@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="366.95633" height="357.82319" viewBox="0 0 366.95633 357.82319">
+  <defs>
+    <linearGradient id="28d2583e-c641-4354-8bcd-66960f48e4ef" x1="201.97473" y1="37.91159" x2="203.96519" y2="111.22681" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fec900"/>
+      <stop offset="1" stop-color="#fe9200"/>
+    </linearGradient>
+    <linearGradient id="1633b70f-a6e1-4178-abc0-60c8687abf0a" x1="169.71576" y1="15.29464" x2="150.14519" y2="109.83041" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#fe9200"/>
+      <stop offset="1" stop-color="#fe6c00"/>
+    </linearGradient>
+    <linearGradient id="3614d37f-ae4c-46bb-a8d2-24d80c300b06" x1="183.45622" y1="20.16585" x2="183.45622" y2="121.38415" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ff5b02"/>
+      <stop offset="1" stop-color="#f42b01"/>
+    </linearGradient>
+    <linearGradient id="339707db-0924-465d-8723-0a75d5b4ffe3" x1="-778.88742" y1="131.75393" x2="-755.88742" y2="142.4206" gradientTransform="matrix(-1, 0, 0, 1, -572.93829, -22.65812)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ee1e00"/>
+      <stop offset="1" stop-color="#da1d05"/>
+    </linearGradient>
+    <linearGradient id="71c8c86f-726e-4d8c-bdf8-dc602bda1979" x1="183.67042" y1="74.83832" x2="170.92042" y2="138.58832" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#da1d05"/>
+      <stop offset="1" stop-color="#ca1601"/>
+    </linearGradient>
+    <linearGradient id="87d3ca6e-7f4a-4069-b2ed-f01f64009ea3" x1="139.16818" y1="148.08594" x2="181.50151" y2="162.75261" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#c61500"/>
+      <stop offset="1" stop-color="#900"/>
+    </linearGradient>
+    <linearGradient id="d38d63e7-70b6-47e0-ad62-8468437c5a6f" x1="169.43346" y1="88.2475" x2="186.33482" y2="96.08581" xlink:href="#1633b70f-a6e1-4178-abc0-60c8687abf0a"/>
+    <linearGradient id="a5d0329c-0423-45e0-8549-b7782ca3a694" x1="-739.82368" y1="110.90562" x2="-722.92232" y2="118.74394" gradientTransform="matrix(-1, 0, 0, 1, -542.34471, -22.65812)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#c61500"/>
+      <stop offset="1" stop-color="#a40000"/>
+    </linearGradient>
+    <linearGradient id="5a061d76-ecba-48ac-af6b-5e0fbd72faa8" x1="218.51851" y1="60.56971" x2="220.50897" y2="133.88493" gradientTransform="translate(223.57565 -99.63781) rotate(51.42)" xlink:href="#28d2583e-c641-4354-8bcd-66960f48e4ef"/>
+    <linearGradient id="495b4671-aea9-4305-8aae-e1029c1940e0" x1="186.25954" y1="37.95276" x2="166.68898" y2="132.48853" gradientTransform="translate(223.57565 -99.63781) rotate(51.42)" xlink:href="#1633b70f-a6e1-4178-abc0-60c8687abf0a"/>
+    <linearGradient id="b2a3bd75-0062-4af3-aca3-d0d040961a04" x1="200" y1="42.82397" x2="200" y2="144.04227" gradientTransform="translate(223.57565 -99.63781) rotate(51.42)" xlink:href="#3614d37f-ae4c-46bb-a8d2-24d80c300b06"/>
+    <linearGradient id="4113ef47-4845-4f06-9566-8ba2079a9ff8" x1="-778.88742" y1="131.75393" x2="-755.88742" y2="142.4206" gradientTransform="matrix(-0.62361, -0.78174, -0.78174, 0.62361, -123.39572, -534.59266)" xlink:href="#339707db-0924-465d-8723-0a75d5b4ffe3"/>
+    <linearGradient id="8eec4461-4dbf-49eb-9473-372371f7ae73" x1="200.21421" y1="97.49644" x2="187.46421" y2="161.24644" gradientTransform="translate(223.57565 -99.63781) rotate(51.42)" xlink:href="#71c8c86f-726e-4d8c-bdf8-dc602bda1979"/>
+    <linearGradient id="da0fd2cd-f3fc-4695-9ed4-2c7edd1deade" x1="155.71197" y1="170.74407" x2="198.0453" y2="185.41073" gradientTransform="translate(223.57565 -99.63781) rotate(51.42)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#d61500"/>
+      <stop offset="1" stop-color="#ac0500"/>
+    </linearGradient>
+    <linearGradient id="e7d99c15-f88a-494b-ae88-93c762b65c5e" x1="185.97724" y1="110.90562" x2="202.8786" y2="118.74394" gradientTransform="translate(223.57565 -99.63781) rotate(51.42)" xlink:href="#1633b70f-a6e1-4178-abc0-60c8687abf0a"/>
+    <linearGradient id="c4f80204-96cf-4a32-b13e-4280ae652639" x1="-739.82368" y1="110.90562" x2="-722.92232" y2="118.74394" gradientTransform="matrix(-0.62361, -0.78174, -0.78174, 0.62361, -104.31735, -510.67648)" xlink:href="#a5d0329c-0423-45e0-8549-b7782ca3a694"/>
+    <linearGradient id="e8a56c3a-8e7c-495b-ae18-1f30273f2e34" x1="218.51851" y1="60.56971" x2="220.50897" y2="133.88493" gradientTransform="translate(433.49372 40.06767) rotate(102.84)" xlink:href="#28d2583e-c641-4354-8bcd-66960f48e4ef"/>
+    <linearGradient id="8798816d-2990-4bce-97c1-14c282c4125b" x1="186.25954" y1="37.95276" x2="166.68898" y2="132.48853" gradientTransform="translate(433.49372 40.06767) rotate(102.84)" xlink:href="#1633b70f-a6e1-4178-abc0-60c8687abf0a"/>
+    <linearGradient id="661d7178-fd0c-4709-a4f4-b34c0a0ab797" x1="200" y1="42.82397" x2="200" y2="144.04227" gradientTransform="translate(433.49372 40.06767) rotate(102.84)" xlink:href="#3614d37f-ae4c-46bb-a8d2-24d80c300b06"/>
+    <linearGradient id="18646547-2e91-4a4e-85f1-16224300ec5b" x1="-778.88742" y1="131.75393" x2="-755.88742" y2="142.4206" gradientTransform="matrix(0.22223, -0.97499, -0.97499, -0.22223, 557.14084, -502.41389)" xlink:href="#339707db-0924-465d-8723-0a75d5b4ffe3"/>
+    <linearGradient id="92a93936-91ce-4008-9d3c-adba322d56cb" x1="200.21421" y1="97.49644" x2="187.46421" y2="161.24644" gradientTransform="translate(433.49372 40.06767) rotate(102.84)" xlink:href="#71c8c86f-726e-4d8c-bdf8-dc602bda1979"/>
+    <linearGradient id="da741390-5b50-448f-8a61-76a7c046d7fe" x1="155.71197" y1="170.74407" x2="198.0453" y2="185.41073" gradientTransform="translate(433.49372 40.06767) rotate(102.84)" xlink:href="#87d3ca6e-7f4a-4069-b2ed-f01f64009ea3"/>
+    <linearGradient id="e4048202-aeb3-4c00-8bb2-e01a7a08aa28" x1="185.97724" y1="110.90562" x2="202.8786" y2="118.74394" gradientTransform="translate(433.49372 40.06767) rotate(102.84)" xlink:href="#1633b70f-a6e1-4178-abc0-60c8687abf0a"/>
+    <linearGradient id="2bfb9649-fba7-43f2-acae-36df60db81f6" x1="-739.82368" y1="110.90562" x2="-722.92232" y2="118.74394" gradientTransform="matrix(0.22223, -0.97499, -0.97499, -0.22223, 550.34205, -472.58531)" xlink:href="#a5d0329c-0423-45e0-8549-b7782ca3a694"/>
+    <linearGradient id="6fb98562-7eeb-48b7-b634-6b3c9bf8dee0" x1="218.51851" y1="60.56971" x2="220.50897" y2="133.88493" gradientTransform="translate(455.18693 291.28993) rotate(154.26)" xlink:href="#28d2583e-c641-4354-8bcd-66960f48e4ef"/>
+    <linearGradient id="aaf3e935-1603-496b-a347-21ab20700ce2" x1="186.25954" y1="37.95276" x2="166.68898" y2="132.48853" gradientTransform="translate(455.18693 291.28993) rotate(154.26)" xlink:href="#1633b70f-a6e1-4178-abc0-60c8687abf0a"/>
+    <linearGradient id="9bf9d002-7851-42d4-8bb7-5107065d0e5d" x1="200" y1="42.82397" x2="200" y2="144.04227" gradientTransform="translate(455.18693 291.28993) rotate(154.26)" xlink:href="#3614d37f-ae4c-46bb-a8d2-24d80c300b06"/>
+    <linearGradient id="35d4bef6-31e3-4937-b85f-7d41d34ba04b" x1="-778.88742" y1="131.75393" x2="-755.88742" y2="142.4206" gradientTransform="matrix(0.90077, -0.43429, -0.43429, -0.90077, 956.37267, 49.65444)" xlink:href="#339707db-0924-465d-8723-0a75d5b4ffe3"/>
+    <linearGradient id="15009b93-4149-48e4-a6de-f2ee720f9c36" x1="200.21421" y1="97.49644" x2="187.46421" y2="161.24644" gradientTransform="translate(455.18693 291.28993) rotate(154.26)" xlink:href="#71c8c86f-726e-4d8c-bdf8-dc602bda1979"/>
+    <linearGradient id="4a8882fb-fc98-4050-9425-13e770b70c8c" x1="155.71197" y1="170.74407" x2="198.0453" y2="185.41073" gradientTransform="translate(455.18693 291.28993) rotate(154.26)" xlink:href="#da0fd2cd-f3fc-4695-9ed4-2c7edd1deade"/>
+    <linearGradient id="ae4325bc-8ec2-4139-a4bb-d59f9dd3373f" x1="185.97724" y1="110.90562" x2="202.8786" y2="118.74394" gradientTransform="translate(455.18693 291.28993) rotate(154.26)" xlink:href="#1633b70f-a6e1-4178-abc0-60c8687abf0a"/>
+    <linearGradient id="7ca8e79b-5fd6-4055-912d-94477eb1bdef" x1="-739.82368" y1="110.90562" x2="-722.92232" y2="118.74394" gradientTransform="matrix(0.90077, -0.43429, -0.43429, -0.90077, 928.81476, 62.94087)" xlink:href="#a5d0329c-0423-45e0-8549-b7782ca3a694"/>
+    <linearGradient id="3dbefeb6-df13-4eeb-aedb-1b87fec34e32" x1="218.51851" y1="60.56971" x2="220.50897" y2="133.88493" gradientTransform="translate(272.32493 464.91223) rotate(-154.32)" xlink:href="#28d2583e-c641-4354-8bcd-66960f48e4ef"/>
+    <linearGradient id="8883009a-d433-4bf6-8a3e-5fcba96c114c" x1="186.25954" y1="37.95276" x2="166.68898" y2="132.48853" gradientTransform="translate(272.32493 464.91223) rotate(-154.32)" xlink:href="#1633b70f-a6e1-4178-abc0-60c8687abf0a"/>
+    <linearGradient id="4120d0bf-87d2-4054-916a-94c7abe9e96d" x1="200" y1="42.82397" x2="200" y2="144.04227" gradientTransform="translate(272.32493 464.91223) rotate(-154.32)" xlink:href="#3614d37f-ae4c-46bb-a8d2-24d80c300b06"/>
+    <linearGradient id="de255cd6-ed3a-469f-b58d-0989a17c627c" x1="-778.88742" y1="131.75393" x2="-755.88742" y2="142.4206" gradientTransform="matrix(0.90123, 0.43334, 0.43334, -0.90123, 773.76344, 706.02275)" xlink:href="#339707db-0924-465d-8723-0a75d5b4ffe3"/>
+    <linearGradient id="8385462c-3ec5-481a-a7e6-c3b5a6545a59" x1="200.21421" y1="97.49644" x2="187.46421" y2="161.24644" gradientTransform="translate(272.32493 464.91223) rotate(-154.32)" xlink:href="#71c8c86f-726e-4d8c-bdf8-dc602bda1979"/>
+    <linearGradient id="2cad4d8e-148e-470c-a0ce-2636c7758e06" x1="155.71197" y1="170.74407" x2="198.0453" y2="185.41073" gradientTransform="translate(272.32493 464.91223) rotate(-154.32)" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#c61500"/>
+      <stop offset="1" stop-color="#8e0000"/>
+    </linearGradient>
+    <linearGradient id="e2da44c4-63ee-4523-ba6f-a1e2bc2774f0" x1="185.97724" y1="110.90562" x2="202.8786" y2="118.74394" gradientTransform="translate(272.32493 464.91223) rotate(-154.32)" xlink:href="#1633b70f-a6e1-4178-abc0-60c8687abf0a"/>
+    <linearGradient id="799e22d3-0abd-4171-905a-07bb3e95d41b" x1="-739.82368" y1="110.90562" x2="-722.92232" y2="118.74394" gradientTransform="matrix(0.90123, 0.43334, 0.43334, -0.90123, 746.19163, 692.76518)" xlink:href="#a5d0329c-0423-45e0-8549-b7782ca3a694"/>
+    <linearGradient id="0fb8c647-60ea-475a-ae2f-6f6808c87704" x1="218.51851" y1="60.56971" x2="220.50897" y2="133.88493" gradientTransform="translate(22.56376 430.23407) rotate(-102.9)" xlink:href="#28d2583e-c641-4354-8bcd-66960f48e4ef"/>
+    <linearGradient id="313492d8-a51c-48f6-9ae4-66b0c2ad36b8" x1="186.25954" y1="37.95276" x2="166.68898" y2="132.48853" gradientTransform="translate(22.56376 430.23407) rotate(-102.9)" xlink:href="#1633b70f-a6e1-4178-abc0-60c8687abf0a"/>
+    <linearGradient id="72393add-2fa8-4711-bd7f-9f2f637c3f21" x1="200" y1="42.82397" x2="200" y2="144.04227" gradientTransform="translate(22.56376 430.23407) rotate(-102.9)" xlink:href="#3614d37f-ae4c-46bb-a8d2-24d80c300b06"/>
+    <linearGradient id="b111d22f-bd5d-4769-a72e-765525315bf0" x1="-778.88742" y1="131.75393" x2="-755.88742" y2="142.4206" gradientTransform="matrix(0.22325, 0.97476, 0.97476, -0.22325, 146.7789, 972.58585)" xlink:href="#339707db-0924-465d-8723-0a75d5b4ffe3"/>
+    <linearGradient id="431874b2-e203-46c4-9a05-6664344afc3a" x1="200.21421" y1="97.49644" x2="187.46421" y2="161.24644" gradientTransform="translate(22.56376 430.23407) rotate(-102.9)" xlink:href="#71c8c86f-726e-4d8c-bdf8-dc602bda1979"/>
+    <linearGradient id="f9543194-fa3d-4759-8d63-19df812f634a" x1="155.71197" y1="170.74407" x2="198.0453" y2="185.41073" gradientTransform="translate(22.56376 430.23407) rotate(-102.9)" xlink:href="#87d3ca6e-7f4a-4069-b2ed-f01f64009ea3"/>
+    <linearGradient id="781b6771-b8be-4b63-9a1b-c06d860f93ac" x1="185.97724" y1="110.90562" x2="202.8786" y2="118.74394" gradientTransform="translate(22.56376 430.23407) rotate(-102.9)" xlink:href="#1633b70f-a6e1-4178-abc0-60c8687abf0a"/>
+    <linearGradient id="67249a6a-9f4a-46f2-89f5-5f8ea25f89f0" x1="-739.82368" y1="110.90562" x2="-722.92232" y2="118.74394" gradientTransform="matrix(0.22325, 0.97476, 0.97476, -0.22325, 139.94888, 942.7644)" xlink:href="#a5d0329c-0423-45e0-8549-b7782ca3a694"/>
+    <linearGradient id="7aa4e86f-d7cf-4afd-9674-b561acbe908d" x1="218.51851" y1="60.56971" x2="220.50897" y2="133.88493" gradientTransform="matrix(0.62279, -0.78239, 0.78239, 0.62279, -106.07974, 213.36068)" xlink:href="#28d2583e-c641-4354-8bcd-66960f48e4ef"/>
+    <linearGradient id="ffeb5b63-14fe-416a-814d-ccca19a19e7a" x1="186.25954" y1="37.95276" x2="166.68898" y2="132.48853" gradientTransform="matrix(0.62279, -0.78239, 0.78239, 0.62279, -106.07974, 213.36068)" xlink:href="#1633b70f-a6e1-4178-abc0-60c8687abf0a"/>
+    <linearGradient id="1d97a316-9881-4f84-9679-88347dad27cf" x1="200" y1="42.82397" x2="200" y2="144.04227" gradientTransform="matrix(0.62279, -0.78239, 0.78239, 0.62279, -106.07974, 213.36068)" xlink:href="#3614d37f-ae4c-46bb-a8d2-24d80c300b06"/>
+    <linearGradient id="f2ba6119-3ca2-4a73-92df-608e90951927" x1="-778.88742" y1="131.75393" x2="-755.88742" y2="142.4206" gradientTransform="matrix(-0.62279, 0.78239, 0.78239, 0.62279, -452.59544, 648.67864)" xlink:href="#339707db-0924-465d-8723-0a75d5b4ffe3"/>
+    <linearGradient id="273b786f-1492-4f3e-9946-2043fd93e382" x1="200.21421" y1="97.49644" x2="187.46421" y2="161.24644" gradientTransform="matrix(0.62279, -0.78239, 0.78239, 0.62279, -106.07974, 213.36068)" xlink:href="#71c8c86f-726e-4d8c-bdf8-dc602bda1979"/>
+    <linearGradient id="650ee18e-886d-438c-b9f7-7b49e1d9d9f1" x1="155.71197" y1="170.74407" x2="198.0453" y2="185.41073" gradientTransform="matrix(0.62279, -0.78239, 0.78239, 0.62279, -106.07974, 213.36068)" xlink:href="#da0fd2cd-f3fc-4695-9ed4-2c7edd1deade"/>
+    <linearGradient id="10f91d1e-aa5f-49fc-9f51-d8994695ca56" x1="185.97724" y1="110.90562" x2="202.8786" y2="118.74394" gradientTransform="matrix(0.62279, -0.78239, 0.78239, 0.62279, -106.07974, 213.36068)" xlink:href="#1633b70f-a6e1-4178-abc0-60c8687abf0a"/>
+    <linearGradient id="b1e9d27c-cd5b-4687-8df3-19884939b080" x1="-739.82368" y1="110.90562" x2="-722.92232" y2="118.74394" gradientTransform="matrix(-0.62279, 0.78239, 0.78239, 0.62279, -433.54213, 624.74249)" xlink:href="#a5d0329c-0423-45e0-8549-b7782ca3a694"/>
+  </defs>
+  <title>helioworkstation_icon_process</title>
+  <g style="isolation: isolate">
+    <g id="fa3ca396-84e2-4cb5-bbf7-dc9f653c93b8" data-name="Layer 2">
+      <polygon points="211.924 129.082 220.522 76.89 183.456 0 211.924 129.082" fill="url(#28d2583e-c641-4354-8bcd-66960f48e4ef)"/>
+      <polygon points="154.989 129.082 146.39 76.89 183.456 0 154.989 129.082" fill="url(#1633b70f-a6e1-4178-abc0-60c8687abf0a)"/>
+      <polygon points="211.924 129.082 183.456 0 154.989 129.082 183.456 50.848 211.924 129.082" fill="url(#3614d37f-ae4c-46bb-a8d2-24d80c300b06)"/>
+      <polygon points="211.924 129.082 183.456 0 154.989 129.082 183.456 8.268 211.924 129.082" fill="#ef4136" opacity="0.3" style="mix-blend-mode: multiply"/>
+      <polygon points="144.716 157.311 183.456 50.848 211.924 129.082 183.456 138.653 183.456 188.206 144.716 157.311" fill="url(#339707db-0924-465d-8723-0a75d5b4ffe3)"/>
+      <polygon points="183.456 188.206 183.456 50.848 144.716 157.311 183.456 188.206" fill="url(#71c8c86f-726e-4d8c-bdf8-dc602bda1979)"/>
+      <polygon points="154.989 129.082 183.456 138.653 183.456 188.206 144.716 157.311 154.989 129.082" fill="url(#87d3ca6e-7f4a-4069-b2ed-f01f64009ea3)"/>
+      <polygon points="183.456 50.848 183.456 138.653 211.924 129.082 185.166 136.519 183.456 50.848" opacity="0.39" fill="url(#d38d63e7-70b6-47e0-ad62-8468437c5a6f)"/>
+      <polygon points="183.456 50.848 183.456 138.653 154.989 129.082 181.746 136.519 183.456 50.848" opacity="0.19" fill="url(#a5d0329c-0423-45e0-8549-b7782ca3a694)" style="mix-blend-mode: multiply"/>
+      <polygon points="247.429 173.59 293.591 147.765 330.584 70.84 247.429 173.59" fill="url(#5a061d76-ecba-48ac-af6b-5e0fbd72faa8)"/>
+      <polygon points="211.924 129.081 247.362 89.813 330.584 70.84 211.924 129.081" fill="url(#495b4671-aea9-4305-8aae-e1029c1940e0)"/>
+      <polygon points="247.429 173.59 330.584 70.84 211.924 129.081 290.834 102.549 247.429 173.59" fill="url(#b2a3bd75-0062-4af3-aca3-d0d040961a04)"/>
+      <polygon points="247.429 173.59 330.584 70.84 211.924 129.081 324.121 75.995 247.429 173.59" fill="#ef4136" opacity="0.3" style="mix-blend-mode: multiply"/>
+      <polygon points="183.45 138.655 290.834 102.549 247.429 173.59 222.194 157.305 183.456 188.206 183.45 138.655" fill="url(#4113ef47-4845-4f06-9566-8ba2079a9ff8)"/>
+      <polygon points="183.456 188.206 290.834 102.549 183.45 138.655 183.456 188.206" fill="url(#8eec4461-4dbf-49eb-9473-372371f7ae73)"/>
+      <polygon points="211.924 129.081 222.194 157.305 183.456 188.206 183.45 138.655 211.924 129.081" fill="url(#da0fd2cd-f3fc-4695-9ed4-2c7edd1deade)"/>
+      <polygon points="290.834 102.549 222.194 157.305 247.429 173.59 224.928 157.311 290.834 102.549" opacity="0.39" fill="url(#e7d99c15-f88a-494b-ae88-93c762b65c5e)"/>
+      <polygon points="290.834 102.549 222.194 157.305 211.924 129.081 222.796 154.637 290.834 102.549" opacity="0.19" fill="url(#c4f80204-96cf-4a32-b13e-4280ae652639)" style="mix-blend-mode: multiply"/>
+      <polygon points="234.776 229.101 283.752 249.083 366.956 230.031 234.776 229.101" fill="url(#e8a56c3a-8e7c-495b-ae18-1f30273f2e34)"/>
+      <polygon points="247.429 173.59 300.226 176.805 366.956 230.031 247.429 173.59" fill="url(#8798816d-2990-4bce-97c1-14c282c4125b)"/>
+      <polygon points="234.776 229.101 366.956 230.031 247.429 173.59 317.38 218.731 234.776 229.101" fill="url(#661d7178-fd0c-4709-a4f4-b34c0a0ab797)"/>
+      <polygon points="234.776 229.101 366.956 230.031 247.429 173.59 358.895 228.194 234.776 229.101" fill="#ef4136" opacity="0.3" style="mix-blend-mode: multiply"/>
+      <polygon points="222.188 157.301 317.38 218.731 234.776 229.101 231.77 199.218 183.456 188.206 222.188 157.301" fill="url(#18646547-2e91-4a4e-85f1-16224300ec5b)"/>
+      <polygon points="183.456 188.206 317.38 218.731 222.188 157.301 183.456 188.206" fill="url(#92a93936-91ce-4008-9d3c-adba322d56cb)"/>
+      <polygon points="247.429 173.59 231.77 199.218 183.456 188.206 222.188 157.301 247.429 173.59" fill="url(#da741390-5b50-448f-8a61-76a7c046d7fe)"/>
+      <polygon points="317.38 218.731 231.77 199.218 234.776 229.101 233.471 201.36 317.38 218.731" opacity="0.39" fill="url(#e4048202-aeb3-4c00-8bb2-e01a7a08aa28)"/>
+      <polygon points="317.38 218.731 231.77 199.218 247.429 173.59 234.231 198.026 317.38 218.731" opacity="0.19" fill="url(#2bfb9649-fba7-43f2-acae-36df60db81f6)" style="mix-blend-mode: multiply"/>
+      <polygon points="183.491 253.828 198.411 304.574 265.192 357.738 183.491 253.828" fill="url(#6fb98562-7eeb-48b7-b634-6b3c9bf8dee0)"/>
+      <polygon points="234.776 229.101 265.188 272.38 265.192 357.738 234.776 229.101" fill="url(#aaf3e935-1603-496b-a347-21ab20700ce2)"/>
+      <polygon points="183.491 253.828 265.192 357.738 234.776 229.101 243.109 311.935 183.491 253.828" fill="url(#9bf9d002-7851-42d4-8bb7-5107065d0e5d)"/>
+      <polygon points="183.491 253.828 265.192 357.738 234.776 229.101 261.601 350.29 183.491 253.828" fill="#ef4136" opacity="0.3" style="mix-blend-mode: multiply"/>
+      <polygon points="231.769 199.212 243.109 311.935 183.491 253.828 204.976 232.842 183.456 188.206 231.769 199.212" fill="url(#35d4bef6-31e3-4937-b85f-7d41d34ba04b)"/>
+      <polygon points="183.456 188.206 243.109 311.935 231.769 199.212 183.456 188.206" fill="url(#15009b93-4149-48e4-a6de-f2ee720f9c36)"/>
+      <polygon points="234.776 229.101 204.976 232.842 183.456 188.206 231.769 199.212 234.776 229.101" fill="url(#4a8882fb-fc98-4050-9425-13e770b70c8c)"/>
+      <polygon points="243.109 311.935 204.976 232.842 183.491 253.828 204.363 235.507 243.109 311.935" opacity="0.39" fill="url(#ae4325bc-8ec2-4139-a4bb-d59f9dd3373f)"/>
+      <polygon points="243.109 311.935 204.976 232.842 234.776 229.101 207.443 234.022 243.109 311.935" opacity="0.19" fill="url(#7ca8e79b-5fd6-4055-912d-94477eb1bdef)" style="mix-blend-mode: multiply"/>
+      <polygon points="132.179 229.155 101.813 272.465 101.898 357.823 132.179 229.155" fill="url(#3dbefeb6-df13-4eeb-aedb-1b87fec34e32)"/>
+      <polygon points="183.491 253.828 168.623 304.59 101.898 357.823 183.491 253.828" fill="url(#8883009a-d433-4bf6-8a3e-5fcba96c114c)"/>
+      <polygon points="132.179 229.155 101.898 357.823 183.491 253.828 123.933 311.997 132.179 229.155" fill="url(#4120d0bf-87d2-4054-916a-94c7abe9e96d)"/>
+      <polygon points="132.179 229.155 101.898 357.823 183.491 253.828 105.481 350.372 132.179 229.155" fill="#ef4136" opacity="0.3" style="mix-blend-mode: multiply"/>
+      <polygon points="204.981 232.838 123.933 311.997 132.179 229.155 161.983 232.865 183.456 188.206 204.981 232.838" fill="url(#de255cd6-ed3a-469f-b58d-0989a17c627c)"/>
+      <polygon points="183.456 188.206 123.933 311.997 204.981 232.838 183.456 188.206" fill="url(#8385462c-3ec5-481a-a7e6-c3b5a6545a59)"/>
+      <polygon points="183.491 253.828 161.983 232.865 183.456 188.206 204.981 232.838 183.491 253.828" fill="url(#2cad4d8e-148e-470c-a0ce-2636c7758e06)"/>
+      <polygon points="123.933 311.997 161.983 232.865 132.179 229.155 159.517 234.047 123.933 311.997" opacity="0.39" fill="url(#e2da44c4-63ee-4523-ba6f-a1e2bc2774f0)"/>
+      <polygon points="123.933 311.997 161.983 232.865 183.491 253.828 162.599 235.529 123.933 311.997" opacity="0.19" fill="url(#799e22d3-0abd-4171-905a-07bb3e95d41b)" style="mix-blend-mode: multiply"/>
+      <polygon points="119.468 173.657 66.674 176.927 0 230.223 119.468 173.657" fill="url(#0fb8c647-60ea-475a-ae2f-6f6808c87704)"/>
+      <polygon points="132.179 229.155 83.224 249.188 0 230.223 132.179 229.155" fill="url(#313492d8-a51c-48f6-9ae4-66b0c2ad36b8)"/>
+      <polygon points="119.468 173.657 0 230.223 132.179 229.155 49.565 218.872 119.468 173.657" fill="url(#72393add-2fa8-4711-bd7f-9f2f637c3f21)"/>
+      <polygon points="119.468 173.657 0 230.223 132.179 229.155 8.059 228.378 119.468 173.657" fill="#ef4136" opacity="0.3" style="mix-blend-mode: multiply"/>
+      <polygon points="161.989 232.866 49.565 218.872 119.468 173.657 135.154 199.269 183.456 188.206 161.989 232.866" fill="url(#b111d22f-bd5d-4769-a72e-765525315bf0)"/>
+      <polygon points="183.456 188.206 49.565 218.872 161.989 232.866 183.456 188.206" fill="url(#431874b2-e203-46c4-9a05-6664344afc3a)"/>
+      <polygon points="132.179 229.155 135.154 199.269 183.456 188.206 161.989 232.866 132.179 229.155" fill="url(#f9543194-fa3d-4759-8d63-19df812f634a)"/>
+      <polygon points="49.565 218.872 135.154 199.269 119.468 173.657 132.692 198.079 49.565 218.872" opacity="0.39" fill="url(#781b6771-b8be-4b63-9a1b-c06d860f93ac)"/>
+      <polygon points="49.565 218.872 135.154 199.269 132.179 229.155 133.456 201.412 49.565 218.872" opacity="0.19" fill="url(#67249a6a-9f4a-46f2-89f5-5f8ea25f89f0)" style="mix-blend-mode: multiply"/>
+      <polygon points="154.927 129.111 119.448 89.88 36.205 70.994 154.927 129.111" fill="url(#7aa4e86f-d7cf-4afd-9674-b561acbe908d)"/>
+      <polygon points="119.468 173.657 73.279 147.88 36.205 70.994 119.468 173.657" fill="url(#ffeb5b63-14fe-416a-814d-ccca19a19e7a)"/>
+      <polygon points="154.927 129.111 36.205 70.994 119.468 173.657 75.989 102.661 154.927 129.111" fill="url(#1d97a316-9881-4f84-9679-88347dad27cf)"/>
+      <polygon points="154.927 129.111 36.205 70.994 119.468 173.657 42.674 76.143 154.927 129.111" fill="#ef4136" opacity="0.3" style="mix-blend-mode: multiply"/>
+      <polygon points="135.157 199.275 75.989 102.661 154.927 129.111 144.686 157.345 183.456 188.206 135.157 199.275" fill="url(#f2ba6119-3ca2-4a73-92df-608e90951927)"/>
+      <polygon points="183.456 188.206 75.989 102.661 135.157 199.275 183.456 188.206" fill="url(#273b786f-1492-4f3e-9946-2043fd93e382)"/>
+      <polygon points="119.468 173.657 144.686 157.345 183.456 188.206 135.157 199.275 119.468 173.657" fill="url(#650ee18e-886d-438c-b9f7-7b49e1d9d9f1)"/>
+      <polygon points="75.989 102.661 144.686 157.345 154.927 129.111 144.082 154.679 75.989 102.661" opacity="0.39" fill="url(#10f91d1e-aa5f-49fc-9f51-d8994695ca56)"/>
+      <polygon points="75.989 102.661 144.686 157.345 119.468 173.657 141.952 157.354 75.989 102.661" opacity="0.19" fill="url(#b1e9d27c-cd5b-4687-8df3-19884939b080)" style="mix-blend-mode: multiply"/>
+    </g>
+  </g>
+</svg>

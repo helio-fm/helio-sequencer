@@ -1,0 +1,163 @@
+/*
+    This file is part of Helio Workstation.
+
+    Helio is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Helio is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Helio. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+//[Headers]
+#include "Common.h"
+//[/Headers]
+
+#include "PanelC.h"
+
+//[MiscUserDefs]
+#include "PanelBackgroundC.h"
+//[/MiscUserDefs]
+
+PanelC::PanelC()
+{
+
+    //[UserPreSize]
+    //[/UserPreSize]
+
+    setSize (600, 400);
+
+    //[Constructor]
+    this->setOpaque(false);
+    this->setInterceptsMouseClicks(false, false);
+    //[/Constructor]
+}
+
+PanelC::~PanelC()
+{
+    //[Destructor_pre]
+    //[/Destructor_pre]
+
+
+    //[Destructor]
+    //[/Destructor]
+}
+
+void PanelC::paint (Graphics& g)
+{
+    //[UserPrePaint] Add your own custom painting code here..
+#if 0
+    //[/UserPrePaint]
+
+    g.setGradientFill (ColourGradient (Colour (0xff3b5297),
+                                       0.0f, static_cast<float> (getHeight() - -200),
+                                       Colour (0xff292c57),
+                                       static_cast<float> (getWidth()), 0.0f,
+                                       true));
+    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 7.000f);
+
+    g.setGradientFill (ColourGradient (Colour (0x3a193477),
+                                       static_cast<float> (proportionOfWidth (0.5200f)), static_cast<float> (proportionOfHeight (1.2000f)),
+                                       Colour (0x00000000),
+                                       static_cast<float> (proportionOfWidth (0.4800f)), static_cast<float> (proportionOfHeight (-0.2000f)),
+                                       false));
+    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 7.000f);
+
+    g.setGradientFill (ColourGradient (Colour (0x3a193477),
+                                       static_cast<float> (proportionOfWidth (0.5200f)), static_cast<float> (proportionOfHeight (1.3000f)),
+                                       Colour (0x00000000),
+                                       static_cast<float> (proportionOfWidth (0.4800f)), static_cast<float> (proportionOfHeight (-0.3000f)),
+                                       false));
+    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 7.000f);
+
+    g.setGradientFill (ColourGradient (Colour (0x3a193477),
+                                       static_cast<float> (proportionOfWidth (0.5200f)), static_cast<float> (proportionOfHeight (1.3000f)),
+                                       Colour (0x00000000),
+                                       static_cast<float> (proportionOfWidth (0.4800f)), static_cast<float> (proportionOfHeight (-0.3000f)),
+                                       false));
+    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 7.000f);
+
+    g.setColour (Colour (0xffb9b9b9));
+    g.drawRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 7.000f, 1.000f);
+
+    //[UserPaint] Add your own custom painting code here..
+#endif
+
+    g.setGradientFill (ColourGradient (findColour(PanelBackgroundC::panelFillStartId),
+                                       0.0f, static_cast<float> (getHeight() - -200),
+                                       findColour(PanelBackgroundC::panelFillEndId),
+                                       static_cast<float> (getWidth()), 0.0f,
+                                       true));
+    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 7.000f);
+
+    g.setGradientFill (ColourGradient (findColour(PanelBackgroundC::panelShadeStartId),
+                                       static_cast<float> (proportionOfWidth (0.5200f)), static_cast<float> (proportionOfHeight (1.2000f)),
+                                       findColour(PanelBackgroundC::panelShadeEndId),
+                                       static_cast<float> (proportionOfWidth (0.4800f)), static_cast<float> (proportionOfHeight (-0.2000f)),
+                                       false));
+    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 7.000f);
+
+#if HELIO_DESKTOP
+    g.setGradientFill (ColourGradient (findColour(PanelBackgroundC::panelShadeStartId),
+                                       static_cast<float> (proportionOfWidth (0.5200f)), static_cast<float> (proportionOfHeight (1.3000f)),
+                                       findColour(PanelBackgroundC::panelShadeEndId),
+                                       static_cast<float> (proportionOfWidth (0.4800f)), static_cast<float> (proportionOfHeight (-0.3000f)),
+                                       false));
+    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 7.000f);
+
+    g.setGradientFill (ColourGradient (findColour(PanelBackgroundC::panelShadeStartId),
+                                       static_cast<float> (proportionOfWidth (0.5200f)), static_cast<float> (proportionOfHeight (1.3000f)),
+                                       findColour(PanelBackgroundC::panelShadeEndId),
+                                       static_cast<float> (proportionOfWidth (0.4800f)), static_cast<float> (proportionOfHeight (-0.3000f)),
+                                       false));
+    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 7.000f);
+#endif
+
+    g.setColour (Colour (0x77b9b9b9));
+    g.drawRoundedRectangle (0.5f, 0.5f, static_cast<float> (getWidth() - 1), static_cast<float> (getHeight() - 1), 6.000f, 1.000f);
+
+    //[/UserPaint]
+}
+
+void PanelC::resized()
+{
+    //[UserPreResize] Add your own custom resize code here..
+    //[/UserPreResize]
+
+    //[UserResized] Add your own custom resize handling here..
+    //[/UserResized]
+}
+
+
+//[MiscUserCode]
+//[/MiscUserCode]
+
+#if 0
+/*
+BEGIN_JUCER_METADATA
+
+<JUCER_COMPONENT documentType="Component" className="PanelC" template="../../Template"
+                 componentName="" parentClasses="public Component" constructorParams=""
+                 variableInitialisers="" snapPixels="8" snapActive="0" snapShown="1"
+                 overlayOpacity="0.330" fixedSize="0" initialWidth="600" initialHeight="400">
+  <BACKGROUND backgroundColour="0">
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="7" fill=" radial: 0 -200R, 0R 0, 0=ff3b5297, 1=ff292c57"
+               hasStroke="0"/>
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="7" fill="linear: 52% 120%, 48% -20%, 0=3a193477, 1=0"
+               hasStroke="0"/>
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="7" fill="linear: 52% 130%, 48% -30%, 0=3a193477, 1=0"
+               hasStroke="0"/>
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="7" fill="linear: 52% 130%, 48% -30%, 0=3a193477, 1=0"
+               hasStroke="1" stroke="1, mitered, butt" strokeColour="solid: ffb9b9b9"/>
+  </BACKGROUND>
+</JUCER_COMPONENT>
+
+END_JUCER_METADATA
+*/
+#endif

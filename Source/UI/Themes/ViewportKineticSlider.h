@@ -1,0 +1,67 @@
+/*
+    This file is part of Helio Workstation.
+
+    Helio is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Helio is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Helio. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#pragma once
+
+class ViewportKineticSlider : private Timer
+{
+public:
+    
+    static ViewportKineticSlider &instance()
+    {
+        static ViewportKineticSlider s;
+        return s;
+    }
+    
+    void stopAnimationForViewport(Viewport *targetViewport);
+    
+    void calculateDragSpeedForViewport(Viewport *targetViewport, Point<float> absDragOffset);
+
+    void startAnimationForViewport(Viewport *targetViewport, Point<float> force);
+    
+private:
+    
+    void timerCallback() override;
+    
+    struct Animator : ReferenceCountedObject
+    {
+        typedef ReferenceCountedObjectPtr<Animator> Ptr;
+        
+        Component::SafePointer<Viewport> viewport;
+        
+        Point<float> force;
+        Point<int> anchor;
+    };
+    
+    struct DragSpeedHolder : ReferenceCountedObject
+    {
+        typedef ReferenceCountedObjectPtr<DragSpeedHolder> Ptr;
+        
+        Component::SafePointer<Viewport> viewport;
+        Point<float> force;
+
+        Point<float> currentOffset;
+        Point<float> offsetAnchor;
+
+        double lastCheckTime;
+    };
+    
+    ReferenceCountedArray<Animator> animators;
+
+    ReferenceCountedArray<DragSpeedHolder> dragSpeedHolders;
+
+};

@@ -1,0 +1,121 @@
+/*
+    This file is part of Helio Workstation.
+
+    Helio is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Helio is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Helio. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#pragma once
+
+class ProjectTreeItem;
+class Delta;
+
+#include "Serializable.h"
+#include "ProjectInfoDiffLogic.h"
+#include "TrackedItem.h"
+
+class ProjectInfo :
+    public Serializable,
+    public VCS::TrackedItem
+{
+public:
+
+    explicit ProjectInfo(ProjectTreeItem &parent);
+
+    ~ProjectInfo() override;
+
+
+    int64 getStartTime() const;
+
+    String getLicense() const;
+    void setLicense(String val);
+
+    String getFullName() const;
+    void setFullName(String val);
+
+    String getAuthor() const;
+    void setAuthor(String val);
+
+    String getDescription() const;
+    void setDescription(String val);
+
+
+    //===------------------------------------------------------------------===//
+    // VCS::TrackedItem
+    //===------------------------------------------------------------------===//
+
+    String getVCSName() const override;
+
+    int getNumDeltas() const override;
+
+    VCS::Delta *getDelta(int index) const override;
+
+    XmlElement *createDeltaDataFor(int index) const override;
+
+    VCS::DiffLogic *getDiffLogic() const override;
+
+    void resetStateTo(const VCS::TrackedItem &newState) override;
+
+
+    //===------------------------------------------------------------------===//
+    // Serializable
+    //===------------------------------------------------------------------===//
+
+    XmlElement *serialize() const override;
+
+    void deserialize(const XmlElement &xml) override;
+
+    void reset() override;
+
+
+    //===------------------------------------------------------------------===//
+    // Deltas
+    //===------------------------------------------------------------------===//
+
+    XmlElement *serializeLicenseDelta() const;
+
+    XmlElement *serializeFullNameDelta() const;
+
+    XmlElement *serializeAuthorDelta() const;
+
+    XmlElement *serializeDescriptionDelta() const;
+
+    void resetLicenseDelta(const XmlElement *state);
+
+    void resetFullNameDelta(const XmlElement *state);
+
+    void resetAuthorDelta(const XmlElement *state);
+
+    void resetDescriptionDelta(const XmlElement *state);
+
+private:
+
+    ScopedPointer<VCS::ProjectInfoDiffLogic> vcsDiffLogic;
+
+    OwnedArray<VCS::Delta> deltas;
+
+private:
+
+    ProjectTreeItem &project;
+
+    String author;
+
+    String description;
+
+    String license;
+
+    int64 initTimestamp;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectInfo);
+
+};
