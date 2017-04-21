@@ -21,13 +21,13 @@
 
 #if HELIO_DESKTOP
 #   define APP_VERSION_MAJOR "1"
-#   define APP_VERSION_MINOR "6"
-#   define APP_VERSION_REVISION "1"
+#   define APP_VERSION_MINOR "7"
+#   define APP_VERSION_REVISION "0"
 #   define APP_VERSION_NAME ""
 #elif HELIO_MOBILE
 #   define APP_VERSION_MAJOR "1"
-#   define APP_VERSION_MINOR "6"
-#   define APP_VERSION_REVISION "1"
+#   define APP_VERSION_MINOR "7"
+#   define APP_VERSION_REVISION "0"
 #   define APP_VERSION_NAME ""
 #endif
 
