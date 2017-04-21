@@ -16,6 +16,7 @@
 */
 
 //[Headers]
+#include "Common.h"
 //[/Headers]
 
 #include "ShadowHorizontalFading.h"

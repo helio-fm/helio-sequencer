@@ -1,0 +1,3 @@
+[submodule "ThirdParty/JUCE"]
+	path = ThirdParty/JUCE
+	url = git@github.com:julianstorer/JUCE.git
