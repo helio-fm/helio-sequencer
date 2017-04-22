@@ -18,7 +18,6 @@
 #pragma once
 
 //[Headers]
-#include "../../../Projects/Introjucer/JuceLibraryCode/JuceHeader.h"
 //[/Headers]
 
 

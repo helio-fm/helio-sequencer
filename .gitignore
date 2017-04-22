@@ -27,6 +27,8 @@ build/
 JuceLibraryCode/
 JuceModules/
 Trash/
+ThirdParty/ASIO
+ThirdParty/VST_SDK
 
 *.obj
 *.exe
