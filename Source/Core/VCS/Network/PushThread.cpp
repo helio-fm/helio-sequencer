@@ -80,12 +80,13 @@ void PushThread::run()
 
         MemoryBlock fetchData;
         downloadStream->readIntoMemoryBlock(fetchData);
+        //Logger::writeToLog(fetchData.toString());
 
         remoteXml = DataEncoder::createDecryptedXml(fetchData, this->localKey);
 
 		const bool fileExists = (fetchData.getSize() != 0) && (statusCode != 404);
-		const bool fileIsParsed = (remoteXml == nullptr);
-        if (fileExists && !fileIsParsed)
+		const bool fileCanBeDecrypted = (remoteXml != nullptr);
+        if (fileExists && !fileCanBeDecrypted)
         {
             Logger::writeToLog("Wrong key!");
             Supervisor::track(Serialization::Activities::vcsPushError);
