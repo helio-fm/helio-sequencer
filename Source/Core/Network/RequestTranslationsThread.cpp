@@ -54,7 +54,13 @@ void RequestTranslationsThread::requestTranslations(RequestTranslationsThread::L
 
 void RequestTranslationsThread::run()
 {
+    const String deviceId(Config::getMachineId());
+    const String saltedDeviceId = deviceId + HELIO_SALT;
+    const String saltedDeviceIdHash = SHA256(saltedDeviceId.toUTF8()).toHexString();
+
     URL fetchUrl(HELIO_TRANSLATIONS_URL);
+    fetchUrl = fetchUrl.withParameter(Serialization::Network::deviceId, deviceId);
+    fetchUrl = fetchUrl.withParameter(Serialization::Network::clientCheck, saltedDeviceIdHash);
 
     {
 		int statusCode = 0;

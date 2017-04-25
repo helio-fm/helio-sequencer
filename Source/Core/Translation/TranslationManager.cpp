@@ -387,7 +387,7 @@ void TranslationManager::timerCallback()
 void TranslationManager::translationsRequestOk()
 {
     Logger::writeToLog("TranslationManager::translationsRequestOk");
-    const String translations(this->requestTranslationsThread->getLatestResponse());
+    const String translations(DataEncoder::deobfuscateString(this->requestTranslationsThread->getLatestResponse()));
     ScopedPointer<XmlElement> xml(XmlDocument::parse(translations));
 
     if (xml)
