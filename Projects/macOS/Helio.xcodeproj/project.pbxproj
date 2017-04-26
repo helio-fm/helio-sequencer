@@ -292,7 +292,6 @@
 		BAE6CEBBFF766E6A28D560C3 = {isa = PBXBuildFile; fileRef = DF0E85DF24EABD7217B5FC1D; };
 		FA2AF6B477823884254819A4 = {isa = PBXBuildFile; fileRef = 676C596C02F33BEF8232F9FA; };
 		2FA262EB1FAC586B5DECC831 = {isa = PBXBuildFile; fileRef = A8B2B5194A37102EFCF13D65; };
-		45A0D2F9E52E81236173B1D5 = {isa = PBXBuildFile; fileRef = F518C6C068D3598777DBA99D; };
 		E6B221F9D2A7E49E5BEB05E3 = {isa = PBXBuildFile; fileRef = 049110EFE86677978F8FA611; };
 		29C223D4EDC3F046663698C1 = {isa = PBXBuildFile; fileRef = DC11896BC12B330D03C7D902; };
 		713B6C189BB5212469CA96A2 = {isa = PBXBuildFile; fileRef = F6BA889FA91B97EE77EBE80E; };
@@ -2151,7 +2150,6 @@
 		F4E3B6D9CAE54939FE888B98 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = PopupImageButton.cpp; path = ../../Source/UI/Popups/PopupImageButton.cpp; sourceTree = "SOURCE_ROOT"; };
 		F4E8E4F17352C95FC0EB5340 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NoteComponent.cpp; path = ../../Source/UI/MidiEditor/NoteComponent.cpp; sourceTree = "SOURCE_ROOT"; };
 		F4F622E319D195ECFA4D237D = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AutomationLayerTreeItem.h; path = ../../Source/Core/Tree/AutomationLayerTreeItem.h; sourceTree = "SOURCE_ROOT"; };
-		F518C6C068D3598777DBA99D = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Common.cpp; path = ../../Source/Common.cpp; sourceTree = "SOURCE_ROOT"; };
 		F533004CDFD4DB5448D437FE = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Arpeggiator.h; path = ../../Source/Core/Tools/Arpeggiator.h; sourceTree = "SOURCE_ROOT"; };
 		F5652E58BD06BB6C0C72735A = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_osc.cpp"; path = "../../ThirdParty/JUCE/modules/juce_osc/juce_osc.cpp"; sourceTree = "SOURCE_ROOT"; };
 		F5CD02A25BB21968413316D4 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PopupButton.h; path = ../../Source/UI/Popups/PopupButton.h; sourceTree = "SOURCE_ROOT"; };
@@ -3036,7 +3034,6 @@
 		A5A8B866A5155701257C3303 = {isa = PBXGroup; children = (
 					F55C3B93C4093617E4D3A8D4,
 					424C1E2B281BCFB305E84D42,
-					F518C6C068D3598777DBA99D,
 					F296B3FEAA0E5CD8657C0E5D, ); name = Source; sourceTree = "<group>"; };
 		089D151021D90D5484AFE629 = {isa = PBXGroup; children = (
 					4D9753CCE9FBD39CF4A7E451,
@@ -4541,7 +4538,7 @@
 					"JucePlugin_Build_AAX=0",
 					"JucePlugin_Build_Standalone=0", );
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = ("../../ThirdParty/VST_SDK", "../Projucer/JuceLibraryCode", "../../ThirdParty/JUCE/modules", "$(inherited)");
+				HEADER_SEARCH_PATHS = ("../../ThirdParty/VST_SDK/VST3_SDK", "../Projucer/JuceLibraryCode", "../../ThirdParty/JUCE/modules", "$(inherited)");
 				INFOPLIST_FILE = Info-App.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
@@ -4576,7 +4573,7 @@
 					"JucePlugin_Build_Standalone=0", );
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = ("../../ThirdParty/VST_SDK", "../Projucer/JuceLibraryCode", "../../ThirdParty/JUCE/modules", "$(inherited)");
+				HEADER_SEARCH_PATHS = ("../../ThirdParty/VST_SDK/VST3_SDK", "../Projucer/JuceLibraryCode", "../../ThirdParty/JUCE/modules", "$(inherited)");
 				INFOPLIST_FILE = Info-App.plist;
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
@@ -4899,7 +4896,6 @@
 					BAE6CEBBFF766E6A28D560C3,
 					FA2AF6B477823884254819A4,
 					2FA262EB1FAC586B5DECC831,
-					45A0D2F9E52E81236173B1D5,
 					E6B221F9D2A7E49E5BEB05E3,
 					29C223D4EDC3F046663698C1,
 					713B6C189BB5212469CA96A2,

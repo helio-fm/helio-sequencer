@@ -24,7 +24,7 @@ DefaultGroupName=Helio
 DisableProgramGroupPage=yes
 LicenseFile=..\..\..\LICENSE
 OutputDir=.
-OutputBaseFilename=setup
+OutputBaseFilename=Helio-{#MyAppVersion}-setup
 Compression=lzma
 SolidCompression=yes
 
@@ -44,8 +44,8 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "..\..\VisualStudio2015\x64\Release x64\Helio.exe"; DestDir: "{app}"; DestName: "{#MyAppExeName}"; Flags: ignoreversion; Check: Is64BitInstallMode
-Source: "..\..\VisualStudio2015\Release 32-bit\Helio.exe"; DestDir: "{app}"; Flags: ignoreversion; Check: not Is64BitInstallMode
+Source: "..\..\VisualStudio2015\x64\Release x64\App\Helio.exe"; DestDir: "{app}"; DestName: "{#MyAppExeName}"; Flags: ignoreversion; Check: Is64BitInstallMode
+Source: "..\..\VisualStudio2015\Win32\Release 32-bit\App\Helio.exe"; DestDir: "{app}"; Flags: ignoreversion; Check: not Is64BitInstallMode
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
