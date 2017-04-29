@@ -247,13 +247,7 @@ void CommandItemComponent::mouseDown (const MouseEvent& e)
 #if HAS_OPENGL_BUG
         this->clickMarker->setVisible(true);
 #else
-
-#   if HELIO_HAS_LOTS_OF_FADEINS
         this->animator.animateComponent(this->clickMarker, this->getLocalBounds(), 1.f, 150, true, 0.0, 0.0);
-#   else
-        this->clickMarker->setVisible(true);
-#   endif
-
 #endif
 
         if (this->listCanBeScrolled())
@@ -282,10 +276,8 @@ void CommandItemComponent::mouseUp (const MouseEvent& e)
     {
         if (this->clickMarker)
         {
-#if HELIO_HAS_LOTS_OF_FADEINS
 #if ! HAS_OPENGL_BUG
             this->animator.animateComponent(this->clickMarker, this->getLocalBounds(), 0.f, 100, true, 0.0, 0.0);
-#endif
 #endif
 
             this->removeChildComponent(this->clickMarker);

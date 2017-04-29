@@ -16,6 +16,9 @@
 *.opendb
 *.tlog
 *.dmg
+*.xcscheme
+*.xcworkspacedata
+xcschememanagement.plist
 
 UserInterfaceState.xcuserstate
 resources.res

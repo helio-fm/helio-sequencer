@@ -18,8 +18,8 @@
 #pragma once
 
 #ifndef JUCE_ANDROID
-    #define JUCE_USE_FREETYPE_AMALGAMATED 1
-    #define JUCE_AMALGAMATED_INCLUDE 1
+#   define JUCE_USE_FREETYPE_AMALGAMATED 1
+#   define JUCE_AMALGAMATED_INCLUDE 1
 #endif
 
 // Unreferenced formal parameter
@@ -27,21 +27,7 @@
 // Hides class member
 #pragma warning(disable: 4458)
 
-#include "AppConfig.h"
-
-#include "juce_audio_basics.h"
-#include "juce_audio_devices.h"
-#include "juce_audio_formats.h"
-#include "juce_audio_processors.h"
-#include "juce_audio_utils.h"
-#include "juce_core.h"
-#include "juce_cryptography.h"
-#include "juce_data_structures.h"
-#include "juce_events.h"
-#include "juce_graphics.h"
-#include "juce_gui_basics.h"
-#include "juce_gui_extra.h"
-#include "juce_opengl.h"
+#include "JuceHeader.h"
 
 #if _MSC_VER
 inline float roundf(float x)
@@ -49,8 +35,6 @@ inline float roundf(float x)
     return (x >= 0.0f) ? floorf(x + 0.5f) : ceilf(x - 0.5f);
 }
 #endif
-
-using namespace juce;
 
 // Internationalization
 #include "TranslationManager.h"
@@ -65,9 +49,3 @@ using namespace juce;
 #else
 #   define HELIO_DESKTOP 1
 #endif
-
-// #if JUCE_ANDROID || JUCE_WINDOWS
-// #   define HELIO_HAS_LOTS_OF_FADEINS 0
-// #else
-#   define HELIO_HAS_LOTS_OF_FADEINS 1
-// #endif

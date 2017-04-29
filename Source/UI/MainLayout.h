@@ -30,10 +30,6 @@ class TooltipContainer;
 #   define HAS_FADING_PAGECHANGE 0
 #endif
 
-#if ! HELIO_HAS_LOTS_OF_FADEINS
-#   define HAS_FADING_PAGECHANGE 0
-#endif
-
 #define TRACK_SCROLLER_HEIGHT_DEFAULT (128)
 #define TRACK_SCROLLER_HEIGHT_PHONE (64)
 

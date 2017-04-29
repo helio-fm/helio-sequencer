@@ -24,20 +24,14 @@ public:
     HighlightedComponent() :
         highlighted(false),
         highlighter(nullptr),
-// #if HELIO_HAS_LOTS_OF_FADEINS
         fadingHighlights(true)
-// #else
-        // fadingHighlights(false)
-// #endif
     {
         this->setInterceptsMouseClicks(true, false);
     }
     
     void setUsesFadingHighlights(bool shouldFade)
     {
-// #if HELIO_HAS_LOTS_OF_FADEINS
         this->fadingHighlights = shouldFade;
-// #endif
     }
 
     

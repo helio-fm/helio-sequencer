@@ -88,7 +88,6 @@ void FontSerializer::run(const String &commandLine)
         return;
     }
 
-
     serializeFont();
 
     //AlertWindow::showMessageBox(AlertWindow::InfoIcon, "done", "done sir.");
@@ -96,11 +95,7 @@ void FontSerializer::run(const String &commandLine)
 
 void FontSerializer::serializeFont()
 {
-    streamPlain     = new MemoryOutputStream();
-    //streamBold      = new MemoryOutputStream();
-    //streamItalic    = new MemoryOutputStream();
-    //streamAll       = new MemoryOutputStream();
-
+    streamPlain = new MemoryOutputStream();
     printf("Fserialize::serializeFont looking for font in system list [%s]\n", fontName.toUTF8().getAddress());
 
     for (auto && systemFont : systemFonts)
@@ -109,67 +104,26 @@ void FontSerializer::serializeFont()
         {
             printf("FontSerializer::serializeFont font found, attempt to create typeface\n");
             Font fPlain(systemFont);
-            //Font fBold(systemFonts[i]);
-            //Font fItalic(systemFonts[i]);
-            //Font fAll(systemFonts[i]);
 
             fPlain.setStyleFlags(Font::plain);
             Typeface *tPlain = fPlain.getTypeface();
-
-            //fBold.setStyleFlags(Font::bold);
-            //Typeface *tBold = fBold.getTypeface();
-
-            //fItalic.setStyleFlags(Font::italic);
-            //Typeface *tItalic = fItalic.getTypeface();
-
-            //fAll.setStyleFlags(Font::italic | Font::bold);
-            //Typeface *tAll = fAll.getTypeface();
 
             if (tPlain)
             {
                 printf("FontSerializer::serializeFont copying glyphs to CustomTypeface[plain]\n");
                 customTypefacePlain.addGlyphsFromOtherTypeface(*tPlain, 0, glyphCount);
 
-                //printf("Fserialize::serializeFont copying glyphs to CustomTypeface[bold]\n");
-                //customTypefaceBold.addGlyphsFromOtherTypeface(*tBold, 0, glyphCount);
-
-                //printf("Fserialize::serializeFont copying glyphs to CustomTypeface[italic]\n");
-                //customTypefaceItalic.addGlyphsFromOtherTypeface(*tItalic, 0, glyphCount);
-
-                //printf("Fserialize::serializeFont copying glyphs to CustomTypeface[italic+bold]\n");
-                //customTypefaceAll.addGlyphsFromOtherTypeface(*tAll, 0, glyphCount);
-
                 //printf("Fserialize::serializeFont typeface created, attempt to write to file, glyphs=%d\n", glyphCount);
 
                 printf("FontSerializer customTypefacePlain.writeToStream");
                 customTypefacePlain.writeToStream(*streamPlain);
-                //customTypefaceBold.writeToStream(*streamBold);
-                //customTypefaceItalic.writeToStream(*streamItalic);
-                //customTypefaceAll.writeToStream(*streamAll);
-
                 size_t streamPlainSize = streamPlain->getDataSize();
-                //size_t streamBoldSize = streamBold->getDataSize();
-                //size_t streamItalicSize = streamItalic->getDataSize();
-                //size_t streamAllSize = streamAll->getDataSize();
 
                 printf("FontSerializer::serializeFont truncate font file to 0");
                 fontFile.replaceWithData(nullptr, 0);
 
                 printf("FontSerializer::serializeFont writing normal font, size=%zu\n", streamPlainSize);
-                //fontFile.appendData(&streamPlainSize, sizeof(uint32));
                 fontFile.appendData(streamPlain->getData(), streamPlain->getDataSize());
-
-                //printf("Fserialize::serializeFont writing bold font, size=%d\n", streamBoldSize);
-                //fontFile.appendData(&streamBoldSize, sizeof(uint32));
-                //fontFile.appendData(streamBold->getData(), streamBold->getDataSize());
-
-                //printf("Fserialize::serializeFont writing italic font, size=%d\n", streamItalicSize);
-                //fontFile.appendData(&streamItalicSize, sizeof(uint32));
-                //fontFile.appendData(streamItalic->getData(), streamItalic->getDataSize());
-
-                //printf("Fserialize::serializeFont writing bold+italic font, size=%d\n", streamAllSize);
-                //fontFile.appendData(&streamAllSize, sizeof(uint32));
-                //fontFile.appendData(streamAll->getData(), streamAll->getDataSize());
             }
             else
             {
@@ -181,7 +135,4 @@ void FontSerializer::serializeFont()
     printf("Fserialize::serializeFont finished\n");
 
     deleteAndZero(streamPlain);
-    //deleteAndZero(streamBold);
-    //deleteAndZero(streamItalic);
-    //deleteAndZero(streamAll);
 }
