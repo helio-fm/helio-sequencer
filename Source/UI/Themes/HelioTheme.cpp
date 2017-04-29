@@ -769,21 +769,12 @@ void HelioTheme::positionDocumentWindowButtons(DocumentWindow &,
 
 void HelioTheme::initResources()
 {
-    //MemoryInputStream ins1(BinaryData::tienne_font, BinaryData::tienne_fontSize, false);
-    //this->textTypefaceCache = (new CustomTypeface(ins1));
+//    MemoryInputStream is(BinaryData::comfortaa_font, BinaryData::comfortaa_fontSize, false);
+//    this->textTypefaceCache = (new CustomTypeface(is));
 
-    //MemoryInputStream ins2(BinaryData::artifika_font, BinaryData::artifika_fontSize, false);
-    //this->headerTypefaceCache = (new CustomTypeface(ins2));
+    MemoryInputStream is(BinaryData::lato_fnt, BinaryData::lato_fntSize, false);
+    this->textTypefaceCache = (new CustomTypeface(is));
 
-    MemoryInputStream ins2(BinaryData::comfortaa_font, BinaryData::comfortaa_fontSize, false);
-    this->textTypefaceCache = (new CustomTypeface(ins2));
-
-    //MemoryInputStream ins2(BinaryData::raleway_font, BinaryData::raleway_fontSize, false);
-    //this->textTypefaceCache = (new CustomTypeface(ins2));
-
-    //MemoryInputStream font(BinaryData::robotolight_font, BinaryData::robotolight_fontSize, false);
-    //this->textTypefaceCache = (new CustomTypeface(font));
-    
     Icons::setupBuiltInImages();
 }
 

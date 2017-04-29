@@ -7,10 +7,8 @@
   <MAINGROUP id="szkQi0" name="Helio">
     <GROUP id="{005FBE8D-B17D-F49E-397E-DB420E759514}" name="Resources">
       <GROUP id="{4C273977-B090-3F23-250C-510E8D92F7A0}" name="Fonts">
-        <FILE id="GisXlN" name="comfortaa.font" compile="0" resource="1" file="../../Resources/Fonts/comfortaa.font"/>
-        <FILE id="f7Jjiw" name="raleway.font" compile="0" resource="0" file="../../Resources/Fonts/raleway.font"/>
-        <FILE id="nKKlsX" name="robotolight.font" compile="0" resource="0"
-              file="../../Resources/Fonts/robotolight.font"/>
+        <FILE id="GisXlN" name="comfortaa.font" compile="0" resource="0" file="../../Resources/Fonts/comfortaa.font"/>
+        <FILE id="lGxgzu" name="lato.fnt" compile="0" resource="1" file="../../Resources/Fonts/lato.fnt"/>
       </GROUP>
       <GROUP id="{14FB8A25-1178-E3EF-6B94-AEFBD0ED4866}" name="Themes">
         <GROUP id="{26C997FB-F5F9-B400-1EA1-6E714196DE3C}" name="Backgrounds">

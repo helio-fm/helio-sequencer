@@ -170,8 +170,7 @@ add_library( ${BINARY_NAME}
     SHARED
 
     "../../../Resources/Fonts/comfortaa.font"
-    "../../../Resources/Fonts/raleway.font"
-    "../../../Resources/Fonts/robotolight.font"
+    "../../../Resources/Fonts/lato.fnt"
     "../../../Resources/Themes/Backgrounds/defaultPattern.png"
     "../../../Resources/Themes/ColourSchemes.xml"
     "../../../Resources/PianoSamples/A0v9.ogg"
@@ -2086,8 +2085,7 @@ add_library( ${BINARY_NAME}
 )
 
 set_source_files_properties("../../../Resources/Fonts/comfortaa.font" PROPERTIES HEADER_FILE_ONLY TRUE)
-set_source_files_properties("../../../Resources/Fonts/raleway.font" PROPERTIES HEADER_FILE_ONLY TRUE)
-set_source_files_properties("../../../Resources/Fonts/robotolight.font" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../../Resources/Fonts/lato.fnt" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Resources/Themes/Backgrounds/defaultPattern.png" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Resources/Themes/ColourSchemes.xml" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Resources/PianoSamples/A0v9.ogg" PROPERTIES HEADER_FILE_ONLY TRUE)

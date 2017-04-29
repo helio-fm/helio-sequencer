@@ -16,8 +16,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fonts", "Fonts", "{423539D1-B318-4812-22EC-7CB3CA9607B6}"
 	ProjectSection(SolutionItems) = preProject
 		..\..\Resources\Fonts\comfortaa.font = ..\..\Resources\Fonts\comfortaa.font
-		..\..\Resources\Fonts\raleway.font = ..\..\Resources\Fonts\raleway.font
-		..\..\Resources\Fonts\robotolight.font = ..\..\Resources\Fonts\robotolight.font
+		..\..\Resources\Fonts\lato.fnt = ..\..\Resources\Fonts\lato.fnt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Themes", "Themes", "{C5F1D0B5-84B7-C0E4-0C0B-C929B3F1EBF5}"
