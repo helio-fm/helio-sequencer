@@ -34,6 +34,11 @@ class SignInHighlighter : public Component
 {
 public:
 
+    SignInHighlighter()
+    {
+        this->setInterceptsMouseClicks(false, false);
+    }
+
     void paint(Graphics &g) override
     {
         g.setColour(Colours::white.withAlpha(0.025f));
@@ -110,8 +115,8 @@ void SignInRow::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    actionLabel->setBounds (54, 8, 253, 24);
-    descriptionLabel->setBounds (54 + 0, 8 + 24, getWidth() - 100, 18);
+    actionLabel->setBounds (54, 8, 274, 24);
+    descriptionLabel->setBounds (54 + 0, 8 + 24, getWidth() - 76, 18);
     loginImage->setBounds (16, (getHeight() / 2) + 2 - (24 / 2), 24, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
@@ -155,12 +160,12 @@ BEGIN_JUCER_METADATA
                stroke="2, mitered, butt" strokeColour="solid: 30000000"/>
   </BACKGROUND>
   <LABEL name="" id="c261305e2de1ebf2" memberName="actionLabel" virtualName=""
-         explicitFocusOrder="0" pos="54 8 253 24" edTextCol="ff000000"
+         explicitFocusOrder="0" pos="54 8 274 24" edTextCol="ff000000"
          edBkgCol="0" labelText="..." editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
          kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="" id="12427a53408d61ee" memberName="descriptionLabel" virtualName=""
-         explicitFocusOrder="0" pos="0 0R 100M 18" posRelativeX="c261305e2de1ebf2"
+         explicitFocusOrder="0" pos="0 0R 76M 18" posRelativeX="c261305e2de1ebf2"
          posRelativeY="c261305e2de1ebf2" textCol="77ffffff" edTextCol="ff000000"
          edBkgCol="0" labelText="..." editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default sans-serif font" fontsize="16"

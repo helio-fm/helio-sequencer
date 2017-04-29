@@ -28,6 +28,11 @@
 class OpenProjectHighlighter : public Component
 {
 public:
+    
+    OpenProjectHighlighter()
+    {
+        this->setInterceptsMouseClicks(false, false);
+    }
 
     void paint(Graphics &g) override
     {
