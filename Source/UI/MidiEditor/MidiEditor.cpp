@@ -431,7 +431,6 @@ MidiEditor::MidiEditor(ProjectTreeItem &parentProject) :
 
 
     this->viewport->setViewedComponent(this->roll, false);
-    //this->roll->addChangeListener(this->scroller);
     this->roll->addRollListener(this->scroller);
 
     // захардкодим дефолтную позицию по y (не с самого верха, так стремно)
