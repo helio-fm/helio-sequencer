@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /opt/helio_workstation/helio_workstation
