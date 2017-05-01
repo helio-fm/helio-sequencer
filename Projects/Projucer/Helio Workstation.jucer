@@ -7,10 +7,8 @@
   <MAINGROUP id="szkQi0" name="Helio">
     <GROUP id="{005FBE8D-B17D-F49E-397E-DB420E759514}" name="Resources">
       <GROUP id="{4C273977-B090-3F23-250C-510E8D92F7A0}" name="Fonts">
-        <FILE id="GisXlN" name="comfortaa.font" compile="0" resource="1" file="../../Resources/Fonts/comfortaa.font"/>
-        <FILE id="f7Jjiw" name="raleway.font" compile="0" resource="0" file="../../Resources/Fonts/raleway.font"/>
-        <FILE id="nKKlsX" name="robotolight.font" compile="0" resource="0"
-              file="../../Resources/Fonts/robotolight.font"/>
+        <FILE id="GisXlN" name="comfortaa.font" compile="0" resource="0" file="../../Resources/Fonts/comfortaa.font"/>
+        <FILE id="lGxgzu" name="lato.fnt" compile="0" resource="1" file="../../Resources/Fonts/lato.fnt"/>
       </GROUP>
       <GROUP id="{14FB8A25-1178-E3EF-6B94-AEFBD0ED4866}" name="Themes">
         <GROUP id="{26C997FB-F5F9-B400-1EA1-6E714196DE3C}" name="Backgrounds">
@@ -1375,7 +1373,8 @@
     </VS2015>
     <LINUX_MAKE targetFolder="../../Projects/LinuxMakefile" vstFolder="~/Code/Steinberg/VST3"
                 vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK" bigIcon="x2W128"
-                smallIcon="x2W128" extraCompilerFlags="-fpermissive -Wno-unknown-pragmas -Wno-reorder">
+                smallIcon="x2W128" extraCompilerFlags="-fpermissive -Wno-unknown-pragmas -Wno-reorder"
+                cppLanguageStandard="-std=c++11">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
                        targetName="Helio" headerPath="../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Events&#10;../../Source/Core/Layers&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/CommandPanels&#10;../../Source/UI/CommandPanels/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Input&#10;../../Source/UI/InstrumentsPage&#10;../../Source/UI/InstrumentsPage/Editor&#10;../../Source/UI/Intro&#10;../../Source/UI/MidiEditor&#10;../../Source/UI/MidiEditor/AnnotationsMap&#10;../../Source/UI/MidiEditor/AutomationMap&#10;../../Source/UI/MidiEditor/Header&#10;../../Source/UI/MidiEditor/Helpers&#10;../../Source/UI/MidiEditor/TrackMap&#10;../../Source/UI/MidiEditor/TriggersMap&#10;../../Source/UI/MidiEditor/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/ProjectPage&#10;../../Source/UI/Rollovers&#10;../../Source/UI/SettingsPage&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/VCSPage&#10;../../Source/UI/WorkspacePage&#10;../../Source/UI/WorkspacePage/Menu&#10;../../Source/UI/WorkspacePage/Scroller&#10;"/>
@@ -1403,6 +1402,35 @@
         <MODULEPATH id="juce_osc" path="../../ThirdParty/JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
+    <ANDROIDSTUDIO targetFolder="../../Projects/Android" vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK"
+                   androidSDKPath="" androidNDKPath="" androidActivityClass="com.peterrudenko.Helio"
+                   androidInternetNeeded="1" androidOtherPermissions="android.permission.WRITE_EXTERNAL_STORAGE android.permission.MODIFY_AUDIO_SETTINGS"
+                   cppLanguageStandard="-std=c++14" androidTheme="@style/splashScreenTheme"
+                   androidMinimumSDK="11" smallIcon="x2W128" bigIcon="x2W128" androidScreenOrientation="landscape"
+                   androidVersionCode="3">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" androidArchitectures="armeabi x86" isDebug="1" optimisation="1"
+                       targetName="Helio" headerPath="../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Events&#10;../../Source/Core/Layers&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/CommandPanels&#10;../../Source/UI/CommandPanels/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Input&#10;../../Source/UI/InstrumentsPage&#10;../../Source/UI/InstrumentsPage/Editor&#10;../../Source/UI/Intro&#10;../../Source/UI/MidiEditor&#10;../../Source/UI/MidiEditor/AnnotationsMap&#10;../../Source/UI/MidiEditor/AutomationMap&#10;../../Source/UI/MidiEditor/Header&#10;../../Source/UI/MidiEditor/Helpers&#10;../../Source/UI/MidiEditor/TrackMap&#10;../../Source/UI/MidiEditor/TriggersMap&#10;../../Source/UI/MidiEditor/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/ProjectPage&#10;../../Source/UI/Rollovers&#10;../../Source/UI/SettingsPage&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/VCSPage&#10;../../Source/UI/WorkspacePage&#10;../../Source/UI/WorkspacePage/Menu&#10;../../Source/UI/WorkspacePage/Scroller&#10;"/>
+        <CONFIGURATION name="Release" androidArchitectures="" isDebug="0" optimisation="3"
+                       targetName="Helio" headerPath="../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Events&#10;../../Source/Core/Layers&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/CommandPanels&#10;../../Source/UI/CommandPanels/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Input&#10;../../Source/UI/InstrumentsPage&#10;../../Source/UI/InstrumentsPage/Editor&#10;../../Source/UI/Intro&#10;../../Source/UI/MidiEditor&#10;../../Source/UI/MidiEditor/AnnotationsMap&#10;../../Source/UI/MidiEditor/AutomationMap&#10;../../Source/UI/MidiEditor/Header&#10;../../Source/UI/MidiEditor/Helpers&#10;../../Source/UI/MidiEditor/TrackMap&#10;../../Source/UI/MidiEditor/TriggersMap&#10;../../Source/UI/MidiEditor/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/ProjectPage&#10;../../Source/UI/Rollovers&#10;../../Source/UI/SettingsPage&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/VCSPage&#10;../../Source/UI/WorkspacePage&#10;../../Source/UI/WorkspacePage/Menu&#10;../../Source/UI/WorkspacePage/Scroller&#10;"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_osc" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_opengl" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../ThirdParty/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../ThirdParty/JUCE/modules"/>
+      </MODULEPATHS>
+    </ANDROIDSTUDIO>
   </EXPORTFORMATS>
   <MODULES>
     <MODULES id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
@@ -1426,7 +1454,7 @@
                JUCE_USE_CDBURNER="disabled" JUCE_USE_FLAC="enabled" JUCE_USE_OGGVORBIS="enabled"
                JUCE_USE_MP3AUDIOFORMAT="disabled" JUCE_USE_LAME_AUDIO_FORMAT="disabled"
                JUCE_USE_WINDOWS_MEDIA_FORMAT="disabled" JUCE_CHECK_MEMORY_LEAKS="enabled"
-               JUCE_USE_CURL="disabled" JUCE_USE_XSHM="enabled" JUCE_USE_XRENDER="disabled"
+               JUCE_USE_CURL="enabled" JUCE_USE_XSHM="enabled" JUCE_USE_XRENDER="disabled"
                JUCE_USE_XCURSOR="enabled" JUCE_WEB_BROWSER="disabled" JUCE_PLUGINHOST_VST="enabled"
                JUCE_PLUGINHOST_VST3="enabled" JUCE_PLUGINHOST_AU="enabled" JUCE_CATCH_UNHANDLED_EXCEPTIONS="enabled"
                JUCE_ALLOW_STATIC_NULL_VARIABLES="enabled" JUCE_EXECUTE_APP_SUSPEND_ON_IOS_BACKGROUND_TASK="enabled"/>

@@ -74,9 +74,6 @@ public:
     
     void reloadMidiTrack() override;
     void setActiveMidiLayers(Array<MidiLayer *> tracks, MidiLayer *primaryLayer) override;
-    
-    void showEmptySelectionPopup(const MouseEvent &e);
-    void showSelectionPopup(const MouseEvent &e);
 
     void setRowHeight(const int newRowHeight);
 
@@ -168,7 +165,6 @@ public:
     void mouseDoubleClick(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
-    void handleCommandMessage(int commandId) override;
     bool keyPressed(const KeyPress &key) override;
     void resized() override;
     void paint(Graphics &g) override;
@@ -197,8 +193,6 @@ private:
     void insertNewNoteAt(const MouseEvent &e);
     bool dismissDraggingNoteIfNeeded();
 
-    bool canEmitChordMenu;
-    bool canEmitEditMenu;
     bool mouseDownWasTriggered; // juce mouseUp wierdness workaround
 
     NoteComponent *draggingNote;

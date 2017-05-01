@@ -1629,7 +1629,6 @@ bool MidiRoll::isViewportZoomEvent(const MouseEvent &e) const
     }
 
     // may add custom logic here
-
     return false;
 }
 
@@ -1650,9 +1649,7 @@ bool MidiRoll::isViewportDragEvent(const MouseEvent &e) const
         return (e.mods.isLeftButtonDown());
     }
     
-    
-        return (e.mods.isRightButtonDown() || e.mods.isMiddleButtonDown());
-    
+    return (e.mods.isRightButtonDown() || e.mods.isMiddleButtonDown());
 }
 
 bool MidiRoll::isAddEvent(const MouseEvent &e) const
@@ -1687,9 +1684,7 @@ bool MidiRoll::isLassoEvent(const MouseEvent &e) const
         return false;
     }
     
-    
-        return e.mods.isLeftButtonDown();
-    
+    return e.mods.isLeftButtonDown();
 }
 
 bool MidiRoll::isWipeSpaceEvent(const MouseEvent &e) const

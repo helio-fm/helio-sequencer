@@ -29,6 +29,11 @@ class CreateProjectHighlighter : public Component
 {
 public:
 
+    CreateProjectHighlighter()
+    {
+        this->setInterceptsMouseClicks(false, false);
+    }
+
     void paint(Graphics &g) override
     {
         g.setColour(Colours::white.withAlpha(0.025f));

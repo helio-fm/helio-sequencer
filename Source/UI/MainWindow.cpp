@@ -145,13 +145,12 @@ DocumentWindow("Helio",
 
 MainWindow::~MainWindow()
 {
-    this->clearContentComponent();
-    this->workspace = nullptr;
-
     if (this->isOpenGLRendererEnabled())
     {
         this->detachOpenGLContext();
     }
+    
+    this->dismissWorkspaceComponent();
 }
 
 #if HELIO_HAS_CUSTOM_TITLEBAR

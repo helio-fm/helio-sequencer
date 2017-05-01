@@ -43,9 +43,7 @@ SoundProbeIndicator::SoundProbeIndicator()
 SoundProbeIndicator::~SoundProbeIndicator()
 {
     //[Destructor_pre]
-#if HELIO_HAS_LOTS_OF_FADEINS
     Desktop::getInstance().getAnimator().animateComponent(this, this->getBounds(), 0.f, 100, true, 0.0, 0.0);
-#endif
     //[/Destructor_pre]
 
 

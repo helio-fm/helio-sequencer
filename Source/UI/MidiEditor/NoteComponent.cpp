@@ -668,27 +668,15 @@ void NoteComponent::mouseUp(const MouseEvent &e)
         this->setMouseCursor(MouseCursor::NormalCursor);
     }
 
-    if (e.getDistanceFromDragStart() < 5 &&
-        e.mods.isRightButtonDown())
-    {
-        if (selection.getNumSelected() > 0)
-        {
-            this->getRoll().showSelectionPopup(e.getEventRelativeTo(&this->getRoll()));
-        }
-    }
-
-    //else if (e.mods.isRightButtonDown())
-    //{
-    //for (int i = 0; i < selection.getNumSelected(); i++) {
-    //    Note *component = dynamic_cast<Note *>(selection.getSelectedItem(i));
-    //    if (component && component != this) {
-    //        owner->removeNote(component, true);
-    //    }
-    //}
-
-    //owner->removeNote(this, false);
-    //delete(this);
-    //}
+    // TODO: show selection menu on right click?
+//    if (e.getDistanceFromDragStart() < 5 &&
+//        e.mods.isRightButtonDown())
+//    {
+//        if (selection.getNumSelected() > 0)
+//        {
+//            this->getRoll().showSelectionPopup(e.getEventRelativeTo(&this->getRoll()));
+//        }
+//    }
 }
 
 void NoteComponent::mouseDoubleClick(const MouseEvent &e)

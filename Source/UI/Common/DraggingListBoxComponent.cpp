@@ -128,18 +128,26 @@ void DraggingListBoxComponent::mouseWheelMove(const MouseEvent &event,
     const int forwardWheel =
         roundFloatToInt(wheel.deltaY * (wheel.isReversed ? -LISTBOX_DRAG_SPEED : LISTBOX_DRAG_SPEED));
     
-    if (this->parentViewport)
+    if (this->parentViewport != nullptr)
     {
+        BailOutChecker checker(this);
         this->parentViewport->setViewPosition(0, this->parentViewport->getViewPosition().getY() - forwardWheel);
-        ViewportKineticSlider::instance().startAnimationForViewport(this->parentViewport, Point<float>(0.f, float(forwardWheel) / 50.f));
+        
+        // If viewport is owned by Listbox,
+        // the Listbox has just updated its contents here,
+        // and the component may be deleted:
+        if (! checker.shouldBailOut())
+        {
+            ViewportKineticSlider::instance().startAnimationForViewport(this->parentViewport, Point<float>(0.f, float(forwardWheel) / 50.f));
+            
+            const bool eventWasUsed =
+                (wheel.deltaX != 0 && this->parentViewport->getHorizontalScrollBar()->isVisible()) ||
+                (wheel.deltaY != 0 && this->parentViewport->getVerticalScrollBar()->isVisible());
+            
+            if (!eventWasUsed)
+                Component::mouseWheelMove(event, wheel);
+        }
     }
-
-    bool eventWasUsed =
-        (wheel.deltaX != 0 && this->parentViewport->getHorizontalScrollBar()->isVisible()) ||
-        (wheel.deltaY != 0 && this->parentViewport->getVerticalScrollBar()->isVisible());
-
-    if (!eventWasUsed)
-        Component::mouseWheelMove(event, wheel);
 }
 
 bool DraggingListBoxComponent::listCanBeScrolled() const

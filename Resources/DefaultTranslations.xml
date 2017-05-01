@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8"?>
 <Translations>
   <Locale Id="en" Name="English">
     <PluralForms Equation="({x}==1 ? 1 : 2)"/>
@@ -51,7 +51,7 @@
     <Literal Name="menu::project::render::flac" Translation="Render to FLAC"/>
     <Literal Name="menu::project::render::ogg" Translation="Render to OGG"/>
     <Literal Name="menu::project::render::wav" Translation="Render to WAV"/>
-    <Literal Name="menu::project::render::midi" Translation="Export to Midi"/>
+    <Literal Name="menu::project::render::midi" Translation="Export to MIDI"/>
     <Literal Name="menu::project::render::savedto" Translation="Saved to"/>
     <Literal Name="menu::project::refactor" Translation="Refactor"/>
     <Literal Name="menu::project::refactor::halftoneup" Translation="Transpose up"/>
@@ -324,7 +324,7 @@
     <Literal Name="defaults::newproject::name" Translation="Новый проект"/>
     <Literal Name="defaults::newlayer::name" Translation="Новый слой"/>
     <Literal Name="defaults::tempotrack::name" Translation="Темп"/>
-    <Literal Name="warnings::emptyselection" Translation="Ничего не выбрано."/>
+    <Literal Name="warnings::emptyselection" Translation="Событие не выбрано."/>
     <Literal Name="warnings::noinstrument" Translation="Не выбран инструмент."/>
     <Literal Name="warnings::smallscreen" Translation="Helio не рассчитан на маленькие экраны. Попробуйте установить его на планшете."/>
     <Literal Name="tree::instruments" Translation="Инструменты"/>
@@ -369,7 +369,7 @@
     <Literal Name="menu::project::render::flac" Translation="Рендер в FLAC"/>
     <Literal Name="menu::project::render::ogg" Translation="Рендер в OGG"/>
     <Literal Name="menu::project::render::wav" Translation="Рендер в WAV"/>
-    <Literal Name="menu::project::render::midi" Translation="Экспорт в Midi"/>
+    <Literal Name="menu::project::render::midi" Translation="Экспорт в MIDI"/>
     <Literal Name="menu::project::render::savedto" Translation="Сохранено как"/>
     <Literal Name="menu::project::refactor" Translation="Рефактор"/>
     <Literal Name="menu::project::refactor::halftoneup" Translation="Повысить на полтона"/>
@@ -477,7 +477,7 @@
     <Literal Name="settings::audio::samplerate" Translation="Частота дискретизации"/>
     <Literal Name="settings::audio::buffersize" Translation="Размер буфера"/>
     <Literal Name="settings::ui" Translation="Цветовая схема"/>
-    <Literal Name="settings::language::help" Translation="Вы можете помочь с переводом Helio"/>
+    <Literal Name="settings::language::help" Translation="Вы можете помочь с переводом"/>
     <Literal Name="settings::renderer" Translation="Рендерер интерфейса"/>
     <Literal Name="settings::renderer::default" Translation="По умолчанию"/>
     <Literal Name="settings::renderer::opengl" Translation="OpenGL"/>
@@ -655,15 +655,15 @@
     <Literal Name="Midi Input" Translation="Midi-вход"/>
     <Literal Name="Midi Output" Translation="Midi-выход"/>
   </Locale>
-  <Locale Id="de" Name="Deutch">
+  <Locale Id="de" Name="Deutsch">
     <PluralForms Equation="({x}==1 ? 1 : 2)"/>
     <Literal Name="defaults::newproject::firstcommit" Translation="Projekt erstellt"/>
     <Literal Name="defaults::newproject::name" Translation="Neues Projekt"/>
-    <Literal Name="defaults::newlayer::name" Translation="Neue Schicht"/>
+    <Literal Name="defaults::newlayer::name" Translation="Neuer Layer"/>
     <Literal Name="defaults::tempotrack::name" Translation="Tempo"/>
     <Literal Name="warnings::emptyselection" Translation="Nichts ausgewählt."/>
-    <Literal Name="warnings::noinstrument" Translation="Kein instrument ausgewählt."/>
-    <Literal Name="warnings::smallscreen" Translation="Helio ist nicht für einen kleinen Bildschirm konzipiert. Bitte installieren Sie es auf ein Tablet."/>
+    <Literal Name="warnings::noinstrument" Translation="Kein Instrument ausgewählt."/>
+    <Literal Name="warnings::smallscreen" Translation="Helio ist nicht für kleine Bildschirme konzipiert. Bitte installieren Sie es auf ein Tablet."/>
     <Literal Name="tree::instruments" Translation="Instrumente"/>
     <Literal Name="tree::settings" Translation="Einstellungen"/>
     <Literal Name="tree::vcs" Translation="Versionen"/>
@@ -682,13 +682,13 @@
     <Literal Name="dialog::auth::cancel" Translation="Abbrechen"/>
     <Literal Name="dialog::auth::defaultlogin::desktop" Translation="E-Mail eingeben"/>
     <Literal Name="dialog::auth::defaultlogin::mobile" Translation="E-Mail eingeben"/>
-    <Literal Name="dialog::renamelayer::caption" Translation="Schicht umbenennen"/>
+    <Literal Name="dialog::renamelayer::caption" Translation="Layer umbenennen"/>
     <Literal Name="dialog::renamelayer::proceed" Translation="Umbenennen"/>
     <Literal Name="dialog::renamelayer::cancel" Translation="Abbrechen"/>
     <Literal Name="dialog::addlayer::caption" Translation="Schicht hinzufügen"/>
     <Literal Name="dialog::addlayer::proceed" Translation="Hinzufügen"/>
     <Literal Name="dialog::addlayer::cancel" Translation="Abbrechen"/>
-    <Literal Name="dialog::deleteproject::caption" Translation="Wollen Sie das Projekt endgültig aus der Wolke und von der Platte löschen? Diese Aktion kann man nicht abbrechen."/>
+    <Literal Name="dialog::deleteproject::caption" Translation="Wollen Sie das Projekt endgültig aus der Wolke und von der Festplatte löschen? Diese Aktion kann man nicht abbrechen."/>
     <Literal Name="dialog::deleteproject::proceed" Translation="Löschen"/>
     <Literal Name="dialog::deleteproject::cancel" Translation="Abbrechen"/>
     <Literal Name="dialog::deleteproject::confirm::caption" Translation="Geben Sie den Namen des Projekts ein, um das Löschen zu bestätigen:"/>
@@ -697,7 +697,7 @@
     <Literal Name="menu::project::delete" Translation="Projekt löschen"/>
     <Literal Name="menu::project::delete::cancelled" Translation="Löschen abgebrochen"/>
     <Literal Name="menu::project::unload" Translation="Projekt schließen"/>
-    <Literal Name="menu::project::addlayer" Translation="Schicht hinzufügen"/>
+    <Literal Name="menu::project::addlayer" Translation="Layer hinzufügen"/>
     <Literal Name="menu::project::addautomation" Translation="Automatisierung hinzufügen"/>
     <Literal Name="menu::project::addtempo" Translation="Tempo"/>
     <Literal Name="menu::project::addtempo::failed" Translation="Dieser Track existiert schon."/>
@@ -706,7 +706,7 @@
     <Literal Name="menu::project::render::flac" Translation="Rendering in FLAC"/>
     <Literal Name="menu::project::render::ogg" Translation="Rendering in OGG"/>
     <Literal Name="menu::project::render::wav" Translation="Rendering in WAV"/>
-    <Literal Name="menu::project::render::midi" Translation="In Midi exportieren"/>
+    <Literal Name="menu::project::render::midi" Translation="In MIDI exportieren"/>
     <Literal Name="menu::project::render::savedto" Translation="Gespeichert als"/>
     <Literal Name="menu::project::refactor" Translation="Umgestalten"/>
     <Literal Name="menu::project::refactor::halftoneup" Translation="Transponieren nach oben"/>
@@ -729,7 +729,7 @@
     <Literal Name="menu::layer::unmute" Translation="Aktivieren"/>
     <Literal Name="menu::layer::delete" Translation="Löschen"/>
     <Literal Name="menu::workspace::project::create" Translation="Ein neues Projekt erstellen"/>
-    <Literal Name="menu::workspace::project::open" Translation="Das Projekt öffnen"/>
+    <Literal Name="menu::workspace::project::open" Translation="Projekt laden"/>
     <Literal Name="menu::workspace::login" Translation="Einloggen / Anmelden"/>
     <Literal Name="menu::workspace::login::hint" Translation="Es ist kostenlos."/>
     <Literal Name="menu::workspace::logout" Translation="Ausloggen"/>
@@ -754,11 +754,11 @@
     <Literal Name="dialog::document::export::done" Translation="Exportiert."/>
     <Literal Name="dialog::document::load" Translation="Eine Datei zum Laden wählen"/>
     <Literal Name="dialog::document::import" Translation="Eine Datei zum Import wählen"/>
-    <Literal Name="dialog::render::caption" Translation="Renderin in:"/>
+    <Literal Name="dialog::render::caption" Translation="Rendern nach:"/>
     <Literal Name="dialog::render::proceed" Translation="Start"/>
     <Literal Name="dialog::render::abort" Translation="Rendering abbrechen"/>
     <Literal Name="dialog::render::close" Translation="Schließen"/>
-    <Literal Name="dialog::render::selectfile" Translation="Eine Datei zu Rendering wählen"/>
+    <Literal Name="dialog::render::selectfile" Translation="Eine Datei zum rendern auswählen"/>
     <Literal Name="dialog::update::minor" Translation="Aktualisierung"/>
     <Literal Name="dialog::update::major" Translation="Große Aktualisierung"/>
     <Literal Name="dialog::update::version::installed" Translation="Installierte Version:"/>
@@ -810,7 +810,7 @@
     <Literal Name="popup::chord::function::7" Translation="Subtonika"/>
     <Literal Name="settings::audio" Translation="Audio"/>
     <Literal Name="settings::audio::device" Translation="Gerät"/>
-    <Literal Name="settings::audio::driver" Translation="Driver"/>
+    <Literal Name="settings::audio::driver" Translation="Treiber"/>
     <Literal Name="settings::audio::samplerate" Translation="Samplingfrequenz"/>
     <Literal Name="settings::audio::buffersize" Translation="Buffer-Größe"/>
     <Literal Name="settings::ui" Translation="Farbschema"/>
@@ -821,16 +821,16 @@
     <Literal Name="settings::renderer::coregraphics" Translation="Core Graphics"/>
     <Literal Name="settings::renderer::direct2d" Translation="Direct2D"/>
     <Literal Name="settings::renderer::native" Translation="Nativ-Renderer"/>
-    <Literal Name="dialog::opengl::caption" Translation="OpenGL-Renderer ist viel schneller als Nativ-Renderer, aber abhängig von Ihrem Hardware kann es instabil sein. Zu OpenGL wechseln?"/>
-    <Literal Name="dialog::opengl::proceed" Translation="Einschließen"/>
+    <Literal Name="dialog::opengl::caption" Translation="Der OpenGL-Renderer ist für gewöhnlich deutlich schneller für große Projekte, kann aber je nach verwendeter Hardware instabil sein. Wirklich auf OpenGL umstellen?"/>
+    <Literal Name="dialog::opengl::proceed" Translation="OpenGL verwenden"/>
     <Literal Name="dialog::opengl::cancel" Translation="Abbrechen"/>
     <Literal Name="dialog::vcs::commit::caption" Translation="Commit-Beschreibung eingeben:"/>
     <Literal Name="dialog::vcs::commit::proceed" Translation="Speichern"/>
     <Literal Name="dialog::vcs::commit::cancel" Translation="Abbrechen"/>
-    <Literal Name="dialog::vcs::reset::caption" Translation="Wollen Sie ausgewählte Änderungen zurückbrechen?"/>
-    <Literal Name="dialog::vcs::reset::proceed" Translation="Zurückbrechen"/>
+    <Literal Name="dialog::vcs::reset::caption" Translation="Wollen Sie die ausgwählten Änderungen zurücknehmen?"/>
+    <Literal Name="dialog::vcs::reset::proceed" Translation="Zurücknehmen"/>
     <Literal Name="dialog::vcs::reset::cancel" Translation="Abbrechen"/>
-    <Literal Name="instruments::initialscan" Translation="Für Plugingssuche klicken"/>
+    <Literal Name="instruments::initialscan" Translation="Für Pluginsuche klicken"/>
     <Literal Name="instruments::search" Translation="Suchen"/>
     <Literal Name="instruments::remove" Translation="Löschen"/>
     <Literal Name="instruments::init" Translation="Hinzufügen"/>
@@ -839,7 +839,7 @@
     <Literal Name="vcs::delta::type::changed" Translation="Geändert"/>
     <Literal Name="vcs::stage::caption" Translation="Projektänderungen"/>
     <Literal Name="vcs::warning::cannotcommit" Translation="Wählen Sie die Änderungen, die Sie speichern wollen."/>
-    <Literal Name="vcs::warning::cannotreset" Translation="Wählen Sie Änderungen, die Sie zurückbrechen wollen."/>
+    <Literal Name="vcs::warning::cannotreset" Translation="Wählen Sie die Änderungen, die Sie zurücknehmen wollen."/>
     <Literal Name="vcs::warning::cannotrevert" Translation="Rücksprung an die Anschlussstelle unmöglich, das wird Änderungen löschen."/>
     <Literal Name="vcs::history::caption" Translation="Revisionsbaum"/>
     <Literal Name="vcs::history::forcepull::warning" Translation="Projekt enthält nicht gespeicherte Änderungen!"/>
@@ -880,68 +880,386 @@
     <Literal Name="common::and" Translation="und"/>
     <Literal Name="common::yesterday" Translation="Gestern"/>
     <PluralLiteral Name="{x} input channels">
-      <Translation Name="{x} eingangskanal" PluralForm="1"/>
-      <Translation Name="{x} eingangskanäle" PluralForm="2"/>
+      <Translation Name="{x} Eingangskanal" PluralForm="1"/>
+      <Translation Name="{x} Eingangskanäle" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="{x} output channels">
-      <Translation Name="{x} ausgabekanal" PluralForm="1"/>
-      <Translation Name="{x} ausgabekanäle" PluralForm="2"/>
+      <Translation Name="{x} Ausgabekanal" PluralForm="1"/>
+      <Translation Name="{x} Ausgabekanäle" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="added {x} notes">
-      <Translation Name="{x} note hinzugefügt" PluralForm="1"/>
-      <Translation Name="{x} noten hinzugefügt" PluralForm="2"/>
+      <Translation Name="{x} Note hinzugefügt" PluralForm="1"/>
+      <Translation Name="{x} Noten hinzugefügt" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="removed {x} notes">
-      <Translation Name="{x} note gelöscht" PluralForm="1"/>
-      <Translation Name="{x} noten gelöscht" PluralForm="2"/>
+      <Translation Name="{x} Note gelöscht" PluralForm="1"/>
+      <Translation Name="{x} Noten gelöscht" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="changed {x} notes">
-      <Translation Name="{x} note geändert" PluralForm="1"/>
-      <Translation Name="{x} noten geändert" PluralForm="2"/>
+      <Translation Name="{x} Note geändert" PluralForm="1"/>
+      <Translation Name="{x} Noten geändert" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="added {x} events">
-      <Translation Name="{x} ereignis hinzugefügt" PluralForm="1"/>
-      <Translation Name="{x} ereignisse hinzugefügt" PluralForm="2"/>
+      <Translation Name="{x} Ereignis hinzugefügt" PluralForm="1"/>
+      <Translation Name="{x} Ereignisse hinzugefügt" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="removed {x} events">
-      <Translation Name="{x} ereignis gelöscht" PluralForm="1"/>
-      <Translation Name="{x} ereignisse gelöscht" PluralForm="2"/>
+      <Translation Name="{x} Ereignis gelöscht" PluralForm="1"/>
+      <Translation Name="{x} Ereignisse gelöscht" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="changed {x} events">
-      <Translation Name="{x} ereignis geändert" PluralForm="1"/>
-      <Translation Name="{x} ereignisse geändert" PluralForm="2"/>
+      <Translation Name="{x} Ereignis geändert" PluralForm="1"/>
+      <Translation Name="{x} Ereignisse geändert" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="added {x} annotations">
-      <Translation Name="{x} marke hinzugefügt" PluralForm="1"/>
-      <Translation Name="{x} marken hinzugefügt" PluralForm="2"/>
+      <Translation Name="{x} Marke hinzugefügt" PluralForm="1"/>
+      <Translation Name="{x} Marken hinzugefügt" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="removed {x} annotations">
-      <Translation Name="{x} marke gelöscht" PluralForm="1"/>
-      <Translation Name="{x} marken gelöscht" PluralForm="2"/>
+      <Translation Name="{x} Marke gelöscht" PluralForm="1"/>
+      <Translation Name="{x} Marken gelöscht" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="changed {x} annotations">
-      <Translation Name="{x} marke geändert" PluralForm="1"/>
-      <Translation Name="{x} marken geändert" PluralForm="2"/>
+      <Translation Name="{x} Marke geändert" PluralForm="1"/>
+      <Translation Name="{x} Marken geändert" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="{x} notes">
+      <Translation Name="{x} Note" PluralForm="1"/>
+      <Translation Name="{x} Noten" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="{x} events">
+      <Translation Name="{x} Ereignis" PluralForm="1"/>
+      <Translation Name="{x} Ereignisse" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="{x} annotations">
+      <Translation Name="{x} Marke" PluralForm="1"/>
+      <Translation Name="{x} Marken" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="{x} layers">
+      <Translation Name="{x} Layer" PluralForm="1"/>
+      <Translation Name="{x} Layer" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="{x} revisions">
+      <Translation Name="{x} Revision" PluralForm="1"/>
+      <Translation Name="{x} Revisionen" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="{x} deltas">
+      <Translation Name="{x} Delta" PluralForm="1"/>
+      <Translation Name="{x} Deltas" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="{x} minutes">
+      <Translation Name="{x} Minute" PluralForm="1"/>
+      <Translation Name="{x} Minuten" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="{x} seconds">
+      <Translation Name="{x} Sekunde" PluralForm="1"/>
+      <Translation Name="{x} Sekunden" PluralForm="2"/>
+    </PluralLiteral>
+    <Literal Name="initialized" Translation="hinzugefügt"/>
+    <Literal Name="license changed" Translation="Lizenz geändert"/>
+    <Literal Name="title changed" Translation="Titel geändert"/>
+    <Literal Name="author changed" Translation="Autor geändert"/>
+    <Literal Name="description changed" Translation="Beschreibung geändert"/>
+    <Literal Name="moved from {x}" Translation="umbenannt von {x}"/>
+    <Literal Name="color changed" Translation="Farbe geändert"/>
+    <Literal Name="empty layer" Translation="leerer Layer"/>
+    <Literal Name="instrument changed" Translation="Instrument geändert"/>
+    <Literal Name="controller changed" Translation="Controller geändert"/>
+    <Literal Name="muted" Translation="stummgeschaltet"/>
+    <Literal Name="unmuted" Translation="Stummschaltung aufgehoben"/>
+    <Literal Name="(no choices)" Translation="(keine auswahl)"/>
+    <Literal Name="Audio Input" Translation="Audioeingang"/>
+    <Literal Name="Audio Output" Translation="Audioausgang"/>
+    <Literal Name="Midi Input" Translation="Midi-Eingang"/>
+    <Literal Name="Midi Output" Translation="Midi-Ausgang"/>
+  </Locale>
+  <Locale Id="fr" Name="Français">
+    <PluralForms Equation="(({x}==0 || {x}==1) ? 1 : 2)"/>
+    <Literal Name="defaults::newproject::firstcommit" Translation="Le projet a été créé"/>
+    <Literal Name="defaults::newproject::name" Translation="Nouveau projet"/>
+    <Literal Name="defaults::newlayer::name" Translation="Nouveau calque"/>
+    <Literal Name="defaults::tempotrack::name" Translation="Tempo"/>
+    <Literal Name="warnings::emptyselection" Translation="Aucun événement sélectionné."/>
+    <Literal Name="warnings::noinstrument" Translation="Aucun instrument n’est sélectionné."/>
+    <Literal Name="warnings::smallscreen" Translation="Helio n'a pas été conçu pour les petits écrans. Veuillez installer le programme sur une tablette."/>
+    <Literal Name="tree::instruments" Translation="Instruments"/>
+    <Literal Name="tree::settings" Translation="Paramètres"/>
+    <Literal Name="tree::vcs" Translation="Révisions"/>
+    <Literal Name="menu::annotation::rename" Translation="Renommer"/>
+    <Literal Name="menu::annotation::delete" Translation="Supprimer"/>
+    <Literal Name="menu::annotation::add" Translation="Ajouter un marqueur"/>
+    <Literal Name="dialog::annotation::rename::caption" Translation="Renommer le marqueur"/>
+    <Literal Name="dialog::annotation::rename::proceed" Translation="Renommer"/>
+    <Literal Name="dialog::annotation::rename::cancel" Translation="Annuler"/>
+    <Literal Name="dialog::annotation::add::caption" Translation="Nommez le marqueur:"/>
+    <Literal Name="dialog::annotation::add::proceed" Translation="Ajouter"/>
+    <Literal Name="dialog::annotation::add::cancel" Translation="Annuler"/>
+    <Literal Name="dialog::auth::email" Translation="E-mail:"/>
+    <Literal Name="dialog::auth::password" Translation="Mot de passe:"/>
+    <Literal Name="dialog::auth::proceed" Translation="Se connecter / S‘inscrire"/>
+    <Literal Name="dialog::auth::cancel" Translation="Annuler"/>
+    <Literal Name="dialog::auth::defaultlogin::desktop" Translation="Cliquez pour saisir l‘e-mail"/>
+    <Literal Name="dialog::auth::defaultlogin::mobile" Translation="Appuyez sur pour saisir l‘e-mail"/>
+    <Literal Name="dialog::renamelayer::caption" Translation="Renommer le calque"/>
+    <Literal Name="dialog::renamelayer::proceed" Translation="Renommer"/>
+    <Literal Name="dialog::renamelayer::cancel" Translation="Annuler"/>
+    <Literal Name="dialog::addlayer::caption" Translation="Ajouter un calque"/>
+    <Literal Name="dialog::addlayer::proceed" Translation="Ajouter"/>
+    <Literal Name="dialog::addlayer::cancel" Translation="Annuler"/>
+    <Literal Name="dialog::deleteproject::caption" Translation="Voulez-vous supprimer définitivement le projet du cloud et du disque? Cette action est irréversible."/>
+    <Literal Name="dialog::deleteproject::proceed" Translation="Supprimer"/>
+    <Literal Name="dialog::deleteproject::cancel" Translation="Annuler"/>
+    <Literal Name="dialog::deleteproject::confirm::caption" Translation="Saisissez le nom du projet pour confirmer la suppression:"/>
+    <Literal Name="dialog::deleteproject::confirm::proceed" Translation="Supprimer définitivement"/>
+    <Literal Name="dialog::deleteproject::confirm::cancel" Translation="Annuler"/>
+    <Literal Name="menu::project::delete" Translation="Supprimer le projet"/>
+    <Literal Name="menu::project::delete::cancelled" Translation="Les noms ne correspondent pas! La suppression a été annulée."/>
+    <Literal Name="menu::project::unload" Translation="Fermer le projet"/>
+    <Literal Name="menu::project::addlayer" Translation="Ajouter un calque"/>
+    <Literal Name="menu::project::addautomation" Translation="Ajouter l‘automation"/>
+    <Literal Name="menu::project::addtempo" Translation="Tempo"/>
+    <Literal Name="menu::project::addtempo::failed" Translation="Cette piste existe déjà."/>
+    <Literal Name="menu::project::import::midi" Translation="Importer Midi"/>
+    <Literal Name="menu::project::render" Translation="Exporter"/>
+    <Literal Name="menu::project::render::flac" Translation="Exporter au format FLAC"/>
+    <Literal Name="menu::project::render::ogg" Translation="Exporter au format OGG"/>
+    <Literal Name="menu::project::render::wav" Translation="Exporter au format WAV"/>
+    <Literal Name="menu::project::render::midi" Translation="Exporter en fichier MIDI"/>
+    <Literal Name="menu::project::render::savedto" Translation="Enregistré dans"/>
+    <Literal Name="menu::project::refactor" Translation="Reprogrammation"/>
+    <Literal Name="menu::project::refactor::halftoneup" Translation="Transposer sur un demi-ton au dessus"/>
+    <Literal Name="menu::project::refactor::halftonedown" Translation="Transposer sur un demi-ton en dessous"/>
+    <Literal Name="menu::project::refactor::cleanup" Translation="Supprimer les fragments se recoupant"/>
+    <Literal Name="menu::project::change::instrument" Translation="Changer l‘instrument"/>
+    <Literal Name="menu::instrument::update" Translation="Mettre à jour l‘instrument"/>
+    <Literal Name="menu::instrument::rename" Translation="Renommer l‘instrument"/>
+    <Literal Name="menu::instrument::delete" Translation="Supprimer l‘instrument"/>
+    <Literal Name="menu::instruments::reload" Translation="Recharger la liste des plugins"/>
+    <Literal Name="menu::instruments::scanfolder" Translation="Scanner le dossier"/>
+    <Literal Name="menu::instruments::add" Translation="Ajouter"/>
+    <Literal Name="menu::layer::selectall" Translation="Sélectionner tout"/>
+    <Literal Name="menu::layer::change::colour" Translation="Changer la couleur"/>
+    <Literal Name="menu::layer::change::instrument" Translation="Changer l‘instrument"/>
+    <Literal Name="menu::layer::rename" Translation="Renommer"/>
+    <Literal Name="menu::layer::duplicate" Translation="Cloner"/>
+    <Literal Name="menu::layer::copytoproject" Translation="Copier sur le projet"/>
+    <Literal Name="menu::layer::mute" Translation="Désactiver le calque"/>
+    <Literal Name="menu::layer::unmute" Translation="Activer le calque"/>
+    <Literal Name="menu::layer::delete" Translation="Supprimer le calque"/>
+    <Literal Name="menu::workspace::project::create" Translation="Démarrer un nouveau projet"/>
+    <Literal Name="menu::workspace::project::open" Translation="Ouvrir un projet"/>
+    <Literal Name="menu::workspace::login" Translation="Se connecter / Créer un compte"/>
+    <Literal Name="menu::workspace::login::hint" Translation="C'est gratuit."/>
+    <Literal Name="menu::workspace::logout" Translation="Se déconnecter"/>
+    <Literal Name="menu::back" Translation="Retour"/>
+    <Literal Name="page::project::title" Translation="Titre"/>
+    <Literal Name="page::project::author" Translation="Auteur"/>
+    <Literal Name="page::project::description" Translation="Description"/>
+    <Literal Name="page::project::license" Translation="Licence"/>
+    <Literal Name="page::project::duration" Translation="Durée"/>
+    <Literal Name="page::project::startdate" Translation="Commencé le"/>
+    <Literal Name="page::project::stats::vcs" Translation="Statistique des versions"/>
+    <Literal Name="page::project::stats::content" Translation="Statistique des calques"/>
+    <Literal Name="page::project::filelocation" Translation="Emplacement du fichier"/>
+    <Literal Name="page::project::default::value::desktop" Translation="Cliquez pour modifier"/>
+    <Literal Name="page::project::default::value::mobile" Translation="Appuyez sur pour modifier"/>
+    <Literal Name="page::project::default::author" Translation="Incognito"/>
+    <Literal Name="page::project::default::license" Translation="Droits d'auteur"/>
+    <Literal Name="dialog::scanfolder::caption" Translation="Sélectionnez le dossier à scanner"/>
+    <Literal Name="dialog::workspace::createproject::caption" Translation="Créer un nouveau projet"/>
+    <Literal Name="dialog::document::save" Translation="Choisissez un fichier à enregistrer"/>
+    <Literal Name="dialog::document::export" Translation="Choisissez un fichier à exporter"/>
+    <Literal Name="dialog::document::export::done" Translation="Exporté."/>
+    <Literal Name="dialog::document::load" Translation="Choisissez un fichier à charger"/>
+    <Literal Name="dialog::document::import" Translation="Choisissez un fichier à importer"/>
+    <Literal Name="dialog::render::caption" Translation="Rendre vers:"/>
+    <Literal Name="dialog::render::proceed" Translation="Rendre"/>
+    <Literal Name="dialog::render::abort" Translation="Arrêter le rendu"/>
+    <Literal Name="dialog::render::close" Translation="Fermer"/>
+    <Literal Name="dialog::render::selectfile" Translation="Choisissez un fichier pour le rendu"/>
+    <Literal Name="dialog::update::minor" Translation="Mise à jour mineure"/>
+    <Literal Name="dialog::update::major" Translation="Mise à jour majeure disponible"/>
+    <Literal Name="dialog::update::version::installed" Translation="Version installée:"/>
+    <Literal Name="dialog::update::version::available" Translation="Version disponible:"/>
+    <Literal Name="dialog::update::proceed" Translation="Mettre à jour"/>
+    <Literal Name="dialog::update::cancel" Translation="Pas maintenant"/>
+    <Literal Name="colours::none" Translation="Sans couleur"/>
+    <Literal Name="colours::white" Translation="Blanc"/>
+    <Literal Name="colours::black" Translation="Noir"/>
+    <Literal Name="colours::red" Translation="Rouge"/>
+    <Literal Name="colours::crimson" Translation="Cramoisi"/>
+    <Literal Name="colours::deeppink" Translation="Rose profond"/>
+    <Literal Name="colours::fuchsia" Translation="Fuchsia"/>
+    <Literal Name="colours::darkviolet" Translation="Aubergine"/>
+    <Literal Name="colours::blueviolet" Translation="Bleu violet"/>
+    <Literal Name="colours::blue" Translation="Bleu"/>
+    <Literal Name="colours::royalblue" Translation="Bleu royal"/>
+    <Literal Name="colours::aqua" Translation="Turquoise"/>
+    <Literal Name="colours::springgreen" Translation="Vert printanier"/>
+    <Literal Name="colours::lime" Translation="Citron vert"/>
+    <Literal Name="colours::chartreuse" Translation="Chartreuse"/>
+    <Literal Name="colours::greenyellow" Translation="Vert jaune"/>
+    <Literal Name="colours::gold" Translation="Or"/>
+    <Literal Name="colours::darkorange" Translation="Orange foncé"/>
+    <Literal Name="colours::tomato" Translation="Tomate"/>
+    <Literal Name="colours::orangered" Translation="Rouge-orange"/>
+    <Literal Name="popup::chord::rootkey" Translation="Tonalité"/>
+    <Literal Name="popup::chord::function" Translation="Fonction"/>
+    <Literal Name="popup::chord::chord" Translation="Accord"/>
+    <Literal Name="popup::chord::minor::1" Translation="Mineur, tonique"/>
+    <Literal Name="popup::chord::minor::2" Translation="Mineur, dominante passagère"/>
+    <Literal Name="popup::chord::minor::3" Translation="Mineur, parallèle à la tonique"/>
+    <Literal Name="popup::chord::minor::4" Translation="Mineur, sous-dominante"/>
+    <Literal Name="popup::chord::minor::5" Translation="Mineur, dominante"/>
+    <Literal Name="popup::chord::minor::6" Translation="Mineur, parallèle à la sous-dominante"/>
+    <Literal Name="popup::chord::minor::7" Translation="Mineur, parallèle à la dominante"/>
+    <Literal Name="popup::chord::major::1" Translation="Majeur, tonique"/>
+    <Literal Name="popup::chord::major::2" Translation="Majeur, parallèle à la sous-dominante"/>
+    <Literal Name="popup::chord::major::3" Translation="Majeur, parallèle à la dominante"/>
+    <Literal Name="popup::chord::major::4" Translation="Majeur, sous-dominante"/>
+    <Literal Name="popup::chord::major::5" Translation="Majeur, dominante"/>
+    <Literal Name="popup::chord::major::6" Translation="Majeur, parallèle à la tonique"/>
+    <Literal Name="popup::chord::function::1" Translation="Tonique"/>
+    <Literal Name="popup::chord::function::2" Translation="Sus-tonique"/>
+    <Literal Name="popup::chord::function::3" Translation="Médiante"/>
+    <Literal Name="popup::chord::function::4" Translation="Sous-dominante"/>
+    <Literal Name="popup::chord::function::5" Translation="Dominante"/>
+    <Literal Name="popup::chord::function::6" Translation="Sous-médiante"/>
+    <Literal Name="popup::chord::function::7" Translation="Sous-tonique"/>
+    <Literal Name="settings::audio" Translation="Audio"/>
+    <Literal Name="settings::audio::device" Translation="Moteur"/>
+    <Literal Name="settings::audio::driver" Translation="Pilote"/>
+    <Literal Name="settings::audio::samplerate" Translation="Taux d'échantillonnage"/>
+    <Literal Name="settings::audio::buffersize" Translation="Dimension du buffer"/>
+    <Literal Name="settings::ui" Translation="Palette de couleurs"/>
+    <Literal Name="settings::language::help" Translation="Vous pouvez aider à améliorer la traduction d'Helio"/>
+    <Literal Name="settings::renderer" Translation="Mode de rendu de l‘interface"/>
+    <Literal Name="settings::renderer::default" Translation="Mode de rendu par défaut"/>
+    <Literal Name="settings::renderer::opengl" Translation="Utiliser le mode de rendu OpenGL"/>
+    <Literal Name="settings::renderer::coregraphics" Translation="Utiliser le mode de rendu CoreGraphics"/>
+    <Literal Name="settings::renderer::direct2d" Translation="Utiliser le mode de rendu Direct2D"/>
+    <Literal Name="settings::renderer::native" Translation="Utiliser le mode de rendu natif"/>
+    <Literal Name="dialog::opengl::caption" Translation="Le mode de rendu OpenGL est normalement plus rapide que le mode natif pour les grands projets, mais selon votre système, il peut provoquer des instabilités. Selectionner OpenGL?"/>
+    <Literal Name="dialog::opengl::proceed" Translation="Utiliser OpenGL"/>
+    <Literal Name="dialog::opengl::cancel" Translation="Non, merci"/>
+    <Literal Name="dialog::vcs::commit::caption" Translation="Saisissez le message de confirmation:"/>
+    <Literal Name="dialog::vcs::commit::proceed" Translation="Enregistrer"/>
+    <Literal Name="dialog::vcs::commit::cancel" Translation="Annuler"/>
+    <Literal Name="dialog::vcs::reset::caption" Translation="Annuler les changements sélectionnés?"/>
+    <Literal Name="dialog::vcs::reset::proceed" Translation="Réinitialiser"/>
+    <Literal Name="dialog::vcs::reset::cancel" Translation="Ne rien faire"/>
+    <Literal Name="instruments::initialscan" Translation="Cliquez pour rechercher des plugins maintenant"/>
+    <Literal Name="instruments::search" Translation="Chercher"/>
+    <Literal Name="instruments::remove" Translation="Supprimer"/>
+    <Literal Name="instruments::init" Translation="Ajouter"/>
+    <Literal Name="vcs::delta::type::added" Translation="Ajouté"/>
+    <Literal Name="vcs::delta::type::removed" Translation="Supprimé"/>
+    <Literal Name="vcs::delta::type::changed" Translation="Modifié"/>
+    <Literal Name="vcs::stage::caption" Translation="Modifications du projet"/>
+    <Literal Name="vcs::warning::cannotcommit" Translation="Sélectionnez les modifications à enregistrer."/>
+    <Literal Name="vcs::warning::cannotreset" Translation="Sélectionnez les changements à réinitialiser."/>
+    <Literal Name="vcs::warning::cannotrevert" Translation="Vous ne pouvez pas annuler les changements, cela supprimera les modifications effectuées."/>
+    <Literal Name="vcs::history::caption" Translation="Arbre de révision"/>
+    <Literal Name="vcs::history::forcepull::warning" Translation="Le projet contient les modifications non synchronisées!"/>
+    <Literal Name="vcs::history::forcepull::confirmation" Translation="Le projet contient les modifications non synchronisées qui seront perdues lors de la récupération de la version distante. Voulez-vous récupérer la version depuis le serveur et écraser les changements locaux?"/>
+    <Literal Name="vcs::history::forcepull::proceed" Translation="Récupérer la version distante"/>
+    <Literal Name="vcs::history::forcepull::cancel" Translation="Ne rien faire"/>
+    <Literal Name="vcs::history::checkout" Translation="Changer la version"/>
+    <Literal Name="vcs::push::contacting::progress" Translation="Connexion au serveur.."/>
+    <Literal Name="vcs::push::contacting::error" Translation="Le serveur ne répond pas."/>
+    <Literal Name="vcs::push::fetching::progress" Translation="Récupération de l'historique du projet.."/>
+    <Literal Name="vcs::push::fetching::error" Translation="Echec de l'envoi de l'historique au serveur."/>
+    <Literal Name="vcs::push::merging::uptodate" Translation="Le projet sur le serveur est déjà à jour."/>
+    <Literal Name="vcs::push::merging::error" Translation="La version du projet sur le serveur a été changée. Veuillez mettre à jour la version locale avant d'envoyer les changements."/>
+    <Literal Name="vcs::push::sync::progress" Translation="Envoi.."/>
+    <Literal Name="vcs::push::sync::error::unauthorized" Translation="Erreur d‘autorisation. Si vous êtes l'auteur de cette piste, veuillez vous connecter avant la synchronisation de l'historique."/>
+    <Literal Name="vcs::push::sync::error::forbidden" Translation="Accès interdit. Vous n'êtes pas connecté en tant qu'auteur de la piste."/>
+    <Literal Name="vcs::push::sync::error" Translation="Echec de l'envoi de l'historique."/>
+    <Literal Name="vcs::push::done" Translation="Fait."/>
+    <Literal Name="vcs::pull::contacting::progress" Translation="Connexion au serveur…"/>
+    <Literal Name="vcs::pull::contacting::error" Translation="Le serveur ne répond pas."/>
+    <Literal Name="vcs::pull::fetching::progress" Translation="Récupération de l'historique du projet.."/>
+    <Literal Name="vcs::pull::fetching::error" Translation="Echec de l'envoi de l'historique au serveur."/>
+    <Literal Name="vcs::pull::merging::uptodate" Translation="Le projet local est déjà à jour."/>
+    <Literal Name="vcs::pull::merging::error" Translation="La version locale du projet a été changée. Veuillez mettre à jour la version sur le serveur avant de récupérer les changements."/>
+    <Literal Name="vcs::pull::done" Translation="Fait."/>
+    <Literal Name="vcs::remove::contacting::progress" Translation="Connexion au serveur.."/>
+    <Literal Name="vcs::remove::contacting::error" Translation="Le serveur ne répond pas."/>
+    <Literal Name="vcs::remove::sync::progress" Translation="Supprimer le projet du serveur ."/>
+    <Literal Name="vcs::remove::sync::error::unauthorized" Translation="Erreur d‘autorisation. Si vous êtes l'auteur de cette piste, veuillez vous connecter avant la suppression."/>
+    <Literal Name="vcs::remove::sync::error::forbidden" Translation="Accès interdit. Vous n'êtes pas connecté en tant qu'auteur de la piste."/>
+    <Literal Name="vcs::remove::sync::error" Translation="La suppression du projet du serveur a failli."/>
+    <Literal Name="vcs::remove::done" Translation="Fait."/>
+    <Literal Name="vcs::items::annotations" Translation="Annotations"/>
+    <Literal Name="vcs::items::projectinfo" Translation="Infos sur le projet"/>
+    <Literal Name="dialog::corruption::caption" Translation="Le fichier exécutable est corrompu."/>
+    <Literal Name="dialog::corruption::message" Translation="Le fichier exécutable est corrompu. Votre système a pu être contaminé par un virus ou vous avez installé le programme depuis une source non sûre. Vous pouvez télécharger une version originale sur http://helioworkstation.com"/>
+    <Literal Name="common::version" Translation="version"/>
+    <Literal Name="common::and" Translation="et"/>
+    <Literal Name="common::yesterday" Translation="Hier"/>
+    <PluralLiteral Name="{x} input channels">
+      <Translation Name="{x} canal d'entrée" PluralForm="1"/>
+      <Translation Name="{x} canaux d'entrée" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="{x} output channels">
+      <Translation Name="{x} canal de sortie" PluralForm="1"/>
+      <Translation Name="{x} canaux de sortie" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="added {x} notes">
+      <Translation Name="{x} note ajoutée" PluralForm="1"/>
+      <Translation Name="{x} notes ajoutées" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="removed {x} notes">
+      <Translation Name="{x} note supprimée" PluralForm="1"/>
+      <Translation Name="{x} notes supprimées" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="changed {x} notes">
+      <Translation Name="{x} note changée" PluralForm="1"/>
+      <Translation Name="{x} notes changées" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="added {x} events">
+      <Translation Name="{x} événement ajouté" PluralForm="1"/>
+      <Translation Name="{x} événements ajoutés" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="removed {x} events">
+      <Translation Name="{x} événement supprimé" PluralForm="1"/>
+      <Translation Name="{x} les événements supprimés" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="changed {x} events">
+      <Translation Name="{x} évènement modifié" PluralForm="1"/>
+      <Translation Name="{x} événements modifiés" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="added {x} annotations">
+      <Translation Name="{x} annotation ajoutée" PluralForm="1"/>
+      <Translation Name="{x} annotations ajoutées" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="removed {x} annotations">
+      <Translation Name="{x} annotation supprimée" PluralForm="1"/>
+      <Translation Name="{x} annotations supprimées" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="changed {x} annotations">
+      <Translation Name="{x} annotation modifiée" PluralForm="1"/>
+      <Translation Name="{x} annotations modifiées" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="{x} notes">
       <Translation Name="{x} note" PluralForm="1"/>
-      <Translation Name="{x} noten" PluralForm="2"/>
+      <Translation Name="{x} notes" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="{x} events">
-      <Translation Name="{x} ereignis" PluralForm="1"/>
-      <Translation Name="{x} ereignisse" PluralForm="2"/>
+      <Translation Name="{x} événement" PluralForm="1"/>
+      <Translation Name="{x} événements" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="{x} annotations">
-      <Translation Name="{x} marke" PluralForm="1"/>
-      <Translation Name="{x} marken" PluralForm="2"/>
+      <Translation Name="{x} annotation" PluralForm="1"/>
+      <Translation Name="{x} annotations" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="{x} layers">
-      <Translation Name="{x} schicht" PluralForm="1"/>
-      <Translation Name="{x} schichten" PluralForm="2"/>
+      <Translation Name="{x} calques" PluralForm="1"/>
+      <Translation Name="{x} calques" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="{x} revisions">
-      <Translation Name="{x} revision" PluralForm="1"/>
-      <Translation Name="{x} revisionen" PluralForm="2"/>
+      <Translation Name="{x} révision" PluralForm="1"/>
+      <Translation Name="{x} révisions" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="{x} deltas">
       <Translation Name="{x} delta" PluralForm="1"/>
@@ -949,29 +1267,29 @@
     </PluralLiteral>
     <PluralLiteral Name="{x} minutes">
       <Translation Name="{x} minute" PluralForm="1"/>
-      <Translation Name="{x} minuten" PluralForm="2"/>
+      <Translation Name="{x} minutes" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="{x} seconds">
-      <Translation Name="{x} sekunde" PluralForm="1"/>
-      <Translation Name="{x} sekunden" PluralForm="2"/>
+      <Translation Name="{x} seconde" PluralForm="1"/>
+      <Translation Name="{x} secondes" PluralForm="2"/>
     </PluralLiteral>
-    <Literal Name="initialized" Translation="hinzugefügt"/>
-    <Literal Name="license changed" Translation="lizenz geändert"/>
-    <Literal Name="title changed" Translation="titel geändert"/>
-    <Literal Name="author changed" Translation="autor geändert"/>
-    <Literal Name="description changed" Translation="beschreibung geändert"/>
-    <Literal Name="moved from {x}" Translation="umbenennt von {x}"/>
-    <Literal Name="color changed" Translation="farbe geändert"/>
-    <Literal Name="empty layer" Translation="leere schicht"/>
-    <Literal Name="instrument changed" Translation="instrument geändert"/>
-    <Literal Name="controller changed" Translation="controller geändert"/>
-    <Literal Name="muted" Translation="gedämpft"/>
-    <Literal Name="unmuted" Translation="eingeschaltet"/>
-    <Literal Name="(no choices)" Translation="(keine auswahl)"/>
-    <Literal Name="Audio Input" Translation="Audioeingang"/>
-    <Literal Name="Audio Output" Translation="Audioausgang"/>
-    <Literal Name="Midi Input" Translation="Midi-Eingang"/>
-    <Literal Name="Midi Output" Translation="Midi-Ausgang"/>
+    <Literal Name="initialized" Translation="initialisé"/>
+    <Literal Name="license changed" Translation="la licence a été changée"/>
+    <Literal Name="title changed" Translation="le titre a été changé"/>
+    <Literal Name="author changed" Translation="l'auteur a été changé"/>
+    <Literal Name="description changed" Translation="la description a été changée"/>
+    <Literal Name="moved from {x}" Translation="déplacé de {x}"/>
+    <Literal Name="color changed" Translation="la couleur a été changée"/>
+    <Literal Name="empty layer" Translation="calque vide"/>
+    <Literal Name="instrument changed" Translation="l'instrument a été changé"/>
+    <Literal Name="controller changed" Translation="le contrôleur a été changé"/>
+    <Literal Name="muted" Translation="son désactivé"/>
+    <Literal Name="unmuted" Translation="son activé"/>
+    <Literal Name="(no choices)" Translation="(aucun choix)"/>
+    <Literal Name="Audio Input" Translation="Entrée audio"/>
+    <Literal Name="Audio Output" Translation="Sortie audio"/>
+    <Literal Name="Midi Input" Translation="Entrée Midi"/>
+    <Literal Name="Midi Output" Translation="Sortie Midi"/>
   </Locale>
   <Locale Id="it" Name="Italiano">
     <PluralForms Equation="({x}==1 ? 1 : 2)"/>
@@ -1024,7 +1342,7 @@
     <Literal Name="menu::project::render::flac" Translation="Rendering in FLAC"/>
     <Literal Name="menu::project::render::ogg" Translation="Rendering in OGG"/>
     <Literal Name="menu::project::render::wav" Translation="Rendering in WAV"/>
-    <Literal Name="menu::project::render::midi" Translation="Esportare in Midi"/>
+    <Literal Name="menu::project::render::midi" Translation="Esportare in MIDI"/>
     <Literal Name="menu::project::render::savedto" Translation="Salvato"/>
     <Literal Name="menu::project::refactor" Translation="Refactor"/>
     <Literal Name="menu::project::refactor::halftoneup" Translation="Alzare di un semitono"/>
@@ -1130,11 +1448,11 @@
     <Literal Name="settings::audio::device" Translation="Dispositivo"/>
     <Literal Name="settings::audio::driver" Translation="Driver"/>
     <Literal Name="settings::audio::samplerate" Translation="Frequenza di campionamento"/>
-    <Literal Name="settings::audio::buffersize" Translation="Dimensioni di buffer"/>
+    <Literal Name="settings::audio::buffersize" Translation="Dimensione del buffer"/>
     <Literal Name="settings::ui" Translation="Combinazione di colori"/>
-    <Literal Name="settings::language::help" Translation="Aiuti a migliorare la traduzione di Helio"/>
+    <Literal Name="settings::language::help" Translation="Aiuta a migliorare la traduzione di Helio"/>
     <Literal Name="settings::renderer" Translation="Renderer di interfaccia"/>
-    <Literal Name="settings::renderer::default" Translation="Per default"/>
+    <Literal Name="settings::renderer::default" Translation="Usa renderer di default"/>
     <Literal Name="settings::renderer::opengl" Translation="OpenGL"/>
     <Literal Name="settings::renderer::coregraphics" Translation="CoreGraphics"/>
     <Literal Name="settings::renderer::direct2d" Translation="Direct2D"/>
@@ -1285,7 +1603,7 @@
     <Literal Name="controller changed" Translation="il controllore è cambiato"/>
     <Literal Name="muted" Translation="smorzato"/>
     <Literal Name="unmuted" Translation="riattivato"/>
-    <Literal Name="(no choices)" Translation="(nessun opzione)"/>
+    <Literal Name="(no choices)" Translation="(nessuna opzione)"/>
     <Literal Name="Audio Input" Translation="Ingresso audio"/>
     <Literal Name="Audio Output" Translation="Uscita audio"/>
     <Literal Name="Midi Input" Translation="Ingresso Midi"/>
@@ -1342,7 +1660,7 @@
     <Literal Name="menu::project::render::flac" Translation="Renderizar a FLAC"/>
     <Literal Name="menu::project::render::ogg" Translation="Renderizar a OGG"/>
     <Literal Name="menu::project::render::wav" Translation="Renderizar a WAV"/>
-    <Literal Name="menu::project::render::midi" Translation="Exportar a Midi"/>
+    <Literal Name="menu::project::render::midi" Translation="Exportar a MIDI"/>
     <Literal Name="menu::project::render::savedto" Translation="Guardado como"/>
     <Literal Name="menu::project::refactor" Translation="Refactorizar"/>
     <Literal Name="menu::project::refactor::halftoneup" Translation="Transponer hacia arriba"/>
@@ -1609,324 +1927,6 @@
     <Literal Name="Midi Input" Translation="Entrada Midi"/>
     <Literal Name="Midi Output" Translation="Salida Midi"/>
   </Locale>
-  <Locale Id="fr" Name="Français">
-    <PluralForms Equation="(({x}==0 || {x}==1) ? 1 : 2)"/>
-    <Literal Name="defaults::newproject::firstcommit" Translation="Le projet a été créé"/>
-    <Literal Name="defaults::newproject::name" Translation="Le nouveau projet"/>
-    <Literal Name="defaults::newlayer::name" Translation="La nouvelle couche"/>
-    <Literal Name="defaults::tempotrack::name" Translation="Rythme"/>
-    <Literal Name="warnings::emptyselection" Translation="Rien n‘est sélectionné."/>
-    <Literal Name="warnings::noinstrument" Translation="Aucun instrument n’est sélectionné."/>
-    <Literal Name="warnings::smallscreen" Translation="Helio n'a pas été conçu pour les petits écrans. S'il vous plaît installez le programme sur une tablette."/>
-    <Literal Name="tree::instruments" Translation="Instruments"/>
-    <Literal Name="tree::settings" Translation="Paramètres"/>
-    <Literal Name="tree::vcs" Translation="Révisions"/>
-    <Literal Name="menu::annotation::rename" Translation="Renommer"/>
-    <Literal Name="menu::annotation::delete" Translation="Supprimer"/>
-    <Literal Name="menu::annotation::add" Translation="Ajouter une marque"/>
-    <Literal Name="dialog::annotation::rename::caption" Translation="Renommer la marque"/>
-    <Literal Name="dialog::annotation::rename::proceed" Translation="Renommer"/>
-    <Literal Name="dialog::annotation::rename::cancel" Translation="Annuler"/>
-    <Literal Name="dialog::annotation::add::caption" Translation="Saisissezle texte de la marque:"/>
-    <Literal Name="dialog::annotation::add::proceed" Translation="Ajouter"/>
-    <Literal Name="dialog::annotation::add::cancel" Translation="Annuler"/>
-    <Literal Name="dialog::auth::email" Translation="E-mail:"/>
-    <Literal Name="dialog::auth::password" Translation="Mot de passe:"/>
-    <Literal Name="dialog::auth::proceed" Translation="Se connecter / S‘inscrire"/>
-    <Literal Name="dialog::auth::cancel" Translation="Annuler"/>
-    <Literal Name="dialog::auth::defaultlogin::desktop" Translation="Cliquez pour saisir l‘e-mail"/>
-    <Literal Name="dialog::auth::defaultlogin::mobile" Translation="Appuyez sur pour saisir l‘e-mail"/>
-    <Literal Name="dialog::renamelayer::caption" Translation="Renommer la couche"/>
-    <Literal Name="dialog::renamelayer::proceed" Translation="Renommer"/>
-    <Literal Name="dialog::renamelayer::cancel" Translation="Annuler"/>
-    <Literal Name="dialog::addlayer::caption" Translation="Ajouter une couche"/>
-    <Literal Name="dialog::addlayer::proceed" Translation="Ajouter"/>
-    <Literal Name="dialog::addlayer::cancel" Translation="Annuler"/>
-    <Literal Name="dialog::deleteproject::caption" Translation="Voulez-vous suprimer le projet du nuage et du disque pour toujours? Cette action n’est pas à annuler."/>
-    <Literal Name="dialog::deleteproject::proceed" Translation="Supprimer"/>
-    <Literal Name="dialog::deleteproject::cancel" Translation="Ne rien faire"/>
-    <Literal Name="dialog::deleteproject::confirm::caption" Translation="Saisissez le nom du projet pour confirmer la suppression:"/>
-    <Literal Name="dialog::deleteproject::confirm::proceed" Translation="Supprimer vraiment"/>
-    <Literal Name="dialog::deleteproject::confirm::cancel" Translation="Annuler"/>
-    <Literal Name="menu::project::delete" Translation="Supprimer le projet"/>
-    <Literal Name="menu::project::delete::cancelled" Translation="Les noms ne correspondent pas! La suppression a été annulée."/>
-    <Literal Name="menu::project::unload" Translation="Fermer le projet"/>
-    <Literal Name="menu::project::addlayer" Translation="Ajouter une couche"/>
-    <Literal Name="menu::project::addautomation" Translation="Ajouter l‘automatisation"/>
-    <Literal Name="menu::project::addtempo" Translation="Rythme"/>
-    <Literal Name="menu::project::addtempo::failed" Translation="Cette piste existe déjà."/>
-    <Literal Name="menu::project::import::midi" Translation="Importer Midi"/>
-    <Literal Name="menu::project::render" Translation="Rendre"/>
-    <Literal Name="menu::project::render::flac" Translation="Rendre au format FLAC"/>
-    <Literal Name="menu::project::render::ogg" Translation="Rendre au format OGG"/>
-    <Literal Name="menu::project::render::wav" Translation="Rendre au format WAV"/>
-    <Literal Name="menu::project::render::midi" Translation="Exporter à Midi"/>
-    <Literal Name="menu::project::render::savedto" Translation="Enregistré dans"/>
-    <Literal Name="menu::project::refactor" Translation="Reprogrammation"/>
-    <Literal Name="menu::project::refactor::halftoneup" Translation="Transposer sur une demi-ton en haut"/>
-    <Literal Name="menu::project::refactor::halftonedown" Translation="Transposer sur une demi-ton en bas"/>
-    <Literal Name="menu::project::refactor::cleanup" Translation="Supprimer les fragments se recoupants"/>
-    <Literal Name="menu::project::change::instrument" Translation="Changer l‘instrument"/>
-    <Literal Name="menu::instrument::update" Translation="Mettre à jour l‘instrument"/>
-    <Literal Name="menu::instrument::rename" Translation="Renommer l‘instrument"/>
-    <Literal Name="menu::instrument::delete" Translation="Supprimer l‘instrument"/>
-    <Literal Name="menu::instruments::reload" Translation="Recharger la liste des plugins"/>
-    <Literal Name="menu::instruments::scanfolder" Translation="Scanner le dossier"/>
-    <Literal Name="menu::instruments::add" Translation="Ajouter"/>
-    <Literal Name="menu::layer::selectall" Translation="Sélectionner tout"/>
-    <Literal Name="menu::layer::change::colour" Translation="Changer la couleur"/>
-    <Literal Name="menu::layer::change::instrument" Translation="Changer l‘instrument"/>
-    <Literal Name="menu::layer::rename" Translation="Renommer"/>
-    <Literal Name="menu::layer::duplicate" Translation="Cloner"/>
-    <Literal Name="menu::layer::copytoproject" Translation="Dupliquer au projet"/>
-    <Literal Name="menu::layer::mute" Translation="Désactiver la couche"/>
-    <Literal Name="menu::layer::unmute" Translation="Activer la couche"/>
-    <Literal Name="menu::layer::delete" Translation="Supprimer la couche"/>
-    <Literal Name="menu::workspace::project::create" Translation="Démarrer un nouveau projet"/>
-    <Literal Name="menu::workspace::project::open" Translation="Ouvrez le projet"/>
-    <Literal Name="menu::workspace::login" Translation="Se connecter / Créer un compte"/>
-    <Literal Name="menu::workspace::login::hint" Translation="C'est gratuit."/>
-    <Literal Name="menu::workspace::logout" Translation="Se déconnecter"/>
-    <Literal Name="menu::back" Translation="Arrière"/>
-    <Literal Name="page::project::title" Translation="Titre"/>
-    <Literal Name="page::project::author" Translation="Auteur"/>
-    <Literal Name="page::project::description" Translation="La description"/>
-    <Literal Name="page::project::license" Translation="Licence"/>
-    <Literal Name="page::project::duration" Translation="Longueur"/>
-    <Literal Name="page::project::startdate" Translation="Commencé à"/>
-    <Literal Name="page::project::stats::vcs" Translation="Statistique des versions"/>
-    <Literal Name="page::project::stats::content" Translation="Statistique des couches"/>
-    <Literal Name="page::project::filelocation" Translation="Emplacement du fichier"/>
-    <Literal Name="page::project::default::value::desktop" Translation="Cliquez pour modifier"/>
-    <Literal Name="page::project::default::value::mobile" Translation="Appuyez sur pour modifier"/>
-    <Literal Name="page::project::default::author" Translation="Incognito"/>
-    <Literal Name="page::project::default::license" Translation="Droits d'auteur"/>
-    <Literal Name="dialog::scanfolder::caption" Translation="Sélectionnez le dossier pour scanner"/>
-    <Literal Name="dialog::workspace::createproject::caption" Translation="Créer un nouveau projet"/>
-    <Literal Name="dialog::document::save" Translation="Choisissez un fichier à enregistrer"/>
-    <Literal Name="dialog::document::export" Translation="Choisissez un fichier à exporter"/>
-    <Literal Name="dialog::document::export::done" Translation="L’exportation a été fait."/>
-    <Literal Name="dialog::document::load" Translation="Choisissez un fichier à charger"/>
-    <Literal Name="dialog::document::import" Translation="Choisissez un fichier à importer"/>
-    <Literal Name="dialog::render::caption" Translation="Rendu à:"/>
-    <Literal Name="dialog::render::proceed" Translation="Rendre"/>
-    <Literal Name="dialog::render::abort" Translation="Arrêter le rendu"/>
-    <Literal Name="dialog::render::close" Translation="Fermer"/>
-    <Literal Name="dialog::render::selectfile" Translation="Choisissez un fichier pour transformer"/>
-    <Literal Name="dialog::update::minor" Translation="Mise à jour mineure"/>
-    <Literal Name="dialog::update::major" Translation="Mise à jour majeure disponible"/>
-    <Literal Name="dialog::update::version::installed" Translation="Version installée:"/>
-    <Literal Name="dialog::update::version::available" Translation="Version disponible:"/>
-    <Literal Name="dialog::update::proceed" Translation="Mettre à jour"/>
-    <Literal Name="dialog::update::cancel" Translation="Pas maintenant"/>
-    <Literal Name="colours::none" Translation="Sans couleur"/>
-    <Literal Name="colours::white" Translation="Blanc"/>
-    <Literal Name="colours::black" Translation="Noir"/>
-    <Literal Name="colours::red" Translation="Rouge"/>
-    <Literal Name="colours::crimson" Translation="Cramoisi"/>
-    <Literal Name="colours::deeppink" Translation="Rose profond"/>
-    <Literal Name="colours::fuchsia" Translation="Fuchsia"/>
-    <Literal Name="colours::darkviolet" Translation="Aubergine"/>
-    <Literal Name="colours::blueviolet" Translation="Bleu violet"/>
-    <Literal Name="colours::blue" Translation="Bleu"/>
-    <Literal Name="colours::royalblue" Translation="Bleu royal"/>
-    <Literal Name="colours::aqua" Translation="Glauque"/>
-    <Literal Name="colours::springgreen" Translation="Vert printanier"/>
-    <Literal Name="colours::lime" Translation="Citron vert"/>
-    <Literal Name="colours::chartreuse" Translation="Chartreuse"/>
-    <Literal Name="colours::greenyellow" Translation="Vert jaune"/>
-    <Literal Name="colours::gold" Translation="Or"/>
-    <Literal Name="colours::darkorange" Translation="Orange foncé"/>
-    <Literal Name="colours::tomato" Translation="Tomate"/>
-    <Literal Name="colours::orangered" Translation="Rouge-orange"/>
-    <Literal Name="popup::chord::rootkey" Translation="Tonalité"/>
-    <Literal Name="popup::chord::function" Translation="Fonction"/>
-    <Literal Name="popup::chord::chord" Translation="Accord"/>
-    <Literal Name="popup::chord::minor::1" Translation="Mineur, tonique"/>
-    <Literal Name="popup::chord::minor::2" Translation="Mineur, dominante passagère"/>
-    <Literal Name="popup::chord::minor::3" Translation="Mineur, parallèle à la tonique"/>
-    <Literal Name="popup::chord::minor::4" Translation="Mineur, sous-dominante"/>
-    <Literal Name="popup::chord::minor::5" Translation="Mineur, dominante"/>
-    <Literal Name="popup::chord::minor::6" Translation="Mineur, parallèle à la sous-dominante"/>
-    <Literal Name="popup::chord::minor::7" Translation="Mineur, parallèle à la dominante"/>
-    <Literal Name="popup::chord::major::1" Translation="Majeur, tonique"/>
-    <Literal Name="popup::chord::major::2" Translation="Majeur, parallèle à la sous-dominante"/>
-    <Literal Name="popup::chord::major::3" Translation="Majeur, parallèle à la dominante"/>
-    <Literal Name="popup::chord::major::4" Translation="Majeur, sous-dominante"/>
-    <Literal Name="popup::chord::major::5" Translation="Majeur, dominante"/>
-    <Literal Name="popup::chord::major::6" Translation="Majeur, parallèle à la tonique"/>
-    <Literal Name="popup::chord::function::1" Translation="Tonique"/>
-    <Literal Name="popup::chord::function::2" Translation="Sus-tonique"/>
-    <Literal Name="popup::chord::function::3" Translation="Médiante"/>
-    <Literal Name="popup::chord::function::4" Translation="Sous-dominante"/>
-    <Literal Name="popup::chord::function::5" Translation="Dominante"/>
-    <Literal Name="popup::chord::function::6" Translation="Sous-médiante"/>
-    <Literal Name="popup::chord::function::7" Translation="Sous-tonique"/>
-    <Literal Name="settings::audio" Translation="Audio"/>
-    <Literal Name="settings::audio::device" Translation="Dispositif"/>
-    <Literal Name="settings::audio::driver" Translation="Driver"/>
-    <Literal Name="settings::audio::samplerate" Translation="Taux d'échantillonnage"/>
-    <Literal Name="settings::audio::buffersize" Translation="Dimension du buffer"/>
-    <Literal Name="settings::ui" Translation="Palette de couleurs"/>
-    <Literal Name="settings::language::help" Translation="Vous pouvez aider d’améliorer la traduction de Helio"/>
-    <Literal Name="settings::renderer" Translation="Module de rendu de l‘interface"/>
-    <Literal Name="settings::renderer::default" Translation="Module de rendu par défaut"/>
-    <Literal Name="settings::renderer::opengl" Translation="Utiliser le module de rendu OpenGL"/>
-    <Literal Name="settings::renderer::coregraphics" Translation="Utilisez le module de rendu CoreGraphics"/>
-    <Literal Name="settings::renderer::direct2d" Translation="Utilisez le module de rendu Direct2D"/>
-    <Literal Name="settings::renderer::native" Translation="Utilisez le module de rendu natif"/>
-    <Literal Name="dialog::opengl::caption" Translation="Le module de rendu OpenGL est d’habitude plus rapide que celui natif pour les grands projets, mais en fonction de votre système il peut provoquer le fonctionnement instable. Selectionner OpenGL?"/>
-    <Literal Name="dialog::opengl::proceed" Translation="Utiliser OpenGL"/>
-    <Literal Name="dialog::opengl::cancel" Translation="Non, merci"/>
-    <Literal Name="dialog::vcs::commit::caption" Translation="Saisissez le message de commit:"/>
-    <Literal Name="dialog::vcs::commit::proceed" Translation="Enregistrer"/>
-    <Literal Name="dialog::vcs::commit::cancel" Translation="Annuler"/>
-    <Literal Name="dialog::vcs::reset::caption" Translation="Annuler les changements sélectionnés?"/>
-    <Literal Name="dialog::vcs::reset::proceed" Translation="Réinitialiser"/>
-    <Literal Name="dialog::vcs::reset::cancel" Translation="Ne rien faire"/>
-    <Literal Name="instruments::initialscan" Translation="Cliquez pour rechercher des plugins maintenant"/>
-    <Literal Name="instruments::search" Translation="Chercher"/>
-    <Literal Name="instruments::remove" Translation="Supprimer"/>
-    <Literal Name="instruments::init" Translation="Ajouter"/>
-    <Literal Name="vcs::delta::type::added" Translation="Ajouté"/>
-    <Literal Name="vcs::delta::type::removed" Translation="Supprimé"/>
-    <Literal Name="vcs::delta::type::changed" Translation="Modifié"/>
-    <Literal Name="vcs::stage::caption" Translation="Modifications du projet"/>
-    <Literal Name="vcs::warning::cannotcommit" Translation="Sélectionnez les modifications pour enregistrer."/>
-    <Literal Name="vcs::warning::cannotreset" Translation="Sélectionnez les changements pour réinitialiser."/>
-    <Literal Name="vcs::warning::cannotrevert" Translation="Vous ne pouvez pas retourner dans le point du contrôle – cela supprimera les changements actuels."/>
-    <Literal Name="vcs::history::caption" Translation="Arbre de révision"/>
-    <Literal Name="vcs::history::forcepull::warning" Translation="Le projet contient les modifications non validées!"/>
-    <Literal Name="vcs::history::forcepull::confirmation" Translation="Le projet contient les modifications non validées qui seront perdus. Voulez-vous recevoir l’histoire du serveur et réinitialiser les changements locaux?"/>
-    <Literal Name="vcs::history::forcepull::proceed" Translation="Recevoir l’histoire"/>
-    <Literal Name="vcs::history::forcepull::cancel" Translation="Ne rien faire"/>
-    <Literal Name="vcs::history::checkout" Translation="Changer la version"/>
-    <Literal Name="vcs::push::contacting::progress" Translation="Connexion au serveur.."/>
-    <Literal Name="vcs::push::contacting::error" Translation="Le serveur ne répond pas."/>
-    <Literal Name="vcs::push::fetching::progress" Translation="Récupération de l'histoire du projet.."/>
-    <Literal Name="vcs::push::fetching::error" Translation="L’envoi de l'histoirea failli."/>
-    <Literal Name="vcs::push::merging::uptodate" Translation="L’histoire sur le serveur à l’état actuel."/>
-    <Literal Name="vcs::push::merging::error" Translation="L’histoire sur le serveur a été changée. Déchargez-la avant l’evoyer."/>
-    <Literal Name="vcs::push::sync::progress" Translation="Envoi.."/>
-    <Literal Name="vcs::push::sync::error::unauthorized" Translation="Erreur de l‘autorisation. Si vous êtes l'auteur de cette piste, s'il vous plaît connectez-vous avant la synchronisation de l‘histoire."/>
-    <Literal Name="vcs::push::sync::error::forbidden" Translation="Vous n’avez pas des droits pour l’autorisation."/>
-    <Literal Name="vcs::push::sync::error" Translation="L’envoi de l'histoirea failli."/>
-    <Literal Name="vcs::push::done" Translation="Fait."/>
-    <Literal Name="vcs::pull::contacting::progress" Translation="Connexion au serveur…"/>
-    <Literal Name="vcs::pull::contacting::error" Translation="Le serveur ne répond pas."/>
-    <Literal Name="vcs::pull::fetching::progress" Translation="Récupération de l'histoire du projet.."/>
-    <Literal Name="vcs::pull::fetching::error" Translation="L’envoi de l'histoirea failli."/>
-    <Literal Name="vcs::pull::merging::uptodate" Translation="L'histoire locale à l’état actuel."/>
-    <Literal Name="vcs::pull::merging::error" Translation="L'histoire locale a été changée, envoyez-la avant la décharger."/>
-    <Literal Name="vcs::pull::done" Translation="Fait."/>
-    <Literal Name="vcs::remove::contacting::progress" Translation="Connexion au serveur.."/>
-    <Literal Name="vcs::remove::contacting::error" Translation="Le serveur ne répond pas."/>
-    <Literal Name="vcs::remove::sync::progress" Translation="Supprimer le projet du serveur ."/>
-    <Literal Name="vcs::remove::sync::error::unauthorized" Translation="Erreur de l‘autorisation. Si vous êtes l'auteur de cette piste, s'il vous plaît connectez-vous avant la suppression."/>
-    <Literal Name="vcs::remove::sync::error::forbidden" Translation="Vous n’avez pas des droits pour la suppression."/>
-    <Literal Name="vcs::remove::sync::error" Translation="La suppression du projet du serveura failli."/>
-    <Literal Name="vcs::remove::done" Translation="Fait."/>
-    <Literal Name="vcs::items::annotations" Translation="Marques de texte"/>
-    <Literal Name="vcs::items::projectinfo" Translation="Infos sur le projet"/>
-    <Literal Name="dialog::corruption::caption" Translation="Le fichier exécutable est perdu"/>
-    <Literal Name="dialog::corruption::message" Translation="Le fichier exécutable est perdu. Votre système peut être contaminé par les virus, ou vous avez installé le programme d’une source incontrôlée. Vous pouvez décharger la version originale sur http://helioworkstation.com"/>
-    <Literal Name="common::version" Translation="version"/>
-    <Literal Name="common::and" Translation="et"/>
-    <Literal Name="common::yesterday" Translation="Hier"/>
-    <PluralLiteral Name="{x} input channels">
-      <Translation Name="{x} canal d'introduction" PluralForm="1"/>
-      <Translation Name="{x} canaux d'introduction" PluralForm="2"/>
-    </PluralLiteral>
-    <PluralLiteral Name="{x} output channels">
-      <Translation Name="{x} canal de sortie" PluralForm="1"/>
-      <Translation Name="{x} canaux de sortie" PluralForm="2"/>
-    </PluralLiteral>
-    <PluralLiteral Name="added {x} notes">
-      <Translation Name="note {x} ajoutée" PluralForm="1"/>
-      <Translation Name="notes {x} ajoutées" PluralForm="2"/>
-    </PluralLiteral>
-    <PluralLiteral Name="removed {x} notes">
-      <Translation Name="note {x} supprimée" PluralForm="1"/>
-      <Translation Name="notes {x} supprimées" PluralForm="2"/>
-    </PluralLiteral>
-    <PluralLiteral Name="changed {x} notes">
-      <Translation Name="note {x} changée" PluralForm="1"/>
-      <Translation Name="notes {x} changées" PluralForm="2"/>
-    </PluralLiteral>
-    <PluralLiteral Name="added {x} events">
-      <Translation Name="ajouter {x} un événement" PluralForm="1"/>
-      <Translation Name="ajouter {x} des événements" PluralForm="2"/>
-    </PluralLiteral>
-    <PluralLiteral Name="removed {x} events">
-      <Translation Name="supprimer {x} l‘événement" PluralForm="1"/>
-      <Translation Name="supprimer {x} les événements" PluralForm="2"/>
-    </PluralLiteral>
-    <PluralLiteral Name="changed {x} events">
-      <Translation Name="modifier {x} l‘évènement" PluralForm="1"/>
-      <Translation Name="modifier {x} les événements" PluralForm="2"/>
-    </PluralLiteral>
-    <PluralLiteral Name="added {x} annotations">
-      <Translation Name="ajouter {x} une marque" PluralForm="1"/>
-      <Translation Name="ajouter {x} des marques" PluralForm="2"/>
-    </PluralLiteral>
-    <PluralLiteral Name="removed {x} annotations">
-      <Translation Name="supprimer {x} la marque" PluralForm="1"/>
-      <Translation Name="supprimer {x} les marques" PluralForm="2"/>
-    </PluralLiteral>
-    <PluralLiteral Name="changed {x} annotations">
-      <Translation Name="modifier {x} la marque" PluralForm="1"/>
-      <Translation Name="modifier {x} les marques" PluralForm="2"/>
-    </PluralLiteral>
-    <PluralLiteral Name="{x} notes">
-      <Translation Name="{x} note" PluralForm="1"/>
-      <Translation Name="{x} notes" PluralForm="2"/>
-    </PluralLiteral>
-    <PluralLiteral Name="{x} events">
-      <Translation Name="{x} événement" PluralForm="1"/>
-      <Translation Name="{x} événements" PluralForm="2"/>
-    </PluralLiteral>
-    <PluralLiteral Name="{x} annotations">
-      <Translation Name="{x} marque" PluralForm="1"/>
-      <Translation Name="{x} marques" PluralForm="2"/>
-    </PluralLiteral>
-    <PluralLiteral Name="{x} layers">
-      <Translation Name="{x} couche" PluralForm="1"/>
-      <Translation Name="{x} couches" PluralForm="2"/>
-    </PluralLiteral>
-    <PluralLiteral Name="{x} revisions">
-      <Translation Name="{x} révision" PluralForm="1"/>
-      <Translation Name="{x} révisions" PluralForm="2"/>
-    </PluralLiteral>
-    <PluralLiteral Name="{x} deltas">
-      <Translation Name="{x} delta" PluralForm="1"/>
-      <Translation Name="{x} deltas" PluralForm="2"/>
-    </PluralLiteral>
-    <PluralLiteral Name="{x} minutes">
-      <Translation Name="{x} minutes" PluralForm="1"/>
-      <Translation Name="{x} minutes" PluralForm="2"/>
-    </PluralLiteral>
-    <PluralLiteral Name="{x} seconds">
-      <Translation Name="{x} seconde" PluralForm="1"/>
-      <Translation Name="{x} secondes" PluralForm="2"/>
-    </PluralLiteral>
-    <Literal Name="initialized" Translation="ajouté"/>
-    <Literal Name="license changed" Translation="la licence était modifiée"/>
-    <Literal Name="title changed" Translation="le titre était changé"/>
-    <Literal Name="author changed" Translation="l‘auteur était changé"/>
-    <Literal Name="description changed" Translation="la description était modifiée"/>
-    <Literal Name="moved from {x}" Translation="renommé de {x}"/>
-    <Literal Name="color changed" Translation="la couleur était changé"/>
-    <Literal Name="empty layer" Translation="couche vide"/>
-    <Literal Name="instrument changed" Translation="l‘instrument était changé"/>
-    <Literal Name="controller changed" Translation="le contrôleur était changé"/>
-    <Literal Name="muted" Translation="désactivé"/>
-    <Literal Name="unmuted" Translation="activé"/>
-    <Literal Name="(no choices)" Translation="(pas de choix)"/>
-    <Literal Name="Audio Input" Translation="Entrée audio"/>
-    <Literal Name="Audio Output" Translation="Sortie audio"/>
-    <Literal Name="Midi Input" Translation="Entrée Midi"/>
-    <Literal Name="Midi Output" Translation="Sortie Midi"/>
-  </Locale>
   <Locale Id="br" Name="Português brasileiro">
     <PluralForms Equation="(({x}==0 || {x}==1) ? 1 : 2)"/>
     <Literal Name="defaults::newproject::firstcommit" Translation="Início do projeto"/>
@@ -1978,7 +1978,7 @@
     <Literal Name="menu::project::render::flac" Translation="Converter para FLAC"/>
     <Literal Name="menu::project::render::ogg" Translation="Converter para OGG"/>
     <Literal Name="menu::project::render::wav" Translation="Converter para WAV"/>
-    <Literal Name="menu::project::render::midi" Translation="Exportar para Midi"/>
+    <Literal Name="menu::project::render::midi" Translation="Exportar para MIDI"/>
     <Literal Name="menu::project::render::savedto" Translation="Salvar em"/>
     <Literal Name="menu::project::refactor" Translation="Refatorar"/>
     <Literal Name="menu::project::refactor::halftoneup" Translation="Transpor para cima"/>
@@ -2144,7 +2144,7 @@
     <Literal Name="vcs::remove::sync::error::forbidden" Translation="Acesso proibido. Você não está conectado como autor da obra original."/>
     <Literal Name="vcs::remove::sync::error" Translation="Erro ao remover projeto do repositório remoto."/>
     <Literal Name="vcs::remove::done" Translation="Concluído."/>
-    <Literal Name="vcs::items::annotations" Translation="Anotações da linha do tempo"/>
+    <Literal Name="vcs::items::annotations" Translation="Anotações"/>
     <Literal Name="vcs::items::projectinfo" Translation="Info do projeto"/>
     <Literal Name="dialog::corruption::caption" Translation="Corrupção da integridade do executável."/>
     <Literal Name="dialog::corruption::message" Translation="Falha na verificação de integridade do executável. Você pode ter um vírus no seu sistema ou talvez tenha baixado uma distribuição corrompida de uma fonte não confiável. Se possível, faça uma varredura com um antivírus e então baixe a última versão de http://helioworkstation.com"/>
@@ -2152,7 +2152,7 @@
     <Literal Name="common::and" Translation="e"/>
     <Literal Name="common::yesterday" Translation="Ontem"/>
     <PluralLiteral Name="{x} input channels">
-      <Translation Name="{x} canal de entrada " PluralForm="1"/>
+      <Translation Name="{x} canal de entrada" PluralForm="1"/>
       <Translation Name="{x} canais de entrada" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="{x} output channels">

@@ -223,25 +223,28 @@ void TransportIndicator::parentHierarchyChanged()
 
 void TransportIndicator::parentChanged()
 {
-    //Logger::writeToLog("TransportIndicator::parentChanged");
-    this->setSize(this->indicatorWidth, this->getParentHeight());
-
-    if (this->isTimerRunning())
+    if (this->getParentComponent() != nullptr)
     {
-        //Logger::writeToLog("this->isTimerRunning()");
-        this->tick();
-    }
-    else
-    {
-        double position;
-
-        {
-            ScopedReadLock lock(this->lastCorrectPositionLock);
-            position = this->lastCorrectPosition;
-        }
+        //Logger::writeToLog("TransportIndicator::parentChanged");
+        this->setSize(this->indicatorWidth, this->getParentHeight());
         
-        this->updatePosition(position);
-        this->toFront(false);
+        if (this->isTimerRunning())
+        {
+            //Logger::writeToLog("this->isTimerRunning()");
+            this->tick();
+        }
+        else
+        {
+            double position;
+            
+            {
+                ScopedReadLock lock(this->lastCorrectPositionLock);
+                position = this->lastCorrectPosition;
+            }
+            
+            this->updatePosition(position);
+            this->toFront(false);
+        }
     }
 }
 

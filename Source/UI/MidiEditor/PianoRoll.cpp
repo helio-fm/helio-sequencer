@@ -63,8 +63,6 @@ PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
     defaultNoteLength(0.5f),
     defaultNoteVelocity(0.5f),
     addNewNoteMode(false),
-    canEmitChordMenu(true),
-    canEmitEditMenu(true),
     mouseDownWasTriggered(false),
     usingFullRender(false)
 {
@@ -833,19 +831,19 @@ void PianoRoll::mouseDown(const MouseEvent &e)
 
 void PianoRoll::mouseDoubleClick(const MouseEvent &e)
 {
-
+    // "Add chord" dialog
+    if (! this->project.getEditMode().forbidsAddingEvents())
+    {
+        auto popup = new NoNotesPopup(this, this->primaryActiveLayer);
+        const MouseEvent &e2(e.getEventRelativeTo(&App::Layout()));
+        popup->setTopLeftPosition(e2.getPosition() - Point<int>(popup->getWidth(), popup->getHeight()) / 2);
+        App::Layout().addAndMakeVisible(popup);
+    }
 }
 
 void PianoRoll::mouseDrag(const MouseEvent &e)
 {
     // can show menus
-    //Logger::writeToLog("canEmitChordMenu mouseDrag");
-    if (e.getDistanceFromDragStart() > 10)
-    {
-        this->canEmitChordMenu = true;
-        this->canEmitEditMenu = true;
-    }
-
     if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
     {
         return;
@@ -894,30 +892,8 @@ void PianoRoll::mouseUp(const MouseEvent &e)
     {
         this->setInterceptsMouseClicks(true, true);
 
-        // never emit chord menu after dropping the selection
-        if (this->selection.getNumSelected() > 0)
-        {
-            this->canEmitChordMenu = false;
-        }
-
         // process lasso selection logic
         MidiRoll::mouseUp(e);
-
-        if (! this->project.getEditMode().forbidsAddingEvents())
-        {
-            if (! justEndedDraggingNewNote && this->mouseDownWasTriggered)
-            {
-                if ((e.getDistanceFromDragStart() < 10) && (this->selection.getNumSelected() == 0))
-                {
-                    this->showEmptySelectionPopup(e);
-                }
-
-//                if ((e.getDistanceFromDragStart() < 10) && (e.mods.isRightButtonDown()) && (this->selection.getNumSelected() > 0))
-//                {
-//                    this->showSelectionPopup(e);
-//                }
-            }
-        }
     }
 
     this->mouseDownWasTriggered = false;
@@ -939,44 +915,10 @@ bool PianoRoll::dismissDraggingNoteIfNeeded()
 }
 
 //===----------------------------------------------------------------------===//
-// Context popups
+// Keyboard shortcuts
 //===----------------------------------------------------------------------===//
 
-void PianoRoll::showEmptySelectionPopup(const MouseEvent &e)
-{
-    if (this->canEmitChordMenu)
-    {
-        auto popup = new NoNotesPopup(this, this->primaryActiveLayer);
-        const MouseEvent &e2(e.getEventRelativeTo(&App::Layout()));
-        popup->setTopLeftPosition(e2.getPosition() - Point<int>(popup->getWidth(), popup->getHeight()) / 2);
-        App::Layout().addAndMakeVisible(popup);
-        this->canEmitChordMenu = false;
-    }
-    else
-    {
-        this->canEmitChordMenu = true;
-    }
-}
-
-void PianoRoll::showSelectionPopup(const MouseEvent &e)
-{
-}
-
-
-void PianoRoll::handleCommandMessage(int commandId)
-{
-    if (commandId == CommandIDs::PopupMenuDismissedAsCancel)
-    {
-        this->canEmitChordMenu = false;
-        this->canEmitEditMenu = false;
-    }
-    else if (commandId == CommandIDs::PopupMenuDismissedAsDone)
-    {
-        //Logger::writeToLog("canEmitEditMenu popupMenuDoneOk");
-        this->canEmitChordMenu = true;
-        this->canEmitEditMenu = true;
-    }
-}
+// TODO: hardcoded shortcuts are evil, need to move them to config file
 
 bool PianoRoll::keyPressed(const KeyPress &key)
 {

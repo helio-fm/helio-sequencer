@@ -75,27 +75,20 @@ void AnnotationLargeComponent::paint (Graphics& g)
 #if 0
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x05000000));
-    g.drawRoundedRectangle (2.0f, 2.0f, static_cast<float> (getWidth() - 4), static_cast<float> (getHeight() - 4), 9.000f, 0.500f);
-
     g.setColour (Colour (0x88ffffff));
     g.setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
     g.drawText (TRANS("..."),
                 4, 4, getWidth() - 6, getHeight() - 8,
                 Justification::centredLeft, true);
 
+    g.setColour (Colour (0x20ffffff));
+    g.fillRect (0, 0, getWidth() - 0, 2);
+
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-    g.setColour(this->event.getColour().interpolatedWith(Colours::white, 0.5f).withAlpha(9.f / 255.f));
-    g.fillRoundedRectangle (-10.0f, 3.0f, float(this->getWidth() - 5), float(this->getHeight() - 8), 7.000f);
-
-    g.drawLine(0.f, 3.f, 0.f, float(this->getHeight() - 8), 2.f);
-
-//    g.setColour(this->event.getColour().interpolatedWith(Colours::white, 0.75f).withAlpha(37.f / 255.f));
-    g.setColour(Colours::black.withAlpha(0.1f));
-    g.drawRoundedRectangle (-10.0f, 3.0f, float(this->getWidth() - 5), float(this->getHeight() - 8), 7.000f, 0.5f);
-
+    g.setColour(this->event.getColour().interpolatedWith(Colours::white, 0.5f).withAlpha(30.f / 255.f));
+    g.fillRect (0, 0, getWidth() - 0, 2);
 
     if (this->event.getDescription().isNotEmpty())
     {
@@ -106,7 +99,7 @@ void AnnotationLargeComponent::paint (Graphics& g)
         arr.addFittedText(labelFont,
                           this->event.getDescription(),
                           4.f + this->boundsOffset.getX(),
-                          3.f,
+                          2.f,
                           float(this->getWidth()) - 16.f,
                           float(this->getHeight()) - 8.f,
                           Justification::centredLeft,
@@ -297,11 +290,10 @@ BEGIN_JUCER_METADATA
     <METHOD name="mouseDoubleClick (const MouseEvent&amp; e)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="2 2 4M 4M" cornerSize="9" fill="solid: ffffff" hasStroke="1"
-               stroke="0.5, mitered, butt" strokeColour="solid: 5000000"/>
     <TEXT pos="4 4 6M 8M" fill="solid: 88ffffff" hasStroke="0" text="..."
           fontname="Default font" fontsize="16" kerning="0" bold="0" italic="0"
           justification="33"/>
+    <RECT pos="0 0 0M 2" fill="solid: 20ffffff" hasStroke="0"/>
   </BACKGROUND>
   <LABEL name="annotationLabel" id="3dbd8cef4b61c2fe" memberName="annotationLabel"
          virtualName="" explicitFocusOrder="0" pos="4 -40 6M 8M" textCol="99ffffff"
