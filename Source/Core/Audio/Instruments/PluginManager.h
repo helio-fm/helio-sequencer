@@ -32,7 +32,7 @@ public:
     ~PluginManager() override;
 
     
-    bool isWorkingNow() const;
+    bool isWorking() const;
 
     void removeListItem(int index);
 
@@ -78,9 +78,11 @@ private:
     
     ReadWriteLock workingFlagLock;
     
-    bool isWorking;
+    bool working;
     
+    bool usingExternalProcess;
 
+    
     FileSearchPath getTypicalFolders();
 
     void scanPossibleSubfolders(const StringArray &possibleSubfolders,

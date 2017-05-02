@@ -26,36 +26,13 @@
 
 #include "BuiltInSynthFormat.h"
 
-// можно тестировать плагины сразу в этом потоке, а можно - отдельным процессом.
-// в первом случае определяем:
-//#define INTERNAL_PLUGIN_TESTING 1
-
-// но не жалуемся, когда программа вылетает сразу при старте
-// с прекрасным сообщением о heap corruption из-за чьего-то плагина.
-// про плагин, впрочем, никто не вспомнит, виноваты останемся мы.
-// поэтому - нельзя доверять всему этому шлаку.
-
-// upd. оказывается, тестирование отдельным процессом не всегда роботает
-// там, где работает тестирование в своем процессе. блин.
-
-//#if HELIO_MOBILE
-#   define INTERNAL_PLUGIN_TESTING 1
-//#elif HELIO_DESKTOP
-//#   define INTERNAL_PLUGIN_TESTING 0
-//#endif
-
 PluginManager::PluginManager() :
-    Thread("Plugin Scanner Thread"),
-    isWorking(false)
+Thread("Plugin Scanner Thread"),
+working(false),
+usingExternalProcess(false)
 {
     this->startThread(0);
-
     Config::load(Serialization::Core::pluginManager, this);
-
-    //if ((this->getList().getNumTypes() == 0) || Config::hasNewMachineId())
-    //{
-    //    this->runInitialScan();
-    //}
 }
 
 PluginManager::~PluginManager()
@@ -89,23 +66,23 @@ StringArray PluginManager::getFilesToScan() const
     return this->filesToScan;
 }
 
-bool PluginManager::isWorkingNow() const
+bool PluginManager::isWorking() const
 {
     ScopedReadLock lock(this->workingFlagLock);
-    return this->isWorking;
+    return this->working;
 }
 
 
 
 void PluginManager::runInitialScan()
 {
+    if (this->isWorking())
     {
-        if (this->isWorkingNow())
-        {
-            Logger::writeToLog("PluginManager scan thread is already running!");
-            return;
-        }
+        Logger::writeToLog("PluginManager scan thread is already running!");
+        return;
     }
+    
+    this->usingExternalProcess = true;
     
     FileSearchPath pathToScan = this->getTypicalFolders();
 
@@ -148,6 +125,16 @@ void PluginManager::runInitialScan()
 
 void PluginManager::scanFolderAndAddResults(const File &dir)
 {
+    if (this->isWorking())
+    {
+        Logger::writeToLog("PluginManager scan thread is already running!");
+        return;
+    }
+    
+#if HELIO_DESKTOP
+    this->usingExternalProcess = false;
+#endif
+    
     FileSearchPath pathToScan = dir.getFullPathName();
 
     Array<File> subPaths;
@@ -180,39 +167,18 @@ void PluginManager::scanFolderAndAddResults(const File &dir)
 // Thread
 //===----------------------------------------------------------------------===//
 
-//struct ScannerData
-//{
-//    const String& fileOrIdentifier;
-//    const bool dontRescanIfAlreadyInList;
-//    OwnedArray<PluginDescription>& typesFound;
-//    AudioPluginFormat& format;
-//};
-
-//static void *scanAndAddOnMessageThread(void *userData)
-//{
-//    KnownPluginList knownPluginList;
-//    ScannerData *data = static_cast<ScannerData *>(userData);
-//    knownPluginList.scanAndAddFile(data->fileOrIdentifier,
-//                                   data->dontRescanIfAlreadyInList,
-//                                   data->typesFound,
-//                                   data->format);
-//}
-
-
 void PluginManager::run()
 {
     WaitableEvent::wait();
-
-#if INTERNAL_PLUGIN_TESTING
+    
     AudioPluginFormatManager formatManager;
     AudioCore::initAudioFormats(formatManager);
-#endif
-
+    
     while (!this->threadShouldExit())
     {
         {
             ScopedWriteLock lock(this->workingFlagLock);
-            this->isWorking = true;
+            this->working = true;
         }
         
         StringArray uncheckedList = this->getFilesToScan();
@@ -222,86 +188,82 @@ void PluginManager::run()
             for (const auto & i : uncheckedList)
             {
                 Logger::writeToLog(i);
-
-#if INTERNAL_PLUGIN_TESTING
-
-                const String pluginPath(i);
-                //const File pluginFile(pluginPath);
-
-                KnownPluginList knownPluginList;
-                OwnedArray<PluginDescription> typesFound;
-
-                try
+                if (this->usingExternalProcess)
                 {
-                    for (int j = 0; j < formatManager.getNumFormats(); ++j)
-                    {
-                        AudioPluginFormat *format = formatManager.getFormat(j);
-                        //ScopedPointer<ScannerData> scannerData(new ScannerData({pluginPath, false, typesFound, *format}));
-                        //MessageManager::getInstance()->callFunctionOnMessageThread(&scanAndAddOnMessageThread, scannerData);
-                        knownPluginList.scanAndAddFile(pluginPath, false, typesFound, *format);
-                    }
-                }
-                catch (...) {}
-
-                // если мы дошли до сих пор, то все хорошо и плагин нас не обрушил
-                if (typesFound.size() != 0)
-                {
-                    for (auto type : typesFound)
-                    {
-                        const ScopedWriteLock lock(this->pluginsListLock);
-                        this->pluginsList.addType(*type);
-                    }
-                }
+                    const Uuid tempFileName;
+                    const File tempFile(FileUtils::getTempSlot(tempFileName.toString()));
+                    tempFile.replaceWithText(i);
                     
-                this->sendChangeMessage();
-                Thread::sleep(150);
-
-#else
-
-                const Uuid tempFileName;
-                const File tempFile(FileUtils::getTempSlot(tempFileName.toString()));
-                tempFile.replaceWithText(i);
-
-                const String myself = File::getSpecialLocation(File::currentExecutableFile).getFullPathName();
-
-                ChildProcess checkerProcess;
-                String commandLine(myself + " " + tempFileName.toString());
-                checkerProcess.start(commandLine);
-
-                if (!checkerProcess.waitForProcessToFinish(10000))
-                {
-                    checkerProcess.kill();
+                    const String myself = File::getSpecialLocation(File::currentExecutableFile).getFullPathName();
+                    
+                    ChildProcess checkerProcess;
+                    String commandLine(myself + " " + tempFileName.toString());
+                    checkerProcess.start(commandLine);
+                    
+                    if (!checkerProcess.waitForProcessToFinish(3000))
+                    {
+                        checkerProcess.kill();
+                    }
+                    else
+                    {
+                        if (tempFile.existsAsFile())
+                        {
+                            try
+                            {
+                                ScopedPointer<XmlElement> xml(DataEncoder::loadObfuscated(tempFile));
+                                
+                                // todo as Serialization::Core::smartPluginDescription
+                                if (xml)
+                                {
+                                    forEachXmlChildElementWithTagName(*xml, e, "PLUGIN")
+                                    {
+                                        const ScopedWriteLock lock(this->pluginsListLock);
+                                        PluginDescription pluginDescription;
+                                        pluginDescription.loadFromXml(*e);
+                                        this->pluginsList.addType(pluginDescription);
+                                    }
+                                    
+                                    this->sendChangeMessage();
+                                }
+                            }
+                            catch (...)
+                            { }
+                        }
+                    }
+                    
+                    tempFile.deleteFile();
                 }
                 else
                 {
-                    if (tempFile.existsAsFile())
+                    const String pluginPath(i);
+                    //const File pluginFile(pluginPath);
+                    
+                    KnownPluginList knownPluginList;
+                    OwnedArray<PluginDescription> typesFound;
+                    
+                    try
                     {
-                        try
+                        for (int j = 0; j < formatManager.getNumFormats(); ++j)
                         {
-                            ScopedPointer<XmlElement> xml(DataEncoder::loadObfuscated(tempFile));
-
-                            // todo as Serialization::Core::smartPluginDescription
-                            if (xml)
-                            {
-                                forEachXmlChildElementWithTagName(*xml, e, "PLUGIN")
-                                {
-                                    const ScopedWriteLock lock(this->pluginsListLock);
-                                    PluginDescription pluginDescription;
-                                    pluginDescription.loadFromXml(*e);
-                                    this->pluginsList.addType(pluginDescription);
-                                }
-
-                                this->sendChangeMessage();
-                            }
+                            AudioPluginFormat *format = formatManager.getFormat(j);
+                            knownPluginList.scanAndAddFile(pluginPath, false, typesFound, *format);
                         }
-                        catch (...)
-                        { }
                     }
+                    catch (...) {}
+                    
+                    // если мы дошли до сих пор, то все хорошо и плагин нас не обрушил
+                    if (typesFound.size() != 0)
+                    {
+                        for (auto type : typesFound)
+                        {
+                            const ScopedWriteLock lock(this->pluginsListLock);
+                            this->pluginsList.addType(*type);
+                        }
+                    }
+                    
+                    this->sendChangeMessage();
+                    Thread::sleep(150);
                 }
-
-                tempFile.deleteFile();
-
-#endif
             }
 
             Config::save(Serialization::Core::pluginManager, this);
@@ -311,7 +273,7 @@ void PluginManager::run()
 
         {
             ScopedWriteLock lock(this->workingFlagLock);
-            this->isWorking = false;
+            this->working = false;
             
             Logger::writeToLog("Done scanning for audio plugins");
             this->sendChangeMessage();

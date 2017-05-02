@@ -33,7 +33,7 @@ InstrumentsCommandPanel::InstrumentsCommandPanel(InstrumentsRootTreeItem &parent
 {
     ReferenceCountedArray<CommandItem> cmds;
 
-    const bool pluginsAreCurrentlyScanning = App::Workspace().getPluginManager().isWorkingNow();
+    const bool pluginsAreCurrentlyScanning = App::Workspace().getPluginManager().isWorking();
 
     if (!pluginsAreCurrentlyScanning)
     {

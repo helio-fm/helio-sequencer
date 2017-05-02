@@ -542,6 +542,10 @@ App::RunMode App::detectRunMode(const String &commandLine)
 
 void App::checkPlugin(const String &markerFile)
 {
+#if JUCE_MAC
+    Process::setDockIconVisible(false);
+#endif
+
     const File tempFile(FileUtils::getTemporaryFolder() + File::separatorString + markerFile);
 
     try
