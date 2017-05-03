@@ -240,8 +240,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Layers", "Layers", "{5C571F
 		..\..\Source\Core\Layers\MidiLayer.h = ..\..\Source\Core\Layers\MidiLayer.h
 		..\..\Source\Core\Layers\PianoLayer.cpp = ..\..\Source\Core\Layers\PianoLayer.cpp
 		..\..\Source\Core\Layers\PianoLayer.h = ..\..\Source\Core\Layers\PianoLayer.h
-		..\..\Source\Core\Layers\ProjectAnnotations.cpp = ..\..\Source\Core\Layers\ProjectAnnotations.cpp
-		..\..\Source\Core\Layers\ProjectAnnotations.h = ..\..\Source\Core\Layers\ProjectAnnotations.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Network", "Network", "{CC0C8F09-C3E8-8BC3-DE6C-7F4AAB89677C}"
@@ -332,6 +330,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tree", "Tree", "{BD1E4205-D
 		..\..\Source\Core\Tree\PianoLayerTreeItem.h = ..\..\Source\Core\Tree\PianoLayerTreeItem.h
 		..\..\Source\Core\Tree\ProjectInfo.cpp = ..\..\Source\Core\Tree\ProjectInfo.cpp
 		..\..\Source\Core\Tree\ProjectInfo.h = ..\..\Source\Core\Tree\ProjectInfo.h
+		..\..\Source\Core\Tree\ProjectTimeline.cpp = ..\..\Source\Core\Tree\ProjectTimeline.cpp
+		..\..\Source\Core\Tree\ProjectTimeline.h = ..\..\Source\Core\Tree\ProjectTimeline.h
 		..\..\Source\Core\Tree\ProjectListener.h = ..\..\Source\Core\Tree\ProjectListener.h
 		..\..\Source\Core\Tree\ProjectTreeItem.cpp = ..\..\Source\Core\Tree\ProjectTreeItem.cpp
 		..\..\Source\Core\Tree\ProjectTreeItem.h = ..\..\Source\Core\Tree\ProjectTreeItem.h
@@ -402,9 +402,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VCS", "VCS", "{97DDC28F-A29
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DiffLogic", "DiffLogic", "{92C9F97A-01D1-AA44-F946-003D6F41A111}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\Source\Core\VCS\DiffLogic\AnnotationDeltas.h = ..\..\Source\Core\VCS\DiffLogic\AnnotationDeltas.h
-		..\..\Source\Core\VCS\DiffLogic\AnnotationsLayerDiffLogic.cpp = ..\..\Source\Core\VCS\DiffLogic\AnnotationsLayerDiffLogic.cpp
-		..\..\Source\Core\VCS\DiffLogic\AnnotationsLayerDiffLogic.h = ..\..\Source\Core\VCS\DiffLogic\AnnotationsLayerDiffLogic.h
 		..\..\Source\Core\VCS\DiffLogic\AutoLayerDeltas.h = ..\..\Source\Core\VCS\DiffLogic\AutoLayerDeltas.h
 		..\..\Source\Core\VCS\DiffLogic\AutomationLayerDiffLogic.cpp = ..\..\Source\Core\VCS\DiffLogic\AutomationLayerDiffLogic.cpp
 		..\..\Source\Core\VCS\DiffLogic\AutomationLayerDiffLogic.h = ..\..\Source\Core\VCS\DiffLogic\AutomationLayerDiffLogic.h
@@ -416,6 +413,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DiffLogic", "DiffLogic", "{
 		..\..\Source\Core\VCS\DiffLogic\ProjectInfoDeltas.h = ..\..\Source\Core\VCS\DiffLogic\ProjectInfoDeltas.h
 		..\..\Source\Core\VCS\DiffLogic\ProjectInfoDiffLogic.cpp = ..\..\Source\Core\VCS\DiffLogic\ProjectInfoDiffLogic.cpp
 		..\..\Source\Core\VCS\DiffLogic\ProjectInfoDiffLogic.h = ..\..\Source\Core\VCS\DiffLogic\ProjectInfoDiffLogic.h
+		..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDeltas.h = ..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDeltas.h
+		..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDiffLogic.cpp = ..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDiffLogic.cpp
+		..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDiffLogic.h = ..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDiffLogic.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Network", "Network", "{0E35680A-E44A-C486-26F0-A7BA199CD7E3}"

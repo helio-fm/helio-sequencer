@@ -26,7 +26,7 @@
 #include "PianoLayerTreeItem.h"
 #include "AutomationLayerTreeItem.h"
 #include "ProjectTreeItem.h"
-#include "ProjectAnnotations.h"
+#include "ProjectTimeline.h"
 #include "Note.h"
 #include "NoteComponent.h"
 #include "HelperRectangle.h"
@@ -629,7 +629,7 @@ XmlElement *PianoRoll::clipboardCopy() const
     if (selectionIsNotEmpty && isShiftPressed)
     {
         // todo copy from
-        const auto annotations = this->project.getAnnotationsTrack();
+        const auto annotations = this->project.getTimeline();
         auto annotationLayerIdParent = new XmlElement(Serialization::Clipboard::layer);
         annotationLayerIdParent->setAttribute(Serialization::Clipboard::layerId, annotations->getLayer()->getLayerIdAsString());
         xml->addChildElement(annotationLayerIdParent);
@@ -733,7 +733,7 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
         {
             AnnotationsLayer *targetLayer = this->project.getLayerWithId<AnnotationsLayer>(layerId);
             
-            // no check for a tree item as there isn't any for ProjectAnnotations
+            // no check for a tree item as there isn't any for ProjectTimeline
             Array<AnnotationEvent> pastedAnnotations;
             
             forEachXmlChildElementWithTagName(*layerElement, annotationElement, Serialization::Core::annotation)

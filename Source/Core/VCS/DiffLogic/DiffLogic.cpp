@@ -21,7 +21,7 @@
 
 #include "PianoLayerDiffLogic.h"
 #include "AutomationLayerDiffLogic.h"
-#include "AnnotationsLayerDiffLogic.h"
+#include "ProjectTimelineDiffLogic.h"
 #include "ProjectInfoDiffLogic.h"
 
 using namespace VCS;
@@ -58,9 +58,10 @@ DiffLogic *DiffLogic::createLogicFor(TrackedItem &targetItem, const String &type
     {
         return new AutomationLayerDiffLogic(targetItem);
     }
-    else if (type == Serialization::Core::defaultAnnotationsLayer)
+    else if (type == Serialization::Core::defaultAnnotationsLayer || // legacy support
+             type == Serialization::Core::projectTimeline)
     {
-        return new AnnotationsLayerDiffLogic(targetItem);
+        return new ProjectTimelineDiffLogic(targetItem);
     }
     else if (type == Serialization::Core::projectInfo)
     {

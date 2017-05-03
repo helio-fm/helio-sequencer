@@ -19,20 +19,20 @@
 
 class MidiEvent;
 class MidiLayer;
-class ProjectAnnotations;
+class ProjectTimeline;
 
 #include "Diff.h"
 #include "DiffLogic.h"
 
 namespace VCS
 {
-    class AnnotationsLayerDiffLogic : public DiffLogic
+    class ProjectTimelineDiffLogic : public DiffLogic
     {
     public:
 
-        explicit AnnotationsLayerDiffLogic(TrackedItem &targetItem);
+        explicit ProjectTimelineDiffLogic(TrackedItem &targetItem);
 
-        ~AnnotationsLayerDiffLogic() override;
+        ~ProjectTimelineDiffLogic() override;
 
         //===------------------------------------------------------------------===//
         // DiffLogic

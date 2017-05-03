@@ -218,6 +218,7 @@
     <Literal Name="vcs::remove::sync::error" Translation="Error removing project from remote repository."/>
     <Literal Name="vcs::remove::done" Translation="All done."/>
     <Literal Name="vcs::items::annotations" Translation="Timeline annotations"/>
+    <Literal Name="vcs::items::timeline" Translation="Project timeline"/>
     <Literal Name="vcs::items::projectinfo" Translation="Project info"/>
     <Literal Name="dialog::corruption::caption" Translation="Executable integrity corruption."/>
     <Literal Name="dialog::corruption::message" Translation="Executable integrity check failed. You may either have viruses within your operating system or you may have downloaded the corrupted distributive from an untrusted source. If you could perform an antivirus check and then download the latest version from http://helioworkstation.com"/>
@@ -536,6 +537,7 @@
     <Literal Name="vcs::remove::sync::error" Translation="Не удалось удалить проект с сервера."/>
     <Literal Name="vcs::remove::done" Translation="Готово."/>
     <Literal Name="vcs::items::annotations" Translation="Текстовые метки"/>
+    <Literal Name="vcs::items::timeline" Translation="Временная шкала проекта"/>
     <Literal Name="vcs::items::projectinfo" Translation="Информация о проекте"/>
     <Literal Name="dialog::corruption::caption" Translation="Исполнимый файл поврежден."/>
     <Literal Name="dialog::corruption::message" Translation="Исполнимый файл поврежден. Возможно, ваша система заражена вирусами, либо вы установили программу из недоверенного источника. Вы можете скачать оригинальную версию на http://helioworkstation.com"/>
@@ -873,6 +875,7 @@
     <Literal Name="vcs::remove::sync::error" Translation="Fehler beim Löschen des Projekts vom Server."/>
     <Literal Name="vcs::remove::done" Translation="Fertigstellen."/>
     <Literal Name="vcs::items::annotations" Translation="Textmarken"/>
+    <Literal Name="vcs::items::timeline" Translation="Projekt Timeline"/>
     <Literal Name="vcs::items::projectinfo" Translation="Projektinformation"/>
     <Literal Name="dialog::corruption::caption" Translation="Die ausführende Datei ist fehlerhaft."/>
     <Literal Name="dialog::corruption::message" Translation="Die ausführende Datei ist fehlerhaft. Vielleicht ist Ihr Betriebssystem mit Viren infiziert oder Sie haben das Programm von einer nicht vertrauenswürdigen Quelle heruntergeladen. Die Original-Version können Sie unter http://helioworkstation.com herunterladen."/>
@@ -1191,6 +1194,7 @@
     <Literal Name="vcs::remove::sync::error" Translation="La suppression du projet du serveur a failli."/>
     <Literal Name="vcs::remove::done" Translation="Fait."/>
     <Literal Name="vcs::items::annotations" Translation="Annotations"/>
+    <Literal Name="vcs::items::timeline" Translation="Projet timeline"/>
     <Literal Name="vcs::items::projectinfo" Translation="Infos sur le projet"/>
     <Literal Name="dialog::corruption::caption" Translation="Le fichier exécutable est corrompu."/>
     <Literal Name="dialog::corruption::message" Translation="Le fichier exécutable est corrompu. Votre système a pu être contaminé par un virus ou vous avez installé le programme depuis une source non sûre. Vous pouvez télécharger une version originale sur http://helioworkstation.com"/>
@@ -1509,6 +1513,7 @@
     <Literal Name="vcs::remove::sync::error" Translation="E’ stato verificato un errore durante la rimozione del progetto dal server."/>
     <Literal Name="vcs::remove::done" Translation="Fatto."/>
     <Literal Name="vcs::items::annotations" Translation="Annotazioni di testo"/>
+    <Literal Name="vcs::items::timeline" Translation="Progetto timeline"/>
     <Literal Name="vcs::items::projectinfo" Translation="Informazioni sul progetto"/>
     <Literal Name="dialog::corruption::caption" Translation="Il file eseguibile è stato danneggiato."/>
     <Literal Name="dialog::corruption::message" Translation="Il file eseguibile è stato danneggiato. Forse il Suo sistema è infetto dai virus, o è stato installato un programma da una fonte non attendibile. È possibile scaricare la versione originale su http://helioworkstation.com"/>
@@ -1827,6 +1832,7 @@
     <Literal Name="vcs::remove::sync::error" Translation="No se podido eliminar el proyecto del servidor."/>
     <Literal Name="vcs::remove::done" Translation="Listo."/>
     <Literal Name="vcs::items::annotations" Translation="Etiquetas de texto"/>
+    <Literal Name="vcs::items::timeline" Translation="Cronograma del proyecto"/>
     <Literal Name="vcs::items::projectinfo" Translation="Información del proyecto"/>
     <Literal Name="dialog::corruption::caption" Translation="Archivo ejecutable corrupto."/>
     <Literal Name="dialog::corruption::message" Translation="El archivo ejecutable está cirrupto. Es posible que su sistema está infectado por vírus o Usted ha instalado un programa obtenido de una fuente que no es de confianza. Usted puede obtener la versión original de http://helioworkstation.com"/>
@@ -2145,6 +2151,7 @@
     <Literal Name="vcs::remove::sync::error" Translation="Erro ao remover projeto do repositório remoto."/>
     <Literal Name="vcs::remove::done" Translation="Concluído."/>
     <Literal Name="vcs::items::annotations" Translation="Anotações"/>
+    <Literal Name="vcs::items::timeline" Translation="Cronograma do projeto"/>
     <Literal Name="vcs::items::projectinfo" Translation="Info do projeto"/>
     <Literal Name="dialog::corruption::caption" Translation="Corrupção da integridade do executável."/>
     <Literal Name="dialog::corruption::message" Translation="Falha na verificação de integridade do executável. Você pode ter um vírus no seu sistema ou talvez tenha baixado uma distribuição corrompida de uma fonte não confiável. Se possível, faça uma varredura com um antivírus e então baixe a última versão de http://helioworkstation.com"/>

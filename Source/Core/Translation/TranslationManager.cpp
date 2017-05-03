@@ -41,7 +41,8 @@ struct PluralEquationWrapper: public DynamicObject
     {
         if (args.numArguments > 0)
         {
-            if (PluralEquationWrapper *thisObject = dynamic_cast<PluralEquationWrapper *>(args.thisObject.getObject()))
+            if (PluralEquationWrapper *thisObject =
+                dynamic_cast<PluralEquationWrapper *>(args.thisObject.getObject()))
             {
                 //Logger::writeToLog("PluralEquationWrapper::detect " + args.arguments[0].toString());
                 thisObject->translator.equationResult = args.arguments[0].toString();
@@ -106,12 +107,12 @@ String TranslationManager::findPluralFor(const String &baseLiteral, int64 target
     const int64 absTargetNumber = (targetNumber > 0 ? targetNumber : -targetNumber);
     
     const String expessionToEvaluate =
-                                       Serialization::Locales::wrapperClassName +
-                                       "." +
-                                       Serialization::Locales::wrapperMethodName +
-                                       "(" +
-                                       this->pluralEquation.replace(Serialization::Locales::metaSymbol, String(absTargetNumber)) +
-                                       ")";
+        Serialization::Locales::wrapperClassName +
+        "." +
+        Serialization::Locales::wrapperMethodName +
+        "(" +
+        this->pluralEquation.replace(Serialization::Locales::metaSymbol, String(absTargetNumber)) +
+        ")";
     
     //Logger::writeToLog("expessionToEvaluate: " + expessionToEvaluate);
 

@@ -16,26 +16,26 @@
 */
 
 #include "Common.h"
-#include "ProjectAnnotations.h"
+#include "ProjectTimeline.h"
 #include "AnnotationsLayer.h"
-#include "AnnotationDeltas.h"
+#include "ProjectTimelineDeltas.h"
 #include "ProjectTreeItem.h"
 #include "Icons.h"
 
 
-ProjectAnnotations::ProjectAnnotations(ProjectTreeItem &parentProject,
+ProjectTimeline::ProjectTimeline(ProjectTreeItem &parentProject,
                                        String trackName) :
     project(parentProject),
     name(std::move(trackName))
 {
     this->layer = new AnnotationsLayer(*this);
-    this->vcsDiffLogic = new VCS::AnnotationsLayerDiffLogic(*this);
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), AnnotationDeltas::annotationsAdded));
+    this->vcsDiffLogic = new VCS::ProjectTimelineDiffLogic(*this);
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectTimelineDeltas::annotationsAdded));
     
     this->project.broadcastLayerAdded(this->layer);
 }
 
-ProjectAnnotations::~ProjectAnnotations()
+ProjectTimeline::~ProjectTimeline()
 {
     this->project.broadcastLayerRemoved(this->layer);
 }
@@ -45,19 +45,19 @@ ProjectAnnotations::~ProjectAnnotations()
 // VCS::TrackedItem
 //===----------------------------------------------------------------------===//
 
-String ProjectAnnotations::getVCSName() const
+String ProjectTimeline::getVCSName() const
 {
-    return ("vcs::items::annotations");
+    return ("vcs::items::timeline");
 }
 
-int ProjectAnnotations::getNumDeltas() const
+int ProjectTimeline::getNumDeltas() const
 {
     return this->deltas.size();
 }
 
-VCS::Delta *ProjectAnnotations::getDelta(int index) const
+VCS::Delta *ProjectTimeline::getDelta(int index) const
 {
-    if (this->deltas[index]->getType() == AnnotationDeltas::annotationsAdded)
+    if (this->deltas[index]->getType() == ProjectTimelineDeltas::annotationsAdded)
     {
         const int numEvents = this->layer->size();
 
@@ -74,9 +74,9 @@ VCS::Delta *ProjectAnnotations::getDelta(int index) const
     return this->deltas[index];
 }
 
-XmlElement *ProjectAnnotations::createDeltaDataFor(int index) const
+XmlElement *ProjectTimeline::createDeltaDataFor(int index) const
 {
-    if (this->deltas[index]->getType() == AnnotationDeltas::annotationsAdded)
+    if (this->deltas[index]->getType() == ProjectTimelineDeltas::annotationsAdded)
     {
         return this->serializeAnnotationsDelta();
     }
@@ -85,19 +85,19 @@ XmlElement *ProjectAnnotations::createDeltaDataFor(int index) const
     return nullptr;
 }
 
-VCS::DiffLogic *ProjectAnnotations::getDiffLogic() const
+VCS::DiffLogic *ProjectTimeline::getDiffLogic() const
 {
     return this->vcsDiffLogic;
 }
 
-void ProjectAnnotations::resetStateTo(const VCS::TrackedItem &newState)
+void ProjectTimeline::resetStateTo(const VCS::TrackedItem &newState)
 {
     for (int i = 0; i < newState.getNumDeltas(); ++i)
     {
         const VCS::Delta *newDelta = newState.getDelta(i);
         ScopedPointer<XmlElement> newDeltaData(newState.createDeltaDataFor(i));
         
-        if (newDelta->getType() == AnnotationDeltas::annotationsAdded)
+        if (newDelta->getType() == ProjectTimelineDeltas::annotationsAdded)
         {
             this->resetAnnotationsDelta(newDeltaData);
         }
@@ -112,17 +112,17 @@ void ProjectAnnotations::resetStateTo(const VCS::TrackedItem &newState)
 // MidiLayerOwner
 //===----------------------------------------------------------------------===//
 
-Transport *ProjectAnnotations::getTransport() const
+Transport *ProjectTimeline::getTransport() const
 {
     return &this->project.getTransport();
 }
 
-String ProjectAnnotations::getXPath() const
+String ProjectTimeline::getXPath() const
 {
     return this->name;
 }
 
-void ProjectAnnotations::setXPath(const String &path)
+void ProjectTimeline::setXPath(const String &path)
 {
     if (path != this->name)
     {
@@ -130,32 +130,32 @@ void ProjectAnnotations::setXPath(const String &path)
     }
 }
 
-void ProjectAnnotations::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void ProjectTimeline::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     this->project.broadcastEventChanged(oldEvent, newEvent);
 }
 
-void ProjectAnnotations::onEventAdded(const MidiEvent &event)
+void ProjectTimeline::onEventAdded(const MidiEvent &event)
 {
     this->project.broadcastEventAdded(event);
 }
 
-void ProjectAnnotations::onEventRemoved(const MidiEvent &event)
+void ProjectTimeline::onEventRemoved(const MidiEvent &event)
 {
     this->project.broadcastEventRemoved(event);
 }
 
-void ProjectAnnotations::onLayerChanged(const MidiLayer *midiLayer)
+void ProjectTimeline::onLayerChanged(const MidiLayer *midiLayer)
 {
     this->project.broadcastLayerChanged(midiLayer);
 }
 
-void ProjectAnnotations::onBeatRangeChanged()
+void ProjectTimeline::onBeatRangeChanged()
 {
     this->project.broadcastBeatRangeChanged();
 }
 
-ProjectTreeItem *ProjectAnnotations::getProject() const
+ProjectTreeItem *ProjectTimeline::getProject() const
 {
     return &this->project;
 }
@@ -165,12 +165,12 @@ ProjectTreeItem *ProjectAnnotations::getProject() const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-void ProjectAnnotations::reset()
+void ProjectTimeline::reset()
 {
     this->layer->reset();
 }
 
-XmlElement *ProjectAnnotations::serialize() const
+XmlElement *ProjectTimeline::serialize() const
 {
     XmlElement *xml = new XmlElement(this->vcsDiffLogic->getType());
 
@@ -181,7 +181,7 @@ XmlElement *ProjectAnnotations::serialize() const
     return xml;
 }
 
-void ProjectAnnotations::deserialize(const XmlElement &xml)
+void ProjectTimeline::deserialize(const XmlElement &xml)
 {
     this->reset();
     
@@ -190,7 +190,12 @@ void ProjectAnnotations::deserialize(const XmlElement &xml)
     
     if (root == nullptr)
     {
-        return;
+        // v1.7 legacy support hack
+        root = xml.hasTagName(Serialization::Core::defaultAnnotationsLayer) ?
+            &xml : xml.getChildByName(Serialization::Core::defaultAnnotationsLayer);
+        
+        if (root == nullptr)
+            return;
     }
 
     this->deserializeVCSUuid(*root);
@@ -208,9 +213,9 @@ void ProjectAnnotations::deserialize(const XmlElement &xml)
 // Deltas
 //===----------------------------------------------------------------------===//
 
-XmlElement *ProjectAnnotations::serializeAnnotationsDelta() const
+XmlElement *ProjectTimeline::serializeAnnotationsDelta() const
 {
-    auto xml = new XmlElement(AnnotationDeltas::annotationsAdded);
+    auto xml = new XmlElement(ProjectTimelineDeltas::annotationsAdded);
 
     for (int i = 0; i < this->layer->size(); ++i)
     {
@@ -221,9 +226,9 @@ XmlElement *ProjectAnnotations::serializeAnnotationsDelta() const
     return xml;
 }
 
-void ProjectAnnotations::resetAnnotationsDelta(const XmlElement *state)
+void ProjectTimeline::resetAnnotationsDelta(const XmlElement *state)
 {
-    jassert(state->getTagName() == AnnotationDeltas::annotationsAdded);
+    jassert(state->getTagName() == ProjectTimelineDeltas::annotationsAdded);
 
     this->reset();
     this->layer->reset();

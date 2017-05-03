@@ -25,7 +25,7 @@
 #include "MidiLayer.h"
 #include "InternalClipboard.h"
 #include "CommandItemComponent.h"
-#include "ProjectAnnotations.h"
+#include "ProjectTimeline.h"
 #include "AnnotationEvent.h"
 #include "HelioCallout.h"
 #include "AnnotationsCommandPanel.h"
@@ -69,7 +69,7 @@ void MidiRollCommandPanel::handleCommandMessage (int commandId)
         // если выбрана какая-то аннотация, показываем ее меню, если нет - показываем общее
         {
             const AnnotationEvent *selectedAnnotation = nullptr;
-            const ProjectAnnotations *annotations = this->project.getAnnotationsTrack();
+            const ProjectTimeline *annotations = this->project.getTimeline();
             const double seekPosition = this->project.getTransport().getSeekPosition();
 
             if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))

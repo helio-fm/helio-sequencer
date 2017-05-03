@@ -254,10 +254,6 @@
           <FILE id="PwJehg" name="MidiLayer.h" compile="0" resource="0" file="../../Source/Core/Layers/MidiLayer.h"/>
           <FILE id="ELqGLE" name="PianoLayer.cpp" compile="1" resource="0" file="../../Source/Core/Layers/PianoLayer.cpp"/>
           <FILE id="vCbiKc" name="PianoLayer.h" compile="0" resource="0" file="../../Source/Core/Layers/PianoLayer.h"/>
-          <FILE id="SHLKJv" name="ProjectAnnotations.cpp" compile="1" resource="0"
-                file="../../Source/Core/Layers/ProjectAnnotations.cpp"/>
-          <FILE id="S3o6cl" name="ProjectAnnotations.h" compile="0" resource="0"
-                file="../../Source/Core/Layers/ProjectAnnotations.h"/>
         </GROUP>
         <GROUP id="{9C34DE9F-57B6-7B3A-C005-1E16E0BF57B2}" name="Network">
           <FILE id="zuzMlt" name="AuthorizationManager.cpp" compile="1" resource="0"
@@ -378,6 +374,10 @@
                 file="../../Source/Core/Tree/PianoLayerTreeItem.h"/>
           <FILE id="tKVO8v" name="ProjectInfo.cpp" compile="1" resource="0" file="../../Source/Core/Tree/ProjectInfo.cpp"/>
           <FILE id="IEWN1c" name="ProjectInfo.h" compile="0" resource="0" file="../../Source/Core/Tree/ProjectInfo.h"/>
+          <FILE id="SwcYq5" name="ProjectTimeline.cpp" compile="1" resource="0"
+                file="../../Source/Core/Tree/ProjectTimeline.cpp"/>
+          <FILE id="i2XkU1" name="ProjectTimeline.h" compile="0" resource="0"
+                file="../../Source/Core/Tree/ProjectTimeline.h"/>
           <FILE id="inh3nZ" name="ProjectListener.h" compile="0" resource="0"
                 file="../../Source/Core/Tree/ProjectListener.h"/>
           <FILE id="CKexRS" name="ProjectTreeItem.cpp" compile="1" resource="0"
@@ -439,12 +439,6 @@
         </GROUP>
         <GROUP id="{93158781-1E3A-C291-199C-658344E36869}" name="VCS">
           <GROUP id="{7066A342-DF54-461D-76B4-F0789077D1ED}" name="DiffLogic">
-            <FILE id="sUxeti" name="AnnotationDeltas.h" compile="0" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/AnnotationDeltas.h"/>
-            <FILE id="J9AS6t" name="AnnotationsLayerDiffLogic.cpp" compile="1"
-                  resource="0" file="../../Source/Core/VCS/DiffLogic/AnnotationsLayerDiffLogic.cpp"/>
-            <FILE id="hpqcsa" name="AnnotationsLayerDiffLogic.h" compile="0" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/AnnotationsLayerDiffLogic.h"/>
             <FILE id="qTenLU" name="AutoLayerDeltas.h" compile="0" resource="0"
                   file="../../Source/Core/VCS/DiffLogic/AutoLayerDeltas.h"/>
             <FILE id="ebFjSs" name="AutomationLayerDiffLogic.cpp" compile="1" resource="0"
@@ -465,6 +459,12 @@
                   file="../../Source/Core/VCS/DiffLogic/ProjectInfoDiffLogic.cpp"/>
             <FILE id="pF9gKu" name="ProjectInfoDiffLogic.h" compile="0" resource="0"
                   file="../../Source/Core/VCS/DiffLogic/ProjectInfoDiffLogic.h"/>
+            <FILE id="sUxeti" name="ProjectTimelineDeltas.h" compile="0" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/ProjectTimelineDeltas.h"/>
+            <FILE id="J9AS6t" name="ProjectTimelineDiffLogic.cpp" compile="1" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/ProjectTimelineDiffLogic.cpp"/>
+            <FILE id="hpqcsa" name="ProjectTimelineDiffLogic.h" compile="0" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/ProjectTimelineDiffLogic.h"/>
           </GROUP>
           <GROUP id="{5BF12749-FA72-B265-B472-AD699480DAB8}" name="Network">
             <FILE id="QVoEFQ" name="PullThread.cpp" compile="1" resource="0" file="../../Source/Core/VCS/Network/PullThread.cpp"/>

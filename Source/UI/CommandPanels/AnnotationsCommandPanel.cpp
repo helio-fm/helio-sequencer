@@ -23,7 +23,7 @@
 #include "MidiRoll.h"
 #include "AnnotationEvent.h"
 #include "PianoLayerTreeItem.h"
-#include "ProjectAnnotations.h"
+#include "ProjectTimeline.h"
 #include "MidiLayer.h"
 #include "ModalDialogInput.h"
 #include "App.h"
@@ -32,7 +32,7 @@ AnnotationsCommandPanel::AnnotationsCommandPanel(ProjectTreeItem &parentProject)
     project(parentProject)
 {
     const AnnotationEvent *selectedAnnotation = nullptr;
-    const ProjectAnnotations *annotations = this->project.getAnnotationsTrack();
+    const ProjectTimeline *annotations = this->project.getTimeline();
     const double seekPosition = this->project.getTransport().getSeekPosition();
     
     if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
@@ -132,7 +132,7 @@ void AnnotationsCommandPanel::handleCommandMessage(int commandId)
     }
     else
     {
-        ProjectAnnotations *annotations = this->project.getAnnotationsTrack();
+        ProjectTimeline *annotations = this->project.getTimeline();
         const int annotationIndex = (commandId - CommandIDs::JumpToAnnotation);
         
         if (MidiRoll *roll =

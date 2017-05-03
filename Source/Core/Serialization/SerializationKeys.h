@@ -48,6 +48,7 @@ namespace Serialization
 
         static const String project = "Project";
         static const String projectInfo = "ProjectInfo";
+        static const String projectTimeline = "ProjectTimeline";
         static const String projectTimeStamp = "ProjectTimeStamp";
         static const String versionControl = "VersionControl";
         static const String layerGroup = "Group";

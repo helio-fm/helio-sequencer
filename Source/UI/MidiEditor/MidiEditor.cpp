@@ -490,8 +490,8 @@ MidiEditor::~MidiEditor()
     this->roll->removeRollListener(this->scroller);
     //this->roll->removeAllChangeListeners();
     
-    this->roll = nullptr;
     this->scroller = nullptr;
+    this->roll = nullptr;
     this->viewport = nullptr;
 }
 

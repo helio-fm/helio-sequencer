@@ -49,7 +49,7 @@
 #include "MainWindow.h"
 #include "PlayerThread.h"
 
-#include "ProjectAnnotations.h"
+#include "ProjectTimeline.h"
 #include "AnnotationsLayer.h"
 #include "AnnotationEvent.h"
 #include "MidiRollToolbox.h"
@@ -221,7 +221,7 @@ void MidiRoll::insertAnnotationWithinScreen(const String &annotation)
         targetBeat = this->getRoundBeatByXPosition(viewCentre);
     }
 
-    if (AnnotationsLayer *annotationsLayer = dynamic_cast<AnnotationsLayer *>(this->project.getAnnotationsTrack()->getLayer()))
+    if (AnnotationsLayer *annotationsLayer = dynamic_cast<AnnotationsLayer *>(this->project.getTimeline()->getLayer()))
     {
         annotationsLayer->checkpoint();
         AnnotationEvent event(annotationsLayer, targetBeat, annotation, Colours::transparentWhite);

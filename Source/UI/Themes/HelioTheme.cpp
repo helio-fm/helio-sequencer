@@ -769,6 +769,33 @@ void HelioTheme::positionDocumentWindowButtons(DocumentWindow &,
 
 void HelioTheme::initResources()
 {
+//    // Search for Lato if present,
+//    // Or fallback to default sans serif font
+//    
+//    Logger::writeToLog("Fonts search started");
+//    Array <Font> systemFonts;
+//    Font::findFonts(systemFonts);
+//    
+//    for (auto && systemFont : systemFonts)
+//    {
+//        if (systemFont.getTypeface()->getName().toLowerCase().startsWith("lato"))
+//        {
+//            Logger::writeToLog("Found " + systemFont.getTypeface()->getName());
+//            Font font(systemFont);
+//            this->textTypefaceCache = Typeface::createSystemTypefaceFor(font);
+//        }
+//    }
+//    
+//    if (this->textTypefaceCache == nullptr)
+//    {
+//        // Verdana on win32, Bitstream Vera Sans or something on Linux,
+//        // Lucida Grande on mac, Helvetica on iOS
+//        Logger::writeToLog("Falling back to system sans serif");
+//        this->textTypefaceCache =
+//        Font::getDefaultTypefaceForFont(Font(Font::getDefaultSansSerifFontName(), 0, 0));
+//        Logger::writeToLog("Done");
+//    }
+    
 //    MemoryInputStream is(BinaryData::comfortaa_font, BinaryData::comfortaa_fontSize, false);
 //    this->textTypefaceCache = (new CustomTypeface(is));
 

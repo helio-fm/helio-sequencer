@@ -16,9 +16,9 @@
 */
 
 #include "Common.h"
-#include "AnnotationsLayerDiffLogic.h"
-#include "ProjectAnnotations.h"
-#include "AnnotationDeltas.h"
+#include "ProjectTimelineDiffLogic.h"
+#include "ProjectTimeline.h"
+#include "ProjectTimelineDeltas.h"
 
 #include "AnnotationEvent.h"
 #include "AnnotationsLayer.h"
@@ -41,31 +41,31 @@ public:
 };
 
 
-AnnotationsLayerDiffLogic::AnnotationsLayerDiffLogic(TrackedItem &targetItem) :
+ProjectTimelineDiffLogic::ProjectTimelineDiffLogic(TrackedItem &targetItem) :
     DiffLogic(targetItem)
 {
 
 }
 
-AnnotationsLayerDiffLogic::~AnnotationsLayerDiffLogic()
+ProjectTimelineDiffLogic::~ProjectTimelineDiffLogic()
 {
 
 }
 
-const String AnnotationsLayerDiffLogic::getType() const
+const String ProjectTimelineDiffLogic::getType() const
 {
-    return Serialization::Core::defaultAnnotationsLayer;
+    return Serialization::Core::projectTimeline;
 }
 
 
 // предполагается, что это используется только применительно
 // к айтемам проекта. в 2х случаях - при чекауте и при ресете изменений.
-void AnnotationsLayerDiffLogic::resetStateTo(const TrackedItem &newState)
+void ProjectTimelineDiffLogic::resetStateTo(const TrackedItem &newState)
 {
     this->target.resetStateTo(newState);
 }
 
-Diff *AnnotationsLayerDiffLogic::createDiff(const TrackedItem &initialState) const
+Diff *ProjectTimelineDiffLogic::createDiff(const TrackedItem &initialState) const
 {
     auto diff = new Diff(this->target);
 
@@ -102,7 +102,7 @@ Diff *AnnotationsLayerDiffLogic::createDiff(const TrackedItem &initialState) con
 
         if (!deltaFoundInState || (deltaFoundInState && dataHasChanged))
         {
-            if (myDelta->getType() == AnnotationDeltas::annotationsAdded)
+            if (myDelta->getType() == ProjectTimelineDeltas::annotationsAdded)
             {
                 Array<NewSerializedDelta> fullDeltas = this->createAnnotationsDiffs(stateDeltaData, myDeltaData);
 
@@ -118,7 +118,7 @@ Diff *AnnotationsLayerDiffLogic::createDiff(const TrackedItem &initialState) con
 }
 
 
-Diff *AnnotationsLayerDiffLogic::createMergedItem(const TrackedItem &initialState) const
+Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState) const
 {
     auto diff = new Diff(this->target);
 
@@ -135,7 +135,7 @@ Diff *AnnotationsLayerDiffLogic::createMergedItem(const TrackedItem &initialStat
 
         // для нот в итоге надо выдать одну дельту типа eventsAdded
         // на которую наложить все дельты изменений нот одно за другим.
-        ScopedPointer<Delta> eventsDelta(new Delta(DeltaDescription(Serialization::VCS::headStateDelta), AnnotationDeltas::annotationsAdded));
+        ScopedPointer<Delta> eventsDelta(new Delta(DeltaDescription(Serialization::VCS::headStateDelta), ProjectTimelineDeltas::annotationsAdded));
         ScopedPointer<XmlElement> eventsDeltaData;
 
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
@@ -150,7 +150,7 @@ Diff *AnnotationsLayerDiffLogic::createMergedItem(const TrackedItem &initialStat
             {
                 deltaFoundInChanges = true;
 
-                if (targetDelta->getType() == AnnotationDeltas::annotationsAdded)
+                if (targetDelta->getType() == ProjectTimelineDeltas::annotationsAdded)
                 {
                     if (eventsDeltaData != nullptr)
                     {
@@ -161,7 +161,7 @@ Diff *AnnotationsLayerDiffLogic::createMergedItem(const TrackedItem &initialStat
                         eventsDeltaData = this->mergeAnnotationsAdded(stateDeltaData, targetDeltaData);
                     }
                 }
-                else if (targetDelta->getType() == AnnotationDeltas::annotationsRemoved)
+                else if (targetDelta->getType() == ProjectTimelineDeltas::annotationsRemoved)
                 {
                     if (eventsDeltaData != nullptr)
                     {
@@ -172,7 +172,7 @@ Diff *AnnotationsLayerDiffLogic::createMergedItem(const TrackedItem &initialStat
                         eventsDeltaData = this->mergeAnnotationsRemoved(stateDeltaData, targetDeltaData);
                     }
                 }
-                else if (targetDelta->getType() == AnnotationDeltas::annotationsChanged)
+                else if (targetDelta->getType() == ProjectTimelineDeltas::annotationsChanged)
                 {
                     if (eventsDeltaData != nullptr)
                     {
@@ -206,7 +206,7 @@ Diff *AnnotationsLayerDiffLogic::createMergedItem(const TrackedItem &initialStat
 // Merge
 //===----------------------------------------------------------------------===//
 
-XmlElement *AnnotationsLayerDiffLogic::mergeAnnotationsAdded(const XmlElement *state, const XmlElement *changes) const
+XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsAdded(const XmlElement *state, const XmlElement *changes) const
 {
     EmptyLayerOwner emptyOwner;
     AnnotationsLayer emptyLayer(emptyOwner);
@@ -241,10 +241,10 @@ XmlElement *AnnotationsLayerDiffLogic::mergeAnnotationsAdded(const XmlElement *s
         }
     }
 
-    return this->serializeLayer(result, AnnotationDeltas::annotationsAdded);
+    return this->serializeLayer(result, ProjectTimelineDeltas::annotationsAdded);
 }
 
-XmlElement *AnnotationsLayerDiffLogic::mergeAnnotationsRemoved(const XmlElement *state, const XmlElement *changes) const
+XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsRemoved(const XmlElement *state, const XmlElement *changes) const
 {
     EmptyLayerOwner emptyOwner;
     AnnotationsLayer emptyLayer(emptyOwner);
@@ -277,10 +277,10 @@ XmlElement *AnnotationsLayerDiffLogic::mergeAnnotationsRemoved(const XmlElement 
         }
     }
 
-    return this->serializeLayer(result, AnnotationDeltas::annotationsAdded);
+    return this->serializeLayer(result, ProjectTimelineDeltas::annotationsAdded);
 }
 
-XmlElement *AnnotationsLayerDiffLogic::mergeAnnotationsChanged(const XmlElement *state, const XmlElement *changes) const
+XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsChanged(const XmlElement *state, const XmlElement *changes) const
 {
     EmptyLayerOwner emptyOwner;
     AnnotationsLayer emptyLayer(emptyOwner);
@@ -315,7 +315,7 @@ XmlElement *AnnotationsLayerDiffLogic::mergeAnnotationsChanged(const XmlElement 
         //jassert(foundNoteInChanges);
     }
 
-    return this->serializeLayer(result, AnnotationDeltas::annotationsAdded);
+    return this->serializeLayer(result, ProjectTimelineDeltas::annotationsAdded);
 }
 
 
@@ -323,7 +323,7 @@ XmlElement *AnnotationsLayerDiffLogic::mergeAnnotationsChanged(const XmlElement 
 // Diff
 //===----------------------------------------------------------------------===//
 
-Array<NewSerializedDelta> AnnotationsLayerDiffLogic::createAnnotationsDiffs(const XmlElement *state, const XmlElement *changes) const
+Array<NewSerializedDelta> ProjectTimelineDiffLogic::createAnnotationsDiffs(const XmlElement *state, const XmlElement *changes) const
 {
     EmptyLayerOwner emptyOwner;
     AnnotationsLayer emptyLayer(emptyOwner);
@@ -408,7 +408,7 @@ Array<NewSerializedDelta> AnnotationsLayerDiffLogic::createAnnotationsDiffs(cons
         res.add(this->serializeChanges(addedEvents,
                                        "added {x} annotations",
                                        addedEvents.size(),
-                                       AnnotationDeltas::annotationsAdded));
+                                       ProjectTimelineDeltas::annotationsAdded));
     }
 
     if (removedEvents.size() > 0)
@@ -416,7 +416,7 @@ Array<NewSerializedDelta> AnnotationsLayerDiffLogic::createAnnotationsDiffs(cons
         res.add(this->serializeChanges(removedEvents,
                                        "removed {x} annotations",
                                        removedEvents.size(),
-                                       AnnotationDeltas::annotationsRemoved));
+                                       ProjectTimelineDeltas::annotationsRemoved));
     }
 
     if (changedEvents.size() > 0)
@@ -424,13 +424,13 @@ Array<NewSerializedDelta> AnnotationsLayerDiffLogic::createAnnotationsDiffs(cons
         res.add(this->serializeChanges(changedEvents,
                                        "changed {x} annotations",
                                        changedEvents.size(),
-                                       AnnotationDeltas::annotationsChanged));
+                                       ProjectTimelineDeltas::annotationsChanged));
     }
 
     return res;
 }
 
-void AnnotationsLayerDiffLogic::deserializeChanges(MidiLayer &layer,
+void ProjectTimelineDiffLogic::deserializeChanges(MidiLayer &layer,
         const XmlElement *state,
         const XmlElement *changes,
         OwnedArray<MidiEvent> &stateNotes,
@@ -451,7 +451,7 @@ void AnnotationsLayerDiffLogic::deserializeChanges(MidiLayer &layer,
     }
 }
 
-NewSerializedDelta AnnotationsLayerDiffLogic::serializeChanges(Array<const MidiEvent *> changes,
+NewSerializedDelta ProjectTimelineDiffLogic::serializeChanges(Array<const MidiEvent *> changes,
         const String &description, int64 numChanges, const String &deltaType) const
 {
     NewSerializedDelta changesFullDelta;
@@ -460,7 +460,7 @@ NewSerializedDelta AnnotationsLayerDiffLogic::serializeChanges(Array<const MidiE
     return changesFullDelta;
 }
 
-XmlElement *AnnotationsLayerDiffLogic::serializeLayer(Array<const MidiEvent *> changes,
+XmlElement *ProjectTimelineDiffLogic::serializeLayer(Array<const MidiEvent *> changes,
         const String &tag) const
 {
     auto xml = new XmlElement(tag);
@@ -474,9 +474,9 @@ XmlElement *AnnotationsLayerDiffLogic::serializeLayer(Array<const MidiEvent *> c
     return xml;
 }
 
-bool AnnotationsLayerDiffLogic::checkIfDeltaIsEventsType(const Delta *delta) const
+bool ProjectTimelineDiffLogic::checkIfDeltaIsEventsType(const Delta *delta) const
 {
-    return (delta->getType() == AnnotationDeltas::annotationsAdded ||
-            delta->getType() == AnnotationDeltas::annotationsChanged ||
-            delta->getType() == AnnotationDeltas::annotationsRemoved);
+    return (delta->getType() == ProjectTimelineDeltas::annotationsAdded ||
+            delta->getType() == ProjectTimelineDeltas::annotationsChanged ||
+            delta->getType() == ProjectTimelineDeltas::annotationsRemoved);
 }

@@ -19,20 +19,20 @@
 
 class ProjectTreeItem;
 
-#include "AnnotationsLayerDiffLogic.h"
+#include "ProjectTimelineDiffLogic.h"
 #include "MidiLayerOwner.h"
 #include "Serializable.h"
 
-class ProjectAnnotations :
+class ProjectTimeline :
     public MidiLayerOwner,
     public VCS::TrackedItem,
     public Serializable
 {
 public:
 
-    ProjectAnnotations(ProjectTreeItem &parentProject, String trackName);
+    ProjectTimeline(ProjectTreeItem &parentProject, String trackName);
 
-    ~ProjectAnnotations() override;
+    ~ProjectTimeline() override;
     
     inline MidiLayer *getLayer() const { return this->layer; }
     

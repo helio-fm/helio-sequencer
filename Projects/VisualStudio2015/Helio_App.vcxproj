@@ -279,7 +279,6 @@
     <ClCompile Include="..\..\Source\Core\Layers\AutomationLayer.cpp"/>
     <ClCompile Include="..\..\Source\Core\Layers\MidiLayer.cpp"/>
     <ClCompile Include="..\..\Source\Core\Layers\PianoLayer.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Layers\ProjectAnnotations.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\AuthorizationManager.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\LoginThread.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\LogoutThread.cpp"/>
@@ -310,6 +309,7 @@
     <ClCompile Include="..\..\Source\Core\Tree\LayerTreeItem.cpp"/>
     <ClCompile Include="..\..\Source\Core\Tree\PianoLayerTreeItem.cpp"/>
     <ClCompile Include="..\..\Source\Core\Tree\ProjectInfo.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Tree\ProjectTimeline.cpp"/>
     <ClCompile Include="..\..\Source\Core\Tree\ProjectTreeItem.cpp"/>
     <ClCompile Include="..\..\Source\Core\Tree\RootTreeItem.cpp"/>
     <ClCompile Include="..\..\Source\Core\Tree\SettingsTreeItem.cpp"/>
@@ -324,11 +324,11 @@
     <ClCompile Include="..\..\Source\Core\Undo\Actions\NoteActions.cpp"/>
     <ClCompile Include="..\..\Source\Core\Undo\Actions\PianoLayerTreeItemActions.cpp"/>
     <ClCompile Include="..\..\Source\Core\Undo\UndoStack.cpp"/>
-    <ClCompile Include="..\..\Source\Core\VCS\DiffLogic\AnnotationsLayerDiffLogic.cpp"/>
     <ClCompile Include="..\..\Source\Core\VCS\DiffLogic\AutomationLayerDiffLogic.cpp"/>
     <ClCompile Include="..\..\Source\Core\VCS\DiffLogic\DiffLogic.cpp"/>
     <ClCompile Include="..\..\Source\Core\VCS\DiffLogic\PianoLayerDiffLogic.cpp"/>
     <ClCompile Include="..\..\Source\Core\VCS\DiffLogic\ProjectInfoDiffLogic.cpp"/>
+    <ClCompile Include="..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDiffLogic.cpp"/>
     <ClCompile Include="..\..\Source\Core\VCS\Network\PullThread.cpp"/>
     <ClCompile Include="..\..\Source\Core\VCS\Network\PushThread.cpp"/>
     <ClCompile Include="..\..\Source\Core\VCS\Network\RemovalThread.cpp"/>

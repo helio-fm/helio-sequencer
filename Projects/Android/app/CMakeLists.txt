@@ -339,8 +339,6 @@ add_library( ${BINARY_NAME}
     "../../../Source/Core/Layers/MidiLayer.h"
     "../../../Source/Core/Layers/PianoLayer.cpp"
     "../../../Source/Core/Layers/PianoLayer.h"
-    "../../../Source/Core/Layers/ProjectAnnotations.cpp"
-    "../../../Source/Core/Layers/ProjectAnnotations.h"
     "../../../Source/Core/Network/AuthorizationManager.cpp"
     "../../../Source/Core/Network/AuthorizationManager.h"
     "../../../Source/Core/Network/HelioServerDefines.h"
@@ -407,6 +405,8 @@ add_library( ${BINARY_NAME}
     "../../../Source/Core/Tree/PianoLayerTreeItem.h"
     "../../../Source/Core/Tree/ProjectInfo.cpp"
     "../../../Source/Core/Tree/ProjectInfo.h"
+    "../../../Source/Core/Tree/ProjectTimeline.cpp"
+    "../../../Source/Core/Tree/ProjectTimeline.h"
     "../../../Source/Core/Tree/ProjectListener.h"
     "../../../Source/Core/Tree/ProjectTreeItem.cpp"
     "../../../Source/Core/Tree/ProjectTreeItem.h"
@@ -438,9 +438,6 @@ add_library( ${BINARY_NAME}
     "../../../Source/Core/Undo/Actions/UndoAction.h"
     "../../../Source/Core/Undo/UndoStack.cpp"
     "../../../Source/Core/Undo/UndoStack.h"
-    "../../../Source/Core/VCS/DiffLogic/AnnotationDeltas.h"
-    "../../../Source/Core/VCS/DiffLogic/AnnotationsLayerDiffLogic.cpp"
-    "../../../Source/Core/VCS/DiffLogic/AnnotationsLayerDiffLogic.h"
     "../../../Source/Core/VCS/DiffLogic/AutoLayerDeltas.h"
     "../../../Source/Core/VCS/DiffLogic/AutomationLayerDiffLogic.cpp"
     "../../../Source/Core/VCS/DiffLogic/AutomationLayerDiffLogic.h"
@@ -452,6 +449,9 @@ add_library( ${BINARY_NAME}
     "../../../Source/Core/VCS/DiffLogic/ProjectInfoDeltas.h"
     "../../../Source/Core/VCS/DiffLogic/ProjectInfoDiffLogic.cpp"
     "../../../Source/Core/VCS/DiffLogic/ProjectInfoDiffLogic.h"
+    "../../../Source/Core/VCS/DiffLogic/ProjectTimelineDeltas.h"
+    "../../../Source/Core/VCS/DiffLogic/ProjectTimelineDiffLogic.cpp"
+    "../../../Source/Core/VCS/DiffLogic/ProjectTimelineDiffLogic.h"
     "../../../Source/Core/VCS/Network/PullThread.cpp"
     "../../../Source/Core/VCS/Network/PullThread.h"
     "../../../Source/Core/VCS/Network/PushThread.cpp"
@@ -2228,7 +2228,6 @@ set_source_files_properties("../../../Source/Core/Layers/AnnotationsLayer.h" PRO
 set_source_files_properties("../../../Source/Core/Layers/AutomationLayer.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Layers/MidiLayer.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Layers/PianoLayer.h" PROPERTIES HEADER_FILE_ONLY TRUE)
-set_source_files_properties("../../../Source/Core/Layers/ProjectAnnotations.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Network/AuthorizationManager.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Network/HelioServerDefines.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Network/LoginThread.h" PROPERTIES HEADER_FILE_ONLY TRUE)
@@ -2265,6 +2264,7 @@ set_source_files_properties("../../../Source/Core/Tree/LayerGroupTreeItem.h" PRO
 set_source_files_properties("../../../Source/Core/Tree/LayerTreeItem.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Tree/PianoLayerTreeItem.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Tree/ProjectInfo.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../../Source/Core/Tree/ProjectTimeline.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Tree/ProjectListener.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Tree/ProjectTreeItem.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Tree/RootTreeItem.h" PROPERTIES HEADER_FILE_ONLY TRUE)
@@ -2282,8 +2282,6 @@ set_source_files_properties("../../../Source/Core/Undo/Actions/NoteActions.h" PR
 set_source_files_properties("../../../Source/Core/Undo/Actions/PianoLayerTreeItemActions.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Undo/Actions/UndoAction.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Undo/UndoStack.h" PROPERTIES HEADER_FILE_ONLY TRUE)
-set_source_files_properties("../../../Source/Core/VCS/DiffLogic/AnnotationDeltas.h" PROPERTIES HEADER_FILE_ONLY TRUE)
-set_source_files_properties("../../../Source/Core/VCS/DiffLogic/AnnotationsLayerDiffLogic.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/VCS/DiffLogic/AutoLayerDeltas.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/VCS/DiffLogic/AutomationLayerDiffLogic.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/VCS/DiffLogic/DiffLogic.h" PROPERTIES HEADER_FILE_ONLY TRUE)
@@ -2291,6 +2289,8 @@ set_source_files_properties("../../../Source/Core/VCS/DiffLogic/PianoLayerDeltas
 set_source_files_properties("../../../Source/Core/VCS/DiffLogic/PianoLayerDiffLogic.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/VCS/DiffLogic/ProjectInfoDeltas.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/VCS/DiffLogic/ProjectInfoDiffLogic.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../../Source/Core/VCS/DiffLogic/ProjectTimelineDeltas.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../../Source/Core/VCS/DiffLogic/ProjectTimelineDiffLogic.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/VCS/Network/PullThread.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/VCS/Network/PushThread.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/VCS/Network/RemovalThread.h" PROPERTIES HEADER_FILE_ONLY TRUE)

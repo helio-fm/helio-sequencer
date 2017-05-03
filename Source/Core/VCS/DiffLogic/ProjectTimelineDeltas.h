@@ -17,9 +17,13 @@
 
 #pragma once
 
-namespace AnnotationDeltas
+namespace ProjectTimelineDeltas
 {
     static const String annotationsAdded = "AnnotationsAdded";
     static const String annotationsRemoved = "AnnotationsRemoved";
     static const String annotationsChanged = "AnnotationsChanged";
-} // namespace AnnotationDeltas
+
+    static const String timeSignaturesAdded = "TimeSignaturesAdded";
+    static const String timeSignaturesRemoved = "TimeSignaturesRemoved";
+    static const String timeSignaturesChanged = "TimeSignaturesChanged";
+} // namespace ProjectTimelineDeltas
