@@ -331,6 +331,8 @@ add_library( ${BINARY_NAME}
     "../../../Source/Core/Events/MidiEvent.h"
     "../../../Source/Core/Events/Note.cpp"
     "../../../Source/Core/Events/Note.h"
+    "../../../Source/Core/Events/TimeSignatureEvent.cpp"
+    "../../../Source/Core/Events/TimeSignatureEvent.h"
     "../../../Source/Core/Layers/AnnotationsLayer.cpp"
     "../../../Source/Core/Layers/AnnotationsLayer.h"
     "../../../Source/Core/Layers/AutomationLayer.cpp"
@@ -339,6 +341,8 @@ add_library( ${BINARY_NAME}
     "../../../Source/Core/Layers/MidiLayer.h"
     "../../../Source/Core/Layers/PianoLayer.cpp"
     "../../../Source/Core/Layers/PianoLayer.h"
+    "../../../Source/Core/Layers/TimeSignaturesLayer.cpp"
+    "../../../Source/Core/Layers/TimeSignaturesLayer.h"
     "../../../Source/Core/Network/AuthorizationManager.cpp"
     "../../../Source/Core/Network/AuthorizationManager.h"
     "../../../Source/Core/Network/HelioServerDefines.h"
@@ -435,6 +439,8 @@ add_library( ${BINARY_NAME}
     "../../../Source/Core/Undo/Actions/NoteActions.h"
     "../../../Source/Core/Undo/Actions/PianoLayerTreeItemActions.cpp"
     "../../../Source/Core/Undo/Actions/PianoLayerTreeItemActions.h"
+    "../../../Source/Core/Undo/Actions/TimeSignatureEventActions.cpp"
+    "../../../Source/Core/Undo/Actions/TimeSignatureEventActions.h"
     "../../../Source/Core/Undo/Actions/UndoAction.h"
     "../../../Source/Core/Undo/UndoStack.cpp"
     "../../../Source/Core/Undo/UndoStack.h"
@@ -2224,10 +2230,12 @@ set_source_files_properties("../../../Source/Core/Events/AnnotationEvent.h" PROP
 set_source_files_properties("../../../Source/Core/Events/AutomationEvent.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Events/MidiEvent.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Events/Note.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../../Source/Core/Events/TimeSignatureEvent.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Layers/AnnotationsLayer.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Layers/AutomationLayer.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Layers/MidiLayer.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Layers/PianoLayer.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../../Source/Core/Layers/TimeSignaturesLayer.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Network/AuthorizationManager.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Network/HelioServerDefines.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Network/LoginThread.h" PROPERTIES HEADER_FILE_ONLY TRUE)
@@ -2280,6 +2288,7 @@ set_source_files_properties("../../../Source/Core/Undo/Actions/LayerTreeItemActi
 set_source_files_properties("../../../Source/Core/Undo/Actions/MidiLayerActions.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Undo/Actions/NoteActions.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Undo/Actions/PianoLayerTreeItemActions.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../../Source/Core/Undo/Actions/TimeSignatureEventActions.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Undo/Actions/UndoAction.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/Undo/UndoStack.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/Core/VCS/DiffLogic/AutoLayerDeltas.h" PROPERTIES HEADER_FILE_ONLY TRUE)

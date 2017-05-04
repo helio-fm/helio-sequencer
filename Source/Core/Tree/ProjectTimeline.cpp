@@ -63,6 +63,7 @@ VCS::Delta *ProjectTimeline::getDelta(int index) const
 
         if (numEvents == 0)
         {
+            // TODO "no annotations, no time signatures"
             this->deltas[index]->setDescription(VCS::DeltaDescription("empty layer"));
         }
         else
@@ -190,12 +191,7 @@ void ProjectTimeline::deserialize(const XmlElement &xml)
     
     if (root == nullptr)
     {
-        // v1.7 legacy support hack
-        root = xml.hasTagName(Serialization::Core::defaultAnnotationsLayer) ?
-            &xml : xml.getChildByName(Serialization::Core::defaultAnnotationsLayer);
-        
-        if (root == nullptr)
-            return;
+        return;
     }
 
     this->deserializeVCSUuid(*root);

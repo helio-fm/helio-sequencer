@@ -228,6 +228,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Events", "Events", "{0394D2
 		..\..\Source\Core\Events\MidiEvent.h = ..\..\Source\Core\Events\MidiEvent.h
 		..\..\Source\Core\Events\Note.cpp = ..\..\Source\Core\Events\Note.cpp
 		..\..\Source\Core\Events\Note.h = ..\..\Source\Core\Events\Note.h
+		..\..\Source\Core\Events\TimeSignatureEvent.cpp = ..\..\Source\Core\Events\TimeSignatureEvent.cpp
+		..\..\Source\Core\Events\TimeSignatureEvent.h = ..\..\Source\Core\Events\TimeSignatureEvent.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Layers", "Layers", "{5C571F43-F82F-40D5-B64F-79DE61D232B0}"
@@ -240,6 +242,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Layers", "Layers", "{5C571F
 		..\..\Source\Core\Layers\MidiLayer.h = ..\..\Source\Core\Layers\MidiLayer.h
 		..\..\Source\Core\Layers\PianoLayer.cpp = ..\..\Source\Core\Layers\PianoLayer.cpp
 		..\..\Source\Core\Layers\PianoLayer.h = ..\..\Source\Core\Layers\PianoLayer.h
+		..\..\Source\Core\Layers\TimeSignaturesLayer.cpp = ..\..\Source\Core\Layers\TimeSignaturesLayer.cpp
+		..\..\Source\Core\Layers\TimeSignaturesLayer.h = ..\..\Source\Core\Layers\TimeSignaturesLayer.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Network", "Network", "{CC0C8F09-C3E8-8BC3-DE6C-7F4AAB89677C}"
@@ -370,6 +374,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{A237
 		..\..\Source\Core\Undo\Actions\NoteActions.h = ..\..\Source\Core\Undo\Actions\NoteActions.h
 		..\..\Source\Core\Undo\Actions\PianoLayerTreeItemActions.cpp = ..\..\Source\Core\Undo\Actions\PianoLayerTreeItemActions.cpp
 		..\..\Source\Core\Undo\Actions\PianoLayerTreeItemActions.h = ..\..\Source\Core\Undo\Actions\PianoLayerTreeItemActions.h
+		..\..\Source\Core\Undo\Actions\TimeSignatureEventActions.cpp = ..\..\Source\Core\Undo\Actions\TimeSignatureEventActions.cpp
+		..\..\Source\Core\Undo\Actions\TimeSignatureEventActions.h = ..\..\Source\Core\Undo\Actions\TimeSignatureEventActions.h
 		..\..\Source\Core\Undo\Actions\UndoAction.h = ..\..\Source\Core\Undo\Actions\UndoAction.h
 	EndProjectSection
 EndProject

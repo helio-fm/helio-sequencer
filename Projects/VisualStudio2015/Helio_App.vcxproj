@@ -275,10 +275,12 @@
     <ClCompile Include="..\..\Source\Core\Events\AutomationEvent.cpp"/>
     <ClCompile Include="..\..\Source\Core\Events\MidiEvent.cpp"/>
     <ClCompile Include="..\..\Source\Core\Events\Note.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Events\TimeSignatureEvent.cpp"/>
     <ClCompile Include="..\..\Source\Core\Layers\AnnotationsLayer.cpp"/>
     <ClCompile Include="..\..\Source\Core\Layers\AutomationLayer.cpp"/>
     <ClCompile Include="..\..\Source\Core\Layers\MidiLayer.cpp"/>
     <ClCompile Include="..\..\Source\Core\Layers\PianoLayer.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Layers\TimeSignaturesLayer.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\AuthorizationManager.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\LoginThread.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\LogoutThread.cpp"/>
@@ -323,6 +325,7 @@
     <ClCompile Include="..\..\Source\Core\Undo\Actions\MidiLayerActions.cpp"/>
     <ClCompile Include="..\..\Source\Core\Undo\Actions\NoteActions.cpp"/>
     <ClCompile Include="..\..\Source\Core\Undo\Actions\PianoLayerTreeItemActions.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Undo\Actions\TimeSignatureEventActions.cpp"/>
     <ClCompile Include="..\..\Source\Core\Undo\UndoStack.cpp"/>
     <ClCompile Include="..\..\Source\Core\VCS\DiffLogic\AutomationLayerDiffLogic.cpp"/>
     <ClCompile Include="..\..\Source\Core\VCS\DiffLogic\DiffLogic.cpp"/>

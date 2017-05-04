@@ -58,8 +58,7 @@ DiffLogic *DiffLogic::createLogicFor(TrackedItem &targetItem, const String &type
     {
         return new AutomationLayerDiffLogic(targetItem);
     }
-    else if (type == Serialization::Core::defaultAnnotationsLayer || // legacy support
-             type == Serialization::Core::projectTimeline)
+    else if (type == Serialization::Core::projectTimeline)
     {
         return new ProjectTimelineDiffLogic(targetItem);
     }

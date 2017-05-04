@@ -109,10 +109,12 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/AutomationEvent_c0b3df1e.o \
   $(JUCE_OBJDIR)/MidiEvent_70f710d4.o \
   $(JUCE_OBJDIR)/Note_e4d6a341.o \
+  $(JUCE_OBJDIR)/TimeSignatureEvent_c1b6a83e.o \
   $(JUCE_OBJDIR)/AnnotationsLayer_b5cec6d3.o \
   $(JUCE_OBJDIR)/AutomationLayer_97ef53fe.o \
   $(JUCE_OBJDIR)/MidiLayer_449e3874.o \
   $(JUCE_OBJDIR)/PianoLayer_54e97f0e.o \
+  $(JUCE_OBJDIR)/TimeSignaturesLayer_176e34d.o \
   $(JUCE_OBJDIR)/AuthorizationManager_a8e59c6.o \
   $(JUCE_OBJDIR)/LoginThread_c2baf4b.o \
   $(JUCE_OBJDIR)/LogoutThread_1a2f6a06.o \
@@ -157,6 +159,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/MidiLayerActions_833be803.o \
   $(JUCE_OBJDIR)/NoteActions_b5a2e99f.o \
   $(JUCE_OBJDIR)/PianoLayerTreeItemActions_609aa778.o \
+  $(JUCE_OBJDIR)/TimeSignatureEventActions_c6f6be42.o \
   $(JUCE_OBJDIR)/UndoStack_c8cfe6ea.o \
   $(JUCE_OBJDIR)/AutomationLayerDiffLogic_5a3fe36f.o \
   $(JUCE_OBJDIR)/DiffLogic_e39316b3.o \
@@ -493,6 +496,11 @@ $(JUCE_OBJDIR)/Note_e4d6a341.o: ../../Source/Core/Events/Note.cpp
 	@echo "Compiling Note.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/TimeSignatureEvent_c1b6a83e.o: ../../Source/Core/Events/TimeSignatureEvent.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TimeSignatureEvent.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/AnnotationsLayer_b5cec6d3.o: ../../Source/Core/Layers/AnnotationsLayer.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling AnnotationsLayer.cpp"
@@ -511,6 +519,11 @@ $(JUCE_OBJDIR)/MidiLayer_449e3874.o: ../../Source/Core/Layers/MidiLayer.cpp
 $(JUCE_OBJDIR)/PianoLayer_54e97f0e.o: ../../Source/Core/Layers/PianoLayer.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling PianoLayer.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TimeSignaturesLayer_176e34d.o: ../../Source/Core/Layers/TimeSignaturesLayer.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TimeSignaturesLayer.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/AuthorizationManager_a8e59c6.o: ../../Source/Core/Network/AuthorizationManager.cpp
@@ -731,6 +744,11 @@ $(JUCE_OBJDIR)/NoteActions_b5a2e99f.o: ../../Source/Core/Undo/Actions/NoteAction
 $(JUCE_OBJDIR)/PianoLayerTreeItemActions_609aa778.o: ../../Source/Core/Undo/Actions/PianoLayerTreeItemActions.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling PianoLayerTreeItemActions.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TimeSignatureEventActions_c6f6be42.o: ../../Source/Core/Undo/Actions/TimeSignatureEventActions.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TimeSignatureEventActions.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/UndoStack_c8cfe6ea.o: ../../Source/Core/Undo/UndoStack.cpp

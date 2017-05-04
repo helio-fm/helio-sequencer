@@ -240,6 +240,10 @@
           <FILE id="BD1bg7" name="MidiEvent.h" compile="0" resource="0" file="../../Source/Core/Events/MidiEvent.h"/>
           <FILE id="SBEGSv" name="Note.cpp" compile="1" resource="0" file="../../Source/Core/Events/Note.cpp"/>
           <FILE id="PUrhdV" name="Note.h" compile="0" resource="0" file="../../Source/Core/Events/Note.h"/>
+          <FILE id="E1z4S9" name="TimeSignatureEvent.cpp" compile="1" resource="0"
+                file="../../Source/Core/Events/TimeSignatureEvent.cpp"/>
+          <FILE id="HHfm9f" name="TimeSignatureEvent.h" compile="0" resource="0"
+                file="../../Source/Core/Events/TimeSignatureEvent.h"/>
         </GROUP>
         <GROUP id="{8429084D-E3EA-5746-6224-45121134B7CE}" name="Layers">
           <FILE id="LaYJRq" name="AnnotationsLayer.cpp" compile="1" resource="0"
@@ -254,6 +258,10 @@
           <FILE id="PwJehg" name="MidiLayer.h" compile="0" resource="0" file="../../Source/Core/Layers/MidiLayer.h"/>
           <FILE id="ELqGLE" name="PianoLayer.cpp" compile="1" resource="0" file="../../Source/Core/Layers/PianoLayer.cpp"/>
           <FILE id="vCbiKc" name="PianoLayer.h" compile="0" resource="0" file="../../Source/Core/Layers/PianoLayer.h"/>
+          <FILE id="fgHAkL" name="TimeSignaturesLayer.cpp" compile="1" resource="0"
+                file="../../Source/Core/Layers/TimeSignaturesLayer.cpp"/>
+          <FILE id="A7Nu8h" name="TimeSignaturesLayer.h" compile="0" resource="0"
+                file="../../Source/Core/Layers/TimeSignaturesLayer.h"/>
         </GROUP>
         <GROUP id="{9C34DE9F-57B6-7B3A-C005-1E16E0BF57B2}" name="Network">
           <FILE id="zuzMlt" name="AuthorizationManager.cpp" compile="1" resource="0"
@@ -432,6 +440,10 @@
                   resource="0" file="../../Source/Core/Undo/Actions/PianoLayerTreeItemActions.cpp"/>
             <FILE id="P0vWru" name="PianoLayerTreeItemActions.h" compile="0" resource="0"
                   file="../../Source/Core/Undo/Actions/PianoLayerTreeItemActions.h"/>
+            <FILE id="RqeYx1" name="TimeSignatureEventActions.cpp" compile="1"
+                  resource="0" file="../../Source/Core/Undo/Actions/TimeSignatureEventActions.cpp"/>
+            <FILE id="fXYYo6" name="TimeSignatureEventActions.h" compile="0" resource="0"
+                  file="../../Source/Core/Undo/Actions/TimeSignatureEventActions.h"/>
             <FILE id="j3wR8r" name="UndoAction.h" compile="0" resource="0" file="../../Source/Core/Undo/Actions/UndoAction.h"/>
           </GROUP>
           <FILE id="PMFht6" name="UndoStack.cpp" compile="1" resource="0" file="../../Source/Core/Undo/UndoStack.cpp"/>

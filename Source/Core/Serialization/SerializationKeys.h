@@ -48,14 +48,13 @@ namespace Serialization
 
         static const String project = "Project";
         static const String projectInfo = "ProjectInfo";
-        static const String projectTimeline = "ProjectTimeline";
         static const String projectTimeStamp = "ProjectTimeStamp";
         static const String versionControl = "VersionControl";
         static const String layerGroup = "Group";
         static const String layer = "Layer";
         static const String pianoLayer = "PianoLayer";
         static const String autoLayer = "AutoLayer";
-        static const String defaultAnnotationsLayer = "DefaultAnnotationsLayer";
+        static const String projectTimeline = "DefaultAnnotationsLayer";
 
         // Layers
         static const String track = "Track";
