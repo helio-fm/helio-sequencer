@@ -53,11 +53,7 @@ AnnotationEvent::~AnnotationEvent()
 Array<MidiMessage> AnnotationEvent::getSequence() const
 {
 	Array<MidiMessage> result;
-
-    // TODO(peterrudenko): 
-    // text events
-    // time signature events
-
+    // TODO export text events
     return result;
 }
 

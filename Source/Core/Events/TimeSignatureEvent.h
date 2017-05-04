@@ -19,45 +19,50 @@
 
 #include "MidiEvent.h"
 
-class AnnotationEvent : public MidiEvent
+// The default is, obviously, common time (4/4)
+#define TIME_SIGNATURE_DEFAULT_NUMERATOR 4
+#define TIME_SIGNATURE_DEFAULT_DENOMINATOR 4
+
+class TimeSignatureEvent : public MidiEvent
 {
 public:
 
-    AnnotationEvent();
 
-    AnnotationEvent(const AnnotationEvent &other);
+    TimeSignatureEvent();
 
-    explicit AnnotationEvent(MidiLayer *owner,
+    TimeSignatureEvent(const TimeSignatureEvent &other);
+
+    explicit TimeSignatureEvent(MidiLayer *owner,
                     float newBeat = 0.f,
-                    String newDescription = "",
-                    const Colour &newColour = Colours::white);
+                    int newNumerator = TIME_SIGNATURE_DEFAULT_NUMERATOR,
+                    int newDenominator = TIME_SIGNATURE_DEFAULT_DENOMINATOR);
 
-    ~AnnotationEvent() override;
+    ~TimeSignatureEvent() override;
     
 
 	Array<MidiMessage> getSequence() const override;
 
     
-    AnnotationEvent copyWithNewId() const;
+    TimeSignatureEvent copyWithNewId() const;
     
-    AnnotationEvent withDeltaBeat(float beatOffset) const;
+    TimeSignatureEvent withDeltaBeat(float beatOffset) const;
     
-    AnnotationEvent withBeat(float newBeat) const;
+    TimeSignatureEvent withBeat(float newBeat) const;
 
-    AnnotationEvent withDescription(const String &newDescription) const;
+    TimeSignatureEvent withNumerator(const int newNumerator) const;
     
-    AnnotationEvent withColour(const Colour &newColour) const;
+    TimeSignatureEvent withDenominator(const int newDenominator) const;
 
-    AnnotationEvent withParameters(const XmlElement &xml) const;
+    TimeSignatureEvent withParameters(const XmlElement &xml) const;
 
 
     //===------------------------------------------------------------------===//
     // Accessors
     //===------------------------------------------------------------------===//
 
-    String getDescription() const noexcept;
+    int getNumerator() const noexcept;
 
-    Colour getColour() const noexcept;
+    int getDenominator() const noexcept;
 
 
     //===------------------------------------------------------------------===//
@@ -75,9 +80,9 @@ public:
     // Stuff for hashtables
     //===------------------------------------------------------------------===//
 
-    AnnotationEvent &operator=(const AnnotationEvent &right);
+    TimeSignatureEvent &operator=(const TimeSignatureEvent &right);
 
-    friend inline bool operator==(const AnnotationEvent &lhs, const AnnotationEvent &rhs)
+    friend inline bool operator==(const TimeSignatureEvent &lhs, const TimeSignatureEvent &rhs)
     {
         return (lhs.getID() == rhs.getID());
     }
@@ -87,22 +92,22 @@ public:
 
 protected:
 
-    String description;
+    int numerator;
     
-    Colour colour;
+    int denominator;
 
 private:
 
-    JUCE_LEAK_DETECTOR(AnnotationEvent);
+    JUCE_LEAK_DETECTOR(TimeSignatureEvent);
 
 };
 
 
-class AnnotationEventHashFunction
+class TimeSignatureEventHashFunction
 {
 public:
-    static int generateHash(const AnnotationEvent key, const int upperLimit) noexcept
+    static int generateHash(const TimeSignatureEvent key, const int upperLimit) noexcept
     {
-        return static_cast<int>((static_cast<uint32>( key.hashCode())) % static_cast<uint32>( upperLimit));
+        return static_cast<int>((static_cast<uint32>(key.hashCode())) % static_cast<uint32>(upperLimit));
     }
 };
