@@ -340,6 +340,8 @@ namespace Serialization
         
         static const String annotationBefore = "AnnotationBefore";
         static const String annotationAfter = "AnnotationAfter";
+        static const String timeSignatureBefore = "TimeSignatureBefore";
+        static const String timeSignatureAfter = "TimeSignatureAfter";
         static const String eventBefore = "EventBefore";
         static const String eventAfter = "EventAfter";
         static const String noteBefore = "NoteBefore";
@@ -372,6 +374,13 @@ namespace Serialization
         static const String annotationEventsGroupInsertAction = "AnnotationEventsGroupInsertAction";
         static const String annotationEventsGroupRemoveAction = "AnnotationEventsGroupRemoveAction";
         static const String annotationEventsGroupChangeAction = "AnnotationEventsGroupChangeAction";
+
+        static const String timeSignatureEventInsertAction = "TimeSignatureEventInsertAction";
+        static const String timeSignatureEventRemoveAction = "TimeSignatureEventRemoveAction";
+        static const String timeSignatureEventChangeAction = "TimeSignatureEventChangeAction";
+        static const String timeSignatureEventsGroupInsertAction = "TimeSignatureEventsGroupInsertAction";
+        static const String timeSignatureEventsGroupRemoveAction = "TimeSignatureEventsGroupRemoveAction";
+        static const String timeSignatureEventsGroupChangeAction = "TimeSignatureEventsGroupChangeAction";
         
         static const String automationEventInsertAction = "AutomationEventInsertAction";
         static const String automationEventRemoveAction = "AutomationEventRemoveAction";
