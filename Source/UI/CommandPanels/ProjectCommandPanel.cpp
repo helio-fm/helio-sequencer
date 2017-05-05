@@ -265,7 +265,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
             }
             else
             {
-                App::Layout().showTooltip("menu::project::delete::cancelled");
+                App::Layout().showTooltip(TRANS("menu::project::delete::cancelled"));
             }
 
             this->getParentComponent()->exitModalState(0);
