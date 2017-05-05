@@ -32,14 +32,14 @@ AnnotationsCommandPanel::AnnotationsCommandPanel(ProjectTreeItem &parentProject)
     project(parentProject)
 {
     const AnnotationEvent *selectedAnnotation = nullptr;
-    const ProjectTimeline *annotations = this->project.getTimeline();
+    const ProjectTimeline *timeline = this->project.getTimeline();
     const double seekPosition = this->project.getTransport().getSeekPosition();
     
     if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
     {
-        for (int i = 0; i < annotations->getLayer()->size(); ++i)
+        for (int i = 0; i < timeline->getAnnotations()->size(); ++i)
         {
-            if (AnnotationEvent *annotation = dynamic_cast<AnnotationEvent *>(annotations->getLayer()->getUnchecked(i)))
+            if (AnnotationEvent *annotation = dynamic_cast<AnnotationEvent *>(timeline->getAnnotations()->getUnchecked(i)))
             {
                 const double annotationSeekPosition = roll->getTransportPositionByBeat(annotation->getBeat());
                 const double numBeats = double(roll->getNumBeats());
@@ -63,9 +63,9 @@ AnnotationsCommandPanel::AnnotationsCommandPanel(ProjectTreeItem &parentProject)
     
     if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
     {
-        for (int i = 0; i < annotations->getLayer()->size(); ++i)
+        for (int i = 0; i < timeline->getAnnotations()->size(); ++i)
         {
-            if (AnnotationEvent *annotation = dynamic_cast<AnnotationEvent *>(annotations->getLayer()->getUnchecked(i)))
+            if (AnnotationEvent *annotation = dynamic_cast<AnnotationEvent *>(timeline->getAnnotations()->getUnchecked(i)))
             {
                 const int commandIndex = (CommandIDs::JumpToAnnotation + i);
                 
@@ -132,14 +132,14 @@ void AnnotationsCommandPanel::handleCommandMessage(int commandId)
     }
     else
     {
-        ProjectTimeline *annotations = this->project.getTimeline();
+        ProjectTimeline *timeline = this->project.getTimeline();
         const int annotationIndex = (commandId - CommandIDs::JumpToAnnotation);
         
         if (MidiRoll *roll =
             dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
         {
             if (AnnotationEvent *annotation =
-                dynamic_cast<AnnotationEvent *>(annotations->getLayer()->getUnchecked(annotationIndex)))
+                dynamic_cast<AnnotationEvent *>(timeline->getAnnotations()->getUnchecked(annotationIndex)))
             {
                 const double seekPosition = roll->getTransportPositionByBeat(annotation->getBeat());
                 this->project.getTransport().seekToPosition(seekPosition);

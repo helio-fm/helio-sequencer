@@ -221,7 +221,7 @@ void MidiRoll::insertAnnotationWithinScreen(const String &annotation)
         targetBeat = this->getRoundBeatByXPosition(viewCentre);
     }
 
-    if (AnnotationsLayer *annotationsLayer = dynamic_cast<AnnotationsLayer *>(this->project.getTimeline()->getLayer()))
+    if (AnnotationsLayer *annotationsLayer = dynamic_cast<AnnotationsLayer *>(this->project.getTimeline()->getAnnotations()))
     {
         annotationsLayer->checkpoint();
         AnnotationEvent event(annotationsLayer, targetBeat, annotation, Colours::transparentWhite);

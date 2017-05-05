@@ -18,26 +18,32 @@
 #include "Common.h"
 #include "ProjectTimeline.h"
 #include "AnnotationsLayer.h"
+#include "TimeSignaturesLayer.h"
 #include "ProjectTimelineDeltas.h"
 #include "ProjectTreeItem.h"
 #include "Icons.h"
 
 
 ProjectTimeline::ProjectTimeline(ProjectTreeItem &parentProject,
-                                       String trackName) :
+                                 String trackName) :
     project(parentProject),
     name(std::move(trackName))
 {
-    this->layer = new AnnotationsLayer(*this);
+    this->annotations = new AnnotationsLayer(*this);
+    this->timeSignatures = new TimeSignaturesLayer(*this);
+
     this->vcsDiffLogic = new VCS::ProjectTimelineDiffLogic(*this);
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectTimelineDeltas::annotationsAdded));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectTimelineDeltas::timeSignaturesAdded));
     
-    this->project.broadcastLayerAdded(this->layer);
+    this->project.broadcastLayerAdded(this->annotations);
+    this->project.broadcastLayerAdded(this->timeSignatures);
 }
 
 ProjectTimeline::~ProjectTimeline()
 {
-    this->project.broadcastLayerRemoved(this->layer);
+    this->project.broadcastLayerRemoved(this->timeSignatures);
+    this->project.broadcastLayerRemoved(this->annotations);
 }
 
 
@@ -59,16 +65,30 @@ VCS::Delta *ProjectTimeline::getDelta(int index) const
 {
     if (this->deltas[index]->getType() == ProjectTimelineDeltas::annotationsAdded)
     {
-        const int numEvents = this->layer->size();
+        const int numEvents = this->annotations->size();
 
         if (numEvents == 0)
         {
             // TODO "no annotations, no time signatures"
-            this->deltas[index]->setDescription(VCS::DeltaDescription("empty layer"));
+            this->deltas[index]->setDescription(VCS::DeltaDescription("empty annotations layer"));
         }
         else
         {
             this->deltas[index]->setDescription(VCS::DeltaDescription("{x} annotations", numEvents));
+        }
+    }
+    else if (this->deltas[index]->getType() == ProjectTimelineDeltas::timeSignaturesAdded)
+    {
+        const int numEvents = this->timeSignatures->size();
+        
+        if (numEvents == 0)
+        {
+            // TODO "no annotations, no time signatures"
+            this->deltas[index]->setDescription(VCS::DeltaDescription("empty time signatures layer"));
+        }
+        else
+        {
+            this->deltas[index]->setDescription(VCS::DeltaDescription("{x} time signatures", numEvents));
         }
     }
 
@@ -80,6 +100,10 @@ XmlElement *ProjectTimeline::createDeltaDataFor(int index) const
     if (this->deltas[index]->getType() == ProjectTimelineDeltas::annotationsAdded)
     {
         return this->serializeAnnotationsDelta();
+    }
+    else if (this->deltas[index]->getType() == ProjectTimelineDeltas::timeSignaturesAdded)
+    {
+        return this->serializeTimeSignaturesDelta();
     }
 
     jassertfalse;
@@ -93,6 +117,9 @@ VCS::DiffLogic *ProjectTimeline::getDiffLogic() const
 
 void ProjectTimeline::resetStateTo(const VCS::TrackedItem &newState)
 {
+    bool annotationsChanged = false;
+    bool signaturesChanged = false;
+    
     for (int i = 0; i < newState.getNumDeltas(); ++i)
     {
         const VCS::Delta *newDelta = newState.getDelta(i);
@@ -101,11 +128,26 @@ void ProjectTimeline::resetStateTo(const VCS::TrackedItem &newState)
         if (newDelta->getType() == ProjectTimelineDeltas::annotationsAdded)
         {
             this->resetAnnotationsDelta(newDeltaData);
+            annotationsChanged = true;
+        }
+        else if (newDelta->getType() == ProjectTimelineDeltas::timeSignaturesRemoved)
+        {
+            this->resetTimeSignaturesDelta(newDeltaData);
+            signaturesChanged = true;
         }
     }
     
-    this->getLayer()->notifyLayerChanged();
-    this->getLayer()->notifyBeatRangeChanged();
+    if (annotationsChanged)
+    {
+        this->annotations->notifyLayerChanged();
+        this->annotations->notifyBeatRangeChanged();
+    }
+    
+    if (signaturesChanged)
+    {
+        this->timeSignatures->notifyLayerChanged();
+        this->timeSignatures->notifyBeatRangeChanged();
+    }
 }
 
 
@@ -168,7 +210,8 @@ ProjectTreeItem *ProjectTimeline::getProject() const
 
 void ProjectTimeline::reset()
 {
-    this->layer->reset();
+    this->annotations->reset();
+    this->timeSignatures->reset();
 }
 
 XmlElement *ProjectTimeline::serialize() const
@@ -177,7 +220,8 @@ XmlElement *ProjectTimeline::serialize() const
 
     this->serializeVCSUuid(*xml);
     xml->setAttribute("name", this->name);
-    xml->addChildElement(this->layer->serialize());
+    xml->addChildElement(this->annotations->serialize());
+    xml->addChildElement(this->timeSignatures->serialize());
 
     return xml;
 }
@@ -197,11 +241,20 @@ void ProjectTimeline::deserialize(const XmlElement &xml)
     this->deserializeVCSUuid(*root);
     this->name = root->getStringAttribute("name");
 
-    // он все равно должен быть один, но так короче
     forEachXmlChildElementWithTagName(*root, e, Serialization::Core::annotations)
     {
-        this->layer->deserialize(*e);
+        this->annotations->deserialize(*e);
     }
+
+    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::timeSignatures)
+    {
+        this->timeSignatures->deserialize(*e);
+    }
+    
+    
+    // Debug::
+    //TimeSignatureEvent e(this->timeSignatures);
+    //(static_cast<TimeSignaturesLayer *>(this->timeSignatures.get()))->insert(e, false);
 }
 
 
@@ -213,9 +266,9 @@ XmlElement *ProjectTimeline::serializeAnnotationsDelta() const
 {
     auto xml = new XmlElement(ProjectTimelineDeltas::annotationsAdded);
 
-    for (int i = 0; i < this->layer->size(); ++i)
+    for (int i = 0; i < this->annotations->size(); ++i)
     {
-        const MidiEvent *event = this->layer->getUnchecked(i);
+        const MidiEvent *event = this->annotations->getUnchecked(i);
         xml->addChildElement(event->serialize());
     }
 
@@ -226,11 +279,35 @@ void ProjectTimeline::resetAnnotationsDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == ProjectTimelineDeltas::annotationsAdded);
 
-    this->reset();
-    this->layer->reset();
+    this->annotations->reset();
 
     forEachXmlChildElementWithTagName(*state, e, Serialization::Core::annotation)
     {
-        this->layer->silentImport(AnnotationEvent(this->layer).withParameters(*e));
+        this->annotations->silentImport(AnnotationEvent(this->annotations).withParameters(*e));
+    }
+}
+
+XmlElement *ProjectTimeline::serializeTimeSignaturesDelta() const
+{
+    auto xml = new XmlElement(ProjectTimelineDeltas::timeSignaturesAdded);
+    
+    for (int i = 0; i < this->timeSignatures->size(); ++i)
+    {
+        const MidiEvent *event = this->timeSignatures->getUnchecked(i);
+        xml->addChildElement(event->serialize());
+    }
+    
+    return xml;
+}
+
+void ProjectTimeline::resetTimeSignaturesDelta(const XmlElement *state)
+{
+    jassert(state->getTagName() == ProjectTimelineDeltas::timeSignaturesAdded);
+    
+    this->timeSignatures->reset();
+    
+    forEachXmlChildElementWithTagName(*state, e, Serialization::Core::timeSignature)
+    {
+        this->timeSignatures->silentImport(TimeSignatureEvent(this->timeSignatures).withParameters(*e));
     }
 }

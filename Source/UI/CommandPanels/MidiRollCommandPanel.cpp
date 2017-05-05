@@ -69,14 +69,14 @@ void MidiRollCommandPanel::handleCommandMessage (int commandId)
         // если выбрана какая-то аннотация, показываем ее меню, если нет - показываем общее
         {
             const AnnotationEvent *selectedAnnotation = nullptr;
-            const ProjectTimeline *annotations = this->project.getTimeline();
+            const ProjectTimeline *timeline = this->project.getTimeline();
             const double seekPosition = this->project.getTransport().getSeekPosition();
 
             if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
             {
-                for (int i = 0; i < annotations->getLayer()->size(); ++i)
+                for (int i = 0; i < timeline->getAnnotations()->size(); ++i)
                 {
-                    if (AnnotationEvent *annotation = dynamic_cast<AnnotationEvent *>(annotations->getLayer()->getUnchecked(i)))
+                    if (AnnotationEvent *annotation = dynamic_cast<AnnotationEvent *>(timeline->getAnnotations()->getUnchecked(i)))
                     {
                         const double annotationSeekPosition = roll->getTransportPositionByBeat(annotation->getBeat());
                         const double numBeats = double(roll->getNumBeats());

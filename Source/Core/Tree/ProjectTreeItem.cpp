@@ -494,17 +494,21 @@ bool ProjectTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDe
 Array<MidiLayer *> ProjectTreeItem::getLayersList() const
 {
     ScopedReadLock lock(this->layersListLock);
-
     Array<MidiLayer *> layers;
+
+    // now get all layers inside a tree hierarcht
     this->collectLayers(layers);
-    layers.add(this->timeline->getLayer()); // explicitly add the only non-tree-owned layer
+    
+    // and explicitly add the only non-tree-owned layers
+    layers.add(this->timeline->getAnnotations());
+    layers.add(this->timeline->getTimeSignatures());
+
     return layers;
 }
 
 Array<MidiLayer *> ProjectTreeItem::getSelectedLayersList() const
 {
     ScopedReadLock lock(this->layersListLock);
-    
     Array<MidiLayer *> layers;
     this->collectLayers(layers, true);
     return layers;
@@ -980,7 +984,8 @@ void ProjectTreeItem::rebuildLayersHashIfNeeded()
     if (this->isLayersHashOutdated)
     {
         this->layersHash.clear();
-        this->layersHash.set(this->timeline->getLayer()->getLayerIdAsString(), this->timeline->getLayer());
+        this->layersHash.set(this->timeline->getAnnotations()->getLayerIdAsString(), this->timeline->getAnnotations());
+        this->layersHash.set(this->timeline->getTimeSignatures()->getLayerIdAsString(), this->timeline->getTimeSignatures());
         
         Array<LayerTreeItem *> children = this->findChildrenOfType<LayerTreeItem>();
         

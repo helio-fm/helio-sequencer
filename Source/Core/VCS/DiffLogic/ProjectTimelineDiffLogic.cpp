@@ -20,8 +20,8 @@
 #include "ProjectTimeline.h"
 #include "ProjectTimelineDeltas.h"
 
-#include "AnnotationEvent.h"
 #include "AnnotationsLayer.h"
+#include "TimeSignaturesLayer.h"
 #include "MidiLayerOwner.h"
 #include "SerializationKeys.h"
 
@@ -93,8 +93,8 @@ Diff *ProjectTimelineDiffLogic::createDiff(const TrackedItem &initialState) cons
 
             if (myDelta->getType() == stateDelta->getType())
             {
-                deltaFoundInState = true;
                 stateDeltaData = initialState.createDeltaDataFor(j);
+                deltaFoundInState = (stateDeltaData != nullptr);
                 dataHasChanged = (! myDeltaData->isEquivalentTo(stateDeltaData, true));
                 break;
             }
@@ -104,8 +104,19 @@ Diff *ProjectTimelineDiffLogic::createDiff(const TrackedItem &initialState) cons
         {
             if (myDelta->getType() == ProjectTimelineDeltas::annotationsAdded)
             {
-                Array<NewSerializedDelta> fullDeltas = this->createAnnotationsDiffs(stateDeltaData, myDeltaData);
+                Array<NewSerializedDelta> fullDeltas =
+                    this->createAnnotationsDiffs(stateDeltaData, myDeltaData);
 
+                for (auto fullDelta : fullDeltas)
+                {
+                    diff->addOwnedDelta(fullDelta.delta, fullDelta.deltaData);
+                }
+            }
+            else if (myDelta->getType() == ProjectTimelineDeltas::timeSignaturesAdded)
+            {
+                Array<NewSerializedDelta> fullDeltas =
+                    this->createTimeSignaturesDiffs(stateDeltaData, myDeltaData);
+                
                 for (auto fullDelta : fullDeltas)
                 {
                     diff->addOwnedDelta(fullDelta.delta, fullDelta.deltaData);
@@ -131,66 +142,86 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
         const Delta *stateDelta = initialState.getDelta(i);
         ScopedPointer<XmlElement> stateDeltaData(initialState.createDeltaDataFor(i));
 
-        bool deltaFoundInChanges = false;
+        // для каждого слоя надо выдать одну дельту типа eventsAdded
+        // на которую будут наложены все изменения событий одно за другим.
+        ScopedPointer<Delta> annotationsDelta(
+            new Delta(DeltaDescription(Serialization::VCS::headStateDelta),
+                      ProjectTimelineDeltas::annotationsAdded));
 
-        // для нот в итоге надо выдать одну дельту типа eventsAdded
-        // на которую наложить все дельты изменений нот одно за другим.
-        ScopedPointer<Delta> eventsDelta(new Delta(DeltaDescription(Serialization::VCS::headStateDelta), ProjectTimelineDeltas::annotationsAdded));
-        ScopedPointer<XmlElement> eventsDeltaData;
+        ScopedPointer<Delta> timeSignaturesDelta(
+            new Delta(DeltaDescription(Serialization::VCS::headStateDelta),
+                      ProjectTimelineDeltas::timeSignaturesAdded));
+
+        ScopedPointer<XmlElement> annotationsDeltaData;
+        ScopedPointer<XmlElement> timeSignaturesDeltaData;
+
+        bool deltaFoundInChanges = false;
 
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
         {
             const Delta *targetDelta = this->target.getDelta(j);
             ScopedPointer<XmlElement> targetDeltaData(this->target.createDeltaDataFor(j));
 
-            const bool bothDeltasAreEventsType =
-                this->checkIfDeltaIsEventsType(stateDelta) && this->checkIfDeltaIsEventsType(targetDelta);
+            const bool bothDeltasAreAnnotationType =
+                this->checkIfDeltaIsAnnotationType(stateDelta) && this->checkIfDeltaIsAnnotationType(targetDelta);
 
-            if (bothDeltasAreEventsType)
+            const bool bothDeltasAreTimeSignatureType =
+                this->checkIfDeltaIsTimeSignatureType(stateDelta) && this->checkIfDeltaIsTimeSignatureType(targetDelta);
+
+            if (bothDeltasAreAnnotationType)
             {
                 deltaFoundInChanges = true;
+                const bool incrementalMerge = (annotationsDeltaData != nullptr);
 
                 if (targetDelta->getType() == ProjectTimelineDeltas::annotationsAdded)
                 {
-                    if (eventsDeltaData != nullptr)
-                    {
-                        eventsDeltaData = this->mergeAnnotationsAdded(eventsDeltaData, targetDeltaData);
-                    }
-                    else
-                    {
-                        eventsDeltaData = this->mergeAnnotationsAdded(stateDeltaData, targetDeltaData);
-                    }
+                    annotationsDeltaData = this->mergeAnnotationsAdded(
+                        incrementalMerge ? annotationsDeltaData : stateDeltaData, targetDeltaData);
                 }
                 else if (targetDelta->getType() == ProjectTimelineDeltas::annotationsRemoved)
                 {
-                    if (eventsDeltaData != nullptr)
-                    {
-                        eventsDeltaData = this->mergeAnnotationsRemoved(eventsDeltaData, targetDeltaData);
-                    }
-                    else
-                    {
-                        eventsDeltaData = this->mergeAnnotationsRemoved(stateDeltaData, targetDeltaData);
-                    }
+                    annotationsDeltaData = this->mergeAnnotationsRemoved(
+                        incrementalMerge ? annotationsDeltaData : stateDeltaData, targetDeltaData);
                 }
                 else if (targetDelta->getType() == ProjectTimelineDeltas::annotationsChanged)
                 {
-                    if (eventsDeltaData != nullptr)
-                    {
-                        eventsDeltaData = this->mergeAnnotationsChanged(eventsDeltaData, targetDeltaData);
-                    }
-                    else
-                    {
-                        eventsDeltaData = this->mergeAnnotationsChanged(stateDeltaData, targetDeltaData);
-                    }
+                    annotationsDeltaData = this->mergeAnnotationsChanged(
+                        incrementalMerge ? annotationsDeltaData : stateDeltaData, targetDeltaData);
+                }
+            }
+            else if (bothDeltasAreTimeSignatureType)
+            {
+                deltaFoundInChanges = true;
+                const bool incrementalMerge = (timeSignaturesDeltaData != nullptr);
+                
+                if (targetDelta->getType() == ProjectTimelineDeltas::timeSignaturesAdded)
+                {
+                    timeSignaturesDeltaData = this->mergeTimeSignaturesAdded(
+                        incrementalMerge ? timeSignaturesDeltaData : stateDeltaData, targetDeltaData);
+                }
+                else if (targetDelta->getType() == ProjectTimelineDeltas::timeSignaturesRemoved)
+                {
+                    timeSignaturesDeltaData = this->mergeTimeSignaturesRemoved(
+                        incrementalMerge ? timeSignaturesDeltaData : stateDeltaData, targetDeltaData);
+                }
+                else if (targetDelta->getType() == ProjectTimelineDeltas::timeSignaturesChanged)
+                {
+                    timeSignaturesDeltaData = this->mergeTimeSignaturesChanged(
+                        incrementalMerge ? timeSignaturesDeltaData : stateDeltaData, targetDeltaData);
                 }
             }
         }
 
-        if (eventsDeltaData != nullptr)
+        if (annotationsDeltaData != nullptr)
         {
-            diff->addOwnedDelta(eventsDelta.release(), eventsDeltaData.release());
+            diff->addOwnedDelta(annotationsDelta.release(), annotationsDeltaData.release());
         }
-
+        
+        if (timeSignaturesDeltaData != nullptr)
+        {
+            diff->addOwnedDelta(timeSignaturesDelta.release(), timeSignaturesDeltaData.release());
+        }
+        
         if (! deltaFoundInChanges)
         {
             auto stateDeltaCopy = new Delta(*stateDelta);
@@ -203,7 +234,7 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
 
 
 //===----------------------------------------------------------------------===//
-// Merge
+// Merge annotations
 //===----------------------------------------------------------------------===//
 
 XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsAdded(const XmlElement *state, const XmlElement *changes) const
@@ -318,6 +349,122 @@ XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsChanged(const XmlElement *
     return this->serializeLayer(result, ProjectTimelineDeltas::annotationsAdded);
 }
 
+//===----------------------------------------------------------------------===//
+// Merge time signatures
+//===----------------------------------------------------------------------===//
+
+XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesAdded(const XmlElement *state, const XmlElement *changes) const
+{
+    EmptyLayerOwner emptyOwner;
+    TimeSignaturesLayer emptyLayer(emptyOwner);
+    OwnedArray<MidiEvent> stateNotes;
+    OwnedArray<MidiEvent> changesNotes;
+    this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    
+    Array<const MidiEvent *> result;
+    
+    result.addArray(stateNotes);
+    
+    // на всякий пожарный, ищем, нет ли в состоянии нот с теми же id, где нет - добавляем
+    for (int i = 0; i < changesNotes.size(); ++i)
+    {
+        bool foundNoteInState = false;
+        const TimeSignatureEvent *changesNote = static_cast<TimeSignatureEvent *>(changesNotes.getUnchecked(i));
+        
+        for (int j = 0; j < stateNotes.size(); ++j)
+        {
+            const TimeSignatureEvent *stateNote = static_cast<TimeSignatureEvent *>(stateNotes.getUnchecked(j));
+            
+            if (stateNote->getID() == changesNote->getID())
+            {
+                foundNoteInState = true;
+                break;
+            }
+        }
+        
+        if (! foundNoteInState)
+        {
+            result.add(changesNote);
+        }
+    }
+    
+    return this->serializeLayer(result, ProjectTimelineDeltas::timeSignaturesAdded);
+}
+
+XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesRemoved(const XmlElement *state, const XmlElement *changes) const
+{
+    EmptyLayerOwner emptyOwner;
+    TimeSignaturesLayer emptyLayer(emptyOwner);
+    OwnedArray<MidiEvent> stateNotes;
+    OwnedArray<MidiEvent> changesNotes;
+    this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    
+    Array<const MidiEvent *> result;
+    
+    // добавляем все ноты из состояния, которых нет в изменениях
+    for (int i = 0; i < stateNotes.size(); ++i)
+    {
+        bool foundNoteInChanges = false;
+        const TimeSignatureEvent *stateNote = static_cast<TimeSignatureEvent *>(stateNotes.getUnchecked(i));
+        
+        for (int j = 0; j < changesNotes.size(); ++j)
+        {
+            const TimeSignatureEvent *changesNote = static_cast<TimeSignatureEvent *>(changesNotes.getUnchecked(j));
+            
+            if (stateNote->getID() == changesNote->getID())
+            {
+                foundNoteInChanges = true;
+                break;
+            }
+        }
+        
+        if (! foundNoteInChanges)
+        {
+            result.add(stateNote);
+        }
+    }
+    
+    return this->serializeLayer(result, ProjectTimelineDeltas::timeSignaturesAdded);
+}
+
+XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesChanged(const XmlElement *state, const XmlElement *changes) const
+{
+    EmptyLayerOwner emptyOwner;
+    TimeSignaturesLayer emptyLayer(emptyOwner);
+    OwnedArray<MidiEvent> stateNotes;
+    OwnedArray<MidiEvent> changesNotes;
+    this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    
+    Array<const MidiEvent *> result;
+    
+    result.addArray(stateNotes);
+    
+    // снова ищем по id и заменяем
+    for (int i = 0; i < stateNotes.size(); ++i)
+    {
+        bool foundNoteInChanges = false;
+        const TimeSignatureEvent *stateNote = static_cast<TimeSignatureEvent *>(stateNotes.getUnchecked(i));
+        
+        for (int j = 0; j < changesNotes.size(); ++j)
+        {
+            const TimeSignatureEvent *changesNote = static_cast<TimeSignatureEvent *>(changesNotes.getUnchecked(j));
+            
+            if (stateNote->getID() == changesNote->getID())
+            {
+                foundNoteInChanges = true;
+                result.removeAllInstancesOf(stateNote);
+                result.addIfNotAlreadyThere(changesNote);
+                
+                break;
+            }
+        }
+        
+        //jassert(foundNoteInChanges);
+    }
+    
+    return this->serializeLayer(result, ProjectTimelineDeltas::timeSignaturesAdded);
+}
+
 
 //===----------------------------------------------------------------------===//
 // Diff
@@ -336,7 +483,6 @@ Array<NewSerializedDelta> ProjectTimelineDiffLogic::createAnnotationsDiffs(const
     this->deserializeChanges(emptyLayer, state, changes, stateEvents, changesEvents);
 
     Array<NewSerializedDelta> res;
-
 
     Array<const MidiEvent *> addedEvents;
     Array<const MidiEvent *> removedEvents;
@@ -430,24 +576,152 @@ Array<NewSerializedDelta> ProjectTimelineDiffLogic::createAnnotationsDiffs(const
     return res;
 }
 
+
+Array<NewSerializedDelta> ProjectTimelineDiffLogic::createTimeSignaturesDiffs(const XmlElement *state, const XmlElement *changes) const
+{
+    EmptyLayerOwner emptyOwner;
+    TimeSignaturesLayer emptyLayer(emptyOwner);
+    OwnedArray<MidiEvent> stateEvents;
+    OwnedArray<MidiEvent> changesEvents;
+    
+    this->deserializeChanges(emptyLayer, state, changes, stateEvents, changesEvents);
+    
+    Array<NewSerializedDelta> res;
+    Array<const MidiEvent *> addedEvents;
+    Array<const MidiEvent *> removedEvents;
+    Array<const MidiEvent *> changedEvents;
+    
+    // собственно, само сравнение
+    for (int i = 0; i < stateEvents.size(); ++i)
+    {
+        bool foundNoteInChanges = false;
+        const TimeSignatureEvent *stateEvent = static_cast<TimeSignatureEvent *>(stateEvents.getUnchecked(i));
+        
+        for (int j = 0; j < changesEvents.size(); ++j)
+        {
+            const TimeSignatureEvent *changesEvent = static_cast<TimeSignatureEvent *>(changesEvents.getUnchecked(j));
+            
+            // событие из состояния - существует в изменениях. добавляем запись changed, если нужно.
+            if (stateEvent->getID() == changesEvent->getID())
+            {
+                foundNoteInChanges = true;
+                
+                const bool eventHasChanged = (stateEvent->getBeat() != changesEvent->getBeat() ||
+                                              stateEvent->getNumerator() != changesEvent->getNumerator() ||
+                                              stateEvent->getDenominator() != changesEvent->getDenominator());
+                
+                if (eventHasChanged)
+                {
+                    changedEvents.add(changesEvent);
+                }
+                
+                break;
+            }
+        }
+        
+        // событие из состояния - в изменениях не найдена. добавляем запись removed.
+        if (! foundNoteInChanges)
+        {
+            removedEvents.add(stateEvent);
+        }
+    }
+    
+    // теперь ищем в изменениях события, которые отсутствуют в состоянии
+    for (int i = 0; i < changesEvents.size(); ++i)
+    {
+        bool foundNoteInState = false;
+        const TimeSignatureEvent *changesEvent = static_cast<TimeSignatureEvent *>(changesEvents.getUnchecked(i));
+        
+        for (int j = 0; j < stateEvents.size(); ++j)
+        {
+            const TimeSignatureEvent *stateEvent = static_cast<TimeSignatureEvent *>(stateEvents.getUnchecked(j));
+            
+            if (stateEvent->getID() == changesEvent->getID())
+            {
+                foundNoteInState = true;
+                break;
+            }
+        }
+        
+        // и пишем ее в список добавленных
+        if (! foundNoteInState)
+        {
+            addedEvents.add(changesEvent);
+        }
+    }
+    
+    // сериализуем диффы, если таковые есть
+    
+    if (addedEvents.size() > 0)
+    {
+        res.add(this->serializeChanges(addedEvents,
+                                       "added {x} time signatures",
+                                       addedEvents.size(),
+                                       ProjectTimelineDeltas::timeSignaturesAdded));
+    }
+    
+    if (removedEvents.size() > 0)
+    {
+        res.add(this->serializeChanges(removedEvents,
+                                       "removed {x} time signatures",
+                                       removedEvents.size(),
+                                       ProjectTimelineDeltas::timeSignaturesRemoved));
+    }
+    
+    if (changedEvents.size() > 0)
+    {
+        res.add(this->serializeChanges(changedEvents,
+                                       "changed {x} time signatures",
+                                       changedEvents.size(),
+                                       ProjectTimelineDeltas::timeSignaturesChanged));
+    }
+    
+    return res;
+}
+
+
+//===----------------------------------------------------------------------===//
+// Serialization
+//===----------------------------------------------------------------------===//
+
 void ProjectTimelineDiffLogic::deserializeChanges(MidiLayer &layer,
         const XmlElement *state,
         const XmlElement *changes,
         OwnedArray<MidiEvent> &stateNotes,
         OwnedArray<MidiEvent> &changesNotes) const
 {
-    forEachXmlChildElementWithTagName(*state, e, Serialization::Core::annotation)
+    if (state != nullptr)
     {
-        AnnotationEvent *event = new AnnotationEvent(&layer);
-        event->deserialize(*e);
-        stateNotes.addSorted(*event, event);
+        forEachXmlChildElementWithTagName(*state, e, Serialization::Core::annotation)
+        {
+            AnnotationEvent *event = new AnnotationEvent(&layer);
+            event->deserialize(*e);
+            stateNotes.addSorted(*event, event);
+        }
+
+        forEachXmlChildElementWithTagName(*state, e, Serialization::Core::timeSignature)
+        {
+            TimeSignatureEvent *event = new TimeSignatureEvent(&layer);
+            event->deserialize(*e);
+            stateNotes.addSorted(*event, event);
+        }
     }
 
-    forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::annotation)
+    if (changes != nullptr)
     {
-        AnnotationEvent *event = new AnnotationEvent(&layer);
-        event->deserialize(*e);
-        changesNotes.addSorted(*event, event);
+        forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::annotation)
+        {
+            AnnotationEvent *event = new AnnotationEvent(&layer);
+            event->deserialize(*e);
+            changesNotes.addSorted(*event, event);
+        }
+        
+        forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::timeSignature)
+        {
+            TimeSignatureEvent *event = new TimeSignatureEvent(&layer);
+            event->deserialize(*e);
+            changesNotes.addSorted(*event, event);
+        }
     }
 }
 
@@ -474,9 +748,16 @@ XmlElement *ProjectTimelineDiffLogic::serializeLayer(Array<const MidiEvent *> ch
     return xml;
 }
 
-bool ProjectTimelineDiffLogic::checkIfDeltaIsEventsType(const Delta *delta) const
+bool ProjectTimelineDiffLogic::checkIfDeltaIsAnnotationType(const Delta *delta) const
 {
     return (delta->getType() == ProjectTimelineDeltas::annotationsAdded ||
             delta->getType() == ProjectTimelineDeltas::annotationsChanged ||
             delta->getType() == ProjectTimelineDeltas::annotationsRemoved);
+}
+
+bool ProjectTimelineDiffLogic::checkIfDeltaIsTimeSignatureType(const Delta *delta) const
+{
+    return (delta->getType() == ProjectTimelineDeltas::timeSignaturesAdded ||
+            delta->getType() == ProjectTimelineDeltas::timeSignaturesChanged ||
+            delta->getType() == ProjectTimelineDeltas::timeSignaturesRemoved);
 }

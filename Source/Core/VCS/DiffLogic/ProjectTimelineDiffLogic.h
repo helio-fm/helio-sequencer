@@ -54,9 +54,17 @@ namespace VCS
 
         XmlElement *mergeAnnotationsChanged(const XmlElement *state, const XmlElement *changes) const;
 
+        XmlElement *mergeTimeSignaturesAdded(const XmlElement *state, const XmlElement *changes) const;
+        
+        XmlElement *mergeTimeSignaturesRemoved(const XmlElement *state, const XmlElement *changes) const;
+        
+        XmlElement *mergeTimeSignaturesChanged(const XmlElement *state, const XmlElement *changes) const;
+
     private:
 
         Array<NewSerializedDelta> createAnnotationsDiffs(const XmlElement *state, const XmlElement *changes) const;
+
+        Array<NewSerializedDelta> createTimeSignaturesDiffs(const XmlElement *state, const XmlElement *changes) const;
 
     private:
 
@@ -74,7 +82,9 @@ namespace VCS
         XmlElement *serializeLayer(Array<const MidiEvent *> changes,
                                    const String &tag) const;
 
-        bool checkIfDeltaIsEventsType(const Delta *delta) const;
+        bool checkIfDeltaIsAnnotationType(const Delta *delta) const;
+
+        bool checkIfDeltaIsTimeSignatureType(const Delta *delta) const;
 
     };
 }  // namespace VCS

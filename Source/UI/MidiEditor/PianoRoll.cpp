@@ -629,15 +629,15 @@ XmlElement *PianoRoll::clipboardCopy() const
     if (selectionIsNotEmpty && isShiftPressed)
     {
         // todo copy from
-        const auto annotations = this->project.getTimeline();
+        const auto timeline = this->project.getTimeline();
         auto annotationLayerIdParent = new XmlElement(Serialization::Clipboard::layer);
-        annotationLayerIdParent->setAttribute(Serialization::Clipboard::layerId, annotations->getLayer()->getLayerIdAsString());
+        annotationLayerIdParent->setAttribute(Serialization::Clipboard::layerId, timeline->getAnnotations()->getLayerIdAsString());
         xml->addChildElement(annotationLayerIdParent);
 
-        for (int i = 0; i < annotations->getLayer()->size(); ++i)
+        for (int i = 0; i < timeline->getAnnotations()->size(); ++i)
         {
             if (const AnnotationEvent *event =
-                dynamic_cast<AnnotationEvent *>(annotations->getLayer()->getUnchecked(i)))
+                dynamic_cast<AnnotationEvent *>(timeline->getAnnotations()->getUnchecked(i)))
             {
                 if (const bool eventFitsInRange =
                     (event->getBeat() >= firstBeat) && (event->getBeat() < lastBeat))
