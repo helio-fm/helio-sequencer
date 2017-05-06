@@ -54,7 +54,7 @@ namespace Serialization
         static const String layer = "Layer";
         static const String pianoLayer = "PianoLayer";
         static const String autoLayer = "AutoLayer";
-        static const String projectTimeline = "DefaultAnnotationsLayer";
+        static const String projectTimeline = "ProjectTimeline";
 
         // Layers
         static const String track = "Track";

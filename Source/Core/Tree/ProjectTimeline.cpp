@@ -66,30 +66,12 @@ VCS::Delta *ProjectTimeline::getDelta(int index) const
     if (this->deltas[index]->getType() == ProjectTimelineDeltas::annotationsAdded)
     {
         const int numEvents = this->annotations->size();
-
-        if (numEvents == 0)
-        {
-            // TODO "no annotations, no time signatures"
-            this->deltas[index]->setDescription(VCS::DeltaDescription("empty annotations layer"));
-        }
-        else
-        {
-            this->deltas[index]->setDescription(VCS::DeltaDescription("{x} annotations", numEvents));
-        }
+        this->deltas[index]->setDescription(VCS::DeltaDescription("{x} annotations", numEvents));
     }
     else if (this->deltas[index]->getType() == ProjectTimelineDeltas::timeSignaturesAdded)
     {
         const int numEvents = this->timeSignatures->size();
-        
-        if (numEvents == 0)
-        {
-            // TODO "no annotations, no time signatures"
-            this->deltas[index]->setDescription(VCS::DeltaDescription("empty time signatures layer"));
-        }
-        else
-        {
-            this->deltas[index]->setDescription(VCS::DeltaDescription("{x} time signatures", numEvents));
-        }
+        this->deltas[index]->setDescription(VCS::DeltaDescription("{x} time signatures", numEvents));
     }
 
     return this->deltas[index];
@@ -250,7 +232,6 @@ void ProjectTimeline::deserialize(const XmlElement &xml)
     {
         this->timeSignatures->deserialize(*e);
     }
-    
     
     // Debug::
     //TimeSignatureEvent e(this->timeSignatures);
