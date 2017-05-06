@@ -72,6 +72,7 @@ IF(JUCE_BUILD_CONFIGFURATION MATCHES "DEBUG")
         "../../../Source/UI/MidiEditor/AutomationMap"
         "../../../Source/UI/MidiEditor/Header"
         "../../../Source/UI/MidiEditor/Helpers"
+        "../../../Source/UI/MidiEditor/TimeSignaturesMap"
         "../../../Source/UI/MidiEditor/TrackMap"
         "../../../Source/UI/MidiEditor/TriggersMap"
         "../../../Source/UI/MidiEditor/WaveformMap"
@@ -146,6 +147,7 @@ ELSEIF(JUCE_BUILD_CONFIGFURATION MATCHES "RELEASE")
         "../../../Source/UI/MidiEditor/AutomationMap"
         "../../../Source/UI/MidiEditor/Header"
         "../../../Source/UI/MidiEditor/Helpers"
+        "../../../Source/UI/MidiEditor/TimeSignaturesMap"
         "../../../Source/UI/MidiEditor/TrackMap"
         "../../../Source/UI/MidiEditor/TriggersMap"
         "../../../Source/UI/MidiEditor/WaveformMap"
@@ -643,6 +645,12 @@ add_library( ${BINARY_NAME}
     "../../../Source/UI/MidiEditor/Helpers/NoteResizerRight.h"
     "../../../Source/UI/MidiEditor/Helpers/WipeSpaceHelper.cpp"
     "../../../Source/UI/MidiEditor/Helpers/WipeSpaceHelper.h"
+    "../../../Source/UI/MidiEditor/TimeSignaturesMap/TimeSignatureLargeComponent.cpp"
+    "../../../Source/UI/MidiEditor/TimeSignaturesMap/TimeSignatureLargeComponent.h"
+    "../../../Source/UI/MidiEditor/TimeSignaturesMap/TimeSignatureSmallComponent.cpp"
+    "../../../Source/UI/MidiEditor/TimeSignaturesMap/TimeSignatureSmallComponent.h"
+    "../../../Source/UI/MidiEditor/TimeSignaturesMap/TimeSignaturesTrackMap.cpp"
+    "../../../Source/UI/MidiEditor/TimeSignaturesMap/TimeSignaturesTrackMap.h"
     "../../../Source/UI/MidiEditor/TrackMap/PianoTrackMap.cpp"
     "../../../Source/UI/MidiEditor/TrackMap/PianoTrackMap.h"
     "../../../Source/UI/MidiEditor/TrackMap/TrackScroller.cpp"
@@ -2402,6 +2410,9 @@ set_source_files_properties("../../../Source/UI/MidiEditor/Helpers/MidiRollExpan
 set_source_files_properties("../../../Source/UI/MidiEditor/Helpers/NoteResizerLeft.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/MidiEditor/Helpers/NoteResizerRight.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/MidiEditor/Helpers/WipeSpaceHelper.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../../Source/UI/MidiEditor/TimeSignaturesMap/TimeSignatureLargeComponent.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../../Source/UI/MidiEditor/TimeSignaturesMap/TimeSignatureSmallComponent.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../../Source/UI/MidiEditor/TimeSignaturesMap/TimeSignaturesTrackMap.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/MidiEditor/TrackMap/PianoTrackMap.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/MidiEditor/TrackMap/TrackScroller.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/MidiEditor/TrackMap/TrackScrollerScreen.h" PROPERTIES HEADER_FILE_ONLY TRUE)

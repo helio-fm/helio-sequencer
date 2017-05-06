@@ -168,7 +168,7 @@ void AnnotationLargeComponent::mouseDown (const MouseEvent& e)
 void AnnotationLargeComponent::mouseDrag (const MouseEvent& e)
 {
     //[UserCode_mouseDrag] -- Add your code here...
-    if (e.mods.isLeftButtonDown())
+    if (e.mods.isLeftButtonDown() && e.getDistanceFromDragStart() > 4)
     {
         if (this->draggingState)
         {

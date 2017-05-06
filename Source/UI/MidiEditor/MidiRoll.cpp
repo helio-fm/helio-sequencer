@@ -76,6 +76,10 @@
 #include "AnnotationsMap/AnnotationsTrackMap.cpp"
 template class AnnotationsTrackMap<AnnotationLargeComponent>;
 
+// force compile template
+#include "TimeSignaturesMap/TimeSignaturesTrackMap.cpp"
+template class TimeSignaturesTrackMap<TimeSignatureLargeComponent>;
+
 
 MidiRoll::MidiRoll(ProjectTreeItem &parentProject,
                    Viewport &viewportRef,
@@ -117,6 +121,8 @@ MidiRoll::MidiRoll(ProjectTreeItem &parentProject,
 
     this->header = new MidiRollHeader(this->project.getTransport(), *this, this->viewport);
     this->annotationsTrack = new AnnotationsLargeMap(this->project, *this);
+    this->timeSignaturesTrack = new TimeSignaturesLargeMap(this->project, *this);
+    
     this->indicator = new TransportIndicator(*this, this->project.getTransport(), this);
 
     this->lassoComponent = new MidiEventComponentLasso();
@@ -127,6 +133,7 @@ MidiRoll::MidiRoll(ProjectTreeItem &parentProject,
     this->addAndMakeVisible(this->bottomShadow);
     this->addAndMakeVisible(this->header);
     this->addAndMakeVisible(this->annotationsTrack);
+    this->addAndMakeVisible(this->timeSignaturesTrack);
     this->addAndMakeVisible(this->indicator);
 
     this->addAndMakeVisible(this->lassoComponent);
@@ -1983,7 +1990,9 @@ void MidiRoll::updateChildrenBounds()
 
     this->header->setBounds(0, viewY, this->getWidth(), MIDIROLL_HEADER_HEIGHT);
     this->annotationsTrack->setBounds(0, viewY, this->getWidth(), MIDIROLL_HEADER_HEIGHT);
+    this->timeSignaturesTrack->setBounds(0, viewY, this->getWidth(), MIDIROLL_HEADER_HEIGHT);
     this->annotationsTrack->toFront(false);
+    this->timeSignaturesTrack->toFront(false);
 
     if (this->wipeSpaceHelper)
     {
@@ -1998,7 +2007,8 @@ void MidiRoll::updateChildrenBounds()
     for (int i = 0; i < this->trackMaps.size(); ++i)
     {
         Component *const trackMap = this->trackMaps.getUnchecked(i);
-        trackMap->setBounds(0, viewY + viewHeight - trackMap->getHeight(), this->getWidth(), trackMap->getHeight());
+        trackMap->setBounds(0, viewY + viewHeight - trackMap->getHeight(),
+                            this->getWidth(), trackMap->getHeight());
     }
 
     this->broadcastRollResized();
@@ -2016,7 +2026,9 @@ void MidiRoll::updateChildrenPositions()
 
     this->header->setTopLeftPosition(0, viewY);
     this->annotationsTrack->setTopLeftPosition(0, viewY);
+    this->timeSignaturesTrack->setTopLeftPosition(0, viewY);
     this->annotationsTrack->toFront(false);
+    this->timeSignaturesTrack->toFront(false);
 
     if (this->wipeSpaceHelper)
     {

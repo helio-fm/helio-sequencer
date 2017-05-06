@@ -27,6 +27,7 @@
 #include "TriggersTrackMap.h"
 #include "SerializationKeys.h"
 #include "AnnotationSmallComponent.h"
+#include "TimeSignatureSmallComponent.h"
 #include "OrigamiHorizontal.h"
 #include "OrigamiVertical.h"
 #include "MidiRollCommandPanelPhone.h"
@@ -43,6 +44,10 @@
 // force compile template
 #include "AnnotationsMap/AnnotationsTrackMap.cpp"
 template class AnnotationsTrackMap<AnnotationSmallComponent>;
+
+// force compile template
+#include "TimeSignaturesMap/TimeSignaturesTrackMap.cpp"
+template class TimeSignaturesTrackMap<TimeSignatureSmallComponent>;
 
 
 #define MAX_NUM_SPLITSCREEN_EDITORS 2
@@ -424,6 +429,7 @@ MidiEditor::MidiEditor(ProjectTreeItem &parentProject) :
     this->scroller = new TrackScroller(this->project.getTransport(), *this->roll);
     this->scroller->addOwnedMap(new PianoTrackMap(this->project, *this->roll), false);
     this->scroller->addOwnedMap(new AnnotationsTrackMap<AnnotationSmallComponent>(this->project, *this->roll), false);
+    this->scroller->addOwnedMap(new TimeSignaturesTrackMap<TimeSignatureSmallComponent>(this->project, *this->roll), false);
     //this->scroller->addOwnedMap(new AutomationTrackMap(this->project, *this->roll, this->project.getDefaultTempoTrack()->getLayer()), true);
 
     this->roll->setBarWidth(MAX_BAR_WIDTH);

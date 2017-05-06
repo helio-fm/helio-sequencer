@@ -675,6 +675,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Helpers", "Helpers", "{A993
 		..\..\Source\UI\MidiEditor\Helpers\WipeSpaceHelper.h = ..\..\Source\UI\MidiEditor\Helpers\WipeSpaceHelper.h
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TimeSignaturesMap", "TimeSignaturesMap", "{3AA9445A-806B-2260-BBD8-7D165FC0802C}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureLargeComponent.cpp = ..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureLargeComponent.cpp
+		..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureLargeComponent.h = ..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureLargeComponent.h
+		..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureSmallComponent.cpp = ..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureSmallComponent.cpp
+		..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureSmallComponent.h = ..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureSmallComponent.h
+		..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignaturesTrackMap.cpp = ..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignaturesTrackMap.cpp
+		..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignaturesTrackMap.h = ..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignaturesTrackMap.h
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TrackMap", "TrackMap", "{AFD47355-5485-1DCC-A254-81D37890A01F}"
 	ProjectSection(SolutionItems) = preProject
 		..\..\Source\UI\MidiEditor\TrackMap\PianoTrackMap.cpp = ..\..\Source\UI\MidiEditor\TrackMap\PianoTrackMap.cpp
@@ -2668,6 +2678,7 @@ Global
 		{C273D9C2-1275-7D6C-1E1A-AFCD82B1220D} = {C0D7C37D-C204-F202-B6B4-F191450D4F6E}
 		{342E8DA0-53B2-8DF0-6F87-BF5C2A9CC8B2} = {C0D7C37D-C204-F202-B6B4-F191450D4F6E}
 		{A9939A38-3736-99C0-4322-A70E567A5372} = {C0D7C37D-C204-F202-B6B4-F191450D4F6E}
+		{3AA9445A-806B-2260-BBD8-7D165FC0802C} = {C0D7C37D-C204-F202-B6B4-F191450D4F6E}
 		{AFD47355-5485-1DCC-A254-81D37890A01F} = {C0D7C37D-C204-F202-B6B4-F191450D4F6E}
 		{F98304CF-EFBD-B860-17F8-C8473BA1310A} = {C0D7C37D-C204-F202-B6B4-F191450D4F6E}
 		{C0D7C37D-C204-F202-B6B4-F191450D4F6E} = {A0B56175-3F2D-E876-8518-CFA284ED1E2D}

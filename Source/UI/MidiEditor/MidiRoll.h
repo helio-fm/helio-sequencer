@@ -37,6 +37,8 @@ class TimelineWarningMarker;
 #include "ComponentFader.h"
 #include "AnnotationsTrackMap.h"
 #include "AnnotationLargeComponent.h"
+#include "TimeSignaturesTrackMap.h"
+#include "TimeSignatureLargeComponent.h"
 #include "TransportIndicator.h"
 #include "TransportListener.h"
 #include "MidiEventComponent.h"
@@ -434,6 +436,9 @@ protected:
     
     typedef AnnotationsTrackMap<AnnotationLargeComponent> AnnotationsLargeMap;
     ScopedPointer<AnnotationsLargeMap> annotationsTrack;
+
+    typedef TimeSignaturesTrackMap<TimeSignatureLargeComponent> TimeSignaturesLargeMap;
+    ScopedPointer<TimeSignaturesLargeMap> timeSignaturesTrack;
 
     ScopedPointer<Component> topShadow;
     ScopedPointer<Component> bottomShadow;
