@@ -91,7 +91,6 @@ MidiRoll::MidiRoll(ProjectTreeItem &parentProject,
     clickAnchor(0, 0),
     zoomAnchor(0, 0),
     primaryActiveLayer(nullptr),
-    snapQuantize(1),
     barWidth(0),
     firstBar(INT_MAX),
     lastBar(INT_MIN),
@@ -641,7 +640,6 @@ void MidiRoll::setBarWidth(const float newBarWidth)
         this->setSnapQuantize(64.f);
     }
 
-    this->snapWidth = this->barWidth / float(this->snapQuantize);
     this->updateBounds();
 }
 
@@ -650,11 +648,11 @@ void MidiRoll::setSnapQuantize(float quantize)
     if (quantize == 0)
     { return; }
 
-    this->snapQuantize = quantize;
-    this->snapsPerBeat = 1.0f / (this->snapQuantize / float(NUM_BEATS_IN_BAR));
-    this->snapWidth = this->barWidth / float(snapQuantize);
+    this->snapsPerBeat = 1.0f / (quantize / float(NUM_BEATS_IN_BAR));
+    this->snapWidth = this->barWidth / quantize;
 }
 
+// Snaps per quarter beat, actually
 float MidiRoll::getSnapsPerBeat() const
 {
     return this->snapsPerBeat;
@@ -664,6 +662,102 @@ float MidiRoll::getSnapWidth() const
 {
     return this->snapWidth;
 }
+
+void MidiRoll::getVisibleBeatLines(Array<float> &visibleBars,
+                                   Array<float> &visibleBeats,
+                                   Array<float> &visibleSnaps) const
+{
+    // The layer is already sorted:
+    const auto tsLayer = this->project.getTimeline()->getTimeSignatures();
+    
+    const float zeroCanvasOffset = this->getFirstBar() * this->barWidth;
+    
+    const float paintStartX = this->viewport.getViewPositionX() + zeroCanvasOffset;
+    const float paintEndX = float(this->viewport.getViewPositionX() + this->viewport.getViewWidth()) + zeroCanvasOffset;
+    
+    const int paintStartBar = int(paintStartX / this->barWidth) - 1;
+    const int paintEndBar = int(paintEndX / this->barWidth) + 1;
+    
+    int numerator = TIME_SIGNATURE_DEFAULT_NUMERATOR;
+    int denominator = TIME_SIGNATURE_DEFAULT_DENOMINATOR;
+    float i = float(paintStartBar);
+
+    int nextSignatureIdx = 0;
+
+    // Find a time signature to start from (or use default values):
+    // find a first time signature after a paint start and take a previous one, if any
+    TimeSignatureEvent *startSignature = nullptr;
+    for (; nextSignatureIdx < tsLayer->size(); ++nextSignatureIdx)
+    {
+        const auto currentSignature =
+            static_cast<TimeSignatureEvent *>(tsLayer->getUnchecked(nextSignatureIdx));
+        
+        if (currentSignature->getBeat() >= (paintStartBar * NUM_BEATS_IN_BAR))
+        {
+            if (startSignature != nullptr)
+            {
+                numerator = startSignature->getNumerator();
+                denominator = startSignature->getDenominator();
+                i = startSignature->getBeat() / NUM_BEATS_IN_BAR;
+            }
+            
+            break;
+        }
+
+        startSignature = currentSignature;
+    }
+
+    while (i <= paintEndBar)
+    {
+        // Expecting the bar to be full (if time signature does not change in between)
+        float beatStep = 1.f / float(denominator);
+        float barStep = beatStep * float(numerator);
+        const float barStartX = this->barWidth * i - zeroCanvasOffset;
+
+        visibleBars.add(barStartX); // TODO check for viewport.getViewPositionX or so?
+        
+        // Check if we have more time signatures to come
+        TimeSignatureEvent *nextSignature = nullptr;
+        if (nextSignatureIdx < tsLayer->size())
+        {
+            nextSignature = static_cast<TimeSignatureEvent *>(tsLayer->getUnchecked(nextSignatureIdx));
+        }
+        
+        // Now for the beat lines
+        for (float j = 0.f; j < barStep; j += beatStep)
+        {
+            // Check for time signature change at this point
+            if (nextSignature != nullptr)
+            {
+                if (nextSignature->getBeat() <= ((i + j) * NUM_BEATS_IN_BAR))
+                {
+                    numerator = nextSignature->getNumerator();
+                    denominator = nextSignature->getDenominator();
+                    barStep = j; // i.e. incomplete bar
+                    nextSignatureIdx++;
+                    break;
+                }
+            }
+            
+            const float beatStartX = barStartX + this->barWidth * j;
+            const float nextBeatStartX = barStartX + this->barWidth * (j + beatStep);
+            
+            // And snaps
+            for (float k = beatStartX + this->snapWidth; k < (nextBeatStartX - 1); k += this->snapWidth)
+            {
+                visibleSnaps.add(k);
+            }
+            
+            if (j >= beatStep) // Skip first as it is a barline
+            {
+                visibleBeats.add(beatStartX);
+            }
+        }
+        
+        i += barStep;
+    }
+}
+
 
 //===----------------------------------------------------------------------===//
 // Alternative keydown modes (space for drag, etc.)
@@ -1280,54 +1374,42 @@ void MidiRoll::getGridMultipliers(float targetBarWidth, int &gridMultiplier, int
 
 void MidiRoll::paint(Graphics &g)
 {
-    const Colour barStart = findColour(MidiRoll::barStartLineColourId);
-    const Colour beatStart = findColour(MidiRoll::beatStartLineColourId);
-
-    int dynamicGridSize = NUM_BEATS_IN_BAR;
-    int showEvery = 1;
-
-    MidiRoll::getGridMultipliers(this->barWidth, dynamicGridSize, showEvery);
-
-    const float zeroCanvasOffset = this->getFirstBar() * this->barWidth;
-
-    const float paintStartX = this->viewport.getViewPositionX() - this->barWidth + zeroCanvasOffset;
-    const float paintEndX = float(this->viewport.getViewPositionX() + this->viewport.getViewWidth()) + zeroCanvasOffset;
+    const Colour barLine = findColour(MidiRoll::barLineColourId);
+    const Colour barLineBevel = findColour(MidiRoll::barLineBevelColourId);
+    const Colour beatLine = findColour(MidiRoll::beatLineColourId);
+    const Colour snapLine = findColour(MidiRoll::snapLineColourId);
+    
+    // Should be easy as this:
+    Array<float> visibleBars;
+    Array<float> visibleBeats;
+    Array<float> visibleSnaps;
+    this->getVisibleBeatLines(visibleBars, visibleBeats, visibleSnaps);
 
     const float paintStartY = float(this->viewport.getViewPositionY());
     const float paintEndY = paintStartY + this->viewport.getViewHeight();
 
-    float pos_x = paintStartX - fmodf(paintStartX, this->barWidth);
-
-    int i = int(paintStartX / this->barWidth) - showEvery;
-    const int j = int(paintEndX / this->barWidth);
-
-    const float beatWidth = this->barWidth / dynamicGridSize;
-
-    while (i <= j)
+    g.setColour(barLine);
+    for (const auto f : visibleBars)
     {
-        // show every x'th
-        if (i % showEvery == 0)
-        {
-            const float startX1 = (barWidth * i) - zeroCanvasOffset;
+        g.drawVerticalLine(f, paintStartY, paintEndY);
+    }
 
-            g.setColour(beatStart);
-            //g.drawLine(startX1, paintStartY, startX1, paintEndY, 0.8f);
-            g.drawVerticalLine(startX1, paintStartY, paintEndY);
+    g.setColour(barLineBevel);
+    for (const auto f : visibleBars)
+    {
+        g.drawVerticalLine(f + 1, paintStartY, paintEndY);
+    }
 
-            g.setColour(barStart);
-            //g.drawVerticalLine(startX1 - 1, paintStartY, paintEndY);
-
-            for (int k = 1; k < dynamicGridSize; k++)
-            {
-                const float startX2 = (barWidth * i + beatWidth * showEvery * k) - zeroCanvasOffset;
-
-                //g.setColour(rowLine);
-                //g.drawLine(startX2, paintStartY, startX2, paintEndY, 0.5f);
-                g.drawVerticalLine(startX2, paintStartY, paintEndY);
-            }
-        }
-
-        i++;
+    g.setColour(beatLine);
+    for (const auto f : visibleBeats)
+    {
+        g.drawVerticalLine(f, paintStartY, paintEndY);
+    }
+    
+    g.setColour(snapLine);
+    for (const auto f : visibleSnaps)
+    {
+        g.drawVerticalLine(f, paintStartY, paintEndY);
     }
 }
 

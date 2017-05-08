@@ -234,7 +234,7 @@ void ProjectTimeline::deserialize(const XmlElement &xml)
     }
     
     // Debug::
-    //TimeSignatureEvent e(this->timeSignatures);
+    //TimeSignatureEvent e(this->timeSignatures, 0.f, 9, 16);
     //(static_cast<TimeSignaturesLayer *>(this->timeSignatures.get()))->insert(e, false);
 }
 

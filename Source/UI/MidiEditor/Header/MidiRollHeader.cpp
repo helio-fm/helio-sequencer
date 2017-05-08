@@ -36,8 +36,6 @@
 #define MIDIROLL_HEADER_SELECTION_ALIGNS_TO_BEATS 0
 #define MIN_TIME_DISTANCE_INDICATOR_SIZE (40)
 
-#define MIDIROLL_PRERENDERED_HEADER 0
-
 MidiRollHeader::MidiRollHeader(Transport &transportRef, MidiRoll &rollRef, Viewport &viewportRef) :
     transport(transportRef),
     roll(rollRef),
@@ -47,13 +45,6 @@ MidiRollHeader::MidiRollHeader(Transport &transportRef, MidiRoll &rollRef, Viewp
 {
     this->setOpaque(true);
     this->setAlwaysOnTop(true);
-    
-#if MIDIROLL_PRERENDERED_HEADER
-    this->setBufferedToImage(true);
-#else
-    this->setBufferedToImage(false);
-#endif
-
     this->setSize(this->getParentWidth(), MIDIROLL_HEADER_HEIGHT);
 }
 
@@ -438,24 +429,8 @@ void MidiRollHeader::handleCommandMessage(int commandId)
 
 void MidiRollHeader::paint(Graphics &g)
 {
-    const int numBars = this->roll.getNumBars();
-    const float barWidth = this->roll.getBarWidth();
-    
-    int dynamicGridSize = NUM_BEATS_IN_BAR;
-    int showEvery = 1;
-    
-    MidiRoll::getGridMultipliers(barWidth, dynamicGridSize, showEvery);
-
-#if MIDIROLL_PRERENDERED_HEADER
-    const int paintStartX = 0;
-    const int paintEndX = this->getWidth();
-    const int paintWidth = this->getWidth();
-#else
-    const int zeroCanvasOffset = int(this->roll.getFirstBar() * barWidth);
-    const int paintStartX = int(this->viewport.getViewPositionX() - barWidth + zeroCanvasOffset);
-    const int paintEndX = this->viewport.getViewPositionX() + this->viewport.getViewWidth() + zeroCanvasOffset;
-    const int paintWidth = paintEndX - paintStartX;
-#endif
+    const int paintStartX = this->viewport.getViewPositionX();
+    const int paintEndX = this->viewport.getViewPositionX() + this->viewport.getViewWidth();
 
     const Colour backCol(this->findColour(MidiRoll::headerColourId));
     const Colour frontCol(this->isActive ?
@@ -463,54 +438,31 @@ void MidiRollHeader::paint(Graphics &g)
                           backCol.contrasting().withMultipliedAlpha(0.1f));
 
     g.setColour(backCol);
-    //g.setGradientFill(ColourGradient(backCol.brighter(0.03f),
-    //                                 0.f,
-    //                                 4.f,
-    //                                 backCol.darker(0.03f),
-    //                                 0.f,
-    //                                 float(this->getHeight() - 4), false));
+    g.fillRect(paintStartX, 0, paintEndX - paintStartX, MIDIROLL_HEADER_HEIGHT);
 
-    g.fillRect(paintStartX - zeroCanvasOffset, 0, paintWidth, MIDIROLL_HEADER_HEIGHT);
-
-#if MIDIROLL_PRERENDERED_HEADER
-    HelioTheme::drawNoise(g, getWidth(), getHeight(), 3);
-#endif
-
-//    const float h1Font = 14.f;
-//    const float h2Font = 16.f;
-
-//    g.setColour(frontCol.withMultipliedAlpha(0.5f));
-//    g.setFont(Font(Font::getDefaultSerifFontName(), h1Font, Font::plain));
-//    g.drawText(this->roll.getPrimaryActiveMidiLayer()->getOwner()->getXPath(),
-//               Rectangle<float>(this->viewport.getViewPositionX() + 5.f, 3.f, float(this->viewport.getViewWidth()) - 10.f, float(this->getHeight() / 2)),
-//               Justification::centredRight,
-//               false);
+    //HelioTheme::drawNoise(g, getWidth(), getHeight(), 3);
     
     g.setColour(frontCol);
-
-    int i = int(paintStartX / barWidth) - showEvery;
-    const int j = int(paintEndX / barWidth);
-    const float beatWidth = barWidth / float(dynamicGridSize);
-
-    while (i <= j)
+    
+    // Should be easy as this:
+    Array<float> visibleBars;
+    Array<float> visibleBeats;
+    Array<float> visibleSnaps;
+    this->roll.getVisibleBeatLines(visibleBars, visibleBeats, visibleSnaps);
+    
+    for (const auto f : visibleBars)
     {
-        // show every x'th
-        if (i % showEvery == 0)
-        {
-            const float startX1 = float(barWidth * i) - zeroCanvasOffset + 0.5f;
-            
-            g.drawLine(startX1, float(this->getHeight() - 13), startX1, float(this->getHeight() - 1), 2.f);
-            //g.drawVerticalLine(startX1, float(this->getHeight() - 13.f), float(this->getHeight() - 1.f));
+        g.drawLine(f, float(this->getHeight() - 16), f, float(this->getHeight() - 1), 2.5f);
+    }
 
-            for (int k = 1; k < dynamicGridSize; k++)
-            {
-                const float startX2 = (barWidth * i + beatWidth * showEvery * k) - zeroCanvasOffset;
-                //g.drawLine(startX2, float(this->getHeight() - 8), startX2, float(this->getHeight() - 1), 0.25f);
-                g.drawVerticalLine(startX2, float(this->getHeight() - 8.f), float(this->getHeight() - 1.f));
-            }
-        }
+    for (const auto f : visibleBeats)
+    {
+        g.drawVerticalLine(f, float(this->getHeight() - 10), float(this->getHeight() - 1.f));
+    }
 
-        i++;
+    for (const auto f : visibleSnaps)
+    {
+        g.drawVerticalLine(f, float(this->getHeight() - 4), float(this->getHeight() - 1.f));
     }
 
     g.setColour(Colours::white.withAlpha(0.025f));

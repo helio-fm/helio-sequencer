@@ -49,7 +49,6 @@
 #include "Config.h"
 #include "SerializationKeys.h"
 
-// todo fixed NUM_BEATS_IN_BAR(4)
 #define ROWS_OF_TWO_OCTAVES 24
 
 PianoRoll::PianoRoll(ProjectTreeItem &parentProject,

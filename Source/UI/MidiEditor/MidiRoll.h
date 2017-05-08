@@ -61,7 +61,11 @@ class TimelineWarningMarker;
 #   define MIDIROLL_HEADER_HEIGHT (48)
 #endif
 
+
+// Track is measured in quarter beats
 #define NUM_BEATS_IN_BAR 4
+
+// For the empty project:
 #define DEFAULT_NUM_BARS 8
 
 
@@ -103,10 +107,12 @@ public:
         whiteKeyColourId                 = 0x99002003,
         whiteKeyBrightColourId           = 0x99002004,
         rowLineColourId                  = 0x99002005,
-        barStartLineColourId             = 0x99002006,
-        beatStartLineColourId            = 0x99002007,
-        headerColourId                   = 0x99002008,
-        indicatorColourId                = 0x99002009
+        barLineColourId                  = 0x99002006,
+        barLineBevelColourId             = 0x99002007,
+        beatLineColourId                 = 0x99002008,
+        snapLineColourId                 = 0x99002009,
+        headerColourId                   = 0x99002010,
+        indicatorColourId                = 0x99002011
     };
     
     MidiRoll(ProjectTreeItem &parentProject,
@@ -239,6 +245,10 @@ public:
     void setSnapQuantize(float snapQuantize);
     float getSnapsPerBeat() const;
     float getSnapWidth() const;
+    
+    void getVisibleBeatLines(Array<float> &visibleBars,
+                             Array<float> &visibleBeats,
+                             Array<float> &visibleSnaps) const;
     
     bool isUsingAnyAltMode() const;
     void setSpaceDraggingMode(bool dragMode);
@@ -411,7 +421,6 @@ protected:
     bool isWipeSpaceEvent(const MouseEvent &e) const;
     bool isInsertSpaceEvent(const MouseEvent &e) const;
     
-    float snapQuantize;
     float snapsPerBeat;
     float snapWidth;
 
