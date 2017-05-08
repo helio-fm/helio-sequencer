@@ -82,13 +82,13 @@ void AnnotationLargeComponent::paint (Graphics& g)
                 Justification::centredLeft, true);
 
     g.setColour (Colour (0x20ffffff));
-    g.fillRect (0, 0, getWidth() - 0, 2);
+    g.fillRect (0, 0, getWidth() - 0, 3);
 
     //[UserPaint] Add your own custom painting code here..
 #endif
 
     g.setColour(this->event.getColour().interpolatedWith(Colours::white, 0.5f).withAlpha(30.f / 255.f));
-    g.fillRect (0, 0, getWidth() - 0, 2);
+    g.fillRect (0, 0, getWidth() - 0, 3);
 
     if (this->event.getDescription().isNotEmpty())
     {
@@ -293,7 +293,7 @@ BEGIN_JUCER_METADATA
     <TEXT pos="4 4 6M 8M" fill="solid: 88ffffff" hasStroke="0" text="..."
           fontname="Default font" fontsize="16" kerning="0" bold="0" italic="0"
           justification="33"/>
-    <RECT pos="0 0 0M 2" fill="solid: 20ffffff" hasStroke="0"/>
+    <RECT pos="0 0 0M 3" fill="solid: 20ffffff" hasStroke="0"/>
   </BACKGROUND>
   <LABEL name="annotationLabel" id="3dbd8cef4b61c2fe" memberName="annotationLabel"
          virtualName="" explicitFocusOrder="0" pos="4 -40 6M 8M" textCol="99ffffff"

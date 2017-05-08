@@ -2071,8 +2071,8 @@ void MidiRoll::updateChildrenBounds()
     this->bottomShadow->setBounds(viewX, viewY + viewHeight - shadowSize, viewWidth, shadowSize);
 
     this->header->setBounds(0, viewY, this->getWidth(), MIDIROLL_HEADER_HEIGHT);
-    this->annotationsTrack->setBounds(0, viewY, this->getWidth(), MIDIROLL_HEADER_HEIGHT);
-    this->timeSignaturesTrack->setBounds(0, viewY + MIDIROLL_HEADER_HEIGHT, this->getWidth(), MIDIROLL_HEADER_HEIGHT);
+    this->annotationsTrack->setBounds(0, viewY + MIDIROLL_HEADER_HEIGHT, this->getWidth(), MIDIROLL_HEADER_HEIGHT);
+    this->timeSignaturesTrack->setBounds(0, viewY, this->getWidth(), MIDIROLL_HEADER_HEIGHT);
     this->annotationsTrack->toFront(false);
     this->timeSignaturesTrack->toFront(false);
 
@@ -2107,8 +2107,8 @@ void MidiRoll::updateChildrenPositions()
     this->bottomShadow->setTopLeftPosition(viewX, viewY + viewHeight - shadowSize);
 
     this->header->setTopLeftPosition(0, viewY);
-    this->annotationsTrack->setTopLeftPosition(0, viewY);
-    this->timeSignaturesTrack->setTopLeftPosition(0, viewY + MIDIROLL_HEADER_HEIGHT);
+    this->annotationsTrack->setTopLeftPosition(0, viewY + MIDIROLL_HEADER_HEIGHT);
+    this->timeSignaturesTrack->setTopLeftPosition(0, viewY);
     this->annotationsTrack->toFront(false);
     this->timeSignaturesTrack->toFront(false);
 

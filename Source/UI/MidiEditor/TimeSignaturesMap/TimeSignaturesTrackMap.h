@@ -87,6 +87,8 @@ private:
     T *getPreviousEventComponent(int indexOfSorted) const;
     T *getNextEventComponent(int indexOfSorted) const;
     
+    void updateTrackRangeIndicatorsAnchors();
+    
 private:
     
     float projectFirstBeat;
@@ -97,6 +99,9 @@ private:
     
     MidiRoll &roll;
     ProjectTreeItem &project;
+    
+    ScopedPointer<TrackStartIndicator> trackStartIndicator;
+    ScopedPointer<TrackEndIndicator> trackEndIndicator;
     
     ComponentAnimator animator;
 

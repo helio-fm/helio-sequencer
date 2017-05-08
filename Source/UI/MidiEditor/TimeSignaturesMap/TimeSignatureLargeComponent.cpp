@@ -32,7 +32,7 @@ TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesTrackMap<
       mouseDownWasTriggered(false)
 {
     addAndMakeVisible (numeratorLabel = new Label (String(),
-                                                   TRANS("16")));
+                                                   TRANS("26")));
     numeratorLabel->setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
     numeratorLabel->setJustificationType (Justification::centredRight);
     numeratorLabel->setEditable (false, false, false);
@@ -90,14 +90,12 @@ TimeSignatureLargeComponent::~TimeSignatureLargeComponent()
 void TimeSignatureLargeComponent::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
-#if 0
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x20ffffff));
-    g.fillRect (0, 0, 2, getHeight() - 0);
+    g.setColour (Colour (0x53ffffff));
+    g.fillRect (0, 0, getWidth() - 0, 3);
 
     //[UserPaint] Add your own custom painting code here..
-#endif
     //[/UserPaint]
 }
 
@@ -106,9 +104,9 @@ void TimeSignatureLargeComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    numeratorLabel->setBounds (-14, 0, 42, 24);
-    divLabel->setBounds (20, 0, 24, 32);
-    denominatorLabel->setBounds (29, 8, 32, 24);
+    numeratorLabel->setBounds (-18, 0, 42, 24);
+    divLabel->setBounds (14, 2, 22, 32);
+    denominatorLabel->setBounds (21, 12, 36, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -264,20 +262,20 @@ BEGIN_JUCER_METADATA
     <METHOD name="mouseDoubleClick (const MouseEvent&amp; e)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <RECT pos="0 0 2 0M" fill="solid: 20ffffff" hasStroke="0"/>
+    <RECT pos="0 0 0M 3" fill="solid: 53ffffff" hasStroke="0"/>
   </BACKGROUND>
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="numeratorLabel" virtualName=""
-         explicitFocusOrder="0" pos="-14 0 42 24" textCol="99ffffff" edTextCol="ff000000"
-         edBkgCol="0" labelText="16" editableSingleClick="0" editableDoubleClick="0"
+         explicitFocusOrder="0" pos="-18 0 42 24" textCol="99ffffff" edTextCol="ff000000"
+         edBkgCol="0" labelText="26" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="16"
          kerning="0" bold="0" italic="0" justification="34"/>
   <LABEL name="" id="5710d8ba7f669fd0" memberName="divLabel" virtualName=""
-         explicitFocusOrder="0" pos="20 0 24 32" textCol="99ffffff" edTextCol="ff000000"
+         explicitFocusOrder="0" pos="14 2 22 32" textCol="99ffffff" edTextCol="ff000000"
          edBkgCol="0" labelText="/" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="16"
          kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="" id="971a291c01db0330" memberName="denominatorLabel" virtualName=""
-         explicitFocusOrder="0" pos="29 8 32 24" textCol="99ffffff" edTextCol="ff000000"
+         explicitFocusOrder="0" pos="21 12 36 24" textCol="99ffffff" edTextCol="ff000000"
          edBkgCol="0" labelText="16" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="16"
          kerning="0" bold="0" italic="0" justification="33"/>

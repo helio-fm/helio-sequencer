@@ -26,8 +26,6 @@
 #include "MidiRoll.h"
 #include "HelioCallout.h"
 #include "AnnotationCommandPanel.h"
-#include "TrackStartIndicator.h"
-#include "TrackEndIndicator.h"
 
 template<typename T> AnnotationsTrackMap<T>::AnnotationsTrackMap(ProjectTreeItem &parentProject, MidiRoll &parentRoll) :
     project(parentProject),
@@ -41,14 +39,6 @@ template<typename T> AnnotationsTrackMap<T>::AnnotationsTrackMap(ProjectTreeItem
     this->setAlwaysOnTop(true);
     this->setInterceptsMouseClicks(false, true);
     
-    this->trackStartIndicator = new TrackStartIndicator();
-    this->addAndMakeVisible(this->trackStartIndicator);
-
-    this->trackEndIndicator = new TrackEndIndicator();
-    this->addAndMakeVisible(this->trackEndIndicator);
-    
-    this->updateTrackRangeIndicatorsAnchors();
-    
     this->reloadTrackMap();
     
     this->project.addListener(this);
@@ -57,16 +47,6 @@ template<typename T> AnnotationsTrackMap<T>::AnnotationsTrackMap(ProjectTreeItem
 template<typename T> AnnotationsTrackMap<T>::~AnnotationsTrackMap()
 {
     this->project.removeListener(this);
-}
-
-template<typename T> void AnnotationsTrackMap<T>::updateTrackRangeIndicatorsAnchors()
-{
-    const float rollLengthInBeats = (this->rollLastBeat - this->rollFirstBeat);
-    const float absStart = ((this->projectFirstBeat - this->rollFirstBeat) / rollLengthInBeats);
-    const float absEnd = ((this->projectLastBeat - this->rollFirstBeat) / rollLengthInBeats);
-    //Logger::writeToLog("updateTrackRangeIndicatorsAnchors: " + String(absStart) + ":" + String(absEnd));
-    this->trackStartIndicator->setAnchoredAt(absStart);
-    this->trackEndIndicator->setAnchoredAt(absEnd);
 }
 
 
@@ -103,8 +83,6 @@ template<typename T> void AnnotationsTrackMap<T>::resized()
         previous = current;
     }
 
-    this->updateTrackRangeIndicatorsAnchors();
-    
     this->setVisible(true);
 }
 
@@ -263,7 +241,6 @@ template<typename T> void AnnotationsTrackMap<T>::onProjectBeatRangeChanged(floa
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
-    this->updateTrackRangeIndicatorsAnchors();
 }
 
 
