@@ -255,27 +255,19 @@ public:
                                          float(this->getHeight() - 4), false));
         
         g.fillAll();
-        
         g.setColour(frontCol);
         
-        Array<float> visibleBars;
-        Array<float> visibleBeats;
-        Array<float> visibleSnaps;
-        
-        // FIXME: this will not be repainted immediately when any time signature event changes
-        this->roll.getVisibleBeatLines(visibleBars, visibleBeats, visibleSnaps);
-        
-        for (const auto f : visibleBars)
+        for (const auto f : this->roll.getVisibleBars())
         {
             g.drawLine(f - pX, 0.f, f - pX, float(this->getHeight() - 1), 0.4f);
         }
         
-        for (const auto f : visibleBeats)
+        for (const auto f : this->roll.getVisibleBeats())
         {
             g.drawLine(f - pX, 0.f, f - pX, float(this->getHeight() - 1), 0.1f);
         }
         
-        for (const auto f : visibleSnaps)
+        for (const auto f : this->roll.getVisibleSnaps())
         {
             g.drawLine(f - pX, 0.f, f - pX, float(this->getHeight() - 1), 0.025f);
         }
@@ -289,16 +281,13 @@ public:
     
     void onMidiRollMoved(MidiRoll *targetRoll) override
     {
-        //this->triggerAsyncUpdate();
-        // or
         this->updateTargetPosition();
     }
     
     void onMidiRollResized(MidiRoll *targetRoll) override
     {
-        //this->triggerAsyncUpdate();
-        // or
         this->updateTargetBounds();
+        this->target->repaint();
     }
     
     MidiRoll &getRoll()

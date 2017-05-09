@@ -667,11 +667,15 @@ float MidiRoll::getSnapWidth() const
     return this->snapWidth;
 }
 
-void MidiRoll::getVisibleBeatLines(Array<float> &visibleBars,
-                                   Array<float> &visibleBeats,
-                                   Array<float> &visibleSnaps) const
+#define MIN_BAR_WIDTH 12
+#define MIN_BEAT_WIDTH 8
+
+void MidiRoll::computeVisibleBeatLines()
 {
-    // The layer is already sorted:
+    this->visibleBars.clearQuick();
+    this->visibleBeats.clearQuick();
+    this->visibleSnaps.clearQuick();
+
     const auto tsLayer = this->project.getTimeline()->getTimeSignatures();
     
     const float zeroCanvasOffset = this->getFirstBar() * this->barWidth;
@@ -707,10 +711,6 @@ void MidiRoll::getVisibleBeatLines(Array<float> &visibleBars,
     }
     
     float barWidthSum = 0.f;
-
-#define MIN_BAR_WIDTH 12
-#define MIN_BEAT_WIDTH 8
-    
     while (i <= paintEndBar)
     {
         // Expecting the bar to be full (if time signature does not change in between)
@@ -918,7 +918,7 @@ void MidiRoll::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEve
     // Time signatures have changed, need to repaint
     if (dynamic_cast<const TimeSignatureEvent *>(&oldEvent))
     {
-        this->repaint();
+        this->resized();
     }
 }
 
@@ -926,7 +926,7 @@ void MidiRoll::onEventAdded(const MidiEvent &event)
 {
     if (dynamic_cast<const TimeSignatureEvent *>(&event))
     {
-        this->repaint();
+        this->resized();
     }
 }
 
@@ -934,7 +934,7 @@ void MidiRoll::onEventRemoved(const MidiEvent &event)
 {
     if (dynamic_cast<const TimeSignatureEvent *>(&event))
     {
-        this->repaint();
+        this->resized();
     }
 }
 
@@ -1381,35 +1381,31 @@ void MidiRoll::paint(Graphics &g)
     const Colour beatLine = findColour(MidiRoll::beatLineColourId);
     const Colour snapLine = findColour(MidiRoll::snapLineColourId);
     
-    // Should be easy as this:
-    Array<float> visibleBars;
-    Array<float> visibleBeats;
-    Array<float> visibleSnaps;
-    this->getVisibleBeatLines(visibleBars, visibleBeats, visibleSnaps);
+    this->computeVisibleBeatLines();
 
     const float paintStartY = float(this->viewport.getViewPositionY());
     const float paintEndY = paintStartY + this->viewport.getViewHeight();
 
     g.setColour(barLine);
-    for (const auto f : visibleBars)
+    for (const auto f : this->visibleBars)
     {
         g.drawVerticalLine(f, paintStartY, paintEndY);
     }
 
     g.setColour(barLineBevel);
-    for (const auto f : visibleBars)
+    for (const auto f : this->visibleBars)
     {
         g.drawVerticalLine(f + 1, paintStartY, paintEndY);
     }
 
     g.setColour(beatLine);
-    for (const auto f : visibleBeats)
+    for (const auto f : this->visibleBeats)
     {
         g.drawVerticalLine(f, paintStartY, paintEndY);
     }
     
     g.setColour(snapLine);
-    for (const auto f : visibleSnaps)
+    for (const auto f : this->visibleSnaps)
     {
         g.drawVerticalLine(f, paintStartY, paintEndY);
     }
@@ -2129,9 +2125,6 @@ void MidiRoll::updateChildrenPositions()
         Component *const trackMap = this->trackMaps.getUnchecked(i);
         trackMap->setTopLeftPosition(0, viewY + viewHeight - trackMap->getHeight());
     }
-
-//    this->leftShadow->toFront(false);
-//    this->rightShadow->toFront(false);
 
     this->broadcastRollMoved();
 }

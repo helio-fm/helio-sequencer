@@ -444,23 +444,17 @@ void MidiRollHeader::paint(Graphics &g)
     
     g.setColour(frontCol);
     
-    // Should be easy as this:
-    Array<float> visibleBars;
-    Array<float> visibleBeats;
-    Array<float> visibleSnaps;
-    this->roll.getVisibleBeatLines(visibleBars, visibleBeats, visibleSnaps);
-    
-    for (const auto f : visibleBars)
+    for (const auto f : this->roll.getVisibleBars())
     {
         g.drawLine(f, float(this->getHeight() - 16), f, float(this->getHeight() - 1), 2.5f);
     }
 
-    for (const auto f : visibleBeats)
+    for (const auto f : this->roll.getVisibleBeats())
     {
         g.drawVerticalLine(f, float(this->getHeight() - 10), float(this->getHeight() - 1.f));
     }
 
-    for (const auto f : visibleSnaps)
+    for (const auto f : this->roll.getVisibleSnaps())
     {
         g.drawVerticalLine(f, float(this->getHeight() - 4), float(this->getHeight() - 1.f));
     }

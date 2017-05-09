@@ -226,27 +226,27 @@ public:
     float getRoundBeatByXPosition(int x) const;
     
     virtual void setLastBar(int bar);
-    inline int getLastBar() const { return this->lastBar; }
-    inline float getLastBeat() const { return float(this->lastBar * NUM_BEATS_IN_BAR); }
+    inline int getLastBar() const noexcept { return this->lastBar; }
+    inline float getLastBeat() const noexcept { return float(this->lastBar * NUM_BEATS_IN_BAR); }
     
     virtual void setFirstBar(int bar);
-    inline int getFirstBar() const { return this->firstBar; }
-    inline float getFirstBeat() const { return float(this->firstBar * NUM_BEATS_IN_BAR); }
+    inline int getFirstBar() const noexcept { return this->firstBar; }
+    inline float getFirstBeat() const noexcept { return float(this->firstBar * NUM_BEATS_IN_BAR); }
     
     void setBarRange(int first, int last);
     inline int getNumBars() const { return this->lastBar - this->firstBar; }
     inline int getNumBeats() const { return this->getNumBars() * NUM_BEATS_IN_BAR; }
 
     virtual void setBarWidth(const float newBarWidth);
-    float getBarWidth() const { return this->barWidth; }
+    float getBarWidth() const noexcept { return this->barWidth; }
 
+    Array<float> &getVisibleBars() noexcept { return this->visibleBars; }
+    Array<float> &getVisibleBeats() noexcept { return this->visibleBeats; }
+    Array<float> &getVisibleSnaps() noexcept { return this->visibleSnaps; }
+    
     void setSnapQuantize(float snapQuantize);
     float getSnapsPerBeat() const;
     float getSnapWidth() const;
-    
-    void getVisibleBeatLines(Array<float> &visibleBars,
-                             Array<float> &visibleBeats,
-                             Array<float> &visibleSnaps) const;
     
     bool isUsingAnyAltMode() const;
     void setSpaceDraggingMode(bool dragMode);
@@ -454,6 +454,14 @@ protected:
     ScopedPointer<Component> bottomShadow;
 
     ScopedPointer<MidiEventComponentLasso> lassoComponent;
+
+protected:
+    
+    Array<float> visibleBars;
+    Array<float> visibleBeats;
+    Array<float> visibleSnaps;
+
+    void computeVisibleBeatLines();
 
 protected:
 
