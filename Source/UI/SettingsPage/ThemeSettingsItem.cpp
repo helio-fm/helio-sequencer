@@ -132,7 +132,9 @@ void ThemeSettingsItem::paint (Graphics& g)
         const float beatWidth = barWidth / dynamicGridSize;
 
         const Colour barStart = this->theme->findColour(MidiRoll::barLineColourId);
+        const Colour barBevel = this->theme->findColour(MidiRoll::barLineBevelColourId);
         const Colour beatStart = this->theme->findColour(MidiRoll::beatLineColourId);
+        const Colour snapStart = this->theme->findColour(MidiRoll::snapLineColourId);
 
         while (i <= j)
         {
@@ -141,16 +143,18 @@ void ThemeSettingsItem::paint (Graphics& g)
             {
                 const float startX1 = (barWidth * i);
 
-                g.setColour(beatStart);
+                g.setColour(barStart);
                 g.drawVerticalLine(startX1, lineStartY, lineEndY);
 
-                g.setColour(barStart);
+                g.setColour(barBevel);
+                g.drawVerticalLine(startX1 + 1, lineStartY, lineEndY);
 
-                for (int k = 1; k < dynamicGridSize; k++)
-                {
-                    const float startX2 = (barWidth * i + beatWidth * k);
-                    g.drawVerticalLine(startX2, lineStartY, lineEndY);
-                }
+                g.setColour(beatStart);
+                g.drawVerticalLine((barWidth * i + beatWidth * 2), lineStartY, lineEndY);
+
+                g.setColour(snapStart);
+                g.drawVerticalLine((barWidth * i + beatWidth), lineStartY, lineEndY);
+                g.drawVerticalLine((barWidth * i + beatWidth * 3), lineStartY, lineEndY);
             }
 
             i++;
