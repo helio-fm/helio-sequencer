@@ -87,8 +87,8 @@ void AnnotationLargeComponent::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-    g.setColour(this->event.getColour().interpolatedWith(Colours::white, 0.5f).withAlpha(30.f / 255.f));
-    g.fillRect (0, 0, getWidth() - 0, 3);
+    g.setColour(this->event.getColour().interpolatedWith(Colours::white, 0.5f).withAlpha(75.f / 255.f));
+    g.fillRect(0, 2, this->getWidth(), 3);
 
     if (this->event.getDescription().isNotEmpty())
     {

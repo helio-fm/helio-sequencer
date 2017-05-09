@@ -23,7 +23,6 @@ class AnnotationEvent;
 #include "AnnotationsTrackMap.h"
 //[/Headers]
 
-#include "../../Themes/SeparatorVertical.h"
 
 class AnnotationSmallComponent  : public Component
 {
@@ -73,7 +72,6 @@ private:
     //[/UserVariables]
 
     ScopedPointer<Label> annotationLabel;
-    ScopedPointer<SeparatorVertical> component;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AnnotationSmallComponent)
 };

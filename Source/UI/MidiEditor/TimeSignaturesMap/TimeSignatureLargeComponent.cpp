@@ -27,48 +27,20 @@
 
 TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesTrackMap<TimeSignatureLargeComponent> &parent, const TimeSignatureEvent &targetEvent)
     : event(targetEvent),
-      anchor(targetEvent),
       editor(parent),
+      anchor(targetEvent),
+      numerator(0),
+      denominator(0),
       mouseDownWasTriggered(false)
 {
-    addAndMakeVisible (numeratorLabel = new Label (String(),
-                                                   TRANS("26")));
-    numeratorLabel->setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
-    numeratorLabel->setJustificationType (Justification::centredRight);
-    numeratorLabel->setEditable (false, false, false);
-    numeratorLabel->setColour (Label::textColourId, Colour (0x99ffffff));
-    numeratorLabel->setColour (TextEditor::textColourId, Colours::black);
-    numeratorLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
-
-    addAndMakeVisible (divLabel = new Label (String(),
-                                             TRANS("/")));
-    divLabel->setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
-    divLabel->setJustificationType (Justification::centredLeft);
-    divLabel->setEditable (false, false, false);
-    divLabel->setColour (Label::textColourId, Colour (0x99ffffff));
-    divLabel->setColour (TextEditor::textColourId, Colours::black);
-    divLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
-
-    addAndMakeVisible (denominatorLabel = new Label (String(),
-                                                     TRANS("16")));
-    denominatorLabel->setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
-    denominatorLabel->setJustificationType (Justification::centredLeft);
-    denominatorLabel->setEditable (false, false, false);
-    denominatorLabel->setColour (Label::textColourId, Colour (0x99ffffff));
-    denominatorLabel->setColour (TextEditor::textColourId, Colours::black);
-    denominatorLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
-
 
     //[UserPreSize]
     this->setOpaque(false);
     this->setInterceptsMouseClicks(true, false);
     this->setMouseCursor(MouseCursor::PointingHandCursor);
-    this->divLabel->setInterceptsMouseClicks(false, false);
-    this->numeratorLabel->setInterceptsMouseClicks(false, false);
-    this->denominatorLabel->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]
 
-    setSize (128, 32);
+    setSize (128, 42);
 
     //[Constructor]
     //[/Constructor]
@@ -79,9 +51,6 @@ TimeSignatureLargeComponent::~TimeSignatureLargeComponent()
     //[Destructor_pre]
     //[/Destructor_pre]
 
-    numeratorLabel = nullptr;
-    divLabel = nullptr;
-    denominatorLabel = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -92,10 +61,36 @@ void TimeSignatureLargeComponent::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x53ffffff));
-    g.fillRect (0, 0, getWidth() - 0, 3);
+    g.setColour (Colour (0x25fefefe));
+    g.fillPath (internalPath1);
 
     //[UserPaint] Add your own custom painting code here..
+    const Font labelFont(19.00f, Font::plain);
+    g.setColour(Colour(0x88ffffff));
+
+    GlyphArrangement arr;
+
+    arr.addFittedText(labelFont,
+                      String(this->numerator),
+                      this->boundsOffset.getX() + 4.f,
+                      -3.f,
+                      float(this->getWidth()),
+                      24.f,
+                      Justification::centredLeft,
+                      1,
+                      0.85f);
+
+    arr.addFittedText(labelFont,
+                      String(this->denominator),
+                      this->boundsOffset.getX() + 4.f,
+                      11.f,
+                      float(this->getWidth()),
+                      24.f,
+                      Justification::centredLeft,
+                      1,
+                      0.85f);
+    arr.draw(g);
+
     //[/UserPaint]
 }
 
@@ -104,9 +99,13 @@ void TimeSignatureLargeComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    numeratorLabel->setBounds (-18, 0, 42, 24);
-    divLabel->setBounds (14, 2, 22, 32);
-    denominatorLabel->setBounds (21, 12, 36, 24);
+    internalPath1.clear();
+    internalPath1.startNewSubPath (0.0f, 0.0f);
+    internalPath1.lineTo (5.0f, 0.0f);
+    internalPath1.lineTo (1.0f, 5.0f);
+    internalPath1.lineTo (0.0f, 6.0f);
+    internalPath1.closeSubPath();
+
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -231,15 +230,13 @@ float TimeSignatureLargeComponent::getBeat() const
 
 void TimeSignatureLargeComponent::updateContent()
 {
-    this->numeratorLabel->setText(String(this->event.getNumerator()), dontSendNotification);
-    this->denominatorLabel->setText(String(this->event.getDenominator()), dontSendNotification);
-    Logger::writeToLog("TimeSignatureLargeComponent::updateContent");
-    this->repaint();
-}
-
-float TimeSignatureLargeComponent::getTextWidth() const
-{
-    return 32;
+    if (this->numerator != this->event.getNumerator() ||
+        this->denominator != this->event.getDenominator())
+    {
+        this->numerator = this->event.getNumerator();
+        this->denominator = this->event.getDenominator();
+        this->repaint();
+    }
 }
 
 //[/MiscUserCode]
@@ -251,9 +248,9 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="TimeSignatureLargeComponent"
                  template="../../../Template" componentName="" parentClasses="public Component"
                  constructorParams="TimeSignaturesTrackMap&lt;TimeSignatureLargeComponent&gt; &amp;parent, const TimeSignatureEvent &amp;targetEvent"
-                 variableInitialisers="event(targetEvent),&#10;anchor(targetEvent),&#10;editor(parent),&#10;mouseDownWasTriggered(false)"
+                 variableInitialisers="event(targetEvent),&#10;editor(parent),&#10;anchor(targetEvent),&#10;numerator(0),&#10;denominator(0),&#10;mouseDownWasTriggered(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="128" initialHeight="32">
+                 fixedSize="1" initialWidth="128" initialHeight="42">
   <METHODS>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
     <METHOD name="mouseDrag (const MouseEvent&amp; e)"/>
@@ -262,23 +259,8 @@ BEGIN_JUCER_METADATA
     <METHOD name="mouseDoubleClick (const MouseEvent&amp; e)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <RECT pos="0 0 0M 3" fill="solid: 53ffffff" hasStroke="0"/>
+    <PATH pos="0 0 100 100" fill="solid: 25fefefe" hasStroke="0" nonZeroWinding="1">s 0 0 l 5 0 l 1 5 l 0 6 x</PATH>
   </BACKGROUND>
-  <LABEL name="" id="3dbd8cef4b61c2fe" memberName="numeratorLabel" virtualName=""
-         explicitFocusOrder="0" pos="-18 0 42 24" textCol="99ffffff" edTextCol="ff000000"
-         edBkgCol="0" labelText="26" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="16"
-         kerning="0" bold="0" italic="0" justification="34"/>
-  <LABEL name="" id="5710d8ba7f669fd0" memberName="divLabel" virtualName=""
-         explicitFocusOrder="0" pos="14 2 22 32" textCol="99ffffff" edTextCol="ff000000"
-         edBkgCol="0" labelText="/" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="16"
-         kerning="0" bold="0" italic="0" justification="33"/>
-  <LABEL name="" id="971a291c01db0330" memberName="denominatorLabel" virtualName=""
-         explicitFocusOrder="0" pos="21 12 36 24" textCol="99ffffff" edTextCol="ff000000"
-         edBkgCol="0" labelText="16" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="16"
-         kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

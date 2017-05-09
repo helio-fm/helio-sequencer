@@ -35,7 +35,6 @@ public:
     //[UserMethods]
     const TimeSignatureEvent &getEvent() const;
     float getBeat() const;
-    float getTextWidth() const;
 
     void updateContent();
     void setRealBounds(const Rectangle<float> bounds);
@@ -72,6 +71,9 @@ private:
     ComponentDragger dragger;
     TimeSignatureEvent anchor;
 
+    int numerator;
+    int denominator;
+
     Rectangle<float> boundsOffset;
     Point<int> clickOffset;
     bool draggingState;
@@ -83,9 +85,7 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<Label> numeratorLabel;
-    ScopedPointer<Label> divLabel;
-    ScopedPointer<Label> denominatorLabel;
+    Path internalPath1;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeSignatureLargeComponent)
 };

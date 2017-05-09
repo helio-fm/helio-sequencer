@@ -400,12 +400,10 @@ template<typename T> void TimeSignaturesTrackMap<T>::applyTimeSignatureBounds(T 
     const float nextX = mapWidth * (nextBeat / projectLengthInBeats);
 
     const float minWidth = 10.f;
-    const float oneBeatWidth = jmax(minWidth, (mapWidth * (1.f / projectLengthInBeats)));
-
-    const float widthMargin = 25.f;
+    const float widthMargin = 32.f;
     const float componentsPadding = 10.f;
     const float maxWidth = nextX - x;
-    const float w = jmax(minWidth, jmin((maxWidth - componentsPadding), (nc->getTextWidth() + widthMargin)));
+    const float w = jmax(minWidth, jmin((maxWidth - componentsPadding), widthMargin));
 
     nc->setRealBounds(Rectangle<float>(x, 0.f, w, float(nc->getHeight())));
 }

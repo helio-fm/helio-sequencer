@@ -36,7 +36,6 @@ public:
     //[UserMethods]
     const TimeSignatureEvent &getEvent() const;
     float getBeat() const;
-    float getTextWidth() const;
 
     void updateContent();
     void setRealBounds(const Rectangle<float> bounds);
