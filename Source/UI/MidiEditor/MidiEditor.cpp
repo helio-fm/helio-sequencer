@@ -261,6 +261,8 @@ public:
         Array<float> visibleBars;
         Array<float> visibleBeats;
         Array<float> visibleSnaps;
+        
+        // FIXME: this will not be repainted immediately when any time signature event changes
         this->roll.getVisibleBeatLines(visibleBars, visibleBeats, visibleSnaps);
         
         for (const auto f : visibleBars)

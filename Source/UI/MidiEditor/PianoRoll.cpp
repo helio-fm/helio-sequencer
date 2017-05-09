@@ -440,6 +440,8 @@ void PianoRoll::moveHelpers(const float deltaBeat, const int deltaKey)
 
 void PianoRoll::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
+    MidiRoll::onEventChanged(oldEvent, newEvent);
+    
     if (! dynamic_cast<const Note *>(&oldEvent)) { return; }
 
     const Note &note = static_cast<const Note &>(oldEvent);
@@ -458,6 +460,8 @@ void PianoRoll::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEv
 
 void PianoRoll::onEventAdded(const MidiEvent &event)
 {
+    MidiRoll::onEventAdded(event);
+    
     if (! dynamic_cast<const Note *>(&event)) { return; }
 
     const Note &note = static_cast<const Note &>(event);
@@ -493,6 +497,8 @@ void PianoRoll::onEventAdded(const MidiEvent &event)
 
 void PianoRoll::onEventRemoved(const MidiEvent &event)
 {
+    MidiRoll::onEventRemoved(event);
+
     if (! dynamic_cast<const Note *>(&event)) { return; }
     
     const Note &note = static_cast<const Note &>(event);

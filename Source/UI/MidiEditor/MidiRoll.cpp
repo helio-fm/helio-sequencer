@@ -366,13 +366,22 @@ void MidiRoll::panByOffset(const int offsetX, const int offsetY)
     const bool needsToStretchRight = (offsetX >= (this->getWidth() - this->viewport.getViewWidth()));
     const bool needsToStretchLeft = (offsetX <= 0);
 
+    int numBarsToExpand = 1;
+    if (this->barWidth <= 1)
+    {
+        numBarsToExpand = 64;
+    }
+    else if (this->barWidth <= 16)
+    {
+        numBarsToExpand = 16;
+    }
+    else if (this->barWidth <= 64)
+    {
+        numBarsToExpand = 4;
+    }
+    
     if (needsToStretchRight)
     {
-        int dynamicGridSize = 0;
-        int numBarsToExpand = 1;
-
-        MidiRoll::getGridMultipliers(this->barWidth, dynamicGridSize, numBarsToExpand);
-
         this->setLastBar(this->lastBar + numBarsToExpand);
         this->viewport.setViewPosition(offsetX, offsetY); // sic! after setLastBar
         this->grabKeyboardFocus();
@@ -382,11 +391,6 @@ void MidiRoll::panByOffset(const int offsetX, const int offsetY)
     }
     else if (needsToStretchLeft)
     {
-        int dynamicGridSize = 0;
-        int numBarsToExpand = 1;
-
-        MidiRoll::getGridMultipliers(this->barWidth, dynamicGridSize, numBarsToExpand);
-
         const float deltaW = float(this->barWidth * numBarsToExpand);
         this->clickAnchor.addXY(deltaW / SMOOTH_PAN_SPEED_MULTIPLIER, 0); // an ugly hack
         this->setFirstBar(this->firstBar - numBarsToExpand);
@@ -672,8 +676,9 @@ void MidiRoll::getVisibleBeatLines(Array<float> &visibleBars,
     
     const float zeroCanvasOffset = this->getFirstBar() * this->barWidth;
     
-    const float paintStartX = this->viewport.getViewPositionX() + zeroCanvasOffset;
-    const float paintEndX = float(this->viewport.getViewPositionX() + this->viewport.getViewWidth()) + zeroCanvasOffset;
+    const float viewPosX = this->viewport.getViewPositionX();
+    const float paintStartX = viewPosX + zeroCanvasOffset;
+    const float paintEndX = float(viewPosX + this->viewport.getViewWidth()) + zeroCanvasOffset;
     
     const int paintStartBar = int(paintStartX / this->barWidth) - 1;
     const int paintEndBar = int(paintEndX / this->barWidth) + 1;
@@ -686,35 +691,41 @@ void MidiRoll::getVisibleBeatLines(Array<float> &visibleBars,
 
     // Find a time signature to start from (or use default values):
     // find a first time signature after a paint start and take a previous one, if any
-    TimeSignatureEvent *startSignature = nullptr;
     for (; nextSignatureIdx < tsLayer->size(); ++nextSignatureIdx)
     {
-        const auto currentSignature =
+        const auto signature =
             static_cast<TimeSignatureEvent *>(tsLayer->getUnchecked(nextSignatureIdx));
         
-        if (currentSignature->getBeat() >= (paintStartBar * NUM_BEATS_IN_BAR))
+        if (signature->getBeat() >= (paintStartBar * NUM_BEATS_IN_BAR))
         {
-            if (startSignature != nullptr)
-            {
-                numerator = startSignature->getNumerator();
-                denominator = startSignature->getDenominator();
-                i = startSignature->getBeat() / NUM_BEATS_IN_BAR;
-            }
-            
             break;
         }
 
-        startSignature = currentSignature;
+        numerator = signature->getNumerator();
+        denominator = signature->getDenominator();
+        i = signature->getBeat() / NUM_BEATS_IN_BAR;
     }
+    
+    float barWidthSum = 0.f;
 
+#define MIN_BAR_WIDTH 12
+#define MIN_BEAT_WIDTH 8
+    
     while (i <= paintEndBar)
     {
         // Expecting the bar to be full (if time signature does not change in between)
         float beatStep = 1.f / float(denominator);
         float barStep = beatStep * float(numerator);
         const float barStartX = this->barWidth * i - zeroCanvasOffset;
+        const float stepWidth = this->barWidth * barStep;
+        barWidthSum += stepWidth;
 
-        visibleBars.add(barStartX); // TODO check for viewport.getViewPositionX or so?
+        if (barWidthSum > MIN_BAR_WIDTH &&
+            barStartX >= viewPosX)
+        {
+            visibleBars.add(barStartX);
+            barWidthSum = 0;
+        }
         
         // Check if we have more time signatures to come
         TimeSignatureEvent *nextSignature = nullptr;
@@ -724,31 +735,38 @@ void MidiRoll::getVisibleBeatLines(Array<float> &visibleBars,
         }
         
         // Now for the beat lines
-        for (float j = 0.f; j < barStep; j += beatStep)
+        bool lastFrame = false;
+        for (float j = 0.f; j < barStep && !lastFrame; j += beatStep)
         {
+            const float beatStartX = barStartX + this->barWidth * j;
+            float nextBeatStartX = barStartX + this->barWidth * (j + beatStep);
+            
             // Check for time signature change at this point
             if (nextSignature != nullptr)
             {
-                if (nextSignature->getBeat() <= ((i + j) * NUM_BEATS_IN_BAR))
+                const float tsBar = nextSignature->getBeat() / NUM_BEATS_IN_BAR;
+                if (tsBar <= (i + j + beatStep))
                 {
                     numerator = nextSignature->getNumerator();
                     denominator = nextSignature->getDenominator();
-                    barStep = j; // i.e. incomplete bar
+                    barStep = (tsBar - i); // i.e. incomplete bar
+                    nextBeatStartX = barStartX + this->barWidth * barStep;
                     nextSignatureIdx++;
-                    break;
+                    barWidthSum = 0;
+                    lastFrame = true;
                 }
             }
             
-            const float beatStartX = barStartX + this->barWidth * j;
-            const float nextBeatStartX = barStartX + this->barWidth * (j + beatStep);
-            
-            // And snaps
-            for (float k = beatStartX + this->snapWidth; k < (nextBeatStartX - 1); k += this->snapWidth)
+            // Get snap lines and beat lines
+            for (float k = beatStartX + this->snapWidth;
+                 k < (nextBeatStartX - 1);
+                 k += this->snapWidth)
             {
                 visibleSnaps.add(k);
             }
             
-            if (j >= beatStep) // Skip first as it is a barline
+            if (j >= beatStep && // Don't draw the first one as it is a barline
+                (nextBeatStartX - beatStartX) > MIN_BEAT_WIDTH)
             {
                 visibleBeats.add(beatStartX);
             }
@@ -894,6 +912,31 @@ MidiEventComponentLasso *MidiRoll::getLasso() const
 //===----------------------------------------------------------------------===//
 // ProjectListener
 //===----------------------------------------------------------------------===//
+
+void MidiRoll::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+{
+    // Time signatures have changed, need to repaint
+    if (dynamic_cast<const TimeSignatureEvent *>(&oldEvent))
+    {
+        this->repaint();
+    }
+}
+
+void MidiRoll::onEventAdded(const MidiEvent &event)
+{
+    if (dynamic_cast<const TimeSignatureEvent *>(&event))
+    {
+        this->repaint();
+    }
+}
+
+void MidiRoll::onEventRemoved(const MidiEvent &event)
+{
+    if (dynamic_cast<const TimeSignatureEvent *>(&event))
+    {
+        this->repaint();
+    }
+}
 
 void MidiRoll::onProjectBeatRangeChanged(float firstBeat, float lastBeat)
 {
@@ -1329,47 +1372,6 @@ void MidiRoll::resized()
 {
     this->updateChildrenBounds();
     //this->sendChangeMessage();
-}
-
-void MidiRoll::getGridMultipliers(float targetBarWidth, int &gridMultiplier, int &gridShowsEvery)
-{
-    if (targetBarWidth <= 160)
-    {
-        gridMultiplier = NUM_BEATS_IN_BAR * 1;
-    }
-    else if (targetBarWidth <= 320)
-    {
-        gridMultiplier = NUM_BEATS_IN_BAR * 2;
-    }
-    else if (targetBarWidth <= 640)
-    {
-        gridMultiplier = NUM_BEATS_IN_BAR * 4;
-    }
-    else if (targetBarWidth <= 1280)
-    {
-        gridMultiplier = NUM_BEATS_IN_BAR * 8;
-    }
-    else /*if (this->barWidth <= 2560)*/
-    {
-        gridMultiplier = NUM_BEATS_IN_BAR * 16;
-    }
-
-    if (targetBarWidth <= 1)
-    {
-        gridShowsEvery = 64;
-    }
-    else if (targetBarWidth <= 16)
-    {
-        gridShowsEvery = 16;
-    }
-    else if (targetBarWidth <= 64)
-    {
-        gridShowsEvery = 4;
-    }
-    else
-    {
-        gridShowsEvery = 1;
-    }
 }
 
 void MidiRoll::paint(Graphics &g)

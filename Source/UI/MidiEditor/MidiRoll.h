@@ -121,8 +121,6 @@ public:
 
     ~MidiRoll() override;
 
-    static void getGridMultipliers(float targetBarWidth, int &gridMultiplier, int &gridShowsEvery);
-    
     Viewport &getViewport() const noexcept;
     Transport &getTransport() const noexcept;
     ProjectTreeItem &getProject() const noexcept;
@@ -277,6 +275,9 @@ public:
     // ProjectListener
     //===------------------------------------------------------------------===//
 
+    void onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
+    void onEventAdded(const MidiEvent &event) override;
+    void onEventRemoved(const MidiEvent &event) override;
     void onProjectBeatRangeChanged(float firstBeat, float lastBeat) override;
 
     //===------------------------------------------------------------------===//
