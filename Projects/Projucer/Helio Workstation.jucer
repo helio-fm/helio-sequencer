@@ -540,10 +540,6 @@
                 file="../../Source/UI/CommandPanels/AnnotationCommandPanel.cpp"/>
           <FILE id="mA4zKi" name="AnnotationCommandPanel.h" compile="0" resource="0"
                 file="../../Source/UI/CommandPanels/AnnotationCommandPanel.h"/>
-          <FILE id="IWRyID" name="AnnotationsCommandPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/CommandPanels/AnnotationsCommandPanel.cpp"/>
-          <FILE id="YO5QtE" name="AnnotationsCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/CommandPanels/AnnotationsCommandPanel.h"/>
           <FILE id="cRkBp5" name="ArpeggiatorEditorPanel.cpp" compile="1" resource="0"
                 file="../../Source/UI/CommandPanels/ArpeggiatorEditorPanel.cpp"/>
           <FILE id="ezMMEU" name="ArpeggiatorEditorPanel.h" compile="0" resource="0"
@@ -600,6 +596,14 @@
                 file="../../Source/UI/CommandPanels/RootTreeItemPanelCompact.cpp"/>
           <FILE id="jiVx41" name="RootTreeItemPanelCompact.h" compile="0" resource="0"
                 file="../../Source/UI/CommandPanels/RootTreeItemPanelCompact.h"/>
+          <FILE id="IWRyID" name="TimelineCommandPanel.cpp" compile="1" resource="0"
+                file="../../Source/UI/CommandPanels/TimelineCommandPanel.cpp"/>
+          <FILE id="YO5QtE" name="TimelineCommandPanel.h" compile="0" resource="0"
+                file="../../Source/UI/CommandPanels/TimelineCommandPanel.h"/>
+          <FILE id="KXvBh9" name="TimeSignatureCommandPanel.h" compile="0" resource="0"
+                file="../../Source/UI/CommandPanels/TimeSignatureCommandPanel.h"/>
+          <FILE id="jbN3Fi" name="TimeSignatureCommandPanel.cpp" compile="1"
+                resource="0" file="../../Source/UI/CommandPanels/TimeSignatureCommandPanel.cpp"/>
           <FILE id="W0z55J" name="VCSCommandPanel.cpp" compile="1" resource="0"
                 file="../../Source/UI/CommandPanels/VCSCommandPanel.cpp"/>
           <FILE id="qrKFgt" name="VCSCommandPanel.h" compile="0" resource="0"

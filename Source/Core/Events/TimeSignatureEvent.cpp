@@ -49,6 +49,26 @@ TimeSignatureEvent::~TimeSignatureEvent()
 {
 }
 
+void TimeSignatureEvent::parseString(const String &data, int &numerator, int &denominator)
+{
+	numerator = TIME_SIGNATURE_DEFAULT_NUMERATOR;
+	denominator = TIME_SIGNATURE_DEFAULT_DENOMINATOR;
+
+	StringArray sa;
+	sa.addTokens(data, "/\\|-", "' \"");
+
+	if (sa.size() == 2)
+	{
+		const int n = sa[0].getIntValue();
+		int d = sa[1].getIntValue();
+		// Round to the power of two:
+		d = int(pow(2, ceil(log(d) / log(2))));
+		// Apply some reasonable constraints:
+		denominator = jlimit(2, 32, d);
+		numerator = jlimit(2, 64, n);
+	}
+}
+
 
 Array<MidiMessage> TimeSignatureEvent::getSequence() const
 {
@@ -112,6 +132,11 @@ int TimeSignatureEvent::getNumerator() const noexcept
 int TimeSignatureEvent::getDenominator() const noexcept
 {
     return this->denominator;
+}
+
+String TimeSignatureEvent::toString() const noexcept
+{
+	return String(this->numerator) + "/" + String(this->denominator);
 }
 
 

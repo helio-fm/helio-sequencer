@@ -59,7 +59,7 @@ MidiRollCommandPanelDefault::MidiRollCommandPanelDefault(ProjectTreeItem &parent
     addAndMakeVisible (playButton = new PlayButton());
     addAndMakeVisible (headShadow = new LighterShadowDownwards());
     addAndMakeVisible (gradient = new GradientVerticalReversed());
-    addAndMakeVisible (annotationsButton = new CommandItemComponent (this, nullptr, CommandItem::withParams(Icons::annotation, CommandIDs::ShowAnnotations)));
+    addAndMakeVisible (annotationsButton = new CommandItemComponent (this, nullptr, CommandItem::withParams(Icons::menu, CommandIDs::ShowAnnotations)));
 
 
     //[UserPreSize]
@@ -321,7 +321,7 @@ BEGIN_JUCER_METADATA
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="34c972d7b22acf17" memberName="annotationsButton"
                     virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 45" class="CommandItemComponent"
-                    params="this, nullptr, CommandItem::withParams(Icons::annotation, CommandIDs::ShowAnnotations)"/>
+                    params="this, nullptr, CommandItem::withParams(Icons::menu, CommandIDs::ShowAnnotations)"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

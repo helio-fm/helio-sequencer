@@ -117,10 +117,7 @@ float TimeSignatureSmallComponent::getBeat() const
 
 void TimeSignatureSmallComponent::updateContent()
 {
-    this->signatureLabel->setText(String(this->event.getNumerator()) +
-                                  "/" +
-                                  String(this->event.getDenominator()),
-                                  dontSendNotification);
+    this->signatureLabel->setText(this->event.toString(), dontSendNotification);
     this->repaint();
 }
 

@@ -135,8 +135,10 @@ public:
     virtual Rectangle<float> getEventBounds(MidiEventComponent *nc) const = 0;
     
     void scrollToSeekPosition();
+	float getPositionForNewTimelineEvent() const;
     void insertAnnotationWithinScreen(const String &annotation);
-    void selectAll();
+	void insertTimeSignatureWithinScreen(int numerator, int denominator);
+	void selectAll();
     
     //===------------------------------------------------------------------===//
     // Custom maps

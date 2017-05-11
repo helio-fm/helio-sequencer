@@ -26,6 +26,7 @@
 #include "MidiRoll.h"
 #include "HelioCallout.h"
 #include "AnnotationCommandPanel.h"
+#include "TimeSignatureCommandPanel.h"
 #include "TrackStartIndicator.h"
 #include "TrackEndIndicator.h"
 
@@ -310,7 +311,6 @@ template<typename T> void TimeSignaturesTrackMap<T>::onTimeSignatureTapped(T *nc
     //    this->project.getTransport().startPlayback();
     //}
 
-    // если аннотация уже выбрана - покажем ее меню
     if (timeSignatureUnderSeekCursor == &nc->getEvent() && !wasPlaying)
     {
         this->showContextMenuFor(nc);
@@ -325,8 +325,7 @@ template<typename T> void TimeSignaturesTrackMap<T>::showContextMenuFor(T *nc)
 {
     if (! this->project.getTransport().isPlaying())
     {
-        // TODO show TimelineEventDialog
-//        HelioCallout::emit(new TimeSignatureCommandPanel(this->project, nc->getEvent()), nc);
+        HelioCallout::emit(new TimeSignatureCommandPanel(this->project, nc->getEvent()), nc);
     }
 }
 

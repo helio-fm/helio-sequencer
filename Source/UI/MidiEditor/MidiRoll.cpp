@@ -51,7 +51,7 @@
 
 #include "ProjectTimeline.h"
 #include "AnnotationsLayer.h"
-#include "AnnotationEvent.h"
+#include "TimeSignaturesLayer.h"
 #include "MidiRollToolbox.h"
 #include "MidiRollListener.h"
 #include "VersionControlTreeItem.h"
@@ -70,7 +70,6 @@
 //  on Windows and mobiles this sucks, so just turn it off.
 #   define MIDIROLL_FOLLOWS_INDICATOR 0
 #endif
-
 
 // force compile template
 #include "AnnotationsMap/AnnotationsTrackMap.cpp"
@@ -206,33 +205,49 @@ MidiLayer *MidiRoll::getActiveMidiLayer(int index) const noexcept
     return this->activeLayers[index];
 }
 
+//===----------------------------------------------------------------------===//
+// Timeline events
+//===----------------------------------------------------------------------===//
+
+float MidiRoll::getPositionForNewTimelineEvent() const
+{
+	const double indicatorOffset = this->findIndicatorOffsetFromViewCentre();
+	const bool indicatorIsWithinScreen = fabs(indicatorOffset) < (this->viewport.getViewWidth() / 2);
+	float targetBeat = 0.f;
+
+	// If playhead is visible, put new event on it's position, otherwise just align to the screen center
+	if (indicatorIsWithinScreen)
+	{
+		const int viewCentre = this->viewport.getViewPositionX() + (this->viewport.getViewWidth() / 2);
+		const int indicatorPosition = viewCentre + int(indicatorOffset);
+		return this->getRoundBeatByXPosition(indicatorPosition);
+	}
+
+	const int viewCentre = this->viewport.getViewPositionX() + (this->viewport.getViewWidth() / 2);
+	return this->getRoundBeatByXPosition(viewCentre);
+}
 
 void MidiRoll::insertAnnotationWithinScreen(const String &annotation)
 {
-    const double indicatorOffset = this->findIndicatorOffsetFromViewCentre();
-    const bool indicatorIsWithinScreen = fabs(indicatorOffset) < (this->viewport.getViewWidth() / 2);
-
-    float targetBeat = 0.f;
-
-    // если индикатор на экране - ставим аннотацию на него, если нет - просто в середину экрана
-    if (indicatorIsWithinScreen)
-    {
-        const int viewCentre = this->viewport.getViewPositionX() + (this->viewport.getViewWidth() / 2);
-        const int indicatorPosition = viewCentre + int(indicatorOffset);
-        targetBeat = this->getRoundBeatByXPosition(indicatorPosition);
-    }
-    else
-    {
-        const int viewCentre = this->viewport.getViewPositionX() + (this->viewport.getViewWidth() / 2);
-        targetBeat = this->getRoundBeatByXPosition(viewCentre);
-    }
-
     if (AnnotationsLayer *annotationsLayer = dynamic_cast<AnnotationsLayer *>(this->project.getTimeline()->getAnnotations()))
     {
-        annotationsLayer->checkpoint();
-        AnnotationEvent event(annotationsLayer, targetBeat, annotation, Colours::transparentWhite);
+		annotationsLayer->checkpoint();
+		const float targetBeat = this->getPositionForNewTimelineEvent();
+		AnnotationEvent event(annotationsLayer, targetBeat, annotation, Colours::transparentWhite);
         annotationsLayer->insert(event, true);
     }
+}
+
+void MidiRoll::insertTimeSignatureWithinScreen(int numerator, int denominator)
+{
+	jassert(denominator == 2 || denominator == 4 || denominator == 8 || denominator == 16 || denominator == 32);
+	if (TimeSignaturesLayer *tsLayer = dynamic_cast<TimeSignaturesLayer *>(this->project.getTimeline()->getTimeSignatures()))
+	{
+		tsLayer->checkpoint();
+		const float targetBeat = this->getPositionForNewTimelineEvent();
+		TimeSignatureEvent event(tsLayer, targetBeat, numerator, denominator);
+		tsLayer->insert(event, true);
+	}
 }
 
 //===----------------------------------------------------------------------===//

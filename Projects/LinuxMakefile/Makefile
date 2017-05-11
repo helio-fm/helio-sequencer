@@ -184,7 +184,6 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/CommandItemComponentMarker_7a059b50.o \
   $(JUCE_OBJDIR)/CommandPanel_2ecd6990.o \
   $(JUCE_OBJDIR)/AnnotationCommandPanel_e55a5d39.o \
-  $(JUCE_OBJDIR)/AnnotationsCommandPanel_39b74236.o \
   $(JUCE_OBJDIR)/ArpeggiatorEditorPanel_c93e430f.o \
   $(JUCE_OBJDIR)/ArpeggiatorPanel_4c71683c.o \
   $(JUCE_OBJDIR)/AutomationsCommandPanel_586f254e.o \
@@ -199,6 +198,8 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/ProjectCommandPanel_e4b1ca2b.o \
   $(JUCE_OBJDIR)/RootTreeItemPanelDefault_73fae601.o \
   $(JUCE_OBJDIR)/RootTreeItemPanelCompact_5cad09e3.o \
+  $(JUCE_OBJDIR)/TimelineCommandPanel_5042c14b.o \
+  $(JUCE_OBJDIR)/TimeSignatureCommandPanel_f89d47d.o \
   $(JUCE_OBJDIR)/VCSCommandPanel_f3c04a78.o \
   $(JUCE_OBJDIR)/SpectrumComponent_4605e8d9.o \
   $(JUCE_OBJDIR)/VolumeComponent_ff6a9630.o \
@@ -874,11 +875,6 @@ $(JUCE_OBJDIR)/AnnotationCommandPanel_e55a5d39.o: ../../Source/UI/CommandPanels/
 	@echo "Compiling AnnotationCommandPanel.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/AnnotationsCommandPanel_39b74236.o: ../../Source/UI/CommandPanels/AnnotationsCommandPanel.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling AnnotationsCommandPanel.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/ArpeggiatorEditorPanel_c93e430f.o: ../../Source/UI/CommandPanels/ArpeggiatorEditorPanel.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ArpeggiatorEditorPanel.cpp"
@@ -947,6 +943,16 @@ $(JUCE_OBJDIR)/RootTreeItemPanelDefault_73fae601.o: ../../Source/UI/CommandPanel
 $(JUCE_OBJDIR)/RootTreeItemPanelCompact_5cad09e3.o: ../../Source/UI/CommandPanels/RootTreeItemPanelCompact.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling RootTreeItemPanelCompact.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TimelineCommandPanel_5042c14b.o: ../../Source/UI/CommandPanels/TimelineCommandPanel.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TimelineCommandPanel.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TimeSignatureCommandPanel_f89d47d.o: ../../Source/UI/CommandPanels/TimeSignatureCommandPanel.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TimeSignatureCommandPanel.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/VCSCommandPanel_f3c04a78.o: ../../Source/UI/CommandPanels/VCSCommandPanel.cpp

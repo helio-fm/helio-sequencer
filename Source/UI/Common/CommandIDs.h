@@ -21,7 +21,6 @@ namespace CommandIDs
 {
     enum
     {
-        // TODO reserved ids
         Back                            = 0x000001,
         Cancel                          = 0x000002,
         Browse                          = 0x000003,
@@ -32,17 +31,24 @@ namespace CommandIDs
         HideDialog                      = 0x000008,
         HideCallout                     = 0x000009,
         
+        // TimeSignatureCommandPanel
+        ChangeTimeSignature             = 0x000100,
+        ChangeTimeSignatureConfirmed    = 0x000101,
+        DeleteTimeSignature             = 0x000102,
+
         // AnnotationCommandPanel
-        RenameAnnotation                = 0x000010,
-        RenameAnnotationConfirmed       = 0x000011,
-        SetAnnotationColour             = 0x000012, // more ids reserved for colours
+        RenameAnnotation                = 0x000110,
+        RenameAnnotationConfirmed       = 0x000111,
+        SetAnnotationColour             = 0x000112, // more ids reserved for colours
         DeleteAnnotation                = 0x001000,
         
         // AnnotationsCommandPanel
         AddAnnotation                   = 0x001001,
         AddAnnotationConfirmed          = 0x001002,
-        JumpToAnnotation                = 0x001003, // more ids reserved for annotations
-        
+        AddTimeSignature                = 0x001003,
+        AddTimeSignatureConfirmed       = 0x001004,
+        JumpToAnnotation                = 0x001005, // more ids reserved for annotations
+
         // ArpeggiatorEditorPanel
         ResetArpeggiatorChanges         = 0x002000,
         ApplyArpeggiator                = 0x002001, // more ids reserved for arps

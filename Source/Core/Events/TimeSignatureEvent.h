@@ -39,9 +39,10 @@ public:
 
     ~TimeSignatureEvent() override;
     
+	static void parseString(const String &data, int &numerator, int &denominator);
+	
 
 	Array<MidiMessage> getSequence() const override;
-
     
     TimeSignatureEvent copyWithNewId() const;
     
@@ -63,6 +64,8 @@ public:
     int getNumerator() const noexcept;
 
     int getDenominator() const noexcept;
+
+	String toString() const noexcept;
 
 
     //===------------------------------------------------------------------===//

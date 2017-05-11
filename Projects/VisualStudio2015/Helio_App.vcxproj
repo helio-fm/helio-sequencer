@@ -350,7 +350,6 @@
     <ClCompile Include="..\..\Source\UI\CommandPanels\Base\CommandItemComponentMarker.cpp"/>
     <ClCompile Include="..\..\Source\UI\CommandPanels\Base\CommandPanel.cpp"/>
     <ClCompile Include="..\..\Source\UI\CommandPanels\AnnotationCommandPanel.cpp"/>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\AnnotationsCommandPanel.cpp"/>
     <ClCompile Include="..\..\Source\UI\CommandPanels\ArpeggiatorEditorPanel.cpp"/>
     <ClCompile Include="..\..\Source\UI\CommandPanels\ArpeggiatorPanel.cpp"/>
     <ClCompile Include="..\..\Source\UI\CommandPanels\AutomationsCommandPanel.cpp"/>
@@ -365,6 +364,8 @@
     <ClCompile Include="..\..\Source\UI\CommandPanels\ProjectCommandPanel.cpp"/>
     <ClCompile Include="..\..\Source\UI\CommandPanels\RootTreeItemPanelDefault.cpp"/>
     <ClCompile Include="..\..\Source\UI\CommandPanels\RootTreeItemPanelCompact.cpp"/>
+    <ClCompile Include="..\..\Source\UI\CommandPanels\TimelineCommandPanel.cpp"/>
+    <ClCompile Include="..\..\Source\UI\CommandPanels\TimeSignatureCommandPanel.cpp"/>
     <ClCompile Include="..\..\Source\UI\CommandPanels\VCSCommandPanel.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\Meters\SpectrumComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\Meters\VolumeComponent.cpp"/>

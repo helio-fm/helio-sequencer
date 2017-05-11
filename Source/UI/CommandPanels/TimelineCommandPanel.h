@@ -22,13 +22,13 @@ class ProjectTreeItem;
 #include "CommandPanel.h"
 #include "CommandIDs.h"
 
-class AnnotationsCommandPanel : public CommandPanel
+class TimelineCommandPanel : public CommandPanel
 {
 public:
     
-    explicit AnnotationsCommandPanel(ProjectTreeItem &parentProject);
+    explicit TimelineCommandPanel(ProjectTreeItem &parentProject);
     
-    ~AnnotationsCommandPanel() override;
+    ~TimelineCommandPanel() override;
     
     void handleCommandMessage(int commandId) override;
     
@@ -36,6 +36,6 @@ private:
     
     ProjectTreeItem &project;
     
-    String newAnnotationText;
+    String newEventData;
     
 };
