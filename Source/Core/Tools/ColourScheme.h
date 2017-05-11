@@ -64,7 +64,6 @@ public:
     Colour getBlackKeyColour() const;
     Colour getWhiteKeyColour() const;
     Colour getRowColour() const;
-    Colour getBeatColour() const;
     Colour getBarColour() const;
 
     // Labels and buttons text

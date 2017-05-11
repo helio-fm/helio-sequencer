@@ -1,7 +1,8 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2015
-
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Helio - App", "Helio_App.vcxproj", "{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}"
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Helio_App", "Helio_App.vcxproj", "{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Helio", "Helio", "{1B2C2B59-FB27-BB39-915F-0947F689172B}"
 EndProject
@@ -160,8 +161,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "App", "App", "{34CD2A84-A17
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Audio", "Audio", "{9030FCB2-72B0-6D1A-1FC0-4EC0D651B608}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\Source\Core\Audio\AudiobusOutput.mm = ..\..\Source\Core\Audio\AudiobusOutput.mm
 		..\..\Source\Core\Audio\AudiobusOutput.h = ..\..\Source\Core\Audio\AudiobusOutput.h
+		..\..\Source\Core\Audio\AudiobusOutput.mm = ..\..\Source\Core\Audio\AudiobusOutput.mm
 		..\..\Source\Core\Audio\AudioCore.cpp = ..\..\Source\Core\Audio\AudioCore.cpp
 		..\..\Source\Core\Audio\AudioCore.h = ..\..\Source\Core\Audio\AudioCore.h
 	EndProjectSection
@@ -228,6 +229,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Events", "Events", "{0394D2
 		..\..\Source\Core\Events\MidiEvent.h = ..\..\Source\Core\Events\MidiEvent.h
 		..\..\Source\Core\Events\Note.cpp = ..\..\Source\Core\Events\Note.cpp
 		..\..\Source\Core\Events\Note.h = ..\..\Source\Core\Events\Note.h
+		..\..\Source\Core\Events\TimeSignatureEvent.cpp = ..\..\Source\Core\Events\TimeSignatureEvent.cpp
+		..\..\Source\Core\Events\TimeSignatureEvent.h = ..\..\Source\Core\Events\TimeSignatureEvent.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Layers", "Layers", "{5C571F43-F82F-40D5-B64F-79DE61D232B0}"
@@ -240,8 +243,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Layers", "Layers", "{5C571F
 		..\..\Source\Core\Layers\MidiLayer.h = ..\..\Source\Core\Layers\MidiLayer.h
 		..\..\Source\Core\Layers\PianoLayer.cpp = ..\..\Source\Core\Layers\PianoLayer.cpp
 		..\..\Source\Core\Layers\PianoLayer.h = ..\..\Source\Core\Layers\PianoLayer.h
-		..\..\Source\Core\Layers\ProjectAnnotations.cpp = ..\..\Source\Core\Layers\ProjectAnnotations.cpp
-		..\..\Source\Core\Layers\ProjectAnnotations.h = ..\..\Source\Core\Layers\ProjectAnnotations.h
+		..\..\Source\Core\Layers\TimeSignaturesLayer.cpp = ..\..\Source\Core\Layers\TimeSignaturesLayer.cpp
+		..\..\Source\Core\Layers\TimeSignaturesLayer.h = ..\..\Source\Core\Layers\TimeSignaturesLayer.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Network", "Network", "{CC0C8F09-C3E8-8BC3-DE6C-7F4AAB89677C}"
@@ -313,8 +316,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Translation", "Translation"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tree", "Tree", "{BD1E4205-D181-1CEA-F6AC-927D1AE66DD0}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\Source\Core\Tree\RecentFilesList.cpp = ..\..\Source\Core\Tree\RecentFilesList.cpp
-		..\..\Source\Core\Tree\RecentFilesList.h = ..\..\Source\Core\Tree\RecentFilesList.h
 		..\..\Source\Core\Tree\AudioPluginTreeItem.cpp = ..\..\Source\Core\Tree\AudioPluginTreeItem.cpp
 		..\..\Source\Core\Tree\AudioPluginTreeItem.h = ..\..\Source\Core\Tree\AudioPluginTreeItem.h
 		..\..\Source\Core\Tree\AutomationLayerTreeItem.cpp = ..\..\Source\Core\Tree\AutomationLayerTreeItem.cpp
@@ -333,8 +334,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tree", "Tree", "{BD1E4205-D
 		..\..\Source\Core\Tree\ProjectInfo.cpp = ..\..\Source\Core\Tree\ProjectInfo.cpp
 		..\..\Source\Core\Tree\ProjectInfo.h = ..\..\Source\Core\Tree\ProjectInfo.h
 		..\..\Source\Core\Tree\ProjectListener.h = ..\..\Source\Core\Tree\ProjectListener.h
+		..\..\Source\Core\Tree\ProjectTimeline.cpp = ..\..\Source\Core\Tree\ProjectTimeline.cpp
+		..\..\Source\Core\Tree\ProjectTimeline.h = ..\..\Source\Core\Tree\ProjectTimeline.h
 		..\..\Source\Core\Tree\ProjectTreeItem.cpp = ..\..\Source\Core\Tree\ProjectTreeItem.cpp
 		..\..\Source\Core\Tree\ProjectTreeItem.h = ..\..\Source\Core\Tree\ProjectTreeItem.h
+		..\..\Source\Core\Tree\RecentFilesList.cpp = ..\..\Source\Core\Tree\RecentFilesList.cpp
+		..\..\Source\Core\Tree\RecentFilesList.h = ..\..\Source\Core\Tree\RecentFilesList.h
 		..\..\Source\Core\Tree\RootTreeItem.cpp = ..\..\Source\Core\Tree\RootTreeItem.cpp
 		..\..\Source\Core\Tree\RootTreeItem.h = ..\..\Source\Core\Tree\RootTreeItem.h
 		..\..\Source\Core\Tree\SafeTreeItemPointer.h = ..\..\Source\Core\Tree\SafeTreeItemPointer.h
@@ -370,6 +375,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{A237
 		..\..\Source\Core\Undo\Actions\NoteActions.h = ..\..\Source\Core\Undo\Actions\NoteActions.h
 		..\..\Source\Core\Undo\Actions\PianoLayerTreeItemActions.cpp = ..\..\Source\Core\Undo\Actions\PianoLayerTreeItemActions.cpp
 		..\..\Source\Core\Undo\Actions\PianoLayerTreeItemActions.h = ..\..\Source\Core\Undo\Actions\PianoLayerTreeItemActions.h
+		..\..\Source\Core\Undo\Actions\TimeSignatureEventActions.cpp = ..\..\Source\Core\Undo\Actions\TimeSignatureEventActions.cpp
+		..\..\Source\Core\Undo\Actions\TimeSignatureEventActions.h = ..\..\Source\Core\Undo\Actions\TimeSignatureEventActions.h
 		..\..\Source\Core\Undo\Actions\UndoAction.h = ..\..\Source\Core\Undo\Actions\UndoAction.h
 	EndProjectSection
 EndProject
@@ -402,9 +409,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VCS", "VCS", "{97DDC28F-A29
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DiffLogic", "DiffLogic", "{92C9F97A-01D1-AA44-F946-003D6F41A111}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\Source\Core\VCS\DiffLogic\AnnotationDeltas.h = ..\..\Source\Core\VCS\DiffLogic\AnnotationDeltas.h
-		..\..\Source\Core\VCS\DiffLogic\AnnotationsLayerDiffLogic.cpp = ..\..\Source\Core\VCS\DiffLogic\AnnotationsLayerDiffLogic.cpp
-		..\..\Source\Core\VCS\DiffLogic\AnnotationsLayerDiffLogic.h = ..\..\Source\Core\VCS\DiffLogic\AnnotationsLayerDiffLogic.h
 		..\..\Source\Core\VCS\DiffLogic\AutoLayerDeltas.h = ..\..\Source\Core\VCS\DiffLogic\AutoLayerDeltas.h
 		..\..\Source\Core\VCS\DiffLogic\AutomationLayerDiffLogic.cpp = ..\..\Source\Core\VCS\DiffLogic\AutomationLayerDiffLogic.cpp
 		..\..\Source\Core\VCS\DiffLogic\AutomationLayerDiffLogic.h = ..\..\Source\Core\VCS\DiffLogic\AutomationLayerDiffLogic.h
@@ -416,6 +420,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DiffLogic", "DiffLogic", "{
 		..\..\Source\Core\VCS\DiffLogic\ProjectInfoDeltas.h = ..\..\Source\Core\VCS\DiffLogic\ProjectInfoDeltas.h
 		..\..\Source\Core\VCS\DiffLogic\ProjectInfoDiffLogic.cpp = ..\..\Source\Core\VCS\DiffLogic\ProjectInfoDiffLogic.cpp
 		..\..\Source\Core\VCS\DiffLogic\ProjectInfoDiffLogic.h = ..\..\Source\Core\VCS\DiffLogic\ProjectInfoDiffLogic.h
+		..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDeltas.h = ..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDeltas.h
+		..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDiffLogic.cpp = ..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDiffLogic.cpp
+		..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDiffLogic.h = ..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDiffLogic.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Network", "Network", "{0E35680A-E44A-C486-26F0-A7BA199CD7E3}"
@@ -443,8 +450,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommandPanels", "CommandPan
 	ProjectSection(SolutionItems) = preProject
 		..\..\Source\UI\CommandPanels\AnnotationCommandPanel.cpp = ..\..\Source\UI\CommandPanels\AnnotationCommandPanel.cpp
 		..\..\Source\UI\CommandPanels\AnnotationCommandPanel.h = ..\..\Source\UI\CommandPanels\AnnotationCommandPanel.h
-		..\..\Source\UI\CommandPanels\AnnotationsCommandPanel.cpp = ..\..\Source\UI\CommandPanels\AnnotationsCommandPanel.cpp
-		..\..\Source\UI\CommandPanels\AnnotationsCommandPanel.h = ..\..\Source\UI\CommandPanels\AnnotationsCommandPanel.h
 		..\..\Source\UI\CommandPanels\ArpeggiatorEditorPanel.cpp = ..\..\Source\UI\CommandPanels\ArpeggiatorEditorPanel.cpp
 		..\..\Source\UI\CommandPanels\ArpeggiatorEditorPanel.h = ..\..\Source\UI\CommandPanels\ArpeggiatorEditorPanel.h
 		..\..\Source\UI\CommandPanels\ArpeggiatorPanel.cpp = ..\..\Source\UI\CommandPanels\ArpeggiatorPanel.cpp
@@ -469,10 +474,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommandPanels", "CommandPan
 		..\..\Source\UI\CommandPanels\NotesTuningPanel.h = ..\..\Source\UI\CommandPanels\NotesTuningPanel.h
 		..\..\Source\UI\CommandPanels\ProjectCommandPanel.cpp = ..\..\Source\UI\CommandPanels\ProjectCommandPanel.cpp
 		..\..\Source\UI\CommandPanels\ProjectCommandPanel.h = ..\..\Source\UI\CommandPanels\ProjectCommandPanel.h
-		..\..\Source\UI\CommandPanels\RootTreeItemPanelDefault.cpp = ..\..\Source\UI\CommandPanels\RootTreeItemPanelDefault.cpp
-		..\..\Source\UI\CommandPanels\RootTreeItemPanelDefault.h = ..\..\Source\UI\CommandPanels\RootTreeItemPanelDefault.h
 		..\..\Source\UI\CommandPanels\RootTreeItemPanelCompact.cpp = ..\..\Source\UI\CommandPanels\RootTreeItemPanelCompact.cpp
 		..\..\Source\UI\CommandPanels\RootTreeItemPanelCompact.h = ..\..\Source\UI\CommandPanels\RootTreeItemPanelCompact.h
+		..\..\Source\UI\CommandPanels\RootTreeItemPanelDefault.cpp = ..\..\Source\UI\CommandPanels\RootTreeItemPanelDefault.cpp
+		..\..\Source\UI\CommandPanels\RootTreeItemPanelDefault.h = ..\..\Source\UI\CommandPanels\RootTreeItemPanelDefault.h
+		..\..\Source\UI\CommandPanels\TimelineCommandPanel.cpp = ..\..\Source\UI\CommandPanels\TimelineCommandPanel.cpp
+		..\..\Source\UI\CommandPanels\TimelineCommandPanel.h = ..\..\Source\UI\CommandPanels\TimelineCommandPanel.h
+		..\..\Source\UI\CommandPanels\TimeSignatureCommandPanel.cpp = ..\..\Source\UI\CommandPanels\TimeSignatureCommandPanel.cpp
+		..\..\Source\UI\CommandPanels\TimeSignatureCommandPanel.h = ..\..\Source\UI\CommandPanels\TimeSignatureCommandPanel.h
 		..\..\Source\UI\CommandPanels\VCSCommandPanel.cpp = ..\..\Source\UI\CommandPanels\VCSCommandPanel.cpp
 		..\..\Source\UI\CommandPanels\VCSCommandPanel.h = ..\..\Source\UI\CommandPanels\VCSCommandPanel.h
 	EndProjectSection
@@ -653,8 +662,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Header", "Header", "{342E8D
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Helpers", "Helpers", "{A9939A38-3736-99C0-4322-A70E567A5372}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\Source\UI\MidiEditor\Helpers\TimelineWarningMarker.cpp = ..\..\Source\UI\MidiEditor\Helpers\TimelineWarningMarker.cpp
-		..\..\Source\UI\MidiEditor\Helpers\TimelineWarningMarker.h = ..\..\Source\UI\MidiEditor\Helpers\TimelineWarningMarker.h
 		..\..\Source\UI\MidiEditor\Helpers\ComponentConnectorCurve.cpp = ..\..\Source\UI\MidiEditor\Helpers\ComponentConnectorCurve.cpp
 		..\..\Source\UI\MidiEditor\Helpers\ComponentConnectorCurve.h = ..\..\Source\UI\MidiEditor\Helpers\ComponentConnectorCurve.h
 		..\..\Source\UI\MidiEditor\Helpers\InsertSpaceHelper.cpp = ..\..\Source\UI\MidiEditor\Helpers\InsertSpaceHelper.cpp
@@ -665,8 +672,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Helpers", "Helpers", "{A993
 		..\..\Source\UI\MidiEditor\Helpers\NoteResizerLeft.h = ..\..\Source\UI\MidiEditor\Helpers\NoteResizerLeft.h
 		..\..\Source\UI\MidiEditor\Helpers\NoteResizerRight.cpp = ..\..\Source\UI\MidiEditor\Helpers\NoteResizerRight.cpp
 		..\..\Source\UI\MidiEditor\Helpers\NoteResizerRight.h = ..\..\Source\UI\MidiEditor\Helpers\NoteResizerRight.h
+		..\..\Source\UI\MidiEditor\Helpers\TimelineWarningMarker.cpp = ..\..\Source\UI\MidiEditor\Helpers\TimelineWarningMarker.cpp
+		..\..\Source\UI\MidiEditor\Helpers\TimelineWarningMarker.h = ..\..\Source\UI\MidiEditor\Helpers\TimelineWarningMarker.h
 		..\..\Source\UI\MidiEditor\Helpers\WipeSpaceHelper.cpp = ..\..\Source\UI\MidiEditor\Helpers\WipeSpaceHelper.cpp
 		..\..\Source\UI\MidiEditor\Helpers\WipeSpaceHelper.h = ..\..\Source\UI\MidiEditor\Helpers\WipeSpaceHelper.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TimeSignaturesMap", "TimeSignaturesMap", "{3AA9445A-806B-2260-BBD8-7D165FC0802C}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureLargeComponent.cpp = ..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureLargeComponent.cpp
+		..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureLargeComponent.h = ..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureLargeComponent.h
+		..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureSmallComponent.cpp = ..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureSmallComponent.cpp
+		..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureSmallComponent.h = ..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureSmallComponent.h
+		..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignaturesTrackMap.cpp = ..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignaturesTrackMap.cpp
+		..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignaturesTrackMap.h = ..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignaturesTrackMap.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TrackMap", "TrackMap", "{AFD47355-5485-1DCC-A254-81D37890A01F}"
@@ -721,18 +740,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Popups", "Popups", "{635E0A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rollovers", "Rollovers", "{37DE69D6-B11A-7A1D-2E17-D20EF23B6872}"
 	ProjectSection(SolutionItems) = preProject
+		..\..\Source\UI\Rollovers\ProjectRollover.cpp = ..\..\Source\UI\Rollovers\ProjectRollover.cpp
+		..\..\Source\UI\Rollovers\ProjectRollover.h = ..\..\Source\UI\Rollovers\ProjectRollover.h
 		..\..\Source\UI\Rollovers\RolloverBackButtonLeft.cpp = ..\..\Source\UI\Rollovers\RolloverBackButtonLeft.cpp
 		..\..\Source\UI\Rollovers\RolloverBackButtonLeft.h = ..\..\Source\UI\Rollovers\RolloverBackButtonLeft.h
 		..\..\Source\UI\Rollovers\RolloverBackButtonRight.cpp = ..\..\Source\UI\Rollovers\RolloverBackButtonRight.cpp
 		..\..\Source\UI\Rollovers\RolloverBackButtonRight.h = ..\..\Source\UI\Rollovers\RolloverBackButtonRight.h
+		..\..\Source\UI\Rollovers\RolloverContainer.cpp = ..\..\Source\UI\Rollovers\RolloverContainer.cpp
+		..\..\Source\UI\Rollovers\RolloverContainer.h = ..\..\Source\UI\Rollovers\RolloverContainer.h
 		..\..\Source\UI\Rollovers\RolloverHeaderLeft.cpp = ..\..\Source\UI\Rollovers\RolloverHeaderLeft.cpp
 		..\..\Source\UI\Rollovers\RolloverHeaderLeft.h = ..\..\Source\UI\Rollovers\RolloverHeaderLeft.h
 		..\..\Source\UI\Rollovers\RolloverHeaderRight.cpp = ..\..\Source\UI\Rollovers\RolloverHeaderRight.cpp
 		..\..\Source\UI\Rollovers\RolloverHeaderRight.h = ..\..\Source\UI\Rollovers\RolloverHeaderRight.h
-		..\..\Source\UI\Rollovers\RolloverContainer.cpp = ..\..\Source\UI\Rollovers\RolloverContainer.cpp
-		..\..\Source\UI\Rollovers\RolloverContainer.h = ..\..\Source\UI\Rollovers\RolloverContainer.h
-		..\..\Source\UI\Rollovers\ProjectRollover.cpp = ..\..\Source\UI\Rollovers\ProjectRollover.cpp
-		..\..\Source\UI\Rollovers\ProjectRollover.h = ..\..\Source\UI\Rollovers\ProjectRollover.h
 		..\..\Source\UI\Rollovers\SettingsRollover.cpp = ..\..\Source\UI\Rollovers\SettingsRollover.cpp
 		..\..\Source\UI\Rollovers\SettingsRollover.h = ..\..\Source\UI\Rollovers\SettingsRollover.h
 	EndProjectSection
@@ -766,12 +785,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SettingsPage", "SettingsPag
 		..\..\Source\UI\SettingsPage\OpenGLSettings.h = ..\..\Source\UI\SettingsPage\OpenGLSettings.h
 		..\..\Source\UI\SettingsPage\PluginsList.cpp = ..\..\Source\UI\SettingsPage\PluginsList.cpp
 		..\..\Source\UI\SettingsPage\PluginsList.h = ..\..\Source\UI\SettingsPage\PluginsList.h
-		..\..\Source\UI\SettingsPage\SettingsPage.cpp = ..\..\Source\UI\SettingsPage\SettingsPage.cpp
-		..\..\Source\UI\SettingsPage\SettingsPage.h = ..\..\Source\UI\SettingsPage\SettingsPage.h
 		..\..\Source\UI\SettingsPage\SettingsListItemHighlighter.cpp = ..\..\Source\UI\SettingsPage\SettingsListItemHighlighter.cpp
 		..\..\Source\UI\SettingsPage\SettingsListItemHighlighter.h = ..\..\Source\UI\SettingsPage\SettingsListItemHighlighter.h
 		..\..\Source\UI\SettingsPage\SettingsListItemSelection.cpp = ..\..\Source\UI\SettingsPage\SettingsListItemSelection.cpp
 		..\..\Source\UI\SettingsPage\SettingsListItemSelection.h = ..\..\Source\UI\SettingsPage\SettingsListItemSelection.h
+		..\..\Source\UI\SettingsPage\SettingsPage.cpp = ..\..\Source\UI\SettingsPage\SettingsPage.cpp
+		..\..\Source\UI\SettingsPage\SettingsPage.h = ..\..\Source\UI\SettingsPage\SettingsPage.h
 		..\..\Source\UI\SettingsPage\ThemeSettings.cpp = ..\..\Source\UI\SettingsPage\ThemeSettings.cpp
 		..\..\Source\UI\SettingsPage\ThemeSettings.h = ..\..\Source\UI\SettingsPage\ThemeSettings.h
 		..\..\Source\UI\SettingsPage\ThemeSettingsItem.cpp = ..\..\Source\UI\SettingsPage\ThemeSettingsItem.cpp
@@ -823,12 +842,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Themes", "Themes", "{0099EC
 		..\..\Source\UI\Themes\PanelC.h = ..\..\Source\UI\Themes\PanelC.h
 		..\..\Source\UI\Themes\SeparatorHorizontal.cpp = ..\..\Source\UI\Themes\SeparatorHorizontal.cpp
 		..\..\Source\UI\Themes\SeparatorHorizontal.h = ..\..\Source\UI\Themes\SeparatorHorizontal.h
-		..\..\Source\UI\Themes\SeparatorHorizontalReversed.cpp = ..\..\Source\UI\Themes\SeparatorHorizontalReversed.cpp
-		..\..\Source\UI\Themes\SeparatorHorizontalReversed.h = ..\..\Source\UI\Themes\SeparatorHorizontalReversed.h
 		..\..\Source\UI\Themes\SeparatorHorizontalFading.cpp = ..\..\Source\UI\Themes\SeparatorHorizontalFading.cpp
 		..\..\Source\UI\Themes\SeparatorHorizontalFading.h = ..\..\Source\UI\Themes\SeparatorHorizontalFading.h
 		..\..\Source\UI\Themes\SeparatorHorizontalFadingReversed.cpp = ..\..\Source\UI\Themes\SeparatorHorizontalFadingReversed.cpp
 		..\..\Source\UI\Themes\SeparatorHorizontalFadingReversed.h = ..\..\Source\UI\Themes\SeparatorHorizontalFadingReversed.h
+		..\..\Source\UI\Themes\SeparatorHorizontalReversed.cpp = ..\..\Source\UI\Themes\SeparatorHorizontalReversed.cpp
+		..\..\Source\UI\Themes\SeparatorHorizontalReversed.h = ..\..\Source\UI\Themes\SeparatorHorizontalReversed.h
 		..\..\Source\UI\Themes\SeparatorVertical.cpp = ..\..\Source\UI\Themes\SeparatorVertical.cpp
 		..\..\Source\UI\Themes\SeparatorVertical.h = ..\..\Source\UI\Themes\SeparatorVertical.h
 		..\..\Source\UI\Themes\SeparatorVerticalReversed.cpp = ..\..\Source\UI\Themes\SeparatorVerticalReversed.cpp
@@ -855,14 +874,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tree", "Tree", "{B71B6B5C-9
 	ProjectSection(SolutionItems) = preProject
 		..\..\Source\UI\Tree\TreeItemComponent.cpp = ..\..\Source\UI\Tree\TreeItemComponent.cpp
 		..\..\Source\UI\Tree\TreeItemComponent.h = ..\..\Source\UI\Tree\TreeItemComponent.h
-		..\..\Source\UI\Tree\TreeItemComponentDefault.cpp = ..\..\Source\UI\Tree\TreeItemComponentDefault.cpp
-		..\..\Source\UI\Tree\TreeItemComponentDefault.h = ..\..\Source\UI\Tree\TreeItemComponentDefault.h
 		..\..\Source\UI\Tree\TreeItemComponentCompact.cpp = ..\..\Source\UI\Tree\TreeItemComponentCompact.cpp
 		..\..\Source\UI\Tree\TreeItemComponentCompact.h = ..\..\Source\UI\Tree\TreeItemComponentCompact.h
-		..\..\Source\UI\Tree\TreeItemMarkerDefault.cpp = ..\..\Source\UI\Tree\TreeItemMarkerDefault.cpp
-		..\..\Source\UI\Tree\TreeItemMarkerDefault.h = ..\..\Source\UI\Tree\TreeItemMarkerDefault.h
+		..\..\Source\UI\Tree\TreeItemComponentDefault.cpp = ..\..\Source\UI\Tree\TreeItemComponentDefault.cpp
+		..\..\Source\UI\Tree\TreeItemComponentDefault.h = ..\..\Source\UI\Tree\TreeItemComponentDefault.h
 		..\..\Source\UI\Tree\TreeItemMarkerCompact.cpp = ..\..\Source\UI\Tree\TreeItemMarkerCompact.cpp
 		..\..\Source\UI\Tree\TreeItemMarkerCompact.h = ..\..\Source\UI\Tree\TreeItemMarkerCompact.h
+		..\..\Source\UI\Tree\TreeItemMarkerDefault.cpp = ..\..\Source\UI\Tree\TreeItemMarkerDefault.cpp
+		..\..\Source\UI\Tree\TreeItemMarkerDefault.h = ..\..\Source\UI\Tree\TreeItemMarkerDefault.h
 		..\..\Source\UI\Tree\TreeItemMenuButton.cpp = ..\..\Source\UI\Tree\TreeItemMenuButton.cpp
 		..\..\Source\UI\Tree\TreeItemMenuButton.h = ..\..\Source\UI\Tree\TreeItemMenuButton.h
 		..\..\Source\UI\Tree\TreePanel.cpp = ..\..\Source\UI\Tree\TreePanel.cpp
@@ -930,7 +949,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_audio_basics", "juce_a
 		..\..\ThirdParty\JUCE\modules\juce_audio_basics\juce_audio_basics.cpp = ..\..\ThirdParty\JUCE\modules\juce_audio_basics\juce_audio_basics.cpp
 		..\..\ThirdParty\JUCE\modules\juce_audio_basics\juce_audio_basics.h = ..\..\ThirdParty\JUCE\modules\juce_audio_basics\juce_audio_basics.h
 		..\..\ThirdParty\JUCE\modules\juce_audio_basics\juce_audio_basics.mm = ..\..\ThirdParty\JUCE\modules\juce_audio_basics\juce_audio_basics.mm
-		..\..\ThirdParty\JUCE\modules\juce_audio_basics\juce_audio_basics.h = ..\..\ThirdParty\JUCE\modules\juce_audio_basics\juce_audio_basics.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "audio_play_head", "audio_play_head", "{EBF046F5-7CA3-37D3-9D14-C9A7C0217454}"
@@ -1033,7 +1051,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_audio_devices", "juce_
 		..\..\ThirdParty\JUCE\modules\juce_audio_devices\juce_audio_devices.cpp = ..\..\ThirdParty\JUCE\modules\juce_audio_devices\juce_audio_devices.cpp
 		..\..\ThirdParty\JUCE\modules\juce_audio_devices\juce_audio_devices.h = ..\..\ThirdParty\JUCE\modules\juce_audio_devices\juce_audio_devices.h
 		..\..\ThirdParty\JUCE\modules\juce_audio_devices\juce_audio_devices.mm = ..\..\ThirdParty\JUCE\modules\juce_audio_devices\juce_audio_devices.mm
-		..\..\ThirdParty\JUCE\modules\juce_audio_devices\juce_audio_devices.h = ..\..\ThirdParty\JUCE\modules\juce_audio_devices\juce_audio_devices.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "audio_io", "audio_io", "{2FB2505D-2839-6A28-8B43-608B6961375F}"
@@ -1088,7 +1105,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_audio_formats", "juce_
 		..\..\ThirdParty\JUCE\modules\juce_audio_formats\juce_audio_formats.cpp = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\juce_audio_formats.cpp
 		..\..\ThirdParty\JUCE\modules\juce_audio_formats\juce_audio_formats.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\juce_audio_formats.h
 		..\..\ThirdParty\JUCE\modules\juce_audio_formats\juce_audio_formats.mm = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\juce_audio_formats.mm
-		..\..\ThirdParty\JUCE\modules\juce_audio_formats\juce_audio_formats.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\juce_audio_formats.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "codecs", "codecs", "{39987945-FE5D-E386-3C47-064B2DF8EF23}"
@@ -1260,16 +1276,15 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "modes", "modes", "{B1508D51-A050-EB5E-38AC-A3D9A2F5291D}"
 	ProjectSection(SolutionItems) = preProject
 		..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\floor_all.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\floor_all.h
-		..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\psych_8.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\psych_8.h
 		..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\psych_11.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\psych_11.h
 		..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\psych_16.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\psych_16.h
 		..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\psych_44.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\psych_44.h
-		..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\residue_8.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\residue_8.h
+		..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\psych_8.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\psych_8.h
 		..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\residue_16.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\residue_16.h
 		..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\residue_44.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\residue_44.h
 		..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\residue_44p51.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\residue_44p51.h
 		..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\residue_44u.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\residue_44u.h
-		..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\setup_8.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\setup_8.h
+		..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\residue_8.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\residue_8.h
 		..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\setup_11.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\setup_11.h
 		..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\setup_16.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\setup_16.h
 		..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\setup_22.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\setup_22.h
@@ -1277,6 +1292,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "modes", "modes", "{B1508D51
 		..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\setup_44.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\setup_44.h
 		..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\setup_44p51.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\setup_44p51.h
 		..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\setup_44u.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\setup_44u.h
+		..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\setup_8.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\setup_8.h
 		..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\setup_X.h = ..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\oggvorbis\libvorbis-1.3.2\lib\modes\setup_X.h
 	EndProjectSection
 EndProject
@@ -1310,7 +1326,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_audio_processors", "ju
 		..\..\ThirdParty\JUCE\modules\juce_audio_processors\juce_audio_processors.cpp = ..\..\ThirdParty\JUCE\modules\juce_audio_processors\juce_audio_processors.cpp
 		..\..\ThirdParty\JUCE\modules\juce_audio_processors\juce_audio_processors.h = ..\..\ThirdParty\JUCE\modules\juce_audio_processors\juce_audio_processors.h
 		..\..\ThirdParty\JUCE\modules\juce_audio_processors\juce_audio_processors.mm = ..\..\ThirdParty\JUCE\modules\juce_audio_processors\juce_audio_processors.mm
-		..\..\ThirdParty\JUCE\modules\juce_audio_processors\juce_audio_processors.h = ..\..\ThirdParty\JUCE\modules\juce_audio_processors\juce_audio_processors.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "format", "format", "{15387D64-C701-2C1A-5DEA-C056077E178A}"
@@ -1383,7 +1398,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_audio_utils", "juce_au
 		..\..\ThirdParty\JUCE\modules\juce_audio_utils\juce_audio_utils.cpp = ..\..\ThirdParty\JUCE\modules\juce_audio_utils\juce_audio_utils.cpp
 		..\..\ThirdParty\JUCE\modules\juce_audio_utils\juce_audio_utils.h = ..\..\ThirdParty\JUCE\modules\juce_audio_utils\juce_audio_utils.h
 		..\..\ThirdParty\JUCE\modules\juce_audio_utils\juce_audio_utils.mm = ..\..\ThirdParty\JUCE\modules\juce_audio_utils\juce_audio_utils.mm
-		..\..\ThirdParty\JUCE\modules\juce_audio_utils\juce_audio_utils.h = ..\..\ThirdParty\JUCE\modules\juce_audio_utils\juce_audio_utils.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "audio_cd", "audio_cd", "{2A0F5ACB-117B-DBDF-01A4-637E97E507E9}"
@@ -1420,9 +1434,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "native", "native", "{F76E7B
 		..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_mac_AudioCDBurner.mm = ..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_mac_AudioCDBurner.mm
 		..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_mac_AudioCDReader.mm = ..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_mac_AudioCDReader.mm
 		..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_mac_BluetoothMidiDevicePairingDialogue.mm = ..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_mac_BluetoothMidiDevicePairingDialogue.mm
-		..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_win_BluetoothMidiDevicePairingDialogue.cpp = ..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_win_BluetoothMidiDevicePairingDialogue.cpp
 		..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_win32_AudioCDBurner.cpp = ..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_win32_AudioCDBurner.cpp
 		..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_win32_AudioCDReader.cpp = ..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_win32_AudioCDReader.cpp
+		..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_win_BluetoothMidiDevicePairingDialogue.cpp = ..\..\ThirdParty\JUCE\modules\juce_audio_utils\native\juce_win_BluetoothMidiDevicePairingDialogue.cpp
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "players", "players", "{D975B1FC-4D8C-049F-316E-1267AFBDEFE7}"
@@ -1438,7 +1452,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_core", "juce_core", "{
 		..\..\ThirdParty\JUCE\modules\juce_core\juce_core.cpp = ..\..\ThirdParty\JUCE\modules\juce_core\juce_core.cpp
 		..\..\ThirdParty\JUCE\modules\juce_core\juce_core.h = ..\..\ThirdParty\JUCE\modules\juce_core\juce_core.h
 		..\..\ThirdParty\JUCE\modules\juce_core\juce_core.mm = ..\..\ThirdParty\JUCE\modules\juce_core\juce_core.mm
-		..\..\ThirdParty\JUCE\modules\juce_core\juce_core.h = ..\..\ThirdParty\JUCE\modules\juce_core\juce_core.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "containers", "containers", "{65518DFA-AA0E-33C8-3816-2792B73EE256}"
@@ -1632,9 +1645,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "text", "text", "{D3A3219A-8
 		..\..\ThirdParty\JUCE\modules\juce_core\text\juce_CharacterFunctions.cpp = ..\..\ThirdParty\JUCE\modules\juce_core\text\juce_CharacterFunctions.cpp
 		..\..\ThirdParty\JUCE\modules\juce_core\text\juce_CharacterFunctions.h = ..\..\ThirdParty\JUCE\modules\juce_core\text\juce_CharacterFunctions.h
 		..\..\ThirdParty\JUCE\modules\juce_core\text\juce_CharPointer_ASCII.h = ..\..\ThirdParty\JUCE\modules\juce_core\text\juce_CharPointer_ASCII.h
-		..\..\ThirdParty\JUCE\modules\juce_core\text\juce_CharPointer_UTF8.h = ..\..\ThirdParty\JUCE\modules\juce_core\text\juce_CharPointer_UTF8.h
 		..\..\ThirdParty\JUCE\modules\juce_core\text\juce_CharPointer_UTF16.h = ..\..\ThirdParty\JUCE\modules\juce_core\text\juce_CharPointer_UTF16.h
 		..\..\ThirdParty\JUCE\modules\juce_core\text\juce_CharPointer_UTF32.h = ..\..\ThirdParty\JUCE\modules\juce_core\text\juce_CharPointer_UTF32.h
+		..\..\ThirdParty\JUCE\modules\juce_core\text\juce_CharPointer_UTF8.h = ..\..\ThirdParty\JUCE\modules\juce_core\text\juce_CharPointer_UTF8.h
 		..\..\ThirdParty\JUCE\modules\juce_core\text\juce_Identifier.cpp = ..\..\ThirdParty\JUCE\modules\juce_core\text\juce_Identifier.cpp
 		..\..\ThirdParty\JUCE\modules\juce_core\text\juce_Identifier.h = ..\..\ThirdParty\JUCE\modules\juce_core\text\juce_Identifier.h
 		..\..\ThirdParty\JUCE\modules\juce_core\text\juce_LocalisedStrings.cpp = ..\..\ThirdParty\JUCE\modules\juce_core\text\juce_LocalisedStrings.cpp
@@ -1744,7 +1757,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_cryptography", "juce_c
 		..\..\ThirdParty\JUCE\modules\juce_cryptography\juce_cryptography.cpp = ..\..\ThirdParty\JUCE\modules\juce_cryptography\juce_cryptography.cpp
 		..\..\ThirdParty\JUCE\modules\juce_cryptography\juce_cryptography.h = ..\..\ThirdParty\JUCE\modules\juce_cryptography\juce_cryptography.h
 		..\..\ThirdParty\JUCE\modules\juce_cryptography\juce_cryptography.mm = ..\..\ThirdParty\JUCE\modules\juce_cryptography\juce_cryptography.mm
-		..\..\ThirdParty\JUCE\modules\juce_cryptography\juce_cryptography.h = ..\..\ThirdParty\JUCE\modules\juce_cryptography\juce_cryptography.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "encryption", "encryption", "{44D4C0FA-8813-81F3-C395-3DAC13A7A89A}"
@@ -1772,7 +1784,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_data_structures", "juc
 		..\..\ThirdParty\JUCE\modules\juce_data_structures\juce_data_structures.cpp = ..\..\ThirdParty\JUCE\modules\juce_data_structures\juce_data_structures.cpp
 		..\..\ThirdParty\JUCE\modules\juce_data_structures\juce_data_structures.h = ..\..\ThirdParty\JUCE\modules\juce_data_structures\juce_data_structures.h
 		..\..\ThirdParty\JUCE\modules\juce_data_structures\juce_data_structures.mm = ..\..\ThirdParty\JUCE\modules\juce_data_structures\juce_data_structures.mm
-		..\..\ThirdParty\JUCE\modules\juce_data_structures\juce_data_structures.h = ..\..\ThirdParty\JUCE\modules\juce_data_structures\juce_data_structures.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "app_properties", "app_properties", "{4A705E23-0141-66F3-2594-CD9A0BF44C32}"
@@ -1807,7 +1818,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_events", "juce_events"
 		..\..\ThirdParty\JUCE\modules\juce_events\juce_events.cpp = ..\..\ThirdParty\JUCE\modules\juce_events\juce_events.cpp
 		..\..\ThirdParty\JUCE\modules\juce_events\juce_events.h = ..\..\ThirdParty\JUCE\modules\juce_events\juce_events.h
 		..\..\ThirdParty\JUCE\modules\juce_events\juce_events.mm = ..\..\ThirdParty\JUCE\modules\juce_events\juce_events.mm
-		..\..\ThirdParty\JUCE\modules\juce_events\juce_events.h = ..\..\ThirdParty\JUCE\modules\juce_events\juce_events.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "broadcasters", "broadcasters", "{9E47598B-2577-465A-C90A-32404F7850B2}"
@@ -1876,7 +1886,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_graphics", "juce_graph
 		..\..\ThirdParty\JUCE\modules\juce_graphics\juce_graphics.cpp = ..\..\ThirdParty\JUCE\modules\juce_graphics\juce_graphics.cpp
 		..\..\ThirdParty\JUCE\modules\juce_graphics\juce_graphics.h = ..\..\ThirdParty\JUCE\modules\juce_graphics\juce_graphics.h
 		..\..\ThirdParty\JUCE\modules\juce_graphics\juce_graphics.mm = ..\..\ThirdParty\JUCE\modules\juce_graphics\juce_graphics.mm
-		..\..\ThirdParty\JUCE\modules\juce_graphics\juce_graphics.h = ..\..\ThirdParty\JUCE\modules\juce_graphics\juce_graphics.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "colour", "colour", "{F3F11CDE-52EC-66F8-F2D7-53315CF3AAFF}"
@@ -2088,7 +2097,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_gui_basics", "juce_gui
 		..\..\ThirdParty\JUCE\modules\juce_gui_basics\juce_gui_basics.cpp = ..\..\ThirdParty\JUCE\modules\juce_gui_basics\juce_gui_basics.cpp
 		..\..\ThirdParty\JUCE\modules\juce_gui_basics\juce_gui_basics.h = ..\..\ThirdParty\JUCE\modules\juce_gui_basics\juce_gui_basics.h
 		..\..\ThirdParty\JUCE\modules\juce_gui_basics\juce_gui_basics.mm = ..\..\ThirdParty\JUCE\modules\juce_gui_basics\juce_gui_basics.mm
-		..\..\ThirdParty\JUCE\modules\juce_gui_basics\juce_gui_basics.h = ..\..\ThirdParty\JUCE\modules\juce_gui_basics\juce_gui_basics.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "application", "application", "{3EC53F5E-7B4C-388B-D81F-383A9790312D}"
@@ -2421,7 +2429,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_gui_extra", "juce_gui_
 		..\..\ThirdParty\JUCE\modules\juce_gui_extra\juce_gui_extra.cpp = ..\..\ThirdParty\JUCE\modules\juce_gui_extra\juce_gui_extra.cpp
 		..\..\ThirdParty\JUCE\modules\juce_gui_extra\juce_gui_extra.h = ..\..\ThirdParty\JUCE\modules\juce_gui_extra\juce_gui_extra.h
 		..\..\ThirdParty\JUCE\modules\juce_gui_extra\juce_gui_extra.mm = ..\..\ThirdParty\JUCE\modules\juce_gui_extra\juce_gui_extra.mm
-		..\..\ThirdParty\JUCE\modules\juce_gui_extra\juce_gui_extra.h = ..\..\ThirdParty\JUCE\modules\juce_gui_extra\juce_gui_extra.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "code_editor", "code_editor", "{46D23535-DF3D-1036-B282-994A43B10DAE}"
@@ -2500,7 +2507,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_opengl", "juce_opengl"
 		..\..\ThirdParty\JUCE\modules\juce_opengl\juce_opengl.cpp = ..\..\ThirdParty\JUCE\modules\juce_opengl\juce_opengl.cpp
 		..\..\ThirdParty\JUCE\modules\juce_opengl\juce_opengl.h = ..\..\ThirdParty\JUCE\modules\juce_opengl\juce_opengl.h
 		..\..\ThirdParty\JUCE\modules\juce_opengl\juce_opengl.mm = ..\..\ThirdParty\JUCE\modules\juce_opengl\juce_opengl.mm
-		..\..\ThirdParty\JUCE\modules\juce_opengl\juce_opengl.h = ..\..\ThirdParty\JUCE\modules\juce_opengl\juce_opengl.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "geometry", "geometry", "{AE53579D-78DA-DB07-51BB-6B14BAAD222A}"
@@ -2553,7 +2559,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "juce_osc", "juce_osc", "{CD
 	ProjectSection(SolutionItems) = preProject
 		..\..\ThirdParty\JUCE\modules\juce_osc\juce_osc.cpp = ..\..\ThirdParty\JUCE\modules\juce_osc\juce_osc.cpp
 		..\..\ThirdParty\JUCE\modules\juce_osc\juce_osc.h = ..\..\ThirdParty\JUCE\modules\juce_osc\juce_osc.h
-		..\..\ThirdParty\JUCE\modules\juce_osc\juce_osc.h = ..\..\ThirdParty\JUCE\modules\juce_osc\juce_osc.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "osc", "osc", "{71FEBE55-3C49-0260-9633-4C25EE44F006}"
@@ -2603,36 +2608,46 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug 32-bit|Win32 = Debug 32-bit|Win32
+		Debug 32-bit|x64 = Debug 32-bit|x64
+		Debug x64|Win32 = Debug x64|Win32
 		Debug x64|x64 = Debug x64|x64
 		Release 32-bit|Win32 = Release 32-bit|Win32
+		Release 32-bit|x64 = Release 32-bit|x64
+		Release x64|Win32 = Release x64|Win32
 		Release x64|x64 = Release x64|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Debug 32-bit|Win32.Build.0 = Debug 32-bit|Win32
 		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Debug 32-bit|Win32.ActiveCfg = Debug 32-bit|Win32
-		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Debug x64|x64.Build.0 = Debug x64|x64
+		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Debug 32-bit|Win32.Build.0 = Debug 32-bit|Win32
+		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Debug 32-bit|x64.ActiveCfg = Debug 32-bit|Win32
+		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Debug x64|Win32.ActiveCfg = Debug x64|x64
 		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Debug x64|x64.ActiveCfg = Debug x64|x64
-		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Release 32-bit|Win32.Build.0 = Release 32-bit|Win32
+		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Debug x64|x64.Build.0 = Debug x64|x64
 		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Release 32-bit|Win32.ActiveCfg = Release 32-bit|Win32
-		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Release x64|x64.Build.0 = Release x64|x64
+		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Release 32-bit|Win32.Build.0 = Release 32-bit|Win32
+		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Release 32-bit|x64.ActiveCfg = Release 32-bit|Win32
+		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Release x64|Win32.ActiveCfg = Release x64|x64
 		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Release x64|x64.ActiveCfg = Release x64|x64
+		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Release x64|x64.Build.0 = Release x64|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{A139F6D7-68B6-6010-9674-AA4A8CD1C31D} = {1B2C2B59-FB27-BB39-915F-0947F689172B}
 		{423539D1-B318-4812-22EC-7CB3CA9607B6} = {A139F6D7-68B6-6010-9674-AA4A8CD1C31D}
-		{941F4278-BB49-1F74-C221-F6954AA378E9} = {C5F1D0B5-84B7-C0E4-0C0B-C929B3F1EBF5}
 		{C5F1D0B5-84B7-C0E4-0C0B-C929B3F1EBF5} = {A139F6D7-68B6-6010-9674-AA4A8CD1C31D}
+		{941F4278-BB49-1F74-C221-F6954AA378E9} = {C5F1D0B5-84B7-C0E4-0C0B-C929B3F1EBF5}
 		{FDA9B87F-DE32-54FD-A5B1-769E1A90DB4B} = {A139F6D7-68B6-6010-9674-AA4A8CD1C31D}
 		{878B272A-D502-EFFE-6433-63D5715C9745} = {A139F6D7-68B6-6010-9674-AA4A8CD1C31D}
-		{A139F6D7-68B6-6010-9674-AA4A8CD1C31D} = {1B2C2B59-FB27-BB39-915F-0947F689172B}
+		{66D7B54D-E77C-ADFF-5C4C-9D2D9F8532CC} = {1B2C2B59-FB27-BB39-915F-0947F689172B}
+		{131541EF-BEB3-D3EB-FC4C-E668585F0382} = {66D7B54D-E77C-ADFF-5C4C-9D2D9F8532CC}
 		{34CD2A84-A17B-D50E-224B-C126C86A5F12} = {131541EF-BEB3-D3EB-FC4C-E668585F0382}
+		{9030FCB2-72B0-6D1A-1FC0-4EC0D651B608} = {131541EF-BEB3-D3EB-FC4C-E668585F0382}
 		{6DACDE76-3FF3-84E8-25C6-14D72A1A5F7D} = {9030FCB2-72B0-6D1A-1FC0-4EC0D651B608}
 		{64A67A61-A5A4-255A-BD67-8805BA604691} = {9030FCB2-72B0-6D1A-1FC0-4EC0D651B608}
 		{1077A5AF-6206-0860-0B92-5E35B1F01379} = {9030FCB2-72B0-6D1A-1FC0-4EC0D651B608}
 		{90E0DD82-2E71-3DD7-1DED-8C1D114AC6FA} = {9030FCB2-72B0-6D1A-1FC0-4EC0D651B608}
-		{9030FCB2-72B0-6D1A-1FC0-4EC0D651B608} = {131541EF-BEB3-D3EB-FC4C-E668585F0382}
 		{92376BA7-DEE3-26EB-4ADD-529B9937C263} = {131541EF-BEB3-D3EB-FC4C-E668585F0382}
 		{0394D29C-0580-62B9-5F56-F78A3BF38D52} = {131541EF-BEB3-D3EB-FC4C-E668585F0382}
 		{5C571F43-F82F-40D5-B64F-79DE61D232B0} = {131541EF-BEB3-D3EB-FC4C-E668585F0382}
@@ -2642,29 +2657,30 @@ Global
 		{40E7F839-9928-2C46-0038-413E00EEDD25} = {131541EF-BEB3-D3EB-FC4C-E668585F0382}
 		{AD7FC0E5-7D44-C5D9-E2D9-EE705401D0F5} = {131541EF-BEB3-D3EB-FC4C-E668585F0382}
 		{BD1E4205-D181-1CEA-F6AC-927D1AE66DD0} = {131541EF-BEB3-D3EB-FC4C-E668585F0382}
-		{A237BE49-BA60-BAEA-0D87-B9B71472C8BF} = {66DC8417-EA59-76DE-370D-4550EEAA5E31}
 		{66DC8417-EA59-76DE-370D-4550EEAA5E31} = {131541EF-BEB3-D3EB-FC4C-E668585F0382}
+		{A237BE49-BA60-BAEA-0D87-B9B71472C8BF} = {66DC8417-EA59-76DE-370D-4550EEAA5E31}
+		{97DDC28F-A297-3EDD-565A-9EFA5FB822EB} = {131541EF-BEB3-D3EB-FC4C-E668585F0382}
 		{92C9F97A-01D1-AA44-F946-003D6F41A111} = {97DDC28F-A297-3EDD-565A-9EFA5FB822EB}
 		{0E35680A-E44A-C486-26F0-A7BA199CD7E3} = {97DDC28F-A297-3EDD-565A-9EFA5FB822EB}
-		{97DDC28F-A297-3EDD-565A-9EFA5FB822EB} = {131541EF-BEB3-D3EB-FC4C-E668585F0382}
-		{131541EF-BEB3-D3EB-FC4C-E668585F0382} = {66D7B54D-E77C-ADFF-5C4C-9D2D9F8532CC}
-		{C634724A-4A6F-7CE2-24F4-849167E8EE19} = {3B3E6699-4841-60D3-B8EA-FB7DC1284866}
+		{A0B56175-3F2D-E876-8518-CFA284ED1E2D} = {66D7B54D-E77C-ADFF-5C4C-9D2D9F8532CC}
 		{3B3E6699-4841-60D3-B8EA-FB7DC1284866} = {A0B56175-3F2D-E876-8518-CFA284ED1E2D}
+		{C634724A-4A6F-7CE2-24F4-849167E8EE19} = {3B3E6699-4841-60D3-B8EA-FB7DC1284866}
+		{281B2E60-0E58-956E-36E1-6F7BBF559D21} = {A0B56175-3F2D-E876-8518-CFA284ED1E2D}
 		{556CB817-B992-99D2-6E55-C0E265671297} = {281B2E60-0E58-956E-36E1-6F7BBF559D21}
 		{5DD38396-AD2C-F723-AAE5-BB819304AD58} = {281B2E60-0E58-956E-36E1-6F7BBF559D21}
-		{281B2E60-0E58-956E-36E1-6F7BBF559D21} = {A0B56175-3F2D-E876-8518-CFA284ED1E2D}
 		{39199219-CB1A-8D07-59E6-5623E5915C90} = {A0B56175-3F2D-E876-8518-CFA284ED1E2D}
 		{288F3D77-4BC8-1EE2-6FC7-80D7F546F479} = {A0B56175-3F2D-E876-8518-CFA284ED1E2D}
-		{A5C53657-4E77-4DDC-4855-FC90B4E97210} = {F3533BE3-CD85-CDB5-AC43-94F3DFCC3205}
 		{F3533BE3-CD85-CDB5-AC43-94F3DFCC3205} = {A0B56175-3F2D-E876-8518-CFA284ED1E2D}
+		{A5C53657-4E77-4DDC-4855-FC90B4E97210} = {F3533BE3-CD85-CDB5-AC43-94F3DFCC3205}
 		{42B74602-3931-7487-673F-5EAF72D1DCFC} = {A0B56175-3F2D-E876-8518-CFA284ED1E2D}
+		{C0D7C37D-C204-F202-B6B4-F191450D4F6E} = {A0B56175-3F2D-E876-8518-CFA284ED1E2D}
 		{394F7E2F-2074-4848-0A0F-DEAAD8AA2C19} = {C0D7C37D-C204-F202-B6B4-F191450D4F6E}
 		{C273D9C2-1275-7D6C-1E1A-AFCD82B1220D} = {C0D7C37D-C204-F202-B6B4-F191450D4F6E}
 		{342E8DA0-53B2-8DF0-6F87-BF5C2A9CC8B2} = {C0D7C37D-C204-F202-B6B4-F191450D4F6E}
 		{A9939A38-3736-99C0-4322-A70E567A5372} = {C0D7C37D-C204-F202-B6B4-F191450D4F6E}
+		{3AA9445A-806B-2260-BBD8-7D165FC0802C} = {C0D7C37D-C204-F202-B6B4-F191450D4F6E}
 		{AFD47355-5485-1DCC-A254-81D37890A01F} = {C0D7C37D-C204-F202-B6B4-F191450D4F6E}
 		{F98304CF-EFBD-B860-17F8-C8473BA1310A} = {C0D7C37D-C204-F202-B6B4-F191450D4F6E}
-		{C0D7C37D-C204-F202-B6B4-F191450D4F6E} = {A0B56175-3F2D-E876-8518-CFA284ED1E2D}
 		{635E0AA2-0024-24B7-EB15-82D926F73077} = {A0B56175-3F2D-E876-8518-CFA284ED1E2D}
 		{37DE69D6-B11A-7A1D-2E17-D20EF23B6872} = {A0B56175-3F2D-E876-8518-CFA284ED1E2D}
 		{92DC2E4F-385F-8D6C-D38C-854BAF682A4D} = {A0B56175-3F2D-E876-8518-CFA284ED1E2D}
@@ -2672,10 +2688,9 @@ Global
 		{0099EC85-4A77-7FEF-6B7F-DBCA291C42E9} = {A0B56175-3F2D-E876-8518-CFA284ED1E2D}
 		{B71B6B5C-9D66-9DA8-88FA-38C29DF9C93C} = {A0B56175-3F2D-E876-8518-CFA284ED1E2D}
 		{300DF9DD-A822-715D-128C-2C66AD359F99} = {A0B56175-3F2D-E876-8518-CFA284ED1E2D}
-		{D018F450-606F-CC36-0E80-141141CC897D} = {FC614C2C-4BE9-BAD8-BB72-E238DC6ADB7A}
 		{FC614C2C-4BE9-BAD8-BB72-E238DC6ADB7A} = {A0B56175-3F2D-E876-8518-CFA284ED1E2D}
-		{A0B56175-3F2D-E876-8518-CFA284ED1E2D} = {66D7B54D-E77C-ADFF-5C4C-9D2D9F8532CC}
-		{66D7B54D-E77C-ADFF-5C4C-9D2D9F8532CC} = {1B2C2B59-FB27-BB39-915F-0947F689172B}
+		{D018F450-606F-CC36-0E80-141141CC897D} = {FC614C2C-4BE9-BAD8-BB72-E238DC6ADB7A}
+		{7D98269F-FE96-6BA2-6982-95A094257474} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
 		{EBF046F5-7CA3-37D3-9D14-C9A7C0217454} = {7D98269F-FE96-6BA2-6982-95A094257474}
 		{7CD42E50-9A58-3EBA-EE01-8BB53EE23455} = {7D98269F-FE96-6BA2-6982-95A094257474}
 		{F9D856A3-0393-6323-2067-7800D15AE886} = {7D98269F-FE96-6BA2-6982-95A094257474}
@@ -2683,40 +2698,40 @@ Global
 		{42A6BDC7-7BE0-EBA7-7449-244611E7C050} = {7D98269F-FE96-6BA2-6982-95A094257474}
 		{2C9328F7-BEDA-D0AD-8A77-25E2413F43B3} = {7D98269F-FE96-6BA2-6982-95A094257474}
 		{42788118-A55A-13F2-0D75-9336034CC898} = {7D98269F-FE96-6BA2-6982-95A094257474}
-		{7D98269F-FE96-6BA2-6982-95A094257474} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
+		{9B424FDD-E818-734F-9A73-089DB94DAD0F} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
 		{2FB2505D-2839-6A28-8B43-608B6961375F} = {9B424FDD-E818-734F-9A73-089DB94DAD0F}
 		{3A38C056-9228-7750-758A-38C4DC501768} = {9B424FDD-E818-734F-9A73-089DB94DAD0F}
 		{F86FE87E-E9FA-0117-7B1D-9BD6F8AE7A2B} = {9B424FDD-E818-734F-9A73-089DB94DAD0F}
 		{AB4C4044-BD2A-AED7-B3B0-38C2624E2B03} = {9B424FDD-E818-734F-9A73-089DB94DAD0F}
-		{9B424FDD-E818-734F-9A73-089DB94DAD0F} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
+		{2C62B2A1-47C2-2C91-3E85-F988210D128A} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
+		{39987945-FE5D-E386-3C47-064B2DF8EF23} = {2C62B2A1-47C2-2C91-3E85-F988210D128A}
+		{2A093441-0818-FBB3-4018-AC42C7556BA1} = {39987945-FE5D-E386-3C47-064B2DF8EF23}
+		{EAE49DAE-C9DA-C22A-94BB-F594D24A8859} = {2A093441-0818-FBB3-4018-AC42C7556BA1}
+		{03DE31C9-4319-43F6-00CD-07D4076628AF} = {EAE49DAE-C9DA-C22A-94BB-F594D24A8859}
 		{57D44D97-1CEA-8801-71F9-2FDC3B30C765} = {03DE31C9-4319-43F6-00CD-07D4076628AF}
 		{72BC0A0E-5EFA-E29B-BC3B-C7C1D82692DD} = {03DE31C9-4319-43F6-00CD-07D4076628AF}
-		{03DE31C9-4319-43F6-00CD-07D4076628AF} = {EAE49DAE-C9DA-C22A-94BB-F594D24A8859}
-		{EAE49DAE-C9DA-C22A-94BB-F594D24A8859} = {2A093441-0818-FBB3-4018-AC42C7556BA1}
-		{2A093441-0818-FBB3-4018-AC42C7556BA1} = {39987945-FE5D-E386-3C47-064B2DF8EF23}
+		{89150802-5D84-B6ED-6A2B-EF3360A15C5E} = {39987945-FE5D-E386-3C47-064B2DF8EF23}
+		{28514950-B775-46D9-9558-D6E19DBA7737} = {89150802-5D84-B6ED-6A2B-EF3360A15C5E}
+		{39BEDD74-6156-CE0A-3D68-92B6619C6F17} = {28514950-B775-46D9-9558-D6E19DBA7737}
+		{BB6B3427-6256-D4F0-0335-52F2EC20FCF9} = {39BEDD74-6156-CE0A-3D68-92B6619C6F17}
 		{C1E00123-06F7-8611-C34F-D28E65D1484B} = {BB6B3427-6256-D4F0-0335-52F2EC20FCF9}
 		{6206A11D-B7B7-C251-EDB5-3FED3EEA091C} = {BB6B3427-6256-D4F0-0335-52F2EC20FCF9}
 		{8417A906-7041-470C-88E5-BA45164FB3BB} = {BB6B3427-6256-D4F0-0335-52F2EC20FCF9}
-		{BB6B3427-6256-D4F0-0335-52F2EC20FCF9} = {39BEDD74-6156-CE0A-3D68-92B6619C6F17}
 		{B1508D51-A050-EB5E-38AC-A3D9A2F5291D} = {39BEDD74-6156-CE0A-3D68-92B6619C6F17}
-		{39BEDD74-6156-CE0A-3D68-92B6619C6F17} = {28514950-B775-46D9-9558-D6E19DBA7737}
-		{28514950-B775-46D9-9558-D6E19DBA7737} = {89150802-5D84-B6ED-6A2B-EF3360A15C5E}
-		{89150802-5D84-B6ED-6A2B-EF3360A15C5E} = {39987945-FE5D-E386-3C47-064B2DF8EF23}
-		{39987945-FE5D-E386-3C47-064B2DF8EF23} = {2C62B2A1-47C2-2C91-3E85-F988210D128A}
 		{DA257576-DA2A-550A-0603-007F49337197} = {2C62B2A1-47C2-2C91-3E85-F988210D128A}
 		{1F68DB2D-F9CD-F7E7-9821-B51A6CFDB6E7} = {2C62B2A1-47C2-2C91-3E85-F988210D128A}
-		{2C62B2A1-47C2-2C91-3E85-F988210D128A} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
+		{861DF610-5E57-5745-146B-95D712482F64} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
 		{15387D64-C701-2C1A-5DEA-C056077E178A} = {861DF610-5E57-5745-146B-95D712482F64}
 		{C4C2ECEF-256A-2D14-9D85-2E125EFC0C9B} = {861DF610-5E57-5745-146B-95D712482F64}
 		{65AED23F-3946-CBF4-174B-30EC23840D6F} = {861DF610-5E57-5745-146B-95D712482F64}
 		{DA5DE8C5-116D-D9AF-4FE3-7194EB099C35} = {861DF610-5E57-5745-146B-95D712482F64}
 		{86851094-F8E2-4D2E-50A4-D3D9032FC6F3} = {861DF610-5E57-5745-146B-95D712482F64}
-		{861DF610-5E57-5745-146B-95D712482F64} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
+		{7EB91F56-DF03-C4D2-537F-FE2E438C9553} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
 		{2A0F5ACB-117B-DBDF-01A4-637E97E507E9} = {7EB91F56-DF03-C4D2-537F-FE2E438C9553}
 		{AB54F86B-DB98-3AE3-F510-6232975EFB16} = {7EB91F56-DF03-C4D2-537F-FE2E438C9553}
 		{F76E7B5E-2093-0FFD-6770-333083258323} = {7EB91F56-DF03-C4D2-537F-FE2E438C9553}
 		{D975B1FC-4D8C-049F-316E-1267AFBDEFE7} = {7EB91F56-DF03-C4D2-537F-FE2E438C9553}
-		{7EB91F56-DF03-C4D2-537F-FE2E438C9553} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
+		{5C1FF221-EF7F-CCBD-1CED-454508D18369} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
 		{65518DFA-AA0E-33C8-3816-2792B73EE256} = {5C1FF221-EF7F-CCBD-1CED-454508D18369}
 		{A58B512B-E06C-F645-55DA-8C87A7FE568A} = {5C1FF221-EF7F-CCBD-1CED-454508D18369}
 		{F41628A6-1B4D-BAAE-BD31-8B298B25155E} = {5C1FF221-EF7F-CCBD-1CED-454508D18369}
@@ -2733,34 +2748,34 @@ Global
 		{B00B716D-4253-9A7E-3BD7-27AF9469D1E6} = {5C1FF221-EF7F-CCBD-1CED-454508D18369}
 		{E2A357EF-C157-ED08-1979-0CCF55091353} = {5C1FF221-EF7F-CCBD-1CED-454508D18369}
 		{E843862A-9401-9721-AA93-D8991E9A6E27} = {5C1FF221-EF7F-CCBD-1CED-454508D18369}
-		{5CEAE3EF-C9AF-D573-4DFD-C50764137E87} = {F2168155-D168-B526-81BE-D83B4B91C24A}
 		{F2168155-D168-B526-81BE-D83B4B91C24A} = {5C1FF221-EF7F-CCBD-1CED-454508D18369}
-		{5C1FF221-EF7F-CCBD-1CED-454508D18369} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
+		{5CEAE3EF-C9AF-D573-4DFD-C50764137E87} = {F2168155-D168-B526-81BE-D83B4B91C24A}
+		{04648CB9-87AA-9B21-4138-4A452A92363F} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
 		{44D4C0FA-8813-81F3-C395-3DAC13A7A89A} = {04648CB9-87AA-9B21-4138-4A452A92363F}
 		{766F8AB2-0A6E-822C-FD9C-FD786012C282} = {04648CB9-87AA-9B21-4138-4A452A92363F}
-		{04648CB9-87AA-9B21-4138-4A452A92363F} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
+		{F637247F-DED6-3C77-BFE6-443CE9E617D9} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
 		{4A705E23-0141-66F3-2594-CD9A0BF44C32} = {F637247F-DED6-3C77-BFE6-443CE9E617D9}
 		{A4B83D1B-4E23-17E7-3AEA-B45FBA1CC99C} = {F637247F-DED6-3C77-BFE6-443CE9E617D9}
 		{A85F4C49-821F-8970-673A-B944D49FB7E3} = {F637247F-DED6-3C77-BFE6-443CE9E617D9}
-		{F637247F-DED6-3C77-BFE6-443CE9E617D9} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
+		{FC794184-5E75-90FA-4D88-0E201BFED805} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
 		{9E47598B-2577-465A-C90A-32404F7850B2} = {FC794184-5E75-90FA-4D88-0E201BFED805}
 		{48F8370A-172B-3EA6-E5DF-EA1916F0153E} = {FC794184-5E75-90FA-4D88-0E201BFED805}
 		{3898C2CE-3B0F-2B59-A173-8F60EE808168} = {FC794184-5E75-90FA-4D88-0E201BFED805}
 		{01E01F63-A042-9A34-270C-B5D7C77D2D2E} = {FC794184-5E75-90FA-4D88-0E201BFED805}
 		{DB7B412F-7680-ACAF-3D61-D629541DA87B} = {FC794184-5E75-90FA-4D88-0E201BFED805}
-		{FC794184-5E75-90FA-4D88-0E201BFED805} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
+		{07F6A409-5964-FBB6-3EDE-5BC5039F20B5} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
 		{F3F11CDE-52EC-66F8-F2D7-53315CF3AAFF} = {07F6A409-5964-FBB6-3EDE-5BC5039F20B5}
 		{790DC405-D2C8-91B2-0BBD-4B2905F779C8} = {07F6A409-5964-FBB6-3EDE-5BC5039F20B5}
 		{FCF311FC-94D9-E1BB-08D5-60468FFF3651} = {07F6A409-5964-FBB6-3EDE-5BC5039F20B5}
 		{C9065BC1-84B5-B81C-BD15-10A3DCD01605} = {07F6A409-5964-FBB6-3EDE-5BC5039F20B5}
 		{CE0DC204-9779-CB1B-DB25-5589C1A4256E} = {07F6A409-5964-FBB6-3EDE-5BC5039F20B5}
+		{A2D0E9BB-628F-854A-2775-F44188825B03} = {07F6A409-5964-FBB6-3EDE-5BC5039F20B5}
 		{5B1B94D6-AB1F-7F5C-DC1D-208A248E4CCE} = {A2D0E9BB-628F-854A-2775-F44188825B03}
 		{C0B9F4E9-281D-9A7F-82A1-B65533517FFD} = {A2D0E9BB-628F-854A-2775-F44188825B03}
-		{A2D0E9BB-628F-854A-2775-F44188825B03} = {07F6A409-5964-FBB6-3EDE-5BC5039F20B5}
 		{B4E7DF71-9AE9-30A6-3D63-118486D76DFE} = {07F6A409-5964-FBB6-3EDE-5BC5039F20B5}
 		{A3A05819-7E50-7977-B2C1-60EC721A88A5} = {07F6A409-5964-FBB6-3EDE-5BC5039F20B5}
 		{A3856E0A-3F84-E9FF-DC21-057DB1048DE1} = {07F6A409-5964-FBB6-3EDE-5BC5039F20B5}
-		{07F6A409-5964-FBB6-3EDE-5BC5039F20B5} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
+		{754F86DC-35C1-1F47-478B-BBD91384AD60} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
 		{3EC53F5E-7B4C-388B-D81F-383A9790312D} = {754F86DC-35C1-1F47-478B-BBD91384AD60}
 		{8DA7C9B9-999E-77C5-5260-92AF379693BB} = {754F86DC-35C1-1F47-478B-BBD91384AD60}
 		{C1B036D6-D597-5F37-AEE4-448BA7F06602} = {754F86DC-35C1-1F47-478B-BBD91384AD60}
@@ -2778,19 +2793,18 @@ Global
 		{40012E3B-5B7F-7EF6-B271-590D6A7965EC} = {754F86DC-35C1-1F47-478B-BBD91384AD60}
 		{29D48680-731C-919D-050C-60F3E03AC077} = {754F86DC-35C1-1F47-478B-BBD91384AD60}
 		{1E240A87-4855-E8B9-A1E3-9DAF37D75F46} = {754F86DC-35C1-1F47-478B-BBD91384AD60}
-		{754F86DC-35C1-1F47-478B-BBD91384AD60} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
+		{3D224AD3-E8D5-0D00-29AA-840F07BD4E30} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
 		{46D23535-DF3D-1036-B282-994A43B10DAE} = {3D224AD3-E8D5-0D00-29AA-840F07BD4E30}
 		{ED6DB7D6-5216-3F9F-5428-E53D7CB223A9} = {3D224AD3-E8D5-0D00-29AA-840F07BD4E30}
 		{39245158-EAC7-DA09-7560-373129D7DC5D} = {3D224AD3-E8D5-0D00-29AA-840F07BD4E30}
 		{526A655D-3D6A-CABA-3206-9B8745975E38} = {3D224AD3-E8D5-0D00-29AA-840F07BD4E30}
 		{C0D38C33-F13D-0AE2-FB14-EA81FDBAE0A5} = {3D224AD3-E8D5-0D00-29AA-840F07BD4E30}
-		{3D224AD3-E8D5-0D00-29AA-840F07BD4E30} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
+		{49C4F9A4-3DE3-4033-60DC-1DF3678A3801} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
 		{AE53579D-78DA-DB07-51BB-6B14BAAD222A} = {49C4F9A4-3DE3-4033-60DC-1DF3678A3801}
 		{F0E5BED7-A32B-7FF0-4F09-727216529C9B} = {49C4F9A4-3DE3-4033-60DC-1DF3678A3801}
 		{02F44C59-9337-9748-A756-120E92F77ED0} = {49C4F9A4-3DE3-4033-60DC-1DF3678A3801}
 		{C60799F8-C6B5-6717-C02E-80215EEBBD8F} = {49C4F9A4-3DE3-4033-60DC-1DF3678A3801}
-		{49C4F9A4-3DE3-4033-60DC-1DF3678A3801} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
-		{71FEBE55-3C49-0260-9633-4C25EE44F006} = {CD93DF2C-726E-5C02-EF7A-910A19D85F69}
 		{CD93DF2C-726E-5C02-EF7A-910A19D85F69} = {AD2C04D4-7DBA-314E-4D66-F2B021015F59}
+		{71FEBE55-3C49-0260-9633-4C25EE44F006} = {CD93DF2C-726E-5C02-EF7A-910A19D85F69}
 	EndGlobalSection
 EndGlobal

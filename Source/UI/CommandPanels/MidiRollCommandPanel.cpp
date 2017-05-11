@@ -25,11 +25,12 @@
 #include "MidiLayer.h"
 #include "InternalClipboard.h"
 #include "CommandItemComponent.h"
-#include "ProjectAnnotations.h"
+#include "ProjectTimeline.h"
 #include "AnnotationEvent.h"
 #include "HelioCallout.h"
-#include "AnnotationsCommandPanel.h"
+#include "TimelineCommandPanel.h"
 #include "AnnotationCommandPanel.h"
+#include "TimeSignatureCommandPanel.h"
 #include "MidiRollToolbox.h"
 #include "ArpeggiatorPanel.h"
 #include "MoveToLayerCommandPanel.h"
@@ -69,19 +70,21 @@ void MidiRollCommandPanel::handleCommandMessage (int commandId)
         // если выбрана какая-то аннотация, показываем ее меню, если нет - показываем общее
         {
             const AnnotationEvent *selectedAnnotation = nullptr;
-            const ProjectAnnotations *annotations = this->project.getAnnotationsTrack();
+			const TimeSignatureEvent *selectedTimeSignature = nullptr;
+
+			const ProjectTimeline *timeline = this->project.getTimeline();
             const double seekPosition = this->project.getTransport().getSeekPosition();
 
             if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
             {
-                for (int i = 0; i < annotations->getLayer()->size(); ++i)
+				const double numBeats = double(roll->getNumBeats());
+				const double seekThreshold = (1.0 / numBeats) / 10.0;
+
+				for (int i = 0; i < timeline->getAnnotations()->size(); ++i)
                 {
-                    if (AnnotationEvent *annotation = dynamic_cast<AnnotationEvent *>(annotations->getLayer()->getUnchecked(i)))
+                    if (AnnotationEvent *annotation = dynamic_cast<AnnotationEvent *>(timeline->getAnnotations()->getUnchecked(i)))
                     {
                         const double annotationSeekPosition = roll->getTransportPositionByBeat(annotation->getBeat());
-                        const double numBeats = double(roll->getNumBeats());
-                        const double seekThreshold = (1.0 / numBeats) / 100.0;
-
                         if (fabs(annotationSeekPosition - seekPosition) < seekThreshold)
                         {
                             selectedAnnotation = annotation;
@@ -89,19 +92,36 @@ void MidiRollCommandPanel::handleCommandMessage (int commandId)
                         }
                     }
                 }
+
+				for (int i = 0; i < timeline->getTimeSignatures()->size(); ++i)
+				{
+					if (TimeSignatureEvent *ts = dynamic_cast<TimeSignatureEvent *>(timeline->getTimeSignatures()->getUnchecked(i)))
+					{
+						const double tsSeekPosition = roll->getTransportPositionByBeat(ts->getBeat());
+						if (fabs(tsSeekPosition - seekPosition) < seekThreshold)
+						{
+							selectedTimeSignature = ts;
+							break;
+						}
+					}
+				}
             }
 
-            // todo при нажатии что-то происходит со звуком, а индикатор едет дальше
-            // пока просто остановлю воспроизведение
+            // FIXME при нажатии что-то происходит со звуком, а индикатор едет дальше
+            // (пока просто остановлю воспроизведение)
             this->project.getTransport().stopPlayback();
 
             if (selectedAnnotation != nullptr && MIDIROLL_COMMANDPANEL_SHOULD_SHOW_ANNOTATION_DETAILS)
             {
                 this->emitAnnotationsCallout(new AnnotationCommandPanel(this->project, *selectedAnnotation));
             }
+			else if (selectedTimeSignature != nullptr && MIDIROLL_COMMANDPANEL_SHOULD_SHOW_ANNOTATION_DETAILS)
+			{
+				this->emitAnnotationsCallout(new TimeSignatureCommandPanel(this->project, *selectedTimeSignature));
+			}
             else
             {
-                this->emitAnnotationsCallout(new AnnotationsCommandPanel(this->project));
+                this->emitAnnotationsCallout(new TimelineCommandPanel(this->project));
             }
         }
             break;

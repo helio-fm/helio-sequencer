@@ -18,30 +18,30 @@
 #pragma once
 
 //[Headers]
-class AnnotationEvent;
+class TimeSignatureEvent;
 
-#include "AnnotationsTrackMap.h"
+#include "TimeSignaturesTrackMap.h"
 //[/Headers]
 
+#include "../../Themes/SeparatorVertical.h"
 
-class AnnotationSmallComponent  : public Component
+class TimeSignatureSmallComponent  : public Component
 {
 public:
 
-    AnnotationSmallComponent (AnnotationsTrackMap<AnnotationSmallComponent> &parent, const AnnotationEvent &targetEvent);
+    TimeSignatureSmallComponent (TimeSignaturesTrackMap<TimeSignatureSmallComponent> &parent, const TimeSignatureEvent &targetEvent);
 
-    ~AnnotationSmallComponent();
+    ~TimeSignatureSmallComponent();
 
     //[UserMethods]
-    const AnnotationEvent &getEvent() const;
+    const TimeSignatureEvent &getEvent() const;
     float getBeat() const;
-    float getTextWidth() const;
 
     void updateContent();
     void setRealBounds(const Rectangle<float> bounds);
 
-    static int compareElements(const AnnotationSmallComponent *first,
-                               const AnnotationSmallComponent *second)
+    static int compareElements(const TimeSignatureSmallComponent *first,
+                               const TimeSignatureSmallComponent *second)
     {
         if (first == second) { return 0; }
 
@@ -62,16 +62,15 @@ private:
 
     //[UserVariables]
 
-    const AnnotationEvent &event;
-    AnnotationsTrackMap<AnnotationSmallComponent> &editor;
+    const TimeSignatureEvent &event;
+    TimeSignaturesTrackMap<TimeSignatureSmallComponent> &editor;
 
     Rectangle<float> boundsOffset;
-    float textWidth;
-    Colour lastColour;
 
     //[/UserVariables]
 
-    ScopedPointer<Label> annotationLabel;
+    ScopedPointer<Label> signatureLabel;
+    ScopedPointer<SeparatorVertical> component;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AnnotationSmallComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeSignatureSmallComponent)
 };

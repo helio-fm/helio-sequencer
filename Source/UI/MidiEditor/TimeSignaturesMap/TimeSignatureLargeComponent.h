@@ -18,30 +18,29 @@
 #pragma once
 
 //[Headers]
-class AnnotationEvent;
+class TimeSignatureEvent;
 
-#include "AnnotationsTrackMap.h"
+#include "TimeSignaturesTrackMap.h"
 //[/Headers]
 
 
-class AnnotationSmallComponent  : public Component
+class TimeSignatureLargeComponent  : public Component
 {
 public:
 
-    AnnotationSmallComponent (AnnotationsTrackMap<AnnotationSmallComponent> &parent, const AnnotationEvent &targetEvent);
+    TimeSignatureLargeComponent (TimeSignaturesTrackMap<TimeSignatureLargeComponent> &parent, const TimeSignatureEvent &targetEvent);
 
-    ~AnnotationSmallComponent();
+    ~TimeSignatureLargeComponent();
 
     //[UserMethods]
-    const AnnotationEvent &getEvent() const;
+    const TimeSignatureEvent &getEvent() const;
     float getBeat() const;
-    float getTextWidth() const;
 
     void updateContent();
     void setRealBounds(const Rectangle<float> bounds);
 
-    static int compareElements(const AnnotationSmallComponent *first,
-                               const AnnotationSmallComponent *second)
+    static int compareElements(const TimeSignatureLargeComponent *first,
+                               const TimeSignatureLargeComponent *second)
     {
         if (first == second) { return 0; }
 
@@ -55,23 +54,38 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void parentHierarchyChanged() override;
+    void mouseMove (const MouseEvent& e) override;
+    void mouseDown (const MouseEvent& e) override;
+    void mouseDrag (const MouseEvent& e) override;
+    void mouseUp (const MouseEvent& e) override;
+    void mouseDoubleClick (const MouseEvent& e) override;
 
 
 private:
 
     //[UserVariables]
 
-    const AnnotationEvent &event;
-    AnnotationsTrackMap<AnnotationSmallComponent> &editor;
+    const TimeSignatureEvent &event;
+    TimeSignaturesTrackMap<TimeSignatureLargeComponent> &editor;
+
+    ComponentDragger dragger;
+    TimeSignatureEvent anchor;
+
+    int numerator;
+    int denominator;
 
     Rectangle<float> boundsOffset;
-    float textWidth;
-    Colour lastColour;
+    Point<int> clickOffset;
+    bool draggingState;
+    bool draggingHadCheckpoint;
+
+    // workaround странного поведения juce
+    // возможна ситуация, когда mousedown'а не было, а mouseup срабатывает
+    bool mouseDownWasTriggered;
 
     //[/UserVariables]
 
-    ScopedPointer<Label> annotationLabel;
+    Path internalPath1;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AnnotationSmallComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeSignatureLargeComponent)
 };

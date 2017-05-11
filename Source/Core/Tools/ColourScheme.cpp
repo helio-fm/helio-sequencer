@@ -168,12 +168,6 @@ Colour ColourScheme::getRowColour() const
     return JUCE_LIVE_CONSTANT(c);
 }
 
-Colour ColourScheme::getBeatColour() const
-{
-    const Colour c(this->colours[Serialization::UI::Colours::beat]);
-    return JUCE_LIVE_CONSTANT(c);
-}
-
 Colour ColourScheme::getBarColour() const
 {
     const Colour c(this->colours[Serialization::UI::Colours::bar]);
@@ -222,7 +216,6 @@ void ColourScheme::exportColourChanges()
     this->colours.set(Serialization::UI::Colours::blackKey, this->getBlackKeyColour());
     this->colours.set(Serialization::UI::Colours::whiteKey, this->getWhiteKeyColour());
     this->colours.set(Serialization::UI::Colours::row, this->getRowColour());
-    this->colours.set(Serialization::UI::Colours::beat, this->getBeatColour());
     this->colours.set(Serialization::UI::Colours::bar, this->getBarColour());
     this->colours.set(Serialization::UI::Colours::text, this->getTextColour());
     this->colours.set(Serialization::UI::Colours::iconBase, this->getIconBaseColour());
@@ -289,7 +282,6 @@ void ColourScheme::reset()
     this->colours.set(Serialization::UI::Colours::blackKey, Colours::black);
     this->colours.set(Serialization::UI::Colours::whiteKey, Colours::black);
     this->colours.set(Serialization::UI::Colours::row, Colours::black);
-    this->colours.set(Serialization::UI::Colours::beat, Colours::black);
     this->colours.set(Serialization::UI::Colours::bar, Colours::black);
     this->colours.set(Serialization::UI::Colours::text, Colours::black);
     this->colours.set(Serialization::UI::Colours::iconBase, Colours::black.withAlpha(0.25f));

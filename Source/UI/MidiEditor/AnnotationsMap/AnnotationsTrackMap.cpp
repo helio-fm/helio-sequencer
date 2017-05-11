@@ -20,14 +20,12 @@
 #include "ProjectTreeItem.h"
 #include "Transport.h"
 #include "MidiLayer.h"
-#include "ProjectAnnotations.h"
+#include "ProjectTimeline.h"
 #include "PianoLayer.h"
 #include "PlayerThread.h"
 #include "MidiRoll.h"
 #include "HelioCallout.h"
 #include "AnnotationCommandPanel.h"
-#include "TrackStartIndicator.h"
-#include "TrackEndIndicator.h"
 
 template<typename T> AnnotationsTrackMap<T>::AnnotationsTrackMap(ProjectTreeItem &parentProject, MidiRoll &parentRoll) :
     project(parentProject),
@@ -41,14 +39,6 @@ template<typename T> AnnotationsTrackMap<T>::AnnotationsTrackMap(ProjectTreeItem
     this->setAlwaysOnTop(true);
     this->setInterceptsMouseClicks(false, true);
     
-    this->trackStartIndicator = new TrackStartIndicator();
-    this->addAndMakeVisible(this->trackStartIndicator);
-
-    this->trackEndIndicator = new TrackEndIndicator();
-    this->addAndMakeVisible(this->trackEndIndicator);
-    
-    this->updateTrackRangeIndicatorsAnchors();
-    
     this->reloadTrackMap();
     
     this->project.addListener(this);
@@ -57,16 +47,6 @@ template<typename T> AnnotationsTrackMap<T>::AnnotationsTrackMap(ProjectTreeItem
 template<typename T> AnnotationsTrackMap<T>::~AnnotationsTrackMap()
 {
     this->project.removeListener(this);
-}
-
-template<typename T> void AnnotationsTrackMap<T>::updateTrackRangeIndicatorsAnchors()
-{
-    const float rollLengthInBeats = (this->rollLastBeat - this->rollFirstBeat);
-    const float absStart = ((this->projectFirstBeat - this->rollFirstBeat) / rollLengthInBeats);
-    const float absEnd = ((this->projectLastBeat - this->rollFirstBeat) / rollLengthInBeats);
-    //Logger::writeToLog("updateTrackRangeIndicatorsAnchors: " + String(absStart) + ":" + String(absEnd));
-    this->trackStartIndicator->setAnchoredAt(absStart);
-    this->trackEndIndicator->setAnchoredAt(absEnd);
 }
 
 
@@ -103,8 +83,6 @@ template<typename T> void AnnotationsTrackMap<T>::resized()
         previous = current;
     }
 
-    this->updateTrackRangeIndicatorsAnchors();
-    
     this->setVisible(true);
 }
 
@@ -115,7 +93,7 @@ template<typename T> void AnnotationsTrackMap<T>::resized()
 
 template<typename T> void AnnotationsTrackMap<T>::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    if (newEvent.getLayer() == this->project.getAnnotationsTrack()->getLayer())
+    if (newEvent.getLayer() == this->project.getTimeline()->getAnnotations())
     {
         const AnnotationEvent &annotation = static_cast<const AnnotationEvent &>(oldEvent);
         const AnnotationEvent &newAnnotation = static_cast<const AnnotationEvent &>(newEvent);
@@ -159,7 +137,7 @@ template<typename T> void AnnotationsTrackMap<T>::alignAnnotationComponent(T *co
 
 template<typename T> void AnnotationsTrackMap<T>::onEventAdded(const MidiEvent &event)
 {
-    if (event.getLayer() == this->project.getAnnotationsTrack()->getLayer())
+    if (event.getLayer() == this->project.getTimeline()->getAnnotations())
     {
         const AnnotationEvent &annotation = static_cast<const AnnotationEvent &>(event);
 
@@ -188,7 +166,7 @@ template<typename T> void AnnotationsTrackMap<T>::onEventAdded(const MidiEvent &
 
 template<typename T> void AnnotationsTrackMap<T>::onEventRemoved(const MidiEvent &event)
 {
-    if (event.getLayer() == this->project.getAnnotationsTrack()->getLayer())
+    if (event.getLayer() == this->project.getTimeline()->getAnnotations())
     {
         const AnnotationEvent &annotation = static_cast<const AnnotationEvent &>(event);
 
@@ -215,9 +193,9 @@ template<typename T> void AnnotationsTrackMap<T>::onEventRemoved(const MidiEvent
 
 template<typename T> void AnnotationsTrackMap<T>::onLayerChanged(const MidiLayer *layer)
 {
-    if (this->project.getAnnotationsTrack() != nullptr)
+    if (this->project.getTimeline() != nullptr)
     {
-        if (layer == this->project.getAnnotationsTrack()->getLayer())
+        if (layer == this->project.getTimeline()->getAnnotations())
         {
             this->reloadTrackMap();
         }
@@ -226,9 +204,9 @@ template<typename T> void AnnotationsTrackMap<T>::onLayerChanged(const MidiLayer
 
 template<typename T> void AnnotationsTrackMap<T>::onLayerAdded(const MidiLayer *layer)
 {
-    if (this->project.getAnnotationsTrack() != nullptr)
+    if (this->project.getTimeline() != nullptr)
     {
-        if (layer == this->project.getAnnotationsTrack()->getLayer())
+        if (layer == this->project.getTimeline()->getAnnotations())
         {
             if (layer->size() > 0)
             {
@@ -240,9 +218,9 @@ template<typename T> void AnnotationsTrackMap<T>::onLayerAdded(const MidiLayer *
 
 template<typename T> void AnnotationsTrackMap<T>::onLayerRemoved(const MidiLayer *layer)
 {
-    if (this->project.getAnnotationsTrack() != nullptr)
+    if (this->project.getTimeline() != nullptr)
     {
-        if (layer == this->project.getAnnotationsTrack()->getLayer())
+        if (layer == this->project.getTimeline()->getAnnotations())
         {
             for (int i = 0; i < layer->size(); ++i)
             {
@@ -263,7 +241,6 @@ template<typename T> void AnnotationsTrackMap<T>::onProjectBeatRangeChanged(floa
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
-    this->updateTrackRangeIndicatorsAnchors();
 }
 
 
@@ -279,12 +256,12 @@ template<typename T> void AnnotationsTrackMap<T>::onAnnotationMoved(T *nc)
 template<typename T> void AnnotationsTrackMap<T>::onAnnotationTapped(T *nc)
 {
     const AnnotationEvent *annotationUnderSeekCursor = nullptr;
-    const ProjectAnnotations *annotations = this->project.getAnnotationsTrack();
+    const ProjectTimeline *timeline = this->project.getTimeline();
     const double seekPosition = this->project.getTransport().getSeekPosition();
 
-    for (int i = 0; i < annotations->getLayer()->size(); ++i)
+    for (int i = 0; i < timeline->getAnnotations()->size(); ++i)
     {
-        if (AnnotationEvent *annotation = dynamic_cast<AnnotationEvent *>(annotations->getLayer()->getUnchecked(i)))
+        if (AnnotationEvent *annotation = dynamic_cast<AnnotationEvent *>(timeline->getAnnotations()->getUnchecked(i)))
         {
             const float seekBeat = this->roll.getBeatByTransportPosition(seekPosition);
             
@@ -366,7 +343,7 @@ template<typename T> void AnnotationsTrackMap<T>::reloadTrackMap()
 
     this->setVisible(false);
 
-    MidiLayer *layer = this->project.getAnnotationsTrack()->getLayer();
+    MidiLayer *layer = this->project.getTimeline()->getAnnotations();
 
     for (int j = 0; j < layer->size(); ++j)
     {

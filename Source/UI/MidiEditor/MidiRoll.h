@@ -37,6 +37,8 @@ class TimelineWarningMarker;
 #include "ComponentFader.h"
 #include "AnnotationsTrackMap.h"
 #include "AnnotationLargeComponent.h"
+#include "TimeSignaturesTrackMap.h"
+#include "TimeSignatureLargeComponent.h"
 #include "TransportIndicator.h"
 #include "TransportListener.h"
 #include "MidiEventComponent.h"
@@ -59,7 +61,11 @@ class TimelineWarningMarker;
 #   define MIDIROLL_HEADER_HEIGHT (48)
 #endif
 
+
+// Track is measured in quarter beats
 #define NUM_BEATS_IN_BAR 4
+
+// For the empty project:
 #define DEFAULT_NUM_BARS 8
 
 
@@ -101,10 +107,12 @@ public:
         whiteKeyColourId                 = 0x99002003,
         whiteKeyBrightColourId           = 0x99002004,
         rowLineColourId                  = 0x99002005,
-        barStartLineColourId             = 0x99002006,
-        beatStartLineColourId            = 0x99002007,
-        headerColourId                   = 0x99002008,
-        indicatorColourId                = 0x99002009
+        barLineColourId                  = 0x99002006,
+        barLineBevelColourId             = 0x99002007,
+        beatLineColourId                 = 0x99002008,
+        snapLineColourId                 = 0x99002009,
+        headerColourId                   = 0x99002010,
+        indicatorColourId                = 0x99002011
     };
     
     MidiRoll(ProjectTreeItem &parentProject,
@@ -113,8 +121,6 @@ public:
 
     ~MidiRoll() override;
 
-    static void getGridMultipliers(float targetBarWidth, int &gridMultiplier, int &gridShowsEvery);
-    
     Viewport &getViewport() const noexcept;
     Transport &getTransport() const noexcept;
     ProjectTreeItem &getProject() const noexcept;
@@ -129,8 +135,10 @@ public:
     virtual Rectangle<float> getEventBounds(MidiEventComponent *nc) const = 0;
     
     void scrollToSeekPosition();
+	float getPositionForNewTimelineEvent() const;
     void insertAnnotationWithinScreen(const String &annotation);
-    void selectAll();
+	void insertTimeSignatureWithinScreen(int numerator, int denominator);
+	void selectAll();
     
     //===------------------------------------------------------------------===//
     // Custom maps
@@ -220,20 +228,24 @@ public:
     float getRoundBeatByXPosition(int x) const;
     
     virtual void setLastBar(int bar);
-    inline int getLastBar() const { return this->lastBar; }
-    inline float getLastBeat() const { return float(this->lastBar * NUM_BEATS_IN_BAR); }
+    inline int getLastBar() const noexcept { return this->lastBar; }
+    inline float getLastBeat() const noexcept { return float(this->lastBar * NUM_BEATS_IN_BAR); }
     
     virtual void setFirstBar(int bar);
-    inline int getFirstBar() const { return this->firstBar; }
-    inline float getFirstBeat() const { return float(this->firstBar * NUM_BEATS_IN_BAR); }
+    inline int getFirstBar() const noexcept { return this->firstBar; }
+    inline float getFirstBeat() const noexcept { return float(this->firstBar * NUM_BEATS_IN_BAR); }
     
     void setBarRange(int first, int last);
     inline int getNumBars() const { return this->lastBar - this->firstBar; }
     inline int getNumBeats() const { return this->getNumBars() * NUM_BEATS_IN_BAR; }
 
     virtual void setBarWidth(const float newBarWidth);
-    float getBarWidth() const { return this->barWidth; }
+    float getBarWidth() const noexcept { return this->barWidth; }
 
+    Array<float> &getVisibleBars() noexcept { return this->visibleBars; }
+    Array<float> &getVisibleBeats() noexcept { return this->visibleBeats; }
+    Array<float> &getVisibleSnaps() noexcept { return this->visibleSnaps; }
+    
     void setSnapQuantize(float snapQuantize);
     float getSnapsPerBeat() const;
     float getSnapWidth() const;
@@ -265,6 +277,9 @@ public:
     // ProjectListener
     //===------------------------------------------------------------------===//
 
+    void onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
+    void onEventAdded(const MidiEvent &event) override;
+    void onEventRemoved(const MidiEvent &event) override;
     void onProjectBeatRangeChanged(float firstBeat, float lastBeat) override;
 
     //===------------------------------------------------------------------===//
@@ -409,7 +424,6 @@ protected:
     bool isWipeSpaceEvent(const MouseEvent &e) const;
     bool isInsertSpaceEvent(const MouseEvent &e) const;
     
-    float snapQuantize;
     float snapsPerBeat;
     float snapWidth;
 
@@ -435,10 +449,21 @@ protected:
     typedef AnnotationsTrackMap<AnnotationLargeComponent> AnnotationsLargeMap;
     ScopedPointer<AnnotationsLargeMap> annotationsTrack;
 
+    typedef TimeSignaturesTrackMap<TimeSignatureLargeComponent> TimeSignaturesLargeMap;
+    ScopedPointer<TimeSignaturesLargeMap> timeSignaturesTrack;
+
     ScopedPointer<Component> topShadow;
     ScopedPointer<Component> bottomShadow;
 
     ScopedPointer<MidiEventComponentLasso> lassoComponent;
+
+protected:
+    
+    Array<float> visibleBars;
+    Array<float> visibleBeats;
+    Array<float> visibleSnaps;
+
+    void computeVisibleBeatLines();
 
 protected:
 

@@ -19,20 +19,20 @@
 
 class MidiEvent;
 class MidiLayer;
-class ProjectAnnotations;
+class ProjectTimeline;
 
 #include "Diff.h"
 #include "DiffLogic.h"
 
 namespace VCS
 {
-    class AnnotationsLayerDiffLogic : public DiffLogic
+    class ProjectTimelineDiffLogic : public DiffLogic
     {
     public:
 
-        explicit AnnotationsLayerDiffLogic(TrackedItem &targetItem);
+        explicit ProjectTimelineDiffLogic(TrackedItem &targetItem);
 
-        ~AnnotationsLayerDiffLogic() override;
+        ~ProjectTimelineDiffLogic() override;
 
         //===------------------------------------------------------------------===//
         // DiffLogic
@@ -54,9 +54,17 @@ namespace VCS
 
         XmlElement *mergeAnnotationsChanged(const XmlElement *state, const XmlElement *changes) const;
 
+        XmlElement *mergeTimeSignaturesAdded(const XmlElement *state, const XmlElement *changes) const;
+        
+        XmlElement *mergeTimeSignaturesRemoved(const XmlElement *state, const XmlElement *changes) const;
+        
+        XmlElement *mergeTimeSignaturesChanged(const XmlElement *state, const XmlElement *changes) const;
+
     private:
 
         Array<NewSerializedDelta> createAnnotationsDiffs(const XmlElement *state, const XmlElement *changes) const;
+
+        Array<NewSerializedDelta> createTimeSignaturesDiffs(const XmlElement *state, const XmlElement *changes) const;
 
     private:
 
@@ -74,7 +82,9 @@ namespace VCS
         XmlElement *serializeLayer(Array<const MidiEvent *> changes,
                                    const String &tag) const;
 
-        bool checkIfDeltaIsEventsType(const Delta *delta) const;
+        bool checkIfDeltaIsAnnotationType(const Delta *delta) const;
+
+        bool checkIfDeltaIsTimeSignatureType(const Delta *delta) const;
 
     };
 }  // namespace VCS

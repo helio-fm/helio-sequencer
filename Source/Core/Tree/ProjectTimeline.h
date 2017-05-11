@@ -19,23 +19,27 @@
 
 class ProjectTreeItem;
 
-#include "AnnotationsLayerDiffLogic.h"
+#include "ProjectTimelineDiffLogic.h"
 #include "MidiLayerOwner.h"
 #include "Serializable.h"
 
-class ProjectAnnotations :
+class ProjectTimeline :
     public MidiLayerOwner,
     public VCS::TrackedItem,
     public Serializable
 {
 public:
 
-    ProjectAnnotations(ProjectTreeItem &parentProject, String trackName);
+    ProjectTimeline(ProjectTreeItem &parentProject, String trackName);
 
-    ~ProjectAnnotations() override;
+    ~ProjectTimeline() override;
     
-    inline MidiLayer *getLayer() const { return this->layer; }
-    
+    inline MidiLayer *getAnnotations() const noexcept
+    { return this->annotations; }
+
+    inline MidiLayer *getTimeSignatures() const noexcept
+    { return this->timeSignatures; }
+
 
     //===------------------------------------------------------------------===//
     // VCS::TrackedItem
@@ -96,6 +100,11 @@ public:
 
     void resetAnnotationsDelta(const XmlElement *state);
 
+    XmlElement *serializeTimeSignaturesDelta() const;
+
+    void resetTimeSignaturesDelta(const XmlElement *state);
+    
+
 private:
 
     ScopedPointer<VCS::DiffLogic> vcsDiffLogic;
@@ -106,6 +115,8 @@ private:
     
     String name;
     
-    ScopedPointer<MidiLayer> layer;
+    ScopedPointer<MidiLayer> annotations;
+
+    ScopedPointer<MidiLayer> timeSignatures;
 
 };

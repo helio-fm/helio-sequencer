@@ -39,7 +39,6 @@ AnnotationSmallComponent::AnnotationSmallComponent(AnnotationsTrackMap<Annotatio
     annotationLabel->setColour (TextEditor::textColourId, Colours::black);
     annotationLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (component = new SeparatorVertical());
 
     //[UserPreSize]
     this->setOpaque(false);
@@ -59,7 +58,6 @@ AnnotationSmallComponent::~AnnotationSmallComponent()
     //[/Destructor_pre]
 
     annotationLabel = nullptr;
-    component = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -71,6 +69,8 @@ void AnnotationSmallComponent::paint (Graphics& g)
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..
+    g.setColour(this->event.getColour().interpolatedWith(Colours::white, 0.55f).withAlpha(0.1f));
+    g.drawHorizontalLine(this->getHeight() - 4, 0.f, float(this->getWidth() - 4));
     //[/UserPaint]
 }
 
@@ -79,8 +79,7 @@ void AnnotationSmallComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    annotationLabel->setBounds (0, 2, getWidth() - -4, 16);
-    component->setBounds (0, 0, 2, getHeight() - 0);
+    annotationLabel->setBounds (-2, getHeight() - 4 - 16, getWidth() - -4, 16);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -123,7 +122,7 @@ void AnnotationSmallComponent::updateContent()
     {
         this->lastColour = this->event.getColour();
         this->annotationLabel->setText(this->event.getDescription(), dontSendNotification);
-        this->annotationLabel->setColour(Label::textColourId, this->lastColour.interpolatedWith(Colours::white, 0.6f).withAlpha(0.75f));
+        this->annotationLabel->setColour(Label::textColourId, this->lastColour.interpolatedWith(Colours::white, 0.55f).withAlpha(0.7f));
         this->textWidth = float(this->annotationLabel->getFont().getStringWidth(this->event.getDescription()));
         //Logger::writeToLog("AnnotationSmallComponent::updateContent " + String(this->textWidth));
     }
@@ -153,13 +152,10 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="annotationLabel" virtualName=""
-         explicitFocusOrder="0" pos="0 2 -4M 16" textCol="99ffffff" edTextCol="ff000000"
-         edBkgCol="0" labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="12"
-         kerning="0" bold="0" italic="0" justification="33"/>
-  <JUCERCOMP name="" id="1e5a57ee127ef53d" memberName="component" virtualName=""
-             explicitFocusOrder="0" pos="0 0 2 0M" sourceFile="../../Themes/SeparatorVertical.cpp"
-             constructorParams=""/>
+         explicitFocusOrder="0" pos="-2 4Rr -4M 16" textCol="99ffffff"
+         edTextCol="ff000000" edBkgCol="0" labelText="..." editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="12" kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

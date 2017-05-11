@@ -27,6 +27,7 @@
 #include "TriggersTrackMap.h"
 #include "SerializationKeys.h"
 #include "AnnotationSmallComponent.h"
+#include "TimeSignatureSmallComponent.h"
 #include "OrigamiHorizontal.h"
 #include "OrigamiVertical.h"
 #include "MidiRollCommandPanelPhone.h"
@@ -43,6 +44,10 @@
 // force compile template
 #include "AnnotationsMap/AnnotationsTrackMap.cpp"
 template class AnnotationsTrackMap<AnnotationSmallComponent>;
+
+// force compile template
+#include "TimeSignaturesMap/TimeSignaturesTrackMap.cpp"
+template class TimeSignaturesTrackMap<TimeSignatureSmallComponent>;
 
 
 #define MAX_NUM_SPLITSCREEN_EDITORS 2
@@ -238,21 +243,9 @@ public:
     
     void paint(Graphics &g) override
     {
-        const int numBars = this->roll.getNumBars();
-        const float barWidth = this->roll.getBarWidth();
-        
-        int dynamicGridSize = NUM_BEATS_IN_BAR;
-        int showEvery = 1;
-        
-        MidiRoll::getGridMultipliers(barWidth, dynamicGridSize, showEvery);
-        
-        const int zeroCanvasOffset = int(this->roll.getFirstBar() * barWidth);
-        const int paintStartX = int(this->roll.getViewport().getViewPositionX() + zeroCanvasOffset);
-        const int paintEndX = this->roll.getViewport().getViewPositionX() + this->roll.getViewport().getViewWidth() + zeroCanvasOffset;
-        const int paintWidth = paintEndX - paintStartX;
-        
         const Colour backCol(this->findColour(MidiRoll::headerColourId));
         const Colour frontCol(backCol.contrasting().withMultipliedAlpha(0.5f));
+        const float pX = this->roll.getViewport().getViewPositionX();
         
         g.setGradientFill(ColourGradient(backCol,
                                          0.f,
@@ -262,29 +255,21 @@ public:
                                          float(this->getHeight() - 4), false));
         
         g.fillAll();
-        
         g.setColour(frontCol);
         
-        int i = int(paintStartX / barWidth) - showEvery;
-        const int j = int(paintEndX / barWidth);
-        const float beatWidth = barWidth / float(dynamicGridSize);
-        
-        while (i <= j)
+        for (const auto f : this->roll.getVisibleBars())
         {
-            // show every x'th
-            if (i % showEvery == 0)
-            {
-                const float startX1 = float(barWidth * i) - paintStartX;
-                g.drawLine(startX1, 0.f, startX1, float(this->getHeight() - 1), 0.4f);
-                
-                for (int k = 1; k < dynamicGridSize; k++)
-                {
-                    const float startX2 = (barWidth * i + beatWidth * showEvery * k) - paintStartX;
-                    g.drawLine(startX2, 0.f, startX2, float(this->getHeight() - 1), 0.1f);
-                }
-            }
-            
-            i++;
+            g.drawLine(f - pX, 0.f, f - pX, float(this->getHeight() - 1), 0.4f);
+        }
+        
+        for (const auto f : this->roll.getVisibleBeats())
+        {
+            g.drawLine(f - pX, 0.f, f - pX, float(this->getHeight() - 1), 0.1f);
+        }
+        
+        for (const auto f : this->roll.getVisibleSnaps())
+        {
+            g.drawLine(f - pX, 0.f, f - pX, float(this->getHeight() - 1), 0.025f);
         }
         
         g.setColour(Colours::white.withAlpha(0.07f));
@@ -296,16 +281,13 @@ public:
     
     void onMidiRollMoved(MidiRoll *targetRoll) override
     {
-        //this->triggerAsyncUpdate();
-        // or
         this->updateTargetPosition();
     }
     
     void onMidiRollResized(MidiRoll *targetRoll) override
     {
-        //this->triggerAsyncUpdate();
-        // or
         this->updateTargetBounds();
+        this->target->repaint();
     }
     
     MidiRoll &getRoll()
@@ -424,6 +406,7 @@ MidiEditor::MidiEditor(ProjectTreeItem &parentProject) :
     this->scroller = new TrackScroller(this->project.getTransport(), *this->roll);
     this->scroller->addOwnedMap(new PianoTrackMap(this->project, *this->roll), false);
     this->scroller->addOwnedMap(new AnnotationsTrackMap<AnnotationSmallComponent>(this->project, *this->roll), false);
+    this->scroller->addOwnedMap(new TimeSignaturesTrackMap<TimeSignatureSmallComponent>(this->project, *this->roll), false);
     //this->scroller->addOwnedMap(new AutomationTrackMap(this->project, *this->roll, this->project.getDefaultTempoTrack()->getLayer()), true);
 
     this->roll->setBarWidth(MAX_BAR_WIDTH);
@@ -490,8 +473,8 @@ MidiEditor::~MidiEditor()
     this->roll->removeRollListener(this->scroller);
     //this->roll->removeAllChangeListeners();
     
-    this->roll = nullptr;
     this->scroller = nullptr;
+    this->roll = nullptr;
     this->viewport = nullptr;
 }
 

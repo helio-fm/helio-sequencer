@@ -26,7 +26,7 @@
 #include "PianoLayerTreeItem.h"
 #include "AutomationLayerTreeItem.h"
 #include "ProjectTreeItem.h"
-#include "ProjectAnnotations.h"
+#include "ProjectTimeline.h"
 #include "Note.h"
 #include "NoteComponent.h"
 #include "HelperRectangle.h"
@@ -49,7 +49,6 @@
 #include "Config.h"
 #include "SerializationKeys.h"
 
-// todo fixed NUM_BEATS_IN_BAR(4)
 #define ROWS_OF_TWO_OCTAVES 24
 
 PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
@@ -441,6 +440,8 @@ void PianoRoll::moveHelpers(const float deltaBeat, const int deltaKey)
 
 void PianoRoll::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
+    MidiRoll::onEventChanged(oldEvent, newEvent);
+    
     if (! dynamic_cast<const Note *>(&oldEvent)) { return; }
 
     const Note &note = static_cast<const Note &>(oldEvent);
@@ -459,6 +460,8 @@ void PianoRoll::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEv
 
 void PianoRoll::onEventAdded(const MidiEvent &event)
 {
+    MidiRoll::onEventAdded(event);
+    
     if (! dynamic_cast<const Note *>(&event)) { return; }
 
     const Note &note = static_cast<const Note &>(event);
@@ -494,6 +497,8 @@ void PianoRoll::onEventAdded(const MidiEvent &event)
 
 void PianoRoll::onEventRemoved(const MidiEvent &event)
 {
+    MidiRoll::onEventRemoved(event);
+
     if (! dynamic_cast<const Note *>(&event)) { return; }
     
     const Note &note = static_cast<const Note &>(event);
@@ -629,15 +634,15 @@ XmlElement *PianoRoll::clipboardCopy() const
     if (selectionIsNotEmpty && isShiftPressed)
     {
         // todo copy from
-        const auto annotations = this->project.getAnnotationsTrack();
+        const auto timeline = this->project.getTimeline();
         auto annotationLayerIdParent = new XmlElement(Serialization::Clipboard::layer);
-        annotationLayerIdParent->setAttribute(Serialization::Clipboard::layerId, annotations->getLayer()->getLayerIdAsString());
+        annotationLayerIdParent->setAttribute(Serialization::Clipboard::layerId, timeline->getAnnotations()->getLayerIdAsString());
         xml->addChildElement(annotationLayerIdParent);
 
-        for (int i = 0; i < annotations->getLayer()->size(); ++i)
+        for (int i = 0; i < timeline->getAnnotations()->size(); ++i)
         {
             if (const AnnotationEvent *event =
-                dynamic_cast<AnnotationEvent *>(annotations->getLayer()->getUnchecked(i)))
+                dynamic_cast<AnnotationEvent *>(timeline->getAnnotations()->getUnchecked(i)))
             {
                 if (const bool eventFitsInRange =
                     (event->getBeat() >= firstBeat) && (event->getBeat() < lastBeat))
@@ -733,7 +738,7 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
         {
             AnnotationsLayer *targetLayer = this->project.getLayerWithId<AnnotationsLayer>(layerId);
             
-            // no check for a tree item as there isn't any for ProjectAnnotations
+            // no check for a tree item as there isn't any for ProjectTimeline
             Array<AnnotationEvent> pastedAnnotations;
             
             forEachXmlChildElementWithTagName(*layerElement, annotationElement, Serialization::Core::annotation)

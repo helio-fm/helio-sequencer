@@ -769,6 +769,33 @@ void HelioTheme::positionDocumentWindowButtons(DocumentWindow &,
 
 void HelioTheme::initResources()
 {
+//    // Search for Lato if present,
+//    // Or fallback to default sans serif font
+//    
+//    Logger::writeToLog("Fonts search started");
+//    Array <Font> systemFonts;
+//    Font::findFonts(systemFonts);
+//    
+//    for (auto && systemFont : systemFonts)
+//    {
+//        if (systemFont.getTypeface()->getName().toLowerCase().startsWith("lato"))
+//        {
+//            Logger::writeToLog("Found " + systemFont.getTypeface()->getName());
+//            Font font(systemFont);
+//            this->textTypefaceCache = Typeface::createSystemTypefaceFor(font);
+//        }
+//    }
+//    
+//    if (this->textTypefaceCache == nullptr)
+//    {
+//        // Verdana on win32, Bitstream Vera Sans or something on Linux,
+//        // Lucida Grande on mac, Helvetica on iOS
+//        Logger::writeToLog("Falling back to system sans serif");
+//        this->textTypefaceCache =
+//        Font::getDefaultTypefaceForFont(Font(Font::getDefaultSansSerifFontName(), 0, 0));
+//        Logger::writeToLog("Done");
+//    }
+    
 //    MemoryInputStream is(BinaryData::comfortaa_font, BinaryData::comfortaa_fontSize, false);
 //    this->textTypefaceCache = (new CustomTypeface(is));
 
@@ -880,11 +907,13 @@ void HelioTheme::initColours(const ColourScheme &colours)
     this->setColour(MidiRoll::whiteKeyColourId, colours.getWhiteKeyColour());
     this->setColour(MidiRoll::whiteKeyBrightColourId, colours.getWhiteKeyColour().withMultipliedBrightness(1.15f));
     this->setColour(MidiRoll::rowLineColourId, colours.getRowColour());
-    this->setColour(MidiRoll::barStartLineColourId, colours.getBarColour());
-    this->setColour(MidiRoll::beatStartLineColourId, colours.getBeatColour());
+    this->setColour(MidiRoll::barLineColourId, colours.getBarColour().withAlpha(0.9f));
+    this->setColour(MidiRoll::barLineBevelColourId, Colours::white.withAlpha(0.015f));
+    this->setColour(MidiRoll::beatLineColourId, colours.getBarColour().withAlpha(0.45f));
+    this->setColour(MidiRoll::snapLineColourId, colours.getBarColour().withAlpha(0.1f));
     this->setColour(MidiRoll::headerColourId, colours.getPrimaryGradientColourB());
 
-    this->setColour(MidiRoll::indicatorColourId,  colours.getLassoBorderColour().withAlpha(0.5f));
+    this->setColour(MidiRoll::indicatorColourId, colours.getLassoBorderColour().withAlpha(0.5f));
     this->setColour(LassoComponent<void *>::lassoFillColourId, colours.getLassoFillColour().withAlpha(0.15f));
     this->setColour(LassoComponent<void *>::lassoOutlineColourId, colours.getLassoBorderColour().withAlpha(0.4f));
 
