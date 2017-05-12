@@ -19,6 +19,7 @@
 
 //[Headers]
 #include "FadingDialog.h"
+#include "AnnotationEvent.h"
 //[/Headers]
 
 #include "../Themes/PanelC.h"
@@ -26,25 +27,22 @@
 #include "../Themes/ShadowDownwards.h"
 #include "../Common/ColourSwatches.h"
 
-class ModalDialogInput  : public FadingDialog,
+class AnnotationDialog  : public FadingDialog,
                           public TextEditorListener,
+                          public ColourButtonListener,
                           private Timer,
                           public ButtonListener,
                           public ComboBoxListener
 {
 public:
 
-    ModalDialogInput (Component &owner, String &result, const String &message, const String &okText, const String &cancelText, int okCode, int cancelCode);
+    AnnotationDialog (Component &owner, const AnnotationEvent &event, const String &message, const String &okText, const String &cancelText, int okCode, int cancelCode);
 
-    ~ModalDialogInput();
+    ~AnnotationDialog();
 
     //[UserMethods]
-
-    void textEditorTextChanged(TextEditor &editor) override;
-    void textEditorReturnKeyPressed(TextEditor&) override;
-    void textEditorEscapeKeyPressed(TextEditor&) override;
-
-    //[/UserMethods]
+	void onColourButtonClicked(ColourButton *button) override;
+	//[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
@@ -62,8 +60,9 @@ private:
 
     //[UserVariables]
 
-    String &targetString;
-    Component &ownerComponent;
+	AnnotationEvent targetEvent;
+
+	Component &ownerComponent;
 
     int okCommand;
     int cancelCommand;
@@ -100,5 +99,5 @@ private:
     ScopedPointer<ComboBox> textEditor;
     ScopedPointer<ColourSwatches> component;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModalDialogInput)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AnnotationDialog)
 };

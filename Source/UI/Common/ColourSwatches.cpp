@@ -29,13 +29,19 @@ ColourSwatches::ColourSwatches()
 {
 
     //[UserPreSize]
+	const StringPairArray colours(CommandPanel::getColoursList());
+	for (const auto c : colours.getAllValues())
+	{
+		const Colour colour(Colour::fromString(c));
+		ScopedPointer<ColourButton> button(new ColourButton(colour, this));
+		this->addAndMakeVisible(button);
+		this->buttons.add(button.release());
+	}
     //[/UserPreSize]
 
     setSize (384, 42);
 
     //[Constructor]
-	const StringPairArray colours(CommandPanel::getColoursList());
-	// TODO
     //[/Constructor]
 }
 
@@ -52,6 +58,7 @@ ColourSwatches::~ColourSwatches()
 void ColourSwatches::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
+#if 0
     //[/UserPrePaint]
 
     g.setColour (Colour (0xffa52a90));
@@ -64,12 +71,20 @@ void ColourSwatches::paint (Graphics& g)
     g.fillRoundedRectangle (343.0f, 1.0f, 40.0f, 40.0f, 2.000f);
 
     //[UserPaint] Add your own custom painting code here..
+#endif
     //[/UserPaint]
 }
 
 void ColourSwatches::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
+	int x = 0;
+	for (const auto &button : this->buttons)
+	{
+		const int w = this->getWidth() / this->buttons.size();
+		button->setBounds(x, 0, w, this->getHeight());
+		x += w;
+	}
     //[/UserPreResize]
 
     //[UserResized] Add your own custom resize handling here..
@@ -78,6 +93,22 @@ void ColourSwatches::resized()
 
 
 //[MiscUserCode]
+void ColourSwatches::onColourButtonClicked(ColourButton *clickedButton)
+{
+	for (const auto &button : this->buttons)
+	{
+		if (button != clickedButton)
+		{
+			button->deselect();
+		}
+	}
+
+	if (ColourButtonListener *parentListener =
+		dynamic_cast<ColourButtonListener *>(this->getParentComponent()))
+	{
+		parentListener->onColourButtonClicked(clickedButton);
+	}
+}
 //[/MiscUserCode]
 
 #if 0
@@ -85,9 +116,10 @@ void ColourSwatches::resized()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="ColourSwatches" template="../../Template"
-                 componentName="" parentClasses="public Component" constructorParams=""
-                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="384" initialHeight="42">
+                 componentName="" parentClasses="public Component, public ColourButtonListener"
+                 constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="384"
+                 initialHeight="42">
   <BACKGROUND backgroundColour="0">
     <ROUNDRECT pos="1 1 40 40" cornerSize="2" fill="solid: ffa52a90" hasStroke="0"/>
     <ROUNDRECT pos="42 1 40 40" cornerSize="2" fill="solid: ff5f6cff" hasStroke="0"/>

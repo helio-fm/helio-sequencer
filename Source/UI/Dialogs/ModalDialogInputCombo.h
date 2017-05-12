@@ -38,11 +38,6 @@ public:
     ~ModalDialogInputCombo();
 
     //[UserMethods]
-
-    void textEditorTextChanged(TextEditor &editor) override;
-    void textEditorReturnKeyPressed(TextEditor&) override;
-    void textEditorEscapeKeyPressed(TextEditor&) override;
-
     //[/UserMethods]
 
     void paint (Graphics& g) override;

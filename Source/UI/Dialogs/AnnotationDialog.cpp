@@ -31,9 +31,8 @@ static const int asyncCancelCommandId = 123123;
 #endif
 //[/MiscUserDefs]
 
-ModalDialogInput::ModalDialogInput(Component &owner, String &result, const String &message, const String &okText, const String &cancelText, int okCode, int cancelCode)
+AnnotationDialog::AnnotationDialog(Component &owner, const AnnotationEvent &event, const String &message, const String &okText, const String &cancelText, int okCode, int cancelCode)
     : ownerComponent(owner),
-      targetString(result),
       okCommand(okCode),
       cancelCommand(cancelCode)
 {
@@ -69,12 +68,12 @@ ModalDialogInput::ModalDialogInput(Component &owner, String &result, const Strin
     addAndMakeVisible (component = new ColourSwatches());
 
     //[UserPreSize]
-    this->messageLabel->setText(message, dontSendNotification);
+    //this->messageLabel->setText(message, dontSendNotification);
     this->okButton->setButtonText(okText);
     this->cancelButton->setButtonText(cancelText);
 
-    this->textEditor->setFont(Font(INPUT_DIALOG_FONT_SIZE));
-    this->textEditor->setText(this->targetString, dontSendNotification);
+    //this->textEditor->setFont(Font(INPUT_DIALOG_FONT_SIZE));
+    //this->textEditor->setText(this->targetString, dontSendNotification);
     this->textEditor->addListener(this);
     //[/UserPreSize]
 
@@ -87,14 +86,14 @@ ModalDialogInput::ModalDialogInput(Component &owner, String &result, const Strin
     this->toFront(true);
     this->setAlwaysOnTop(true);
     this->textEditor->grabKeyboardFocus();
-    this->textEditor->setTextToShowWhenEmpty(message, Colours::black.withAlpha(0.5f));
+    //this->textEditor->setTextToShowWhenEmpty(message, Colours::black.withAlpha(0.5f));
     this->updateOkButtonState();
 
     this->startTimer(100);
     //[/Constructor]
 }
 
-ModalDialogInput::~ModalDialogInput()
+AnnotationDialog::~AnnotationDialog()
 {
     //[Destructor_pre]
     this->stopTimer();
@@ -117,7 +116,7 @@ ModalDialogInput::~ModalDialogInput()
     //[/Destructor]
 }
 
-void ModalDialogInput::paint (Graphics& g)
+void AnnotationDialog::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
@@ -129,7 +128,7 @@ void ModalDialogInput::paint (Graphics& g)
     //[/UserPaint]
 }
 
-void ModalDialogInput::resized()
+void AnnotationDialog::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
@@ -141,13 +140,13 @@ void ModalDialogInput::resized()
     shadow->setBounds ((getWidth() / 2) - (310 / 2), 15 + 153 - 3, 310, 24);
     okButton->setBounds ((getWidth() / 2) + 5, 15 + 153, 150, 42);
     textEditor->setBounds ((getWidth() / 2) - ((getWidth() - 60) / 2), 62, getWidth() - 60, 36);
-    component->setBounds ((getWidth() / 2) - (384 / 2), 112, 384, 42);
+    component->setBounds ((getWidth() / 2) - (384 / 2), 112, 384, 38);
     //[UserResized] Add your own custom resize handling here..
     this->textEditor->grabKeyboardFocus();
     //[/UserResized]
 }
 
-void ModalDialogInput::buttonClicked (Button* buttonThatWasClicked)
+void AnnotationDialog::buttonClicked (Button* buttonThatWasClicked)
 {
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
@@ -169,7 +168,7 @@ void ModalDialogInput::buttonClicked (Button* buttonThatWasClicked)
     //[/UserbuttonClicked_Post]
 }
 
-void ModalDialogInput::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
+void AnnotationDialog::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 {
     //[UsercomboBoxChanged_Pre]
     //[/UsercomboBoxChanged_Pre]
@@ -184,28 +183,28 @@ void ModalDialogInput::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     //[/UsercomboBoxChanged_Post]
 }
 
-void ModalDialogInput::visibilityChanged()
+void AnnotationDialog::visibilityChanged()
 {
     //[UserCode_visibilityChanged] -- Add your code here...
     this->textEditor->grabKeyboardFocus();
     //[/UserCode_visibilityChanged]
 }
 
-void ModalDialogInput::parentHierarchyChanged()
+void AnnotationDialog::parentHierarchyChanged()
 {
     //[UserCode_parentHierarchyChanged] -- Add your code here...
     this->rebound();
     //[/UserCode_parentHierarchyChanged]
 }
 
-void ModalDialogInput::parentSizeChanged()
+void AnnotationDialog::parentSizeChanged()
 {
     //[UserCode_parentSizeChanged] -- Add your code here...
     this->rebound();
     //[/UserCode_parentSizeChanged]
 }
 
-void ModalDialogInput::handleCommandMessage (int commandId)
+void AnnotationDialog::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == asyncCancelCommandId)
@@ -215,7 +214,7 @@ void ModalDialogInput::handleCommandMessage (int commandId)
     //[/UserCode_handleCommandMessage]
 }
 
-bool ModalDialogInput::keyPressed (const KeyPress& key)
+bool AnnotationDialog::keyPressed (const KeyPress& key)
 {
     //[UserCode_keyPressed] -- Add your code here...
     if (key.isKeyCode(KeyPress::escapeKey))
@@ -234,7 +233,7 @@ bool ModalDialogInput::keyPressed (const KeyPress& key)
     //[/UserCode_keyPressed]
 }
 
-void ModalDialogInput::inputAttemptWhenModal()
+void AnnotationDialog::inputAttemptWhenModal()
 {
     //[UserCode_inputAttemptWhenModal] -- Add your code here...
     this->postCommandMessage(asyncCancelCommandId);
@@ -244,33 +243,14 @@ void ModalDialogInput::inputAttemptWhenModal()
 
 //[MiscUserCode]
 
-void ModalDialogInput::textEditorTextChanged(TextEditor &editor)
+void AnnotationDialog::updateOkButtonState()
 {
-    this->targetString = editor.getText();
-    this->updateOkButtonState();
+    //const bool textIsEmpty = this->targetString.isEmpty();
+    //this->okButton->setAlpha(textIsEmpty ? 0.5f : 1.f);
+    //this->okButton->setEnabled(!textIsEmpty);
 }
 
-void ModalDialogInput::textEditorReturnKeyPressed(TextEditor &)
-{
-    if (this->targetString.isNotEmpty())
-    {
-        this->okay();
-    }
-}
-
-void ModalDialogInput::textEditorEscapeKeyPressed(TextEditor &)
-{
-    this->cancel();
-}
-
-void ModalDialogInput::updateOkButtonState()
-{
-    const bool textIsEmpty = this->targetString.isEmpty();
-    this->okButton->setAlpha(textIsEmpty ? 0.5f : 1.f);
-    this->okButton->setEnabled(!textIsEmpty);
-}
-
-void ModalDialogInput::timerCallback()
+void AnnotationDialog::timerCallback()
 {
     if (! this->textEditor->hasKeyboardFocus(true))
     {
@@ -279,16 +259,21 @@ void ModalDialogInput::timerCallback()
     }
 }
 
+void AnnotationDialog::onColourButtonClicked(ColourButton *clickedButton)
+{
+	const Colour c(clickedButton->getColour());
+
+}
 //[/MiscUserCode]
 
 #if 0
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="ModalDialogInput" template="../../Template"
-                 componentName="" parentClasses="public FadingDialog, public TextEditorListener, private Timer"
-                 constructorParams="Component &amp;owner, String &amp;result, const String &amp;message, const String &amp;okText, const String &amp;cancelText, int okCode, int cancelCode"
-                 variableInitialisers="ownerComponent(owner),&#10;targetString(result),&#10;okCommand(okCode),&#10;cancelCommand(cancelCode)"
+<JUCER_COMPONENT documentType="Component" className="AnnotationDialog" template="../../Template"
+                 componentName="" parentClasses="public FadingDialog, public TextEditorListener, public ColourButtonListener, private Timer"
+                 constructorParams="Component &amp;owner, const AnnotationEvent &amp;event, const String &amp;message, const String &amp;okText, const String &amp;cancelText, int okCode, int cancelCode"
+                 variableInitialisers="ownerComponent(owner),&#10;okCommand(okCode),&#10;cancelCommand(cancelCode)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="450" initialHeight="225">
   <METHODS>
@@ -327,7 +312,7 @@ BEGIN_JUCER_METADATA
             explicitFocusOrder="0" pos="0Cc 62 60M 36" editable="1" layout="33"
             items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <JUCERCOMP name="" id="12e51c6931db61b4" memberName="component" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 112 384 42" sourceFile="../Common/ColourSwatches.cpp"
+             explicitFocusOrder="0" pos="0Cc 112 384 38" sourceFile="../Common/ColourSwatches.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

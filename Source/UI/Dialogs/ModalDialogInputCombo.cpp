@@ -72,7 +72,7 @@ ModalDialogInputCombo::ModalDialogInputCombo(Component &owner, String &result, c
     this->okButton->setButtonText(okText);
     this->cancelButton->setButtonText(cancelText);
 
-    this->textEditor->setFont(Font(INPUT_DIALOG_FONT_SIZE));
+    //this->textEditor->setFont(Font(INPUT_DIALOG_FONT_SIZE));
     this->textEditor->setText(this->targetString, dontSendNotification);
     this->textEditor->addListener(this);
     //[/UserPreSize]
@@ -86,7 +86,7 @@ ModalDialogInputCombo::ModalDialogInputCombo(Component &owner, String &result, c
     this->toFront(true);
     this->setAlwaysOnTop(true);
     this->textEditor->grabKeyboardFocus();
-    this->textEditor->setTextToShowWhenEmpty(message, Colours::black.withAlpha(0.5f));
+    //this->textEditor->setTextToShowWhenEmpty(message, Colours::black.withAlpha(0.5f));
     this->updateOkButtonState();
 
     this->startTimer(100);
@@ -241,33 +241,14 @@ void ModalDialogInputCombo::inputAttemptWhenModal()
 
 //[MiscUserCode]
 
-void ModalDialogInput::textEditorTextChanged(TextEditor &editor)
-{
-    this->targetString = editor.getText();
-    this->updateOkButtonState();
-}
-
-void ModalDialogInput::textEditorReturnKeyPressed(TextEditor &)
-{
-    if (this->targetString.isNotEmpty())
-    {
-        this->okay();
-    }
-}
-
-void ModalDialogInput::textEditorEscapeKeyPressed(TextEditor &)
-{
-    this->cancel();
-}
-
-void ModalDialogInput::updateOkButtonState()
+void ModalDialogInputCombo::updateOkButtonState()
 {
     const bool textIsEmpty = this->targetString.isEmpty();
     this->okButton->setAlpha(textIsEmpty ? 0.5f : 1.f);
     this->okButton->setEnabled(!textIsEmpty);
 }
 
-void ModalDialogInput::timerCallback()
+void ModalDialogInputCombo::timerCallback()
 {
     if (! this->textEditor->hasKeyboardFocus(true))
     {

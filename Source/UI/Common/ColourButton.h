@@ -18,33 +18,54 @@
 #pragma once
 
 //[Headers]
-#include "ColourButton.h"
+#include "HighlightedComponent.h"
+#include "ComponentFader.h"
+
+class IconComponent;
+class ColourButton;
+
+struct ColourButtonListener
+{
+	virtual void onColourButtonClicked(ColourButton *button) = 0;
+};
 //[/Headers]
 
 
-class ColourSwatches  : public Component,
-                        public ColourButtonListener
+class ColourButton  : public HighlightedComponent
 {
 public:
 
-    ColourSwatches ();
+    ColourButton (Colour c, ColourButtonListener *listener);
 
-    ~ColourSwatches();
+    ~ColourButton();
 
     //[UserMethods]
-	void onColourButtonClicked(ColourButton *button) override;
+	void deselect();
+	void select();
+
+	bool isSelected() const noexcept
+	{ return this->checkMark != nullptr; }
+
+	Colour getColour() const noexcept
+	{ return this->colour; }
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
+    void mouseDown (const MouseEvent& e) override;
 
 
 private:
 
     //[UserVariables]
-	OwnedArray<ColourButton> buttons;
+	Component *createHighlighterComponent() override;
+
+	Colour colour;
+	ScopedPointer<IconComponent> checkMark;
+	ColourButtonListener *owner;
+	ComponentFader fader;
     //[/UserVariables]
 
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ColourSwatches)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ColourButton)
 };
