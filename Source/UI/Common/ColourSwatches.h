@@ -33,6 +33,7 @@ public:
 
     //[UserMethods]
 	void onColourButtonClicked(ColourButton *button) override;
+	void setSelectedColour(Colour colour);
     //[/UserMethods]
 
     void paint (Graphics& g) override;

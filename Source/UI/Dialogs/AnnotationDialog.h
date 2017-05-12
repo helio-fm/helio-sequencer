@@ -42,7 +42,7 @@ public:
 
     //[UserMethods]
 	void onColourButtonClicked(ColourButton *button) override;
-	//[/UserMethods]
+    //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
@@ -85,8 +85,12 @@ private:
     { delete this; }
 
     void updateOkButtonState();
-
     void timerCallback() override;
+
+
+	bool hasMadeChanges;
+	void sendEventChange(AnnotationEvent newEvent);
+	void cancelChangesIfAny();
 
     //[/UserVariables]
 
@@ -97,7 +101,7 @@ private:
     ScopedPointer<ShadowDownwards> shadow;
     ScopedPointer<TextButton> okButton;
     ScopedPointer<ComboBox> textEditor;
-    ScopedPointer<ColourSwatches> component;
+    ScopedPointer<ColourSwatches> colourSwatches;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AnnotationDialog)
 };

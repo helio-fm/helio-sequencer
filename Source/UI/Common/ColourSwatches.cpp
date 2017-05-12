@@ -109,6 +109,17 @@ void ColourSwatches::onColourButtonClicked(ColourButton *clickedButton)
 		parentListener->onColourButtonClicked(clickedButton);
 	}
 }
+
+void ColourSwatches::setSelectedColour(Colour colour)
+{
+	for (const auto &button : this->buttons)
+	{
+		if (button->getColour() == colour)
+		{ button->select(); }
+		else
+		{ button->deselect(); }
+	}
+}
 //[/MiscUserCode]
 
 #if 0

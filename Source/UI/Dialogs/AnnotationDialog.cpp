@@ -22,6 +22,8 @@
 #include "AnnotationDialog.h"
 
 //[MiscUserDefs]
+#include "AnnotationsLayer.h"
+
 static const int asyncCancelCommandId = 123123;
 
 #if HELIO_DESKTOP
@@ -32,9 +34,11 @@ static const int asyncCancelCommandId = 123123;
 //[/MiscUserDefs]
 
 AnnotationDialog::AnnotationDialog(Component &owner, const AnnotationEvent &event, const String &message, const String &okText, const String &cancelText, int okCode, int cancelCode)
-    : ownerComponent(owner),
+    : targetEvent(event),
+      ownerComponent(owner),
       okCommand(okCode),
-      cancelCommand(cancelCode)
+      cancelCommand(cancelCode),
+      hasMadeChanges(false)
 {
     addAndMakeVisible (background = new PanelC());
     addAndMakeVisible (panel = new PanelA());
@@ -65,9 +69,11 @@ AnnotationDialog::AnnotationDialog(Component &owner, const AnnotationEvent &even
     textEditor->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     textEditor->addListener (this);
 
-    addAndMakeVisible (component = new ColourSwatches());
+    addAndMakeVisible (colourSwatches = new ColourSwatches());
 
     //[UserPreSize]
+	this->colourSwatches->setSelectedColour(this->targetEvent.getColour());
+
     //this->messageLabel->setText(message, dontSendNotification);
     this->okButton->setButtonText(okText);
     this->cancelButton->setButtonText(cancelText);
@@ -96,6 +102,8 @@ AnnotationDialog::AnnotationDialog(Component &owner, const AnnotationEvent &even
 AnnotationDialog::~AnnotationDialog()
 {
     //[Destructor_pre]
+	this->cancelChangesIfAny();
+
     this->stopTimer();
 
     textEditor->removeListener(this);
@@ -110,7 +118,7 @@ AnnotationDialog::~AnnotationDialog()
     shadow = nullptr;
     okButton = nullptr;
     textEditor = nullptr;
-    component = nullptr;
+    colourSwatches = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -140,7 +148,7 @@ void AnnotationDialog::resized()
     shadow->setBounds ((getWidth() / 2) - (310 / 2), 15 + 153 - 3, 310, 24);
     okButton->setBounds ((getWidth() / 2) + 5, 15 + 153, 150, 42);
     textEditor->setBounds ((getWidth() / 2) - ((getWidth() - 60) / 2), 62, getWidth() - 60, 36);
-    component->setBounds ((getWidth() / 2) - (384 / 2), 112, 384, 38);
+    colourSwatches->setBounds ((getWidth() / 2) - (384 / 2), 112, 384, 38);
     //[UserResized] Add your own custom resize handling here..
     this->textEditor->grabKeyboardFocus();
     //[/UserResized]
@@ -262,7 +270,28 @@ void AnnotationDialog::timerCallback()
 void AnnotationDialog::onColourButtonClicked(ColourButton *clickedButton)
 {
 	const Colour c(clickedButton->getColour());
+	this->sendEventChange(this->targetEvent.withColour(c));
+}
 
+void AnnotationDialog::sendEventChange(AnnotationEvent newEvent)
+{
+	if (AnnotationsLayer *layer =
+		dynamic_cast<AnnotationsLayer *>(this->targetEvent.getLayer()))
+	{
+		this->cancelChangesIfAny();
+		layer->checkpoint();
+		layer->change(this->targetEvent, newEvent, true);
+		this->hasMadeChanges = true;
+	}
+}
+
+void AnnotationDialog::cancelChangesIfAny()
+{
+	if (this->hasMadeChanges)
+	{
+		this->targetEvent.getLayer()->undo();
+		this->hasMadeChanges = false;
+	}
 }
 //[/MiscUserCode]
 
@@ -273,7 +302,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="AnnotationDialog" template="../../Template"
                  componentName="" parentClasses="public FadingDialog, public TextEditorListener, public ColourButtonListener, private Timer"
                  constructorParams="Component &amp;owner, const AnnotationEvent &amp;event, const String &amp;message, const String &amp;okText, const String &amp;cancelText, int okCode, int cancelCode"
-                 variableInitialisers="ownerComponent(owner),&#10;okCommand(okCode),&#10;cancelCommand(cancelCode)"
+                 variableInitialisers="targetEvent(event),&#10;ownerComponent(owner),&#10;okCommand(okCode),&#10;cancelCommand(cancelCode),&#10;hasMadeChanges(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="450" initialHeight="225">
   <METHODS>
@@ -311,7 +340,7 @@ BEGIN_JUCER_METADATA
   <COMBOBOX name="" id="1923d71c308d2169" memberName="textEditor" virtualName=""
             explicitFocusOrder="0" pos="0Cc 62 60M 36" editable="1" layout="33"
             items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
-  <JUCERCOMP name="" id="12e51c6931db61b4" memberName="component" virtualName=""
+  <JUCERCOMP name="" id="12e51c6931db61b4" memberName="colourSwatches" virtualName=""
              explicitFocusOrder="0" pos="0Cc 112 384 38" sourceFile="../Common/ColourSwatches.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>

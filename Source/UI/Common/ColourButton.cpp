@@ -62,6 +62,7 @@ ColourButton::ColourButton(Colour c, ColourButtonListener *listener)
 ColourButton::~ColourButton()
 {
     //[Destructor_pre]
+	this->checkMark = nullptr;
     //[/Destructor_pre]
 
 
