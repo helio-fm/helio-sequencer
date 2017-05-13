@@ -398,6 +398,12 @@ void TranslationManager::translationsRequestOk()
         {
             Logger::writeToLog("TranslationManager :: downloaded translations file seems to be valid");
             DataEncoder::saveObfuscated(this->getDownloadedTranslationsFile(), xml);
+            
+            Logger::writeToLog("TranslationManager :: applying new translations");
+            this->deserialize(*xml);
+            // Don't send redunant change messages,
+            // as translations are going to be updated at the very start of the app:
+            //this->sendChangeMessage();
         }
     }
 }
