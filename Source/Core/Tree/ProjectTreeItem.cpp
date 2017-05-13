@@ -39,7 +39,7 @@
 #include "AutomationLayer.h"
 #include "Icons.h"
 #include "ProjectInfo.h"
-#include "ProjectAnnotations.h"
+#include "ProjectTimeline.h"
 #include "DataEncoder.h"
 
 #include "TrackedItem.h"
@@ -90,8 +90,8 @@ void ProjectTreeItem::initialize()
     this->info = new ProjectInfo(*this);
     this->vcsItems.add(this->info);
     
-    this->annotationsTrack = new ProjectAnnotations(*this, "Project Annotations");
-    this->vcsItems.add(this->annotationsTrack);
+    this->timeline = new ProjectTimeline(*this, "Project Timeline");
+    this->vcsItems.add(this->timeline);
 
     this->transport->seekToPosition(0.0);
     
@@ -122,7 +122,7 @@ ProjectTreeItem::~ProjectTreeItem()
     this->removeAllListeners();
     this->editor = nullptr;
 
-    this->annotationsTrack = nullptr;
+    this->timeline = nullptr;
     this->info = nullptr;
 
     this->removeListener(this->transport);
@@ -192,10 +192,10 @@ ProjectInfo *ProjectTreeItem::getProjectInfo() const noexcept
     return this->info;
 }
 
-ProjectAnnotations *ProjectTreeItem::getAnnotationsTrack() const noexcept
+ProjectTimeline *ProjectTreeItem::getTimeline() const noexcept
 {
-    jassert(this->annotationsTrack);
-    return this->annotationsTrack;
+    jassert(this->timeline);
+    return this->timeline;
 }
 
 MidiRoll *ProjectTreeItem::getLastFocusedRoll() const
@@ -494,17 +494,21 @@ bool ProjectTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDe
 Array<MidiLayer *> ProjectTreeItem::getLayersList() const
 {
     ScopedReadLock lock(this->layersListLock);
-
     Array<MidiLayer *> layers;
+
+    // now get all layers inside a tree hierarcht
     this->collectLayers(layers);
-    layers.add(this->annotationsTrack->getLayer()); // explicitly add the only non-tree-owned layer
+    
+    // and explicitly add the only non-tree-owned layers
+    layers.add(this->timeline->getAnnotations());
+    layers.add(this->timeline->getTimeSignatures());
+
     return layers;
 }
 
 Array<MidiLayer *> ProjectTreeItem::getSelectedLayersList() const
 {
     ScopedReadLock lock(this->layersListLock);
-    
     Array<MidiLayer *> layers;
     this->collectLayers(layers, true);
     return layers;
@@ -605,7 +609,7 @@ void ProjectTreeItem::reset()
     this->transport->seekToPosition(0.f);
     this->vcsItems.clear();
     this->vcsItems.add(this->info);
-    this->vcsItems.add(this->annotationsTrack);
+    this->vcsItems.add(this->timeline);
     this->undoStack->clearUndoHistory();
     TreeItem::reset();
 }
@@ -617,7 +621,7 @@ XmlElement *ProjectTreeItem::save() const
     xml->setAttribute("name", this->name);
 
     xml->addChildElement(this->info->serialize());
-    xml->addChildElement(this->annotationsTrack->serialize());
+    xml->addChildElement(this->timeline->serialize());
     
     //xml->addChildElement(this->player->serialize()); // todo instead of:
     xml->setAttribute("seek", this->transport->getSeekPosition());
@@ -646,7 +650,7 @@ void ProjectTreeItem::load(const XmlElement &xml)
     this->setName(root->getStringAttribute("name"));
 
     this->info->deserialize(*root);
-    this->annotationsTrack->deserialize(*root);
+    this->timeline->deserialize(*root);
 
     TreeItemChildrenSerializer::deserializeChildren(*this, *root);
 
@@ -912,10 +916,10 @@ VCS::TrackedItem *ProjectTreeItem::initTrackedItem(const String &type, const Uui
         this->info->setVCSUuid(id);
         return this->info;
     }
-    else if (type == Serialization::Core::defaultAnnotationsLayer)
+    else if (type == Serialization::Core::projectTimeline)
     {
-        this->annotationsTrack->setVCSUuid(id);
-        return this->annotationsTrack;
+        this->timeline->setVCSUuid(id);
+        return this->timeline;
     }
     
     return nullptr;
@@ -980,7 +984,8 @@ void ProjectTreeItem::rebuildLayersHashIfNeeded()
     if (this->isLayersHashOutdated)
     {
         this->layersHash.clear();
-        this->layersHash.set(this->annotationsTrack->getLayer()->getLayerIdAsString(), this->annotationsTrack->getLayer());
+        this->layersHash.set(this->timeline->getAnnotations()->getLayerIdAsString(), this->timeline->getAnnotations());
+        this->layersHash.set(this->timeline->getTimeSignatures()->getLayerIdAsString(), this->timeline->getTimeSignatures());
         
         Array<LayerTreeItem *> children = this->findChildrenOfType<LayerTreeItem>();
         

@@ -211,8 +211,17 @@ ProjectPageDefault::ProjectPageDefault(ProjectTreeItem &parentProject)
 
     addAndMakeVisible (menuButton = new MenuButton());
     addAndMakeVisible (shadow = new LightShadowRightwards());
+    addAndMakeVisible (revealLocationButton = new ImageButton (String()));
+    revealLocationButton->addListener (this);
+
+    revealLocationButton->setImages (false, true, false,
+                                     Image(), 1.000f, Colour (0x00000000),
+                                     Image(), 1.000f, Colour (0x00000000),
+                                     Image(), 1.000f, Colour (0x00000000));
 
     //[UserPreSize]
+    this->revealLocationButton->setMouseCursor(MouseCursor::PointingHandCursor);
+
     if (App::isRunningOnPhone())
     {
         this->menuButton->setVisible(false);
@@ -258,6 +267,7 @@ ProjectPageDefault::~ProjectPageDefault()
     licenseEditor = nullptr;
     menuButton = nullptr;
     shadow = nullptr;
+    revealLocationButton = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -300,6 +310,7 @@ void ProjectPageDefault::resized()
     licenseEditor->setBounds ((getWidth() / 2) + -100, proportionOfHeight (0.0751f) + 230, 440, 48);
     menuButton->setBounds ((getWidth() / 2) - (128 / 2), getHeight() - -16 - (128 / 2), 128, 128);
     shadow->setBounds (0, 0, 5, getHeight() - 0);
+    revealLocationButton->setBounds (((getWidth() / 2) + -100) + -150, ((proportionOfHeight (0.0751f) + 310) + 138) + 0, 400 - -150, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -344,6 +355,22 @@ void ProjectPageDefault::labelTextChanged (Label* labelThatHasChanged)
 
     //[UserlabelTextChanged_Post]
     //[/UserlabelTextChanged_Post]
+}
+
+void ProjectPageDefault::buttonClicked (Button* buttonThatWasClicked)
+{
+    //[UserbuttonClicked_Pre]
+    //[/UserbuttonClicked_Pre]
+
+    if (buttonThatWasClicked == revealLocationButton)
+    {
+        //[UserButtonCode_revealLocationButton] -- add your button handler code here..
+        this->project.getDocument()->getFile().revealToUser();
+        //[/UserButtonCode_revealLocationButton]
+    }
+
+    //[UserbuttonClicked_Post]
+    //[/UserbuttonClicked_Post]
 }
 
 void ProjectPageDefault::handleCommandMessage (int commandId)
@@ -532,7 +559,7 @@ BEGIN_JUCER_METADATA
          fontname="Default serif font" fontsize="16" kerning="0" bold="0"
          italic="0" justification="9"/>
   <GENERICCOMPONENT name="level1" id="b6ea6ccc6b9be1f8" memberName="level1" virtualName=""
-                    explicitFocusOrder="0" pos="32 7.507% 150 24" class="Component"
+                    explicitFocusOrder="0" pos="32 7.511% 150 24" class="Component"
                     params=""/>
   <GENERICCOMPONENT name="level2" id="91994c13c1a34ef8" memberName="level2" virtualName=""
                     explicitFocusOrder="0" pos="32 310 150 24" posRelativeY="b6ea6ccc6b9be1f8"
@@ -555,6 +582,13 @@ BEGIN_JUCER_METADATA
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
              explicitFocusOrder="0" pos="0 0 5 0M" sourceFile="../Themes/LightShadowRightwards.cpp"
              constructorParams=""/>
+  <IMAGEBUTTON name="" id="6ab32d6eda6c96a8" memberName="revealLocationButton"
+               virtualName="" explicitFocusOrder="0" pos="-150 0 -150M 24" posRelativeX="e68c5a019e000a0b"
+               posRelativeY="cf836ffeded76ad1" posRelativeW="e68c5a019e000a0b"
+               buttonText="" connectedEdges="0" needsCallback="1" radioGroupId="0"
+               keepProportions="0" resourceNormal="" opacityNormal="1" colourNormal="0"
+               resourceOver="" opacityOver="1" colourOver="0" resourceDown=""
+               opacityDown="1" colourDown="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

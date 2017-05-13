@@ -580,18 +580,24 @@ void PianoLayerDiffLogic::deserializeChanges(MidiLayer &layer,
         OwnedArray<Note> &stateNotes,
         OwnedArray<Note> &changesNotes) const
 {
-    forEachXmlChildElementWithTagName(*state, e, Serialization::Core::note)
+    if (state != nullptr)
     {
-        auto note = new Note(&layer, 0, 0, 0, 0);
-        note->deserialize(*e);
-        stateNotes.addSorted(*note, note);
+        forEachXmlChildElementWithTagName(*state, e, Serialization::Core::note)
+        {
+            auto note = new Note(&layer, 0, 0, 0, 0);
+            note->deserialize(*e);
+            stateNotes.addSorted(*note, note);
+        }
     }
 
-    forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::note)
+    if (changes != nullptr)
     {
-        auto note = new Note(&layer, 0, 0, 0, 0);
-        note->deserialize(*e);
-        changesNotes.addSorted(*note, note);
+        forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::note)
+        {
+            auto note = new Note(&layer, 0, 0, 0, 0);
+            note->deserialize(*e);
+            changesNotes.addSorted(*note, note);
+        }
     }
 }
 

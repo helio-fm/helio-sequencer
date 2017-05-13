@@ -33,7 +33,7 @@ class Origami;
 class TrackMap;
 class Transport;
 class ProjectInfo;
-class ProjectAnnotations;
+class ProjectTimeline;
 class MidiRollCommandPanel;
 class UndoStack;
 class RecentFilesList;
@@ -73,7 +73,7 @@ public:
 
     ProjectInfo *getProjectInfo() const noexcept;
 
-    ProjectAnnotations *getAnnotationsTrack() const noexcept;
+    ProjectTimeline *getTimeline() const noexcept;
 
     MidiRoll *getLastFocusedRoll() const;
     
@@ -297,7 +297,7 @@ private:
 
     ScopedPointer<ProjectInfo> info;
 
-    ScopedPointer<ProjectAnnotations> annotationsTrack;
+    ScopedPointer<ProjectTimeline> timeline;
 
 private:
 

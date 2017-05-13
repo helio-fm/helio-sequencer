@@ -22,7 +22,7 @@
 #include "VersionControl.h"
 #include "Head.h"
 #include "ProjectInfo.h"
-#include "ProjectAnnotations.h"
+#include "ProjectTimeline.h"
 #include "RecentFilesList.h"
 #include "MainLayout.h"
 #include "App.h"
@@ -162,7 +162,7 @@ void VersionControlTreeItem::commitProjectInfo()
     if (parentProject && this->vcs)
     {
         this->vcs->quickAmendItem(parentProject->getProjectInfo());
-        this->vcs->quickAmendItem(parentProject->getAnnotationsTrack());
+        this->vcs->quickAmendItem(parentProject->getTimeline());
     }
 }
 

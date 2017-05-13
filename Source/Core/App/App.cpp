@@ -542,6 +542,10 @@ App::RunMode App::detectRunMode(const String &commandLine)
 
 void App::checkPlugin(const String &markerFile)
 {
+#if JUCE_MAC
+    Process::setDockIconVisible(false);
+#endif
+
     const File tempFile(FileUtils::getTemporaryFolder() + File::separatorString + markerFile);
 
     try
@@ -604,7 +608,10 @@ void App::changeListenerCallback(ChangeBroadcaster *source)
 {
     Logger::writeToLog("Reloading translations");
     this->getWindow()->dismissWorkspaceComponent();
-    this->getWorkspace()->getTreeRoot()->recreateSubtreePages();
+    if (TreeItem *root = this->getWorkspace()->getTreeRoot())
+    {
+        root->recreateSubtreePages();
+    }
     this->getWindow()->createWorkspaceComponent();
 }
 

@@ -49,9 +49,9 @@
 #include "MainWindow.h"
 #include "PlayerThread.h"
 
-#include "ProjectAnnotations.h"
+#include "ProjectTimeline.h"
 #include "AnnotationsLayer.h"
-#include "AnnotationEvent.h"
+#include "TimeSignaturesLayer.h"
 #include "MidiRollToolbox.h"
 #include "MidiRollListener.h"
 #include "VersionControlTreeItem.h"
@@ -71,10 +71,13 @@
 #   define MIDIROLL_FOLLOWS_INDICATOR 0
 #endif
 
-
 // force compile template
 #include "AnnotationsMap/AnnotationsTrackMap.cpp"
 template class AnnotationsTrackMap<AnnotationLargeComponent>;
+
+// force compile template
+#include "TimeSignaturesMap/TimeSignaturesTrackMap.cpp"
+template class TimeSignaturesTrackMap<TimeSignatureLargeComponent>;
 
 
 MidiRoll::MidiRoll(ProjectTreeItem &parentProject,
@@ -87,7 +90,6 @@ MidiRoll::MidiRoll(ProjectTreeItem &parentProject,
     clickAnchor(0, 0),
     zoomAnchor(0, 0),
     primaryActiveLayer(nullptr),
-    snapQuantize(1),
     barWidth(0),
     firstBar(INT_MAX),
     lastBar(INT_MIN),
@@ -117,6 +119,8 @@ MidiRoll::MidiRoll(ProjectTreeItem &parentProject,
 
     this->header = new MidiRollHeader(this->project.getTransport(), *this, this->viewport);
     this->annotationsTrack = new AnnotationsLargeMap(this->project, *this);
+    this->timeSignaturesTrack = new TimeSignaturesLargeMap(this->project, *this);
+    
     this->indicator = new TransportIndicator(*this, this->project.getTransport(), this);
 
     this->lassoComponent = new MidiEventComponentLasso();
@@ -127,6 +131,7 @@ MidiRoll::MidiRoll(ProjectTreeItem &parentProject,
     this->addAndMakeVisible(this->bottomShadow);
     this->addAndMakeVisible(this->header);
     this->addAndMakeVisible(this->annotationsTrack);
+    this->addAndMakeVisible(this->timeSignaturesTrack);
     this->addAndMakeVisible(this->indicator);
 
     this->addAndMakeVisible(this->lassoComponent);
@@ -200,33 +205,49 @@ MidiLayer *MidiRoll::getActiveMidiLayer(int index) const noexcept
     return this->activeLayers[index];
 }
 
+//===----------------------------------------------------------------------===//
+// Timeline events
+//===----------------------------------------------------------------------===//
+
+float MidiRoll::getPositionForNewTimelineEvent() const
+{
+	const double indicatorOffset = this->findIndicatorOffsetFromViewCentre();
+	const bool indicatorIsWithinScreen = fabs(indicatorOffset) < (this->viewport.getViewWidth() / 2);
+	float targetBeat = 0.f;
+
+	// If playhead is visible, put new event on it's position, otherwise just align to the screen center
+	if (indicatorIsWithinScreen)
+	{
+		const int viewCentre = this->viewport.getViewPositionX() + (this->viewport.getViewWidth() / 2);
+		const int indicatorPosition = viewCentre + int(indicatorOffset);
+		return this->getRoundBeatByXPosition(indicatorPosition);
+	}
+
+	const int viewCentre = this->viewport.getViewPositionX() + (this->viewport.getViewWidth() / 2);
+	return this->getRoundBeatByXPosition(viewCentre);
+}
 
 void MidiRoll::insertAnnotationWithinScreen(const String &annotation)
 {
-    const double indicatorOffset = this->findIndicatorOffsetFromViewCentre();
-    const bool indicatorIsWithinScreen = fabs(indicatorOffset) < (this->viewport.getViewWidth() / 2);
-
-    float targetBeat = 0.f;
-
-    // если индикатор на экране - ставим аннотацию на него, если нет - просто в середину экрана
-    if (indicatorIsWithinScreen)
+    if (AnnotationsLayer *annotationsLayer = dynamic_cast<AnnotationsLayer *>(this->project.getTimeline()->getAnnotations()))
     {
-        const int viewCentre = this->viewport.getViewPositionX() + (this->viewport.getViewWidth() / 2);
-        const int indicatorPosition = viewCentre + int(indicatorOffset);
-        targetBeat = this->getRoundBeatByXPosition(indicatorPosition);
-    }
-    else
-    {
-        const int viewCentre = this->viewport.getViewPositionX() + (this->viewport.getViewWidth() / 2);
-        targetBeat = this->getRoundBeatByXPosition(viewCentre);
-    }
-
-    if (AnnotationsLayer *annotationsLayer = dynamic_cast<AnnotationsLayer *>(this->project.getAnnotationsTrack()->getLayer()))
-    {
-        annotationsLayer->checkpoint();
-        AnnotationEvent event(annotationsLayer, targetBeat, annotation, Colours::transparentWhite);
+		annotationsLayer->checkpoint();
+		const float targetBeat = this->getPositionForNewTimelineEvent();
+		AnnotationEvent event(annotationsLayer, targetBeat, annotation, Colours::transparentWhite);
         annotationsLayer->insert(event, true);
     }
+}
+
+void MidiRoll::insertTimeSignatureWithinScreen(int numerator, int denominator)
+{
+	jassert(denominator == 2 || denominator == 4 || denominator == 8 || denominator == 16 || denominator == 32);
+	if (TimeSignaturesLayer *tsLayer = dynamic_cast<TimeSignaturesLayer *>(this->project.getTimeline()->getTimeSignatures()))
+	{
+		tsLayer->checkpoint();
+		const float targetBeat = this->getPositionForNewTimelineEvent();
+		TimeSignatureEvent event(tsLayer, targetBeat, numerator, denominator);
+		tsLayer->insert(event, true);
+	}
 }
 
 //===----------------------------------------------------------------------===//
@@ -360,13 +381,22 @@ void MidiRoll::panByOffset(const int offsetX, const int offsetY)
     const bool needsToStretchRight = (offsetX >= (this->getWidth() - this->viewport.getViewWidth()));
     const bool needsToStretchLeft = (offsetX <= 0);
 
+    int numBarsToExpand = 1;
+    if (this->barWidth <= 1)
+    {
+        numBarsToExpand = 64;
+    }
+    else if (this->barWidth <= 16)
+    {
+        numBarsToExpand = 16;
+    }
+    else if (this->barWidth <= 64)
+    {
+        numBarsToExpand = 4;
+    }
+    
     if (needsToStretchRight)
     {
-        int dynamicGridSize = 0;
-        int numBarsToExpand = 1;
-
-        MidiRoll::getGridMultipliers(this->barWidth, dynamicGridSize, numBarsToExpand);
-
         this->setLastBar(this->lastBar + numBarsToExpand);
         this->viewport.setViewPosition(offsetX, offsetY); // sic! after setLastBar
         this->grabKeyboardFocus();
@@ -376,11 +406,6 @@ void MidiRoll::panByOffset(const int offsetX, const int offsetY)
     }
     else if (needsToStretchLeft)
     {
-        int dynamicGridSize = 0;
-        int numBarsToExpand = 1;
-
-        MidiRoll::getGridMultipliers(this->barWidth, dynamicGridSize, numBarsToExpand);
-
         const float deltaW = float(this->barWidth * numBarsToExpand);
         this->clickAnchor.addXY(deltaW / SMOOTH_PAN_SPEED_MULTIPLIER, 0); // an ugly hack
         this->setFirstBar(this->firstBar - numBarsToExpand);
@@ -634,7 +659,6 @@ void MidiRoll::setBarWidth(const float newBarWidth)
         this->setSnapQuantize(64.f);
     }
 
-    this->snapWidth = this->barWidth / float(this->snapQuantize);
     this->updateBounds();
 }
 
@@ -643,11 +667,11 @@ void MidiRoll::setSnapQuantize(float quantize)
     if (quantize == 0)
     { return; }
 
-    this->snapQuantize = quantize;
-    this->snapsPerBeat = 1.0f / (this->snapQuantize / float(NUM_BEATS_IN_BAR));
-    this->snapWidth = this->barWidth / float(snapQuantize);
+    this->snapsPerBeat = 1.0f / (quantize / float(NUM_BEATS_IN_BAR));
+    this->snapWidth = this->barWidth / quantize;
 }
 
+// Snaps per quarter beat, actually
 float MidiRoll::getSnapsPerBeat() const
 {
     return this->snapsPerBeat;
@@ -657,6 +681,116 @@ float MidiRoll::getSnapWidth() const
 {
     return this->snapWidth;
 }
+
+#define MIN_BAR_WIDTH 12
+#define MIN_BEAT_WIDTH 8
+
+void MidiRoll::computeVisibleBeatLines()
+{
+    this->visibleBars.clearQuick();
+    this->visibleBeats.clearQuick();
+    this->visibleSnaps.clearQuick();
+
+    const auto tsLayer = this->project.getTimeline()->getTimeSignatures();
+    
+    const float zeroCanvasOffset = this->getFirstBar() * this->barWidth;
+    
+    const float viewPosX = this->viewport.getViewPositionX();
+    const float paintStartX = viewPosX + zeroCanvasOffset;
+    const float paintEndX = float(viewPosX + this->viewport.getViewWidth()) + zeroCanvasOffset;
+    
+    const int paintStartBar = int(paintStartX / this->barWidth) - 1;
+    const int paintEndBar = int(paintEndX / this->barWidth) + 1;
+    
+    int numerator = TIME_SIGNATURE_DEFAULT_NUMERATOR;
+    int denominator = TIME_SIGNATURE_DEFAULT_DENOMINATOR;
+    float i = float(paintStartBar);
+
+    int nextSignatureIdx = 0;
+
+    // Find a time signature to start from (or use default values):
+    // find a first time signature after a paint start and take a previous one, if any
+    for (; nextSignatureIdx < tsLayer->size(); ++nextSignatureIdx)
+    {
+        const auto signature =
+            static_cast<TimeSignatureEvent *>(tsLayer->getUnchecked(nextSignatureIdx));
+        
+        if (signature->getBeat() >= (paintStartBar * NUM_BEATS_IN_BAR))
+        {
+            break;
+        }
+
+        numerator = signature->getNumerator();
+        denominator = signature->getDenominator();
+        i = signature->getBeat() / NUM_BEATS_IN_BAR;
+    }
+    
+    float barWidthSum = 0.f;
+    while (i <= paintEndBar)
+    {
+        // Expecting the bar to be full (if time signature does not change in between)
+        float beatStep = 1.f / float(denominator);
+        float barStep = beatStep * float(numerator);
+        const float barStartX = this->barWidth * i - zeroCanvasOffset;
+        const float stepWidth = this->barWidth * barStep;
+        barWidthSum += stepWidth;
+
+        if (barWidthSum > MIN_BAR_WIDTH &&
+            barStartX >= viewPosX)
+        {
+            visibleBars.add(barStartX);
+            barWidthSum = 0;
+        }
+        
+        // Check if we have more time signatures to come
+        TimeSignatureEvent *nextSignature = nullptr;
+        if (nextSignatureIdx < tsLayer->size())
+        {
+            nextSignature = static_cast<TimeSignatureEvent *>(tsLayer->getUnchecked(nextSignatureIdx));
+        }
+        
+        // Now for the beat lines
+        bool lastFrame = false;
+        for (float j = 0.f; j < barStep && !lastFrame; j += beatStep)
+        {
+            const float beatStartX = barStartX + this->barWidth * j;
+            float nextBeatStartX = barStartX + this->barWidth * (j + beatStep);
+            
+            // Check for time signature change at this point
+            if (nextSignature != nullptr)
+            {
+                const float tsBar = nextSignature->getBeat() / NUM_BEATS_IN_BAR;
+                if (tsBar <= (i + j + beatStep))
+                {
+                    numerator = nextSignature->getNumerator();
+                    denominator = nextSignature->getDenominator();
+                    barStep = (tsBar - i); // i.e. incomplete bar
+                    nextBeatStartX = barStartX + this->barWidth * barStep;
+                    nextSignatureIdx++;
+                    barWidthSum = 0;
+                    lastFrame = true;
+                }
+            }
+            
+            // Get snap lines and beat lines
+            for (float k = beatStartX + this->snapWidth;
+                 k < (nextBeatStartX - 1);
+                 k += this->snapWidth)
+            {
+                visibleSnaps.add(k);
+            }
+            
+            if (j >= beatStep && // Don't draw the first one as it is a barline
+                (nextBeatStartX - beatStartX) > MIN_BEAT_WIDTH)
+            {
+                visibleBeats.add(beatStartX);
+            }
+        }
+        
+        i += barStep;
+    }
+}
+
 
 //===----------------------------------------------------------------------===//
 // Alternative keydown modes (space for drag, etc.)
@@ -793,6 +927,31 @@ MidiEventComponentLasso *MidiRoll::getLasso() const
 //===----------------------------------------------------------------------===//
 // ProjectListener
 //===----------------------------------------------------------------------===//
+
+void MidiRoll::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+{
+    // Time signatures have changed, need to repaint
+    if (dynamic_cast<const TimeSignatureEvent *>(&oldEvent))
+    {
+        this->resized();
+    }
+}
+
+void MidiRoll::onEventAdded(const MidiEvent &event)
+{
+    if (dynamic_cast<const TimeSignatureEvent *>(&event))
+    {
+        this->resized();
+    }
+}
+
+void MidiRoll::onEventRemoved(const MidiEvent &event)
+{
+    if (dynamic_cast<const TimeSignatureEvent *>(&event))
+    {
+        this->resized();
+    }
+}
 
 void MidiRoll::onProjectBeatRangeChanged(float firstBeat, float lastBeat)
 {
@@ -1230,97 +1389,40 @@ void MidiRoll::resized()
     //this->sendChangeMessage();
 }
 
-void MidiRoll::getGridMultipliers(float targetBarWidth, int &gridMultiplier, int &gridShowsEvery)
-{
-    if (targetBarWidth <= 160)
-    {
-        gridMultiplier = NUM_BEATS_IN_BAR * 1;
-    }
-    else if (targetBarWidth <= 320)
-    {
-        gridMultiplier = NUM_BEATS_IN_BAR * 2;
-    }
-    else if (targetBarWidth <= 640)
-    {
-        gridMultiplier = NUM_BEATS_IN_BAR * 4;
-    }
-    else if (targetBarWidth <= 1280)
-    {
-        gridMultiplier = NUM_BEATS_IN_BAR * 8;
-    }
-    else /*if (this->barWidth <= 2560)*/
-    {
-        gridMultiplier = NUM_BEATS_IN_BAR * 16;
-    }
-
-    if (targetBarWidth <= 1)
-    {
-        gridShowsEvery = 64;
-    }
-    else if (targetBarWidth <= 16)
-    {
-        gridShowsEvery = 16;
-    }
-    else if (targetBarWidth <= 64)
-    {
-        gridShowsEvery = 4;
-    }
-    else
-    {
-        gridShowsEvery = 1;
-    }
-}
-
 void MidiRoll::paint(Graphics &g)
 {
-    const Colour barStart = findColour(MidiRoll::barStartLineColourId);
-    const Colour beatStart = findColour(MidiRoll::beatStartLineColourId);
-
-    int dynamicGridSize = NUM_BEATS_IN_BAR;
-    int showEvery = 1;
-
-    MidiRoll::getGridMultipliers(this->barWidth, dynamicGridSize, showEvery);
-
-    const float zeroCanvasOffset = this->getFirstBar() * this->barWidth;
-
-    const float paintStartX = this->viewport.getViewPositionX() - this->barWidth + zeroCanvasOffset;
-    const float paintEndX = float(this->viewport.getViewPositionX() + this->viewport.getViewWidth()) + zeroCanvasOffset;
+    const Colour barLine = findColour(MidiRoll::barLineColourId);
+    const Colour barLineBevel = findColour(MidiRoll::barLineBevelColourId);
+    const Colour beatLine = findColour(MidiRoll::beatLineColourId);
+    const Colour snapLine = findColour(MidiRoll::snapLineColourId);
+    
+    this->computeVisibleBeatLines();
 
     const float paintStartY = float(this->viewport.getViewPositionY());
     const float paintEndY = paintStartY + this->viewport.getViewHeight();
 
-    float pos_x = paintStartX - fmodf(paintStartX, this->barWidth);
-
-    int i = int(paintStartX / this->barWidth) - showEvery;
-    const int j = int(paintEndX / this->barWidth);
-
-    const float beatWidth = this->barWidth / dynamicGridSize;
-
-    while (i <= j)
+    g.setColour(barLine);
+    for (const auto f : this->visibleBars)
     {
-        // show every x'th
-        if (i % showEvery == 0)
-        {
-            const float startX1 = (barWidth * i) - zeroCanvasOffset;
+        g.drawVerticalLine(f, paintStartY, paintEndY);
+    }
 
-            g.setColour(beatStart);
-            //g.drawLine(startX1, paintStartY, startX1, paintEndY, 0.8f);
-            g.drawVerticalLine(startX1, paintStartY, paintEndY);
+    g.setColour(barLineBevel);
+    for (const auto f : this->visibleBars)
+    {
+        g.drawVerticalLine(f + 1, paintStartY, paintEndY);
+    }
 
-            g.setColour(barStart);
-            //g.drawVerticalLine(startX1 - 1, paintStartY, paintEndY);
-
-            for (int k = 1; k < dynamicGridSize; k++)
-            {
-                const float startX2 = (barWidth * i + beatWidth * showEvery * k) - zeroCanvasOffset;
-
-                //g.setColour(rowLine);
-                //g.drawLine(startX2, paintStartY, startX2, paintEndY, 0.5f);
-                g.drawVerticalLine(startX2, paintStartY, paintEndY);
-            }
-        }
-
-        i++;
+    g.setColour(beatLine);
+    for (const auto f : this->visibleBeats)
+    {
+        g.drawVerticalLine(f, paintStartY, paintEndY);
+    }
+    
+    g.setColour(snapLine);
+    for (const auto f : this->visibleSnaps)
+    {
+        g.drawVerticalLine(f, paintStartY, paintEndY);
     }
 }
 
@@ -1982,8 +2084,10 @@ void MidiRoll::updateChildrenBounds()
     this->bottomShadow->setBounds(viewX, viewY + viewHeight - shadowSize, viewWidth, shadowSize);
 
     this->header->setBounds(0, viewY, this->getWidth(), MIDIROLL_HEADER_HEIGHT);
-    this->annotationsTrack->setBounds(0, viewY, this->getWidth(), MIDIROLL_HEADER_HEIGHT);
+    this->annotationsTrack->setBounds(0, viewY + MIDIROLL_HEADER_HEIGHT, this->getWidth(), MIDIROLL_HEADER_HEIGHT);
+    this->timeSignaturesTrack->setBounds(0, viewY, this->getWidth(), MIDIROLL_HEADER_HEIGHT);
     this->annotationsTrack->toFront(false);
+    this->timeSignaturesTrack->toFront(false);
 
     if (this->wipeSpaceHelper)
     {
@@ -1998,7 +2102,8 @@ void MidiRoll::updateChildrenBounds()
     for (int i = 0; i < this->trackMaps.size(); ++i)
     {
         Component *const trackMap = this->trackMaps.getUnchecked(i);
-        trackMap->setBounds(0, viewY + viewHeight - trackMap->getHeight(), this->getWidth(), trackMap->getHeight());
+        trackMap->setBounds(0, viewY + viewHeight - trackMap->getHeight(),
+                            this->getWidth(), trackMap->getHeight());
     }
 
     this->broadcastRollResized();
@@ -2015,8 +2120,10 @@ void MidiRoll::updateChildrenPositions()
     this->bottomShadow->setTopLeftPosition(viewX, viewY + viewHeight - shadowSize);
 
     this->header->setTopLeftPosition(0, viewY);
-    this->annotationsTrack->setTopLeftPosition(0, viewY);
+    this->annotationsTrack->setTopLeftPosition(0, viewY + MIDIROLL_HEADER_HEIGHT);
+    this->timeSignaturesTrack->setTopLeftPosition(0, viewY);
     this->annotationsTrack->toFront(false);
+    this->timeSignaturesTrack->toFront(false);
 
     if (this->wipeSpaceHelper)
     {
@@ -2033,9 +2140,6 @@ void MidiRoll::updateChildrenPositions()
         Component *const trackMap = this->trackMaps.getUnchecked(i);
         trackMap->setTopLeftPosition(0, viewY + viewHeight - trackMap->getHeight());
     }
-
-//    this->leftShadow->toFront(false);
-//    this->rightShadow->toFront(false);
 
     this->broadcastRollMoved();
 }

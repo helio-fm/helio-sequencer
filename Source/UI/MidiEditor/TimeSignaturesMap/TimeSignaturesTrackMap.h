@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "AnnotationEvent.h"
+#include "TimeSignatureEvent.h"
 #include "ProjectListener.h"
 
 class MidiRoll;
@@ -26,17 +26,17 @@ class TrackStartIndicator;
 class TrackEndIndicator;
 
 template< typename T >
-class AnnotationsTrackMap :
+class TimeSignaturesTrackMap :
     public Component,
     public ProjectListener
 {
 public:
 
-    AnnotationsTrackMap(ProjectTreeItem &parentProject, MidiRoll &parentRoll);
+    TimeSignaturesTrackMap(ProjectTreeItem &parentProject, MidiRoll &parentRoll);
 
-    ~AnnotationsTrackMap() override;
+    ~TimeSignaturesTrackMap() override;
 
-    void alignAnnotationComponent(T *nc);
+    void alignTimeSignatureComponent(T *nc);
 
 
     //===------------------------------------------------------------------===//
@@ -69,9 +69,9 @@ public:
     // Stuff for children
     //===------------------------------------------------------------------===//
 
-    void onAnnotationMoved(T *nc);
+    void onTimeSignatureMoved(T *nc);
     
-    void onAnnotationTapped(T *nc);
+    void onTimeSignatureTapped(T *nc);
     
     void showContextMenuFor(T *nc);
 
@@ -82,10 +82,12 @@ public:
 private:
     
     void reloadTrackMap();
-    void applyAnnotationBounds(T *nc, T *nextOne = nullptr);
+    void applyTimeSignatureBounds(T *nc, T *nextOne = nullptr);
     
     T *getPreviousEventComponent(int indexOfSorted) const;
     T *getNextEventComponent(int indexOfSorted) const;
+    
+    void updateTrackRangeIndicatorsAnchors();
     
 private:
     
@@ -98,10 +100,13 @@ private:
     MidiRoll &roll;
     ProjectTreeItem &project;
     
+    ScopedPointer<TrackStartIndicator> trackStartIndicator;
+    ScopedPointer<TrackEndIndicator> trackEndIndicator;
+    
     ComponentAnimator animator;
 
-    OwnedArray<T> annotationComponents;
-    HashMap<AnnotationEvent, T *, AnnotationEventHashFunction> annotationsHash;
+    OwnedArray<T> timeSignatureComponents;
+    HashMap<TimeSignatureEvent, T *, TimeSignatureEventHashFunction> timeSignaturesHash;
     
 };
 

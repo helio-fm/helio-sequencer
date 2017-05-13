@@ -29,6 +29,7 @@
 #include "NoteActions.h"
 #include "AnnotationEventActions.h"
 #include "AutomationEventActions.h"
+#include "TimeSignatureEventActions.h"
 
 #define MAX_TRANSACTIONS_TO_STORE 10
 
@@ -131,6 +132,12 @@ struct UndoStack::ActionSet
         else if (tagName == Serialization::Undo::annotationEventsGroupInsertAction)     { return new AnnotationEventsGroupInsertAction(this->project); }
         else if (tagName == Serialization::Undo::annotationEventsGroupRemoveAction)     { return new AnnotationEventsGroupRemoveAction(this->project); }
         else if (tagName == Serialization::Undo::annotationEventsGroupChangeAction)     { return new AnnotationEventsGroupChangeAction(this->project); }
+        else if (tagName == Serialization::Undo::timeSignatureEventInsertAction)        { return new TimeSignatureEventInsertAction(this->project); }
+        else if (tagName == Serialization::Undo::timeSignatureEventRemoveAction)        { return new TimeSignatureEventRemoveAction(this->project); }
+        else if (tagName == Serialization::Undo::timeSignatureEventChangeAction)        { return new TimeSignatureEventChangeAction(this->project); }
+        else if (tagName == Serialization::Undo::timeSignatureEventsGroupInsertAction)  { return new TimeSignatureEventsGroupInsertAction(this->project); }
+        else if (tagName == Serialization::Undo::timeSignatureEventsGroupRemoveAction)  { return new TimeSignatureEventsGroupRemoveAction(this->project); }
+        else if (tagName == Serialization::Undo::timeSignatureEventsGroupChangeAction)  { return new TimeSignatureEventsGroupChangeAction(this->project); }
         else if (tagName == Serialization::Undo::automationEventInsertAction)           { return new AutomationEventInsertAction(this->project); }
         else if (tagName == Serialization::Undo::automationEventRemoveAction)           { return new AutomationEventRemoveAction(this->project); }
         else if (tagName == Serialization::Undo::automationEventChangeAction)           { return new AutomationEventChangeAction(this->project); }

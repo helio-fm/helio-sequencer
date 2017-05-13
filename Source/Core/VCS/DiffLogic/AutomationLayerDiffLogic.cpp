@@ -558,18 +558,24 @@ void AutomationLayerDiffLogic::deserializeChanges(MidiLayer &layer,
         OwnedArray<MidiEvent> &stateNotes,
         OwnedArray<MidiEvent> &changesNotes) const
 {
-    forEachXmlChildElementWithTagName(*state, e, Serialization::Core::event)
+    if (state != nullptr)
     {
-        auto event = new AutomationEvent(&layer, 0.f, 0.f);
-        event->deserialize(*e);
-        stateNotes.addSorted(*event, event);
+        forEachXmlChildElementWithTagName(*state, e, Serialization::Core::event)
+        {
+            auto event = new AutomationEvent(&layer, 0.f, 0.f);
+            event->deserialize(*e);
+            stateNotes.addSorted(*event, event);
+        }
     }
 
-    forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::event)
+    if (changes != nullptr)
     {
-        auto event = new AutomationEvent(&layer, 0.f, 0.f);
-        event->deserialize(*e);
-        changesNotes.addSorted(*event, event);
+        forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::event)
+        {
+            auto event = new AutomationEvent(&layer, 0.f, 0.f);
+            event->deserialize(*e);
+            changesNotes.addSorted(*event, event);
+        }
     }
 }
 

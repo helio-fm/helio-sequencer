@@ -17,25 +17,13 @@
 
 #pragma once
 
-class ProjectTreeItem;
-
-#include "CommandPanel.h"
-#include "CommandIDs.h"
-
-class AnnotationsCommandPanel : public CommandPanel
+namespace ProjectTimelineDeltas
 {
-public:
-    
-    explicit AnnotationsCommandPanel(ProjectTreeItem &parentProject);
-    
-    ~AnnotationsCommandPanel() override;
-    
-    void handleCommandMessage(int commandId) override;
-    
-private:
-    
-    ProjectTreeItem &project;
-    
-    String newAnnotationText;
-    
-};
+    static const String annotationsAdded = "AnnotationsAdded";
+    static const String annotationsRemoved = "AnnotationsRemoved";
+    static const String annotationsChanged = "AnnotationsChanged";
+
+    static const String timeSignaturesAdded = "TimeSignaturesAdded";
+    static const String timeSignaturesRemoved = "TimeSignaturesRemoved";
+    static const String timeSignaturesChanged = "TimeSignaturesChanged";
+} // namespace ProjectTimelineDeltas

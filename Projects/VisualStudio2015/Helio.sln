@@ -228,6 +228,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Events", "Events", "{0394D2
 		..\..\Source\Core\Events\MidiEvent.h = ..\..\Source\Core\Events\MidiEvent.h
 		..\..\Source\Core\Events\Note.cpp = ..\..\Source\Core\Events\Note.cpp
 		..\..\Source\Core\Events\Note.h = ..\..\Source\Core\Events\Note.h
+		..\..\Source\Core\Events\TimeSignatureEvent.cpp = ..\..\Source\Core\Events\TimeSignatureEvent.cpp
+		..\..\Source\Core\Events\TimeSignatureEvent.h = ..\..\Source\Core\Events\TimeSignatureEvent.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Layers", "Layers", "{5C571F43-F82F-40D5-B64F-79DE61D232B0}"
@@ -240,8 +242,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Layers", "Layers", "{5C571F
 		..\..\Source\Core\Layers\MidiLayer.h = ..\..\Source\Core\Layers\MidiLayer.h
 		..\..\Source\Core\Layers\PianoLayer.cpp = ..\..\Source\Core\Layers\PianoLayer.cpp
 		..\..\Source\Core\Layers\PianoLayer.h = ..\..\Source\Core\Layers\PianoLayer.h
-		..\..\Source\Core\Layers\ProjectAnnotations.cpp = ..\..\Source\Core\Layers\ProjectAnnotations.cpp
-		..\..\Source\Core\Layers\ProjectAnnotations.h = ..\..\Source\Core\Layers\ProjectAnnotations.h
+		..\..\Source\Core\Layers\TimeSignaturesLayer.cpp = ..\..\Source\Core\Layers\TimeSignaturesLayer.cpp
+		..\..\Source\Core\Layers\TimeSignaturesLayer.h = ..\..\Source\Core\Layers\TimeSignaturesLayer.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Network", "Network", "{CC0C8F09-C3E8-8BC3-DE6C-7F4AAB89677C}"
@@ -332,6 +334,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tree", "Tree", "{BD1E4205-D
 		..\..\Source\Core\Tree\PianoLayerTreeItem.h = ..\..\Source\Core\Tree\PianoLayerTreeItem.h
 		..\..\Source\Core\Tree\ProjectInfo.cpp = ..\..\Source\Core\Tree\ProjectInfo.cpp
 		..\..\Source\Core\Tree\ProjectInfo.h = ..\..\Source\Core\Tree\ProjectInfo.h
+		..\..\Source\Core\Tree\ProjectTimeline.cpp = ..\..\Source\Core\Tree\ProjectTimeline.cpp
+		..\..\Source\Core\Tree\ProjectTimeline.h = ..\..\Source\Core\Tree\ProjectTimeline.h
 		..\..\Source\Core\Tree\ProjectListener.h = ..\..\Source\Core\Tree\ProjectListener.h
 		..\..\Source\Core\Tree\ProjectTreeItem.cpp = ..\..\Source\Core\Tree\ProjectTreeItem.cpp
 		..\..\Source\Core\Tree\ProjectTreeItem.h = ..\..\Source\Core\Tree\ProjectTreeItem.h
@@ -370,6 +374,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Actions", "Actions", "{A237
 		..\..\Source\Core\Undo\Actions\NoteActions.h = ..\..\Source\Core\Undo\Actions\NoteActions.h
 		..\..\Source\Core\Undo\Actions\PianoLayerTreeItemActions.cpp = ..\..\Source\Core\Undo\Actions\PianoLayerTreeItemActions.cpp
 		..\..\Source\Core\Undo\Actions\PianoLayerTreeItemActions.h = ..\..\Source\Core\Undo\Actions\PianoLayerTreeItemActions.h
+		..\..\Source\Core\Undo\Actions\TimeSignatureEventActions.cpp = ..\..\Source\Core\Undo\Actions\TimeSignatureEventActions.cpp
+		..\..\Source\Core\Undo\Actions\TimeSignatureEventActions.h = ..\..\Source\Core\Undo\Actions\TimeSignatureEventActions.h
 		..\..\Source\Core\Undo\Actions\UndoAction.h = ..\..\Source\Core\Undo\Actions\UndoAction.h
 	EndProjectSection
 EndProject
@@ -402,9 +408,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VCS", "VCS", "{97DDC28F-A29
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DiffLogic", "DiffLogic", "{92C9F97A-01D1-AA44-F946-003D6F41A111}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\Source\Core\VCS\DiffLogic\AnnotationDeltas.h = ..\..\Source\Core\VCS\DiffLogic\AnnotationDeltas.h
-		..\..\Source\Core\VCS\DiffLogic\AnnotationsLayerDiffLogic.cpp = ..\..\Source\Core\VCS\DiffLogic\AnnotationsLayerDiffLogic.cpp
-		..\..\Source\Core\VCS\DiffLogic\AnnotationsLayerDiffLogic.h = ..\..\Source\Core\VCS\DiffLogic\AnnotationsLayerDiffLogic.h
 		..\..\Source\Core\VCS\DiffLogic\AutoLayerDeltas.h = ..\..\Source\Core\VCS\DiffLogic\AutoLayerDeltas.h
 		..\..\Source\Core\VCS\DiffLogic\AutomationLayerDiffLogic.cpp = ..\..\Source\Core\VCS\DiffLogic\AutomationLayerDiffLogic.cpp
 		..\..\Source\Core\VCS\DiffLogic\AutomationLayerDiffLogic.h = ..\..\Source\Core\VCS\DiffLogic\AutomationLayerDiffLogic.h
@@ -416,6 +419,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DiffLogic", "DiffLogic", "{
 		..\..\Source\Core\VCS\DiffLogic\ProjectInfoDeltas.h = ..\..\Source\Core\VCS\DiffLogic\ProjectInfoDeltas.h
 		..\..\Source\Core\VCS\DiffLogic\ProjectInfoDiffLogic.cpp = ..\..\Source\Core\VCS\DiffLogic\ProjectInfoDiffLogic.cpp
 		..\..\Source\Core\VCS\DiffLogic\ProjectInfoDiffLogic.h = ..\..\Source\Core\VCS\DiffLogic\ProjectInfoDiffLogic.h
+		..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDeltas.h = ..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDeltas.h
+		..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDiffLogic.cpp = ..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDiffLogic.cpp
+		..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDiffLogic.h = ..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDiffLogic.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Network", "Network", "{0E35680A-E44A-C486-26F0-A7BA199CD7E3}"
@@ -443,8 +449,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommandPanels", "CommandPan
 	ProjectSection(SolutionItems) = preProject
 		..\..\Source\UI\CommandPanels\AnnotationCommandPanel.cpp = ..\..\Source\UI\CommandPanels\AnnotationCommandPanel.cpp
 		..\..\Source\UI\CommandPanels\AnnotationCommandPanel.h = ..\..\Source\UI\CommandPanels\AnnotationCommandPanel.h
-		..\..\Source\UI\CommandPanels\AnnotationsCommandPanel.cpp = ..\..\Source\UI\CommandPanels\AnnotationsCommandPanel.cpp
-		..\..\Source\UI\CommandPanels\AnnotationsCommandPanel.h = ..\..\Source\UI\CommandPanels\AnnotationsCommandPanel.h
 		..\..\Source\UI\CommandPanels\ArpeggiatorEditorPanel.cpp = ..\..\Source\UI\CommandPanels\ArpeggiatorEditorPanel.cpp
 		..\..\Source\UI\CommandPanels\ArpeggiatorEditorPanel.h = ..\..\Source\UI\CommandPanels\ArpeggiatorEditorPanel.h
 		..\..\Source\UI\CommandPanels\ArpeggiatorPanel.cpp = ..\..\Source\UI\CommandPanels\ArpeggiatorPanel.cpp
@@ -473,6 +477,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CommandPanels", "CommandPan
 		..\..\Source\UI\CommandPanels\RootTreeItemPanelDefault.h = ..\..\Source\UI\CommandPanels\RootTreeItemPanelDefault.h
 		..\..\Source\UI\CommandPanels\RootTreeItemPanelCompact.cpp = ..\..\Source\UI\CommandPanels\RootTreeItemPanelCompact.cpp
 		..\..\Source\UI\CommandPanels\RootTreeItemPanelCompact.h = ..\..\Source\UI\CommandPanels\RootTreeItemPanelCompact.h
+		..\..\Source\UI\CommandPanels\TimelineCommandPanel.cpp = ..\..\Source\UI\CommandPanels\TimelineCommandPanel.cpp
+		..\..\Source\UI\CommandPanels\TimelineCommandPanel.h = ..\..\Source\UI\CommandPanels\TimelineCommandPanel.h
+		..\..\Source\UI\CommandPanels\TimeSignatureCommandPanel.h = ..\..\Source\UI\CommandPanels\TimeSignatureCommandPanel.h
+		..\..\Source\UI\CommandPanels\TimeSignatureCommandPanel.cpp = ..\..\Source\UI\CommandPanels\TimeSignatureCommandPanel.cpp
 		..\..\Source\UI\CommandPanels\VCSCommandPanel.cpp = ..\..\Source\UI\CommandPanels\VCSCommandPanel.cpp
 		..\..\Source\UI\CommandPanels\VCSCommandPanel.h = ..\..\Source\UI\CommandPanels\VCSCommandPanel.h
 	EndProjectSection
@@ -667,6 +675,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Helpers", "Helpers", "{A993
 		..\..\Source\UI\MidiEditor\Helpers\NoteResizerRight.h = ..\..\Source\UI\MidiEditor\Helpers\NoteResizerRight.h
 		..\..\Source\UI\MidiEditor\Helpers\WipeSpaceHelper.cpp = ..\..\Source\UI\MidiEditor\Helpers\WipeSpaceHelper.cpp
 		..\..\Source\UI\MidiEditor\Helpers\WipeSpaceHelper.h = ..\..\Source\UI\MidiEditor\Helpers\WipeSpaceHelper.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TimeSignaturesMap", "TimeSignaturesMap", "{3AA9445A-806B-2260-BBD8-7D165FC0802C}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureLargeComponent.cpp = ..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureLargeComponent.cpp
+		..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureLargeComponent.h = ..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureLargeComponent.h
+		..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureSmallComponent.cpp = ..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureSmallComponent.cpp
+		..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureSmallComponent.h = ..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureSmallComponent.h
+		..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignaturesTrackMap.cpp = ..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignaturesTrackMap.cpp
+		..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignaturesTrackMap.h = ..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignaturesTrackMap.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TrackMap", "TrackMap", "{AFD47355-5485-1DCC-A254-81D37890A01F}"
@@ -2662,6 +2680,7 @@ Global
 		{C273D9C2-1275-7D6C-1E1A-AFCD82B1220D} = {C0D7C37D-C204-F202-B6B4-F191450D4F6E}
 		{342E8DA0-53B2-8DF0-6F87-BF5C2A9CC8B2} = {C0D7C37D-C204-F202-B6B4-F191450D4F6E}
 		{A9939A38-3736-99C0-4322-A70E567A5372} = {C0D7C37D-C204-F202-B6B4-F191450D4F6E}
+		{3AA9445A-806B-2260-BBD8-7D165FC0802C} = {C0D7C37D-C204-F202-B6B4-F191450D4F6E}
 		{AFD47355-5485-1DCC-A254-81D37890A01F} = {C0D7C37D-C204-F202-B6B4-F191450D4F6E}
 		{F98304CF-EFBD-B860-17F8-C8473BA1310A} = {C0D7C37D-C204-F202-B6B4-F191450D4F6E}
 		{C0D7C37D-C204-F202-B6B4-F191450D4F6E} = {A0B56175-3F2D-E876-8518-CFA284ED1E2D}

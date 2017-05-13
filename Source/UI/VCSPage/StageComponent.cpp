@@ -376,7 +376,7 @@ void StageComponent::toggleButtonAction()
     }
     else if (case4)
     {
-        App::Helio()->showTooltip("vcs::warning::cannotrevert");
+        App::Helio()->showTooltip(TRANS("vcs::warning::cannotrevert"));
         App::Helio()->showModalComponent(new FailTooltip());
     }
 }

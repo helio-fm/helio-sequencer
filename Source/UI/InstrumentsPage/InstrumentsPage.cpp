@@ -344,7 +344,7 @@ void InstrumentsPage::changeListenerCallback(ChangeBroadcaster *source)
         this->pluginsList->updateContent();
         this->pluginsList->setSelectedRows(SparseSet<int>());
 
-        if (! this->pluginManager.isWorkingNow())
+        if (! this->pluginManager.isWorking())
         {
             Component *progressIndicator = App::Layout().findChildWithID(ProgressTooltip::componentId);
 

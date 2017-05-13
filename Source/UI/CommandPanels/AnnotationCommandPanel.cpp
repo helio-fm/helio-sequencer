@@ -25,7 +25,7 @@
 #include "AnnotationEvent.h"
 #include "AnnotationsLayer.h"
 #include "PianoLayerTreeItem.h"
-#include "ProjectAnnotations.h"
+#include "ProjectTimeline.h"
 #include "MidiLayer.h"
 #include "App.h"
 
@@ -56,7 +56,7 @@ AnnotationCommandPanel::~AnnotationCommandPanel()
 
 void AnnotationCommandPanel::handleCommandMessage(int commandId)
 {
-    ProjectAnnotations *annotations = this->project.getAnnotationsTrack();
+    ProjectTimeline *annotations = this->project.getTimeline();
     
     if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
     {

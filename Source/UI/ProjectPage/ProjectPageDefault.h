@@ -26,7 +26,8 @@
 #include "../Themes/LightShadowRightwards.h"
 
 class ProjectPageDefault  : public ProjectPage,
-                            public LabelListener
+                            public LabelListener,
+                            public ButtonListener
 {
 public:
 
@@ -41,6 +42,7 @@ public:
     void paint (Graphics& g) override;
     void resized() override;
     void labelTextChanged (Label* labelThatHasChanged) override;
+    void buttonClicked (Button* buttonThatWasClicked) override;
     void handleCommandMessage (int commandId) override;
 
 
@@ -83,6 +85,7 @@ private:
     ScopedPointer<Label> licenseEditor;
     ScopedPointer<MenuButton> menuButton;
     ScopedPointer<LightShadowRightwards> shadow;
+    ScopedPointer<ImageButton> revealLocationButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ProjectPageDefault)
 };

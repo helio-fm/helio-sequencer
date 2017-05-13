@@ -33,13 +33,13 @@ ifeq ($(CONFIG),Debug)
     TARGET_ARCH := -march=native
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DDEBUG=1 -D_DEBUG=1 -DJUCE_DONT_DECLARE_PROJECTINFO=1 -DJUCER_LINUX_MAKE_B650AE49=1 -DJUCE_APP_VERSION=1.7 -DJUCE_APP_VERSION_HEX=0x10700 $(shell pkg-config --cflags alsa freetype2 gtk+-x11-3.0 libcurl  x11 xext xinerama) -pthread -I../../ThirdParty/VST_SDK/VST3_SDK -I../Projucer/JuceLibraryCode -I../../ThirdParty/JUCE/modules -I../../ThirdParty/ASIO/common -I../../ThirdParty/JUCE/modules/juce_audio_basics -I../../ThirdParty/JUCE/modules/juce_audio_devices -I../../ThirdParty/JUCE/modules/juce_audio_formats -I../../ThirdParty/JUCE/modules/juce_audio_processors -I../../ThirdParty/JUCE/modules/juce_audio_utils -I../../ThirdParty/JUCE/modules/juce_core -I../../ThirdParty/JUCE/modules/juce_cryptography -I../../ThirdParty/JUCE/modules/juce_data_structures -I../../ThirdParty/JUCE/modules/juce_events -I../../ThirdParty/JUCE/modules/juce_graphics -I../../ThirdParty/JUCE/modules/juce_gui_basics -I../../ThirdParty/JUCE/modules/juce_gui_extra -I../../ThirdParty/JUCE/modules/juce_opengl -I../../ThirdParty/JUCE/modules/juce_osc -I../../Source/ -I../../Source/Core/ -I../../Source/Core/App -I../../Source/Core/Audio -I../../Source/Core/Audio/BuiltIn -I../../Source/Core/Audio/Instruments -I../../Source/Core/Audio/Monitoring -I../../Source/Core/Audio/Transport -I../../Source/Core/Audio/Waveform -I../../Source/Core/Clipboard -I../../Source/Core/Events -I../../Source/Core/Layers -I../../Source/Core/Network -I../../Source/Core/Serialization -I../../Source/Core/Supervisor -I../../Source/Core/Tools -I../../Source/Core/Translation -I../../Source/Core/Tree -I../../Source/Core/Tutorial -I../../Source/Core/Undo -I../../Source/Core/Undo/Actions -I../../Source/Core/VCS -I../../Source/Core/VCS/DiffLogic -I../../Source/Core/VCS/Network -I../../Source/UI/ -I../../Source/UI/CodeEditor -I../../Source/UI/CommandPanels -I../../Source/UI/CommandPanels/Base -I../../Source/UI/Common -I../../Source/UI/Common/Meters -I../../Source/UI/Common/Origami -I../../Source/UI/Console -I../../Source/UI/Dialogs -I../../Source/UI/Input -I../../Source/UI/InstrumentsPage -I../../Source/UI/InstrumentsPage/Editor -I../../Source/UI/Intro -I../../Source/UI/MidiEditor -I../../Source/UI/MidiEditor/AnnotationsMap -I../../Source/UI/MidiEditor/AutomationMap -I../../Source/UI/MidiEditor/Header -I../../Source/UI/MidiEditor/Helpers -I../../Source/UI/MidiEditor/TrackMap -I../../Source/UI/MidiEditor/TriggersMap -I../../Source/UI/MidiEditor/WaveformMap -I../../Source/UI/Popups -I../../Source/UI/ProjectPage -I../../Source/UI/Rollovers -I../../Source/UI/SettingsPage -I../../Source/UI/Themes -I../../Source/UI/Tree -I../../Source/UI/VCSPage -I../../Source/UI/WorkspacePage -I../../Source/UI/WorkspacePage/Menu -I../../Source/UI/WorkspacePage/Scroller $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DDEBUG=1 -D_DEBUG=1 -DJUCE_DONT_DECLARE_PROJECTINFO=1 -DJUCER_LINUX_MAKE_B650AE49=1 -DJUCE_APP_VERSION=1.7 -DJUCE_APP_VERSION_HEX=0x10700 $(shell pkg-config --cflags alsa freetype2 gtk+-x11-3.0 libcurl webkit2gtk-4.0 x11 xext xinerama) -pthread -I../../ThirdParty/VST_SDK/VST3_SDK -I../Projucer/JuceLibraryCode -I../../ThirdParty/JUCE/modules -I../../ThirdParty/ASIO/common -I../../ThirdParty/JUCE/modules/juce_audio_basics -I../../ThirdParty/JUCE/modules/juce_audio_devices -I../../ThirdParty/JUCE/modules/juce_audio_formats -I../../ThirdParty/JUCE/modules/juce_audio_processors -I../../ThirdParty/JUCE/modules/juce_audio_utils -I../../ThirdParty/JUCE/modules/juce_core -I../../ThirdParty/JUCE/modules/juce_cryptography -I../../ThirdParty/JUCE/modules/juce_data_structures -I../../ThirdParty/JUCE/modules/juce_events -I../../ThirdParty/JUCE/modules/juce_graphics -I../../ThirdParty/JUCE/modules/juce_gui_basics -I../../ThirdParty/JUCE/modules/juce_gui_extra -I../../ThirdParty/JUCE/modules/juce_opengl -I../../ThirdParty/JUCE/modules/juce_osc -I../../Source/ -I../../Source/Core/ -I../../Source/Core/App -I../../Source/Core/Audio -I../../Source/Core/Audio/BuiltIn -I../../Source/Core/Audio/Instruments -I../../Source/Core/Audio/Monitoring -I../../Source/Core/Audio/Transport -I../../Source/Core/Audio/Waveform -I../../Source/Core/Clipboard -I../../Source/Core/Events -I../../Source/Core/Layers -I../../Source/Core/Network -I../../Source/Core/Serialization -I../../Source/Core/Supervisor -I../../Source/Core/Tools -I../../Source/Core/Translation -I../../Source/Core/Tree -I../../Source/Core/Tutorial -I../../Source/Core/Undo -I../../Source/Core/Undo/Actions -I../../Source/Core/VCS -I../../Source/Core/VCS/DiffLogic -I../../Source/Core/VCS/Network -I../../Source/UI/ -I../../Source/UI/CodeEditor -I../../Source/UI/CommandPanels -I../../Source/UI/CommandPanels/Base -I../../Source/UI/Common -I../../Source/UI/Common/Meters -I../../Source/UI/Common/Origami -I../../Source/UI/Console -I../../Source/UI/Dialogs -I../../Source/UI/Input -I../../Source/UI/InstrumentsPage -I../../Source/UI/InstrumentsPage/Editor -I../../Source/UI/Intro -I../../Source/UI/MidiEditor -I../../Source/UI/MidiEditor/AnnotationsMap -I../../Source/UI/MidiEditor/AutomationMap -I../../Source/UI/MidiEditor/Header -I../../Source/UI/MidiEditor/Helpers -I../../Source/UI/MidiEditor/TimeSignaturesMap -I../../Source/UI/MidiEditor/TrackMap -I../../Source/UI/MidiEditor/TriggersMap -I../../Source/UI/MidiEditor/WaveformMap -I../../Source/UI/Popups -I../../Source/UI/ProjectPage -I../../Source/UI/Rollovers -I../../Source/UI/SettingsPage -I../../Source/UI/Themes -I../../Source/UI/Tree -I../../Source/UI/VCSPage -I../../Source/UI/WorkspacePage -I../../Source/UI/WorkspacePage/Menu -I../../Source/UI/WorkspacePage/Scroller $(CPPFLAGS)
   JUCE_CPPFLAGS_APP := -DJucePlugin_Build_VST=0 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0
   JUCE_TARGET_APP := Helio
 
   JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -g -ggdb -O0 -fpermissive -Wno-unknown-pragmas -Wno-reorder $(CFLAGS)
   JUCE_CXXFLAGS += $(CXXFLAGS) $(JUCE_CFLAGS) -std=c++11 $(CXXFLAGS)
-  JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) -L/usr/X11R6/lib/ $(shell pkg-config --libs alsa freetype2 gtk+-x11-3.0 libcurl  x11 xext xinerama) -lGL -ldl -lpthread -lrt  $(LDFLAGS)
+  JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) -L/usr/X11R6/lib/ $(shell pkg-config --libs alsa freetype2 gtk+-x11-3.0 libcurl webkit2gtk-4.0 x11 xext xinerama) -lGL -ldl -lpthread -lrt  $(LDFLAGS)
 
   CLEANCMD = rm -rf $(JUCE_OUTDIR)/$(TARGET) $(JUCE_OBJDIR)
 endif
@@ -54,13 +54,13 @@ ifeq ($(CONFIG),Release32)
     TARGET_ARCH := -m32
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DNDEBUG=1 -DJUCE_DONT_DECLARE_PROJECTINFO=1 -DJUCER_LINUX_MAKE_B650AE49=1 -DJUCE_APP_VERSION=1.7 -DJUCE_APP_VERSION_HEX=0x10700 $(shell pkg-config --cflags alsa freetype2 gtk+-x11-3.0 libcurl  x11 xext xinerama) -pthread -I../../ThirdParty/VST_SDK/VST3_SDK -I../Projucer/JuceLibraryCode -I../../ThirdParty/JUCE/modules -I../../ThirdParty/ASIO/common -I../../ThirdParty/JUCE/modules/juce_audio_basics -I../../ThirdParty/JUCE/modules/juce_audio_devices -I../../ThirdParty/JUCE/modules/juce_audio_formats -I../../ThirdParty/JUCE/modules/juce_audio_processors -I../../ThirdParty/JUCE/modules/juce_audio_utils -I../../ThirdParty/JUCE/modules/juce_core -I../../ThirdParty/JUCE/modules/juce_cryptography -I../../ThirdParty/JUCE/modules/juce_data_structures -I../../ThirdParty/JUCE/modules/juce_events -I../../ThirdParty/JUCE/modules/juce_graphics -I../../ThirdParty/JUCE/modules/juce_gui_basics -I../../ThirdParty/JUCE/modules/juce_gui_extra -I../../ThirdParty/JUCE/modules/juce_opengl -I../../ThirdParty/JUCE/modules/juce_osc -I../../Source/ -I../../Source/Core/ -I../../Source/Core/App -I../../Source/Core/Audio -I../../Source/Core/Audio/BuiltIn -I../../Source/Core/Audio/Instruments -I../../Source/Core/Audio/Monitoring -I../../Source/Core/Audio/Transport -I../../Source/Core/Audio/Waveform -I../../Source/Core/Clipboard -I../../Source/Core/Events -I../../Source/Core/Layers -I../../Source/Core/Network -I../../Source/Core/Serialization -I../../Source/Core/Supervisor -I../../Source/Core/Tools -I../../Source/Core/Translation -I../../Source/Core/Tree -I../../Source/Core/Tutorial -I../../Source/Core/Undo -I../../Source/Core/Undo/Actions -I../../Source/Core/VCS -I../../Source/Core/VCS/DiffLogic -I../../Source/Core/VCS/Network -I../../Source/UI/ -I../../Source/UI/CodeEditor -I../../Source/UI/CommandPanels -I../../Source/UI/CommandPanels/Base -I../../Source/UI/Common -I../../Source/UI/Common/Meters -I../../Source/UI/Common/Origami -I../../Source/UI/Console -I../../Source/UI/Dialogs -I../../Source/UI/Input -I../../Source/UI/InstrumentsPage -I../../Source/UI/InstrumentsPage/Editor -I../../Source/UI/Intro -I../../Source/UI/MidiEditor -I../../Source/UI/MidiEditor/AnnotationsMap -I../../Source/UI/MidiEditor/AutomationMap -I../../Source/UI/MidiEditor/Header -I../../Source/UI/MidiEditor/Helpers -I../../Source/UI/MidiEditor/TrackMap -I../../Source/UI/MidiEditor/TriggersMap -I../../Source/UI/MidiEditor/WaveformMap -I../../Source/UI/Popups -I../../Source/UI/ProjectPage -I../../Source/UI/Rollovers -I../../Source/UI/SettingsPage -I../../Source/UI/Themes -I../../Source/UI/Tree -I../../Source/UI/VCSPage -I../../Source/UI/WorkspacePage -I../../Source/UI/WorkspacePage/Menu -I../../Source/UI/WorkspacePage/Scroller $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DNDEBUG=1 -DJUCE_DONT_DECLARE_PROJECTINFO=1 -DJUCER_LINUX_MAKE_B650AE49=1 -DJUCE_APP_VERSION=1.7 -DJUCE_APP_VERSION_HEX=0x10700 $(shell pkg-config --cflags alsa freetype2 gtk+-x11-3.0 libcurl webkit2gtk-4.0 x11 xext xinerama) -pthread -I../../ThirdParty/VST_SDK/VST3_SDK -I../Projucer/JuceLibraryCode -I../../ThirdParty/JUCE/modules -I../../ThirdParty/ASIO/common -I../../ThirdParty/JUCE/modules/juce_audio_basics -I../../ThirdParty/JUCE/modules/juce_audio_devices -I../../ThirdParty/JUCE/modules/juce_audio_formats -I../../ThirdParty/JUCE/modules/juce_audio_processors -I../../ThirdParty/JUCE/modules/juce_audio_utils -I../../ThirdParty/JUCE/modules/juce_core -I../../ThirdParty/JUCE/modules/juce_cryptography -I../../ThirdParty/JUCE/modules/juce_data_structures -I../../ThirdParty/JUCE/modules/juce_events -I../../ThirdParty/JUCE/modules/juce_graphics -I../../ThirdParty/JUCE/modules/juce_gui_basics -I../../ThirdParty/JUCE/modules/juce_gui_extra -I../../ThirdParty/JUCE/modules/juce_opengl -I../../ThirdParty/JUCE/modules/juce_osc -I../../Source/ -I../../Source/Core/ -I../../Source/Core/App -I../../Source/Core/Audio -I../../Source/Core/Audio/BuiltIn -I../../Source/Core/Audio/Instruments -I../../Source/Core/Audio/Monitoring -I../../Source/Core/Audio/Transport -I../../Source/Core/Audio/Waveform -I../../Source/Core/Clipboard -I../../Source/Core/Events -I../../Source/Core/Layers -I../../Source/Core/Network -I../../Source/Core/Serialization -I../../Source/Core/Supervisor -I../../Source/Core/Tools -I../../Source/Core/Translation -I../../Source/Core/Tree -I../../Source/Core/Tutorial -I../../Source/Core/Undo -I../../Source/Core/Undo/Actions -I../../Source/Core/VCS -I../../Source/Core/VCS/DiffLogic -I../../Source/Core/VCS/Network -I../../Source/UI/ -I../../Source/UI/CodeEditor -I../../Source/UI/CommandPanels -I../../Source/UI/CommandPanels/Base -I../../Source/UI/Common -I../../Source/UI/Common/Meters -I../../Source/UI/Common/Origami -I../../Source/UI/Console -I../../Source/UI/Dialogs -I../../Source/UI/Input -I../../Source/UI/InstrumentsPage -I../../Source/UI/InstrumentsPage/Editor -I../../Source/UI/Intro -I../../Source/UI/MidiEditor -I../../Source/UI/MidiEditor/AnnotationsMap -I../../Source/UI/MidiEditor/AutomationMap -I../../Source/UI/MidiEditor/Header -I../../Source/UI/MidiEditor/Helpers -I../../Source/UI/MidiEditor/TimeSignaturesMap -I../../Source/UI/MidiEditor/TrackMap -I../../Source/UI/MidiEditor/TriggersMap -I../../Source/UI/MidiEditor/WaveformMap -I../../Source/UI/Popups -I../../Source/UI/ProjectPage -I../../Source/UI/Rollovers -I../../Source/UI/SettingsPage -I../../Source/UI/Themes -I../../Source/UI/Tree -I../../Source/UI/VCSPage -I../../Source/UI/WorkspacePage -I../../Source/UI/WorkspacePage/Menu -I../../Source/UI/WorkspacePage/Scroller $(CPPFLAGS)
   JUCE_CPPFLAGS_APP := -DJucePlugin_Build_VST=0 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0
   JUCE_TARGET_APP := Helio
 
   JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -O3 -fpermissive -Wno-unknown-pragmas -Wno-reorder $(CFLAGS)
   JUCE_CXXFLAGS += $(CXXFLAGS) $(JUCE_CFLAGS) -std=c++11 $(CXXFLAGS)
-  JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) -fvisibility=hidden -L/usr/X11R6/lib/ $(shell pkg-config --libs alsa freetype2 gtk+-x11-3.0 libcurl  x11 xext xinerama) -lGL -ldl -lpthread -lrt  $(LDFLAGS)
+  JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) -fvisibility=hidden -L/usr/X11R6/lib/ $(shell pkg-config --libs alsa freetype2 gtk+-x11-3.0 libcurl webkit2gtk-4.0 x11 xext xinerama) -lGL -ldl -lpthread -lrt  $(LDFLAGS)
 
   CLEANCMD = rm -rf $(JUCE_OUTDIR)/$(TARGET) $(JUCE_OBJDIR)
 endif
@@ -75,13 +75,13 @@ ifeq ($(CONFIG),Release64)
     TARGET_ARCH := -m64
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DNDEBUG=1 -DJUCE_DONT_DECLARE_PROJECTINFO=1 -DJUCER_LINUX_MAKE_B650AE49=1 -DJUCE_APP_VERSION=1.7 -DJUCE_APP_VERSION_HEX=0x10700 $(shell pkg-config --cflags alsa freetype2 gtk+-x11-3.0 libcurl  x11 xext xinerama) -pthread -I../../ThirdParty/VST_SDK/VST3_SDK -I../Projucer/JuceLibraryCode -I../../ThirdParty/JUCE/modules -I../../ThirdParty/ASIO/common -I../../ThirdParty/JUCE/modules/juce_audio_basics -I../../ThirdParty/JUCE/modules/juce_audio_devices -I../../ThirdParty/JUCE/modules/juce_audio_formats -I../../ThirdParty/JUCE/modules/juce_audio_processors -I../../ThirdParty/JUCE/modules/juce_audio_utils -I../../ThirdParty/JUCE/modules/juce_core -I../../ThirdParty/JUCE/modules/juce_cryptography -I../../ThirdParty/JUCE/modules/juce_data_structures -I../../ThirdParty/JUCE/modules/juce_events -I../../ThirdParty/JUCE/modules/juce_graphics -I../../ThirdParty/JUCE/modules/juce_gui_basics -I../../ThirdParty/JUCE/modules/juce_gui_extra -I../../ThirdParty/JUCE/modules/juce_opengl -I../../ThirdParty/JUCE/modules/juce_osc -I../../Source/ -I../../Source/Core/ -I../../Source/Core/App -I../../Source/Core/Audio -I../../Source/Core/Audio/BuiltIn -I../../Source/Core/Audio/Instruments -I../../Source/Core/Audio/Monitoring -I../../Source/Core/Audio/Transport -I../../Source/Core/Audio/Waveform -I../../Source/Core/Clipboard -I../../Source/Core/Events -I../../Source/Core/Layers -I../../Source/Core/Network -I../../Source/Core/Serialization -I../../Source/Core/Supervisor -I../../Source/Core/Tools -I../../Source/Core/Translation -I../../Source/Core/Tree -I../../Source/Core/Tutorial -I../../Source/Core/Undo -I../../Source/Core/Undo/Actions -I../../Source/Core/VCS -I../../Source/Core/VCS/DiffLogic -I../../Source/Core/VCS/Network -I../../Source/UI/ -I../../Source/UI/CodeEditor -I../../Source/UI/CommandPanels -I../../Source/UI/CommandPanels/Base -I../../Source/UI/Common -I../../Source/UI/Common/Meters -I../../Source/UI/Common/Origami -I../../Source/UI/Console -I../../Source/UI/Dialogs -I../../Source/UI/Input -I../../Source/UI/InstrumentsPage -I../../Source/UI/InstrumentsPage/Editor -I../../Source/UI/Intro -I../../Source/UI/MidiEditor -I../../Source/UI/MidiEditor/AnnotationsMap -I../../Source/UI/MidiEditor/AutomationMap -I../../Source/UI/MidiEditor/Header -I../../Source/UI/MidiEditor/Helpers -I../../Source/UI/MidiEditor/TrackMap -I../../Source/UI/MidiEditor/TriggersMap -I../../Source/UI/MidiEditor/WaveformMap -I../../Source/UI/Popups -I../../Source/UI/ProjectPage -I../../Source/UI/Rollovers -I../../Source/UI/SettingsPage -I../../Source/UI/Themes -I../../Source/UI/Tree -I../../Source/UI/VCSPage -I../../Source/UI/WorkspacePage -I../../Source/UI/WorkspacePage/Menu -I../../Source/UI/WorkspacePage/Scroller $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DNDEBUG=1 -DJUCE_DONT_DECLARE_PROJECTINFO=1 -DJUCER_LINUX_MAKE_B650AE49=1 -DJUCE_APP_VERSION=1.7 -DJUCE_APP_VERSION_HEX=0x10700 $(shell pkg-config --cflags alsa freetype2 gtk+-x11-3.0 libcurl webkit2gtk-4.0 x11 xext xinerama) -pthread -I../../ThirdParty/VST_SDK/VST3_SDK -I../Projucer/JuceLibraryCode -I../../ThirdParty/JUCE/modules -I../../ThirdParty/ASIO/common -I../../ThirdParty/JUCE/modules/juce_audio_basics -I../../ThirdParty/JUCE/modules/juce_audio_devices -I../../ThirdParty/JUCE/modules/juce_audio_formats -I../../ThirdParty/JUCE/modules/juce_audio_processors -I../../ThirdParty/JUCE/modules/juce_audio_utils -I../../ThirdParty/JUCE/modules/juce_core -I../../ThirdParty/JUCE/modules/juce_cryptography -I../../ThirdParty/JUCE/modules/juce_data_structures -I../../ThirdParty/JUCE/modules/juce_events -I../../ThirdParty/JUCE/modules/juce_graphics -I../../ThirdParty/JUCE/modules/juce_gui_basics -I../../ThirdParty/JUCE/modules/juce_gui_extra -I../../ThirdParty/JUCE/modules/juce_opengl -I../../ThirdParty/JUCE/modules/juce_osc -I../../Source/ -I../../Source/Core/ -I../../Source/Core/App -I../../Source/Core/Audio -I../../Source/Core/Audio/BuiltIn -I../../Source/Core/Audio/Instruments -I../../Source/Core/Audio/Monitoring -I../../Source/Core/Audio/Transport -I../../Source/Core/Audio/Waveform -I../../Source/Core/Clipboard -I../../Source/Core/Events -I../../Source/Core/Layers -I../../Source/Core/Network -I../../Source/Core/Serialization -I../../Source/Core/Supervisor -I../../Source/Core/Tools -I../../Source/Core/Translation -I../../Source/Core/Tree -I../../Source/Core/Tutorial -I../../Source/Core/Undo -I../../Source/Core/Undo/Actions -I../../Source/Core/VCS -I../../Source/Core/VCS/DiffLogic -I../../Source/Core/VCS/Network -I../../Source/UI/ -I../../Source/UI/CodeEditor -I../../Source/UI/CommandPanels -I../../Source/UI/CommandPanels/Base -I../../Source/UI/Common -I../../Source/UI/Common/Meters -I../../Source/UI/Common/Origami -I../../Source/UI/Console -I../../Source/UI/Dialogs -I../../Source/UI/Input -I../../Source/UI/InstrumentsPage -I../../Source/UI/InstrumentsPage/Editor -I../../Source/UI/Intro -I../../Source/UI/MidiEditor -I../../Source/UI/MidiEditor/AnnotationsMap -I../../Source/UI/MidiEditor/AutomationMap -I../../Source/UI/MidiEditor/Header -I../../Source/UI/MidiEditor/Helpers -I../../Source/UI/MidiEditor/TimeSignaturesMap -I../../Source/UI/MidiEditor/TrackMap -I../../Source/UI/MidiEditor/TriggersMap -I../../Source/UI/MidiEditor/WaveformMap -I../../Source/UI/Popups -I../../Source/UI/ProjectPage -I../../Source/UI/Rollovers -I../../Source/UI/SettingsPage -I../../Source/UI/Themes -I../../Source/UI/Tree -I../../Source/UI/VCSPage -I../../Source/UI/WorkspacePage -I../../Source/UI/WorkspacePage/Menu -I../../Source/UI/WorkspacePage/Scroller $(CPPFLAGS)
   JUCE_CPPFLAGS_APP := -DJucePlugin_Build_VST=0 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0
   JUCE_TARGET_APP := Helio
 
   JUCE_CFLAGS += $(JUCE_CPPFLAGS) $(TARGET_ARCH) -O3 -fpermissive -Wno-unknown-pragmas -Wno-reorder $(CFLAGS)
   JUCE_CXXFLAGS += $(CXXFLAGS) $(JUCE_CFLAGS) -std=c++11 $(CXXFLAGS)
-  JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) -fvisibility=hidden -L/usr/X11R6/lib/ $(shell pkg-config --libs alsa freetype2 gtk+-x11-3.0 libcurl  x11 xext xinerama) -lGL -ldl -lpthread -lrt  $(LDFLAGS)
+  JUCE_LDFLAGS += $(TARGET_ARCH) -L$(JUCE_BINDIR) -L$(JUCE_LIBDIR) -fvisibility=hidden -L/usr/X11R6/lib/ $(shell pkg-config --libs alsa freetype2 gtk+-x11-3.0 libcurl webkit2gtk-4.0 x11 xext xinerama) -lGL -ldl -lpthread -lrt  $(LDFLAGS)
 
   CLEANCMD = rm -rf $(JUCE_OUTDIR)/$(TARGET) $(JUCE_OBJDIR)
 endif
@@ -109,11 +109,12 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/AutomationEvent_c0b3df1e.o \
   $(JUCE_OBJDIR)/MidiEvent_70f710d4.o \
   $(JUCE_OBJDIR)/Note_e4d6a341.o \
+  $(JUCE_OBJDIR)/TimeSignatureEvent_c1b6a83e.o \
   $(JUCE_OBJDIR)/AnnotationsLayer_b5cec6d3.o \
   $(JUCE_OBJDIR)/AutomationLayer_97ef53fe.o \
   $(JUCE_OBJDIR)/MidiLayer_449e3874.o \
   $(JUCE_OBJDIR)/PianoLayer_54e97f0e.o \
-  $(JUCE_OBJDIR)/ProjectAnnotations_53cbd551.o \
+  $(JUCE_OBJDIR)/TimeSignaturesLayer_176e34d.o \
   $(JUCE_OBJDIR)/AuthorizationManager_a8e59c6.o \
   $(JUCE_OBJDIR)/LoginThread_c2baf4b.o \
   $(JUCE_OBJDIR)/LogoutThread_1a2f6a06.o \
@@ -144,6 +145,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/LayerTreeItem_ef1d0be2.o \
   $(JUCE_OBJDIR)/PianoLayerTreeItem_baf138a3.o \
   $(JUCE_OBJDIR)/ProjectInfo_52f6a347.o \
+  $(JUCE_OBJDIR)/ProjectTimeline_9655ff5a.o \
   $(JUCE_OBJDIR)/ProjectTreeItem_334546ea.o \
   $(JUCE_OBJDIR)/RootTreeItem_3b150bd.o \
   $(JUCE_OBJDIR)/SettingsTreeItem_c1194ffe.o \
@@ -157,12 +159,13 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/MidiLayerActions_833be803.o \
   $(JUCE_OBJDIR)/NoteActions_b5a2e99f.o \
   $(JUCE_OBJDIR)/PianoLayerTreeItemActions_609aa778.o \
+  $(JUCE_OBJDIR)/TimeSignatureEventActions_c6f6be42.o \
   $(JUCE_OBJDIR)/UndoStack_c8cfe6ea.o \
-  $(JUCE_OBJDIR)/AnnotationsLayerDiffLogic_f228a926.o \
   $(JUCE_OBJDIR)/AutomationLayerDiffLogic_5a3fe36f.o \
   $(JUCE_OBJDIR)/DiffLogic_e39316b3.o \
   $(JUCE_OBJDIR)/PianoLayerDiffLogic_a6808bcb.o \
   $(JUCE_OBJDIR)/ProjectInfoDiffLogic_85d6d922.o \
+  $(JUCE_OBJDIR)/ProjectTimelineDiffLogic_dd926f6f.o \
   $(JUCE_OBJDIR)/PullThread_38e0532a.o \
   $(JUCE_OBJDIR)/PushThread_1b290dbf.o \
   $(JUCE_OBJDIR)/RemovalThread_1f5e1bc5.o \
@@ -181,7 +184,6 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/CommandItemComponentMarker_7a059b50.o \
   $(JUCE_OBJDIR)/CommandPanel_2ecd6990.o \
   $(JUCE_OBJDIR)/AnnotationCommandPanel_e55a5d39.o \
-  $(JUCE_OBJDIR)/AnnotationsCommandPanel_39b74236.o \
   $(JUCE_OBJDIR)/ArpeggiatorEditorPanel_c93e430f.o \
   $(JUCE_OBJDIR)/ArpeggiatorPanel_4c71683c.o \
   $(JUCE_OBJDIR)/AutomationsCommandPanel_586f254e.o \
@@ -196,6 +198,8 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/ProjectCommandPanel_e4b1ca2b.o \
   $(JUCE_OBJDIR)/RootTreeItemPanelDefault_73fae601.o \
   $(JUCE_OBJDIR)/RootTreeItemPanelCompact_5cad09e3.o \
+  $(JUCE_OBJDIR)/TimelineCommandPanel_5042c14b.o \
+  $(JUCE_OBJDIR)/TimeSignatureCommandPanel_f89d47d.o \
   $(JUCE_OBJDIR)/VCSCommandPanel_f3c04a78.o \
   $(JUCE_OBJDIR)/SpectrumComponent_4605e8d9.o \
   $(JUCE_OBJDIR)/VolumeComponent_ff6a9630.o \
@@ -246,6 +250,9 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/NoteResizerLeft_50cb08a4.o \
   $(JUCE_OBJDIR)/NoteResizerRight_5e39269.o \
   $(JUCE_OBJDIR)/WipeSpaceHelper_9e63751e.o \
+  $(JUCE_OBJDIR)/TimeSignatureLargeComponent_7c00fbad.o \
+  $(JUCE_OBJDIR)/TimeSignatureSmallComponent_979e6d61.o \
+  $(JUCE_OBJDIR)/TimeSignaturesTrackMap_f0baeec3.o \
   $(JUCE_OBJDIR)/PianoTrackMap_6dec58cb.o \
   $(JUCE_OBJDIR)/TrackScroller_71d05d76.o \
   $(JUCE_OBJDIR)/TrackScrollerScreen_666f0f42.o \
@@ -493,6 +500,11 @@ $(JUCE_OBJDIR)/Note_e4d6a341.o: ../../Source/Core/Events/Note.cpp
 	@echo "Compiling Note.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/TimeSignatureEvent_c1b6a83e.o: ../../Source/Core/Events/TimeSignatureEvent.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TimeSignatureEvent.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/AnnotationsLayer_b5cec6d3.o: ../../Source/Core/Layers/AnnotationsLayer.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling AnnotationsLayer.cpp"
@@ -513,9 +525,9 @@ $(JUCE_OBJDIR)/PianoLayer_54e97f0e.o: ../../Source/Core/Layers/PianoLayer.cpp
 	@echo "Compiling PianoLayer.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/ProjectAnnotations_53cbd551.o: ../../Source/Core/Layers/ProjectAnnotations.cpp
+$(JUCE_OBJDIR)/TimeSignaturesLayer_176e34d.o: ../../Source/Core/Layers/TimeSignaturesLayer.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling ProjectAnnotations.cpp"
+	@echo "Compiling TimeSignaturesLayer.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/AuthorizationManager_a8e59c6.o: ../../Source/Core/Network/AuthorizationManager.cpp
@@ -668,6 +680,11 @@ $(JUCE_OBJDIR)/ProjectInfo_52f6a347.o: ../../Source/Core/Tree/ProjectInfo.cpp
 	@echo "Compiling ProjectInfo.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/ProjectTimeline_9655ff5a.o: ../../Source/Core/Tree/ProjectTimeline.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling ProjectTimeline.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/ProjectTreeItem_334546ea.o: ../../Source/Core/Tree/ProjectTreeItem.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ProjectTreeItem.cpp"
@@ -733,14 +750,14 @@ $(JUCE_OBJDIR)/PianoLayerTreeItemActions_609aa778.o: ../../Source/Core/Undo/Acti
 	@echo "Compiling PianoLayerTreeItemActions.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/TimeSignatureEventActions_c6f6be42.o: ../../Source/Core/Undo/Actions/TimeSignatureEventActions.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TimeSignatureEventActions.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/UndoStack_c8cfe6ea.o: ../../Source/Core/Undo/UndoStack.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling UndoStack.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/AnnotationsLayerDiffLogic_f228a926.o: ../../Source/Core/VCS/DiffLogic/AnnotationsLayerDiffLogic.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling AnnotationsLayerDiffLogic.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/AutomationLayerDiffLogic_5a3fe36f.o: ../../Source/Core/VCS/DiffLogic/AutomationLayerDiffLogic.cpp
@@ -761,6 +778,11 @@ $(JUCE_OBJDIR)/PianoLayerDiffLogic_a6808bcb.o: ../../Source/Core/VCS/DiffLogic/P
 $(JUCE_OBJDIR)/ProjectInfoDiffLogic_85d6d922.o: ../../Source/Core/VCS/DiffLogic/ProjectInfoDiffLogic.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ProjectInfoDiffLogic.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/ProjectTimelineDiffLogic_dd926f6f.o: ../../Source/Core/VCS/DiffLogic/ProjectTimelineDiffLogic.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling ProjectTimelineDiffLogic.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/PullThread_38e0532a.o: ../../Source/Core/VCS/Network/PullThread.cpp
@@ -853,11 +875,6 @@ $(JUCE_OBJDIR)/AnnotationCommandPanel_e55a5d39.o: ../../Source/UI/CommandPanels/
 	@echo "Compiling AnnotationCommandPanel.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/AnnotationsCommandPanel_39b74236.o: ../../Source/UI/CommandPanels/AnnotationsCommandPanel.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling AnnotationsCommandPanel.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/ArpeggiatorEditorPanel_c93e430f.o: ../../Source/UI/CommandPanels/ArpeggiatorEditorPanel.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ArpeggiatorEditorPanel.cpp"
@@ -926,6 +943,16 @@ $(JUCE_OBJDIR)/RootTreeItemPanelDefault_73fae601.o: ../../Source/UI/CommandPanel
 $(JUCE_OBJDIR)/RootTreeItemPanelCompact_5cad09e3.o: ../../Source/UI/CommandPanels/RootTreeItemPanelCompact.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling RootTreeItemPanelCompact.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TimelineCommandPanel_5042c14b.o: ../../Source/UI/CommandPanels/TimelineCommandPanel.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TimelineCommandPanel.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TimeSignatureCommandPanel_f89d47d.o: ../../Source/UI/CommandPanels/TimeSignatureCommandPanel.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TimeSignatureCommandPanel.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/VCSCommandPanel_f3c04a78.o: ../../Source/UI/CommandPanels/VCSCommandPanel.cpp
@@ -1176,6 +1203,21 @@ $(JUCE_OBJDIR)/NoteResizerRight_5e39269.o: ../../Source/UI/MidiEditor/Helpers/No
 $(JUCE_OBJDIR)/WipeSpaceHelper_9e63751e.o: ../../Source/UI/MidiEditor/Helpers/WipeSpaceHelper.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling WipeSpaceHelper.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TimeSignatureLargeComponent_7c00fbad.o: ../../Source/UI/MidiEditor/TimeSignaturesMap/TimeSignatureLargeComponent.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TimeSignatureLargeComponent.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TimeSignatureSmallComponent_979e6d61.o: ../../Source/UI/MidiEditor/TimeSignaturesMap/TimeSignatureSmallComponent.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TimeSignatureSmallComponent.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TimeSignaturesTrackMap_f0baeec3.o: ../../Source/UI/MidiEditor/TimeSignaturesMap/TimeSignaturesTrackMap.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TimeSignaturesTrackMap.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/PianoTrackMap_6dec58cb.o: ../../Source/UI/MidiEditor/TrackMap/PianoTrackMap.cpp
@@ -1815,7 +1857,7 @@ $(JUCE_OBJDIR)/juce_osc_728e6d5e.o: ../Projucer/JuceLibraryCode/juce_osc.cpp
 
 check-pkg-config:
 	@command -v pkg-config >/dev/null 2>&1 || { echo >&2 "pkg-config not installed. Please, install it."; exit 1; }
-	@pkg-config --print-errors alsa freetype2 gtk+-x11-3.0 libcurl  x11 xext xinerama
+	@pkg-config --print-errors alsa freetype2 gtk+-x11-3.0 libcurl webkit2gtk-4.0 x11 xext xinerama
 
 clean:
 	@echo Cleaning Helio
