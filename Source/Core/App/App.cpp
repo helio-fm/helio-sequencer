@@ -608,7 +608,10 @@ void App::changeListenerCallback(ChangeBroadcaster *source)
 {
     Logger::writeToLog("Reloading translations");
     this->getWindow()->dismissWorkspaceComponent();
-    this->getWorkspace()->getTreeRoot()->recreateSubtreePages();
+    if (TreeItem *root = this->getWorkspace()->getTreeRoot())
+    {
+        root->recreateSubtreePages();
+    }
     this->getWindow()->createWorkspaceComponent();
 }
 
