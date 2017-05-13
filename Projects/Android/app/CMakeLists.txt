@@ -500,8 +500,6 @@ add_library( ${BINARY_NAME}
     "../../../Source/UI/CommandPanels/Base/CommandPanel.h"
     "../../../Source/UI/CommandPanels/AnnotationCommandPanel.cpp"
     "../../../Source/UI/CommandPanels/AnnotationCommandPanel.h"
-    "../../../Source/UI/CommandPanels/AnnotationsCommandPanel.cpp"
-    "../../../Source/UI/CommandPanels/AnnotationsCommandPanel.h"
     "../../../Source/UI/CommandPanels/ArpeggiatorEditorPanel.cpp"
     "../../../Source/UI/CommandPanels/ArpeggiatorEditorPanel.h"
     "../../../Source/UI/CommandPanels/ArpeggiatorPanel.cpp"
@@ -530,6 +528,10 @@ add_library( ${BINARY_NAME}
     "../../../Source/UI/CommandPanels/RootTreeItemPanelDefault.h"
     "../../../Source/UI/CommandPanels/RootTreeItemPanelCompact.cpp"
     "../../../Source/UI/CommandPanels/RootTreeItemPanelCompact.h"
+    "../../../Source/UI/CommandPanels/TimelineCommandPanel.cpp"
+    "../../../Source/UI/CommandPanels/TimelineCommandPanel.h"
+    "../../../Source/UI/CommandPanels/TimeSignatureCommandPanel.h"
+    "../../../Source/UI/CommandPanels/TimeSignatureCommandPanel.cpp"
     "../../../Source/UI/CommandPanels/VCSCommandPanel.cpp"
     "../../../Source/UI/CommandPanels/VCSCommandPanel.h"
     "../../../Source/UI/Common/Meters/SpectrumComponent.cpp"
@@ -2330,7 +2332,6 @@ set_source_files_properties("../../../Source/UI/CommandPanels/Base/CommandItemCo
 set_source_files_properties("../../../Source/UI/CommandPanels/Base/CommandItemComponentMarker.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/CommandPanels/Base/CommandPanel.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/CommandPanels/AnnotationCommandPanel.h" PROPERTIES HEADER_FILE_ONLY TRUE)
-set_source_files_properties("../../../Source/UI/CommandPanels/AnnotationsCommandPanel.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/CommandPanels/ArpeggiatorEditorPanel.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/CommandPanels/ArpeggiatorPanel.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/CommandPanels/AutomationsCommandPanel.h" PROPERTIES HEADER_FILE_ONLY TRUE)
@@ -2345,6 +2346,8 @@ set_source_files_properties("../../../Source/UI/CommandPanels/NotesTuningPanel.h
 set_source_files_properties("../../../Source/UI/CommandPanels/ProjectCommandPanel.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/CommandPanels/RootTreeItemPanelDefault.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/CommandPanels/RootTreeItemPanelCompact.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../../Source/UI/CommandPanels/TimelineCommandPanel.h" PROPERTIES HEADER_FILE_ONLY TRUE)
+set_source_files_properties("../../../Source/UI/CommandPanels/TimeSignatureCommandPanel.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/CommandPanels/VCSCommandPanel.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/Common/Meters/SpectrumComponent.h" PROPERTIES HEADER_FILE_ONLY TRUE)
 set_source_files_properties("../../../Source/UI/Common/Meters/VolumeComponent.h" PROPERTIES HEADER_FILE_ONLY TRUE)
