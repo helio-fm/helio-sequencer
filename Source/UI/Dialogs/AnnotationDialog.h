@@ -36,7 +36,7 @@ class AnnotationDialog  : public FadingDialog,
 {
 public:
 
-    AnnotationDialog (Component &owner, const AnnotationEvent &event, const String &message, const String &okText, const String &cancelText, int okCode, int cancelCode);
+    AnnotationDialog (Component &owner, const AnnotationEvent &event);
 
     ~AnnotationDialog();
 
@@ -64,20 +64,15 @@ private:
 
 	Component &ownerComponent;
 
-    int okCommand;
-    int cancelCommand;
-
     void cancel()
     {
-        this->ownerComponent.postCommandMessage(this->cancelCommand);
+        this->cancelChangesIfAny();
         this->disappear();
     }
 
     void okay()
     {
         if (textEditor->getText().isEmpty()) { return; }
-
-        this->ownerComponent.postCommandMessage(this->okCommand);
         this->disappear();
     }
 

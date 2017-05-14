@@ -22,7 +22,7 @@
 #include "ModalDialogConfirmation.h"
 
 //[MiscUserDefs]
-static const int asyncCancelCommandId = 123123;
+#include "CommandIDs.h"
 //[/MiscUserDefs]
 
 ModalDialogConfirmation::ModalDialogConfirmation(Component &owner, const String &message, const String &okText, const String &cancelText, int okCode, int cancelCode)
@@ -155,7 +155,7 @@ void ModalDialogConfirmation::parentSizeChanged()
 void ModalDialogConfirmation::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
-    if (commandId == asyncCancelCommandId)
+    if (commandId == CommandIDs::DismissModalDialogAsync)
     {
         this->cancel();
     }
@@ -183,7 +183,7 @@ bool ModalDialogConfirmation::keyPressed (const KeyPress& key)
 void ModalDialogConfirmation::inputAttemptWhenModal()
 {
     //[UserCode_inputAttemptWhenModal] -- Add your code here...
-    this->postCommandMessage(asyncCancelCommandId);
+    this->postCommandMessage(CommandIDs::DismissModalDialogAsync);
     //[/UserCode_inputAttemptWhenModal]
 }
 

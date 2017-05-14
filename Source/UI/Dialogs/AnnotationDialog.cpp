@@ -23,21 +23,31 @@
 
 //[MiscUserDefs]
 #include "AnnotationsLayer.h"
+#include "CommandIDs.h"
 
-static const int asyncCancelCommandId = 123123;
-
-#if HELIO_DESKTOP
-#    define INPUT_DIALOG_FONT_SIZE (21)
-#elif HELIO_MOBILE
-#    define INPUT_DIALOG_FONT_SIZE (28)
-#endif
+static StringPairArray getDynamics()
+{
+    StringPairArray c;
+    c.set("Pianissimo",         Colours::greenyellow.toString());
+    c.set("Piano",              Colours::gold.toString());
+    c.set("Mezzo-piano",        Colours::tomato.toString());
+    c.set("Mezzo-forte",        Colours::orangered.toString());
+    c.set("Forte",              Colours::red.toString());
+    c.set("Fortissimo",         Colours::fuchsia.toString());
+    c.set("Al niente",          Colours::white.toString());
+    c.set("Calmando",           Colours::royalblue.toString());
+    c.set("Crescendo",          Colours::red.toString());
+    c.set("Dal niente",         Colours::aqua.toString());
+    c.set("Diminuendo",         Colours::blue.toString());
+    c.set("Marcato",            Colours::lime.toString());
+    c.set("Smorzando",          Colours::greenyellow.toString());
+    return c;
+}
 //[/MiscUserDefs]
 
-AnnotationDialog::AnnotationDialog(Component &owner, const AnnotationEvent &event, const String &message, const String &okText, const String &cancelText, int okCode, int cancelCode)
+AnnotationDialog::AnnotationDialog(Component &owner, const AnnotationEvent &event)
     : targetEvent(event),
       ownerComponent(owner),
-      okCommand(okCode),
-      cancelCommand(cancelCode),
       hasMadeChanges(false)
 {
     addAndMakeVisible (background = new PanelC());
@@ -72,15 +82,23 @@ AnnotationDialog::AnnotationDialog(Component &owner, const AnnotationEvent &even
     addAndMakeVisible (colourSwatches = new ColourSwatches());
 
     //[UserPreSize]
+    // TODO add event if necessary
+    
+    
+    
 	this->colourSwatches->setSelectedColour(this->targetEvent.getColour());
 
+    // TODO add mode and change mode
+    //TRANS("dialog::annotation::add::caption"),
+    //TRANS("dialog::annotation::add::proceed"),
+    //TRANS("dialog::annotation::add::cancel"),
     //this->messageLabel->setText(message, dontSendNotification);
-    this->okButton->setButtonText(okText);
-    this->cancelButton->setButtonText(cancelText);
+    //this->okButton->setButtonText(okText);
+    //this->cancelButton->setButtonText(cancelText);
 
-    //this->textEditor->setFont(Font(INPUT_DIALOG_FONT_SIZE));
-    //this->textEditor->setText(this->targetString, dontSendNotification);
+    this->textEditor->setText(this->targetEvent.getDescription(), dontSendNotification);
     this->textEditor->addListener(this);
+    this->textEditor->addItemList(getDynamics().getAllKeys(), 1);
     //[/UserPreSize]
 
     setSize (450, 225);
@@ -102,8 +120,6 @@ AnnotationDialog::AnnotationDialog(Component &owner, const AnnotationEvent &even
 AnnotationDialog::~AnnotationDialog()
 {
     //[Destructor_pre]
-	this->cancelChangesIfAny();
-
     this->stopTimer();
 
     textEditor->removeListener(this);
@@ -184,6 +200,18 @@ void AnnotationDialog::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == textEditor)
     {
         //[UserComboBoxCode_textEditor] -- add your combo box handling code here..
+        const String text(this->textEditor->getText());
+        AnnotationEvent newEvent = this->targetEvent.withDescription(text);
+        const String colourString(getDynamics()[text]);
+
+        if (colourString.isNotEmpty())
+        {
+            const Colour c(Colour::fromString(colourString));
+            this->colourSwatches->setSelectedColour(c);
+            newEvent = newEvent.withColour(c);
+        }
+
+        this->sendEventChange(newEvent);
         //[/UserComboBoxCode_textEditor]
     }
 
@@ -215,7 +243,7 @@ void AnnotationDialog::parentSizeChanged()
 void AnnotationDialog::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
-    if (commandId == asyncCancelCommandId)
+    if (commandId == CommandIDs::DismissModalDialogAsync)
     {
         this->cancel();
     }
@@ -237,14 +265,14 @@ bool AnnotationDialog::keyPressed (const KeyPress& key)
         return true;
     }
 
-    return false;  // Return true if your handler uses this key event, or false to allow it to be passed-on.
+    return false; // Return true if your handler uses this key event, or false to allow it to be passed-on.
     //[/UserCode_keyPressed]
 }
 
 void AnnotationDialog::inputAttemptWhenModal()
 {
     //[UserCode_inputAttemptWhenModal] -- Add your code here...
-    this->postCommandMessage(asyncCancelCommandId);
+    this->postCommandMessage(CommandIDs::DismissModalDialogAsync);
     //[/UserCode_inputAttemptWhenModal]
 }
 
@@ -270,7 +298,10 @@ void AnnotationDialog::timerCallback()
 void AnnotationDialog::onColourButtonClicked(ColourButton *clickedButton)
 {
 	const Colour c(clickedButton->getColour());
-	this->sendEventChange(this->targetEvent.withColour(c));
+    const AnnotationEvent newEvent = this->targetEvent
+        .withDescription(this->textEditor->getText())
+        .withColour(c);
+	this->sendEventChange(newEvent);
 }
 
 void AnnotationDialog::sendEventChange(AnnotationEvent newEvent)
@@ -301,8 +332,8 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="AnnotationDialog" template="../../Template"
                  componentName="" parentClasses="public FadingDialog, public TextEditorListener, public ColourButtonListener, private Timer"
-                 constructorParams="Component &amp;owner, const AnnotationEvent &amp;event, const String &amp;message, const String &amp;okText, const String &amp;cancelText, int okCode, int cancelCode"
-                 variableInitialisers="targetEvent(event),&#10;ownerComponent(owner),&#10;okCommand(okCode),&#10;cancelCommand(cancelCode),&#10;hasMadeChanges(false)"
+                 constructorParams="Component &amp;owner, const AnnotationEvent &amp;event"
+                 variableInitialisers="targetEvent(event),&#10;ownerComponent(owner),&#10;hasMadeChanges(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="450" initialHeight="225">
   <METHODS>

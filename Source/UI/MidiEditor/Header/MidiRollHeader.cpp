@@ -31,6 +31,7 @@
 #include "ModalDialogInput.h"
 #include "App.h"
 #include "MainLayout.h"
+#include "AnnotationDialog.h"
 
 #define MIDIROLL_HEADER_ALIGNS_TO_BEATS 1
 #define MIDIROLL_HEADER_SELECTION_ALIGNS_TO_BEATS 0
@@ -404,6 +405,12 @@ void MidiRollHeader::handleCommandMessage(int commandId)
 {
     if (commandId == CommandIDs::AddAnnotation)
     {
+//        const float targetBeat = this->roll.getPositionForNewTimelineEvent();
+//        if (AnnotationsLayer *annotationsLayer = dynamic_cast<AnnotationsLayer *>(this->project.getTimeline()->getAnnotations()))
+
+//        Component *editDialog = new AnnotationDialog(*this, nc->getEvent());
+//        App::Layout().showModalNonOwnedDialog(editDialog);
+
         Component *inputDialog =
         new ModalDialogInput(*this,
                              this->newAnnotationText,

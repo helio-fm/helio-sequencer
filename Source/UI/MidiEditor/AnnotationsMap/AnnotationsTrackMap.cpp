@@ -308,18 +308,8 @@ template<typename T> void AnnotationsTrackMap<T>::showContextMenuFor(T *nc)
 {
     if (! this->project.getTransport().isPlaying())
     {
-		Component *editDialog =
-			new AnnotationDialog(*this,
-				nc->getEvent(),
-				TRANS("dialog::annotation::add::caption"),
-				TRANS("dialog::annotation::add::proceed"),
-				TRANS("dialog::annotation::add::cancel"),
-				CommandIDs::AddAnnotationConfirmed,
-				CommandIDs::Cancel);
-
+		Component *editDialog = new AnnotationDialog(*this, nc->getEvent());
 		App::Layout().showModalNonOwnedDialog(editDialog);
-
-        //HelioCallout::emit(new AnnotationCommandPanel(this->project, nc->getEvent()), nc);
     }
 }
 

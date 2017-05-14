@@ -22,7 +22,7 @@
 #include "ModalDialogInputCombo.h"
 
 //[MiscUserDefs]
-static const int asyncCancelCommandId = 123123;
+#include "CommandIDs.h"
 
 #if HELIO_DESKTOP
 #    define INPUT_DIALOG_FONT_SIZE (21)
@@ -205,7 +205,7 @@ void ModalDialogInputCombo::parentSizeChanged()
 void ModalDialogInputCombo::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
-    if (commandId == asyncCancelCommandId)
+    if (commandId == CommandIDs::DismissModalDialogAsync)
     {
         this->cancel();
     }
@@ -234,7 +234,7 @@ bool ModalDialogInputCombo::keyPressed (const KeyPress& key)
 void ModalDialogInputCombo::inputAttemptWhenModal()
 {
     //[UserCode_inputAttemptWhenModal] -- Add your code here...
-    this->postCommandMessage(asyncCancelCommandId);
+    this->postCommandMessage(CommandIDs::DismissModalDialogAsync);
     //[/UserCode_inputAttemptWhenModal]
 }
 
