@@ -308,8 +308,9 @@ template<typename T> void AnnotationsTrackMap<T>::showContextMenuFor(T *nc)
 {
     if (! this->project.getTransport().isPlaying())
     {
-		Component *editDialog = new AnnotationDialog(*this, nc->getEvent());
-		App::Layout().showModalNonOwnedDialog(editDialog);
+		Component *dialog =
+			AnnotationDialog::createEditingDialog(*this, nc->getEvent());
+		App::Layout().showModalNonOwnedDialog(dialog);
     }
 }
 

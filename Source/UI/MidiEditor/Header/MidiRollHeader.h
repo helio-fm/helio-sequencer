@@ -54,16 +54,12 @@ public:
     
     void mouseDoubleClick(const MouseEvent &e) override;
 
-    void handleCommandMessage(int commandId) override;
-
     void paint(Graphics &g) override;
 
 protected:
     
     bool isActive;
     bool soundProbeMode;
-
-    String newAnnotationText;
     
     Transport &transport;
     MidiRoll &roll;

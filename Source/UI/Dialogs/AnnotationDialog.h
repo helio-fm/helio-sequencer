@@ -20,6 +20,8 @@
 //[Headers]
 #include "FadingDialog.h"
 #include "AnnotationEvent.h"
+
+class AnnotationsLayer;
 //[/Headers]
 
 #include "../Themes/PanelC.h"
@@ -36,11 +38,14 @@ class AnnotationDialog  : public FadingDialog,
 {
 public:
 
-    AnnotationDialog (Component &owner, const AnnotationEvent &event);
+    AnnotationDialog (Component &owner, AnnotationsLayer *annotationsLayer, const AnnotationEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
 
     ~AnnotationDialog();
 
     //[UserMethods]
+	static AnnotationDialog *createEditingDialog(Component &owner, const AnnotationEvent &event);
+	static AnnotationDialog *createAddingDialog(Component &owner, AnnotationsLayer *annotationsLayer, float targetBeat);
+
 	void onColourButtonClicked(ColourButton *button) override;
     //[/UserMethods]
 
@@ -61,30 +66,19 @@ private:
     //[UserVariables]
 
 	AnnotationEvent targetEvent;
-
+	AnnotationsLayer *targetLayer;
 	Component &ownerComponent;
 
-    void cancel()
-    {
-        this->cancelChangesIfAny();
-        this->disappear();
-    }
+	inline void cancelAndDisappear();
+	inline void disappear();
+	inline void updateOkButtonState();
 
-    void okay()
-    {
-        if (textEditor->getText().isEmpty()) { return; }
-        this->disappear();
-    }
+	void timerCallback() override;
 
-    void disappear()
-    { delete this; }
-
-    void updateOkButtonState();
-    void timerCallback() override;
-
-
+	bool addsNewEvent;
 	bool hasMadeChanges;
 	void sendEventChange(AnnotationEvent newEvent);
+	void removeEvent();
 	void cancelChangesIfAny();
 
     //[/UserVariables]
@@ -92,7 +86,7 @@ private:
     ScopedPointer<PanelC> background;
     ScopedPointer<PanelA> panel;
     ScopedPointer<Label> messageLabel;
-    ScopedPointer<TextButton> cancelButton;
+    ScopedPointer<TextButton> removeEventButton;
     ScopedPointer<ShadowDownwards> shadow;
     ScopedPointer<TextButton> okButton;
     ScopedPointer<ComboBox> textEditor;

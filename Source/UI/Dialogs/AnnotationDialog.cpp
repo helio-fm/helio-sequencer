@@ -45,9 +45,11 @@ static StringPairArray getDynamics()
 }
 //[/MiscUserDefs]
 
-AnnotationDialog::AnnotationDialog(Component &owner, const AnnotationEvent &event)
-    : targetEvent(event),
+AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsLayer *annotationsLayer, const AnnotationEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
+    : targetEvent(editedEvent),
+      targetLayer(annotationsLayer),
       ownerComponent(owner),
+      addsNewEvent(shouldAddNewEvent),
       hasMadeChanges(false)
 {
     addAndMakeVisible (background = new PanelC());
@@ -61,10 +63,10 @@ AnnotationDialog::AnnotationDialog(Component &owner, const AnnotationEvent &even
     messageLabel->setColour (TextEditor::textColourId, Colours::black);
     messageLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (cancelButton = new TextButton (String()));
-    cancelButton->setButtonText (TRANS("..."));
-    cancelButton->setConnectedEdges (Button::ConnectedOnTop);
-    cancelButton->addListener (this);
+    addAndMakeVisible (removeEventButton = new TextButton (String()));
+    removeEventButton->setButtonText (TRANS("..."));
+    removeEventButton->setConnectedEdges (Button::ConnectedOnTop);
+    removeEventButton->addListener (this);
 
     addAndMakeVisible (shadow = new ShadowDownwards());
     addAndMakeVisible (okButton = new TextButton (String()));
@@ -82,23 +84,33 @@ AnnotationDialog::AnnotationDialog(Component &owner, const AnnotationEvent &even
     addAndMakeVisible (colourSwatches = new ColourSwatches());
 
     //[UserPreSize]
-    // TODO add event if necessary
-    
-    
-    
+	jassert(this->addsNewEvent || this->targetEvent.getLayer() != nullptr);
+
+	if (this->addsNewEvent)
+	{
+		Random r;
+		const auto keys(getDynamics().getAllKeys());
+		const String key(keys[r.nextInt(keys.size())]);
+		const Colour colour(Colour::fromString(getDynamics()[key]));
+		this->targetEvent = AnnotationEvent(annotationsLayer, targetBeat, key, colour);
+		annotationsLayer->insert(this->targetEvent, true);
+
+		this->messageLabel->setText(TRANS("dialog::annotation::add::caption"), dontSendNotification);
+		this->okButton->setButtonText(TRANS("dialog::annotation::add::proceed"));
+		this->removeEventButton->setButtonText(TRANS("dialog::annotation::add::cancel"));
+	}
+	else
+	{
+		this->messageLabel->setText(TRANS("dialog::annotation::edit::caption"), dontSendNotification);
+		this->okButton->setButtonText(TRANS("dialog::annotation::edit::apply"));
+		this->removeEventButton->setButtonText(TRANS("dialog::annotation::edit::delete"));
+	}
+
 	this->colourSwatches->setSelectedColour(this->targetEvent.getColour());
 
-    // TODO add mode and change mode
-    //TRANS("dialog::annotation::add::caption"),
-    //TRANS("dialog::annotation::add::proceed"),
-    //TRANS("dialog::annotation::add::cancel"),
-    //this->messageLabel->setText(message, dontSendNotification);
-    //this->okButton->setButtonText(okText);
-    //this->cancelButton->setButtonText(cancelText);
-
     this->textEditor->setText(this->targetEvent.getDescription(), dontSendNotification);
-    this->textEditor->addListener(this);
-    this->textEditor->addItemList(getDynamics().getAllKeys(), 1);
+	this->textEditor->addItemList(getDynamics().getAllKeys(), 1);
+	this->textEditor->addListener(this);
     //[/UserPreSize]
 
     setSize (450, 225);
@@ -122,7 +134,7 @@ AnnotationDialog::~AnnotationDialog()
     //[Destructor_pre]
     this->stopTimer();
 
-    textEditor->removeListener(this);
+    this->textEditor->removeListener(this);
 
     FadingDialog::fadeOut();
     //[/Destructor_pre]
@@ -130,7 +142,7 @@ AnnotationDialog::~AnnotationDialog()
     background = nullptr;
     panel = nullptr;
     messageLabel = nullptr;
-    cancelButton = nullptr;
+    removeEventButton = nullptr;
     shadow = nullptr;
     okButton = nullptr;
     textEditor = nullptr;
@@ -160,7 +172,7 @@ void AnnotationDialog::resized()
     background->setBounds ((getWidth() / 2) - ((getWidth() - 10) / 2), 5, getWidth() - 10, getHeight() - 10);
     panel->setBounds ((getWidth() / 2) - ((getWidth() - 30) / 2), 15, getWidth() - 30, 153);
     messageLabel->setBounds ((getWidth() / 2) - ((getWidth() - 60) / 2), 5 + 16, getWidth() - 60, 36);
-    cancelButton->setBounds ((getWidth() / 2) + -5 - 150, 15 + 153, 150, 42);
+    removeEventButton->setBounds ((getWidth() / 2) + -5 - 150, 15 + 153, 150, 42);
     shadow->setBounds ((getWidth() / 2) - (310 / 2), 15 + 153 - 3, 310, 24);
     okButton->setBounds ((getWidth() / 2) + 5, 15 + 153, 150, 42);
     textEditor->setBounds ((getWidth() / 2) - ((getWidth() - 60) / 2), 62, getWidth() - 60, 36);
@@ -175,16 +187,27 @@ void AnnotationDialog::buttonClicked (Button* buttonThatWasClicked)
     //[UserbuttonClicked_Pre]
     //[/UserbuttonClicked_Pre]
 
-    if (buttonThatWasClicked == cancelButton)
+    if (buttonThatWasClicked == removeEventButton)
     {
-        //[UserButtonCode_cancelButton] -- add your button handler code here..
-        this->cancel();
-        //[/UserButtonCode_cancelButton]
+        //[UserButtonCode_removeEventButton] -- add your button handler code here..
+		if (this->addsNewEvent)
+		{
+			this->cancelAndDisappear();
+		}
+		else
+		{
+			this->removeEvent();
+			this->disappear();
+		}
+        //[/UserButtonCode_removeEventButton]
     }
     else if (buttonThatWasClicked == okButton)
     {
         //[UserButtonCode_okButton] -- add your button handler code here..
-        this->okay();
+		if (textEditor->getText().isNotEmpty())
+		{
+			this->disappear();
+		}
         //[/UserButtonCode_okButton]
     }
 
@@ -200,7 +223,9 @@ void AnnotationDialog::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == textEditor)
     {
         //[UserComboBoxCode_textEditor] -- add your combo box handling code here..
-        const String text(this->textEditor->getText());
+		this->updateOkButtonState();
+
+		const String text(this->textEditor->getText());
         AnnotationEvent newEvent = this->targetEvent.withDescription(text);
         const String colourString(getDynamics()[text]);
 
@@ -211,7 +236,10 @@ void AnnotationDialog::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
             newEvent = newEvent.withColour(c);
         }
 
-        this->sendEventChange(newEvent);
+		if (text.isNotEmpty())
+		{
+			this->sendEventChange(newEvent);
+		}
         //[/UserComboBoxCode_textEditor]
     }
 
@@ -245,8 +273,8 @@ void AnnotationDialog::handleCommandMessage (int commandId)
     //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::DismissModalDialogAsync)
     {
-        this->cancel();
-    }
+		this->cancelAndDisappear();
+	}
     //[/UserCode_handleCommandMessage]
 }
 
@@ -255,13 +283,17 @@ bool AnnotationDialog::keyPressed (const KeyPress& key)
     //[UserCode_keyPressed] -- Add your code here...
     if (key.isKeyCode(KeyPress::escapeKey))
     {
-        this->cancel();
-        return true;
+		this->cancelAndDisappear();
+		return true;
     }
     else if (key.isKeyCode(KeyPress::returnKey) ||
              key.isKeyCode(KeyPress::tabKey))
     {
-        this->okay();
+		if (textEditor->getText().isNotEmpty())
+		{
+			this->disappear();
+		}
+
         return true;
     }
 
@@ -279,11 +311,21 @@ void AnnotationDialog::inputAttemptWhenModal()
 
 //[MiscUserCode]
 
+AnnotationDialog *AnnotationDialog::createEditingDialog(Component &owner, const AnnotationEvent &event)
+{
+	return new AnnotationDialog(owner, static_cast<AnnotationsLayer *>(event.getLayer()), event, false, 0.f);
+}
+
+AnnotationDialog *AnnotationDialog::createAddingDialog(Component &owner, AnnotationsLayer *annotationsLayer, float targetBeat)
+{
+	return new AnnotationDialog(owner, annotationsLayer, AnnotationEvent(), true, targetBeat);
+}
+
 void AnnotationDialog::updateOkButtonState()
 {
-    //const bool textIsEmpty = this->targetString.isEmpty();
-    //this->okButton->setAlpha(textIsEmpty ? 0.5f : 1.f);
-    //this->okButton->setEnabled(!textIsEmpty);
+    const bool textIsEmpty = this->textEditor->getText().isEmpty();
+    this->okButton->setAlpha(textIsEmpty ? 0.5f : 1.f);
+    this->okButton->setEnabled(!textIsEmpty);
 }
 
 void AnnotationDialog::timerCallback()
@@ -298,31 +340,59 @@ void AnnotationDialog::timerCallback()
 void AnnotationDialog::onColourButtonClicked(ColourButton *clickedButton)
 {
 	const Colour c(clickedButton->getColour());
-    const AnnotationEvent newEvent = this->targetEvent
-        .withDescription(this->textEditor->getText())
-        .withColour(c);
+    const AnnotationEvent newEvent =
+		this->targetEvent.withDescription(this->textEditor->getText()).withColour(c);
 	this->sendEventChange(newEvent);
 }
 
 void AnnotationDialog::sendEventChange(AnnotationEvent newEvent)
 {
-	if (AnnotationsLayer *layer =
-		dynamic_cast<AnnotationsLayer *>(this->targetEvent.getLayer()))
+	if (this->targetLayer != nullptr)
 	{
 		this->cancelChangesIfAny();
-		layer->checkpoint();
-		layer->change(this->targetEvent, newEvent, true);
+		this->targetLayer->checkpoint();
+		this->targetLayer->change(this->targetEvent, newEvent, true);
+		this->hasMadeChanges = true;
+	}
+}
+
+void AnnotationDialog::removeEvent()
+{
+	if (this->targetLayer != nullptr)
+	{
+		this->cancelChangesIfAny();
+		this->targetLayer->checkpoint();
+		this->targetLayer->remove(this->targetEvent, true);
 		this->hasMadeChanges = true;
 	}
 }
 
 void AnnotationDialog::cancelChangesIfAny()
 {
-	if (this->hasMadeChanges)
+	if (this->hasMadeChanges &&
+		this->targetLayer != nullptr)
 	{
-		this->targetEvent.getLayer()->undo();
+		this->targetLayer->undo();
 		this->hasMadeChanges = false;
 	}
+}
+
+void AnnotationDialog::disappear()
+{
+	delete this;
+}
+
+void AnnotationDialog::cancelAndDisappear()
+{
+	this->cancelChangesIfAny(); // Discards possible changes
+
+	if (this->addsNewEvent &&
+		this->targetLayer != nullptr)
+	{
+		this->targetLayer->undo(); // Discards new event
+	}
+
+	this->disappear();
 }
 //[/MiscUserCode]
 
@@ -332,8 +402,8 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="AnnotationDialog" template="../../Template"
                  componentName="" parentClasses="public FadingDialog, public TextEditorListener, public ColourButtonListener, private Timer"
-                 constructorParams="Component &amp;owner, const AnnotationEvent &amp;event"
-                 variableInitialisers="targetEvent(event),&#10;ownerComponent(owner),&#10;hasMadeChanges(false)"
+                 constructorParams="Component &amp;owner, AnnotationsLayer *annotationsLayer, const AnnotationEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
+                 variableInitialisers="targetEvent(editedEvent),&#10;targetLayer(annotationsLayer),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="450" initialHeight="225">
   <METHODS>
@@ -359,8 +429,8 @@ BEGIN_JUCER_METADATA
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default serif font" fontsize="21" kerning="0" bold="0"
          italic="0" justification="36"/>
-  <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="cancelButton" virtualName=""
-              explicitFocusOrder="0" pos="-5Cr 0R 150 42" posRelativeY="fee11f38ba63ec9"
+  <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="removeEventButton"
+              virtualName="" explicitFocusOrder="0" pos="-5Cr 0R 150 42" posRelativeY="fee11f38ba63ec9"
               buttonText="..." connectedEdges="4" needsCallback="1" radioGroupId="0"/>
   <JUCERCOMP name="" id="ab3649d51aa02a67" memberName="shadow" virtualName=""
              explicitFocusOrder="0" pos="0Cc 3R 310 24" posRelativeY="fee11f38ba63ec9"

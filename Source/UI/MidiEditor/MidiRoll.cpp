@@ -1674,6 +1674,21 @@ void MidiRoll::handleAsyncUpdate()
 #endif
 }
 
+void MidiRoll::handleCommandMessage(int commandId)
+{
+	if (commandId == CommandIDs::AddAnnotation)
+	{
+		const float targetBeat = this->getPositionForNewTimelineEvent();
+		if (AnnotationsLayer *annotationsLayer =
+			dynamic_cast<AnnotationsLayer *>(this->project.getTimeline()->getAnnotations()))
+		{
+			Component *dialog =
+				AnnotationDialog::createAddingDialog(*this, annotationsLayer, targetBeat);
+			App::Layout().showModalNonOwnedDialog(dialog);
+		}
+	}
+}
+
 double MidiRoll::findIndicatorOffsetFromViewCentre() const
 {
     int indicatorX = 0;
