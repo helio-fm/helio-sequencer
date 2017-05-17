@@ -29,6 +29,7 @@
 #include "TimeSignatureCommandPanel.h"
 #include "TrackStartIndicator.h"
 #include "TrackEndIndicator.h"
+#include "TimeSignatureDialog.h"
 
 template<typename T> TimeSignaturesTrackMap<T>::TimeSignaturesTrackMap(ProjectTreeItem &parentProject, MidiRoll &parentRoll) :
     project(parentProject),
@@ -325,7 +326,9 @@ template<typename T> void TimeSignaturesTrackMap<T>::showContextMenuFor(T *nc)
 {
     if (! this->project.getTransport().isPlaying())
     {
-        HelioCallout::emit(new TimeSignatureCommandPanel(this->project, nc->getEvent()), nc);
+		Component *dialog =
+			TimeSignatureDialog::createEditingDialog(*this, nc->getEvent());
+		App::Layout().showModalNonOwnedDialog(dialog);
     }
 }
 

@@ -178,8 +178,6 @@ private:
             this->deltaH = 0.f;
             this->stopTimer();
         }
-
-        // this->roll->toFront(true);
     }
     
     float deltaH;

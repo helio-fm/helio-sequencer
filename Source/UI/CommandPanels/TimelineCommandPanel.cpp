@@ -129,29 +129,8 @@ void TimelineCommandPanel::handleCommandMessage(int commandId)
 	{
 		if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
 		{
-			Component *inputDialog =
-				new ModalDialogInput(*this,
-					this->newEventData,
-					TRANS("dialog::timesignature::add::caption"),
-					TRANS("dialog::timesignature::add::proceed"),
-					TRANS("dialog::timesignature::add::cancel"),
-					CommandIDs::AddTimeSignatureConfirmed,
-					CommandIDs::Cancel);
-
-			App::Layout().showModalNonOwnedDialog(inputDialog);
-		}
-	}
-	else if (commandId == CommandIDs::AddTimeSignatureConfirmed)
-	{
-		if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
-		{
-			int numerator;
-			int denominator;
-			TimeSignatureEvent::parseString(this->newEventData, numerator, denominator);
-			roll->insertTimeSignatureWithinScreen(numerator, denominator);
-			this->newEventData.clear();
+			roll->postCommandMessage(CommandIDs::AddTimeSignature);
 			this->getParentComponent()->exitModalState(0);
-			roll->grabKeyboardFocus();
 		}
 	}
     else if (commandId == CommandIDs::Cancel)

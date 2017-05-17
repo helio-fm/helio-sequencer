@@ -394,6 +394,7 @@ void MidiRollHeader::mouseExit(const MouseEvent &e)
 
 void MidiRollHeader::mouseDoubleClick(const MouseEvent &e)
 {
+	// TODO instead show a menu like "add annotation / add time signature"?
     this->roll.postCommandMessage(CommandIDs::AddAnnotation);
 }
 

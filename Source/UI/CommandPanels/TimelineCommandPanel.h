@@ -36,6 +36,4 @@ private:
     
     ProjectTreeItem &project;
     
-    String newEventData;
-    
 };

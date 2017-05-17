@@ -19,25 +19,30 @@
 
 //[Headers]
 #include "FadingDialog.h"
+#include "TimeSignatureEvent.h"
+
+class TimeSignaturesLayer;
 //[/Headers]
 
 #include "../Themes/PanelC.h"
 #include "../Themes/PanelA.h"
 #include "../Themes/ShadowDownwards.h"
 
-class ModalDialogInputCombo  : public FadingDialog,
-                               public TextEditorListener,
-                               private Timer,
-                               public ButtonListener,
-                               public ComboBoxListener
+class TimeSignatureDialog  : public FadingDialog,
+                             public TextEditorListener,
+                             private Timer,
+                             public ButtonListener,
+                             public ComboBoxListener
 {
 public:
 
-    ModalDialogInputCombo (Component &owner, String &result, const String &message, const String &okText, const String &cancelText, int okCode, int cancelCode);
+    TimeSignatureDialog (Component &owner, TimeSignaturesLayer *signaturesLayer, const TimeSignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
 
-    ~ModalDialogInputCombo();
+    ~TimeSignatureDialog();
 
     //[UserMethods]
+	static TimeSignatureDialog *createEditingDialog(Component &owner, const TimeSignatureEvent &event);
+	static TimeSignatureDialog *createAddingDialog(Component &owner, TimeSignaturesLayer *annotationsLayer, float targetBeat);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -56,42 +61,31 @@ private:
 
     //[UserVariables]
 
-    String &targetString;
-    Component &ownerComponent;
+	TimeSignatureEvent targetEvent;
+	TimeSignaturesLayer *targetLayer;
+	Component &ownerComponent;
 
-    int okCommand;
-    int cancelCommand;
+	inline void cancelAndDisappear();
+	inline void disappear();
+	inline void updateOkButtonState();
 
-    void cancel()
-    {
-        this->ownerComponent.postCommandMessage(this->cancelCommand);
-        this->disappear();
-    }
+	void timerCallback() override;
 
-    void okay()
-    {
-        if (textEditor->getText().isEmpty()) { return; }
-
-        this->ownerComponent.postCommandMessage(this->okCommand);
-        this->disappear();
-    }
-
-    void disappear()
-    { delete this; }
-
-    void updateOkButtonState();
-
-    void timerCallback() override;
+	bool addsNewEvent;
+	bool hasMadeChanges;
+	void sendEventChange(TimeSignatureEvent newEvent);
+	void removeEvent();
+	void cancelChangesIfAny();
 
     //[/UserVariables]
 
     ScopedPointer<PanelC> background;
     ScopedPointer<PanelA> panel;
     ScopedPointer<Label> messageLabel;
-    ScopedPointer<TextButton> cancelButton;
+    ScopedPointer<TextButton> removeEventButton;
     ScopedPointer<ShadowDownwards> shadow;
     ScopedPointer<TextButton> okButton;
     ScopedPointer<ComboBox> textEditor;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModalDialogInputCombo)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeSignatureDialog)
 };

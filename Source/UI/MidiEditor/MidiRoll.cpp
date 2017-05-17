@@ -56,6 +56,9 @@
 #include "MidiRollListener.h"
 #include "VersionControlTreeItem.h"
 
+#include "AnnotationDialog.h"
+#include "TimeSignatureDialog.h"
+
 #include "App.h"
 #include "Workspace.h"
 #include "AudioCore.h"
@@ -474,7 +477,7 @@ void MidiRoll::zoomAbsolute(const Point<float> &zoom)
 
 void MidiRoll::zoomRelative(const Point<float> &origin, const Point<float> &factor)
 {
-//    this->stopFollowingIndicator();
+    //this->stopFollowingIndicator();
 
     const Point<float> oldViewPosition = this->viewport.getViewPosition().toFloat();
     const Point<float> absoluteOrigin = oldViewPosition + origin;
@@ -498,7 +501,7 @@ void MidiRoll::zoomRelative(const Point<float> &origin, const Point<float> &fact
 
     this->resetDraggingAnchors();
     this->updateChildrenPositions();
-    this->grabKeyboardFocus();
+    //this->grabKeyboardFocus();
 }
 
 float MidiRoll::getZoomFactorX() const
@@ -933,7 +936,8 @@ void MidiRoll::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEve
     // Time signatures have changed, need to repaint
     if (dynamic_cast<const TimeSignatureEvent *>(&oldEvent))
     {
-        this->resized();
+        this->updateChildrenBounds();
+		this->repaint();
     }
 }
 
@@ -941,16 +945,18 @@ void MidiRoll::onEventAdded(const MidiEvent &event)
 {
     if (dynamic_cast<const TimeSignatureEvent *>(&event))
     {
-        this->resized();
-    }
+        this->updateChildrenBounds();
+		this->repaint();
+	}
 }
 
 void MidiRoll::onEventRemoved(const MidiEvent &event)
 {
     if (dynamic_cast<const TimeSignatureEvent *>(&event))
     {
-        this->resized();
-    }
+        this->updateChildrenBounds();
+		this->repaint();
+	}
 }
 
 void MidiRoll::onProjectBeatRangeChanged(float firstBeat, float lastBeat)
@@ -1684,6 +1690,17 @@ void MidiRoll::handleCommandMessage(int commandId)
 		{
 			Component *dialog =
 				AnnotationDialog::createAddingDialog(*this, annotationsLayer, targetBeat);
+			App::Layout().showModalNonOwnedDialog(dialog);
+		}
+	}
+	else if (commandId == CommandIDs::AddTimeSignature)
+	{
+		const float targetBeat = this->getPositionForNewTimelineEvent();
+		if (TimeSignaturesLayer *signaturesLayer =
+			dynamic_cast<TimeSignaturesLayer *>(this->project.getTimeline()->getTimeSignatures()))
+		{
+			Component *dialog =
+				TimeSignatureDialog::createAddingDialog(*this, signaturesLayer, targetBeat);
 			App::Layout().showModalNonOwnedDialog(dialog);
 		}
 	}

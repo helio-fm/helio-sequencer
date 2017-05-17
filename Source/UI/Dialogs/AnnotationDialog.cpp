@@ -122,7 +122,6 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsLayer *annotatio
     this->toFront(true);
     this->setAlwaysOnTop(true);
     this->textEditor->grabKeyboardFocus();
-    //this->textEditor->setTextToShowWhenEmpty(message, Colours::black.withAlpha(0.5f));
     this->updateOkButtonState();
 
     this->startTimer(100);
