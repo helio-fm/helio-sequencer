@@ -29,7 +29,10 @@
 #include "TimeSignatureCommandPanel.h"
 #include "TrackStartIndicator.h"
 #include "TrackEndIndicator.h"
+
 #include "TimeSignatureDialog.h"
+#include "App.h"
+#include "MainLayout.h"
 
 template<typename T> TimeSignaturesTrackMap<T>::TimeSignaturesTrackMap(ProjectTreeItem &parentProject, MidiRoll &parentRoll) :
     project(parentProject),

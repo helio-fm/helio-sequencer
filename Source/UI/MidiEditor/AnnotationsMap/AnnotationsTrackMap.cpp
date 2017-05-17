@@ -28,7 +28,6 @@
 #include "AnnotationCommandPanel.h"
 
 #include "AnnotationDialog.h"
-#include "CommandIDs.h"
 #include "App.h"
 #include "MainLayout.h"
 
