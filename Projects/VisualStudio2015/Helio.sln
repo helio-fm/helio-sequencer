@@ -497,6 +497,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base", "Base", "{C634724A-4
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{281B2E60-0E58-956E-36E1-6F7BBF559D21}"
 	ProjectSection(SolutionItems) = preProject
+		..\..\Source\UI\Common\ColourButton.cpp = ..\..\Source\UI\Common\ColourButton.cpp
+		..\..\Source\UI\Common\ColourButton.h = ..\..\Source\UI\Common\ColourButton.h
+		..\..\Source\UI\Common\ColourSwatches.cpp = ..\..\Source\UI\Common\ColourSwatches.cpp
+		..\..\Source\UI\Common\ColourSwatches.h = ..\..\Source\UI\Common\ColourSwatches.h
 		..\..\Source\UI\Common\CommandIDs.h = ..\..\Source\UI\Common\CommandIDs.h
 		..\..\Source\UI\Common\DraggingListBoxComponent.cpp = ..\..\Source\UI\Common\DraggingListBoxComponent.cpp
 		..\..\Source\UI\Common\DraggingListBoxComponent.h = ..\..\Source\UI\Common\DraggingListBoxComponent.h
@@ -541,6 +545,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Origami", "Origami", "{5DD3
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dialogs", "Dialogs", "{39199219-CB1A-8D07-59E6-5623E5915C90}"
 	ProjectSection(SolutionItems) = preProject
+		..\..\Source\UI\Dialogs\AnnotationDialog.cpp = ..\..\Source\UI\Dialogs\AnnotationDialog.cpp
+		..\..\Source\UI\Dialogs\AnnotationDialog.h = ..\..\Source\UI\Dialogs\AnnotationDialog.h
 		..\..\Source\UI\Dialogs\AuthorizationDialog.cpp = ..\..\Source\UI\Dialogs\AuthorizationDialog.cpp
 		..\..\Source\UI\Dialogs\AuthorizationDialog.h = ..\..\Source\UI\Dialogs\AuthorizationDialog.h
 		..\..\Source\UI\Dialogs\FadingDialog.cpp = ..\..\Source\UI\Dialogs\FadingDialog.cpp
@@ -551,6 +557,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dialogs", "Dialogs", "{3919
 		..\..\Source\UI\Dialogs\ModalDialogInput.h = ..\..\Source\UI\Dialogs\ModalDialogInput.h
 		..\..\Source\UI\Dialogs\RenderDialog.cpp = ..\..\Source\UI\Dialogs\RenderDialog.cpp
 		..\..\Source\UI\Dialogs\RenderDialog.h = ..\..\Source\UI\Dialogs\RenderDialog.h
+		..\..\Source\UI\Dialogs\TimeSignatureDialog.cpp = ..\..\Source\UI\Dialogs\TimeSignatureDialog.cpp
+		..\..\Source\UI\Dialogs\TimeSignatureDialog.h = ..\..\Source\UI\Dialogs\TimeSignatureDialog.h
 		..\..\Source\UI\Dialogs\UpdateDialog.cpp = ..\..\Source\UI\Dialogs\UpdateDialog.cpp
 		..\..\Source\UI\Dialogs\UpdateDialog.h = ..\..\Source\UI\Dialogs\UpdateDialog.h
 	EndProjectSection
