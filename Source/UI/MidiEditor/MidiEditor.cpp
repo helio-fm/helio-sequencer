@@ -480,7 +480,11 @@ void MidiEditor::setActiveMidiLayers(Array<MidiLayer *> tracks, MidiLayer *prima
 {
     //Logger::writeToLog("MidiEditor::setActiveMidiLayers");
     this->roll->setActiveMidiLayers(tracks, primaryTrack);
-    this->roll->grabKeyboardFocus();
+
+	if (this->isShowing())
+	{
+		this->roll->grabKeyboardFocus();
+	}
 }
 
 void MidiEditor::hideAutomationEditor(AutomationLayer *targetLayer)
