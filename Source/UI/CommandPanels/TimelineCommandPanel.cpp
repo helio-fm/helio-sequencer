@@ -121,55 +121,16 @@ void TimelineCommandPanel::handleCommandMessage(int commandId)
     {
         if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
         {
-            Component *inputDialog =
-            new ModalDialogInput(*this,
-                                 this->newEventData,
-                                 TRANS("dialog::annotation::add::caption"),
-                                 TRANS("dialog::annotation::add::proceed"),
-                                 TRANS("dialog::annotation::add::cancel"),
-                                 CommandIDs::AddAnnotationConfirmed,
-                                 CommandIDs::Cancel);
-            
-            App::Layout().showModalNonOwnedDialog(inputDialog);
-        }
-    }
-    else if (commandId == CommandIDs::AddAnnotationConfirmed)
-    {
-        if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
-        {
-			roll->insertAnnotationWithinScreen(this->newEventData);
-            this->newEventData.clear();
-            this->getParentComponent()->exitModalState(0);
-            roll->grabKeyboardFocus();
-        }
+			roll->postCommandMessage(CommandIDs::AddAnnotation);
+			this->getParentComponent()->exitModalState(0);
+		}
     }
 	else if (commandId == CommandIDs::AddTimeSignature)
 	{
 		if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
 		{
-			Component *inputDialog =
-				new ModalDialogInput(*this,
-					this->newEventData,
-					TRANS("dialog::timesignature::add::caption"),
-					TRANS("dialog::timesignature::add::proceed"),
-					TRANS("dialog::timesignature::add::cancel"),
-					CommandIDs::AddTimeSignatureConfirmed,
-					CommandIDs::Cancel);
-
-			App::Layout().showModalNonOwnedDialog(inputDialog);
-		}
-	}
-	else if (commandId == CommandIDs::AddTimeSignatureConfirmed)
-	{
-		if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
-		{
-			int numerator;
-			int denominator;
-			TimeSignatureEvent::parseString(this->newEventData, numerator, denominator);
-			roll->insertTimeSignatureWithinScreen(numerator, denominator);
-			this->newEventData.clear();
+			roll->postCommandMessage(CommandIDs::AddTimeSignature);
 			this->getParentComponent()->exitModalState(0);
-			roll->grabKeyboardFocus();
 		}
 	}
     else if (commandId == CommandIDs::Cancel)

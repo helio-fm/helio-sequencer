@@ -632,6 +632,13 @@
             <FILE id="vKQRAK" name="OrigamiVertical.h" compile="0" resource="0"
                   file="../../Source/UI/Common/Origami/OrigamiVertical.h"/>
           </GROUP>
+          <FILE id="CY4MW2" name="ColourButton.cpp" compile="1" resource="0"
+                file="../../Source/UI/Common/ColourButton.cpp"/>
+          <FILE id="VrkDkH" name="ColourButton.h" compile="0" resource="0" file="../../Source/UI/Common/ColourButton.h"/>
+          <FILE id="OEFzba" name="ColourSwatches.cpp" compile="1" resource="0"
+                file="../../Source/UI/Common/ColourSwatches.cpp"/>
+          <FILE id="OeoOMp" name="ColourSwatches.h" compile="0" resource="0"
+                file="../../Source/UI/Common/ColourSwatches.h"/>
           <FILE id="JpyU5z" name="CommandIDs.h" compile="0" resource="0" file="../../Source/UI/Common/CommandIDs.h"/>
           <FILE id="wxzKUC" name="DraggingListBoxComponent.cpp" compile="1" resource="0"
                 file="../../Source/UI/Common/DraggingListBoxComponent.cpp"/>
@@ -669,6 +676,10 @@
                 file="../../Source/UI/Common/ViewportFitProxyComponent.h"/>
         </GROUP>
         <GROUP id="{C442EB44-2A42-3717-4072-B117F284125C}" name="Dialogs">
+          <FILE id="p6d4bP" name="AnnotationDialog.cpp" compile="1" resource="0"
+                file="../../Source/UI/Dialogs/AnnotationDialog.cpp"/>
+          <FILE id="aje40l" name="AnnotationDialog.h" compile="0" resource="0"
+                file="../../Source/UI/Dialogs/AnnotationDialog.h"/>
           <FILE id="ajCqPG" name="AuthorizationDialog.cpp" compile="1" resource="0"
                 file="../../Source/UI/Dialogs/AuthorizationDialog.cpp"/>
           <FILE id="WCRnDA" name="AuthorizationDialog.h" compile="0" resource="0"
@@ -687,6 +698,10 @@
           <FILE id="f4aznu" name="RenderDialog.cpp" compile="1" resource="0"
                 file="../../Source/UI/Dialogs/RenderDialog.cpp"/>
           <FILE id="ZRs9s2" name="RenderDialog.h" compile="0" resource="0" file="../../Source/UI/Dialogs/RenderDialog.h"/>
+          <FILE id="NbGM0A" name="TimeSignatureDialog.cpp" compile="1" resource="0"
+                file="../../Source/UI/Dialogs/TimeSignatureDialog.cpp"/>
+          <FILE id="ny7iGn" name="TimeSignatureDialog.h" compile="0" resource="0"
+                file="../../Source/UI/Dialogs/TimeSignatureDialog.h"/>
           <FILE id="Z4BNDb" name="UpdateDialog.cpp" compile="1" resource="0"
                 file="../../Source/UI/Dialogs/UpdateDialog.cpp"/>
           <FILE id="Gyc7iS" name="UpdateDialog.h" compile="0" resource="0" file="../../Source/UI/Dialogs/UpdateDialog.h"/>

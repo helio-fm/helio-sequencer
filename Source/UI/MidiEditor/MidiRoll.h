@@ -352,6 +352,7 @@ protected:
     //===------------------------------------------------------------------===//
     
     void handleAsyncUpdate() override;
+	void handleCommandMessage(int commandId) override;
 
     double findIndicatorOffsetFromViewCentre() const;
     friend class MidiRollHeader;

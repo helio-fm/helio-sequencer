@@ -17,23 +17,35 @@
 
 #pragma once
 
-class ProjectTreeItem;
+//[Headers]
+#include "ColourButton.h"
+//[/Headers]
 
-#include "CommandPanel.h"
-#include "CommandIDs.h"
 
-class TimelineCommandPanel : public CommandPanel
+class ColourSwatches  : public Component,
+                        public ColourButtonListener
 {
 public:
-    
-    explicit TimelineCommandPanel(ProjectTreeItem &parentProject);
-    
-    ~TimelineCommandPanel() override;
-    
-    void handleCommandMessage(int commandId) override;
-    
+
+    ColourSwatches ();
+
+    ~ColourSwatches();
+
+    //[UserMethods]
+	void onColourButtonClicked(ColourButton *button) override;
+	void setSelectedColour(Colour colour);
+    //[/UserMethods]
+
+    void paint (Graphics& g) override;
+    void resized() override;
+
+
 private:
-    
-    ProjectTreeItem &project;
-    
+
+    //[UserVariables]
+	OwnedArray<ColourButton> buttons;
+    //[/UserVariables]
+
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ColourSwatches)
 };
