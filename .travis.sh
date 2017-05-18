@@ -5,7 +5,8 @@
 # even if the project doesn't need it, i.e. has JUCE_WEB_BROWSER=0.
 # So here is the dirty hackaround:
 pushd ThirdParty/JUCE/extras/Projucer/Builds/LinuxMakefile
-sed -i 's/\/\/#define\ JUCE_WEB_BROWSER/#define\ JUCE_WEB_BROWSER 0/g' ../../JuceLibraryCode/AppConfig.h
+sed -i 's/#define JUCER_ENABLE_GPL_MODE 0/#define JUCER_ENABLE_GPL_MODE 1/g' ../../JuceLibraryCode/AppConfig.h
+sed -i 's/\/\/#define JUCE_WEB_BROWSER/#define JUCE_WEB_BROWSER 0/g' ../../JuceLibraryCode/AppConfig.h
 sed -i 's/webkit2gtk-4.0//g' Makefile
 export CONFIG=Release
 make

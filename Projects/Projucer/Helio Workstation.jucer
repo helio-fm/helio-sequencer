@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="lG607P" name="Helio" projectType="guiapp" version="1.7" bundleIdentifier="com.peterrudenko.helioworkstation"
-              includeBinaryInAppConfig="1" jucerVersion="4.3.1" companyWebsite="http://helioworkstation.com"
+              includeBinaryInAppConfig="1" jucerVersion="5.0.1" companyWebsite="http://helioworkstation.com"
               companyEmail="peter.rudenko@gmail.com" companyName="Peter Rudenko"
-              defines="JUCE_DONT_DECLARE_PROJECTINFO=1">
+              defines="JUCE_DONT_DECLARE_PROJECTINFO=1" displaySplashScreen="0"
+              reportAppUsage="0" splashScreenColour="Dark">
   <MAINGROUP id="szkQi0" name="Helio">
     <GROUP id="{005FBE8D-B17D-F49E-397E-DB420E759514}" name="Resources">
       <GROUP id="{4C273977-B090-3F23-250C-510E8D92F7A0}" name="Fonts">
-        <FILE id="GisXlN" name="comfortaa.font" compile="0" resource="0" file="../../Resources/Fonts/comfortaa.font"/>
         <FILE id="lGxgzu" name="lato.fnt" compile="0" resource="1" file="../../Resources/Fonts/lato.fnt"/>
       </GROUP>
       <GROUP id="{14FB8A25-1178-E3EF-6B94-AEFBD0ED4866}" name="Themes">

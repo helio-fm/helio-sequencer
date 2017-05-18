@@ -370,20 +370,20 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/BinaryData_7821001c.o \
   $(JUCE_OBJDIR)/BinaryData2_8c1f1960.o \
   $(JUCE_OBJDIR)/BinaryData3_8c2d30e1.o \
-  $(JUCE_OBJDIR)/juce_audio_basics_141eae59.o \
-  $(JUCE_OBJDIR)/juce_audio_devices_1343c8d3.o \
-  $(JUCE_OBJDIR)/juce_audio_formats_c62acbd2.o \
-  $(JUCE_OBJDIR)/juce_audio_processors_6968acf5.o \
-  $(JUCE_OBJDIR)/juce_audio_utils_517d1ee7.o \
-  $(JUCE_OBJDIR)/juce_core_499facea.o \
-  $(JUCE_OBJDIR)/juce_cryptography_16881db7.o \
-  $(JUCE_OBJDIR)/juce_data_structures_e2a8ad74.o \
-  $(JUCE_OBJDIR)/juce_events_64b963e4.o \
-  $(JUCE_OBJDIR)/juce_graphics_9acb56d6.o \
-  $(JUCE_OBJDIR)/juce_gui_basics_a7a3e554.o \
-  $(JUCE_OBJDIR)/juce_gui_extra_21a9586b.o \
-  $(JUCE_OBJDIR)/juce_opengl_5f6b907a.o \
-  $(JUCE_OBJDIR)/juce_osc_728e6d5e.o \
+  $(JUCE_OBJDIR)/include_juce_audio_basics_68629202.o \
+  $(JUCE_OBJDIR)/include_juce_audio_devices_477c5a4a.o \
+  $(JUCE_OBJDIR)/include_juce_audio_formats_fa635d49.o \
+  $(JUCE_OBJDIR)/include_juce_audio_processors_6c50941e.o \
+  $(JUCE_OBJDIR)/include_juce_audio_utils_a6c9a21e.o \
+  $(JUCE_OBJDIR)/include_juce_core_9b124993.o \
+  $(JUCE_OBJDIR)/include_juce_cryptography_6acc0160.o \
+  $(JUCE_OBJDIR)/include_juce_data_structures_eb02bd2b.o \
+  $(JUCE_OBJDIR)/include_juce_events_23f77a4d.o \
+  $(JUCE_OBJDIR)/include_juce_graphics_82dd76ff.o \
+  $(JUCE_OBJDIR)/include_juce_gui_basics_d3ae9f3d.o \
+  $(JUCE_OBJDIR)/include_juce_gui_extra_3bdb3d62.o \
+  $(JUCE_OBJDIR)/include_juce_opengl_1ea9a6e3.o \
+  $(JUCE_OBJDIR)/include_juce_osc_7d711795.o \
 
 .PHONY: clean all
 
@@ -1809,74 +1809,74 @@ $(JUCE_OBJDIR)/BinaryData3_8c2d30e1.o: ../Projucer/JuceLibraryCode/BinaryData3.c
 	@echo "Compiling BinaryData3.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/juce_audio_basics_141eae59.o: ../Projucer/JuceLibraryCode/juce_audio_basics.cpp
+$(JUCE_OBJDIR)/include_juce_audio_basics_68629202.o: ../Projucer/JuceLibraryCode/include_juce_audio_basics.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling juce_audio_basics.cpp"
+	@echo "Compiling include_juce_audio_basics.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/juce_audio_devices_1343c8d3.o: ../Projucer/JuceLibraryCode/juce_audio_devices.cpp
+$(JUCE_OBJDIR)/include_juce_audio_devices_477c5a4a.o: ../Projucer/JuceLibraryCode/include_juce_audio_devices.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling juce_audio_devices.cpp"
+	@echo "Compiling include_juce_audio_devices.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/juce_audio_formats_c62acbd2.o: ../Projucer/JuceLibraryCode/juce_audio_formats.cpp
+$(JUCE_OBJDIR)/include_juce_audio_formats_fa635d49.o: ../Projucer/JuceLibraryCode/include_juce_audio_formats.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling juce_audio_formats.cpp"
+	@echo "Compiling include_juce_audio_formats.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/juce_audio_processors_6968acf5.o: ../Projucer/JuceLibraryCode/juce_audio_processors.cpp
+$(JUCE_OBJDIR)/include_juce_audio_processors_6c50941e.o: ../Projucer/JuceLibraryCode/include_juce_audio_processors.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling juce_audio_processors.cpp"
+	@echo "Compiling include_juce_audio_processors.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/juce_audio_utils_517d1ee7.o: ../Projucer/JuceLibraryCode/juce_audio_utils.cpp
+$(JUCE_OBJDIR)/include_juce_audio_utils_a6c9a21e.o: ../Projucer/JuceLibraryCode/include_juce_audio_utils.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling juce_audio_utils.cpp"
+	@echo "Compiling include_juce_audio_utils.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/juce_core_499facea.o: ../Projucer/JuceLibraryCode/juce_core.cpp
+$(JUCE_OBJDIR)/include_juce_core_9b124993.o: ../Projucer/JuceLibraryCode/include_juce_core.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling juce_core.cpp"
+	@echo "Compiling include_juce_core.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/juce_cryptography_16881db7.o: ../Projucer/JuceLibraryCode/juce_cryptography.cpp
+$(JUCE_OBJDIR)/include_juce_cryptography_6acc0160.o: ../Projucer/JuceLibraryCode/include_juce_cryptography.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling juce_cryptography.cpp"
+	@echo "Compiling include_juce_cryptography.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/juce_data_structures_e2a8ad74.o: ../Projucer/JuceLibraryCode/juce_data_structures.cpp
+$(JUCE_OBJDIR)/include_juce_data_structures_eb02bd2b.o: ../Projucer/JuceLibraryCode/include_juce_data_structures.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling juce_data_structures.cpp"
+	@echo "Compiling include_juce_data_structures.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/juce_events_64b963e4.o: ../Projucer/JuceLibraryCode/juce_events.cpp
+$(JUCE_OBJDIR)/include_juce_events_23f77a4d.o: ../Projucer/JuceLibraryCode/include_juce_events.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling juce_events.cpp"
+	@echo "Compiling include_juce_events.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/juce_graphics_9acb56d6.o: ../Projucer/JuceLibraryCode/juce_graphics.cpp
+$(JUCE_OBJDIR)/include_juce_graphics_82dd76ff.o: ../Projucer/JuceLibraryCode/include_juce_graphics.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling juce_graphics.cpp"
+	@echo "Compiling include_juce_graphics.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/juce_gui_basics_a7a3e554.o: ../Projucer/JuceLibraryCode/juce_gui_basics.cpp
+$(JUCE_OBJDIR)/include_juce_gui_basics_d3ae9f3d.o: ../Projucer/JuceLibraryCode/include_juce_gui_basics.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling juce_gui_basics.cpp"
+	@echo "Compiling include_juce_gui_basics.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/juce_gui_extra_21a9586b.o: ../Projucer/JuceLibraryCode/juce_gui_extra.cpp
+$(JUCE_OBJDIR)/include_juce_gui_extra_3bdb3d62.o: ../Projucer/JuceLibraryCode/include_juce_gui_extra.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling juce_gui_extra.cpp"
+	@echo "Compiling include_juce_gui_extra.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/juce_opengl_5f6b907a.o: ../Projucer/JuceLibraryCode/juce_opengl.cpp
+$(JUCE_OBJDIR)/include_juce_opengl_1ea9a6e3.o: ../Projucer/JuceLibraryCode/include_juce_opengl.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling juce_opengl.cpp"
+	@echo "Compiling include_juce_opengl.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/juce_osc_728e6d5e.o: ../Projucer/JuceLibraryCode/juce_osc.cpp
+$(JUCE_OBJDIR)/include_juce_osc_7d711795.o: ../Projucer/JuceLibraryCode/include_juce_osc.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling juce_osc.cpp"
+	@echo "Compiling include_juce_osc.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 check-pkg-config:
@@ -1891,4 +1891,4 @@ strip:
 	@echo Stripping Helio
 	-$(V_AT)$(STRIP) --strip-unneeded $(JUCE_OUTDIR)/$(TARGET)
 
--include $(OBJECTS:%.o=%.d)
+-include $(OBJECTS_APP:%.o=%.d)

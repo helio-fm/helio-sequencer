@@ -536,20 +536,20 @@
     <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData.cpp"/>
     <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData2.cpp"/>
     <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData3.cpp"/>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\juce_audio_basics.cpp"/>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\juce_audio_devices.cpp"/>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\juce_audio_formats.cpp"/>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\juce_audio_processors.cpp"/>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\juce_audio_utils.cpp"/>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\juce_core.cpp"/>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\juce_cryptography.cpp"/>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\juce_data_structures.cpp"/>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\juce_events.cpp"/>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\juce_graphics.cpp"/>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\juce_gui_basics.cpp"/>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\juce_gui_extra.cpp"/>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\juce_opengl.cpp"/>
-    <ClCompile Include="..\Projucer\JuceLibraryCode\juce_osc.cpp"/>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_audio_basics.cpp"/>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_audio_devices.cpp"/>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_audio_formats.cpp"/>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_audio_processors.cpp"/>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_audio_utils.cpp"/>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_core.cpp"/>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_cryptography.cpp"/>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_data_structures.cpp"/>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_events.cpp"/>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_graphics.cpp"/>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_gui_basics.cpp"/>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_gui_extra.cpp"/>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_opengl.cpp"/>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_osc.cpp"/>
   </ItemGroup>
   <ItemGroup/>
   <ItemGroup>
