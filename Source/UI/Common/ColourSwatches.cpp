@@ -61,14 +61,32 @@ void ColourSwatches::paint (Graphics& g)
 #if 0
     //[/UserPrePaint]
 
-    g.setColour (Colour (0xffa52a90));
-    g.fillRoundedRectangle (1.0f, 1.0f, 40.0f, 40.0f, 2.000f);
+    {
+        float x = 1.0f, y = 1.0f, width = 40.0f, height = 40.0f;
+        Colour fillColour = Colour (0xffa52a90);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRoundedRectangle (x, y, width, height, 2.000f);
+    }
 
-    g.setColour (Colour (0xff5f6cff));
-    g.fillRoundedRectangle (42.0f, 1.0f, 40.0f, 40.0f, 2.000f);
+    {
+        float x = 42.0f, y = 1.0f, width = 40.0f, height = 40.0f;
+        Colour fillColour = Colour (0xff5f6cff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRoundedRectangle (x, y, width, height, 2.000f);
+    }
 
-    g.setColour (Colour (0xffff5f5f));
-    g.fillRoundedRectangle (343.0f, 1.0f, 40.0f, 40.0f, 2.000f);
+    {
+        float x = 343.0f, y = 1.0f, width = 40.0f, height = 40.0f;
+        Colour fillColour = Colour (0xffff5f5f);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRoundedRectangle (x, y, width, height, 2.000f);
+    }
 
     //[UserPaint] Add your own custom painting code here..
 #endif

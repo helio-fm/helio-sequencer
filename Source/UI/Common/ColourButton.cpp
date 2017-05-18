@@ -105,7 +105,7 @@ void ColourButton::resized()
 		const int s = jmin(this->getHeight(), this->getWidth()) - 4;
 		this->checkMark->setSize(s, s);
 		const auto c = this->getLocalBounds().getCentre();
-		this->checkMark->setCentrePosition(c.x, c.y + 2);
+		this->checkMark->setCentrePosition(c.x, c.y + 3);
 		//this->checkMark->setBounds(this->getLocalBounds().reduced(8));
 	}
     //[/UserResized]

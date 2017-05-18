@@ -355,16 +355,7 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
                                       bool isMouseOverButton, bool isButtonDown)
 {
     Colour baseColour(backgroundColour
-                      .withMultipliedSaturation(button.hasKeyboardFocus(true) ? 1.3f : 0.9f)
-                      .withMultipliedAlpha(button.isEnabled() ? 0.5f : 0.3f));
-
-    if (isButtonDown || isMouseOverButton)
-    {
-        baseColour = baseColour.withMultipliedAlpha(isButtonDown ? 1.3f : 1.15f);
-    }
-
-    //{ baseColour = baseColour.contrasting(isButtonDown ? 0.15f : 0.075f); }
-    //{ baseColour = baseColour.withMultipliedBrightness(isButtonDown ? 1.2f : 1.1f); }
+                      .withMultipliedAlpha(button.isEnabled() ? 0.75f : 0.3f));
 
     const bool flatOnLeft   = button.isConnectedOnLeft();
     const bool flatOnRight  = button.isConnectedOnRight();
@@ -376,7 +367,6 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
 
     if (width > 0 && height > 0)
     {
-        //const float cornerSize = width / 4;
         const float cornerSize = 7.f;
 
         Path outline;
@@ -386,28 +376,19 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
                                     !(flatOnLeft  || flatOnBottom),
                                     !(flatOnRight || flatOnBottom));
 
-        // shape itself
         const float mainBrightness = baseColour.getBrightness();
         const float mainAlpha = baseColour.getFloatAlpha();
 
-
-        g.setGradientFill(ColourGradient(baseColour.brighter(0.1f), 0.0f, height / 2 - 2,
-                                         baseColour.darker(0.15f), 0.0f, height / 2 + 2, false));
-        g.fillPath(outline);
+        g.setGradientFill(ColourGradient(baseColour.darker(0.1f), 0.0f, height / 2 - 2,
+                                         baseColour.darker(0.2f), 0.0f, height / 2 + 2, false));
+		//g.setColour(baseColour.darker(0.2f));
+		g.fillPath(outline);
 
         if (isButtonDown || isMouseOverButton)
         {
-            g.setGradientFill(ColourGradient(findColour(PanelBackgroundA::panelFillStartId).withMultipliedAlpha(0.5f).withMultipliedBrightness(1.2f),
-                                             float((width / 2)), 0,
-                                             Colours::transparentBlack,
-                                             0.0f, height,
-                                             true));
+			g.setColour(baseColour.brighter(isButtonDown ? 0.1f : 0.01f));
             g.fillPath(outline);
         }
-
-        //g.setColour(Colours::white.withAlpha(0.4f * mainAlpha * mainBrightness * mainBrightness));
-        //g.strokePath(outline, PathStrokeType(1.0f),
-        //             AffineTransform::translation(0.0f, 1.0f).scaled(1.0f, (height - 1.6f) / height));
 
         g.setColour(Colours::white.withAlpha(mainAlpha));
         g.strokePath(outline, PathStrokeType(1.0f));

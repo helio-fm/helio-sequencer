@@ -27,9 +27,8 @@ class CommandItemComponent;
 //[/Headers]
 
 #include "../Themes/PanelC.h"
-#include "../Themes/PanelA.h"
-#include "../Themes/ShadowDownwards.h"
 #include "../Themes/SeparatorHorizontalFading.h"
+#include "../Themes/SeparatorHorizontal.h"
 
 class RenderDialog  : public FadingDialog,
                       private Timer,
@@ -81,17 +80,16 @@ private:
     //[/UserVariables]
 
     ScopedPointer<PanelC> background;
-    ScopedPointer<PanelA> frame;
     ScopedPointer<TextButton> renderButton;
     ScopedPointer<Label> filenameEditor;
     ScopedPointer<Label> filenameLabel;
-    ScopedPointer<ShadowDownwards> shadow;
     ScopedPointer<TextButton> cancelButton;
     ScopedPointer<Slider> slider;
     ScopedPointer<ProgressIndicator> indicator;
     ScopedPointer<CommandItemComponent> browseButton;
     ScopedPointer<Label> pathEditor;
     ScopedPointer<SeparatorHorizontalFading> component3;
+    ScopedPointer<SeparatorHorizontal> separatorH;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RenderDialog)
 };

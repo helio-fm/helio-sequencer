@@ -31,7 +31,6 @@ ModalDialogConfirmation::ModalDialogConfirmation(Component &owner, const String 
       cancelCommand(cancelCode)
 {
     addAndMakeVisible (background = new PanelC());
-    addAndMakeVisible (panel = new PanelA());
     addAndMakeVisible (messageLabel = new Label (String(),
                                                  TRANS("...")));
     messageLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
@@ -43,23 +42,25 @@ ModalDialogConfirmation::ModalDialogConfirmation(Component &owner, const String 
 
     addAndMakeVisible (cancelButton = new TextButton (String()));
     cancelButton->setButtonText (TRANS("..."));
-    cancelButton->setConnectedEdges (Button::ConnectedOnTop);
+    cancelButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnTop);
     cancelButton->addListener (this);
 
-    addAndMakeVisible (component2 = new ShadowDownwards());
     addAndMakeVisible (okButton = new TextButton (String()));
     okButton->setButtonText (TRANS("..."));
-    okButton->setConnectedEdges (Button::ConnectedOnTop);
+    okButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnTop);
     okButton->addListener (this);
 
+    addAndMakeVisible (separatorH = new SeparatorHorizontal());
+    addAndMakeVisible (separatorV = new SeparatorVertical());
 
     //[UserPreSize]
     this->messageLabel->setText(message, dontSendNotification);
     this->okButton->setButtonText(okText);
     this->cancelButton->setButtonText(cancelText);
+	this->separatorH->setAlphaMultiplier(2.5f);
     //[/UserPreSize]
 
-    setSize (400, 210);
+    setSize (410, 180);
 
     //[Constructor]
     this->rebound();
@@ -78,11 +79,11 @@ ModalDialogConfirmation::~ModalDialogConfirmation()
     //[/Destructor_pre]
 
     background = nullptr;
-    panel = nullptr;
     messageLabel = nullptr;
     cancelButton = nullptr;
-    component2 = nullptr;
     okButton = nullptr;
+    separatorH = nullptr;
+    separatorV = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -93,8 +94,14 @@ void ModalDialogConfirmation::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x59000000));
-    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 10.000f);
+    {
+        float x = 0.0f, y = 0.0f, width = static_cast<float> (getWidth() - 0), height = static_cast<float> (getHeight() - 0);
+        Colour fillColour = Colour (0x59000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRoundedRectangle (x, y, width, height, 10.000f);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -105,12 +112,12 @@ void ModalDialogConfirmation::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    background->setBounds ((getWidth() / 2) + -1 - ((getWidth() - 10) / 2), 5, getWidth() - 10, getHeight() - 10);
-    panel->setBounds ((getWidth() / 2) + -1 - ((getWidth() - 30) / 2), 15, getWidth() - 30, 137);
-    messageLabel->setBounds ((getWidth() / 2) - ((getWidth() - 40) / 2), 5 + 18, getWidth() - 40, 121);
-    cancelButton->setBounds ((getWidth() / 2) + -5 - 139, 15 + 137, 139, 42);
-    component2->setBounds ((getWidth() / 2) - (284 / 2), 15 + 137 - 3, 284, 24);
-    okButton->setBounds ((getWidth() / 2) + 5, 15 + 137, 139, 42);
+    background->setBounds ((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
+    messageLabel->setBounds ((getWidth() / 2) - ((getWidth() - 32) / 2), 4 + 12, getWidth() - 32, 96);
+    cancelButton->setBounds (4, getHeight() - 4 - 48, 200, 48);
+    okButton->setBounds (getWidth() - 4 - 201, getHeight() - 4 - 48, 201, 48);
+    separatorH->setBounds (4, getHeight() - 52 - 2, getWidth() - 8, 2);
+    separatorV->setBounds ((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
     //[UserResized] Add your own custom resize handling here..
     this->grabKeyboardFocus();
     //[/UserResized]
@@ -200,7 +207,7 @@ BEGIN_JUCER_METADATA
                  constructorParams="Component &amp;owner, const String &amp;message, const String &amp;okText, const String &amp;cancelText, int okCode, int cancelCode"
                  variableInitialisers="ownerComponent(owner),&#10;okCommand(okCode),&#10;cancelCommand(cancelCode)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="400" initialHeight="210">
+                 fixedSize="1" initialWidth="410" initialHeight="180">
   <METHODS>
     <METHOD name="parentSizeChanged()"/>
     <METHOD name="parentHierarchyChanged()"/>
@@ -212,26 +219,26 @@ BEGIN_JUCER_METADATA
     <ROUNDRECT pos="0 0 0M 0M" cornerSize="10" fill="solid: 59000000" hasStroke="0"/>
   </BACKGROUND>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="-1Cc 5 10M 10M" posRelativeH="ac3897c4f32c4354"
+             explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
              sourceFile="../Themes/PanelC.cpp" constructorParams=""/>
-  <JUCERCOMP name="" id="fee11f38ba63ec9" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="-1Cc 15 30M 137" sourceFile="../Themes/PanelA.cpp"
-             constructorParams=""/>
   <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
-         explicitFocusOrder="0" pos="0Cc 18 40M 121" posRelativeY="e96b77baef792d3a"
+         explicitFocusOrder="0" pos="0Cc 12 32M 96" posRelativeY="e96b77baef792d3a"
          textCol="ffffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default serif font" fontsize="21" kerning="0" bold="0"
          italic="0" justification="36"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="cancelButton" virtualName=""
-              explicitFocusOrder="0" pos="-5Cr 0R 139 42" posRelativeY="fee11f38ba63ec9"
-              buttonText="..." connectedEdges="4" needsCallback="1" radioGroupId="0"/>
-  <JUCERCOMP name="" id="ab3649d51aa02a67" memberName="component2" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 3R 284 24" posRelativeY="fee11f38ba63ec9"
-             sourceFile="../Themes/ShadowDownwards.cpp" constructorParams=""/>
+              explicitFocusOrder="0" pos="4 4Rr 200 48" buttonText="..." connectedEdges="6"
+              needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="okButton" virtualName=""
-              explicitFocusOrder="0" pos="5C 0R 139 42" posRelativeY="fee11f38ba63ec9"
-              buttonText="..." connectedEdges="4" needsCallback="1" radioGroupId="0"/>
+              explicitFocusOrder="0" pos="4Rr 4Rr 201 48" buttonText="..."
+              connectedEdges="5" needsCallback="1" radioGroupId="0"/>
+  <JUCERCOMP name="" id="e39d9e103e2a60e6" memberName="separatorH" virtualName=""
+             explicitFocusOrder="0" pos="4 52Rr 8M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
+             constructorParams=""/>
+  <JUCERCOMP name="" id="1fb927654787aaf4" memberName="separatorV" virtualName=""
+             explicitFocusOrder="0" pos="0Cc 4Rr 2 48" sourceFile="../Themes/SeparatorVertical.cpp"
+             constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

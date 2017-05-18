@@ -90,10 +90,9 @@ private:
 AuthorizationDialog::AuthorizationDialog()
 {
     addAndMakeVisible (background = new PanelC());
-    addAndMakeVisible (panel = new PanelA());
     addAndMakeVisible (loginButton = new TextButton (String()));
     loginButton->setButtonText (TRANS("dialog::auth::proceed"));
-    loginButton->setConnectedEdges (Button::ConnectedOnTop);
+    loginButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnTop);
     loginButton->addListener (this);
 
     addAndMakeVisible (emailEditor = new Label (String(),
@@ -109,7 +108,7 @@ AuthorizationDialog::AuthorizationDialog()
     addAndMakeVisible (emailLabel = new Label (String(),
                                                TRANS("dialog::auth::email")));
     emailLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    emailLabel->setJustificationType (Justification::centredRight);
+    emailLabel->setJustificationType (Justification::topRight);
     emailLabel->setEditable (false, false, false);
     emailLabel->setColour (Label::textColourId, Colour (0x77ffffff));
     emailLabel->setColour (TextEditor::textColourId, Colours::black);
@@ -118,20 +117,21 @@ AuthorizationDialog::AuthorizationDialog()
     addAndMakeVisible (passwordLabel = new Label (String(),
                                                   TRANS("dialog::auth::password")));
     passwordLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    passwordLabel->setJustificationType (Justification::centredRight);
+    passwordLabel->setJustificationType (Justification::topRight);
     passwordLabel->setEditable (false, false, false);
     passwordLabel->setColour (Label::textColourId, Colour (0x77ffffff));
     passwordLabel->setColour (TextEditor::textColourId, Colours::black);
     passwordLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (shadow = new ShadowDownwards());
     addAndMakeVisible (cancelButton = new TextButton (String()));
     cancelButton->setButtonText (TRANS("dialog::auth::cancel"));
-    cancelButton->setConnectedEdges (Button::ConnectedOnTop);
+    cancelButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnTop);
     cancelButton->addListener (this);
 
     addAndMakeVisible (passwordEditor = new LabelWithPassword());
 
+    addAndMakeVisible (separatorH = new SeparatorHorizontal());
+    addAndMakeVisible (separatorV = new SeparatorVertical());
 
     //[UserPreSize]
     const String lastLogin = Config::get(Serialization::Core::lastUsedLogin);
@@ -154,9 +154,11 @@ AuthorizationDialog::AuthorizationDialog()
     this->passwordEditor->addListener (this);
     this->passwordEditor->setPasswordCharacter(static_cast<juce_wchar>(0x00B7));
     this->passwordEditor->setText("111", sendNotification);
+
+	this->separatorH->setAlphaMultiplier(2.5f);
     //[/UserPreSize]
 
-    setSize (530, 230);
+    setSize (530, 210);
 
     //[Constructor]
     this->rebound();
@@ -170,14 +172,14 @@ AuthorizationDialog::~AuthorizationDialog()
     //[/Destructor_pre]
 
     background = nullptr;
-    panel = nullptr;
     loginButton = nullptr;
     emailEditor = nullptr;
     emailLabel = nullptr;
     passwordLabel = nullptr;
-    shadow = nullptr;
     cancelButton = nullptr;
     passwordEditor = nullptr;
+    separatorH = nullptr;
+    separatorV = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -188,8 +190,14 @@ void AuthorizationDialog::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x59000000));
-    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 10.000f);
+    {
+        float x = 0.0f, y = 0.0f, width = static_cast<float> (getWidth() - 0), height = static_cast<float> (getHeight() - 0);
+        Colour fillColour = Colour (0x59000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRoundedRectangle (x, y, width, height, 10.000f);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -200,15 +208,15 @@ void AuthorizationDialog::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    background->setBounds ((getWidth() / 2) - (520 / 2), 5, 520, getHeight() - 10);
-    panel->setBounds (15, 15, getWidth() - 30, getHeight() - 78);
-    loginButton->setBounds (((getWidth() / 2) - (520 / 2)) + 520 / 2 + 68 - (346 / 2), getHeight() - 63, 346, 46);
-    emailEditor->setBounds ((getWidth() / 2) + 50 - (361 / 2), 5 + 36, 361, 40);
-    emailLabel->setBounds ((getWidth() / 2) + -186 - (96 / 2), 5 + 28, 96, 22);
-    passwordLabel->setBounds ((getWidth() / 2) + -186 - (96 / 2), 5 + 88, 96, 22);
-    shadow->setBounds (((getWidth() / 2) - (520 / 2)) + 520 / 2 - (480 / 2), getHeight() - 66, 480, 24);
-    cancelButton->setBounds (((getWidth() / 2) - (520 / 2)) + 520 / 2 + -181 - (120 / 2), getHeight() - 63, 120, 46);
-    passwordEditor->setBounds ((getWidth() / 2) + 50 - (361 / 2), 96, 361, 40);
+    background->setBounds ((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
+    loginButton->setBounds (getWidth() - 4 - 390, getHeight() - 4 - 48, 390, 48);
+    emailEditor->setBounds ((getWidth() / 2) + 54 - (369 / 2), 4 + 32, 369, 40);
+    emailLabel->setBounds ((getWidth() / 2) + -194 - (111 / 2), 4 + 24, 111, 47);
+    passwordLabel->setBounds ((getWidth() / 2) + -194 - (111 / 2), 4 + 84, 111, 51);
+    cancelButton->setBounds (4, getHeight() - 4 - 48, 131, 48);
+    passwordEditor->setBounds ((getWidth() / 2) + 54 - (369 / 2), 92, 369, 40);
+    separatorH->setBounds (4, getHeight() - 52 - 2, getWidth() - 8, 2);
+    separatorV->setBounds (134, getHeight() - 4 - 48, 2, 48);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -370,7 +378,7 @@ BEGIN_JUCER_METADATA
                  componentName="" parentClasses="public FadingDialog, private ChangeListener"
                  constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="530"
-                 initialHeight="230">
+                 initialHeight="210">
   <METHODS>
     <METHOD name="parentHierarchyChanged()"/>
     <METHOD name="parentSizeChanged()"/>
@@ -381,43 +389,41 @@ BEGIN_JUCER_METADATA
     <ROUNDRECT pos="0 0 0M 0M" cornerSize="10" fill="solid: 59000000" hasStroke="0"/>
   </BACKGROUND>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 5 520 10M" posRelativeH="ac3897c4f32c4354"
+             explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
              sourceFile="../Themes/PanelC.cpp" constructorParams=""/>
-  <JUCERCOMP name="" id="c55a4a1bfd41a78f" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="15 15 30M 78M" sourceFile="../Themes/PanelA.cpp"
-             constructorParams=""/>
   <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="loginButton" virtualName=""
-              explicitFocusOrder="0" pos="68Cc 63R 346 46" posRelativeX="e96b77baef792d3a"
-              buttonText="dialog::auth::proceed" connectedEdges="4" needsCallback="1"
-              radioGroupId="0"/>
+              explicitFocusOrder="0" pos="4Rr 4Rr 390 48" buttonText="dialog::auth::proceed"
+              connectedEdges="5" needsCallback="1" radioGroupId="0"/>
   <LABEL name="" id="9c63b5388edfe183" memberName="emailEditor" virtualName=""
-         explicitFocusOrder="0" pos="50.5Cc 36 361 40" posRelativeY="e96b77baef792d3a"
+         explicitFocusOrder="0" pos="54.5Cc 32 369 40" posRelativeY="e96b77baef792d3a"
          textCol="ffffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
          editableSingleClick="1" editableDoubleClick="1" focusDiscardsChanges="0"
          fontname="Default serif font" fontsize="37" kerning="0" bold="0"
          italic="0" justification="33"/>
   <LABEL name="" id="cf32360d33639f7f" memberName="emailLabel" virtualName=""
-         explicitFocusOrder="0" pos="-186Cc 28 96 22" posRelativeY="e96b77baef792d3a"
+         explicitFocusOrder="0" pos="-193.5Cc 24 111 47" posRelativeY="e96b77baef792d3a"
          textCol="77ffffff" edTextCol="ff000000" edBkgCol="0" labelText="dialog::auth::email"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default serif font" fontsize="21" kerning="0" bold="0"
-         italic="0" justification="34"/>
+         italic="0" justification="10"/>
   <LABEL name="" id="c134a00c2bb2de66" memberName="passwordLabel" virtualName=""
-         explicitFocusOrder="0" pos="-186Cc 88 96 22" posRelativeY="e96b77baef792d3a"
+         explicitFocusOrder="0" pos="-193.5Cc 84 111 51" posRelativeY="e96b77baef792d3a"
          textCol="77ffffff" edTextCol="ff000000" edBkgCol="0" labelText="dialog::auth::password"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default serif font" fontsize="21" kerning="0" bold="0"
-         italic="0" justification="34"/>
-  <JUCERCOMP name="" id="ab3649d51aa02a67" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 66R 480 24" posRelativeX="e96b77baef792d3a"
-             sourceFile="../Themes/ShadowDownwards.cpp" constructorParams=""/>
+         italic="0" justification="10"/>
   <TEXTBUTTON name="" id="27c5d30533a1f7a9" memberName="cancelButton" virtualName=""
-              explicitFocusOrder="0" pos="-181Cc 63R 120 46" posRelativeX="e96b77baef792d3a"
-              buttonText="dialog::auth::cancel" connectedEdges="4" needsCallback="1"
-              radioGroupId="0"/>
+              explicitFocusOrder="0" pos="4 4Rr 131 48" buttonText="dialog::auth::cancel"
+              connectedEdges="6" needsCallback="1" radioGroupId="0"/>
   <GENERICCOMPONENT name="" id="ac81a17122003703" memberName="passwordEditor" virtualName=""
-                    explicitFocusOrder="0" pos="50.5Cc 96 361 40" class="LabelWithPassword"
+                    explicitFocusOrder="0" pos="54.5Cc 92 369 40" class="LabelWithPassword"
                     params=""/>
+  <JUCERCOMP name="" id="e39d9e103e2a60e6" memberName="separatorH" virtualName=""
+             explicitFocusOrder="0" pos="4 52Rr 8M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
+             constructorParams=""/>
+  <JUCERCOMP name="" id="1fb927654787aaf4" memberName="separatorV" virtualName=""
+             explicitFocusOrder="0" pos="134 4Rr 2 48" sourceFile="../Themes/SeparatorVertical.cpp"
+             constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

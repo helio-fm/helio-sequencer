@@ -41,7 +41,6 @@ RenderDialog::RenderDialog(ProjectTreeItem &parentProject, const File &renderTo,
       shouldRenderAfterDialogCompletes(false)
 {
     addAndMakeVisible (background = new PanelC());
-    addAndMakeVisible (frame = new PanelA());
     addAndMakeVisible (renderButton = new TextButton (String()));
     renderButton->setButtonText (TRANS("dialog::render::proceed"));
     renderButton->setConnectedEdges (Button::ConnectedOnTop);
@@ -66,10 +65,9 @@ RenderDialog::RenderDialog(ProjectTreeItem &parentProject, const File &renderTo,
     filenameLabel->setColour (TextEditor::textColourId, Colours::black);
     filenameLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (shadow = new ShadowDownwards());
     addAndMakeVisible (cancelButton = new TextButton (String()));
     cancelButton->setButtonText (TRANS("dialog::render::close"));
-    cancelButton->setConnectedEdges (Button::ConnectedOnTop);
+    cancelButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnTop);
     cancelButton->addListener (this);
 
     addAndMakeVisible (slider = new Slider (String()));
@@ -92,6 +90,7 @@ RenderDialog::RenderDialog(ProjectTreeItem &parentProject, const File &renderTo,
     pathEditor->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (component3 = new SeparatorHorizontalFading());
+    addAndMakeVisible (separatorH = new SeparatorHorizontal());
 
     //[UserPreSize]
     // just in case..
@@ -102,7 +101,9 @@ RenderDialog::RenderDialog(ProjectTreeItem &parentProject, const File &renderTo,
     this->slider->setEnabled(false);
     this->slider->setRange(0.0, 1.0, 0.01);
 
-    this->pathEditor->setText(renderTo.getParentDirectory().getFullPathName(), dontSendNotification);
+	this->separatorH->setAlphaMultiplier(2.5f);
+
+	this->pathEditor->setText(renderTo.getParentDirectory().getFullPathName(), dontSendNotification);
     this->filenameEditor->setText(renderTo.getFileName(), dontSendNotification);
 
 #if JUCE_MAC
@@ -110,7 +111,7 @@ RenderDialog::RenderDialog(ProjectTreeItem &parentProject, const File &renderTo,
 #endif
     //[/UserPreSize]
 
-    setSize (520, 230);
+    setSize (520, 224);
 
     //[Constructor]
     this->rebound();
@@ -124,17 +125,16 @@ RenderDialog::~RenderDialog()
     //[/Destructor_pre]
 
     background = nullptr;
-    frame = nullptr;
     renderButton = nullptr;
     filenameEditor = nullptr;
     filenameLabel = nullptr;
-    shadow = nullptr;
     cancelButton = nullptr;
     slider = nullptr;
     indicator = nullptr;
     browseButton = nullptr;
     pathEditor = nullptr;
     component3 = nullptr;
+    separatorH = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -145,8 +145,14 @@ void RenderDialog::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x59000000));
-    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 10.000f);
+    {
+        float x = 0.0f, y = 0.0f, width = static_cast<float> (getWidth() - 0), height = static_cast<float> (getHeight() - 0);
+        Colour fillColour = Colour (0x59000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRoundedRectangle (x, y, width, height, 10.000f);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -157,18 +163,17 @@ void RenderDialog::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    background->setBounds ((getWidth() / 2) - (510 / 2), 5, 510, getHeight() - 10);
-    frame->setBounds ((getWidth() / 2) - (490 / 2), 15, 490, 156);
-    renderButton->setBounds ((getWidth() / 2) + 80 - (292 / 2), getHeight() - 59, 292, 42);
-    filenameEditor->setBounds ((getWidth() / 2) + 25 - (406 / 2), 5 + 75, 406, 32);
-    filenameLabel->setBounds ((getWidth() / 2) + 25 - (406 / 2), 5 + 25, 406, 22);
-    shadow->setBounds ((getWidth() / 2) - (454 / 2), getHeight() - 61, 454, 24);
-    cancelButton->setBounds ((getWidth() / 2) + -154 - (145 / 2), getHeight() - 59, 145, 42);
-    slider->setBounds ((getWidth() / 2) + 24 - (392 / 2), 137, 392, 12);
-    indicator->setBounds ((getWidth() / 2) + -206 - (32 / 2), 137 + 12 / 2 + -2 - (32 / 2), 32, 32);
-    browseButton->setBounds (getWidth() - 442 - 48, 63, 48, 48);
-    pathEditor->setBounds ((getWidth() / 2) + 25 - (406 / 2), 5 + 52, 406, 24);
+    background->setBounds ((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
+    renderButton->setBounds (getWidth() - 4 - (getWidth() - 8), getHeight() - 4 - 48, getWidth() - 8, 48);
+    filenameEditor->setBounds ((getWidth() / 2) + 25 - (406 / 2), 4 + 71, 406, 32);
+    filenameLabel->setBounds ((getWidth() / 2) + 29 - (414 / 2), 4 + 16, 414, 22);
+    cancelButton->setBounds (0, getHeight() - -74 - 48, 255, 48);
+    slider->setBounds ((getWidth() / 2) + 24 - (392 / 2), 139, 392, 12);
+    indicator->setBounds ((getWidth() / 2) + -212 - (32 / 2), 139 + 12 / 2 + -2 - (32 / 2), 32, 32);
+    browseButton->setBounds (getWidth() - 448 - 48, 59, 48, 48);
+    pathEditor->setBounds ((getWidth() / 2) + 25 - (406 / 2), 4 + 48, 406, 24);
     component3->setBounds (32, 121, 456, 8);
+    separatorH->setBounds (4, getHeight() - 52 - 2, getWidth() - 8, 2);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -376,7 +381,7 @@ BEGIN_JUCER_METADATA
                  constructorParams="ProjectTreeItem &amp;parentProject, const File &amp;renderTo, const String &amp;formatExtension"
                  variableInitialisers="project(parentProject),&#10;extension(formatExtension.toLowerCase()),&#10;shouldRenderAfterDialogCompletes(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="520" initialHeight="230">
+                 fixedSize="1" initialWidth="520" initialHeight="224">
   <METHODS>
     <METHOD name="parentHierarchyChanged()"/>
     <METHOD name="parentSizeChanged()"/>
@@ -388,50 +393,47 @@ BEGIN_JUCER_METADATA
     <ROUNDRECT pos="0 0 0M 0M" cornerSize="10" fill="solid: 59000000" hasStroke="0"/>
   </BACKGROUND>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 5 510 10M" posRelativeH="ac3897c4f32c4354"
+             explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
              sourceFile="../Themes/PanelC.cpp" constructorParams=""/>
-  <JUCERCOMP name="" id="fee11f38ba63ec9" memberName="frame" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 15 490 156" sourceFile="../Themes/PanelA.cpp"
-             constructorParams=""/>
   <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="renderButton" virtualName=""
-              explicitFocusOrder="0" pos="80Cc 59R 292 42" buttonText="dialog::render::proceed"
+              explicitFocusOrder="0" pos="4Rr 4Rr 8M 48" buttonText="dialog::render::proceed"
               connectedEdges="4" needsCallback="1" radioGroupId="0"/>
   <LABEL name="" id="9c63b5388edfe183" memberName="filenameEditor" virtualName=""
-         explicitFocusOrder="0" pos="25Cc 75 406 32" posRelativeY="e96b77baef792d3a"
+         explicitFocusOrder="0" pos="25Cc 71 406 32" posRelativeY="e96b77baef792d3a"
          textCol="ffffffff" edTextCol="ffffffff" edBkgCol="0" labelText="..."
          editableSingleClick="1" editableDoubleClick="1" focusDiscardsChanges="0"
          fontname="Default serif font" fontsize="28" kerning="0" bold="0"
          italic="0" justification="9"/>
   <LABEL name="" id="cf32360d33639f7f" memberName="filenameLabel" virtualName=""
-         explicitFocusOrder="0" pos="25Cc 25 406 22" posRelativeY="e96b77baef792d3a"
+         explicitFocusOrder="0" pos="29Cc 16 414 22" posRelativeY="e96b77baef792d3a"
          textCol="77ffffff" edTextCol="ff000000" edBkgCol="0" labelText="dialog::render::caption"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default serif font" fontsize="21" kerning="0" bold="0"
          italic="0" justification="33"/>
-  <JUCERCOMP name="" id="ab3649d51aa02a67" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 61R 454 24" sourceFile="../Themes/ShadowDownwards.cpp"
-             constructorParams=""/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="cancelButton" virtualName=""
-              explicitFocusOrder="0" pos="-154.5Cc 59R 145 42" buttonText="dialog::render::close"
-              connectedEdges="4" needsCallback="1" radioGroupId="0"/>
+              explicitFocusOrder="0" pos="0 -74Rr 255 48" buttonText="dialog::render::close"
+              connectedEdges="6" needsCallback="1" radioGroupId="0"/>
   <SLIDER name="" id="53d73eae72d7741b" memberName="slider" virtualName=""
-          explicitFocusOrder="0" pos="24Cc 137 392 12" min="0" max="1000"
+          explicitFocusOrder="0" pos="24Cc 139 392 12" min="0" max="1000"
           int="0" style="LinearBar" textBoxPos="NoTextBox" textBoxEditable="0"
           textBoxWidth="80" textBoxHeight="20" skewFactor="1" needsCallback="1"/>
   <GENERICCOMPONENT name="" id="92641fd94a728225" memberName="indicator" virtualName=""
-                    explicitFocusOrder="0" pos="-206Cc -2Cc 32 32" posRelativeY="53d73eae72d7741b"
+                    explicitFocusOrder="0" pos="-212Cc -2Cc 32 32" posRelativeY="53d73eae72d7741b"
                     class="ProgressIndicator" params=""/>
   <GENERICCOMPONENT name="" id="62a5bd7c1a3ec2" memberName="browseButton" virtualName=""
-                    explicitFocusOrder="0" pos="442Rr 63 48 48" class="CommandItemComponent"
+                    explicitFocusOrder="0" pos="448Rr 59 48 48" class="CommandItemComponent"
                     params="this, nullptr, CommandItem::withParams(Icons::open, CommandIDs::Browse)"/>
   <LABEL name="" id="2310f57af9b4eefb" memberName="pathEditor" virtualName=""
-         explicitFocusOrder="0" pos="25Cc 52 406 24" posRelativeY="e96b77baef792d3a"
+         explicitFocusOrder="0" pos="25Cc 48 406 24" posRelativeY="e96b77baef792d3a"
          textCol="bcffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default serif font" fontsize="16" kerning="0" bold="0"
          italic="0" justification="33"/>
   <JUCERCOMP name="" id="ab3833b58a212645" memberName="component3" virtualName=""
              explicitFocusOrder="0" pos="32 121 456 8" sourceFile="../Themes/SeparatorHorizontalFading.cpp"
+             constructorParams=""/>
+  <JUCERCOMP name="" id="e39d9e103e2a60e6" memberName="separatorH" virtualName=""
+             explicitFocusOrder="0" pos="4 52Rr 8M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

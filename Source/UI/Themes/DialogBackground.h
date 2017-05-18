@@ -45,7 +45,7 @@ public:
     { this->setSize(this->getParentWidth(), this->getParentHeight()); }
 
     void paint(Graphics &g) override
-    { g.fillAll(Colours::white.withAlpha(0.05f)); }
+    { g.fillAll(Colours::black.withAlpha(0.1f)); }
 
 private:
 

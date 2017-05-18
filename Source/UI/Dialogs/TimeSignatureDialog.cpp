@@ -28,10 +28,10 @@
 static StringArray getMeters()
 {
 	StringArray c;
-	c.add("4/4");
 	c.add("2/2");
 	c.add("2/4");
 	c.add("3/4");
+	c.add("4/4");
 	c.add("5/8");
 	c.add("6/8");
 	c.add("7/8");
@@ -49,7 +49,6 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesLayer *
       hasMadeChanges(false)
 {
     addAndMakeVisible (background = new PanelC());
-    addAndMakeVisible (panel = new PanelA());
     addAndMakeVisible (messageLabel = new Label (String(),
                                                  TRANS("...")));
     messageLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
@@ -61,13 +60,12 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesLayer *
 
     addAndMakeVisible (removeEventButton = new TextButton (String()));
     removeEventButton->setButtonText (TRANS("..."));
-    removeEventButton->setConnectedEdges (Button::ConnectedOnTop);
+    removeEventButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnTop);
     removeEventButton->addListener (this);
 
-    addAndMakeVisible (shadow = new ShadowDownwards());
     addAndMakeVisible (okButton = new TextButton (String()));
     okButton->setButtonText (TRANS("..."));
-    okButton->setConnectedEdges (Button::ConnectedOnTop);
+    okButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnTop);
     okButton->addListener (this);
 
     addAndMakeVisible (textEditor = new ComboBox (String()));
@@ -77,6 +75,8 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesLayer *
     textEditor->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     textEditor->addListener (this);
 
+    addAndMakeVisible (separatorH = new SeparatorHorizontal());
+    addAndMakeVisible (separatorV = new SeparatorVertical());
 
     //[UserPreSize]
 	jassert(this->addsNewEvent || this->targetEvent.getLayer() != nullptr);
@@ -106,9 +106,11 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesLayer *
     this->textEditor->setText(this->targetEvent.toString(), dontSendNotification);
 	this->textEditor->addItemList(getMeters(), 1);
 	this->textEditor->addListener(this);
+
+	this->separatorH->setAlphaMultiplier(2.5f);
     //[/UserPreSize]
 
-    setSize (450, 175);
+    setSize (370, 165);
 
     //[Constructor]
     this->rebound();
@@ -134,12 +136,12 @@ TimeSignatureDialog::~TimeSignatureDialog()
     //[/Destructor_pre]
 
     background = nullptr;
-    panel = nullptr;
     messageLabel = nullptr;
     removeEventButton = nullptr;
-    shadow = nullptr;
     okButton = nullptr;
     textEditor = nullptr;
+    separatorH = nullptr;
+    separatorV = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -150,8 +152,14 @@ void TimeSignatureDialog::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x59000000));
-    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 10.000f);
+    {
+        float x = 0.0f, y = 0.0f, width = static_cast<float> (getWidth() - 0), height = static_cast<float> (getHeight() - 0);
+        Colour fillColour = Colour (0x59000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRoundedRectangle (x, y, width, height, 10.000f);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -162,13 +170,13 @@ void TimeSignatureDialog::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    background->setBounds ((getWidth() / 2) - ((getWidth() - 10) / 2), 5, getWidth() - 10, getHeight() - 10);
-    panel->setBounds ((getWidth() / 2) - ((getWidth() - 30) / 2), 15, getWidth() - 30, 100);
-    messageLabel->setBounds ((getWidth() / 2) - ((getWidth() - 60) / 2), 5 + 16, getWidth() - 60, 36);
-    removeEventButton->setBounds ((getWidth() / 2) + -5 - 150, 15 + 100, 150, 42);
-    shadow->setBounds ((getWidth() / 2) - (310 / 2), 15 + 100 - 3, 310, 24);
-    okButton->setBounds ((getWidth() / 2) + 5, 15 + 100, 150, 42);
-    textEditor->setBounds ((getWidth() / 2) - ((getWidth() - 60) / 2), 62, getWidth() - 60, 36);
+    background->setBounds ((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
+    messageLabel->setBounds ((getWidth() / 2) - ((getWidth() - 32) / 2), 4 + 12, getWidth() - 32, 36);
+    removeEventButton->setBounds (4, getHeight() - 4 - 48, 180, 48);
+    okButton->setBounds (getWidth() - 4 - 181, getHeight() - 4 - 48, 181, 48);
+    textEditor->setBounds ((getWidth() / 2) - ((getWidth() - 48) / 2), 58, getWidth() - 48, 36);
+    separatorH->setBounds (4, getHeight() - 52 - 2, getWidth() - 8, 2);
+    separatorV->setBounds ((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
     //[UserResized] Add your own custom resize handling here..
     this->textEditor->grabKeyboardFocus();
     //[/UserResized]
@@ -191,7 +199,7 @@ void TimeSignatureDialog::buttonClicked (Button* buttonThatWasClicked)
 			this->removeEvent();
 			this->disappear();
 		}
-		//[/UserButtonCode_removeEventButton]
+        //[/UserButtonCode_removeEventButton]
     }
     else if (buttonThatWasClicked == okButton)
     {
@@ -230,7 +238,7 @@ void TimeSignatureDialog::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 
 			this->sendEventChange(newEvent);
 		}
-		//[/UserComboBoxCode_textEditor]
+        //[/UserComboBoxCode_textEditor]
     }
 
     //[UsercomboBoxChanged_Post]
@@ -388,7 +396,7 @@ BEGIN_JUCER_METADATA
                  constructorParams="Component &amp;owner, TimeSignaturesLayer *signaturesLayer, const TimeSignatureEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
                  variableInitialisers="targetEvent(editedEvent),&#10;targetLayer(signaturesLayer),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="450" initialHeight="175">
+                 fixedSize="1" initialWidth="370" initialHeight="165">
   <METHODS>
     <METHOD name="parentSizeChanged()"/>
     <METHOD name="parentHierarchyChanged()"/>
@@ -401,29 +409,29 @@ BEGIN_JUCER_METADATA
     <ROUNDRECT pos="0 0 0M 0M" cornerSize="10" fill="solid: 59000000" hasStroke="0"/>
   </BACKGROUND>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 5 10M 10M" posRelativeH="ac3897c4f32c4354"
+             explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
              sourceFile="../Themes/PanelC.cpp" constructorParams=""/>
-  <JUCERCOMP name="" id="fee11f38ba63ec9" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 15 30M 100" sourceFile="../Themes/PanelA.cpp"
-             constructorParams=""/>
   <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
-         explicitFocusOrder="0" pos="0Cc 16 60M 36" posRelativeY="e96b77baef792d3a"
+         explicitFocusOrder="0" pos="0Cc 12 32M 36" posRelativeY="e96b77baef792d3a"
          textCol="ffffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default serif font" fontsize="21" kerning="0" bold="0"
          italic="0" justification="36"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="removeEventButton"
-              virtualName="" explicitFocusOrder="0" pos="-5Cr 0R 150 42" posRelativeY="fee11f38ba63ec9"
-              buttonText="..." connectedEdges="4" needsCallback="1" radioGroupId="0"/>
-  <JUCERCOMP name="" id="ab3649d51aa02a67" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 3R 310 24" posRelativeY="fee11f38ba63ec9"
-             sourceFile="../Themes/ShadowDownwards.cpp" constructorParams=""/>
+              virtualName="" explicitFocusOrder="0" pos="4 4Rr 180 48" buttonText="..."
+              connectedEdges="6" needsCallback="1" radioGroupId="0"/>
   <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="okButton" virtualName=""
-              explicitFocusOrder="0" pos="5C 0R 150 42" posRelativeY="fee11f38ba63ec9"
-              buttonText="..." connectedEdges="4" needsCallback="1" radioGroupId="0"/>
+              explicitFocusOrder="0" pos="4Rr 4Rr 181 48" buttonText="..."
+              connectedEdges="5" needsCallback="1" radioGroupId="0"/>
   <COMBOBOX name="" id="1923d71c308d2169" memberName="textEditor" virtualName=""
-            explicitFocusOrder="0" pos="0Cc 62 60M 36" editable="1" layout="33"
+            explicitFocusOrder="0" pos="0Cc 58 48M 36" editable="1" layout="33"
             items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
+  <JUCERCOMP name="" id="e39d9e103e2a60e6" memberName="separatorH" virtualName=""
+             explicitFocusOrder="0" pos="4 52Rr 8M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
+             constructorParams=""/>
+  <JUCERCOMP name="" id="1fb927654787aaf4" memberName="separatorV" virtualName=""
+             explicitFocusOrder="0" pos="0Cc 4Rr 2 48" sourceFile="../Themes/SeparatorVertical.cpp"
+             constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

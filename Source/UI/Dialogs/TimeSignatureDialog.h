@@ -25,8 +25,8 @@ class TimeSignaturesLayer;
 //[/Headers]
 
 #include "../Themes/PanelC.h"
-#include "../Themes/PanelA.h"
-#include "../Themes/ShadowDownwards.h"
+#include "../Themes/SeparatorHorizontal.h"
+#include "../Themes/SeparatorVertical.h"
 
 class TimeSignatureDialog  : public FadingDialog,
                              public TextEditorListener,
@@ -80,12 +80,12 @@ private:
     //[/UserVariables]
 
     ScopedPointer<PanelC> background;
-    ScopedPointer<PanelA> panel;
     ScopedPointer<Label> messageLabel;
     ScopedPointer<TextButton> removeEventButton;
-    ScopedPointer<ShadowDownwards> shadow;
     ScopedPointer<TextButton> okButton;
     ScopedPointer<ComboBox> textEditor;
+    ScopedPointer<SeparatorHorizontal> separatorH;
+    ScopedPointer<SeparatorVertical> separatorV;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeSignatureDialog)
 };

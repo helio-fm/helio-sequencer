@@ -37,7 +37,6 @@
 UpdateDialog::UpdateDialog()
 {
     addAndMakeVisible (background = new PanelC());
-    addAndMakeVisible (panel = new PanelA());
     addAndMakeVisible (updateButton = new TextButton (String()));
     updateButton->setButtonText (TRANS("dialog::update::proceed"));
     updateButton->setConnectedEdges (Button::ConnectedOnTop);
@@ -99,7 +98,7 @@ UpdateDialog::UpdateDialog()
     forceUpdateButton->setConnectedEdges (Button::ConnectedOnTop);
     forceUpdateButton->addListener (this);
 
-    addAndMakeVisible (shadow = new ShadowDownwards());
+    addAndMakeVisible (separatorH = new SeparatorHorizontal());
 
     //[UserPreSize]
     UpdateManager *updater = App::Helio()->getUpdateManager();
@@ -119,9 +118,11 @@ UpdateDialog::UpdateDialog()
         this->updateButton->setVisible(true);
         this->forceUpdateButton->setVisible(false);
     }
-    //[/UserPreSize]
+	
+	this->separatorH->setAlphaMultiplier(2.5f);
+	//[/UserPreSize]
 
-    setSize (500, 200);
+    setSize (500, 190);
 
     //[Constructor]
     this->rebound();
@@ -135,7 +136,6 @@ UpdateDialog::~UpdateDialog()
     //[/Destructor_pre]
 
     background = nullptr;
-    panel = nullptr;
     updateButton = nullptr;
     titleLabel = nullptr;
     cancelButton = nullptr;
@@ -144,7 +144,7 @@ UpdateDialog::~UpdateDialog()
     installedVersionLabel = nullptr;
     availableVersionLabel = nullptr;
     forceUpdateButton = nullptr;
-    shadow = nullptr;
+    separatorH = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -155,8 +155,14 @@ void UpdateDialog::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x59000000));
-    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 10.000f);
+    {
+        float x = 0.0f, y = 0.0f, width = static_cast<float> (getWidth() - 0), height = static_cast<float> (getHeight() - 0);
+        Colour fillColour = Colour (0x59000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRoundedRectangle (x, y, width, height, 10.000f);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -167,17 +173,16 @@ void UpdateDialog::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    background->setBounds ((getWidth() / 2) - (490 / 2), 5, 490, getHeight() - 10);
-    panel->setBounds ((getWidth() / 2) - (470 / 2), 15, 470, 126);
-    updateButton->setBounds ((getWidth() / 2) + 76 - (283 / 2), 15 + 126, 283, 42);
-    titleLabel->setBounds ((getWidth() / 2) + -2 - (448 / 2), 5 + 19, 448, 40);
-    cancelButton->setBounds ((getWidth() / 2) + -150 - (136 / 2), 15 + 126, 136, 42);
-    descriptionLabel1->setBounds ((getWidth() / 2) + -114 - (208 / 2), 5 + 67, 208, 24);
-    descriptionLabel2->setBounds ((getWidth() / 2) + -114 - (208 / 2), 5 + 95, 208, 24);
-    installedVersionLabel->setBounds ((getWidth() / 2) + 106 - (216 / 2), 5 + 67, 216, 24);
-    availableVersionLabel->setBounds ((getWidth() / 2) + 106 - (216 / 2), 5 + 95, 216, 24);
-    forceUpdateButton->setBounds ((getWidth() / 2) - (435 / 2), 15 + 126, 435, 42);
-    shadow->setBounds ((getWidth() / 2) - (434 / 2), 15 + 126 - 2, 434, 32);
+    background->setBounds ((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
+    updateButton->setBounds ((getWidth() / 2) + 76 - (283 / 2), getHeight(), 283, 42);
+    titleLabel->setBounds ((getWidth() / 2) - (464 / 2), 4 + 15, 464, 40);
+    cancelButton->setBounds ((getWidth() / 2) + -150 - (136 / 2), getHeight(), 136, 42);
+    descriptionLabel1->setBounds ((getWidth() / 2) + -114 - (208 / 2), 4 + 59, 208, 24);
+    descriptionLabel2->setBounds ((getWidth() / 2) + -114 - (208 / 2), 4 + 87, 208, 24);
+    installedVersionLabel->setBounds ((getWidth() / 2) + 106 - (216 / 2), 4 + 63, 216, 24);
+    availableVersionLabel->setBounds ((getWidth() / 2) + 106 - (216 / 2), 4 + 91, 216, 24);
+    forceUpdateButton->setBounds (4, getHeight() - 4 - 48, getWidth() - 8, 48);
+    separatorH->setBounds (4, getHeight() - 52 - 2, getWidth() - 8, 2);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -269,7 +274,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="UpdateDialog" template="../../Template"
                  componentName="" parentClasses="public FadingDialog" constructorParams=""
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="500" initialHeight="200">
+                 overlayOpacity="0.330" fixedSize="1" initialWidth="500" initialHeight="190">
   <METHODS>
     <METHOD name="parentHierarchyChanged()"/>
     <METHOD name="parentSizeChanged()"/>
@@ -280,17 +285,14 @@ BEGIN_JUCER_METADATA
     <ROUNDRECT pos="0 0 0M 0M" cornerSize="10" fill="solid: 59000000" hasStroke="0"/>
   </BACKGROUND>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 5 490 10M" posRelativeH="ac3897c4f32c4354"
+             explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
              sourceFile="../Themes/PanelC.cpp" constructorParams=""/>
-  <JUCERCOMP name="" id="fee11f38ba63ec9" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 15 470 126" sourceFile="../Themes/PanelA.cpp"
-             constructorParams=""/>
   <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="updateButton" virtualName=""
               explicitFocusOrder="0" pos="75.5Cc 0R 283 42" posRelativeY="fee11f38ba63ec9"
               buttonText="dialog::update::proceed" connectedEdges="4" needsCallback="1"
               radioGroupId="0"/>
   <LABEL name="" id="9c63b5388edfe183" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="-2Cc 19 448 40" posRelativeY="e96b77baef792d3a"
+         explicitFocusOrder="0" pos="0Cc 15 464 40" posRelativeY="e96b77baef792d3a"
          textCol="ffffffff" edTextCol="ff000000" edBkgCol="0" labelText="dialog::update::minor"
          editableSingleClick="1" editableDoubleClick="1" focusDiscardsChanges="0"
          fontname="Default serif font" fontsize="28" kerning="0" bold="0"
@@ -300,36 +302,35 @@ BEGIN_JUCER_METADATA
               buttonText="dialog::update::cancel" connectedEdges="4" needsCallback="1"
               radioGroupId="0"/>
   <LABEL name="" id="cf32360d33639f7f" memberName="descriptionLabel1"
-         virtualName="" explicitFocusOrder="0" pos="-114Cc 67 208 24"
+         virtualName="" explicitFocusOrder="0" pos="-114Cc 59 208 24"
          posRelativeY="e96b77baef792d3a" textCol="77ffffff" edTextCol="ff000000"
          edBkgCol="0" labelText="dialog::update::version::installed" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
          fontsize="21" kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="" id="45eb7fb0b9758df1" memberName="descriptionLabel2"
-         virtualName="" explicitFocusOrder="0" pos="-114Cc 95 208 24"
+         virtualName="" explicitFocusOrder="0" pos="-114Cc 87 208 24"
          posRelativeY="e96b77baef792d3a" textCol="99ffffff" edTextCol="ff000000"
          edBkgCol="0" labelText="dialog::update::version::available" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
          fontsize="21" kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="" id="9ee14541a0070623" memberName="installedVersionLabel"
-         virtualName="" explicitFocusOrder="0" pos="106Cc 67 216 24" posRelativeY="e96b77baef792d3a"
+         virtualName="" explicitFocusOrder="0" pos="106Cc 63 216 24" posRelativeY="e96b77baef792d3a"
          textCol="55ffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default serif font" fontsize="21" kerning="0" bold="0"
          italic="0" justification="34"/>
   <LABEL name="" id="c4486b9eacc8fa89" memberName="availableVersionLabel"
-         virtualName="" explicitFocusOrder="0" pos="106Cc 95 216 24" posRelativeY="e96b77baef792d3a"
+         virtualName="" explicitFocusOrder="0" pos="106Cc 91 216 24" posRelativeY="e96b77baef792d3a"
          textCol="77ffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default serif font" fontsize="21" kerning="0" bold="0"
          italic="0" justification="34"/>
   <TEXTBUTTON name="" id="29470b579dfe9508" memberName="forceUpdateButton"
-              virtualName="" explicitFocusOrder="0" pos="-0.5Cc 0R 435 42"
-              posRelativeY="fee11f38ba63ec9" buttonText="dialog::update::proceed"
+              virtualName="" explicitFocusOrder="0" pos="4 4Rr 8M 48" buttonText="dialog::update::proceed"
               connectedEdges="4" needsCallback="1" radioGroupId="0"/>
-  <JUCERCOMP name="" id="ab3649d51aa02a67" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 2R 434 32" posRelativeY="fee11f38ba63ec9"
-             sourceFile="../Themes/ShadowDownwards.cpp" constructorParams=""/>
+  <JUCERCOMP name="" id="e39d9e103e2a60e6" memberName="separatorH" virtualName=""
+             explicitFocusOrder="0" pos="4 52Rr 8M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
+             constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
