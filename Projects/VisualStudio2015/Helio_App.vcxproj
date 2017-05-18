@@ -536,6 +536,13 @@
     <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData.cpp"/>
     <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData2.cpp"/>
     <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData3.cpp"/>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData4.cpp"/>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData5.cpp"/>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData6.cpp"/>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData7.cpp"/>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData8.cpp"/>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData9.cpp"/>
+    <ClCompile Include="..\Projucer\JuceLibraryCode\BinaryData10.cpp"/>
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_audio_basics.cpp"/>
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_audio_devices.cpp"/>
     <ClCompile Include="..\Projucer\JuceLibraryCode\include_juce_audio_formats.cpp"/>

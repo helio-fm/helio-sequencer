@@ -7,26 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Helio", "Helio", "{1B2C2B59
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{A139F6D7-68B6-6010-9674-AA4A8CD1C31D}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\Resources\DefaultArps.xml = ..\..\Resources\DefaultArps.xml
-		..\..\Resources\DefaultTranslations.xml = ..\..\Resources\DefaultTranslations.xml
 		..\..\Resources\Icon.png = ..\..\Resources\Icon.png
 		..\..\Resources\Logo.png = ..\..\Resources\Logo.png
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fonts", "Fonts", "{423539D1-B318-4812-22EC-7CB3CA9607B6}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\Resources\Fonts\comfortaa.font = ..\..\Resources\Fonts\comfortaa.font
-		..\..\Resources\Fonts\lato.fnt = ..\..\Resources\Fonts\lato.fnt
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Themes", "Themes", "{C5F1D0B5-84B7-C0E4-0C0B-C929B3F1EBF5}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\Resources\Themes\ColourSchemes.xml = ..\..\Resources\Themes\ColourSchemes.xml
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backgrounds", "Backgrounds", "{941F4278-BB49-1F74-C221-F6954AA378E9}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\Resources\Themes\Backgrounds\defaultPattern.png = ..\..\Resources\Themes\Backgrounds\defaultPattern.png
+		..\..\Resources\DefaultArps.xml = ..\..\Resources\DefaultArps.xml
+		..\..\Resources\DefaultTranslations.xml = ..\..\Resources\DefaultTranslations.xml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PianoSamples", "PianoSamples", "{FDA9B87F-DE32-54FD-A5B1-769E1A90DB4B}"
@@ -61,6 +45,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PianoSamples", "PianoSample
 		..\..\Resources\PianoSamples\F#5v9.ogg = ..\..\Resources\PianoSamples\F#5v9.ogg
 		..\..\Resources\PianoSamples\F#6v9.ogg = ..\..\Resources\PianoSamples\F#6v9.ogg
 		..\..\Resources\PianoSamples\F#7v9.ogg = ..\..\Resources\PianoSamples\F#7v9.ogg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Fonts", "Fonts", "{423539D1-B318-4812-22EC-7CB3CA9607B6}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\Resources\Fonts\lato.fnt = ..\..\Resources\Fonts\lato.fnt
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Icons", "Icons", "{878B272A-D502-EFFE-6433-63D5715C9745}"
@@ -138,6 +127,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Icons", "Icons", "{878B272A
 		..\..\Resources\Icons\wipe-space.svg = ..\..\Resources\Icons\wipe-space.svg
 		..\..\Resources\Icons\zoom-in.svg = ..\..\Resources\Icons\zoom-in.svg
 		..\..\Resources\Icons\zoom-out.svg = ..\..\Resources\Icons\zoom-out.svg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Themes", "Themes", "{C5F1D0B5-84B7-C0E4-0C0B-C929B3F1EBF5}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\Resources\Themes\ColourSchemes.xml = ..\..\Resources\Themes\ColourSchemes.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Backgrounds", "Backgrounds", "{941F4278-BB49-1F74-C221-F6954AA378E9}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\Resources\Themes\Backgrounds\defaultPattern.png = ..\..\Resources\Themes\Backgrounds\defaultPattern.png
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{66D7B54D-E77C-ADFF-5C4C-9D2D9F8532CC}"
@@ -1568,6 +1567,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{228DF378-D
 		..\..\ThirdParty\JUCE\modules\juce_core\misc\juce_Result.h = ..\..\ThirdParty\JUCE\modules\juce_core\misc\juce_Result.h
 		..\..\ThirdParty\JUCE\modules\juce_core\misc\juce_RuntimePermissions.cpp = ..\..\ThirdParty\JUCE\modules\juce_core\misc\juce_RuntimePermissions.cpp
 		..\..\ThirdParty\JUCE\modules\juce_core\misc\juce_RuntimePermissions.h = ..\..\ThirdParty\JUCE\modules\juce_core\misc\juce_RuntimePermissions.h
+		..\..\ThirdParty\JUCE\modules\juce_core\misc\juce_StdFunctionCompat.cpp = ..\..\ThirdParty\JUCE\modules\juce_core\misc\juce_StdFunctionCompat.cpp
+		..\..\ThirdParty\JUCE\modules\juce_core\misc\juce_StdFunctionCompat.h = ..\..\ThirdParty\JUCE\modules\juce_core\misc\juce_StdFunctionCompat.h
 		..\..\ThirdParty\JUCE\modules\juce_core\misc\juce_Uuid.cpp = ..\..\ThirdParty\JUCE\modules\juce_core\misc\juce_Uuid.cpp
 		..\..\ThirdParty\JUCE\modules\juce_core\misc\juce_Uuid.h = ..\..\ThirdParty\JUCE\modules\juce_core\misc\juce_Uuid.h
 		..\..\ThirdParty\JUCE\modules\juce_core\misc\juce_WindowsRegistry.h = ..\..\ThirdParty\JUCE\modules\juce_core\misc\juce_WindowsRegistry.h
@@ -2286,6 +2287,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lookandfeel", "lookandfeel"
 		..\..\ThirdParty\JUCE\modules\juce_gui_basics\lookandfeel\juce_LookAndFeel_V2.h = ..\..\ThirdParty\JUCE\modules\juce_gui_basics\lookandfeel\juce_LookAndFeel_V2.h
 		..\..\ThirdParty\JUCE\modules\juce_gui_basics\lookandfeel\juce_LookAndFeel_V3.cpp = ..\..\ThirdParty\JUCE\modules\juce_gui_basics\lookandfeel\juce_LookAndFeel_V3.cpp
 		..\..\ThirdParty\JUCE\modules\juce_gui_basics\lookandfeel\juce_LookAndFeel_V3.h = ..\..\ThirdParty\JUCE\modules\juce_gui_basics\lookandfeel\juce_LookAndFeel_V3.h
+		..\..\ThirdParty\JUCE\modules\juce_gui_basics\lookandfeel\juce_LookAndFeel_V4.cpp = ..\..\ThirdParty\JUCE\modules\juce_gui_basics\lookandfeel\juce_LookAndFeel_V4.cpp
+		..\..\ThirdParty\JUCE\modules\juce_gui_basics\lookandfeel\juce_LookAndFeel_V4.h = ..\..\ThirdParty\JUCE\modules\juce_gui_basics\lookandfeel\juce_LookAndFeel_V4.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "menus", "menus", "{806CB070-E860-0A3A-CDA1-F6AEA5A961F1}"
@@ -2304,6 +2307,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "misc", "misc", "{55DD5543-1
 		..\..\ThirdParty\JUCE\modules\juce_gui_basics\misc\juce_BubbleComponent.h = ..\..\ThirdParty\JUCE\modules\juce_gui_basics\misc\juce_BubbleComponent.h
 		..\..\ThirdParty\JUCE\modules\juce_gui_basics\misc\juce_DropShadower.cpp = ..\..\ThirdParty\JUCE\modules\juce_gui_basics\misc\juce_DropShadower.cpp
 		..\..\ThirdParty\JUCE\modules\juce_gui_basics\misc\juce_DropShadower.h = ..\..\ThirdParty\JUCE\modules\juce_gui_basics\misc\juce_DropShadower.h
+		..\..\ThirdParty\JUCE\modules\juce_gui_basics\misc\juce_JUCESplashScreen.cpp = ..\..\ThirdParty\JUCE\modules\juce_gui_basics\misc\juce_JUCESplashScreen.cpp
+		..\..\ThirdParty\JUCE\modules\juce_gui_basics\misc\juce_JUCESplashScreen.h = ..\..\ThirdParty\JUCE\modules\juce_gui_basics\misc\juce_JUCESplashScreen.h
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mouse", "mouse", "{4F197470-F555-0160-9A03-5DC709BDF137}"
@@ -2609,20 +2614,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Juce Library Code", "Juce L
 		..\Projucer\JuceLibraryCode\BinaryData.h = ..\Projucer\JuceLibraryCode\BinaryData.h
 		..\Projucer\JuceLibraryCode\BinaryData2.cpp = ..\Projucer\JuceLibraryCode\BinaryData2.cpp
 		..\Projucer\JuceLibraryCode\BinaryData3.cpp = ..\Projucer\JuceLibraryCode\BinaryData3.cpp
-		..\Projucer\JuceLibraryCode\juce_audio_basics.cpp = ..\Projucer\JuceLibraryCode\juce_audio_basics.cpp
-		..\Projucer\JuceLibraryCode\juce_audio_devices.cpp = ..\Projucer\JuceLibraryCode\juce_audio_devices.cpp
-		..\Projucer\JuceLibraryCode\juce_audio_formats.cpp = ..\Projucer\JuceLibraryCode\juce_audio_formats.cpp
-		..\Projucer\JuceLibraryCode\juce_audio_processors.cpp = ..\Projucer\JuceLibraryCode\juce_audio_processors.cpp
-		..\Projucer\JuceLibraryCode\juce_audio_utils.cpp = ..\Projucer\JuceLibraryCode\juce_audio_utils.cpp
-		..\Projucer\JuceLibraryCode\juce_core.cpp = ..\Projucer\JuceLibraryCode\juce_core.cpp
-		..\Projucer\JuceLibraryCode\juce_cryptography.cpp = ..\Projucer\JuceLibraryCode\juce_cryptography.cpp
-		..\Projucer\JuceLibraryCode\juce_data_structures.cpp = ..\Projucer\JuceLibraryCode\juce_data_structures.cpp
-		..\Projucer\JuceLibraryCode\juce_events.cpp = ..\Projucer\JuceLibraryCode\juce_events.cpp
-		..\Projucer\JuceLibraryCode\juce_graphics.cpp = ..\Projucer\JuceLibraryCode\juce_graphics.cpp
-		..\Projucer\JuceLibraryCode\juce_gui_basics.cpp = ..\Projucer\JuceLibraryCode\juce_gui_basics.cpp
-		..\Projucer\JuceLibraryCode\juce_gui_extra.cpp = ..\Projucer\JuceLibraryCode\juce_gui_extra.cpp
-		..\Projucer\JuceLibraryCode\juce_opengl.cpp = ..\Projucer\JuceLibraryCode\juce_opengl.cpp
-		..\Projucer\JuceLibraryCode\juce_osc.cpp = ..\Projucer\JuceLibraryCode\juce_osc.cpp
+		..\Projucer\JuceLibraryCode\BinaryData4.cpp = ..\Projucer\JuceLibraryCode\BinaryData4.cpp
+		..\Projucer\JuceLibraryCode\BinaryData5.cpp = ..\Projucer\JuceLibraryCode\BinaryData5.cpp
+		..\Projucer\JuceLibraryCode\BinaryData6.cpp = ..\Projucer\JuceLibraryCode\BinaryData6.cpp
+		..\Projucer\JuceLibraryCode\BinaryData7.cpp = ..\Projucer\JuceLibraryCode\BinaryData7.cpp
+		..\Projucer\JuceLibraryCode\BinaryData8.cpp = ..\Projucer\JuceLibraryCode\BinaryData8.cpp
+		..\Projucer\JuceLibraryCode\BinaryData9.cpp = ..\Projucer\JuceLibraryCode\BinaryData9.cpp
+		..\Projucer\JuceLibraryCode\BinaryData10.cpp = ..\Projucer\JuceLibraryCode\BinaryData10.cpp
+		..\Projucer\JuceLibraryCode\include_juce_audio_basics.cpp = ..\Projucer\JuceLibraryCode\include_juce_audio_basics.cpp
+		..\Projucer\JuceLibraryCode\include_juce_audio_devices.cpp = ..\Projucer\JuceLibraryCode\include_juce_audio_devices.cpp
+		..\Projucer\JuceLibraryCode\include_juce_audio_formats.cpp = ..\Projucer\JuceLibraryCode\include_juce_audio_formats.cpp
+		..\Projucer\JuceLibraryCode\include_juce_audio_processors.cpp = ..\Projucer\JuceLibraryCode\include_juce_audio_processors.cpp
+		..\Projucer\JuceLibraryCode\include_juce_audio_utils.cpp = ..\Projucer\JuceLibraryCode\include_juce_audio_utils.cpp
+		..\Projucer\JuceLibraryCode\include_juce_core.cpp = ..\Projucer\JuceLibraryCode\include_juce_core.cpp
+		..\Projucer\JuceLibraryCode\include_juce_cryptography.cpp = ..\Projucer\JuceLibraryCode\include_juce_cryptography.cpp
+		..\Projucer\JuceLibraryCode\include_juce_data_structures.cpp = ..\Projucer\JuceLibraryCode\include_juce_data_structures.cpp
+		..\Projucer\JuceLibraryCode\include_juce_events.cpp = ..\Projucer\JuceLibraryCode\include_juce_events.cpp
+		..\Projucer\JuceLibraryCode\include_juce_graphics.cpp = ..\Projucer\JuceLibraryCode\include_juce_graphics.cpp
+		..\Projucer\JuceLibraryCode\include_juce_gui_basics.cpp = ..\Projucer\JuceLibraryCode\include_juce_gui_basics.cpp
+		..\Projucer\JuceLibraryCode\include_juce_gui_extra.cpp = ..\Projucer\JuceLibraryCode\include_juce_gui_extra.cpp
+		..\Projucer\JuceLibraryCode\include_juce_opengl.cpp = ..\Projucer\JuceLibraryCode\include_juce_opengl.cpp
+		..\Projucer\JuceLibraryCode\include_juce_osc.cpp = ..\Projucer\JuceLibraryCode\include_juce_osc.cpp
 		..\Projucer\JuceLibraryCode\JuceHeader.h = ..\Projucer\JuceLibraryCode\JuceHeader.h
 	EndProjectSection
 EndProject
@@ -2647,11 +2659,11 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{FDA9B87F-DE32-54FD-A5B1-769E1A90DB4B} = {A139F6D7-68B6-6010-9674-AA4A8CD1C31D}
 		{423539D1-B318-4812-22EC-7CB3CA9607B6} = {A139F6D7-68B6-6010-9674-AA4A8CD1C31D}
+		{878B272A-D502-EFFE-6433-63D5715C9745} = {A139F6D7-68B6-6010-9674-AA4A8CD1C31D}
 		{941F4278-BB49-1F74-C221-F6954AA378E9} = {C5F1D0B5-84B7-C0E4-0C0B-C929B3F1EBF5}
 		{C5F1D0B5-84B7-C0E4-0C0B-C929B3F1EBF5} = {A139F6D7-68B6-6010-9674-AA4A8CD1C31D}
-		{FDA9B87F-DE32-54FD-A5B1-769E1A90DB4B} = {A139F6D7-68B6-6010-9674-AA4A8CD1C31D}
-		{878B272A-D502-EFFE-6433-63D5715C9745} = {A139F6D7-68B6-6010-9674-AA4A8CD1C31D}
 		{A139F6D7-68B6-6010-9674-AA4A8CD1C31D} = {1B2C2B59-FB27-BB39-915F-0947F689172B}
 		{34CD2A84-A17B-D50E-224B-C126C86A5F12} = {131541EF-BEB3-D3EB-FC4C-E668585F0382}
 		{6DACDE76-3FF3-84E8-25C6-14D72A1A5F7D} = {9030FCB2-72B0-6D1A-1FC0-4EC0D651B608}

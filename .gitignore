@@ -26,8 +26,6 @@ Thumbs.db
 cloc.pl
 
 build/
-JuceLibraryCode/
-JuceModules/
 Trash/
 ThirdParty/ASIO
 ThirdParty/VST_SDK
