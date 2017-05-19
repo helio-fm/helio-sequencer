@@ -1,13 +1,26 @@
 ## ![Vive la culture libre](Resources/Screenshot.png)
-> [Helio Workstation](https://helioworkstation.com) is free and open-source music sequencer, designed to be used on all major platforms.
-
-[![Build status of the master branch](https://img.shields.io/travis/peterrudenko/helio-workstation/master.svg?label=master)](https://travis-ci.org/peterrudenko/helio-workstation) [![Build status of the develop branch](https://img.shields.io/travis/peterrudenko/helio-workstation/develop.svg?label=develop)](https://travis-ci.org/peterrudenko/helio-workstation)
+[Helio Workstation](https://helioworkstation.com) is free and open-source music sequencer, designed to be used on all major platforms.
 
 ### Why another sequencer?
 
 Most of the DAW interfaces often seem overcomplicated, and they only tend to get more and more bloated over time. Also most of the DAWs are commercial, proprietary-licensed and almost none of them support all major operating systems at the same time.
 
 Helio aims to be a modern music creation tool, featuring linear-based sequencer with a clean interface, high-performance C++ core, integrated version control providing intelligent synchronization between devices, saved undo history, translations to many languages and more.
+
+### Building
+
+||Linux|Windows|
+|---|---|---|
+|master|[![Linux build status](https://img.shields.io/travis/peterrudenko/helio-workstation/master.svg)](https://travis-ci.org/peterrudenko/helio-workstation)|[![Windows build status](https://img.shields.io/appveyor/ci/peterrudenko/helio-workstation/master.svg)](https://ci.appveyor.com/project/peterrudenko/helio-workstation)|
+|develop|[![Linux build status](https://img.shields.io/travis/peterrudenko/helio-workstation/develop.svg)](https://travis-ci.org/peterrudenko/helio-workstation)|[![Windows build status](https://img.shields.io/appveyor/ci/peterrudenko/helio-workstation/develop.svg)](https://ci.appveyor.com/project/peterrudenko/helio-workstation)|
+
+#### Basic build instructions
+
+ * Git clone,
+ * Get submodules, if not yet done - `git submodule update --init --recursive`,
+ * Get VST and ASIO SDKs (which can't be redistributed in this project due to licensing restrictions, but you may use `ThirdParty/get_asio_and_vst_sdks.sh` script to download and extract the SDKs sources),
+ * On Linux, you'll need to have the following packages installed: `libfreetype6-dev libx11-dev libxinerama-dev libxrandr-dev libxcursor-dev libxcomposite-dev mesa-common-dev libasound2-dev freeglut3-dev libcurl4-openssl-dev libasound2-dev libjack-dev libgtk-3-dev libwebkit2gtk-4.0-dev`
+ * Pick the right project for you OS from `Projects` directory and build.
 
 ### Links
 
