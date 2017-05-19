@@ -11,15 +11,15 @@ Helio aims to be a modern music creation tool, featuring linear-based sequencer 
 
 ||Linux|Windows|
 |---|---|---|
-|master|[![Linux build status](https://img.shields.io/travis/peterrudenko/helio-workstation/master.svg)](https://travis-ci.org/peterrudenko/helio-workstation)|[![Windows build status](https://img.shields.io/appveyor/ci/peterrudenko/helio-workstation/master.svg)](https://ci.appveyor.com/project/peterrudenko/helio-workstation)|
-|develop|[![Linux build status](https://img.shields.io/travis/peterrudenko/helio-workstation/develop.svg)](https://travis-ci.org/peterrudenko/helio-workstation)|[![Windows build status](https://img.shields.io/appveyor/ci/peterrudenko/helio-workstation/develop.svg)](https://ci.appveyor.com/project/peterrudenko/helio-workstation)|
+|master|[![Linux Build Status](https://travis-ci.org/peterrudenko/helio-workstation.svg?branch=master)](https://travis-ci.org/peterrudenko/helio-workstation)|[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/peterrudenko/helio-workstation?svg=true&branch=master)](https://ci.appveyor.com/project/peterrudenko/helio-workstation)|
+|develop|[![Linux Build Status](https://travis-ci.org/peterrudenko/helio-workstation.svg?branch=develop)](https://travis-ci.org/peterrudenko/helio-workstation)|[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/peterrudenko/helio-workstation?svg=true&branch=develop)](https://ci.appveyor.com/project/peterrudenko/helio-workstation)|
 
 #### Basic build instructions
 
  * Git clone,
  * Get submodules, if not yet done - `git submodule update --init --recursive`,
  * Get VST and ASIO SDKs (which can't be redistributed in this project due to licensing restrictions, but you may use `ThirdParty/get_asio_and_vst_sdks.sh` script to download and extract the SDKs sources),
- * On Linux, you'll need to have the following packages installed: `libfreetype6-dev libx11-dev libxinerama-dev libxrandr-dev libxcursor-dev libxcomposite-dev mesa-common-dev libasound2-dev freeglut3-dev libcurl4-openssl-dev libasound2-dev libjack-dev libgtk-3-dev libwebkit2gtk-4.0-dev`
+ * On Linux, you'll need to have the following packages installed: `libfreetype6-dev libx11-dev libxinerama-dev libxrandr-dev libxcursor-dev libxcomposite-dev mesa-common-dev libasound2-dev freeglut3-dev libcurl4-openssl-dev libasound2-dev libjack-dev libgtk-3-dev libwebkit2gtk-4.0-dev`,
  * Pick the right project for you OS from `Projects` directory and build.
 
 ### Links
