@@ -6,15 +6,20 @@
 
 echo Downloading SDKs..
 
-wget -w 1 -r -np -nd -nv http://www.steinberg.net/sdk_downloads/vstsdk367_03_03_2017_build_352.zip
-wget -w 1 -r -np -nd -nv http://www.steinberg.net/sdk_downloads/asiosdk2.3.zip
-unzip ./vstsdk367_03_03_2017_build_352.zip
-unzip ./asiosdk2.3.zip
-pushd VST_SDK
-./copy_vst2_to_vst3_sdk.sh 
-popd
-mv ASIOSDK2.3 ASIO
-rm ./vstsdk367_03_03_2017_build_352.zip
-rm ./asiosdk2.3.zip
+if [ ! -d "./VST_SDK" ]; then
+    wget -w 1 -r -np -nd -nv http://www.steinberg.net/sdk_downloads/vstsdk367_03_03_2017_build_352.zip
+    unzip ./vstsdk367_03_03_2017_build_352.zip
+    pushd VST_SDK
+    ./copy_vst2_to_vst3_sdk.sh 
+    popd
+    rm ./vstsdk367_03_03_2017_build_352.zip
+fi
+
+if [ ! -d "./ASIO" ]; then
+    wget -w 1 -r -np -nd -nv http://www.steinberg.net/sdk_downloads/asiosdk2.3.zip
+    unzip ./asiosdk2.3.zip
+    mv ASIOSDK2.3 ASIO
+    rm ./asiosdk2.3.zip
+fi
 
 echo Done

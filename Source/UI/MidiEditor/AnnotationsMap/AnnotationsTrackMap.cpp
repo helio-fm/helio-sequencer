@@ -27,6 +27,10 @@
 #include "HelioCallout.h"
 #include "AnnotationCommandPanel.h"
 
+#include "AnnotationDialog.h"
+#include "App.h"
+#include "MainLayout.h"
+
 template<typename T> AnnotationsTrackMap<T>::AnnotationsTrackMap(ProjectTreeItem &parentProject, MidiRoll &parentRoll) :
     project(parentProject),
     roll(parentRoll),
@@ -303,7 +307,9 @@ template<typename T> void AnnotationsTrackMap<T>::showContextMenuFor(T *nc)
 {
     if (! this->project.getTransport().isPlaying())
     {
-        HelioCallout::emit(new AnnotationCommandPanel(this->project, nc->getEvent()), nc);
+		Component *dialog =
+			AnnotationDialog::createEditingDialog(*this, nc->getEvent());
+		App::Layout().showModalNonOwnedDialog(dialog);
     }
 }
 

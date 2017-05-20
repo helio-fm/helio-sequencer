@@ -16,13 +16,15 @@ compiler:
 os:
   - linux
 
+env:
+  - CONFIG=Release64
+
 before_install:
   - sudo apt-get update --fix-missing
   - sudo apt-get install -qq
       build-essential
       clang
       unzip
-      sed
       xvfb
       libfreetype6-dev
       libx11-dev
@@ -36,11 +38,8 @@ before_install:
       libcurl4-gnutls-dev+
       libasound2-dev
       libjack-dev
-      libgtk-3-dev
   - pushd ThirdParty
   - wget -w 1 -r -np -nd -nv http://www.steinberg.net/sdk_downloads/vstsdk367_03_03_2017_build_352.zip
-  - wget -w 1 -r -np -nd -nv http://www.steinberg.net/sdk_downloads/asiosdk2.3.zip
-  - unzip -qq ./asiosdk2.3.zip
   - unzip -qq ./vstsdk367_03_03_2017_build_352.zip
   - pushd VST_SDK
   - ./copy_vst2_to_vst3_sdk.sh 
@@ -48,8 +47,8 @@ before_install:
   - popd
 
 install:
-  - git submodule init && git submodule update && git submodule status
+  - git submodule update --init --recursive
 
 script:
   - export DISPLAY=localhost:1.0
-  - xvfb-run -a bash .travis.sh
+  - xvfb-run -a bash -c 'cd Projects/LinuxMakefile && make'

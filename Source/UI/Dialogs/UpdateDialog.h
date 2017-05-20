@@ -26,8 +26,7 @@ class ProgressIndicator;
 //[/Headers]
 
 #include "../Themes/PanelC.h"
-#include "../Themes/PanelA.h"
-#include "../Themes/ShadowDownwards.h"
+#include "../Themes/SeparatorHorizontal.h"
 
 class UpdateDialog  : public FadingDialog,
                       public ButtonListener,
@@ -58,7 +57,6 @@ private:
     //[/UserVariables]
 
     ScopedPointer<PanelC> background;
-    ScopedPointer<PanelA> panel;
     ScopedPointer<TextButton> updateButton;
     ScopedPointer<Label> titleLabel;
     ScopedPointer<TextButton> cancelButton;
@@ -67,7 +65,7 @@ private:
     ScopedPointer<Label> installedVersionLabel;
     ScopedPointer<Label> availableVersionLabel;
     ScopedPointer<TextButton> forceUpdateButton;
-    ScopedPointer<ShadowDownwards> shadow;
+    ScopedPointer<SeparatorHorizontal> separatorH;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UpdateDialog)
 };

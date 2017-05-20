@@ -1114,6 +1114,11 @@ bool PianoRoll::keyPressed(const KeyPress &key)
 
 void PianoRoll::resized()
 {
+	if (!this->isShowing())
+	{
+		return;
+	}
+
     MIDI_ROLL_BULK_REPAINT_START
 
     for (int i = 0; i < this->eventComponents.size(); ++i)

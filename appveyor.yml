@@ -1,0 +1,28 @@
+version: 1.0.{build}
+branches:
+  only:
+  - develop
+  - master
+skip_tags: true
+image: Visual Studio 2015
+clone_depth: 1
+install:
+- ps: |
+    cmd.exe /c 'git submodule update --init --recursive 2> $null'
+
+    $vstSdkSource = "http://www.steinberg.net/sdk_downloads/vstsdk367_03_03_2017_build_352.zip"
+    $vstSdkDestination = "ThirdParty\vstsdk367_03_03_2017_build_352.zip"
+    Invoke-WebRequest $vstSdkSource -OutFile $vstSdkDestination
+
+    $asioSdkSource = "http://www.steinberg.net/sdk_downloads/asiosdk2.3.zip"
+    $asioSdkDestination = "ThirdParty\asiosdk2.3.zip"
+    Invoke-WebRequest $asioSdkSource -OutFile $asioSdkDestination
+
+    7z x $vstSdkDestination -oThirdParty
+    7z x $asioSdkDestination -oThirdParty
+
+    Rename-Item -path ThirdParty\ASIOSDK2.3 -newName ASIO
+    Copy-Item ThirdParty\VST_SDK\VST2_SDK ThirdParty\VST_SDK\VST3_SDK -force -recurse
+build:
+  project: Projects\VisualStudio2015\Helio.sln
+  verbosity: minimal

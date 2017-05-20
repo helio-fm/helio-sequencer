@@ -30,6 +30,7 @@ public:
     ~SeparatorHorizontal();
 
     //[UserMethods]
+	void setAlphaMultiplier(float a);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -39,6 +40,7 @@ public:
 private:
 
     //[UserVariables]
+	float alphaFactor;
     //[/UserVariables]
 
 

@@ -165,28 +165,13 @@ void HelioTheme::drawComboBox(Graphics &g, int width, int height,
     g.setColour(box.findColour(ComboBox::backgroundColourId));
     g.fillRoundedRectangle(1.f, 1.f, float(width - 2), float(height - 2), 2.f);
 
-    if (box.isEnabled() && box.hasKeyboardFocus(false))
-    {
-        g.setColour(box.findColour(ComboBox::buttonColourId));
-        g.drawRoundedRectangle(1.f, 1.f, float(width - 2), float(height - 2), 2.0f, 1.0f);
-    }
-    else
-    {
-        g.setColour(box.findColour(ComboBox::outlineColourId));
-        g.drawRoundedRectangle(1.f, 1.f, float(width - 2), float(height - 2), 2.0f, 1.0f);
-    }
+//    if (box.isEnabled() && box.hasKeyboardFocus(false))
 
-    const float outlineThickness = box.isEnabled() ? (isButtonDown ? 1.0f : 0.7f) : 0.7f;
+    g.setColour(box.findColour(ComboBox::outlineColourId));
+    g.drawRoundedRectangle(1.f, 1.f, float(width - 2), float(height - 2), 2.0f, 1.0f);
 
-    const bool needsHighlight = box.hasKeyboardFocus(true);
-    const Colour baseColour(box.findColour(ComboBox::buttonColourId).darker(needsHighlight ? 0.2f : 0.0f));
-
-    g.setColour(baseColour);
-    g.drawRoundedRectangle(buttonX + outlineThickness,
-                           buttonY + outlineThickness,
-                           buttonW - outlineThickness * 2.0f,
-                           buttonH - outlineThickness * 2.0f,
-                           2.f, outlineThickness);
+//    const bool needsHighlight = box.hasKeyboardFocus(true);
+//    const Colour baseColour(box.findColour(ComboBox::buttonColourId).darker(needsHighlight ? 0.2f : 0.0f));
 
     if (box.isEnabled())
     {
@@ -201,6 +186,16 @@ void HelioTheme::drawComboBox(Graphics &g, int width, int height,
         g.setColour(box.findColour(ComboBox::arrowColourId));
         g.fillPath(p);
     }
+}
+
+Font HelioTheme::getComboBoxFont(ComboBox &box)
+{
+    return Font(jmax(16.0f, box.getHeight() * 0.65f));
+}
+
+Label *HelioTheme::createComboBoxTextBox(ComboBox &box)
+{
+    return new Label(String(), String());
 }
 
 
@@ -360,16 +355,7 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
                                       bool isMouseOverButton, bool isButtonDown)
 {
     Colour baseColour(backgroundColour
-                      .withMultipliedSaturation(button.hasKeyboardFocus(true) ? 1.3f : 0.9f)
-                      .withMultipliedAlpha(button.isEnabled() ? 0.5f : 0.3f));
-
-    if (isButtonDown || isMouseOverButton)
-    {
-        baseColour = baseColour.withMultipliedAlpha(isButtonDown ? 1.3f : 1.15f);
-    }
-
-    //{ baseColour = baseColour.contrasting(isButtonDown ? 0.15f : 0.075f); }
-    //{ baseColour = baseColour.withMultipliedBrightness(isButtonDown ? 1.2f : 1.1f); }
+                      .withMultipliedAlpha(button.isEnabled() ? 0.75f : 0.3f));
 
     const bool flatOnLeft   = button.isConnectedOnLeft();
     const bool flatOnRight  = button.isConnectedOnRight();
@@ -381,7 +367,6 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
 
     if (width > 0 && height > 0)
     {
-        //const float cornerSize = width / 4;
         const float cornerSize = 7.f;
 
         Path outline;
@@ -391,28 +376,19 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
                                     !(flatOnLeft  || flatOnBottom),
                                     !(flatOnRight || flatOnBottom));
 
-        // shape itself
         const float mainBrightness = baseColour.getBrightness();
         const float mainAlpha = baseColour.getFloatAlpha();
 
-
-        g.setGradientFill(ColourGradient(baseColour.brighter(0.1f), 0.0f, height / 2 - 2,
-                                         baseColour.darker(0.15f), 0.0f, height / 2 + 2, false));
-        g.fillPath(outline);
+        g.setGradientFill(ColourGradient(baseColour.darker(0.1f), 0.0f, height / 2 - 2,
+                                         baseColour.darker(0.2f), 0.0f, height / 2 + 2, false));
+		//g.setColour(baseColour.darker(0.2f));
+		g.fillPath(outline);
 
         if (isButtonDown || isMouseOverButton)
         {
-            g.setGradientFill(ColourGradient(findColour(PanelBackgroundA::panelFillStartId).withMultipliedAlpha(0.5f).withMultipliedBrightness(1.2f),
-                                             float((width / 2)), 0,
-                                             Colours::transparentBlack,
-                                             0.0f, height,
-                                             true));
+			g.setColour(baseColour.brighter(isButtonDown ? 0.1f : 0.01f));
             g.fillPath(outline);
         }
-
-        //g.setColour(Colours::white.withAlpha(0.4f * mainAlpha * mainBrightness * mainBrightness));
-        //g.strokePath(outline, PathStrokeType(1.0f),
-        //             AffineTransform::translation(0.0f, 1.0f).scaled(1.0f, (height - 1.6f) / height));
 
         g.setColour(Colours::white.withAlpha(mainAlpha));
         g.strokePath(outline, PathStrokeType(1.0f));
@@ -557,6 +533,100 @@ void HelioTheme::drawPopupMenuBackground(Graphics &g, int width, int height)
     
     g.setColour(findColour(ComboBox::outlineColourId));
     g.drawRect(0.0f, 0.0f, static_cast<float>(width), static_cast<float>(height), 1.000f);
+}
+
+
+void HelioTheme::drawPopupMenuItem(Graphics& g, const Rectangle<int>& area,
+                                   const bool isSeparator, const bool isActive,
+                                   const bool isHighlighted, const bool isTicked,
+                                   const bool hasSubMenu, const String& text,
+                                   const String& shortcutKeyText,
+                                   const Drawable* icon, const Colour* const textColourToUse)
+{
+    if (isSeparator)
+    {
+        Rectangle<int> r (area.reduced (5, 0));
+        r.removeFromTop (r.getHeight() / 2 - 1);
+        
+        g.setColour (Colour (0x33000000));
+        g.fillRect (r.removeFromTop (1));
+        
+        g.setColour (Colour (0x66ffffff));
+        g.fillRect (r.removeFromTop (1));
+    }
+    else
+    {
+        Colour textColour (findColour (PopupMenu::textColourId));
+        
+        if (textColourToUse != nullptr)
+            textColour = *textColourToUse;
+        
+        Rectangle<int> r (area.reduced (1));
+        
+        if (isHighlighted)
+        {
+            g.setColour (findColour (PopupMenu::highlightedBackgroundColourId));
+            g.fillRect (r);
+            
+            g.setColour (findColour (PopupMenu::highlightedTextColourId));
+        }
+        else
+        {
+            g.setColour (textColour);
+        }
+        
+        if (! isActive)
+            g.setOpacity (0.3f);
+        
+        Font font (getPopupMenuFont());
+        
+        const float maxFontHeight = area.getHeight() / 1.3f;
+        
+        if (font.getHeight() > maxFontHeight)
+            font.setHeight (maxFontHeight);
+        
+        g.setFont (font);
+        
+        Rectangle<float> iconArea (r.removeFromLeft ((r.getHeight() * 5) / 4).reduced (3).toFloat());
+        
+        if (icon != nullptr)
+        {
+            icon->drawWithin (g, iconArea, RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize, 1.0f);
+        }
+        else if (isTicked)
+        {
+            //const Path tick (getTickShape (1.0f));
+            //g.fillPath (tick, tick.getTransformToScaleToFit (iconArea, true));
+        }
+        
+        if (hasSubMenu)
+        {
+            const float arrowH = 0.6f * getPopupMenuFont().getAscent();
+            
+            const float x = (float) r.removeFromRight ((int) arrowH).getX();
+            const float halfH = (float) r.getCentreY();
+            
+            Path p;
+            p.addTriangle (x, halfH - arrowH * 0.5f,
+                           x, halfH + arrowH * 0.5f,
+                           x + arrowH * 0.6f, halfH);
+            
+            g.fillPath (p);
+        }
+        
+        r.removeFromRight (3);
+        g.drawFittedText (text, r, Justification::centredLeft, 1);
+        
+        if (shortcutKeyText.isNotEmpty())
+        {
+            Font f2 (font);
+            f2.setHeight (f2.getHeight() * 0.75f);
+            f2.setHorizontalScale (0.95f);
+            g.setFont (f2);
+            
+            g.drawText (shortcutKeyText, r, Justification::centredRight, true);
+        }
+    }
 }
 
 

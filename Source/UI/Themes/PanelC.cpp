@@ -55,36 +55,70 @@ void PanelC::paint (Graphics& g)
 #if 0
     //[/UserPrePaint]
 
-    g.setGradientFill (ColourGradient (Colour (0xff3b5297),
-                                       0.0f, static_cast<float> (getHeight() - -200),
-                                       Colour (0xff292c57),
-                                       static_cast<float> (getWidth()), 0.0f,
+    g.fillAll (Colour (0xffefefef));
+
+    {
+        float x = 0.0f, y = 0.0f, width = static_cast<float> (getWidth() - 0), height = static_cast<float> (getHeight() - 0);
+        Colour fillColour1 = Colour (0xff3b5297), fillColour2 = Colour (0xff292c57);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       0.0f - 0.0f + x,
+                                       static_cast<float> (getHeight() - -200) - 0.0f + y,
+                                       fillColour2,
+                                       static_cast<float> (getWidth()) - 0.0f + x,
+                                       0.0f - 0.0f + y,
                                        true));
-    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 7.000f);
+        g.fillRoundedRectangle (x, y, width, height, 7.000f);
+    }
 
-    g.setGradientFill (ColourGradient (Colour (0x3a193477),
-                                       static_cast<float> (proportionOfWidth (0.5200f)), static_cast<float> (proportionOfHeight (1.2000f)),
-                                       Colour (0x00000000),
-                                       static_cast<float> (proportionOfWidth (0.4800f)), static_cast<float> (proportionOfHeight (-0.2000f)),
+    {
+        float x = 0.0f, y = 0.0f, width = static_cast<float> (getWidth() - 0), height = static_cast<float> (getHeight() - 0);
+        Colour fillColour1 = Colour (0x3a193477), fillColour2 = Colour (0x00000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       static_cast<float> (proportionOfWidth (0.5200f)) - 0.0f + x,
+                                       static_cast<float> (proportionOfHeight (1.2000f)) - 0.0f + y,
+                                       fillColour2,
+                                       static_cast<float> (proportionOfWidth (0.4800f)) - 0.0f + x,
+                                       static_cast<float> (proportionOfHeight (-0.2000f)) - 0.0f + y,
                                        false));
-    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 7.000f);
+        g.fillRoundedRectangle (x, y, width, height, 7.000f);
+    }
 
-    g.setGradientFill (ColourGradient (Colour (0x3a193477),
-                                       static_cast<float> (proportionOfWidth (0.5200f)), static_cast<float> (proportionOfHeight (1.3000f)),
-                                       Colour (0x00000000),
-                                       static_cast<float> (proportionOfWidth (0.4800f)), static_cast<float> (proportionOfHeight (-0.3000f)),
+    {
+        float x = 0.0f, y = 0.0f, width = static_cast<float> (getWidth() - 0), height = static_cast<float> (getHeight() - 0);
+        Colour fillColour1 = Colour (0x3a193477), fillColour2 = Colour (0x00000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       static_cast<float> (proportionOfWidth (0.5200f)) - 0.0f + x,
+                                       static_cast<float> (proportionOfHeight (1.3000f)) - 0.0f + y,
+                                       fillColour2,
+                                       static_cast<float> (proportionOfWidth (0.4800f)) - 0.0f + x,
+                                       static_cast<float> (proportionOfHeight (-0.3000f)) - 0.0f + y,
                                        false));
-    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 7.000f);
+        g.fillRoundedRectangle (x, y, width, height, 7.000f);
+    }
 
-    g.setGradientFill (ColourGradient (Colour (0x3a193477),
-                                       static_cast<float> (proportionOfWidth (0.5200f)), static_cast<float> (proportionOfHeight (1.3000f)),
-                                       Colour (0x00000000),
-                                       static_cast<float> (proportionOfWidth (0.4800f)), static_cast<float> (proportionOfHeight (-0.3000f)),
+    {
+        float x = 0.0f, y = 0.0f, width = static_cast<float> (getWidth() - 0), height = static_cast<float> (getHeight() - 0);
+        Colour fillColour1 = Colour (0x3a193477), fillColour2 = Colour (0x00000000);
+        Colour strokeColour = Colour (0xffb9b9b9);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       static_cast<float> (proportionOfWidth (0.5200f)) - 0.0f + x,
+                                       static_cast<float> (proportionOfHeight (1.3000f)) - 0.0f + y,
+                                       fillColour2,
+                                       static_cast<float> (proportionOfWidth (0.4800f)) - 0.0f + x,
+                                       static_cast<float> (proportionOfHeight (-0.3000f)) - 0.0f + y,
                                        false));
-    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 7.000f);
-
-    g.setColour (Colour (0xffb9b9b9));
-    g.drawRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 7.000f, 1.000f);
+        g.fillRoundedRectangle (x, y, width, height, 7.000f);
+        g.setColour (strokeColour);
+        g.drawRoundedRectangle (x, y, width, height, 7.000f, 1.000f);
+    }
 
     //[UserPaint] Add your own custom painting code here..
 #endif
@@ -119,7 +153,7 @@ void PanelC::paint (Graphics& g)
     g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 7.000f);
 #endif
 
-    g.setColour (Colour (0x77b9b9b9));
+    g.setColour (Colour (0x44b9b9b9));
     g.drawRoundedRectangle (0.5f, 0.5f, static_cast<float> (getWidth() - 1), static_cast<float> (getHeight() - 1), 6.000f, 1.000f);
 
     //[/UserPaint]

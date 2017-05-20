@@ -112,7 +112,7 @@ void ProjectTimeline::resetStateTo(const VCS::TrackedItem &newState)
             this->resetAnnotationsDelta(newDeltaData);
             annotationsChanged = true;
         }
-        else if (newDelta->getType() == ProjectTimelineDeltas::timeSignaturesRemoved)
+        else if (newDelta->getType() == ProjectTimelineDeltas::timeSignaturesAdded)
         {
             this->resetTimeSignaturesDelta(newDeltaData);
             signaturesChanged = true;

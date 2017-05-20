@@ -91,14 +91,20 @@ public:
             int /*w*/, int /*h*/, bool /*isVerticalBar*/,
             bool isMouseOver, bool isMouseDragging) override;
 
+    //===------------------------------------------------------------------===//
+    // Combo box
+    //===------------------------------------------------------------------===//
+
     void drawComboBox(Graphics &g, int width, int height,
                               bool isButtonDown,
                               int buttonX, int buttonY,
                               int buttonW, int buttonH,
                               ComboBox &box) override;
 
-    //virtual void drawRootTreeItem();
-
+    Font getComboBoxFont(ComboBox&) override;
+    
+    Label *createComboBoxTextBox(ComboBox&) override;
+    
     
     //===------------------------------------------------------------------===//
     // Selection
@@ -180,7 +186,15 @@ public:
 
     void drawPopupMenuBackground(Graphics &g, int width, int height) override;
 
-
+    void drawPopupMenuItem(Graphics&, const Rectangle<int>& area,
+                           bool isSeparator, bool isActive, bool isHighlighted,
+                           bool isTicked, bool hasSubMenu,
+                           const String& text,
+                           const String& shortcutKeyText,
+                           const Drawable* icon,
+                           const Colour* textColour) override;
+    
+    
     //===------------------------------------------------------------------===//
     // Window
     //===------------------------------------------------------------------===//

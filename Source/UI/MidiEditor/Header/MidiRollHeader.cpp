@@ -28,9 +28,6 @@
 #include "MidiEventComponentLasso.h"
 #include "HeaderSelectionIndicator.h"
 #include "CommandIDs.h"
-#include "ModalDialogInput.h"
-#include "App.h"
-#include "MainLayout.h"
 
 #define MIDIROLL_HEADER_ALIGNS_TO_BEATS 1
 #define MIDIROLL_HEADER_SELECTION_ALIGNS_TO_BEATS 0
@@ -397,34 +394,8 @@ void MidiRollHeader::mouseExit(const MouseEvent &e)
 
 void MidiRollHeader::mouseDoubleClick(const MouseEvent &e)
 {
-    this->postCommandMessage(CommandIDs::AddAnnotation);
-}
-
-void MidiRollHeader::handleCommandMessage(int commandId)
-{
-    if (commandId == CommandIDs::AddAnnotation)
-    {
-        Component *inputDialog =
-        new ModalDialogInput(*this,
-                             this->newAnnotationText,
-                             TRANS("dialog::annotation::add::caption"),
-                             TRANS("dialog::annotation::add::proceed"),
-                             TRANS("dialog::annotation::add::cancel"),
-                             CommandIDs::AddAnnotationConfirmed,
-                             CommandIDs::Cancel);
-        
-        App::Layout().showModalNonOwnedDialog(inputDialog);
-    }
-    else if (commandId == CommandIDs::AddAnnotationConfirmed)
-    {
-        this->roll.insertAnnotationWithinScreen(this->newAnnotationText);
-        this->newAnnotationText.clear();
-        this->roll.grabKeyboardFocus();
-    }
-    else if (commandId == CommandIDs::Cancel)
-    {
-        this->roll.grabKeyboardFocus();
-    }
+	// TODO instead show a menu like "add annotation / add time signature"?
+    this->roll.postCommandMessage(CommandIDs::AddAnnotation);
 }
 
 void MidiRollHeader::paint(Graphics &g)

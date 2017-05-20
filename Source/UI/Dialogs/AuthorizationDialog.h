@@ -26,8 +26,8 @@ class LabelWithPassword;
 //[/Headers]
 
 #include "../Themes/PanelC.h"
-#include "../Themes/PanelA.h"
-#include "../Themes/ShadowDownwards.h"
+#include "../Themes/SeparatorHorizontal.h"
+#include "../Themes/SeparatorVertical.h"
 
 class AuthorizationDialog  : public FadingDialog,
                              private ChangeListener,
@@ -66,14 +66,14 @@ private:
     //[/UserVariables]
 
     ScopedPointer<PanelC> background;
-    ScopedPointer<PanelA> panel;
     ScopedPointer<TextButton> loginButton;
     ScopedPointer<Label> emailEditor;
     ScopedPointer<Label> emailLabel;
     ScopedPointer<Label> passwordLabel;
-    ScopedPointer<ShadowDownwards> shadow;
     ScopedPointer<TextButton> cancelButton;
     ScopedPointer<LabelWithPassword> passwordEditor;
+    ScopedPointer<SeparatorHorizontal> separatorH;
+    ScopedPointer<SeparatorVertical> separatorV;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AuthorizationDialog)
 };

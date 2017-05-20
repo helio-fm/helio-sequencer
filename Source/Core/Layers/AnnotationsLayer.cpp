@@ -166,9 +166,7 @@ bool AnnotationsLayer::change(const AnnotationEvent &annotation,
             return true;
         }
         
-        
-            return false;
-        
+        return false;
     }
 
     return true;
