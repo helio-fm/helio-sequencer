@@ -9,17 +9,17 @@ Helio aims to be a modern music creation tool, featuring linear-based sequencer 
 
 ### Building
 
-||Linux|Windows|
-|---|---|---|
-|master|[![Linux Build Status](https://travis-ci.org/peterrudenko/helio-workstation.svg?branch=master)](https://travis-ci.org/peterrudenko/helio-workstation)|[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/peterrudenko/helio-workstation?svg=true&branch=master)](https://ci.appveyor.com/project/peterrudenko/helio-workstation)|
-|develop|[![Linux Build Status](https://travis-ci.org/peterrudenko/helio-workstation.svg?branch=develop)](https://travis-ci.org/peterrudenko/helio-workstation)|[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/peterrudenko/helio-workstation?svg=true&branch=develop)](https://ci.appveyor.com/project/peterrudenko/helio-workstation)|
+||Linux|Windows|macOS|iOS|
+|---|---|---|---|---|
+|master|[![Linux Build Status](https://travis-ci.org/peterrudenko/helio-workstation.svg?branch=master)](https://travis-ci.org/peterrudenko/helio-workstation)|[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/peterrudenko/helio-workstation?svg=true&branch=master)](https://ci.appveyor.com/project/peterrudenko/helio-workstation)|[![macOS Build Status](https://app.nevercode.io/api/projects/8fe1daf4-2cde-4f36-ad57-430f7a2816e6/workflows/5a4dd672-ef90-4a66-8943-5c7682a6545d/status_badge.svg?branch=master&style=shields)](https://app.nevercode.io/#/project/8fe1daf4-2cde-4f36-ad57-430f7a2816e6/workflow/5a4dd672-ef90-4a66-8943-5c7682a6545d/latestBuild?branch=master)|[![iOS Build Status](https://app.nevercode.io/api/projects/2540e222-b017-4cfd-a4af-80399e319629/workflows/6e9ff9ae-ede3-4f01-bced-8ff4e0761fea/status_badge.svg?branch=master&style=shields)](https://app.nevercode.io/#/project/2540e222-b017-4cfd-a4af-80399e319629/workflow/6e9ff9ae-ede3-4f01-bced-8ff4e0761fea/latestBuild?branch=master)|
+|develop|[![Linux Build Status](https://travis-ci.org/peterrudenko/helio-workstation.svg?branch=develop)](https://travis-ci.org/peterrudenko/helio-workstation)|[![Windows Build Status](https://ci.appveyor.com/api/projects/status/github/peterrudenko/helio-workstation?svg=true&branch=develop)](https://ci.appveyor.com/project/peterrudenko/helio-workstation)|[![macOS Build Status](https://app.nevercode.io/api/projects/8fe1daf4-2cde-4f36-ad57-430f7a2816e6/workflows/5a4dd672-ef90-4a66-8943-5c7682a6545d/status_badge.svg?branch=develop&style=shields)](https://app.nevercode.io/#/project/8fe1daf4-2cde-4f36-ad57-430f7a2816e6/workflow/5a4dd672-ef90-4a66-8943-5c7682a6545d/latestBuild?branch=develop)|[![ios Build Status](https://app.nevercode.io/api/projects/2540e222-b017-4cfd-a4af-80399e319629/workflows/6e9ff9ae-ede3-4f01-bced-8ff4e0761fea/status_badge.svg?branch=develop&style=shields)](https://app.nevercode.io/#/project/2540e222-b017-4cfd-a4af-80399e319629/workflow/6e9ff9ae-ede3-4f01-bced-8ff4e0761fea/latestBuild?branch=develop)|
 
 #### Basic build instructions
 
  * Git clone,
  * Get submodules, if not yet done - `git submodule update --init --recursive`,
- * Get VST and ASIO SDKs (which can't be redistributed in this project due to licensing restrictions, but you may use `ThirdParty/get_asio_and_vst_sdks.sh` script to download and extract the SDKs sources),
- * On Linux, you'll need to have the following packages installed: `libfreetype6-dev libx11-dev libxinerama-dev libxrandr-dev libxcursor-dev libxcomposite-dev mesa-common-dev libasound2-dev freeglut3-dev libcurl4-openssl-dev libasound2-dev libjack-dev libgtk-3-dev libwebkit2gtk-4.0-dev`,
+ * Get VST and ASIO SDKs (which can't be redistributed in this project due to licensing restrictions, but you may use `ThirdParty/get_asio_and_vst_sdks.sh` script to download and extract the SDKs sources; this is invoked automatically in macOS and iOS projects pre-build phase),
+ * On Linux, you'll need to have the following packages installed: `libfreetype6-dev libx11-dev libxinerama-dev libxrandr-dev libxcursor-dev libxcomposite-dev mesa-common-dev libasound2-dev freeglut3-dev libcurl4-openssl-dev libasound2-dev libjack-dev`,
  * Pick the right project for you OS from `Projects` directory and build.
 
 ### Links
