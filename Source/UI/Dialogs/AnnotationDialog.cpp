@@ -93,6 +93,8 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsLayer *annotatio
 		const String key(keys[r.nextInt(keys.size())]);
 		const Colour colour(Colour::fromString(getDynamics()[key]));
 		this->targetEvent = AnnotationEvent(annotationsLayer, targetBeat, key, colour);
+
+        annotationsLayer->checkpoint();
 		annotationsLayer->insert(this->targetEvent, true);
 
 		this->messageLabel->setText(TRANS("dialog::annotation::add::caption"), dontSendNotification);

@@ -90,6 +90,8 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesLayer *
 		int denominator;
 		TimeSignatureEvent::parseString(meter, numerator, denominator);
 		this->targetEvent = TimeSignatureEvent(this->targetLayer, targetBeat, numerator, denominator);
+
+        this->targetLayer->checkpoint();
 		this->targetLayer->insert(this->targetEvent, true);
 
 		this->messageLabel->setText(TRANS("dialog::timesignature::add::caption"), dontSendNotification);
