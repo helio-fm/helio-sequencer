@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="lG607P" name="Helio" projectType="guiapp" version="1.7" bundleIdentifier="com.peterrudenko.helioworkstation"
-              includeBinaryInAppConfig="1" jucerVersion="5.0.1" companyWebsite="http://helioworkstation.com"
+<JUCERPROJECT id="lG607P" name="Helio" projectType="guiapp" version="1.7.5"
+              bundleIdentifier="com.peterrudenko.helioworkstation" includeBinaryInAppConfig="1"
+              jucerVersion="5.0.1" companyWebsite="http://helioworkstation.com"
               companyEmail="peter.rudenko@gmail.com" companyName="Peter Rudenko"
               defines="JUCE_DONT_DECLARE_PROJECTINFO=1" displaySplashScreen="0"
               reportAppUsage="0" splashScreenColour="Dark" maxBinaryFileSize="2097152">
