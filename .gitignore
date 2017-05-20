@@ -24,6 +24,7 @@ UserInterfaceState.xcuserstate
 resources.res
 Thumbs.db
 cloc.pl
+CMakeLists.txt
 
 build/
 Trash/
