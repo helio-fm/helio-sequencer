@@ -578,20 +578,53 @@ int MidiRoll::getXPositionByBeat(float targetBeat) const
 
 float MidiRoll::getFloorBeatByXPosition(int x) const
 {
+	Array<float> allSnaps;
+	allSnaps.addArray(this->visibleBars);
+	allSnaps.addArray(this->visibleBeats);
+	allSnaps.addArray(this->visibleSnaps);
+
+	float d = FLT_MAX;
+	float targetX = x;
+	for (float snapX : allSnaps)
+	{
+		const float dist = fabs(x - snapX);
+		if (dist < d && snapX < x)
+		{
+			d = dist;
+			targetX = snapX;
+		}
+	}
+
     const float lastAlignedBeat = float(this->lastBar * NUM_BEATS_IN_BAR);
     const float firstAlignedBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
-    float beatNumber = this->snapsPerBeat * floor(x / this->snapWidth) + firstAlignedBeat;
-    return jmin(jmax(beatNumber, firstAlignedBeat), lastAlignedBeat);
+	float beatNumber = (targetX / this->barWidth) * NUM_BEATS_IN_BAR + firstAlignedBeat;
+	return jmin(jmax(beatNumber, firstAlignedBeat), lastAlignedBeat);
 }
 
 float MidiRoll::getRoundBeatByXPosition(int x) const
 {
+	Array<float> allSnaps;
+	allSnaps.addArray(this->visibleBars);
+	allSnaps.addArray(this->visibleBeats);
+	allSnaps.addArray(this->visibleSnaps);
+
+	float d = FLT_MAX;
+	float targetX = x;
+	for (float snapX : allSnaps)
+	{
+		const float dist = fabs(x - snapX);
+		if (dist < d)
+		{
+			d = dist;
+			targetX = snapX;
+		}
+	}
+
     const float lastAlignedBeat = float(this->lastBar * NUM_BEATS_IN_BAR);
     const float firstAlignedBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
-    float beatNumber = this->snapsPerBeat * roundf(x / this->snapWidth) + firstAlignedBeat;
-    return jmin(jmax(beatNumber, firstAlignedBeat), lastAlignedBeat);
+	float beatNumber = (targetX / this->barWidth) * NUM_BEATS_IN_BAR + firstAlignedBeat;
+	return jmin(jmax(beatNumber, firstAlignedBeat), lastAlignedBeat);
 }
-
 
 void MidiRoll::setFirstBar(int bar)
 {
