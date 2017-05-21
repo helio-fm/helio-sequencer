@@ -1136,16 +1136,11 @@ void PianoRoll::paint(Graphics &g)
 {
 #if PIANOROLL_HAS_PRERENDERED_BACKGROUND
 
-//    Icons::drawImageRetinaAware(PianoRoll::backgroundsCache[this->rowHeight], g,
-//                                this->viewport.getViewPositionX() + this->viewport.getViewWidth() / 2,
-//                                this->viewport.getViewPositionY() + this->viewport.getViewHeight() / 2);
-
     g.setTiledImageFill(*(static_cast<HelioTheme &>(this->getLookAndFeel()).getRollBgCache()[this->rowHeight]), 0, 0, 1.f);
     g.fillRect(this->viewport.getViewArea());
 
 #else
 
-    // opengl does render pretty smoothly
     const Colour blackKey = this->findColour(MidiRoll::blackKeyColourId);
     const Colour blackKeyBright = this->findColour(MidiRoll::blackKeyBrightColourId);
     const Colour whiteKey = this->findColour(MidiRoll::whiteKeyColourId);
@@ -1174,13 +1169,9 @@ void PianoRoll::paint(Graphics &g)
 
         switch (noteNumber)
         {
-            //case 0:
-            //    g.setColour(rowLine);
-            //    g.drawHorizontalLine(yPos - 1, float(viewPosition.getX()), float(viewPosition.getX() + visibleWidth));
-            //    break;
             case 1:
             case 3:
-            case 6:
+            case 5:
             case 8:
             case 10: // black keys
                 g.setColour(octaveIsOdd ? blackKeyBright : blackKey);
@@ -1409,7 +1400,7 @@ CachedImage::Ptr PianoRoll::renderRowsPattern(HelioTheme &theme, int height)
         {
         case 1:
         case 3:
-        case 6:
+        case 5:
         case 8:
         case 10: // black keys
             g.setColour(octaveIsOdd ? blackKeyBright : blackKey);
