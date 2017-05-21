@@ -134,9 +134,7 @@ bool AnnotationsLayer::remove(const AnnotationEvent &annotation, bool undoable)
             return true;
         }
         
-        
-            return false;
-        
+        return false;
     }
 
     return true;

@@ -73,7 +73,9 @@ void TimeSignatureEvent::parseString(const String &data, int &numerator, int &de
 Array<MidiMessage> TimeSignatureEvent::getSequence() const
 {
 	Array<MidiMessage> result;
-    // TODO export time signature midi events
+    MidiMessage event(MidiMessage::timeSignatureMetaEvent(this->numerator, this->denominator));
+    event.setTimeStamp(this->beat * Transport::millisecondsPerBeat);
+    result.add(event);
     return result;
 }
 
