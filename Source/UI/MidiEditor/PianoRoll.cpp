@@ -355,8 +355,8 @@ Rectangle<float> PianoRoll::getEventBounds(MidiEventComponent *mc) const
 Rectangle<float> PianoRoll::getEventBounds(const int key, const float beat, const float length) const
 {
     const float startOffsetBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
-    const float x = this->snapWidth * ((beat - startOffsetBeat) / this->snapsPerBeat);
-    const float w = this->snapWidth * (length / this->snapsPerBeat);
+	const float x = this->barWidth * (beat - startOffsetBeat) / NUM_BEATS_IN_BAR;
+	const float w = this->barWidth * length / NUM_BEATS_IN_BAR;
 
     const float yPosition = float(this->getYPositionByKey(key));
     return Rectangle<float> (x, yPosition + 1, w, float(this->rowHeight - 1));
@@ -366,9 +366,6 @@ Rectangle<float> PianoRoll::getEventBounds(const int key, const float beat, cons
 
 void PianoRoll::getRowsColsByComponentPosition(const float x, const float y, int &noteNumber, float &beatNumber) const
 {
-    // update beats number
-    //const float snapsPerBeat = 1.0f / (snapQuantize / (float) NUM_BEATS_IN_BAR);
-    //const float snapWidth = barWidth / (float) snapQuantize;
     beatNumber = this->getRoundBeatByXPosition(int(x)); /* - 0.5f ? */
     noteNumber = roundToInt((this->getHeight() - y) / this->rowHeight);
     noteNumber = jmin(jmax(noteNumber, 0), numRows - 1);
@@ -964,7 +961,7 @@ bool PianoRoll::keyPressed(const KeyPress &key)
     else if (key == KeyPress::createFromDescription("s"))
     {
         MIDI_ROLL_BULK_REPAINT_START
-        MidiRollToolbox::snapSelection(this->getLassoSelection(), this->getSnapsPerBeat());
+        MidiRollToolbox::snapSelection(this->getLassoSelection(), 1);
         MIDI_ROLL_BULK_REPAINT_END
         return true;
     }
