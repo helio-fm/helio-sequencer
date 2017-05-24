@@ -125,7 +125,7 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsLayer *annotatio
     this->setInterceptsMouseClicks(true, true);
     this->toFront(true);
     this->setAlwaysOnTop(true);
-    this->textEditor->grabKeyboardFocus();
+    this->textEditor->showEditor();
     this->updateOkButtonState();
 
     this->startTimer(100);
@@ -341,7 +341,7 @@ void AnnotationDialog::timerCallback()
 {
     if (! this->textEditor->hasKeyboardFocus(true))
     {
-        this->textEditor->grabKeyboardFocus();
+        this->textEditor->showEditor();
         this->stopTimer();
     }
 }

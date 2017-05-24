@@ -768,10 +768,14 @@ void MidiRoll::computeVisibleBeatLines()
                  k < (nextBeatStartX - 1);
                  k += snapWidth)
             {
-                visibleSnaps.add(k);
+				if (k >= viewPosX)
+				{
+					visibleSnaps.add(k);
+				}
             }
             
-            if (j >= beatStep && // Don't draw the first one as it is a barline
+            if (beatStartX >= viewPosX &&
+				j >= beatStep && // Don't draw the first one as it is a barline
                 (nextBeatStartX - beatStartX) > MIN_BEAT_WIDTH)
             {
                 visibleBeats.add(beatStartX);

@@ -875,7 +875,7 @@ void HelioTheme::initResources()
     Icons::setupBuiltInImages();
 }
 
-void HelioTheme::initColours(const ColourScheme &colours)
+void HelioTheme::initColours(const ::ColourScheme &colours)
 {
     // A hack for icon base colors
     this->setColour(Icons::iconColourId, colours.getIconBaseColour());
@@ -962,7 +962,9 @@ void HelioTheme::initColours(const ColourScheme &colours)
     this->setColour(TextEditor::focusedOutlineColourId, Colours::black.withAlpha(0.2f));
     this->setColour(TextEditor::shadowColourId, colours.getShadingGradientColourB());
     this->setColour(TextEditor::backgroundColourId, colours.getPrimaryGradientColourA().darker(0.05f));
-    this->setColour(TextEditor::highlightColourId, Colours::black.withAlpha(0.2f));
+    this->setColour(TextEditor::highlightColourId, Colours::black.withAlpha(0.25f));
+	this->setColour(CaretComponent::caretColourId, Colours::white.withAlpha(0.35f));
+	
 
     // Tree stuff
     this->setColour(TreeView::linesColourId, Colours::white.withAlpha(0.1f));

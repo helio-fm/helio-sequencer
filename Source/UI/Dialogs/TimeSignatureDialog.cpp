@@ -120,7 +120,7 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesLayer *
     this->setInterceptsMouseClicks(true, true);
     this->toFront(true);
     this->setAlwaysOnTop(true);
-    this->textEditor->grabKeyboardFocus();
+    this->textEditor->showEditor();
     this->updateOkButtonState();
 
     this->startTimer(100);
@@ -332,7 +332,7 @@ void TimeSignatureDialog::timerCallback()
 {
 	if (!this->textEditor->hasKeyboardFocus(true))
 	{
-		this->textEditor->grabKeyboardFocus();
+		this->textEditor->showEditor();
 		this->stopTimer();
 	}
 }
