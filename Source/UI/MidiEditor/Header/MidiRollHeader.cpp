@@ -27,6 +27,8 @@
 #include "TimeDistanceIndicator.h"
 #include "MidiEventComponentLasso.h"
 #include "HeaderSelectionIndicator.h"
+#include "HelioCallout.h"
+#include "TimelineCommandPanel.h"
 #include "CommandIDs.h"
 
 #define MIDIROLL_HEADER_ALIGNS_TO_BEATS 1
@@ -334,25 +336,20 @@ void MidiRollHeader::mouseUp(const MouseEvent &e)
     }
     else
     {
-        if (this->transport.isPlaying())
-        {
-            this->transport.stopPlayback();
-        }
-        
 #if MIDIROLL_HEADER_ALIGNS_TO_BEATS
         const float roundBeat = this->roll.getRoundBeatByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
         const double transportPosition = this->roll.getTransportPositionByBeat(roundBeat);
-        //Logger::writeToLog("Click beat: " + String(roundBeat) + ", transport position: " + String(transportPosition));
-
 #else
         const double transportPosition = this->roll.getTransportPositionByXPosition(e.x, float(this->getWidth()));
 #endif
         
-        this->transport.seekToPosition(transportPosition);
+		this->transport.stopPlayback();
+		this->transport.seekToPosition(transportPosition);
         
         if (e.mods.isRightButtonDown())
         {
-            this->transport.startPlayback();
+			HelioCallout::emit(new TimelineCommandPanel(this->roll.getProject()), this, true);
+            //this->transport.startPlayback();
         }
     }
 }
@@ -394,8 +391,19 @@ void MidiRollHeader::mouseExit(const MouseEvent &e)
 
 void MidiRollHeader::mouseDoubleClick(const MouseEvent &e)
 {
-	// TODO instead show a menu like "add annotation / add time signature"?
-    this->roll.postCommandMessage(CommandIDs::AddAnnotation);
+    // this->roll.postCommandMessage(CommandIDs::AddAnnotation);
+	// HelioCallout::emit(new TimelineCommandPanel(this->roll.getProject()), this, true);
+
+#if MIDIROLL_HEADER_ALIGNS_TO_BEATS
+	const float roundBeat = this->roll.getRoundBeatByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
+	const double transportPosition = this->roll.getTransportPositionByBeat(roundBeat);
+#else
+	const double transportPosition = this->roll.getTransportPositionByXPosition(e.x, float(this->getWidth()));
+#endif
+
+	this->transport.stopPlayback();
+	this->transport.seekToPosition(transportPosition);
+	this->transport.startPlayback();
 }
 
 void MidiRollHeader::paint(Graphics &g)
@@ -417,7 +425,7 @@ void MidiRollHeader::paint(Graphics &g)
     
     for (const auto f : this->roll.getVisibleBars())
     {
-        g.drawLine(f, float(this->getHeight() - 16), f, float(this->getHeight() - 1), 2.5f);
+        g.drawLine(f, float(this->getHeight() - 18), f, float(this->getHeight() - 1), 2.5f);
     }
 
     for (const auto f : this->roll.getVisibleBeats())
@@ -427,7 +435,7 @@ void MidiRollHeader::paint(Graphics &g)
 
     for (const auto f : this->roll.getVisibleSnaps())
     {
-        g.drawVerticalLine(f, float(this->getHeight() - 4), float(this->getHeight() - 1.f));
+        g.drawVerticalLine(f, float(this->getHeight() - 3), float(this->getHeight() - 1.f));
     }
 
     g.setColour(Colours::white.withAlpha(0.025f));

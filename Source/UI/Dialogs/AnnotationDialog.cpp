@@ -127,18 +127,13 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsLayer *annotatio
     this->setAlwaysOnTop(true);
     this->textEditor->showEditor();
     this->updateOkButtonState();
-
-    this->startTimer(100);
     //[/Constructor]
 }
 
 AnnotationDialog::~AnnotationDialog()
 {
     //[Destructor_pre]
-    this->stopTimer();
-
     this->textEditor->removeListener(this);
-
     FadingDialog::fadeOut();
     //[/Destructor_pre]
 
@@ -337,15 +332,6 @@ void AnnotationDialog::updateOkButtonState()
     this->okButton->setEnabled(!textIsEmpty);
 }
 
-void AnnotationDialog::timerCallback()
-{
-    if (! this->textEditor->hasKeyboardFocus(true))
-    {
-        this->textEditor->showEditor();
-        this->stopTimer();
-    }
-}
-
 void AnnotationDialog::onColourButtonClicked(ColourButton *clickedButton)
 {
 	const Colour c(clickedButton->getColour());
@@ -410,7 +396,7 @@ void AnnotationDialog::cancelAndDisappear()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="AnnotationDialog" template="../../Template"
-                 componentName="" parentClasses="public FadingDialog, public TextEditorListener, public ColourButtonListener, private Timer"
+                 componentName="" parentClasses="public FadingDialog, public TextEditorListener, public ColourButtonListener"
                  constructorParams="Component &amp;owner, AnnotationsLayer *annotationsLayer, const AnnotationEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
                  variableInitialisers="targetEvent(editedEvent),&#10;targetLayer(annotationsLayer),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"

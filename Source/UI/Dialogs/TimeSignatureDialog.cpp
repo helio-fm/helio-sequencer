@@ -122,18 +122,13 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesLayer *
     this->setAlwaysOnTop(true);
     this->textEditor->showEditor();
     this->updateOkButtonState();
-
-    this->startTimer(100);
     //[/Constructor]
 }
 
 TimeSignatureDialog::~TimeSignatureDialog()
 {
     //[Destructor_pre]
-    this->stopTimer();
-
     textEditor->removeListener(this);
-
     FadingDialog::fadeOut();
     //[/Destructor_pre]
 
@@ -328,15 +323,6 @@ void TimeSignatureDialog::updateOkButtonState()
 	this->okButton->setEnabled(!textIsEmpty);
 }
 
-void TimeSignatureDialog::timerCallback()
-{
-	if (!this->textEditor->hasKeyboardFocus(true))
-	{
-		this->textEditor->showEditor();
-		this->stopTimer();
-	}
-}
-
 void TimeSignatureDialog::sendEventChange(TimeSignatureEvent newEvent)
 {
 	if (this->targetLayer != nullptr)
@@ -394,7 +380,7 @@ void TimeSignatureDialog::cancelAndDisappear()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="TimeSignatureDialog" template="../../Template"
-                 componentName="" parentClasses="public FadingDialog, public TextEditorListener, private Timer"
+                 componentName="" parentClasses="public FadingDialog, public TextEditorListener"
                  constructorParams="Component &amp;owner, TimeSignaturesLayer *signaturesLayer, const TimeSignatureEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
                  variableInitialisers="targetEvent(editedEvent),&#10;targetLayer(signaturesLayer),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
