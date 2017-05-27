@@ -80,9 +80,9 @@
     <key>CFBundleSignature</key>
     <string>????</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.7.5</string>
+    <string>1.7.6</string>
     <key>CFBundleVersion</key>
-    <string>1.7.5</string>
+    <string>1.7.6</string>
     <key>NSHighResolutionCapable</key>
     <true/>
     <key>UIRequiresFullScreen</key>
