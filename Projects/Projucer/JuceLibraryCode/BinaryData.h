@@ -336,7 +336,7 @@ namespace BinaryData
     const int            DefaultArps_xmlSize = 6981;
 
     extern const char*   DefaultTranslations_xml;
-    const int            DefaultTranslations_xmlSize = 172136;
+    const int            DefaultTranslations_xmlSize = 185385;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];
