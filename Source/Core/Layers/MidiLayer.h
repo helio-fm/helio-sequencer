@@ -62,12 +62,63 @@ public:
     MidiMessageSequence exportMidi() const;
     virtual void importMidi(const MidiMessageSequence &sequence) = 0;
 
+	//===------------------------------------------------------------------===//
+	// Instances
+	//===------------------------------------------------------------------===//
+
+	class Instance : public Serializable
+	{
+	public:
+
+		Instance() : startBeat(0.f)
+		{
+			Uuid uuid;
+			id = uuid.toString();
+		}
+
+		float getStartBeat() const noexcept
+		{ return this->startBeat; }
+
+		String getId() const noexcept
+		{ return this->id; }
+
+		void reset()
+		{ this->startBeat = 0.f; }
+
+		XmlElement *serialize() const override;
+		void deserialize(const XmlElement &xml) override;
+		void reset() override;
+
+		static int compareElements(const Instance *const first, const Instance *const second)
+		{
+			if (first == second) { return 0; }
+
+			const float diff = first->startBeat - second->startBeat;
+			const int diffResult = (diff > 0.f) - (diff < 0.f);
+			if (diffResult != 0) { return diffResult; }
+
+			return first->id.compare(second->id);
+		}
+
+	private:
+
+		float startBeat;
+		String id;
+
+	};
+
+	Array<Instance> getInstances() const noexcept;
+	bool insertInstance(Instance instance, const bool undoable);
+	bool removeInstance(Instance instance, const bool undoable);
+	bool changeInstance(Instance instance, Instance newInstance, const bool undoable);
+
     //===------------------------------------------------------------------===//
     // Track editing
     //===------------------------------------------------------------------===//
 
-    // эта функция - для импорта и чекаута. не уведомляет никого об изменениях.
-    // после ее использования - обязательно вызывать notifyLayerChanged()
+    // This one is for import and checkout procedures.
+	// Does not notify anybody to prevent notification hell.
+    // Always call notifyLayerChanged() when you're done using it.
     virtual void silentImport(const MidiEvent &eventToImport) = 0;
 
     //===------------------------------------------------------------------===//
@@ -164,6 +215,8 @@ protected:
     Uuid layerId;
 
     OwnedArray<MidiEvent> midiEvents;
+
+	Array<Instance> instances;
 
 private:
 

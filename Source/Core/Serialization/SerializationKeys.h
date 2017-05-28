@@ -347,6 +347,8 @@ namespace Serialization
         static const String noteAfter = "NoteAfter";
         static const String groupBefore = "GroupBefore";
         static const String groupAfter = "GroupAfter";
+		static const String instanceBefore = "InstanceBefore";
+		static const String instanceAfter = "InstanceAfter";
 
         static const String pianoLayerTreeItemInsertAction = "PianoLayerTreeItemInsertAction";
         static const String pianoLayerTreeItemRemoveAction = "PianoLayerTreeItemRemoveAction";
@@ -360,6 +362,10 @@ namespace Serialization
         static const String midiLayerChangeInstrumentAction = "MidiLayerChangeInstrumentAction";
         static const String midiLayerMuteAction = "MidiLayerMuteAction";
         
+		static const String midiLayerInstanceInsertAction = "MidiLayerInstanceInsertAction";
+		static const String midiLayerInstanceRemoveAction = "MidiLayerInstanceRemoveAction";
+		static const String midiLayerInstanceChangeAction = "MidiLayerInstanceChangeAction";
+
         static const String noteInsertAction = "NoteInsertAction";
         static const String noteRemoveAction = "NoteRemoveAction";
         static const String noteChangeAction = "NoteChangeAction";

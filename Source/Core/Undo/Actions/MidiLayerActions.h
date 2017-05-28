@@ -121,3 +121,102 @@ private:
     
     JUCE_DECLARE_NON_COPYABLE(MidiLayerMuteAction)
 };
+
+
+//===----------------------------------------------------------------------===//
+// Insert Instance
+//===----------------------------------------------------------------------===//
+
+class MidiLayerInsertInstanceAction : public UndoAction
+{
+public:
+
+	explicit MidiLayerInsertInstanceAction(ProjectTreeItem &project) :
+		UndoAction(project) {}
+
+	MidiLayerInsertInstanceAction(ProjectTreeItem &project,
+		String layerId, const MidiLayer::Instance &target);
+
+	bool perform() override;
+	bool undo() override;
+	int getSizeInUnits() override;
+
+	XmlElement *serialize() const override;
+	void deserialize(const XmlElement &xml) override;
+	void reset() override;
+
+private:
+
+	String layerId;
+	MidiLayer::Instance instance;
+
+	JUCE_DECLARE_NON_COPYABLE(MidiLayerInsertInstanceAction)
+};
+
+
+//===----------------------------------------------------------------------===//
+// Remove Instance
+//===----------------------------------------------------------------------===//
+
+class MidiLayerRemoveInstanceAction : public UndoAction
+{
+public:
+
+	explicit MidiLayerRemoveInstanceAction(ProjectTreeItem &project) :
+		UndoAction(project) {}
+
+	MidiLayerRemoveInstanceAction(ProjectTreeItem &project,
+		String layerId, const MidiLayer::Instance &target);
+
+	bool perform() override;
+	bool undo() override;
+	int getSizeInUnits() override;
+
+	XmlElement *serialize() const override;
+	void deserialize(const XmlElement &xml) override;
+	void reset() override;
+
+private:
+
+	String layerId;
+	MidiLayer::Instance instance;
+
+	JUCE_DECLARE_NON_COPYABLE(MidiLayerRemoveInstanceAction)
+};
+
+
+//===----------------------------------------------------------------------===//
+// Change Instance
+//===----------------------------------------------------------------------===//
+
+class MidiLayerChangeInstanceAction : public UndoAction
+{
+public:
+
+	explicit MidiLayerChangeInstanceAction(ProjectTreeItem &project) :
+		UndoAction(project) {}
+
+	MidiLayerChangeInstanceAction(ProjectTreeItem &project,
+		String layerId,
+		const MidiLayer::Instance &target,
+		const MidiLayer::Instance &newParameters);
+
+	bool perform() override;
+	bool undo() override;
+	int getSizeInUnits() override;
+	UndoAction *createCoalescedAction(UndoAction *nextAction) override;
+
+	XmlElement *serialize() const override;
+	void deserialize(const XmlElement &xml) override;
+	void reset() override;
+
+private:
+
+	String layerId;
+
+	MidiLayer::Instance instanceBefore;
+	MidiLayer::Instance instanceAfter;
+
+	JUCE_DECLARE_NON_COPYABLE(MidiLayerChangeInstanceAction)
+
+};
