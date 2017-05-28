@@ -355,8 +355,8 @@ Rectangle<float> PianoRoll::getEventBounds(MidiEventComponent *mc) const
 Rectangle<float> PianoRoll::getEventBounds(const int key, const float beat, const float length) const
 {
     const float startOffsetBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
-    const float x = this->snapWidth * ((beat - startOffsetBeat) / this->snapsPerBeat);
-    const float w = this->snapWidth * (length / this->snapsPerBeat);
+	const float x = this->barWidth * (beat - startOffsetBeat) / NUM_BEATS_IN_BAR;
+	const float w = this->barWidth * length / NUM_BEATS_IN_BAR;
 
     const float yPosition = float(this->getYPositionByKey(key));
     return Rectangle<float> (x, yPosition + 1, w, float(this->rowHeight - 1));
@@ -366,9 +366,6 @@ Rectangle<float> PianoRoll::getEventBounds(const int key, const float beat, cons
 
 void PianoRoll::getRowsColsByComponentPosition(const float x, const float y, int &noteNumber, float &beatNumber) const
 {
-    // update beats number
-    //const float snapsPerBeat = 1.0f / (snapQuantize / (float) NUM_BEATS_IN_BAR);
-    //const float snapWidth = barWidth / (float) snapQuantize;
     beatNumber = this->getRoundBeatByXPosition(int(x)); /* - 0.5f ? */
     noteNumber = roundToInt((this->getHeight() - y) / this->rowHeight);
     noteNumber = jmin(jmax(noteNumber, 0), numRows - 1);
@@ -964,7 +961,7 @@ bool PianoRoll::keyPressed(const KeyPress &key)
     else if (key == KeyPress::createFromDescription("s"))
     {
         MIDI_ROLL_BULK_REPAINT_START
-        MidiRollToolbox::snapSelection(this->getLassoSelection(), this->getSnapsPerBeat());
+        MidiRollToolbox::snapSelection(this->getLassoSelection(), 1);
         MIDI_ROLL_BULK_REPAINT_END
         return true;
     }
@@ -1136,16 +1133,11 @@ void PianoRoll::paint(Graphics &g)
 {
 #if PIANOROLL_HAS_PRERENDERED_BACKGROUND
 
-//    Icons::drawImageRetinaAware(PianoRoll::backgroundsCache[this->rowHeight], g,
-//                                this->viewport.getViewPositionX() + this->viewport.getViewWidth() / 2,
-//                                this->viewport.getViewPositionY() + this->viewport.getViewHeight() / 2);
-
     g.setTiledImageFill(*(static_cast<HelioTheme &>(this->getLookAndFeel()).getRollBgCache()[this->rowHeight]), 0, 0, 1.f);
     g.fillRect(this->viewport.getViewArea());
 
 #else
 
-    // opengl does render pretty smoothly
     const Colour blackKey = this->findColour(MidiRoll::blackKeyColourId);
     const Colour blackKeyBright = this->findColour(MidiRoll::blackKeyBrightColourId);
     const Colour whiteKey = this->findColour(MidiRoll::whiteKeyColourId);
@@ -1174,13 +1166,9 @@ void PianoRoll::paint(Graphics &g)
 
         switch (noteNumber)
         {
-            //case 0:
-            //    g.setColour(rowLine);
-            //    g.drawHorizontalLine(yPos - 1, float(viewPosition.getX()), float(viewPosition.getX() + visibleWidth));
-            //    break;
             case 1:
             case 3:
-            case 6:
+            case 5:
             case 8:
             case 10: // black keys
                 g.setColour(octaveIsOdd ? blackKeyBright : blackKey);
@@ -1409,7 +1397,7 @@ CachedImage::Ptr PianoRoll::renderRowsPattern(HelioTheme &theme, int height)
         {
         case 1:
         case 3:
-        case 6:
+        case 5:
         case 8:
         case 10: // black keys
             g.setColour(octaveIsOdd ? blackKeyBright : blackKey);

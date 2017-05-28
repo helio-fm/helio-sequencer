@@ -122,7 +122,7 @@ void ThemeSettingsItem::paint (Graphics& g)
         const int lineStartY = paintStartY;
         const int lineEndY = paintEndY + paintStartY;
 
-        g.setTiledImageFill(*this->rollImage.get(), 0, 0, 1.f);
+        g.setTiledImageFill(*this->rollImage.get(), 0, -3, 1.f);
         g.fillRect(200, paintStartY, this->getWidth() - 200, paintEndY);
 
         const int barWidth = 64;

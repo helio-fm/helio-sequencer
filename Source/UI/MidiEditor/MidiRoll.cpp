@@ -495,7 +495,7 @@ void MidiRoll::zoomRelative(const Point<float> &origin, const Point<float> &fact
     const float newWidth = float(this->getWidth());
     const float mouseOffsetX = float(absoluteOrigin.getX() - oldViewPosition.getX());
     const float newViewPositionX = float((absoluteOrigin.getX() * newWidth) / oldWidth) - mouseOffsetX;
-    this->viewport.setViewPosition(Point<int>(int(newViewPositionX + 0.5f), oldViewPosition.getY()));
+    this->viewport.setViewPosition(int(newViewPositionX + 0.5f), int(oldViewPosition.getY()));
 
     this->transportIndicatorOffset = this->findIndicatorOffsetFromViewCentre();
 
@@ -578,20 +578,53 @@ int MidiRoll::getXPositionByBeat(float targetBeat) const
 
 float MidiRoll::getFloorBeatByXPosition(int x) const
 {
+	Array<float> allSnaps;
+	allSnaps.addArray(this->visibleBars);
+	allSnaps.addArray(this->visibleBeats);
+	allSnaps.addArray(this->visibleSnaps);
+
+	float d = FLT_MAX;
+	float targetX = float(x);
+	for (float snapX : allSnaps)
+	{
+		const float dist = fabs(x - snapX);
+		if (dist < d && snapX < x)
+		{
+			d = dist;
+			targetX = snapX;
+		}
+	}
+
     const float lastAlignedBeat = float(this->lastBar * NUM_BEATS_IN_BAR);
     const float firstAlignedBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
-    float beatNumber = this->snapsPerBeat * floor(x / this->snapWidth) + firstAlignedBeat;
-    return jmin(jmax(beatNumber, firstAlignedBeat), lastAlignedBeat);
+	float beatNumber = (targetX / this->barWidth) * NUM_BEATS_IN_BAR + firstAlignedBeat;
+	return jmin(jmax(beatNumber, firstAlignedBeat), lastAlignedBeat);
 }
 
 float MidiRoll::getRoundBeatByXPosition(int x) const
 {
+	Array<float> allSnaps;
+	allSnaps.addArray(this->visibleBars);
+	allSnaps.addArray(this->visibleBeats);
+	allSnaps.addArray(this->visibleSnaps);
+
+	float d = FLT_MAX;
+	float targetX = float(x);
+	for (float snapX : allSnaps)
+	{
+		const float dist = fabs(x - snapX);
+		if (dist < d)
+		{
+			d = dist;
+			targetX = snapX;
+		}
+	}
+
     const float lastAlignedBeat = float(this->lastBar * NUM_BEATS_IN_BAR);
     const float firstAlignedBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
-    float beatNumber = this->snapsPerBeat * roundf(x / this->snapWidth) + firstAlignedBeat;
-    return jmin(jmax(beatNumber, firstAlignedBeat), lastAlignedBeat);
+	float beatNumber = (targetX / this->barWidth) * NUM_BEATS_IN_BAR + firstAlignedBeat;
+	return jmin(jmax(beatNumber, firstAlignedBeat), lastAlignedBeat);
 }
-
 
 void MidiRoll::setFirstBar(int bar)
 {
@@ -630,59 +663,8 @@ void MidiRoll::setBarRange(int first, int last)
 void MidiRoll::setBarWidth(const float newBarWidth)
 {
     if (newBarWidth > 1440 || newBarWidth <= 0) { return; }
-
     this->barWidth = newBarWidth;
-
-    if (this->barWidth <= 32)
-    {
-        this->setSnapQuantize(1.f);
-    }
-    else if (this->barWidth <= 64)
-    {
-        this->setSnapQuantize(2.f);
-    }
-    else if (this->barWidth <= 160)
-    {
-        this->setSnapQuantize(4.f);
-    }
-    else if (this->barWidth <= 320)
-    {
-        this->setSnapQuantize(8.f);
-    }
-    else if (this->barWidth <= 640)
-    {
-        this->setSnapQuantize(16.f);
-    }
-    else if (this->barWidth <= 1280)
-    {
-        this->setSnapQuantize(32.f);
-    }
-    else /*if (this->barWidth < 2560)*/
-    {
-        this->setSnapQuantize(64.f);
-    }
-
     this->updateBounds();
-}
-
-void MidiRoll::setSnapQuantize(float quantize)
-{
-    if (quantize == 0)
-    { return; }
-
-    this->snapsPerBeat = 1.0f / (quantize / float(NUM_BEATS_IN_BAR));
-    this->snapWidth = this->barWidth / quantize;
-}
-
-// Snaps per quarter beat, actually
-float MidiRoll::getSnapsPerBeat() const
-{
-    return this->snapsPerBeat;
-}
-
-float MidiRoll::getSnapWidth() const
-{
-    return this->snapWidth;
 }
 
 #define MIN_BAR_WIDTH 12
@@ -696,15 +678,21 @@ void MidiRoll::computeVisibleBeatLines()
 
     const auto tsLayer = this->project.getTimeline()->getTimeSignatures();
     
-    const float zeroCanvasOffset = this->getFirstBar() * this->barWidth;
+    const float zeroCanvasOffset = this->firstBar * this->barWidth;
     
-    const float viewPosX = this->viewport.getViewPositionX();
+    const float viewPosX = float(this->viewport.getViewPositionX());
     const float paintStartX = viewPosX + zeroCanvasOffset;
     const float paintEndX = float(viewPosX + this->viewport.getViewWidth()) + zeroCanvasOffset;
     
     const int paintStartBar = int(paintStartX / this->barWidth) - 1;
     const int paintEndBar = int(paintEndX / this->barWidth) + 1;
     
+	// Get number of snaps depending on bar width, 
+	// 2 for 64, 4 for 128, 8 for 256, etc:
+	const float nearestPowTwo = ceilf(log(this->barWidth) / log(2.f));
+	const float numSnaps = powf(2, jlimit(1.f, 6.f, nearestPowTwo - 5.f)); // like -4.f for twice as dense grid
+	const float snapWidth = this->barWidth / numSnaps;
+
     int numerator = TIME_SIGNATURE_DEFAULT_NUMERATOR;
     int denominator = TIME_SIGNATURE_DEFAULT_DENOMINATOR;
     float i = float(paintStartBar);
@@ -774,16 +762,20 @@ void MidiRoll::computeVisibleBeatLines()
                     lastFrame = true;
                 }
             }
-            
+
             // Get snap lines and beat lines
-            for (float k = beatStartX + this->snapWidth;
+            for (float k = beatStartX + snapWidth;
                  k < (nextBeatStartX - 1);
-                 k += this->snapWidth)
+                 k += snapWidth)
             {
-                visibleSnaps.add(k);
+				if (k >= viewPosX)
+				{
+					visibleSnaps.add(k);
+				}
             }
             
-            if (j >= beatStep && // Don't draw the first one as it is a barline
+            if (beatStartX >= viewPosX &&
+				j >= beatStep && // Don't draw the first one as it is a barline
                 (nextBeatStartX - beatStartX) > MIN_BEAT_WIDTH)
             {
                 visibleBeats.add(beatStartX);
@@ -1075,22 +1067,22 @@ bool MidiRoll::keyPressed(const KeyPress &key)
     }
     else if (key == KeyPress::createFromDescription("cursor left"))
     {
-        MidiRollToolbox::shiftBeatRelative(this->getLassoSelection(), -this->getSnapsPerBeat());
+        MidiRollToolbox::shiftBeatRelative(this->getLassoSelection(), -0.25f);
         return true;
     }
     else if (key == KeyPress::createFromDescription("cursor right"))
     {
-        MidiRollToolbox::shiftBeatRelative(this->getLassoSelection(), this->getSnapsPerBeat());
+        MidiRollToolbox::shiftBeatRelative(this->getLassoSelection(), 0.25f);
         return true;
     }
     else if (key == KeyPress::createFromDescription("shift + cursor left"))
     {
-        MidiRollToolbox::shiftBeatRelative(this->getLassoSelection(), -this->getSnapsPerBeat() * NUM_BEATS_IN_BAR);
+        MidiRollToolbox::shiftBeatRelative(this->getLassoSelection(), -0.25f * NUM_BEATS_IN_BAR);
         return true;
     }
     else if (key == KeyPress::createFromDescription("shift + cursor right"))
     {
-        MidiRollToolbox::shiftBeatRelative(this->getLassoSelection(), this->getSnapsPerBeat() * NUM_BEATS_IN_BAR);
+        MidiRollToolbox::shiftBeatRelative(this->getLassoSelection(), 0.25f * NUM_BEATS_IN_BAR);
         return true;
     }
     else if (key.isKeyCode(KeyPress::spaceKey))
@@ -1410,25 +1402,25 @@ void MidiRoll::paint(Graphics &g)
     g.setColour(barLine);
     for (const auto f : this->visibleBars)
     {
-        g.drawVerticalLine(f, paintStartY, paintEndY);
+        g.drawVerticalLine(int(f), paintStartY, paintEndY);
     }
 
     g.setColour(barLineBevel);
     for (const auto f : this->visibleBars)
     {
-        g.drawVerticalLine(f + 1, paintStartY, paintEndY);
+        g.drawVerticalLine(int(f + 1), paintStartY, paintEndY);
     }
 
     g.setColour(beatLine);
     for (const auto f : this->visibleBeats)
     {
-        g.drawVerticalLine(f, paintStartY, paintEndY);
+        g.drawVerticalLine(int(f), paintStartY, paintEndY);
     }
     
     g.setColour(snapLine);
     for (const auto f : this->visibleSnaps)
     {
-        g.drawVerticalLine(f, paintStartY, paintEndY);
+        g.drawVerticalLine(int(f), paintStartY, paintEndY);
     }
 }
 
@@ -2094,10 +2086,9 @@ Point<float> MidiRoll::getMouseOffset(Point<float> mouseScreenPosition) const
 
 void MidiRoll::updateBounds()
 {
-    // todo set position
     const int &newWidth = int(this->getNumBars() * this->barWidth);
-
-    if (this->getWidth() == newWidth) { return; }
+    if (this->getWidth() == newWidth)
+	{ return; }
 
     this->setSize(newWidth, this->getHeight());
 }

@@ -1,1 +1,6 @@
-* -text
+*.cpp text=auto eol=lf
+*.h text=auto eol=lf
+*.mm text=auto eol=lf
+*.txt text=auto eol=lf
+*.xml -text
+*.svg -text

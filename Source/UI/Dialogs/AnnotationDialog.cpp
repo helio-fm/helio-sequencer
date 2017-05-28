@@ -93,6 +93,8 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsLayer *annotatio
 		const String key(keys[r.nextInt(keys.size())]);
 		const Colour colour(Colour::fromString(getDynamics()[key]));
 		this->targetEvent = AnnotationEvent(annotationsLayer, targetBeat, key, colour);
+
+        annotationsLayer->checkpoint();
 		annotationsLayer->insert(this->targetEvent, true);
 
 		this->messageLabel->setText(TRANS("dialog::annotation::add::caption"), dontSendNotification);
@@ -123,20 +125,15 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsLayer *annotatio
     this->setInterceptsMouseClicks(true, true);
     this->toFront(true);
     this->setAlwaysOnTop(true);
-    this->textEditor->grabKeyboardFocus();
+    this->textEditor->showEditor();
     this->updateOkButtonState();
-
-    this->startTimer(100);
     //[/Constructor]
 }
 
 AnnotationDialog::~AnnotationDialog()
 {
     //[Destructor_pre]
-    this->stopTimer();
-
     this->textEditor->removeListener(this);
-
     FadingDialog::fadeOut();
     //[/Destructor_pre]
 
@@ -335,15 +332,6 @@ void AnnotationDialog::updateOkButtonState()
     this->okButton->setEnabled(!textIsEmpty);
 }
 
-void AnnotationDialog::timerCallback()
-{
-    if (! this->textEditor->hasKeyboardFocus(true))
-    {
-        this->textEditor->grabKeyboardFocus();
-        this->stopTimer();
-    }
-}
-
 void AnnotationDialog::onColourButtonClicked(ColourButton *clickedButton)
 {
 	const Colour c(clickedButton->getColour());
@@ -356,8 +344,12 @@ void AnnotationDialog::sendEventChange(AnnotationEvent newEvent)
 {
 	if (this->targetLayer != nullptr)
 	{
-		this->cancelChangesIfAny();
-		this->targetLayer->checkpoint();
+        if (!this->addsNewEvent)
+        {
+            this->cancelChangesIfAny();
+            this->targetLayer->checkpoint();
+        }
+        
 		this->targetLayer->change(this->targetEvent, newEvent, true);
 		this->hasMadeChanges = true;
 	}
@@ -367,8 +359,12 @@ void AnnotationDialog::removeEvent()
 {
 	if (this->targetLayer != nullptr)
 	{
-		this->cancelChangesIfAny();
-		this->targetLayer->checkpoint();
+        if (!this->addsNewEvent)
+        {
+            this->cancelChangesIfAny();
+            this->targetLayer->checkpoint();
+        }
+        
 		this->targetLayer->remove(this->targetEvent, true);
 		this->hasMadeChanges = true;
 	}
@@ -376,7 +372,8 @@ void AnnotationDialog::removeEvent()
 
 void AnnotationDialog::cancelChangesIfAny()
 {
-	if (this->hasMadeChanges &&
+	if (!this->addsNewEvent &&
+        this->hasMadeChanges &&
 		this->targetLayer != nullptr)
 	{
 		this->targetLayer->undo();
@@ -408,7 +405,7 @@ void AnnotationDialog::cancelAndDisappear()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="AnnotationDialog" template="../../Template"
-                 componentName="" parentClasses="public FadingDialog, public TextEditorListener, public ColourButtonListener, private Timer"
+                 componentName="" parentClasses="public FadingDialog, public TextEditorListener, public ColourButtonListener"
                  constructorParams="Component &amp;owner, AnnotationsLayer *annotationsLayer, const AnnotationEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
                  variableInitialisers="targetEvent(editedEvent),&#10;targetLayer(annotationsLayer),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"

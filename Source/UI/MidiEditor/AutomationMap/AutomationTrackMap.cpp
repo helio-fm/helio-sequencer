@@ -223,8 +223,7 @@ void AutomationTrackMap::getRowsColsByMousePosition(int x, int y, float &targetV
 {
     const float diameter = this->getEventDiameter();
     const float xRoll = float(x + (diameter / 2.f)) / float(this->getWidth()) * float(this->roll.getWidth());
-    targetBeat = this->roll.getSnapsPerBeat() * roundToInt(xRoll / this->roll.getSnapWidth()) + this->rollFirstBeat;
-    targetBeat = jmin(jmax(targetBeat, this->rollFirstBeat), this->rollLastBeat);
+	targetBeat = this->roll.getRoundBeatByXPosition(xRoll);
     
     // hardcoded multiplier
     //targetValue = float(y + (diameter / 2)) / float(this->getAvailableHeight());

@@ -246,10 +246,6 @@ public:
     Array<float> &getVisibleBeats() noexcept { return this->visibleBeats; }
     Array<float> &getVisibleSnaps() noexcept { return this->visibleSnaps; }
     
-    void setSnapQuantize(float snapQuantize);
-    float getSnapsPerBeat() const;
-    float getSnapWidth() const;
-    
     bool isUsingAnyAltMode() const;
     void setSpaceDraggingMode(bool dragMode);
     bool isUsingSpaceDraggingMode() const;
@@ -424,9 +420,6 @@ protected:
     bool isLassoEvent(const MouseEvent &e) const;
     bool isWipeSpaceEvent(const MouseEvent &e) const;
     bool isInsertSpaceEvent(const MouseEvent &e) const;
-    
-    float snapsPerBeat;
-    float snapWidth;
 
     int firstBar;
     int lastBar;

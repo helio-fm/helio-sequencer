@@ -408,8 +408,6 @@ MidiEditor::MidiEditor(ProjectTreeItem &parentProject) :
     //this->scroller->addOwnedMap(new AutomationTrackMap(this->project, *this->roll, this->project.getDefaultTempoTrack()->getLayer()), true);
 
     this->roll->setBarWidth(MAX_BAR_WIDTH);
-    this->roll->setSnapQuantize(8);
-
 
     this->viewport->setViewedComponent(this->roll, false);
     this->roll->addRollListener(this->scroller);

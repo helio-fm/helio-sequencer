@@ -32,7 +32,6 @@ class AnnotationsLayer;
 class AnnotationDialog  : public FadingDialog,
                           public TextEditorListener,
                           public ColourButtonListener,
-                          private Timer,
                           public ButtonListener,
                           public ComboBoxListener
 {
@@ -72,8 +71,6 @@ private:
 	inline void cancelAndDisappear();
 	inline void disappear();
 	inline void updateOkButtonState();
-
-	void timerCallback() override;
 
 	bool addsNewEvent;
 	bool hasMadeChanges;

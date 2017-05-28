@@ -40,7 +40,7 @@ TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesTrackMap<
     this->setMouseCursor(MouseCursor::PointingHandCursor);
     //[/UserPreSize]
 
-    setSize (128, 42);
+    setSize (128, 32);
 
     //[Constructor]
     //[/Constructor]
@@ -61,8 +61,14 @@ void TimeSignatureLargeComponent::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x25fefefe));
-    g.fillPath (internalPath1);
+    {
+        float x = 0, y = 0;
+        Colour fillColour = Colour (0x25fefefe);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillPath (internalPath1, AffineTransform::translation(x, y));
+    }
 
     //[UserPaint] Add your own custom painting code here..
     const Font labelFont(19.00f, Font::plain);
@@ -250,7 +256,7 @@ BEGIN_JUCER_METADATA
                  constructorParams="TimeSignaturesTrackMap&lt;TimeSignatureLargeComponent&gt; &amp;parent, const TimeSignatureEvent &amp;targetEvent"
                  variableInitialisers="event(targetEvent),&#10;editor(parent),&#10;anchor(targetEvent),&#10;numerator(0),&#10;denominator(0),&#10;mouseDownWasTriggered(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="128" initialHeight="42">
+                 fixedSize="1" initialWidth="128" initialHeight="32">
   <METHODS>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
     <METHOD name="mouseDrag (const MouseEvent&amp; e)"/>

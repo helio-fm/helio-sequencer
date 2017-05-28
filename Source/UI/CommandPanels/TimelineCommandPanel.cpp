@@ -108,7 +108,7 @@ TimelineCommandPanel::TimelineCommandPanel(ProjectTreeItem &parentProject) :
         jassertfalse;
     }
     
-    this->updateContent(cmds, SlideLeft);
+	this->updateContent(cmds, SlideDown);
 }
 
 TimelineCommandPanel::~TimelineCommandPanel()

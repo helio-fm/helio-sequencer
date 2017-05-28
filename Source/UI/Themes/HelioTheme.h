@@ -32,7 +32,7 @@ public:
     typedef ReferenceCountedObjectPtr<CachedImage> Ptr;
 };
 
-class HelioTheme : public LookAndFeel_V3
+class HelioTheme : public LookAndFeel_V4
 {
 public:
 
@@ -43,7 +43,7 @@ public:
 
     void initResources();
 
-    void initColours(const ColourScheme &colours);
+    void initColours(const ::ColourScheme &colours);
 
     void updateBackgroundRenders(bool force = false);
 

@@ -30,7 +30,6 @@ class TimeSignaturesLayer;
 
 class TimeSignatureDialog  : public FadingDialog,
                              public TextEditorListener,
-                             private Timer,
                              public ButtonListener,
                              public ComboBoxListener
 {
@@ -68,8 +67,6 @@ private:
 	inline void cancelAndDisappear();
 	inline void disappear();
 	inline void updateOkButtonState();
-
-	void timerCallback() override;
 
 	bool addsNewEvent;
 	bool hasMadeChanges;

@@ -302,9 +302,6 @@ void NoNotesPopup::onPopupsResetState(PopupButton *button)
     }
 }
 
-static const char *kNotesLettersArray[] = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "H" };
-//static const char *kNotesLettersArray[] = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "B", "H" };
-
 static const char *kChordDescriptionsArray[] =
 {
     "popup::chord::minor::1", "popup::chord::major::1",
@@ -327,12 +324,9 @@ static const char *kFunctionDescriptionsArray[] =
     "popup::chord::function::7"
 };
 
-String keyName(int key)
+inline String keyName(int key)
 {
-    const int octave = (key / 12) - 2; // -2 means that we count from C-2, not C0 (respecting piano keyboard, not midi numbers)
-    const int note = key % 12;
-    const StringArray notesLetters(kNotesLettersArray, 12);
-    return notesLetters[note] + String(octave);
+    return MidiMessage::getMidiNoteName(key, true, true, 3);
 }
 
 #define SHOW_CHORD_TOOLTIP(FUNCTION_INDEX, CHORD_INDEX) \

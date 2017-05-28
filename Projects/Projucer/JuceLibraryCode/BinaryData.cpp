@@ -11816,7 +11816,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) throw
         case 0xde5493f9:  numBytes = 317; return defaultPattern_png;
         case 0x607fea3a:  numBytes = 2880; return ColourSchemes_xml;
         case 0xec23d88d:  numBytes = 6981; return DefaultArps_xml;
-        case 0x7502f27b:  numBytes = 172136; return DefaultTranslations_xml;
+        case 0x7502f27b:  numBytes = 185385; return DefaultTranslations_xml;
         default: break;
     }
 

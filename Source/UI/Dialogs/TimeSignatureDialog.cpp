@@ -90,6 +90,8 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesLayer *
 		int denominator;
 		TimeSignatureEvent::parseString(meter, numerator, denominator);
 		this->targetEvent = TimeSignatureEvent(this->targetLayer, targetBeat, numerator, denominator);
+
+        this->targetLayer->checkpoint();
 		this->targetLayer->insert(this->targetEvent, true);
 
 		this->messageLabel->setText(TRANS("dialog::timesignature::add::caption"), dontSendNotification);
@@ -118,20 +120,15 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesLayer *
     this->setInterceptsMouseClicks(true, true);
     this->toFront(true);
     this->setAlwaysOnTop(true);
-    this->textEditor->grabKeyboardFocus();
+    this->textEditor->showEditor();
     this->updateOkButtonState();
-
-    this->startTimer(100);
     //[/Constructor]
 }
 
 TimeSignatureDialog::~TimeSignatureDialog()
 {
     //[Destructor_pre]
-    this->stopTimer();
-
     textEditor->removeListener(this);
-
     FadingDialog::fadeOut();
     //[/Destructor_pre]
 
@@ -326,21 +323,16 @@ void TimeSignatureDialog::updateOkButtonState()
 	this->okButton->setEnabled(!textIsEmpty);
 }
 
-void TimeSignatureDialog::timerCallback()
-{
-	if (!this->textEditor->hasKeyboardFocus(true))
-	{
-		this->textEditor->grabKeyboardFocus();
-		this->stopTimer();
-	}
-}
-
 void TimeSignatureDialog::sendEventChange(TimeSignatureEvent newEvent)
 {
 	if (this->targetLayer != nullptr)
 	{
-		this->cancelChangesIfAny();
-		this->targetLayer->checkpoint();
+        if (!this->addsNewEvent)
+        {
+            this->cancelChangesIfAny();
+            this->targetLayer->checkpoint();
+        }
+        
 		this->targetLayer->change(this->targetEvent, newEvent, true);
 		this->hasMadeChanges = true;
 	}
@@ -350,8 +342,12 @@ void TimeSignatureDialog::removeEvent()
 {
 	if (this->targetLayer != nullptr)
 	{
-		this->cancelChangesIfAny();
-		this->targetLayer->checkpoint();
+        if (!this->addsNewEvent)
+        {
+            this->cancelChangesIfAny();
+            this->targetLayer->checkpoint();
+        }
+        
 		this->targetLayer->remove(this->targetEvent, true);
 		this->hasMadeChanges = true;
 	}
@@ -359,7 +355,8 @@ void TimeSignatureDialog::removeEvent()
 
 void TimeSignatureDialog::cancelChangesIfAny()
 {
-	if (this->hasMadeChanges &&
+	if (!this->addsNewEvent &&
+        this->hasMadeChanges &&
 		this->targetLayer != nullptr)
 	{
 		this->targetLayer->undo();
@@ -392,7 +389,7 @@ void TimeSignatureDialog::cancelAndDisappear()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="TimeSignatureDialog" template="../../Template"
-                 componentName="" parentClasses="public FadingDialog, public TextEditorListener, private Timer"
+                 componentName="" parentClasses="public FadingDialog, public TextEditorListener"
                  constructorParams="Component &amp;owner, TimeSignaturesLayer *signaturesLayer, const TimeSignatureEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
                  variableInitialisers="targetEvent(editedEvent),&#10;targetLayer(signaturesLayer),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
