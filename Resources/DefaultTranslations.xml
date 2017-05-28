@@ -15,12 +15,24 @@
     <Literal Name="menu::annotation::rename" Translation="Rename"/>
     <Literal Name="menu::annotation::delete" Translation="Delete"/>
     <Literal Name="menu::annotation::add" Translation="Add annotation"/>
-    <Literal Name="dialog::annotation::rename::caption" Translation="Rename annotation"/>
-    <Literal Name="dialog::annotation::rename::proceed" Translation="Rename"/>
-    <Literal Name="dialog::annotation::rename::cancel" Translation="Cancel"/>
     <Literal Name="dialog::annotation::add::caption" Translation="Enter annotation text:"/>
     <Literal Name="dialog::annotation::add::proceed" Translation="Add"/>
     <Literal Name="dialog::annotation::add::cancel" Translation="Cancel"/>
+    <Literal Name="dialog::annotation::rename::caption" Translation="Rename annotation"/>
+    <Literal Name="dialog::annotation::rename::proceed" Translation="Rename"/>
+    <Literal Name="dialog::annotation::rename::cancel" Translation="Cancel"/>
+    <Literal Name="dialog::annotation::edit::caption" Translation="Edit annotation"/>
+    <Literal Name="dialog::annotation::edit::apply" Translation="Apply"/>
+    <Literal Name="dialog::annotation::edit::delete" Translation="Delete"/>
+    <Literal Name="menu::timesignature::change" Translation="Change time signature"/>
+    <Literal Name="menu::timesignature::delete" Translation="Delete"/>
+    <Literal Name="menu::timesignature::add" Translation="Add time signature"/>
+    <Literal Name="dialog::timesignature::edit::caption" Translation="Change time signature"/>
+    <Literal Name="dialog::timesignature::edit::apply" Translation="Apply"/>
+    <Literal Name="dialog::timesignature::edit::delete" Translation="Delete"/>
+    <Literal Name="dialog::timesignature::add::caption" Translation="Enter new metre:"/>
+    <Literal Name="dialog::timesignature::add::proceed" Translation="Add"/>
+    <Literal Name="dialog::timesignature::add::cancel" Translation="Cancel"/>
     <Literal Name="dialog::auth::email" Translation="E-mail:"/>
     <Literal Name="dialog::auth::password" Translation="Password:"/>
     <Literal Name="dialog::auth::proceed" Translation="Authorize / Register"/>
@@ -269,6 +281,18 @@
       <Translation Name="changed {x} annotation" PluralForm="1"/>
       <Translation Name="changed {x} annotations" PluralForm="2"/>
     </PluralLiteral>
+    <PluralLiteral Name="added {x} time signatures">
+      <Translation Name="added {x} time signature" PluralForm="1"/>
+      <Translation Name="added {x} time signatures" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="removed {x} time signatures">
+      <Translation Name="removed {x} time signature" PluralForm="1"/>
+      <Translation Name="removed {x} time signatures" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="changed {x} time signatures">
+      <Translation Name="changed {x} time signature" PluralForm="1"/>
+      <Translation Name="changed {x} time signatures" PluralForm="2"/>
+    </PluralLiteral>
     <PluralLiteral Name="{x} notes">
       <Translation Name="{x} note" PluralForm="1"/>
       <Translation Name="{x} notes" PluralForm="2"/>
@@ -280,6 +304,10 @@
     <PluralLiteral Name="{x} annotations">
       <Translation Name="{x} annotation" PluralForm="1"/>
       <Translation Name="{x} annotations" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="{x} time signatures">
+      <Translation Name="{x} time signature" PluralForm="1"/>
+      <Translation Name="{x} time signatures" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="{x} layers">
       <Translation Name="{x} layer" PluralForm="1"/>
@@ -325,7 +353,7 @@
     <Literal Name="defaults::newproject::name" Translation="Новый проект"/>
     <Literal Name="defaults::newlayer::name" Translation="Новый слой"/>
     <Literal Name="defaults::tempotrack::name" Translation="Темп"/>
-    <Literal Name="warnings::emptyselection" Translation="Событие не выбрано."/>
+    <Literal Name="warnings::emptyselection" Translation="Не выбрано ни одной ноты."/>
     <Literal Name="warnings::noinstrument" Translation="Не выбран инструмент."/>
     <Literal Name="warnings::smallscreen" Translation="Helio не рассчитан на маленькие экраны. Попробуйте установить его на планшете."/>
     <Literal Name="tree::instruments" Translation="Инструменты"/>
@@ -334,12 +362,24 @@
     <Literal Name="menu::annotation::rename" Translation="Переименовать"/>
     <Literal Name="menu::annotation::delete" Translation="Удалить"/>
     <Literal Name="menu::annotation::add" Translation="Добавить метку"/>
-    <Literal Name="dialog::annotation::rename::caption" Translation="Переименовать метку"/>
-    <Literal Name="dialog::annotation::rename::proceed" Translation="Переименовать"/>
-    <Literal Name="dialog::annotation::rename::cancel" Translation="Отмена"/>
     <Literal Name="dialog::annotation::add::caption" Translation="Введите текст:"/>
     <Literal Name="dialog::annotation::add::proceed" Translation="Добавить"/>
     <Literal Name="dialog::annotation::add::cancel" Translation="Отмена"/>
+    <Literal Name="dialog::annotation::rename::caption" Translation="Переименовать метку"/>
+    <Literal Name="dialog::annotation::rename::proceed" Translation="Переименовать"/>
+    <Literal Name="dialog::annotation::rename::cancel" Translation="Отмена"/>
+    <Literal Name="dialog::annotation::edit::caption" Translation="Изменить метку"/>
+    <Literal Name="dialog::annotation::edit::apply" Translation="Применить"/>
+    <Literal Name="dialog::annotation::edit::delete" Translation="Удалить"/>
+    <Literal Name="menu::timesignature::change" Translation="Изменить размер"/>
+    <Literal Name="menu::timesignature::delete" Translation="Удалить"/>
+    <Literal Name="menu::timesignature::add" Translation="Добавить размер"/>
+    <Literal Name="dialog::timesignature::edit::caption" Translation="Изменить размер"/>
+    <Literal Name="dialog::timesignature::edit::apply" Translation="Применить"/>
+    <Literal Name="dialog::timesignature::edit::delete" Translation="Удалить"/>
+    <Literal Name="dialog::timesignature::add::caption" Translation="Введите новый размер:"/>
+    <Literal Name="dialog::timesignature::add::proceed" Translation="Добавить"/>
+    <Literal Name="dialog::timesignature::add::cancel" Translation="Отмена"/>
     <Literal Name="dialog::auth::email" Translation="E-mail:"/>
     <Literal Name="dialog::auth::password" Translation="Пароль:"/>
     <Literal Name="dialog::auth::proceed" Translation="Вход или Регистрация"/>
@@ -537,7 +577,7 @@
     <Literal Name="vcs::remove::sync::error" Translation="Не удалось удалить проект с сервера."/>
     <Literal Name="vcs::remove::done" Translation="Готово."/>
     <Literal Name="vcs::items::annotations" Translation="Текстовые метки"/>
-    <Literal Name="vcs::items::timeline" Translation="Временная шкала проекта"/>
+    <Literal Name="vcs::items::timeline" Translation="Временная шкала"/>
     <Literal Name="vcs::items::projectinfo" Translation="Информация о проекте"/>
     <Literal Name="dialog::corruption::caption" Translation="Исполнимый файл поврежден."/>
     <Literal Name="dialog::corruption::message" Translation="Исполнимый файл поврежден. Возможно, ваша система заражена вирусами, либо вы установили программу из недоверенного источника. Вы можете скачать оригинальную версию на http://helioworkstation.com"/>
@@ -599,6 +639,21 @@
       <Translation Name="изменены {x} метки" PluralForm="2"/>
       <Translation Name="изменено {x} меток" PluralForm="3"/>
     </PluralLiteral>
+    <PluralLiteral Name="added {x} time signatures">
+      <Translation Name="добавлен {x} размер" PluralForm="1"/>
+      <Translation Name="добавлены {x} размера" PluralForm="2"/>
+      <Translation Name="добавлено {x} размеров" PluralForm="3"/>
+    </PluralLiteral>
+    <PluralLiteral Name="removed {x} time signatures">
+      <Translation Name="изменен {x} размер" PluralForm="1"/>
+      <Translation Name="изменены {x} размера" PluralForm="2"/>
+      <Translation Name="изменено {x} размеров" PluralForm="3"/>
+    </PluralLiteral>
+    <PluralLiteral Name="changed {x} time signatures">
+      <Translation Name="удален {x} размер" PluralForm="1"/>
+      <Translation Name="удалены {x} размера" PluralForm="2"/>
+      <Translation Name="удалено {x} размеров" PluralForm="3"/>
+    </PluralLiteral>
     <PluralLiteral Name="{x} notes">
       <Translation Name="{x} нота" PluralForm="1"/>
       <Translation Name="{x} ноты" PluralForm="2"/>
@@ -613,6 +668,11 @@
       <Translation Name="{x} метка" PluralForm="1"/>
       <Translation Name="{x} метки" PluralForm="2"/>
       <Translation Name="{x} меток" PluralForm="3"/>
+    </PluralLiteral>
+    <PluralLiteral Name="{x} time signatures">
+      <Translation Name="{x} размер" PluralForm="1"/>
+      <Translation Name="{x} размера" PluralForm="2"/>
+      <Translation Name="{x} размеров" PluralForm="3"/>
     </PluralLiteral>
     <PluralLiteral Name="{x} layers">
       <Translation Name="{x} слой" PluralForm="1"/>
@@ -661,36 +721,48 @@
     <PluralForms Equation="({x}==1 ? 1 : 2)"/>
     <Literal Name="defaults::newproject::firstcommit" Translation="Projekt erstellt"/>
     <Literal Name="defaults::newproject::name" Translation="Neues Projekt"/>
-    <Literal Name="defaults::newlayer::name" Translation="Neuer Layer"/>
+    <Literal Name="defaults::newlayer::name" Translation="Neuer Ebene"/>
     <Literal Name="defaults::tempotrack::name" Translation="Tempo"/>
     <Literal Name="warnings::emptyselection" Translation="Nichts ausgewählt."/>
     <Literal Name="warnings::noinstrument" Translation="Kein Instrument ausgewählt."/>
-    <Literal Name="warnings::smallscreen" Translation="Helio ist nicht für kleine Bildschirme konzipiert. Bitte installieren Sie es auf ein Tablet."/>
+    <Literal Name="warnings::smallscreen" Translation="Helio ist nicht für kleine Bildschirme konzipiert. Bitte installieren Sie es auf einem Tablet."/>
     <Literal Name="tree::instruments" Translation="Instrumente"/>
     <Literal Name="tree::settings" Translation="Einstellungen"/>
     <Literal Name="tree::vcs" Translation="Versionen"/>
     <Literal Name="menu::annotation::rename" Translation="Umbenennen"/>
     <Literal Name="menu::annotation::delete" Translation="Löschen"/>
     <Literal Name="menu::annotation::add" Translation="Marke hinzufügen"/>
-    <Literal Name="dialog::annotation::rename::caption" Translation="Marke umbenennen"/>
-    <Literal Name="dialog::annotation::rename::proceed" Translation="Umbenennen"/>
-    <Literal Name="dialog::annotation::rename::cancel" Translation="Abbrechen"/>
     <Literal Name="dialog::annotation::add::caption" Translation="Text eingeben:"/>
     <Literal Name="dialog::annotation::add::proceed" Translation="Hinzufügen"/>
     <Literal Name="dialog::annotation::add::cancel" Translation="Abbrechen"/>
+    <Literal Name="dialog::annotation::rename::caption" Translation="Marke umbenennen"/>
+    <Literal Name="dialog::annotation::rename::proceed" Translation="Umbenennen"/>
+    <Literal Name="dialog::annotation::rename::cancel" Translation="Abbrechen"/>
+    <Literal Name="dialog::annotation::edit::caption" Translation="Marke ändern"/>
+    <Literal Name="dialog::annotation::edit::apply" Translation="Anwenden"/>
+    <Literal Name="dialog::annotation::edit::delete" Translation="Löschen"/>
+    <Literal Name="menu::timesignature::change" Translation="Taktangabe ändern"/>
+    <Literal Name="menu::timesignature::delete" Translation="Löschen"/>
+    <Literal Name="menu::timesignature::add" Translation="Taktangabe hinzufügen"/>
+    <Literal Name="dialog::timesignature::edit::caption" Translation="Taktangabe ändern"/>
+    <Literal Name="dialog::timesignature::edit::apply" Translation="Anwenden"/>
+    <Literal Name="dialog::timesignature::edit::delete" Translation="Löschen"/>
+    <Literal Name="dialog::timesignature::add::caption" Translation="Taktangabe eingeben:"/>
+    <Literal Name="dialog::timesignature::add::proceed" Translation="Hinzufügen"/>
+    <Literal Name="dialog::timesignature::add::cancel" Translation="Abbrechen"/>
     <Literal Name="dialog::auth::email" Translation="E-Mail:"/>
     <Literal Name="dialog::auth::password" Translation="Passwort:"/>
-    <Literal Name="dialog::auth::proceed" Translation="Einloggen / Anmelden"/>
+    <Literal Name="dialog::auth::proceed" Translation="Einloggen/Anmelden"/>
     <Literal Name="dialog::auth::cancel" Translation="Abbrechen"/>
     <Literal Name="dialog::auth::defaultlogin::desktop" Translation="E-Mail eingeben"/>
     <Literal Name="dialog::auth::defaultlogin::mobile" Translation="E-Mail eingeben"/>
-    <Literal Name="dialog::renamelayer::caption" Translation="Layer umbenennen"/>
+    <Literal Name="dialog::renamelayer::caption" Translation="Ebene umbenennen"/>
     <Literal Name="dialog::renamelayer::proceed" Translation="Umbenennen"/>
     <Literal Name="dialog::renamelayer::cancel" Translation="Abbrechen"/>
-    <Literal Name="dialog::addlayer::caption" Translation="Schicht hinzufügen"/>
+    <Literal Name="dialog::addlayer::caption" Translation="Ebene hinzufügen"/>
     <Literal Name="dialog::addlayer::proceed" Translation="Hinzufügen"/>
     <Literal Name="dialog::addlayer::cancel" Translation="Abbrechen"/>
-    <Literal Name="dialog::deleteproject::caption" Translation="Wollen Sie das Projekt endgültig aus der Wolke und von der Festplatte löschen? Diese Aktion kann man nicht abbrechen."/>
+    <Literal Name="dialog::deleteproject::caption" Translation="Wollen Sie das Projekt endgültig aus der Cloud und von der Festplatte löschen? (Diese Aktion kann nicht rückgängig gemacht werden!)"/>
     <Literal Name="dialog::deleteproject::proceed" Translation="Löschen"/>
     <Literal Name="dialog::deleteproject::cancel" Translation="Abbrechen"/>
     <Literal Name="dialog::deleteproject::confirm::caption" Translation="Geben Sie den Namen des Projekts ein, um das Löschen zu bestätigen:"/>
@@ -699,7 +771,7 @@
     <Literal Name="menu::project::delete" Translation="Projekt löschen"/>
     <Literal Name="menu::project::delete::cancelled" Translation="Löschen abgebrochen"/>
     <Literal Name="menu::project::unload" Translation="Projekt schließen"/>
-    <Literal Name="menu::project::addlayer" Translation="Layer hinzufügen"/>
+    <Literal Name="menu::project::addlayer" Translation="Ebene hinzufügen"/>
     <Literal Name="menu::project::addautomation" Translation="Automatisierung hinzufügen"/>
     <Literal Name="menu::project::addtempo" Translation="Tempo"/>
     <Literal Name="menu::project::addtempo::failed" Translation="Dieser Track existiert schon."/>
@@ -743,7 +815,7 @@
     <Literal Name="page::project::duration" Translation="Länge"/>
     <Literal Name="page::project::startdate" Translation="Startdatum"/>
     <Literal Name="page::project::stats::vcs" Translation="Versionsstatistik"/>
-    <Literal Name="page::project::stats::content" Translation="Schichtenstatistik"/>
+    <Literal Name="page::project::stats::content" Translation="Besteht aus"/>
     <Literal Name="page::project::filelocation" Translation="Speicherort der Datei"/>
     <Literal Name="page::project::default::value::desktop" Translation="Zum Bearbeiten anklicken"/>
     <Literal Name="page::project::default::value::mobile" Translation="Für die Bearbeitung berühren"/>
@@ -926,6 +998,18 @@
       <Translation Name="{x} Marke geändert" PluralForm="1"/>
       <Translation Name="{x} Marken geändert" PluralForm="2"/>
     </PluralLiteral>
+    <PluralLiteral Name="added {x} time signatures">
+      <Translation Name="{x} Taktangabe hinzugefügt" PluralForm="1"/>
+      <Translation Name="{x} Taktangaben hinzugefügt" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="removed {x} time signatures">
+      <Translation Name="{x} Taktangabe gelöscht" PluralForm="1"/>
+      <Translation Name="{x} Taktangaben gelöscht" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="changed {x} time signatures">
+      <Translation Name="{x} Taktangabe geändert" PluralForm="1"/>
+      <Translation Name="{x} Taktangaben geändert" PluralForm="2"/>
+    </PluralLiteral>
     <PluralLiteral Name="{x} notes">
       <Translation Name="{x} Note" PluralForm="1"/>
       <Translation Name="{x} Noten" PluralForm="2"/>
@@ -938,9 +1022,13 @@
       <Translation Name="{x} Marke" PluralForm="1"/>
       <Translation Name="{x} Marken" PluralForm="2"/>
     </PluralLiteral>
+    <PluralLiteral Name="{x} time signatures">
+      <Translation Name="{x} Taktangabe" PluralForm="1"/>
+      <Translation Name="{x} Taktangaben" PluralForm="2"/>
+    </PluralLiteral>
     <PluralLiteral Name="{x} layers">
-      <Translation Name="{x} Layer" PluralForm="1"/>
-      <Translation Name="{x} Layer" PluralForm="2"/>
+      <Translation Name="{x} Ebene" PluralForm="1"/>
+      <Translation Name="{x} Ebenen" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="{x} revisions">
       <Translation Name="{x} Revision" PluralForm="1"/>
@@ -965,7 +1053,7 @@
     <Literal Name="description changed" Translation="Beschreibung geändert"/>
     <Literal Name="moved from {x}" Translation="umbenannt von {x}"/>
     <Literal Name="color changed" Translation="Farbe geändert"/>
-    <Literal Name="empty layer" Translation="leerer Layer"/>
+    <Literal Name="empty layer" Translation="leerer Ebene"/>
     <Literal Name="instrument changed" Translation="Instrument geändert"/>
     <Literal Name="controller changed" Translation="Controller geändert"/>
     <Literal Name="muted" Translation="stummgeschaltet"/>
@@ -991,12 +1079,24 @@
     <Literal Name="menu::annotation::rename" Translation="Renommer"/>
     <Literal Name="menu::annotation::delete" Translation="Supprimer"/>
     <Literal Name="menu::annotation::add" Translation="Ajouter un marqueur"/>
-    <Literal Name="dialog::annotation::rename::caption" Translation="Renommer le marqueur"/>
-    <Literal Name="dialog::annotation::rename::proceed" Translation="Renommer"/>
-    <Literal Name="dialog::annotation::rename::cancel" Translation="Annuler"/>
     <Literal Name="dialog::annotation::add::caption" Translation="Nommez le marqueur:"/>
     <Literal Name="dialog::annotation::add::proceed" Translation="Ajouter"/>
     <Literal Name="dialog::annotation::add::cancel" Translation="Annuler"/>
+    <Literal Name="dialog::annotation::rename::caption" Translation="Renommer le marqueur"/>
+    <Literal Name="dialog::annotation::rename::proceed" Translation="Renommer"/>
+    <Literal Name="dialog::annotation::rename::cancel" Translation="Annuler"/>
+    <Literal Name="dialog::annotation::edit::caption" Translation="Éditer le marqueur"/>
+    <Literal Name="dialog::annotation::edit::apply" Translation="Appliquer"/>
+    <Literal Name="dialog::annotation::edit::delete" Translation="Supprimer"/>
+    <Literal Name="menu::timesignature::change" Translation="Modifier la mesure"/>
+    <Literal Name="menu::timesignature::delete" Translation="Supprimer"/>
+    <Literal Name="menu::timesignature::add" Translation="Ajouter une mesure"/>
+    <Literal Name="dialog::timesignature::edit::caption" Translation="Modifier la mesure"/>
+    <Literal Name="dialog::timesignature::edit::apply" Translation="Appliquer"/>
+    <Literal Name="dialog::timesignature::edit::delete" Translation="Supprimer"/>
+    <Literal Name="dialog::timesignature::add::caption" Translation="Ajouter une mesure:"/>
+    <Literal Name="dialog::timesignature::add::proceed" Translation="Ajouter"/>
+    <Literal Name="dialog::timesignature::add::cancel" Translation="Annuler"/>
     <Literal Name="dialog::auth::email" Translation="E-mail:"/>
     <Literal Name="dialog::auth::password" Translation="Mot de passe:"/>
     <Literal Name="dialog::auth::proceed" Translation="Se connecter / S‘inscrire"/>
@@ -1062,7 +1162,7 @@
     <Literal Name="page::project::duration" Translation="Durée"/>
     <Literal Name="page::project::startdate" Translation="Commencé le"/>
     <Literal Name="page::project::stats::vcs" Translation="Statistique des versions"/>
-    <Literal Name="page::project::stats::content" Translation="Statistique des calques"/>
+    <Literal Name="page::project::stats::content" Translation="Consiste en"/>
     <Literal Name="page::project::filelocation" Translation="Emplacement du fichier"/>
     <Literal Name="page::project::default::value::desktop" Translation="Cliquez pour modifier"/>
     <Literal Name="page::project::default::value::mobile" Translation="Appuyez sur pour modifier"/>
@@ -1245,6 +1345,18 @@
       <Translation Name="{x} annotation modifiée" PluralForm="1"/>
       <Translation Name="{x} annotations modifiées" PluralForm="2"/>
     </PluralLiteral>
+    <PluralLiteral Name="added {x} time signatures">
+      <Translation Name="{x} mesure ajoutée" PluralForm="1"/>
+      <Translation Name="{x} mesures ajoutées" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="removed {x} time signatures">
+      <Translation Name="{x} mesure supprimée" PluralForm="1"/>
+      <Translation Name="{x} mesures supprimées" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="changed {x} time signatures">
+      <Translation Name="{x} mesure modifiée" PluralForm="1"/>
+      <Translation Name="{x} mesures modifiées" PluralForm="2"/>
+    </PluralLiteral>
     <PluralLiteral Name="{x} notes">
       <Translation Name="{x} note" PluralForm="1"/>
       <Translation Name="{x} notes" PluralForm="2"/>
@@ -1256,6 +1368,10 @@
     <PluralLiteral Name="{x} annotations">
       <Translation Name="{x} annotation" PluralForm="1"/>
       <Translation Name="{x} annotations" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="{x} time signatures">
+      <Translation Name="{x} mesure" PluralForm="1"/>
+      <Translation Name="{x} mesures" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="{x} layers">
       <Translation Name="{x} calques" PluralForm="1"/>
@@ -1310,12 +1426,24 @@
     <Literal Name="menu::annotation::rename" Translation="Rinominare"/>
     <Literal Name="menu::annotation::delete" Translation="Cancellare"/>
     <Literal Name="menu::annotation::add" Translation="Aggiungere un’annotazione"/>
-    <Literal Name="dialog::annotation::rename::caption" Translation="Rinominare l’annotazione"/>
-    <Literal Name="dialog::annotation::rename::proceed" Translation="Rinominare"/>
-    <Literal Name="dialog::annotation::rename::cancel" Translation="Annulla"/>
     <Literal Name="dialog::annotation::add::caption" Translation="Inserire il testo dell’annotazione:"/>
     <Literal Name="dialog::annotation::add::proceed" Translation="Aggiungere"/>
     <Literal Name="dialog::annotation::add::cancel" Translation="Annulla"/>
+    <Literal Name="dialog::annotation::rename::caption" Translation="Rinominare l’annotazione"/>
+    <Literal Name="dialog::annotation::rename::proceed" Translation="Rinominare"/>
+    <Literal Name="dialog::annotation::rename::cancel" Translation="Annulla"/>
+    <Literal Name="dialog::annotation::edit::caption" Translation="Modificare l’annotazione"/>
+    <Literal Name="dialog::annotation::edit::apply" Translation="Applica"/>
+    <Literal Name="dialog::annotation::edit::delete" Translation="Cancellare"/>
+    <Literal Name="menu::timesignature::change" Translation="Modificare metro"/>
+    <Literal Name="menu::timesignature::delete" Translation="Cancellare"/>
+    <Literal Name="menu::timesignature::add" Translation="Aggiungere metro"/>
+    <Literal Name="dialog::timesignature::edit::caption" Translation="Modificare metro"/>
+    <Literal Name="dialog::timesignature::edit::apply" Translation="Applica"/>
+    <Literal Name="dialog::timesignature::edit::delete" Translation="Cancellare"/>
+    <Literal Name="dialog::timesignature::add::caption" Translation="Aggiungere metro:"/>
+    <Literal Name="dialog::timesignature::add::proceed" Translation="Aggiungere"/>
+    <Literal Name="dialog::timesignature::add::cancel" Translation="Annulla"/>
     <Literal Name="dialog::auth::email" Translation="E-mail:"/>
     <Literal Name="dialog::auth::password" Translation="Password:"/>
     <Literal Name="dialog::auth::proceed" Translation="Entrare o Registrarsi"/>
@@ -1381,7 +1509,7 @@
     <Literal Name="page::project::duration" Translation="Lunghezza"/>
     <Literal Name="page::project::startdate" Translation="Data del inizio"/>
     <Literal Name="page::project::stats::vcs" Translation="Statistiche di versioni"/>
-    <Literal Name="page::project::stats::content" Translation="Statistiche di layer"/>
+    <Literal Name="page::project::stats::content" Translation="Consiste di"/>
     <Literal Name="page::project::filelocation" Translation="Posizione del file"/>
     <Literal Name="page::project::default::value::desktop" Translation="Cliccare per modificare"/>
     <Literal Name="page::project::default::value::mobile" Translation="Toccare per modificare"/>
@@ -1564,6 +1692,18 @@
       <Translation Name="cambiata {x} annotazione" PluralForm="1"/>
       <Translation Name="cambiate {x} annotazioni" PluralForm="2"/>
     </PluralLiteral>
+    <PluralLiteral Name="added {x} time signatures">
+      <Translation Name="aggiunta {x} metro" PluralForm="1"/>
+      <Translation Name="aggiunte {x} metri" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="removed {x} time signatures">
+      <Translation Name="eliminata {x} metro" PluralForm="1"/>
+      <Translation Name="eliminate {x} metri" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="changed {x} time signatures">
+      <Translation Name="cambiata {x} metro" PluralForm="1"/>
+      <Translation Name="cambiate {x} metri" PluralForm="2"/>
+    </PluralLiteral>
     <PluralLiteral Name="{x} notes">
       <Translation Name="{x} nota" PluralForm="1"/>
       <Translation Name="{x} note" PluralForm="2"/>
@@ -1575,6 +1715,10 @@
     <PluralLiteral Name="{x} annotations">
       <Translation Name="{x} annotazione" PluralForm="1"/>
       <Translation Name="{x} annotazioni" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="{x} time signatures">
+      <Translation Name="{x} metro" PluralForm="1"/>
+      <Translation Name="{x} metri" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="{x} layers">
       <Translation Name="{x} layer" PluralForm="1"/>
@@ -1629,12 +1773,24 @@
     <Literal Name="menu::annotation::rename" Translation="Renombrar"/>
     <Literal Name="menu::annotation::delete" Translation="Eliminar"/>
     <Literal Name="menu::annotation::add" Translation="Añadir nota"/>
-    <Literal Name="dialog::annotation::rename::caption" Translation="Renombrar nota"/>
-    <Literal Name="dialog::annotation::rename::proceed" Translation="Renombrar"/>
-    <Literal Name="dialog::annotation::rename::cancel" Translation="Cancelar"/>
     <Literal Name="dialog::annotation::add::caption" Translation="Introduzca el texto de la nota:"/>
     <Literal Name="dialog::annotation::add::proceed" Translation="Añadir"/>
     <Literal Name="dialog::annotation::add::cancel" Translation="Cancelar"/>
+    <Literal Name="dialog::annotation::rename::caption" Translation="Renombrar nota"/>
+    <Literal Name="dialog::annotation::rename::proceed" Translation="Renombrar"/>
+    <Literal Name="dialog::annotation::rename::cancel" Translation="Cancelar"/>
+    <Literal Name="dialog::annotation::edit::caption" Translation="Modificar nota"/>
+    <Literal Name="dialog::annotation::edit::apply" Translation="Aplicar"/>
+    <Literal Name="dialog::annotation::edit::delete" Translation="Eliminar"/>
+    <Literal Name="menu::timesignature::change" Translation="Modificar métrica"/>
+    <Literal Name="menu::timesignature::delete" Translation="Eliminar"/>
+    <Literal Name="menu::timesignature::add" Translation="Añadir métrica"/>
+    <Literal Name="dialog::timesignature::edit::caption" Translation="Modificar métrica"/>
+    <Literal Name="dialog::timesignature::edit::apply" Translation="Aplicar"/>
+    <Literal Name="dialog::timesignature::edit::delete" Translation="Eliminar"/>
+    <Literal Name="dialog::timesignature::add::caption" Translation="Añadir métrica:"/>
+    <Literal Name="dialog::timesignature::add::proceed" Translation="Añadir"/>
+    <Literal Name="dialog::timesignature::add::cancel" Translation="Cancelar"/>
     <Literal Name="dialog::auth::email" Translation="Email:"/>
     <Literal Name="dialog::auth::password" Translation="Contraseña:"/>
     <Literal Name="dialog::auth::proceed" Translation="Entrar / Registrarse"/>
@@ -1700,7 +1856,7 @@
     <Literal Name="page::project::duration" Translation="Longitud"/>
     <Literal Name="page::project::startdate" Translation="Fecha del comienzo"/>
     <Literal Name="page::project::stats::vcs" Translation="Estadística de versiones"/>
-    <Literal Name="page::project::stats::content" Translation="Estadística de capas"/>
+    <Literal Name="page::project::stats::content" Translation="Consiste en"/>
     <Literal Name="page::project::filelocation" Translation="Ubicación"/>
     <Literal Name="page::project::default::value::desktop" Translation="Haga clic para editar"/>
     <Literal Name="page::project::default::value::mobile" Translation="Pulsa para editar"/>
@@ -1883,6 +2039,18 @@
       <Translation Name="ha sido modificada {x} etiqueta" PluralForm="1"/>
       <Translation Name="han sido modificadas {x} etiquetas" PluralForm="2"/>
     </PluralLiteral>
+    <PluralLiteral Name="added {x} time signatures">
+      <Translation Name="ha sido añadida {x} métrica" PluralForm="1"/>
+      <Translation Name="han sido añadidas {x} métricas" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="removed {x} time signatures">
+      <Translation Name="ha sido eliminada {x} métrica" PluralForm="1"/>
+      <Translation Name="han sido eliminadas {x} métricas" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="changed {x} time signatures">
+      <Translation Name="ha sido modificada {x} métrica" PluralForm="1"/>
+      <Translation Name="han sido modificadas {x} métricas" PluralForm="2"/>
+    </PluralLiteral>
     <PluralLiteral Name="{x} notes">
       <Translation Name="{x} nota" PluralForm="1"/>
       <Translation Name="{x} notas" PluralForm="2"/>
@@ -1894,6 +2062,10 @@
     <PluralLiteral Name="{x} annotations">
       <Translation Name="{x} etiqueta" PluralForm="1"/>
       <Translation Name="{x} etiquetas" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="{x} time signatures">
+      <Translation Name="{x} métrica" PluralForm="1"/>
+      <Translation Name="{x} métricas" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="{x} layers">
       <Translation Name="{x} capa" PluralForm="1"/>
@@ -1948,12 +2120,24 @@
     <Literal Name="menu::annotation::rename" Translation="Renomear"/>
     <Literal Name="menu::annotation::delete" Translation="Apagar"/>
     <Literal Name="menu::annotation::add" Translation="Adicionar anotação"/>
-    <Literal Name="dialog::annotation::rename::caption" Translation="Renomear anotação"/>
-    <Literal Name="dialog::annotation::rename::proceed" Translation="Renomear"/>
-    <Literal Name="dialog::annotation::rename::cancel" Translation="Cancelar"/>
     <Literal Name="dialog::annotation::add::caption" Translation="Digite o texto da anotação:"/>
     <Literal Name="dialog::annotation::add::proceed" Translation="Adicionar"/>
     <Literal Name="dialog::annotation::add::cancel" Translation="Cancelar"/>
+    <Literal Name="dialog::annotation::rename::caption" Translation="Renomear anotação"/>
+    <Literal Name="dialog::annotation::rename::proceed" Translation="Renomear"/>
+    <Literal Name="dialog::annotation::rename::cancel" Translation="Cancelar"/>
+    <Literal Name="dialog::annotation::edit::caption" Translation="Modificar anotação"/>
+    <Literal Name="dialog::annotation::edit::apply" Translation="Aplicar"/>
+    <Literal Name="dialog::annotation::edit::delete" Translation="Apagar"/>
+    <Literal Name="menu::timesignature::change" Translation="Modificar métrica"/>
+    <Literal Name="menu::timesignature::delete" Translation="Apagar"/>
+    <Literal Name="menu::timesignature::add" Translation="Adicionar métrica"/>
+    <Literal Name="dialog::timesignature::edit::caption" Translation="Modificar métrica"/>
+    <Literal Name="dialog::timesignature::edit::apply" Translation="Aplicar"/>
+    <Literal Name="dialog::timesignature::edit::delete" Translation="Apagar"/>
+    <Literal Name="dialog::timesignature::add::caption" Translation="Adicionar métrica:"/>
+    <Literal Name="dialog::timesignature::add::proceed" Translation="Adicionar"/>
+    <Literal Name="dialog::timesignature::add::cancel" Translation="Cancelar"/>
     <Literal Name="dialog::auth::email" Translation="E-mail:"/>
     <Literal Name="dialog::auth::password" Translation="Senha:"/>
     <Literal Name="dialog::auth::proceed" Translation="Autorizar / Registrar"/>
@@ -2202,6 +2386,18 @@
       <Translation Name="{x} anotação alterada" PluralForm="1"/>
       <Translation Name="{x} anotações alteradas" PluralForm="2"/>
     </PluralLiteral>
+    <PluralLiteral Name="added {x} time signatures">
+      <Translation Name="{x} métrica adicionada" PluralForm="1"/>
+      <Translation Name="{x} métricas adicionadas" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="removed {x} time signatures">
+      <Translation Name="{x} métrica removida" PluralForm="1"/>
+      <Translation Name="{x} métricas removidas" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="changed {x} time signatures">
+      <Translation Name="{x} métrica alterada" PluralForm="1"/>
+      <Translation Name="{x} métricas alteradas" PluralForm="2"/>
+    </PluralLiteral>
     <PluralLiteral Name="{x} notes">
       <Translation Name="{x} notas" PluralForm="1"/>
       <Translation Name="{x} notas" PluralForm="2"/>
@@ -2213,6 +2409,10 @@
     <PluralLiteral Name="{x} annotations">
       <Translation Name="{x} anotação" PluralForm="1"/>
       <Translation Name="{x} anotações" PluralForm="2"/>
+    </PluralLiteral>
+    <PluralLiteral Name="{x} time signatures">
+      <Translation Name="{x} métrica" PluralForm="1"/>
+      <Translation Name="{x} métricas" PluralForm="2"/>
     </PluralLiteral>
     <PluralLiteral Name="{x} layers">
       <Translation Name="{x} camada" PluralForm="1"/>
