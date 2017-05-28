@@ -327,8 +327,12 @@ void TimeSignatureDialog::sendEventChange(TimeSignatureEvent newEvent)
 {
 	if (this->targetLayer != nullptr)
 	{
-		this->cancelChangesIfAny();
-		this->targetLayer->checkpoint();
+        if (!this->addsNewEvent)
+        {
+            this->cancelChangesIfAny();
+            this->targetLayer->checkpoint();
+        }
+        
 		this->targetLayer->change(this->targetEvent, newEvent, true);
 		this->hasMadeChanges = true;
 	}
@@ -338,8 +342,12 @@ void TimeSignatureDialog::removeEvent()
 {
 	if (this->targetLayer != nullptr)
 	{
-		this->cancelChangesIfAny();
-		this->targetLayer->checkpoint();
+        if (!this->addsNewEvent)
+        {
+            this->cancelChangesIfAny();
+            this->targetLayer->checkpoint();
+        }
+        
 		this->targetLayer->remove(this->targetEvent, true);
 		this->hasMadeChanges = true;
 	}
@@ -347,7 +355,8 @@ void TimeSignatureDialog::removeEvent()
 
 void TimeSignatureDialog::cancelChangesIfAny()
 {
-	if (this->hasMadeChanges &&
+	if (!this->addsNewEvent &&
+        this->hasMadeChanges &&
 		this->targetLayer != nullptr)
 	{
 		this->targetLayer->undo();
