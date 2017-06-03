@@ -161,10 +161,9 @@ NoNotesPopup::NoNotesPopup(PianoRoll *caller, MidiLayer *layer)
 #endif
 
     this->setFocusContainer(true);
-    this->grabKeyboardFocus();
 
     this->setInterceptsMouseClicks(false, true);
-    this->enterModalState(true, nullptr, true);
+    this->enterModalState(false, nullptr, true);
 
     this->newNote->setMouseCursor(MouseCursor::DraggingHandCursor);
     //[/Constructor]

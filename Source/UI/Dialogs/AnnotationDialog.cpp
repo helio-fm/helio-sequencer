@@ -125,7 +125,6 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsLayer *annotatio
     this->setInterceptsMouseClicks(true, true);
     this->toFront(true);
     this->setAlwaysOnTop(true);
-    this->textEditor->showEditor();
     this->updateOkButtonState();
     //[/Constructor]
 }
@@ -182,7 +181,6 @@ void AnnotationDialog::resized()
     separatorH->setBounds (4, getHeight() - 52 - 2, getWidth() - 8, 2);
     separatorV->setBounds ((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
     //[UserResized] Add your own custom resize handling here..
-    this->textEditor->grabKeyboardFocus();
     //[/UserResized]
 }
 
@@ -254,7 +252,6 @@ void AnnotationDialog::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 void AnnotationDialog::visibilityChanged()
 {
     //[UserCode_visibilityChanged] -- Add your code here...
-    this->textEditor->grabKeyboardFocus();
     //[/UserCode_visibilityChanged]
 }
 
@@ -349,7 +346,7 @@ void AnnotationDialog::sendEventChange(AnnotationEvent newEvent)
             this->cancelChangesIfAny();
             this->targetLayer->checkpoint();
         }
-        
+
 		this->targetLayer->change(this->targetEvent, newEvent, true);
 		this->hasMadeChanges = true;
 	}
@@ -364,7 +361,7 @@ void AnnotationDialog::removeEvent()
             this->cancelChangesIfAny();
             this->targetLayer->checkpoint();
         }
-        
+
 		this->targetLayer->remove(this->targetEvent, true);
 		this->hasMadeChanges = true;
 	}

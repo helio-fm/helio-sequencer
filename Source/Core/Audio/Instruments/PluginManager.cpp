@@ -82,7 +82,9 @@ void PluginManager::runInitialScan()
         return;
     }
     
+#if HELIO_DESKTOP
     this->usingExternalProcess = true;
+#endif
     
     FileSearchPath pathToScan = this->getTypicalFolders();
 
@@ -131,9 +133,7 @@ void PluginManager::scanFolderAndAddResults(const File &dir)
         return;
     }
     
-#if HELIO_DESKTOP
     this->usingExternalProcess = false;
-#endif
     
     FileSearchPath pathToScan = dir.getFullPathName();
 

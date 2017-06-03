@@ -969,19 +969,6 @@ void MidiRoll::onProjectBeatRangeChanged(float firstBeat, float lastBeat)
 // Component
 //===----------------------------------------------------------------------===//
 
-void MidiRoll::longTapEvent(const MouseEvent &e)
-{
-    if (this->multiTouchController->hasMultitouch() ||
-        this->project.getEditMode().forbidsSelectionMode() ||
-        e.eventComponent != this)
-    {
-        return;
-    }
-
-    //Logger::writeToLog("MidiRoll::longTapEvent beginlasso");
-    this->lassoComponent->beginLasso(e, this);
-}
-
 void MidiRoll::focusGained(FocusChangeType cause)
 {
     // juce hack

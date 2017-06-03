@@ -120,7 +120,6 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesLayer *
     this->setInterceptsMouseClicks(true, true);
     this->toFront(true);
     this->setAlwaysOnTop(true);
-    this->textEditor->showEditor();
     this->updateOkButtonState();
     //[/Constructor]
 }
@@ -175,7 +174,6 @@ void TimeSignatureDialog::resized()
     separatorH->setBounds (4, getHeight() - 52 - 2, getWidth() - 8, 2);
     separatorV->setBounds ((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
     //[UserResized] Add your own custom resize handling here..
-    this->textEditor->grabKeyboardFocus();
     //[/UserResized]
 }
 
@@ -245,7 +243,6 @@ void TimeSignatureDialog::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 void TimeSignatureDialog::visibilityChanged()
 {
     //[UserCode_visibilityChanged] -- Add your code here...
-    this->textEditor->grabKeyboardFocus();
     //[/UserCode_visibilityChanged]
 }
 
