@@ -342,6 +342,7 @@ void AudioSettings::syncSampleRatesList(AudioDeviceManager &deviceManager)
 
 void AudioSettings::syncLatencySlider(AudioDeviceManager &deviceManager)
 {
+    this->latency->clear(dontSendNotification);
     AudioIODevice *currentDevice = deviceManager.getCurrentAudioDevice();
 
     if (!currentDevice) { return; }
