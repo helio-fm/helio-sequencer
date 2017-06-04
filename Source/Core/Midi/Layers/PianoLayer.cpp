@@ -366,13 +366,7 @@ XmlElement *PianoLayer::serialize() const
         const MidiEvent *event = this->midiEvents.getUnchecked(i);
         xml->prependChildElement(event->serialize());
     }
-
-	for (int i = 0; i < this->instances.size(); ++i)
-	{
-		const Instance instance = this->instances.getUnchecked(i);
-		xml->prependChildElement(instance.serialize());
-	}
-
+	
     return xml;
 }
 
@@ -393,20 +387,7 @@ void PianoLayer::deserialize(const XmlElement &xml)
     this->controllerNumber = (root->getIntAttribute("cc", this->getControllerNumber()));
     this->layerId = Uuid(root->getStringAttribute("id", this->getLayerId().toString()));
     this->muted = MidiLayer::isMuted(root->getStringAttribute("mute"));
-
-	forEachXmlChildElementWithTagName(*root, e, Serialization::Core::layerInstance)
-	{
-		Instance i;
-		i.deserialize(*e);
-		this->instances.add(i);
-	}
-
-	// Fallback to single instance at zero bar, if no instances found
-	if (this->instances.size() == 0)
-	{
-		this->instances.add(Instance());
-	}
-
+	
 	float lastBeat = 0;
 	float firstBeat = 0;
 
@@ -438,7 +419,6 @@ void PianoLayer::reset()
 
 void PianoLayer::clearQuick()
 {
-	this->instances.clearQuick();
 	this->midiEvents.clearQuick(true);
 	this->notesHashTable.clear();
 }

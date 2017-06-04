@@ -26,6 +26,8 @@ class UndoStack;
 
 #define MIDI_IMPORT_SCALE 48
 
+// TODO rename as MidiSequence, PianoSequence, AutomationSequence,
+// or as MidiTrack, PianoTrack, AutomationTrack, etc.
 class MidiLayer : public Serializable
 {
 public:
@@ -61,46 +63,7 @@ public:
 
     MidiMessageSequence exportMidi() const;
     virtual void importMidi(const MidiMessageSequence &sequence) = 0;
-
-	//===------------------------------------------------------------------===//
-	// Instances
-	//===------------------------------------------------------------------===//
-
-	// TODO rename to Clip and move to ClipsStack or so?
-	class Instance : public Serializable
-	{
-	public:
-
-		Instance();
-		Instance(const Instance &other);
-
-		float getStartBeat() const noexcept;
-		String getId() const noexcept;
-		XmlElement *serialize() const override;
-		void deserialize(const XmlElement &xml) override;
-		void reset() override;
-
-		friend inline bool operator==(const Instance &lhs, const Instance &rhs)
-		{
-			return (&lhs == &rhs || lhs.id == rhs.id);
-		}
-
-		static int compareElements(const Instance &first,
-			const Instance &second);
-
-	private:
-
-		float startBeat;
-		String id;
-
-		JUCE_LEAK_DETECTOR(Instance);
-	};
-
-	inline Array<Instance> &getInstances() noexcept;
-	bool insertInstance(Instance instance, const bool undoable);
-	bool removeInstance(Instance instance, const bool undoable);
-	bool changeInstance(Instance instance, Instance newInstance, const bool undoable);
-
+	
     //===------------------------------------------------------------------===//
     // Track editing
     //===------------------------------------------------------------------===//
@@ -207,9 +170,7 @@ protected:
     Uuid layerId;
 
     OwnedArray<MidiEvent> midiEvents;
-
-	Array<Instance> instances;
-
+	
 private:
 
     mutable MidiMessageSequence cachedSequence;

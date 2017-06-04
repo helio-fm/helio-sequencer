@@ -291,13 +291,7 @@ XmlElement *AutomationLayer::serialize() const
         MidiEvent *event = this->midiEvents.getUnchecked(i);
         xml->addChildElement(event->serialize());
     }
-
-	for (int i = 0; i < this->instances.size(); ++i)
-	{
-		const Instance instance = this->instances.getUnchecked(i);
-		xml->prependChildElement(instance.serialize());
-	}
-
+	
     return xml;
 }
 
@@ -318,20 +312,7 @@ void AutomationLayer::deserialize(const XmlElement &xml)
     this->setControllerNumber(root->getIntAttribute("cc", this->getControllerNumber()));
     this->setLayerId(root->getStringAttribute("id", this->getLayerId().toString()));
     this->muted = MidiLayer::isMuted(root->getStringAttribute("mute"));
-
-	forEachXmlChildElementWithTagName(*root, e, Serialization::Core::layerInstance)
-	{
-		Instance i;
-		i.deserialize(*e);
-		this->instances.add(i);
-	}
-
-	// Fallback to single instance at zero bar, if no instances found
-	if (this->instances.size() == 0)
-	{
-		this->instances.add(Instance());
-	}
-
+	
 	float firstBeat = 0;
 	float lastBeat = 0;
 
@@ -362,7 +343,6 @@ void AutomationLayer::reset()
 
 void AutomationLayer::clearQuick()
 {
-	this->instances.clearQuick();
 	this->midiEvents.clearQuick(true);
 	this->eventsHashTable.clear();
 }

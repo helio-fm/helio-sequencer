@@ -62,13 +62,15 @@ namespace Serialization
         static const String annotations = "Annotations";
         static const String timeSignatures = "TimeSignatures";
 
-		static const String layerInstance = "Instance";
-
         // Events
         static const String note = "Note";
         static const String event = "Event";
         static const String annotation = "Annotation";
         static const String timeSignature = "TimeSignature";
+
+		// Patterns
+		static const String clip = "Clip";
+		static const String pattern = "Pattern";
 
         static const String valueTag = "Key";
         static const String nameAttribute = "Name";
@@ -328,7 +330,8 @@ namespace Serialization
         static const String name = "Name";
         static const String xPath = "Path";
         static const String layerId = "LayerId";
-        static const String group = "Group";
+		static const String patternId = "PatternId";
+		static const String group = "Group";
 
         static const String xPathBefore = "PathBefore";
         static const String xPathAfter = "PathAfter";
@@ -364,9 +367,9 @@ namespace Serialization
         static const String midiLayerChangeInstrumentAction = "MidiLayerChangeInstrumentAction";
         static const String midiLayerMuteAction = "MidiLayerMuteAction";
         
-		static const String midiLayerInstanceInsertAction = "MidiLayerInstanceInsertAction";
-		static const String midiLayerInstanceRemoveAction = "MidiLayerInstanceRemoveAction";
-		static const String midiLayerInstanceChangeAction = "MidiLayerInstanceChangeAction";
+		static const String patternClipInsertAction = "PatternClipInsertAction";
+		static const String patternClipRemoveAction = "PatternClipRemoveAction";
+		static const String patternClipChangeAction = "PatternClipChangeAction";
 
         static const String noteInsertAction = "NoteInsertAction";
         static const String noteRemoveAction = "NoteRemoveAction";

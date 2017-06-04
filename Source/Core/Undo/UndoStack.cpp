@@ -30,6 +30,7 @@
 #include "AnnotationEventActions.h"
 #include "AutomationEventActions.h"
 #include "TimeSignatureEventActions.h"
+#include "PatternActions.h"
 
 #define MAX_TRANSACTIONS_TO_STORE 10
 
@@ -120,9 +121,9 @@ struct UndoStack::ActionSet
         else if (tagName == Serialization::Undo::midiLayerChangeColourAction)           { return new MidiLayerChangeColourAction(this->project); }
         else if (tagName == Serialization::Undo::midiLayerChangeInstrumentAction)       { return new MidiLayerChangeInstrumentAction(this->project); }
         else if (tagName == Serialization::Undo::midiLayerMuteAction)                   { return new MidiLayerMuteAction(this->project); }
-		else if (tagName == Serialization::Undo::midiLayerInstanceInsertAction)			{ return new MidiLayerInsertInstanceAction(this->project); }
-		else if (tagName == Serialization::Undo::midiLayerInstanceRemoveAction)			{ return new MidiLayerRemoveInstanceAction(this->project); }
-		else if (tagName == Serialization::Undo::midiLayerInstanceChangeAction)			{ return new MidiLayerChangeInstanceAction(this->project); }
+		else if (tagName == Serialization::Undo::patternClipInsertAction)				{ return new PatternClipInsertAction(this->project); }
+		else if (tagName == Serialization::Undo::patternClipRemoveAction)				{ return new PatternClipRemoveAction(this->project); }
+		else if (tagName == Serialization::Undo::patternClipChangeAction)				{ return new PatternClipChangeAction(this->project); }
 		else if (tagName == Serialization::Undo::noteInsertAction)                      { return new NoteInsertAction(this->project); }
         else if (tagName == Serialization::Undo::noteRemoveAction)                      { return new NoteRemoveAction(this->project); }
         else if (tagName == Serialization::Undo::noteChangeAction)                      { return new NoteChangeAction(this->project); }

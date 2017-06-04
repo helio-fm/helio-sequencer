@@ -37,6 +37,7 @@ class ProjectTimeline;
 class MidiRollCommandPanel;
 class UndoStack;
 class RecentFilesList;
+class Pattern;
 
 #include "TreeItem.h"
 #include "DocumentOwner.h"
@@ -148,6 +149,8 @@ public:
     void undo();
     void redo();
     void clearUndoHistory();
+
+	Pattern *getPatternWithId(const String &uuid);
 
     template<typename T>
     T *getLayerWithId(const String &uuid)
