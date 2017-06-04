@@ -292,31 +292,48 @@ XmlElement *AutomationLayer::serialize() const
         xml->addChildElement(event->serialize());
     }
 
+	for (int i = 0; i < this->instances.size(); ++i)
+	{
+		const Instance instance = this->instances.getUnchecked(i);
+		xml->prependChildElement(instance.serialize());
+	}
+
     return xml;
 }
 
 void AutomationLayer::deserialize(const XmlElement &xml)
 {
-    this->reset();
+	this->clearQuick();
 
-    const XmlElement *root = (xml.getTagName() == Serialization::Core::automation) ?
-                              &xml : xml.getChildByName(Serialization::Core::automation);
+    const XmlElement *root = 
+		(xml.getTagName() == Serialization::Core::automation) ?
+		&xml : xml.getChildByName(Serialization::Core::automation);
 
     if (root == nullptr)
-    {
-        return;
-    }
+    { return; }
 
     this->setColour(Colour::fromString(root->getStringAttribute("col")));
     this->setChannel(root->getIntAttribute("channel", this->getChannel()));
     this->setInstrumentId(root->getStringAttribute("instrument", this->getInstrumentId()));
     this->setControllerNumber(root->getIntAttribute("cc", this->getControllerNumber()));
     this->setLayerId(root->getStringAttribute("id", this->getLayerId().toString()));
+    this->muted = MidiLayer::isMuted(root->getStringAttribute("mute"));
 
-    this->muted = MidiLayer::isMuted(xml.getStringAttribute("mute"));
+	forEachXmlChildElementWithTagName(*root, e, Serialization::Core::layerInstance)
+	{
+		Instance i;
+		i.deserialize(*e);
+		this->instances.add(i);
+	}
 
-    float firstBeat = 0;
-    float lastBeat = 0;
+	// Fallback to single instance at zero bar, if no instances found
+	if (this->instances.size() == 0)
+	{
+		this->instances.add(Instance());
+	}
+
+	float firstBeat = 0;
+	float lastBeat = 0;
 
     forEachXmlChildElementWithTagName(*root, e, Serialization::Core::event)
     {
@@ -339,8 +356,13 @@ void AutomationLayer::deserialize(const XmlElement &xml)
 
 void AutomationLayer::reset()
 {
-    this->midiEvents.clear();
-    this->eventsHashTable.clear();
+	this->clearQuick();
     this->notifyLayerChanged();
 }
 
+void AutomationLayer::clearQuick()
+{
+	this->instances.clearQuick();
+	this->midiEvents.clearQuick(true);
+	this->eventsHashTable.clear();
+}

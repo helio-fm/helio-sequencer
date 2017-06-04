@@ -66,48 +66,37 @@ public:
 	// Instances
 	//===------------------------------------------------------------------===//
 
+	// TODO rename to Clip and move to ClipsStack or so?
 	class Instance : public Serializable
 	{
 	public:
 
-		Instance() : startBeat(0.f)
-		{
-			Uuid uuid;
-			id = uuid.toString();
-		}
+		Instance();
+		Instance(const Instance &other);
 
-		float getStartBeat() const noexcept
-		{ return this->startBeat; }
-
-		String getId() const noexcept
-		{ return this->id; }
-
-		void reset()
-		{ this->startBeat = 0.f; }
-
+		float getStartBeat() const noexcept;
+		String getId() const noexcept;
 		XmlElement *serialize() const override;
 		void deserialize(const XmlElement &xml) override;
 		void reset() override;
 
-		static int compareElements(const Instance *const first, const Instance *const second)
+		friend inline bool operator==(const Instance &lhs, const Instance &rhs)
 		{
-			if (first == second) { return 0; }
-
-			const float diff = first->startBeat - second->startBeat;
-			const int diffResult = (diff > 0.f) - (diff < 0.f);
-			if (diffResult != 0) { return diffResult; }
-
-			return first->id.compare(second->id);
+			return (&lhs == &rhs || lhs.id == rhs.id);
 		}
+
+		static int compareElements(const Instance &first,
+			const Instance &second);
 
 	private:
 
 		float startBeat;
 		String id;
 
+		JUCE_LEAK_DETECTOR(Instance);
 	};
 
-	Array<Instance> getInstances() const noexcept;
+	inline Array<Instance> &getInstances() noexcept;
 	bool insertInstance(Instance instance, const bool undoable);
 	bool removeInstance(Instance instance, const bool undoable);
 	bool changeInstance(Instance instance, Instance newInstance, const bool undoable);
@@ -198,6 +187,9 @@ public:
 
 protected:
 
+	// clearQuick the arrays and don't send any notifications
+	virtual void clearQuick() {}
+
     void setLayerId(const String &id);
 
     float lastEndBeat;
@@ -230,4 +222,5 @@ private:
     WeakReference<MidiLayer>::Master masterReference;
     friend class WeakReference<MidiLayer>;
 
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiLayer);
 };

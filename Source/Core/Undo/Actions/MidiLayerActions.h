@@ -20,6 +20,7 @@
 class ProjectTreeItem;
 
 #include "UndoAction.h"
+#include "MidiLayer.h"
 
 //===----------------------------------------------------------------------===//
 // Change Colour

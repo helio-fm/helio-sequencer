@@ -23,6 +23,8 @@ class Transport;
 class ProjectTreeItem;
 
 // duplicates methods from ProjectListener :(
+// events pass this way:
+// note -> layer -> tree item(layer owner) -> project -> listeners
 class MidiLayerOwner
 {
 public:

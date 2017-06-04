@@ -62,6 +62,8 @@ namespace Serialization
         static const String annotations = "Annotations";
         static const String timeSignatures = "TimeSignatures";
 
+		static const String layerInstance = "Instance";
+
         // Events
         static const String note = "Note";
         static const String event = "Event";

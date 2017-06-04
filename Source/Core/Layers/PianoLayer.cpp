@@ -155,9 +155,7 @@ bool PianoLayer::remove(const Note &note, const bool undoable)
             return true;
         }
         
-        
-            return false;
-        
+        return false;
     }
 
     return true;
@@ -191,9 +189,7 @@ bool PianoLayer::change(const Note &note,
             return true;
         }
         
-        
-            return false;
-        
+        return false;
     }
 
     return true;
@@ -368,36 +364,53 @@ XmlElement *PianoLayer::serialize() const
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         const MidiEvent *event = this->midiEvents.getUnchecked(i);
-        xml->prependChildElement(event->serialize()); // todo test
-        //xml->addChildElement(event->serialize());
+        xml->prependChildElement(event->serialize());
     }
+
+	for (int i = 0; i < this->instances.size(); ++i)
+	{
+		const Instance instance = this->instances.getUnchecked(i);
+		xml->prependChildElement(instance.serialize());
+	}
 
     return xml;
 }
 
 void PianoLayer::deserialize(const XmlElement &xml)
 {
-    //this->reset(); // this will send change notifications
-    this->midiEvents.clear();
-    this->notesHashTable.clear();
+	this->clearQuick();
 
-    const XmlElement *mainSlot = (xml.getTagName() == Serialization::Core::track) ?
-                                 &xml : xml.getChildByName(Serialization::Core::track);
+    const XmlElement *root = 
+		(xml.getTagName() == Serialization::Core::track) ?
+		&xml : xml.getChildByName(Serialization::Core::track);
 
-    if (mainSlot == nullptr)
+    if (root == nullptr)
     { return; }
 
-    this->colour = (Colour::fromString(xml.getStringAttribute("col")));
-    this->channel = (xml.getIntAttribute("channel", this->getChannel()));
-    this->instrumentId = (xml.getStringAttribute("instrument", this->getInstrumentId()));
-    this->controllerNumber = (xml.getIntAttribute("cc", this->getControllerNumber()));
-    this->layerId = Uuid(xml.getStringAttribute("id", this->getLayerId().toString()));
-    this->muted = MidiLayer::isMuted(xml.getStringAttribute("mute"));
+    this->colour = (Colour::fromString(root->getStringAttribute("col")));
+    this->channel = (root->getIntAttribute("channel", this->getChannel()));
+    this->instrumentId = (root->getStringAttribute("instrument", this->getInstrumentId()));
+    this->controllerNumber = (root->getIntAttribute("cc", this->getControllerNumber()));
+    this->layerId = Uuid(root->getStringAttribute("id", this->getLayerId().toString()));
+    this->muted = MidiLayer::isMuted(root->getStringAttribute("mute"));
 
-    float lastBeat = 0;
-    float firstBeat = 0;
+	forEachXmlChildElementWithTagName(*root, e, Serialization::Core::layerInstance)
+	{
+		Instance i;
+		i.deserialize(*e);
+		this->instances.add(i);
+	}
 
-    forEachXmlChildElementWithTagName(*mainSlot, e, Serialization::Core::note)
+	// Fallback to single instance at zero bar, if no instances found
+	if (this->instances.size() == 0)
+	{
+		this->instances.add(Instance());
+	}
+
+	float lastBeat = 0;
+	float firstBeat = 0;
+
+    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::note)
     {
         auto note = new Note(this);
         note->deserialize(*e);
@@ -419,7 +432,13 @@ void PianoLayer::deserialize(const XmlElement &xml)
 
 void PianoLayer::reset()
 {
-    this->midiEvents.clear();
-    this->notesHashTable.clear();
+	this->clearQuick();
     this->notifyLayerChanged();
+}
+
+void PianoLayer::clearQuick()
+{
+	this->instances.clearQuick();
+	this->midiEvents.clearQuick(true);
+	this->notesHashTable.clear();
 }

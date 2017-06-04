@@ -67,6 +67,10 @@ public:
 
     void reset() override;
 
+protected:
+
+	void clearQuick() override;
+
 private:
 
     // быстрый доступ к указателю на событие по соответствующим ему параметрам
