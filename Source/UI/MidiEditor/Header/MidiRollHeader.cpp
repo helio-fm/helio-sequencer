@@ -430,12 +430,12 @@ void MidiRollHeader::paint(Graphics &g)
 
     for (const auto f : this->roll.getVisibleBeats())
     {
-        g.drawVerticalLine(f, float(this->getHeight() - 10), float(this->getHeight() - 1.f));
+        g.drawVerticalLine(int(f), float(this->getHeight() - 10), float(this->getHeight() - 1.f));
     }
 
     for (const auto f : this->roll.getVisibleSnaps())
     {
-        g.drawVerticalLine(f, float(this->getHeight() - 3), float(this->getHeight() - 1.f));
+        g.drawVerticalLine(int(f), float(this->getHeight() - 3), float(this->getHeight() - 1.f));
     }
 
     g.setColour(Colours::white.withAlpha(0.025f));

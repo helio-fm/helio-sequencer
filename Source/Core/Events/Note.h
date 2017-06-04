@@ -91,7 +91,7 @@ public:
 
     friend inline bool operator==(const Note &lhs, const Note &rhs)
     {
-        return (lhs.getID() == rhs.getID());
+        return (&lhs == &rhs || lhs.id == rhs.id);
     }
 
     int hashCode() const noexcept;
