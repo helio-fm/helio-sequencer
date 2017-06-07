@@ -22,17 +22,14 @@
 
 #include "Note.h"
 #include "PianoLayer.h"
-#include "MidiLayerOwner.h"
+#include "ProjectEventDispatcher.h"
 #include "SerializationKeys.h"
 
 using namespace VCS;
 
-class EmptyLayerOwner : public MidiLayerOwner
+class EmptyEventDispatcher : public ProjectEventDispatcher
 {
 public:
-    Transport *getTransport() const override { return nullptr; }
-    String getXPath() const override { return ""; }
-    void setXPath(const String &path) override {}
     void onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent) override {}
     void onEventAdded(const MidiEvent &event) override {}
     void onEventRemoved(const MidiEvent &event) override {}
@@ -282,8 +279,8 @@ XmlElement *PianoLayerDiffLogic::mergeInstrument(const XmlElement *state, const 
 
 XmlElement *PianoLayerDiffLogic::mergeNotesAdded(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    PianoLayer emptyLayer(emptyOwner);
+	EmptyEventDispatcher dispatcher;
+    PianoLayer emptyLayer(dispatcher);
     OwnedArray<Note> stateNotes;
     OwnedArray<Note> changesNotes;
     this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
@@ -330,8 +327,8 @@ XmlElement *PianoLayerDiffLogic::mergeNotesAdded(const XmlElement *state, const 
 
 XmlElement *PianoLayerDiffLogic::mergeNotesRemoved(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    PianoLayer emptyLayer(emptyOwner);
+	EmptyEventDispatcher dispatcher;
+    PianoLayer emptyLayer(dispatcher);
     OwnedArray<Note> stateNotes;
     OwnedArray<Note> changesNotes;
     this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
@@ -375,8 +372,8 @@ XmlElement *PianoLayerDiffLogic::mergeNotesRemoved(const XmlElement *state, cons
 
 XmlElement *PianoLayerDiffLogic::mergeNotesChanged(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    PianoLayer emptyLayer(emptyOwner);
+	EmptyEventDispatcher dispatcher;
+    PianoLayer emptyLayer(dispatcher);
     OwnedArray<Note> stateNotes;
     OwnedArray<Note> changesNotes;
     this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
@@ -467,8 +464,8 @@ NewSerializedDelta PianoLayerDiffLogic::createInstrumentDiff(const XmlElement *s
 
 Array<NewSerializedDelta> PianoLayerDiffLogic::createEventsDiffs(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    PianoLayer emptyLayer(emptyOwner);
+	EmptyEventDispatcher dispatcher;
+    PianoLayer emptyLayer(dispatcher);
     OwnedArray<Note> stateNotes;
     OwnedArray<Note> changesNotes;
 

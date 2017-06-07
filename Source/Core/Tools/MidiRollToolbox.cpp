@@ -28,6 +28,7 @@
 #include "AnnotationsLayer.h"
 #include "InternalClipboard.h"
 #include "Arpeggiator.h"
+#include "Transport.h"
 #include <float.h>
 #include <math.h>
 
@@ -1564,7 +1565,8 @@ void MidiRollToolbox::deleteSelection(MidiEventSelection &selection)
     }
 }
 
-void MidiRollToolbox::shiftKeyRelative(MidiEventSelection &selection, int deltaKey, bool shouldCheckpoint)
+void MidiRollToolbox::shiftKeyRelative(MidiEventSelection &selection,
+	int deltaKey, bool shouldCheckpoint, Transport *transport)
 {
     if (selection.getNumSelected() == 0)
     { return; }
@@ -1593,9 +1595,10 @@ void MidiRollToolbox::shiftKeyRelative(MidiEventSelection &selection, int deltaK
             Note newNote(nc->getNote().withDeltaKey(deltaKey));
             groupAfter.add(newNote);
             
-            if (numSelected < 8)
+            if (transport != nullptr && numSelected < 8)
             {
-                pianoLayer->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), newNote.getKey(), newNote.getVelocity()));
+                transport->sendMidiMessage(pianoLayer->getLayerIdAsString(),
+					MidiMessage::noteOn(pianoLayer->getChannel(), newNote.getKey(), newNote.getVelocity()));
             }
         }
         
@@ -1661,7 +1664,8 @@ void MidiRollToolbox::shiftBeatRelative(MidiEventSelection &selection, float del
     }
 }
 
-void MidiRollToolbox::inverseChord(MidiEventSelection &selection, int deltaKey, bool shouldCheckpoint)
+void MidiRollToolbox::inverseChord(MidiEventSelection &selection, 
+	int deltaKey, bool shouldCheckpoint, Transport *transport)
 {
     if (selection.getNumSelected() == 0)
     { return; }
@@ -1755,12 +1759,13 @@ void MidiRollToolbox::inverseChord(MidiEventSelection &selection, int deltaKey, 
         pianoLayer->changeGroup(groupBefore, groupAfter, true);
         
         // step 4. make em sound, if needed
-        if (numSelected < 8)
+        if (transport != nullptr && numSelected < 8)
         {
             for (int i = 0; i < numSelected; ++i)
             {
                 NoteComponent *nc = static_cast<NoteComponent *>(layerSelection->getUnchecked(i));
-                pianoLayer->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), nc->getKey(), nc->getVelocity()));
+                transport->sendMidiMessage(pianoLayer->getLayerIdAsString(),
+					MidiMessage::noteOn(pianoLayer->getChannel(), nc->getKey(), nc->getVelocity()));
             }
         }
     }

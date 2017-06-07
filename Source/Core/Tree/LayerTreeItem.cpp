@@ -35,9 +35,6 @@
 
 #include "LayerCommandPanel.h"
 
-const String MidiLayerOwner::xPathSeparator = "/";
-
-
 LayerTreeItem::LayerTreeItem(const String &name) :
     TreeItem(name)
 {
@@ -133,13 +130,8 @@ String LayerTreeItem::getVCSName() const
 
 
 //===----------------------------------------------------------------------===//
-// MidiLayerOwner
+// ProjectEventDispatcher
 //===----------------------------------------------------------------------===//
-
-Transport *LayerTreeItem::getTransport() const
-{
-    return &this->lastFoundParent->getTransport();
-}
 
 String LayerTreeItem::getXPath() const
 {
@@ -154,7 +146,7 @@ String LayerTreeItem::getXPath() const
         { return xpath; }
 
         if (TreeItem *treeItem = dynamic_cast<TreeItem *>(item))
-        { xpath = treeItem->getName() + MidiLayerOwner::xPathSeparator + xpath; }
+        { xpath = treeItem->getName() + TreeItem::xPathSeparator + xpath; }
     }
 
     return xpath;
@@ -170,7 +162,7 @@ void LayerTreeItem::setXPath(const String &path)
     // рассплитить путь и переместить себя в нужное место на дереве.
     // если таких групп не существует - создать.
 
-    StringArray parts(StringArray::fromTokens(path, MidiLayerOwner::xPathSeparator, "'"));
+    StringArray parts(StringArray::fromTokens(path, TreeItem::xPathSeparator, "'"));
 
     TreeItem *rootItem = this->lastFoundParent;
 

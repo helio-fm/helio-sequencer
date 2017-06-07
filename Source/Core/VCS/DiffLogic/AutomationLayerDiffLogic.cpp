@@ -22,17 +22,14 @@
 
 #include "AutomationEvent.h"
 #include "AutomationLayer.h"
-#include "MidiLayerOwner.h"
+#include "ProjectEventDispatcher.h"
 #include "SerializationKeys.h"
 
 using namespace VCS;
 
-class EmptyLayerOwner : public MidiLayerOwner
+class EmptyEventDispatcher : public ProjectEventDispatcher
 {
 public:
-    Transport *getTransport() const override { return nullptr; }
-    String getXPath() const override { return ""; }
-    void setXPath(const String &path) override {}
     void onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent) override {}
     void onEventAdded(const MidiEvent &event) override {}
     void onEventRemoved(const MidiEvent &event) override {}
@@ -287,8 +284,8 @@ XmlElement *AutomationLayerDiffLogic::mergeController(const XmlElement *state, c
 
 XmlElement *AutomationLayerDiffLogic::mergeEventsAdded(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    AutomationLayer emptyLayer(emptyOwner);
+	EmptyEventDispatcher dispatcher;
+    AutomationLayer emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
     this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
@@ -325,8 +322,8 @@ XmlElement *AutomationLayerDiffLogic::mergeEventsAdded(const XmlElement *state, 
 
 XmlElement *AutomationLayerDiffLogic::mergeEventsRemoved(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    AutomationLayer emptyLayer(emptyOwner);
+	EmptyEventDispatcher dispatcher;
+    AutomationLayer emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
     this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
@@ -361,8 +358,8 @@ XmlElement *AutomationLayerDiffLogic::mergeEventsRemoved(const XmlElement *state
 
 XmlElement *AutomationLayerDiffLogic::mergeEventsChanged(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    AutomationLayer emptyLayer(emptyOwner);
+	EmptyEventDispatcher dispatcher;
+    AutomationLayer emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
     this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
@@ -446,8 +443,8 @@ NewSerializedDelta AutomationLayerDiffLogic::createControllerDiff(const XmlEleme
 
 Array<NewSerializedDelta> AutomationLayerDiffLogic::createEventsDiffs(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    AutomationLayer emptyLayer(emptyOwner);
+	EmptyEventDispatcher dispatcher;
+    AutomationLayer emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
 

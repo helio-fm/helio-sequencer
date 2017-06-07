@@ -198,10 +198,14 @@ ProjectTimeline *ProjectTreeItem::getTimeline() const noexcept
     return this->timeline;
 }
 
+MidiRollEditMode ProjectTreeItem::getEditMode() const noexcept
+{
+	return this->rollEditMode;
+}
+
 MidiRoll *ProjectTreeItem::getLastFocusedRoll() const
 {
     // todo!
-    
     return this->editor->getRoll();
     
 //    if (this->origami != nullptr)
@@ -214,6 +218,13 @@ MidiRoll *ProjectTreeItem::getLastFocusedRoll() const
 //    
 //    return nullptr;
 }
+
+Pattern *ProjectTreeItem::getPatternWithId(const String &uuid)
+{
+	// TODO implement
+	return nullptr;
+}
+
 
 Colour ProjectTreeItem::getColour() const
 {
@@ -310,25 +321,6 @@ void ProjectTreeItem::loadPageState()
     }
 }
 
-void ProjectTreeItem::showEditor(MidiLayer *layer) // todo +param: Component *caller
-{
-    const Array<MidiLayer *> layers(this->getLayersList());
-
-    for (int i = 0; i < layers.size(); ++i)
-    {
-        const MidiLayer *layerIter = layers.getUnchecked(i);
-
-        if (layerIter == layer)
-        {
-            if (TreeItem *item = dynamic_cast<TreeItem *>(layer->getOwner()))
-            {
-                this->showEditor(layer, item);
-                return;
-            }
-        }
-    }
-}
-
 void ProjectTreeItem::showEditor(MidiLayer *activeLayer, TreeItem *source)
 {
     if (PianoLayer *pianoLayer = dynamic_cast<PianoLayer *>(activeLayer))
@@ -389,12 +381,12 @@ void ProjectTreeItem::showEditorsGroup(Array<MidiLayer *> layersGroup, TreeItem 
 //    this->origami = new OrigamiVertical();
 //    int editorIndex = 0;
 //    MidiEditor *firstFoundEditor = nullptr;
-//===----------------------------------------------------------------------===//
+//
 //    for (int i = 0; i < myLayers.size(); ++i)
 //    {
 //        const bool needsShadow = (editorIndex != (layersGroup.size() - 1));
 //        MidiLayer *layerIter = myLayers.getUnchecked(i);
-//===----------------------------------------------------------------------===//
+//
 //        if (layersGroup.contains(layerIter))
 //        {
 //            if (TreeItem *item = dynamic_cast<TreeItem *>(layerIter->getOwner()))
@@ -403,11 +395,11 @@ void ProjectTreeItem::showEditorsGroup(Array<MidiLayer *> layersGroup, TreeItem 
 //                {
 //                    if (editorIndex >= this->splitscreenPianoEditors.size())
 //                    { break; }
-//===----------------------------------------------------------------------===//
+//
 //                    MidiEditor *foundEditor = this->splitscreenPianoEditors[editorIndex];
 //                    this->origami->addPage(foundEditor, false, needsShadow);
 //                    foundEditor->setActiveMidiLayer(layerIter);
-//===----------------------------------------------------------------------===//
+//
 //                    firstFoundEditor = (firstFoundEditor == nullptr) ? foundEditor : firstFoundEditor;
 //                }
 //                else if (dynamic_cast<AutomationLayer *>(layerIter))
@@ -416,22 +408,22 @@ void ProjectTreeItem::showEditorsGroup(Array<MidiLayer *> layersGroup, TreeItem 
 //                    
 //                    //if (editorIndex >= this->splitscreenAutoEditors.size())
 //                    //{ break; }
-//===----------------------------------------------------------------------===//
+//
 //                    //MidiEditor *foundEditor = this->splitscreenAutoEditors[editorIndex];
 //                    //this->origami->addPage(foundEditor, false, needsShadow);
 //                    //foundEditor->setActiveMidiLayer(layerIter);
-//===----------------------------------------------------------------------===//
+//
 //                    //firstFoundEditor = (firstFoundEditor == nullptr) ? foundEditor : firstFoundEditor;
 //                }
-//===----------------------------------------------------------------------===//
+//
 //                editorIndex += 1;
 //            }
 //        }
 //    }
-//===----------------------------------------------------------------------===//
+//
 //    this->origami->addPage(this->midiRollCommandPanel, false, false, true);
 //    this->workspace.showPage(this->origami, source);
-//===----------------------------------------------------------------------===//
+//
 //    firstFoundEditor->grabKeyboardFocus();
 }
 
@@ -451,6 +443,27 @@ void ProjectTreeItem::updateActiveGroupEditors()
     }
 }
 
+void ProjectTreeItem::activateLayer(MidiLayer* layer, bool selectOthers, bool deselectOthers)
+{
+	if (selectOthers)
+	{
+		if (PianoLayerTreeItem *item =
+			this->findChildByLayerId<PianoLayerTreeItem>(layer->getLayerIdAsString()))
+		{
+			PianoLayerTreeItem::selectAllPianoSiblings(item);
+			return;
+		}
+	}
+	else
+	{
+		if (PianoLayerTreeItem *item =
+			this->findChildByLayerId<PianoLayerTreeItem>(layer->getLayerIdAsString()))
+		{
+			item->setSelected(false, false);
+			item->setSelected(true, deselectOthers);
+		}
+	}
+}
 
 //===----------------------------------------------------------------------===//
 // Menu
@@ -963,20 +976,28 @@ void ProjectTreeItem::changeListenerCallback(ChangeBroadcaster *source)
 
 void ProjectTreeItem::registerVcsItem(const MidiLayer *layer)
 {
-    if (const VCS::TrackedItem *item = dynamic_cast<const VCS::TrackedItem *>(layer->getOwner()))
-    {
-        ScopedWriteLock lock(this->vcsInfoLock);
-        this->vcsItems.add(item);
-    }
+	const auto children = this->findChildrenOfType<LayerTreeItem>();
+	for (LayerTreeItem *item : children)
+	{
+		if (item->getLayer() == layer)
+		{
+			ScopedWriteLock lock(this->vcsInfoLock);
+			this->vcsItems.addIfNotAlreadyThere(item);
+		}
+	}
 }
 
 void ProjectTreeItem::unregisterVcsItem(const MidiLayer *layer)
 {
-    if (const VCS::TrackedItem *item = dynamic_cast<const VCS::TrackedItem *>(layer->getOwner()))
-    {
-        ScopedWriteLock lock(this->vcsInfoLock);
-        this->vcsItems.removeAllInstancesOf(item);
-    }
+	const auto children = this->findChildrenOfType<LayerTreeItem>();
+	for (LayerTreeItem *item : children)
+	{
+		if (item->getLayer() == layer)
+		{
+			ScopedWriteLock lock(this->vcsInfoLock);
+			this->vcsItems.addIfNotAlreadyThere(item);
+		}
+	}
 }
 
 void ProjectTreeItem::rebuildLayersHashIfNeeded()

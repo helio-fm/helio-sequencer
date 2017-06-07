@@ -25,6 +25,12 @@ MidiRollEditMode::MidiRollEditMode() :
 {
 }
 
+MidiRollEditMode::MidiRollEditMode(const MidiRollEditMode &other) :
+	mode(other.mode),
+	previousMode(other.previousMode)
+{
+}
+
 bool MidiRollEditMode::forbidsViewportDragging() const
 {
     return

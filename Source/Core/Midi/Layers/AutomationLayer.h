@@ -24,7 +24,7 @@ class AutomationLayer : public MidiLayer
 {
 public:
 
-    explicit AutomationLayer(MidiLayerOwner &parent);
+    explicit AutomationLayer(ProjectEventDispatcher &parent);
 
 
     //===------------------------------------------------------------------===//

@@ -288,7 +288,7 @@ void MidiRoll::removeOwnedMap(Component *existingTrackMap)
 // Modes
 //===----------------------------------------------------------------------===//
 
-MidiRollEditMode &MidiRoll::getEditMode()
+MidiRollEditMode MidiRoll::getEditMode() const
 {
     return this->project.getEditMode();
 }

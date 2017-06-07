@@ -19,7 +19,6 @@
 #include "MidiRollHeader.h"
 #include "MidiRoll.h"
 #include "MidiLayer.h"
-#include "MidiLayerOwner.h"
 #include "Transport.h"
 #include "AnnotationsTrackMap.h"
 #include "Origami.h"

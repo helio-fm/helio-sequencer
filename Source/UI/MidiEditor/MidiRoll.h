@@ -125,7 +125,7 @@ public:
     Transport &getTransport() const noexcept;
     ProjectTreeItem &getProject() const noexcept;
     MidiLayer *getPrimaryActiveMidiLayer() const noexcept;
-    MidiRollEditMode &getEditMode();
+    MidiRollEditMode getEditMode() const;
 
     int getNumActiveLayers() const noexcept;
     MidiLayer *getActiveMidiLayer(int index) const noexcept;

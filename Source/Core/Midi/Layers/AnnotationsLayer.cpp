@@ -23,7 +23,7 @@
 #include "UndoStack.h"
 
 
-AnnotationsLayer::AnnotationsLayer(MidiLayerOwner &parent) : MidiLayer(parent)
+AnnotationsLayer::AnnotationsLayer(ProjectEventDispatcher &parent) : MidiLayer(parent)
 {
 }
 

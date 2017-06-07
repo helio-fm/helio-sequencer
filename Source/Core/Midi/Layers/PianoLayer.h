@@ -26,7 +26,7 @@ class PianoLayer : public MidiLayer
 {
 public:
 
-    explicit PianoLayer(MidiLayerOwner &parent);
+    explicit PianoLayer(ProjectEventDispatcher &parent);
 
 
     //===------------------------------------------------------------------===//

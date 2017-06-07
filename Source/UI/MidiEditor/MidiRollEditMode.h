@@ -36,7 +36,8 @@ public:
     };
     
     MidiRollEditMode();
-    
+	MidiRollEditMode(const MidiRollEditMode &other);
+
     bool forbidsViewportDragging() const;
     bool forcesViewportDragging() const;
     
@@ -65,9 +66,8 @@ public:
 private:
     
     Mode mode;
-
     Mode previousMode;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiRollEditMode)
+    JUCE_LEAK_DETECTOR(MidiRollEditMode)
     
 };

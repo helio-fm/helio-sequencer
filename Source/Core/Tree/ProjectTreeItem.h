@@ -57,42 +57,26 @@ class ProjectTreeItem :
 public:
 
     explicit ProjectTreeItem(const String &name);
-
     explicit ProjectTreeItem(const File &existingFile);
-
     ~ProjectTreeItem() override;
     
     void deletePermanently();
     
-
-
     String getId() const;
-
     String getStats() const;
 
     Transport &getTransport() const noexcept;
+	ProjectInfo *getProjectInfo() const noexcept;
+	ProjectTimeline *getTimeline() const noexcept;
+	MidiRollEditMode getEditMode() const noexcept;
+	MidiRoll *getLastFocusedRoll() const;
 
-    ProjectInfo *getProjectInfo() const noexcept;
-
-    ProjectTimeline *getTimeline() const noexcept;
-
-    MidiRoll *getLastFocusedRoll() const;
-    
-    MidiRollEditMode &getEditMode() noexcept
-    {
-        return this->rollEditMode;
-    }
-    
-    void repaintEditor();
-
+	void repaintEditor();
     
     void importMidi(File &file);
-    
     void exportMidi(File &file) const;
 
-
-    Colour getColour() const override;
-
+	Colour getColour() const override;
     Image getIcon() const override;
 
     void showPage() override;
@@ -102,16 +86,12 @@ public:
 
     void onRename(const String &newName) override;
 
-
-    void showEditor(MidiLayer *layer);
-
     void showEditor(MidiLayer *activeLayer, TreeItem *source);
-
     void showEditorsGroup(Array<MidiLayer *> layersGroup, TreeItem *source);
-
     void hideEditor(MidiLayer *activeLayer, TreeItem *source);
 
     void updateActiveGroupEditors();
+	void activateLayer(MidiLayer* layer, bool selectOthers, bool deselectOthers);
 
 
     //===------------------------------------------------------------------===//

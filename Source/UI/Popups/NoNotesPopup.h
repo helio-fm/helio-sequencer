@@ -90,6 +90,9 @@ private:
     void buildNewNote(bool shouldSendMidiMessage);
     void cancelChangesIfAny();
 
+	void stopSound();
+	void sendMidiMessage(const MidiMessage &message);
+
     //[/UserVariables]
 
     ScopedPointer<PopupCustomButton> chordMinor1;

@@ -131,6 +131,9 @@ protected:
 
     bool shouldGoQuickSelectLayerMode(const ModifierKeys &modifiers) const;
     void setQuickSelectLayerMode(bool value);
+
+	void stopSound();
+	void sendMidiMessage(const MidiMessage &message);
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteComponent)
     

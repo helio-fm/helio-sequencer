@@ -21,11 +21,12 @@
 #include "Transport.h"
 #include "MidiRoll.h"
 #include "ProjectTreeItem.h"
+#include "ProjectEventDispatcher.h"
 #include "SerializationKeys.h"
 #include "MidiLayerActions.h"
 #include "UndoStack.h"
 
-MidiLayer::MidiLayer(MidiLayerOwner &parent) :
+MidiLayer::MidiLayer(ProjectEventDispatcher &parent) :
     owner(parent),
     colour(Colours::white),
     channel(1),
@@ -44,16 +45,6 @@ MidiLayer::~MidiLayer()
     this->masterReference.clear();
 }
 
-String MidiLayer::getXPath() const
-{
-    return this->owner.getXPath();
-}
-
-MidiLayerOwner *MidiLayer::getOwner() const
-{
-    return &this->owner;
-}
-
 void MidiLayer::sort()
 {
     if (this->midiEvents.size() > 0)
@@ -62,51 +53,33 @@ void MidiLayer::sort()
     }
 }
 
-void MidiLayer::allNotesOff()
-{
-//    for (int c = 1; c <= 16; ++c)
+//void MidiLayer::allNotesOff()
+//{
+//    const MidiMessage notesOff(MidiMessage::allNotesOff(this->getChannel()));
+//    this->sendMidiMessage(notesOff);
+//    
+//    // It vas very very frustrating to realise that some plugins (like Arturia iSEM on iOS)
+//    // do NOT understand allNotesOff message, so they're just never going to shut the **** up.
+//    // We always have to tell them that every single ******* note is ******* off.
+//    // What a pain.
+//    for (int c = 0; c < 128; ++c)
 //    {
-//        const MidiMessage notesOff(MidiMessage::allNotesOff(c));
-//        this->sendMidiMessage(notesOff);
+//        const MidiMessage noteOff(MidiMessage::noteOff(this->getChannel(), c));
+//        this->sendMidiMessage(noteOff);
 //    }
-    
-    const MidiMessage notesOff(MidiMessage::allNotesOff(this->getChannel()));
-    this->sendMidiMessage(notesOff);
-    
-    // It vas very very frustrating to realise that some plugins (like Arturia iSEM on iOS)
-    // do NOT understand allNotesOff message, so they're just never going to shut the **** up.
-    // We always have to tell them that every single ******* note is ******* off.
-    // What a pain.
-    for (int c = 0; c < 128; ++c)
-    {
-        const MidiMessage noteOff(MidiMessage::noteOff(this->getChannel(), c));
-        this->sendMidiMessage(noteOff);
-    }
-}
-
-void MidiLayer::allSoundOff()
-{
-//    for (int c = 1; c <= 16; ++c)
-//    {
-//        const MidiMessage soundOff(MidiMessage::allSoundOff(c));
-//        this->sendMidiMessage(soundOff);
-//    }
-    
-    const MidiMessage soundOff(MidiMessage::allSoundOff(this->getChannel()));
-    this->sendMidiMessage(soundOff);
-}
-
-void MidiLayer::allControllersOff()
-{
-//    for (int c = 1; c <= 16; ++c)
-//    {
-//        const MidiMessage controllersOff(MidiMessage::allControllersOff(c));
-//        this->sendMidiMessage(controllersOff);
-//    }
-    
-    const MidiMessage controllersOff(MidiMessage::allControllersOff(this->getChannel()));
-    this->sendMidiMessage(controllersOff);
-}
+//}
+//
+//void MidiLayer::allSoundOff()
+//{
+//    const MidiMessage soundOff(MidiMessage::allSoundOff(this->getChannel()));
+//    this->sendMidiMessage(soundOff);
+//}
+//
+//void MidiLayer::allControllersOff()
+//{
+//    const MidiMessage controllersOff(MidiMessage::allControllersOff(this->getChannel()));
+//    this->sendMidiMessage(controllersOff);
+//}
 
 //===----------------------------------------------------------------------===//
 // Undoing // TODO move this to project interface
@@ -136,8 +109,7 @@ void MidiLayer::redo()
 
 void MidiLayer::clearUndoHistory()
 {
-    Logger::writeToLog(this->getXPath() + " clearUndoHistory");
-    this->getUndoStack()->clearUndoHistory();
+	this->getUndoStack()->clearUndoHistory();
 }
 
 
@@ -318,10 +290,10 @@ void MidiLayer::updateBeatRange(bool shouldNotifyIfChanged)
 }
 
 
-void MidiLayer::sendMidiMessage(const MidiMessage &message)
-{
-    this->owner.getTransport()->sendMidiMessage(this->getLayerId().toString(), message);
-}
+//void MidiLayer::sendMidiMessage(const MidiMessage &message)
+//{
+//    this->owner.getTransport()->sendMidiMessage(this->getLayerId().toString(), message);
+//}
 
 void MidiLayer::setInstrumentId(const String &val)
 {

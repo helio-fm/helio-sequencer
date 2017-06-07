@@ -20,11 +20,11 @@
 class ProjectTreeItem;
 
 #include "ProjectTimelineDiffLogic.h"
-#include "MidiLayerOwner.h"
+#include "ProjectEventDispatcher.h"
 #include "Serializable.h"
 
 class ProjectTimeline :
-    public MidiLayerOwner,
+    public ProjectEventDispatcher,
     public VCS::TrackedItem,
     public Serializable
 {
@@ -33,7 +33,7 @@ public:
     ProjectTimeline(ProjectTreeItem &parentProject, String trackName);
 
     ~ProjectTimeline() override;
-    
+
     inline MidiLayer *getAnnotations() const noexcept
     { return this->annotations; }
 
@@ -59,14 +59,8 @@ public:
     
     
     //===------------------------------------------------------------------===//
-    // MidiLayerOwner
+    // ProjectEventDispatcher
     //===------------------------------------------------------------------===//
-    
-    Transport *getTransport() const override;
-    
-    String getXPath() const override;
-    
-    void setXPath(const String &path) override;
     
     void onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
     

@@ -23,7 +23,7 @@
 #include "UndoStack.h"
 
 
-TimeSignaturesLayer::TimeSignaturesLayer(MidiLayerOwner &parent) : MidiLayer(parent)
+TimeSignaturesLayer::TimeSignaturesLayer(ProjectEventDispatcher &parent) : MidiLayer(parent)
 {
 }
 

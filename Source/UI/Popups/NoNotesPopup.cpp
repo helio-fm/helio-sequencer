@@ -29,7 +29,7 @@
 #include "Note.h"
 #include "App.h"
 #include "ChordTooltip.h"
-
+#include "Transport.h"
 #include "Supervisor.h"
 #include "SerializationKeys.h"
 
@@ -173,8 +173,7 @@ NoNotesPopup::NoNotesPopup(PianoRoll *caller, MidiLayer *layer)
 NoNotesPopup::~NoNotesPopup()
 {
     //[Destructor_pre]
-    this->targetLayer->allNotesOff();
-    this->targetLayer->allSoundOff();
+	this->stopSound();
     //[/Destructor_pre]
 
     chordMinor1 = nullptr;
@@ -480,9 +479,7 @@ void NoNotesPopup::buildChord(int n1, int n2, int n3)
     {
         this->cancelChangesIfAny();
 
-        pianoLayer->allNotesOff();
-        //pianoLayer->allControllersOff();
-        //pianoLayer->allSoundOff();
+        this->stopSound();
 
         pianoLayer->checkpoint();
 
@@ -501,9 +498,9 @@ void NoNotesPopup::buildChord(int n1, int n2, int n3)
         // a hack for stop sound events not mute the forthcoming notes
         //Time::waitForMillisecondCounter(Time::getMillisecondCounter() + 20);
 
-        pianoLayer->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key1, kDefaultChordVelocity));
-        pianoLayer->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key2, kDefaultChordVelocity));
-        pianoLayer->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key3, kDefaultChordVelocity));
+        this->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key1, kDefaultChordVelocity));
+		this->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key2, kDefaultChordVelocity));
+		this->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key3, kDefaultChordVelocity));
 
         this->hasMadeChanges = true;
     }
@@ -517,7 +514,7 @@ void NoNotesPopup::buildNewNote(bool shouldSendMidiMessage)
 
         if (shouldSendMidiMessage)
         {
-            pianoLayer->allNotesOff();
+            this->stopSound();
         }
 
         pianoLayer->checkpoint();
@@ -529,7 +526,7 @@ void NoNotesPopup::buildNewNote(bool shouldSendMidiMessage)
 
         if (shouldSendMidiMessage)
         {
-            pianoLayer->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key, kDefaultChordVelocity));
+			this->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key, kDefaultChordVelocity));
         }
 
         this->hasMadeChanges = true;
@@ -553,6 +550,21 @@ bool NoNotesPopup::detectKeyAndBeat()
     const bool hasChanges = (newKey != this->targetKey);
     this->targetKey = newKey;
     return hasChanges;
+}
+
+//===----------------------------------------------------------------------===//
+// Shorthands
+//===----------------------------------------------------------------------===//
+
+void NoNotesPopup::stopSound()
+{
+	this->roll->getTransport().allNotesControllersAndSoundOff();
+}
+
+void NoNotesPopup::sendMidiMessage(const MidiMessage &message)
+{
+	const String layerId = this->targetLayer->getLayerIdAsString();
+	this->roll->getTransport().sendMidiMessage(layerId, message);
 }
 
 //[/MiscUserCode]

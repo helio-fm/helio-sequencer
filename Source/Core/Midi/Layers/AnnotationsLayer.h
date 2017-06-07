@@ -24,7 +24,7 @@ class AnnotationsLayer : public MidiLayer
 {
 public:
 
-    explicit AnnotationsLayer(MidiLayerOwner &parent);
+    explicit AnnotationsLayer(ProjectEventDispatcher &parent);
 
 
     //===------------------------------------------------------------------===//

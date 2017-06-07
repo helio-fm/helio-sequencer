@@ -24,7 +24,7 @@ class TimeSignaturesLayer : public MidiLayer
 {
 public:
 
-    explicit TimeSignaturesLayer(MidiLayerOwner &parent);
+    explicit TimeSignaturesLayer(ProjectEventDispatcher &parent);
 
 
     //===------------------------------------------------------------------===//

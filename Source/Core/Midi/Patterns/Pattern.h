@@ -18,9 +18,9 @@
 #pragma once
 
 #include "Serializable.h"
-#include "MidiLayerOwner.h"
 #include "Clip.h"
 
+class ProjectEventDispatcher;
 class ProjectTreeItem;
 class UndoStack;
 
@@ -29,10 +29,8 @@ class Pattern : public Serializable
 {
 public:
 
-    explicit Pattern(MidiLayerOwner &parent);
+    explicit Pattern(ProjectEventDispatcher &parent);
     ~Pattern() override;
-
-    MidiLayerOwner *getOwner() const;
     
     //===------------------------------------------------------------------===//
     // Undoing
@@ -42,15 +40,6 @@ public:
     void undo();
     void redo();
     void clearUndoHistory();
-	
-	//===------------------------------------------------------------------===//
-	// Clips
-	//===------------------------------------------------------------------===//
-
-	inline Array<Clip> &getClips() noexcept;
-	bool insert(Clip clip, const bool undoable);
-	bool remove(Clip clip, const bool undoable);
-	bool change(Clip clip, Clip newClip, const bool undoable);
 
     //===------------------------------------------------------------------===//
     // Track editing
@@ -59,8 +48,12 @@ public:
     // This one is for import and checkout procedures.
 	// Does not notify anybody to prevent notification hell.
     // Always call notifyLayerChanged() when you're done using it.
-    virtual void silentImport(const MidiEvent &eventToImport) = 0;
-	
+    void silentImport(const Clip &clipToImport);
+
+	bool insert(Clip clip, const bool undoable);
+	bool remove(Clip clip, const bool undoable);
+	bool change(Clip clip, Clip newClip, const bool undoable);
+
     //===------------------------------------------------------------------===//
     // Array wrapper
     //===------------------------------------------------------------------===//
@@ -85,6 +78,8 @@ public:
         return this->clips.indexOfSorted(event, event);
     }
 
+	inline Array<Clip> &getClips() noexcept;
+	
     //===------------------------------------------------------------------===//
     // Events change listener
     //===------------------------------------------------------------------===//
@@ -117,7 +112,7 @@ protected:
 
 private:
 	
-    MidiLayerOwner &owner;
+    ProjectEventDispatcher &owner;
 
 private:
     

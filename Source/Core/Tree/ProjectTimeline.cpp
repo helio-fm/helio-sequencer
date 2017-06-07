@@ -134,26 +134,8 @@ void ProjectTimeline::resetStateTo(const VCS::TrackedItem &newState)
 
 
 //===----------------------------------------------------------------------===//
-// MidiLayerOwner
+// ProjectEventDispatcher
 //===----------------------------------------------------------------------===//
-
-Transport *ProjectTimeline::getTransport() const
-{
-    return &this->project.getTransport();
-}
-
-String ProjectTimeline::getXPath() const
-{
-    return this->name;
-}
-
-void ProjectTimeline::setXPath(const String &path)
-{
-    if (path != this->name)
-    {
-        this->name = path;
-    }
-}
 
 void ProjectTimeline::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {

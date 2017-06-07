@@ -25,7 +25,7 @@
 #include "UndoStack.h"
 
 
-AutomationLayer::AutomationLayer(MidiLayerOwner &parent) : MidiLayer(parent)
+AutomationLayer::AutomationLayer(ProjectEventDispatcher &parent) : MidiLayer(parent)
 {
 }
 

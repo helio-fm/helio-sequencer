@@ -19,10 +19,11 @@
 #include "Pattern.h"
 #include "PatternActions.h"
 #include "ProjectTreeItem.h"
+#include "ProjectEventDispatcher.h"
 #include "UndoStack.h"
 #include "SerializationKeys.h"
 
-Pattern::Pattern(MidiLayerOwner &parent) :
+Pattern::Pattern(ProjectEventDispatcher &parent) :
     owner(parent)
 {
 }
@@ -30,11 +31,6 @@ Pattern::Pattern(MidiLayerOwner &parent) :
 Pattern::~Pattern()
 {
     this->masterReference.clear();
-}
-
-MidiLayerOwner *Pattern::getOwner() const
-{
-    return &this->owner;
 }
 
 void Pattern::sort()
@@ -83,6 +79,14 @@ void Pattern::clearUndoHistory()
 Array<Clip> &Pattern::getClips() noexcept
 {
 	return this->clips;
+}
+
+void Pattern::silentImport(const Clip &clip)
+{
+	if (! this->clips.contains(clip))
+	{
+		this->clips.addSorted(clip, clip);
+	}
 }
 
 bool Pattern::insert(Clip clip, const bool undoable)

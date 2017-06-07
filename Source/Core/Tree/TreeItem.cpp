@@ -20,13 +20,14 @@
 #include "TreePanel.h"
 #include "TreeItemComponentDefault.h"
 #include "TreeItemComponentCompact.h"
-#include "MidiLayerOwner.h"
 #include "MainLayout.h"
 #include "HelioCallout.h"
 
+const String TreeItem::xPathSeparator = "/";
+
 String TreeItem::createSafeName(const String &nameStr)
 {
-    return File::createLegalFileName(nameStr).removeCharacters(MidiLayerOwner::xPathSeparator);
+    return File::createLegalFileName(nameStr).removeCharacters(TreeItem::xPathSeparator);
 }
 
 TreeItem::TreeItem(const String &nameStr) :

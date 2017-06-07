@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "MidiEventComponent.h"
+#include "ProjectTreeItem.h"
 #include "MidiLayer.h"
 #include "MidiEvent.h"
 #include "MidiRoll.h"
@@ -147,5 +148,5 @@ int MidiEventComponent::compareElements(MidiEventComponent *first, MidiEventComp
 void MidiEventComponent::activateCorrespondingLayer(bool selectOthers, bool deselectOthers)
 {
     MidiLayer *layer = this->getEvent().getLayer();
-    layer->getOwner()->activateLayer(layer, selectOthers, deselectOthers);
+	this->roll.getProject().activateLayer(layer, selectOthers, deselectOthers);
 }

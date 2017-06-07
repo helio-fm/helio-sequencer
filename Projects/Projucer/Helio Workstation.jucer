@@ -395,6 +395,8 @@
                 file="../../Source/Core/Tree/ProjectTimeline.cpp"/>
           <FILE id="i2XkU1" name="ProjectTimeline.h" compile="0" resource="0"
                 file="../../Source/Core/Tree/ProjectTimeline.h"/>
+          <FILE id="vj0ipC" name="ProjectEventDispatcher.h" compile="0" resource="0"
+                file="../../Source/Core/Tree/ProjectEventDispatcher.h"/>
           <FILE id="inh3nZ" name="ProjectListener.h" compile="0" resource="0"
                 file="../../Source/Core/Tree/ProjectListener.h"/>
           <FILE id="CKexRS" name="ProjectTreeItem.cpp" compile="1" resource="0"
@@ -923,8 +925,6 @@
                 file="../../Source/UI/MidiEditor/MidiEventComponentLasso.h"/>
           <FILE id="aREnGn" name="MidiEventSelection.h" compile="0" resource="0"
                 file="../../Source/UI/MidiEditor/MidiEventSelection.h"/>
-          <FILE id="PTiB9i" name="MidiLayerOwner.h" compile="0" resource="0"
-                file="../../Source/UI/MidiEditor/MidiLayerOwner.h"/>
           <FILE id="Xw54gq" name="MidiRoll.cpp" compile="1" resource="0" file="../../Source/UI/MidiEditor/MidiRoll.cpp"/>
           <FILE id="DjO9Ru" name="MidiRoll.h" compile="0" resource="0" file="../../Source/UI/MidiEditor/MidiRoll.h"/>
           <FILE id="XNtqm6" name="MidiRollEditMode.cpp" compile="1" resource="0"

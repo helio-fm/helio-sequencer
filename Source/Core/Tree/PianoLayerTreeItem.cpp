@@ -78,31 +78,6 @@ void PianoLayerTreeItem::selectAllPianoSiblings(PianoLayerTreeItem *layerItem)
     layerItem->setSelected(true, false, sendNotification);
 }
 
-void PianoLayerTreeItem::activateLayer(MidiLayer* layer, bool selectOthers, bool deselectOthers)
-{
-    if (this->getProject() != nullptr)
-    {
-        if (selectOthers)
-        {
-            if (PianoLayerTreeItem *item =
-                this->getProject()->findChildByLayerId<PianoLayerTreeItem>(layer->getLayerIdAsString()))
-            {
-                PianoLayerTreeItem::selectAllPianoSiblings(item);
-                return;
-            }
-        }
-        else
-        {
-            if (PianoLayerTreeItem *item =
-                this->getProject()->findChildByLayerId<PianoLayerTreeItem>(layer->getLayerIdAsString()))
-            {
-                item->setSelected(false, false);
-                item->setSelected(true, deselectOthers);
-            }
-        }
-    }
-}
-
 //===----------------------------------------------------------------------===//
 // VCS stuff
 //===----------------------------------------------------------------------===//

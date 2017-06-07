@@ -1000,22 +1000,26 @@ bool PianoRoll::keyPressed(const KeyPress &key)
     }
     else if (key == KeyPress::createFromDescription("cursor up"))
     {
-        MidiRollToolbox::shiftKeyRelative(this->getLassoSelection(), 1);
+		MidiRollToolbox::shiftKeyRelative(this->getLassoSelection(),
+			1, true, &this->getTransport());
         return true;
     }
     else if (key == KeyPress::createFromDescription("cursor down"))
     {
-        MidiRollToolbox::shiftKeyRelative(this->getLassoSelection(), -1);
+        MidiRollToolbox::shiftKeyRelative(this->getLassoSelection(), 
+			-1, true, &this->getTransport());
         return true;
     }
     else if (key == KeyPress::createFromDescription("shift + cursor up"))
     {
-        MidiRollToolbox::shiftKeyRelative(this->getLassoSelection(), 12);
+        MidiRollToolbox::shiftKeyRelative(this->getLassoSelection(),
+			12, true, &this->getTransport());
         return true;
     }
     else if (key == KeyPress::createFromDescription("shift + cursor down"))
     {
-        MidiRollToolbox::shiftKeyRelative(this->getLassoSelection(), -12);
+        MidiRollToolbox::shiftKeyRelative(this->getLassoSelection(),
+			-12, true, &this->getTransport());
         return true;
     }
     else if (key == KeyPress::createFromDescription("option + cursor up") ||
@@ -1023,7 +1027,8 @@ bool PianoRoll::keyPressed(const KeyPress &key)
              key == KeyPress::createFromDescription("ctrl + cursor up") ||
              key == KeyPress::createFromDescription("alt + cursor up"))
     {
-        MidiRollToolbox::inverseChord(this->getLassoSelection(), 12);
+        MidiRollToolbox::inverseChord(this->getLassoSelection(), 
+			12, true, &this->getTransport());
         return true;
     }
     else if (key == KeyPress::createFromDescription("option + cursor down") ||
@@ -1031,7 +1036,8 @@ bool PianoRoll::keyPressed(const KeyPress &key)
              key == KeyPress::createFromDescription("ctrl + cursor down") ||
              key == KeyPress::createFromDescription("alt + cursor down"))
     {
-        MidiRollToolbox::inverseChord(this->getLassoSelection(), -12);
+        MidiRollToolbox::inverseChord(this->getLassoSelection(),
+			-12, true, &this->getTransport());
         return true;
     }
     else if ((key == KeyPress::createFromDescription("command + x")) ||

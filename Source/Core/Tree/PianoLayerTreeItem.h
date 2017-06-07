@@ -30,14 +30,6 @@ public:
 
     static void selectAllPianoSiblings(PianoLayerTreeItem *layerItem);
 
-
-    //===------------------------------------------------------------------===//
-    // MidiLayerOwner
-    //===------------------------------------------------------------------===//
-
-    void activateLayer(MidiLayer* layer, bool selectOthers, bool deselectOthers) override;
-
-
     //===------------------------------------------------------------------===//
     // VCS::TrackedItem
     //===------------------------------------------------------------------===//

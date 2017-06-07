@@ -30,7 +30,7 @@
 // todo optimize data structures >_<
 // using std::dense_hash_map ?
 
-PianoLayer::PianoLayer(MidiLayerOwner &parent) : MidiLayer(parent)
+PianoLayer::PianoLayer(ProjectEventDispatcher &parent) : MidiLayer(parent)
 {
 }
 

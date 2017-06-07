@@ -17,6 +17,7 @@
 
 #pragma once
 
+class Transport;
 class Arpeggiator;
 class ProjectTreeItem;
 class MidiEventSelection;
@@ -68,9 +69,13 @@ public:
     
     static void deleteSelection(MidiEventSelection &selection);
     
-    static void shiftKeyRelative(MidiEventSelection &selection, int deltaKey, bool shouldCheckpoint = true);
-    static void shiftBeatRelative(MidiEventSelection &selection, float deltaBeat, bool shouldCheckpoint = true);
+    static void shiftKeyRelative(MidiEventSelection &selection, int deltaKey,
+		bool shouldCheckpoint = true, Transport *transport = nullptr);
+
+    static void shiftBeatRelative(MidiEventSelection &selection, float deltaBeat,
+		bool shouldCheckpoint = true);
     
-    static void inverseChord(MidiEventSelection &selection, int deltaKey, bool shouldCheckpoint = true);
+    static void inverseChord(MidiEventSelection &selection, int deltaKey,
+		bool shouldCheckpoint = true, Transport *transport = nullptr);
     
 };

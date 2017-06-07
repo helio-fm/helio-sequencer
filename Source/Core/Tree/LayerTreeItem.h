@@ -18,7 +18,7 @@
 #pragma once
 
 #include "TreeItem.h"
-#include "MidiLayerOwner.h"
+#include "ProjectEventDispatcher.h"
 
 #include "TrackedItem.h"
 #include "Delta.h"
@@ -29,7 +29,7 @@ class InstrumentDescription;
 
 class LayerTreeItem :
     public TreeItem,
-    public MidiLayerOwner,
+    public ProjectEventDispatcher,
     public VCS::TrackedItem
 {
 public:
@@ -37,6 +37,10 @@ public:
     explicit LayerTreeItem(const String &name);
 
     ~LayerTreeItem() override;
+
+	String getXPath() const;
+
+	void setXPath(const String &path);
 
     bool isMuted() const;
     
@@ -60,14 +64,8 @@ public:
 
 
     //===------------------------------------------------------------------===//
-    // MidiLayerOwner
+    // ProjectEventDispatcher
     //===------------------------------------------------------------------===//
-
-    Transport *getTransport() const override;
-
-    String getXPath() const override;
-
-    void setXPath(const String &path) override;
 
     void onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
 

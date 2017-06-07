@@ -19,25 +19,21 @@
 
 class MidiEvent;
 class MidiLayer;
+class Pattern;
 class Transport;
 class ProjectTreeItem;
 
-// duplicates methods from ProjectListener :(
-// events pass this way:
-// note -> layer -> tree item(layer owner) -> project -> listeners
-class MidiLayerOwner
+// TODO rename methods
+// More TODOS:
+// Rename LayerTreeItem to MidiLayerTreeItem
+// Rename MidiLayer as MidiSequence, PianoSequence, AutomationSequence,
+// or as MidiTrack, PianoTrack, AutomationTrack, etc.
+
+class ProjectEventDispatcher
 {
 public:
 
-    static const String xPathSeparator;
-    
-    virtual ~MidiLayerOwner() {}
-
-    virtual Transport *getTransport() const = 0;
-
-    virtual String getXPath() const = 0; // i.e. "Main Part/Modulation/Arpeggio"
-
-    virtual void setXPath(const String &path) = 0;
+    virtual ~ProjectEventDispatcher() {}
 
     virtual void onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent) = 0;
 
@@ -50,8 +46,6 @@ public:
     virtual void onLayerChanged(const MidiLayer *layer) = 0;
 
     virtual void onBeatRangeChanged() = 0;
-
-    virtual void activateLayer(MidiLayer* layer, bool selectOthers, bool deselectOthers) {}
 
     virtual ProjectTreeItem *getProject() const { return nullptr; }
 

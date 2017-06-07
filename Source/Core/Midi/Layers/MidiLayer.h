@@ -18,9 +18,10 @@
 #pragma once
 
 #include "Serializable.h"
-#include "MidiLayerOwner.h"
 #include "MidiEvent.h"
 
+class ProjectTreeItem;
+class ProjectEventDispatcher;
 class LayerTreeItem;
 class UndoStack;
 
@@ -32,16 +33,9 @@ class MidiLayer : public Serializable
 {
 public:
 
-    explicit MidiLayer(MidiLayerOwner &parent);
+    explicit MidiLayer(ProjectEventDispatcher &parent);
     ~MidiLayer() override;
 
-    String getXPath() const;
-    MidiLayerOwner *getOwner() const;
-    
-    void allNotesOff();
-    void allSoundOff();
-    void allControllersOff();
-    
     enum DefaultControllers
     {
         sustainPedalController = 64,
@@ -132,8 +126,6 @@ public:
     // Misc
     //===------------------------------------------------------------------===//
 
-    void sendMidiMessage(const MidiMessage &message);
-
     String getInstrumentId() const noexcept;
     void setInstrumentId(const String &val);
 
@@ -176,7 +168,7 @@ private:
     mutable MidiMessageSequence cachedSequence;
     mutable bool cacheIsOutdated;
 
-    MidiLayerOwner &owner;
+    ProjectEventDispatcher &owner;
 
 private:
     

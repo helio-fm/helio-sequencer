@@ -336,7 +336,8 @@ void Transport::sendMidiMessage(const String &layerId, const MidiMessage &messag
 
 void Transport::allNotesAndControllersOff() const
 {
-    for (int c = 1; c <= 16; ++c)
+	const int c = 1;
+    //for (int c = 1; c <= 16; ++c)
     {
         const MidiMessage notesOff(MidiMessage::allNotesOff(c));
         const MidiMessage controllersOff(MidiMessage::allControllersOff(c));
@@ -363,8 +364,9 @@ void Transport::allNotesAndControllersOff() const
 
 void Transport::allNotesControllersAndSoundOff() const
 {
-    for (int c = 1; c <= 16; ++c)
-    {
+	const int c = 1;
+	//for (int c = 1; c <= 16; ++c)
+	{
         const MidiMessage notesOff(MidiMessage::allNotesOff(c));
         const MidiMessage soundOff(MidiMessage::allSoundOff(c));
         const MidiMessage controllersOff(MidiMessage::allControllersOff(c));

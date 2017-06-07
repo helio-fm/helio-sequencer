@@ -22,17 +22,14 @@
 
 #include "AnnotationsLayer.h"
 #include "TimeSignaturesLayer.h"
-#include "MidiLayerOwner.h"
+#include "ProjectEventDispatcher.h"
 #include "SerializationKeys.h"
 
 using namespace VCS;
 
-class EmptyLayerOwner : public MidiLayerOwner
+class EmptyEventDispatcher : public ProjectEventDispatcher
 {
 public:
-    Transport *getTransport() const override { return nullptr; }
-    String getXPath() const override { return ""; }
-    void setXPath(const String &path) override {}
     void onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent) override {}
     void onEventAdded(const MidiEvent &event) override {}
     void onEventRemoved(const MidiEvent &event) override {}
@@ -239,8 +236,8 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
 
 XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsAdded(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    AnnotationsLayer emptyLayer(emptyOwner);
+	EmptyEventDispatcher dispatcher;
+    AnnotationsLayer emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
     this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
@@ -277,8 +274,8 @@ XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsAdded(const XmlElement *st
 
 XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsRemoved(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    AnnotationsLayer emptyLayer(emptyOwner);
+	EmptyEventDispatcher dispatcher;
+    AnnotationsLayer emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
     this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
@@ -313,8 +310,8 @@ XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsRemoved(const XmlElement *
 
 XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsChanged(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    AnnotationsLayer emptyLayer(emptyOwner);
+	EmptyEventDispatcher dispatcher;
+    AnnotationsLayer emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
     this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
@@ -355,8 +352,8 @@ XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsChanged(const XmlElement *
 
 XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesAdded(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    TimeSignaturesLayer emptyLayer(emptyOwner);
+	EmptyEventDispatcher dispatcher;
+    TimeSignaturesLayer emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
     this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
@@ -393,8 +390,8 @@ XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesAdded(const XmlElement 
 
 XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesRemoved(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    TimeSignaturesLayer emptyLayer(emptyOwner);
+	EmptyEventDispatcher dispatcher;
+    TimeSignaturesLayer emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
     this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
@@ -429,8 +426,8 @@ XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesRemoved(const XmlElemen
 
 XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesChanged(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    TimeSignaturesLayer emptyLayer(emptyOwner);
+	EmptyEventDispatcher dispatcher;
+    TimeSignaturesLayer emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
     this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
@@ -472,8 +469,8 @@ XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesChanged(const XmlElemen
 
 Array<NewSerializedDelta> ProjectTimelineDiffLogic::createAnnotationsDiffs(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    AnnotationsLayer emptyLayer(emptyOwner);
+	EmptyEventDispatcher dispatcher;
+    AnnotationsLayer emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
 
@@ -579,8 +576,8 @@ Array<NewSerializedDelta> ProjectTimelineDiffLogic::createAnnotationsDiffs(const
 
 Array<NewSerializedDelta> ProjectTimelineDiffLogic::createTimeSignaturesDiffs(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    TimeSignaturesLayer emptyLayer(emptyOwner);
+	EmptyEventDispatcher dispatcher;
+    TimeSignaturesLayer emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
     

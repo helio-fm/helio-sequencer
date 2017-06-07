@@ -23,7 +23,7 @@
 #include "Note.h"
 #include "MidiEventComponentLasso.h"
 #include "MidiRollToolbox.h"
-
+#include "Transport.h"
 #include "App.h"
 #include "MainWindow.h"
 
@@ -232,7 +232,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
         
         if (shouldSendMidi)
         {
-            this->getNote().getLayer()->allNotesOff();
+			this->stopSound();
         }
 
         if (this->canResize() &&
@@ -523,8 +523,8 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             
             if (shouldSendMidi)
             {
-                this->getNote().getLayer()->allNotesOff();
-            }
+				this->stopSound();
+			}
             
             const MidiEventSelection::MultiLayerMap &selections = selection.getMultiLayerSelections();
             MidiEventSelection::MultiLayerMap::Iterator selectionsMapIterator(selections);
@@ -825,7 +825,7 @@ void NoteComponent::startDragging(const bool sendMidiMessage)
     
     if (sendMidiMessage)
     {
-        this->getNote().getLayer()->sendMidiMessage(MidiMessage::noteOn(1, this->getKey(), this->getVelocity()));
+        this->sendMidiMessage(MidiMessage::noteOn(1, this->getKey(), this->getVelocity()));
     }
 }
 
@@ -858,7 +858,7 @@ Note NoteComponent::continueDragging(float deltaBeat, int deltaKey, bool sendMid
 
     if (sendMidiMessage)
     {
-        this->getNote().getLayer()->sendMidiMessage(MidiMessage::noteOn(1, newKey, this->getVelocity()));
+        this->sendMidiMessage(MidiMessage::noteOn(1, newKey, this->getVelocity()));
     }
 
     return this->getNote().withKeyBeat(newKey, newBeat);
@@ -868,8 +868,8 @@ void NoteComponent::endDragging(bool sendMidiMessage)
 {
     if (sendMidiMessage)
     {
-        this->getNote().getLayer()->allNotesOff();
-    }
+		this->stopSound();
+	}
     
     this->roll.grabKeyboardFocus();
     this->state = None;
@@ -898,7 +898,7 @@ void NoteComponent::startResizingRight(bool sendMidiMessage)
     
     if (sendMidiMessage)
     {
-        this->getNote().getLayer()->sendMidiMessage(MidiMessage::noteOn(1, this->getKey(), this->getVelocity()));
+        this->sendMidiMessage(MidiMessage::noteOn(1, this->getKey(), this->getVelocity()));
     }
 }
 
@@ -927,8 +927,8 @@ Note NoteComponent::continueResizingRight(float deltaLength)
 
 void NoteComponent::endResizingRight()
 {
-    this->getNote().getLayer()->allNotesOff();
-    this->roll.grabKeyboardFocus();
+	this->stopSound();
+	this->roll.grabKeyboardFocus();
     this->state = None;
 }
 
@@ -945,7 +945,7 @@ void NoteComponent::startResizingLeft(bool sendMidiMessage)
     
     if (sendMidiMessage)
     {
-        this->getNote().getLayer()->sendMidiMessage(MidiMessage::noteOn(1, this->getKey(), this->getVelocity()));
+        this->sendMidiMessage(MidiMessage::noteOn(1, this->getKey(), this->getVelocity()));
     }
 }
 
@@ -973,7 +973,7 @@ Note NoteComponent::continueResizingLeft(float deltaLength)
 
 void NoteComponent::endResizingLeft()
 {
-    this->getNote().getLayer()->allNotesOff();
+    this->stopSound();
     this->roll.grabKeyboardFocus();
     this->state = None;
 }
@@ -1134,4 +1134,19 @@ void NoteComponent::checkpointIfNeeded()
         this->midiEvent.getLayer()->checkpoint();
         this->firstChangeDone = true;
     }
+}
+
+//===----------------------------------------------------------------------===//
+// Shorthands
+//===----------------------------------------------------------------------===//
+
+void NoteComponent::stopSound()
+{
+	this->getRoll().getTransport().allNotesControllersAndSoundOff();
+}
+
+void NoteComponent::sendMidiMessage(const MidiMessage &message)
+{
+	const String layerId = this->getNote().getLayer()->getLayerIdAsString();
+	this->getRoll().getTransport().sendMidiMessage(layerId, message);
 }
