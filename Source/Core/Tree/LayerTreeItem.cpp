@@ -63,7 +63,7 @@ LayerTreeItem::~LayerTreeItem()
     {
         this->removeItemFromParent();
         this->lastFoundParent->hideEditor(this->layer, this);
-        this->lastFoundParent->broadcastLayerRemoved(this->layer);
+        this->lastFoundParent->broadcastRemoveLayer(this->layer);
         LayerGroupTreeItem::removeAllEmptyGroupsInProject(this->lastFoundParent);
     }
 }
@@ -249,53 +249,89 @@ void LayerTreeItem::setXPath(const String &path)
     }
 }
 
-void LayerTreeItem::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void LayerTreeItem::dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     if (this->lastFoundParent != nullptr)
     {
-        this->lastFoundParent->broadcastEventChanged(oldEvent, newEvent);
+        this->lastFoundParent->broadcastChangeEvent(oldEvent, newEvent);
     }
 }
 
-void LayerTreeItem::onEventAdded(const MidiEvent &event)
+void LayerTreeItem::dispatchAddEvent(const MidiEvent &event)
 {
     if (this->lastFoundParent != nullptr)
     {
-        this->lastFoundParent->broadcastEventAdded(event);
+        this->lastFoundParent->broadcastAddEvent(event);
     }
 }
 
-void LayerTreeItem::onEventRemoved(const MidiEvent &event)
+void LayerTreeItem::dispatchRemoveEvent(const MidiEvent &event)
 {
     if (this->lastFoundParent != nullptr)
     {
-        this->lastFoundParent->broadcastEventRemoved(event);
+        this->lastFoundParent->broadcastRemoveEvent(event);
     }
 }
 
-void LayerTreeItem::onEventRemovedPostAction(const MidiLayer *layer)
+void LayerTreeItem::dispatchPostRemoveEvent(const MidiLayer *layer)
 {
     if (this->lastFoundParent != nullptr)
     {
-        this->lastFoundParent->broadcastEventRemovedPostAction(layer);
+		this->lastFoundParent->broadcastPostRemoveEvent(layer);
     }
 }
 
-void LayerTreeItem::onLayerChanged(const MidiLayer *layer)
+void LayerTreeItem::dispatchReloadTrack(const MidiLayer *layer)
 {
     if (this->lastFoundParent != nullptr)
     {
-        this->lastFoundParent->broadcastLayerChanged(layer);
+        this->lastFoundParent->broadcastChangeLayer(layer);
         this->repaintItem(); // if colour changed
     }
 }
 
-void LayerTreeItem::onBeatRangeChanged()
+void LayerTreeItem::dispatchChangeTrackBeatRange()
 {
     if (this->lastFoundParent != nullptr)
     {
-        this->lastFoundParent->broadcastBeatRangeChanged();
+        this->lastFoundParent->broadcastChangeProjectBeatRange();
     }
+}
+
+
+void LayerTreeItem::dispatchAddClip(const Clip &clip)
+{
+	// TODO
+}
+
+
+void LayerTreeItem::dispatchChangeClip(const Clip &oldClip, const Clip &newClip)
+{
+	// TODO
+}
+
+
+void LayerTreeItem::dispatchRemoveClip(const Clip &clip)
+{
+	// TODO
+}
+
+
+void LayerTreeItem::dispatchPostRemoveClip(const Pattern *pattern)
+{
+	// TODO
+}
+
+
+void LayerTreeItem::dispatchReloadPattern(const Pattern *pattern)
+{
+	// TODO
+}
+
+
+void LayerTreeItem::dispatchChangePatternBeatRange()
+{
+	// TODO
 }
 
 ProjectTreeItem *LayerTreeItem::getProject() const
@@ -320,7 +356,7 @@ void LayerTreeItem::onItemMoved()
 {
     if (this->lastFoundParent)
     {
-        this->lastFoundParent->broadcastLayerMoved(this->layer);
+        this->lastFoundParent->broadcastMoveLayer(this->layer);
         this->lastFoundParent->updateActiveGroupEditors();
     }
 
@@ -333,12 +369,12 @@ void LayerTreeItem::onItemMoved()
     {
         if (this->lastFoundParent)
         {
-            this->lastFoundParent->broadcastLayerRemoved(this->layer);
+            this->lastFoundParent->broadcastRemoveLayer(this->layer);
         }
 
         if (newParent)
         {
-            newParent->broadcastLayerAdded(this->layer);
+            newParent->broadcastAddLayer(this->layer);
             newParent->updateActiveGroupEditors();
         }
 

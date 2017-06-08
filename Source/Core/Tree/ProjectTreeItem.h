@@ -193,25 +193,18 @@ public:
     // Broadcaster
     //===------------------------------------------------------------------===//
 
-    void broadcastEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent);
+    void broadcastChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent);
+    void broadcastAddEvent(const MidiEvent &event);
+    void broadcastRemoveEvent(const MidiEvent &event);
+	void broadcastPostRemoveEvent(const MidiLayer *layer);
 
-    void broadcastEventAdded(const MidiEvent &event);
+    void broadcastChangeLayer(const MidiLayer *layer);
+	void broadcastMoveLayer(const MidiLayer *layer);
+	void broadcastAddLayer(const MidiLayer *layer);
+    void broadcastRemoveLayer(const MidiLayer *layer);
 
-    void broadcastEventRemoved(const MidiEvent &event);
-
-    void broadcastEventRemovedPostAction(const MidiLayer *layer);
-
-    void broadcastLayerChanged(const MidiLayer *layer);
-
-    void broadcastLayerAdded(const MidiLayer *layer);
-
-    void broadcastLayerRemoved(const MidiLayer *layer);
-
-    void broadcastLayerMoved(const MidiLayer *layer);
-
-    void broadcastInfoChanged(const ProjectInfo *info);
-
-    void broadcastBeatRangeChanged();
+    void broadcastChangeProjectInfo(const ProjectInfo *info);
+    void broadcastChangeProjectBeatRange();
 
 
     //===------------------------------------------------------------------===//

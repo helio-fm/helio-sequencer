@@ -207,7 +207,7 @@ void MidiLayer::setMuted(bool shouldBeMuted)
     if (this->muted != shouldBeMuted)
     {
         this->muted = shouldBeMuted;
-        this->owner.onLayerChanged(this);
+        this->owner.dispatchReloadTrack(this);
     }
 }
 
@@ -239,37 +239,37 @@ UndoStack *MidiLayer::getUndoStack()
 void MidiLayer::notifyEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     this->cacheIsOutdated = true;
-    this->owner.onEventChanged(oldEvent, newEvent);
+    this->owner.dispatchChangeEvent(oldEvent, newEvent);
 }
 
 void MidiLayer::notifyEventAdded(const MidiEvent &event)
 {
     this->cacheIsOutdated = true;
-    this->owner.onEventAdded(event);
+    this->owner.dispatchAddEvent(event);
 }
 
 void MidiLayer::notifyEventRemoved(const MidiEvent &event)
 {
     this->cacheIsOutdated = true;
-    this->owner.onEventRemoved(event);
+    this->owner.dispatchRemoveEvent(event);
 }
 
 void MidiLayer::notifyEventRemovedPostAction()
 {
     this->cacheIsOutdated = true;
-    this->owner.onEventRemovedPostAction(this);
+    this->owner.dispatchPostRemoveEvent(this);
 }
 
 void MidiLayer::notifyLayerChanged()
 {
     this->cacheIsOutdated = true;
-    this->owner.onLayerChanged(this);
+    this->owner.dispatchReloadTrack(this);
 }
 
 void MidiLayer::notifyBeatRangeChanged()
 {
     //this->cacheIsOutdated = true;
-    this->owner.onBeatRangeChanged();
+    this->owner.dispatchChangeTrackBeatRange();
 }
 
 void MidiLayer::updateBeatRange(bool shouldNotifyIfChanged)
@@ -300,7 +300,7 @@ void MidiLayer::setInstrumentId(const String &val)
     if (this->instrumentId != val)
     {
         this->instrumentId = val;
-        this->owner.onLayerChanged(this);
+        this->owner.dispatchReloadTrack(this);
     }
 }
 

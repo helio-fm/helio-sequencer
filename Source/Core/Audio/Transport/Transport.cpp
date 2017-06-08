@@ -479,7 +479,7 @@ void Transport::onEventRemovedPostAction(const MidiLayer *layer)
     if (this->player->isThreadRunning())
     { this->stopPlayback(); }
     
-    // a hack
+    // a hack to re-calculate length and current time
     if (layer->getControllerNumber() == MidiLayer::tempoController)
     {
         this->seekToPosition(this->getSeekPosition());

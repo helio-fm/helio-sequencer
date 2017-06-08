@@ -62,15 +62,21 @@ public:
     // ProjectEventDispatcher
     //===------------------------------------------------------------------===//
     
-    void onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
-    
-    void onEventAdded(const MidiEvent &event) override;
-    
-    void onEventRemoved(const MidiEvent &event) override;
-    
-    void onLayerChanged(const MidiLayer *layer) override;
-    
-    void onBeatRangeChanged() override;
+    void dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
+    void dispatchAddEvent(const MidiEvent &event) override;
+    void dispatchRemoveEvent(const MidiEvent &event) override;
+	void dispatchPostRemoveEvent(const MidiLayer *layer) override;
+
+    void dispatchReloadTrack(const MidiLayer *layer) override;
+    void dispatchChangeTrackBeatRange() override;
+
+	void dispatchAddClip(const Clip &clip) override;
+	void dispatchChangeClip(const Clip &oldClip, const Clip &newClip) override;
+	void dispatchRemoveClip(const Clip &clip) override;
+	void dispatchPostRemoveClip(const Pattern *pattern) override;
+
+	void dispatchReloadPattern(const Pattern *pattern) override;
+	void dispatchChangePatternBeatRange() override;
 
     ProjectTreeItem *getProject() const override;
     

@@ -303,7 +303,7 @@ void ProjectTreeItem::recreatePage()
         this->projectSettings = new ProjectPageDefault(*this);
     }
     
-    this->broadcastBeatRangeChanged(); // let rolls update themselves
+    this->broadcastChangeProjectBeatRange(); // let rolls update themselves
     this->loadPageState();
 }
 
@@ -481,7 +481,7 @@ Component *ProjectTreeItem::createItemMenu()
 
 void ProjectTreeItem::onItemMoved()
 {
-    this->broadcastInfoChanged(this->info);
+    this->broadcastChangeProjectInfo(this->info);
 }
 
 bool ProjectTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
@@ -667,7 +667,7 @@ void ProjectTreeItem::load(const XmlElement &xml)
 
     TreeItemChildrenSerializer::deserializeChildren(*this, *root);
 
-    this->broadcastBeatRangeChanged();
+    this->broadcastChangeProjectBeatRange();
 
     //this->transport->deserialize(*root); // todo
 
@@ -710,7 +710,7 @@ void ProjectTreeItem::importMidi(File &file)
         layer->importMidi(*currentTrack);
     }
     
-    this->broadcastBeatRangeChanged();
+    this->broadcastChangeProjectBeatRange();
     this->getDocument()->save();
 }
 
@@ -741,38 +741,38 @@ void ProjectTreeItem::removeAllListeners()
 // Broadcaster
 //===----------------------------------------------------------------------===//
 
-void ProjectTreeItem::broadcastEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void ProjectTreeItem::broadcastChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     //if (this->changeListeners.size() == 0) { return; }
     this->changeListeners.call(&ProjectListener::onEventChanged, oldEvent, newEvent);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastEventAdded(const MidiEvent &event)
+void ProjectTreeItem::broadcastAddEvent(const MidiEvent &event)
 {
     this->changeListeners.call(&ProjectListener::onEventAdded, event);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastEventRemoved(const MidiEvent &event)
+void ProjectTreeItem::broadcastRemoveEvent(const MidiEvent &event)
 {
     this->changeListeners.call(&ProjectListener::onEventRemoved, event);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastEventRemovedPostAction(const MidiLayer *layer)
+void ProjectTreeItem::broadcastPostRemoveEvent(const MidiLayer *layer)
 {
     this->changeListeners.call(&ProjectListener::onEventRemovedPostAction, layer);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastLayerChanged(const MidiLayer *layer)
+void ProjectTreeItem::broadcastChangeLayer(const MidiLayer *layer)
 {
     this->changeListeners.call(&ProjectListener::onLayerChanged, layer);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastLayerAdded(const MidiLayer *layer)
+void ProjectTreeItem::broadcastAddLayer(const MidiLayer *layer)
 {
     this->isLayersHashOutdated = true;
     this->registerVcsItem(layer);
@@ -780,7 +780,7 @@ void ProjectTreeItem::broadcastLayerAdded(const MidiLayer *layer)
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastLayerRemoved(const MidiLayer *layer)
+void ProjectTreeItem::broadcastRemoveLayer(const MidiLayer *layer)
 {
     this->isLayersHashOutdated = true;
     this->unregisterVcsItem(layer);
@@ -788,19 +788,19 @@ void ProjectTreeItem::broadcastLayerRemoved(const MidiLayer *layer)
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastLayerMoved(const MidiLayer *layer)
+void ProjectTreeItem::broadcastMoveLayer(const MidiLayer *layer)
 {
     this->changeListeners.call(&ProjectListener::onLayerMoved, layer);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastInfoChanged(const ProjectInfo *info)
+void ProjectTreeItem::broadcastChangeProjectInfo(const ProjectInfo *info)
 {
     this->changeListeners.call(&ProjectListener::onInfoChanged, info);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastBeatRangeChanged()
+void ProjectTreeItem::broadcastChangeProjectBeatRange()
 {
     const Point<float> &beatRange = this->getTrackRangeInBeats();
     const float &firstBeat = beatRange.getX();

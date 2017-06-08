@@ -29,24 +29,17 @@ public:
 
     virtual ~ProjectListener() {}
 
-    virtual void onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent) = 0;
-
-    virtual void onEventAdded(const MidiEvent &event) = 0;
-
+	virtual void onEventAdded(const MidiEvent &event) = 0;
+	virtual void onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent) = 0;
     virtual void onEventRemoved(const MidiEvent &event) = 0; // вызывается прямо перед удалением события
-
-    virtual void onEventRemovedPostAction(const MidiLayer *layer) {} // вызывается после удаления события, надо будет переименовать эти методы по-человечески
-
-    virtual void onLayerChanged(const MidiLayer *layer) = 0;
+	virtual void onEventRemovedPostAction(const MidiLayer *layer) {} // вызывается после удаления события, надо будет переименовать эти методы по-человечески
 
     virtual void onLayerAdded(const MidiLayer *layer) = 0;
-
-    virtual void onLayerRemoved(const MidiLayer *layer) = 0; // вызывается прямо перед удалением слоя
+	virtual void onLayerChanged(const MidiLayer *layer) = 0;
+	virtual void onLayerMoved(const MidiLayer *layer) {} // этот метод нужен далеко не всем
+	virtual void onLayerRemoved(const MidiLayer *layer) = 0; // вызывается прямо перед удалением слоя
     
-    virtual void onLayerMoved(const MidiLayer *layer) {} // этот метод нужен далеко не всем
-
     virtual void onInfoChanged(const ProjectInfo *info) {} // этот метод нужен далеко не всем
-
     virtual void onProjectBeatRangeChanged(float firstBeat, float lastBeat) = 0;
 
 };

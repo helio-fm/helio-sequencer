@@ -119,7 +119,7 @@ void RootTreeItem::importMidi(File &file)
     //this->addAutoLayer(project, "Tempo", 81);
 
     // todo сохранить по умолчанию рядом - или куда?
-    project->broadcastBeatRangeChanged();
+    project->broadcastChangeProjectBeatRange();
     project->getDocument()->save();
     App::Workspace().sendChangeMessage();
 }
@@ -256,7 +256,7 @@ ProjectTreeItem *RootTreeItem::createDefaultProjectChildren(ProjectTreeItem *new
 //#endif
     
     newProject->getDocument()->save();
-    newProject->broadcastBeatRangeChanged();
+    newProject->broadcastChangeProjectBeatRange();
     
     // notify recent files list
     App::Workspace().getRecentFilesList().

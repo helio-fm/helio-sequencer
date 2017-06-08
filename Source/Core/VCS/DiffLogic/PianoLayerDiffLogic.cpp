@@ -27,17 +27,6 @@
 
 using namespace VCS;
 
-class EmptyEventDispatcher : public ProjectEventDispatcher
-{
-public:
-    void onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent) override {}
-    void onEventAdded(const MidiEvent &event) override {}
-    void onEventRemoved(const MidiEvent &event) override {}
-    void onLayerChanged(const MidiLayer *layer) override {}
-    void onBeatRangeChanged() override {}
-};
-
-
 PianoLayerDiffLogic::PianoLayerDiffLogic(TrackedItem &targetItem) :
     DiffLogic(targetItem)
 {

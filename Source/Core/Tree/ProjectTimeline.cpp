@@ -36,14 +36,14 @@ ProjectTimeline::ProjectTimeline(ProjectTreeItem &parentProject,
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectTimelineDeltas::annotationsAdded));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectTimelineDeltas::timeSignaturesAdded));
     
-    this->project.broadcastLayerAdded(this->annotations);
-    this->project.broadcastLayerAdded(this->timeSignatures);
+    this->project.broadcastAddLayer(this->annotations);
+    this->project.broadcastAddLayer(this->timeSignatures);
 }
 
 ProjectTimeline::~ProjectTimeline()
 {
-    this->project.broadcastLayerRemoved(this->timeSignatures);
-    this->project.broadcastLayerRemoved(this->annotations);
+    this->project.broadcastRemoveLayer(this->timeSignatures);
+    this->project.broadcastRemoveLayer(this->annotations);
 }
 
 
@@ -137,29 +137,65 @@ void ProjectTimeline::resetStateTo(const VCS::TrackedItem &newState)
 // ProjectEventDispatcher
 //===----------------------------------------------------------------------===//
 
-void ProjectTimeline::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void ProjectTimeline::dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    this->project.broadcastEventChanged(oldEvent, newEvent);
+    this->project.broadcastChangeEvent(oldEvent, newEvent);
 }
 
-void ProjectTimeline::onEventAdded(const MidiEvent &event)
+void ProjectTimeline::dispatchAddEvent(const MidiEvent &event)
 {
-    this->project.broadcastEventAdded(event);
+    this->project.broadcastAddEvent(event);
 }
 
-void ProjectTimeline::onEventRemoved(const MidiEvent &event)
+void ProjectTimeline::dispatchRemoveEvent(const MidiEvent &event)
 {
-    this->project.broadcastEventRemoved(event);
+    this->project.broadcastRemoveEvent(event);
 }
 
-void ProjectTimeline::onLayerChanged(const MidiLayer *midiLayer)
+void ProjectTimeline::dispatchPostRemoveEvent(const MidiLayer *layer)
 {
-    this->project.broadcastLayerChanged(midiLayer);
+	this->project.broadcastPostRemoveEvent(layer);
 }
 
-void ProjectTimeline::onBeatRangeChanged()
+void ProjectTimeline::dispatchReloadTrack(const MidiLayer *midiLayer)
 {
-    this->project.broadcastBeatRangeChanged();
+    this->project.broadcastChangeLayer(midiLayer);
+}
+
+void ProjectTimeline::dispatchChangeTrackBeatRange()
+{
+    this->project.broadcastChangeProjectBeatRange();
+}
+
+
+void ProjectTimeline::dispatchAddClip(const Clip &clip)
+{
+	// TODO
+}
+
+void ProjectTimeline::dispatchChangeClip(const Clip &oldClip, const Clip &newClip)
+{
+	// TODO
+}
+
+void ProjectTimeline::dispatchRemoveClip(const Clip &clip)
+{
+	// TODO
+}
+
+void ProjectTimeline::dispatchPostRemoveClip(const Pattern *pattern)
+{
+	// TODO
+}
+
+void ProjectTimeline::dispatchReloadPattern(const Pattern *pattern)
+{
+	// TODO
+}
+
+void ProjectTimeline::dispatchChangePatternBeatRange()
+{
+	// TODO
 }
 
 ProjectTreeItem *ProjectTimeline::getProject() const

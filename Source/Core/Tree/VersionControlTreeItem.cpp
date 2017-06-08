@@ -225,7 +225,7 @@ void VersionControlTreeItem::changeListenerCallback(ChangeBroadcaster *source)
                     }
                     
                     parentProject->getDocument()->save();
-                    parentProject->broadcastBeatRangeChanged();
+                    parentProject->broadcastChangeProjectBeatRange();
                     
                     // notify recent files list
                     App::Workspace().getRecentFilesList().
