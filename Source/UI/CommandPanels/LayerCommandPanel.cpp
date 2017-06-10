@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "LayerCommandPanel.h"
-#include "LayerTreeItem.h"
+#include "MidiLayerTreeItem.h"
 #include "PianoLayerTreeItem.h"
 #include "Icons.h"
 #include "CommandIDs.h"
@@ -42,7 +42,7 @@
 #include "Workspace.h"
 #include "App.h"
 
-LayerCommandPanel::LayerCommandPanel(LayerTreeItem &parentLayer) :
+LayerCommandPanel::LayerCommandPanel(MidiLayerTreeItem &parentLayer) :
     layerItem(parentLayer)
 {
     this->initDefaultCommands();

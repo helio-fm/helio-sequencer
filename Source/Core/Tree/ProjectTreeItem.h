@@ -199,7 +199,6 @@ public:
 	void broadcastPostRemoveEvent(const MidiLayer *layer);
 
     void broadcastChangeLayer(const MidiLayer *layer);
-	void broadcastMoveLayer(const MidiLayer *layer);
 	void broadcastAddLayer(const MidiLayer *layer);
     void broadcastRemoveLayer(const MidiLayer *layer);
 

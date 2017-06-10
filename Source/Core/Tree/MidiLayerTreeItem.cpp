@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "LayerTreeItem.h"
+#include "MidiLayerTreeItem.h"
 #include "LayerGroupTreeItem.h"
 
 #include "TreeItemChildrenSerializer.h"
@@ -35,7 +35,7 @@
 
 #include "LayerCommandPanel.h"
 
-LayerTreeItem::LayerTreeItem(const String &name) :
+MidiLayerTreeItem::MidiLayerTreeItem(const String &name) :
     TreeItem(name)
 {
     //if (type == LayerTreeItem::Piano)
@@ -55,7 +55,7 @@ LayerTreeItem::LayerTreeItem(const String &name) :
     // т.к. при создании слой еще ни к кому не приаттачен
 }
 
-LayerTreeItem::~LayerTreeItem()
+MidiLayerTreeItem::~MidiLayerTreeItem()
 {
     this->lastFoundParent = this->findParentOfType<ProjectTreeItem>();
     
@@ -69,17 +69,17 @@ LayerTreeItem::~LayerTreeItem()
 }
 
 
-bool LayerTreeItem::isMuted() const
+bool MidiLayerTreeItem::isMuted() const
 {
     return this->getLayer()->isMuted();
 }
 
-Colour LayerTreeItem::getColour() const
+Colour MidiLayerTreeItem::getColour() const
 {
     return this->layer->getColour().interpolatedWith(Colours::white, 0.4f);
 }
 
-void LayerTreeItem::showPage()
+void MidiLayerTreeItem::showPage()
 {
     if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
     {
@@ -87,7 +87,7 @@ void LayerTreeItem::showPage()
     }
 }
 
-void LayerTreeItem::onRename(const String &newName)
+void MidiLayerTreeItem::onRename(const String &newName)
 {
 //    TreeItem::onRename(newName);
 //    this->setXPath(this->getXPath()); // this performs sorting layers
@@ -112,7 +112,7 @@ void LayerTreeItem::onRename(const String &newName)
     TreeItem::notifySubtreeMoved(this); // сделать это default логикой для всех типов нодов?
 }
 
-void LayerTreeItem::importMidi(const MidiMessageSequence &sequence)
+void MidiLayerTreeItem::importMidi(const MidiMessageSequence &sequence)
 {
     this->layer->importMidi(sequence);
 }
@@ -123,7 +123,7 @@ void LayerTreeItem::importMidi(const MidiMessageSequence &sequence)
 // VCS::TrackedItem
 //===----------------------------------------------------------------------===//
 
-String LayerTreeItem::getVCSName() const
+String MidiLayerTreeItem::getVCSName() const
 {
     return this->getXPath();
 }
@@ -133,7 +133,7 @@ String LayerTreeItem::getVCSName() const
 // ProjectEventDispatcher
 //===----------------------------------------------------------------------===//
 
-String LayerTreeItem::getXPath() const
+String MidiLayerTreeItem::getXPath() const
 {
     const TreeViewItem *rootItem = this;
     String xpath = this->getName();
@@ -152,7 +152,7 @@ String LayerTreeItem::getXPath() const
     return xpath;
 }
 
-void LayerTreeItem::setXPath(const String &path)
+void MidiLayerTreeItem::setXPath(const String &path)
 {
     if (path == this->getXPath())
     {
@@ -216,7 +216,7 @@ void LayerTreeItem::setXPath(const String &path)
         {
             currentChildName = layerGroupItem->getName();
         }
-        else if (LayerTreeItem *layerItem = dynamic_cast<LayerTreeItem *>(rootItem->getSubItem(i)))
+        else if (MidiLayerTreeItem *layerItem = dynamic_cast<MidiLayerTreeItem *>(rootItem->getSubItem(i)))
         {
             currentChildName = layerItem->getName();
         }
@@ -249,7 +249,7 @@ void LayerTreeItem::setXPath(const String &path)
     }
 }
 
-void LayerTreeItem::dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void MidiLayerTreeItem::dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     if (this->lastFoundParent != nullptr)
     {
@@ -257,7 +257,7 @@ void LayerTreeItem::dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEve
     }
 }
 
-void LayerTreeItem::dispatchAddEvent(const MidiEvent &event)
+void MidiLayerTreeItem::dispatchAddEvent(const MidiEvent &event)
 {
     if (this->lastFoundParent != nullptr)
     {
@@ -265,7 +265,7 @@ void LayerTreeItem::dispatchAddEvent(const MidiEvent &event)
     }
 }
 
-void LayerTreeItem::dispatchRemoveEvent(const MidiEvent &event)
+void MidiLayerTreeItem::dispatchRemoveEvent(const MidiEvent &event)
 {
     if (this->lastFoundParent != nullptr)
     {
@@ -273,7 +273,7 @@ void LayerTreeItem::dispatchRemoveEvent(const MidiEvent &event)
     }
 }
 
-void LayerTreeItem::dispatchPostRemoveEvent(const MidiLayer *layer)
+void MidiLayerTreeItem::dispatchPostRemoveEvent(const MidiLayer *layer)
 {
     if (this->lastFoundParent != nullptr)
     {
@@ -281,7 +281,7 @@ void LayerTreeItem::dispatchPostRemoveEvent(const MidiLayer *layer)
     }
 }
 
-void LayerTreeItem::dispatchReloadTrack(const MidiLayer *layer)
+void MidiLayerTreeItem::dispatchReloadLayer(const MidiLayer *layer)
 {
     if (this->lastFoundParent != nullptr)
     {
@@ -290,7 +290,7 @@ void LayerTreeItem::dispatchReloadTrack(const MidiLayer *layer)
     }
 }
 
-void LayerTreeItem::dispatchChangeTrackBeatRange()
+void MidiLayerTreeItem::dispatchChangeLayerBeatRange()
 {
     if (this->lastFoundParent != nullptr)
     {
@@ -299,42 +299,42 @@ void LayerTreeItem::dispatchChangeTrackBeatRange()
 }
 
 
-void LayerTreeItem::dispatchAddClip(const Clip &clip)
+void MidiLayerTreeItem::dispatchAddClip(const Clip &clip)
 {
 	// TODO
 }
 
 
-void LayerTreeItem::dispatchChangeClip(const Clip &oldClip, const Clip &newClip)
+void MidiLayerTreeItem::dispatchChangeClip(const Clip &oldClip, const Clip &newClip)
 {
 	// TODO
 }
 
 
-void LayerTreeItem::dispatchRemoveClip(const Clip &clip)
+void MidiLayerTreeItem::dispatchRemoveClip(const Clip &clip)
 {
 	// TODO
 }
 
 
-void LayerTreeItem::dispatchPostRemoveClip(const Pattern *pattern)
+void MidiLayerTreeItem::dispatchPostRemoveClip(const Pattern *pattern)
 {
 	// TODO
 }
 
 
-void LayerTreeItem::dispatchReloadPattern(const Pattern *pattern)
+void MidiLayerTreeItem::dispatchReloadPattern(const Pattern *pattern)
 {
 	// TODO
 }
 
 
-void LayerTreeItem::dispatchChangePatternBeatRange()
+void MidiLayerTreeItem::dispatchChangePatternBeatRange()
 {
 	// TODO
 }
 
-ProjectTreeItem *LayerTreeItem::getProject() const
+ProjectTreeItem *MidiLayerTreeItem::getProject() const
 {
     return this->lastFoundParent;
 }
@@ -344,7 +344,7 @@ ProjectTreeItem *LayerTreeItem::getProject() const
 // Dragging
 //===----------------------------------------------------------------------===//
 
-var LayerTreeItem::getDragSourceDescription()
+var MidiLayerTreeItem::getDragSourceDescription()
 {
     if (this->isCompactMode())
     { return var::null; }
@@ -352,12 +352,12 @@ var LayerTreeItem::getDragSourceDescription()
     return Serialization::Core::layer;
 }
 
-void LayerTreeItem::onItemMoved()
+void MidiLayerTreeItem::onItemMoved()
 {
     if (this->lastFoundParent)
     {
-        this->lastFoundParent->broadcastMoveLayer(this->layer);
         this->lastFoundParent->updateActiveGroupEditors();
+        this->lastFoundParent->sendChangeMessage();
     }
 
     ProjectTreeItem *newParent = this->findParentOfType<ProjectTreeItem>();
@@ -387,7 +387,7 @@ void LayerTreeItem::onItemMoved()
     }
 }
 
-bool LayerTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
+bool MidiLayerTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
     bool isInterested = (dragSourceDetails.description == Serialization::Core::instrument);
 
@@ -397,7 +397,7 @@ bool LayerTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDeta
     return isInterested;
 }
 
-void LayerTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
+void MidiLayerTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
 {
     if (TreeView *treeView = dynamic_cast<TreeView *>(dragSourceDetails.sourceComponent.get()))
     {
@@ -417,7 +417,7 @@ void LayerTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSour
 // Menu
 //===----------------------------------------------------------------------===//
 
-Component *LayerTreeItem::createItemMenu()
+Component *MidiLayerTreeItem::createItemMenu()
 {
     return new LayerCommandPanel(*this);
 }

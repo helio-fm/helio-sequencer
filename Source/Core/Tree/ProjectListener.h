@@ -19,6 +19,8 @@
 
 class MidiEvent;
 class MidiLayer;
+class Pattern;
+class Clip;
 class ProjectInfo;
 
 class ProjectListener
@@ -29,17 +31,25 @@ public:
 
     virtual ~ProjectListener() {}
 
-	virtual void onEventAdded(const MidiEvent &event) = 0;
-	virtual void onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent) = 0;
-    virtual void onEventRemoved(const MidiEvent &event) = 0; // вызывается прямо перед удалением события
-	virtual void onEventRemovedPostAction(const MidiLayer *layer) {} // вызывается после удаления события, надо будет переименовать эти методы по-человечески
+	virtual void onAddMidiEvent(const MidiEvent &event) = 0;
+	virtual void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) = 0;
+    virtual void onRemoveMidiEvent(const MidiEvent &event) = 0;
+	virtual void onPostRemoveMidiEvent(const MidiLayer *layer) {}
 
-    virtual void onLayerAdded(const MidiLayer *layer) = 0;
-	virtual void onLayerChanged(const MidiLayer *layer) = 0;
-	virtual void onLayerMoved(const MidiLayer *layer) {} // этот метод нужен далеко не всем
-	virtual void onLayerRemoved(const MidiLayer *layer) = 0; // вызывается прямо перед удалением слоя
+    virtual void onAddMidiLayer(const MidiLayer *layer) = 0;
+	virtual void onChangeMidiLayer(const MidiLayer *layer) = 0;
+	virtual void onRemoveMidiLayer(const MidiLayer *layer) = 0;
     
-    virtual void onInfoChanged(const ProjectInfo *info) {} // этот метод нужен далеко не всем
-    virtual void onProjectBeatRangeChanged(float firstBeat, float lastBeat) = 0;
+    virtual void onAddClip(const Clip &clip) {}
+    virtual void onChangeClip(const Clip &oldClip, const Clip &newClip) {}
+    virtual void onRemoveClip(const Clip &clip) {}
+    virtual void onPostRemoveClip(const Pattern *pattern) {}
+
+    virtual void onAddPattern(const Pattern *pattern) {}
+    virtual void onChangePattern(const Pattern *pattern) {}
+    virtual void onRemovePattern(const Pattern *pattern) {}
+
+    virtual void onChangeProjectInfo(const ProjectInfo *info) {}
+    virtual void onChangeProjectBeatRange(float firstBeat, float lastBeat) = 0;
 
 };

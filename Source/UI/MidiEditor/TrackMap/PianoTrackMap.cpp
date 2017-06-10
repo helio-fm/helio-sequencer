@@ -126,7 +126,7 @@ void PianoTrackMap::resized()
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-void PianoTrackMap::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void PianoTrackMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     if (!dynamic_cast<const Note *>(&oldEvent)) { return; }
 
@@ -144,7 +144,7 @@ void PianoTrackMap::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &n
     }
 }
 
-void PianoTrackMap::onEventAdded(const MidiEvent &event)
+void PianoTrackMap::onAddMidiEvent(const MidiEvent &event)
 {
     if (!dynamic_cast<const Note *>(&event)) { return; }
 
@@ -161,7 +161,7 @@ void PianoTrackMap::onEventAdded(const MidiEvent &event)
     this->componentsHashTable.set(note, component);
 }
 
-void PianoTrackMap::onEventRemoved(const MidiEvent &event)
+void PianoTrackMap::onRemoveMidiEvent(const MidiEvent &event)
 {
     if (!dynamic_cast<const Note *>(&event)) { return; }
 
@@ -176,14 +176,14 @@ void PianoTrackMap::onEventRemoved(const MidiEvent &event)
     }
 }
 
-void PianoTrackMap::onLayerChanged(const MidiLayer *layer)
+void PianoTrackMap::onChangeMidiLayer(const MidiLayer *layer)
 {
     if (!dynamic_cast<const PianoLayer *>(layer)) { return; }
 
     this->reloadTrackMap();
 }
 
-void PianoTrackMap::onLayerAdded(const MidiLayer *layer)
+void PianoTrackMap::onAddMidiLayer(const MidiLayer *layer)
 {
     if (!dynamic_cast<const PianoLayer *>(layer)) { return; }
 
@@ -193,7 +193,7 @@ void PianoTrackMap::onLayerAdded(const MidiLayer *layer)
     }
 }
 
-void PianoTrackMap::onLayerRemoved(const MidiLayer *layer)
+void PianoTrackMap::onRemoveMidiLayer(const MidiLayer *layer)
 {
     if (!dynamic_cast<const PianoLayer *>(layer)) { return; }
 
@@ -210,7 +210,7 @@ void PianoTrackMap::onLayerRemoved(const MidiLayer *layer)
     }
 }
 
-void PianoTrackMap::onProjectBeatRangeChanged(float firstBeat, float lastBeat)
+void PianoTrackMap::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;

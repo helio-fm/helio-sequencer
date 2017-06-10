@@ -242,7 +242,7 @@ float TriggersTrackMap::getBeatByXPosition(int x) const
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-void TriggersTrackMap::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void TriggersTrackMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     if (newEvent.getLayer() == this->layer)
     {
@@ -297,7 +297,7 @@ void TriggersTrackMap::onEventChanged(const MidiEvent &oldEvent, const MidiEvent
     }
 }
 
-void TriggersTrackMap::onEventAdded(const MidiEvent &event)
+void TriggersTrackMap::onAddMidiEvent(const MidiEvent &event)
 {
     if (event.getLayer() == this->layer)
     {
@@ -332,7 +332,7 @@ void TriggersTrackMap::onEventAdded(const MidiEvent &event)
     }
 }
 
-void TriggersTrackMap::onEventRemoved(const MidiEvent &event)
+void TriggersTrackMap::onRemoveMidiEvent(const MidiEvent &event)
 {
     if (event.getLayer() == this->layer)
     {
@@ -365,7 +365,7 @@ void TriggersTrackMap::onEventRemoved(const MidiEvent &event)
     }
 }
 
-void TriggersTrackMap::onLayerChanged(const MidiLayer *changedLayer)
+void TriggersTrackMap::onChangeMidiLayer(const MidiLayer *changedLayer)
 {
     if (this->layer)
     {
@@ -376,7 +376,7 @@ void TriggersTrackMap::onLayerChanged(const MidiLayer *changedLayer)
     }
 }
 
-void TriggersTrackMap::onLayerAdded(const MidiLayer *addedLayer)
+void TriggersTrackMap::onAddMidiLayer(const MidiLayer *addedLayer)
 {
     if (this->layer)
     {
@@ -390,7 +390,7 @@ void TriggersTrackMap::onLayerAdded(const MidiLayer *addedLayer)
     }
 }
 
-void TriggersTrackMap::onLayerRemoved(const MidiLayer *removedLayer)
+void TriggersTrackMap::onRemoveMidiLayer(const MidiLayer *removedLayer)
 {
     if (this->layer)
     {
@@ -401,7 +401,7 @@ void TriggersTrackMap::onLayerRemoved(const MidiLayer *removedLayer)
     }
 }
 
-void TriggersTrackMap::onProjectBeatRangeChanged(float firstBeat, float lastBeat)
+void TriggersTrackMap::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;

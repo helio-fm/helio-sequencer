@@ -20,7 +20,7 @@
 #include "TreeItem.h"
 
 class ProjectTreeItem;
-class LayerTreeItem;
+class MidiLayerTreeItem;
 
 class LayerGroupTreeItem : public TreeItem
 {

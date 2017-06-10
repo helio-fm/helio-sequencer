@@ -260,7 +260,7 @@ AutomationEventComponent *AutomationTrackMap::getNextEventComponent(int indexOfS
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-void AutomationTrackMap::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void AutomationTrackMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     if (newEvent.getLayer() == this->layer)
     {
@@ -306,7 +306,7 @@ void AutomationTrackMap::onEventChanged(const MidiEvent &oldEvent, const MidiEve
     }
 }
 
-void AutomationTrackMap::onEventAdded(const MidiEvent &event)
+void AutomationTrackMap::onAddMidiEvent(const MidiEvent &event)
 {
     if (event.getLayer() == this->layer)
     {
@@ -345,7 +345,7 @@ void AutomationTrackMap::onEventAdded(const MidiEvent &event)
     }
 }
 
-void AutomationTrackMap::onEventRemoved(const MidiEvent &event)
+void AutomationTrackMap::onRemoveMidiEvent(const MidiEvent &event)
 {
     if (event.getLayer() == this->layer)
     {
@@ -377,7 +377,7 @@ void AutomationTrackMap::onEventRemoved(const MidiEvent &event)
     }
 }
 
-void AutomationTrackMap::onLayerChanged(const MidiLayer *changedLayer)
+void AutomationTrackMap::onChangeMidiLayer(const MidiLayer *changedLayer)
 {
     if (this->layer)
     {
@@ -388,7 +388,7 @@ void AutomationTrackMap::onLayerChanged(const MidiLayer *changedLayer)
     }
 }
 
-void AutomationTrackMap::onLayerAdded(const MidiLayer *addedLayer)
+void AutomationTrackMap::onAddMidiLayer(const MidiLayer *addedLayer)
 {
     if (this->layer)
     {
@@ -402,7 +402,7 @@ void AutomationTrackMap::onLayerAdded(const MidiLayer *addedLayer)
     }
 }
 
-void AutomationTrackMap::onLayerRemoved(const MidiLayer *removedLayer)
+void AutomationTrackMap::onRemoveMidiLayer(const MidiLayer *removedLayer)
 {
     if (this->layer)
     {
@@ -413,7 +413,7 @@ void AutomationTrackMap::onLayerRemoved(const MidiLayer *removedLayer)
     }
 }
 
-void AutomationTrackMap::onProjectBeatRangeChanged(float firstBeat, float lastBeat)
+void AutomationTrackMap::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;

@@ -22,7 +22,7 @@
 #include "WorkspacePage.h"
 
 #include "TreeItem.h"
-#include "LayerTreeItem.h"
+#include "MidiLayerTreeItem.h"
 #include "SizeSwitcherComponent.h"
 
 #include "TreePanelPhone.h"
@@ -509,7 +509,7 @@ bool MainLayout::keyPressed(const KeyPress &key)
     }
     else if (key == KeyPress::createFromDescription("F2"))
     {
-        if (LayerTreeItem *primaryItem = dynamic_cast<LayerTreeItem *>(this->getActiveTreeItem().get()))
+        if (MidiLayerTreeItem *primaryItem = dynamic_cast<MidiLayerTreeItem *>(this->getActiveTreeItem().get()))
         {
             this->treePanel->showRenameLayerDialogAsync(primaryItem);
             return true;

@@ -33,7 +33,7 @@
 
 
 PianoLayerTreeItem::PianoLayerTreeItem(const String &name) :
-    LayerTreeItem(name)
+    MidiLayerTreeItem(name)
 {
     this->layer = new PianoLayer(*this);
 

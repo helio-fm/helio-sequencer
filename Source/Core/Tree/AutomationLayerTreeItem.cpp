@@ -25,7 +25,7 @@
 #include "TreeItemComponentDefault.h"
 
 AutomationLayerTreeItem::AutomationLayerTreeItem(const String &name) :
-    LayerTreeItem(name)
+    MidiLayerTreeItem(name)
 {
     this->layer = new AutomationLayer(*this);
     this->vcsDiffLogic = new VCS::AutomationLayerDiffLogic(*this);

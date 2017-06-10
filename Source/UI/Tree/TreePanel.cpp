@@ -25,14 +25,14 @@
 #include "MainLayout.h"
 #include "ModalDialogInput.h"
 
-#include "LayerTreeItem.h"
+#include "MidiLayerTreeItem.h"
 #include "ProjectTreeItem.h"
 #include "UndoStack.h"
 #include "LayerTreeItemActions.h"
 #include "ModalDialogInput.h"
 
 #include "LongTapController.h"
-#include "LayerTreeItem.h"
+#include "MidiLayerTreeItem.h"
 
 #include "RolloverHeaderLeft.h"
 #include "RolloverHeaderRight.h"
@@ -126,7 +126,7 @@ void TreePanel::handleCommandMessage(int commandId)
 
 
 
-void TreePanel::showRenameLayerDialogAsync(LayerTreeItem *item)
+void TreePanel::showRenameLayerDialogAsync(MidiLayerTreeItem *item)
 {
     this->lastRenamedItem = item;
     this->postCommandMessage(CommandIDs::RenameLayer);

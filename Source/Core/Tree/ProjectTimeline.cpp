@@ -157,12 +157,12 @@ void ProjectTimeline::dispatchPostRemoveEvent(const MidiLayer *layer)
 	this->project.broadcastPostRemoveEvent(layer);
 }
 
-void ProjectTimeline::dispatchReloadTrack(const MidiLayer *midiLayer)
+void ProjectTimeline::dispatchReloadLayer(const MidiLayer *midiLayer)
 {
     this->project.broadcastChangeLayer(midiLayer);
 }
 
-void ProjectTimeline::dispatchChangeTrackBeatRange()
+void ProjectTimeline::dispatchChangeLayerBeatRange()
 {
     this->project.broadcastChangeProjectBeatRange();
 }

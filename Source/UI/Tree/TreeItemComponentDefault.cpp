@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "TreeItemComponentDefault.h"
 #include "TreeItem.h"
-#include "LayerTreeItem.h"
+#include "MidiLayerTreeItem.h"
 #include "ProjectTreeItem.h"
 #include "PianoLayerTreeItem.h"
 #include "AutomationLayerTreeItem.h"
@@ -60,7 +60,7 @@ TreeItemComponentDefault::TreeItemComponentDefault(TreeItem &i) :
     //this->addChildComponent(this->selectionFrame);
     
     // Component(); // TreeItemComponentFrame(); //TreeItemMarkerDefault();
-    const bool needsMarker = (nullptr != dynamic_cast<LayerTreeItem *>(&this->item));
+    const bool needsMarker = (nullptr != dynamic_cast<MidiLayerTreeItem *>(&this->item));
     this->pageMarker = needsMarker ? new TreeItemMarkerDefault() : new Component();
     this->addChildComponent(this->pageMarker);
     
@@ -163,7 +163,7 @@ void TreeItemComponentDefault::paintText(Graphics &g, const Rectangle<float> &ar
     //    }
     //}
     
-    if (LayerTreeItem *lti = dynamic_cast<LayerTreeItem *>(&this->item))
+    if (MidiLayerTreeItem *lti = dynamic_cast<MidiLayerTreeItem *>(&this->item))
     {
         if (lti->isMuted())
         {

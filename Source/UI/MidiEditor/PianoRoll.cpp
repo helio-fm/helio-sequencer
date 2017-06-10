@@ -435,9 +435,9 @@ void PianoRoll::moveHelpers(const float deltaBeat, const int deltaKey)
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-void PianoRoll::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    MidiRoll::onEventChanged(oldEvent, newEvent);
+    MidiRoll::onChangeMidiEvent(oldEvent, newEvent);
     
     if (! dynamic_cast<const Note *>(&oldEvent)) { return; }
 
@@ -455,9 +455,9 @@ void PianoRoll::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEv
     }
 }
 
-void PianoRoll::onEventAdded(const MidiEvent &event)
+void PianoRoll::onAddMidiEvent(const MidiEvent &event)
 {
-    MidiRoll::onEventAdded(event);
+    MidiRoll::onAddMidiEvent(event);
     
     if (! dynamic_cast<const Note *>(&event)) { return; }
 
@@ -492,9 +492,9 @@ void PianoRoll::onEventAdded(const MidiEvent &event)
     }
 }
 
-void PianoRoll::onEventRemoved(const MidiEvent &event)
+void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
 {
-    MidiRoll::onEventRemoved(event);
+    MidiRoll::onRemoveMidiEvent(event);
 
     if (! dynamic_cast<const Note *>(&event)) { return; }
     
@@ -512,14 +512,14 @@ void PianoRoll::onEventRemoved(const MidiEvent &event)
     }
 }
 
-void PianoRoll::onLayerChanged(const MidiLayer *layer)
+void PianoRoll::onChangeMidiLayer(const MidiLayer *layer)
 {
     if (! dynamic_cast<const PianoLayer *>(layer)) { return; }
 
     this->reloadMidiTrack();
 }
 
-void PianoRoll::onLayerAdded(const MidiLayer *layer)
+void PianoRoll::onAddMidiLayer(const MidiLayer *layer)
 {
     if (! dynamic_cast<const PianoLayer *>(layer)) { return; }
 
@@ -529,7 +529,7 @@ void PianoRoll::onLayerAdded(const MidiLayer *layer)
     }
 }
 
-void PianoRoll::onLayerRemoved(const MidiLayer *layer)
+void PianoRoll::onRemoveMidiLayer(const MidiLayer *layer)
 {
     if (! dynamic_cast<const PianoLayer *>(layer)) { return; }
 

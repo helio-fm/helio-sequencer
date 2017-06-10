@@ -38,7 +38,7 @@ AutoLayerTreeItemInsertAction::AutoLayerTreeItemInsertAction(ProjectTreeItem &pa
 
 bool AutoLayerTreeItemInsertAction::perform()
 {
-    LayerTreeItem *layer = new AutomationLayerTreeItem("empty");
+    MidiLayerTreeItem *layer = new AutomationLayerTreeItem("empty");
     this->project.addChildTreeItem(layer);
     
     ScopedPointer<XmlElement> layerState = XmlDocument::parse(this->serializedState);
@@ -122,7 +122,7 @@ bool AutoLayerTreeItemRemoveAction::undo()
 {
     if (this->serializedTreeItem != nullptr)
     {
-        LayerTreeItem *layer = new AutomationLayerTreeItem("empty");
+        MidiLayerTreeItem *layer = new AutomationLayerTreeItem("empty");
         this->project.addChildTreeItem(layer);
         layer->deserialize(*this->serializedTreeItem);
         layer->onRename(this->xPath);

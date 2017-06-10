@@ -38,7 +38,7 @@ PianoLayerTreeItemInsertAction::PianoLayerTreeItemInsertAction(ProjectTreeItem &
 
 bool PianoLayerTreeItemInsertAction::perform()
 {
-    LayerTreeItem *layer = new PianoLayerTreeItem("empty");
+    MidiLayerTreeItem *layer = new PianoLayerTreeItem("empty");
     this->project.addChildTreeItem(layer);
     
     ScopedPointer<XmlElement> layerState = XmlDocument::parse(this->serializedState);
@@ -120,7 +120,7 @@ bool PianoLayerTreeItemRemoveAction::undo()
 {
     if (this->serializedTreeItem != nullptr)
     {
-        LayerTreeItem *layer = new PianoLayerTreeItem("empty");
+        MidiLayerTreeItem *layer = new PianoLayerTreeItem("empty");
         this->project.addChildTreeItem(layer);
         layer->deserialize(*this->serializedTreeItem);
         layer->onRename(this->xPath);

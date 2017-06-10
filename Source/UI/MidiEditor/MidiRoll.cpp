@@ -923,7 +923,7 @@ MidiEventComponentLasso *MidiRoll::getLasso() const
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-void MidiRoll::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void MidiRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     // Time signatures have changed, need to repaint
     if (dynamic_cast<const TimeSignatureEvent *>(&oldEvent))
@@ -933,7 +933,7 @@ void MidiRoll::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEve
     }
 }
 
-void MidiRoll::onEventAdded(const MidiEvent &event)
+void MidiRoll::onAddMidiEvent(const MidiEvent &event)
 {
     if (dynamic_cast<const TimeSignatureEvent *>(&event))
     {
@@ -942,7 +942,7 @@ void MidiRoll::onEventAdded(const MidiEvent &event)
 	}
 }
 
-void MidiRoll::onEventRemoved(const MidiEvent &event)
+void MidiRoll::onRemoveMidiEvent(const MidiEvent &event)
 {
     if (dynamic_cast<const TimeSignatureEvent *>(&event))
     {
@@ -951,7 +951,7 @@ void MidiRoll::onEventRemoved(const MidiEvent &event)
 	}
 }
 
-void MidiRoll::onProjectBeatRangeChanged(float firstBeat, float lastBeat)
+void MidiRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
     //Logger::writeToLog("MidiRoll::onProjectBeatRangeChanged " + String(firstBeat) + " " + String(lastBeat));
     this->trackFirstBeat = firstBeat;

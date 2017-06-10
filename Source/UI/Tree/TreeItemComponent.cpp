@@ -21,7 +21,6 @@
 #include "TreePanel.h"
 #include "PanelBackgroundC.h"
 #include "ProjectTreeItem.h"
-#include "LayerTreeItem.h"
 #include "PianoLayerTreeItem.h"
 #include "AutomationLayerTreeItem.h"
 #include "LayerGroupTreeItem.h"
@@ -97,11 +96,11 @@ void TreeItemComponent::setSelected(bool shouldBeSelected)
     
     // multiple selection stuff
     const bool isShiftPressed = Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown();
-    const bool canBeAddedToSelection = (dynamic_cast<LayerTreeItem *>(&this->item) != nullptr ||
+    const bool canBeAddedToSelection = (dynamic_cast<MidiLayerTreeItem *>(&this->item) != nullptr ||
                                         dynamic_cast<LayerGroupTreeItem *>(&this->item) != nullptr);
     
     const Array<TreeItem *>selection = this->item.getRootTreeItem()->findSelectedSubItems();
-    const bool selectionContainsOnlyLayersAndGroups = checkIfAllItemsAreTypeOf<LayerTreeItem, LayerGroupTreeItem>(selection);
+    const bool selectionContainsOnlyLayersAndGroups = checkIfAllItemsAreTypeOf<MidiLayerTreeItem, LayerGroupTreeItem>(selection);
     
     const bool isAlreadySelected = this->item.isSelected() || this->item.isMarkerVisible();
     const bool shouldAddToSelection = (isShiftPressed && selectionContainsOnlyLayersAndGroups);

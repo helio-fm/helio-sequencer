@@ -22,7 +22,7 @@
 
 class ProjectTreeItem;
 class ProjectEventDispatcher;
-class LayerTreeItem;
+class MidiLayerTreeItem;
 class UndoStack;
 
 #define MIDI_IMPORT_SCALE 48

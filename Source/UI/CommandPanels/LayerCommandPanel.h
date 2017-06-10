@@ -17,7 +17,7 @@
 
 #pragma once
 
-class LayerTreeItem;
+class MidiLayerTreeItem;
 
 #include "CommandPanel.h"
 
@@ -25,7 +25,7 @@ class LayerCommandPanel : public CommandPanel
 {
 public:
     
-    explicit LayerCommandPanel(LayerTreeItem &parentLayer);
+    explicit LayerCommandPanel(MidiLayerTreeItem &parentLayer);
     
     ~LayerCommandPanel() override;
     
@@ -39,6 +39,6 @@ private:
     void initInstrumentSelection();
     void exit();
 
-    LayerTreeItem &layerItem;
+    MidiLayerTreeItem &layerItem;
     
 };

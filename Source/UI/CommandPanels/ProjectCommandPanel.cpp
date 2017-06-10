@@ -283,8 +283,8 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
         {
             Logger::writeToLog(instruments[instrumentIndex]->getIdAndHash());
             
-            const Array<LayerTreeItem *> layers =
-            this->project.findChildrenOfType<LayerTreeItem>();
+            const Array<MidiLayerTreeItem *> layers =
+            this->project.findChildrenOfType<MidiLayerTreeItem>();
             
             if (layers.size() > 0)
             {
@@ -353,14 +353,14 @@ void ProjectCommandPanel::proceedToRenderDialog(const String &extension)
 
 String ProjectCommandPanel::createPianoLayerTempate(const String &name) const
 {
-    ScopedPointer<LayerTreeItem> newItem = new PianoLayerTreeItem(name);
+    ScopedPointer<MidiLayerTreeItem> newItem = new PianoLayerTreeItem(name);
     ScopedPointer<XmlElement> parameters = newItem->serialize();
     return parameters->createDocument("", false, false, "UTF-8", 1024);
 }
 
 String ProjectCommandPanel::createAutoLayerTempate(const String &name, int controllerNumber, const String &instrumentId) const
 {
-    ScopedPointer<LayerTreeItem> newItem = new AutomationLayerTreeItem(name);
+    ScopedPointer<MidiLayerTreeItem> newItem = new AutomationLayerTreeItem(name);
     AutomationLayer *itemLayer = static_cast<AutomationLayer *>(newItem->getLayer());
     
     itemLayer->setControllerNumber(controllerNumber);
@@ -387,7 +387,7 @@ void ProjectCommandPanel::initMainMenu(AnimationType animationType)
     cmds.add(CommandItem::withParams(Icons::render, CommandIDs::ProjectRenderMenu, TRANS("menu::project::render"))->withSubmenu());
 #endif
 
-    const Array<LayerTreeItem *> &layers = this->project.findChildrenOfType<LayerTreeItem>();
+    const Array<MidiLayerTreeItem *> &layers = this->project.findChildrenOfType<MidiLayerTreeItem>();
     const Array<Instrument *> &instruments = App::Workspace().getAudioCore().getInstruments();
     if (instruments.size() > 1 && layers.size() > 0)
     {

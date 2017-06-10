@@ -273,10 +273,10 @@ public:
     // ProjectListener
     //===------------------------------------------------------------------===//
 
-    void onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
-    void onEventAdded(const MidiEvent &event) override;
-    void onEventRemoved(const MidiEvent &event) override;
-    void onProjectBeatRangeChanged(float firstBeat, float lastBeat) override;
+    void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
+    void onAddMidiEvent(const MidiEvent &event) override;
+    void onRemoveMidiEvent(const MidiEvent &event) override;
+    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
 
     //===------------------------------------------------------------------===//
     // Component

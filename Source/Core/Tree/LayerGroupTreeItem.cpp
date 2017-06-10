@@ -89,7 +89,7 @@ void LayerGroupTreeItem::sortByNameAmongSiblings()
             {
                 currentChildName = layerGroupItem->getName();
             }
-            else if (LayerTreeItem *layerItem = dynamic_cast<LayerTreeItem *>(parentItem->getSubItem(i)))
+            else if (MidiLayerTreeItem *layerItem = dynamic_cast<MidiLayerTreeItem *>(parentItem->getSubItem(i)))
             {
                 currentChildName = layerItem->getName();
             }
@@ -127,7 +127,7 @@ static void applySelectionPolicyForGroup(LayerGroupTreeItem *rootNode, bool forc
     }
     
     // ищем активный слой по всему проекту
-    LayerTreeItem *activeItem = TreeItem::getActiveItem<LayerTreeItem>(rootNode->getRootTreeItem());
+    MidiLayerTreeItem *activeItem = TreeItem::getActiveItem<MidiLayerTreeItem>(rootNode->getRootTreeItem());
     
     if (shouldSelectAll || forceSelectAll)
     {
@@ -137,7 +137,7 @@ static void applySelectionPolicyForGroup(LayerGroupTreeItem *rootNode, bool forc
 
         for (signed int i = (rootNode->getNumSubItems() - 1); i >= 0 ; --i)
         {
-            if (LayerTreeItem *layerItem = dynamic_cast<LayerTreeItem *>(rootNode->getSubItem(i)))
+            if (MidiLayerTreeItem *layerItem = dynamic_cast<MidiLayerTreeItem *>(rootNode->getSubItem(i)))
             {
                 rootNode->getSubItem(i)->setSelected(true, false, sendNotification);
             }
@@ -172,7 +172,7 @@ static void applySelectionPolicyForGroup(LayerGroupTreeItem *rootNode, bool forc
         
         for (int i = 0; i < rootNode->getNumSubItems(); ++i)
         {
-            if (LayerTreeItem *layerItem = dynamic_cast<LayerTreeItem *>(rootNode->getSubItem(i)))
+            if (MidiLayerTreeItem *layerItem = dynamic_cast<MidiLayerTreeItem *>(rootNode->getSubItem(i)))
             {
                 if (layerItem->isMarkerVisible())
                 {
@@ -193,7 +193,7 @@ static void applySelectionPolicyForGroup(LayerGroupTreeItem *rootNode, bool forc
                 
                 for (int i = 0; i < rootNode->getNumSubItems(); ++i)
                 {
-                    if (LayerTreeItem *layerItem = dynamic_cast<LayerTreeItem *>(rootNode->getSubItem(i)))
+                    if (MidiLayerTreeItem *layerItem = dynamic_cast<MidiLayerTreeItem *>(rootNode->getSubItem(i)))
                     {
                         rootNode->getSubItem(i)->setSelected(false, false, sendNotification);
                     }
@@ -214,7 +214,7 @@ void LayerGroupTreeItem::showPage()
 {
     applySelectionPolicyForGroup(this);
     
-    Array<LayerTreeItem *> myLayerItems(this->findChildrenOfType<LayerTreeItem>());
+    Array<MidiLayerTreeItem *> myLayerItems(this->findChildrenOfType<MidiLayerTreeItem>());
     
     Array<MidiLayer *> myLayers;
     

@@ -67,8 +67,8 @@ public:
     void dispatchRemoveEvent(const MidiEvent &event) override;
 	void dispatchPostRemoveEvent(const MidiLayer *layer) override;
 
-    void dispatchReloadTrack(const MidiLayer *layer) override;
-    void dispatchChangeTrackBeatRange() override;
+    void dispatchReloadLayer(const MidiLayer *layer) override;
+    void dispatchChangeLayerBeatRange() override;
 
 	void dispatchAddClip(const Clip &clip) override;
 	void dispatchChangeClip(const Clip &oldClip, const Clip &newClip) override;

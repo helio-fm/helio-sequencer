@@ -43,13 +43,13 @@ public:
     // ProjectListener
     //===------------------------------------------------------------------===//
 
-    void onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
-    void onEventAdded(const MidiEvent &event) override;
-    void onEventRemoved(const MidiEvent &event) override;
-    void onLayerChanged(const MidiLayer *layer) override;
-    void onLayerAdded(const MidiLayer *layer) override;
-    void onLayerRemoved(const MidiLayer *layer) override;
-    void onProjectBeatRangeChanged(float firstBeat, float lastBeat) override;
+    void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
+    void onAddMidiEvent(const MidiEvent &event) override;
+    void onRemoveMidiEvent(const MidiEvent &event) override;
+    void onChangeMidiLayer(const MidiLayer *layer) override;
+    void onAddMidiLayer(const MidiLayer *layer) override;
+    void onRemoveMidiLayer(const MidiLayer *layer) override;
+    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
 
 private:
 

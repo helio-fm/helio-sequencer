@@ -207,7 +207,7 @@ void MidiLayer::setMuted(bool shouldBeMuted)
     if (this->muted != shouldBeMuted)
     {
         this->muted = shouldBeMuted;
-        this->owner.dispatchReloadTrack(this);
+        this->owner.dispatchReloadLayer(this);
     }
 }
 
@@ -263,13 +263,13 @@ void MidiLayer::notifyEventRemovedPostAction()
 void MidiLayer::notifyLayerChanged()
 {
     this->cacheIsOutdated = true;
-    this->owner.dispatchReloadTrack(this);
+    this->owner.dispatchReloadLayer(this);
 }
 
 void MidiLayer::notifyBeatRangeChanged()
 {
     //this->cacheIsOutdated = true;
-    this->owner.dispatchChangeTrackBeatRange();
+    this->owner.dispatchChangeLayerBeatRange();
 }
 
 void MidiLayer::updateBeatRange(bool shouldNotifyIfChanged)
@@ -300,7 +300,7 @@ void MidiLayer::setInstrumentId(const String &val)
     if (this->instrumentId != val)
     {
         this->instrumentId = val;
-        this->owner.dispatchReloadTrack(this);
+        this->owner.dispatchReloadLayer(this);
     }
 }
 

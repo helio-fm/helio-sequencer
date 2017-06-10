@@ -167,7 +167,7 @@ String ProjectTreeItem::getId() const
 
 String ProjectTreeItem::getStats() const
 {
-    Array<LayerTreeItem *> layerItems(this->findChildrenOfType<LayerTreeItem>());
+    Array<MidiLayerTreeItem *> layerItems(this->findChildrenOfType<MidiLayerTreeItem>());
     
     int numEvents = 0;
     int numLayers = layerItems.size();
@@ -529,7 +529,7 @@ Array<MidiLayer *> ProjectTreeItem::getSelectedLayersList() const
 
 void ProjectTreeItem::collectLayers(Array<MidiLayer *> &resultArray, bool onlySelectedLayers) const
 {
-    Array<LayerTreeItem *> layerItems = this->findChildrenOfType<LayerTreeItem>();
+    Array<MidiLayerTreeItem *> layerItems = this->findChildrenOfType<MidiLayerTreeItem>();
     
     for (int i = 0; i < layerItems.size(); ++i)
     {
@@ -705,7 +705,7 @@ void ProjectTreeItem::importMidi(File &file)
     {
         const MidiMessageSequence *currentTrack = tempFile.getTrack(trackNum);
         const String trackName = "Track " + String(trackNum);
-        LayerTreeItem *layer = new PianoLayerTreeItem(trackName);
+        MidiLayerTreeItem *layer = new PianoLayerTreeItem(trackName);
         this->addChildTreeItem(layer);
         layer->importMidi(*currentTrack);
     }
@@ -744,31 +744,31 @@ void ProjectTreeItem::removeAllListeners()
 void ProjectTreeItem::broadcastChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     //if (this->changeListeners.size() == 0) { return; }
-    this->changeListeners.call(&ProjectListener::onEventChanged, oldEvent, newEvent);
+    this->changeListeners.call(&ProjectListener::onChangeMidiEvent, oldEvent, newEvent);
     this->sendChangeMessage();
 }
 
 void ProjectTreeItem::broadcastAddEvent(const MidiEvent &event)
 {
-    this->changeListeners.call(&ProjectListener::onEventAdded, event);
+    this->changeListeners.call(&ProjectListener::onAddMidiEvent, event);
     this->sendChangeMessage();
 }
 
 void ProjectTreeItem::broadcastRemoveEvent(const MidiEvent &event)
 {
-    this->changeListeners.call(&ProjectListener::onEventRemoved, event);
+    this->changeListeners.call(&ProjectListener::onRemoveMidiEvent, event);
     this->sendChangeMessage();
 }
 
 void ProjectTreeItem::broadcastPostRemoveEvent(const MidiLayer *layer)
 {
-    this->changeListeners.call(&ProjectListener::onEventRemovedPostAction, layer);
+    this->changeListeners.call(&ProjectListener::onPostRemoveMidiEvent, layer);
     this->sendChangeMessage();
 }
 
 void ProjectTreeItem::broadcastChangeLayer(const MidiLayer *layer)
 {
-    this->changeListeners.call(&ProjectListener::onLayerChanged, layer);
+    this->changeListeners.call(&ProjectListener::onChangeMidiLayer, layer);
     this->sendChangeMessage();
 }
 
@@ -776,7 +776,7 @@ void ProjectTreeItem::broadcastAddLayer(const MidiLayer *layer)
 {
     this->isLayersHashOutdated = true;
     this->registerVcsItem(layer);
-    this->changeListeners.call(&ProjectListener::onLayerAdded, layer);
+    this->changeListeners.call(&ProjectListener::onAddMidiLayer, layer);
     this->sendChangeMessage();
 }
 
@@ -784,19 +784,13 @@ void ProjectTreeItem::broadcastRemoveLayer(const MidiLayer *layer)
 {
     this->isLayersHashOutdated = true;
     this->unregisterVcsItem(layer);
-    this->changeListeners.call(&ProjectListener::onLayerRemoved, layer);
-    this->sendChangeMessage();
-}
-
-void ProjectTreeItem::broadcastMoveLayer(const MidiLayer *layer)
-{
-    this->changeListeners.call(&ProjectListener::onLayerMoved, layer);
+    this->changeListeners.call(&ProjectListener::onRemoveMidiLayer, layer);
     this->sendChangeMessage();
 }
 
 void ProjectTreeItem::broadcastChangeProjectInfo(const ProjectInfo *info)
 {
-    this->changeListeners.call(&ProjectListener::onInfoChanged, info);
+    this->changeListeners.call(&ProjectListener::onChangeProjectInfo, info);
     this->sendChangeMessage();
 }
 
@@ -811,9 +805,9 @@ void ProjectTreeItem::broadcastChangeProjectBeatRange()
     // и транспорт обновляет позицию индикатора позже, чем роллы
     // и, если ролл ресайзится, индикатор дергается
     // пусть лучше транспорт обновит индикатор 2 раза, но гарантированно перед остальными
-    this->transport->onProjectBeatRangeChanged(firstBeat, lastBeat);
+    this->transport->onChangeProjectBeatRange(firstBeat, lastBeat);
     
-    this->changeListeners.call(&ProjectListener::onProjectBeatRangeChanged, firstBeat, lastBeat);
+    this->changeListeners.call(&ProjectListener::onChangeProjectBeatRange, firstBeat, lastBeat);
     this->sendChangeMessage();
 }
 
@@ -912,14 +906,14 @@ VCS::TrackedItem *ProjectTreeItem::initTrackedItem(const String &type, const Uui
 {
     if (type == Serialization::Core::pianoLayer)
     {
-        LayerTreeItem *layer = new PianoLayerTreeItem("empty");
+        MidiLayerTreeItem *layer = new PianoLayerTreeItem("empty");
         layer->setVCSUuid(id);
         this->addChildTreeItem(layer);
         return layer;
     }
     if (type == Serialization::Core::autoLayer)
     {
-        LayerTreeItem *layer = new AutomationLayerTreeItem("empty");
+        MidiLayerTreeItem *layer = new AutomationLayerTreeItem("empty");
         layer->setVCSUuid(id);
         this->addChildTreeItem(layer);
         return layer;
@@ -940,7 +934,7 @@ VCS::TrackedItem *ProjectTreeItem::initTrackedItem(const String &type, const Uui
 
 bool ProjectTreeItem::deleteTrackedItem(VCS::TrackedItem *item)
 {
-    if (dynamic_cast<LayerTreeItem *>(item))
+    if (dynamic_cast<MidiLayerTreeItem *>(item))
     {
         delete item;
     }
@@ -976,8 +970,8 @@ void ProjectTreeItem::changeListenerCallback(ChangeBroadcaster *source)
 
 void ProjectTreeItem::registerVcsItem(const MidiLayer *layer)
 {
-	const auto children = this->findChildrenOfType<LayerTreeItem>();
-	for (LayerTreeItem *item : children)
+	const auto children = this->findChildrenOfType<MidiLayerTreeItem>();
+	for (MidiLayerTreeItem *item : children)
 	{
 		if (item->getLayer() == layer)
 		{
@@ -989,8 +983,8 @@ void ProjectTreeItem::registerVcsItem(const MidiLayer *layer)
 
 void ProjectTreeItem::unregisterVcsItem(const MidiLayer *layer)
 {
-	const auto children = this->findChildrenOfType<LayerTreeItem>();
-	for (LayerTreeItem *item : children)
+	const auto children = this->findChildrenOfType<MidiLayerTreeItem>();
+	for (MidiLayerTreeItem *item : children)
 	{
 		if (item->getLayer() == layer)
 		{
@@ -1008,7 +1002,7 @@ void ProjectTreeItem::rebuildLayersHashIfNeeded()
         this->layersHash.set(this->timeline->getAnnotations()->getLayerIdAsString(), this->timeline->getAnnotations());
         this->layersHash.set(this->timeline->getTimeSignatures()->getLayerIdAsString(), this->timeline->getTimeSignatures());
         
-        Array<LayerTreeItem *> children = this->findChildrenOfType<LayerTreeItem>();
+        Array<MidiLayerTreeItem *> children = this->findChildrenOfType<MidiLayerTreeItem>();
         
         for (int i = 0; i < children.size(); ++i)
         {

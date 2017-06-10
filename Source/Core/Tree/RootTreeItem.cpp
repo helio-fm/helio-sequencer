@@ -112,7 +112,7 @@ void RootTreeItem::importMidi(File &file)
     {
         const MidiMessageSequence *currentTrack = tempFile.getTrack(trackNum);
         String trackName = "Track " + String(trackNum);
-        LayerTreeItem *layer = this->addPianoLayer(project, trackName);
+        MidiLayerTreeItem *layer = this->addPianoLayer(project, trackName);
         layer->importMidi(*currentTrack);
     }
 
@@ -287,16 +287,16 @@ LayerGroupTreeItem *RootTreeItem::addGroup(TreeItem *parent, const String &name)
     return group;
 }
 
-LayerTreeItem *RootTreeItem::addPianoLayer(TreeItem *parent, const String &name)
+MidiLayerTreeItem *RootTreeItem::addPianoLayer(TreeItem *parent, const String &name)
 {
-    LayerTreeItem *item = new PianoLayerTreeItem(name);
+    MidiLayerTreeItem *item = new PianoLayerTreeItem(name);
     parent->addChildTreeItem(item);
     return item;
 }
 
-LayerTreeItem *RootTreeItem::addAutoLayer(TreeItem *parent, const String &name, int controllerNumber)
+MidiLayerTreeItem *RootTreeItem::addAutoLayer(TreeItem *parent, const String &name, int controllerNumber)
 {
-    LayerTreeItem *item = new AutomationLayerTreeItem(name);
+    MidiLayerTreeItem *item = new AutomationLayerTreeItem(name);
     AutomationLayer *itemLayer = static_cast<AutomationLayer *>(item->getLayer());
     parent->addChildTreeItem(item);
     itemLayer->setControllerNumber(controllerNumber);

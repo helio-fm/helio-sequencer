@@ -382,9 +382,10 @@
                 file="../../Source/Core/Tree/LayerGroupTreeItem.cpp"/>
           <FILE id="Ce99xg" name="LayerGroupTreeItem.h" compile="0" resource="0"
                 file="../../Source/Core/Tree/LayerGroupTreeItem.h"/>
-          <FILE id="W9WiMA" name="LayerTreeItem.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/LayerTreeItem.cpp"/>
-          <FILE id="ud8k96" name="LayerTreeItem.h" compile="0" resource="0" file="../../Source/Core/Tree/LayerTreeItem.h"/>
+          <FILE id="RDbVyd" name="MidiLayerTreeItem.cpp" compile="1" resource="0"
+                file="../../Source/Core/Tree/MidiLayerTreeItem.cpp"/>
+          <FILE id="eJBNBC" name="MidiLayerTreeItem.h" compile="0" resource="0"
+                file="../../Source/Core/Tree/MidiLayerTreeItem.h"/>
           <FILE id="J0u0zn" name="PianoLayerTreeItem.cpp" compile="1" resource="0"
                 file="../../Source/Core/Tree/PianoLayerTreeItem.cpp"/>
           <FILE id="JopERW" name="PianoLayerTreeItem.h" compile="0" resource="0"

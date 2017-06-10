@@ -95,7 +95,7 @@ template<typename T> void AnnotationsTrackMap<T>::resized()
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-template<typename T> void AnnotationsTrackMap<T>::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+template<typename T> void AnnotationsTrackMap<T>::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     if (newEvent.getLayer() == this->project.getTimeline()->getAnnotations())
     {
@@ -139,7 +139,7 @@ template<typename T> void AnnotationsTrackMap<T>::alignAnnotationComponent(T *co
     this->applyAnnotationBounds(component, nextEventComponent);
 }
 
-template<typename T> void AnnotationsTrackMap<T>::onEventAdded(const MidiEvent &event)
+template<typename T> void AnnotationsTrackMap<T>::onAddMidiEvent(const MidiEvent &event)
 {
     if (event.getLayer() == this->project.getTimeline()->getAnnotations())
     {
@@ -168,7 +168,7 @@ template<typename T> void AnnotationsTrackMap<T>::onEventAdded(const MidiEvent &
     }
 }
 
-template<typename T> void AnnotationsTrackMap<T>::onEventRemoved(const MidiEvent &event)
+template<typename T> void AnnotationsTrackMap<T>::onRemoveMidiEvent(const MidiEvent &event)
 {
     if (event.getLayer() == this->project.getTimeline()->getAnnotations())
     {
@@ -195,7 +195,7 @@ template<typename T> void AnnotationsTrackMap<T>::onEventRemoved(const MidiEvent
     }
 }
 
-template<typename T> void AnnotationsTrackMap<T>::onLayerChanged(const MidiLayer *layer)
+template<typename T> void AnnotationsTrackMap<T>::onChangeMidiLayer(const MidiLayer *layer)
 {
     if (this->project.getTimeline() != nullptr)
     {
@@ -206,7 +206,7 @@ template<typename T> void AnnotationsTrackMap<T>::onLayerChanged(const MidiLayer
     }
 }
 
-template<typename T> void AnnotationsTrackMap<T>::onLayerAdded(const MidiLayer *layer)
+template<typename T> void AnnotationsTrackMap<T>::onAddMidiLayer(const MidiLayer *layer)
 {
     if (this->project.getTimeline() != nullptr)
     {
@@ -220,7 +220,7 @@ template<typename T> void AnnotationsTrackMap<T>::onLayerAdded(const MidiLayer *
     }
 }
 
-template<typename T> void AnnotationsTrackMap<T>::onLayerRemoved(const MidiLayer *layer)
+template<typename T> void AnnotationsTrackMap<T>::onRemoveMidiLayer(const MidiLayer *layer)
 {
     if (this->project.getTimeline() != nullptr)
     {
@@ -241,7 +241,7 @@ template<typename T> void AnnotationsTrackMap<T>::onLayerRemoved(const MidiLayer
     }
 }
 
-template<typename T> void AnnotationsTrackMap<T>::onProjectBeatRangeChanged(float firstBeat, float lastBeat)
+template<typename T> void AnnotationsTrackMap<T>::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;

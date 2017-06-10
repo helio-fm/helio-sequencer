@@ -117,7 +117,7 @@ template<typename T> void TimeSignaturesTrackMap<T>::resized()
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-template<typename T> void TimeSignaturesTrackMap<T>::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+template<typename T> void TimeSignaturesTrackMap<T>::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     if (newEvent.getLayer() == this->project.getTimeline()->getTimeSignatures())
     {
@@ -161,7 +161,7 @@ template<typename T> void TimeSignaturesTrackMap<T>::alignTimeSignatureComponent
     this->applyTimeSignatureBounds(component, nextEventComponent);
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onEventAdded(const MidiEvent &event)
+template<typename T> void TimeSignaturesTrackMap<T>::onAddMidiEvent(const MidiEvent &event)
 {
     if (event.getLayer() == this->project.getTimeline()->getTimeSignatures())
     {
@@ -190,7 +190,7 @@ template<typename T> void TimeSignaturesTrackMap<T>::onEventAdded(const MidiEven
     }
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onEventRemoved(const MidiEvent &event)
+template<typename T> void TimeSignaturesTrackMap<T>::onRemoveMidiEvent(const MidiEvent &event)
 {
     if (event.getLayer() == this->project.getTimeline()->getTimeSignatures())
     {
@@ -217,7 +217,7 @@ template<typename T> void TimeSignaturesTrackMap<T>::onEventRemoved(const MidiEv
     }
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onLayerChanged(const MidiLayer *layer)
+template<typename T> void TimeSignaturesTrackMap<T>::onChangeMidiLayer(const MidiLayer *layer)
 {
     if (this->project.getTimeline() != nullptr)
     {
@@ -228,7 +228,7 @@ template<typename T> void TimeSignaturesTrackMap<T>::onLayerChanged(const MidiLa
     }
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onLayerAdded(const MidiLayer *layer)
+template<typename T> void TimeSignaturesTrackMap<T>::onAddMidiLayer(const MidiLayer *layer)
 {
     if (this->project.getTimeline() != nullptr)
     {
@@ -242,7 +242,7 @@ template<typename T> void TimeSignaturesTrackMap<T>::onLayerAdded(const MidiLaye
     }
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onLayerRemoved(const MidiLayer *layer)
+template<typename T> void TimeSignaturesTrackMap<T>::onRemoveMidiLayer(const MidiLayer *layer)
 {
     if (this->project.getTimeline() != nullptr)
     {
@@ -263,7 +263,7 @@ template<typename T> void TimeSignaturesTrackMap<T>::onLayerRemoved(const MidiLa
     }
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onProjectBeatRangeChanged(float firstBeat, float lastBeat)
+template<typename T> void TimeSignaturesTrackMap<T>::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;

@@ -18,9 +18,9 @@
 #pragma once
 
 #include "PianoLayerDiffLogic.h"
-#include "LayerTreeItem.h"
+#include "MidiLayerTreeItem.h"
 
-class PianoLayerTreeItem : public LayerTreeItem
+class PianoLayerTreeItem : public MidiLayerTreeItem
 {
 public:
 

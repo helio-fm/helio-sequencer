@@ -18,9 +18,9 @@
 #pragma once
 
 #include "AutomationLayerDiffLogic.h"
-#include "LayerTreeItem.h"
+#include "MidiLayerTreeItem.h"
 
-class AutomationLayerTreeItem : public LayerTreeItem
+class AutomationLayerTreeItem : public MidiLayerTreeItem
 {
 public:
 

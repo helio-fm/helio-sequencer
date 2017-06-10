@@ -25,12 +25,6 @@ class ProjectTreeItem;
 class Clip;
 class Pattern;
 
-// TODO rename methods
-// More TODOS:
-// Rename LayerTreeItem to MidiLayerTreeItem
-// Rename MidiLayer as MidiSequence, PianoSequence, AutomationSequence,
-// or as MidiTrack, PianoTrack, AutomationTrack, etc.
-
 class ProjectEventDispatcher
 {
 public:
@@ -43,8 +37,8 @@ public:
 	virtual void dispatchPostRemoveEvent(const MidiLayer *layer) = 0;
 
 	// Sent on mute/unmute, instrument change, midi import, reload or reset
-	virtual void dispatchReloadTrack(const MidiLayer *layer) = 0;
-	virtual void dispatchChangeTrackBeatRange() = 0;
+	virtual void dispatchReloadLayer(const MidiLayer *layer) = 0;
+	virtual void dispatchChangeLayerBeatRange() = 0;
 
 	virtual void dispatchAddClip(const Clip &clip) = 0;
 	virtual void dispatchChangeClip(const Clip &oldClip, const Clip &newClip) = 0;
@@ -66,8 +60,8 @@ public:
 	void dispatchRemoveEvent(const MidiEvent &event) override {}
 	void dispatchPostRemoveEvent(const MidiLayer *layer) override {}
 
-	void dispatchReloadTrack(const MidiLayer *layer) override {}
-	void dispatchChangeTrackBeatRange() override {}
+	void dispatchReloadLayer(const MidiLayer *layer) override {}
+	void dispatchChangeLayerBeatRange() override {}
 
 	void dispatchAddClip(const Clip &clip) override {}
 	void dispatchChangeClip(const Clip &oldClip, const Clip &newClip) override {}

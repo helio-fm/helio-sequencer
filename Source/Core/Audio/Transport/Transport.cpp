@@ -432,7 +432,7 @@ void Transport::instrumentRemovedPostAction()
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-void Transport::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void Transport::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     // todo stop playback only if the event is in future and getControllerNumber == 0 (not an automation)
     
@@ -448,7 +448,7 @@ void Transport::onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEv
     this->sequencesAreOutdated = true;
 }
 
-void Transport::onEventAdded(const MidiEvent &event)
+void Transport::onAddMidiEvent(const MidiEvent &event)
 {
     // todo stop playback only if the event is in future and getControllerNumber == 0 (not an automation)
 
@@ -464,7 +464,7 @@ void Transport::onEventAdded(const MidiEvent &event)
     this->sequencesAreOutdated = true;
 }
 
-void Transport::onEventRemoved(const MidiEvent &event)
+void Transport::onRemoveMidiEvent(const MidiEvent &event)
 {
     // todo stop playback only if the event is in future and getControllerNumber == 0 (not an automation)
 
@@ -474,7 +474,7 @@ void Transport::onEventRemoved(const MidiEvent &event)
     this->sequencesAreOutdated = true;
 }
 
-void Transport::onEventRemovedPostAction(const MidiLayer *layer)
+void Transport::onPostRemoveMidiEvent(const MidiLayer *layer)
 {
     if (this->player->isThreadRunning())
     { this->stopPlayback(); }
@@ -488,7 +488,7 @@ void Transport::onEventRemovedPostAction(const MidiLayer *layer)
     this->sequencesAreOutdated = true;
 }
 
-void Transport::onLayerChanged(const MidiLayer *layer)
+void Transport::onChangeMidiLayer(const MidiLayer *layer)
 {
     if (this->player->isThreadRunning())
     { this->stopPlayback(); }
@@ -497,7 +497,7 @@ void Transport::onLayerChanged(const MidiLayer *layer)
     this->updateLinkForLayer(layer);
 }
 
-void Transport::onLayerAdded(const MidiLayer *layer)
+void Transport::onAddMidiLayer(const MidiLayer *layer)
 {
     if (this->player->isThreadRunning())
     {this->stopPlayback(); }
@@ -507,7 +507,7 @@ void Transport::onLayerAdded(const MidiLayer *layer)
     this->updateLinkForLayer(layer);
 }
 
-void Transport::onLayerRemoved(const MidiLayer *layer)
+void Transport::onRemoveMidiLayer(const MidiLayer *layer)
 {
     if (this->player->isThreadRunning())
     {this->stopPlayback(); }
@@ -517,7 +517,7 @@ void Transport::onLayerRemoved(const MidiLayer *layer)
     this->removeLinkForLayer(layer);
 }
 
-void Transport::onProjectBeatRangeChanged(float firstBeat, float lastBeat)
+void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
     if (this->player->isThreadRunning())
     {
