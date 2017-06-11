@@ -61,6 +61,8 @@ public:
     //===------------------------------------------------------------------===//
 
     String getVCSName() const override;
+    XmlElement *serializeClipsDelta() const;
+    void resetClipsDelta(const XmlElement *state);
 
     //===------------------------------------------------------------------===//
     // ProjectEventDispatcher

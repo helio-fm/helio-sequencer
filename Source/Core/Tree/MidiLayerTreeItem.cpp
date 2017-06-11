@@ -26,6 +26,7 @@
 #include "Icons.h"
 
 #include "Pattern.h"
+#include "PatternDeltas.h"
 #include "PianoLayer.h"
 #include "AutomationLayer.h"
 #include "PianoRoll.h"
@@ -118,6 +119,35 @@ String MidiLayerTreeItem::getVCSName() const
 {
     return this->getXPath();
 }
+
+XmlElement *MidiLayerTreeItem::serializeClipsDelta() const
+{
+    auto xml = new XmlElement(PatternDeltas::clipsAdded);
+
+    for (int i = 0; i < this->getPattern()->size(); ++i)
+    {
+        const auto clip = this->getPattern()->getUnchecked(i);
+        xml->addChildElement(clip.serialize());
+    }
+
+    return xml;
+}
+
+void MidiLayerTreeItem::resetClipsDelta(const XmlElement *state)
+{
+    jassert(state->getTagName() == PatternDeltas::clipsAdded);
+
+    //this->reset(); // TODO test
+    this->getPattern()->reset();
+
+    forEachXmlChildElementWithTagName(*state, e, Serialization::Core::clip)
+    {
+        Clip c;
+        c.deserialize(*e);
+        this->getPattern()->silentImport(c);
+    }
+}
+
 
 
 //===----------------------------------------------------------------------===//

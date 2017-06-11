@@ -29,6 +29,7 @@
 #include "OrchestraPit.h"
 
 #include "Delta.h"
+#include "PatternDeltas.h"
 #include "PianoLayerDeltas.h"
 #include "PianoLayerDiffLogic.h"
 
@@ -48,6 +49,7 @@ PianoLayerTreeItem::PianoLayerTreeItem(const String &name) :
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), PianoLayerDeltas::layerColour));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), PianoLayerDeltas::layerInstrument));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), PianoLayerDeltas::notesAdded));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), PatternDeltas::clipsAdded));
 }
 
 Image PianoLayerTreeItem::getIcon() const
@@ -98,6 +100,19 @@ VCS::Delta *PianoLayerTreeItem::getDelta(int index) const
             this->deltas[index]->setDescription(VCS::DeltaDescription("{x} notes", numEvents));
         }
     }
+    else if (this->deltas[index]->getType() == PatternDeltas::clipsAdded)
+    {
+        const int numClips = this->getPattern()->size();
+
+        if (numClips == 0)
+        {
+            this->deltas[index]->setDescription(VCS::DeltaDescription("empty pattern"));
+        }
+        else
+        {
+            this->deltas[index]->setDescription(VCS::DeltaDescription("{x} clips", numClips));
+        }
+    }
 
     return this->deltas[index];
 }
@@ -123,6 +138,10 @@ XmlElement *PianoLayerTreeItem::createDeltaDataFor(int index) const
     else if (this->deltas[index]->getType() == PianoLayerDeltas::notesAdded)
     {
         return this->serializeEventsDelta();
+    }
+    else if (this->deltas[index]->getType() == PatternDeltas::clipsAdded)
+    {
+        return this->serializeClipsDelta();
     }
 
     jassertfalse;
@@ -157,10 +176,16 @@ void PianoLayerTreeItem::resetStateTo(const VCS::TrackedItem &newState)
         {
             this->resetInstrumentDelta(newDeltaData);
         }
-        // предполагается, что у состояния будет одна нотная дельта типа notesAdded
+        // the current layer state is supposed to have
+        // a single note delta of type PianoLayerDeltas::notesAdded
         else if (newDelta->getType() == PianoLayerDeltas::notesAdded)
         {
             this->resetEventsDelta(newDeltaData);
+        }
+        // same rule applies to clips state:
+        else if (newDelta->getType() == PatternDeltas::clipsAdded)
+        {
+            this->resetClipsDelta(newDeltaData);
         }
     }
     
@@ -308,8 +333,7 @@ void PianoLayerTreeItem::resetEventsDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == PianoLayerDeltas::notesAdded);
 
-    // не очень круто вызывать здесь reset, когда нужно просто очистить список событий
-    this->reset();
+    //this->reset(); // TODO test
     this->getLayer()->reset();
 
     forEachXmlChildElementWithTagName(*state, e, Serialization::Core::note)

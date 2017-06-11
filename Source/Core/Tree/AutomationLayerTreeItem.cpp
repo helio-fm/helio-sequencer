@@ -24,6 +24,7 @@
 #include "TreeItemComponentCompact.h"
 #include "TreeItemComponentDefault.h"
 #include "Pattern.h"
+#include "PatternDeltas.h"
 
 AutomationLayerTreeItem::AutomationLayerTreeItem(const String &name) :
     MidiLayerTreeItem(name)
@@ -39,7 +40,8 @@ AutomationLayerTreeItem::AutomationLayerTreeItem(const String &name) :
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), AutoLayerDeltas::layerInstrument));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), AutoLayerDeltas::layerController));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), AutoLayerDeltas::eventsAdded));
-    
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), PatternDeltas::clipsAdded));
+
     this->setGreyedOut(true); // automations not visible by default
     
 #if HELIO_MOBILE
@@ -89,6 +91,19 @@ VCS::Delta *AutomationLayerTreeItem::getDelta(int index) const
             this->deltas[index]->setDescription(VCS::DeltaDescription("{x} events", numEvents));
         }
     }
+    else if (this->deltas[index]->getType() == PatternDeltas::clipsAdded)
+    {
+        const int numClips = this->getPattern()->size();
+
+        if (numClips == 0)
+        {
+            this->deltas[index]->setDescription(VCS::DeltaDescription("empty pattern"));
+        }
+        else
+        {
+            this->deltas[index]->setDescription(VCS::DeltaDescription("{x} clips", numClips));
+        }
+    }
 
     return this->deltas[index];
 }
@@ -118,6 +133,10 @@ XmlElement *AutomationLayerTreeItem::createDeltaDataFor(int index) const
     else if (this->deltas[index]->getType() == AutoLayerDeltas::eventsAdded)
     {
         return this->serializeEventsDelta();
+    }
+    else if (this->deltas[index]->getType() == PatternDeltas::clipsAdded)
+    {
+        return this->serializeClipsDelta();
     }
 
     jassertfalse;
@@ -159,6 +178,10 @@ void AutomationLayerTreeItem::resetStateTo(const VCS::TrackedItem &newState)
         else if (newDelta->getType() == AutoLayerDeltas::eventsAdded)
         {
             this->resetEventsDelta(newDeltaData);
+        }
+        else if (newDelta->getType() == PatternDeltas::clipsAdded)
+        {
+            this->resetClipsDelta(newDeltaData);
         }
     }
     
