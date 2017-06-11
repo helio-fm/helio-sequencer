@@ -24,6 +24,8 @@ class Clip : public Serializable
 {
 public:
 
+    using Id = String;
+
 	Clip();
 	Clip(const Clip &other);
 
@@ -32,6 +34,13 @@ public:
 	XmlElement *serialize() const override;
 	void deserialize(const XmlElement &xml) override;
 	void reset() override;
+
+    Clip &operator=(const Clip &right)
+    {
+        this->id = right.id;
+        this->startBeat = right.startBeat;
+        return *this;
+    }
 
 	friend inline bool operator==(const Clip &lhs, const Clip &rhs)
 	{

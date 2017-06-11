@@ -475,6 +475,11 @@
                   file="../../Source/Core/VCS/DiffLogic/AutomationLayerDiffLogic.h"/>
             <FILE id="tzU3Zw" name="DiffLogic.cpp" compile="1" resource="0" file="../../Source/Core/VCS/DiffLogic/DiffLogic.cpp"/>
             <FILE id="o2iVIn" name="DiffLogic.h" compile="0" resource="0" file="../../Source/Core/VCS/DiffLogic/DiffLogic.h"/>
+            <FILE id="QjBtl0" name="PatternDeltas.h" compile="0" resource="0" file="../../Source/Core/VCS/DiffLogic/PatternDeltas.h"/>
+            <FILE id="S6GNkC" name="PatternDiffLogic.cpp" compile="1" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/PatternDiffLogic.cpp"/>
+            <FILE id="TaWyPn" name="PatternDiffLogic.h" compile="0" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/PatternDiffLogic.h"/>
             <FILE id="u0jV9C" name="PianoLayerDeltas.h" compile="0" resource="0"
                   file="../../Source/Core/VCS/DiffLogic/PianoLayerDeltas.h"/>
             <FILE id="ABF3BH" name="PianoLayerDiffLogic.cpp" compile="1" resource="0"
