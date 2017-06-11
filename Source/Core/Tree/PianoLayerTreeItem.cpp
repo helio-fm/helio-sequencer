@@ -22,6 +22,7 @@
 #include "TreeItemChildrenSerializer.h"
 #include "TreeItemComponent.h"
 #include "Icons.h"
+#include "Pattern.h"
 
 #include "MainLayout.h"
 #include "Instrument.h"
@@ -31,13 +32,13 @@
 #include "PianoLayerDeltas.h"
 #include "PianoLayerDiffLogic.h"
 
-
 PianoLayerTreeItem::PianoLayerTreeItem(const String &name) :
     MidiLayerTreeItem(name)
 {
     this->layer = new PianoLayer(*this);
+    this->pattern = new Pattern(*this);
 
-    // плеер сам назначит
+    // this will be set by transport
     //this->layer->setInstrumentId(this->workspace.getDefaultInstrument()->getInstrumentID());
 
     this->vcsDiffLogic = new VCS::PianoLayerDiffLogic(*this);
@@ -182,6 +183,7 @@ XmlElement *PianoLayerTreeItem::serialize() const
     xml->setAttribute("name", this->name);
 
     xml->addChildElement(this->layer->serialize());
+    xml->addChildElement(this->pattern->serialize());
 
     TreeItemChildrenSerializer::serializeChildren(*this, *xml);
 
@@ -204,6 +206,11 @@ void PianoLayerTreeItem::deserialize(const XmlElement &xml)
     forEachXmlChildElementWithTagName(xml, e, Serialization::Core::track)
     {
         this->layer->deserialize(*e);
+    }
+
+    forEachXmlChildElementWithTagName(xml, e, Serialization::Core::pattern)
+    {
+        this->pattern->deserialize(*e);
     }
 
     TreeItemChildrenSerializer::deserializeChildren(*this, xml);

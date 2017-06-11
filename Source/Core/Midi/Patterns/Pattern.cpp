@@ -193,26 +193,27 @@ String Pattern::getPatternIdAsString() const
 
 void Pattern::notifyClipChanged(const Clip &oldClip, const Clip &newClip)
 {
-	//TODO
-    //this->owner.onEventChanged(oldEvent, newEvent);
+    this->owner.dispatchChangeClip(oldClip, newClip);
 }
 
 void Pattern::notifyClipAdded(const Clip &clip)
 {
-	//TODO
-	//this->owner.onEventAdded(event);
+	this->owner.dispatchAddClip(clip);
 }
 
 void Pattern::notifyClipRemoved(const Clip &clip)
 {
-	//TODO
-	//this->owner.onEventRemoved(event);
+	this->owner.dispatchRemoveClip(clip);
+}
+
+void Pattern::notifyClipRemovedPostAction()
+{
+    this->owner.dispatchPostRemoveClip(this);
 }
 
 void Pattern::notifyPatternChanged()
 {
-	//TODO
-	//this->owner.onPatternChanged(this);
+	this->owner.dispatchReloadPattern(this);
 }
 
 
@@ -256,7 +257,7 @@ void Pattern::deserialize(const XmlElement &xml)
 		this->clips.add(c);
 	}
 
-	// Fallback to single instance at zero bar, if no instances found
+	// Fallback to single clip at zero bar, if no clips found
 	if (this->clips.size() == 0)
 	{
 		this->clips.add(Clip());

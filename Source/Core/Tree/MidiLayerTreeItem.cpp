@@ -25,6 +25,7 @@
 #include "AudioCore.h"
 #include "Icons.h"
 
+#include "Pattern.h"
 #include "PianoLayer.h"
 #include "AutomationLayer.h"
 #include "PianoRoll.h"
@@ -38,17 +39,6 @@
 MidiLayerTreeItem::MidiLayerTreeItem(const String &name) :
     TreeItem(name)
 {
-    //if (type == LayerTreeItem::Piano)
-    //{
-    //    this->layer = new PianoLayer(*this);
-    //    this->icon = Icons::findByName(Icons::layer);
-    //}
-    //else if (type == LayerTreeItem::Automation)
-    //{
-    //    this->layer = new AutomationLayer(*this);
-    //    this->icon = Icons::findByName(Icons::layer); // todo! Icons::automation
-    //}
-
     // есть связанный с этим открытый баг, когда это поле остается нулевым. отстой.
     this->lastFoundParent = this->findParentOfType<ProjectTreeItem>();
     // здесь мы не оповещаем родительский проект о добавлении нового слоя,
@@ -64,6 +54,7 @@ MidiLayerTreeItem::~MidiLayerTreeItem()
         this->removeItemFromParent();
         this->lastFoundParent->hideEditor(this->layer, this);
         this->lastFoundParent->broadcastRemoveLayer(this->layer);
+        this->lastFoundParent->broadcastRemovePattern(this->pattern);
         LayerGroupTreeItem::removeAllEmptyGroupsInProject(this->lastFoundParent);
     }
 }
@@ -370,11 +361,13 @@ void MidiLayerTreeItem::onItemMoved()
         if (this->lastFoundParent)
         {
             this->lastFoundParent->broadcastRemoveLayer(this->layer);
+            this->lastFoundParent->broadcastRemovePattern(this->pattern);
         }
 
         if (newParent)
         {
             newParent->broadcastAddLayer(this->layer);
+            newParent->broadcastAddPattern(this->pattern);
             newParent->updateActiveGroupEditors();
         }
 

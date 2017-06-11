@@ -25,6 +25,8 @@ class ProjectTreeItem;
 class Clip;
 class Pattern;
 
+#include "ProjectListener.h"
+
 class ProjectEventDispatcher
 {
 public:

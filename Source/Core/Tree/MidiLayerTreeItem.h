@@ -23,6 +23,7 @@
 #include "TrackedItem.h"
 #include "Delta.h"
 
+class Pattern;
 class MidiLayer;
 class ProjectTreeItem;
 class InstrumentDescription;
@@ -39,29 +40,27 @@ public:
     ~MidiLayerTreeItem() override;
 
 	String getXPath() const;
-
 	void setXPath(const String &path);
 
     bool isMuted() const;
-    
     Colour getColour() const override;
 
     void showPage() override;
-
     void onRename(const String &newName) override;
 
+    inline MidiLayer *getLayer() const noexcept 
+    { return this->layer; }
 
-    MidiLayer *getLayer() const { return this->layer.get(); }
+    inline Pattern *getPattern() const noexcept 
+    { return this->pattern; }
 
     void importMidi(const MidiMessageSequence &sequence);
-
 
     //===------------------------------------------------------------------===//
     // VCS::TrackedItem
     //===------------------------------------------------------------------===//
 
     String getVCSName() const override;
-
 
     //===------------------------------------------------------------------===//
     // ProjectEventDispatcher
@@ -85,19 +84,14 @@ public:
 
     ProjectTreeItem *getProject() const override;
 
-
     //===------------------------------------------------------------------===//
     // Dragging
     //===------------------------------------------------------------------===//
 
     void onItemMoved() override;
-
     var getDragSourceDescription() override;
-
     bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
-
     void itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) override;
-
 
     //===------------------------------------------------------------------===//
     // Menu
@@ -111,6 +105,8 @@ protected:
     ProjectTreeItem *lastFoundParent;
 
     ScopedPointer<MidiLayer> layer;
+
+    ScopedPointer<Pattern> pattern;
     
 private:
 
@@ -118,5 +114,4 @@ private:
     {
         return this->getXPath(); // allows edit full layer path
     }
-
 };

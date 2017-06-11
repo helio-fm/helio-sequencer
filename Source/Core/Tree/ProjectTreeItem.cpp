@@ -743,7 +743,6 @@ void ProjectTreeItem::removeAllListeners()
 
 void ProjectTreeItem::broadcastChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    //if (this->changeListeners.size() == 0) { return; }
     this->changeListeners.call(&ProjectListener::onChangeMidiEvent, oldEvent, newEvent);
     this->sendChangeMessage();
 }
@@ -785,6 +784,50 @@ void ProjectTreeItem::broadcastRemoveLayer(const MidiLayer *layer)
     this->isLayersHashOutdated = true;
     this->unregisterVcsItem(layer);
     this->changeListeners.call(&ProjectListener::onRemoveMidiLayer, layer);
+    this->sendChangeMessage();
+}
+
+void ProjectTreeItem::broadcastAddClip(const Clip &clip)
+{
+    this->changeListeners.call(&ProjectListener::onAddClip, clip);
+    this->sendChangeMessage();
+}
+
+void ProjectTreeItem::broadcastChangeClip(const Clip &oldClip, const Clip &newClip)
+{
+    this->changeListeners.call(&ProjectListener::onChangeClip, oldClip, newClip);
+    this->sendChangeMessage();
+}
+
+void ProjectTreeItem::broadcastRemoveClip(const Clip &clip)
+{
+    this->changeListeners.call(&ProjectListener::onRemoveClip, clip);
+    this->sendChangeMessage();
+}
+
+void ProjectTreeItem::broadcastPostRemoveClip(const Pattern *pattern)
+{
+    this->changeListeners.call(&ProjectListener::onPostRemoveClip, pattern);
+    this->sendChangeMessage();
+}
+
+void ProjectTreeItem::broadcastChangePattern(const Pattern *pattern)
+{
+    this->changeListeners.call(&ProjectListener::onChangePattern, pattern);
+    this->sendChangeMessage();
+}
+
+void ProjectTreeItem::broadcastAddPattern(const Pattern *pattern)
+{
+    this->registerVcsItem(pattern);
+    this->changeListeners.call(&ProjectListener::onAddPattern, pattern);
+    this->sendChangeMessage();
+}
+
+void ProjectTreeItem::broadcastRemovePattern(const Pattern *pattern)
+{
+    this->unregisterVcsItem(pattern);
+    this->changeListeners.call(&ProjectListener::onRemovePattern, pattern);
     this->sendChangeMessage();
 }
 
@@ -981,6 +1024,19 @@ void ProjectTreeItem::registerVcsItem(const MidiLayer *layer)
 	}
 }
 
+void ProjectTreeItem::registerVcsItem(const Pattern *pattern)
+{
+    const auto children = this->findChildrenOfType<MidiLayerTreeItem>();
+    for (MidiLayerTreeItem *item : children)
+    {
+        if (item->getPattern() == pattern)
+        {
+            ScopedWriteLock lock(this->vcsInfoLock);
+            this->vcsItems.addIfNotAlreadyThere(item);
+        }
+    }
+}
+
 void ProjectTreeItem::unregisterVcsItem(const MidiLayer *layer)
 {
 	const auto children = this->findChildrenOfType<MidiLayerTreeItem>();
@@ -992,6 +1048,20 @@ void ProjectTreeItem::unregisterVcsItem(const MidiLayer *layer)
 			this->vcsItems.addIfNotAlreadyThere(item);
 		}
 	}
+}
+
+
+void ProjectTreeItem::unregisterVcsItem(const Pattern *pattern)
+{
+    const auto children = this->findChildrenOfType<MidiLayerTreeItem>();
+    for (MidiLayerTreeItem *item : children)
+    {
+        if (item->getPattern() == pattern)
+        {
+            ScopedWriteLock lock(this->vcsInfoLock);
+            this->vcsItems.addIfNotAlreadyThere(item);
+        }
+    }
 }
 
 void ProjectTreeItem::rebuildLayersHashIfNeeded()

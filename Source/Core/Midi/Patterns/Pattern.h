@@ -87,7 +87,8 @@ public:
     void notifyClipChanged(const Clip &oldClip, const Clip &newClip);
     void notifyClipAdded(const Clip &clip);
     void notifyClipRemoved(const Clip &clip);
-	void notifyPatternChanged();
+    void notifyClipRemovedPostAction();
+    void notifyPatternChanged();
 
 	//===------------------------------------------------------------------===//
 	// Serializable

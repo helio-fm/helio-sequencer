@@ -23,11 +23,14 @@
 #include "Icons.h"
 #include "TreeItemComponentCompact.h"
 #include "TreeItemComponentDefault.h"
+#include "Pattern.h"
 
 AutomationLayerTreeItem::AutomationLayerTreeItem(const String &name) :
     MidiLayerTreeItem(name)
 {
     this->layer = new AutomationLayer(*this);
+    this->pattern = new Pattern(*this);
+
     this->vcsDiffLogic = new VCS::AutomationLayerDiffLogic(*this);
 
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), AutoLayerDeltas::layerPath));
@@ -178,6 +181,7 @@ XmlElement *AutomationLayerTreeItem::serialize() const
     xml->setAttribute("name", this->name);
 
     xml->addChildElement(this->layer->serialize());
+    xml->addChildElement(this->pattern->serialize());
 
     TreeItemChildrenSerializer::serializeChildren(*this, *xml);
 
@@ -200,6 +204,11 @@ void AutomationLayerTreeItem::deserialize(const XmlElement &xml)
     forEachXmlChildElementWithTagName(xml, e, Serialization::Core::automation)
     {
         this->layer->deserialize(*e);
+    }
+
+    forEachXmlChildElementWithTagName(xml, e, Serialization::Core::pattern)
+    {
+        this->pattern->deserialize(*e);
     }
 
     TreeItemChildrenSerializer::deserializeChildren(*this, xml);

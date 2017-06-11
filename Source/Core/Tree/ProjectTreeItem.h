@@ -193,14 +193,23 @@ public:
     // Broadcaster
     //===------------------------------------------------------------------===//
 
-    void broadcastChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent);
     void broadcastAddEvent(const MidiEvent &event);
+    void broadcastChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent);
     void broadcastRemoveEvent(const MidiEvent &event);
 	void broadcastPostRemoveEvent(const MidiLayer *layer);
 
+    void broadcastAddLayer(const MidiLayer *layer);
     void broadcastChangeLayer(const MidiLayer *layer);
-	void broadcastAddLayer(const MidiLayer *layer);
     void broadcastRemoveLayer(const MidiLayer *layer);
+
+    void broadcastAddClip(const Clip &clip);
+    void broadcastChangeClip(const Clip &oldClip, const Clip &newClip);
+    void broadcastRemoveClip(const Clip &clip);
+    void broadcastPostRemoveClip(const Pattern *pattern);
+
+    void broadcastAddPattern(const Pattern *pattern);
+    void broadcastChangePattern(const Pattern *pattern);
+    void broadcastRemovePattern(const Pattern *pattern);
 
     void broadcastChangeProjectInfo(const ProjectInfo *info);
     void broadcastChangeProjectBeatRange();
@@ -283,7 +292,10 @@ private:
 private:
 
     void registerVcsItem(const MidiLayer *layer);
+    void registerVcsItem(const Pattern *pattern);
+
     void unregisterVcsItem(const MidiLayer *layer);
+    void unregisterVcsItem(const Pattern *pattern);
 
     ReadWriteLock vcsInfoLock;
     Array<const VCS::TrackedItem *> vcsItems;
