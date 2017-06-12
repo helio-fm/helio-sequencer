@@ -22,10 +22,10 @@
 #include "WipeSpaceHelper.h"
 
 //[MiscUserDefs]
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 //[/MiscUserDefs]
 
-WipeSpaceHelper::WipeSpaceHelper(MidiRoll &parentRoll)
+WipeSpaceHelper::WipeSpaceHelper(HybridRoll &parentRoll)
     : roll(parentRoll),
       startBeat(0.f),
       endBeat(0.f)
@@ -138,7 +138,7 @@ void WipeSpaceHelper::fadeIn()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="WipeSpaceHelper" template="../../../Template"
-                 componentName="" parentClasses="public Component" constructorParams="MidiRoll &amp;parentRoll"
+                 componentName="" parentClasses="public Component" constructorParams="HybridRoll &amp;parentRoll"
                  variableInitialisers="roll(parentRoll),&#10;startBeat(0.f),&#10;endBeat(0.f)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="128" initialHeight="256">

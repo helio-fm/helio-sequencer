@@ -52,7 +52,7 @@
 #include "Workspace.h"
 #include "MainWindow.h"
 #include "HelioCallout.h"
-#include "MidiRollCommandPanel.h"
+#include "HybridRollCommandPanel.h"
 
 #include "ColourSchemeManager.h"
 #include "ColourScheme.h"

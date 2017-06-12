@@ -26,7 +26,7 @@
 #include "AudioCore.h"
 #include "Instrument.h"
 #include "MidiLayer.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 #include "ProjectTreeItem.h"
 #include "ModalDialogInput.h"
 
@@ -60,7 +60,7 @@ void LayerCommandPanel::handleCommandMessage(int commandId)
             
             if (ProjectTreeItem *project = this->layerItem.getProject())
             {
-                if (MidiRoll *roll = dynamic_cast<MidiRoll *>(project->getLastFocusedRoll()))
+                if (HybridRoll *roll = dynamic_cast<HybridRoll *>(project->getLastFocusedRoll()))
                 {
                     roll->selectAll();
                 }
@@ -143,7 +143,7 @@ void LayerCommandPanel::handleCommandMessage(int commandId)
                 project->getUndoStack()->perform(new AutoLayerTreeItemRemoveAction(*project, layerId));
             }
             
-            if (MidiRoll *roll = dynamic_cast<MidiRoll *>(project->getLastFocusedRoll()))
+            if (HybridRoll *roll = dynamic_cast<HybridRoll *>(project->getLastFocusedRoll()))
             {
                 roll->grabKeyboardFocus();
             }
@@ -311,7 +311,7 @@ void LayerCommandPanel::exit()
 {
     if (ProjectTreeItem *project = this->layerItem.getProject())
     {
-        if (MidiRoll *roll = dynamic_cast<MidiRoll *>(project->getLastFocusedRoll()))
+        if (HybridRoll *roll = dynamic_cast<HybridRoll *>(project->getLastFocusedRoll()))
         {
             roll->grabKeyboardFocus();
         }

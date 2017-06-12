@@ -19,13 +19,13 @@
 #include "Common.h"
 //[/Headers]
 
-#include "MidiRollExpandMark.h"
+#include "HybridRollExpandMark.h"
 
 //[MiscUserDefs]
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 //[/MiscUserDefs]
 
-MidiRollExpandMark::MidiRollExpandMark(MidiRoll &parentRoll, float targetBar, int numBarsToTake)
+HybridRollExpandMark::HybridRollExpandMark(HybridRoll &parentRoll, float targetBar, int numBarsToTake)
     : roll(parentRoll),
       bar(targetBar),
       numBars(numBarsToTake),
@@ -45,7 +45,7 @@ MidiRollExpandMark::MidiRollExpandMark(MidiRoll &parentRoll, float targetBar, in
     //[/Constructor]
 }
 
-MidiRollExpandMark::~MidiRollExpandMark()
+HybridRollExpandMark::~HybridRollExpandMark()
 {
     //[Destructor_pre]
     //[/Destructor_pre]
@@ -56,7 +56,7 @@ MidiRollExpandMark::~MidiRollExpandMark()
     //[/Destructor]
 }
 
-void MidiRollExpandMark::paint (Graphics& g)
+void HybridRollExpandMark::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
@@ -67,7 +67,7 @@ void MidiRollExpandMark::paint (Graphics& g)
     //[/UserPaint]
 }
 
-void MidiRollExpandMark::resized()
+void HybridRollExpandMark::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
@@ -77,14 +77,14 @@ void MidiRollExpandMark::resized()
     //[/UserResized]
 }
 
-void MidiRollExpandMark::parentHierarchyChanged()
+void HybridRollExpandMark::parentHierarchyChanged()
 {
     //[UserCode_parentHierarchyChanged] -- Add your code here...
     this->updatePosition();
     //[/UserCode_parentHierarchyChanged]
 }
 
-void MidiRollExpandMark::parentSizeChanged()
+void HybridRollExpandMark::parentSizeChanged()
 {
     //[UserCode_parentSizeChanged] -- Add your code here...
     this->updatePosition();
@@ -93,7 +93,7 @@ void MidiRollExpandMark::parentSizeChanged()
 
 
 //[MiscUserCode]
-void MidiRollExpandMark::updatePosition()
+void HybridRollExpandMark::updatePosition()
 {
     const float barOffset = this->bar - this->roll.getFirstBar();
     const int xOffset = int(barOffset * this->roll.getBarWidth());
@@ -102,7 +102,7 @@ void MidiRollExpandMark::updatePosition()
     this->setBounds(xOffset, 0, newWidth, this->getParentHeight());
 }
 
-void MidiRollExpandMark::timerCallback()
+void HybridRollExpandMark::timerCallback()
 {
     this->alpha -= 0.015f;
 
@@ -122,9 +122,9 @@ void MidiRollExpandMark::timerCallback()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="MidiRollExpandMark" template="../../../Template"
+<JUCER_COMPONENT documentType="Component" className="HybridRollExpandMark" template="../../../Template"
                  componentName="" parentClasses="public Component, private Timer"
-                 constructorParams="MidiRoll &amp;parentRoll, float targetBar, int numBarsToTake"
+                 constructorParams="HybridRoll &amp;parentRoll, float targetBar, int numBarsToTake"
                  variableInitialisers="roll(parentRoll),&#10;bar(targetBar),&#10;numBars(numBarsToTake),&#10;alpha(1.f)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="256" initialHeight="48">

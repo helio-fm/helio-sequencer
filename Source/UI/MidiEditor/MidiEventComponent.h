@@ -19,13 +19,13 @@
 
 class MidiEvent;
 class MidiLayer;
-class MidiRoll;
+class HybridRoll;
 
 class MidiEventComponent : public Component
 {
 public:
 
-    MidiEventComponent(MidiRoll &editor, const MidiEvent &event);
+    MidiEventComponent(HybridRoll &editor, const MidiEvent &event);
 
     const MidiEvent &getEvent() const;
 
@@ -60,7 +60,7 @@ protected:
 
     void activateCorrespondingLayer(bool selectOthers, bool deselectOthers);
 
-    MidiRoll &roll;
+    HybridRoll &roll;
 
     const MidiEvent &midiEvent;
 

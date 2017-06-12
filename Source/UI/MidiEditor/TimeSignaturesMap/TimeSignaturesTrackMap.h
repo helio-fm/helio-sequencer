@@ -20,7 +20,7 @@
 #include "TimeSignatureEvent.h"
 #include "ProjectListener.h"
 
-class MidiRoll;
+class HybridRoll;
 class ProjectTreeItem;
 class TrackStartIndicator;
 class TrackEndIndicator;
@@ -32,7 +32,7 @@ class TimeSignaturesTrackMap :
 {
 public:
 
-    TimeSignaturesTrackMap(ProjectTreeItem &parentProject, MidiRoll &parentRoll);
+    TimeSignaturesTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll);
 
     ~TimeSignaturesTrackMap() override;
 
@@ -97,7 +97,7 @@ private:
     float rollFirstBeat;
     float rollLastBeat;
     
-    MidiRoll &roll;
+    HybridRoll &roll;
     ProjectTreeItem &project;
     
     ScopedPointer<TrackStartIndicator> trackStartIndicator;

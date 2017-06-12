@@ -27,7 +27,7 @@
 #include "App.h"
 #include "Workspace.h"
 #include "AudioCore.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 
 #if PLAYER_THREAD_SENDS_SEEK_EVENTS
 #   define PLAYER_THREAD_STOP_TIME_MS 1500

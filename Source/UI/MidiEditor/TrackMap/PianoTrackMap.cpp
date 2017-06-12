@@ -21,7 +21,7 @@
 #include "MidiLayer.h"
 #include "PianoLayer.h"
 #include "PlayerThread.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 #include "AnnotationEvent.h"
 
 class TrackMapNoteComponent : public Component
@@ -80,7 +80,7 @@ private:
 };
 
 
-PianoTrackMap::PianoTrackMap(ProjectTreeItem &parentProject, MidiRoll &parentRoll) :
+PianoTrackMap::PianoTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll) :
     project(parentProject),
     roll(parentRoll),
     projectFirstBeat(0.f),

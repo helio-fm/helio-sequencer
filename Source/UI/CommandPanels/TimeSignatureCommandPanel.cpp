@@ -21,7 +21,7 @@
 #include "MainLayout.h"
 #include "ModalDialogInput.h"
 #include "Icons.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 #include "TimeSignatureEvent.h"
 #include "TimeSignaturesLayer.h"
 #include "PianoLayerTreeItem.h"
@@ -46,7 +46,7 @@ TimeSignatureCommandPanel::~TimeSignatureCommandPanel()
 
 void TimeSignatureCommandPanel::handleCommandMessage(int commandId)
 {
-    if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
+    if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
     {
         if (commandId == CommandIDs::ChangeTimeSignature)
         {

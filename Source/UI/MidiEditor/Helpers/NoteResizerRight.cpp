@@ -22,15 +22,15 @@
 #include "NoteResizerRight.h"
 
 //[MiscUserDefs]
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 #include "PianoRoll.h"
 #include "PianoLayer.h"
-#include "MidiRollToolbox.h"
+#include "PianoRollToolbox.h"
 #include "NoteComponent.h"
 #include <float.h>
 //[/MiscUserDefs]
 
-NoteResizerRight::NoteResizerRight(MidiRoll &parentRoll)
+NoteResizerRight::NoteResizerRight(HybridRoll &parentRoll)
     : roll(parentRoll)
 {
     addAndMakeVisible (resizeIcon = new IconComponent (Icons::stretchRight));
@@ -117,7 +117,7 @@ void NoteResizerRight::mouseDown (const MouseEvent& e)
     this->dragger.startDraggingComponent(this, e);
 
     const MidiEventSelection &selection = this->roll.getLassoSelection();
-    const float groupStartBeat = MidiRollToolbox::findStartBeat(selection);
+    const float groupStartBeat = PianoRollToolbox::findStartBeat(selection);
 
     this->noteComponent = this->findRightMostEvent(selection);
 
@@ -218,7 +218,7 @@ void NoteResizerRight::updateBounds(NoteComponent *anchorComponent)
     const MidiEventSelection &selection = this->roll.getLassoSelection();
     const float groupEndBeat = (anchorComponent != nullptr) ?
                                 (anchorComponent->getBeat() + anchorComponent->getLength()) :
-                                MidiRollToolbox::findEndBeat(selection);
+                                PianoRollToolbox::findEndBeat(selection);
 
     const int xAnchor = this->roll.getXPositionByBeat(groupEndBeat);
     const int yAnchor = this->roll.getViewport().getViewPositionY() + MIDIROLL_HEADER_HEIGHT;
@@ -244,7 +244,7 @@ void NoteResizerRight::updateTopPosition()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="NoteResizerRight" template="../../../Template"
-                 componentName="" parentClasses="public Component" constructorParams="MidiRoll &amp;parentRoll"
+                 componentName="" parentClasses="public Component" constructorParams="HybridRoll &amp;parentRoll"
                  variableInitialisers="roll(parentRoll)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="64"
                  initialHeight="256">

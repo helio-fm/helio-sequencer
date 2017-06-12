@@ -18,7 +18,7 @@
 #pragma once
 
 class Transport;
-class MidiRoll;
+class HybridRoll;
 class MovementListener;
 
 #include "TransportListener.h"
@@ -38,7 +38,7 @@ public:
         virtual void onTransportIndicatorMoved(int indicatorX) = 0;
     };
 
-    TransportIndicator(MidiRoll &parentRoll,
+    TransportIndicator(HybridRoll &parentRoll,
                        Transport &owner,
                        TransportIndicator::MovementListener *movementListener = nullptr,
                        int width = 2);
@@ -75,7 +75,7 @@ public:
 
 protected:
 
-    MidiRoll &roll;
+    HybridRoll &roll;
 
     Transport &transport;
 

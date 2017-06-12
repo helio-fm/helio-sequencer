@@ -22,10 +22,10 @@
 #include "InsertSpaceHelper.h"
 
 //[MiscUserDefs]
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 //[/MiscUserDefs]
 
-InsertSpaceHelper::InsertSpaceHelper(MidiRoll &parentRoll)
+InsertSpaceHelper::InsertSpaceHelper(HybridRoll &parentRoll)
     : roll(parentRoll),
       startBeat(0.f),
       endBeat(0.f),
@@ -160,7 +160,7 @@ void InsertSpaceHelper::fadeIn()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="InsertSpaceHelper" template="../../../Template"
-                 componentName="" parentClasses="public Component" constructorParams="MidiRoll &amp;parentRoll"
+                 componentName="" parentClasses="public Component" constructorParams="HybridRoll &amp;parentRoll"
                  variableInitialisers="roll(parentRoll),&#10;startBeat(0.f),&#10;endBeat(0.f),&#10;endBeatAnchor(0.f)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="128" initialHeight="256">

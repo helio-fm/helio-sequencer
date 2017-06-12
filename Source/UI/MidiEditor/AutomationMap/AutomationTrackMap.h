@@ -20,7 +20,7 @@
 #include "AutomationEvent.h"
 #include "ProjectListener.h"
 
-class MidiRoll;
+class HybridRoll;
 class ProjectTreeItem;
 class AutomationCurveHelper;
 class AutomationEventComponent;
@@ -39,7 +39,7 @@ class AutomationTrackMap : public AutomationTrackMapCommon
 {
 public:
     
-    AutomationTrackMap(ProjectTreeItem &parentProject, MidiRoll &parentRoll, WeakReference<MidiLayer> targetLayer);
+    AutomationTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll, WeakReference<MidiLayer> targetLayer);
     
     ~AutomationTrackMap() override;
     
@@ -108,7 +108,7 @@ private:
     float rollFirstBeat;
     float rollLastBeat;
     
-    MidiRoll &roll;
+    HybridRoll &roll;
     ProjectTreeItem &project;
 
     WeakReference<MidiLayer> layer;

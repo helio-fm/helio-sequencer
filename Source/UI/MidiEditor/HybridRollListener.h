@@ -17,18 +17,18 @@
 
 #pragma once
 
-class MidiRoll;
+class HybridRoll;
 
-class MidiRollListener
+class HybridRollListener
 {
 public:
     
-    MidiRollListener() {}
+    HybridRollListener() {}
     
-    virtual ~MidiRollListener() {}
+    virtual ~HybridRollListener() {}
     
-    virtual void onMidiRollMoved(MidiRoll *targetRoll) = 0;
+    virtual void onMidiRollMoved(HybridRoll *targetRoll) = 0;
     
-    virtual void onMidiRollResized(MidiRoll *targetRoll) = 0;
+    virtual void onMidiRollResized(HybridRoll *targetRoll) = 0;
     
 };

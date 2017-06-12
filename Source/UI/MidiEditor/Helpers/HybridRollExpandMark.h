@@ -18,19 +18,19 @@
 #pragma once
 
 //[Headers]
-class MidiRoll;
+class HybridRoll;
 #include "IconComponent.h"
 //[/Headers]
 
 
-class MidiRollExpandMark  : public Component,
+class HybridRollExpandMark  : public Component,
                             private Timer
 {
 public:
 
-    MidiRollExpandMark (MidiRoll &parentRoll, float targetBar, int numBarsToTake);
+    HybridRollExpandMark (HybridRoll &parentRoll, float targetBar, int numBarsToTake);
 
-    ~MidiRollExpandMark();
+    ~HybridRollExpandMark();
 
     //[UserMethods]
     //[/UserMethods]
@@ -48,7 +48,7 @@ private:
     void timerCallback() override;
     void updatePosition();
 
-    MidiRoll &roll;
+    HybridRoll &roll;
 
     float bar;
     float alpha;
@@ -58,5 +58,5 @@ private:
 
     ScopedPointer<IconComponent> plusImage;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MidiRollExpandMark)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HybridRollExpandMark)
 };

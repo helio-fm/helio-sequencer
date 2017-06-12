@@ -19,7 +19,7 @@
 #include "Common.h"
 //[/Headers]
 
-#include "MidiRollCommandPanelDefault.h"
+#include "HybridRollCommandPanelDefault.h"
 
 //[MiscUserDefs]
 #include "Transport.h"
@@ -27,8 +27,8 @@
 #include "CommandIDs.h"
 //[/MiscUserDefs]
 
-MidiRollCommandPanelDefault::MidiRollCommandPanelDefault(ProjectTreeItem &parent)
-    : MidiRollCommandPanel(parent)
+HybridRollCommandPanelDefault::HybridRollCommandPanelDefault(ProjectTreeItem &parent)
+    : HybridRollCommandPanel(parent)
 {
     addAndMakeVisible (headBg = new PanelBackgroundC());
     addAndMakeVisible (bodyBg = new PanelBackgroundC());
@@ -91,7 +91,7 @@ MidiRollCommandPanelDefault::MidiRollCommandPanelDefault(ProjectTreeItem &parent
     //[/Constructor]
 }
 
-MidiRollCommandPanelDefault::~MidiRollCommandPanelDefault()
+HybridRollCommandPanelDefault::~HybridRollCommandPanelDefault()
 {
     //[Destructor_pre]
     //[/Destructor_pre]
@@ -114,7 +114,7 @@ MidiRollCommandPanelDefault::~MidiRollCommandPanelDefault()
     //[/Destructor]
 }
 
-void MidiRollCommandPanelDefault::paint (Graphics& g)
+void HybridRollCommandPanelDefault::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
@@ -123,7 +123,7 @@ void MidiRollCommandPanelDefault::paint (Graphics& g)
     //[/UserPaint]
 }
 
-void MidiRollCommandPanelDefault::resized()
+void HybridRollCommandPanelDefault::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
@@ -142,7 +142,7 @@ void MidiRollCommandPanelDefault::resized()
     gradient->setBounds (0, 0, getWidth() - 0, 47);
     annotationsButton->setBounds ((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 45);
     //[UserResized] Add your own custom resize handling here..
-    //Logger::writeToLog("MidiRollCommandPanel updateContent");
+    //Logger::writeToLog("HybridRollCommandPanel updateContent");
     // a hack for themes changing
     this->listBox->updateContent();
     this->annotationsButton->resized();
@@ -157,14 +157,14 @@ void MidiRollCommandPanelDefault::resized()
     //[/UserResized]
 }
 
-void MidiRollCommandPanelDefault::childrenChanged()
+void HybridRollCommandPanelDefault::childrenChanged()
 {
     //[UserCode_childrenChanged] -- Add your code here...
     //this->updateButtonsImages();
     //[/UserCode_childrenChanged]
 }
 
-void MidiRollCommandPanelDefault::mouseMove (const MouseEvent& e)
+void HybridRollCommandPanelDefault::mouseMove (const MouseEvent& e)
 {
     //[UserCode_mouseMove] -- Add your code here...
     //[/UserCode_mouseMove]
@@ -178,7 +178,7 @@ void MidiRollCommandPanelDefault::mouseMove (const MouseEvent& e)
 //
 
 Component
-*MidiRollCommandPanelDefault::refreshComponentForRow(int rowNumber, bool isRowSelected,
+*HybridRollCommandPanelDefault::refreshComponentForRow(int rowNumber, bool isRowSelected,
                                                      Component *existingComponentToUpdate)
 {
     if (rowNumber >= this->commandDescriptions.size())
@@ -211,7 +211,7 @@ Component
 // AsyncUpdater
 //
 
-void MidiRollCommandPanelDefault::handleAsyncUpdate()
+void HybridRollCommandPanelDefault::handleAsyncUpdate()
 {
     if (this->isTimerRunning())
     {
@@ -231,35 +231,35 @@ void MidiRollCommandPanelDefault::handleAsyncUpdate()
 // TransportListener
 //
 
-void MidiRollCommandPanelDefault::onTotalTimeChanged(const double timeMs)
+void HybridRollCommandPanelDefault::onTotalTimeChanged(const double timeMs)
 {
-    MidiRollCommandPanel::onTotalTimeChanged(timeMs);
+    HybridRollCommandPanel::onTotalTimeChanged(timeMs);
     this->totalTime->setText(Transport::getTimeString(this->lastTotalTime), dontSendNotification);
 }
 
-void MidiRollCommandPanelDefault::onPlay()
+void HybridRollCommandPanelDefault::onPlay()
 {
-    MidiRollCommandPanel::onPlay();
+    HybridRollCommandPanel::onPlay();
     this->playButton->setPlaying(true);
 }
 
-void MidiRollCommandPanelDefault::onStop()
+void HybridRollCommandPanelDefault::onStop()
 {
-    MidiRollCommandPanel::onStop();
+    HybridRollCommandPanel::onStop();
     this->playButton->setPlaying(false);
 }
 
 //===--------------------------------------------------------------------------===//
-// MidiRollCommandPanel
+// HybridRollCommandPanel
 //
 
-void MidiRollCommandPanelDefault::updateModeButtons()
+void HybridRollCommandPanelDefault::updateModeButtons()
 {
     this->recreateCommandDescriptions();
     this->listBox->updateContent();
 }
 
-void MidiRollCommandPanelDefault::emitAnnotationsCallout(Component *newAnnotationsMenu)
+void HybridRollCommandPanelDefault::emitAnnotationsCallout(Component *newAnnotationsMenu)
 {
     HelioCallout::emit(newAnnotationsMenu, this->annotationsButton);
 }
@@ -270,9 +270,9 @@ void MidiRollCommandPanelDefault::emitAnnotationsCallout(Component *newAnnotatio
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="MidiRollCommandPanelDefault"
-                 template="../../Template" componentName="" parentClasses="public MidiRollCommandPanel"
-                 constructorParams="ProjectTreeItem &amp;parent" variableInitialisers="MidiRollCommandPanel(parent)"
+<JUCER_COMPONENT documentType="Component" className="HybridRollCommandPanelDefault"
+                 template="../../Template" componentName="" parentClasses="public HybridRollCommandPanel"
+                 constructorParams="ProjectTreeItem &amp;parent" variableInitialisers="HybridRollCommandPanel(parent)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="64" initialHeight="640">
   <METHODS>
@@ -336,5 +336,5 @@ static const unsigned char resource_MidiRollCommandPanelDefault_gray1x1_png[] = 
 0,0,11,19,1,0,154,156,24,0,0,0,7,116,73,77,69,7,222,4,19,5,8,9,228,2,121,9,0,0,0,29,105,84,88,116,67,111,109,109,101,110,116,0,0,0,0,0,67,114,101,97,116,101,100,32,119,105,116,104,32,71,73,77,80,100,46,
 101,7,0,0,0,12,73,68,65,84,8,215,99,136,138,138,2,0,2,32,1,15,53,60,95,243,0,0,0,0,73,69,78,68,174,66,96,130,0,0};
 
-const char* MidiRollCommandPanelDefault::gray1x1_png = (const char*) resource_MidiRollCommandPanelDefault_gray1x1_png;
-const int MidiRollCommandPanelDefault::gray1x1_pngSize = 150;
+const char* HybridRollCommandPanelDefault::gray1x1_png = (const char*) resource_MidiRollCommandPanelDefault_gray1x1_png;
+const int HybridRollCommandPanelDefault::gray1x1_pngSize = 150;

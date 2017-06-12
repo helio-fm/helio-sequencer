@@ -17,25 +17,25 @@
 
 #pragma once
 
-class MidiRoll;
+class HybridRoll;
 class TrackMap;
 class TrackScrollerScreen;
 class TransportIndicator;
 class Transport;
 
 #include "HelperRectangle.h"
-#include "MidiRollListener.h"
+#include "HybridRollListener.h"
 #include "ComponentFader.h"
 
 class TrackScroller :
     public Component,
-    public MidiRollListener,
+    public HybridRollListener,
     private AsyncUpdater
 {
 public:
 
     TrackScroller(Transport &transport,
-                  MidiRoll &roll);
+                  HybridRoll &roll);
 
     ~TrackScroller() override;
     
@@ -89,12 +89,12 @@ public:
 
     
     //===------------------------------------------------------------------===//
-    // MidiRollListener
+    // HybridRollListener
     //===------------------------------------------------------------------===//
     
-    void onMidiRollMoved(MidiRoll *targetRoll) override;
+    void onMidiRollMoved(HybridRoll *targetRoll) override;
     
-    void onMidiRollResized(MidiRoll *targetRoll) override;
+    void onMidiRollResized(HybridRoll *targetRoll) override;
     
     
     //===------------------------------------------------------------------===//
@@ -169,7 +169,7 @@ private:
     void handleAsyncUpdate() override;
     
     Transport &transport;
-    MidiRoll &roll;
+    HybridRoll &roll;
     
     ScopedPointer<Component> background;
     ScopedPointer<TrackScrollerScreen> screenRange;

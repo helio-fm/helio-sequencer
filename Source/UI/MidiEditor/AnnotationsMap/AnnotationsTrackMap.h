@@ -20,7 +20,7 @@
 #include "AnnotationEvent.h"
 #include "ProjectListener.h"
 
-class MidiRoll;
+class HybridRoll;
 class ProjectTreeItem;
 class TrackStartIndicator;
 class TrackEndIndicator;
@@ -32,7 +32,7 @@ class AnnotationsTrackMap :
 {
 public:
 
-    AnnotationsTrackMap(ProjectTreeItem &parentProject, MidiRoll &parentRoll);
+    AnnotationsTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll);
 
     ~AnnotationsTrackMap() override;
 
@@ -95,7 +95,7 @@ private:
     float rollFirstBeat;
     float rollLastBeat;
     
-    MidiRoll &roll;
+    HybridRoll &roll;
     ProjectTreeItem &project;
     
     ComponentAnimator animator;

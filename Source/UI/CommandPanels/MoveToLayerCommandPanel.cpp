@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "MoveToLayerCommandPanel.h"
 #include "ProjectTreeItem.h"
-#include "MidiRollToolbox.h"
+#include "PianoRollToolbox.h"
 #include "PianoLayerTreeItem.h"
 #include "PianoRoll.h"
 #include "Icons.h"
@@ -66,7 +66,7 @@ void MoveToLayerCommandPanel::handleCommandMessage(int commandId)
         if (! alreadyBelongsTo)
         {
             //Logger::writeToLog("Moving notes to " + layerItems[layerIndex]->getXPath());
-            MidiRollToolbox::moveToLayer(this->roll.getLassoSelection(), layerItems[layerIndex]->getLayer());
+            PianoRollToolbox::moveToLayer(this->roll.getLassoSelection(), layerItems[layerIndex]->getLayer());
             layerItems[layerIndex]->setSelected(false, false, sendNotification);
             layerItems[layerIndex]->setSelected(true, true, sendNotification);
             this->dismiss();

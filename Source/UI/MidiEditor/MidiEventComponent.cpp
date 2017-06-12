@@ -20,9 +20,9 @@
 #include "ProjectTreeItem.h"
 #include "MidiLayer.h"
 #include "MidiEvent.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 
-MidiEventComponent::MidiEventComponent(MidiRoll &editor, const MidiEvent &event) :
+MidiEventComponent::MidiEventComponent(HybridRoll &editor, const MidiEvent &event) :
     roll(editor),
     midiEvent(event),
     dragger(),

@@ -16,8 +16,8 @@
 */
 
 #include "Common.h"
-#include "MidiRollHeader.h"
-#include "MidiRoll.h"
+#include "HybridRollHeader.h"
+#include "HybridRoll.h"
 #include "MidiLayer.h"
 #include "Transport.h"
 #include "AnnotationsTrackMap.h"
@@ -34,7 +34,7 @@
 #define MIDIROLL_HEADER_SELECTION_ALIGNS_TO_BEATS 0
 #define MIN_TIME_DISTANCE_INDICATOR_SIZE (40)
 
-MidiRollHeader::MidiRollHeader(Transport &transportRef, MidiRoll &rollRef, Viewport &viewportRef) :
+HybridRollHeader::HybridRollHeader(Transport &transportRef, HybridRoll &rollRef, Viewport &viewportRef) :
     transport(transportRef),
     roll(rollRef),
     viewport(viewportRef),
@@ -46,11 +46,11 @@ MidiRollHeader::MidiRollHeader(Transport &transportRef, MidiRoll &rollRef, Viewp
     this->setSize(this->getParentWidth(), MIDIROLL_HEADER_HEIGHT);
 }
 
-MidiRollHeader::~MidiRollHeader()
+HybridRollHeader::~HybridRollHeader()
 {
 }
 
-void MidiRollHeader::setSoundProbeMode(bool shouldPlayOnClick)
+void HybridRollHeader::setSoundProbeMode(bool shouldPlayOnClick)
 {
     if (this->soundProbeMode == shouldPlayOnClick)
     {
@@ -71,25 +71,25 @@ void MidiRollHeader::setSoundProbeMode(bool shouldPlayOnClick)
     }
 }
 
-void MidiRollHeader::setActive(bool shouldBeActive)
+void HybridRollHeader::setActive(bool shouldBeActive)
 {
     this->isActive = shouldBeActive;
     this->repaint();
 }
 
-void MidiRollHeader::updateIndicatorPosition(SoundProbeIndicator *indicator, const MouseEvent &e)
+void HybridRollHeader::updateIndicatorPosition(SoundProbeIndicator *indicator, const MouseEvent &e)
 {
     indicator->setAnchoredAt(this->getAlignedAnchorForEvent(e));
 }
 
-float MidiRollHeader::getUnalignedAnchorForEvent(const MouseEvent &e) const
+float HybridRollHeader::getUnalignedAnchorForEvent(const MouseEvent &e) const
 {
     const MouseEvent parentEvent = e.getEventRelativeTo(&this->roll);
     const float absX = float(parentEvent.getPosition().getX()) / float(this->roll.getWidth());
     return absX;
 }
 
-float MidiRollHeader::getAlignedAnchorForEvent(const MouseEvent &e) const
+float HybridRollHeader::getAlignedAnchorForEvent(const MouseEvent &e) const
 {
     const MouseEvent parentEvent = e.getEventRelativeTo(&this->roll);
     
@@ -104,7 +104,7 @@ float MidiRollHeader::getAlignedAnchorForEvent(const MouseEvent &e) const
     return absX;
 }
 
-void MidiRollHeader::updateTimeDistanceIndicator()
+void HybridRollHeader::updateTimeDistanceIndicator()
 {
     if (this->pointingIndicator == nullptr ||
         this->playingIndicator == nullptr ||
@@ -140,7 +140,7 @@ void MidiRollHeader::updateTimeDistanceIndicator()
 // Component
 //===----------------------------------------------------------------------===//
 
-void MidiRollHeader::mouseDown(const MouseEvent &e)
+void HybridRollHeader::mouseDown(const MouseEvent &e)
 {
     if (this->soundProbeMode)
     {
@@ -231,7 +231,7 @@ void MidiRollHeader::mouseDown(const MouseEvent &e)
     }
 }
 
-void MidiRollHeader::mouseDrag(const MouseEvent &e)
+void HybridRollHeader::mouseDrag(const MouseEvent &e)
 {
     if (this->soundProbeMode)
     {
@@ -245,7 +245,7 @@ void MidiRollHeader::mouseDrag(const MouseEvent &e)
 
                 if (this->timeDistanceIndicator == nullptr)
                 {
-                    //Logger::writeToLog("MidiRollHeader::initTimeDistanceIndicatorIfPossible " + String(distance));
+                    //Logger::writeToLog("HybridRollHeader::initTimeDistanceIndicatorIfPossible " + String(distance));
                     
                     // todo rebuild sequences if not playing, do nothing if playing
                     this->transport.stopPlayback();
@@ -317,7 +317,7 @@ void MidiRollHeader::mouseDrag(const MouseEvent &e)
     }
 }
 
-void MidiRollHeader::mouseUp(const MouseEvent &e)
+void HybridRollHeader::mouseUp(const MouseEvent &e)
 {
     this->playingIndicator = nullptr;
     this->timeDistanceIndicator = nullptr;
@@ -353,11 +353,11 @@ void MidiRollHeader::mouseUp(const MouseEvent &e)
     }
 }
 
-void MidiRollHeader::mouseEnter(const MouseEvent &e)
+void HybridRollHeader::mouseEnter(const MouseEvent &e)
 {
 }
 
-void MidiRollHeader::mouseMove(const MouseEvent &e)
+void HybridRollHeader::mouseMove(const MouseEvent &e)
 {
     if (this->pointingIndicator != nullptr)
     {
@@ -375,7 +375,7 @@ void MidiRollHeader::mouseMove(const MouseEvent &e)
     }
 }
 
-void MidiRollHeader::mouseExit(const MouseEvent &e)
+void HybridRollHeader::mouseExit(const MouseEvent &e)
 {
     if (this->pointingIndicator != nullptr)
     {
@@ -388,7 +388,7 @@ void MidiRollHeader::mouseExit(const MouseEvent &e)
     }
 }
 
-void MidiRollHeader::mouseDoubleClick(const MouseEvent &e)
+void HybridRollHeader::mouseDoubleClick(const MouseEvent &e)
 {
     // this->roll.postCommandMessage(CommandIDs::AddAnnotation);
 	// HelioCallout::emit(new TimelineCommandPanel(this->roll.getProject()), this, true);
@@ -405,12 +405,12 @@ void MidiRollHeader::mouseDoubleClick(const MouseEvent &e)
 	this->transport.startPlayback();
 }
 
-void MidiRollHeader::paint(Graphics &g)
+void HybridRollHeader::paint(Graphics &g)
 {
     const int paintStartX = this->viewport.getViewPositionX();
     const int paintEndX = this->viewport.getViewPositionX() + this->viewport.getViewWidth();
 
-    const Colour backCol(this->findColour(MidiRoll::headerColourId));
+    const Colour backCol(this->findColour(HybridRoll::headerColourId));
     const Colour frontCol(this->isActive ?
                           backCol.contrasting().withMultipliedAlpha(0.2f) :
                           backCol.contrasting().withMultipliedAlpha(0.1f));

@@ -30,7 +30,7 @@
 #include "AudioCore.h"
 #include "Instrument.h"
 #include "PianoLayer.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 #include "Document.h"
 #include "SuccessTooltip.h"
 #include "PianoLayerTreeItemActions.h"
@@ -476,7 +476,7 @@ void ProjectCommandPanel::initInstrumentSelection()
 
 void ProjectCommandPanel::focusRollAndExit()
 {
-    if (MidiRoll *roll = this->project.getLastFocusedRoll())
+    if (HybridRoll *roll = this->project.getLastFocusedRoll())
     {
         roll->grabKeyboardFocus();
     }

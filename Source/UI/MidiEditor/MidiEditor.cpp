@@ -30,8 +30,8 @@
 #include "TimeSignatureSmallComponent.h"
 #include "OrigamiHorizontal.h"
 #include "OrigamiVertical.h"
-#include "MidiRollCommandPanelPhone.h"
-#include "MidiRollCommandPanelDefault.h"
+#include "HybridRollCommandPanelPhone.h"
+#include "HybridRollCommandPanelDefault.h"
 #include "AutomationsCommandPanel.h"
 #include "PanelBackgroundC.h"
 
@@ -124,7 +124,7 @@ public:
     
     void paint(Graphics &g) override
     {
-        const Colour backCol(this->findColour(MidiRoll::headerColourId).darker(0.05f));
+        const Colour backCol(this->findColour(HybridRoll::headerColourId).darker(0.05f));
         g.fillAll(backCol);
     }
     
@@ -197,11 +197,11 @@ private:
 // Automations Container
 //===----------------------------------------------------------------------===//
 
-class AutomationTrackMapProxy : public Component, public MidiRollListener, private AsyncUpdater
+class AutomationTrackMapProxy : public Component, public HybridRollListener, private AsyncUpdater
 {
 public:
     
-    AutomationTrackMapProxy(MidiRoll &parentRoll,
+    AutomationTrackMapProxy(HybridRoll &parentRoll,
                             Component *newOwnedComponent) :
         roll(parentRoll),
         target(newOwnedComponent)
@@ -241,7 +241,7 @@ public:
     
     void paint(Graphics &g) override
     {
-        const Colour backCol(this->findColour(MidiRoll::headerColourId));
+        const Colour backCol(this->findColour(HybridRoll::headerColourId));
         const Colour frontCol(backCol.contrasting().withMultipliedAlpha(0.5f));
         const float pX = this->roll.getViewport().getViewPositionX();
         
@@ -277,25 +277,25 @@ public:
         g.drawHorizontalLine(this->getHeight() - 2, 0.f, float(this->getWidth()));
     }
     
-    void onMidiRollMoved(MidiRoll *targetRoll) override
+    void onMidiRollMoved(HybridRoll *targetRoll) override
     {
         this->updateTargetPosition();
     }
     
-    void onMidiRollResized(MidiRoll *targetRoll) override
+    void onMidiRollResized(HybridRoll *targetRoll) override
     {
         this->updateTargetBounds();
         this->target->repaint();
     }
     
-    MidiRoll &getRoll()
+    HybridRoll &getRoll()
     {
         return this->roll;
     }
     
 private:
     
-    MidiRoll &roll;
+    HybridRoll &roll;
     
     ScopedPointer<Component> target;
     
@@ -328,7 +328,7 @@ class PianoRollProxy : public Component
 {
 public:
     
-    PianoRollProxy(MidiRoll *targetRoll,
+    PianoRollProxy(HybridRoll *targetRoll,
                    Viewport *targetViewport,
                    TrackScroller *targetScroller) :
     roll(targetRoll),
@@ -369,7 +369,7 @@ public:
     
 private:
     
-    SafePointer<MidiRoll> roll;
+    SafePointer<HybridRoll> roll;
     SafePointer<Viewport> viewport;
     SafePointer<TrackScroller> scroller;
 
@@ -423,11 +423,11 @@ MidiEditor::MidiEditor(ProjectTreeItem &parentProject) :
     // создаем тулбар и компонуем его с контейнером
     if (App::isRunningOnPhone())
     {
-        this->rollCommandPanel = new MidiRollCommandPanelPhone(this->project);
+        this->rollCommandPanel = new HybridRollCommandPanelPhone(this->project);
     }
     else
     {
-        this->rollCommandPanel = new MidiRollCommandPanelDefault(this->project);
+        this->rollCommandPanel = new HybridRollCommandPanelDefault(this->project);
     }
 
     // TODO we may have multiple roll editors here
@@ -589,7 +589,7 @@ bool MidiEditor::toggleShowAutomationEditor(AutomationLayer *targetLayer)
     return false;
 }
 
-MidiRoll *MidiEditor::getRoll() const
+HybridRoll *MidiEditor::getRoll() const
 {
     return this->roll;
 }

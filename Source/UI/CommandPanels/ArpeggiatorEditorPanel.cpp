@@ -24,13 +24,12 @@
 //[MiscUserDefs]
 #include "PianoRoll.h"
 #include "MidiEventSelection.h"
-#include "MidiRollToolbox.h"
+#include "PianoRollToolbox.h"
 #include "MidiLayer.h"
 #include "NoteComponent.h"
 #include "ProjectTreeItem.h"
 #include "Transport.h"
 #include "CommandItemComponent.h"
-#include "MidiRollToolbox.h"
 #include "SerializationKeys.h"
 #include "InternalClipboard.h"
 #include "ArpeggiatorsManager.h"
@@ -315,8 +314,8 @@ void ArpeggiatorEditorPanel::handleCommandMessage (int commandId)
     }
     else if (commandId == CommandIDs::TransportStartPlayback)
     {
-        const float startBeat = MidiRollToolbox::findStartBeat(this->roll.getLassoSelection());
-        const float endBeat = MidiRollToolbox::findEndBeat(this->roll.getLassoSelection());
+        const float startBeat = PianoRollToolbox::findStartBeat(this->roll.getLassoSelection());
+        const float endBeat = PianoRollToolbox::findEndBeat(this->roll.getLassoSelection());
 
         const double loopStart = this->roll.getTransportPositionByBeat(startBeat);
         const double loopEnd = this->roll.getTransportPositionByBeat(endBeat);
@@ -448,7 +447,7 @@ void ArpeggiatorEditorPanel::applyArpToSelectedNotes(const Arpeggiator &arp)
         this->roll.getPrimaryActiveMidiLayer()->undo();
     }
 
-    if (bool arpedOk = MidiRollToolbox::arpeggiate(this->roll.getLassoSelection(), arp))
+    if (bool arpedOk = PianoRollToolbox::arpeggiate(this->roll.getLassoSelection(), arp))
     {
         this->hasMadeChanges = true;
     }

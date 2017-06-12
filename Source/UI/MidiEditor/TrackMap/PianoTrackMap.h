@@ -20,7 +20,7 @@
 #include "Note.h"
 #include "ProjectListener.h"
 
-class MidiRoll;
+class HybridRoll;
 class ProjectTreeItem;
 class TrackMapNoteComponent;
 
@@ -30,7 +30,7 @@ class PianoTrackMap :
 {
 public:
 
-    PianoTrackMap(ProjectTreeItem &parentProject, MidiRoll &parentRoll);
+    PianoTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll);
     ~PianoTrackMap() override;
 
     //===------------------------------------------------------------------===//
@@ -64,7 +64,7 @@ private:
     
     float componentHeight;
     
-    MidiRoll &roll;
+    HybridRoll &roll;
     ProjectTreeItem &project;
     
     OwnedArray<TrackMapNoteComponent> eventComponents;

@@ -16,11 +16,11 @@
 */
 
 #include "Common.h"
-#include "MidiRollCommandPanel.h"
+#include "HybridRollCommandPanel.h"
 #include "ProjectTreeItem.h"
 #include "PlayerThread.h"
 #include "Icons.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 #include "PianoRoll.h"
 #include "MidiLayer.h"
 #include "InternalClipboard.h"
@@ -31,7 +31,7 @@
 #include "TimelineCommandPanel.h"
 #include "AnnotationCommandPanel.h"
 #include "TimeSignatureCommandPanel.h"
-#include "MidiRollToolbox.h"
+#include "PianoRollToolbox.h"
 #include "ArpeggiatorPanel.h"
 #include "MoveToLayerCommandPanel.h"
 #include "NotesTuningPanel.h"
@@ -41,7 +41,7 @@
 #include "Workspace.h"
 #include "CommandIDs.h"
 
-MidiRollCommandPanel::MidiRollCommandPanel(ProjectTreeItem &parent)
+HybridRollCommandPanel::HybridRollCommandPanel(ProjectTreeItem &parent)
     : project(parent),
       lastSeekTime(0.0),
       lastTotalTime(0.0)
@@ -54,13 +54,13 @@ MidiRollCommandPanel::MidiRollCommandPanel(ProjectTreeItem &parent)
     this->project.getEditMode().addChangeListener(this);
 }
 
-MidiRollCommandPanel::~MidiRollCommandPanel()
+HybridRollCommandPanel::~HybridRollCommandPanel()
 {
     this->project.getEditMode().removeChangeListener(this);
     this->project.getTransport().removeTransportListener(this);
 }
 
-void MidiRollCommandPanel::handleCommandMessage (int commandId)
+void HybridRollCommandPanel::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
     switch (commandId)
@@ -75,7 +75,7 @@ void MidiRollCommandPanel::handleCommandMessage (int commandId)
 			const ProjectTimeline *timeline = this->project.getTimeline();
             const double seekPosition = this->project.getTransport().getSeekPosition();
 
-            if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
+            if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
             {
 				const double numBeats = double(roll->getNumBeats());
 				const double seekThreshold = (1.0 / numBeats) / 10.0;
@@ -127,7 +127,7 @@ void MidiRollCommandPanel::handleCommandMessage (int commandId)
             break;
 
         case CommandIDs::TransportStartPlayback:
-            if (MidiRoll *roll = this->project.getLastFocusedRoll())
+            if (HybridRoll *roll = this->project.getLastFocusedRoll())
             {
                 this->project.getTransport().startPlayback();
                 roll->startFollowingIndicator();
@@ -135,7 +135,7 @@ void MidiRollCommandPanel::handleCommandMessage (int commandId)
             break;
 
         case CommandIDs::TransportPausePlayback:
-            if (MidiRoll *roll = this->project.getLastFocusedRoll())
+            if (HybridRoll *roll = this->project.getLastFocusedRoll())
             {
                 this->project.getTransport().stopPlayback();
                 roll->stopFollowingIndicator();
@@ -143,7 +143,7 @@ void MidiRollCommandPanel::handleCommandMessage (int commandId)
             break;
 
         case CommandIDs::EditEvents:
-            //if (MidiRoll *roll = this->project.getLastFocusedRoll())
+            //if (HybridRoll *roll = this->project.getLastFocusedRoll())
             //{
             //    roll->showEditMenu();
             //}
@@ -157,14 +157,14 @@ void MidiRollCommandPanel::handleCommandMessage (int commandId)
             break;
 
         case CommandIDs::CopyEvents:
-            if (MidiRoll *roll = this->project.getLastFocusedRoll())
+            if (HybridRoll *roll = this->project.getLastFocusedRoll())
             {
                 InternalClipboard::copy(*roll);
             }
             break;
 
         case CommandIDs::PasteEvents:
-            if (MidiRoll *roll = this->project.getLastFocusedRoll())
+            if (HybridRoll *roll = this->project.getLastFocusedRoll())
             {
                 InternalClipboard::paste(*roll);
             }
@@ -172,47 +172,47 @@ void MidiRollCommandPanel::handleCommandMessage (int commandId)
 
 
         case CommandIDs::CursorTool:
-            this->project.getEditMode().setMode(MidiRollEditMode::defaultMode);
+            this->project.getEditMode().setMode(HybridRollEditMode::defaultMode);
             break;
 
         case CommandIDs::DrawTool:
-            this->project.getEditMode().setMode(MidiRollEditMode::drawMode);
+            this->project.getEditMode().setMode(HybridRollEditMode::drawMode);
             break;
 
         case CommandIDs::SelectionTool:
-            this->project.getEditMode().setMode(MidiRollEditMode::selectionMode);
+            this->project.getEditMode().setMode(HybridRollEditMode::selectionMode);
             break;
 
         case CommandIDs::ZoomTool:
-            this->project.getEditMode().setMode(MidiRollEditMode::zoomMode);
+            this->project.getEditMode().setMode(HybridRollEditMode::zoomMode);
             break;
 
         case CommandIDs::DragTool:
-            this->project.getEditMode().setMode(MidiRollEditMode::dragMode);
+            this->project.getEditMode().setMode(HybridRollEditMode::dragMode);
             break;
 
         case CommandIDs::InsertSpaceTool:
-            this->project.getEditMode().setMode(MidiRollEditMode::insertSpaceMode);
+            this->project.getEditMode().setMode(HybridRollEditMode::insertSpaceMode);
             break;
 
         case CommandIDs::WipeSpaceTool:
-            this->project.getEditMode().setMode(MidiRollEditMode::wipeSpaceMode);
+            this->project.getEditMode().setMode(HybridRollEditMode::wipeSpaceMode);
             break;
 
         case CommandIDs::ScissorsTool:
-            this->project.getEditMode().setMode(MidiRollEditMode::scissorsMode);
+            this->project.getEditMode().setMode(HybridRollEditMode::scissorsMode);
             break;
 
 
         case CommandIDs::ZoomIn:
-            if (MidiRoll *roll = this->project.getLastFocusedRoll())
+            if (HybridRoll *roll = this->project.getLastFocusedRoll())
             {
                 roll->zoomInImpulse();
             }
             break;
 
         case CommandIDs::ZoomOut:
-            if (MidiRoll *roll = this->project.getLastFocusedRoll())
+            if (HybridRoll *roll = this->project.getLastFocusedRoll())
             {
                 roll->zoomOutImpulse();
             }
@@ -220,14 +220,14 @@ void MidiRollCommandPanel::handleCommandMessage (int commandId)
 
 
         case CommandIDs::Undo:
-            if (MidiRoll *roll = this->project.getLastFocusedRoll())
+            if (HybridRoll *roll = this->project.getLastFocusedRoll())
             {
                 roll->getPrimaryActiveMidiLayer()->undo();
             }
             break;
 
         case CommandIDs::Redo:
-            if (MidiRoll *roll = this->project.getLastFocusedRoll())
+            if (HybridRoll *roll = this->project.getLastFocusedRoll())
             {
                 roll->getPrimaryActiveMidiLayer()->redo();
             }
@@ -281,14 +281,14 @@ void MidiRollCommandPanel::handleCommandMessage (int commandId)
     //[/UserCode_handleCommandMessage]
 }
 
-void MidiRollCommandPanel::childrenChanged()
+void HybridRollCommandPanel::childrenChanged()
 {
     //[UserCode_childrenChanged] -- Add your code here...
     //this->updateButtonsImages();
     //[/UserCode_childrenChanged]
 }
 
-void MidiRollCommandPanel::mouseMove (const MouseEvent& e)
+void HybridRollCommandPanel::mouseMove (const MouseEvent& e)
 {
     //[UserCode_mouseMove] -- Add your code here...
     //[/UserCode_mouseMove]
@@ -298,18 +298,18 @@ void MidiRollCommandPanel::mouseMove (const MouseEvent& e)
 
 //[MiscUserCode]
 
-void MidiRollCommandPanel::recreateCommandDescriptions()
+void HybridRollCommandPanel::recreateCommandDescriptions()
 {
     this->commandDescriptions.clear();
 
-    const bool defaultMode = this->project.getEditMode().isMode(MidiRollEditMode::defaultMode);
-    const bool drawMode = this->project.getEditMode().isMode(MidiRollEditMode::drawMode);
-    const bool selectionMode = this->project.getEditMode().isMode(MidiRollEditMode::selectionMode);
-    const bool zoomMode = this->project.getEditMode().isMode(MidiRollEditMode::zoomMode);
-    const bool dragMode = this->project.getEditMode().isMode(MidiRollEditMode::dragMode);
-    const bool wipeSpaceMode = this->project.getEditMode().isMode(MidiRollEditMode::wipeSpaceMode);
-    const bool insertSpaceMode = this->project.getEditMode().isMode(MidiRollEditMode::insertSpaceMode);
-    const bool scissorsMode = this->project.getEditMode().isMode(MidiRollEditMode::scissorsMode);
+    const bool defaultMode = this->project.getEditMode().isMode(HybridRollEditMode::defaultMode);
+    const bool drawMode = this->project.getEditMode().isMode(HybridRollEditMode::drawMode);
+    const bool selectionMode = this->project.getEditMode().isMode(HybridRollEditMode::selectionMode);
+    const bool zoomMode = this->project.getEditMode().isMode(HybridRollEditMode::zoomMode);
+    const bool dragMode = this->project.getEditMode().isMode(HybridRollEditMode::dragMode);
+    const bool wipeSpaceMode = this->project.getEditMode().isMode(HybridRollEditMode::wipeSpaceMode);
+    const bool insertSpaceMode = this->project.getEditMode().isMode(HybridRollEditMode::insertSpaceMode);
+    const bool scissorsMode = this->project.getEditMode().isMode(HybridRollEditMode::scissorsMode);
 
     this->commandDescriptions.add(CommandItem::withParams(Icons::cursorTool, CommandIDs::CursorTool)->toggled(defaultMode));
     this->commandDescriptions.add(CommandItem::withParams(Icons::drawTool, CommandIDs::DrawTool)->toggled(drawMode));
@@ -339,12 +339,12 @@ void MidiRollCommandPanel::recreateCommandDescriptions()
 // ListBoxModel
 //
 
-int MidiRollCommandPanel::getNumRows()
+int HybridRollCommandPanel::getNumRows()
 {
     return this->commandDescriptions.size();
 }
 
-void MidiRollCommandPanel::paintListBoxItem(int rowNumber,
+void HybridRollCommandPanel::paintListBoxItem(int rowNumber,
                                             Graphics &g,
                                             int width, int height,
                                             bool rowIsSelected)
@@ -357,7 +357,7 @@ void MidiRollCommandPanel::paintListBoxItem(int rowNumber,
 // ChangeListener
 //
 
-void MidiRollCommandPanel::changeListenerCallback(ChangeBroadcaster *source)
+void HybridRollCommandPanel::changeListenerCallback(ChangeBroadcaster *source)
 {
     this->updateModeButtons();
 }
@@ -367,7 +367,7 @@ void MidiRollCommandPanel::changeListenerCallback(ChangeBroadcaster *source)
 // Timer
 //
 
-void MidiRollCommandPanel::timerCallback()
+void HybridRollCommandPanel::timerCallback()
 {
     this->triggerAsyncUpdate();
 }
@@ -377,7 +377,7 @@ void MidiRollCommandPanel::timerCallback()
 // TransportListener
 //
 
-void MidiRollCommandPanel::onSeek(const double newPosition,
+void HybridRollCommandPanel::onSeek(const double newPosition,
                                   const double currentTimeMs, const double totalTimeMs)
 {
     this->lastSeekTime = currentTimeMs; // todo locks?
@@ -385,24 +385,24 @@ void MidiRollCommandPanel::onSeek(const double newPosition,
     this->triggerAsyncUpdate();
 }
 
-void MidiRollCommandPanel::onTempoChanged(const double newTempo)
+void HybridRollCommandPanel::onTempoChanged(const double newTempo)
 {
 
 }
 
-void MidiRollCommandPanel::onTotalTimeChanged(const double timeMs)
+void HybridRollCommandPanel::onTotalTimeChanged(const double timeMs)
 {
     this->lastTotalTime = timeMs;
 }
 
-void MidiRollCommandPanel::onPlay()
+void HybridRollCommandPanel::onPlay()
 {
     this->timerStartSystemTime = Time::getMillisecondCounter();
     this->timerStartSeekTime = this->lastSeekTime;
     this->startTimer(100);
 }
 
-void MidiRollCommandPanel::onStop()
+void HybridRollCommandPanel::onStop()
 {
     this->stopTimer();
 }

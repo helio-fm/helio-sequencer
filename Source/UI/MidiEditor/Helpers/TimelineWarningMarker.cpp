@@ -17,9 +17,9 @@
 
 #include "Common.h"
 #include "TimelineWarningMarker.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 
-TimelineWarningMarker::TimelineWarningMarker(WarningLevel warningLevel, MidiRoll &parentRoll, float inititalBeatPosition)
+TimelineWarningMarker::TimelineWarningMarker(WarningLevel warningLevel, HybridRoll &parentRoll, float inititalBeatPosition)
     : roll(parentRoll),
       colour((warningLevel == Red) ? Colour(0x33ff0000) : Colour(0x27ffff00)),
       startBeat(inititalBeatPosition),

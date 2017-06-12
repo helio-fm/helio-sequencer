@@ -16,9 +16,9 @@
 */
 
 #include "Common.h"
-#include "MidiRoll.h"
-#include "MidiRollHeader.h"
-#include "MidiRollExpandMark.h"
+#include "HybridRoll.h"
+#include "HybridRollHeader.h"
+#include "HybridRollExpandMark.h"
 #include "MidiEvent.h"
 #include "MidiEventComponent.h"
 #include "MidiLayer.h"
@@ -52,8 +52,8 @@
 #include "ProjectTimeline.h"
 #include "AnnotationsLayer.h"
 #include "TimeSignaturesLayer.h"
-#include "MidiRollToolbox.h"
-#include "MidiRollListener.h"
+#include "PianoRollToolbox.h"
+#include "HybridRollListener.h"
 #include "VersionControlTreeItem.h"
 
 #include "AnnotationDialog.h"
@@ -83,7 +83,7 @@ template class AnnotationsTrackMap<AnnotationLargeComponent>;
 template class TimeSignaturesTrackMap<TimeSignatureLargeComponent>;
 
 
-MidiRoll::MidiRoll(ProjectTreeItem &parentProject,
+HybridRoll::HybridRoll(ProjectTreeItem &parentProject,
                    Viewport &viewportRef,
                    WeakReference<AudioMonitor> AudioMonitor) :
     clippingDetector(std::move(AudioMonitor)),
@@ -120,7 +120,7 @@ MidiRoll::MidiRoll(ProjectTreeItem &parentProject,
     this->topShadow = new LightShadowDownwards();
     this->bottomShadow = new LightShadowUpwards();
 
-    this->header = new MidiRollHeader(this->project.getTransport(), *this, this->viewport);
+    this->header = new HybridRollHeader(this->project.getTransport(), *this, this->viewport);
     this->annotationsTrack = new AnnotationsLargeMap(this->project, *this);
     this->timeSignaturesTrack = new TimeSignaturesLargeMap(this->project, *this);
     
@@ -158,7 +158,7 @@ MidiRoll::MidiRoll(ProjectTreeItem &parentProject,
     }
 }
 
-MidiRoll::~MidiRoll()
+HybridRoll::~HybridRoll()
 {
     if (this->clippingDetector != nullptr)
     {
@@ -178,32 +178,32 @@ MidiRoll::~MidiRoll()
 }
 
 
-Viewport &MidiRoll::getViewport() const noexcept
+Viewport &HybridRoll::getViewport() const noexcept
 {
     return this->viewport;
 }
 
-Transport &MidiRoll::getTransport() const noexcept
+Transport &HybridRoll::getTransport() const noexcept
 {
     return this->project.getTransport();
 }
 
-ProjectTreeItem &MidiRoll::getProject() const noexcept
+ProjectTreeItem &HybridRoll::getProject() const noexcept
 {
     return this->project;
 }
 
-MidiLayer *MidiRoll::getPrimaryActiveMidiLayer() const noexcept
+MidiLayer *HybridRoll::getPrimaryActiveMidiLayer() const noexcept
 {
     return this->primaryActiveLayer;
 }
 
-int MidiRoll::getNumActiveLayers() const noexcept
+int HybridRoll::getNumActiveLayers() const noexcept
 {
     return this->activeLayers.size();
 }
 
-MidiLayer *MidiRoll::getActiveMidiLayer(int index) const noexcept
+MidiLayer *HybridRoll::getActiveMidiLayer(int index) const noexcept
 {
     return this->activeLayers[index];
 }
@@ -212,7 +212,7 @@ MidiLayer *MidiRoll::getActiveMidiLayer(int index) const noexcept
 // Timeline events
 //===----------------------------------------------------------------------===//
 
-float MidiRoll::getPositionForNewTimelineEvent() const
+float HybridRoll::getPositionForNewTimelineEvent() const
 {
 	const double indicatorOffset = this->findIndicatorOffsetFromViewCentre();
 	const bool indicatorIsWithinScreen = fabs(indicatorOffset) < (this->viewport.getViewWidth() / 2);
@@ -230,7 +230,7 @@ float MidiRoll::getPositionForNewTimelineEvent() const
 	return this->getRoundBeatByXPosition(viewCentre);
 }
 
-void MidiRoll::insertAnnotationWithinScreen(const String &annotation)
+void HybridRoll::insertAnnotationWithinScreen(const String &annotation)
 {
     if (AnnotationsLayer *annotationsLayer = dynamic_cast<AnnotationsLayer *>(this->project.getTimeline()->getAnnotations()))
     {
@@ -241,7 +241,7 @@ void MidiRoll::insertAnnotationWithinScreen(const String &annotation)
     }
 }
 
-void MidiRoll::insertTimeSignatureWithinScreen(int numerator, int denominator)
+void HybridRoll::insertTimeSignatureWithinScreen(int numerator, int denominator)
 {
 	jassert(denominator == 2 || denominator == 4 || denominator == 8 || denominator == 16 || denominator == 32);
 	if (TimeSignaturesLayer *tsLayer = dynamic_cast<TimeSignaturesLayer *>(this->project.getTimeline()->getTimeSignatures()))
@@ -257,7 +257,7 @@ void MidiRoll::insertTimeSignatureWithinScreen(int numerator, int denominator)
 // Custom maps
 //===----------------------------------------------------------------------===//
 
-void MidiRoll::addOwnedMap(Component *newTrackMap)
+void HybridRoll::addOwnedMap(Component *newTrackMap)
 {
     this->trackMaps.add(newTrackMap);
     this->addAndMakeVisible(newTrackMap);
@@ -273,7 +273,7 @@ void MidiRoll::addOwnedMap(Component *newTrackMap)
     this->resized();
 }
 
-void MidiRoll::removeOwnedMap(Component *existingTrackMap)
+void HybridRoll::removeOwnedMap(Component *existingTrackMap)
 {
     if (this->trackMaps.contains(existingTrackMap))
     {
@@ -288,52 +288,52 @@ void MidiRoll::removeOwnedMap(Component *existingTrackMap)
 // Modes
 //===----------------------------------------------------------------------===//
 
-MidiRollEditMode MidiRoll::getEditMode() const
+HybridRollEditMode HybridRoll::getEditMode() const
 {
     return this->project.getEditMode();
 }
 
-bool MidiRoll::isInSelectionMode() const
+bool HybridRoll::isInSelectionMode() const
 {
-    return (this->project.getEditMode().isMode(MidiRollEditMode::selectionMode));
+    return (this->project.getEditMode().isMode(HybridRollEditMode::selectionMode));
 }
 
-bool MidiRoll::isInDragMode() const
+bool HybridRoll::isInDragMode() const
 {
-    return (this->project.getEditMode().isMode(MidiRollEditMode::dragMode));
+    return (this->project.getEditMode().isMode(HybridRollEditMode::dragMode));
 }
 
 
 //===----------------------------------------------------------------------===//
-// MidiRoll listeners management
+// HybridRoll listeners management
 //===----------------------------------------------------------------------===//
 
-void MidiRoll::addRollListener(MidiRollListener *listener)
+void HybridRoll::addRollListener(HybridRollListener *listener)
 {
     jassert(MessageManager::getInstance()->currentThreadHasLockedMessageManager());
     this->listeners.add(listener);
 }
 
-void MidiRoll::removeRollListener(MidiRollListener *listener)
+void HybridRoll::removeRollListener(HybridRollListener *listener)
 {
     jassert(MessageManager::getInstance()->currentThreadHasLockedMessageManager());
     this->listeners.remove(listener);
 }
 
-void MidiRoll::removeAllRollListeners()
+void HybridRoll::removeAllRollListeners()
 {
     jassert(MessageManager::getInstance()->currentThreadHasLockedMessageManager());
     this->listeners.clear();
 }
 
-void MidiRoll::broadcastRollMoved()
+void HybridRoll::broadcastRollMoved()
 {
-    this->listeners.call(&MidiRollListener::onMidiRollMoved, this);
+    this->listeners.call(&HybridRollListener::onMidiRollMoved, this);
 }
 
-void MidiRoll::broadcastRollResized()
+void HybridRoll::broadcastRollResized()
 {
-    this->listeners.call(&MidiRollListener::onMidiRollResized, this);
+    this->listeners.call(&HybridRollListener::onMidiRollResized, this);
 }
 
 
@@ -341,33 +341,33 @@ void MidiRoll::broadcastRollResized()
 // MultiTouchListener
 //===----------------------------------------------------------------------===//
 
-void MidiRoll::multiTouchZoomEvent(const Point<float> &origin, const Point<float> &zoom)
+void HybridRoll::multiTouchZoomEvent(const Point<float> &origin, const Point<float> &zoom)
 {
-    //Logger::writeToLog("MidiRoll::multiTouchZoomEvent");
+    //Logger::writeToLog("HybridRoll::multiTouchZoomEvent");
     this->smoothPanController->cancelPan();
     this->smoothZoomController->zoomRelative(origin, zoom);
 }
 
-void MidiRoll::multiTouchPanEvent(const Point<float> &offset)
+void HybridRoll::multiTouchPanEvent(const Point<float> &offset)
 {
-    //Logger::writeToLog("MidiRoll::multiTouchPanEvent");
+    //Logger::writeToLog("HybridRoll::multiTouchPanEvent");
     //this->smoothZoomController->cancelZoom();
     this->smoothPanController->panByOffset(this->viewport.getViewPosition() + offset.toInt());
 }
 
-void MidiRoll::multiTouchCancelZoom()
+void HybridRoll::multiTouchCancelZoom()
 {
     this->clickAnchor = Desktop::getInstance().getMainMouseSource().getScreenPosition();
     this->smoothZoomController->cancelZoom();
 }
 
-void MidiRoll::multiTouchCancelPan()
+void HybridRoll::multiTouchCancelPan()
 {
     this->clickAnchor = Desktop::getInstance().getMainMouseSource().getScreenPosition();
     this->smoothPanController->cancelPan();
 }
 
-Point<float> MidiRoll::getMultiTouchOrigin(const Point<float> &from)
+Point<float> HybridRoll::getMultiTouchOrigin(const Point<float> &from)
 {
     return (from - this->viewport.getViewPosition().toFloat());
 }
@@ -377,7 +377,7 @@ Point<float> MidiRoll::getMultiTouchOrigin(const Point<float> &from)
 // SmoothPanListener
 //===----------------------------------------------------------------------===//
 
-void MidiRoll::panByOffset(const int offsetX, const int offsetY)
+void HybridRoll::panByOffset(const int offsetX, const int offsetY)
 {
     this->stopFollowingIndicator();
 
@@ -405,7 +405,7 @@ void MidiRoll::panByOffset(const int offsetX, const int offsetY)
         this->grabKeyboardFocus();
 
         const float barCloseToTheRight = float(this->lastBar - numBarsToExpand);
-        this->header->addAndMakeVisible(new MidiRollExpandMark(*this, barCloseToTheRight, numBarsToExpand));
+        this->header->addAndMakeVisible(new HybridRollExpandMark(*this, barCloseToTheRight, numBarsToExpand));
     }
     else if (needsToStretchLeft)
     {
@@ -416,7 +416,7 @@ void MidiRoll::panByOffset(const int offsetX, const int offsetY)
         this->grabKeyboardFocus();
 
         const float barCloseToTheLeft = float(this->firstBar);
-        this->header->addAndMakeVisible(new MidiRollExpandMark(*this, barCloseToTheLeft, numBarsToExpand));
+        this->header->addAndMakeVisible(new HybridRollExpandMark(*this, barCloseToTheLeft, numBarsToExpand));
     }
     else
     {
@@ -426,14 +426,14 @@ void MidiRoll::panByOffset(const int offsetX, const int offsetY)
     this->updateChildrenPositions();
 }
 
-void MidiRoll::panProportionally(const float absX, const float absY)
+void HybridRoll::panProportionally(const float absX, const float absY)
 {
     this->stopFollowingIndicator();
     this->viewport.setViewPositionProportionately(absX, absY);
     this->updateChildrenPositions();
 }
 
-Point<int> MidiRoll::getPanOffset() const
+Point<int> HybridRoll::getPanOffset() const
 {
     return this->viewport.getViewPosition();
 }
@@ -443,26 +443,26 @@ Point<int> MidiRoll::getPanOffset() const
 // SmoothZoomListener
 //===----------------------------------------------------------------------===//
 
-void MidiRoll::startSmoothZoom(const Point<float> &origin, const Point<float> &factor)
+void HybridRoll::startSmoothZoom(const Point<float> &origin, const Point<float> &factor)
 {
     this->smoothZoomController->zoomRelative(origin, factor);
 }
 
-void MidiRoll::zoomInImpulse()
+void HybridRoll::zoomInImpulse()
 {
     const Point<float> origin = this->getViewport().getLocalBounds().getCentre().toFloat();
     const Point<float> factor(0.15f, 0.05f);
     this->startSmoothZoom(origin, factor);
 }
 
-void MidiRoll::zoomOutImpulse()
+void HybridRoll::zoomOutImpulse()
 {
     const Point<float> origin = this->getViewport().getLocalBounds().getCentre().toFloat();
     const Point<float> factor(-0.15f, -0.05f);
     this->startSmoothZoom(origin, factor);
 }
 
-void MidiRoll::zoomAbsolute(const Point<float> &zoom)
+void HybridRoll::zoomAbsolute(const Point<float> &zoom)
 {
 //    this->stopFollowingIndicator();
 
@@ -475,7 +475,7 @@ void MidiRoll::zoomAbsolute(const Point<float> &zoom)
     this->transportIndicatorOffset = this->findIndicatorOffsetFromViewCentre();
 }
 
-void MidiRoll::zoomRelative(const Point<float> &origin, const Point<float> &factor)
+void HybridRoll::zoomRelative(const Point<float> &origin, const Point<float> &factor)
 {
     //this->stopFollowingIndicator();
 
@@ -504,7 +504,7 @@ void MidiRoll::zoomRelative(const Point<float> &origin, const Point<float> &fact
     //this->grabKeyboardFocus();
 }
 
-float MidiRoll::getZoomFactorX() const
+float HybridRoll::getZoomFactorX() const
 {
     const float &numBars = float(this->getNumBars());
     const float &viewWidth = float(this->viewport.getViewWidth());
@@ -513,7 +513,7 @@ float MidiRoll::getZoomFactorX() const
     return (barsOnScreen / numBars);
 }
 
-float MidiRoll::getZoomFactorY() const
+float HybridRoll::getZoomFactorY() const
 {
     return 1.f;
 }
@@ -523,7 +523,7 @@ float MidiRoll::getZoomFactorY() const
 // Accessors
 //===----------------------------------------------------------------------===//
 
-int MidiRoll::getXPositionByTransportPosition(double absPosition, double canvasWidth) const
+int HybridRoll::getXPositionByTransportPosition(double absPosition, double canvasWidth) const
 {
     const double rollLengthInBeats = (this->getLastBeat() - this->getFirstBeat());
     const double projectLengthInBeats = (this->trackLastBeat - this->trackFirstBeat);
@@ -535,7 +535,7 @@ int MidiRoll::getXPositionByTransportPosition(double absPosition, double canvasW
     return int(trackStart + absPosition * trackWidth);
 }
 
-double MidiRoll::getTransportPositionByXPosition(int xPosition, double canvasWidth) const
+double HybridRoll::getTransportPositionByXPosition(int xPosition, double canvasWidth) const
 {
     const double rollLengthInBeats = (this->getLastBeat() - this->getFirstBeat());
     const double projectLengthInBeats = (this->trackLastBeat - this->trackFirstBeat);
@@ -547,36 +547,36 @@ double MidiRoll::getTransportPositionByXPosition(int xPosition, double canvasWid
     return double((xPosition - trackStart) / trackWidth);
 }
 
-double MidiRoll::getTransportPositionByBeat(float targetBeat) const
+double HybridRoll::getTransportPositionByBeat(float targetBeat) const
 {
     const double projectLengthInBeats = (this->trackLastBeat - this->trackFirstBeat);
     return double((targetBeat - this->trackFirstBeat) / projectLengthInBeats);
 }
 
-float MidiRoll::getBeatByTransportPosition(double absSeekPosition) const
+float HybridRoll::getBeatByTransportPosition(double absSeekPosition) const
 {
     const double projectLengthInBeats = (this->trackLastBeat - this->trackFirstBeat);
     return float(projectLengthInBeats * absSeekPosition) + this->trackFirstBeat;
 }
 
-float MidiRoll::getBarByXPosition(int xPosition) const
+float HybridRoll::getBarByXPosition(int xPosition) const
 {
     const int zeroCanvasOffset = int(this->getFirstBar() * this->getBarWidth());
     const float bar = float(xPosition + zeroCanvasOffset) / float(this->getBarWidth());
     return bar;
 }
 
-int MidiRoll::getXPositionByBar(float targetBar) const
+int HybridRoll::getXPositionByBar(float targetBar) const
 {
     return int((targetBar - this->getFirstBar()) * float(this->getBarWidth()));
 }
 
-int MidiRoll::getXPositionByBeat(float targetBeat) const
+int HybridRoll::getXPositionByBeat(float targetBeat) const
 {
     return this->getXPositionByBar(targetBeat / float(NUM_BEATS_IN_BAR));
 }
 
-float MidiRoll::getFloorBeatByXPosition(int x) const
+float HybridRoll::getFloorBeatByXPosition(int x) const
 {
 	Array<float> allSnaps;
 	allSnaps.addArray(this->visibleBars);
@@ -601,7 +601,7 @@ float MidiRoll::getFloorBeatByXPosition(int x) const
 	return jmin(jmax(beatNumber, firstAlignedBeat), lastAlignedBeat);
 }
 
-float MidiRoll::getRoundBeatByXPosition(int x) const
+float HybridRoll::getRoundBeatByXPosition(int x) const
 {
 	Array<float> allSnaps;
 	allSnaps.addArray(this->visibleBars);
@@ -626,7 +626,7 @@ float MidiRoll::getRoundBeatByXPosition(int x) const
 	return jmin(jmax(beatNumber, firstAlignedBeat), lastAlignedBeat);
 }
 
-void MidiRoll::setFirstBar(int bar)
+void HybridRoll::setFirstBar(int bar)
 {
     if (this->firstBar == bar)
     {
@@ -637,7 +637,7 @@ void MidiRoll::setFirstBar(int bar)
     this->updateBounds();
 }
 
-void MidiRoll::setLastBar(int bar)
+void HybridRoll::setLastBar(int bar)
 {
     if (this->lastBar == bar)
     {
@@ -648,7 +648,7 @@ void MidiRoll::setLastBar(int bar)
     this->updateBounds();
 }
 
-void MidiRoll::setBarRange(int first, int last)
+void HybridRoll::setBarRange(int first, int last)
 {
     if (this->lastBar == last && this->firstBar == first)
     {
@@ -660,7 +660,7 @@ void MidiRoll::setBarRange(int first, int last)
     this->updateBounds();
 }
 
-void MidiRoll::setBarWidth(const float newBarWidth)
+void HybridRoll::setBarWidth(const float newBarWidth)
 {
     if (newBarWidth > 1440 || newBarWidth <= 0) { return; }
     this->barWidth = newBarWidth;
@@ -670,7 +670,7 @@ void MidiRoll::setBarWidth(const float newBarWidth)
 #define MIN_BAR_WIDTH 12
 #define MIN_BEAT_WIDTH 8
 
-void MidiRoll::computeVisibleBeatLines()
+void HybridRoll::computeVisibleBeatLines()
 {
     this->visibleBars.clearQuick();
     this->visibleBeats.clearQuick();
@@ -791,7 +791,7 @@ void MidiRoll::computeVisibleBeatLines()
 // Alternative keydown modes (space for drag, etc.)
 //===----------------------------------------------------------------------===//
 
-void MidiRoll::setSpaceDraggingMode(bool dragMode)
+void HybridRoll::setSpaceDraggingMode(bool dragMode)
 {
     if (this->spaceDragMode == dragMode)
     {
@@ -805,7 +805,7 @@ void MidiRoll::setSpaceDraggingMode(bool dragMode)
 
     if (dragMode)
     {
-        this->project.getEditMode().setMode(MidiRollEditMode::dragMode, true);
+        this->project.getEditMode().setMode(HybridRollEditMode::dragMode, true);
     }
     else
     {
@@ -813,12 +813,12 @@ void MidiRoll::setSpaceDraggingMode(bool dragMode)
     }
 }
 
-bool MidiRoll::isUsingSpaceDraggingMode() const
+bool HybridRoll::isUsingSpaceDraggingMode() const
 {
     return this->spaceDragMode;
 }
 
-void MidiRoll::setAltDrawingMode(bool drawMode)
+void HybridRoll::setAltDrawingMode(bool drawMode)
 {
     if (this->altDrawMode == drawMode)
     {
@@ -829,7 +829,7 @@ void MidiRoll::setAltDrawingMode(bool drawMode)
 
     if (drawMode)
     {
-        this->project.getEditMode().setMode(MidiRollEditMode::drawMode, true);
+        this->project.getEditMode().setMode(HybridRollEditMode::drawMode, true);
     }
     else
     {
@@ -837,12 +837,12 @@ void MidiRoll::setAltDrawingMode(bool drawMode)
     }
 }
 
-bool MidiRoll::isUsingAltDrawingMode() const
+bool HybridRoll::isUsingAltDrawingMode() const
 {
     return this->altDrawMode;
 }
 
-bool MidiRoll::isUsingAnyAltMode() const
+bool HybridRoll::isUsingAnyAltMode() const
 {
     return this->isUsingAltDrawingMode() || this->isUsingSpaceDraggingMode();
 }
@@ -852,12 +852,12 @@ bool MidiRoll::isUsingAnyAltMode() const
 // LassoSource
 //===----------------------------------------------------------------------===//
 
-MidiEventSelection &MidiRoll::getLassoSelection()
+MidiEventSelection &HybridRoll::getLassoSelection()
 {
     return this->selection;
 }
 
-void MidiRoll::selectEventsInRange(float startBeat, float endBeat, bool shouldClearAllOthers)
+void HybridRoll::selectEventsInRange(float startBeat, float endBeat, bool shouldClearAllOthers)
 {
     if (shouldClearAllOthers)
     {
@@ -878,7 +878,7 @@ void MidiRoll::selectEventsInRange(float startBeat, float endBeat, bool shouldCl
 
 }
 
-void MidiRoll::selectEvent(MidiEventComponent *event, bool shouldClearAllOthers)
+void HybridRoll::selectEvent(MidiEventComponent *event, bool shouldClearAllOthers)
 {
     if (shouldClearAllOthers)
     {
@@ -891,17 +891,17 @@ void MidiRoll::selectEvent(MidiEventComponent *event, bool shouldClearAllOthers)
     }
 }
 
-void MidiRoll::deselectEvent(MidiEventComponent *event)
+void HybridRoll::deselectEvent(MidiEventComponent *event)
 {
     this->selection.deselect(event);
 }
 
-void MidiRoll::deselectAll()
+void HybridRoll::deselectAll()
 {
     this->selection.deselectAll();
 }
 
-void MidiRoll::selectAll()
+void HybridRoll::selectAll()
 {
     for (int i = 0; i < this->eventComponents.size(); ++i)
     {
@@ -914,7 +914,7 @@ void MidiRoll::selectAll()
     }
 }
 
-MidiEventComponentLasso *MidiRoll::getLasso() const
+MidiEventComponentLasso *HybridRoll::getLasso() const
 {
     return this->lassoComponent;
 }
@@ -923,7 +923,7 @@ MidiEventComponentLasso *MidiRoll::getLasso() const
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-void MidiRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void HybridRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     // Time signatures have changed, need to repaint
     if (dynamic_cast<const TimeSignatureEvent *>(&oldEvent))
@@ -933,7 +933,7 @@ void MidiRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &new
     }
 }
 
-void MidiRoll::onAddMidiEvent(const MidiEvent &event)
+void HybridRoll::onAddMidiEvent(const MidiEvent &event)
 {
     if (dynamic_cast<const TimeSignatureEvent *>(&event))
     {
@@ -942,7 +942,7 @@ void MidiRoll::onAddMidiEvent(const MidiEvent &event)
 	}
 }
 
-void MidiRoll::onRemoveMidiEvent(const MidiEvent &event)
+void HybridRoll::onRemoveMidiEvent(const MidiEvent &event)
 {
     if (dynamic_cast<const TimeSignatureEvent *>(&event))
     {
@@ -951,9 +951,9 @@ void MidiRoll::onRemoveMidiEvent(const MidiEvent &event)
 	}
 }
 
-void MidiRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
+void HybridRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
-    //Logger::writeToLog("MidiRoll::onProjectBeatRangeChanged " + String(firstBeat) + " " + String(lastBeat));
+    //Logger::writeToLog("HybridRoll::onProjectBeatRangeChanged " + String(firstBeat) + " " + String(lastBeat));
     this->trackFirstBeat = firstBeat;
     this->trackLastBeat = lastBeat;
 
@@ -969,7 +969,7 @@ void MidiRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 // Component
 //===----------------------------------------------------------------------===//
 
-void MidiRoll::longTapEvent(const MouseEvent &e)
+void HybridRoll::longTapEvent(const MouseEvent &e)
 {
     if (this->multiTouchController->hasMultitouch() ||
         this->project.getEditMode().forbidsSelectionMode() ||
@@ -978,11 +978,11 @@ void MidiRoll::longTapEvent(const MouseEvent &e)
         return;
     }
 
-    //Logger::writeToLog("MidiRoll::longTapEvent beginlasso");
+    //Logger::writeToLog("HybridRoll::longTapEvent beginlasso");
     this->lassoComponent->beginLasso(e, this);
 }
 
-void MidiRoll::focusGained(FocusChangeType cause)
+void HybridRoll::focusGained(FocusChangeType cause)
 {
     // juce hack
     if (Origami *parentOrigami = this->findParentComponentOfClass<Origami>())
@@ -993,14 +993,14 @@ void MidiRoll::focusGained(FocusChangeType cause)
     this->header->setActive(true);
 }
 
-void MidiRoll::focusLost(FocusChangeType cause)
+void HybridRoll::focusLost(FocusChangeType cause)
 {
     this->header->setActive(false);
 }
 
-bool MidiRoll::keyPressed(const KeyPress &key)
+bool HybridRoll::keyPressed(const KeyPress &key)
 {
-    //Logger::writeToLog("MidiRoll::keyPressed " + key.getTextDescription());
+    //Logger::writeToLog("HybridRoll::keyPressed " + key.getTextDescription());
 
     if (key == KeyPress::createFromDescription("command + a"))
     {
@@ -1009,8 +1009,8 @@ bool MidiRoll::keyPressed(const KeyPress &key)
     }
 //    else if (key == KeyPress::createFromDescription("/"))
 //    {
-//        Logger::writeToLog(String(MidiRollToolbox::findStartBeat(this->getLassoSelection())));
-//        Logger::writeToLog(String(MidiRollToolbox::findEndBeat(this->getLassoSelection())));
+//        Logger::writeToLog(String(PianoRollToolbox::findStartBeat(this->getLassoSelection())));
+//        Logger::writeToLog(String(PianoRollToolbox::findEndBeat(this->getLassoSelection())));
 //    }
     else if (key == KeyPress::createFromDescription("command + z") ||
              key == KeyPress::createFromDescription("ctrl + z"))
@@ -1054,35 +1054,36 @@ bool MidiRoll::keyPressed(const KeyPress &key)
     else if ((key == KeyPress::createFromDescription("command + shift + x")) ||
              (key == KeyPress::createFromDescription("ctrl + shift + x")))
     {
+		// TODO move all PianoRollToolbox-related stuff to PianoRoll
         if (this->selection.getNumSelected() > 0)
         {
             InternalClipboard::copy(*this, false);
             this->primaryActiveLayer->checkpoint();
-            const float leftBeat = MidiRollToolbox::findStartBeat(this->selection);
-            const float rightBeat = MidiRollToolbox::findEndBeat(this->selection);
-            MidiRollToolbox::wipeSpace(this->project.getLayersList(), leftBeat, rightBeat, true, false);
-            MidiRollToolbox::shiftEventsToTheRight(this->project.getLayersList(), leftBeat, -(rightBeat - leftBeat), false);
+            const float leftBeat = PianoRollToolbox::findStartBeat(this->selection);
+            const float rightBeat = PianoRollToolbox::findEndBeat(this->selection);
+            PianoRollToolbox::wipeSpace(this->project.getLayersList(), leftBeat, rightBeat, true, false);
+            PianoRollToolbox::shiftEventsToTheRight(this->project.getLayersList(), leftBeat, -(rightBeat - leftBeat), false);
             return true;
         }
     }
     else if (key == KeyPress::createFromDescription("cursor left"))
     {
-        MidiRollToolbox::shiftBeatRelative(this->getLassoSelection(), -0.25f);
+        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), -0.25f);
         return true;
     }
     else if (key == KeyPress::createFromDescription("cursor right"))
     {
-        MidiRollToolbox::shiftBeatRelative(this->getLassoSelection(), 0.25f);
+        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), 0.25f);
         return true;
     }
     else if (key == KeyPress::createFromDescription("shift + cursor left"))
     {
-        MidiRollToolbox::shiftBeatRelative(this->getLassoSelection(), -0.25f * NUM_BEATS_IN_BAR);
+        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), -0.25f * NUM_BEATS_IN_BAR);
         return true;
     }
     else if (key == KeyPress::createFromDescription("shift + cursor right"))
     {
-        MidiRollToolbox::shiftBeatRelative(this->getLassoSelection(), 0.25f * NUM_BEATS_IN_BAR);
+        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), 0.25f * NUM_BEATS_IN_BAR);
         return true;
     }
     else if (key.isKeyCode(KeyPress::spaceKey))
@@ -1108,37 +1109,37 @@ bool MidiRoll::keyPressed(const KeyPress &key)
     }
     else if (key == KeyPress::createFromDescription("1"))
     {
-        this->project.getEditMode().setMode(MidiRollEditMode::defaultMode);
+        this->project.getEditMode().setMode(HybridRollEditMode::defaultMode);
         return true;
     }
     else if (key == KeyPress::createFromDescription("2"))
     {
-        this->project.getEditMode().setMode(MidiRollEditMode::drawMode);
+        this->project.getEditMode().setMode(HybridRollEditMode::drawMode);
         return true;
     }
     else if (key == KeyPress::createFromDescription("3"))
     {
-        this->project.getEditMode().setMode(MidiRollEditMode::selectionMode);
+        this->project.getEditMode().setMode(HybridRollEditMode::selectionMode);
         return true;
     }
 //    else if (key == KeyPress::createFromDescription("4"))
 //    {
-//        this->project.getEditMode().setMode(MidiRollEditMode::zoomMode);
+//        this->project.getEditMode().setMode(HybridRollEditMode::zoomMode);
 //        return true;
 //    }
     else if (key == KeyPress::createFromDescription("4"))
     {
-        this->project.getEditMode().setMode(MidiRollEditMode::dragMode);
+        this->project.getEditMode().setMode(HybridRollEditMode::dragMode);
         return true;
     }
     else if (key == KeyPress::createFromDescription("5"))
     {
-        this->project.getEditMode().setMode(MidiRollEditMode::wipeSpaceMode);
+        this->project.getEditMode().setMode(HybridRollEditMode::wipeSpaceMode);
         return true;
     }
     else if (key == KeyPress::createFromDescription("6"))
     {
-        this->project.getEditMode().setMode(MidiRollEditMode::insertSpaceMode);
+        this->project.getEditMode().setMode(HybridRollEditMode::insertSpaceMode);
         return true;
     }
     else if (key == KeyPress::createFromDescription("z"))
@@ -1184,7 +1185,7 @@ bool MidiRoll::keyPressed(const KeyPress &key)
     return false;
 }
 
-bool MidiRoll::keyStateChanged(bool isKeyDown)
+bool HybridRoll::keyStateChanged(bool isKeyDown)
 {
     if (isKeyDown && KeyPress::isKeyCurrentlyDown(KeyPress::spaceKey))
     {
@@ -1192,7 +1193,7 @@ bool MidiRoll::keyStateChanged(bool isKeyDown)
 
         // без этой проверки при отжатии space - режим сменится на предпредыдущий, а не должен
         // а с ней - не включается плэйбек на space
-        //const bool alreadyHasDragMode = this->project.getEditMode().isMode(MidiRollEditMode::dragMode);
+        //const bool alreadyHasDragMode = this->project.getEditMode().isMode(HybridRollEditMode::dragMode);
         //if (! alreadyHasDragMode)
         {
             this->setSpaceDraggingMode(true);
@@ -1232,7 +1233,7 @@ bool MidiRoll::keyStateChanged(bool isKeyDown)
     return false;
 }
 
-void MidiRoll::modifierKeysChanged(const ModifierKeys &modifiers)
+void HybridRoll::modifierKeysChanged(const ModifierKeys &modifiers)
 {
     const bool altDrawingMode = modifiers.isCommandDown(); // || modifiers.isAltDown();
 
@@ -1252,13 +1253,13 @@ void MidiRoll::modifierKeysChanged(const ModifierKeys &modifiers)
 }
 
 
-void MidiRoll::mouseMove(const MouseEvent &e)
+void HybridRoll::mouseMove(const MouseEvent &e)
 {
     this->updateWipeSpaceHelperIfNeeded(e);
     this->updateInsertSpaceHelperIfNeeded(e);
 }
 
-void MidiRoll::mouseDown(const MouseEvent &e)
+void HybridRoll::mouseDown(const MouseEvent &e)
 {
     if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
     {
@@ -1266,7 +1267,7 @@ void MidiRoll::mouseDown(const MouseEvent &e)
         return;
     }
 
-    //Logger::writeToLog("MidiRoll::mouseDown");
+    //Logger::writeToLog("HybridRoll::mouseDown");
 
     if (this->isLassoEvent(e))
     {
@@ -1291,14 +1292,14 @@ void MidiRoll::mouseDown(const MouseEvent &e)
     }
 }
 
-void MidiRoll::mouseDrag(const MouseEvent &e)
+void HybridRoll::mouseDrag(const MouseEvent &e)
 {
     if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
     {
         return;
     }
 
-    //Logger::writeToLog("MidiRoll::mouseDrag");
+    //Logger::writeToLog("HybridRoll::mouseDrag");
 
     if (this->lassoComponent->isDragging())
     {
@@ -1322,7 +1323,7 @@ void MidiRoll::mouseDrag(const MouseEvent &e)
     }
 }
 
-void MidiRoll::mouseUp(const MouseEvent &e)
+void HybridRoll::mouseUp(const MouseEvent &e)
 {
     if (const bool hasMultitouch = (e.source.getIndex() > 0))
     {
@@ -1337,7 +1338,7 @@ void MidiRoll::mouseUp(const MouseEvent &e)
         this->endZooming();
     }
 
-    //Logger::writeToLog("MidiRoll::mouseUp");
+    //Logger::writeToLog("HybridRoll::mouseUp");
 
     if (this->lassoComponent->isDragging())
     {
@@ -1359,7 +1360,7 @@ void MidiRoll::mouseUp(const MouseEvent &e)
     }
 }
 
-void MidiRoll::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
+void HybridRoll::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
 {
     const float &inititalSpeed = this->smoothZoomController->getInitialZoomSpeed();
     const float forwardWheel = wheel.deltaY * (wheel.isReversed ? -inititalSpeed : inititalSpeed);
@@ -1376,23 +1377,23 @@ void MidiRoll::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &
 }
 
 
-void MidiRoll::moved()
+void HybridRoll::moved()
 {
     //this->sendChangeMessage();
 }
 
-void MidiRoll::resized()
+void HybridRoll::resized()
 {
     this->updateChildrenBounds();
     //this->sendChangeMessage();
 }
 
-void MidiRoll::paint(Graphics &g)
+void HybridRoll::paint(Graphics &g)
 {
-    const Colour barLine = findColour(MidiRoll::barLineColourId);
-    const Colour barLineBevel = findColour(MidiRoll::barLineBevelColourId);
-    const Colour beatLine = findColour(MidiRoll::beatLineColourId);
-    const Colour snapLine = findColour(MidiRoll::snapLineColourId);
+    const Colour barLine = findColour(HybridRoll::barLineColourId);
+    const Colour barLineBevel = findColour(HybridRoll::barLineBevelColourId);
+    const Colour beatLine = findColour(HybridRoll::beatLineColourId);
+    const Colour snapLine = findColour(HybridRoll::snapLineColourId);
     
     this->computeVisibleBeatLines();
 
@@ -1428,7 +1429,7 @@ void MidiRoll::paint(Graphics &g)
 // TransportIndicator::MovementListener
 //===----------------------------------------------------------------------===//
 
-void MidiRoll::onTransportIndicatorMoved(int indicatorX)
+void HybridRoll::onTransportIndicatorMoved(int indicatorX)
 {
     if (this->shouldFollowIndicator &&
         !this->smoothZoomController->isZooming())
@@ -1454,7 +1455,7 @@ void MidiRoll::onTransportIndicatorMoved(int indicatorX)
 // VolumeCallback::ClippingListener
 //===----------------------------------------------------------------------===//
 
-void MidiRoll::onClippingWarning()
+void HybridRoll::onClippingWarning()
 {
     if (! this->project.getTransport().isPlaying())
     {
@@ -1485,12 +1486,12 @@ void MidiRoll::onClippingWarning()
     this->addAndMakeVisible(newMarker);
 }
 
-void MidiRoll::resetAllClippingIndicators()
+void HybridRoll::resetAllClippingIndicators()
 {
     this->clippingIndicators.clear();
 }
 
-void MidiRoll::onOversaturationWarning()
+void HybridRoll::onOversaturationWarning()
 {
     if (! this->project.getTransport().isPlaying())
     {
@@ -1521,7 +1522,7 @@ void MidiRoll::onOversaturationWarning()
     this->addAndMakeVisible(newMarker);
 }
 
-void MidiRoll::resetAllOversaturationIndicators()
+void HybridRoll::resetAllOversaturationIndicators()
 {
     this->oversaturationIndicators.clear();
 }
@@ -1530,7 +1531,7 @@ void MidiRoll::resetAllOversaturationIndicators()
 // TransportListener
 //===----------------------------------------------------------------------===//
 
-void MidiRoll::onSeek(const double newPosition,
+void HybridRoll::onSeek(const double newPosition,
                       const double currentTimeMs,
                       const double totalTimeMs)
 {
@@ -1542,21 +1543,21 @@ void MidiRoll::onSeek(const double newPosition,
 #if MIDIROLL_FOLLOWS_INDICATOR
 //    if (this->shouldFollowIndicator)
 //    {
-//        Logger::writeToLog("MidiRoll shouldFollowIndicator");
+//        Logger::writeToLog("HybridRoll shouldFollowIndicator");
 //        this->triggerAsyncUpdate();
 //    }
 #endif
 }
 
-void MidiRoll::onTempoChanged(const double newTempo)
+void HybridRoll::onTempoChanged(const double newTempo)
 {
 }
 
-void MidiRoll::onTotalTimeChanged(const double timeMs)
+void HybridRoll::onTotalTimeChanged(const double timeMs)
 {
 }
 
-void MidiRoll::onPlay()
+void HybridRoll::onPlay()
 {
     this->resetAllClippingIndicators();
     this->resetAllOversaturationIndicators();
@@ -1570,7 +1571,7 @@ void MidiRoll::onPlay()
 #endif
 }
 
-void MidiRoll::onStop()
+void HybridRoll::onStop()
 {
 #if MIDIROLL_FOLLOWS_INDICATOR
     // todo sync screen back to indicator?
@@ -1579,7 +1580,7 @@ void MidiRoll::onStop()
 #endif
 }
 
-void MidiRoll::startFollowingIndicator()
+void HybridRoll::startFollowingIndicator()
 {
 #if MIDIROLL_FOLLOWS_INDICATOR
     this->transportIndicatorOffset = this->findIndicatorOffsetFromViewCentre();
@@ -1588,7 +1589,7 @@ void MidiRoll::startFollowingIndicator()
 #endif
 }
 
-void MidiRoll::stopFollowingIndicator()
+void HybridRoll::stopFollowingIndicator()
 {
 #if MIDIROLL_FOLLOWS_INDICATOR
     this->stopTimer();
@@ -1598,7 +1599,7 @@ void MidiRoll::stopFollowingIndicator()
 #endif
 }
 
-void MidiRoll::scrollToSeekPosition()
+void HybridRoll::scrollToSeekPosition()
 {
 #if MIDIROLL_FOLLOWS_INDICATOR
     this->startFollowingIndicator();
@@ -1621,7 +1622,7 @@ void MidiRoll::scrollToSeekPosition()
 // AsyncUpdater
 //===----------------------------------------------------------------------===//
 
-void MidiRoll::handleAsyncUpdate()
+void HybridRoll::handleAsyncUpdate()
 {
     // batch repaint & resize stuff
     if (this->batchRepaintList.size() > 0)
@@ -1672,7 +1673,7 @@ void MidiRoll::handleAsyncUpdate()
 #endif
 }
 
-void MidiRoll::handleCommandMessage(int commandId)
+void HybridRoll::handleCommandMessage(int commandId)
 {
 	if (commandId == CommandIDs::AddAnnotation)
 	{
@@ -1698,7 +1699,7 @@ void MidiRoll::handleCommandMessage(int commandId)
 	}
 }
 
-double MidiRoll::findIndicatorOffsetFromViewCentre() const
+double HybridRoll::findIndicatorOffsetFromViewCentre() const
 {
     int indicatorX = 0;
 
@@ -1711,7 +1712,7 @@ double MidiRoll::findIndicatorOffsetFromViewCentre() const
     return indicatorX - viewportCentreX;
 }
 
-void MidiRoll::triggerBatchRepaintFor(MidiEventComponent *target)
+void HybridRoll::triggerBatchRepaintFor(MidiEventComponent *target)
 {
     this->batchRepaintList.add(target);
     this->triggerAsyncUpdate();
@@ -1722,7 +1723,7 @@ void MidiRoll::triggerBatchRepaintFor(MidiEventComponent *target)
 // Timer
 //===----------------------------------------------------------------------===//
 
-void MidiRoll::hiResTimerCallback()
+void HybridRoll::hiResTimerCallback()
 {
     if (fabs(this->transportIndicatorOffset) < 0.01)
     {
@@ -1742,7 +1743,7 @@ void MidiRoll::hiResTimerCallback()
 // Events check
 //===----------------------------------------------------------------------===//
 
-bool MidiRoll::isViewportZoomEvent(const MouseEvent &e) const
+bool HybridRoll::isViewportZoomEvent(const MouseEvent &e) const
 {
     if (this->project.getEditMode().forbidsViewportZooming())
     {
@@ -1758,7 +1759,7 @@ bool MidiRoll::isViewportZoomEvent(const MouseEvent &e) const
     return false;
 }
 
-bool MidiRoll::isViewportDragEvent(const MouseEvent &e) const
+bool HybridRoll::isViewportDragEvent(const MouseEvent &e) const
 {
     if (this->project.getEditMode().forbidsViewportDragging())
     {
@@ -1778,7 +1779,7 @@ bool MidiRoll::isViewportDragEvent(const MouseEvent &e) const
     return (e.mods.isRightButtonDown() || e.mods.isMiddleButtonDown());
 }
 
-bool MidiRoll::isAddEvent(const MouseEvent &e) const
+bool HybridRoll::isAddEvent(const MouseEvent &e) const
 {
     if (this->project.getEditMode().forbidsAddingEvents())
     {
@@ -1793,7 +1794,7 @@ bool MidiRoll::isAddEvent(const MouseEvent &e) const
     return false; // (e.mods.isMiddleButtonDown());
 }
 
-bool MidiRoll::isLassoEvent(const MouseEvent &e) const
+bool HybridRoll::isLassoEvent(const MouseEvent &e) const
 {
     if (this->project.getEditMode().forbidsSelectionMode())
     {
@@ -1813,7 +1814,7 @@ bool MidiRoll::isLassoEvent(const MouseEvent &e) const
     return e.mods.isLeftButtonDown();
 }
 
-bool MidiRoll::isWipeSpaceEvent(const MouseEvent &e) const
+bool HybridRoll::isWipeSpaceEvent(const MouseEvent &e) const
 {
     if (this->project.getEditMode().forbidsSpaceWipe())
     {
@@ -1829,7 +1830,7 @@ bool MidiRoll::isWipeSpaceEvent(const MouseEvent &e) const
     return false;
 }
 
-bool MidiRoll::isInsertSpaceEvent(const MouseEvent &e) const
+bool HybridRoll::isInsertSpaceEvent(const MouseEvent &e) const
 {
     if (this->project.getEditMode().forbidsSpaceInsert())
     {
@@ -1846,13 +1847,13 @@ bool MidiRoll::isInsertSpaceEvent(const MouseEvent &e) const
 }
 
 
-void MidiRoll::resetDraggingAnchors()
+void HybridRoll::resetDraggingAnchors()
 {
     this->viewportAnchor = this->viewport.getViewPosition();
     this->clickAnchor = Desktop::getInstance().getMainMouseSource().getScreenPosition();
 }
 
-void MidiRoll::continueDragging(const MouseEvent &e)
+void HybridRoll::continueDragging(const MouseEvent &e)
 {
     this->draggedDistance = e.getDistanceFromDragStart();
     this->smoothZoomController->cancelZoom();
@@ -1864,7 +1865,7 @@ void MidiRoll::continueDragging(const MouseEvent &e)
 // Wipe space tool
 //===----------------------------------------------------------------------===//
 
-void MidiRoll::initWipeSpaceHelper(int xPosition)
+void HybridRoll::initWipeSpaceHelper(int xPosition)
 {
     if (this->wipeSpaceHelper == nullptr)
     {
@@ -1877,7 +1878,7 @@ void MidiRoll::initWipeSpaceHelper(int xPosition)
     this->wipeSpaceHelper->setEndBeat(startBeat);
 }
 
-void MidiRoll::updateWipeSpaceHelperIfNeeded(const MouseEvent &e)
+void HybridRoll::updateWipeSpaceHelperIfNeeded(const MouseEvent &e)
 {
     if (this->wipeSpaceHelper != nullptr)
     {
@@ -1887,17 +1888,17 @@ void MidiRoll::updateWipeSpaceHelperIfNeeded(const MouseEvent &e)
     }
 }
 
-void MidiRoll::removeWipeSpaceHelper()
+void HybridRoll::removeWipeSpaceHelper()
 {
     this->wipeSpaceHelper = nullptr;
 }
 
-void MidiRoll::startWipingSpace(const MouseEvent &e)
+void HybridRoll::startWipingSpace(const MouseEvent &e)
 {
     this->initWipeSpaceHelper(e.x);
 }
 
-void MidiRoll::continueWipingSpace(const MouseEvent &e)
+void HybridRoll::continueWipingSpace(const MouseEvent &e)
 {
     if (this->wipeSpaceHelper != nullptr)
     {
@@ -1906,7 +1907,7 @@ void MidiRoll::continueWipingSpace(const MouseEvent &e)
     }
 }
 
-void MidiRoll::endWipingSpaceIfNeeded()
+void HybridRoll::endWipingSpaceIfNeeded()
 {
     if (this->wipeSpaceHelper != nullptr)
     {
@@ -1917,17 +1918,17 @@ void MidiRoll::endWipingSpaceIfNeeded()
         {
             const bool isAnyModifierKeyDown = Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isAnyModifierKeyDown();
 
-            MidiRollToolbox::wipeSpace(isAnyModifierKeyDown ? this->project.getSelectedLayersList() : this->project.getLayersList(), leftBeat, rightBeat);
+            PianoRollToolbox::wipeSpace(isAnyModifierKeyDown ? this->project.getSelectedLayersList() : this->project.getLayersList(), leftBeat, rightBeat);
 
             if (! isAnyModifierKeyDown)
             {
                 if (this->wipeSpaceHelper->isInverted())
                 {
-                    MidiRollToolbox::shiftEventsToTheLeft(this->project.getLayersList(), leftBeat, (rightBeat - leftBeat), false);
+                    PianoRollToolbox::shiftEventsToTheLeft(this->project.getLayersList(), leftBeat, (rightBeat - leftBeat), false);
                 }
                 else
                 {
-                    MidiRollToolbox::shiftEventsToTheRight(this->project.getLayersList(), leftBeat, -(rightBeat - leftBeat), false);
+                    PianoRollToolbox::shiftEventsToTheRight(this->project.getLayersList(), leftBeat, -(rightBeat - leftBeat), false);
                 }
             }
         }
@@ -1941,7 +1942,7 @@ void MidiRoll::endWipingSpaceIfNeeded()
 // Insert space tool
 //===----------------------------------------------------------------------===//
 
-void MidiRoll::initInsertSpaceHelper(int xPosition)
+void HybridRoll::initInsertSpaceHelper(int xPosition)
 {
     if (this->insertSpaceHelper == nullptr)
     {
@@ -1954,7 +1955,7 @@ void MidiRoll::initInsertSpaceHelper(int xPosition)
     this->insertSpaceHelper->setEndBeat(startBeat);
 }
 
-void MidiRoll::updateInsertSpaceHelperIfNeeded(const MouseEvent &e)
+void HybridRoll::updateInsertSpaceHelperIfNeeded(const MouseEvent &e)
 {
     if (this->insertSpaceHelper != nullptr)
     {
@@ -1964,19 +1965,19 @@ void MidiRoll::updateInsertSpaceHelperIfNeeded(const MouseEvent &e)
     }
 }
 
-void MidiRoll::removeInsertSpaceHelper()
+void HybridRoll::removeInsertSpaceHelper()
 {
     this->insertSpaceHelper = nullptr;
 }
 
-void MidiRoll::startInsertingSpace(const MouseEvent &e)
+void HybridRoll::startInsertingSpace(const MouseEvent &e)
 {
     this->initInsertSpaceHelper(e.x);
     this->insertSpaceHelper->resetDragDelta();
     this->insertSpaceHelper->setNeedsCheckpoint(true);
 }
 
-void MidiRoll::continueInsertingSpace(const MouseEvent &e)
+void HybridRoll::continueInsertingSpace(const MouseEvent &e)
 {
     if (this->insertSpaceHelper != nullptr)
     {
@@ -1993,11 +1994,11 @@ void MidiRoll::continueInsertingSpace(const MouseEvent &e)
 
             if (isInverted)
             {
-                MidiRollToolbox::shiftEventsToTheLeft(this->project.getLayersList(), rightBeat, changeDelta, shouldCheckpoint);
+                PianoRollToolbox::shiftEventsToTheLeft(this->project.getLayersList(), rightBeat, changeDelta, shouldCheckpoint);
             }
             else
             {
-                MidiRollToolbox::shiftEventsToTheRight(this->project.getLayersList(), leftBeat, changeDelta, shouldCheckpoint);
+                PianoRollToolbox::shiftEventsToTheRight(this->project.getLayersList(), leftBeat, changeDelta, shouldCheckpoint);
             }
 
             this->insertSpaceHelper->resetDragDelta();
@@ -2006,7 +2007,7 @@ void MidiRoll::continueInsertingSpace(const MouseEvent &e)
     }
 }
 
-void MidiRoll::endInsertingSpaceIfNeeded()
+void HybridRoll::endInsertingSpaceIfNeeded()
 {
     if (this->insertSpaceHelper != nullptr)
     {
@@ -2019,7 +2020,7 @@ void MidiRoll::endInsertingSpaceIfNeeded()
 // Zooming
 //===----------------------------------------------------------------------===//
 
-void MidiRoll::startZooming()
+void HybridRoll::startZooming()
 {
     this->smoothPanController->cancelPan();
     this->clickAnchor = Desktop::getInstance().getMainMouseSource().getScreenPosition();
@@ -2039,7 +2040,7 @@ void MidiRoll::startZooming()
     Desktop::getInstance().getMainMouseSource().enableUnboundedMouseMovement(true, false);
 }
 
-void MidiRoll::continueZooming(const MouseEvent &e)
+void HybridRoll::continueZooming(const MouseEvent &e)
 {
     Desktop::getInstance().getMainMouseSource().setScreenPosition(e.getMouseDownScreenPosition().toFloat());
 
@@ -2056,7 +2057,7 @@ void MidiRoll::continueZooming(const MouseEvent &e)
     //    this->zoomMarker->setCentrePosition(markerCentre.getX(), markerCentre.getY());
 }
 
-void MidiRoll::endZooming()
+void HybridRoll::endZooming()
 {
     Desktop::getInstance().getMainMouseSource().enableUnboundedMouseMovement(false, false);
 
@@ -2065,7 +2066,7 @@ void MidiRoll::endZooming()
 }
 
 
-Point<float> MidiRoll::getMouseOffset(Point<float> mouseScreenPosition) const
+Point<float> HybridRoll::getMouseOffset(Point<float> mouseScreenPosition) const
 {
     const int w = this->getWidth() - this->viewport.getWidth();
 
@@ -2084,7 +2085,7 @@ Point<float> MidiRoll::getMouseOffset(Point<float> mouseScreenPosition) const
     return Point<float>(x, y);
 }
 
-void MidiRoll::updateBounds()
+void HybridRoll::updateBounds()
 {
     const int &newWidth = int(this->getNumBars() * this->barWidth);
     if (this->getWidth() == newWidth)
@@ -2096,7 +2097,7 @@ void MidiRoll::updateBounds()
 
 static const int shadowSize = 15;
 
-void MidiRoll::updateChildrenBounds()
+void HybridRoll::updateChildrenBounds()
 {
     const int &viewHeight = this->viewport.getViewHeight();
     const int &viewWidth = this->viewport.getViewWidth();
@@ -2132,7 +2133,7 @@ void MidiRoll::updateChildrenBounds()
     this->broadcastRollResized();
 }
 
-void MidiRoll::updateChildrenPositions()
+void HybridRoll::updateChildrenPositions()
 {
     const int &viewWidth = this->viewport.getViewWidth();
     const int &viewHeight = this->viewport.getViewHeight();
@@ -2172,7 +2173,7 @@ void MidiRoll::updateChildrenPositions()
 // ChangeListener
 //===----------------------------------------------------------------------===//
 
-void MidiRoll::changeListenerCallback(ChangeBroadcaster *source)
+void HybridRoll::changeListenerCallback(ChangeBroadcaster *source)
 {
     if (this->lassoComponent->isDragging())
     {
@@ -2180,13 +2181,13 @@ void MidiRoll::changeListenerCallback(ChangeBroadcaster *source)
     }
 
     if (this->isUsingSpaceDraggingMode() &&
-        ! (this->project.getEditMode().isMode(MidiRollEditMode::dragMode)))
+        ! (this->project.getEditMode().isMode(HybridRollEditMode::dragMode)))
     {
         this->setSpaceDraggingMode(false);
     }
 
     if (this->isUsingAltDrawingMode() &&
-        ! (this->project.getEditMode().isMode(MidiRollEditMode::drawMode)))
+        ! (this->project.getEditMode().isMode(HybridRollEditMode::drawMode)))
     {
         this->setAltDrawingMode(false);
     }

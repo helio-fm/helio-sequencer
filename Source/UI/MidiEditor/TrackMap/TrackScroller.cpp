@@ -20,7 +20,7 @@
 #include "TrackScrollerScreen.h"
 #include "TransportIndicator.h"
 #include "Transport.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 #include "PanelBackgroundC.h"
 #include "Origami.h"
 
@@ -32,7 +32,7 @@
 
 
 TrackScroller::TrackScroller(Transport &transportRef,
-                             MidiRoll &rollRef) :
+                             HybridRoll &rollRef) :
     transport(transportRef),
     roll(rollRef),
     mapShouldGetStretched(true)
@@ -316,12 +316,12 @@ void TrackScroller::mouseWheelMove(const MouseEvent &event, const MouseWheelDeta
 // MidiRollListener
 //===----------------------------------------------------------------------===//
 
-void TrackScroller::onMidiRollMoved(MidiRoll *targetRoll)
+void TrackScroller::onMidiRollMoved(HybridRoll *targetRoll)
 {
     this->triggerAsyncUpdate();
 }
 
-void TrackScroller::onMidiRollResized(MidiRoll *targetRoll)
+void TrackScroller::onMidiRollResized(HybridRoll *targetRoll)
 {
     this->triggerAsyncUpdate();
 }

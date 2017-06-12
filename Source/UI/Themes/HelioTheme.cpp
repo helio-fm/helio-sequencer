@@ -25,7 +25,7 @@
 
 #include "MainWindow.h"
 #include "Origami.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 #include "TreePanel.h"
 #include "InstrumentEditor.h"
 #include "HelperRectangle.h"
@@ -973,19 +973,19 @@ void HelioTheme::initColours(const ::ColourScheme &colours)
     this->setColour(TreeView::dragAndDropIndicatorColourId, Colours::black.withAlpha(0.15f));
     this->setColour(SizeSwitcherComponent::borderColourId, Colours::white.withAlpha(0.09f));
 
-    // MidiRoll
-    this->setColour(MidiRoll::blackKeyColourId, colours.getBlackKeyColour());
-    this->setColour(MidiRoll::blackKeyBrightColourId, colours.getBlackKeyColour().withMultipliedBrightness(1.15f));
-    this->setColour(MidiRoll::whiteKeyColourId, colours.getWhiteKeyColour());
-    this->setColour(MidiRoll::whiteKeyBrightColourId, colours.getWhiteKeyColour().withMultipliedBrightness(1.15f));
-    this->setColour(MidiRoll::rowLineColourId, colours.getRowColour());
-    this->setColour(MidiRoll::barLineColourId, colours.getBarColour().withAlpha(0.9f));
-    this->setColour(MidiRoll::barLineBevelColourId, Colours::white.withAlpha(0.015f));
-    this->setColour(MidiRoll::beatLineColourId, colours.getBarColour().withAlpha(0.45f));
-    this->setColour(MidiRoll::snapLineColourId, colours.getBarColour().withAlpha(0.1f));
-    this->setColour(MidiRoll::headerColourId, colours.getPrimaryGradientColourB());
+    // HybridRoll
+    this->setColour(HybridRoll::blackKeyColourId, colours.getBlackKeyColour());
+    this->setColour(HybridRoll::blackKeyBrightColourId, colours.getBlackKeyColour().withMultipliedBrightness(1.15f));
+    this->setColour(HybridRoll::whiteKeyColourId, colours.getWhiteKeyColour());
+    this->setColour(HybridRoll::whiteKeyBrightColourId, colours.getWhiteKeyColour().withMultipliedBrightness(1.15f));
+    this->setColour(HybridRoll::rowLineColourId, colours.getRowColour());
+    this->setColour(HybridRoll::barLineColourId, colours.getBarColour().withAlpha(0.9f));
+    this->setColour(HybridRoll::barLineBevelColourId, Colours::white.withAlpha(0.015f));
+    this->setColour(HybridRoll::beatLineColourId, colours.getBarColour().withAlpha(0.45f));
+    this->setColour(HybridRoll::snapLineColourId, colours.getBarColour().withAlpha(0.1f));
+    this->setColour(HybridRoll::headerColourId, colours.getPrimaryGradientColourB());
 
-    this->setColour(MidiRoll::indicatorColourId, colours.getLassoBorderColour().withAlpha(0.5f));
+    this->setColour(HybridRoll::indicatorColourId, colours.getLassoBorderColour().withAlpha(0.5f));
     this->setColour(LassoComponent<void *>::lassoFillColourId, colours.getLassoFillColour().withAlpha(0.15f));
     this->setColour(LassoComponent<void *>::lassoOutlineColourId, colours.getLassoBorderColour().withAlpha(0.4f));
 

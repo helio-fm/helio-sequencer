@@ -19,7 +19,7 @@
 
 // belongs to ProjectTreeItem
 
-class MidiRollEditMode : public ChangeBroadcaster
+class HybridRollEditMode : public ChangeBroadcaster
 {
 public:
     
@@ -35,8 +35,8 @@ public:
         scissorsMode                     = 0x08,
     };
     
-    MidiRollEditMode();
-	MidiRollEditMode(const MidiRollEditMode &other);
+    HybridRollEditMode();
+	HybridRollEditMode(const HybridRollEditMode &other);
 
     bool forbidsViewportDragging() const;
     bool forcesViewportDragging() const;
@@ -68,6 +68,6 @@ private:
     Mode mode;
     Mode previousMode;
 
-    JUCE_LEAK_DETECTOR(MidiRollEditMode)
+    JUCE_LEAK_DETECTOR(HybridRollEditMode)
     
 };

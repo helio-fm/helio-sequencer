@@ -18,7 +18,7 @@
 #pragma once
 
 //[Headers]
-#include "MidiRollCommandPanel.h"
+#include "HybridRollCommandPanel.h"
 //[/Headers]
 
 #include "../Themes/PanelBackgroundC.h"
@@ -31,13 +31,13 @@
 #include "../Themes/LighterShadowDownwards.h"
 #include "../Themes/GradientVerticalReversed.h"
 
-class MidiRollCommandPanelPhone  : public MidiRollCommandPanel
+class HybridRollCommandPanelPhone  : public HybridRollCommandPanel
 {
 public:
 
-    MidiRollCommandPanelPhone (ProjectTreeItem &parent);
+    HybridRollCommandPanelPhone (ProjectTreeItem &parent);
 
-    ~MidiRollCommandPanelPhone();
+    ~HybridRollCommandPanelPhone();
 
     //[UserMethods]
     //[/UserMethods]
@@ -56,7 +56,7 @@ private:
     //[UserVariables]
 
     //===----------------------------------------------------------------------===//
-    // MidiRollCommandPanel
+    // HybridRollCommandPanel
     //
 
     void updateModeButtons() override;
@@ -99,5 +99,5 @@ private:
     ScopedPointer<GradientVerticalReversed> gradient;
     ScopedPointer<CommandItemComponent> annotationsButton;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MidiRollCommandPanelPhone)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HybridRollCommandPanelPhone)
 };

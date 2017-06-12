@@ -26,7 +26,7 @@
 #include "ProjectTreeItem.h"
 #include "PlayerThread.h"
 #include "Icons.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 #include "MidiLayer.h"
 #include "InternalClipboard.h"
 #include "CommandItemComponent.h"

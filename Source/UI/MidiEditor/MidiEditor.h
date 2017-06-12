@@ -17,12 +17,12 @@
 
 #pragma once
 
-class MidiRoll;
+class HybridRoll;
 class MidiLayer;
 class AutomationLayer;
 class TrackScroller;
 class ProjectTreeItem;
-class MidiRollCommandPanel;
+class HybridRollCommandPanel;
 class AutomationTrackMap;
 class AutomationTrackMapProxy;
 class MidiEditorSplitContainer;
@@ -46,7 +46,7 @@ public:
     bool toggleShowAutomationEditor(AutomationLayer *targetLayer);
     void hideAutomationEditor(AutomationLayer *targetLayer);
     
-    MidiRoll *getRoll() const;
+    HybridRoll *getRoll() const;
 
 
     //===------------------------------------------------------------------===//
@@ -79,10 +79,10 @@ private:
     ScopedPointer<Viewport> viewport;
     ScopedPointer<TrackScroller> scroller;
 
-    ScopedPointer<MidiRoll> roll;
+    ScopedPointer<HybridRoll> roll;
     ScopedPointer<Component> rollContainer; // лейаут для вьюпорта с роллом и минимап-скроллера внизу
     //ScopedPointer<Component> automationContainer; // лейаут для редактора автоматизации с тулбаром справа
-    ScopedPointer<MidiRollCommandPanel> rollCommandPanel; // тублар справа от роллов
+    ScopedPointer<HybridRollCommandPanel> rollCommandPanel; // тублар справа от роллов
 
     typedef HashMap<String, AutomationTrackMapProxy *> AutomationEditorsHashMap;
     AutomationEditorsHashMap automationEditorsLinks; // связки id слоев и редакторов автоматизации

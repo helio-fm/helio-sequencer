@@ -52,10 +52,10 @@ class NoteResizerLeft;
 class NoteResizerRight;
 
 #include "HelioTheme.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 #include "Note.h"
 
-class PianoRoll : public MidiRoll
+class PianoRoll : public HybridRoll
 {
 public:
 
@@ -171,7 +171,7 @@ public:
 
     
     //===------------------------------------------------------------------===//
-    // MidiRoll's legacy
+    // HybridRoll's legacy
     //===------------------------------------------------------------------===//
     
     void handleAsyncUpdate() override;

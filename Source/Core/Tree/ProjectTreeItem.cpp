@@ -46,7 +46,7 @@
 #include "VersionControlTreeItem.h"
 #include "VersionControl.h"
 #include "RecentFilesList.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 #include "Autosaver.h"
 
 #include "HelioTheme.h"
@@ -198,12 +198,12 @@ ProjectTimeline *ProjectTreeItem::getTimeline() const noexcept
     return this->timeline;
 }
 
-MidiRollEditMode ProjectTreeItem::getEditMode() const noexcept
+HybridRollEditMode ProjectTreeItem::getEditMode() const noexcept
 {
 	return this->rollEditMode;
 }
 
-MidiRoll *ProjectTreeItem::getLastFocusedRoll() const
+HybridRoll *ProjectTreeItem::getLastFocusedRoll() const
 {
     // todo!
     return this->editor->getRoll();
@@ -212,7 +212,7 @@ MidiRoll *ProjectTreeItem::getLastFocusedRoll() const
 //    {
 //        if (Component *lastFocused = this->origami->getLastFocusedComponent())
 //        {
-//            return dynamic_cast<MidiRoll *>(lastFocused);
+//            return dynamic_cast<HybridRoll *>(lastFocused);
 //        }
 //    }
 //    

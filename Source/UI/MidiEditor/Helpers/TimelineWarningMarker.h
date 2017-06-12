@@ -18,7 +18,7 @@
 #pragma once
 
 #include "ComponentFader.h"
-class MidiRoll;
+class HybridRoll;
 
 #define CLIPPING_MARKER_MIN_SIZE_IN_BEATS 0.25f
 #define CLIPPING_MARKER_MAX_GAP_IN_BEATS 0.25f
@@ -34,7 +34,7 @@ public:
     };
     
     TimelineWarningMarker(WarningLevel warningLevel,
-                          MidiRoll &parentRoll,
+                          HybridRoll &parentRoll,
                           float inititalBeatPosition);
 
     ~TimelineWarningMarker() override;
@@ -51,7 +51,7 @@ public:
 
 private:
 
-    MidiRoll &roll;
+    HybridRoll &roll;
 
     ComponentFader fader;
     Colour colour;

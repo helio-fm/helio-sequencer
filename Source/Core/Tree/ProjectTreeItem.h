@@ -25,7 +25,7 @@ class Document;
 class Project;
 class ProjectListener;
 class MidiEditor;
-class MidiRoll;
+class HybridRoll;
 class MidiEvent;
 class TrackMapRenderer;
 class ProjectPage;
@@ -34,7 +34,7 @@ class TrackMap;
 class Transport;
 class ProjectInfo;
 class ProjectTimeline;
-class MidiRollCommandPanel;
+class HybridRollCommandPanel;
 class UndoStack;
 class RecentFilesList;
 class Pattern;
@@ -44,7 +44,7 @@ class Pattern;
 #include "Transport.h"
 #include "TrackedItemsSource.h"
 #include "ProjectSequencesWrapper.h"
-#include "MidiRollEditMode.h"
+#include "HybridRollEditMode.h"
 #include "MidiLayer.h"
 
 // todo depends on AudioCore
@@ -68,8 +68,8 @@ public:
     Transport &getTransport() const noexcept;
 	ProjectInfo *getProjectInfo() const noexcept;
 	ProjectTimeline *getTimeline() const noexcept;
-	MidiRollEditMode getEditMode() const noexcept;
-	MidiRoll *getLastFocusedRoll() const;
+	HybridRollEditMode getEditMode() const noexcept;
+	HybridRoll *getLastFocusedRoll() const;
 
 	void repaintEditor();
     
@@ -271,7 +271,7 @@ private:
 
     ScopedPointer<MidiEditor> editor;
 
-    MidiRollEditMode rollEditMode;
+    HybridRollEditMode rollEditMode;
 
     ListenerList<ProjectListener> changeListeners;
 

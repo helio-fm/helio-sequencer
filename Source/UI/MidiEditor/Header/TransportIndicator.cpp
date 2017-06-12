@@ -35,7 +35,7 @@
 
 // TODO: check deadlocks?
 
-TransportIndicator::TransportIndicator(MidiRoll &parentRoll,
+TransportIndicator::TransportIndicator(HybridRoll &parentRoll,
                                        Transport &owner,
                                        TransportIndicator::MovementListener *movementListener /*= nullptr*/,
                                        int width /*= 2*/) :

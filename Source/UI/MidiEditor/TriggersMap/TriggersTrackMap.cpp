@@ -21,13 +21,13 @@
 #include "MidiLayer.h"
 #include "AutomationLayer.h"
 #include "PlayerThread.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 #include "TriggerEventComponent.h"
 #include "TriggerEventConnector.h"
 
 #define DEFAULT_TRACKMAP_HEIGHT 16
 
-TriggersTrackMap::TriggersTrackMap(ProjectTreeItem &parentProject, MidiRoll &parentRoll, WeakReference<MidiLayer> targetLayer) :
+TriggersTrackMap::TriggersTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll, WeakReference<MidiLayer> targetLayer) :
     project(parentProject),
     roll(parentRoll),
     layer(std::move(targetLayer)),

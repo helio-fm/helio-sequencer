@@ -17,19 +17,19 @@
 
 #pragma once
 
-class MidiRoll;
+class HybridRoll;
 class Transport;
 class SoundProbeIndicator;
 class TimeDistanceIndicator;
 class HeaderSelectionIndicator;
 
-class MidiRollHeader : public Component
+class HybridRollHeader : public Component
 {
 public:
 
-    MidiRollHeader(Transport &transport, MidiRoll &roll, Viewport &viewport);
+    HybridRollHeader(Transport &transport, HybridRoll &roll, Viewport &viewport);
 
-    ~MidiRollHeader() override;
+    ~HybridRollHeader() override;
     
     void setSoundProbeMode(bool shouldProbeOnClick);
 
@@ -62,7 +62,7 @@ protected:
     bool soundProbeMode;
     
     Transport &transport;
-    MidiRoll &roll;
+    HybridRoll &roll;
     Viewport &viewport;
     
     ScopedPointer<SoundProbeIndicator> playingIndicator;

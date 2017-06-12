@@ -24,7 +24,7 @@ class MidiEventSelection;
 class MidiLayer;
 class Note;
 
-class MidiRollToolbox
+class PianoRollToolbox
 {
 public:
     

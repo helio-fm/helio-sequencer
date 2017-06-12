@@ -18,7 +18,7 @@
 #pragma once
 
 //[Headers]
-class MidiRoll;
+class HybridRoll;
 class NoteComponent;
 class MidiEventSelection;
 
@@ -31,7 +31,7 @@ class NoteResizerLeft  : public Component
 {
 public:
 
-    NoteResizerLeft (MidiRoll &parentRoll);
+    NoteResizerLeft (HybridRoll &parentRoll);
 
     ~NoteResizerLeft();
 
@@ -58,7 +58,7 @@ private:
 
     ComponentFader fader;
     ComponentDragger dragger;
-    MidiRoll &roll;
+    HybridRoll &roll;
     SafePointer<NoteComponent> noteComponent;
 
     //[/UserVariables]

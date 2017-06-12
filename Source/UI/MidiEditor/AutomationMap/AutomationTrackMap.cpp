@@ -23,7 +23,7 @@
 #include "MidiLayer.h"
 #include "AutomationLayer.h"
 #include "PlayerThread.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 #include "ComponentConnectorCurve.h"
 
 #if HELIO_DESKTOP
@@ -38,7 +38,7 @@
 
 #define DEFAULT_TRACKMAP_HEIGHT 128
 
-AutomationTrackMap::AutomationTrackMap(ProjectTreeItem &parentProject, MidiRoll &parentRoll, WeakReference<MidiLayer> targetLayer) :
+AutomationTrackMap::AutomationTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll, WeakReference<MidiLayer> targetLayer) :
     project(parentProject),
     roll(parentRoll),
     layer(std::move(targetLayer)),

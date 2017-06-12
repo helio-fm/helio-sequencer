@@ -34,7 +34,7 @@ class VolumeCallback;
 #   define MIDIROLL_COMMANDPANEL_SHOULD_SHOW_ANNOTATION_DETAILS (false)
 #endif
 
-class MidiRollCommandPanel : public Component,
+class HybridRollCommandPanel : public Component,
                              protected TransportListener,
                              protected AsyncUpdater,
                              protected ListBoxModel,
@@ -43,8 +43,8 @@ class MidiRollCommandPanel : public Component,
 {
 public:
 
-    MidiRollCommandPanel(ProjectTreeItem &parent);
-    ~MidiRollCommandPanel();
+    HybridRollCommandPanel(ProjectTreeItem &parent);
+    ~HybridRollCommandPanel();
     
     void handleCommandMessage (int commandId) override;
     void childrenChanged() override;
@@ -99,5 +99,5 @@ protected:
     void onPlay() override;
     void onStop() override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MidiRollCommandPanel)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HybridRollCommandPanel)
 };

@@ -19,7 +19,7 @@
 #include "Common.h"
 //[/Headers]
 
-#include "MidiRollCommandPanelPhone.h"
+#include "HybridRollCommandPanelPhone.h"
 
 //[MiscUserDefs]
 #include "Transport.h"
@@ -27,8 +27,8 @@
 #include "CommandIDs.h"
 //[/MiscUserDefs]
 
-MidiRollCommandPanelPhone::MidiRollCommandPanelPhone(ProjectTreeItem &parent)
-    : MidiRollCommandPanel(parent)
+HybridRollCommandPanelPhone::HybridRollCommandPanelPhone(ProjectTreeItem &parent)
+    : HybridRollCommandPanel(parent)
 {
     addAndMakeVisible (headBg = new PanelBackgroundC());
     addAndMakeVisible (bodyBg = new PanelBackgroundC());
@@ -88,7 +88,7 @@ MidiRollCommandPanelPhone::MidiRollCommandPanelPhone(ProjectTreeItem &parent)
     //[/Constructor]
 }
 
-MidiRollCommandPanelPhone::~MidiRollCommandPanelPhone()
+HybridRollCommandPanelPhone::~HybridRollCommandPanelPhone()
 {
     //[Destructor_pre]
     //[/Destructor_pre]
@@ -111,7 +111,7 @@ MidiRollCommandPanelPhone::~MidiRollCommandPanelPhone()
     //[/Destructor]
 }
 
-void MidiRollCommandPanelPhone::paint (Graphics& g)
+void HybridRollCommandPanelPhone::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
@@ -120,7 +120,7 @@ void MidiRollCommandPanelPhone::paint (Graphics& g)
     //[/UserPaint]
 }
 
-void MidiRollCommandPanelPhone::resized()
+void HybridRollCommandPanelPhone::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
@@ -139,7 +139,7 @@ void MidiRollCommandPanelPhone::resized()
     gradient->setBounds (0, 0, getWidth() - 0, 47);
     annotationsButton->setBounds ((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 45);
     //[UserResized] Add your own custom resize handling here..
-    //Logger::writeToLog("MidiRollCommandPanel updateContent");
+    //Logger::writeToLog("HybridRollCommandPanel updateContent");
     // a hack for themes changing
     this->listBox->updateContent();
     this->annotationsButton->resized();
@@ -154,14 +154,14 @@ void MidiRollCommandPanelPhone::resized()
     //[/UserResized]
 }
 
-void MidiRollCommandPanelPhone::childrenChanged()
+void HybridRollCommandPanelPhone::childrenChanged()
 {
     //[UserCode_childrenChanged] -- Add your code here...
     //this->updateButtonsImages();
     //[/UserCode_childrenChanged]
 }
 
-void MidiRollCommandPanelPhone::mouseMove (const MouseEvent& e)
+void HybridRollCommandPanelPhone::mouseMove (const MouseEvent& e)
 {
     //[UserCode_mouseMove] -- Add your code here...
     //[/UserCode_mouseMove]
@@ -175,7 +175,7 @@ void MidiRollCommandPanelPhone::mouseMove (const MouseEvent& e)
 //
 
 Component
-*MidiRollCommandPanelPhone::refreshComponentForRow(int rowNumber, bool isRowSelected,
+*HybridRollCommandPanelPhone::refreshComponentForRow(int rowNumber, bool isRowSelected,
                                                      Component *existingComponentToUpdate)
 {
     if (rowNumber >= this->commandDescriptions.size())
@@ -208,7 +208,7 @@ Component
 // AsyncUpdater
 //
 
-void MidiRollCommandPanelPhone::handleAsyncUpdate()
+void HybridRollCommandPanelPhone::handleAsyncUpdate()
 {
     if (this->isTimerRunning())
     {
@@ -228,35 +228,35 @@ void MidiRollCommandPanelPhone::handleAsyncUpdate()
 // TransportListener
 //
 
-void MidiRollCommandPanelPhone::onTotalTimeChanged(const double timeMs)
+void HybridRollCommandPanelPhone::onTotalTimeChanged(const double timeMs)
 {
-    MidiRollCommandPanel::onTotalTimeChanged(timeMs);
+    HybridRollCommandPanel::onTotalTimeChanged(timeMs);
     this->totalTime->setText(Transport::getTimeString(this->lastTotalTime), dontSendNotification);
 }
 
-void MidiRollCommandPanelPhone::onPlay()
+void HybridRollCommandPanelPhone::onPlay()
 {
-    MidiRollCommandPanel::onPlay();
+    HybridRollCommandPanel::onPlay();
     this->playButton->setPlaying(true);
 }
 
-void MidiRollCommandPanelPhone::onStop()
+void HybridRollCommandPanelPhone::onStop()
 {
-    MidiRollCommandPanel::onStop();
+    HybridRollCommandPanel::onStop();
     this->playButton->setPlaying(false);
 }
 
 //===--------------------------------------------------------------------------===//
-// MidiRollCommandPanel
+// HybridRollCommandPanel
 //
 
-void MidiRollCommandPanelPhone::updateModeButtons()
+void HybridRollCommandPanelPhone::updateModeButtons()
 {
     this->recreateCommandDescriptions();
     this->listBox->updateContent();
 }
 
-void MidiRollCommandPanelPhone::emitAnnotationsCallout(Component *newAnnotationsMenu)
+void HybridRollCommandPanelPhone::emitAnnotationsCallout(Component *newAnnotationsMenu)
 {
     HelioCallout::emit(newAnnotationsMenu, this->annotationsButton);
 }
@@ -268,8 +268,8 @@ void MidiRollCommandPanelPhone::emitAnnotationsCallout(Component *newAnnotations
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="MidiRollCommandPanelPhone"
-                 template="../../Template" componentName="" parentClasses="public MidiRollCommandPanel"
-                 constructorParams="ProjectTreeItem &amp;parent" variableInitialisers="MidiRollCommandPanel(parent)"
+                 template="../../Template" componentName="" parentClasses="public HybridRollCommandPanel"
+                 constructorParams="ProjectTreeItem &amp;parent" variableInitialisers="HybridRollCommandPanel(parent)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="64" initialHeight="640">
   <METHODS>
@@ -333,5 +333,5 @@ static const unsigned char resource_MidiRollCommandPanelPhone_gray1x1_png[] = { 
 0,11,19,1,0,154,156,24,0,0,0,7,116,73,77,69,7,222,4,19,5,8,9,228,2,121,9,0,0,0,29,105,84,88,116,67,111,109,109,101,110,116,0,0,0,0,0,67,114,101,97,116,101,100,32,119,105,116,104,32,71,73,77,80,100,46,
 101,7,0,0,0,12,73,68,65,84,8,215,99,136,138,138,2,0,2,32,1,15,53,60,95,243,0,0,0,0,73,69,78,68,174,66,96,130,0,0};
 
-const char* MidiRollCommandPanelPhone::gray1x1_png = (const char*) resource_MidiRollCommandPanelPhone_gray1x1_png;
-const int MidiRollCommandPanelPhone::gray1x1_pngSize = 150;
+const char* HybridRollCommandPanelPhone::gray1x1_png = (const char*) resource_MidiRollCommandPanelPhone_gray1x1_png;
+const int HybridRollCommandPanelPhone::gray1x1_pngSize = 150;

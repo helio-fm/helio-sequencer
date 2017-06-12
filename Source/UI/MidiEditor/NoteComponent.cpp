@@ -22,7 +22,7 @@
 #include "MidiLayer.h"
 #include "Note.h"
 #include "MidiEventComponentLasso.h"
-#include "MidiRollToolbox.h"
+#include "PianoRollToolbox.h"
 #include "Transport.h"
 #include "App.h"
 #include "MainWindow.h"
@@ -211,7 +211,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
     //const double transportPosition = this->roll.getTransportPositionByBeat(this->getBeat());
     //Logger::writeToLog("Beat: " + String(this->getBeat()) + ", transport position: " + String(transportPosition));
     
-    if (e.mods.isRightButtonDown() && this->roll.getEditMode().isMode(MidiRollEditMode::defaultMode))
+    if (e.mods.isRightButtonDown() && this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
     {
         this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
@@ -240,7 +240,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
         {
             if (e.mods.isShiftDown())
             {
-                const float groupStartBeat = MidiRollToolbox::findStartBeat(selection);
+                const float groupStartBeat = PianoRollToolbox::findStartBeat(selection);
                 
                 for (int i = 0; i < selection.getNumSelected(); i++)
                 {
@@ -271,7 +271,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
         {
             if (e.mods.isShiftDown())
             {
-                const float groupEndBeat = MidiRollToolbox::findEndBeat(selection);
+                const float groupEndBeat = PianoRollToolbox::findEndBeat(selection);
                 
                 for (int i = 0; i < selection.getNumSelected(); i++)
                 {
@@ -347,7 +347,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         return;
     }
 
-    if (e.mods.isRightButtonDown() && this->roll.getEditMode().isMode(MidiRollEditMode::defaultMode))
+    if (e.mods.isRightButtonDown() && this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
     {
         this->roll.mouseDrag(e.getEventRelativeTo(&this->roll));
         return;
@@ -593,7 +593,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
         return;
     }
 
-    if (e.mods.isRightButtonDown() && this->roll.getEditMode().isMode(MidiRollEditMode::defaultMode))
+    if (e.mods.isRightButtonDown() && this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
     {
         this->setMouseCursor(MouseCursor::NormalCursor);
         this->roll.mouseUp(e.getEventRelativeTo(&this->roll));

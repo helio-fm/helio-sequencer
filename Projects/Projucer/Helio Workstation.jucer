@@ -342,10 +342,6 @@
                 file="../../Source/Core/Tools/ColourSchemeManager.cpp"/>
           <FILE id="i6yaTe" name="ColourSchemeManager.h" compile="0" resource="0"
                 file="../../Source/Core/Tools/ColourSchemeManager.h"/>
-          <FILE id="znZHIy" name="MidiRollToolbox.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tools/MidiRollToolbox.cpp"/>
-          <FILE id="IzpbWU" name="MidiRollToolbox.h" compile="0" resource="0"
-                file="../../Source/Core/Tools/MidiRollToolbox.h"/>
         </GROUP>
         <GROUP id="{ACF28C50-DEDE-3EE2-139E-A123DA464268}" name="Translation">
           <FILE id="iKAdEE" name="TranslationKeys.h" compile="0" resource="0"
@@ -573,6 +569,18 @@
                 file="../../Source/UI/CommandPanels/AutomationsCommandPanel.cpp"/>
           <FILE id="JumAC2" name="AutomationsCommandPanel.h" compile="0" resource="0"
                 file="../../Source/UI/CommandPanels/AutomationsCommandPanel.h"/>
+          <FILE id="CWH4wd" name="HybridRollCommandPanel.cpp" compile="1" resource="0"
+                file="../../Source/UI/CommandPanels/HybridRollCommandPanel.cpp"/>
+          <FILE id="uaXvba" name="HybridRollCommandPanel.h" compile="0" resource="0"
+                file="../../Source/UI/CommandPanels/HybridRollCommandPanel.h"/>
+          <FILE id="eke3ab" name="HybridRollCommandPanelDefault.cpp" compile="1"
+                resource="0" file="../../Source/UI/CommandPanels/HybridRollCommandPanelDefault.cpp"/>
+          <FILE id="u86NSA" name="HybridRollCommandPanelDefault.h" compile="0"
+                resource="0" file="../../Source/UI/CommandPanels/HybridRollCommandPanelDefault.h"/>
+          <FILE id="kFwmeh" name="HybridRollCommandPanelPhone.cpp" compile="1"
+                resource="0" file="../../Source/UI/CommandPanels/HybridRollCommandPanelPhone.cpp"/>
+          <FILE id="w65VrJ" name="HybridRollCommandPanelPhone.h" compile="0"
+                resource="0" file="../../Source/UI/CommandPanels/HybridRollCommandPanelPhone.h"/>
           <FILE id="qiHiZv" name="InstrumentCommandPanel.cpp" compile="1" resource="0"
                 file="../../Source/UI/CommandPanels/InstrumentCommandPanel.cpp"/>
           <FILE id="GfB3bQ" name="InstrumentCommandPanel.h" compile="0" resource="0"
@@ -585,18 +593,6 @@
                 file="../../Source/UI/CommandPanels/LayerCommandPanel.cpp"/>
           <FILE id="PkWGHl" name="LayerCommandPanel.h" compile="0" resource="0"
                 file="../../Source/UI/CommandPanels/LayerCommandPanel.h"/>
-          <FILE id="qTfrlW" name="MidiRollCommandPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/CommandPanels/MidiRollCommandPanel.cpp"/>
-          <FILE id="qAH1AG" name="MidiRollCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/CommandPanels/MidiRollCommandPanel.h"/>
-          <FILE id="NZZrdN" name="MidiRollCommandPanelDefault.cpp" compile="1"
-                resource="0" file="../../Source/UI/CommandPanels/MidiRollCommandPanelDefault.cpp"/>
-          <FILE id="BtG5jI" name="MidiRollCommandPanelDefault.h" compile="0"
-                resource="0" file="../../Source/UI/CommandPanels/MidiRollCommandPanelDefault.h"/>
-          <FILE id="BUCEdg" name="MidiRollCommandPanelPhone.cpp" compile="1"
-                resource="0" file="../../Source/UI/CommandPanels/MidiRollCommandPanelPhone.cpp"/>
-          <FILE id="N00jS2" name="MidiRollCommandPanelPhone.h" compile="0" resource="0"
-                file="../../Source/UI/CommandPanels/MidiRollCommandPanelPhone.h"/>
           <FILE id="TkKS69" name="MoveToLayerCommandPanel.cpp" compile="1" resource="0"
                 file="../../Source/UI/CommandPanels/MoveToLayerCommandPanel.cpp"/>
           <FILE id="oXLYPE" name="MoveToLayerCommandPanel.h" compile="0" resource="0"
@@ -824,10 +820,10 @@
                   file="../../Source/UI/MidiEditor/Header/HeaderSelectionIndicator.cpp"/>
             <FILE id="MnITW5" name="HeaderSelectionIndicator.h" compile="0" resource="0"
                   file="../../Source/UI/MidiEditor/Header/HeaderSelectionIndicator.h"/>
-            <FILE id="JWmikc" name="MidiRollHeader.cpp" compile="1" resource="0"
-                  file="../../Source/UI/MidiEditor/Header/MidiRollHeader.cpp"/>
-            <FILE id="yPnVp3" name="MidiRollHeader.h" compile="0" resource="0"
-                  file="../../Source/UI/MidiEditor/Header/MidiRollHeader.h"/>
+            <FILE id="LtHooF" name="HybridRollHeader.cpp" compile="1" resource="0"
+                  file="../../Source/UI/MidiEditor/Header/HybridRollHeader.cpp"/>
+            <FILE id="Y1tz4P" name="HybridRollHeader.h" compile="0" resource="0"
+                  file="../../Source/UI/MidiEditor/Header/HybridRollHeader.h"/>
             <FILE id="kdkjgf" name="SoundProbeIndicator.cpp" compile="1" resource="0"
                   file="../../Source/UI/MidiEditor/Header/SoundProbeIndicator.cpp"/>
             <FILE id="BPp2m5" name="SoundProbeIndicator.h" compile="0" resource="0"
@@ -850,22 +846,18 @@
                   file="../../Source/UI/MidiEditor/Header/TransportIndicator.h"/>
           </GROUP>
           <GROUP id="{C2AB7AC1-CB21-329E-CF3A-C8D3D0F479BA}" name="Helpers">
-            <FILE id="u95YuP" name="TimelineWarningMarker.cpp" compile="1" resource="0"
-                  file="../../Source/UI/MidiEditor/Helpers/TimelineWarningMarker.cpp"/>
-            <FILE id="ddH9zZ" name="TimelineWarningMarker.h" compile="0" resource="0"
-                  file="../../Source/UI/MidiEditor/Helpers/TimelineWarningMarker.h"/>
             <FILE id="jYZzed" name="ComponentConnectorCurve.cpp" compile="1" resource="0"
                   file="../../Source/UI/MidiEditor/Helpers/ComponentConnectorCurve.cpp"/>
             <FILE id="VXwvbI" name="ComponentConnectorCurve.h" compile="0" resource="0"
                   file="../../Source/UI/MidiEditor/Helpers/ComponentConnectorCurve.h"/>
+            <FILE id="qS1Xd4" name="HybridRollExpandMark.cpp" compile="1" resource="0"
+                  file="../../Source/UI/MidiEditor/Helpers/HybridRollExpandMark.cpp"/>
+            <FILE id="bACrfn" name="HybridRollExpandMark.h" compile="0" resource="0"
+                  file="../../Source/UI/MidiEditor/Helpers/HybridRollExpandMark.h"/>
             <FILE id="OCugDl" name="InsertSpaceHelper.cpp" compile="1" resource="0"
                   file="../../Source/UI/MidiEditor/Helpers/InsertSpaceHelper.cpp"/>
             <FILE id="TFqERh" name="InsertSpaceHelper.h" compile="0" resource="0"
                   file="../../Source/UI/MidiEditor/Helpers/InsertSpaceHelper.h"/>
-            <FILE id="I8XVNt" name="MidiRollExpandMark.cpp" compile="1" resource="0"
-                  file="../../Source/UI/MidiEditor/Helpers/MidiRollExpandMark.cpp"/>
-            <FILE id="WZCcDq" name="MidiRollExpandMark.h" compile="0" resource="0"
-                  file="../../Source/UI/MidiEditor/Helpers/MidiRollExpandMark.h"/>
             <FILE id="KLAZcn" name="NoteResizerLeft.cpp" compile="1" resource="0"
                   file="../../Source/UI/MidiEditor/Helpers/NoteResizerLeft.cpp"/>
             <FILE id="a3RnIi" name="NoteResizerLeft.h" compile="0" resource="0"
@@ -874,6 +866,10 @@
                   file="../../Source/UI/MidiEditor/Helpers/NoteResizerRight.cpp"/>
             <FILE id="PfAiZz" name="NoteResizerRight.h" compile="0" resource="0"
                   file="../../Source/UI/MidiEditor/Helpers/NoteResizerRight.h"/>
+            <FILE id="u95YuP" name="TimelineWarningMarker.cpp" compile="1" resource="0"
+                  file="../../Source/UI/MidiEditor/Helpers/TimelineWarningMarker.cpp"/>
+            <FILE id="ddH9zZ" name="TimelineWarningMarker.h" compile="0" resource="0"
+                  file="../../Source/UI/MidiEditor/Helpers/TimelineWarningMarker.h"/>
             <FILE id="O4tmwy" name="WipeSpaceHelper.cpp" compile="1" resource="0"
                   file="../../Source/UI/MidiEditor/Helpers/WipeSpaceHelper.cpp"/>
             <FILE id="Bi5QP5" name="WipeSpaceHelper.h" compile="0" resource="0"
@@ -919,6 +915,14 @@
             <FILE id="KxuI6I" name="TriggersTrackMap.h" compile="0" resource="0"
                   file="../../Source/UI/MidiEditor/TriggersMap/TriggersTrackMap.h"/>
           </GROUP>
+          <FILE id="TvY2vk" name="HybridRoll.cpp" compile="1" resource="0" file="../../Source/UI/MidiEditor/HybridRoll.cpp"/>
+          <FILE id="AUeKho" name="HybridRoll.h" compile="0" resource="0" file="../../Source/UI/MidiEditor/HybridRoll.h"/>
+          <FILE id="P38o6D" name="HybridRollEditMode.cpp" compile="1" resource="0"
+                file="../../Source/UI/MidiEditor/HybridRollEditMode.cpp"/>
+          <FILE id="BOQz7D" name="HybridRollEditMode.h" compile="0" resource="0"
+                file="../../Source/UI/MidiEditor/HybridRollEditMode.h"/>
+          <FILE id="MpDM4j" name="HybridRollListener.h" compile="0" resource="0"
+                file="../../Source/UI/MidiEditor/HybridRollListener.h"/>
           <FILE id="YbSHvo" name="MidiEditor.cpp" compile="1" resource="0" file="../../Source/UI/MidiEditor/MidiEditor.cpp"/>
           <FILE id="B7YR7m" name="MidiEditor.h" compile="0" resource="0" file="../../Source/UI/MidiEditor/MidiEditor.h"/>
           <FILE id="Cnsx5k" name="MidiEventComponent.cpp" compile="1" resource="0"
@@ -931,19 +935,15 @@
                 file="../../Source/UI/MidiEditor/MidiEventComponentLasso.h"/>
           <FILE id="aREnGn" name="MidiEventSelection.h" compile="0" resource="0"
                 file="../../Source/UI/MidiEditor/MidiEventSelection.h"/>
-          <FILE id="Xw54gq" name="MidiRoll.cpp" compile="1" resource="0" file="../../Source/UI/MidiEditor/MidiRoll.cpp"/>
-          <FILE id="DjO9Ru" name="MidiRoll.h" compile="0" resource="0" file="../../Source/UI/MidiEditor/MidiRoll.h"/>
-          <FILE id="XNtqm6" name="MidiRollEditMode.cpp" compile="1" resource="0"
-                file="../../Source/UI/MidiEditor/MidiRollEditMode.cpp"/>
-          <FILE id="wZftph" name="MidiRollEditMode.h" compile="0" resource="0"
-                file="../../Source/UI/MidiEditor/MidiRollEditMode.h"/>
-          <FILE id="xYQjeZ" name="MidiRollListener.h" compile="0" resource="0"
-                file="../../Source/UI/MidiEditor/MidiRollListener.h"/>
           <FILE id="RFnIll" name="NoteComponent.cpp" compile="1" resource="0"
                 file="../../Source/UI/MidiEditor/NoteComponent.cpp"/>
           <FILE id="aLZ1dG" name="NoteComponent.h" compile="0" resource="0" file="../../Source/UI/MidiEditor/NoteComponent.h"/>
           <FILE id="K0gAQM" name="PianoRoll.cpp" compile="1" resource="0" file="../../Source/UI/MidiEditor/PianoRoll.cpp"/>
           <FILE id="tEIEjP" name="PianoRoll.h" compile="0" resource="0" file="../../Source/UI/MidiEditor/PianoRoll.h"/>
+          <FILE id="QEKY5K" name="PianoRollToolbox.cpp" compile="1" resource="0"
+                file="../../Source/UI/MidiEditor/PianoRollToolbox.cpp"/>
+          <FILE id="JkSSPT" name="PianoRollToolbox.h" compile="0" resource="0"
+                file="../../Source/UI/MidiEditor/PianoRollToolbox.h"/>
         </GROUP>
         <GROUP id="{46445667-CE4E-4608-3F8E-1835F7CA531E}" name="Popups">
           <FILE id="yq7LlT" name="CenteredTooltipComponent.h" compile="0" resource="0"

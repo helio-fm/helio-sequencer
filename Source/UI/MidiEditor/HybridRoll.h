@@ -26,10 +26,10 @@ class SmoothPanController;
 class SmoothZoomController;
 class MultiTouchController;
 class OverlayShadow;
-class MidiRollHeader;
+class HybridRollHeader;
 class TriggersTrackMap;
 class Transport;
-class MidiRollListener;
+class HybridRollListener;
 class WipeSpaceHelper;
 class InsertSpaceHelper;
 class TimelineWarningMarker;
@@ -49,7 +49,7 @@ class TimelineWarningMarker;
 #include "MultiTouchListener.h"
 #include "ProjectListener.h"
 #include "MidiEventSelection.h"
-#include "MidiRollEditMode.h"
+#include "HybridRollEditMode.h"
 #include "AudioMonitor.h"
 #include "Serializable.h"
 
@@ -81,7 +81,7 @@ class TimelineWarningMarker;
     this->grabKeyboardFocus();
 
 
-class MidiRoll :
+class HybridRoll :
     public Component,
     public Serializable,
     public LongTapListener,
@@ -91,7 +91,7 @@ class MidiRoll :
     public ProjectListener,
     public ClipboardOwner,
     public LassoSource<MidiEventComponent *>,
-    protected ChangeListener, // listens to MidiRollEditMode,
+    protected ChangeListener, // listens to HybridRollEditMode,
     protected TransportListener,
     protected AsyncUpdater, // for async scrolling on transport listener events
     protected HighResolutionTimer, // for smooth scrolling to seek position
@@ -115,17 +115,17 @@ public:
         indicatorColourId                = 0x99002011
     };
     
-    MidiRoll(ProjectTreeItem &parentProject,
+    HybridRoll(ProjectTreeItem &parentProject,
              Viewport &viewportRef,
              WeakReference<AudioMonitor> AudioMonitor);
 
-    ~MidiRoll() override;
+    ~HybridRoll() override;
 
     Viewport &getViewport() const noexcept;
     Transport &getTransport() const noexcept;
     ProjectTreeItem &getProject() const noexcept;
     MidiLayer *getPrimaryActiveMidiLayer() const noexcept;
-    MidiRollEditMode getEditMode() const;
+    HybridRollEditMode getEditMode() const;
 
     int getNumActiveLayers() const noexcept;
     MidiLayer *getActiveMidiLayer(int index) const noexcept;
@@ -171,11 +171,11 @@ public:
     // ...
     
     //===------------------------------------------------------------------===//
-    // MidiRoll listeners management
+    // HybridRoll listeners management
     //===------------------------------------------------------------------===//
     
-    void addRollListener(MidiRollListener *listener);
-    void removeRollListener(MidiRollListener *listener);
+    void addRollListener(HybridRollListener *listener);
+    void removeRollListener(HybridRollListener *listener);
     void removeAllRollListeners();
     
     //===------------------------------------------------------------------===//
@@ -303,7 +303,7 @@ public:
 
 protected:
     
-    ListenerList<MidiRollListener> listeners;
+    ListenerList<HybridRollListener> listeners;
     
     void broadcastRollMoved();
     void broadcastRollResized();
@@ -351,7 +351,7 @@ protected:
 	void handleCommandMessage(int commandId) override;
 
     double findIndicatorOffsetFromViewCentre() const;
-    friend class MidiRollHeader;
+    friend class HybridRollHeader;
     
     //===------------------------------------------------------------------===//
     // Timer
@@ -437,7 +437,7 @@ protected:
 
     ComponentFader fader;
 
-    ScopedPointer<MidiRollHeader> header;
+    ScopedPointer<HybridRollHeader> header;
     ScopedPointer<TransportIndicator> indicator;
     
     typedef AnnotationsTrackMap<AnnotationLargeComponent> AnnotationsLargeMap;

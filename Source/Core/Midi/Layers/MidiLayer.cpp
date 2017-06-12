@@ -19,7 +19,7 @@
 #include "MidiLayer.h"
 #include "MidiEvent.h"
 #include "Transport.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 #include "ProjectTreeItem.h"
 #include "ProjectEventDispatcher.h"
 #include "SerializationKeys.h"

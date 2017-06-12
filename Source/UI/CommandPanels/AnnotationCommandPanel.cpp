@@ -21,7 +21,7 @@
 #include "MainLayout.h"
 #include "ModalDialogInput.h"
 #include "Icons.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 #include "AnnotationEvent.h"
 #include "AnnotationsLayer.h"
 #include "PianoLayerTreeItem.h"
@@ -58,7 +58,7 @@ void AnnotationCommandPanel::handleCommandMessage(int commandId)
 {
     ProjectTimeline *annotations = this->project.getTimeline();
     
-    if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
+    if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
     {
         if (commandId == CommandIDs::RenameAnnotation)
         {

@@ -23,7 +23,7 @@
 #include "ProjectTimeline.h"
 #include "PianoLayer.h"
 #include "PlayerThread.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 #include "HelioCallout.h"
 #include "AnnotationCommandPanel.h"
 #include "TimeSignatureCommandPanel.h"
@@ -34,7 +34,7 @@
 #include "App.h"
 #include "MainLayout.h"
 
-template<typename T> TimeSignaturesTrackMap<T>::TimeSignaturesTrackMap(ProjectTreeItem &parentProject, MidiRoll &parentRoll) :
+template<typename T> TimeSignaturesTrackMap<T>::TimeSignaturesTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll) :
     project(parentProject),
     roll(parentRoll),
     projectFirstBeat(0.f),

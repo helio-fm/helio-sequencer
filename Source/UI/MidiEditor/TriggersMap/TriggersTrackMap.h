@@ -21,7 +21,7 @@
 #include "ProjectListener.h"
 #include "AutomationTrackMap.h"
 
-class MidiRoll;
+class HybridRoll;
 class ProjectTreeItem;
 class TriggerEventComponent;
 class TriggerEventConnector;
@@ -35,7 +35,7 @@ class TriggersTrackMap : public AutomationTrackMapCommon
 {
 public:
     
-    TriggersTrackMap(ProjectTreeItem &parentProject, MidiRoll &parentRoll, WeakReference<MidiLayer> targetLayer);
+    TriggersTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll, WeakReference<MidiLayer> targetLayer);
     
     ~TriggersTrackMap() override;
     
@@ -99,7 +99,7 @@ private:
     float rollFirstBeat;
     float rollLastBeat;
     
-    MidiRoll &roll;
+    HybridRoll &roll;
     ProjectTreeItem &project;
 
     WeakReference<MidiLayer> layer;

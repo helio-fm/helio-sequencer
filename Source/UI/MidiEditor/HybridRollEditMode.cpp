@@ -16,107 +16,107 @@
 */
 
 #include "Common.h"
-#include "MidiRollEditMode.h"
+#include "HybridRollEditMode.h"
 #include "Icons.h"
 
-MidiRollEditMode::MidiRollEditMode() :
+HybridRollEditMode::HybridRollEditMode() :
     mode(defaultMode),
     previousMode(defaultMode)
 {
 }
 
-MidiRollEditMode::MidiRollEditMode(const MidiRollEditMode &other) :
+HybridRollEditMode::HybridRollEditMode(const HybridRollEditMode &other) :
 	mode(other.mode),
 	previousMode(other.previousMode)
 {
 }
 
-bool MidiRollEditMode::forbidsViewportDragging() const
+bool HybridRollEditMode::forbidsViewportDragging() const
 {
     return
-    this->isMode(MidiRollEditMode::drawMode) ||
-    this->isMode(MidiRollEditMode::selectionMode) ||
-    this->isMode(MidiRollEditMode::zoomMode) ||
-    this->isMode(MidiRollEditMode::insertSpaceMode) ||
-    this->isMode(MidiRollEditMode::wipeSpaceMode);
+    this->isMode(HybridRollEditMode::drawMode) ||
+    this->isMode(HybridRollEditMode::selectionMode) ||
+    this->isMode(HybridRollEditMode::zoomMode) ||
+    this->isMode(HybridRollEditMode::insertSpaceMode) ||
+    this->isMode(HybridRollEditMode::wipeSpaceMode);
 }
 
-bool MidiRollEditMode::forcesViewportDragging() const
+bool HybridRollEditMode::forcesViewportDragging() const
 {
     return
-    this->isMode(MidiRollEditMode::dragMode);
+    this->isMode(HybridRollEditMode::dragMode);
 }
 
-bool MidiRollEditMode::forbidsViewportZooming() const
+bool HybridRollEditMode::forbidsViewportZooming() const
 {
     return
-    (this->mode != MidiRollEditMode::zoomMode);
+    (this->mode != HybridRollEditMode::zoomMode);
 }
 
-bool MidiRollEditMode::forcesViewportZooming() const
+bool HybridRollEditMode::forcesViewportZooming() const
 {
     return
-    this->isMode(MidiRollEditMode::zoomMode);
+    this->isMode(HybridRollEditMode::zoomMode);
 }
 
-bool MidiRollEditMode::forbidsSelectionMode() const
+bool HybridRollEditMode::forbidsSelectionMode() const
 {
     return
-    this->isMode(MidiRollEditMode::drawMode) ||
-    this->isMode(MidiRollEditMode::zoomMode) ||
-    this->isMode(MidiRollEditMode::dragMode) ||
-    this->isMode(MidiRollEditMode::insertSpaceMode) ||
-    this->isMode(MidiRollEditMode::wipeSpaceMode);
+    this->isMode(HybridRollEditMode::drawMode) ||
+    this->isMode(HybridRollEditMode::zoomMode) ||
+    this->isMode(HybridRollEditMode::dragMode) ||
+    this->isMode(HybridRollEditMode::insertSpaceMode) ||
+    this->isMode(HybridRollEditMode::wipeSpaceMode);
 }
 
-bool MidiRollEditMode::forcesSelectionMode() const
+bool HybridRollEditMode::forcesSelectionMode() const
 {
     return
-    this->isMode(MidiRollEditMode::selectionMode);
+    this->isMode(HybridRollEditMode::selectionMode);
 }
 
-bool MidiRollEditMode::forbidsAddingEvents() const
+bool HybridRollEditMode::forbidsAddingEvents() const
 {
     return
-    this->isMode(MidiRollEditMode::selectionMode) ||
-    this->isMode(MidiRollEditMode::zoomMode) ||
-    this->isMode(MidiRollEditMode::dragMode) ||
-    this->isMode(MidiRollEditMode::insertSpaceMode) ||
-    this->isMode(MidiRollEditMode::wipeSpaceMode);
+    this->isMode(HybridRollEditMode::selectionMode) ||
+    this->isMode(HybridRollEditMode::zoomMode) ||
+    this->isMode(HybridRollEditMode::dragMode) ||
+    this->isMode(HybridRollEditMode::insertSpaceMode) ||
+    this->isMode(HybridRollEditMode::wipeSpaceMode);
 }
 
-bool MidiRollEditMode::forcesAddingEvents() const
+bool HybridRollEditMode::forcesAddingEvents() const
 {
     return
-    this->isMode(MidiRollEditMode::drawMode);
+    this->isMode(HybridRollEditMode::drawMode);
 }
 
-bool MidiRollEditMode::forbidsSpaceWipe() const
+bool HybridRollEditMode::forbidsSpaceWipe() const
 {
     return
-    (this->mode != MidiRollEditMode::wipeSpaceMode);
+    (this->mode != HybridRollEditMode::wipeSpaceMode);
 }
 
-bool MidiRollEditMode::forcesSpaceWipe() const
+bool HybridRollEditMode::forcesSpaceWipe() const
 {
     return
-    this->isMode(MidiRollEditMode::wipeSpaceMode);
+    this->isMode(HybridRollEditMode::wipeSpaceMode);
 }
 
-bool MidiRollEditMode::forbidsSpaceInsert() const
+bool HybridRollEditMode::forbidsSpaceInsert() const
 {
     return
-    (this->mode != MidiRollEditMode::insertSpaceMode);
+    (this->mode != HybridRollEditMode::insertSpaceMode);
 }
 
-bool MidiRollEditMode::forcesSpaceInsert() const
+bool HybridRollEditMode::forcesSpaceInsert() const
 {
     return
-    this->isMode(MidiRollEditMode::insertSpaceMode);
+    this->isMode(HybridRollEditMode::insertSpaceMode);
 }
 
 
-bool MidiRollEditMode::shouldInteractWithChildren() const
+bool HybridRollEditMode::shouldInteractWithChildren() const
 {
     switch (this->mode)
     {
@@ -138,7 +138,7 @@ bool MidiRollEditMode::shouldInteractWithChildren() const
     return true;
 }
 
-MouseCursor MidiRollEditMode::getCursor() const
+MouseCursor HybridRollEditMode::getCursor() const
 {
     switch (this->mode)
     {
@@ -174,7 +174,7 @@ MouseCursor MidiRollEditMode::getCursor() const
     return MouseCursor::NormalCursor;
 }
 
-void MidiRollEditMode::unsetLastMode()
+void HybridRollEditMode::unsetLastMode()
 {
     //Logger::writeToLog("Unsetting to " + String(this->previousMode));
     Mode temp = this->mode;
@@ -183,7 +183,7 @@ void MidiRollEditMode::unsetLastMode()
     this->sendChangeMessage();
 }
 
-void MidiRollEditMode::setMode(Mode newMode, bool force)
+void HybridRollEditMode::setMode(Mode newMode, bool force)
 {
     if ((this->mode == newMode) && !force)
     {
@@ -195,7 +195,7 @@ void MidiRollEditMode::setMode(Mode newMode, bool force)
     this->sendChangeMessage();
 }
 
-bool MidiRollEditMode::isMode(Mode targetMode) const
+bool HybridRollEditMode::isMode(Mode targetMode) const
 {
     return (this->mode == targetMode);
 }

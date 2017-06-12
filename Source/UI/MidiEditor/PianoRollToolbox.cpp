@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "MidiRollToolbox.h"
+#include "PianoRollToolbox.h"
 #include "ProjectTreeItem.h"
 #include "MidiEventSelection.h"
 #include "Note.h"
@@ -340,7 +340,7 @@ static bool isPedalUpAtPosition(float beatPosition, AutomationLayer *pedalLayer)
     return lastEventPedalUp;
 }
 
-float MidiRollToolbox::findStartBeat(const MidiEventSelection &selection)
+float PianoRollToolbox::findStartBeat(const MidiEventSelection &selection)
 {
     if (selection.getNumSelected() == 0)
     { return 0.f; }
@@ -358,7 +358,7 @@ float MidiRollToolbox::findStartBeat(const MidiEventSelection &selection)
     return startBeat;
 }
 
-float MidiRollToolbox::findEndBeat(const MidiEventSelection &selection)
+float PianoRollToolbox::findEndBeat(const MidiEventSelection &selection)
 {
     if (selection.getNumSelected() == 0)
     { return 0.f; }
@@ -379,7 +379,7 @@ float MidiRollToolbox::findEndBeat(const MidiEventSelection &selection)
     return endBeat;
 }
 
-float MidiRollToolbox::findStartBeat(const Array<Note> &selection)
+float PianoRollToolbox::findStartBeat(const Array<Note> &selection)
 {
     if (selection.size() == 0)
     { return 0.f; }
@@ -398,7 +398,7 @@ float MidiRollToolbox::findStartBeat(const Array<Note> &selection)
     return startBeat;
 }
 
-float MidiRollToolbox::findEndBeat(const Array<Note> &selection)
+float PianoRollToolbox::findEndBeat(const Array<Note> &selection)
 {
     if (selection.size() == 0)
     { return 0.f; }
@@ -428,7 +428,7 @@ static float snappedBeat(float beat, float snapsPerBeat)
 
 
 
-void MidiRollToolbox::wipeSpace(Array<MidiLayer *> layers,
+void PianoRollToolbox::wipeSpace(Array<MidiLayer *> layers,
                                 float startBeat, float endBeat,
                                 bool shouldKeepCroppedNotes, bool shouldCheckpoint)
 {
@@ -523,7 +523,7 @@ void MidiRollToolbox::wipeSpace(Array<MidiLayer *> layers,
     }
 }
 
-void MidiRollToolbox::shiftEventsToTheLeft(Array<MidiLayer *> layers, float targetBeat, float beatOffset, bool shouldCheckpoint)
+void PianoRollToolbox::shiftEventsToTheLeft(Array<MidiLayer *> layers, float targetBeat, float beatOffset, bool shouldCheckpoint)
 {
     bool didCheckpoint = false;
     
@@ -587,7 +587,7 @@ void MidiRollToolbox::shiftEventsToTheLeft(Array<MidiLayer *> layers, float targ
     applyAutoChanges(autoGroupBefore, autoGroupAfter, didCheckpoint, shouldCheckpoint);
 }
 
-void MidiRollToolbox::shiftEventsToTheRight(Array<MidiLayer *> layers, float targetBeat, float beatOffset, bool shouldCheckpoint)
+void PianoRollToolbox::shiftEventsToTheRight(Array<MidiLayer *> layers, float targetBeat, float beatOffset, bool shouldCheckpoint)
 {
     bool didCheckpoint = false;
     
@@ -652,7 +652,7 @@ void MidiRollToolbox::shiftEventsToTheRight(Array<MidiLayer *> layers, float tar
 }
 
 
-void MidiRollToolbox::snapSelection(MidiEventSelection &selection, float snapsPerBeat, bool shouldCheckpoint)
+void PianoRollToolbox::snapSelection(MidiEventSelection &selection, float snapsPerBeat, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     {
@@ -686,7 +686,7 @@ void MidiRollToolbox::snapSelection(MidiEventSelection &selection, float snapsPe
 }
 
 
-void MidiRollToolbox::removeOverlaps(MidiEventSelection &selection, bool shouldCheckpoint)
+void PianoRollToolbox::removeOverlaps(MidiEventSelection &selection, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     {
@@ -941,7 +941,7 @@ void MidiRollToolbox::removeOverlaps(MidiEventSelection &selection, bool shouldC
     applyPianoRemovals(removalGroup, didCheckpoint, shouldCheckpoint);
 }
 
-void MidiRollToolbox::removeDuplicates(MidiEventSelection &selection, bool shouldCheckpoint)
+void PianoRollToolbox::removeDuplicates(MidiEventSelection &selection, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     { return; }
@@ -994,7 +994,7 @@ void MidiRollToolbox::removeDuplicates(MidiEventSelection &selection, bool shoul
 }
 
 
-void MidiRollToolbox::moveToLayer(MidiEventSelection &selection, MidiLayer *layer, bool shouldCheckpoint)
+void PianoRollToolbox::moveToLayer(MidiEventSelection &selection, MidiLayer *layer, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     {
@@ -1083,7 +1083,7 @@ void MidiRollToolbox::moveToLayer(MidiEventSelection &selection, MidiLayer *laye
 }
 
 
-bool MidiRollToolbox::arpeggiateUsingClipboardAsPattern(MidiEventSelection &selection, bool shouldCheckpoint)
+bool PianoRollToolbox::arpeggiateUsingClipboardAsPattern(MidiEventSelection &selection, bool shouldCheckpoint)
 {
     XmlElement *xml = InternalClipboard::getCurrentContent();
     Arpeggiator arp = Arpeggiator().withSequenceFromXml(*xml);
@@ -1093,11 +1093,11 @@ bool MidiRollToolbox::arpeggiateUsingClipboardAsPattern(MidiEventSelection &sele
         return false;
     }
     
-    return MidiRollToolbox::arpeggiate(selection, arp, shouldCheckpoint);
+    return PianoRollToolbox::arpeggiate(selection, arp, shouldCheckpoint);
 }
 
 
-bool MidiRollToolbox::arpeggiate(MidiEventSelection &selection,
+bool PianoRollToolbox::arpeggiate(MidiEventSelection &selection,
                                  const Arpeggiator &arp,
                                  bool shouldCheckpoint)
 {
@@ -1135,7 +1135,7 @@ bool MidiRollToolbox::arpeggiate(MidiEventSelection &selection,
             sortedSelection->addSorted(nc->getNote(), nc->getNote());
         }
         
-        const float selectionStartBeat = MidiRollToolbox::findStartBeat(*sortedSelection);
+        const float selectionStartBeat = PianoRollToolbox::findStartBeat(*sortedSelection);
         
         
         // 2. split chords (and sequences)
@@ -1203,15 +1203,15 @@ bool MidiRollToolbox::arpeggiate(MidiEventSelection &selection,
         
         // needed for chord-mapped arp
         const PianoChangeGroup &&firstChord = chords.getUnchecked(0);
-        const float firstChordStart = MidiRollToolbox::findStartBeat(firstChord);
-        const float firstChordEnd = MidiRollToolbox::findEndBeat(firstChord);
+        const float firstChordStart = PianoRollToolbox::findStartBeat(firstChord);
+        const float firstChordEnd = PianoRollToolbox::findEndBeat(firstChord);
         const float firstChordLength = firstChordEnd - firstChordStart;
         
         for (int i = 0; i < chords.size(); ++i)
         {
             const PianoChangeGroup &&chord = chords.getUnchecked(i);
-            const float chordStart = MidiRollToolbox::findStartBeat(chord);
-            const float chordEnd = MidiRollToolbox::findEndBeat(chord);
+            const float chordStart = PianoRollToolbox::findStartBeat(chord);
+            const float chordEnd = PianoRollToolbox::findEndBeat(chord);
             //const float chordLength = chordEnd - chordStart;
             
             if (arp.hasRelativeMapping())
@@ -1328,7 +1328,7 @@ bool MidiRollToolbox::arpeggiate(MidiEventSelection &selection,
     return true;
 }
 
-void MidiRollToolbox::randomizeVolume(MidiEventSelection &selection, float factor, bool shouldCheckpoint)
+void PianoRollToolbox::randomizeVolume(MidiEventSelection &selection, float factor, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     {
@@ -1357,7 +1357,7 @@ void MidiRollToolbox::randomizeVolume(MidiEventSelection &selection, float facto
     applyPianoChanges(groupBefore, groupAfter, didCheckpoint, shouldCheckpoint);
 }
 
-void MidiRollToolbox::fadeOutVolume(MidiEventSelection &selection, float factor, bool shouldCheckpoint)
+void PianoRollToolbox::fadeOutVolume(MidiEventSelection &selection, float factor, bool shouldCheckpoint)
 {
     // Smooth fade out like
     // 1 - ((x / sqrt(x)) * factor)
@@ -1405,7 +1405,7 @@ void MidiRollToolbox::fadeOutVolume(MidiEventSelection &selection, float factor,
     applyPianoChanges(groupBefore, groupAfter, didCheckpoint, shouldCheckpoint);
 }
 
-void MidiRollToolbox::startTuning(MidiEventSelection &selection)
+void PianoRollToolbox::startTuning(MidiEventSelection &selection)
 {
     if (selection.getNumSelected() == 0)
     { return; }
@@ -1417,7 +1417,7 @@ void MidiRollToolbox::startTuning(MidiEventSelection &selection)
     }
 }
 
-void MidiRollToolbox::changeVolumeLinear(MidiEventSelection &selection, float volumeDelta)
+void PianoRollToolbox::changeVolumeLinear(MidiEventSelection &selection, float volumeDelta)
 {
     if (selection.getNumSelected() == 0)
     { return; }
@@ -1446,7 +1446,7 @@ void MidiRollToolbox::changeVolumeLinear(MidiEventSelection &selection, float vo
     }
 }
 
-void MidiRollToolbox::changeVolumeMultiplied(MidiEventSelection &selection, float volumeFactor)
+void PianoRollToolbox::changeVolumeMultiplied(MidiEventSelection &selection, float volumeFactor)
 {
     if (selection.getNumSelected() == 0)
     { return; }
@@ -1482,7 +1482,7 @@ void MidiRollToolbox::changeVolumeMultiplied(MidiEventSelection &selection, floa
     }
 }
 
-void MidiRollToolbox::changeVolumeSine(MidiEventSelection &selection, float volumeFactor)
+void PianoRollToolbox::changeVolumeSine(MidiEventSelection &selection, float volumeFactor)
 {
     if (selection.getNumSelected() == 0)
     { return; }
@@ -1496,8 +1496,8 @@ void MidiRollToolbox::changeVolumeSine(MidiEventSelection &selection, float volu
     }
     midline = midline / float(selection.getNumSelected());
     
-    const float startBeat = MidiRollToolbox::findStartBeat(selection);
-    const float endBeat = MidiRollToolbox::findEndBeat(selection);
+    const float startBeat = PianoRollToolbox::findStartBeat(selection);
+    const float endBeat = PianoRollToolbox::findEndBeat(selection);
     
     const MidiEventSelection::MultiLayerMap &selections = selection.getMultiLayerSelections();
     MidiEventSelection::MultiLayerMap::Iterator selectionsMapIterator(selections);
@@ -1523,7 +1523,7 @@ void MidiRollToolbox::changeVolumeSine(MidiEventSelection &selection, float volu
     }
 }
 
-void MidiRollToolbox::endTuning(MidiEventSelection &selection)
+void PianoRollToolbox::endTuning(MidiEventSelection &selection)
 {
     jassert(selection.getNumSelected() > 0);
     
@@ -1534,7 +1534,7 @@ void MidiRollToolbox::endTuning(MidiEventSelection &selection)
     }
 }
 
-void MidiRollToolbox::deleteSelection(MidiEventSelection &selection)
+void PianoRollToolbox::deleteSelection(MidiEventSelection &selection)
 {
     if (selection.getNumSelected() == 0)
     { return; }
@@ -1565,7 +1565,7 @@ void MidiRollToolbox::deleteSelection(MidiEventSelection &selection)
     }
 }
 
-void MidiRollToolbox::shiftKeyRelative(MidiEventSelection &selection,
+void PianoRollToolbox::shiftKeyRelative(MidiEventSelection &selection,
 	int deltaKey, bool shouldCheckpoint, Transport *transport)
 {
     if (selection.getNumSelected() == 0)
@@ -1618,7 +1618,7 @@ void MidiRollToolbox::shiftKeyRelative(MidiEventSelection &selection,
     }
 }
 
-void MidiRollToolbox::shiftBeatRelative(MidiEventSelection &selection, float deltaBeat, bool shouldCheckpoint)
+void PianoRollToolbox::shiftBeatRelative(MidiEventSelection &selection, float deltaBeat, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     { return; }
@@ -1664,7 +1664,7 @@ void MidiRollToolbox::shiftBeatRelative(MidiEventSelection &selection, float del
     }
 }
 
-void MidiRollToolbox::inverseChord(MidiEventSelection &selection, 
+void PianoRollToolbox::inverseChord(MidiEventSelection &selection, 
 	int deltaKey, bool shouldCheckpoint, Transport *transport)
 {
     if (selection.getNumSelected() == 0)

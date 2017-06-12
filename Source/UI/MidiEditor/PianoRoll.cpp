@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "MainLayout.h"
 #include "PianoRoll.h"
-#include "MidiRollHeader.h"
+#include "HybridRollHeader.h"
 #include "MidiLayer.h"
 #include "PianoLayer.h"
 #include "AutomationLayer.h"
@@ -35,7 +35,7 @@
 #include "HelioTheme.h"
 #include "NoNotesPopup.h"
 #include "MidiEventComponentLasso.h"
-#include "MidiRollEditMode.h"
+#include "HybridRollEditMode.h"
 #include "SerializationKeys.h"
 #include "Icons.h"
 #include "InternalClipboard.h"
@@ -43,7 +43,7 @@
 #include "NotesTuningPanel.h"
 #include "ArpeggiatorPanel.h"
 #include "ArpeggiatorEditorPanel.h"
-#include "MidiRollToolbox.h"
+#include "PianoRollToolbox.h"
 #include "NoteResizerLeft.h"
 #include "NoteResizerRight.h"
 #include "Config.h"
@@ -54,7 +54,7 @@
 PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
                      Viewport &viewportRef,
                      WeakReference<AudioMonitor> clippingDetector) :
-    MidiRoll(parentProject, viewportRef, clippingDetector),
+    HybridRoll(parentProject, viewportRef, clippingDetector),
     //rowsPattern(Image::RGB, 1, 1, true),
     numRows(128),
     rowHeight(MIN_ROW_HEIGHT),
@@ -296,7 +296,7 @@ void PianoRoll::zoomRelative(const Point<float> &origin, const Point<float> &fac
         this->viewport.setViewPosition(Point<int>(oldViewPosition.getX(), int(newViewPositionY + 0.5f)));
     }
 
-    MidiRoll::zoomRelative(origin, factor);
+    HybridRoll::zoomRelative(origin, factor);
 }
 
 void PianoRoll::zoomAbsolute(const Point<float> &zoom)
@@ -308,7 +308,7 @@ void PianoRoll::zoomAbsolute(const Point<float> &zoom)
 
     this->setRowHeight(int(newRowHeight));
 
-    MidiRoll::zoomAbsolute(zoom);
+    HybridRoll::zoomAbsolute(zoom);
 }
 
 float PianoRoll::getZoomFactorY() const
@@ -437,7 +437,7 @@ void PianoRoll::moveHelpers(const float deltaBeat, const int deltaKey)
 
 void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    MidiRoll::onChangeMidiEvent(oldEvent, newEvent);
+    HybridRoll::onChangeMidiEvent(oldEvent, newEvent);
     
     if (! dynamic_cast<const Note *>(&oldEvent)) { return; }
 
@@ -457,7 +457,7 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
 
 void PianoRoll::onAddMidiEvent(const MidiEvent &event)
 {
-    MidiRoll::onAddMidiEvent(event);
+    HybridRoll::onAddMidiEvent(event);
     
     if (! dynamic_cast<const Note *>(&event)) { return; }
 
@@ -494,7 +494,7 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
 
 void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
 {
-    MidiRoll::onRemoveMidiEvent(event);
+    HybridRoll::onRemoveMidiEvent(event);
 
     if (! dynamic_cast<const Note *>(&event)) { return; }
     
@@ -776,7 +776,7 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
                     if (isShiftPressed)
                     {
                         const float changeDelta = lastBeat - firstBeat;
-                        MidiRollToolbox::shiftEventsToTheRight(this->project.getLayersList(), indicatorBeat, changeDelta, false);
+                        PianoRollToolbox::shiftEventsToTheRight(this->project.getLayersList(), indicatorBeat, changeDelta, false);
                     }
                 }
                 
@@ -806,7 +806,7 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
 //        this->insertNewNoteAt(e);
 //    }
 //
-//    MidiRoll::longTapEvent(e);
+//    HybridRoll::longTapEvent(e);
 //}
 
 void PianoRoll::mouseDown(const MouseEvent &e)
@@ -826,7 +826,7 @@ void PianoRoll::mouseDown(const MouseEvent &e)
         }
     }
 
-    MidiRoll::mouseDown(e);
+    HybridRoll::mouseDown(e);
 
     this->mouseDownWasTriggered = true;
 }
@@ -870,7 +870,7 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
         }
     }
 
-    MidiRoll::mouseDrag(e);
+    HybridRoll::mouseDrag(e);
 }
 
 void PianoRoll::mouseUp(const MouseEvent &e)
@@ -895,7 +895,7 @@ void PianoRoll::mouseUp(const MouseEvent &e)
         this->setInterceptsMouseClicks(true, true);
 
         // process lasso selection logic
-        MidiRoll::mouseUp(e);
+        HybridRoll::mouseUp(e);
     }
 
     this->mouseDownWasTriggered = false;
@@ -954,14 +954,14 @@ bool PianoRoll::keyPressed(const KeyPress &key)
     else if (key == KeyPress::createFromDescription("o"))
     {
         MIDI_ROLL_BULK_REPAINT_START
-        MidiRollToolbox::removeOverlaps(this->getLassoSelection());
+        PianoRollToolbox::removeOverlaps(this->getLassoSelection());
         MIDI_ROLL_BULK_REPAINT_END
         return true;
     }
     else if (key == KeyPress::createFromDescription("s"))
     {
         MIDI_ROLL_BULK_REPAINT_START
-        MidiRollToolbox::snapSelection(this->getLassoSelection(), 1);
+        PianoRollToolbox::snapSelection(this->getLassoSelection(), 1);
         MIDI_ROLL_BULK_REPAINT_END
         return true;
     }
@@ -969,7 +969,7 @@ bool PianoRoll::keyPressed(const KeyPress &key)
              key == KeyPress::createFromDescription("ctrl + 1"))
     {
         MIDI_ROLL_BULK_REPAINT_START
-        MidiRollToolbox::randomizeVolume(this->getLassoSelection(), 0.1f);
+        PianoRollToolbox::randomizeVolume(this->getLassoSelection(), 0.1f);
         MIDI_ROLL_BULK_REPAINT_END
         return true;
     }
@@ -977,7 +977,7 @@ bool PianoRoll::keyPressed(const KeyPress &key)
              key == KeyPress::createFromDescription("ctrl + 2"))
     {
         MIDI_ROLL_BULK_REPAINT_START
-        MidiRollToolbox::fadeOutVolume(this->getLassoSelection(), 0.35f);
+        PianoRollToolbox::fadeOutVolume(this->getLassoSelection(), 0.35f);
         MIDI_ROLL_BULK_REPAINT_END
         return true;
     }
@@ -985,7 +985,7 @@ bool PianoRoll::keyPressed(const KeyPress &key)
 //    else if (key == KeyPress::createFromDescription("option + shift + a"))
 //    {
 //        MIDI_ROLL_BULK_REPAINT_START
-//        MidiRollToolbox::arpeggiateUsingClipboardAsPattern(this->getLassoSelection());
+//        PianoRollToolbox::arpeggiateUsingClipboardAsPattern(this->getLassoSelection());
 //        MIDI_ROLL_BULK_REPAINT_END
 //        return true;
 //    }
@@ -1000,25 +1000,25 @@ bool PianoRoll::keyPressed(const KeyPress &key)
     }
     else if (key == KeyPress::createFromDescription("cursor up"))
     {
-		MidiRollToolbox::shiftKeyRelative(this->getLassoSelection(),
+		PianoRollToolbox::shiftKeyRelative(this->getLassoSelection(),
 			1, true, &this->getTransport());
         return true;
     }
     else if (key == KeyPress::createFromDescription("cursor down"))
     {
-        MidiRollToolbox::shiftKeyRelative(this->getLassoSelection(), 
+        PianoRollToolbox::shiftKeyRelative(this->getLassoSelection(), 
 			-1, true, &this->getTransport());
         return true;
     }
     else if (key == KeyPress::createFromDescription("shift + cursor up"))
     {
-        MidiRollToolbox::shiftKeyRelative(this->getLassoSelection(),
+        PianoRollToolbox::shiftKeyRelative(this->getLassoSelection(),
 			12, true, &this->getTransport());
         return true;
     }
     else if (key == KeyPress::createFromDescription("shift + cursor down"))
     {
-        MidiRollToolbox::shiftKeyRelative(this->getLassoSelection(),
+        PianoRollToolbox::shiftKeyRelative(this->getLassoSelection(),
 			-12, true, &this->getTransport());
         return true;
     }
@@ -1027,7 +1027,7 @@ bool PianoRoll::keyPressed(const KeyPress &key)
              key == KeyPress::createFromDescription("ctrl + cursor up") ||
              key == KeyPress::createFromDescription("alt + cursor up"))
     {
-        MidiRollToolbox::inverseChord(this->getLassoSelection(), 
+        PianoRollToolbox::inverseChord(this->getLassoSelection(), 
 			12, true, &this->getTransport());
         return true;
     }
@@ -1036,7 +1036,7 @@ bool PianoRoll::keyPressed(const KeyPress &key)
              key == KeyPress::createFromDescription("ctrl + cursor down") ||
              key == KeyPress::createFromDescription("alt + cursor down"))
     {
-        MidiRollToolbox::inverseChord(this->getLassoSelection(),
+        PianoRollToolbox::inverseChord(this->getLassoSelection(),
 			-12, true, &this->getTransport());
         return true;
     }
@@ -1111,7 +1111,7 @@ bool PianoRoll::keyPressed(const KeyPress &key)
 
 #endif
 
-    return MidiRoll::keyPressed(key);
+    return HybridRoll::keyPressed(key);
 }
 
 
@@ -1130,7 +1130,7 @@ void PianoRoll::resized()
         note->updateBounds(this->getEventBounds(note));
     }
 
-    MidiRoll::resized();
+    HybridRoll::resized();
 
     MIDI_ROLL_BULK_REPAINT_END
 }
@@ -1144,12 +1144,12 @@ void PianoRoll::paint(Graphics &g)
 
 #else
 
-    const Colour blackKey = this->findColour(MidiRoll::blackKeyColourId);
-    const Colour blackKeyBright = this->findColour(MidiRoll::blackKeyBrightColourId);
-    const Colour whiteKey = this->findColour(MidiRoll::whiteKeyColourId);
-    const Colour whiteKeyBright = this->findColour(MidiRoll::whiteKeyBrightColourId);
+    const Colour blackKey = this->findColour(HybridRoll::blackKeyColourId);
+    const Colour blackKeyBright = this->findColour(HybridRoll::blackKeyBrightColourId);
+    const Colour whiteKey = this->findColour(HybridRoll::whiteKeyColourId);
+    const Colour whiteKeyBright = this->findColour(HybridRoll::whiteKeyBrightColourId);
     const Colour whiteKeyBrighter = whiteKeyBright.brighter(0.025f);
-    const Colour rowLine = this->findColour(MidiRoll::rowLineColourId);
+    const Colour rowLine = this->findColour(HybridRoll::rowLineColourId);
 
     const float visibleWidth = float(this->viewport.getViewWidth());
     const float visibleHeight = float(this->viewport.getViewHeight());
@@ -1195,7 +1195,7 @@ void PianoRoll::paint(Graphics &g)
 
 #endif
 
-    MidiRoll::paint(g);
+    HybridRoll::paint(g);
 }
 
 void PianoRoll::insertNewNoteAt(const MouseEvent &e)
@@ -1210,7 +1210,7 @@ void PianoRoll::insertNewNoteAt(const MouseEvent &e)
 
 
 //===----------------------------------------------------------------------===//
-// MidiRoll's legacy
+// HybridRoll's legacy
 //===----------------------------------------------------------------------===//
 
 void PianoRoll::handleAsyncUpdate()
@@ -1255,7 +1255,7 @@ void PianoRoll::handleAsyncUpdate()
     }
 #endif
 
-    MidiRoll::handleAsyncUpdate();
+    HybridRoll::handleAsyncUpdate();
 }
 
 
@@ -1273,7 +1273,7 @@ void PianoRoll::updateChildrenBounds()
     }
 #endif
 
-    MidiRoll::updateChildrenBounds();
+    HybridRoll::updateChildrenBounds();
 }
 
 void PianoRoll::updateChildrenPositions()
@@ -1290,7 +1290,7 @@ void PianoRoll::updateChildrenPositions()
     }
 #endif
 
-    MidiRoll::updateChildrenPositions();
+    HybridRoll::updateChildrenPositions();
 }
 
 
@@ -1373,12 +1373,12 @@ CachedImage::Ptr PianoRoll::renderRowsPattern(HelioTheme &theme, int height)
 
     Graphics g(*patternImage);
 
-    const Colour blackKey = theme.findColour(MidiRoll::blackKeyColourId);
-    const Colour blackKeyBright = theme.findColour(MidiRoll::blackKeyBrightColourId);
-    const Colour whiteKey = theme.findColour(MidiRoll::whiteKeyColourId);
-    const Colour whiteKeyBright = theme.findColour(MidiRoll::whiteKeyBrightColourId);
+    const Colour blackKey = theme.findColour(HybridRoll::blackKeyColourId);
+    const Colour blackKeyBright = theme.findColour(HybridRoll::blackKeyBrightColourId);
+    const Colour whiteKey = theme.findColour(HybridRoll::whiteKeyColourId);
+    const Colour whiteKeyBright = theme.findColour(HybridRoll::whiteKeyBrightColourId);
     const Colour whiteKeyBrighter = whiteKeyBright.brighter(0.025f);
-    const Colour rowLine = theme.findColour(MidiRoll::rowLineColourId);
+    const Colour rowLine = theme.findColour(HybridRoll::rowLineColourId);
 
     float currentHeight = float(height);
     float previousHeight = 0;

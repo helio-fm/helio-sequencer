@@ -122,7 +122,7 @@ protected:
     bool ghostMode;
     
     friend class PianoRoll;
-    friend class MidiRollToolbox;
+    friend class PianoRollToolbox;
     friend class NoteResizerLeft;
     friend class NoteResizerRight;
     

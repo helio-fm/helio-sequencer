@@ -24,7 +24,7 @@
 //[MiscUserDefs]
 #include "PianoRoll.h"
 #include "MidiEventSelection.h"
-#include "MidiRollToolbox.h"
+#include "PianoRollToolbox.h"
 #include "MidiLayer.h"
 #include "NoteComponent.h"
 #include "ProjectTreeItem.h"
@@ -75,8 +75,8 @@ private:
             return;
         }
 
-        const float startBeat = MidiRollToolbox::findStartBeat(this->selection);
-        const float endBeat = MidiRollToolbox::findEndBeat(this->selection);
+        const float startBeat = PianoRollToolbox::findStartBeat(this->selection);
+        const float endBeat = PianoRollToolbox::findEndBeat(this->selection);
 
         Array<MidiEventComponent *> sortedSelection;
 
@@ -329,8 +329,8 @@ void NotesTuningPanel::handleCommandMessage (int commandId)
     }
     else if (commandId == CommandIDs::TransportStartPlayback)
     {
-        const float startBeat = MidiRollToolbox::findStartBeat(this->roll.getLassoSelection());
-        const float endBeat = MidiRollToolbox::findEndBeat(this->roll.getLassoSelection());
+        const float startBeat = PianoRollToolbox::findStartBeat(this->roll.getLassoSelection());
+        const float endBeat = PianoRollToolbox::findEndBeat(this->roll.getLassoSelection());
 
         const double loopStart = this->roll.getTransportPositionByBeat(startBeat);
         const double loopEnd = this->roll.getTransportPositionByBeat(endBeat);
@@ -388,7 +388,7 @@ void NotesTuningPanel::syncVolumeLinear(Slider *volumeSlider)
 
     const float volumeDelta = this->volumeAnchorLinear - float(volumeSlider->getValue());
     MidiEventSelection &selection = this->roll.getLassoSelection();
-    MidiRollToolbox::changeVolumeLinear(selection, volumeDelta);
+    PianoRollToolbox::changeVolumeLinear(selection, volumeDelta);
 }
 
 void NotesTuningPanel::syncVolumeMultiplied(Slider *volumeSlider)
@@ -406,7 +406,7 @@ void NotesTuningPanel::syncVolumeMultiplied(Slider *volumeSlider)
     const float volumeFactor = (volume < anchor) ? ((volume / anchor) - 1.f) : ((volume - anchor) / (1.f - anchor));
 
     MidiEventSelection &selection = this->roll.getLassoSelection();
-    MidiRollToolbox::changeVolumeMultiplied(selection, volumeFactor);
+    PianoRollToolbox::changeVolumeMultiplied(selection, volumeFactor);
 }
 
 void NotesTuningPanel::syncVolumeSine(Slider *volumeSlider)
@@ -424,7 +424,7 @@ void NotesTuningPanel::syncVolumeSine(Slider *volumeSlider)
     const float volumeFactor = (volume < anchor) ? ((volume / anchor) - 1.f) : ((volume - anchor) / (1.f - anchor));
 
     MidiEventSelection &selection = this->roll.getLassoSelection();
-    MidiRollToolbox::changeVolumeSine(selection, volumeFactor);
+    PianoRollToolbox::changeVolumeSine(selection, volumeFactor);
 }
 
 void NotesTuningPanel::syncSliders()
@@ -467,13 +467,13 @@ float NotesTuningPanel::flattenValue(float value) const
 void NotesTuningPanel::startTuning()
 {
     MidiEventSelection &selection = this->roll.getLassoSelection();
-    MidiRollToolbox::startTuning(selection);
+    PianoRollToolbox::startTuning(selection);
 }
 
 void NotesTuningPanel::endTuning()
 {
     MidiEventSelection &selection = this->roll.getLassoSelection();
-    MidiRollToolbox::endTuning(selection);
+    PianoRollToolbox::endTuning(selection);
 }
 
 

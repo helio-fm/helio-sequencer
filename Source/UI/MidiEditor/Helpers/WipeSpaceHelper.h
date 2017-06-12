@@ -18,7 +18,7 @@
 #pragma once
 
 //[Headers]
-class MidiRoll;
+class HybridRoll;
 //[/Headers]
 
 #include "../../Themes/ShadowLeftwards.h"
@@ -28,7 +28,7 @@ class WipeSpaceHelper  : public Component
 {
 public:
 
-    WipeSpaceHelper (MidiRoll &parentRoll);
+    WipeSpaceHelper (HybridRoll &parentRoll);
 
     ~WipeSpaceHelper();
 
@@ -54,7 +54,7 @@ private:
 
     //[UserVariables]
 
-    MidiRoll &roll;
+    HybridRoll &roll;
 
     float startBeat;
     float endBeat;

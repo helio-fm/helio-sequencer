@@ -18,7 +18,7 @@
 #pragma once
 
 //[Headers]
-class MidiRoll;
+class HybridRoll;
 //[/Headers]
 
 #include "../../Themes/ShadowLeftwards.h"
@@ -28,7 +28,7 @@ class InsertSpaceHelper  : public Component
 {
 public:
 
-    InsertSpaceHelper (MidiRoll &parentRoll);
+    InsertSpaceHelper (HybridRoll &parentRoll);
 
     ~InsertSpaceHelper();
 
@@ -59,7 +59,7 @@ private:
 
     //[UserVariables]
 
-    MidiRoll &roll;
+    HybridRoll &roll;
 
     float startBeat;
     float endBeat;
