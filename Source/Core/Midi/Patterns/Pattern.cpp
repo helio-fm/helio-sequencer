@@ -26,6 +26,8 @@
 Pattern::Pattern(ProjectEventDispatcher &parent) :
     owner(parent)
 {
+    // Add default single instance
+    this->clips.add(Clip());
 }
 
 Pattern::~Pattern()

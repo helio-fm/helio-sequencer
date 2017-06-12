@@ -17,64 +17,34 @@
 
 #pragma once
 
-class Clip;
-class Pattern;
-
-#include "Diff.h"
-#include "DiffLogic.h"
+#include "PatternDeltas.h"
+#include "Pattern.h"
+#include "Delta.h"
 
 namespace VCS
 {
-    class PatternDiffLogic : public DiffLogic
+    class PatternDiffLogic
     {
     public:
+        
+        static void deserializePatternChanges(Pattern &pattern,
+            const XmlElement *state, const XmlElement *changes,
+            Array<Clip> &stateClips, Array<Clip> &changesClips);
 
-        explicit PatternDiffLogic(TrackedItem &targetItem);
+        static XmlElement *serializePattern(Array<Clip> changes, const String &tag);
 
-        ~PatternDiffLogic() override;
+        static NewSerializedDelta serializePatternChanges(Array<Clip> changes,
+            const String &description, int64 numChanges,
+            const String &deltaType);
 
-        //===------------------------------------------------------------------===//
-        // DiffLogic
-        //
+        static bool checkIfDeltaIsPatternType(const Delta *delta);
 
-        const String getType() const override;
+        static XmlElement *mergeClipsAdded(const XmlElement *state, const XmlElement *changes);
 
-        void resetStateTo(const TrackedItem &newState) override;
+        static XmlElement *mergeClipsRemoved(const XmlElement *state, const XmlElement *changes);
 
-        Diff *createDiff(const TrackedItem &initialState) const override;
+        static XmlElement *mergeClipsChanged(const XmlElement *state, const XmlElement *changes);
 
-        Diff *createMergedItem(const TrackedItem &initialState) const override;
-
-    private:
-
-        XmlElement *mergeClipsAdded(const XmlElement *state, const XmlElement *changes) const;
-
-        XmlElement *mergeClipsRemoved(const XmlElement *state, const XmlElement *changes) const;
-
-        XmlElement *mergeClipsChanged(const XmlElement *state, const XmlElement *changes) const;
-
-    private:
-
-        Array<NewSerializedDelta> createEventsDiffs(const XmlElement *state, const XmlElement *changes) const;
-
-    private:
-
-        void deserializeChanges(Pattern &pattern,
-            const XmlElement *state,
-            const XmlElement *changes,
-            Array<Clip> &stateClips,
-            Array<Clip> &changesClips) const;
-
-        NewSerializedDelta serializeChanges(Array<Clip> changes,
-            const String &description,
-            int64 numChanges,
-            const String &deltaType) const;
-
-        XmlElement *serializePattern(Array<Clip> changes,
-            const String &tag) const;
-
-        bool checkIfDeltaIsPatternType(const Delta *delta) const;
-
-
+        static Array<NewSerializedDelta> createClipsDiffs(const XmlElement *state, const XmlElement *changes);
     };
 } // namespace VCS

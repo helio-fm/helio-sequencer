@@ -15,183 +15,83 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#pragma once
+
 #include "Common.h"
 #include "PatternDiffLogic.h"
-#include "PatternDeltas.h"
-
 #include "Clip.h"
 #include "Pattern.h"
-#include "ProjectEventDispatcher.h"
 #include "SerializationKeys.h"
+#include "ProjectEventDispatcher.h"
 
 using namespace VCS;
 
-PatternDiffLogic::PatternDiffLogic(TrackedItem &targetItem) :
-    DiffLogic(targetItem)
+void PatternDiffLogic::deserializePatternChanges(Pattern &pattern, 
+    const XmlElement *state, const XmlElement *changes,
+    Array<Clip> &stateClips, Array<Clip> &changesClips)
 {
-}
-
-PatternDiffLogic::~PatternDiffLogic()
-{
-}
-
-const String PatternDiffLogic::getType() const
-{
-    return Serialization::Core::pattern;
-}
-
-void PatternDiffLogic::resetStateTo(const TrackedItem &newState)
-{
-    this->target.resetStateTo(newState);
-}
-
-Diff *PatternDiffLogic::createDiff(const TrackedItem &initialState) const
-{
-    auto diff = new Diff(this->target);
-
-    for (int i = 0; i < this->target.getNumDeltas(); ++i)
+    if (state != nullptr)
     {
-        const Delta *myDelta = this->target.getDelta(i);
-
-        ScopedPointer<XmlElement> myDeltaData(this->target.createDeltaDataFor(i));
-        ScopedPointer<XmlElement> stateDeltaData;
-
-        bool deltaFoundInState = false;
-        bool dataHasChanged = false;
-
-        for (int j = 0; j < initialState.getNumDeltas(); ++j)
+        forEachXmlChildElementWithTagName(*state, e, Serialization::Core::clip)
         {
-            const Delta *stateDelta = initialState.getDelta(j);
-
-            if (myDelta->getType() == stateDelta->getType())
-            {
-                deltaFoundInState = true;
-                stateDeltaData = initialState.createDeltaDataFor(j);
-                dataHasChanged = (!myDeltaData->isEquivalentTo(stateDeltaData, true));
-                break;
-            }
-        }
-
-        if (!deltaFoundInState || (deltaFoundInState && dataHasChanged))
-        {
-            if (myDelta->getType() == PatternDeltas::clipsAdded)
-            {
-                Array<NewSerializedDelta> fullDeltas =
-                    this->createEventsDiffs(stateDeltaData, myDeltaData);
-
-                for (auto fullDelta : fullDeltas)
-                {
-                    diff->addOwnedDelta(fullDelta.delta, fullDelta.deltaData);
-                }
-            }
+            Clip clip;
+            clip.deserialize(*e);
+            stateClips.addSorted(clip, clip);
         }
     }
 
-    return diff;
-}
-
-Diff *PatternDiffLogic::createMergedItem(const TrackedItem &initialState) const
-{
-    auto diff = new Diff(this->target);
-
-    for (int i = 0; i < initialState.getNumDeltas(); ++i)
+    if (changes != nullptr)
     {
-        const Delta *stateDelta = initialState.getDelta(i);
-        ScopedPointer<XmlElement> stateDeltaData(initialState.createDeltaDataFor(i));
-
-        bool deltaFoundInChanges = false;
-
-        ScopedPointer<Delta> clipsDelta(new Delta(
-            DeltaDescription(Serialization::VCS::headStateDelta),
-            PatternDeltas::clipsAdded));
-
-        ScopedPointer<XmlElement> clipsDeltaData;
-
-        for (int j = 0; j < this->target.getNumDeltas(); ++j)
+        forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::clip)
         {
-            const Delta *targetDelta = this->target.getDelta(j);
-            ScopedPointer<XmlElement> targetDeltaData(this->target.createDeltaDataFor(j));
-
-            const bool typesMatchStrictly =
-                (stateDelta->getType() == targetDelta->getType());
-
-            const bool bothDeltasAreClips =
-                this->checkIfDeltaIsPatternType(stateDelta) && 
-                this->checkIfDeltaIsPatternType(targetDelta);
-
-            if (bothDeltasAreClips)
-            {
-                deltaFoundInChanges = true;
-
-                if (targetDelta->getType() == PatternDeltas::clipsAdded)
-                {
-                    if (clipsDeltaData != nullptr)
-                    {
-                        clipsDeltaData = this->mergeClipsAdded(clipsDeltaData, targetDeltaData);
-                    }
-                    else
-                    {
-                        clipsDeltaData = this->mergeClipsAdded(stateDeltaData, targetDeltaData);
-                    }
-                }
-                else if (targetDelta->getType() == PatternDeltas::clipsRemoved)
-                {
-                    if (clipsDeltaData != nullptr)
-                    {
-                        clipsDeltaData = this->mergeClipsRemoved(clipsDeltaData, targetDeltaData);
-                    }
-                    else
-                    {
-                        clipsDeltaData = this->mergeClipsRemoved(stateDeltaData, targetDeltaData);
-                    }
-                }
-                else if (targetDelta->getType() == PatternDeltas::clipsChanged)
-                {
-                    if (clipsDeltaData != nullptr)
-                    {
-                        clipsDeltaData = this->mergeClipsChanged(clipsDeltaData, targetDeltaData);
-                    }
-                    else
-                    {
-                        clipsDeltaData = this->mergeClipsChanged(stateDeltaData, targetDeltaData);
-                    }
-                }
-            }
-        }
-
-        if (clipsDeltaData != nullptr)
-        {
-            diff->addOwnedDelta(clipsDelta.release(), clipsDeltaData.release());
-        }
-
-        if (!deltaFoundInChanges)
-        {
-            auto stateDeltaCopy = new Delta(*stateDelta);
-            diff->addOwnedDelta(stateDeltaCopy, stateDeltaData.release());
+            Clip clip;
+            clip.deserialize(*e);
+            changesClips.addSorted(clip, clip);
         }
     }
-
-    return diff;
 }
 
+XmlElement *PatternDiffLogic::serializePattern(Array<Clip> changes,
+    const String &tag)
+{
+    auto xml = new XmlElement(tag);
 
-//===----------------------------------------------------------------------===//
-// Merge
-//===----------------------------------------------------------------------===//
+    for (int i = 0; i < changes.size(); ++i)
+    {
+        xml->addChildElement(changes.getUnchecked(i).serialize());
+    }
+
+    return xml;
+}
+
+NewSerializedDelta PatternDiffLogic::serializePatternChanges(Array<Clip> changes,
+    const String &description, int64 numChanges, const String &deltaType)
+{
+    NewSerializedDelta changesFullDelta;
+    changesFullDelta.delta = new Delta(DeltaDescription(description, numChanges), deltaType);
+    changesFullDelta.deltaData = serializePattern(changes, deltaType);
+    return changesFullDelta;
+}
+
+bool PatternDiffLogic::checkIfDeltaIsPatternType(const Delta *delta)
+{
+    return (delta->getType() == PatternDeltas::clipsAdded ||
+        delta->getType() == PatternDeltas::clipsRemoved ||
+        delta->getType() == PatternDeltas::clipsChanged);
+}
 
 XmlElement *PatternDiffLogic::mergeClipsAdded(const XmlElement *state,
-    const XmlElement *changes) const
+    const XmlElement *changes)
 {
     EmptyEventDispatcher dispatcher;
     Pattern emptyPattern(dispatcher);
     Array<Clip> stateClips;
     Array<Clip> changesClips;
-    this->deserializeChanges(emptyPattern, state, changes, stateClips, changesClips);
+    deserializePatternChanges(emptyPattern, state, changes, stateClips, changesClips);
 
     Array<Clip> result;
     result.addArray(stateClips);
 
-    // на всякий пожарный, ищем, нет ли в состоянии нот с теми же id, где нет - добавляем
     HashMap<Clip::Id, int> stateIDs;
 
     for (int j = 0; j < stateClips.size(); ++j)
@@ -210,17 +110,17 @@ XmlElement *PatternDiffLogic::mergeClipsAdded(const XmlElement *state,
         }
     }
 
-    return this->serializePattern(result, PatternDeltas::clipsAdded);
+    return serializePattern(result, PatternDeltas::clipsAdded);
 }
 
-XmlElement *PatternDiffLogic::mergeClipsRemoved(const XmlElement *state,
-    const XmlElement *changes) const
+XmlElement *PatternDiffLogic::mergeClipsRemoved(const XmlElement *state, 
+    const XmlElement *changes)
 {
     EmptyEventDispatcher dispatcher;
     Pattern emptyPattern(dispatcher);
     Array<Clip> stateClips;
     Array<Clip> changesClips;
-    this->deserializeChanges(emptyPattern, state, changes, stateClips, changesClips);
+    deserializePatternChanges(emptyPattern, state, changes, stateClips, changesClips);
 
     Array<Clip> result;
     HashMap<Clip::Id, int> changesIDs;
@@ -241,22 +141,21 @@ XmlElement *PatternDiffLogic::mergeClipsRemoved(const XmlElement *state,
         }
     }
 
-    return this->serializePattern(result, PatternDeltas::clipsAdded);
+    return serializePattern(result, PatternDeltas::clipsAdded);
 }
 
-XmlElement *PatternDiffLogic::mergeClipsChanged(const XmlElement *state,
-    const XmlElement *changes) const
+XmlElement *PatternDiffLogic::mergeClipsChanged(const XmlElement *state, 
+    const XmlElement *changes)
 {
     EmptyEventDispatcher dispatcher;
     Pattern emptyPattern(dispatcher);
     Array<Clip> stateClips;
     Array<Clip> changesClips;
-    this->deserializeChanges(emptyPattern, state, changes, stateClips, changesClips);
+    deserializePatternChanges(emptyPattern, state, changes, stateClips, changesClips);
 
     Array<Clip> result;
     result.addArray(stateClips);
 
-    // снова ищем по id и заменяем
     HashMap<Clip::Id, Clip> changesIDs;
 
     for (int j = 0; j < changesClips.size(); ++j)
@@ -277,22 +176,18 @@ XmlElement *PatternDiffLogic::mergeClipsChanged(const XmlElement *state,
         }
     }
 
-    return this->serializePattern(result, PatternDeltas::clipsAdded);
+    return serializePattern(result, PatternDeltas::clipsAdded);
 }
 
-
-//===----------------------------------------------------------------------===//
-// Diff
-//===----------------------------------------------------------------------===//
-
-Array<NewSerializedDelta> PatternDiffLogic::createEventsDiffs(const XmlElement *state, const XmlElement *changes) const
+Array<VCS::NewSerializedDelta> PatternDiffLogic::createClipsDiffs(
+    const XmlElement *state, const XmlElement *changes)
 {
     EmptyEventDispatcher dispatcher;
     Pattern emptyPattern(dispatcher);
     Array<Clip> stateClips;
     Array<Clip> changesClips;
 
-    this->deserializeChanges(emptyPattern, state, changes, stateClips, changesClips);
+    deserializePatternChanges(emptyPattern, state, changes, stateClips, changesClips);
 
     Array<NewSerializedDelta> res;
 
@@ -350,7 +245,7 @@ Array<NewSerializedDelta> PatternDiffLogic::createEventsDiffs(const XmlElement *
 
     if (addedClips.size() > 0)
     {
-        res.add(this->serializeChanges(addedClips,
+        res.add(serializePatternChanges(addedClips,
             "added {x} clips",
             addedClips.size(),
             PatternDeltas::clipsAdded));
@@ -358,7 +253,7 @@ Array<NewSerializedDelta> PatternDiffLogic::createEventsDiffs(const XmlElement *
 
     if (removedClips.size() > 0)
     {
-        res.add(this->serializeChanges(removedClips,
+        res.add(serializePatternChanges(removedClips,
             "removed {x} clips",
             removedClips.size(),
             PatternDeltas::clipsRemoved));
@@ -366,68 +261,11 @@ Array<NewSerializedDelta> PatternDiffLogic::createEventsDiffs(const XmlElement *
 
     if (changedClips.size() > 0)
     {
-        res.add(this->serializeChanges(changedClips,
+        res.add(serializePatternChanges(changedClips,
             "changed {x} clips",
             changedClips.size(),
             PatternDeltas::clipsChanged));
     }
 
     return res;
-}
-
-
-void PatternDiffLogic::deserializeChanges(Pattern &pattern,
-    const XmlElement *state,
-    const XmlElement *changes,
-    Array<Clip> &stateClips,
-    Array<Clip> &changesClips) const
-{
-    if (state != nullptr)
-    {
-        forEachXmlChildElementWithTagName(*state, e, Serialization::Core::clip)
-        {
-            Clip clip;
-            clip.deserialize(*e);
-            stateClips.addSorted(clip, clip);
-        }
-    }
-
-    if (changes != nullptr)
-    {
-        forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::clip)
-        {
-            Clip clip;
-            clip.deserialize(*e);
-            changesClips.addSorted(clip, clip);
-        }
-    }
-}
-
-NewSerializedDelta PatternDiffLogic::serializeChanges(Array<Clip> changes,
-    const String &description, int64 numChanges, const String &deltaType) const
-{
-    NewSerializedDelta changesFullDelta;
-    changesFullDelta.delta = new Delta(DeltaDescription(description, numChanges), deltaType);
-    changesFullDelta.deltaData = this->serializePattern(changes, deltaType);
-    return changesFullDelta;
-}
-
-XmlElement *PatternDiffLogic::serializePattern(Array<Clip> changes,
-    const String &tag) const
-{
-    auto xml = new XmlElement(tag);
-
-    for (int i = 0; i < changes.size(); ++i)
-    {
-        xml->addChildElement(changes.getUnchecked(i).serialize());
-    }
-
-    return xml;
-}
-
-bool PatternDiffLogic::checkIfDeltaIsPatternType(const Delta *delta) const
-{
-    return (delta->getType() == PatternDeltas::clipsAdded ||
-        delta->getType() == PatternDeltas::clipsRemoved ||
-        delta->getType() == PatternDeltas::clipsChanged);
 }
