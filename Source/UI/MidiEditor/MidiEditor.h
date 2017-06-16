@@ -30,6 +30,7 @@ class Origami;
 
 #include "Serializable.h"
 
+// TODO remove as EditorLayout or HybridRollLayout or so
 class MidiEditor :
     public Component,
     public Serializable,
