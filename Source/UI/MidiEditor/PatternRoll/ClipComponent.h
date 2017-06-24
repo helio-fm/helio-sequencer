@@ -17,26 +17,20 @@
 
 #pragma once
 
-class MidiEvent;
+class Clip;
 class MidiLayer;
 class HybridRoll;
 
-class ClipComponent : public Component
+#include "FloatBoundsComponent.h"
+
+class ClipComponent : public FloatBoundsComponent
 {
 public:
 
-    ClipComponent(HybridRoll &editor, const MidiEvent &event);
+    ClipComponent(HybridRoll &editor, Clip clip);
 
-    const MidiEvent &getEvent() const;
+    const Clip getClip() const;
 
-
-
-    bool isActive() const;
-
-    void setActive(bool val, bool force = false);
-
-
-    virtual void updateBounds(const Rectangle<float> &b) = 0;
 
     virtual void setSelected(const bool selected);
 
@@ -45,8 +39,6 @@ public:
 
     float getBeat() const;
 
-    bool belongsToLayerSet(Array<MidiLayer *> layers) const;
-    
     
     //===------------------------------------------------------------------===//
     // Component
@@ -67,15 +59,11 @@ protected:
     ComponentDragger dragger;
 
     bool selectedState;
-
-    bool activeState;
-
+	
     float anchorBeat;
 
     Colour colour;
 
-    // сдвиг мыши от нуля компонента во время клика.
-    // если его не учитывать, то ноты двигаются неестественно
     Point<int> clickOffset;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ClipComponent)

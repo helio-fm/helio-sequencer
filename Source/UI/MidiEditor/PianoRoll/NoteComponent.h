@@ -45,7 +45,6 @@ public:
     const Note &getNote() const;
     PianoRoll &getRoll() const;
 
-    void updateBounds(const Rectangle<float> &b) override;
     void setSelected(const bool selected) override;
 
     //===------------------------------------------------------------------===//
@@ -117,8 +116,6 @@ protected:
 
     State state;
 
-    Rectangle<float> realLocalBounds;
-    
     bool ghostMode;
     
     friend class PianoRoll;

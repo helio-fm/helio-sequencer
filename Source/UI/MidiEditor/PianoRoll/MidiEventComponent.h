@@ -21,7 +21,9 @@ class MidiEvent;
 class MidiLayer;
 class HybridRoll;
 
-class MidiEventComponent : public Component
+#include "FloatBoundsComponent.h"
+
+class MidiEventComponent : public FloatBoundsComponent
 {
 public:
 
@@ -35,8 +37,6 @@ public:
 
     void setActive(bool val, bool force = false);
 
-
-    virtual void updateBounds(const Rectangle<float> &b) = 0;
 
     virtual void setSelected(const bool selected);
 

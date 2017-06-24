@@ -346,8 +346,9 @@ void PianoRoll::addNote(int key, float beat, float length, float velocity)
     }
 }
 
-Rectangle<float> PianoRoll::getEventBounds(MidiEventComponent *mc) const
+Rectangle<float> PianoRoll::getEventBounds(Component *mc) const
 {
+	jassert(dynamic_cast<NoteComponent *>(mc));
     NoteComponent *nc = static_cast<NoteComponent *>(mc);
     return this->getEventBounds(nc->getKey(), nc->getBeat(), nc->getLength());
 }
@@ -1127,7 +1128,7 @@ void PianoRoll::resized()
     for (int i = 0; i < this->eventComponents.size(); ++i)
     {
         NoteComponent *note = static_cast<NoteComponent *>(this->eventComponents.getUnchecked(i));
-        note->updateBounds(this->getEventBounds(note));
+        note->setFloatBounds(this->getEventBounds(note));
     }
 
     HybridRoll::resized();

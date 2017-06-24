@@ -35,18 +35,15 @@ NoteComponent::NoteComponent(PianoRoll &editor, const Note &event)
       state(None),
       anchor(event),
       groupScalingAnchor(event),
-      realLocalBounds(0.f, 0.f),
       firstChangeDone(false),
       ghostMode(false)
 {
     this->toFront(false);
     this->setOpaque(false); // true ведет к адским тормозам
-    //this->setBufferedToImage(true); // ведет к адским тормозам при переключении слоев
 
     this->setPaintingIsUnclipped(true); // speedup
 
-    //this->setBounds(this->getEventBounds(this));
-    this->updateBounds(this->getRoll().getEventBounds(this));
+    this->setFloatBounds(this->getRoll().getEventBounds(this));
 }
 
 NoteComponent::~NoteComponent()
@@ -62,24 +59,6 @@ const Note &NoteComponent::getNote() const
 PianoRoll &NoteComponent::getRoll() const
 {
     return static_cast<PianoRoll &>(this->roll);
-}
-
-void NoteComponent::updateBounds(const Rectangle<float> &b)
-{
-    const int bX = roundFloatToInt(b.getX()) - 1;
-    const int bY = roundFloatToInt(b.getY());
-    const int bW = roundFloatToInt(b.getWidth()) + 2;
-    const int bH = roundFloatToInt(b.getHeight());
-
-    const float dX = b.getX() - bX;
-    const float dW = b.getWidth() - bW;
-    
-    this->realLocalBounds.setX(dX);
-    this->realLocalBounds.setWidth(bW + dW + dX - .75f); // 0.7px - a small gap between notes
-    this->realLocalBounds.setY(b.getY() - bY);
-    this->realLocalBounds.setHeight(b.getHeight());
-    
-    this->setBounds(bX, bY, bW, bH);
 }
 
 void NoteComponent::setSelected(const bool selected)
@@ -387,7 +366,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         }
         else
         {
-            this->updateBounds(this->getRoll().getEventBounds(this)); // возвращаем на место
+            this->setFloatBounds(this->getRoll().getEventBounds(this)); // возвращаем на место
         }
     }
     else if (this->state == ResizingLeft)
@@ -422,7 +401,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         }
         else
         {
-            this->updateBounds(this->getRoll().getEventBounds(this)); // возвращаем на место
+            this->setFloatBounds(this->getRoll().getEventBounds(this)); // возвращаем на место
         }
     }
     else if (this->state == GroupScalingRight)
@@ -457,7 +436,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         }
         else
         {
-            this->updateBounds(this->getRoll().getEventBounds(this)); // возвращаем на место
+            this->setFloatBounds(this->getRoll().getEventBounds(this)); // возвращаем на место
         }
     }
     else if (this->state == GroupScalingLeft)
@@ -492,7 +471,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         }
         else
         {
-            this->updateBounds(this->getRoll().getEventBounds(this)); // возвращаем на место
+            this->setFloatBounds(this->getRoll().getEventBounds(this)); // возвращаем на место
         }
     }
     else if (this->state == Dragging)
@@ -513,7 +492,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         
         // возвращаем на место активную ноту
         // это здесь, чтоб не было лага между сдвинутой нотой и асинхронным обновлением ролла
-        this->updateBounds(this->getRoll().getEventBounds(this));
+        this->setFloatBounds(this->getRoll().getEventBounds(this));
         
         if (eventChanged)
         {
@@ -648,7 +627,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
     else if (this->state == Dragging)
     {
         this->getRoll().hideHelpers();
-        this->updateBounds(this->getRoll().getEventBounds(this));
+        this->setFloatBounds(this->getRoll().getEventBounds(this));
         
         for (int i = 0; i < selection.getNumSelected(); i++)
         {
@@ -731,11 +710,11 @@ void NoteComponent::paintNewLook(Graphics &g)
     const Colour myColourL(myColour.brighter(0.125f));
     const Colour myColourD(myColour.darker(0.175f));
     
-    const float w = this->realLocalBounds.getWidth();
-    const float h = this->realLocalBounds.getHeight();
-    const float x1 = this->realLocalBounds.getX();
+    const float w = this->floatLocalBounds.getWidth() - .75f; // a small gap between notes
+    const float h = this->floatLocalBounds.getHeight();
+    const float x1 = this->floatLocalBounds.getX();
     const float x2 = x1 + w;
-    const float y1 = this->realLocalBounds.getY();
+    const float y1 = this->floatLocalBounds.getY();
     const float y2 = y1 + h - 1;
     const float yh = (y2 - y1);
     
@@ -775,8 +754,8 @@ void NoteComponent::paintNewLook(Graphics &g)
         g.drawHorizontalLine(y, x1 + bevel, x2 - bevel);
     }
     
-    const float sx = this->realLocalBounds.getX() + 2.f;
-    const float sw = this->realLocalBounds.getWidth() - 2.f;
+    const float sx = x1 + 2.f;
+    const float sw = w - 2.f;
     
     g.setColour(Colours::black.withAlpha(0.4f));
     g.drawHorizontalLine(this->getHeight() - 2, sx, sw * this->getVelocity());
@@ -795,15 +774,15 @@ void NoteComponent::paintLegacyLook(Graphics &g)
     if (! this->activeState)
     {
         g.setColour(myColour);
-        g.drawRoundedRectangle(this->realLocalBounds.reduced(0.5f, 0.5f), 2.f, 1.0f);
+        g.drawRoundedRectangle(this->floatLocalBounds.reduced(0.5f, 0.5f), 2.f, 1.0f);
         return;
     }
     
     g.setColour(myColour);
-    g.fillRoundedRectangle(this->realLocalBounds, 2.f);
+    g.fillRoundedRectangle(this->floatLocalBounds, 2.f);
     
-    const float sx = this->realLocalBounds.getX() + 2.f;
-    const float sw = this->realLocalBounds.getWidth() - 2.f;
+    const float sx = this->floatLocalBounds.getX() + 2.f;
+    const float sw = this->floatLocalBounds.getWidth() - 2.f - .75f;
     
     g.setColour(Colours::black.withAlpha(0.4f));
     g.drawHorizontalLine(this->getHeight() - 2, sx, sw * this->getVelocity());
@@ -837,8 +816,8 @@ bool NoteComponent::getDraggingDelta(const MouseEvent &e, float &deltaBeat, int 
     float newBeat = -1;
 
     // по идее, там надо прибавлять this->clickOffset.getX() % (длина минимального деления)
-    this->getRoll().getRowsColsByComponentPosition(this->getX() + this->realLocalBounds.getX() + 1 /*+ this->clickOffset.getX()*/,
-            this->getY() + (this->getHeight() / 2) + this->realLocalBounds.getY() + this->clickOffset.getY(),
+    this->getRoll().getRowsColsByComponentPosition(this->getX() + this->floatLocalBounds.getX() + 1 /*+ this->clickOffset.getX()*/,
+            this->getY() + (this->getHeight() / 2) + this->floatLocalBounds.getY() + this->clickOffset.getY(),
             newKey,
             newBeat);
 
@@ -907,8 +886,8 @@ bool NoteComponent::getResizingRightDelta(const MouseEvent &e, float &deltaLengt
     int newNote = -1;
     float newBeat = -1;
 
-    this->getRoll().getRowsColsByComponentPosition(getX() + this->realLocalBounds.getX() + e.x,
-                                                   getY() + this->realLocalBounds.getY() + e.y,
+    this->getRoll().getRowsColsByComponentPosition(getX() + this->floatLocalBounds.getX() + e.x,
+                                                   getY() + this->floatLocalBounds.getY() + e.y,
                                                    newNote,
                                                    newBeat);
 
@@ -954,8 +933,8 @@ bool NoteComponent::getResizingLeftDelta(const MouseEvent &e, float &deltaLength
     int newNote = -1;
     float newBeat = -1;
     
-    this->getRoll().getRowsColsByComponentPosition(getX() + this->realLocalBounds.getX() + e.x,
-                                                   getY() + this->realLocalBounds.getY() + e.y,
+    this->getRoll().getRowsColsByComponentPosition(getX() + this->floatLocalBounds.getX() + e.x,
+                                                   getY() + this->floatLocalBounds.getY() + e.y,
                                                    newNote,
                                                    newBeat);
     
@@ -997,8 +976,8 @@ bool NoteComponent::getGroupScaleRightFactor(const MouseEvent &e, float &absScal
     int newNote = -1;
     float newBeat = -1;
     
-    this->getRoll().getRowsColsByComponentPosition(getX() + this->realLocalBounds.getX() + e.x,
-                                                   getY() + this->realLocalBounds.getY() + e.y,
+    this->getRoll().getRowsColsByComponentPosition(getX() + this->floatLocalBounds.getX() + e.x,
+                                                   getY() + this->floatLocalBounds.getY() + e.y,
                                                    newNote,
                                                    newBeat);
     
@@ -1044,8 +1023,8 @@ bool NoteComponent::getGroupScaleLeftFactor(const MouseEvent &e, float &absScale
     int newNote = -1;
     float newBeat = -1;
     
-    this->getRoll().getRowsColsByComponentPosition(this->getX() + this->realLocalBounds.getX() + e.x,
-                                                   this->getY() + this->realLocalBounds.getY() + e.y,
+    this->getRoll().getRowsColsByComponentPosition(this->getX() + this->floatLocalBounds.getX() + e.x,
+                                                   this->getY() + this->floatLocalBounds.getY() + e.y,
                                                    newNote,
                                                    newBeat);
     

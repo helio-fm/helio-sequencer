@@ -665,6 +665,8 @@
                 file="../../Source/UI/Common/FatalErrorScreen.cpp"/>
           <FILE id="nq0jKL" name="FatalErrorScreen.h" compile="0" resource="0"
                 file="../../Source/UI/Common/FatalErrorScreen.h"/>
+          <FILE id="KlCL6B" name="FloatBoundsComponent.h" compile="0" resource="0"
+                file="../../Source/UI/Common/FloatBoundsComponent.h"/>
           <FILE id="UJMCTX" name="HelperRectangle.h" compile="0" resource="0"
                 file="../../Source/UI/Common/HelperRectangle.h"/>
           <FILE id="sDpOes" name="HighlightedComponent.h" compile="0" resource="0"

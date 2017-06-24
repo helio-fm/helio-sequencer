@@ -346,8 +346,9 @@ void PatternRoll::addNote(int key, float beat, float length, float velocity)
     }
 }
 
-Rectangle<float> PatternRoll::getEventBounds(MidiEventComponent *mc) const
+Rectangle<float> PatternRoll::getEventBounds(Component *mc) const
 {
+	jassert(dynamic_cast<NoteComponent *>(mc));
     NoteComponent *nc = static_cast<NoteComponent *>(mc);
     return this->getEventBounds(nc->getKey(), nc->getBeat(), nc->getLength());
 }

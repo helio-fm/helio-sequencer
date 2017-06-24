@@ -132,7 +132,7 @@ public:
     
     virtual void reloadMidiTrack() = 0;
     virtual void setActiveMidiLayers(Array<MidiLayer *> tracks, MidiLayer *primaryLayer) = 0;
-    virtual Rectangle<float> getEventBounds(MidiEventComponent *nc) const = 0;
+    virtual Rectangle<float> getEventBounds(Component *nc) const = 0;
     
     void scrollToSeekPosition();
 	float getPositionForNewTimelineEvent() const;
@@ -252,7 +252,7 @@ public:
     void setAltDrawingMode(bool drawMode);
     bool isUsingAltDrawingMode() const;
     
-    void triggerBatchRepaintFor(MidiEventComponent *target);
+    void triggerBatchRepaintFor(FloatBoundsComponent *target);
 
     void startFollowingIndicator();
     void stopFollowingIndicator();
@@ -466,7 +466,7 @@ protected:
     ScopedPointer<SmoothPanController> smoothPanController;
     ScopedPointer<SmoothZoomController> smoothZoomController;
 
-    Array<SafePointer<MidiEventComponent>> batchRepaintList;
+    Array<SafePointer<FloatBoundsComponent>> batchRepaintList;
 
 protected:
     

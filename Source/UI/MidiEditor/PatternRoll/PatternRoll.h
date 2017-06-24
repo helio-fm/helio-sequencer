@@ -112,7 +112,7 @@ public:
     //===------------------------------------------------------------------===//
 
     void addNote(int key, float beat, float length, float velocity);
-    Rectangle<float> getEventBounds(MidiEventComponent *mc) const override;
+    Rectangle<float> getEventBounds(Component *mc) const override;
     Rectangle<float> getEventBounds(const int key, const float beat, const float length) const;
     void getRowsColsByComponentPosition(const float x, const float y, int &noteNumber, float &beatNumber) const;
     void getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber) const;
@@ -195,7 +195,7 @@ private:
 
     bool mouseDownWasTriggered; // juce mouseUp wierdness workaround
 
-    NoteComponent *draggingNote;
+	ClipComponent *draggingNote;
     bool addNewNoteMode;
     
     int numRows;
@@ -214,7 +214,7 @@ private:
     
 private:
     
-    OwnedArray<NoteComponent> ghostNotes;
+    OwnedArray<ClipComponent> ghostNotes;
     
     //ScopedPointer<HelperRectangle> helperVertical;
     ScopedPointer<HelperRectangle> helperHorizontal;
@@ -222,6 +222,6 @@ private:
     ScopedPointer<NoteResizerLeft> noteResizerLeft;
     ScopedPointer<NoteResizerRight> noteResizerRight;
     
-    HashMap<Note, NoteComponent *, NoteHashFunction> componentsHashTable;
+    HashMap<Clip, ClipComponent *, ClipHashFunction> componentsHashTable;
 
 };

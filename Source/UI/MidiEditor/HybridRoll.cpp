@@ -1631,10 +1631,10 @@ void HybridRoll::handleAsyncUpdate()
 
         for (int i = 0; i < this->batchRepaintList.size(); ++i)
         {
-            if (MidiEventComponent *mc = this->batchRepaintList.getUnchecked(i))
+            if (FloatBoundsComponent *mc = this->batchRepaintList.getUnchecked(i))
             {
                 const Rectangle<float> nb(this->getEventBounds(mc));
-                mc->updateBounds(nb);
+                mc->setFloatBounds(nb);
                 mc->repaint();
             }
         }
@@ -1712,7 +1712,7 @@ double HybridRoll::findIndicatorOffsetFromViewCentre() const
     return indicatorX - viewportCentreX;
 }
 
-void HybridRoll::triggerBatchRepaintFor(MidiEventComponent *target)
+void HybridRoll::triggerBatchRepaintFor(FloatBoundsComponent *target)
 {
     this->batchRepaintList.add(target);
     this->triggerAsyncUpdate();
