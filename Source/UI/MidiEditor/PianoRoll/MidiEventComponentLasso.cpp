@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "MidiEventSelection.h"
+#include "Lasso.h"
 #include "MidiEventComponentLasso.h"
 #include "HelioTheme.h"
 
@@ -25,7 +25,7 @@ MidiEventComponentLasso::MidiEventComponentLasso() :
 {
 }
 
-void MidiEventComponentLasso::beginLasso(const MouseEvent &e, LassoSource<MidiEventComponent *> *const lassoSource)
+void MidiEventComponentLasso::beginLasso(const MouseEvent &e, LassoSource<SelectableComponent *> *const lassoSource)
 {
     jassert(source == nullptr);
     jassert(lassoSource != nullptr);
@@ -48,7 +48,7 @@ void MidiEventComponentLasso::dragLasso(const MouseEvent &e)
         this->setBounds(Rectangle<int>(dragStartPos, e.getPosition()));
         this->setVisible(true);
 
-        Array<MidiEventComponent *> itemsInLasso;
+        Array<SelectableComponent *> itemsInLasso;
         source->findLassoItemsInArea(itemsInLasso, getBounds());
 
         if (e.mods.isShiftDown())
@@ -58,14 +58,14 @@ void MidiEventComponentLasso::dragLasso(const MouseEvent &e)
         }
         else if (e.mods.isAltDown())
         {
-            Array<MidiEventComponent *> originalMinusNew(originalSelection);
+            Array<SelectableComponent *> originalMinusNew(originalSelection);
             originalMinusNew.removeValuesIn(itemsInLasso);
 
             itemsInLasso.removeValuesIn(originalSelection);
             itemsInLasso.addArray(originalMinusNew);
         }
 
-        source->getLassoSelection() = MidiEventSelection(itemsInLasso);
+        source->getLassoSelection() = Lasso(itemsInLasso);
     }
 }
 

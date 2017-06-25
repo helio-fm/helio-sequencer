@@ -680,6 +680,8 @@
           <FILE id="yXiN5u" name="PluginWindow.cpp" compile="1" resource="0"
                 file="../../Source/UI/Common/PluginWindow.cpp"/>
           <FILE id="MqJpUz" name="PluginWindow.h" compile="0" resource="0" file="../../Source/UI/Common/PluginWindow.h"/>
+          <FILE id="MA7sNa" name="SelectableComponent.h" compile="0" resource="0"
+                file="../../Source/UI/Common/SelectableComponent.h"/>
           <FILE id="SncSXr" name="ShapeComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Common/ShapeComponent.h"/>
           <FILE id="QOhiaM" name="SizeSwitcherComponent.cpp" compile="1" resource="0"
@@ -893,8 +895,6 @@
                   file="../../Source/UI/MidiEditor/PianoRoll/MidiEventComponentLasso.cpp"/>
             <FILE id="LT9CWl" name="MidiEventComponentLasso.h" compile="0" resource="0"
                   file="../../Source/UI/MidiEditor/PianoRoll/MidiEventComponentLasso.h"/>
-            <FILE id="UI9NN8" name="MidiEventSelection.h" compile="0" resource="0"
-                  file="../../Source/UI/MidiEditor/PianoRoll/MidiEventSelection.h"/>
             <FILE id="e4F4el" name="NoteComponent.cpp" compile="1" resource="0"
                   file="../../Source/UI/MidiEditor/PianoRoll/NoteComponent.cpp"/>
             <FILE id="N5ZAHh" name="NoteComponent.h" compile="0" resource="0" file="../../Source/UI/MidiEditor/PianoRoll/NoteComponent.h"/>
@@ -953,6 +953,7 @@
                 file="../../Source/UI/MidiEditor/HybridRollEditMode.h"/>
           <FILE id="MpDM4j" name="HybridRollListener.h" compile="0" resource="0"
                 file="../../Source/UI/MidiEditor/HybridRollListener.h"/>
+          <FILE id="oBPZ1l" name="Lasso.h" compile="0" resource="0" file="../../Source/UI/MidiEditor/Lasso.h"/>
           <FILE id="YbSHvo" name="MidiEditor.cpp" compile="1" resource="0" file="../../Source/UI/MidiEditor/MidiEditor.cpp"/>
           <FILE id="B7YR7m" name="MidiEditor.h" compile="0" resource="0" file="../../Source/UI/MidiEditor/MidiEditor.h"/>
         </GROUP>

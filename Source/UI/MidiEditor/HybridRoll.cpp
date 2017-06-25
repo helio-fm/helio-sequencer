@@ -852,7 +852,7 @@ bool HybridRoll::isUsingAnyAltMode() const
 // LassoSource
 //===----------------------------------------------------------------------===//
 
-MidiEventSelection &HybridRoll::getLassoSelection()
+Lasso &HybridRoll::getLassoSelection()
 {
     return this->selection;
 }
@@ -878,7 +878,7 @@ void HybridRoll::selectEventsInRange(float startBeat, float endBeat, bool should
 
 }
 
-void HybridRoll::selectEvent(MidiEventComponent *event, bool shouldClearAllOthers)
+void HybridRoll::selectEvent(SelectableComponent *event, bool shouldClearAllOthers)
 {
     if (shouldClearAllOthers)
     {
@@ -891,7 +891,7 @@ void HybridRoll::selectEvent(MidiEventComponent *event, bool shouldClearAllOther
     }
 }
 
-void HybridRoll::deselectEvent(MidiEventComponent *event)
+void HybridRoll::deselectEvent(SelectableComponent *event)
 {
     this->selection.deselect(event);
 }

@@ -43,17 +43,15 @@
 #   endif
 #endif
 
-class MidiLayer;
-class NoteComponent;
+class Pattern;
+class ClipComponent;
 class PianoRollReboundThread;
 class PianoRollCellHighlighter;
 class HelperRectangle;
-class NoteResizerLeft;
-class NoteResizerRight;
 
 #include "HelioTheme.h"
 #include "HybridRoll.h"
-#include "Note.h"
+#include "Clip.h"
 
 class PatternRoll : public HybridRoll
 {
@@ -144,8 +142,8 @@ public:
     // LassoSource
     //===------------------------------------------------------------------===//
 
-    void findLassoItemsInArea(Array<MidiEventComponent *> &itemsFound,
-                                      const Rectangle<int> &rectangle) override;
+    void findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
+		const Rectangle<int> &rectangle) override;
 
 
     //===------------------------------------------------------------------===//

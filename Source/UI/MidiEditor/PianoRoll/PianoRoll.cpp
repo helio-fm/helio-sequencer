@@ -99,7 +99,7 @@ void PianoRoll::deleteSelection()
 
     for (int i = 0; i < this->selection.getNumSelected(); ++i)
     {
-        const MidiEvent &event = this->selection.getSelectedItem(i)->getEvent();
+        const MidiEvent &event = this->selection.getItemAs<MidiEventComponent>(i)->getEvent();
         const Note &note = static_cast<const Note &>(event);
         MidiLayer *ownerLayer = event.getLayer();
         Array<Note> *arrayToAddTo = nullptr;
@@ -346,7 +346,7 @@ void PianoRoll::addNote(int key, float beat, float length, float velocity)
     }
 }
 
-Rectangle<float> PianoRoll::getEventBounds(Component *mc) const
+Rectangle<float> PianoRoll::getEventBounds(FloatBoundsComponent *mc) const
 {
 	jassert(dynamic_cast<NoteComponent *>(mc));
     NoteComponent *nc = static_cast<NoteComponent *>(mc);
@@ -553,7 +553,7 @@ void PianoRoll::onRemoveMidiLayer(const MidiLayer *layer)
 // LassoSource
 //===----------------------------------------------------------------------===//
 
-void PianoRoll::findLassoItemsInArea(Array<MidiEventComponent *> &itemsFound, const Rectangle<int> &rectangle)
+void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, const Rectangle<int> &rectangle)
 {
     bool shouldInvalidateSelectionCache = false;
 
@@ -589,8 +589,8 @@ XmlElement *PianoRoll::clipboardCopy() const
 {
     auto xml = new XmlElement(Serialization::Clipboard::clipboard);
     
-    const MidiEventSelection::MultiLayerMap &selections = this->selection.getMultiLayerSelections();
-    MidiEventSelection::MultiLayerMap::Iterator selectionsMapIterator(selections);
+    const Lasso::GroupedSelections &selections = this->selection.getGroupedSelections();
+    Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
 
     float firstBeat = FLT_MAX;
     float lastBeat = -FLT_MAX;

@@ -17,36 +17,48 @@
 
 #pragma once
 
-#include "MidiEventComponent.h"
+#include "SelectableComponent.h"
 #include "MidiLayer.h"
 
-class SelectionProxyArray : public Array<MidiEventComponent *>, public ReferenceCountedObject
+class SelectionProxyArray : public Array<SelectableComponent *>, public ReferenceCountedObject
 {
 public:
     SelectionProxyArray() {}
+
     typedef ReferenceCountedObjectPtr<SelectionProxyArray> Ptr;
+
+	template<typename T>
+	T *getFirstAs() const
+	{
+		return static_cast<T *>(this->getFirst());
+	}
+
+	template<typename T>
+	T *getItemAs(const int index) const
+	{
+		return static_cast<T *>(this->getUnchecked(index));
+	}
 };
 
-
-class MidiEventSelection :
-    public SelectedItemSet<MidiEventComponent *>
+class Lasso :
+    public SelectedItemSet<SelectableComponent *>
 {
 public:
 
-    MidiEventSelection() : SelectedItemSet() {}
+    Lasso() : SelectedItemSet() {}
     
-    explicit MidiEventSelection(const ItemArray &items) : SelectedItemSet (items)
+    explicit Lasso(const ItemArray &items) : SelectedItemSet (items)
     {
         this->invalidateCache();
     }
     
-    void itemSelected(MidiEventComponent *item) override
+    void itemSelected(SelectableComponent *item) override
     {
         this->invalidateCache();
         item->setSelected(true);
     }
 
-    void itemDeselected(MidiEventComponent *item) override
+    void itemDeselected(SelectableComponent *item) override
     {
         this->invalidateCache();
         item->setSelected(false);
@@ -68,14 +80,14 @@ public:
     }
     
     
-    typedef HashMap< String, SelectionProxyArray::Ptr > MultiLayerMap;
+    typedef HashMap< String, SelectionProxyArray::Ptr > GroupedSelections;
 
     void invalidateCache()
     {
         this->selectionsCache.clear();
     }
 
-    const MultiLayerMap &getMultiLayerSelections() const
+    const GroupedSelections &getGroupedSelections() const
     {
         if (this->selectionsCache.size() == 0)
         {
@@ -84,6 +96,18 @@ public:
         
         return this->selectionsCache;
     }
+
+	template<typename T>
+	T *getFirstAs() const
+	{
+		return static_cast<T *>(this->getSelectedItem(0));
+	}
+
+	template<typename T>
+	T *getItemAs(const int index) const
+	{
+		return static_cast<T *>(this->getSelectedItem(index));
+	}
 
     bool shouldDisplayGhostNotes() const
     {
@@ -94,7 +118,7 @@ private:
 
     Rectangle<int> bounds;
     
-    mutable MultiLayerMap selectionsCache;
+    mutable GroupedSelections selectionsCache;
 
     void rebuildCache() const
     {
@@ -102,14 +126,14 @@ private:
 
         for (int i = 0; i < this->getNumSelected(); ++i)
         {
-            MidiEventComponent *item = this->getSelectedItem(i);
-            const String &layerId(item->getEvent().getLayer()->getLayerIdAsString());
+			SelectableComponent *item = this->getSelectedItem(i);
+            const String &groupId(item->getSelectionGroupId());
             
             SelectionProxyArray::Ptr targetArray;
             
-            if (this->selectionsCache.contains(layerId))
+            if (this->selectionsCache.contains(groupId))
             {
-                targetArray = this->selectionsCache[layerId];
+                targetArray = this->selectionsCache[groupId];
             }
             else
             {
@@ -117,7 +141,7 @@ private:
             }
             
             targetArray->add(item);
-            this->selectionsCache.set(layerId, targetArray);
+            this->selectionsCache.set(groupId, targetArray);
         }
     }
 

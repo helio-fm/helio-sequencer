@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "PianoRollToolbox.h"
 #include "ProjectTreeItem.h"
-#include "MidiEventSelection.h"
+#include "Lasso.h"
 #include "Note.h"
 #include "AnnotationEvent.h"
 #include "AutomationEvent.h"
@@ -280,6 +280,13 @@ bool applyAutoInsertions(const AutoChangeGroup &group, bool &didCheckpoint, bool
 { return applyInsertions<AutomationEvent, AutomationLayer, AutoChangeGroup, AutoChangeGroupsPerLayer>(group, didCheckpoint, shouldCheckpoint); }
 
 
+static PianoLayer *getPianoLayer(SelectionProxyArray::Ptr selection)
+{
+	const auto &firstEvent = selection->getFirstAs<MidiEventComponent>()->getEvent();
+	PianoLayer *pianoLayer = static_cast<PianoLayer *>(firstEvent.getLayer());
+	return pianoLayer;
+}
+
 
 static AutomationEvent *eventAtPosition(float beatPosition, AutomationLayer *layer)
 {
@@ -340,7 +347,7 @@ static bool isPedalUpAtPosition(float beatPosition, AutomationLayer *pedalLayer)
     return lastEventPedalUp;
 }
 
-float PianoRollToolbox::findStartBeat(const MidiEventSelection &selection)
+float PianoRollToolbox::findStartBeat(const Lasso &selection)
 {
     if (selection.getNumSelected() == 0)
     { return 0.f; }
@@ -349,16 +356,14 @@ float PianoRollToolbox::findStartBeat(const MidiEventSelection &selection)
     
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
-        if (startBeat > selection.getSelectedItem(i)->getBeat())
-        {
-            startBeat = selection.getSelectedItem(i)->getBeat();
-        }
+		NoteComponent *note = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+		startBeat = jmin(startBeat, note->getBeat());
     }
     
     return startBeat;
 }
 
-float PianoRollToolbox::findEndBeat(const MidiEventSelection &selection)
+float PianoRollToolbox::findEndBeat(const Lasso &selection)
 {
     if (selection.getNumSelected() == 0)
     { return 0.f; }
@@ -369,11 +374,7 @@ float PianoRollToolbox::findEndBeat(const MidiEventSelection &selection)
     {
         const NoteComponent *nc = static_cast<const NoteComponent *>(selection.getSelectedItem(i));
         const float beatPlusLength = nc->getBeat() + nc->getLength();
-        
-        if (endBeat < beatPlusLength)
-        {
-            endBeat = beatPlusLength;
-        }
+		endBeat = jmax(endBeat, beatPlusLength);
     }
     
     return endBeat;
@@ -652,7 +653,7 @@ void PianoRollToolbox::shiftEventsToTheRight(Array<MidiLayer *> layers, float ta
 }
 
 
-void PianoRollToolbox::snapSelection(MidiEventSelection &selection, float snapsPerBeat, bool shouldCheckpoint)
+void PianoRollToolbox::snapSelection(Lasso &selection, float snapsPerBeat, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     {
@@ -686,7 +687,7 @@ void PianoRollToolbox::snapSelection(MidiEventSelection &selection, float snapsP
 }
 
 
-void PianoRollToolbox::removeOverlaps(MidiEventSelection &selection, bool shouldCheckpoint)
+void PianoRollToolbox::removeOverlaps(Lasso &selection, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     {
@@ -941,7 +942,7 @@ void PianoRollToolbox::removeOverlaps(MidiEventSelection &selection, bool should
     applyPianoRemovals(removalGroup, didCheckpoint, shouldCheckpoint);
 }
 
-void PianoRollToolbox::removeDuplicates(MidiEventSelection &selection, bool shouldCheckpoint)
+void PianoRollToolbox::removeDuplicates(Lasso &selection, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     { return; }
@@ -994,7 +995,7 @@ void PianoRollToolbox::removeDuplicates(MidiEventSelection &selection, bool shou
 }
 
 
-void PianoRollToolbox::moveToLayer(MidiEventSelection &selection, MidiLayer *layer, bool shouldCheckpoint)
+void PianoRollToolbox::moveToLayer(Lasso &selection, MidiLayer *layer, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     {
@@ -1008,13 +1009,13 @@ void PianoRollToolbox::moveToLayer(MidiEventSelection &selection, MidiLayer *lay
     PianoChangeGroupsPerLayer deferredRemovals;
     PianoChangeGroupProxy::Ptr insertionsForTargetLayer(new PianoChangeGroupProxy());
     
-    const MidiEventSelection::MultiLayerMap &selections = selection.getMultiLayerSelections();
-    MidiEventSelection::MultiLayerMap::Iterator selectionsMapIterator(selections);
+    const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
+    Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
     
     while (selectionsMapIterator.next())
     {
         SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-        MidiLayer *midiLayer = layerSelection->getFirst()->getEvent().getLayer();
+        MidiLayer *midiLayer = layerSelection->getFirstAs<MidiEventComponent>()->getEvent().getLayer();
 
         if (PianoLayer *sourcePianoLayer = dynamic_cast<PianoLayer *>(midiLayer))
         {
@@ -1029,7 +1030,7 @@ void PianoRollToolbox::moveToLayer(MidiEventSelection &selection, MidiLayer *lay
                 
                 for (int i = 0; i < layerSelection->size(); ++i)
                 {
-                    const MidiEventComponent *mc1 = layerSelection->getUnchecked(i);
+                    const MidiEventComponent *mc1 = layerSelection->getItemAs<MidiEventComponent>(i);
                     const Note *n1 = static_cast<const Note *>(&mc1->getEvent());
                     
                     bool targetHasTheSameNote = false;
@@ -1083,7 +1084,7 @@ void PianoRollToolbox::moveToLayer(MidiEventSelection &selection, MidiLayer *lay
 }
 
 
-bool PianoRollToolbox::arpeggiateUsingClipboardAsPattern(MidiEventSelection &selection, bool shouldCheckpoint)
+bool PianoRollToolbox::arpeggiateUsingClipboardAsPattern(Lasso &selection, bool shouldCheckpoint)
 {
     XmlElement *xml = InternalClipboard::getCurrentContent();
     Arpeggiator arp = Arpeggiator().withSequenceFromXml(*xml);
@@ -1097,7 +1098,7 @@ bool PianoRollToolbox::arpeggiateUsingClipboardAsPattern(MidiEventSelection &sel
 }
 
 
-bool PianoRollToolbox::arpeggiate(MidiEventSelection &selection,
+bool PianoRollToolbox::arpeggiate(Lasso &selection,
                                  const Arpeggiator &arp,
                                  bool shouldCheckpoint)
 {
@@ -1115,15 +1116,15 @@ bool PianoRollToolbox::arpeggiate(MidiEventSelection &selection,
     PianoChangeGroupsPerLayer deferredRemovals;
     PianoChangeGroupsPerLayer deferredInsertions;
 
-    const MidiEventSelection::MultiLayerMap &selections = selection.getMultiLayerSelections();
-    MidiEventSelection::MultiLayerMap::Iterator selectionsMapIterator(selections);
+    const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
+    Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
     
     while (selectionsMapIterator.next())
     {
         SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
 
-        MidiLayer *midiLayer = layerSelection->getFirst()->getEvent().getLayer();
-        PianoLayer *pianoLayer = static_cast<PianoLayer *>(midiLayer);
+		PianoLayer *pianoLayer = getPianoLayer(layerSelection);
+		
         jassert(pianoLayer);
 
         // 1. sort selection
@@ -1328,7 +1329,7 @@ bool PianoRollToolbox::arpeggiate(MidiEventSelection &selection,
     return true;
 }
 
-void PianoRollToolbox::randomizeVolume(MidiEventSelection &selection, float factor, bool shouldCheckpoint)
+void PianoRollToolbox::randomizeVolume(Lasso &selection, float factor, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     {
@@ -1357,7 +1358,7 @@ void PianoRollToolbox::randomizeVolume(MidiEventSelection &selection, float fact
     applyPianoChanges(groupBefore, groupAfter, didCheckpoint, shouldCheckpoint);
 }
 
-void PianoRollToolbox::fadeOutVolume(MidiEventSelection &selection, float factor, bool shouldCheckpoint)
+void PianoRollToolbox::fadeOutVolume(Lasso &selection, float factor, bool shouldCheckpoint)
 {
     // Smooth fade out like
     // 1 - ((x / sqrt(x)) * factor)
@@ -1405,7 +1406,7 @@ void PianoRollToolbox::fadeOutVolume(MidiEventSelection &selection, float factor
     applyPianoChanges(groupBefore, groupAfter, didCheckpoint, shouldCheckpoint);
 }
 
-void PianoRollToolbox::startTuning(MidiEventSelection &selection)
+void PianoRollToolbox::startTuning(Lasso &selection)
 {
     if (selection.getNumSelected() == 0)
     { return; }
@@ -1417,20 +1418,18 @@ void PianoRollToolbox::startTuning(MidiEventSelection &selection)
     }
 }
 
-void PianoRollToolbox::changeVolumeLinear(MidiEventSelection &selection, float volumeDelta)
+void PianoRollToolbox::changeVolumeLinear(Lasso &selection, float volumeDelta)
 {
     if (selection.getNumSelected() == 0)
     { return; }
 
-    const MidiEventSelection::MultiLayerMap &selections = selection.getMultiLayerSelections();
-    MidiEventSelection::MultiLayerMap::Iterator selectionsMapIterator(selections);
+    const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
+    Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
     
     while (selectionsMapIterator.next())
     {
         SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-        
-        MidiLayer *midiLayer = layerSelection->getFirst()->getEvent().getLayer();
-        PianoLayer *pianoLayer = static_cast<PianoLayer *>(midiLayer);
+		PianoLayer *pianoLayer = getPianoLayer(layerSelection);
         jassert(pianoLayer);
 
         PianoChangeGroup groupBefore, groupAfter;
@@ -1446,20 +1445,18 @@ void PianoRollToolbox::changeVolumeLinear(MidiEventSelection &selection, float v
     }
 }
 
-void PianoRollToolbox::changeVolumeMultiplied(MidiEventSelection &selection, float volumeFactor)
+void PianoRollToolbox::changeVolumeMultiplied(Lasso &selection, float volumeFactor)
 {
     if (selection.getNumSelected() == 0)
     { return; }
 
-    const MidiEventSelection::MultiLayerMap &selections = selection.getMultiLayerSelections();
-    MidiEventSelection::MultiLayerMap::Iterator selectionsMapIterator(selections);
+    const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
+    Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
     
     while (selectionsMapIterator.next())
     {
         SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-        
-        MidiLayer *midiLayer = layerSelection->getFirst()->getEvent().getLayer();
-        PianoLayer *pianoLayer = static_cast<PianoLayer *>(midiLayer);
+        PianoLayer *pianoLayer = getPianoLayer(layerSelection);
         jassert(pianoLayer);
 
         PianoChangeGroup groupBefore, groupAfter;
@@ -1482,7 +1479,7 @@ void PianoRollToolbox::changeVolumeMultiplied(MidiEventSelection &selection, flo
     }
 }
 
-void PianoRollToolbox::changeVolumeSine(MidiEventSelection &selection, float volumeFactor)
+void PianoRollToolbox::changeVolumeSine(Lasso &selection, float volumeFactor)
 {
     if (selection.getNumSelected() == 0)
     { return; }
@@ -1499,14 +1496,12 @@ void PianoRollToolbox::changeVolumeSine(MidiEventSelection &selection, float vol
     const float startBeat = PianoRollToolbox::findStartBeat(selection);
     const float endBeat = PianoRollToolbox::findEndBeat(selection);
     
-    const MidiEventSelection::MultiLayerMap &selections = selection.getMultiLayerSelections();
-    MidiEventSelection::MultiLayerMap::Iterator selectionsMapIterator(selections);
+    const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
+    Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
     while (selectionsMapIterator.next())
     {
         SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-        
-        MidiLayer *midiLayer = layerSelection->getFirst()->getEvent().getLayer();
-        PianoLayer *pianoLayer = static_cast<PianoLayer *>(midiLayer);
+        PianoLayer *pianoLayer = getPianoLayer(layerSelection);
         jassert(pianoLayer);
         
         PianoChangeGroup groupBefore, groupAfter;
@@ -1523,7 +1518,7 @@ void PianoRollToolbox::changeVolumeSine(MidiEventSelection &selection, float vol
     }
 }
 
-void PianoRollToolbox::endTuning(MidiEventSelection &selection)
+void PianoRollToolbox::endTuning(Lasso &selection)
 {
     jassert(selection.getNumSelected() > 0);
     
@@ -1534,19 +1529,19 @@ void PianoRollToolbox::endTuning(MidiEventSelection &selection)
     }
 }
 
-void PianoRollToolbox::deleteSelection(MidiEventSelection &selection)
+void PianoRollToolbox::deleteSelection(Lasso &selection)
 {
     if (selection.getNumSelected() == 0)
     { return; }
 
-    const MidiEventSelection::MultiLayerMap &selections = selection.getMultiLayerSelections();
-    MidiEventSelection::MultiLayerMap::Iterator selectionsMapIterator(selections);
+    const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
+    Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
     
     while (selectionsMapIterator.next())
     {
         SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
         
-        MidiLayer *midiLayer = layerSelection->getFirst()->getEvent().getLayer();
+        MidiLayer *midiLayer = layerSelection->getFirstAs<MidiEventComponent>()->getEvent().getLayer();
         PianoLayer *pianoLayer = static_cast<PianoLayer *>(midiLayer);
         jassert(pianoLayer);
         
@@ -1565,7 +1560,7 @@ void PianoRollToolbox::deleteSelection(MidiEventSelection &selection)
     }
 }
 
-void PianoRollToolbox::shiftKeyRelative(MidiEventSelection &selection,
+void PianoRollToolbox::shiftKeyRelative(Lasso &selection,
 	int deltaKey, bool shouldCheckpoint, Transport *transport)
 {
     if (selection.getNumSelected() == 0)
@@ -1573,15 +1568,13 @@ void PianoRollToolbox::shiftKeyRelative(MidiEventSelection &selection,
 
     bool didCheckpoint = false;
     
-    const MidiEventSelection::MultiLayerMap &selections = selection.getMultiLayerSelections();
-    MidiEventSelection::MultiLayerMap::Iterator selectionsMapIterator(selections);
+    const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
+    Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
     
     while (selectionsMapIterator.next())
     {
         SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-        
-        MidiLayer *midiLayer = layerSelection->getFirst()->getEvent().getLayer();
-        PianoLayer *pianoLayer = static_cast<PianoLayer *>(midiLayer);
+        PianoLayer *pianoLayer = getPianoLayer(layerSelection);
         jassert(pianoLayer);
 
         const int numSelected = layerSelection->size();
@@ -1618,22 +1611,20 @@ void PianoRollToolbox::shiftKeyRelative(MidiEventSelection &selection,
     }
 }
 
-void PianoRollToolbox::shiftBeatRelative(MidiEventSelection &selection, float deltaBeat, bool shouldCheckpoint)
+void PianoRollToolbox::shiftBeatRelative(Lasso &selection, float deltaBeat, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     { return; }
 
     bool didCheckpoint = false;
 
-    const MidiEventSelection::MultiLayerMap &selections = selection.getMultiLayerSelections();
-    MidiEventSelection::MultiLayerMap::Iterator selectionsMapIterator(selections);
+    const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
+    Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
     
     while (selectionsMapIterator.next())
     {
         SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-        
-        MidiLayer *midiLayer = layerSelection->getFirst()->getEvent().getLayer();
-        PianoLayer *pianoLayer = static_cast<PianoLayer *>(midiLayer);
+        PianoLayer *pianoLayer = getPianoLayer(layerSelection);
         jassert(pianoLayer);
 
         const int numSelected = layerSelection->size();
@@ -1664,7 +1655,7 @@ void PianoRollToolbox::shiftBeatRelative(MidiEventSelection &selection, float de
     }
 }
 
-void PianoRollToolbox::inverseChord(MidiEventSelection &selection, 
+void PianoRollToolbox::inverseChord(Lasso &selection, 
 	int deltaKey, bool shouldCheckpoint, Transport *transport)
 {
     if (selection.getNumSelected() == 0)
@@ -1672,15 +1663,13 @@ void PianoRollToolbox::inverseChord(MidiEventSelection &selection,
 
     bool didCheckpoint = false;
     
-    const MidiEventSelection::MultiLayerMap &selections = selection.getMultiLayerSelections();
-    MidiEventSelection::MultiLayerMap::Iterator selectionsMapIterator(selections);
+    const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
+    Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
     
     while (selectionsMapIterator.next())
     {
         SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-        
-        MidiLayer *midiLayer = layerSelection->getFirst()->getEvent().getLayer();
-        PianoLayer *pianoLayer = static_cast<PianoLayer *>(midiLayer);
+        PianoLayer *pianoLayer = getPianoLayer(layerSelection);
         jassert(pianoLayer);
 
         const int numSelected = layerSelection->size();

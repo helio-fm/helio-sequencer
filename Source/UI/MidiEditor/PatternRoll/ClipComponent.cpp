@@ -22,12 +22,11 @@
 #include "MidiEvent.h"
 #include "HybridRoll.h"
 
-ClipComponent::ClipComponent(HybridRoll &editor, const MidiEvent &event) :
+ClipComponent::ClipComponent(HybridRoll &editor, Clip clip) :
     roll(editor),
-    midiEvent(event),
+    clip(clip),
     dragger(),
     selectedState(false),
-    activeState(true),
     anchorBeat(0),
     colour(Colours::white),
     clickOffset(0, 0)    
@@ -35,66 +34,15 @@ ClipComponent::ClipComponent(HybridRoll &editor, const MidiEvent &event) :
     this->setWantsKeyboardFocus(false);
 }
 
-bool ClipComponent::isActive() const
-{
-    return this->activeState;
-}
-
-void ClipComponent::setActive(bool val, bool force)
-{
-    if (!force && this->activeState == val)
-    {
-        return;
-    }
-
-    this->activeState = val;
-
-    if (this->activeState)
-    {
-        this->toFront(false);
-    }
-    else
-    {
-        this->toBack();
-    }
-}
-
-void ClipComponent::setSelected(const bool selected)
-{
-    if (this->selectedState != selected)
-    {
-        this->selectedState = selected;
-        this->roll.triggerBatchRepaintFor(this);
-    }
-}
-
-bool ClipComponent::isSelected() const
-{
-    return this->selectedState;
-}
-
 float ClipComponent::getBeat() const
 {
-    return this->midiEvent.getBeat();
+    return this->clip.getStartBeat();
 }
 
 
-const MidiEvent &ClipComponent::getEvent() const
+const Clip ClipComponent::getClip() const
 {
-    return this->midiEvent;
-}
-
-bool ClipComponent::belongsToLayerSet(Array<MidiLayer *> layers) const
-{
-    for (int i = 0; i < layers.size(); ++i)
-    {
-        if (this->getEvent().getLayer() == layers.getUnchecked(i))
-        {
-            return true;
-        }
-    }
-    
-    return false;
+    return this->clip;
 }
 
 
@@ -104,20 +52,10 @@ bool ClipComponent::belongsToLayerSet(Array<MidiLayer *> layers) const
 
 void ClipComponent::mouseDown(const MouseEvent &e)
 {
-    if (!this->activeState)
-    {
-        if (!e.mods.isLeftButtonDown())
-        {
-            this->activateCorrespondingLayer(false, true);
-        }
-
-        return;
-    }
-
     this->clickOffset.setXY(e.x, e.y);
 
     // shift-alt-logic
-    MidiEventSelection &selection = this->roll.getLassoSelection();
+    Lasso &selection = this->roll.getLassoSelection();
 
     if (!selection.isSelected(this))
     {
@@ -137,16 +75,38 @@ void ClipComponent::mouseDown(const MouseEvent &e)
     }
 }
 
+//===----------------------------------------------------------------------===//
+// SelectableComponent
+//===----------------------------------------------------------------------===//
+
+void ClipComponent::setSelected(const bool selected)
+{
+	if (this->selectedState != selected)
+	{
+		this->selectedState = selected;
+		this->roll.triggerBatchRepaintFor(this);
+	}
+}
+
+bool ClipComponent::isSelected() const
+{
+	return this->selectedState;
+}
+
+String ClipComponent::getSelectionGroupId() const
+{
+	// TODO!
+	return {};
+}
+
+//===----------------------------------------------------------------------===//
+// Helpers
+//===----------------------------------------------------------------------===//
+
 int ClipComponent::compareElements(ClipComponent *first, ClipComponent *second)
 {
     if (first == second) { return 0; }
     const float diff = first->getBeat() - second->getBeat();
     const int diffResult = (diff > 0.f) - (diff < 0.f);
-    return (diffResult != 0) ? diffResult : (first->midiEvent.getID().compare(second->midiEvent.getID()));
-}
-
-void ClipComponent::activateCorrespondingLayer(bool selectOthers, bool deselectOthers)
-{
-    MidiLayer *layer = this->getEvent().getLayer();
-	this->roll.getProject().activateLayer(layer, selectOthers, deselectOthers);
+    return (diffResult != 0) ? diffResult : (first->clip.getId().compare(second->clip.getId()));
 }

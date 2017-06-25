@@ -118,7 +118,7 @@ void NoteResizerLeft::mouseDown (const MouseEvent& e)
     //[UserCode_mouseDown] -- Add your code here...
     this->dragger.startDraggingComponent(this, e);
 
-    const MidiEventSelection &selection = this->roll.getLassoSelection();
+    const Lasso &selection = this->roll.getLassoSelection();
     const float groupEndBeat = PianoRollToolbox::findEndBeat(selection);
 
     this->noteComponent = this->findLeftMostEvent(selection);
@@ -141,7 +141,7 @@ void NoteResizerLeft::mouseDrag (const MouseEvent& e)
     //[UserCode_mouseDrag] -- Add your code here...
     this->dragger.dragComponent(this, e, nullptr);
 
-    MidiEventSelection &selection = this->roll.getLassoSelection();
+    Lasso &selection = this->roll.getLassoSelection();
 
     float groupScaleFactor = 1.f;
     const bool scaleFactorChanged =
@@ -151,8 +151,8 @@ void NoteResizerLeft::mouseDrag (const MouseEvent& e)
     {
         this->noteComponent->checkpointIfNeeded();
 
-        const MidiEventSelection::MultiLayerMap &selections = selection.getMultiLayerSelections();
-        MidiEventSelection::MultiLayerMap::Iterator selectionsMapIterator(selections);
+        const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
+        Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
 
         while (selectionsMapIterator.next())
         {
@@ -167,8 +167,8 @@ void NoteResizerLeft::mouseDrag (const MouseEvent& e)
                 groupDragAfter.add(nc->continueGroupScalingLeft(groupScaleFactor));
             }
 
-            MidiLayer *midiLayer = layerSelection->getFirst()->getEvent().getLayer();
-            PianoLayer *pianoLayer = static_cast<PianoLayer *>(midiLayer);
+            const auto &event = layerSelection->getFirstAs<MidiEventComponent>()->getEvent();
+            PianoLayer *pianoLayer = static_cast<PianoLayer *>(event.getLayer());
             pianoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
         }
     }
@@ -180,7 +180,7 @@ void NoteResizerLeft::mouseDrag (const MouseEvent& e)
 void NoteResizerLeft::mouseUp (const MouseEvent& e)
 {
     //[UserCode_mouseUp] -- Add your code here...
-    const MidiEventSelection &selection = this->roll.getLassoSelection();
+    const Lasso &selection = this->roll.getLassoSelection();
 
     for (int i = 0; i < selection.getNumSelected(); i++)
     {
@@ -194,19 +194,19 @@ void NoteResizerLeft::mouseUp (const MouseEvent& e)
 
 //[MiscUserCode]
 
-NoteComponent *NoteResizerLeft::findLeftMostEvent(const MidiEventSelection &selection)
+NoteComponent *NoteResizerLeft::findLeftMostEvent(const Lasso &selection)
 {
     MidiEventComponent *mc = nullptr;
     float leftMostBeat = FLT_MAX;
 
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
-        MidiEventComponent *const currentEvent = selection.getSelectedItem(i);
+        MidiEventComponent *const e = selection.getItemAs<MidiEventComponent>(i);
 
-        if (leftMostBeat > currentEvent->getBeat())
+        if (leftMostBeat > e->getBeat())
         {
-            leftMostBeat = currentEvent->getBeat();
-            mc = currentEvent;
+            leftMostBeat = e->getBeat();
+            mc = e;
         }
     }
 
@@ -215,7 +215,7 @@ NoteComponent *NoteResizerLeft::findLeftMostEvent(const MidiEventSelection &sele
 
 void NoteResizerLeft::updateBounds(NoteComponent *anchorComponent)
 {
-    const MidiEventSelection &selection = this->roll.getLassoSelection();
+    const Lasso &selection = this->roll.getLassoSelection();
     const float groupStartBeat = (anchorComponent != nullptr) ?
                                   anchorComponent->getBeat() :
                                   PianoRollToolbox::findStartBeat(selection);

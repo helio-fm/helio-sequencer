@@ -59,19 +59,6 @@ void MidiEventComponent::setActive(bool val, bool force)
     }
 }
 
-void MidiEventComponent::setSelected(const bool selected)
-{
-    if (this->selectedState != selected)
-    {
-        this->selectedState = selected;
-        this->roll.triggerBatchRepaintFor(this);
-    }
-}
-
-bool MidiEventComponent::isSelected() const
-{
-    return this->selectedState;
-}
 
 float MidiEventComponent::getBeat() const
 {
@@ -117,7 +104,7 @@ void MidiEventComponent::mouseDown(const MouseEvent &e)
     this->clickOffset.setXY(e.x, e.y);
 
     // shift-alt-logic
-    MidiEventSelection &selection = this->roll.getLassoSelection();
+    Lasso &selection = this->roll.getLassoSelection();
 
     if (!selection.isSelected(this))
     {
@@ -136,6 +123,35 @@ void MidiEventComponent::mouseDown(const MouseEvent &e)
         return;
     }
 }
+
+
+//===----------------------------------------------------------------------===//
+// SelectableComponent
+//===----------------------------------------------------------------------===//
+
+void MidiEventComponent::setSelected(bool selected)
+{
+	if (this->selectedState != selected)
+	{
+		this->selectedState = selected;
+		this->roll.triggerBatchRepaintFor(this);
+	}
+}
+
+bool MidiEventComponent::isSelected() const
+{
+	return this->selectedState;
+}
+
+String MidiEventComponent::getSelectionGroupId() const
+{
+	return this->midiEvent.getLayer()->getLayerIdAsString();
+}
+
+
+//===----------------------------------------------------------------------===//
+// Helpers
+//===----------------------------------------------------------------------===//
 
 int MidiEventComponent::compareElements(MidiEventComponent *first, MidiEventComponent *second)
 {

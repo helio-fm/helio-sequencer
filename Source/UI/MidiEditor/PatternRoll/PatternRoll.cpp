@@ -67,9 +67,6 @@ PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
 {
     this->setRowHeight(MIN_ROW_HEIGHT + 5);
 
-    //this->helperVertical = new HelperRectangleVertical();
-    //this->addChildComponent(this->helperVertical);
-
     this->helperHorizontal = new HelperRectangleHorizontal();
     this->addChildComponent(this->helperHorizontal);
 
@@ -313,21 +310,9 @@ void PatternRoll::zoomAbsolute(const Point<float> &zoom)
 
 float PatternRoll::getZoomFactorY() const
 {
-    // headerheight fix hack:
     const float &numRows = float(this->getNumRows());
     const float &viewHeight = float(this->viewport.getViewHeight() - MIDIROLL_HEADER_HEIGHT);
     return (viewHeight / float(this->getHeight()));
-
-//    const float &rowHeight = float(this->getRowHeight());
-//    const float &rowsOnScreen = (viewHeight / rowHeight);
-//    return (rowsOnScreen / numRows);
-
-//    const float &viewHeight = float(this->viewport.getViewHeight() - MIDIROLL_HEADER_HEIGHT);
-//    const float &thisHeight = float(this->getHeight() - MIDIROLL_HEADER_HEIGHT);
-
-//    const float &viewHeight = float(this->viewport.getViewHeight());
-//    const float &thisHeight = float(this->getHeight());
-//    return viewHeight / thisHeight;
 }
 
 
@@ -589,8 +574,8 @@ XmlElement *PatternRoll::clipboardCopy() const
 {
     auto xml = new XmlElement(Serialization::Clipboard::clipboard);
     
-    const MidiEventSelection::MultiLayerMap &selections = this->selection.getMultiLayerSelections();
-    MidiEventSelection::MultiLayerMap::Iterator selectionsMapIterator(selections);
+    const Lasso::GroupedSelections &selections = this->selection.getGroupedSelections();
+    Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
 
     float firstBeat = FLT_MAX;
     float lastBeat = -FLT_MAX;

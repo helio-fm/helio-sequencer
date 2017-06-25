@@ -20,7 +20,7 @@
 //[Headers]
 class HybridRoll;
 class NoteComponent;
-class MidiEventSelection;
+class Lasso;
 
 #include "IconComponent.h"
 #include "ComponentFader.h"
@@ -54,7 +54,7 @@ private:
 
     //[UserVariables]
 
-    NoteComponent *findLeftMostEvent(const MidiEventSelection &selection);
+    NoteComponent *findLeftMostEvent(const Lasso &selection);
 
     ComponentFader fader;
     ComponentDragger dragger;

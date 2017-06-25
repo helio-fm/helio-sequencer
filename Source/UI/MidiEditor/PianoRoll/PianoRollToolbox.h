@@ -20,7 +20,7 @@
 class Transport;
 class Arpeggiator;
 class ProjectTreeItem;
-class MidiEventSelection;
+class Lasso;
 class MidiLayer;
 class Note;
 
@@ -28,8 +28,8 @@ class PianoRollToolbox
 {
 public:
     
-    static float findStartBeat(const MidiEventSelection &selection);
-    static float findEndBeat(const MidiEventSelection &selection);
+    static float findStartBeat(const Lasso &selection);
+    static float findEndBeat(const Lasso &selection);
     static float findStartBeat(const Array<Note> &selection);
     static float findEndBeat(const Array<Note> &selection);
     
@@ -49,33 +49,33 @@ public:
                                       float beatOffset,
                                       bool shouldCheckpoint = true);
     
-    static void snapSelection(MidiEventSelection &selection, float snapsPerBeat, bool shouldCheckpoint = true);
-    static void removeOverlaps(MidiEventSelection &selection, bool shouldCheckpoint = true);
-    static void removeDuplicates(MidiEventSelection &selection, bool shouldCheckpoint = true);
+    static void snapSelection(Lasso &selection, float snapsPerBeat, bool shouldCheckpoint = true);
+    static void removeOverlaps(Lasso &selection, bool shouldCheckpoint = true);
+    static void removeDuplicates(Lasso &selection, bool shouldCheckpoint = true);
     
-    static void moveToLayer(MidiEventSelection &selection, MidiLayer *layer, bool shouldCheckpoint = true);
+    static void moveToLayer(Lasso &selection, MidiLayer *layer, bool shouldCheckpoint = true);
     
-    static bool arpeggiateUsingClipboardAsPattern(MidiEventSelection &selection, bool shouldCheckpoint = true);
-    static bool arpeggiate(MidiEventSelection &selection, const Arpeggiator &arp, bool shouldCheckpoint = true);
+    static bool arpeggiateUsingClipboardAsPattern(Lasso &selection, bool shouldCheckpoint = true);
+    static bool arpeggiate(Lasso &selection, const Arpeggiator &arp, bool shouldCheckpoint = true);
 
-    static void randomizeVolume(MidiEventSelection &selection, float factor = 0.5f, bool shouldCheckpoint = true);
-    static void fadeOutVolume(MidiEventSelection &selection, float factor = 0.5f, bool shouldCheckpoint = true);
+    static void randomizeVolume(Lasso &selection, float factor = 0.5f, bool shouldCheckpoint = true);
+    static void fadeOutVolume(Lasso &selection, float factor = 0.5f, bool shouldCheckpoint = true);
 
-    static void startTuning(MidiEventSelection &selection);
-    static void changeVolumeLinear(MidiEventSelection &selection, float volumeDelta);
-    static void changeVolumeMultiplied(MidiEventSelection &selection, float volumeFactor);
-    static void changeVolumeSine(MidiEventSelection &selection, float volumeFactor);
-    static void endTuning(MidiEventSelection &selection);
+    static void startTuning(Lasso &selection);
+    static void changeVolumeLinear(Lasso &selection, float volumeDelta);
+    static void changeVolumeMultiplied(Lasso &selection, float volumeFactor);
+    static void changeVolumeSine(Lasso &selection, float volumeFactor);
+    static void endTuning(Lasso &selection);
     
-    static void deleteSelection(MidiEventSelection &selection);
+    static void deleteSelection(Lasso &selection);
     
-    static void shiftKeyRelative(MidiEventSelection &selection, int deltaKey,
+    static void shiftKeyRelative(Lasso &selection, int deltaKey,
 		bool shouldCheckpoint = true, Transport *transport = nullptr);
 
-    static void shiftBeatRelative(MidiEventSelection &selection, float deltaBeat,
+    static void shiftBeatRelative(Lasso &selection, float deltaBeat,
 		bool shouldCheckpoint = true);
     
-    static void inverseChord(MidiEventSelection &selection, int deltaKey,
+    static void inverseChord(Lasso &selection, int deltaKey,
 		bool shouldCheckpoint = true, Transport *transport = nullptr);
     
 };

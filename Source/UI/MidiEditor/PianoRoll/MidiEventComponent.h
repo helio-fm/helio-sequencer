@@ -22,8 +22,9 @@ class MidiLayer;
 class HybridRoll;
 
 #include "FloatBoundsComponent.h"
+#include "SelectableComponent.h"
 
-class MidiEventComponent : public FloatBoundsComponent
+class MidiEventComponent : public FloatBoundsComponent, public SelectableComponent
 {
 public:
 
@@ -38,11 +39,6 @@ public:
     void setActive(bool val, bool force = false);
 
 
-    virtual void setSelected(const bool selected);
-
-    bool isSelected() const;
-
-
     float getBeat() const;
 
     bool belongsToLayerSet(Array<MidiLayer *> layers) const;
@@ -55,6 +51,17 @@ public:
     void mouseDown(const MouseEvent &e) override;
 
     static int compareElements(MidiEventComponent *first, MidiEventComponent *second);
+
+
+	//===------------------------------------------------------------------===//
+	// SelectableComponent
+	//===------------------------------------------------------------------===//
+
+	void setSelected(bool selected) override;
+
+	bool isSelected() const override;
+
+	String getSelectionGroupId() const override;
 
 protected:
 

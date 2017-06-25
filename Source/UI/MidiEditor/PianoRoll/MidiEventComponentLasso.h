@@ -31,9 +31,8 @@ public:
         lassoOutlineColourId    = 0x1000441,
     };
 
-
     virtual void beginLasso(const MouseEvent &e,
-                            LassoSource<MidiEventComponent *> *const lassoSource);
+		LassoSource<SelectableComponent *> *const lassoSource);
 
     virtual void dragLasso(const MouseEvent &e);
 
@@ -47,9 +46,9 @@ public:
 
 private:
 
-    Array<MidiEventComponent *> originalSelection;
+    Array<SelectableComponent *> originalSelection;
 
-    LassoSource<MidiEventComponent *> *source;
+    LassoSource<SelectableComponent *> *source;
 
     Point<int> dragStartPos;
 

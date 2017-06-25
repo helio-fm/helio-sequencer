@@ -112,7 +112,7 @@ public:
     //===------------------------------------------------------------------===//
 
     void addNote(int key, float beat, float length, float velocity);
-    Rectangle<float> getEventBounds(Component *mc) const override;
+    Rectangle<float> getEventBounds(FloatBoundsComponent *mc) const override;
     Rectangle<float> getEventBounds(const int key, const float beat, const float length) const;
     void getRowsColsByComponentPosition(const float x, const float y, int &noteNumber, float &beatNumber) const;
     void getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber) const;
@@ -144,8 +144,8 @@ public:
     // LassoSource
     //===------------------------------------------------------------------===//
 
-    void findLassoItemsInArea(Array<MidiEventComponent *> &itemsFound,
-                                      const Rectangle<int> &rectangle) override;
+    void findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
+		const Rectangle<int> &rectangle) override;
 
 
     //===------------------------------------------------------------------===//

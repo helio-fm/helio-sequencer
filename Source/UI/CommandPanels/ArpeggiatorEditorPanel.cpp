@@ -23,7 +23,7 @@
 
 //[MiscUserDefs]
 #include "PianoRoll.h"
-#include "MidiEventSelection.h"
+#include "Lasso.h"
 #include "PianoRollToolbox.h"
 #include "MidiLayer.h"
 #include "NoteComponent.h"

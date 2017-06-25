@@ -17,30 +17,14 @@
 
 #pragma once
 
-class FloatBoundsComponent : public virtual Component
+class SelectableComponent : public virtual Component
 {
 public:
 
-	virtual void setFloatBounds(const Rectangle<float> &b)
-	{
-		const int bX = roundFloatToInt(b.getX()) - 1;
-		const int bY = roundFloatToInt(b.getY());
-		const int bW = roundFloatToInt(b.getWidth()) + 2;
-		const int bH = roundFloatToInt(b.getHeight());
+	virtual void setSelected(bool selected) = 0;
 
-		const float dX = b.getX() - bX;
-		const float dW = b.getWidth() - bW;
+	virtual bool isSelected() const = 0;
 
-		this->floatLocalBounds.setX(dX);
-		this->floatLocalBounds.setWidth(bW + dW + dX);
-		this->floatLocalBounds.setY(b.getY() - bY);
-		this->floatLocalBounds.setHeight(b.getHeight());
-
-		this->setBounds(bX, bY, bW, bH);
-	}
-
-protected:
-
-	Rectangle<float> floatLocalBounds;
+	virtual String getSelectionGroupId() const = 0;
 
 };

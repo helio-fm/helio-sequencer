@@ -30,6 +30,13 @@
 #define RESIZE_CORNER 10
 #define MAX_DRAG_POLYPHONY 8
 
+static PianoLayer *getPianoLayer(SelectionProxyArray::Ptr selection)
+{
+	const auto &firstEvent = selection->getFirstAs<MidiEventComponent>()->getEvent();
+	PianoLayer *pianoLayer = static_cast<PianoLayer *>(firstEvent.getLayer());
+	return pianoLayer;
+}
+
 NoteComponent::NoteComponent(PianoRoll &editor, const Note &event)
     : MidiEventComponent(editor, event),
       state(None),
@@ -61,7 +68,7 @@ PianoRoll &NoteComponent::getRoll() const
     return static_cast<PianoRoll &>(this->roll);
 }
 
-void NoteComponent::setSelected(const bool selected)
+void NoteComponent::setSelected(bool selected)
 {
     // как-то так?
     //this->roll.wantVolumeSliderFor(this, selected);
@@ -199,7 +206,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
 
     MidiEventComponent::mouseDown(e);
 
-    const MidiEventSelection &selection = this->roll.getLassoSelection();
+    const Lasso &selection = this->roll.getLassoSelection();
 
     if (e.mods.isLeftButtonDown())
     {
@@ -332,7 +339,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         return;
     }
     
-    MidiEventSelection &selection = this->roll.getLassoSelection();
+    Lasso &selection = this->roll.getLassoSelection();
 
     if (this->state == ResizingRight)
     {
@@ -343,8 +350,8 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         {
             this->checkpointIfNeeded();
             
-            const MidiEventSelection::MultiLayerMap &selections = selection.getMultiLayerSelections();
-            MidiEventSelection::MultiLayerMap::Iterator selectionsMapIterator(selections);
+            const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
+            Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
             
             while (selectionsMapIterator.next())
             {
@@ -359,9 +366,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                     groupDragAfter.add(nc->continueResizingRight(deltaLength));
                 }
                 
-                MidiLayer *midiLayer = layerSelection->getFirst()->getEvent().getLayer();
-                PianoLayer *pianoLayer = static_cast<PianoLayer *>(midiLayer);
-                pianoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
+				getPianoLayer(layerSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
             }
         }
         else
@@ -378,8 +383,8 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         {
             this->checkpointIfNeeded();
             
-            const MidiEventSelection::MultiLayerMap &selections = selection.getMultiLayerSelections();
-            MidiEventSelection::MultiLayerMap::Iterator selectionsMapIterator(selections);
+            const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
+            Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
             
             while (selectionsMapIterator.next())
             {
@@ -394,9 +399,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                     groupDragAfter.add(nc->continueResizingLeft(deltaLength));
                 }
                 
-                MidiLayer *midiLayer = layerSelection->getFirst()->getEvent().getLayer();
-                PianoLayer *pianoLayer = static_cast<PianoLayer *>(midiLayer);
-                pianoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
+				getPianoLayer(layerSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
             }
         }
         else
@@ -413,8 +416,8 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         {
             this->checkpointIfNeeded();
             
-            const MidiEventSelection::MultiLayerMap &selections = selection.getMultiLayerSelections();
-            MidiEventSelection::MultiLayerMap::Iterator selectionsMapIterator(selections);
+            const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
+            Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
             
             while (selectionsMapIterator.next())
             {
@@ -429,9 +432,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                     groupDragAfter.add(nc->continueGroupScalingRight(groupScaleFactor));
                 }
                 
-                MidiLayer *midiLayer = layerSelection->getFirst()->getEvent().getLayer();
-                PianoLayer *pianoLayer = static_cast<PianoLayer *>(midiLayer);
-                pianoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
+				getPianoLayer(layerSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
             }
         }
         else
@@ -448,8 +449,8 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         {
             this->checkpointIfNeeded();
             
-            const MidiEventSelection::MultiLayerMap &selections = selection.getMultiLayerSelections();
-            MidiEventSelection::MultiLayerMap::Iterator selectionsMapIterator(selections);
+            const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
+            Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
             
             while (selectionsMapIterator.next())
             {
@@ -464,9 +465,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                     groupDragAfter.add(nc->continueGroupScalingLeft(groupScaleFactor));
                 }
                 
-                MidiLayer *midiLayer = layerSelection->getFirst()->getEvent().getLayer();
-                PianoLayer *pianoLayer = static_cast<PianoLayer *>(midiLayer);
-                pianoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
+				getPianoLayer(layerSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
             }
         }
         else
@@ -505,8 +504,8 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
 				this->stopSound();
 			}
             
-            const MidiEventSelection::MultiLayerMap &selections = selection.getMultiLayerSelections();
-            MidiEventSelection::MultiLayerMap::Iterator selectionsMapIterator(selections);
+            const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
+            Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
             
             while (selectionsMapIterator.next())
             {
@@ -521,9 +520,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                     groupDragAfter.add(nc->continueDragging(deltaBeat, deltaKey, shouldSendMidi));
                 }
                 
-                MidiLayer *midiLayer = layerSelection->getFirst()->getEvent().getLayer();
-                PianoLayer *pianoLayer = static_cast<PianoLayer *>(midiLayer);
-                pianoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
+				getPianoLayer(layerSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
             }
         }
     }
@@ -531,8 +528,8 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     {
         this->checkpointIfNeeded();
         
-        const MidiEventSelection::MultiLayerMap &selections = selection.getMultiLayerSelections();
-        MidiEventSelection::MultiLayerMap::Iterator selectionsMapIterator(selections);
+        const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
+        Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
         
         while (selectionsMapIterator.next())
         {
@@ -552,9 +549,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                 //this->roll.triggerBatchRepaintFor(nc);
             }
             
-            MidiLayer *midiLayer = layerSelection->getFirst()->getEvent().getLayer();
-            PianoLayer *pianoLayer = static_cast<PianoLayer *>(midiLayer);
-            pianoLayer->changeGroup(groupTuneBefore, groupTuneAfter, true);
+			getPianoLayer(layerSelection)->changeGroup(groupTuneBefore, groupTuneAfter, true);
         }
     }
 }
@@ -588,7 +583,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
 #endif
 
     
-    MidiEventSelection &selection = this->roll.getLassoSelection();
+    Lasso &selection = this->roll.getLassoSelection();
 
     if (this->state == ResizingRight)
     {

@@ -17,29 +17,22 @@
 
 #pragma once
 
-class Clip;
 class MidiLayer;
 class HybridRoll;
 
+#include "Clip.h"
 #include "FloatBoundsComponent.h"
+#include "SelectableComponent.h"
 
-class ClipComponent : public FloatBoundsComponent
+class ClipComponent : public FloatBoundsComponent, public SelectableComponent
 {
 public:
 
     ClipComponent(HybridRoll &editor, Clip clip);
-
     const Clip getClip() const;
-
-
-    virtual void setSelected(const bool selected);
-
-    bool isSelected() const;
-
 
     float getBeat() const;
 
-    
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
@@ -48,22 +41,26 @@ public:
 
     static int compareElements(ClipComponent *first, ClipComponent *second);
 
+	//===------------------------------------------------------------------===//
+	// SelectableComponent
+	//===------------------------------------------------------------------===//
+
+	void setSelected(const bool selected) override;
+	
+	bool isSelected() const override;
+
+	String getSelectionGroupId() const override;
+
 protected:
 
-    void activateCorrespondingLayer(bool selectOthers, bool deselectOthers);
-
     HybridRoll &roll;
-
-    const MidiEvent &midiEvent;
+    const Clip clip;
 
     ComponentDragger dragger;
 
     bool selectedState;
-	
     float anchorBeat;
-
     Colour colour;
-
     Point<int> clickOffset;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ClipComponent)

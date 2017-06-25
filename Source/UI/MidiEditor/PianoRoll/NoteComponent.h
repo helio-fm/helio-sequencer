@@ -45,8 +45,6 @@ public:
     const Note &getNote() const;
     PianoRoll &getRoll() const;
 
-    void setSelected(const bool selected) override;
-
     //===------------------------------------------------------------------===//
     // Accessors
     //===------------------------------------------------------------------===//
@@ -68,6 +66,12 @@ public:
     void mouseUp(const MouseEvent &e) override;
     void mouseDoubleClick(const MouseEvent &e) override;
     void paint(Graphics &g) override;
+
+	//===------------------------------------------------------------------===//
+	// SelectableComponent
+	//===------------------------------------------------------------------===//
+
+	void setSelected(bool selected) override;
 
 protected:
 

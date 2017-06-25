@@ -48,7 +48,7 @@ class TimelineWarningMarker;
 #include "SmoothZoomListener.h"
 #include "MultiTouchListener.h"
 #include "ProjectListener.h"
-#include "MidiEventSelection.h"
+#include "Lasso.h"
 #include "HybridRollEditMode.h"
 #include "AudioMonitor.h"
 #include "Serializable.h"
@@ -90,7 +90,7 @@ class HybridRoll :
     public MultiTouchListener,
     public ProjectListener,
     public ClipboardOwner,
-    public LassoSource<MidiEventComponent *>,
+    public LassoSource<SelectableComponent *>,
     protected ChangeListener, // listens to HybridRollEditMode,
     protected TransportListener,
     protected AsyncUpdater, // for async scrolling on transport listener events
@@ -132,7 +132,7 @@ public:
     
     virtual void reloadMidiTrack() = 0;
     virtual void setActiveMidiLayers(Array<MidiLayer *> tracks, MidiLayer *primaryLayer) = 0;
-    virtual Rectangle<float> getEventBounds(Component *nc) const = 0;
+    virtual Rectangle<float> getEventBounds(FloatBoundsComponent *nc) const = 0;
     
     void scrollToSeekPosition();
 	float getPositionForNewTimelineEvent() const;
@@ -261,10 +261,10 @@ public:
     // LassoSource
     //===------------------------------------------------------------------===//
 
-    MidiEventSelection &getLassoSelection() override;
+    Lasso &getLassoSelection() override;
     void selectEventsInRange(float startBeat, float endBeat, bool shouldClearAllOthers);
-    void selectEvent(MidiEventComponent *event, bool shouldClearAllOthers);
-    void deselectEvent(MidiEventComponent *event);
+    void selectEvent(SelectableComponent *event, bool shouldClearAllOthers);
+    void deselectEvent(SelectableComponent *event);
     void deselectAll();
     
     MidiEventComponentLasso *getLasso() const;
@@ -410,7 +410,7 @@ protected:
     Array<MidiLayer *> activeLayers;
     MidiLayer *primaryActiveLayer;
 
-    MidiEventSelection selection;
+    Lasso selection;
 
     OwnedArray<MidiEventComponent> eventComponents;
 
