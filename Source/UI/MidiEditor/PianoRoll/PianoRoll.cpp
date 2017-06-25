@@ -34,7 +34,7 @@
 #include "MultiTouchController.h"
 #include "HelioTheme.h"
 #include "NoNotesPopup.h"
-#include "LassoComponent.h"
+#include "HybridLassoComponent.h"
 #include "HybridRollEditMode.h"
 #include "SerializationKeys.h"
 #include "Icons.h"
@@ -315,7 +315,7 @@ float PianoRoll::getZoomFactorY() const
 {
     // headerheight fix hack:
     const float &numRows = float(this->getNumRows());
-    const float &viewHeight = float(this->viewport.getViewHeight() - MIDIROLL_HEADER_HEIGHT);
+    const float &viewHeight = float(this->viewport.getViewHeight() - HYBRID_ROLL_HEADER_HEIGHT);
     return (viewHeight / float(this->getHeight()));
 
 //    const float &rowHeight = float(this->getRowHeight());
@@ -954,32 +954,32 @@ bool PianoRoll::keyPressed(const KeyPress &key)
     }
     else if (key == KeyPress::createFromDescription("o"))
     {
-        MIDI_ROLL_BULK_REPAINT_START
+        HYBRID_ROLL_BULK_REPAINT_START
         PianoRollToolbox::removeOverlaps(this->getLassoSelection());
-        MIDI_ROLL_BULK_REPAINT_END
+        HYBRID_ROLL_BULK_REPAINT_END
         return true;
     }
     else if (key == KeyPress::createFromDescription("s"))
     {
-        MIDI_ROLL_BULK_REPAINT_START
+        HYBRID_ROLL_BULK_REPAINT_START
         PianoRollToolbox::snapSelection(this->getLassoSelection(), 1);
-        MIDI_ROLL_BULK_REPAINT_END
+        HYBRID_ROLL_BULK_REPAINT_END
         return true;
     }
     else if (key == KeyPress::createFromDescription("command + 1") ||
              key == KeyPress::createFromDescription("ctrl + 1"))
     {
-        MIDI_ROLL_BULK_REPAINT_START
+        HYBRID_ROLL_BULK_REPAINT_START
         PianoRollToolbox::randomizeVolume(this->getLassoSelection(), 0.1f);
-        MIDI_ROLL_BULK_REPAINT_END
+        HYBRID_ROLL_BULK_REPAINT_END
         return true;
     }
     else if (key == KeyPress::createFromDescription("command + 2") ||
              key == KeyPress::createFromDescription("ctrl + 2"))
     {
-        MIDI_ROLL_BULK_REPAINT_START
+        HYBRID_ROLL_BULK_REPAINT_START
         PianoRollToolbox::fadeOutVolume(this->getLassoSelection(), 0.35f);
-        MIDI_ROLL_BULK_REPAINT_END
+        HYBRID_ROLL_BULK_REPAINT_END
         return true;
     }
     
@@ -1123,7 +1123,7 @@ void PianoRoll::resized()
 		return;
 	}
 
-    MIDI_ROLL_BULK_REPAINT_START
+    HYBRID_ROLL_BULK_REPAINT_START
 
     for (int i = 0; i < this->eventComponents.size(); ++i)
     {
@@ -1133,7 +1133,7 @@ void PianoRoll::resized()
 
     HybridRoll::resized();
 
-    MIDI_ROLL_BULK_REPAINT_END
+    HYBRID_ROLL_BULK_REPAINT_END
 }
 
 void PianoRoll::paint(Graphics &g)
@@ -1240,7 +1240,7 @@ void PianoRoll::handleAsyncUpdate()
 
     if (this->batchRepaintList.size() > 0)
     {
-        MIDI_ROLL_BULK_REPAINT_START
+        HYBRID_ROLL_BULK_REPAINT_START
 
         if (this->noteResizerLeft != nullptr)
         {
@@ -1252,7 +1252,7 @@ void PianoRoll::handleAsyncUpdate()
             this->noteResizerRight->updateBounds();
         }
 
-        MIDI_ROLL_BULK_REPAINT_END
+        HYBRID_ROLL_BULK_REPAINT_END
     }
 #endif
 

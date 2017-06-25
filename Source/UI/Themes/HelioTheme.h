@@ -137,18 +137,7 @@ public:
                                       const Colour &backgroundColour,
                                       bool isMouseOverButton, bool isButtonDown) override;
 
-
-    //===------------------------------------------------------------------===//
-    // Filebrowser
-    //===------------------------------------------------------------------===//
-
-    void drawFileBrowserRow(Graphics &, int width, int height,
-                            const String &filename, Image *icon,
-                            const String &fileSizeDescription, const String &fileTimeDescription,
-                            bool isDirectory, bool isItemSelected, int itemIndex,
-                            DirectoryContentsDisplayComponent &) override;
-
-
+	
     //===------------------------------------------------------------------===//
     // Scrollbars
     //===------------------------------------------------------------------===//

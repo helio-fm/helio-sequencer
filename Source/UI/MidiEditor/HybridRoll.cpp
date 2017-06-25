@@ -22,7 +22,7 @@
 #include "MidiEvent.h"
 #include "MidiEventComponent.h"
 #include "MidiLayer.h"
-#include "MidiEventComponentLasso.h"
+#include "HybridLassoComponent.h"
 #include "ProjectTreeItem.h"
 #include "TriggersTrackMap.h"
 
@@ -68,10 +68,10 @@
 
 #if HELIO_DESKTOP
 //(defined (JUCE_MAC) || defined (JUCE_LINUX))
-#   define MIDIROLL_FOLLOWS_INDICATOR 1
+#   define HYBRID_ROLL_FOLLOWS_INDICATOR 1
 #else
 //  on Windows and mobiles this sucks, so just turn it off.
-#   define MIDIROLL_FOLLOWS_INDICATOR 0
+#   define HYBRID_ROLL_FOLLOWS_INDICATOR 0
 #endif
 
 // force compile template
@@ -126,7 +126,7 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject,
     
     this->indicator = new TransportIndicator(*this, this->project.getTransport(), this);
 
-    this->lassoComponent = new LassoComponent();
+    this->lassoComponent = new HybridLassoComponent();
     this->lassoComponent->setWantsKeyboardFocus(false);
     this->lassoComponent->setFocusContainer(false);
 
@@ -466,8 +466,8 @@ void HybridRoll::zoomAbsolute(const Point<float> &zoom)
 {
 //    this->stopFollowingIndicator();
 
-    const float &newWidth = (this->getNumBars() * MAX_BAR_WIDTH) * zoom.getX();
-    const float &barsOnNewScreen = float(newWidth / MAX_BAR_WIDTH);
+    const float &newWidth = (this->getNumBars() * HYBRID_ROLL_MAX_BAR_WIDTH) * zoom.getX();
+    const float &barsOnNewScreen = float(newWidth / HYBRID_ROLL_MAX_BAR_WIDTH);
     const float &viewWidth = float(this->viewport.getViewWidth());
     const float &newBarWidth = floorf(viewWidth / barsOnNewScreen + .5f);
     this->setBarWidth(newBarWidth);
@@ -914,7 +914,7 @@ void HybridRoll::selectAll()
     }
 }
 
-LassoComponent *HybridRoll::getLasso() const
+HybridLassoComponent *HybridRoll::getLasso() const
 {
     return this->lassoComponent;
 }
@@ -1017,9 +1017,9 @@ bool HybridRoll::keyPressed(const KeyPress &key)
     {
         if (this->primaryActiveLayer)
         {
-            MIDI_ROLL_BULK_REPAINT_START
+            HYBRID_ROLL_BULK_REPAINT_START
             this->primaryActiveLayer->undo();
-            MIDI_ROLL_BULK_REPAINT_END
+            HYBRID_ROLL_BULK_REPAINT_END
             return true;
         }
     }
@@ -1030,9 +1030,9 @@ bool HybridRoll::keyPressed(const KeyPress &key)
     {
         if (this->primaryActiveLayer)
         {
-            MIDI_ROLL_BULK_REPAINT_START
+            HYBRID_ROLL_BULK_REPAINT_START
             this->primaryActiveLayer->redo();
-            MIDI_ROLL_BULK_REPAINT_END
+            HYBRID_ROLL_BULK_REPAINT_END
             return true;
         }
     }
@@ -1627,7 +1627,7 @@ void HybridRoll::handleAsyncUpdate()
     // batch repaint & resize stuff
     if (this->batchRepaintList.size() > 0)
     {
-        MIDI_ROLL_BULK_REPAINT_START
+        HYBRID_ROLL_BULK_REPAINT_START
 
         for (int i = 0; i < this->batchRepaintList.size(); ++i)
         {
@@ -1639,7 +1639,7 @@ void HybridRoll::handleAsyncUpdate()
             }
         }
 
-        MIDI_ROLL_BULK_REPAINT_END
+        HYBRID_ROLL_BULK_REPAINT_END
 
         this->batchRepaintList.clear();
     }
@@ -2104,12 +2104,12 @@ void HybridRoll::updateChildrenBounds()
     const int &viewX = this->viewport.getViewPositionX();
     const int &viewY = this->viewport.getViewPositionY();
 
-    this->topShadow->setBounds(viewX, viewY + MIDIROLL_HEADER_HEIGHT, viewWidth, shadowSize);
+    this->topShadow->setBounds(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT, viewWidth, shadowSize);
     this->bottomShadow->setBounds(viewX, viewY + viewHeight - shadowSize, viewWidth, shadowSize);
 
-    this->header->setBounds(0, viewY, this->getWidth(), MIDIROLL_HEADER_HEIGHT);
-    this->annotationsTrack->setBounds(0, viewY + MIDIROLL_HEADER_HEIGHT, this->getWidth(), MIDIROLL_HEADER_HEIGHT);
-    this->timeSignaturesTrack->setBounds(0, viewY, this->getWidth(), MIDIROLL_HEADER_HEIGHT);
+    this->header->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
+    this->annotationsTrack->setBounds(0, viewY + HYBRID_ROLL_HEADER_HEIGHT, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
+    this->timeSignaturesTrack->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
     this->annotationsTrack->toFront(false);
     this->timeSignaturesTrack->toFront(false);
 
@@ -2140,11 +2140,11 @@ void HybridRoll::updateChildrenPositions()
     const int &viewX = this->viewport.getViewPositionX();
     const int &viewY = this->viewport.getViewPositionY();
 
-    this->topShadow->setTopLeftPosition(viewX, viewY + MIDIROLL_HEADER_HEIGHT);
+    this->topShadow->setTopLeftPosition(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT);
     this->bottomShadow->setTopLeftPosition(viewX, viewY + viewHeight - shadowSize);
 
     this->header->setTopLeftPosition(0, viewY);
-    this->annotationsTrack->setTopLeftPosition(0, viewY + MIDIROLL_HEADER_HEIGHT);
+    this->annotationsTrack->setTopLeftPosition(0, viewY + HYBRID_ROLL_HEADER_HEIGHT);
     this->timeSignaturesTrack->setTopLeftPosition(0, viewY);
     this->annotationsTrack->toFront(false);
     this->timeSignaturesTrack->toFront(false);

@@ -221,7 +221,7 @@ void NoteResizerLeft::updateBounds(NoteComponent *anchorComponent)
                                   PianoRollToolbox::findStartBeat(selection);
 
     const int xAnchor = this->roll.getXPositionByBeat(groupStartBeat);
-    const int yAnchor = this->roll.getViewport().getViewPositionY() + MIDIROLL_HEADER_HEIGHT;
+    const int yAnchor = this->roll.getViewport().getViewPositionY() + HYBRID_ROLL_HEADER_HEIGHT;
     const int h = this->roll.getViewport().getViewHeight();
     this->setBounds(xAnchor - this->getWidth(), yAnchor, this->getWidth(), h);
 
@@ -233,7 +233,7 @@ void NoteResizerLeft::updateBounds(NoteComponent *anchorComponent)
 
 void NoteResizerLeft::updateTopPosition()
 {
-    const int yAnchor = this->roll.getViewport().getViewPositionY() + MIDIROLL_HEADER_HEIGHT;
+    const int yAnchor = this->roll.getViewport().getViewPositionY() + HYBRID_ROLL_HEADER_HEIGHT;
     this->setTopLeftPosition(this->getX(), yAnchor);
 }
 

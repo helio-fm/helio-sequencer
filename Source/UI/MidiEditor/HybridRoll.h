@@ -18,7 +18,7 @@
 #pragma once
 
 class MidiLayer;
-class LassoComponent;
+class HybridLassoComponent;
 class ProjectTreeItem;
 class LongTapController;
 class SmartDragController;
@@ -54,11 +54,11 @@ class TimelineWarningMarker;
 #include "Serializable.h"
 
 #if HELIO_DESKTOP
-#   define MAX_BAR_WIDTH (250)
-#   define MIDIROLL_HEADER_HEIGHT (48)
+#   define HYBRID_ROLL_MAX_BAR_WIDTH (250)
+#   define HYBRID_ROLL_HEADER_HEIGHT (48)
 #elif HELIO_MOBILE
-#   define MAX_BAR_WIDTH (300)
-#   define MIDIROLL_HEADER_HEIGHT (48)
+#   define HYBRID_ROLL_MAX_BAR_WIDTH (300)
+#   define HYBRID_ROLL_HEADER_HEIGHT (48)
 #endif
 
 
@@ -72,11 +72,11 @@ class TimelineWarningMarker;
 // Dirty hack for speedup, supposed to be used every time I need to repaint a lot of child components. 
 // Component::unfocusAllComponents() - prevents keyboard focus traverse hell
 // this->setVisible(false) - prevents redraw hell
-#define MIDI_ROLL_BULK_REPAINT_START \
+#define HYBRID_ROLL_BULK_REPAINT_START \
     Component::unfocusAllComponents();  \
     this->setVisible(false);
 
-#define MIDI_ROLL_BULK_REPAINT_END \
+#define HYBRID_ROLL_BULK_REPAINT_END \
     this->setVisible(true); \
     this->grabKeyboardFocus();
 
@@ -267,7 +267,7 @@ public:
     void deselectEvent(SelectableComponent *event);
     void deselectAll();
     
-    LassoComponent *getLasso() const;
+    HybridLassoComponent *getLasso() const;
     
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -449,8 +449,8 @@ protected:
     ScopedPointer<Component> topShadow;
     ScopedPointer<Component> bottomShadow;
 
-    ScopedPointer<LassoComponent> lassoComponent;
-
+    ScopedPointer<HybridLassoComponent> lassoComponent;
+	
 protected:
     
     Array<float> visibleBars;

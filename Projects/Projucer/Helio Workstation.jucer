@@ -949,10 +949,10 @@
                 file="../../Source/UI/MidiEditor/HybridRollEditMode.h"/>
           <FILE id="MpDM4j" name="HybridRollListener.h" compile="0" resource="0"
                 file="../../Source/UI/MidiEditor/HybridRollListener.h"/>
-          <FILE id="abWN4e" name="LassoComponent.cpp" compile="1" resource="0"
-                file="../../Source/UI/MidiEditor/LassoComponent.cpp"/>
-          <FILE id="Jmrb0B" name="LassoComponent.h" compile="0" resource="0"
-                file="../../Source/UI/MidiEditor/LassoComponent.h"/>
+          <FILE id="MjV1TW" name="HybridLassoComponent.cpp" compile="1" resource="0"
+                file="../../Source/UI/MidiEditor/HybridLassoComponent.cpp"/>
+          <FILE id="CIZS43" name="HybridLassoComponent.h" compile="0" resource="0"
+                file="../../Source/UI/MidiEditor/HybridLassoComponent.h"/>
           <FILE id="oBPZ1l" name="Lasso.h" compile="0" resource="0" file="../../Source/UI/MidiEditor/Lasso.h"/>
           <FILE id="YbSHvo" name="MidiEditor.cpp" compile="1" resource="0" file="../../Source/UI/MidiEditor/MidiEditor.cpp"/>
           <FILE id="B7YR7m" name="MidiEditor.h" compile="0" resource="0" file="../../Source/UI/MidiEditor/MidiEditor.h"/>

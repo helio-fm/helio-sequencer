@@ -33,7 +33,7 @@
 #include "PianoRoll.h"
 
 #include "HelioCallout.h"
-#include "MidiEventComponentLasso.h"
+#include "HybridLassoComponent.h"
 #include "PanelBackgroundA.h"
 #include "PanelBackgroundB.h"
 #include "PanelBackgroundC.h"
@@ -398,74 +398,6 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
                      AffineTransform::translation(0.0f, 1.0f).scaled(1.0f, (height + 2.0f) / height));
     }
 }
-
-void HelioTheme::drawFileBrowserRow(Graphics &g, int width, int height,
-                                    const String &filename, Image *icon,
-                                    const String &fileSizeDescription,
-                                    const String &fileTimeDescription,
-                                    const bool isDirectory, const bool isItemSelected,
-                                    const int /*itemIndex*/, DirectoryContentsDisplayComponent &dcc)
-{
-    Component *const fileListComp = dynamic_cast<Component *>(&dcc);
-
-    if (isItemSelected) {
-        g.fillAll(fileListComp != nullptr ? fileListComp->findColour(DirectoryContentsDisplayComponent::highlightColourId)
-                  : findColour(DirectoryContentsDisplayComponent::highlightColourId));
-}
-
-    const int x = 32;
-    g.setColour(Colours::black);
-
-    if (icon != nullptr && icon->isValid())
-    {
-        g.drawImageWithin(*icon, 2, 2, x - 4, height - 4,
-                          RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize,
-                          false);
-    }
-    else
-    {
-        if (const Drawable *d = isDirectory ? getDefaultFolderImage()
-                                : getDefaultDocumentFileImage()) {
-            d->drawWithin(g, Rectangle<float> (2.0f, 2.0f, x - 4.0f, height - 4.0f),
-                          RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize, 1.0f);
-}
-    }
-
-    g.setColour(fileListComp != nullptr ? fileListComp->findColour(DirectoryContentsDisplayComponent::textColourId)
-                : findColour(DirectoryContentsDisplayComponent::textColourId));
-    g.setFont(Font(Font::getDefaultSansSerifFontName(), height * 0.7f, Font::plain));
-
-    if (width > 450 && ! isDirectory)
-    {
-        const int sizeX = roundToInt(width * 0.7f);
-        const int dateX = roundToInt(width * 0.8f);
-
-        g.drawFittedText(filename,
-                         x, 0, sizeX - x, height,
-                         Justification::centredLeft, 1);
-
-        g.setFont(Font(Font::getDefaultSansSerifFontName(), height * 0.6f, Font::plain));
-
-        if (! isDirectory)
-        {
-            g.drawFittedText(fileSizeDescription,
-                             sizeX, 0, dateX - sizeX - 8, height,
-                             Justification::centredRight, 1);
-
-            g.drawFittedText(fileTimeDescription,
-                             dateX, 0, width - 8 - dateX, height,
-                             Justification::centredRight, 1);
-        }
-    }
-    else
-    {
-        g.drawFittedText(filename,
-                         x, 0, width - x, height,
-                         Justification::centredLeft, 1);
-
-    }
-}
-
 
 //===----------------------------------------------------------------------===//
 // Scrollbars

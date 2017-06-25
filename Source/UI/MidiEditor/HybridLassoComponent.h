@@ -19,11 +19,11 @@
 
 #include "SelectableComponent.h"
 
-class LassoComponent : public Component
+class HybridLassoComponent : public Component
 {
 public:
 
-    LassoComponent();
+    HybridLassoComponent();
 
     enum ColourIds
     {
@@ -52,5 +52,5 @@ private:
 
     Point<int> dragStartPos;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LassoComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HybridLassoComponent)
 };

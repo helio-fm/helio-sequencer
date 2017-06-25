@@ -24,14 +24,14 @@
 #include "Origami.h"
 #include "SoundProbeIndicator.h"
 #include "TimeDistanceIndicator.h"
-#include "MidiEventComponentLasso.h"
+#include "HybridLassoComponent.h"
 #include "HeaderSelectionIndicator.h"
 #include "HelioCallout.h"
 #include "TimelineCommandPanel.h"
 #include "CommandIDs.h"
 
-#define MIDIROLL_HEADER_ALIGNS_TO_BEATS 1
-#define MIDIROLL_HEADER_SELECTION_ALIGNS_TO_BEATS 0
+#define HYBRID_ROLL_HEADER_ALIGNS_TO_BEATS 1
+#define HYBRID_ROLL_HEADER_SELECTION_ALIGNS_TO_BEATS 0
 #define MIN_TIME_DISTANCE_INDICATOR_SIZE (40)
 
 HybridRollHeader::HybridRollHeader(Transport &transportRef, HybridRoll &rollRef, Viewport &viewportRef) :
@@ -43,7 +43,7 @@ HybridRollHeader::HybridRollHeader(Transport &transportRef, HybridRoll &rollRef,
 {
     this->setOpaque(true);
     this->setAlwaysOnTop(true);
-    this->setSize(this->getParentWidth(), MIDIROLL_HEADER_HEIGHT);
+    this->setSize(this->getParentWidth(), HYBRID_ROLL_HEADER_HEIGHT);
 }
 
 HybridRollHeader::~HybridRollHeader()
@@ -416,7 +416,7 @@ void HybridRollHeader::paint(Graphics &g)
                           backCol.contrasting().withMultipliedAlpha(0.1f));
 
     g.setColour(backCol);
-    g.fillRect(paintStartX, 0, paintEndX - paintStartX, MIDIROLL_HEADER_HEIGHT);
+    g.fillRect(paintStartX, 0, paintEndX - paintStartX, HYBRID_ROLL_HEADER_HEIGHT);
 
     //HelioTheme::drawNoise(g, getWidth(), getHeight(), 3);
     
