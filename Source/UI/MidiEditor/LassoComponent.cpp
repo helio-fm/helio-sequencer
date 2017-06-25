@@ -17,15 +17,15 @@
 
 #include "Common.h"
 #include "Lasso.h"
-#include "MidiEventComponentLasso.h"
+#include "LassoComponent.h"
 #include "HelioTheme.h"
 
-MidiEventComponentLasso::MidiEventComponentLasso() :
+LassoComponent::LassoComponent() :
     source(nullptr)
 {
 }
 
-void MidiEventComponentLasso::beginLasso(const MouseEvent &e, LassoSource<SelectableComponent *> *const lassoSource)
+void LassoComponent::beginLasso(const MouseEvent &e, LassoSource<SelectableComponent *> *const lassoSource)
 {
     jassert(source == nullptr);
     jassert(lassoSource != nullptr);
@@ -41,7 +41,7 @@ void MidiEventComponentLasso::beginLasso(const MouseEvent &e, LassoSource<Select
     }
 }
 
-void MidiEventComponentLasso::dragLasso(const MouseEvent &e)
+void LassoComponent::dragLasso(const MouseEvent &e)
 {
     if (source != nullptr)
     {
@@ -69,7 +69,7 @@ void MidiEventComponentLasso::dragLasso(const MouseEvent &e)
     }
 }
 
-void MidiEventComponentLasso::endLasso()
+void LassoComponent::endLasso()
 {
     if (source != nullptr)
     {
@@ -79,12 +79,12 @@ void MidiEventComponentLasso::endLasso()
     }
 }
 
-bool MidiEventComponentLasso::isDragging() const
+bool LassoComponent::isDragging() const
 {
     return (this->source != nullptr);
 }
 
-void MidiEventComponentLasso::paint(Graphics &g)
+void LassoComponent::paint(Graphics &g)
 {
     this->getLookAndFeel().drawLasso(g, *this);
     jassert(isMouseButtonDownAnywhere());

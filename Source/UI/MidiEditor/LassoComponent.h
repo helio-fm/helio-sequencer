@@ -17,13 +17,13 @@
 
 #pragma once
 
-#include "MidiEventComponent.h"
+#include "SelectableComponent.h"
 
-class MidiEventComponentLasso : public Component
+class LassoComponent : public Component
 {
 public:
 
-    MidiEventComponentLasso();
+    LassoComponent();
 
     enum ColourIds
     {
@@ -52,5 +52,5 @@ private:
 
     Point<int> dragStartPos;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiEventComponentLasso)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(LassoComponent)
 };

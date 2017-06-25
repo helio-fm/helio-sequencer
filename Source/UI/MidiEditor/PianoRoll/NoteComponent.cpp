@@ -21,7 +21,7 @@
 #include "PianoRoll.h"
 #include "MidiLayer.h"
 #include "Note.h"
-#include "MidiEventComponentLasso.h"
+#include "LassoComponent.h"
 #include "PianoRollToolbox.h"
 #include "Transport.h"
 #include "App.h"

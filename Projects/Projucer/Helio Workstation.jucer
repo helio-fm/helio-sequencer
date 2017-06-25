@@ -891,10 +891,6 @@
                   file="../../Source/UI/MidiEditor/PianoRoll/MidiEventComponent.cpp"/>
             <FILE id="QYxOeu" name="MidiEventComponent.h" compile="0" resource="0"
                   file="../../Source/UI/MidiEditor/PianoRoll/MidiEventComponent.h"/>
-            <FILE id="wLDKRN" name="MidiEventComponentLasso.cpp" compile="1" resource="0"
-                  file="../../Source/UI/MidiEditor/PianoRoll/MidiEventComponentLasso.cpp"/>
-            <FILE id="LT9CWl" name="MidiEventComponentLasso.h" compile="0" resource="0"
-                  file="../../Source/UI/MidiEditor/PianoRoll/MidiEventComponentLasso.h"/>
             <FILE id="e4F4el" name="NoteComponent.cpp" compile="1" resource="0"
                   file="../../Source/UI/MidiEditor/PianoRoll/NoteComponent.cpp"/>
             <FILE id="N5ZAHh" name="NoteComponent.h" compile="0" resource="0" file="../../Source/UI/MidiEditor/PianoRoll/NoteComponent.h"/>
@@ -953,6 +949,10 @@
                 file="../../Source/UI/MidiEditor/HybridRollEditMode.h"/>
           <FILE id="MpDM4j" name="HybridRollListener.h" compile="0" resource="0"
                 file="../../Source/UI/MidiEditor/HybridRollListener.h"/>
+          <FILE id="abWN4e" name="LassoComponent.cpp" compile="1" resource="0"
+                file="../../Source/UI/MidiEditor/LassoComponent.cpp"/>
+          <FILE id="Jmrb0B" name="LassoComponent.h" compile="0" resource="0"
+                file="../../Source/UI/MidiEditor/LassoComponent.h"/>
           <FILE id="oBPZ1l" name="Lasso.h" compile="0" resource="0" file="../../Source/UI/MidiEditor/Lasso.h"/>
           <FILE id="YbSHvo" name="MidiEditor.cpp" compile="1" resource="0" file="../../Source/UI/MidiEditor/MidiEditor.cpp"/>
           <FILE id="B7YR7m" name="MidiEditor.h" compile="0" resource="0" file="../../Source/UI/MidiEditor/MidiEditor.h"/>

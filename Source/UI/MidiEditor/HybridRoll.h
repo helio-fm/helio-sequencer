@@ -18,7 +18,7 @@
 #pragma once
 
 class MidiLayer;
-class MidiEventComponentLasso;
+class LassoComponent;
 class ProjectTreeItem;
 class LongTapController;
 class SmartDragController;
@@ -267,7 +267,7 @@ public:
     void deselectEvent(SelectableComponent *event);
     void deselectAll();
     
-    MidiEventComponentLasso *getLasso() const;
+    LassoComponent *getLasso() const;
     
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -449,7 +449,7 @@ protected:
     ScopedPointer<Component> topShadow;
     ScopedPointer<Component> bottomShadow;
 
-    ScopedPointer<MidiEventComponentLasso> lassoComponent;
+    ScopedPointer<LassoComponent> lassoComponent;
 
 protected:
     

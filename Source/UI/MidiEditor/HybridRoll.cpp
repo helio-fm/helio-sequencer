@@ -126,7 +126,7 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject,
     
     this->indicator = new TransportIndicator(*this, this->project.getTransport(), this);
 
-    this->lassoComponent = new MidiEventComponentLasso();
+    this->lassoComponent = new LassoComponent();
     this->lassoComponent->setWantsKeyboardFocus(false);
     this->lassoComponent->setFocusContainer(false);
 
@@ -914,7 +914,7 @@ void HybridRoll::selectAll()
     }
 }
 
-MidiEventComponentLasso *HybridRoll::getLasso() const
+LassoComponent *HybridRoll::getLasso() const
 {
     return this->lassoComponent;
 }

@@ -34,7 +34,7 @@
 #include "MultiTouchController.h"
 #include "HelioTheme.h"
 #include "NoNotesPopup.h"
-#include "MidiEventComponentLasso.h"
+#include "LassoComponent.h"
 #include "HybridRollEditMode.h"
 #include "SerializationKeys.h"
 #include "Icons.h"
@@ -55,7 +55,6 @@ PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
                      Viewport &viewportRef,
                      WeakReference<AudioMonitor> clippingDetector) :
     HybridRoll(parentProject, viewportRef, clippingDetector),
-    //rowsPattern(Image::RGB, 1, 1, true),
     numRows(128),
     rowHeight(MIN_ROW_HEIGHT),
     draggingNote(nullptr),

@@ -34,7 +34,7 @@
 #include "MultiTouchController.h"
 #include "HelioTheme.h"
 #include "NoNotesPopup.h"
-#include "MidiEventComponentLasso.h"
+#include "LassoComponent.h"
 #include "HybridRollEditMode.h"
 #include "SerializationKeys.h"
 #include "Icons.h"
