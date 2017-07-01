@@ -39,7 +39,7 @@ public:
 
         explicit ChildConstrainer(Origami &origamiRef) : origami(origamiRef) { }
 
-        void applyBoundsToComponent(Component *component, const Rectangle<int> &bounds) override;
+        void applyBoundsToComponent(Component &component, Rectangle<int> bounds) override;
 
     private:
 

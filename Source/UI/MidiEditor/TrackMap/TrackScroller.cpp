@@ -139,7 +139,7 @@ void TrackScroller::xyMoveByUser()
     const float &propY = screenRangeBounds.getTopLeft().getY() / mh;
     
     // fixes for headerheight delta
-    const float &hh = float(MIDIROLL_HEADER_HEIGHT);
+    const float &hh = float(HYBRID_ROLL_HEADER_HEIGHT);
     const float &rollHeight = float(this->roll.getHeight());
     const float &propY2 = roundf(((rollHeight - hh) * propY) - hh) / rollHeight;
     this->roll.panProportionally(propX, propY2);
@@ -361,7 +361,7 @@ Rectangle<float> TrackScroller::getIndicatorBounds() const
     
     const float &zoomFactorY = this->roll.getZoomFactorY();
     //const float &headerHeight = 0; //float(MIDIROLL_HEADER_HEIGHT);
-    const float &headerHeight = float(MIDIROLL_HEADER_HEIGHT);
+    const float &headerHeight = float(HYBRID_ROLL_HEADER_HEIGHT);
     const float &rollHeight = float(this->roll.getHeight() - headerHeight);
     const float &viewY = float(this->roll.getViewport().getViewPositionY() + headerHeight);
     const float &trackHeight = float(this->getHeight());
@@ -405,9 +405,9 @@ Rectangle<int> TrackScroller::getMapBounds() const
 }
 
 void TrackScroller::HorizontalDragHelper::
-MoveConstrainer::applyBoundsToComponent(Component *component, const Rectangle<int> &bounds)
+MoveConstrainer::applyBoundsToComponent(Component &component, Rectangle<int> bounds)
 {
     ComponentBoundsConstrainer::applyBoundsToComponent(component, bounds);
-    this->scroller.horizontalDragByUser(component, bounds);
+    this->scroller.horizontalDragByUser(&component, bounds);
 }
 

@@ -177,9 +177,8 @@ void Origami::focusOfChildComponentChanged(FocusChangeType cause)
 }
 
 
-void Origami::ChildConstrainer::applyBoundsToComponent(Component *component,
-        const Rectangle<int> &bounds)
+void Origami::ChildConstrainer::applyBoundsToComponent(Component &component, Rectangle<int> bounds)
 {
     ComponentBoundsConstrainer::applyBoundsToComponent(component, bounds);
-    this->origami.onPageResized(component);
+    this->origami.onPageResized(&component);
 }

@@ -67,7 +67,7 @@ public:
     public:
         explicit ResizeConstrainer(MidiEditorSplitContainer &splitterRef) : splitter(splitterRef) { }
         
-        void applyBoundsToComponent(Component *component, const Rectangle<int> &bounds) override
+        void applyBoundsToComponent(Component &component, Rectangle<int> bounds) override
         {
             ComponentBoundsConstrainer::applyBoundsToComponent(component, bounds);
             this->splitter.resizedByUser();
@@ -407,7 +407,7 @@ MidiEditor::MidiEditor(ProjectTreeItem &parentProject) :
     this->scroller->addOwnedMap(new TimeSignaturesTrackMap<TimeSignatureSmallComponent>(this->project, *this->roll), false);
     //this->scroller->addOwnedMap(new AutomationTrackMap(this->project, *this->roll, this->project.getDefaultTempoTrack()->getLayer()), true);
 
-    this->roll->setBarWidth(MAX_BAR_WIDTH);
+    this->roll->setBarWidth(HYBRID_ROLL_MAX_BAR_WIDTH);
 
     this->viewport->setViewedComponent(this->roll, false);
     this->roll->addRollListener(this->scroller);
