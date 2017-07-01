@@ -50,10 +50,22 @@ public:
 	static int compareElements(const Clip &first,
 		const Clip &second);
 
+	int hashCode() const noexcept;
+
 private:
 
 	float startBeat;
 	String id;
 
 	JUCE_LEAK_DETECTOR(Clip);
+};
+
+class ClipHashFunction
+{
+public:
+
+	static int generateHash(Clip clip, const int upperLimit) noexcept
+	{
+		return static_cast<int>((static_cast<uint32>(clip.hashCode())) % static_cast<uint32>(upperLimit));
+	}
 };

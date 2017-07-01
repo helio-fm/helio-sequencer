@@ -69,3 +69,8 @@ int Clip::compareElements(const Clip &first, const Clip &second)
 	const int diffResult = (diff > 0.f) - (diff < 0.f);
 	return diffResult;
 }
+
+int Clip::hashCode() const noexcept
+{
+	return this->getId().hashCode();
+}
