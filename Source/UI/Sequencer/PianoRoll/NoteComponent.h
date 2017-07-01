@@ -19,10 +19,10 @@
 
 class PianoRoll;
 
-#include "MidiEventComponent.h"
+#include "HybridRollEventComponent.h"
 #include "Note.h"
 
-class NoteComponent : public MidiEventComponent
+class NoteComponent : public HybridRollEventComponent
 {
 public:
 
@@ -49,10 +49,18 @@ public:
     // Accessors
     //===------------------------------------------------------------------===//
 
-    //bool isNoteToggled(const int note, const float beat);
     int getKey() const;
     float getLength() const;
     float getVelocity() const;
+
+	//===------------------------------------------------------------------===//
+	// HybridRollEventComponent
+	//===------------------------------------------------------------------===//
+
+	void setSelected(bool selected) override;
+	String getSelectionGroupId() const override;
+	float getBeat() const override;
+	String getId() const override;
 
     //===------------------------------------------------------------------===//
     // Component
@@ -67,19 +75,18 @@ public:
     void mouseDoubleClick(const MouseEvent &e) override;
     void paint(Graphics &g) override;
 
-	//===------------------------------------------------------------------===//
-	// SelectableComponent
-	//===------------------------------------------------------------------===//
-
-	void setSelected(bool selected) override;
-
 protected:
+
+	const MidiEvent &midiEvent;
 
     inline void paintNewLook(Graphics &g);
     inline void paintLegacyLook(Graphics &g);
     
     Note anchor;
     Note groupScalingAnchor;
+
+	bool belongsToLayerSet(Array<MidiLayer *> layers) const;
+	void activateCorrespondingLayer(bool selectOthers, bool deselectOthers);
 
     void setNoCheckpointNeededForNextAction();
     bool isResizing() const;

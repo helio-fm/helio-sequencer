@@ -24,60 +24,41 @@ class HybridRoll;
 #include "FloatBoundsComponent.h"
 #include "SelectableComponent.h"
 
-// TODO rework as HybridEventComponent
-class MidiEventComponent : public FloatBoundsComponent, public SelectableComponent
+class HybridRollEventComponent :
+	public FloatBoundsComponent, 
+	public SelectableComponent
 {
 public:
 
-    MidiEventComponent(HybridRoll &editor, const MidiEvent &event);
-
-    const MidiEvent &getEvent() const;
-
-
+    HybridRollEventComponent(HybridRoll &editor);
 
     bool isActive() const;
-
     void setActive(bool val, bool force = false);
 
+    virtual float getBeat() const = 0;
+	virtual String getId() const = 0;
 
-    float getBeat() const;
-
-    bool belongsToLayerSet(Array<MidiLayer *> layers) const;
-    
-    
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
     void mouseDown(const MouseEvent &e) override;
-
-    static int compareElements(MidiEventComponent *first, MidiEventComponent *second);
-
+    static int compareElements(HybridRollEventComponent *first, HybridRollEventComponent *second);
 
 	//===------------------------------------------------------------------===//
 	// SelectableComponent
 	//===------------------------------------------------------------------===//
 
 	void setSelected(bool selected) override;
-
 	bool isSelected() const override;
-
-	String getSelectionGroupId() const override;
 
 protected:
 
-    void activateCorrespondingLayer(bool selectOthers, bool deselectOthers);
-
     HybridRoll &roll;
-
-    const MidiEvent &midiEvent;
-
     ComponentDragger dragger;
 
     bool selectedState;
-
     bool activeState;
-
     float anchorBeat;
 
     Colour colour;
@@ -86,5 +67,5 @@ protected:
     // если его не учитывать, то ноты двигаются неестественно
     Point<int> clickOffset;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiEventComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HybridRollEventComponent)
 };

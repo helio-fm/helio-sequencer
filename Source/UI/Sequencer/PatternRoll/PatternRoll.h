@@ -82,7 +82,7 @@ public:
     // Ghost notes
     //===------------------------------------------------------------------===//
     
-    void showGhostNoteFor(ClipComponent *targetNoteComponent);
+    void showGhostClipFor(ClipComponent *targetClipComponent);
     void hideAllGhostClips();
     
 
@@ -99,12 +99,11 @@ public:
     // Note management
     //===------------------------------------------------------------------===//
 
-    void addNote(int key, float beat, float length, float velocity);
+    void addClip(int key, float beat, float length, float velocity);
     Rectangle<float> getEventBounds(FloatBoundsComponent *mc) const override;
-    Rectangle<float> getEventBounds(const int key, const float beat, const float length) const;
-    void getRowsColsByComponentPosition(const float x, const float y, int &noteNumber, float &beatNumber) const;
-    void getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber) const;
-    int getYPositionByKey(int targetKey) const;
+    Rectangle<float> getEventBounds(int key, float beat, float length) const;
+    float getBeatByComponentPosition(float x) const;
+    float getBeatByMousePosition(int x) const;
     
 
     //===------------------------------------------------------------------===//

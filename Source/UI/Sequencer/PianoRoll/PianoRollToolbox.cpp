@@ -282,7 +282,7 @@ bool applyAutoInsertions(const AutoChangeGroup &group, bool &didCheckpoint, bool
 
 static PianoLayer *getPianoLayer(SelectionProxyArray::Ptr selection)
 {
-	const auto &firstEvent = selection->getFirstAs<MidiEventComponent>()->getEvent();
+	const auto &firstEvent = selection->getFirstAs<NoteComponent>()->getNote();
 	PianoLayer *pianoLayer = static_cast<PianoLayer *>(firstEvent.getLayer());
 	return pianoLayer;
 }
@@ -1015,7 +1015,7 @@ void PianoRollToolbox::moveToLayer(Lasso &selection, MidiLayer *layer, bool shou
     while (selectionsMapIterator.next())
     {
         SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-        MidiLayer *midiLayer = layerSelection->getFirstAs<MidiEventComponent>()->getEvent().getLayer();
+        MidiLayer *midiLayer = layerSelection->getFirstAs<NoteComponent>()->getNote().getLayer();
 
         if (PianoLayer *sourcePianoLayer = dynamic_cast<PianoLayer *>(midiLayer))
         {
@@ -1030,8 +1030,7 @@ void PianoRollToolbox::moveToLayer(Lasso &selection, MidiLayer *layer, bool shou
                 
                 for (int i = 0; i < layerSelection->size(); ++i)
                 {
-                    const MidiEventComponent *mc1 = layerSelection->getItemAs<MidiEventComponent>(i);
-                    const Note *n1 = static_cast<const Note *>(&mc1->getEvent());
+                    const Note &n1 = layerSelection->getItemAs<NoteComponent>(i)->getNote();
                     
                     bool targetHasTheSameNote = false;
                     
@@ -1039,9 +1038,9 @@ void PianoRollToolbox::moveToLayer(Lasso &selection, MidiLayer *layer, bool shou
                     {
                         const Note *n2 = static_cast<Note *>(targetLayer->getUnchecked(j));
                         
-                        if (fabs(n1->getBeat() - n2->getBeat()) < 0.01f &&
-                            fabs(n1->getLength() - n2->getLength()) < 0.01f &&
-                            n1->getKey() == n2->getKey())
+                        if (fabs(n1.getBeat() - n2->getBeat()) < 0.01f &&
+                            fabs(n1.getLength() - n2->getLength()) < 0.01f &&
+                            n1.getKey() == n2->getKey())
                         {
                             Logger::writeToLog("targetHasTheSameNote");
                             targetHasTheSameNote = true;
@@ -1049,11 +1048,11 @@ void PianoRollToolbox::moveToLayer(Lasso &selection, MidiLayer *layer, bool shou
                         }
                     }
                     
-                    removalsForThisLayer->add(*n1);
+                    removalsForThisLayer->add(n1);
                     
                     if (! targetHasTheSameNote)
                     {
-                        insertionsForTargetLayer->add(*n1);
+                        insertionsForTargetLayer->add(n1);
                     }
                     
                     if (!didCheckpoint && shouldCheckpoint)
@@ -1540,9 +1539,7 @@ void PianoRollToolbox::deleteSelection(Lasso &selection)
     while (selectionsMapIterator.next())
     {
         SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-        
-        MidiLayer *midiLayer = layerSelection->getFirstAs<MidiEventComponent>()->getEvent().getLayer();
-        PianoLayer *pianoLayer = static_cast<PianoLayer *>(midiLayer);
+        PianoLayer *pianoLayer = getPianoLayer(layerSelection);
         jassert(pianoLayer);
         
         PianoChangeGroup notesToDelete;

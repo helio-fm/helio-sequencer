@@ -19,7 +19,7 @@
 
 #include "Serializable.h"
 
-// Just an instance of a midi track on a certain position
+// Just an instance of a midi layer on a certain position
 class Clip : public Serializable
 {
 public:

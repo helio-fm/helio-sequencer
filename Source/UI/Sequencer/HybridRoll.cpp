@@ -20,7 +20,7 @@
 #include "HybridRollHeader.h"
 #include "HybridRollExpandMark.h"
 #include "MidiEvent.h"
-#include "MidiEventComponent.h"
+#include "HybridRollEventComponent.h"
 #include "MidiLayer.h"
 #include "HybridLassoComponent.h"
 #include "ProjectTreeItem.h"
@@ -852,7 +852,7 @@ void HybridRoll::selectEventsInRange(float startBeat,
 
     for (int i = 0; i < this->eventComponents.size(); ++i)
     {
-        MidiEventComponent *ec = this->eventComponents.getUnchecked(i);
+        HybridRollEventComponent *ec = this->eventComponents.getUnchecked(i);
         if (ec->isActive() &&
             ec->getBeat() >= startBeat &&
             ec->getBeat() < endBeat)
@@ -2174,7 +2174,7 @@ void HybridRoll::changeListenerCallback(ChangeBroadcaster *source)
 
     for (int i = 0; i < this->eventComponents.size(); ++i)
     {
-        MidiEventComponent *child = this->eventComponents.getUnchecked(i);
+        HybridRollEventComponent *child = this->eventComponents.getUnchecked(i);
         child->setInterceptsMouseClicks(interactsWithChildren, interactsWithChildren);
         child->setMouseCursor(interactsWithChildren ? MouseCursor::NormalCursor : cursor);
     }

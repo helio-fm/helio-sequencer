@@ -116,8 +116,8 @@ public:
 
     void addNote(int key, float beat, float length, float velocity);
     Rectangle<float> getEventBounds(FloatBoundsComponent *mc) const override;
-    Rectangle<float> getEventBounds(const int key, const float beat, const float length) const;
-    void getRowsColsByComponentPosition(const float x, const float y, int &noteNumber, float &beatNumber) const;
+    Rectangle<float> getEventBounds(int key, float beat, float length) const;
+    void getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber) const;
     void getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber) const;
     int getYPositionByKey(int targetKey) const;
     

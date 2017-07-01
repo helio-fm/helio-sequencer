@@ -16,15 +16,13 @@
 */
 
 #include "Common.h"
-#include "MidiEventComponent.h"
-#include "ProjectTreeItem.h"
+#include "HybridRollEventComponent.h"
 #include "MidiLayer.h"
 #include "MidiEvent.h"
 #include "HybridRoll.h"
 
-MidiEventComponent::MidiEventComponent(HybridRoll &editor, const MidiEvent &event) :
+HybridRollEventComponent::HybridRollEventComponent(HybridRoll &editor) :
     roll(editor),
-    midiEvent(event),
     dragger(),
     selectedState(false),
     activeState(true),
@@ -35,12 +33,12 @@ MidiEventComponent::MidiEventComponent(HybridRoll &editor, const MidiEvent &even
     this->setWantsKeyboardFocus(false);
 }
 
-bool MidiEventComponent::isActive() const
+bool HybridRollEventComponent::isActive() const
 {
     return this->activeState;
 }
 
-void MidiEventComponent::setActive(bool val, bool force)
+void HybridRollEventComponent::setActive(bool val, bool force)
 {
     if (!force && this->activeState == val)
     {
@@ -60,47 +58,12 @@ void MidiEventComponent::setActive(bool val, bool force)
 }
 
 
-float MidiEventComponent::getBeat() const
-{
-    return this->midiEvent.getBeat();
-}
-
-
-const MidiEvent &MidiEventComponent::getEvent() const
-{
-    return this->midiEvent;
-}
-
-bool MidiEventComponent::belongsToLayerSet(Array<MidiLayer *> layers) const
-{
-    for (int i = 0; i < layers.size(); ++i)
-    {
-        if (this->getEvent().getLayer() == layers.getUnchecked(i))
-        {
-            return true;
-        }
-    }
-    
-    return false;
-}
-
-
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
 
-void MidiEventComponent::mouseDown(const MouseEvent &e)
+void HybridRollEventComponent::mouseDown(const MouseEvent &e)
 {
-    if (!this->activeState)
-    {
-        if (!e.mods.isLeftButtonDown())
-        {
-            this->activateCorrespondingLayer(false, true);
-        }
-
-        return;
-    }
-
     this->clickOffset.setXY(e.x, e.y);
 
     // shift-alt-logic
@@ -129,7 +92,7 @@ void MidiEventComponent::mouseDown(const MouseEvent &e)
 // SelectableComponent
 //===----------------------------------------------------------------------===//
 
-void MidiEventComponent::setSelected(bool selected)
+void HybridRollEventComponent::setSelected(bool selected)
 {
 	if (this->selectedState != selected)
 	{
@@ -138,14 +101,9 @@ void MidiEventComponent::setSelected(bool selected)
 	}
 }
 
-bool MidiEventComponent::isSelected() const
+bool HybridRollEventComponent::isSelected() const
 {
 	return this->selectedState;
-}
-
-String MidiEventComponent::getSelectionGroupId() const
-{
-	return this->midiEvent.getLayer()->getLayerIdAsString();
 }
 
 
@@ -153,16 +111,10 @@ String MidiEventComponent::getSelectionGroupId() const
 // Helpers
 //===----------------------------------------------------------------------===//
 
-int MidiEventComponent::compareElements(MidiEventComponent *first, MidiEventComponent *second)
+int HybridRollEventComponent::compareElements(HybridRollEventComponent *first, HybridRollEventComponent *second)
 {
     if (first == second) { return 0; }
     const float diff = first->getBeat() - second->getBeat();
     const int diffResult = (diff > 0.f) - (diff < 0.f);
-    return (diffResult != 0) ? diffResult : (first->midiEvent.getID().compare(second->midiEvent.getID()));
-}
-
-void MidiEventComponent::activateCorrespondingLayer(bool selectOthers, bool deselectOthers)
-{
-    MidiLayer *layer = this->getEvent().getLayer();
-	this->roll.getProject().activateLayer(layer, selectOthers, deselectOthers);
+    return (diffResult != 0) ? diffResult : (first->getId().compare(second->getId()));
 }

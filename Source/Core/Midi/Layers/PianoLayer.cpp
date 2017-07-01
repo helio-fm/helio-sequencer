@@ -147,7 +147,6 @@ bool PianoLayer::remove(const Note &note, const bool undoable)
             
             const int matchingNoteIndex = this->indexOfSorted(matchingNote);
             this->midiEvents.remove(matchingNoteIndex, true);
-            //this->midiEvents.removeObject(matchingNote);
             
             this->notesHashTable.remove(note);
             this->updateBeatRange(true);

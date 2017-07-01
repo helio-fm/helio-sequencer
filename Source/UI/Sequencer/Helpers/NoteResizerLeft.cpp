@@ -167,7 +167,7 @@ void NoteResizerLeft::mouseDrag (const MouseEvent& e)
                 groupDragAfter.add(nc->continueGroupScalingLeft(groupScaleFactor));
             }
 
-            const auto &event = layerSelection->getFirstAs<MidiEventComponent>()->getEvent();
+            const auto &event = layerSelection->getFirstAs<NoteComponent>()->getNote();
             PianoLayer *pianoLayer = static_cast<PianoLayer *>(event.getLayer());
             pianoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
         }
@@ -196,12 +196,12 @@ void NoteResizerLeft::mouseUp (const MouseEvent& e)
 
 NoteComponent *NoteResizerLeft::findLeftMostEvent(const Lasso &selection)
 {
-    MidiEventComponent *mc = nullptr;
+    HybridRollEventComponent *mc = nullptr;
     float leftMostBeat = FLT_MAX;
 
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
-        MidiEventComponent *const e = selection.getItemAs<MidiEventComponent>(i);
+        HybridRollEventComponent *const e = selection.getItemAs<HybridRollEventComponent>(i);
 
         if (leftMostBeat > e->getBeat())
         {

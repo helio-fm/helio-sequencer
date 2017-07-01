@@ -41,7 +41,7 @@ class TimelineWarningMarker;
 #include "TimeSignatureLargeComponent.h"
 #include "TransportIndicator.h"
 #include "TransportListener.h"
-#include "MidiEventComponent.h"
+#include "HybridRollEventComponent.h"
 #include "ClipboardOwner.h"
 #include "LongTapListener.h"
 #include "SmoothPanListener.h"
@@ -403,7 +403,7 @@ protected:
 
     Lasso selection;
 
-    OwnedArray<MidiEventComponent> eventComponents;
+    OwnedArray<HybridRollEventComponent> eventComponents;
 
     bool isViewportZoomEvent(const MouseEvent &e) const;
     bool isViewportDragEvent(const MouseEvent &e) const;

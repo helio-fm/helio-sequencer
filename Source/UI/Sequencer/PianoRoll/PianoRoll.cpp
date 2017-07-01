@@ -98,9 +98,8 @@ void PianoRoll::deleteSelection()
 
     for (int i = 0; i < this->selection.getNumSelected(); ++i)
     {
-        const MidiEvent &event = this->selection.getItemAs<MidiEventComponent>(i)->getEvent();
-        const Note &note = static_cast<const Note &>(event);
-        MidiLayer *ownerLayer = event.getLayer();
+		const Note &note = this->selection.getItemAs<NoteComponent>(i)->getNote();
+        const MidiLayer *ownerLayer = note.getLayer();
         Array<Note> *arrayToAddTo = nullptr;
 
         for (int j = 0; j < selections.size(); ++j)
@@ -249,8 +248,7 @@ void PianoRoll::selectAll()
 {
 	for (int i = 0; i < this->eventComponents.size(); ++i)
 	{
-		MidiEventComponent *child = this->eventComponents.getUnchecked(i);
-
+		NoteComponent *child = static_cast<NoteComponent *>(this->eventComponents.getUnchecked(i));
 		if (child->belongsToLayerSet(this->activeLayers))
 		{
 			this->selection.addToSelection(child);
@@ -382,7 +380,7 @@ Rectangle<float> PianoRoll::getEventBounds(FloatBoundsComponent *mc) const
     return this->getEventBounds(nc->getKey(), nc->getBeat(), nc->getLength());
 }
 
-Rectangle<float> PianoRoll::getEventBounds(const int key, const float beat, const float length) const
+Rectangle<float> PianoRoll::getEventBounds(int key, float beat, float length) const
 {
     const float startOffsetBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
 	const float x = this->barWidth * (beat - startOffsetBeat) / NUM_BEATS_IN_BAR;
@@ -392,9 +390,7 @@ Rectangle<float> PianoRoll::getEventBounds(const int key, const float beat, cons
     return Rectangle<float> (x, yPosition + 1, w, float(this->rowHeight - 1));
 }
 
-
-
-void PianoRoll::getRowsColsByComponentPosition(const float x, const float y, int &noteNumber, float &beatNumber) const
+void PianoRoll::getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber) const
 {
     beatNumber = this->getRoundBeatByXPosition(int(x)); /* - 0.5f ? */
     noteNumber = roundToInt((this->getHeight() - y) / this->rowHeight);

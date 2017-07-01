@@ -976,10 +976,6 @@
             <FILE id="MXsdDW" name="PatternRoll.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PatternRoll/PatternRoll.h"/>
           </GROUP>
           <GROUP id="{EFEF1060-46EA-01AF-80DB-F6245A003904}" name="PianoRoll">
-            <FILE id="YS1HdZ" name="MidiEventComponent.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/PianoRoll/MidiEventComponent.cpp"/>
-            <FILE id="T2U3zT" name="MidiEventComponent.h" compile="0" resource="0"
-                  file="../../Source/UI/Sequencer/PianoRoll/MidiEventComponent.h"/>
             <FILE id="nkGHj5" name="NoteComponent.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/PianoRoll/NoteComponent.cpp"/>
             <FILE id="o50CGJ" name="NoteComponent.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PianoRoll/NoteComponent.h"/>
@@ -1040,6 +1036,10 @@
                 file="../../Source/UI/Sequencer/HybridRollEditMode.cpp"/>
           <FILE id="MWqxz4" name="HybridRollEditMode.h" compile="0" resource="0"
                 file="../../Source/UI/Sequencer/HybridRollEditMode.h"/>
+          <FILE id="q8fOIB" name="HybridRollEventComponent.cpp" compile="1" resource="0"
+                file="../../Source/UI/Sequencer/HybridRollEventComponent.cpp"/>
+          <FILE id="M0Rx3A" name="HybridRollEventComponent.h" compile="0" resource="0"
+                file="../../Source/UI/Sequencer/HybridRollEventComponent.h"/>
           <FILE id="kc1423" name="HybridRollListener.h" compile="0" resource="0"
                 file="../../Source/UI/Sequencer/HybridRollListener.h"/>
           <FILE id="OL6lfl" name="Lasso.h" compile="0" resource="0" file="../../Source/UI/Sequencer/Lasso.h"/>

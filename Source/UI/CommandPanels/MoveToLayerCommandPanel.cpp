@@ -63,7 +63,7 @@ void MoveToLayerCommandPanel::handleCommandMessage(int commandId)
 
 		if (NoteComponent *note = dynamic_cast<NoteComponent *>(this->roll.getLassoSelection().getSelectedItem(0)))
 		{
-			const MidiLayer *layerOfFirstSelected = (numSelected > 0) ? (note->getEvent().getLayer()) : nullptr;
+			const MidiLayer *layerOfFirstSelected = (numSelected > 0) ? (note->getNote().getLayer()) : nullptr;
 			const bool hasMultiLayerSelection = (selections.size() > 1);
 			const bool alreadyBelongsTo = hasMultiLayerSelection ? false : (layerItems[layerIndex]->getLayer() == layerOfFirstSelected);
 
@@ -97,7 +97,7 @@ void MoveToLayerCommandPanel::initLayersPanel(bool shouldAddBackButton)
     {
         const Lasso::GroupedSelections &selections = this->roll.getLassoSelection().getGroupedSelections();
         const int numSelected = this->roll.getLassoSelection().getNumSelected();
-		const auto &event = this->roll.getLassoSelection().getFirstAs<MidiEventComponent>()->getEvent();
+		const auto &event = this->roll.getLassoSelection().getFirstAs<NoteComponent>()->getNote();
         const MidiLayer *layerOfFirstSelected = (numSelected > 0) ? (event.getLayer()) : nullptr;
         const bool hasMultiLayerSelection = (selections.size() > 1);
         const bool belongsTo = hasMultiLayerSelection ? false : (layers.getUnchecked(i)->getLayer() == layerOfFirstSelected);

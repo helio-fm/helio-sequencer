@@ -23,26 +23,41 @@
 #include "HybridRoll.h"
 
 ClipComponent::ClipComponent(HybridRoll &editor, Clip clip) :
-    roll(editor),
-    clip(clip),
-    dragger(),
-    selectedState(false),
-    anchorBeat(0),
-    colour(Colours::white),
-    clickOffset(0, 0)    
+	HybridRollEventComponent(editor),
+    clip(clip)
 {
     this->setWantsKeyboardFocus(false);
 }
 
-float ClipComponent::getBeat() const
-{
-    return this->clip.getStartBeat();
-}
-
-
 const Clip ClipComponent::getClip() const
 {
     return this->clip;
+}
+
+
+//===----------------------------------------------------------------------===//
+// HybridRollEventComponent
+//===----------------------------------------------------------------------===//
+
+void ClipComponent::setSelected(bool selected)
+{
+	//this->roll.wantVolumeSliderFor(this, selected);
+	HybridRollEventComponent::setSelected(selected);
+}
+
+float ClipComponent::getBeat() const
+{
+	return this->clip.getStartBeat();
+}
+
+String ClipComponent::getSelectionGroupId() const
+{
+	return this->clip.getPattern()->getPatternIdAsString();
+}
+
+String ClipComponent::getId() const
+{
+	return this->clip.getId();
 }
 
 
@@ -75,29 +90,6 @@ void ClipComponent::mouseDown(const MouseEvent &e)
     }
 }
 
-//===----------------------------------------------------------------------===//
-// SelectableComponent
-//===----------------------------------------------------------------------===//
-
-void ClipComponent::setSelected(const bool selected)
-{
-	if (this->selectedState != selected)
-	{
-		this->selectedState = selected;
-		this->roll.triggerBatchRepaintFor(this);
-	}
-}
-
-bool ClipComponent::isSelected() const
-{
-	return this->selectedState;
-}
-
-String ClipComponent::getSelectionGroupId() const
-{
-	// TODO!
-	return {};
-}
 
 //===----------------------------------------------------------------------===//
 // Helpers

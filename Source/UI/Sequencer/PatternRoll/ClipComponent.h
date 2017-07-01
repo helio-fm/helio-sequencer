@@ -21,47 +21,34 @@ class MidiLayer;
 class HybridRoll;
 
 #include "Clip.h"
-#include "FloatBoundsComponent.h"
-#include "SelectableComponent.h"
+#include "HybridRollEventComponent.h"
 
-class ClipComponent : public FloatBoundsComponent, public SelectableComponent
+class ClipComponent : public HybridRollEventComponent
 {
 public:
 
     ClipComponent(HybridRoll &editor, Clip clip);
     const Clip getClip() const;
 
-    float getBeat() const;
+	//===------------------------------------------------------------------===//
+	// HybridRollEventComponent
+	//===------------------------------------------------------------------===//
+
+	void setSelected(bool selected) override;
+	String getSelectionGroupId() const override;
+	float getBeat() const override;
+	String getId() const override;
 
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
     void mouseDown(const MouseEvent &e) override;
-
     static int compareElements(ClipComponent *first, ClipComponent *second);
-
-	//===------------------------------------------------------------------===//
-	// SelectableComponent
-	//===------------------------------------------------------------------===//
-
-	void setSelected(const bool selected) override;
-	
-	bool isSelected() const override;
-
-	String getSelectionGroupId() const override;
 
 protected:
 
-    HybridRoll &roll;
     const Clip clip;
-
-    ComponentDragger dragger;
-
-    bool selectedState;
-    float anchorBeat;
-    Colour colour;
-    Point<int> clickOffset;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ClipComponent)
 };

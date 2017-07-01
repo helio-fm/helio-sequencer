@@ -19,6 +19,7 @@
 #include "NoteComponent.h"
 #include "PianoLayer.h"
 #include "PianoRoll.h"
+#include "ProjectTreeItem.h"
 #include "MidiLayer.h"
 #include "Note.h"
 #include "HybridLassoComponent.h"
@@ -32,13 +33,14 @@
 
 static PianoLayer *getPianoLayer(SelectionProxyArray::Ptr selection)
 {
-	const auto &firstEvent = selection->getFirstAs<MidiEventComponent>()->getEvent();
+	const auto &firstEvent = selection->getFirstAs<NoteComponent>()->getNote();
 	PianoLayer *pianoLayer = static_cast<PianoLayer *>(firstEvent.getLayer());
 	return pianoLayer;
 }
 
 NoteComponent::NoteComponent(PianoRoll &editor, const Note &event)
-    : MidiEventComponent(editor, event),
+    : HybridRollEventComponent(editor),
+	  midiEvent(event),
       state(None),
       anchor(event),
       groupScalingAnchor(event),
@@ -46,8 +48,7 @@ NoteComponent::NoteComponent(PianoRoll &editor, const Note &event)
       ghostMode(false)
 {
     this->toFront(false);
-    this->setOpaque(false); // true ведет к адским тормозам
-
+    this->setOpaque(false); // speedup
     this->setPaintingIsUnclipped(true); // speedup
 
     this->setFloatBounds(this->getRoll().getEventBounds(this));
@@ -66,13 +67,6 @@ const Note &NoteComponent::getNote() const
 PianoRoll &NoteComponent::getRoll() const
 {
     return static_cast<PianoRoll &>(this->roll);
-}
-
-void NoteComponent::setSelected(bool selected)
-{
-    // как-то так?
-    //this->roll.wantVolumeSliderFor(this, selected);
-    MidiEventComponent::setSelected(selected);
 }
 
 
@@ -119,6 +113,34 @@ void NoteComponent::setQuickSelectLayerMode(bool value)
     }
 }
 
+
+//===----------------------------------------------------------------------===//
+// HybridRollEventComponent
+//===----------------------------------------------------------------------===//
+
+void NoteComponent::setSelected(bool selected)
+{
+	// как-то так?
+	//this->roll.wantVolumeSliderFor(this, selected);
+	HybridRollEventComponent::setSelected(selected);
+}
+
+float NoteComponent::getBeat() const
+{
+	return this->midiEvent.getBeat();
+}
+
+String NoteComponent::getSelectionGroupId() const
+{
+	return this->midiEvent.getLayer()->getLayerIdAsString();
+}
+
+String NoteComponent::getId() const
+{
+	return this->midiEvent.getID();
+}
+
+
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
@@ -126,20 +148,6 @@ void NoteComponent::setQuickSelectLayerMode(bool value)
 bool NoteComponent::keyStateChanged(bool isKeyDown)
 {
     return this->roll.keyStateChanged(isKeyDown);
-//
-//    // Space drag mode
-//    if (isKeyDown && KeyPress::isKeyCurrentlyDown(KeyPress::spaceKey))
-//    {
-//        this->roll.setSpaceDraggingMode(true);
-//        return true;
-//    }
-//    else if (!isKeyDown && !KeyPress::isKeyCurrentlyDown(KeyPress::spaceKey))
-//    {
-//        this->roll.setSpaceDraggingMode(false);
-//        return true;
-//    }
-//    
-//    return false;
 }
 
 void NoteComponent::modifierKeysChanged(const ModifierKeys &modifiers)
@@ -197,14 +205,15 @@ void NoteComponent::mouseDown(const MouseEvent &e)
     //const double transportPosition = this->roll.getTransportPositionByBeat(this->getBeat());
     //Logger::writeToLog("Beat: " + String(this->getBeat()) + ", transport position: " + String(transportPosition));
     
-    if (e.mods.isRightButtonDown() && this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
+    if (e.mods.isRightButtonDown() &&
+		this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
     {
         this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
         return;
     }
 
-    MidiEventComponent::mouseDown(e);
+    HybridRollEventComponent::mouseDown(e);
 
     const Lasso &selection = this->roll.getLassoSelection();
 
@@ -698,7 +707,7 @@ void NoteComponent::paint(Graphics &g)
 void NoteComponent::paintNewLook(Graphics &g)
 {
     const Colour myColour(Colours::white
-                          .interpolatedWith(this->getEvent().getLayer()->getColour(), 0.5f)
+                          .interpolatedWith(this->getNote().getLayer()->getColour(), 0.5f)
                           .withAlpha(this->ghostMode ? 0.2f : 0.95f)
                           .darker(this->selectedState ? 0.5f : 0.f));
     
@@ -762,7 +771,7 @@ void NoteComponent::paintNewLook(Graphics &g)
 void NoteComponent::paintLegacyLook(Graphics &g)
 {
     const Colour myColour(Colours::white
-                          .interpolatedWith(this->getEvent().getLayer()->getColour(), 0.5f)
+                          .interpolatedWith(this->getNote().getLayer()->getColour(), 0.5f)
                           .withAlpha(this->ghostMode ? 0.2f : 0.95f)
                           .darker(this->selectedState ? 0.5f : 0.f));
     
@@ -784,6 +793,30 @@ void NoteComponent::paintLegacyLook(Graphics &g)
     g.drawHorizontalLine(this->getHeight() - 3, sx, sw * this->getVelocity());
     g.drawHorizontalLine(this->getHeight() - 4, sx, sw * this->getVelocity());
 
+}
+
+
+//===----------------------------------------------------------------------===//
+// Helpers
+//===----------------------------------------------------------------------===//
+
+bool NoteComponent::belongsToLayerSet(Array<MidiLayer *> layers) const
+{
+	for (int i = 0; i < layers.size(); ++i)
+	{
+		if (this->getNote().getLayer() == layers.getUnchecked(i))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void NoteComponent::activateCorrespondingLayer(bool selectOthers, bool deselectOthers)
+{
+	MidiLayer *layer = this->getNote().getLayer();
+	this->roll.getProject().activateLayer(layer, selectOthers, deselectOthers);
 }
 
 

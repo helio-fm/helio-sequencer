@@ -78,11 +78,11 @@ private:
         const float startBeat = PianoRollToolbox::findStartBeat(this->selection);
         const float endBeat = PianoRollToolbox::findEndBeat(this->selection);
 
-        Array<MidiEventComponent *> sortedSelection;
+        Array<HybridRollEventComponent *> sortedSelection;
 
         for (int i = 0; i < this->selection.getNumSelected(); ++i)
         {
-            MidiEventComponent *mc = static_cast<MidiEventComponent *>(this->selection.getSelectedItem(i));
+            HybridRollEventComponent *mc = static_cast<HybridRollEventComponent *>(this->selection.getSelectedItem(i));
             sortedSelection.addSorted(*mc, mc);
         }
 

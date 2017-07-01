@@ -19,16 +19,12 @@
 #include "MainLayout.h"
 #include "PatternRoll.h"
 #include "HybridRollHeader.h"
-#include "MidiLayer.h"
-#include "PianoLayer.h"
-#include "AutomationLayer.h"
-#include "AnnotationsLayer.h"
+#include "Pattern.h"
 #include "PianoLayerTreeItem.h"
 #include "AutomationLayerTreeItem.h"
 #include "ProjectTreeItem.h"
 #include "ProjectTimeline.h"
-#include "Note.h"
-#include "NoteComponent.h"
+#include "ClipComponent.h"
 #include "HelperRectangle.h"
 #include "SmoothZoomController.h"
 #include "MultiTouchController.h"
@@ -94,7 +90,7 @@ void PatternRoll::deleteSelection()
     {
         const Clip clip = this->selection.getItemAs<ClipComponent>(i)->getClip();
         Pattern *ownerPattern = clip.getLayer();
-        Array<Note> *arrayToAddTo = nullptr;
+        Array<Clip> *arrayToAddTo = nullptr;
 
         for (int j = 0; j < selections.size(); ++j)
         {
@@ -109,7 +105,7 @@ void PatternRoll::deleteSelection()
 
         if (arrayToAddTo == nullptr)
         {
-            arrayToAddTo = new Array<Note>();
+            arrayToAddTo = new Array<Clip>();
             selections.add(arrayToAddTo);
         }
 
@@ -122,7 +118,7 @@ void PatternRoll::deleteSelection()
     {
         PianoLayer *pianoLayer = static_cast<PianoLayer *>(selections.getUnchecked(i)->getUnchecked(0).getLayer());
 
-        if (! didCheckpoint)
+		if (! didCheckpoint)
         {
             didCheckpoint = true;
             pianoLayer->checkpoint();
@@ -197,7 +193,7 @@ int PatternRoll::getNumRows() const noexcept
 // Ghost notes
 //===----------------------------------------------------------------------===//
 
-void PatternRoll::showGhostNoteFor(ClipComponent *targetClipComponent)
+void PatternRoll::showGhostClipFor(ClipComponent *targetClipComponent)
 {
     auto component = new NoteComponent(*this, targetClipComponent->getNote());
     component->setEnabled(false);
@@ -286,14 +282,13 @@ float PatternRoll::getZoomFactorY() const
 // Note management
 //===----------------------------------------------------------------------===//
 
-void PatternRoll::addNote(int key, float beat, float length, float velocity)
+void PatternRoll::addClip(int key, float beat, float length, float velocity)
 {
-    //if (PianoLayer *activePianoLayer = dynamic_cast<PianoLayer *>(this->activeLayer))
-    PianoLayer *activePianoLayer = static_cast<PianoLayer *>(this->primaryActiveLayer);
+    Pattern *pattern = null; // TODO
     {
-        activePianoLayer->checkpoint();
-        Note note(activePianoLayer, key, beat, length, velocity);
-        activePianoLayer->insert(note, true);
+        pattern->checkpoint();
+        Note note(pattern, key, beat, length, velocity);
+        pattern->insert(note, true);
     }
 }
 
@@ -304,35 +299,26 @@ Rectangle<float> PatternRoll::getEventBounds(FloatBoundsComponent *mc) const
     return this->getEventBounds(nc->getKey(), nc->getBeat(), nc->getLength());
 }
 
-Rectangle<float> PatternRoll::getEventBounds(const int key, const float beat, const float length) const
+Rectangle<float> PatternRoll::getEventBounds(int key, float beat, float length) const
 {
     const float startOffsetBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
 	const float x = this->barWidth * (beat - startOffsetBeat) / NUM_BEATS_IN_BAR;
 	const float w = this->barWidth * length / NUM_BEATS_IN_BAR;
 
+	// TODO y position by layer
     const float yPosition = float(this->getYPositionByKey(key));
     return Rectangle<float> (x, yPosition + 1, w, float(this->rowHeight - 1));
 }
 
-void PatternRoll::getRowsColsByComponentPosition(const float x, const float y, int &noteNumber, float &beatNumber) const
+float PatternRoll::getBeatByComponentPosition(float x) const
 {
-    beatNumber = this->getRoundBeatByXPosition(int(x)); /* - 0.5f ? */
-    noteNumber = roundToInt((this->getHeight() - y) / this->rowHeight);
-    noteNumber = jmin(jmax(noteNumber, 0), numRows - 1);
+    return this->getRoundBeatByXPosition(int(x)); /* - 0.5f ? */
 }
 
-void PatternRoll::getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber) const
+float PatternRoll::getBeatByMousePosition(int x) const
 {
-    beatNumber = this->getFloorBeatByXPosition(x);
-    noteNumber = roundToInt((this->getHeight() - y) / this->rowHeight);
-    noteNumber = jmin(jmax(noteNumber, 0), numRows - 1);
+    return this->getFloorBeatByXPosition(x);
 }
-
-int PatternRoll::getYPositionByKey(int targetKey) const
-{
-    return (this->getHeight() - this->rowHeight) - (targetKey * this->rowHeight);
-}
-
 
 //===----------------------------------------------------------------------===//
 // Drag helpers
@@ -502,7 +488,7 @@ void PatternRoll::onRemoveMidiLayer(const MidiLayer *layer)
 // LassoSource
 //===----------------------------------------------------------------------===//
 
-void PatternRoll::findLassoItemsInArea(Array<MidiEventComponent *> &itemsFound, const Rectangle<int> &rectangle)
+void PatternRoll::findLassoItemsInArea(Array<HybridRollEventComponent *> &itemsFound, const Rectangle<int> &rectangle)
 {
     bool shouldInvalidateSelectionCache = false;
 
@@ -972,9 +958,9 @@ void PatternRoll::insertNewNoteAt(const MouseEvent &e)
 {
     int draggingRow = 0;
     float draggingColumn = 0.f;
-    this->getRowsColsByMousePosition(e.x, e.y, draggingRow, draggingColumn);
+    this->getBeatByMousePosition(e.x);
     this->addNewNoteMode = true;
-    this->addNote(draggingRow, draggingColumn, this->defaultClipLength, this->defaultClipVelocity);
+    this->addClip(draggingRow, draggingColumn, this->defaultClipLength, this->defaultClipVelocity);
     //this->activeLayer->sendMidiMessage(MidiMessage::noteOn(this->activeLayer->getChannel(), draggingRow, 0.5f));
 }
 

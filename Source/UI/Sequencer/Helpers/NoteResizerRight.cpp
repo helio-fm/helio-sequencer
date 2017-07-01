@@ -167,7 +167,7 @@ void NoteResizerRight::mouseDrag (const MouseEvent& e)
                 groupDragAfter.add(nc->continueGroupScalingRight(groupScaleFactor));
             }
 
-            const auto &event = layerSelection->getFirstAs<MidiEventComponent>()->getEvent();
+            const auto &event = layerSelection->getFirstAs<NoteComponent>()->getNote();
             PianoLayer *pianoLayer = static_cast<PianoLayer *>(event.getLayer());
 
             pianoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
@@ -178,7 +178,7 @@ void NoteResizerRight::mouseDrag (const MouseEvent& e)
     //[/UserCode_mouseDrag]
 }
 
-void NoteResizerRight::mouseUp (const MouseEvent& e)
+void NoteResizerRight::mouseUp (const MouseEvent &e)
 {
     //[UserCode_mouseUp] -- Add your code here...
     const Lasso &selection = this->roll.getLassoSelection();
