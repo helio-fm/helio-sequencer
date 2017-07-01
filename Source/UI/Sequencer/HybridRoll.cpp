@@ -92,7 +92,6 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject,
     viewportAnchor(0, 0),
     clickAnchor(0, 0),
     zoomAnchor(0, 0),
-    primaryActiveLayer(nullptr),
     barWidth(0),
     firstBar(INT_MAX),
     lastBar(INT_MIN),
@@ -193,20 +192,6 @@ ProjectTreeItem &HybridRoll::getProject() const noexcept
     return this->project;
 }
 
-MidiLayer *HybridRoll::getPrimaryActiveMidiLayer() const noexcept
-{
-    return this->primaryActiveLayer;
-}
-
-int HybridRoll::getNumActiveLayers() const noexcept
-{
-    return this->activeLayers.size();
-}
-
-MidiLayer *HybridRoll::getActiveMidiLayer(int index) const noexcept
-{
-    return this->activeLayers[index];
-}
 
 //===----------------------------------------------------------------------===//
 // Timeline events
@@ -857,7 +842,8 @@ Lasso &HybridRoll::getLassoSelection()
     return this->selection;
 }
 
-void HybridRoll::selectEventsInRange(float startBeat, float endBeat, bool shouldClearAllOthers)
+void HybridRoll::selectEventsInRange(float startBeat, 
+	float endBeat, bool shouldClearAllOthers)
 {
     if (shouldClearAllOthers)
     {
@@ -899,19 +885,6 @@ void HybridRoll::deselectEvent(SelectableComponent *event)
 void HybridRoll::deselectAll()
 {
     this->selection.deselectAll();
-}
-
-void HybridRoll::selectAll()
-{
-    for (int i = 0; i < this->eventComponents.size(); ++i)
-    {
-        MidiEventComponent *child = this->eventComponents.getUnchecked(i);
-
-        if (child->belongsToLayerSet(this->activeLayers))
-        {
-            this->selection.addToSelection(child);
-        }
-    }
 }
 
 HybridLassoComponent *HybridRoll::getLasso() const
@@ -1000,41 +973,28 @@ void HybridRoll::focusLost(FocusChangeType cause)
 
 bool HybridRoll::keyPressed(const KeyPress &key)
 {
-    //Logger::writeToLog("HybridRoll::keyPressed " + key.getTextDescription());
-
     if (key == KeyPress::createFromDescription("command + a"))
     {
         this->selectAll();
         return true;
     }
-//    else if (key == KeyPress::createFromDescription("/"))
-//    {
-//        Logger::writeToLog(String(PianoRollToolbox::findStartBeat(this->getLassoSelection())));
-//        Logger::writeToLog(String(PianoRollToolbox::findEndBeat(this->getLassoSelection())));
-//    }
     else if (key == KeyPress::createFromDescription("command + z") ||
              key == KeyPress::createFromDescription("ctrl + z"))
     {
-        if (this->primaryActiveLayer)
-        {
-            HYBRID_ROLL_BULK_REPAINT_START
-            this->primaryActiveLayer->undo();
-            HYBRID_ROLL_BULK_REPAINT_END
-            return true;
-        }
+        HYBRID_ROLL_BULK_REPAINT_START
+        this->project.undo();
+        HYBRID_ROLL_BULK_REPAINT_END
+        return true;
     }
     else if (key == KeyPress::createFromDescription("command + y") ||
              key == KeyPress::createFromDescription("ctrl + y") ||
              key == KeyPress::createFromDescription("command + shift + z") ||
              key == KeyPress::createFromDescription("ctrl + shift + z"))
     {
-        if (this->primaryActiveLayer)
-        {
-            HYBRID_ROLL_BULK_REPAINT_START
-            this->primaryActiveLayer->redo();
-            HYBRID_ROLL_BULK_REPAINT_END
-            return true;
-        }
+        HYBRID_ROLL_BULK_REPAINT_START
+        this->project.redo();
+        HYBRID_ROLL_BULK_REPAINT_END
+        return true;
     }
     else if ((key == KeyPress::createFromDescription("command + c")) ||
              (key == KeyPress::createFromDescription("command + insert")) ||
@@ -1058,7 +1018,7 @@ bool HybridRoll::keyPressed(const KeyPress &key)
         if (this->selection.getNumSelected() > 0)
         {
             InternalClipboard::copy(*this, false);
-            this->primaryActiveLayer->checkpoint();
+            this->project.checkpoint();
             const float leftBeat = PianoRollToolbox::findStartBeat(this->selection);
             const float rightBeat = PianoRollToolbox::findEndBeat(this->selection);
             PianoRollToolbox::wipeSpace(this->project.getLayersList(), leftBeat, rightBeat, true, false);
@@ -1122,11 +1082,6 @@ bool HybridRoll::keyPressed(const KeyPress &key)
         this->project.getEditMode().setMode(HybridRollEditMode::selectionMode);
         return true;
     }
-//    else if (key == KeyPress::createFromDescription("4"))
-//    {
-//        this->project.getEditMode().setMode(HybridRollEditMode::zoomMode);
-//        return true;
-//    }
     else if (key == KeyPress::createFromDescription("4"))
     {
         this->project.getEditMode().setMode(HybridRollEditMode::dragMode);

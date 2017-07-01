@@ -24,7 +24,7 @@ class Autosaver;
 class Document;
 class Project;
 class ProjectListener;
-class MidiEditor;
+class SequencerLayout;
 class HybridRoll;
 class MidiEvent;
 class TrackMapRenderer;
@@ -269,7 +269,7 @@ private:
     ScopedPointer<Component> trackMap;
 #endif
 
-    ScopedPointer<MidiEditor> editor;
+    ScopedPointer<SequencerLayout> editor;
 
     HybridRollEditMode rollEditMode;
 

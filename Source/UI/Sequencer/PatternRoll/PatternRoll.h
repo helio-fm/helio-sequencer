@@ -18,14 +18,14 @@
 #pragma once
 
 #if JUCE_IOS
-#   define PIANOROLL_HAS_PRERENDERED_BACKGROUND 1
+#   define PATTERNROLL_HAS_PRERENDERED_BACKGROUND 1
 #else
-#   define PIANOROLL_HAS_PRERENDERED_BACKGROUND 0
+#   define PATTERNROLL_HAS_PRERENDERED_BACKGROUND 0
 #endif
 
 #if HELIO_DESKTOP
-#   define PIANOROLL_HAS_NOTE_RESIZERS 0
-#   if PIANOROLL_HAS_PRERENDERED_BACKGROUND
+#   define PATTERNROLL_HAS_NOTE_RESIZERS 0
+#   if PATTERNROLL_HAS_PRERENDERED_BACKGROUND
 #       define MAX_ROW_HEIGHT (30)
 #       define MIN_ROW_HEIGHT (8)
 #   else
@@ -33,8 +33,8 @@
 #       define MIN_ROW_HEIGHT (6)
 #   endif
 #elif HELIO_MOBILE
-#   define PIANOROLL_HAS_NOTE_RESIZERS 1
-#   if PIANOROLL_HAS_PRERENDERED_BACKGROUND
+#   define PATTERNROLL_HAS_NOTE_RESIZERS 1
+#   if PATTERNROLL_HAS_PRERENDERED_BACKGROUND
 #       define MAX_ROW_HEIGHT (40)
 #       define MIN_ROW_HEIGHT (10)
 #   else
@@ -43,19 +43,17 @@
 #   endif
 #endif
 
-class MidiLayer;
-class NoteComponent;
+class Pattern;
+class ClipComponent;
 class PianoRollReboundThread;
 class PianoRollCellHighlighter;
 class HelperRectangle;
-class NoteResizerLeft;
-class NoteResizerRight;
 
 #include "HelioTheme.h"
 #include "HybridRoll.h"
-#include "Note.h"
+#include "Clip.h"
 
-class PianoRoll : public HybridRoll
+class PatternRoll : public HybridRoll
 {
 public:
 
@@ -64,38 +62,28 @@ public:
     
 public:
 
-    PianoRoll(ProjectTreeItem &parentProject,
+    PatternRoll(ProjectTreeItem &parentProject,
               Viewport &viewportRef,
               WeakReference<AudioMonitor> clippingDetector);
 
-    ~PianoRoll() override;
+    ~PatternRoll() override;
 
     void deleteSelection();
     
     void reloadMidiTrack() override;
-    void setActiveMidiLayers(Array<MidiLayer *> tracks, MidiLayer *primaryLayer) override;
 
     void setRowHeight(const int newRowHeight);
-
-    inline int getRowHeight() const
+    inline int getRowHeight() const noexcept
     { return this->rowHeight; }
 
-    inline int getNumRows() const
-    { return this->numRows; }
-    
-    inline float getDefaultNoteVelocity() const
-    { return this->defaultNoteVelocity; }
-
-    inline void setDefaultNoteVelocity(float val)
-    { this->defaultNoteVelocity = val; }
-
+	int getNumRows() const noexcept;
     
     //===------------------------------------------------------------------===//
     // Ghost notes
     //===------------------------------------------------------------------===//
     
-    void showGhostNoteFor(NoteComponent *targetNoteComponent);
-    void hideAllGhostNotes();
+    void showGhostNoteFor(ClipComponent *targetNoteComponent);
+    void hideAllGhostClips();
     
 
     //===------------------------------------------------------------------===//
@@ -171,7 +159,7 @@ public:
 
     
     //===------------------------------------------------------------------===//
-    // HybridRoll's legacy
+    // MidiRoll's legacy
     //===------------------------------------------------------------------===//
     
     void handleAsyncUpdate() override;
@@ -193,19 +181,13 @@ private:
     void insertNewNoteAt(const MouseEvent &e);
     bool dismissDraggingNoteIfNeeded();
 
-    bool mouseDownWasTriggered; // juce mouseUp wierdness workaround
+    bool mouseDownWasTriggered; // juce mouseUp weirdness workaround
 
-    NoteComponent *draggingNote;
+	ClipComponent *draggingClip;
     bool addNewNoteMode;
     
-    int numRows;
     int rowHeight;
-
-    float defaultNoteLength;
-    float defaultNoteVelocity;
-    
-    bool usingFullRender;
-    
+	
 private:
     
     void focusToRegionAnimated(int startKey, int endKey, float startBeat, float endBeat);
@@ -214,14 +196,10 @@ private:
     
 private:
     
-    OwnedArray<NoteComponent> ghostNotes;
+    OwnedArray<ClipComponent> ghostClips;
     
-    //ScopedPointer<HelperRectangle> helperVertical;
     ScopedPointer<HelperRectangle> helperHorizontal;
-
-    ScopedPointer<NoteResizerLeft> noteResizerLeft;
-    ScopedPointer<NoteResizerRight> noteResizerRight;
     
-    HashMap<Note, NoteComponent *, NoteHashFunction> componentsHashTable;
+    HashMap<Clip, ClipComponent *, ClipHashFunction> componentsHashTable;
 
 };

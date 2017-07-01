@@ -220,17 +220,11 @@ void HybridRollCommandPanel::handleCommandMessage (int commandId)
 
 
         case CommandIDs::Undo:
-            if (HybridRoll *roll = this->project.getLastFocusedRoll())
-            {
-                roll->getPrimaryActiveMidiLayer()->undo();
-            }
+			this->project.undo();
             break;
 
         case CommandIDs::Redo:
-            if (HybridRoll *roll = this->project.getLastFocusedRoll())
-            {
-                roll->getPrimaryActiveMidiLayer()->redo();
-            }
+			this->project.redo();
             break;
 
         case CommandIDs::ArpNotes:

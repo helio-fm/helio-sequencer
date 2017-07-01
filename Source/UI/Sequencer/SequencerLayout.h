@@ -17,6 +17,7 @@
 
 #pragma once
 
+class PianoRoll;
 class HybridRoll;
 class MidiLayer;
 class AutomationLayer;
@@ -30,16 +31,15 @@ class Origami;
 
 #include "Serializable.h"
 
-// TODO remove as EditorLayout or HybridRollLayout or so
-class MidiEditor :
+class SequencerLayout :
     public Component,
     public Serializable,
     public FileDragAndDropTarget
 {
 public:
 
-    explicit MidiEditor(ProjectTreeItem &parentProject);
-    ~MidiEditor() override;
+    explicit SequencerLayout(ProjectTreeItem &parentProject);
+    ~SequencerLayout() override;
 
     void setActiveMidiLayers(Array<MidiLayer *> tracks, MidiLayer *primaryTrack);
     
@@ -80,7 +80,7 @@ private:
     ScopedPointer<Viewport> viewport;
     ScopedPointer<TrackScroller> scroller;
 
-    ScopedPointer<HybridRoll> roll;
+    ScopedPointer<PianoRoll> roll;
     ScopedPointer<Component> rollContainer; // лейаут для вьюпорта с роллом и минимап-скроллера внизу
     //ScopedPointer<Component> automationContainer; // лейаут для редактора автоматизации с тулбаром справа
     ScopedPointer<HybridRollCommandPanel> rollCommandPanel; // тублар справа от роллов
@@ -94,6 +94,6 @@ private:
     ScopedPointer<MidiEditorSplitContainer> allEditorsContainer; // разделяет automationsOrigami вверху и rollContainer внизу
     ScopedPointer<Origami> allEditorsAndCommandPanel; // вертикальный стек, содержит все редакторы + тулбар справа
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiEditor);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SequencerLayout);
 
 };

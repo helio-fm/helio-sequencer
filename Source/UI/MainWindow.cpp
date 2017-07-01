@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "MainWindow.h"
 #include "MainLayout.h"
-#include "MidiEditor.h"
+#include "SequencerLayout.h"
 #include "Config.h"
 #include "SerializationKeys.h"
 #include "FatalErrorScreen.h"

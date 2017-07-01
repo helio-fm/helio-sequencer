@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "MidiEditor.h"
+#include "SequencerLayout.h"
 #include "MidiLayer.h"
 #include "AutomationLayer.h"
 #include "PianoRoll.h"
@@ -381,7 +381,7 @@ private:
 // Editor Itself
 //===----------------------------------------------------------------------===//
 
-MidiEditor::MidiEditor(ProjectTreeItem &parentProject) :
+SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
     project(parentProject),
     roll(nullptr)
 {
@@ -455,7 +455,7 @@ MidiEditor::MidiEditor(ProjectTreeItem &parentProject) :
     this->setFocusContainer(false);
 }
 
-MidiEditor::~MidiEditor()
+SequencerLayout::~SequencerLayout()
 {
     this->allEditorsAndCommandPanel = nullptr;
     this->allEditorsContainer = nullptr;
@@ -474,7 +474,7 @@ MidiEditor::~MidiEditor()
     this->viewport = nullptr;
 }
 
-void MidiEditor::setActiveMidiLayers(Array<MidiLayer *> tracks, MidiLayer *primaryTrack)
+void SequencerLayout::setActiveMidiLayers(Array<MidiLayer *> tracks, MidiLayer *primaryTrack)
 {
     //Logger::writeToLog("MidiEditor::setActiveMidiLayers");
     this->roll->setActiveMidiLayers(tracks, primaryTrack);
@@ -485,7 +485,7 @@ void MidiEditor::setActiveMidiLayers(Array<MidiLayer *> tracks, MidiLayer *prima
 	}
 }
 
-void MidiEditor::hideAutomationEditor(AutomationLayer *targetLayer)
+void SequencerLayout::hideAutomationEditor(AutomationLayer *targetLayer)
 {
     const String &layerId = targetLayer->getLayerId().toString();
     
@@ -495,7 +495,7 @@ void MidiEditor::hideAutomationEditor(AutomationLayer *targetLayer)
     }
 }
 
-bool MidiEditor::toggleShowAutomationEditor(AutomationLayer *targetLayer)
+bool SequencerLayout::toggleShowAutomationEditor(AutomationLayer *targetLayer)
 {
     const String &layerId = targetLayer->getLayerId().toString();
     
@@ -589,7 +589,7 @@ bool MidiEditor::toggleShowAutomationEditor(AutomationLayer *targetLayer)
     return false;
 }
 
-HybridRoll *MidiEditor::getRoll() const
+HybridRoll *SequencerLayout::getRoll() const
 {
     return this->roll;
 }
@@ -598,13 +598,13 @@ HybridRoll *MidiEditor::getRoll() const
 // FileDragAndDropTarget
 //===----------------------------------------------------------------------===//
 
-bool MidiEditor::isInterestedInFileDrag(const StringArray &files)
+bool SequencerLayout::isInterestedInFileDrag(const StringArray &files)
 {
     File file = File(files.joinIntoString(String::empty, 0, 1));
     return (file.hasFileExtension("mid") || file.hasFileExtension("midi"));
 }
 
-void MidiEditor::filesDropped(const juce::StringArray &filenames,
+void SequencerLayout::filesDropped(const juce::StringArray &filenames,
                               int mouseX, int mouseY)
 {
     if (isInterestedInFileDrag(filenames))
@@ -620,7 +620,7 @@ void MidiEditor::filesDropped(const juce::StringArray &filenames,
 // Component
 //===----------------------------------------------------------------------===//
 
-void MidiEditor::resized()
+void SequencerLayout::resized()
 {
     this->allEditorsAndCommandPanel->setBounds(this->getLocalBounds());
 
@@ -638,7 +638,7 @@ void MidiEditor::resized()
 // UI State Serialization
 //===----------------------------------------------------------------------===//
 
-XmlElement *MidiEditor::serialize() const
+XmlElement *SequencerLayout::serialize() const
 {
     // задел на будущее, типа
     auto xml = new XmlElement(Serialization::Core::editor);
@@ -646,7 +646,7 @@ XmlElement *MidiEditor::serialize() const
     return xml;
 }
 
-void MidiEditor::deserialize(const XmlElement &xml)
+void SequencerLayout::deserialize(const XmlElement &xml)
 {
     this->reset();
 
@@ -662,7 +662,7 @@ void MidiEditor::deserialize(const XmlElement &xml)
     }
 }
 
-void MidiEditor::reset()
+void SequencerLayout::reset()
 {
     // no need for this yet
 }

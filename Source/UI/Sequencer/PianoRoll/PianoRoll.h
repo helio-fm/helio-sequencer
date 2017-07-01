@@ -43,17 +43,19 @@
 #   endif
 #endif
 
-class Pattern;
-class ClipComponent;
+class MidiLayer;
+class NoteComponent;
 class PianoRollReboundThread;
 class PianoRollCellHighlighter;
 class HelperRectangle;
+class NoteResizerLeft;
+class NoteResizerRight;
 
 #include "HelioTheme.h"
 #include "HybridRoll.h"
-#include "Clip.h"
+#include "Note.h"
 
-class PatternRoll : public HybridRoll
+class PianoRoll : public HybridRoll
 {
 public:
 
@@ -62,32 +64,35 @@ public:
     
 public:
 
-    PatternRoll(ProjectTreeItem &parentProject,
+    PianoRoll(ProjectTreeItem &parentProject,
               Viewport &viewportRef,
               WeakReference<AudioMonitor> clippingDetector);
 
-    ~PatternRoll() override;
+    ~PianoRoll() override;
 
     void deleteSelection();
     
     void reloadMidiTrack() override;
-    void setActiveMidiLayers(Array<MidiLayer *> tracks, MidiLayer *primaryLayer) override;
+	int getNumActiveLayers() const noexcept;
+	MidiLayer *getActiveMidiLayer(int index) const noexcept;
+	MidiLayer *getPrimaryActiveMidiLayer() const noexcept;
+	void setActiveMidiLayers(Array<MidiLayer *> tracks,
+		MidiLayer *primaryLayer);
 
     void setRowHeight(const int newRowHeight);
-
     inline int getRowHeight() const
     { return this->rowHeight; }
 
     inline int getNumRows() const
     { return this->numRows; }
-    
-    inline float getDefaultNoteVelocity() const
-    { return this->defaultNoteVelocity; }
 
-    inline void setDefaultNoteVelocity(float val)
-    { this->defaultNoteVelocity = val; }
+	//===------------------------------------------------------------------===//
+	// HybridRoll
+	//===------------------------------------------------------------------===//
 
-    
+	void selectAll() override;
+
+
     //===------------------------------------------------------------------===//
     // Ghost notes
     //===------------------------------------------------------------------===//
@@ -110,7 +115,7 @@ public:
     //===------------------------------------------------------------------===//
 
     void addNote(int key, float beat, float length, float velocity);
-    Rectangle<float> getEventBounds(Component *mc) const override;
+    Rectangle<float> getEventBounds(FloatBoundsComponent *mc) const override;
     Rectangle<float> getEventBounds(const int key, const float beat, const float length) const;
     void getRowsColsByComponentPosition(const float x, const float y, int &noteNumber, float &beatNumber) const;
     void getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber) const;
@@ -169,7 +174,7 @@ public:
 
     
     //===------------------------------------------------------------------===//
-    // MidiRoll's legacy
+    // HybridRoll's legacy
     //===------------------------------------------------------------------===//
     
     void handleAsyncUpdate() override;
@@ -185,25 +190,25 @@ public:
     
 private:
 
+	Array<MidiLayer *> activeLayers;
+	MidiLayer *primaryActiveLayer;
+
+private:
+
     void updateChildrenBounds() override;
     void updateChildrenPositions() override;
 
     void insertNewNoteAt(const MouseEvent &e);
     bool dismissDraggingNoteIfNeeded();
 
-    bool mouseDownWasTriggered; // juce mouseUp wierdness workaround
+    bool mouseDownWasTriggered; // juce mouseUp weirdness workaround
 
-	ClipComponent *draggingNote;
+    NoteComponent *draggingNote;
     bool addNewNoteMode;
     
     int numRows;
     int rowHeight;
 
-    float defaultNoteLength;
-    float defaultNoteVelocity;
-    
-    bool usingFullRender;
-    
 private:
     
     void focusToRegionAnimated(int startKey, int endKey, float startBeat, float endBeat);
@@ -212,7 +217,7 @@ private:
     
 private:
     
-    OwnedArray<ClipComponent> ghostNotes;
+    OwnedArray<NoteComponent> ghostNotes;
     
     //ScopedPointer<HelperRectangle> helperVertical;
     ScopedPointer<HelperRectangle> helperHorizontal;
@@ -220,6 +225,6 @@ private:
     ScopedPointer<NoteResizerLeft> noteResizerLeft;
     ScopedPointer<NoteResizerRight> noteResizerRight;
     
-    HashMap<Clip, ClipComponent *, ClipHashFunction> componentsHashTable;
+    HashMap<Note, NoteComponent *, NoteHashFunction> componentsHashTable;
 
 };

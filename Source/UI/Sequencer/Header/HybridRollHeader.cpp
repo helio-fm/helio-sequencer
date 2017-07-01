@@ -153,16 +153,7 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
         const double transportPosition = this->roll.getTransportPositionByXPosition(e.x, float(this->getWidth()));
 #endif
         
-        const bool shouldProbeAllLayers = (!e.mods.isAnyModifierKeyDown() || e.mods.isRightButtonDown());
-        
-        if (shouldProbeAllLayers)
-        {
-            this->transport.probeSoundAt(transportPosition, nullptr);
-        }
-        else
-        {
-            this->transport.probeSoundAt(transportPosition, this->roll.getPrimaryActiveMidiLayer());
-        }
+        this->transport.probeSoundAt(transportPosition, nullptr);
         
         this->playingIndicator = new SoundProbeIndicator();
         this->roll.addAndMakeVisible(this->playingIndicator);

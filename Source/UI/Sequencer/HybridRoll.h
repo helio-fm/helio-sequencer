@@ -116,29 +116,24 @@ public:
     };
     
     HybridRoll(ProjectTreeItem &parentProject,
-             Viewport &viewportRef,
-             WeakReference<AudioMonitor> AudioMonitor);
+		Viewport &viewportRef,
+		WeakReference<AudioMonitor> AudioMonitor);
 
     ~HybridRoll() override;
 
     Viewport &getViewport() const noexcept;
     Transport &getTransport() const noexcept;
     ProjectTreeItem &getProject() const noexcept;
-    MidiLayer *getPrimaryActiveMidiLayer() const noexcept;
     HybridRollEditMode getEditMode() const;
 
-    int getNumActiveLayers() const noexcept;
-    MidiLayer *getActiveMidiLayer(int index) const noexcept;
-    
-    virtual void reloadMidiTrack() = 0;
-    virtual void setActiveMidiLayers(Array<MidiLayer *> tracks, MidiLayer *primaryLayer) = 0;
-    virtual Rectangle<float> getEventBounds(FloatBoundsComponent *nc) const = 0;
+	virtual void selectAll() = 0;
+	virtual void reloadMidiTrack() = 0;
+	virtual Rectangle<float> getEventBounds(FloatBoundsComponent *nc) const = 0;
     
     void scrollToSeekPosition();
 	float getPositionForNewTimelineEvent() const;
     void insertAnnotationWithinScreen(const String &annotation);
 	void insertTimeSignatureWithinScreen(int numerator, int denominator);
-	void selectAll();
     
     //===------------------------------------------------------------------===//
     // Custom maps
@@ -405,10 +400,6 @@ protected:
     void endInsertingSpaceIfNeeded();
     
     ScopedPointer<InsertSpaceHelper> insertSpaceHelper;
-
-    
-    Array<MidiLayer *> activeLayers;
-    MidiLayer *primaryActiveLayer;
 
     Lasso selection;
 

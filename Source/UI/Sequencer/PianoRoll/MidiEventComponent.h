@@ -24,6 +24,7 @@ class HybridRoll;
 #include "FloatBoundsComponent.h"
 #include "SelectableComponent.h"
 
+// TODO rework as HybridEventComponent
 class MidiEventComponent : public FloatBoundsComponent, public SelectableComponent
 {
 public:

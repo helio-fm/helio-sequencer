@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "MainLayout.h"
-#include "PianoRoll.h"
+#include "PatternRoll.h"
 #include "HybridRollHeader.h"
 #include "MidiLayer.h"
 #include "PianoLayer.h"
@@ -50,25 +50,18 @@
 #include "SerializationKeys.h"
 
 #define ROWS_OF_TWO_OCTAVES 24
+#define DEFAULT_CLIP_LENGTH 1.0f
 
-PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
+PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
                      Viewport &viewportRef,
                      WeakReference<AudioMonitor> clippingDetector) :
     HybridRoll(parentProject, viewportRef, clippingDetector),
-    //rowsPattern(Image::RGB, 1, 1, true),
-    numRows(128),
-    rowHeight(MIN_ROW_HEIGHT),
-    draggingNote(nullptr),
-    defaultNoteLength(0.5f),
-    defaultNoteVelocity(0.5f),
+	rowHeight(MIN_ROW_HEIGHT),
+    draggingClip(nullptr),
     addNewNoteMode(false),
-    mouseDownWasTriggered(false),
-    usingFullRender(false)
+    mouseDownWasTriggered(false)
 {
     this->setRowHeight(MIN_ROW_HEIGHT + 5);
-
-    //this->helperVertical = new HelperRectangleVertical();
-    //this->addChildComponent(this->helperVertical);
 
     this->helperHorizontal = new HelperRectangleHorizontal();
     this->addChildComponent(this->helperHorizontal);
@@ -79,12 +72,12 @@ PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
     this->reloadMidiTrack();
 }
 
-PianoRoll::~PianoRoll()
+PatternRoll::~PatternRoll()
 {
 }
 
 
-void PianoRoll::deleteSelection()
+void PatternRoll::deleteSelection()
 {
     if (this->selection.getNumSelected() == 0)
     {
@@ -92,23 +85,22 @@ void PianoRoll::deleteSelection()
     }
     
     // Avoids crash
-    this->hideAllGhostNotes();
+    this->hideAllGhostClips();
 
     // раскидать this->selection по массивам
-    OwnedArray< Array<Note> > selections;
+    OwnedArray< Array<Clip> > selections;
 
     for (int i = 0; i < this->selection.getNumSelected(); ++i)
     {
-        const MidiEvent &event = this->selection.getItemAs<MidiEventComponent>(i)->getEvent();
-        const Note &note = static_cast<const Note &>(event);
-        MidiLayer *ownerLayer = event.getLayer();
+        const Clip clip = this->selection.getItemAs<ClipComponent>(i)->getClip();
+        Pattern *ownerPattern = clip.getLayer();
         Array<Note> *arrayToAddTo = nullptr;
 
         for (int j = 0; j < selections.size(); ++j)
         {
             if (selections.getUnchecked(j)->size() > 0)
             {
-                if (selections.getUnchecked(j)->getUnchecked(0).getLayer() == ownerLayer)
+                if (selections.getUnchecked(j)->getUnchecked(0).getLayer() == ownerPattern)
                 {
                     arrayToAddTo = selections.getUnchecked(j);
                 }
@@ -121,7 +113,7 @@ void PianoRoll::deleteSelection()
             selections.add(arrayToAddTo);
         }
 
-        arrayToAddTo->add(note);
+        arrayToAddTo->add(clip);
     }
 
     bool didCheckpoint = false;
@@ -142,7 +134,7 @@ void PianoRoll::deleteSelection()
     this->grabKeyboardFocus(); // not working?
 }
 
-void PianoRoll::reloadMidiTrack()
+void PatternRoll::reloadMidiTrack()
 {
     //Logger::writeToLog("PianoRoll::reloadMidiTrack");
 
@@ -187,41 +179,7 @@ void PianoRoll::reloadMidiTrack()
     this->repaint(this->viewport.getViewArea());
 }
 
-void PianoRoll::setActiveMidiLayers(Array<MidiLayer *> newLayers, MidiLayer *primaryLayer)
-{
-    // todo! check arrays for equality
-    //if (this->activeLayer == layer) { return; }
-
-    // todo! check if primary layer is within newLayers
-
-    //Logger::writeToLog("PianoRoll::setActiveMidiLayers");
-
-    this->selection.deselectAll();
-
-    for (int i = 0; i < this->eventComponents.size(); ++i)
-    {
-        NoteComponent *noteComponent =
-            static_cast<NoteComponent *>(this->eventComponents.getUnchecked(i));
-
-        const bool belongsToNewLayers = noteComponent->belongsToLayerSet(newLayers);
-        const bool belongsToOldLayers = noteComponent->belongsToLayerSet(this->activeLayers);
-
-        //if (belongsToNewLayer || belongsToOldLayer)
-        //{
-        noteComponent->setActive(belongsToNewLayers);
-        //}
-    }
-
-    this->activeLayers = newLayers;
-    this->primaryActiveLayer = primaryLayer;
-
-    // lightweight rendering or not
-    this->usingFullRender = (Config::get(Serialization::Core::openGLState) == Serialization::Core::enabledState);
-
-    this->repaint(this->viewport.getViewArea());
-}
-
-void PianoRoll::setRowHeight(const int newRowHeight)
+void PatternRoll::setRowHeight(const int newRowHeight)
 {
     if (newRowHeight == this->rowHeight || newRowHeight <= 1) { return; }
 
@@ -229,34 +187,39 @@ void PianoRoll::setRowHeight(const int newRowHeight)
     this->setSize(this->getWidth(), this->numRows * this->rowHeight);
 }
 
+int PatternRoll::getNumRows() const noexcept
+{
+	return this->layers.size();
+}
+
 
 //===----------------------------------------------------------------------===//
 // Ghost notes
 //===----------------------------------------------------------------------===//
 
-void PianoRoll::showGhostNoteFor(NoteComponent *targetNoteComponent)
+void PatternRoll::showGhostNoteFor(ClipComponent *targetClipComponent)
 {
-    auto component = new NoteComponent(*this, targetNoteComponent->getNote());
+    auto component = new NoteComponent(*this, targetClipComponent->getNote());
     component->setEnabled(false);
 
     //component->setAlpha(0.2f); // почему-то адские тормоза из-за альфы
     component->setGhostMode(); // use this, Luke.
 
     this->addAndMakeVisible(component);
-    this->ghostNotes.add(component);
+    this->ghostClips.add(component);
 
     this->batchRepaintList.add(component);
     this->triggerAsyncUpdate();
 }
 
-void PianoRoll::hideAllGhostNotes()
+void PatternRoll::hideAllGhostClips()
 {
-    for (int i = 0; i < this->ghostNotes.size(); ++i)
+    for (int i = 0; i < this->ghostClips.size(); ++i)
     {
-        this->fader.fadeOut(this->ghostNotes.getUnchecked(i), 100);
+        this->fader.fadeOut(this->ghostClips.getUnchecked(i), 100);
     }
 
-    this->ghostNotes.clear();
+    this->ghostClips.clear();
 }
 
 
@@ -264,7 +227,7 @@ void PianoRoll::hideAllGhostNotes()
 // SmoothZoomListener
 //===----------------------------------------------------------------------===//
 
-void PianoRoll::zoomRelative(const Point<float> &origin, const Point<float> &factor)
+void PatternRoll::zoomRelative(const Point<float> &origin, const Point<float> &factor)
 {
     //Logger::writeToLog("zoomRelative " + String(factor.getY()));
     const float yZoomThreshold = 0.005f;
@@ -299,7 +262,7 @@ void PianoRoll::zoomRelative(const Point<float> &origin, const Point<float> &fac
     HybridRoll::zoomRelative(origin, factor);
 }
 
-void PianoRoll::zoomAbsolute(const Point<float> &zoom)
+void PatternRoll::zoomAbsolute(const Point<float> &zoom)
 {
     const float &newHeight = (this->getNumRows() * MAX_ROW_HEIGHT) * zoom.getY();
     const float &rowsOnNewScreen = float(newHeight / MAX_ROW_HEIGHT);
@@ -308,26 +271,14 @@ void PianoRoll::zoomAbsolute(const Point<float> &zoom)
 
     this->setRowHeight(int(newRowHeight));
 
-    HybridRoll::zoomAbsolute(zoom);
+	HybridRoll::zoomAbsolute(zoom);
 }
 
-float PianoRoll::getZoomFactorY() const
+float PatternRoll::getZoomFactorY() const
 {
-    // headerheight fix hack:
     const float &numRows = float(this->getNumRows());
     const float &viewHeight = float(this->viewport.getViewHeight() - HYBRID_ROLL_HEADER_HEIGHT);
     return (viewHeight / float(this->getHeight()));
-
-//    const float &rowHeight = float(this->getRowHeight());
-//    const float &rowsOnScreen = (viewHeight / rowHeight);
-//    return (rowsOnScreen / numRows);
-
-//    const float &viewHeight = float(this->viewport.getViewHeight() - MIDIROLL_HEADER_HEIGHT);
-//    const float &thisHeight = float(this->getHeight() - MIDIROLL_HEADER_HEIGHT);
-
-//    const float &viewHeight = float(this->viewport.getViewHeight());
-//    const float &thisHeight = float(this->getHeight());
-//    return viewHeight / thisHeight;
 }
 
 
@@ -335,7 +286,7 @@ float PianoRoll::getZoomFactorY() const
 // Note management
 //===----------------------------------------------------------------------===//
 
-void PianoRoll::addNote(int key, float beat, float length, float velocity)
+void PatternRoll::addNote(int key, float beat, float length, float velocity)
 {
     //if (PianoLayer *activePianoLayer = dynamic_cast<PianoLayer *>(this->activeLayer))
     PianoLayer *activePianoLayer = static_cast<PianoLayer *>(this->primaryActiveLayer);
@@ -346,14 +297,14 @@ void PianoRoll::addNote(int key, float beat, float length, float velocity)
     }
 }
 
-Rectangle<float> PianoRoll::getEventBounds(FloatBoundsComponent *mc) const
+Rectangle<float> PatternRoll::getEventBounds(FloatBoundsComponent *mc) const
 {
-	jassert(dynamic_cast<NoteComponent *>(mc));
-    NoteComponent *nc = static_cast<NoteComponent *>(mc);
+	jassert(dynamic_cast<ClipComponent *>(mc));
+	ClipComponent *nc = static_cast<ClipComponent *>(mc);
     return this->getEventBounds(nc->getKey(), nc->getBeat(), nc->getLength());
 }
 
-Rectangle<float> PianoRoll::getEventBounds(const int key, const float beat, const float length) const
+Rectangle<float> PatternRoll::getEventBounds(const int key, const float beat, const float length) const
 {
     const float startOffsetBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
 	const float x = this->barWidth * (beat - startOffsetBeat) / NUM_BEATS_IN_BAR;
@@ -363,23 +314,21 @@ Rectangle<float> PianoRoll::getEventBounds(const int key, const float beat, cons
     return Rectangle<float> (x, yPosition + 1, w, float(this->rowHeight - 1));
 }
 
-
-
-void PianoRoll::getRowsColsByComponentPosition(const float x, const float y, int &noteNumber, float &beatNumber) const
+void PatternRoll::getRowsColsByComponentPosition(const float x, const float y, int &noteNumber, float &beatNumber) const
 {
     beatNumber = this->getRoundBeatByXPosition(int(x)); /* - 0.5f ? */
     noteNumber = roundToInt((this->getHeight() - y) / this->rowHeight);
     noteNumber = jmin(jmax(noteNumber, 0), numRows - 1);
 }
 
-void PianoRoll::getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber) const
+void PatternRoll::getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber) const
 {
     beatNumber = this->getFloorBeatByXPosition(x);
     noteNumber = roundToInt((this->getHeight() - y) / this->rowHeight);
     noteNumber = jmin(jmax(noteNumber, 0), numRows - 1);
 }
 
-int PianoRoll::getYPositionByKey(int targetKey) const
+int PatternRoll::getYPositionByKey(int targetKey) const
 {
     return (this->getHeight() - this->rowHeight) - (targetKey * this->rowHeight);
 }
@@ -389,7 +338,7 @@ int PianoRoll::getYPositionByKey(int targetKey) const
 // Drag helpers
 //===----------------------------------------------------------------------===//
 
-void PianoRoll::showHelpers()
+void PatternRoll::showHelpers()
 {
     if (this->helperHorizontal->isVisible())
     { return; }
@@ -402,14 +351,14 @@ void PianoRoll::showHelpers()
     this->helperHorizontal->setVisible(true);
 }
 
-void PianoRoll::hideHelpers()
+void PatternRoll::hideHelpers()
 {
     const int animTime = SHORT_FADE_TIME(this);
     //this->fader.fadeOut(this->helperVertical, animTime);
     this->fader.fadeOut(this->helperHorizontal, animTime);
 }
 
-void PianoRoll::moveHelpers(const float deltaBeat, const int deltaKey)
+void PatternRoll::moveHelpers(const float deltaBeat, const int deltaKey)
 {
     const float firstBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
     const Rectangle<int> selectionBounds = this->selection.getSelectionBounds();
@@ -436,9 +385,9 @@ void PianoRoll::moveHelpers(const float deltaBeat, const int deltaKey)
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void PatternRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    HybridRoll::onChangeMidiEvent(oldEvent, newEvent);
+	HybridRoll::onChangeMidiEvent(oldEvent, newEvent);
     
     if (! dynamic_cast<const Note *>(&oldEvent)) { return; }
 
@@ -456,9 +405,9 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
     }
 }
 
-void PianoRoll::onAddMidiEvent(const MidiEvent &event)
+void PatternRoll::onAddMidiEvent(const MidiEvent &event)
 {
-    HybridRoll::onAddMidiEvent(event);
+	HybridRoll::onAddMidiEvent(event);
     
     if (! dynamic_cast<const Note *>(&event)) { return; }
 
@@ -486,14 +435,14 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
 
     if (this->addNewNoteMode)
     {
-        this->draggingNote = component;
+        this->draggingClip = component;
         this->addNewNoteMode = false;
-        this->selectEvent(this->draggingNote, true); // clear prev selection
+        this->selectEvent(this->draggingClip, true); // clear prev selection
         this->grabKeyboardFocus();
     }
 }
 
-void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
+void PatternRoll::onRemoveMidiEvent(const MidiEvent &event)
 {
     HybridRoll::onRemoveMidiEvent(event);
 
@@ -513,14 +462,14 @@ void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
-void PianoRoll::onChangeMidiLayer(const MidiLayer *layer)
+void PatternRoll::onChangeMidiLayer(const MidiLayer *layer)
 {
     if (! dynamic_cast<const PianoLayer *>(layer)) { return; }
 
     this->reloadMidiTrack();
 }
 
-void PianoRoll::onAddMidiLayer(const MidiLayer *layer)
+void PatternRoll::onAddMidiLayer(const MidiLayer *layer)
 {
     if (! dynamic_cast<const PianoLayer *>(layer)) { return; }
 
@@ -530,7 +479,7 @@ void PianoRoll::onAddMidiLayer(const MidiLayer *layer)
     }
 }
 
-void PianoRoll::onRemoveMidiLayer(const MidiLayer *layer)
+void PatternRoll::onRemoveMidiLayer(const MidiLayer *layer)
 {
     if (! dynamic_cast<const PianoLayer *>(layer)) { return; }
 
@@ -553,7 +502,7 @@ void PianoRoll::onRemoveMidiLayer(const MidiLayer *layer)
 // LassoSource
 //===----------------------------------------------------------------------===//
 
-void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, const Rectangle<int> &rectangle)
+void PatternRoll::findLassoItemsInArea(Array<MidiEventComponent *> &itemsFound, const Rectangle<int> &rectangle)
 {
     bool shouldInvalidateSelectionCache = false;
 
@@ -585,7 +534,7 @@ void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, c
 // ClipboardOwner
 //===----------------------------------------------------------------------===//
 
-XmlElement *PianoRoll::clipboardCopy() const
+XmlElement *PatternRoll::clipboardCopy() const
 {
     auto xml = new XmlElement(Serialization::Clipboard::clipboard);
     
@@ -680,7 +629,7 @@ XmlElement *PianoRoll::clipboardCopy() const
     return xml;
 }
 
-void PianoRoll::clipboardPaste(const XmlElement &xml)
+void PatternRoll::clipboardPaste(const XmlElement &xml)
 {
     const XmlElement *mainSlot = (xml.getTagName() == Serialization::Clipboard::clipboard) ?
                                  &xml : xml.getChildByName(Serialization::Clipboard::clipboard);
@@ -777,7 +726,7 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
                     if (isShiftPressed)
                     {
                         const float changeDelta = lastBeat - firstBeat;
-                        PianoRollToolbox::shiftEventsToTheRight(this->project.getLayersList(), indicatorBeat, changeDelta, false);
+						PianoRollToolbox::shiftEventsToTheRight(this->project.getLayersList(), indicatorBeat, changeDelta, false);
                     }
                 }
                 
@@ -795,22 +744,7 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
 // Component
 //===----------------------------------------------------------------------===//
 
-//void PianoRoll::longTapEvent(const MouseEvent &e)
-//{
-//    if (this->multiTouchController->hasMultitouch())
-//    {
-//        return;
-//    }
-//
-//    if (e.eventComponent == this)
-//    {
-//        this->insertNewNoteAt(e);
-//    }
-//
-//    HybridRoll::longTapEvent(e);
-//}
-
-void PianoRoll::mouseDown(const MouseEvent &e)
+void PatternRoll::mouseDown(const MouseEvent &e)
 {
     if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
     {
@@ -827,12 +761,12 @@ void PianoRoll::mouseDown(const MouseEvent &e)
         }
     }
 
-    HybridRoll::mouseDown(e);
+	HybridRoll::mouseDown(e);
 
     this->mouseDownWasTriggered = true;
 }
 
-void PianoRoll::mouseDoubleClick(const MouseEvent &e)
+void PatternRoll::mouseDoubleClick(const MouseEvent &e)
 {
     // "Add chord" dialog
     if (! this->project.getEditMode().forbidsAddingEvents())
@@ -844,7 +778,7 @@ void PianoRoll::mouseDoubleClick(const MouseEvent &e)
     }
 }
 
-void PianoRoll::mouseDrag(const MouseEvent &e)
+void PatternRoll::mouseDrag(const MouseEvent &e)
 {
     // can show menus
     if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
@@ -852,11 +786,11 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
         return;
     }
 
-    if (this->draggingNote)
+    if (this->draggingClip)
     {
-        if (this->draggingNote->isResizing())
+        if (this->draggingClip->isResizing())
         {
-            this->draggingNote->mouseDrag(e.getEventRelativeTo(this->draggingNote));
+            this->draggingClip->mouseDrag(e.getEventRelativeTo(this->draggingClip));
         }
         else
         {
@@ -865,16 +799,16 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
             //    activePianoLayer->checkpoint();
             //}
 
-            this->draggingNote->startResizingRight(true);
-            this->draggingNote->setNoCheckpointNeededForNextAction(); // a hack
+            this->draggingClip->startResizingRight(true);
+            this->draggingClip->setNoCheckpointNeededForNextAction(); // a hack
             this->setMouseCursor(MouseCursor(MouseCursor::LeftRightResizeCursor));
         }
     }
 
-    HybridRoll::mouseDrag(e);
+	HybridRoll::mouseDrag(e);
 }
 
-void PianoRoll::mouseUp(const MouseEvent &e)
+void PatternRoll::mouseUp(const MouseEvent &e)
 {
     if (const bool hasMultitouch = (e.source.getIndex() > 0))
     {
@@ -896,21 +830,21 @@ void PianoRoll::mouseUp(const MouseEvent &e)
         this->setInterceptsMouseClicks(true, true);
 
         // process lasso selection logic
-        HybridRoll::mouseUp(e);
+		HybridRoll::mouseUp(e);
     }
 
     this->mouseDownWasTriggered = false;
 }
 
-bool PianoRoll::dismissDraggingNoteIfNeeded()
+bool PatternRoll::dismissDraggingNoteIfNeeded()
 {
     // todo dismissDraggingNoteIfNeeded on editmode change?
-    if (this->draggingNote != nullptr)
+    if (this->draggingClip != nullptr)
     {
 
-        this->draggingNote->endResizingRight();
+        this->draggingClip->endResizingRight();
         this->setMouseCursor(this->project.getEditMode().getCursor());
-        this->draggingNote = nullptr;
+        this->draggingClip = nullptr;
         return true;
     }
 
@@ -921,127 +855,9 @@ bool PianoRoll::dismissDraggingNoteIfNeeded()
 // Keyboard shortcuts
 //===----------------------------------------------------------------------===//
 
-// TODO: hardcoded shortcuts are evil, need to move them to config file
-
-bool PianoRoll::keyPressed(const KeyPress &key)
+bool PatternRoll::keyPressed(const KeyPress &key)
 {
-//    Logger::writeToLog("PianoRoll::keyPressed " + key.getTextDescription());
-
-    if (key == KeyPress::createFromDescription("f"))
-    {
-        if (this->selection.getNumSelected() > 0)
-        {
-            // zoom selected events
-            HelioCallout::emit(new NotesTuningPanel(this->project, *this), this, true);
-            return true;
-        }
-    }
-    else if (key == KeyPress::createFromDescription("v"))
-    {
-        if (this->selection.getNumSelected() > 0)
-        {
-            HelioCallout::emit(new NotesTuningPanel(this->project, *this), this, true);
-            return true;
-        }
-    }
-    else if (key == KeyPress::createFromDescription("a"))
-    {
-        if (this->selection.getNumSelected() > 0)
-        {
-            HelioCallout::emit(new ArpeggiatorPanel(this->project.getTransport(), *this), this, true);
-            return true;
-        }
-    }
-    else if (key == KeyPress::createFromDescription("o"))
-    {
-        HYBRID_ROLL_BULK_REPAINT_START
-        PianoRollToolbox::removeOverlaps(this->getLassoSelection());
-        HYBRID_ROLL_BULK_REPAINT_END
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("s"))
-    {
-        HYBRID_ROLL_BULK_REPAINT_START
-        PianoRollToolbox::snapSelection(this->getLassoSelection(), 1);
-        HYBRID_ROLL_BULK_REPAINT_END
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("command + 1") ||
-             key == KeyPress::createFromDescription("ctrl + 1"))
-    {
-        HYBRID_ROLL_BULK_REPAINT_START
-        PianoRollToolbox::randomizeVolume(this->getLassoSelection(), 0.1f);
-        HYBRID_ROLL_BULK_REPAINT_END
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("command + 2") ||
-             key == KeyPress::createFromDescription("ctrl + 2"))
-    {
-        HYBRID_ROLL_BULK_REPAINT_START
-        PianoRollToolbox::fadeOutVolume(this->getLassoSelection(), 0.35f);
-        HYBRID_ROLL_BULK_REPAINT_END
-        return true;
-    }
-    
-//    else if (key == KeyPress::createFromDescription("option + shift + a"))
-//    {
-//        MIDI_ROLL_BULK_REPAINT_START
-//        PianoRollToolbox::arpeggiateUsingClipboardAsPattern(this->getLassoSelection());
-//        MIDI_ROLL_BULK_REPAINT_END
-//        return true;
-//    }
-    
-    else if (key == KeyPress::createFromDescription("shift + a"))
-    {
-        if (this->selection.getNumSelected() > 0)
-        {
-            HelioCallout::emit(new ArpeggiatorEditorPanel(this->project, *this), this, true);
-            return true;
-        }
-    }
-    else if (key == KeyPress::createFromDescription("cursor up"))
-    {
-		PianoRollToolbox::shiftKeyRelative(this->getLassoSelection(),
-			1, true, &this->getTransport());
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("cursor down"))
-    {
-        PianoRollToolbox::shiftKeyRelative(this->getLassoSelection(), 
-			-1, true, &this->getTransport());
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("shift + cursor up"))
-    {
-        PianoRollToolbox::shiftKeyRelative(this->getLassoSelection(),
-			12, true, &this->getTransport());
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("shift + cursor down"))
-    {
-        PianoRollToolbox::shiftKeyRelative(this->getLassoSelection(),
-			-12, true, &this->getTransport());
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("option + cursor up") ||
-             key == KeyPress::createFromDescription("command + cursor up") ||
-             key == KeyPress::createFromDescription("ctrl + cursor up") ||
-             key == KeyPress::createFromDescription("alt + cursor up"))
-    {
-        PianoRollToolbox::inverseChord(this->getLassoSelection(), 
-			12, true, &this->getTransport());
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("option + cursor down") ||
-             key == KeyPress::createFromDescription("command + cursor down") ||
-             key == KeyPress::createFromDescription("ctrl + cursor down") ||
-             key == KeyPress::createFromDescription("alt + cursor down"))
-    {
-        PianoRollToolbox::inverseChord(this->getLassoSelection(),
-			-12, true, &this->getTransport());
-        return true;
-    }
-    else if ((key == KeyPress::createFromDescription("command + x")) ||
+	if ((key == KeyPress::createFromDescription("command + x")) ||
              (key == KeyPress::createFromDescription("ctrl + x")) ||
              (key == KeyPress::createFromDescription("shift + delete")))
     {
@@ -1066,57 +882,10 @@ bool PianoRoll::keyPressed(const KeyPress &key)
         return true;
     }
 
-#if JUCE_ENABLE_LIVE_CONSTANT_EDITOR
-
-    if (key.isKeyCode(KeyPress::numberPad2))
-    {
-        this->smoothZoomController->setInitialZoomSpeed(this->smoothZoomController->getInitialZoomSpeed() - 0.01f);
-    }
-    else if (key.isKeyCode(KeyPress::numberPad8))
-    {
-        this->smoothZoomController->setInitialZoomSpeed(this->smoothZoomController->getInitialZoomSpeed() + 0.01f);
-    }
-    else if (key.isKeyCode(KeyPress::numberPad4))
-    {
-        this->smoothZoomController->setZoomReduxFactor(this->smoothZoomController->getZoomReduxFactor() - 0.01f);
-    }
-    else if (key.isKeyCode(KeyPress::numberPad6))
-    {
-        this->smoothZoomController->setZoomReduxFactor(this->smoothZoomController->getZoomReduxFactor() + 0.01f);
-    }
-    else if (key.isKeyCode(KeyPress::numberPad7))
-    {
-        this->smoothZoomController->setZoomStopFactor(this->smoothZoomController->getZoomStopFactor() - 0.0005f);
-    }
-    else if (key.isKeyCode(KeyPress::numberPad9))
-    {
-        this->smoothZoomController->setZoomStopFactor(this->smoothZoomController->getZoomStopFactor() + 0.0005f);
-    }
-    else if (key.isKeyCode(KeyPress::numberPad1))
-    {
-        this->smoothZoomController->setTimerDelay(this->smoothZoomController->getTimerDelay() - 1);
-    }
-    else if (key.isKeyCode(KeyPress::numberPad3))
-    {
-        this->smoothZoomController->setTimerDelay(this->smoothZoomController->getTimerDelay() + 1);
-    }
-    else if (key.isKeyCode(KeyPress::numberPad0))
-    {
-        const String msg = "InitialZoomSpeed: " + String(this->smoothZoomController->getInitialZoomSpeed()) + ", " +
-                           "ZoomReduxFactor: " + String(this->smoothZoomController->getZoomReduxFactor()) + ", " +
-                           "ZoomStopFactor: " + String(this->smoothZoomController->getZoomStopFactor()) + ", " +
-                           "TimerDelay: " + String(this->smoothZoomController->getTimerDelay());
-
-        Logger::writeToLog(msg);
-    }
-
-#endif
-
     return HybridRoll::keyPressed(key);
 }
 
-
-void PianoRoll::resized()
+void PatternRoll::resized()
 {
 	if (!this->isShowing())
 	{
@@ -1128,17 +897,17 @@ void PianoRoll::resized()
     for (int i = 0; i < this->eventComponents.size(); ++i)
     {
         NoteComponent *note = static_cast<NoteComponent *>(this->eventComponents.getUnchecked(i));
-        note->setFloatBounds(this->getEventBounds(note));
+        note->updateBounds(this->getEventBounds(note));
     }
 
-    HybridRoll::resized();
+	HybridRoll::resized();
 
     HYBRID_ROLL_BULK_REPAINT_END
 }
 
-void PianoRoll::paint(Graphics &g)
+void PatternRoll::paint(Graphics &g)
 {
-#if PIANOROLL_HAS_PRERENDERED_BACKGROUND
+#if PATTERNROLL_HAS_PRERENDERED_BACKGROUND
 
     g.setTiledImageFill(*(static_cast<HelioTheme &>(this->getLookAndFeel()).getRollBgCache()[this->rowHeight]), 0, 0, 1.f);
     g.fillRect(this->viewport.getViewArea());
@@ -1196,27 +965,27 @@ void PianoRoll::paint(Graphics &g)
 
 #endif
 
-    HybridRoll::paint(g);
+	HybridRoll::paint(g);
 }
 
-void PianoRoll::insertNewNoteAt(const MouseEvent &e)
+void PatternRoll::insertNewNoteAt(const MouseEvent &e)
 {
     int draggingRow = 0;
     float draggingColumn = 0.f;
     this->getRowsColsByMousePosition(e.x, e.y, draggingRow, draggingColumn);
     this->addNewNoteMode = true;
-    this->addNote(draggingRow, draggingColumn, this->defaultNoteLength, this->defaultNoteVelocity);
+    this->addNote(draggingRow, draggingColumn, this->defaultClipLength, this->defaultClipVelocity);
     //this->activeLayer->sendMidiMessage(MidiMessage::noteOn(this->activeLayer->getChannel(), draggingRow, 0.5f));
 }
 
 
 //===----------------------------------------------------------------------===//
-// HybridRoll's legacy
+// MidiRoll's legacy
 //===----------------------------------------------------------------------===//
 
-void PianoRoll::handleAsyncUpdate()
+void PatternRoll::handleAsyncUpdate()
 {
-#if PIANOROLL_HAS_NOTE_RESIZERS
+#if PATTERNROLL_HAS_NOTE_RESIZERS
     // resizers for the mobile version
     if (this->selection.getNumSelected() > 0 &&
         this->noteResizerLeft == nullptr)
@@ -1256,13 +1025,13 @@ void PianoRoll::handleAsyncUpdate()
     }
 #endif
 
-    HybridRoll::handleAsyncUpdate();
+	HybridRoll::handleAsyncUpdate();
 }
 
 
-void PianoRoll::updateChildrenBounds()
+void PatternRoll::updateChildrenBounds()
 {
-#if PIANOROLL_HAS_NOTE_RESIZERS
+#if PATTERNROLL_HAS_NOTE_RESIZERS
     if (this->noteResizerLeft != nullptr)
     {
         this->noteResizerLeft->updateBounds();
@@ -1274,12 +1043,12 @@ void PianoRoll::updateChildrenBounds()
     }
 #endif
 
-    HybridRoll::updateChildrenBounds();
+	HybridRoll::updateChildrenBounds();
 }
 
-void PianoRoll::updateChildrenPositions()
+void PatternRoll::updateChildrenPositions()
 {
-#if PIANOROLL_HAS_NOTE_RESIZERS
+#if PATTERNROLL_HAS_NOTE_RESIZERS
     if (this->noteResizerLeft != nullptr)
     {
         this->noteResizerLeft->updateTopPosition();
@@ -1291,7 +1060,7 @@ void PianoRoll::updateChildrenPositions()
     }
 #endif
 
-    HybridRoll::updateChildrenPositions();
+	HybridRoll::updateChildrenPositions();
 }
 
 
@@ -1299,7 +1068,7 @@ void PianoRoll::updateChildrenPositions()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *PianoRoll::serialize() const
+XmlElement *PatternRoll::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::midiRoll);
 
@@ -1319,7 +1088,7 @@ XmlElement *PianoRoll::serialize() const
     return xml;
 }
 
-void PianoRoll::deserialize(const XmlElement &xml)
+void PatternRoll::deserialize(const XmlElement &xml)
 {
     this->reset();
 
@@ -1348,7 +1117,7 @@ void PianoRoll::deserialize(const XmlElement &xml)
     // restore selection?
 }
 
-void PianoRoll::reset()
+void PatternRoll::reset()
 {
 }
 
@@ -1357,18 +1126,18 @@ void PianoRoll::reset()
 // Bg images cache
 //===----------------------------------------------------------------------===//
 
-void PianoRoll::repaintBackgroundsCache(HelioTheme &theme)
+void PatternRoll::repaintBackgroundsCache(HelioTheme &theme)
 {
     theme.getRollBgCache().clear();
 
     for (int i = MIN_ROW_HEIGHT; i <= MAX_ROW_HEIGHT; ++i)
     {
-        CachedImage::Ptr pattern(PianoRoll::renderRowsPattern(theme, i));
+        CachedImage::Ptr pattern(PatternRoll::renderRowsPattern(theme, i));
         theme.getRollBgCache().set(i, pattern);
     }
 }
 
-CachedImage::Ptr PianoRoll::renderRowsPattern(HelioTheme &theme, int height)
+CachedImage::Ptr PatternRoll::renderRowsPattern(HelioTheme &theme, int height)
 {
     CachedImage::Ptr patternImage(new CachedImage(Image::RGB, 128, height * ROWS_OF_TWO_OCTAVES, false));
 

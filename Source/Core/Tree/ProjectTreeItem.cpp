@@ -32,7 +32,7 @@
 #include "AudioCore.h"
 #include "PlayerThread.h"
 
-#include "MidiEditor.h"
+#include "SequencerLayout.h"
 #include "MidiEvent.h"
 #include "MidiLayer.h"
 #include "PianoLayer.h"
@@ -292,7 +292,7 @@ void ProjectTreeItem::recreatePage()
         this->savePageState();
     }
     
-    this->editor = new MidiEditor(*this);
+    this->editor = new SequencerLayout(*this);
     
     if (App::isRunningOnPhone())
     {

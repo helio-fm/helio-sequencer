@@ -545,7 +545,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                 Note tuned(nc->continueTuning(e));
                 groupTuneAfter.add(tuned);
                 
-                this->getRoll().setDefaultNoteVelocity(tuned.getVelocity());
+                //this->getRoll().setDefaultNoteVelocity(tuned.getVelocity());
                 //this->roll.triggerBatchRepaintFor(nc);
             }
             
