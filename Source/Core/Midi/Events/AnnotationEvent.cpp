@@ -32,7 +32,7 @@ AnnotationEvent::AnnotationEvent(const AnnotationEvent &other) :
     description(other.description),
     colour(other.colour)
 {
-    this->id = other.getID();
+    this->id = other.getId();
 }
 
 AnnotationEvent::AnnotationEvent(MidiLayer *owner,
@@ -150,7 +150,7 @@ void AnnotationEvent::reset()
 int AnnotationEvent::hashCode() const noexcept
 {
     return this->getDescription().hashCode() +
-           this->getID().hashCode();
+           this->getId().hashCode();
 }
 
 AnnotationEvent &AnnotationEvent::operator=(const AnnotationEvent &right)

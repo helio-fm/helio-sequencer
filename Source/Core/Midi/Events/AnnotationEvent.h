@@ -79,7 +79,7 @@ public:
 
     friend inline bool operator==(const AnnotationEvent &lhs, const AnnotationEvent &rhs)
     {
-        return (lhs.getID() == rhs.getID());
+        return (lhs.getId() == rhs.getId());
     }
 
     int hashCode() const noexcept;

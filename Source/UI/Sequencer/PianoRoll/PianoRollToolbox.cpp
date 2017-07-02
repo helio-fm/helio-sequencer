@@ -921,13 +921,13 @@ void PianoRollToolbox::removeOverlaps(Lasso &selection, bool shouldCheckpoint)
             const bool startsFromTheSameBeat = (nc->getKey() == nc2->getKey() &&
                                                 nc->getBeat() == nc2->getBeat());
             
-            const bool isOriginalNote = unremovableNotes.contains(nc2->getNote().getID());
+            const bool isOriginalNote = unremovableNotes.contains(nc2->getNote().getId());
             
             if (! isOriginalNote &&
                 (isOverlappingNote || startsFromTheSameBeat))
             {
-                unremovableNotes.set(nc->getNote().getID(), nc->getNote());
-                deferredRemoval.set(nc2->getNote().getID(), nc2->getNote());
+                unremovableNotes.set(nc->getNote().getId(), nc->getNote());
+                deferredRemoval.set(nc2->getNote().getId(), nc2->getNote());
             }
         }
     }
@@ -973,13 +973,13 @@ void PianoRollToolbox::removeDuplicates(Lasso &selection, bool shouldCheckpoint)
             const bool startsFromTheSameBeat = (nc->getKey() == nc2->getKey() &&
                                                 nc->getBeat() == nc2->getBeat());
             
-            const bool isOriginalNote = unremovableNotes.contains(nc2->getNote().getID());
+            const bool isOriginalNote = unremovableNotes.contains(nc2->getNote().getId());
 
             if (! isOriginalNote &&
                 (isOverlappingNote || startsFromTheSameBeat))
             {
-                unremovableNotes.set(nc->getNote().getID(), nc->getNote());
-                deferredRemoval.set(nc2->getNote().getID(), nc2->getNote());
+                unremovableNotes.set(nc->getNote().getId(), nc->getNote());
+                deferredRemoval.set(nc2->getNote().getId(), nc2->getNote());
             }
         }
     }

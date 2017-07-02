@@ -364,13 +364,13 @@ XmlElement *mergeNotesAdded(const XmlElement *state, const XmlElement *changes)
     for (int j = 0; j < stateNotes.size(); ++j)
     {
         const Note *stateNote(stateNotes.getUnchecked(j));
-        stateIDs.set(stateNote->getID(), j);
+        stateIDs.set(stateNote->getId(), j);
     }
 
     for (int i = 0; i < changesNotes.size(); ++i)
     {
         const Note *changesNote(changesNotes.getUnchecked(i));
-        bool foundNoteInState = stateIDs.contains(changesNote->getID());
+        bool foundNoteInState = stateIDs.contains(changesNote->getId());
 
         if (! foundNoteInState)
         {
@@ -397,13 +397,13 @@ XmlElement *mergeNotesRemoved(const XmlElement *state, const XmlElement *changes
     for (int j = 0; j < changesNotes.size(); ++j)
     {
         const Note *changesNote(changesNotes.getUnchecked(j));
-        changesIDs.set(changesNote->getID(), j);
+        changesIDs.set(changesNote->getId(), j);
     }
     
     for (int i = 0; i < stateNotes.size(); ++i)
     {
         const Note *stateNote(stateNotes.getUnchecked(i));
-        const bool foundNoteInChanges = changesIDs.contains(stateNote->getID());
+        const bool foundNoteInChanges = changesIDs.contains(stateNote->getId());
         if (! foundNoteInChanges)
         {
             result.add(stateNote);
@@ -431,15 +431,15 @@ XmlElement *mergeNotesChanged(const XmlElement *state, const XmlElement *changes
     for (int j = 0; j < changesNotes.size(); ++j)
     {
         const Note *changesNote(changesNotes.getUnchecked(j));
-        changesIDs.set(changesNote->getID(), changesNote);
+        changesIDs.set(changesNote->getId(), changesNote);
     }
 
     for (int i = 0; i < stateNotes.size(); ++i)
     {
         const Note *stateNote(stateNotes.getUnchecked(i));
-        if (changesIDs.contains(stateNote->getID()))
+        if (changesIDs.contains(stateNote->getId()))
         {
-            const Note *changesNote = changesIDs[stateNote->getID()];
+            const Note *changesNote = changesIDs[stateNote->getId()];
             result.removeAllInstancesOf(stateNote);
             result.addIfNotAlreadyThere(changesNote);
         }
@@ -521,7 +521,7 @@ Array<NewSerializedDelta> createEventsDiffs(const XmlElement *state, const XmlEl
             const Note *changesNote(changesNotes.getUnchecked(j));
 
             // нота из состояния - существует в изменениях. добавляем запись changed, если нужно.
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInChanges = true;
 
@@ -557,7 +557,7 @@ Array<NewSerializedDelta> createEventsDiffs(const XmlElement *state, const XmlEl
         {
             const Note *stateNote(stateNotes.getUnchecked(j));
 
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInState = true;
                 break;

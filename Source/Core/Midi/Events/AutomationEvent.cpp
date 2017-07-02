@@ -35,7 +35,7 @@ AutomationEvent::AutomationEvent(const AutomationEvent &other) :
     controllerValue(other.controllerValue),
     curvature(other.curvature)
 {
-    this->id = other.getID();
+    this->id = other.getId();
 }
 
 AutomationEvent::AutomationEvent(MidiLayer *owner, float beatVal, float cValue) :
@@ -308,7 +308,7 @@ int AutomationEvent::hashCode() const noexcept
     //       this->getID().toString().hashCode();
     return roundFloatToInt(this->getControllerValue() * 1000) +
            roundFloatToInt(this->getBeat() * 1000) +
-           this->getID().hashCode();
+           this->getId().hashCode();
 }
 
 AutomationEvent &AutomationEvent::operator=(const AutomationEvent &right)

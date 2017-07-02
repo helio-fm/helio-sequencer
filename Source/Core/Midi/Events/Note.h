@@ -105,7 +105,7 @@ public:
         const int diffResult = (diff > 0.f) - (diff < 0.f);
         if (diffResult != 0) { return diffResult; }
         
-        return first->getID().compare(second->getID());
+        return first->getId().compare(second->getId());
     }
     
     static int compareElements(Note *const first, Note *const second)
@@ -120,7 +120,7 @@ public:
         const int keyResult = (keyDiff > 0) - (keyDiff < 0);
         if (keyResult != 0) { return keyResult; }
         
-        return first->getID().compare(second->getID());
+        return first->getId().compare(second->getId());
     }
     
     static int compareElements(const Note &first, const Note &second)
@@ -134,7 +134,7 @@ public:
         const int keyResult = (keyDiff > 0) - (keyDiff < 0);
         if (keyResult != 0) { return keyResult; }
         
-        return first.getID().compare(second.getID());
+        return first.getId().compare(second.getId());
     }
 
 protected:

@@ -87,7 +87,7 @@ public:
 
     friend inline bool operator==(const TimeSignatureEvent &lhs, const TimeSignatureEvent &rhs)
     {
-        return (lhs.getID() == rhs.getID());
+        return (lhs.getId() == rhs.getId());
     }
 
     int hashCode() const noexcept;

@@ -155,7 +155,7 @@ NoteChangeAction::NoteChangeAction(ProjectTreeItem &parentProject,
     noteBefore(note),
     noteAfter(newParameters)
 {
-    jassert(note.getID() == newParameters.getID());
+    jassert(note.getId() == newParameters.getId());
 }
 
 bool NoteChangeAction::perform()
@@ -190,7 +190,7 @@ UndoAction *NoteChangeAction::createCoalescedAction(UndoAction *nextAction)
         if (NoteChangeAction *nextChanger = dynamic_cast<NoteChangeAction *>(nextAction))
         {
             // если прямо объединять события - это портит групповые изменения, так что смотрим по id
-            const bool idsAreEqual = (this->noteBefore.getID() == nextChanger->noteAfter.getID() &&
+            const bool idsAreEqual = (this->noteBefore.getId() == nextChanger->noteAfter.getId() &&
                                       this->layerId == nextChanger->layerId);
             
             if (idsAreEqual)
@@ -442,7 +442,7 @@ UndoAction *NotesGroupChangeAction::createCoalescedAction(UndoAction *nextAction
             
             for (int i = 0; i < this->notesBefore.size(); ++i)
             {
-                if (this->notesBefore.getUnchecked(i).getID() != nextChanger->notesAfter.getUnchecked(i).getID())
+                if (this->notesBefore.getUnchecked(i).getId() != nextChanger->notesAfter.getUnchecked(i).getId())
                 {
                     return nullptr;
                 }

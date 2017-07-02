@@ -378,7 +378,7 @@ XmlElement *mergeEventsAdded(const XmlElement *state, const XmlElement *changes)
         {
             const AutomationEvent *stateNote = static_cast<AutomationEvent *>(stateNotes.getUnchecked(j));
 
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInState = true;
                 break;
@@ -414,7 +414,7 @@ XmlElement *mergeEventsRemoved(const XmlElement *state, const XmlElement *change
         {
             const AutomationEvent *changesNote = static_cast<AutomationEvent *>(changesNotes.getUnchecked(j));
 
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInChanges = true;
                 break;
@@ -451,7 +451,7 @@ XmlElement *mergeEventsChanged(const XmlElement *state, const XmlElement *change
         {
             const AutomationEvent *changesNote = static_cast<AutomationEvent *>(changesNotes.getUnchecked(j));
 
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInChanges = true;
                 result.removeAllInstancesOf(stateNote);
@@ -542,7 +542,7 @@ Array<NewSerializedDelta> createEventsDiffs(const XmlElement *state, const XmlEl
             const AutomationEvent *changesEvent = static_cast<AutomationEvent *>(changesEvents.getUnchecked(j));
 
             // нота из состояния - существует в изменениях. добавляем запись changed, если нужно.
-            if (stateEvent->getID() == changesEvent->getID())
+            if (stateEvent->getId() == changesEvent->getId())
             {
                 foundNoteInChanges = true;
 
@@ -576,7 +576,7 @@ Array<NewSerializedDelta> createEventsDiffs(const XmlElement *state, const XmlEl
         {
             const AutomationEvent *stateNote = static_cast<AutomationEvent *>(stateEvents.getUnchecked(j));
 
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInState = true;
                 break;

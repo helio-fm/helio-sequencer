@@ -39,7 +39,7 @@ MidiLayer *MidiEvent::getLayer() const noexcept
     return this->layer;
 }
 
-MidiEvent::Id MidiEvent::getID() const noexcept
+MidiEvent::Id MidiEvent::getId() const noexcept
 {
     return this->id;
 }

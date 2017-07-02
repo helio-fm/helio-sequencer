@@ -44,7 +44,7 @@ Note::Note(const Note &other) :
     length(other.length),
     velocity(other.velocity)
 {
-    this->id = other.getID();
+    this->id = other.getId();
 }
 
 Note::Note(MidiLayer *newOwner, const Note &parametersToCopy) :
@@ -53,7 +53,7 @@ Note::Note(MidiLayer *newOwner, const Note &parametersToCopy) :
     length(parametersToCopy.length),
     velocity(parametersToCopy.velocity)
 {
-    this->id = parametersToCopy.getID();
+    this->id = parametersToCopy.getId();
 }
 
 
@@ -236,5 +236,5 @@ Note &Note::operator=(const Note &right)
 
 int Note::hashCode() const noexcept
 {
-    return this->getID().hashCode();
+    return this->getId().hashCode();
 }

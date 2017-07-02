@@ -47,7 +47,7 @@ public:
 
     MidiLayer *getLayer() const noexcept;
 
-    Id getID() const noexcept;
+    Id getId() const noexcept;
 
     float getBeat() const noexcept;
 
@@ -66,7 +66,7 @@ public:
         const int diffResult = (diff > 0.f) - (diff < 0.f);
         if (diffResult != 0) { return diffResult; }
         
-        return first->getID().compare(second->getID());
+        return first->getId().compare(second->getId());
     }
 
 protected:

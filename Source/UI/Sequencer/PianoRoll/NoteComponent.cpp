@@ -137,7 +137,7 @@ String NoteComponent::getSelectionGroupId() const
 
 String NoteComponent::getId() const
 {
-	return this->midiEvent.getID();
+	return this->midiEvent.getId();
 }
 
 

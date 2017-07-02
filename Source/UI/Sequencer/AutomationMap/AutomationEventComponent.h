@@ -58,7 +58,7 @@ public:
         const int cvResult = (cvDiff > 0.f) - (cvDiff < 0.f); // sorted by cv, if beats are the same
         if (cvResult != 0) { return cvResult; }
 
-        return first->event.getID().compare(second->event.getID());
+        return first->event.getId().compare(second->event.getId());
     }
 
     //[/UserMethods]

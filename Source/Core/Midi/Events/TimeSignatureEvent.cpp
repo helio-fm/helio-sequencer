@@ -32,7 +32,7 @@ TimeSignatureEvent::TimeSignatureEvent(const TimeSignatureEvent &other) :
     numerator(other.numerator),
     denominator(other.denominator)
 {
-    this->id = other.getID();
+    this->id = other.getId();
 }
 
 TimeSignatureEvent::TimeSignatureEvent(MidiLayer *owner,

@@ -94,7 +94,7 @@ public:
 
     friend inline bool operator==(const AutomationEvent &lhs, const AutomationEvent &rhs)
     {
-        return (lhs.getID() == rhs.getID());
+        return (lhs.getId() == rhs.getId());
     }
 
     int hashCode() const noexcept;

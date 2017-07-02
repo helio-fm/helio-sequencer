@@ -50,7 +50,7 @@ public:
         const int diffResult = (diff > 0.f) - (diff < 0.f);
         if (diffResult != 0) { return diffResult; }
 
-        return first->event.getID().compare(second->event.getID());
+        return first->event.getId().compare(second->event.getId());
     }
     //[/UserMethods]
 

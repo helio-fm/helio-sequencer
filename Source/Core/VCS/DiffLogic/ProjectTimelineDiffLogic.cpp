@@ -245,7 +245,7 @@ XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsAdded(const XmlElement *st
         {
             const AnnotationEvent *stateNote = static_cast<AnnotationEvent *>(stateNotes.getUnchecked(j));
 
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInState = true;
                 break;
@@ -281,7 +281,7 @@ XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsRemoved(const XmlElement *
         {
             const AnnotationEvent *changesNote = static_cast<AnnotationEvent *>(changesNotes.getUnchecked(j));
 
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInChanges = true;
                 break;
@@ -319,7 +319,7 @@ XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsChanged(const XmlElement *
         {
             const AnnotationEvent *changesNote = static_cast<AnnotationEvent *>(changesNotes.getUnchecked(j));
 
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInChanges = true;
                 result.removeAllInstancesOf(stateNote);
@@ -361,7 +361,7 @@ XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesAdded(const XmlElement 
         {
             const TimeSignatureEvent *stateNote = static_cast<TimeSignatureEvent *>(stateNotes.getUnchecked(j));
             
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInState = true;
                 break;
@@ -397,7 +397,7 @@ XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesRemoved(const XmlElemen
         {
             const TimeSignatureEvent *changesNote = static_cast<TimeSignatureEvent *>(changesNotes.getUnchecked(j));
             
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInChanges = true;
                 break;
@@ -435,7 +435,7 @@ XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesChanged(const XmlElemen
         {
             const TimeSignatureEvent *changesNote = static_cast<TimeSignatureEvent *>(changesNotes.getUnchecked(j));
             
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInChanges = true;
                 result.removeAllInstancesOf(stateNote);
@@ -485,7 +485,7 @@ Array<NewSerializedDelta> ProjectTimelineDiffLogic::createAnnotationsDiffs(const
             const AnnotationEvent *changesEvent = static_cast<AnnotationEvent *>(changesEvents.getUnchecked(j));
 
             // нота из состояния - существует в изменениях. добавляем запись changed, если нужно.
-            if (stateEvent->getID() == changesEvent->getID())
+            if (stateEvent->getId() == changesEvent->getId())
             {
                 foundNoteInChanges = true;
 
@@ -519,7 +519,7 @@ Array<NewSerializedDelta> ProjectTimelineDiffLogic::createAnnotationsDiffs(const
         {
             const AnnotationEvent *stateNote = static_cast<AnnotationEvent *>(stateEvents.getUnchecked(j));
 
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInState = true;
                 break;
@@ -588,7 +588,7 @@ Array<NewSerializedDelta> ProjectTimelineDiffLogic::createTimeSignaturesDiffs(co
             const TimeSignatureEvent *changesEvent = static_cast<TimeSignatureEvent *>(changesEvents.getUnchecked(j));
             
             // событие из состояния - существует в изменениях. добавляем запись changed, если нужно.
-            if (stateEvent->getID() == changesEvent->getID())
+            if (stateEvent->getId() == changesEvent->getId())
             {
                 foundNoteInChanges = true;
                 
@@ -622,7 +622,7 @@ Array<NewSerializedDelta> ProjectTimelineDiffLogic::createTimeSignaturesDiffs(co
         {
             const TimeSignatureEvent *stateEvent = static_cast<TimeSignatureEvent *>(stateEvents.getUnchecked(j));
             
-            if (stateEvent->getID() == changesEvent->getID())
+            if (stateEvent->getId() == changesEvent->getId())
             {
                 foundNoteInState = true;
                 break;

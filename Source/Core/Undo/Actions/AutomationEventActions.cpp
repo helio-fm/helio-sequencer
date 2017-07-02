@@ -189,7 +189,7 @@ UndoAction *AutomationEventChangeAction::createCoalescedAction(UndoAction *nextA
     {
         if (AutomationEventChangeAction *nextChanger = dynamic_cast<AutomationEventChangeAction *>(nextAction))
         {
-            const bool idsAreEqual = (this->eventBefore.getID() == nextChanger->eventAfter.getID() &&
+            const bool idsAreEqual = (this->eventBefore.getId() == nextChanger->eventAfter.getId() &&
                                       this->layerId == nextChanger->layerId);
             
             if (idsAreEqual)
@@ -439,7 +439,7 @@ UndoAction *AutomationEventsGroupChangeAction::createCoalescedAction(UndoAction 
             
             // это явно неполная проверка, но ее будет достаточно
             bool arraysContainSameNotes = (this->eventsBefore.size() == nextChanger->eventsAfter.size()) &&
-                                          (this->eventsBefore[0].getID() == nextChanger->eventsAfter[0].getID());
+                                          (this->eventsBefore[0].getId() == nextChanger->eventsAfter[0].getId());
             
             if (arraysContainSameNotes)
             {
