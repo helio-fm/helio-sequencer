@@ -19,16 +19,30 @@
 #include "Clip.h"
 #include "SerializationKeys.h"
 
-Clip::Clip() : startBeat(0.f)
+Clip::Clip()
 {
-	Uuid uuid;
-	id = uuid.toString();
+	// needed for juce's Array to work
+	//jassertfalse;
 }
 
 Clip::Clip(const Clip &other) :
+	pattern(other.pattern),
 	startBeat(other.startBeat),
 	id(other.id)
 {
+	id = this->createId();
+}
+
+Clip::Clip(Pattern *owner, float beatVal) :
+	pattern(owner),
+	startBeat(beatVal)
+{
+	id = this->createId();
+}
+
+Pattern *Clip::getPattern() const noexcept
+{
+	return this->pattern;
 }
 
 float Clip::getStartBeat() const noexcept
@@ -39,6 +53,38 @@ float Clip::getStartBeat() const noexcept
 String Clip::getId() const noexcept
 {
 	return this->id;
+}
+
+Clip Clip::copyWithNewId(Pattern *newOwner) const
+{
+	Clip c(*this);
+	c.id = this->createId();
+
+	if (newOwner != nullptr)
+	{
+		c.pattern = newOwner;
+	}
+
+	return c;
+}
+
+Clip Clip::withParameters(const XmlElement &xml) const
+{
+	Clip c(*this);
+	c.deserialize(xml);
+	return c;
+}
+
+static float roundBeat(float beat)
+{
+	return roundf(beat * 16.f) / 16.f;
+}
+
+Clip Clip::withDeltaBeat(float deltaPosition) const
+{
+	Clip other(*this);
+	other.startBeat = roundBeat(other.startBeat + deltaPosition);
+	return other;
 }
 
 XmlElement *Clip::serialize() const
@@ -60,6 +106,15 @@ void Clip::reset()
 	this->startBeat = 0.f;
 }
 
+Clip &Clip::operator=(const Clip &right)
+{
+	//if (this == &right) { return *this; }
+	//this->pattern = right.pattern; // never do this
+	this->id = right.id;
+	this->startBeat = right.startBeat;
+	return *this;
+}
+
 int Clip::compareElements(const Clip &first, const Clip &second)
 {
 	if (&first == &second) { return 0; }
@@ -73,4 +128,10 @@ int Clip::compareElements(const Clip &first, const Clip &second)
 int Clip::hashCode() const noexcept
 {
 	return this->getId().hashCode();
+}
+
+Clip::Id Clip::createId() noexcept
+{
+	Uuid uuid;
+	return uuid.toString();
 }

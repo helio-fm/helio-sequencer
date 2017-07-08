@@ -21,6 +21,7 @@
 #include "MidiLayer.h"
 #include "MidiEvent.h"
 #include "HybridRoll.h"
+#include "Pattern.h"
 
 ClipComponent::ClipComponent(HybridRoll &editor, Clip clip) :
 	HybridRollEventComponent(editor),

@@ -19,6 +19,8 @@
 
 #include "Serializable.h"
 
+class Pattern;
+
 // Just an instance of a midi layer on a certain position
 class Clip : public Serializable
 {
@@ -28,19 +30,29 @@ public:
 
 	Clip();
 	Clip(const Clip &other);
+	explicit Clip(Pattern *owner, float beatVal = 0.f);
 
+	Pattern *getPattern() const noexcept;
 	float getStartBeat() const noexcept;
 	String getId() const noexcept;
+
+	Clip copyWithNewId(Pattern *newOwner = nullptr) const;
+	Clip withParameters(const XmlElement &xml) const;
+	Clip withDeltaBeat(float deltaPosition) const;
+
+	//===------------------------------------------------------------------===//
+	// Serializable
+	//===------------------------------------------------------------------===//
+
 	XmlElement *serialize() const override;
 	void deserialize(const XmlElement &xml) override;
 	void reset() override;
 
-    Clip &operator=(const Clip &right)
-    {
-        this->id = right.id;
-        this->startBeat = right.startBeat;
-        return *this;
-    }
+	//===------------------------------------------------------------------===//
+	// Helpers
+	//===------------------------------------------------------------------===//
+
+	Clip &operator=(const Clip &right);
 
 	friend inline bool operator==(const Clip &lhs, const Clip &rhs)
 	{
@@ -54,8 +66,12 @@ public:
 
 private:
 
+	Pattern *pattern;
+
 	float startBeat;
 	String id;
+
+	static Id createId() noexcept;
 
 	JUCE_LEAK_DETECTOR(Clip);
 };
