@@ -143,7 +143,9 @@ namespace Serialization
         static const String clipboard = "Clipboard";
         static const String layer = "Layer";
         static const String layerId = "LayerId";
-        static const String firstBeat = "FirstBeat";
+		static const String pattern = "Pattern";
+		static const String patternId = "PatternId";
+		static const String firstBeat = "FirstBeat";
         static const String lastBeat = "LastBeat";
     } // namespace Clipboard
     

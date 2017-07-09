@@ -40,8 +40,6 @@
 #include "ArpeggiatorPanel.h"
 #include "ArpeggiatorEditorPanel.h"
 #include "PianoRollToolbox.h"
-#include "NoteResizerLeft.h"
-#include "NoteResizerRight.h"
 #include "Config.h"
 #include "SerializationKeys.h"
 
@@ -52,10 +50,7 @@ PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
                      Viewport &viewportRef,
                      WeakReference<AudioMonitor> clippingDetector) :
     HybridRoll(parentProject, viewportRef, clippingDetector),
-	rowHeight(MIN_ROW_HEIGHT),
-    draggingClip(nullptr),
-    addNewNoteMode(false),
-    mouseDownWasTriggered(false)
+	rowHeight(MIN_ROW_HEIGHT)
 {
     this->setRowHeight(MIN_ROW_HEIGHT + 5);
 
@@ -89,14 +84,14 @@ void PatternRoll::deleteSelection()
     for (int i = 0; i < this->selection.getNumSelected(); ++i)
     {
         const Clip clip = this->selection.getItemAs<ClipComponent>(i)->getClip();
-        Pattern *ownerPattern = clip.getLayer();
+        Pattern *ownerPattern = clip.getPattern();
         Array<Clip> *arrayToAddTo = nullptr;
 
         for (int j = 0; j < selections.size(); ++j)
         {
             if (selections.getUnchecked(j)->size() > 0)
             {
-                if (selections.getUnchecked(j)->getUnchecked(0).getLayer() == ownerPattern)
+                if (selections.getUnchecked(j)->getUnchecked(0).getPattern() == ownerPattern)
                 {
                     arrayToAddTo = selections.getUnchecked(j);
                 }
@@ -116,15 +111,18 @@ void PatternRoll::deleteSelection()
 
     for (int i = 0; i < selections.size(); ++i)
     {
-        PianoLayer *pianoLayer = static_cast<PianoLayer *>(selections.getUnchecked(i)->getUnchecked(0).getLayer());
+        Pattern *pattern = (selections.getUnchecked(i)->getUnchecked(0).getPattern());
 
 		if (! didCheckpoint)
         {
             didCheckpoint = true;
-            pianoLayer->checkpoint();
+            pattern->checkpoint();
         }
 
-        pianoLayer->removeGroup(*selections.getUnchecked(i), true);
+		for (Clip &c : *selections.getUnchecked(i))
+		{
+			pattern->remove(c, true);
+		}
     }
 
     this->grabKeyboardFocus(); // not working?
@@ -132,8 +130,6 @@ void PatternRoll::deleteSelection()
 
 void PatternRoll::reloadMidiTrack()
 {
-    //Logger::writeToLog("PianoRoll::reloadMidiTrack");
-
     this->selection.deselectAll();
 
     for (int i = 0; i < this->eventComponents.size(); ++i)
@@ -144,30 +140,19 @@ void PatternRoll::reloadMidiTrack()
     this->eventComponents.clear();
     this->componentsHashTable.clear();
 
+    const Array<Pattern *> &patterns = this->project.getPatternsList();
 
-    const Array<MidiLayer *> &layers = this->project.getLayersList();
-
-    for (auto layer : layers)
+    for (auto pattern : patterns)
     {
-        for (int j = 0; j < layer->size(); ++j)
+        for (int j = 0; j < pattern->size(); ++j)
         {
-            MidiEvent *event = layer->getUnchecked(j);
+            const Clip &clip = pattern->getUnchecked(j);
+            auto noteComponent = new ClipComponent(*this, clip);
 
-            if (Note *note = dynamic_cast<Note *>(event))
-            {
-                auto noteComponent = new NoteComponent(*this, *note);
+            this->eventComponents.add(noteComponent);
+            this->componentsHashTable.set(clip, noteComponent);
 
-                //noteComponent->setSelected(this->selection.isSelected(noteComponent)); // ��� �� �:
-                //noteComponent->setSelected(this->activeLayer->getLassoSelection().isSelected(noteComponent));
-
-                this->eventComponents.add(noteComponent);
-                this->componentsHashTable.set(*note, noteComponent);
-
-                const bool belongsToActiveLayer = noteComponent->belongsToLayerSet(this->activeLayers);
-                noteComponent->setActive(belongsToActiveLayer, true);
-
-                this->addAndMakeVisible(noteComponent);
-            }
+            this->addAndMakeVisible(noteComponent);
         }
     }
 
@@ -180,12 +165,12 @@ void PatternRoll::setRowHeight(const int newRowHeight)
     if (newRowHeight == this->rowHeight || newRowHeight <= 1) { return; }
 
     this->rowHeight = newRowHeight;
-    this->setSize(this->getWidth(), this->numRows * this->rowHeight);
+    this->setSize(this->getWidth(), this->getNumRows() * this->rowHeight);
 }
 
 int PatternRoll::getNumRows() const noexcept
 {
-	return this->layers.size();
+	return this->patterns.size();
 }
 
 
@@ -195,11 +180,9 @@ int PatternRoll::getNumRows() const noexcept
 
 void PatternRoll::showGhostClipFor(ClipComponent *targetClipComponent)
 {
-    auto component = new NoteComponent(*this, targetClipComponent->getNote());
+    auto component = new ClipComponent(*this, targetClipComponent->getClip());
     component->setEnabled(false);
-
-    //component->setAlpha(0.2f); // почему-то адские тормоза из-за альфы
-    component->setGhostMode(); // use this, Luke.
+    component->setGhostMode();
 
     this->addAndMakeVisible(component);
     this->ghostClips.add(component);
@@ -279,30 +262,28 @@ float PatternRoll::getZoomFactorY() const
 
 
 //===----------------------------------------------------------------------===//
-// Note management
+// Clip management
 //===----------------------------------------------------------------------===//
 
-void PatternRoll::addClip(int key, float beat, float length, float velocity)
+void PatternRoll::addClip(Pattern *pattern, float beat)
 {
-    Pattern *pattern = null; // TODO
-    {
-        pattern->checkpoint();
-        Note note(pattern, key, beat, length, velocity);
-        pattern->insert(note, true);
-    }
+    pattern->checkpoint();
+    Clip clip(pattern, beat);
+    pattern->insert(clip, true);
 }
 
 Rectangle<float> PatternRoll::getEventBounds(FloatBoundsComponent *mc) const
 {
 	jassert(dynamic_cast<ClipComponent *>(mc));
 	ClipComponent *nc = static_cast<ClipComponent *>(mc);
-    return this->getEventBounds(nc->getKey(), nc->getBeat(), nc->getLength());
+    return this->getEventBounds(nc->getClip().getPattern(), nc->getBeat());
 }
 
-Rectangle<float> PatternRoll::getEventBounds(int key, float beat, float length) const
+Rectangle<float> PatternRoll::getEventBounds(Pattern *pattern, float beat) const
 {
     const float startOffsetBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
 	const float x = this->barWidth * (beat - startOffsetBeat) / NUM_BEATS_IN_BAR;
+	// the hard part here, need to get the layer info
 	const float w = this->barWidth * length / NUM_BEATS_IN_BAR;
 
 	// TODO y position by layer
@@ -371,116 +352,80 @@ void PatternRoll::moveHelpers(const float deltaBeat, const int deltaKey)
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-void PatternRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void PatternRoll::onAddClip(const Clip &clip)
 {
-	HybridRoll::onChangeMidiEvent(oldEvent, newEvent);
-    
-    if (! dynamic_cast<const Note *>(&oldEvent)) { return; }
+	auto component = new ClipComponent(*this, clip);
+	this->addAndMakeVisible(component);
 
-    const Note &note = static_cast<const Note &>(oldEvent);
-    const Note &newNote = static_cast<const Note &>(newEvent);
+	this->batchRepaintList.add(component);
+	this->triggerAsyncUpdate();
 
-    if (NoteComponent *component = this->componentsHashTable[note])
-    {
-        //component->repaint(); // если делать так - будут дикие тормоза, поэтому:
-        this->batchRepaintList.add(component);
-        this->triggerAsyncUpdate();
+	component->toFront(false);
 
-        this->componentsHashTable.remove(note);
-        this->componentsHashTable.set(newNote, component);
-    }
+	this->fader.fadeIn(component, 150);
+
+	this->eventComponents.add(component);
+	this->selectEvent(component, false);
+
+	this->componentsHashTable.set(clip, component);
 }
 
-void PatternRoll::onAddMidiEvent(const MidiEvent &event)
+void PatternRoll::onChangeClip(const Clip &clip, const Clip &newClip)
 {
-	HybridRoll::onAddMidiEvent(event);
-    
-    if (! dynamic_cast<const Note *>(&event)) { return; }
+	if (ClipComponent *component = this->componentsHashTable[clip])
+	{
+		this->batchRepaintList.add(component);
+		this->triggerAsyncUpdate();
 
-    const Note &note = static_cast<const Note &>(event);
-
-    auto component = new NoteComponent(*this, note);
-    this->addAndMakeVisible(component);
-
-    this->batchRepaintList.add(component);
-    this->triggerAsyncUpdate();
-    // ^^ вместо:
-    //component->updateBounds(this->getEventBounds(component));
-
-    component->toFront(false);
-
-    this->fader.fadeIn(component, 150);
-
-    this->eventComponents.add(component);
-    this->selectEvent(component, false); // selectEvent(component, true)
-
-    const bool isActive = component->belongsToLayerSet(this->activeLayers);
-    component->setActive(isActive);
-
-    this->componentsHashTable.set(note, component);
-
-    if (this->addNewNoteMode)
-    {
-        this->draggingClip = component;
-        this->addNewNoteMode = false;
-        this->selectEvent(this->draggingClip, true); // clear prev selection
-        this->grabKeyboardFocus();
-    }
+		this->componentsHashTable.remove(clip);
+		this->componentsHashTable.set(newClip, component);
+	}
 }
 
-void PatternRoll::onRemoveMidiEvent(const MidiEvent &event)
+void PatternRoll::onRemoveClip(const Clip &clip)
 {
-    HybridRoll::onRemoveMidiEvent(event);
+	if (ClipComponent *component = this->componentsHashTable[clip])
+	{
+		this->fader.fadeOut(component, 150);
+		this->selection.deselect(component);
 
-    if (! dynamic_cast<const Note *>(&event)) { return; }
-    
-    const Note &note = static_cast<const Note &>(event);
-
-    if (NoteComponent *component = this->componentsHashTable[note])
-    {
-        this->fader.fadeOut(component, 150);
-        
-        this->selection.deselect(component);
-
-        this->removeChildComponent(component); // O(N)
-        this->componentsHashTable.remove(note);
-        this->eventComponents.removeObject(component, true); // O(N)
-    }
+		this->removeChildComponent(component);
+		this->componentsHashTable.remove(clip);
+		this->eventComponents.removeObject(component, true);
+	}
 }
 
-void PatternRoll::onChangeMidiLayer(const MidiLayer *layer)
+void PatternRoll::onPostRemoveClip(const Pattern *pattern)
 {
-    if (! dynamic_cast<const PianoLayer *>(layer)) { return; }
-
-    this->reloadMidiTrack();
+	//
 }
 
-void PatternRoll::onAddMidiLayer(const MidiLayer *layer)
+void PatternRoll::onAddPattern(const Pattern *pattern)
 {
-    if (! dynamic_cast<const PianoLayer *>(layer)) { return; }
-
-    if (layer->size() > 0)
-    {
-        this->reloadMidiTrack();
-    }
+	if (pattern->size() > 0)
+	{
+		this->reloadMidiTrack();
+	}
 }
 
-void PatternRoll::onRemoveMidiLayer(const MidiLayer *layer)
+void PatternRoll::onChangePattern(const Pattern *pattern)
 {
-    if (! dynamic_cast<const PianoLayer *>(layer)) { return; }
+	this->reloadMidiTrack();
+}
 
-    for (int i = 0; i < layer->size(); ++i)
-    {
-        const Note &note = static_cast<const Note &>(*layer->getUnchecked(i));
-
-        if (NoteComponent *component = this->componentsHashTable[note])
-        {
-            this->selection.deselect(component);
-            this->removeChildComponent(component);
-            this->componentsHashTable.remove(note);
-            this->eventComponents.removeObject(component, true);
-        }
-    }
+void PatternRoll::onRemovePattern(const Pattern *pattern)
+{
+	for (int i = 0; i < pattern->size(); ++i)
+	{
+		const Clip &clip = pattern->getUnchecked(i);
+		if (ClipComponent *component = this->componentsHashTable[clip])
+		{
+			this->selection.deselect(component);
+			this->removeChildComponent(component);
+			this->componentsHashTable.remove(clip);
+			this->eventComponents.removeObject(component, true);
+		}
+	}
 }
 
 
@@ -488,24 +433,24 @@ void PatternRoll::onRemoveMidiLayer(const MidiLayer *layer)
 // LassoSource
 //===----------------------------------------------------------------------===//
 
-void PatternRoll::findLassoItemsInArea(Array<HybridRollEventComponent *> &itemsFound, const Rectangle<int> &rectangle)
+void PatternRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, const Rectangle<int> &rectangle)
 {
     bool shouldInvalidateSelectionCache = false;
 
     for (int i = 0; i < this->eventComponents.size(); ++i)
     {
-        NoteComponent *note = static_cast<NoteComponent *>(this->eventComponents.getUnchecked(i));
-        note->setSelected(this->selection.isSelected(note));
+        ClipComponent *clip = static_cast<ClipComponent *>(this->eventComponents.getUnchecked(i));
+        clip->setSelected(this->selection.isSelected(clip));
     }
 
     for (int i = 0; i < this->eventComponents.size(); ++i)
     {
-        NoteComponent *note = static_cast<NoteComponent *>(this->eventComponents.getUnchecked(i));
+		ClipComponent *clip = static_cast<ClipComponent *>(this->eventComponents.getUnchecked(i));
 
-        if (rectangle.intersects(note->getBounds()) && note->isActive())
+        if (rectangle.intersects(clip->getBounds()) && clip->isActive())
         {
             shouldInvalidateSelectionCache = true;
-            itemsFound.addIfNotAlreadyThere(note);
+            itemsFound.addIfNotAlreadyThere(clip);
         }
     }
 
@@ -522,105 +467,49 @@ void PatternRoll::findLassoItemsInArea(Array<HybridRollEventComponent *> &itemsF
 
 XmlElement *PatternRoll::clipboardCopy() const
 {
-    auto xml = new XmlElement(Serialization::Clipboard::clipboard);
-    
-    const Lasso::GroupedSelections &selections = this->selection.getGroupedSelections();
-    Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
+	auto xml = new XmlElement(Serialization::Clipboard::clipboard);
 
-    float firstBeat = FLT_MAX;
-    float lastBeat = -FLT_MAX;
+	const Lasso::GroupedSelections &selections = this->selection.getGroupedSelections();
+	Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
 
-    while (selectionsMapIterator.next())
-    {
-        SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-        const String layerId = selectionsMapIterator.getKey();
+	float firstBeat = FLT_MAX;
+	float lastBeat = -FLT_MAX;
 
-        // create xml parent with layer id
-        auto layerIdParent = new XmlElement(Serialization::Clipboard::layer);
-        layerIdParent->setAttribute(Serialization::Clipboard::layerId, layerId);
-        xml->addChildElement(layerIdParent);
+	while (selectionsMapIterator.next())
+	{
+		SelectionProxyArray::Ptr patternSelection(selectionsMapIterator.getValue());
+		const String patternId = selectionsMapIterator.getKey();
 
-        for (int i = 0; i < layerSelection->size(); ++i)
-        {
-            if (const NoteComponent *noteComponent =
-                dynamic_cast<NoteComponent *>(layerSelection->getUnchecked(i)))
-            {
-                layerIdParent->addChildElement(noteComponent->getNote().serialize());
+		// create xml parent with layer id
+		auto patternIdParent = new XmlElement(Serialization::Clipboard::pattern);
+		patternIdParent->setAttribute(Serialization::Clipboard::patternId, patternId);
+		xml->addChildElement(patternIdParent);
 
-                if (firstBeat > noteComponent->getBeat())
-                {
-                    firstBeat = noteComponent->getBeat();
-                }
+		for (int i = 0; i < patternSelection->size(); ++i)
+		{
+			if (const ClipComponent *clipComponent =
+				dynamic_cast<ClipComponent *>(patternSelection->getUnchecked(i)))
+			{
+				patternIdParent->addChildElement(clipComponent->getClip().serialize());
+				firstBeat = jmin(firstBeat, clipComponent->getBeat());
+				lastBeat = jmax(lastBeat, clipComponent->getBeat());
+			}
+		}
+	}
 
-                if (lastBeat < (noteComponent->getBeat() + noteComponent->getLength()))
-                {
-                    lastBeat = (noteComponent->getBeat() + noteComponent->getLength());
-                }
-            }
-        }
-    }
+	xml->setAttribute(Serialization::Clipboard::firstBeat, firstBeat);
+	xml->setAttribute(Serialization::Clipboard::lastBeat, lastBeat);
 
-    // a hack: alt-mode, copies also autos/annotations within given range, if any
-    const bool isShiftPressed = Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown();
-    const bool selectionIsNotEmpty = (firstBeat < lastBeat);
-
-    if (selectionIsNotEmpty && isShiftPressed)
-    {
-        // todo copy from
-        const auto timeline = this->project.getTimeline();
-        auto annotationLayerIdParent = new XmlElement(Serialization::Clipboard::layer);
-        annotationLayerIdParent->setAttribute(Serialization::Clipboard::layerId, timeline->getAnnotations()->getLayerIdAsString());
-        xml->addChildElement(annotationLayerIdParent);
-
-        for (int i = 0; i < timeline->getAnnotations()->size(); ++i)
-        {
-            if (const AnnotationEvent *event =
-                dynamic_cast<AnnotationEvent *>(timeline->getAnnotations()->getUnchecked(i)))
-            {
-                if (const bool eventFitsInRange =
-                    (event->getBeat() >= firstBeat) && (event->getBeat() < lastBeat))
-                {
-                    annotationLayerIdParent->addChildElement(event->serialize());
-                }
-            }
-        }
-
-        // and from all autos
-        const auto automations = this->project.findChildrenOfType<AutomationLayerTreeItem>(false);
-        for (auto automation : automations)
-        {
-            MidiLayer *autoLayer = automation->getLayer();
-            auto autoLayerIdParent = new XmlElement(Serialization::Clipboard::layer);
-            autoLayerIdParent->setAttribute(Serialization::Clipboard::layerId, autoLayer->getLayerIdAsString());
-            xml->addChildElement(autoLayerIdParent);
-            
-            for (int j = 0; j < autoLayer->size(); ++j)
-            {
-                if (const AutomationEvent *event =
-                    dynamic_cast<AutomationEvent *>(autoLayer->getUnchecked(j)))
-                {
-                    if (const bool eventFitsInRange =
-                        (event->getBeat() >= firstBeat) && (event->getBeat() < lastBeat))
-                    {
-                        autoLayerIdParent->addChildElement(event->serialize());
-                    }
-                }
-            }
-        }
-    }
-
-    xml->setAttribute(Serialization::Clipboard::firstBeat, firstBeat);
-    xml->setAttribute(Serialization::Clipboard::lastBeat, lastBeat);
-
-    return xml;
+	return xml;
 }
 
 void PatternRoll::clipboardPaste(const XmlElement &xml)
 {
-    const XmlElement *mainSlot = (xml.getTagName() == Serialization::Clipboard::clipboard) ?
-                                 &xml : xml.getChildByName(Serialization::Clipboard::clipboard);
+    const XmlElement *root =
+		(xml.getTagName() == Serialization::Clipboard::clipboard) ?
+		&xml : xml.getChildByName(Serialization::Clipboard::clipboard);
 
-    if (mainSlot == nullptr) { return; }
+    if (root == nullptr) { return; }
 
     float trackLength = 0;
     bool didCheckpoint = false;
@@ -628,83 +517,35 @@ void PatternRoll::clipboardPaste(const XmlElement &xml)
     const float indicatorRoughBeat = this->getBeatByTransportPosition(this->project.getTransport().getSeekPosition());
     const float indicatorBeat = roundf(indicatorRoughBeat * 1000.f) / 1000.f;
 
-    const float firstBeat = mainSlot->getDoubleAttribute(Serialization::Clipboard::firstBeat);
-    const float lastBeat = mainSlot->getDoubleAttribute(Serialization::Clipboard::lastBeat);
+    const float firstBeat = root->getDoubleAttribute(Serialization::Clipboard::firstBeat);
+    const float lastBeat = root->getDoubleAttribute(Serialization::Clipboard::lastBeat);
     const bool indicatorIsWithinSelection = (indicatorBeat >= firstBeat) && (indicatorBeat < lastBeat);
     const float startBeatAligned = roundf(firstBeat);
     const float deltaBeat = (indicatorBeat - startBeatAligned);
 
     this->deselectAll();
 
-    forEachXmlChildElementWithTagName(*mainSlot, layerElement, Serialization::Core::layer)
+    forEachXmlChildElementWithTagName(*root, patternElement, Serialization::Core::pattern)
     {
-        Array<Note> pastedNotes;
-
-        const String layerId = layerElement->getStringAttribute(Serialization::Clipboard::layerId);
+        Array<Clip> pastedClips;
+        const String patternId = patternElement->getStringAttribute(Serialization::Clipboard::patternId);
         
-        // TODO: store layer type in copy-paste info
-        // when pasting, use these priorities:
-        // 1. layer with the same id
-        // 2. layer with the same type and controller
-        // 3. active layer
-        
-        if (nullptr != this->project.getLayerWithId<AutomationLayer>(layerId))
+        if (nullptr != this->project.getPatternWithId(patternId))
         {
-            AutomationLayer *targetLayer = this->project.getLayerWithId<AutomationLayer>(layerId);
-            const bool correspondingTreeItemExists =
-            (this->project.findChildByLayerId<AutomationLayerTreeItem>(layerId) != nullptr);
+            Pattern *targetPattern = this->project.getPatternWithId(patternId);
+            PianoLayerTreeItem *targetLayerItem = this->project.findChildByLayerId<PianoLayerTreeItem>(patternId);
             
-            if (correspondingTreeItemExists)
+            forEachXmlChildElementWithTagName(*patternElement, clipElement, Serialization::Core::clip)
             {
-                Array<AutomationEvent> pastedEvents;
-                
-                forEachXmlChildElementWithTagName(*layerElement, autoElement, Serialization::Core::event)
-                {
-                    AutomationEvent &&ae = AutomationEvent(targetLayer).withParameters(*autoElement).copyWithNewId();
-                    pastedEvents.add(ae.withDeltaBeat(deltaBeat));
-                }
-                
-                targetLayer->insertGroup(pastedEvents, true);
-            }
-        }
-        else if (nullptr != this->project.getLayerWithId<AnnotationsLayer>(layerId))
-        {
-            AnnotationsLayer *targetLayer = this->project.getLayerWithId<AnnotationsLayer>(layerId);
-            
-            // no check for a tree item as there isn't any for ProjectTimeline
-            Array<AnnotationEvent> pastedAnnotations;
-            
-            forEachXmlChildElementWithTagName(*layerElement, annotationElement, Serialization::Core::annotation)
-            {
-                AnnotationEvent &&ae = AnnotationEvent(targetLayer).withParameters(*annotationElement).copyWithNewId();
-                pastedAnnotations.add(ae.withDeltaBeat(deltaBeat));
+                Clip &&c = Clip(targetPattern).withParameters(*clipElement).copyWithNewId();
+                pastedClips.add(c.withDeltaBeat(deltaBeat));
             }
             
-            targetLayer->insertGroup(pastedAnnotations, true);
-        }
-        else
-        {
-            PianoLayer *targetLayer = this->project.getLayerWithId<PianoLayer>(layerId);
-            PianoLayerTreeItem *targetLayerItem = this->project.findChildByLayerId<PianoLayerTreeItem>(layerId);
-            // use primary layer, if target is not found or not selected
-            const bool shouldUsePrimaryLayer = (targetLayerItem == nullptr) ? true : (!targetLayerItem->isSelected());
-            
-            if (shouldUsePrimaryLayer)
-            {
-                targetLayer = static_cast<PianoLayer *>(this->primaryActiveLayer);
-            }
-            
-            forEachXmlChildElementWithTagName(*layerElement, noteElement, Serialization::Core::note)
-            {
-                Note &&n = Note(targetLayer).withParameters(*noteElement).copyWithNewId();
-                pastedNotes.add(n.withDeltaBeat(deltaBeat));
-            }
-            
-            if (pastedNotes.size() > 0)
+            if (pastedClips.size() > 0)
             {
                 if (! didCheckpoint)
                 {
-                    targetLayer->checkpoint();
+                    targetPattern->checkpoint();
                     didCheckpoint = true;
                     
                     // also insert space if needed
@@ -716,7 +557,10 @@ void PatternRoll::clipboardPaste(const XmlElement &xml)
                     }
                 }
                 
-                targetLayer->insertGroup(pastedNotes, true);
+				for (Clip &c : pastedClips)
+				{
+					targetPattern->insert(c, true);
+				}
             }
         }
 
@@ -743,25 +587,11 @@ void PatternRoll::mouseDown(const MouseEvent &e)
 
         if (this->isAddEvent(e))
         {
-            this->insertNewNoteAt(e);
+            this->insertNewClipAt(e);
         }
     }
 
 	HybridRoll::mouseDown(e);
-
-    this->mouseDownWasTriggered = true;
-}
-
-void PatternRoll::mouseDoubleClick(const MouseEvent &e)
-{
-    // "Add chord" dialog
-    if (! this->project.getEditMode().forbidsAddingEvents())
-    {
-        auto popup = new NoNotesPopup(this, this->primaryActiveLayer);
-        const MouseEvent &e2(e.getEventRelativeTo(&App::Layout()));
-        popup->setTopLeftPosition(e2.getPosition() - Point<int>(popup->getWidth(), popup->getHeight()) / 2);
-        App::Layout().addAndMakeVisible(popup);
-    }
 }
 
 void PatternRoll::mouseDrag(const MouseEvent &e)
@@ -770,25 +600,6 @@ void PatternRoll::mouseDrag(const MouseEvent &e)
     if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
     {
         return;
-    }
-
-    if (this->draggingClip)
-    {
-        if (this->draggingClip->isResizing())
-        {
-            this->draggingClip->mouseDrag(e.getEventRelativeTo(this->draggingClip));
-        }
-        else
-        {
-            //if (PianoLayer *activePianoLayer = dynamic_cast<PianoLayer *>(this->activeLayer))
-            //{
-            //    activePianoLayer->checkpoint();
-            //}
-
-            this->draggingClip->startResizingRight(true);
-            this->draggingClip->setNoCheckpointNeededForNextAction(); // a hack
-            this->setMouseCursor(MouseCursor(MouseCursor::LeftRightResizeCursor));
-        }
     }
 
 	HybridRoll::mouseDrag(e);
@@ -803,13 +614,6 @@ void PatternRoll::mouseUp(const MouseEvent &e)
     
     // Due to weird modal component behavior,
     // a component can receive mouseUp event without receiving a mouseDown event before.
-    
-//    if (! this->mouseDownWasTriggered)
-//    {
-//        return;
-//    }
-
-    const bool justEndedDraggingNewNote = this->dismissDraggingNoteIfNeeded();
 
     if (! this->isUsingSpaceDraggingMode())
     {
@@ -818,23 +622,6 @@ void PatternRoll::mouseUp(const MouseEvent &e)
         // process lasso selection logic
 		HybridRoll::mouseUp(e);
     }
-
-    this->mouseDownWasTriggered = false;
-}
-
-bool PatternRoll::dismissDraggingNoteIfNeeded()
-{
-    // todo dismissDraggingNoteIfNeeded on editmode change?
-    if (this->draggingClip != nullptr)
-    {
-
-        this->draggingClip->endResizingRight();
-        this->setMouseCursor(this->project.getEditMode().getCursor());
-        this->draggingClip = nullptr;
-        return true;
-    }
-
-    return false;
 }
 
 //===----------------------------------------------------------------------===//
@@ -882,8 +669,8 @@ void PatternRoll::resized()
 
     for (int i = 0; i < this->eventComponents.size(); ++i)
     {
-        NoteComponent *note = static_cast<NoteComponent *>(this->eventComponents.getUnchecked(i));
-        note->updateBounds(this->getEventBounds(note));
+        ClipComponent *clip = static_cast<ClipComponent *>(this->eventComponents.getUnchecked(i));
+		clip->setFloatBounds(this->getEventBounds(clip));
     }
 
 	HybridRoll::resized();
@@ -954,99 +741,10 @@ void PatternRoll::paint(Graphics &g)
 	HybridRoll::paint(g);
 }
 
-void PatternRoll::insertNewNoteAt(const MouseEvent &e)
+void PatternRoll::insertNewClipAt(const MouseEvent &e)
 {
-    int draggingRow = 0;
-    float draggingColumn = 0.f;
-    this->getBeatByMousePosition(e.x);
-    this->addNewNoteMode = true;
-    this->addClip(draggingRow, draggingColumn, this->defaultClipLength, this->defaultClipVelocity);
-    //this->activeLayer->sendMidiMessage(MidiMessage::noteOn(this->activeLayer->getChannel(), draggingRow, 0.5f));
-}
-
-
-//===----------------------------------------------------------------------===//
-// MidiRoll's legacy
-//===----------------------------------------------------------------------===//
-
-void PatternRoll::handleAsyncUpdate()
-{
-#if PATTERNROLL_HAS_NOTE_RESIZERS
-    // resizers for the mobile version
-    if (this->selection.getNumSelected() > 0 &&
-        this->noteResizerLeft == nullptr)
-    {
-        this->noteResizerLeft = new NoteResizerLeft(*this);
-        this->addAndMakeVisible(this->noteResizerLeft);
-    }
-
-    if (this->selection.getNumSelected() > 0 &&
-        this->noteResizerRight == nullptr)
-    {
-        this->noteResizerRight = new NoteResizerRight(*this);
-        this->addAndMakeVisible(this->noteResizerRight);
-    }
-
-    if (this->selection.getNumSelected() == 0)
-    {
-        this->noteResizerLeft = nullptr;
-        this->noteResizerRight = nullptr;
-    }
-
-    if (this->batchRepaintList.size() > 0)
-    {
-        HYBRID_ROLL_BULK_REPAINT_START
-
-        if (this->noteResizerLeft != nullptr)
-        {
-            this->noteResizerLeft->updateBounds();
-        }
-
-        if (this->noteResizerRight != nullptr)
-        {
-            this->noteResizerRight->updateBounds();
-        }
-
-        HYBRID_ROLL_BULK_REPAINT_END
-    }
-#endif
-
-	HybridRoll::handleAsyncUpdate();
-}
-
-
-void PatternRoll::updateChildrenBounds()
-{
-#if PATTERNROLL_HAS_NOTE_RESIZERS
-    if (this->noteResizerLeft != nullptr)
-    {
-        this->noteResizerLeft->updateBounds();
-    }
-
-    if (this->noteResizerRight != nullptr)
-    {
-        this->noteResizerRight->updateBounds();
-    }
-#endif
-
-	HybridRoll::updateChildrenBounds();
-}
-
-void PatternRoll::updateChildrenPositions()
-{
-#if PATTERNROLL_HAS_NOTE_RESIZERS
-    if (this->noteResizerLeft != nullptr)
-    {
-        this->noteResizerLeft->updateTopPosition();
-    }
-
-    if (this->noteResizerRight != nullptr)
-    {
-        this->noteResizerRight->updateTopPosition();
-    }
-#endif
-
-	HybridRoll::updateChildrenPositions();
+    float draggingBeat = this->getBeatByMousePosition(e.x);
+    this->addClip(pattern, draggingBeat);
 }
 
 
@@ -1057,8 +755,6 @@ void PatternRoll::updateChildrenPositions()
 XmlElement *PatternRoll::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::midiRoll);
-
-    xml->setAttribute("defaultVelocity", this->getDefaultNoteVelocity());
 
     xml->setAttribute("barWidth", this->getBarWidth());
     xml->setAttribute("rowHeight", this->getRowHeight());
@@ -1083,8 +779,6 @@ void PatternRoll::deserialize(const XmlElement &xml)
 
     if (root == nullptr)
     { return; }
-
-    this->setDefaultNoteVelocity(float(root->getDoubleAttribute("defaultVelocity", this->getDefaultNoteVelocity())));
 
     this->setBarWidth(float(root->getDoubleAttribute("barWidth", this->getBarWidth())));
     this->setRowHeight(root->getIntAttribute("rowHeight", this->getRowHeight()));

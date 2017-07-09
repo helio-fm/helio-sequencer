@@ -24,7 +24,6 @@
 #endif
 
 #if HELIO_DESKTOP
-#   define PATTERNROLL_HAS_NOTE_RESIZERS 0
 #   if PATTERNROLL_HAS_PRERENDERED_BACKGROUND
 #       define MAX_ROW_HEIGHT (30)
 #       define MIN_ROW_HEIGHT (8)
@@ -33,7 +32,6 @@
 #       define MIN_ROW_HEIGHT (6)
 #   endif
 #elif HELIO_MOBILE
-#   define PATTERNROLL_HAS_NOTE_RESIZERS 1
 #   if PATTERNROLL_HAS_PRERENDERED_BACKGROUND
 #       define MAX_ROW_HEIGHT (40)
 #       define MIN_ROW_HEIGHT (10)
@@ -99,9 +97,9 @@ public:
     // Note management
     //===------------------------------------------------------------------===//
 
-    void addClip(int key, float beat, float length, float velocity);
+	void addClip(Pattern *pattern, float beat);
     Rectangle<float> getEventBounds(FloatBoundsComponent *mc) const override;
-    Rectangle<float> getEventBounds(int key, float beat, float length) const;
+    Rectangle<float> getEventBounds(Pattern *pattern, float beat) const;
     float getBeatByComponentPosition(float x) const;
     float getBeatByMousePosition(int x) const;
     
@@ -119,12 +117,14 @@ public:
     // ProjectListener
     //===------------------------------------------------------------------===//
 
-    void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
-    void onAddMidiEvent(const MidiEvent &event) override;
-    void onRemoveMidiEvent(const MidiEvent &event) override;
-    void onChangeMidiLayer(const MidiLayer *layer) override;
-    void onAddMidiLayer(const MidiLayer *layer) override;
-    void onRemoveMidiLayer(const MidiLayer *layer) override;
+	void onAddClip(const Clip &clip) override;
+	void onChangeClip(const Clip &oldClip, const Clip &newClip) override;
+	void onRemoveClip(const Clip &clip) override;
+	void onPostRemoveClip(const Pattern *pattern) override;
+
+	void onAddPattern(const Pattern *pattern) override;
+	void onChangePattern(const Pattern *pattern) override;
+	void onRemovePattern(const Pattern *pattern) override;
 
 
     //===------------------------------------------------------------------===//
@@ -147,9 +147,7 @@ public:
     // Component
     //===------------------------------------------------------------------===//
 
-    //virtual void longTapEvent(const MouseEvent &e) override;
     void mouseDown(const MouseEvent &e) override;
-    void mouseDoubleClick(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
     bool keyPressed(const KeyPress &key) override;
@@ -177,14 +175,8 @@ private:
     void updateChildrenBounds() override;
     void updateChildrenPositions() override;
 
-    void insertNewNoteAt(const MouseEvent &e);
-    bool dismissDraggingNoteIfNeeded();
+    void insertNewClipAt(const MouseEvent &e);
 
-    bool mouseDownWasTriggered; // juce mouseUp weirdness workaround
-
-	ClipComponent *draggingClip;
-    bool addNewNoteMode;
-    
     int rowHeight;
 	
 private:

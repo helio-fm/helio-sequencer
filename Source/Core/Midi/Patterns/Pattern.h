@@ -98,10 +98,10 @@ public:
 	void deserialize(const XmlElement &xml) override;
 	void reset() override;
 
-protected:
-
 	inline Uuid getPatternId() const noexcept;
 	inline String getPatternIdAsString() const;
+
+protected:
 
 	void clearQuick();
 
