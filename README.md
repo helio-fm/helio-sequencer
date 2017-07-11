@@ -47,3 +47,8 @@ Built-in piano samples are the part of [Salamander Grand Piano by Alexander Holm
 Used fonts and icons taken from various free icon fonts (see [Icomoon](https://icomoon.io)) are licensed under [SIL Open Font License](http://scripts.sil.org/cms/scripts/page.php?id=OFL) and [CC-BY](https://creativecommons.org/licenses/by/3.0/).
 
 All Helio logos and translations are also distrubuted under [CC-BY](https://creativecommons.org/licenses/by/3.0/).
+
+#### Additional translations credits
+
+Dario Silva - Brazilian Portuguese  
+Jacques Viviers - Afrikaans  
