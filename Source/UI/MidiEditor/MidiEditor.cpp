@@ -67,7 +67,7 @@ public:
     public:
         explicit ResizeConstrainer(MidiEditorSplitContainer &splitterRef) : splitter(splitterRef) { }
         
-        void applyBoundsToComponent(Component *component, const Rectangle<int> &bounds) override
+        void applyBoundsToComponent(Component &component, Rectangle<int> bounds) override
         {
             ComponentBoundsConstrainer::applyBoundsToComponent(component, bounds);
             this->splitter.resizedByUser();

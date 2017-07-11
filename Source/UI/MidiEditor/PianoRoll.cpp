@@ -794,20 +794,17 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
 // Component
 //===----------------------------------------------------------------------===//
 
-//void PianoRoll::longTapEvent(const MouseEvent &e)
-//{
-//    if (this->multiTouchController->hasMultitouch())
-//    {
-//        return;
-//    }
-//
-//    if (e.eventComponent == this)
-//    {
-//        this->insertNewNoteAt(e);
-//    }
-//
-//    MidiRoll::longTapEvent(e);
-//}
+void PianoRoll::longTapEvent(const MouseEvent &e)
+{
+    if (this->multiTouchController->hasMultitouch() ||
+        e.eventComponent != this)
+    {
+        return;
+    }
+
+    // Redirect to new chord popup
+    this->mouseDoubleClick(e);
+}
 
 void PianoRoll::mouseDown(const MouseEvent &e)
 {

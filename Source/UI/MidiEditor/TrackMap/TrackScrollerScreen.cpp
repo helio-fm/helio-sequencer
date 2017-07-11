@@ -84,8 +84,7 @@ void TrackScrollerScreen::resized()
 // Constrainers
 //===----------------------------------------------------------------------===//
 
-void TrackScrollerScreen::ResizeConstrainer::applyBoundsToComponent(Component *component,
-        const Rectangle<int> &bounds)
+void TrackScrollerScreen::ResizeConstrainer::applyBoundsToComponent(Component &component, Rectangle<int> bounds)
 {
     ComponentBoundsConstrainer::applyBoundsToComponent(component, bounds);
     this->scroller.resizeByUser();

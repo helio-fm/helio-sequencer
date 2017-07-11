@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 11
+    compileSdkVersion 14
     buildToolsVersion "25.0.2"
     externalNativeBuild {
         cmake {
@@ -20,11 +20,11 @@ android {
 
     defaultConfig {
         applicationId "com.peterrudenko.helioworkstation"
-        minSdkVersion    11
-        targetSdkVersion 11
+        minSdkVersion    14
+        targetSdkVersion 14
         externalNativeBuild {
             cmake {
-                arguments "-DANDROID_TOOLCHAIN=clang", "-DANDROID_PLATFORM=android-11", "-DANDROID_STL=c++_static", "-DANDROID_CPP_FEATURES=exceptions rtti", "-DANDROID_ARM_MODE=arm", "-DANDROID_ARM_NEON=TRUE"
+                arguments "-DANDROID_TOOLCHAIN=clang", "-DANDROID_PLATFORM=android-14", "-DANDROID_STL=c++_static", "-DANDROID_CPP_FEATURES=exceptions rtti", "-DANDROID_ARM_MODE=arm", "-DANDROID_ARM_NEON=TRUE"
                 cFlags "-fsigned-char"
                 cppFlags "-fsigned-char", "-std=c++14"
             }

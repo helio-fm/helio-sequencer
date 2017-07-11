@@ -117,7 +117,7 @@ DocumentWindow("Helio",
 
     const String openGLState = Config::get(Serialization::Core::openGLState);
 
-#if JUCE_MAC
+#if JUCE_MAC || JUCE_ANDROID
 	const bool shouldEnableOpenGLByDefault = openGLState.isEmpty();
 #else
 	const bool shouldEnableOpenGLByDefault = false;
@@ -223,13 +223,14 @@ void MainWindow::createWorkspaceComponent()
     this->workspace = new MainLayout();
 
 #if JUCE_ANDROID
-    const bool hasRetina = (dpi > 200);
+    //const double dpi = Desktop::getInstance().getDisplays().getMainDisplay().dpi;
+    //const bool hasRetina = (dpi > 200);
 
-    if (hasRetina)
-    {
-        this->setContentOwned(new WorkspaceAndroidProxy(this->workspace), false);
-    }
-    else
+    //if (hasRetina)
+    //{
+    //    this->setContentOwned(new WorkspaceAndroidProxy(this->workspace), false);
+    //}
+    //else
     {
         this->setContentNonOwned(this->workspace, false);
     }

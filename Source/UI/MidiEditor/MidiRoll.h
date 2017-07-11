@@ -282,8 +282,6 @@ public:
     // Component
     //===------------------------------------------------------------------===//
 
-    void longTapEvent(const MouseEvent &e) override;
-
     void focusGained(FocusChangeType cause) override;
     void focusLost(FocusChangeType cause) override;
 

@@ -405,9 +405,9 @@ Rectangle<int> TrackScroller::getMapBounds() const
 }
 
 void TrackScroller::HorizontalDragHelper::
-MoveConstrainer::applyBoundsToComponent(Component *component, const Rectangle<int> &bounds)
+MoveConstrainer::applyBoundsToComponent(Component &component, Rectangle<int> bounds)
 {
     ComponentBoundsConstrainer::applyBoundsToComponent(component, bounds);
-    this->scroller.horizontalDragByUser(component, bounds);
+    this->scroller.horizontalDragByUser(&component, bounds);
 }
 

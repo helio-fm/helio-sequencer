@@ -62,7 +62,7 @@ public:
     {
     public:
         explicit ResizeConstrainer(TrackScroller &scrollerRef) : scroller(scrollerRef) { }
-        void applyBoundsToComponent(Component *component, const Rectangle<int> &bounds) override;
+        void applyBoundsToComponent(Component &component, Rectangle<int> bounds) override;
     private:
         TrackScroller &scroller;
     };
