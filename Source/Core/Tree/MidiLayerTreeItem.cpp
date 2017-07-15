@@ -54,8 +54,7 @@ MidiLayerTreeItem::~MidiLayerTreeItem()
     {
         this->removeItemFromParent();
         this->lastFoundParent->hideEditor(this->layer, this);
-        this->lastFoundParent->broadcastRemoveLayer(this->layer);
-        this->lastFoundParent->broadcastRemovePattern(this->pattern);
+        this->lastFoundParent->broadcastRemoveTrack(this->layer, this->pattern);
         LayerGroupTreeItem::removeAllEmptyGroupsInProject(this->lastFoundParent);
     }
 }
@@ -306,7 +305,7 @@ void MidiLayerTreeItem::dispatchReloadLayer(const MidiLayer *layer)
 {
     if (this->lastFoundParent != nullptr)
     {
-        this->lastFoundParent->broadcastChangeLayer(layer);
+        this->lastFoundParent->broadcastChangeTrack(layer);
         this->repaintItem(); // if colour changed
     }
 }
@@ -390,14 +389,12 @@ void MidiLayerTreeItem::onItemMoved()
     {
         if (this->lastFoundParent)
         {
-            this->lastFoundParent->broadcastRemoveLayer(this->layer);
-            this->lastFoundParent->broadcastRemovePattern(this->pattern);
+            this->lastFoundParent->broadcastRemoveTrack(this->layer, this->pattern);
         }
 
         if (newParent)
         {
-            newParent->broadcastAddLayer(this->layer);
-            newParent->broadcastAddPattern(this->pattern);
+            newParent->broadcastAddTrack(this->layer, this->pattern);
             newParent->updateActiveGroupEditors();
         }
 

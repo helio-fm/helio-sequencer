@@ -24,18 +24,18 @@
 
 Note::Note() : MidiEvent(nullptr, 0.f)
 {
-    // needed for juce's Array
-    // should never be called.
+    // needed for juce's Array to work
     //jassertfalse;
 }
 
-Note::Note(MidiLayer *owner, int keyVal, float beatVal, float lengthVal, float velocityVal) :
+Note::Note(MidiLayer *owner,
+	int keyVal, float beatVal,
+	float lengthVal, float velocityVal) :
     MidiEvent(owner, beatVal),
     key(keyVal),
     length(lengthVal),
     velocity(velocityVal)
 {
-
 }
 
 Note::Note(const Note &other) :
@@ -91,7 +91,6 @@ Note Note::copyWithNewId(MidiLayer *newOwner) const
 
 static float roundBeat(float beat)
 {
-    //return beat;
     return roundf(beat * 16.f) / 16.f;
     //return roundf(beat * 1000.f) / 1000.f;
 }

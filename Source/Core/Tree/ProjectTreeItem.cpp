@@ -765,25 +765,28 @@ void ProjectTreeItem::broadcastPostRemoveEvent(const MidiLayer *layer)
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastChangeLayer(const MidiLayer *layer)
+void ProjectTreeItem::broadcastChangeTrack(const MidiLayer *layer,
+	const Pattern *pattern /*= nullptr*/)
 {
-    this->changeListeners.call(&ProjectListener::onChangeMidiLayer, layer);
+    this->changeListeners.call(&ProjectListener::onChangeTrack, layer, pattern);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastAddLayer(const MidiLayer *layer)
+void ProjectTreeItem::broadcastAddTrack(const MidiLayer *layer,
+	const Pattern *pattern /*= nullptr*/)
 {
     this->isLayersHashOutdated = true;
     this->registerVcsItem(layer);
-    this->changeListeners.call(&ProjectListener::onAddMidiLayer, layer);
+    this->changeListeners.call(&ProjectListener::onAddTrack, layer, pattern);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastRemoveLayer(const MidiLayer *layer)
+void ProjectTreeItem::broadcastRemoveTrack(const MidiLayer *layer,
+	const Pattern *pattern /*= nullptr*/)
 {
     this->isLayersHashOutdated = true;
     this->unregisterVcsItem(layer);
-    this->changeListeners.call(&ProjectListener::onRemoveMidiLayer, layer);
+    this->changeListeners.call(&ProjectListener::onRemoveTrack, layer, pattern);
     this->sendChangeMessage();
 }
 
@@ -808,26 +811,6 @@ void ProjectTreeItem::broadcastRemoveClip(const Clip &clip)
 void ProjectTreeItem::broadcastPostRemoveClip(const Pattern *pattern)
 {
     this->changeListeners.call(&ProjectListener::onPostRemoveClip, pattern);
-    this->sendChangeMessage();
-}
-
-void ProjectTreeItem::broadcastChangePattern(const Pattern *pattern)
-{
-    this->changeListeners.call(&ProjectListener::onChangePattern, pattern);
-    this->sendChangeMessage();
-}
-
-void ProjectTreeItem::broadcastAddPattern(const Pattern *pattern)
-{
-    this->registerVcsItem(pattern);
-    this->changeListeners.call(&ProjectListener::onAddPattern, pattern);
-    this->sendChangeMessage();
-}
-
-void ProjectTreeItem::broadcastRemovePattern(const Pattern *pattern)
-{
-    this->unregisterVcsItem(pattern);
-    this->changeListeners.call(&ProjectListener::onRemovePattern, pattern);
     this->sendChangeMessage();
 }
 

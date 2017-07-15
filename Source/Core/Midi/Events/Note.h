@@ -34,8 +34,7 @@ public:
          int keyVal = 0, float beatVal = 0.f,
          float lengthVal = 1.f, float velocityVal = 1.f);
 
-    Note(MidiLayer *newOwner,
-         const Note &parametersToCopy);
+    Note(MidiLayer *newOwner, const Note &parametersToCopy);
     
     ~Note() override {}
 

@@ -28,7 +28,6 @@ class ProjectListener
 public:
 
     ProjectListener() {}
-
     virtual ~ProjectListener() {}
 
 	virtual void onAddMidiEvent(const MidiEvent &event) = 0;
@@ -36,18 +35,14 @@ public:
     virtual void onRemoveMidiEvent(const MidiEvent &event) = 0;
 	virtual void onPostRemoveMidiEvent(const MidiLayer *layer) {}
 
-    virtual void onAddMidiLayer(const MidiLayer *layer) = 0;
-	virtual void onChangeMidiLayer(const MidiLayer *layer) = 0;
-	virtual void onRemoveMidiLayer(const MidiLayer *layer) = 0;
-    
     virtual void onAddClip(const Clip &clip) {}
     virtual void onChangeClip(const Clip &oldClip, const Clip &newClip) {}
     virtual void onRemoveClip(const Clip &clip) {}
     virtual void onPostRemoveClip(const Pattern *pattern) {}
 
-    virtual void onAddPattern(const Pattern *pattern) {}
-    virtual void onChangePattern(const Pattern *pattern) {}
-    virtual void onRemovePattern(const Pattern *pattern) {}
+	virtual void onAddTrack(const MidiLayer *layer, const Pattern *pattern = nullptr) = 0;
+	virtual void onChangeTrack(const MidiLayer *layer, const Pattern *pattern = nullptr) = 0;
+	virtual void onRemoveTrack(const MidiLayer *layer, const Pattern *pattern = nullptr) = 0;
 
     virtual void onChangeProjectInfo(const ProjectInfo *info) {}
     virtual void onChangeProjectBeatRange(float firstBeat, float lastBeat) = 0;

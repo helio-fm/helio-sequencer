@@ -198,18 +198,14 @@ public:
     void broadcastRemoveEvent(const MidiEvent &event);
 	void broadcastPostRemoveEvent(const MidiLayer *layer);
 
-    void broadcastAddLayer(const MidiLayer *layer);
-    void broadcastChangeLayer(const MidiLayer *layer);
-    void broadcastRemoveLayer(const MidiLayer *layer);
+    void broadcastAddTrack(const MidiLayer *layer, const Pattern *pattern = nullptr);
+    void broadcastChangeTrack(const MidiLayer *layer, const Pattern *pattern = nullptr);
+    void broadcastRemoveTrack(const MidiLayer *layer, const Pattern *pattern = nullptr);
 
     void broadcastAddClip(const Clip &clip);
     void broadcastChangeClip(const Clip &oldClip, const Clip &newClip);
     void broadcastRemoveClip(const Clip &clip);
     void broadcastPostRemoveClip(const Pattern *pattern);
-
-    void broadcastAddPattern(const Pattern *pattern);
-    void broadcastChangePattern(const Pattern *pattern);
-    void broadcastRemovePattern(const Pattern *pattern);
 
     void broadcastChangeProjectInfo(const ProjectInfo *info);
     void broadcastChangeProjectBeatRange();

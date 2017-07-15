@@ -170,7 +170,7 @@ void PatternRoll::setRowHeight(const int newRowHeight)
 
 int PatternRoll::getNumRows() const noexcept
 {
-	return this->patterns.size();
+	return this->layers.size();
 }
 
 
@@ -352,6 +352,61 @@ void PatternRoll::moveHelpers(const float deltaBeat, const int deltaKey)
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
+void PatternRoll::onAddMidiEvent(const MidiEvent &event)
+{
+
+}
+
+void PatternRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+{
+
+}
+
+void PatternRoll::onRemoveMidiEvent(const MidiEvent &event)
+{
+
+}
+
+void PatternRoll::onPostRemoveMidiEvent(const MidiLayer *layer)
+{
+
+}
+
+void PatternRoll::onAddTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
+{
+	//this->layers.set(layer->getLayerIdAsString(), layer);
+
+	if (pattern != nullptr && pattern->size() > 0)
+	{
+		this->reloadMidiTrack();
+	}
+}
+
+void PatternRoll::onChangeTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
+{
+	this->reloadMidiTrack();
+}
+
+void PatternRoll::onRemoveTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
+{
+	//this->layers.remove(layer->getLayerIdAsString());
+
+	if (pattern != nullptr)
+	{
+		for (int i = 0; i < pattern->size(); ++i)
+		{
+			const Clip &clip = pattern->getUnchecked(i);
+			if (ClipComponent *component = this->componentsHashTable[clip])
+			{
+				this->selection.deselect(component);
+				this->removeChildComponent(component);
+				this->componentsHashTable.remove(clip);
+				this->eventComponents.removeObject(component, true);
+			}
+		}
+	}
+}
+
 void PatternRoll::onAddClip(const Clip &clip)
 {
 	auto component = new ClipComponent(*this, clip);
@@ -398,34 +453,6 @@ void PatternRoll::onRemoveClip(const Clip &clip)
 void PatternRoll::onPostRemoveClip(const Pattern *pattern)
 {
 	//
-}
-
-void PatternRoll::onAddPattern(const Pattern *pattern)
-{
-	if (pattern->size() > 0)
-	{
-		this->reloadMidiTrack();
-	}
-}
-
-void PatternRoll::onChangePattern(const Pattern *pattern)
-{
-	this->reloadMidiTrack();
-}
-
-void PatternRoll::onRemovePattern(const Pattern *pattern)
-{
-	for (int i = 0; i < pattern->size(); ++i)
-	{
-		const Clip &clip = pattern->getUnchecked(i);
-		if (ClipComponent *component = this->componentsHashTable[clip])
-		{
-			this->selection.deselect(component);
-			this->removeChildComponent(component);
-			this->componentsHashTable.remove(clip);
-			this->eventComponents.removeObject(component, true);
-		}
-	}
 }
 
 

@@ -73,11 +73,11 @@ public:
     
     void onRemoveMidiEvent(const MidiEvent &event) override;
     
-    void onChangeMidiLayer(const MidiLayer *layer) override;
+    void onChangeTrack(const MidiLayer *layer, const Pattern *pattern = nullptr) override;
     
-    void onAddMidiLayer(const MidiLayer *layer) override;
+    void onAddTrack(const MidiLayer *layer, const Pattern *pattern = nullptr) override;
     
-    void onRemoveMidiLayer(const MidiLayer *layer) override;
+    void onRemoveTrack(const MidiLayer *layer, const Pattern *pattern = nullptr) override;
     
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
     

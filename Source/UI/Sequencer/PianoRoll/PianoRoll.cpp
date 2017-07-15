@@ -538,14 +538,14 @@ void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
-void PianoRoll::onChangeMidiLayer(const MidiLayer *layer)
+void PianoRoll::onChangeTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
 {
     if (! dynamic_cast<const PianoLayer *>(layer)) { return; }
 
     this->reloadMidiTrack();
 }
 
-void PianoRoll::onAddMidiLayer(const MidiLayer *layer)
+void PianoRoll::onAddTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
 {
     if (! dynamic_cast<const PianoLayer *>(layer)) { return; }
 
@@ -555,7 +555,7 @@ void PianoRoll::onAddMidiLayer(const MidiLayer *layer)
     }
 }
 
-void PianoRoll::onRemoveMidiLayer(const MidiLayer *layer)
+void PianoRoll::onRemoveTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
 {
     if (! dynamic_cast<const PianoLayer *>(layer)) { return; }
 

@@ -36,14 +36,14 @@ ProjectTimeline::ProjectTimeline(ProjectTreeItem &parentProject,
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectTimelineDeltas::annotationsAdded));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectTimelineDeltas::timeSignaturesAdded));
     
-    this->project.broadcastAddLayer(this->annotations);
-    this->project.broadcastAddLayer(this->timeSignatures);
+    this->project.broadcastAddTrack(this->annotations);
+    this->project.broadcastAddTrack(this->timeSignatures);
 }
 
 ProjectTimeline::~ProjectTimeline()
 {
-    this->project.broadcastRemoveLayer(this->timeSignatures);
-    this->project.broadcastRemoveLayer(this->annotations);
+    this->project.broadcastRemoveTrack(this->timeSignatures);
+    this->project.broadcastRemoveTrack(this->annotations);
 }
 
 
@@ -159,7 +159,7 @@ void ProjectTimeline::dispatchPostRemoveEvent(const MidiLayer *layer)
 
 void ProjectTimeline::dispatchReloadLayer(const MidiLayer *midiLayer)
 {
-    this->project.broadcastChangeLayer(midiLayer);
+    this->project.broadcastChangeTrack(midiLayer);
 }
 
 void ProjectTimeline::dispatchChangeLayerBeatRange()
