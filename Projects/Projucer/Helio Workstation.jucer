@@ -972,6 +972,14 @@
             <FILE id="x4IUU7" name="ClipComponent.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/PatternRoll/ClipComponent.cpp"/>
             <FILE id="o9SpSK" name="ClipComponent.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PatternRoll/ClipComponent.h"/>
+            <FILE id="kW2Qjv" name="AutomationClipComponent.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/PatternRoll/AutomationClipComponent.cpp"/>
+            <FILE id="CFnVVc" name="AutomationClipComponent.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/PatternRoll/AutomationClipComponent.h"/>
+            <FILE id="Exbw0l" name="PianoClipComponent.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/PatternRoll/PianoClipComponent.cpp"/>
+            <FILE id="pPYJa2" name="PianoClipComponent.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/PatternRoll/PianoClipComponent.h"/>
             <FILE id="Fq4aoW" name="PatternRoll.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/PatternRoll/PatternRoll.cpp"/>
             <FILE id="MXsdDW" name="PatternRoll.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PatternRoll/PatternRoll.h"/>
           </GROUP>
