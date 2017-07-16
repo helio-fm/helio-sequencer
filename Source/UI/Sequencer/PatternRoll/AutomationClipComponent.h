@@ -19,6 +19,7 @@
 
 #include "ClipComponent.h"
 
+// TODO: this one should also act as a mini-editor for cc curves
 class AutomationClipComponent : public ClipComponent
 {
 public:

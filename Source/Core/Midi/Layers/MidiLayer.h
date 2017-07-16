@@ -73,6 +73,7 @@ public:
 
     virtual float getFirstBeat() const;
     virtual float getLastBeat() const;
+	float getLengthInBeats() const;
 
     int getChannel() const;
     void setChannel(int val);

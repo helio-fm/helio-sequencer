@@ -49,18 +49,15 @@
 PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
                      Viewport &viewportRef,
                      WeakReference<AudioMonitor> clippingDetector) :
-    HybridRoll(parentProject, viewportRef, clippingDetector),
-	rowHeight(MIN_ROW_HEIGHT)
+    HybridRoll(parentProject, viewportRef, clippingDetector)
 {
-    this->setRowHeight(MIN_ROW_HEIGHT + 5);
-
     this->helperHorizontal = new HelperRectangleHorizontal();
     this->addChildComponent(this->helperHorizontal);
 
     this->header->toFront(false);
     this->indicator->toFront(false);
     
-    this->reloadMidiTrack();
+    this->reloadRollContent();
 }
 
 PatternRoll::~PatternRoll()
@@ -128,7 +125,7 @@ void PatternRoll::deleteSelection()
     this->grabKeyboardFocus(); // not working?
 }
 
-void PatternRoll::reloadMidiTrack()
+void PatternRoll::reloadRollContent()
 {
     this->selection.deselectAll();
 
@@ -140,10 +137,9 @@ void PatternRoll::reloadMidiTrack()
     this->eventComponents.clear();
     this->componentsHashTable.clear();
 
-    const Array<Pattern *> &patterns = this->project.getPatternsList();
-
-    for (auto pattern : patterns)
+    for (auto path : sortedPaths)
     {
+		auto pattern = this->patterns[path];
         for (int j = 0; j < pattern->size(); ++j)
         {
             const Clip &clip = pattern->getUnchecked(j);
@@ -158,19 +154,6 @@ void PatternRoll::reloadMidiTrack()
 
     this->resized();
     this->repaint(this->viewport.getViewArea());
-}
-
-void PatternRoll::setRowHeight(const int newRowHeight)
-{
-    if (newRowHeight == this->rowHeight || newRowHeight <= 1) { return; }
-
-    this->rowHeight = newRowHeight;
-    this->setSize(this->getWidth(), this->getNumRows() * this->rowHeight);
-}
-
-int PatternRoll::getNumRows() const noexcept
-{
-	return this->layers.size();
 }
 
 
@@ -203,65 +186,6 @@ void PatternRoll::hideAllGhostClips()
 
 
 //===----------------------------------------------------------------------===//
-// SmoothZoomListener
-//===----------------------------------------------------------------------===//
-
-void PatternRoll::zoomRelative(const Point<float> &origin, const Point<float> &factor)
-{
-    //Logger::writeToLog("zoomRelative " + String(factor.getY()));
-    const float yZoomThreshold = 0.005f;
-
-    if (fabs(factor.getY()) > yZoomThreshold)
-    {
-        const Point<float> oldViewPosition = this->viewport.getViewPosition().toFloat();
-        const Point<float> absoluteOrigin = oldViewPosition + origin;
-        const float oldHeight = float(this->getHeight());
-
-        int newRowHeight = this->getRowHeight();
-        newRowHeight = (factor.getY() < -yZoomThreshold) ? (newRowHeight - 1) : newRowHeight;
-        newRowHeight = (factor.getY() > yZoomThreshold) ? (newRowHeight + 1) : newRowHeight;
-
-        const float estimatedNewHeight = float(newRowHeight * this->getNumRows());
-
-        if (estimatedNewHeight < this->viewport.getViewHeight() ||
-            newRowHeight > MAX_ROW_HEIGHT ||
-            newRowHeight < MIN_ROW_HEIGHT)
-        {
-            newRowHeight = this->getRowHeight();
-        }
-
-        this->setRowHeight(newRowHeight);
-
-        const float newHeight = float(this->getHeight());
-        const float mouseOffsetY = float(absoluteOrigin.getY() - oldViewPosition.getY());
-        const float newViewPositionY = float((absoluteOrigin.getY() * newHeight) / oldHeight) - mouseOffsetY;
-        this->viewport.setViewPosition(Point<int>(oldViewPosition.getX(), int(newViewPositionY + 0.5f)));
-    }
-
-    HybridRoll::zoomRelative(origin, factor);
-}
-
-void PatternRoll::zoomAbsolute(const Point<float> &zoom)
-{
-    const float &newHeight = (this->getNumRows() * MAX_ROW_HEIGHT) * zoom.getY();
-    const float &rowsOnNewScreen = float(newHeight / MAX_ROW_HEIGHT);
-    const float &viewHeight = float(this->viewport.getViewHeight());
-    const float &newRowHeight = floorf(viewHeight / rowsOnNewScreen + .5f);
-
-    this->setRowHeight(int(newRowHeight));
-
-	HybridRoll::zoomAbsolute(zoom);
-}
-
-float PatternRoll::getZoomFactorY() const
-{
-    const float &numRows = float(this->getNumRows());
-    const float &viewHeight = float(this->viewport.getViewHeight() - HYBRID_ROLL_HEADER_HEIGHT);
-    return (viewHeight / float(this->getHeight()));
-}
-
-
-//===----------------------------------------------------------------------===//
 // Clip management
 //===----------------------------------------------------------------------===//
 
@@ -283,12 +207,16 @@ Rectangle<float> PatternRoll::getEventBounds(Pattern *pattern, float beat) const
 {
     const float startOffsetBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
 	const float x = this->barWidth * (beat - startOffsetBeat) / NUM_BEATS_IN_BAR;
+
 	// the hard part here, need to get the layer info
+	MidiLayer *matchingLayer = nullptr;
+	const float length = matchingLayer->getLengthInBeats();
 	const float w = this->barWidth * length / NUM_BEATS_IN_BAR;
 
 	// TODO y position by layer
-    const float yPosition = float(this->getYPositionByKey(key));
-    return Rectangle<float> (x, yPosition + 1, w, float(this->rowHeight - 1));
+	const int patternIndex = TODO;
+	const float yPosition = float(patternIndex * PATTERNROLL_ROW_HEIGHT);
+    return Rectangle<float> (x, yPosition + 1, w, float(PATTERNROLL_ROW_HEIGHT - 1));
 }
 
 float PatternRoll::getBeatByComponentPosition(float x) const
@@ -300,6 +228,16 @@ float PatternRoll::getBeatByMousePosition(int x) const
 {
     return this->getFloorBeatByXPosition(x);
 }
+
+Pattern *PatternRoll::getPatternByMousePosition(int y) const
+{
+	const int patternIndex =
+		jlimit(0, this->sortedPaths.size() - 1,
+			int(y / PATTERNROLL_ROW_HEIGHT));
+	const String patternPath = this->sortedPaths[patternIndex];
+	return this->patterns[patternPath];
+}
+
 
 //===----------------------------------------------------------------------===//
 // Drag helpers
@@ -378,13 +316,15 @@ void PatternRoll::onAddTrack(const MidiLayer *layer, const Pattern *pattern /*= 
 
 	if (pattern != nullptr && pattern->size() > 0)
 	{
-		this->reloadMidiTrack();
+		this->reloadRollContent();
 	}
+
+	this->setSize(this->getWidth(), this->getNumRows() * PATTERNROLL_ROW_HEIGHT);
 }
 
 void PatternRoll::onChangeTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
 {
-	this->reloadMidiTrack();
+	this->reloadRollContent();
 }
 
 void PatternRoll::onRemoveTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
@@ -725,8 +665,8 @@ void PatternRoll::paint(Graphics &g)
     const float visibleHeight = float(this->viewport.getViewHeight());
     const Point<int> &viewPosition = this->viewport.getViewPosition();
 
-    const int keyStart = int(viewPosition.getY() / this->rowHeight);
-    const int keyEnd = int((viewPosition.getY() + visibleHeight) / this->rowHeight);
+    const int keyStart = int(viewPosition.getY() / PATTERNROLL_ROW_HEIGHT);
+    const int keyEnd = int((viewPosition.getY() + visibleHeight) / PATTERNROLL_ROW_HEIGHT);
 
     // Fill everything with white keys color
     g.setColour(whiteKeyBright);
@@ -735,7 +675,7 @@ void PatternRoll::paint(Graphics &g)
     for (int i = keyStart; i <= keyEnd; i++)
     {
         const int lastOctaveReminder = 4;
-        const int yPos = i * this->rowHeight;
+        const int yPos = i * PATTERNROLL_ROW_HEIGHT;
         const int noteNumber = (i + lastOctaveReminder) % 12;
         const int octaveNumber = (i + lastOctaveReminder) / 12;
         const bool octaveIsOdd = ((octaveNumber % 2) > 0);
@@ -748,7 +688,7 @@ void PatternRoll::paint(Graphics &g)
             case 8:
             case 10: // black keys
                 g.setColour(octaveIsOdd ? blackKeyBright : blackKey);
-                g.fillRect(float(viewPosition.getX()), float(yPos), visibleWidth, float(this->rowHeight));
+                g.fillRect(float(viewPosition.getX()), float(yPos), visibleWidth, float(PATTERNROLL_ROW_HEIGHT));
                 break;
 
             default: // white keys bevel
@@ -771,6 +711,7 @@ void PatternRoll::paint(Graphics &g)
 void PatternRoll::insertNewClipAt(const MouseEvent &e)
 {
     float draggingBeat = this->getBeatByMousePosition(e.x);
+	const auto pattern = this->getPatternByMousePosition(e.y);
     this->addClip(pattern, draggingBeat);
 }
 
@@ -784,7 +725,6 @@ XmlElement *PatternRoll::serialize() const
     auto xml = new XmlElement(Serialization::Core::midiRoll);
 
     xml->setAttribute("barWidth", this->getBarWidth());
-    xml->setAttribute("rowHeight", this->getRowHeight());
 
     xml->setAttribute("startBar", this->getBarByXPosition(this->getViewport().getViewPositionX()));
     xml->setAttribute("endBar", this->getBarByXPosition(this->getViewport().getViewPositionX() + this->getViewport().getViewWidth()));
@@ -808,7 +748,6 @@ void PatternRoll::deserialize(const XmlElement &xml)
     { return; }
 
     this->setBarWidth(float(root->getDoubleAttribute("barWidth", this->getBarWidth())));
-    this->setRowHeight(root->getIntAttribute("rowHeight", this->getRowHeight()));
 
     const float startBar = float(root->getDoubleAttribute("startBar", 0.0));
     const float endBar = float(root->getDoubleAttribute("endBar", 0.0));
@@ -832,17 +771,6 @@ void PatternRoll::reset()
 //===----------------------------------------------------------------------===//
 // Bg images cache
 //===----------------------------------------------------------------------===//
-
-void PatternRoll::repaintBackgroundsCache(HelioTheme &theme)
-{
-    theme.getRollBgCache().clear();
-
-    for (int i = MIN_ROW_HEIGHT; i <= MAX_ROW_HEIGHT; ++i)
-    {
-        CachedImage::Ptr pattern(PatternRoll::renderRowsPattern(theme, i));
-        theme.getRollBgCache().set(i, pattern);
-    }
-}
 
 CachedImage::Ptr PatternRoll::renderRowsPattern(HelioTheme &theme, int height)
 {

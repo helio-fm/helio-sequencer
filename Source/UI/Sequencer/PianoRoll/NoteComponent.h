@@ -26,7 +26,7 @@ class NoteComponent : public HybridRollEventComponent
 {
 public:
 
-    NoteComponent(PianoRoll &gridRef, const Note &eventRef);
+    NoteComponent(PianoRoll &gridRef, const Note &eventRef, bool ghostMode = false);
     ~NoteComponent() override;
 
     enum State
@@ -40,8 +40,6 @@ public:
         Dragging
     };
     
-    void setGhostMode();
-
     const Note &getNote() const;
     PianoRoll &getRoll() const;
 
@@ -126,8 +124,6 @@ protected:
     bool canResize() const;
 
     State state;
-
-    bool ghostMode;
     
     friend class PianoRoll;
     friend class PianoRollToolbox;

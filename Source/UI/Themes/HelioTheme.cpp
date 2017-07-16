@@ -31,6 +31,7 @@
 #include "HelperRectangle.h"
 #include "SizeSwitcherComponent.h"
 #include "PianoRoll.h"
+#include "PatternRoll.h"
 
 #include "HelioCallout.h"
 #include "HybridLassoComponent.h"
@@ -937,7 +938,11 @@ void HelioTheme::updateBackgroundRenders(bool force)
 #if PIANOROLL_HAS_PRERENDERED_BACKGROUND
     PianoRoll::repaintBackgroundsCache(*this);
 #endif
-    
+
+#if PATTERNROLL_HAS_PRERENDERED_BACKGROUND
+	PatternRoll::repaintBackgroundsCache(*this);
+#endif
+
 #if PANEL_A_HAS_PRERENDERED_BACKGROUND
     PanelBackgroundA::updateRender(*this);
 #endif

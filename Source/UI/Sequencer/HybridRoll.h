@@ -127,7 +127,7 @@ public:
     HybridRollEditMode getEditMode() const;
 
 	virtual void selectAll() = 0;
-	virtual void reloadMidiTrack() = 0;
+	virtual void reloadRollContent() = 0;
 	virtual Rectangle<float> getEventBounds(FloatBoundsComponent *nc) const = 0;
     
     void scrollToSeekPosition();

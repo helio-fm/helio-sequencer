@@ -38,14 +38,13 @@ static PianoLayer *getPianoLayer(SelectionProxyArray::Ptr selection)
 	return pianoLayer;
 }
 
-NoteComponent::NoteComponent(PianoRoll &editor, const Note &event)
-    : HybridRollEventComponent(editor),
+NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, bool ghostMode)
+    : HybridRollEventComponent(editor, ghostMode),
 	  midiEvent(event),
       state(None),
       anchor(event),
       groupScalingAnchor(event),
-      firstChangeDone(false),
-      ghostMode(false)
+      firstChangeDone(false)
 {
     this->toFront(false);
     this->setOpaque(false); // speedup
@@ -672,12 +671,6 @@ void NoteComponent::mouseDoubleClick(const MouseEvent &e)
             this->activateCorrespondingLayer(true, deselectOthers);
         }
     }
-}
-
-void NoteComponent::setGhostMode()
-{
-    this->ghostMode = true;
-    this->repaint();
 }
 
 //===----------------------------------------------------------------------===//

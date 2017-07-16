@@ -30,10 +30,11 @@ class HybridRollEventComponent :
 {
 public:
 
-    HybridRollEventComponent(HybridRoll &editor);
+    HybridRollEventComponent(HybridRoll &editor, bool ghostMode = false);
 
     bool isActive() const;
     void setActive(bool val, bool force = false);
+	void setGhostMode();
 
     virtual float getBeat() const = 0;
 	virtual String getId() const = 0;
@@ -62,6 +63,7 @@ protected:
     float anchorBeat;
 
     Colour colour;
+	bool ghostMode;
 
     // сдвиг мыши от нуля компонента во время клика.
     // если его не учитывать, то ноты двигаются неестественно

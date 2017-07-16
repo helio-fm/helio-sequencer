@@ -21,13 +21,14 @@
 #include "MidiEvent.h"
 #include "HybridRoll.h"
 
-HybridRollEventComponent::HybridRollEventComponent(HybridRoll &editor) :
+HybridRollEventComponent::HybridRollEventComponent(HybridRoll &editor, bool isGhost) :
     roll(editor),
     dragger(),
     selectedState(false),
     activeState(true),
     anchorBeat(0),
     colour(Colours::white),
+	ghostMode(isGhost),
     clickOffset(0, 0)    
 {
     this->setWantsKeyboardFocus(false);
@@ -57,6 +58,11 @@ void HybridRollEventComponent::setActive(bool val, bool force)
     }
 }
 
+void HybridRollEventComponent::setGhostMode()
+{
+	this->ghostMode = true;
+	this->repaint();
+}
 
 //===----------------------------------------------------------------------===//
 // Component

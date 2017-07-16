@@ -383,7 +383,8 @@ void MidiLayerTreeItem::onItemMoved()
     ProjectTreeItem *newParent = this->findParentOfType<ProjectTreeItem>();
 
     const bool parentProjectChanged = (this->lastFoundParent != newParent);
-    const bool needsToRepaintEditor = (this->isMarkerVisible() && (this->lastFoundParent != nullptr) && parentProjectChanged);
+    const bool needsToRepaintEditor = (this->isMarkerVisible() &&
+		(this->lastFoundParent != nullptr) && parentProjectChanged);
 
     if (parentProjectChanged)
     {

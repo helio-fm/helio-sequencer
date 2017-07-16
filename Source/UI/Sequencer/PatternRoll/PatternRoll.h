@@ -19,26 +19,10 @@
 
 #if JUCE_IOS
 #   define PATTERNROLL_HAS_PRERENDERED_BACKGROUND 1
+#   define PATTERNROLL_ROW_HEIGHT 96
 #else
 #   define PATTERNROLL_HAS_PRERENDERED_BACKGROUND 0
-#endif
-
-#if HELIO_DESKTOP
-#   if PATTERNROLL_HAS_PRERENDERED_BACKGROUND
-#       define MAX_ROW_HEIGHT (30)
-#       define MIN_ROW_HEIGHT (8)
-#   else
-#       define MAX_ROW_HEIGHT (35)
-#       define MIN_ROW_HEIGHT (6)
-#   endif
-#elif HELIO_MOBILE
-#   if PATTERNROLL_HAS_PRERENDERED_BACKGROUND
-#       define MAX_ROW_HEIGHT (40)
-#       define MIN_ROW_HEIGHT (10)
-#   else
-#       define MAX_ROW_HEIGHT (60)
-#       define MIN_ROW_HEIGHT (8)
-#   endif
+#   define PATTERNROLL_ROW_HEIGHT 64
 #endif
 
 class Pattern;
@@ -55,11 +39,6 @@ class PatternRoll : public HybridRoll
 {
 public:
 
-    static void repaintBackgroundsCache(HelioTheme &theme);
-    static CachedImage::Ptr renderRowsPattern(HelioTheme &theme, int height);
-    
-public:
-
     PatternRoll(ProjectTreeItem &parentProject,
               Viewport &viewportRef,
               WeakReference<AudioMonitor> clippingDetector);
@@ -67,30 +46,16 @@ public:
     ~PatternRoll() override;
 
     void deleteSelection();
-    
-    void reloadMidiTrack() override;
-
-    void setRowHeight(const int newRowHeight);
-    inline int getRowHeight() const noexcept
-    { return this->rowHeight; }
-
+    void reloadRollContent() override;
 	int getNumRows() const noexcept;
-    
+
+
     //===------------------------------------------------------------------===//
     // Ghost notes
     //===------------------------------------------------------------------===//
     
     void showGhostClipFor(ClipComponent *targetClipComponent);
     void hideAllGhostClips();
-    
-
-    //===------------------------------------------------------------------===//
-    // SmoothZoomListener
-    //===------------------------------------------------------------------===//
-
-    void zoomRelative(const Point<float> &origin, const Point<float> &factor) override;
-    void zoomAbsolute(const Point<float> &zoom) override;
-    float getZoomFactorY() const override;
 
 
     //===------------------------------------------------------------------===//
@@ -102,7 +67,8 @@ public:
     Rectangle<float> getEventBounds(Pattern *pattern, float beat) const;
     float getBeatByComponentPosition(float x) const;
     float getBeatByMousePosition(int x) const;
-    
+	Pattern *getPatternByMousePosition(int y) const;
+
 
     //===------------------------------------------------------------------===//
     // Drag helpers
@@ -175,14 +141,19 @@ public:
     void deserialize(const XmlElement &xml) override;
     void reset() override;
     
+public:
+
+		static CachedImage::Ptr rowPattern;
+		static CachedImage::Ptr renderRowsPattern(HelioTheme &theme, int height);
+		static void repaintBackgroundsCache(HelioTheme &theme)
+		{ rowPattern = PatternRoll::renderRowsPattern(theme, PATTERNROLL_ROW_HEIGHT); }
+
 private:
 
     void updateChildrenBounds() override;
     void updateChildrenPositions() override;
 
     void insertNewClipAt(const MouseEvent &e);
-
-    int rowHeight;
 	
 private:
     
@@ -192,7 +163,10 @@ private:
     
 private:
     
-	HashMap<String, const MidiLayer *> layers;
+	// layer's path : pattern
+	HashMap<String, Pattern *> patterns;
+	HashMap<String, MidiLayer *> layers;
+	StringArray sortedPaths;
 
     OwnedArray<ClipComponent> ghostClips;
     

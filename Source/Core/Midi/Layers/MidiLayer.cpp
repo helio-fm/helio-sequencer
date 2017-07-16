@@ -173,6 +173,11 @@ float MidiLayer::getLastBeat() const
     return this->midiEvents.getUnchecked(this->midiEvents.size() - 1)->getBeat();
 }
 
+float MidiLayer::getLengthInBeats() const
+{
+	return this->getLastBeat() - this->getFirstBeat();
+}
+
 int MidiLayer::getChannel() const
 {
     return this->channel;
