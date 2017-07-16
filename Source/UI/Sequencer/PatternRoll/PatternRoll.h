@@ -29,7 +29,6 @@ class Pattern;
 class ClipComponent;
 class PianoRollReboundThread;
 class PianoRollCellHighlighter;
-class HelperRectangle;
 
 #include "HelioTheme.h"
 #include "HybridRoll.h"
@@ -68,15 +67,6 @@ public:
     float getBeatByComponentPosition(float x) const;
     float getBeatByMousePosition(int x) const;
 	Pattern *getPatternByMousePosition(int y) const;
-
-
-    //===------------------------------------------------------------------===//
-    // Drag helpers
-    //===------------------------------------------------------------------===//
-
-    void showHelpers();
-    void hideHelpers();
-    void moveHelpers(const float deltaBeat, const int deltaKey);
 
 
     //===------------------------------------------------------------------===//
@@ -169,8 +159,6 @@ private:
 	StringArray sortedPaths;
 
     OwnedArray<ClipComponent> ghostClips;
-    
-    ScopedPointer<HelperRectangle> helperHorizontal;
     
     HashMap<Clip, ClipComponent *, ClipHashFunction> componentsHashTable;
 

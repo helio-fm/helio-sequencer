@@ -25,7 +25,6 @@
 #include "ProjectTreeItem.h"
 #include "ProjectTimeline.h"
 #include "ClipComponent.h"
-#include "HelperRectangle.h"
 #include "SmoothZoomController.h"
 #include "MultiTouchController.h"
 #include "HelioTheme.h"
@@ -51,9 +50,6 @@ PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
                      WeakReference<AudioMonitor> clippingDetector) :
     HybridRoll(parentProject, viewportRef, clippingDetector)
 {
-    this->helperHorizontal = new HelperRectangleHorizontal();
-    this->addChildComponent(this->helperHorizontal);
-
     this->header->toFront(false);
     this->indicator->toFront(false);
     
@@ -152,8 +148,8 @@ void PatternRoll::reloadRollContent()
         }
     }
 
-    this->resized();
-    this->repaint(this->viewport.getViewArea());
+	this->setSize(this->getWidth(), this->getNumRows() * PATTERNROLL_ROW_HEIGHT);
+	this->repaint(this->viewport.getViewArea());
 }
 
 
@@ -240,53 +236,6 @@ Pattern *PatternRoll::getPatternByMousePosition(int y) const
 
 
 //===----------------------------------------------------------------------===//
-// Drag helpers
-//===----------------------------------------------------------------------===//
-
-void PatternRoll::showHelpers()
-{
-    if (this->helperHorizontal->isVisible())
-    { return; }
-
-    this->selection.needsToCalculateSelectionBounds();
-    this->moveHelpers(0.f, 0);
-    //this->helperVertical->setAlpha(1.f);
-    this->helperHorizontal->setAlpha(1.f);
-    //this->helperVertical->setVisible(true);
-    this->helperHorizontal->setVisible(true);
-}
-
-void PatternRoll::hideHelpers()
-{
-    const int animTime = SHORT_FADE_TIME(this);
-    //this->fader.fadeOut(this->helperVertical, animTime);
-    this->fader.fadeOut(this->helperHorizontal, animTime);
-}
-
-void PatternRoll::moveHelpers(const float deltaBeat, const int deltaKey)
-{
-    const float firstBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
-    const Rectangle<int> selectionBounds = this->selection.getSelectionBounds();
-    //const Rectangle<int> delta = this->getEventBounds(deltaKey - 1, deltaBeat, 1.f);
-    const Rectangle<float> delta = this->getEventBounds(deltaKey - 1, deltaBeat + firstBeat, 1.f);
-
-    const int deltaX = roundFloatToInt(delta.getTopLeft().getX());
-    const int deltaY = roundFloatToInt(delta.getTopLeft().getY() - this->getHeight() - 1);
-    //const int deltaX = delta.getTopLeft().getX();
-    //const int deltaY = delta.getTopLeft().getY() - this->getHeight() - 1;
-    const Rectangle<int> selectionTranslated = selectionBounds.translated(deltaX, deltaY);
-
-    const int vX = this->viewport.getViewPositionX();
-    const int vW = this->viewport.getViewWidth();
-    this->helperHorizontal->setBounds(selectionTranslated.withLeft(vX).withWidth(vW));
-
-    //const int vY = this->viewport.getViewPositionY();
-    //const int vH = this->viewport.getViewHeight();
-    //this->helperVertical->setBounds(selectionTranslated.withTop(vY).withHeight(vH));
-}
-
-
-//===----------------------------------------------------------------------===//
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
@@ -318,8 +267,6 @@ void PatternRoll::onAddTrack(const MidiLayer *layer, const Pattern *pattern /*= 
 	{
 		this->reloadRollContent();
 	}
-
-	this->setSize(this->getWidth(), this->getNumRows() * PATTERNROLL_ROW_HEIGHT);
 }
 
 void PatternRoll::onChangeTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
@@ -344,6 +291,8 @@ void PatternRoll::onRemoveTrack(const MidiLayer *layer, const Pattern *pattern /
 				this->eventComponents.removeObject(component, true);
 			}
 		}
+
+		this->setSize(this->getWidth(), this->getNumRows() * PATTERNROLL_ROW_HEIGHT);
 	}
 }
 
