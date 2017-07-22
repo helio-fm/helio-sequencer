@@ -141,6 +141,20 @@ public:
     Uuid getLayerId() const noexcept;
     String getLayerIdAsString() const;
 
+	//===------------------------------------------------------------------===//
+	// Helpers
+	//===------------------------------------------------------------------===//
+
+	friend inline bool operator==(const MidiLayer &lhs, const MidiLayer &rhs)
+	{
+		return (&lhs == &rhs || lhs.layerId == rhs.layerId);
+	}
+
+	static int compareElements(const MidiLayer *first,
+		const MidiLayer *second);
+
+	int hashCode() const noexcept;
+
 protected:
 
 	// clearQuick the arrays and don't send any notifications

@@ -501,6 +501,42 @@ bool ProjectTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDe
 
 
 //===----------------------------------------------------------------------===//
+// Undos
+//===----------------------------------------------------------------------===//
+
+UndoStack *ProjectTreeItem::getUndoStack() const noexcept
+{
+	return this->undoStack.get();
+}
+
+void ProjectTreeItem::checkpoint()
+{
+	this->getUndoStack()->beginNewTransaction(String::empty);
+}
+
+void ProjectTreeItem::undo()
+{
+	if (this->getUndoStack()->canUndo())
+	{
+		this->checkpoint();
+		this->getUndoStack()->undo();
+	}
+}
+
+void ProjectTreeItem::redo()
+{
+	if (this->getUndoStack()->canRedo())
+	{
+		this->getUndoStack()->redo();
+	}
+}
+
+void ProjectTreeItem::clearUndoHistory()
+{
+	this->getUndoStack()->clearUndoHistory();
+}
+
+//===----------------------------------------------------------------------===//
 // Project
 //===----------------------------------------------------------------------===//
 
@@ -759,21 +795,21 @@ void ProjectTreeItem::broadcastRemoveEvent(const MidiEvent &event)
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastPostRemoveEvent(const MidiLayer *layer)
+void ProjectTreeItem::broadcastPostRemoveEvent(MidiLayer *const layer)
 {
     this->changeListeners.call(&ProjectListener::onPostRemoveMidiEvent, layer);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastChangeTrack(const MidiLayer *layer,
-	const Pattern *pattern /*= nullptr*/)
+void ProjectTreeItem::broadcastChangeTrack(MidiLayer *const layer,
+	Pattern *const pattern /*= nullptr*/)
 {
     this->changeListeners.call(&ProjectListener::onChangeTrack, layer, pattern);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastAddTrack(const MidiLayer *layer,
-	const Pattern *pattern /*= nullptr*/)
+void ProjectTreeItem::broadcastAddTrack(MidiLayer *const layer,
+	Pattern *const pattern /*= nullptr*/)
 {
     this->isLayersHashOutdated = true;
     this->registerVcsItem(layer);
@@ -781,8 +817,8 @@ void ProjectTreeItem::broadcastAddTrack(const MidiLayer *layer,
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastRemoveTrack(const MidiLayer *layer,
-	const Pattern *pattern /*= nullptr*/)
+void ProjectTreeItem::broadcastRemoveTrack(MidiLayer *const layer,
+	Pattern *const pattern /*= nullptr*/)
 {
     this->isLayersHashOutdated = true;
     this->unregisterVcsItem(layer);
@@ -808,7 +844,7 @@ void ProjectTreeItem::broadcastRemoveClip(const Clip &clip)
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastPostRemoveClip(const Pattern *pattern)
+void ProjectTreeItem::broadcastPostRemoveClip(Pattern *const pattern)
 {
     this->changeListeners.call(&ProjectListener::onPostRemoveClip, pattern);
     this->sendChangeMessage();

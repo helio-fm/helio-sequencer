@@ -45,7 +45,7 @@ void Pattern::sort()
 
 //===----------------------------------------------------------------------===//
 // Undoing // TODO move this to project interface
-//
+//===----------------------------------------------------------------------===//
 
 void Pattern::checkpoint()
 {
@@ -166,7 +166,7 @@ bool Pattern::change(Clip clip, Clip newClip, const bool undoable)
 
 //===----------------------------------------------------------------------===//
 // Accessors
-//
+//===----------------------------------------------------------------------===//
 
 ProjectTreeItem *Pattern::getProject()
 {
@@ -191,7 +191,7 @@ String Pattern::getPatternIdAsString() const
 
 //===----------------------------------------------------------------------===//
 // Events change listener
-//
+//===----------------------------------------------------------------------===//
 
 void Pattern::notifyClipChanged(const Clip &oldClip, const Clip &newClip)
 {
@@ -278,4 +278,27 @@ void Pattern::reset()
 void Pattern::clearQuick()
 {
 	this->clips.clearQuick();
+}
+
+
+//===----------------------------------------------------------------------===//
+// Helpers
+//===----------------------------------------------------------------------===//
+
+int Pattern::compareElements(const Pattern *first, const Pattern *second)
+{
+	// Compare by names?
+	if (first == second || 
+		first->id == second->id)
+	{ 
+		return 0;
+	}
+
+	// TODO sorting them the right way
+
+}
+
+int Pattern::hashCode() const noexcept
+{
+	return this->id.toString().hashCode();
 }

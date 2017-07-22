@@ -365,7 +365,7 @@ void TriggersTrackMap::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
-void TriggersTrackMap::onChangeTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
+void TriggersTrackMap::onChangeTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (this->layer)
     {
@@ -376,7 +376,7 @@ void TriggersTrackMap::onChangeTrack(const MidiLayer *layer, const Pattern *patt
     }
 }
 
-void TriggersTrackMap::onAddTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
+void TriggersTrackMap::onAddTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (this->layer)
     {
@@ -390,7 +390,7 @@ void TriggersTrackMap::onAddTrack(const MidiLayer *layer, const Pattern *pattern
     }
 }
 
-void TriggersTrackMap::onRemoveTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
+void TriggersTrackMap::onRemoveTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (this->layer)
     {

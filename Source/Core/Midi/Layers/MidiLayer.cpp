@@ -359,3 +359,25 @@ void MidiLayer::setLayerId(const String &id)
 {
     this->layerId = Uuid(id);
 }
+
+//===----------------------------------------------------------------------===//
+// Helpers
+//===----------------------------------------------------------------------===//
+
+int MidiLayer::compareElements(const MidiLayer *first, const MidiLayer *second)
+{
+	// Compare by names?
+	if (first == second ||
+		first->layerId == second->layerId)
+	{
+		return 0;
+	}
+
+	// TODO sorting them the right way
+
+}
+
+int MidiLayer::hashCode() const noexcept
+{
+	return this->layerId.toString().hashCode();
+}

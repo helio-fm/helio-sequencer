@@ -217,7 +217,7 @@ template<typename T> void TimeSignaturesTrackMap<T>::onRemoveMidiEvent(const Mid
     }
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onChangeTrack(const MidiLayer *layer, const Pattern *pattern)
+template<typename T> void TimeSignaturesTrackMap<T>::onChangeTrack(MidiLayer *const layer, Pattern *const pattern)
 {
     if (this->project.getTimeline() != nullptr)
     {
@@ -228,7 +228,7 @@ template<typename T> void TimeSignaturesTrackMap<T>::onChangeTrack(const MidiLay
     }
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onAddTrack(const MidiLayer *layer, const Pattern *pattern)
+template<typename T> void TimeSignaturesTrackMap<T>::onAddTrack(MidiLayer *const layer, Pattern *const pattern)
 {
     if (this->project.getTimeline() != nullptr)
     {
@@ -242,7 +242,7 @@ template<typename T> void TimeSignaturesTrackMap<T>::onAddTrack(const MidiLayer 
     }
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onRemoveTrack(const MidiLayer *layer, const Pattern *pattern)
+template<typename T> void TimeSignaturesTrackMap<T>::onRemoveTrack(MidiLayer *const layer, Pattern *const pattern)
 {
     if (this->project.getTimeline() != nullptr)
     {

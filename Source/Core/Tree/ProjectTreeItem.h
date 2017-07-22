@@ -120,11 +120,7 @@ public:
     // Undos
     //===------------------------------------------------------------------===//
 
-    UndoStack *getUndoStack() noexcept
-    {
-        return this->undoStack.get();
-    }
-
+    UndoStack *getUndoStack() const noexcept;
     void checkpoint();
     void undo();
     void redo();
@@ -196,16 +192,16 @@ public:
     void broadcastAddEvent(const MidiEvent &event);
     void broadcastChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent);
     void broadcastRemoveEvent(const MidiEvent &event);
-	void broadcastPostRemoveEvent(const MidiLayer *layer);
+	void broadcastPostRemoveEvent(MidiLayer *const layer);
 
-    void broadcastAddTrack(const MidiLayer *layer, const Pattern *pattern = nullptr);
-    void broadcastChangeTrack(const MidiLayer *layer, const Pattern *pattern = nullptr);
-    void broadcastRemoveTrack(const MidiLayer *layer, const Pattern *pattern = nullptr);
+    void broadcastAddTrack(MidiLayer *const layer, Pattern *const pattern = nullptr);
+    void broadcastChangeTrack(MidiLayer *const layer, Pattern *const pattern = nullptr);
+    void broadcastRemoveTrack(MidiLayer *const layer, Pattern *const pattern = nullptr);
 
     void broadcastAddClip(const Clip &clip);
     void broadcastChangeClip(const Clip &oldClip, const Clip &newClip);
     void broadcastRemoveClip(const Clip &clip);
-    void broadcastPostRemoveClip(const Pattern *pattern);
+    void broadcastPostRemoveClip(Pattern *const pattern);
 
     void broadcastChangeProjectInfo(const ProjectInfo *info);
     void broadcastChangeProjectBeatRange();

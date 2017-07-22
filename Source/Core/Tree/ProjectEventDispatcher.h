@@ -36,10 +36,10 @@ public:
 	virtual void dispatchAddEvent(const MidiEvent &event) = 0;
 	virtual void dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) = 0;
 	virtual void dispatchRemoveEvent(const MidiEvent &event) = 0;
-	virtual void dispatchPostRemoveEvent(const MidiLayer *layer) = 0;
+	virtual void dispatchPostRemoveEvent(MidiLayer *const layer) = 0;
 
 	// Sent on mute/unmute, instrument change, midi import, reload or reset
-	virtual void dispatchReloadLayer(const MidiLayer *layer) = 0;
+	virtual void dispatchReloadLayer(MidiLayer *const layer) = 0;
 	virtual void dispatchChangeLayerBeatRange() = 0;
 
 	virtual void dispatchAddClip(const Clip &clip) = 0;
@@ -47,7 +47,7 @@ public:
 	virtual void dispatchRemoveClip(const Clip &clip) = 0;
 	virtual void dispatchPostRemoveClip(const Pattern *pattern) = 0;
 
-	virtual void dispatchReloadPattern(const Pattern *pattern) = 0;
+	virtual void dispatchReloadPattern(Pattern *const pattern) = 0;
 	virtual void dispatchChangePatternBeatRange() = 0;
 
     virtual ProjectTreeItem *getProject() const { return nullptr; }
@@ -60,9 +60,9 @@ public:
 	void dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override {}
 	void dispatchAddEvent(const MidiEvent &event) override {}
 	void dispatchRemoveEvent(const MidiEvent &event) override {}
-	void dispatchPostRemoveEvent(const MidiLayer *layer) override {}
+	void dispatchPostRemoveEvent(MidiLayer *const layer) override {}
 
-	void dispatchReloadLayer(const MidiLayer *layer) override {}
+	void dispatchReloadLayer(MidiLayer *const layer) override {}
 	void dispatchChangeLayerBeatRange() override {}
 
 	void dispatchAddClip(const Clip &clip) override {}
@@ -70,6 +70,6 @@ public:
 	void dispatchRemoveClip(const Clip &clip) override {}
 	void dispatchPostRemoveClip(const Pattern *pattern) override {}
 
-	void dispatchReloadPattern(const Pattern *pattern) override {}
+	void dispatchReloadPattern(Pattern *const pattern) override {}
 	void dispatchChangePatternBeatRange() override {}
 };

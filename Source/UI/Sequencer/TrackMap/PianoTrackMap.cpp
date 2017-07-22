@@ -176,14 +176,14 @@ void PianoTrackMap::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
-void PianoTrackMap::onChangeTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
+void PianoTrackMap::onChangeTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (!dynamic_cast<const PianoLayer *>(layer)) { return; }
 
     this->reloadTrackMap();
 }
 
-void PianoTrackMap::onAddTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
+void PianoTrackMap::onAddTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (!dynamic_cast<const PianoLayer *>(layer)) { return; }
 
@@ -193,7 +193,7 @@ void PianoTrackMap::onAddTrack(const MidiLayer *layer, const Pattern *pattern /*
     }
 }
 
-void PianoTrackMap::onRemoveTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
+void PianoTrackMap::onRemoveTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (!dynamic_cast<const PianoLayer *>(layer)) { return; }
 

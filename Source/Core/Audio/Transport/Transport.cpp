@@ -474,7 +474,7 @@ void Transport::onRemoveMidiEvent(const MidiEvent &event)
     this->sequencesAreOutdated = true;
 }
 
-void Transport::onPostRemoveMidiEvent(const MidiLayer *layer)
+void Transport::onPostRemoveMidiEvent(MidiLayer *const layer)
 {
     if (this->player->isThreadRunning())
     { this->stopPlayback(); }
@@ -488,7 +488,7 @@ void Transport::onPostRemoveMidiEvent(const MidiLayer *layer)
     this->sequencesAreOutdated = true;
 }
 
-void Transport::onChangeTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
+void Transport::onChangeTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (this->player->isThreadRunning())
     { this->stopPlayback(); }
@@ -497,7 +497,7 @@ void Transport::onChangeTrack(const MidiLayer *layer, const Pattern *pattern /*=
     this->updateLinkForLayer(layer);
 }
 
-void Transport::onAddTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
+void Transport::onAddTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (this->player->isThreadRunning())
     {this->stopPlayback(); }
@@ -507,7 +507,7 @@ void Transport::onAddTrack(const MidiLayer *layer, const Pattern *pattern /*= nu
     this->updateLinkForLayer(layer);
 }
 
-void Transport::onRemoveTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
+void Transport::onRemoveTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (this->player->isThreadRunning())
     {this->stopPlayback(); }

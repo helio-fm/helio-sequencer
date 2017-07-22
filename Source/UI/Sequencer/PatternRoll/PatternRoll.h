@@ -25,13 +25,13 @@
 #   define PATTERNROLL_ROW_HEIGHT 64
 #endif
 
-class Pattern;
 class ClipComponent;
 class PianoRollReboundThread;
 class PianoRollCellHighlighter;
 
 #include "HelioTheme.h"
 #include "HybridRoll.h"
+#include "Pattern.h"
 #include "Clip.h"
 
 class PatternRoll : public HybridRoll
@@ -63,7 +63,7 @@ public:
 
 	void addClip(Pattern *pattern, float beat);
     Rectangle<float> getEventBounds(FloatBoundsComponent *mc) const override;
-    Rectangle<float> getEventBounds(Pattern *pattern, float beat) const;
+    Rectangle<float> getEventBounds(const Clip &clip, float beat) const;
     float getBeatByComponentPosition(float x) const;
     float getBeatByMousePosition(int x) const;
 	Pattern *getPatternByMousePosition(int y) const;
@@ -76,16 +76,16 @@ public:
 	void onAddMidiEvent(const MidiEvent &event) override;
 	void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
 	void onRemoveMidiEvent(const MidiEvent &event) override;
-	void onPostRemoveMidiEvent(const MidiLayer *layer) override;
+	void onPostRemoveMidiEvent(MidiLayer *const layer) override;
 
 	void onAddClip(const Clip &clip) override;
 	void onChangeClip(const Clip &oldClip, const Clip &newClip) override;
 	void onRemoveClip(const Clip &clip) override;
-	void onPostRemoveClip(const Pattern *pattern) override;
+	void onPostRemoveClip(Pattern *const pattern) override;
 
-	void onAddTrack(const MidiLayer *layer, const Pattern *pattern = nullptr) override;
-	void onChangeTrack(const MidiLayer *layer, const Pattern *pattern = nullptr) override;
-	void onRemoveTrack(const MidiLayer *layer, const Pattern *pattern = nullptr) override;
+	void onAddTrack(MidiLayer *const layer, Pattern *const pattern = nullptr) override;
+	void onChangeTrack(MidiLayer *const layer, Pattern *const pattern = nullptr) override;
+	void onRemoveTrack(MidiLayer *const layer, Pattern *const pattern = nullptr) override;
 
 
     //===------------------------------------------------------------------===//
@@ -117,13 +117,6 @@ public:
 
     
     //===------------------------------------------------------------------===//
-    // MidiRoll's legacy
-    //===------------------------------------------------------------------===//
-    
-    void handleAsyncUpdate() override;
-    
-    
-    //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
@@ -140,9 +133,6 @@ public:
 
 private:
 
-    void updateChildrenBounds() override;
-    void updateChildrenPositions() override;
-
     void insertNewClipAt(const MouseEvent &e);
 	
 private:
@@ -153,10 +143,10 @@ private:
     
 private:
     
-	// layer's path : pattern
-	HashMap<String, Pattern *> patterns;
-	HashMap<String, MidiLayer *> layers;
-	StringArray sortedPaths;
+	// sorted arrays:
+	Array<Pattern *> patterns;
+	Array<MidiLayer *> layers;
+	HashMap<const Pattern *, MidiLayer *, PatternHashFunction> links;
 
     OwnedArray<ClipComponent> ghostClips;
     

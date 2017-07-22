@@ -133,9 +133,8 @@ void PatternRoll::reloadRollContent()
     this->eventComponents.clear();
     this->componentsHashTable.clear();
 
-    for (auto path : sortedPaths)
+    for (auto pattern : patterns)
     {
-		auto pattern = this->patterns[path];
         for (int j = 0; j < pattern->size(); ++j)
         {
             const Clip &clip = pattern->getUnchecked(j);
@@ -152,6 +151,10 @@ void PatternRoll::reloadRollContent()
 	this->repaint(this->viewport.getViewArea());
 }
 
+int PatternRoll::getNumRows() const noexcept
+{
+	return this->patterns.size();
+}
 
 //===----------------------------------------------------------------------===//
 // Ghost notes
@@ -196,21 +199,21 @@ Rectangle<float> PatternRoll::getEventBounds(FloatBoundsComponent *mc) const
 {
 	jassert(dynamic_cast<ClipComponent *>(mc));
 	ClipComponent *nc = static_cast<ClipComponent *>(mc);
-    return this->getEventBounds(nc->getClip().getPattern(), nc->getBeat());
+    return this->getEventBounds(nc->getClip(), nc->getBeat());
 }
 
-Rectangle<float> PatternRoll::getEventBounds(Pattern *pattern, float beat) const
+Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float beat) const
 {
     const float startOffsetBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
 	const float x = this->barWidth * (beat - startOffsetBeat) / NUM_BEATS_IN_BAR;
+	const Pattern *pattern = clip.getPattern();
 
 	// the hard part here, need to get the layer info
-	MidiLayer *matchingLayer = nullptr;
+	const MidiLayer *matchingLayer = this->links[pattern];
 	const float length = matchingLayer->getLengthInBeats();
 	const float w = this->barWidth * length / NUM_BEATS_IN_BAR;
 
-	// TODO y position by layer
-	const int patternIndex = TODO;
+	const int patternIndex = this->patterns.indexOfSorted(*pattern, pattern);
 	const float yPosition = float(patternIndex * PATTERNROLL_ROW_HEIGHT);
     return Rectangle<float> (x, yPosition + 1, w, float(PATTERNROLL_ROW_HEIGHT - 1));
 }
@@ -228,10 +231,9 @@ float PatternRoll::getBeatByMousePosition(int x) const
 Pattern *PatternRoll::getPatternByMousePosition(int y) const
 {
 	const int patternIndex =
-		jlimit(0, this->sortedPaths.size() - 1,
+		jlimit(0, this->getNumRows() - 1,
 			int(y / PATTERNROLL_ROW_HEIGHT));
-	const String patternPath = this->sortedPaths[patternIndex];
-	return this->patterns[patternPath];
+	return this->patterns.getUnchecked(patternIndex);
 }
 
 
@@ -254,14 +256,16 @@ void PatternRoll::onRemoveMidiEvent(const MidiEvent &event)
 
 }
 
-void PatternRoll::onPostRemoveMidiEvent(const MidiLayer *layer)
+void PatternRoll::onPostRemoveMidiEvent(MidiLayer *const layer)
 {
 
 }
 
-void PatternRoll::onAddTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
+void PatternRoll::onAddTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
 {
-	//this->layers.set(layer->getLayerIdAsString(), layer);
+	this->patterns.addSorted(*pattern, pattern);
+	this->layers.addSorted(*layer, layer);
+	this->links.set(pattern, layer);
 
 	if (pattern != nullptr && pattern->size() > 0)
 	{
@@ -269,14 +273,15 @@ void PatternRoll::onAddTrack(const MidiLayer *layer, const Pattern *pattern /*= 
 	}
 }
 
-void PatternRoll::onChangeTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
+void PatternRoll::onChangeTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
 {
 	this->reloadRollContent();
 }
 
-void PatternRoll::onRemoveTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
+void PatternRoll::onRemoveTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
 {
-	//this->layers.remove(layer->getLayerIdAsString());
+	this->patterns.removeAllInstancesOf(pattern);
+	this->layers.removeAllInstancesOf(layer);
 
 	if (pattern != nullptr)
 	{
@@ -339,7 +344,7 @@ void PatternRoll::onRemoveClip(const Clip &clip)
 	}
 }
 
-void PatternRoll::onPostRemoveClip(const Pattern *pattern)
+void PatternRoll::onPostRemoveClip(Pattern *const pattern)
 {
 	//
 }

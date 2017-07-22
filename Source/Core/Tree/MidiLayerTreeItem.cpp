@@ -80,9 +80,6 @@ void MidiLayerTreeItem::showPage()
 
 void MidiLayerTreeItem::onRename(const String &newName)
 {
-//    TreeItem::onRename(newName);
-//    this->setXPath(this->getXPath()); // this performs sorting layers
-    
     String fixedName = newName.replace("\\", "/");
     
     while (fixedName.contains("//"))
@@ -91,14 +88,6 @@ void MidiLayerTreeItem::onRename(const String &newName)
     }
     
     this->setXPath(fixedName);
-    
-    // a hack - tells roll to update
-    // upd. and wtf do we need this?
-    // upd. it seems to lose the keyboard focus on rename somehow
-//    if (this->isMarkerVisible())
-//    {
-//        this->showPage();
-//    }
     
     TreeItem::notifySubtreeMoved(this); // сделать это default логикой для всех типов нодов?
 }
@@ -146,7 +135,6 @@ void MidiLayerTreeItem::resetClipsDelta(const XmlElement *state)
         this->getPattern()->silentImport(c);
     }
 }
-
 
 
 //===----------------------------------------------------------------------===//
@@ -293,7 +281,7 @@ void MidiLayerTreeItem::dispatchRemoveEvent(const MidiEvent &event)
     }
 }
 
-void MidiLayerTreeItem::dispatchPostRemoveEvent(const MidiLayer *layer)
+void MidiLayerTreeItem::dispatchPostRemoveEvent(MidiLayer *const layer)
 {
     if (this->lastFoundParent != nullptr)
     {
@@ -301,7 +289,7 @@ void MidiLayerTreeItem::dispatchPostRemoveEvent(const MidiLayer *layer)
     }
 }
 
-void MidiLayerTreeItem::dispatchReloadLayer(const MidiLayer *layer)
+void MidiLayerTreeItem::dispatchReloadLayer(MidiLayer *const layer)
 {
     if (this->lastFoundParent != nullptr)
     {
@@ -343,7 +331,7 @@ void MidiLayerTreeItem::dispatchPostRemoveClip(const Pattern *pattern)
 }
 
 
-void MidiLayerTreeItem::dispatchReloadPattern(const Pattern *pattern)
+void MidiLayerTreeItem::dispatchReloadPattern(Pattern *const pattern)
 {
 	// TODO
 }

@@ -71,9 +71,9 @@ public:
     void dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
     void dispatchAddEvent(const MidiEvent &event) override;
     void dispatchRemoveEvent(const MidiEvent &event) override;
-	void dispatchPostRemoveEvent(const MidiLayer *layer) override;
+	void dispatchPostRemoveEvent(MidiLayer *const layer) override;
 
-    void dispatchReloadLayer(const MidiLayer *layer) override;
+    void dispatchReloadLayer(MidiLayer *const layer) override;
     void dispatchChangeLayerBeatRange() override;
     
 	void dispatchAddClip(const Clip &clip) override;
@@ -81,7 +81,7 @@ public:
 	void dispatchRemoveClip(const Clip &clip) override;
 	void dispatchPostRemoveClip(const Pattern *pattern) override;
 
-	void dispatchReloadPattern(const Pattern *pattern) override;
+	void dispatchReloadPattern(Pattern *const pattern) override;
 	void dispatchChangePatternBeatRange() override;
 
     ProjectTreeItem *getProject() const override;

@@ -101,6 +101,20 @@ public:
 	inline Uuid getPatternId() const noexcept;
 	inline String getPatternIdAsString() const;
 
+	//===------------------------------------------------------------------===//
+	// Helpers
+	//===------------------------------------------------------------------===//
+
+	friend inline bool operator==(const Pattern &lhs, const Pattern &rhs)
+	{
+		return (&lhs == &rhs || lhs.id == rhs.id);
+	}
+
+	static int compareElements(const Pattern *first,
+		const Pattern *second);
+
+	int hashCode() const noexcept;
+
 protected:
 
 	void clearQuick();
@@ -121,4 +135,14 @@ private:
     friend class WeakReference<Pattern>;
 
 	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Pattern);
+};
+
+class PatternHashFunction
+{
+public:
+
+	static int generateHash(const Pattern *pattern, const int upperLimit) noexcept
+	{
+		return static_cast<int>((static_cast<uint32>(pattern->hashCode())) % static_cast<uint32>(upperLimit));
+	}
 };

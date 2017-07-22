@@ -377,7 +377,7 @@ void AutomationTrackMap::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
-void AutomationTrackMap::onChangeTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
+void AutomationTrackMap::onChangeTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (this->layer)
     {
@@ -388,7 +388,7 @@ void AutomationTrackMap::onChangeTrack(const MidiLayer *layer, const Pattern *pa
     }
 }
 
-void AutomationTrackMap::onAddTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
+void AutomationTrackMap::onAddTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (this->layer)
     {
@@ -402,7 +402,7 @@ void AutomationTrackMap::onAddTrack(const MidiLayer *layer, const Pattern *patte
     }
 }
 
-void AutomationTrackMap::onRemoveTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
+void AutomationTrackMap::onRemoveTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (this->layer)
     {

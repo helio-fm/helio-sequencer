@@ -75,7 +75,7 @@ PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
     this->header->toFront(false);
     this->indicator->toFront(false);
     
-    this->reloadMidiTrack();
+    this->reloadRollContent();
 }
 
 PianoRoll::~PianoRoll()
@@ -140,10 +140,8 @@ void PianoRoll::deleteSelection()
     this->grabKeyboardFocus(); // not working?
 }
 
-void PianoRoll::reloadMidiTrack()
+void PianoRoll::reloadRollContent()
 {
-    //Logger::writeToLog("PianoRoll::reloadMidiTrack");
-
     this->selection.deselectAll();
 
     for (int i = 0; i < this->eventComponents.size(); ++i)
@@ -538,24 +536,23 @@ void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
-void PianoRoll::onChangeTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
+void PianoRoll::onChangeTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (! dynamic_cast<const PianoLayer *>(layer)) { return; }
-
-    this->reloadMidiTrack();
+    this->reloadRollContent();
 }
 
-void PianoRoll::onAddTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
+void PianoRoll::onAddTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (! dynamic_cast<const PianoLayer *>(layer)) { return; }
 
     if (layer->size() > 0)
     {
-        this->reloadMidiTrack();
+        this->reloadRollContent();
     }
 }
 
-void PianoRoll::onRemoveTrack(const MidiLayer *layer, const Pattern *pattern /*= nullptr*/)
+void PianoRoll::onRemoveTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (! dynamic_cast<const PianoLayer *>(layer)) { return; }
 
