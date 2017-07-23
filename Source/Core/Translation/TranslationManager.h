@@ -34,12 +34,17 @@ public:
         return Instance;
     }
 
-    typedef struct
+    struct Locale
     {
         String localeId;
         String localeName;
         String localeAuthor;
-    } Locale;
+
+		static int compareElements(const Locale &first, const Locale &second)
+		{
+			return first.localeName.compare(second.localeName);
+		}
+    };
     
     static File getDownloadedTranslationsFile();
     static File getDebugTranslationsFile();

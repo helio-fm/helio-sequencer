@@ -146,7 +146,7 @@ Array<TranslationManager::Locale> TranslationManager::getAvailableLocales() cons
     
     while (i.next())
     {
-        result.add(i.getValue());
+        result.addSorted(i.getValue(), i.getValue());
     }
     
     return result;
