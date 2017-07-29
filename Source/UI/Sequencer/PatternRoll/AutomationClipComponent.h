@@ -17,6 +17,8 @@
 
 #pragma once
 
+class AutomationLayer;
+
 #include "ClipComponent.h"
 
 // TODO: this one should also act as a mini-editor for cc curves
@@ -24,9 +26,12 @@ class AutomationClipComponent : public ClipComponent
 {
 public:
 
-	AutomationClipComponent(HybridRoll &editor, Clip clip);
+	AutomationClipComponent(AutomationLayer *layer,
+		HybridRoll &editor, Clip clip);
 
 protected:
+
+	AutomationLayer *layer;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationClipComponent)
 };

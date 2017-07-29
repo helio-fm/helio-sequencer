@@ -39,13 +39,14 @@ class PatternRoll : public HybridRoll
 public:
 
     PatternRoll(ProjectTreeItem &parentProject,
-              Viewport &viewportRef,
-              WeakReference<AudioMonitor> clippingDetector);
+		Viewport &viewportRef,
+		WeakReference<AudioMonitor> clippingDetector);
 
     ~PatternRoll() override;
 
     void deleteSelection();
-    void reloadRollContent() override;
+	void selectAll() override;
+	void reloadRollContent() override;
 	int getNumRows() const noexcept;
 
 

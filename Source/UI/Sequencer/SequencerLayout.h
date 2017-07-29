@@ -18,7 +18,9 @@
 #pragma once
 
 class PianoRoll;
+class PatternRoll;
 class HybridRoll;
+class RollsSwitchingProxy;
 class MidiLayer;
 class AutomationLayer;
 class TrackScroller;
@@ -77,11 +79,13 @@ public:
 private:
 
     ProjectTreeItem &project;
-    ScopedPointer<Viewport> viewport;
-    ScopedPointer<TrackScroller> scroller;
+    ScopedPointer<Viewport> pianoViewport;
+	ScopedPointer<Viewport> patternViewport;
+	ScopedPointer<TrackScroller> scroller;
 
-    ScopedPointer<PianoRoll> roll;
-    ScopedPointer<Component> rollContainer; // лейаут для вьюпорта с роллом и минимап-скроллера внизу
+    ScopedPointer<PianoRoll> pianoRoll;
+	ScopedPointer<PatternRoll> patternRoll;
+	ScopedPointer<RollsSwitchingProxy> rollContainer; // лейаут для вьюпорта с роллом и минимап-скроллера внизу
     //ScopedPointer<Component> automationContainer; // лейаут для редактора автоматизации с тулбаром справа
     ScopedPointer<HybridRollCommandPanel> rollCommandPanel; // тублар справа от роллов
 
@@ -95,5 +99,4 @@ private:
     ScopedPointer<Origami> allEditorsAndCommandPanel; // вертикальный стек, содержит все редакторы + тулбар справа
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SequencerLayout);
-
 };

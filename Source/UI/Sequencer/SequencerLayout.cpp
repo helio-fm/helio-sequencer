@@ -20,6 +20,7 @@
 #include "MidiLayer.h"
 #include "AutomationLayer.h"
 #include "PianoRoll.h"
+#include "PatternRoll.h"
 #include "ProjectTreeItem.h"
 #include "TrackScroller.h"
 #include "PianoTrackMap.h"
@@ -321,59 +322,120 @@ private:
 
 
 //===----------------------------------------------------------------------===//
-// Rolls Container
+// Rolls container responsible for switching between piano and pattern roll
 //===----------------------------------------------------------------------===//
 
-class PianoRollProxy : public Component
+class RollsSwitchingProxy : public Component, private Timer
 {
 public:
     
-    PianoRollProxy(HybridRoll *targetRoll,
-                   Viewport *targetViewport,
-                   TrackScroller *targetScroller) :
-    roll(targetRoll),
-    viewport(targetViewport),
-    scroller(targetScroller)
+#define ROLLS_SWITCH_ANIMATION_SPEED 0.13f
+#define ROLLS_SWITCH_ANIMATION_ACCELERATION 0.87f
+
+	RollsSwitchingProxy(HybridRoll *targetRoll1,
+		HybridRoll *targetRoll2,
+		Viewport *targetViewport1,
+		Viewport *targetViewport2,
+		TrackScroller *targetScroller) :
+		pianoRoll(targetRoll1),
+		pianoViewport(targetViewport1),
+		patternRoll(targetRoll2),
+		patternViewport(targetViewport2),
+		scroller(targetScroller),
+		animationPosition(0.f),
+		animationDirection(-1.f),
+		animationSpeed(0.f)
     {
         this->setFocusContainer(false);
         this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, true);
-        
-        this->addAndMakeVisible(this->viewport);
-        this->addAndMakeVisible(this->scroller);
-    }
+
+        this->addAndMakeVisible(this->pianoViewport);
+		this->addAndMakeVisible(this->patternViewport);
+		this->addAndMakeVisible(this->scroller);
+	}
     
-    ~PianoRollProxy() override
+    ~RollsSwitchingProxy() override
     {
         this->removeAllChildren();
     }
+
+	void startRollSwitchAnimation()
+	{
+		this->animationDirection *= -1.f;
+		this->animationSpeed = ROLLS_SWITCH_ANIMATION_SPEED;
+		this->startTimer(15);
+	}
     
     void resized() override
     {
-        jassert(this->roll);
-        jassert(this->viewport);
-        jassert(this->scroller);
+        jassert(this->pianoRoll);
+        jassert(this->pianoViewport);
+		jassert(this->patternRoll);
+		jassert(this->patternViewport);
+		jassert(this->scroller);
         
         Rectangle<int> r(this->getLocalBounds());
         const int scrollerHeight = MainLayout::getScrollerHeight();
-        this->viewport->setBounds(r.withBottom(r.getBottom() - scrollerHeight));
-        this->scroller->setBounds(r.removeFromBottom(scrollerHeight));
-        
-        if ((this->roll->getBarWidth() * this->roll->getNumBars()) < this->getWidth())
-        {
-            this->roll->setBarWidth(float(this->getWidth()) / float(this->roll->getNumBars()));
-        }
-        
-        this->roll->resized();
-    }
-    
-private:
-    
-    SafePointer<HybridRoll> roll;
-    SafePointer<Viewport> viewport;
-    SafePointer<TrackScroller> scroller;
+		const float rollViewportHeight = float(r.getHeight() - scrollerHeight);
+		const Rectangle<int> rollSize(r.withBottom(r.getBottom() - scrollerHeight));
+		const int viewport1Pos = int(this->animationPosition * rollViewportHeight);
+		const int viewport2Pos = int(this->animationPosition * rollViewportHeight - rollViewportHeight);
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRollProxy)
+		this->pianoViewport->setBounds(rollSize.withY(viewport1Pos));
+		this->patternViewport->setBounds(rollSize.withY(viewport2Pos));
+		this->scroller->setBounds(r.removeFromBottom(scrollerHeight));
+
+        if ((this->pianoRoll->getBarWidth() * this->pianoRoll->getNumBars()) < this->getWidth())
+        {
+            this->pianoRoll->setBarWidth(float(this->getWidth()) / float(this->pianoRoll->getNumBars()));
+        }
+
+		if ((this->patternRoll->getBarWidth() * this->patternRoll->getNumBars()) < this->getWidth())
+		{
+			this->patternRoll->setBarWidth(float(this->getWidth()) / float(this->patternRoll->getNumBars()));
+		}
+
+		// Force update children bounds, even if they have just moved
+		this->pianoRoll->resized();
+		this->patternRoll->resized();
+	}
+
+private:
+
+	void timerCallback() override
+	{
+		this->animationPosition += this->animationDirection * this->animationSpeed;
+		//this->animationSpeed = jlimit(0.000001f, 1.f, this->animationSpeed * 0.9f);
+		this->animationSpeed *= ROLLS_SWITCH_ANIMATION_ACCELERATION;
+
+		// TODO notify scroller!
+		// change subscriptions on the fly of just send events to move its rectangles?
+
+		if (this->animationPosition < 0.001f || this->animationPosition > 0.999f)
+		{
+			//Logger::writeToLog("Stopping rolls-switch animation");
+			this->animationPosition = jlimit(0.f, 1.f, this->animationPosition);
+			this->stopTimer();
+		}
+
+		this->resized();
+	}
+
+    SafePointer<HybridRoll> pianoRoll;
+    SafePointer<Viewport> pianoViewport;
+
+	SafePointer<HybridRoll> patternRoll;
+	SafePointer<Viewport> patternViewport;
+
+	SafePointer<TrackScroller> scroller;
+
+	// 0.f to 1.f, animates the switching between piano and pattern roll
+	float animationPosition;
+	float animationDirection;
+	float animationSpeed;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RollsSwitchingProxy)
 };
 
 
@@ -383,42 +445,55 @@ private:
 
 SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
     project(parentProject),
-    roll(nullptr)
+    pianoRoll(nullptr)
 {
     this->setName("MidiEditor");
 
-    // создаем вьюпорт, кидаем в него ролл и добавляем скроллер снизу
-    this->viewport = new Viewport("Viewport One");
-    this->viewport->setInterceptsMouseClicks(false, true);
-    this->viewport->setScrollBarsShown(false, false);
-    this->viewport->setWantsKeyboardFocus(false);
-    this->viewport->setFocusContainer(false);
-
-    const WeakReference<AudioMonitor> clippingDetector =
-        App::Workspace().getAudioCore().getMonitor();
+    // Create viewports, containing the rolls
+	const WeakReference<AudioMonitor> clippingDetector =
+		App::Workspace().getAudioCore().getMonitor();
+	
+	this->pianoViewport = new Viewport("Viewport One");
+    this->pianoViewport->setInterceptsMouseClicks(false, true);
+    this->pianoViewport->setScrollBarsShown(false, false);
+    this->pianoViewport->setWantsKeyboardFocus(false);
+    this->pianoViewport->setFocusContainer(false);
     
-    this->roll = new PianoRoll(this->project,
-                               *this->viewport,
-                               clippingDetector);
+    this->pianoRoll = new PianoRoll(this->project,
+		*this->pianoViewport, clippingDetector);
 
-    this->scroller = new TrackScroller(this->project.getTransport(), *this->roll);
-    this->scroller->addOwnedMap(new PianoTrackMap(this->project, *this->roll), false);
-    this->scroller->addOwnedMap(new AnnotationsTrackMap<AnnotationSmallComponent>(this->project, *this->roll), false);
-    this->scroller->addOwnedMap(new TimeSignaturesTrackMap<TimeSignatureSmallComponent>(this->project, *this->roll), false);
+	this->patternViewport = new Viewport("Viewport One");
+	this->patternViewport->setInterceptsMouseClicks(false, true);
+	this->patternViewport->setScrollBarsShown(false, false);
+	this->patternViewport->setWantsKeyboardFocus(false);
+	this->patternViewport->setFocusContainer(false);
+
+	this->patternRoll = new PatternRoll(this->project,
+		*this->patternViewport, clippingDetector);
+
+    this->scroller = new TrackScroller(this->project.getTransport(), *this->pianoRoll);
+    this->scroller->addOwnedMap(new PianoTrackMap(this->project, *this->pianoRoll), false);
+    this->scroller->addOwnedMap(new AnnotationsTrackMap<AnnotationSmallComponent>(this->project, *this->pianoRoll), false);
+    this->scroller->addOwnedMap(new TimeSignaturesTrackMap<TimeSignatureSmallComponent>(this->project, *this->pianoRoll), false);
     //this->scroller->addOwnedMap(new AutomationTrackMap(this->project, *this->roll, this->project.getDefaultTempoTrack()->getLayer()), true);
 
-    this->roll->setBarWidth(HYBRID_ROLL_MAX_BAR_WIDTH);
+    this->pianoRoll->setBarWidth(HYBRID_ROLL_MAX_BAR_WIDTH);
+    this->pianoViewport->setViewedComponent(this->pianoRoll, false);
+    this->pianoRoll->addRollListener(this->scroller);
 
-    this->viewport->setViewedComponent(this->roll, false);
-    this->roll->addRollListener(this->scroller);
+	this->patternRoll->setBarWidth(HYBRID_ROLL_MAX_BAR_WIDTH);
+	this->patternViewport->setViewedComponent(this->patternRoll, false);
+	this->patternRoll->addRollListener(this->scroller);
 
     // захардкодим дефолтную позицию по y (не с самого верха, так стремно)
-    const int defaultY = (this->roll->getHeight() / 3);
-    this->viewport->setViewPosition(this->viewport->getViewPositionX(), defaultY);
+    const int defaultY = (this->pianoRoll->getHeight() / 3);
+    this->pianoViewport->setViewPosition(this->pianoViewport->getViewPositionX(), defaultY);
     
     
     // затем помещаем их в контейнер
-    this->rollContainer = new PianoRollProxy(this->roll, this->viewport, this->scroller);
+    this->rollContainer = new RollsSwitchingProxy(this->pianoRoll, this->patternRoll,
+		this->pianoViewport, this->patternViewport,
+		this->scroller);
     
     // создаем тулбар и компонуем его с контейнером
     if (App::isRunningOnPhone())
@@ -465,23 +540,28 @@ SequencerLayout::~SequencerLayout()
     //this->rollsOrigami = nullptr;
     this->rollCommandPanel = nullptr;
     this->rollContainer = nullptr;
-    
-    this->roll->removeRollListener(this->scroller);
+
+	this->patternRoll->removeRollListener(this->scroller);
+    this->pianoRoll->removeRollListener(this->scroller);
     //this->roll->removeAllChangeListeners();
     
     this->scroller = nullptr;
-    this->roll = nullptr;
-    this->viewport = nullptr;
+
+	this->patternRoll = nullptr;
+	this->patternViewport = nullptr;
+
+	this->pianoRoll = nullptr;
+    this->pianoViewport = nullptr;
 }
 
 void SequencerLayout::setActiveMidiLayers(Array<MidiLayer *> tracks, MidiLayer *primaryTrack)
 {
     //Logger::writeToLog("MidiEditor::setActiveMidiLayers");
-    this->roll->setActiveMidiLayers(tracks, primaryTrack);
+    this->pianoRoll->setActiveMidiLayers(tracks, primaryTrack);
 
 	if (this->isShowing())
 	{
-		this->roll->grabKeyboardFocus();
+		this->pianoRoll->grabKeyboardFocus();
 	}
 }
 
@@ -497,6 +577,10 @@ void SequencerLayout::hideAutomationEditor(AutomationLayer *targetLayer)
 
 bool SequencerLayout::toggleShowAutomationEditor(AutomationLayer *targetLayer)
 {
+	// test rolls switching:
+	//this->rollContainer->startRollSwitchAnimation();
+	//return false;
+
     const String &layerId = targetLayer->getLayerId().toString();
     
     // special case for the tempo track - let's show it on the scroller
@@ -521,18 +605,18 @@ bool SequencerLayout::toggleShowAutomationEditor(AutomationLayer *targetLayer)
     
     if (targetLayer->isSustainPedalLayer())
     {
-        TriggersTrackMap *existingTrackMap = this->roll->findOwnedMapOfType<TriggersTrackMap>();
+        TriggersTrackMap *existingTrackMap = this->pianoRoll->findOwnedMapOfType<TriggersTrackMap>();
         const bool addTrackMode = (existingTrackMap == nullptr);
         
         if (addTrackMode)
         {
-            TriggersTrackMap *newTrackMap = new TriggersTrackMap(this->project, *this->roll, targetLayer);
+            TriggersTrackMap *newTrackMap = new TriggersTrackMap(this->project, *this->pianoRoll, targetLayer);
             newTrackMap->reloadTrack();
-            this->roll->addOwnedMap(newTrackMap);
+            this->pianoRoll->addOwnedMap(newTrackMap);
         }
         else
         {
-            this->roll->removeOwnedMap(existingTrackMap);
+            this->pianoRoll->removeOwnedMap(existingTrackMap);
         }
         
         return addTrackMode;
@@ -559,17 +643,17 @@ bool SequencerLayout::toggleShowAutomationEditor(AutomationLayer *targetLayer)
     
     if (targetLayer->isOnOffLayer())
     {
-        newTrackMap = new TriggersTrackMap(this->project, *this->roll, targetLayer);
+        newTrackMap = new TriggersTrackMap(this->project, *this->pianoRoll, targetLayer);
     }
     else
     {
-        newTrackMap = new AutomationTrackMap(this->project, *this->roll, targetLayer);
+        newTrackMap = new AutomationTrackMap(this->project, *this->pianoRoll, targetLayer);
     }
     
     if (newTrackMap != nullptr)
     {
         newTrackMap->reloadTrack();
-        auto newTrackMapProxy = new AutomationTrackMapProxy(*this->roll, newTrackMap);
+        auto newTrackMapProxy = new AutomationTrackMapProxy(*this->pianoRoll, newTrackMap);
         
         this->automationEditors.add(newTrackMapProxy);
         this->automationEditorsLinks.set(layerId, newTrackMapProxy);
@@ -591,7 +675,7 @@ bool SequencerLayout::toggleShowAutomationEditor(AutomationLayer *targetLayer)
 
 HybridRoll *SequencerLayout::getRoll() const
 {
-    return this->roll;
+    return this->pianoRoll;
 }
 
 //===----------------------------------------------------------------------===//
@@ -642,7 +726,7 @@ XmlElement *SequencerLayout::serialize() const
 {
     // задел на будущее, типа
     auto xml = new XmlElement(Serialization::Core::editor);
-    xml->addChildElement(this->roll->serialize());
+    xml->addChildElement(this->pianoRoll->serialize());
     return xml;
 }
 
@@ -658,7 +742,7 @@ void SequencerLayout::deserialize(const XmlElement &xml)
 
     if (XmlElement *firstChild = root->getFirstChildElement())
     {
-        this->roll->deserialize(*firstChild);
+        this->pianoRoll->deserialize(*firstChild);
     }
 }
 

@@ -30,6 +30,8 @@ public:
     ClipComponent(HybridRoll &editor, Clip clip);
     const Clip getClip() const;
 
+	//virtual void updateContent() = 0;
+
 	//===------------------------------------------------------------------===//
 	// HybridRollEventComponent
 	//===------------------------------------------------------------------===//

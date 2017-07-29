@@ -41,6 +41,10 @@
 #include "PianoRollToolbox.h"
 #include "Config.h"
 #include "SerializationKeys.h"
+#include "PianoLayer.h"
+#include "PianoClipComponent.h"
+#include "AutomationLayer.h"
+#include "AutomationClipComponent.h"
 
 #define ROWS_OF_TWO_OCTAVES 24
 #define DEFAULT_CLIP_LENGTH 1.0f
@@ -121,6 +125,11 @@ void PatternRoll::deleteSelection()
     this->grabKeyboardFocus(); // not working?
 }
 
+void PatternRoll::selectAll()
+{
+	// TODO
+}
+
 void PatternRoll::reloadRollContent()
 {
     this->selection.deselectAll();
@@ -135,15 +144,27 @@ void PatternRoll::reloadRollContent()
 
     for (auto pattern : patterns)
     {
+		auto linkedLayer = this->links[pattern];
         for (int j = 0; j < pattern->size(); ++j)
         {
             const Clip &clip = pattern->getUnchecked(j);
-            auto noteComponent = new ClipComponent(*this, clip);
+			ClipComponent *clipComponent = nullptr;
 
-            this->eventComponents.add(noteComponent);
-            this->componentsHashTable.set(clip, noteComponent);
+			if (auto pianoLayer = dynamic_cast<PianoLayer *>(linkedLayer))
+			{
+				auto clipComponent = new PianoClipComponent(pianoLayer, *this, clip);
+			}
+			else if (auto autoLayer = dynamic_cast<AutomationLayer *>(linkedLayer))
+			{
+				auto clipComponent = new AutomationClipComponent(autoLayer, *this, clip);
+			}
 
-            this->addAndMakeVisible(noteComponent);
+			if (clipComponent != nullptr)
+			{
+				this->eventComponents.add(clipComponent);
+				this->componentsHashTable.set(clip, clipComponent);
+				this->addAndMakeVisible(clipComponent);
+			}
         }
     }
 
@@ -162,6 +183,7 @@ int PatternRoll::getNumRows() const noexcept
 
 void PatternRoll::showGhostClipFor(ClipComponent *targetClipComponent)
 {
+	// TODO DummyClipComponent?
     auto component = new ClipComponent(*this, targetClipComponent->getClip());
     component->setEnabled(false);
     component->setGhostMode();
@@ -243,22 +265,24 @@ Pattern *PatternRoll::getPatternByMousePosition(int y) const
 
 void PatternRoll::onAddMidiEvent(const MidiEvent &event)
 {
-
+	// the question is:
+	// is pattern roll supposed to monitor single event changes?
+	// or it just reloads the whole sequence on show?
 }
 
 void PatternRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-
+	//
 }
 
 void PatternRoll::onRemoveMidiEvent(const MidiEvent &event)
 {
-
+	//
 }
 
 void PatternRoll::onPostRemoveMidiEvent(MidiLayer *const layer)
 {
-
+	//
 }
 
 void PatternRoll::onAddTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
@@ -303,6 +327,7 @@ void PatternRoll::onRemoveTrack(MidiLayer *const layer, Pattern *const pattern /
 
 void PatternRoll::onAddClip(const Clip &clip)
 {
+	// TODO create PianoClipComponent or AutomationClipComponent
 	auto component = new ClipComponent(*this, clip);
 	this->addAndMakeVisible(component);
 
