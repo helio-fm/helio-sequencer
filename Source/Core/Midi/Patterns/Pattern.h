@@ -72,10 +72,9 @@ public:
     inline Clip getUnchecked(const int index) const
     { return this->clips.getUnchecked(index); }
 
-    inline int indexOfSorted(const Clip &event) const
+    inline int indexOfSorted(const Clip &clip) const
     {
-        jassert(this->midiEvents[this->midiEvents.indexOfSorted(*event, event)] == event);
-        return this->clips.indexOfSorted(event, event);
+        return this->clips.indexOfSorted(clip, clip);
     }
 
 	inline Array<Clip> &getClips() noexcept;

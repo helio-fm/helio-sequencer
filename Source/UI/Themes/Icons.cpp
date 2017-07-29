@@ -95,7 +95,7 @@ struct BuiltInImageData
     BuiltInImageData()
     {
         // empty constructor, needed for hashmap, should never be called.
-        jassertfalse;
+        //jassertfalse;
     }
     
     BuiltInImageData(const void *_data, const size_t _numBytes) :
