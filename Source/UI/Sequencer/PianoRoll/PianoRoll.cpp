@@ -339,21 +339,9 @@ void PianoRoll::zoomAbsolute(const Point<float> &zoom)
 
 float PianoRoll::getZoomFactorY() const
 {
-    // headerheight fix hack:
     const float &numRows = float(this->getNumRows());
-    const float &viewHeight = float(this->viewport.getViewHeight() - HYBRID_ROLL_HEADER_HEIGHT);
+    const float &viewHeight = float(this->viewport.getViewHeight());
     return (viewHeight / float(this->getHeight()));
-
-//    const float &rowHeight = float(this->getRowHeight());
-//    const float &rowsOnScreen = (viewHeight / rowHeight);
-//    return (rowsOnScreen / numRows);
-
-//    const float &viewHeight = float(this->viewport.getViewHeight() - MIDIROLL_HEADER_HEIGHT);
-//    const float &thisHeight = float(this->getHeight() - MIDIROLL_HEADER_HEIGHT);
-
-//    const float &viewHeight = float(this->viewport.getViewHeight());
-//    const float &thisHeight = float(this->getHeight());
-//    return viewHeight / thisHeight;
 }
 
 

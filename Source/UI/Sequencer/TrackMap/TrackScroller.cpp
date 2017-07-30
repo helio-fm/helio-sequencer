@@ -351,46 +351,45 @@ void TrackScroller::handleAsyncUpdate()
 
 Rectangle<float> TrackScroller::getIndicatorBounds() const
 {
-    const float &viewX = float(this->roll.getViewport().getViewPositionX());
-    const float &viewWidth = float(this->roll.getViewport().getViewWidth());
-    const float &rollWidth = float(this->roll.getWidth());
-    const float &rollInvisibleArea = rollWidth - viewWidth;
-    const float &trackWidth = float(this->getWidth());
-    const float &trackInvisibleArea = float(this->getWidth() - INDICATOR_FIXED_WIDTH);
-    const float &mapWidth = ((INDICATOR_FIXED_WIDTH * rollWidth) / viewWidth);
+    const float viewX = float(this->roll.getViewport().getViewPositionX());
+    const float viewWidth = float(this->roll.getViewport().getViewWidth());
+    const float rollWidth = float(this->roll.getWidth());
+    const float rollInvisibleArea = rollWidth - viewWidth;
+    const float trackWidth = float(this->getWidth());
+    const float trackInvisibleArea = float(this->getWidth() - INDICATOR_FIXED_WIDTH);
+    const float mapWidth = ((INDICATOR_FIXED_WIDTH * rollWidth) / viewWidth);
     
-    const float &zoomFactorY = this->roll.getZoomFactorY();
-    //const float &headerHeight = 0; //float(MIDIROLL_HEADER_HEIGHT);
-    const float &headerHeight = float(HYBRID_ROLL_HEADER_HEIGHT);
-    const float &rollHeight = float(this->roll.getHeight() - headerHeight);
-    const float &viewY = float(this->roll.getViewport().getViewPositionY() + headerHeight);
-    const float &trackHeight = float(this->getHeight());
-    const float &rY = roundf(trackHeight * (viewY / rollHeight));
-    const float &rH = (trackHeight * zoomFactorY);
-    
+    const float zoomFactorY = this->roll.getZoomFactorY();
+	const float rollHeaderHeight = float(HYBRID_ROLL_HEADER_HEIGHT);
+    const float rollHeight = float(this->roll.getHeight() - rollHeaderHeight);
+    const float viewY = float(this->roll.getViewport().getViewPositionY() + rollHeaderHeight);
+    const float trackHeight = float(this->getHeight());
+	const float trackHeaderHeight = float(rollHeaderHeight * trackHeight / rollHeight);
+
+	const float rY = roundf(trackHeight * (viewY / rollHeight)) - trackHeaderHeight;
+    const float rH = (trackHeight * zoomFactorY);
+
     if (mapWidth <= trackWidth || !this->mapShouldGetStretched)
     {
-        const float &rX = ((trackWidth * viewX) / rollWidth);
-        const float &rW = (trackWidth * this->roll.getZoomFactorX());
+        const float rX = ((trackWidth * viewX) / rollWidth);
+        const float rW = (trackWidth * this->roll.getZoomFactorX());
         return Rectangle<float>(rX, rY, rW, rH);
     }
     
-    
-        const float &rX = ((trackInvisibleArea * viewX) / jmax(rollInvisibleArea, viewWidth));
-        const float &rW = INDICATOR_FIXED_WIDTH;
-        return Rectangle<float>(rX, rY, rW, rH);
-    
+    const float rX = ((trackInvisibleArea * viewX) / jmax(rollInvisibleArea, viewWidth));
+    const float rW = INDICATOR_FIXED_WIDTH;
+    return Rectangle<float>(rX, rY, rW, rH);
 }
 
 Rectangle<int> TrackScroller::getMapBounds() const
 {
-    const float &viewX = float(this->roll.getViewport().getViewPositionX());
-    const float &viewWidth = float(this->roll.getViewport().getViewWidth());
-    const float &rollWidth = float(this->roll.getWidth());
-    const float &rollInvisibleArea = rollWidth - viewWidth;
-    const float &trackWidth = float(this->getWidth());
-    const float &trackInvisibleArea = float(this->getWidth() - INDICATOR_FIXED_WIDTH);
-    const float &mapWidth = ((INDICATOR_FIXED_WIDTH * rollWidth) / viewWidth);
+    const float viewX = float(this->roll.getViewport().getViewPositionX());
+    const float viewWidth = float(this->roll.getViewport().getViewWidth());
+    const float rollWidth = float(this->roll.getWidth());
+    const float rollInvisibleArea = rollWidth - viewWidth;
+    const float trackWidth = float(this->getWidth());
+    const float trackInvisibleArea = float(this->getWidth() - INDICATOR_FIXED_WIDTH);
+    const float mapWidth = ((INDICATOR_FIXED_WIDTH * rollWidth) / viewWidth);
     
     if (mapWidth <= trackWidth || !this->mapShouldGetStretched)
     {
@@ -404,8 +403,8 @@ Rectangle<int> TrackScroller::getMapBounds() const
     
 }
 
-void TrackScroller::HorizontalDragHelper::
-MoveConstrainer::applyBoundsToComponent(Component &component, Rectangle<int> bounds)
+void TrackScroller::HorizontalDragHelper::MoveConstrainer::
+	applyBoundsToComponent(Component &component, Rectangle<int> bounds)
 {
     ComponentBoundsConstrainer::applyBoundsToComponent(component, bounds);
     this->scroller.horizontalDragByUser(&component, bounds);
