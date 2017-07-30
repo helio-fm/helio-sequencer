@@ -917,6 +917,8 @@
                   file="../../Source/UI/Sequencer/Header/HybridRollHeader.cpp"/>
             <FILE id="Z44WkV" name="HybridRollHeader.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/Header/HybridRollHeader.h"/>
+            <FILE id="Lh8JqJ" name="Playhead.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/Header/Playhead.cpp"/>
+            <FILE id="HTYKGw" name="Playhead.h" compile="0" resource="0" file="../../Source/UI/Sequencer/Header/Playhead.h"/>
             <FILE id="rdz3ZU" name="SoundProbeIndicator.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/Header/SoundProbeIndicator.cpp"/>
             <FILE id="fSWSdO" name="SoundProbeIndicator.h" compile="0" resource="0"
@@ -933,10 +935,6 @@
                   file="../../Source/UI/Sequencer/Header/TrackStartIndicator.cpp"/>
             <FILE id="cMsYHX" name="TrackStartIndicator.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/Header/TrackStartIndicator.h"/>
-            <FILE id="iX17u5" name="TransportIndicator.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/Header/TransportIndicator.cpp"/>
-            <FILE id="yqyTbo" name="TransportIndicator.h" compile="0" resource="0"
-                  file="../../Source/UI/Sequencer/Header/TransportIndicator.h"/>
           </GROUP>
           <GROUP id="{8144406F-1438-BE00-DA08-A94FC6424392}" name="Helpers">
             <FILE id="SJ8OZZ" name="ComponentConnectorCurve.cpp" compile="1" resource="0"

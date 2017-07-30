@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "TrackScroller.h"
 #include "TrackScrollerScreen.h"
-#include "TransportIndicator.h"
+#include "Playhead.h"
 #include "Transport.h"
 #include "HybridRoll.h"
 #include "PanelBackgroundC.h"
@@ -42,7 +42,7 @@ TrackScroller::TrackScroller(Transport &transportRef,
 
     this->setOpaque(true);
 
-    this->indicator = new TransportIndicator(this->roll, this->transport);
+    this->indicator = new Playhead(this->roll, this->transport);
 //    this->trackImage->addAndMakeVisible(this->indicator);
     
     this->helperRectangle = new HorizontalDragHelper(*this);

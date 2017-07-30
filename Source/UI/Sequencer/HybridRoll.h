@@ -39,7 +39,7 @@ class TimelineWarningMarker;
 #include "AnnotationLargeComponent.h"
 #include "TimeSignaturesTrackMap.h"
 #include "TimeSignatureLargeComponent.h"
-#include "TransportIndicator.h"
+#include "Playhead.h"
 #include "TransportListener.h"
 #include "HybridRollEventComponent.h"
 #include "ClipboardOwner.h"
@@ -95,7 +95,7 @@ class HybridRoll :
     protected TransportListener,
     protected AsyncUpdater, // for async scrolling on transport listener events
     protected HighResolutionTimer, // for smooth scrolling to seek position
-    protected TransportIndicator::MovementListener, // for smooth scrolling to seek position
+    protected Playhead::Listener, // for smooth scrolling to seek position
     protected AudioMonitor::ClippingListener // for displaying clipping indicator components
 {
 public:
@@ -112,7 +112,7 @@ public:
         beatLineColourId                 = 0x99002008,
         snapLineColourId                 = 0x99002009,
         headerColourId                   = 0x99002010,
-        indicatorColourId                = 0x99002011
+        playheadColourId                 = 0x99002011
     };
     
     HybridRoll(ProjectTreeItem &parentProject,
@@ -306,10 +306,10 @@ protected:
 protected:
     
     //===------------------------------------------------------------------===//
-    // TransportIndicator::MovementListener
+    // Playhead::Listener
     //===------------------------------------------------------------------===//
     
-    void onTransportIndicatorMoved(int indicatorX) override;
+    void onPlayheadMoved(int indicatorX) override;
     
     //===------------------------------------------------------------------===//
     // VolumeCallback::ClippingListener
@@ -429,7 +429,7 @@ protected:
     ComponentFader fader;
 
     ScopedPointer<HybridRollHeader> header;
-    ScopedPointer<TransportIndicator> indicator;
+    ScopedPointer<Playhead> indicator;
     
     typedef AnnotationsTrackMap<AnnotationLargeComponent> AnnotationsLargeMap;
     ScopedPointer<AnnotationsLargeMap> annotationsTrack;

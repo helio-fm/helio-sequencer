@@ -918,7 +918,7 @@ void HelioTheme::initColours(const ::ColourScheme &colours)
     this->setColour(HybridRoll::snapLineColourId, colours.getBarColour().withAlpha(0.1f));
     this->setColour(HybridRoll::headerColourId, colours.getPrimaryGradientColourB());
 
-    this->setColour(HybridRoll::indicatorColourId, colours.getLassoBorderColour().withAlpha(0.5f));
+    this->setColour(HybridRoll::playheadColourId, colours.getLassoBorderColour().withAlpha(0.5f));
     this->setColour(LassoComponent<void *>::lassoFillColourId, colours.getLassoFillColour().withAlpha(0.15f));
     this->setColour(LassoComponent<void *>::lassoOutlineColourId, colours.getLassoBorderColour().withAlpha(0.4f));
 

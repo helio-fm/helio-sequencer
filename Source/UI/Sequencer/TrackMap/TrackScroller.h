@@ -20,7 +20,7 @@
 class HybridRoll;
 class TrackMap;
 class TrackScrollerScreen;
-class TransportIndicator;
+class Playhead;
 class Transport;
 
 #include "HelperRectangle.h"
@@ -172,7 +172,7 @@ private:
     
     ScopedPointer<Component> background;
     ScopedPointer<TrackScrollerScreen> screenRange;
-    ScopedPointer<TransportIndicator> indicator;
+    ScopedPointer<Playhead> indicator;
     
     OwnedArray<Component> trackMaps;
 

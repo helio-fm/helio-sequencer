@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "TransportIndicator.h"
+#include "Playhead.h"
 #include "Transport.h"
 #include "PianoRoll.h"
 #include "PlayerThread.h"
@@ -25,23 +25,23 @@
 
 
 //#if PLAYER_THREAD_SENDS_SEEK_EVENTS
-//#   define TRANSPORT_INDICATOR_ESTIMATES_MOVEMENT 0
+//#   define PLAYHEAD_ESTIMATES_MOVEMENT 0
 //#else
-#   define TRANSPORT_INDICATOR_ESTIMATES_MOVEMENT 1
+#   define PLAYHEAD_ESTIMATES_MOVEMENT 1
 //#endif
 
-//#define TRANSPORT_INDICATOR_UPDATE_TIME_MS (1000 / 50)
-#define TRANSPORT_INDICATOR_UPDATE_TIME_MS 7
+//#define PLAYHEAD_UPDATE_TIME_MS (1000 / 50)
+#define PLAYHEAD_UPDATE_TIME_MS 7
 
 // TODO: check deadlocks?
 
-TransportIndicator::TransportIndicator(HybridRoll &parentRoll,
-                                       Transport &owner,
-                                       TransportIndicator::MovementListener *movementListener /*= nullptr*/,
-                                       int width /*= 2*/) :
+Playhead::Playhead(HybridRoll &parentRoll,
+	Transport &owner,
+	Playhead::Listener *movementListener /*= nullptr*/,
+	int width /*= 2*/) :
     roll(parentRoll),
     transport(owner),
-    indicatorWidth(width + FREE_SPACE),
+    playheadWidth(width + FREE_SPACE),
     lastCorrectPosition(0.0),
     timerStartTime(0.0),
     tempo(1.0),
@@ -54,7 +54,7 @@ TransportIndicator::TransportIndicator(HybridRoll &parentRoll,
     this->setInterceptsMouseClicks(false, false);
     this->setOpaque(false);
     this->setAlwaysOnTop(true);
-    this->setSize(this->indicatorWidth, 1);
+    this->setSize(this->playheadWidth, 1);
 
     this->lastCorrectPosition = this->transport.getSeekPosition();
     this->timerStartTime = Time::getMillisecondCounterHiRes();
@@ -63,7 +63,7 @@ TransportIndicator::TransportIndicator(HybridRoll &parentRoll,
     this->transport.addTransportListener(this);
 }
 
-TransportIndicator::~TransportIndicator()
+Playhead::~Playhead()
 {
     this->transport.removeTransportListener(this);
 }
@@ -73,11 +73,11 @@ TransportIndicator::~TransportIndicator()
 // TransportListener
 //===----------------------------------------------------------------------===//
 
-void TransportIndicator::onSeek(const double newPosition,
+void Playhead::onSeek(const double newPosition,
                                 const double currentTimeMs,
                                 const double totalTimeMs)
 {
-    //Logger::writeToLog("TransportIndicator::onSeek " + String(newPosition));
+    //Logger::writeToLog("Playhead::onSeek " + String(newPosition));
     //Logger::writeToLog(this->getName() + " onSeek newPosition = " + String(newPosition));
 
     {
@@ -87,21 +87,21 @@ void TransportIndicator::onSeek(const double newPosition,
 
     this->triggerAsyncUpdate();
 
-#if TRANSPORT_INDICATOR_ESTIMATES_MOVEMENT
+#if PLAYHEAD_ESTIMATES_MOVEMENT
     if (this->isTimerRunning())
     {
         ScopedWriteLock lock(this->anchorsLock);
         this->timerStartTime = Time::getMillisecondCounterHiRes();
         this->timerStartPosition = this->lastCorrectPosition;
-        //this->startTimer(TRANSPORT_INDICATOR_UPDATE_TIME_MS);
+        //this->startTimer(PLAYHEAD_UPDATE_TIME_MS);
     }
 #endif
 }
 
-void TransportIndicator::onTempoChanged(const double newTempo)
+void Playhead::onTempoChanged(const double newTempo)
 {
-    //Logger::writeToLog("TransportIndicator::onTempoChanged " + String(newTempo));
-#if TRANSPORT_INDICATOR_ESTIMATES_MOVEMENT
+    //Logger::writeToLog("Playhead::onTempoChanged " + String(newTempo));
+#if PLAYHEAD_ESTIMATES_MOVEMENT
     ScopedWriteLock lock(this->anchorsLock);
     this->tempo = jmax(newTempo, 0.01);
         
@@ -113,29 +113,29 @@ void TransportIndicator::onTempoChanged(const double newTempo)
 #endif
 }
 
-void TransportIndicator::onTotalTimeChanged(const double timeMs)
+void Playhead::onTotalTimeChanged(const double timeMs)
 {
 }
 
-void TransportIndicator::onPlay()
+void Playhead::onPlay()
 {
-    //Logger::writeToLog("TransportIndicator::onPlay");
-#if TRANSPORT_INDICATOR_ESTIMATES_MOVEMENT
+    //Logger::writeToLog("Playhead::onPlay");
+#if PLAYHEAD_ESTIMATES_MOVEMENT
     {
         ScopedWriteLock lock(this->anchorsLock);
         this->timerStartTime = Time::getMillisecondCounterHiRes();
         this->timerStartPosition = this->lastCorrectPosition;
     }
 
-    //Logger::writeToLog("   !!!!! TransportIndicator startTimer");
-    this->startTimer(TRANSPORT_INDICATOR_UPDATE_TIME_MS);
+    //Logger::writeToLog("   !!!!! Playhead startTimer");
+    this->startTimer(PLAYHEAD_UPDATE_TIME_MS);
 #endif
 }
 
-void TransportIndicator::onStop()
+void Playhead::onStop()
 {
-    //Logger::writeToLog("TransportIndicator::onStop");
-#if TRANSPORT_INDICATOR_ESTIMATES_MOVEMENT
+    //Logger::writeToLog("Playhead::onStop");
+#if PLAYHEAD_ESTIMATES_MOVEMENT
     this->stopTimer();
 
     {
@@ -151,9 +151,9 @@ void TransportIndicator::onStop()
 // Timer
 //===----------------------------------------------------------------------===//
 
-void TransportIndicator::timerCallback()
+void Playhead::timerCallback()
 {
-    //Logger::writeToLog("TransportIndicator::hiResTimerCallback");
+    //Logger::writeToLog("Playhead::hiResTimerCallback");
 //    MessageManagerLock lock(Thread::getCurrentThread());
 //    if (lock.lockWasGained())
 //    {
@@ -168,9 +168,9 @@ void TransportIndicator::timerCallback()
 // AsyncUpdater
 //===----------------------------------------------------------------------===//
 
-void TransportIndicator::handleAsyncUpdate()
+void Playhead::handleAsyncUpdate()
 {
-    //Logger::writeToLog("TransportIndicator::handleAsyncUpdate");
+    //Logger::writeToLog("Playhead::handleAsyncUpdate");
 
     if (this->isTimerRunning())
     {
@@ -194,39 +194,39 @@ void TransportIndicator::handleAsyncUpdate()
 // Component
 //===----------------------------------------------------------------------===//
 
-void TransportIndicator::paint(Graphics &g)
+void Playhead::paint(Graphics &g)
 {
-    //Logger::writeToLog("TransportIndicator::paint");
-    const Colour indicatorColour(this->findColour(PianoRoll::indicatorColourId));
-    const Colour indicatorShade(indicatorColour.withMultipliedBrightness(1.5f));
+    //Logger::writeToLog("Playhead::paint");
+    const Colour playheadColour(this->findColour(PianoRoll::playheadColourId));
+    const Colour playheadShade(playheadColour.withMultipliedBrightness(1.5f));
     
-    g.setColour(indicatorColour);
+    g.setColour(playheadColour);
     //g.fillRect(0, 0, this->getWidth() - FREE_SPACE, this->getHeight());
     g.drawVerticalLine(0, 0.f, float(this->getHeight()));
 
-    g.setColour(indicatorShade);
+    g.setColour(playheadShade);
     //g.setColour(Colours::black.withAlpha(0.5f));
     g.drawVerticalLine(1, 0.f, float(this->getHeight()));
 }
 
-void TransportIndicator::parentSizeChanged()
+void Playhead::parentSizeChanged()
 {
-    //Logger::writeToLog("TransportIndicator::parentSizeChanged");
+    //Logger::writeToLog("Playhead::parentSizeChanged");
     this->parentChanged();
 }
 
-void TransportIndicator::parentHierarchyChanged()
+void Playhead::parentHierarchyChanged()
 {
-    //Logger::writeToLog("TransportIndicator::parentHierarchyChanged");
+    //Logger::writeToLog("Playhead::parentHierarchyChanged");
     this->parentChanged();
 }
 
-void TransportIndicator::parentChanged()
+void Playhead::parentChanged()
 {
     if (this->getParentComponent() != nullptr)
     {
-        //Logger::writeToLog("TransportIndicator::parentChanged");
-        this->setSize(this->indicatorWidth, this->getParentHeight());
+        //Logger::writeToLog("Playhead::parentChanged");
+        this->setSize(this->playheadWidth, this->getParentHeight());
         
         if (this->isTimerRunning())
         {
@@ -248,26 +248,26 @@ void TransportIndicator::parentChanged()
     }
 }
 
-void TransportIndicator::updatePosition(double position)
+void Playhead::updatePosition(double position)
 {
-    //Logger::writeToLog("TransportIndicator::updatePosition " + String(position));
-    //Logger::writeToLog("TransportIndicator::getParentWidth " + String(this->getParentWidth()));
+    //Logger::writeToLog("Playhead::updatePosition " + String(position));
+    //Logger::writeToLog("Playhead::getParentWidth " + String(this->getParentWidth()));
     const int &newX = this->roll.getXPositionByTransportPosition(position, float(this->getParentWidth()));
     this->setTopLeftPosition(newX, 0);
     //this->setBounds(newX, 0, this->indicatorWidth, this->getParentHeight());
 
     if (this->listener != nullptr)
     {
-        this->listener->onTransportIndicatorMoved(newX);
+        this->listener->onPlayheadMoved(newX);
     }
 
-    //Logger::writeToLog("TransportIndicator " + String(this->getX()) + " " + String(this->getY()) + " " + String(this->getWidth()) + " " + String(this->getHeight()));
+    //Logger::writeToLog("Playhead " + String(this->getX()) + " " + String(this->getY()) + " " + String(this->getWidth()) + " " + String(this->getHeight()));
 }
 
-void TransportIndicator::tick()
+void Playhead::tick()
 {
-#if TRANSPORT_INDICATOR_ESTIMATES_MOVEMENT
-    //Logger::writeToLog("TransportIndicator::tick");
+#if PLAYHEAD_ESTIMATES_MOVEMENT
+    //Logger::writeToLog("Playhead::tick");
     double estimatedPosition;
     
     {

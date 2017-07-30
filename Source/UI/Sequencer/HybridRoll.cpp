@@ -123,7 +123,7 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject,
     this->annotationsTrack = new AnnotationsLargeMap(this->project, *this);
     this->timeSignaturesTrack = new TimeSignaturesLargeMap(this->project, *this);
     
-    this->indicator = new TransportIndicator(*this, this->project.getTransport(), this);
+    this->indicator = new Playhead(*this, this->project.getTransport(), this);
 
     this->lassoComponent = new HybridLassoComponent();
     this->lassoComponent->setWantsKeyboardFocus(false);
@@ -1381,10 +1381,10 @@ void HybridRoll::paint(Graphics &g)
 }
 
 //===----------------------------------------------------------------------===//
-// TransportIndicator::MovementListener
+// Playhead::Listener
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::onTransportIndicatorMoved(int indicatorX)
+void HybridRoll::onPlayheadMoved(int indicatorX)
 {
     if (this->shouldFollowIndicator &&
         !this->smoothZoomController->isZooming())

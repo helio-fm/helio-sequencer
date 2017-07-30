@@ -23,7 +23,7 @@ class MovementListener;
 
 #include "TransportListener.h"
 
-class TransportIndicator :
+class Playhead :
     public Component,
     public TransportListener,
     private AsyncUpdater,
@@ -31,19 +31,19 @@ class TransportIndicator :
 {
 public:
 
-    class MovementListener
+    class Listener
     {
     public:
-        virtual ~MovementListener() {}
-        virtual void onTransportIndicatorMoved(int indicatorX) = 0;
+        virtual ~Listener() {}
+        virtual void onPlayheadMoved(int indicatorX) = 0;
     };
 
-    TransportIndicator(HybridRoll &parentRoll,
-                       Transport &owner,
-                       TransportIndicator::MovementListener *movementListener = nullptr,
-                       int width = 2);
+    Playhead(HybridRoll &parentRoll,
+		Transport &owner,
+		Playhead::Listener *movementListener = nullptr,
+		int width = 2);
 
-    ~TransportIndicator() override;
+    ~Playhead() override;
 
 
     //===------------------------------------------------------------------===//
@@ -79,7 +79,7 @@ protected:
 
     Transport &transport;
 
-    int indicatorWidth;
+    int playheadWidth;
 
 private:
 
@@ -112,6 +112,6 @@ private:
     ReadWriteLock lastCorrectPositionLock;
     double lastCorrectPosition;
 
-    MovementListener *listener;
+    Listener *listener;
 
 };
