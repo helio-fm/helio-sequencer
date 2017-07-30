@@ -234,7 +234,8 @@ void PianoRoll::setRowHeight(const int newRowHeight)
     if (newRowHeight == this->rowHeight || newRowHeight <= 1) { return; }
 
     this->rowHeight = newRowHeight;
-    this->setSize(this->getWidth(), this->numRows * this->rowHeight);
+    this->setSize(this->getWidth(),
+		HYBRID_ROLL_HEADER_HEIGHT + this->numRows * this->rowHeight);
 }
 
 
@@ -404,7 +405,8 @@ void PianoRoll::getRowsColsByMousePosition(int x, int y, int &noteNumber, float 
 
 int PianoRoll::getYPositionByKey(int targetKey) const
 {
-    return (this->getHeight() - this->rowHeight) - (targetKey * this->rowHeight);
+    return (this->getHeight() - this->rowHeight) -
+		(targetKey * this->rowHeight);
 }
 
 
@@ -1188,7 +1190,7 @@ void PianoRoll::paint(Graphics &g)
     for (int i = keyStart; i <= keyEnd; i++)
     {
         const int lastOctaveReminder = 4;
-        const int yPos = i * this->rowHeight;
+        const int yPos = HYBRID_ROLL_HEADER_HEIGHT + i * this->rowHeight;
         const int noteNumber = (i + lastOctaveReminder) % 12;
         const int octaveNumber = (i + lastOctaveReminder) / 12;
         const bool octaveIsOdd = ((octaveNumber % 2) > 0);

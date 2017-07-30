@@ -168,7 +168,8 @@ void PatternRoll::reloadRollContent()
         }
     }
 
-	this->setSize(this->getWidth(), this->getNumRows() * PATTERNROLL_ROW_HEIGHT);
+	this->setSize(this->getWidth(),
+		HYBRID_ROLL_HEADER_HEIGHT + this->getNumRows() * PATTERNROLL_ROW_HEIGHT);
 	this->repaint(this->viewport.getViewArea());
 }
 
@@ -321,7 +322,8 @@ void PatternRoll::onRemoveTrack(MidiLayer *const layer, Pattern *const pattern /
 			}
 		}
 
-		this->setSize(this->getWidth(), this->getNumRows() * PATTERNROLL_ROW_HEIGHT);
+		this->setSize(this->getWidth(),
+			HYBRID_ROLL_HEADER_HEIGHT + this->getNumRows() * PATTERNROLL_ROW_HEIGHT);
 	}
 }
 
@@ -628,8 +630,8 @@ void PatternRoll::paint(Graphics &g)
 {
 #if PATTERNROLL_HAS_PRERENDERED_BACKGROUND
 
-    g.setTiledImageFill(*(static_cast<HelioTheme &>(this->getLookAndFeel()).getRollBgCache()[this->rowHeight]), 0, 0, 1.f);
-    g.fillRect(this->viewport.getViewArea());
+	g.setTiledImageFill(this->rowPattern, 0, PATTERN_ROLL_HEADER_OFFSET, 1.f);
+	g.fillRect(this->viewport.getViewArea());
 
 #else
 
@@ -654,7 +656,7 @@ void PatternRoll::paint(Graphics &g)
     for (int i = keyStart; i <= keyEnd; i++)
     {
         const int lastOctaveReminder = 4;
-        const int yPos = i * PATTERNROLL_ROW_HEIGHT;
+        const int yPos = HYBRID_ROLL_HEADER_HEIGHT + i * PATTERNROLL_ROW_HEIGHT;
         const int noteNumber = (i + lastOctaveReminder) % 12;
         const int octaveNumber = (i + lastOctaveReminder) / 12;
         const bool octaveIsOdd = ((octaveNumber % 2) > 0);
