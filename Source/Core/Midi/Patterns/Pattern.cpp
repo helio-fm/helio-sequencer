@@ -27,7 +27,7 @@ Pattern::Pattern(ProjectEventDispatcher &parent) :
     owner(parent)
 {
     // Add default single instance?
-    this->clips.add(Clip());
+    this->clips.add(Clip(this));
 }
 
 Pattern::~Pattern()
@@ -39,7 +39,8 @@ void Pattern::sort()
 {
 	if (this->clips.size() > 0)
 	{
-		this->clips.sort(this->clips.getUnchecked(0));
+		const Clip clip(this);
+		this->clips.sort(clip);
 	}
 }
 
@@ -254,7 +255,7 @@ void Pattern::deserialize(const XmlElement &xml)
 
 	forEachXmlChildElementWithTagName(*root, e, Serialization::Core::clip)
 	{
-		Clip c;
+		Clip c(this);
 		c.deserialize(*e);
 		this->clips.add(c);
 	}
@@ -262,7 +263,7 @@ void Pattern::deserialize(const XmlElement &xml)
 	// Fallback to single clip at zero bar, if no clips found
 	if (this->clips.size() == 0)
 	{
-		this->clips.add(Clip());
+		this->clips.add(Clip(this));
 	}
 
 	this->sort();
@@ -295,7 +296,7 @@ int Pattern::compareElements(const Pattern *first, const Pattern *second)
 	}
 
 	// TODO sorting them the right way
-
+	return 0;
 }
 
 int Pattern::hashCode() const noexcept

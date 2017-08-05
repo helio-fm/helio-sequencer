@@ -19,6 +19,7 @@
 
 class MidiLayer;
 class HybridRoll;
+class PatternRoll;
 
 #include "Clip.h"
 #include "HybridRollEventComponent.h"
@@ -29,6 +30,7 @@ public:
 
     ClipComponent(HybridRoll &editor, Clip clip);
     const Clip getClip() const;
+	PatternRoll &getRoll() const;
 
 	//virtual void updateContent() = 0;
 
@@ -46,6 +48,8 @@ public:
     //===------------------------------------------------------------------===//
 
     void mouseDown(const MouseEvent &e) override;
+	void paint(Graphics& g) override;
+
     static int compareElements(ClipComponent *first, ClipComponent *second);
 
 protected:

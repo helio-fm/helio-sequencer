@@ -167,36 +167,15 @@ void ProjectTimeline::dispatchChangeLayerBeatRange()
     this->project.broadcastChangeProjectBeatRange();
 }
 
+// Timeline sequences are the case where there are no patterns and clips
+// So just leave this empty:
 
-void ProjectTimeline::dispatchAddClip(const Clip &clip)
-{
-	// TODO
-}
-
-void ProjectTimeline::dispatchChangeClip(const Clip &oldClip, const Clip &newClip)
-{
-	// TODO
-}
-
-void ProjectTimeline::dispatchRemoveClip(const Clip &clip)
-{
-	// TODO
-}
-
-void ProjectTimeline::dispatchPostRemoveClip(const Pattern *pattern)
-{
-	// TODO
-}
-
-void ProjectTimeline::dispatchReloadPattern(Pattern *const pattern)
-{
-	// TODO
-}
-
-void ProjectTimeline::dispatchChangePatternBeatRange()
-{
-	// TODO
-}
+void ProjectTimeline::dispatchAddClip(const Clip &clip) {}
+void ProjectTimeline::dispatchChangeClip(const Clip &oldClip, const Clip &newClip) {}
+void ProjectTimeline::dispatchRemoveClip(const Clip &clip) {}
+void ProjectTimeline::dispatchPostRemoveClip(Pattern *const pattern) {}
+void ProjectTimeline::dispatchReloadPattern(Pattern *const pattern) {}
+void ProjectTimeline::dispatchChangePatternBeatRange() {}
 
 ProjectTreeItem *ProjectTimeline::getProject() const
 {

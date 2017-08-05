@@ -20,7 +20,7 @@
 #include "ProjectTreeItem.h"
 #include "MidiLayer.h"
 #include "MidiEvent.h"
-#include "HybridRoll.h"
+#include "PatternRoll.h"
 #include "Pattern.h"
 
 ClipComponent::ClipComponent(HybridRoll &editor, Clip clip) :
@@ -28,11 +28,17 @@ ClipComponent::ClipComponent(HybridRoll &editor, Clip clip) :
     clip(clip)
 {
     this->setWantsKeyboardFocus(false);
+	this->setFloatBounds(this->getRoll().getEventBounds(this));
 }
 
 const Clip ClipComponent::getClip() const
 {
     return this->clip;
+}
+
+PatternRoll &ClipComponent::getRoll() const
+{
+	return static_cast<PatternRoll &>(this->roll);
 }
 
 
@@ -89,6 +95,12 @@ void ClipComponent::mouseDown(const MouseEvent &e)
         this->roll.deselectEvent(this);
         return;
     }
+}
+
+void ClipComponent::paint(Graphics& g)
+{
+	g.setColour(Colours::floralwhite.withAlpha(0.5f));
+	g.fillRoundedRectangle(0, 0, this->getWidth(), this->getHeight(), 5);
 }
 
 

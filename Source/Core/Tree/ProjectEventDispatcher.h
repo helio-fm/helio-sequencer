@@ -45,7 +45,7 @@ public:
 	virtual void dispatchAddClip(const Clip &clip) = 0;
 	virtual void dispatchChangeClip(const Clip &oldClip, const Clip &newClip) = 0;
 	virtual void dispatchRemoveClip(const Clip &clip) = 0;
-	virtual void dispatchPostRemoveClip(const Pattern *pattern) = 0;
+	virtual void dispatchPostRemoveClip(Pattern *const pattern) = 0;
 
 	virtual void dispatchReloadPattern(Pattern *const pattern) = 0;
 	virtual void dispatchChangePatternBeatRange() = 0;
@@ -68,7 +68,7 @@ public:
 	void dispatchAddClip(const Clip &clip) override {}
 	void dispatchChangeClip(const Clip &oldClip, const Clip &newClip) override {}
 	void dispatchRemoveClip(const Clip &clip) override {}
-	void dispatchPostRemoveClip(const Pattern *pattern) override {}
+	void dispatchPostRemoveClip(Pattern *const pattern) override {}
 
 	void dispatchReloadPattern(Pattern *const pattern) override {}
 	void dispatchChangePatternBeatRange() override {}

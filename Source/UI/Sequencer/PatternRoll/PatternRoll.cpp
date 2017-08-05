@@ -56,8 +56,7 @@ PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
 {
     this->header->toFront(false);
     this->indicator->toFront(false);
-    
-    this->reloadRollContent();
+    //this->reloadRollContent();
 }
 
 PatternRoll::~PatternRoll()
@@ -152,11 +151,11 @@ void PatternRoll::reloadRollContent()
 
 			if (auto pianoLayer = dynamic_cast<PianoLayer *>(linkedLayer))
 			{
-				auto clipComponent = new PianoClipComponent(pianoLayer, *this, clip);
+				clipComponent = new PianoClipComponent(pianoLayer, *this, clip);
 			}
 			else if (auto autoLayer = dynamic_cast<AutomationLayer *>(linkedLayer))
 			{
-				auto clipComponent = new AutomationClipComponent(autoLayer, *this, clip);
+				clipComponent = new AutomationClipComponent(autoLayer, *this, clip);
 			}
 
 			if (clipComponent != nullptr)
@@ -268,7 +267,8 @@ void PatternRoll::onAddMidiEvent(const MidiEvent &event)
 {
 	// the question is:
 	// is pattern roll supposed to monitor single event changes?
-	// or it just reloads the whole sequence on show?
+	// or it just reloads the whole sequence on show?0
+	//this->reloadRollContent();
 }
 
 void PatternRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
@@ -288,12 +288,11 @@ void PatternRoll::onPostRemoveMidiEvent(MidiLayer *const layer)
 
 void PatternRoll::onAddTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
 {
-	this->patterns.addSorted(*pattern, pattern);
-	this->layers.addSorted(*layer, layer);
-	this->links.set(pattern, layer);
-
-	if (pattern != nullptr && pattern->size() > 0)
+	if (pattern != nullptr)
 	{
+		this->patterns.addSorted(*pattern, pattern);
+		this->layers.addSorted(*layer, layer);
+		this->links.set(pattern, layer);
 		this->reloadRollContent();
 	}
 }
@@ -307,6 +306,7 @@ void PatternRoll::onRemoveTrack(MidiLayer *const layer, Pattern *const pattern /
 {
 	this->patterns.removeAllInstancesOf(pattern);
 	this->layers.removeAllInstancesOf(layer);
+	this->links.remove(pattern);
 
 	if (pattern != nullptr)
 	{
@@ -330,20 +330,34 @@ void PatternRoll::onRemoveTrack(MidiLayer *const layer, Pattern *const pattern /
 void PatternRoll::onAddClip(const Clip &clip)
 {
 	// TODO create PianoClipComponent or AutomationClipComponent
-	auto component = new ClipComponent(*this, clip);
-	this->addAndMakeVisible(component);
+	ClipComponent *clipComponent = nullptr;
+	auto linkedLayer = this->links[clip.getPattern()];
 
-	this->batchRepaintList.add(component);
-	this->triggerAsyncUpdate();
+	if (auto pianoLayer = dynamic_cast<PianoLayer *>(linkedLayer))
+	{
+		clipComponent = new PianoClipComponent(pianoLayer, *this, clip);
+	}
+	else if (auto autoLayer = dynamic_cast<AutomationLayer *>(linkedLayer))
+	{
+		clipComponent = new AutomationClipComponent(autoLayer, *this, clip);
+	}
 
-	component->toFront(false);
+	if (clipComponent != nullptr)
+	{
+		this->addAndMakeVisible(clipComponent);
 
-	this->fader.fadeIn(component, 150);
+		this->batchRepaintList.add(clipComponent);
+		this->triggerAsyncUpdate();
 
-	this->eventComponents.add(component);
-	this->selectEvent(component, false);
+		clipComponent->toFront(false);
 
-	this->componentsHashTable.set(clip, component);
+		this->fader.fadeIn(clipComponent, 150);
+
+		this->eventComponents.add(clipComponent);
+		this->selectEvent(clipComponent, false);
+
+		this->componentsHashTable.set(clip, clipComponent);
+	}
 }
 
 void PatternRoll::onChangeClip(const Clip &clip, const Clip &newClip)

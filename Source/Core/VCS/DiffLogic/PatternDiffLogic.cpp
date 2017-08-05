@@ -34,7 +34,7 @@ void PatternDiffLogic::deserializePatternChanges(Pattern &pattern,
     {
         forEachXmlChildElementWithTagName(*state, e, Serialization::Core::clip)
         {
-            Clip clip;
+            Clip clip(&pattern);
             clip.deserialize(*e);
             stateClips.addSorted(clip, clip);
         }
@@ -44,7 +44,7 @@ void PatternDiffLogic::deserializePatternChanges(Pattern &pattern,
     {
         forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::clip)
         {
-            Clip clip;
+            Clip clip(&pattern);
             clip.deserialize(*e);
             changesClips.addSorted(clip, clip);
         }

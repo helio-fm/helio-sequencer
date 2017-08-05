@@ -341,7 +341,7 @@ float PianoLayer::getLastBeat() const
         return -FLT_MAX;
     }
 
-    const Note &note = static_cast<const Note &>(*this->midiEvents.getUnchecked(this->midiEvents.size() - 1));
+    const Note &note = static_cast<const Note &>(*this->midiEvents.getLast());
     return note.getBeat() + note.getLength();
 }
 

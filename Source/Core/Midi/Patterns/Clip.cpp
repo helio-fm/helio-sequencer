@@ -22,7 +22,7 @@
 Clip::Clip()
 {
 	// needed for juce's Array to work
-	//jassertfalse;
+	jassertfalse;
 }
 
 Clip::Clip(const Clip &other) :
@@ -42,6 +42,7 @@ Clip::Clip(Pattern *owner, float beatVal) :
 
 Pattern *Clip::getPattern() const noexcept
 {
+	jassert(this->pattern != nullptr);
 	return this->pattern;
 }
 

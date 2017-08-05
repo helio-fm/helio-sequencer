@@ -283,7 +283,8 @@ void MidiLayerTreeItem::dispatchRemoveEvent(const MidiEvent &event)
 
 void MidiLayerTreeItem::dispatchPostRemoveEvent(MidiLayer *const layer)
 {
-    if (this->lastFoundParent != nullptr)
+	jassert(layer == this->layer);
+	if (this->lastFoundParent != nullptr)
     {
 		this->lastFoundParent->broadcastPostRemoveEvent(layer);
     }
@@ -291,9 +292,10 @@ void MidiLayerTreeItem::dispatchPostRemoveEvent(MidiLayer *const layer)
 
 void MidiLayerTreeItem::dispatchReloadLayer(MidiLayer *const layer)
 {
-    if (this->lastFoundParent != nullptr)
+	jassert(layer == this->layer);
+	if (this->lastFoundParent != nullptr)
     {
-        this->lastFoundParent->broadcastChangeTrack(layer);
+        this->lastFoundParent->broadcastChangeTrack(layer, this->pattern);
         this->repaintItem(); // if colour changed
     }
 }
@@ -306,40 +308,54 @@ void MidiLayerTreeItem::dispatchChangeLayerBeatRange()
     }
 }
 
-
 void MidiLayerTreeItem::dispatchAddClip(const Clip &clip)
 {
-	// TODO
+	if (this->lastFoundParent != nullptr)
+	{
+		this->lastFoundParent->broadcastAddClip(clip);
+	}
 }
-
 
 void MidiLayerTreeItem::dispatchChangeClip(const Clip &oldClip, const Clip &newClip)
 {
-	// TODO
+	if (this->lastFoundParent != nullptr)
+	{
+		this->lastFoundParent->broadcastChangeClip(oldClip, newClip);
+	}
 }
-
 
 void MidiLayerTreeItem::dispatchRemoveClip(const Clip &clip)
 {
-	// TODO
+	if (this->lastFoundParent != nullptr)
+	{
+		this->lastFoundParent->broadcastRemoveClip(clip);
+	}
 }
 
-
-void MidiLayerTreeItem::dispatchPostRemoveClip(const Pattern *pattern)
+void MidiLayerTreeItem::dispatchPostRemoveClip(Pattern *const pattern)
 {
-	// TODO
+	jassert(pattern == this->pattern);
+	if (this->lastFoundParent != nullptr)
+	{
+		this->lastFoundParent->broadcastPostRemoveClip(pattern);
+	}
 }
-
 
 void MidiLayerTreeItem::dispatchReloadPattern(Pattern *const pattern)
 {
-	// TODO
+	jassert(pattern == this->pattern);
+	if (this->lastFoundParent != nullptr)
+	{
+		this->lastFoundParent->broadcastChangeTrack(this->layer, pattern);
+	}
 }
-
 
 void MidiLayerTreeItem::dispatchChangePatternBeatRange()
 {
-	// TODO
+	if (this->lastFoundParent != nullptr)
+	{
+		this->lastFoundParent->broadcastChangeProjectBeatRange();
+	}
 }
 
 ProjectTreeItem *MidiLayerTreeItem::getProject() const

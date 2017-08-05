@@ -79,7 +79,7 @@ public:
 	void dispatchAddClip(const Clip &clip) override;
 	void dispatchChangeClip(const Clip &oldClip, const Clip &newClip) override;
 	void dispatchRemoveClip(const Clip &clip) override;
-	void dispatchPostRemoveClip(const Pattern *pattern) override;
+	void dispatchPostRemoveClip(Pattern *const pattern) override;
 
 	void dispatchReloadPattern(Pattern *const pattern) override;
 	void dispatchChangePatternBeatRange() override;

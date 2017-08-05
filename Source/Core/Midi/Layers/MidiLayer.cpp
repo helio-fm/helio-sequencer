@@ -160,7 +160,7 @@ float MidiLayer::getFirstBeat() const
         return FLT_MAX;
     }
     
-    return this->midiEvents.getUnchecked(0)->getBeat();
+    return this->midiEvents.getFirst()->getBeat();
 }
 
 float MidiLayer::getLastBeat() const
@@ -170,7 +170,7 @@ float MidiLayer::getLastBeat() const
         return -FLT_MAX;
     }
     
-    return this->midiEvents.getUnchecked(this->midiEvents.size() - 1)->getBeat();
+    return this->midiEvents.getLast()->getBeat();
 }
 
 float MidiLayer::getLengthInBeats() const
@@ -374,7 +374,7 @@ int MidiLayer::compareElements(const MidiLayer *first, const MidiLayer *second)
 	}
 
 	// TODO sorting them the right way
-
+	return 0;
 }
 
 int MidiLayer::hashCode() const noexcept
