@@ -107,8 +107,6 @@ PianoTrackMap::~PianoTrackMap()
 
 void PianoTrackMap::resized()
 {
-    this->rollFirstBeat = this->roll.getFirstBeat();
-    this->rollLastBeat = this->roll.getLastBeat();
     this->componentHeight = float(this->getHeight()) / 128.f;
     
     this->setVisible(false);
@@ -214,6 +212,13 @@ void PianoTrackMap::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
+}
+
+void PianoTrackMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
+{
+	this->rollFirstBeat = firstBeat;
+	this->rollLastBeat = lastBeat;
+	this->resized();
 }
 
 

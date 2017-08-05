@@ -384,7 +384,6 @@ void TrackScroller::handleAsyncUpdate()
     for (int i = 0; i < this->trackMaps.size(); ++i)
     {
         this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
-        this->trackMaps.getUnchecked(i)->resized(); // as roll resizes, force maps to update
     }
     
     this->indicator->parentSizeChanged(); // a hack: also update indicator position

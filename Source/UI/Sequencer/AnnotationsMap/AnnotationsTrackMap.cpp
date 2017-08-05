@@ -61,10 +61,6 @@ template<typename T> AnnotationsTrackMap<T>::~AnnotationsTrackMap()
 template<typename T> void AnnotationsTrackMap<T>::resized()
 {
     //Logger::writeToLog("AnnotationsTrackMap<T>::resized");
-
-    this->rollFirstBeat = this->roll.getFirstBeat();
-    this->rollLastBeat = this->roll.getLastBeat();
-
     this->setVisible(false);
 
     T *previous = nullptr;
@@ -245,6 +241,13 @@ template<typename T> void AnnotationsTrackMap<T>::onChangeProjectBeatRange(float
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
+}
+
+template<typename T> void AnnotationsTrackMap<T>::onChangeViewBeatRange(float firstBeat, float lastBeat)
+{
+	this->rollFirstBeat = firstBeat;
+	this->rollLastBeat = lastBeat;
+	this->resized();
 }
 
 

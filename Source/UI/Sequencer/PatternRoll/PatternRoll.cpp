@@ -730,14 +730,9 @@ void PatternRoll::deserialize(const XmlElement &xml)
 
     this->setBarWidth(float(root->getDoubleAttribute("barWidth", this->getBarWidth())));
 
+	// FIXME doesn't work right for now, as view range is sent after this
     const float startBar = float(root->getDoubleAttribute("startBar", 0.0));
-    const float endBar = float(root->getDoubleAttribute("endBar", 0.0));
-
-    this->setFirstBar(jmin(this->getFirstBar(), int(floorf(startBar))));
-    this->setLastBar(jmax(this->getLastBar(), int(ceilf(endBar))));
-
     const int x = this->getXPositionByBar(startBar);
-
     const int y = root->getIntAttribute("y");
     this->getViewport().setViewPosition(x, y);
 

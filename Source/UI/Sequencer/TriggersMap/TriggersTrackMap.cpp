@@ -73,9 +73,6 @@ void TriggersTrackMap::mouseDown(const MouseEvent &e)
 
 void TriggersTrackMap::resized()
 {
-    this->rollFirstBeat = this->roll.getFirstBeat();
-    this->rollLastBeat = this->roll.getLastBeat();
-    
     this->setVisible(false);
     
     // вместо одного updateSustainPedalComponent(с) -
@@ -404,7 +401,14 @@ void TriggersTrackMap::onRemoveTrack(MidiLayer *const layer, Pattern *const patt
 void TriggersTrackMap::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
     this->projectFirstBeat = firstBeat;
-    this->projectLastBeat = lastBeat;
+	this->projectLastBeat = lastBeat;
+}
+
+void TriggersTrackMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
+{
+	this->rollFirstBeat = firstBeat;
+	this->rollLastBeat = lastBeat;
+	this->resized();
 }
 
 

@@ -385,8 +385,10 @@ void HybridRoll::panByOffset(const int offsetX, const int offsetY)
     
     if (needsToStretchRight)
     {
-        this->setLastBar(this->lastBar + numBarsToExpand);
-        this->viewport.setViewPosition(offsetX, offsetY); // sic! after setLastBar
+		this->project.broadcastChangeViewBeatRange(
+			this->firstBar * NUM_BEATS_IN_BAR,
+			(this->lastBar + numBarsToExpand) * NUM_BEATS_IN_BAR);
+        this->viewport.setViewPosition(offsetX, offsetY); // after setLastBar
         this->grabKeyboardFocus();
 
         const float barCloseToTheRight = float(this->lastBar - numBarsToExpand);
@@ -396,8 +398,10 @@ void HybridRoll::panByOffset(const int offsetX, const int offsetY)
     {
         const float deltaW = float(this->barWidth * numBarsToExpand);
         this->clickAnchor.addXY(deltaW / SMOOTH_PAN_SPEED_MULTIPLIER, 0); // an ugly hack
-        this->setFirstBar(this->firstBar - numBarsToExpand);
-        this->viewport.setViewPosition(offsetX + int(deltaW), offsetY); // sic! after setFirstBar
+		this->project.broadcastChangeViewBeatRange(
+			(this->firstBar - numBarsToExpand) * NUM_BEATS_IN_BAR,
+			this->lastBar * NUM_BEATS_IN_BAR);
+        this->viewport.setViewPosition(offsetX + int(deltaW), offsetY); // after setFirstBar
         this->grabKeyboardFocus();
 
         const float barCloseToTheLeft = float(this->firstBar);
@@ -609,28 +613,6 @@ float HybridRoll::getRoundBeatByXPosition(int x) const
     const float firstAlignedBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
 	float beatNumber = (targetX / this->barWidth) * NUM_BEATS_IN_BAR + firstAlignedBeat;
 	return jmin(jmax(beatNumber, firstAlignedBeat), lastAlignedBeat);
-}
-
-void HybridRoll::setFirstBar(int bar)
-{
-    if (this->firstBar == bar)
-    {
-        return;
-    }
-
-    this->firstBar = bar;
-    this->updateBounds();
-}
-
-void HybridRoll::setLastBar(int bar)
-{
-    if (this->lastBar == bar)
-    {
-        return;
-    }
-
-    this->lastBar = bar;
-    this->updateBounds();
 }
 
 void HybridRoll::setBarRange(int first, int last)
@@ -932,11 +914,19 @@ void HybridRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 
     const int trackFirstBar = int(floorf(firstBeat / float(NUM_BEATS_IN_BAR)));
     const int trackLastBar = int(ceilf(lastBeat / float(NUM_BEATS_IN_BAR)));
-    const int rollFirstBar = jmin(this->firstBar, trackFirstBar);
+	const int rollFirstBar = jmin(this->firstBar, trackFirstBar);
     const int rollLastBar = jmax(this->lastBar, trackLastBar);
 
     this->setBarRange(rollFirstBar, rollLastBar);
 }
+
+void HybridRoll::onChangeViewBeatRange(float firstBeat, float lastBeat)
+{
+	const int viewFirstBar = int(floorf(firstBeat / float(NUM_BEATS_IN_BAR)));
+	const int viewLastBar = int(ceilf(lastBeat / float(NUM_BEATS_IN_BAR)));
+	this->setBarRange(viewFirstBar, viewLastBar);
+}
+
 
 //===----------------------------------------------------------------------===//
 // Component

@@ -104,7 +104,8 @@ public:
     // ProjectListener
     //===------------------------------------------------------------------===//
     
-    void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
+    void onChangeMidiEvent(const MidiEvent &oldEvent,
+		const MidiEvent &newEvent) override;
     
     void onAddMidiEvent(const MidiEvent &event) override;
     
@@ -112,14 +113,19 @@ public:
     
     void onPostRemoveMidiEvent(MidiLayer *const layer) override;
 
-    void onChangeTrack(MidiLayer *const layer, Pattern *const pattern = nullptr) override;
+    void onChangeTrack(MidiLayer *const layer,
+		Pattern *const pattern = nullptr) override;
     
-    void onAddTrack(MidiLayer *const layer, Pattern *const pattern = nullptr) override;
+    void onAddTrack(MidiLayer *const layer,
+		Pattern *const pattern = nullptr) override;
     
-    void onRemoveTrack(MidiLayer *const layer, Pattern *const pattern = nullptr) override; // ���������� ����� ����� ��������� ����
+    void onRemoveTrack(MidiLayer *const layer,
+		Pattern *const pattern = nullptr) override;
     
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
-    
+
+	void onChangeViewBeatRange(float firstBeat, float lastBeat) override {}
+
 
     //===------------------------------------------------------------------===//
     // Listeners management

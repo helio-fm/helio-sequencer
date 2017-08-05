@@ -222,11 +222,9 @@ public:
     float getFloorBeatByXPosition(int x) const;
     float getRoundBeatByXPosition(int x) const;
     
-    virtual void setLastBar(int bar);
     inline int getLastBar() const noexcept { return this->lastBar; }
     inline float getLastBeat() const noexcept { return float(this->lastBar * NUM_BEATS_IN_BAR); }
     
-    virtual void setFirstBar(int bar);
     inline int getFirstBar() const noexcept { return this->firstBar; }
     inline float getFirstBeat() const noexcept { return float(this->firstBar * NUM_BEATS_IN_BAR); }
     
@@ -272,6 +270,7 @@ public:
     void onAddMidiEvent(const MidiEvent &event) override;
     void onRemoveMidiEvent(const MidiEvent &event) override;
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
+	void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
 
     //===------------------------------------------------------------------===//
     // Component

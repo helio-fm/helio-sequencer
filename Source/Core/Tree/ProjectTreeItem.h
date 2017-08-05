@@ -204,7 +204,8 @@ public:
     void broadcastPostRemoveClip(Pattern *const pattern);
 
     void broadcastChangeProjectInfo(const ProjectInfo *info);
-    void broadcastChangeProjectBeatRange();
+	void broadcastChangeViewBeatRange(float firstBeat, float lastBeat);
+	Point<float> broadcastChangeProjectBeatRange();
 
 
     //===------------------------------------------------------------------===//

@@ -703,7 +703,17 @@ void ProjectTreeItem::load(const XmlElement &xml)
 
     TreeItemChildrenSerializer::deserializeChildren(*this, *root);
 
-    this->broadcastChangeProjectBeatRange();
+    const auto range = this->broadcastChangeProjectBeatRange();
+
+	// a hack to add some margin to project beat range,
+	// then to round beats to nearest bars
+	// because rolls' view ranges are rounded to bars
+	const float r = float(NUM_BEATS_IN_BAR);
+	const float viewStartWithMArgin = range.getX() - r;
+	const float viewEndWithMArgin = range.getY() + r;
+	const int viewFirstBeat = int(floorf(viewStartWithMArgin / r) * r);
+	const int viewLastBeat = int(ceilf(viewEndWithMArgin / r) * r);
+	this->broadcastChangeViewBeatRange(viewFirstBeat, viewLastBeat);
 
     //this->transport->deserialize(*root); // todo
 
@@ -856,7 +866,7 @@ void ProjectTreeItem::broadcastChangeProjectInfo(const ProjectInfo *info)
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastChangeProjectBeatRange()
+Point<float> ProjectTreeItem::broadcastChangeProjectBeatRange()
 {
     const Point<float> &beatRange = this->getTrackRangeInBeats();
     const float &firstBeat = beatRange.getX();
@@ -871,6 +881,14 @@ void ProjectTreeItem::broadcastChangeProjectBeatRange()
     
     this->changeListeners.call(&ProjectListener::onChangeProjectBeatRange, firstBeat, lastBeat);
     this->sendChangeMessage();
+
+	return beatRange;
+}
+
+void ProjectTreeItem::broadcastChangeViewBeatRange(float firstBeat, float lastBeat)
+{
+	this->changeListeners.call(&ProjectListener::onChangeViewBeatRange, firstBeat, lastBeat);
+	// this->sendChangeMessage(); the project itself didn't change, so dont call this
 }
 
 

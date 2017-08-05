@@ -81,10 +81,6 @@ template<typename T> void TimeSignaturesTrackMap<T>::updateTrackRangeIndicatorsA
 template<typename T> void TimeSignaturesTrackMap<T>::resized()
 {
     //Logger::writeToLog("TimeSignaturesTrackMap<T>::resized");
-
-    this->rollFirstBeat = this->roll.getFirstBeat();
-    this->rollLastBeat = this->roll.getLastBeat();
-
     this->setVisible(false);
 
     T *previous = nullptr;
@@ -267,7 +263,14 @@ template<typename T> void TimeSignaturesTrackMap<T>::onChangeProjectBeatRange(fl
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
-    this->updateTrackRangeIndicatorsAnchors();
+	this->updateTrackRangeIndicatorsAnchors();
+}
+
+template<typename T> void TimeSignaturesTrackMap<T>::onChangeViewBeatRange(float firstBeat, float lastBeat)
+{
+	this->rollFirstBeat = firstBeat;
+	this->rollLastBeat = lastBeat;
+	this->resized();
 }
 
 

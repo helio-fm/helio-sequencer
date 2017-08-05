@@ -113,9 +113,6 @@ void AutomationTrackMap::mouseUp(const MouseEvent &e)
 
 void AutomationTrackMap::resized()
 {
-    this->rollFirstBeat = float(this->roll.getFirstBeat());
-    this->rollLastBeat = float(this->roll.getLastBeat());
-    
     this->setVisible(false);
     
     // во избежание глюков - сначала обновляем позиции
@@ -417,7 +414,7 @@ void AutomationTrackMap::onChangeProjectBeatRange(float firstBeat, float lastBea
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
-    
+
     // move first event to the first projects's beat
 //    if (AutomationLayer *autoLayer = dynamic_cast<AutomationLayer *>(this->layer.get()))
 //    {
@@ -429,6 +426,13 @@ void AutomationTrackMap::onChangeProjectBeatRange(float firstBeat, float lastBea
 //            }
 //        }
 //    }
+}
+
+void AutomationTrackMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
+{
+	this->rollFirstBeat = firstBeat;
+	this->rollLastBeat = lastBeat;
+	this->resized();
 }
 
 

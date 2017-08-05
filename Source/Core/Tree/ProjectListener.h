@@ -46,5 +46,6 @@ public:
 
     virtual void onChangeProjectInfo(const ProjectInfo *info) {}
     virtual void onChangeProjectBeatRange(float firstBeat, float lastBeat) = 0;
+	virtual void onChangeViewBeatRange(float firstBeat, float lastBeat) = 0;
 
 };
