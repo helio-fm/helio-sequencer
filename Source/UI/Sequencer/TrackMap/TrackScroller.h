@@ -27,22 +27,26 @@ class Transport;
 #include "HybridRollListener.h"
 #include "ComponentFader.h"
 
+// TODO: smoothly animate visible area rectangle!!!!!!!!!!!!!!!!1111111111111
+
 class TrackScroller :
     public Component,
     public HybridRollListener,
-    private AsyncUpdater
+    private AsyncUpdater,
+	private Timer
 {
 public:
 
-    TrackScroller(Transport &transport,
-                  HybridRoll &roll);
+    TrackScroller(Transport &transport, HybridRoll *roll);
 
     ~TrackScroller() override;
     
     void addOwnedMap(Component *newTrackMap, bool shouldBringToFront);
 
     void removeOwnedMap(Component *existingTrackMap);
-    
+
+	void switchToRoll(HybridRoll *targetRoll);
+
     template<typename T>
     T *findOwnedMapOfType()
     {
@@ -78,8 +82,6 @@ public:
     void resized() override;
 
     void paintOverChildren(Graphics &g) override;
-    
-    void mouseDown(const MouseEvent &event) override;
 
     void mouseDrag(const MouseEvent &event) override;
     
@@ -166,10 +168,15 @@ protected:
 private:
     
     void handleAsyncUpdate() override;
+
+	void timerCallback() override;
     
     Transport &transport;
-    HybridRoll &roll;
+    HybridRoll *roll;
     
+	Rectangle<float> oldAreaBounds;
+	Rectangle<float> oldMapBounds;
+
     ScopedPointer<Component> background;
     ScopedPointer<TrackScrollerScreen> screenRange;
     ScopedPointer<Playhead> indicator;
@@ -178,7 +185,7 @@ private:
 
     void disconnectIndicator();
     Rectangle<float> getIndicatorBounds() const;
-    Rectangle<int> getMapBounds() const;
+	Rectangle<int> getMapBounds() const;
     
     ComponentFader fader;
     ComponentDragger helperDragger;

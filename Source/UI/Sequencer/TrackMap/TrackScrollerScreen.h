@@ -37,7 +37,6 @@ public:
     {
         this->realBounds = bounds;
         this->setBounds(this->realBounds.toType<int>());
-//        this->setBounds(this->realBounds.toType<int>().translated(0, 1)); // header fix hack
     }
 
     

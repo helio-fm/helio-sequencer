@@ -244,7 +244,7 @@ public:
     {
         const Colour backCol(this->findColour(HybridRoll::headerColourId));
         const Colour frontCol(backCol.contrasting().withMultipliedAlpha(0.5f));
-        const float pX = this->roll.getViewport().getViewPositionX();
+        const float pX = float(this->roll.getViewport().getViewPositionX());
         
         g.setGradientFill(ColourGradient(backCol,
                                          0.f,
@@ -364,6 +364,8 @@ public:
 	{
 		this->animationDirection *= -1.f;
 		this->animationSpeed = ROLLS_SWITCH_ANIMATION_SPEED;
+		this->scroller->switchToRoll((this->animationDirection > 0.f) ?
+			this->patternRoll : this->pianoRoll);
 		this->startTimer(15);
 	}
     
@@ -471,7 +473,7 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
 	this->patternRoll = new PatternRoll(this->project,
 		*this->patternViewport, clippingDetector);
 
-    this->scroller = new TrackScroller(this->project.getTransport(), *this->pianoRoll);
+    this->scroller = new TrackScroller(this->project.getTransport(), this->pianoRoll);
     this->scroller->addOwnedMap(new PianoTrackMap(this->project, *this->pianoRoll), false);
     this->scroller->addOwnedMap(new AnnotationsTrackMap<AnnotationSmallComponent>(this->project, *this->pianoRoll), false);
     this->scroller->addOwnedMap(new TimeSignaturesTrackMap<TimeSignatureSmallComponent>(this->project, *this->pianoRoll), false);

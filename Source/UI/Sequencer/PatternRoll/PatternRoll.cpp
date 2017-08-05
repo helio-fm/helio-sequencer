@@ -50,8 +50,8 @@
 #define DEFAULT_CLIP_LENGTH 1.0f
 
 PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
-                     Viewport &viewportRef,
-                     WeakReference<AudioMonitor> clippingDetector) :
+	Viewport &viewportRef,
+	WeakReference<AudioMonitor> clippingDetector) :
     HybridRoll(parentProject, viewportRef, clippingDetector)
 {
     this->header->toFront(false);
