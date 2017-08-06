@@ -45,6 +45,7 @@
 #include "PianoClipComponent.h"
 #include "AutomationLayer.h"
 #include "AutomationClipComponent.h"
+#include "DummyClipComponent.h"
 
 #define ROWS_OF_TWO_OCTAVES 24
 #define DEFAULT_CLIP_LENGTH 1.0f
@@ -144,6 +145,8 @@ void PatternRoll::reloadRollContent()
     for (auto pattern : patterns)
     {
 		auto linkedLayer = this->links[pattern];
+		jassert(linkedLayer != nullptr);
+
         for (int j = 0; j < pattern->size(); ++j)
         {
             const Clip &clip = pattern->getUnchecked(j);
@@ -183,8 +186,10 @@ int PatternRoll::getNumRows() const noexcept
 
 void PatternRoll::showGhostClipFor(ClipComponent *targetClipComponent)
 {
-	// TODO DummyClipComponent?
-    auto component = new ClipComponent(*this, targetClipComponent->getClip());
+	auto linkedLayer = this->links[targetClipComponent->getClip().getPattern()];
+	jassert(linkedLayer != nullptr);
+
+	auto component = new DummyClipComponent(linkedLayer, *this, targetClipComponent->getClip());
     component->setEnabled(false);
     component->setGhostMode();
 
@@ -232,12 +237,15 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float beat) const
 
 	// the hard part here, need to get the layer info
 	const MidiLayer *matchingLayer = this->links[pattern];
+	jassert(matchingLayer != nullptr);
+
 	const float length = matchingLayer->getLengthInBeats();
 	const float w = this->barWidth * length / NUM_BEATS_IN_BAR;
 
 	const int patternIndex = this->patterns.indexOfSorted(*pattern, pattern);
 	const float yPosition = float(patternIndex * PATTERNROLL_ROW_HEIGHT);
-    return Rectangle<float> (x, yPosition + 1, w, float(PATTERNROLL_ROW_HEIGHT - 1));
+    return Rectangle<float> (x, HYBRID_ROLL_HEADER_HEIGHT + yPosition + 1,
+		w, float(PATTERNROLL_ROW_HEIGHT - 1));
 }
 
 float PatternRoll::getBeatByComponentPosition(float x) const
@@ -299,7 +307,11 @@ void PatternRoll::onAddTrack(MidiLayer *const layer, Pattern *const pattern /*= 
 
 void PatternRoll::onChangeTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
 {
-	this->reloadRollContent();
+	if (pattern != nullptr)
+	{
+		this->links.set(pattern, layer);
+		this->reloadRollContent();
+	}
 }
 
 void PatternRoll::onRemoveTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
@@ -332,6 +344,7 @@ void PatternRoll::onAddClip(const Clip &clip)
 	// TODO create PianoClipComponent or AutomationClipComponent
 	ClipComponent *clipComponent = nullptr;
 	auto linkedLayer = this->links[clip.getPattern()];
+	jassert(linkedLayer != nullptr);
 
 	if (auto pianoLayer = dynamic_cast<PianoLayer *>(linkedLayer))
 	{

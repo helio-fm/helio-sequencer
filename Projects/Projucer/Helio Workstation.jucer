@@ -974,6 +974,10 @@
                   file="../../Source/UI/Sequencer/PatternRoll/AutomationClipComponent.cpp"/>
             <FILE id="CFnVVc" name="AutomationClipComponent.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/PatternRoll/AutomationClipComponent.h"/>
+            <FILE id="UvGcIr" name="DummyClipComponent.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/PatternRoll/DummyClipComponent.cpp"/>
+            <FILE id="UkQ65l" name="DummyClipComponent.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/PatternRoll/DummyClipComponent.h"/>
             <FILE id="Exbw0l" name="PianoClipComponent.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/PatternRoll/PianoClipComponent.cpp"/>
             <FILE id="pPYJa2" name="PianoClipComponent.h" compile="0" resource="0"
