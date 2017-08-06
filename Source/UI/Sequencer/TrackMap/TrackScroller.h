@@ -27,8 +27,6 @@ class Transport;
 #include "HybridRollListener.h"
 #include "ComponentFader.h"
 
-// TODO: smoothly animate visible area rectangle!!!!!!!!!!!!!!!!1111111111111
-
 class TrackScroller :
     public Component,
     public HybridRollListener,

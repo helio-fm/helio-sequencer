@@ -379,13 +379,13 @@ public:
         
         Rectangle<int> r(this->getLocalBounds());
         const int scrollerHeight = MainLayout::getScrollerHeight();
-		const float rollViewportHeight = float(r.getHeight() - scrollerHeight);
+		const float rollViewportWidth = float(r.getWidth());
 		const Rectangle<int> rollSize(r.withBottom(r.getBottom() - scrollerHeight));
-		const int viewport1Pos = int(this->animationPosition * rollViewportHeight);
-		const int viewport2Pos = int(this->animationPosition * rollViewportHeight - rollViewportHeight);
+		const int viewport1Pos = int(this->animationPosition * rollViewportWidth);
+		const int viewport2Pos = int(this->animationPosition * rollViewportWidth - rollViewportWidth);
 
-		this->pianoViewport->setBounds(rollSize.withY(viewport1Pos));
-		this->patternViewport->setBounds(rollSize.withY(viewport2Pos));
+		this->pianoViewport->setBounds(rollSize.withX(viewport1Pos));
+		this->patternViewport->setBounds(rollSize.withX(viewport2Pos));
 		this->scroller->setBounds(r.removeFromBottom(scrollerHeight));
 
         if ((this->pianoRoll->getBarWidth() * this->pianoRoll->getNumBars()) < this->getWidth())
