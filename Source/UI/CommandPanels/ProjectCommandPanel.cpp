@@ -120,7 +120,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
                                                                             MidiLayer::tempoController);
                 
                 this->project.getUndoStack()->beginNewTransaction();
-                this->project.getUndoStack()->perform(new AutoLayerTreeItemInsertAction(this->project,
+                this->project.getUndoStack()->perform(new AutomationTrackInsertAction(this->project,
                                                                                         autoLayerParams,
                                                                                         TRANS("defaults::tempotrack::name")));
             }
@@ -149,7 +149,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
             this->project.setOpen(true);
             
             this->project.getUndoStack()->beginNewTransaction();
-            this->project.getUndoStack()->perform(new PianoLayerTreeItemInsertAction(this->project,
+            this->project.getUndoStack()->perform(new PianoTrackInsertAction(this->project,
                                                                                      this->createPianoLayerTempate(""),
                                                                                      this->layerNameString));
             
@@ -321,7 +321,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
         const String autoLayerParams = this->createAutoLayerTempate(layerName, controllerNumber, instrumentId);
         
         this->project.getUndoStack()->beginNewTransaction();
-        this->project.getUndoStack()->perform(new AutoLayerTreeItemInsertAction(this->project,
+        this->project.getUndoStack()->perform(new AutomationTrackInsertAction(this->project,
                                                                                 autoLayerParams,
                                                                                 layerName));
         

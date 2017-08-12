@@ -104,7 +104,7 @@ void TreePanel::handleCommandMessage(int commandId)
                 const String &layerId = this->lastRenamedItem->getLayer()->getLayerIdAsString();
                 
                 project->getUndoStack()->beginNewTransaction();
-                project->getUndoStack()->perform(new LayerTreeItemRenameAction(*project, layerId, this->renameString));
+                project->getUndoStack()->perform(new MidiTrackRenameAction(*project, layerId, this->renameString));
                 
                 // instead of:
                 //this->layerItem.onRename(this->renameString);

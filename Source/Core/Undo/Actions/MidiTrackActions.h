@@ -25,14 +25,14 @@ class ProjectTreeItem;
 // Rename/Move
 //===----------------------------------------------------------------------===//
 
-class LayerTreeItemRenameAction : public UndoAction
+class MidiTrackRenameAction : public UndoAction
 {
 public:
 
-    explicit LayerTreeItemRenameAction(ProjectTreeItem &project) :
+    explicit MidiTrackRenameAction(ProjectTreeItem &project) :
     UndoAction(project) {}
     
-    LayerTreeItemRenameAction(ProjectTreeItem &project,
+    MidiTrackRenameAction(ProjectTreeItem &project,
                               String layerId,
                               String newXPath);
 
@@ -51,5 +51,5 @@ private:
     String xPathBefore;
     String xPathAfter;
 
-    JUCE_DECLARE_NON_COPYABLE(LayerTreeItemRenameAction)
+    JUCE_DECLARE_NON_COPYABLE(MidiTrackRenameAction)
 };

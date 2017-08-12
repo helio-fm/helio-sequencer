@@ -136,11 +136,11 @@ void LayerCommandPanel::handleCommandMessage(int commandId)
             
             if (dynamic_cast<PianoTrackTreeItem *>(&this->layerItem))
             {
-                project->getUndoStack()->perform(new PianoLayerTreeItemRemoveAction(*project, layerId));
+                project->getUndoStack()->perform(new PianoTrackRemoveAction(*project, layerId));
             }
             else if (dynamic_cast<AutomationTrackTreeItem *>(&this->layerItem))
             {
-                project->getUndoStack()->perform(new AutoLayerTreeItemRemoveAction(*project, layerId));
+                project->getUndoStack()->perform(new AutomationTrackRemoveAction(*project, layerId));
             }
             
             if (HybridRoll *roll = dynamic_cast<HybridRoll *>(project->getLastFocusedRoll()))

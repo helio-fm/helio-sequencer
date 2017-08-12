@@ -25,7 +25,7 @@
 // Rename/Move
 //===----------------------------------------------------------------------===//
 
-LayerTreeItemRenameAction::LayerTreeItemRenameAction(ProjectTreeItem &parentProject,
+MidiTrackRenameAction::MidiTrackRenameAction(ProjectTreeItem &parentProject,
                                                      String targetLayerId,
                                                      String newXPath) :
     UndoAction(parentProject),
@@ -34,7 +34,7 @@ LayerTreeItemRenameAction::LayerTreeItemRenameAction(ProjectTreeItem &parentProj
 {
 }
 
-bool LayerTreeItemRenameAction::perform()
+bool MidiTrackRenameAction::perform()
 {
     if (MidiTrackTreeItem *treeItem =
         this->project.findChildByLayerId<MidiTrackTreeItem>(this->layerId))
@@ -47,7 +47,7 @@ bool LayerTreeItemRenameAction::perform()
     return false;
 }
 
-bool LayerTreeItemRenameAction::undo()
+bool MidiTrackRenameAction::undo()
 {
     if (MidiTrackTreeItem *treeItem =
         this->project.findChildByLayerId<MidiTrackTreeItem>(this->layerId))
@@ -59,12 +59,12 @@ bool LayerTreeItemRenameAction::undo()
     return false;
 }
 
-int LayerTreeItemRenameAction::getSizeInUnits()
+int MidiTrackRenameAction::getSizeInUnits()
 {
     return this->xPathBefore.length() + this->xPathAfter.length();
 }
 
-XmlElement *LayerTreeItemRenameAction::serialize() const
+XmlElement *MidiTrackRenameAction::serialize() const
 {
     auto xml = new XmlElement(Serialization::Undo::layerTreeItemRenameAction);
     xml->setAttribute(Serialization::Undo::xPathBefore, this->xPathBefore);
@@ -73,14 +73,14 @@ XmlElement *LayerTreeItemRenameAction::serialize() const
     return xml;
 }
 
-void LayerTreeItemRenameAction::deserialize(const XmlElement &xml)
+void MidiTrackRenameAction::deserialize(const XmlElement &xml)
 {
     this->xPathBefore = xml.getStringAttribute(Serialization::Undo::xPathBefore);
     this->xPathAfter = xml.getStringAttribute(Serialization::Undo::xPathAfter);
     this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
 }
 
-void LayerTreeItemRenameAction::reset()
+void MidiTrackRenameAction::reset()
 {
     this->xPathBefore.clear();
     this->xPathAfter.clear();

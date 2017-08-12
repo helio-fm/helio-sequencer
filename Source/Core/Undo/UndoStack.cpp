@@ -113,11 +113,11 @@ struct UndoStack::ActionSet
     
     UndoAction *createUndoActionsByTagName(const String &tagName)
     {
-        if      (tagName == Serialization::Undo::pianoLayerTreeItemInsertAction)        { return new PianoLayerTreeItemInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::pianoLayerTreeItemRemoveAction)        { return new PianoLayerTreeItemRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::autoLayerTreeItemInsertAction)         { return new AutoLayerTreeItemInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::autoLayerTreeItemRemoveAction)         { return new AutoLayerTreeItemRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::layerTreeItemRenameAction)             { return new LayerTreeItemRenameAction(this->project); }
+        if      (tagName == Serialization::Undo::pianoLayerTreeItemInsertAction)        { return new PianoTrackInsertAction(this->project); }
+        else if (tagName == Serialization::Undo::pianoLayerTreeItemRemoveAction)        { return new PianoTrackRemoveAction(this->project); }
+        else if (tagName == Serialization::Undo::autoLayerTreeItemInsertAction)         { return new AutomationTrackInsertAction(this->project); }
+        else if (tagName == Serialization::Undo::autoLayerTreeItemRemoveAction)         { return new AutomationTrackRemoveAction(this->project); }
+        else if (tagName == Serialization::Undo::layerTreeItemRenameAction)             { return new MidiTrackRenameAction(this->project); }
         else if (tagName == Serialization::Undo::midiLayerChangeColourAction)           { return new MidiLayerChangeColourAction(this->project); }
         else if (tagName == Serialization::Undo::midiLayerChangeInstrumentAction)       { return new MidiLayerChangeInstrumentAction(this->project); }
         else if (tagName == Serialization::Undo::midiLayerMuteAction)                   { return new MidiLayerMuteAction(this->project); }

@@ -19,7 +19,7 @@
 
 class ProjectTreeItem;
 
-#include "AutomationLayer.h"
+#include "PianoLayer.h"
 #include "UndoAction.h"
 
 
@@ -27,16 +27,16 @@ class ProjectTreeItem;
 // Insert
 //===----------------------------------------------------------------------===//
 
-class AutoLayerTreeItemInsertAction : public UndoAction
+class PianoTrackInsertAction : public UndoAction
 {
 public:
 
-    explicit AutoLayerTreeItemInsertAction(ProjectTreeItem &project) :
+    explicit PianoTrackInsertAction(ProjectTreeItem &project) :
     UndoAction(project) {}
-    
-    AutoLayerTreeItemInsertAction(ProjectTreeItem &project,
-                                  String serializedState,
-                                  String xPath);
+
+    PianoTrackInsertAction(ProjectTreeItem &project,
+                                   String serializedState,
+                                   String xPath);
 
     bool perform() override;
     bool undo() override;
@@ -52,8 +52,8 @@ private:
     
     String xPath;
     String serializedState;
-    
-    JUCE_DECLARE_NON_COPYABLE(AutoLayerTreeItemInsertAction)
+
+    JUCE_DECLARE_NON_COPYABLE(PianoTrackInsertAction)
 };
 
 
@@ -61,20 +61,20 @@ private:
 // Remove
 //===----------------------------------------------------------------------===//
 
-class AutoLayerTreeItemRemoveAction : public UndoAction
+class PianoTrackRemoveAction : public UndoAction
 {
 public:
 
-    explicit AutoLayerTreeItemRemoveAction(ProjectTreeItem &project) :
+    explicit PianoTrackRemoveAction(ProjectTreeItem &project) :
     UndoAction(project) {}
     
-    AutoLayerTreeItemRemoveAction(ProjectTreeItem &project,
+    PianoTrackRemoveAction(ProjectTreeItem &project,
                                    String layerId);
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
-
+    
     XmlElement *serialize() const override;
     void deserialize(const XmlElement &xml) override;
     void reset() override;
@@ -86,6 +86,6 @@ private:
     
     ScopedPointer<XmlElement> serializedTreeItem;
     String xPath;
-    
-    JUCE_DECLARE_NON_COPYABLE(AutoLayerTreeItemRemoveAction)
+
+    JUCE_DECLARE_NON_COPYABLE(PianoTrackRemoveAction)
 };

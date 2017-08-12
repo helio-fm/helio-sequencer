@@ -361,10 +361,10 @@
                 file="../../Source/Core/Tree/AudioPluginTreeItem.cpp"/>
           <FILE id="RL4cbn" name="AudioPluginTreeItem.h" compile="0" resource="0"
                 file="../../Source/Core/Tree/AudioPluginTreeItem.h"/>
-          <FILE id="pNamTQ" name="AutomationLayerTreeItem.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/AutomationLayerTreeItem.cpp"/>
-          <FILE id="nkG5XY" name="AutomationLayerTreeItem.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/AutomationLayerTreeItem.h"/>
+          <FILE id="UVWEdm" name="AutomationTrackTreeItem.cpp" compile="1" resource="0"
+                file="../../Source/Core/Tree/AutomationTrackTreeItem.cpp"/>
+          <FILE id="K82RYP" name="AutomationTrackTreeItem.h" compile="0" resource="0"
+                file="../../Source/Core/Tree/AutomationTrackTreeItem.h"/>
           <FILE id="Eu2SWn" name="InstrumentsRootTreeItem.cpp" compile="1" resource="0"
                 file="../../Source/Core/Tree/InstrumentsRootTreeItem.cpp"/>
           <FILE id="d9gThN" name="InstrumentsRootTreeItem.h" compile="0" resource="0"
@@ -375,18 +375,14 @@
                 file="../../Source/Core/Tree/InstrumentTreeItem.h"/>
           <FILE id="ms7iQB" name="LastShownTreeItems.h" compile="0" resource="0"
                 file="../../Source/Core/Tree/LastShownTreeItems.h"/>
-          <FILE id="tYkIfZ" name="LayerGroupTreeItem.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/LayerGroupTreeItem.cpp"/>
-          <FILE id="Ce99xg" name="LayerGroupTreeItem.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/LayerGroupTreeItem.h"/>
-          <FILE id="RDbVyd" name="MidiLayerTreeItem.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/MidiLayerTreeItem.cpp"/>
-          <FILE id="eJBNBC" name="MidiLayerTreeItem.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/MidiLayerTreeItem.h"/>
-          <FILE id="J0u0zn" name="PianoLayerTreeItem.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/PianoLayerTreeItem.cpp"/>
-          <FILE id="JopERW" name="PianoLayerTreeItem.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/PianoLayerTreeItem.h"/>
+          <FILE id="HFh5gQ" name="MidiTrackTreeItem.cpp" compile="1" resource="0"
+                file="../../Source/Core/Tree/MidiTrackTreeItem.cpp"/>
+          <FILE id="TIdQYG" name="MidiTrackTreeItem.h" compile="0" resource="0"
+                file="../../Source/Core/Tree/MidiTrackTreeItem.h"/>
+          <FILE id="LNAQbu" name="PianoTrackTreeItem.cpp" compile="1" resource="0"
+                file="../../Source/Core/Tree/PianoTrackTreeItem.cpp"/>
+          <FILE id="ioqyfh" name="PianoTrackTreeItem.h" compile="0" resource="0"
+                file="../../Source/Core/Tree/PianoTrackTreeItem.h"/>
           <FILE id="tKVO8v" name="ProjectInfo.cpp" compile="1" resource="0" file="../../Source/Core/Tree/ProjectInfo.cpp"/>
           <FILE id="IEWN1c" name="ProjectInfo.h" compile="0" resource="0" file="../../Source/Core/Tree/ProjectInfo.h"/>
           <FILE id="SwcYq5" name="ProjectTimeline.cpp" compile="1" resource="0"
@@ -410,6 +406,10 @@
                 file="../../Source/Core/Tree/SettingsTreeItem.cpp"/>
           <FILE id="ustDr6" name="SettingsTreeItem.h" compile="0" resource="0"
                 file="../../Source/Core/Tree/SettingsTreeItem.h"/>
+          <FILE id="LvVZ86" name="TrackGroupTreeItem.cpp" compile="1" resource="0"
+                file="../../Source/Core/Tree/TrackGroupTreeItem.cpp"/>
+          <FILE id="eUdOwJ" name="TrackGroupTreeItem.h" compile="0" resource="0"
+                file="../../Source/Core/Tree/TrackGroupTreeItem.h"/>
           <FILE id="p4vaGG" name="TreeItem.cpp" compile="1" resource="0" file="../../Source/Core/Tree/TreeItem.cpp"/>
           <FILE id="nnj8WS" name="TreeItem.h" compile="0" resource="0" file="../../Source/Core/Tree/TreeItem.h"/>
           <FILE id="cKuziz" name="TreeItemChildrenSerializer.cpp" compile="1"
@@ -427,18 +427,18 @@
                   file="../../Source/Core/Undo/Actions/AnnotationEventActions.cpp"/>
             <FILE id="VtxtHL" name="AnnotationEventActions.h" compile="0" resource="0"
                   file="../../Source/Core/Undo/Actions/AnnotationEventActions.h"/>
-            <FILE id="VtqDCe" name="AutoLayerTreeItemActions.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Undo/Actions/AutoLayerTreeItemActions.cpp"/>
-            <FILE id="GzyFvz" name="AutoLayerTreeItemActions.h" compile="0" resource="0"
-                  file="../../Source/Core/Undo/Actions/AutoLayerTreeItemActions.h"/>
+            <FILE id="Ud1v3P" name="AutomationTrackActions.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Undo/Actions/AutomationTrackActions.cpp"/>
+            <FILE id="l743PN" name="AutomationTrackActions.h" compile="0" resource="0"
+                  file="../../Source/Core/Undo/Actions/AutomationTrackActions.h"/>
             <FILE id="avJCF4" name="AutomationEventActions.cpp" compile="1" resource="0"
                   file="../../Source/Core/Undo/Actions/AutomationEventActions.cpp"/>
             <FILE id="nW8GvH" name="AutomationEventActions.h" compile="0" resource="0"
                   file="../../Source/Core/Undo/Actions/AutomationEventActions.h"/>
-            <FILE id="Uwq9ZV" name="LayerTreeItemActions.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Undo/Actions/LayerTreeItemActions.cpp"/>
-            <FILE id="U8wW6C" name="LayerTreeItemActions.h" compile="0" resource="0"
-                  file="../../Source/Core/Undo/Actions/LayerTreeItemActions.h"/>
+            <FILE id="T9sZeB" name="MidiTrackActions.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Undo/Actions/MidiTrackActions.cpp"/>
+            <FILE id="BdOw67" name="MidiTrackActions.h" compile="0" resource="0"
+                  file="../../Source/Core/Undo/Actions/MidiTrackActions.h"/>
             <FILE id="fJMUxE" name="MidiLayerActions.cpp" compile="1" resource="0"
                   file="../../Source/Core/Undo/Actions/MidiLayerActions.cpp"/>
             <FILE id="Z8vp2H" name="MidiLayerActions.h" compile="0" resource="0"
@@ -449,10 +449,10 @@
                   file="../../Source/Core/Undo/Actions/PatternActions.cpp"/>
             <FILE id="DOHOAO" name="PatternActions.h" compile="0" resource="0"
                   file="../../Source/Core/Undo/Actions/PatternActions.h"/>
-            <FILE id="Uvs9EI" name="PianoLayerTreeItemActions.cpp" compile="1"
-                  resource="0" file="../../Source/Core/Undo/Actions/PianoLayerTreeItemActions.cpp"/>
-            <FILE id="P0vWru" name="PianoLayerTreeItemActions.h" compile="0" resource="0"
-                  file="../../Source/Core/Undo/Actions/PianoLayerTreeItemActions.h"/>
+            <FILE id="Y7LjNA" name="PianoTrackActions.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Undo/Actions/PianoTrackActions.cpp"/>
+            <FILE id="z13mOO" name="PianoTrackActions.h" compile="0" resource="0"
+                  file="../../Source/Core/Undo/Actions/PianoTrackActions.h"/>
             <FILE id="RqeYx1" name="TimeSignatureEventActions.cpp" compile="1"
                   resource="0" file="../../Source/Core/Undo/Actions/TimeSignatureEventActions.cpp"/>
             <FILE id="fXYYo6" name="TimeSignatureEventActions.h" compile="0" resource="0"

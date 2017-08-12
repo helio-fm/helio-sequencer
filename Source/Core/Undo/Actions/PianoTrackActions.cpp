@@ -27,7 +27,7 @@
 // Insert
 //===----------------------------------------------------------------------===//
 
-PianoLayerTreeItemInsertAction::PianoLayerTreeItemInsertAction(ProjectTreeItem &parentProject,
+PianoTrackInsertAction::PianoTrackInsertAction(ProjectTreeItem &parentProject,
                                                                String targetSerializedState,
                                                                String targetXPath) :
     UndoAction(parentProject),
@@ -36,7 +36,7 @@ PianoLayerTreeItemInsertAction::PianoLayerTreeItemInsertAction(ProjectTreeItem &
 {
 }
 
-bool PianoLayerTreeItemInsertAction::perform()
+bool PianoTrackInsertAction::perform()
 {
     MidiTrackTreeItem *layer = new PianoTrackTreeItem("empty");
     this->project.addChildTreeItem(layer);
@@ -50,7 +50,7 @@ bool PianoLayerTreeItemInsertAction::perform()
     return true;
 }
 
-bool PianoLayerTreeItemInsertAction::undo()
+bool PianoTrackInsertAction::undo()
 {
     if (PianoTrackTreeItem *treeItem = this->project.findChildByLayerId<PianoTrackTreeItem>(this->layerId))
     {
@@ -62,12 +62,12 @@ bool PianoLayerTreeItemInsertAction::undo()
     return false;
 }
 
-int PianoLayerTreeItemInsertAction::getSizeInUnits()
+int PianoTrackInsertAction::getSizeInUnits()
 {
     return this->xPath.length();
 }
 
-XmlElement *PianoLayerTreeItemInsertAction::serialize() const
+XmlElement *PianoTrackInsertAction::serialize() const
 {
     auto xml = new XmlElement(Serialization::Undo::pianoLayerTreeItemInsertAction);
     xml->setAttribute(Serialization::Undo::xPath, this->xPath);
@@ -76,14 +76,14 @@ XmlElement *PianoLayerTreeItemInsertAction::serialize() const
     return xml;
 }
 
-void PianoLayerTreeItemInsertAction::deserialize(const XmlElement &xml)
+void PianoTrackInsertAction::deserialize(const XmlElement &xml)
 {
     this->xPath = xml.getStringAttribute(Serialization::Undo::xPath);
     this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
     this->serializedState = xml.getFirstChildElement()->createDocument("");
 }
 
-void PianoLayerTreeItemInsertAction::reset()
+void PianoTrackInsertAction::reset()
 {
     this->xPath.clear();
     this->layerId.clear();
@@ -95,7 +95,7 @@ void PianoLayerTreeItemInsertAction::reset()
 // Remove
 //===----------------------------------------------------------------------===//
 
-PianoLayerTreeItemRemoveAction::PianoLayerTreeItemRemoveAction(ProjectTreeItem &parentProject,
+PianoTrackRemoveAction::PianoTrackRemoveAction(ProjectTreeItem &parentProject,
                                                                String targetLayerId) :
     UndoAction(parentProject),
     layerId(std::move(targetLayerId)),
@@ -103,7 +103,7 @@ PianoLayerTreeItemRemoveAction::PianoLayerTreeItemRemoveAction(ProjectTreeItem &
 {
 }
 
-bool PianoLayerTreeItemRemoveAction::perform()
+bool PianoTrackRemoveAction::perform()
 {
     if (PianoTrackTreeItem *treeItem = this->project.findChildByLayerId<PianoTrackTreeItem>(this->layerId))
     {
@@ -116,7 +116,7 @@ bool PianoLayerTreeItemRemoveAction::perform()
     return false;
 }
 
-bool PianoLayerTreeItemRemoveAction::undo()
+bool PianoTrackRemoveAction::undo()
 {
     if (this->serializedTreeItem != nullptr)
     {
@@ -130,7 +130,7 @@ bool PianoLayerTreeItemRemoveAction::undo()
     return false;
 }
 
-int PianoLayerTreeItemRemoveAction::getSizeInUnits()
+int PianoTrackRemoveAction::getSizeInUnits()
 {
     if (this->serializedTreeItem != nullptr)
     {
@@ -140,7 +140,7 @@ int PianoLayerTreeItemRemoveAction::getSizeInUnits()
     return 1;
 }
 
-XmlElement *PianoLayerTreeItemRemoveAction::serialize() const
+XmlElement *PianoTrackRemoveAction::serialize() const
 {
     auto xml = new XmlElement(Serialization::Undo::pianoLayerTreeItemRemoveAction);
     xml->setAttribute(Serialization::Undo::xPath, this->xPath);
@@ -149,14 +149,14 @@ XmlElement *PianoLayerTreeItemRemoveAction::serialize() const
     return xml;
 }
 
-void PianoLayerTreeItemRemoveAction::deserialize(const XmlElement &xml)
+void PianoTrackRemoveAction::deserialize(const XmlElement &xml)
 {
     this->xPath = xml.getStringAttribute(Serialization::Undo::xPath);
     this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
     this->serializedTreeItem = new XmlElement(*xml.getFirstChildElement()); // deep copy
 }
 
-void PianoLayerTreeItemRemoveAction::reset()
+void PianoTrackRemoveAction::reset()
 {
     this->xPath.clear();
     this->layerId.clear();
