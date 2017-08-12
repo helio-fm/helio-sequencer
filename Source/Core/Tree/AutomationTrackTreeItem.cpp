@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "AutomationLayerTreeItem.h"
+#include "AutomationTrackTreeItem.h"
 #include "AutomationLayer.h"
 #include "AutoLayerDeltas.h"
 #include "TreeItemChildrenSerializer.h"
@@ -26,8 +26,8 @@
 #include "Pattern.h"
 #include "PatternDeltas.h"
 
-AutomationLayerTreeItem::AutomationLayerTreeItem(const String &name) :
-    MidiLayerTreeItem(name)
+AutomationTrackTreeItem::AutomationTrackTreeItem(const String &name) :
+    MidiTrackTreeItem(name)
 {
     this->layer = new AutomationLayer(*this);
     this->pattern = new Pattern(*this);
@@ -50,12 +50,12 @@ AutomationLayerTreeItem::AutomationLayerTreeItem(const String &name) :
 #endif
 }
 
-Image AutomationLayerTreeItem::getIcon() const
+Image AutomationTrackTreeItem::getIcon() const
 {
     return Icons::findByName(Icons::automation, TREE_ICON_HEIGHT);
 }
 
-void AutomationLayerTreeItem::paintItem(Graphics &g, int width, int height)
+void AutomationTrackTreeItem::paintItem(Graphics &g, int width, int height)
 {
     if (this->isCompactMode())
     {
@@ -71,12 +71,12 @@ void AutomationLayerTreeItem::paintItem(Graphics &g, int width, int height)
 // VCS::TrackedItem
 //===----------------------------------------------------------------------===//
 
-int AutomationLayerTreeItem::getNumDeltas() const
+int AutomationTrackTreeItem::getNumDeltas() const
 {
     return this->deltas.size();
 }
 
-VCS::Delta *AutomationLayerTreeItem::getDelta(int index) const
+VCS::Delta *AutomationTrackTreeItem::getDelta(int index) const
 {
     if (this->deltas[index]->getType() == AutoLayerDeltas::eventsAdded)
     {
@@ -108,7 +108,7 @@ VCS::Delta *AutomationLayerTreeItem::getDelta(int index) const
     return this->deltas[index];
 }
 
-XmlElement *AutomationLayerTreeItem::createDeltaDataFor(int index) const
+XmlElement *AutomationTrackTreeItem::createDeltaDataFor(int index) const
 {
     if (this->deltas[index]->getType() == AutoLayerDeltas::layerPath)
     {
@@ -143,12 +143,12 @@ XmlElement *AutomationLayerTreeItem::createDeltaDataFor(int index) const
     return nullptr;
 }
 
-VCS::DiffLogic *AutomationLayerTreeItem::getDiffLogic() const
+VCS::DiffLogic *AutomationTrackTreeItem::getDiffLogic() const
 {
     return this->vcsDiffLogic;
 }
 
-void AutomationLayerTreeItem::resetStateTo(const VCS::TrackedItem &newState)
+void AutomationTrackTreeItem::resetStateTo(const VCS::TrackedItem &newState)
 {
     for (int i = 0; i < newState.getNumDeltas(); ++i)
     {
@@ -194,7 +194,7 @@ void AutomationLayerTreeItem::resetStateTo(const VCS::TrackedItem &newState)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *AutomationLayerTreeItem::serialize() const
+XmlElement *AutomationTrackTreeItem::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::treeItem);
 
@@ -211,7 +211,7 @@ XmlElement *AutomationLayerTreeItem::serialize() const
     return xml;
 }
 
-void AutomationLayerTreeItem::deserialize(const XmlElement &xml)
+void AutomationTrackTreeItem::deserialize(const XmlElement &xml)
 {
     this->reset();
 
@@ -244,42 +244,42 @@ void AutomationLayerTreeItem::deserialize(const XmlElement &xml)
 
 // вот все это можно вынести в LayerTreeItem
 
-XmlElement *AutomationLayerTreeItem::serializePathDelta() const
+XmlElement *AutomationTrackTreeItem::serializePathDelta() const
 {
     auto xml = new XmlElement(AutoLayerDeltas::layerPath);
     xml->setAttribute(Serialization::VCS::delta, this->getXPath());
     return xml;
 }
 
-XmlElement *AutomationLayerTreeItem::serializeMuteDelta() const
+XmlElement *AutomationTrackTreeItem::serializeMuteDelta() const
 {
     auto xml = new XmlElement(AutoLayerDeltas::layerMute);
     xml->setAttribute(Serialization::VCS::delta, this->getLayer()->getMuteStateAsString());
     return xml;
 }
 
-XmlElement *AutomationLayerTreeItem::serializeColourDelta() const
+XmlElement *AutomationTrackTreeItem::serializeColourDelta() const
 {
     auto xml = new XmlElement(AutoLayerDeltas::layerColour);
     xml->setAttribute(Serialization::VCS::delta, this->getLayer()->getColour().toString());
     return xml;
 }
 
-XmlElement *AutomationLayerTreeItem::serializeInstrumentDelta() const
+XmlElement *AutomationTrackTreeItem::serializeInstrumentDelta() const
 {
     auto xml = new XmlElement(AutoLayerDeltas::layerInstrument);
     xml->setAttribute(Serialization::VCS::delta, this->getLayer()->getInstrumentId());
     return xml;
 }
 
-XmlElement *AutomationLayerTreeItem::serializeControllerDelta() const
+XmlElement *AutomationTrackTreeItem::serializeControllerDelta() const
 {
     auto xml = new XmlElement(AutoLayerDeltas::layerController);
     xml->setAttribute(Serialization::VCS::delta, this->getLayer()->getControllerNumber());
     return xml;
 }
 
-XmlElement *AutomationLayerTreeItem::serializeEventsDelta() const
+XmlElement *AutomationTrackTreeItem::serializeEventsDelta() const
 {
     auto xml = new XmlElement(AutoLayerDeltas::eventsAdded);
 
@@ -293,14 +293,14 @@ XmlElement *AutomationLayerTreeItem::serializeEventsDelta() const
 }
 
 
-void AutomationLayerTreeItem::resetPathDelta(const XmlElement *state)
+void AutomationTrackTreeItem::resetPathDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == AutoLayerDeltas::layerPath);
     const String &path(state->getStringAttribute(Serialization::VCS::delta));
     this->setXPath(path);
 }
 
-void AutomationLayerTreeItem::resetMuteDelta(const XmlElement *state)
+void AutomationTrackTreeItem::resetMuteDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == AutoLayerDeltas::layerMute);
     const String &muteState(state->getStringAttribute(Serialization::VCS::delta));
@@ -313,7 +313,7 @@ void AutomationLayerTreeItem::resetMuteDelta(const XmlElement *state)
     }
 }
 
-void AutomationLayerTreeItem::resetColourDelta(const XmlElement *state)
+void AutomationTrackTreeItem::resetColourDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == AutoLayerDeltas::layerColour);
     const String &colourString(state->getStringAttribute(Serialization::VCS::delta));
@@ -326,21 +326,21 @@ void AutomationLayerTreeItem::resetColourDelta(const XmlElement *state)
     }
 }
 
-void AutomationLayerTreeItem::resetInstrumentDelta(const XmlElement *state)
+void AutomationTrackTreeItem::resetInstrumentDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == AutoLayerDeltas::layerInstrument);
     const String &instrumentId(state->getStringAttribute(Serialization::VCS::delta));
     this->getLayer()->setInstrumentId(instrumentId);
 }
 
-void AutomationLayerTreeItem::resetControllerDelta(const XmlElement *state)
+void AutomationTrackTreeItem::resetControllerDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == AutoLayerDeltas::layerController);
     const int ccNumber(state->getIntAttribute(Serialization::VCS::delta));
     this->getLayer()->setControllerNumber(ccNumber);
 }
 
-void AutomationLayerTreeItem::resetEventsDelta(const XmlElement *state)
+void AutomationTrackTreeItem::resetEventsDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == AutoLayerDeltas::eventsAdded);
 

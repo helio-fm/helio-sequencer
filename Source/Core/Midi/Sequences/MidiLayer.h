@@ -22,7 +22,8 @@
 
 class ProjectTreeItem;
 class ProjectEventDispatcher;
-class MidiLayerTreeItem;
+class MidiTrack;
+class MidiTrackTreeItem;
 class UndoStack;
 
 #define MIDI_IMPORT_SCALE 48
@@ -33,7 +34,9 @@ class MidiLayer : public Serializable
 {
 public:
 
-    explicit MidiLayer(ProjectEventDispatcher &parent);
+    explicit MidiLayer(MidiTrack &parentTrack,
+		ProjectEventDispatcher &eventDispatcher);
+
     ~MidiLayer() override;
 
     enum DefaultControllers
@@ -74,18 +77,7 @@ public:
     virtual float getFirstBeat() const;
     virtual float getLastBeat() const;
 	float getLengthInBeats() const;
-
-    int getChannel() const;
-    void setChannel(int val);
-
-    Colour getColour() const;
-    void setColour(Colour val);
-    
-    bool isMuted() const;
-    String getMuteStateAsString() const;
-    void setMuted(bool shouldBeMuted);
-    static bool isMuted(const String &muteState);
-
+		    
     //===------------------------------------------------------------------===//
     // OwnedArray wrapper
     //===------------------------------------------------------------------===//
@@ -123,24 +115,6 @@ public:
     void notifyBeatRangeChanged();
     void updateBeatRange(bool shouldNotifyIfChanged);
 
-    //===------------------------------------------------------------------===//
-    // Misc
-    //===------------------------------------------------------------------===//
-
-    String getInstrumentId() const noexcept;
-    void setInstrumentId(const String &val);
-
-    int getControllerNumber() const noexcept;
-    void setControllerNumber(int val);
-    
-    bool isTempoLayer() const noexcept;
-    bool isSustainPedalLayer() const noexcept;
-    bool isOnOffLayer() const noexcept;
-
-    // используется в плеере для связки с инструментами
-    Uuid getLayerId() const noexcept;
-    String getLayerIdAsString() const;
-
 	//===------------------------------------------------------------------===//
 	// Helpers
 	//===------------------------------------------------------------------===//
@@ -155,10 +129,15 @@ public:
 
 	int hashCode() const noexcept;
 
+private:
+
+	MidiTrack &track;
+	ProjectEventDispatcher &eventDispatcher;
+
 protected:
 
 	// clearQuick the arrays and don't send any notifications
-	virtual void clearQuick() {}
+	virtual void clearQuick() = 0;
 
     void setLayerId(const String &id);
 
@@ -167,14 +146,6 @@ protected:
     
     ProjectTreeItem *getProject();
     UndoStack *getUndoStack();
-    
-    Colour colour;
-    int channel;
-    bool muted;
-
-    String instrumentId;
-    int controllerNumber;
-    Uuid layerId;
 
     OwnedArray<MidiEvent> midiEvents;
 	
@@ -182,8 +153,6 @@ private:
 
     mutable MidiMessageSequence cachedSequence;
     mutable bool cacheIsOutdated;
-
-    ProjectEventDispatcher &owner;
 
 private:
     

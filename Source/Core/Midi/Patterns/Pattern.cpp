@@ -23,8 +23,10 @@
 #include "UndoStack.h"
 #include "SerializationKeys.h"
 
-Pattern::Pattern(ProjectEventDispatcher &parent) :
-    owner(parent)
+Pattern::Pattern(MidiTrack &parentTrack,
+	ProjectEventDispatcher &dispatcher) :
+	track(parentTrack),
+	eventDispatcher(dispatcher)
 {
     // Add default single instance?
     this->clips.add(Clip(this));
@@ -171,12 +173,12 @@ bool Pattern::change(Clip clip, Clip newClip, const bool undoable)
 
 ProjectTreeItem *Pattern::getProject()
 {
-    return this->owner.getProject();
+    return this->eventDispatcher.getProject();
 }
 
 UndoStack *Pattern::getUndoStack()
 {
-    return this->owner.getProject()->getUndoStack();
+    return this->eventDispatcher.getProject()->getUndoStack();
 }
 
 Uuid Pattern::getPatternId() const noexcept
@@ -196,27 +198,27 @@ String Pattern::getPatternIdAsString() const
 
 void Pattern::notifyClipChanged(const Clip &oldClip, const Clip &newClip)
 {
-    this->owner.dispatchChangeClip(oldClip, newClip);
+    this->eventDispatcher.dispatchChangeClip(oldClip, newClip);
 }
 
 void Pattern::notifyClipAdded(const Clip &clip)
 {
-	this->owner.dispatchAddClip(clip);
+	this->eventDispatcher.dispatchAddClip(clip);
 }
 
 void Pattern::notifyClipRemoved(const Clip &clip)
 {
-	this->owner.dispatchRemoveClip(clip);
+	this->eventDispatcher.dispatchRemoveClip(clip);
 }
 
 void Pattern::notifyClipRemovedPostAction()
 {
-    this->owner.dispatchPostRemoveClip(this);
+    this->eventDispatcher.dispatchPostRemoveClip(this);
 }
 
 void Pattern::notifyPatternChanged()
 {
-	this->owner.dispatchReloadPattern(this);
+	this->eventDispatcher.dispatchReloadPattern(this);
 }
 
 
@@ -288,15 +290,12 @@ void Pattern::clearQuick()
 
 int Pattern::compareElements(const Pattern *first, const Pattern *second)
 {
-	// Compare by names?
-	if (first == second || 
-		first->id == second->id)
+	if (first == second)
 	{ 
 		return 0;
 	}
 
-	// TODO sorting them the right way
-	return 0;
+	return first->track.getTrackName().compare(second->track.getTrackName());
 }
 
 int Pattern::hashCode() const noexcept

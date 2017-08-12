@@ -21,7 +21,7 @@
 #include "LongTapController.h"
 
 class TreeItem;
-class PianoLayerTreeItem;
+class PianoTrackTreeItem;
 
 class TreeItemComponent : public DraggingListBoxComponent, protected LongTapListener
 {

@@ -16,26 +16,26 @@
 */
 
 #include "Common.h"
-#include "LayerGroupTreeItem.h"
+#include "TrackGroupTreeItem.h"
 #include "ProjectTreeItem.h"
 
 #include "TreeItemChildrenSerializer.h"
-#include "PianoLayerTreeItem.h"
+#include "PianoTrackTreeItem.h"
 #include "MainLayout.h"
 #include "Icons.h"
 
 #define GROUP_COMPACT_SEPARATOR 5
 
-LayerGroupTreeItem::LayerGroupTreeItem(const String &name) :
+TrackGroupTreeItem::TrackGroupTreeItem(const String &name) :
     TreeItem(name)
 {
 }
 
-LayerGroupTreeItem::~LayerGroupTreeItem()
+TrackGroupTreeItem::~TrackGroupTreeItem()
 {
 }
 
-void LayerGroupTreeItem::removeAllEmptyGroupsInProject(ProjectTreeItem *project)
+void TrackGroupTreeItem::removeAllEmptyGroupsInProject(ProjectTreeItem *project)
 {
     if (project != nullptr)
     {
@@ -43,12 +43,12 @@ void LayerGroupTreeItem::removeAllEmptyGroupsInProject(ProjectTreeItem *project)
         
         do
         {
-            Array<LayerGroupTreeItem *> groupsToDelete;
-            Array<LayerGroupTreeItem *> groups(project->findChildrenOfType<LayerGroupTreeItem>());
+            Array<TrackGroupTreeItem *> groupsToDelete;
+            Array<TrackGroupTreeItem *> groups(project->findChildrenOfType<TrackGroupTreeItem>());
             
             for (int i = 0; i < groups.size(); ++i)
             {
-                LayerGroupTreeItem *group = groups.getUnchecked(i);
+                TrackGroupTreeItem *group = groups.getUnchecked(i);
                 Array<TreeItem *> groupChildren(group->findChildrenOfType<TreeItem>());
                 
                 if (groupChildren.size() == 0)
@@ -68,7 +68,7 @@ void LayerGroupTreeItem::removeAllEmptyGroupsInProject(ProjectTreeItem *project)
     }
 }
 
-void LayerGroupTreeItem::sortByNameAmongSiblings()
+void TrackGroupTreeItem::sortByNameAmongSiblings()
 {
     if (TreeItem *parentItem = dynamic_cast<TreeItem *>(this->getParentItem()))
     {
@@ -85,11 +85,11 @@ void LayerGroupTreeItem::sortByNameAmongSiblings()
         {
             String currentChildName;
             
-            if (LayerGroupTreeItem *layerGroupItem = dynamic_cast<LayerGroupTreeItem *>(parentItem->getSubItem(i)))
+            if (TrackGroupTreeItem *layerGroupItem = dynamic_cast<TrackGroupTreeItem *>(parentItem->getSubItem(i)))
             {
                 currentChildName = layerGroupItem->getName();
             }
-            else if (MidiLayerTreeItem *layerItem = dynamic_cast<MidiLayerTreeItem *>(parentItem->getSubItem(i)))
+            else if (MidiTrackTreeItem *layerItem = dynamic_cast<MidiTrackTreeItem *>(parentItem->getSubItem(i)))
             {
                 currentChildName = layerItem->getName();
             }
@@ -116,7 +116,7 @@ void LayerGroupTreeItem::sortByNameAmongSiblings()
     }
 }
 
-static void applySelectionPolicyForGroup(LayerGroupTreeItem *rootNode, bool forceSelectAll = false)
+static void applySelectionPolicyForGroup(TrackGroupTreeItem *rootNode, bool forceSelectAll = false)
 {
     const bool shiftPressed = Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown();
     bool shouldSelectAll = shiftPressed;
@@ -127,7 +127,7 @@ static void applySelectionPolicyForGroup(LayerGroupTreeItem *rootNode, bool forc
     }
     
     // ищем активный слой по всему проекту
-    MidiLayerTreeItem *activeItem = TreeItem::getActiveItem<MidiLayerTreeItem>(rootNode->getRootTreeItem());
+    MidiTrackTreeItem *activeItem = TreeItem::getActiveItem<MidiTrackTreeItem>(rootNode->getRootTreeItem());
     
     if (shouldSelectAll || forceSelectAll)
     {
@@ -137,11 +137,11 @@ static void applySelectionPolicyForGroup(LayerGroupTreeItem *rootNode, bool forc
 
         for (signed int i = (rootNode->getNumSubItems() - 1); i >= 0 ; --i)
         {
-            if (MidiLayerTreeItem *layerItem = dynamic_cast<MidiLayerTreeItem *>(rootNode->getSubItem(i)))
+            if (MidiTrackTreeItem *layerItem = dynamic_cast<MidiTrackTreeItem *>(rootNode->getSubItem(i)))
             {
                 rootNode->getSubItem(i)->setSelected(true, false, sendNotification);
             }
-            else if (LayerGroupTreeItem *group = dynamic_cast<LayerGroupTreeItem *>(rootNode->getSubItem(i)))
+            else if (TrackGroupTreeItem *group = dynamic_cast<TrackGroupTreeItem *>(rootNode->getSubItem(i)))
             {
                 applySelectionPolicyForGroup(group, true);
             }
@@ -172,7 +172,7 @@ static void applySelectionPolicyForGroup(LayerGroupTreeItem *rootNode, bool forc
         
         for (int i = 0; i < rootNode->getNumSubItems(); ++i)
         {
-            if (MidiLayerTreeItem *layerItem = dynamic_cast<MidiLayerTreeItem *>(rootNode->getSubItem(i)))
+            if (MidiTrackTreeItem *layerItem = dynamic_cast<MidiTrackTreeItem *>(rootNode->getSubItem(i)))
             {
                 if (layerItem->isMarkerVisible())
                 {
@@ -193,11 +193,11 @@ static void applySelectionPolicyForGroup(LayerGroupTreeItem *rootNode, bool forc
                 
                 for (int i = 0; i < rootNode->getNumSubItems(); ++i)
                 {
-                    if (MidiLayerTreeItem *layerItem = dynamic_cast<MidiLayerTreeItem *>(rootNode->getSubItem(i)))
+                    if (MidiTrackTreeItem *layerItem = dynamic_cast<MidiTrackTreeItem *>(rootNode->getSubItem(i)))
                     {
                         rootNode->getSubItem(i)->setSelected(false, false, sendNotification);
                     }
-                    else if (LayerGroupTreeItem *group = dynamic_cast<LayerGroupTreeItem *>(rootNode->getSubItem(i)))
+                    else if (TrackGroupTreeItem *group = dynamic_cast<TrackGroupTreeItem *>(rootNode->getSubItem(i)))
                     {
                         applySelectionPolicyForGroup(group);
                     }
@@ -210,11 +210,11 @@ static void applySelectionPolicyForGroup(LayerGroupTreeItem *rootNode, bool forc
     }
 }
 
-void LayerGroupTreeItem::showPage()
+void TrackGroupTreeItem::showPage()
 {
     applySelectionPolicyForGroup(this);
     
-    Array<MidiLayerTreeItem *> myLayerItems(this->findChildrenOfType<MidiLayerTreeItem>());
+    Array<MidiTrackTreeItem *> myLayerItems(this->findChildrenOfType<MidiTrackTreeItem>());
     
     Array<MidiLayer *> myLayers;
     
@@ -229,17 +229,17 @@ void LayerGroupTreeItem::showPage()
     }
 }
 
-Colour LayerGroupTreeItem::getColour() const
+Colour TrackGroupTreeItem::getColour() const
 {
     return Colour(255, 210, 255);
 }
 
-Image LayerGroupTreeItem::getIcon() const
+Image TrackGroupTreeItem::getIcon() const
 {
     return Icons::findByName(Icons::group, TREE_ICON_HEIGHT);
 }
 
-void LayerGroupTreeItem::onRename(const String &newName)
+void TrackGroupTreeItem::onRename(const String &newName)
 {
     TreeItem::onRename(newName);
     this->sortByNameAmongSiblings();
@@ -251,7 +251,7 @@ void LayerGroupTreeItem::onRename(const String &newName)
 // Menu
 //===----------------------------------------------------------------------===//
 
-Component *LayerGroupTreeItem::createItemMenu()
+Component *TrackGroupTreeItem::createItemMenu()
 {
     return nullptr;
 }
@@ -261,7 +261,7 @@ Component *LayerGroupTreeItem::createItemMenu()
 // Dragging
 //===----------------------------------------------------------------------===//
 
-var LayerGroupTreeItem::getDragSourceDescription()
+var TrackGroupTreeItem::getDragSourceDescription()
 {
     if (this->isCompactMode())
     { return var::null; }
@@ -269,7 +269,7 @@ var LayerGroupTreeItem::getDragSourceDescription()
     return Serialization::Core::layerGroup;
 }
 
-bool LayerGroupTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
+bool TrackGroupTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
     if (TreeView *treeView = dynamic_cast<TreeView *>(dragSourceDetails.sourceComponent.get()))
     {
@@ -290,7 +290,7 @@ bool LayerGroupTreeItem::isInterestedInDragSource(const DragAndDropTarget::Sourc
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *LayerGroupTreeItem::serialize() const
+XmlElement *TrackGroupTreeItem::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::treeItem);
     xml->setAttribute("type", Serialization::Core::layerGroup);
@@ -301,7 +301,7 @@ XmlElement *LayerGroupTreeItem::serialize() const
     return xml;
 }
 
-void LayerGroupTreeItem::deserialize(const XmlElement &xml)
+void TrackGroupTreeItem::deserialize(const XmlElement &xml)
 {
     this->reset();
 

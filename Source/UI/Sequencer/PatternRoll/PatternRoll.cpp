@@ -20,8 +20,8 @@
 #include "PatternRoll.h"
 #include "HybridRollHeader.h"
 #include "Pattern.h"
-#include "PianoLayerTreeItem.h"
-#include "AutomationLayerTreeItem.h"
+#include "PianoTrackTreeItem.h"
+#include "AutomationTrackTreeItem.h"
 #include "ProjectTreeItem.h"
 #include "ProjectTimeline.h"
 #include "ClipComponent.h"
@@ -296,7 +296,7 @@ void PatternRoll::onPostRemoveMidiEvent(MidiLayer *const layer)
 
 void PatternRoll::onAddTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
 {
-	if (pattern != nullptr)
+	if (pattern != nullptr && layer != nullptr)
 	{
 		this->patterns.addSorted(*pattern, pattern);
 		this->layers.addSorted(*layer, layer);
@@ -508,7 +508,7 @@ void PatternRoll::clipboardPaste(const XmlElement &xml)
         if (nullptr != this->project.getPatternWithId(patternId))
         {
             Pattern *targetPattern = this->project.getPatternWithId(patternId);
-            PianoLayerTreeItem *targetLayerItem = this->project.findChildByLayerId<PianoLayerTreeItem>(patternId);
+            PianoTrackTreeItem *targetLayerItem = this->project.findChildByLayerId<PianoTrackTreeItem>(patternId);
             
             forEachXmlChildElementWithTagName(*patternElement, clipElement, Serialization::Core::clip)
             {

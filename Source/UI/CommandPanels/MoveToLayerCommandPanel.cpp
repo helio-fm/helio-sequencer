@@ -19,7 +19,7 @@
 #include "MoveToLayerCommandPanel.h"
 #include "ProjectTreeItem.h"
 #include "PianoRollToolbox.h"
-#include "PianoLayerTreeItem.h"
+#include "PianoTrackTreeItem.h"
 #include "PianoRoll.h"
 #include "NoteComponent.h"
 #include "Icons.h"
@@ -50,8 +50,8 @@ MoveToLayerCommandPanel::~MoveToLayerCommandPanel()
 
 void MoveToLayerCommandPanel::handleCommandMessage(int commandId)
 {
-    const Array<PianoLayerTreeItem *> &layerItems =
-        this->project.findChildrenOfType<PianoLayerTreeItem>();
+    const Array<PianoTrackTreeItem *> &layerItems =
+        this->project.findChildrenOfType<PianoTrackTreeItem>();
     
     if (commandId >= CommandIDs::MoveEventsToLayer &&
         commandId <= (CommandIDs::MoveEventsToLayer + layerItems.size()))
@@ -90,8 +90,8 @@ void MoveToLayerCommandPanel::initLayersPanel(bool shouldAddBackButton)
         cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back")));
     }
     
-    const Array<PianoLayerTreeItem *> &layers =
-        this->project.findChildrenOfType<PianoLayerTreeItem>();
+    const Array<PianoTrackTreeItem *> &layers =
+        this->project.findChildrenOfType<PianoTrackTreeItem>();
     
     for (int i = 0; i < layers.size(); ++i)
     {

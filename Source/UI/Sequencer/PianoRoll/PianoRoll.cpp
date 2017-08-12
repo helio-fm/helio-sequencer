@@ -23,8 +23,8 @@
 #include "PianoLayer.h"
 #include "AutomationLayer.h"
 #include "AnnotationsLayer.h"
-#include "PianoLayerTreeItem.h"
-#include "AutomationLayerTreeItem.h"
+#include "PianoTrackTreeItem.h"
+#include "AutomationTrackTreeItem.h"
 #include "ProjectTreeItem.h"
 #include "ProjectTimeline.h"
 #include "Note.h"
@@ -663,7 +663,7 @@ XmlElement *PianoRoll::clipboardCopy() const
         }
 
         // and from all autos
-        const auto automations = this->project.findChildrenOfType<AutomationLayerTreeItem>(false);
+        const auto automations = this->project.findChildrenOfType<AutomationTrackTreeItem>(false);
         for (auto automation : automations)
         {
             MidiLayer *autoLayer = automation->getLayer();
@@ -729,7 +729,7 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
         {
             AutomationLayer *targetLayer = this->project.getLayerWithId<AutomationLayer>(layerId);
             const bool correspondingTreeItemExists =
-            (this->project.findChildByLayerId<AutomationLayerTreeItem>(layerId) != nullptr);
+            (this->project.findChildByLayerId<AutomationTrackTreeItem>(layerId) != nullptr);
             
             if (correspondingTreeItemExists)
             {
@@ -762,7 +762,7 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
         else
         {
             PianoLayer *targetLayer = this->project.getLayerWithId<PianoLayer>(layerId);
-            PianoLayerTreeItem *targetLayerItem = this->project.findChildByLayerId<PianoLayerTreeItem>(layerId);
+            PianoTrackTreeItem *targetLayerItem = this->project.findChildByLayerId<PianoTrackTreeItem>(layerId);
             // use primary layer, if target is not found or not selected
             const bool shouldUsePrimaryLayer = (targetLayerItem == nullptr) ? true : (!targetLayerItem->isSelected());
             

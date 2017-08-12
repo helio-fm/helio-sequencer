@@ -19,7 +19,7 @@
 
 #include "TreeItem.h"
 #include "ProjectEventDispatcher.h"
-
+#include "MidiTrack.h"
 #include "TrackedItem.h"
 #include "Delta.h"
 
@@ -28,21 +28,20 @@ class MidiLayer;
 class ProjectTreeItem;
 class InstrumentDescription;
 
-class MidiLayerTreeItem :
+class MidiTrackTreeItem :
     public TreeItem,
+	public MidiTrack,
     public ProjectEventDispatcher,
     public VCS::TrackedItem
 {
 public:
 
-    explicit MidiLayerTreeItem(const String &name);
+    explicit MidiTrackTreeItem(const String &name);
 
-    ~MidiLayerTreeItem() override;
+    ~MidiTrackTreeItem() override;
 
-	String getXPath() const;
+	String getXPath() const noexcept;
 	void setXPath(const String &path);
-
-    bool isMuted() const;
     Colour getColour() const override;
 
     void showPage() override;
@@ -63,6 +62,23 @@ public:
     String getVCSName() const override;
     XmlElement *serializeClipsDelta() const;
     void resetClipsDelta(const XmlElement *state);
+
+	//===------------------------------------------------------------------===//
+	// MidiTrack
+	//===------------------------------------------------------------------===//
+
+	String getTrackName() const noexcept override;
+	Colour getTrackColour() const noexcept override;
+	int getTrackChannel() const noexcept override;
+
+	String getTrackInstrumentId() const noexcept override;
+	int getTrackControllerNumber() const noexcept override;
+
+	bool isTrackMuted() const noexcept override;
+	bool isTrackSolo() const noexcept override;
+
+	MidiLayer *getLayer() const noexcept override;
+	Pattern *getPattern() const noexcept override;
 
     //===------------------------------------------------------------------===//
     // ProjectEventDispatcher
@@ -110,6 +126,17 @@ protected:
 
     ScopedPointer<Pattern> pattern;
     
+protected:
+
+	Colour colour;
+	int channel;
+
+	String instrumentId;
+	int controllerNumber;
+
+	bool mute;
+	bool solo;
+
 private:
 
     String getNameForRenamingCallback() const override

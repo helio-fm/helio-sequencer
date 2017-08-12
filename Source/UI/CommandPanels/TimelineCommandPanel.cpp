@@ -23,7 +23,7 @@
 #include "HybridRoll.h"
 #include "AnnotationEvent.h"
 #include "TimeSignatureEvent.h"
-#include "PianoLayerTreeItem.h"
+#include "PianoTrackTreeItem.h"
 #include "ProjectTimeline.h"
 #include "MidiLayer.h"
 #include "ModalDialogInput.h"

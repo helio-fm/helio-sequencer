@@ -17,8 +17,8 @@
 
 #include "Common.h"
 #include "LayerCommandPanel.h"
-#include "MidiLayerTreeItem.h"
-#include "PianoLayerTreeItem.h"
+#include "MidiTrackTreeItem.h"
+#include "PianoTrackTreeItem.h"
 #include "Icons.h"
 #include "CommandIDs.h"
 
@@ -31,8 +31,8 @@
 #include "ModalDialogInput.h"
 
 #include "MidiLayer.h"
-#include "PianoLayerTreeItem.h"
-#include "AutomationLayerTreeItem.h"
+#include "PianoTrackTreeItem.h"
+#include "AutomationTrackTreeItem.h"
 #include "PianoLayerTreeItemActions.h"
 #include "AutoLayerTreeItemActions.h"
 #include "LayerTreeItemActions.h"
@@ -42,7 +42,7 @@
 #include "Workspace.h"
 #include "App.h"
 
-LayerCommandPanel::LayerCommandPanel(MidiLayerTreeItem &parentLayer) :
+LayerCommandPanel::LayerCommandPanel(MidiTrackTreeItem &parentLayer) :
     layerItem(parentLayer)
 {
     this->initDefaultCommands();
@@ -134,11 +134,11 @@ void LayerCommandPanel::handleCommandMessage(int commandId)
             
             project->getUndoStack()->beginNewTransaction();
             
-            if (dynamic_cast<PianoLayerTreeItem *>(&this->layerItem))
+            if (dynamic_cast<PianoTrackTreeItem *>(&this->layerItem))
             {
                 project->getUndoStack()->perform(new PianoLayerTreeItemRemoveAction(*project, layerId));
             }
-            else if (dynamic_cast<AutomationLayerTreeItem *>(&this->layerItem))
+            else if (dynamic_cast<AutomationTrackTreeItem *>(&this->layerItem))
             {
                 project->getUndoStack()->perform(new AutoLayerTreeItemRemoveAction(*project, layerId));
             }
@@ -234,7 +234,7 @@ void LayerCommandPanel::initDefaultCommands()
     //    cmds.add(CommandItem::withParams(Icons::copy, DuplicateTo, TRANS("menu::layer::copytoproject"))->withSubmenu());
     //}
 
-    const bool canBeMuted = (dynamic_cast<PianoLayerTreeItem *>(&this->layerItem) != nullptr);
+    const bool canBeMuted = (dynamic_cast<PianoTrackTreeItem *>(&this->layerItem) != nullptr);
     
     if (canBeMuted)
     {

@@ -23,8 +23,8 @@
 #include "RenderDialog.h"
 #include "ModalDialogInput.h"
 #include "ModalDialogConfirmation.h"
-#include "PianoLayerTreeItem.h"
-#include "AutomationLayerTreeItem.h"
+#include "PianoTrackTreeItem.h"
+#include "AutomationTrackTreeItem.h"
 #include "AutomationLayer.h"
 #include "MainLayout.h"
 #include "AudioCore.h"
@@ -99,7 +99,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
         case CommandIDs::AddTempoController:
         {
             bool hasTempoTrack = false;
-            Array<AutomationLayerTreeItem *> autos = this->project.findChildrenOfType<AutomationLayerTreeItem>();
+            Array<AutomationTrackTreeItem *> autos = this->project.findChildrenOfType<AutomationTrackTreeItem>();
             
             for (auto i : autos)
             {
@@ -283,16 +283,16 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
         {
             Logger::writeToLog(instruments[instrumentIndex]->getIdAndHash());
             
-            const Array<MidiLayerTreeItem *> layers =
-            this->project.findChildrenOfType<MidiLayerTreeItem>();
+            const Array<MidiTrackTreeItem *> tracks =
+            this->project.findChildrenOfType<MidiTrackTreeItem>();
             
-            if (layers.size() > 0)
+            if (tracks.size() > 0)
             {
                 this->project.getUndoStack()->beginNewTransaction();
                 
-                for (auto layer : layers)
+                for (auto track : tracks)
                 {
-                    const String layerId = layer->getLayer()->getLayerIdAsString();
+                    const String layerId = track->getLayer()->getLayerIdAsString();
                     const String instrumentId = instruments[instrumentIndex]->getIdAndHash();
                     this->project.getUndoStack()->perform(new MidiLayerChangeInstrumentAction(this->project, layerId, instrumentId));
                 }
@@ -353,14 +353,14 @@ void ProjectCommandPanel::proceedToRenderDialog(const String &extension)
 
 String ProjectCommandPanel::createPianoLayerTempate(const String &name) const
 {
-    ScopedPointer<MidiLayerTreeItem> newItem = new PianoLayerTreeItem(name);
+    ScopedPointer<MidiTrackTreeItem> newItem = new PianoTrackTreeItem(name);
     ScopedPointer<XmlElement> parameters = newItem->serialize();
     return parameters->createDocument("", false, false, "UTF-8", 1024);
 }
 
 String ProjectCommandPanel::createAutoLayerTempate(const String &name, int controllerNumber, const String &instrumentId) const
 {
-    ScopedPointer<MidiLayerTreeItem> newItem = new AutomationLayerTreeItem(name);
+    ScopedPointer<MidiTrackTreeItem> newItem = new AutomationTrackTreeItem(name);
     AutomationLayer *itemLayer = static_cast<AutomationLayer *>(newItem->getLayer());
     
     itemLayer->setControllerNumber(controllerNumber);
@@ -387,7 +387,7 @@ void ProjectCommandPanel::initMainMenu(AnimationType animationType)
     cmds.add(CommandItem::withParams(Icons::render, CommandIDs::ProjectRenderMenu, TRANS("menu::project::render"))->withSubmenu());
 #endif
 
-    const Array<MidiLayerTreeItem *> &layers = this->project.findChildrenOfType<MidiLayerTreeItem>();
+    const Array<MidiTrackTreeItem *> &layers = this->project.findChildrenOfType<MidiTrackTreeItem>();
     const Array<Instrument *> &instruments = App::Workspace().getAudioCore().getInstruments();
     if (instruments.size() > 1 && layers.size() > 0)
     {

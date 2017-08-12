@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "AutoLayerTreeItemActions.h"
 #include "ProjectTreeItem.h"
-#include "AutomationLayerTreeItem.h"
+#include "AutomationTrackTreeItem.h"
 #include "TreeItem.h"
 #include "SerializationKeys.h"
 
@@ -38,7 +38,7 @@ AutoLayerTreeItemInsertAction::AutoLayerTreeItemInsertAction(ProjectTreeItem &pa
 
 bool AutoLayerTreeItemInsertAction::perform()
 {
-    MidiLayerTreeItem *layer = new AutomationLayerTreeItem("empty");
+    MidiTrackTreeItem *layer = new AutomationTrackTreeItem("empty");
     this->project.addChildTreeItem(layer);
     
     ScopedPointer<XmlElement> layerState = XmlDocument::parse(this->serializedState);
@@ -52,8 +52,8 @@ bool AutoLayerTreeItemInsertAction::perform()
 
 bool AutoLayerTreeItemInsertAction::undo()
 {
-    if (AutomationLayerTreeItem *treeItem =
-        this->project.findChildByLayerId<AutomationLayerTreeItem>(this->layerId))
+    if (AutomationTrackTreeItem *treeItem =
+        this->project.findChildByLayerId<AutomationTrackTreeItem>(this->layerId))
     {
         // here the item state should be the same as when it was created
         // so don't serialize anything again
@@ -106,8 +106,8 @@ AutoLayerTreeItemRemoveAction::AutoLayerTreeItemRemoveAction(ProjectTreeItem &pa
 
 bool AutoLayerTreeItemRemoveAction::perform()
 {
-    if (AutomationLayerTreeItem *treeItem =
-        this->project.findChildByLayerId<AutomationLayerTreeItem>(this->layerId))
+    if (AutomationTrackTreeItem *treeItem =
+        this->project.findChildByLayerId<AutomationTrackTreeItem>(this->layerId))
     {
         this->numEvents = treeItem->getLayer()->size();
         this->serializedTreeItem = treeItem->serialize();
@@ -122,7 +122,7 @@ bool AutoLayerTreeItemRemoveAction::undo()
 {
     if (this->serializedTreeItem != nullptr)
     {
-        MidiLayerTreeItem *layer = new AutomationLayerTreeItem("empty");
+        MidiTrackTreeItem *layer = new AutomationTrackTreeItem("empty");
         this->project.addChildTreeItem(layer);
         layer->deserialize(*this->serializedTreeItem);
         layer->onRename(this->xPath);

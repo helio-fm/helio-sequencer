@@ -147,7 +147,9 @@ private:
 	// sorted arrays:
 	Array<Pattern *> patterns;
 	Array<MidiLayer *> layers;
-	HashMap<const Pattern *, MidiLayer *, PatternHashFunction> links;
+
+	typedef HashMap<const Pattern *, MidiLayer *, PatternHashFunction> LinksMap;
+	LinksMap links;
 
     OwnedArray<ClipComponent> ghostClips;
     

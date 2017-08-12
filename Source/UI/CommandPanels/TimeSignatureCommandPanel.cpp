@@ -24,7 +24,7 @@
 #include "HybridRoll.h"
 #include "TimeSignatureEvent.h"
 #include "TimeSignaturesLayer.h"
-#include "PianoLayerTreeItem.h"
+#include "PianoTrackTreeItem.h"
 #include "ProjectTimeline.h"
 #include "MidiLayer.h"
 #include "App.h"

@@ -20,7 +20,7 @@
 class Note;
 class MidiEvent;
 class MidiLayer;
-class PianoLayerTreeItem;
+class PianoTrackTreeItem;
 
 #include "Diff.h"
 #include "DiffLogic.h"

@@ -18,11 +18,11 @@
 #include "Common.h"
 #include "TreeItemComponentDefault.h"
 #include "TreeItem.h"
-#include "MidiLayerTreeItem.h"
+#include "MidiTrackTreeItem.h"
 #include "ProjectTreeItem.h"
-#include "PianoLayerTreeItem.h"
-#include "AutomationLayerTreeItem.h"
-#include "LayerGroupTreeItem.h"
+#include "PianoTrackTreeItem.h"
+#include "AutomationTrackTreeItem.h"
+#include "TrackGroupTreeItem.h"
 #include "Icons.h"
 #include "TreeItemMarkerDefault.h"
 #include "TreeItemMenuButton.h"
@@ -60,7 +60,7 @@ TreeItemComponentDefault::TreeItemComponentDefault(TreeItem &i) :
     //this->addChildComponent(this->selectionFrame);
     
     // Component(); // TreeItemComponentFrame(); //TreeItemMarkerDefault();
-    const bool needsMarker = (nullptr != dynamic_cast<MidiLayerTreeItem *>(&this->item));
+    const bool needsMarker = (nullptr != dynamic_cast<MidiTrackTreeItem *>(&this->item));
     this->pageMarker = needsMarker ? new TreeItemMarkerDefault() : new Component();
     this->addChildComponent(this->pageMarker);
     
@@ -163,7 +163,7 @@ void TreeItemComponentDefault::paintText(Graphics &g, const Rectangle<float> &ar
     //    }
     //}
     
-    if (MidiLayerTreeItem *lti = dynamic_cast<MidiLayerTreeItem *>(&this->item))
+    if (MidiTrackTreeItem *lti = dynamic_cast<MidiTrackTreeItem *>(&this->item))
     {
         if (lti->isMuted())
         {

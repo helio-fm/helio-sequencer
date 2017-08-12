@@ -16,8 +16,8 @@
 */
 
 #include "Common.h"
-#include "MidiLayerTreeItem.h"
-#include "LayerGroupTreeItem.h"
+#include "MidiTrackTreeItem.h"
+#include "TrackGroupTreeItem.h"
 
 #include "TreeItemChildrenSerializer.h"
 #include "ProjectTreeItem.h"
@@ -37,8 +37,14 @@
 
 #include "LayerCommandPanel.h"
 
-MidiLayerTreeItem::MidiLayerTreeItem(const String &name) :
-    TreeItem(name)
+MidiTrackTreeItem::MidiTrackTreeItem(const String &name) :
+    TreeItem(name),
+	colour(Colours::white),
+	channel(1),
+	instrumentId(String::empty),
+	controllerNumber(0),
+	mute(false),
+	solo(false)
 {
     // есть связанный с этим открытый баг, когда это поле остается нулевым. отстой.
     this->lastFoundParent = this->findParentOfType<ProjectTreeItem>();
@@ -46,7 +52,7 @@ MidiLayerTreeItem::MidiLayerTreeItem(const String &name) :
     // т.к. при создании слой еще ни к кому не приаттачен
 }
 
-MidiLayerTreeItem::~MidiLayerTreeItem()
+MidiTrackTreeItem::~MidiTrackTreeItem()
 {
     this->lastFoundParent = this->findParentOfType<ProjectTreeItem>();
     
@@ -55,22 +61,16 @@ MidiLayerTreeItem::~MidiLayerTreeItem()
         this->removeItemFromParent();
         this->lastFoundParent->hideEditor(this->layer, this);
         this->lastFoundParent->broadcastRemoveTrack(this->layer, this->pattern);
-        LayerGroupTreeItem::removeAllEmptyGroupsInProject(this->lastFoundParent);
+        TrackGroupTreeItem::removeAllEmptyGroupsInProject(this->lastFoundParent);
     }
 }
 
-
-bool MidiLayerTreeItem::isMuted() const
+Colour MidiTrackTreeItem::getColour() const
 {
-    return this->getLayer()->isMuted();
+    return this->getColour().interpolatedWith(Colours::white, 0.4f);
 }
 
-Colour MidiLayerTreeItem::getColour() const
-{
-    return this->layer->getColour().interpolatedWith(Colours::white, 0.4f);
-}
-
-void MidiLayerTreeItem::showPage()
+void MidiTrackTreeItem::showPage()
 {
     if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
     {
@@ -78,7 +78,7 @@ void MidiLayerTreeItem::showPage()
     }
 }
 
-void MidiLayerTreeItem::onRename(const String &newName)
+void MidiTrackTreeItem::onRename(const String &newName)
 {
     String fixedName = newName.replace("\\", "/");
     
@@ -92,7 +92,7 @@ void MidiLayerTreeItem::onRename(const String &newName)
     TreeItem::notifySubtreeMoved(this); // сделать это default логикой для всех типов нодов?
 }
 
-void MidiLayerTreeItem::importMidi(const MidiMessageSequence &sequence)
+void MidiTrackTreeItem::importMidi(const MidiMessageSequence &sequence)
 {
     this->layer->importMidi(sequence);
 }
@@ -103,12 +103,12 @@ void MidiLayerTreeItem::importMidi(const MidiMessageSequence &sequence)
 // VCS::TrackedItem
 //===----------------------------------------------------------------------===//
 
-String MidiLayerTreeItem::getVCSName() const
+String MidiTrackTreeItem::getVCSName() const
 {
     return this->getXPath();
 }
 
-XmlElement *MidiLayerTreeItem::serializeClipsDelta() const
+XmlElement *MidiTrackTreeItem::serializeClipsDelta() const
 {
     auto xml = new XmlElement(PatternDeltas::clipsAdded);
 
@@ -121,7 +121,7 @@ XmlElement *MidiLayerTreeItem::serializeClipsDelta() const
     return xml;
 }
 
-void MidiLayerTreeItem::resetClipsDelta(const XmlElement *state)
+void MidiTrackTreeItem::resetClipsDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == PatternDeltas::clipsAdded);
 
@@ -136,12 +136,61 @@ void MidiLayerTreeItem::resetClipsDelta(const XmlElement *state)
     }
 }
 
+//===----------------------------------------------------------------------===//
+// MidiTrack
+//===----------------------------------------------------------------------===//
+
+String MidiTrackTreeItem::getTrackName() const noexcept
+{
+	return this->getXPath();
+}
+
+Colour MidiTrackTreeItem::getTrackColour() const noexcept
+{
+	return this->colour;
+}
+
+int MidiTrackTreeItem::getTrackChannel() const noexcept
+{
+	return this->channel;
+}
+
+String MidiTrackTreeItem::getTrackInstrumentId() const noexcept
+{
+	return this->instrumentId;
+}
+
+int MidiTrackTreeItem::getTrackControllerNumber() const noexcept
+{
+	return this->controllerNumber;
+}
+
+bool MidiTrackTreeItem::isTrackMuted() const noexcept
+{
+	return this->mute;
+}
+
+bool MidiTrackTreeItem::isTrackSolo() const noexcept
+{
+	return this->solo;
+}
+
+MidiLayer *MidiTrackTreeItem::getLayer() const noexcept
+{
+	return this->layer;
+}
+
+Pattern *MidiTrackTreeItem::getPattern() const noexcept
+{
+	return this->pattern;
+}
+
 
 //===----------------------------------------------------------------------===//
 // ProjectEventDispatcher
 //===----------------------------------------------------------------------===//
 
-String MidiLayerTreeItem::getXPath() const
+String MidiTrackTreeItem::getXPath() const noexcept
 {
     const TreeViewItem *rootItem = this;
     String xpath = this->getName();
@@ -160,15 +209,15 @@ String MidiLayerTreeItem::getXPath() const
     return xpath;
 }
 
-void MidiLayerTreeItem::setXPath(const String &path)
+void MidiTrackTreeItem::setXPath(const String &path)
 {
     if (path == this->getXPath())
     {
         return;
     }
     
-    // рассплитить путь и переместить себя в нужное место на дереве.
-    // если таких групп не существует - создать.
+	// Split path and move the item into a target place in a tree
+	// If no matching groups found, create them
 
     StringArray parts(StringArray::fromTokens(path, TreeItem::xPathSeparator, "'"));
 
@@ -183,7 +232,7 @@ void MidiLayerTreeItem::setXPath(const String &path)
 
         for (int j = 0; j < rootItem->getNumSubItems(); ++j)
         {
-            if (LayerGroupTreeItem *group = dynamic_cast<LayerGroupTreeItem *>(rootItem->getSubItem(j)))
+            if (TrackGroupTreeItem *group = dynamic_cast<TrackGroupTreeItem *>(rootItem->getSubItem(j)))
             {
                 if (group->getName() == parts[i])
                 {
@@ -196,7 +245,7 @@ void MidiLayerTreeItem::setXPath(const String &path)
 
         if (! foundSubGroup)
         {
-            auto group = new LayerGroupTreeItem(parts[i]);
+            auto group = new TrackGroupTreeItem(parts[i]);
             rootItem->addChildTreeItem(group);
             group->sortByNameAmongSiblings();
             rootItem = group;
@@ -220,11 +269,11 @@ void MidiLayerTreeItem::setXPath(const String &path)
     {
         String currentChildName;
 
-        if (LayerGroupTreeItem *layerGroupItem = dynamic_cast<LayerGroupTreeItem *>(rootItem->getSubItem(i)))
+        if (TrackGroupTreeItem *layerGroupItem = dynamic_cast<TrackGroupTreeItem *>(rootItem->getSubItem(i)))
         {
             currentChildName = layerGroupItem->getName();
         }
-        else if (MidiLayerTreeItem *layerItem = dynamic_cast<MidiLayerTreeItem *>(rootItem->getSubItem(i)))
+        else if (MidiTrackTreeItem *layerItem = dynamic_cast<MidiTrackTreeItem *>(rootItem->getSubItem(i)))
         {
             currentChildName = layerItem->getName();
         }
@@ -253,11 +302,11 @@ void MidiLayerTreeItem::setXPath(const String &path)
     // cleanup. убираем все пустые группы
     if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
     {
-        LayerGroupTreeItem::removeAllEmptyGroupsInProject(parentProject);
+        TrackGroupTreeItem::removeAllEmptyGroupsInProject(parentProject);
     }
 }
 
-void MidiLayerTreeItem::dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void MidiTrackTreeItem::dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     if (this->lastFoundParent != nullptr)
     {
@@ -265,7 +314,7 @@ void MidiLayerTreeItem::dispatchChangeEvent(const MidiEvent &oldEvent, const Mid
     }
 }
 
-void MidiLayerTreeItem::dispatchAddEvent(const MidiEvent &event)
+void MidiTrackTreeItem::dispatchAddEvent(const MidiEvent &event)
 {
     if (this->lastFoundParent != nullptr)
     {
@@ -273,7 +322,7 @@ void MidiLayerTreeItem::dispatchAddEvent(const MidiEvent &event)
     }
 }
 
-void MidiLayerTreeItem::dispatchRemoveEvent(const MidiEvent &event)
+void MidiTrackTreeItem::dispatchRemoveEvent(const MidiEvent &event)
 {
     if (this->lastFoundParent != nullptr)
     {
@@ -281,7 +330,7 @@ void MidiLayerTreeItem::dispatchRemoveEvent(const MidiEvent &event)
     }
 }
 
-void MidiLayerTreeItem::dispatchPostRemoveEvent(MidiLayer *const layer)
+void MidiTrackTreeItem::dispatchPostRemoveEvent(MidiLayer *const layer)
 {
 	jassert(layer == this->layer);
 	if (this->lastFoundParent != nullptr)
@@ -290,7 +339,7 @@ void MidiLayerTreeItem::dispatchPostRemoveEvent(MidiLayer *const layer)
     }
 }
 
-void MidiLayerTreeItem::dispatchReloadLayer(MidiLayer *const layer)
+void MidiTrackTreeItem::dispatchReloadLayer(MidiLayer *const layer)
 {
 	jassert(layer == this->layer);
 	if (this->lastFoundParent != nullptr)
@@ -300,7 +349,7 @@ void MidiLayerTreeItem::dispatchReloadLayer(MidiLayer *const layer)
     }
 }
 
-void MidiLayerTreeItem::dispatchChangeLayerBeatRange()
+void MidiTrackTreeItem::dispatchChangeLayerBeatRange()
 {
     if (this->lastFoundParent != nullptr)
     {
@@ -308,7 +357,7 @@ void MidiLayerTreeItem::dispatchChangeLayerBeatRange()
     }
 }
 
-void MidiLayerTreeItem::dispatchAddClip(const Clip &clip)
+void MidiTrackTreeItem::dispatchAddClip(const Clip &clip)
 {
 	if (this->lastFoundParent != nullptr)
 	{
@@ -316,7 +365,7 @@ void MidiLayerTreeItem::dispatchAddClip(const Clip &clip)
 	}
 }
 
-void MidiLayerTreeItem::dispatchChangeClip(const Clip &oldClip, const Clip &newClip)
+void MidiTrackTreeItem::dispatchChangeClip(const Clip &oldClip, const Clip &newClip)
 {
 	if (this->lastFoundParent != nullptr)
 	{
@@ -324,7 +373,7 @@ void MidiLayerTreeItem::dispatchChangeClip(const Clip &oldClip, const Clip &newC
 	}
 }
 
-void MidiLayerTreeItem::dispatchRemoveClip(const Clip &clip)
+void MidiTrackTreeItem::dispatchRemoveClip(const Clip &clip)
 {
 	if (this->lastFoundParent != nullptr)
 	{
@@ -332,7 +381,7 @@ void MidiLayerTreeItem::dispatchRemoveClip(const Clip &clip)
 	}
 }
 
-void MidiLayerTreeItem::dispatchPostRemoveClip(Pattern *const pattern)
+void MidiTrackTreeItem::dispatchPostRemoveClip(Pattern *const pattern)
 {
 	jassert(pattern == this->pattern);
 	if (this->lastFoundParent != nullptr)
@@ -341,7 +390,7 @@ void MidiLayerTreeItem::dispatchPostRemoveClip(Pattern *const pattern)
 	}
 }
 
-void MidiLayerTreeItem::dispatchReloadPattern(Pattern *const pattern)
+void MidiTrackTreeItem::dispatchReloadPattern(Pattern *const pattern)
 {
 	jassert(pattern == this->pattern);
 	if (this->lastFoundParent != nullptr)
@@ -350,7 +399,7 @@ void MidiLayerTreeItem::dispatchReloadPattern(Pattern *const pattern)
 	}
 }
 
-void MidiLayerTreeItem::dispatchChangePatternBeatRange()
+void MidiTrackTreeItem::dispatchChangePatternBeatRange()
 {
 	if (this->lastFoundParent != nullptr)
 	{
@@ -358,7 +407,7 @@ void MidiLayerTreeItem::dispatchChangePatternBeatRange()
 	}
 }
 
-ProjectTreeItem *MidiLayerTreeItem::getProject() const
+ProjectTreeItem *MidiTrackTreeItem::getProject() const
 {
     return this->lastFoundParent;
 }
@@ -368,7 +417,7 @@ ProjectTreeItem *MidiLayerTreeItem::getProject() const
 // Dragging
 //===----------------------------------------------------------------------===//
 
-var MidiLayerTreeItem::getDragSourceDescription()
+var MidiTrackTreeItem::getDragSourceDescription()
 {
     if (this->isCompactMode())
     { return var::null; }
@@ -376,7 +425,7 @@ var MidiLayerTreeItem::getDragSourceDescription()
     return Serialization::Core::layer;
 }
 
-void MidiLayerTreeItem::onItemMoved()
+void MidiTrackTreeItem::onItemMoved()
 {
     if (this->lastFoundParent)
     {
@@ -412,7 +461,7 @@ void MidiLayerTreeItem::onItemMoved()
     }
 }
 
-bool MidiLayerTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
+bool MidiTrackTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
     bool isInterested = (dragSourceDetails.description == Serialization::Core::instrument);
 
@@ -422,7 +471,7 @@ bool MidiLayerTreeItem::isInterestedInDragSource(const DragAndDropTarget::Source
     return isInterested;
 }
 
-void MidiLayerTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
+void MidiTrackTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
 {
     if (TreeView *treeView = dynamic_cast<TreeView *>(dragSourceDetails.sourceComponent.get()))
     {
@@ -442,7 +491,7 @@ void MidiLayerTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &drag
 // Menu
 //===----------------------------------------------------------------------===//
 
-Component *MidiLayerTreeItem::createItemMenu()
+Component *MidiTrackTreeItem::createItemMenu()
 {
     return new LayerCommandPanel(*this);
 }

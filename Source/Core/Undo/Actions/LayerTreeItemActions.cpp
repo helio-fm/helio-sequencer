@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "LayerTreeItemActions.h"
 #include "ProjectTreeItem.h"
-#include "MidiLayerTreeItem.h"
+#include "MidiTrackTreeItem.h"
 #include "TreeItem.h"
 
 //===----------------------------------------------------------------------===//
@@ -36,8 +36,8 @@ LayerTreeItemRenameAction::LayerTreeItemRenameAction(ProjectTreeItem &parentProj
 
 bool LayerTreeItemRenameAction::perform()
 {
-    if (MidiLayerTreeItem *treeItem =
-        this->project.findChildByLayerId<MidiLayerTreeItem>(this->layerId))
+    if (MidiTrackTreeItem *treeItem =
+        this->project.findChildByLayerId<MidiTrackTreeItem>(this->layerId))
     {
         this->xPathBefore = treeItem->getXPath();
         treeItem->onRename(this->xPathAfter);
@@ -49,8 +49,8 @@ bool LayerTreeItemRenameAction::perform()
 
 bool LayerTreeItemRenameAction::undo()
 {
-    if (MidiLayerTreeItem *treeItem =
-        this->project.findChildByLayerId<MidiLayerTreeItem>(this->layerId))
+    if (MidiTrackTreeItem *treeItem =
+        this->project.findChildByLayerId<MidiTrackTreeItem>(this->layerId))
     {
         treeItem->onRename(this->xPathBefore);
         return true;

@@ -580,8 +580,8 @@ void SequencerLayout::hideAutomationEditor(AutomationLayer *targetLayer)
 bool SequencerLayout::toggleShowAutomationEditor(AutomationLayer *targetLayer)
 {
 	// test rolls switching:
-	//this->rollContainer->startRollSwitchAnimation();
-	//return false;
+	this->rollContainer->startRollSwitchAnimation();
+	return false;
 
     const String &layerId = targetLayer->getLayerId().toString();
     

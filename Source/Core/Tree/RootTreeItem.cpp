@@ -21,9 +21,9 @@
 #include "TreeItemChildrenSerializer.h"
 #include "ProjectTreeItem.h"
 #include "VersionControlTreeItem.h"
-#include "LayerGroupTreeItem.h"
-#include "PianoLayerTreeItem.h"
-#include "AutomationLayerTreeItem.h"
+#include "TrackGroupTreeItem.h"
+#include "PianoTrackTreeItem.h"
+#include "AutomationTrackTreeItem.h"
 #include "WorkspacePage.h"
 #include "MainLayout.h"
 #include "DataEncoder.h"
@@ -112,7 +112,7 @@ void RootTreeItem::importMidi(File &file)
     {
         const MidiMessageSequence *currentTrack = tempFile.getTrack(trackNum);
         String trackName = "Track " + String(trackNum);
-        MidiLayerTreeItem *layer = this->addPianoLayer(project, trackName);
+        MidiTrackTreeItem *layer = this->addPianoLayer(project, trackName);
         layer->importMidi(*currentTrack);
     }
 
@@ -280,23 +280,23 @@ VersionControlTreeItem *RootTreeItem::addVCS(TreeItem *parent)
     return vcs;
 }
 
-LayerGroupTreeItem *RootTreeItem::addGroup(TreeItem *parent, const String &name)
+TrackGroupTreeItem *RootTreeItem::addGroup(TreeItem *parent, const String &name)
 {
-    auto group = new LayerGroupTreeItem(name);
+    auto group = new TrackGroupTreeItem(name);
     parent->addChildTreeItem(group);
     return group;
 }
 
-MidiLayerTreeItem *RootTreeItem::addPianoLayer(TreeItem *parent, const String &name)
+MidiTrackTreeItem *RootTreeItem::addPianoLayer(TreeItem *parent, const String &name)
 {
-    MidiLayerTreeItem *item = new PianoLayerTreeItem(name);
+    MidiTrackTreeItem *item = new PianoTrackTreeItem(name);
     parent->addChildTreeItem(item);
     return item;
 }
 
-MidiLayerTreeItem *RootTreeItem::addAutoLayer(TreeItem *parent, const String &name, int controllerNumber)
+MidiTrackTreeItem *RootTreeItem::addAutoLayer(TreeItem *parent, const String &name, int controllerNumber)
 {
-    MidiLayerTreeItem *item = new AutomationLayerTreeItem(name);
+    MidiTrackTreeItem *item = new AutomationTrackTreeItem(name);
     AutomationLayer *itemLayer = static_cast<AutomationLayer *>(item->getLayer());
     parent->addChildTreeItem(item);
     itemLayer->setControllerNumber(controllerNumber);

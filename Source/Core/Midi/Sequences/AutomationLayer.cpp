@@ -21,7 +21,7 @@
 
 #include "ProjectTreeItem.h"
 #include "ProjectListener.h"
-#include "MidiLayerTreeItem.h"
+#include "MidiTrackTreeItem.h"
 #include "UndoStack.h"
 
 

@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "AutomationLayerDiffLogic.h"
-#include "AutomationLayerTreeItem.h"
+#include "AutomationTrackTreeItem.h"
 #include "AutoLayerDeltas.h"
 #include "PatternDiffLogic.h"
 #include "AutomationEvent.h"

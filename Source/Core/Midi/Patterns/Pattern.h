@@ -29,7 +29,9 @@ class Pattern : public Serializable
 {
 public:
 
-    explicit Pattern(ProjectEventDispatcher &parent);
+	explicit Pattern(MidiTrack &parentTrack,
+		ProjectEventDispatcher &eventDispatcher);
+
     ~Pattern() override;
     
     //===------------------------------------------------------------------===//
@@ -126,7 +128,8 @@ protected:
 
 private:
 	
-    ProjectEventDispatcher &owner;
+	MidiTrack &track;
+	ProjectEventDispatcher &eventDispatcher;
 
 private:
     

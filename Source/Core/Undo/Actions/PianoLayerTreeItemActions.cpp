@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "PianoLayerTreeItemActions.h"
 #include "ProjectTreeItem.h"
-#include "PianoLayerTreeItem.h"
+#include "PianoTrackTreeItem.h"
 #include "TreeItem.h"
 #include "SerializationKeys.h"
 
@@ -38,7 +38,7 @@ PianoLayerTreeItemInsertAction::PianoLayerTreeItemInsertAction(ProjectTreeItem &
 
 bool PianoLayerTreeItemInsertAction::perform()
 {
-    MidiLayerTreeItem *layer = new PianoLayerTreeItem("empty");
+    MidiTrackTreeItem *layer = new PianoTrackTreeItem("empty");
     this->project.addChildTreeItem(layer);
     
     ScopedPointer<XmlElement> layerState = XmlDocument::parse(this->serializedState);
@@ -52,7 +52,7 @@ bool PianoLayerTreeItemInsertAction::perform()
 
 bool PianoLayerTreeItemInsertAction::undo()
 {
-    if (PianoLayerTreeItem *treeItem = this->project.findChildByLayerId<PianoLayerTreeItem>(this->layerId))
+    if (PianoTrackTreeItem *treeItem = this->project.findChildByLayerId<PianoTrackTreeItem>(this->layerId))
     {
         // here the item state should be the same as when it was created
         // so don't serialize anything again
@@ -105,7 +105,7 @@ PianoLayerTreeItemRemoveAction::PianoLayerTreeItemRemoveAction(ProjectTreeItem &
 
 bool PianoLayerTreeItemRemoveAction::perform()
 {
-    if (PianoLayerTreeItem *treeItem = this->project.findChildByLayerId<PianoLayerTreeItem>(this->layerId))
+    if (PianoTrackTreeItem *treeItem = this->project.findChildByLayerId<PianoTrackTreeItem>(this->layerId))
     {
         this->numEvents = treeItem->getLayer()->size();
         this->serializedTreeItem = treeItem->serialize();
@@ -120,7 +120,7 @@ bool PianoLayerTreeItemRemoveAction::undo()
 {
     if (this->serializedTreeItem != nullptr)
     {
-        MidiLayerTreeItem *layer = new PianoLayerTreeItem("empty");
+        MidiTrackTreeItem *layer = new PianoTrackTreeItem("empty");
         this->project.addChildTreeItem(layer);
         layer->deserialize(*this->serializedTreeItem);
         layer->onRename(this->xPath);

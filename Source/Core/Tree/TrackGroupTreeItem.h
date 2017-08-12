@@ -20,15 +20,15 @@
 #include "TreeItem.h"
 
 class ProjectTreeItem;
-class MidiLayerTreeItem;
+class MidiTrackTreeItem;
 
-class LayerGroupTreeItem : public TreeItem
+class TrackGroupTreeItem : public TreeItem
 {
 public:
 
-    explicit LayerGroupTreeItem(const String &name_);
+    explicit TrackGroupTreeItem(const String &name_);
 
-    ~LayerGroupTreeItem() override;
+    ~TrackGroupTreeItem() override;
 
     static void removeAllEmptyGroupsInProject(ProjectTreeItem *project); // sanitize the tree
     

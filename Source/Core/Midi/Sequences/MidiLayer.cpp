@@ -26,17 +26,14 @@
 #include "MidiLayerActions.h"
 #include "UndoStack.h"
 
-MidiLayer::MidiLayer(ProjectEventDispatcher &parent) :
-    owner(parent),
-    colour(Colours::white),
-    channel(1),
-    muted(false),
-    cachedSequence(),
-    lastStartBeat(0.f),
-    cacheIsOutdated(false),
-    lastEndBeat(0.f),
-    instrumentId(String::empty),
-    controllerNumber(0)
+MidiLayer::MidiLayer(MidiTrack &parentTrack,
+	ProjectEventDispatcher &dispatcher) :
+	track(parentTrack),
+	eventDispatcher(dispatcher),
+	lastStartBeat(0.f),
+	lastEndBeat(0.f),
+	cachedSequence(),
+    cacheIsOutdated(false)
 {
 }
 
@@ -119,7 +116,7 @@ void MidiLayer::clearUndoHistory()
 
 MidiMessageSequence MidiLayer::exportMidi() const
 {
-    if (this->isMuted())
+    if (this->track.isTrackMuted())
     {
         return MidiMessageSequence();
     }
@@ -175,46 +172,14 @@ float MidiLayer::getLastBeat() const
 
 float MidiLayer::getLengthInBeats() const
 {
+	if (this->midiEvents.size() == 0)
+	{
+		return 0;
+	}
+
 	return this->getLastBeat() - this->getFirstBeat();
 }
 
-int MidiLayer::getChannel() const
-{
-    return this->channel;
-}
-
-void MidiLayer::setChannel(int val)
-{
-    this->cacheIsOutdated = true;
-    this->channel = val;
-}
-
-Colour MidiLayer::getColour() const
-{
-    return this->colour;
-}
-
-void MidiLayer::setColour(Colour val)
-{
-    if (this->colour != val)
-    {
-        this->colour = val;
-    }
-}
-
-bool MidiLayer::isMuted() const
-{
-    return this->muted;
-}
-
-void MidiLayer::setMuted(bool shouldBeMuted)
-{
-    if (this->muted != shouldBeMuted)
-    {
-        this->muted = shouldBeMuted;
-        this->owner.dispatchReloadLayer(this);
-    }
-}
 
 String MidiLayer::getMuteStateAsString() const
 {
@@ -228,12 +193,12 @@ bool MidiLayer::isMuted(const String &muteState)
 
 ProjectTreeItem *MidiLayer::getProject()
 {
-    return this->owner.getProject();
+    return this->eventDispatcher.getProject();
 }
 
 UndoStack *MidiLayer::getUndoStack()
 {
-    return this->owner.getProject()->getUndoStack();
+    return this->eventDispatcher.getProject()->getUndoStack();
 }
 
 
@@ -244,37 +209,37 @@ UndoStack *MidiLayer::getUndoStack()
 void MidiLayer::notifyEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     this->cacheIsOutdated = true;
-    this->owner.dispatchChangeEvent(oldEvent, newEvent);
+    this->eventDispatcher.dispatchChangeEvent(oldEvent, newEvent);
 }
 
 void MidiLayer::notifyEventAdded(const MidiEvent &event)
 {
     this->cacheIsOutdated = true;
-    this->owner.dispatchAddEvent(event);
+    this->eventDispatcher.dispatchAddEvent(event);
 }
 
 void MidiLayer::notifyEventRemoved(const MidiEvent &event)
 {
     this->cacheIsOutdated = true;
-    this->owner.dispatchRemoveEvent(event);
+    this->eventDispatcher.dispatchRemoveEvent(event);
 }
 
 void MidiLayer::notifyEventRemovedPostAction()
 {
     this->cacheIsOutdated = true;
-    this->owner.dispatchPostRemoveEvent(this);
+    this->eventDispatcher.dispatchPostRemoveEvent(this);
 }
 
 void MidiLayer::notifyLayerChanged()
 {
     this->cacheIsOutdated = true;
-    this->owner.dispatchReloadLayer(this);
+    this->eventDispatcher.dispatchReloadLayer(this);
 }
 
 void MidiLayer::notifyBeatRangeChanged()
 {
     //this->cacheIsOutdated = true;
-    this->owner.dispatchChangeLayerBeatRange();
+    this->eventDispatcher.dispatchChangeLayerBeatRange();
 }
 
 void MidiLayer::updateBeatRange(bool shouldNotifyIfChanged)
@@ -300,23 +265,36 @@ void MidiLayer::updateBeatRange(bool shouldNotifyIfChanged)
 //    this->owner.getTransport()->sendMidiMessage(this->getLayerId().toString(), message);
 //}
 
+void MidiLayer::setChannel(int val)
+{
+	this->cacheIsOutdated = true;
+	this->channel = val;
+}
+
+void MidiLayer::setColour(Colour val)
+{
+	if (this->colour != val)
+	{
+		this->colour = val;
+	}
+}
+
+void MidiLayer::setMuted(bool shouldBeMuted)
+{
+	if (this->muted != shouldBeMuted)
+	{
+		this->muted = shouldBeMuted;
+		this->eventDispatcher.dispatchReloadLayer(this);
+	}
+}
+
 void MidiLayer::setInstrumentId(const String &val)
 {
     if (this->instrumentId != val)
     {
         this->instrumentId = val;
-        this->owner.dispatchReloadLayer(this);
+        this->eventDispatcher.dispatchReloadLayer(this);
     }
-}
-
-String MidiLayer::getInstrumentId() const noexcept
-{
-    return this->instrumentId;
-}
-
-int MidiLayer::getControllerNumber() const noexcept
-{
-    return this->controllerNumber;
 }
 
 void MidiLayer::setControllerNumber(int val)
@@ -327,39 +305,6 @@ void MidiLayer::setControllerNumber(int val)
     }
 }
 
-bool MidiLayer::isTempoLayer() const noexcept
-{
-    return (this->controllerNumber == MidiLayer::tempoController);
-}
-
-bool MidiLayer::isSustainPedalLayer() const noexcept
-{
-    return (this->controllerNumber == MidiLayer::sustainPedalController);
-}
-
-bool MidiLayer::isOnOffLayer() const noexcept
-{
-    // hardcoded -_-
-    return (this->controllerNumber >= 64 &&
-            this->controllerNumber <= 69);
-}
-
-
-Uuid MidiLayer::getLayerId() const noexcept
-{
-    return this->layerId;
-}
-
-String MidiLayer::getLayerIdAsString() const
-{
-    return this->layerId.toString();
-}
-
-void MidiLayer::setLayerId(const String &id)
-{
-    this->layerId = Uuid(id);
-}
-
 //===----------------------------------------------------------------------===//
 // Helpers
 //===----------------------------------------------------------------------===//
@@ -367,14 +312,12 @@ void MidiLayer::setLayerId(const String &id)
 int MidiLayer::compareElements(const MidiLayer *first, const MidiLayer *second)
 {
 	// Compare by names?
-	if (first == second ||
-		first->layerId == second->layerId)
+	if (first == second)
 	{
 		return 0;
 	}
 
-	// TODO sorting them the right way
-	return 0;
+	return first->track->getTrackName().compare(second->track->getTrackName());
 }
 
 int MidiLayer::hashCode() const noexcept

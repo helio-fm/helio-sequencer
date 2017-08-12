@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "PianoLayerDiffLogic.h"
-#include "PianoLayerTreeItem.h"
+#include "PianoTrackTreeItem.h"
 #include "PianoLayerDeltas.h"
 #include "PatternDiffLogic.h"
 #include "Note.h"

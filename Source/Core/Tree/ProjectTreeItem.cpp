@@ -20,9 +20,9 @@
 
 #include "TreeItemChildrenSerializer.h"
 #include "RootTreeItem.h"
-#include "LayerGroupTreeItem.h"
-#include "PianoLayerTreeItem.h"
-#include "AutomationLayerTreeItem.h"
+#include "TrackGroupTreeItem.h"
+#include "PianoTrackTreeItem.h"
+#include "AutomationTrackTreeItem.h"
 #include "MainLayout.h"
 #include "Document.h"
 #include "ProjectListener.h"
@@ -167,7 +167,7 @@ String ProjectTreeItem::getId() const
 
 String ProjectTreeItem::getStats() const
 {
-    Array<MidiLayerTreeItem *> layerItems(this->findChildrenOfType<MidiLayerTreeItem>());
+    Array<MidiTrackTreeItem *> layerItems(this->findChildrenOfType<MidiTrackTreeItem>());
     
     int numEvents = 0;
     int numLayers = layerItems.size();
@@ -326,7 +326,7 @@ void ProjectTreeItem::showEditor(MidiLayer *activeLayer, TreeItem *source)
     if (PianoLayer *pianoLayer = dynamic_cast<PianoLayer *>(activeLayer))
     {
         // todo collect selected pianotreeitems
-        Array<PianoLayerTreeItem *> pianoTreeItems = this->findChildrenOfType<PianoLayerTreeItem>(true);
+        Array<PianoTrackTreeItem *> pianoTreeItems = this->findChildrenOfType<PianoTrackTreeItem>(true);
         Array<MidiLayer *> pianoLayers;
 
         for (int i = 0; i < pianoTreeItems.size(); ++i)
@@ -429,11 +429,11 @@ void ProjectTreeItem::showEditorsGroup(Array<MidiLayer *> layersGroup, TreeItem 
 
 void ProjectTreeItem::updateActiveGroupEditors()
 {
-    Array<LayerGroupTreeItem *> myGroups(this->findChildrenOfType<LayerGroupTreeItem>());
+    Array<TrackGroupTreeItem *> myGroups(this->findChildrenOfType<TrackGroupTreeItem>());
 
     for (int i = 0; i < myGroups.size(); ++i)
     {
-        LayerGroupTreeItem *group = myGroups.getUnchecked(i);
+        TrackGroupTreeItem *group = myGroups.getUnchecked(i);
 
         if (group->isMarkerVisible())
         {
@@ -447,17 +447,17 @@ void ProjectTreeItem::activateLayer(MidiLayer* layer, bool selectOthers, bool de
 {
 	if (selectOthers)
 	{
-		if (PianoLayerTreeItem *item =
-			this->findChildByLayerId<PianoLayerTreeItem>(layer->getLayerIdAsString()))
+		if (PianoTrackTreeItem *item =
+			this->findChildByLayerId<PianoTrackTreeItem>(layer->getLayerIdAsString()))
 		{
-			PianoLayerTreeItem::selectAllPianoSiblings(item);
+			PianoTrackTreeItem::selectAllPianoSiblings(item);
 			return;
 		}
 	}
 	else
 	{
-		if (PianoLayerTreeItem *item =
-			this->findChildByLayerId<PianoLayerTreeItem>(layer->getLayerIdAsString()))
+		if (PianoTrackTreeItem *item =
+			this->findChildByLayerId<PianoTrackTreeItem>(layer->getLayerIdAsString()))
 		{
 			item->setSelected(false, false);
 			item->setSelected(true, deselectOthers);
@@ -565,7 +565,7 @@ Array<MidiLayer *> ProjectTreeItem::getSelectedLayersList() const
 
 void ProjectTreeItem::collectLayers(Array<MidiLayer *> &resultArray, bool onlySelectedLayers) const
 {
-    Array<MidiLayerTreeItem *> layerItems = this->findChildrenOfType<MidiLayerTreeItem>();
+    Array<MidiTrackTreeItem *> layerItems = this->findChildrenOfType<MidiTrackTreeItem>();
     
     for (int i = 0; i < layerItems.size(); ++i)
     {
@@ -751,7 +751,7 @@ void ProjectTreeItem::importMidi(File &file)
     {
         const MidiMessageSequence *currentTrack = tempFile.getTrack(trackNum);
         const String trackName = "Track " + String(trackNum);
-        MidiLayerTreeItem *layer = new PianoLayerTreeItem(trackName);
+        MidiTrackTreeItem *layer = new PianoTrackTreeItem(trackName);
         this->addChildTreeItem(layer);
         layer->importMidi(*currentTrack);
     }
@@ -986,14 +986,14 @@ VCS::TrackedItem *ProjectTreeItem::initTrackedItem(const String &type, const Uui
 {
     if (type == Serialization::Core::pianoLayer)
     {
-        MidiLayerTreeItem *layer = new PianoLayerTreeItem("empty");
+        MidiTrackTreeItem *layer = new PianoTrackTreeItem("empty");
         layer->setVCSUuid(id);
         this->addChildTreeItem(layer);
         return layer;
     }
     if (type == Serialization::Core::autoLayer)
     {
-        MidiLayerTreeItem *layer = new AutomationLayerTreeItem("empty");
+        MidiTrackTreeItem *layer = new AutomationTrackTreeItem("empty");
         layer->setVCSUuid(id);
         this->addChildTreeItem(layer);
         return layer;
@@ -1014,7 +1014,7 @@ VCS::TrackedItem *ProjectTreeItem::initTrackedItem(const String &type, const Uui
 
 bool ProjectTreeItem::deleteTrackedItem(VCS::TrackedItem *item)
 {
-    if (dynamic_cast<MidiLayerTreeItem *>(item))
+    if (dynamic_cast<MidiTrackTreeItem *>(item))
     {
         delete item;
     }
@@ -1050,8 +1050,8 @@ void ProjectTreeItem::changeListenerCallback(ChangeBroadcaster *source)
 
 void ProjectTreeItem::registerVcsItem(const MidiLayer *layer)
 {
-	const auto children = this->findChildrenOfType<MidiLayerTreeItem>();
-	for (MidiLayerTreeItem *item : children)
+	const auto children = this->findChildrenOfType<MidiTrackTreeItem>();
+	for (MidiTrackTreeItem *item : children)
 	{
 		if (item->getLayer() == layer)
 		{
@@ -1063,8 +1063,8 @@ void ProjectTreeItem::registerVcsItem(const MidiLayer *layer)
 
 void ProjectTreeItem::registerVcsItem(const Pattern *pattern)
 {
-    const auto children = this->findChildrenOfType<MidiLayerTreeItem>();
-    for (MidiLayerTreeItem *item : children)
+    const auto children = this->findChildrenOfType<MidiTrackTreeItem>();
+    for (MidiTrackTreeItem *item : children)
     {
         if (item->getPattern() == pattern)
         {
@@ -1076,8 +1076,8 @@ void ProjectTreeItem::registerVcsItem(const Pattern *pattern)
 
 void ProjectTreeItem::unregisterVcsItem(const MidiLayer *layer)
 {
-	const auto children = this->findChildrenOfType<MidiLayerTreeItem>();
-	for (MidiLayerTreeItem *item : children)
+	const auto children = this->findChildrenOfType<MidiTrackTreeItem>();
+	for (MidiTrackTreeItem *item : children)
 	{
 		if (item->getLayer() == layer)
 		{
@@ -1090,8 +1090,8 @@ void ProjectTreeItem::unregisterVcsItem(const MidiLayer *layer)
 
 void ProjectTreeItem::unregisterVcsItem(const Pattern *pattern)
 {
-    const auto children = this->findChildrenOfType<MidiLayerTreeItem>();
-    for (MidiLayerTreeItem *item : children)
+    const auto children = this->findChildrenOfType<MidiTrackTreeItem>();
+    for (MidiTrackTreeItem *item : children)
     {
         if (item->getPattern() == pattern)
         {
@@ -1109,7 +1109,7 @@ void ProjectTreeItem::rebuildLayersHashIfNeeded()
         this->layersHash.set(this->timeline->getAnnotations()->getLayerIdAsString(), this->timeline->getAnnotations());
         this->layersHash.set(this->timeline->getTimeSignatures()->getLayerIdAsString(), this->timeline->getTimeSignatures());
         
-        Array<MidiLayerTreeItem *> children = this->findChildrenOfType<MidiLayerTreeItem>();
+        Array<MidiTrackTreeItem *> children = this->findChildrenOfType<MidiTrackTreeItem>();
         
         for (int i = 0; i < children.size(); ++i)
         {

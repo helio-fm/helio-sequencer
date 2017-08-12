@@ -17,19 +17,18 @@
 
 #pragma once
 
-#include "AutomationLayerDiffLogic.h"
-#include "MidiLayerTreeItem.h"
+#include "PianoLayerDiffLogic.h"
+#include "MidiTrackTreeItem.h"
 
-class AutomationLayerTreeItem : public MidiLayerTreeItem
+class PianoTrackTreeItem : public MidiTrackTreeItem
 {
 public:
 
-    explicit AutomationLayerTreeItem(const String &name);
+    explicit PianoTrackTreeItem(const String &name);
 
     Image getIcon() const override;
 
-    void paintItem(Graphics &g, int width, int height) override;
-    
+    static void selectAllPianoSiblings(PianoTrackTreeItem *layerItem);
 
     //===------------------------------------------------------------------===//
     // VCS::TrackedItem
@@ -67,8 +66,6 @@ public:
 
     XmlElement *serializeInstrumentDelta() const;
 
-    XmlElement *serializeControllerDelta() const;
-
     XmlElement *serializeEventsDelta() const;
 
     void resetPathDelta(const XmlElement *state);
@@ -79,13 +76,12 @@ public:
 
     void resetInstrumentDelta(const XmlElement *state);
 
-    void resetControllerDelta(const XmlElement *state);
-
     void resetEventsDelta(const XmlElement *state);
+
 
 private:
 
-    ScopedPointer<VCS::AutomationLayerDiffLogic> vcsDiffLogic;
+    ScopedPointer<VCS::PianoLayerDiffLogic> vcsDiffLogic;
 
     OwnedArray<VCS::Delta> deltas;
 

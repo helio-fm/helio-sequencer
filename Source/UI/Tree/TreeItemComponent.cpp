@@ -21,9 +21,9 @@
 #include "TreePanel.h"
 #include "PanelBackgroundC.h"
 #include "ProjectTreeItem.h"
-#include "PianoLayerTreeItem.h"
-#include "AutomationLayerTreeItem.h"
-#include "LayerGroupTreeItem.h"
+#include "PianoTrackTreeItem.h"
+#include "AutomationTrackTreeItem.h"
+#include "TrackGroupTreeItem.h"
 #include "Icons.h"
 #include "HelioTheme.h"
 #include "HelioCallout.h"
@@ -96,11 +96,11 @@ void TreeItemComponent::setSelected(bool shouldBeSelected)
     
     // multiple selection stuff
     const bool isShiftPressed = Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown();
-    const bool canBeAddedToSelection = (dynamic_cast<MidiLayerTreeItem *>(&this->item) != nullptr ||
-                                        dynamic_cast<LayerGroupTreeItem *>(&this->item) != nullptr);
+    const bool canBeAddedToSelection = (dynamic_cast<MidiTrackTreeItem *>(&this->item) != nullptr ||
+                                        dynamic_cast<TrackGroupTreeItem *>(&this->item) != nullptr);
     
     const Array<TreeItem *>selection = this->item.getRootTreeItem()->findSelectedSubItems();
-    const bool selectionContainsOnlyLayersAndGroups = checkIfAllItemsAreTypeOf<MidiLayerTreeItem, LayerGroupTreeItem>(selection);
+    const bool selectionContainsOnlyLayersAndGroups = checkIfAllItemsAreTypeOf<MidiTrackTreeItem, TrackGroupTreeItem>(selection);
     
     const bool isAlreadySelected = this->item.isSelected() || this->item.isMarkerVisible();
     const bool shouldAddToSelection = (isShiftPressed && selectionContainsOnlyLayersAndGroups);
@@ -108,7 +108,7 @@ void TreeItemComponent::setSelected(bool shouldBeSelected)
     TreeItem *activeItem = TreeItem::getActiveItem<TreeItem>(this->item.getRootTreeItem());
     const bool belongToDifferentProjects = (activeItem != nullptr) ? (activeItem->findParentOfType<ProjectTreeItem>() != this->item.findParentOfType<ProjectTreeItem>()) : true;
     
-    const bool forbidsDeselectingOthers = (dynamic_cast<AutomationLayerTreeItem *>(&this->item) != nullptr);
+    const bool forbidsDeselectingOthers = (dynamic_cast<AutomationTrackTreeItem *>(&this->item) != nullptr);
     
     const bool willDeselectOthers =
                                     (
@@ -171,9 +171,9 @@ void TreeItemComponent::handleCommandMessage(int commandId)
 
 void TreeItemComponent::mouseDoubleClick(const MouseEvent &event)
 {
-    if (PianoLayerTreeItem *layerItem = dynamic_cast<PianoLayerTreeItem *>(&this->item))
+    if (PianoTrackTreeItem *layerItem = dynamic_cast<PianoTrackTreeItem *>(&this->item))
     {
-        PianoLayerTreeItem::selectAllPianoSiblings(layerItem);
+        PianoTrackTreeItem::selectAllPianoSiblings(layerItem);
         
         // or show rename dialog?
         //if (TreePanel *panel = layerItem->findParentTreePanel())
@@ -187,9 +187,9 @@ void TreeItemComponent::mouseDown(const MouseEvent &event)
 {
     if (event.mods.isRightButtonDown())
     {
-        if (PianoLayerTreeItem *layerItem = dynamic_cast<PianoLayerTreeItem *>(&this->item))
+        if (PianoTrackTreeItem *layerItem = dynamic_cast<PianoTrackTreeItem *>(&this->item))
         {
-            PianoLayerTreeItem::selectAllPianoSiblings(layerItem);
+            PianoTrackTreeItem::selectAllPianoSiblings(layerItem);
             return;
         }
     }

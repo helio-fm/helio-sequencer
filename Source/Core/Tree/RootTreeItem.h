@@ -21,8 +21,8 @@
 
 class ProjectTreeItem;
 class VersionControlTreeItem;
-class LayerGroupTreeItem;
-class MidiLayerTreeItem;
+class TrackGroupTreeItem;
+class MidiTrackTreeItem;
 class ScriptTreeItem;
 class WorkspacePage;
 
@@ -62,9 +62,9 @@ public:
     ProjectTreeItem *createDefaultProjectChildren(ProjectTreeItem *newProject);
 
     VersionControlTreeItem *addVCS(TreeItem *parent);
-    LayerGroupTreeItem *addGroup(TreeItem *parent, const String &name);
-    MidiLayerTreeItem *addPianoLayer(TreeItem *parent, const String &name);
-    MidiLayerTreeItem *addAutoLayer(TreeItem *parent, const String &name, int controllerNumber);
+    TrackGroupTreeItem *addGroup(TreeItem *parent, const String &name);
+    MidiTrackTreeItem *addPianoLayer(TreeItem *parent, const String &name);
+    MidiTrackTreeItem *addAutoLayer(TreeItem *parent, const String &name, int controllerNumber);
     ScriptTreeItem *addScript(TreeItem *parent, const String &path);
 
 
