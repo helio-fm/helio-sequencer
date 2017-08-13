@@ -34,9 +34,9 @@
 
 #include "SequencerLayout.h"
 #include "MidiEvent.h"
-#include "MidiLayer.h"
-#include "PianoLayer.h"
-#include "AutomationLayer.h"
+#include "MidiSequence.h"
+#include "PianoSequence.h"
+#include "AutomationSequence.h"
 #include "Icons.h"
 #include "ProjectInfo.h"
 #include "ProjectTimeline.h"
@@ -174,7 +174,7 @@ String ProjectTreeItem::getStats() const
 
     for (int i = 0; i < numLayers; ++i)
     {
-        numEvents += layerItems[i]->getLayer()->size();
+        numEvents += layerItems[i]->getSequence()->size();
     }
 
     return String(TRANS_PLURAL("{x} layers", numLayers) + " " + TRANS("common::and") + " " + TRANS_PLURAL("{x} events", numEvents));
@@ -321,17 +321,17 @@ void ProjectTreeItem::loadPageState()
     }
 }
 
-void ProjectTreeItem::showEditor(MidiLayer *activeLayer, TreeItem *source)
+void ProjectTreeItem::showEditor(MidiSequence *activeLayer, TreeItem *source)
 {
-    if (PianoLayer *pianoLayer = dynamic_cast<PianoLayer *>(activeLayer))
+    if (PianoSequence *pianoLayer = dynamic_cast<PianoSequence *>(activeLayer))
     {
         // todo collect selected pianotreeitems
         Array<PianoTrackTreeItem *> pianoTreeItems = this->findChildrenOfType<PianoTrackTreeItem>(true);
-        Array<MidiLayer *> pianoLayers;
+        Array<MidiSequence *> pianoLayers;
 
         for (int i = 0; i < pianoTreeItems.size(); ++i)
         {
-            pianoLayers.add(pianoTreeItems.getUnchecked(i)->getLayer());
+            pianoLayers.add(pianoTreeItems.getUnchecked(i)->getSequence());
         }
         
         this->editor->setActiveMidiLayers(pianoLayers, activeLayer); // before
@@ -339,7 +339,7 @@ void ProjectTreeItem::showEditor(MidiLayer *activeLayer, TreeItem *source)
         App::Layout().showPage(this->editor, source);
         this->editor->grabKeyboardFocus();
     }
-    else if (AutomationLayer *autoLayer = dynamic_cast<AutomationLayer *>(activeLayer))
+    else if (AutomationSequence *autoLayer = dynamic_cast<AutomationSequence *>(activeLayer))
     {
         const bool editorWasShown = this->editor->toggleShowAutomationEditor(autoLayer);
         source->setGreyedOut(!editorWasShown);
@@ -347,18 +347,18 @@ void ProjectTreeItem::showEditor(MidiLayer *activeLayer, TreeItem *source)
     }
 }
 
-void ProjectTreeItem::hideEditor(MidiLayer *activeLayer, TreeItem *source)
+void ProjectTreeItem::hideEditor(MidiSequence *activeLayer, TreeItem *source)
 {
-    if (AutomationLayer *autoLayer = dynamic_cast<AutomationLayer *>(activeLayer))
+    if (AutomationSequence *autoLayer = dynamic_cast<AutomationSequence *>(activeLayer))
     {
         this->editor->hideAutomationEditor(autoLayer);
         source->setGreyedOut(true);
     }
 }
 
-void ProjectTreeItem::showEditorsGroup(Array<MidiLayer *> layersGroup, TreeItem *source)
+void ProjectTreeItem::showEditorsGroup(Array<MidiSequence *> layersGroup, TreeItem *source)
 {
-    Array<MidiLayer *> layers(this->getLayersList());
+    Array<MidiSequence *> layers(this->getLayersList());
 
     if (layersGroup.size() == 0)
     {
@@ -385,13 +385,13 @@ void ProjectTreeItem::showEditorsGroup(Array<MidiLayer *> layersGroup, TreeItem 
 //    for (int i = 0; i < myLayers.size(); ++i)
 //    {
 //        const bool needsShadow = (editorIndex != (layersGroup.size() - 1));
-//        MidiLayer *layerIter = myLayers.getUnchecked(i);
+//        MidiSequence *layerIter = myLayers.getUnchecked(i);
 //
 //        if (layersGroup.contains(layerIter))
 //        {
 //            if (TreeItem *item = dynamic_cast<TreeItem *>(layerIter->getOwner()))
 //            {
-//                if (dynamic_cast<PianoLayer *>(layerIter))
+//                if (dynamic_cast<PianoSequence *>(layerIter))
 //                {
 //                    if (editorIndex >= this->splitscreenPianoEditors.size())
 //                    { break; }
@@ -402,7 +402,7 @@ void ProjectTreeItem::showEditorsGroup(Array<MidiLayer *> layersGroup, TreeItem 
 //
 //                    firstFoundEditor = (firstFoundEditor == nullptr) ? foundEditor : firstFoundEditor;
 //                }
-//                else if (dynamic_cast<AutomationLayer *>(layerIter))
+//                else if (dynamic_cast<AutomationSequence *>(layerIter))
 //                {
 //                    // todo!
 //                    
@@ -443,7 +443,7 @@ void ProjectTreeItem::updateActiveGroupEditors()
     }
 }
 
-void ProjectTreeItem::activateLayer(MidiLayer* layer, bool selectOthers, bool deselectOthers)
+void ProjectTreeItem::activateLayer(MidiSequence* layer, bool selectOthers, bool deselectOthers)
 {
 	if (selectOthers)
 	{
@@ -540,10 +540,10 @@ void ProjectTreeItem::clearUndoHistory()
 // Project
 //===----------------------------------------------------------------------===//
 
-Array<MidiLayer *> ProjectTreeItem::getLayersList() const
+Array<MidiSequence *> ProjectTreeItem::getLayersList() const
 {
     ScopedReadLock lock(this->layersListLock);
-    Array<MidiLayer *> layers;
+    Array<MidiSequence *> layers;
 
     // now get all layers inside a tree hierarcht
     this->collectLayers(layers);
@@ -555,15 +555,15 @@ Array<MidiLayer *> ProjectTreeItem::getLayersList() const
     return layers;
 }
 
-Array<MidiLayer *> ProjectTreeItem::getSelectedLayersList() const
+Array<MidiSequence *> ProjectTreeItem::getSelectedLayersList() const
 {
     ScopedReadLock lock(this->layersListLock);
-    Array<MidiLayer *> layers;
+    Array<MidiSequence *> layers;
     this->collectLayers(layers, true);
     return layers;
 }
 
-void ProjectTreeItem::collectLayers(Array<MidiLayer *> &resultArray, bool onlySelectedLayers) const
+void ProjectTreeItem::collectLayers(Array<MidiSequence *> &resultArray, bool onlySelectedLayers) const
 {
     Array<MidiTrackTreeItem *> layerItems = this->findChildrenOfType<MidiTrackTreeItem>();
     
@@ -571,7 +571,7 @@ void ProjectTreeItem::collectLayers(Array<MidiLayer *> &resultArray, bool onlySe
     {
         if (layerItems.getUnchecked(i)->isSelected() || !onlySelectedLayers)
         {
-            resultArray.add(layerItems.getUnchecked(i)->getLayer());
+            resultArray.add(layerItems.getUnchecked(i)->getSequence());
         }
     }
 }
@@ -582,7 +582,7 @@ Point<float> ProjectTreeItem::getTrackRangeInBeats() const
     float firstBeat = FLT_MAX;
     const float defaultNumBeats = DEFAULT_NUM_BARS * NUM_BEATS_IN_BAR;
 
-    Array<MidiLayer *> layers;
+    Array<MidiSequence *> layers;
     this->collectLayers(layers);
 
     for (auto layer : layers)
@@ -805,20 +805,20 @@ void ProjectTreeItem::broadcastRemoveEvent(const MidiEvent &event)
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastPostRemoveEvent(MidiLayer *const layer)
+void ProjectTreeItem::broadcastPostRemoveEvent(MidiSequence *const layer)
 {
     this->changeListeners.call(&ProjectListener::onPostRemoveMidiEvent, layer);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastChangeTrack(MidiLayer *const layer,
+void ProjectTreeItem::broadcastChangeTrack(MidiSequence *const layer,
 	Pattern *const pattern /*= nullptr*/)
 {
     this->changeListeners.call(&ProjectListener::onChangeTrack, layer, pattern);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastAddTrack(MidiLayer *const layer,
+void ProjectTreeItem::broadcastAddTrack(MidiSequence *const layer,
 	Pattern *const pattern /*= nullptr*/)
 {
     this->isLayersHashOutdated = true;
@@ -827,7 +827,7 @@ void ProjectTreeItem::broadcastAddTrack(MidiLayer *const layer,
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastRemoveTrack(MidiLayer *const layer,
+void ProjectTreeItem::broadcastRemoveTrack(MidiSequence *const layer,
 	Pattern *const pattern /*= nullptr*/)
 {
     this->isLayersHashOutdated = true;
@@ -954,7 +954,7 @@ void ProjectTreeItem::exportMidi(File &file) const
     MidiFile tempFile;
     tempFile.setTicksPerQuarterNote(Transport::millisecondsPerBeat);
     
-    const Array<MidiLayer *> &layers = this->getLayersList();
+    const Array<MidiSequence *> &layers = this->getLayersList();
     
     for (auto layer : layers)
     {
@@ -1048,12 +1048,12 @@ void ProjectTreeItem::changeListenerCallback(ChangeBroadcaster *source)
 
 
 
-void ProjectTreeItem::registerVcsItem(const MidiLayer *layer)
+void ProjectTreeItem::registerVcsItem(const MidiSequence *layer)
 {
 	const auto children = this->findChildrenOfType<MidiTrackTreeItem>();
 	for (MidiTrackTreeItem *item : children)
 	{
-		if (item->getLayer() == layer)
+		if (item->getSequence() == layer)
 		{
 			ScopedWriteLock lock(this->vcsInfoLock);
 			this->vcsItems.addIfNotAlreadyThere(item);
@@ -1074,12 +1074,12 @@ void ProjectTreeItem::registerVcsItem(const Pattern *pattern)
     }
 }
 
-void ProjectTreeItem::unregisterVcsItem(const MidiLayer *layer)
+void ProjectTreeItem::unregisterVcsItem(const MidiSequence *layer)
 {
 	const auto children = this->findChildrenOfType<MidiTrackTreeItem>();
 	for (MidiTrackTreeItem *item : children)
 	{
-		if (item->getLayer() == layer)
+		if (item->getSequence() == layer)
 		{
 			ScopedWriteLock lock(this->vcsInfoLock);
 			this->vcsItems.addIfNotAlreadyThere(item);
@@ -1113,7 +1113,7 @@ void ProjectTreeItem::rebuildLayersHashIfNeeded()
         
         for (int i = 0; i < children.size(); ++i)
         {
-            MidiLayer *layer = children.getUnchecked(i)->getLayer();
+            MidiSequence *layer = children.getUnchecked(i)->getSequence();
             this->layersHash.set(layer->getLayerIdAsString(), layer);
         }
         

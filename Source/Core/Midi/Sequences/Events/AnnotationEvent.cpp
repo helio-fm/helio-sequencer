@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "AnnotationEvent.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "Transport.h"
 #include "SerializationKeys.h"
 
@@ -35,7 +35,7 @@ AnnotationEvent::AnnotationEvent(const AnnotationEvent &other) :
     this->id = other.getId();
 }
 
-AnnotationEvent::AnnotationEvent(MidiLayer *owner,
+AnnotationEvent::AnnotationEvent(MidiSequence *owner,
                      float newBeat,
                      String newDescription,
                      const Colour &newColour) :

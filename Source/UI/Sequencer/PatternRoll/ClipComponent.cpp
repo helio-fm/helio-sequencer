@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "ClipComponent.h"
 #include "ProjectTreeItem.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "MidiEvent.h"
 #include "PatternRoll.h"
 #include "Pattern.h"

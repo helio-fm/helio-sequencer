@@ -27,7 +27,7 @@
 #include "PlayerThread.h"
 #include "Icons.h"
 #include "HybridRoll.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "InternalClipboard.h"
 #include "CommandItemComponent.h"
 #include "App.h"

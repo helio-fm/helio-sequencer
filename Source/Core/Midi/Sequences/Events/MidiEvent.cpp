@@ -17,10 +17,10 @@
 
 #include "Common.h"
 #include "MidiEvent.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 
 
-MidiEvent::MidiEvent(MidiLayer *owner, float beatVal) :
+MidiEvent::MidiEvent(MidiSequence *owner, float beatVal) :
     layer(owner),
     beat(beatVal)
 {
@@ -33,7 +33,7 @@ MidiEvent::~MidiEvent()
 }
 
 
-MidiLayer *MidiEvent::getLayer() const noexcept
+MidiSequence *MidiEvent::getLayer() const noexcept
 {
     jassert(this->layer);
     return this->layer;

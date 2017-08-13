@@ -28,7 +28,7 @@
 #include "MidiTrackTreeItem.h"
 #include "ProjectTreeItem.h"
 #include "UndoStack.h"
-#include "LayerTreeItemActions.h"
+#include "MidiTrackActions.h"
 #include "ModalDialogInput.h"
 
 #include "LongTapController.h"
@@ -101,7 +101,7 @@ void TreePanel::handleCommandMessage(int commandId)
             if (this->lastRenamedItem != nullptr)
             {
                 ProjectTreeItem *project = this->lastRenamedItem->getProject();
-                const String &layerId = this->lastRenamedItem->getLayer()->getLayerIdAsString();
+                const String &layerId = this->lastRenamedItem->getSequence()->getLayerIdAsString();
                 
                 project->getUndoStack()->beginNewTransaction();
                 project->getUndoStack()->perform(new MidiTrackRenameAction(*project, layerId, this->renameString));

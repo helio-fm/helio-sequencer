@@ -17,7 +17,7 @@
 
 //[Headers]
 #include "Common.h"
-#include "TimeSignaturesLayer.h"
+#include "TimeSignaturesSequence.h"
 //[/Headers]
 
 #include "TimeSignatureLargeComponent.h"
@@ -169,7 +169,7 @@ void TimeSignatureLargeComponent::mouseDrag (const MouseEvent& e)
                 Array<TimeSignatureEvent> groupDragBefore, groupDragAfter;
                 groupDragBefore.add(this->event);
                 groupDragAfter.add(this->event.withBeat(newBeat));
-                TimeSignaturesLayer *autoLayer = static_cast<TimeSignaturesLayer *>(this->event.getLayer());
+                TimeSignaturesSequence *autoLayer = static_cast<TimeSignaturesSequence *>(this->event.getLayer());
                 autoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
             }
 

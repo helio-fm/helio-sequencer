@@ -17,7 +17,7 @@
 
 #pragma once
 
-class PianoLayer;
+class PianoSequence;
 class ProjectTreeItem;
 
 #include "Note.h"

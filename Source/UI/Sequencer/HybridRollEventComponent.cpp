@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "HybridRollEventComponent.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "MidiEvent.h"
 #include "HybridRoll.h"
 

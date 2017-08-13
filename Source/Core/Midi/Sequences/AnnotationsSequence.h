@@ -17,14 +17,14 @@
 
 #pragma once
 
-#include "MidiLayer.h"
-#include "TimeSignatureEvent.h"
+#include "MidiSequence.h"
+#include "AnnotationEvent.h"
 
-class TimeSignaturesLayer : public MidiLayer
+class AnnotationsSequence : public MidiSequence
 {
 public:
 
-    explicit TimeSignaturesLayer(ProjectEventDispatcher &parent);
+    explicit AnnotationsSequence(ProjectEventDispatcher &parent);
 
 
     //===------------------------------------------------------------------===//
@@ -40,18 +40,18 @@ public:
 
     void silentImport(const MidiEvent &eventToImport) override;
     
-    MidiEvent *insert(const TimeSignatureEvent &signatureToCopy, bool undoable);
+    MidiEvent *insert(const AnnotationEvent &annotationToCopy, bool undoable);
 
-    bool remove(const TimeSignatureEvent &signature, bool undoable);
+    bool remove(const AnnotationEvent &annotation, bool undoable);
 
-    bool change(const TimeSignatureEvent &signature, const TimeSignatureEvent &newSignature, bool undoable);
+    bool change(const AnnotationEvent &annotation, const AnnotationEvent &newAnnotation, bool undoable);
 
-    bool insertGroup(Array<TimeSignatureEvent> &signatures, bool undoable);
+    bool insertGroup(Array<AnnotationEvent> &annotations, bool undoable);
     
-    bool removeGroup(Array<TimeSignatureEvent> &signatures, bool undoable);
+    bool removeGroup(Array<AnnotationEvent> &annotations, bool undoable);
     
-    bool changeGroup(Array<TimeSignatureEvent> &signaturesBefore,
-                     Array<TimeSignatureEvent> &signaturesAfter,
+    bool changeGroup(Array<AnnotationEvent> &annotationsBefore,
+                     Array<AnnotationEvent> &annotationsAfter,
                      bool undoable);
 
 
@@ -68,10 +68,10 @@ public:
 private:
 
     // быстрый доступ к указателю на событие по соответствующим ему параметрам
-    HashMap<TimeSignatureEvent, TimeSignatureEvent *, TimeSignatureEventHashFunction> signaturesHashTable;
+    HashMap<AnnotationEvent, AnnotationEvent *, AnnotationEventHashFunction> annotationsHashTable;
 
 private:
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeSignaturesLayer);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AnnotationsSequence);
 
 };

@@ -17,16 +17,14 @@
 
 #pragma once
 
-#include "MidiLayer.h"
-#include "Note.h"
+#include "MidiSequence.h"
+#include "TimeSignatureEvent.h"
 
-class PianoRoll;
-
-class PianoLayer : public MidiLayer
+class TimeSignaturesSequence : public MidiSequence
 {
 public:
 
-    explicit PianoLayer(ProjectEventDispatcher &parent);
+    explicit TimeSignaturesSequence(ProjectEventDispatcher &parent);
 
 
     //===------------------------------------------------------------------===//
@@ -42,36 +40,21 @@ public:
 
     void silentImport(const MidiEvent &eventToImport) override;
     
-    
-    MidiEvent *insert(const Note &note, const bool undoable);
+    MidiEvent *insert(const TimeSignatureEvent &signatureToCopy, bool undoable);
 
-    bool remove(const Note &note, const bool undoable);
+    bool remove(const TimeSignatureEvent &signature, bool undoable);
 
-    bool change(const Note &note, const Note &newNote, const bool undoable);
+    bool change(const TimeSignatureEvent &signature, const TimeSignatureEvent &newSignature, bool undoable);
 
-    bool insertGroup(Array<Note> &notes, bool undoable);
+    bool insertGroup(Array<TimeSignatureEvent> &signatures, bool undoable);
     
-    bool removeGroup(Array<Note> &notes, bool undoable);
+    bool removeGroup(Array<TimeSignatureEvent> &signatures, bool undoable);
     
-    bool changeGroup(Array<Note> &eventsBefore,
-                     Array<Note> &eventsAfter,
+    bool changeGroup(Array<TimeSignatureEvent> &signaturesBefore,
+                     Array<TimeSignatureEvent> &signaturesAfter,
                      bool undoable);
 
-    
-    //===------------------------------------------------------------------===//
-    // Batch operations
-    //===------------------------------------------------------------------===//
-    
-    void transposeAll(int keyDelta, bool shouldCheckpoint = true);
-    
-    
-    //===------------------------------------------------------------------===//
-    // Accessors
-    //===------------------------------------------------------------------===//
-    
-    float getLastBeat() const override; // overriding to set beat+length
-    
-    
+
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
@@ -82,18 +65,13 @@ public:
 
     void reset() override;
 
-protected:
-
-	void clearQuick() override;
-
 private:
 
     // быстрый доступ к указателю на событие по соответствующим ему параметрам
-    // todo вот прям быстрый? замени на dense_hash_map или flat_hash_map
-    HashMap<Note, Note *, NoteHashFunction> notesHashTable;
+    HashMap<TimeSignatureEvent, TimeSignatureEvent *, TimeSignatureEventHashFunction> signaturesHashTable;
 
 private:
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoLayer);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TimeSignaturesSequence);
 
 };

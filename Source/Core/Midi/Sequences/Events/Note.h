@@ -30,18 +30,18 @@ public:
     // оператор копирования только заполняет параметры, не трогая указатель - это нужно для undo/redo операций
     Note(const Note &other);
 
-    explicit Note(MidiLayer *owner,
+    explicit Note(MidiSequence *owner,
          int keyVal = 0, float beatVal = 0.f,
          float lengthVal = 1.f, float velocityVal = 1.f);
 
-    Note(MidiLayer *newOwner, const Note &parametersToCopy);
+    Note(MidiSequence *newOwner, const Note &parametersToCopy);
     
     ~Note() override {}
 
 	Array<MidiMessage> getSequence() const override;
     
     
-    Note copyWithNewId(MidiLayer *newOwner = nullptr) const;
+    Note copyWithNewId(MidiSequence *newOwner = nullptr) const;
     
     Note withBeat(float newBeat) const;
 

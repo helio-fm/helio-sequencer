@@ -17,7 +17,7 @@
 
 #pragma once
 
-class TimeSignaturesLayer;
+class TimeSignaturesSequence;
 class ProjectTreeItem;
 
 #include "TimeSignatureEvent.h"

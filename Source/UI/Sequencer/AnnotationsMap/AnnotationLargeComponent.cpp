@@ -17,7 +17,7 @@
 
 //[Headers]
 #include "Common.h"
-#include "AnnotationsLayer.h"
+#include "AnnotationsSequence.h"
 //[/Headers]
 
 #include "AnnotationLargeComponent.h"
@@ -188,7 +188,7 @@ void AnnotationLargeComponent::mouseDrag (const MouseEvent& e)
                 Array<AnnotationEvent> groupDragBefore, groupDragAfter;
                 groupDragBefore.add(this->event);
                 groupDragAfter.add(this->event.withBeat(newBeat));
-                AnnotationsLayer *autoLayer = static_cast<AnnotationsLayer *>(this->event.getLayer());
+                AnnotationsSequence *autoLayer = static_cast<AnnotationsSequence *>(this->event.getLayer());
                 autoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
             }
 

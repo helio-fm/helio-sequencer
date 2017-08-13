@@ -17,7 +17,7 @@
 
 #pragma once
 
-class AutomationLayer;
+class AutomationSequence;
 class ProjectTreeItem;
 
 #include "AutomationEvent.h"

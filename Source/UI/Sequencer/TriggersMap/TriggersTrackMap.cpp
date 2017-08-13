@@ -18,8 +18,8 @@
 #include "Common.h"
 #include "TriggersTrackMap.h"
 #include "ProjectTreeItem.h"
-#include "MidiLayer.h"
-#include "AutomationLayer.h"
+#include "MidiSequence.h"
+#include "AutomationSequence.h"
 #include "PlayerThread.h"
 #include "HybridRoll.h"
 #include "TriggerEventComponent.h"
@@ -27,7 +27,7 @@
 
 #define DEFAULT_TRACKMAP_HEIGHT 16
 
-TriggersTrackMap::TriggersTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll, WeakReference<MidiLayer> targetLayer) :
+TriggersTrackMap::TriggersTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll, WeakReference<MidiSequence> targetLayer) :
     project(parentProject),
     roll(parentRoll),
     layer(std::move(targetLayer)),
@@ -150,8 +150,8 @@ void TriggersTrackMap::insertNewEventAt(const MouseEvent &e, bool shouldAddTrigg
     const float w = mapWidth * (kComponentLengthInBeats / projectLengthInBeats);
     const float draggingBeat = this->getBeatByXPosition(int(e.x + w / 2));
     
-    if (AutomationLayer *activeAutoLayer =
-        dynamic_cast<AutomationLayer *>(this->layer.get()))
+    if (AutomationSequence *activeAutoLayer =
+        dynamic_cast<AutomationSequence *>(this->layer.get()))
     {
         const AutomationEvent *firstEvent = static_cast<AutomationEvent *>(activeAutoLayer->getUnchecked(0));
         float prevEventCV = firstEvent->getControllerValue();
@@ -198,7 +198,7 @@ void TriggersTrackMap::insertNewEventAt(const MouseEvent &e, bool shouldAddTrigg
 
 void TriggersTrackMap::removeEventIfPossible(const AutomationEvent &e)
 {
-    AutomationLayer *autoLayer = static_cast<AutomationLayer *>(e.getLayer());
+    AutomationSequence *autoLayer = static_cast<AutomationSequence *>(e.getLayer());
     
     if (autoLayer->size() > 1)
     {
@@ -362,7 +362,7 @@ void TriggersTrackMap::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
-void TriggersTrackMap::onChangeTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
+void TriggersTrackMap::onChangeTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (this->layer)
     {
@@ -373,7 +373,7 @@ void TriggersTrackMap::onChangeTrack(MidiLayer *const layer, Pattern *const patt
     }
 }
 
-void TriggersTrackMap::onAddTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
+void TriggersTrackMap::onAddTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (this->layer)
     {
@@ -387,7 +387,7 @@ void TriggersTrackMap::onAddTrack(MidiLayer *const layer, Pattern *const pattern
     }
 }
 
-void TriggersTrackMap::onRemoveTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
+void TriggersTrackMap::onRemoveTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (this->layer)
     {

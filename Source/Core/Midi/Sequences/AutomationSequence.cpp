@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "AutomationLayer.h"
+#include "AutomationSequence.h"
 #include "AutomationEventActions.h"
 
 #include "ProjectTreeItem.h"
@@ -25,7 +25,7 @@
 #include "UndoStack.h"
 
 
-AutomationLayer::AutomationLayer(ProjectEventDispatcher &parent) : MidiLayer(parent)
+AutomationSequence::AutomationSequence(ProjectEventDispatcher &parent) : MidiSequence(parent)
 {
 }
 
@@ -33,7 +33,7 @@ AutomationLayer::AutomationLayer(ProjectEventDispatcher &parent) : MidiLayer(par
 // Import/export
 //===----------------------------------------------------------------------===//
 
-void AutomationLayer::importMidi(const MidiMessageSequence &sequence)
+void AutomationSequence::importMidi(const MidiMessageSequence &sequence)
 {
     this->clearUndoHistory();
     
@@ -65,7 +65,7 @@ void AutomationLayer::importMidi(const MidiMessageSequence &sequence)
 // Undoable track editing
 //===----------------------------------------------------------------------===//
 
-void AutomationLayer::silentImport(const MidiEvent &eventToImport)
+void AutomationSequence::silentImport(const MidiEvent &eventToImport)
 {
     const AutomationEvent &autoEvent =
         static_cast<const AutomationEvent &>(eventToImport);
@@ -82,7 +82,7 @@ void AutomationLayer::silentImport(const MidiEvent &eventToImport)
     this->updateBeatRange(false);
 }
 
-MidiEvent *AutomationLayer::insert(const AutomationEvent &autoEvent, bool undoable)
+MidiEvent *AutomationSequence::insert(const AutomationEvent &autoEvent, bool undoable)
 {
     if (AutomationEvent *matchingEvent = this->eventsHashTable[autoEvent])
     {
@@ -113,7 +113,7 @@ MidiEvent *AutomationLayer::insert(const AutomationEvent &autoEvent, bool undoab
     return nullptr;
 }
 
-bool AutomationLayer::remove(const AutomationEvent &autoEvent, bool undoable)
+bool AutomationSequence::remove(const AutomationEvent &autoEvent, bool undoable)
 {
     if (undoable)
     {
@@ -141,7 +141,7 @@ bool AutomationLayer::remove(const AutomationEvent &autoEvent, bool undoable)
     return true;
 }
 
-bool AutomationLayer::change(const AutomationEvent &autoEvent, const AutomationEvent &newAutoEvent, bool undoable)
+bool AutomationSequence::change(const AutomationEvent &autoEvent, const AutomationEvent &newAutoEvent, bool undoable)
 {
     if (undoable)
     {
@@ -174,7 +174,7 @@ bool AutomationLayer::change(const AutomationEvent &autoEvent, const AutomationE
     return true;
 }
 
-bool AutomationLayer::insertGroup(Array<AutomationEvent> &events, bool undoable)
+bool AutomationSequence::insertGroup(Array<AutomationEvent> &events, bool undoable)
 {
     if (undoable)
     {
@@ -202,7 +202,7 @@ bool AutomationLayer::insertGroup(Array<AutomationEvent> &events, bool undoable)
     return true;
 }
 
-bool AutomationLayer::removeGroup(Array<AutomationEvent> &events, bool undoable)
+bool AutomationSequence::removeGroup(Array<AutomationEvent> &events, bool undoable)
 {
     if (undoable)
     {
@@ -231,7 +231,7 @@ bool AutomationLayer::removeGroup(Array<AutomationEvent> &events, bool undoable)
     return true;
 }
 
-bool AutomationLayer::changeGroup(const Array<AutomationEvent> eventsBefore,
+bool AutomationSequence::changeGroup(const Array<AutomationEvent> eventsBefore,
                                   const Array<AutomationEvent> eventsAfter,
                                   bool undoable)
 {
@@ -276,7 +276,7 @@ bool AutomationLayer::changeGroup(const Array<AutomationEvent> eventsBefore,
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *AutomationLayer::serialize() const
+XmlElement *AutomationSequence::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::automation);
     xml->setAttribute("col", this->getColour().toString());
@@ -295,7 +295,7 @@ XmlElement *AutomationLayer::serialize() const
     return xml;
 }
 
-void AutomationLayer::deserialize(const XmlElement &xml)
+void AutomationSequence::deserialize(const XmlElement &xml)
 {
 	this->clearQuick();
 
@@ -311,7 +311,7 @@ void AutomationLayer::deserialize(const XmlElement &xml)
     this->setInstrumentId(root->getStringAttribute("instrument", this->getInstrumentId()));
     this->setControllerNumber(root->getIntAttribute("cc", this->getControllerNumber()));
     this->setLayerId(root->getStringAttribute("id", this->getLayerId().toString()));
-    this->muted = MidiLayer::isMuted(root->getStringAttribute("mute"));
+    this->muted = MidiSequence::isMuted(root->getStringAttribute("mute"));
 	
 	float firstBeat = 0;
 	float lastBeat = 0;
@@ -335,13 +335,13 @@ void AutomationLayer::deserialize(const XmlElement &xml)
     this->notifyLayerChanged();
 }
 
-void AutomationLayer::reset()
+void AutomationSequence::reset()
 {
 	this->clearQuick();
     this->notifyLayerChanged();
 }
 
-void AutomationLayer::clearQuick()
+void AutomationSequence::clearQuick()
 {
 	this->midiEvents.clearQuick(true);
 	this->eventsHashTable.clear();

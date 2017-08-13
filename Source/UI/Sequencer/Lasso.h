@@ -18,7 +18,7 @@
 #pragma once
 
 #include "SelectableComponent.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 
 class SelectionProxyArray : public Array<SelectableComponent *>, public ReferenceCountedObject
 {

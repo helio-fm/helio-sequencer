@@ -28,22 +28,14 @@ class UndoStack;
 
 #define MIDI_IMPORT_SCALE 48
 
-// TODO rename as MidiSequence, PianoSequence, AutomationSequence,
-// or as MidiTrack, PianoTrack, AutomationTrack, etc.
-class MidiLayer : public Serializable
+class MidiSequence : public Serializable
 {
 public:
 
-    explicit MidiLayer(MidiTrack &parentTrack,
+    explicit MidiSequence(MidiTrack &parentTrack,
 		ProjectEventDispatcher &eventDispatcher);
 
-    ~MidiLayer() override;
-
-    enum DefaultControllers
-    {
-        sustainPedalController = 64,
-        tempoController = 81,
-    };
+    ~MidiSequence() override;
     
     //===------------------------------------------------------------------===//
     // Undoing
@@ -119,13 +111,13 @@ public:
 	// Helpers
 	//===------------------------------------------------------------------===//
 
-	friend inline bool operator==(const MidiLayer &lhs, const MidiLayer &rhs)
+	friend inline bool operator==(const MidiSequence &lhs, const MidiSequence &rhs)
 	{
 		return (&lhs == &rhs || lhs.layerId == rhs.layerId);
 	}
 
-	static int compareElements(const MidiLayer *first,
-		const MidiLayer *second);
+	static int compareElements(const MidiSequence *first,
+		const MidiSequence *second);
 
 	int hashCode() const noexcept;
 
@@ -156,8 +148,8 @@ private:
 
 private:
     
-    WeakReference<MidiLayer>::Master masterReference;
-    friend class WeakReference<MidiLayer>;
+    WeakReference<MidiSequence>::Master masterReference;
+    friend class WeakReference<MidiSequence>;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiLayer);
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiSequence);
 };

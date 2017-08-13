@@ -24,7 +24,7 @@
 //[MiscUserDefs]
 #include "HybridRoll.h"
 #include "PianoRoll.h"
-#include "PianoLayer.h"
+#include "PianoSequence.h"
 #include "NoteComponent.h"
 #include "PianoRollToolbox.h"
 #include <float.h>
@@ -168,7 +168,7 @@ void NoteResizerLeft::mouseDrag (const MouseEvent& e)
             }
 
             const auto &event = layerSelection->getFirstAs<NoteComponent>()->getNote();
-            PianoLayer *pianoLayer = static_cast<PianoLayer *>(event.getLayer());
+            PianoSequence *pianoLayer = static_cast<PianoSequence *>(event.getSequence());
             pianoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
         }
     }

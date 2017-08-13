@@ -20,8 +20,8 @@
 #include "AutomationEventComponent.h"
 #include "AutomationCurveHelper.h"
 #include "ProjectTreeItem.h"
-#include "MidiLayer.h"
-#include "AutomationLayer.h"
+#include "MidiSequence.h"
+#include "AutomationSequence.h"
 #include "PlayerThread.h"
 #include "HybridRoll.h"
 #include "ComponentConnectorCurve.h"
@@ -38,7 +38,7 @@
 
 #define DEFAULT_TRACKMAP_HEIGHT 128
 
-AutomationTrackMap::AutomationTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll, WeakReference<MidiLayer> targetLayer) :
+AutomationTrackMap::AutomationTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll, WeakReference<MidiSequence> targetLayer) :
     project(parentProject),
     roll(parentRoll),
     layer(std::move(targetLayer)),
@@ -153,7 +153,7 @@ void AutomationTrackMap::insertNewEventAt(const MouseEvent &e)
                                      e.y - int(this->getEventDiameter() / 2),
                                      draggingValue, draggingBeat);
     
-    AutomationLayer *activeAutoLayer = static_cast<AutomationLayer *>(this->layer.get());
+    AutomationSequence *activeAutoLayer = static_cast<AutomationSequence *>(this->layer.get());
     {
         this->addNewEventMode = true;
         activeAutoLayer->checkpoint();
@@ -164,7 +164,7 @@ void AutomationTrackMap::insertNewEventAt(const MouseEvent &e)
 
 void AutomationTrackMap::removeEventIfPossible(const AutomationEvent &e)
 {
-    AutomationLayer *autoLayer = static_cast<AutomationLayer *>(e.getLayer());
+    AutomationSequence *autoLayer = static_cast<AutomationSequence *>(e.getLayer());
     
     if (autoLayer->size() > 1)
     {
@@ -374,7 +374,7 @@ void AutomationTrackMap::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
-void AutomationTrackMap::onChangeTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
+void AutomationTrackMap::onChangeTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (this->layer)
     {
@@ -385,7 +385,7 @@ void AutomationTrackMap::onChangeTrack(MidiLayer *const layer, Pattern *const pa
     }
 }
 
-void AutomationTrackMap::onAddTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
+void AutomationTrackMap::onAddTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (this->layer)
     {
@@ -399,7 +399,7 @@ void AutomationTrackMap::onAddTrack(MidiLayer *const layer, Pattern *const patte
     }
 }
 
-void AutomationTrackMap::onRemoveTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
+void AutomationTrackMap::onRemoveTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (this->layer)
     {
@@ -416,7 +416,7 @@ void AutomationTrackMap::onChangeProjectBeatRange(float firstBeat, float lastBea
     this->projectLastBeat = lastBeat;
 
     // move first event to the first projects's beat
-//    if (AutomationLayer *autoLayer = dynamic_cast<AutomationLayer *>(this->layer.get()))
+//    if (AutomationSequence *autoLayer = dynamic_cast<AutomationSequence *>(this->layer.get()))
 //    {
 //        if (autoLayer->size() > 1)
 //        {

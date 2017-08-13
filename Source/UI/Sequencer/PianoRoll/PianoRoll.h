@@ -43,7 +43,7 @@
 #   endif
 #endif
 
-class MidiLayer;
+class MidiSequence;
 class NoteComponent;
 class PianoRollReboundThread;
 class PianoRollCellHighlighter;
@@ -74,10 +74,10 @@ public:
     
     void reloadRollContent() override;
 	int getNumActiveLayers() const noexcept;
-	MidiLayer *getActiveMidiLayer(int index) const noexcept;
-	MidiLayer *getPrimaryActiveMidiLayer() const noexcept;
-	void setActiveMidiLayers(Array<MidiLayer *> tracks,
-		MidiLayer *primaryLayer);
+	MidiSequence *getActiveMidiLayer(int index) const noexcept;
+	MidiSequence *getPrimaryActiveMidiLayer() const noexcept;
+	void setActiveMidiLayers(Array<MidiSequence *> tracks,
+		MidiSequence *primaryLayer);
 
     void setRowHeight(const int newRowHeight);
     inline int getRowHeight() const
@@ -138,9 +138,9 @@ public:
     void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
     void onAddMidiEvent(const MidiEvent &event) override;
     void onRemoveMidiEvent(const MidiEvent &event) override;
-    void onChangeTrack(MidiLayer *const layer, Pattern *const pattern = nullptr) override;
-    void onAddTrack(MidiLayer *const layer, Pattern *const pattern = nullptr) override;
-    void onRemoveTrack(MidiLayer *const layer, Pattern *const pattern = nullptr) override;
+    void onChangeTrack(MidiSequence *const layer, Pattern *const pattern = nullptr) override;
+    void onAddTrack(MidiSequence *const layer, Pattern *const pattern = nullptr) override;
+    void onRemoveTrack(MidiSequence *const layer, Pattern *const pattern = nullptr) override;
 
 
     //===------------------------------------------------------------------===//
@@ -190,8 +190,8 @@ public:
     
 private:
 
-	Array<MidiLayer *> activeLayers;
-	MidiLayer *primaryActiveLayer;
+	Array<MidiSequence *> activeLayers;
+	MidiSequence *primaryActiveLayer;
 
 private:
 

@@ -22,7 +22,7 @@
 #include "Icons.h"
 #include "HybridRoll.h"
 #include "PianoRoll.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "InternalClipboard.h"
 #include "CommandItemComponent.h"
 #include "ProjectTimeline.h"

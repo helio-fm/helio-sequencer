@@ -83,7 +83,7 @@ protected:
     Note anchor;
     Note groupScalingAnchor;
 
-	bool belongsToLayerSet(Array<MidiLayer *> layers) const;
+	bool belongsToLayerSet(Array<MidiSequence *> layers) const;
 	void activateCorrespondingLayer(bool selectOthers, bool deselectOthers);
 
     void setNoCheckpointNeededForNextAction();

@@ -19,7 +19,7 @@
 
 class ProjectTreeItem;
 
-#include "PianoLayer.h"
+#include "PianoSequence.h"
 #include "UndoAction.h"
 
 

@@ -17,7 +17,7 @@
 
 //[Headers]
 #include "Common.h"
-#include "TimeSignaturesLayer.h"
+#include "TimeSignaturesSequence.h"
 //[/Headers]
 
 #include "TimeSignatureSmallComponent.h"

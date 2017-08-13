@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "AutomationEventActions.h"
-#include "AutomationLayer.h"
+#include "AutomationSequence.h"
 #include "ProjectTreeItem.h"
 #include "SerializationKeys.h"
 
@@ -38,7 +38,7 @@ AutomationEventInsertAction::AutomationEventInsertAction(ProjectTreeItem &parent
 
 bool AutomationEventInsertAction::perform()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *layer = this->project.getLayerWithId<AutomationSequence>(this->layerId))
     {
         return (layer->insert(this->event, false) != nullptr);
     }
@@ -48,7 +48,7 @@ bool AutomationEventInsertAction::perform()
 
 bool AutomationEventInsertAction::undo()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *layer = this->project.getLayerWithId<AutomationSequence>(this->layerId))
     {
         return layer->remove(this->event, false);
     }
@@ -98,7 +98,7 @@ AutomationEventRemoveAction::AutomationEventRemoveAction(ProjectTreeItem &parent
 
 bool AutomationEventRemoveAction::perform()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *layer = this->project.getLayerWithId<AutomationSequence>(this->layerId))
     {
         return layer->remove(this->event, false);
     }
@@ -108,7 +108,7 @@ bool AutomationEventRemoveAction::perform()
 
 bool AutomationEventRemoveAction::undo()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *layer = this->project.getLayerWithId<AutomationSequence>(this->layerId))
     {
         return (layer->insert(this->event, false) != nullptr);
     }
@@ -160,7 +160,7 @@ AutomationEventChangeAction::AutomationEventChangeAction(ProjectTreeItem &parent
 
 bool AutomationEventChangeAction::perform()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *layer = this->project.getLayerWithId<AutomationSequence>(this->layerId))
     {
         return layer->change(this->eventBefore, this->eventAfter, false);
     }
@@ -170,7 +170,7 @@ bool AutomationEventChangeAction::perform()
 
 bool AutomationEventChangeAction::undo()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *layer = this->project.getLayerWithId<AutomationSequence>(this->layerId))
     {
         return layer->change(this->eventAfter, this->eventBefore, false);
     }
@@ -185,7 +185,7 @@ int AutomationEventChangeAction::getSizeInUnits()
 
 UndoAction *AutomationEventChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *layer = this->project.getLayerWithId<AutomationSequence>(this->layerId))
     {
         if (AutomationEventChangeAction *nextChanger = dynamic_cast<AutomationEventChangeAction *>(nextAction))
         {
@@ -256,7 +256,7 @@ layerId(std::move(targetLayerId))
 
 bool AutomationEventsGroupInsertAction::perform()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *layer = this->project.getLayerWithId<AutomationSequence>(this->layerId))
     {
         return layer->insertGroup(this->events, false);
     }
@@ -266,7 +266,7 @@ bool AutomationEventsGroupInsertAction::perform()
 
 bool AutomationEventsGroupInsertAction::undo()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *layer = this->project.getLayerWithId<AutomationSequence>(this->layerId))
     {
         return layer->removeGroup(this->events, false);
     }
@@ -328,7 +328,7 @@ AutomationEventsGroupRemoveAction::AutomationEventsGroupRemoveAction(ProjectTree
 
 bool AutomationEventsGroupRemoveAction::perform()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *layer = this->project.getLayerWithId<AutomationSequence>(this->layerId))
     {
         return layer->removeGroup(this->events, false);
     }
@@ -338,7 +338,7 @@ bool AutomationEventsGroupRemoveAction::perform()
 
 bool AutomationEventsGroupRemoveAction::undo()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *layer = this->project.getLayerWithId<AutomationSequence>(this->layerId))
     {
         return layer->insertGroup(this->events, false);
     }
@@ -402,7 +402,7 @@ AutomationEventsGroupChangeAction::AutomationEventsGroupChangeAction(ProjectTree
 
 bool AutomationEventsGroupChangeAction::perform()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *layer = this->project.getLayerWithId<AutomationSequence>(this->layerId))
     {
         return layer->changeGroup(this->eventsBefore, this->eventsAfter, false);
     }
@@ -412,7 +412,7 @@ bool AutomationEventsGroupChangeAction::perform()
 
 bool AutomationEventsGroupChangeAction::undo()
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *layer = this->project.getLayerWithId<AutomationSequence>(this->layerId))
     {
         return layer->changeGroup(this->eventsAfter, this->eventsBefore, false);
     }
@@ -428,7 +428,7 @@ int AutomationEventsGroupChangeAction::getSizeInUnits()
 
 UndoAction *AutomationEventsGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (AutomationLayer *layer = this->project.getLayerWithId<AutomationLayer>(this->layerId))
+    if (AutomationSequence *layer = this->project.getLayerWithId<AutomationSequence>(this->layerId))
     {
         if (AutomationEventsGroupChangeAction *nextChanger = dynamic_cast<AutomationEventsGroupChangeAction *>(nextAction))
         {

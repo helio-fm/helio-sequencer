@@ -19,7 +19,7 @@
 
 #include "Serializable.h"
 
-class MidiLayer;
+class MidiSequence;
 
 class MidiEvent : public Serializable
 {
@@ -34,7 +34,7 @@ public:
 
     //using Id = int64;
 
-    MidiEvent(MidiLayer *owner, float beat);
+    MidiEvent(MidiSequence *owner, float beat);
 
     ~MidiEvent() override;
 
@@ -45,7 +45,7 @@ public:
     // Accessors
     //===------------------------------------------------------------------===//
 
-    MidiLayer *getLayer() const noexcept;
+    MidiSequence *getLayer() const noexcept;
 
     Id getId() const noexcept;
 
@@ -71,7 +71,7 @@ public:
 
 protected:
 
-    MidiLayer *layer;
+    MidiSequence *layer;
 
     float beat;
 

@@ -16,14 +16,14 @@
 */
 
 #include "Common.h"
-#include "TimeSignaturesLayer.h"
+#include "TimeSignaturesSequence.h"
 #include "Note.h"
 #include "TimeSignatureEventActions.h"
 #include "SerializationKeys.h"
 #include "UndoStack.h"
 
 
-TimeSignaturesLayer::TimeSignaturesLayer(ProjectEventDispatcher &parent) : MidiLayer(parent)
+TimeSignaturesSequence::TimeSignaturesSequence(ProjectEventDispatcher &parent) : MidiSequence(parent)
 {
 }
 
@@ -32,7 +32,7 @@ TimeSignaturesLayer::TimeSignaturesLayer(ProjectEventDispatcher &parent) : MidiL
 // Import/export
 //===----------------------------------------------------------------------===//
 
-void TimeSignaturesLayer::importMidi(const MidiMessageSequence &sequence)
+void TimeSignaturesSequence::importMidi(const MidiMessageSequence &sequence)
 {
     this->clearUndoHistory();
     this->checkpoint();
@@ -63,7 +63,7 @@ void TimeSignaturesLayer::importMidi(const MidiMessageSequence &sequence)
 // Undoable track editing
 //===----------------------------------------------------------------------===//
 
-void TimeSignaturesLayer::silentImport(const MidiEvent &eventToImport)
+void TimeSignaturesSequence::silentImport(const MidiEvent &eventToImport)
 {
     const TimeSignatureEvent &signature = static_cast<const TimeSignatureEvent &>(eventToImport);
 
@@ -81,7 +81,7 @@ void TimeSignaturesLayer::silentImport(const MidiEvent &eventToImport)
     this->updateBeatRange(false);
 }
 
-MidiEvent *TimeSignaturesLayer::insert(const TimeSignatureEvent &signature, bool undoable)
+MidiEvent *TimeSignaturesSequence::insert(const TimeSignatureEvent &signature, bool undoable)
 {
     if (this->signaturesHashTable.contains(signature))
     {
@@ -112,7 +112,7 @@ MidiEvent *TimeSignaturesLayer::insert(const TimeSignatureEvent &signature, bool
     return nullptr;
 }
 
-bool TimeSignaturesLayer::remove(const TimeSignatureEvent &signature, bool undoable)
+bool TimeSignaturesSequence::remove(const TimeSignatureEvent &signature, bool undoable)
 {
     if (undoable)
     {
@@ -141,7 +141,7 @@ bool TimeSignaturesLayer::remove(const TimeSignatureEvent &signature, bool undoa
     return true;
 }
 
-bool TimeSignaturesLayer::change(const TimeSignatureEvent &signature,
+bool TimeSignaturesSequence::change(const TimeSignatureEvent &signature,
                                  const TimeSignatureEvent &newSignature,
                                  bool undoable)
 {
@@ -174,7 +174,7 @@ bool TimeSignaturesLayer::change(const TimeSignatureEvent &signature,
     return true;
 }
 
-bool TimeSignaturesLayer::insertGroup(Array<TimeSignatureEvent> &signatures, bool undoable)
+bool TimeSignaturesSequence::insertGroup(Array<TimeSignatureEvent> &signatures, bool undoable)
 {
     if (undoable)
     {
@@ -203,7 +203,7 @@ bool TimeSignaturesLayer::insertGroup(Array<TimeSignatureEvent> &signatures, boo
     return true;
 }
 
-bool TimeSignaturesLayer::removeGroup(Array<TimeSignatureEvent> &signatures, bool undoable)
+bool TimeSignaturesSequence::removeGroup(Array<TimeSignatureEvent> &signatures, bool undoable)
 {
     if (undoable)
     {
@@ -233,7 +233,7 @@ bool TimeSignaturesLayer::removeGroup(Array<TimeSignatureEvent> &signatures, boo
     return true;
 }
 
-bool TimeSignaturesLayer::changeGroup(Array<TimeSignatureEvent> &signaturesBefore,
+bool TimeSignaturesSequence::changeGroup(Array<TimeSignatureEvent> &signaturesBefore,
                                       Array<TimeSignatureEvent> &signaturesAfter,
                                       bool undoable)
 {
@@ -278,7 +278,7 @@ bool TimeSignaturesLayer::changeGroup(Array<TimeSignatureEvent> &signaturesBefor
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *TimeSignaturesLayer::serialize() const
+XmlElement *TimeSignaturesSequence::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::timeSignatures);
     
@@ -298,7 +298,7 @@ XmlElement *TimeSignaturesLayer::serialize() const
     return xml;
 }
 
-void TimeSignaturesLayer::deserialize(const XmlElement &xml)
+void TimeSignaturesSequence::deserialize(const XmlElement &xml)
 {
     this->reset();
 
@@ -338,7 +338,7 @@ void TimeSignaturesLayer::deserialize(const XmlElement &xml)
     this->notifyLayerChanged();
 }
 
-void TimeSignaturesLayer::reset()
+void TimeSignaturesSequence::reset()
 {
     this->midiEvents.clear();
     this->signaturesHashTable.clear();

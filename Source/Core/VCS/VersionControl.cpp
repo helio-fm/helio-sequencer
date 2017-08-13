@@ -21,7 +21,7 @@
 #include "VersionControlEditorPhone.h"
 #include "VersionControlEditorDefault.h"
 #include "TrackedItem.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "SerializationKeys.h"
 #include "Client.h"
 #include "Supervisor.h"

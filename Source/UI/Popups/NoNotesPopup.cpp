@@ -25,7 +25,7 @@
 #include "NotePopupListener.h"
 #include "NoteComponent.h"
 #include "PianoRoll.h"
-#include "PianoLayer.h"
+#include "PianoSequence.h"
 #include "Note.h"
 #include "App.h"
 #include "ChordTooltip.h"
@@ -61,7 +61,7 @@ static Label *createLabel(const String &text)
 
 //[/MiscUserDefs]
 
-NoNotesPopup::NoNotesPopup(PianoRoll *caller, MidiLayer *layer)
+NoNotesPopup::NoNotesPopup(PianoRoll *caller, MidiSequence *layer)
     : PopupMenuComponent(caller),
       roll(caller),
       targetLayer(layer),
@@ -475,7 +475,7 @@ static const float kDefaultChordVelocity = 0.35f;
 
 void NoNotesPopup::buildChord(int n1, int n2, int n3)
 {
-    if (PianoLayer *pianoLayer = dynamic_cast<PianoLayer *>(this->targetLayer))
+    if (PianoSequence *pianoLayer = dynamic_cast<PianoSequence *>(this->targetLayer))
     {
         this->cancelChangesIfAny();
 
@@ -508,7 +508,7 @@ void NoNotesPopup::buildChord(int n1, int n2, int n3)
 
 void NoNotesPopup::buildNewNote(bool shouldSendMidiMessage)
 {
-    if (PianoLayer *pianoLayer = dynamic_cast<PianoLayer *>(this->targetLayer))
+    if (PianoSequence *pianoLayer = dynamic_cast<PianoSequence *>(this->targetLayer))
     {
         this->cancelChangesIfAny();
 
@@ -575,7 +575,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="NoNotesPopup" template="../../Template"
                  componentName="" parentClasses="public PopupMenuComponent, public PopupButtonOwner"
-                 constructorParams="PianoRoll *caller, MidiLayer *layer" variableInitialisers="PopupMenuComponent(caller),&#10;roll(caller),&#10;targetLayer(layer),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0)"
+                 constructorParams="PianoRoll *caller, MidiSequence *layer" variableInitialisers="PopupMenuComponent(caller),&#10;roll(caller),&#10;targetLayer(layer),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0)"
                  snapPixels="8" snapActive="0" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="500" initialHeight="500">
   <METHODS>

@@ -27,7 +27,7 @@ public:
 
     AnnotationEvent(const AnnotationEvent &other);
 
-    explicit AnnotationEvent(MidiLayer *owner,
+    explicit AnnotationEvent(MidiSequence *owner,
                     float newBeat = 0.f,
                     String newDescription = "",
                     const Colour &newColour = Colours::white);

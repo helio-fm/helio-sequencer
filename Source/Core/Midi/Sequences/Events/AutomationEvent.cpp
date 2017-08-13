@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "AutomationEvent.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "Transport.h"
 #include "SerializationKeys.h"
 
@@ -38,7 +38,7 @@ AutomationEvent::AutomationEvent(const AutomationEvent &other) :
     this->id = other.getId();
 }
 
-AutomationEvent::AutomationEvent(MidiLayer *owner, float beatVal, float cValue) :
+AutomationEvent::AutomationEvent(MidiSequence *owner, float beatVal, float cValue) :
     MidiEvent(owner, beatVal),
     controllerValue(cValue),
     curvature(AUTOEVENT_DEFAULT_CURVATURE)
@@ -258,12 +258,12 @@ bool AutomationEvent::isPedalUpEvent() const noexcept
     return (this->controllerValue <= 0.5f);
 }
 
-AutomationEvent AutomationEvent::pedalUpEvent(MidiLayer *owner, float beatVal)
+AutomationEvent AutomationEvent::pedalUpEvent(MidiSequence *owner, float beatVal)
 {
     return AutomationEvent(owner, beatVal, pedalUpCV);
 }
 
-AutomationEvent AutomationEvent::pedalDownEvent(MidiLayer *owner, float beatVal)
+AutomationEvent AutomationEvent::pedalDownEvent(MidiSequence *owner, float beatVal)
 {
     return AutomationEvent(owner, beatVal, pedalDownCV);
 }

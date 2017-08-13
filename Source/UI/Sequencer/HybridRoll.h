@@ -17,7 +17,7 @@
 
 #pragma once
 
-class MidiLayer;
+class MidiSequence;
 class HybridLassoComponent;
 class ProjectTreeItem;
 class LongTapController;

@@ -21,7 +21,7 @@
 #include "OrchestraPit.h"
 #include "PlayerThread.h"
 #include "RendererThread.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "MidiEvent.h"
 
 #include "App.h"
@@ -173,7 +173,7 @@ void Transport::seekToPosition(double absPosition)
     this->broadcastSeek(absPosition, timeMs, realLengthMs);
 }
 
-void Transport::probeSoundAt(double absTrackPosition, const MidiLayer *limitToLayer)
+void Transport::probeSoundAt(double absTrackPosition, const MidiSequence *limitToLayer)
 {
     this->rebuildSequencesIfNeeded();
     
@@ -440,7 +440,7 @@ void Transport::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
     { this->stopPlayback(); }
     
     // a hack
-    if (newEvent.getLayer()->getControllerNumber() == MidiLayer::tempoController)
+    if (newEvent.getLayer()->getControllerNumber() == MidiSequence::tempoController)
     {
         this->seekToPosition(this->getSeekPosition());
     }
@@ -456,7 +456,7 @@ void Transport::onAddMidiEvent(const MidiEvent &event)
     { this->stopPlayback(); }
     
     // a hack
-    if (event.getLayer()->getControllerNumber() == MidiLayer::tempoController)
+    if (event.getLayer()->getControllerNumber() == MidiSequence::tempoController)
     {
         this->seekToPosition(this->getSeekPosition());
     }
@@ -474,13 +474,13 @@ void Transport::onRemoveMidiEvent(const MidiEvent &event)
     this->sequencesAreOutdated = true;
 }
 
-void Transport::onPostRemoveMidiEvent(MidiLayer *const layer)
+void Transport::onPostRemoveMidiEvent(MidiSequence *const layer)
 {
     if (this->player->isThreadRunning())
     { this->stopPlayback(); }
     
     // a hack to re-calculate length and current time
-    if (layer->getControllerNumber() == MidiLayer::tempoController)
+    if (layer->getControllerNumber() == MidiSequence::tempoController)
     {
         this->seekToPosition(this->getSeekPosition());
     }
@@ -488,7 +488,7 @@ void Transport::onPostRemoveMidiEvent(MidiLayer *const layer)
     this->sequencesAreOutdated = true;
 }
 
-void Transport::onChangeTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
+void Transport::onChangeTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (this->player->isThreadRunning())
     { this->stopPlayback(); }
@@ -497,7 +497,7 @@ void Transport::onChangeTrack(MidiLayer *const layer, Pattern *const pattern /*=
     this->updateLinkForLayer(layer);
 }
 
-void Transport::onAddTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
+void Transport::onAddTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (this->player->isThreadRunning())
     {this->stopPlayback(); }
@@ -507,7 +507,7 @@ void Transport::onAddTrack(MidiLayer *const layer, Pattern *const pattern /*= nu
     this->updateLinkForLayer(layer);
 }
 
-void Transport::onRemoveTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
+void Transport::onRemoveTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
 {
     if (this->player->isThreadRunning())
     {this->stopPlayback(); }
@@ -636,7 +636,7 @@ void Transport::rebuildSequencesIfNeeded()
         
         for (int i = 0; i < this->layersCache.size(); ++i)
         {
-            const MidiLayer *layer = this->layersCache.getUnchecked(i);
+            const MidiSequence *layer = this->layersCache.getUnchecked(i);
             MidiMessageSequence sequence(layer->exportMidi());
             sequence.addTimeToMessages(-this->trackStartMs);
             
@@ -663,7 +663,7 @@ ProjectSequences Transport::getSequences()
     return this->sequences;
 }
 
-void Transport::updateLinkForLayer(const MidiLayer *layer)
+void Transport::updateLinkForLayer(const MidiSequence *layer)
 {
 //    Instrument *targetInstrument = this->orchestra.findInstrumentById(layer->getInstrumentId());
 //    
@@ -704,7 +704,7 @@ void Transport::updateLinkForLayer(const MidiLayer *layer)
     this->linksCache.set(layer->getLayerId().toString(), this->orchestra.getInstruments()[0]);
 }
 
-void Transport::removeLinkForLayer(const MidiLayer *layer)
+void Transport::removeLinkForLayer(const MidiSequence *layer)
 {
     this->linksCache.remove(layer->getLayerId().toString());
 }

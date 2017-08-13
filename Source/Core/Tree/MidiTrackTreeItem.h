@@ -24,7 +24,7 @@
 #include "Delta.h"
 
 class Pattern;
-class MidiLayer;
+class MidiSequence;
 class ProjectTreeItem;
 class InstrumentDescription;
 
@@ -47,7 +47,7 @@ public:
     void showPage() override;
     void onRename(const String &newName) override;
 
-    inline MidiLayer *getLayer() const noexcept 
+    inline MidiSequence *getSequence() const noexcept 
     { return this->layer; }
 
     inline Pattern *getPattern() const noexcept 
@@ -77,7 +77,7 @@ public:
 	bool isTrackMuted() const noexcept override;
 	bool isTrackSolo() const noexcept override;
 
-	MidiLayer *getLayer() const noexcept override;
+	MidiSequence *getSequence() const noexcept override;
 	Pattern *getPattern() const noexcept override;
 
     //===------------------------------------------------------------------===//
@@ -87,9 +87,9 @@ public:
     void dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
     void dispatchAddEvent(const MidiEvent &event) override;
     void dispatchRemoveEvent(const MidiEvent &event) override;
-	void dispatchPostRemoveEvent(MidiLayer *const layer) override;
+	void dispatchPostRemoveEvent(MidiSequence *const layer) override;
 
-    void dispatchReloadLayer(MidiLayer *const layer) override;
+    void dispatchReloadLayer(MidiSequence *const layer) override;
     void dispatchChangeLayerBeatRange() override;
     
 	void dispatchAddClip(const Clip &clip) override;
@@ -122,7 +122,7 @@ protected:
 
     ProjectTreeItem *lastFoundParent;
 
-    ScopedPointer<MidiLayer> layer;
+    ScopedPointer<MidiSequence> layer;
 
     ScopedPointer<Pattern> pattern;
     

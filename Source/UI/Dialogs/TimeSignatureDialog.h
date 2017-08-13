@@ -21,7 +21,7 @@
 #include "FadingDialog.h"
 #include "TimeSignatureEvent.h"
 
-class TimeSignaturesLayer;
+class TimeSignaturesSequence;
 //[/Headers]
 
 #include "../Themes/PanelC.h"
@@ -35,13 +35,13 @@ class TimeSignatureDialog  : public FadingDialog,
 {
 public:
 
-    TimeSignatureDialog (Component &owner, TimeSignaturesLayer *signaturesLayer, const TimeSignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
+    TimeSignatureDialog (Component &owner, TimeSignaturesSequence *signaturesLayer, const TimeSignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
 
     ~TimeSignatureDialog();
 
     //[UserMethods]
 	static TimeSignatureDialog *createEditingDialog(Component &owner, const TimeSignatureEvent &event);
-	static TimeSignatureDialog *createAddingDialog(Component &owner, TimeSignaturesLayer *annotationsLayer, float targetBeat);
+	static TimeSignatureDialog *createAddingDialog(Component &owner, TimeSignaturesSequence *annotationsLayer, float targetBeat);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -61,7 +61,7 @@ private:
     //[UserVariables]
 
 	TimeSignatureEvent targetEvent;
-	TimeSignaturesLayer *targetLayer;
+	TimeSignaturesSequence *targetLayer;
 	Component &ownerComponent;
 
 	inline void cancelAndDisappear();

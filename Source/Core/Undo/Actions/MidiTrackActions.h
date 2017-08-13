@@ -53,3 +53,104 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE(MidiTrackRenameAction)
 };
+
+//===----------------------------------------------------------------------===//
+// Change Colour
+//===----------------------------------------------------------------------===//
+
+class MidiTrackChangeColourAction : public UndoAction
+{
+public:
+
+	explicit MidiTrackChangeColourAction(ProjectTreeItem &project) :
+		UndoAction(project) {}
+
+	MidiTrackChangeColourAction(ProjectTreeItem &project,
+		String layerId,
+		const Colour &newColour);
+
+	bool perform() override;
+	bool undo() override;
+	int getSizeInUnits() override;
+
+	XmlElement *serialize() const override;
+	void deserialize(const XmlElement &xml) override;
+	void reset() override;
+
+private:
+
+	String layerId;
+
+	Colour colourBefore;
+	Colour colourAfter;
+
+	JUCE_DECLARE_NON_COPYABLE(MidiTrackChangeColourAction)
+};
+
+
+//===----------------------------------------------------------------------===//
+// Change Instrument
+//===----------------------------------------------------------------------===//
+
+class MidiTrackChangeInstrumentAction : public UndoAction
+{
+public:
+
+	explicit MidiTrackChangeInstrumentAction(ProjectTreeItem &project) :
+		UndoAction(project) {}
+
+	MidiTrackChangeInstrumentAction(ProjectTreeItem &project,
+		String layerId,
+		String newInstrumentId);
+
+	bool perform() override;
+	bool undo() override;
+	int getSizeInUnits() override;
+
+	XmlElement *serialize() const override;
+	void deserialize(const XmlElement &xml) override;
+	void reset() override;
+
+private:
+
+	String layerId;
+
+	String instrumentIdBefore;
+	String instrumentIdAfter;
+
+	JUCE_DECLARE_NON_COPYABLE(MidiTrackChangeInstrumentAction)
+};
+
+
+//===----------------------------------------------------------------------===//
+// Mute/Unmute
+//===----------------------------------------------------------------------===//
+
+class MidiTrackMuteAction : public UndoAction
+{
+public:
+
+	explicit MidiTrackMuteAction(ProjectTreeItem &project) :
+		UndoAction(project) {}
+
+	MidiTrackMuteAction(ProjectTreeItem &project,
+		String layerId,
+		bool shouldBeMuted);
+
+	bool perform() override;
+	bool undo() override;
+	int getSizeInUnits() override;
+
+	XmlElement *serialize() const override;
+	void deserialize(const XmlElement &xml) override;
+	void reset() override;
+
+private:
+
+	String layerId;
+
+	bool muteStateBefore;
+	bool muteStateAfter;
+
+	JUCE_DECLARE_NON_COPYABLE(MidiTrackMuteAction)
+};

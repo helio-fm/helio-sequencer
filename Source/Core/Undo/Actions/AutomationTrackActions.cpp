@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "AutoLayerTreeItemActions.h"
+#include "AutomationTrackActions.h"
 #include "ProjectTreeItem.h"
 #include "AutomationTrackTreeItem.h"
 #include "TreeItem.h"
@@ -44,7 +44,7 @@ bool AutomationTrackInsertAction::perform()
     ScopedPointer<XmlElement> layerState = XmlDocument::parse(this->serializedState);
     layer->deserialize(*layerState);
     
-    this->layerId = layer->getLayer()->getLayerIdAsString();
+    this->layerId = layer->getSequence()->getLayerIdAsString();
     layer->onRename(this->xPath);
     
     return true;
@@ -109,7 +109,7 @@ bool AutomationTrackRemoveAction::perform()
     if (AutomationTrackTreeItem *treeItem =
         this->project.findChildByLayerId<AutomationTrackTreeItem>(this->layerId))
     {
-        this->numEvents = treeItem->getLayer()->size();
+        this->numEvents = treeItem->getSequence()->size();
         this->serializedTreeItem = treeItem->serialize();
         this->xPath = treeItem->getXPath();
         return TreeItem::deleteItem(treeItem);

@@ -34,10 +34,10 @@ public:
 
     ~ProjectTimeline() override;
 
-    inline MidiLayer *getAnnotations() const noexcept
+    inline MidiSequence *getAnnotations() const noexcept
     { return this->annotations; }
 
-    inline MidiLayer *getTimeSignatures() const noexcept
+    inline MidiSequence *getTimeSignatures() const noexcept
     { return this->timeSignatures; }
 
 
@@ -65,9 +65,9 @@ public:
     void dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
     void dispatchAddEvent(const MidiEvent &event) override;
     void dispatchRemoveEvent(const MidiEvent &event) override;
-	void dispatchPostRemoveEvent(MidiLayer *const layer) override;
+	void dispatchPostRemoveEvent(MidiSequence *const layer) override;
 
-    void dispatchReloadLayer(MidiLayer *const layer) override;
+    void dispatchReloadLayer(MidiSequence *const layer) override;
     void dispatchChangeLayerBeatRange() override;
 
 	void dispatchAddClip(const Clip &clip) override;
@@ -115,8 +115,8 @@ private:
     
     String name;
     
-    ScopedPointer<MidiLayer> annotations;
+    ScopedPointer<MidiSequence> annotations;
 
-    ScopedPointer<MidiLayer> timeSignatures;
+    ScopedPointer<MidiSequence> timeSignatures;
 
 };

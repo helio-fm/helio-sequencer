@@ -19,7 +19,7 @@
 
 class ProjectTreeItem;
 
-#include "AutomationLayer.h"
+#include "AutomationSequence.h"
 #include "UndoAction.h"
 
 

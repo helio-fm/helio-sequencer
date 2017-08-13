@@ -24,7 +24,7 @@
 //[MiscUserDefs]
 #include "AutomationTrackMap.h"
 #include "ComponentConnectorCurve.h"
-#include "AutomationLayer.h"
+#include "AutomationSequence.h"
 //[/MiscUserDefs]
 
 AutomationCurveHelper::AutomationCurveHelper(AutomationTrackMap &parent, const AutomationEvent &targetEvent, Component *target1, Component *target2)
@@ -147,7 +147,7 @@ void AutomationCurveHelper::mouseDrag (const MouseEvent& e)
             //Logger::writeToLog(String(newCurvature));
 
             // todo! right helper dragging
-            AutomationLayer *autoLayer = static_cast<AutomationLayer *>(this->event.getLayer());
+            AutomationSequence *autoLayer = static_cast<AutomationSequence *>(this->event.getLayer());
             autoLayer->change(this->event, this->event.withCurvature(newCurvature), true);
         }
     }

@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "TimeSignatureEventActions.h"
-#include "TimeSignaturesLayer.h"
+#include "TimeSignaturesSequence.h"
 #include "ProjectTreeItem.h"
 #include "SerializationKeys.h"
 
@@ -38,7 +38,7 @@ TimeSignatureEventInsertAction::TimeSignatureEventInsertAction(ProjectTreeItem &
 
 bool TimeSignatureEventInsertAction::perform()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *layer = this->project.getLayerWithId<TimeSignaturesSequence>(this->layerId))
     {
         return (layer->insert(this->event, false) != nullptr);
     }
@@ -48,7 +48,7 @@ bool TimeSignatureEventInsertAction::perform()
 
 bool TimeSignatureEventInsertAction::undo()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *layer = this->project.getLayerWithId<TimeSignaturesSequence>(this->layerId))
     {
         return layer->remove(this->event, false);
     }
@@ -98,7 +98,7 @@ TimeSignatureEventRemoveAction::TimeSignatureEventRemoveAction(ProjectTreeItem &
 
 bool TimeSignatureEventRemoveAction::perform()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *layer = this->project.getLayerWithId<TimeSignaturesSequence>(this->layerId))
     {
         return layer->remove(this->event, false);
     }
@@ -108,7 +108,7 @@ bool TimeSignatureEventRemoveAction::perform()
 
 bool TimeSignatureEventRemoveAction::undo()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *layer = this->project.getLayerWithId<TimeSignaturesSequence>(this->layerId))
     {
         return (layer->insert(this->event, false) != nullptr);
     }
@@ -160,7 +160,7 @@ TimeSignatureEventChangeAction::TimeSignatureEventChangeAction(ProjectTreeItem &
 
 bool TimeSignatureEventChangeAction::perform()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *layer = this->project.getLayerWithId<TimeSignaturesSequence>(this->layerId))
     {
         return layer->change(this->eventBefore, this->eventAfter, false);
     }
@@ -170,7 +170,7 @@ bool TimeSignatureEventChangeAction::perform()
 
 bool TimeSignatureEventChangeAction::undo()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *layer = this->project.getLayerWithId<TimeSignaturesSequence>(this->layerId))
     {
         return layer->change(this->eventAfter, this->eventBefore, false);
     }
@@ -185,7 +185,7 @@ int TimeSignatureEventChangeAction::getSizeInUnits()
 
 UndoAction *TimeSignatureEventChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *layer = this->project.getLayerWithId<TimeSignaturesSequence>(this->layerId))
     {
         if (TimeSignatureEventChangeAction *nextChanger = dynamic_cast<TimeSignatureEventChangeAction *>(nextAction))
         {
@@ -256,7 +256,7 @@ TimeSignatureEventsGroupInsertAction::TimeSignatureEventsGroupInsertAction(Proje
 
 bool TimeSignatureEventsGroupInsertAction::perform()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *layer = this->project.getLayerWithId<TimeSignaturesSequence>(this->layerId))
     {
         return layer->insertGroup(this->signatures, false);
     }
@@ -266,7 +266,7 @@ bool TimeSignatureEventsGroupInsertAction::perform()
 
 bool TimeSignatureEventsGroupInsertAction::undo()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *layer = this->project.getLayerWithId<TimeSignaturesSequence>(this->layerId))
     {
         return layer->removeGroup(this->signatures, false);
     }
@@ -328,7 +328,7 @@ TimeSignatureEventsGroupRemoveAction::TimeSignatureEventsGroupRemoveAction(Proje
 
 bool TimeSignatureEventsGroupRemoveAction::perform()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *layer = this->project.getLayerWithId<TimeSignaturesSequence>(this->layerId))
     {
         return layer->removeGroup(this->signatures, false);
     }
@@ -338,7 +338,7 @@ bool TimeSignatureEventsGroupRemoveAction::perform()
 
 bool TimeSignatureEventsGroupRemoveAction::undo()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *layer = this->project.getLayerWithId<TimeSignaturesSequence>(this->layerId))
     {
         return layer->insertGroup(this->signatures, false);
     }
@@ -402,7 +402,7 @@ TimeSignatureEventsGroupChangeAction::TimeSignatureEventsGroupChangeAction(Proje
 
 bool TimeSignatureEventsGroupChangeAction::perform()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *layer = this->project.getLayerWithId<TimeSignaturesSequence>(this->layerId))
     {
         return layer->changeGroup(this->eventsBefore, this->eventsAfter, false);
     }
@@ -412,7 +412,7 @@ bool TimeSignatureEventsGroupChangeAction::perform()
 
 bool TimeSignatureEventsGroupChangeAction::undo()
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *layer = this->project.getLayerWithId<TimeSignaturesSequence>(this->layerId))
     {
         return layer->changeGroup(this->eventsAfter, this->eventsBefore, false);
     }
@@ -428,7 +428,7 @@ int TimeSignatureEventsGroupChangeAction::getSizeInUnits()
 
 UndoAction *TimeSignatureEventsGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (TimeSignaturesLayer *layer = this->project.getLayerWithId<TimeSignaturesLayer>(this->layerId))
+    if (TimeSignaturesSequence *layer = this->project.getLayerWithId<TimeSignaturesSequence>(this->layerId))
     {
         if (TimeSignatureEventsGroupChangeAction *nextChanger = dynamic_cast<TimeSignatureEventsGroupChangeAction *>(nextAction))
         {

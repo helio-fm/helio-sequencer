@@ -17,14 +17,16 @@
 
 #pragma once
 
-#include "MidiLayer.h"
-#include "AnnotationEvent.h"
+#include "MidiSequence.h"
+#include "Note.h"
 
-class AnnotationsLayer : public MidiLayer
+class PianoRoll;
+
+class PianoSequence : public MidiSequence
 {
 public:
 
-    explicit AnnotationsLayer(ProjectEventDispatcher &parent);
+    explicit PianoSequence(ProjectEventDispatcher &parent);
 
 
     //===------------------------------------------------------------------===//
@@ -40,21 +42,36 @@ public:
 
     void silentImport(const MidiEvent &eventToImport) override;
     
-    MidiEvent *insert(const AnnotationEvent &annotationToCopy, bool undoable);
-
-    bool remove(const AnnotationEvent &annotation, bool undoable);
-
-    bool change(const AnnotationEvent &annotation, const AnnotationEvent &newAnnotation, bool undoable);
-
-    bool insertGroup(Array<AnnotationEvent> &annotations, bool undoable);
     
-    bool removeGroup(Array<AnnotationEvent> &annotations, bool undoable);
+    MidiEvent *insert(const Note &note, const bool undoable);
+
+    bool remove(const Note &note, const bool undoable);
+
+    bool change(const Note &note, const Note &newNote, const bool undoable);
+
+    bool insertGroup(Array<Note> &notes, bool undoable);
     
-    bool changeGroup(Array<AnnotationEvent> &annotationsBefore,
-                     Array<AnnotationEvent> &annotationsAfter,
+    bool removeGroup(Array<Note> &notes, bool undoable);
+    
+    bool changeGroup(Array<Note> &eventsBefore,
+                     Array<Note> &eventsAfter,
                      bool undoable);
 
-
+    
+    //===------------------------------------------------------------------===//
+    // Batch operations
+    //===------------------------------------------------------------------===//
+    
+    void transposeAll(int keyDelta, bool shouldCheckpoint = true);
+    
+    
+    //===------------------------------------------------------------------===//
+    // Accessors
+    //===------------------------------------------------------------------===//
+    
+    float getLastBeat() const override; // overriding to set beat+length
+    
+    
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
@@ -65,13 +82,18 @@ public:
 
     void reset() override;
 
+protected:
+
+	void clearQuick() override;
+
 private:
 
     // быстрый доступ к указателю на событие по соответствующим ему параметрам
-    HashMap<AnnotationEvent, AnnotationEvent *, AnnotationEventHashFunction> annotationsHashTable;
+    // todo вот прям быстрый? замени на dense_hash_map или flat_hash_map
+    HashMap<Note, Note *, NoteHashFunction> notesHashTable;
 
 private:
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AnnotationsLayer);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoSequence);
 
 };

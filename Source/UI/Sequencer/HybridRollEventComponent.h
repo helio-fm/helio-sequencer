@@ -18,7 +18,7 @@
 #pragma once
 
 class MidiEvent;
-class MidiLayer;
+class MidiSequence;
 class HybridRoll;
 
 #include "FloatBoundsComponent.h"

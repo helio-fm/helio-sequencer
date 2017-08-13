@@ -45,7 +45,7 @@ class Pattern;
 #include "TrackedItemsSource.h"
 #include "ProjectSequencesWrapper.h"
 #include "HybridRollEditMode.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 
 // todo depends on AudioCore
 class ProjectTreeItem :
@@ -86,12 +86,12 @@ public:
 
     void onRename(const String &newName) override;
 
-    void showEditor(MidiLayer *activeLayer, TreeItem *source);
-    void showEditorsGroup(Array<MidiLayer *> layersGroup, TreeItem *source);
-    void hideEditor(MidiLayer *activeLayer, TreeItem *source);
+    void showEditor(MidiSequence *activeLayer, TreeItem *source);
+    void showEditorsGroup(Array<MidiSequence *> layersGroup, TreeItem *source);
+    void hideEditor(MidiSequence *activeLayer, TreeItem *source);
 
     void updateActiveGroupEditors();
-	void activateLayer(MidiLayer* layer, bool selectOthers, bool deselectOthers);
+	void activateLayer(MidiSequence* layer, bool selectOthers, bool deselectOthers);
 
 
     //===------------------------------------------------------------------===//
@@ -156,9 +156,9 @@ public:
     // Accessors
     //===------------------------------------------------------------------===//
 
-    Array<MidiLayer *> getLayersList() const;
+    Array<MidiSequence *> getLayersList() const;
 
-    Array<MidiLayer *> getSelectedLayersList() const;
+    Array<MidiSequence *> getSelectedLayersList() const;
 
     Point<float> getTrackRangeInBeats() const;
 
@@ -192,11 +192,11 @@ public:
     void broadcastAddEvent(const MidiEvent &event);
     void broadcastChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent);
     void broadcastRemoveEvent(const MidiEvent &event);
-	void broadcastPostRemoveEvent(MidiLayer *const layer);
+	void broadcastPostRemoveEvent(MidiSequence *const layer);
 
-    void broadcastAddTrack(MidiLayer *const layer, Pattern *const pattern = nullptr);
-    void broadcastChangeTrack(MidiLayer *const layer, Pattern *const pattern = nullptr);
-    void broadcastRemoveTrack(MidiLayer *const layer, Pattern *const pattern = nullptr);
+    void broadcastAddTrack(MidiSequence *const layer, Pattern *const pattern = nullptr);
+    void broadcastChangeTrack(MidiSequence *const layer, Pattern *const pattern = nullptr);
+    void broadcastRemoveTrack(MidiSequence *const layer, Pattern *const pattern = nullptr);
 
     void broadcastAddClip(const Clip &clip);
     void broadcastChangeClip(const Clip &oldClip, const Clip &newClip);
@@ -250,7 +250,7 @@ protected:
 
 private:
 
-    void collectLayers(Array<MidiLayer *> &resultArray, bool onlySelectedLayers = false) const;
+    void collectLayers(Array<MidiSequence *> &resultArray, bool onlySelectedLayers = false) const;
 
     ScopedPointer<Autosaver> autosaver;
     ScopedPointer<Transport> transport;
@@ -284,10 +284,10 @@ private:
 
 private:
 
-    void registerVcsItem(const MidiLayer *layer);
+    void registerVcsItem(const MidiSequence *layer);
     void registerVcsItem(const Pattern *pattern);
 
-    void unregisterVcsItem(const MidiLayer *layer);
+    void unregisterVcsItem(const MidiSequence *layer);
     void unregisterVcsItem(const Pattern *pattern);
 
     ReadWriteLock vcsInfoLock;
@@ -298,7 +298,7 @@ private:
     ScopedPointer<UndoStack> undoStack;
 
     bool isLayersHashOutdated;
-    HashMap<String, WeakReference<MidiLayer> > layersHash;
+    HashMap<String, WeakReference<MidiSequence> > layersHash;
 
     void rebuildLayersHashIfNeeded();
 

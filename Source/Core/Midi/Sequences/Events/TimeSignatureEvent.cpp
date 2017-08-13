@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "TimeSignatureEvent.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "Transport.h"
 #include "SerializationKeys.h"
 
@@ -35,7 +35,7 @@ TimeSignatureEvent::TimeSignatureEvent(const TimeSignatureEvent &other) :
     this->id = other.getId();
 }
 
-TimeSignatureEvent::TimeSignatureEvent(MidiLayer *owner,
+TimeSignatureEvent::TimeSignatureEvent(MidiSequence *owner,
                                        float newBeat,
                                        int newNumerator,
                                        int newDenominator) :

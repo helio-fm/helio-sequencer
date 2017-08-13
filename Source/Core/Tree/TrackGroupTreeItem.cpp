@@ -216,11 +216,11 @@ void TrackGroupTreeItem::showPage()
     
     Array<MidiTrackTreeItem *> myLayerItems(this->findChildrenOfType<MidiTrackTreeItem>());
     
-    Array<MidiLayer *> myLayers;
+    Array<MidiSequence *> myLayers;
     
     for (int i = 0; i < myLayerItems.size(); ++i)
     {
-        myLayers.add(myLayerItems.getUnchecked(i)->getLayer());
+        myLayers.add(myLayerItems.getUnchecked(i)->getSequence());
     }
     
     if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())

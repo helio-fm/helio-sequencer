@@ -20,7 +20,7 @@
 
 #include "PlayerThread.h"
 #include "Instrument.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 
 #include "DataEncoder.h"
 

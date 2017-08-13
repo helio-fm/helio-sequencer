@@ -18,13 +18,13 @@
 #include "Common.h"
 #include "AutomationClipComponent.h"
 #include "ProjectTreeItem.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "MidiEvent.h"
 #include "HybridRoll.h"
 #include "Pattern.h"
-#include "AutomationLayer.h"
+#include "AutomationSequence.h"
 
-AutomationClipComponent::AutomationClipComponent(AutomationLayer *targetLayer,
+AutomationClipComponent::AutomationClipComponent(AutomationSequence *targetLayer,
 	HybridRoll &editor, Clip clip) :
 	ClipComponent(editor, clip),
 	layer(targetLayer)

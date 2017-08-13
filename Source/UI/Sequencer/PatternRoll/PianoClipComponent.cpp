@@ -18,13 +18,13 @@
 #include "Common.h"
 #include "PianoClipComponent.h"
 #include "ProjectTreeItem.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "MidiEvent.h"
 #include "HybridRoll.h"
 #include "Pattern.h"
-#include "PianoLayer.h"
+#include "PianoSequence.h"
 
-PianoClipComponent::PianoClipComponent(PianoLayer *targetLayer,
+PianoClipComponent::PianoClipComponent(PianoSequence *targetLayer,
 	HybridRoll &editor, Clip clip) :
 	ClipComponent(editor, clip),
 	layer(targetLayer)

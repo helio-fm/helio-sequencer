@@ -27,8 +27,8 @@
 
 #include "Pattern.h"
 #include "PatternDeltas.h"
-#include "PianoLayer.h"
-#include "AutomationLayer.h"
+#include "PianoSequence.h"
+#include "AutomationSequence.h"
 #include "PianoRoll.h"
 #include "Note.h"
 
@@ -175,7 +175,7 @@ bool MidiTrackTreeItem::isTrackSolo() const noexcept
 	return this->solo;
 }
 
-MidiLayer *MidiTrackTreeItem::getLayer() const noexcept
+MidiSequence *MidiTrackTreeItem::getSequence() const noexcept
 {
 	return this->layer;
 }
@@ -330,7 +330,7 @@ void MidiTrackTreeItem::dispatchRemoveEvent(const MidiEvent &event)
     }
 }
 
-void MidiTrackTreeItem::dispatchPostRemoveEvent(MidiLayer *const layer)
+void MidiTrackTreeItem::dispatchPostRemoveEvent(MidiSequence *const layer)
 {
 	jassert(layer == this->layer);
 	if (this->lastFoundParent != nullptr)
@@ -339,7 +339,7 @@ void MidiTrackTreeItem::dispatchPostRemoveEvent(MidiLayer *const layer)
     }
 }
 
-void MidiTrackTreeItem::dispatchReloadLayer(MidiLayer *const layer)
+void MidiTrackTreeItem::dispatchReloadLayer(MidiSequence *const layer)
 {
 	jassert(layer == this->layer);
 	if (this->lastFoundParent != nullptr)

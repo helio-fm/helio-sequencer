@@ -24,7 +24,7 @@
 //[MiscUserDefs]
 #include "TriggersTrackMap.h"
 #include "TriggerEventConnector.h"
-#include "AutomationLayer.h"
+#include "AutomationSequence.h"
 
 // a hack
 //#define proportionOfWidth(x) ((this->getWidth() * x) + (this->getWidth() - this->realBounds.getWidth()))
@@ -198,7 +198,7 @@ void TriggerEventComponent::mouseUp (const MouseEvent& e)
         if (e.getDistanceFromDragStart() < 2)
         {
 #if 0
-            AutomationLayer *autoLayer = static_cast<AutomationLayer *>(this->event.getLayer());
+            AutomationSequence *autoLayer = static_cast<AutomationSequence *>(this->event.getLayer());
 
             const int myIndex = autoLayer->indexOfSorted(&this->event);
             const bool hasPreviousEvent = (myIndex > 0);
@@ -252,7 +252,7 @@ void TriggerEventComponent::mouseUp (const MouseEvent& e)
 void TriggerEventComponent::drag(float targetBeat)
 {
     float newRoundBeat = targetBeat;
-    AutomationLayer *autoLayer = static_cast<AutomationLayer *>(this->event.getLayer());
+    AutomationSequence *autoLayer = static_cast<AutomationSequence *>(this->event.getLayer());
 
     // ограничим перемещение отрезком между двумя соседними компонентами
     const int myIndex = autoLayer->indexOfSorted(&this->event);

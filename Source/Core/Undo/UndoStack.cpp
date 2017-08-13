@@ -118,9 +118,9 @@ struct UndoStack::ActionSet
         else if (tagName == Serialization::Undo::autoLayerTreeItemInsertAction)         { return new AutomationTrackInsertAction(this->project); }
         else if (tagName == Serialization::Undo::autoLayerTreeItemRemoveAction)         { return new AutomationTrackRemoveAction(this->project); }
         else if (tagName == Serialization::Undo::layerTreeItemRenameAction)             { return new MidiTrackRenameAction(this->project); }
-        else if (tagName == Serialization::Undo::midiLayerChangeColourAction)           { return new MidiLayerChangeColourAction(this->project); }
-        else if (tagName == Serialization::Undo::midiLayerChangeInstrumentAction)       { return new MidiLayerChangeInstrumentAction(this->project); }
-        else if (tagName == Serialization::Undo::midiLayerMuteAction)                   { return new MidiLayerMuteAction(this->project); }
+        else if (tagName == Serialization::Undo::midiLayerChangeColourAction)           { return new MidiTrackChangeColourAction(this->project); }
+        else if (tagName == Serialization::Undo::midiLayerChangeInstrumentAction)       { return new MidiTrackChangeInstrumentAction(this->project); }
+        else if (tagName == Serialization::Undo::midiLayerMuteAction)                   { return new MidiTrackMuteAction(this->project); }
 		else if (tagName == Serialization::Undo::patternClipInsertAction)				{ return new PatternClipInsertAction(this->project); }
 		else if (tagName == Serialization::Undo::patternClipRemoveAction)				{ return new PatternClipRemoveAction(this->project); }
 		else if (tagName == Serialization::Undo::patternClipChangeAction)				{ return new PatternClipChangeAction(this->project); }

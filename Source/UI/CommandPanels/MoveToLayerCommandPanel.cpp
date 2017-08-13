@@ -27,7 +27,7 @@
 #include "MainLayout.h"
 #include "AudioCore.h"
 #include "Instrument.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "InternalClipboard.h"
 #include "App.h"
 #include "CommandIDs.h"
@@ -63,14 +63,14 @@ void MoveToLayerCommandPanel::handleCommandMessage(int commandId)
 
 		if (NoteComponent *note = dynamic_cast<NoteComponent *>(this->roll.getLassoSelection().getSelectedItem(0)))
 		{
-			const MidiLayer *layerOfFirstSelected = (numSelected > 0) ? (note->getNote().getLayer()) : nullptr;
+			const MidiSequence *layerOfFirstSelected = (numSelected > 0) ? (note->getNote().getLayer()) : nullptr;
 			const bool hasMultiLayerSelection = (selections.size() > 1);
-			const bool alreadyBelongsTo = hasMultiLayerSelection ? false : (layerItems[layerIndex]->getLayer() == layerOfFirstSelected);
+			const bool alreadyBelongsTo = hasMultiLayerSelection ? false : (layerItems[layerIndex]->getSequence() == layerOfFirstSelected);
 
 			if (!alreadyBelongsTo)
 			{
 				//Logger::writeToLog("Moving notes to " + layerItems[layerIndex]->getXPath());
-				PianoRollToolbox::moveToLayer(this->roll.getLassoSelection(), layerItems[layerIndex]->getLayer());
+				PianoRollToolbox::moveToLayer(this->roll.getLassoSelection(), layerItems[layerIndex]->getSequence());
 				layerItems[layerIndex]->setSelected(false, false, sendNotification);
 				layerItems[layerIndex]->setSelected(true, true, sendNotification);
 				this->dismiss();
@@ -98,9 +98,9 @@ void MoveToLayerCommandPanel::initLayersPanel(bool shouldAddBackButton)
         const Lasso::GroupedSelections &selections = this->roll.getLassoSelection().getGroupedSelections();
         const int numSelected = this->roll.getLassoSelection().getNumSelected();
 		const auto &event = this->roll.getLassoSelection().getFirstAs<NoteComponent>()->getNote();
-        const MidiLayer *layerOfFirstSelected = (numSelected > 0) ? (event.getLayer()) : nullptr;
+        const MidiSequence *layerOfFirstSelected = (numSelected > 0) ? (event.getSequence()) : nullptr;
         const bool hasMultiLayerSelection = (selections.size() > 1);
-        const bool belongsTo = hasMultiLayerSelection ? false : (layers.getUnchecked(i)->getLayer() == layerOfFirstSelected);
+        const bool belongsTo = hasMultiLayerSelection ? false : (layers.getUnchecked(i)->getSequence() == layerOfFirstSelected);
         
         const String name(layers.getUnchecked(i)->getXPath());
         const Colour colour(layers.getUnchecked(i)->getColour());

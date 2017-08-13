@@ -21,8 +21,8 @@ class PianoRoll;
 class PatternRoll;
 class HybridRoll;
 class RollsSwitchingProxy;
-class MidiLayer;
-class AutomationLayer;
+class MidiSequence;
+class AutomationSequence;
 class TrackScroller;
 class ProjectTreeItem;
 class HybridRollCommandPanel;
@@ -43,11 +43,11 @@ public:
     explicit SequencerLayout(ProjectTreeItem &parentProject);
     ~SequencerLayout() override;
 
-    void setActiveMidiLayers(Array<MidiLayer *> tracks, MidiLayer *primaryTrack);
+    void setActiveMidiLayers(Array<MidiSequence *> tracks, MidiSequence *primaryTrack);
     
     // returns true if editor was shown, else returns false
-    bool toggleShowAutomationEditor(AutomationLayer *targetLayer);
-    void hideAutomationEditor(AutomationLayer *targetLayer);
+    bool toggleShowAutomationEditor(AutomationSequence *targetLayer);
+    void hideAutomationEditor(AutomationSequence *targetLayer);
     
     HybridRoll *getRoll() const;
 

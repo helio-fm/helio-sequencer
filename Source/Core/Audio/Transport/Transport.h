@@ -51,7 +51,7 @@ public:
     void seekToPosition(double absPosition);
     
     void probeSoundAt(double absTrackPosition,
-                      const MidiLayer *limitToLayer = nullptr);
+                      const MidiSequence *limitToLayer = nullptr);
 
     
     void startPlaybackLooped(double absLoopStart, double absLoopEnd);
@@ -111,15 +111,15 @@ public:
     
     void onRemoveMidiEvent(const MidiEvent &event) override;
     
-    void onPostRemoveMidiEvent(MidiLayer *const layer) override;
+    void onPostRemoveMidiEvent(MidiSequence *const layer) override;
 
-    void onChangeTrack(MidiLayer *const layer,
+    void onChangeTrack(MidiSequence *const layer,
 		Pattern *const pattern = nullptr) override;
     
-    void onAddTrack(MidiLayer *const layer,
+    void onAddTrack(MidiSequence *const layer,
 		Pattern *const pattern = nullptr) override;
     
-    void onRemoveTrack(MidiLayer *const layer,
+    void onRemoveTrack(MidiSequence *const layer,
 		Pattern *const pattern = nullptr) override;
     
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
@@ -166,11 +166,11 @@ private:
     ProjectSequences sequences;
     bool sequencesAreOutdated;
     
-    Array<const MidiLayer *> layersCache;
+    Array<const MidiSequence *> layersCache;
     HashMap<String, Instrument *> linksCache; // layer id : instrument
     
-    void updateLinkForLayer(const MidiLayer *layer);
-    void removeLinkForLayer(const MidiLayer *layer);
+    void updateLinkForLayer(const MidiSequence *layer);
+    void removeLinkForLayer(const MidiSequence *layer);
     
 private:
     

@@ -23,7 +23,7 @@
 
 //[MiscUserDefs]
 #include "CommandIDs.h"
-#include "TimeSignaturesLayer.h"
+#include "TimeSignaturesSequence.h"
 
 static StringArray getMeters()
 {
@@ -41,7 +41,7 @@ static StringArray getMeters()
 }
 //[/MiscUserDefs]
 
-TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesLayer *signaturesLayer, const TimeSignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
+TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequence *signaturesLayer, const TimeSignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
     : targetEvent(editedEvent),
       targetLayer(signaturesLayer),
       ownerComponent(owner),
@@ -308,10 +308,10 @@ void TimeSignatureDialog::inputAttemptWhenModal()
 
 TimeSignatureDialog *TimeSignatureDialog::createEditingDialog(Component &owner, const TimeSignatureEvent &event)
 {
-	return new TimeSignatureDialog(owner, static_cast<TimeSignaturesLayer *>(event.getLayer()), event, false, 0.f);
+	return new TimeSignatureDialog(owner, static_cast<TimeSignaturesSequence *>(event.getLayer()), event, false, 0.f);
 }
 
-TimeSignatureDialog *TimeSignatureDialog::createAddingDialog(Component &owner, TimeSignaturesLayer *annotationsLayer, float targetBeat)
+TimeSignatureDialog *TimeSignatureDialog::createAddingDialog(Component &owner, TimeSignaturesSequence *annotationsLayer, float targetBeat)
 {
 	return new TimeSignatureDialog(owner, annotationsLayer, TimeSignatureEvent(), true, targetBeat);
 }
@@ -390,7 +390,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="TimeSignatureDialog" template="../../Template"
                  componentName="" parentClasses="public FadingDialog, public TextEditorListener"
-                 constructorParams="Component &amp;owner, TimeSignaturesLayer *signaturesLayer, const TimeSignatureEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
+                 constructorParams="Component &amp;owner, TimeSignaturesSequence *signaturesLayer, const TimeSignatureEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
                  variableInitialisers="targetEvent(editedEvent),&#10;targetLayer(signaturesLayer),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="370" initialHeight="165">

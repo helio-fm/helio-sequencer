@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "Note.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "Transport.h"
 #include "SerializationKeys.h"
 
@@ -28,7 +28,7 @@ Note::Note() : MidiEvent(nullptr, 0.f)
     //jassertfalse;
 }
 
-Note::Note(MidiLayer *owner,
+Note::Note(MidiSequence *owner,
 	int keyVal, float beatVal,
 	float lengthVal, float velocityVal) :
     MidiEvent(owner, beatVal),
@@ -47,7 +47,7 @@ Note::Note(const Note &other) :
     this->id = other.getId();
 }
 
-Note::Note(MidiLayer *newOwner, const Note &parametersToCopy) :
+Note::Note(MidiSequence *newOwner, const Note &parametersToCopy) :
     MidiEvent(newOwner, parametersToCopy.beat),
     key(parametersToCopy.key),
     length(parametersToCopy.length),
@@ -75,7 +75,7 @@ Array<MidiMessage> Note::getSequence() const
     return result;
 }
 
-Note Note::copyWithNewId(MidiLayer *newOwner) const
+Note Note::copyWithNewId(MidiSequence *newOwner) const
 {
     Note n(*this);
     n.id = this->createId();

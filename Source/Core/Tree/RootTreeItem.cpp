@@ -28,13 +28,13 @@
 #include "MainLayout.h"
 #include "DataEncoder.h"
 #include "Icons.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "AutomationEvent.h"
 #include "RecentFilesList.h"
 #include "ProjectInfo.h"
 #include "WorkspaceMenu.h"
 #include "AutomationEvent.h"
-#include "AutomationLayer.h"
+#include "AutomationSequence.h"
 #include "App.h"
 #include "Workspace.h"
 
@@ -224,34 +224,34 @@ ProjectTreeItem *RootTreeItem::createDefaultProjectChildren(ProjectTreeItem *new
 {
     VersionControlTreeItem *vcs = this->addVCS(newProject);
     
-    this->addPianoLayer(newProject, "Arps")->getLayer()->setColour(Colours::orangered);
-    this->addPianoLayer(newProject, "Counterpoint")->getLayer()->setColour(Colours::gold);
-    this->addPianoLayer(newProject, "Melodic")->getLayer()->setColour(Colours::chartreuse);
+    this->addPianoLayer(newProject, "Arps")->getSequence()->setColour(Colours::orangered);
+    this->addPianoLayer(newProject, "Counterpoint")->getSequence()->setColour(Colours::gold);
+    this->addPianoLayer(newProject, "Melodic")->getSequence()->setColour(Colours::chartreuse);
     
 //#if HELIO_DESKTOP
 //    
 //    LayerGroupTreeItem *group1 = this->addGroup(newProject, "Intro");
-//    this->addPianoLayer(group1, "Arpeggio")->getLayer()->setColour(Colours::orangered);
-//    this->addPianoLayer(group1, "Theme")->getLayer()->setColour(Colours::greenyellow);
+//    this->addPianoLayer(group1, "Arpeggio")->getSequence()->setColour(Colours::orangered);
+//    this->addPianoLayer(group1, "Theme")->getSequence()->setColour(Colours::greenyellow);
 //    
 //    LayerGroupTreeItem *group2 = this->addGroup(newProject, "Middle");
-//    this->addPianoLayer(group2, "Arpeggio")->getLayer()->setColour(Colours::red);
-//    this->addPianoLayer(group2, "Theme")->getLayer()->setColour(Colours::lime);
+//    this->addPianoLayer(group2, "Arpeggio")->getSequence()->setColour(Colours::red);
+//    this->addPianoLayer(group2, "Theme")->getSequence()->setColour(Colours::lime);
 //    
 //    LayerGroupTreeItem *group3 = this->addGroup(newProject, "Outro");
-//    this->addPianoLayer(group3, "Arpeggio")->getLayer()->setColour(Colours::deeppink);
-//    this->addPianoLayer(group3, "Theme")->getLayer()->setColour(Colours::royalblue);
+//    this->addPianoLayer(group3, "Arpeggio")->getSequence()->setColour(Colours::deeppink);
+//    this->addPianoLayer(group3, "Theme")->getSequence()->setColour(Colours::royalblue);
 //    
 //#elif HELIO_MOBILE
 //    
-//    this->addPianoLayer(newProject, "Intro Arp")->getLayer()->setColour(Colours::orangered);
-//    this->addPianoLayer(newProject, "Intro Theme")->getLayer()->setColour(Colours::greenyellow);
+//    this->addPianoLayer(newProject, "Intro Arp")->getSequence()->setColour(Colours::orangered);
+//    this->addPianoLayer(newProject, "Intro Theme")->getSequence()->setColour(Colours::greenyellow);
 //    
-//    this->addPianoLayer(newProject, "Middle Arp")->getLayer()->setColour(Colours::red);
-//    this->addPianoLayer(newProject, "Middle Theme")->getLayer()->setColour(Colours::lime);
+//    this->addPianoLayer(newProject, "Middle Arp")->getSequence()->setColour(Colours::red);
+//    this->addPianoLayer(newProject, "Middle Theme")->getSequence()->setColour(Colours::lime);
 //    
-//    this->addPianoLayer(newProject, "Outro Arp")->getLayer()->setColour(Colours::deeppink);
-//    this->addPianoLayer(newProject, "Outro Theme")->getLayer()->setColour(Colours::royalblue);
+//    this->addPianoLayer(newProject, "Outro Arp")->getSequence()->setColour(Colours::deeppink);
+//    this->addPianoLayer(newProject, "Outro Theme")->getSequence()->setColour(Colours::royalblue);
 //    
 //#endif
     
@@ -297,7 +297,7 @@ MidiTrackTreeItem *RootTreeItem::addPianoLayer(TreeItem *parent, const String &n
 MidiTrackTreeItem *RootTreeItem::addAutoLayer(TreeItem *parent, const String &name, int controllerNumber)
 {
     MidiTrackTreeItem *item = new AutomationTrackTreeItem(name);
-    AutomationLayer *itemLayer = static_cast<AutomationLayer *>(item->getLayer());
+    AutomationSequence *itemLayer = static_cast<AutomationSequence *>(item->getSequence());
     parent->addChildTreeItem(item);
     itemLayer->setControllerNumber(controllerNumber);
     itemLayer->insert(AutomationEvent(itemLayer, 0, 0.5), false);

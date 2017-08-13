@@ -21,7 +21,7 @@
 #include "PianoLayerDeltas.h"
 #include "PatternDiffLogic.h"
 #include "Note.h"
-#include "PianoLayer.h"
+#include "PianoSequence.h"
 #include "ProjectEventDispatcher.h"
 #include "SerializationKeys.h"
 
@@ -43,7 +43,7 @@ static NewSerializedDelta createInstrumentDiff(const XmlElement *state, const Xm
 
 static Array<NewSerializedDelta> createEventsDiffs(const XmlElement *state, const XmlElement *changes);
 
-static void deserializeLayerChanges(MidiLayer &layer,
+static void deserializeLayerChanges(MidiSequence &layer,
     const XmlElement *state, const XmlElement *changes,
     OwnedArray<Note> &stateNotes, OwnedArray<Note> &changesNotes);
 
@@ -349,7 +349,7 @@ XmlElement *mergeInstrument(const XmlElement *state, const XmlElement *changes)
 XmlElement *mergeNotesAdded(const XmlElement *state, const XmlElement *changes)
 {
 	EmptyEventDispatcher dispatcher;
-    PianoLayer emptyLayer(dispatcher);
+    PianoSequence emptyLayer(dispatcher);
     OwnedArray<Note> stateNotes;
     OwnedArray<Note> changesNotes;
     deserializeLayerChanges(emptyLayer, state, changes, stateNotes, changesNotes);
@@ -384,7 +384,7 @@ XmlElement *mergeNotesAdded(const XmlElement *state, const XmlElement *changes)
 XmlElement *mergeNotesRemoved(const XmlElement *state, const XmlElement *changes)
 {
 	EmptyEventDispatcher dispatcher;
-    PianoLayer emptyLayer(dispatcher);
+    PianoSequence emptyLayer(dispatcher);
     OwnedArray<Note> stateNotes;
     OwnedArray<Note> changesNotes;
     deserializeLayerChanges(emptyLayer, state, changes, stateNotes, changesNotes);
@@ -416,7 +416,7 @@ XmlElement *mergeNotesRemoved(const XmlElement *state, const XmlElement *changes
 XmlElement *mergeNotesChanged(const XmlElement *state, const XmlElement *changes)
 {
 	EmptyEventDispatcher dispatcher;
-    PianoLayer emptyLayer(dispatcher);
+    PianoSequence emptyLayer(dispatcher);
     OwnedArray<Note> stateNotes;
     OwnedArray<Note> changesNotes;
     deserializeLayerChanges(emptyLayer, state, changes, stateNotes, changesNotes);
@@ -464,7 +464,7 @@ NewSerializedDelta createPathDiff(const XmlElement *state, const XmlElement *cha
 
 NewSerializedDelta createMuteDiff(const XmlElement *state, const XmlElement *changes)
 {
-    const bool muted = MidiLayer::isMuted(changes->getStringAttribute(Serialization::VCS::delta));
+    const bool muted = MidiSequence::isMuted(changes->getStringAttribute(Serialization::VCS::delta));
     NewSerializedDelta res;
     res.deltaData = new XmlElement(*changes);
     res.delta = new Delta(muted ? 
@@ -494,7 +494,7 @@ NewSerializedDelta createInstrumentDiff(const XmlElement *state, const XmlElemen
 Array<NewSerializedDelta> createEventsDiffs(const XmlElement *state, const XmlElement *changes)
 {
 	EmptyEventDispatcher dispatcher;
-    PianoLayer emptyLayer(dispatcher);
+    PianoSequence emptyLayer(dispatcher);
     OwnedArray<Note> stateNotes;
     OwnedArray<Note> changesNotes;
 
@@ -601,7 +601,7 @@ Array<NewSerializedDelta> createEventsDiffs(const XmlElement *state, const XmlEl
 }
 
 
-void deserializeLayerChanges(MidiLayer &layer,
+void deserializeLayerChanges(MidiSequence &layer,
         const XmlElement *state,
         const XmlElement *changes,
         OwnedArray<Note> &stateNotes,

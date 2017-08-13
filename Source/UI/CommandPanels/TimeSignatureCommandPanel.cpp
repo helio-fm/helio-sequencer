@@ -23,10 +23,10 @@
 #include "Icons.h"
 #include "HybridRoll.h"
 #include "TimeSignatureEvent.h"
-#include "TimeSignaturesLayer.h"
+#include "TimeSignaturesSequence.h"
 #include "PianoTrackTreeItem.h"
 #include "ProjectTimeline.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "App.h"
 
 TimeSignatureCommandPanel::TimeSignatureCommandPanel(ProjectTreeItem &parentProject, 
@@ -72,13 +72,13 @@ void TimeSignatureCommandPanel::handleCommandMessage(int commandId)
             Array<TimeSignatureEvent> groupBefore, groupAfter;
 			groupBefore.add(this->event);
 			groupAfter.add(this->event.withNumerator(numerator).withDenominator(denominator));
-			TimeSignaturesLayer *autoLayer = static_cast<TimeSignaturesLayer *>(this->event.getLayer());
+			TimeSignaturesSequence *autoLayer = static_cast<TimeSignaturesSequence *>(this->event.getLayer());
             autoLayer->checkpoint();
             autoLayer->changeGroup(groupBefore, groupAfter, true);
         }
         else if (commandId == CommandIDs::DeleteTimeSignature)
         {
-			TimeSignaturesLayer *autoLayer = static_cast<TimeSignaturesLayer *>(this->event.getLayer());
+			TimeSignaturesSequence *autoLayer = static_cast<TimeSignaturesSequence *>(this->event.getLayer());
             autoLayer->checkpoint();
             autoLayer->remove(this->event, true);
         }

@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "HybridRollHeader.h"
 #include "HybridRoll.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "Transport.h"
 #include "AnnotationsTrackMap.h"
 #include "Origami.h"

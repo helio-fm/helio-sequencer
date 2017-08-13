@@ -18,8 +18,8 @@
 #include "Common.h"
 #include "PianoTrackMap.h"
 #include "ProjectTreeItem.h"
-#include "MidiLayer.h"
-#include "PianoLayer.h"
+#include "MidiSequence.h"
+#include "PianoSequence.h"
 #include "PlayerThread.h"
 #include "HybridRoll.h"
 #include "AnnotationEvent.h"
@@ -174,16 +174,16 @@ void PianoTrackMap::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
-void PianoTrackMap::onChangeTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
+void PianoTrackMap::onChangeTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
 {
-    if (!dynamic_cast<const PianoLayer *>(layer)) { return; }
+    if (!dynamic_cast<const PianoSequence *>(layer)) { return; }
 
     this->reloadTrackMap();
 }
 
-void PianoTrackMap::onAddTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
+void PianoTrackMap::onAddTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
 {
-    if (!dynamic_cast<const PianoLayer *>(layer)) { return; }
+    if (!dynamic_cast<const PianoSequence *>(layer)) { return; }
 
     if (layer->size() > 0)
     {
@@ -191,9 +191,9 @@ void PianoTrackMap::onAddTrack(MidiLayer *const layer, Pattern *const pattern /*
     }
 }
 
-void PianoTrackMap::onRemoveTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
+void PianoTrackMap::onRemoveTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
 {
-    if (!dynamic_cast<const PianoLayer *>(layer)) { return; }
+    if (!dynamic_cast<const PianoSequence *>(layer)) { return; }
 
     for (int i = 0; i < layer->size(); ++i)
     {
@@ -236,7 +236,7 @@ void PianoTrackMap::reloadTrackMap()
     this->eventComponents.clear();
     this->componentsHashTable.clear();
 
-    const Array<MidiLayer *> &layers = this->project.getLayersList();
+    const Array<MidiSequence *> &layers = this->project.getLayersList();
 
     this->setVisible(false);
 

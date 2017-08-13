@@ -18,7 +18,7 @@
 #pragma once
 
 class MidiEvent;
-class MidiLayer;
+class MidiSequence;
 class Pattern;
 class Transport;
 class ProjectTreeItem;
@@ -36,10 +36,10 @@ public:
 	virtual void dispatchAddEvent(const MidiEvent &event) = 0;
 	virtual void dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) = 0;
 	virtual void dispatchRemoveEvent(const MidiEvent &event) = 0;
-	virtual void dispatchPostRemoveEvent(MidiLayer *const layer) = 0;
+	virtual void dispatchPostRemoveEvent(MidiSequence *const layer) = 0;
 
 	// Sent on mute/unmute, instrument change, midi import, reload or reset
-	virtual void dispatchReloadLayer(MidiLayer *const layer) = 0;
+	virtual void dispatchReloadLayer(MidiSequence *const layer) = 0;
 	virtual void dispatchChangeLayerBeatRange() = 0;
 
 	virtual void dispatchAddClip(const Clip &clip) = 0;
@@ -60,9 +60,9 @@ public:
 	void dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override {}
 	void dispatchAddEvent(const MidiEvent &event) override {}
 	void dispatchRemoveEvent(const MidiEvent &event) override {}
-	void dispatchPostRemoveEvent(MidiLayer *const layer) override {}
+	void dispatchPostRemoveEvent(MidiSequence *const layer) override {}
 
-	void dispatchReloadLayer(MidiLayer *const layer) override {}
+	void dispatchReloadLayer(MidiSequence *const layer) override {}
 	void dispatchChangeLayerBeatRange() override {}
 
 	void dispatchAddClip(const Clip &clip) override {}

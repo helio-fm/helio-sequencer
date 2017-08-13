@@ -23,9 +23,9 @@
 #include "AnnotationEvent.h"
 #include "AutomationEvent.h"
 #include "NoteComponent.h"
-#include "AutomationLayer.h"
-#include "PianoLayer.h"
-#include "AnnotationsLayer.h"
+#include "AutomationSequence.h"
+#include "PianoSequence.h"
+#include "AnnotationsSequence.h"
 #include "InternalClipboard.h"
 #include "Arpeggiator.h"
 #include "Transport.h"
@@ -113,7 +113,7 @@ bool applyChanges(const TGroup &groupBefore,
         typename ChangeGroupProxy<TGroup>::Ptr currentGroupBefore(changeGroupsIterator.getValue());
         typename ChangeGroupProxy<TGroup>::Ptr currentGroupAfter(groupsAfter[changeGroupsIterator.getKey()]);
         
-        MidiLayer *midiLayer = currentGroupBefore->getFirst().getLayer();
+        MidiSequence *midiLayer = currentGroupBefore->getFirst().getSequence();
         TLayer *targetLayer = dynamic_cast<TLayer *>(midiLayer);
         jassert(targetLayer != nullptr);
         
@@ -151,7 +151,7 @@ bool applyRemovals(const TGroup &groupToRemove,
     {
         typename ChangeGroupProxy<TGroup>::Ptr currentRemovalGroup(changeGroupsIterator.getValue());
         
-        MidiLayer *midiLayer = currentRemovalGroup->getFirst().getLayer();
+        MidiSequence *midiLayer = currentRemovalGroup->getFirst().getSequence();
         TLayer *targetLayer = dynamic_cast<TLayer *>(midiLayer);
         jassert(targetLayer != nullptr);
         
@@ -189,7 +189,7 @@ bool applyInsertions(const TGroup &groupToInsert,
     {
         typename ChangeGroupProxy<TGroup>::Ptr currentInsertionGroup(changeGroupsIterator.getValue());
         
-        MidiLayer *midiLayer = currentInsertionGroup->getFirst().getLayer();
+        MidiSequence *midiLayer = currentInsertionGroup->getFirst().getSequence();
         TLayer *targetLayer = dynamic_cast<TLayer *>(midiLayer);
         jassert(targetLayer != nullptr);
         
@@ -211,20 +211,20 @@ bool applyInsertions(const TGroup &groupToInsert,
 
 
 bool applyPianoChanges(const PianoChangeGroup &groupBefore, const PianoChangeGroup &groupAfter, bool &didCheckpoint, bool shouldCheckpoint)
-{ return applyChanges<Note, PianoLayer, PianoChangeGroup, PianoChangeGroupsPerLayer>(groupBefore, groupAfter, didCheckpoint, shouldCheckpoint); }
+{ return applyChanges<Note, PianoSequence, PianoChangeGroup, PianoChangeGroupsPerLayer>(groupBefore, groupAfter, didCheckpoint, shouldCheckpoint); }
 
 bool applyAnnotationChanges(const AnnotationChangeGroup &groupBefore, const AnnotationChangeGroup &groupAfter, bool &didCheckpoint, bool shouldCheckpoint)
-{ return applyChanges<AnnotationEvent, AnnotationsLayer, AnnotationChangeGroup, AnnotationChangeGroupsPerLayer>(groupBefore, groupAfter, didCheckpoint, shouldCheckpoint); }
+{ return applyChanges<AnnotationEvent, AnnotationsSequence, AnnotationChangeGroup, AnnotationChangeGroupsPerLayer>(groupBefore, groupAfter, didCheckpoint, shouldCheckpoint); }
 
 bool applyAutoChanges(const AutoChangeGroup &groupBefore, const AutoChangeGroup &groupAfter, bool &didCheckpoint, bool shouldCheckpoint)
-{ return applyChanges<AutomationEvent, AutomationLayer, AutoChangeGroup, AutoChangeGroupsPerLayer>(groupBefore, groupAfter, didCheckpoint, shouldCheckpoint); }
+{ return applyChanges<AutomationEvent, AutomationSequence, AutoChangeGroup, AutoChangeGroupsPerLayer>(groupBefore, groupAfter, didCheckpoint, shouldCheckpoint); }
 
 
 bool applyPianoRemovals(const PianoChangeGroup &group, bool &didCheckpoint, bool shouldCheckpoint)
-{ return applyRemovals<Note, PianoLayer, PianoChangeGroup, PianoChangeGroupsPerLayer>(group, didCheckpoint, shouldCheckpoint); }
+{ return applyRemovals<Note, PianoSequence, PianoChangeGroup, PianoChangeGroupsPerLayer>(group, didCheckpoint, shouldCheckpoint); }
 
 bool applyAnnotationRemovals(const AnnotationChangeGroup &group, bool &didCheckpoint, bool shouldCheckpoint)
-{ return applyRemovals<AnnotationEvent, AnnotationsLayer, AnnotationChangeGroup, AnnotationChangeGroupsPerLayer>(group, didCheckpoint, shouldCheckpoint); }
+{ return applyRemovals<AnnotationEvent, AnnotationsSequence, AnnotationChangeGroup, AnnotationChangeGroupsPerLayer>(group, didCheckpoint, shouldCheckpoint); }
 
 // особенный случай - я хочу, чтоб хотя бы одно авто-событие на слое оставалось
 bool applyAutoRemovals(const AutoChangeGroup &group, bool &didCheckpoint, bool shouldCheckpoint)
@@ -241,8 +241,8 @@ bool applyAutoRemovals(const AutoChangeGroup &group, bool &didCheckpoint, bool s
     {
         ChangeGroupProxy<AutoChangeGroup>::Ptr currentRemovalGroup(changeGroupsIterator.getValue());
         
-        MidiLayer *midiLayer = currentRemovalGroup->getFirst().getLayer();
-        AutomationLayer *targetLayer = dynamic_cast<AutomationLayer *>(midiLayer);
+        MidiSequence *midiLayer = currentRemovalGroup->getFirst().getLayer();
+        AutomationSequence *targetLayer = dynamic_cast<AutomationSequence *>(midiLayer);
         jassert(targetLayer != nullptr);
         
         if ((targetLayer->size() - currentRemovalGroup->size()) <= 1)
@@ -267,28 +267,28 @@ bool applyAutoRemovals(const AutoChangeGroup &group, bool &didCheckpoint, bool s
 }
 
 //bool applyAutoRemovals(const AutoChangeGroup &group, bool &didCheckpoint, bool shouldCheckpoint)
-//{ applyRemovals<AutomationEvent, AutomationLayer, AutoChangeGroup, AutoChangeGroupsPerLayer>(group, didCheckpoint, shouldCheckpoint); }
+//{ applyRemovals<AutomationEvent, AutomationSequence, AutoChangeGroup, AutoChangeGroupsPerLayer>(group, didCheckpoint, shouldCheckpoint); }
 
 
 bool applyPianoInsertions(const PianoChangeGroup &group, bool &didCheckpoint, bool shouldCheckpoint)
-{ return applyInsertions<Note, PianoLayer, PianoChangeGroup, PianoChangeGroupsPerLayer>(group, didCheckpoint, shouldCheckpoint); }
+{ return applyInsertions<Note, PianoSequence, PianoChangeGroup, PianoChangeGroupsPerLayer>(group, didCheckpoint, shouldCheckpoint); }
 
 bool applyAnnotationInsertions(const AnnotationChangeGroup &group, bool &didCheckpoint, bool shouldCheckpoint)
-{ return applyInsertions<AnnotationEvent, AnnotationsLayer, AnnotationChangeGroup, AnnotationChangeGroupsPerLayer>(group, didCheckpoint, shouldCheckpoint); }
+{ return applyInsertions<AnnotationEvent, AnnotationsSequence, AnnotationChangeGroup, AnnotationChangeGroupsPerLayer>(group, didCheckpoint, shouldCheckpoint); }
 
 bool applyAutoInsertions(const AutoChangeGroup &group, bool &didCheckpoint, bool shouldCheckpoint)
-{ return applyInsertions<AutomationEvent, AutomationLayer, AutoChangeGroup, AutoChangeGroupsPerLayer>(group, didCheckpoint, shouldCheckpoint); }
+{ return applyInsertions<AutomationEvent, AutomationSequence, AutoChangeGroup, AutoChangeGroupsPerLayer>(group, didCheckpoint, shouldCheckpoint); }
 
 
-static PianoLayer *getPianoLayer(SelectionProxyArray::Ptr selection)
+static PianoSequence *getPianoLayer(SelectionProxyArray::Ptr selection)
 {
 	const auto &firstEvent = selection->getFirstAs<NoteComponent>()->getNote();
-	PianoLayer *pianoLayer = static_cast<PianoLayer *>(firstEvent.getLayer());
+	PianoSequence *pianoLayer = static_cast<PianoSequence *>(firstEvent.getSequence());
 	return pianoLayer;
 }
 
 
-static AutomationEvent *eventAtPosition(float beatPosition, AutomationLayer *layer)
+static AutomationEvent *eventAtPosition(float beatPosition, AutomationSequence *layer)
 {
     for (int i = 0; i < layer->size(); ++i)
     {
@@ -303,7 +303,7 @@ static AutomationEvent *eventAtPosition(float beatPosition, AutomationLayer *lay
     return nullptr;
 }
 
-static bool isPedalDownAtPosition(float beatPosition, AutomationLayer *pedalLayer)
+static bool isPedalDownAtPosition(float beatPosition, AutomationSequence *pedalLayer)
 {
     bool lastEventPedalDown = DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE;
     float lastEventBeat = -FLT_MAX;
@@ -325,7 +325,7 @@ static bool isPedalDownAtPosition(float beatPosition, AutomationLayer *pedalLaye
     return lastEventPedalDown;
 }
 
-static bool isPedalUpAtPosition(float beatPosition, AutomationLayer *pedalLayer)
+static bool isPedalUpAtPosition(float beatPosition, AutomationSequence *pedalLayer)
 {
     bool lastEventPedalUp = ! DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE;
     float lastEventBeat = -FLT_MAX;
@@ -429,7 +429,7 @@ static float snappedBeat(float beat, float snapsPerBeat)
 
 
 
-void PianoRollToolbox::wipeSpace(Array<MidiLayer *> layers,
+void PianoRollToolbox::wipeSpace(Array<MidiSequence *> layers,
                                 float startBeat, float endBeat,
                                 bool shouldKeepCroppedNotes, bool shouldCheckpoint)
 {
@@ -448,9 +448,9 @@ void PianoRollToolbox::wipeSpace(Array<MidiLayer *> layers,
    
     for (int i = 0; i < layers.size(); ++i)
     {
-        if (nullptr != dynamic_cast<PianoLayer *>(layers.getUnchecked(i)))
+        if (nullptr != dynamic_cast<PianoSequence *>(layers.getUnchecked(i)))
         {
-            PianoLayer *layer = dynamic_cast<PianoLayer *>(layers.getUnchecked(i));
+            PianoSequence *layer = dynamic_cast<PianoSequence *>(layers.getUnchecked(i));
             for (int j = 0; j < layer->size(); ++j)
             {
                 Note *note = static_cast<Note *>(layer->getUnchecked(j));
@@ -484,9 +484,9 @@ void PianoRollToolbox::wipeSpace(Array<MidiLayer *> layers,
                 }
             }
         }
-        else if (nullptr != dynamic_cast<AnnotationsLayer *>(layers.getUnchecked(i)))
+        else if (nullptr != dynamic_cast<AnnotationsSequence *>(layers.getUnchecked(i)))
         {
-            AnnotationsLayer *layer = dynamic_cast<AnnotationsLayer *>(layers.getUnchecked(i));
+            AnnotationsSequence *layer = dynamic_cast<AnnotationsSequence *>(layers.getUnchecked(i));
             for (int j = 0; j < layer->size(); ++j)
             {
                 AnnotationEvent *annotation = static_cast<AnnotationEvent *>(layer->getUnchecked(j));
@@ -498,9 +498,9 @@ void PianoRollToolbox::wipeSpace(Array<MidiLayer *> layers,
                 }
             }
         }
-        else if (nullptr != dynamic_cast<AutomationLayer *>(layers.getUnchecked(i)))
+        else if (nullptr != dynamic_cast<AutomationSequence *>(layers.getUnchecked(i)))
         {
-            AutomationLayer *layer = dynamic_cast<AutomationLayer *>(layers.getUnchecked(i));
+            AutomationSequence *layer = dynamic_cast<AutomationSequence *>(layers.getUnchecked(i));
             for (int j = 0; j < layer->size(); ++j)
             {
                 AutomationEvent *event = static_cast<AutomationEvent *>(layer->getUnchecked(j));
@@ -524,7 +524,7 @@ void PianoRollToolbox::wipeSpace(Array<MidiLayer *> layers,
     }
 }
 
-void PianoRollToolbox::shiftEventsToTheLeft(Array<MidiLayer *> layers, float targetBeat, float beatOffset, bool shouldCheckpoint)
+void PianoRollToolbox::shiftEventsToTheLeft(Array<MidiSequence *> layers, float targetBeat, float beatOffset, bool shouldCheckpoint)
 {
     bool didCheckpoint = false;
     
@@ -539,9 +539,9 @@ void PianoRollToolbox::shiftEventsToTheLeft(Array<MidiLayer *> layers, float tar
     
     for (int i = 0; i < layers.size(); ++i)
     {
-        if (nullptr != dynamic_cast<PianoLayer *>(layers.getUnchecked(i)))
+        if (nullptr != dynamic_cast<PianoSequence *>(layers.getUnchecked(i)))
         {
-            PianoLayer *layer = dynamic_cast<PianoLayer *>(layers.getUnchecked(i));
+            PianoSequence *layer = dynamic_cast<PianoSequence *>(layers.getUnchecked(i));
             for (int j = 0; j < layer->size(); ++j)
             {
                 Note *note = static_cast<Note *>(layer->getUnchecked(j));
@@ -553,9 +553,9 @@ void PianoRollToolbox::shiftEventsToTheLeft(Array<MidiLayer *> layers, float tar
                 }
             }
         }
-        else if (nullptr != dynamic_cast<AnnotationsLayer *>(layers.getUnchecked(i)))
+        else if (nullptr != dynamic_cast<AnnotationsSequence *>(layers.getUnchecked(i)))
         {
-            AnnotationsLayer *layer = dynamic_cast<AnnotationsLayer *>(layers.getUnchecked(i));
+            AnnotationsSequence *layer = dynamic_cast<AnnotationsSequence *>(layers.getUnchecked(i));
             for (int j = 0; j < layer->size(); ++j)
             {
                 AnnotationEvent *annotation = static_cast<AnnotationEvent *>(layer->getUnchecked(j));
@@ -567,9 +567,9 @@ void PianoRollToolbox::shiftEventsToTheLeft(Array<MidiLayer *> layers, float tar
                 }
             }
         }
-        else if (nullptr != dynamic_cast<AutomationLayer *>(layers.getUnchecked(i)))
+        else if (nullptr != dynamic_cast<AutomationSequence *>(layers.getUnchecked(i)))
         {
-            AutomationLayer *layer = dynamic_cast<AutomationLayer *>(layers.getUnchecked(i));
+            AutomationSequence *layer = dynamic_cast<AutomationSequence *>(layers.getUnchecked(i));
             for (int j = 0; j < layer->size(); ++j)
             {
                 AutomationEvent *event = static_cast<AutomationEvent *>(layer->getUnchecked(j));
@@ -588,7 +588,7 @@ void PianoRollToolbox::shiftEventsToTheLeft(Array<MidiLayer *> layers, float tar
     applyAutoChanges(autoGroupBefore, autoGroupAfter, didCheckpoint, shouldCheckpoint);
 }
 
-void PianoRollToolbox::shiftEventsToTheRight(Array<MidiLayer *> layers, float targetBeat, float beatOffset, bool shouldCheckpoint)
+void PianoRollToolbox::shiftEventsToTheRight(Array<MidiSequence *> layers, float targetBeat, float beatOffset, bool shouldCheckpoint)
 {
     bool didCheckpoint = false;
     
@@ -603,9 +603,9 @@ void PianoRollToolbox::shiftEventsToTheRight(Array<MidiLayer *> layers, float ta
     
     for (int i = 0; i < layers.size(); ++i)
     {
-        if (nullptr != dynamic_cast<PianoLayer *>(layers.getUnchecked(i)))
+        if (nullptr != dynamic_cast<PianoSequence *>(layers.getUnchecked(i)))
         {
-            PianoLayer *layer = dynamic_cast<PianoLayer *>(layers.getUnchecked(i));
+            PianoSequence *layer = dynamic_cast<PianoSequence *>(layers.getUnchecked(i));
             for (int j = 0; j < layer->size(); ++j)
             {
                 Note *note = static_cast<Note *>(layer->getUnchecked(j));
@@ -617,9 +617,9 @@ void PianoRollToolbox::shiftEventsToTheRight(Array<MidiLayer *> layers, float ta
                 }
             }
         }
-        else if (nullptr != dynamic_cast<AnnotationsLayer *>(layers.getUnchecked(i)))
+        else if (nullptr != dynamic_cast<AnnotationsSequence *>(layers.getUnchecked(i)))
         {
-            AnnotationsLayer *layer = dynamic_cast<AnnotationsLayer *>(layers.getUnchecked(i));
+            AnnotationsSequence *layer = dynamic_cast<AnnotationsSequence *>(layers.getUnchecked(i));
             for (int j = 0; j < layer->size(); ++j)
             {
                 AnnotationEvent *annotation = static_cast<AnnotationEvent *>(layer->getUnchecked(j));
@@ -631,9 +631,9 @@ void PianoRollToolbox::shiftEventsToTheRight(Array<MidiLayer *> layers, float ta
                 }
             }
         }
-        else if (nullptr != dynamic_cast<AutomationLayer *>(layers.getUnchecked(i)))
+        else if (nullptr != dynamic_cast<AutomationSequence *>(layers.getUnchecked(i)))
         {
-            AutomationLayer *layer = dynamic_cast<AutomationLayer *>(layers.getUnchecked(i));
+            AutomationSequence *layer = dynamic_cast<AutomationSequence *>(layers.getUnchecked(i));
             for (int j = 0; j < layer->size(); ++j)
             {
                 AutomationEvent *event = static_cast<AutomationEvent *>(layer->getUnchecked(j));
@@ -995,14 +995,14 @@ void PianoRollToolbox::removeDuplicates(Lasso &selection, bool shouldCheckpoint)
 }
 
 
-void PianoRollToolbox::moveToLayer(Lasso &selection, MidiLayer *layer, bool shouldCheckpoint)
+void PianoRollToolbox::moveToLayer(Lasso &selection, MidiSequence *layer, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     {
         return;
     }
     
-    PianoLayer *targetLayer = dynamic_cast<PianoLayer *>(layer);
+    PianoSequence *targetLayer = dynamic_cast<PianoSequence *>(layer);
     jassert(targetLayer != nullptr);
 
     bool didCheckpoint = false;
@@ -1015,9 +1015,9 @@ void PianoRollToolbox::moveToLayer(Lasso &selection, MidiLayer *layer, bool shou
     while (selectionsMapIterator.next())
     {
         SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-        MidiLayer *midiLayer = layerSelection->getFirstAs<NoteComponent>()->getNote().getLayer();
+        MidiSequence *midiLayer = layerSelection->getFirstAs<NoteComponent>()->getNote().getLayer();
 
-        if (PianoLayer *sourcePianoLayer = dynamic_cast<PianoLayer *>(midiLayer))
+        if (PianoSequence *sourcePianoLayer = dynamic_cast<PianoSequence *>(midiLayer))
         {
             // здесь - смотрим, если
             if (sourcePianoLayer != targetLayer)
@@ -1073,8 +1073,8 @@ void PianoRollToolbox::moveToLayer(Lasso &selection, MidiLayer *layer, bool shou
     while (deferredRemovalIterator.next())
     {
         PianoChangeGroupProxy::Ptr groupToRemove(deferredRemovalIterator.getValue());
-        MidiLayer *midiLayer = groupToRemove->getFirst().getLayer();
-        PianoLayer *pianoLayer = static_cast<PianoLayer *>(midiLayer);
+        MidiSequence *midiLayer = groupToRemove->getFirst().getLayer();
+        PianoSequence *pianoLayer = static_cast<PianoSequence *>(midiLayer);
         pianoLayer->removeGroup(*groupToRemove, true);
     }
     
@@ -1122,7 +1122,7 @@ bool PianoRollToolbox::arpeggiate(Lasso &selection,
     {
         SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
 
-		PianoLayer *pianoLayer = getPianoLayer(layerSelection);
+		PianoSequence *pianoLayer = getPianoLayer(layerSelection);
 		
         jassert(pianoLayer);
 
@@ -1310,8 +1310,8 @@ bool PianoRollToolbox::arpeggiate(Lasso &selection,
     while (deferredRemovalIterator.next())
     {
         PianoChangeGroupProxy::Ptr groupToRemove(deferredRemovalIterator.getValue());
-        MidiLayer *midiLayer = groupToRemove->getFirst().getLayer();
-        PianoLayer *pianoLayer = static_cast<PianoLayer *>(midiLayer);
+        MidiSequence *midiLayer = groupToRemove->getFirst().getLayer();
+        PianoSequence *pianoLayer = static_cast<PianoSequence *>(midiLayer);
         pianoLayer->removeGroup(*groupToRemove, true);
     }
     
@@ -1320,8 +1320,8 @@ bool PianoRollToolbox::arpeggiate(Lasso &selection,
     while (deferredInsertionsIterator.next())
     {
         PianoChangeGroupProxy::Ptr groupToInsert(deferredInsertionsIterator.getValue());
-        MidiLayer *midiLayer = groupToInsert->getFirst().getLayer();
-        PianoLayer *pianoLayer = static_cast<PianoLayer *>(midiLayer);
+        MidiSequence *midiLayer = groupToInsert->getFirst().getLayer();
+        PianoSequence *pianoLayer = static_cast<PianoSequence *>(midiLayer);
         pianoLayer->insertGroup(*groupToInsert, true);
     }
     
@@ -1428,7 +1428,7 @@ void PianoRollToolbox::changeVolumeLinear(Lasso &selection, float volumeDelta)
     while (selectionsMapIterator.next())
     {
         SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-		PianoLayer *pianoLayer = getPianoLayer(layerSelection);
+		PianoSequence *pianoLayer = getPianoLayer(layerSelection);
         jassert(pianoLayer);
 
         PianoChangeGroup groupBefore, groupAfter;
@@ -1455,7 +1455,7 @@ void PianoRollToolbox::changeVolumeMultiplied(Lasso &selection, float volumeFact
     while (selectionsMapIterator.next())
     {
         SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-        PianoLayer *pianoLayer = getPianoLayer(layerSelection);
+        PianoSequence *pianoLayer = getPianoLayer(layerSelection);
         jassert(pianoLayer);
 
         PianoChangeGroup groupBefore, groupAfter;
@@ -1500,7 +1500,7 @@ void PianoRollToolbox::changeVolumeSine(Lasso &selection, float volumeFactor)
     while (selectionsMapIterator.next())
     {
         SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-        PianoLayer *pianoLayer = getPianoLayer(layerSelection);
+        PianoSequence *pianoLayer = getPianoLayer(layerSelection);
         jassert(pianoLayer);
         
         PianoChangeGroup groupBefore, groupAfter;
@@ -1539,7 +1539,7 @@ void PianoRollToolbox::deleteSelection(Lasso &selection)
     while (selectionsMapIterator.next())
     {
         SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-        PianoLayer *pianoLayer = getPianoLayer(layerSelection);
+        PianoSequence *pianoLayer = getPianoLayer(layerSelection);
         jassert(pianoLayer);
         
         PianoChangeGroup notesToDelete;
@@ -1571,7 +1571,7 @@ void PianoRollToolbox::shiftKeyRelative(Lasso &selection,
     while (selectionsMapIterator.next())
     {
         SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-        PianoLayer *pianoLayer = getPianoLayer(layerSelection);
+        PianoSequence *pianoLayer = getPianoLayer(layerSelection);
         jassert(pianoLayer);
 
         const int numSelected = layerSelection->size();
@@ -1621,7 +1621,7 @@ void PianoRollToolbox::shiftBeatRelative(Lasso &selection, float deltaBeat, bool
     while (selectionsMapIterator.next())
     {
         SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-        PianoLayer *pianoLayer = getPianoLayer(layerSelection);
+        PianoSequence *pianoLayer = getPianoLayer(layerSelection);
         jassert(pianoLayer);
 
         const int numSelected = layerSelection->size();
@@ -1666,7 +1666,7 @@ void PianoRollToolbox::inverseChord(Lasso &selection,
     while (selectionsMapIterator.next())
     {
         SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-        PianoLayer *pianoLayer = getPianoLayer(layerSelection);
+        PianoSequence *pianoLayer = getPianoLayer(layerSelection);
         jassert(pianoLayer);
 
         const int numSelected = layerSelection->size();

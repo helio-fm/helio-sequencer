@@ -23,10 +23,10 @@
 #include "Icons.h"
 #include "HybridRoll.h"
 #include "AnnotationEvent.h"
-#include "AnnotationsLayer.h"
+#include "AnnotationsSequence.h"
 #include "PianoTrackTreeItem.h"
 #include "ProjectTimeline.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "App.h"
 
 AnnotationCommandPanel::AnnotationCommandPanel(ProjectTreeItem &parentProject, const AnnotationEvent &targetAnnotation) :
@@ -81,7 +81,7 @@ void AnnotationCommandPanel::handleCommandMessage(int commandId)
             Array<AnnotationEvent> groupDragBefore, groupDragAfter;
             groupDragBefore.add(this->annotation);
             groupDragAfter.add(this->annotation.withDescription(this->renameString));
-            AnnotationsLayer *autoLayer = static_cast<AnnotationsLayer *>(this->annotation.getLayer());
+            AnnotationsSequence *autoLayer = static_cast<AnnotationsSequence *>(this->annotation.getLayer());
             autoLayer->checkpoint();
             autoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
         }
@@ -91,7 +91,7 @@ void AnnotationCommandPanel::handleCommandMessage(int commandId)
         }
         else if (commandId == CommandIDs::DeleteAnnotation)
         {
-            AnnotationsLayer *autoLayer = static_cast<AnnotationsLayer *>(this->annotation.getLayer());
+            AnnotationsSequence *autoLayer = static_cast<AnnotationsSequence *>(this->annotation.getLayer());
             autoLayer->checkpoint();
             autoLayer->remove(this->annotation, true);
         }
@@ -110,7 +110,7 @@ void AnnotationCommandPanel::handleCommandMessage(int commandId)
             Array<AnnotationEvent> groupDragBefore, groupDragAfter;
             groupDragBefore.add(this->annotation);
             groupDragAfter.add(this->annotation.withColour(colour));
-            AnnotationsLayer *autoLayer = static_cast<AnnotationsLayer *>(this->annotation.getLayer());
+            AnnotationsSequence *autoLayer = static_cast<AnnotationsSequence *>(this->annotation.getLayer());
             autoLayer->checkpoint();
             autoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
         }

@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "PatternActions.h"
 #include "ProjectTreeItem.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "TreeItem.h"
 #include "SerializationKeys.h"
 

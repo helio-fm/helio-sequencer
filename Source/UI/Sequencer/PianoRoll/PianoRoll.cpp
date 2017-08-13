@@ -19,10 +19,10 @@
 #include "MainLayout.h"
 #include "PianoRoll.h"
 #include "HybridRollHeader.h"
-#include "MidiLayer.h"
-#include "PianoLayer.h"
-#include "AutomationLayer.h"
-#include "AnnotationsLayer.h"
+#include "MidiSequence.h"
+#include "PianoSequence.h"
+#include "AutomationSequence.h"
+#include "AnnotationsSequence.h"
 #include "PianoTrackTreeItem.h"
 #include "AutomationTrackTreeItem.h"
 #include "ProjectTreeItem.h"
@@ -99,7 +99,7 @@ void PianoRoll::deleteSelection()
     for (int i = 0; i < this->selection.getNumSelected(); ++i)
     {
 		const Note &note = this->selection.getItemAs<NoteComponent>(i)->getNote();
-        const MidiLayer *ownerLayer = note.getLayer();
+        const MidiSequence *ownerLayer = note.getLayer();
         Array<Note> *arrayToAddTo = nullptr;
 
         for (int j = 0; j < selections.size(); ++j)
@@ -126,7 +126,7 @@ void PianoRoll::deleteSelection()
 
     for (int i = 0; i < selections.size(); ++i)
     {
-        PianoLayer *pianoLayer = static_cast<PianoLayer *>(selections.getUnchecked(i)->getUnchecked(0).getLayer());
+        PianoSequence *pianoLayer = static_cast<PianoSequence *>(selections.getUnchecked(i)->getUnchecked(0).getLayer());
 
         if (! didCheckpoint)
         {
@@ -153,7 +153,7 @@ void PianoRoll::reloadRollContent()
     this->componentsHashTable.clear();
 
 
-    const Array<MidiLayer *> &layers = this->project.getLayersList();
+    const Array<MidiSequence *> &layers = this->project.getLayersList();
 
     for (auto layer : layers)
     {
@@ -183,7 +183,7 @@ void PianoRoll::reloadRollContent()
     this->repaint(this->viewport.getViewArea());
 }
 
-void PianoRoll::setActiveMidiLayers(Array<MidiLayer *> newLayers, MidiLayer *primaryLayer)
+void PianoRoll::setActiveMidiLayers(Array<MidiSequence *> newLayers, MidiSequence *primaryLayer)
 {
     // todo! check arrays for equality
     //if (this->activeLayer == layer) { return; }
@@ -214,7 +214,7 @@ void PianoRoll::setActiveMidiLayers(Array<MidiLayer *> newLayers, MidiLayer *pri
     this->repaint(this->viewport.getViewArea());
 }
 
-MidiLayer *PianoRoll::getPrimaryActiveMidiLayer() const noexcept
+MidiSequence *PianoRoll::getPrimaryActiveMidiLayer() const noexcept
 {
 	return this->primaryActiveLayer;
 }
@@ -224,7 +224,7 @@ int PianoRoll::getNumActiveLayers() const noexcept
 	return this->activeLayers.size();
 }
 
-MidiLayer *PianoRoll::getActiveMidiLayer(int index) const noexcept
+MidiSequence *PianoRoll::getActiveMidiLayer(int index) const noexcept
 {
 	return this->activeLayers[index];
 }
@@ -351,8 +351,8 @@ float PianoRoll::getZoomFactorY() const
 
 void PianoRoll::addNote(int key, float beat, float length, float velocity)
 {
-    //if (PianoLayer *activePianoLayer = dynamic_cast<PianoLayer *>(this->activeLayer))
-    PianoLayer *activePianoLayer = static_cast<PianoLayer *>(this->primaryActiveLayer);
+    //if (PianoSequence *activePianoLayer = dynamic_cast<PianoSequence *>(this->activeLayer))
+    PianoSequence *activePianoLayer = static_cast<PianoSequence *>(this->primaryActiveLayer);
     {
         activePianoLayer->checkpoint();
         Note note(activePianoLayer, key, beat, length, velocity);
@@ -526,15 +526,15 @@ void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
-void PianoRoll::onChangeTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
+void PianoRoll::onChangeTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
 {
-    if (! dynamic_cast<const PianoLayer *>(layer)) { return; }
+    if (! dynamic_cast<const PianoSequence *>(layer)) { return; }
     this->reloadRollContent();
 }
 
-void PianoRoll::onAddTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
+void PianoRoll::onAddTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
 {
-    if (! dynamic_cast<const PianoLayer *>(layer)) { return; }
+    if (! dynamic_cast<const PianoSequence *>(layer)) { return; }
 
     if (layer->size() > 0)
     {
@@ -542,9 +542,9 @@ void PianoRoll::onAddTrack(MidiLayer *const layer, Pattern *const pattern /*= nu
     }
 }
 
-void PianoRoll::onRemoveTrack(MidiLayer *const layer, Pattern *const pattern /*= nullptr*/)
+void PianoRoll::onRemoveTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
 {
-    if (! dynamic_cast<const PianoLayer *>(layer)) { return; }
+    if (! dynamic_cast<const PianoSequence *>(layer)) { return; }
 
     for (int i = 0; i < layer->size(); ++i)
     {
@@ -666,7 +666,7 @@ XmlElement *PianoRoll::clipboardCopy() const
         const auto automations = this->project.findChildrenOfType<AutomationTrackTreeItem>(false);
         for (auto automation : automations)
         {
-            MidiLayer *autoLayer = automation->getLayer();
+            MidiSequence *autoLayer = automation->getSequence();
             auto autoLayerIdParent = new XmlElement(Serialization::Clipboard::layer);
             autoLayerIdParent->setAttribute(Serialization::Clipboard::layerId, autoLayer->getLayerIdAsString());
             xml->addChildElement(autoLayerIdParent);
@@ -725,9 +725,9 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
         // 2. layer with the same type and controller
         // 3. active layer
         
-        if (nullptr != this->project.getLayerWithId<AutomationLayer>(layerId))
+        if (nullptr != this->project.getLayerWithId<AutomationSequence>(layerId))
         {
-            AutomationLayer *targetLayer = this->project.getLayerWithId<AutomationLayer>(layerId);
+            AutomationSequence *targetLayer = this->project.getLayerWithId<AutomationSequence>(layerId);
             const bool correspondingTreeItemExists =
             (this->project.findChildByLayerId<AutomationTrackTreeItem>(layerId) != nullptr);
             
@@ -744,9 +744,9 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
                 targetLayer->insertGroup(pastedEvents, true);
             }
         }
-        else if (nullptr != this->project.getLayerWithId<AnnotationsLayer>(layerId))
+        else if (nullptr != this->project.getLayerWithId<AnnotationsSequence>(layerId))
         {
-            AnnotationsLayer *targetLayer = this->project.getLayerWithId<AnnotationsLayer>(layerId);
+            AnnotationsSequence *targetLayer = this->project.getLayerWithId<AnnotationsSequence>(layerId);
             
             // no check for a tree item as there isn't any for ProjectTimeline
             Array<AnnotationEvent> pastedAnnotations;
@@ -761,14 +761,14 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
         }
         else
         {
-            PianoLayer *targetLayer = this->project.getLayerWithId<PianoLayer>(layerId);
+            PianoSequence *targetLayer = this->project.getLayerWithId<PianoSequence>(layerId);
             PianoTrackTreeItem *targetLayerItem = this->project.findChildByLayerId<PianoTrackTreeItem>(layerId);
             // use primary layer, if target is not found or not selected
             const bool shouldUsePrimaryLayer = (targetLayerItem == nullptr) ? true : (!targetLayerItem->isSelected());
             
             if (shouldUsePrimaryLayer)
             {
-                targetLayer = static_cast<PianoLayer *>(this->primaryActiveLayer);
+                targetLayer = static_cast<PianoSequence *>(this->primaryActiveLayer);
             }
             
             forEachXmlChildElementWithTagName(*layerElement, noteElement, Serialization::Core::note)
@@ -872,7 +872,7 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
         }
         else
         {
-            //if (PianoLayer *activePianoLayer = dynamic_cast<PianoLayer *>(this->activeLayer))
+            //if (PianoSequence *activePianoLayer = dynamic_cast<PianoSequence *>(this->activeLayer))
             //{
             //    activePianoLayer->checkpoint();
             //}

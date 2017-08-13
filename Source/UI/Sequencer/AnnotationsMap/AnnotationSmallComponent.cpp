@@ -17,7 +17,7 @@
 
 //[Headers]
 #include "Common.h"
-#include "AnnotationsLayer.h"
+#include "AnnotationsSequence.h"
 //[/Headers]
 
 #include "AnnotationSmallComponent.h"

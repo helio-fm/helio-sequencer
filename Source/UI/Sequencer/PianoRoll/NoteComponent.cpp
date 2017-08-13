@@ -17,10 +17,10 @@
 
 #include "Common.h"
 #include "NoteComponent.h"
-#include "PianoLayer.h"
+#include "PianoSequence.h"
 #include "PianoRoll.h"
 #include "ProjectTreeItem.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "Note.h"
 #include "HybridLassoComponent.h"
 #include "PianoRollToolbox.h"
@@ -31,10 +31,10 @@
 #define RESIZE_CORNER 10
 #define MAX_DRAG_POLYPHONY 8
 
-static PianoLayer *getPianoLayer(SelectionProxyArray::Ptr selection)
+static PianoSequence *getPianoLayer(SelectionProxyArray::Ptr selection)
 {
 	const auto &firstEvent = selection->getFirstAs<NoteComponent>()->getNote();
-	PianoLayer *pianoLayer = static_cast<PianoLayer *>(firstEvent.getLayer());
+	PianoSequence *pianoLayer = static_cast<PianoSequence *>(firstEvent.getSequence());
 	return pianoLayer;
 }
 
@@ -793,7 +793,7 @@ void NoteComponent::paintLegacyLook(Graphics &g)
 // Helpers
 //===----------------------------------------------------------------------===//
 
-bool NoteComponent::belongsToLayerSet(Array<MidiLayer *> layers) const
+bool NoteComponent::belongsToLayerSet(Array<MidiSequence *> layers) const
 {
 	for (int i = 0; i < layers.size(); ++i)
 	{
@@ -808,7 +808,7 @@ bool NoteComponent::belongsToLayerSet(Array<MidiLayer *> layers) const
 
 void NoteComponent::activateCorrespondingLayer(bool selectOthers, bool deselectOthers)
 {
-	MidiLayer *layer = this->getNote().getLayer();
+	MidiSequence *layer = this->getNote().getLayer();
 	this->roll.getProject().activateLayer(layer, selectOthers, deselectOthers);
 }
 

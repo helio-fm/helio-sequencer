@@ -17,7 +17,7 @@
 
 #pragma once
 
-class AnnotationsLayer;
+class AnnotationsSequence;
 class ProjectTreeItem;
 
 #include "AnnotationEvent.h"

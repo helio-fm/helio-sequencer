@@ -25,11 +25,11 @@
 #include "ModalDialogConfirmation.h"
 #include "PianoTrackTreeItem.h"
 #include "AutomationTrackTreeItem.h"
-#include "AutomationLayer.h"
+#include "AutomationSequence.h"
 #include "MainLayout.h"
 #include "AudioCore.h"
 #include "Instrument.h"
-#include "PianoLayer.h"
+#include "PianoSequence.h"
 #include "HybridRoll.h"
 #include "Document.h"
 #include "SuccessTooltip.h"
@@ -103,7 +103,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
             
             for (auto i : autos)
             {
-                if (i->getLayer()->getControllerNumber() == MidiLayer::tempoController)
+                if (i->getSequence()->getControllerNumber() == MidiSequence::tempoController)
                 {
                     hasTempoTrack = true;
                     break;
@@ -117,7 +117,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
             else
             {
                 const String autoLayerParams = this->createAutoLayerTempate(TRANS("defaults::tempotrack::name"),
-                                                                            MidiLayer::tempoController);
+                                                                            MidiSequence::tempoController);
                 
                 this->project.getUndoStack()->beginNewTransaction();
                 this->project.getUndoStack()->perform(new AutomationTrackInsertAction(this->project,
@@ -162,12 +162,12 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
             
         case CommandIDs::RefactorTransposeUp:
         {
-            Array<MidiLayer *> layers = this->project.getLayersList();
+            Array<MidiSequence *> layers = this->project.getLayersList();
             bool didCheckpoint = false;
             
             for (int i = 0; i < layers.size(); ++i)
             {
-                if (PianoLayer *pianoLayer = dynamic_cast<PianoLayer *>(layers.getUnchecked(i)))
+                if (PianoSequence *pianoLayer = dynamic_cast<PianoSequence *>(layers.getUnchecked(i)))
                 {
                     if (! didCheckpoint)
                     {
@@ -183,12 +183,12 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
             
         case CommandIDs::RefactorTransposeDown:
         {
-            Array<MidiLayer *> layers = this->project.getLayersList();
+            Array<MidiSequence *> layers = this->project.getLayersList();
             bool didCheckpoint = false;
             
             for (int i = 0; i < layers.size(); ++i)
             {
-                if (PianoLayer *pianoLayer = dynamic_cast<PianoLayer *>(layers.getUnchecked(i)))
+                if (PianoSequence *pianoLayer = dynamic_cast<PianoSequence *>(layers.getUnchecked(i)))
                 {
                     if (! didCheckpoint)
                     {
@@ -292,9 +292,9 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
                 
                 for (auto track : tracks)
                 {
-                    const String layerId = track->getLayer()->getLayerIdAsString();
+                    const String layerId = track->getSequence()->getLayerIdAsString();
                     const String instrumentId = instruments[instrumentIndex]->getIdAndHash();
-                    this->project.getUndoStack()->perform(new MidiLayerChangeInstrumentAction(this->project, layerId, instrumentId));
+                    this->project.getUndoStack()->perform(new MidiTrackChangeInstrumentAction(this->project, layerId, instrumentId));
                 }
             }
             
@@ -361,7 +361,7 @@ String ProjectCommandPanel::createPianoLayerTempate(const String &name) const
 String ProjectCommandPanel::createAutoLayerTempate(const String &name, int controllerNumber, const String &instrumentId) const
 {
     ScopedPointer<MidiTrackTreeItem> newItem = new AutomationTrackTreeItem(name);
-    AutomationLayer *itemLayer = static_cast<AutomationLayer *>(newItem->getLayer());
+    AutomationSequence *itemLayer = static_cast<AutomationSequence *>(newItem->getSequence());
     
     itemLayer->setControllerNumber(controllerNumber);
     itemLayer->setInstrumentId(instrumentId);

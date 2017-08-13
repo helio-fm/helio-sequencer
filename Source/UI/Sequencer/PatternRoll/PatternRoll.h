@@ -77,16 +77,16 @@ public:
 	void onAddMidiEvent(const MidiEvent &event) override;
 	void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
 	void onRemoveMidiEvent(const MidiEvent &event) override;
-	void onPostRemoveMidiEvent(MidiLayer *const layer) override;
+	void onPostRemoveMidiEvent(MidiSequence *const layer) override;
 
 	void onAddClip(const Clip &clip) override;
 	void onChangeClip(const Clip &oldClip, const Clip &newClip) override;
 	void onRemoveClip(const Clip &clip) override;
 	void onPostRemoveClip(Pattern *const pattern) override;
 
-	void onAddTrack(MidiLayer *const layer, Pattern *const pattern = nullptr) override;
-	void onChangeTrack(MidiLayer *const layer, Pattern *const pattern = nullptr) override;
-	void onRemoveTrack(MidiLayer *const layer, Pattern *const pattern = nullptr) override;
+	void onAddTrack(MidiSequence *const layer, Pattern *const pattern = nullptr) override;
+	void onChangeTrack(MidiSequence *const layer, Pattern *const pattern = nullptr) override;
+	void onRemoveTrack(MidiSequence *const layer, Pattern *const pattern = nullptr) override;
 
 
     //===------------------------------------------------------------------===//
@@ -146,9 +146,9 @@ private:
     
 	// sorted arrays:
 	Array<Pattern *> patterns;
-	Array<MidiLayer *> layers;
+	Array<MidiSequence *> layers;
 
-	typedef HashMap<const Pattern *, MidiLayer *, PatternHashFunction> LinksMap;
+	typedef HashMap<const Pattern *, MidiSequence *, PatternHashFunction> LinksMap;
 	LinksMap links;
 
     OwnedArray<ClipComponent> ghostClips;

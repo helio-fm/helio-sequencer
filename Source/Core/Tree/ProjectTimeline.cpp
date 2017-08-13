@@ -17,8 +17,8 @@
 
 #include "Common.h"
 #include "ProjectTimeline.h"
-#include "AnnotationsLayer.h"
-#include "TimeSignaturesLayer.h"
+#include "AnnotationsSequence.h"
+#include "TimeSignaturesSequence.h"
 #include "ProjectTimelineDeltas.h"
 #include "ProjectTreeItem.h"
 #include "Icons.h"
@@ -29,8 +29,8 @@ ProjectTimeline::ProjectTimeline(ProjectTreeItem &parentProject,
     project(parentProject),
     name(std::move(trackName))
 {
-    this->annotations = new AnnotationsLayer(*this);
-    this->timeSignatures = new TimeSignaturesLayer(*this);
+    this->annotations = new AnnotationsSequence(*this);
+    this->timeSignatures = new TimeSignaturesSequence(*this);
 
     this->vcsDiffLogic = new VCS::ProjectTimelineDiffLogic(*this);
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectTimelineDeltas::annotationsAdded));
@@ -152,12 +152,12 @@ void ProjectTimeline::dispatchRemoveEvent(const MidiEvent &event)
     this->project.broadcastRemoveEvent(event);
 }
 
-void ProjectTimeline::dispatchPostRemoveEvent(MidiLayer *const layer)
+void ProjectTimeline::dispatchPostRemoveEvent(MidiSequence *const layer)
 {
 	this->project.broadcastPostRemoveEvent(layer);
 }
 
-void ProjectTimeline::dispatchReloadLayer(MidiLayer *const layer)
+void ProjectTimeline::dispatchReloadLayer(MidiSequence *const layer)
 {
     this->project.broadcastChangeTrack(layer);
 }
@@ -232,7 +232,7 @@ void ProjectTimeline::deserialize(const XmlElement &xml)
     
     // Debug::
     //TimeSignatureEvent e(this->timeSignatures, 0.f, 9, 16);
-    //(static_cast<TimeSignaturesLayer *>(this->timeSignatures.get()))->insert(e, false);
+    //(static_cast<TimeSignaturesSequence *>(this->timeSignatures.get()))->insert(e, false);
 }
 
 

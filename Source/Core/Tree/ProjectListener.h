@@ -18,7 +18,7 @@
 #pragma once
 
 class MidiEvent;
-class MidiLayer;
+class MidiSequence;
 class Pattern;
 class Clip;
 class ProjectInfo;
@@ -33,16 +33,16 @@ public:
 	virtual void onAddMidiEvent(const MidiEvent &event) = 0;
 	virtual void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) = 0;
     virtual void onRemoveMidiEvent(const MidiEvent &event) = 0;
-	virtual void onPostRemoveMidiEvent(MidiLayer *const layer) {}
+	virtual void onPostRemoveMidiEvent(MidiSequence *const layer) {}
 
     virtual void onAddClip(const Clip &clip) {}
     virtual void onChangeClip(const Clip &oldClip, const Clip &newClip) {}
     virtual void onRemoveClip(const Clip &clip) {}
     virtual void onPostRemoveClip(Pattern *const pattern) {}
 
-	virtual void onAddTrack(MidiLayer *const layer, Pattern *const pattern = nullptr) = 0;
-	virtual void onChangeTrack(MidiLayer *const layer, Pattern *const pattern = nullptr) = 0;
-	virtual void onRemoveTrack(MidiLayer *const layer, Pattern *const pattern = nullptr) = 0;
+	virtual void onAddTrack(MidiSequence *const layer, Pattern *const pattern = nullptr) = 0;
+	virtual void onChangeTrack(MidiSequence *const layer, Pattern *const pattern = nullptr) = 0;
+	virtual void onRemoveTrack(MidiSequence *const layer, Pattern *const pattern = nullptr) = 0;
 
     virtual void onChangeProjectInfo(const ProjectInfo *info) {}
     virtual void onChangeProjectBeatRange(float firstBeat, float lastBeat) = 0;

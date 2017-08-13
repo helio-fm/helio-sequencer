@@ -17,7 +17,7 @@
 
 #pragma once
 
-class MidiLayer;
+class MidiSequence;
 class Pattern;
 
 // A track is a meta-object that has
@@ -40,7 +40,7 @@ public:
 	virtual bool isTrackMuted() const noexcept = 0;
 	virtual bool isTrackSolo() const noexcept = 0;
 
-	virtual MidiLayer *getLayer() const noexcept = 0;
+	virtual MidiSequence *getSequence() const noexcept = 0;
 	virtual Pattern *getPattern() const noexcept = 0;
 
 	// used by player thread to link tracks with instruments
@@ -49,14 +49,20 @@ public:
 
 	// Some shorthands:
 
+	enum DefaultControllers
+	{
+		sustainPedalController = 64,
+		tempoController = 81,
+	};
+
 	bool isTempoTrack() const noexcept
 	{
-		return (this->getTrackControllerNumber() == MidiLayer::tempoController);
+		return (this->getTrackControllerNumber() == MidiTrack::tempoController);
 	}
 
 	bool isSustainPedalTrack() const noexcept
 	{
-		return (this->getTrackControllerNumber() == MidiLayer::sustainPedalController);
+		return (this->getTrackControllerNumber() == MidiTrack::sustainPedalController);
 	}
 
 	bool isOnOffTrack() const noexcept

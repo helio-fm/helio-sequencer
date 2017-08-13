@@ -22,7 +22,7 @@
 #include "AnnotationDialog.h"
 
 //[MiscUserDefs]
-#include "AnnotationsLayer.h"
+#include "AnnotationsSequence.h"
 #include "CommandIDs.h"
 
 static StringPairArray getDynamics()
@@ -45,7 +45,7 @@ static StringPairArray getDynamics()
 }
 //[/MiscUserDefs]
 
-AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsLayer *annotationsLayer, const AnnotationEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
+AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *annotationsLayer, const AnnotationEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
     : targetEvent(editedEvent),
       targetLayer(annotationsLayer),
       ownerComponent(owner),
@@ -317,10 +317,10 @@ void AnnotationDialog::inputAttemptWhenModal()
 
 AnnotationDialog *AnnotationDialog::createEditingDialog(Component &owner, const AnnotationEvent &event)
 {
-	return new AnnotationDialog(owner, static_cast<AnnotationsLayer *>(event.getLayer()), event, false, 0.f);
+	return new AnnotationDialog(owner, static_cast<AnnotationsSequence *>(event.getLayer()), event, false, 0.f);
 }
 
-AnnotationDialog *AnnotationDialog::createAddingDialog(Component &owner, AnnotationsLayer *annotationsLayer, float targetBeat)
+AnnotationDialog *AnnotationDialog::createAddingDialog(Component &owner, AnnotationsSequence *annotationsLayer, float targetBeat)
 {
 	return new AnnotationDialog(owner, annotationsLayer, AnnotationEvent(), true, targetBeat);
 }
@@ -406,7 +406,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="AnnotationDialog" template="../../Template"
                  componentName="" parentClasses="public FadingDialog, public TextEditorListener, public ColourButtonListener"
-                 constructorParams="Component &amp;owner, AnnotationsLayer *annotationsLayer, const AnnotationEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
+                 constructorParams="Component &amp;owner, AnnotationsSequence *annotationsLayer, const AnnotationEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
                  variableInitialisers="targetEvent(editedEvent),&#10;targetLayer(annotationsLayer),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="450" initialHeight="204">

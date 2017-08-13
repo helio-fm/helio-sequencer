@@ -17,7 +17,7 @@
 
 #pragma once
 
-class AutomationLayer;
+class AutomationSequence;
 
 #include "ClipComponent.h"
 
@@ -26,12 +26,12 @@ class AutomationClipComponent : public ClipComponent
 {
 public:
 
-	AutomationClipComponent(AutomationLayer *layer,
+	AutomationClipComponent(AutomationSequence *layer,
 		HybridRoll &editor, Clip clip);
 
 protected:
 
-	AutomationLayer *layer;
+	AutomationSequence *layer;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationClipComponent)
 };

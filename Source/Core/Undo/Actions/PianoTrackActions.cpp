@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "PianoLayerTreeItemActions.h"
+#include "PianoTrackActions.h"
 #include "ProjectTreeItem.h"
 #include "PianoTrackTreeItem.h"
 #include "TreeItem.h"
@@ -44,7 +44,7 @@ bool PianoTrackInsertAction::perform()
     ScopedPointer<XmlElement> layerState = XmlDocument::parse(this->serializedState);
     layer->deserialize(*layerState);
 
-    this->layerId = layer->getLayer()->getLayerIdAsString();
+    this->layerId = layer->getSequence()->getLayerIdAsString();
     layer->onRename(this->xPath);
 
     return true;
@@ -107,7 +107,7 @@ bool PianoTrackRemoveAction::perform()
 {
     if (PianoTrackTreeItem *treeItem = this->project.findChildByLayerId<PianoTrackTreeItem>(this->layerId))
     {
-        this->numEvents = treeItem->getLayer()->size();
+        this->numEvents = treeItem->getSequence()->size();
         this->serializedTreeItem = treeItem->serialize();
         this->xPath = treeItem->getXPath();
         return TreeItem::deleteItem(treeItem);

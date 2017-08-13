@@ -19,9 +19,9 @@
 #include "AnnotationsTrackMap.h"
 #include "ProjectTreeItem.h"
 #include "Transport.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "ProjectTimeline.h"
-#include "PianoLayer.h"
+#include "PianoSequence.h"
 #include "PlayerThread.h"
 #include "HybridRoll.h"
 #include "HelioCallout.h"
@@ -191,7 +191,7 @@ template<typename T> void AnnotationsTrackMap<T>::onRemoveMidiEvent(const MidiEv
     }
 }
 
-template<typename T> void AnnotationsTrackMap<T>::onChangeTrack(MidiLayer *const layer, Pattern *const pattern)
+template<typename T> void AnnotationsTrackMap<T>::onChangeTrack(MidiSequence *const layer, Pattern *const pattern)
 {
     if (this->project.getTimeline() != nullptr)
     {
@@ -202,7 +202,7 @@ template<typename T> void AnnotationsTrackMap<T>::onChangeTrack(MidiLayer *const
     }
 }
 
-template<typename T> void AnnotationsTrackMap<T>::onAddTrack(MidiLayer *const layer, Pattern *const pattern)
+template<typename T> void AnnotationsTrackMap<T>::onAddTrack(MidiSequence *const layer, Pattern *const pattern)
 {
     if (this->project.getTimeline() != nullptr)
     {
@@ -216,7 +216,7 @@ template<typename T> void AnnotationsTrackMap<T>::onAddTrack(MidiLayer *const la
     }
 }
 
-template<typename T> void AnnotationsTrackMap<T>::onRemoveTrack(MidiLayer *const layer, Pattern *const pattern)
+template<typename T> void AnnotationsTrackMap<T>::onRemoveTrack(MidiSequence *const layer, Pattern *const pattern)
 {
     if (this->project.getTimeline() != nullptr)
     {
@@ -352,7 +352,7 @@ template<typename T> void AnnotationsTrackMap<T>::reloadTrackMap()
 
     this->setVisible(false);
 
-    MidiLayer *layer = this->project.getTimeline()->getAnnotations();
+    MidiSequence *layer = this->project.getTimeline()->getAnnotations();
 
     for (int j = 0; j < layer->size(); ++j)
     {

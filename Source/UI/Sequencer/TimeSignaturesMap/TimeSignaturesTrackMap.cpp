@@ -19,9 +19,9 @@
 #include "TimeSignaturesTrackMap.h"
 #include "ProjectTreeItem.h"
 #include "Transport.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "ProjectTimeline.h"
-#include "PianoLayer.h"
+#include "PianoSequence.h"
 #include "PlayerThread.h"
 #include "HybridRoll.h"
 #include "HelioCallout.h"
@@ -213,7 +213,7 @@ template<typename T> void TimeSignaturesTrackMap<T>::onRemoveMidiEvent(const Mid
     }
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onChangeTrack(MidiLayer *const layer, Pattern *const pattern)
+template<typename T> void TimeSignaturesTrackMap<T>::onChangeTrack(MidiSequence *const layer, Pattern *const pattern)
 {
     if (this->project.getTimeline() != nullptr)
     {
@@ -224,7 +224,7 @@ template<typename T> void TimeSignaturesTrackMap<T>::onChangeTrack(MidiLayer *co
     }
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onAddTrack(MidiLayer *const layer, Pattern *const pattern)
+template<typename T> void TimeSignaturesTrackMap<T>::onAddTrack(MidiSequence *const layer, Pattern *const pattern)
 {
     if (this->project.getTimeline() != nullptr)
     {
@@ -238,7 +238,7 @@ template<typename T> void TimeSignaturesTrackMap<T>::onAddTrack(MidiLayer *const
     }
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onRemoveTrack(MidiLayer *const layer, Pattern *const pattern)
+template<typename T> void TimeSignaturesTrackMap<T>::onRemoveTrack(MidiSequence *const layer, Pattern *const pattern)
 {
     if (this->project.getTimeline() != nullptr)
     {
@@ -374,7 +374,7 @@ template<typename T> void TimeSignaturesTrackMap<T>::reloadTrackMap()
 
     this->setVisible(false);
 
-    MidiLayer *layer = this->project.getTimeline()->getTimeSignatures();
+    MidiSequence *layer = this->project.getTimeline()->getTimeSignatures();
 
     for (int j = 0; j < layer->size(); ++j)
     {

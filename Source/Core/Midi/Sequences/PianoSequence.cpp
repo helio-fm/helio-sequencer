@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "PianoLayer.h"
+#include "PianoSequence.h"
 
 #include "PianoRoll.h"
 #include "Note.h"
@@ -30,7 +30,7 @@
 // todo optimize data structures >_<
 // using std::dense_hash_map ?
 
-PianoLayer::PianoLayer(ProjectEventDispatcher &parent) : MidiLayer(parent)
+PianoSequence::PianoSequence(ProjectEventDispatcher &parent) : MidiSequence(parent)
 {
 }
 
@@ -38,7 +38,7 @@ PianoLayer::PianoLayer(ProjectEventDispatcher &parent) : MidiLayer(parent)
 // Import/export
 //===----------------------------------------------------------------------===//
 
-void PianoLayer::importMidi(const MidiMessageSequence &sequence)
+void PianoSequence::importMidi(const MidiMessageSequence &sequence)
 {
     this->clearUndoHistory();
     this->checkpoint();
@@ -84,7 +84,7 @@ void PianoLayer::importMidi(const MidiMessageSequence &sequence)
 // Undoable track editing
 //===----------------------------------------------------------------------===//
 
-void PianoLayer::silentImport(const MidiEvent &eventToImport)
+void PianoSequence::silentImport(const MidiEvent &eventToImport)
 {
     const Note &note = static_cast<const Note &>(eventToImport);
 
@@ -101,7 +101,7 @@ void PianoLayer::silentImport(const MidiEvent &eventToImport)
     this->updateBeatRange(false);
 }
 
-MidiEvent *PianoLayer::insert(const Note &note, const bool undoable)
+MidiEvent *PianoSequence::insert(const Note &note, const bool undoable)
 {
     if (this->notesHashTable.contains(note))
     {
@@ -130,7 +130,7 @@ MidiEvent *PianoLayer::insert(const Note &note, const bool undoable)
     return nullptr;
 }
 
-bool PianoLayer::remove(const Note &note, const bool undoable)
+bool PianoSequence::remove(const Note &note, const bool undoable)
 {
     if (undoable)
     {
@@ -160,7 +160,7 @@ bool PianoLayer::remove(const Note &note, const bool undoable)
     return true;
 }
 
-bool PianoLayer::change(const Note &note,
+bool PianoSequence::change(const Note &note,
                         const Note &newNote,
                         const bool undoable)
 {
@@ -195,7 +195,7 @@ bool PianoLayer::change(const Note &note,
 }
 
 
-bool PianoLayer::insertGroup(Array<Note> &notes, bool undoable)
+bool PianoSequence::insertGroup(Array<Note> &notes, bool undoable)
 {
     if (undoable)
     {
@@ -222,7 +222,7 @@ bool PianoLayer::insertGroup(Array<Note> &notes, bool undoable)
     return true;
 }
 
-bool PianoLayer::removeGroup(Array<Note> &notes, bool undoable)
+bool PianoSequence::removeGroup(Array<Note> &notes, bool undoable)
 {
     if (undoable)
     {
@@ -255,7 +255,7 @@ bool PianoLayer::removeGroup(Array<Note> &notes, bool undoable)
     return true;
 }
 
-bool PianoLayer::changeGroup(Array<Note> &notesBefore,
+bool PianoSequence::changeGroup(Array<Note> &notesBefore,
                              Array<Note> &notesAfter,
                              bool undoable)
 {
@@ -295,7 +295,7 @@ bool PianoLayer::changeGroup(Array<Note> &notesBefore,
 // Batch operations
 //===----------------------------------------------------------------------===//
 
-void PianoLayer::transposeAll(int keyDelta, bool shouldCheckpoint)
+void PianoSequence::transposeAll(int keyDelta, bool shouldCheckpoint)
 {
     if (this->midiEvents.size() == 0)
     {
@@ -329,7 +329,7 @@ void PianoLayer::transposeAll(int keyDelta, bool shouldCheckpoint)
 // Accessors
 //===----------------------------------------------------------------------===//
 
-float PianoLayer::getLastBeat() const
+float PianoSequence::getLastBeat() const
 {
     // todo fix
     // сейчас тут скрыт один баг: последний бит считается по последнему событию
@@ -350,7 +350,7 @@ float PianoLayer::getLastBeat() const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *PianoLayer::serialize() const
+XmlElement *PianoSequence::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::track);
     xml->setAttribute("col", this->getColour().toString());
@@ -369,7 +369,7 @@ XmlElement *PianoLayer::serialize() const
     return xml;
 }
 
-void PianoLayer::deserialize(const XmlElement &xml)
+void PianoSequence::deserialize(const XmlElement &xml)
 {
 	this->clearQuick();
 
@@ -385,7 +385,7 @@ void PianoLayer::deserialize(const XmlElement &xml)
     this->instrumentId = (root->getStringAttribute("instrument", this->getInstrumentId()));
     this->controllerNumber = (root->getIntAttribute("cc", this->getControllerNumber()));
     this->layerId = Uuid(root->getStringAttribute("id", this->getLayerId().toString()));
-    this->muted = MidiLayer::isMuted(root->getStringAttribute("mute"));
+    this->muted = MidiSequence::isMuted(root->getStringAttribute("mute"));
 	
 	float lastBeat = 0;
 	float firstBeat = 0;
@@ -410,13 +410,13 @@ void PianoLayer::deserialize(const XmlElement &xml)
     this->notifyLayerChanged();
 }
 
-void PianoLayer::reset()
+void PianoSequence::reset()
 {
 	this->clearQuick();
     this->notifyLayerChanged();
 }
 
-void PianoLayer::clearQuick()
+void PianoSequence::clearQuick()
 {
 	this->midiEvents.clearQuick(true);
 	this->notesHashTable.clear();

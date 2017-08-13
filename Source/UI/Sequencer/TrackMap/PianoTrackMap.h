@@ -46,9 +46,9 @@ public:
     void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
     void onAddMidiEvent(const MidiEvent &event) override;
     void onRemoveMidiEvent(const MidiEvent &event) override;
-    void onChangeTrack(MidiLayer *const layer, Pattern *const pattern = nullptr) override;
-    void onAddTrack(MidiLayer *const layer, Pattern *const pattern = nullptr) override;
-    void onRemoveTrack(MidiLayer *const layer, Pattern *const pattern = nullptr) override;
+    void onChangeTrack(MidiSequence *const layer, Pattern *const pattern = nullptr) override;
+    void onAddTrack(MidiSequence *const layer, Pattern *const pattern = nullptr) override;
+    void onRemoveTrack(MidiSequence *const layer, Pattern *const pattern = nullptr) override;
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
 	void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
 

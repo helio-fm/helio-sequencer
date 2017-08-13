@@ -21,7 +21,7 @@ class Transport;
 class Arpeggiator;
 class ProjectTreeItem;
 class Lasso;
-class MidiLayer;
+class MidiSequence;
 class Note;
 
 class PianoRollToolbox
@@ -33,18 +33,18 @@ public:
     static float findStartBeat(const Array<Note> &selection);
     static float findEndBeat(const Array<Note> &selection);
     
-    static void wipeSpace(Array<MidiLayer *> layers,
+    static void wipeSpace(Array<MidiSequence *> layers,
                           float startBeat,
                           float endBeat,
                           bool shouldKeepCroppedNotes = true,
                           bool shouldCheckpoint = true);
     
-    static void shiftEventsToTheLeft(Array<MidiLayer *> layers,
+    static void shiftEventsToTheLeft(Array<MidiSequence *> layers,
                                      float targetBeat,
                                      float beatOffset,
                                      bool shouldCheckpoint = true);
     
-    static void shiftEventsToTheRight(Array<MidiLayer *> layers,
+    static void shiftEventsToTheRight(Array<MidiSequence *> layers,
                                       float targetBeat,
                                       float beatOffset,
                                       bool shouldCheckpoint = true);
@@ -53,7 +53,7 @@ public:
     static void removeOverlaps(Lasso &selection, bool shouldCheckpoint = true);
     static void removeDuplicates(Lasso &selection, bool shouldCheckpoint = true);
     
-    static void moveToLayer(Lasso &selection, MidiLayer *layer, bool shouldCheckpoint = true);
+    static void moveToLayer(Lasso &selection, MidiSequence *layer, bool shouldCheckpoint = true);
     
     static bool arpeggiateUsingClipboardAsPattern(Lasso &selection, bool shouldCheckpoint = true);
     static bool arpeggiate(Lasso &selection, const Arpeggiator &arp, bool shouldCheckpoint = true);

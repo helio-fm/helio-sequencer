@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "AnnotationEventActions.h"
-#include "AnnotationsLayer.h"
+#include "AnnotationsSequence.h"
 #include "ProjectTreeItem.h"
 #include "SerializationKeys.h"
 
@@ -38,7 +38,7 @@ AnnotationEventInsertAction::AnnotationEventInsertAction(ProjectTreeItem &parent
 
 bool AnnotationEventInsertAction::perform()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *layer = this->project.getLayerWithId<AnnotationsSequence>(this->layerId))
     {
         return (layer->insert(this->event, false) != nullptr);
     }
@@ -48,7 +48,7 @@ bool AnnotationEventInsertAction::perform()
 
 bool AnnotationEventInsertAction::undo()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *layer = this->project.getLayerWithId<AnnotationsSequence>(this->layerId))
     {
         return layer->remove(this->event, false);
     }
@@ -98,7 +98,7 @@ AnnotationEventRemoveAction::AnnotationEventRemoveAction(ProjectTreeItem &parent
 
 bool AnnotationEventRemoveAction::perform()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *layer = this->project.getLayerWithId<AnnotationsSequence>(this->layerId))
     {
         return layer->remove(this->event, false);
     }
@@ -108,7 +108,7 @@ bool AnnotationEventRemoveAction::perform()
 
 bool AnnotationEventRemoveAction::undo()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *layer = this->project.getLayerWithId<AnnotationsSequence>(this->layerId))
     {
         return (layer->insert(this->event, false) != nullptr);
     }
@@ -160,7 +160,7 @@ AnnotationEventChangeAction::AnnotationEventChangeAction(ProjectTreeItem &parent
 
 bool AnnotationEventChangeAction::perform()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *layer = this->project.getLayerWithId<AnnotationsSequence>(this->layerId))
     {
         return layer->change(this->eventBefore, this->eventAfter, false);
     }
@@ -170,7 +170,7 @@ bool AnnotationEventChangeAction::perform()
 
 bool AnnotationEventChangeAction::undo()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *layer = this->project.getLayerWithId<AnnotationsSequence>(this->layerId))
     {
         return layer->change(this->eventAfter, this->eventBefore, false);
     }
@@ -185,7 +185,7 @@ int AnnotationEventChangeAction::getSizeInUnits()
 
 UndoAction *AnnotationEventChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *layer = this->project.getLayerWithId<AnnotationsSequence>(this->layerId))
     {
         if (AnnotationEventChangeAction *nextChanger = dynamic_cast<AnnotationEventChangeAction *>(nextAction))
         {
@@ -256,7 +256,7 @@ AnnotationEventsGroupInsertAction::AnnotationEventsGroupInsertAction(ProjectTree
 
 bool AnnotationEventsGroupInsertAction::perform()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *layer = this->project.getLayerWithId<AnnotationsSequence>(this->layerId))
     {
         return layer->insertGroup(this->annotations, false);
     }
@@ -266,7 +266,7 @@ bool AnnotationEventsGroupInsertAction::perform()
 
 bool AnnotationEventsGroupInsertAction::undo()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *layer = this->project.getLayerWithId<AnnotationsSequence>(this->layerId))
     {
         return layer->removeGroup(this->annotations, false);
     }
@@ -328,7 +328,7 @@ AnnotationEventsGroupRemoveAction::AnnotationEventsGroupRemoveAction(ProjectTree
 
 bool AnnotationEventsGroupRemoveAction::perform()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *layer = this->project.getLayerWithId<AnnotationsSequence>(this->layerId))
     {
         return layer->removeGroup(this->annotations, false);
     }
@@ -338,7 +338,7 @@ bool AnnotationEventsGroupRemoveAction::perform()
 
 bool AnnotationEventsGroupRemoveAction::undo()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *layer = this->project.getLayerWithId<AnnotationsSequence>(this->layerId))
     {
         return layer->insertGroup(this->annotations, false);
     }
@@ -402,7 +402,7 @@ AnnotationEventsGroupChangeAction::AnnotationEventsGroupChangeAction(ProjectTree
 
 bool AnnotationEventsGroupChangeAction::perform()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *layer = this->project.getLayerWithId<AnnotationsSequence>(this->layerId))
     {
         return layer->changeGroup(this->eventsBefore, this->eventsAfter, false);
     }
@@ -412,7 +412,7 @@ bool AnnotationEventsGroupChangeAction::perform()
 
 bool AnnotationEventsGroupChangeAction::undo()
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *layer = this->project.getLayerWithId<AnnotationsSequence>(this->layerId))
     {
         return layer->changeGroup(this->eventsAfter, this->eventsBefore, false);
     }
@@ -428,7 +428,7 @@ int AnnotationEventsGroupChangeAction::getSizeInUnits()
 
 UndoAction *AnnotationEventsGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (AnnotationsLayer *layer = this->project.getLayerWithId<AnnotationsLayer>(this->layerId))
+    if (AnnotationsSequence *layer = this->project.getLayerWithId<AnnotationsSequence>(this->layerId))
     {
         if (AnnotationEventsGroupChangeAction *nextChanger = dynamic_cast<AnnotationEventsGroupChangeAction *>(nextAction))
         {

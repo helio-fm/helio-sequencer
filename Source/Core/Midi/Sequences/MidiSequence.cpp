@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "MidiEvent.h"
 #include "Transport.h"
 #include "HybridRoll.h"
@@ -26,7 +26,7 @@
 #include "MidiLayerActions.h"
 #include "UndoStack.h"
 
-MidiLayer::MidiLayer(MidiTrack &parentTrack,
+MidiSequence::MidiSequence(MidiTrack &parentTrack,
 	ProjectEventDispatcher &dispatcher) :
 	track(parentTrack),
 	eventDispatcher(dispatcher),
@@ -37,12 +37,12 @@ MidiLayer::MidiLayer(MidiTrack &parentTrack,
 {
 }
 
-MidiLayer::~MidiLayer()
+MidiSequence::~MidiSequence()
 {
     this->masterReference.clear();
 }
 
-void MidiLayer::sort()
+void MidiSequence::sort()
 {
     if (this->midiEvents.size() > 0)
     {
@@ -50,7 +50,7 @@ void MidiLayer::sort()
     }
 }
 
-//void MidiLayer::allNotesOff()
+//void MidiSequence::allNotesOff()
 //{
 //    const MidiMessage notesOff(MidiMessage::allNotesOff(this->getChannel()));
 //    this->sendMidiMessage(notesOff);
@@ -66,13 +66,13 @@ void MidiLayer::sort()
 //    }
 //}
 //
-//void MidiLayer::allSoundOff()
+//void MidiSequence::allSoundOff()
 //{
 //    const MidiMessage soundOff(MidiMessage::allSoundOff(this->getChannel()));
 //    this->sendMidiMessage(soundOff);
 //}
 //
-//void MidiLayer::allControllersOff()
+//void MidiSequence::allControllersOff()
 //{
 //    const MidiMessage controllersOff(MidiMessage::allControllersOff(this->getChannel()));
 //    this->sendMidiMessage(controllersOff);
@@ -82,12 +82,12 @@ void MidiLayer::sort()
 // Undoing // TODO move this to project interface
 //
 
-void MidiLayer::checkpoint()
+void MidiSequence::checkpoint()
 {
     this->getUndoStack()->beginNewTransaction(String::empty);
 }
 
-void MidiLayer::undo()
+void MidiSequence::undo()
 {
     if (this->getUndoStack()->canUndo())
     {
@@ -96,7 +96,7 @@ void MidiLayer::undo()
     }
 }
 
-void MidiLayer::redo()
+void MidiSequence::redo()
 {
     if (this->getUndoStack()->canRedo())
     {
@@ -104,7 +104,7 @@ void MidiLayer::redo()
     }
 }
 
-void MidiLayer::clearUndoHistory()
+void MidiSequence::clearUndoHistory()
 {
 	this->getUndoStack()->clearUndoHistory();
 }
@@ -114,7 +114,7 @@ void MidiLayer::clearUndoHistory()
 // Import/export
 //
 
-MidiMessageSequence MidiLayer::exportMidi() const
+MidiMessageSequence MidiSequence::exportMidi() const
 {
     if (this->track.isTrackMuted())
     {
@@ -150,7 +150,7 @@ MidiMessageSequence MidiLayer::exportMidi() const
 // Accessors
 //
 
-float MidiLayer::getFirstBeat() const
+float MidiSequence::getFirstBeat() const
 {
     if (this->midiEvents.size() == 0)
     {
@@ -160,7 +160,7 @@ float MidiLayer::getFirstBeat() const
     return this->midiEvents.getFirst()->getBeat();
 }
 
-float MidiLayer::getLastBeat() const
+float MidiSequence::getLastBeat() const
 {
     if (this->midiEvents.size() == 0)
     {
@@ -170,7 +170,7 @@ float MidiLayer::getLastBeat() const
     return this->midiEvents.getLast()->getBeat();
 }
 
-float MidiLayer::getLengthInBeats() const
+float MidiSequence::getLengthInBeats() const
 {
 	if (this->midiEvents.size() == 0)
 	{
@@ -181,22 +181,22 @@ float MidiLayer::getLengthInBeats() const
 }
 
 
-String MidiLayer::getMuteStateAsString() const
+String MidiSequence::getMuteStateAsString() const
 {
     return (this->isMuted() ? "yes" : "no");
 }
 
-bool MidiLayer::isMuted(const String &muteState)
+bool MidiSequence::isMuted(const String &muteState)
 {
     return (muteState == "yes");
 }
 
-ProjectTreeItem *MidiLayer::getProject()
+ProjectTreeItem *MidiSequence::getProject()
 {
     return this->eventDispatcher.getProject();
 }
 
-UndoStack *MidiLayer::getUndoStack()
+UndoStack *MidiSequence::getUndoStack()
 {
     return this->eventDispatcher.getProject()->getUndoStack();
 }
@@ -206,43 +206,43 @@ UndoStack *MidiLayer::getUndoStack()
 // Events change listener
 //
 
-void MidiLayer::notifyEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void MidiSequence::notifyEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     this->cacheIsOutdated = true;
     this->eventDispatcher.dispatchChangeEvent(oldEvent, newEvent);
 }
 
-void MidiLayer::notifyEventAdded(const MidiEvent &event)
+void MidiSequence::notifyEventAdded(const MidiEvent &event)
 {
     this->cacheIsOutdated = true;
     this->eventDispatcher.dispatchAddEvent(event);
 }
 
-void MidiLayer::notifyEventRemoved(const MidiEvent &event)
+void MidiSequence::notifyEventRemoved(const MidiEvent &event)
 {
     this->cacheIsOutdated = true;
     this->eventDispatcher.dispatchRemoveEvent(event);
 }
 
-void MidiLayer::notifyEventRemovedPostAction()
+void MidiSequence::notifyEventRemovedPostAction()
 {
     this->cacheIsOutdated = true;
     this->eventDispatcher.dispatchPostRemoveEvent(this);
 }
 
-void MidiLayer::notifyLayerChanged()
+void MidiSequence::notifyLayerChanged()
 {
     this->cacheIsOutdated = true;
     this->eventDispatcher.dispatchReloadLayer(this);
 }
 
-void MidiLayer::notifyBeatRangeChanged()
+void MidiSequence::notifyBeatRangeChanged()
 {
     //this->cacheIsOutdated = true;
     this->eventDispatcher.dispatchChangeLayerBeatRange();
 }
 
-void MidiLayer::updateBeatRange(bool shouldNotifyIfChanged)
+void MidiSequence::updateBeatRange(bool shouldNotifyIfChanged)
 {
     if (this->lastStartBeat == this->getFirstBeat() &&
         this->lastEndBeat == this->getLastBeat())
@@ -260,18 +260,18 @@ void MidiLayer::updateBeatRange(bool shouldNotifyIfChanged)
 }
 
 
-//void MidiLayer::sendMidiMessage(const MidiMessage &message)
+//void MidiSequence::sendMidiMessage(const MidiMessage &message)
 //{
 //    this->owner.getTransport()->sendMidiMessage(this->getLayerId().toString(), message);
 //}
 
-void MidiLayer::setChannel(int val)
+void MidiSequence::setChannel(int val)
 {
 	this->cacheIsOutdated = true;
 	this->channel = val;
 }
 
-void MidiLayer::setColour(Colour val)
+void MidiSequence::setColour(Colour val)
 {
 	if (this->colour != val)
 	{
@@ -279,7 +279,7 @@ void MidiLayer::setColour(Colour val)
 	}
 }
 
-void MidiLayer::setMuted(bool shouldBeMuted)
+void MidiSequence::setMuted(bool shouldBeMuted)
 {
 	if (this->muted != shouldBeMuted)
 	{
@@ -288,7 +288,7 @@ void MidiLayer::setMuted(bool shouldBeMuted)
 	}
 }
 
-void MidiLayer::setInstrumentId(const String &val)
+void MidiSequence::setInstrumentId(const String &val)
 {
     if (this->instrumentId != val)
     {
@@ -297,7 +297,7 @@ void MidiLayer::setInstrumentId(const String &val)
     }
 }
 
-void MidiLayer::setControllerNumber(int val)
+void MidiSequence::setControllerNumber(int val)
 {
     if (this->controllerNumber != val)
     {
@@ -309,7 +309,7 @@ void MidiLayer::setControllerNumber(int val)
 // Helpers
 //===----------------------------------------------------------------------===//
 
-int MidiLayer::compareElements(const MidiLayer *first, const MidiLayer *second)
+int MidiSequence::compareElements(const MidiSequence *first, const MidiSequence *second)
 {
 	// Compare by names?
 	if (first == second)
@@ -320,7 +320,7 @@ int MidiLayer::compareElements(const MidiLayer *first, const MidiLayer *second)
 	return first->track->getTrackName().compare(second->track->getTrackName());
 }
 
-int MidiLayer::hashCode() const noexcept
+int MidiSequence::hashCode() const noexcept
 {
 	return this->layerId.toString().hashCode();
 }

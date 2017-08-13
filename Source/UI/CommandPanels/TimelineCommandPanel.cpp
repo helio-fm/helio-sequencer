@@ -25,7 +25,7 @@
 #include "TimeSignatureEvent.h"
 #include "PianoTrackTreeItem.h"
 #include "ProjectTimeline.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "ModalDialogInput.h"
 #include "App.h"
 

@@ -32,7 +32,7 @@ public:
 
     TimeSignatureEvent(const TimeSignatureEvent &other);
 
-    explicit TimeSignatureEvent(MidiLayer *owner,
+    explicit TimeSignatureEvent(MidiSequence *owner,
                     float newBeat = 0.f,
                     int newNumerator = TIME_SIGNATURE_DEFAULT_NUMERATOR,
                     int newDenominator = TIME_SIGNATURE_DEFAULT_DENOMINATOR);

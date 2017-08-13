@@ -237,39 +237,41 @@
           </GROUP>
           <GROUP id="{B5F6594E-8877-B849-CD35-81801189872A}" name="Sequences">
             <GROUP id="{AB8EE82E-9F91-3B49-01A3-788E973C9C38}" name="Events">
-              <FILE id="wrJDBI" name="AnnotationEvent.cpp" compile="1" resource="0"
+              <FILE id="f9lmRW" name="AnnotationEvent.cpp" compile="1" resource="0"
                     file="../../Source/Core/Midi/Sequences/Events/AnnotationEvent.cpp"/>
-              <FILE id="COfS9K" name="AnnotationEvent.h" compile="0" resource="0"
+              <FILE id="FX26OJ" name="AnnotationEvent.h" compile="0" resource="0"
                     file="../../Source/Core/Midi/Sequences/Events/AnnotationEvent.h"/>
-              <FILE id="r2Vxjb" name="AutomationEvent.cpp" compile="1" resource="0"
+              <FILE id="DZFxQA" name="AutomationEvent.cpp" compile="1" resource="0"
                     file="../../Source/Core/Midi/Sequences/Events/AutomationEvent.cpp"/>
-              <FILE id="lMp94h" name="AutomationEvent.h" compile="0" resource="0"
+              <FILE id="bjp15Z" name="AutomationEvent.h" compile="0" resource="0"
                     file="../../Source/Core/Midi/Sequences/Events/AutomationEvent.h"/>
-              <FILE id="LnIQKi" name="MidiEvent.cpp" compile="1" resource="0" file="../../Source/Core/Midi/Sequences/Events/MidiEvent.cpp"/>
-              <FILE id="ESc3yQ" name="MidiEvent.h" compile="0" resource="0" file="../../Source/Core/Midi/Sequences/Events/MidiEvent.h"/>
-              <FILE id="TvdamZ" name="Note.cpp" compile="1" resource="0" file="../../Source/Core/Midi/Sequences/Events/Note.cpp"/>
-              <FILE id="ijhxgu" name="Note.h" compile="0" resource="0" file="../../Source/Core/Midi/Sequences/Events/Note.h"/>
-              <FILE id="yvkNpK" name="TimeSignatureEvent.cpp" compile="1" resource="0"
+              <FILE id="xdcqR0" name="MidiEvent.cpp" compile="1" resource="0" file="../../Source/Core/Midi/Sequences/Events/MidiEvent.cpp"/>
+              <FILE id="bflbXk" name="MidiEvent.h" compile="0" resource="0" file="../../Source/Core/Midi/Sequences/Events/MidiEvent.h"/>
+              <FILE id="anKLlo" name="Note.cpp" compile="1" resource="0" file="../../Source/Core/Midi/Sequences/Events/Note.cpp"/>
+              <FILE id="FGxj1T" name="Note.h" compile="0" resource="0" file="../../Source/Core/Midi/Sequences/Events/Note.h"/>
+              <FILE id="S4bj3A" name="TimeSignatureEvent.cpp" compile="1" resource="0"
                     file="../../Source/Core/Midi/Sequences/Events/TimeSignatureEvent.cpp"/>
-              <FILE id="Kyr4VE" name="TimeSignatureEvent.h" compile="0" resource="0"
+              <FILE id="uTqfdO" name="TimeSignatureEvent.h" compile="0" resource="0"
                     file="../../Source/Core/Midi/Sequences/Events/TimeSignatureEvent.h"/>
             </GROUP>
-            <FILE id="rM1mky" name="AnnotationsLayer.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Midi/Sequences/AnnotationsLayer.cpp"/>
-            <FILE id="qJSySX" name="AnnotationsLayer.h" compile="0" resource="0"
-                  file="../../Source/Core/Midi/Sequences/AnnotationsLayer.h"/>
-            <FILE id="YR7Jyj" name="AutomationLayer.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Midi/Sequences/AutomationLayer.cpp"/>
-            <FILE id="ptjwh2" name="AutomationLayer.h" compile="0" resource="0"
-                  file="../../Source/Core/Midi/Sequences/AutomationLayer.h"/>
-            <FILE id="mkKkha" name="MidiLayer.cpp" compile="1" resource="0" file="../../Source/Core/Midi/Sequences/MidiLayer.cpp"/>
-            <FILE id="EwQfUE" name="MidiLayer.h" compile="0" resource="0" file="../../Source/Core/Midi/Sequences/MidiLayer.h"/>
-            <FILE id="jiYu8h" name="PianoLayer.cpp" compile="1" resource="0" file="../../Source/Core/Midi/Sequences/PianoLayer.cpp"/>
-            <FILE id="A2yMcA" name="PianoLayer.h" compile="0" resource="0" file="../../Source/Core/Midi/Sequences/PianoLayer.h"/>
-            <FILE id="PuipcX" name="TimeSignaturesLayer.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Midi/Sequences/TimeSignaturesLayer.cpp"/>
-            <FILE id="ZmVC5U" name="TimeSignaturesLayer.h" compile="0" resource="0"
-                  file="../../Source/Core/Midi/Sequences/TimeSignaturesLayer.h"/>
+            <FILE id="Uq1fio" name="AnnotationsSequence.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Midi/Sequences/AnnotationsSequence.cpp"/>
+            <FILE id="Kq0pKj" name="AnnotationsSequence.h" compile="0" resource="0"
+                  file="../../Source/Core/Midi/Sequences/AnnotationsSequence.h"/>
+            <FILE id="wXRUbZ" name="AutomationSequence.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Midi/Sequences/AutomationSequence.cpp"/>
+            <FILE id="GRKG5X" name="AutomationSequence.h" compile="0" resource="0"
+                  file="../../Source/Core/Midi/Sequences/AutomationSequence.h"/>
+            <FILE id="MHE6co" name="MidiSequence.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Midi/Sequences/MidiSequence.cpp"/>
+            <FILE id="SK7GBV" name="MidiSequence.h" compile="0" resource="0" file="../../Source/Core/Midi/Sequences/MidiSequence.h"/>
+            <FILE id="QpJTUN" name="PianoSequence.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Midi/Sequences/PianoSequence.cpp"/>
+            <FILE id="ex5XgV" name="PianoSequence.h" compile="0" resource="0" file="../../Source/Core/Midi/Sequences/PianoSequence.h"/>
+            <FILE id="Xpzwmq" name="TimeSignaturesSequence.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Midi/Sequences/TimeSignaturesSequence.cpp"/>
+            <FILE id="czxRrv" name="TimeSignaturesSequence.h" compile="0" resource="0"
+                  file="../../Source/Core/Midi/Sequences/TimeSignaturesSequence.h"/>
           </GROUP>
           <FILE id="BA8BhP" name="MidiTrack.h" compile="0" resource="0" file="../../Source/Core/Midi/MidiTrack.h"/>
         </GROUP>
@@ -439,10 +441,6 @@
                   file="../../Source/Core/Undo/Actions/MidiTrackActions.cpp"/>
             <FILE id="BdOw67" name="MidiTrackActions.h" compile="0" resource="0"
                   file="../../Source/Core/Undo/Actions/MidiTrackActions.h"/>
-            <FILE id="fJMUxE" name="MidiLayerActions.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Undo/Actions/MidiLayerActions.cpp"/>
-            <FILE id="Z8vp2H" name="MidiLayerActions.h" compile="0" resource="0"
-                  file="../../Source/Core/Undo/Actions/MidiLayerActions.h"/>
             <FILE id="bJkovu" name="NoteActions.cpp" compile="1" resource="0" file="../../Source/Core/Undo/Actions/NoteActions.cpp"/>
             <FILE id="oBWANR" name="NoteActions.h" compile="0" resource="0" file="../../Source/Core/Undo/Actions/NoteActions.h"/>
             <FILE id="RWaKL8" name="PatternActions.cpp" compile="1" resource="0"

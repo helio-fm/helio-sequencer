@@ -16,14 +16,14 @@
 */
 
 #include "Common.h"
-#include "AnnotationsLayer.h"
+#include "AnnotationsSequence.h"
 #include "Note.h"
 #include "AnnotationEventActions.h"
 #include "SerializationKeys.h"
 #include "UndoStack.h"
 
 
-AnnotationsLayer::AnnotationsLayer(ProjectEventDispatcher &parent) : MidiLayer(parent)
+AnnotationsSequence::AnnotationsSequence(ProjectEventDispatcher &parent) : MidiSequence(parent)
 {
 }
 
@@ -32,7 +32,7 @@ AnnotationsLayer::AnnotationsLayer(ProjectEventDispatcher &parent) : MidiLayer(p
 // Import/export
 //===----------------------------------------------------------------------===//
 
-void AnnotationsLayer::importMidi(const MidiMessageSequence &sequence)
+void AnnotationsSequence::importMidi(const MidiMessageSequence &sequence)
 {
     this->clearUndoHistory();
     this->checkpoint();
@@ -63,7 +63,7 @@ void AnnotationsLayer::importMidi(const MidiMessageSequence &sequence)
 // Undoable track editing
 //===----------------------------------------------------------------------===//
 
-void AnnotationsLayer::silentImport(const MidiEvent &eventToImport)
+void AnnotationsSequence::silentImport(const MidiEvent &eventToImport)
 {
     const AnnotationEvent &annotation = static_cast<const AnnotationEvent &>(eventToImport);
 
@@ -82,7 +82,7 @@ void AnnotationsLayer::silentImport(const MidiEvent &eventToImport)
     this->updateBeatRange(false);
 }
 
-MidiEvent *AnnotationsLayer::insert(const AnnotationEvent &annotation, bool undoable)
+MidiEvent *AnnotationsSequence::insert(const AnnotationEvent &annotation, bool undoable)
 {
     if (this->annotationsHashTable.contains(annotation))
     {
@@ -114,7 +114,7 @@ MidiEvent *AnnotationsLayer::insert(const AnnotationEvent &annotation, bool undo
     return nullptr;
 }
 
-bool AnnotationsLayer::remove(const AnnotationEvent &annotation, bool undoable)
+bool AnnotationsSequence::remove(const AnnotationEvent &annotation, bool undoable)
 {
     if (undoable)
     {
@@ -140,7 +140,7 @@ bool AnnotationsLayer::remove(const AnnotationEvent &annotation, bool undoable)
     return true;
 }
 
-bool AnnotationsLayer::change(const AnnotationEvent &annotation,
+bool AnnotationsSequence::change(const AnnotationEvent &annotation,
                               const AnnotationEvent &newAnnotation,
                               bool undoable)
 {
@@ -170,7 +170,7 @@ bool AnnotationsLayer::change(const AnnotationEvent &annotation,
     return true;
 }
 
-bool AnnotationsLayer::insertGroup(Array<AnnotationEvent> &annotations, bool undoable)
+bool AnnotationsSequence::insertGroup(Array<AnnotationEvent> &annotations, bool undoable)
 {
     if (undoable)
     {
@@ -198,7 +198,7 @@ bool AnnotationsLayer::insertGroup(Array<AnnotationEvent> &annotations, bool und
     return true;
 }
 
-bool AnnotationsLayer::removeGroup(Array<AnnotationEvent> &annotations, bool undoable)
+bool AnnotationsSequence::removeGroup(Array<AnnotationEvent> &annotations, bool undoable)
 {
     if (undoable)
     {
@@ -227,7 +227,7 @@ bool AnnotationsLayer::removeGroup(Array<AnnotationEvent> &annotations, bool und
     return true;
 }
 
-bool AnnotationsLayer::changeGroup(Array<AnnotationEvent> &annotationsBefore,
+bool AnnotationsSequence::changeGroup(Array<AnnotationEvent> &annotationsBefore,
                                    Array<AnnotationEvent> &annotationsAfter,
                                    bool undoable)
 {
@@ -271,7 +271,7 @@ bool AnnotationsLayer::changeGroup(Array<AnnotationEvent> &annotationsBefore,
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *AnnotationsLayer::serialize() const
+XmlElement *AnnotationsSequence::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::annotations);
     
@@ -291,7 +291,7 @@ XmlElement *AnnotationsLayer::serialize() const
     return xml;
 }
 
-void AnnotationsLayer::deserialize(const XmlElement &xml)
+void AnnotationsSequence::deserialize(const XmlElement &xml)
 {
     this->reset();
 
@@ -331,7 +331,7 @@ void AnnotationsLayer::deserialize(const XmlElement &xml)
     this->notifyLayerChanged();
 }
 
-void AnnotationsLayer::reset()
+void AnnotationsSequence::reset()
 {
     this->midiEvents.clear();
     this->annotationsHashTable.clear();

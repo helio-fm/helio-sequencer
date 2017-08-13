@@ -25,7 +25,7 @@
 #include "AutomationTrackMap.h"
 #include "AutomationCurveHelper.h"
 #include "AutomationEventsConnector.h"
-#include "AutomationLayer.h"
+#include "AutomationSequence.h"
 //[/MiscUserDefs]
 
 AutomationEventComponent::AutomationEventComponent(AutomationTrackMap &parent, const AutomationEvent &targetEvent)
@@ -140,7 +140,7 @@ void AutomationEventComponent::mouseDrag (const MouseEvent& e)
             if (eventChanged)
             {
                 this->setMouseCursor(MouseCursor::DraggingHandCursor);
-                AutomationLayer *autoLayer = static_cast<AutomationLayer *>(this->event.getLayer());
+                AutomationSequence *autoLayer = static_cast<AutomationSequence *>(this->event.getLayer());
                 autoLayer->change(this->event, this->continueDragging(deltaBeat, deltaValue), true);
             }
             else

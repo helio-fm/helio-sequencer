@@ -18,13 +18,13 @@
 #include "Common.h"
 #include "DummyClipComponent.h"
 #include "ProjectTreeItem.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "MidiEvent.h"
 #include "HybridRoll.h"
 #include "Pattern.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 
-DummyClipComponent::DummyClipComponent(MidiLayer *targetLayer,
+DummyClipComponent::DummyClipComponent(MidiSequence *targetLayer,
 	HybridRoll &editor, Clip clip) :
 	ClipComponent(editor, clip),
 	layer(targetLayer)

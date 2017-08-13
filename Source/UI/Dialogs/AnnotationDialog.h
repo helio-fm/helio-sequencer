@@ -21,7 +21,7 @@
 #include "FadingDialog.h"
 #include "AnnotationEvent.h"
 
-class AnnotationsLayer;
+class AnnotationsSequence;
 //[/Headers]
 
 #include "../Themes/PanelC.h"
@@ -37,13 +37,13 @@ class AnnotationDialog  : public FadingDialog,
 {
 public:
 
-    AnnotationDialog (Component &owner, AnnotationsLayer *annotationsLayer, const AnnotationEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
+    AnnotationDialog (Component &owner, AnnotationsSequence *annotationsLayer, const AnnotationEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
 
     ~AnnotationDialog();
 
     //[UserMethods]
 	static AnnotationDialog *createEditingDialog(Component &owner, const AnnotationEvent &event);
-	static AnnotationDialog *createAddingDialog(Component &owner, AnnotationsLayer *annotationsLayer, float targetBeat);
+	static AnnotationDialog *createAddingDialog(Component &owner, AnnotationsSequence *annotationsLayer, float targetBeat);
 
 	void onColourButtonClicked(ColourButton *button) override;
     //[/UserMethods]
@@ -65,7 +65,7 @@ private:
     //[UserVariables]
 
 	AnnotationEvent targetEvent;
-	AnnotationsLayer *targetLayer;
+	AnnotationsSequence *targetLayer;
 	Component &ownerComponent;
 
 	inline void cancelAndDisappear();

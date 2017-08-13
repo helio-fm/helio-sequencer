@@ -17,14 +17,14 @@
 
 #pragma once
 
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "AutomationEvent.h"
 
-class AutomationLayer : public MidiLayer
+class AutomationSequence : public MidiSequence
 {
 public:
 
-    explicit AutomationLayer(ProjectEventDispatcher &parent);
+    explicit AutomationSequence(ProjectEventDispatcher &parent);
 
 
     //===------------------------------------------------------------------===//
@@ -78,6 +78,6 @@ private:
 
 private:
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationLayer);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationSequence);
 
 };

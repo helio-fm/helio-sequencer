@@ -17,8 +17,8 @@
 
 #include "Common.h"
 #include "SequencerLayout.h"
-#include "MidiLayer.h"
-#include "AutomationLayer.h"
+#include "MidiSequence.h"
+#include "AutomationSequence.h"
 #include "PianoRoll.h"
 #include "PatternRoll.h"
 #include "ProjectTreeItem.h"
@@ -556,7 +556,7 @@ SequencerLayout::~SequencerLayout()
     this->pianoViewport = nullptr;
 }
 
-void SequencerLayout::setActiveMidiLayers(Array<MidiLayer *> tracks, MidiLayer *primaryTrack)
+void SequencerLayout::setActiveMidiLayers(Array<MidiSequence *> tracks, MidiSequence *primaryTrack)
 {
     //Logger::writeToLog("MidiEditor::setActiveMidiLayers");
     this->pianoRoll->setActiveMidiLayers(tracks, primaryTrack);
@@ -567,7 +567,7 @@ void SequencerLayout::setActiveMidiLayers(Array<MidiLayer *> tracks, MidiLayer *
 	}
 }
 
-void SequencerLayout::hideAutomationEditor(AutomationLayer *targetLayer)
+void SequencerLayout::hideAutomationEditor(AutomationSequence *targetLayer)
 {
     const String &layerId = targetLayer->getLayerId().toString();
     
@@ -577,7 +577,7 @@ void SequencerLayout::hideAutomationEditor(AutomationLayer *targetLayer)
     }
 }
 
-bool SequencerLayout::toggleShowAutomationEditor(AutomationLayer *targetLayer)
+bool SequencerLayout::toggleShowAutomationEditor(AutomationSequence *targetLayer)
 {
 	// test rolls switching:
 	this->rollContainer->startRollSwitchAnimation();

@@ -29,7 +29,7 @@ public:
 
     AutomationEvent(const AutomationEvent &other);
 
-    explicit AutomationEvent(MidiLayer *owner,
+    explicit AutomationEvent(MidiSequence *owner,
                     float beatVal = 0.f,
                     float controllerValue = 0.f);
 
@@ -70,9 +70,9 @@ public:
 
     bool isPedalUpEvent() const noexcept;
     
-    static AutomationEvent pedalUpEvent(MidiLayer *owner, float beatVal = 0.f);
+    static AutomationEvent pedalUpEvent(MidiSequence *owner, float beatVal = 0.f);
 
-    static AutomationEvent pedalDownEvent(MidiLayer *owner, float beatVal = 0.f);
+    static AutomationEvent pedalDownEvent(MidiSequence *owner, float beatVal = 0.f);
 
 
     //===------------------------------------------------------------------===//

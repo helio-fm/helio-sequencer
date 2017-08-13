@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "NoteActions.h"
-#include "PianoLayer.h"
+#include "PianoSequence.h"
 #include "ProjectTreeItem.h"
 #include "SerializationKeys.h"
 
@@ -38,7 +38,7 @@ NoteInsertAction::NoteInsertAction(ProjectTreeItem &parentProject,
 
 bool NoteInsertAction::perform()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *layer = this->project.getLayerWithId<PianoSequence>(this->layerId))
     {
         return (layer->insert(this->note, false) != nullptr);
     }
@@ -48,7 +48,7 @@ bool NoteInsertAction::perform()
 
 bool NoteInsertAction::undo()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *layer = this->project.getLayerWithId<PianoSequence>(this->layerId))
     {
         return layer->remove(this->note, false);
     }
@@ -98,7 +98,7 @@ NoteRemoveAction::NoteRemoveAction(ProjectTreeItem &parentProject,
 
 bool NoteRemoveAction::perform()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *layer = this->project.getLayerWithId<PianoSequence>(this->layerId))
     {
         return layer->remove(this->note, false);
     }
@@ -108,7 +108,7 @@ bool NoteRemoveAction::perform()
 
 bool NoteRemoveAction::undo()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *layer = this->project.getLayerWithId<PianoSequence>(this->layerId))
     {
         return (layer->insert(this->note, false) != nullptr);
     }
@@ -160,7 +160,7 @@ NoteChangeAction::NoteChangeAction(ProjectTreeItem &parentProject,
 
 bool NoteChangeAction::perform()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *layer = this->project.getLayerWithId<PianoSequence>(this->layerId))
     {
         return layer->change(this->noteBefore, this->noteAfter, false);
     }
@@ -170,7 +170,7 @@ bool NoteChangeAction::perform()
 
 bool NoteChangeAction::undo()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *layer = this->project.getLayerWithId<PianoSequence>(this->layerId))
     {
         return layer->change(this->noteAfter, this->noteBefore, false);
     }
@@ -185,7 +185,7 @@ int NoteChangeAction::getSizeInUnits()
 
 UndoAction *NoteChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *layer = this->project.getLayerWithId<PianoSequence>(this->layerId))
     {
         if (NoteChangeAction *nextChanger = dynamic_cast<NoteChangeAction *>(nextAction))
         {
@@ -255,7 +255,7 @@ NotesGroupInsertAction::NotesGroupInsertAction(ProjectTreeItem &parentProject,
 
 bool NotesGroupInsertAction::perform()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *layer = this->project.getLayerWithId<PianoSequence>(this->layerId))
     {
         return layer->insertGroup(this->notes, false);
     }
@@ -265,7 +265,7 @@ bool NotesGroupInsertAction::perform()
 
 bool NotesGroupInsertAction::undo()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *layer = this->project.getLayerWithId<PianoSequence>(this->layerId))
     {
         return layer->removeGroup(this->notes, false);
     }
@@ -327,7 +327,7 @@ NotesGroupRemoveAction::NotesGroupRemoveAction(ProjectTreeItem &parentProject,
 
 bool NotesGroupRemoveAction::perform()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *layer = this->project.getLayerWithId<PianoSequence>(this->layerId))
     {
         return layer->removeGroup(this->notes, false);
     }
@@ -337,7 +337,7 @@ bool NotesGroupRemoveAction::perform()
 
 bool NotesGroupRemoveAction::undo()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *layer = this->project.getLayerWithId<PianoSequence>(this->layerId))
     {
         return layer->insertGroup(this->notes, false);
     }
@@ -401,7 +401,7 @@ NotesGroupChangeAction::NotesGroupChangeAction(ProjectTreeItem &parentProject,
 
 bool NotesGroupChangeAction::perform()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *layer = this->project.getLayerWithId<PianoSequence>(this->layerId))
     {
         return layer->changeGroup(this->notesBefore, this->notesAfter, false);
     }
@@ -411,7 +411,7 @@ bool NotesGroupChangeAction::perform()
 
 bool NotesGroupChangeAction::undo()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *layer = this->project.getLayerWithId<PianoSequence>(this->layerId))
     {
         return layer->changeGroup(this->notesAfter, this->notesBefore, false);
     }
@@ -426,7 +426,7 @@ int NotesGroupChangeAction::getSizeInUnits()
 
 UndoAction *NotesGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *layer = this->project.getLayerWithId<PianoSequence>(this->layerId))
     {
         if (NotesGroupChangeAction *nextChanger = dynamic_cast<NotesGroupChangeAction *>(nextAction))
         {
