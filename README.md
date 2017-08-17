@@ -3,9 +3,11 @@
 
 ### Why another sequencer?
 
-Most of the DAW interfaces often seem overcomplicated, and they only tend to get more and more bloated over time. Also most of the DAWs are commercial, proprietary-licensed and almost none of them support all major operating systems at the same time.
+Most of the DAW interfaces often seem [overcomplicated](http://mashable.com/2015/09/18/german-u-boat/), and they only tend to get more and more bloated over time. Many of them are commercial, proprietary-licensed and almost none of them support all major operating systems at the same time.
 
-Helio aims to be a modern music creation tool, featuring linear-based sequencer with a clean interface, high-performance C++ core, integrated version control providing intelligent synchronization between devices, saved undo history, translations to many languages and more.
+Helio is an attempt to rethink a music sequencer to create a tool that **feels right**.
+
+It aims to be a modern music creation software, featuring linear-based sequencer with a clean interface, high-performance C++ core, integrated version control providing intelligent synchronization between devices, saved undo history, translations to many languages and more.
 
 ### Building
 
@@ -27,6 +29,7 @@ Helio aims to be a modern music creation tool, featuring linear-based sequencer 
  * Homepage with all latest builds: [https://helioworkstation.com](https://helioworkstation.com/).
  * Project page at [KVR database](http://www.kvraudio.com/product/helio-workstation-by-peter-rudenko).
  * Some [screencasts on Youtube](https://www.youtube.com/channel/UCO3K8iCd1k2FTqSocoE-WXw/).
+ * [Discussion](https://news.ycombinator.com/item?id=14212054) at HN.
 
 ### Contributing
 
@@ -34,11 +37,11 @@ Helio is a work in progress and still there are many essential features missing,
 
 Your ideas are also welcome: friendly and lightweight UI is the main development priority in this project, and if you have a vision on how to improve user experience in music composing, feel free to share it.
 
-You could also [make a new translation](http://helioworkstation.com/translations/) for your native language or improve any of existing translations, which include English, German, French, Italian, Spanish and Russian.
+You could also [make a new translation](http://helioworkstation.com/translations/) for your native language or proofread any of existing translations, including English, German, French, Italian, Spanish and Russian.
 
-### License
+### License and credits
 
-GNU GPL v3 © [Peter Rudenko](https://www.facebook.com/rudenko.peter)
+GNU GPL v3 © [Peter Rudenko](https://www.facebook.com/rudenko.peter).
 
 See ``LICENSE`` for more information.
 
@@ -48,7 +51,8 @@ Used fonts and icons taken from various free icon fonts (see [Icomoon](https://i
 
 All Helio logos and translations are also distrubuted under [CC-BY](https://creativecommons.org/licenses/by/3.0/).
 
-#### Additional translations credits
+#### Additional translation and proofreading credits
 
 Dario Silva - Brazilian Portuguese  
 Jacques Viviers - Afrikaans  
+Claudio Stano - Italian  
