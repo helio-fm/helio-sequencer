@@ -30,7 +30,7 @@ class InstrumentDescription;
 
 class MidiTrackTreeItem :
     public TreeItem,
-	public MidiTrack,
+    public MidiTrack,
     public ProjectEventDispatcher,
     public VCS::TrackedItem
 {
@@ -40,18 +40,12 @@ public:
 
     ~MidiTrackTreeItem() override;
 
-	String getXPath() const noexcept;
-	void setXPath(const String &path);
+    String getXPath() const noexcept;
+    void setXPath(const String &path);
     Colour getColour() const override;
 
     void showPage() override;
     void onRename(const String &newName) override;
-
-    inline MidiSequence *getSequence() const noexcept 
-    { return this->layer; }
-
-    inline Pattern *getPattern() const noexcept 
-    { return this->pattern; }
 
     void importMidi(const MidiMessageSequence &sequence);
 
@@ -63,22 +57,30 @@ public:
     XmlElement *serializeClipsDelta() const;
     void resetClipsDelta(const XmlElement *state);
 
-	//===------------------------------------------------------------------===//
-	// MidiTrack
-	//===------------------------------------------------------------------===//
+    //===------------------------------------------------------------------===//
+    // MidiTrack
+    //===------------------------------------------------------------------===//
 
-	String getTrackName() const noexcept override;
-	Colour getTrackColour() const noexcept override;
-	int getTrackChannel() const noexcept override;
+    Uuid getTrackId() const noexcept override;
+    int getTrackChannel() const noexcept override;
 
-	String getTrackInstrumentId() const noexcept override;
-	int getTrackControllerNumber() const noexcept override;
+    String getTrackName() const noexcept override;
+    void setTrackName(const String &val) override;
 
-	bool isTrackMuted() const noexcept override;
-	bool isTrackSolo() const noexcept override;
+    Colour getTrackColour() const noexcept override;
+    void setTrackColour(Colour colour) override;
 
-	MidiSequence *getSequence() const noexcept override;
-	Pattern *getPattern() const noexcept override;
+    String getTrackInstrumentId() const noexcept override;
+    void setTrackInstrumentId(const String &val) override;
+
+    int getTrackControllerNumber() const noexcept override;
+    void setTrackControllerNumber(int val) override;
+
+    bool isTrackMuted() const noexcept override;
+    void setTrackMuted(bool shouldBeMuted) override;
+
+    MidiSequence *getSequence() const noexcept override;
+    Pattern *getPattern() const noexcept override;
 
     //===------------------------------------------------------------------===//
     // ProjectEventDispatcher
@@ -87,18 +89,16 @@ public:
     void dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
     void dispatchAddEvent(const MidiEvent &event) override;
     void dispatchRemoveEvent(const MidiEvent &event) override;
-	void dispatchPostRemoveEvent(MidiSequence *const layer) override;
+    void dispatchPostRemoveEvent(MidiSequence *const layer) override;
 
-    void dispatchReloadLayer(MidiSequence *const layer) override;
-    void dispatchChangeLayerBeatRange() override;
-    
-	void dispatchAddClip(const Clip &clip) override;
-	void dispatchChangeClip(const Clip &oldClip, const Clip &newClip) override;
-	void dispatchRemoveClip(const Clip &clip) override;
-	void dispatchPostRemoveClip(Pattern *const pattern) override;
+    void dispatchAddClip(const Clip &clip) override;
+    void dispatchChangeClip(const Clip &oldClip, const Clip &newClip) override;
+    void dispatchRemoveClip(const Clip &clip) override;
+    void dispatchPostRemoveClip(Pattern *const pattern) override;
 
-	void dispatchReloadPattern(Pattern *const pattern) override;
-	void dispatchChangePatternBeatRange() override;
+    void dispatchChangeTrackProperties(MidiTrack *const track) override {}
+    void dispatchChangeTrackBeatRange(MidiTrack *const track) override {}
+    void dispatchChangeTrackContent(MidiTrack *const track) override {}
 
     ProjectTreeItem *getProject() const override;
 
@@ -117,7 +117,6 @@ public:
 
     Component *createItemMenu() override;
 
-
 protected:
 
     ProjectTreeItem *lastFoundParent;
@@ -128,14 +127,16 @@ protected:
     
 protected:
 
-	Colour colour;
-	int channel;
+    Uuid id;
 
-	String instrumentId;
-	int controllerNumber;
+    Colour colour;
+    int channel;
 
-	bool mute;
-	bool solo;
+    String instrumentId;
+    int controllerNumber;
+
+    bool mute;
+    bool solo;
 
 private:
 

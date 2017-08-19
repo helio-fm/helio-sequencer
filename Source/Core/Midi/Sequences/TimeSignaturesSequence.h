@@ -24,7 +24,7 @@ class TimeSignaturesSequence : public MidiSequence
 {
 public:
 
-    explicit TimeSignaturesSequence(ProjectEventDispatcher &parent);
+    explicit TimeSignaturesSequence(MidiTrack &track, ProjectEventDispatcher &dispatcher);
 
 
     //===------------------------------------------------------------------===//

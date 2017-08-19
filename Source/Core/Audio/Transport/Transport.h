@@ -79,7 +79,7 @@ public:
 
     
     //===------------------------------------------------------------------===//
-    // Sending messages at realtime
+    // Sending messages at real-time
     //===------------------------------------------------------------------===//
     
     void sendMidiMessage(const String &layerId, const MidiMessage &message) const;
@@ -105,7 +105,7 @@ public:
     //===------------------------------------------------------------------===//
     
     void onChangeMidiEvent(const MidiEvent &oldEvent,
-		const MidiEvent &newEvent) override;
+        const MidiEvent &newEvent) override;
     
     void onAddMidiEvent(const MidiEvent &event) override;
     
@@ -113,18 +113,15 @@ public:
     
     void onPostRemoveMidiEvent(MidiSequence *const layer) override;
 
-    void onChangeTrack(MidiSequence *const layer,
-		Pattern *const pattern = nullptr) override;
+    void onChangeTrackProperties(MidiTrack *const track) override;
     
-    void onAddTrack(MidiSequence *const layer,
-		Pattern *const pattern = nullptr) override;
+    void onAddTrack(MidiTrack *const track) override;
     
-    void onRemoveTrack(MidiSequence *const layer,
-		Pattern *const pattern = nullptr) override;
+    void onRemoveTrack(MidiTrack *const track) override;
     
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
 
-	void onChangeViewBeatRange(float firstBeat, float lastBeat) override {}
+    void onChangeViewBeatRange(float firstBeat, float lastBeat) override {}
 
 
     //===------------------------------------------------------------------===//
@@ -166,11 +163,11 @@ private:
     ProjectSequences sequences;
     bool sequencesAreOutdated;
     
-    Array<const MidiSequence *> layersCache;
+    Array<const MidiTrack *> tracksCache;
     HashMap<String, Instrument *> linksCache; // layer id : instrument
     
-    void updateLinkForLayer(const MidiSequence *layer);
-    void removeLinkForLayer(const MidiSequence *layer);
+    void updateLinkForTrack(const MidiTrack *track);
+    void removeLinkForTrack(const MidiTrack *track);
     
 private:
     

@@ -32,8 +32,8 @@ class MidiSequence : public Serializable
 {
 public:
 
-    explicit MidiSequence(MidiTrack &parentTrack,
-		ProjectEventDispatcher &eventDispatcher);
+    explicit MidiSequence(MidiTrack &track,
+        ProjectEventDispatcher &eventDispatcher);
 
     ~MidiSequence() override;
     
@@ -52,13 +52,13 @@ public:
 
     MidiMessageSequence exportMidi() const;
     virtual void importMidi(const MidiMessageSequence &sequence) = 0;
-	
+    
     //===------------------------------------------------------------------===//
     // Track editing
     //===------------------------------------------------------------------===//
 
     // This one is for import and checkout procedures.
-	// Does not notify anybody to prevent notification hell.
+    // Does not notify anybody to prevent notification hell.
     // Always call notifyLayerChanged() when you're done using it.
     virtual void silentImport(const MidiEvent &eventToImport) = 0;
 
@@ -68,8 +68,9 @@ public:
 
     virtual float getFirstBeat() const;
     virtual float getLastBeat() const;
-	float getLengthInBeats() const;
-		    
+    float getLengthInBeats() const;
+    MidiTrack *getTrack() const;
+
     //===------------------------------------------------------------------===//
     // OwnedArray wrapper
     //===------------------------------------------------------------------===//
@@ -103,33 +104,30 @@ public:
     void notifyEventAdded(const MidiEvent &event);
     void notifyEventRemoved(const MidiEvent &event);
     void notifyEventRemovedPostAction();
-    void notifyLayerChanged();
+    void notifySequenceChanged();
     void notifyBeatRangeChanged();
     void updateBeatRange(bool shouldNotifyIfChanged);
 
-	//===------------------------------------------------------------------===//
-	// Helpers
-	//===------------------------------------------------------------------===//
+    //===------------------------------------------------------------------===//
+    // Helpers
+    //===------------------------------------------------------------------===//
 
-	friend inline bool operator==(const MidiSequence &lhs, const MidiSequence &rhs)
-	{
-		return (&lhs == &rhs || lhs.layerId == rhs.layerId);
-	}
+    friend inline bool operator==(const MidiSequence &lhs, const MidiSequence &rhs)
+    {
+        return &lhs == &rhs;
+    }
 
-	static int compareElements(const MidiSequence *first,
-		const MidiSequence *second);
-
-	int hashCode() const noexcept;
+    int hashCode() const noexcept;
 
 private:
 
-	MidiTrack &track;
-	ProjectEventDispatcher &eventDispatcher;
+    MidiTrack &track;
+    ProjectEventDispatcher &eventDispatcher;
 
 protected:
 
-	// clearQuick the arrays and don't send any notifications
-	virtual void clearQuick() = 0;
+    // clearQuick the arrays and don't send any notifications
+    virtual void clearQuick() {}
 
     void setLayerId(const String &id);
 
@@ -140,7 +138,7 @@ protected:
     UndoStack *getUndoStack();
 
     OwnedArray<MidiEvent> midiEvents;
-	
+    
 private:
 
     mutable MidiMessageSequence cachedSequence;
@@ -151,5 +149,5 @@ private:
     WeakReference<MidiSequence>::Master masterReference;
     friend class WeakReference<MidiSequence>;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiSequence);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiSequence);
 };

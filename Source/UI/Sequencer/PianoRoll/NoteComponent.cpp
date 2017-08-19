@@ -33,14 +33,14 @@
 
 static PianoSequence *getPianoLayer(SelectionProxyArray::Ptr selection)
 {
-	const auto &firstEvent = selection->getFirstAs<NoteComponent>()->getNote();
-	PianoSequence *pianoLayer = static_cast<PianoSequence *>(firstEvent.getSequence());
-	return pianoLayer;
+    const auto &firstEvent = selection->getFirstAs<NoteComponent>()->getNote();
+    PianoSequence *pianoLayer = static_cast<PianoSequence *>(firstEvent.getSequence());
+    return pianoLayer;
 }
 
 NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, bool ghostMode)
     : HybridRollEventComponent(editor, ghostMode),
-	  midiEvent(event),
+      midiEvent(event),
       state(None),
       anchor(event),
       groupScalingAnchor(event),
@@ -119,24 +119,24 @@ void NoteComponent::setQuickSelectLayerMode(bool value)
 
 void NoteComponent::setSelected(bool selected)
 {
-	// как-то так?
-	//this->roll.wantVolumeSliderFor(this, selected);
-	HybridRollEventComponent::setSelected(selected);
+    // как-то так?
+    //this->roll.wantVolumeSliderFor(this, selected);
+    HybridRollEventComponent::setSelected(selected);
 }
 
 float NoteComponent::getBeat() const
 {
-	return this->midiEvent.getBeat();
+    return this->midiEvent.getBeat();
 }
 
 String NoteComponent::getSelectionGroupId() const
 {
-	return this->midiEvent.getLayer()->getLayerIdAsString();
+    return this->midiEvent.getLayer()->getLayerIdAsString();
 }
 
 String NoteComponent::getId() const
 {
-	return this->midiEvent.getId();
+    return this->midiEvent.getId();
 }
 
 
@@ -205,7 +205,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
     //Logger::writeToLog("Beat: " + String(this->getBeat()) + ", transport position: " + String(transportPosition));
     
     if (e.mods.isRightButtonDown() &&
-		this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
+        this->roll.getEditMode().isMode(HybridRollEditMode::defaultMode))
     {
         this->setMouseCursor(MouseCursor::DraggingHandCursor);
         this->roll.mouseDown(e.getEventRelativeTo(&this->roll));
@@ -226,7 +226,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
         
         if (shouldSendMidi)
         {
-			this->stopSound();
+            this->stopSound();
         }
 
         if (this->canResize() &&
@@ -374,7 +374,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                     groupDragAfter.add(nc->continueResizingRight(deltaLength));
                 }
                 
-				getPianoLayer(layerSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                getPianoLayer(layerSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
             }
         }
         else
@@ -407,7 +407,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                     groupDragAfter.add(nc->continueResizingLeft(deltaLength));
                 }
                 
-				getPianoLayer(layerSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                getPianoLayer(layerSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
             }
         }
         else
@@ -440,7 +440,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                     groupDragAfter.add(nc->continueGroupScalingRight(groupScaleFactor));
                 }
                 
-				getPianoLayer(layerSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                getPianoLayer(layerSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
             }
         }
         else
@@ -473,7 +473,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                     groupDragAfter.add(nc->continueGroupScalingLeft(groupScaleFactor));
                 }
                 
-				getPianoLayer(layerSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                getPianoLayer(layerSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
             }
         }
         else
@@ -509,8 +509,8 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             
             if (shouldSendMidi)
             {
-				this->stopSound();
-			}
+                this->stopSound();
+            }
             
             const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
             Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
@@ -528,7 +528,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                     groupDragAfter.add(nc->continueDragging(deltaBeat, deltaKey, shouldSendMidi));
                 }
                 
-				getPianoLayer(layerSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                getPianoLayer(layerSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
             }
         }
     }
@@ -557,7 +557,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                 //this->roll.triggerBatchRepaintFor(nc);
             }
             
-			getPianoLayer(layerSelection)->changeGroup(groupTuneBefore, groupTuneAfter, true);
+            getPianoLayer(layerSelection)->changeGroup(groupTuneBefore, groupTuneAfter, true);
         }
     }
 }
@@ -795,21 +795,21 @@ void NoteComponent::paintLegacyLook(Graphics &g)
 
 bool NoteComponent::belongsToLayerSet(Array<MidiSequence *> layers) const
 {
-	for (int i = 0; i < layers.size(); ++i)
-	{
-		if (this->getNote().getLayer() == layers.getUnchecked(i))
-		{
-			return true;
-		}
-	}
+    for (int i = 0; i < layers.size(); ++i)
+    {
+        if (this->getNote().getLayer() == layers.getUnchecked(i))
+        {
+            return true;
+        }
+    }
 
-	return false;
+    return false;
 }
 
 void NoteComponent::activateCorrespondingLayer(bool selectOthers, bool deselectOthers)
 {
-	MidiSequence *layer = this->getNote().getLayer();
-	this->roll.getProject().activateLayer(layer, selectOthers, deselectOthers);
+    MidiSequence *layer = this->getNote().getLayer();
+    this->roll.getProject().activateLayer(layer, selectOthers, deselectOthers);
 }
 
 
@@ -868,8 +868,8 @@ void NoteComponent::endDragging(bool sendMidiMessage)
 {
     if (sendMidiMessage)
     {
-		this->stopSound();
-	}
+        this->stopSound();
+    }
     
     this->roll.grabKeyboardFocus();
     this->state = None;
@@ -927,8 +927,8 @@ Note NoteComponent::continueResizingRight(float deltaLength)
 
 void NoteComponent::endResizingRight()
 {
-	this->stopSound();
-	this->roll.grabKeyboardFocus();
+    this->stopSound();
+    this->roll.grabKeyboardFocus();
     this->state = None;
 }
 
@@ -1142,11 +1142,11 @@ void NoteComponent::checkpointIfNeeded()
 
 void NoteComponent::stopSound()
 {
-	this->getRoll().getTransport().allNotesControllersAndSoundOff();
+    this->getRoll().getTransport().allNotesControllersAndSoundOff();
 }
 
 void NoteComponent::sendMidiMessage(const MidiMessage &message)
 {
-	const String layerId = this->getNote().getLayer()->getLayerIdAsString();
-	this->getRoll().getTransport().sendMidiMessage(layerId, message);
+    const String layerId = this->getNote().getLayer()->getLayerIdAsString();
+    this->getRoll().getTransport().sendMidiMessage(layerId, message);
 }

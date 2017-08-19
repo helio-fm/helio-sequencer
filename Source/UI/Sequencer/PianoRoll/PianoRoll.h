@@ -73,11 +73,11 @@ public:
     void deleteSelection();
     
     void reloadRollContent() override;
-	int getNumActiveLayers() const noexcept;
-	MidiSequence *getActiveMidiLayer(int index) const noexcept;
-	MidiSequence *getPrimaryActiveMidiLayer() const noexcept;
-	void setActiveMidiLayers(Array<MidiSequence *> tracks,
-		MidiSequence *primaryLayer);
+    int getNumActiveLayers() const noexcept;
+    MidiSequence *getActiveMidiLayer(int index) const noexcept;
+    MidiSequence *getPrimaryActiveMidiLayer() const noexcept;
+    void setActiveMidiLayers(Array<MidiSequence *> tracks,
+        MidiSequence *primaryLayer);
 
     void setRowHeight(const int newRowHeight);
     inline int getRowHeight() const
@@ -86,11 +86,11 @@ public:
     inline int getNumRows() const
     { return this->numRows; }
 
-	//===------------------------------------------------------------------===//
-	// HybridRoll
-	//===------------------------------------------------------------------===//
+    //===------------------------------------------------------------------===//
+    // HybridRoll
+    //===------------------------------------------------------------------===//
 
-	void selectAll() override;
+    void selectAll() override;
 
 
     //===------------------------------------------------------------------===//
@@ -138,9 +138,9 @@ public:
     void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
     void onAddMidiEvent(const MidiEvent &event) override;
     void onRemoveMidiEvent(const MidiEvent &event) override;
-    void onChangeTrack(MidiSequence *const layer, Pattern *const pattern = nullptr) override;
-    void onAddTrack(MidiSequence *const layer, Pattern *const pattern = nullptr) override;
-    void onRemoveTrack(MidiSequence *const layer, Pattern *const pattern = nullptr) override;
+    void onChangeTrackProperties(MidiTrack *const track) override;
+    void onAddTrack(MidiTrack *const track) override;
+    void onRemoveTrack(MidiTrack *const track) override;
 
 
     //===------------------------------------------------------------------===//
@@ -148,7 +148,7 @@ public:
     //===------------------------------------------------------------------===//
 
     void findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
-		const Rectangle<int> &rectangle) override;
+        const Rectangle<int> &rectangle) override;
 
 
     //===------------------------------------------------------------------===//
@@ -190,8 +190,8 @@ public:
     
 private:
 
-	Array<MidiSequence *> activeLayers;
-	MidiSequence *primaryActiveLayer;
+    Array<MidiSequence *> activeLayers;
+    MidiSequence *primaryActiveLayer;
 
 private:
 

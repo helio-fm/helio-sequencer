@@ -25,6 +25,7 @@
 #include "PlayerThread.h"
 #include "HybridRoll.h"
 #include "ComponentConnectorCurve.h"
+#include "MidiTrack.h"
 
 #if HELIO_DESKTOP
 #   define TRACKMAP_NOTE_COMPONENT_HEIGHT (1)
@@ -38,10 +39,11 @@
 
 #define DEFAULT_TRACKMAP_HEIGHT 128
 
-AutomationTrackMap::AutomationTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll, WeakReference<MidiSequence> targetLayer) :
+AutomationTrackMap::AutomationTrackMap(ProjectTreeItem &parentProject,
+    HybridRoll &parentRoll, WeakReference<MidiSequence> targetSequence) :
     project(parentProject),
     roll(parentRoll),
-    layer(std::move(targetLayer)),
+    sequence(std::move(targetSequence)),
     projectFirstBeat(0.f),
     projectLastBeat(16.f),
     rollFirstBeat(0.f),
@@ -153,7 +155,7 @@ void AutomationTrackMap::insertNewEventAt(const MouseEvent &e)
                                      e.y - int(this->getEventDiameter() / 2),
                                      draggingValue, draggingBeat);
     
-    AutomationSequence *activeAutoLayer = static_cast<AutomationSequence *>(this->layer.get());
+    AutomationSequence *activeAutoLayer = static_cast<AutomationSequence *>(this->sequence.get());
     {
         this->addNewEventMode = true;
         activeAutoLayer->checkpoint();
@@ -220,7 +222,7 @@ void AutomationTrackMap::getRowsColsByMousePosition(int x, int y, float &targetV
 {
     const float diameter = this->getEventDiameter();
     const float xRoll = float(x + (diameter / 2.f)) / float(this->getWidth()) * float(this->roll.getWidth());
-	targetBeat = this->roll.getRoundBeatByXPosition(int(xRoll));
+    targetBeat = this->roll.getRoundBeatByXPosition(int(xRoll));
     
     // hardcoded multiplier
     //targetValue = float(y + (diameter / 2)) / float(this->getAvailableHeight());
@@ -259,7 +261,7 @@ AutomationEventComponent *AutomationTrackMap::getNextEventComponent(int indexOfS
 
 void AutomationTrackMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    if (newEvent.getLayer() == this->layer)
+    if (newEvent.getLayer() == this->sequence)
     {
         const AutomationEvent &autoEvent = static_cast<const AutomationEvent &>(oldEvent);
         const AutomationEvent &newAutoEvent = static_cast<const AutomationEvent &>(newEvent);
@@ -305,7 +307,7 @@ void AutomationTrackMap::onChangeMidiEvent(const MidiEvent &oldEvent, const Midi
 
 void AutomationTrackMap::onAddMidiEvent(const MidiEvent &event)
 {
-    if (event.getLayer() == this->layer)
+    if (event.getLayer() == this->sequence)
     {
         const AutomationEvent &autoEvent = static_cast<const AutomationEvent &>(event);
         
@@ -344,7 +346,7 @@ void AutomationTrackMap::onAddMidiEvent(const MidiEvent &event)
 
 void AutomationTrackMap::onRemoveMidiEvent(const MidiEvent &event)
 {
-    if (event.getLayer() == this->layer)
+    if (event.getLayer() == this->sequence)
     {
         const AutomationEvent &autoEvent = static_cast<const AutomationEvent &>(event);
         
@@ -374,39 +376,23 @@ void AutomationTrackMap::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
-void AutomationTrackMap::onChangeTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
+void AutomationTrackMap::onChangeTrackProperties(MidiTrack *const track)
 {
-    if (this->layer)
+    if (this->sequence != nullptr && track->getSequence() == this->sequence)
     {
-        if (layer == this->layer)
-        {
-            this->reloadTrack();
-        }
+        this->repaint(); // this->reloadTrack();
     }
 }
 
-void AutomationTrackMap::onAddTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
+void AutomationTrackMap::onAddTrack(MidiTrack *const track)
 {
-    if (this->layer)
-    {
-        if (layer == this->layer)
-        {
-            if (layer->size() > 0)
-            {
-                this->reloadTrack();
-            }
-        }
-    }
 }
 
-void AutomationTrackMap::onRemoveTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
+void AutomationTrackMap::onRemoveTrack(MidiTrack *const track)
 {
-    if (this->layer)
+    if (this->sequence != nullptr && track->getSequence() == this->sequence)
     {
-        if (layer == this->layer)
-        {
-            this->reloadTrack();
-        }
+        this->reloadTrack();
     }
 }
 
@@ -430,9 +416,9 @@ void AutomationTrackMap::onChangeProjectBeatRange(float firstBeat, float lastBea
 
 void AutomationTrackMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
 {
-	this->rollFirstBeat = firstBeat;
-	this->rollLastBeat = lastBeat;
-	this->resized();
+    this->rollFirstBeat = firstBeat;
+    this->rollLastBeat = lastBeat;
+    this->resized();
 }
 
 
@@ -459,9 +445,9 @@ void AutomationTrackMap::reloadTrack()
     
     this->setVisible(false);
     
-    for (int j = 0; j < this->layer->size(); ++j)
+    for (int j = 0; j < this->sequence->size(); ++j)
     {
-        MidiEvent *event = this->layer->getUnchecked(j);
+        MidiEvent *event = this->sequence->getUnchecked(j);
         
         if (AutomationEvent *autoEvent = dynamic_cast<AutomationEvent *>(event))
         {

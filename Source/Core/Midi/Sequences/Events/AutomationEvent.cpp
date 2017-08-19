@@ -91,9 +91,9 @@ float exponentalInterpolation(float y0, float y1, float factor, float easing)
 }
 
 
-Array<MidiMessage> AutomationEvent::getSequence() const
+Array<MidiMessage> AutomationEvent::toMidiMessages() const
 {
-	Array<MidiMessage> result;
+    Array<MidiMessage> result;
     
     // теперь пусть все треки автоматизации ведут себя одинаково
     //if (this->getLayer()->isTempoLayer())
@@ -303,9 +303,6 @@ void AutomationEvent::reset()
 
 int AutomationEvent::hashCode() const noexcept
 {
-    //return roundFloatToInt(this->getControllerValue() * 1000) +
-    //       roundFloatToInt(this->getBeat() * 1000) +
-    //       this->getID().toString().hashCode();
     return roundFloatToInt(this->getControllerValue() * 1000) +
            roundFloatToInt(this->getBeat() * 1000) +
            this->getId().hashCode();

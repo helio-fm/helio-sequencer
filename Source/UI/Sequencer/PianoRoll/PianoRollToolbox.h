@@ -70,12 +70,12 @@ public:
     static void deleteSelection(Lasso &selection);
     
     static void shiftKeyRelative(Lasso &selection, int deltaKey,
-		bool shouldCheckpoint = true, Transport *transport = nullptr);
+    bool shouldCheckpoint = true, Transport *transport = nullptr);
 
     static void shiftBeatRelative(Lasso &selection, float deltaBeat,
-		bool shouldCheckpoint = true);
+    bool shouldCheckpoint = true);
     
     static void inverseChord(Lasso &selection, int deltaKey,
-		bool shouldCheckpoint = true, Transport *transport = nullptr);
+    bool shouldCheckpoint = true, Transport *transport = nullptr);
     
 };

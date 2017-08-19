@@ -26,7 +26,7 @@ class PianoSequence : public MidiSequence
 {
 public:
 
-    explicit PianoSequence(ProjectEventDispatcher &parent);
+    explicit PianoSequence(MidiTrack &track, ProjectEventDispatcher &dispatcher);
 
 
     //===------------------------------------------------------------------===//
@@ -84,7 +84,7 @@ public:
 
 protected:
 
-	void clearQuick() override;
+    void clearQuick() override;
 
 private:
 

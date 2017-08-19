@@ -97,8 +97,8 @@ void SeparatorHorizontal::resized()
 //[MiscUserCode]
 void SeparatorHorizontal::setAlphaMultiplier(float a)
 {
-	this->alphaFactor = a;
-	this->repaint();
+    this->alphaFactor = a;
+    this->repaint();
 }
 //[/MiscUserCode]
 

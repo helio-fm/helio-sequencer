@@ -182,7 +182,7 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
 #if MIDIROLL_HEADER_SELECTION_ALIGNS_TO_BEATS
             const float roundBeat = this->roll.getRoundBeatByXPosition(parentEvent.x);
             const int roundX = this->roll.getXPositionByBeat(roundBeat);
-			const float newX = float(roundX + 1);
+            const float newX = float(roundX + 1);
 #else
             const float newX = parentEvent.position.x;
 #endif
@@ -208,9 +208,9 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
                                                 0, this->selectionIndicator->getHeight());
             
 #if MIDIROLL_HEADER_SELECTION_ALIGNS_TO_BEATS
-			this->selectionIndicator->setStartAnchor(this->getAlignedAnchorForEvent(e));
+            this->selectionIndicator->setStartAnchor(this->getAlignedAnchorForEvent(e));
 #else
-			this->selectionIndicator->setStartAnchor(this->getUnalignedAnchorForEvent(e));
+            this->selectionIndicator->setStartAnchor(this->getUnalignedAnchorForEvent(e));
 #endif
         }
         else
@@ -283,9 +283,9 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
             if (this->selectionIndicator != nullptr)
             {
 #if MIDIROLL_HEADER_SELECTION_ALIGNS_TO_BEATS
-				this->selectionIndicator->setEndAnchor(this->getAlignedAnchorForEvent(e));
+                this->selectionIndicator->setEndAnchor(this->getAlignedAnchorForEvent(e));
 #else
-				this->selectionIndicator->setEndAnchor(this->getUnalignedAnchorForEvent(e));
+                this->selectionIndicator->setEndAnchor(this->getUnalignedAnchorForEvent(e));
 #endif
             }
         }
@@ -333,12 +333,12 @@ void HybridRollHeader::mouseUp(const MouseEvent &e)
         const double transportPosition = this->roll.getTransportPositionByXPosition(e.x, float(this->getWidth()));
 #endif
         
-		this->transport.stopPlayback();
-		this->transport.seekToPosition(transportPosition);
+        this->transport.stopPlayback();
+        this->transport.seekToPosition(transportPosition);
         
         if (e.mods.isRightButtonDown())
         {
-			HelioCallout::emit(new TimelineCommandPanel(this->roll.getProject()), this, true);
+            HelioCallout::emit(new TimelineCommandPanel(this->roll.getProject()), this, true);
             //this->transport.startPlayback();
         }
     }
@@ -382,18 +382,18 @@ void HybridRollHeader::mouseExit(const MouseEvent &e)
 void HybridRollHeader::mouseDoubleClick(const MouseEvent &e)
 {
     // this->roll.postCommandMessage(CommandIDs::AddAnnotation);
-	// HelioCallout::emit(new TimelineCommandPanel(this->roll.getProject()), this, true);
+    // HelioCallout::emit(new TimelineCommandPanel(this->roll.getProject()), this, true);
 
 #if MIDIROLL_HEADER_ALIGNS_TO_BEATS
-	const float roundBeat = this->roll.getRoundBeatByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
-	const double transportPosition = this->roll.getTransportPositionByBeat(roundBeat);
+    const float roundBeat = this->roll.getRoundBeatByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
+    const double transportPosition = this->roll.getTransportPositionByBeat(roundBeat);
 #else
-	const double transportPosition = this->roll.getTransportPositionByXPosition(e.x, float(this->getWidth()));
+    const double transportPosition = this->roll.getTransportPositionByXPosition(e.x, float(this->getWidth()));
 #endif
 
-	this->transport.stopPlayback();
-	this->transport.seekToPosition(transportPosition);
-	this->transport.startPlayback();
+    this->transport.stopPlayback();
+    this->transport.seekToPosition(transportPosition);
+    this->transport.startPlayback();
 }
 
 void HybridRollHeader::paint(Graphics &g)

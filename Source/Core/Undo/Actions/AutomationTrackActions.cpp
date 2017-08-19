@@ -32,20 +32,20 @@ AutomationTrackInsertAction::AutomationTrackInsertAction(ProjectTreeItem &parent
                                                              String targetXPath) :
     UndoAction(parentProject),
     serializedState(std::move(targetSerializedState)),
-    xPath(std::move(targetXPath))
+    trackName(std::move(targetXPath))
 {
 }
 
 bool AutomationTrackInsertAction::perform()
 {
-    MidiTrackTreeItem *layer = new AutomationTrackTreeItem("empty");
-    this->project.addChildTreeItem(layer);
+    MidiTrackTreeItem *track = new AutomationTrackTreeItem("empty");
+    this->project.addChildTreeItem(track);
     
     ScopedPointer<XmlElement> layerState = XmlDocument::parse(this->serializedState);
-    layer->deserialize(*layerState);
+    track->deserialize(*layerState);
     
-    this->layerId = layer->getSequence()->getLayerIdAsString();
-    layer->onRename(this->xPath);
+    this->trackId = track->getTrackId().toString();
+    track->setTrackName(this->trackName);
     
     return true;
 }
@@ -53,7 +53,7 @@ bool AutomationTrackInsertAction::perform()
 bool AutomationTrackInsertAction::undo()
 {
     if (AutomationTrackTreeItem *treeItem =
-        this->project.findChildByLayerId<AutomationTrackTreeItem>(this->layerId))
+        this->project.findTrackById<AutomationTrackTreeItem>(this->trackId))
     {
         // here the item state should be the same as when it was created
         // so don't serialize anything again
@@ -65,29 +65,29 @@ bool AutomationTrackInsertAction::undo()
 
 int AutomationTrackInsertAction::getSizeInUnits()
 {
-    return this->xPath.length();
+    return this->trackName.length();
 }
 
 XmlElement *AutomationTrackInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::autoLayerTreeItemInsertAction);
-    xml->setAttribute(Serialization::Undo::xPath, this->xPath);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
+    auto xml = new XmlElement(Serialization::Undo::automationTrackInsertAction);
+    xml->setAttribute(Serialization::Undo::xPath, this->trackName);
+    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
     xml->prependChildElement(XmlDocument::parse(this->serializedState));
     return xml;
 }
 
 void AutomationTrackInsertAction::deserialize(const XmlElement &xml)
 {
-    this->xPath = xml.getStringAttribute(Serialization::Undo::xPath);
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
+    this->trackName = xml.getStringAttribute(Serialization::Undo::xPath);
+    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
     this->serializedState = xml.getFirstChildElement()->createDocument("");
 }
 
 void AutomationTrackInsertAction::reset()
 {
-    this->xPath.clear();
-    this->layerId.clear();
+    this->trackName.clear();
+    this->trackId.clear();
     this->serializedState.clear();
 }
 
@@ -97,9 +97,9 @@ void AutomationTrackInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 AutomationTrackRemoveAction::AutomationTrackRemoveAction(ProjectTreeItem &parentProject,
-                                                             String targetLayerId) :
+                                                         String targetLayerId) :
     UndoAction(parentProject),
-    layerId(std::move(targetLayerId)),
+    trackId(std::move(targetLayerId)),
     numEvents(0)
 {
 }
@@ -107,11 +107,11 @@ AutomationTrackRemoveAction::AutomationTrackRemoveAction(ProjectTreeItem &parent
 bool AutomationTrackRemoveAction::perform()
 {
     if (AutomationTrackTreeItem *treeItem =
-        this->project.findChildByLayerId<AutomationTrackTreeItem>(this->layerId))
+        this->project.findTrackById<AutomationTrackTreeItem>(this->trackId))
     {
         this->numEvents = treeItem->getSequence()->size();
         this->serializedTreeItem = treeItem->serialize();
-        this->xPath = treeItem->getXPath();
+        this->trackName = treeItem->getTrackName();
         return TreeItem::deleteItem(treeItem);
     }
     
@@ -122,10 +122,10 @@ bool AutomationTrackRemoveAction::undo()
 {
     if (this->serializedTreeItem != nullptr)
     {
-        MidiTrackTreeItem *layer = new AutomationTrackTreeItem("empty");
-        this->project.addChildTreeItem(layer);
-        layer->deserialize(*this->serializedTreeItem);
-        layer->onRename(this->xPath);
+        MidiTrackTreeItem *track = new AutomationTrackTreeItem("empty");
+        this->project.addChildTreeItem(track);
+        track->deserialize(*this->serializedTreeItem);
+        track->setTrackName(this->trackName);
         return true;
     }
     
@@ -144,23 +144,23 @@ int AutomationTrackRemoveAction::getSizeInUnits()
 
 XmlElement *AutomationTrackRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::autoLayerTreeItemRemoveAction);
-    xml->setAttribute(Serialization::Undo::xPath, this->xPath);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
+    auto xml = new XmlElement(Serialization::Undo::automationTrackRemoveAction);
+    xml->setAttribute(Serialization::Undo::xPath, this->trackName);
+    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
     xml->prependChildElement(new XmlElement(*this->serializedTreeItem)); // deep copy
     return xml;
 }
 
 void AutomationTrackRemoveAction::deserialize(const XmlElement &xml)
 {
-    this->xPath = xml.getStringAttribute(Serialization::Undo::xPath);
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
+    this->trackName = xml.getStringAttribute(Serialization::Undo::xPath);
+    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
     this->serializedTreeItem = new XmlElement(*xml.getFirstChildElement()); // deep copy
 }
 
 void AutomationTrackRemoveAction::reset()
 {
-    this->xPath.clear();
-    this->layerId.clear();
+    this->trackName.clear();
+    this->trackId.clear();
     this->serializedTreeItem->deleteAllChildElements();
 }

@@ -31,7 +31,7 @@ class TrackScroller :
     public Component,
     public HybridRollListener,
     private AsyncUpdater,
-	private Timer
+    private Timer
 {
 public:
 
@@ -43,7 +43,7 @@ public:
 
     void removeOwnedMap(Component *existingTrackMap);
 
-	void switchToRoll(HybridRoll *targetRoll);
+    void switchToRoll(HybridRoll *targetRoll);
 
     template<typename T>
     T *findOwnedMapOfType()
@@ -167,13 +167,13 @@ private:
     
     void handleAsyncUpdate() override;
 
-	void timerCallback() override;
+    void timerCallback() override;
     
     Transport &transport;
     HybridRoll *roll;
     
-	Rectangle<float> oldAreaBounds;
-	Rectangle<float> oldMapBounds;
+    Rectangle<float> oldAreaBounds;
+    Rectangle<float> oldMapBounds;
 
     ScopedPointer<Component> background;
     ScopedPointer<TrackScrollerScreen> screenRange;
@@ -183,7 +183,7 @@ private:
 
     void disconnectIndicator();
     Rectangle<float> getIndicatorBounds() const;
-	Rectangle<int> getMapBounds() const;
+    Rectangle<int> getMapBounds() const;
     
     ComponentFader fader;
     ComponentDragger helperDragger;

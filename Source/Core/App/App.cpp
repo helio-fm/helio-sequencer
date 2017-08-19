@@ -492,9 +492,9 @@ String App::collectSomeSystemInfo()
     systemInfo
             << "Resolution: " << rect.getWidth() << ":" << rect.getHeight() << newLine
             << "Display scale: " << scale << newLine
-			<< "Screen area: " << String(cmScreenSize.x) << " x " << String(cmScreenSize.y) << " cm."
-			
-			<< "User logon name: "  << SystemStats::getLogonName() << newLine
+            << "Screen area: " << String(cmScreenSize.x) << " x " << String(cmScreenSize.y) << " cm."
+            
+            << "User logon name: "  << SystemStats::getLogonName() << newLine
             << "Full user name: "   << SystemStats::getFullUserName() << newLine
             << "Host name: "        << SystemStats::getComputerName() << newLine
 

@@ -199,43 +199,43 @@ ProjectTreeItem &HybridRoll::getProject() const noexcept
 
 float HybridRoll::getPositionForNewTimelineEvent() const
 {
-	const double indicatorOffset = this->findIndicatorOffsetFromViewCentre();
-	const bool indicatorIsWithinScreen = fabs(indicatorOffset) < (this->viewport.getViewWidth() / 2);
-	float targetBeat = 0.f;
+    const double indicatorOffset = this->findIndicatorOffsetFromViewCentre();
+    const bool indicatorIsWithinScreen = fabs(indicatorOffset) < (this->viewport.getViewWidth() / 2);
+    float targetBeat = 0.f;
 
-	// If playhead is visible, put new event on it's position, otherwise just align to the screen center
-	if (indicatorIsWithinScreen)
-	{
-		const int viewCentre = this->viewport.getViewPositionX() + (this->viewport.getViewWidth() / 2);
-		const int indicatorPosition = viewCentre + int(indicatorOffset);
-		return this->getRoundBeatByXPosition(indicatorPosition);
-	}
+    // If playhead is visible, put new event on it's position, otherwise just align to the screen center
+    if (indicatorIsWithinScreen)
+    {
+        const int viewCentre = this->viewport.getViewPositionX() + (this->viewport.getViewWidth() / 2);
+        const int indicatorPosition = viewCentre + int(indicatorOffset);
+        return this->getRoundBeatByXPosition(indicatorPosition);
+    }
 
-	const int viewCentre = this->viewport.getViewPositionX() + (this->viewport.getViewWidth() / 2);
-	return this->getRoundBeatByXPosition(viewCentre);
+    const int viewCentre = this->viewport.getViewPositionX() + (this->viewport.getViewWidth() / 2);
+    return this->getRoundBeatByXPosition(viewCentre);
 }
 
 void HybridRoll::insertAnnotationWithinScreen(const String &annotation)
 {
     if (AnnotationsSequence *annotationsLayer = dynamic_cast<AnnotationsSequence *>(this->project.getTimeline()->getAnnotations()))
     {
-		annotationsLayer->checkpoint();
-		const float targetBeat = this->getPositionForNewTimelineEvent();
-		AnnotationEvent event(annotationsLayer, targetBeat, annotation, Colours::transparentWhite);
+        annotationsLayer->checkpoint();
+        const float targetBeat = this->getPositionForNewTimelineEvent();
+        AnnotationEvent event(annotationsLayer, targetBeat, annotation, Colours::transparentWhite);
         annotationsLayer->insert(event, true);
     }
 }
 
 void HybridRoll::insertTimeSignatureWithinScreen(int numerator, int denominator)
 {
-	jassert(denominator == 2 || denominator == 4 || denominator == 8 || denominator == 16 || denominator == 32);
-	if (TimeSignaturesSequence *tsLayer = dynamic_cast<TimeSignaturesSequence *>(this->project.getTimeline()->getTimeSignatures()))
-	{
-		tsLayer->checkpoint();
-		const float targetBeat = this->getPositionForNewTimelineEvent();
-		TimeSignatureEvent event(tsLayer, targetBeat, numerator, denominator);
-		tsLayer->insert(event, true);
-	}
+    jassert(denominator == 2 || denominator == 4 || denominator == 8 || denominator == 16 || denominator == 32);
+    if (TimeSignaturesSequence *tsLayer = dynamic_cast<TimeSignaturesSequence *>(this->project.getTimeline()->getTimeSignatures()))
+    {
+        tsLayer->checkpoint();
+        const float targetBeat = this->getPositionForNewTimelineEvent();
+        TimeSignatureEvent event(tsLayer, targetBeat, numerator, denominator);
+        tsLayer->insert(event, true);
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -385,9 +385,9 @@ void HybridRoll::panByOffset(const int offsetX, const int offsetY)
     
     if (needsToStretchRight)
     {
-		this->project.broadcastChangeViewBeatRange(
-			this->firstBar * NUM_BEATS_IN_BAR,
-			(this->lastBar + numBarsToExpand) * NUM_BEATS_IN_BAR);
+        this->project.broadcastChangeViewBeatRange(
+            this->firstBar * NUM_BEATS_IN_BAR,
+            (this->lastBar + numBarsToExpand) * NUM_BEATS_IN_BAR);
         this->viewport.setViewPosition(offsetX, offsetY); // after setLastBar
         this->grabKeyboardFocus();
 
@@ -398,9 +398,9 @@ void HybridRoll::panByOffset(const int offsetX, const int offsetY)
     {
         const float deltaW = float(this->barWidth * numBarsToExpand);
         this->clickAnchor.addXY(deltaW / SMOOTH_PAN_SPEED_MULTIPLIER, 0); // an ugly hack
-		this->project.broadcastChangeViewBeatRange(
-			(this->firstBar - numBarsToExpand) * NUM_BEATS_IN_BAR,
-			this->lastBar * NUM_BEATS_IN_BAR);
+        this->project.broadcastChangeViewBeatRange(
+            (this->firstBar - numBarsToExpand) * NUM_BEATS_IN_BAR,
+            this->lastBar * NUM_BEATS_IN_BAR);
         this->viewport.setViewPosition(offsetX + int(deltaW), offsetY); // after setFirstBar
         this->grabKeyboardFocus();
 
@@ -567,52 +567,52 @@ int HybridRoll::getXPositionByBeat(float targetBeat) const
 
 float HybridRoll::getFloorBeatByXPosition(int x) const
 {
-	Array<float> allSnaps;
-	allSnaps.addArray(this->visibleBars);
-	allSnaps.addArray(this->visibleBeats);
-	allSnaps.addArray(this->visibleSnaps);
+    Array<float> allSnaps;
+    allSnaps.addArray(this->visibleBars);
+    allSnaps.addArray(this->visibleBeats);
+    allSnaps.addArray(this->visibleSnaps);
 
-	float d = FLT_MAX;
-	float targetX = float(x);
-	for (float snapX : allSnaps)
-	{
-		const float dist = fabs(x - snapX);
-		if (dist < d && snapX < x)
-		{
-			d = dist;
-			targetX = snapX;
-		}
-	}
+    float d = FLT_MAX;
+    float targetX = float(x);
+    for (float snapX : allSnaps)
+    {
+        const float dist = fabs(x - snapX);
+        if (dist < d && snapX < x)
+        {
+            d = dist;
+            targetX = snapX;
+        }
+    }
 
     const float lastAlignedBeat = float(this->lastBar * NUM_BEATS_IN_BAR);
     const float firstAlignedBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
-	float beatNumber = (targetX / this->barWidth) * NUM_BEATS_IN_BAR + firstAlignedBeat;
-	return jmin(jmax(beatNumber, firstAlignedBeat), lastAlignedBeat);
+    float beatNumber = (targetX / this->barWidth) * NUM_BEATS_IN_BAR + firstAlignedBeat;
+    return jmin(jmax(beatNumber, firstAlignedBeat), lastAlignedBeat);
 }
 
 float HybridRoll::getRoundBeatByXPosition(int x) const
 {
-	Array<float> allSnaps;
-	allSnaps.addArray(this->visibleBars);
-	allSnaps.addArray(this->visibleBeats);
-	allSnaps.addArray(this->visibleSnaps);
+    Array<float> allSnaps;
+    allSnaps.addArray(this->visibleBars);
+    allSnaps.addArray(this->visibleBeats);
+    allSnaps.addArray(this->visibleSnaps);
 
-	float d = FLT_MAX;
-	float targetX = float(x);
-	for (float snapX : allSnaps)
-	{
-		const float dist = fabs(x - snapX);
-		if (dist < d)
-		{
-			d = dist;
-			targetX = snapX;
-		}
-	}
+    float d = FLT_MAX;
+    float targetX = float(x);
+    for (float snapX : allSnaps)
+    {
+        const float dist = fabs(x - snapX);
+        if (dist < d)
+        {
+            d = dist;
+            targetX = snapX;
+        }
+    }
 
     const float lastAlignedBeat = float(this->lastBar * NUM_BEATS_IN_BAR);
     const float firstAlignedBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
-	float beatNumber = (targetX / this->barWidth) * NUM_BEATS_IN_BAR + firstAlignedBeat;
-	return jmin(jmax(beatNumber, firstAlignedBeat), lastAlignedBeat);
+    float beatNumber = (targetX / this->barWidth) * NUM_BEATS_IN_BAR + firstAlignedBeat;
+    return jmin(jmax(beatNumber, firstAlignedBeat), lastAlignedBeat);
 }
 
 void HybridRoll::setBarRange(int first, int last)
@@ -654,11 +654,11 @@ void HybridRoll::computeVisibleBeatLines()
     const int paintStartBar = int(paintStartX / this->barWidth) - 1;
     const int paintEndBar = int(paintEndX / this->barWidth) + 1;
     
-	// Get number of snaps depending on bar width, 
-	// 2 for 64, 4 for 128, 8 for 256, etc:
-	const float nearestPowTwo = ceilf(log(this->barWidth) / log(2.f));
-	const float numSnaps = powf(2, jlimit(1.f, 6.f, nearestPowTwo - 5.f)); // like -4.f for twice as dense grid
-	const float snapWidth = this->barWidth / numSnaps;
+    // Get number of snaps depending on bar width, 
+    // 2 for 64, 4 for 128, 8 for 256, etc:
+    const float nearestPowTwo = ceilf(log(this->barWidth) / log(2.f));
+    const float numSnaps = powf(2, jlimit(1.f, 6.f, nearestPowTwo - 5.f)); // like -4.f for twice as dense grid
+    const float snapWidth = this->barWidth / numSnaps;
 
     int numerator = TIME_SIGNATURE_DEFAULT_NUMERATOR;
     int denominator = TIME_SIGNATURE_DEFAULT_DENOMINATOR;
@@ -735,14 +735,14 @@ void HybridRoll::computeVisibleBeatLines()
                  k < (nextBeatStartX - 1);
                  k += snapWidth)
             {
-				if (k >= viewPosX)
-				{
-					visibleSnaps.add(k);
-				}
+                if (k >= viewPosX)
+                {
+                    visibleSnaps.add(k);
+                }
             }
             
             if (beatStartX >= viewPosX &&
-				j >= beatStep && // Don't draw the first one as it is a barline
+                j >= beatStep && // Don't draw the first one as it is a barline
                 (nextBeatStartX - beatStartX) > MIN_BEAT_WIDTH)
             {
                 visibleBeats.add(beatStartX);
@@ -825,7 +825,7 @@ Lasso &HybridRoll::getLassoSelection()
 }
 
 void HybridRoll::selectEventsInRange(float startBeat, 
-	float endBeat, bool shouldClearAllOthers)
+    float endBeat, bool shouldClearAllOthers)
 {
     if (shouldClearAllOthers)
     {
@@ -884,7 +884,7 @@ void HybridRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &n
     if (dynamic_cast<const TimeSignatureEvent *>(&oldEvent))
     {
         this->updateChildrenBounds();
-		this->repaint();
+        this->repaint();
     }
 }
 
@@ -893,8 +893,8 @@ void HybridRoll::onAddMidiEvent(const MidiEvent &event)
     if (dynamic_cast<const TimeSignatureEvent *>(&event))
     {
         this->updateChildrenBounds();
-		this->repaint();
-	}
+        this->repaint();
+    }
 }
 
 void HybridRoll::onRemoveMidiEvent(const MidiEvent &event)
@@ -902,8 +902,8 @@ void HybridRoll::onRemoveMidiEvent(const MidiEvent &event)
     if (dynamic_cast<const TimeSignatureEvent *>(&event))
     {
         this->updateChildrenBounds();
-		this->repaint();
-	}
+        this->repaint();
+    }
 }
 
 void HybridRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
@@ -914,7 +914,7 @@ void HybridRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 
     const int trackFirstBar = int(floorf(firstBeat / float(NUM_BEATS_IN_BAR)));
     const int trackLastBar = int(ceilf(lastBeat / float(NUM_BEATS_IN_BAR)));
-	const int rollFirstBar = jmin(this->firstBar, trackFirstBar);
+    const int rollFirstBar = jmin(this->firstBar, trackFirstBar);
     const int rollLastBar = jmax(this->lastBar, trackLastBar);
 
     this->setBarRange(rollFirstBar, rollLastBar);
@@ -922,9 +922,9 @@ void HybridRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 
 void HybridRoll::onChangeViewBeatRange(float firstBeat, float lastBeat)
 {
-	const int viewFirstBar = int(floorf(firstBeat / float(NUM_BEATS_IN_BAR)));
-	const int viewLastBar = int(ceilf(lastBeat / float(NUM_BEATS_IN_BAR)));
-	this->setBarRange(viewFirstBar, viewLastBar);
+    const int viewFirstBar = int(floorf(firstBeat / float(NUM_BEATS_IN_BAR)));
+    const int viewLastBar = int(ceilf(lastBeat / float(NUM_BEATS_IN_BAR)));
+    this->setBarRange(viewFirstBar, viewLastBar);
 }
 
 
@@ -1004,15 +1004,15 @@ bool HybridRoll::keyPressed(const KeyPress &key)
     else if ((key == KeyPress::createFromDescription("command + shift + x")) ||
              (key == KeyPress::createFromDescription("ctrl + shift + x")))
     {
-		// TODO move all PianoRollToolbox-related stuff to PianoRoll
+        // TODO move all PianoRollToolbox-related stuff to PianoRoll
         if (this->selection.getNumSelected() > 0)
         {
             InternalClipboard::copy(*this, false);
             this->project.checkpoint();
             const float leftBeat = PianoRollToolbox::findStartBeat(this->selection);
             const float rightBeat = PianoRollToolbox::findEndBeat(this->selection);
-            PianoRollToolbox::wipeSpace(this->project.getLayersList(), leftBeat, rightBeat, true, false);
-            PianoRollToolbox::shiftEventsToTheRight(this->project.getLayersList(), leftBeat, -(rightBeat - leftBeat), false);
+            PianoRollToolbox::wipeSpace(this->project.getTracks(), leftBeat, rightBeat, true, false);
+            PianoRollToolbox::shiftEventsToTheRight(this->project.getTracks(), leftBeat, -(rightBeat - leftBeat), false);
             return true;
         }
     }
@@ -1620,28 +1620,28 @@ void HybridRoll::handleAsyncUpdate()
 
 void HybridRoll::handleCommandMessage(int commandId)
 {
-	if (commandId == CommandIDs::AddAnnotation)
-	{
-		const float targetBeat = this->getPositionForNewTimelineEvent();
-		if (AnnotationsSequence *annotationsLayer =
-			dynamic_cast<AnnotationsSequence *>(this->project.getTimeline()->getAnnotations()))
-		{
-			Component *dialog =
-				AnnotationDialog::createAddingDialog(*this, annotationsLayer, targetBeat);
-			App::Layout().showModalNonOwnedDialog(dialog);
-		}
-	}
-	else if (commandId == CommandIDs::AddTimeSignature)
-	{
-		const float targetBeat = this->getPositionForNewTimelineEvent();
-		if (TimeSignaturesSequence *signaturesLayer =
-			dynamic_cast<TimeSignaturesSequence *>(this->project.getTimeline()->getTimeSignatures()))
-		{
-			Component *dialog =
-				TimeSignatureDialog::createAddingDialog(*this, signaturesLayer, targetBeat);
-			App::Layout().showModalNonOwnedDialog(dialog);
-		}
-	}
+    if (commandId == CommandIDs::AddAnnotation)
+    {
+        const float targetBeat = this->getPositionForNewTimelineEvent();
+        if (AnnotationsSequence *annotationsLayer =
+            dynamic_cast<AnnotationsSequence *>(this->project.getTimeline()->getAnnotations()))
+        {
+            Component *dialog =
+                AnnotationDialog::createAddingDialog(*this, annotationsLayer, targetBeat);
+            App::Layout().showModalNonOwnedDialog(dialog);
+        }
+    }
+    else if (commandId == CommandIDs::AddTimeSignature)
+    {
+        const float targetBeat = this->getPositionForNewTimelineEvent();
+        if (TimeSignaturesSequence *signaturesLayer =
+            dynamic_cast<TimeSignaturesSequence *>(this->project.getTimeline()->getTimeSignatures()))
+        {
+            Component *dialog =
+                TimeSignatureDialog::createAddingDialog(*this, signaturesLayer, targetBeat);
+            App::Layout().showModalNonOwnedDialog(dialog);
+        }
+    }
 }
 
 double HybridRoll::findIndicatorOffsetFromViewCentre() const
@@ -1863,17 +1863,17 @@ void HybridRoll::endWipingSpaceIfNeeded()
         {
             const bool isAnyModifierKeyDown = Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isAnyModifierKeyDown();
 
-            PianoRollToolbox::wipeSpace(isAnyModifierKeyDown ? this->project.getSelectedLayersList() : this->project.getLayersList(), leftBeat, rightBeat);
+            PianoRollToolbox::wipeSpace(isAnyModifierKeyDown ? this->project.getSelectedLayersList() : this->project.getTracks(), leftBeat, rightBeat);
 
             if (! isAnyModifierKeyDown)
             {
                 if (this->wipeSpaceHelper->isInverted())
                 {
-                    PianoRollToolbox::shiftEventsToTheLeft(this->project.getLayersList(), leftBeat, (rightBeat - leftBeat), false);
+                    PianoRollToolbox::shiftEventsToTheLeft(this->project.getTracks(), leftBeat, (rightBeat - leftBeat), false);
                 }
                 else
                 {
-                    PianoRollToolbox::shiftEventsToTheRight(this->project.getLayersList(), leftBeat, -(rightBeat - leftBeat), false);
+                    PianoRollToolbox::shiftEventsToTheRight(this->project.getTracks(), leftBeat, -(rightBeat - leftBeat), false);
                 }
             }
         }
@@ -1939,11 +1939,11 @@ void HybridRoll::continueInsertingSpace(const MouseEvent &e)
 
             if (isInverted)
             {
-                PianoRollToolbox::shiftEventsToTheLeft(this->project.getLayersList(), rightBeat, changeDelta, shouldCheckpoint);
+                PianoRollToolbox::shiftEventsToTheLeft(this->project.getTracks(), rightBeat, changeDelta, shouldCheckpoint);
             }
             else
             {
-                PianoRollToolbox::shiftEventsToTheRight(this->project.getLayersList(), leftBeat, changeDelta, shouldCheckpoint);
+                PianoRollToolbox::shiftEventsToTheRight(this->project.getTracks(), leftBeat, changeDelta, shouldCheckpoint);
             }
 
             this->insertSpaceHelper->resetDragDelta();
@@ -2034,7 +2034,7 @@ void HybridRoll::updateBounds()
 {
     const int &newWidth = int(this->getNumBars() * this->barWidth);
     if (this->getWidth() == newWidth)
-	{ return; }
+    { return; }
 
     this->setSize(newWidth, this->getHeight());
 }

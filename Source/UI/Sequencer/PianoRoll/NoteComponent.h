@@ -51,14 +51,14 @@ public:
     float getLength() const;
     float getVelocity() const;
 
-	//===------------------------------------------------------------------===//
-	// HybridRollEventComponent
-	//===------------------------------------------------------------------===//
+    //===------------------------------------------------------------------===//
+    // HybridRollEventComponent
+    //===------------------------------------------------------------------===//
 
-	void setSelected(bool selected) override;
-	String getSelectionGroupId() const override;
-	float getBeat() const override;
-	String getId() const override;
+    void setSelected(bool selected) override;
+    String getSelectionGroupId() const override;
+    float getBeat() const override;
+    String getId() const override;
 
     //===------------------------------------------------------------------===//
     // Component
@@ -75,7 +75,7 @@ public:
 
 protected:
 
-	const MidiEvent &midiEvent;
+    const MidiEvent &midiEvent;
 
     inline void paintNewLook(Graphics &g);
     inline void paintLegacyLook(Graphics &g);
@@ -83,8 +83,8 @@ protected:
     Note anchor;
     Note groupScalingAnchor;
 
-	bool belongsToLayerSet(Array<MidiSequence *> layers) const;
-	void activateCorrespondingLayer(bool selectOthers, bool deselectOthers);
+    bool belongsToLayerSet(Array<MidiSequence *> layers) const;
+    void activateCorrespondingLayer(bool selectOthers, bool deselectOthers);
 
     void setNoCheckpointNeededForNextAction();
     bool isResizing() const;
@@ -136,8 +136,8 @@ protected:
     bool shouldGoQuickSelectLayerMode(const ModifierKeys &modifiers) const;
     void setQuickSelectLayerMode(bool value);
 
-	void stopSound();
-	void sendMidiMessage(const MidiMessage &message);
+    void stopSound();
+    void sendMidiMessage(const MidiMessage &message);
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteComponent)
     

@@ -23,7 +23,9 @@
 #include "UndoStack.h"
 
 
-TimeSignaturesSequence::TimeSignaturesSequence(ProjectEventDispatcher &parent) : MidiSequence(parent)
+TimeSignaturesSequence::TimeSignaturesSequence(MidiTrack &track,
+    ProjectEventDispatcher &dispatcher) :
+    MidiSequence(track, dispatcher)
 {
 }
 
@@ -55,7 +57,7 @@ void TimeSignaturesSequence::importMidi(const MidiMessageSequence &sequence)
     }
 
     this->notifyBeatRangeChanged();
-    this->notifyLayerChanged();
+    this->notifySequenceChanged();
 }
 
 
@@ -92,8 +94,7 @@ MidiEvent *TimeSignaturesSequence::insert(const TimeSignatureEvent &signature, b
     {
         this->getUndoStack()->
             perform(new TimeSignatureEventInsertAction(*this->getProject(),
-                                                       this->getLayerIdAsString(),
-                                                       signature));
+                this->getLayerIdAsString(), signature));
     }
     else
     {
@@ -335,12 +336,12 @@ void TimeSignaturesSequence::deserialize(const XmlElement &xml)
 
     this->sort();
     this->updateBeatRange(false);
-    this->notifyLayerChanged();
+    this->notifySequenceChanged();
 }
 
 void TimeSignaturesSequence::reset()
 {
     this->midiEvents.clear();
     this->signaturesHashTable.clear();
-    this->notifyLayerChanged();
+    this->notifySequenceChanged();
 }

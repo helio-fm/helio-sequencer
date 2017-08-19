@@ -27,17 +27,17 @@ public:
 
     typedef ReferenceCountedObjectPtr<SelectionProxyArray> Ptr;
 
-	template<typename T>
-	T *getFirstAs() const
-	{
-		return static_cast<T *>(this->getFirst());
-	}
+    template<typename T>
+    T *getFirstAs() const
+    {
+        return static_cast<T *>(this->getFirst());
+    }
 
-	template<typename T>
-	T *getItemAs(const int index) const
-	{
-		return static_cast<T *>(this->getUnchecked(index));
-	}
+    template<typename T>
+    T *getItemAs(const int index) const
+    {
+        return static_cast<T *>(this->getUnchecked(index));
+    }
 };
 
 class Lasso :
@@ -97,17 +97,17 @@ public:
         return this->selectionsCache;
     }
 
-	template<typename T>
-	T *getFirstAs() const
-	{
-		return static_cast<T *>(this->getSelectedItem(0));
-	}
+    template<typename T>
+    T *getFirstAs() const
+    {
+        return static_cast<T *>(this->getSelectedItem(0));
+    }
 
-	template<typename T>
-	T *getItemAs(const int index) const
-	{
-		return static_cast<T *>(this->getSelectedItem(index));
-	}
+    template<typename T>
+    T *getItemAs(const int index) const
+    {
+        return static_cast<T *>(this->getSelectedItem(index));
+    }
 
     bool shouldDisplayGhostNotes() const
     {
@@ -126,7 +126,7 @@ private:
 
         for (int i = 0; i < this->getNumSelected(); ++i)
         {
-			SelectableComponent *item = this->getSelectedItem(i);
+            SelectableComponent *item = this->getSelectedItem(i);
             const String &groupId(item->getSelectionGroupId());
             
             SelectionProxyArray::Ptr targetArray;

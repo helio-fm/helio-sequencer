@@ -24,21 +24,19 @@
 #include "Pattern.h"
 #include "MidiSequence.h"
 
-DummyClipComponent::DummyClipComponent(MidiSequence *targetLayer,
-	HybridRoll &editor, Clip clip) :
-	ClipComponent(editor, clip),
-	layer(targetLayer)
+DummyClipComponent::DummyClipComponent(HybridRoll &editor, Clip clip) :
+    ClipComponent(editor, clip)
 {
-	//
+    //
 }
 
 void DummyClipComponent::paint(Graphics &g)
 {
-	const Colour myColour(Colours::white
-		.interpolatedWith(this->layer->getColour(), 0.5f)
-		.withAlpha(this->ghostMode ? 0.2f : 0.95f)
-		.darker(this->selectedState ? 0.5f : 0.f));
+    const Colour myColour(Colours::white
+        //.interpolatedWith(this->layer->getColour(), 0.5f)
+        .withAlpha(this->ghostMode ? 0.2f : 0.95f)
+        .darker(this->selectedState ? 0.5f : 0.f));
 
-	g.setColour(myColour);
-	g.fillRoundedRectangle(this->floatLocalBounds, 2.f);
+    g.setColour(myColour);
+    g.fillRoundedRectangle(this->floatLocalBounds, 2.f);
 }

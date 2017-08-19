@@ -22,7 +22,6 @@
 
 #include "AnnotationsSequence.h"
 #include "TimeSignaturesSequence.h"
-#include "ProjectEventDispatcher.h"
 #include "SerializationKeys.h"
 
 using namespace VCS;
@@ -30,7 +29,6 @@ using namespace VCS;
 ProjectTimelineDiffLogic::ProjectTimelineDiffLogic(TrackedItem &targetItem) :
     DiffLogic(targetItem)
 {
-
 }
 
 ProjectTimelineDiffLogic::~ProjectTimelineDiffLogic()
@@ -225,11 +223,9 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
 
 XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsAdded(const XmlElement *state, const XmlElement *changes) const
 {
-	EmptyEventDispatcher dispatcher;
-    AnnotationsSequence emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
-    this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    this->deserializeChanges(state, changes, stateNotes, changesNotes);
 
     Array<const MidiEvent *> result;
 
@@ -263,11 +259,9 @@ XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsAdded(const XmlElement *st
 
 XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsRemoved(const XmlElement *state, const XmlElement *changes) const
 {
-	EmptyEventDispatcher dispatcher;
-    AnnotationsSequence emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
-    this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    this->deserializeChanges(state, changes, stateNotes, changesNotes);
 
     Array<const MidiEvent *> result;
 
@@ -299,11 +293,9 @@ XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsRemoved(const XmlElement *
 
 XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsChanged(const XmlElement *state, const XmlElement *changes) const
 {
-	EmptyEventDispatcher dispatcher;
-    AnnotationsSequence emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
-    this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    this->deserializeChanges(state, changes, stateNotes, changesNotes);
 
     Array<const MidiEvent *> result;
 
@@ -341,11 +333,9 @@ XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsChanged(const XmlElement *
 
 XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesAdded(const XmlElement *state, const XmlElement *changes) const
 {
-	EmptyEventDispatcher dispatcher;
-    TimeSignaturesSequence emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
-    this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    this->deserializeChanges(state, changes, stateNotes, changesNotes);
     
     Array<const MidiEvent *> result;
     
@@ -379,11 +369,9 @@ XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesAdded(const XmlElement 
 
 XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesRemoved(const XmlElement *state, const XmlElement *changes) const
 {
-	EmptyEventDispatcher dispatcher;
-    TimeSignaturesSequence emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
-    this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    this->deserializeChanges(state, changes, stateNotes, changesNotes);
     
     Array<const MidiEvent *> result;
     
@@ -415,11 +403,9 @@ XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesRemoved(const XmlElemen
 
 XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesChanged(const XmlElement *state, const XmlElement *changes) const
 {
-	EmptyEventDispatcher dispatcher;
-    TimeSignaturesSequence emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
-    this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    this->deserializeChanges(state, changes, stateNotes, changesNotes);
     
     Array<const MidiEvent *> result;
     
@@ -458,15 +444,13 @@ XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesChanged(const XmlElemen
 
 Array<NewSerializedDelta> ProjectTimelineDiffLogic::createAnnotationsDiffs(const XmlElement *state, const XmlElement *changes) const
 {
-	EmptyEventDispatcher dispatcher;
-    AnnotationsSequence emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
 
     // вот здесь по уму надо десериализовать слои
     // а для этого надо, чтоб в слоях не было ничего, кроме нот
     // поэтому пока есть, как есть, и это не критично
-    this->deserializeChanges(emptyLayer, state, changes, stateEvents, changesEvents);
+    this->deserializeChanges(state, changes, stateEvents, changesEvents);
 
     Array<NewSerializedDelta> res;
 
@@ -565,12 +549,10 @@ Array<NewSerializedDelta> ProjectTimelineDiffLogic::createAnnotationsDiffs(const
 
 Array<NewSerializedDelta> ProjectTimelineDiffLogic::createTimeSignaturesDiffs(const XmlElement *state, const XmlElement *changes) const
 {
-	EmptyEventDispatcher dispatcher;
-    TimeSignaturesSequence emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
     
-    this->deserializeChanges(emptyLayer, state, changes, stateEvents, changesEvents);
+    this->deserializeChanges(state, changes, stateEvents, changesEvents);
     
     Array<NewSerializedDelta> res;
     Array<const MidiEvent *> addedEvents;
@@ -670,8 +652,7 @@ Array<NewSerializedDelta> ProjectTimelineDiffLogic::createTimeSignaturesDiffs(co
 // Serialization
 //===----------------------------------------------------------------------===//
 
-void ProjectTimelineDiffLogic::deserializeChanges(MidiSequence &layer,
-        const XmlElement *state,
+void VCS::ProjectTimelineDiffLogic::deserializeChanges(const XmlElement *state,
         const XmlElement *changes,
         OwnedArray<MidiEvent> &stateNotes,
         OwnedArray<MidiEvent> &changesNotes) const
@@ -680,14 +661,14 @@ void ProjectTimelineDiffLogic::deserializeChanges(MidiSequence &layer,
     {
         forEachXmlChildElementWithTagName(*state, e, Serialization::Core::annotation)
         {
-            AnnotationEvent *event = new AnnotationEvent(&layer);
+            AnnotationEvent *event = new AnnotationEvent();
             event->deserialize(*e);
             stateNotes.addSorted(*event, event);
         }
 
         forEachXmlChildElementWithTagName(*state, e, Serialization::Core::timeSignature)
         {
-            TimeSignatureEvent *event = new TimeSignatureEvent(&layer);
+            TimeSignatureEvent *event = new TimeSignatureEvent();
             event->deserialize(*e);
             stateNotes.addSorted(*event, event);
         }
@@ -697,14 +678,14 @@ void ProjectTimelineDiffLogic::deserializeChanges(MidiSequence &layer,
     {
         forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::annotation)
         {
-            AnnotationEvent *event = new AnnotationEvent(&layer);
+            AnnotationEvent *event = new AnnotationEvent();
             event->deserialize(*e);
             changesNotes.addSorted(*event, event);
         }
         
         forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::timeSignature)
         {
-            TimeSignatureEvent *event = new TimeSignatureEvent(&layer);
+            TimeSignatureEvent *event = new TimeSignatureEvent();
             event->deserialize(*e);
             changesNotes.addSorted(*event, event);
         }

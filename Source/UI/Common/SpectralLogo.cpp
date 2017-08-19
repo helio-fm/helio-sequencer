@@ -34,16 +34,16 @@
 #define M_2PI       6.28318530717958647692528676655900576   /* 2*pi */
 
 SpectralLogo::SpectralLogo()
-	: Thread("Spectral Logo"),
-	  bandCount(NUM_BANDS),
-	  skewTime(0),
+    : Thread("Spectral Logo"),
+      bandCount(NUM_BANDS),
+      skewTime(0),
       pulse(0.f),
       randomnessRange(0),
       lineThickness(0),
       lineStepSize(0),
       lineWidth(0)
 {
-	for (int band = 0; band < this->bandCount; ++band)
+    for (int band = 0; band < this->bandCount; ++band)
     {
         this->bands.add(new SpectralLogo::Band(this));
     }
@@ -53,19 +53,19 @@ SpectralLogo::SpectralLogo()
 
 SpectralLogo::~SpectralLogo()
 { 
-	this->stopThread(1000);
+    this->stopThread(1000);
 }
 
 void SpectralLogo::run()
 {
-	while (! this->threadShouldExit())
-	{
-		Thread::sleep(jlimit(10, 100, 70 - this->skewTime));
-		const double b = Time::getMillisecondCounterHiRes();
+    while (! this->threadShouldExit())
+    {
+        Thread::sleep(jlimit(10, 100, 70 - this->skewTime));
+        const double b = Time::getMillisecondCounterHiRes();
         this->triggerAsyncUpdate();
-		const double a = Time::getMillisecondCounterHiRes();
-		this->skewTime = int(a - b);
-	}
+        const double a = Time::getMillisecondCounterHiRes();
+        this->skewTime = int(a - b);
+    }
 }
 
 void SpectralLogo::handleAsyncUpdate()
@@ -104,58 +104,58 @@ void SpectralLogo::resized()
 
 void SpectralLogo::paint(Graphics &g)
 {
-	const int width = this->getWidth();
-	const int height = this->getHeight();
+    const int width = this->getWidth();
+    const int height = this->getHeight();
 
-	Image img(Image::ARGB, width, height, true);
+    Image img(Image::ARGB, width, height, true);
     const float cx = float(img.getWidth()) / 2.f;
     const float cy = float(img.getHeight()) / 2.f;
     const float bandSize = float(height) / 2.5f;
 
-	//{
-	//	g.setColour(Colours::white);
-	//	g.fillEllipse(1, 1, img.getWidth() - 2, img.getHeight() - 2);
-	//}
+    //{
+    //  g.setColour(Colours::white);
+    //  g.fillEllipse(1, 1, img.getWidth() - 2, img.getHeight() - 2);
+    //}
 
     {
         Random r;
         Graphics g1(img);
-		Colour c(Colours::white.withAlpha(0.175f));
-		g1.setColour(c);
+        Colour c(Colours::white.withAlpha(0.175f));
+        g1.setColour(c);
 
-		for (int i = 0; i < this->bandCount; ++i)
+        for (int i = 0; i < this->bandCount; ++i)
         {
             const float waveOffset = -(M_PI_2);
             const float wavePosition = ((M_2PI * NUM_WAVES) / float(this->bandCount)) * i;
             const float multiplier = 0.5f + sinf(waveOffset + wavePosition) / 2.f;
 
-			// Controls rays sharpness:
-			const float heptagramShape = 0.5f + ((multiplier * multiplier) / 2.f);
-			//const float heptagramShape = 0.5f + ((multiplier * multiplier * multiplier) / 2.f);
-			
-			const float pulseScale = 1.4f;
-			const float pulseMultiplier = pulseScale * (0.5f + (sinf(this->pulse) / 2.f));
+            // Controls rays sharpness:
+            const float heptagramShape = 0.5f + ((multiplier * multiplier) / 2.f);
+            //const float heptagramShape = 0.5f + ((multiplier * multiplier * multiplier) / 2.f);
+            
+            const float pulseScale = 1.4f;
+            const float pulseMultiplier = pulseScale * (0.5f + (sinf(this->pulse) / 2.f));
             
             const float v =
-				(heptagramShape * bandSize) -
-				(r.nextFloat() * this->getRandomnessRange()) -
-				(pulseMultiplier * pulseMultiplier * this->getRandomnessRange() * (0.5f - heptagramShape) * 0.5f);
+                (heptagramShape * bandSize) -
+                (r.nextFloat() * this->getRandomnessRange()) -
+                (pulseMultiplier * pulseMultiplier * this->getRandomnessRange() * (0.5f - heptagramShape) * 0.5f);
             
             this->bands[i]->setValue(v);
             const float radians = (M_2PI / float(this->bandCount)) * i;
             this->bands[i]->drawBand(g1, cx, cy, bandSize, radians, NUM_SEGMENTS_TO_SKIP);
         }
 
-		//static PNGImageFormat png;
-		//static int i = 0;
+        //static PNGImageFormat png;
+        //static int i = 0;
 
-		//File f("test" + String(++i) + ".png");
-		//FileOutputStream outStream(f);
-		//png.writeImageToStream(img, outStream);
-		//outStream.flush();
+        //File f("test" + String(++i) + ".png");
+        //FileOutputStream outStream(f);
+        //png.writeImageToStream(img, outStream);
+        //outStream.flush();
     }
 
-	g.drawImageAt(img, 0, 0);
+    g.drawImageAt(img, 0, 0);
 }
 
 SpectralLogo::Band::Band(SpectralLogo *parent) :
@@ -185,7 +185,7 @@ void SpectralLogo::Band::reset()
 }
 
 inline Path SpectralLogo::Band::buildPath(float cx, float cy,
-	float h, float radians, int numSkippedSegments)
+    float h, float radians, int numSkippedSegments)
 {
     float valueInY = this->value;
     
@@ -221,22 +221,22 @@ inline Path SpectralLogo::Band::buildPath(float cx, float cy,
         this->peakDecay = this->peakDecay * this->peakDecay;
     }
     
-	const float lineStepSize = this->meter->getLineStepSize();
-	const float lineThickness = this->meter->getLineThickness();
-	const float lineWidth = this->meter->getLineWidth();
+    const float lineStepSize = this->meter->getLineStepSize();
+    const float lineThickness = this->meter->getLineThickness();
+    const float lineWidth = this->meter->getLineWidth();
 
-	this->peak = jmax(this->peak, lineStepSize * (numSkippedSegments + 1));
+    this->peak = jmax(this->peak, lineStepSize * (numSkippedSegments + 1));
     
     Path path;
     
-	int segmentIndex = 0;
+    int segmentIndex = 0;
     for (float i = 0.f; i < valueInY; i += lineStepSize)
     {
-		if (segmentIndex++ > numSkippedSegments)
-		{
-			const float w = lineWidth * (i / h);
-			path.addLineSegment(Line<float>(-w, i, w, i), lineThickness);
-		}
+        if (segmentIndex++ > numSkippedSegments)
+        {
+            const float w = lineWidth * (i / h);
+            path.addLineSegment(Line<float>(-w, i, w, i), lineThickness);
+        }
     }
     
     const float alignedPeak = roundf(this->peak / lineStepSize) * lineStepSize;
@@ -250,9 +250,9 @@ inline Path SpectralLogo::Band::buildPath(float cx, float cy,
 }
 
 inline void SpectralLogo::Band::drawBand(Graphics &g, 
-	float cx, float cy, 
-	float h, float radians,
-	int numSkippedSegments)
+    float cx, float cy, 
+    float h, float radians,
+    int numSkippedSegments)
 {
     g.fillPath(this->buildPath(cx, cy, h, radians, numSkippedSegments));
 }

@@ -39,9 +39,9 @@ public:
     };
 
     Playhead(HybridRoll &parentRoll,
-		Transport &owner,
-		Playhead::Listener *movementListener = nullptr,
-		int width = 2);
+        Transport &owner,
+        Playhead::Listener *movementListener = nullptr,
+        int width = 2);
 
     ~Playhead() override;
 

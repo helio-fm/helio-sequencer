@@ -84,37 +84,37 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *annota
     addAndMakeVisible (separatorV = new SeparatorVertical());
 
     //[UserPreSize]
-	jassert(this->addsNewEvent || this->targetEvent.getLayer() != nullptr);
+    jassert(this->addsNewEvent || this->targetEvent.getLayer() != nullptr);
 
-	if (this->addsNewEvent)
-	{
-		Random r;
-		const auto keys(getDynamics().getAllKeys());
-		const String key(keys[r.nextInt(keys.size())]);
-		const Colour colour(Colour::fromString(getDynamics()[key]));
-		this->targetEvent = AnnotationEvent(annotationsLayer, targetBeat, key, colour);
+    if (this->addsNewEvent)
+    {
+        Random r;
+        const auto keys(getDynamics().getAllKeys());
+        const String key(keys[r.nextInt(keys.size())]);
+        const Colour colour(Colour::fromString(getDynamics()[key]));
+        this->targetEvent = AnnotationEvent(annotationsLayer, targetBeat, key, colour);
 
         annotationsLayer->checkpoint();
-		annotationsLayer->insert(this->targetEvent, true);
+        annotationsLayer->insert(this->targetEvent, true);
 
-		this->messageLabel->setText(TRANS("dialog::annotation::add::caption"), dontSendNotification);
-		this->okButton->setButtonText(TRANS("dialog::annotation::add::proceed"));
-		this->removeEventButton->setButtonText(TRANS("dialog::annotation::add::cancel"));
-	}
-	else
-	{
-		this->messageLabel->setText(TRANS("dialog::annotation::edit::caption"), dontSendNotification);
-		this->okButton->setButtonText(TRANS("dialog::annotation::edit::apply"));
-		this->removeEventButton->setButtonText(TRANS("dialog::annotation::edit::delete"));
-	}
+        this->messageLabel->setText(TRANS("dialog::annotation::add::caption"), dontSendNotification);
+        this->okButton->setButtonText(TRANS("dialog::annotation::add::proceed"));
+        this->removeEventButton->setButtonText(TRANS("dialog::annotation::add::cancel"));
+    }
+    else
+    {
+        this->messageLabel->setText(TRANS("dialog::annotation::edit::caption"), dontSendNotification);
+        this->okButton->setButtonText(TRANS("dialog::annotation::edit::apply"));
+        this->removeEventButton->setButtonText(TRANS("dialog::annotation::edit::delete"));
+    }
 
-	this->colourSwatches->setSelectedColour(this->targetEvent.getColour());
+    this->colourSwatches->setSelectedColour(this->targetEvent.getColour());
 
     this->textEditor->setText(this->targetEvent.getDescription(), dontSendNotification);
-	this->textEditor->addItemList(getDynamics().getAllKeys(), 1);
-	this->textEditor->addListener(this);
+    this->textEditor->addItemList(getDynamics().getAllKeys(), 1);
+    this->textEditor->addListener(this);
 
-	this->separatorH->setAlphaMultiplier(2.5f);
+    this->separatorH->setAlphaMultiplier(2.5f);
     //[/UserPreSize]
 
     setSize (450, 204);
@@ -194,24 +194,24 @@ void AnnotationDialog::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == removeEventButton)
     {
         //[UserButtonCode_removeEventButton] -- add your button handler code here..
-		if (this->addsNewEvent)
-		{
-			this->cancelAndDisappear();
-		}
-		else
-		{
-			this->removeEvent();
-			this->disappear();
-		}
+        if (this->addsNewEvent)
+        {
+            this->cancelAndDisappear();
+        }
+        else
+        {
+            this->removeEvent();
+            this->disappear();
+        }
         //[/UserButtonCode_removeEventButton]
     }
     else if (buttonThatWasClicked == okButton)
     {
         //[UserButtonCode_okButton] -- add your button handler code here..
-		if (textEditor->getText().isNotEmpty())
-		{
-			this->disappear();
-		}
+        if (textEditor->getText().isNotEmpty())
+        {
+            this->disappear();
+        }
         //[/UserButtonCode_okButton]
     }
 
@@ -227,9 +227,9 @@ void AnnotationDialog::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == textEditor)
     {
         //[UserComboBoxCode_textEditor] -- add your combo box handling code here..
-		this->updateOkButtonState();
+        this->updateOkButtonState();
 
-		const String text(this->textEditor->getText());
+        const String text(this->textEditor->getText());
         AnnotationEvent newEvent = this->targetEvent.withDescription(text);
         const String colourString(getDynamics()[text]);
 
@@ -240,10 +240,10 @@ void AnnotationDialog::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
             newEvent = newEvent.withColour(c);
         }
 
-		if (text.isNotEmpty())
-		{
-			this->sendEventChange(newEvent);
-		}
+        if (text.isNotEmpty())
+        {
+            this->sendEventChange(newEvent);
+        }
         //[/UserComboBoxCode_textEditor]
     }
 
@@ -277,8 +277,8 @@ void AnnotationDialog::handleCommandMessage (int commandId)
     //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::DismissModalDialogAsync)
     {
-		this->cancelAndDisappear();
-	}
+        this->cancelAndDisappear();
+    }
     //[/UserCode_handleCommandMessage]
 }
 
@@ -287,16 +287,16 @@ bool AnnotationDialog::keyPressed (const KeyPress& key)
     //[UserCode_keyPressed] -- Add your code here...
     if (key.isKeyCode(KeyPress::escapeKey))
     {
-		this->cancelAndDisappear();
-		return true;
+        this->cancelAndDisappear();
+        return true;
     }
     else if (key.isKeyCode(KeyPress::returnKey) ||
              key.isKeyCode(KeyPress::tabKey))
     {
-		if (textEditor->getText().isNotEmpty())
-		{
-			this->disappear();
-		}
+        if (textEditor->getText().isNotEmpty())
+        {
+            this->disappear();
+        }
 
         return true;
     }
@@ -317,12 +317,12 @@ void AnnotationDialog::inputAttemptWhenModal()
 
 AnnotationDialog *AnnotationDialog::createEditingDialog(Component &owner, const AnnotationEvent &event)
 {
-	return new AnnotationDialog(owner, static_cast<AnnotationsSequence *>(event.getLayer()), event, false, 0.f);
+    return new AnnotationDialog(owner, static_cast<AnnotationsSequence *>(event.getLayer()), event, false, 0.f);
 }
 
 AnnotationDialog *AnnotationDialog::createAddingDialog(Component &owner, AnnotationsSequence *annotationsLayer, float targetBeat)
 {
-	return new AnnotationDialog(owner, annotationsLayer, AnnotationEvent(), true, targetBeat);
+    return new AnnotationDialog(owner, annotationsLayer, AnnotationEvent(), true, targetBeat);
 }
 
 void AnnotationDialog::updateOkButtonState()
@@ -334,69 +334,69 @@ void AnnotationDialog::updateOkButtonState()
 
 void AnnotationDialog::onColourButtonClicked(ColourButton *clickedButton)
 {
-	const Colour c(clickedButton->getColour());
+    const Colour c(clickedButton->getColour());
     const AnnotationEvent newEvent =
-		this->targetEvent.withDescription(this->textEditor->getText()).withColour(c);
-	this->sendEventChange(newEvent);
+        this->targetEvent.withDescription(this->textEditor->getText()).withColour(c);
+    this->sendEventChange(newEvent);
 }
 
 void AnnotationDialog::sendEventChange(AnnotationEvent newEvent)
 {
-	if (this->targetLayer != nullptr)
-	{
+    if (this->targetLayer != nullptr)
+    {
         if (!this->addsNewEvent)
         {
             this->cancelChangesIfAny();
             this->targetLayer->checkpoint();
         }
         
-		this->targetLayer->change(this->targetEvent, newEvent, true);
-		this->hasMadeChanges = true;
-	}
+        this->targetLayer->change(this->targetEvent, newEvent, true);
+        this->hasMadeChanges = true;
+    }
 }
 
 void AnnotationDialog::removeEvent()
 {
-	if (this->targetLayer != nullptr)
-	{
+    if (this->targetLayer != nullptr)
+    {
         if (!this->addsNewEvent)
         {
             this->cancelChangesIfAny();
             this->targetLayer->checkpoint();
         }
         
-		this->targetLayer->remove(this->targetEvent, true);
-		this->hasMadeChanges = true;
-	}
+        this->targetLayer->remove(this->targetEvent, true);
+        this->hasMadeChanges = true;
+    }
 }
 
 void AnnotationDialog::cancelChangesIfAny()
 {
-	if (!this->addsNewEvent &&
+    if (!this->addsNewEvent &&
         this->hasMadeChanges &&
-		this->targetLayer != nullptr)
-	{
-		this->targetLayer->undo();
-		this->hasMadeChanges = false;
-	}
+        this->targetLayer != nullptr)
+    {
+        this->targetLayer->undo();
+        this->hasMadeChanges = false;
+    }
 }
 
 void AnnotationDialog::disappear()
 {
-	delete this;
+    delete this;
 }
 
 void AnnotationDialog::cancelAndDisappear()
 {
-	this->cancelChangesIfAny(); // Discards possible changes
+    this->cancelChangesIfAny(); // Discards possible changes
 
-	if (this->addsNewEvent &&
-		this->targetLayer != nullptr)
-	{
-		this->targetLayer->undo(); // Discards new event
-	}
+    if (this->addsNewEvent &&
+        this->targetLayer != nullptr)
+    {
+        this->targetLayer->undo(); // Discards new event
+    }
 
-	this->disappear();
+    this->disappear();
 }
 //[/MiscUserCode]
 

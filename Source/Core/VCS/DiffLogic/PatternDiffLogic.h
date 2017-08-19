@@ -23,15 +23,9 @@
 
 namespace VCS
 {
-    class PatternDiffLogic
+    class PatternDiffLogic // TODO : public DiffLogic
     {
     public:
-        
-        static void deserializePatternChanges(Pattern &pattern,
-            const XmlElement *state, const XmlElement *changes,
-            Array<Clip> &stateClips, Array<Clip> &changesClips);
-
-        static XmlElement *serializePattern(Array<Clip> changes, const String &tag);
 
         static NewSerializedDelta serializePatternChanges(Array<Clip> changes,
             const String &description, int64 numChanges,

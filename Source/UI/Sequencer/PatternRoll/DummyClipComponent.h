@@ -17,21 +17,17 @@
 
 #pragma once
 
-class MidiSequence;
-
 #include "ClipComponent.h"
 
 class DummyClipComponent : public ClipComponent
 {
 public:
 
-	DummyClipComponent(MidiSequence *layer, HybridRoll &editor, Clip clip);
+    DummyClipComponent(HybridRoll &editor, Clip clip);
 
-	void paint(Graphics &g) override;
+    void paint(Graphics &g) override;
 
 protected:
-
-	MidiSequence *layer;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DummyClipComponent)
 };

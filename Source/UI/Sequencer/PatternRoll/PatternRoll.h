@@ -39,15 +39,15 @@ class PatternRoll : public HybridRoll
 public:
 
     PatternRoll(ProjectTreeItem &parentProject,
-		Viewport &viewportRef,
-		WeakReference<AudioMonitor> clippingDetector);
+        Viewport &viewportRef,
+        WeakReference<AudioMonitor> clippingDetector);
 
     ~PatternRoll() override;
 
     void deleteSelection();
-	void selectAll() override;
-	void reloadRollContent() override;
-	int getNumRows() const noexcept;
+    void selectAll() override;
+    void reloadRollContent() override;
+    int getNumRows() const noexcept;
 
 
     //===------------------------------------------------------------------===//
@@ -62,31 +62,31 @@ public:
     // Note management
     //===------------------------------------------------------------------===//
 
-	void addClip(Pattern *pattern, float beat);
+    void addClip(Pattern *pattern, float beat);
     Rectangle<float> getEventBounds(FloatBoundsComponent *mc) const override;
     Rectangle<float> getEventBounds(const Clip &clip, float beat) const;
     float getBeatByComponentPosition(float x) const;
     float getBeatByMousePosition(int x) const;
-	Pattern *getPatternByMousePosition(int y) const;
+    Pattern *getPatternByMousePosition(int y) const;
 
 
     //===------------------------------------------------------------------===//
     // ProjectListener
     //===------------------------------------------------------------------===//
 
-	void onAddMidiEvent(const MidiEvent &event) override;
-	void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
-	void onRemoveMidiEvent(const MidiEvent &event) override;
-	void onPostRemoveMidiEvent(MidiSequence *const layer) override;
+    void onAddMidiEvent(const MidiEvent &event) override;
+    void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
+    void onRemoveMidiEvent(const MidiEvent &event) override;
+    void onPostRemoveMidiEvent(MidiSequence *const layer) override;
 
-	void onAddClip(const Clip &clip) override;
-	void onChangeClip(const Clip &oldClip, const Clip &newClip) override;
-	void onRemoveClip(const Clip &clip) override;
-	void onPostRemoveClip(Pattern *const pattern) override;
+    void onAddClip(const Clip &clip) override;
+    void onChangeClip(const Clip &oldClip, const Clip &newClip) override;
+    void onRemoveClip(const Clip &clip) override;
+    void onPostRemoveClip(Pattern *const pattern) override;
 
-	void onAddTrack(MidiSequence *const layer, Pattern *const pattern = nullptr) override;
-	void onChangeTrack(MidiSequence *const layer, Pattern *const pattern = nullptr) override;
-	void onRemoveTrack(MidiSequence *const layer, Pattern *const pattern = nullptr) override;
+    void onAddTrack(MidiTrack *const track) override;
+    void onChangeTrackProperties(MidiTrack *const track) override;
+    void onRemoveTrack(MidiTrack *const track) override;
 
 
     //===------------------------------------------------------------------===//
@@ -94,7 +94,7 @@ public:
     //===------------------------------------------------------------------===//
 
     void findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
-		const Rectangle<int> &rectangle) override;
+        const Rectangle<int> &rectangle) override;
 
 
     //===------------------------------------------------------------------===//
@@ -127,15 +127,15 @@ public:
     
 public:
 
-		static CachedImage::Ptr rowPattern;
-		static CachedImage::Ptr renderRowsPattern(HelioTheme &theme, int height);
-		static void repaintBackgroundsCache(HelioTheme &theme)
-		{ rowPattern = PatternRoll::renderRowsPattern(theme, PATTERNROLL_ROW_HEIGHT); }
+        static CachedImage::Ptr rowPattern;
+        static CachedImage::Ptr renderRowsPattern(HelioTheme &theme, int height);
+        static void repaintBackgroundsCache(HelioTheme &theme)
+        { rowPattern = PatternRoll::renderRowsPattern(theme, PATTERNROLL_ROW_HEIGHT); }
 
 private:
 
     void insertNewClipAt(const MouseEvent &e);
-	
+    
 private:
     
     void focusToRegionAnimated(int startKey, int endKey, float startBeat, float endBeat);
@@ -144,12 +144,7 @@ private:
     
 private:
     
-	// sorted arrays:
-	Array<Pattern *> patterns;
-	Array<MidiSequence *> layers;
-
-	typedef HashMap<const Pattern *, MidiSequence *, PatternHashFunction> LinksMap;
-	LinksMap links;
+    Array<MidiTrack *> tracks;
 
     OwnedArray<ClipComponent> ghostClips;
     

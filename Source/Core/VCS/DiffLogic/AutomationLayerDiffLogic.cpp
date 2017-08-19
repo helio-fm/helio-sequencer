@@ -22,7 +22,6 @@
 #include "PatternDiffLogic.h"
 #include "AutomationEvent.h"
 #include "AutomationSequence.h"
-#include "ProjectEventDispatcher.h"
 #include "SerializationKeys.h"
 
 using namespace VCS;
@@ -44,8 +43,7 @@ static NewSerializedDelta createControllerDiff(const XmlElement *state, const Xm
 
 static Array<NewSerializedDelta> createEventsDiffs(const XmlElement *state, const XmlElement *changes);
 
-static void deserializeChanges(MidiSequence &layer,
-    const XmlElement *state,
+static void deserializeChanges(const XmlElement *state,
     const XmlElement *changes,
     OwnedArray<MidiEvent> &stateNotes,
     OwnedArray<MidiEvent> &changesNotes);
@@ -359,11 +357,9 @@ XmlElement *mergeController(const XmlElement *state, const XmlElement *changes)
 
 XmlElement *mergeEventsAdded(const XmlElement *state, const XmlElement *changes)
 {
-	EmptyEventDispatcher dispatcher;
-    AutomationSequence emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
-    deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    deserializeChanges(state, changes, stateNotes, changesNotes);
 
     Array<const MidiEvent *> result;
     result.addArray(stateNotes);
@@ -396,11 +392,9 @@ XmlElement *mergeEventsAdded(const XmlElement *state, const XmlElement *changes)
 
 XmlElement *mergeEventsRemoved(const XmlElement *state, const XmlElement *changes)
 {
-	EmptyEventDispatcher dispatcher;
-    AutomationSequence emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
-    deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    deserializeChanges(state, changes, stateNotes, changesNotes);
 
     Array<const MidiEvent *> result;
 
@@ -432,11 +426,9 @@ XmlElement *mergeEventsRemoved(const XmlElement *state, const XmlElement *change
 
 XmlElement *mergeEventsChanged(const XmlElement *state, const XmlElement *changes)
 {
-	EmptyEventDispatcher dispatcher;
-    AutomationSequence emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
-    deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    deserializeChanges(state, changes, stateNotes, changesNotes);
 
     Array<const MidiEvent *> result;
     result.addArray(stateNotes);
@@ -483,7 +475,7 @@ NewSerializedDelta createPathDiff(const XmlElement *state, const XmlElement *cha
 
 NewSerializedDelta createMuteDiff(const XmlElement *state, const XmlElement *changes)
 {
-    const bool muted = MidiSequence::isMuted(changes->getStringAttribute(Serialization::VCS::delta));
+    const bool muted = MidiTrack::isTrackMuted(changes->getStringAttribute(Serialization::VCS::delta));
     NewSerializedDelta res;
     res.deltaData = new XmlElement(*changes);
     res.delta = new Delta(muted ? DeltaDescription("muted") : DeltaDescription("unmuted"), AutoLayerDeltas::layerMute);
@@ -516,15 +508,13 @@ NewSerializedDelta createControllerDiff(const XmlElement *state, const XmlElemen
 
 Array<NewSerializedDelta> createEventsDiffs(const XmlElement *state, const XmlElement *changes)
 {
-	EmptyEventDispatcher dispatcher;
-    AutomationSequence emptyLayer(dispatcher);
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
 
     // вот здесь по уму надо десериализовать слои
     // а для этого надо, чтоб в слоях не было ничего, кроме нот
     // поэтому пока есть, как есть, и это не критично
-    deserializeChanges(emptyLayer, state, changes, stateEvents, changesEvents);
+    deserializeChanges(state, changes, stateEvents, changesEvents);
 
     Array<NewSerializedDelta> res;
     Array<const MidiEvent *> addedEvents;
@@ -619,8 +609,7 @@ Array<NewSerializedDelta> createEventsDiffs(const XmlElement *state, const XmlEl
     return res;
 }
 
-void deserializeChanges(MidiSequence &layer,
-        const XmlElement *state,
+void deserializeChanges(const XmlElement *state,
         const XmlElement *changes,
         OwnedArray<MidiEvent> &stateNotes,
         OwnedArray<MidiEvent> &changesNotes)
@@ -629,7 +618,7 @@ void deserializeChanges(MidiSequence &layer,
     {
         forEachXmlChildElementWithTagName(*state, e, Serialization::Core::event)
         {
-            auto event = new AutomationEvent(&layer, 0.f, 0.f);
+            auto event = new AutomationEvent();
             event->deserialize(*e);
             stateNotes.addSorted(*event, event);
         }
@@ -639,7 +628,7 @@ void deserializeChanges(MidiSequence &layer,
     {
         forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::event)
         {
-            auto event = new AutomationEvent(&layer, 0.f, 0.f);
+            auto event = new AutomationEvent();
             event->deserialize(*e);
             changesNotes.addSorted(*event, event);
         }

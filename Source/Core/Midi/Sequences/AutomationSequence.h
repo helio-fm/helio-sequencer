@@ -24,7 +24,7 @@ class AutomationSequence : public MidiSequence
 {
 public:
 
-    explicit AutomationSequence(ProjectEventDispatcher &parent);
+    explicit AutomationSequence(MidiTrack &track, ProjectEventDispatcher &dispatcher);
 
 
     //===------------------------------------------------------------------===//
@@ -69,7 +69,7 @@ public:
 
 protected:
 
-	void clearQuick() override;
+    void clearQuick() override;
 
 private:
 

@@ -36,7 +36,7 @@ public:
     };
     
     HybridRollEditMode();
-	HybridRollEditMode(const HybridRollEditMode &other);
+    HybridRollEditMode(const HybridRollEditMode &other);
 
     bool forbidsViewportDragging() const;
     bool forcesViewportDragging() const;

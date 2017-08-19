@@ -224,9 +224,9 @@ ProjectTreeItem *RootTreeItem::createDefaultProjectChildren(ProjectTreeItem *new
 {
     VersionControlTreeItem *vcs = this->addVCS(newProject);
     
-    this->addPianoLayer(newProject, "Arps")->getSequence()->setColour(Colours::orangered);
-    this->addPianoLayer(newProject, "Counterpoint")->getSequence()->setColour(Colours::gold);
-    this->addPianoLayer(newProject, "Melodic")->getSequence()->setColour(Colours::chartreuse);
+    this->addPianoLayer(newProject, "Arps")->setColour(Colours::orangered);
+    this->addPianoLayer(newProject, "Counterpoint")->setColour(Colours::gold);
+    this->addPianoLayer(newProject, "Melodic")->setColour(Colours::chartreuse);
     
 //#if HELIO_DESKTOP
 //    

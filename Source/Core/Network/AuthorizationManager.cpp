@@ -183,8 +183,8 @@ void AuthorizationManager::logoutConnectionFailed()
 
 void AuthorizationManager::listRequestOk(const String &userEmail, Array<RemoteProjectDescription> list)
 {
-	//Logger::writeToLog("listRequestOk: " + userEmail);
-	this->lastRequestState = RequestSucceed;
+    //Logger::writeToLog("listRequestOk: " + userEmail);
+    this->lastRequestState = RequestSucceed;
     this->authState = LoggedIn;
     this->lastReceivedProjects = list;
     this->currentLogin = userEmail;
@@ -193,16 +193,16 @@ void AuthorizationManager::listRequestOk(const String &userEmail, Array<RemotePr
 
 void AuthorizationManager::listRequestAuthorizationFailed()
 {
-	//Logger::writeToLog("listRequestAuthorizationFailed: ");
-	this->lastRequestState = RequestFailed;
+    //Logger::writeToLog("listRequestAuthorizationFailed: ");
+    this->lastRequestState = RequestFailed;
     this->authState = NotLoggedIn;
     this->sendChangeMessage();
 }
 
 void AuthorizationManager::listRequestConnectionFailed()
 {
-	//Logger::writeToLog("listRequestConnectionFailed: ");
-	this->lastRequestState = ConnectionFailed;
+    //Logger::writeToLog("listRequestConnectionFailed: ");
+    this->lastRequestState = ConnectionFailed;
     this->authState = Unknown;
     this->lastReceivedProjects.clear();
     this->sendChangeMessage();

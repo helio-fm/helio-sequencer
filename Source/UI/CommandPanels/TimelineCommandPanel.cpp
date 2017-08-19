@@ -33,17 +33,17 @@ TimelineCommandPanel::TimelineCommandPanel(ProjectTreeItem &parentProject) :
     project(parentProject)
 {
     const AnnotationEvent *selectedAnnotation = nullptr;
-	const TimeSignatureEvent *selectedTimeSignature = nullptr;
+    const TimeSignatureEvent *selectedTimeSignature = nullptr;
 
-	const ProjectTimeline *timeline = this->project.getTimeline();
+    const ProjectTimeline *timeline = this->project.getTimeline();
     const double seekPosition = this->project.getTransport().getSeekPosition();
     
     if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
     {
-		const double numBeats = double(roll->getNumBeats());
-		const double seekThreshold = (1.0 / numBeats) / 10.0;
+        const double numBeats = double(roll->getNumBeats());
+        const double seekThreshold = (1.0 / numBeats) / 10.0;
 
-		for (int i = 0; i < timeline->getAnnotations()->size(); ++i)
+        for (int i = 0; i < timeline->getAnnotations()->size(); ++i)
         {
             if (AnnotationEvent *annotation = dynamic_cast<AnnotationEvent *>(timeline->getAnnotations()->getUnchecked(i)))
             {
@@ -56,18 +56,18 @@ TimelineCommandPanel::TimelineCommandPanel(ProjectTreeItem &parentProject) :
             }
         }
 
-		for (int i = 0; i < timeline->getTimeSignatures()->size(); ++i)
-		{
-			if (TimeSignatureEvent *ts = dynamic_cast<TimeSignatureEvent *>(timeline->getTimeSignatures()->getUnchecked(i)))
-			{
-				const double tsSeekPosition = roll->getTransportPositionByBeat(ts->getBeat());
-				if (fabs(tsSeekPosition - seekPosition) < seekThreshold)
-				{
-					selectedTimeSignature = ts;
-					break;
-				}
-			}
-		}
+        for (int i = 0; i < timeline->getTimeSignatures()->size(); ++i)
+        {
+            if (TimeSignatureEvent *ts = dynamic_cast<TimeSignatureEvent *>(timeline->getTimeSignatures()->getUnchecked(i)))
+            {
+                const double tsSeekPosition = roll->getTransportPositionByBeat(ts->getBeat());
+                if (fabs(tsSeekPosition - seekPosition) < seekThreshold)
+                {
+                    selectedTimeSignature = ts;
+                    break;
+                }
+            }
+        }
     }
     
     ReferenceCountedArray<CommandItem> cmds;
@@ -77,10 +77,10 @@ TimelineCommandPanel::TimelineCommandPanel(ProjectTreeItem &parentProject) :
         cmds.add(CommandItem::withParams(Icons::plus, CommandIDs::AddAnnotation, TRANS("menu::annotation::add")));
     }
 
-	if (selectedTimeSignature == nullptr)
-	{
-		cmds.add(CommandItem::withParams(Icons::plus, CommandIDs::AddTimeSignature, TRANS("menu::timesignature::add")));
-	}
+    if (selectedTimeSignature == nullptr)
+    {
+        cmds.add(CommandItem::withParams(Icons::plus, CommandIDs::AddTimeSignature, TRANS("menu::timesignature::add")));
+    }
     
     if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
     {
@@ -108,7 +108,7 @@ TimelineCommandPanel::TimelineCommandPanel(ProjectTreeItem &parentProject) :
         jassertfalse;
     }
     
-	this->updateContent(cmds, SlideDown);
+    this->updateContent(cmds, SlideDown);
 }
 
 TimelineCommandPanel::~TimelineCommandPanel()
@@ -121,18 +121,18 @@ void TimelineCommandPanel::handleCommandMessage(int commandId)
     {
         if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
         {
-			roll->postCommandMessage(CommandIDs::AddAnnotation);
-			this->getParentComponent()->exitModalState(0);
-		}
+            roll->postCommandMessage(CommandIDs::AddAnnotation);
+            this->getParentComponent()->exitModalState(0);
+        }
     }
-	else if (commandId == CommandIDs::AddTimeSignature)
-	{
-		if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
-		{
-			roll->postCommandMessage(CommandIDs::AddTimeSignature);
-			this->getParentComponent()->exitModalState(0);
-		}
-	}
+    else if (commandId == CommandIDs::AddTimeSignature)
+    {
+        if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
+        {
+            roll->postCommandMessage(CommandIDs::AddTimeSignature);
+            this->getParentComponent()->exitModalState(0);
+        }
+    }
     else if (commandId == CommandIDs::Cancel)
     {
         if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))

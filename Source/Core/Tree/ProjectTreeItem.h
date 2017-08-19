@@ -66,17 +66,17 @@ public:
     String getStats() const;
 
     Transport &getTransport() const noexcept;
-	ProjectInfo *getProjectInfo() const noexcept;
-	ProjectTimeline *getTimeline() const noexcept;
-	HybridRollEditMode getEditMode() const noexcept;
-	HybridRoll *getLastFocusedRoll() const;
+    ProjectInfo *getProjectInfo() const noexcept;
+    ProjectTimeline *getTimeline() const noexcept;
+    HybridRollEditMode getEditMode() const noexcept;
+    HybridRoll *getLastFocusedRoll() const;
 
-	void repaintEditor();
+    void repaintEditor();
     
     void importMidi(File &file);
     void exportMidi(File &file) const;
 
-	Colour getColour() const override;
+    Colour getColour() const override;
     Image getIcon() const override;
 
     void showPage() override;
@@ -91,7 +91,7 @@ public:
     void hideEditor(MidiSequence *activeLayer, TreeItem *source);
 
     void updateActiveGroupEditors();
-	void activateLayer(MidiSequence* layer, bool selectOthers, bool deselectOthers);
+    void activateLayer(MidiSequence* layer, bool selectOthers, bool deselectOthers);
 
 
     //===------------------------------------------------------------------===//
@@ -126,23 +126,23 @@ public:
     void redo();
     void clearUndoHistory();
 
-	Pattern *getPatternWithId(const String &uuid);
+    Pattern *getPatternWithId(const String &uuid);
 
     template<typename T>
-    T *getLayerWithId(const String &uuid)
+    T *findSequenceByTrackId(const String &trackId)
     {
-        this->rebuildLayersHashIfNeeded();
-        return dynamic_cast<T *>(this->layersHash[uuid].get());
+        this->rebuildSequencesHashIfNeeded();
+        return dynamic_cast<T *>(this->sequencesHash[trackId].get());
     }
 
     template<typename T>
-    T *findChildByLayerId(const String &uuid) const
+    T *findTrackById(const String &uuid) const
     {
         Array<T *> allChildren = this->findChildrenOfType<T>();
         
         for (int i = 0; i < allChildren.size(); ++i)
         {
-            if (allChildren.getUnchecked(i)->getLayer()->getLayerId().toString() == uuid)
+            if (allChildren.getUnchecked(i)->getTrackId().toString() == uuid)
             {
                 return allChildren.getUnchecked(i);
             }
@@ -156,11 +156,9 @@ public:
     // Accessors
     //===------------------------------------------------------------------===//
 
-    Array<MidiSequence *> getLayersList() const;
-
-    Array<MidiSequence *> getSelectedLayersList() const;
-
-    Point<float> getTrackRangeInBeats() const;
+    Array<MidiTrack *> getTracks() const;
+    Array<MidiTrack *> getSelectedTracks() const;
+    Point<float> getProjectRangeInBeats() const;
 
 
     //===------------------------------------------------------------------===//
@@ -168,9 +166,7 @@ public:
     //===------------------------------------------------------------------===//
 
     XmlElement *serialize() const override;
-
     void deserialize(const XmlElement &xml) override;
-
     void reset() override;
 
 
@@ -179,9 +175,7 @@ public:
     //===------------------------------------------------------------------===//
 
     void addListener(ProjectListener *listener);
-
     void removeListener(ProjectListener *listener);
-
     void removeAllListeners();
 
 
@@ -192,11 +186,12 @@ public:
     void broadcastAddEvent(const MidiEvent &event);
     void broadcastChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent);
     void broadcastRemoveEvent(const MidiEvent &event);
-	void broadcastPostRemoveEvent(MidiSequence *const layer);
+    void broadcastPostRemoveEvent(MidiSequence *const layer);
 
-    void broadcastAddTrack(MidiSequence *const layer, Pattern *const pattern = nullptr);
-    void broadcastChangeTrack(MidiSequence *const layer, Pattern *const pattern = nullptr);
-    void broadcastRemoveTrack(MidiSequence *const layer, Pattern *const pattern = nullptr);
+    void broadcastAddTrack(MidiTrack *const track);
+    void broadcastRemoveTrack(MidiTrack *const track);
+    void broadcastChangeTrackProperties(MidiTrack *const track);
+    void broadcastResetTrackContent(MidiTrack *const track);
 
     void broadcastAddClip(const Clip &clip);
     void broadcastChangeClip(const Clip &oldClip, const Clip &newClip);
@@ -204,8 +199,8 @@ public:
     void broadcastPostRemoveClip(Pattern *const pattern);
 
     void broadcastChangeProjectInfo(const ProjectInfo *info);
-	void broadcastChangeViewBeatRange(float firstBeat, float lastBeat);
-	Point<float> broadcastChangeProjectBeatRange();
+    void broadcastChangeViewBeatRange(float firstBeat, float lastBeat);
+    Point<float> broadcastChangeProjectBeatRange();
 
 
     //===------------------------------------------------------------------===//
@@ -250,7 +245,7 @@ protected:
 
 private:
 
-    void collectLayers(Array<MidiSequence *> &resultArray, bool onlySelectedLayers = false) const;
+    void collectTracks(Array<MidiTrack *> &resultArray, bool onlySelected = false) const;
 
     ScopedPointer<Autosaver> autosaver;
     ScopedPointer<Transport> transport;
@@ -270,7 +265,7 @@ private:
 
     ScopedPointer<ProjectPage> projectSettings;
 
-    ReadWriteLock layersListLock;
+    ReadWriteLock tracksListLock;
 
     ScopedPointer<ProjectInfo> info;
 
@@ -298,8 +293,8 @@ private:
     ScopedPointer<UndoStack> undoStack;
 
     bool isLayersHashOutdated;
-    HashMap<String, WeakReference<MidiSequence> > layersHash;
+    HashMap<String, WeakReference<MidiSequence> > sequencesHash;
 
-    void rebuildLayersHashIfNeeded();
+    void rebuildSequencesHashIfNeeded();
 
 };

@@ -21,10 +21,10 @@ class SelectableComponent : public virtual Component
 {
 public:
 
-	virtual void setSelected(bool selected) = 0;
+    virtual void setSelected(bool selected) = 0;
 
-	virtual bool isSelected() const = 0;
+    virtual bool isSelected() const = 0;
 
-	virtual String getSelectionGroupId() const = 0;
+    virtual String getSelectionGroupId() const = 0;
 
 };

@@ -26,8 +26,8 @@ HybridRollEditMode::HybridRollEditMode() :
 }
 
 HybridRollEditMode::HybridRollEditMode(const HybridRollEditMode &other) :
-	mode(other.mode),
-	previousMode(other.previousMode)
+    mode(other.mode),
+    previousMode(other.previousMode)
 {
 }
 

@@ -23,16 +23,16 @@
 #include "ProjectTreeItem.h"
 #include "ProjectEventDispatcher.h"
 #include "SerializationKeys.h"
-#include "MidiLayerActions.h"
 #include "UndoStack.h"
+#include "MidiTrack.h"
 
 MidiSequence::MidiSequence(MidiTrack &parentTrack,
-	ProjectEventDispatcher &dispatcher) :
-	track(parentTrack),
-	eventDispatcher(dispatcher),
-	lastStartBeat(0.f),
-	lastEndBeat(0.f),
-	cachedSequence(),
+    ProjectEventDispatcher &dispatcher) :
+    track(parentTrack),
+    eventDispatcher(dispatcher),
+    lastStartBeat(0.f),
+    lastEndBeat(0.f),
+    cachedSequence(),
     cacheIsOutdated(false)
 {
 }
@@ -49,34 +49,6 @@ void MidiSequence::sort()
         this->midiEvents.sort(*this->midiEvents.getUnchecked(0));
     }
 }
-
-//void MidiSequence::allNotesOff()
-//{
-//    const MidiMessage notesOff(MidiMessage::allNotesOff(this->getChannel()));
-//    this->sendMidiMessage(notesOff);
-//    
-//    // It vas very very frustrating to realise that some plugins (like Arturia iSEM on iOS)
-//    // do NOT understand allNotesOff message, so they're just never going to shut the **** up.
-//    // We always have to tell them that every single ******* note is ******* off.
-//    // What a pain.
-//    for (int c = 0; c < 128; ++c)
-//    {
-//        const MidiMessage noteOff(MidiMessage::noteOff(this->getChannel(), c));
-//        this->sendMidiMessage(noteOff);
-//    }
-//}
-//
-//void MidiSequence::allSoundOff()
-//{
-//    const MidiMessage soundOff(MidiMessage::allSoundOff(this->getChannel()));
-//    this->sendMidiMessage(soundOff);
-//}
-//
-//void MidiSequence::allControllersOff()
-//{
-//    const MidiMessage controllersOff(MidiMessage::allControllersOff(this->getChannel()));
-//    this->sendMidiMessage(controllersOff);
-//}
 
 //===----------------------------------------------------------------------===//
 // Undoing // TODO move this to project interface
@@ -106,7 +78,7 @@ void MidiSequence::redo()
 
 void MidiSequence::clearUndoHistory()
 {
-	this->getUndoStack()->clearUndoHistory();
+    this->getUndoStack()->clearUndoHistory();
 }
 
 
@@ -127,15 +99,15 @@ MidiMessageSequence MidiSequence::exportMidi() const
 
         for (auto event : this->midiEvents)
         {
-			const Array<MidiMessage> &track = event->getSequence();
+            const Array<MidiMessage> &track = event->getSequence();
 
-			for (auto &message : track)
-			{
-				this->cachedSequence.addEvent(message);
-			}
+            for (auto &message : track)
+            {
+                this->cachedSequence.addEvent(message);
+            }
 
-			// need to call it here?
-			//this->cachedSequence.updateMatchedPairs();
+            // need to call it here?
+            //this->cachedSequence.updateMatchedPairs();
         }
 
         this->cachedSequence.updateMatchedPairs();
@@ -172,23 +144,18 @@ float MidiSequence::getLastBeat() const
 
 float MidiSequence::getLengthInBeats() const
 {
-	if (this->midiEvents.size() == 0)
-	{
-		return 0;
-	}
+    if (this->midiEvents.size() == 0)
+    {
+        return 0;
+    }
 
-	return this->getLastBeat() - this->getFirstBeat();
+    return this->getLastBeat() - this->getFirstBeat();
 }
 
 
-String MidiSequence::getMuteStateAsString() const
+MidiTrack *MidiSequence::getTrack() const
 {
-    return (this->isMuted() ? "yes" : "no");
-}
-
-bool MidiSequence::isMuted(const String &muteState)
-{
-    return (muteState == "yes");
+    return &this->track;
 }
 
 ProjectTreeItem *MidiSequence::getProject()
@@ -230,16 +197,16 @@ void MidiSequence::notifyEventRemovedPostAction()
     this->eventDispatcher.dispatchPostRemoveEvent(this);
 }
 
-void MidiSequence::notifyLayerChanged()
+void MidiSequence::notifySequenceChanged()
 {
     this->cacheIsOutdated = true;
-    this->eventDispatcher.dispatchReloadLayer(this);
+    this->eventDispatcher.dispatchChangeTrackProperties();
 }
 
 void MidiSequence::notifyBeatRangeChanged()
 {
     //this->cacheIsOutdated = true;
-    this->eventDispatcher.dispatchChangeLayerBeatRange();
+    this->eventDispatcher.dispatchChangeTrackBeatRange();
 }
 
 void MidiSequence::updateBeatRange(bool shouldNotifyIfChanged)
@@ -259,68 +226,17 @@ void MidiSequence::updateBeatRange(bool shouldNotifyIfChanged)
     }
 }
 
-
 //void MidiSequence::sendMidiMessage(const MidiMessage &message)
 //{
 //    this->owner.getTransport()->sendMidiMessage(this->getLayerId().toString(), message);
 //}
 
-void MidiSequence::setChannel(int val)
-{
-	this->cacheIsOutdated = true;
-	this->channel = val;
-}
-
-void MidiSequence::setColour(Colour val)
-{
-	if (this->colour != val)
-	{
-		this->colour = val;
-	}
-}
-
-void MidiSequence::setMuted(bool shouldBeMuted)
-{
-	if (this->muted != shouldBeMuted)
-	{
-		this->muted = shouldBeMuted;
-		this->eventDispatcher.dispatchReloadLayer(this);
-	}
-}
-
-void MidiSequence::setInstrumentId(const String &val)
-{
-    if (this->instrumentId != val)
-    {
-        this->instrumentId = val;
-        this->eventDispatcher.dispatchReloadLayer(this);
-    }
-}
-
-void MidiSequence::setControllerNumber(int val)
-{
-    if (this->controllerNumber != val)
-    {
-        this->controllerNumber = val;
-    }
-}
 
 //===----------------------------------------------------------------------===//
 // Helpers
 //===----------------------------------------------------------------------===//
 
-int MidiSequence::compareElements(const MidiSequence *first, const MidiSequence *second)
-{
-	// Compare by names?
-	if (first == second)
-	{
-		return 0;
-	}
-
-	return first->track->getTrackName().compare(second->track->getTrackName());
-}
-
 int MidiSequence::hashCode() const noexcept
 {
-	return this->layerId.toString().hashCode();
+    return this->layerId.toString().hashCode();
 }

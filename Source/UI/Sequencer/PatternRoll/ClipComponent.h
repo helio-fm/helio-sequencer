@@ -30,25 +30,25 @@ public:
 
     ClipComponent(HybridRoll &editor, Clip clip);
     const Clip getClip() const;
-	PatternRoll &getRoll() const;
+    PatternRoll &getRoll() const;
 
-	//virtual void updateContent() = 0;
+    //virtual void updateContent() = 0;
 
-	//===------------------------------------------------------------------===//
-	// HybridRollEventComponent
-	//===------------------------------------------------------------------===//
+    //===------------------------------------------------------------------===//
+    // HybridRollEventComponent
+    //===------------------------------------------------------------------===//
 
-	void setSelected(bool selected) override;
-	String getSelectionGroupId() const override;
-	float getBeat() const override;
-	String getId() const override;
+    void setSelected(bool selected) override;
+    String getSelectionGroupId() const override;
+    float getBeat() const override;
+    String getId() const override;
 
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
     void mouseDown(const MouseEvent &e) override;
-	void paint(Graphics& g) override;
+    void paint(Graphics& g) override;
 
     static int compareElements(ClipComponent *first, ClipComponent *second);
 

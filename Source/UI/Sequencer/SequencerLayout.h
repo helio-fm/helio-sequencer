@@ -80,12 +80,12 @@ private:
 
     ProjectTreeItem &project;
     ScopedPointer<Viewport> pianoViewport;
-	ScopedPointer<Viewport> patternViewport;
-	ScopedPointer<TrackScroller> scroller;
+    ScopedPointer<Viewport> patternViewport;
+    ScopedPointer<TrackScroller> scroller;
 
     ScopedPointer<PianoRoll> pianoRoll;
-	ScopedPointer<PatternRoll> patternRoll;
-	ScopedPointer<RollsSwitchingProxy> rollContainer; // лейаут для вьюпорта с роллом и минимап-скроллера внизу
+    ScopedPointer<PatternRoll> patternRoll;
+    ScopedPointer<RollsSwitchingProxy> rollContainer; // лейаут для вьюпорта с роллом и минимап-скроллера внизу
     //ScopedPointer<Component> automationContainer; // лейаут для редактора автоматизации с тулбаром справа
     ScopedPointer<HybridRollCommandPanel> rollCommandPanel; // тублар справа от роллов
 

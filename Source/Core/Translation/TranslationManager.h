@@ -40,10 +40,10 @@ public:
         String localeName;
         String localeAuthor;
 
-		static int compareElements(const Locale &first, const Locale &second)
-		{
-			return first.localeName.compare(second.localeName);
-		}
+        static int compareElements(const Locale &first, const Locale &second)
+        {
+            return first.localeName.compare(second.localeName);
+        }
     };
     
     static File getDownloadedTranslationsFile();

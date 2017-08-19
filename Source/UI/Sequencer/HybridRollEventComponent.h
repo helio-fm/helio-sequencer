@@ -25,8 +25,8 @@ class HybridRoll;
 #include "SelectableComponent.h"
 
 class HybridRollEventComponent :
-	public FloatBoundsComponent, 
-	public SelectableComponent
+    public FloatBoundsComponent, 
+    public SelectableComponent
 {
 public:
 
@@ -34,10 +34,10 @@ public:
 
     bool isActive() const;
     void setActive(bool val, bool force = false);
-	void setGhostMode();
+    void setGhostMode();
 
     virtual float getBeat() const = 0;
-	virtual String getId() const = 0;
+    virtual String getId() const = 0;
 
     //===------------------------------------------------------------------===//
     // Component
@@ -46,12 +46,12 @@ public:
     void mouseDown(const MouseEvent &e) override;
     static int compareElements(HybridRollEventComponent *first, HybridRollEventComponent *second);
 
-	//===------------------------------------------------------------------===//
-	// SelectableComponent
-	//===------------------------------------------------------------------===//
+    //===------------------------------------------------------------------===//
+    // SelectableComponent
+    //===------------------------------------------------------------------===//
 
-	void setSelected(bool selected) override;
-	bool isSelected() const override;
+    void setSelected(bool selected) override;
+    bool isSelected() const override;
 
 protected:
 
@@ -63,7 +63,7 @@ protected:
     float anchorBeat;
 
     Colour colour;
-	bool ghostMode;
+    bool ghostMode;
 
     // сдвиг мыши от нуля компонента во время клика.
     // если его не учитывать, то ноты двигаются неестественно

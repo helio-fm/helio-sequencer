@@ -382,12 +382,12 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
 
         g.setGradientFill(ColourGradient(baseColour.darker(0.1f), 0.0f, height / 2 - 2,
                                          baseColour.darker(0.2f), 0.0f, height / 2 + 2, false));
-		//g.setColour(baseColour.darker(0.2f));
-		g.fillPath(outline);
+        //g.setColour(baseColour.darker(0.2f));
+        g.fillPath(outline);
 
         if (isButtonDown || isMouseOverButton)
         {
-			g.setColour(baseColour.brighter(isButtonDown ? 0.1f : 0.01f));
+            g.setColour(baseColour.brighter(isButtonDown ? 0.1f : 0.01f));
             g.fillPath(outline);
         }
 
@@ -896,8 +896,8 @@ void HelioTheme::initColours(const ::ColourScheme &colours)
     this->setColour(TextEditor::shadowColourId, colours.getShadingGradientColourB());
     this->setColour(TextEditor::backgroundColourId, colours.getPrimaryGradientColourA().darker(0.05f));
     this->setColour(TextEditor::highlightColourId, Colours::black.withAlpha(0.25f));
-	this->setColour(CaretComponent::caretColourId, Colours::white.withAlpha(0.35f));
-	
+    this->setColour(CaretComponent::caretColourId, Colours::white.withAlpha(0.35f));
+    
 
     // Tree stuff
     this->setColour(TreeView::linesColourId, Colours::white.withAlpha(0.1f));
@@ -940,7 +940,7 @@ void HelioTheme::updateBackgroundRenders(bool force)
 #endif
 
 #if PATTERNROLL_HAS_PRERENDERED_BACKGROUND
-	PatternRoll::repaintBackgroundsCache(*this);
+    PatternRoll::repaintBackgroundsCache(*this);
 #endif
 
 #if PANEL_A_HAS_PRERENDERED_BACKGROUND

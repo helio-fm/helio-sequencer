@@ -31,26 +31,26 @@ class PatternClipInsertAction : public UndoAction
 {
 public:
 
-	explicit PatternClipInsertAction(ProjectTreeItem &project) :
-		UndoAction(project) {}
+    explicit PatternClipInsertAction(ProjectTreeItem &project) :
+        UndoAction(project) {}
 
-	PatternClipInsertAction(ProjectTreeItem &project,
-		String patternId, const Clip &target);
+    PatternClipInsertAction(ProjectTreeItem &project,
+        String patternId, const Clip &target);
 
-	bool perform() override;
-	bool undo() override;
-	int getSizeInUnits() override;
+    bool perform() override;
+    bool undo() override;
+    int getSizeInUnits() override;
 
-	XmlElement *serialize() const override;
-	void deserialize(const XmlElement &xml) override;
-	void reset() override;
+    XmlElement *serialize() const override;
+    void deserialize(const XmlElement &xml) override;
+    void reset() override;
 
 private:
 
-	String patternId;
-	Clip clip;
+    String patternId;
+    Clip clip;
 
-	JUCE_DECLARE_NON_COPYABLE(PatternClipInsertAction)
+    JUCE_DECLARE_NON_COPYABLE(PatternClipInsertAction)
 };
 
 
@@ -62,26 +62,26 @@ class PatternClipRemoveAction : public UndoAction
 {
 public:
 
-	explicit PatternClipRemoveAction(ProjectTreeItem &project) :
-		UndoAction(project) {}
+    explicit PatternClipRemoveAction(ProjectTreeItem &project) :
+        UndoAction(project) {}
 
-	PatternClipRemoveAction(ProjectTreeItem &project,
-		String patternId, const Clip &target);
+    PatternClipRemoveAction(ProjectTreeItem &project,
+        String patternId, const Clip &target);
 
-	bool perform() override;
-	bool undo() override;
-	int getSizeInUnits() override;
+    bool perform() override;
+    bool undo() override;
+    int getSizeInUnits() override;
 
-	XmlElement *serialize() const override;
-	void deserialize(const XmlElement &xml) override;
-	void reset() override;
+    XmlElement *serialize() const override;
+    void deserialize(const XmlElement &xml) override;
+    void reset() override;
 
 private:
 
-	String patternId;
-	Clip clip;
+    String patternId;
+    Clip clip;
 
-	JUCE_DECLARE_NON_COPYABLE(PatternClipRemoveAction)
+    JUCE_DECLARE_NON_COPYABLE(PatternClipRemoveAction)
 };
 
 
@@ -93,29 +93,29 @@ class PatternClipChangeAction : public UndoAction
 {
 public:
 
-	explicit PatternClipChangeAction(ProjectTreeItem &project) :
-		UndoAction(project) {}
+    explicit PatternClipChangeAction(ProjectTreeItem &project) :
+        UndoAction(project) {}
 
-	PatternClipChangeAction(ProjectTreeItem &project,
-		String patternId,
-		const Clip &target,
-		const Clip &newParameters);
+    PatternClipChangeAction(ProjectTreeItem &project,
+        String patternId,
+        const Clip &target,
+        const Clip &newParameters);
 
-	bool perform() override;
-	bool undo() override;
-	int getSizeInUnits() override;
-	UndoAction *createCoalescedAction(UndoAction *nextAction) override;
+    bool perform() override;
+    bool undo() override;
+    int getSizeInUnits() override;
+    UndoAction *createCoalescedAction(UndoAction *nextAction) override;
 
-	XmlElement *serialize() const override;
-	void deserialize(const XmlElement &xml) override;
-	void reset() override;
+    XmlElement *serialize() const override;
+    void deserialize(const XmlElement &xml) override;
+    void reset() override;
 
 private:
 
-	String patternId;
+    String patternId;
 
-	Clip clipBefore;
-	Clip clipAfter;
+    Clip clipBefore;
+    Clip clipAfter;
 
-	JUCE_DECLARE_NON_COPYABLE(PatternClipChangeAction)
+    JUCE_DECLARE_NON_COPYABLE(PatternClipChangeAction)
 };

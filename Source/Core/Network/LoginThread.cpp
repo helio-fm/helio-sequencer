@@ -69,11 +69,11 @@ void LoginThread::run()
         url = url.withParameter(Serialization::Network::clientCheck, saltedDeviceIdHash);
 
         {
-			int statusCode = 0;
-			StringPairArray responseHeaders;
+            int statusCode = 0;
+            StringPairArray responseHeaders;
 
-			ScopedPointer<InputStream> downloadStream(
-				url.createInputStream(true, nullptr, nullptr, HELIO_USERAGENT, 0, &responseHeaders, &statusCode));
+            ScopedPointer<InputStream> downloadStream(
+                url.createInputStream(true, nullptr, nullptr, HELIO_USERAGENT, 0, &responseHeaders, &statusCode));
 
             if (!downloadStream)
             {
@@ -86,33 +86,33 @@ void LoginThread::run()
             if (statusCode != 200)
             {
                 MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
-					{
-						LoginThread *self = static_cast<LoginThread *>(data);
-						self->listener->loginAuthorizationFailed();
-						return nullptr;
-					},
-					this);
+                    {
+                        LoginThread *self = static_cast<LoginThread *>(data);
+                        self->listener->loginAuthorizationFailed();
+                        return nullptr;
+                    },
+                    this);
 
                 return;
             }
 
-			MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
-				{
-					LoginThread *self = static_cast<LoginThread *>(data);
-					self->listener->loginOk(self->email);
-					return nullptr;
-				},
-				this);
+            MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+                {
+                    LoginThread *self = static_cast<LoginThread *>(data);
+                    self->listener->loginOk(self->email);
+                    return nullptr;
+                },
+                this);
 
             return;
         }
     }
 
-	MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
-		{
-			LoginThread *self = static_cast<LoginThread *>(data);
-			self->listener->loginConnectionFailed();
-			return nullptr;
-		},
-		this);
+    MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+        {
+            LoginThread *self = static_cast<LoginThread *>(data);
+            self->listener->loginConnectionFailed();
+            return nullptr;
+        },
+        this);
 }

@@ -35,8 +35,8 @@ public:
     UndoAction(project) {}
     
     AutomationTrackInsertAction(ProjectTreeItem &project,
-                                  String serializedState,
-                                  String xPath);
+                                String serializedState,
+                                String xPath);
 
     bool perform() override;
     bool undo() override;
@@ -48,9 +48,9 @@ public:
     
 private:
 
-    String layerId;
+    String trackId;
     
-    String xPath;
+    String trackName;
     String serializedState;
     
     JUCE_DECLARE_NON_COPYABLE(AutomationTrackInsertAction)
@@ -69,7 +69,7 @@ public:
     UndoAction(project) {}
     
     AutomationTrackRemoveAction(ProjectTreeItem &project,
-                                   String layerId);
+                                String trackId);
 
     bool perform() override;
     bool undo() override;
@@ -81,11 +81,11 @@ public:
     
 private:
 
-    String layerId;
+    String trackId;
     int numEvents;
     
     ScopedPointer<XmlElement> serializedTreeItem;
-    String xPath;
+    String trackName;
     
     JUCE_DECLARE_NON_COPYABLE(AutomationTrackRemoveAction)
 };

@@ -90,8 +90,8 @@ private:
     void buildNewNote(bool shouldSendMidiMessage);
     void cancelChangesIfAny();
 
-	void stopSound();
-	void sendMidiMessage(const MidiMessage &message);
+    void stopSound();
+    void sendMidiMessage(const MidiMessage &message);
 
     //[/UserVariables]
 

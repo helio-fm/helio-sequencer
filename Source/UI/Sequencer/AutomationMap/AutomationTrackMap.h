@@ -68,24 +68,21 @@ public:
     //===------------------------------------------------------------------===//
     
     void onChangeMidiEvent(const MidiEvent &oldEvent,
-		const MidiEvent &newEvent) override;
+        const MidiEvent &newEvent) override;
     
     void onAddMidiEvent(const MidiEvent &event) override;
     
     void onRemoveMidiEvent(const MidiEvent &event) override;
     
-    void onChangeTrack(MidiSequence *const layer,
-		Pattern *const pattern = nullptr) override;
+    void onChangeTrackProperties(MidiTrack *const track) override;
     
-    void onAddTrack(MidiSequence *const layer,
-		Pattern *const pattern = nullptr) override;
+    void onAddTrack(MidiTrack *const track) override;
     
-    void onRemoveTrack(MidiSequence *const layer,
-		Pattern *const pattern = nullptr) override;
+    void onRemoveTrack(MidiTrack *const track) override;
     
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
 
-	void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
+    void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
 
 protected:
     
@@ -117,7 +114,7 @@ private:
     HybridRoll &roll;
     ProjectTreeItem &project;
 
-    WeakReference<MidiSequence> layer;
+    WeakReference<MidiSequence> sequence;
     
     ScopedPointer<ComponentConnectorCurve> leadingConnector;
 

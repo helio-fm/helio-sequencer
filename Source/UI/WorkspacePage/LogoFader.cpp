@@ -27,11 +27,11 @@
 LogoFader::LogoFader(bool useOldLogo)
 {
     if (useOldLogo) {
-		this->logoSize = OLD_LOGO_SIZE;
+        this->logoSize = OLD_LOGO_SIZE;
         this->addAndMakeVisible(this->gfx = new LogoImage());
     } else {
-		this->logoSize = DEFAULT_LOGO_SIZE;
-		this->addAndMakeVisible(this->gfx = new SpectralLogo());
+        this->logoSize = DEFAULT_LOGO_SIZE;
+        this->addAndMakeVisible(this->gfx = new SpectralLogo());
     }
     
     this->setSize(this->logoSize, this->logoSize);

@@ -23,14 +23,15 @@
 class ProjectEventDispatcher;
 class ProjectTreeItem;
 class UndoStack;
+class MidiTrack;
 
 // A sorted array of clips
 class Pattern : public Serializable
 {
 public:
 
-	explicit Pattern(MidiTrack &parentTrack,
-		ProjectEventDispatcher &eventDispatcher);
+    explicit Pattern(MidiTrack &track,
+        ProjectEventDispatcher &eventDispatcher);
 
     ~Pattern() override;
     
@@ -48,13 +49,13 @@ public:
     //===------------------------------------------------------------------===//
 
     // This one is for import and checkout procedures.
-	// Does not notify anybody to prevent notification hell.
+    // Does not notify anybody to prevent notification hell.
     // Always call notifyLayerChanged() when you're done using it.
     void silentImport(const Clip &clipToImport);
 
-	bool insert(Clip clip, const bool undoable);
-	bool remove(Clip clip, const bool undoable);
-	bool change(Clip clip, Clip newClip, const bool undoable);
+    bool insert(Clip clip, const bool undoable);
+    bool remove(Clip clip, const bool undoable);
+    bool change(Clip clip, Clip newClip, const bool undoable);
 
     //===------------------------------------------------------------------===//
     // Array wrapper
@@ -79,8 +80,8 @@ public:
         return this->clips.indexOfSorted(clip, clip);
     }
 
-	inline Array<Clip> &getClips() noexcept;
-	
+    inline Array<Clip> &getClips() noexcept;
+    
     //===------------------------------------------------------------------===//
     // Events change listener
     //===------------------------------------------------------------------===//
@@ -91,60 +92,59 @@ public:
     void notifyClipRemovedPostAction();
     void notifyPatternChanged();
 
-	//===------------------------------------------------------------------===//
-	// Serializable
-	//===------------------------------------------------------------------===//
+    //===------------------------------------------------------------------===//
+    // Serializable
+    //===------------------------------------------------------------------===//
 
-	XmlElement *serialize() const override;
-	void deserialize(const XmlElement &xml) override;
-	void reset() override;
+    XmlElement *serialize() const override;
+    void deserialize(const XmlElement &xml) override;
+    void reset() override;
 
-	inline Uuid getPatternId() const noexcept;
-	inline String getPatternIdAsString() const;
+    inline Uuid getPatternId() const noexcept;
+    inline String getPatternIdAsString() const;
 
-	//===------------------------------------------------------------------===//
-	// Helpers
-	//===------------------------------------------------------------------===//
+    //===------------------------------------------------------------------===//
+    // Helpers
+    //===------------------------------------------------------------------===//
 
-	friend inline bool operator==(const Pattern &lhs, const Pattern &rhs)
-	{
-		return (&lhs == &rhs || lhs.id == rhs.id);
-	}
+    MidiTrack *getTrack() const;
 
-	static int compareElements(const Pattern *first,
-		const Pattern *second);
+    friend inline bool operator==(const Pattern &lhs, const Pattern &rhs)
+    {
+        return (&lhs == &rhs || lhs.id == rhs.id);
+    }
 
-	int hashCode() const noexcept;
+    int hashCode() const noexcept;
 
 protected:
 
-	void clearQuick();
+    void clearQuick();
 
-	ProjectTreeItem *getProject();
-	UndoStack *getUndoStack();
+    ProjectTreeItem *getProject();
+    UndoStack *getUndoStack();
 
-	Uuid id;
-	Array<Clip> clips;
+    Uuid id;
+    Array<Clip> clips;
 
 private:
-	
-	MidiTrack &track;
-	ProjectEventDispatcher &eventDispatcher;
+    
+    MidiTrack &track;
+    ProjectEventDispatcher &eventDispatcher;
 
 private:
     
     WeakReference<Pattern>::Master masterReference;
     friend class WeakReference<Pattern>;
 
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Pattern);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Pattern);
 };
 
 class PatternHashFunction
 {
 public:
 
-	static int generateHash(const Pattern *pattern, const int upperLimit) noexcept
-	{
-		return static_cast<int>((static_cast<uint32>(pattern->hashCode())) % static_cast<uint32>(upperLimit));
-	}
+    static int generateHash(const Pattern *pattern, const int upperLimit) noexcept
+    {
+        return static_cast<int>((static_cast<uint32>(pattern->hashCode())) % static_cast<uint32>(upperLimit));
+    }
 };

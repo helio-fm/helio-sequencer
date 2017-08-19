@@ -144,8 +144,8 @@ void NoteResizerRight::mouseDrag (const MouseEvent& e)
     float groupScaleFactor = 1.f;
     const bool scaleFactorChanged =
         this->noteComponent->getGroupScaleRightFactor(
-			e.withNewPosition(Point<int>(0, 0))
-			.getEventRelativeTo(this->noteComponent), groupScaleFactor);
+            e.withNewPosition(Point<int>(0, 0))
+            .getEventRelativeTo(this->noteComponent), groupScaleFactor);
 
     if (scaleFactorChanged)
     {

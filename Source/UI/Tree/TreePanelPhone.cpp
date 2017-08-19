@@ -157,11 +157,11 @@ void TreePanelPhone::resized()
         // Scrollbars on the tree are evil, as they mess up the whole UI
         this->tree->getViewport()->setScrollBarsShown(false, false);
         // Force reload components:
-		if (this->root != nullptr)
-		{
-			this->tree->setRootItem(nullptr);
-			this->tree->setRootItem(this->root);
-		}
+    if (this->root != nullptr)
+    {
+      this->tree->setRootItem(nullptr);
+      this->tree->setRootItem(this->root);
+    }
     }
 
     if (this->currentRollover != nullptr &&

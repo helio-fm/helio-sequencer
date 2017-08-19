@@ -38,7 +38,7 @@ public:
     
     ~Note() override {}
 
-	Array<MidiMessage> getSequence() const override;
+    Array<MidiMessage> toMidiMessages() const override;
     
     
     Note copyWithNewId(MidiSequence *newOwner = nullptr) const;

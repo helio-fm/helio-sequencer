@@ -22,12 +22,12 @@
 #include "MidiEvent.h"
 #include "HybridRoll.h"
 #include "Pattern.h"
-#include "AutomationSequence.h"
+#include "MidiTrack.h"
 
-AutomationClipComponent::AutomationClipComponent(AutomationSequence *targetLayer,
-	HybridRoll &editor, Clip clip) :
-	ClipComponent(editor, clip),
-	layer(targetLayer)
+AutomationClipComponent::AutomationClipComponent(MidiTrack *targetTrack,
+    HybridRoll &editor, Clip clip) :
+    ClipComponent(editor, clip),
+    track(targetTrack)
 {
-	//
+    //
 }

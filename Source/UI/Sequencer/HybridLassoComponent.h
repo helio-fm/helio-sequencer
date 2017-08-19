@@ -32,7 +32,7 @@ public:
     };
 
     virtual void beginLasso(const MouseEvent &e,
-		LassoSource<SelectableComponent *> *const lassoSource);
+        LassoSource<SelectableComponent *> *const lassoSource);
 
     virtual void dragLasso(const MouseEvent &e);
 

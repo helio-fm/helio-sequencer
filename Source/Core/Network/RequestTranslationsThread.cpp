@@ -40,8 +40,8 @@ RequestTranslationsThread::~RequestTranslationsThread()
 
 const String &RequestTranslationsThread::getLatestResponse()
 {
-	ScopedReadLock lock(this->dataLock);
-	return this->latestResponse;
+    ScopedReadLock lock(this->dataLock);
+    return this->latestResponse;
 }
 
 
@@ -63,36 +63,36 @@ void RequestTranslationsThread::run()
     fetchUrl = fetchUrl.withParameter(Serialization::Network::clientCheck, saltedDeviceIdHash);
 
     {
-		int statusCode = 0;
-		StringPairArray responseHeaders;
+        int statusCode = 0;
+        StringPairArray responseHeaders;
 
         ScopedPointer<InputStream> downloadStream(
-			fetchUrl.createInputStream(true, nullptr, nullptr, HELIO_USERAGENT, 0, &responseHeaders, &statusCode));
+            fetchUrl.createInputStream(true, nullptr, nullptr, HELIO_USERAGENT, 0, &responseHeaders, &statusCode));
 
-		if (downloadStream != nullptr && statusCode == 200)
-		{
-			{
-				ScopedWriteLock lock(this->dataLock);
-				this->latestResponse = downloadStream->readEntireStreamAsString();
-			}
+        if (downloadStream != nullptr && statusCode == 200)
+        {
+            {
+                ScopedWriteLock lock(this->dataLock);
+                this->latestResponse = downloadStream->readEntireStreamAsString();
+            }
 
-			MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
-				{
-				RequestTranslationsThread *self = static_cast<RequestTranslationsThread *>(data);
-					self->listener->translationsRequestOk();
-					return nullptr;
-				},
-				this);
-			
-			return;
+            MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+                {
+                RequestTranslationsThread *self = static_cast<RequestTranslationsThread *>(data);
+                    self->listener->translationsRequestOk();
+                    return nullptr;
+                },
+                this);
+            
+            return;
         }
     }
 
-	MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
-		{
-			RequestTranslationsThread *self = static_cast<RequestTranslationsThread *>(data);
-			self->listener->translationsRequestFailed();
-			return nullptr;
-		},
-		this);
+    MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+        {
+            RequestTranslationsThread *self = static_cast<RequestTranslationsThread *>(data);
+            self->listener->translationsRequestFailed();
+            return nullptr;
+        },
+        this);
 }

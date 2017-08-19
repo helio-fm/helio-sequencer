@@ -22,12 +22,12 @@
 #include "MidiEvent.h"
 #include "HybridRoll.h"
 #include "Pattern.h"
-#include "PianoSequence.h"
+#include "MidiTrack.h"
 
-PianoClipComponent::PianoClipComponent(PianoSequence *targetLayer,
-	HybridRoll &editor, Clip clip) :
-	ClipComponent(editor, clip),
-	layer(targetLayer)
+PianoClipComponent::PianoClipComponent(MidiTrack *targetTrack,
+    HybridRoll &editor, Clip clip) :
+    ClipComponent(editor, clip),
+    track(targetTrack)
 {
-	//
+    //
 }

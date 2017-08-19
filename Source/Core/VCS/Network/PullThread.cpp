@@ -59,21 +59,21 @@ void PullThread::run()
     fetchUrl = fetchUrl.withParameter(Serialization::Network::clientCheck, saltedIdHash);
 
     {
-		int statusCode = 0;
-		StringPairArray responseHeaders;
+        int statusCode = 0;
+        StringPairArray responseHeaders;
 
         ScopedPointer<InputStream> downloadStream(
-			fetchUrl.createInputStream(true,
+            fetchUrl.createInputStream(true,
                 syncProgressCallback,
                 static_cast<void *>(this),
                 HELIO_USERAGENT,
-				0,
-				&responseHeaders,
-				&statusCode));
+                0,
+                &responseHeaders,
+                &statusCode));
 
         if (downloadStream == nullptr || statusCode != 200)
         {
-			//Logger::writeToLog("downloadStream " + String(statusCode));
+            //Logger::writeToLog("downloadStream " + String(statusCode));
             //Logger::writeToLog(downloadStream->readEntireStreamAsString());
             this->setState(SyncThread::fetchHistoryError);
             return;

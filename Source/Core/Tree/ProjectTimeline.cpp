@@ -21,16 +21,21 @@
 #include "TimeSignaturesSequence.h"
 #include "ProjectTimelineDeltas.h"
 #include "ProjectTreeItem.h"
+#include "Pattern.h"
 #include "Icons.h"
-
 
 ProjectTimeline::ProjectTimeline(ProjectTreeItem &parentProject,
                                  String trackName) :
     project(parentProject),
     name(std::move(trackName))
 {
-    this->annotations = new AnnotationsSequence(*this);
-    this->timeSignatures = new TimeSignaturesSequence(*this);
+    this->annotations = new ProjectTimeline::Track();
+    auto newAnotationSequence = new AnnotationsSequence(*this->annotations, *this);
+    this->annotations->setSequence(newAnotationSequence);
+
+    this->timeSignatures = new ProjectTimeline::Track();
+    auto newTimeSignatureSequence = new TimeSignaturesSequence(*this->timeSignatures, *this);
+    this->timeSignatures->setSequence(newTimeSignatureSequence);
 
     this->vcsDiffLogic = new VCS::ProjectTimelineDiffLogic(*this);
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectTimelineDeltas::annotationsAdded));
@@ -44,6 +49,17 @@ ProjectTimeline::~ProjectTimeline()
 {
     this->project.broadcastRemoveTrack(this->timeSignatures);
     this->project.broadcastRemoveTrack(this->annotations);
+}
+
+
+MidiTrack *ProjectTimeline::getAnnotations() const noexcept
+{
+    return this->annotations;
+}
+
+MidiTrack *ProjectTimeline::getTimeSignatures() const noexcept
+{
+    return this->timeSignatures;
 }
 
 
@@ -65,12 +81,12 @@ VCS::Delta *ProjectTimeline::getDelta(int index) const
 {
     if (this->deltas[index]->getType() == ProjectTimelineDeltas::annotationsAdded)
     {
-        const int numEvents = this->annotations->size();
+        const int numEvents = this->annotations->getSequence()->size();
         this->deltas[index]->setDescription(VCS::DeltaDescription("{x} annotations", numEvents));
     }
     else if (this->deltas[index]->getType() == ProjectTimelineDeltas::timeSignaturesAdded)
     {
-        const int numEvents = this->timeSignatures->size();
+        const int numEvents = this->timeSignatures->getSequence()->size();
         this->deltas[index]->setDescription(VCS::DeltaDescription("{x} time signatures", numEvents));
     }
 
@@ -121,14 +137,14 @@ void ProjectTimeline::resetStateTo(const VCS::TrackedItem &newState)
     
     if (annotationsChanged)
     {
-        this->annotations->notifyLayerChanged();
-        this->annotations->notifyBeatRangeChanged();
+        this->dispatchChangeTrackContent(this->annotations);
+        this->dispatchChangeTrackBeatRange(this->annotations);
     }
-    
+
     if (signaturesChanged)
     {
-        this->timeSignatures->notifyLayerChanged();
-        this->timeSignatures->notifyBeatRangeChanged();
+        this->dispatchChangeTrackContent(this->timeSignatures);
+        this->dispatchChangeTrackBeatRange(this->timeSignatures);
     }
 }
 
@@ -154,18 +170,24 @@ void ProjectTimeline::dispatchRemoveEvent(const MidiEvent &event)
 
 void ProjectTimeline::dispatchPostRemoveEvent(MidiSequence *const layer)
 {
-	this->project.broadcastPostRemoveEvent(layer);
+    this->project.broadcastPostRemoveEvent(layer);
 }
 
-void ProjectTimeline::dispatchReloadLayer(MidiSequence *const layer)
+void ProjectTimeline::dispatchChangeTrackProperties(MidiTrack *const track)
 {
-    this->project.broadcastChangeTrack(layer);
+    this->project.broadcastChangeTrackProperties(track);
 }
 
-void ProjectTimeline::dispatchChangeLayerBeatRange()
+void ProjectTimeline::dispatchChangeTrackBeatRange(MidiTrack *const track)
 {
     this->project.broadcastChangeProjectBeatRange();
 }
+
+void ProjectTimeline::dispatchChangeTrackContent(MidiTrack *const track)
+{
+    this->project.broadcastResetTrackContent(track);
+}
+
 
 // Timeline sequences are the case where there are no patterns and clips
 // So just leave this empty:
@@ -174,8 +196,6 @@ void ProjectTimeline::dispatchAddClip(const Clip &clip) {}
 void ProjectTimeline::dispatchChangeClip(const Clip &oldClip, const Clip &newClip) {}
 void ProjectTimeline::dispatchRemoveClip(const Clip &clip) {}
 void ProjectTimeline::dispatchPostRemoveClip(Pattern *const pattern) {}
-void ProjectTimeline::dispatchReloadPattern(Pattern *const pattern) {}
-void ProjectTimeline::dispatchChangePatternBeatRange() {}
 
 ProjectTreeItem *ProjectTimeline::getProject() const
 {
@@ -189,8 +209,8 @@ ProjectTreeItem *ProjectTimeline::getProject() const
 
 void ProjectTimeline::reset()
 {
-    this->annotations->reset();
-    this->timeSignatures->reset();
+    this->annotations->getSequence()->reset();
+    this->timeSignatures->getSequence()->reset();
 }
 
 XmlElement *ProjectTimeline::serialize() const
@@ -199,8 +219,10 @@ XmlElement *ProjectTimeline::serialize() const
 
     this->serializeVCSUuid(*xml);
     xml->setAttribute("name", this->name);
-    xml->addChildElement(this->annotations->serialize());
-    xml->addChildElement(this->timeSignatures->serialize());
+    // TODO serialize tracks ids
+
+    xml->addChildElement(this->annotations->getSequence()->serialize());
+    xml->addChildElement(this->timeSignatures->getSequence()->serialize());
 
     return xml;
 }
@@ -222,12 +244,12 @@ void ProjectTimeline::deserialize(const XmlElement &xml)
 
     forEachXmlChildElementWithTagName(*root, e, Serialization::Core::annotations)
     {
-        this->annotations->deserialize(*e);
+        this->annotations->getSequence()->deserialize(*e);
     }
 
     forEachXmlChildElementWithTagName(*root, e, Serialization::Core::timeSignatures)
     {
-        this->timeSignatures->deserialize(*e);
+        this->timeSignatures->getSequence()->deserialize(*e);
     }
     
     // Debug::
@@ -243,10 +265,11 @@ void ProjectTimeline::deserialize(const XmlElement &xml)
 XmlElement *ProjectTimeline::serializeAnnotationsDelta() const
 {
     auto xml = new XmlElement(ProjectTimelineDeltas::annotationsAdded);
+    auto annotationSequence = this->annotations->getSequence();
 
-    for (int i = 0; i < this->annotations->size(); ++i)
+    for (int i = 0; i < annotationSequence->size(); ++i)
     {
-        const MidiEvent *event = this->annotations->getUnchecked(i);
+        const MidiEvent *event = annotationSequence->getUnchecked(i);
         xml->addChildElement(event->serialize());
     }
 
@@ -257,21 +280,23 @@ void ProjectTimeline::resetAnnotationsDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == ProjectTimelineDeltas::annotationsAdded);
 
-    this->annotations->reset();
+    auto annotationSequence = this->annotations->getSequence();
+    annotationSequence->reset();
 
     forEachXmlChildElementWithTagName(*state, e, Serialization::Core::annotation)
     {
-        this->annotations->silentImport(AnnotationEvent(this->annotations).withParameters(*e));
+        annotationSequence->silentImport(AnnotationEvent(annotationSequence).withParameters(*e));
     }
 }
 
 XmlElement *ProjectTimeline::serializeTimeSignaturesDelta() const
 {
     auto xml = new XmlElement(ProjectTimelineDeltas::timeSignaturesAdded);
-    
-    for (int i = 0; i < this->timeSignatures->size(); ++i)
+    auto timeSignatureSequence = this->timeSignatures->getSequence();
+
+    for (int i = 0; i < timeSignatureSequence->size(); ++i)
     {
-        const MidiEvent *event = this->timeSignatures->getUnchecked(i);
+        const MidiEvent *event = timeSignatureSequence->getUnchecked(i);
         xml->addChildElement(event->serialize());
     }
     
@@ -281,11 +306,12 @@ XmlElement *ProjectTimeline::serializeTimeSignaturesDelta() const
 void ProjectTimeline::resetTimeSignaturesDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == ProjectTimelineDeltas::timeSignaturesAdded);
-    
-    this->timeSignatures->reset();
+
+    auto timeSignatureSequence = this->timeSignatures->getSequence();
+    timeSignatureSequence->reset();
     
     forEachXmlChildElementWithTagName(*state, e, Serialization::Core::timeSignature)
     {
-        this->timeSignatures->silentImport(TimeSignatureEvent(this->timeSignatures).withParameters(*e));
+        timeSignatureSequence->silentImport(TimeSignatureEvent(timeSignatureSequence).withParameters(*e));
     }
 }

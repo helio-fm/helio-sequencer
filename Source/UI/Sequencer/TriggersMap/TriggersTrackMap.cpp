@@ -24,6 +24,7 @@
 #include "HybridRoll.h"
 #include "TriggerEventComponent.h"
 #include "TriggerEventConnector.h"
+#include "MidiTrack.h"
 
 #define DEFAULT_TRACKMAP_HEIGHT 16
 
@@ -362,53 +363,37 @@ void TriggersTrackMap::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
-void TriggersTrackMap::onChangeTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
+void TriggersTrackMap::onChangeTrackProperties(MidiTrack *const track)
 {
-    if (this->layer)
+    if (this->layer != nullptr && track->getSequence() == this->layer)
     {
-        if (layer == this->layer)
-        {
-            this->reloadTrack();
-        }
+        this->repaint(); // this->reloadTrack();
     }
 }
 
-void TriggersTrackMap::onAddTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
+void TriggersTrackMap::onAddTrack(MidiTrack *const track)
 {
-    if (this->layer)
-    {
-        if (layer == this->layer)
-        {
-            if (layer->size() > 0)
-            {
-                this->reloadTrack();
-            }
-        }
-    }
 }
 
-void TriggersTrackMap::onRemoveTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
+void TriggersTrackMap::onRemoveTrack(MidiTrack *const track)
 {
-    if (this->layer)
+    if (this->layer != nullptr && track->getSequence() == this->layer)
     {
-        if (layer == this->layer)
-        {
-            this->reloadTrack();
-        }
+        this->reloadTrack();
     }
 }
 
 void TriggersTrackMap::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
     this->projectFirstBeat = firstBeat;
-	this->projectLastBeat = lastBeat;
+    this->projectLastBeat = lastBeat;
 }
 
 void TriggersTrackMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
 {
-	this->rollFirstBeat = firstBeat;
-	this->rollLastBeat = lastBeat;
-	this->resized();
+    this->rollFirstBeat = firstBeat;
+    this->rollLastBeat = lastBeat;
+    this->resized();
 }
 
 

@@ -19,6 +19,7 @@
 
 class ProjectTreeItem;
 
+#include "MidiTrack.h"
 #include "ProjectTimelineDiffLogic.h"
 #include "ProjectEventDispatcher.h"
 #include "Serializable.h"
@@ -31,14 +32,32 @@ class ProjectTimeline :
 public:
 
     ProjectTimeline(ProjectTreeItem &parentProject, String trackName);
-
     ~ProjectTimeline() override;
 
-    inline MidiSequence *getAnnotations() const noexcept
-    { return this->annotations; }
+    // A simple wrapper around the sequences
+    // We don't need any patterns here
+    class Track : public EmptyMidiTrack
+    {
+    public:
 
-    inline MidiSequence *getTimeSignatures() const noexcept
-    { return this->timeSignatures; }
+        Track() {}
+
+        MidiSequence *getSequence() const noexcept override
+        { return this->sequence; }
+
+        void setSequence(MidiSequence *sequence)
+        { this->sequence = sequence; }
+
+        // TODO ids
+
+    private:
+
+        ScopedPointer<MidiSequence> sequence;
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Track)
+    };
+
+    MidiTrack *getAnnotations() const noexcept;
+    MidiTrack *getTimeSignatures() const noexcept;
 
 
     //===------------------------------------------------------------------===//
@@ -46,15 +65,10 @@ public:
     //===------------------------------------------------------------------===//
 
     String getVCSName() const override;
-
     int getNumDeltas() const override;
-
     VCS::Delta *getDelta(int index) const override;
-
     XmlElement *createDeltaDataFor(int index) const override;
-
     VCS::DiffLogic *getDiffLogic() const override;
-
     void resetStateTo(const VCS::TrackedItem &newState) override;
     
     
@@ -65,18 +79,16 @@ public:
     void dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
     void dispatchAddEvent(const MidiEvent &event) override;
     void dispatchRemoveEvent(const MidiEvent &event) override;
-	void dispatchPostRemoveEvent(MidiSequence *const layer) override;
+    void dispatchPostRemoveEvent(MidiSequence *const layer) override;
 
-    void dispatchReloadLayer(MidiSequence *const layer) override;
-    void dispatchChangeLayerBeatRange() override;
+    void dispatchAddClip(const Clip &clip) override;
+    void dispatchChangeClip(const Clip &oldClip, const Clip &newClip) override;
+    void dispatchRemoveClip(const Clip &clip) override;
+    void dispatchPostRemoveClip(Pattern *const pattern) override;
 
-	void dispatchAddClip(const Clip &clip) override;
-	void dispatchChangeClip(const Clip &oldClip, const Clip &newClip) override;
-	void dispatchRemoveClip(const Clip &clip) override;
-	void dispatchPostRemoveClip(Pattern *const pattern) override;
-
-	void dispatchReloadPattern(Pattern *const pattern) override;
-	void dispatchChangePatternBeatRange() override;
+    void dispatchChangeTrackProperties(MidiTrack *const track) override;
+    void dispatchChangeTrackBeatRange(MidiTrack *const track) override;
+    void dispatchChangeTrackContent(MidiTrack *const track) override;
 
     ProjectTreeItem *getProject() const override;
     
@@ -115,8 +127,9 @@ private:
     
     String name;
     
-    ScopedPointer<MidiSequence> annotations;
+    ScopedPointer<ProjectTimeline::Track> annotations;
 
-    ScopedPointer<MidiSequence> timeSignatures;
+    ScopedPointer<ProjectTimeline::Track> timeSignatures;
 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectTimeline)
 };

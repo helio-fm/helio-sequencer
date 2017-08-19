@@ -116,8 +116,8 @@ public:
     };
     
     HybridRoll(ProjectTreeItem &parentProject,
-		Viewport &viewportRef,
-		WeakReference<AudioMonitor> AudioMonitor);
+        Viewport &viewportRef,
+        WeakReference<AudioMonitor> AudioMonitor);
 
     ~HybridRoll() override;
 
@@ -126,14 +126,14 @@ public:
     ProjectTreeItem &getProject() const noexcept;
     HybridRollEditMode getEditMode() const;
 
-	virtual void selectAll() = 0;
-	virtual void reloadRollContent() = 0;
-	virtual Rectangle<float> getEventBounds(FloatBoundsComponent *nc) const = 0;
+    virtual void selectAll() = 0;
+    virtual void reloadRollContent() = 0;
+    virtual Rectangle<float> getEventBounds(FloatBoundsComponent *nc) const = 0;
     
     void scrollToSeekPosition();
-	float getPositionForNewTimelineEvent() const;
+    float getPositionForNewTimelineEvent() const;
     void insertAnnotationWithinScreen(const String &annotation);
-	void insertTimeSignatureWithinScreen(int numerator, int denominator);
+    void insertTimeSignatureWithinScreen(int numerator, int denominator);
     
     //===------------------------------------------------------------------===//
     // Custom maps
@@ -270,7 +270,7 @@ public:
     void onAddMidiEvent(const MidiEvent &event) override;
     void onRemoveMidiEvent(const MidiEvent &event) override;
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
-	void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
+    void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
 
     //===------------------------------------------------------------------===//
     // Component
@@ -342,7 +342,7 @@ protected:
     //===------------------------------------------------------------------===//
     
     void handleAsyncUpdate() override;
-	void handleCommandMessage(int commandId) override;
+    void handleCommandMessage(int commandId) override;
 
     double findIndicatorOffsetFromViewCentre() const;
     friend class HybridRollHeader;
@@ -440,7 +440,7 @@ protected:
     ScopedPointer<Component> bottomShadow;
 
     ScopedPointer<HybridLassoComponent> lassoComponent;
-	
+    
 protected:
     
     Array<float> visibleBars;

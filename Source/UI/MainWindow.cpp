@@ -32,42 +32,42 @@ class WorkspaceAndroidProxy : public Component
 {
 public:
 
-	explicit WorkspaceAndroidProxy(MainLayout *target, int targetScale = 2) :
-		workspace(target),
-		scale(targetScale)
-	{
-		Rectangle<int> screenArea = Desktop::getInstance().getDisplays().getMainDisplay().userArea;
+    explicit WorkspaceAndroidProxy(MainLayout *target, int targetScale = 2) :
+        workspace(target),
+        scale(targetScale)
+    {
+        Rectangle<int> screenArea = Desktop::getInstance().getDisplays().getMainDisplay().userArea;
 
-		//const double dpi = Desktop::getInstance().getDisplays().getMainDisplay().dpi;
+        //const double dpi = Desktop::getInstance().getDisplays().getMainDisplay().dpi;
         //const double cmWidth = (screenArea.getWidth() / dpi) * 2.54;
         //const double cmHeight = (screenArea.getHeight() / dpi) * 2.54;
 
-		const float realWidth = float(screenArea.getWidth()) / float(this->scale);
-		const float realHeight = float(screenArea.getHeight()) / float(this->scale);
+        const float realWidth = float(screenArea.getWidth()) / float(this->scale);
+        const float realHeight = float(screenArea.getHeight()) / float(this->scale);
 
-		const float realScaleWidth = float(screenArea.getWidth()) / realWidth;
-		const float realScaleheight = float(screenArea.getHeight()) / realHeight;
+        const float realScaleWidth = float(screenArea.getWidth()) / realWidth;
+        const float realScaleheight = float(screenArea.getHeight()) / realHeight;
 
-		AffineTransform newTransform = this->workspace->getTransform();
-		newTransform = newTransform.scale(realScaleWidth, realScaleheight);
-		this->workspace->setTransform(newTransform);
+        AffineTransform newTransform = this->workspace->getTransform();
+        newTransform = newTransform.scale(realScaleWidth, realScaleheight);
+        this->workspace->setTransform(newTransform);
 
-		this->addAndMakeVisible(this->workspace);
-	}
+        this->addAndMakeVisible(this->workspace);
+    }
 
-	void resized() override
-	{
-		if (this->workspace != nullptr)
-		{
-			this->workspace->setBounds(this->getLocalBounds() / this->scale);
-		}
-	}
+    void resized() override
+    {
+        if (this->workspace != nullptr)
+        {
+            this->workspace->setBounds(this->getLocalBounds() / this->scale);
+        }
+    }
 
 private:
 
-	SafePointer<MainLayout> workspace;
+    SafePointer<MainLayout> workspace;
 
-	int scale;
+    int scale;
 
 };
 
@@ -118,9 +118,9 @@ DocumentWindow("Helio",
     const String openGLState = Config::get(Serialization::Core::openGLState);
 
 #if JUCE_MAC
-	const bool shouldEnableOpenGLByDefault = openGLState.isEmpty();
+    const bool shouldEnableOpenGLByDefault = openGLState.isEmpty();
 #else
-	const bool shouldEnableOpenGLByDefault = false;
+    const bool shouldEnableOpenGLByDefault = false;
 #endif
 
     if ((openGLState == Serialization::Core::enabledState) || shouldEnableOpenGLByDefault)

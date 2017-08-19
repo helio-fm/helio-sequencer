@@ -29,8 +29,8 @@ Note::Note() : MidiEvent(nullptr, 0.f)
 }
 
 Note::Note(MidiSequence *owner,
-	int keyVal, float beatVal,
-	float lengthVal, float velocityVal) :
+    int keyVal, float beatVal,
+    float lengthVal, float velocityVal) :
     MidiEvent(owner, beatVal),
     key(keyVal),
     length(lengthVal),
@@ -57,9 +57,9 @@ Note::Note(MidiSequence *newOwner, const Note &parametersToCopy) :
 }
 
 
-Array<MidiMessage> Note::getSequence() const
+Array<MidiMessage> Note::toMidiMessages() const
 {
-	Array<MidiMessage> result;
+    Array<MidiMessage> result;
 
     MidiMessage eventNoteOn(MidiMessage::noteOn(this->layer->getChannel(), this->key, velocity));
     const float &startTime = this->beat * Transport::millisecondsPerBeat;

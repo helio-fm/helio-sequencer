@@ -39,12 +39,12 @@
 
 MidiTrackTreeItem::MidiTrackTreeItem(const String &name) :
     TreeItem(name),
-	colour(Colours::white),
-	channel(1),
-	instrumentId(String::empty),
-	controllerNumber(0),
-	mute(false),
-	solo(false)
+    colour(Colours::white),
+    channel(1),
+    instrumentId(String::empty),
+    controllerNumber(0),
+    mute(false),
+    solo(false)
 {
     // есть связанный с этим открытый баг, когда это поле остается нулевым. отстой.
     this->lastFoundParent = this->findParentOfType<ProjectTreeItem>();
@@ -60,7 +60,7 @@ MidiTrackTreeItem::~MidiTrackTreeItem()
     {
         this->removeItemFromParent();
         this->lastFoundParent->hideEditor(this->layer, this);
-        this->lastFoundParent->broadcastRemoveTrack(this->layer, this->pattern);
+        this->lastFoundParent->broadcastRemoveTrack(this);
         TrackGroupTreeItem::removeAllEmptyGroupsInProject(this->lastFoundParent);
     }
 }
@@ -140,49 +140,93 @@ void MidiTrackTreeItem::resetClipsDelta(const XmlElement *state)
 // MidiTrack
 //===----------------------------------------------------------------------===//
 
-String MidiTrackTreeItem::getTrackName() const noexcept
+// TODO properties serialization!
+
+Uuid MidiTrackTreeItem::getTrackId() const noexcept
 {
-	return this->getXPath();
+    return this->id;
 }
 
-Colour MidiTrackTreeItem::getTrackColour() const noexcept
+String MidiTrackTreeItem::getTrackName() const noexcept
 {
-	return this->colour;
+    return this->getXPath();
 }
 
 int MidiTrackTreeItem::getTrackChannel() const noexcept
 {
-	return this->channel;
+    return this->channel;
+}
+
+void MidiTrackTreeItem::setTrackName(const String &val)
+{
+    this->onRename(val);
+    this->dispatchChangeTrackProperties(this);
+}
+
+Colour MidiTrackTreeItem::getTrackColour() const noexcept
+{
+    return this->colour;
+}
+
+void MidiTrackTreeItem::setTrackColour(Colour val)
+{
+    if (this->colour != val)
+    {
+        this->colour = val;
+        this->dispatchChangeTrackProperties(this);
+    }
 }
 
 String MidiTrackTreeItem::getTrackInstrumentId() const noexcept
 {
-	return this->instrumentId;
+    return this->instrumentId;
+}
+
+void MidiTrackTreeItem::setTrackInstrumentId(const String &val)
+{
+    if (this->instrumentId != val)
+    {
+        this->instrumentId = val;
+        this->dispatchChangeTrackProperties(this);
+    }
 }
 
 int MidiTrackTreeItem::getTrackControllerNumber() const noexcept
 {
-	return this->controllerNumber;
+    return this->controllerNumber;
+}
+
+void MidiTrackTreeItem::setTrackControllerNumber(int val)
+{
+    if (this->controllerNumber != val)
+    {
+        this->controllerNumber = val;
+        this->dispatchChangeTrackProperties(this);
+    }
 }
 
 bool MidiTrackTreeItem::isTrackMuted() const noexcept
 {
-	return this->mute;
+    return this->mute;
 }
 
-bool MidiTrackTreeItem::isTrackSolo() const noexcept
+void MidiTrackTreeItem::setTrackMuted(bool shouldBeMuted)
 {
-	return this->solo;
+    if (this->mute != shouldBeMuted)
+    {
+        this->mute = shouldBeMuted;
+        this->dispatchChangeTrackProperties(this);
+    }
 }
 
 MidiSequence *MidiTrackTreeItem::getSequence() const noexcept
 {
-	return this->layer;
+    return this->layer;
 }
 
 Pattern *MidiTrackTreeItem::getPattern() const noexcept
 {
-	return this->pattern;
+    return this->pattern;
 }
 
 
@@ -216,8 +260,8 @@ void MidiTrackTreeItem::setXPath(const String &path)
         return;
     }
     
-	// Split path and move the item into a target place in a tree
-	// If no matching groups found, create them
+    // Split path and move the item into a target place in a tree
+    // If no matching groups found, create them
 
     StringArray parts(StringArray::fromTokens(path, TreeItem::xPathSeparator, "'"));
 
@@ -332,24 +376,23 @@ void MidiTrackTreeItem::dispatchRemoveEvent(const MidiEvent &event)
 
 void MidiTrackTreeItem::dispatchPostRemoveEvent(MidiSequence *const layer)
 {
-	jassert(layer == this->layer);
-	if (this->lastFoundParent != nullptr)
+    jassert(layer == this->layer);
+    if (this->lastFoundParent != nullptr)
     {
-		this->lastFoundParent->broadcastPostRemoveEvent(layer);
+        this->lastFoundParent->broadcastPostRemoveEvent(layer);
     }
 }
 
-void MidiTrackTreeItem::dispatchReloadLayer(MidiSequence *const layer)
+void MidiTrackTreeItem::dispatchChangeTrackProperties(MidiTrack *const track)
 {
-	jassert(layer == this->layer);
-	if (this->lastFoundParent != nullptr)
+    if (this->lastFoundParent != nullptr)
     {
-        this->lastFoundParent->broadcastChangeTrack(layer, this->pattern);
-        this->repaintItem(); // if colour changed
+        this->lastFoundParent->broadcastChangeTrackProperties(this);
+        this->repaintItem();
     }
 }
 
-void MidiTrackTreeItem::dispatchChangeLayerBeatRange()
+void MidiTrackTreeItem::dispatchChangeTrackBeatRange(MidiTrack *const track)
 {
     if (this->lastFoundParent != nullptr)
     {
@@ -357,54 +400,45 @@ void MidiTrackTreeItem::dispatchChangeLayerBeatRange()
     }
 }
 
+void MidiTrackTreeItem::dispatchChangeTrackContent(MidiTrack *const track)
+{
+    if (this->lastFoundParent != nullptr)
+    {
+        this->lastFoundParent->broadcastResetTrackContent();
+    }
+}
+
 void MidiTrackTreeItem::dispatchAddClip(const Clip &clip)
 {
-	if (this->lastFoundParent != nullptr)
-	{
-		this->lastFoundParent->broadcastAddClip(clip);
-	}
+    if (this->lastFoundParent != nullptr)
+    {
+        this->lastFoundParent->broadcastAddClip(clip);
+    }
 }
 
 void MidiTrackTreeItem::dispatchChangeClip(const Clip &oldClip, const Clip &newClip)
 {
-	if (this->lastFoundParent != nullptr)
-	{
-		this->lastFoundParent->broadcastChangeClip(oldClip, newClip);
-	}
+    if (this->lastFoundParent != nullptr)
+    {
+        this->lastFoundParent->broadcastChangeClip(oldClip, newClip);
+    }
 }
 
 void MidiTrackTreeItem::dispatchRemoveClip(const Clip &clip)
 {
-	if (this->lastFoundParent != nullptr)
-	{
-		this->lastFoundParent->broadcastRemoveClip(clip);
-	}
+    if (this->lastFoundParent != nullptr)
+    {
+        this->lastFoundParent->broadcastRemoveClip(clip);
+    }
 }
 
 void MidiTrackTreeItem::dispatchPostRemoveClip(Pattern *const pattern)
 {
-	jassert(pattern == this->pattern);
-	if (this->lastFoundParent != nullptr)
-	{
-		this->lastFoundParent->broadcastPostRemoveClip(pattern);
-	}
-}
-
-void MidiTrackTreeItem::dispatchReloadPattern(Pattern *const pattern)
-{
-	jassert(pattern == this->pattern);
-	if (this->lastFoundParent != nullptr)
-	{
-		this->lastFoundParent->broadcastChangeTrack(this->layer, pattern);
-	}
-}
-
-void MidiTrackTreeItem::dispatchChangePatternBeatRange()
-{
-	if (this->lastFoundParent != nullptr)
-	{
-		this->lastFoundParent->broadcastChangeProjectBeatRange();
-	}
+    jassert(pattern == this->pattern);
+    if (this->lastFoundParent != nullptr)
+    {
+        this->lastFoundParent->broadcastPostRemoveClip(pattern);
+    }
 }
 
 ProjectTreeItem *MidiTrackTreeItem::getProject() const
@@ -437,18 +471,18 @@ void MidiTrackTreeItem::onItemMoved()
 
     const bool parentProjectChanged = (this->lastFoundParent != newParent);
     const bool needsToRepaintEditor = (this->isMarkerVisible() &&
-		(this->lastFoundParent != nullptr) && parentProjectChanged);
+        (this->lastFoundParent != nullptr) && parentProjectChanged);
 
     if (parentProjectChanged)
     {
         if (this->lastFoundParent)
         {
-            this->lastFoundParent->broadcastRemoveTrack(this->layer, this->pattern);
+            this->lastFoundParent->broadcastRemoveTrack(this);
         }
 
         if (newParent)
         {
-            newParent->broadcastAddTrack(this->layer, this->pattern);
+            newParent->broadcastAddTrack(this);
             newParent->updateActiveGroupEditors();
         }
 
@@ -479,7 +513,7 @@ void MidiTrackTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &drag
 
         if (InstrumentTreeItem *iti = dynamic_cast<InstrumentTreeItem *>(selected))
         {
-            this->layer->setInstrumentId(iti->getInstrumentIdAndHash());
+            this->setTrackInstrumentId(iti->getInstrumentIdAndHash());
         }
     }
 

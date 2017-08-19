@@ -25,7 +25,9 @@
 #include "UndoStack.h"
 
 
-AutomationSequence::AutomationSequence(ProjectEventDispatcher &parent) : MidiSequence(parent)
+AutomationSequence::AutomationSequence(MidiTrack &track,
+    ProjectEventDispatcher &dispatcher) :
+    MidiSequence(track, dispatcher)
 {
 }
 
@@ -57,7 +59,7 @@ void AutomationSequence::importMidi(const MidiMessageSequence &sequence)
     }
     
     this->notifyBeatRangeChanged();
-    this->notifyLayerChanged();
+    this->notifySequenceChanged();
 }
 
 
@@ -264,7 +266,7 @@ bool AutomationSequence::changeGroup(const Array<AutomationEvent> eventsBefore,
         }
         
         this->sort();
-        this->notifyLayerChanged();
+        this->notifySequenceChanged();
         this->updateBeatRange(true);
     }
 
@@ -291,17 +293,17 @@ XmlElement *AutomationSequence::serialize() const
         MidiEvent *event = this->midiEvents.getUnchecked(i);
         xml->addChildElement(event->serialize());
     }
-	
+    
     return xml;
 }
 
 void AutomationSequence::deserialize(const XmlElement &xml)
 {
-	this->clearQuick();
+    this->clearQuick();
 
     const XmlElement *root = 
-		(xml.getTagName() == Serialization::Core::automation) ?
-		&xml : xml.getChildByName(Serialization::Core::automation);
+        (xml.getTagName() == Serialization::Core::automation) ?
+        &xml : xml.getChildByName(Serialization::Core::automation);
 
     if (root == nullptr)
     { return; }
@@ -312,9 +314,9 @@ void AutomationSequence::deserialize(const XmlElement &xml)
     this->setControllerNumber(root->getIntAttribute("cc", this->getControllerNumber()));
     this->setLayerId(root->getStringAttribute("id", this->getLayerId().toString()));
     this->muted = MidiSequence::isMuted(root->getStringAttribute("mute"));
-	
-	float firstBeat = 0;
-	float lastBeat = 0;
+    
+    float firstBeat = 0;
+    float lastBeat = 0;
 
     forEachXmlChildElementWithTagName(*root, e, Serialization::Core::event)
     {
@@ -332,17 +334,17 @@ void AutomationSequence::deserialize(const XmlElement &xml)
 
     this->sort();
     this->updateBeatRange(false);
-    this->notifyLayerChanged();
+    this->notifySequenceChanged();
 }
 
 void AutomationSequence::reset()
 {
-	this->clearQuick();
-    this->notifyLayerChanged();
+    this->clearQuick();
+    this->notifySequenceChanged();
 }
 
 void AutomationSequence::clearQuick()
 {
-	this->midiEvents.clearQuick(true);
-	this->eventsHashTable.clear();
+    this->midiEvents.clearQuick(true);
+    this->eventsHashTable.clear();
 }

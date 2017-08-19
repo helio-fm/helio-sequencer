@@ -23,7 +23,7 @@
 #include "RendererThread.h"
 #include "MidiSequence.h"
 #include "MidiEvent.h"
-
+#include "MidiTrack.h"
 #include "App.h"
 #include "Workspace.h"
 #include "AudioCore.h"
@@ -314,7 +314,7 @@ float Transport::getRenderingPercentsComplete() const
 
 
 //===----------------------------------------------------------------------===//
-// Sending messages at realtime
+// Sending messages at real-time
 //===----------------------------------------------------------------------===//
 
 void Transport::sendMidiMessage(const String &layerId, const MidiMessage &message) const
@@ -336,7 +336,7 @@ void Transport::sendMidiMessage(const String &layerId, const MidiMessage &messag
 
 void Transport::allNotesAndControllersOff() const
 {
-	const int c = 1;
+    const int c = 1;
     //for (int c = 1; c <= 16; ++c)
     {
         const MidiMessage notesOff(MidiMessage::allNotesOff(c));
@@ -344,10 +344,10 @@ void Transport::allNotesAndControllersOff() const
         
         Array<MidiMessageCollector *>duplicateCollectors;
         
-        for (int l = 0; l < this->layersCache.size(); ++l)
+        for (int l = 0; l < this->tracksCache.size(); ++l)
         {
             const String &layerId =
-            this->layersCache.getUnchecked(l)->getLayerIdAsString();
+            this->tracksCache.getUnchecked(l)->getLayerIdAsString();
             
             MidiMessageCollector *collector =
             &this->linksCache[layerId]->getProcessorPlayer().getMidiMessageCollector();
@@ -364,19 +364,19 @@ void Transport::allNotesAndControllersOff() const
 
 void Transport::allNotesControllersAndSoundOff() const
 {
-	const int c = 1;
-	//for (int c = 1; c <= 16; ++c)
-	{
+    const int c = 1;
+    //for (int c = 1; c <= 16; ++c)
+    {
         const MidiMessage notesOff(MidiMessage::allNotesOff(c));
         const MidiMessage soundOff(MidiMessage::allSoundOff(c));
         const MidiMessage controllersOff(MidiMessage::allControllersOff(c));
         
         Array<MidiMessageCollector *>duplicateCollectors;
         
-        for (int l = 0; l < this->layersCache.size(); ++l)
+        for (int l = 0; l < this->tracksCache.size(); ++l)
         {
             const String &layerId =
-            this->layersCache.getUnchecked(l)->getLayerIdAsString();
+            this->tracksCache.getUnchecked(l)->getLayerIdAsString();
             
             MidiMessageCollector *collector =
             &this->linksCache[layerId]->getProcessorPlayer().getMidiMessageCollector();
@@ -404,9 +404,9 @@ void Transport::instrumentAdded(Instrument *instrument)
     // invalidate sequences as they use pointers to the players too
     this->sequencesAreOutdated = true;
 
-    for (int i = 0; i < this->layersCache.size(); ++i)
+    for (int i = 0; i < this->tracksCache.size(); ++i)
     {
-        this->updateLinkForLayer(this->layersCache.getUnchecked(i));
+        this->updateLinkForTrack(this->tracksCache.getUnchecked(i));
     }
 }
 
@@ -421,9 +421,9 @@ void Transport::instrumentRemovedPostAction()
 {
     this->sequencesAreOutdated = true;
 
-    for (int i = 0; i < this->layersCache.size(); ++i)
+    for (int i = 0; i < this->tracksCache.size(); ++i)
     {
-        this->updateLinkForLayer(this->layersCache.getUnchecked(i));
+        this->updateLinkForTrack(this->tracksCache.getUnchecked(i));
     }
 }
 
@@ -440,7 +440,7 @@ void Transport::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
     { this->stopPlayback(); }
     
     // a hack
-    if (newEvent.getLayer()->getControllerNumber() == MidiSequence::tempoController)
+    if (newEvent.getLayer()->getControllerNumber() == MidiTrack::tempoController)
     {
         this->seekToPosition(this->getSeekPosition());
     }
@@ -456,7 +456,7 @@ void Transport::onAddMidiEvent(const MidiEvent &event)
     { this->stopPlayback(); }
     
     // a hack
-    if (event.getLayer()->getControllerNumber() == MidiSequence::tempoController)
+    if (event.getLayer()->getControllerNumber() == MidiTrack::tempoController)
     {
         this->seekToPosition(this->getSeekPosition());
     }
@@ -480,7 +480,7 @@ void Transport::onPostRemoveMidiEvent(MidiSequence *const layer)
     { this->stopPlayback(); }
     
     // a hack to re-calculate length and current time
-    if (layer->getControllerNumber() == MidiSequence::tempoController)
+    if (layer->getControllerNumber() == MidiTrack::tempoController)
     {
         this->seekToPosition(this->getSeekPosition());
     }
@@ -488,33 +488,35 @@ void Transport::onPostRemoveMidiEvent(MidiSequence *const layer)
     this->sequencesAreOutdated = true;
 }
 
-void Transport::onChangeTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
+void Transport::onChangeTrackProperties(MidiTrack *const track)
 {
+    // TODO: stop playback only when instrument changes?
+
     if (this->player->isThreadRunning())
     { this->stopPlayback(); }
     
     this->sequencesAreOutdated = true;
-    this->updateLinkForLayer(layer);
+    this->updateLinkForTrack(track);
 }
 
-void Transport::onAddTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
+void Transport::onAddTrack(MidiTrack *const track)
 {
     if (this->player->isThreadRunning())
     {this->stopPlayback(); }
     
     this->sequencesAreOutdated = true;
-    this->layersCache.addIfNotAlreadyThere(layer);
-    this->updateLinkForLayer(layer);
+    this->tracksCache.addIfNotAlreadyThere(track);
+    this->updateLinkForTrack(track);
 }
 
-void Transport::onRemoveTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
+void Transport::onRemoveTrack(MidiTrack *const track)
 {
     if (this->player->isThreadRunning())
     {this->stopPlayback(); }
     
     this->sequencesAreOutdated = true;
-    this->layersCache.removeAllInstancesOf(layer);
-    this->removeLinkForLayer(layer);
+    this->tracksCache.removeAllInstancesOf(track);
+    this->removeLinkForTrack(track);
 }
 
 void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
@@ -634,9 +636,9 @@ void Transport::rebuildSequencesIfNeeded()
     {
         this->sequences.clear();
         
-        for (int i = 0; i < this->layersCache.size(); ++i)
+        for (int i = 0; i < this->tracksCache.size(); ++i)
         {
-            const MidiSequence *layer = this->layersCache.getUnchecked(i);
+            const MidiSequence *layer = this->tracksCache.getUnchecked(i)->getSequence();
             MidiMessageSequence sequence(layer->exportMidi());
             sequence.addTimeToMessages(-this->trackStartMs);
             
@@ -663,7 +665,7 @@ ProjectSequences Transport::getSequences()
     return this->sequences;
 }
 
-void Transport::updateLinkForLayer(const MidiSequence *layer)
+void Transport::updateLinkForTrack(const MidiTrack *track)
 {
 //    Instrument *targetInstrument = this->orchestra.findInstrumentById(layer->getInstrumentId());
 //    
@@ -680,9 +682,9 @@ void Transport::updateLinkForLayer(const MidiSequence *layer)
     {
         Instrument *instrument = instruments.getUnchecked(i);
         
-        if (layer->getInstrumentId().contains(instrument->getInstrumentID()))
+        if (track->getTrackInstrumentId().contains(instrument->getInstrumentID()))
         {
-            // corresponding node already exists, lets addd
+            // corresponding node already exists, lets add
             this->linksCache.set(layer->getLayerId().toString(), instrument);
             return;
         }
@@ -704,7 +706,7 @@ void Transport::updateLinkForLayer(const MidiSequence *layer)
     this->linksCache.set(layer->getLayerId().toString(), this->orchestra.getInstruments()[0]);
 }
 
-void Transport::removeLinkForLayer(const MidiSequence *layer)
+void Transport::removeLinkForTrack(const MidiTrack *track)
 {
     this->linksCache.remove(layer->getLayerId().toString());
 }
@@ -727,7 +729,7 @@ void Transport::removeTransportListener(TransportListener *listener)
 }
 
 void Transport::broadcastSeek(const double newPosition,
-                              const double currentTimeMs, const double totalTimeMs)
+    const double currentTimeMs, const double totalTimeMs)
 {
     // todo remember last seek position
     this->transportListeners.call(&TransportListener::onSeek, newPosition, currentTimeMs, totalTimeMs);

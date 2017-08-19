@@ -535,12 +535,12 @@ bool MainLayout::keyPressed(const KeyPress &key)
     {
         if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
         {
-			auto scheme = ColourSchemeManager::getInstance().getCurrentScheme();
-			ht->updateBackgroundRenders(true);
+            auto scheme = ColourSchemeManager::getInstance().getCurrentScheme();
+            ht->updateBackgroundRenders(true);
             ht->initColours(scheme);
             this->repaint();
 
-			scheme.exportColourChanges();
+            scheme.exportColourChanges();
             const ScopedPointer<XmlElement> xml(scheme.serialize());
             const String xmlString(xml->createDocument("", true, false, "UTF-8", 512));
             SystemClipboard::copyTextToClipboard(xmlString);

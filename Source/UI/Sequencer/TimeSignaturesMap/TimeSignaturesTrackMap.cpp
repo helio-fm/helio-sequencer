@@ -213,24 +213,25 @@ template<typename T> void TimeSignaturesTrackMap<T>::onRemoveMidiEvent(const Mid
     }
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onChangeTrack(MidiSequence *const layer, Pattern *const pattern)
+template<typename T> void TimeSignaturesTrackMap<T>::onChangeTrackProperties(MidiTrack *const track)
 {
     if (this->project.getTimeline() != nullptr)
     {
-        if (layer == this->project.getTimeline()->getTimeSignatures())
+        if (track->getSequence() == this->project.getTimeline()->getTimeSignatures())
         {
-            this->reloadTrackMap();
+            this->repaint(); // this->reloadTrackMap();
         }
     }
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onAddTrack(MidiSequence *const layer, Pattern *const pattern)
+template<typename T> void TimeSignaturesTrackMap<T>::onAddTrack(MidiTrack *const track)
 {
     if (this->project.getTimeline() != nullptr)
     {
-        if (layer == this->project.getTimeline()->getTimeSignatures())
+        auto sequence = track->getSequence();
+        if (sequence == this->project.getTimeline()->getTimeSignatures())
         {
-            if (layer->size() > 0)
+            if (sequence->size() > 0)
             {
                 this->reloadTrackMap();
             }
@@ -238,15 +239,17 @@ template<typename T> void TimeSignaturesTrackMap<T>::onAddTrack(MidiSequence *co
     }
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onRemoveTrack(MidiSequence *const layer, Pattern *const pattern)
+template<typename T> void TimeSignaturesTrackMap<T>::onRemoveTrack(MidiTrack *const track)
 {
     if (this->project.getTimeline() != nullptr)
     {
-        if (layer == this->project.getTimeline()->getTimeSignatures())
+        auto sequence = track->getSequence();
+        if (sequence == this->project.getTimeline()->getTimeSignatures())
         {
             for (int i = 0; i < layer->size(); ++i)
             {
-                const TimeSignatureEvent &timeSignature = static_cast<const TimeSignatureEvent &>(*layer->getUnchecked(i));
+                const TimeSignatureEvent &timeSignature =
+                    static_cast<const TimeSignatureEvent &>(*sequence->getUnchecked(i));
 
                 if (T *component = this->timeSignaturesHash[timeSignature])
                 {
@@ -263,14 +266,14 @@ template<typename T> void TimeSignaturesTrackMap<T>::onChangeProjectBeatRange(fl
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
-	this->updateTrackRangeIndicatorsAnchors();
+    this->updateTrackRangeIndicatorsAnchors();
 }
 
 template<typename T> void TimeSignaturesTrackMap<T>::onChangeViewBeatRange(float firstBeat, float lastBeat)
 {
-	this->rollFirstBeat = firstBeat;
-	this->rollLastBeat = lastBeat;
-	this->resized();
+    this->rollFirstBeat = firstBeat;
+    this->rollLastBeat = lastBeat;
+    this->resized();
 }
 
 
@@ -291,7 +294,8 @@ template<typename T> void TimeSignaturesTrackMap<T>::onTimeSignatureTapped(T *nc
 
     for (int i = 0; i < timeline->getTimeSignatures()->size(); ++i)
     {
-        if (TimeSignatureEvent *timeSignature = dynamic_cast<TimeSignatureEvent *>(timeline->getTimeSignatures()->getUnchecked(i)))
+        if (TimeSignatureEvent *timeSignature =
+            dynamic_cast<TimeSignatureEvent *>(timeline->getTimeSignatures()->getUnchecked(i)))
         {
             const float seekBeat = this->roll.getBeatByTransportPosition(seekPosition);
             
@@ -332,9 +336,9 @@ template<typename T> void TimeSignaturesTrackMap<T>::showContextMenuFor(T *nc)
 {
     if (! this->project.getTransport().isPlaying())
     {
-		Component *dialog =
-			TimeSignatureDialog::createEditingDialog(*this, nc->getEvent());
-		App::Layout().showModalNonOwnedDialog(dialog);
+        Component *dialog =
+            TimeSignatureDialog::createEditingDialog(*this, nc->getEvent());
+        App::Layout().showModalNonOwnedDialog(dialog);
     }
 }
 

@@ -36,7 +36,7 @@ public:
     UndoAction(project) {}
     
     NoteInsertAction(ProjectTreeItem &project,
-                     String layerId,
+                     String trackId,
                      const Note &target);
 
     bool perform() override;
@@ -49,7 +49,7 @@ public:
     
 private:
 
-    String layerId;
+    String trackId;
     Note note;
 
     JUCE_DECLARE_NON_COPYABLE(NoteInsertAction)
@@ -68,7 +68,7 @@ public:
     UndoAction(project) {}
 
     NoteRemoveAction(ProjectTreeItem &project,
-                     String layerId,
+                     String trackId,
                      const Note &target);
 
     bool perform() override;
@@ -81,7 +81,7 @@ public:
 
 private:
 
-    String layerId;
+    String trackId;
     Note note;
 
     JUCE_DECLARE_NON_COPYABLE(NoteRemoveAction)
@@ -100,7 +100,7 @@ public:
     UndoAction(project) {}
 
     NoteChangeAction(ProjectTreeItem &project,
-                     String layerId,
+                     String trackId,
                      const Note &note,
                      const Note &newParameters);
 
@@ -115,7 +115,7 @@ public:
 
 private:
 
-    String layerId;
+    String trackId;
 
     Note noteBefore;
     Note noteAfter;
@@ -137,7 +137,7 @@ public:
     UndoAction(project) {}
     
     NotesGroupInsertAction(ProjectTreeItem &project,
-                           String layerId,
+                           String trackId,
                            Array<Note> &target);
     
     bool perform() override;
@@ -150,7 +150,7 @@ public:
     
 private:
     
-    String layerId;
+    String trackId;
     Array<Note> notes;
     
     JUCE_DECLARE_NON_COPYABLE(NotesGroupInsertAction)
@@ -170,7 +170,7 @@ public:
     UndoAction(project) {}
     
     NotesGroupRemoveAction(ProjectTreeItem &project,
-                           String layerId,
+                           String trackId,
                            Array<Note> &target);
     
     bool perform() override;
@@ -183,7 +183,7 @@ public:
     
 private:
     
-    String layerId;
+    String trackId;
     Array<Note> notes;
     
     JUCE_DECLARE_NON_COPYABLE(NotesGroupRemoveAction)
@@ -203,7 +203,7 @@ public:
     UndoAction(project) {}
 
     NotesGroupChangeAction(ProjectTreeItem &project,
-                           String layerId,
+                           String trackId,
                            Array<Note> &state1,
                            Array<Note> &state2);
 
@@ -218,7 +218,7 @@ public:
 
 private:
 
-    String layerId;
+    String trackId;
 
     Array<Note> notesBefore;
     Array<Note> notesAfter;

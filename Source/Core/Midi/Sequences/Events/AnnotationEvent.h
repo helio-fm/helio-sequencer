@@ -35,7 +35,7 @@ public:
     ~AnnotationEvent() override;
     
 
-	Array<MidiMessage> getSequence() const override;
+    Array<MidiMessage> toMidiMessages() const override;
 
     
     AnnotationEvent copyWithNewId() const;

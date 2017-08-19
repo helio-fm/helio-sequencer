@@ -38,7 +38,7 @@ public:
 
     ~MidiEvent() override;
 
-    virtual Array<MidiMessage> getSequence() const = 0;
+    virtual Array<MidiMessage> toMidiMessages() const = 0;
 
 
     //===------------------------------------------------------------------===//

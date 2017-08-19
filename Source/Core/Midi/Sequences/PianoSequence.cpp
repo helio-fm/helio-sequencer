@@ -30,7 +30,9 @@
 // todo optimize data structures >_<
 // using std::dense_hash_map ?
 
-PianoSequence::PianoSequence(ProjectEventDispatcher &parent) : MidiSequence(parent)
+PianoSequence::PianoSequence(MidiTrack &track,
+    ProjectEventDispatcher &dispatcher) :
+    MidiSequence(track, dispatcher)
 {
 }
 
@@ -76,7 +78,7 @@ void PianoSequence::importMidi(const MidiMessageSequence &sequence)
     }
 
     this->notifyBeatRangeChanged();
-    this->notifyLayerChanged();
+    this->notifySequenceChanged();
 }
 
 
@@ -365,17 +367,17 @@ XmlElement *PianoSequence::serialize() const
         const MidiEvent *event = this->midiEvents.getUnchecked(i);
         xml->prependChildElement(event->serialize());
     }
-	
+    
     return xml;
 }
 
 void PianoSequence::deserialize(const XmlElement &xml)
 {
-	this->clearQuick();
+    this->clearQuick();
 
     const XmlElement *root = 
-		(xml.getTagName() == Serialization::Core::track) ?
-		&xml : xml.getChildByName(Serialization::Core::track);
+        (xml.getTagName() == Serialization::Core::track) ?
+        &xml : xml.getChildByName(Serialization::Core::track);
 
     if (root == nullptr)
     { return; }
@@ -386,9 +388,9 @@ void PianoSequence::deserialize(const XmlElement &xml)
     this->controllerNumber = (root->getIntAttribute("cc", this->getControllerNumber()));
     this->layerId = Uuid(root->getStringAttribute("id", this->getLayerId().toString()));
     this->muted = MidiSequence::isMuted(root->getStringAttribute("mute"));
-	
-	float lastBeat = 0;
-	float firstBeat = 0;
+    
+    float lastBeat = 0;
+    float firstBeat = 0;
 
     forEachXmlChildElementWithTagName(*root, e, Serialization::Core::note)
     {
@@ -407,17 +409,17 @@ void PianoSequence::deserialize(const XmlElement &xml)
 
     this->sort();
     this->updateBeatRange(false);
-    this->notifyLayerChanged();
+    this->notifySequenceChanged();
 }
 
 void PianoSequence::reset()
 {
-	this->clearQuick();
-    this->notifyLayerChanged();
+    this->clearQuick();
+    this->notifySequenceChanged();
 }
 
 void PianoSequence::clearQuick()
 {
-	this->midiEvents.clearQuick(true);
-	this->notesHashTable.clear();
+    this->midiEvents.clearQuick(true);
+    this->notesHashTable.clear();
 }

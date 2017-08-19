@@ -173,7 +173,7 @@ NoNotesPopup::NoNotesPopup(PianoRoll *caller, MidiSequence *layer)
 NoNotesPopup::~NoNotesPopup()
 {
     //[Destructor_pre]
-	this->stopSound();
+    this->stopSound();
     //[/Destructor_pre]
 
     chordMinor1 = nullptr;
@@ -499,8 +499,8 @@ void NoNotesPopup::buildChord(int n1, int n2, int n3)
         //Time::waitForMillisecondCounter(Time::getMillisecondCounter() + 20);
 
         this->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key1, kDefaultChordVelocity));
-		this->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key2, kDefaultChordVelocity));
-		this->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key3, kDefaultChordVelocity));
+        this->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key2, kDefaultChordVelocity));
+        this->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key3, kDefaultChordVelocity));
 
         this->hasMadeChanges = true;
     }
@@ -526,7 +526,7 @@ void NoNotesPopup::buildNewNote(bool shouldSendMidiMessage)
 
         if (shouldSendMidiMessage)
         {
-			this->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key, kDefaultChordVelocity));
+            this->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key, kDefaultChordVelocity));
         }
 
         this->hasMadeChanges = true;
@@ -558,13 +558,13 @@ bool NoNotesPopup::detectKeyAndBeat()
 
 void NoNotesPopup::stopSound()
 {
-	this->roll->getTransport().allNotesControllersAndSoundOff();
+    this->roll->getTransport().allNotesControllersAndSoundOff();
 }
 
 void NoNotesPopup::sendMidiMessage(const MidiMessage &message)
 {
-	const String layerId = this->targetLayer->getLayerIdAsString();
-	this->roll->getTransport().sendMidiMessage(layerId, message);
+    const String layerId = this->targetLayer->getLayerIdAsString();
+    this->roll->getTransport().sendMidiMessage(layerId, message);
 }
 
 //[/MiscUserCode]

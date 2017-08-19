@@ -18,29 +18,28 @@
 #include "Common.h"
 #include "MidiTrackActions.h"
 #include "ProjectTreeItem.h"
-#include "MidiTrackTreeItem.h"
-#include "TreeItem.h"
+#include "SerializationKeys.h"
+#include "MidiTrack.h"
 
 //===----------------------------------------------------------------------===//
 // Rename/Move
 //===----------------------------------------------------------------------===//
 
 MidiTrackRenameAction::MidiTrackRenameAction(ProjectTreeItem &parentProject,
-                                                     String targetLayerId,
-                                                     String newXPath) :
+    String targetTrackId, String newXPath) :
     UndoAction(parentProject),
-    layerId(std::move(targetLayerId)),
+    trackId(std::move(targetTrackId)),
     xPathAfter(std::move(newXPath))
 {
 }
 
 bool MidiTrackRenameAction::perform()
 {
-    if (MidiTrackTreeItem *treeItem =
-        this->project.findChildByLayerId<MidiTrackTreeItem>(this->layerId))
+    if (MidiTrack *track =
+        this->project.findTrackById<MidiTrack>(this->trackId))
     {
-        this->xPathBefore = treeItem->getXPath();
-        treeItem->onRename(this->xPathAfter);
+        this->xPathBefore = track->getTrackName();
+        track->setTrackName(this->xPathAfter);
         return true;
     }
     
@@ -49,10 +48,10 @@ bool MidiTrackRenameAction::perform()
 
 bool MidiTrackRenameAction::undo()
 {
-    if (MidiTrackTreeItem *treeItem =
-        this->project.findChildByLayerId<MidiTrackTreeItem>(this->layerId))
+    if (MidiTrack *track =
+        this->project.findTrackById<MidiTrack>(this->trackId))
     {
-        treeItem->onRename(this->xPathBefore);
+        track->setTrackName(this->xPathBefore);
         return true;
     }
     
@@ -66,10 +65,10 @@ int MidiTrackRenameAction::getSizeInUnits()
 
 XmlElement *MidiTrackRenameAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::layerTreeItemRenameAction);
+    auto xml = new XmlElement(Serialization::Undo::midiTrackRenameAction);
     xml->setAttribute(Serialization::Undo::xPathBefore, this->xPathBefore);
     xml->setAttribute(Serialization::Undo::xPathAfter, this->xPathAfter);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
+    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
     return xml;
 }
 
@@ -77,14 +76,14 @@ void MidiTrackRenameAction::deserialize(const XmlElement &xml)
 {
     this->xPathBefore = xml.getStringAttribute(Serialization::Undo::xPathBefore);
     this->xPathAfter = xml.getStringAttribute(Serialization::Undo::xPathAfter);
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
+    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
 }
 
 void MidiTrackRenameAction::reset()
 {
     this->xPathBefore.clear();
     this->xPathAfter.clear();
-    this->layerId.clear();
+    this->trackId.clear();
 }
 
 
@@ -93,65 +92,63 @@ void MidiTrackRenameAction::reset()
 //===----------------------------------------------------------------------===//
 
 MidiTrackChangeColourAction::MidiTrackChangeColourAction(ProjectTreeItem &parentProject,
-	String targetLayerId,
-	const Colour &newColour) :
-	UndoAction(parentProject),
-	layerId(std::move(targetLayerId)),
-	colourAfter(newColour)
+    String targetTrackId,
+    const Colour &newColour) :
+    UndoAction(parentProject),
+    trackId(std::move(targetTrackId)),
+    colourAfter(newColour)
 {
 }
 
 bool MidiTrackChangeColourAction::perform()
 {
-	if (WeakReference<MidiSequence> layer =
-		this->project.getLayerWithId<MidiSequence>(this->layerId))
-	{
-		this->colourBefore = layer->getColour();
-		layer->setColour(this->colourAfter);
-		layer->notifyLayerChanged();
-		return true;
-	}
+    if (MidiTrack *track =
+        this->project.findTrackById<MidiTrack>(this->trackId))
+    {
+        this->colourBefore = track->getTrackColour();
+        track->setTrackColour(this->colourAfter);
+        return true;
+    }
 
-	return false;
+    return false;
 }
 
 bool MidiTrackChangeColourAction::undo()
 {
-	if (WeakReference<MidiSequence> layer =
-		this->project.getLayerWithId<MidiSequence>(this->layerId))
-	{
-		layer->setColour(this->colourBefore);
-		layer->notifyLayerChanged();
-		return true;
-	}
+    if (MidiTrack *track =
+        this->project.findTrackById<MidiTrack>(this->trackId))
+    {
+        track->setTrackColour(this->colourBefore);
+        return true;
+    }
 
-	return false;
+    return false;
 }
 
 int MidiTrackChangeColourAction::getSizeInUnits()
 {
-	return sizeof(this->colourBefore) + sizeof(this->colourAfter);
+    return sizeof(this->colourBefore) + sizeof(this->colourAfter);
 }
 
 XmlElement *MidiTrackChangeColourAction::serialize() const
 {
-	auto xml = new XmlElement(Serialization::Undo::midiLayerChangeColourAction);
-	xml->setAttribute(Serialization::Undo::colourBefore, this->colourBefore.toString());
-	xml->setAttribute(Serialization::Undo::colourAfter, this->colourAfter.toString());
-	xml->setAttribute(Serialization::Undo::layerId, this->layerId);
-	return xml;
+    auto xml = new XmlElement(Serialization::Undo::midiTrackChangeColourAction);
+    xml->setAttribute(Serialization::Undo::colourBefore, this->colourBefore.toString());
+    xml->setAttribute(Serialization::Undo::colourAfter, this->colourAfter.toString());
+    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    return xml;
 }
 
 void MidiTrackChangeColourAction::deserialize(const XmlElement &xml)
 {
-	this->colourBefore = Colour::fromString(xml.getStringAttribute(Serialization::Undo::colourBefore));
-	this->colourAfter = Colour::fromString(xml.getStringAttribute(Serialization::Undo::colourAfter));
-	this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
+    this->colourBefore = Colour::fromString(xml.getStringAttribute(Serialization::Undo::colourBefore));
+    this->colourAfter = Colour::fromString(xml.getStringAttribute(Serialization::Undo::colourAfter));
+    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
 }
 
 void MidiTrackChangeColourAction::reset()
 {
-	this->layerId.clear();
+    this->trackId.clear();
 }
 
 
@@ -160,63 +157,63 @@ void MidiTrackChangeColourAction::reset()
 //===----------------------------------------------------------------------===//
 
 MidiTrackChangeInstrumentAction::MidiTrackChangeInstrumentAction(ProjectTreeItem &parentProject,
-	String targetLayerId,
-	String newInstrumentId) :
-	UndoAction(parentProject),
-	layerId(std::move(targetLayerId)),
-	instrumentIdAfter(std::move(newInstrumentId))
+    String targetTrackId,
+    String newInstrumentId) :
+    UndoAction(parentProject),
+    trackId(std::move(targetTrackId)),
+    instrumentIdAfter(std::move(newInstrumentId))
 {
 }
 
 bool MidiTrackChangeInstrumentAction::perform()
 {
-	if (WeakReference<MidiSequence> layer =
-		this->project.getLayerWithId<MidiSequence>(this->layerId))
-	{
-		this->instrumentIdBefore = layer->getInstrumentId();
-		layer->setInstrumentId(this->instrumentIdAfter);
-		return true;
-	}
+    if (MidiTrack *track =
+        this->project.findTrackById<MidiTrack>(this->trackId))
+    {
+        this->instrumentIdBefore = track->getTrackInstrumentId();
+        track->setTrackInstrumentId(this->instrumentIdAfter);
+        return true;
+    }
 
-	return false;
+    return false;
 }
 
 bool MidiTrackChangeInstrumentAction::undo()
 {
-	if (WeakReference<MidiSequence> layer =
-		this->project.getLayerWithId<MidiSequence>(this->layerId))
-	{
-		layer->setInstrumentId(this->instrumentIdBefore);
-		return true;
-	}
+    if (MidiTrack *track =
+        this->project.findTrackById<MidiTrack>(this->trackId))
+    {
+        track->setTrackInstrumentId(this->instrumentIdBefore);
+        return true;
+    }
 
-	return false;
+    return false;
 }
 
 int MidiTrackChangeInstrumentAction::getSizeInUnits()
 {
-	return this->instrumentIdAfter.length() + this->instrumentIdBefore.length();
+    return this->instrumentIdAfter.length() + this->instrumentIdBefore.length();
 }
 
 XmlElement *MidiTrackChangeInstrumentAction::serialize() const
 {
-	auto xml = new XmlElement(Serialization::Undo::midiLayerChangeInstrumentAction);
-	xml->setAttribute(Serialization::Undo::instrumentIdBefore, this->instrumentIdBefore);
-	xml->setAttribute(Serialization::Undo::instrumentIdAfter, this->instrumentIdAfter);
-	xml->setAttribute(Serialization::Undo::layerId, this->layerId);
-	return xml;
+    auto xml = new XmlElement(Serialization::Undo::midiTrackChangeInstrumentAction);
+    xml->setAttribute(Serialization::Undo::instrumentIdBefore, this->instrumentIdBefore);
+    xml->setAttribute(Serialization::Undo::instrumentIdAfter, this->instrumentIdAfter);
+    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    return xml;
 }
 
 void MidiTrackChangeInstrumentAction::deserialize(const XmlElement &xml)
 {
-	this->instrumentIdBefore = xml.getStringAttribute(Serialization::Undo::instrumentIdBefore);
-	this->instrumentIdAfter = xml.getStringAttribute(Serialization::Undo::instrumentIdAfter);
-	this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
+    this->instrumentIdBefore = xml.getStringAttribute(Serialization::Undo::instrumentIdBefore);
+    this->instrumentIdAfter = xml.getStringAttribute(Serialization::Undo::instrumentIdAfter);
+    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
 }
 
 void MidiTrackChangeInstrumentAction::reset()
 {
-	this->layerId.clear();
+    this->trackId.clear();
 }
 
 
@@ -225,71 +222,71 @@ void MidiTrackChangeInstrumentAction::reset()
 //===----------------------------------------------------------------------===//
 
 MidiTrackMuteAction::MidiTrackMuteAction(ProjectTreeItem &parentProject,
-	String targetLayerId,
-	bool shouldBeMuted) :
-	UndoAction(parentProject),
-	layerId(std::move(targetLayerId)),
-	muteStateAfter(shouldBeMuted)
+    String targetTrackId,
+    bool shouldBeMuted) :
+    UndoAction(parentProject),
+    trackId(std::move(targetTrackId)),
+    muteStateAfter(shouldBeMuted)
 {
 }
 
 bool MidiTrackMuteAction::perform()
 {
-	if (WeakReference<MidiSequence> layer =
-		this->project.getLayerWithId<MidiSequence>(this->layerId))
-	{
-		this->muteStateBefore = layer->isMuted();
-		layer->setMuted(this->muteStateAfter);
-		return true;
-	}
+    if (MidiTrack *track =
+        this->project.findTrackById<MidiTrack>(this->trackId))
+    {
+        this->muteStateBefore = track->isTrackMuted();
+        track->setTrackMuted(this->muteStateAfter);
+        return true;
+    }
 
-	return false;
+    return false;
 }
 
 bool MidiTrackMuteAction::undo()
 {
-	if (WeakReference<MidiSequence> layer =
-		this->project.getLayerWithId<MidiSequence>(this->layerId))
-	{
-		layer->setMuted(this->muteStateBefore);
-		return true;
-	}
+    if (MidiTrack *track =
+        this->project.findTrackById<MidiTrack>(this->trackId))
+    {
+        track->setTrackMuted(this->muteStateBefore);
+        return true;
+    }
 
-	return false;
+    return false;
 }
 
 int MidiTrackMuteAction::getSizeInUnits()
 {
-	return 1;
+    return 1;
 }
 
 String boolToString(bool val)
 {
-	return val ? "yes" : "no";
+    return val ? "yes" : "no";
 }
 
 bool stringToBool(const String &val)
 {
-	return val == "yes";
+    return val == "yes";
 }
 
 XmlElement *MidiTrackMuteAction::serialize() const
 {
-	auto xml = new XmlElement(Serialization::Undo::midiLayerMuteAction);
-	xml->setAttribute(Serialization::Undo::muteStateBefore, boolToString(this->muteStateBefore));
-	xml->setAttribute(Serialization::Undo::muteStateAfter, boolToString(this->muteStateAfter));
-	xml->setAttribute(Serialization::Undo::layerId, this->layerId);
-	return xml;
+    auto xml = new XmlElement(Serialization::Undo::midiTrackMuteAction);
+    xml->setAttribute(Serialization::Undo::muteStateBefore, boolToString(this->muteStateBefore));
+    xml->setAttribute(Serialization::Undo::muteStateAfter, boolToString(this->muteStateAfter));
+    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    return xml;
 }
 
 void MidiTrackMuteAction::deserialize(const XmlElement &xml)
 {
-	this->muteStateBefore = stringToBool(xml.getStringAttribute(Serialization::Undo::muteStateBefore));
-	this->muteStateAfter = stringToBool(xml.getStringAttribute(Serialization::Undo::muteStateAfter));
-	this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
+    this->muteStateBefore = stringToBool(xml.getStringAttribute(Serialization::Undo::muteStateBefore));
+    this->muteStateAfter = stringToBool(xml.getStringAttribute(Serialization::Undo::muteStateAfter));
+    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
 }
 
 void MidiTrackMuteAction::reset()
 {
-	this->layerId.clear();
+    this->trackId.clear();
 }

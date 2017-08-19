@@ -30,45 +30,102 @@ class MidiTrack
 {
 public:
 
-	virtual String getTrackName() const noexcept = 0;
-	virtual Colour getTrackColour() const noexcept = 0;
-	virtual int getTrackChannel() const noexcept = 0;
+    virtual ~MidiTrack() {}
 
-	virtual String getTrackInstrumentId() const noexcept = 0;
-	virtual int getTrackControllerNumber() const noexcept = 0;
+    virtual Uuid getTrackId() const noexcept = 0;
+    virtual int getTrackChannel() const noexcept = 0;
 
-	virtual bool isTrackMuted() const noexcept = 0;
-	virtual bool isTrackSolo() const noexcept = 0;
+    virtual String getTrackName() const noexcept = 0;
+    virtual void setTrackName(const String &val) = 0;
 
-	virtual MidiSequence *getSequence() const noexcept = 0;
-	virtual Pattern *getPattern() const noexcept = 0;
+    virtual Colour getTrackColour() const noexcept = 0;
+    virtual void setTrackColour(Colour colour) = 0;
 
-	// used by player thread to link tracks with instruments
-	// Uuid getLayerId() const noexcept;
-	// String getLayerIdAsString() const;
+    virtual String getTrackInstrumentId() const noexcept = 0;
+    virtual void setTrackInstrumentId(const String &val) = 0;
+        
+    virtual int getTrackControllerNumber() const noexcept = 0;
+    virtual void setTrackControllerNumber(int val) = 0;
 
-	// Some shorthands:
+    virtual bool isTrackMuted() const noexcept = 0;
+    virtual void setTrackMuted(bool shouldBeMuted) = 0;
 
-	enum DefaultControllers
-	{
-		sustainPedalController = 64,
-		tempoController = 81,
-	};
+    // TODO
+    //virtual bool isTrackSolo() const noexcept = 0;
+    //virtual void setSolo(bool shouldBeSolo) = 0;
 
-	bool isTempoTrack() const noexcept
-	{
-		return (this->getTrackControllerNumber() == MidiTrack::tempoController);
-	}
+    virtual MidiSequence *getSequence() const noexcept = 0;
+    virtual Pattern *getPattern() const noexcept = 0;
 
-	bool isSustainPedalTrack() const noexcept
-	{
-		return (this->getTrackControllerNumber() == MidiTrack::sustainPedalController);
-	}
+    // Some shorthands:
 
-	bool isOnOffTrack() const noexcept
-	{
-		// hardcoded for now
-		return (this->getTrackControllerNumber() >= 64 &&
-			this->getTrackControllerNumber() <= 69);
-	}
+    static int compareElements(const MidiTrack &first, const MidiTrack &second)
+    {
+        if (&first == &second) { return 0; }
+        return first.getTrackName().compareNatural(second.getTrackName());
+    }
+
+
+    enum DefaultControllers
+    {
+        sustainPedalController = 64,
+        tempoController = 81,
+    };
+
+    bool isTempoTrack() const noexcept
+    {
+        return (this->getTrackControllerNumber() == MidiTrack::tempoController);
+    }
+
+    bool isSustainPedalTrack() const noexcept
+    {
+        return (this->getTrackControllerNumber() == MidiTrack::sustainPedalController);
+    }
+
+    bool isOnOffTrack() const noexcept
+    {
+        // hardcoded for now
+        return (this->getTrackControllerNumber() >= 64 &&
+            this->getTrackControllerNumber() <= 69);
+    }
+
+    String getTrackMuteStateAsString() const
+    {
+        return (this->isTrackMuted() ? "yes" : "no");
+    }
+
+    static bool isTrackMuted(const String &muteState)
+    {
+        return (muteState == "yes");
+    }
+};
+
+class EmptyMidiTrack : public MidiTrack
+{
+public:
+
+    EmptyMidiTrack() {}
+
+    virtual Uuid getTrackId() const noexcept override { return {}; }
+    int getTrackChannel() const noexcept override { return 0; }
+
+    String getTrackName() const noexcept override { return String::empty; }
+    void setTrackName(const String &val) override {}
+
+    Colour getTrackColour() const noexcept override { return Colours::white; }
+    void setTrackColour(Colour colour) override {};
+
+    String getTrackInstrumentId() const noexcept override { return String::empty; }
+    void setTrackInstrumentId(const String &val) override {};
+
+    int getTrackControllerNumber() const noexcept override { return 0; }
+    void setTrackControllerNumber(int val) override {};
+
+    bool isTrackMuted() const noexcept override { return false; }
+    void setTrackMuted(bool shouldBeMuted) override {};
+
+    MidiSequence *getSequence() const noexcept override { return nullptr; }
+    Pattern *getPattern() const noexcept override { return nullptr; }
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EmptyMidiTrack)
 };

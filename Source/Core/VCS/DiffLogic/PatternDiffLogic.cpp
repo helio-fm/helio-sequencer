@@ -22,19 +22,17 @@
 #include "Clip.h"
 #include "Pattern.h"
 #include "SerializationKeys.h"
-#include "ProjectEventDispatcher.h"
 
 using namespace VCS;
 
-void PatternDiffLogic::deserializePatternChanges(Pattern &pattern, 
-    const XmlElement *state, const XmlElement *changes,
+void deserializePatternChanges(const XmlElement *state, const XmlElement *changes,
     Array<Clip> &stateClips, Array<Clip> &changesClips)
 {
     if (state != nullptr)
     {
         forEachXmlChildElementWithTagName(*state, e, Serialization::Core::clip)
         {
-            Clip clip(&pattern);
+            Clip clip;
             clip.deserialize(*e);
             stateClips.addSorted(clip, clip);
         }
@@ -44,15 +42,14 @@ void PatternDiffLogic::deserializePatternChanges(Pattern &pattern,
     {
         forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::clip)
         {
-            Clip clip(&pattern);
+            Clip clip;
             clip.deserialize(*e);
             changesClips.addSorted(clip, clip);
         }
     }
 }
 
-XmlElement *PatternDiffLogic::serializePattern(Array<Clip> changes,
-    const String &tag)
+XmlElement *serializePattern(Array<Clip> changes, const String &tag)
 {
     auto xml = new XmlElement(tag);
 
@@ -83,11 +80,9 @@ bool PatternDiffLogic::checkIfDeltaIsPatternType(const Delta *delta)
 XmlElement *PatternDiffLogic::mergeClipsAdded(const XmlElement *state,
     const XmlElement *changes)
 {
-    EmptyEventDispatcher dispatcher;
-    Pattern emptyPattern(dispatcher);
     Array<Clip> stateClips;
     Array<Clip> changesClips;
-    deserializePatternChanges(emptyPattern, state, changes, stateClips, changesClips);
+    deserializePatternChanges(state, changes, stateClips, changesClips);
 
     Array<Clip> result;
     result.addArray(stateClips);
@@ -116,11 +111,9 @@ XmlElement *PatternDiffLogic::mergeClipsAdded(const XmlElement *state,
 XmlElement *PatternDiffLogic::mergeClipsRemoved(const XmlElement *state, 
     const XmlElement *changes)
 {
-    EmptyEventDispatcher dispatcher;
-    Pattern emptyPattern(dispatcher);
     Array<Clip> stateClips;
     Array<Clip> changesClips;
-    deserializePatternChanges(emptyPattern, state, changes, stateClips, changesClips);
+    deserializePatternChanges(state, changes, stateClips, changesClips);
 
     Array<Clip> result;
     HashMap<Clip::Id, int> changesIDs;
@@ -147,11 +140,9 @@ XmlElement *PatternDiffLogic::mergeClipsRemoved(const XmlElement *state,
 XmlElement *PatternDiffLogic::mergeClipsChanged(const XmlElement *state, 
     const XmlElement *changes)
 {
-    EmptyEventDispatcher dispatcher;
-    Pattern emptyPattern(dispatcher);
     Array<Clip> stateClips;
     Array<Clip> changesClips;
-    deserializePatternChanges(emptyPattern, state, changes, stateClips, changesClips);
+    deserializePatternChanges(state, changes, stateClips, changesClips);
 
     Array<Clip> result;
     result.addArray(stateClips);
@@ -182,12 +173,10 @@ XmlElement *PatternDiffLogic::mergeClipsChanged(const XmlElement *state,
 Array<VCS::NewSerializedDelta> PatternDiffLogic::createClipsDiffs(
     const XmlElement *state, const XmlElement *changes)
 {
-    EmptyEventDispatcher dispatcher;
-    Pattern emptyPattern(dispatcher);
     Array<Clip> stateClips;
     Array<Clip> changesClips;
 
-    deserializePatternChanges(emptyPattern, state, changes, stateClips, changesClips);
+    deserializePatternChanges(state, changes, stateClips, changesClips);
 
     Array<NewSerializedDelta> res;
 

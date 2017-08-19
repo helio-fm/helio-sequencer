@@ -191,7 +191,7 @@ template<typename T> void AnnotationsTrackMap<T>::onRemoveMidiEvent(const MidiEv
     }
 }
 
-template<typename T> void AnnotationsTrackMap<T>::onChangeTrack(MidiSequence *const layer, Pattern *const pattern)
+template<typename T> void AnnotationsTrackMap<T>::onChangeTrackProperties(MidiSequence *const layer, Pattern *const pattern)
 {
     if (this->project.getTimeline() != nullptr)
     {
@@ -245,9 +245,9 @@ template<typename T> void AnnotationsTrackMap<T>::onChangeProjectBeatRange(float
 
 template<typename T> void AnnotationsTrackMap<T>::onChangeViewBeatRange(float firstBeat, float lastBeat)
 {
-	this->rollFirstBeat = firstBeat;
-	this->rollLastBeat = lastBeat;
-	this->resized();
+    this->rollFirstBeat = firstBeat;
+    this->rollLastBeat = lastBeat;
+    this->resized();
 }
 
 
@@ -310,9 +310,9 @@ template<typename T> void AnnotationsTrackMap<T>::showContextMenuFor(T *nc)
 {
     if (! this->project.getTransport().isPlaying())
     {
-		Component *dialog =
-			AnnotationDialog::createEditingDialog(*this, nc->getEvent());
-		App::Layout().showModalNonOwnedDialog(dialog);
+        Component *dialog =
+            AnnotationDialog::createEditingDialog(*this, nc->getEvent());
+        App::Layout().showModalNonOwnedDialog(dialog);
     }
 }
 

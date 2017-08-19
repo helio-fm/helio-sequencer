@@ -70,17 +70,17 @@ void HybridRollCommandPanel::handleCommandMessage (int commandId)
         // если выбрана какая-то аннотация, показываем ее меню, если нет - показываем общее
         {
             const AnnotationEvent *selectedAnnotation = nullptr;
-			const TimeSignatureEvent *selectedTimeSignature = nullptr;
+            const TimeSignatureEvent *selectedTimeSignature = nullptr;
 
-			const ProjectTimeline *timeline = this->project.getTimeline();
+            const ProjectTimeline *timeline = this->project.getTimeline();
             const double seekPosition = this->project.getTransport().getSeekPosition();
 
             if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
             {
-				const double numBeats = double(roll->getNumBeats());
-				const double seekThreshold = (1.0 / numBeats) / 10.0;
+                const double numBeats = double(roll->getNumBeats());
+                const double seekThreshold = (1.0 / numBeats) / 10.0;
 
-				for (int i = 0; i < timeline->getAnnotations()->size(); ++i)
+                for (int i = 0; i < timeline->getAnnotations()->size(); ++i)
                 {
                     if (AnnotationEvent *annotation = dynamic_cast<AnnotationEvent *>(timeline->getAnnotations()->getUnchecked(i)))
                     {
@@ -93,18 +93,18 @@ void HybridRollCommandPanel::handleCommandMessage (int commandId)
                     }
                 }
 
-				for (int i = 0; i < timeline->getTimeSignatures()->size(); ++i)
-				{
-					if (TimeSignatureEvent *ts = dynamic_cast<TimeSignatureEvent *>(timeline->getTimeSignatures()->getUnchecked(i)))
-					{
-						const double tsSeekPosition = roll->getTransportPositionByBeat(ts->getBeat());
-						if (fabs(tsSeekPosition - seekPosition) < seekThreshold)
-						{
-							selectedTimeSignature = ts;
-							break;
-						}
-					}
-				}
+                for (int i = 0; i < timeline->getTimeSignatures()->size(); ++i)
+                {
+                    if (TimeSignatureEvent *ts = dynamic_cast<TimeSignatureEvent *>(timeline->getTimeSignatures()->getUnchecked(i)))
+                    {
+                        const double tsSeekPosition = roll->getTransportPositionByBeat(ts->getBeat());
+                        if (fabs(tsSeekPosition - seekPosition) < seekThreshold)
+                        {
+                            selectedTimeSignature = ts;
+                            break;
+                        }
+                    }
+                }
             }
 
             // FIXME при нажатии что-то происходит со звуком, а индикатор едет дальше
@@ -115,10 +115,10 @@ void HybridRollCommandPanel::handleCommandMessage (int commandId)
             {
                 this->emitAnnotationsCallout(new AnnotationCommandPanel(this->project, *selectedAnnotation));
             }
-			else if (selectedTimeSignature != nullptr && MIDIROLL_COMMANDPANEL_SHOULD_SHOW_ANNOTATION_DETAILS)
-			{
-				this->emitAnnotationsCallout(new TimeSignatureCommandPanel(this->project, *selectedTimeSignature));
-			}
+            else if (selectedTimeSignature != nullptr && MIDIROLL_COMMANDPANEL_SHOULD_SHOW_ANNOTATION_DETAILS)
+            {
+                this->emitAnnotationsCallout(new TimeSignatureCommandPanel(this->project, *selectedTimeSignature));
+            }
             else
             {
                 this->emitAnnotationsCallout(new TimelineCommandPanel(this->project));
@@ -220,11 +220,11 @@ void HybridRollCommandPanel::handleCommandMessage (int commandId)
 
 
         case CommandIDs::Undo:
-			this->project.undo();
+            this->project.undo();
             break;
 
         case CommandIDs::Redo:
-			this->project.redo();
+            this->project.redo();
             break;
 
         case CommandIDs::ArpNotes:

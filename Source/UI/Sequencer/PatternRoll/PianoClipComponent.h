@@ -17,7 +17,7 @@
 
 #pragma once
 
-class PianoSequence;
+class MidiTrack;
 
 #include "ClipComponent.h"
 
@@ -25,11 +25,11 @@ class PianoClipComponent : public ClipComponent
 {
 public:
 
-	PianoClipComponent(PianoSequence *layer, HybridRoll &editor, Clip clip);
+    PianoClipComponent(MidiTrack *track, HybridRoll &editor, Clip clip);
 
 protected:
 
-	PianoSequence *layer;
+    MidiTrack *track;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoClipComponent)
 };

@@ -28,60 +28,60 @@ public:
 
     using Id = String;
 
-	Clip();
-	Clip(const Clip &other);
-	explicit Clip(Pattern *owner, float beatVal = 0.f);
+    Clip();
+    Clip(const Clip &other);
+    explicit Clip(Pattern *owner, float beatVal = 0.f);
 
-	Pattern *getPattern() const noexcept;
-	float getStartBeat() const noexcept;
-	String getId() const noexcept;
+    Pattern *getPattern() const noexcept;
+    float getStartBeat() const noexcept;
+    String getId() const noexcept;
 
-	Clip copyWithNewId(Pattern *newOwner = nullptr) const;
-	Clip withParameters(const XmlElement &xml) const;
-	Clip withDeltaBeat(float deltaPosition) const;
+    Clip copyWithNewId(Pattern *newOwner = nullptr) const;
+    Clip withParameters(const XmlElement &xml) const;
+    Clip withDeltaBeat(float deltaPosition) const;
 
-	//===------------------------------------------------------------------===//
-	// Serializable
-	//===------------------------------------------------------------------===//
+    //===------------------------------------------------------------------===//
+    // Serializable
+    //===------------------------------------------------------------------===//
 
-	XmlElement *serialize() const override;
-	void deserialize(const XmlElement &xml) override;
-	void reset() override;
+    XmlElement *serialize() const override;
+    void deserialize(const XmlElement &xml) override;
+    void reset() override;
 
-	//===------------------------------------------------------------------===//
-	// Helpers
-	//===------------------------------------------------------------------===//
+    //===------------------------------------------------------------------===//
+    // Helpers
+    //===------------------------------------------------------------------===//
 
-	Clip &operator=(const Clip &right);
+    Clip &operator=(const Clip &right);
 
-	friend inline bool operator==(const Clip &lhs, const Clip &rhs)
-	{
-		return (&lhs == &rhs || lhs.id == rhs.id);
-	}
+    friend inline bool operator==(const Clip &lhs, const Clip &rhs)
+    {
+        return (&lhs == &rhs || lhs.id == rhs.id);
+    }
 
-	static int compareElements(const Clip &first,
-		const Clip &second);
+    static int compareElements(const Clip &first,
+        const Clip &second);
 
-	int hashCode() const noexcept;
+    int hashCode() const noexcept;
 
 private:
 
-	Pattern *pattern;
+    Pattern *pattern;
 
-	float startBeat;
-	String id;
+    float startBeat;
+    String id;
 
-	static Id createId() noexcept;
+    static Id createId() noexcept;
 
-	JUCE_LEAK_DETECTOR(Clip);
+    JUCE_LEAK_DETECTOR(Clip);
 };
 
 class ClipHashFunction
 {
 public:
 
-	static int generateHash(Clip clip, const int upperLimit) noexcept
-	{
-		return static_cast<int>((static_cast<uint32>(clip.hashCode())) % static_cast<uint32>(upperLimit));
-	}
+    static int generateHash(Clip clip, const int upperLimit) noexcept
+    {
+        return static_cast<int>((static_cast<uint32>(clip.hashCode())) % static_cast<uint32>(upperLimit));
+    }
 };

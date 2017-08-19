@@ -23,6 +23,7 @@
 #include "PlayerThread.h"
 #include "HybridRoll.h"
 #include "AnnotationEvent.h"
+#include "MidiTrack.h"
 
 class TrackMapNoteComponent : public Component
 {
@@ -56,7 +57,7 @@ public:
     
     void paint(Graphics &g) override
     {
-        g.setColour(this->note.getLayer()->getColour().
+        g.setColour(this->note.getColour().
                     interpolatedWith(Colours::white, .35f).
                     withAlpha(this->note.getVelocity() * .3f + .4f));
 
@@ -174,30 +175,30 @@ void PianoTrackMap::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
-void PianoTrackMap::onChangeTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
+void PianoTrackMap::onChangeTrackProperties(MidiTrack *const track)
 {
-    if (!dynamic_cast<const PianoSequence *>(layer)) { return; }
+    if (!dynamic_cast<const PianoSequence *>(track->getSequence())) { return; }
 
-    this->reloadTrackMap();
+    this->repaint(); // this->reloadTrackMap();
 }
 
-void PianoTrackMap::onAddTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
+void PianoTrackMap::onAddTrack(MidiTrack *const track)
 {
-    if (!dynamic_cast<const PianoSequence *>(layer)) { return; }
+    if (!dynamic_cast<const PianoSequence *>(track)) { return; }
 
-    if (layer->size() > 0)
+    if (track->size() > 0)
     {
         this->reloadTrackMap();
     }
 }
 
-void PianoTrackMap::onRemoveTrack(MidiSequence *const layer, Pattern *const pattern /*= nullptr*/)
+void PianoTrackMap::onRemoveTrack(MidiTrack *const track)
 {
-    if (!dynamic_cast<const PianoSequence *>(layer)) { return; }
+    if (!dynamic_cast<const PianoSequence *>(track)) { return; }
 
-    for (int i = 0; i < layer->size(); ++i)
+    for (int i = 0; i < track->size(); ++i)
     {
-        const Note &note = static_cast<const Note &>(*layer->getUnchecked(i));
+        const Note &note = static_cast<const Note &>(*track->getUnchecked(i));
 
         if (TrackMapNoteComponent *component = this->componentsHashTable[note])
         {
@@ -216,9 +217,9 @@ void PianoTrackMap::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 
 void PianoTrackMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
 {
-	this->rollFirstBeat = firstBeat;
-	this->rollLastBeat = lastBeat;
-	this->resized();
+    this->rollFirstBeat = firstBeat;
+    this->rollLastBeat = lastBeat;
+    this->resized();
 }
 
 
@@ -236,7 +237,7 @@ void PianoTrackMap::reloadTrackMap()
     this->eventComponents.clear();
     this->componentsHashTable.clear();
 
-    const Array<MidiSequence *> &layers = this->project.getLayersList();
+    const Array<MidiSequence *> &layers = this->project.getTracks();
 
     this->setVisible(false);
 

@@ -29,8 +29,8 @@
 AutomationTrackTreeItem::AutomationTrackTreeItem(const String &name) :
     MidiTrackTreeItem(name)
 {
-    this->layer = new AutomationSequence(*this);
-    this->pattern = new Pattern(*this);
+    this->layer = new AutomationSequence(*this, *this);
+    this->pattern = new Pattern(*this, *this);
 
     this->vcsDiffLogic = new VCS::AutomationLayerDiffLogic(*this);
 
@@ -185,7 +185,7 @@ void AutomationTrackTreeItem::resetStateTo(const VCS::TrackedItem &newState)
         }
     }
     
-    this->getSequence()->notifyLayerChanged();
+    this->getSequence()->notifySequenceChanged();
     this->getSequence()->notifyBeatRangeChanged();
 }
 
@@ -247,35 +247,35 @@ void AutomationTrackTreeItem::deserialize(const XmlElement &xml)
 XmlElement *AutomationTrackTreeItem::serializePathDelta() const
 {
     auto xml = new XmlElement(AutoLayerDeltas::layerPath);
-    xml->setAttribute(Serialization::VCS::delta, this->getXPath());
+    xml->setAttribute(Serialization::VCS::delta, this->getTrackName());
     return xml;
 }
 
 XmlElement *AutomationTrackTreeItem::serializeMuteDelta() const
 {
     auto xml = new XmlElement(AutoLayerDeltas::layerMute);
-    xml->setAttribute(Serialization::VCS::delta, this->getSequence()->getMuteStateAsString());
+    xml->setAttribute(Serialization::VCS::delta, this->getTrackMuteStateAsString());
     return xml;
 }
 
 XmlElement *AutomationTrackTreeItem::serializeColourDelta() const
 {
     auto xml = new XmlElement(AutoLayerDeltas::layerColour);
-    xml->setAttribute(Serialization::VCS::delta, this->getSequence()->getColour().toString());
+    xml->setAttribute(Serialization::VCS::delta, this->getTrackColour().toString());
     return xml;
 }
 
 XmlElement *AutomationTrackTreeItem::serializeInstrumentDelta() const
 {
     auto xml = new XmlElement(AutoLayerDeltas::layerInstrument);
-    xml->setAttribute(Serialization::VCS::delta, this->getSequence()->getInstrumentId());
+    xml->setAttribute(Serialization::VCS::delta, this->getTrackInstrumentId());
     return xml;
 }
 
 XmlElement *AutomationTrackTreeItem::serializeControllerDelta() const
 {
     auto xml = new XmlElement(AutoLayerDeltas::layerController);
-    xml->setAttribute(Serialization::VCS::delta, this->getSequence()->getControllerNumber());
+    xml->setAttribute(Serialization::VCS::delta, this->getTrackControllerNumber());
     return xml;
 }
 
@@ -304,11 +304,11 @@ void AutomationTrackTreeItem::resetMuteDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == AutoLayerDeltas::layerMute);
     const String &muteState(state->getStringAttribute(Serialization::VCS::delta));
-    const bool willMute = MidiSequence::isMuted(muteState);
+    const bool willMute = MidiTrack::isTrackMuted(muteState);
     
-    if (willMute != this->getSequence()->isMuted())
+    if (willMute != this->isTrackMuted())
     {
-        this->getSequence()->setMuted(willMute);
+        this->setTrackMuted(willMute);
         this->repaintItem();
     }
 }
@@ -319,9 +319,9 @@ void AutomationTrackTreeItem::resetColourDelta(const XmlElement *state)
     const String &colourString(state->getStringAttribute(Serialization::VCS::delta));
     const Colour &colour(Colour::fromString(colourString));
 
-    if (colour != this->getSequence()->getColour())
+    if (colour != this->getTrackColour())
     {
-        this->getSequence()->setColour(colour);
+        this->setTrackColour(colour);
         this->repaintItem();
     }
 }
@@ -330,14 +330,14 @@ void AutomationTrackTreeItem::resetInstrumentDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == AutoLayerDeltas::layerInstrument);
     const String &instrumentId(state->getStringAttribute(Serialization::VCS::delta));
-    this->getSequence()->setInstrumentId(instrumentId);
+    this->setTrackInstrumentId(instrumentId);
 }
 
 void AutomationTrackTreeItem::resetControllerDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == AutoLayerDeltas::layerController);
     const int ccNumber(state->getIntAttribute(Serialization::VCS::delta));
-    this->getSequence()->setControllerNumber(ccNumber);
+    this->setTrackControllerNumber(ccNumber);
 }
 
 void AutomationTrackTreeItem::resetEventsDelta(const XmlElement *state)

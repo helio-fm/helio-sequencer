@@ -165,7 +165,7 @@ void TreeItemComponentDefault::paintText(Graphics &g, const Rectangle<float> &ar
     
     if (MidiTrackTreeItem *lti = dynamic_cast<MidiTrackTreeItem *>(&this->item))
     {
-        if (lti->isMuted())
+        if (lti->isTrackMuted())
         {
             const int cY = int(area.getCentreY()) + 2;
             g.drawLine(int(area.getX()), cY, int(area.getX()) + this->item.getFont().getStringWidth(this->item.getName()), cY, 1.f);

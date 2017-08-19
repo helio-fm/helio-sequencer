@@ -137,7 +137,7 @@ public:
                                       const Colour &backgroundColour,
                                       bool isMouseOverButton, bool isButtonDown) override;
 
-	
+    
     //===------------------------------------------------------------------===//
     // Scrollbars
     //===------------------------------------------------------------------===//

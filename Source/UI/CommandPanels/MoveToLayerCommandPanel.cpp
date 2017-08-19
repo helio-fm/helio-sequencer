@@ -61,21 +61,21 @@ void MoveToLayerCommandPanel::handleCommandMessage(int commandId)
         const Lasso::GroupedSelections &selections = this->roll.getLassoSelection().getGroupedSelections();
         const int numSelected = this->roll.getLassoSelection().getNumSelected();
 
-		if (NoteComponent *note = dynamic_cast<NoteComponent *>(this->roll.getLassoSelection().getSelectedItem(0)))
-		{
-			const MidiSequence *layerOfFirstSelected = (numSelected > 0) ? (note->getNote().getLayer()) : nullptr;
-			const bool hasMultiLayerSelection = (selections.size() > 1);
-			const bool alreadyBelongsTo = hasMultiLayerSelection ? false : (layerItems[layerIndex]->getSequence() == layerOfFirstSelected);
+        if (NoteComponent *note = dynamic_cast<NoteComponent *>(this->roll.getLassoSelection().getSelectedItem(0)))
+        {
+            const MidiSequence *layerOfFirstSelected = (numSelected > 0) ? (note->getNote().getLayer()) : nullptr;
+            const bool hasMultiLayerSelection = (selections.size() > 1);
+            const bool alreadyBelongsTo = hasMultiLayerSelection ? false : (layerItems[layerIndex]->getSequence() == layerOfFirstSelected);
 
-			if (!alreadyBelongsTo)
-			{
-				//Logger::writeToLog("Moving notes to " + layerItems[layerIndex]->getXPath());
-				PianoRollToolbox::moveToLayer(this->roll.getLassoSelection(), layerItems[layerIndex]->getSequence());
-				layerItems[layerIndex]->setSelected(false, false, sendNotification);
-				layerItems[layerIndex]->setSelected(true, true, sendNotification);
-				this->dismiss();
-			}
-		}
+            if (!alreadyBelongsTo)
+            {
+                //Logger::writeToLog("Moving notes to " + layerItems[layerIndex]->getXPath());
+                PianoRollToolbox::moveToLayer(this->roll.getLassoSelection(), layerItems[layerIndex]->getSequence());
+                layerItems[layerIndex]->setSelected(false, false, sendNotification);
+                layerItems[layerIndex]->setSelected(true, true, sendNotification);
+                this->dismiss();
+            }
+        }
 
         return;
     }
@@ -97,7 +97,7 @@ void MoveToLayerCommandPanel::initLayersPanel(bool shouldAddBackButton)
     {
         const Lasso::GroupedSelections &selections = this->roll.getLassoSelection().getGroupedSelections();
         const int numSelected = this->roll.getLassoSelection().getNumSelected();
-		const auto &event = this->roll.getLassoSelection().getFirstAs<NoteComponent>()->getNote();
+        const auto &event = this->roll.getLassoSelection().getFirstAs<NoteComponent>()->getNote();
         const MidiSequence *layerOfFirstSelected = (numSelected > 0) ? (event.getSequence()) : nullptr;
         const bool hasMultiLayerSelection = (selections.size() > 1);
         const bool belongsTo = hasMultiLayerSelection ? false : (layers.getUnchecked(i)->getSequence() == layerOfFirstSelected);

@@ -24,7 +24,7 @@ class AnnotationsSequence : public MidiSequence
 {
 public:
 
-    explicit AnnotationsSequence(ProjectEventDispatcher &parent);
+    explicit AnnotationsSequence(MidiTrack &track, ProjectEventDispatcher &dispatcher);
 
 
     //===------------------------------------------------------------------===//

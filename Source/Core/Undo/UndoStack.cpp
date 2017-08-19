@@ -22,10 +22,9 @@
 
 #include "ProjectTreeItem.h"
 
-#include "PianoLayerTreeItemActions.h"
-#include "AutoLayerTreeItemActions.h"
-#include "LayerTreeItemActions.h"
-#include "MidiLayerActions.h"
+#include "MidiTrackActions.h"
+#include "PianoTrackActions.h"
+#include "AutomationTrackActions.h"
 #include "NoteActions.h"
 #include "AnnotationEventActions.h"
 #include "AutomationEventActions.h"
@@ -113,18 +112,18 @@ struct UndoStack::ActionSet
     
     UndoAction *createUndoActionsByTagName(const String &tagName)
     {
-        if      (tagName == Serialization::Undo::pianoLayerTreeItemInsertAction)        { return new PianoTrackInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::pianoLayerTreeItemRemoveAction)        { return new PianoTrackRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::autoLayerTreeItemInsertAction)         { return new AutomationTrackInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::autoLayerTreeItemRemoveAction)         { return new AutomationTrackRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::layerTreeItemRenameAction)             { return new MidiTrackRenameAction(this->project); }
-        else if (tagName == Serialization::Undo::midiLayerChangeColourAction)           { return new MidiTrackChangeColourAction(this->project); }
-        else if (tagName == Serialization::Undo::midiLayerChangeInstrumentAction)       { return new MidiTrackChangeInstrumentAction(this->project); }
-        else if (tagName == Serialization::Undo::midiLayerMuteAction)                   { return new MidiTrackMuteAction(this->project); }
-		else if (tagName == Serialization::Undo::patternClipInsertAction)				{ return new PatternClipInsertAction(this->project); }
-		else if (tagName == Serialization::Undo::patternClipRemoveAction)				{ return new PatternClipRemoveAction(this->project); }
-		else if (tagName == Serialization::Undo::patternClipChangeAction)				{ return new PatternClipChangeAction(this->project); }
-		else if (tagName == Serialization::Undo::noteInsertAction)                      { return new NoteInsertAction(this->project); }
+        if      (tagName == Serialization::Undo::pianoTrackInsertAction)                { return new PianoTrackInsertAction(this->project); }
+        else if (tagName == Serialization::Undo::pianoTrackRemoveAction)                { return new PianoTrackRemoveAction(this->project); }
+        else if (tagName == Serialization::Undo::automationTrackInsertAction)           { return new AutomationTrackInsertAction(this->project); }
+        else if (tagName == Serialization::Undo::automationTrackRemoveAction)           { return new AutomationTrackRemoveAction(this->project); }
+        else if (tagName == Serialization::Undo::midiTrackRenameAction)                 { return new MidiTrackRenameAction(this->project); }
+        else if (tagName == Serialization::Undo::midiTrackChangeColourAction)           { return new MidiTrackChangeColourAction(this->project); }
+        else if (tagName == Serialization::Undo::midiTrackChangeInstrumentAction)       { return new MidiTrackChangeInstrumentAction(this->project); }
+        else if (tagName == Serialization::Undo::midiTrackMuteAction)                   { return new MidiTrackMuteAction(this->project); }
+        else if (tagName == Serialization::Undo::patternClipInsertAction)               { return new PatternClipInsertAction(this->project); }
+        else if (tagName == Serialization::Undo::patternClipRemoveAction)               { return new PatternClipRemoveAction(this->project); }
+        else if (tagName == Serialization::Undo::patternClipChangeAction)               { return new PatternClipChangeAction(this->project); }
+        else if (tagName == Serialization::Undo::noteInsertAction)                      { return new NoteInsertAction(this->project); }
         else if (tagName == Serialization::Undo::noteRemoveAction)                      { return new NoteRemoveAction(this->project); }
         else if (tagName == Serialization::Undo::noteChangeAction)                      { return new NoteChangeAction(this->project); }
         else if (tagName == Serialization::Undo::notesGroupInsertAction)                { return new NotesGroupInsertAction(this->project); }

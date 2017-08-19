@@ -66,13 +66,13 @@ void RequestProjectsListThread::run()
         url = url.withParameter(Serialization::Network::clientCheck, saltedDeviceIdHash);
 
         {
-			StringPairArray responseHeaders;
-			int statusCode = 0;
+            StringPairArray responseHeaders;
+            int statusCode = 0;
 
-			ScopedPointer<InputStream> downloadStream(
-				url.createInputStream(true, nullptr, nullptr, HELIO_USERAGENT, 0, &responseHeaders, &statusCode));
+            ScopedPointer<InputStream> downloadStream(
+                url.createInputStream(true, nullptr, nullptr, HELIO_USERAGENT, 0, &responseHeaders, &statusCode));
 
-			//Logger::writeToLog("statusCode: " + String(statusCode));
+            //Logger::writeToLog("statusCode: " + String(statusCode));
 
             if (!downloadStream || statusCode != 200)
             {
@@ -80,15 +80,15 @@ void RequestProjectsListThread::run()
             }
 
             const String &rawResult = downloadStream->readEntireStreamAsString();
-			//Logger::writeToLog(rawResult);
+            //Logger::writeToLog(rawResult);
 
             var json;
             Result result = JSON::parse(rawResult, json);
 
             if (! result.wasOk())
             {
-				Logger::writeToLog("JSON parse error: " + result.getErrorMessage());
-				continue;
+                Logger::writeToLog("JSON parse error: " + result.getErrorMessage());
+                continue;
             }
 
             const Identifier idProperty("id");
@@ -99,7 +99,7 @@ void RequestProjectsListThread::run()
 
             if (json.isArray())
             {
-				for (int i = 0; i < json.size(); ++i)
+                for (int i = 0; i < json.size(); ++i)
                 {
                     var &child(json[i]);
                     jassert (!child.isVoid());
@@ -117,8 +117,8 @@ void RequestProjectsListThread::run()
                             if (key == idProperty)
                             {
                                 description.projectId = value;
-								//Logger::writeToLog("::" + description.projectId + "::");
-							}
+                                //Logger::writeToLog("::" + description.projectId + "::");
+                            }
                             else if (key == keyProperty)
                             {
                                 description.projectKey = DataEncoder::deobfuscateString(value);
@@ -127,20 +127,20 @@ void RequestProjectsListThread::run()
                             else if (key == titleProperty)
                             {
                                 description.projectTitle = value;
-								//Logger::writeToLog("::" + description.projectTitle + "::");
-							}
+                                //Logger::writeToLog("::" + description.projectTitle + "::");
+                            }
                             else if (key == timeProperty)
                             {
                                 description.lastModifiedTime = int64(value) * 1000;
-							}
+                            }
                             else if (key == emailProperty)
                             {
                                 this->userEmail = value;
-							}
+                            }
                         }
 
                         if (description.projectId.isNotEmpty() && 
-							description.projectKey.isNotEmpty())
+                            description.projectKey.isNotEmpty())
                         {
                             ScopedWriteLock lock(this->listLock);
                             this->projectsList.add(description);
@@ -152,34 +152,34 @@ void RequestProjectsListThread::run()
             if (this->userEmail.isEmpty())
             {
                 MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
-					{
-						RequestProjectsListThread *self = static_cast<RequestProjectsListThread *>(data);
-						self->listener->listRequestAuthorizationFailed();
-						return nullptr;
-					},
-					this);
+                    {
+                        RequestProjectsListThread *self = static_cast<RequestProjectsListThread *>(data);
+                        self->listener->listRequestAuthorizationFailed();
+                        return nullptr;
+                    },
+                    this);
 
                 return;
             }
 
             MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
-				{
-					RequestProjectsListThread *self = static_cast<RequestProjectsListThread *>(data);
-					ScopedReadLock lock(self->listLock);
-					self->listener->listRequestOk(self->userEmail, self->projectsList);
-					return nullptr;
-				},
-				this);
+                {
+                    RequestProjectsListThread *self = static_cast<RequestProjectsListThread *>(data);
+                    ScopedReadLock lock(self->listLock);
+                    self->listener->listRequestOk(self->userEmail, self->projectsList);
+                    return nullptr;
+                },
+                this);
 
             return;
         }
     }
 
     MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
-		{
-			RequestProjectsListThread *self = static_cast<RequestProjectsListThread *>(data);
-			self->listener->listRequestConnectionFailed();
-			return nullptr;
-		},
-		this);
+        {
+            RequestProjectsListThread *self = static_cast<RequestProjectsListThread *>(data);
+            self->listener->listRequestConnectionFailed();
+            return nullptr;
+        },
+        this);
 }

@@ -36,9 +36,9 @@
 // TODO: check deadlocks?
 
 Playhead::Playhead(HybridRoll &parentRoll,
-	Transport &owner,
-	Playhead::Listener *movementListener /*= nullptr*/,
-	int width /*= 2*/) :
+    Transport &owner,
+    Playhead::Listener *movementListener /*= nullptr*/,
+    int width /*= 2*/) :
     roll(parentRoll),
     transport(owner),
     playheadWidth(width + FREE_SPACE),

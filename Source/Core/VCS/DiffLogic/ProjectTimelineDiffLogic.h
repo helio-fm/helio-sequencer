@@ -68,8 +68,7 @@ namespace VCS
 
     private:
 
-        void deserializeChanges(MidiSequence &layer,
-                                const XmlElement *state,
+        void deserializeChanges(const XmlElement *state,
                                 const XmlElement *changes,
                                 OwnedArray<MidiEvent> &stateNotes,
                                 OwnedArray<MidiEvent> &changesNotes) const;

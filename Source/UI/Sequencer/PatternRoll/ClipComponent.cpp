@@ -24,11 +24,11 @@
 #include "Pattern.h"
 
 ClipComponent::ClipComponent(HybridRoll &editor, Clip clip) :
-	HybridRollEventComponent(editor),
+    HybridRollEventComponent(editor),
     clip(clip)
 {
     this->setWantsKeyboardFocus(false);
-	this->setFloatBounds(this->getRoll().getEventBounds(this));
+    this->setFloatBounds(this->getRoll().getEventBounds(this));
 }
 
 const Clip ClipComponent::getClip() const
@@ -38,7 +38,7 @@ const Clip ClipComponent::getClip() const
 
 PatternRoll &ClipComponent::getRoll() const
 {
-	return static_cast<PatternRoll &>(this->roll);
+    return static_cast<PatternRoll &>(this->roll);
 }
 
 
@@ -48,23 +48,23 @@ PatternRoll &ClipComponent::getRoll() const
 
 void ClipComponent::setSelected(bool selected)
 {
-	//this->roll.wantVolumeSliderFor(this, selected);
-	HybridRollEventComponent::setSelected(selected);
+    //this->roll.wantVolumeSliderFor(this, selected);
+    HybridRollEventComponent::setSelected(selected);
 }
 
 float ClipComponent::getBeat() const
 {
-	return this->clip.getStartBeat();
+    return this->clip.getStartBeat();
 }
 
 String ClipComponent::getSelectionGroupId() const
 {
-	return this->clip.getPattern()->getPatternIdAsString();
+    return this->clip.getPattern()->getPatternIdAsString();
 }
 
 String ClipComponent::getId() const
 {
-	return this->clip.getId();
+    return this->clip.getId();
 }
 
 
@@ -99,8 +99,8 @@ void ClipComponent::mouseDown(const MouseEvent &e)
 
 void ClipComponent::paint(Graphics& g)
 {
-	g.setColour(Colours::floralwhite.withAlpha(0.5f));
-	g.fillRoundedRectangle(0, 0, this->getWidth(), this->getHeight(), 5);
+    g.setColour(Colours::floralwhite.withAlpha(0.5f));
+    g.fillRoundedRectangle(0, 0, this->getWidth(), this->getHeight(), 5);
 }
 
 

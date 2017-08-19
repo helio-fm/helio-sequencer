@@ -36,7 +36,7 @@ public:
     UndoAction(project) {}
 
     AutomationEventInsertAction(ProjectTreeItem &project,
-                                String layerId,
+                                String trackId,
                                 const AutomationEvent &target);
 
     bool perform() override;
@@ -49,7 +49,7 @@ public:
 
 private:
 
-    String layerId;
+    String trackId;
     AutomationEvent event;
 
     JUCE_DECLARE_NON_COPYABLE(AutomationEventInsertAction)
@@ -68,7 +68,7 @@ public:
     UndoAction(project) {}
 
     AutomationEventRemoveAction(ProjectTreeItem &project,
-                                String layerId,
+                                String trackId,
                                 const AutomationEvent &target);
 
     bool perform() override;
@@ -81,7 +81,7 @@ public:
 
 private:
 
-    String layerId;
+    String trackId;
     AutomationEvent event;
 
     JUCE_DECLARE_NON_COPYABLE(AutomationEventRemoveAction)
@@ -100,7 +100,7 @@ public:
     UndoAction(project) {}
 
     AutomationEventChangeAction(ProjectTreeItem &project,
-                                String layerId,
+                                String trackId,
                                 const AutomationEvent &target,
                                 const AutomationEvent &newParameters);
 
@@ -115,7 +115,7 @@ public:
 
 private:
 
-    String layerId;
+    String trackId;
 
     AutomationEvent eventBefore;
     AutomationEvent eventAfter;
@@ -137,7 +137,7 @@ public:
     UndoAction(project) {}
     
     AutomationEventsGroupInsertAction(ProjectTreeItem &project,
-                                      String layerId,
+                                      String trackId,
                                       Array<AutomationEvent> &target);
     
     bool perform() override;
@@ -150,7 +150,7 @@ public:
     
 private:
     
-    String layerId;
+    String trackId;
     Array<AutomationEvent> events;
     
     JUCE_DECLARE_NON_COPYABLE(AutomationEventsGroupInsertAction)
@@ -170,7 +170,7 @@ public:
     UndoAction(project) {}
     
     AutomationEventsGroupRemoveAction(ProjectTreeItem &project,
-                                      String layerId,
+                                      String trackId,
                                       Array<AutomationEvent> &target);
     
     bool perform() override;
@@ -183,7 +183,7 @@ public:
     
 private:
     
-    String layerId;
+    String trackId;
     Array<AutomationEvent> events;
     
     JUCE_DECLARE_NON_COPYABLE(AutomationEventsGroupRemoveAction)
@@ -203,7 +203,7 @@ public:
     UndoAction(project) {}
 
     AutomationEventsGroupChangeAction(ProjectTreeItem &project,
-                                      String layerId,
+                                      String trackId,
                                       const Array<AutomationEvent> state1,
                                       const Array<AutomationEvent> state2);
 
@@ -218,7 +218,7 @@ public:
 
 private:
 
-    String layerId;
+    String trackId;
 
     Array<AutomationEvent> eventsBefore;
     Array<AutomationEvent> eventsAfter;

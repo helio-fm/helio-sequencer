@@ -208,8 +208,8 @@ void InstrumentsPage::buttonClicked (Button* buttonThatWasClicked)
 
         if (fc.browseForDirectory())
         {
-			App::Helio()->showModalComponent(new ProgressTooltip());
-			this->pluginManager.scanFolderAndAddResults(fc.getResult());
+            App::Helio()->showModalComponent(new ProgressTooltip());
+            this->pluginManager.scanFolderAndAddResults(fc.getResult());
             this->pluginsList->updateContent();
         }
 #endif
@@ -350,7 +350,7 @@ void InstrumentsPage::changeListenerCallback(ChangeBroadcaster *source)
 
             if (progressIndicator)
             {
-				// Nasty hack -_-
+                // Nasty hack -_-
                 delete progressIndicator;
             }
         }

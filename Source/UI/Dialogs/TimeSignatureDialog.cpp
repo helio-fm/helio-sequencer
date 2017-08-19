@@ -27,17 +27,17 @@
 
 static StringArray getMeters()
 {
-	StringArray c;
-	c.add("2/2");
-	c.add("2/4");
-	c.add("3/4");
-	c.add("4/4");
-	c.add("5/8");
-	c.add("6/8");
-	c.add("7/8");
-	c.add("9/8");
-	c.add("12/8");
-	return c;
+    StringArray c;
+    c.add("2/2");
+    c.add("2/4");
+    c.add("3/4");
+    c.add("4/4");
+    c.add("5/8");
+    c.add("6/8");
+    c.add("7/8");
+    c.add("9/8");
+    c.add("12/8");
+    return c;
 }
 //[/MiscUserDefs]
 
@@ -79,37 +79,37 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
     addAndMakeVisible (separatorV = new SeparatorVertical());
 
     //[UserPreSize]
-	jassert(this->addsNewEvent || this->targetEvent.getLayer() != nullptr);
+    jassert(this->addsNewEvent || this->targetEvent.getLayer() != nullptr);
 
-	if (this->addsNewEvent)
-	{
-		Random r;
-		const auto meters(getMeters());
-		const String meter(meters[r.nextInt(meters.size())]);
-		int numerator;
-		int denominator;
-		TimeSignatureEvent::parseString(meter, numerator, denominator);
-		this->targetEvent = TimeSignatureEvent(this->targetLayer, targetBeat, numerator, denominator);
+    if (this->addsNewEvent)
+    {
+        Random r;
+        const auto meters(getMeters());
+        const String meter(meters[r.nextInt(meters.size())]);
+        int numerator;
+        int denominator;
+        TimeSignatureEvent::parseString(meter, numerator, denominator);
+        this->targetEvent = TimeSignatureEvent(this->targetLayer, targetBeat, numerator, denominator);
 
         this->targetLayer->checkpoint();
-		this->targetLayer->insert(this->targetEvent, true);
+        this->targetLayer->insert(this->targetEvent, true);
 
-		this->messageLabel->setText(TRANS("dialog::timesignature::add::caption"), dontSendNotification);
-		this->okButton->setButtonText(TRANS("dialog::timesignature::add::proceed"));
-		this->removeEventButton->setButtonText(TRANS("dialog::timesignature::add::cancel"));
-	}
-	else
-	{
-		this->messageLabel->setText(TRANS("dialog::timesignature::edit::caption"), dontSendNotification);
-		this->okButton->setButtonText(TRANS("dialog::timesignature::edit::apply"));
-		this->removeEventButton->setButtonText(TRANS("dialog::timesignature::edit::delete"));
-	}
+        this->messageLabel->setText(TRANS("dialog::timesignature::add::caption"), dontSendNotification);
+        this->okButton->setButtonText(TRANS("dialog::timesignature::add::proceed"));
+        this->removeEventButton->setButtonText(TRANS("dialog::timesignature::add::cancel"));
+    }
+    else
+    {
+        this->messageLabel->setText(TRANS("dialog::timesignature::edit::caption"), dontSendNotification);
+        this->okButton->setButtonText(TRANS("dialog::timesignature::edit::apply"));
+        this->removeEventButton->setButtonText(TRANS("dialog::timesignature::edit::delete"));
+    }
 
     this->textEditor->setText(this->targetEvent.toString(), dontSendNotification);
-	this->textEditor->addItemList(getMeters(), 1);
-	this->textEditor->addListener(this);
+    this->textEditor->addItemList(getMeters(), 1);
+    this->textEditor->addListener(this);
 
-	this->separatorH->setAlphaMultiplier(2.5f);
+    this->separatorH->setAlphaMultiplier(2.5f);
     //[/UserPreSize]
 
     setSize (370, 165);
@@ -187,24 +187,24 @@ void TimeSignatureDialog::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == removeEventButton)
     {
         //[UserButtonCode_removeEventButton] -- add your button handler code here..
-		if (this->addsNewEvent)
-		{
-			this->cancelAndDisappear();
-		}
-		else
-		{
-			this->removeEvent();
-			this->disappear();
-		}
+        if (this->addsNewEvent)
+        {
+            this->cancelAndDisappear();
+        }
+        else
+        {
+            this->removeEvent();
+            this->disappear();
+        }
         //[/UserButtonCode_removeEventButton]
     }
     else if (buttonThatWasClicked == okButton)
     {
         //[UserButtonCode_okButton] -- add your button handler code here..
-		if (textEditor->getText().isNotEmpty())
-		{
-			this->disappear();
-		}
+        if (textEditor->getText().isNotEmpty())
+        {
+            this->disappear();
+        }
         //[/UserButtonCode_okButton]
     }
 
@@ -220,21 +220,21 @@ void TimeSignatureDialog::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
     if (comboBoxThatHasChanged == textEditor)
     {
         //[UserComboBoxCode_textEditor] -- add your combo box handling code here..
-		this->updateOkButtonState();
+        this->updateOkButtonState();
 
-		const String meterString(this->textEditor->getText());
-		if (meterString.isNotEmpty())
-		{
-			int numerator;
-			int denominator;
-			TimeSignatureEvent::parseString(meterString, numerator, denominator);
+        const String meterString(this->textEditor->getText());
+        if (meterString.isNotEmpty())
+        {
+            int numerator;
+            int denominator;
+            TimeSignatureEvent::parseString(meterString, numerator, denominator);
 
-			TimeSignatureEvent newEvent = this->targetEvent
-				.withNumerator(numerator)
-				.withDenominator(denominator);
+            TimeSignatureEvent newEvent = this->targetEvent
+                .withNumerator(numerator)
+                .withDenominator(denominator);
 
-			this->sendEventChange(newEvent);
-		}
+            this->sendEventChange(newEvent);
+        }
         //[/UserComboBoxCode_textEditor]
     }
 
@@ -268,7 +268,7 @@ void TimeSignatureDialog::handleCommandMessage (int commandId)
     //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::DismissModalDialogAsync)
     {
-		this->cancelAndDisappear();
+        this->cancelAndDisappear();
     }
     //[/UserCode_handleCommandMessage]
 }
@@ -278,16 +278,16 @@ bool TimeSignatureDialog::keyPressed (const KeyPress& key)
     //[UserCode_keyPressed] -- Add your code here...
     if (key.isKeyCode(KeyPress::escapeKey))
     {
-		this->cancelAndDisappear();
+        this->cancelAndDisappear();
         return true;
     }
     else if (key.isKeyCode(KeyPress::returnKey) ||
              key.isKeyCode(KeyPress::tabKey))
     {
-		if (textEditor->getText().isNotEmpty())
-		{
-			this->disappear();
-		}
+        if (textEditor->getText().isNotEmpty())
+        {
+            this->disappear();
+        }
 
         return true;
     }
@@ -308,78 +308,78 @@ void TimeSignatureDialog::inputAttemptWhenModal()
 
 TimeSignatureDialog *TimeSignatureDialog::createEditingDialog(Component &owner, const TimeSignatureEvent &event)
 {
-	return new TimeSignatureDialog(owner, static_cast<TimeSignaturesSequence *>(event.getLayer()), event, false, 0.f);
+    return new TimeSignatureDialog(owner, static_cast<TimeSignaturesSequence *>(event.getLayer()), event, false, 0.f);
 }
 
 TimeSignatureDialog *TimeSignatureDialog::createAddingDialog(Component &owner, TimeSignaturesSequence *annotationsLayer, float targetBeat)
 {
-	return new TimeSignatureDialog(owner, annotationsLayer, TimeSignatureEvent(), true, targetBeat);
+    return new TimeSignatureDialog(owner, annotationsLayer, TimeSignatureEvent(), true, targetBeat);
 }
 
 void TimeSignatureDialog::updateOkButtonState()
 {
-	const bool textIsEmpty = this->textEditor->getText().isEmpty();
-	this->okButton->setAlpha(textIsEmpty ? 0.5f : 1.f);
-	this->okButton->setEnabled(!textIsEmpty);
+    const bool textIsEmpty = this->textEditor->getText().isEmpty();
+    this->okButton->setAlpha(textIsEmpty ? 0.5f : 1.f);
+    this->okButton->setEnabled(!textIsEmpty);
 }
 
 void TimeSignatureDialog::sendEventChange(TimeSignatureEvent newEvent)
 {
-	if (this->targetLayer != nullptr)
-	{
+    if (this->targetLayer != nullptr)
+    {
         if (!this->addsNewEvent)
         {
             this->cancelChangesIfAny();
             this->targetLayer->checkpoint();
         }
         
-		this->targetLayer->change(this->targetEvent, newEvent, true);
-		this->hasMadeChanges = true;
-	}
+        this->targetLayer->change(this->targetEvent, newEvent, true);
+        this->hasMadeChanges = true;
+    }
 }
 
 void TimeSignatureDialog::removeEvent()
 {
-	if (this->targetLayer != nullptr)
-	{
+    if (this->targetLayer != nullptr)
+    {
         if (!this->addsNewEvent)
         {
             this->cancelChangesIfAny();
             this->targetLayer->checkpoint();
         }
         
-		this->targetLayer->remove(this->targetEvent, true);
-		this->hasMadeChanges = true;
-	}
+        this->targetLayer->remove(this->targetEvent, true);
+        this->hasMadeChanges = true;
+    }
 }
 
 void TimeSignatureDialog::cancelChangesIfAny()
 {
-	if (!this->addsNewEvent &&
+    if (!this->addsNewEvent &&
         this->hasMadeChanges &&
-		this->targetLayer != nullptr)
-	{
-		this->targetLayer->undo();
-		this->hasMadeChanges = false;
-	}
+        this->targetLayer != nullptr)
+    {
+        this->targetLayer->undo();
+        this->hasMadeChanges = false;
+    }
 }
 
 void TimeSignatureDialog::disappear()
 {
-	delete this;
+    delete this;
 }
 
 void TimeSignatureDialog::cancelAndDisappear()
 {
-	this->cancelChangesIfAny(); // Discards possible changes
+    this->cancelChangesIfAny(); // Discards possible changes
 
-	if (this->addsNewEvent &&
-		this->targetLayer != nullptr)
-	{
-		this->targetLayer->undo(); // Discards new event
-	}
+    if (this->addsNewEvent &&
+        this->targetLayer != nullptr)
+    {
+        this->targetLayer->undo(); // Discards new event
+    }
 
-	this->disappear();
+    this->disappear();
 }
 
 //[/MiscUserCode]

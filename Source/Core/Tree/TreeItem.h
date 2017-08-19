@@ -43,7 +43,7 @@ public:
 
     ~TreeItem() override;
     
-	static const String xPathSeparator;
+    static const String xPathSeparator;
 
 
     static String createSafeName(const String &nameStr);

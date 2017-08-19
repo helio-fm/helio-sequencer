@@ -28,7 +28,7 @@ HybridRollEventComponent::HybridRollEventComponent(HybridRoll &editor, bool isGh
     activeState(true),
     anchorBeat(0),
     colour(Colours::white),
-	ghostMode(isGhost),
+    ghostMode(isGhost),
     clickOffset(0, 0)    
 {
     this->setWantsKeyboardFocus(false);
@@ -60,8 +60,8 @@ void HybridRollEventComponent::setActive(bool val, bool force)
 
 void HybridRollEventComponent::setGhostMode()
 {
-	this->ghostMode = true;
-	this->repaint();
+    this->ghostMode = true;
+    this->repaint();
 }
 
 //===----------------------------------------------------------------------===//
@@ -100,16 +100,16 @@ void HybridRollEventComponent::mouseDown(const MouseEvent &e)
 
 void HybridRollEventComponent::setSelected(bool selected)
 {
-	if (this->selectedState != selected)
-	{
-		this->selectedState = selected;
-		this->roll.triggerBatchRepaintFor(this);
-	}
+    if (this->selectedState != selected)
+    {
+        this->selectedState = selected;
+        this->roll.triggerBatchRepaintFor(this);
+    }
 }
 
 bool HybridRollEventComponent::isSelected() const
 {
-	return this->selectedState;
+    return this->selectedState;
 }
 
 

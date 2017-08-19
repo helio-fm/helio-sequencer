@@ -44,10 +44,10 @@ private:
     void run() override;
 
     URL url;
-	
-	ReadWriteLock dataLock;
-	String latestResponse;
     
-	RequestTranslationsThread::Listener *listener;
+    ReadWriteLock dataLock;
+    String latestResponse;
+    
+    RequestTranslationsThread::Listener *listener;
     
 };

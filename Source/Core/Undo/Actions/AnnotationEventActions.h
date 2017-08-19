@@ -36,7 +36,7 @@ public:
     UndoAction(project) {}
 
     AnnotationEventInsertAction(ProjectTreeItem &project,
-                                String layerId,
+                                String trackId,
                                 const AnnotationEvent &target);
 
     bool perform() override;
@@ -49,7 +49,7 @@ public:
 
 private:
 
-    String layerId;
+    String trackId;
     AnnotationEvent event;
 
     JUCE_DECLARE_NON_COPYABLE(AnnotationEventInsertAction)
@@ -68,7 +68,7 @@ public:
     UndoAction(project) {}
 
     AnnotationEventRemoveAction(ProjectTreeItem &project,
-                                String layerId,
+                                String trackId,
                                 const AnnotationEvent &target);
 
     bool perform() override;
@@ -81,7 +81,7 @@ public:
 
 private:
 
-    String layerId;
+    String trackId;
     AnnotationEvent event;
 
     JUCE_DECLARE_NON_COPYABLE(AnnotationEventRemoveAction)
@@ -100,7 +100,7 @@ public:
     UndoAction(project) {}
 
     AnnotationEventChangeAction(ProjectTreeItem &project,
-                                String layerId,
+                                String trackId,
                                 const AnnotationEvent &target,
                                 const AnnotationEvent &newParameters);
 
@@ -115,7 +115,7 @@ public:
 
 private:
 
-    String layerId;
+    String trackId;
     
     AnnotationEvent eventBefore;
     AnnotationEvent eventAfter;
@@ -137,7 +137,7 @@ public:
     UndoAction(project) {}
     
     AnnotationEventsGroupInsertAction(ProjectTreeItem &project,
-                                      String layerId,
+                                      String trackId,
                                       Array<AnnotationEvent> &target);
     
     bool perform() override;
@@ -150,7 +150,7 @@ public:
     
 private:
     
-    String layerId;
+    String trackId;
     Array<AnnotationEvent> annotations;
     
     JUCE_DECLARE_NON_COPYABLE(AnnotationEventsGroupInsertAction)
@@ -170,7 +170,7 @@ public:
     UndoAction(project) {}
     
     AnnotationEventsGroupRemoveAction(ProjectTreeItem &project,
-                                      String layerId,
+                                      String trackId,
                                       Array<AnnotationEvent> &target);
     
     bool perform() override;
@@ -183,7 +183,7 @@ public:
     
 private:
     
-    String layerId;
+    String trackId;
     Array<AnnotationEvent> annotations;
     
     JUCE_DECLARE_NON_COPYABLE(AnnotationEventsGroupRemoveAction)
@@ -203,7 +203,7 @@ public:
     UndoAction(project) {}
 
     AnnotationEventsGroupChangeAction(ProjectTreeItem &project,
-                                      String layerId,
+                                      String trackId,
                                       const Array<AnnotationEvent> state1,
                                       const Array<AnnotationEvent> state2);
 
@@ -218,7 +218,7 @@ public:
 
 private:
 
-    String layerId;
+    String trackId;
     
     Array<AnnotationEvent> eventsBefore;
     Array<AnnotationEvent> eventsAfter;

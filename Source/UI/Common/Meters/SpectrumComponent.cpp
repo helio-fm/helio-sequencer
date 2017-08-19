@@ -40,7 +40,7 @@ static const float kSpectrumFrequencies[] =
       800.f,   900.f,   1000.f,  1120.f,  1250.f,  1400.f,
      1600.f,  1800.f,   2000.f,  2240.f,  2500.f,  2800.f,
      3150.f,  3550.f,   4000.f,  4500.f,  5000.f,  5600.f,
-     6300.f,  7100.f,	8000.f,  9000.f, 10000.f, 11200.f,
+     6300.f,  7100.f,   8000.f,  9000.f, 10000.f, 11200.f,
     12500.f, 14000.f,  16000.f, 18000.f, 20000.f, 22400.f,
     22400.f, 25000.f
 };
@@ -55,18 +55,18 @@ static const float kSpectrumFrequenciesCompact[] =
 };
 
 SpectrumComponent::SpectrumComponent(WeakReference<AudioMonitor> monitor)
-	: Thread("Spectrum Component"),
-	  audioMonitor(std::move(monitor)),
-	  bandCount(HQ_METER_NUM_BANDS),
+    : Thread("Spectrum Component"),
+      audioMonitor(std::move(monitor)),
+      bandCount(HQ_METER_NUM_BANDS),
       spectrumFrequencies(kSpectrumFrequencies),
       peakFalloff(HQ_METER_CYCLES_BEFORE_PEAK_FALLOFF),
-	  skewTime(0),
+      skewTime(0),
       altMode(false)
 {
     // (true, false) will enable switching rendering modes on click
     this->setInterceptsMouseClicks(false, false);
     
-	for (int band = 0; band < this->bandCount; ++band)
+    for (int band = 0; band < this->bandCount; ++band)
     {
         this->bands.add(new SpectrumBand(this));
     }
@@ -88,7 +88,7 @@ void SpectrumComponent::setTargetAnalyzer(WeakReference<AudioMonitor> monitor)
 
 SpectrumComponent::~SpectrumComponent()
 { 
-	this->stopThread(1000);
+    this->stopThread(1000);
 }
 
 bool SpectrumComponent::isCompactMode() const
@@ -98,14 +98,14 @@ bool SpectrumComponent::isCompactMode() const
 
 void SpectrumComponent::run()
 {
-	while (! this->threadShouldExit())
-	{
-		Thread::sleep(jlimit(10, 100, 35 - this->skewTime));
-		const double b = Time::getMillisecondCounterHiRes();
+    while (! this->threadShouldExit())
+    {
+        Thread::sleep(jlimit(10, 100, 35 - this->skewTime));
+        const double b = Time::getMillisecondCounterHiRes();
         this->triggerAsyncUpdate();
-		const double a = Time::getMillisecondCounterHiRes();
-		this->skewTime = int(a - b);
-	}
+        const double a = Time::getMillisecondCounterHiRes();
+        this->skewTime = int(a - b);
+    }
 }
 
 void SpectrumComponent::handleAsyncUpdate()
@@ -140,10 +140,10 @@ void SpectrumComponent::paint(Graphics &g)
         return;
     }
     
-	const int width = this->getWidth();
-	const int height = this->getHeight();
+    const int width = this->getWidth();
+    const int height = this->getHeight();
     
-	Image img(Image::ARGB, width, height, true);
+    Image img(Image::ARGB, width, height, true);
 
     {
         Graphics g1(img);
@@ -173,7 +173,7 @@ void SpectrumComponent::paint(Graphics &g)
     }
     
     // fillAlphaChannelWithCurrentBrush=true is evil, takes up to 9% of CPU on rendering
-	g.drawImageAt(img, 0, 0, false);
+    g.drawImageAt(img, 0, 0, false);
 }
 
 void SpectrumComponent::mouseUp(const MouseEvent& event)

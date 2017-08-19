@@ -23,7 +23,9 @@
 #include "UndoStack.h"
 
 
-AnnotationsSequence::AnnotationsSequence(ProjectEventDispatcher &parent) : MidiSequence(parent)
+AnnotationsSequence::AnnotationsSequence(MidiTrack &track, 
+    ProjectEventDispatcher &dispatcher) :
+    MidiSequence(track, dispatcher)
 {
 }
 
@@ -55,7 +57,7 @@ void AnnotationsSequence::importMidi(const MidiMessageSequence &sequence)
     }
 
     this->notifyBeatRangeChanged();
-    this->notifyLayerChanged();
+    this->notifySequenceChanged();
 }
 
 
@@ -92,8 +94,7 @@ MidiEvent *AnnotationsSequence::insert(const AnnotationEvent &annotation, bool u
     if (undoable)
     {
         this->getUndoStack()->perform(new AnnotationEventInsertAction(*this->getProject(),
-                                                                      this->getLayerIdAsString(),
-                                                                      annotation));
+            this->getLayerIdAsString(), annotation));
     }
     else
     {
@@ -328,12 +329,12 @@ void AnnotationsSequence::deserialize(const XmlElement &xml)
 
     this->sort();
     this->updateBeatRange(false);
-    this->notifyLayerChanged();
+    this->notifySequenceChanged();
 }
 
 void AnnotationsSequence::reset()
 {
     this->midiEvents.clear();
     this->annotationsHashTable.clear();
-    this->notifyLayerChanged();
+    this->notifySequenceChanged();
 }

@@ -17,6 +17,7 @@
 
 #pragma once
 
+class MidiTrack;
 class MidiEvent;
 class MidiSequence;
 class Pattern;
@@ -30,22 +31,23 @@ public:
     ProjectListener() {}
     virtual ~ProjectListener() {}
 
-	virtual void onAddMidiEvent(const MidiEvent &event) = 0;
-	virtual void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) = 0;
+    virtual void onAddMidiEvent(const MidiEvent &event) = 0;
+    virtual void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) = 0;
     virtual void onRemoveMidiEvent(const MidiEvent &event) = 0;
-	virtual void onPostRemoveMidiEvent(MidiSequence *const layer) {}
+    virtual void onPostRemoveMidiEvent(MidiSequence *const layer) {}
 
     virtual void onAddClip(const Clip &clip) {}
     virtual void onChangeClip(const Clip &oldClip, const Clip &newClip) {}
     virtual void onRemoveClip(const Clip &clip) {}
     virtual void onPostRemoveClip(Pattern *const pattern) {}
 
-	virtual void onAddTrack(MidiSequence *const layer, Pattern *const pattern = nullptr) = 0;
-	virtual void onChangeTrack(MidiSequence *const layer, Pattern *const pattern = nullptr) = 0;
-	virtual void onRemoveTrack(MidiSequence *const layer, Pattern *const pattern = nullptr) = 0;
+    virtual void onAddTrack(MidiTrack *const track) = 0;
+    virtual void onRemoveTrack(MidiTrack *const track) = 0;
+    virtual void onChangeTrackProperties(MidiTrack *const track) = 0;
+    virtual void onResetTrackContent(MidiTrack *const track) = 0;
 
     virtual void onChangeProjectInfo(const ProjectInfo *info) {}
     virtual void onChangeProjectBeatRange(float firstBeat, float lastBeat) = 0;
-	virtual void onChangeViewBeatRange(float firstBeat, float lastBeat) = 0;
+    virtual void onChangeViewBeatRange(float firstBeat, float lastBeat) = 0;
 
 };

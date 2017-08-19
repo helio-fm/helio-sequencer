@@ -49,9 +49,9 @@ AnnotationEvent::~AnnotationEvent()
 {
 }
 
-Array<MidiMessage> AnnotationEvent::getSequence() const
+Array<MidiMessage> AnnotationEvent::toMidiMessages() const
 {
-	Array<MidiMessage> result;
+    Array<MidiMessage> result;
     MidiMessage event(MidiMessage::textMetaEvent(1, this->getDescription()));
     event.setTimeStamp(this->beat * Transport::millisecondsPerBeat);
     result.add(event);

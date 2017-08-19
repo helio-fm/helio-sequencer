@@ -24,13 +24,13 @@ static const std::string kBase64Chars =
     "0123456789+/";
 
 static const int kMagicNumber = 
-	static_cast<int>(ByteOrder::littleEndianInt("PR::"));
+    static_cast<int>(ByteOrder::littleEndianInt("PR::"));
 
 static const std::string kXorKey =
-	"2V:-5?Vl%ulG+4-PG0`#:;[DUnB.Qs::"
-	"v<{#]_oaa3NWyGtA[bq>Qf<i,28gV,,;"
-	"y;W6rzn)ij}Ol%Eaxoq),+tx>l|@BS($"
-	"7W9b9|46Fr&%pS!}[>5g5lly|bC]3aQu";
+    "2V:-5?Vl%ulG+4-PG0`#:;[DUnB.Qs::"
+    "v<{#]_oaa3NWyGtA[bq>Qf<i,28gV,,;"
+    "y;W6rzn)ij}Ol%Eaxoq),+tx>l|@BS($"
+    "7W9b9|46Fr&%pS!}[>5g5lly|bC]3aQu";
 
 class TempFile
 {
@@ -165,12 +165,12 @@ static inline std::string encodeBase64(unsigned char const *bytes_to_encode, siz
 
 static inline std::string encodeBase64(const std::string &s)
 {
-	return encodeBase64(reinterpret_cast<const unsigned char *>(s.data()), s.length());
+    return encodeBase64(reinterpret_cast<const unsigned char *>(s.data()), s.length());
 }
 
 static inline bool isBase64(unsigned char c)
 {
-	return (isalnum(c) || (c == '+') || (c == '/'));
+    return (isalnum(c) || (c == '+') || (c == '/'));
 }
 
 static inline std::string decodeBase64(const std::string &encoded_string)
@@ -452,8 +452,8 @@ XmlElement *DataEncoder::createDecryptedXml(const MemoryBlock &buffer,
 
     if (magicNumber != kMagicNumber)
     { 
-		return nullptr;
-	}
+        return nullptr;
+    }
 
     while (!bufferStream.isExhausted())
     {

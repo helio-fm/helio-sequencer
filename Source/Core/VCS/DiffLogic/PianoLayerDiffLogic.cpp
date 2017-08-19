@@ -22,7 +22,6 @@
 #include "PatternDiffLogic.h"
 #include "Note.h"
 #include "PianoSequence.h"
-#include "ProjectEventDispatcher.h"
 #include "SerializationKeys.h"
 
 using namespace VCS;
@@ -43,8 +42,7 @@ static NewSerializedDelta createInstrumentDiff(const XmlElement *state, const Xm
 
 static Array<NewSerializedDelta> createEventsDiffs(const XmlElement *state, const XmlElement *changes);
 
-static void deserializeLayerChanges(MidiSequence &layer,
-    const XmlElement *state, const XmlElement *changes,
+static void deserializeLayerChanges(const XmlElement *state, const XmlElement *changes,
     OwnedArray<Note> &stateNotes, OwnedArray<Note> &changesNotes);
 
 static NewSerializedDelta serializeLayerChanges(Array<const MidiEvent *> changes,
@@ -348,11 +346,9 @@ XmlElement *mergeInstrument(const XmlElement *state, const XmlElement *changes)
 
 XmlElement *mergeNotesAdded(const XmlElement *state, const XmlElement *changes)
 {
-	EmptyEventDispatcher dispatcher;
-    PianoSequence emptyLayer(dispatcher);
     OwnedArray<Note> stateNotes;
     OwnedArray<Note> changesNotes;
-    deserializeLayerChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    deserializeLayerChanges(state, changes, stateNotes, changesNotes);
 
     Array<const MidiEvent *> result;
 
@@ -383,11 +379,9 @@ XmlElement *mergeNotesAdded(const XmlElement *state, const XmlElement *changes)
 
 XmlElement *mergeNotesRemoved(const XmlElement *state, const XmlElement *changes)
 {
-	EmptyEventDispatcher dispatcher;
-    PianoSequence emptyLayer(dispatcher);
     OwnedArray<Note> stateNotes;
     OwnedArray<Note> changesNotes;
-    deserializeLayerChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    deserializeLayerChanges(state, changes, stateNotes, changesNotes);
 
     Array<const MidiEvent *> result;
 
@@ -415,11 +409,9 @@ XmlElement *mergeNotesRemoved(const XmlElement *state, const XmlElement *changes
 
 XmlElement *mergeNotesChanged(const XmlElement *state, const XmlElement *changes)
 {
-	EmptyEventDispatcher dispatcher;
-    PianoSequence emptyLayer(dispatcher);
     OwnedArray<Note> stateNotes;
     OwnedArray<Note> changesNotes;
-    deserializeLayerChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    deserializeLayerChanges(state, changes, stateNotes, changesNotes);
 
     Array<const MidiEvent *> result;
 
@@ -493,15 +485,13 @@ NewSerializedDelta createInstrumentDiff(const XmlElement *state, const XmlElemen
 
 Array<NewSerializedDelta> createEventsDiffs(const XmlElement *state, const XmlElement *changes)
 {
-	EmptyEventDispatcher dispatcher;
-    PianoSequence emptyLayer(dispatcher);
     OwnedArray<Note> stateNotes;
     OwnedArray<Note> changesNotes;
 
     // вот здесь по уму надо десериализовать слои
     // а для этого надо, чтоб в слоях не было ничего, кроме нот
     // поэтому пока есть, как есть, и это не критично
-    deserializeLayerChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    deserializeLayerChanges(state, changes, stateNotes, changesNotes);
 
     Array<NewSerializedDelta> res;
 
@@ -601,8 +591,7 @@ Array<NewSerializedDelta> createEventsDiffs(const XmlElement *state, const XmlEl
 }
 
 
-void deserializeLayerChanges(MidiSequence &layer,
-        const XmlElement *state,
+void deserializeLayerChanges(const XmlElement *state,
         const XmlElement *changes,
         OwnedArray<Note> &stateNotes,
         OwnedArray<Note> &changesNotes)
@@ -611,7 +600,7 @@ void deserializeLayerChanges(MidiSequence &layer,
     {
         forEachXmlChildElementWithTagName(*state, e, Serialization::Core::note)
         {
-            auto note = new Note(&layer, 0, 0, 0, 0);
+            auto note = new Note();
             note->deserialize(*e);
             stateNotes.addSorted(*note, note);
         }
@@ -621,7 +610,7 @@ void deserializeLayerChanges(MidiSequence &layer,
     {
         forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::note)
         {
-            auto note = new Note(&layer, 0, 0, 0, 0);
+            auto note = new Note();
             note->deserialize(*e);
             changesNotes.addSorted(*note, note);
         }
