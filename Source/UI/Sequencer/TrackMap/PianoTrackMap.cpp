@@ -179,14 +179,22 @@ void PianoTrackMap::onChangeTrackProperties(MidiTrack *const track)
 {
     if (!dynamic_cast<const PianoSequence *>(track->getSequence())) { return; }
 
-    this->repaint(); // this->reloadTrackMap();
+    this->repaint();
+}
+
+void PianoTrackMap::onResetTrackContent(MidiTrack *const track)
+{
+    if (!dynamic_cast<const PianoSequence *>(track->getSequence())) { return; }
+
+    this->reloadTrackMap();
+
 }
 
 void PianoTrackMap::onAddTrack(MidiTrack *const track)
 {
-    if (!dynamic_cast<const PianoSequence *>(track)) { return; }
+    if (!dynamic_cast<const PianoSequence *>(track->getSequence())) { return; }
 
-    if (track->size() > 0)
+    if (track->getSequence()->size() > 0)
     {
         this->reloadTrackMap();
     }
@@ -194,11 +202,11 @@ void PianoTrackMap::onAddTrack(MidiTrack *const track)
 
 void PianoTrackMap::onRemoveTrack(MidiTrack *const track)
 {
-    if (!dynamic_cast<const PianoSequence *>(track)) { return; }
+    if (!dynamic_cast<const PianoSequence *>(track->getSequence())) { return; }
 
-    for (int i = 0; i < track->size(); ++i)
+    for (int i = 0; i < track->getSequence()->size(); ++i)
     {
-        const Note &note = static_cast<const Note &>(*track->getUnchecked(i));
+        const Note &note = static_cast<const Note &>(*track->getSequence()->getUnchecked(i));
 
         if (TrackMapNoteComponent *component = this->componentsHashTable[note])
         {
@@ -237,15 +245,15 @@ void PianoTrackMap::reloadTrackMap()
     this->eventComponents.clear();
     this->componentsHashTable.clear();
 
-    const Array<MidiSequence *> &layers = this->project.getTracks();
+    const auto &tracks = this->project.getTracks();
 
     this->setVisible(false);
 
-    for (auto layer : layers)
+    for (auto track : tracks)
     {
-        for (int j = 0; j < layer->size(); ++j)
+        for (int j = 0; j < track->getSequence()->size(); ++j)
         {
-            MidiEvent *event = layer->getUnchecked(j);
+            MidiEvent *event = track->getSequence()->getUnchecked(j);
 
             if (Note *note = dynamic_cast<Note *>(event))
             {

@@ -112,7 +112,7 @@ void AutomationCurveHelper::mouseDown (const MouseEvent& e)
 
     if (e.mods.isLeftButtonDown())
     {
-        this->event.getLayer()->checkpoint();
+        this->event.getSequence()->checkpoint();
         this->dragger.startDraggingComponent(this, e);
         this->anchor = this->getBounds().getCentre();
         this->curveAnchor = this->getCurvature();
@@ -147,7 +147,7 @@ void AutomationCurveHelper::mouseDrag (const MouseEvent& e)
             //Logger::writeToLog(String(newCurvature));
 
             // todo! right helper dragging
-            AutomationSequence *autoLayer = static_cast<AutomationSequence *>(this->event.getLayer());
+            AutomationSequence *autoLayer = static_cast<AutomationSequence *>(this->event.getSequence());
             autoLayer->change(this->event, this->event.withCurvature(newCurvature), true);
         }
     }

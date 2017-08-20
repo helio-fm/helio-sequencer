@@ -273,6 +273,7 @@
             <FILE id="czxRrv" name="TimeSignaturesSequence.h" compile="0" resource="0"
                   file="../../Source/Core/Midi/Sequences/TimeSignaturesSequence.h"/>
           </GROUP>
+          <FILE id="MrLUNm" name="MidiTrack.cpp" compile="1" resource="0" file="../../Source/Core/Midi/MidiTrack.cpp"/>
           <FILE id="BA8BhP" name="MidiTrack.h" compile="0" resource="0" file="../../Source/Core/Midi/MidiTrack.h"/>
         </GROUP>
         <GROUP id="{9C34DE9F-57B6-7B3A-C005-1E16E0BF57B2}" name="Network">
@@ -470,6 +471,8 @@
                   file="../../Source/Core/VCS/DiffLogic/AutomationLayerDiffLogic.h"/>
             <FILE id="tzU3Zw" name="DiffLogic.cpp" compile="1" resource="0" file="../../Source/Core/VCS/DiffLogic/DiffLogic.cpp"/>
             <FILE id="o2iVIn" name="DiffLogic.h" compile="0" resource="0" file="../../Source/Core/VCS/DiffLogic/DiffLogic.h"/>
+            <FILE id="vlvaNu" name="MidiTrackDeltas.h" compile="0" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/MidiTrackDeltas.h"/>
             <FILE id="sUuTah" name="PatternDeltas.h" compile="0" resource="0" file="../../Source/Core/VCS/DiffLogic/PatternDeltas.h"/>
             <FILE id="mLsD5l" name="PatternDiffLogic.h" compile="0" resource="0"
                   file="../../Source/Core/VCS/DiffLogic/PatternDiffLogic.h"/>

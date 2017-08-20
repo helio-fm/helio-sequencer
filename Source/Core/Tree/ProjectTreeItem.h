@@ -126,7 +126,7 @@ public:
     void redo();
     void clearUndoHistory();
 
-    Pattern *getPatternWithId(const String &uuid);
+    Pattern *findPatternByTrackId(const String &uuid);
 
     template<typename T>
     T *findSequenceByTrackId(const String &trackId)

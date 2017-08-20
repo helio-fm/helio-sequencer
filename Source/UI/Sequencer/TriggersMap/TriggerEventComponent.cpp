@@ -161,7 +161,7 @@ void TriggerEventComponent::mouseDown (const MouseEvent& e)
     //[UserCode_mouseDown] -- Add your code here...
     if (e.mods.isLeftButtonDown())
     {
-        this->event.getLayer()->checkpoint();
+        this->event.getSequence()->checkpoint();
         this->dragger.startDraggingComponent(this, e);
         this->draggingState = true;
     }
@@ -252,7 +252,7 @@ void TriggerEventComponent::mouseUp (const MouseEvent& e)
 void TriggerEventComponent::drag(float targetBeat)
 {
     float newRoundBeat = targetBeat;
-    AutomationSequence *autoLayer = static_cast<AutomationSequence *>(this->event.getLayer());
+    AutomationSequence *autoLayer = static_cast<AutomationSequence *>(this->event.getSequence());
 
     // ограничим перемещение отрезком между двумя соседними компонентами
     const int myIndex = autoLayer->indexOfSorted(&this->event);

@@ -119,7 +119,7 @@ void AutomationEventComponent::mouseDown (const MouseEvent& e)
     //[UserCode_mouseDown] -- Add your code here...
     if (e.mods.isLeftButtonDown())
     {
-        this->event.getLayer()->checkpoint();
+        this->event.getSequence()->checkpoint();
         this->dragger.startDraggingComponent(this, e);
         this->startDragging();
     }
@@ -140,7 +140,7 @@ void AutomationEventComponent::mouseDrag (const MouseEvent& e)
             if (eventChanged)
             {
                 this->setMouseCursor(MouseCursor::DraggingHandCursor);
-                AutomationSequence *autoLayer = static_cast<AutomationSequence *>(this->event.getLayer());
+                AutomationSequence *autoLayer = static_cast<AutomationSequence *>(this->event.getSequence());
                 autoLayer->change(this->event, this->continueDragging(deltaBeat, deltaValue), true);
             }
             else

@@ -199,7 +199,7 @@ void TriggersTrackMap::insertNewEventAt(const MouseEvent &e, bool shouldAddTrigg
 
 void TriggersTrackMap::removeEventIfPossible(const AutomationEvent &e)
 {
-    AutomationSequence *autoLayer = static_cast<AutomationSequence *>(e.getLayer());
+    AutomationSequence *autoLayer = static_cast<AutomationSequence *>(e.getSequence());
     
     if (autoLayer->size() > 1)
     {
@@ -242,7 +242,7 @@ float TriggersTrackMap::getBeatByXPosition(int x) const
 
 void TriggersTrackMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    if (newEvent.getLayer() == this->layer)
+    if (newEvent.getSequence() == this->layer)
     {
         const AutomationEvent &autoEvent = static_cast<const AutomationEvent &>(oldEvent);
         const AutomationEvent &newAutoEvent = static_cast<const AutomationEvent &>(newEvent);
@@ -297,7 +297,7 @@ void TriggersTrackMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEv
 
 void TriggersTrackMap::onAddMidiEvent(const MidiEvent &event)
 {
-    if (event.getLayer() == this->layer)
+    if (event.getSequence() == this->layer)
     {
         const AutomationEvent &autoEvent = static_cast<const AutomationEvent &>(event);
         
@@ -332,7 +332,7 @@ void TriggersTrackMap::onAddMidiEvent(const MidiEvent &event)
 
 void TriggersTrackMap::onRemoveMidiEvent(const MidiEvent &event)
 {
-    if (event.getLayer() == this->layer)
+    if (event.getSequence() == this->layer)
     {
         const AutomationEvent &autoEvent = static_cast<const AutomationEvent &>(event);
         
@@ -367,12 +367,25 @@ void TriggersTrackMap::onChangeTrackProperties(MidiTrack *const track)
 {
     if (this->layer != nullptr && track->getSequence() == this->layer)
     {
-        this->repaint(); // this->reloadTrack();
+        this->repaint();
+    }
+}
+
+void TriggersTrackMap::onResetTrackContent(MidiTrack *const track)
+{
+    if (this->layer != nullptr && track->getSequence() == this->layer)
+    {
+        this->reloadTrack();
     }
 }
 
 void TriggersTrackMap::onAddTrack(MidiTrack *const track)
 {
+    // TODO remove?
+    if (this->layer != nullptr && track->getSequence() == this->layer)
+    {
+        this->reloadTrack();
+    }
 }
 
 void TriggersTrackMap::onRemoveTrack(MidiTrack *const track)

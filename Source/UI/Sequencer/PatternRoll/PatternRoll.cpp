@@ -50,6 +50,16 @@
 #define ROWS_OF_TWO_OCTAVES 24
 #define DEFAULT_CLIP_LENGTH 1.0f
 
+//void dumpDebugInfo(Array<MidiTrack *> tracks)
+//{
+//    Logger::writeToLog("--- tracks:");
+//    for (int i = 0; i < tracks.size(); i++)
+//    {
+//        Logger::writeToLog(tracks[i]->getTrackName());
+//    }
+//}
+
+
 PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
     Viewport &viewportRef,
     WeakReference<AudioMonitor> clippingDetector) :
@@ -155,11 +165,11 @@ void PatternRoll::reloadRollContent()
 
             if (auto pianoLayer = dynamic_cast<PianoSequence *>(sequence))
             {
-                clipComponent = new PianoClipComponent(pianoLayer, *this, clip);
+                clipComponent = new PianoClipComponent(track, *this, clip);
             }
             else if (auto autoLayer = dynamic_cast<AutomationSequence *>(sequence))
             {
-                clipComponent = new AutomationClipComponent(autoLayer, *this, clip);
+                clipComponent = new AutomationClipComponent(track, *this, clip);
             }
 
             if (clipComponent != nullptr)
@@ -230,12 +240,14 @@ Rectangle<float> PatternRoll::getEventBounds(FloatBoundsComponent *mc) const
 Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float beat) const
 {
     const float startOffsetBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
-    // TODO fix x, add starting beat?
+
+    // TODO fix x, add correct sequence starting beat
     const float x = this->barWidth * (beat - startOffsetBeat) / NUM_BEATS_IN_BAR;
     const Pattern *pattern = clip.getPattern();
 
     MidiTrack *track = clip.getPattern()->getTrack();
     int trackIndex = this->tracks.indexOfSorted(*track, track);
+
     const MidiSequence *sequence = track->getSequence();
     jassert(sequence != nullptr);
 
@@ -306,7 +318,19 @@ void PatternRoll::onChangeTrackProperties(MidiTrack *const track)
 {
     if (Pattern *pattern = track->getPattern())
     {
-        this->repaint(); // this->reloadRollContent();
+        this->tracks.removeAllInstancesOf(track);
+        this->tracks.addSorted(*track, track);
+        this->repaint();
+    }
+}
+
+void PatternRoll::onResetTrackContent(MidiTrack *const track)
+{
+    if (Pattern *pattern = track->getPattern())
+    {
+        this->tracks.removeAllInstancesOf(track);
+        this->tracks.addSorted(*track, track);
+        this->reloadRollContent();
     }
 }
 
@@ -335,7 +359,6 @@ void PatternRoll::onRemoveTrack(MidiTrack *const track)
 
 void PatternRoll::onAddClip(const Clip &clip)
 {
-    // TODO create PianoClipComponent or AutomationClipComponent
     ClipComponent *clipComponent = nullptr;
     auto track = clip.getPattern()->getTrack();
     auto sequence = track->getSequence();
@@ -499,9 +522,9 @@ void PatternRoll::clipboardPaste(const XmlElement &xml)
         Array<Clip> pastedClips;
         const String patternId = patternElement->getStringAttribute(Serialization::Clipboard::patternId);
         
-        if (nullptr != this->project.getPatternWithId(patternId))
+        if (nullptr != this->project.findPatternByTrackId(patternId))
         {
-            Pattern *targetPattern = this->project.getPatternWithId(patternId);
+            Pattern *targetPattern = this->project.findPatternByTrackId(patternId);
             PianoTrackTreeItem *targetLayerItem = this->project.findTrackById<PianoTrackTreeItem>(patternId);
             
             forEachXmlChildElementWithTagName(*patternElement, clipElement, Serialization::Core::clip)

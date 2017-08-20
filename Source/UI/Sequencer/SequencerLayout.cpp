@@ -567,23 +567,21 @@ void SequencerLayout::setActiveMidiLayers(Array<MidiSequence *> tracks, MidiSequ
     }
 }
 
-void SequencerLayout::hideAutomationEditor(AutomationSequence *targetLayer)
+void SequencerLayout::hideAutomationEditor(AutomationSequence *sequence)
 {
-    const String &layerId = targetLayer->getLayerId().toString();
-    
-    if (this->automationEditorsLinks.contains(layerId))
+    if (this->automationEditorsLinks.contains(sequence->getTrackId()))
     {
-        this->toggleShowAutomationEditor(targetLayer);
+        this->toggleShowAutomationEditor(sequence);
     }
 }
 
-bool SequencerLayout::toggleShowAutomationEditor(AutomationSequence *targetLayer)
+bool SequencerLayout::toggleShowAutomationEditor(AutomationSequence *sequence)
 {
     // test rolls switching:
     this->rollContainer->startRollSwitchAnimation();
     return false;
 
-    const String &layerId = targetLayer->getLayerId().toString();
+    const String &trackId = sequence->getTrackId();
     
     // special case for the tempo track - let's show it on the scroller
     //if (targetLayer->isTempoLayer())
@@ -605,14 +603,14 @@ bool SequencerLayout::toggleShowAutomationEditor(AutomationSequence *targetLayer
     //    return addTrackMode;
     //}
     
-    if (targetLayer->isSustainPedalLayer())
+    if (sequence->getTrack()->isSustainPedalTrack())
     {
         TriggersTrackMap *existingTrackMap = this->pianoRoll->findOwnedMapOfType<TriggersTrackMap>();
         const bool addTrackMode = (existingTrackMap == nullptr);
         
         if (addTrackMode)
         {
-            TriggersTrackMap *newTrackMap = new TriggersTrackMap(this->project, *this->pianoRoll, targetLayer);
+            TriggersTrackMap *newTrackMap = new TriggersTrackMap(this->project, *this->pianoRoll, sequence);
             newTrackMap->reloadTrack();
             this->pianoRoll->addOwnedMap(newTrackMap);
         }
@@ -624,9 +622,9 @@ bool SequencerLayout::toggleShowAutomationEditor(AutomationSequence *targetLayer
         return addTrackMode;
     }
     
-    if (this->automationEditorsLinks.contains(layerId))
+    if (this->automationEditorsLinks.contains(trackId))
     {
-        AutomationTrackMapProxy *trackMapProxy = this->automationEditorsLinks[layerId];
+        AutomationTrackMapProxy *trackMapProxy = this->automationEditorsLinks[trackId];
 
         this->automationsOrigami->removePageContaining(trackMapProxy);
 
@@ -634,7 +632,7 @@ bool SequencerLayout::toggleShowAutomationEditor(AutomationSequence *targetLayer
         this->allEditorsContainer->resizeAutomations(-trackMapProxy->getHeight());
         this->allEditorsContainer->resized();
         
-        this->automationEditorsLinks.remove(layerId);
+        this->automationEditorsLinks.remove(trackId);
         this->automationEditors.removeObject(trackMapProxy);
         
         this->resized();
@@ -643,13 +641,13 @@ bool SequencerLayout::toggleShowAutomationEditor(AutomationSequence *targetLayer
     
     AutomationTrackMapCommon *newTrackMap = nullptr;
     
-    if (targetLayer->isOnOffLayer())
+    if (sequence->getTrack()->isOnOffTrack())
     {
-        newTrackMap = new TriggersTrackMap(this->project, *this->pianoRoll, targetLayer);
+        newTrackMap = new TriggersTrackMap(this->project, *this->pianoRoll, sequence);
     }
     else
     {
-        newTrackMap = new AutomationTrackMap(this->project, *this->pianoRoll, targetLayer);
+        newTrackMap = new AutomationTrackMap(this->project, *this->pianoRoll, sequence);
     }
     
     if (newTrackMap != nullptr)
@@ -658,14 +656,14 @@ bool SequencerLayout::toggleShowAutomationEditor(AutomationSequence *targetLayer
         auto newTrackMapProxy = new AutomationTrackMapProxy(*this->pianoRoll, newTrackMap);
         
         this->automationEditors.add(newTrackMapProxy);
-        this->automationEditorsLinks.set(layerId, newTrackMapProxy);
+        this->automationEditorsLinks.set(trackId, newTrackMapProxy);
         
         // здесь увеличить размер automationsOrigami на высоту newTrackMap
         this->allEditorsContainer->resizeAutomations(newTrackMap->getHeight());
         
         const int hNormal = newTrackMap->getHeight();
-        const int hMax = targetLayer->isOnOffLayer() ? hNormal : (hNormal * 3);
-        const bool isFixedSize = targetLayer->isOnOffLayer();
+        const int hMax = sequence->getTrack()->isOnOffTrack() ? hNormal : (hNormal * 3);
+        const bool isFixedSize = sequence->getTrack()->isOnOffTrack();
         this->automationsOrigami->addPage(newTrackMapProxy, false, false, isFixedSize, hNormal, hMax, 0);
         
         this->resized();

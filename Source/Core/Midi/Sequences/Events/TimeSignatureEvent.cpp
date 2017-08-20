@@ -28,7 +28,7 @@ TimeSignatureEvent::TimeSignatureEvent() : MidiEvent(nullptr, 0.f)
 }
 
 TimeSignatureEvent::TimeSignatureEvent(const TimeSignatureEvent &other) :
-    MidiEvent(other.layer, other.beat),
+    MidiEvent(other.sequence, other.beat),
     numerator(other.numerator),
     denominator(other.denominator)
 {
@@ -178,7 +178,7 @@ int TimeSignatureEvent::hashCode() const noexcept
 TimeSignatureEvent &TimeSignatureEvent::operator=(const TimeSignatureEvent &right)
 {
     //if (this == &right) { return *this; }
-    //this->layer = *right.getLayer(); // never do this
+    //this->sequence = *right.getLayer(); // never do this
     this->id = right.id;
     this->beat = right.beat;
     this->numerator = right.numerator;

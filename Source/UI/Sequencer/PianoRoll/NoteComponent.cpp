@@ -131,7 +131,7 @@ float NoteComponent::getBeat() const
 
 String NoteComponent::getSelectionGroupId() const
 {
-    return this->midiEvent.getLayer()->getLayerIdAsString();
+    return this->midiEvent.getSequence()->getTrackId();
 }
 
 String NoteComponent::getId() const
@@ -191,7 +191,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
     {
         const bool selectOthers = false; // e.mods.isRightButtonDown();
         const bool deselectOthers = !e.mods.isShiftDown();
-        this->activateCorrespondingLayer(selectOthers, deselectOthers);
+        this->activateCorrespondingTrack(selectOthers, deselectOthers);
         return;
     }
     
@@ -312,7 +312,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
     }
     else if (e.mods.isMiddleButtonDown())
     {
-        this->midiEvent.getLayer()->checkpoint();
+        this->midiEvent.getSequence()->checkpoint();
 
         this->setMouseCursor(MouseCursor::UpDownResizeCursor);
 
@@ -668,7 +668,7 @@ void NoteComponent::mouseDoubleClick(const MouseEvent &e)
     {
         if (const bool deselectOthers = e.mods.isRightButtonDown())
         {
-            this->activateCorrespondingLayer(true, deselectOthers);
+            this->activateCorrespondingTrack(true, deselectOthers);
         }
     }
 }
@@ -700,7 +700,7 @@ void NoteComponent::paint(Graphics &g)
 void NoteComponent::paintNewLook(Graphics &g)
 {
     const Colour myColour(Colours::white
-                          .interpolatedWith(this->getNote().getLayer()->getColour(), 0.5f)
+                          .interpolatedWith(this->getNote().getColour(), 0.5f)
                           .withAlpha(this->ghostMode ? 0.2f : 0.95f)
                           .darker(this->selectedState ? 0.5f : 0.f));
     
@@ -758,13 +758,12 @@ void NoteComponent::paintNewLook(Graphics &g)
     g.drawHorizontalLine(this->getHeight() - 2, sx, sw * this->getVelocity());
     g.drawHorizontalLine(this->getHeight() - 3, sx, sw * this->getVelocity());
     g.drawHorizontalLine(this->getHeight() - 4, sx, sw * this->getVelocity());
-
 }
 
 void NoteComponent::paintLegacyLook(Graphics &g)
 {
     const Colour myColour(Colours::white
-                          .interpolatedWith(this->getNote().getLayer()->getColour(), 0.5f)
+                          .interpolatedWith(this->getNote().getColour(), 0.5f)
                           .withAlpha(this->ghostMode ? 0.2f : 0.95f)
                           .darker(this->selectedState ? 0.5f : 0.f));
     
@@ -793,11 +792,11 @@ void NoteComponent::paintLegacyLook(Graphics &g)
 // Helpers
 //===----------------------------------------------------------------------===//
 
-bool NoteComponent::belongsToLayerSet(Array<MidiSequence *> layers) const
+bool NoteComponent::belongsToAnySequence(Array<MidiSequence *> layers) const
 {
     for (int i = 0; i < layers.size(); ++i)
     {
-        if (this->getNote().getLayer() == layers.getUnchecked(i))
+        if (this->getNote().getSequence() == layers.getUnchecked(i))
         {
             return true;
         }
@@ -806,9 +805,9 @@ bool NoteComponent::belongsToLayerSet(Array<MidiSequence *> layers) const
     return false;
 }
 
-void NoteComponent::activateCorrespondingLayer(bool selectOthers, bool deselectOthers)
+void NoteComponent::activateCorrespondingTrack(bool selectOthers, bool deselectOthers)
 {
-    MidiSequence *layer = this->getNote().getLayer();
+    MidiSequence *layer = this->getNote().getSequence();
     this->roll.getProject().activateLayer(layer, selectOthers, deselectOthers);
 }
 
@@ -1131,7 +1130,7 @@ void NoteComponent::checkpointIfNeeded()
 {
     if (! this->firstChangeDone)
     {
-        this->midiEvent.getLayer()->checkpoint();
+        this->midiEvent.getSequence()->checkpoint();
         this->firstChangeDone = true;
     }
 }
@@ -1147,6 +1146,6 @@ void NoteComponent::stopSound()
 
 void NoteComponent::sendMidiMessage(const MidiMessage &message)
 {
-    const String layerId = this->getNote().getLayer()->getLayerIdAsString();
+    const String layerId = this->getNote().getSequence()->getTrackId();
     this->getRoll().getTransport().sendMidiMessage(layerId, message);
 }

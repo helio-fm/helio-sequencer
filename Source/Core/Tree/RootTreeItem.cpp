@@ -35,6 +35,7 @@
 #include "WorkspaceMenu.h"
 #include "AutomationEvent.h"
 #include "AutomationSequence.h"
+#include "MidiTrack.h"
 #include "App.h"
 #include "Workspace.h"
 
@@ -112,7 +113,7 @@ void RootTreeItem::importMidi(File &file)
     {
         const MidiMessageSequence *currentTrack = tempFile.getTrack(trackNum);
         String trackName = "Track " + String(trackNum);
-        MidiTrackTreeItem *layer = this->addPianoLayer(project, trackName);
+        MidiTrackTreeItem *layer = this->addPianoTrack(project, trackName);
         layer->importMidi(*currentTrack);
     }
 
@@ -224,37 +225,11 @@ ProjectTreeItem *RootTreeItem::createDefaultProjectChildren(ProjectTreeItem *new
 {
     VersionControlTreeItem *vcs = this->addVCS(newProject);
     
-    this->addPianoLayer(newProject, "Arps")->setColour(Colours::orangered);
-    this->addPianoLayer(newProject, "Counterpoint")->setColour(Colours::gold);
-    this->addPianoLayer(newProject, "Melodic")->setColour(Colours::chartreuse);
-    
-//#if HELIO_DESKTOP
-//    
-//    LayerGroupTreeItem *group1 = this->addGroup(newProject, "Intro");
-//    this->addPianoLayer(group1, "Arpeggio")->getSequence()->setColour(Colours::orangered);
-//    this->addPianoLayer(group1, "Theme")->getSequence()->setColour(Colours::greenyellow);
-//    
-//    LayerGroupTreeItem *group2 = this->addGroup(newProject, "Middle");
-//    this->addPianoLayer(group2, "Arpeggio")->getSequence()->setColour(Colours::red);
-//    this->addPianoLayer(group2, "Theme")->getSequence()->setColour(Colours::lime);
-//    
-//    LayerGroupTreeItem *group3 = this->addGroup(newProject, "Outro");
-//    this->addPianoLayer(group3, "Arpeggio")->getSequence()->setColour(Colours::deeppink);
-//    this->addPianoLayer(group3, "Theme")->getSequence()->setColour(Colours::royalblue);
-//    
-//#elif HELIO_MOBILE
-//    
-//    this->addPianoLayer(newProject, "Intro Arp")->getSequence()->setColour(Colours::orangered);
-//    this->addPianoLayer(newProject, "Intro Theme")->getSequence()->setColour(Colours::greenyellow);
-//    
-//    this->addPianoLayer(newProject, "Middle Arp")->getSequence()->setColour(Colours::red);
-//    this->addPianoLayer(newProject, "Middle Theme")->getSequence()->setColour(Colours::lime);
-//    
-//    this->addPianoLayer(newProject, "Outro Arp")->getSequence()->setColour(Colours::deeppink);
-//    this->addPianoLayer(newProject, "Outro Theme")->getSequence()->setColour(Colours::royalblue);
-//    
-//#endif
-    
+    this->addPianoTrack(newProject, "Arps")->setTrackColour(Colours::orangered);
+    this->addPianoTrack(newProject, "Counterpoint")->setTrackColour(Colours::gold);
+    this->addPianoTrack(newProject, "Melodic")->setTrackColour(Colours::chartreuse);
+    this->addAutoLayer(newProject, "Tempo", MidiTrack::tempoController)->setTrackColour(Colours::floralwhite);
+
     newProject->getDocument()->save();
     newProject->broadcastChangeProjectBeatRange();
     
@@ -287,7 +262,7 @@ TrackGroupTreeItem *RootTreeItem::addGroup(TreeItem *parent, const String &name)
     return group;
 }
 
-MidiTrackTreeItem *RootTreeItem::addPianoLayer(TreeItem *parent, const String &name)
+MidiTrackTreeItem *RootTreeItem::addPianoTrack(TreeItem *parent, const String &name)
 {
     MidiTrackTreeItem *item = new PianoTrackTreeItem(name);
     parent->addChildTreeItem(item);
@@ -297,9 +272,9 @@ MidiTrackTreeItem *RootTreeItem::addPianoLayer(TreeItem *parent, const String &n
 MidiTrackTreeItem *RootTreeItem::addAutoLayer(TreeItem *parent, const String &name, int controllerNumber)
 {
     MidiTrackTreeItem *item = new AutomationTrackTreeItem(name);
+    item->setTrackControllerNumber(controllerNumber);
     AutomationSequence *itemLayer = static_cast<AutomationSequence *>(item->getSequence());
     parent->addChildTreeItem(item);
-    itemLayer->setControllerNumber(controllerNumber);
     itemLayer->insert(AutomationEvent(itemLayer, 0, 0.5), false);
     return item;
 }

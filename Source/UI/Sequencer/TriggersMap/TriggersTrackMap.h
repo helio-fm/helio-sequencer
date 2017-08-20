@@ -35,25 +35,20 @@ class TriggersTrackMap : public AutomationTrackMapCommon
 {
 public:
     
-    TriggersTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll, WeakReference<MidiSequence> targetLayer);
+    TriggersTrackMap(ProjectTreeItem &parentProject,
+        HybridRoll &parentRoll, WeakReference<MidiSequence> targetLayer);
     
     ~TriggersTrackMap() override;
     
     void reloadTrack() override;
-
     
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
     
     void mouseDown(const MouseEvent &e) override;
-    
     void resized() override;
-    
-    //virtual void paint(Graphics &g) override;
-    
     void mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel) override;
-
     
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -61,19 +56,15 @@ public:
     
     void onChangeMidiEvent(const MidiEvent &oldEvent,
         const MidiEvent &newEvent) override;
-    
     void onAddMidiEvent(const MidiEvent &event) override;
-    
     void onRemoveMidiEvent(const MidiEvent &event) override;
     
-    void onChangeTrackProperties(MidiTrack *const track) override;
-    
     void onAddTrack(MidiTrack *const track) override;
-    
     void onRemoveTrack(MidiTrack *const track) override;
-    
-    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
+    void onChangeTrackProperties(MidiTrack *const track) override;
+    void onResetTrackContent(MidiTrack *const track) override;
 
+    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
 
 protected:

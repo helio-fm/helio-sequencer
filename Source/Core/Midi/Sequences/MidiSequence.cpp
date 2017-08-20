@@ -99,7 +99,7 @@ MidiMessageSequence MidiSequence::exportMidi() const
 
         for (auto event : this->midiEvents)
         {
-            const Array<MidiMessage> &track = event->getSequence();
+            const auto &track = event->toMidiMessages();
 
             for (auto &message : track)
             {
@@ -200,13 +200,12 @@ void MidiSequence::notifyEventRemovedPostAction()
 void MidiSequence::notifySequenceChanged()
 {
     this->cacheIsOutdated = true;
-    this->eventDispatcher.dispatchChangeTrackProperties();
+    this->eventDispatcher.dispatchChangeTrackContent(&this->track);
 }
 
 void MidiSequence::notifyBeatRangeChanged()
 {
-    //this->cacheIsOutdated = true;
-    this->eventDispatcher.dispatchChangeTrackBeatRange();
+    this->eventDispatcher.dispatchChangeTrackBeatRange(&this->track);
 }
 
 void MidiSequence::updateBeatRange(bool shouldNotifyIfChanged)
@@ -226,17 +225,21 @@ void MidiSequence::updateBeatRange(bool shouldNotifyIfChanged)
     }
 }
 
-//void MidiSequence::sendMidiMessage(const MidiMessage &message)
-//{
-//    this->owner.getTransport()->sendMidiMessage(this->getLayerId().toString(), message);
-//}
-
-
 //===----------------------------------------------------------------------===//
 // Helpers
 //===----------------------------------------------------------------------===//
 
-int MidiSequence::hashCode() const noexcept
+String MidiSequence::getTrackId() const noexcept
 {
-    return this->layerId.toString().hashCode();
+    return this->track.getTrackId().toString();
 }
+
+int MidiSequence::getChannel() const noexcept
+{
+    return this->track.getTrackChannel();
+}
+
+//void MidiSequence::sendMidiMessage(const MidiMessage &message)
+//{
+//    this->owner.getTransport()->sendMidiMessage(this->getLayerId().toString(), message);
+//}

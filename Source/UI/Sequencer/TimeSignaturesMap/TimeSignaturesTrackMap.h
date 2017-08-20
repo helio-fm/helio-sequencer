@@ -33,11 +33,9 @@ class TimeSignaturesTrackMap :
 public:
 
     TimeSignaturesTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll);
-
     ~TimeSignaturesTrackMap() override;
 
     void alignTimeSignatureComponent(T *nc);
-
 
     //===------------------------------------------------------------------===//
     // Component
@@ -45,41 +43,31 @@ public:
 
     void resized() override;
 
-
     //===------------------------------------------------------------------===//
     // ProjectListener
     //===------------------------------------------------------------------===//
 
     void onChangeMidiEvent(const MidiEvent &oldEvent,
         const MidiEvent &newEvent) override;
-
     void onAddMidiEvent(const MidiEvent &event) override;
-
     void onRemoveMidiEvent(const MidiEvent &event) override;
 
-    void onChangeTrackProperties(MidiTrack *const track) override;
-
     void onAddTrack(MidiTrack *const track) override;
-
     void onRemoveTrack(MidiTrack *const track) override;
+    void onChangeTrackProperties(MidiTrack *const track) override;
+    void onResetTrackContent(MidiTrack *const track) override;
 
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
-
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
-
 
     //===------------------------------------------------------------------===//
     // Stuff for children
     //===------------------------------------------------------------------===//
 
     void onTimeSignatureMoved(T *nc);
-    
     void onTimeSignatureTapped(T *nc);
-    
     void showContextMenuFor(T *nc);
-
     void alternateActionFor(T *nc);
-
     float getBeatByXPosition(int x) const;
     
 private:

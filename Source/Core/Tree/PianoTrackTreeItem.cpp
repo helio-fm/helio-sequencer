@@ -31,6 +31,7 @@
 #include "Delta.h"
 #include "PatternDeltas.h"
 #include "PianoLayerDeltas.h"
+#include "MidiTrackDeltas.h"
 #include "PianoLayerDiffLogic.h"
 
 PianoTrackTreeItem::PianoTrackTreeItem(const String &name) :
@@ -44,10 +45,10 @@ PianoTrackTreeItem::PianoTrackTreeItem(const String &name) :
 
     this->vcsDiffLogic = new VCS::PianoLayerDiffLogic(*this);
 
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), PianoLayerDeltas::layerPath));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), PianoLayerDeltas::layerMute));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), PianoLayerDeltas::layerColour));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), PianoLayerDeltas::layerInstrument));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), MidiTrackDeltas::trackPath));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), MidiTrackDeltas::trackMute));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), MidiTrackDeltas::trackColour));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), MidiTrackDeltas::trackInstrument));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), PianoLayerDeltas::notesAdded));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), PatternDeltas::clipsAdded));
 }
@@ -119,19 +120,19 @@ VCS::Delta *PianoTrackTreeItem::getDelta(int index) const
 
 XmlElement *PianoTrackTreeItem::createDeltaDataFor(int index) const
 {
-    if (this->deltas[index]->getType() == PianoLayerDeltas::layerPath)
+    if (this->deltas[index]->getType() == MidiTrackDeltas::trackPath)
     {
         return this->serializePathDelta();
     }
-    if (this->deltas[index]->getType() == PianoLayerDeltas::layerMute)
+    if (this->deltas[index]->getType() == MidiTrackDeltas::trackMute)
     {
         return this->serializeMuteDelta();
     }
-    else if (this->deltas[index]->getType() == PianoLayerDeltas::layerColour)
+    else if (this->deltas[index]->getType() == MidiTrackDeltas::trackColour)
     {
         return this->serializeColourDelta();
     }
-    else if (this->deltas[index]->getType() == PianoLayerDeltas::layerInstrument)
+    else if (this->deltas[index]->getType() == MidiTrackDeltas::trackInstrument)
     {
         return this->serializeInstrumentDelta();
     }
@@ -160,19 +161,19 @@ void PianoTrackTreeItem::resetStateTo(const VCS::TrackedItem &newState)
         const VCS::Delta *newDelta = newState.getDelta(i);
         ScopedPointer<XmlElement> newDeltaData(newState.createDeltaDataFor(i));
         
-        if (newDelta->getType() == PianoLayerDeltas::layerPath)
+        if (newDelta->getType() == MidiTrackDeltas::trackPath)
         {
             this->resetPathDelta(newDeltaData);
         }
-        else if (newDelta->getType() == PianoLayerDeltas::layerMute)
+        else if (newDelta->getType() == MidiTrackDeltas::trackMute)
         {
             this->resetMuteDelta(newDeltaData);
         }
-        else if (newDelta->getType() == PianoLayerDeltas::layerColour)
+        else if (newDelta->getType() == MidiTrackDeltas::trackColour)
         {
             this->resetColourDelta(newDeltaData);
         }
-        else if (newDelta->getType() == PianoLayerDeltas::layerInstrument)
+        else if (newDelta->getType() == MidiTrackDeltas::trackInstrument)
         {
             this->resetInstrumentDelta(newDeltaData);
         }
@@ -207,6 +208,8 @@ XmlElement *PianoTrackTreeItem::serialize() const
     xml->setAttribute("type", Serialization::Core::pianoLayer);
     xml->setAttribute("name", this->name);
 
+    this->serializeTrackProperties(*xml);
+
     xml->addChildElement(this->layer->serialize());
     xml->addChildElement(this->pattern->serialize());
 
@@ -224,8 +227,8 @@ void PianoTrackTreeItem::deserialize(const XmlElement &xml)
     if (type != Serialization::Core::pianoLayer) { return; }
 
     this->deserializeVCSUuid(xml);
-
     this->setName(xml.getStringAttribute("name"));
+    this->deserializeTrackProperties(xml);
 
     // он все равно должен быть один, но так короче
     forEachXmlChildElementWithTagName(xml, e, Serialization::Core::track)
@@ -248,28 +251,28 @@ void PianoTrackTreeItem::deserialize(const XmlElement &xml)
 
 XmlElement *PianoTrackTreeItem::serializePathDelta() const
 {
-    auto xml = new XmlElement(PianoLayerDeltas::layerPath);
+    auto xml = new XmlElement(MidiTrackDeltas::trackPath);
     xml->setAttribute(Serialization::VCS::delta, this->getTrackName());
     return xml;
 }
 
 XmlElement *PianoTrackTreeItem::serializeMuteDelta() const
 {
-    auto xml = new XmlElement(PianoLayerDeltas::layerMute);
+    auto xml = new XmlElement(MidiTrackDeltas::trackMute);
     xml->setAttribute(Serialization::VCS::delta, this->getTrackMuteStateAsString());
     return xml;
 }
 
 XmlElement *PianoTrackTreeItem::serializeColourDelta() const
 {
-    auto xml = new XmlElement(PianoLayerDeltas::layerColour);
+    auto xml = new XmlElement(MidiTrackDeltas::trackColour);
     xml->setAttribute(Serialization::VCS::delta, this->getTrackColour().toString());
     return xml;
 }
 
 XmlElement *PianoTrackTreeItem::serializeInstrumentDelta() const
 {
-    auto xml = new XmlElement(PianoLayerDeltas::layerInstrument);
+    auto xml = new XmlElement(MidiTrackDeltas::trackInstrument);
     xml->setAttribute(Serialization::VCS::delta, this->getTrackInstrumentId());
     return xml;
 }
@@ -291,14 +294,14 @@ XmlElement *PianoTrackTreeItem::serializeEventsDelta() const
 
 void PianoTrackTreeItem::resetPathDelta(const XmlElement *state)
 {
-    jassert(state->getTagName() == PianoLayerDeltas::layerPath);
+    jassert(state->getTagName() == MidiTrackDeltas::trackPath);
     const String &path(state->getStringAttribute(Serialization::VCS::delta));
     this->setXPath(path);
 }
 
 void PianoTrackTreeItem::resetMuteDelta(const XmlElement *state)
 {
-    jassert(state->getTagName() == PianoLayerDeltas::layerMute);
+    jassert(state->getTagName() == MidiTrackDeltas::trackMute);
     const String &muteState(state->getStringAttribute(Serialization::VCS::delta));
     const bool willMute = MidiTrack::isTrackMuted(muteState);
     
@@ -311,7 +314,7 @@ void PianoTrackTreeItem::resetMuteDelta(const XmlElement *state)
 
 void PianoTrackTreeItem::resetColourDelta(const XmlElement *state)
 {
-    jassert(state->getTagName() == PianoLayerDeltas::layerColour);
+    jassert(state->getTagName() == MidiTrackDeltas::trackColour);
     const String &colourString(state->getStringAttribute(Serialization::VCS::delta));
     const Colour &colour(Colour::fromString(colourString));
 
@@ -324,7 +327,7 @@ void PianoTrackTreeItem::resetColourDelta(const XmlElement *state)
 
 void PianoTrackTreeItem::resetInstrumentDelta(const XmlElement *state)
 {
-    jassert(state->getTagName() == PianoLayerDeltas::layerInstrument);
+    jassert(state->getTagName() == MidiTrackDeltas::trackInstrument);
     const String &instrumentId(state->getStringAttribute(Serialization::VCS::delta));
     this->setTrackInstrumentId(instrumentId);
 }

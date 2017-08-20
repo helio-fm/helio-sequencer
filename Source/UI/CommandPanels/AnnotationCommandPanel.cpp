@@ -81,7 +81,7 @@ void AnnotationCommandPanel::handleCommandMessage(int commandId)
             Array<AnnotationEvent> groupDragBefore, groupDragAfter;
             groupDragBefore.add(this->annotation);
             groupDragAfter.add(this->annotation.withDescription(this->renameString));
-            AnnotationsSequence *autoLayer = static_cast<AnnotationsSequence *>(this->annotation.getLayer());
+            AnnotationsSequence *autoLayer = static_cast<AnnotationsSequence *>(this->annotation.getSequence());
             autoLayer->checkpoint();
             autoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
         }
@@ -91,7 +91,7 @@ void AnnotationCommandPanel::handleCommandMessage(int commandId)
         }
         else if (commandId == CommandIDs::DeleteAnnotation)
         {
-            AnnotationsSequence *autoLayer = static_cast<AnnotationsSequence *>(this->annotation.getLayer());
+            AnnotationsSequence *autoLayer = static_cast<AnnotationsSequence *>(this->annotation.getSequence());
             autoLayer->checkpoint();
             autoLayer->remove(this->annotation, true);
         }
@@ -110,7 +110,7 @@ void AnnotationCommandPanel::handleCommandMessage(int commandId)
             Array<AnnotationEvent> groupDragBefore, groupDragAfter;
             groupDragBefore.add(this->annotation);
             groupDragAfter.add(this->annotation.withColour(colour));
-            AnnotationsSequence *autoLayer = static_cast<AnnotationsSequence *>(this->annotation.getLayer());
+            AnnotationsSequence *autoLayer = static_cast<AnnotationsSequence *>(this->annotation.getSequence());
             autoLayer->checkpoint();
             autoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
         }

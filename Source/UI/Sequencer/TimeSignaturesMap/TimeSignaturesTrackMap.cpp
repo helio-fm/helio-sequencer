@@ -34,7 +34,8 @@
 #include "App.h"
 #include "MainLayout.h"
 
-template<typename T> TimeSignaturesTrackMap<T>::TimeSignaturesTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll) :
+template<typename T>
+TimeSignaturesTrackMap<T>::TimeSignaturesTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll) :
     project(parentProject),
     roll(parentRoll),
     projectFirstBeat(0.f),
@@ -59,12 +60,14 @@ template<typename T> TimeSignaturesTrackMap<T>::TimeSignaturesTrackMap(ProjectTr
     this->project.addListener(this);
 }
 
-template<typename T> TimeSignaturesTrackMap<T>::~TimeSignaturesTrackMap()
+template<typename T>
+TimeSignaturesTrackMap<T>::~TimeSignaturesTrackMap()
 {
     this->project.removeListener(this);
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::updateTrackRangeIndicatorsAnchors()
+template<typename T>
+void TimeSignaturesTrackMap<T>::updateTrackRangeIndicatorsAnchors()
 {
     const float rollLengthInBeats = (this->rollLastBeat - this->rollFirstBeat);
     const float absStart = ((this->projectFirstBeat - this->rollFirstBeat) / rollLengthInBeats);
@@ -78,7 +81,8 @@ template<typename T> void TimeSignaturesTrackMap<T>::updateTrackRangeIndicatorsA
 // Component
 //===----------------------------------------------------------------------===//
 
-template<typename T> void TimeSignaturesTrackMap<T>::resized()
+template<typename T>
+void TimeSignaturesTrackMap<T>::resized()
 {
     //Logger::writeToLog("TimeSignaturesTrackMap<T>::resized");
     this->setVisible(false);
@@ -113,9 +117,11 @@ template<typename T> void TimeSignaturesTrackMap<T>::resized()
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-template<typename T> void TimeSignaturesTrackMap<T>::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+template<typename T>
+void TimeSignaturesTrackMap<T>::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    if (newEvent.getLayer() == this->project.getTimeline()->getTimeSignatures())
+    if (newEvent.getSequence() ==
+        this->project.getTimeline()->getTimeSignatures()->getSequence())
     {
         const TimeSignatureEvent &timeSignature = static_cast<const TimeSignatureEvent &>(oldEvent);
         const TimeSignatureEvent &newTimeSignature = static_cast<const TimeSignatureEvent &>(newEvent);
@@ -130,7 +136,8 @@ template<typename T> void TimeSignaturesTrackMap<T>::onChangeMidiEvent(const Mid
     }
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::alignTimeSignatureComponent(T *component)
+template<typename T>
+void TimeSignaturesTrackMap<T>::alignTimeSignatureComponent(T *component)
 {
     this->timeSignatureComponents.sort(*component);
     const int indexOfSorted = this->timeSignatureComponents.indexOfSorted(*component, component);
@@ -157,9 +164,11 @@ template<typename T> void TimeSignaturesTrackMap<T>::alignTimeSignatureComponent
     this->applyTimeSignatureBounds(component, nextEventComponent);
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onAddMidiEvent(const MidiEvent &event)
+template<typename T>
+void TimeSignaturesTrackMap<T>::onAddMidiEvent(const MidiEvent &event)
 {
-    if (event.getLayer() == this->project.getTimeline()->getTimeSignatures())
+    if (event.getSequence() ==
+        this->project.getTimeline()->getTimeSignatures()->getSequence())
     {
         const TimeSignatureEvent &timeSignature = static_cast<const TimeSignatureEvent &>(event);
 
@@ -186,9 +195,11 @@ template<typename T> void TimeSignaturesTrackMap<T>::onAddMidiEvent(const MidiEv
     }
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onRemoveMidiEvent(const MidiEvent &event)
+template<typename T>
+void TimeSignaturesTrackMap<T>::onRemoveMidiEvent(const MidiEvent &event)
 {
-    if (event.getLayer() == this->project.getTimeline()->getTimeSignatures())
+    if (event.getSequence() ==
+        this->project.getTimeline()->getTimeSignatures()->getSequence())
     {
         const TimeSignatureEvent &timeSignature = static_cast<const TimeSignatureEvent &>(event);
 
@@ -213,63 +224,71 @@ template<typename T> void TimeSignaturesTrackMap<T>::onRemoveMidiEvent(const Mid
     }
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onChangeTrackProperties(MidiTrack *const track)
+template<typename T>
+void TimeSignaturesTrackMap<T>::onChangeTrackProperties(MidiTrack *const track)
 {
-    if (this->project.getTimeline() != nullptr)
+    if (this->project.getTimeline() != nullptr &&
+        track == this->project.getTimeline()->getTimeSignatures())
     {
-        if (track->getSequence() == this->project.getTimeline()->getTimeSignatures())
+        this->repaint();
+    }
+}
+
+
+template< typename T >
+void TimeSignaturesTrackMap<T>::onResetTrackContent(MidiTrack *const track)
+{
+    if (this->project.getTimeline() != nullptr &&
+        track == this->project.getTimeline()->getTimeSignatures())
+    {
+        this->reloadTrackMap();
+    }
+}
+
+template<typename T>
+void TimeSignaturesTrackMap<T>::onAddTrack(MidiTrack *const track)
+{
+    if (this->project.getTimeline() != nullptr &&
+        track == this->project.getTimeline()->getTimeSignatures())
+    {
+        if (track->getSequence()->size() > 0)
         {
-            this->repaint(); // this->reloadTrackMap();
+            this->reloadTrackMap();
         }
     }
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onAddTrack(MidiTrack *const track)
+template<typename T>
+void TimeSignaturesTrackMap<T>::onRemoveTrack(MidiTrack *const track)
 {
-    if (this->project.getTimeline() != nullptr)
+    if (this->project.getTimeline() != nullptr &&
+        track == this->project.getTimeline()->getTimeSignatures())
     {
-        auto sequence = track->getSequence();
-        if (sequence == this->project.getTimeline()->getTimeSignatures())
+        for (int i = 0; i < track->getSequence()->size(); ++i)
         {
-            if (sequence->size() > 0)
+            const TimeSignatureEvent &timeSignature =
+                static_cast<const TimeSignatureEvent &>(*track->getSequence()->getUnchecked(i));
+
+            if (T *component = this->timeSignaturesHash[timeSignature])
             {
-                this->reloadTrackMap();
+                this->removeChildComponent(component);
+                this->timeSignaturesHash.removeValue(component);
+                this->timeSignatureComponents.removeObject(component, true);
             }
         }
     }
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onRemoveTrack(MidiTrack *const track)
-{
-    if (this->project.getTimeline() != nullptr)
-    {
-        auto sequence = track->getSequence();
-        if (sequence == this->project.getTimeline()->getTimeSignatures())
-        {
-            for (int i = 0; i < layer->size(); ++i)
-            {
-                const TimeSignatureEvent &timeSignature =
-                    static_cast<const TimeSignatureEvent &>(*sequence->getUnchecked(i));
-
-                if (T *component = this->timeSignaturesHash[timeSignature])
-                {
-                    this->removeChildComponent(component);
-                    this->timeSignaturesHash.removeValue(component);
-                    this->timeSignatureComponents.removeObject(component, true);
-                }
-            }
-        }
-    }
-}
-
-template<typename T> void TimeSignaturesTrackMap<T>::onChangeProjectBeatRange(float firstBeat, float lastBeat)
+template<typename T>
+void TimeSignaturesTrackMap<T>::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
     this->updateTrackRangeIndicatorsAnchors();
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onChangeViewBeatRange(float firstBeat, float lastBeat)
+template<typename T>
+void TimeSignaturesTrackMap<T>::onChangeViewBeatRange(float firstBeat, float lastBeat)
 {
     this->rollFirstBeat = firstBeat;
     this->rollLastBeat = lastBeat;
@@ -281,21 +300,24 @@ template<typename T> void TimeSignaturesTrackMap<T>::onChangeViewBeatRange(float
 // Private
 //===----------------------------------------------------------------------===//
 
-template<typename T> void TimeSignaturesTrackMap<T>::onTimeSignatureMoved(T *nc)
+template<typename T>
+void TimeSignaturesTrackMap<T>::onTimeSignatureMoved(T *nc)
 {
     this->roll.grabKeyboardFocus();
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::onTimeSignatureTapped(T *nc)
+template<typename T>
+void TimeSignaturesTrackMap<T>::onTimeSignatureTapped(T *nc)
 {
     const TimeSignatureEvent *timeSignatureUnderSeekCursor = nullptr;
     const ProjectTimeline *timeline = this->project.getTimeline();
+    const auto timeSignatures = timeline->getTimeSignatures()->getSequence();
     const double seekPosition = this->project.getTransport().getSeekPosition();
 
-    for (int i = 0; i < timeline->getTimeSignatures()->size(); ++i)
+    for (int i = 0; i < timeSignatures->size(); ++i)
     {
         if (TimeSignatureEvent *timeSignature =
-            dynamic_cast<TimeSignatureEvent *>(timeline->getTimeSignatures()->getUnchecked(i)))
+            dynamic_cast<TimeSignatureEvent *>(timeSignatures->getUnchecked(i)))
         {
             const float seekBeat = this->roll.getBeatByTransportPosition(seekPosition);
             
@@ -332,7 +354,8 @@ template<typename T> void TimeSignaturesTrackMap<T>::onTimeSignatureTapped(T *nc
     }
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::showContextMenuFor(T *nc)
+template<typename T>
+void TimeSignaturesTrackMap<T>::showContextMenuFor(T *nc)
 {
     if (! this->project.getTransport().isPlaying())
     {
@@ -342,7 +365,8 @@ template<typename T> void TimeSignaturesTrackMap<T>::showContextMenuFor(T *nc)
     }
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::alternateActionFor(T *nc)
+template<typename T>
+void TimeSignaturesTrackMap<T>::alternateActionFor(T *nc)
 {
     // Selects everything within the range of this timeSignature
     this->timeSignatureComponents.sort(*nc);
@@ -357,14 +381,16 @@ template<typename T> void TimeSignaturesTrackMap<T>::alternateActionFor(T *nc)
     this->roll.selectEventsInRange(startBeat, endBeat, shouldClearSelection);
 }
 
-template<typename T> float TimeSignaturesTrackMap<T>::getBeatByXPosition(int x) const
+template<typename T>
+float TimeSignaturesTrackMap<T>::getBeatByXPosition(int x) const
 {
     const int xRoll = int(float(x) / float(this->getWidth()) * float(this->roll.getWidth()));
     const float targetBeat = this->roll.getRoundBeatByXPosition(xRoll);
     return jmin(jmax(targetBeat, this->rollFirstBeat), this->rollLastBeat);
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::reloadTrackMap()
+template<typename T>
+void TimeSignaturesTrackMap<T>::reloadTrackMap()
 {
     //Logger::writeToLog("TimeSignaturesTrackMap<T>::reloadTrackMap");
 
@@ -378,11 +404,11 @@ template<typename T> void TimeSignaturesTrackMap<T>::reloadTrackMap()
 
     this->setVisible(false);
 
-    MidiSequence *layer = this->project.getTimeline()->getTimeSignatures();
+    MidiSequence *sequence = this->project.getTimeline()->getTimeSignatures()->getSequence();
 
-    for (int j = 0; j < layer->size(); ++j)
+    for (int j = 0; j < sequence->size(); ++j)
     {
-        MidiEvent *event = layer->getUnchecked(j);
+        MidiEvent *event = sequence->getUnchecked(j);
 
         if (TimeSignatureEvent *timeSignature = dynamic_cast<TimeSignatureEvent *>(event))
         {
@@ -398,7 +424,8 @@ template<typename T> void TimeSignaturesTrackMap<T>::reloadTrackMap()
     this->setVisible(true);
 }
 
-template<typename T> void TimeSignaturesTrackMap<T>::applyTimeSignatureBounds(T *nc, T *nextOne)
+template<typename T>
+void TimeSignaturesTrackMap<T>::applyTimeSignatureBounds(T *nc, T *nextOne)
 {
     const float rollLengthInBeats = (this->rollLastBeat - this->rollFirstBeat);
     const float projectLengthInBeats = (this->projectLastBeat - this->projectFirstBeat);
@@ -420,7 +447,8 @@ template<typename T> void TimeSignaturesTrackMap<T>::applyTimeSignatureBounds(T 
     nc->setRealBounds(Rectangle<float>(x, 0.f, w, float(nc->getHeight())));
 }
 
-template<typename T> T *TimeSignaturesTrackMap<T>::getPreviousEventComponent(int indexOfSorted) const
+template<typename T>
+T *TimeSignaturesTrackMap<T>::getPreviousEventComponent(int indexOfSorted) const
 {
     const int indexOfPrevious = indexOfSorted - 1;
 
@@ -430,7 +458,8 @@ template<typename T> T *TimeSignaturesTrackMap<T>::getPreviousEventComponent(int
         nullptr;
 }
 
-template<typename T> T *TimeSignaturesTrackMap<T>::getNextEventComponent(int indexOfSorted) const
+template<typename T>
+T *TimeSignaturesTrackMap<T>::getNextEventComponent(int indexOfSorted) const
 {
     const int indexOfNext = indexOfSorted + 1;
 

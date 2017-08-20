@@ -28,7 +28,7 @@ AnnotationEvent::AnnotationEvent() : MidiEvent(nullptr, 0.f)
 }
 
 AnnotationEvent::AnnotationEvent(const AnnotationEvent &other) :
-    MidiEvent(other.layer, other.beat),
+    MidiEvent(other.sequence, other.beat),
     description(other.description),
     colour(other.colour)
 {
@@ -157,7 +157,7 @@ AnnotationEvent &AnnotationEvent::operator=(const AnnotationEvent &right)
 {
     //if (this == &right) { return *this; }
 
-    //this->layer = *right.getLayer(); // never do this
+    //this->sequence = *right.getLayer(); // never do this
     this->id = right.id;
     this->beat = right.beat;
     this->description = right.description;

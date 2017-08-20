@@ -219,7 +219,7 @@ HybridRoll *ProjectTreeItem::getLastFocusedRoll() const
 //    return nullptr;
 }
 
-Pattern *ProjectTreeItem::getPatternWithId(const String &uuid)
+Pattern *ProjectTreeItem::findPatternByTrackId(const String &uuid)
 {
     // TODO implement
     return nullptr;
@@ -358,7 +358,7 @@ void ProjectTreeItem::hideEditor(MidiSequence *activeLayer, TreeItem *source)
 
 void ProjectTreeItem::showEditorsGroup(Array<MidiSequence *> layersGroup, TreeItem *source)
 {
-    Array<MidiSequence *> layers(this->getTracks());
+    //const auto tracks(this->getTracks());
 
     if (layersGroup.size() == 0)
     {
@@ -443,12 +443,12 @@ void ProjectTreeItem::updateActiveGroupEditors()
     }
 }
 
-void ProjectTreeItem::activateLayer(MidiSequence* layer, bool selectOthers, bool deselectOthers)
+void ProjectTreeItem::activateLayer(MidiSequence* sequence, bool selectOthers, bool deselectOthers)
 {
     if (selectOthers)
     {
         if (PianoTrackTreeItem *item =
-            this->findChildByLayerId<PianoTrackTreeItem>(layer->getLayerIdAsString()))
+            this->findTrackById<PianoTrackTreeItem>(sequence->getTrackId()))
         {
             PianoTrackTreeItem::selectAllPianoSiblings(item);
             return;
@@ -457,7 +457,7 @@ void ProjectTreeItem::activateLayer(MidiSequence* layer, bool selectOthers, bool
     else
     {
         if (PianoTrackTreeItem *item =
-            this->findChildByLayerId<PianoTrackTreeItem>(layer->getLayerIdAsString()))
+            this->findTrackById<PianoTrackTreeItem>(sequence->getTrackId()))
         {
             item->setSelected(false, false);
             item->setSelected(true, deselectOthers);
@@ -962,11 +962,12 @@ void ProjectTreeItem::exportMidi(File &file) const
     MidiFile tempFile;
     tempFile.setTicksPerQuarterNote(Transport::millisecondsPerBeat);
     
-    const Array<MidiSequence *> &layers = this->getTracks();
+    const auto &tracks = this->getTracks();
     
-    for (auto layer : layers)
+    for (auto track : tracks)
     {
-        tempFile.addTrack(layer->exportMidi());
+        // TODO patterns!
+        tempFile.addTrack(track->getSequence()->exportMidi());
     }
     
     ScopedPointer<OutputStream> out(new FileOutputStream(file));
@@ -1113,8 +1114,12 @@ void ProjectTreeItem::rebuildSequencesHashIfNeeded()
     if (this->isLayersHashOutdated)
     {
         this->sequencesHash.clear();
-        this->sequencesHash.set(this->timeline->getAnnotations()->getLayerIdAsString(), this->timeline->getAnnotations());
-        this->sequencesHash.set(this->timeline->getTimeSignatures()->getLayerIdAsString(), this->timeline->getTimeSignatures());
+
+        this->sequencesHash.set(this->timeline->getAnnotations()->getTrackId().toString(), 
+            this->timeline->getAnnotations()->getSequence());
+
+        this->sequencesHash.set(this->timeline->getTimeSignatures()->getTrackId().toString(),
+            this->timeline->getTimeSignatures()->getSequence());
         
         Array<MidiTrack *> children = this->findChildrenOfType<MidiTrack>();
         

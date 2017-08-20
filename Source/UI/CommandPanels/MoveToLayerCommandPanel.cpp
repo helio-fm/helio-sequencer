@@ -63,7 +63,7 @@ void MoveToLayerCommandPanel::handleCommandMessage(int commandId)
 
         if (NoteComponent *note = dynamic_cast<NoteComponent *>(this->roll.getLassoSelection().getSelectedItem(0)))
         {
-            const MidiSequence *layerOfFirstSelected = (numSelected > 0) ? (note->getNote().getLayer()) : nullptr;
+            const MidiSequence *layerOfFirstSelected = (numSelected > 0) ? (note->getNote().getSequence()) : nullptr;
             const bool hasMultiLayerSelection = (selections.size() > 1);
             const bool alreadyBelongsTo = hasMultiLayerSelection ? false : (layerItems[layerIndex]->getSequence() == layerOfFirstSelected);
 

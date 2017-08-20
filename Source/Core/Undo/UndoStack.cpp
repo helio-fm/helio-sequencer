@@ -99,9 +99,11 @@ struct UndoStack::ActionSet
         
         forEachXmlChildElement(xml, childActionXml)
         {
-            UndoAction *action = createUndoActionsByTagName(childActionXml->getTagName());
-            action->deserialize(*childActionXml);
-            this->actions.add(action);
+            if (UndoAction *action = createUndoActionsByTagName(childActionXml->getTagName()))
+            {
+                action->deserialize(*childActionXml);
+                this->actions.add(action);
+            }
         }
     }
     
@@ -148,7 +150,7 @@ struct UndoStack::ActionSet
         else if (tagName == Serialization::Undo::automationEventsGroupRemoveAction)     { return new AutomationEventsGroupRemoveAction(this->project); }
         else if (tagName == Serialization::Undo::automationEventsGroupChangeAction)     { return new AutomationEventsGroupChangeAction(this->project); }
         
-        jassertfalse;
+        // Here we could meet deprecated legacy actions
         return nullptr;
     }
     

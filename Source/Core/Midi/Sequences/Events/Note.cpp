@@ -39,7 +39,7 @@ Note::Note(MidiSequence *owner,
 }
 
 Note::Note(const Note &other) :
-    MidiEvent(other.layer, other.beat),
+    MidiEvent(other.sequence, other.beat),
     key(other.key),
     length(other.length),
     velocity(other.velocity)
@@ -61,11 +61,11 @@ Array<MidiMessage> Note::toMidiMessages() const
 {
     Array<MidiMessage> result;
 
-    MidiMessage eventNoteOn(MidiMessage::noteOn(this->layer->getChannel(), this->key, velocity));
+    MidiMessage eventNoteOn(MidiMessage::noteOn(this->getChannel(), this->key, velocity));
     const float &startTime = this->beat * Transport::millisecondsPerBeat;
     eventNoteOn.setTimeStamp(startTime);
 
-    MidiMessage eventNoteOff(MidiMessage::noteOff(this->layer->getChannel(), this->key));
+    MidiMessage eventNoteOff(MidiMessage::noteOff(this->getChannel(), this->key));
     const float &endTime = (this->beat + this->length) * Transport::millisecondsPerBeat;
     eventNoteOff.setTimeStamp(endTime);
 
@@ -82,7 +82,7 @@ Note Note::copyWithNewId(MidiSequence *newOwner) const
     
     if (newOwner != nullptr)
     {
-        n.layer = newOwner;
+        n.sequence = newOwner;
     }
     
     return n;
@@ -224,7 +224,7 @@ void Note::reset()
 Note &Note::operator=(const Note &right)
 {
     //if (this == &right) { return *this; }
-    //this->layer = right.layer; // never do this
+    //this->sequence = right.sequence; // never do this
     this->id = right.id;
     this->beat = right.beat;
     this->key = right.key;

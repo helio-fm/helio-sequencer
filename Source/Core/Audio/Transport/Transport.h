@@ -32,15 +32,12 @@ class Transport : public ProjectListener, private OrchestraListener
 public:
 
     explicit Transport(OrchestraPit &orchestraPit);
-
     ~Transport() override;
 
     static const int millisecondsPerBeat = 500;
     
     static String getTimeString(double timeMs, bool includeMilliseconds = false);
-
     static String getTimeString(const RelativeTime &relTime, bool includeMilliseconds = false);
-    
     
     //===------------------------------------------------------------------===//
     // Transport
@@ -52,7 +49,6 @@ public:
     
     void probeSoundAt(double absTrackPosition,
                       const MidiSequence *limitToLayer = nullptr);
-
     
     void startPlaybackLooped(double absLoopStart, double absLoopEnd);
     bool isLooped() const;
@@ -76,60 +72,46 @@ public:
     MidiMessage findFirstTempoEvent();
 
     void rebuildSequencesInRealtime();
-
     
     //===------------------------------------------------------------------===//
     // Sending messages at real-time
     //===------------------------------------------------------------------===//
     
     void sendMidiMessage(const String &layerId, const MidiMessage &message) const;
-    
     void allNotesAndControllersOff() const;
-
     void allNotesControllersAndSoundOff() const;
-
     
     //===------------------------------------------------------------------===//
     // OrchestraListener
     //===------------------------------------------------------------------===//
 
     void instrumentAdded(Instrument *instrument) override;
-    
     void instrumentRemoved(Instrument *instrument) override;
-
     void instrumentRemovedPostAction() override;
-    
-    
+
     //===------------------------------------------------------------------===//
     // ProjectListener
     //===------------------------------------------------------------------===//
     
     void onChangeMidiEvent(const MidiEvent &oldEvent,
         const MidiEvent &newEvent) override;
-    
     void onAddMidiEvent(const MidiEvent &event) override;
-    
     void onRemoveMidiEvent(const MidiEvent &event) override;
-    
     void onPostRemoveMidiEvent(MidiSequence *const layer) override;
 
-    void onChangeTrackProperties(MidiTrack *const track) override;
-    
     void onAddTrack(MidiTrack *const track) override;
-    
     void onRemoveTrack(MidiTrack *const track) override;
-    
+    void onChangeTrackProperties(MidiTrack *const track) override;
+    void onResetTrackContent(MidiTrack *const track) override;
+
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
-
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override {}
-
 
     //===------------------------------------------------------------------===//
     // Listeners management
     //===------------------------------------------------------------------===//
 
     void addTransportListener(TransportListener *listener);
-
     void removeTransportListener(TransportListener *listener);
 
 protected:

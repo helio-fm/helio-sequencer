@@ -18,10 +18,11 @@
 #include "Common.h"
 #include "MidiEvent.h"
 #include "MidiSequence.h"
+#include "MidiTrack.h"
 
 
 MidiEvent::MidiEvent(MidiSequence *owner, float beatVal) :
-    layer(owner),
+    sequence(owner),
     beat(beatVal)
 {
     this->id = this->createId();
@@ -33,10 +34,28 @@ MidiEvent::~MidiEvent()
 }
 
 
-MidiSequence *MidiEvent::getLayer() const noexcept
+MidiSequence *MidiEvent::getSequence() const noexcept
 {
-    jassert(this->layer);
-    return this->layer;
+    jassert(this->sequence);
+    return this->sequence;
+}
+
+int MidiEvent::getControllerNumber() const noexcept
+{
+    jassert(this->sequence);
+    return this->sequence->getTrack()->getTrackControllerNumber();
+}
+
+int MidiEvent::getChannel() const noexcept
+{
+    jassert(this->sequence);
+    return this->sequence->getTrack()->getTrackChannel();
+}
+
+Colour MidiEvent::getColour() const noexcept
+{
+    jassert(this->sequence);
+    return this->sequence->getTrack()->getTrackColour();
 }
 
 MidiEvent::Id MidiEvent::getId() const noexcept

@@ -34,28 +34,6 @@ public:
     ProjectTimeline(ProjectTreeItem &parentProject, String trackName);
     ~ProjectTimeline() override;
 
-    // A simple wrapper around the sequences
-    // We don't need any patterns here
-    class Track : public EmptyMidiTrack
-    {
-    public:
-
-        Track() {}
-
-        MidiSequence *getSequence() const noexcept override
-        { return this->sequence; }
-
-        void setSequence(MidiSequence *sequence)
-        { this->sequence = sequence; }
-
-        // TODO ids
-
-    private:
-
-        ScopedPointer<MidiSequence> sequence;
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Track)
-    };
-
     MidiTrack *getAnnotations() const noexcept;
     MidiTrack *getTimeSignatures() const noexcept;
 
@@ -98,9 +76,7 @@ public:
     //===------------------------------------------------------------------===//
 
     void reset() override;
-    
     XmlElement *serialize() const override;
-
     void deserialize(const XmlElement &xml) override;
 
 
@@ -109,11 +85,9 @@ public:
     //===------------------------------------------------------------------===//
 
     XmlElement *serializeAnnotationsDelta() const;
-
     void resetAnnotationsDelta(const XmlElement *state);
 
     XmlElement *serializeTimeSignaturesDelta() const;
-
     void resetTimeSignaturesDelta(const XmlElement *state);
     
 
@@ -127,9 +101,17 @@ private:
     
     String name;
     
-    ScopedPointer<ProjectTimeline::Track> annotations;
+    Uuid annotationsId;
+    Uuid timeSignaturesId;
 
-    ScopedPointer<ProjectTimeline::Track> timeSignatures;
+    ScopedPointer<MidiTrack> annotationsTrack;
+    ScopedPointer<MidiTrack> timeSignaturesTrack;
+
+    ScopedPointer<MidiSequence> annotationsSequence;
+    ScopedPointer<MidiSequence> timeSignaturesSequence;
+
+    friend class AnnotationsTrack;
+    friend class TimeSignaturesTrack;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectTimeline)
 };

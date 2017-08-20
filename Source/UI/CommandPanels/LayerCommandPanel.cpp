@@ -75,7 +75,7 @@ void LayerCommandPanel::handleCommandMessage(int commandId)
         case CommandIDs::MuteLayer:
         {
             ProjectTreeItem *project = this->layerItem.getProject();
-            const String &layerId = this->layerItem.getSequence()->getLayerIdAsString();
+            const String &layerId = this->layerItem.getSequence()->getTrackId();
             
             project->getUndoStack()->beginNewTransaction();
             project->getUndoStack()->perform(new MidiTrackMuteAction(*project, layerId, true));
@@ -91,7 +91,7 @@ void LayerCommandPanel::handleCommandMessage(int commandId)
         case CommandIDs::UnmuteLayer:
         {
             ProjectTreeItem *project = this->layerItem.getProject();
-            const String &layerId = this->layerItem.getSequence()->getLayerIdAsString();
+            const String &layerId = this->layerItem.getSequence()->getTrackId();
             
             project->getUndoStack()->beginNewTransaction();
             project->getUndoStack()->perform(new MidiTrackMuteAction(*project, layerId, false));
@@ -129,7 +129,7 @@ void LayerCommandPanel::handleCommandMessage(int commandId)
             //TreeItem::deleteItem(&this->layerItem);
 
             ProjectTreeItem *project = this->layerItem.getProject();
-            const String &layerId = this->layerItem.getSequence()->getLayerIdAsString();
+            const String &layerId = this->layerItem.getSequence()->getTrackId();
             
             project->getUndoStack()->beginNewTransaction();
             
@@ -167,7 +167,7 @@ void LayerCommandPanel::handleCommandMessage(int commandId)
             Logger::writeToLog(info[instrumentIndex]->getIdAndHash());
             
             ProjectTreeItem *project = this->layerItem.getProject();
-            const String layerId = this->layerItem.getSequence()->getLayerIdAsString();
+            const String layerId = this->layerItem.getSequence()->getTrackId();
             const String instrumentId = info[instrumentIndex]->getIdAndHash();
 
             project->getUndoStack()->beginNewTransaction();
@@ -194,7 +194,7 @@ void LayerCommandPanel::handleCommandMessage(int commandId)
         if (colour != this->layerItem.getColour())
         {
             ProjectTreeItem *project = this->layerItem.getProject();
-            const String layerId = this->layerItem.getSequence()->getLayerIdAsString();
+            const String layerId = this->layerItem.getSequence()->getTrackId();
             
             project->getUndoStack()->beginNewTransaction();
             project->getUndoStack()->perform(new MidiTrackChangeColourAction(*project, layerId, colour));
@@ -237,7 +237,7 @@ void LayerCommandPanel::initDefaultCommands()
     
     if (canBeMuted)
     {
-        const bool muted = this->layerItem.getSequence()->isMuted();
+        const bool muted = this->layerItem.isTrackMuted();
         
         if (muted)
         {
@@ -264,7 +264,7 @@ void LayerCommandPanel::initColorSelection()
     {
         const String name(colours.getAllKeys()[i]);
         const Colour colour(Colour::fromString(colours[name]));
-        const bool isSelected = (colour == this->layerItem.getSequence()->getColour());
+        const bool isSelected = (colour == this->layerItem.getTrackColour());
         cmds.add(CommandItem::withParams(isSelected ? Icons::apply : Icons::colour, CommandIDs::SetLayerColour + i, name)->colouredWith(colour));
     }
 
@@ -277,7 +277,7 @@ void LayerCommandPanel::initInstrumentSelection()
     cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back")));
     
     const Array<Instrument *> &info = App::Workspace().getAudioCore().getInstruments();
-    const Instrument *selectedInstrument = App::Workspace().getAudioCore().findInstrumentById(this->layerItem.getSequence()->getInstrumentId());
+    const Instrument *selectedInstrument = App::Workspace().getAudioCore().findInstrumentById(this->layerItem.getTrackInstrumentId());
     const bool hasSubmenu = (info.size() > 5);
     
     for (int i = 0; i < info.size(); ++i)

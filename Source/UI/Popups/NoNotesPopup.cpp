@@ -498,9 +498,9 @@ void NoNotesPopup::buildChord(int n1, int n2, int n3)
         // a hack for stop sound events not mute the forthcoming notes
         //Time::waitForMillisecondCounter(Time::getMillisecondCounter() + 20);
 
-        this->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key1, kDefaultChordVelocity));
-        this->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key2, kDefaultChordVelocity));
-        this->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key3, kDefaultChordVelocity));
+        this->sendMidiMessage(MidiMessage::noteOn(note1.getChannel(), key1, kDefaultChordVelocity));
+        this->sendMidiMessage(MidiMessage::noteOn(note2.getChannel(), key2, kDefaultChordVelocity));
+        this->sendMidiMessage(MidiMessage::noteOn(note3.getChannel(), key3, kDefaultChordVelocity));
 
         this->hasMadeChanges = true;
     }
@@ -526,7 +526,7 @@ void NoNotesPopup::buildNewNote(bool shouldSendMidiMessage)
 
         if (shouldSendMidiMessage)
         {
-            this->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key, kDefaultChordVelocity));
+            this->sendMidiMessage(MidiMessage::noteOn(note1.getChannel(), key, kDefaultChordVelocity));
         }
 
         this->hasMadeChanges = true;
@@ -563,7 +563,7 @@ void NoNotesPopup::stopSound()
 
 void NoNotesPopup::sendMidiMessage(const MidiMessage &message)
 {
-    const String layerId = this->targetLayer->getLayerIdAsString();
+    const String layerId = this->targetLayer->getTrackId();
     this->roll->getTransport().sendMidiMessage(layerId, message);
 }
 

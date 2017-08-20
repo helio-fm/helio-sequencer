@@ -33,11 +33,9 @@ class AnnotationsTrackMap :
 public:
 
     AnnotationsTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll);
-
     ~AnnotationsTrackMap() override;
 
     void alignAnnotationComponent(T *nc);
-
 
     //===------------------------------------------------------------------===//
     // Component
@@ -45,26 +43,21 @@ public:
 
     void resized() override;
 
-
     //===------------------------------------------------------------------===//
     // ProjectListener
     //===------------------------------------------------------------------===//
 
     void onChangeMidiEvent(const MidiEvent &oldEvent,
         const MidiEvent &newEvent) override;
-
     void onAddMidiEvent(const MidiEvent &event) override;
-
     void onRemoveMidiEvent(const MidiEvent &event) override;
 
-    void onChangeTrackProperties(MidiTrack *const track) override;
-
     void onAddTrack(MidiTrack *const track) override;
-
     void onRemoveTrack(MidiTrack *const track) override;
+    void onChangeTrackProperties(MidiTrack *const track) override;
+    void onResetTrackContent(MidiTrack *const track) override;
 
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
-
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
 
 
@@ -73,11 +66,8 @@ public:
     //===------------------------------------------------------------------===//
 
     void onAnnotationMoved(T *nc);
-    
     void onAnnotationTapped(T *nc);
-    
     void showContextMenuFor(T *nc);
-
     void alternateActionFor(T *nc);
 
     float getBeatByXPosition(int x) const;
@@ -107,4 +97,3 @@ private:
     HashMap<AnnotationEvent, T *, AnnotationEventHashFunction> annotationsHash;
     
 };
-

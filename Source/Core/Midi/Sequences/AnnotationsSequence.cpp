@@ -94,7 +94,7 @@ MidiEvent *AnnotationsSequence::insert(const AnnotationEvent &annotation, bool u
     if (undoable)
     {
         this->getUndoStack()->perform(new AnnotationEventInsertAction(*this->getProject(),
-            this->getLayerIdAsString(), annotation));
+            this->getTrackId(), annotation));
     }
     else
     {
@@ -120,7 +120,7 @@ bool AnnotationsSequence::remove(const AnnotationEvent &annotation, bool undoabl
     if (undoable)
     {
         this->getUndoStack()->perform(new AnnotationEventRemoveAction(*this->getProject(),
-                                                                      this->getLayerIdAsString(),
+                                                                      this->getTrackId(),
                                                                       annotation));
     }
     else
@@ -148,7 +148,7 @@ bool AnnotationsSequence::change(const AnnotationEvent &annotation,
     if (undoable)
     {
         this->getUndoStack()->perform(new AnnotationEventChangeAction(*this->getProject(),
-                                                                      this->getLayerIdAsString(),
+                                                                      this->getTrackId(),
                                                                       annotation,
                                                                       newAnnotation));
     }
@@ -176,7 +176,7 @@ bool AnnotationsSequence::insertGroup(Array<AnnotationEvent> &annotations, bool 
     if (undoable)
     {
         this->getUndoStack()->perform(new AnnotationEventsGroupInsertAction(*this->getProject(),
-                                                                            this->getLayerIdAsString(),
+                                                                            this->getTrackId(),
                                                                             annotations));
     }
     else
@@ -204,7 +204,7 @@ bool AnnotationsSequence::removeGroup(Array<AnnotationEvent> &annotations, bool 
     if (undoable)
     {
         this->getUndoStack()->perform(new AnnotationEventsGroupRemoveAction(*this->getProject(),
-                                                                            this->getLayerIdAsString(),
+                                                                            this->getTrackId(),
                                                                             annotations));
     }
     else
@@ -237,7 +237,7 @@ bool AnnotationsSequence::changeGroup(Array<AnnotationEvent> &annotationsBefore,
     if (undoable)
     {
         this->getUndoStack()->perform(new AnnotationEventsGroupChangeAction(*this->getProject(),
-                                                                            this->getLayerIdAsString(),
+                                                                            this->getTrackId(),
                                                                             annotationsBefore,
                                                                             annotationsAfter));
     }
@@ -275,18 +275,11 @@ bool AnnotationsSequence::changeGroup(Array<AnnotationEvent> &annotationsBefore,
 XmlElement *AnnotationsSequence::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::annotations);
-    
-    xml->setAttribute("col", this->getColour().toString());
-    xml->setAttribute("channel", this->getChannel());
-    xml->setAttribute("instrument", this->getInstrumentId());
-    xml->setAttribute("cc", this->getControllerNumber());
-    xml->setAttribute("id", this->getLayerId().toString());
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         const MidiEvent *event = this->midiEvents.getUnchecked(i);
-        xml->prependChildElement(event->serialize()); // todo test
-        //xml->addChildElement(event->serialize());
+        xml->prependChildElement(event->serialize());
     }
 
     return xml;
@@ -303,12 +296,6 @@ void AnnotationsSequence::deserialize(const XmlElement &xml)
     {
         return;
     }
-
-    this->setColour(Colour::fromString(xml.getStringAttribute("col")));
-    this->setChannel(xml.getIntAttribute("channel", this->getChannel()));
-    this->setInstrumentId(xml.getStringAttribute("instrument", this->getInstrumentId()));
-    this->setControllerNumber(xml.getIntAttribute("cc", this->getControllerNumber()));
-    this->setLayerId(xml.getStringAttribute("id", this->getLayerId().toString()));
 
     float lastBeat = 0;
     float firstBeat = 0;

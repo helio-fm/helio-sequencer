@@ -56,11 +56,20 @@ namespace Serialization
         static const String autoLayer = "AutoLayer";
         static const String projectTimeline = "ProjectTimeline";
 
-        // Layers
+        // Sequences
         static const String track = "Track";
         static const String automation = "Automation";
         static const String annotations = "Annotations";
         static const String timeSignatures = "TimeSignatures";
+
+        // Properties
+        static const String trackId = "TrackId";
+        static const String trackColour = "Colour";
+        static const String trackChannel = "Channel";
+        static const String trackInstrumentId = "InstrumentId";
+        static const String trackControllerNumber = "Controller";
+        static const String trackMuteState = "Mute";
+        static const String trackSoloState = "Solo";
 
         // Events
         static const String note = "Note";

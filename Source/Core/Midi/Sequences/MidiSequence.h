@@ -112,12 +112,13 @@ public:
     // Helpers
     //===------------------------------------------------------------------===//
 
+    String getTrackId() const noexcept;
+    int getChannel() const noexcept;
+
     friend inline bool operator==(const MidiSequence &lhs, const MidiSequence &rhs)
     {
         return &lhs == &rhs;
     }
-
-    int hashCode() const noexcept;
 
 private:
 
@@ -128,8 +129,6 @@ protected:
 
     // clearQuick the arrays and don't send any notifications
     virtual void clearQuick() {}
-
-    void setLayerId(const String &id);
 
     float lastEndBeat;
     float lastStartBeat;

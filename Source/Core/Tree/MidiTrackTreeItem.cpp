@@ -39,7 +39,7 @@
 
 MidiTrackTreeItem::MidiTrackTreeItem(const String &name) :
     TreeItem(name),
-    colour(Colours::white),
+    colour(Colours::white), // TODO random color from my set
     channel(1),
     instrumentId(String::empty),
     controllerNumber(0),
@@ -67,7 +67,7 @@ MidiTrackTreeItem::~MidiTrackTreeItem()
 
 Colour MidiTrackTreeItem::getColour() const
 {
-    return this->getColour().interpolatedWith(Colours::white, 0.4f);
+    return this->getTrackColour().interpolatedWith(Colours::white, 0.4f);
 }
 
 void MidiTrackTreeItem::showPage()
@@ -140,11 +140,14 @@ void MidiTrackTreeItem::resetClipsDelta(const XmlElement *state)
 // MidiTrack
 //===----------------------------------------------------------------------===//
 
-// TODO properties serialization!
-
 Uuid MidiTrackTreeItem::getTrackId() const noexcept
 {
     return this->id;
+}
+
+void MidiTrackTreeItem::setTrackId(const Uuid &val)
+{
+    this->id = val;
 }
 
 String MidiTrackTreeItem::getTrackName() const noexcept
@@ -168,7 +171,7 @@ Colour MidiTrackTreeItem::getTrackColour() const noexcept
     return this->colour;
 }
 
-void MidiTrackTreeItem::setTrackColour(Colour val)
+void MidiTrackTreeItem::setTrackColour(const Colour &val)
 {
     if (this->colour != val)
     {
@@ -404,7 +407,7 @@ void MidiTrackTreeItem::dispatchChangeTrackContent(MidiTrack *const track)
 {
     if (this->lastFoundParent != nullptr)
     {
-        this->lastFoundParent->broadcastResetTrackContent();
+        this->lastFoundParent->broadcastResetTrackContent(this);
     }
 }
 

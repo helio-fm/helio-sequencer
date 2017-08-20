@@ -22,6 +22,7 @@ class Arpeggiator;
 class ProjectTreeItem;
 class Lasso;
 class MidiSequence;
+class MidiTrack;
 class Note;
 
 class PianoRollToolbox
@@ -33,18 +34,18 @@ public:
     static float findStartBeat(const Array<Note> &selection);
     static float findEndBeat(const Array<Note> &selection);
     
-    static void wipeSpace(Array<MidiSequence *> layers,
+    static void wipeSpace(Array<MidiTrack *> tracks,
                           float startBeat,
                           float endBeat,
                           bool shouldKeepCroppedNotes = true,
                           bool shouldCheckpoint = true);
     
-    static void shiftEventsToTheLeft(Array<MidiSequence *> layers,
+    static void shiftEventsToTheLeft(Array<MidiTrack *> tracks,
                                      float targetBeat,
                                      float beatOffset,
                                      bool shouldCheckpoint = true);
     
-    static void shiftEventsToTheRight(Array<MidiSequence *> layers,
+    static void shiftEventsToTheRight(Array<MidiTrack *> tracks,
                                       float targetBeat,
                                       float beatOffset,
                                       bool shouldCheckpoint = true);

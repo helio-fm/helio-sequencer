@@ -99,14 +99,14 @@ void PianoRoll::deleteSelection()
     for (int i = 0; i < this->selection.getNumSelected(); ++i)
     {
         const Note &note = this->selection.getItemAs<NoteComponent>(i)->getNote();
-        const MidiSequence *ownerLayer = note.getLayer();
+        const MidiSequence *ownerLayer = note.getSequence();
         Array<Note> *arrayToAddTo = nullptr;
 
         for (int j = 0; j < selections.size(); ++j)
         {
             if (selections.getUnchecked(j)->size() > 0)
             {
-                if (selections.getUnchecked(j)->getUnchecked(0).getLayer() == ownerLayer)
+                if (selections.getUnchecked(j)->getUnchecked(0).getSequence() == ownerLayer)
                 {
                     arrayToAddTo = selections.getUnchecked(j);
                 }
@@ -126,7 +126,7 @@ void PianoRoll::deleteSelection()
 
     for (int i = 0; i < selections.size(); ++i)
     {
-        PianoSequence *pianoLayer = static_cast<PianoSequence *>(selections.getUnchecked(i)->getUnchecked(0).getLayer());
+        PianoSequence *pianoLayer = static_cast<PianoSequence *>(selections.getUnchecked(i)->getUnchecked(0).getSequence());
 
         if (! didCheckpoint)
         {
@@ -152,14 +152,13 @@ void PianoRoll::reloadRollContent()
     this->eventComponents.clear();
     this->componentsHashTable.clear();
 
+    const auto &tracks = this->project.getTracks();
 
-    const Array<MidiSequence *> &layers = this->project.getTracks();
-
-    for (auto layer : layers)
+    for (auto track : tracks)
     {
-        for (int j = 0; j < layer->size(); ++j)
+        for (int j = 0; j < track->getSequence()->size(); ++j)
         {
-            MidiEvent *event = layer->getUnchecked(j);
+            MidiEvent *event = track->getSequence()->getUnchecked(j);
 
             if (Note *note = dynamic_cast<Note *>(event))
             {
@@ -171,8 +170,8 @@ void PianoRoll::reloadRollContent()
                 this->eventComponents.add(noteComponent);
                 this->componentsHashTable.set(*note, noteComponent);
 
-                const bool belongsToActiveLayer = noteComponent->belongsToLayerSet(this->activeLayers);
-                noteComponent->setActive(belongsToActiveLayer, true);
+                const bool belongsToActiveTrack = noteComponent->belongsToAnySequence(this->activeLayers);
+                noteComponent->setActive(belongsToActiveTrack, true);
 
                 this->addAndMakeVisible(noteComponent);
             }
@@ -199,8 +198,8 @@ void PianoRoll::setActiveMidiLayers(Array<MidiSequence *> newLayers, MidiSequenc
         NoteComponent *noteComponent =
             static_cast<NoteComponent *>(this->eventComponents.getUnchecked(i));
 
-        const bool belongsToNewLayers = noteComponent->belongsToLayerSet(newLayers);
-        const bool belongsToOldLayers = noteComponent->belongsToLayerSet(this->activeLayers);
+        const bool belongsToNewLayers = noteComponent->belongsToAnySequence(newLayers);
+        const bool belongsToOldLayers = noteComponent->belongsToAnySequence(this->activeLayers);
 
         //if (belongsToNewLayer || belongsToOldLayer)
         //{
@@ -248,7 +247,7 @@ void PianoRoll::selectAll()
     for (int i = 0; i < this->eventComponents.size(); ++i)
     {
         NoteComponent *child = static_cast<NoteComponent *>(this->eventComponents.getUnchecked(i));
-        if (child->belongsToLayerSet(this->activeLayers))
+        if (child->belongsToAnySequence(this->activeLayers))
         {
             this->selection.addToSelection(child);
         }
@@ -492,7 +491,7 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
     this->eventComponents.add(component);
     this->selectEvent(component, false); // selectEvent(component, true)
 
-    const bool isActive = component->belongsToLayerSet(this->activeLayers);
+    const bool isActive = component->belongsToAnySequence(this->activeLayers);
     component->setActive(isActive);
 
     this->componentsHashTable.set(note, component);
@@ -530,7 +529,15 @@ void PianoRoll::onChangeTrackProperties(MidiTrack *const track)
 {
     if (auto sequence = dynamic_cast<const PianoSequence *>(track->getSequence()))
     {
-        this->repaint(); // this->reloadRollContent();
+        this->repaint();
+    }
+}
+
+void PianoRoll::onResetTrackContent(MidiTrack *const track)
+{
+    if (auto sequence = dynamic_cast<const PianoSequence *>(track->getSequence()))
+    {
+        this->reloadRollContent();
     }
 }
 
@@ -649,14 +656,15 @@ XmlElement *PianoRoll::clipboardCopy() const
     {
         // todo copy from
         const auto timeline = this->project.getTimeline();
+        const auto annotations = timeline->getAnnotations()->getSequence();
         auto annotationLayerIdParent = new XmlElement(Serialization::Clipboard::layer);
-        annotationLayerIdParent->setAttribute(Serialization::Clipboard::layerId, timeline->getAnnotations()->getLayerIdAsString());
+        annotationLayerIdParent->setAttribute(Serialization::Clipboard::layerId, annotations->getTrackId());
         xml->addChildElement(annotationLayerIdParent);
 
-        for (int i = 0; i < timeline->getAnnotations()->size(); ++i)
+        for (int i = 0; i < annotations->size(); ++i)
         {
             if (const AnnotationEvent *event =
-                dynamic_cast<AnnotationEvent *>(timeline->getAnnotations()->getUnchecked(i)))
+                dynamic_cast<AnnotationEvent *>(annotations->getUnchecked(i)))
             {
                 if (const bool eventFitsInRange =
                     (event->getBeat() >= firstBeat) && (event->getBeat() < lastBeat))
@@ -672,7 +680,7 @@ XmlElement *PianoRoll::clipboardCopy() const
         {
             MidiSequence *autoLayer = automation->getSequence();
             auto autoLayerIdParent = new XmlElement(Serialization::Clipboard::layer);
-            autoLayerIdParent->setAttribute(Serialization::Clipboard::layerId, autoLayer->getLayerIdAsString());
+            autoLayerIdParent->setAttribute(Serialization::Clipboard::layerId, autoLayer->getTrackId());
             xml->addChildElement(autoLayerIdParent);
             
             for (int j = 0; j < autoLayer->size(); ++j)

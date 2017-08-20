@@ -20,6 +20,7 @@
 #include "MidiSequence.h"
 #include "Transport.h"
 #include "SerializationKeys.h"
+#include "MidiTrack.h"
 
 #define AUTOEVENT_DEFAULT_CURVATURE (0.5f)
 #define MIN_INTERPOLATED_CONTROLLER_DELTA (0.01f)
@@ -31,7 +32,7 @@ AutomationEvent::AutomationEvent() : MidiEvent(nullptr, 0.f)
 }
 
 AutomationEvent::AutomationEvent(const AutomationEvent &other) :
-    MidiEvent(other.layer, other.beat),
+    MidiEvent(other.sequence, other.beat),
     controllerValue(other.controllerValue),
     curvature(other.curvature)
 {
@@ -96,18 +97,19 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
     Array<MidiMessage> result;
     
     // теперь пусть все треки автоматизации ведут себя одинаково
-    //if (this->getLayer()->isTempoLayer())
+    //if (this->getSequence()->isTempoLayer())
     {
         MidiMessage cc;
-        
-        if (this->getLayer()->isTempoLayer())
+        const bool isTempoTrack = this->getSequence()->getTrack()->isTempoTrack();
+
+        if (isTempoTrack)
         {
             cc = MidiMessage::tempoMetaEvent(int((1.f - this->controllerValue) * Transport::millisecondsPerBeat * 1000));
         }
         else
         {
-            cc = MidiMessage::controllerEvent(this->layer->getChannel(),
-                                              this->getLayer()->getControllerNumber(),
+            cc = MidiMessage::controllerEvent(this->getChannel(),
+                                              this->getControllerNumber(),
                                               int(this->controllerValue * 127));
         
         }
@@ -118,11 +120,11 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
 
         
         // добавить интерполированные события, если таковые должны быть
-        const int indexOfThis = this->getLayer()->indexOfSorted(this);
+        const int indexOfThis = this->getSequence()->indexOfSorted(this);
         
-        if (indexOfThis >= 0 && indexOfThis < (this->getLayer()->size() - 1))
+        if (indexOfThis >= 0 && indexOfThis < (this->getSequence()->size() - 1))
         {
-            const AutomationEvent *nextEvent = static_cast<AutomationEvent *>(this->getLayer()->getUnchecked(indexOfThis + 1));
+            const AutomationEvent *nextEvent = static_cast<AutomationEvent *>(this->getSequence()->getUnchecked(indexOfThis + 1));
             const float controllerDelta = fabs(this->controllerValue - nextEvent->controllerValue);
             
             if (controllerDelta > MIN_INTERPOLATED_CONTROLLER_DELTA)
@@ -144,7 +146,7 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
                     
                     //Logger::writeToLog(String(this->controllerValue) + " - " + String(interpolatedControllerValue) + " - " + String(nextEvent->controllerValue));
                     
-                    if (this->getLayer()->isTempoLayer())
+                    if (isTempoTrack)
                     {
                         MidiMessage ci(MidiMessage::tempoMetaEvent(int((1.f - interpolatedControllerValue) * Transport::millisecondsPerBeat * 1000)));
                         ci.setTimeStamp(interpolatedEventTimeStamp);
@@ -152,8 +154,8 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
                     }
                     else
                     {
-                        MidiMessage ci(MidiMessage::controllerEvent(this->getLayer()->getChannel(),
-                                                                    this->getLayer()->getControllerNumber(),
+                        MidiMessage ci(MidiMessage::controllerEvent(this->getChannel(),
+                                                                    this->getControllerNumber(),
                                                                     int(this->controllerValue * 127)));
                         ci.setTimeStamp(interpolatedEventTimeStamp);
                         result.add(ci);
@@ -312,7 +314,7 @@ AutomationEvent &AutomationEvent::operator=(const AutomationEvent &right)
 {
     //if (this == &right) { return *this; }
 
-    //this->layer = right.layer; // never do this
+    //this->sequence = right.sequence; // never do this
     this->id = right.id;
     this->beat = right.beat;
     this->curvature = right.curvature;

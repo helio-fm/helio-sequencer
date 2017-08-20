@@ -94,7 +94,7 @@ MidiEvent *TimeSignaturesSequence::insert(const TimeSignatureEvent &signature, b
     {
         this->getUndoStack()->
             perform(new TimeSignatureEventInsertAction(*this->getProject(),
-                this->getLayerIdAsString(), signature));
+                this->getTrackId(), signature));
     }
     else
     {
@@ -119,7 +119,7 @@ bool TimeSignaturesSequence::remove(const TimeSignatureEvent &signature, bool un
     {
         this->getUndoStack()->
             perform(new TimeSignatureEventRemoveAction(*this->getProject(),
-                                                       this->getLayerIdAsString(),
+                                                       this->getTrackId(),
                                                        signature));
     }
     else
@@ -150,7 +150,7 @@ bool TimeSignaturesSequence::change(const TimeSignatureEvent &signature,
     {
         this->getUndoStack()->
             perform(new TimeSignatureEventChangeAction(*this->getProject(),
-                                                       this->getLayerIdAsString(),
+                                                       this->getTrackId(),
                                                        signature,
                                                        newSignature));
     }
@@ -181,7 +181,7 @@ bool TimeSignaturesSequence::insertGroup(Array<TimeSignatureEvent> &signatures, 
     {
         this->getUndoStack()->
             perform(new TimeSignatureEventsGroupInsertAction(*this->getProject(),
-                                                             this->getLayerIdAsString(),
+                                                             this->getTrackId(),
                                                              signatures));
     }
     else
@@ -210,7 +210,7 @@ bool TimeSignaturesSequence::removeGroup(Array<TimeSignatureEvent> &signatures, 
     {
         this->getUndoStack()->
             perform(new TimeSignatureEventsGroupRemoveAction(*this->getProject(),
-                                                             this->getLayerIdAsString(),
+                                                             this->getTrackId(),
                                                              signatures));
     }
     else
@@ -244,7 +244,7 @@ bool TimeSignaturesSequence::changeGroup(Array<TimeSignatureEvent> &signaturesBe
     {
         this->getUndoStack()->
             perform(new TimeSignatureEventsGroupChangeAction(*this->getProject(),
-                                                             this->getLayerIdAsString(),
+                                                             this->getTrackId(),
                                                              signaturesBefore,
                                                              signaturesAfter));
     }
@@ -282,12 +282,6 @@ bool TimeSignaturesSequence::changeGroup(Array<TimeSignatureEvent> &signaturesBe
 XmlElement *TimeSignaturesSequence::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::timeSignatures);
-    
-    xml->setAttribute("col", this->getColour().toString());
-    xml->setAttribute("channel", this->getChannel());
-    xml->setAttribute("instrument", this->getInstrumentId());
-    xml->setAttribute("cc", this->getControllerNumber());
-    xml->setAttribute("id", this->getLayerId().toString());
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
@@ -310,12 +304,6 @@ void TimeSignaturesSequence::deserialize(const XmlElement &xml)
     {
         return;
     }
-
-    this->setColour(Colour::fromString(xml.getStringAttribute("col")));
-    this->setChannel(xml.getIntAttribute("channel", this->getChannel()));
-    this->setInstrumentId(xml.getStringAttribute("instrument", this->getInstrumentId()));
-    this->setControllerNumber(xml.getIntAttribute("cc", this->getControllerNumber()));
-    this->setLayerId(xml.getStringAttribute("id", this->getLayerId().toString()));
 
     float lastBeat = 0;
     float firstBeat = 0;

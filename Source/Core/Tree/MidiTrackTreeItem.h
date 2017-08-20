@@ -68,7 +68,7 @@ public:
     void setTrackName(const String &val) override;
 
     Colour getTrackColour() const noexcept override;
-    void setTrackColour(Colour colour) override;
+    void setTrackColour(const Colour &val) override;
 
     String getTrackInstrumentId() const noexcept override;
     void setTrackInstrumentId(const String &val) override;
@@ -96,9 +96,9 @@ public:
     void dispatchRemoveClip(const Clip &clip) override;
     void dispatchPostRemoveClip(Pattern *const pattern) override;
 
-    void dispatchChangeTrackProperties(MidiTrack *const track) override {}
-    void dispatchChangeTrackBeatRange(MidiTrack *const track) override {}
-    void dispatchChangeTrackContent(MidiTrack *const track) override {}
+    void dispatchChangeTrackProperties(MidiTrack *const track) override;
+    void dispatchChangeTrackBeatRange(MidiTrack *const track) override;
+    void dispatchChangeTrackContent(MidiTrack *const track) override;
 
     ProjectTreeItem *getProject() const override;
 
@@ -128,6 +128,7 @@ protected:
 protected:
 
     Uuid id;
+    void setTrackId(const Uuid &val) override;
 
     Colour colour;
     int channel;

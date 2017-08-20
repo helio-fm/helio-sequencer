@@ -113,7 +113,7 @@ MidiEvent *PianoSequence::insert(const Note &note, const bool undoable)
     if (undoable)
     {
         this->getUndoStack()->perform(new NoteInsertAction(*this->getProject(),
-                                                           this->getLayerIdAsString(),
+                                                           this->getTrackId(),
                                                            note));
     }
     else
@@ -137,7 +137,7 @@ bool PianoSequence::remove(const Note &note, const bool undoable)
     if (undoable)
     {
         this->getUndoStack()->perform(new NoteRemoveAction(*this->getProject(),
-                                                           this->getLayerIdAsString(),
+                                                           this->getTrackId(),
                                                            note));
     }
     else
@@ -169,7 +169,7 @@ bool PianoSequence::change(const Note &note,
     if (undoable)
     {
         this->getUndoStack()->perform(new NoteChangeAction(*this->getProject(),
-                                                           this->getLayerIdAsString(),
+                                                           this->getTrackId(),
                                                            note,
                                                            newNote));
     }
@@ -202,7 +202,7 @@ bool PianoSequence::insertGroup(Array<Note> &notes, bool undoable)
     if (undoable)
     {
         this->getUndoStack()->perform(new NotesGroupInsertAction(*this->getProject(),
-                                                                 this->getLayerIdAsString(),
+                                                                 this->getTrackId(),
                                                                  notes));
     }
     else
@@ -229,7 +229,7 @@ bool PianoSequence::removeGroup(Array<Note> &notes, bool undoable)
     if (undoable)
     {
         this->getUndoStack()->perform(new NotesGroupRemoveAction(*this->getProject(),
-                                                                 this->getLayerIdAsString(),
+                                                                 this->getTrackId(),
                                                                  notes));
     }
     else
@@ -266,7 +266,7 @@ bool PianoSequence::changeGroup(Array<Note> &notesBefore,
     if (undoable)
     {
         this->getUndoStack()->perform(new NotesGroupChangeAction(*this->getProject(),
-                                                                 this->getLayerIdAsString(),
+                                                                 this->getTrackId(),
                                                                  notesBefore,
                                                                  notesAfter));
     }
@@ -355,12 +355,6 @@ float PianoSequence::getLastBeat() const
 XmlElement *PianoSequence::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::track);
-    xml->setAttribute("col", this->getColour().toString());
-    xml->setAttribute("mute", this->getMuteStateAsString());
-    xml->setAttribute("channel", this->getChannel());
-    xml->setAttribute("instrument", this->getInstrumentId());
-    xml->setAttribute("cc", this->getControllerNumber());
-    xml->setAttribute("id", this->getLayerId().toString());
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
@@ -382,13 +376,6 @@ void PianoSequence::deserialize(const XmlElement &xml)
     if (root == nullptr)
     { return; }
 
-    this->colour = (Colour::fromString(root->getStringAttribute("col")));
-    this->channel = (root->getIntAttribute("channel", this->getChannel()));
-    this->instrumentId = (root->getStringAttribute("instrument", this->getInstrumentId()));
-    this->controllerNumber = (root->getIntAttribute("cc", this->getControllerNumber()));
-    this->layerId = Uuid(root->getStringAttribute("id", this->getLayerId().toString()));
-    this->muted = MidiSequence::isMuted(root->getStringAttribute("mute"));
-    
     float lastBeat = 0;
     float firstBeat = 0;
 

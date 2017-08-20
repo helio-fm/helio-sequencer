@@ -79,7 +79,7 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
     addAndMakeVisible (separatorV = new SeparatorVertical());
 
     //[UserPreSize]
-    jassert(this->addsNewEvent || this->targetEvent.getLayer() != nullptr);
+    jassert(this->addsNewEvent || this->targetEvent.getSequence() != nullptr);
 
     if (this->addsNewEvent)
     {
@@ -308,7 +308,7 @@ void TimeSignatureDialog::inputAttemptWhenModal()
 
 TimeSignatureDialog *TimeSignatureDialog::createEditingDialog(Component &owner, const TimeSignatureEvent &event)
 {
-    return new TimeSignatureDialog(owner, static_cast<TimeSignaturesSequence *>(event.getLayer()), event, false, 0.f);
+    return new TimeSignatureDialog(owner, static_cast<TimeSignaturesSequence *>(event.getSequence()), event, false, 0.f);
 }
 
 TimeSignatureDialog *TimeSignatureDialog::createAddingDialog(Component &owner, TimeSignaturesSequence *annotationsLayer, float targetBeat)

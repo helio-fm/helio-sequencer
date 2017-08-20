@@ -94,7 +94,7 @@ MidiEvent *AutomationSequence::insert(const AutomationEvent &autoEvent, bool und
     if (undoable)
     {
         this->getUndoStack()->perform(new AutomationEventInsertAction(*this->getProject(),
-                                                                      this->getLayerIdAsString(),
+                                                                      this->getTrackId(),
                                                                       autoEvent));
     }
     else
@@ -120,7 +120,7 @@ bool AutomationSequence::remove(const AutomationEvent &autoEvent, bool undoable)
     if (undoable)
     {
         this->getUndoStack()->perform(new AutomationEventRemoveAction(*this->getProject(),
-                                                                      this->getLayerIdAsString(),
+                                                                      this->getTrackId(),
                                                                       autoEvent));
     }
     else
@@ -148,7 +148,7 @@ bool AutomationSequence::change(const AutomationEvent &autoEvent, const Automati
     if (undoable)
     {
         this->getUndoStack()->perform(new AutomationEventChangeAction(*this->getProject(),
-                                                                      this->getLayerIdAsString(),
+                                                                      this->getTrackId(),
                                                                       autoEvent,
                                                                       newAutoEvent));
     }
@@ -181,7 +181,7 @@ bool AutomationSequence::insertGroup(Array<AutomationEvent> &events, bool undoab
     if (undoable)
     {
         this->getUndoStack()->perform(new AutomationEventsGroupInsertAction(*this->getProject(),
-                                                                            this->getLayerIdAsString(),
+                                                                            this->getTrackId(),
                                                                             events));
     }
     else
@@ -209,7 +209,7 @@ bool AutomationSequence::removeGroup(Array<AutomationEvent> &events, bool undoab
     if (undoable)
     {
         this->getUndoStack()->perform(new AutomationEventsGroupRemoveAction(*this->getProject(),
-                                                                            this->getLayerIdAsString(),
+                                                                            this->getTrackId(),
                                                                             events));
     }
     else
@@ -242,7 +242,7 @@ bool AutomationSequence::changeGroup(const Array<AutomationEvent> eventsBefore,
     if (undoable)
     {
         this->getUndoStack()->perform(new AutomationEventsGroupChangeAction(*this->getProject(),
-                                                                            this->getLayerIdAsString(),
+                                                                            this->getTrackId(),
                                                                             eventsBefore,
                                                                             eventsAfter));
     }
@@ -281,12 +281,6 @@ bool AutomationSequence::changeGroup(const Array<AutomationEvent> eventsBefore,
 XmlElement *AutomationSequence::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::automation);
-    xml->setAttribute("col", this->getColour().toString());
-    xml->setAttribute("mute", this->getMuteStateAsString());
-    xml->setAttribute("channel", this->getChannel());
-    xml->setAttribute("instrument", this->getInstrumentId());
-    xml->setAttribute("cc", this->getControllerNumber());
-    xml->setAttribute("id", this->getLayerId().toString());
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
@@ -308,13 +302,6 @@ void AutomationSequence::deserialize(const XmlElement &xml)
     if (root == nullptr)
     { return; }
 
-    this->setColour(Colour::fromString(root->getStringAttribute("col")));
-    this->setChannel(root->getIntAttribute("channel", this->getChannel()));
-    this->setInstrumentId(root->getStringAttribute("instrument", this->getInstrumentId()));
-    this->setControllerNumber(root->getIntAttribute("cc", this->getControllerNumber()));
-    this->setLayerId(root->getStringAttribute("id", this->getLayerId().toString()));
-    this->muted = MidiSequence::isMuted(root->getStringAttribute("mute"));
-    
     float firstBeat = 0;
     float lastBeat = 0;
 

@@ -19,6 +19,7 @@
 #include "PianoLayerDiffLogic.h"
 #include "PianoTrackTreeItem.h"
 #include "PianoLayerDeltas.h"
+#include "MidiTrackDeltas.h"
 #include "PatternDiffLogic.h"
 #include "Note.h"
 #include "PianoSequence.h"
@@ -112,22 +113,22 @@ Diff *PianoLayerDiffLogic::createDiff(const TrackedItem &initialState) const
 
         if (!deltaFoundInState || (deltaFoundInState && dataHasChanged))
         {
-            if (myDelta->getType() == PianoLayerDeltas::layerPath)
+            if (myDelta->getType() == MidiTrackDeltas::trackPath)
             {
                 NewSerializedDelta fullDelta = createPathDiff(stateDeltaData, myDeltaData);
                 diff->addOwnedDelta(fullDelta.delta, fullDelta.deltaData);
             }
-            else if (myDelta->getType() == PianoLayerDeltas::layerMute)
+            else if (myDelta->getType() == MidiTrackDeltas::trackMute)
             {
                 NewSerializedDelta fullDelta = createMuteDiff(stateDeltaData, myDeltaData);
                 diff->addOwnedDelta(fullDelta.delta, fullDelta.deltaData);
             }
-            else if (myDelta->getType() == PianoLayerDeltas::layerColour)
+            else if (myDelta->getType() == MidiTrackDeltas::trackColour)
             {
                 NewSerializedDelta fullDelta = createColourDiff(stateDeltaData, myDeltaData);
                 diff->addOwnedDelta(fullDelta.delta, fullDelta.deltaData);
             }
-            else if (myDelta->getType() == PianoLayerDeltas::layerInstrument)
+            else if (myDelta->getType() == MidiTrackDeltas::trackInstrument)
             {
                 NewSerializedDelta fullDelta = createInstrumentDiff(stateDeltaData, myDeltaData);
                 diff->addOwnedDelta(fullDelta.delta, fullDelta.deltaData);
@@ -210,25 +211,25 @@ Diff *PianoLayerDiffLogic::createMergedItem(const TrackedItem &initialState) con
             {
                 deltaFoundInChanges = true;
 
-                if (targetDelta->getType() == PianoLayerDeltas::layerPath)
+                if (targetDelta->getType() == MidiTrackDeltas::trackPath)
                 {
                     Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
                     XmlElement *diffDeltaData = mergePath(stateDeltaData, targetDeltaData);
                     diff->addOwnedDelta(diffDelta, diffDeltaData);
                 }
-                else if (targetDelta->getType() == PianoLayerDeltas::layerMute)
+                else if (targetDelta->getType() == MidiTrackDeltas::trackMute)
                 {
                     Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
                     XmlElement *diffDeltaData = mergeMute(stateDeltaData, targetDeltaData);
                     diff->addOwnedDelta(diffDelta, diffDeltaData);
                 }
-                else if (targetDelta->getType() == PianoLayerDeltas::layerColour)
+                else if (targetDelta->getType() == MidiTrackDeltas::trackColour)
                 {
                     Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
                     XmlElement *diffDeltaData = mergeColour(stateDeltaData, targetDeltaData);
                     diff->addOwnedDelta(diffDelta, diffDeltaData);
                 }
-                else if (targetDelta->getType() == PianoLayerDeltas::layerInstrument)
+                else if (targetDelta->getType() == MidiTrackDeltas::trackInstrument)
                 {
                     Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
                     XmlElement *diffDeltaData = mergeInstrument(stateDeltaData, targetDeltaData);
@@ -450,18 +451,18 @@ NewSerializedDelta createPathDiff(const XmlElement *state, const XmlElement *cha
     NewSerializedDelta res;
     res.deltaData = new XmlElement(*changes);
     res.delta = new Delta(DeltaDescription("moved from {x}", state->getStringAttribute(Serialization::VCS::delta)),
-                          PianoLayerDeltas::layerPath);
+                          MidiTrackDeltas::trackPath);
     return res;
 }
 
 NewSerializedDelta createMuteDiff(const XmlElement *state, const XmlElement *changes)
 {
-    const bool muted = MidiSequence::isMuted(changes->getStringAttribute(Serialization::VCS::delta));
+    const bool muted = MidiTrack::isTrackMuted(changes->getStringAttribute(Serialization::VCS::delta));
     NewSerializedDelta res;
     res.deltaData = new XmlElement(*changes);
     res.delta = new Delta(muted ? 
         DeltaDescription("muted") : DeltaDescription("unmuted"),
-        PianoLayerDeltas::layerMute);
+        MidiTrackDeltas::trackMute);
     return res;
 }
 
@@ -469,7 +470,7 @@ NewSerializedDelta createColourDiff(const XmlElement *state, const XmlElement *c
 {
     NewSerializedDelta res;
     res.delta = new Delta(DeltaDescription("color changed"), 
-        PianoLayerDeltas::layerColour);
+        MidiTrackDeltas::trackColour);
     res.deltaData = new XmlElement(*changes);
     return res;
 }
@@ -478,7 +479,7 @@ NewSerializedDelta createInstrumentDiff(const XmlElement *state, const XmlElemen
 {
     NewSerializedDelta res;
     res.delta = new Delta(DeltaDescription("instrument changed"), 
-        PianoLayerDeltas::layerInstrument);
+        MidiTrackDeltas::trackInstrument);
     res.deltaData = new XmlElement(*changes);
     return res;
 }

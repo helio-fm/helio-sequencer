@@ -21,9 +21,9 @@ class MidiSequence;
 class Pattern;
 
 // A track is a meta-object that has
-// all the properties and
-// sequence with events and
-// pattern with clips;
+// - all the properties
+// - sequence with events
+// - pattern with clips
 // MidiLayerTreeItem implements this
 
 class MidiTrack
@@ -32,6 +32,10 @@ public:
 
     virtual ~MidiTrack() {}
 
+    //===------------------------------------------------------------------===//
+    // Properties
+    //===------------------------------------------------------------------===//
+
     virtual Uuid getTrackId() const noexcept = 0;
     virtual int getTrackChannel() const noexcept = 0;
 
@@ -39,7 +43,7 @@ public:
     virtual void setTrackName(const String &val) = 0;
 
     virtual Colour getTrackColour() const noexcept = 0;
-    virtual void setTrackColour(Colour colour) = 0;
+    virtual void setTrackColour(const Colour &val) = 0;
 
     virtual String getTrackInstrumentId() const noexcept = 0;
     virtual void setTrackInstrumentId(const String &val) = 0;
@@ -50,21 +54,18 @@ public:
     virtual bool isTrackMuted() const noexcept = 0;
     virtual void setTrackMuted(bool shouldBeMuted) = 0;
 
-    // TODO
-    //virtual bool isTrackSolo() const noexcept = 0;
-    //virtual void setSolo(bool shouldBeSolo) = 0;
-
     virtual MidiSequence *getSequence() const noexcept = 0;
     virtual Pattern *getPattern() const noexcept = 0;
 
-    // Some shorthands:
+    //===------------------------------------------------------------------===//
+    // Shorthands
+    //===------------------------------------------------------------------===//
 
-    static int compareElements(const MidiTrack &first, const MidiTrack &second)
-    {
-        if (&first == &second) { return 0; }
-        return first.getTrackName().compareNatural(second.getTrackName());
-    }
+    static int compareElements(const MidiTrack &first, const MidiTrack &second);
+    static int compareElements(const MidiTrack *first, const MidiTrack *second);
 
+    void serializeTrackProperties(XmlElement &xml) const;
+    void deserializeTrackProperties(const XmlElement &xml);
 
     enum DefaultControllers
     {
@@ -72,32 +73,17 @@ public:
         tempoController = 81,
     };
 
-    bool isTempoTrack() const noexcept
-    {
-        return (this->getTrackControllerNumber() == MidiTrack::tempoController);
-    }
+    bool isTempoTrack() const noexcept;
+    bool isSustainPedalTrack() const noexcept;
+    bool isOnOffTrack() const noexcept;
 
-    bool isSustainPedalTrack() const noexcept
-    {
-        return (this->getTrackControllerNumber() == MidiTrack::sustainPedalController);
-    }
+    String getTrackMuteStateAsString() const;
+    static bool isTrackMuted(const String &muteState);
 
-    bool isOnOffTrack() const noexcept
-    {
-        // hardcoded for now
-        return (this->getTrackControllerNumber() >= 64 &&
-            this->getTrackControllerNumber() <= 69);
-    }
+protected:
 
-    String getTrackMuteStateAsString() const
-    {
-        return (this->isTrackMuted() ? "yes" : "no");
-    }
+    virtual void setTrackId(const Uuid &val) = 0;
 
-    static bool isTrackMuted(const String &muteState)
-    {
-        return (muteState == "yes");
-    }
 };
 
 class EmptyMidiTrack : public MidiTrack
@@ -106,14 +92,15 @@ public:
 
     EmptyMidiTrack() {}
 
-    virtual Uuid getTrackId() const noexcept override { return {}; }
+    Uuid getTrackId() const noexcept override { return {}; }
+    void setTrackId(const Uuid &val) override {};
     int getTrackChannel() const noexcept override { return 0; }
 
     String getTrackName() const noexcept override { return String::empty; }
     void setTrackName(const String &val) override {}
 
     Colour getTrackColour() const noexcept override { return Colours::white; }
-    void setTrackColour(Colour colour) override {};
+    void setTrackColour(const Colour &val) override {};
 
     String getTrackInstrumentId() const noexcept override { return String::empty; }
     void setTrackInstrumentId(const String &val) override {};

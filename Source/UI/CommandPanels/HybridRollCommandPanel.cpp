@@ -79,10 +79,13 @@ void HybridRollCommandPanel::handleCommandMessage (int commandId)
             {
                 const double numBeats = double(roll->getNumBeats());
                 const double seekThreshold = (1.0 / numBeats) / 10.0;
+                const auto annotationsSequence = timeline->getAnnotations()->getSequence();
+                const auto timeSignaturesSequence = timeline->getTimeSignatures()->getSequence();
 
-                for (int i = 0; i < timeline->getAnnotations()->size(); ++i)
+                for (int i = 0; i < annotationsSequence->size(); ++i)
                 {
-                    if (AnnotationEvent *annotation = dynamic_cast<AnnotationEvent *>(timeline->getAnnotations()->getUnchecked(i)))
+                    if (AnnotationEvent *annotation =
+                        dynamic_cast<AnnotationEvent *>(annotationsSequence->getUnchecked(i)))
                     {
                         const double annotationSeekPosition = roll->getTransportPositionByBeat(annotation->getBeat());
                         if (fabs(annotationSeekPosition - seekPosition) < seekThreshold)
@@ -93,9 +96,10 @@ void HybridRollCommandPanel::handleCommandMessage (int commandId)
                     }
                 }
 
-                for (int i = 0; i < timeline->getTimeSignatures()->size(); ++i)
+                for (int i = 0; i < timeSignaturesSequence->size(); ++i)
                 {
-                    if (TimeSignatureEvent *ts = dynamic_cast<TimeSignatureEvent *>(timeline->getTimeSignatures()->getUnchecked(i)))
+                    if (TimeSignatureEvent *ts =
+                        dynamic_cast<TimeSignatureEvent *>(timeSignaturesSequence->getUnchecked(i)))
                     {
                         const double tsSeekPosition = roll->getTransportPositionByBeat(ts->getBeat());
                         if (fabs(tsSeekPosition - seekPosition) < seekThreshold)

@@ -101,7 +101,7 @@ void TreePanel::handleCommandMessage(int commandId)
             if (this->lastRenamedItem != nullptr)
             {
                 ProjectTreeItem *project = this->lastRenamedItem->getProject();
-                const String &layerId = this->lastRenamedItem->getSequence()->getLayerIdAsString();
+                const String &layerId = this->lastRenamedItem->getSequence()->getTrackId();
                 
                 project->getUndoStack()->beginNewTransaction();
                 project->getUndoStack()->perform(new MidiTrackRenameAction(*project, layerId, this->renameString));

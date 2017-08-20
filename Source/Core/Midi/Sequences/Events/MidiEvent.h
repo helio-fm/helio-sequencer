@@ -45,10 +45,11 @@ public:
     // Accessors
     //===------------------------------------------------------------------===//
 
-    MidiSequence *getLayer() const noexcept;
-
+    MidiSequence *getSequence() const noexcept;
+    int getControllerNumber() const noexcept;
+    int getChannel() const noexcept;
+    Colour getColour() const noexcept;
     Id getId() const noexcept;
-
     float getBeat() const noexcept;
 
     // эта штука используется для сортировки списка событий:
@@ -71,7 +72,7 @@ public:
 
 protected:
 
-    MidiSequence *layer;
+    MidiSequence *sequence;
 
     float beat;
 

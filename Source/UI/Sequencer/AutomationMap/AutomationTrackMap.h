@@ -39,29 +39,22 @@ class AutomationTrackMap : public AutomationTrackMapCommon
 {
 public:
     
-    AutomationTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll, WeakReference<MidiSequence> targetLayer);
-    
+    AutomationTrackMap(ProjectTreeItem &parentProject,
+        HybridRoll &parentRoll, WeakReference<MidiSequence> targetLayer);
     ~AutomationTrackMap() override;
     
     void insertNewEventAt(const MouseEvent &e);
-
     void reloadTrack() override;
-
     
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
     
     void mouseDown(const MouseEvent &e) override;
-
     void mouseDrag(const MouseEvent &e) override;
-    
     void mouseUp(const MouseEvent &e) override;
-    
     void resized() override;
-
     void mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel) override;
-    
     
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -69,19 +62,15 @@ public:
     
     void onChangeMidiEvent(const MidiEvent &oldEvent,
         const MidiEvent &newEvent) override;
-    
     void onAddMidiEvent(const MidiEvent &event) override;
-    
     void onRemoveMidiEvent(const MidiEvent &event) override;
-    
-    void onChangeTrackProperties(MidiTrack *const track) override;
-    
-    void onAddTrack(MidiTrack *const track) override;
-    
-    void onRemoveTrack(MidiTrack *const track) override;
-    
-    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
 
+    void onAddTrack(MidiTrack *const track) override;
+    void onRemoveTrack(MidiTrack *const track) override;
+    void onChangeTrackProperties(MidiTrack *const track) override;
+    void onResetTrackContent(MidiTrack *const track) override;
+
+    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
 
 protected:

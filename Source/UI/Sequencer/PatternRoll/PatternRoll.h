@@ -49,14 +49,12 @@ public:
     void reloadRollContent() override;
     int getNumRows() const noexcept;
 
-
     //===------------------------------------------------------------------===//
     // Ghost notes
     //===------------------------------------------------------------------===//
     
     void showGhostClipFor(ClipComponent *targetClipComponent);
     void hideAllGhostClips();
-
 
     //===------------------------------------------------------------------===//
     // Note management
@@ -68,7 +66,6 @@ public:
     float getBeatByComponentPosition(float x) const;
     float getBeatByMousePosition(int x) const;
     Pattern *getPatternByMousePosition(int y) const;
-
 
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -85,9 +82,9 @@ public:
     void onPostRemoveClip(Pattern *const pattern) override;
 
     void onAddTrack(MidiTrack *const track) override;
-    void onChangeTrackProperties(MidiTrack *const track) override;
     void onRemoveTrack(MidiTrack *const track) override;
-
+    void onChangeTrackProperties(MidiTrack *const track) override;
+    void onResetTrackContent(MidiTrack *const track) override;
 
     //===------------------------------------------------------------------===//
     // LassoSource
@@ -96,14 +93,12 @@ public:
     void findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
         const Rectangle<int> &rectangle) override;
 
-
     //===------------------------------------------------------------------===//
     // ClipboardOwner
     //===------------------------------------------------------------------===//
 
     XmlElement *clipboardCopy() const override;
     void clipboardPaste(const XmlElement &xml) override;
-
 
     //===------------------------------------------------------------------===//
     // Component
@@ -115,7 +110,6 @@ public:
     bool keyPressed(const KeyPress &key) override;
     void resized() override;
     void paint(Graphics &g) override;
-
     
     //===------------------------------------------------------------------===//
     // Serializable

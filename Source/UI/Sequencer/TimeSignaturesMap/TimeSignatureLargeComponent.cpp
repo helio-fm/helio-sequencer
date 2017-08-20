@@ -131,7 +131,7 @@ void TimeSignatureLargeComponent::mouseDown (const MouseEvent& e)
     if (e.mods.isLeftButtonDown())
     {
         // don't checkpoint right here, but only before the actual change
-        //this->event.getLayer()->checkpoint();
+        //this->event.getSequence()->checkpoint();
 
         this->dragger.startDraggingComponent(this, e);
         this->draggingHadCheckpoint = false;
@@ -162,14 +162,14 @@ void TimeSignatureLargeComponent::mouseDrag (const MouseEvent& e)
             {
                 if (! this->draggingHadCheckpoint)
                 {
-                    this->event.getLayer()->checkpoint();
+                    this->event.getSequence()->checkpoint();
                     this->draggingHadCheckpoint = true;
                 }
 
                 Array<TimeSignatureEvent> groupDragBefore, groupDragAfter;
                 groupDragBefore.add(this->event);
                 groupDragAfter.add(this->event.withBeat(newBeat));
-                TimeSignaturesSequence *autoLayer = static_cast<TimeSignaturesSequence *>(this->event.getLayer());
+                TimeSignaturesSequence *autoLayer = static_cast<TimeSignaturesSequence *>(this->event.getSequence());
                 autoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
             }
 

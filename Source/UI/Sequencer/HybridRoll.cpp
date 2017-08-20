@@ -228,13 +228,18 @@ void HybridRoll::insertAnnotationWithinScreen(const String &annotation)
 
 void HybridRoll::insertTimeSignatureWithinScreen(int numerator, int denominator)
 {
-    jassert(denominator == 2 || denominator == 4 || denominator == 8 || denominator == 16 || denominator == 32);
-    if (TimeSignaturesSequence *tsLayer = dynamic_cast<TimeSignaturesSequence *>(this->project.getTimeline()->getTimeSignatures()))
+    jassert(denominator == 2 || 
+        denominator == 4 || denominator == 8 ||
+        denominator == 16 || denominator == 32);
+
+    if (TimeSignaturesSequence *tsSequence = 
+        dynamic_cast<TimeSignaturesSequence *>(this->project.
+            getTimeline()->getTimeSignatures()->getSequence()))
     {
-        tsLayer->checkpoint();
+        tsSequence->checkpoint();
         const float targetBeat = this->getPositionForNewTimelineEvent();
-        TimeSignatureEvent event(tsLayer, targetBeat, numerator, denominator);
-        tsLayer->insert(event, true);
+        TimeSignatureEvent event(tsSequence, targetBeat, numerator, denominator);
+        tsSequence->insert(event, true);
     }
 }
 
@@ -643,7 +648,8 @@ void HybridRoll::computeVisibleBeatLines()
     this->visibleBeats.clearQuick();
     this->visibleSnaps.clearQuick();
 
-    const auto tsLayer = this->project.getTimeline()->getTimeSignatures();
+    const auto tsSequence =
+        this->project.getTimeline()->getTimeSignatures()->getSequence();
     
     const float zeroCanvasOffset = this->firstBar * this->barWidth;
     
@@ -668,10 +674,10 @@ void HybridRoll::computeVisibleBeatLines()
 
     // Find a time signature to start from (or use default values):
     // find a first time signature after a paint start and take a previous one, if any
-    for (; nextSignatureIdx < tsLayer->size(); ++nextSignatureIdx)
+    for (; nextSignatureIdx < tsSequence->size(); ++nextSignatureIdx)
     {
         const auto signature =
-            static_cast<TimeSignatureEvent *>(tsLayer->getUnchecked(nextSignatureIdx));
+            static_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(nextSignatureIdx));
         
         if (signature->getBeat() >= (paintStartBar * NUM_BEATS_IN_BAR))
         {
@@ -702,9 +708,9 @@ void HybridRoll::computeVisibleBeatLines()
         
         // Check if we have more time signatures to come
         TimeSignatureEvent *nextSignature = nullptr;
-        if (nextSignatureIdx < tsLayer->size())
+        if (nextSignatureIdx < tsSequence->size())
         {
-            nextSignature = static_cast<TimeSignatureEvent *>(tsLayer->getUnchecked(nextSignatureIdx));
+            nextSignature = static_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(nextSignatureIdx));
         }
         
         // Now for the beat lines
@@ -1012,7 +1018,8 @@ bool HybridRoll::keyPressed(const KeyPress &key)
             const float leftBeat = PianoRollToolbox::findStartBeat(this->selection);
             const float rightBeat = PianoRollToolbox::findEndBeat(this->selection);
             PianoRollToolbox::wipeSpace(this->project.getTracks(), leftBeat, rightBeat, true, false);
-            PianoRollToolbox::shiftEventsToTheRight(this->project.getTracks(), leftBeat, -(rightBeat - leftBeat), false);
+            PianoRollToolbox::shiftEventsToTheRight(this->project.getTracks(),
+                leftBeat, -(rightBeat - leftBeat), false);
             return true;
         }
     }
@@ -1861,19 +1868,23 @@ void HybridRoll::endWipingSpaceIfNeeded()
 
         if ((rightBeat - leftBeat) > 0.01f)
         {
-            const bool isAnyModifierKeyDown = Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isAnyModifierKeyDown();
+            const bool isAnyModifierKeyDown =
+                Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isAnyModifierKeyDown();
 
-            PianoRollToolbox::wipeSpace(isAnyModifierKeyDown ? this->project.getSelectedLayersList() : this->project.getTracks(), leftBeat, rightBeat);
+            PianoRollToolbox::wipeSpace(isAnyModifierKeyDown ? 
+                this->project.getSelectedTracks() : this->project.getTracks(), leftBeat, rightBeat);
 
             if (! isAnyModifierKeyDown)
             {
                 if (this->wipeSpaceHelper->isInverted())
                 {
-                    PianoRollToolbox::shiftEventsToTheLeft(this->project.getTracks(), leftBeat, (rightBeat - leftBeat), false);
+                    PianoRollToolbox::shiftEventsToTheLeft(this->project.getTracks(),
+                        leftBeat, (rightBeat - leftBeat), false);
                 }
                 else
                 {
-                    PianoRollToolbox::shiftEventsToTheRight(this->project.getTracks(), leftBeat, -(rightBeat - leftBeat), false);
+                    PianoRollToolbox::shiftEventsToTheRight(this->project.getTracks(), 
+                        leftBeat, -(rightBeat - leftBeat), false);
                 }
             }
         }
@@ -1939,11 +1950,13 @@ void HybridRoll::continueInsertingSpace(const MouseEvent &e)
 
             if (isInverted)
             {
-                PianoRollToolbox::shiftEventsToTheLeft(this->project.getTracks(), rightBeat, changeDelta, shouldCheckpoint);
+                PianoRollToolbox::shiftEventsToTheLeft(this->project.getTracks(),
+                    rightBeat, changeDelta, shouldCheckpoint);
             }
             else
             {
-                PianoRollToolbox::shiftEventsToTheRight(this->project.getTracks(), leftBeat, changeDelta, shouldCheckpoint);
+                PianoRollToolbox::shiftEventsToTheRight(this->project.getTracks(),
+                    leftBeat, changeDelta, shouldCheckpoint);
             }
 
             this->insertSpaceHelper->resetDragDelta();
@@ -2169,4 +2182,3 @@ void HybridRoll::changeListenerCallback(ChangeBroadcaster *source)
         child->setMouseCursor(interactsWithChildren ? MouseCursor::NormalCursor : cursor);
     }
 }
-

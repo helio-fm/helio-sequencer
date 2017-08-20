@@ -223,7 +223,7 @@ void Pattern::notifyClipRemovedPostAction()
 
 void Pattern::notifyPatternChanged()
 {
-    this->eventDispatcher.dispatchReloadPattern(this);
+    this->eventDispatcher.dispatchChangeTrackContent(&this->track);
 }
 
 

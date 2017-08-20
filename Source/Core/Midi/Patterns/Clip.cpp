@@ -30,7 +30,6 @@ Clip::Clip(const Clip &other) :
     startBeat(other.startBeat),
     id(other.id)
 {
-    id = this->createId();
 }
 
 Clip::Clip(Pattern *owner, float beatVal) :

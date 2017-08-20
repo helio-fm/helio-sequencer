@@ -17,9 +17,10 @@
 
 #pragma once
 
-namespace PianoLayerDeltas
+namespace MidiTrackDeltas
 {
-    static const String notesAdded = "NotesAdded";
-    static const String notesRemoved = "NotesRemoved";
-    static const String notesChanged = "NotesChanged";
-} // namespace PianoLayerDeltas
+    static const String trackPath = "LayerPath";
+    static const String trackMute = "LayerMute";
+    static const String trackColour = "LayerColour";
+    static const String trackInstrument = "LayerInstrument";
+} // namespace MidiTrackDeltas

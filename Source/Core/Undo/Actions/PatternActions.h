@@ -35,7 +35,7 @@ public:
         UndoAction(project) {}
 
     PatternClipInsertAction(ProjectTreeItem &project,
-        String patternId, const Clip &target);
+        String trackId, const Clip &target);
 
     bool perform() override;
     bool undo() override;
@@ -47,7 +47,7 @@ public:
 
 private:
 
-    String patternId;
+    String trackId;
     Clip clip;
 
     JUCE_DECLARE_NON_COPYABLE(PatternClipInsertAction)
@@ -66,7 +66,7 @@ public:
         UndoAction(project) {}
 
     PatternClipRemoveAction(ProjectTreeItem &project,
-        String patternId, const Clip &target);
+        String trackId, const Clip &target);
 
     bool perform() override;
     bool undo() override;
@@ -78,7 +78,7 @@ public:
 
 private:
 
-    String patternId;
+    String trackId;
     Clip clip;
 
     JUCE_DECLARE_NON_COPYABLE(PatternClipRemoveAction)
@@ -97,7 +97,7 @@ public:
         UndoAction(project) {}
 
     PatternClipChangeAction(ProjectTreeItem &project,
-        String patternId,
+        String trackId,
         const Clip &target,
         const Clip &newParameters);
 
@@ -112,7 +112,7 @@ public:
 
 private:
 
-    String patternId;
+    String trackId;
 
     Clip clipBefore;
     Clip clipAfter;

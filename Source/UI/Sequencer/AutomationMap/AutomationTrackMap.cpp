@@ -166,7 +166,7 @@ void AutomationTrackMap::insertNewEventAt(const MouseEvent &e)
 
 void AutomationTrackMap::removeEventIfPossible(const AutomationEvent &e)
 {
-    AutomationSequence *autoLayer = static_cast<AutomationSequence *>(e.getLayer());
+    AutomationSequence *autoLayer = static_cast<AutomationSequence *>(e.getSequence());
     
     if (autoLayer->size() > 1)
     {
@@ -261,7 +261,7 @@ AutomationEventComponent *AutomationTrackMap::getNextEventComponent(int indexOfS
 
 void AutomationTrackMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    if (newEvent.getLayer() == this->sequence)
+    if (newEvent.getSequence() == this->sequence)
     {
         const AutomationEvent &autoEvent = static_cast<const AutomationEvent &>(oldEvent);
         const AutomationEvent &newAutoEvent = static_cast<const AutomationEvent &>(newEvent);
@@ -307,7 +307,7 @@ void AutomationTrackMap::onChangeMidiEvent(const MidiEvent &oldEvent, const Midi
 
 void AutomationTrackMap::onAddMidiEvent(const MidiEvent &event)
 {
-    if (event.getLayer() == this->sequence)
+    if (event.getSequence() == this->sequence)
     {
         const AutomationEvent &autoEvent = static_cast<const AutomationEvent &>(event);
         
@@ -346,7 +346,7 @@ void AutomationTrackMap::onAddMidiEvent(const MidiEvent &event)
 
 void AutomationTrackMap::onRemoveMidiEvent(const MidiEvent &event)
 {
-    if (event.getLayer() == this->sequence)
+    if (event.getSequence() == this->sequence)
     {
         const AutomationEvent &autoEvent = static_cast<const AutomationEvent &>(event);
         
@@ -380,12 +380,25 @@ void AutomationTrackMap::onChangeTrackProperties(MidiTrack *const track)
 {
     if (this->sequence != nullptr && track->getSequence() == this->sequence)
     {
-        this->repaint(); // this->reloadTrack();
+        this->repaint();
+    }
+}
+
+void AutomationTrackMap::onResetTrackContent(MidiTrack *const track)
+{
+    if (this->sequence != nullptr && track->getSequence() == this->sequence)
+    {
+        this->reloadTrack();
     }
 }
 
 void AutomationTrackMap::onAddTrack(MidiTrack *const track)
 {
+    // TODO remove?
+    if (this->sequence != nullptr && track->getSequence() == this->sequence)
+    {
+        this->reloadTrack();
+    }
 }
 
 void AutomationTrackMap::onRemoveTrack(MidiTrack *const track)

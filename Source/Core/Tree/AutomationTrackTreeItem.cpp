@@ -203,6 +203,8 @@ XmlElement *AutomationTrackTreeItem::serialize() const
     xml->setAttribute("type", Serialization::Core::autoLayer);
     xml->setAttribute("name", this->name);
 
+    this->serializeTrackProperties(*xml);
+
     xml->addChildElement(this->layer->serialize());
     xml->addChildElement(this->pattern->serialize());
 
@@ -222,6 +224,8 @@ void AutomationTrackTreeItem::deserialize(const XmlElement &xml)
     this->deserializeVCSUuid(xml);
 
     this->setName(xml.getStringAttribute("name"));
+
+    this->deserializeTrackProperties(xml);
 
     // он все равно должен быть один, но так короче
     forEachXmlChildElementWithTagName(xml, e, Serialization::Core::automation)

@@ -138,9 +138,11 @@ public:
     void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
     void onAddMidiEvent(const MidiEvent &event) override;
     void onRemoveMidiEvent(const MidiEvent &event) override;
-    void onChangeTrackProperties(MidiTrack *const track) override;
+
     void onAddTrack(MidiTrack *const track) override;
     void onRemoveTrack(MidiTrack *const track) override;
+    void onChangeTrackProperties(MidiTrack *const track) override;
+    void onResetTrackContent(MidiTrack *const track) override;
 
 
     //===------------------------------------------------------------------===//

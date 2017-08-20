@@ -63,7 +63,7 @@ public:
 
     VersionControlTreeItem *addVCS(TreeItem *parent);
     TrackGroupTreeItem *addGroup(TreeItem *parent, const String &name);
-    MidiTrackTreeItem *addPianoLayer(TreeItem *parent, const String &name);
+    MidiTrackTreeItem *addPianoTrack(TreeItem *parent, const String &name);
     MidiTrackTreeItem *addAutoLayer(TreeItem *parent, const String &name, int controllerNumber);
     ScriptTreeItem *addScript(TreeItem *parent, const String &path);
 

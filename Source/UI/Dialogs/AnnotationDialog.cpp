@@ -84,7 +84,7 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *annota
     addAndMakeVisible (separatorV = new SeparatorVertical());
 
     //[UserPreSize]
-    jassert(this->addsNewEvent || this->targetEvent.getLayer() != nullptr);
+    jassert(this->addsNewEvent || this->targetEvent.getSequence() != nullptr);
 
     if (this->addsNewEvent)
     {
@@ -317,7 +317,7 @@ void AnnotationDialog::inputAttemptWhenModal()
 
 AnnotationDialog *AnnotationDialog::createEditingDialog(Component &owner, const AnnotationEvent &event)
 {
-    return new AnnotationDialog(owner, static_cast<AnnotationsSequence *>(event.getLayer()), event, false, 0.f);
+    return new AnnotationDialog(owner, static_cast<AnnotationsSequence *>(event.getSequence()), event, false, 0.f);
 }
 
 AnnotationDialog *AnnotationDialog::createAddingDialog(Component &owner, AnnotationsSequence *annotationsLayer, float targetBeat)
