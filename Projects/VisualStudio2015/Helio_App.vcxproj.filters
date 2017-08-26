@@ -41,11 +41,17 @@
     <Filter Include="Helio\Source\Core\Clipboard">
       <UniqueIdentifier>{1BD0FAF3-9BFE-3BBF-CA8E-7F1A3EC70DFD}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helio\Source\Core\Events">
-      <UniqueIdentifier>{3A5696EA-EEB5-B4F3-B2D4-D0DC0A2BE02C}</UniqueIdentifier>
+    <Filter Include="Helio\Source\Core\Midi\Patterns">
+      <UniqueIdentifier>{E57020CF-CB11-064B-25F9-27049F1CCEC0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helio\Source\Core\Layers">
-      <UniqueIdentifier>{A04777D5-4C83-2132-0359-6E9402CEA8F4}</UniqueIdentifier>
+    <Filter Include="Helio\Source\Core\Midi\Sequences\Events">
+      <UniqueIdentifier>{7B9DB4B6-9ED5-5D1F-DC23-F2A785CE1B29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\Core\Midi\Sequences">
+      <UniqueIdentifier>{CB2C0EA0-32A2-EEBC-A539-14E2B0BF1F0C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\Core\Midi">
+      <UniqueIdentifier>{04AF0CE0-9776-A241-9983-A0708270FCB9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Source\Core\Network">
       <UniqueIdentifier>{6506945C-5148-CBEC-ABD1-970A46A0A028}</UniqueIdentifier>
@@ -113,30 +119,6 @@
     <Filter Include="Helio\Source\UI\Intro">
       <UniqueIdentifier>{4447BFBA-A8BF-CE33-4EC3-DB497FE10359}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helio\Source\UI\MidiEditor\AnnotationsMap">
-      <UniqueIdentifier>{5B062A2D-D296-3E76-6D1E-8C2D70CE2846}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\UI\MidiEditor\AutomationMap">
-      <UniqueIdentifier>{51486267-6236-B092-A742-77188F753A23}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\UI\MidiEditor\Header">
-      <UniqueIdentifier>{3F4C901E-4C55-008B-F264-AB0FF137E291}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\UI\MidiEditor\Helpers">
-      <UniqueIdentifier>{CEE95132-1873-D948-DA1C-0637CB74DBA8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\UI\MidiEditor\TimeSignaturesMap">
-      <UniqueIdentifier>{6703622B-A2F3-522D-A188-CA8D2011566B}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\UI\MidiEditor\TrackMap">
-      <UniqueIdentifier>{E3694FAC-FF5F-916F-28F8-9AB129310ED9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\UI\MidiEditor\TriggersMap">
-      <UniqueIdentifier>{78185C5C-21C1-074C-D0BF-AF4F4BD2488C}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\UI\MidiEditor">
-      <UniqueIdentifier>{25F0D4B0-E4A8-E77D-099F-9FAD62795223}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Helio\Source\UI\Popups">
       <UniqueIdentifier>{97C2C14B-E622-7A8D-30C8-F6BE30B326A5}</UniqueIdentifier>
     </Filter>
@@ -145,6 +127,36 @@
     </Filter>
     <Filter Include="Helio\Source\UI\ProjectPage">
       <UniqueIdentifier>{EBC98F0F-98D8-175A-F91E-A91B7FA7AA16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Sequencer\AnnotationsMap">
+      <UniqueIdentifier>{40A4623C-B436-8ABC-24FF-726991126D83}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Sequencer\AutomationMap">
+      <UniqueIdentifier>{AA851AD4-CBBB-12BB-23DF-F45C8A07007E}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Sequencer\Header">
+      <UniqueIdentifier>{AEC214EA-4021-28CB-DFC1-18ED89D5560A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Sequencer\Helpers">
+      <UniqueIdentifier>{B9140FA4-A12C-DD38-14BE-F83DF81F0C53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Sequencer\PatternRoll">
+      <UniqueIdentifier>{37D29535-0F05-653F-2AAB-0914C631FE05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Sequencer\PianoRoll">
+      <UniqueIdentifier>{18A4F578-97AC-2664-037E-9193CA4BF2A9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Sequencer\TimeSignaturesMap">
+      <UniqueIdentifier>{77620830-14AB-CB3D-A946-E096EE98CB38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Sequencer\TrackMap">
+      <UniqueIdentifier>{40F606FB-0B2C-890A-ED39-5437F06979E2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Sequencer\TriggersMap">
+      <UniqueIdentifier>{082F47A7-9A9C-6341-63AA-30D1BED36745}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Sequencer">
+      <UniqueIdentifier>{51F62DE5-3494-7C22-D76B-2980A4C15C10}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Source\UI\SettingsPage">
       <UniqueIdentifier>{E11C35F5-BB8E-89B1-75A6-BFEE6C13C0FF}</UniqueIdentifier>
@@ -586,35 +598,44 @@
     <ClCompile Include="..\..\Source\Core\Clipboard\InternalClipboard.cpp">
       <Filter>Helio\Source\Core\Clipboard</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Events\AnnotationEvent.cpp">
-      <Filter>Helio\Source\Core\Events</Filter>
+    <ClCompile Include="..\..\Source\Core\Midi\Patterns\Clip.cpp">
+      <Filter>Helio\Source\Core\Midi\Patterns</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Events\AutomationEvent.cpp">
-      <Filter>Helio\Source\Core\Events</Filter>
+    <ClCompile Include="..\..\Source\Core\Midi\Patterns\Pattern.cpp">
+      <Filter>Helio\Source\Core\Midi\Patterns</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Events\MidiEvent.cpp">
-      <Filter>Helio\Source\Core\Events</Filter>
+    <ClCompile Include="..\..\Source\Core\Midi\Sequences\Events\AnnotationEvent.cpp">
+      <Filter>Helio\Source\Core\Midi\Sequences\Events</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Events\Note.cpp">
-      <Filter>Helio\Source\Core\Events</Filter>
+    <ClCompile Include="..\..\Source\Core\Midi\Sequences\Events\AutomationEvent.cpp">
+      <Filter>Helio\Source\Core\Midi\Sequences\Events</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Events\TimeSignatureEvent.cpp">
-      <Filter>Helio\Source\Core\Events</Filter>
+    <ClCompile Include="..\..\Source\Core\Midi\Sequences\Events\MidiEvent.cpp">
+      <Filter>Helio\Source\Core\Midi\Sequences\Events</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Layers\AnnotationsLayer.cpp">
-      <Filter>Helio\Source\Core\Layers</Filter>
+    <ClCompile Include="..\..\Source\Core\Midi\Sequences\Events\Note.cpp">
+      <Filter>Helio\Source\Core\Midi\Sequences\Events</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Layers\AutomationLayer.cpp">
-      <Filter>Helio\Source\Core\Layers</Filter>
+    <ClCompile Include="..\..\Source\Core\Midi\Sequences\Events\TimeSignatureEvent.cpp">
+      <Filter>Helio\Source\Core\Midi\Sequences\Events</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Layers\MidiLayer.cpp">
-      <Filter>Helio\Source\Core\Layers</Filter>
+    <ClCompile Include="..\..\Source\Core\Midi\Sequences\AnnotationsSequence.cpp">
+      <Filter>Helio\Source\Core\Midi\Sequences</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Layers\PianoLayer.cpp">
-      <Filter>Helio\Source\Core\Layers</Filter>
+    <ClCompile Include="..\..\Source\Core\Midi\Sequences\AutomationSequence.cpp">
+      <Filter>Helio\Source\Core\Midi\Sequences</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Layers\TimeSignaturesLayer.cpp">
-      <Filter>Helio\Source\Core\Layers</Filter>
+    <ClCompile Include="..\..\Source\Core\Midi\Sequences\MidiSequence.cpp">
+      <Filter>Helio\Source\Core\Midi\Sequences</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Midi\Sequences\PianoSequence.cpp">
+      <Filter>Helio\Source\Core\Midi\Sequences</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Midi\Sequences\TimeSignaturesSequence.cpp">
+      <Filter>Helio\Source\Core\Midi\Sequences</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Midi\MidiTrack.cpp">
+      <Filter>Helio\Source\Core\Midi</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Network\AuthorizationManager.cpp">
       <Filter>Helio\Source\Core\Network</Filter>
@@ -673,9 +694,6 @@
     <ClCompile Include="..\..\Source\Core\Tools\ColourSchemeManager.cpp">
       <Filter>Helio\Source\Core\Tools</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Tools\MidiRollToolbox.cpp">
-      <Filter>Helio\Source\Core\Tools</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Translation\TranslationManager.cpp">
       <Filter>Helio\Source\Core\Translation</Filter>
     </ClCompile>
@@ -685,7 +703,7 @@
     <ClCompile Include="..\..\Source\Core\Tree\AudioPluginTreeItem.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Tree\AutomationLayerTreeItem.cpp">
+    <ClCompile Include="..\..\Source\Core\Tree\AutomationTrackTreeItem.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Tree\InstrumentsRootTreeItem.cpp">
@@ -694,13 +712,10 @@
     <ClCompile Include="..\..\Source\Core\Tree\InstrumentTreeItem.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Tree\LayerGroupTreeItem.cpp">
+    <ClCompile Include="..\..\Source\Core\Tree\MidiTrackTreeItem.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Tree\LayerTreeItem.cpp">
-      <Filter>Helio\Source\Core\Tree</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Tree\PianoLayerTreeItem.cpp">
+    <ClCompile Include="..\..\Source\Core\Tree\PianoTrackTreeItem.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Tree\ProjectInfo.cpp">
@@ -718,6 +733,9 @@
     <ClCompile Include="..\..\Source\Core\Tree\SettingsTreeItem.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Tree\TrackGroupTreeItem.cpp">
+      <Filter>Helio\Source\Core\Tree</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Tree\TreeItem.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
@@ -730,22 +748,22 @@
     <ClCompile Include="..\..\Source\Core\Undo\Actions\AnnotationEventActions.cpp">
       <Filter>Helio\Source\Core\Undo\Actions</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Undo\Actions\AutoLayerTreeItemActions.cpp">
+    <ClCompile Include="..\..\Source\Core\Undo\Actions\AutomationTrackActions.cpp">
       <Filter>Helio\Source\Core\Undo\Actions</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Undo\Actions\AutomationEventActions.cpp">
       <Filter>Helio\Source\Core\Undo\Actions</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Undo\Actions\LayerTreeItemActions.cpp">
-      <Filter>Helio\Source\Core\Undo\Actions</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Undo\Actions\MidiLayerActions.cpp">
+    <ClCompile Include="..\..\Source\Core\Undo\Actions\MidiTrackActions.cpp">
       <Filter>Helio\Source\Core\Undo\Actions</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Undo\Actions\NoteActions.cpp">
       <Filter>Helio\Source\Core\Undo\Actions</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Undo\Actions\PianoLayerTreeItemActions.cpp">
+    <ClCompile Include="..\..\Source\Core\Undo\Actions\PatternActions.cpp">
+      <Filter>Helio\Source\Core\Undo\Actions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Undo\Actions\PianoTrackActions.cpp">
       <Filter>Helio\Source\Core\Undo\Actions</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Undo\Actions\TimeSignatureEventActions.cpp">
@@ -758,6 +776,9 @@
       <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\VCS\DiffLogic\DiffLogic.cpp">
+      <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\VCS\DiffLogic\PatternDiffLogic.cpp">
       <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\VCS\DiffLogic\PianoLayerDiffLogic.cpp">
@@ -832,6 +853,15 @@
     <ClCompile Include="..\..\Source\UI\CommandPanels\AutomationsCommandPanel.cpp">
       <Filter>Helio\Source\UI\CommandPanels</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\CommandPanels\HybridRollCommandPanel.cpp">
+      <Filter>Helio\Source\UI\CommandPanels</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\CommandPanels\HybridRollCommandPanelDefault.cpp">
+      <Filter>Helio\Source\UI\CommandPanels</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\CommandPanels\HybridRollCommandPanelPhone.cpp">
+      <Filter>Helio\Source\UI\CommandPanels</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\CommandPanels\InstrumentCommandPanel.cpp">
       <Filter>Helio\Source\UI\CommandPanels</Filter>
     </ClCompile>
@@ -839,15 +869,6 @@
       <Filter>Helio\Source\UI\CommandPanels</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\CommandPanels\LayerCommandPanel.cpp">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\MidiRollCommandPanel.cpp">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\MidiRollCommandPanelDefault.cpp">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\MidiRollCommandPanelPhone.cpp">
       <Filter>Helio\Source\UI\CommandPanels</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\CommandPanels\MoveToLayerCommandPanel.cpp">
@@ -970,117 +991,6 @@
     <ClCompile Include="..\..\Source\UI\Intro\InitScreen.cpp">
       <Filter>Helio\Source\UI\Intro</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\AnnotationsMap\AnnotationLargeComponent.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\AnnotationsMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\AnnotationsMap\AnnotationSmallComponent.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\AnnotationsMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\AnnotationsMap\AnnotationsTrackMap.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\AnnotationsMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\AutomationMap\AutomationCurveHelper.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\AutomationMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\AutomationMap\AutomationEventComponent.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\AutomationMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\AutomationMap\AutomationEventsConnector.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\AutomationMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\AutomationMap\AutomationTrackMap.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\AutomationMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\Header\HeaderSelectionIndicator.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\Header</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\Header\MidiRollHeader.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\Header</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\Header\SoundProbeIndicator.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\Header</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\Header\TimeDistanceIndicator.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\Header</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\Header\TrackEndIndicator.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\Header</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\Header\TrackStartIndicator.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\Header</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\Header\TransportIndicator.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\Header</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\Helpers\TimelineWarningMarker.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\Helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\Helpers\ComponentConnectorCurve.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\Helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\Helpers\InsertSpaceHelper.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\Helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\Helpers\MidiRollExpandMark.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\Helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\Helpers\NoteResizerLeft.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\Helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\Helpers\NoteResizerRight.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\Helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\Helpers\WipeSpaceHelper.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\Helpers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureLargeComponent.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\TimeSignaturesMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureSmallComponent.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\TimeSignaturesMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignaturesTrackMap.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\TimeSignaturesMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\TrackMap\PianoTrackMap.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\TrackMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\TrackMap\TrackScroller.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\TrackMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\TrackMap\TrackScrollerScreen.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\TrackMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\TriggersMap\TriggerEventComponent.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\TriggersMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\TriggersMap\TriggerEventConnector.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\TriggersMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\TriggersMap\TriggersTrackMap.cpp">
-      <Filter>Helio\Source\UI\MidiEditor\TriggersMap</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\MidiEditor.cpp">
-      <Filter>Helio\Source\UI\MidiEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\MidiEventComponent.cpp">
-      <Filter>Helio\Source\UI\MidiEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\MidiEventComponentLasso.cpp">
-      <Filter>Helio\Source\UI\MidiEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\MidiRoll.cpp">
-      <Filter>Helio\Source\UI\MidiEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\MidiRollEditMode.cpp">
-      <Filter>Helio\Source\UI\MidiEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\NoteComponent.cpp">
-      <Filter>Helio\Source\UI\MidiEditor</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\MidiEditor\PianoRoll.cpp">
-      <Filter>Helio\Source\UI\MidiEditor</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\ChordTooltip.cpp">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClCompile>
@@ -1140,6 +1050,135 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\ProjectPage\ProjectPagePhone.cpp">
       <Filter>Helio\Source\UI\ProjectPage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\AnnotationsMap\AnnotationLargeComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\AnnotationsMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\AnnotationsMap\AnnotationSmallComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\AnnotationsMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\AnnotationsMap\AnnotationsTrackMap.cpp">
+      <Filter>Helio\Source\UI\Sequencer\AnnotationsMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationCurveHelper.cpp">
+      <Filter>Helio\Source\UI\Sequencer\AutomationMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationEventComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\AutomationMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationEventsConnector.cpp">
+      <Filter>Helio\Source\UI\Sequencer\AutomationMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationTrackMap.cpp">
+      <Filter>Helio\Source\UI\Sequencer\AutomationMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Header\HeaderSelectionIndicator.cpp">
+      <Filter>Helio\Source\UI\Sequencer\Header</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Header\HybridRollHeader.cpp">
+      <Filter>Helio\Source\UI\Sequencer\Header</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Header\Playhead.cpp">
+      <Filter>Helio\Source\UI\Sequencer\Header</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Header\SoundProbeIndicator.cpp">
+      <Filter>Helio\Source\UI\Sequencer\Header</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Header\TimeDistanceIndicator.cpp">
+      <Filter>Helio\Source\UI\Sequencer\Header</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Header\TrackEndIndicator.cpp">
+      <Filter>Helio\Source\UI\Sequencer\Header</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Header\TrackStartIndicator.cpp">
+      <Filter>Helio\Source\UI\Sequencer\Header</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\ComponentConnectorCurve.cpp">
+      <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\HybridRollExpandMark.cpp">
+      <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\InsertSpaceHelper.cpp">
+      <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\NoteResizerLeft.cpp">
+      <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\NoteResizerRight.cpp">
+      <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\TimelineWarningMarker.cpp">
+      <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\WipeSpaceHelper.cpp">
+      <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\AutomationClipComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\DummyClipComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\PianoClipComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\PatternRoll.cpp">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\NoteComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\PianoRoll.cpp">
+      <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\PianoRollToolbox.cpp">
+      <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TimeSignaturesMap\TimeSignatureLargeComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\TimeSignaturesMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TimeSignaturesMap\TimeSignatureSmallComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\TimeSignaturesMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TimeSignaturesMap\TimeSignaturesTrackMap.cpp">
+      <Filter>Helio\Source\UI\Sequencer\TimeSignaturesMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMap\PianoTrackMap.cpp">
+      <Filter>Helio\Source\UI\Sequencer\TrackMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMap\TrackScroller.cpp">
+      <Filter>Helio\Source\UI\Sequencer\TrackMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMap\TrackScrollerScreen.cpp">
+      <Filter>Helio\Source\UI\Sequencer\TrackMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TriggersMap\TriggerEventComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\TriggersMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TriggersMap\TriggerEventConnector.cpp">
+      <Filter>Helio\Source\UI\Sequencer\TriggersMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TriggersMap\TriggersTrackMap.cpp">
+      <Filter>Helio\Source\UI\Sequencer\TriggersMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\HybridLassoComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\HybridRoll.cpp">
+      <Filter>Helio\Source\UI\Sequencer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\HybridRollEditMode.cpp">
+      <Filter>Helio\Source\UI\Sequencer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\HybridRollEventComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\SequencerLayout.cpp">
+      <Filter>Helio\Source\UI\Sequencer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\SettingsPage\AudioSettings.cpp">
       <Filter>Helio\Source\UI\SettingsPage</Filter>
@@ -1669,9 +1708,6 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\juce_OggVorbisAudioFormat.cpp">
       <Filter>Juce Modules\juce_audio_formats\codecs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\juce_QuickTimeAudioFormat.cpp">
-      <Filter>Juce Modules\juce_audio_formats\codecs</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\juce_WavAudioFormat.cpp">
       <Filter>Juce Modules\juce_audio_formats\codecs</Filter>
     </ClCompile>
@@ -1829,6 +1865,9 @@
       <Filter>Juce Modules\juce_core\containers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\containers\juce_DynamicObject.cpp">
+      <Filter>Juce Modules\juce_core\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\containers\juce_HashMap_test.cpp">
       <Filter>Juce Modules\juce_core\containers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_core\containers\juce_ListenerList.cpp">
@@ -3237,35 +3276,44 @@
     <ClInclude Include="..\..\Source\Core\Clipboard\InternalClipboard.h">
       <Filter>Helio\Source\Core\Clipboard</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Events\AnnotationEvent.h">
-      <Filter>Helio\Source\Core\Events</Filter>
+    <ClInclude Include="..\..\Source\Core\Midi\Patterns\Clip.h">
+      <Filter>Helio\Source\Core\Midi\Patterns</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Events\AutomationEvent.h">
-      <Filter>Helio\Source\Core\Events</Filter>
+    <ClInclude Include="..\..\Source\Core\Midi\Patterns\Pattern.h">
+      <Filter>Helio\Source\Core\Midi\Patterns</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Events\MidiEvent.h">
-      <Filter>Helio\Source\Core\Events</Filter>
+    <ClInclude Include="..\..\Source\Core\Midi\Sequences\Events\AnnotationEvent.h">
+      <Filter>Helio\Source\Core\Midi\Sequences\Events</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Events\Note.h">
-      <Filter>Helio\Source\Core\Events</Filter>
+    <ClInclude Include="..\..\Source\Core\Midi\Sequences\Events\AutomationEvent.h">
+      <Filter>Helio\Source\Core\Midi\Sequences\Events</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Events\TimeSignatureEvent.h">
-      <Filter>Helio\Source\Core\Events</Filter>
+    <ClInclude Include="..\..\Source\Core\Midi\Sequences\Events\MidiEvent.h">
+      <Filter>Helio\Source\Core\Midi\Sequences\Events</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Layers\AnnotationsLayer.h">
-      <Filter>Helio\Source\Core\Layers</Filter>
+    <ClInclude Include="..\..\Source\Core\Midi\Sequences\Events\Note.h">
+      <Filter>Helio\Source\Core\Midi\Sequences\Events</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Layers\AutomationLayer.h">
-      <Filter>Helio\Source\Core\Layers</Filter>
+    <ClInclude Include="..\..\Source\Core\Midi\Sequences\Events\TimeSignatureEvent.h">
+      <Filter>Helio\Source\Core\Midi\Sequences\Events</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Layers\MidiLayer.h">
-      <Filter>Helio\Source\Core\Layers</Filter>
+    <ClInclude Include="..\..\Source\Core\Midi\Sequences\AnnotationsSequence.h">
+      <Filter>Helio\Source\Core\Midi\Sequences</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Layers\PianoLayer.h">
-      <Filter>Helio\Source\Core\Layers</Filter>
+    <ClInclude Include="..\..\Source\Core\Midi\Sequences\AutomationSequence.h">
+      <Filter>Helio\Source\Core\Midi\Sequences</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Layers\TimeSignaturesLayer.h">
-      <Filter>Helio\Source\Core\Layers</Filter>
+    <ClInclude Include="..\..\Source\Core\Midi\Sequences\MidiSequence.h">
+      <Filter>Helio\Source\Core\Midi\Sequences</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Midi\Sequences\PianoSequence.h">
+      <Filter>Helio\Source\Core\Midi\Sequences</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Midi\Sequences\TimeSignaturesSequence.h">
+      <Filter>Helio\Source\Core\Midi\Sequences</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Midi\MidiTrack.h">
+      <Filter>Helio\Source\Core\Midi</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Network\AuthorizationManager.h">
       <Filter>Helio\Source\Core\Network</Filter>
@@ -3336,9 +3384,6 @@
     <ClInclude Include="..\..\Source\Core\Tools\ColourSchemeManager.h">
       <Filter>Helio\Source\Core\Tools</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Tools\MidiRollToolbox.h">
-      <Filter>Helio\Source\Core\Tools</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Translation\TranslationKeys.h">
       <Filter>Helio\Source\Core\Translation</Filter>
     </ClInclude>
@@ -3351,7 +3396,7 @@
     <ClInclude Include="..\..\Source\Core\Tree\AudioPluginTreeItem.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Tree\AutomationLayerTreeItem.h">
+    <ClInclude Include="..\..\Source\Core\Tree\AutomationTrackTreeItem.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Tree\InstrumentsRootTreeItem.h">
@@ -3363,19 +3408,19 @@
     <ClInclude Include="..\..\Source\Core\Tree\LastShownTreeItems.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Tree\LayerGroupTreeItem.h">
+    <ClInclude Include="..\..\Source\Core\Tree\MidiTrackTreeItem.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Tree\LayerTreeItem.h">
-      <Filter>Helio\Source\Core\Tree</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Tree\PianoLayerTreeItem.h">
+    <ClInclude Include="..\..\Source\Core\Tree\PianoTrackTreeItem.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Tree\ProjectInfo.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Tree\ProjectTimeline.h">
+      <Filter>Helio\Source\Core\Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Tree\ProjectEventDispatcher.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Tree\ProjectListener.h">
@@ -3393,6 +3438,9 @@
     <ClInclude Include="..\..\Source\Core\Tree\SettingsTreeItem.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Tree\TrackGroupTreeItem.h">
+      <Filter>Helio\Source\Core\Tree</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Tree\TreeItem.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
@@ -3405,22 +3453,22 @@
     <ClInclude Include="..\..\Source\Core\Undo\Actions\AnnotationEventActions.h">
       <Filter>Helio\Source\Core\Undo\Actions</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Undo\Actions\AutoLayerTreeItemActions.h">
+    <ClInclude Include="..\..\Source\Core\Undo\Actions\AutomationTrackActions.h">
       <Filter>Helio\Source\Core\Undo\Actions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Undo\Actions\AutomationEventActions.h">
       <Filter>Helio\Source\Core\Undo\Actions</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Undo\Actions\LayerTreeItemActions.h">
-      <Filter>Helio\Source\Core\Undo\Actions</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Undo\Actions\MidiLayerActions.h">
+    <ClInclude Include="..\..\Source\Core\Undo\Actions\MidiTrackActions.h">
       <Filter>Helio\Source\Core\Undo\Actions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Undo\Actions\NoteActions.h">
       <Filter>Helio\Source\Core\Undo\Actions</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Undo\Actions\PianoLayerTreeItemActions.h">
+    <ClInclude Include="..\..\Source\Core\Undo\Actions\PatternActions.h">
+      <Filter>Helio\Source\Core\Undo\Actions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Undo\Actions\PianoTrackActions.h">
       <Filter>Helio\Source\Core\Undo\Actions</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Undo\Actions\TimeSignatureEventActions.h">
@@ -3439,6 +3487,15 @@
       <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\DiffLogic.h">
+      <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\MidiTrackDeltas.h">
+      <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\PatternDeltas.h">
+      <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\PatternDiffLogic.h">
       <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\PianoLayerDeltas.h">
@@ -3534,6 +3591,15 @@
     <ClInclude Include="..\..\Source\UI\CommandPanels\AutomationsCommandPanel.h">
       <Filter>Helio\Source\UI\CommandPanels</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\CommandPanels\HybridRollCommandPanel.h">
+      <Filter>Helio\Source\UI\CommandPanels</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\CommandPanels\HybridRollCommandPanelDefault.h">
+      <Filter>Helio\Source\UI\CommandPanels</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\CommandPanels\HybridRollCommandPanelPhone.h">
+      <Filter>Helio\Source\UI\CommandPanels</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\CommandPanels\InstrumentCommandPanel.h">
       <Filter>Helio\Source\UI\CommandPanels</Filter>
     </ClInclude>
@@ -3541,15 +3607,6 @@
       <Filter>Helio\Source\UI\CommandPanels</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\CommandPanels\LayerCommandPanel.h">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\MidiRollCommandPanel.h">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\MidiRollCommandPanelDefault.h">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\MidiRollCommandPanelPhone.h">
       <Filter>Helio\Source\UI\CommandPanels</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\CommandPanels\MoveToLayerCommandPanel.h">
@@ -3606,6 +3663,9 @@
     <ClInclude Include="..\..\Source\UI\Common\FatalErrorScreen.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Common\FloatBoundsComponent.h">
+      <Filter>Helio\Source\UI\Common</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Common\HelperRectangle.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
@@ -3625,6 +3685,9 @@
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Common\PluginWindow.h">
+      <Filter>Helio\Source\UI\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Common\SelectableComponent.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Common\ShapeComponent.h">
@@ -3717,126 +3780,6 @@
     <ClInclude Include="..\..\Source\UI\Intro\InitScreen.h">
       <Filter>Helio\Source\UI\Intro</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\AnnotationsMap\AnnotationLargeComponent.h">
-      <Filter>Helio\Source\UI\MidiEditor\AnnotationsMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\AnnotationsMap\AnnotationSmallComponent.h">
-      <Filter>Helio\Source\UI\MidiEditor\AnnotationsMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\AnnotationsMap\AnnotationsTrackMap.h">
-      <Filter>Helio\Source\UI\MidiEditor\AnnotationsMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\AutomationMap\AutomationCurveHelper.h">
-      <Filter>Helio\Source\UI\MidiEditor\AutomationMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\AutomationMap\AutomationEventComponent.h">
-      <Filter>Helio\Source\UI\MidiEditor\AutomationMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\AutomationMap\AutomationEventsConnector.h">
-      <Filter>Helio\Source\UI\MidiEditor\AutomationMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\AutomationMap\AutomationTrackMap.h">
-      <Filter>Helio\Source\UI\MidiEditor\AutomationMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\Header\HeaderSelectionIndicator.h">
-      <Filter>Helio\Source\UI\MidiEditor\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\Header\MidiRollHeader.h">
-      <Filter>Helio\Source\UI\MidiEditor\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\Header\SoundProbeIndicator.h">
-      <Filter>Helio\Source\UI\MidiEditor\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\Header\TimeDistanceIndicator.h">
-      <Filter>Helio\Source\UI\MidiEditor\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\Header\TrackEndIndicator.h">
-      <Filter>Helio\Source\UI\MidiEditor\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\Header\TrackStartIndicator.h">
-      <Filter>Helio\Source\UI\MidiEditor\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\Header\TransportIndicator.h">
-      <Filter>Helio\Source\UI\MidiEditor\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\Helpers\TimelineWarningMarker.h">
-      <Filter>Helio\Source\UI\MidiEditor\Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\Helpers\ComponentConnectorCurve.h">
-      <Filter>Helio\Source\UI\MidiEditor\Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\Helpers\InsertSpaceHelper.h">
-      <Filter>Helio\Source\UI\MidiEditor\Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\Helpers\MidiRollExpandMark.h">
-      <Filter>Helio\Source\UI\MidiEditor\Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\Helpers\NoteResizerLeft.h">
-      <Filter>Helio\Source\UI\MidiEditor\Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\Helpers\NoteResizerRight.h">
-      <Filter>Helio\Source\UI\MidiEditor\Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\Helpers\WipeSpaceHelper.h">
-      <Filter>Helio\Source\UI\MidiEditor\Helpers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureLargeComponent.h">
-      <Filter>Helio\Source\UI\MidiEditor\TimeSignaturesMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignatureSmallComponent.h">
-      <Filter>Helio\Source\UI\MidiEditor\TimeSignaturesMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\TimeSignaturesMap\TimeSignaturesTrackMap.h">
-      <Filter>Helio\Source\UI\MidiEditor\TimeSignaturesMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\TrackMap\PianoTrackMap.h">
-      <Filter>Helio\Source\UI\MidiEditor\TrackMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\TrackMap\TrackScroller.h">
-      <Filter>Helio\Source\UI\MidiEditor\TrackMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\TrackMap\TrackScrollerScreen.h">
-      <Filter>Helio\Source\UI\MidiEditor\TrackMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\TriggersMap\TriggerEventComponent.h">
-      <Filter>Helio\Source\UI\MidiEditor\TriggersMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\TriggersMap\TriggerEventConnector.h">
-      <Filter>Helio\Source\UI\MidiEditor\TriggersMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\TriggersMap\TriggersTrackMap.h">
-      <Filter>Helio\Source\UI\MidiEditor\TriggersMap</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\MidiEditor.h">
-      <Filter>Helio\Source\UI\MidiEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\MidiEventComponent.h">
-      <Filter>Helio\Source\UI\MidiEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\MidiEventComponentLasso.h">
-      <Filter>Helio\Source\UI\MidiEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\MidiEventSelection.h">
-      <Filter>Helio\Source\UI\MidiEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\MidiLayerOwner.h">
-      <Filter>Helio\Source\UI\MidiEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\MidiRoll.h">
-      <Filter>Helio\Source\UI\MidiEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\MidiRollEditMode.h">
-      <Filter>Helio\Source\UI\MidiEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\MidiRollListener.h">
-      <Filter>Helio\Source\UI\MidiEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\NoteComponent.h">
-      <Filter>Helio\Source\UI\MidiEditor</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\MidiEditor\PianoRoll.h">
-      <Filter>Helio\Source\UI\MidiEditor</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\CenteredTooltipComponent.h">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
@@ -3914,6 +3857,141 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\ProjectPage\ProjectPagePhone.h">
       <Filter>Helio\Source\UI\ProjectPage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\AnnotationsMap\AnnotationLargeComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\AnnotationsMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\AnnotationsMap\AnnotationSmallComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\AnnotationsMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\AnnotationsMap\AnnotationsTrackMap.h">
+      <Filter>Helio\Source\UI\Sequencer\AnnotationsMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationCurveHelper.h">
+      <Filter>Helio\Source\UI\Sequencer\AutomationMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationEventComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\AutomationMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationEventsConnector.h">
+      <Filter>Helio\Source\UI\Sequencer\AutomationMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationTrackMap.h">
+      <Filter>Helio\Source\UI\Sequencer\AutomationMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Header\HeaderSelectionIndicator.h">
+      <Filter>Helio\Source\UI\Sequencer\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Header\HybridRollHeader.h">
+      <Filter>Helio\Source\UI\Sequencer\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Header\Playhead.h">
+      <Filter>Helio\Source\UI\Sequencer\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Header\SoundProbeIndicator.h">
+      <Filter>Helio\Source\UI\Sequencer\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Header\TimeDistanceIndicator.h">
+      <Filter>Helio\Source\UI\Sequencer\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Header\TrackEndIndicator.h">
+      <Filter>Helio\Source\UI\Sequencer\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Header\TrackStartIndicator.h">
+      <Filter>Helio\Source\UI\Sequencer\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\ComponentConnectorCurve.h">
+      <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\HybridRollExpandMark.h">
+      <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\InsertSpaceHelper.h">
+      <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\NoteResizerLeft.h">
+      <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\NoteResizerRight.h">
+      <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\TimelineWarningMarker.h">
+      <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\WipeSpaceHelper.h">
+      <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\AutomationClipComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\DummyClipComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\PianoClipComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\PatternRoll.h">
+      <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NoteComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\PianoRoll.h">
+      <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\PianoRollToolbox.h">
+      <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TimeSignaturesMap\TimeSignatureLargeComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\TimeSignaturesMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TimeSignaturesMap\TimeSignatureSmallComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\TimeSignaturesMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TimeSignaturesMap\TimeSignaturesTrackMap.h">
+      <Filter>Helio\Source\UI\Sequencer\TimeSignaturesMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMap\PianoTrackMap.h">
+      <Filter>Helio\Source\UI\Sequencer\TrackMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMap\TrackScroller.h">
+      <Filter>Helio\Source\UI\Sequencer\TrackMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMap\TrackScrollerScreen.h">
+      <Filter>Helio\Source\UI\Sequencer\TrackMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TriggersMap\TriggerEventComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\TriggersMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TriggersMap\TriggerEventConnector.h">
+      <Filter>Helio\Source\UI\Sequencer\TriggersMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TriggersMap\TriggersTrackMap.h">
+      <Filter>Helio\Source\UI\Sequencer\TriggersMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\HybridLassoComponent.h">
+      <Filter>Helio\Source\UI\Sequencer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\HybridRoll.h">
+      <Filter>Helio\Source\UI\Sequencer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\HybridRollEditMode.h">
+      <Filter>Helio\Source\UI\Sequencer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\HybridRollEventComponent.h">
+      <Filter>Helio\Source\UI\Sequencer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\HybridRollListener.h">
+      <Filter>Helio\Source\UI\Sequencer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Lasso.h">
+      <Filter>Helio\Source\UI\Sequencer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\SequencerLayout.h">
+      <Filter>Helio\Source\UI\Sequencer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\SettingsPage\AudioSettings.h">
       <Filter>Helio\Source\UI\SettingsPage</Filter>
@@ -4561,9 +4639,6 @@
       <Filter>Juce Modules\juce_audio_formats\codecs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\juce_OggVorbisAudioFormat.h">
-      <Filter>Juce Modules\juce_audio_formats\codecs</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\juce_QuickTimeAudioFormat.h">
       <Filter>Juce Modules\juce_audio_formats\codecs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\juce_WavAudioFormat.h">
@@ -5398,6 +5473,9 @@
       <Filter>Juce Modules\juce_graphics\native</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\native\juce_RenderingHelpers.h">
+      <Filter>Juce Modules\juce_graphics\native</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\native\juce_win32_Direct2DGraphicsContext.h">
       <Filter>Juce Modules\juce_graphics\native</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\placement\juce_Justification.h">
