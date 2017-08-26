@@ -19,8 +19,8 @@
 
 #include "SpectrumAnalyzer.h"
 
-#define AUDIO_MONITOR_MAX_CHANNELS		2
-#define AUDIO_MONITOR_MAX_SPECTRUMSIZE	512
+#define AUDIO_MONITOR_MAX_CHANNELS      2
+#define AUDIO_MONITOR_MAX_SPECTRUMSIZE  512
 
 #if HELIO_DESKTOP
 #   define AUDIO_MONITOR_COMPUTES_RMS 1
@@ -81,7 +81,7 @@ public:
     
 private:
 
-    SpectrumFFT	fft;
+    SpectrumFFT fft;
     float spectrum[AUDIO_MONITOR_MAX_CHANNELS][AUDIO_MONITOR_MAX_SPECTRUMSIZE];
 
     float peak[AUDIO_MONITOR_MAX_CHANNELS];

@@ -33,7 +33,7 @@
 #include "Client.h"
 #include "VCSCommandPanel.h"
 #include "VersionControlEditor.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 #include "App.h"
 #include "Workspace.h"
 
@@ -218,14 +218,14 @@ void VersionControlTreeItem::changeListenerCallback(ChangeBroadcaster *source)
             {
                 if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
                 {
-                    if (MidiRoll *roll = parentProject->getLastFocusedRoll())
+                    if (HybridRoll *roll = parentProject->getLastFocusedRoll())
                     {
                         parentProject->getTransport().seekToPosition(-0.00001);
                         roll->scrollToSeekPosition();
                     }
                     
                     parentProject->getDocument()->save();
-                    parentProject->broadcastBeatRangeChanged();
+                    parentProject->broadcastChangeProjectBeatRange();
                     
                     // notify recent files list
                     App::Workspace().getRecentFilesList().

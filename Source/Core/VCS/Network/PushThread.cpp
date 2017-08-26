@@ -44,7 +44,7 @@ void PushThread::run()
     const String saltedId = this->localId + HELIO_SALT;
     const String saltedIdHash = SHA256(saltedId.toUTF8()).toHexString();
     const String keyHash = SHA256(this->localKey.toString().toUTF8()).toHexString();
-	
+    
     //===------------------------------------------------------------------===//
     // Fetch remote history
     //===------------------------------------------------------------------===//
@@ -58,21 +58,21 @@ void PushThread::run()
     fetchUrl = fetchUrl.withParameter(Serialization::Network::clientCheck, saltedIdHash);
 
     {
-		int statusCode = 0;
-		StringPairArray responseHeaders;
+        int statusCode = 0;
+        StringPairArray responseHeaders;
 
         ScopedPointer<InputStream> downloadStream(
-			fetchUrl.createInputStream(true,
+            fetchUrl.createInputStream(true,
                 syncProgressCallback,
                 static_cast<void *>(this),
                 HELIO_USERAGENT,
-				0,
-				&responseHeaders,
-				&statusCode));
+                0,
+                &responseHeaders,
+                &statusCode));
 
-		// statusCode can be 404 when pushing new project
+        // statusCode can be 404 when pushing new project
         if (downloadStream == nullptr ||
-			(statusCode != 200 && statusCode != 404))
+            (statusCode != 200 && statusCode != 404))
         {
             this->setState(SyncThread::fetchHistoryError);
             return;
@@ -84,8 +84,8 @@ void PushThread::run()
 
         remoteXml = DataEncoder::createDecryptedXml(fetchData, this->localKey);
 
-		const bool fileExists = (fetchData.getSize() != 0) && (statusCode != 404);
-		const bool fileCanBeDecrypted = (remoteXml != nullptr);
+        const bool fileExists = (fetchData.getSize() != 0) && (statusCode != 404);
+        const bool fileCanBeDecrypted = (remoteXml != nullptr);
         if (fileExists && !fileCanBeDecrypted)
         {
             Logger::writeToLog("Wrong key!");
@@ -191,17 +191,17 @@ void PushThread::run()
     pushUrl = pushUrl.withParameter(Serialization::Network::clientCheck, saltedIdHash);
 
     {
-		int statusCode = 0;
-		StringPairArray responseHeaders;
+        int statusCode = 0;
+        StringPairArray responseHeaders;
 
-		ScopedPointer<InputStream> pushStream(
-			pushUrl.createInputStream(true,
+        ScopedPointer<InputStream> pushStream(
+            pushUrl.createInputStream(true,
                 syncProgressCallback,
                 static_cast<void *>(this),
                 HELIO_USERAGENT,
-				0,
-				&responseHeaders,
-				&statusCode));
+                0,
+                &responseHeaders,
+                &statusCode));
 
         if (pushStream == nullptr)
         {

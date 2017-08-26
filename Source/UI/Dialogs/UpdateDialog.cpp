@@ -118,9 +118,9 @@ UpdateDialog::UpdateDialog()
         this->updateButton->setVisible(true);
         this->forceUpdateButton->setVisible(false);
     }
-	
-	this->separatorH->setAlphaMultiplier(2.5f);
-	//[/UserPreSize]
+  
+  this->separatorH->setAlphaMultiplier(2.5f);
+  //[/UserPreSize]
 
     setSize (500, 190);
 

@@ -17,32 +17,31 @@
 
 #include "Common.h"
 #include "LayerCommandPanel.h"
-#include "LayerTreeItem.h"
-#include "PianoLayerTreeItem.h"
+#include "MidiTrackTreeItem.h"
+#include "PianoTrackTreeItem.h"
 #include "Icons.h"
 #include "CommandIDs.h"
 
 #include "MainLayout.h"
 #include "AudioCore.h"
 #include "Instrument.h"
-#include "MidiLayer.h"
-#include "MidiRoll.h"
+#include "MidiSequence.h"
+#include "HybridRoll.h"
 #include "ProjectTreeItem.h"
 #include "ModalDialogInput.h"
 
-#include "MidiLayer.h"
-#include "PianoLayerTreeItem.h"
-#include "AutomationLayerTreeItem.h"
-#include "PianoLayerTreeItemActions.h"
-#include "AutoLayerTreeItemActions.h"
-#include "LayerTreeItemActions.h"
-#include "MidiLayerActions.h"
+#include "MidiSequence.h"
+#include "PianoTrackTreeItem.h"
+#include "AutomationTrackTreeItem.h"
+#include "MidiTrackActions.h"
+#include "PianoTrackActions.h"
+#include "AutomationTrackActions.h"
 #include "UndoStack.h"
 #include "TreePanel.h"
 #include "Workspace.h"
 #include "App.h"
 
-LayerCommandPanel::LayerCommandPanel(LayerTreeItem &parentLayer) :
+LayerCommandPanel::LayerCommandPanel(MidiTrackTreeItem &parentLayer) :
     layerItem(parentLayer)
 {
     this->initDefaultCommands();
@@ -60,7 +59,7 @@ void LayerCommandPanel::handleCommandMessage(int commandId)
             
             if (ProjectTreeItem *project = this->layerItem.getProject())
             {
-                if (MidiRoll *roll = dynamic_cast<MidiRoll *>(project->getLastFocusedRoll()))
+                if (HybridRoll *roll = dynamic_cast<HybridRoll *>(project->getLastFocusedRoll()))
                 {
                     roll->selectAll();
                 }
@@ -76,13 +75,13 @@ void LayerCommandPanel::handleCommandMessage(int commandId)
         case CommandIDs::MuteLayer:
         {
             ProjectTreeItem *project = this->layerItem.getProject();
-            const String &layerId = this->layerItem.getLayer()->getLayerIdAsString();
+            const String &layerId = this->layerItem.getSequence()->getTrackId();
             
             project->getUndoStack()->beginNewTransaction();
-            project->getUndoStack()->perform(new MidiLayerMuteAction(*project, layerId, true));
+            project->getUndoStack()->perform(new MidiTrackMuteAction(*project, layerId, true));
             
             // instead of:
-            //this->layerItem.getLayer()->setMuted(true);
+            //this->layerItem.getSequence()->setMuted(true);
             //this->layerItem.repaintItem();
             
             this->exit();
@@ -92,13 +91,13 @@ void LayerCommandPanel::handleCommandMessage(int commandId)
         case CommandIDs::UnmuteLayer:
         {
             ProjectTreeItem *project = this->layerItem.getProject();
-            const String &layerId = this->layerItem.getLayer()->getLayerIdAsString();
+            const String &layerId = this->layerItem.getSequence()->getTrackId();
             
             project->getUndoStack()->beginNewTransaction();
-            project->getUndoStack()->perform(new MidiLayerMuteAction(*project, layerId, false));
+            project->getUndoStack()->perform(new MidiTrackMuteAction(*project, layerId, false));
             
             // instead of:
-            //this->layerItem.getLayer()->setMuted(false);
+            //this->layerItem.getSequence()->setMuted(false);
             //this->layerItem.repaintItem();
             
             this->exit();
@@ -130,20 +129,20 @@ void LayerCommandPanel::handleCommandMessage(int commandId)
             //TreeItem::deleteItem(&this->layerItem);
 
             ProjectTreeItem *project = this->layerItem.getProject();
-            const String &layerId = this->layerItem.getLayer()->getLayerIdAsString();
+            const String &layerId = this->layerItem.getSequence()->getTrackId();
             
             project->getUndoStack()->beginNewTransaction();
             
-            if (dynamic_cast<PianoLayerTreeItem *>(&this->layerItem))
+            if (dynamic_cast<PianoTrackTreeItem *>(&this->layerItem))
             {
-                project->getUndoStack()->perform(new PianoLayerTreeItemRemoveAction(*project, layerId));
+                project->getUndoStack()->perform(new PianoTrackRemoveAction(*project, layerId));
             }
-            else if (dynamic_cast<AutomationLayerTreeItem *>(&this->layerItem))
+            else if (dynamic_cast<AutomationTrackTreeItem *>(&this->layerItem))
             {
-                project->getUndoStack()->perform(new AutoLayerTreeItemRemoveAction(*project, layerId));
+                project->getUndoStack()->perform(new AutomationTrackRemoveAction(*project, layerId));
             }
             
-            if (MidiRoll *roll = dynamic_cast<MidiRoll *>(project->getLastFocusedRoll()))
+            if (HybridRoll *roll = dynamic_cast<HybridRoll *>(project->getLastFocusedRoll()))
             {
                 roll->grabKeyboardFocus();
             }
@@ -168,14 +167,14 @@ void LayerCommandPanel::handleCommandMessage(int commandId)
             Logger::writeToLog(info[instrumentIndex]->getIdAndHash());
             
             ProjectTreeItem *project = this->layerItem.getProject();
-            const String layerId = this->layerItem.getLayer()->getLayerIdAsString();
+            const String layerId = this->layerItem.getSequence()->getTrackId();
             const String instrumentId = info[instrumentIndex]->getIdAndHash();
 
             project->getUndoStack()->beginNewTransaction();
-            project->getUndoStack()->perform(new MidiLayerChangeInstrumentAction(*project, layerId, instrumentId));
+            project->getUndoStack()->perform(new MidiTrackChangeInstrumentAction(*project, layerId, instrumentId));
             
             // instead of:
-            //this->layerItem.getLayer()->setInstrumentId(instrumentId);
+            //this->layerItem.getSequence()->setInstrumentId(instrumentId);
             
             this->initDefaultCommands();
             return;
@@ -195,10 +194,10 @@ void LayerCommandPanel::handleCommandMessage(int commandId)
         if (colour != this->layerItem.getColour())
         {
             ProjectTreeItem *project = this->layerItem.getProject();
-            const String layerId = this->layerItem.getLayer()->getLayerIdAsString();
+            const String layerId = this->layerItem.getSequence()->getTrackId();
             
             project->getUndoStack()->beginNewTransaction();
-            project->getUndoStack()->perform(new MidiLayerChangeColourAction(*project, layerId, colour));
+            project->getUndoStack()->perform(new MidiTrackChangeColourAction(*project, layerId, colour));
 
             // instead of:
             //this->layerItem.setColour(colour);
@@ -234,11 +233,11 @@ void LayerCommandPanel::initDefaultCommands()
     //    cmds.add(CommandItem::withParams(Icons::copy, DuplicateTo, TRANS("menu::layer::copytoproject"))->withSubmenu());
     //}
 
-    const bool canBeMuted = (dynamic_cast<PianoLayerTreeItem *>(&this->layerItem) != nullptr);
+    const bool canBeMuted = (dynamic_cast<PianoTrackTreeItem *>(&this->layerItem) != nullptr);
     
     if (canBeMuted)
     {
-        const bool muted = this->layerItem.getLayer()->isMuted();
+        const bool muted = this->layerItem.isTrackMuted();
         
         if (muted)
         {
@@ -265,7 +264,7 @@ void LayerCommandPanel::initColorSelection()
     {
         const String name(colours.getAllKeys()[i]);
         const Colour colour(Colour::fromString(colours[name]));
-        const bool isSelected = (colour == this->layerItem.getLayer()->getColour());
+        const bool isSelected = (colour == this->layerItem.getTrackColour());
         cmds.add(CommandItem::withParams(isSelected ? Icons::apply : Icons::colour, CommandIDs::SetLayerColour + i, name)->colouredWith(colour));
     }
 
@@ -278,7 +277,7 @@ void LayerCommandPanel::initInstrumentSelection()
     cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back")));
     
     const Array<Instrument *> &info = App::Workspace().getAudioCore().getInstruments();
-    const Instrument *selectedInstrument = App::Workspace().getAudioCore().findInstrumentById(this->layerItem.getLayer()->getInstrumentId());
+    const Instrument *selectedInstrument = App::Workspace().getAudioCore().findInstrumentById(this->layerItem.getTrackInstrumentId());
     const bool hasSubmenu = (info.size() > 5);
     
     for (int i = 0; i < info.size(); ++i)
@@ -311,7 +310,7 @@ void LayerCommandPanel::exit()
 {
     if (ProjectTreeItem *project = this->layerItem.getProject())
     {
-        if (MidiRoll *roll = dynamic_cast<MidiRoll *>(project->getLastFocusedRoll()))
+        if (HybridRoll *roll = dynamic_cast<HybridRoll *>(project->getLastFocusedRoll()))
         {
             roll->grabKeyboardFocus();
         }

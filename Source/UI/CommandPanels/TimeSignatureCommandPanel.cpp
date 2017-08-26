@@ -21,16 +21,16 @@
 #include "MainLayout.h"
 #include "ModalDialogInput.h"
 #include "Icons.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 #include "TimeSignatureEvent.h"
-#include "TimeSignaturesLayer.h"
-#include "PianoLayerTreeItem.h"
+#include "TimeSignaturesSequence.h"
+#include "PianoTrackTreeItem.h"
 #include "ProjectTimeline.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "App.h"
 
 TimeSignatureCommandPanel::TimeSignatureCommandPanel(ProjectTreeItem &parentProject, 
-	const TimeSignatureEvent &targetEvent) :
+    const TimeSignatureEvent &targetEvent) :
     project(parentProject),
     event(targetEvent)
 {
@@ -46,7 +46,7 @@ TimeSignatureCommandPanel::~TimeSignatureCommandPanel()
 
 void TimeSignatureCommandPanel::handleCommandMessage(int commandId)
 {
-    if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
+    if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
     {
         if (commandId == CommandIDs::ChangeTimeSignature)
         {
@@ -66,26 +66,26 @@ void TimeSignatureCommandPanel::handleCommandMessage(int commandId)
         }
         if (commandId == CommandIDs::ChangeTimeSignatureConfirmed)
         {
-			int numerator;
-			int denominator;
-			TimeSignatureEvent::parseString(this->inputString, numerator, denominator);
+            int numerator;
+            int denominator;
+            TimeSignatureEvent::parseString(this->inputString, numerator, denominator);
             Array<TimeSignatureEvent> groupBefore, groupAfter;
-			groupBefore.add(this->event);
-			groupAfter.add(this->event.withNumerator(numerator).withDenominator(denominator));
-			TimeSignaturesLayer *autoLayer = static_cast<TimeSignaturesLayer *>(this->event.getLayer());
+            groupBefore.add(this->event);
+            groupAfter.add(this->event.withNumerator(numerator).withDenominator(denominator));
+            TimeSignaturesSequence *autoLayer = static_cast<TimeSignaturesSequence *>(this->event.getSequence());
             autoLayer->checkpoint();
             autoLayer->changeGroup(groupBefore, groupAfter, true);
         }
         else if (commandId == CommandIDs::DeleteTimeSignature)
         {
-			TimeSignaturesLayer *autoLayer = static_cast<TimeSignaturesLayer *>(this->event.getLayer());
+            TimeSignaturesSequence *autoLayer = static_cast<TimeSignaturesSequence *>(this->event.getSequence());
             autoLayer->checkpoint();
             autoLayer->remove(this->event, true);
         }
-		else if (commandId == CommandIDs::Cancel)
-		{
-			return;
-		}
+        else if (commandId == CommandIDs::Cancel)
+        {
+            return;
+        }
 
         roll->grabKeyboardFocus();
         this->getParentComponent()->exitModalState(0);

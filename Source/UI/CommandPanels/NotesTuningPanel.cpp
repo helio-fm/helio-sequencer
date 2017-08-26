@@ -23,9 +23,9 @@
 
 //[MiscUserDefs]
 #include "PianoRoll.h"
-#include "MidiEventSelection.h"
-#include "MidiRollToolbox.h"
-#include "MidiLayer.h"
+#include "Lasso.h"
+#include "PianoRollToolbox.h"
+#include "MidiSequence.h"
 #include "NoteComponent.h"
 #include "ProjectTreeItem.h"
 #include "Transport.h"
@@ -37,7 +37,7 @@ class NotesTuningDiagram : public Component, private ChangeListener
 public:
 
     NotesTuningDiagram(NotesTuningPanel *parentPanel,
-                       const MidiEventSelection &targetSelection) :
+                       const Lasso &targetSelection) :
         parent(parentPanel),
         selection(targetSelection)
     {
@@ -75,14 +75,14 @@ private:
             return;
         }
 
-        const float startBeat = MidiRollToolbox::findStartBeat(this->selection);
-        const float endBeat = MidiRollToolbox::findEndBeat(this->selection);
+        const float startBeat = PianoRollToolbox::findStartBeat(this->selection);
+        const float endBeat = PianoRollToolbox::findEndBeat(this->selection);
 
-        Array<MidiEventComponent *> sortedSelection;
+        Array<HybridRollEventComponent *> sortedSelection;
 
         for (int i = 0; i < this->selection.getNumSelected(); ++i)
         {
-            MidiEventComponent *mc = this->selection.getSelectedItem(i);
+            HybridRollEventComponent *mc = static_cast<HybridRollEventComponent *>(this->selection.getSelectedItem(i));
             sortedSelection.addSorted(*mc, mc);
         }
 
@@ -122,7 +122,7 @@ private:
 
     SafePointer<NotesTuningPanel> parent;
 
-    const MidiEventSelection &selection;
+    const Lasso &selection;
 
 };
 
@@ -329,8 +329,8 @@ void NotesTuningPanel::handleCommandMessage (int commandId)
     }
     else if (commandId == CommandIDs::TransportStartPlayback)
     {
-        const float startBeat = MidiRollToolbox::findStartBeat(this->roll.getLassoSelection());
-        const float endBeat = MidiRollToolbox::findEndBeat(this->roll.getLassoSelection());
+        const float startBeat = PianoRollToolbox::findStartBeat(this->roll.getLassoSelection());
+        const float endBeat = PianoRollToolbox::findEndBeat(this->roll.getLassoSelection());
 
         const double loopStart = this->roll.getTransportPositionByBeat(startBeat);
         const double loopEnd = this->roll.getTransportPositionByBeat(endBeat);
@@ -387,8 +387,8 @@ void NotesTuningPanel::syncVolumeLinear(Slider *volumeSlider)
     }
 
     const float volumeDelta = this->volumeAnchorLinear - float(volumeSlider->getValue());
-    MidiEventSelection &selection = this->roll.getLassoSelection();
-    MidiRollToolbox::changeVolumeLinear(selection, volumeDelta);
+    Lasso &selection = this->roll.getLassoSelection();
+    PianoRollToolbox::changeVolumeLinear(selection, volumeDelta);
 }
 
 void NotesTuningPanel::syncVolumeMultiplied(Slider *volumeSlider)
@@ -405,8 +405,8 @@ void NotesTuningPanel::syncVolumeMultiplied(Slider *volumeSlider)
     const float anchor = this->volumeAnchorMulti;
     const float volumeFactor = (volume < anchor) ? ((volume / anchor) - 1.f) : ((volume - anchor) / (1.f - anchor));
 
-    MidiEventSelection &selection = this->roll.getLassoSelection();
-    MidiRollToolbox::changeVolumeMultiplied(selection, volumeFactor);
+    Lasso &selection = this->roll.getLassoSelection();
+    PianoRollToolbox::changeVolumeMultiplied(selection, volumeFactor);
 }
 
 void NotesTuningPanel::syncVolumeSine(Slider *volumeSlider)
@@ -423,8 +423,8 @@ void NotesTuningPanel::syncVolumeSine(Slider *volumeSlider)
     const float anchor = this->volumeAnchorSine;
     const float volumeFactor = (volume < anchor) ? ((volume / anchor) - 1.f) : ((volume - anchor) / (1.f - anchor));
 
-    MidiEventSelection &selection = this->roll.getLassoSelection();
-    MidiRollToolbox::changeVolumeSine(selection, volumeFactor);
+    Lasso &selection = this->roll.getLassoSelection();
+    PianoRollToolbox::changeVolumeSine(selection, volumeFactor);
 }
 
 void NotesTuningPanel::syncSliders()
@@ -447,7 +447,7 @@ void NotesTuningPanel::syncSliders()
 float NotesTuningPanel::calcSliderValue()
 {
     float volumeSum = 0.f;
-    MidiEventSelection &selection = this->roll.getLassoSelection();
+    Lasso &selection = this->roll.getLassoSelection();
 
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
@@ -466,14 +466,14 @@ float NotesTuningPanel::flattenValue(float value) const
 
 void NotesTuningPanel::startTuning()
 {
-    MidiEventSelection &selection = this->roll.getLassoSelection();
-    MidiRollToolbox::startTuning(selection);
+    Lasso &selection = this->roll.getLassoSelection();
+    PianoRollToolbox::startTuning(selection);
 }
 
 void NotesTuningPanel::endTuning()
 {
-    MidiEventSelection &selection = this->roll.getLassoSelection();
-    MidiRollToolbox::endTuning(selection);
+    Lasso &selection = this->roll.getLassoSelection();
+    PianoRollToolbox::endTuning(selection);
 }
 
 

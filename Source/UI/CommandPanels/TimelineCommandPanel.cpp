@@ -20,12 +20,12 @@
 #include "ProjectTreeItem.h"
 #include "MainLayout.h"
 #include "Icons.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 #include "AnnotationEvent.h"
 #include "TimeSignatureEvent.h"
-#include "PianoLayerTreeItem.h"
+#include "PianoTrackTreeItem.h"
 #include "ProjectTimeline.h"
-#include "MidiLayer.h"
+#include "MidiSequence.h"
 #include "ModalDialogInput.h"
 #include "App.h"
 
@@ -33,19 +33,21 @@ TimelineCommandPanel::TimelineCommandPanel(ProjectTreeItem &parentProject) :
     project(parentProject)
 {
     const AnnotationEvent *selectedAnnotation = nullptr;
-	const TimeSignatureEvent *selectedTimeSignature = nullptr;
+    const TimeSignatureEvent *selectedTimeSignature = nullptr;
 
-	const ProjectTimeline *timeline = this->project.getTimeline();
+    const ProjectTimeline *timeline = this->project.getTimeline();
     const double seekPosition = this->project.getTransport().getSeekPosition();
     
-    if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
+    if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
     {
-		const double numBeats = double(roll->getNumBeats());
-		const double seekThreshold = (1.0 / numBeats) / 10.0;
+        const double numBeats = double(roll->getNumBeats());
+        const double seekThreshold = (1.0 / numBeats) / 10.0;
+        const auto annotationsSequence = timeline->getAnnotations()->getSequence();
+        const auto timeSignaturesSequence = timeline->getTimeSignatures()->getSequence();
 
-		for (int i = 0; i < timeline->getAnnotations()->size(); ++i)
+        for (int i = 0; i < annotationsSequence->size(); ++i)
         {
-            if (AnnotationEvent *annotation = dynamic_cast<AnnotationEvent *>(timeline->getAnnotations()->getUnchecked(i)))
+            if (AnnotationEvent *annotation = dynamic_cast<AnnotationEvent *>(annotationsSequence->getUnchecked(i)))
             {
                 const double annotationSeekPosition = roll->getTransportPositionByBeat(annotation->getBeat());
                 if (fabs(annotationSeekPosition - seekPosition) < seekThreshold)
@@ -56,18 +58,18 @@ TimelineCommandPanel::TimelineCommandPanel(ProjectTreeItem &parentProject) :
             }
         }
 
-		for (int i = 0; i < timeline->getTimeSignatures()->size(); ++i)
-		{
-			if (TimeSignatureEvent *ts = dynamic_cast<TimeSignatureEvent *>(timeline->getTimeSignatures()->getUnchecked(i)))
-			{
-				const double tsSeekPosition = roll->getTransportPositionByBeat(ts->getBeat());
-				if (fabs(tsSeekPosition - seekPosition) < seekThreshold)
-				{
-					selectedTimeSignature = ts;
-					break;
-				}
-			}
-		}
+        for (int i = 0; i < timeSignaturesSequence->size(); ++i)
+        {
+            if (TimeSignatureEvent *ts = dynamic_cast<TimeSignatureEvent *>(timeSignaturesSequence->getUnchecked(i)))
+            {
+                const double tsSeekPosition = roll->getTransportPositionByBeat(ts->getBeat());
+                if (fabs(tsSeekPosition - seekPosition) < seekThreshold)
+                {
+                    selectedTimeSignature = ts;
+                    break;
+                }
+            }
+        }
     }
     
     ReferenceCountedArray<CommandItem> cmds;
@@ -77,16 +79,19 @@ TimelineCommandPanel::TimelineCommandPanel(ProjectTreeItem &parentProject) :
         cmds.add(CommandItem::withParams(Icons::plus, CommandIDs::AddAnnotation, TRANS("menu::annotation::add")));
     }
 
-	if (selectedTimeSignature == nullptr)
-	{
-		cmds.add(CommandItem::withParams(Icons::plus, CommandIDs::AddTimeSignature, TRANS("menu::timesignature::add")));
-	}
-    
-    if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
+    if (selectedTimeSignature == nullptr)
     {
-        for (int i = 0; i < timeline->getAnnotations()->size(); ++i)
+        cmds.add(CommandItem::withParams(Icons::plus, CommandIDs::AddTimeSignature, TRANS("menu::timesignature::add")));
+    }
+    
+    if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
+    {
+        const auto annotationsSequence = timeline->getAnnotations()->getSequence();
+
+        for (int i = 0; i < annotationsSequence->size(); ++i)
         {
-            if (AnnotationEvent *annotation = dynamic_cast<AnnotationEvent *>(timeline->getAnnotations()->getUnchecked(i)))
+            if (AnnotationEvent *annotation =
+                dynamic_cast<AnnotationEvent *>(annotationsSequence->getUnchecked(i)))
             {
                 const int commandIndex = (CommandIDs::JumpToAnnotation + i);
                 
@@ -108,7 +113,7 @@ TimelineCommandPanel::TimelineCommandPanel(ProjectTreeItem &parentProject) :
         jassertfalse;
     }
     
-	this->updateContent(cmds, SlideDown);
+    this->updateContent(cmds, SlideDown);
 }
 
 TimelineCommandPanel::~TimelineCommandPanel()
@@ -119,23 +124,23 @@ void TimelineCommandPanel::handleCommandMessage(int commandId)
 {
     if (commandId == CommandIDs::AddAnnotation)
     {
-        if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
+        if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
         {
-			roll->postCommandMessage(CommandIDs::AddAnnotation);
-			this->getParentComponent()->exitModalState(0);
-		}
+            roll->postCommandMessage(CommandIDs::AddAnnotation);
+            this->getParentComponent()->exitModalState(0);
+        }
     }
-	else if (commandId == CommandIDs::AddTimeSignature)
-	{
-		if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
-		{
-			roll->postCommandMessage(CommandIDs::AddTimeSignature);
-			this->getParentComponent()->exitModalState(0);
-		}
-	}
+    else if (commandId == CommandIDs::AddTimeSignature)
+    {
+        if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
+        {
+            roll->postCommandMessage(CommandIDs::AddTimeSignature);
+            this->getParentComponent()->exitModalState(0);
+        }
+    }
     else if (commandId == CommandIDs::Cancel)
     {
-        if (MidiRoll *roll = dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
+        if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
         {
             this->getParentComponent()->exitModalState(0);
             roll->grabKeyboardFocus();
@@ -146,11 +151,11 @@ void TimelineCommandPanel::handleCommandMessage(int commandId)
         ProjectTimeline *timeline = this->project.getTimeline();
         const int annotationIndex = (commandId - CommandIDs::JumpToAnnotation);
         
-        if (MidiRoll *roll =
-            dynamic_cast<MidiRoll *>(this->project.getLastFocusedRoll()))
+        if (HybridRoll *roll =
+            dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
         {
             if (AnnotationEvent *annotation =
-                dynamic_cast<AnnotationEvent *>(timeline->getAnnotations()->getUnchecked(annotationIndex)))
+                dynamic_cast<AnnotationEvent *>(timeline->getAnnotations()->getSequence()->getUnchecked(annotationIndex)))
             {
                 const double seekPosition = roll->getTransportPositionByBeat(annotation->getBeat());
                 this->project.getTransport().seekToPosition(seekPosition);

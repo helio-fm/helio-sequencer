@@ -19,14 +19,7 @@
 
 namespace PianoLayerDeltas
 {
-    static const String layerPath = "LayerPath";
-    static const String layerMute = "LayerMute";
-    static const String layerColour = "LayerColour";
-    static const String layerInstrument = "LayerInstrument";
     static const String notesAdded = "NotesAdded";
     static const String notesRemoved = "NotesRemoved";
     static const String notesChanged = "NotesChanged";
-    //static const String notesShifted = "NotesShifted"; // TODO сделать более детальную информацию
-    //static const String notesTransposed = "NotesTransposed"; // или это я уже загоняюсь?
-    //static const String notesTuned = "NotesTuned";
 } // namespace PianoLayerDeltas

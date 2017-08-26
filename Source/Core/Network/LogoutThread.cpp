@@ -60,11 +60,11 @@ void LogoutThread::run()
         url = url.withParameter(Serialization::Network::clientCheck, saltedDeviceIdHash);
 
         {
-			int statusCode = 0;
-			StringPairArray responseHeaders;
+            int statusCode = 0;
+            StringPairArray responseHeaders;
 
             ScopedPointer<InputStream> downloadStream(
-				url.createInputStream(true, nullptr, nullptr, HELIO_USERAGENT, 0, &responseHeaders, &statusCode));
+                url.createInputStream(true, nullptr, nullptr, HELIO_USERAGENT, 0, &responseHeaders, &statusCode));
 
             if (!downloadStream)
             {
@@ -78,34 +78,34 @@ void LogoutThread::run()
 
             if (statusCode != 200)
             {
-				MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
-					{
-						LogoutThread *self = static_cast<LogoutThread *>(data);
-						self->listener->logoutFailed();
-						return nullptr;
-					},
-					this);
+                MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+                    {
+                        LogoutThread *self = static_cast<LogoutThread *>(data);
+                        self->listener->logoutFailed();
+                        return nullptr;
+                    },
+                    this);
 
                 return;
             }
 
-			MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
-				{
-					LogoutThread *self = static_cast<LogoutThread *>(data);
-					self->listener->logoutOk();
-					return nullptr;
-				},
-				this);
+            MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+                {
+                    LogoutThread *self = static_cast<LogoutThread *>(data);
+                    self->listener->logoutOk();
+                    return nullptr;
+                },
+                this);
 
-			return;
+            return;
         }
     }
 
-	MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
-		{
-			LogoutThread *self = static_cast<LogoutThread *>(data);
-			self->listener->logoutConnectionFailed();
-			return nullptr;
-		},
-		this);
+    MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+        {
+            LogoutThread *self = static_cast<LogoutThread *>(data);
+            self->listener->logoutConnectionFailed();
+            return nullptr;
+        },
+        this);
 }

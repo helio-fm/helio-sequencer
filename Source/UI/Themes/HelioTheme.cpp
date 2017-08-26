@@ -25,15 +25,16 @@
 
 #include "MainWindow.h"
 #include "Origami.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 #include "TreePanel.h"
 #include "InstrumentEditor.h"
 #include "HelperRectangle.h"
 #include "SizeSwitcherComponent.h"
 #include "PianoRoll.h"
+#include "PatternRoll.h"
 
 #include "HelioCallout.h"
-#include "MidiEventComponentLasso.h"
+#include "HybridLassoComponent.h"
 #include "PanelBackgroundA.h"
 #include "PanelBackgroundB.h"
 #include "PanelBackgroundC.h"
@@ -381,12 +382,12 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
 
         g.setGradientFill(ColourGradient(baseColour.darker(0.1f), 0.0f, height / 2 - 2,
                                          baseColour.darker(0.2f), 0.0f, height / 2 + 2, false));
-		//g.setColour(baseColour.darker(0.2f));
-		g.fillPath(outline);
+        //g.setColour(baseColour.darker(0.2f));
+        g.fillPath(outline);
 
         if (isButtonDown || isMouseOverButton)
         {
-			g.setColour(baseColour.brighter(isButtonDown ? 0.1f : 0.01f));
+            g.setColour(baseColour.brighter(isButtonDown ? 0.1f : 0.01f));
             g.fillPath(outline);
         }
 
@@ -398,74 +399,6 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
                      AffineTransform::translation(0.0f, 1.0f).scaled(1.0f, (height + 2.0f) / height));
     }
 }
-
-void HelioTheme::drawFileBrowserRow(Graphics &g, int width, int height,
-                                    const String &filename, Image *icon,
-                                    const String &fileSizeDescription,
-                                    const String &fileTimeDescription,
-                                    const bool isDirectory, const bool isItemSelected,
-                                    const int /*itemIndex*/, DirectoryContentsDisplayComponent &dcc)
-{
-    Component *const fileListComp = dynamic_cast<Component *>(&dcc);
-
-    if (isItemSelected) {
-        g.fillAll(fileListComp != nullptr ? fileListComp->findColour(DirectoryContentsDisplayComponent::highlightColourId)
-                  : findColour(DirectoryContentsDisplayComponent::highlightColourId));
-}
-
-    const int x = 32;
-    g.setColour(Colours::black);
-
-    if (icon != nullptr && icon->isValid())
-    {
-        g.drawImageWithin(*icon, 2, 2, x - 4, height - 4,
-                          RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize,
-                          false);
-    }
-    else
-    {
-        if (const Drawable *d = isDirectory ? getDefaultFolderImage()
-                                : getDefaultDocumentFileImage()) {
-            d->drawWithin(g, Rectangle<float> (2.0f, 2.0f, x - 4.0f, height - 4.0f),
-                          RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize, 1.0f);
-}
-    }
-
-    g.setColour(fileListComp != nullptr ? fileListComp->findColour(DirectoryContentsDisplayComponent::textColourId)
-                : findColour(DirectoryContentsDisplayComponent::textColourId));
-    g.setFont(Font(Font::getDefaultSansSerifFontName(), height * 0.7f, Font::plain));
-
-    if (width > 450 && ! isDirectory)
-    {
-        const int sizeX = roundToInt(width * 0.7f);
-        const int dateX = roundToInt(width * 0.8f);
-
-        g.drawFittedText(filename,
-                         x, 0, sizeX - x, height,
-                         Justification::centredLeft, 1);
-
-        g.setFont(Font(Font::getDefaultSansSerifFontName(), height * 0.6f, Font::plain));
-
-        if (! isDirectory)
-        {
-            g.drawFittedText(fileSizeDescription,
-                             sizeX, 0, dateX - sizeX - 8, height,
-                             Justification::centredRight, 1);
-
-            g.drawFittedText(fileTimeDescription,
-                             dateX, 0, width - 8 - dateX, height,
-                             Justification::centredRight, 1);
-        }
-    }
-    else
-    {
-        g.drawFittedText(filename,
-                         x, 0, width - x, height,
-                         Justification::centredLeft, 1);
-
-    }
-}
-
 
 //===----------------------------------------------------------------------===//
 // Scrollbars
@@ -963,8 +896,8 @@ void HelioTheme::initColours(const ::ColourScheme &colours)
     this->setColour(TextEditor::shadowColourId, colours.getShadingGradientColourB());
     this->setColour(TextEditor::backgroundColourId, colours.getPrimaryGradientColourA().darker(0.05f));
     this->setColour(TextEditor::highlightColourId, Colours::black.withAlpha(0.25f));
-	this->setColour(CaretComponent::caretColourId, Colours::white.withAlpha(0.35f));
-	
+    this->setColour(CaretComponent::caretColourId, Colours::white.withAlpha(0.35f));
+    
 
     // Tree stuff
     this->setColour(TreeView::linesColourId, Colours::white.withAlpha(0.1f));
@@ -973,19 +906,19 @@ void HelioTheme::initColours(const ::ColourScheme &colours)
     this->setColour(TreeView::dragAndDropIndicatorColourId, Colours::black.withAlpha(0.15f));
     this->setColour(SizeSwitcherComponent::borderColourId, Colours::white.withAlpha(0.09f));
 
-    // MidiRoll
-    this->setColour(MidiRoll::blackKeyColourId, colours.getBlackKeyColour());
-    this->setColour(MidiRoll::blackKeyBrightColourId, colours.getBlackKeyColour().withMultipliedBrightness(1.15f));
-    this->setColour(MidiRoll::whiteKeyColourId, colours.getWhiteKeyColour());
-    this->setColour(MidiRoll::whiteKeyBrightColourId, colours.getWhiteKeyColour().withMultipliedBrightness(1.15f));
-    this->setColour(MidiRoll::rowLineColourId, colours.getRowColour());
-    this->setColour(MidiRoll::barLineColourId, colours.getBarColour().withAlpha(0.9f));
-    this->setColour(MidiRoll::barLineBevelColourId, Colours::white.withAlpha(0.015f));
-    this->setColour(MidiRoll::beatLineColourId, colours.getBarColour().withAlpha(0.45f));
-    this->setColour(MidiRoll::snapLineColourId, colours.getBarColour().withAlpha(0.1f));
-    this->setColour(MidiRoll::headerColourId, colours.getPrimaryGradientColourB());
+    // HybridRoll
+    this->setColour(HybridRoll::blackKeyColourId, colours.getBlackKeyColour());
+    this->setColour(HybridRoll::blackKeyBrightColourId, colours.getBlackKeyColour().withMultipliedBrightness(1.15f));
+    this->setColour(HybridRoll::whiteKeyColourId, colours.getWhiteKeyColour());
+    this->setColour(HybridRoll::whiteKeyBrightColourId, colours.getWhiteKeyColour().withMultipliedBrightness(1.15f));
+    this->setColour(HybridRoll::rowLineColourId, colours.getRowColour());
+    this->setColour(HybridRoll::barLineColourId, colours.getBarColour().withAlpha(0.9f));
+    this->setColour(HybridRoll::barLineBevelColourId, Colours::white.withAlpha(0.015f));
+    this->setColour(HybridRoll::beatLineColourId, colours.getBarColour().withAlpha(0.45f));
+    this->setColour(HybridRoll::snapLineColourId, colours.getBarColour().withAlpha(0.1f));
+    this->setColour(HybridRoll::headerColourId, colours.getPrimaryGradientColourB());
 
-    this->setColour(MidiRoll::indicatorColourId, colours.getLassoBorderColour().withAlpha(0.5f));
+    this->setColour(HybridRoll::playheadColourId, colours.getLassoBorderColour().withAlpha(0.5f));
     this->setColour(LassoComponent<void *>::lassoFillColourId, colours.getLassoFillColour().withAlpha(0.15f));
     this->setColour(LassoComponent<void *>::lassoOutlineColourId, colours.getLassoBorderColour().withAlpha(0.4f));
 
@@ -1005,7 +938,11 @@ void HelioTheme::updateBackgroundRenders(bool force)
 #if PIANOROLL_HAS_PRERENDERED_BACKGROUND
     PianoRoll::repaintBackgroundsCache(*this);
 #endif
-    
+
+#if PATTERNROLL_HAS_PRERENDERED_BACKGROUND
+    PatternRoll::repaintBackgroundsCache(*this);
+#endif
+
 #if PANEL_A_HAS_PRERENDERED_BACKGROUND
     PanelBackgroundA::updateRender(*this);
 #endif

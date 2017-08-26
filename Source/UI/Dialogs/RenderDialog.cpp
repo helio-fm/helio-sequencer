@@ -101,9 +101,9 @@ RenderDialog::RenderDialog(ProjectTreeItem &parentProject, const File &renderTo,
     this->slider->setEnabled(false);
     this->slider->setRange(0.0, 1.0, 0.01);
 
-	this->separatorH->setAlphaMultiplier(2.5f);
+    this->separatorH->setAlphaMultiplier(2.5f);
 
-	this->pathEditor->setText(renderTo.getParentDirectory().getFullPathName(), dontSendNotification);
+    this->pathEditor->setText(renderTo.getParentDirectory().getFullPathName(), dontSendNotification);
     this->filenameEditor->setText(renderTo.getFileName(), dontSendNotification);
 
 #if JUCE_MAC

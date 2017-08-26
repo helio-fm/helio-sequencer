@@ -20,9 +20,9 @@
 #include "Serializable.h"
 #include "TreeItem.h"
 #include "ProjectTreeItem.h"
-#include "LayerGroupTreeItem.h"
-#include "PianoLayerTreeItem.h"
-#include "AutomationLayerTreeItem.h"
+#include "TrackGroupTreeItem.h"
+#include "PianoTrackTreeItem.h"
+#include "AutomationTrackTreeItem.h"
 #include "InstrumentsRootTreeItem.h"
 #include "InstrumentTreeItem.h"
 #include "VersionControlTreeItem.h"
@@ -57,15 +57,15 @@ void TreeItemChildrenSerializer::deserializeChildren(TreeItem &parentItem, const
         }
         else if (type == Serialization::Core::layerGroup)
         {
-            child = new LayerGroupTreeItem("");
+            child = new TrackGroupTreeItem("");
         }
         else if (type == Serialization::Core::pianoLayer)
         {
-            child = new PianoLayerTreeItem( "");
+            child = new PianoTrackTreeItem( "");
         }
         else if (type == Serialization::Core::autoLayer)
         {
-            child = new AutomationLayerTreeItem("");
+            child = new AutomationTrackTreeItem("");
         }
         else if (type == Serialization::Core::instrumentRoot)
         {

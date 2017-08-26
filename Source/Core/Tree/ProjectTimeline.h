@@ -19,26 +19,23 @@
 
 class ProjectTreeItem;
 
+#include "MidiTrack.h"
 #include "ProjectTimelineDiffLogic.h"
-#include "MidiLayerOwner.h"
+#include "ProjectEventDispatcher.h"
 #include "Serializable.h"
 
 class ProjectTimeline :
-    public MidiLayerOwner,
+    public ProjectEventDispatcher,
     public VCS::TrackedItem,
     public Serializable
 {
 public:
 
     ProjectTimeline(ProjectTreeItem &parentProject, String trackName);
-
     ~ProjectTimeline() override;
-    
-    inline MidiLayer *getAnnotations() const noexcept
-    { return this->annotations; }
 
-    inline MidiLayer *getTimeSignatures() const noexcept
-    { return this->timeSignatures; }
+    MidiTrack *getAnnotations() const noexcept;
+    MidiTrack *getTimeSignatures() const noexcept;
 
 
     //===------------------------------------------------------------------===//
@@ -46,37 +43,30 @@ public:
     //===------------------------------------------------------------------===//
 
     String getVCSName() const override;
-
     int getNumDeltas() const override;
-
     VCS::Delta *getDelta(int index) const override;
-
     XmlElement *createDeltaDataFor(int index) const override;
-
     VCS::DiffLogic *getDiffLogic() const override;
-
     void resetStateTo(const VCS::TrackedItem &newState) override;
     
     
     //===------------------------------------------------------------------===//
-    // MidiLayerOwner
+    // ProjectEventDispatcher
     //===------------------------------------------------------------------===//
     
-    Transport *getTransport() const override;
-    
-    String getXPath() const override;
-    
-    void setXPath(const String &path) override;
-    
-    void onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
-    
-    void onEventAdded(const MidiEvent &event) override;
-    
-    void onEventRemoved(const MidiEvent &event) override;
-    
-    void onLayerChanged(const MidiLayer *layer) override;
-    
-    void onBeatRangeChanged() override;
+    void dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
+    void dispatchAddEvent(const MidiEvent &event) override;
+    void dispatchRemoveEvent(const MidiEvent &event) override;
+    void dispatchPostRemoveEvent(MidiSequence *const layer) override;
+
+    void dispatchAddClip(const Clip &clip) override;
+    void dispatchChangeClip(const Clip &oldClip, const Clip &newClip) override;
+    void dispatchRemoveClip(const Clip &clip) override;
+    void dispatchPostRemoveClip(Pattern *const pattern) override;
+
+    void dispatchChangeTrackProperties(MidiTrack *const track) override;
+    void dispatchChangeTrackBeatRange(MidiTrack *const track) override;
+    void dispatchChangeTrackContent(MidiTrack *const track) override;
 
     ProjectTreeItem *getProject() const override;
     
@@ -86,9 +76,7 @@ public:
     //===------------------------------------------------------------------===//
 
     void reset() override;
-    
     XmlElement *serialize() const override;
-
     void deserialize(const XmlElement &xml) override;
 
 
@@ -97,11 +85,9 @@ public:
     //===------------------------------------------------------------------===//
 
     XmlElement *serializeAnnotationsDelta() const;
-
     void resetAnnotationsDelta(const XmlElement *state);
 
     XmlElement *serializeTimeSignaturesDelta() const;
-
     void resetTimeSignaturesDelta(const XmlElement *state);
     
 
@@ -115,8 +101,17 @@ private:
     
     String name;
     
-    ScopedPointer<MidiLayer> annotations;
+    Uuid annotationsId;
+    Uuid timeSignaturesId;
 
-    ScopedPointer<MidiLayer> timeSignatures;
+    ScopedPointer<MidiTrack> annotationsTrack;
+    ScopedPointer<MidiTrack> timeSignaturesTrack;
 
+    ScopedPointer<MidiSequence> annotationsSequence;
+    ScopedPointer<MidiSequence> timeSignaturesSequence;
+
+    friend class AnnotationsTrack;
+    friend class TimeSignaturesTrack;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectTimeline)
 };

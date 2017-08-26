@@ -27,8 +27,8 @@ class TimeSignatureCommandPanel : public CommandPanel
 {
 public:
     
-	TimeSignatureCommandPanel(ProjectTreeItem &parentProject, 
-		const TimeSignatureEvent &targetEvent);
+    TimeSignatureCommandPanel(ProjectTreeItem &parentProject, 
+        const TimeSignatureEvent &targetEvent);
     
     ~TimeSignatureCommandPanel() override;
     

@@ -18,8 +18,8 @@
 #pragma once
 
 class MidiEvent;
-class MidiLayer;
-class AutomationLayerTreeItem;
+class MidiSequence;
+class AutomationTrackTreeItem;
 
 #include "Diff.h"
 #include "DiffLogic.h"
@@ -45,56 +45,6 @@ namespace VCS
         Diff *createDiff(const TrackedItem &initialState) const override;
 
         Diff *createMergedItem(const TrackedItem &initialState) const override;
-
-    private:
-
-        XmlElement *mergePath(const XmlElement *state, const XmlElement *changes) const;
-
-        XmlElement *mergeMute(const XmlElement *state, const XmlElement *changes) const;
-
-        XmlElement *mergeColour(const XmlElement *state, const XmlElement *changes) const;
-
-        XmlElement *mergeInstrument(const XmlElement *state, const XmlElement *changes) const;
-
-        XmlElement *mergeController(const XmlElement *state, const XmlElement *changes) const;
-
-        XmlElement *mergeEventsAdded(const XmlElement *state, const XmlElement *changes) const;
-
-        XmlElement *mergeEventsRemoved(const XmlElement *state, const XmlElement *changes) const;
-
-        XmlElement *mergeEventsChanged(const XmlElement *state, const XmlElement *changes) const;
-
-    private:
-
-        NewSerializedDelta createPathDiff(const XmlElement *state, const XmlElement *changes) const;
-
-        NewSerializedDelta createMuteDiff(const XmlElement *state, const XmlElement *changes) const;
-
-        NewSerializedDelta createColourDiff(const XmlElement *state, const XmlElement *changes) const;
-
-        NewSerializedDelta createInstrumentDiff(const XmlElement *state, const XmlElement *changes) const;
-
-        NewSerializedDelta createControllerDiff(const XmlElement *state, const XmlElement *changes) const;
-
-        Array<NewSerializedDelta> createEventsDiffs(const XmlElement *state, const XmlElement *changes) const;
-
-    private:
-
-        void deserializeChanges(MidiLayer &layer,
-                                const XmlElement *state,
-                                const XmlElement *changes,
-                                OwnedArray<MidiEvent> &stateNotes,
-                                OwnedArray<MidiEvent> &changesNotes) const;
-
-        NewSerializedDelta serializeChanges(Array<const MidiEvent *> changes,
-                                            const String &description,
-                                            int64 numChanges,
-                                            const String &deltaType) const;
-
-        XmlElement *serializeLayer(Array<const MidiEvent *> changes,
-                                   const String &tag) const;
-
-        bool checkIfDeltaIsEventsType(const Delta *delta) const;
 
     };
 } // namespace VCS

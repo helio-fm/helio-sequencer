@@ -22,14 +22,14 @@
 
 #include "ProjectTreeItem.h"
 
-#include "PianoLayerTreeItemActions.h"
-#include "AutoLayerTreeItemActions.h"
-#include "LayerTreeItemActions.h"
-#include "MidiLayerActions.h"
+#include "MidiTrackActions.h"
+#include "PianoTrackActions.h"
+#include "AutomationTrackActions.h"
 #include "NoteActions.h"
 #include "AnnotationEventActions.h"
 #include "AutomationEventActions.h"
 #include "TimeSignatureEventActions.h"
+#include "PatternActions.h"
 
 #define MAX_TRANSACTIONS_TO_STORE 10
 
@@ -99,9 +99,11 @@ struct UndoStack::ActionSet
         
         forEachXmlChildElement(xml, childActionXml)
         {
-            UndoAction *action = createUndoActionsByTagName(childActionXml->getTagName());
-            action->deserialize(*childActionXml);
-            this->actions.add(action);
+            if (UndoAction *action = createUndoActionsByTagName(childActionXml->getTagName()))
+            {
+                action->deserialize(*childActionXml);
+                this->actions.add(action);
+            }
         }
     }
     
@@ -112,14 +114,17 @@ struct UndoStack::ActionSet
     
     UndoAction *createUndoActionsByTagName(const String &tagName)
     {
-        if      (tagName == Serialization::Undo::pianoLayerTreeItemInsertAction)        { return new PianoLayerTreeItemInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::pianoLayerTreeItemRemoveAction)        { return new PianoLayerTreeItemRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::autoLayerTreeItemInsertAction)         { return new AutoLayerTreeItemInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::autoLayerTreeItemRemoveAction)         { return new AutoLayerTreeItemRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::layerTreeItemRenameAction)             { return new LayerTreeItemRenameAction(this->project); }
-        else if (tagName == Serialization::Undo::midiLayerChangeColourAction)           { return new MidiLayerChangeColourAction(this->project); }
-        else if (tagName == Serialization::Undo::midiLayerChangeInstrumentAction)       { return new MidiLayerChangeInstrumentAction(this->project); }
-        else if (tagName == Serialization::Undo::midiLayerMuteAction)                   { return new MidiLayerMuteAction(this->project); }
+        if      (tagName == Serialization::Undo::pianoTrackInsertAction)                { return new PianoTrackInsertAction(this->project); }
+        else if (tagName == Serialization::Undo::pianoTrackRemoveAction)                { return new PianoTrackRemoveAction(this->project); }
+        else if (tagName == Serialization::Undo::automationTrackInsertAction)           { return new AutomationTrackInsertAction(this->project); }
+        else if (tagName == Serialization::Undo::automationTrackRemoveAction)           { return new AutomationTrackRemoveAction(this->project); }
+        else if (tagName == Serialization::Undo::midiTrackRenameAction)                 { return new MidiTrackRenameAction(this->project); }
+        else if (tagName == Serialization::Undo::midiTrackChangeColourAction)           { return new MidiTrackChangeColourAction(this->project); }
+        else if (tagName == Serialization::Undo::midiTrackChangeInstrumentAction)       { return new MidiTrackChangeInstrumentAction(this->project); }
+        else if (tagName == Serialization::Undo::midiTrackMuteAction)                   { return new MidiTrackMuteAction(this->project); }
+        else if (tagName == Serialization::Undo::patternClipInsertAction)               { return new PatternClipInsertAction(this->project); }
+        else if (tagName == Serialization::Undo::patternClipRemoveAction)               { return new PatternClipRemoveAction(this->project); }
+        else if (tagName == Serialization::Undo::patternClipChangeAction)               { return new PatternClipChangeAction(this->project); }
         else if (tagName == Serialization::Undo::noteInsertAction)                      { return new NoteInsertAction(this->project); }
         else if (tagName == Serialization::Undo::noteRemoveAction)                      { return new NoteRemoveAction(this->project); }
         else if (tagName == Serialization::Undo::noteChangeAction)                      { return new NoteChangeAction(this->project); }
@@ -145,7 +150,7 @@ struct UndoStack::ActionSet
         else if (tagName == Serialization::Undo::automationEventsGroupRemoveAction)     { return new AutomationEventsGroupRemoveAction(this->project); }
         else if (tagName == Serialization::Undo::automationEventsGroupChangeAction)     { return new AutomationEventsGroupChangeAction(this->project); }
         
-        jassertfalse;
+        // Here we could meet deprecated legacy actions
         return nullptr;
     }
     

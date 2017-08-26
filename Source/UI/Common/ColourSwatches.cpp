@@ -29,14 +29,14 @@ ColourSwatches::ColourSwatches()
 {
 
     //[UserPreSize]
-	const StringPairArray colours(CommandPanel::getColoursList());
-	for (const auto c : colours.getAllValues())
-	{
-		const Colour colour(Colour::fromString(c));
-		ScopedPointer<ColourButton> button(new ColourButton(colour, this));
-		this->addAndMakeVisible(button);
-		this->buttons.add(button.release());
-	}
+    const StringPairArray colours(CommandPanel::getColoursList());
+    for (const auto c : colours.getAllValues())
+    {
+        const Colour colour(Colour::fromString(c));
+        ScopedPointer<ColourButton> button(new ColourButton(colour, this));
+        this->addAndMakeVisible(button);
+        this->buttons.add(button.release());
+    }
     //[/UserPreSize]
 
     setSize (384, 42);
@@ -96,13 +96,13 @@ void ColourSwatches::paint (Graphics& g)
 void ColourSwatches::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
-	int x = 0;
-	for (const auto &button : this->buttons)
-	{
-		const int w = this->getWidth() / this->buttons.size();
-		button->setBounds(x, 0, w, this->getHeight());
-		x += w;
-	}
+    int x = 0;
+    for (const auto &button : this->buttons)
+    {
+        const int w = this->getWidth() / this->buttons.size();
+        button->setBounds(x, 0, w, this->getHeight());
+        x += w;
+    }
     //[/UserPreResize]
 
     //[UserResized] Add your own custom resize handling here..
@@ -113,30 +113,30 @@ void ColourSwatches::resized()
 //[MiscUserCode]
 void ColourSwatches::onColourButtonClicked(ColourButton *clickedButton)
 {
-	for (const auto &button : this->buttons)
-	{
-		if (button != clickedButton)
-		{
-			button->deselect();
-		}
-	}
+    for (const auto &button : this->buttons)
+    {
+        if (button != clickedButton)
+        {
+            button->deselect();
+        }
+    }
 
-	if (ColourButtonListener *parentListener =
-		dynamic_cast<ColourButtonListener *>(this->getParentComponent()))
-	{
-		parentListener->onColourButtonClicked(clickedButton);
-	}
+    if (ColourButtonListener *parentListener =
+        dynamic_cast<ColourButtonListener *>(this->getParentComponent()))
+    {
+        parentListener->onColourButtonClicked(clickedButton);
+    }
 }
 
 void ColourSwatches::setSelectedColour(Colour colour)
 {
-	for (const auto &button : this->buttons)
-	{
-		if (button->getColour() == colour)
-		{ button->select(); }
-		else
-		{ button->deselect(); }
-	}
+    for (const auto &button : this->buttons)
+    {
+        if (button->getColour() == colour)
+        { button->select(); }
+        else
+        { button->deselect(); }
+    }
 }
 //[/MiscUserCode]
 

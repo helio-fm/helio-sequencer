@@ -296,9 +296,9 @@ FileSearchPath PluginManager::getTypicalFolders()
     possibleSubfolders.add("VST");
     possibleSubfolders.add("VST2");
     possibleSubfolders.add("VST 2");
-	possibleSubfolders.add("VST3");
-	possibleSubfolders.add("VST 3");
-	possibleSubfolders.add("ladspa");
+    possibleSubfolders.add("VST3");
+    possibleSubfolders.add("VST 3");
+    possibleSubfolders.add("ladspa");
     possibleSubfolders.add(".ladspa");
 
     Array<File> systemFolders;

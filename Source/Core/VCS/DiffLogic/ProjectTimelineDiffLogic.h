@@ -18,7 +18,7 @@
 #pragma once
 
 class MidiEvent;
-class MidiLayer;
+class MidiSequence;
 class ProjectTimeline;
 
 #include "Diff.h"
@@ -68,8 +68,7 @@ namespace VCS
 
     private:
 
-        void deserializeChanges(MidiLayer &layer,
-                                const XmlElement *state,
+        void deserializeChanges(const XmlElement *state,
                                 const XmlElement *changes,
                                 OwnedArray<MidiEvent> &stateNotes,
                                 OwnedArray<MidiEvent> &changesNotes) const;

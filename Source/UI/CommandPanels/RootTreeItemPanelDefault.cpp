@@ -22,7 +22,7 @@
 #include "RootTreeItemPanelDefault.h"
 
 //[MiscUserDefs]
-#include "MidiRollCommandPanel.h"
+#include "HybridRollCommandPanel.h"
 #include "HelioTheme.h"
 #include "App.h"
 #include "AuthorizationManager.h"

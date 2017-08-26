@@ -17,7 +17,7 @@
 
 #pragma once
 
-class TimeSignaturesLayer;
+class TimeSignaturesSequence;
 class ProjectTreeItem;
 
 #include "TimeSignatureEvent.h"
@@ -36,7 +36,7 @@ public:
     UndoAction(project) {}
 
     TimeSignatureEventInsertAction(ProjectTreeItem &project,
-                                   String layerId,
+                                   String trackId,
                                    const TimeSignatureEvent &target);
 
     bool perform() override;
@@ -49,7 +49,7 @@ public:
 
 private:
 
-    String layerId;
+    String trackId;
     TimeSignatureEvent event;
 
     JUCE_DECLARE_NON_COPYABLE(TimeSignatureEventInsertAction)
@@ -68,7 +68,7 @@ public:
     UndoAction(project) {}
 
     TimeSignatureEventRemoveAction(ProjectTreeItem &project,
-                                   String layerId,
+                                   String trackId,
                                    const TimeSignatureEvent &target);
 
     bool perform() override;
@@ -81,7 +81,7 @@ public:
 
 private:
 
-    String layerId;
+    String trackId;
     TimeSignatureEvent event;
 
     JUCE_DECLARE_NON_COPYABLE(TimeSignatureEventRemoveAction)
@@ -100,7 +100,7 @@ public:
     UndoAction(project) {}
 
     TimeSignatureEventChangeAction(ProjectTreeItem &project,
-                                   String layerId,
+                                   String trackId,
                                    const TimeSignatureEvent &target,
                                    const TimeSignatureEvent &newParameters);
 
@@ -115,7 +115,7 @@ public:
 
 private:
 
-    String layerId;
+    String trackId;
     
     TimeSignatureEvent eventBefore;
     TimeSignatureEvent eventAfter;
@@ -137,7 +137,7 @@ public:
     UndoAction(project) {}
     
     TimeSignatureEventsGroupInsertAction(ProjectTreeItem &project,
-                                         String layerId,
+                                         String trackId,
                                          Array<TimeSignatureEvent> &target);
     
     bool perform() override;
@@ -150,7 +150,7 @@ public:
     
 private:
     
-    String layerId;
+    String trackId;
     Array<TimeSignatureEvent> signatures;
     
     JUCE_DECLARE_NON_COPYABLE(TimeSignatureEventsGroupInsertAction)
@@ -170,7 +170,7 @@ public:
     UndoAction(project) {}
     
     TimeSignatureEventsGroupRemoveAction(ProjectTreeItem &project,
-                                         String layerId,
+                                         String trackId,
                                          Array<TimeSignatureEvent> &target);
     
     bool perform() override;
@@ -183,7 +183,7 @@ public:
     
 private:
     
-    String layerId;
+    String trackId;
     Array<TimeSignatureEvent> signatures;
     
     JUCE_DECLARE_NON_COPYABLE(TimeSignatureEventsGroupRemoveAction)
@@ -203,7 +203,7 @@ public:
     UndoAction(project) {}
 
     TimeSignatureEventsGroupChangeAction(ProjectTreeItem &project,
-                                         String layerId,
+                                         String trackId,
                                          const Array<TimeSignatureEvent> state1,
                                          const Array<TimeSignatureEvent> state2);
 
@@ -218,7 +218,7 @@ public:
 
 private:
 
-    String layerId;
+    String trackId;
     
     Array<TimeSignatureEvent> eventsBefore;
     Array<TimeSignatureEvent> eventsAfter;

@@ -20,7 +20,7 @@
 #include "Instrument.h"
 #include <float.h>
 
-class MidiLayer;
+class MidiSequence;
 
 struct SequenceWrapper : public ReferenceCountedObject
 {
@@ -28,7 +28,7 @@ struct SequenceWrapper : public ReferenceCountedObject
     int currentIndex;
     MidiMessageCollector *listener;
     Instrument *instrument;
-    const MidiLayer *layer;
+    const MidiSequence *layer;
     typedef ReferenceCountedObjectPtr<SequenceWrapper> Ptr;
 };
 
@@ -108,7 +108,7 @@ public:
         return this->sequences[0]->instrument->getProcessorGraph()->getTotalNumInputChannels();
     }
 
-    ReferenceCountedArray<SequenceWrapper> getAllFor(const MidiLayer *midiLayer)
+    ReferenceCountedArray<SequenceWrapper> getAllFor(const MidiSequence *midiLayer)
     {
         ReferenceCountedArray<SequenceWrapper> result;
         

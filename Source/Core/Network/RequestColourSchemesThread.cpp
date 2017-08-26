@@ -64,36 +64,36 @@ void RequestColourSchemesThread::run()
     fetchUrl = fetchUrl.withParameter(Serialization::Network::clientCheck, saltedDeviceIdHash);
 
     {
-		int statusCode = 0;
-		StringPairArray responseHeaders;
+        int statusCode = 0;
+        StringPairArray responseHeaders;
 
-		ScopedPointer<InputStream> downloadStream(
-			fetchUrl.createInputStream(true, nullptr, nullptr, HELIO_USERAGENT, 0, &responseHeaders, &statusCode));
+        ScopedPointer<InputStream> downloadStream(
+            fetchUrl.createInputStream(true, nullptr, nullptr, HELIO_USERAGENT, 0, &responseHeaders, &statusCode));
 
-		if (downloadStream != nullptr && statusCode == 200)
-		{
+        if (downloadStream != nullptr && statusCode == 200)
+        {
             {
                 ScopedWriteLock lock(this->dataLock);
                 this->lastFetchedData = downloadStream->readEntireStreamAsString();
             }
             
-			MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
-				{
-					RequestColourSchemesThread *self = static_cast<RequestColourSchemesThread *>(data);
-					self->listener->schemesRequestOk(self);
-					return nullptr;
-				},
-				this);
-			
-			return;
+            MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+                {
+                    RequestColourSchemesThread *self = static_cast<RequestColourSchemesThread *>(data);
+                    self->listener->schemesRequestOk(self);
+                    return nullptr;
+                },
+                this);
+            
+            return;
         }
     }
 
-	MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
-		{
-			RequestColourSchemesThread *self = static_cast<RequestColourSchemesThread *>(data);
-			self->listener->schemesRequestFailed(self);
-			return nullptr;
-		},
-		this);
+    MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+        {
+            RequestColourSchemesThread *self = static_cast<RequestColourSchemesThread *>(data);
+            self->listener->schemesRequestFailed(self);
+            return nullptr;
+        },
+        this);
 }

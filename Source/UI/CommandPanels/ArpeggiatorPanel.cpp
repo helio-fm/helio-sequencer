@@ -23,14 +23,14 @@
 
 //[MiscUserDefs]
 #include "PianoRoll.h"
-#include "MidiEventSelection.h"
-#include "MidiRollToolbox.h"
-#include "MidiLayer.h"
+#include "Lasso.h"
+#include "PianoRollToolbox.h"
+#include "MidiSequence.h"
 #include "NoteComponent.h"
 #include "Transport.h"
 #include "CommandItemComponent.h"
 #include "CommandPanel.h"
-#include "MidiRollToolbox.h"
+#include "PianoRollToolbox.h"
 #include "SerializationKeys.h"
 #include "ArpeggiatorsManager.h"
 //[/MiscUserDefs]
@@ -185,8 +185,8 @@ bool ArpeggiatorPanel::keyPressed (const KeyPress& key)
 
 void ArpeggiatorPanel::startPlaybackLoop() const
 {
-    const float startBeat = MidiRollToolbox::findStartBeat(this->roll.getLassoSelection());
-    const float endBeat = MidiRollToolbox::findEndBeat(this->roll.getLassoSelection());
+    const float startBeat = PianoRollToolbox::findStartBeat(this->roll.getLassoSelection());
+    const float endBeat = PianoRollToolbox::findEndBeat(this->roll.getLassoSelection());
 
     const float deltaCorrection = 0.01f;
 
@@ -330,7 +330,7 @@ void ArpeggiatorPanel::applyArpToSelectedNotes(const Arpeggiator &arp)
     if (this->roll.getLassoSelection().getNumSelected() > 20)
     { this->roll.setVisible(false); }
 
-    MidiRollToolbox::arpeggiate(this->roll.getLassoSelection(), arp);
+    PianoRollToolbox::arpeggiate(this->roll.getLassoSelection(), arp);
 
     this->hasMadeChanges = true;
 

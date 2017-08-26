@@ -85,37 +85,37 @@ void RequestArpeggiatorsThread::run()
     }
 
     {
-		int statusCode = 0;
-		StringPairArray responseHeaders;
+        int statusCode = 0;
+        StringPairArray responseHeaders;
 
         ScopedPointer<InputStream> downloadStream(
-			fetchUrl.createInputStream(true, nullptr, nullptr, HELIO_USERAGENT, 0, &responseHeaders, &statusCode));
+            fetchUrl.createInputStream(true, nullptr, nullptr, HELIO_USERAGENT, 0, &responseHeaders, &statusCode));
 
         if (downloadStream != nullptr && statusCode == 200)
         {
-			if (! pushMode)
+            if (! pushMode)
             {
                 ScopedWriteLock lock(this->dataLock);
                 this->lastFetchedData = downloadStream->readEntireStreamAsString();
             }
 
-			MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
-				{
-					RequestArpeggiatorsThread *self = static_cast<RequestArpeggiatorsThread *>(data);
-					self->listener->arpsRequestOk(self);
-					return nullptr;
-				},
-				this);
+            MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+                {
+                    RequestArpeggiatorsThread *self = static_cast<RequestArpeggiatorsThread *>(data);
+                    self->listener->arpsRequestOk(self);
+                    return nullptr;
+                },
+                this);
 
             return;
         }
     }
 
-	MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
-		{
-			RequestArpeggiatorsThread *self = static_cast<RequestArpeggiatorsThread *>(data);
-			self->listener->arpsRequestFailed(self);
-			return nullptr;
-		},
-		this);
+    MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+        {
+            RequestArpeggiatorsThread *self = static_cast<RequestArpeggiatorsThread *>(data);
+            self->listener->arpsRequestFailed(self);
+            return nullptr;
+        },
+        this);
 }

@@ -20,9 +20,9 @@
 
 #include "TreeItemChildrenSerializer.h"
 #include "RootTreeItem.h"
-#include "LayerGroupTreeItem.h"
-#include "PianoLayerTreeItem.h"
-#include "AutomationLayerTreeItem.h"
+#include "TrackGroupTreeItem.h"
+#include "PianoTrackTreeItem.h"
+#include "AutomationTrackTreeItem.h"
 #include "MainLayout.h"
 #include "Document.h"
 #include "ProjectListener.h"
@@ -32,11 +32,11 @@
 #include "AudioCore.h"
 #include "PlayerThread.h"
 
-#include "MidiEditor.h"
+#include "SequencerLayout.h"
 #include "MidiEvent.h"
-#include "MidiLayer.h"
-#include "PianoLayer.h"
-#include "AutomationLayer.h"
+#include "MidiSequence.h"
+#include "PianoSequence.h"
+#include "AutomationSequence.h"
 #include "Icons.h"
 #include "ProjectInfo.h"
 #include "ProjectTimeline.h"
@@ -46,7 +46,7 @@
 #include "VersionControlTreeItem.h"
 #include "VersionControl.h"
 #include "RecentFilesList.h"
-#include "MidiRoll.h"
+#include "HybridRoll.h"
 #include "Autosaver.h"
 
 #include "HelioTheme.h"
@@ -167,14 +167,14 @@ String ProjectTreeItem::getId() const
 
 String ProjectTreeItem::getStats() const
 {
-    Array<LayerTreeItem *> layerItems(this->findChildrenOfType<LayerTreeItem>());
+    Array<MidiTrackTreeItem *> layerItems(this->findChildrenOfType<MidiTrackTreeItem>());
     
     int numEvents = 0;
     int numLayers = layerItems.size();
 
     for (int i = 0; i < numLayers; ++i)
     {
-        numEvents += layerItems[i]->getLayer()->size();
+        numEvents += layerItems[i]->getSequence()->size();
     }
 
     return String(TRANS_PLURAL("{x} layers", numLayers) + " " + TRANS("common::and") + " " + TRANS_PLURAL("{x} events", numEvents));
@@ -198,22 +198,33 @@ ProjectTimeline *ProjectTreeItem::getTimeline() const noexcept
     return this->timeline;
 }
 
-MidiRoll *ProjectTreeItem::getLastFocusedRoll() const
+HybridRollEditMode ProjectTreeItem::getEditMode() const noexcept
+{
+    return this->rollEditMode;
+}
+
+HybridRoll *ProjectTreeItem::getLastFocusedRoll() const
 {
     // todo!
-    
     return this->editor->getRoll();
     
 //    if (this->origami != nullptr)
 //    {
 //        if (Component *lastFocused = this->origami->getLastFocusedComponent())
 //        {
-//            return dynamic_cast<MidiRoll *>(lastFocused);
+//            return dynamic_cast<HybridRoll *>(lastFocused);
 //        }
 //    }
 //    
 //    return nullptr;
 }
+
+Pattern *ProjectTreeItem::findPatternByTrackId(const String &uuid)
+{
+    // TODO implement
+    return nullptr;
+}
+
 
 Colour ProjectTreeItem::getColour() const
 {
@@ -281,7 +292,7 @@ void ProjectTreeItem::recreatePage()
         this->savePageState();
     }
     
-    this->editor = new MidiEditor(*this);
+    this->editor = new SequencerLayout(*this);
     
     if (App::isRunningOnPhone())
     {
@@ -292,7 +303,7 @@ void ProjectTreeItem::recreatePage()
         this->projectSettings = new ProjectPageDefault(*this);
     }
     
-    this->broadcastBeatRangeChanged(); // let rolls update themselves
+    this->broadcastChangeProjectBeatRange(); // let rolls update themselves
     this->loadPageState();
 }
 
@@ -310,36 +321,17 @@ void ProjectTreeItem::loadPageState()
     }
 }
 
-void ProjectTreeItem::showEditor(MidiLayer *layer) // todo +param: Component *caller
+void ProjectTreeItem::showEditor(MidiSequence *activeLayer, TreeItem *source)
 {
-    const Array<MidiLayer *> layers(this->getLayersList());
-
-    for (int i = 0; i < layers.size(); ++i)
-    {
-        const MidiLayer *layerIter = layers.getUnchecked(i);
-
-        if (layerIter == layer)
-        {
-            if (TreeItem *item = dynamic_cast<TreeItem *>(layer->getOwner()))
-            {
-                this->showEditor(layer, item);
-                return;
-            }
-        }
-    }
-}
-
-void ProjectTreeItem::showEditor(MidiLayer *activeLayer, TreeItem *source)
-{
-    if (PianoLayer *pianoLayer = dynamic_cast<PianoLayer *>(activeLayer))
+    if (PianoSequence *pianoLayer = dynamic_cast<PianoSequence *>(activeLayer))
     {
         // todo collect selected pianotreeitems
-        Array<PianoLayerTreeItem *> pianoTreeItems = this->findChildrenOfType<PianoLayerTreeItem>(true);
-        Array<MidiLayer *> pianoLayers;
+        Array<PianoTrackTreeItem *> pianoTreeItems = this->findChildrenOfType<PianoTrackTreeItem>(true);
+        Array<MidiSequence *> pianoLayers;
 
         for (int i = 0; i < pianoTreeItems.size(); ++i)
         {
-            pianoLayers.add(pianoTreeItems.getUnchecked(i)->getLayer());
+            pianoLayers.add(pianoTreeItems.getUnchecked(i)->getSequence());
         }
         
         this->editor->setActiveMidiLayers(pianoLayers, activeLayer); // before
@@ -347,7 +339,7 @@ void ProjectTreeItem::showEditor(MidiLayer *activeLayer, TreeItem *source)
         App::Layout().showPage(this->editor, source);
         this->editor->grabKeyboardFocus();
     }
-    else if (AutomationLayer *autoLayer = dynamic_cast<AutomationLayer *>(activeLayer))
+    else if (AutomationSequence *autoLayer = dynamic_cast<AutomationSequence *>(activeLayer))
     {
         const bool editorWasShown = this->editor->toggleShowAutomationEditor(autoLayer);
         source->setGreyedOut(!editorWasShown);
@@ -355,18 +347,18 @@ void ProjectTreeItem::showEditor(MidiLayer *activeLayer, TreeItem *source)
     }
 }
 
-void ProjectTreeItem::hideEditor(MidiLayer *activeLayer, TreeItem *source)
+void ProjectTreeItem::hideEditor(MidiSequence *activeLayer, TreeItem *source)
 {
-    if (AutomationLayer *autoLayer = dynamic_cast<AutomationLayer *>(activeLayer))
+    if (AutomationSequence *autoLayer = dynamic_cast<AutomationSequence *>(activeLayer))
     {
         this->editor->hideAutomationEditor(autoLayer);
         source->setGreyedOut(true);
     }
 }
 
-void ProjectTreeItem::showEditorsGroup(Array<MidiLayer *> layersGroup, TreeItem *source)
+void ProjectTreeItem::showEditorsGroup(Array<MidiSequence *> layersGroup, TreeItem *source)
 {
-    Array<MidiLayer *> layers(this->getLayersList());
+    //const auto tracks(this->getTracks());
 
     if (layersGroup.size() == 0)
     {
@@ -389,59 +381,59 @@ void ProjectTreeItem::showEditorsGroup(Array<MidiLayer *> layersGroup, TreeItem 
 //    this->origami = new OrigamiVertical();
 //    int editorIndex = 0;
 //    MidiEditor *firstFoundEditor = nullptr;
-//===----------------------------------------------------------------------===//
+//
 //    for (int i = 0; i < myLayers.size(); ++i)
 //    {
 //        const bool needsShadow = (editorIndex != (layersGroup.size() - 1));
-//        MidiLayer *layerIter = myLayers.getUnchecked(i);
-//===----------------------------------------------------------------------===//
+//        MidiSequence *layerIter = myLayers.getUnchecked(i);
+//
 //        if (layersGroup.contains(layerIter))
 //        {
 //            if (TreeItem *item = dynamic_cast<TreeItem *>(layerIter->getOwner()))
 //            {
-//                if (dynamic_cast<PianoLayer *>(layerIter))
+//                if (dynamic_cast<PianoSequence *>(layerIter))
 //                {
 //                    if (editorIndex >= this->splitscreenPianoEditors.size())
 //                    { break; }
-//===----------------------------------------------------------------------===//
+//
 //                    MidiEditor *foundEditor = this->splitscreenPianoEditors[editorIndex];
 //                    this->origami->addPage(foundEditor, false, needsShadow);
 //                    foundEditor->setActiveMidiLayer(layerIter);
-//===----------------------------------------------------------------------===//
+//
 //                    firstFoundEditor = (firstFoundEditor == nullptr) ? foundEditor : firstFoundEditor;
 //                }
-//                else if (dynamic_cast<AutomationLayer *>(layerIter))
+//                else if (dynamic_cast<AutomationSequence *>(layerIter))
 //                {
 //                    // todo!
 //                    
 //                    //if (editorIndex >= this->splitscreenAutoEditors.size())
 //                    //{ break; }
-//===----------------------------------------------------------------------===//
+//
 //                    //MidiEditor *foundEditor = this->splitscreenAutoEditors[editorIndex];
 //                    //this->origami->addPage(foundEditor, false, needsShadow);
 //                    //foundEditor->setActiveMidiLayer(layerIter);
-//===----------------------------------------------------------------------===//
+//
 //                    //firstFoundEditor = (firstFoundEditor == nullptr) ? foundEditor : firstFoundEditor;
 //                }
-//===----------------------------------------------------------------------===//
+//
 //                editorIndex += 1;
 //            }
 //        }
 //    }
-//===----------------------------------------------------------------------===//
+//
 //    this->origami->addPage(this->midiRollCommandPanel, false, false, true);
 //    this->workspace.showPage(this->origami, source);
-//===----------------------------------------------------------------------===//
+//
 //    firstFoundEditor->grabKeyboardFocus();
 }
 
 void ProjectTreeItem::updateActiveGroupEditors()
 {
-    Array<LayerGroupTreeItem *> myGroups(this->findChildrenOfType<LayerGroupTreeItem>());
+    Array<TrackGroupTreeItem *> myGroups(this->findChildrenOfType<TrackGroupTreeItem>());
 
     for (int i = 0; i < myGroups.size(); ++i)
     {
-        LayerGroupTreeItem *group = myGroups.getUnchecked(i);
+        TrackGroupTreeItem *group = myGroups.getUnchecked(i);
 
         if (group->isMarkerVisible())
         {
@@ -451,6 +443,27 @@ void ProjectTreeItem::updateActiveGroupEditors()
     }
 }
 
+void ProjectTreeItem::activateLayer(MidiSequence* sequence, bool selectOthers, bool deselectOthers)
+{
+    if (selectOthers)
+    {
+        if (PianoTrackTreeItem *item =
+            this->findTrackById<PianoTrackTreeItem>(sequence->getTrackId()))
+        {
+            PianoTrackTreeItem::selectAllPianoSiblings(item);
+            return;
+        }
+    }
+    else
+    {
+        if (PianoTrackTreeItem *item =
+            this->findTrackById<PianoTrackTreeItem>(sequence->getTrackId()))
+        {
+            item->setSelected(false, false);
+            item->setSelected(true, deselectOthers);
+        }
+    }
+}
 
 //===----------------------------------------------------------------------===//
 // Menu
@@ -468,7 +481,7 @@ Component *ProjectTreeItem::createItemMenu()
 
 void ProjectTreeItem::onItemMoved()
 {
-    this->broadcastInfoChanged(this->info);
+    this->broadcastChangeProjectInfo(this->info);
 }
 
 bool ProjectTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
@@ -488,61 +501,100 @@ bool ProjectTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDe
 
 
 //===----------------------------------------------------------------------===//
+// Undos
+//===----------------------------------------------------------------------===//
+
+UndoStack *ProjectTreeItem::getUndoStack() const noexcept
+{
+    return this->undoStack.get();
+}
+
+void ProjectTreeItem::checkpoint()
+{
+    this->getUndoStack()->beginNewTransaction(String::empty);
+}
+
+void ProjectTreeItem::undo()
+{
+    if (this->getUndoStack()->canUndo())
+    {
+        this->checkpoint();
+        this->getUndoStack()->undo();
+    }
+}
+
+void ProjectTreeItem::redo()
+{
+    if (this->getUndoStack()->canRedo())
+    {
+        this->getUndoStack()->redo();
+    }
+}
+
+void ProjectTreeItem::clearUndoHistory()
+{
+    this->getUndoStack()->clearUndoHistory();
+}
+
+//===----------------------------------------------------------------------===//
 // Project
 //===----------------------------------------------------------------------===//
 
-Array<MidiLayer *> ProjectTreeItem::getLayersList() const
+Array<MidiTrack *> ProjectTreeItem::getTracks() const
 {
-    ScopedReadLock lock(this->layersListLock);
-    Array<MidiLayer *> layers;
+    ScopedReadLock lock(this->tracksListLock);
+    Array<MidiTrack *> tracks;
 
-    // now get all layers inside a tree hierarcht
-    this->collectLayers(layers);
+    // now get all layers inside a tree hierarchy
+    this->collectTracks(tracks);
     
     // and explicitly add the only non-tree-owned layers
-    layers.add(this->timeline->getAnnotations());
-    layers.add(this->timeline->getTimeSignatures());
+    tracks.add(this->timeline->getAnnotations());
+    tracks.add(this->timeline->getTimeSignatures());
 
-    return layers;
+    return tracks;
 }
 
-Array<MidiLayer *> ProjectTreeItem::getSelectedLayersList() const
+Array<MidiTrack *> ProjectTreeItem::getSelectedTracks() const
 {
-    ScopedReadLock lock(this->layersListLock);
-    Array<MidiLayer *> layers;
-    this->collectLayers(layers, true);
-    return layers;
+    ScopedReadLock lock(this->tracksListLock);
+    Array<MidiTrack *> tracks;
+    this->collectTracks(tracks, true);
+    return tracks;
 }
 
-void ProjectTreeItem::collectLayers(Array<MidiLayer *> &resultArray, bool onlySelectedLayers) const
+void ProjectTreeItem::collectTracks(Array<MidiTrack *> &resultArray, bool onlySelected /*= false*/) const
 {
-    Array<LayerTreeItem *> layerItems = this->findChildrenOfType<LayerTreeItem>();
+    const Array<MidiTrackTreeItem *> treeItems =
+        this->findChildrenOfType<MidiTrackTreeItem>();
     
-    for (int i = 0; i < layerItems.size(); ++i)
+    for (int i = 0; i < treeItems.size(); ++i)
     {
-        if (layerItems.getUnchecked(i)->isSelected() || !onlySelectedLayers)
+        if (treeItems.getUnchecked(i)->isSelected() || !onlySelected)
         {
-            resultArray.add(layerItems.getUnchecked(i)->getLayer());
+            resultArray.add(treeItems.getUnchecked(i));
         }
     }
 }
 
-Point<float> ProjectTreeItem::getTrackRangeInBeats() const
+Point<float> ProjectTreeItem::getProjectRangeInBeats() const
 {
     float lastBeat = -FLT_MAX;
     float firstBeat = FLT_MAX;
     const float defaultNumBeats = DEFAULT_NUM_BARS * NUM_BEATS_IN_BAR;
 
-    Array<MidiLayer *> layers;
-    this->collectLayers(layers);
+    Array<MidiTrack *> tracks;
+    this->collectTracks(tracks);
 
-    for (auto layer : layers)
+    for (auto track : tracks)
     {
-        const float layerFirstBeat = layer->getFirstBeat();
-        const float layerLastBeat = layer->getLastBeat();
+        const float layerFirstBeat = track->getSequence()->getFirstBeat();
+        const float layerLastBeat = track->getSequence()->getLastBeat();
         //Logger::writeToLog(">  " + String(layerFirstBeat) + " : " + String(layerLastBeat));
         firstBeat = jmin(firstBeat, layerFirstBeat);
         lastBeat = jmax(lastBeat, layerLastBeat);
+
+        // TODO also take into account patterns!!!!!!!
     }
     
     if (firstBeat == FLT_MAX)
@@ -654,7 +706,17 @@ void ProjectTreeItem::load(const XmlElement &xml)
 
     TreeItemChildrenSerializer::deserializeChildren(*this, *root);
 
-    this->broadcastBeatRangeChanged();
+    const auto range = this->broadcastChangeProjectBeatRange();
+
+    // a hack to add some margin to project beat range,
+    // then to round beats to nearest bars
+    // because rolls' view ranges are rounded to bars
+    const float r = float(NUM_BEATS_IN_BAR);
+    const float viewStartWithMArgin = range.getX() - r;
+    const float viewEndWithMArgin = range.getY() + r;
+    const int viewFirstBeat = int(floorf(viewStartWithMArgin / r) * r);
+    const int viewLastBeat = int(ceilf(viewEndWithMArgin / r) * r);
+    this->broadcastChangeViewBeatRange(viewFirstBeat, viewLastBeat);
 
     //this->transport->deserialize(*root); // todo
 
@@ -692,12 +754,12 @@ void ProjectTreeItem::importMidi(File &file)
     {
         const MidiMessageSequence *currentTrack = tempFile.getTrack(trackNum);
         const String trackName = "Track " + String(trackNum);
-        LayerTreeItem *layer = new PianoLayerTreeItem(trackName);
+        MidiTrackTreeItem *layer = new PianoTrackTreeItem(trackName);
         this->addChildTreeItem(layer);
         layer->importMidi(*currentTrack);
     }
     
-    this->broadcastBeatRangeChanged();
+    this->broadcastChangeProjectBeatRange();
     this->getDocument()->save();
 }
 
@@ -728,68 +790,93 @@ void ProjectTreeItem::removeAllListeners()
 // Broadcaster
 //===----------------------------------------------------------------------===//
 
-void ProjectTreeItem::broadcastEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void ProjectTreeItem::broadcastChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    //if (this->changeListeners.size() == 0) { return; }
-    this->changeListeners.call(&ProjectListener::onEventChanged, oldEvent, newEvent);
+    this->changeListeners.call(&ProjectListener::onChangeMidiEvent, oldEvent, newEvent);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastEventAdded(const MidiEvent &event)
+void ProjectTreeItem::broadcastAddEvent(const MidiEvent &event)
 {
-    this->changeListeners.call(&ProjectListener::onEventAdded, event);
+    this->changeListeners.call(&ProjectListener::onAddMidiEvent, event);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastEventRemoved(const MidiEvent &event)
+void ProjectTreeItem::broadcastRemoveEvent(const MidiEvent &event)
 {
-    this->changeListeners.call(&ProjectListener::onEventRemoved, event);
+    this->changeListeners.call(&ProjectListener::onRemoveMidiEvent, event);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastEventRemovedPostAction(const MidiLayer *layer)
+void ProjectTreeItem::broadcastPostRemoveEvent(MidiSequence *const layer)
 {
-    this->changeListeners.call(&ProjectListener::onEventRemovedPostAction, layer);
+    this->changeListeners.call(&ProjectListener::onPostRemoveMidiEvent, layer);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastLayerChanged(const MidiLayer *layer)
-{
-    this->changeListeners.call(&ProjectListener::onLayerChanged, layer);
-    this->sendChangeMessage();
-}
-
-void ProjectTreeItem::broadcastLayerAdded(const MidiLayer *layer)
+void ProjectTreeItem::broadcastAddTrack(MidiTrack *const track)
 {
     this->isLayersHashOutdated = true;
-    this->registerVcsItem(layer);
-    this->changeListeners.call(&ProjectListener::onLayerAdded, layer);
+    this->registerVcsItem(track->getSequence());
+    this->registerVcsItem(track->getPattern());
+    this->changeListeners.call(&ProjectListener::onAddTrack, track);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastLayerRemoved(const MidiLayer *layer)
+void ProjectTreeItem::broadcastRemoveTrack(MidiTrack *const track)
 {
     this->isLayersHashOutdated = true;
-    this->unregisterVcsItem(layer);
-    this->changeListeners.call(&ProjectListener::onLayerRemoved, layer);
+    this->unregisterVcsItem(track->getSequence());
+    this->unregisterVcsItem(track->getPattern());
+    this->changeListeners.call(&ProjectListener::onRemoveTrack, track);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastLayerMoved(const MidiLayer *layer)
+void ProjectTreeItem::broadcastChangeTrackProperties(MidiTrack *const track)
 {
-    this->changeListeners.call(&ProjectListener::onLayerMoved, layer);
+    this->changeListeners.call(&ProjectListener::onChangeTrackProperties, track);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastInfoChanged(const ProjectInfo *info)
+void ProjectTreeItem::broadcastResetTrackContent(MidiTrack *const track)
 {
-    this->changeListeners.call(&ProjectListener::onInfoChanged, info);
+    this->changeListeners.call(&ProjectListener::onResetTrackContent, track);
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastBeatRangeChanged()
+void ProjectTreeItem::broadcastAddClip(const Clip &clip)
 {
-    const Point<float> &beatRange = this->getTrackRangeInBeats();
+    this->changeListeners.call(&ProjectListener::onAddClip, clip);
+    this->sendChangeMessage();
+}
+
+void ProjectTreeItem::broadcastChangeClip(const Clip &oldClip, const Clip &newClip)
+{
+    this->changeListeners.call(&ProjectListener::onChangeClip, oldClip, newClip);
+    this->sendChangeMessage();
+}
+
+void ProjectTreeItem::broadcastRemoveClip(const Clip &clip)
+{
+    this->changeListeners.call(&ProjectListener::onRemoveClip, clip);
+    this->sendChangeMessage();
+}
+
+void ProjectTreeItem::broadcastPostRemoveClip(Pattern *const pattern)
+{
+    this->changeListeners.call(&ProjectListener::onPostRemoveClip, pattern);
+    this->sendChangeMessage();
+}
+
+void ProjectTreeItem::broadcastChangeProjectInfo(const ProjectInfo *info)
+{
+    this->changeListeners.call(&ProjectListener::onChangeProjectInfo, info);
+    this->sendChangeMessage();
+}
+
+Point<float> ProjectTreeItem::broadcastChangeProjectBeatRange()
+{
+    const Point<float> &beatRange = this->getProjectRangeInBeats();
     const float &firstBeat = beatRange.getX();
     const float &lastBeat = beatRange.getY();
     
@@ -798,10 +885,18 @@ void ProjectTreeItem::broadcastBeatRangeChanged()
     // и транспорт обновляет позицию индикатора позже, чем роллы
     // и, если ролл ресайзится, индикатор дергается
     // пусть лучше транспорт обновит индикатор 2 раза, но гарантированно перед остальными
-    this->transport->onProjectBeatRangeChanged(firstBeat, lastBeat);
+    this->transport->onChangeProjectBeatRange(firstBeat, lastBeat);
     
-    this->changeListeners.call(&ProjectListener::onProjectBeatRangeChanged, firstBeat, lastBeat);
+    this->changeListeners.call(&ProjectListener::onChangeProjectBeatRange, firstBeat, lastBeat);
     this->sendChangeMessage();
+
+    return beatRange;
+}
+
+void ProjectTreeItem::broadcastChangeViewBeatRange(float firstBeat, float lastBeat)
+{
+    this->changeListeners.call(&ProjectListener::onChangeViewBeatRange, firstBeat, lastBeat);
+    // this->sendChangeMessage(); the project itself didn't change, so dont call this
 }
 
 
@@ -867,11 +962,12 @@ void ProjectTreeItem::exportMidi(File &file) const
     MidiFile tempFile;
     tempFile.setTicksPerQuarterNote(Transport::millisecondsPerBeat);
     
-    const Array<MidiLayer *> &layers = this->getLayersList();
+    const auto &tracks = this->getTracks();
     
-    for (auto layer : layers)
+    for (auto track : tracks)
     {
-        tempFile.addTrack(layer->exportMidi());
+        // TODO patterns!
+        tempFile.addTrack(track->getSequence()->exportMidi());
     }
     
     ScopedPointer<OutputStream> out(new FileOutputStream(file));
@@ -899,14 +995,14 @@ VCS::TrackedItem *ProjectTreeItem::initTrackedItem(const String &type, const Uui
 {
     if (type == Serialization::Core::pianoLayer)
     {
-        LayerTreeItem *layer = new PianoLayerTreeItem("empty");
+        MidiTrackTreeItem *layer = new PianoTrackTreeItem("empty");
         layer->setVCSUuid(id);
         this->addChildTreeItem(layer);
         return layer;
     }
     if (type == Serialization::Core::autoLayer)
     {
-        LayerTreeItem *layer = new AutomationLayerTreeItem("empty");
+        MidiTrackTreeItem *layer = new AutomationTrackTreeItem("empty");
         layer->setVCSUuid(id);
         this->addChildTreeItem(layer);
         return layer;
@@ -927,7 +1023,7 @@ VCS::TrackedItem *ProjectTreeItem::initTrackedItem(const String &type, const Uui
 
 bool ProjectTreeItem::deleteTrackedItem(VCS::TrackedItem *item)
 {
-    if (dynamic_cast<LayerTreeItem *>(item))
+    if (dynamic_cast<MidiTrackTreeItem *>(item))
     {
         delete item;
     }
@@ -961,38 +1057,76 @@ void ProjectTreeItem::changeListenerCallback(ChangeBroadcaster *source)
 
 
 
-void ProjectTreeItem::registerVcsItem(const MidiLayer *layer)
+void ProjectTreeItem::registerVcsItem(const MidiSequence *layer)
 {
-    if (const VCS::TrackedItem *item = dynamic_cast<const VCS::TrackedItem *>(layer->getOwner()))
+    const auto children = this->findChildrenOfType<MidiTrackTreeItem>();
+    for (MidiTrackTreeItem *item : children)
     {
-        ScopedWriteLock lock(this->vcsInfoLock);
-        this->vcsItems.add(item);
+        if (item->getSequence() == layer)
+        {
+            ScopedWriteLock lock(this->vcsInfoLock);
+            this->vcsItems.addIfNotAlreadyThere(item);
+        }
     }
 }
 
-void ProjectTreeItem::unregisterVcsItem(const MidiLayer *layer)
+void ProjectTreeItem::registerVcsItem(const Pattern *pattern)
 {
-    if (const VCS::TrackedItem *item = dynamic_cast<const VCS::TrackedItem *>(layer->getOwner()))
+    const auto children = this->findChildrenOfType<MidiTrackTreeItem>();
+    for (MidiTrackTreeItem *item : children)
     {
-        ScopedWriteLock lock(this->vcsInfoLock);
-        this->vcsItems.removeAllInstancesOf(item);
+        if (item->getPattern() == pattern)
+        {
+            ScopedWriteLock lock(this->vcsInfoLock);
+            this->vcsItems.addIfNotAlreadyThere(item);
+        }
     }
 }
 
-void ProjectTreeItem::rebuildLayersHashIfNeeded()
+void ProjectTreeItem::unregisterVcsItem(const MidiSequence *layer)
+{
+    const auto children = this->findChildrenOfType<MidiTrackTreeItem>();
+    for (MidiTrackTreeItem *item : children)
+    {
+        if (item->getSequence() == layer)
+        {
+            ScopedWriteLock lock(this->vcsInfoLock);
+            this->vcsItems.addIfNotAlreadyThere(item);
+        }
+    }
+}
+
+void ProjectTreeItem::unregisterVcsItem(const Pattern *pattern)
+{
+    const auto children = this->findChildrenOfType<MidiTrackTreeItem>();
+    for (MidiTrackTreeItem *item : children)
+    {
+        if (item->getPattern() == pattern)
+        {
+            ScopedWriteLock lock(this->vcsInfoLock);
+            this->vcsItems.addIfNotAlreadyThere(item);
+        }
+    }
+}
+
+void ProjectTreeItem::rebuildSequencesHashIfNeeded()
 {
     if (this->isLayersHashOutdated)
     {
-        this->layersHash.clear();
-        this->layersHash.set(this->timeline->getAnnotations()->getLayerIdAsString(), this->timeline->getAnnotations());
-        this->layersHash.set(this->timeline->getTimeSignatures()->getLayerIdAsString(), this->timeline->getTimeSignatures());
+        this->sequencesHash.clear();
+
+        this->sequencesHash.set(this->timeline->getAnnotations()->getTrackId().toString(), 
+            this->timeline->getAnnotations()->getSequence());
+
+        this->sequencesHash.set(this->timeline->getTimeSignatures()->getTrackId().toString(),
+            this->timeline->getTimeSignatures()->getSequence());
         
-        Array<LayerTreeItem *> children = this->findChildrenOfType<LayerTreeItem>();
+        Array<MidiTrack *> children = this->findChildrenOfType<MidiTrack>();
         
         for (int i = 0; i < children.size(); ++i)
         {
-            MidiLayer *layer = children.getUnchecked(i)->getLayer();
-            this->layersHash.set(layer->getLayerIdAsString(), layer);
+            const MidiTrack *track = children.getUnchecked(i);
+            this->sequencesHash.set(track->getTrackId().toString(), track->getSequence());
         }
         
         this->isLayersHashOutdated = false;

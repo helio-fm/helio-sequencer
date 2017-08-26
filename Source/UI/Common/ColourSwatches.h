@@ -32,8 +32,8 @@ public:
     ~ColourSwatches();
 
     //[UserMethods]
-	void onColourButtonClicked(ColourButton *button) override;
-	void setSelectedColour(Colour colour);
+    void onColourButtonClicked(ColourButton *button) override;
+    void setSelectedColour(Colour colour);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -43,7 +43,7 @@ public:
 private:
 
     //[UserVariables]
-	OwnedArray<ColourButton> buttons;
+    OwnedArray<ColourButton> buttons;
     //[/UserVariables]
 
 

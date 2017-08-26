@@ -17,8 +17,11 @@
 
 #pragma once
 
+class MidiTrack;
 class MidiEvent;
-class MidiLayer;
+class MidiSequence;
+class Pattern;
+class Clip;
 class ProjectInfo;
 
 class ProjectListener
@@ -26,99 +29,25 @@ class ProjectListener
 public:
 
     ProjectListener() {}
-
     virtual ~ProjectListener() {}
 
-    virtual void onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent) = 0;
+    virtual void onAddMidiEvent(const MidiEvent &event) = 0;
+    virtual void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) = 0;
+    virtual void onRemoveMidiEvent(const MidiEvent &event) = 0;
+    virtual void onPostRemoveMidiEvent(MidiSequence *const layer) {}
 
-    virtual void onEventAdded(const MidiEvent &event) = 0;
+    virtual void onAddClip(const Clip &clip) {}
+    virtual void onChangeClip(const Clip &oldClip, const Clip &newClip) {}
+    virtual void onRemoveClip(const Clip &clip) {}
+    virtual void onPostRemoveClip(Pattern *const pattern) {}
 
-    virtual void onEventRemoved(const MidiEvent &event) = 0; // вызывается прямо перед удалением события
+    virtual void onAddTrack(MidiTrack *const track) = 0;
+    virtual void onRemoveTrack(MidiTrack *const track) = 0;
+    virtual void onChangeTrackProperties(MidiTrack *const track) = 0;
+    virtual void onResetTrackContent(MidiTrack *const track) = 0;
 
-    virtual void onEventRemovedPostAction(const MidiLayer *layer) {} // вызывается после удаления события, надо будет переименовать эти методы по-человечески
-
-    virtual void onLayerChanged(const MidiLayer *layer) = 0;
-
-    virtual void onLayerAdded(const MidiLayer *layer) = 0;
-
-    virtual void onLayerRemoved(const MidiLayer *layer) = 0; // вызывается прямо перед удалением слоя
-    
-    virtual void onLayerMoved(const MidiLayer *layer) {} // этот метод нужен далеко не всем
-
-    virtual void onInfoChanged(const ProjectInfo *info) {} // этот метод нужен далеко не всем
-
-    virtual void onProjectBeatRangeChanged(float firstBeat, float lastBeat) = 0;
+    virtual void onChangeProjectInfo(const ProjectInfo *info) {}
+    virtual void onChangeProjectBeatRange(float firstBeat, float lastBeat) = 0;
+    virtual void onChangeViewBeatRange(float firstBeat, float lastBeat) = 0;
 
 };
-
-// todo:
-
-//class ProjectChangesBroadcaster
-//{
-//public:
-//
-//    virtual ~ProjectChangesBroadcaster()
-//    {
-//        this->projectListeners.clear();
-//    }
-//
-//protected:
-//
-//    //===------------------------------------------------------------------===//
-//    // Listeners management
-//    //
-//
-//    void addListener(ProjectListener *listener)
-//    {
-//        jassert(MessageManager::getInstance()->currentThreadHasLockedMessageManager());
-//        this->projectListeners.add(listener);
-//    }
-//
-//    void removeListener(ProjectListener *listener)
-//    {
-//        jassert(MessageManager::getInstance()->currentThreadHasLockedMessageManager());
-//        this->projectListeners.remove(listener);
-//    }
-//
-//protected:
-//
-//    virtual void broadcastEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
-//    {
-//        this->projectListeners.call(&ProjectListener::onEventChanged, oldEvent, newEvent);
-//    }
-//
-//    virtual void broadcastEventAdded(const MidiEvent &event)
-//    {
-//        this->projectListeners.call(&ProjectListener::onEventAdded, event);
-//    }
-//
-//    virtual void broadcastEventRemoved(const MidiEvent &event)
-//    {
-//        this->projectListeners.call(&ProjectListener::onEventRemoved, event);
-//    }
-//
-//    virtual void broadcastLayerChanged(MidiLayer *layer)
-//    {
-//        this->projectListeners.call(&ProjectListener::onLayerChanged, layer);
-//    }
-//
-//    virtual void broadcastLayerAdded(MidiLayer *layer)
-//    {
-//        this->projectListeners.call(&ProjectListener::onLayerAdded, layer);
-//    }
-//
-//    virtual void broadcastLayerRemoved(MidiLayer *layer)
-//    {
-//        this->projectListeners.call(&ProjectListener::onLayerRemoved, layer);
-//    }
-//
-//    virtual void broadcastLengthChanged()
-//    {
-//        this->projectListeners.call(&ProjectListener::onProjectLengthChanged, 1.f);
-//    }
-//
-//private:
-//
-//    ListenerList<ProjectListener> projectListeners;
-//
-//};

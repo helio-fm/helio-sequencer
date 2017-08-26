@@ -19,7 +19,7 @@
 
 class Instrument;
 class ProjectTreeItem;
-class LayerTreeItem;
+class MidiTrackTreeItem;
 
 #include "CommandPanel.h"
 

@@ -41,7 +41,7 @@ void RemovalThread::run()
     const String saltedId = this->localId + HELIO_SALT;
     const String saltedIdHash = SHA256(saltedId.toUTF8()).toHexString();
     const String keyHash = SHA256(this->localKey.toString().toUTF8()).toHexString();
-	
+    
     //===------------------------------------------------------------------===//
     // Delete
     //===------------------------------------------------------------------===//
@@ -64,17 +64,17 @@ void RemovalThread::run()
     }
     
     {
-		int statusCode = 0;
-		StringPairArray responseHeaders;
+        int statusCode = 0;
+        StringPairArray responseHeaders;
 
         ScopedPointer<InputStream> removalStream(
-			removeUrl.createInputStream(true,
-				syncProgressCallback,
-				static_cast<void *>(this),
-				HELIO_USERAGENT,
-				0,
-				&responseHeaders,
-				&statusCode));
+            removeUrl.createInputStream(true,
+                syncProgressCallback,
+                static_cast<void *>(this),
+                HELIO_USERAGENT,
+                0,
+                &responseHeaders,
+                &statusCode));
 
         if (removalStream == nullptr)
         {

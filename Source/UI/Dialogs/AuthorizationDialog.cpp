@@ -155,7 +155,7 @@ AuthorizationDialog::AuthorizationDialog()
     this->passwordEditor->setPasswordCharacter(static_cast<juce_wchar>(0x00B7));
     this->passwordEditor->setText("111", sendNotification);
 
-	this->separatorH->setAlphaMultiplier(2.5f);
+    this->separatorH->setAlphaMultiplier(2.5f);
     //[/UserPreSize]
 
     setSize (530, 210);

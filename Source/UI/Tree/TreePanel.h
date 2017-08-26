@@ -19,7 +19,7 @@
 
 class TreeItem;
 class AudioMonitor;
-class LayerTreeItem;
+class MidiTrackTreeItem;
 class LongTapController;
 
 #include "LongTapListener.h"
@@ -41,7 +41,7 @@ public:
     virtual void setAudioMonitor(AudioMonitor *audioMonitor) = 0;
     virtual Rectangle<int> getWorkingArea() = 0;
     
-    void showRenameLayerDialogAsync(LayerTreeItem *targetItem);
+    void showRenameLayerDialogAsync(MidiTrackTreeItem *targetItem);
     void emitRollover(Component *newTargetComponent, const String &headerTitle);
     bool isCompactMode() const;
     
@@ -55,7 +55,7 @@ protected:
     
     ScopedPointer<LongTapController> longTapRecognizer;
     
-    LayerTreeItem *lastRenamedItem;
+    MidiTrackTreeItem *lastRenamedItem;
     String renameString;
     
     void dismissCurrentRollover();

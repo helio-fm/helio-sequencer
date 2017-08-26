@@ -131,10 +131,10 @@ void ThemeSettingsItem::paint (Graphics& g)
         const int j = int(this->getWidth() / barWidth);
         const float beatWidth = barWidth / dynamicGridSize;
 
-        const Colour barStart = this->theme->findColour(MidiRoll::barLineColourId);
-        const Colour barBevel = this->theme->findColour(MidiRoll::barLineBevelColourId);
-        const Colour beatStart = this->theme->findColour(MidiRoll::beatLineColourId);
-        const Colour snapStart = this->theme->findColour(MidiRoll::snapLineColourId);
+        const Colour barStart = this->theme->findColour(HybridRoll::barLineColourId);
+        const Colour barBevel = this->theme->findColour(HybridRoll::barLineBevelColourId);
+        const Colour beatStart = this->theme->findColour(HybridRoll::beatLineColourId);
+        const Colour snapStart = this->theme->findColour(HybridRoll::snapLineColourId);
 
         while (i <= j)
         {

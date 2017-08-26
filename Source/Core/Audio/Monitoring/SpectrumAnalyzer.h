@@ -45,13 +45,13 @@ private:
     }
     FFT_COMPLEX;
     
-    FFT_COMPLEX		buffer[16 * 1024];
-    float			costab[FFT_COSTABSIZE];
+    FFT_COMPLEX     buffer[16 * 1024];
+    float           costab[FFT_COSTABSIZE];
     
-    inline const float			cosine(float x);
-    inline const float			sine(float x);
-    inline const unsigned int	reverse(unsigned int val, int bits);
-    inline void					process(int bits);
+    inline const float          cosine(float x);
+    inline const float          sine(float x);
+    inline const unsigned int   reverse(unsigned int val, int bits);
+    inline void                 process(int bits);
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectrumFFT);
 };

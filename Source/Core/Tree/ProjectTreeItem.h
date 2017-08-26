@@ -24,8 +24,8 @@ class Autosaver;
 class Document;
 class Project;
 class ProjectListener;
-class MidiEditor;
-class MidiRoll;
+class SequencerLayout;
+class HybridRoll;
 class MidiEvent;
 class TrackMapRenderer;
 class ProjectPage;
@@ -34,17 +34,18 @@ class TrackMap;
 class Transport;
 class ProjectInfo;
 class ProjectTimeline;
-class MidiRollCommandPanel;
+class HybridRollCommandPanel;
 class UndoStack;
 class RecentFilesList;
+class Pattern;
 
 #include "TreeItem.h"
 #include "DocumentOwner.h"
 #include "Transport.h"
 #include "TrackedItemsSource.h"
 #include "ProjectSequencesWrapper.h"
-#include "MidiRollEditMode.h"
-#include "MidiLayer.h"
+#include "HybridRollEditMode.h"
+#include "MidiSequence.h"
 
 // todo depends on AudioCore
 class ProjectTreeItem :
@@ -56,42 +57,26 @@ class ProjectTreeItem :
 public:
 
     explicit ProjectTreeItem(const String &name);
-
     explicit ProjectTreeItem(const File &existingFile);
-
     ~ProjectTreeItem() override;
     
     void deletePermanently();
     
-
-
     String getId() const;
-
     String getStats() const;
 
     Transport &getTransport() const noexcept;
-
     ProjectInfo *getProjectInfo() const noexcept;
-
     ProjectTimeline *getTimeline() const noexcept;
+    HybridRollEditMode getEditMode() const noexcept;
+    HybridRoll *getLastFocusedRoll() const;
 
-    MidiRoll *getLastFocusedRoll() const;
-    
-    MidiRollEditMode &getEditMode() noexcept
-    {
-        return this->rollEditMode;
-    }
-    
     void repaintEditor();
-
     
     void importMidi(File &file);
-    
     void exportMidi(File &file) const;
 
-
     Colour getColour() const override;
-
     Image getIcon() const override;
 
     void showPage() override;
@@ -101,16 +86,12 @@ public:
 
     void onRename(const String &newName) override;
 
-
-    void showEditor(MidiLayer *layer);
-
-    void showEditor(MidiLayer *activeLayer, TreeItem *source);
-
-    void showEditorsGroup(Array<MidiLayer *> layersGroup, TreeItem *source);
-
-    void hideEditor(MidiLayer *activeLayer, TreeItem *source);
+    void showEditor(MidiSequence *activeLayer, TreeItem *source);
+    void showEditorsGroup(Array<MidiSequence *> layersGroup, TreeItem *source);
+    void hideEditor(MidiSequence *activeLayer, TreeItem *source);
 
     void updateActiveGroupEditors();
+    void activateLayer(MidiSequence* layer, bool selectOthers, bool deselectOthers);
 
 
     //===------------------------------------------------------------------===//
@@ -139,31 +120,29 @@ public:
     // Undos
     //===------------------------------------------------------------------===//
 
-    UndoStack *getUndoStack() noexcept
-    {
-        return this->undoStack.get();
-    }
-
+    UndoStack *getUndoStack() const noexcept;
     void checkpoint();
     void undo();
     void redo();
     void clearUndoHistory();
 
+    Pattern *findPatternByTrackId(const String &uuid);
+
     template<typename T>
-    T *getLayerWithId(const String &uuid)
+    T *findSequenceByTrackId(const String &trackId)
     {
-        this->rebuildLayersHashIfNeeded();
-        return dynamic_cast<T *>(this->layersHash[uuid].get());
+        this->rebuildSequencesHashIfNeeded();
+        return dynamic_cast<T *>(this->sequencesHash[trackId].get());
     }
 
     template<typename T>
-    T *findChildByLayerId(const String &uuid) const
+    T *findTrackById(const String &uuid) const
     {
         Array<T *> allChildren = this->findChildrenOfType<T>();
         
         for (int i = 0; i < allChildren.size(); ++i)
         {
-            if (allChildren.getUnchecked(i)->getLayer()->getLayerId().toString() == uuid)
+            if (allChildren.getUnchecked(i)->getTrackId().toString() == uuid)
             {
                 return allChildren.getUnchecked(i);
             }
@@ -177,11 +156,9 @@ public:
     // Accessors
     //===------------------------------------------------------------------===//
 
-    Array<MidiLayer *> getLayersList() const;
-
-    Array<MidiLayer *> getSelectedLayersList() const;
-
-    Point<float> getTrackRangeInBeats() const;
+    Array<MidiTrack *> getTracks() const;
+    Array<MidiTrack *> getSelectedTracks() const;
+    Point<float> getProjectRangeInBeats() const;
 
 
     //===------------------------------------------------------------------===//
@@ -189,9 +166,7 @@ public:
     //===------------------------------------------------------------------===//
 
     XmlElement *serialize() const override;
-
     void deserialize(const XmlElement &xml) override;
-
     void reset() override;
 
 
@@ -200,9 +175,7 @@ public:
     //===------------------------------------------------------------------===//
 
     void addListener(ProjectListener *listener);
-
     void removeListener(ProjectListener *listener);
-
     void removeAllListeners();
 
 
@@ -210,25 +183,24 @@ public:
     // Broadcaster
     //===------------------------------------------------------------------===//
 
-    void broadcastEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent);
+    void broadcastAddEvent(const MidiEvent &event);
+    void broadcastChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent);
+    void broadcastRemoveEvent(const MidiEvent &event);
+    void broadcastPostRemoveEvent(MidiSequence *const layer);
 
-    void broadcastEventAdded(const MidiEvent &event);
+    void broadcastAddTrack(MidiTrack *const track);
+    void broadcastRemoveTrack(MidiTrack *const track);
+    void broadcastChangeTrackProperties(MidiTrack *const track);
+    void broadcastResetTrackContent(MidiTrack *const track);
 
-    void broadcastEventRemoved(const MidiEvent &event);
+    void broadcastAddClip(const Clip &clip);
+    void broadcastChangeClip(const Clip &oldClip, const Clip &newClip);
+    void broadcastRemoveClip(const Clip &clip);
+    void broadcastPostRemoveClip(Pattern *const pattern);
 
-    void broadcastEventRemovedPostAction(const MidiLayer *layer);
-
-    void broadcastLayerChanged(const MidiLayer *layer);
-
-    void broadcastLayerAdded(const MidiLayer *layer);
-
-    void broadcastLayerRemoved(const MidiLayer *layer);
-
-    void broadcastLayerMoved(const MidiLayer *layer);
-
-    void broadcastInfoChanged(const ProjectInfo *info);
-
-    void broadcastBeatRangeChanged();
+    void broadcastChangeProjectInfo(const ProjectInfo *info);
+    void broadcastChangeViewBeatRange(float firstBeat, float lastBeat);
+    Point<float> broadcastChangeProjectBeatRange();
 
 
     //===------------------------------------------------------------------===//
@@ -273,7 +245,7 @@ protected:
 
 private:
 
-    void collectLayers(Array<MidiLayer *> &resultArray, bool onlySelectedLayers = false) const;
+    void collectTracks(Array<MidiTrack *> &resultArray, bool onlySelected = false) const;
 
     ScopedPointer<Autosaver> autosaver;
     ScopedPointer<Transport> transport;
@@ -285,15 +257,15 @@ private:
     ScopedPointer<Component> trackMap;
 #endif
 
-    ScopedPointer<MidiEditor> editor;
+    ScopedPointer<SequencerLayout> editor;
 
-    MidiRollEditMode rollEditMode;
+    HybridRollEditMode rollEditMode;
 
     ListenerList<ProjectListener> changeListeners;
 
     ScopedPointer<ProjectPage> projectSettings;
 
-    ReadWriteLock layersListLock;
+    ReadWriteLock tracksListLock;
 
     ScopedPointer<ProjectInfo> info;
 
@@ -307,8 +279,11 @@ private:
 
 private:
 
-    void registerVcsItem(const MidiLayer *layer);
-    void unregisterVcsItem(const MidiLayer *layer);
+    void registerVcsItem(const MidiSequence *layer);
+    void registerVcsItem(const Pattern *pattern);
+
+    void unregisterVcsItem(const MidiSequence *layer);
+    void unregisterVcsItem(const Pattern *pattern);
 
     ReadWriteLock vcsInfoLock;
     Array<const VCS::TrackedItem *> vcsItems;
@@ -318,8 +293,8 @@ private:
     ScopedPointer<UndoStack> undoStack;
 
     bool isLayersHashOutdated;
-    HashMap<String, WeakReference<MidiLayer> > layersHash;
+    HashMap<String, WeakReference<MidiSequence> > sequencesHash;
 
-    void rebuildLayersHashIfNeeded();
+    void rebuildSequencesHashIfNeeded();
 
 };

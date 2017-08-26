@@ -21,7 +21,7 @@
 #include "FadingDialog.h"
 #include "AnnotationEvent.h"
 
-class AnnotationsLayer;
+class AnnotationsSequence;
 //[/Headers]
 
 #include "../Themes/PanelC.h"
@@ -37,15 +37,15 @@ class AnnotationDialog  : public FadingDialog,
 {
 public:
 
-    AnnotationDialog (Component &owner, AnnotationsLayer *annotationsLayer, const AnnotationEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
+    AnnotationDialog (Component &owner, AnnotationsSequence *annotationsLayer, const AnnotationEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
 
     ~AnnotationDialog();
 
     //[UserMethods]
-	static AnnotationDialog *createEditingDialog(Component &owner, const AnnotationEvent &event);
-	static AnnotationDialog *createAddingDialog(Component &owner, AnnotationsLayer *annotationsLayer, float targetBeat);
+    static AnnotationDialog *createEditingDialog(Component &owner, const AnnotationEvent &event);
+    static AnnotationDialog *createAddingDialog(Component &owner, AnnotationsSequence *annotationsLayer, float targetBeat);
 
-	void onColourButtonClicked(ColourButton *button) override;
+    void onColourButtonClicked(ColourButton *button) override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -64,19 +64,19 @@ private:
 
     //[UserVariables]
 
-	AnnotationEvent targetEvent;
-	AnnotationsLayer *targetLayer;
-	Component &ownerComponent;
+    AnnotationEvent targetEvent;
+    AnnotationsSequence *targetLayer;
+    Component &ownerComponent;
 
-	inline void cancelAndDisappear();
-	inline void disappear();
-	inline void updateOkButtonState();
+    inline void cancelAndDisappear();
+    inline void disappear();
+    inline void updateOkButtonState();
 
-	bool addsNewEvent;
-	bool hasMadeChanges;
-	void sendEventChange(AnnotationEvent newEvent);
-	void removeEvent();
-	void cancelChangesIfAny();
+    bool addsNewEvent;
+    bool hasMadeChanges;
+    void sendEventChange(AnnotationEvent newEvent);
+    void removeEvent();
+    void cancelChangesIfAny();
 
     //[/UserVariables]
 

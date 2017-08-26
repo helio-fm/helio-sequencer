@@ -29,19 +29,19 @@ class ColourButtonFrame : public Component
 {
 public:
 
-	void paint(Graphics &g) override
-	{
-		const int y1 = 2;
-		const int y2 = this->getHeight() - 2;
-		const int x1 = 2;
-		const int x2 = this->getWidth() - 2;
+    void paint(Graphics &g) override
+    {
+        const int y1 = 2;
+        const int y2 = this->getHeight() - 2;
+        const int x1 = 2;
+        const int x2 = this->getWidth() - 2;
 
-		g.setColour(Colours::white.withAlpha(0.5f));
-		g.drawVerticalLine(x1 - 1, float(y1), float(y2 + 1));
-		g.drawVerticalLine(x2 + 1, float(y1), float(y2 + 1));
-		g.drawHorizontalLine(y1 - 1, float(x1), float(x2 + 1));
-		g.drawHorizontalLine(y2 + 1, float(x1), float(x2 + 1));
-	}
+        g.setColour(Colours::white.withAlpha(0.5f));
+        g.drawVerticalLine(x1 - 1, float(y1), float(y2 + 1));
+        g.drawVerticalLine(x2 + 1, float(y1), float(y2 + 1));
+        g.drawHorizontalLine(y1 - 1, float(x1), float(x2 + 1));
+        g.drawHorizontalLine(y2 + 1, float(x1), float(x2 + 1));
+    }
 };
 //[/MiscUserDefs]
 
@@ -62,7 +62,7 @@ ColourButton::ColourButton(Colour c, ColourButtonListener *listener)
 ColourButton::~ColourButton()
 {
     //[Destructor_pre]
-	this->checkMark = nullptr;
+    this->checkMark = nullptr;
     //[/Destructor_pre]
 
 
@@ -76,21 +76,21 @@ void ColourButton::paint (Graphics& g)
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..
-	const int y1 = 2;
-	const int y2 = this->getHeight() - 2;
-	const int x1 = 2;
-	const int x2 = this->getWidth() - 2;
+    const int y1 = 2;
+    const int y2 = this->getHeight() - 2;
+    const int x1 = 2;
+    const int x2 = this->getWidth() - 2;
 
-	// To avoid smoothed rectangles:
-	g.setColour(this->colour.interpolatedWith(Colours::white, 0.25f).withAlpha(0.9f));
-	//g.fillRect(x1, y2 - 4, x2 - x1 + 1, 5);
-	g.fillRect(x1, y1, x2 - x1 + 1, 5);
+    // To avoid smoothed rectangles:
+    g.setColour(this->colour.interpolatedWith(Colours::white, 0.25f).withAlpha(0.9f));
+    //g.fillRect(x1, y2 - 4, x2 - x1 + 1, 5);
+    g.fillRect(x1, y1, x2 - x1 + 1, 5);
 
-	g.setColour(this->colour.interpolatedWith(Colours::white, 0.5f).withAlpha(0.1f));
-	g.drawVerticalLine(x1 - 1, float(y1), float(y2 + 1));
-	g.drawVerticalLine(x2 + 1, float(y1), float(y2 + 1));
-	g.drawHorizontalLine(y1 - 1, float(x1), float(x2 + 1));
-	g.drawHorizontalLine(y2 + 1, float(x1), float(x2 + 1));
+    g.setColour(this->colour.interpolatedWith(Colours::white, 0.5f).withAlpha(0.1f));
+    g.drawVerticalLine(x1 - 1, float(y1), float(y2 + 1));
+    g.drawVerticalLine(x2 + 1, float(y1), float(y2 + 1));
+    g.drawHorizontalLine(y1 - 1, float(x1), float(x2 + 1));
+    g.drawHorizontalLine(y2 + 1, float(x1), float(x2 + 1));
     //[/UserPaint]
 }
 
@@ -100,25 +100,25 @@ void ColourButton::resized()
     //[/UserPreResize]
 
     //[UserResized] Add your own custom resize handling here..
-	if (this->checkMark != nullptr)
-	{
-		const int s = jmin(this->getHeight(), this->getWidth()) - 4;
-		this->checkMark->setSize(s, s);
-		const auto c = this->getLocalBounds().getCentre();
-		this->checkMark->setCentrePosition(c.x, c.y + 3);
-		//this->checkMark->setBounds(this->getLocalBounds().reduced(8));
-	}
+    if (this->checkMark != nullptr)
+    {
+        const int s = jmin(this->getHeight(), this->getWidth()) - 4;
+        this->checkMark->setSize(s, s);
+        const auto c = this->getLocalBounds().getCentre();
+        this->checkMark->setCentrePosition(c.x, c.y + 3);
+        //this->checkMark->setBounds(this->getLocalBounds().reduced(8));
+    }
     //[/UserResized]
 }
 
 void ColourButton::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
-	if (this->checkMark == nullptr)
-	{
-		this->select();
-		this->owner->onColourButtonClicked(this);
-	}
+    if (this->checkMark == nullptr)
+    {
+        this->select();
+        this->owner->onColourButtonClicked(this);
+    }
     //[/UserCode_mouseDown]
 }
 
@@ -126,27 +126,27 @@ void ColourButton::mouseDown (const MouseEvent& e)
 //[MiscUserCode]
 Component *ColourButton::createHighlighterComponent()
 {
-	return new ColourButtonFrame();
+    return new ColourButtonFrame();
 }
 
 void ColourButton::select()
 {
-	if (this->checkMark == nullptr)
-	{
-		this->checkMark = new IconComponent(Icons::apply);
-		this->addChildComponent(this->checkMark);
-		this->resized();
-		this->fader.fadeIn(this->checkMark, 100);
-	}
+    if (this->checkMark == nullptr)
+    {
+        this->checkMark = new IconComponent(Icons::apply);
+        this->addChildComponent(this->checkMark);
+        this->resized();
+        this->fader.fadeIn(this->checkMark, 100);
+    }
 }
 
 void ColourButton::deselect()
 {
-	if (this->checkMark != nullptr)
-	{
-		this->fader.fadeOutSnapshot(this->checkMark, 200);
-		this->checkMark = nullptr;
-	}
+    if (this->checkMark != nullptr)
+    {
+        this->fader.fadeOutSnapshot(this->checkMark, 200);
+        this->checkMark = nullptr;
+    }
 }
 //[/MiscUserCode]
 

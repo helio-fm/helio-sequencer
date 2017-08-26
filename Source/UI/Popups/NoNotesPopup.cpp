@@ -25,11 +25,11 @@
 #include "NotePopupListener.h"
 #include "NoteComponent.h"
 #include "PianoRoll.h"
-#include "PianoLayer.h"
+#include "PianoSequence.h"
 #include "Note.h"
 #include "App.h"
 #include "ChordTooltip.h"
-
+#include "Transport.h"
 #include "Supervisor.h"
 #include "SerializationKeys.h"
 
@@ -61,7 +61,7 @@ static Label *createLabel(const String &text)
 
 //[/MiscUserDefs]
 
-NoNotesPopup::NoNotesPopup(PianoRoll *caller, MidiLayer *layer)
+NoNotesPopup::NoNotesPopup(PianoRoll *caller, MidiSequence *layer)
     : PopupMenuComponent(caller),
       roll(caller),
       targetLayer(layer),
@@ -172,8 +172,7 @@ NoNotesPopup::NoNotesPopup(PianoRoll *caller, MidiLayer *layer)
 NoNotesPopup::~NoNotesPopup()
 {
     //[Destructor_pre]
-    this->targetLayer->allNotesOff();
-    this->targetLayer->allSoundOff();
+    this->stopSound();
     //[/Destructor_pre]
 
     chordMinor1 = nullptr;
@@ -475,13 +474,11 @@ static const float kDefaultChordVelocity = 0.35f;
 
 void NoNotesPopup::buildChord(int n1, int n2, int n3)
 {
-    if (PianoLayer *pianoLayer = dynamic_cast<PianoLayer *>(this->targetLayer))
+    if (PianoSequence *pianoLayer = dynamic_cast<PianoSequence *>(this->targetLayer))
     {
         this->cancelChangesIfAny();
 
-        pianoLayer->allNotesOff();
-        //pianoLayer->allControllersOff();
-        //pianoLayer->allSoundOff();
+        this->stopSound();
 
         pianoLayer->checkpoint();
 
@@ -500,9 +497,9 @@ void NoNotesPopup::buildChord(int n1, int n2, int n3)
         // a hack for stop sound events not mute the forthcoming notes
         //Time::waitForMillisecondCounter(Time::getMillisecondCounter() + 20);
 
-        pianoLayer->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key1, kDefaultChordVelocity));
-        pianoLayer->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key2, kDefaultChordVelocity));
-        pianoLayer->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key3, kDefaultChordVelocity));
+        this->sendMidiMessage(MidiMessage::noteOn(note1.getChannel(), key1, kDefaultChordVelocity));
+        this->sendMidiMessage(MidiMessage::noteOn(note2.getChannel(), key2, kDefaultChordVelocity));
+        this->sendMidiMessage(MidiMessage::noteOn(note3.getChannel(), key3, kDefaultChordVelocity));
 
         this->hasMadeChanges = true;
     }
@@ -510,13 +507,13 @@ void NoNotesPopup::buildChord(int n1, int n2, int n3)
 
 void NoNotesPopup::buildNewNote(bool shouldSendMidiMessage)
 {
-    if (PianoLayer *pianoLayer = dynamic_cast<PianoLayer *>(this->targetLayer))
+    if (PianoSequence *pianoLayer = dynamic_cast<PianoSequence *>(this->targetLayer))
     {
         this->cancelChangesIfAny();
 
         if (shouldSendMidiMessage)
         {
-            pianoLayer->allNotesOff();
+            this->stopSound();
         }
 
         pianoLayer->checkpoint();
@@ -528,7 +525,7 @@ void NoNotesPopup::buildNewNote(bool shouldSendMidiMessage)
 
         if (shouldSendMidiMessage)
         {
-            pianoLayer->sendMidiMessage(MidiMessage::noteOn(pianoLayer->getChannel(), key, kDefaultChordVelocity));
+            this->sendMidiMessage(MidiMessage::noteOn(note1.getChannel(), key, kDefaultChordVelocity));
         }
 
         this->hasMadeChanges = true;
@@ -554,6 +551,21 @@ bool NoNotesPopup::detectKeyAndBeat()
     return hasChanges;
 }
 
+//===----------------------------------------------------------------------===//
+// Shorthands
+//===----------------------------------------------------------------------===//
+
+void NoNotesPopup::stopSound()
+{
+    this->roll->getTransport().allNotesControllersAndSoundOff();
+}
+
+void NoNotesPopup::sendMidiMessage(const MidiMessage &message)
+{
+    const String layerId = this->targetLayer->getTrackId();
+    this->roll->getTransport().sendMidiMessage(layerId, message);
+}
+
 //[/MiscUserCode]
 
 #if 0
@@ -562,7 +574,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="NoNotesPopup" template="../../Template"
                  componentName="" parentClasses="public PopupMenuComponent, public PopupButtonOwner"
-                 constructorParams="PianoRoll *caller, MidiLayer *layer" variableInitialisers="PopupMenuComponent(caller),&#10;roll(caller),&#10;targetLayer(layer),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0)"
+                 constructorParams="PianoRoll *caller, MidiSequence *layer" variableInitialisers="PopupMenuComponent(caller),&#10;roll(caller),&#10;targetLayer(layer),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0)"
                  snapPixels="8" snapActive="0" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="500" initialHeight="500">
   <METHODS>

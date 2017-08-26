@@ -17,39 +17,53 @@
 
 #include "Common.h"
 #include "AutomationLayerDiffLogic.h"
-#include "AutomationLayerTreeItem.h"
+#include "AutomationTrackTreeItem.h"
 #include "AutoLayerDeltas.h"
-
+#include "PatternDiffLogic.h"
 #include "AutomationEvent.h"
-#include "AutomationLayer.h"
-#include "MidiLayerOwner.h"
+#include "AutomationSequence.h"
 #include "SerializationKeys.h"
 
 using namespace VCS;
 
-class EmptyLayerOwner : public MidiLayerOwner
-{
-public:
-    Transport *getTransport() const override { return nullptr; }
-    String getXPath() const override { return ""; }
-    void setXPath(const String &path) override {}
-    void onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent) override {}
-    void onEventAdded(const MidiEvent &event) override {}
-    void onEventRemoved(const MidiEvent &event) override {}
-    void onLayerChanged(const MidiLayer *layer) override {}
-    void onBeatRangeChanged() override {}
-};
+static XmlElement *mergePath(const XmlElement *state, const XmlElement *changes);
+static XmlElement *mergeMute(const XmlElement *state, const XmlElement *changes);
+static XmlElement *mergeColour(const XmlElement *state, const XmlElement *changes);
+static XmlElement *mergeInstrument(const XmlElement *state, const XmlElement *changes);
+static XmlElement *mergeController(const XmlElement *state, const XmlElement *changes);
+static XmlElement *mergeEventsAdded(const XmlElement *state, const XmlElement *changes);
+static XmlElement *mergeEventsRemoved(const XmlElement *state, const XmlElement *changes);
+static XmlElement *mergeEventsChanged(const XmlElement *state, const XmlElement *changes);
+
+static NewSerializedDelta createPathDiff(const XmlElement *state, const XmlElement *changes);
+static NewSerializedDelta createMuteDiff(const XmlElement *state, const XmlElement *changes);
+static NewSerializedDelta createColourDiff(const XmlElement *state, const XmlElement *changes);
+static NewSerializedDelta createInstrumentDiff(const XmlElement *state, const XmlElement *changes);
+static NewSerializedDelta createControllerDiff(const XmlElement *state, const XmlElement *changes);
+
+static Array<NewSerializedDelta> createEventsDiffs(const XmlElement *state, const XmlElement *changes);
+
+static void deserializeChanges(const XmlElement *state,
+    const XmlElement *changes,
+    OwnedArray<MidiEvent> &stateNotes,
+    OwnedArray<MidiEvent> &changesNotes);
+
+static NewSerializedDelta serializeChanges(Array<const MidiEvent *> changes,
+    const String &description,
+    int64 numChanges,
+    const String &deltaType);
+
+static XmlElement *serializeLayer(Array<const MidiEvent *> changes, const String &tag);
+static bool checkIfDeltaIsEventsType(const Delta *delta);
 
 
 AutomationLayerDiffLogic::AutomationLayerDiffLogic(TrackedItem &targetItem) :
     DiffLogic(targetItem)
 {
-
 }
 
 AutomationLayerDiffLogic::~AutomationLayerDiffLogic()
 {
-
 }
 
 const String AutomationLayerDiffLogic::getType() const
@@ -105,33 +119,43 @@ Diff *AutomationLayerDiffLogic::createDiff(const TrackedItem &initialState) cons
         {
             if (myDelta->getType() == AutoLayerDeltas::layerPath)
             {
-                NewSerializedDelta fullDelta = this->createPathDiff(stateDeltaData, myDeltaData);
+                NewSerializedDelta fullDelta = createPathDiff(stateDeltaData, myDeltaData);
                 diff->addOwnedDelta(fullDelta.delta, fullDelta.deltaData);
             }
             else if (myDelta->getType() == AutoLayerDeltas::layerMute)
             {
-                NewSerializedDelta fullDelta = this->createMuteDiff(stateDeltaData, myDeltaData);
+                NewSerializedDelta fullDelta = createMuteDiff(stateDeltaData, myDeltaData);
                 diff->addOwnedDelta(fullDelta.delta, fullDelta.deltaData);
             }
             else if (myDelta->getType() == AutoLayerDeltas::layerColour)
             {
-                NewSerializedDelta fullDelta = this->createColourDiff(stateDeltaData, myDeltaData);
+                NewSerializedDelta fullDelta = createColourDiff(stateDeltaData, myDeltaData);
                 diff->addOwnedDelta(fullDelta.delta, fullDelta.deltaData);
             }
             else if (myDelta->getType() == AutoLayerDeltas::layerInstrument)
             {
-                NewSerializedDelta fullDelta = this->createInstrumentDiff(stateDeltaData, myDeltaData);
+                NewSerializedDelta fullDelta = createInstrumentDiff(stateDeltaData, myDeltaData);
                 diff->addOwnedDelta(fullDelta.delta, fullDelta.deltaData);
             }
             else if (myDelta->getType() == AutoLayerDeltas::layerController)
             {
-                NewSerializedDelta fullDelta = this->createControllerDiff(stateDeltaData, myDeltaData);
+                NewSerializedDelta fullDelta = createControllerDiff(stateDeltaData, myDeltaData);
                 diff->addOwnedDelta(fullDelta.delta, fullDelta.deltaData);
             }
             //else if (this->checkIfDeltaIsNotesType(myDelta))
             else if (myDelta->getType() == AutoLayerDeltas::eventsAdded)
             {
-                Array<NewSerializedDelta> fullDeltas = this->createEventsDiffs(stateDeltaData, myDeltaData);
+                Array<NewSerializedDelta> fullDeltas = createEventsDiffs(stateDeltaData, myDeltaData);
+
+                for (auto fullDelta : fullDeltas)
+                {
+                    diff->addOwnedDelta(fullDelta.delta, fullDelta.deltaData);
+                }
+            }
+            else if (myDelta->getType() == PatternDeltas::clipsAdded)
+            {
+                Array<NewSerializedDelta> fullDeltas =
+                    PatternDiffLogic::createClipsDiffs(stateDeltaData, myDeltaData);
 
                 for (auto fullDelta : fullDeltas)
                 {
@@ -162,8 +186,17 @@ Diff *AutomationLayerDiffLogic::createMergedItem(const TrackedItem &initialState
 
         // для нот в итоге надо выдать одну дельту типа eventsAdded
         // на которую наложить все дельты изменений нот одно за другим.
-        ScopedPointer<Delta> eventsDelta(new Delta(DeltaDescription(Serialization::VCS::headStateDelta), AutoLayerDeltas::eventsAdded));
+        ScopedPointer<Delta> eventsDelta(new Delta(
+            DeltaDescription(Serialization::VCS::headStateDelta),
+            AutoLayerDeltas::eventsAdded));
+
         ScopedPointer<XmlElement> eventsDeltaData;
+
+        ScopedPointer<Delta> clipsDelta(new Delta(
+            DeltaDescription(Serialization::VCS::headStateDelta),
+            PatternDeltas::clipsAdded));
+
+        ScopedPointer<XmlElement> clipsDeltaData;
 
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
         {
@@ -180,37 +213,38 @@ Diff *AutomationLayerDiffLogic::createMergedItem(const TrackedItem &initialState
                 if (targetDelta->getType() == AutoLayerDeltas::layerPath)
                 {
                     Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
-                    XmlElement *diffDeltaData = this->mergePath(stateDeltaData, targetDeltaData);
+                    XmlElement *diffDeltaData = mergePath(stateDeltaData, targetDeltaData);
                     diff->addOwnedDelta(diffDelta, diffDeltaData);
                 }
                 else if (targetDelta->getType() == AutoLayerDeltas::layerMute)
                 {
                     Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
-                    XmlElement *diffDeltaData = this->mergeMute(stateDeltaData, targetDeltaData);
+                    XmlElement *diffDeltaData = mergeMute(stateDeltaData, targetDeltaData);
                     diff->addOwnedDelta(diffDelta, diffDeltaData);
                 }
                 else if (targetDelta->getType() == AutoLayerDeltas::layerColour)
                 {
                     Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
-                    XmlElement *diffDeltaData = this->mergeColour(stateDeltaData, targetDeltaData);
+                    XmlElement *diffDeltaData = mergeColour(stateDeltaData, targetDeltaData);
                     diff->addOwnedDelta(diffDelta, diffDeltaData);
                 }
                 else if (targetDelta->getType() == AutoLayerDeltas::layerInstrument)
                 {
                     Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
-                    XmlElement *diffDeltaData = this->mergeInstrument(stateDeltaData, targetDeltaData);
+                    XmlElement *diffDeltaData = mergeInstrument(stateDeltaData, targetDeltaData);
                     diff->addOwnedDelta(diffDelta, diffDeltaData);
                 }
                 else if (targetDelta->getType() == AutoLayerDeltas::layerController)
                 {
                     Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
-                    XmlElement *diffDeltaData = this->mergeController(stateDeltaData, targetDeltaData);
+                    XmlElement *diffDeltaData = mergeController(stateDeltaData, targetDeltaData);
                     diff->addOwnedDelta(diffDelta, diffDeltaData);
                 }
             }
 
             const bool bothDeltasAreNotesType =
-                this->checkIfDeltaIsEventsType(stateDelta) && this->checkIfDeltaIsEventsType(targetDelta);
+                checkIfDeltaIsEventsType(stateDelta) && 
+                checkIfDeltaIsEventsType(targetDelta);
 
             if (bothDeltasAreNotesType)
             {
@@ -219,23 +253,54 @@ Diff *AutomationLayerDiffLogic::createMergedItem(const TrackedItem &initialState
                 if (targetDelta->getType() == AutoLayerDeltas::eventsAdded)
                 {
                     if (eventsDeltaData != nullptr)
-                    { eventsDeltaData = this->mergeEventsAdded(eventsDeltaData, targetDeltaData); }
+                    { eventsDeltaData = mergeEventsAdded(eventsDeltaData, targetDeltaData); }
                     else
-                    { eventsDeltaData = this->mergeEventsAdded(stateDeltaData, targetDeltaData); }
+                    { eventsDeltaData = mergeEventsAdded(stateDeltaData, targetDeltaData); }
                 }
                 else if (targetDelta->getType() == AutoLayerDeltas::eventsRemoved)
                 {
                     if (eventsDeltaData != nullptr)
-                    { eventsDeltaData = this->mergeEventsRemoved(eventsDeltaData, targetDeltaData); }
+                    { eventsDeltaData = mergeEventsRemoved(eventsDeltaData, targetDeltaData); }
                     else
-                    { eventsDeltaData = this->mergeEventsRemoved(stateDeltaData, targetDeltaData); }
+                    { eventsDeltaData = mergeEventsRemoved(stateDeltaData, targetDeltaData); }
                 }
                 else if (targetDelta->getType() == AutoLayerDeltas::eventsChanged)
                 {
                     if (eventsDeltaData != nullptr)
-                    { eventsDeltaData = this->mergeEventsChanged(eventsDeltaData, targetDeltaData); }
+                    { eventsDeltaData = mergeEventsChanged(eventsDeltaData, targetDeltaData); }
                     else
-                    { eventsDeltaData = this->mergeEventsChanged(stateDeltaData, targetDeltaData); }
+                    { eventsDeltaData = mergeEventsChanged(stateDeltaData, targetDeltaData); }
+                }
+            }
+
+            const bool bothDeltasArePatternType =
+                PatternDiffLogic::checkIfDeltaIsPatternType(stateDelta) &&
+                PatternDiffLogic::checkIfDeltaIsPatternType(targetDelta);
+
+            if (bothDeltasArePatternType)
+            {
+                deltaFoundInChanges = true;
+
+                if (targetDelta->getType() == PatternDeltas::clipsAdded)
+                {
+                    if (clipsDeltaData != nullptr)
+                    { clipsDeltaData = PatternDiffLogic::mergeClipsAdded(clipsDeltaData, targetDeltaData); }
+                    else
+                    { clipsDeltaData = PatternDiffLogic::mergeClipsAdded(stateDeltaData, targetDeltaData); }
+                }
+                else if (targetDelta->getType() == PatternDeltas::clipsRemoved)
+                {
+                    if (clipsDeltaData != nullptr)
+                    { clipsDeltaData = PatternDiffLogic::mergeClipsRemoved(clipsDeltaData, targetDeltaData); }
+                    else
+                    { clipsDeltaData = PatternDiffLogic::mergeClipsRemoved(stateDeltaData, targetDeltaData); }
+                }
+                else if (targetDelta->getType() == PatternDeltas::clipsChanged)
+                {
+                    if (clipsDeltaData != nullptr)
+                    { clipsDeltaData = PatternDiffLogic::mergeClipsChanged(clipsDeltaData, targetDeltaData); }
+                    else
+                    { clipsDeltaData = PatternDiffLogic::mergeClipsChanged(stateDeltaData, targetDeltaData); }
                 }
             }
         }
@@ -243,6 +308,11 @@ Diff *AutomationLayerDiffLogic::createMergedItem(const TrackedItem &initialState
         if (eventsDeltaData != nullptr)
         {
             diff->addOwnedDelta(eventsDelta.release(), eventsDeltaData.release());
+        }
+
+        if (clipsDeltaData != nullptr)
+        {
+            diff->addOwnedDelta(clipsDelta.release(), clipsDeltaData.release());
         }
 
         if (! deltaFoundInChanges)
@@ -260,41 +330,38 @@ Diff *AutomationLayerDiffLogic::createMergedItem(const TrackedItem &initialState
 // Merge
 //===----------------------------------------------------------------------===//
 
-XmlElement *AutomationLayerDiffLogic::mergePath(const XmlElement *state, const XmlElement *changes) const
+XmlElement *mergePath(const XmlElement *state, const XmlElement *changes)
 {
     return new XmlElement(*changes);
 }
 
-XmlElement *AutomationLayerDiffLogic::mergeMute(const XmlElement *state, const XmlElement *changes) const
+XmlElement *mergeMute(const XmlElement *state, const XmlElement *changes)
 {
     return new XmlElement(*changes);
 }
 
-XmlElement *AutomationLayerDiffLogic::mergeColour(const XmlElement *state, const XmlElement *changes) const
+XmlElement *mergeColour(const XmlElement *state, const XmlElement *changes)
 {
     return new XmlElement(*changes);
 }
 
-XmlElement *AutomationLayerDiffLogic::mergeInstrument(const XmlElement *state, const XmlElement *changes) const
+XmlElement *mergeInstrument(const XmlElement *state, const XmlElement *changes)
 {
     return new XmlElement(*changes);
 }
 
-XmlElement *AutomationLayerDiffLogic::mergeController(const XmlElement *state, const XmlElement *changes) const
+XmlElement *mergeController(const XmlElement *state, const XmlElement *changes)
 {
     return new XmlElement(*changes);
 }
 
-XmlElement *AutomationLayerDiffLogic::mergeEventsAdded(const XmlElement *state, const XmlElement *changes) const
+XmlElement *mergeEventsAdded(const XmlElement *state, const XmlElement *changes)
 {
-    EmptyLayerOwner emptyOwner;
-    AutomationLayer emptyLayer(emptyOwner);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
-    this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    deserializeChanges(state, changes, stateNotes, changesNotes);
 
     Array<const MidiEvent *> result;
-
     result.addArray(stateNotes);
 
     // на всякий пожарный, ищем, нет ли в состоянии нот с теми же id, где нет - добавляем
@@ -307,7 +374,7 @@ XmlElement *AutomationLayerDiffLogic::mergeEventsAdded(const XmlElement *state, 
         {
             const AutomationEvent *stateNote = static_cast<AutomationEvent *>(stateNotes.getUnchecked(j));
 
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInState = true;
                 break;
@@ -320,16 +387,14 @@ XmlElement *AutomationLayerDiffLogic::mergeEventsAdded(const XmlElement *state, 
         }
     }
 
-    return this->serializeLayer(result, AutoLayerDeltas::eventsAdded);
+    return serializeLayer(result, AutoLayerDeltas::eventsAdded);
 }
 
-XmlElement *AutomationLayerDiffLogic::mergeEventsRemoved(const XmlElement *state, const XmlElement *changes) const
+XmlElement *mergeEventsRemoved(const XmlElement *state, const XmlElement *changes)
 {
-    EmptyLayerOwner emptyOwner;
-    AutomationLayer emptyLayer(emptyOwner);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
-    this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    deserializeChanges(state, changes, stateNotes, changesNotes);
 
     Array<const MidiEvent *> result;
 
@@ -343,7 +408,7 @@ XmlElement *AutomationLayerDiffLogic::mergeEventsRemoved(const XmlElement *state
         {
             const AutomationEvent *changesNote = static_cast<AutomationEvent *>(changesNotes.getUnchecked(j));
 
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInChanges = true;
                 break;
@@ -356,19 +421,16 @@ XmlElement *AutomationLayerDiffLogic::mergeEventsRemoved(const XmlElement *state
         }
     }
 
-    return this->serializeLayer(result, AutoLayerDeltas::eventsAdded);
+    return serializeLayer(result, AutoLayerDeltas::eventsAdded);
 }
 
-XmlElement *AutomationLayerDiffLogic::mergeEventsChanged(const XmlElement *state, const XmlElement *changes) const
+XmlElement *mergeEventsChanged(const XmlElement *state, const XmlElement *changes)
 {
-    EmptyLayerOwner emptyOwner;
-    AutomationLayer emptyLayer(emptyOwner);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
-    this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    deserializeChanges(state, changes, stateNotes, changesNotes);
 
     Array<const MidiEvent *> result;
-
     result.addArray(stateNotes);
 
     // снова ищем по id и заменяем
@@ -381,7 +443,7 @@ XmlElement *AutomationLayerDiffLogic::mergeEventsChanged(const XmlElement *state
         {
             const AutomationEvent *changesNote = static_cast<AutomationEvent *>(changesNotes.getUnchecked(j));
 
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInChanges = true;
                 result.removeAllInstancesOf(stateNote);
@@ -394,7 +456,7 @@ XmlElement *AutomationLayerDiffLogic::mergeEventsChanged(const XmlElement *state
         //jassert(foundNoteInChanges);
     }
 
-    return this->serializeLayer(result, AutoLayerDeltas::eventsAdded);
+    return serializeLayer(result, AutoLayerDeltas::eventsAdded);
 }
 
 
@@ -402,7 +464,7 @@ XmlElement *AutomationLayerDiffLogic::mergeEventsChanged(const XmlElement *state
 // Diff
 //===----------------------------------------------------------------------===//
 
-NewSerializedDelta AutomationLayerDiffLogic::createPathDiff(const XmlElement *state, const XmlElement *changes) const
+NewSerializedDelta createPathDiff(const XmlElement *state, const XmlElement *changes)
 {
     NewSerializedDelta res;
     res.deltaData = new XmlElement(*changes);
@@ -411,16 +473,16 @@ NewSerializedDelta AutomationLayerDiffLogic::createPathDiff(const XmlElement *st
     return res;
 }
 
-NewSerializedDelta AutomationLayerDiffLogic::createMuteDiff(const XmlElement *state, const XmlElement *changes) const
+NewSerializedDelta createMuteDiff(const XmlElement *state, const XmlElement *changes)
 {
-    const bool muted = MidiLayer::isMuted(changes->getStringAttribute(Serialization::VCS::delta));
+    const bool muted = MidiTrack::isTrackMuted(changes->getStringAttribute(Serialization::VCS::delta));
     NewSerializedDelta res;
     res.deltaData = new XmlElement(*changes);
     res.delta = new Delta(muted ? DeltaDescription("muted") : DeltaDescription("unmuted"), AutoLayerDeltas::layerMute);
     return res;
 }
 
-NewSerializedDelta AutomationLayerDiffLogic::createColourDiff(const XmlElement *state, const XmlElement *changes) const
+NewSerializedDelta createColourDiff(const XmlElement *state, const XmlElement *changes)
 {
     NewSerializedDelta res;
     res.delta = new Delta(DeltaDescription("color changed"), AutoLayerDeltas::layerColour);
@@ -428,7 +490,7 @@ NewSerializedDelta AutomationLayerDiffLogic::createColourDiff(const XmlElement *
     return res;
 }
 
-NewSerializedDelta AutomationLayerDiffLogic::createInstrumentDiff(const XmlElement *state, const XmlElement *changes) const
+NewSerializedDelta createInstrumentDiff(const XmlElement *state, const XmlElement *changes)
 {
     NewSerializedDelta res;
     res.delta = new Delta(DeltaDescription("instrument changed"), AutoLayerDeltas::layerInstrument);
@@ -436,7 +498,7 @@ NewSerializedDelta AutomationLayerDiffLogic::createInstrumentDiff(const XmlEleme
     return res;
 }
 
-NewSerializedDelta AutomationLayerDiffLogic::createControllerDiff(const XmlElement *state, const XmlElement *changes) const
+NewSerializedDelta createControllerDiff(const XmlElement *state, const XmlElement *changes)
 {
     NewSerializedDelta res;
     res.delta = new Delta(DeltaDescription("controller changed"), AutoLayerDeltas::layerController);
@@ -444,21 +506,17 @@ NewSerializedDelta AutomationLayerDiffLogic::createControllerDiff(const XmlEleme
     return res;
 }
 
-Array<NewSerializedDelta> AutomationLayerDiffLogic::createEventsDiffs(const XmlElement *state, const XmlElement *changes) const
+Array<NewSerializedDelta> createEventsDiffs(const XmlElement *state, const XmlElement *changes)
 {
-    EmptyLayerOwner emptyOwner;
-    AutomationLayer emptyLayer(emptyOwner);
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
 
     // вот здесь по уму надо десериализовать слои
     // а для этого надо, чтоб в слоях не было ничего, кроме нот
     // поэтому пока есть, как есть, и это не критично
-    this->deserializeChanges(emptyLayer, state, changes, stateEvents, changesEvents);
+    deserializeChanges(state, changes, stateEvents, changesEvents);
 
     Array<NewSerializedDelta> res;
-
-
     Array<const MidiEvent *> addedEvents;
     Array<const MidiEvent *> removedEvents;
     Array<const MidiEvent *> changedEvents;
@@ -474,7 +532,7 @@ Array<NewSerializedDelta> AutomationLayerDiffLogic::createEventsDiffs(const XmlE
             const AutomationEvent *changesEvent = static_cast<AutomationEvent *>(changesEvents.getUnchecked(j));
 
             // нота из состояния - существует в изменениях. добавляем запись changed, если нужно.
-            if (stateEvent->getID() == changesEvent->getID())
+            if (stateEvent->getId() == changesEvent->getId())
             {
                 foundNoteInChanges = true;
 
@@ -508,7 +566,7 @@ Array<NewSerializedDelta> AutomationLayerDiffLogic::createEventsDiffs(const XmlE
         {
             const AutomationEvent *stateNote = static_cast<AutomationEvent *>(stateEvents.getUnchecked(j));
 
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInState = true;
                 break;
@@ -526,43 +584,41 @@ Array<NewSerializedDelta> AutomationLayerDiffLogic::createEventsDiffs(const XmlE
 
     if (addedEvents.size() > 0)
     {
-        res.add(this->serializeChanges(addedEvents,
-                                       "added {x} events",
-                                       addedEvents.size(),
-                                       AutoLayerDeltas::eventsAdded));
+        res.add(serializeChanges(addedEvents,
+            "added {x} events",
+            addedEvents.size(),
+            AutoLayerDeltas::eventsAdded));
     }
 
     if (removedEvents.size() > 0)
     {
-        res.add(this->serializeChanges(removedEvents,
-                                       "removed {x} events",
-                                       removedEvents.size(),
-                                       AutoLayerDeltas::eventsRemoved));
+        res.add(serializeChanges(removedEvents,
+            "removed {x} events",
+            removedEvents.size(),
+            AutoLayerDeltas::eventsRemoved));
     }
 
     if (changedEvents.size() > 0)
     {
-        res.add(this->serializeChanges(changedEvents,
-                                       "changed {x} events",
-                                       changedEvents.size(),
-                                       AutoLayerDeltas::eventsChanged));
+        res.add(serializeChanges(changedEvents,
+            "changed {x} events",
+            changedEvents.size(),
+            AutoLayerDeltas::eventsChanged));
     }
 
     return res;
 }
 
-
-void AutomationLayerDiffLogic::deserializeChanges(MidiLayer &layer,
-        const XmlElement *state,
+void deserializeChanges(const XmlElement *state,
         const XmlElement *changes,
         OwnedArray<MidiEvent> &stateNotes,
-        OwnedArray<MidiEvent> &changesNotes) const
+        OwnedArray<MidiEvent> &changesNotes)
 {
     if (state != nullptr)
     {
         forEachXmlChildElementWithTagName(*state, e, Serialization::Core::event)
         {
-            auto event = new AutomationEvent(&layer, 0.f, 0.f);
+            auto event = new AutomationEvent();
             event->deserialize(*e);
             stateNotes.addSorted(*event, event);
         }
@@ -572,24 +628,23 @@ void AutomationLayerDiffLogic::deserializeChanges(MidiLayer &layer,
     {
         forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::event)
         {
-            auto event = new AutomationEvent(&layer, 0.f, 0.f);
+            auto event = new AutomationEvent();
             event->deserialize(*e);
             changesNotes.addSorted(*event, event);
         }
     }
 }
 
-NewSerializedDelta AutomationLayerDiffLogic::serializeChanges(Array<const MidiEvent *> changes,
-        const String &description, int64 numChanges, const String &deltaType) const
+NewSerializedDelta serializeChanges(Array<const MidiEvent *> changes,
+        const String &description, int64 numChanges, const String &deltaType)
 {
     NewSerializedDelta changesFullDelta;
     changesFullDelta.delta = new Delta(DeltaDescription(description, numChanges), deltaType);
-    changesFullDelta.deltaData = this->serializeLayer(changes, deltaType);
+    changesFullDelta.deltaData = serializeLayer(changes, deltaType);
     return changesFullDelta;
 }
 
-XmlElement *AutomationLayerDiffLogic::serializeLayer(Array<const MidiEvent *> changes,
-        const String &tag) const
+XmlElement *serializeLayer(Array<const MidiEvent *> changes, const String &tag)
 {
     auto xml = new XmlElement(tag);
 
@@ -602,7 +657,7 @@ XmlElement *AutomationLayerDiffLogic::serializeLayer(Array<const MidiEvent *> ch
     return xml;
 }
 
-bool AutomationLayerDiffLogic::checkIfDeltaIsEventsType(const Delta *delta) const
+bool checkIfDeltaIsEventsType(const Delta *delta)
 {
     return (delta->getType() == AutoLayerDeltas::eventsAdded ||
             delta->getType() == AutoLayerDeltas::eventsChanged ||

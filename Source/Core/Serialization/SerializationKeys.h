@@ -56,17 +56,30 @@ namespace Serialization
         static const String autoLayer = "AutoLayer";
         static const String projectTimeline = "ProjectTimeline";
 
-        // Layers
+        // Sequences
         static const String track = "Track";
         static const String automation = "Automation";
         static const String annotations = "Annotations";
         static const String timeSignatures = "TimeSignatures";
+
+        // Properties
+        static const String trackId = "TrackId";
+        static const String trackColour = "Colour";
+        static const String trackChannel = "Channel";
+        static const String trackInstrumentId = "InstrumentId";
+        static const String trackControllerNumber = "Controller";
+        static const String trackMuteState = "Mute";
+        static const String trackSoloState = "Solo";
 
         // Events
         static const String note = "Note";
         static const String event = "Event";
         static const String annotation = "Annotation";
         static const String timeSignature = "TimeSignature";
+
+        // Patterns
+        static const String clip = "Clip";
+        static const String pattern = "Pattern";
 
         static const String valueTag = "Key";
         static const String nameAttribute = "Name";
@@ -139,6 +152,8 @@ namespace Serialization
         static const String clipboard = "Clipboard";
         static const String layer = "Layer";
         static const String layerId = "LayerId";
+        static const String pattern = "Pattern";
+        static const String patternId = "PatternId";
         static const String firstBeat = "FirstBeat";
         static const String lastBeat = "LastBeat";
     } // namespace Clipboard
@@ -325,7 +340,7 @@ namespace Serialization
 
         static const String name = "Name";
         static const String xPath = "Path";
-        static const String layerId = "LayerId";
+        static const String trackId = "TrackId";
         static const String group = "Group";
 
         static const String xPathBefore = "PathBefore";
@@ -347,19 +362,25 @@ namespace Serialization
         static const String noteAfter = "NoteAfter";
         static const String groupBefore = "GroupBefore";
         static const String groupAfter = "GroupAfter";
+        static const String instanceBefore = "InstanceBefore";
+        static const String instanceAfter = "InstanceAfter";
 
-        static const String pianoLayerTreeItemInsertAction = "PianoLayerTreeItemInsertAction";
-        static const String pianoLayerTreeItemRemoveAction = "PianoLayerTreeItemRemoveAction";
+        static const String pianoTrackInsertAction = "PianoTrackInsertAction";
+        static const String pianoTrackRemoveAction = "PianoTrackRemoveAction";
         
-        static const String autoLayerTreeItemInsertAction = "AutoLayerTreeItemInsertAction";
-        static const String autoLayerTreeItemRemoveAction = "AutoLayerTreeItemRemoveAction";
+        static const String automationTrackInsertAction = "AutomationTrackInsertAction";
+        static const String automationTrackRemoveAction = "AutomationTrackRemoveAction";
         
-        static const String layerTreeItemRenameAction = "LayerTreeItemRenameAction";
+        static const String midiTrackRenameAction = "MidiTrackRenameAction";
         
-        static const String midiLayerChangeColourAction = "MidiLayerChangeColourAction";
-        static const String midiLayerChangeInstrumentAction = "MidiLayerChangeInstrumentAction";
-        static const String midiLayerMuteAction = "MidiLayerMuteAction";
+        static const String midiTrackChangeColourAction = "MidiTrackChangeColourAction";
+        static const String midiTrackChangeInstrumentAction = "MidiTrackChangeInstrumentAction";
+        static const String midiTrackMuteAction = "MidiTrackMuteAction";
         
+        static const String patternClipInsertAction = "PatternClipInsertAction";
+        static const String patternClipRemoveAction = "PatternClipRemoveAction";
+        static const String patternClipChangeAction = "PatternClipChangeAction";
+
         static const String noteInsertAction = "NoteInsertAction";
         static const String noteRemoveAction = "NoteRemoveAction";
         static const String noteChangeAction = "NoteChangeAction";

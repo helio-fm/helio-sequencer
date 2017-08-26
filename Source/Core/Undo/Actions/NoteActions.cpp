@@ -17,7 +17,8 @@
 
 #include "Common.h"
 #include "NoteActions.h"
-#include "PianoLayer.h"
+#include "MidiTrack.h"
+#include "PianoSequence.h"
 #include "ProjectTreeItem.h"
 #include "SerializationKeys.h"
 
@@ -27,10 +28,10 @@
 //===----------------------------------------------------------------------===//
 
 NoteInsertAction::NoteInsertAction(ProjectTreeItem &parentProject,
-                                   String targetLayerId,
+                                   String targetTrackId,
                                    const Note &event) :
     UndoAction(parentProject),
-    layerId(std::move(targetLayerId)),
+    trackId(std::move(targetTrackId)),
     note(event)
 {
 
@@ -38,9 +39,10 @@ NoteInsertAction::NoteInsertAction(ProjectTreeItem &parentProject,
 
 bool NoteInsertAction::perform()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *sequence =
+        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
-        return (layer->insert(this->note, false) != nullptr);
+        return (sequence->insert(this->note, false) != nullptr);
     }
     
     return false;
@@ -48,9 +50,10 @@ bool NoteInsertAction::perform()
 
 bool NoteInsertAction::undo()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *sequence =
+        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
-        return layer->remove(this->note, false);
+        return sequence->remove(this->note, false);
     }
     
     return false;
@@ -64,21 +67,21 @@ int NoteInsertAction::getSizeInUnits()
 XmlElement *NoteInsertAction::serialize() const
 {
     auto xml = new XmlElement(Serialization::Undo::noteInsertAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
+    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
     xml->prependChildElement(this->note.serialize());
     return xml;
 }
 
 void NoteInsertAction::deserialize(const XmlElement &xml)
 {
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
+    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
     this->note.deserialize(*xml.getFirstChildElement());
 }
 
 void NoteInsertAction::reset()
 {
     this->note.reset();
-    this->layerId.clear();
+    this->trackId.clear();
 }
 
 
@@ -87,10 +90,10 @@ void NoteInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 NoteRemoveAction::NoteRemoveAction(ProjectTreeItem &parentProject,
-                                   String targetLayerId,
+                                   String targetTrackId,
                                    const Note &event) :
     UndoAction(parentProject),
-    layerId(std::move(targetLayerId)),
+    trackId(std::move(targetTrackId)),
     note(event)
 {
 
@@ -98,9 +101,10 @@ NoteRemoveAction::NoteRemoveAction(ProjectTreeItem &parentProject,
 
 bool NoteRemoveAction::perform()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *sequence =
+        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
-        return layer->remove(this->note, false);
+        return sequence->remove(this->note, false);
     }
     
     return false;
@@ -108,9 +112,10 @@ bool NoteRemoveAction::perform()
 
 bool NoteRemoveAction::undo()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *sequence =
+        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
-        return (layer->insert(this->note, false) != nullptr);
+        return (sequence->insert(this->note, false) != nullptr);
     }
     
     return false;
@@ -124,21 +129,21 @@ int NoteRemoveAction::getSizeInUnits()
 XmlElement *NoteRemoveAction::serialize() const
 {
     auto xml = new XmlElement(Serialization::Undo::noteRemoveAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
+    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
     xml->prependChildElement(this->note.serialize());
     return xml;
 }
 
 void NoteRemoveAction::deserialize(const XmlElement &xml)
 {
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
+    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
     this->note.deserialize(*xml.getFirstChildElement());
 }
 
 void NoteRemoveAction::reset()
 {
     this->note.reset();
-    this->layerId.clear();
+    this->trackId.clear();
 }
 
 
@@ -147,22 +152,23 @@ void NoteRemoveAction::reset()
 //===----------------------------------------------------------------------===//
 
 NoteChangeAction::NoteChangeAction(ProjectTreeItem &parentProject,
-                                   String targetLayerId,
+                                   String targetTrackId,
                                    const Note &note,
                                    const Note &newParameters) :
     UndoAction(parentProject),
-    layerId(std::move(targetLayerId)),
+    trackId(std::move(targetTrackId)),
     noteBefore(note),
     noteAfter(newParameters)
 {
-    jassert(note.getID() == newParameters.getID());
+    jassert(note.getId() == newParameters.getId());
 }
 
 bool NoteChangeAction::perform()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *sequence =
+        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
-        return layer->change(this->noteBefore, this->noteAfter, false);
+        return sequence->change(this->noteBefore, this->noteAfter, false);
     }
     
     return false;
@@ -170,9 +176,10 @@ bool NoteChangeAction::perform()
 
 bool NoteChangeAction::undo()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *sequence =
+        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
-        return layer->change(this->noteAfter, this->noteBefore, false);
+        return sequence->change(this->noteAfter, this->noteBefore, false);
     }
     
     return false;
@@ -185,18 +192,21 @@ int NoteChangeAction::getSizeInUnits()
 
 UndoAction *NoteChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *sequence =
+        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
-        if (NoteChangeAction *nextChanger = dynamic_cast<NoteChangeAction *>(nextAction))
+        if (NoteChangeAction *nextChanger =
+            dynamic_cast<NoteChangeAction *>(nextAction))
         {
-            // если прямо объединять события - это портит групповые изменения, так что смотрим по id
-            const bool idsAreEqual = (this->noteBefore.getID() == nextChanger->noteAfter.getID() &&
-                                      this->layerId == nextChanger->layerId);
+            // checking id's here is necessary to keep group changes ok
+            const bool idsAreEqual =
+                (this->noteBefore.getId() == nextChanger->noteAfter.getId() &&
+                    this->trackId == nextChanger->trackId);
             
             if (idsAreEqual)
             {
-                auto newChanger = new NoteChangeAction(this->project, this->layerId, this->noteBefore, nextChanger->noteAfter);
-                return newChanger;
+                return new NoteChangeAction(this->project,
+                    this->trackId, this->noteBefore, nextChanger->noteAfter);
             }
         }
     }
@@ -208,7 +218,7 @@ UndoAction *NoteChangeAction::createCoalescedAction(UndoAction *nextAction)
 XmlElement *NoteChangeAction::serialize() const
 {
     auto xml = new XmlElement(Serialization::Undo::noteChangeAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
+    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
     
     auto noteBeforeChild = new XmlElement(Serialization::Undo::noteBefore);
     noteBeforeChild->prependChildElement(this->noteBefore.serialize());
@@ -223,7 +233,7 @@ XmlElement *NoteChangeAction::serialize() const
 
 void NoteChangeAction::deserialize(const XmlElement &xml)
 {
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
+    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
     
     XmlElement *noteBeforeChild = xml.getChildByName(Serialization::Undo::noteBefore);
     XmlElement *noteAfterChild = xml.getChildByName(Serialization::Undo::noteAfter);
@@ -236,7 +246,7 @@ void NoteChangeAction::reset()
 {
     this->noteBefore.reset();
     this->noteAfter.reset();
-    this->layerId.clear();
+    this->trackId.clear();
 }
 
 
@@ -245,19 +255,20 @@ void NoteChangeAction::reset()
 //===----------------------------------------------------------------------===//
 
 NotesGroupInsertAction::NotesGroupInsertAction(ProjectTreeItem &parentProject,
-                                               String targetLayerId,
+                                               String targetTrackId,
                                                Array<Note> &target) :
     UndoAction(parentProject),
-    layerId(std::move(targetLayerId))
+    trackId(std::move(targetTrackId))
 {
     this->notes.swapWith(target);
 }
 
 bool NotesGroupInsertAction::perform()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *sequence =
+        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
-        return layer->insertGroup(this->notes, false);
+        return sequence->insertGroup(this->notes, false);
     }
     
     return false;
@@ -265,9 +276,10 @@ bool NotesGroupInsertAction::perform()
 
 bool NotesGroupInsertAction::undo()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *sequence =
+        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
-        return layer->removeGroup(this->notes, false);
+        return sequence->removeGroup(this->notes, false);
     }
     
     return false;
@@ -281,7 +293,7 @@ int NotesGroupInsertAction::getSizeInUnits()
 XmlElement *NotesGroupInsertAction::serialize() const
 {
     auto xml = new XmlElement(Serialization::Undo::notesGroupInsertAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
+    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
     
     for (int i = 0; i < this->notes.size(); ++i)
     {
@@ -294,8 +306,7 @@ XmlElement *NotesGroupInsertAction::serialize() const
 void NotesGroupInsertAction::deserialize(const XmlElement &xml)
 {
     this->reset();
-    
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
+    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
     
     forEachXmlChildElement(xml, noteXml)
     {
@@ -308,7 +319,7 @@ void NotesGroupInsertAction::deserialize(const XmlElement &xml)
 void NotesGroupInsertAction::reset()
 {
     this->notes.clear();
-    this->layerId.clear();
+    this->trackId.clear();
 }
 
 
@@ -317,19 +328,20 @@ void NotesGroupInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 NotesGroupRemoveAction::NotesGroupRemoveAction(ProjectTreeItem &parentProject,
-                                               String targetLayerId,
+                                               String targetTrackId,
                                                Array<Note> &target) :
     UndoAction(parentProject),
-    layerId(std::move(targetLayerId))
+    trackId(std::move(targetTrackId))
 {
     this->notes.swapWith(target);
 }
 
 bool NotesGroupRemoveAction::perform()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *sequence =
+        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
-        return layer->removeGroup(this->notes, false);
+        return sequence->removeGroup(this->notes, false);
     }
     
     return false;
@@ -337,9 +349,10 @@ bool NotesGroupRemoveAction::perform()
 
 bool NotesGroupRemoveAction::undo()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *sequence =
+        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
-        return layer->insertGroup(this->notes, false);
+        return sequence->insertGroup(this->notes, false);
     }
     
     return false;
@@ -353,7 +366,7 @@ int NotesGroupRemoveAction::getSizeInUnits()
 XmlElement *NotesGroupRemoveAction::serialize() const
 {
     auto xml = new XmlElement(Serialization::Undo::notesGroupRemoveAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
+    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
     
     for (int i = 0; i < this->notes.size(); ++i)
     {
@@ -366,8 +379,7 @@ XmlElement *NotesGroupRemoveAction::serialize() const
 void NotesGroupRemoveAction::deserialize(const XmlElement &xml)
 {
     this->reset();
-    
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
+    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
     
     forEachXmlChildElement(xml, noteXml)
     {
@@ -380,7 +392,7 @@ void NotesGroupRemoveAction::deserialize(const XmlElement &xml)
 void NotesGroupRemoveAction::reset()
 {
     this->notes.clear();
-    this->layerId.clear();
+    this->trackId.clear();
 }
 
 
@@ -389,11 +401,11 @@ void NotesGroupRemoveAction::reset()
 //===----------------------------------------------------------------------===//
 
 NotesGroupChangeAction::NotesGroupChangeAction(ProjectTreeItem &parentProject,
-                                               String targetLayerId,
+                                               String targetTrackId,
                                                Array<Note> &state1,
                                                Array<Note> &state2) :
     UndoAction(parentProject),
-    layerId(std::move(targetLayerId))
+    trackId(std::move(targetTrackId))
 {
     this->notesBefore.swapWith(state1);
     this->notesAfter.swapWith(state2);
@@ -401,9 +413,10 @@ NotesGroupChangeAction::NotesGroupChangeAction(ProjectTreeItem &parentProject,
 
 bool NotesGroupChangeAction::perform()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *sequence =
+        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
-        return layer->changeGroup(this->notesBefore, this->notesAfter, false);
+        return sequence->changeGroup(this->notesBefore, this->notesAfter, false);
     }
     
     return false;
@@ -411,9 +424,10 @@ bool NotesGroupChangeAction::perform()
 
 bool NotesGroupChangeAction::undo()
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *sequence =
+        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
-        return layer->changeGroup(this->notesAfter, this->notesBefore, false);
+        return sequence->changeGroup(this->notesAfter, this->notesBefore, false);
     }
     
     return false;
@@ -421,16 +435,19 @@ bool NotesGroupChangeAction::undo()
 
 int NotesGroupChangeAction::getSizeInUnits()
 {
-    return (sizeof(Note) * this->notesBefore.size()) + (sizeof(Note) * this->notesAfter.size());
+    return (sizeof(Note) * this->notesBefore.size()) +
+        (sizeof(Note) * this->notesAfter.size());
 }
 
 UndoAction *NotesGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (PianoLayer *layer = this->project.getLayerWithId<PianoLayer>(this->layerId))
+    if (PianoSequence *sequence =
+        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
-        if (NotesGroupChangeAction *nextChanger = dynamic_cast<NotesGroupChangeAction *>(nextAction))
+        if (NotesGroupChangeAction *nextChanger =
+            dynamic_cast<NotesGroupChangeAction *>(nextAction))
         {
-            if (nextChanger->layerId != this->layerId)
+            if (nextChanger->trackId != this->trackId)
             {
                 return nullptr;
             }
@@ -442,16 +459,15 @@ UndoAction *NotesGroupChangeAction::createCoalescedAction(UndoAction *nextAction
             
             for (int i = 0; i < this->notesBefore.size(); ++i)
             {
-                if (this->notesBefore.getUnchecked(i).getID() != nextChanger->notesAfter.getUnchecked(i).getID())
+                if (this->notesBefore.getUnchecked(i).getId() !=
+                    nextChanger->notesAfter.getUnchecked(i).getId())
                 {
                     return nullptr;
                 }
             }
             
-            auto newChanger =
-            new NotesGroupChangeAction(this->project, this->layerId, this->notesBefore, nextChanger->notesAfter);
-            
-            return newChanger;
+            return new NotesGroupChangeAction(this->project,
+                this->trackId, this->notesBefore, nextChanger->notesAfter);
         }
     }
 
@@ -467,7 +483,7 @@ UndoAction *NotesGroupChangeAction::createCoalescedAction(UndoAction *nextAction
 XmlElement *NotesGroupChangeAction::serialize() const
 {
     auto xml = new XmlElement(Serialization::Undo::notesGroupChangeAction);
-    xml->setAttribute(Serialization::Undo::layerId, this->layerId);
+    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
     
     auto groupBeforeChild = new XmlElement(Serialization::Undo::groupBefore);
     auto groupAfterChild = new XmlElement(Serialization::Undo::groupAfter);
@@ -492,7 +508,7 @@ void NotesGroupChangeAction::deserialize(const XmlElement &xml)
 {
     this->reset();
     
-    this->layerId = xml.getStringAttribute(Serialization::Undo::layerId);
+    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
     
     XmlElement *groupBeforeChild = xml.getChildByName(Serialization::Undo::groupBefore);
     XmlElement *groupAfterChild = xml.getChildByName(Serialization::Undo::groupAfter);
@@ -516,5 +532,5 @@ void NotesGroupChangeAction::reset()
 {
     this->notesBefore.clear();
     this->notesAfter.clear();
-    this->layerId.clear();
+    this->trackId.clear();
 }

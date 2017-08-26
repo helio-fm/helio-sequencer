@@ -25,14 +25,14 @@
 #include "MainLayout.h"
 #include "ModalDialogInput.h"
 
-#include "LayerTreeItem.h"
+#include "MidiTrackTreeItem.h"
 #include "ProjectTreeItem.h"
 #include "UndoStack.h"
-#include "LayerTreeItemActions.h"
+#include "MidiTrackActions.h"
 #include "ModalDialogInput.h"
 
 #include "LongTapController.h"
-#include "LayerTreeItem.h"
+#include "MidiTrackTreeItem.h"
 
 #include "RolloverHeaderLeft.h"
 #include "RolloverHeaderRight.h"
@@ -101,10 +101,10 @@ void TreePanel::handleCommandMessage(int commandId)
             if (this->lastRenamedItem != nullptr)
             {
                 ProjectTreeItem *project = this->lastRenamedItem->getProject();
-                const String &layerId = this->lastRenamedItem->getLayer()->getLayerIdAsString();
+                const String &layerId = this->lastRenamedItem->getSequence()->getTrackId();
                 
                 project->getUndoStack()->beginNewTransaction();
-                project->getUndoStack()->perform(new LayerTreeItemRenameAction(*project, layerId, this->renameString));
+                project->getUndoStack()->perform(new MidiTrackRenameAction(*project, layerId, this->renameString));
                 
                 // instead of:
                 //this->layerItem.onRename(this->renameString);
@@ -126,7 +126,7 @@ void TreePanel::handleCommandMessage(int commandId)
 
 
 
-void TreePanel::showRenameLayerDialogAsync(LayerTreeItem *item)
+void TreePanel::showRenameLayerDialogAsync(MidiTrackTreeItem *item)
 {
     this->lastRenamedItem = item;
     this->postCommandMessage(CommandIDs::RenameLayer);

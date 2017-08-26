@@ -56,6 +56,9 @@ TranslationSettings::TranslationSettings()
     setSize (600, 265);
 
     //[Constructor]
+    const Array<TranslationManager::Locale> locales(TranslationManager::getInstance().getAvailableLocales());
+    this->setSize(600, 40 + locales.size() * TRANSLATION_SETTINGS_ROW_HEIGHT);
+
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(true);
     this->setOpaque(true);

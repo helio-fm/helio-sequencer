@@ -22,7 +22,7 @@
 #include "WorkspacePage.h"
 
 #include "TreeItem.h"
-#include "LayerTreeItem.h"
+#include "MidiTrackTreeItem.h"
 #include "SizeSwitcherComponent.h"
 
 #include "TreePanelPhone.h"
@@ -52,7 +52,7 @@
 #include "Workspace.h"
 #include "MainWindow.h"
 #include "HelioCallout.h"
-#include "MidiRollCommandPanel.h"
+#include "HybridRollCommandPanel.h"
 
 #include "ColourSchemeManager.h"
 #include "ColourScheme.h"
@@ -509,7 +509,7 @@ bool MainLayout::keyPressed(const KeyPress &key)
     }
     else if (key == KeyPress::createFromDescription("F2"))
     {
-        if (LayerTreeItem *primaryItem = dynamic_cast<LayerTreeItem *>(this->getActiveTreeItem().get()))
+        if (MidiTrackTreeItem *primaryItem = dynamic_cast<MidiTrackTreeItem *>(this->getActiveTreeItem().get()))
         {
             this->treePanel->showRenameLayerDialogAsync(primaryItem);
             return true;
@@ -535,12 +535,12 @@ bool MainLayout::keyPressed(const KeyPress &key)
     {
         if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
         {
-			auto scheme = ColourSchemeManager::getInstance().getCurrentScheme();
-			ht->updateBackgroundRenders(true);
+            auto scheme = ColourSchemeManager::getInstance().getCurrentScheme();
+            ht->updateBackgroundRenders(true);
             ht->initColours(scheme);
             this->repaint();
 
-			scheme.exportColourChanges();
+            scheme.exportColourChanges();
             const ScopedPointer<XmlElement> xml(scheme.serialize());
             const String xmlString(xml->createDocument("", true, false, "UTF-8", 512));
             SystemClipboard::copyTextToClipboard(xmlString);

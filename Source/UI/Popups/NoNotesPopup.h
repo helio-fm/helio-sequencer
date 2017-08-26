@@ -19,7 +19,7 @@
 
 //[Headers]
 class NoteComponent;
-class MidiLayer;
+class MidiSequence;
 class PianoRoll;
 
 #include "PopupMenuComponent.h"
@@ -45,7 +45,7 @@ class NoNotesPopup  : public PopupMenuComponent,
 {
 public:
 
-    NoNotesPopup (PianoRoll *caller, MidiLayer *layer);
+    NoNotesPopup (PianoRoll *caller, MidiSequence *layer);
 
     ~NoNotesPopup();
 
@@ -78,7 +78,7 @@ private:
     //[UserVariables]
 
     PianoRoll *roll;
-    MidiLayer *targetLayer;
+    MidiSequence *targetLayer;
     int targetKey;
     float targetBeat;
     Point<int> draggingStartPosition;
@@ -89,6 +89,9 @@ private:
     void buildChord(int n1, int n2, int n3);
     void buildNewNote(bool shouldSendMidiMessage);
     void cancelChangesIfAny();
+
+    void stopSound();
+    void sendMidiMessage(const MidiMessage &message);
 
     //[/UserVariables]
 

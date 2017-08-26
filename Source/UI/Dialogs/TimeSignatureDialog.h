@@ -21,7 +21,7 @@
 #include "FadingDialog.h"
 #include "TimeSignatureEvent.h"
 
-class TimeSignaturesLayer;
+class TimeSignaturesSequence;
 //[/Headers]
 
 #include "../Themes/PanelC.h"
@@ -35,13 +35,13 @@ class TimeSignatureDialog  : public FadingDialog,
 {
 public:
 
-    TimeSignatureDialog (Component &owner, TimeSignaturesLayer *signaturesLayer, const TimeSignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
+    TimeSignatureDialog (Component &owner, TimeSignaturesSequence *signaturesLayer, const TimeSignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
 
     ~TimeSignatureDialog();
 
     //[UserMethods]
-	static TimeSignatureDialog *createEditingDialog(Component &owner, const TimeSignatureEvent &event);
-	static TimeSignatureDialog *createAddingDialog(Component &owner, TimeSignaturesLayer *annotationsLayer, float targetBeat);
+    static TimeSignatureDialog *createEditingDialog(Component &owner, const TimeSignatureEvent &event);
+    static TimeSignatureDialog *createAddingDialog(Component &owner, TimeSignaturesSequence *annotationsLayer, float targetBeat);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -60,19 +60,19 @@ private:
 
     //[UserVariables]
 
-	TimeSignatureEvent targetEvent;
-	TimeSignaturesLayer *targetLayer;
-	Component &ownerComponent;
+    TimeSignatureEvent targetEvent;
+    TimeSignaturesSequence *targetLayer;
+    Component &ownerComponent;
 
-	inline void cancelAndDisappear();
-	inline void disappear();
-	inline void updateOkButtonState();
+    inline void cancelAndDisappear();
+    inline void disappear();
+    inline void updateOkButtonState();
 
-	bool addsNewEvent;
-	bool hasMadeChanges;
-	void sendEventChange(TimeSignatureEvent newEvent);
-	void removeEvent();
-	void cancelChangesIfAny();
+    bool addsNewEvent;
+    bool hasMadeChanges;
+    void sendEventChange(TimeSignatureEvent newEvent);
+    void removeEvent();
+    void cancelChangesIfAny();
 
     //[/UserVariables]
 

@@ -43,6 +43,9 @@ public:
 
     ~TreeItem() override;
     
+    static const String xPathSeparator;
+
+
     static String createSafeName(const String &nameStr);
 
     int getNumSelectedSiblings() const;

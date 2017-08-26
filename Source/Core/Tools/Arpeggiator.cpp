@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "Arpeggiator.h"
 #include "SerializationKeys.h"
-#include "MidiRollToolbox.h"
+#include "PianoRollToolbox.h"
 #include "Note.h"
 #include "SerializationKeys.h"
 
@@ -176,8 +176,8 @@ Array<Arpeggiator::Key> Arpeggiator::createArpKeys() const
     sortedArp.sort(n0);
     
     const int arpRootKey = sortedArp[0].getKey();
-    const float arpStartBeat = MidiRollToolbox::findStartBeat(sortedArp);
-    const float arpEndBeat = MidiRollToolbox::findEndBeat(sortedArp);
+    const float arpStartBeat = PianoRollToolbox::findStartBeat(sortedArp);
+    const float arpEndBeat = PianoRollToolbox::findEndBeat(sortedArp);
     
     for (int i = 0; i < sortedArp.size(); ++i)
     {

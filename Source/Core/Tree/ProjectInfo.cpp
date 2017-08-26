@@ -46,16 +46,16 @@ ProjectInfo::~ProjectInfo()
 int64 ProjectInfo::getStartTime() const         { return this->initTimestamp; }
 
 String ProjectInfo::getLicense() const          { return this->license; }
-void ProjectInfo::setLicense(String val)        { this->license = val; this->project.broadcastInfoChanged(this); }
+void ProjectInfo::setLicense(String val)        { this->license = val; this->project.broadcastChangeProjectInfo(this); }
 
 String ProjectInfo::getFullName() const         { return this->project.getCaption(); }
-void ProjectInfo::setFullName(String val)       { this->project.onRename(val); this->project.broadcastInfoChanged(this); } // this->fullName = val;
+void ProjectInfo::setFullName(String val)       { this->project.onRename(val); this->project.broadcastChangeProjectInfo(this); } // this->fullName = val;
 
 String ProjectInfo::getAuthor() const           { return this->author; }
-void ProjectInfo::setAuthor(String val)         { this->author = val; this->project.broadcastInfoChanged(this); }
+void ProjectInfo::setAuthor(String val)         { this->author = val; this->project.broadcastChangeProjectInfo(this); }
 
 String ProjectInfo::getDescription() const      { return this->description; }
-void ProjectInfo::setDescription(String val)    { this->description = val; this->project.broadcastInfoChanged(this); }
+void ProjectInfo::setDescription(String val)    { this->description = val; this->project.broadcastChangeProjectInfo(this); }
 
 
 //===----------------------------------------------------------------------===//
@@ -168,7 +168,7 @@ void ProjectInfo::deserialize(const XmlElement &xml)
     this->author = root->getStringAttribute(ProjectInfoDeltas::projectAuthor);
     this->description = root->getStringAttribute(ProjectInfoDeltas::projectDescription);
 
-    this->project.broadcastInfoChanged(this);
+    this->project.broadcastChangeProjectInfo(this);
 }
 
 void ProjectInfo::reset()

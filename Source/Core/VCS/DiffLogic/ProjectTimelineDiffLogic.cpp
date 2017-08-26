@@ -20,31 +20,15 @@
 #include "ProjectTimeline.h"
 #include "ProjectTimelineDeltas.h"
 
-#include "AnnotationsLayer.h"
-#include "TimeSignaturesLayer.h"
-#include "MidiLayerOwner.h"
+#include "AnnotationsSequence.h"
+#include "TimeSignaturesSequence.h"
 #include "SerializationKeys.h"
 
 using namespace VCS;
 
-class EmptyLayerOwner : public MidiLayerOwner
-{
-public:
-    Transport *getTransport() const override { return nullptr; }
-    String getXPath() const override { return ""; }
-    void setXPath(const String &path) override {}
-    void onEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent) override {}
-    void onEventAdded(const MidiEvent &event) override {}
-    void onEventRemoved(const MidiEvent &event) override {}
-    void onLayerChanged(const MidiLayer *layer) override {}
-    void onBeatRangeChanged() override {}
-};
-
-
 ProjectTimelineDiffLogic::ProjectTimelineDiffLogic(TrackedItem &targetItem) :
     DiffLogic(targetItem)
 {
-
 }
 
 ProjectTimelineDiffLogic::~ProjectTimelineDiffLogic()
@@ -239,11 +223,9 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
 
 XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsAdded(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    AnnotationsLayer emptyLayer(emptyOwner);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
-    this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    this->deserializeChanges(state, changes, stateNotes, changesNotes);
 
     Array<const MidiEvent *> result;
 
@@ -259,7 +241,7 @@ XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsAdded(const XmlElement *st
         {
             const AnnotationEvent *stateNote = static_cast<AnnotationEvent *>(stateNotes.getUnchecked(j));
 
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInState = true;
                 break;
@@ -277,11 +259,9 @@ XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsAdded(const XmlElement *st
 
 XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsRemoved(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    AnnotationsLayer emptyLayer(emptyOwner);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
-    this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    this->deserializeChanges(state, changes, stateNotes, changesNotes);
 
     Array<const MidiEvent *> result;
 
@@ -295,7 +275,7 @@ XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsRemoved(const XmlElement *
         {
             const AnnotationEvent *changesNote = static_cast<AnnotationEvent *>(changesNotes.getUnchecked(j));
 
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInChanges = true;
                 break;
@@ -313,11 +293,9 @@ XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsRemoved(const XmlElement *
 
 XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsChanged(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    AnnotationsLayer emptyLayer(emptyOwner);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
-    this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    this->deserializeChanges(state, changes, stateNotes, changesNotes);
 
     Array<const MidiEvent *> result;
 
@@ -333,7 +311,7 @@ XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsChanged(const XmlElement *
         {
             const AnnotationEvent *changesNote = static_cast<AnnotationEvent *>(changesNotes.getUnchecked(j));
 
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInChanges = true;
                 result.removeAllInstancesOf(stateNote);
@@ -355,11 +333,9 @@ XmlElement *ProjectTimelineDiffLogic::mergeAnnotationsChanged(const XmlElement *
 
 XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesAdded(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    TimeSignaturesLayer emptyLayer(emptyOwner);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
-    this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    this->deserializeChanges(state, changes, stateNotes, changesNotes);
     
     Array<const MidiEvent *> result;
     
@@ -375,7 +351,7 @@ XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesAdded(const XmlElement 
         {
             const TimeSignatureEvent *stateNote = static_cast<TimeSignatureEvent *>(stateNotes.getUnchecked(j));
             
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInState = true;
                 break;
@@ -393,11 +369,9 @@ XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesAdded(const XmlElement 
 
 XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesRemoved(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    TimeSignaturesLayer emptyLayer(emptyOwner);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
-    this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    this->deserializeChanges(state, changes, stateNotes, changesNotes);
     
     Array<const MidiEvent *> result;
     
@@ -411,7 +385,7 @@ XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesRemoved(const XmlElemen
         {
             const TimeSignatureEvent *changesNote = static_cast<TimeSignatureEvent *>(changesNotes.getUnchecked(j));
             
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInChanges = true;
                 break;
@@ -429,11 +403,9 @@ XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesRemoved(const XmlElemen
 
 XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesChanged(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    TimeSignaturesLayer emptyLayer(emptyOwner);
     OwnedArray<MidiEvent> stateNotes;
     OwnedArray<MidiEvent> changesNotes;
-    this->deserializeChanges(emptyLayer, state, changes, stateNotes, changesNotes);
+    this->deserializeChanges(state, changes, stateNotes, changesNotes);
     
     Array<const MidiEvent *> result;
     
@@ -449,7 +421,7 @@ XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesChanged(const XmlElemen
         {
             const TimeSignatureEvent *changesNote = static_cast<TimeSignatureEvent *>(changesNotes.getUnchecked(j));
             
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInChanges = true;
                 result.removeAllInstancesOf(stateNote);
@@ -472,15 +444,13 @@ XmlElement *ProjectTimelineDiffLogic::mergeTimeSignaturesChanged(const XmlElemen
 
 Array<NewSerializedDelta> ProjectTimelineDiffLogic::createAnnotationsDiffs(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    AnnotationsLayer emptyLayer(emptyOwner);
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
 
     // вот здесь по уму надо десериализовать слои
     // а для этого надо, чтоб в слоях не было ничего, кроме нот
     // поэтому пока есть, как есть, и это не критично
-    this->deserializeChanges(emptyLayer, state, changes, stateEvents, changesEvents);
+    this->deserializeChanges(state, changes, stateEvents, changesEvents);
 
     Array<NewSerializedDelta> res;
 
@@ -499,7 +469,7 @@ Array<NewSerializedDelta> ProjectTimelineDiffLogic::createAnnotationsDiffs(const
             const AnnotationEvent *changesEvent = static_cast<AnnotationEvent *>(changesEvents.getUnchecked(j));
 
             // нота из состояния - существует в изменениях. добавляем запись changed, если нужно.
-            if (stateEvent->getID() == changesEvent->getID())
+            if (stateEvent->getId() == changesEvent->getId())
             {
                 foundNoteInChanges = true;
 
@@ -533,7 +503,7 @@ Array<NewSerializedDelta> ProjectTimelineDiffLogic::createAnnotationsDiffs(const
         {
             const AnnotationEvent *stateNote = static_cast<AnnotationEvent *>(stateEvents.getUnchecked(j));
 
-            if (stateNote->getID() == changesNote->getID())
+            if (stateNote->getId() == changesNote->getId())
             {
                 foundNoteInState = true;
                 break;
@@ -579,12 +549,10 @@ Array<NewSerializedDelta> ProjectTimelineDiffLogic::createAnnotationsDiffs(const
 
 Array<NewSerializedDelta> ProjectTimelineDiffLogic::createTimeSignaturesDiffs(const XmlElement *state, const XmlElement *changes) const
 {
-    EmptyLayerOwner emptyOwner;
-    TimeSignaturesLayer emptyLayer(emptyOwner);
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
     
-    this->deserializeChanges(emptyLayer, state, changes, stateEvents, changesEvents);
+    this->deserializeChanges(state, changes, stateEvents, changesEvents);
     
     Array<NewSerializedDelta> res;
     Array<const MidiEvent *> addedEvents;
@@ -602,7 +570,7 @@ Array<NewSerializedDelta> ProjectTimelineDiffLogic::createTimeSignaturesDiffs(co
             const TimeSignatureEvent *changesEvent = static_cast<TimeSignatureEvent *>(changesEvents.getUnchecked(j));
             
             // событие из состояния - существует в изменениях. добавляем запись changed, если нужно.
-            if (stateEvent->getID() == changesEvent->getID())
+            if (stateEvent->getId() == changesEvent->getId())
             {
                 foundNoteInChanges = true;
                 
@@ -636,7 +604,7 @@ Array<NewSerializedDelta> ProjectTimelineDiffLogic::createTimeSignaturesDiffs(co
         {
             const TimeSignatureEvent *stateEvent = static_cast<TimeSignatureEvent *>(stateEvents.getUnchecked(j));
             
-            if (stateEvent->getID() == changesEvent->getID())
+            if (stateEvent->getId() == changesEvent->getId())
             {
                 foundNoteInState = true;
                 break;
@@ -684,8 +652,7 @@ Array<NewSerializedDelta> ProjectTimelineDiffLogic::createTimeSignaturesDiffs(co
 // Serialization
 //===----------------------------------------------------------------------===//
 
-void ProjectTimelineDiffLogic::deserializeChanges(MidiLayer &layer,
-        const XmlElement *state,
+void VCS::ProjectTimelineDiffLogic::deserializeChanges(const XmlElement *state,
         const XmlElement *changes,
         OwnedArray<MidiEvent> &stateNotes,
         OwnedArray<MidiEvent> &changesNotes) const
@@ -694,14 +661,14 @@ void ProjectTimelineDiffLogic::deserializeChanges(MidiLayer &layer,
     {
         forEachXmlChildElementWithTagName(*state, e, Serialization::Core::annotation)
         {
-            AnnotationEvent *event = new AnnotationEvent(&layer);
+            AnnotationEvent *event = new AnnotationEvent();
             event->deserialize(*e);
             stateNotes.addSorted(*event, event);
         }
 
         forEachXmlChildElementWithTagName(*state, e, Serialization::Core::timeSignature)
         {
-            TimeSignatureEvent *event = new TimeSignatureEvent(&layer);
+            TimeSignatureEvent *event = new TimeSignatureEvent();
             event->deserialize(*e);
             stateNotes.addSorted(*event, event);
         }
@@ -711,14 +678,14 @@ void ProjectTimelineDiffLogic::deserializeChanges(MidiLayer &layer,
     {
         forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::annotation)
         {
-            AnnotationEvent *event = new AnnotationEvent(&layer);
+            AnnotationEvent *event = new AnnotationEvent();
             event->deserialize(*e);
             changesNotes.addSorted(*event, event);
         }
         
         forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::timeSignature)
         {
-            TimeSignatureEvent *event = new TimeSignatureEvent(&layer);
+            TimeSignatureEvent *event = new TimeSignatureEvent();
             event->deserialize(*e);
             changesNotes.addSorted(*event, event);
         }
