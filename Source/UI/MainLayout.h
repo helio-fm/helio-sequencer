@@ -18,8 +18,8 @@
 #pragma once
 
 class TreePanel;
-class Console;
 class TooltipContainer;
+class Headline;
 
 #include "LastShownTreeItems.h"
 #include "ComponentFader.h"
@@ -109,6 +109,8 @@ private:
     
     ScopedPointer<Component> initScreen;
     SafePointer<Component> currentContent;
+
+    ScopedPointer<Headline> headline;
 
     ScopedPointer<ResizableEdgeComponent> treeResizer;
     ScopedPointer<TreePanel> treePanel;

@@ -237,25 +237,24 @@ Rectangle<float> PatternRoll::getEventBounds(FloatBoundsComponent *mc) const
     return this->getEventBounds(nc->getClip(), nc->getBeat());
 }
 
-Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float beat) const
+Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) const
 {
-    const float startOffsetBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
-
-    // TODO fix x, add correct sequence starting beat
-    const float x = this->barWidth * (beat - startOffsetBeat) / NUM_BEATS_IN_BAR;
     const Pattern *pattern = clip.getPattern();
-
-    MidiTrack *track = clip.getPattern()->getTrack();
-    int trackIndex = this->tracks.indexOfSorted(*track, track);
-
+    const MidiTrack *track = pattern->getTrack();
     const MidiSequence *sequence = track->getSequence();
     jassert(sequence != nullptr);
 
-    const float length = sequence->getLengthInBeats();
-    const float w = this->barWidth * length / NUM_BEATS_IN_BAR;
+    const float viewStartOffsetBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
+    const int trackIndex = this->tracks.indexOfSorted(*track, track);
+    const float sequenceLength = sequence->getLengthInBeats();
+    const float sequenceStartBeat = 0.f; // TODO? sequence->getFirstBeat();
 
-    const float yPosition = float(trackIndex * PATTERNROLL_ROW_HEIGHT);
-    return Rectangle<float> (x, HYBRID_ROLL_HEADER_HEIGHT + yPosition + 1,
+    const float w = this->barWidth * sequenceLength / NUM_BEATS_IN_BAR;
+    const float x = this->barWidth *
+        (sequenceStartBeat + clipBeat - viewStartOffsetBeat) / NUM_BEATS_IN_BAR;
+
+    const float y = float(trackIndex * PATTERNROLL_ROW_HEIGHT);
+    return Rectangle<float> (x, HYBRID_ROLL_HEADER_HEIGHT + y + 1,
         w, float(PATTERNROLL_ROW_HEIGHT - 1));
 }
 

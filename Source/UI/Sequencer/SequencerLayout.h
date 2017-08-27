@@ -30,6 +30,7 @@ class AutomationTrackMap;
 class AutomationTrackMapProxy;
 class MidiEditorSplitContainer;
 class Origami;
+class Headline;
 
 #include "Serializable.h"
 
@@ -79,6 +80,7 @@ public:
 private:
 
     ProjectTreeItem &project;
+    
     ScopedPointer<Viewport> pianoViewport;
     ScopedPointer<Viewport> patternViewport;
     ScopedPointer<TrackScroller> scroller;

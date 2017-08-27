@@ -35,7 +35,6 @@
 #include "HybridRollCommandPanelDefault.h"
 #include "AutomationsCommandPanel.h"
 #include "PanelBackgroundC.h"
-
 #include "App.h"
 #include "Workspace.h"
 #include "MainLayout.h"
@@ -53,6 +52,7 @@ template class TimeSignaturesTrackMap<TimeSignatureSmallComponent>;
 
 #define MAX_NUM_SPLITSCREEN_EDITORS 2
 #define MINIMUM_ROLLS_HEIGHT 250
+#define VERTICAL_ROLLS_LAYOUT 1
 
 
 //===----------------------------------------------------------------------===//
@@ -379,13 +379,23 @@ public:
         
         Rectangle<int> r(this->getLocalBounds());
         const int scrollerHeight = MainLayout::getScrollerHeight();
+
+#if VERTICAL_ROLLS_LAYOUT
+        const float rollViewportHeight = float(r.getHeight() - scrollerHeight);
+        const Rectangle<int> rollSize(r.withBottom(r.getBottom() - scrollerHeight));
+        const int viewport1Pos = int(this->animationPosition * rollViewportHeight);
+        const int viewport2Pos = int(this->animationPosition * rollViewportHeight - rollViewportHeight);
+        this->pianoViewport->setBounds(rollSize.withY(viewport1Pos));
+        this->patternViewport->setBounds(rollSize.withY(viewport2Pos));
+#else
         const float rollViewportWidth = float(r.getWidth());
         const Rectangle<int> rollSize(r.withBottom(r.getBottom() - scrollerHeight));
         const int viewport1Pos = int(this->animationPosition * rollViewportWidth);
         const int viewport2Pos = int(this->animationPosition * rollViewportWidth - rollViewportWidth);
-
         this->pianoViewport->setBounds(rollSize.withX(viewport1Pos));
         this->patternViewport->setBounds(rollSize.withX(viewport2Pos));
+#endif
+
         this->scroller->setBounds(r.removeFromBottom(scrollerHeight));
 
         if ((this->pianoRoll->getBarWidth() * this->pianoRoll->getNumBars()) < this->getWidth())
