@@ -146,7 +146,8 @@ public:
         Rectangle<int> r(this->getLocalBounds().withTop(int(-this->deltaH)));
         
         this->automations->setBounds(r.removeFromTop(newAutosHeight));
-        this->resizer->setBounds(r.removeFromTop(1));
+        auto resizerBounds = r;
+        this->resizer->setBounds(resizerBounds.removeFromTop(1));
         this->roll->setBounds(r);
     }
     

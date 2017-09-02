@@ -18,6 +18,7 @@
 #pragma once
 
 //[Headers]
+#include "HighlightedComponent.h"
 #include "ComponentFader.h"
 #include "TreeItem.h"
 
@@ -25,7 +26,7 @@ class IconComponent;
 //[/Headers]
 
 
-class HeadlineItem  : public Component
+class HeadlineItem  : public HighlightedComponent
 {
 public:
 
@@ -48,6 +49,8 @@ private:
     ComponentFader fader;
 
     WeakReference<TreeItem> item;
+
+    Component *createHighlighterComponent() override;
 
     //[/UserVariables]
 
