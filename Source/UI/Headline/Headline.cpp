@@ -32,6 +32,8 @@ Headline::Headline()
     addAndMakeVisible (separator = new SeparatorHorizontalReversed());
 
     //[UserPreSize]
+    this->setFocusContainer(false);
+    this->setWantsKeyboardFocus(false);
     //[/UserPreSize]
 
     setSize (600, 34);
@@ -117,7 +119,7 @@ void Headline::syncWithTree(WeakReference<TreeItem> leaf)
     {
         const auto child = this->chain[i];
         const auto finalPos = child->getBounds().withX(fadePositionX - child->getWidth());
-        this->animator.animateComponent(child, finalPos, 0.f, 250, true, 0.f, 1.f);
+        this->animator.animateComponent(child, finalPos, 0.f, 200, true, 0.f, 1.f);
         this->chain.remove(i, true);
     }
 
@@ -132,7 +134,7 @@ void Headline::syncWithTree(WeakReference<TreeItem> leaf)
         child->toBack();
         const auto finalPos = child->getBounds().withX(lastPosX - HEADLINE_ITEMS_OVERLAP);
         lastPosX += child->getWidth() - HEADLINE_ITEMS_OVERLAP;
-        this->animator.animateComponent(child, finalPos, 1.f, 250, false, 1.f, 0.f);
+        this->animator.animateComponent(child, finalPos, 1.f, 300, false, 1.f, 0.f);
     }
 
     this->bg->toBack();

@@ -204,7 +204,7 @@ void ArpeggiatorPanel::stopPlaybackLoop() const
 
 //===----------------------------------------------------------------------===//
 // TransportListener
-//
+//===----------------------------------------------------------------------===//
 
 void ArpeggiatorPanel::onSeek(const double newPosition,
                               const double currentTimeMs,
@@ -233,7 +233,7 @@ void ArpeggiatorPanel::onStop()
 
 //===----------------------------------------------------------------------===//
 // ChangeListener
-//
+//===----------------------------------------------------------------------===//
 
 void ArpeggiatorPanel::changeListenerCallback(ChangeBroadcaster *source)
 {
@@ -243,7 +243,7 @@ void ArpeggiatorPanel::changeListenerCallback(ChangeBroadcaster *source)
 
 //===----------------------------------------------------------------------===//
 // ListBoxModel
-//
+//===----------------------------------------------------------------------===//
 
 int ArpeggiatorPanel::getNumRows()
 {
@@ -294,7 +294,7 @@ void ArpeggiatorPanel::listWasScrolled()
 
 //===----------------------------------------------------------------------===//
 // Private
-//
+//===----------------------------------------------------------------------===//
 
 void ArpeggiatorPanel::reloadList(int selectedRow)
 {

@@ -18,14 +18,16 @@
 #pragma once
 
 //[Headers]
+class TreeItem;
+#include "CommandPanel.h"
 //[/Headers]
 
 
-class HeadlineDropdown  : public Component
+class HeadlineDropdown  : public CommandPanel
 {
 public:
 
-    HeadlineDropdown ();
+    HeadlineDropdown (Array<TreeItem *> treeItems);
 
     ~HeadlineDropdown();
 
@@ -34,11 +36,15 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
+    void handleCommandMessage (int commandId) override;
 
 
 private:
 
     //[UserVariables]
+
+    Array<TreeItem *> items;
+
     //[/UserVariables]
 
 

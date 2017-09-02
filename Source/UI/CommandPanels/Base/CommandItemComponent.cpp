@@ -46,7 +46,8 @@ class ColourHighlighter : public Component
 {
 public:
 
-    explicit ColourHighlighter(const Colour &targetColour) : colour(targetColour/*.interpolatedWith(Colours::white, 0.5f)*/)
+    explicit ColourHighlighter(const Colour &targetColour) :
+        colour(targetColour/*.interpolatedWith(Colours::white, 0.5f)*/)
     {
         this->setInterceptsMouseClicks(false, false);
     }
@@ -209,8 +210,15 @@ void CommandItemComponent::resized()
     submenuMarker->setBounds (getWidth() - 4 - 24, (getHeight() / 2) - ((getHeight() - 16) / 2), 24, getHeight() - 16);
     //[UserResized] Add your own custom resize handling here..
 
-    this->icon = Icons::findByName(this->description->iconName,
-                                   iconHeightByComponentHeight(this->getHeight()));
+    if (this->description->image.isValid())
+    {
+        this->icon = this->description->image;
+    }
+    else
+    {
+        this->icon = Icons::findByName(this->description->iconName,
+            iconHeightByComponentHeight(this->getHeight()));
+    }
 
     const float xMargin = ICON_MARGIN * 1.2f;
     this->textLabel->setBounds(int(this->icon.getWidth() + xMargin),
@@ -390,6 +398,7 @@ void CommandItemComponent::update(const CommandItem::Ptr desc)
 Component *CommandItemComponent::createHighlighterComponent()
 {
     CommandItem::Ptr desc2 = CommandItem::empty();
+    desc2->image = this->description->image;
     desc2->iconName = this->description->iconName;
     desc2->commandText = this->description->commandText;
     desc2->subText = this->description->subText;

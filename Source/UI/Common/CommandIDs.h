@@ -169,8 +169,10 @@ namespace CommandIDs
         BatchChangeInstrument           = 0x018000,
         BatchSetInstrument              = 0x018001, // more ids reserved for instruments
 
-        DismissModalDialogAsync         = 0x020000
+        DismissModalDialogAsync         = 0x020000,
 
-        // Add your command ids here
+        HeadlineSelectSubitem           = 0x020010, // more ids reserved for sub-items
+
+        YourNextCommandId               = 0x021000
     };
 } // namespace CommandIDs

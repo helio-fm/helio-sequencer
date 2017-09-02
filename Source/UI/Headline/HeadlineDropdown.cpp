@@ -22,9 +22,13 @@
 #include "HeadlineDropdown.h"
 
 //[MiscUserDefs]
+#include "TreeItem.h"
+#include "CommandIDs.h"
+#include "Icons.h"
 //[/MiscUserDefs]
 
-HeadlineDropdown::HeadlineDropdown()
+HeadlineDropdown::HeadlineDropdown(Array<TreeItem *> treeItems)
+    : items(treeItems)
 {
 
     //[UserPreSize]
@@ -33,6 +37,18 @@ HeadlineDropdown::HeadlineDropdown()
     setSize (256, 128);
 
     //[Constructor]
+    ReferenceCountedArray<CommandItem> cmds;
+
+    for (int i = 0; i < this->items.size(); ++i)
+    {
+        Logger::writeToLog(this->items[i]->getCaption());
+
+        cmds.add(CommandItem::withParams(this->items[i]->getIcon(),
+            CommandIDs::HeadlineSelectSubitem + i,
+            this->items[i]->getCaption()));
+    }
+
+    this->updateContent(cmds);
     //[/Constructor]
 }
 
@@ -52,6 +68,7 @@ void HeadlineDropdown::paint (Graphics& g)
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..
+    CommandPanel::paint(g);
     //[/UserPaint]
 }
 
@@ -61,7 +78,24 @@ void HeadlineDropdown::resized()
     //[/UserPreResize]
 
     //[UserResized] Add your own custom resize handling here..
+    CommandPanel::resized();
     //[/UserResized]
+}
+
+void HeadlineDropdown::handleCommandMessage (int commandId)
+{
+    //[UserCode_handleCommandMessage] -- Add your code here...
+    for (int i = 0; i < this->items.size(); ++i)
+    {
+        if (commandId == CommandIDs::HeadlineSelectSubitem + i)
+        {
+            this->items[i]->setSelected(true, true);
+            jassert(this->items[i]);
+        }
+    }
+
+    this->getParentComponent()->exitModalState(0);
+    //[/UserCode_handleCommandMessage]
 }
 
 
@@ -73,9 +107,13 @@ void HeadlineDropdown::resized()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="HeadlineDropdown" template="../../Template"
-                 componentName="" parentClasses="public Component" constructorParams=""
-                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="256" initialHeight="128">
+                 componentName="" parentClasses="public CommandPanel" constructorParams="Array&lt;TreeItem *&gt; treeItems"
+                 variableInitialisers="items(treeItems)" snapPixels="8" snapActive="1"
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="256"
+                 initialHeight="128">
+  <METHODS>
+    <METHOD name="handleCommandMessage (int commandId)"/>
+  </METHODS>
   <BACKGROUND backgroundColour="0"/>
 </JUCER_COMPONENT>
 

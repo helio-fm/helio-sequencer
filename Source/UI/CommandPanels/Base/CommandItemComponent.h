@@ -24,6 +24,7 @@ class IconComponent;
 
 struct CommandItem : public ReferenceCountedObject
 {
+    Image image;
     String iconName;
     String commandText;
     String subText;
@@ -49,6 +50,19 @@ struct CommandItem : public ReferenceCountedObject
     {
         CommandItem::Ptr description(new CommandItem());
         description->iconName = targetIcon;
+        description->commandText = text;
+        description->commandId = returnedId;
+        description->isToggled = false;
+        description->hasSubmenu = false;
+        return description;
+    }
+
+    static CommandItem::Ptr withParams(Image image,
+        int returnedId,
+        const String &text = "")
+    {
+        CommandItem::Ptr description(new CommandItem());
+        description->image = image;
         description->commandText = text;
         description->commandId = returnedId;
         description->isToggled = false;

@@ -24,6 +24,8 @@
 //[MiscUserDefs]
 #include "IconComponent.h"
 #include "PanelBackgroundB.h"
+#include "HeadlineDropdown.h"
+#include "HelioCallout.h"
 
 class HeadlineItemHighlighter : public Component
 {
@@ -64,6 +66,8 @@ HeadlineItem::HeadlineItem(WeakReference<TreeItem> treeItem)
 
 
     //[UserPreSize]
+    this->setFocusContainer(false);
+    this->setWantsKeyboardFocus(false);
     this->titleLabel->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]
 
@@ -110,7 +114,7 @@ void HeadlineItem::paint (Graphics& g)
 
     {
         float x = 0, y = 0;
-        Colour fillColour1 = Colour (0x3d000000), fillColour2 = Colour (0x00000000);
+        Colour fillColour1 = Colour (0x33000000), fillColour2 = Colour (0x00000000);
         //[UserPaintCustomArguments] Customize the painting arguments here..
 
         // A hack - don't draw a shadow for the first item in chain
@@ -204,6 +208,27 @@ void HeadlineItem::resized()
     //[/UserResized]
 }
 
+void HeadlineItem::mouseDown (const MouseEvent& e)
+{
+    //[UserCode_mouseDown] -- Add your code here...
+    //if (this->item != nullptr) {
+    //    this->item->setSelected(true, true);
+    //}
+    if (this->item != nullptr)
+    {
+        Array<TreeItem *> childrenLevel1;
+        for (int i = 0; i < this->item->getNumSubItems(); ++i)
+        {
+            TreeItem *child = static_cast<TreeItem *>(this->item->getSubItem(i));
+            childrenLevel1.add(child);
+        }
+
+        Component *menu = new HeadlineDropdown(childrenLevel1);
+        HelioCallout::emit(menu, this);
+    }
+    //[/UserCode_mouseDown]
+}
+
 
 //[MiscUserCode]
 
@@ -228,9 +253,12 @@ BEGIN_JUCER_METADATA
                  constructorParams="WeakReference&lt;TreeItem&gt; treeItem" variableInitialisers="item(treeItem)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="256" initialHeight="32">
+  <METHODS>
+    <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
+  </METHODS>
   <BACKGROUND backgroundColour="0">
     <PATH pos="0 0 100 100" fill="solid: cffffff" hasStroke="0" nonZeroWinding="1">s 0 0 l 8R 0 l 1R 16 l 8R 32 l 0 32 x</PATH>
-    <PATH pos="0 0 100 100" fill=" radial: 0 16, 16 14, 0=3d000000, 1=0"
+    <PATH pos="0 0 100 100" fill=" radial: 0 16, 16 14, 0=33000000, 1=0"
           hasStroke="0" nonZeroWinding="1">s 0 0 l 40 0 l 40 32 l 0 32 x</PATH>
     <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="1" stroke="1, mitered, butt"
           strokeColour=" radial: 1R 16, 8R 2, 0=77000000, 1=0" nonZeroWinding="1">s 224 0 l 8R 0 l 1R 16 l 8R 32 l 224 32 x</PATH>
