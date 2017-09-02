@@ -19,10 +19,12 @@
 
 //[Headers]
 #include "TreeItem.h"
+
+class HeadlineItem;
 //[/Headers]
 
 #include "../Themes/PanelBackgroundB.h"
-#include "../Themes/SeparatorHorizontal.h"
+#include "../Themes/SeparatorHorizontalReversed.h"
 
 class Headline  : public Component
 {
@@ -34,7 +36,7 @@ public:
 
     //[UserMethods]
 
-    void syncWithTree(WeakReference<TreeItem> root);
+    void syncWithTree(WeakReference<TreeItem> child);
 
     //[/UserMethods]
 
@@ -45,10 +47,15 @@ public:
 private:
 
     //[UserVariables]
+
+    ComponentAnimator animator;
+
+    OwnedArray<HeadlineItem> chain;
+
     //[/UserVariables]
 
     ScopedPointer<PanelBackgroundB> bg;
-    ScopedPointer<SeparatorHorizontal> separator;
+    ScopedPointer<SeparatorHorizontalReversed> separator;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Headline)
 };

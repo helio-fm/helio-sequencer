@@ -34,6 +34,7 @@
 #include "TreePanelDefault.h"
 #include "InitScreen.h"
 #include "HybridRollCommandPanel.h"
+#include "ColourSchemeManager.h"
 
 
 namespace KeyboardFocusDebugger
@@ -279,6 +280,8 @@ void MainLayout::showPage(Component *page, TreeItem *source)
         hideMarkersRecursive(App::Workspace().getTreeRoot());
         source->setMarkerVisible(true);
         this->treePanel->repaint();
+
+        this->headline->syncWithTree(source);
     }
 
     if (this->currentContent != nullptr)

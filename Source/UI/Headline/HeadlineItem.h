@@ -19,7 +19,6 @@
 
 //[Headers]
 #include "HighlightedComponent.h"
-#include "ComponentFader.h"
 #include "TreeItem.h"
 
 class IconComponent;
@@ -45,8 +44,6 @@ public:
 private:
 
     //[UserVariables]
-
-    ComponentFader fader;
 
     WeakReference<TreeItem> item;
 
