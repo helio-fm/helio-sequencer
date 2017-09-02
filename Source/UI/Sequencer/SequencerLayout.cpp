@@ -382,7 +382,7 @@ public:
         const int scrollerHeight = MainLayout::getScrollerHeight();
 
 #if VERTICAL_ROLLS_LAYOUT
-        const float rollViewportHeight = float(r.getHeight() - scrollerHeight);
+        const float rollViewportHeight = float(r.getHeight() - scrollerHeight + 1);
         const Rectangle<int> rollSize(r.withBottom(r.getBottom() - scrollerHeight));
         const int viewport1Pos = int(this->animationPosition * rollViewportHeight);
         const int viewport2Pos = int(this->animationPosition * rollViewportHeight - rollViewportHeight);
