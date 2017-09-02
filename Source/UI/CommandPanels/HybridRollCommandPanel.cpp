@@ -48,7 +48,7 @@ HybridRollCommandPanel::HybridRollCommandPanel(ProjectTreeItem &parent)
 {
     this->recreateCommandDescriptions();
 
-    this->setSize(MIDIROLL_COMMANDPANEL_WIDTH, 640);
+    this->setSize(HYBRID_ROLL_COMMANDPANEL_WIDTH, 640);
 
     this->project.getTransport().addTransportListener(this);
     this->project.getEditMode().addChangeListener(this);
@@ -115,11 +115,11 @@ void HybridRollCommandPanel::handleCommandMessage (int commandId)
             // (пока просто остановлю воспроизведение)
             this->project.getTransport().stopPlayback();
 
-            if (selectedAnnotation != nullptr && MIDIROLL_COMMANDPANEL_SHOULD_SHOW_ANNOTATION_DETAILS)
+            if (selectedAnnotation != nullptr && HYBRID_ROLL_COMMANDPANEL_SHOULD_SHOW_ANNOTATION_DETAILS)
             {
                 this->emitAnnotationsCallout(new AnnotationCommandPanel(this->project, *selectedAnnotation));
             }
-            else if (selectedTimeSignature != nullptr && MIDIROLL_COMMANDPANEL_SHOULD_SHOW_ANNOTATION_DETAILS)
+            else if (selectedTimeSignature != nullptr && HYBRID_ROLL_COMMANDPANEL_SHOULD_SHOW_ANNOTATION_DETAILS)
             {
                 this->emitAnnotationsCallout(new TimeSignatureCommandPanel(this->project, *selectedTimeSignature));
             }

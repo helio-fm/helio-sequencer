@@ -23,14 +23,7 @@
 
 //[MiscUserDefs]
 #include "CommandItemComponent.h"
-
-#if HELIO_DESKTOP
-#   define MIDIROLL_COMMANDPANEL_WIDTH (64)
-#   define MIDIROLL_COMMANDPANEL_ROWHEIGHT (48)
-#elif HELIO_MOBILE
-#   define MIDIROLL_COMMANDPANEL_WIDTH (64)
-#   define MIDIROLL_COMMANDPANEL_ROWHEIGHT (48)
-#endif
+#include "HybridRollCommandPanel.h"
 //[/MiscUserDefs]
 
 AutomationsCommandPanel::AutomationsCommandPanel()
@@ -46,13 +39,13 @@ AutomationsCommandPanel::AutomationsCommandPanel()
     this->listBox->setModel(this);
     this->listBox->setMultipleSelectionEnabled(false);
     this->listBox->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
-    this->listBox->setRowHeight(MIDIROLL_COMMANDPANEL_ROWHEIGHT);
+    this->listBox->setRowHeight(HYBRID_ROLL_COMMANDPANEL_ROWHEIGHT);
     //[/UserPreSize]
 
     setSize (64, 640);
 
     //[Constructor]
-    this->setSize(MIDIROLL_COMMANDPANEL_WIDTH, 640);
+    this->setSize(HYBRID_ROLL_COMMANDPANEL_WIDTH, 640);
 
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);

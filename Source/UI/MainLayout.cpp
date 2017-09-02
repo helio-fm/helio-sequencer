@@ -422,7 +422,7 @@ Rectangle<int> MainLayout::getPageBounds() const
 {
     Rectangle<int> r(this->getLocalBounds());
     r.removeFromLeft(this->treePanel->getWidth());
-    r.removeFromRight(MIDIROLL_COMMANDPANEL_WIDTH); // a hack!
+    r.removeFromRight(HYBRID_ROLL_COMMANDPANEL_WIDTH); // a hack!
     return r;
 }
 

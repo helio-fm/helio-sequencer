@@ -68,13 +68,13 @@ HybridRollCommandPanelDefault::HybridRollCommandPanelDefault(ProjectTreeItem &pa
     this->listBox->setModel(this);
     this->listBox->setMultipleSelectionEnabled(false);
     this->listBox->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
-    this->listBox->setRowHeight(MIDIROLL_COMMANDPANEL_ROWHEIGHT);
+    this->listBox->setRowHeight(HYBRID_ROLL_COMMANDPANEL_ROWHEIGHT);
     //[/UserPreSize]
 
     setSize (64, 640);
 
     //[Constructor]
-    this->setSize(MIDIROLL_COMMANDPANEL_WIDTH, 320);
+    this->setSize(HYBRID_ROLL_COMMANDPANEL_WIDTH, 320);
 
     // TODO some kind of helper to fix this?
     this->setFocusContainer(false);
