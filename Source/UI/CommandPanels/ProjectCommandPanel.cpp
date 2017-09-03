@@ -410,7 +410,7 @@ void ProjectCommandPanel::initMainMenu(AnimationType animationType)
 void ProjectCommandPanel::initAutomationsMenu(AnimationType animationType)
 {
     ReferenceCountedArray<CommandItem> cmds;
-    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back")));
+    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
     cmds.add(CommandItem::withParams(Icons::automation, CommandIDs::AddTempoController, TRANS("menu::project::addtempo")));
 
     const Array<Instrument *> &instruments = App::Workspace().getAudioCore().getInstruments();
@@ -426,7 +426,7 @@ void ProjectCommandPanel::initAutomationsMenu(AnimationType animationType)
 void ProjectCommandPanel::initAutomationsControllersMenu()
 {
     ReferenceCountedArray<CommandItem> cmds;
-    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::ProjectAutomationsMenu, TRANS("menu::back")));
+    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::ProjectAutomationsMenu, TRANS("menu::back"))->withTimer());
     
     for (int i = 0; i < NUM_CONTROLLERS_TO_SHOW; ++i)
     {
@@ -444,7 +444,7 @@ void ProjectCommandPanel::initAutomationsControllersMenu()
 void ProjectCommandPanel::initRenderMenu()
 {
     ReferenceCountedArray<CommandItem> cmds;
-    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back")));
+    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
     cmds.add(CommandItem::withParams(Icons::render, CommandIDs::RenderToWAV, TRANS("menu::project::render::wav")));
     cmds.add(CommandItem::withParams(Icons::render, CommandIDs::RenderToOGG, TRANS("menu::project::render::ogg")));
     cmds.add(CommandItem::withParams(Icons::render, CommandIDs::RenderToFLAC, TRANS("menu::project::render::flac")));
@@ -455,7 +455,7 @@ void ProjectCommandPanel::initRenderMenu()
 void ProjectCommandPanel::initBatchMenu()
 {
     ReferenceCountedArray<CommandItem> cmds;
-    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back")));
+    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
     cmds.add(CommandItem::withParams(Icons::up, CommandIDs::RefactorTransposeUp, TRANS("menu::project::refactor::halftoneup")));
     cmds.add(CommandItem::withParams(Icons::down, CommandIDs::RefactorTransposeDown, TRANS("menu::project::refactor::halftonedown")));
     //cmds.add(CommandItem::withParams(Icons::group, CommandIDs::RefactorRemoveOverlaps, TRANS("menu::project::refactor::cleanup")));
@@ -465,7 +465,7 @@ void ProjectCommandPanel::initBatchMenu()
 void ProjectCommandPanel::initInstrumentSelection()
 {
     ReferenceCountedArray<CommandItem> cmds;
-    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back")));
+    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
     const Array<Instrument *> &info = App::Workspace().getAudioCore().getInstruments();
     
     for (int i = 0; i < info.size(); ++i)

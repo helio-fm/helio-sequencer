@@ -32,6 +32,7 @@ struct CommandItem : public ReferenceCountedObject
     int commandId;
     bool isToggled;
     bool hasSubmenu;
+    bool hasTimer;
 
     typedef ReferenceCountedObjectPtr<CommandItem> Ptr;
 
@@ -54,6 +55,7 @@ struct CommandItem : public ReferenceCountedObject
         description->commandId = returnedId;
         description->isToggled = false;
         description->hasSubmenu = false;
+        description->hasTimer = false;
         return description;
     }
 
@@ -67,6 +69,7 @@ struct CommandItem : public ReferenceCountedObject
         description->commandId = returnedId;
         description->isToggled = false;
         description->hasSubmenu = false;
+        description->hasTimer = false;
         return description;
     }
 
@@ -74,6 +77,14 @@ struct CommandItem : public ReferenceCountedObject
     {
         CommandItem::Ptr description(this);
         description->hasSubmenu = true;
+        description->hasTimer = true; // a hack
+        return description;
+    }
+
+    CommandItem::Ptr withTimer()
+    {
+        CommandItem::Ptr description(this);
+        description->hasTimer = true;
         return description;
     }
 
@@ -102,7 +113,8 @@ struct CommandItem : public ReferenceCountedObject
 //[/Headers]
 
 
-class CommandItemComponent  : public DraggingListBoxComponent
+class CommandItemComponent  : public DraggingListBoxComponent,
+                              private Timer
 {
 public:
 
@@ -130,6 +142,9 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
+    void mouseMove (const MouseEvent& e) override;
+    void mouseEnter (const MouseEvent& e) override;
+    void mouseExit (const MouseEvent& e) override;
     void mouseDown (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
 
@@ -148,9 +163,13 @@ private:
     ScopedPointer<Component> toggleMarker;
     ScopedPointer<Component> colourHighlighter;
 
+    Point<int> lastMouseScreenPosition;
+
     ComponentAnimator animator;
 
     Component *createHighlighterComponent() override;
+
+    void timerCallback() override;
 
     inline bool hasText() const
     {

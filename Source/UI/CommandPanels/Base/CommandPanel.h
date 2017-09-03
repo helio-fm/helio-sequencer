@@ -28,7 +28,6 @@
 
 //[/Headers]
 
-#include "../../Themes/PanelBackgroundC.h"
 
 class CommandPanel  : public Component,
                       private ListBoxModel
@@ -50,7 +49,8 @@ public:
         SlideDown       = 0x050,
     };
 
-    void updateContent(ReferenceCountedArray<CommandItem> commands, AnimationType animationType = SlideRight);
+    void updateContent(ReferenceCountedArray<CommandItem> commands,
+        AnimationType animationType = SlideDown);
 
     static StringPairArray getColoursList();
 
@@ -66,6 +66,8 @@ private:
     //[UserVariables]
 
     ComponentAnimator animator;
+
+    AnimationType lastAnimationType;
 
     ReferenceCountedArray<CommandItem> commandDescriptions;
 
@@ -88,7 +90,6 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<PanelBackgroundC> component;
     ScopedPointer<ListBox> listBox;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CommandPanel)

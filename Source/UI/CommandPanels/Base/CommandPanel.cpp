@@ -36,11 +36,11 @@
 
 CommandPanel::CommandPanel()
 {
-    addAndMakeVisible (component = new PanelBackgroundC());
     addAndMakeVisible (listBox = new ListBox());
 
 
     //[UserPreSize]
+    this->lastAnimationType = AnimationType::None;
     this->listBox->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
     //[/UserPreSize]
 
@@ -66,7 +66,6 @@ CommandPanel::~CommandPanel()
     //[Destructor_pre]
     //[/Destructor_pre]
 
-    component = nullptr;
     listBox = nullptr;
 
     //[Destructor]
@@ -87,9 +86,10 @@ void CommandPanel::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    component->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
     listBox->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
+    this->animator.cancelAllAnimations(false);
+    this->updateContent(this->commandDescriptions, this->lastAnimationType);
     //[/UserResized]
 }
 
@@ -156,6 +156,7 @@ StringPairArray CommandPanel::getColoursList()
 
 void CommandPanel::updateContent(ReferenceCountedArray<CommandItem> commands, AnimationType animationType)
 {
+    this->lastAnimationType = animationType;
     const bool firstTimeUpdate = (this->commandDescriptions.size() == 0);
 
     this->commandDescriptions = commands;
@@ -328,9 +329,6 @@ BEGIN_JUCER_METADATA
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
-  <JUCERCOMP name="" id="19597a6a5daad55d" memberName="component" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../../Themes/PanelBackgroundC.cpp"
-             constructorParams=""/>
   <GENERICCOMPONENT name="" id="381fa571a3dfc5cd" memberName="listBox" virtualName=""
                     explicitFocusOrder="0" pos="0 0 0M 0M" class="ListBox" params=""/>
 </JUCER_COMPONENT>

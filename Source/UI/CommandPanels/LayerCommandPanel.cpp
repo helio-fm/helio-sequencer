@@ -256,7 +256,7 @@ void LayerCommandPanel::initDefaultCommands()
 void LayerCommandPanel::initColorSelection()
 {
     ReferenceCountedArray<CommandItem> cmds;
-    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back")));
+    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
     
     const StringPairArray colours(CommandPanel::getColoursList());
     
@@ -274,7 +274,7 @@ void LayerCommandPanel::initColorSelection()
 void LayerCommandPanel::initInstrumentSelection()
 {
     ReferenceCountedArray<CommandItem> cmds;
-    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back")));
+    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
     
     const Array<Instrument *> &info = App::Workspace().getAudioCore().getInstruments();
     const Instrument *selectedInstrument = App::Workspace().getAudioCore().findInstrumentById(this->layerItem.getTrackInstrumentId());
@@ -292,7 +292,7 @@ void LayerCommandPanel::initInstrumentSelection()
 void LayerCommandPanel::initProjectSelection()
 {
     ReferenceCountedArray<CommandItem> cmds;
-    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back")));
+    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
 
     const ProjectTreeItem *currentProject = this->layerItem.getProject();
     Array<ProjectTreeItem *> projects = App::Workspace().getLoadedProjects();

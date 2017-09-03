@@ -87,7 +87,7 @@ void MoveToLayerCommandPanel::initLayersPanel(bool shouldAddBackButton)
     
     if (shouldAddBackButton)
     {
-        cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back")));
+        cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
     }
     
     const Array<PianoTrackTreeItem *> &layers =

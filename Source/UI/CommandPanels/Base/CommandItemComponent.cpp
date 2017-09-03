@@ -138,6 +138,7 @@ CommandItemComponent::CommandItemComponent(Component *parentCommandReceiver, Vie
 
     //[UserPreSize]
     this->toggleMarker = nullptr;
+    this->lastMouseScreenPosition = { 0, 0 };
     //[/UserPreSize]
 
     setSize (512, 40);
@@ -173,11 +174,23 @@ void CommandItemComponent::paint (Graphics& g)
 
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x06ffffff));
-    g.fillRect (0, 0, getWidth() - 0, 1);
+    {
+        int x = 0, y = 0, width = getWidth() - 0, height = 1;
+        Colour fillColour = Colour (0x06ffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+    }
 
-    g.setColour (Colour (0x0f000000));
-    g.fillRect (0, getHeight() - 1, getWidth() - 0, 1);
+    {
+        int x = 0, y = getHeight() - 1, width = getWidth() - 0, height = 1;
+        Colour fillColour = Colour (0x0f000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+    }
 
     //[UserPaint] Add your own custom painting code here..
 
@@ -236,6 +249,41 @@ void CommandItemComponent::resized()
     this->textLabel->setFont(Font(Font::getDefaultSansSerifFontName(), fontSize, Font::plain));
 
     //[/UserResized]
+}
+
+void CommandItemComponent::mouseMove (const MouseEvent& e)
+{
+    //[UserCode_mouseMove] -- Add your code here...
+    if (this->description->hasTimer &&
+        e.getScreenPosition().getDistanceSquaredFrom(this->lastMouseScreenPosition) > 0 &&
+        !this->isTimerRunning())
+    {
+        this->startTimer(550);
+    }
+
+    DraggingListBoxComponent::mouseMove(e);
+
+    // This prevents item from being triggered
+    // after returning from a submenu, when
+    // this item happens to appear under mouse cursor
+    this->lastMouseScreenPosition = e.getScreenPosition();
+    //[/UserCode_mouseMove]
+}
+
+void CommandItemComponent::mouseEnter (const MouseEvent& e)
+{
+    //[UserCode_mouseEnter] -- Add your code here...
+    this->lastMouseScreenPosition = e.getScreenPosition();
+    DraggingListBoxComponent::mouseEnter(e);
+    //[/UserCode_mouseEnter]
+}
+
+void CommandItemComponent::mouseExit (const MouseEvent& e)
+{
+    //[UserCode_mouseExit] -- Add your code here...
+    DraggingListBoxComponent::mouseExit(e);
+    this->stopTimer();
+    //[/UserCode_mouseExit]
 }
 
 void CommandItemComponent::mouseDown (const MouseEvent& e)
@@ -338,6 +386,7 @@ void CommandItemComponent::update(const CommandItem::Ptr desc)
 {
     if (this->description->commandText != desc->commandText)
     {
+        this->stopTimer();
         this->clearHighlighterAndStopAnimations();
     }
 
@@ -353,19 +402,6 @@ void CommandItemComponent::update(const CommandItem::Ptr desc)
         this->toggleMarker = nullptr;
     }
 
-
-//    if ((desc->colour.getAlpha() > 0) && (this->colourHighlighter == nullptr))
-//    {
-//        this->colourHighlighter = new ColourHighlighter(desc->colour);
-//        this->addAndMakeVisible(this->colourHighlighter);
-//        this->colourHighlighter->setBounds(this->getLocalBounds());
-//        //this->animator.animateComponent(this->colourHighlighter, this->getLocalBounds(), 0.1f, 300, false, 0.0, 0.0);
-//    }
-//    else if ((desc->colour.getAlpha() == 0) && (this->colourHighlighter != nullptr))
-//    {
-//        this->colourHighlighter = nullptr;
-//    }
-
     if (desc->colour.getAlpha() > 0)
     {
         this->textLabel->setColour(Label::textColourId, desc->colour.interpolatedWith(Colour(0xbaffffff), 0.5));
@@ -374,7 +410,6 @@ void CommandItemComponent::update(const CommandItem::Ptr desc)
     {
         this->textLabel->setColour(Label::textColourId, Colour(0xbaffffff));
     }
-
 
     this->submenuMarker->setVisible(desc->hasSubmenu);
     this->description = desc;
@@ -404,7 +439,17 @@ Component *CommandItemComponent::createHighlighterComponent()
     desc2->subText = this->description->subText;
     desc2->hasSubmenu = this->description->hasSubmenu;
     desc2->colour = this->description->colour;
+    desc2->hasTimer = false;
     return new CommandItemComponent(this->parent, nullptr, desc2);
+
+    //return new CommandDragHighlighter();
+}
+
+void CommandItemComponent::timerCallback()
+{
+    this->stopTimer();
+    jassert(this->description->hasTimer);
+    this->parent->postCommandMessage(this->description->commandId);
 }
 
 //[/MiscUserCode]
@@ -414,7 +459,7 @@ Component *CommandItemComponent::createHighlighterComponent()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="CommandItemComponent" template="../../../Template"
-                 componentName="" parentClasses="public DraggingListBoxComponent"
+                 componentName="" parentClasses="public DraggingListBoxComponent, private Timer"
                  constructorParams="Component *parentCommandReceiver, Viewport *parentViewport, const CommandItem::Ptr desc"
                  variableInitialisers="DraggingListBoxComponent(parentViewport),&#10;parent(parentCommandReceiver),&#10;description(CommandItem::empty()),&#10;mouseDownWasTriggered(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
@@ -422,6 +467,9 @@ BEGIN_JUCER_METADATA
   <METHODS>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
     <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
+    <METHOD name="mouseEnter (const MouseEvent&amp; e)"/>
+    <METHOD name="mouseExit (const MouseEvent&amp; e)"/>
+    <METHOD name="mouseMove (const MouseEvent&amp; e)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
     <RECT pos="0 0 0M 1" fill="solid: 6ffffff" hasStroke="0"/>
