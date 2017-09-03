@@ -38,6 +38,20 @@ public:
         }
     }
     
+    // Silence useless VC C4250 warnings:
+
+    void resized() override
+    { IconComponent::resized(); }
+
+    void paint(Graphics &g) override
+    { IconComponent::paint(g); }
+
+    void mouseEnter(const MouseEvent &event) override
+    { HighlightedComponent::mouseEnter(event); }
+
+    void mouseExit(const MouseEvent &event) override
+    { HighlightedComponent::mouseExit(event); }
+
 private:
     
     Component *createHighlighterComponent() override

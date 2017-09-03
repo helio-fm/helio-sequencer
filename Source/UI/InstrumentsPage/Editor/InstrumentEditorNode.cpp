@@ -217,12 +217,12 @@ void InstrumentEditorNode::update()
         return;
     }
 
-    this->numIns = jmin(f->getProcessor()->getNumInputChannels(), CHANNELS_NUMBER_LIMIT);
+    this->numIns = jmin(f->getProcessor()->getTotalNumInputChannels(), CHANNELS_NUMBER_LIMIT);
 
     if (f->getProcessor()->acceptsMidi())
     { ++this->numIns; }
 
-    this->numOuts = jmin(f->getProcessor()->getNumOutputChannels(), CHANNELS_NUMBER_LIMIT);
+    this->numOuts = jmin(f->getProcessor()->getTotalNumOutputChannels(), CHANNELS_NUMBER_LIMIT);
 
     if (f->getProcessor()->producesMidi())
     { ++this->numOuts; }

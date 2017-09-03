@@ -80,32 +80,6 @@ void BuiltInSynthAudioPlugin::releaseResources()
     // when playback stops
 }
 
-
-const String BuiltInSynthAudioPlugin::getInputChannelName(int channelIndex) const
-{
-    return "Input " + String(channelIndex + 1);
-}
-
-const String BuiltInSynthAudioPlugin::getOutputChannelName(int channelIndex) const
-{
-    return "Output " + String(channelIndex + 1);
-}
-
-bool BuiltInSynthAudioPlugin::isInputChannelStereoPair(int index) const
-{
-    return false;
-}
-
-bool BuiltInSynthAudioPlugin::isOutputChannelStereoPair(int index) const
-{
-    return true;
-}
-
-bool BuiltInSynthAudioPlugin::silenceInProducesSilenceOut() const
-{
-    return false;
-}
-
 double BuiltInSynthAudioPlugin::getTailLengthSeconds() const
 {
     return 1.0;
