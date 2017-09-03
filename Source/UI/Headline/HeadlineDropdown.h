@@ -18,35 +18,50 @@
 #pragma once
 
 //[Headers]
-class TreeItem;
-#include "CommandPanel.h"
+#include "HighlightedComponent.h"
+#include "TreeItem.h"
+
+class IconComponent;
 //[/Headers]
 
 
-class HeadlineDropdown  : public CommandPanel
+class HeadlineDropdown  : public Component,
+                          private Timer
 {
 public:
 
-    HeadlineDropdown (Array<TreeItem *> treeItems);
+    HeadlineDropdown (WeakReference<TreeItem> targetItem);
 
     ~HeadlineDropdown();
 
     //[UserMethods]
+    void childBoundsChanged(Component *) override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void handleCommandMessage (int commandId) override;
+    void mouseExit (const MouseEvent& e) override;
+    void mouseDown (const MouseEvent& e) override;
+    void inputAttemptWhenModal() override;
 
 
 private:
 
     //[UserVariables]
 
-    Array<TreeItem *> items;
+    WeakReference<TreeItem> item;
+
+    void timerCallback() override;
 
     //[/UserVariables]
 
+    ScopedPointer<Label> titleLabel;
+    ScopedPointer<IconComponent> icon;
+    ScopedPointer<Component> content;
+    Path internalPath1;
+    Path internalPath2;
+    Path internalPath3;
+    Path internalPath4;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeadlineDropdown)
 };

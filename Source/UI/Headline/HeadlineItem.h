@@ -22,10 +22,12 @@
 #include "TreeItem.h"
 
 class IconComponent;
+class HeadlineDropdown;
 //[/Headers]
 
 
-class HeadlineItem  : public HighlightedComponent
+class HeadlineItem  : public Component,
+                      private Timer
 {
 public:
 
@@ -39,6 +41,8 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
+    void mouseEnter (const MouseEvent& e) override;
+    void mouseExit (const MouseEvent& e) override;
     void mouseDown (const MouseEvent& e) override;
 
 
@@ -46,9 +50,13 @@ private:
 
     //[UserVariables]
 
+    void timerCallback() override;
+
     WeakReference<TreeItem> item;
 
-    Component *createHighlighterComponent() override;
+    ScopedPointer<HeadlineDropdown> dropdown;
+
+    //Component *createHighlighterComponent() override;
 
     //[/UserVariables]
 

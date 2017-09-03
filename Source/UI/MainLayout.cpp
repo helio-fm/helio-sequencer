@@ -132,9 +132,9 @@ MainLayout::MainLayout() :
 
     this->treeResizer = new ResizableEdgeComponent(this->treePanel,
             &this->treePanelConstrainer, ResizableEdgeComponent::rightEdge);
-    this->treeResizer->setAlwaysOnTop(true);
     this->addAndMakeVisible(this->treeResizer);
     this->treeResizer->setInterceptsMouseClicks(false, false); // no more resizable panel
+    this->treeResizer->toFront(false);
 
     this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);

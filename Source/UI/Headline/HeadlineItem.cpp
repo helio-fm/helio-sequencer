@@ -26,6 +26,8 @@
 #include "PanelBackgroundB.h"
 #include "HeadlineDropdown.h"
 #include "HelioCallout.h"
+#include "MainLayout.h"
+#include "App.h"
 
 class HeadlineItemHighlighter : public Component
 {
@@ -36,7 +38,7 @@ public:
 
     void paint(Graphics &g) override
     {
-        Colour fillColour = Colour(0x0cffffff);
+        Colour fillColour = Colour(0x09ffffff);
         g.setColour(fillColour);
         g.fillPath(this->path);
     }
@@ -138,10 +140,10 @@ void HeadlineItem::paint (Graphics& g)
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (ColourGradient (strokeColour1,
-                                       static_cast<float> (getWidth() - 1) - 0.0f + x,
+                                       static_cast<float> (getWidth() - 9) - 0.0f + x,
                                        16.0f - 0.0f + y,
                                        strokeColour2,
-                                       static_cast<float> (getWidth() - 8) - 0.0f + x,
+                                       static_cast<float> (getWidth() - 16) - 0.0f + x,
                                        2.0f - 0.0f + y,
                                        true));
         g.strokePath (internalPath3, PathStrokeType (1.000f), AffineTransform::translation(x, y));
@@ -149,14 +151,14 @@ void HeadlineItem::paint (Graphics& g)
 
     {
         float x = 0, y = 0;
-        Colour strokeColour1 = Colour (0x77ffffff), strokeColour2 = Colour (0x00ffffff);
+        Colour strokeColour1 = Colour (0x55ffffff), strokeColour2 = Colour (0x00ffffff);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setGradientFill (ColourGradient (strokeColour1,
-                                       static_cast<float> (getWidth() - 2) - 0.0f + x,
+                                       static_cast<float> (getWidth() - 10) - 0.0f + x,
                                        16.0f - 0.0f + y,
                                        strokeColour2,
-                                       static_cast<float> (getWidth() - 9) - 0.0f + x,
+                                       static_cast<float> (getWidth() - 17) - 0.0f + x,
                                        5.0f - 0.0f + y,
                                        true));
         g.strokePath (internalPath4, PathStrokeType (0.500f), AffineTransform::translation(x, y));
@@ -171,13 +173,13 @@ void HeadlineItem::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    titleLabel->setBounds (34, 0, getWidth() - 44, getHeight() - 1);
+    titleLabel->setBounds (34, 0, getWidth() - 44, 31);
     icon->setBounds (8, (getHeight() / 2) - (32 / 2), 32, 32);
     internalPath1.clear();
     internalPath1.startNewSubPath (0.0f, 0.0f);
-    internalPath1.lineTo (static_cast<float> (getWidth() - 8), 0.0f);
-    internalPath1.lineTo (static_cast<float> (getWidth() - 1), 16.0f);
-    internalPath1.lineTo (static_cast<float> (getWidth() - 8), 32.0f);
+    internalPath1.lineTo (static_cast<float> (getWidth() - 16), 0.0f);
+    internalPath1.lineTo (static_cast<float> (getWidth() - 9), 16.0f);
+    internalPath1.lineTo (static_cast<float> (getWidth() - 16), 32.0f);
     internalPath1.lineTo (0.0f, 32.0f);
     internalPath1.closeSubPath();
 
@@ -189,42 +191,48 @@ void HeadlineItem::resized()
     internalPath2.closeSubPath();
 
     internalPath3.clear();
-    internalPath3.startNewSubPath (224.0f, 0.0f);
-    internalPath3.lineTo (static_cast<float> (getWidth() - 8), 0.0f);
-    internalPath3.lineTo (static_cast<float> (getWidth() - 1), 16.0f);
-    internalPath3.lineTo (static_cast<float> (getWidth() - 8), 32.0f);
-    internalPath3.lineTo (224.0f, 32.0f);
+    internalPath3.startNewSubPath (static_cast<float> (getWidth() - 32), 0.0f);
+    internalPath3.lineTo (static_cast<float> (getWidth() - 16), 0.0f);
+    internalPath3.lineTo (static_cast<float> (getWidth() - 9), 16.0f);
+    internalPath3.lineTo (static_cast<float> (getWidth() - 16), 32.0f);
+    internalPath3.lineTo (static_cast<float> (getWidth() - 32), 32.0f);
     internalPath3.closeSubPath();
 
     internalPath4.clear();
-    internalPath4.startNewSubPath (224.0f, 0.0f);
-    internalPath4.lineTo (static_cast<float> (getWidth() - 9), 0.0f);
-    internalPath4.lineTo (static_cast<float> (getWidth() - 1), 16.0f);
-    internalPath4.lineTo (static_cast<float> (getWidth() - 9), 32.0f);
-    internalPath4.lineTo (224.0f, 32.0f);
+    internalPath4.startNewSubPath (static_cast<float> (getWidth() - 32), 0.0f);
+    internalPath4.lineTo (static_cast<float> (getWidth() - 17), 0.0f);
+    internalPath4.lineTo (static_cast<float> (getWidth() - 10), 16.0f);
+    internalPath4.lineTo (static_cast<float> (getWidth() - 17), 32.0f);
+    internalPath4.lineTo (static_cast<float> (getWidth() - 32), 32.0f);
     internalPath4.closeSubPath();
 
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
 
+void HeadlineItem::mouseEnter (const MouseEvent& e)
+{
+    //[UserCode_mouseEnter] -- Add your code here...
+    this->startTimer(200);
+    //[/UserCode_mouseEnter]
+}
+
+void HeadlineItem::mouseExit (const MouseEvent& e)
+{
+    //[UserCode_mouseExit] -- Add your code here...
+    this->stopTimer();
+    //[/UserCode_mouseExit]
+}
+
 void HeadlineItem::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
-    //if (this->item != nullptr) {
-    //    this->item->setSelected(true, true);
-    //}
     if (this->item != nullptr)
     {
-        Array<TreeItem *> childrenLevel1;
-        for (int i = 0; i < this->item->getNumSubItems(); ++i)
-        {
-            TreeItem *child = static_cast<TreeItem *>(this->item->getSubItem(i));
-            childrenLevel1.add(child);
-        }
-
-        Component *menu = new HeadlineDropdown(childrenLevel1);
-        HelioCallout::emit(menu, this);
+        HeadlineDropdown *hd = new HeadlineDropdown(this->item);
+        hd->setTopLeftPosition(this->getPosition());
+        hd->setAlpha(0.f);
+        App::Layout().showModalNonOwnedDialog(hd);
     }
     //[/UserCode_mouseDown]
 }
@@ -237,9 +245,22 @@ TreeItem *HeadlineItem::getTreeItem() const noexcept
     return this->item;
 }
 
-Component *HeadlineItem::createHighlighterComponent()
+//Component *HeadlineItem::createHighlighterComponent()
+//{
+//    return new HeadlineItemHighlighter(this->internalPath1);
+//}
+
+void HeadlineItem::timerCallback()
 {
-    return new HeadlineItemHighlighter(this->internalPath1);
+    this->stopTimer();
+
+    if (this->item != nullptr)
+    {
+        HeadlineDropdown *hd = new HeadlineDropdown(this->item);
+        hd->setTopLeftPosition(this->getPosition());
+        hd->setAlpha(0.f);
+        App::Layout().showModalNonOwnedDialog(hd);
+    }
 }
 
 //[/MiscUserCode]
@@ -249,24 +270,26 @@ Component *HeadlineItem::createHighlighterComponent()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="HeadlineItem" template="../../Template"
-                 componentName="" parentClasses="public HighlightedComponent"
+                 componentName="" parentClasses="public Component, private Timer"
                  constructorParams="WeakReference&lt;TreeItem&gt; treeItem" variableInitialisers="item(treeItem)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="256" initialHeight="32">
   <METHODS>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
+    <METHOD name="mouseEnter (const MouseEvent&amp; e)"/>
+    <METHOD name="mouseExit (const MouseEvent&amp; e)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <PATH pos="0 0 100 100" fill="solid: cffffff" hasStroke="0" nonZeroWinding="1">s 0 0 l 8R 0 l 1R 16 l 8R 32 l 0 32 x</PATH>
+    <PATH pos="0 0 100 100" fill="solid: cffffff" hasStroke="0" nonZeroWinding="1">s 0 0 l 16R 0 l 9R 16 l 16R 32 l 0 32 x</PATH>
     <PATH pos="0 0 100 100" fill=" radial: 0 16, 16 14, 0=33000000, 1=0"
           hasStroke="0" nonZeroWinding="1">s 0 0 l 40 0 l 40 32 l 0 32 x</PATH>
     <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="1" stroke="1, mitered, butt"
-          strokeColour=" radial: 1R 16, 8R 2, 0=77000000, 1=0" nonZeroWinding="1">s 224 0 l 8R 0 l 1R 16 l 8R 32 l 224 32 x</PATH>
+          strokeColour=" radial: 9R 16, 16R 2, 0=77000000, 1=0" nonZeroWinding="1">s 32R 0 l 16R 0 l 9R 16 l 16R 32 l 32R 32 x</PATH>
     <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="1" stroke="0.5, mitered, butt"
-          strokeColour=" radial: 2R 16, 9R 5, 0=77ffffff, 1=ffffff" nonZeroWinding="1">s 224 0 l 9R 0 l 1R 16 l 9R 32 l 224 32 x</PATH>
+          strokeColour=" radial: 10R 16, 17R 5, 0=55ffffff, 1=ffffff" nonZeroWinding="1">s 32R 0 l 17R 0 l 10R 16 l 17R 32 l 32R 32 x</PATH>
   </BACKGROUND>
   <LABEL name="" id="9a3c449859f61884" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="34 0 44M 1M" textCol="ffffffff" edTextCol="ff000000"
+         explicitFocusOrder="0" pos="34 0 44M 31" textCol="ffffffff" edTextCol="ff000000"
          edBkgCol="0" labelText="Project" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="18"
          kerning="0" bold="0" italic="0" justification="33"/>

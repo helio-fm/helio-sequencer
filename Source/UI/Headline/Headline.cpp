@@ -97,7 +97,7 @@ Array<TreeItem *> createSortedBranchArray(WeakReference<TreeItem> leaf)
     return result;
 }
 
-#define HEADLINE_ITEMS_OVERLAP 8
+#define HEADLINE_ITEMS_OVERLAP 16
 
 void Headline::syncWithTree(WeakReference<TreeItem> leaf)
 {
@@ -105,7 +105,7 @@ void Headline::syncWithTree(WeakReference<TreeItem> leaf)
 
     // Finds the first inconsistency point in the chain
     int firstInvalidUnitIndex = 0;
-    int fadePositionX = 2;
+    int fadePositionX = HEADLINE_ITEMS_OVERLAP - 6;
     for (; firstInvalidUnitIndex < this->chain.size(); firstInvalidUnitIndex++)
     {
         if (this->chain[firstInvalidUnitIndex]->getTreeItem() != branch[firstInvalidUnitIndex])
