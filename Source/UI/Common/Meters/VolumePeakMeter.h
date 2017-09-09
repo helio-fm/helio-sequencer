@@ -36,7 +36,6 @@ public:
     ~VolumePeakMeter() override;
 
     void setTargetAnalyzer(WeakReference<AudioMonitor> targetAnalyzer);
-    inline float iecLevel(const float dB) const;
 
     //===------------------------------------------------------------------===//
     // Component
@@ -50,7 +49,7 @@ private:
     {
     public:
 
-        explicit Band(VolumePeakMeter *parent);
+        explicit Band();
 
         void setValue(float value);
         void reset();
@@ -58,8 +57,6 @@ private:
         inline void drawBand(Graphics &g, float left, float right, float height);
 
     private:
-
-        VolumePeakMeter *meter;
 
         float value;
         float valueHold;

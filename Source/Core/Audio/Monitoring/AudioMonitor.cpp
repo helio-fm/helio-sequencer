@@ -165,17 +165,17 @@ void AudioMonitor::audioDeviceStopped()
 
 float AudioMonitor::getInterpolatedSpectrumAtFrequency(float frequency) const
 {
-    const double resolution = (this->sampleRate / 2) / double(this->spectrumSize);
+    const float resolution = float(this->sampleRate / 2.f) / float(this->spectrumSize);
     
     const int index1 = roundFloatToInt(frequency / resolution);
     const int safeIndex1 = jlimit(0, this->spectrumSize, index1);
-    const double f1 = index1 * resolution;
+    const float f1 = index1 * resolution;
     const float y1 = (this->spectrum[0][safeIndex1].get() +
                       this->spectrum[1][safeIndex1].get()) / 2.f;
     
     const int index2 = index1 + 1;
     const int safeIndex2 = jlimit(0, this->spectrumSize, index2);
-    const double f2 = index2 * resolution;
+    const float f2 = index2 * resolution;
     const float y2 = (this->spectrum[0][safeIndex2].get() +
                       this->spectrum[1][safeIndex2].get()) / 2.f;
     

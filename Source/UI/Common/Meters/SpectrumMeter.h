@@ -27,13 +27,7 @@ public:
     ~SpectrumMeter() override;
     
     void setTargetAnalyzer(WeakReference<AudioMonitor> monitor);
-    
-    inline float iecLevel(const float dB) const;
-    inline int iecScale(const float dB) const;
-    
-    void setPeakFalloff(const int peakFalloff);
-    int getPeakFalloff() const;
-    
+        
     void resized() override;
     void paint(Graphics &g) override;
     void mouseUp(const MouseEvent& event) override;
@@ -44,7 +38,7 @@ private:
     {
     public:
         
-        explicit SpectrumBand(SpectrumMeter *parent);
+        explicit SpectrumBand();
         
         void setDashedLineMode(bool shouldDrawDashedLine);
         void setValue(float value);
@@ -53,9 +47,7 @@ private:
         inline void drawBand(Graphics &g, float xx, float yy, float w, float h);
         
     private:
-        
-        SpectrumMeter *meter;
-        
+                
         float value;
         float valueHold;
         float valueDecay;
@@ -65,7 +57,7 @@ private:
         
         float maxPeak;
         float averagePeak;
-        
+
         bool drawsDashedLine;
         
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectrumBand);
@@ -82,7 +74,6 @@ private:
     OwnedArray<SpectrumBand> bands;
     const float *spectrumFrequencies;
     
-    int peakFalloff;
     int bandCount;
     int skewTime;
     

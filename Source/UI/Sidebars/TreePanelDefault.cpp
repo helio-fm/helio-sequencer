@@ -33,6 +33,7 @@
 
 #include "SpectralLogo.h"
 #include "SpectrumMeter.h"
+#include "WaveformMeter.h"
 #include "VolumePeakMeter.h"
 #include "App.h"
 #include "AudioCore.h"
@@ -56,7 +57,7 @@ TreePanelDefault::TreePanelDefault()
     addAndMakeVisible (headLine = new SeparatorHorizontalReversed());
     addAndMakeVisible (headShadow = new LighterShadowDownwards());
     addAndMakeVisible (gradient1 = new GradientVerticalReversed());
-    addAndMakeVisible (spectrumMeter = new SpectrumMeter (nullptr));
+    addAndMakeVisible (waveformMeter = new WaveformMeter (nullptr));
 
     addAndMakeVisible (separator = new SeparatorHorizontal());
     addAndMakeVisible (rootTreeItemPanel = new Component());
@@ -96,7 +97,7 @@ TreePanelDefault::~TreePanelDefault()
     headLine = nullptr;
     headShadow = nullptr;
     gradient1 = nullptr;
-    spectrumMeter = nullptr;
+    waveformMeter = nullptr;
     separator = nullptr;
     rootTreeItemPanel = nullptr;
     peakMeterLeft = nullptr;
@@ -143,7 +144,7 @@ void TreePanelDefault::resized()
     headLine->setBounds (0, 47, getWidth() - 0, 2);
     headShadow->setBounds (0, 48, getWidth() - 0, 6);
     gradient1->setBounds (-50, 0, getWidth() - -100, 47);
-    spectrumMeter->setBounds (0, getHeight() - 126, getWidth() - 0, 126);
+    waveformMeter->setBounds (0, getHeight() - 126, getWidth() - 0, 126);
     separator->setBounds (0, getHeight() - 126 - 2, getWidth() - 0, 2);
     rootTreeItemPanel->setBounds (0, 0, getWidth() - 0, 48);
     peakMeterLeft->setBounds (0, getHeight() - 126, 8, 126);
@@ -200,7 +201,7 @@ void TreePanelDefault::setRootItemPanelSelected(bool shouldBeSelected)
 
 void TreePanelDefault::setAudioMonitor(AudioMonitor *audioMonitor)
 {
-    this->spectrumMeter->setTargetAnalyzer(audioMonitor);
+    this->waveformMeter->setTargetAnalyzer(audioMonitor);
     this->peakMeterLeft->setTargetAnalyzer(audioMonitor);
     this->peakMeterRight->setTargetAnalyzer(audioMonitor);
 }
@@ -240,8 +241,8 @@ BEGIN_JUCER_METADATA
   <JUCERCOMP name="" id="f09d886c97d1c017" memberName="gradient1" virtualName=""
              explicitFocusOrder="0" pos="-50 0 -100M 47" sourceFile="../Themes/GradientVerticalReversed.cpp"
              constructorParams=""/>
-  <GENERICCOMPONENT name="" id="1c5204139a3bea83" memberName="spectrumMeter" virtualName=""
-                    explicitFocusOrder="0" pos="0 0Rr 0M 126" class="SpectrumMeter"
+  <GENERICCOMPONENT name="" id="1c5204139a3bea83" memberName="waveformMeter" virtualName=""
+                    explicitFocusOrder="0" pos="0 0Rr 0M 126" class="WaveformMeter"
                     params="nullptr"/>
   <JUCERCOMP name="" id="22d481533ce3ecd3" memberName="separator" virtualName=""
              explicitFocusOrder="0" pos="0 126Rr 0M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"

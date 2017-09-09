@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "SpectrumMeter.h"
+#include "WaveformMeter.h"
 #include "AudioMonitor.h"
 #include "TreePanel.h"
 #include "AudioCore.h"
@@ -32,7 +33,7 @@
 static const float kSpectrumFrequencies[] =
 {
     /* Human Ear Response */
-       35.5f,    40.f,    45.f,
+      35.5f,    40.f,     45.f,
        50.f,    56.f,     63.f,    71.f,    80.f,    90.f,
       100.f,   112.f,    125.f,   140.f,   160.f,   180.f,
       200.f,   224.f,    250.f,   280.f,   315.f,   355.f,
@@ -58,31 +59,11 @@ static const float kSpectrumFrequenciesCompact[] =
     5000.f, 8000.f
 };
 
-//static const float kSpectrumFrequenciesCompact[] =
-//{
-//    30, 60,
-//    110, 220,
-//    350, 700,
-//    1600, 3200,
-//    4800, 7000,
-//    10000, 12000
-//};
-
-//static const float kSpectrumFrequenciesCompact[] =
-//{
-//    31.5, 63,
-//    125,  250,
-//    500,  1000,
-//    2000, 4000,
-//    8000, 16000,
-//};
-
 SpectrumMeter::SpectrumMeter(WeakReference<AudioMonitor> monitor)
     : Thread("Spectrum Component"),
       audioMonitor(std::move(monitor)),
       bandCount(HQ_METER_NUM_BANDS),
       spectrumFrequencies(kSpectrumFrequencies),
-      peakFalloff(HQ_METER_CYCLES_BEFORE_PEAK_FALLOFF),
       skewTime(0),
       altMode(false)
 {
@@ -91,7 +72,7 @@ SpectrumMeter::SpectrumMeter(WeakReference<AudioMonitor> monitor)
     
     for (int band = 0; band < this->bandCount; ++band)
     {
-        this->bands.add(new SpectrumBand(this));
+        this->bands.add(new SpectrumBand());
     }
     
     if (this->audioMonitor != nullptr)
@@ -187,9 +168,9 @@ void SpectrumMeter::paint(Graphics &g)
 
         if (this->altMode)
         {
-            const int valueForMinus6dB = this->iecScale(-6.f);
-            const int valueForMinus12dB = this->iecScale(-12.f);
-            const int valueForMinus24dB = this->iecScale(-24.f);
+            const int valueForMinus6dB = AudioCore::iecLevel(-6.f) * this->getHeight();
+            const int valueForMinus12dB = AudioCore::iecLevel(-12.f) * this->getHeight();
+            const int valueForMinus24dB = AudioCore::iecLevel(-24.f) * this->getHeight();
             
             g1.setColour(Colours::white.withAlpha(0.075f));
             g1.drawHorizontalLine(height - valueForMinus6dB, 0.f, this->getWidth());
@@ -212,46 +193,7 @@ void SpectrumMeter::mouseUp(const MouseEvent& event)
     }
 }
 
-inline float SpectrumMeter::iecLevel(const float dB) const
-{
-    float fDef = 1.0;
-    
-    if (dB < -70.0) {
-        fDef = 0.0;
-    } else if (dB < -60.0) {
-        fDef = (dB + 70.0) * 0.0025;
-    } else if (dB < -50.0) {
-        fDef = (dB + 60.0) * 0.005 + 0.025;
-    } else if (dB < -40.0) {
-        fDef = (dB + 50.0) * 0.0075 + 0.075;
-    } else if (dB < -30.0) {
-        fDef = (dB + 40.0) * 0.015 + 0.15;
-    } else if (dB < -20.0) {
-        fDef = (dB + 30.0) * 0.02 + 0.3;
-    } else { // if (dB < 0.0)
-        fDef = (dB + 20.0) * 0.025 + 0.5;
-}
-    
-    return fDef;
-}
-
-inline int SpectrumMeter::iecScale(const float dB) const
-{
-    return int(this->iecLevel(dB) * float(this->getHeight()));
-}
-
-void SpectrumMeter::setPeakFalloff(const int val)
-{
-    this->peakFalloff = val;
-}
-
-int SpectrumMeter::getPeakFalloff() const
-{
-    return this->peakFalloff;
-}
-
-SpectrumMeter::SpectrumBand::SpectrumBand(SpectrumMeter *parent) :
-    meter(parent),
+SpectrumMeter::SpectrumBand::SpectrumBand() :
     value(0.0f),
     valueHold(0.0f),
     valueDecay(HQ_METER_DECAY_RATE1),
@@ -287,18 +229,10 @@ void SpectrumMeter::SpectrumBand::reset()
     this->drawsDashedLine = true;
 }
 
-// TODO !!!!!!!!!!!!!!!!!111111111111111
-// Портатить день на причесывание спектрометра.
-// У немцев он ваще крутой и красивый, так няшно замедляется и фейдится,
-// а у меня дергается как хз-что
-// Надо играться с альфой в зависимости от громкости
-// и кривую фейд-аута сделать покрасивее
-
-
 inline void SpectrumMeter::SpectrumBand::drawBand(Graphics &g, float xx, float yy, float w, float h)
 {
     const float vauleInDb = jlimit(HQ_METER_MINDB, HQ_METER_MAXDB, 20.0f * AudioCore::fastLog10(this->value));
-    float valueInY = float(this->meter->iecScale(vauleInDb));
+    float valueInY = float(AudioCore::iecLevel(vauleInDb) * h);
     
     if (this->valueHold < valueInY)
     {
@@ -326,7 +260,7 @@ inline void SpectrumMeter::SpectrumBand::drawBand(Graphics &g, float xx, float y
         this->peakHold = 0.0;
         this->peakDecay = HQ_METER_DECAY_RATE2;
     }
-    else if (++this->peakHold > this->meter->getPeakFalloff())
+    else if (++this->peakHold > HQ_METER_CYCLES_BEFORE_PEAK_FALLOFF)
     {
         this->peak = this->peak * this->peakDecay;
         this->peakDecay = this->peakDecay * this->peakDecay; // * this->peakDecay;

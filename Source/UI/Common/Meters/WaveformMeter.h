@@ -26,20 +26,10 @@ class WaveformMeter : public Component, private Thread, private AsyncUpdater
 {
 public:
 
-    enum Orientation
-    {
-        Left,
-        Right
-    };
-    
-    WaveformMeter(WeakReference<AudioMonitor> targetAnalyzer,
-                    int targetChannel,
-                    Orientation bandOrientation);
-    
+    WaveformMeter(WeakReference<AudioMonitor> targetAnalyzer);
     ~WaveformMeter() override;
 
     void setTargetAnalyzer(WeakReference<AudioMonitor> targetAnalyzer);
-    inline float iecLevel(const float dB) const;
 
     //===------------------------------------------------------------------===//
     // Component
@@ -49,49 +39,18 @@ public:
 
 private:
 
-    class Band
-    {
-    public:
-
-        explicit Band(WaveformMeter *parent);
-
-        void setValue(float value);
-        void reset();
-
-        inline void drawBand(Graphics &g, float left, float right, float height);
-
-    private:
-
-        WaveformMeter *meter;
-
-        float value;
-        float valueHold;
-        float valueDecay;
-        float peak;
-        float peakHold;
-        float peakDecay;
-
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Band);
-    };
-
-private:
-
     void run() override;
     void handleAsyncUpdate() override;
     
     WeakReference<AudioMonitor> volumeAnalyzer;
     
-    float peakL[WAVEFORM_METER_BUFFER_SIZE];
-    float peakR[WAVEFORM_METER_BUFFER_SIZE];
+    Atomic<float> lPeakBuffer[WAVEFORM_METER_BUFFER_SIZE];
+    Atomic<float> rPeakBuffer[WAVEFORM_METER_BUFFER_SIZE];
 
-    float rmsL[WAVEFORM_METER_BUFFER_SIZE];
-    float rmsR[WAVEFORM_METER_BUFFER_SIZE];
+    Atomic<float> lRmsBuffer[WAVEFORM_METER_BUFFER_SIZE];
+    Atomic<float> rRmsBuffer[WAVEFORM_METER_BUFFER_SIZE];
 
-    Band peakBand;
-    
-    int channel;
     int skewTime;
-    Orientation orientation;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveformMeter)
 

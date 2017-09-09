@@ -19,6 +19,7 @@
 
 //[Headers]
 class SpectrumMeter;
+class WaveformMeter;
 class VolumePeakMeter;
 
 #include "TreePanel.h"
@@ -66,7 +67,7 @@ private:
     ScopedPointer<SeparatorHorizontalReversed> headLine;
     ScopedPointer<LighterShadowDownwards> headShadow;
     ScopedPointer<GradientVerticalReversed> gradient1;
-    ScopedPointer<SpectrumMeter> spectrumMeter;
+    ScopedPointer<WaveformMeter> waveformMeter;
     ScopedPointer<SeparatorHorizontal> separator;
     ScopedPointer<Component> rootTreeItemPanel;
     ScopedPointer<VolumePeakMeter> peakMeterLeft;

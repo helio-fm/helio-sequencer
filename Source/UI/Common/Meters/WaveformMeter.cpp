@@ -21,19 +21,16 @@
 #include "AudioCore.h"
 
 #define HQ_METER_MAXDB (+4.0f)
-#define HQ_METER_MINDB (-70.0f)
+// -69 instead of -70 to have that nearly invisible horizontal line
+#define HQ_METER_MINDB (-69.0f)
 #define HQ_METER_DECAY_RATE1 (1.0f - 3E-5f)
 #define HQ_METER_DECAY_RATE2 (1.0f - 3E-7f)
 #define HQ_METER_CYCLES_BEFORE_PEAK_FALLOFF 100
 
-WaveformMeter::WaveformMeter(WeakReference<AudioMonitor> targetAnalyzer,
-    int targetChannel, Orientation bandOrientation) :
+WaveformMeter::WaveformMeter(WeakReference<AudioMonitor> targetAnalyzer) :
     Thread("Volume Component"),
     volumeAnalyzer(std::move(targetAnalyzer)),
-    peakBand(this),
-    channel(targetChannel),
-    skewTime(0),
-    orientation(bandOrientation)
+    skewTime(0)
 {
     this->setInterceptsMouseClicks(false, false);
     
@@ -65,8 +62,22 @@ void WaveformMeter::run()
         const double b = Time::getMillisecondCounterHiRes();
         this->triggerAsyncUpdate();
 
-        // TODO get rms and peak
-        // and push into a buffer
+        // Shift buffers:
+        for (int i = 0; i < WAVEFORM_METER_BUFFER_SIZE - 1; ++i)
+        {
+            this->lPeakBuffer[i] = this->lPeakBuffer[i + 1].get();
+            this->rPeakBuffer[i] = this->rPeakBuffer[i + 1].get();
+            this->lRmsBuffer[i] = this->lRmsBuffer[i + 1].get();
+            this->rRmsBuffer[i] = this->rRmsBuffer[i + 1].get();
+        }
+
+        const int i = WAVEFORM_METER_BUFFER_SIZE - 1;
+
+        // Push next values:
+        this->lPeakBuffer[i] = this->volumeAnalyzer->getPeak(0);
+        this->rPeakBuffer[i] = this->volumeAnalyzer->getPeak(1);
+        this->lRmsBuffer[i] = this->volumeAnalyzer->getRootMeanSquare(0);
+        this->rRmsBuffer[i] = this->volumeAnalyzer->getRootMeanSquare(1);
 
         const double a = Time::getMillisecondCounterHiRes();
         this->skewTime = int(a - b);
@@ -78,32 +89,18 @@ void WaveformMeter::handleAsyncUpdate()
     this->repaint();
 }
 
-inline float WaveformMeter::iecLevel(const float dB) const
-{
-    float fDef = 1.0;
-    
-    if (dB < -70.0) {
-        fDef = 0.0;
-    } else if (dB < -60.0) {
-        fDef = (dB + 70.0) * 0.0025;
-    } else if (dB < -50.0) {
-        fDef = (dB + 60.0) * 0.005 + 0.025;
-    } else if (dB < -40.0) {
-        fDef = (dB + 50.0) * 0.0075 + 0.075;
-    } else if (dB < -30.0) {
-        fDef = (dB + 40.0) * 0.015 + 0.15;
-    } else if (dB < -20.0) {
-        fDef = (dB + 30.0) * 0.02 + 0.3;
-    } else { // if (dB < 0.0)
-        fDef = (dB + 20.0) * 0.025 + 0.5;
-}
-    
-    return fDef;
-}
-
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
+
+inline static float iecLevel(float peak)
+{
+    const float vauleInDb =
+        jlimit(HQ_METER_MINDB, HQ_METER_MAXDB,
+            20.0f * AudioCore::fastLog10(peak));
+
+    return AudioCore::iecLevel(vauleInDb);
+}
 
 void WaveformMeter::paint(Graphics &g)
 {
@@ -115,112 +112,25 @@ void WaveformMeter::paint(Graphics &g)
     const int w = float(this->getWidth());
     const int h = float(this->getHeight());
     
-    Image img(Image::ARGB, this->getWidth(), this->getHeight(), true);
-    
-    {
-        Graphics g1(img);
-        
-        this->peakBand.setValue(this->volumeAnalyzer->getPeak(this->channel));
-        const float left = (this->orientation == Left) ? 0.f : w;
-        const float right = w - left;
-        this->peakBand.drawBand(g1, left, right, h);
-    }
-    
-    ColourGradient cg(Colours::red, 0.f, 0.f,
-                      Colours::white.withAlpha(0.2f), 0.f, h,
-                      false);
-    
-    cg.addColour(0.05f, Colours::red);
-    cg.addColour(0.06f, Colours::yellow);
-    cg.addColour(0.21f, Colours::white.withAlpha(0.2f));
-    
-    FillType brush3(cg);
-    g.setFillType(brush3);
-    
-    g.drawImageAt(img, 0, 0, true);
-}
+    const float midH = float(this->getHeight()) / 2.f;
 
-//===----------------------------------------------------------------------===//
-// Volume Band
-//===----------------------------------------------------------------------===//
+    g.setColour(Colours::white.withAlpha(0.05f));
 
-WaveformMeter::Band::Band(WaveformMeter *parent) :
-    meter(parent),
-    value(0.0f),
-    valueHold(0.0f),
-    valueDecay(HQ_METER_DECAY_RATE1),
-    peak(0.0f),
-    peakHold(0.0f),
-    peakDecay(HQ_METER_DECAY_RATE2)
-{
-}
-
-void WaveformMeter::Band::setValue(float value)
-{
-    this->value = value;
-}
-
-void WaveformMeter::Band::reset()
-{
-    this->value = 0.0f;
-    this->valueHold = 0.0f;
-    this->valueDecay = HQ_METER_DECAY_RATE1;
-    this->peak = 0.0f;
-    this->peakHold = 0.0f;
-    this->peakDecay = HQ_METER_DECAY_RATE2;
-}
-
-inline void WaveformMeter::Band::drawBand(Graphics &g, float left, float right, float height)
-{
-    g.setColour(Colours::white);
-    
-    const float vauleInDb = jlimit(HQ_METER_MINDB, HQ_METER_MAXDB, 20.0f * AudioCore::fastLog10(this->value));
-    float valueInY = float(this->meter->iecLevel(vauleInDb) * height);
-    
-    if (this->valueHold < valueInY)
+    for (int i = 0; i < WAVEFORM_METER_BUFFER_SIZE; ++i)
     {
-        this->valueHold = valueInY;
-        this->valueDecay = HQ_METER_DECAY_RATE1;
-    }
-    else
-    {
-        this->valueHold = int(this->valueHold * this->valueDecay);
-        
-        if (this->valueHold < valueInY)
-        {
-            this->valueHold = valueInY;
-        }
-        else
-        {
-            this->valueDecay = this->valueDecay * this->valueDecay;
-            valueInY = this->valueHold;
-        }
-    }
-    
-    if (this->peak < valueInY)
-    {
-        this->peak = valueInY;
-        this->peakHold = 0.0;
-        this->peakDecay = HQ_METER_DECAY_RATE2;
-    }
-    else if (++this->peakHold > HQ_METER_CYCLES_BEFORE_PEAK_FALLOFF)
-    {
-        this->peak = this->peak * this->peakDecay;
-        this->peakDecay = this->peakDecay * this->peakDecay;
+        const float peakL = iecLevel(this->lPeakBuffer[i].get()) * midH;
+        const float peakR = iecLevel(this->rPeakBuffer[i].get()) * midH;
+        g.drawVerticalLine(i, midH - peakL, midH);
+        g.drawVerticalLine(i, midH, midH + peakR);
     }
 
-    const float peakHeight = 4.f;
-    const float levelHeight = 8.f;
-    const float levelY = jmax(0.f, (height - valueInY + peakHeight));
+    g.setColour(Colours::white.withAlpha(0.1f));
 
-    Path levelTriangle;
-    levelTriangle.startNewSubPath(left, levelY);
-    levelTriangle.lineTo(right, levelY);
-    levelTriangle.lineTo(right, levelY + 1.5f);
-    levelTriangle.lineTo(left, levelY + levelHeight);
-    levelTriangle.closeSubPath();
-    g.fillPath(levelTriangle);
-
-    const float peakY = jmax(0.f, (height - this->peak));
-    g.fillRect(0.f, peakY, std::abs(right - left), peakHeight);
+    for (int i = 0; i < WAVEFORM_METER_BUFFER_SIZE; ++i)
+    {
+        const float rmsL = iecLevel(this->lRmsBuffer[i].get()) * midH;
+        const float rmsR = iecLevel(this->rRmsBuffer[i].get()) * midH;
+        g.drawVerticalLine(i, midH - rmsL, midH);
+        g.drawVerticalLine(i, midH, midH + rmsR);
+    }
 }

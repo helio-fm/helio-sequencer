@@ -31,7 +31,7 @@ VolumePeakMeter::VolumePeakMeter(WeakReference<AudioMonitor> targetAnalyzer,
                                  Orientation bandOrientation) :
     Thread("Volume Component"),
     volumeAnalyzer(std::move(targetAnalyzer)),
-    peakBand(this),
+    peakBand(),
     channel(targetChannel),
     skewTime(0),
     orientation(bandOrientation)
@@ -78,29 +78,6 @@ void VolumePeakMeter::handleAsyncUpdate()
     this->repaint();
 }
 
-inline float VolumePeakMeter::iecLevel(const float dB) const
-{
-    float fDef = 1.0;
-    
-    if (dB < -70.0) {
-        fDef = 0.0;
-    } else if (dB < -60.0) {
-        fDef = (dB + 70.0) * 0.0025;
-    } else if (dB < -50.0) {
-        fDef = (dB + 60.0) * 0.005 + 0.025;
-    } else if (dB < -40.0) {
-        fDef = (dB + 50.0) * 0.0075 + 0.075;
-    } else if (dB < -30.0) {
-        fDef = (dB + 40.0) * 0.015 + 0.15;
-    } else if (dB < -20.0) {
-        fDef = (dB + 30.0) * 0.02 + 0.3;
-    } else { // if (dB < 0.0)
-        fDef = (dB + 20.0) * 0.025 + 0.5;
-}
-    
-    return fDef;
-}
-
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
@@ -144,8 +121,7 @@ void VolumePeakMeter::paint(Graphics &g)
 // Volume Band
 //===----------------------------------------------------------------------===//
 
-VolumePeakMeter::Band::Band(VolumePeakMeter *parent) :
-    meter(parent),
+VolumePeakMeter::Band::Band() :
     value(0.0f),
     valueHold(0.0f),
     valueDecay(HQ_METER_DECAY_RATE1),
@@ -175,7 +151,7 @@ inline void VolumePeakMeter::Band::drawBand(Graphics &g, float left, float right
     g.setColour(Colours::white);
     
     const float vauleInDb = jlimit(HQ_METER_MINDB, HQ_METER_MAXDB, 20.0f * AudioCore::fastLog10(this->value));
-    float valueInY = float(this->meter->iecLevel(vauleInDb) * height);
+    float valueInY = float(AudioCore::iecLevel(vauleInDb) * height);
     
     if (this->valueHold < valueInY)
     {
