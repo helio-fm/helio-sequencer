@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "SpectrumComponent.h"
+#include "SpectrumMeter.h"
 #include "AudioMonitor.h"
 #include "TreePanel.h"
 #include "AudioCore.h"
@@ -26,8 +26,8 @@
 #define HQ_METER_DECAY_RATE1 (1.0f - 3E-5f)
 #define HQ_METER_DECAY_RATE2 (1.0f - 3E-7f)
 #define HQ_METER_CYCLES_BEFORE_PEAK_FALLOFF 20
+
 #define HQ_METER_NUM_BANDS 40
-#define HQ_METER_NUM_BANDS_COMPACT 8
 
 static const float kSpectrumFrequencies[] =
 {
@@ -45,16 +45,39 @@ static const float kSpectrumFrequencies[] =
     22400.f, 25000.f
 };
 
+#define HQ_METER_NUM_BANDS_COMPACT 12
+
 static const float kSpectrumFrequenciesCompact[] =
 {
-    31.5, 63,
-    125,  250,
-    500,  1000,
-    2000, 4000,
-    8000, 16000,
+    31.5f,
+    50.f, 80.f,
+    125.f, 200.f,
+    315.f, 500.f,
+    800.f, 1250.f,
+    2000.f, 3150.f,
+    5000.f, 8000.f
 };
 
-SpectrumComponent::SpectrumComponent(WeakReference<AudioMonitor> monitor)
+//static const float kSpectrumFrequenciesCompact[] =
+//{
+//    30, 60,
+//    110, 220,
+//    350, 700,
+//    1600, 3200,
+//    4800, 7000,
+//    10000, 12000
+//};
+
+//static const float kSpectrumFrequenciesCompact[] =
+//{
+//    31.5, 63,
+//    125,  250,
+//    500,  1000,
+//    2000, 4000,
+//    8000, 16000,
+//};
+
+SpectrumMeter::SpectrumMeter(WeakReference<AudioMonitor> monitor)
     : Thread("Spectrum Component"),
       audioMonitor(std::move(monitor)),
       bandCount(HQ_METER_NUM_BANDS),
@@ -77,7 +100,7 @@ SpectrumComponent::SpectrumComponent(WeakReference<AudioMonitor> monitor)
     }
 }
 
-void SpectrumComponent::setTargetAnalyzer(WeakReference<AudioMonitor> monitor)
+void SpectrumMeter::setTargetAnalyzer(WeakReference<AudioMonitor> monitor)
 {
     if (monitor != nullptr)
     {
@@ -86,34 +109,37 @@ void SpectrumComponent::setTargetAnalyzer(WeakReference<AudioMonitor> monitor)
     }
 }
 
-SpectrumComponent::~SpectrumComponent()
+SpectrumMeter::~SpectrumMeter()
 { 
     this->stopThread(1000);
 }
 
-bool SpectrumComponent::isCompactMode() const
+bool SpectrumMeter::isCompactMode() const
 {
     return (this->getWidth() == TREE_COMPACT_WIDTH);
 }
 
-void SpectrumComponent::run()
+void SpectrumMeter::run()
 {
     while (! this->threadShouldExit())
     {
         Thread::sleep(jlimit(10, 100, 35 - this->skewTime));
         const double b = Time::getMillisecondCounterHiRes();
+
+        // TODO collect data??
+
         this->triggerAsyncUpdate();
         const double a = Time::getMillisecondCounterHiRes();
         this->skewTime = int(a - b);
     }
 }
 
-void SpectrumComponent::handleAsyncUpdate()
+void SpectrumMeter::handleAsyncUpdate()
 {
     this->repaint();
 }
 
-void SpectrumComponent::resized()
+void SpectrumMeter::resized()
 {
     if (this->isCompactMode())
     {
@@ -133,7 +159,7 @@ void SpectrumComponent::resized()
     }
 }
 
-void SpectrumComponent::paint(Graphics &g)
+void SpectrumMeter::paint(Graphics &g)
 {
     if (this->audioMonitor == nullptr)
     {
@@ -147,12 +173,12 @@ void SpectrumComponent::paint(Graphics &g)
 
     {
         Graphics g1(img);
-        g1.setColour(Colours::white.withAlpha(0.25f));
 
         const float size = float(width) / float(this->bandCount);
         
         for (int i = 0; i < this->bandCount; ++i)
         {
+            g1.setColour(Colours::white.withAlpha(0.25f));
             const float x = float((i * size) + 1);
             const float v = this->audioMonitor->getInterpolatedSpectrumAtFrequency(this->spectrumFrequencies[i]);
             this->bands[i]->setValue(v);
@@ -176,7 +202,7 @@ void SpectrumComponent::paint(Graphics &g)
     g.drawImageAt(img, 0, 0, false);
 }
 
-void SpectrumComponent::mouseUp(const MouseEvent& event)
+void SpectrumMeter::mouseUp(const MouseEvent& event)
 {
     this->altMode = !this->altMode;
     
@@ -186,7 +212,7 @@ void SpectrumComponent::mouseUp(const MouseEvent& event)
     }
 }
 
-inline float SpectrumComponent::iecLevel(const float dB) const
+inline float SpectrumMeter::iecLevel(const float dB) const
 {
     float fDef = 1.0;
     
@@ -209,22 +235,22 @@ inline float SpectrumComponent::iecLevel(const float dB) const
     return fDef;
 }
 
-inline int SpectrumComponent::iecScale(const float dB) const
+inline int SpectrumMeter::iecScale(const float dB) const
 {
     return int(this->iecLevel(dB) * float(this->getHeight()));
 }
 
-void SpectrumComponent::setPeakFalloff(const int val)
+void SpectrumMeter::setPeakFalloff(const int val)
 {
     this->peakFalloff = val;
 }
 
-int SpectrumComponent::getPeakFalloff() const
+int SpectrumMeter::getPeakFalloff() const
 {
     return this->peakFalloff;
 }
 
-SpectrumComponent::SpectrumBand::SpectrumBand(SpectrumComponent *parent) :
+SpectrumMeter::SpectrumBand::SpectrumBand(SpectrumMeter *parent) :
     meter(parent),
     value(0.0f),
     valueHold(0.0f),
@@ -238,17 +264,17 @@ SpectrumComponent::SpectrumBand::SpectrumBand(SpectrumComponent *parent) :
 {
 }
 
-void SpectrumComponent::SpectrumBand::setDashedLineMode(bool shouldDrawDashedLine)
+void SpectrumMeter::SpectrumBand::setDashedLineMode(bool shouldDrawDashedLine)
 {
     this->drawsDashedLine = shouldDrawDashedLine;
 }
 
-void SpectrumComponent::SpectrumBand::setValue(float value)
+void SpectrumMeter::SpectrumBand::setValue(float value)
 {
     this->value = value;
 }
 
-void SpectrumComponent::SpectrumBand::reset()
+void SpectrumMeter::SpectrumBand::reset()
 {
     this->value = 0.0f;
     this->valueHold = 0.0f;
@@ -261,7 +287,15 @@ void SpectrumComponent::SpectrumBand::reset()
     this->drawsDashedLine = true;
 }
 
-inline void SpectrumComponent::SpectrumBand::drawBand(Graphics &g, float xx, float yy, float w, float h)
+// TODO !!!!!!!!!!!!!!!!!111111111111111
+// Портатить день на причесывание спектрометра.
+// У немцев он ваще крутой и красивый, так няшно замедляется и фейдится,
+// а у меня дергается как хз-что
+// Надо играться с альфой в зависимости от громкости
+// и кривую фейд-аута сделать покрасивее
+
+
+inline void SpectrumMeter::SpectrumBand::drawBand(Graphics &g, float xx, float yy, float w, float h)
 {
     const float vauleInDb = jlimit(HQ_METER_MINDB, HQ_METER_MAXDB, 20.0f * AudioCore::fastLog10(this->value));
     float valueInY = float(this->meter->iecScale(vauleInDb));

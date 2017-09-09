@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "VolumeComponent.h"
+#include "VolumePeakMeter.h"
 #include "AudioMonitor.h"
 #include "AudioCore.h"
 
@@ -26,7 +26,7 @@
 #define HQ_METER_DECAY_RATE2 (1.0f - 3E-7f)
 #define HQ_METER_CYCLES_BEFORE_PEAK_FALLOFF 100
 
-VolumeComponent::VolumeComponent(WeakReference<AudioMonitor> targetAnalyzer,
+VolumePeakMeter::VolumePeakMeter(WeakReference<AudioMonitor> targetAnalyzer,
                                  int targetChannel,
                                  Orientation bandOrientation) :
     Thread("Volume Component"),
@@ -44,12 +44,12 @@ VolumeComponent::VolumeComponent(WeakReference<AudioMonitor> targetAnalyzer,
     }
 }
 
-VolumeComponent::~VolumeComponent()
+VolumePeakMeter::~VolumePeakMeter()
 {
     this->stopThread(1000);
 }
 
-void VolumeComponent::setTargetAnalyzer(WeakReference<AudioMonitor> targetAnalyzer)
+void VolumePeakMeter::setTargetAnalyzer(WeakReference<AudioMonitor> targetAnalyzer)
 {
     if (targetAnalyzer != nullptr)
     {
@@ -58,24 +58,27 @@ void VolumeComponent::setTargetAnalyzer(WeakReference<AudioMonitor> targetAnalyz
     }
 }
 
-void VolumeComponent::run()
+void VolumePeakMeter::run()
 {
     while (! this->threadShouldExit())
     {
         Thread::sleep(jlimit(10, 100, 35 - this->skewTime));
         const double b = Time::getMillisecondCounterHiRes();
+
+        // TODO collect data
+
         this->triggerAsyncUpdate();
         const double a = Time::getMillisecondCounterHiRes();
         this->skewTime = int(a - b);
     }
 }
 
-void VolumeComponent::handleAsyncUpdate()
+void VolumePeakMeter::handleAsyncUpdate()
 {
     this->repaint();
 }
 
-inline float VolumeComponent::iecLevel(const float dB) const
+inline float VolumePeakMeter::iecLevel(const float dB) const
 {
     float fDef = 1.0;
     
@@ -102,7 +105,7 @@ inline float VolumeComponent::iecLevel(const float dB) const
 // Component
 //===----------------------------------------------------------------------===//
 
-void VolumeComponent::paint(Graphics &g)
+void VolumePeakMeter::paint(Graphics &g)
 {
     if (this->volumeAnalyzer == nullptr)
     {
@@ -141,7 +144,7 @@ void VolumeComponent::paint(Graphics &g)
 // Volume Band
 //===----------------------------------------------------------------------===//
 
-VolumeComponent::Band::Band(VolumeComponent *parent) :
+VolumePeakMeter::Band::Band(VolumePeakMeter *parent) :
     meter(parent),
     value(0.0f),
     valueHold(0.0f),
@@ -152,12 +155,12 @@ VolumeComponent::Band::Band(VolumeComponent *parent) :
 {
 }
 
-void VolumeComponent::Band::setValue(float value)
+void VolumePeakMeter::Band::setValue(float value)
 {
     this->value = value;
 }
 
-void VolumeComponent::Band::reset()
+void VolumePeakMeter::Band::reset()
 {
     this->value = 0.0f;
     this->valueHold = 0.0f;
@@ -167,7 +170,7 @@ void VolumeComponent::Band::reset()
     this->peakDecay = HQ_METER_DECAY_RATE2;
 }
 
-inline void VolumeComponent::Band::drawBand(Graphics &g, float left, float right, float height)
+inline void VolumePeakMeter::Band::drawBand(Graphics &g, float left, float right, float height)
 {
     g.setColour(Colours::white);
     

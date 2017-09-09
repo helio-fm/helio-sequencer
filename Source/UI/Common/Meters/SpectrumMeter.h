@@ -19,12 +19,12 @@
 
 #include "AudioMonitor.h"
 
-class SpectrumComponent : public Component, private Thread, private AsyncUpdater
+class SpectrumMeter : public Component, private Thread, private AsyncUpdater
 {
 public:
 
-    explicit SpectrumComponent(WeakReference<AudioMonitor> monitor);
-    ~SpectrumComponent() override;
+    explicit SpectrumMeter(WeakReference<AudioMonitor> monitor);
+    ~SpectrumMeter() override;
     
     void setTargetAnalyzer(WeakReference<AudioMonitor> monitor);
     
@@ -44,7 +44,7 @@ private:
     {
     public:
         
-        explicit SpectrumBand(SpectrumComponent *parent);
+        explicit SpectrumBand(SpectrumMeter *parent);
         
         void setDashedLineMode(bool shouldDrawDashedLine);
         void setValue(float value);
@@ -54,7 +54,7 @@ private:
         
     private:
         
-        SpectrumComponent *meter;
+        SpectrumMeter *meter;
         
         float value;
         float valueHold;
@@ -88,5 +88,5 @@ private:
     
     bool altMode;
     
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectrumComponent);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectrumMeter);
 };

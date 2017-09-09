@@ -19,7 +19,10 @@
 
 class AudioMonitor;
 
-class VolumeComponent : public Component, private Thread, private AsyncUpdater
+// The same as component width (and the same as sidebar width):
+#define WAVEFORM_METER_BUFFER_SIZE 72
+
+class WaveformMeter : public Component, private Thread, private AsyncUpdater
 {
 public:
 
@@ -29,11 +32,11 @@ public:
         Right
     };
     
-    VolumeComponent(WeakReference<AudioMonitor> targetAnalyzer,
+    WaveformMeter(WeakReference<AudioMonitor> targetAnalyzer,
                     int targetChannel,
                     Orientation bandOrientation);
     
-    ~VolumeComponent() override;
+    ~WaveformMeter() override;
 
     void setTargetAnalyzer(WeakReference<AudioMonitor> targetAnalyzer);
     inline float iecLevel(const float dB) const;
@@ -50,7 +53,7 @@ private:
     {
     public:
 
-        explicit Band(VolumeComponent *parent);
+        explicit Band(WaveformMeter *parent);
 
         void setValue(float value);
         void reset();
@@ -59,7 +62,7 @@ private:
 
     private:
 
-        VolumeComponent *meter;
+        WaveformMeter *meter;
 
         float value;
         float valueHold;
@@ -78,12 +81,18 @@ private:
     
     WeakReference<AudioMonitor> volumeAnalyzer;
     
+    float peakL[WAVEFORM_METER_BUFFER_SIZE];
+    float peakR[WAVEFORM_METER_BUFFER_SIZE];
+
+    float rmsL[WAVEFORM_METER_BUFFER_SIZE];
+    float rmsR[WAVEFORM_METER_BUFFER_SIZE];
+
     Band peakBand;
     
     int channel;
     int skewTime;
     Orientation orientation;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VolumeComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveformMeter)
 
 };

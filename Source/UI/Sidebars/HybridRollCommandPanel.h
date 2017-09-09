@@ -18,7 +18,7 @@
 #pragma once
 
 class ProjectTreeItem;
-class VolumeComponent;
+class VolumePeakMeter;
 class VolumeCallback;
 
 #include "TransportListener.h"

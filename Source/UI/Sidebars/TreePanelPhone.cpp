@@ -32,8 +32,8 @@
 #include "SerializationKeys.h"
 
 #include "SpectralLogo.h"
-#include "SpectrumComponent.h"
-#include "VolumeComponent.h"
+#include "SpectrumMeter.h"
+#include "VolumePeakMeter.h"
 #include "App.h"
 #include "AudioCore.h"
 
@@ -56,14 +56,14 @@ TreePanelPhone::TreePanelPhone()
     addAndMakeVisible (headLine = new SeparatorHorizontalReversed());
     addAndMakeVisible (headShadow = new LighterShadowDownwards());
     addAndMakeVisible (gradient1 = new GradientVerticalReversed());
-    addAndMakeVisible (spectrometer = new SpectrumComponent (nullptr));
+    addAndMakeVisible (spectrumMeter = new SpectrumMeter (nullptr));
 
     addAndMakeVisible (separator = new SeparatorHorizontal());
     addAndMakeVisible (rootTreeItemPanel = new Component());
 
-    addAndMakeVisible (vuMeterLeft = new VolumeComponent (nullptr, 0, VolumeComponent::Left));
+    addAndMakeVisible (peakMeterLeft = new VolumePeakMeter (nullptr, 0, VolumePeakMeter::Left));
 
-    addAndMakeVisible (vuMeterRight = new VolumeComponent (nullptr, 1, VolumeComponent::Right));
+    addAndMakeVisible (peakMeterRight = new VolumePeakMeter (nullptr, 1, VolumePeakMeter::Right));
 
 
     //[UserPreSize]
@@ -96,11 +96,11 @@ TreePanelPhone::~TreePanelPhone()
     headLine = nullptr;
     headShadow = nullptr;
     gradient1 = nullptr;
-    spectrometer = nullptr;
+    spectrumMeter = nullptr;
     separator = nullptr;
     rootTreeItemPanel = nullptr;
-    vuMeterLeft = nullptr;
-    vuMeterRight = nullptr;
+    peakMeterLeft = nullptr;
+    peakMeterRight = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -143,11 +143,11 @@ void TreePanelPhone::resized()
     headLine->setBounds (0, 47, getWidth() - 0, 2);
     headShadow->setBounds (0, 48, getWidth() - 0, 6);
     gradient1->setBounds (-50, 0, getWidth() - -100, 47);
-    spectrometer->setBounds (0, getHeight() - 62, getWidth() - 0, 62);
+    spectrumMeter->setBounds (0, getHeight() - 62, getWidth() - 0, 62);
     separator->setBounds (0, getHeight() - 62 - 2, getWidth() - 0, 2);
     rootTreeItemPanel->setBounds (0, 0, getWidth() - 0, 48);
-    vuMeterLeft->setBounds (0, getHeight() - 62, 8, 62);
-    vuMeterRight->setBounds (getWidth() - 8, getHeight() - 62, 8, 62);
+    peakMeterLeft->setBounds (0, getHeight() - 62, 8, 62);
+    peakMeterRight->setBounds (getWidth() - 8, getHeight() - 62, 8, 62);
     //[UserResized] Add your own custom resize handling here..
 
     if (widthChanged)
@@ -195,9 +195,9 @@ void TreePanelPhone::setRootItemPanelSelected(bool shouldBeSelected)
 
 void TreePanelPhone::setAudioMonitor(AudioMonitor *audioMonitor)
 {
-    this->spectrometer->setTargetAnalyzer(audioMonitor);
-    this->vuMeterLeft->setTargetAnalyzer(audioMonitor);
-    this->vuMeterRight->setTargetAnalyzer(audioMonitor);
+    this->spectrumMeter->setTargetAnalyzer(audioMonitor);
+    this->peakMeterLeft->setTargetAnalyzer(audioMonitor);
+    this->peakMeterRight->setTargetAnalyzer(audioMonitor);
 }
 
 Rectangle<int> TreePanelPhone::getWorkingArea()
@@ -235,20 +235,20 @@ BEGIN_JUCER_METADATA
   <JUCERCOMP name="" id="f09d886c97d1c017" memberName="gradient1" virtualName=""
              explicitFocusOrder="0" pos="-50 0 -100M 47" sourceFile="../Themes/GradientVerticalReversed.cpp"
              constructorParams=""/>
-  <GENERICCOMPONENT name="" id="1c5204139a3bea83" memberName="spectrometer" virtualName=""
-                    explicitFocusOrder="0" pos="0 0Rr 0M 62" class="SpectrumComponent"
+  <GENERICCOMPONENT name="" id="1c5204139a3bea83" memberName="spectrumMeter" virtualName=""
+                    explicitFocusOrder="0" pos="0 0Rr 0M 62" class="SpectrumMeter"
                     params="nullptr"/>
   <JUCERCOMP name="" id="22d481533ce3ecd3" memberName="separator" virtualName=""
              explicitFocusOrder="0" pos="0 62Rr 0M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="faec82bf5da2e1" memberName="rootTreeItemPanel" virtualName=""
                     explicitFocusOrder="0" pos="0 0 0M 48" class="Component" params=""/>
-  <GENERICCOMPONENT name="" id="f36c1cf11c793cec" memberName="vuMeterLeft" virtualName=""
-                    explicitFocusOrder="0" pos="0 0Rr 8 62" class="VolumeComponent"
-                    params="nullptr, 0, VolumeComponent::Left"/>
-  <GENERICCOMPONENT name="" id="e90d6ee8a79197a7" memberName="vuMeterRight" virtualName=""
-                    explicitFocusOrder="0" pos="0Rr 0Rr 8 62" class="VolumeComponent"
-                    params="nullptr, 1, VolumeComponent::Right"/>
+  <GENERICCOMPONENT name="" id="f36c1cf11c793cec" memberName="peakMeterLeft" virtualName=""
+                    explicitFocusOrder="0" pos="0 0Rr 8 62" class="VolumePeakMeter"
+                    params="nullptr, 0, VolumePeakMeter::Left"/>
+  <GENERICCOMPONENT name="" id="e90d6ee8a79197a7" memberName="peakMeterRight" virtualName=""
+                    explicitFocusOrder="0" pos="0Rr 0Rr 8 62" class="VolumePeakMeter"
+                    params="nullptr, 1, VolumePeakMeter::Right"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

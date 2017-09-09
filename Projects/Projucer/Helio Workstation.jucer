@@ -544,14 +544,16 @@
       <GROUP id="{A07E2735-B226-A3C9-CC16-ED6079B86FEB}" name="UI">
         <GROUP id="{079417AE-DCB0-E5C9-4E06-B34561861CD5}" name="Common">
           <GROUP id="{B1892E7D-57AF-F539-8762-ADFFDBBDECEC}" name="Meters">
-            <FILE id="MH3RFx" name="SpectrumComponent.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Common/Meters/SpectrumComponent.cpp"/>
-            <FILE id="CvUn9C" name="SpectrumComponent.h" compile="0" resource="0"
-                  file="../../Source/UI/Common/Meters/SpectrumComponent.h"/>
-            <FILE id="cYbvbd" name="VolumeComponent.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Common/Meters/VolumeComponent.cpp"/>
-            <FILE id="DYacMI" name="VolumeComponent.h" compile="0" resource="0"
-                  file="../../Source/UI/Common/Meters/VolumeComponent.h"/>
+            <FILE id="MH3RFx" name="SpectrumMeter.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Common/Meters/SpectrumMeter.cpp"/>
+            <FILE id="CvUn9C" name="SpectrumMeter.h" compile="0" resource="0" file="../../Source/UI/Common/Meters/SpectrumMeter.h"/>
+            <FILE id="cYbvbd" name="VolumePeakMeter.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Common/Meters/VolumePeakMeter.cpp"/>
+            <FILE id="DYacMI" name="VolumePeakMeter.h" compile="0" resource="0"
+                  file="../../Source/UI/Common/Meters/VolumePeakMeter.h"/>
+            <FILE id="c2S4Fz" name="WaveformMeter.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Common/Meters/WaveformMeter.cpp"/>
+            <FILE id="w3HxcN" name="WaveformMeter.h" compile="0" resource="0" file="../../Source/UI/Common/Meters/WaveformMeter.h"/>
           </GROUP>
           <GROUP id="{9344DD7C-6943-A6E5-DE9D-8139C7AC0E2C}" name="Origami">
             <FILE id="DFbCxP" name="Origami.cpp" compile="1" resource="0" file="../../Source/UI/Common/Origami/Origami.cpp"/>
