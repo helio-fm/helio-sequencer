@@ -2,7 +2,7 @@
 
 <JUCERPROJECT id="lG607P" name="Helio" projectType="guiapp" version="1.7.6"
               bundleIdentifier="com.peterrudenko.helioworkstation" includeBinaryInAppConfig="1"
-              jucerVersion="5.1.1" companyWebsite="http://helioworkstation.com"
+              jucerVersion="5.1.2" companyWebsite="https://helioworkstation.com"
               companyEmail="peter.rudenko@gmail.com" companyName="Peter Rudenko"
               defines="JUCE_DONT_DECLARE_PROJECTINFO=1" displaySplashScreen="0"
               reportAppUsage="0" splashScreenColour="Dark" maxBinaryFileSize="2097152"
@@ -542,93 +542,6 @@
         </GROUP>
       </GROUP>
       <GROUP id="{A07E2735-B226-A3C9-CC16-ED6079B86FEB}" name="UI">
-        <GROUP id="{92C62E35-FD04-7F5D-A959-2BA2FC9AB735}" name="CommandPanels">
-          <GROUP id="{8324ECFA-EC1E-D7E7-E974-1C3B0C7CB6CD}" name="Base">
-            <FILE id="zwMK6y" name="CommandItemComponent.cpp" compile="1" resource="0"
-                  file="../../Source/UI/CommandPanels/Base/CommandItemComponent.cpp"/>
-            <FILE id="fbGLOr" name="CommandItemComponent.h" compile="0" resource="0"
-                  file="../../Source/UI/CommandPanels/Base/CommandItemComponent.h"/>
-            <FILE id="W2mFpg" name="CommandItemComponentMarker.cpp" compile="1"
-                  resource="0" file="../../Source/UI/CommandPanels/Base/CommandItemComponentMarker.cpp"/>
-            <FILE id="L9UUOQ" name="CommandItemComponentMarker.h" compile="0" resource="0"
-                  file="../../Source/UI/CommandPanels/Base/CommandItemComponentMarker.h"/>
-            <FILE id="YYd7IA" name="CommandPanel.cpp" compile="1" resource="0"
-                  file="../../Source/UI/CommandPanels/Base/CommandPanel.cpp"/>
-            <FILE id="knpfCw" name="CommandPanel.h" compile="0" resource="0" file="../../Source/UI/CommandPanels/Base/CommandPanel.h"/>
-          </GROUP>
-          <FILE id="wgLDqw" name="AnnotationCommandPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/CommandPanels/AnnotationCommandPanel.cpp"/>
-          <FILE id="mA4zKi" name="AnnotationCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/CommandPanels/AnnotationCommandPanel.h"/>
-          <FILE id="cRkBp5" name="ArpeggiatorEditorPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/CommandPanels/ArpeggiatorEditorPanel.cpp"/>
-          <FILE id="ezMMEU" name="ArpeggiatorEditorPanel.h" compile="0" resource="0"
-                file="../../Source/UI/CommandPanels/ArpeggiatorEditorPanel.h"/>
-          <FILE id="Rv5M7p" name="ArpeggiatorPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/CommandPanels/ArpeggiatorPanel.cpp"/>
-          <FILE id="bywjDN" name="ArpeggiatorPanel.h" compile="0" resource="0"
-                file="../../Source/UI/CommandPanels/ArpeggiatorPanel.h"/>
-          <FILE id="MYnON3" name="AutomationsCommandPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/CommandPanels/AutomationsCommandPanel.cpp"/>
-          <FILE id="JumAC2" name="AutomationsCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/CommandPanels/AutomationsCommandPanel.h"/>
-          <FILE id="CWH4wd" name="HybridRollCommandPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/CommandPanels/HybridRollCommandPanel.cpp"/>
-          <FILE id="uaXvba" name="HybridRollCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/CommandPanels/HybridRollCommandPanel.h"/>
-          <FILE id="eke3ab" name="HybridRollCommandPanelDefault.cpp" compile="1"
-                resource="0" file="../../Source/UI/CommandPanels/HybridRollCommandPanelDefault.cpp"/>
-          <FILE id="u86NSA" name="HybridRollCommandPanelDefault.h" compile="0"
-                resource="0" file="../../Source/UI/CommandPanels/HybridRollCommandPanelDefault.h"/>
-          <FILE id="kFwmeh" name="HybridRollCommandPanelPhone.cpp" compile="1"
-                resource="0" file="../../Source/UI/CommandPanels/HybridRollCommandPanelPhone.cpp"/>
-          <FILE id="w65VrJ" name="HybridRollCommandPanelPhone.h" compile="0"
-                resource="0" file="../../Source/UI/CommandPanels/HybridRollCommandPanelPhone.h"/>
-          <FILE id="qiHiZv" name="InstrumentCommandPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/CommandPanels/InstrumentCommandPanel.cpp"/>
-          <FILE id="GfB3bQ" name="InstrumentCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/CommandPanels/InstrumentCommandPanel.h"/>
-          <FILE id="rvRFpY" name="InstrumentsCommandPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/CommandPanels/InstrumentsCommandPanel.cpp"/>
-          <FILE id="r4xx9F" name="InstrumentsCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/CommandPanels/InstrumentsCommandPanel.h"/>
-          <FILE id="BQ6pCM" name="LayerCommandPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/CommandPanels/LayerCommandPanel.cpp"/>
-          <FILE id="PkWGHl" name="LayerCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/CommandPanels/LayerCommandPanel.h"/>
-          <FILE id="TkKS69" name="MoveToLayerCommandPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/CommandPanels/MoveToLayerCommandPanel.cpp"/>
-          <FILE id="oXLYPE" name="MoveToLayerCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/CommandPanels/MoveToLayerCommandPanel.h"/>
-          <FILE id="TmQdNC" name="NotesTuningPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/CommandPanels/NotesTuningPanel.cpp"/>
-          <FILE id="ywKB7T" name="NotesTuningPanel.h" compile="0" resource="0"
-                file="../../Source/UI/CommandPanels/NotesTuningPanel.h"/>
-          <FILE id="eFoCKQ" name="ProjectCommandPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/CommandPanels/ProjectCommandPanel.cpp"/>
-          <FILE id="qz1Ccf" name="ProjectCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/CommandPanels/ProjectCommandPanel.h"/>
-          <FILE id="dGhFSn" name="RootTreeItemPanelDefault.cpp" compile="1" resource="0"
-                file="../../Source/UI/CommandPanels/RootTreeItemPanelDefault.cpp"/>
-          <FILE id="VvAXjc" name="RootTreeItemPanelDefault.h" compile="0" resource="0"
-                file="../../Source/UI/CommandPanels/RootTreeItemPanelDefault.h"/>
-          <FILE id="k0IOfp" name="RootTreeItemPanelCompact.cpp" compile="1" resource="0"
-                file="../../Source/UI/CommandPanels/RootTreeItemPanelCompact.cpp"/>
-          <FILE id="jiVx41" name="RootTreeItemPanelCompact.h" compile="0" resource="0"
-                file="../../Source/UI/CommandPanels/RootTreeItemPanelCompact.h"/>
-          <FILE id="IWRyID" name="TimelineCommandPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/CommandPanels/TimelineCommandPanel.cpp"/>
-          <FILE id="YO5QtE" name="TimelineCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/CommandPanels/TimelineCommandPanel.h"/>
-          <FILE id="KXvBh9" name="TimeSignatureCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/CommandPanels/TimeSignatureCommandPanel.h"/>
-          <FILE id="jbN3Fi" name="TimeSignatureCommandPanel.cpp" compile="1"
-                resource="0" file="../../Source/UI/CommandPanels/TimeSignatureCommandPanel.cpp"/>
-          <FILE id="W0z55J" name="VCSCommandPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/CommandPanels/VCSCommandPanel.cpp"/>
-          <FILE id="qrKFgt" name="VCSCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/CommandPanels/VCSCommandPanel.h"/>
-        </GROUP>
         <GROUP id="{079417AE-DCB0-E5C9-4E06-B34561861CD5}" name="Common">
           <GROUP id="{B1892E7D-57AF-F539-8762-ADFFDBBDECEC}" name="Meters">
             <FILE id="MH3RFx" name="SpectrumComponent.cpp" compile="1" resource="0"
@@ -765,40 +678,261 @@
           <FILE id="bl1ZxP" name="SmoothZoomListener.h" compile="0" resource="0"
                 file="../../Source/UI/Input/SmoothZoomListener.h"/>
         </GROUP>
-        <GROUP id="{F79874FF-9432-881F-8FD9-987D3CE8C120}" name="InstrumentsPage">
-          <GROUP id="{F422C4F8-A12A-43B5-BA9B-FF25BE416502}" name="Editor">
-            <FILE id="yCuhra" name="AudioPluginEditorPage.cpp" compile="1" resource="0"
-                  file="../../Source/UI/InstrumentsPage/Editor/AudioPluginEditorPage.cpp"/>
-            <FILE id="uOooQl" name="AudioPluginEditorPage.h" compile="0" resource="0"
-                  file="../../Source/UI/InstrumentsPage/Editor/AudioPluginEditorPage.h"/>
-            <FILE id="eY1dyY" name="InstrumentEditor.cpp" compile="1" resource="0"
-                  file="../../Source/UI/InstrumentsPage/Editor/InstrumentEditor.cpp"/>
-            <FILE id="D27sY7" name="InstrumentEditor.h" compile="0" resource="0"
-                  file="../../Source/UI/InstrumentsPage/Editor/InstrumentEditor.h"/>
-            <FILE id="IbObRW" name="InstrumentEditorConnector.cpp" compile="1"
-                  resource="0" file="../../Source/UI/InstrumentsPage/Editor/InstrumentEditorConnector.cpp"/>
-            <FILE id="jCMwGI" name="InstrumentEditorConnector.h" compile="0" resource="0"
-                  file="../../Source/UI/InstrumentsPage/Editor/InstrumentEditorConnector.h"/>
-            <FILE id="pLqx2L" name="InstrumentEditorNode.cpp" compile="1" resource="0"
-                  file="../../Source/UI/InstrumentsPage/Editor/InstrumentEditorNode.cpp"/>
-            <FILE id="Dpj4s9" name="InstrumentEditorNode.h" compile="0" resource="0"
-                  file="../../Source/UI/InstrumentsPage/Editor/InstrumentEditorNode.h"/>
-            <FILE id="vqPVgY" name="InstrumentEditorPin.cpp" compile="1" resource="0"
-                  file="../../Source/UI/InstrumentsPage/Editor/InstrumentEditorPin.cpp"/>
-            <FILE id="zkn0TU" name="InstrumentEditorPin.h" compile="0" resource="0"
-                  file="../../Source/UI/InstrumentsPage/Editor/InstrumentEditorPin.h"/>
+        <GROUP id="{92C62E35-FD04-7F5D-A959-2BA2FC9AB735}" name="Menus">
+          <GROUP id="{8324ECFA-EC1E-D7E7-E974-1C3B0C7CB6CD}" name="Base">
+            <FILE id="zwMK6y" name="CommandItemComponent.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Menus/Base/CommandItemComponent.cpp"/>
+            <FILE id="fbGLOr" name="CommandItemComponent.h" compile="0" resource="0"
+                  file="../../Source/UI/Menus/Base/CommandItemComponent.h"/>
+            <FILE id="W2mFpg" name="CommandItemComponentMarker.cpp" compile="1"
+                  resource="0" file="../../Source/UI/Menus/Base/CommandItemComponentMarker.cpp"/>
+            <FILE id="L9UUOQ" name="CommandItemComponentMarker.h" compile="0" resource="0"
+                  file="../../Source/UI/Menus/Base/CommandItemComponentMarker.h"/>
+            <FILE id="YYd7IA" name="CommandPanel.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Menus/Base/CommandPanel.cpp"/>
+            <FILE id="knpfCw" name="CommandPanel.h" compile="0" resource="0" file="../../Source/UI/Menus/Base/CommandPanel.h"/>
           </GROUP>
-          <FILE id="Fi2bcm" name="InstrumentRow.cpp" compile="1" resource="0"
-                file="../../Source/UI/InstrumentsPage/InstrumentRow.cpp"/>
-          <FILE id="bkwgcj" name="InstrumentRow.h" compile="0" resource="0" file="../../Source/UI/InstrumentsPage/InstrumentRow.h"/>
-          <FILE id="GYu4Ht" name="InstrumentsPage.cpp" compile="1" resource="0"
-                file="../../Source/UI/InstrumentsPage/InstrumentsPage.cpp"/>
-          <FILE id="dxPDVJ" name="InstrumentsPage.h" compile="0" resource="0"
-                file="../../Source/UI/InstrumentsPage/InstrumentsPage.h"/>
+          <FILE id="wgLDqw" name="AnnotationCommandPanel.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/AnnotationCommandPanel.cpp"/>
+          <FILE id="mA4zKi" name="AnnotationCommandPanel.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/AnnotationCommandPanel.h"/>
+          <FILE id="cRkBp5" name="ArpeggiatorEditorPanel.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/ArpeggiatorEditorPanel.cpp"/>
+          <FILE id="ezMMEU" name="ArpeggiatorEditorPanel.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/ArpeggiatorEditorPanel.h"/>
+          <FILE id="Rv5M7p" name="ArpeggiatorPanel.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/ArpeggiatorPanel.cpp"/>
+          <FILE id="bywjDN" name="ArpeggiatorPanel.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/ArpeggiatorPanel.h"/>
+          <FILE id="MYnON3" name="AutomationsCommandPanel.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/AutomationsCommandPanel.cpp"/>
+          <FILE id="JumAC2" name="AutomationsCommandPanel.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/AutomationsCommandPanel.h"/>
+          <FILE id="qiHiZv" name="InstrumentCommandPanel.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/InstrumentCommandPanel.cpp"/>
+          <FILE id="GfB3bQ" name="InstrumentCommandPanel.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/InstrumentCommandPanel.h"/>
+          <FILE id="rvRFpY" name="InstrumentsCommandPanel.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/InstrumentsCommandPanel.cpp"/>
+          <FILE id="r4xx9F" name="InstrumentsCommandPanel.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/InstrumentsCommandPanel.h"/>
+          <FILE id="BQ6pCM" name="LayerCommandPanel.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/LayerCommandPanel.cpp"/>
+          <FILE id="PkWGHl" name="LayerCommandPanel.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/LayerCommandPanel.h"/>
+          <FILE id="TkKS69" name="MoveToLayerCommandPanel.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/MoveToLayerCommandPanel.cpp"/>
+          <FILE id="oXLYPE" name="MoveToLayerCommandPanel.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/MoveToLayerCommandPanel.h"/>
+          <FILE id="TmQdNC" name="NotesTuningPanel.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/NotesTuningPanel.cpp"/>
+          <FILE id="ywKB7T" name="NotesTuningPanel.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/NotesTuningPanel.h"/>
+          <FILE id="eFoCKQ" name="ProjectCommandPanel.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/ProjectCommandPanel.cpp"/>
+          <FILE id="qz1Ccf" name="ProjectCommandPanel.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/ProjectCommandPanel.h"/>
+          <FILE id="dGhFSn" name="RootTreeItemPanelDefault.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/RootTreeItemPanelDefault.cpp"/>
+          <FILE id="VvAXjc" name="RootTreeItemPanelDefault.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/RootTreeItemPanelDefault.h"/>
+          <FILE id="k0IOfp" name="RootTreeItemPanelCompact.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/RootTreeItemPanelCompact.cpp"/>
+          <FILE id="jiVx41" name="RootTreeItemPanelCompact.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/RootTreeItemPanelCompact.h"/>
+          <FILE id="IWRyID" name="TimelineCommandPanel.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/TimelineCommandPanel.cpp"/>
+          <FILE id="YO5QtE" name="TimelineCommandPanel.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/TimelineCommandPanel.h"/>
+          <FILE id="KXvBh9" name="TimeSignatureCommandPanel.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/TimeSignatureCommandPanel.h"/>
+          <FILE id="jbN3Fi" name="TimeSignatureCommandPanel.cpp" compile="1"
+                resource="0" file="../../Source/UI/Menus/TimeSignatureCommandPanel.cpp"/>
+          <FILE id="W0z55J" name="VCSCommandPanel.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/VCSCommandPanel.cpp"/>
+          <FILE id="qrKFgt" name="VCSCommandPanel.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/VCSCommandPanel.h"/>
         </GROUP>
-        <GROUP id="{181ADEBE-BA4C-C677-A2FF-B2AFC8640507}" name="Intro">
-          <FILE id="BS6Ktp" name="InitScreen.cpp" compile="1" resource="0" file="../../Source/UI/Intro/InitScreen.cpp"/>
-          <FILE id="Ixe9HQ" name="InitScreen.h" compile="0" resource="0" file="../../Source/UI/Intro/InitScreen.h"/>
+        <GROUP id="{B9AEC376-3BE9-2D8B-8315-5C9D02A78A83}" name="Pages">
+          <GROUP id="{244063AE-D7BB-2E7F-F88C-F6B87D3750F0}" name="Instruments">
+            <GROUP id="{8403AA58-8E12-1E01-83A5-94D36241D728}" name="Editor">
+              <FILE id="WeFwTR" name="AudioPluginEditorPage.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Pages/Instruments/Editor/AudioPluginEditorPage.cpp"/>
+              <FILE id="DRzfAJ" name="AudioPluginEditorPage.h" compile="0" resource="0"
+                    file="../../Source/UI/Pages/Instruments/Editor/AudioPluginEditorPage.h"/>
+              <FILE id="YIExUu" name="InstrumentEditor.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Pages/Instruments/Editor/InstrumentEditor.cpp"/>
+              <FILE id="wrOKuH" name="InstrumentEditor.h" compile="0" resource="0"
+                    file="../../Source/UI/Pages/Instruments/Editor/InstrumentEditor.h"/>
+              <FILE id="GUzIn1" name="InstrumentEditorConnector.cpp" compile="1"
+                    resource="0" file="../../Source/UI/Pages/Instruments/Editor/InstrumentEditorConnector.cpp"/>
+              <FILE id="yKMdnv" name="InstrumentEditorConnector.h" compile="0" resource="0"
+                    file="../../Source/UI/Pages/Instruments/Editor/InstrumentEditorConnector.h"/>
+              <FILE id="HMxxKn" name="InstrumentEditorNode.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Pages/Instruments/Editor/InstrumentEditorNode.cpp"/>
+              <FILE id="D9u9vs" name="InstrumentEditorNode.h" compile="0" resource="0"
+                    file="../../Source/UI/Pages/Instruments/Editor/InstrumentEditorNode.h"/>
+              <FILE id="mhSIce" name="InstrumentEditorPin.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Pages/Instruments/Editor/InstrumentEditorPin.cpp"/>
+              <FILE id="NK73De" name="InstrumentEditorPin.h" compile="0" resource="0"
+                    file="../../Source/UI/Pages/Instruments/Editor/InstrumentEditorPin.h"/>
+            </GROUP>
+            <FILE id="PWcCpe" name="InstrumentRow.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Instruments/InstrumentRow.cpp"/>
+            <FILE id="PmVWGZ" name="InstrumentRow.h" compile="0" resource="0" file="../../Source/UI/Pages/Instruments/InstrumentRow.h"/>
+            <FILE id="yfCrjr" name="InstrumentsPage.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Instruments/InstrumentsPage.cpp"/>
+            <FILE id="kI9KlF" name="InstrumentsPage.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Instruments/InstrumentsPage.h"/>
+          </GROUP>
+          <GROUP id="{01355104-112B-DA3C-0607-D8B2FD252FBB}" name="Intro">
+            <FILE id="VYCvr8" name="InitScreen.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Intro/InitScreen.cpp"/>
+            <FILE id="ADhqBV" name="InitScreen.h" compile="0" resource="0" file="../../Source/UI/Pages/Intro/InitScreen.h"/>
+          </GROUP>
+          <GROUP id="{CD7DBE7C-598C-14E2-4231-52EADE7D3894}" name="Project">
+            <FILE id="BUD2Pz" name="ProjectPage.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Project/ProjectPage.cpp"/>
+            <FILE id="fuC35e" name="ProjectPage.h" compile="0" resource="0" file="../../Source/UI/Pages/Project/ProjectPage.h"/>
+            <FILE id="DprHiC" name="ProjectPageDefault.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Project/ProjectPageDefault.cpp"/>
+            <FILE id="zrV2TC" name="ProjectPageDefault.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Project/ProjectPageDefault.h"/>
+            <FILE id="PYB3CE" name="ProjectPagePhone.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Project/ProjectPagePhone.cpp"/>
+            <FILE id="CDDrlz" name="ProjectPagePhone.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Project/ProjectPagePhone.h"/>
+          </GROUP>
+          <GROUP id="{0EEB5CBD-36F3-CF43-20F0-227013D6ED65}" name="Settings">
+            <FILE id="zErgDe" name="AudioSettings.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Settings/AudioSettings.cpp"/>
+            <FILE id="qPsjoy" name="AudioSettings.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/AudioSettings.h"/>
+            <FILE id="a36Z1B" name="AuthorizationSettings.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Settings/AuthorizationSettings.cpp"/>
+            <FILE id="zqmI1k" name="AuthorizationSettings.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Settings/AuthorizationSettings.h"/>
+            <FILE id="sCV3Ea" name="ColourChangeButton.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Settings/ColourChangeButton.h"/>
+            <FILE id="V92mWI" name="ComponentsList.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Settings/ComponentsList.cpp"/>
+            <FILE id="cSvomJ" name="ComponentsList.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Settings/ComponentsList.h"/>
+            <FILE id="D84dv3" name="IntroSettingsWrapper.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Settings/IntroSettingsWrapper.cpp"/>
+            <FILE id="nli1eM" name="IntroSettingsWrapper.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Settings/IntroSettingsWrapper.h"/>
+            <FILE id="cjGFIF" name="LabeledSettingsWrapper.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Settings/LabeledSettingsWrapper.cpp"/>
+            <FILE id="f3JYry" name="LabeledSettingsWrapper.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Settings/LabeledSettingsWrapper.h"/>
+            <FILE id="Dt6gTd" name="LogComponent.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Settings/LogComponent.cpp"/>
+            <FILE id="ImgYBs" name="LogComponent.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/LogComponent.h"/>
+            <FILE id="hmbJ3w" name="OpenGLSettings.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Settings/OpenGLSettings.cpp"/>
+            <FILE id="mP9NCr" name="OpenGLSettings.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Settings/OpenGLSettings.h"/>
+            <FILE id="V19u6p" name="PluginsList.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Settings/PluginsList.cpp"/>
+            <FILE id="hWf7Bh" name="PluginsList.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/PluginsList.h"/>
+            <FILE id="Lq3FxT" name="SettingsListItemHighlighter.cpp" compile="1"
+                  resource="0" file="../../Source/UI/Pages/Settings/SettingsListItemHighlighter.cpp"/>
+            <FILE id="weL74E" name="SettingsListItemHighlighter.h" compile="0"
+                  resource="0" file="../../Source/UI/Pages/Settings/SettingsListItemHighlighter.h"/>
+            <FILE id="RPfsT8" name="SettingsListItemSelection.cpp" compile="1"
+                  resource="0" file="../../Source/UI/Pages/Settings/SettingsListItemSelection.cpp"/>
+            <FILE id="q6ox0w" name="SettingsListItemSelection.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Settings/SettingsListItemSelection.h"/>
+            <FILE id="NQm5bG" name="SettingsPage.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Settings/SettingsPage.cpp"/>
+            <FILE id="KbKtdO" name="SettingsPage.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/SettingsPage.h"/>
+            <FILE id="dRiPAr" name="ThemeSettings.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Settings/ThemeSettings.cpp"/>
+            <FILE id="SSPYoV" name="ThemeSettings.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/ThemeSettings.h"/>
+            <FILE id="Ep8NCS" name="ThemeSettingsItem.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Settings/ThemeSettingsItem.cpp"/>
+            <FILE id="Jkf4Uy" name="ThemeSettingsItem.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Settings/ThemeSettingsItem.h"/>
+            <FILE id="T6CQNI" name="TranslationSettings.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Settings/TranslationSettings.cpp"/>
+            <FILE id="QKNR9p" name="TranslationSettings.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Settings/TranslationSettings.h"/>
+            <FILE id="iOQRBM" name="TranslationSettingsItem.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Settings/TranslationSettingsItem.cpp"/>
+            <FILE id="YESMIX" name="TranslationSettingsItem.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Settings/TranslationSettingsItem.h"/>
+          </GROUP>
+          <GROUP id="{4F9CA999-5D1A-1BFC-3E71-0CC812F6B1F1}" name="VCS">
+            <FILE id="U2akKA" name="HistoryComponent.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/VCS/HistoryComponent.cpp"/>
+            <FILE id="jjnV7W" name="HistoryComponent.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/VCS/HistoryComponent.h"/>
+            <FILE id="IQ80yY" name="RevisionComponent.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/VCS/RevisionComponent.cpp"/>
+            <FILE id="NRIi1Q" name="RevisionComponent.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/VCS/RevisionComponent.h"/>
+            <FILE id="RlDGUC" name="RevisionConnectorComponent.cpp" compile="1"
+                  resource="0" file="../../Source/UI/Pages/VCS/RevisionConnectorComponent.cpp"/>
+            <FILE id="foEf8W" name="RevisionConnectorComponent.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/VCS/RevisionConnectorComponent.h"/>
+            <FILE id="k9NHgO" name="RevisionItemComponent.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/VCS/RevisionItemComponent.cpp"/>
+            <FILE id="ypi0tp" name="RevisionItemComponent.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/VCS/RevisionItemComponent.h"/>
+            <FILE id="Bs8yzM" name="RevisionTooltipComponent.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/VCS/RevisionTooltipComponent.cpp"/>
+            <FILE id="OuQHUO" name="RevisionTooltipComponent.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/VCS/RevisionTooltipComponent.h"/>
+            <FILE id="QbBQKj" name="RevisionTreeComponent.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/VCS/RevisionTreeComponent.cpp"/>
+            <FILE id="zC94Gs" name="RevisionTreeComponent.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/VCS/RevisionTreeComponent.h"/>
+            <FILE id="oUlU29" name="StageComponent.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/VCS/StageComponent.cpp"/>
+            <FILE id="XvSEqX" name="StageComponent.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/VCS/StageComponent.h"/>
+            <FILE id="odoksk" name="VersionControlEditor.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/VCS/VersionControlEditor.cpp"/>
+            <FILE id="S9QmXX" name="VersionControlEditor.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/VCS/VersionControlEditor.h"/>
+            <FILE id="LU2ItS" name="VersionControlEditorDefault.cpp" compile="1"
+                  resource="0" file="../../Source/UI/Pages/VCS/VersionControlEditorDefault.cpp"/>
+            <FILE id="tjJByt" name="VersionControlEditorDefault.h" compile="0"
+                  resource="0" file="../../Source/UI/Pages/VCS/VersionControlEditorDefault.h"/>
+            <FILE id="EhwzRT" name="VersionControlEditorPhone.cpp" compile="1"
+                  resource="0" file="../../Source/UI/Pages/VCS/VersionControlEditorPhone.cpp"/>
+            <FILE id="m1mtAq" name="VersionControlEditorPhone.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/VCS/VersionControlEditorPhone.h"/>
+            <FILE id="WtPCVf" name="VersionControlEditorPhoneViewportContent.cpp"
+                  compile="1" resource="0" file="../../Source/UI/Pages/VCS/VersionControlEditorPhoneViewportContent.cpp"/>
+            <FILE id="akBI92" name="VersionControlEditorPhoneViewportContent.h"
+                  compile="0" resource="0" file="../../Source/UI/Pages/VCS/VersionControlEditorPhoneViewportContent.h"/>
+          </GROUP>
+          <GROUP id="{32159434-9874-6B08-9036-448BF1932A94}" name="Workspace">
+            <GROUP id="{95E5F2DA-E6EB-7B2B-D706-085B3DCBBCC7}" name="Menu">
+              <FILE id="VvVVMm" name="CreateProjectRow.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Pages/Workspace/Menu/CreateProjectRow.cpp"/>
+              <FILE id="hc7Ie4" name="CreateProjectRow.h" compile="0" resource="0"
+                    file="../../Source/UI/Pages/Workspace/Menu/CreateProjectRow.h"/>
+              <FILE id="VX9Eba" name="OpenProjectRow.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Pages/Workspace/Menu/OpenProjectRow.cpp"/>
+              <FILE id="QhDDee" name="OpenProjectRow.h" compile="0" resource="0"
+                    file="../../Source/UI/Pages/Workspace/Menu/OpenProjectRow.h"/>
+              <FILE id="F7m4dp" name="RecentProjectRow.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Pages/Workspace/Menu/RecentProjectRow.cpp"/>
+              <FILE id="QX0oMp" name="RecentProjectRow.h" compile="0" resource="0"
+                    file="../../Source/UI/Pages/Workspace/Menu/RecentProjectRow.h"/>
+              <FILE id="k8Pcdn" name="SignInRow.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Workspace/Menu/SignInRow.cpp"/>
+              <FILE id="xWKY9O" name="SignInRow.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/Menu/SignInRow.h"/>
+              <FILE id="ETCjLf" name="WorkspaceMenu.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Pages/Workspace/Menu/WorkspaceMenu.cpp"/>
+              <FILE id="f77IW9" name="WorkspaceMenu.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/Menu/WorkspaceMenu.h"/>
+            </GROUP>
+            <FILE id="nrMPWq" name="LogoFader.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Workspace/LogoFader.cpp"/>
+            <FILE id="cmDJdH" name="LogoFader.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/LogoFader.h"/>
+            <FILE id="yEomK8" name="LogoImage.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Workspace/LogoImage.cpp"/>
+            <FILE id="PfeeZI" name="LogoImage.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/LogoImage.h"/>
+            <FILE id="SATMyc" name="WorkspacePage.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Workspace/WorkspacePage.cpp"/>
+            <FILE id="ak0ZaE" name="WorkspacePage.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/WorkspacePage.h"/>
+          </GROUP>
         </GROUP>
         <GROUP id="{46445667-CE4E-4608-3F8E-1835F7CA531E}" name="Popups">
           <FILE id="yq7LlT" name="CenteredTooltipComponent.h" compile="0" resource="0"
@@ -846,48 +980,6 @@
                 file="../../Source/UI/Popups/TooltipContainer.cpp"/>
           <FILE id="tJX7b3" name="TooltipContainer.h" compile="0" resource="0"
                 file="../../Source/UI/Popups/TooltipContainer.h"/>
-        </GROUP>
-        <GROUP id="{4D3788AA-A8F0-247C-46D6-85D8963EDC74}" name="Rollovers">
-          <FILE id="M5WtAy" name="RolloverBackButtonLeft.cpp" compile="1" resource="0"
-                file="../../Source/UI/Rollovers/RolloverBackButtonLeft.cpp"/>
-          <FILE id="SowCX8" name="RolloverBackButtonLeft.h" compile="0" resource="0"
-                file="../../Source/UI/Rollovers/RolloverBackButtonLeft.h"/>
-          <FILE id="ontQOJ" name="RolloverBackButtonRight.cpp" compile="1" resource="0"
-                file="../../Source/UI/Rollovers/RolloverBackButtonRight.cpp"/>
-          <FILE id="nOrqwM" name="RolloverBackButtonRight.h" compile="0" resource="0"
-                file="../../Source/UI/Rollovers/RolloverBackButtonRight.h"/>
-          <FILE id="gw9ARQ" name="RolloverHeaderLeft.cpp" compile="1" resource="0"
-                file="../../Source/UI/Rollovers/RolloverHeaderLeft.cpp"/>
-          <FILE id="yYOJn6" name="RolloverHeaderLeft.h" compile="0" resource="0"
-                file="../../Source/UI/Rollovers/RolloverHeaderLeft.h"/>
-          <FILE id="ZDpz86" name="RolloverHeaderRight.cpp" compile="1" resource="0"
-                file="../../Source/UI/Rollovers/RolloverHeaderRight.cpp"/>
-          <FILE id="RtKdjt" name="RolloverHeaderRight.h" compile="0" resource="0"
-                file="../../Source/UI/Rollovers/RolloverHeaderRight.h"/>
-          <FILE id="I4lVk4" name="RolloverContainer.cpp" compile="1" resource="0"
-                file="../../Source/UI/Rollovers/RolloverContainer.cpp"/>
-          <FILE id="IiRcvf" name="RolloverContainer.h" compile="0" resource="0"
-                file="../../Source/UI/Rollovers/RolloverContainer.h"/>
-          <FILE id="TOljHU" name="ProjectRollover.cpp" compile="1" resource="0"
-                file="../../Source/UI/Rollovers/ProjectRollover.cpp"/>
-          <FILE id="JwiRw6" name="ProjectRollover.h" compile="0" resource="0"
-                file="../../Source/UI/Rollovers/ProjectRollover.h"/>
-          <FILE id="CVe8qf" name="SettingsRollover.cpp" compile="1" resource="0"
-                file="../../Source/UI/Rollovers/SettingsRollover.cpp"/>
-          <FILE id="CJ1mSp" name="SettingsRollover.h" compile="0" resource="0"
-                file="../../Source/UI/Rollovers/SettingsRollover.h"/>
-        </GROUP>
-        <GROUP id="{7EE607A4-2654-D67E-2247-96736E0FBB7E}" name="ProjectPage">
-          <FILE id="LTfrLW" name="ProjectPage.cpp" compile="1" resource="0" file="../../Source/UI/ProjectPage/ProjectPage.cpp"/>
-          <FILE id="QLIZKh" name="ProjectPage.h" compile="0" resource="0" file="../../Source/UI/ProjectPage/ProjectPage.h"/>
-          <FILE id="vTSps5" name="ProjectPageDefault.cpp" compile="1" resource="0"
-                file="../../Source/UI/ProjectPage/ProjectPageDefault.cpp"/>
-          <FILE id="CXBBk8" name="ProjectPageDefault.h" compile="0" resource="0"
-                file="../../Source/UI/ProjectPage/ProjectPageDefault.h"/>
-          <FILE id="rp7nbT" name="ProjectPagePhone.cpp" compile="1" resource="0"
-                file="../../Source/UI/ProjectPage/ProjectPagePhone.cpp"/>
-          <FILE id="qBIkIx" name="ProjectPagePhone.h" compile="0" resource="0"
-                file="../../Source/UI/ProjectPage/ProjectPagePhone.h"/>
         </GROUP>
         <GROUP id="{9ABD7DD8-D3C8-EE5D-AD5E-6E6E6D1D3F8B}" name="Sequencer">
           <GROUP id="{7A422E09-0A4B-45C2-2748-FE1DE4457FCD}" name="AnnotationsMap">
@@ -1072,63 +1164,59 @@
           <FILE id="ROIxEK" name="SequencerLayout.h" compile="0" resource="0"
                 file="../../Source/UI/Sequencer/SequencerLayout.h"/>
         </GROUP>
-        <GROUP id="{3792D952-B1BC-5601-4783-7CB7BA87C2D9}" name="SettingsPage">
-          <FILE id="iV4FHN" name="AudioSettings.cpp" compile="1" resource="0"
-                file="../../Source/UI/SettingsPage/AudioSettings.cpp"/>
-          <FILE id="el4Tlj" name="AudioSettings.h" compile="0" resource="0" file="../../Source/UI/SettingsPage/AudioSettings.h"/>
-          <FILE id="haJaNU" name="AuthorizationSettings.cpp" compile="1" resource="0"
-                file="../../Source/UI/SettingsPage/AuthorizationSettings.cpp"/>
-          <FILE id="CqrvBA" name="AuthorizationSettings.h" compile="0" resource="0"
-                file="../../Source/UI/SettingsPage/AuthorizationSettings.h"/>
-          <FILE id="MAuCFJ" name="ColourChangeButton.h" compile="0" resource="0"
-                file="../../Source/UI/SettingsPage/ColourChangeButton.h"/>
-          <FILE id="rrtssy" name="ComponentsList.cpp" compile="1" resource="0"
-                file="../../Source/UI/SettingsPage/ComponentsList.cpp"/>
-          <FILE id="EdPi5b" name="ComponentsList.h" compile="0" resource="0"
-                file="../../Source/UI/SettingsPage/ComponentsList.h"/>
-          <FILE id="wIryKt" name="IntroSettingsWrapper.cpp" compile="1" resource="0"
-                file="../../Source/UI/SettingsPage/IntroSettingsWrapper.cpp"/>
-          <FILE id="l8Thmm" name="IntroSettingsWrapper.h" compile="0" resource="0"
-                file="../../Source/UI/SettingsPage/IntroSettingsWrapper.h"/>
-          <FILE id="YJrgCL" name="LabeledSettingsWrapper.cpp" compile="1" resource="0"
-                file="../../Source/UI/SettingsPage/LabeledSettingsWrapper.cpp"/>
-          <FILE id="U2vhcU" name="LabeledSettingsWrapper.h" compile="0" resource="0"
-                file="../../Source/UI/SettingsPage/LabeledSettingsWrapper.h"/>
-          <FILE id="XgcS13" name="LogComponent.cpp" compile="1" resource="0"
-                file="../../Source/UI/SettingsPage/LogComponent.cpp"/>
-          <FILE id="uNwoku" name="LogComponent.h" compile="0" resource="0" file="../../Source/UI/SettingsPage/LogComponent.h"/>
-          <FILE id="xkNsUy" name="OpenGLSettings.cpp" compile="1" resource="0"
-                file="../../Source/UI/SettingsPage/OpenGLSettings.cpp"/>
-          <FILE id="KEeLSa" name="OpenGLSettings.h" compile="0" resource="0"
-                file="../../Source/UI/SettingsPage/OpenGLSettings.h"/>
-          <FILE id="qpZk7H" name="PluginsList.cpp" compile="1" resource="0" file="../../Source/UI/SettingsPage/PluginsList.cpp"/>
-          <FILE id="dYPbzq" name="PluginsList.h" compile="0" resource="0" file="../../Source/UI/SettingsPage/PluginsList.h"/>
-          <FILE id="gtOUaZ" name="SettingsPage.cpp" compile="1" resource="0"
-                file="../../Source/UI/SettingsPage/SettingsPage.cpp"/>
-          <FILE id="Hu4jeF" name="SettingsPage.h" compile="0" resource="0" file="../../Source/UI/SettingsPage/SettingsPage.h"/>
-          <FILE id="YqH5ws" name="SettingsListItemHighlighter.cpp" compile="1"
-                resource="0" file="../../Source/UI/SettingsPage/SettingsListItemHighlighter.cpp"/>
-          <FILE id="xmsTKg" name="SettingsListItemHighlighter.h" compile="0"
-                resource="0" file="../../Source/UI/SettingsPage/SettingsListItemHighlighter.h"/>
-          <FILE id="UG8yeo" name="SettingsListItemSelection.cpp" compile="1"
-                resource="0" file="../../Source/UI/SettingsPage/SettingsListItemSelection.cpp"/>
-          <FILE id="kR8b0I" name="SettingsListItemSelection.h" compile="0" resource="0"
-                file="../../Source/UI/SettingsPage/SettingsListItemSelection.h"/>
-          <FILE id="VSYW0G" name="ThemeSettings.cpp" compile="1" resource="0"
-                file="../../Source/UI/SettingsPage/ThemeSettings.cpp"/>
-          <FILE id="r2IyKd" name="ThemeSettings.h" compile="0" resource="0" file="../../Source/UI/SettingsPage/ThemeSettings.h"/>
-          <FILE id="E20wSL" name="ThemeSettingsItem.cpp" compile="1" resource="0"
-                file="../../Source/UI/SettingsPage/ThemeSettingsItem.cpp"/>
-          <FILE id="lV37MM" name="ThemeSettingsItem.h" compile="0" resource="0"
-                file="../../Source/UI/SettingsPage/ThemeSettingsItem.h"/>
-          <FILE id="Zm8OTQ" name="TranslationSettings.cpp" compile="1" resource="0"
-                file="../../Source/UI/SettingsPage/TranslationSettings.cpp"/>
-          <FILE id="kN3tNT" name="TranslationSettings.h" compile="0" resource="0"
-                file="../../Source/UI/SettingsPage/TranslationSettings.h"/>
-          <FILE id="nxNiev" name="TranslationSettingsItem.cpp" compile="1" resource="0"
-                file="../../Source/UI/SettingsPage/TranslationSettingsItem.cpp"/>
-          <FILE id="UJQjhr" name="TranslationSettingsItem.h" compile="0" resource="0"
-                file="../../Source/UI/SettingsPage/TranslationSettingsItem.h"/>
+        <GROUP id="{E3CC1F61-627F-AE9D-B5F8-944A58FBF841}" name="Sidebars">
+          <GROUP id="{1AD8B93E-47DF-813C-B57A-46D0882735A3}" name="Rollovers">
+            <FILE id="vRLRLs" name="ProjectRollover.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sidebars/Rollovers/ProjectRollover.cpp"/>
+            <FILE id="ZKonpr" name="ProjectRollover.h" compile="0" resource="0"
+                  file="../../Source/UI/Sidebars/Rollovers/ProjectRollover.h"/>
+            <FILE id="he7oha" name="RolloverBackButtonLeft.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sidebars/Rollovers/RolloverBackButtonLeft.cpp"/>
+            <FILE id="pswSJ9" name="RolloverBackButtonLeft.h" compile="0" resource="0"
+                  file="../../Source/UI/Sidebars/Rollovers/RolloverBackButtonLeft.h"/>
+            <FILE id="eZxxSk" name="RolloverBackButtonRight.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sidebars/Rollovers/RolloverBackButtonRight.cpp"/>
+            <FILE id="pb6ulv" name="RolloverBackButtonRight.h" compile="0" resource="0"
+                  file="../../Source/UI/Sidebars/Rollovers/RolloverBackButtonRight.h"/>
+            <FILE id="xEhuL7" name="RolloverContainer.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sidebars/Rollovers/RolloverContainer.cpp"/>
+            <FILE id="Tvgx8a" name="RolloverContainer.h" compile="0" resource="0"
+                  file="../../Source/UI/Sidebars/Rollovers/RolloverContainer.h"/>
+            <FILE id="TGYcvq" name="RolloverHeaderLeft.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sidebars/Rollovers/RolloverHeaderLeft.cpp"/>
+            <FILE id="HJYxQj" name="RolloverHeaderLeft.h" compile="0" resource="0"
+                  file="../../Source/UI/Sidebars/Rollovers/RolloverHeaderLeft.h"/>
+            <FILE id="qD9RFF" name="RolloverHeaderRight.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sidebars/Rollovers/RolloverHeaderRight.cpp"/>
+            <FILE id="HUu18c" name="RolloverHeaderRight.h" compile="0" resource="0"
+                  file="../../Source/UI/Sidebars/Rollovers/RolloverHeaderRight.h"/>
+            <FILE id="svTW2Y" name="SettingsRollover.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sidebars/Rollovers/SettingsRollover.cpp"/>
+            <FILE id="OH4CU2" name="SettingsRollover.h" compile="0" resource="0"
+                  file="../../Source/UI/Sidebars/Rollovers/SettingsRollover.h"/>
+          </GROUP>
+          <FILE id="b6CqqP" name="HybridRollCommandPanel.cpp" compile="1" resource="0"
+                file="../../Source/UI/Sidebars/HybridRollCommandPanel.cpp"/>
+          <FILE id="s83bgw" name="HybridRollCommandPanel.h" compile="0" resource="0"
+                file="../../Source/UI/Sidebars/HybridRollCommandPanel.h"/>
+          <FILE id="Ygx9Sk" name="HybridRollCommandPanelDefault.cpp" compile="1"
+                resource="0" file="../../Source/UI/Sidebars/HybridRollCommandPanelDefault.cpp"/>
+          <FILE id="KNnqZg" name="HybridRollCommandPanelDefault.h" compile="0"
+                resource="0" file="../../Source/UI/Sidebars/HybridRollCommandPanelDefault.h"/>
+          <FILE id="hGyrLG" name="HybridRollCommandPanelPhone.cpp" compile="1"
+                resource="0" file="../../Source/UI/Sidebars/HybridRollCommandPanelPhone.cpp"/>
+          <FILE id="McwvFz" name="HybridRollCommandPanelPhone.h" compile="0"
+                resource="0" file="../../Source/UI/Sidebars/HybridRollCommandPanelPhone.h"/>
+          <FILE id="dGDpzD" name="TreePanel.cpp" compile="1" resource="0" file="../../Source/UI/Sidebars/TreePanel.cpp"/>
+          <FILE id="mvAfd1" name="TreePanel.h" compile="0" resource="0" file="../../Source/UI/Sidebars/TreePanel.h"/>
+          <FILE id="YTrvBN" name="TreePanelDefault.cpp" compile="1" resource="0"
+                file="../../Source/UI/Sidebars/TreePanelDefault.cpp"/>
+          <FILE id="RpeyiT" name="TreePanelDefault.h" compile="0" resource="0"
+                file="../../Source/UI/Sidebars/TreePanelDefault.h"/>
+          <FILE id="Xxsq4j" name="TreePanelPhone.cpp" compile="1" resource="0"
+                file="../../Source/UI/Sidebars/TreePanelPhone.cpp"/>
+          <FILE id="ECVocc" name="TreePanelPhone.h" compile="0" resource="0"
+                file="../../Source/UI/Sidebars/TreePanelPhone.h"/>
         </GROUP>
         <GROUP id="{F85E9949-99EB-1D99-18B7-41B94B555349}" name="Themes">
           <FILE id="O8SrxF" name="ComponentFader.cpp" compile="1" resource="0"
@@ -1272,90 +1360,6 @@
                 file="../../Source/UI/Tree/TreeItemMenuButton.cpp"/>
           <FILE id="t0Y3yz" name="TreeItemMenuButton.h" compile="0" resource="0"
                 file="../../Source/UI/Tree/TreeItemMenuButton.h"/>
-          <FILE id="jO83T9" name="TreePanel.cpp" compile="1" resource="0" file="../../Source/UI/Tree/TreePanel.cpp"/>
-          <FILE id="AvjfM0" name="TreePanel.h" compile="0" resource="0" file="../../Source/UI/Tree/TreePanel.h"/>
-          <FILE id="hqR4p7" name="TreePanelDefault.cpp" compile="1" resource="0"
-                file="../../Source/UI/Tree/TreePanelDefault.cpp"/>
-          <FILE id="iftj7g" name="TreePanelDefault.h" compile="0" resource="0"
-                file="../../Source/UI/Tree/TreePanelDefault.h"/>
-          <FILE id="TAqdzD" name="TreePanelPhone.cpp" compile="1" resource="0"
-                file="../../Source/UI/Tree/TreePanelPhone.cpp"/>
-          <FILE id="jvFbXR" name="TreePanelPhone.h" compile="0" resource="0"
-                file="../../Source/UI/Tree/TreePanelPhone.h"/>
-        </GROUP>
-        <GROUP id="{11EA480B-D457-E33A-556B-27E999F7F173}" name="VCSPage">
-          <FILE id="bLLFgr" name="HistoryComponent.cpp" compile="1" resource="0"
-                file="../../Source/UI/VCSPage/HistoryComponent.cpp"/>
-          <FILE id="wqQM8p" name="HistoryComponent.h" compile="0" resource="0"
-                file="../../Source/UI/VCSPage/HistoryComponent.h"/>
-          <FILE id="gZ7JNT" name="RevisionComponent.cpp" compile="1" resource="0"
-                file="../../Source/UI/VCSPage/RevisionComponent.cpp"/>
-          <FILE id="Fpvqgc" name="RevisionComponent.h" compile="0" resource="0"
-                file="../../Source/UI/VCSPage/RevisionComponent.h"/>
-          <FILE id="kiYlCU" name="RevisionConnectorComponent.cpp" compile="1"
-                resource="0" file="../../Source/UI/VCSPage/RevisionConnectorComponent.cpp"/>
-          <FILE id="vO7sKu" name="RevisionConnectorComponent.h" compile="0" resource="0"
-                file="../../Source/UI/VCSPage/RevisionConnectorComponent.h"/>
-          <FILE id="hzYkGf" name="RevisionItemComponent.cpp" compile="1" resource="0"
-                file="../../Source/UI/VCSPage/RevisionItemComponent.cpp"/>
-          <FILE id="Hn9x4r" name="RevisionItemComponent.h" compile="0" resource="0"
-                file="../../Source/UI/VCSPage/RevisionItemComponent.h"/>
-          <FILE id="mhZB8W" name="RevisionTooltipComponent.cpp" compile="1" resource="0"
-                file="../../Source/UI/VCSPage/RevisionTooltipComponent.cpp"/>
-          <FILE id="IGfBRw" name="RevisionTooltipComponent.h" compile="0" resource="0"
-                file="../../Source/UI/VCSPage/RevisionTooltipComponent.h"/>
-          <FILE id="b8gdiO" name="RevisionTreeComponent.cpp" compile="1" resource="0"
-                file="../../Source/UI/VCSPage/RevisionTreeComponent.cpp"/>
-          <FILE id="QR0H0S" name="RevisionTreeComponent.h" compile="0" resource="0"
-                file="../../Source/UI/VCSPage/RevisionTreeComponent.h"/>
-          <FILE id="OaBUVk" name="StageComponent.cpp" compile="1" resource="0"
-                file="../../Source/UI/VCSPage/StageComponent.cpp"/>
-          <FILE id="pqV8TX" name="StageComponent.h" compile="0" resource="0"
-                file="../../Source/UI/VCSPage/StageComponent.h"/>
-          <FILE id="IlBOve" name="VersionControlEditor.cpp" compile="1" resource="0"
-                file="../../Source/UI/VCSPage/VersionControlEditor.cpp"/>
-          <FILE id="mpRRAE" name="VersionControlEditor.h" compile="0" resource="0"
-                file="../../Source/UI/VCSPage/VersionControlEditor.h"/>
-          <FILE id="qO1Kpn" name="VersionControlEditorDefault.cpp" compile="1"
-                resource="0" file="../../Source/UI/VCSPage/VersionControlEditorDefault.cpp"/>
-          <FILE id="UZBf2F" name="VersionControlEditorDefault.h" compile="0"
-                resource="0" file="../../Source/UI/VCSPage/VersionControlEditorDefault.h"/>
-          <FILE id="wQd1E5" name="VersionControlEditorPhone.cpp" compile="1"
-                resource="0" file="../../Source/UI/VCSPage/VersionControlEditorPhone.cpp"/>
-          <FILE id="OTFU8F" name="VersionControlEditorPhone.h" compile="0" resource="0"
-                file="../../Source/UI/VCSPage/VersionControlEditorPhone.h"/>
-          <FILE id="pDleR6" name="VersionControlEditorPhoneViewportContent.cpp"
-                compile="1" resource="0" file="../../Source/UI/VCSPage/VersionControlEditorPhoneViewportContent.cpp"/>
-          <FILE id="Owmte8" name="VersionControlEditorPhoneViewportContent.h"
-                compile="0" resource="0" file="../../Source/UI/VCSPage/VersionControlEditorPhoneViewportContent.h"/>
-        </GROUP>
-        <GROUP id="{4D057746-88A4-E15C-CBDC-7AEC0F7CEB07}" name="WorkspacePage">
-          <GROUP id="{B8678167-3BC5-057A-01B3-A7C20DD237F9}" name="Menu">
-            <FILE id="BPrBjo" name="CreateProjectRow.cpp" compile="1" resource="0"
-                  file="../../Source/UI/WorkspacePage/Menu/CreateProjectRow.cpp"/>
-            <FILE id="o2cB0S" name="CreateProjectRow.h" compile="0" resource="0"
-                  file="../../Source/UI/WorkspacePage/Menu/CreateProjectRow.h"/>
-            <FILE id="urrwGX" name="OpenProjectRow.cpp" compile="1" resource="0"
-                  file="../../Source/UI/WorkspacePage/Menu/OpenProjectRow.cpp"/>
-            <FILE id="SLsO1i" name="OpenProjectRow.h" compile="0" resource="0"
-                  file="../../Source/UI/WorkspacePage/Menu/OpenProjectRow.h"/>
-            <FILE id="IuDKaQ" name="RecentProjectRow.cpp" compile="1" resource="0"
-                  file="../../Source/UI/WorkspacePage/Menu/RecentProjectRow.cpp"/>
-            <FILE id="Rj3apQ" name="RecentProjectRow.h" compile="0" resource="0"
-                  file="../../Source/UI/WorkspacePage/Menu/RecentProjectRow.h"/>
-            <FILE id="T6S8BK" name="SignInRow.cpp" compile="1" resource="0" file="../../Source/UI/WorkspacePage/Menu/SignInRow.cpp"/>
-            <FILE id="b47mHm" name="SignInRow.h" compile="0" resource="0" file="../../Source/UI/WorkspacePage/Menu/SignInRow.h"/>
-            <FILE id="tsT6ZH" name="WorkspaceMenu.cpp" compile="1" resource="0"
-                  file="../../Source/UI/WorkspacePage/Menu/WorkspaceMenu.cpp"/>
-            <FILE id="KvtvdL" name="WorkspaceMenu.h" compile="0" resource="0" file="../../Source/UI/WorkspacePage/Menu/WorkspaceMenu.h"/>
-          </GROUP>
-          <FILE id="JKrzvP" name="LogoFader.cpp" compile="1" resource="0" file="../../Source/UI/WorkspacePage/LogoFader.cpp"/>
-          <FILE id="lJX4od" name="LogoFader.h" compile="0" resource="0" file="../../Source/UI/WorkspacePage/LogoFader.h"/>
-          <FILE id="xkKH7i" name="LogoImage.cpp" compile="1" resource="0" file="../../Source/UI/WorkspacePage/LogoImage.cpp"/>
-          <FILE id="yUNEm7" name="LogoImage.h" compile="0" resource="0" file="../../Source/UI/WorkspacePage/LogoImage.h"/>
-          <FILE id="hHldD3" name="WorkspacePage.cpp" compile="1" resource="0"
-                file="../../Source/UI/WorkspacePage/WorkspacePage.cpp"/>
-          <FILE id="HAvnHf" name="WorkspacePage.h" compile="0" resource="0" file="../../Source/UI/WorkspacePage/WorkspacePage.h"/>
         </GROUP>
         <FILE id="PkRsJW" name="MainLayout.cpp" compile="1" resource="0" file="../../Source/UI/MainLayout.cpp"/>
         <FILE id="hDwgZW" name="MainLayout.h" compile="0" resource="0" file="../../Source/UI/MainLayout.h"/>
@@ -1376,11 +1380,11 @@
         <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="10.7 SDK" osxArchitecture="default"
                        isDebug="1" optimisation="1" targetName="Helio" cppLanguageStandard="c++11"
                        cppLibType="libc++" customXcodeFlags="CODE_SIGN_IDENTITY = &quot;Developer ID Application&quot;"
-                       headerPath="../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/CommandPanels&#10;../../Source/UI/CommandPanels/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/InstrumentsPage&#10;../../Source/UI/InstrumentsPage/Editor&#10;../../Source/UI/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/ProjectPage&#10;../../Source/UI/Rollovers&#10;../../Source/UI/SettingsPage&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/VCSPage&#10;../../Source/UI/WorkspacePage&#10;../../Source/UI/WorkspacePage/Menu&#10;../../Source/UI/WorkspacePage/Scroller&#10;"/>
+                       headerPath="../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Sidebars&#10;../../Source/UI/Sidebars/Rollovers&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Workspace&#10;../../Source/UI/Pages/Workspace/Menu&#10;../../Source/UI/Pages/Workspace/Scroller&#10;"/>
         <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="10.7 SDK" osxArchitecture="default"
                        isDebug="0" optimisation="3" targetName="Helio" cppLanguageStandard="c++11"
                        cppLibType="libc++" customXcodeFlags="CODE_SIGN_IDENTITY = &quot;Developer ID Application&quot;"
-                       stripLocalSymbols="0" headerPath="../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/CommandPanels&#10;../../Source/UI/CommandPanels/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/InstrumentsPage&#10;../../Source/UI/InstrumentsPage/Editor&#10;../../Source/UI/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/ProjectPage&#10;../../Source/UI/Rollovers&#10;../../Source/UI/SettingsPage&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/VCSPage&#10;../../Source/UI/WorkspacePage&#10;../../Source/UI/WorkspacePage/Menu&#10;../../Source/UI/WorkspacePage/Scroller&#10;"/>
+                       stripLocalSymbols="0" headerPath="../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Sidebars&#10;../../Source/UI/Sidebars/Rollovers&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Workspace&#10;../../Source/UI/Pages/Workspace/Menu&#10;../../Source/UI/Pages/Workspace/Scroller&#10;"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../ThirdParty/JUCE/modules"/>
@@ -1413,12 +1417,12 @@
         <CONFIGURATION name="Debug" iosCompatibility="9.0" isDebug="1" optimisation="1"
                        targetName="Helio" cppLanguageStandard="c++11" cppLibType="libc++"
                        customXcodeFlags="TARGETED_DEVICE_FAMILY=2, PRODUCT_BUNDLE_IDENTIFIER=com.peterrudenko.helio"
-                       headerPath="../../Resources/iOS/AudioBus&#10;../../ThirdParty/VST_SDK/VST3_SDK&#10;../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/CommandPanels&#10;../../Source/UI/CommandPanels/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/InstrumentsPage&#10;../../Source/UI/InstrumentsPage/Editor&#10;../../Source/UI/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/ProjectPage&#10;../../Source/UI/Rollovers&#10;../../Source/UI/SettingsPage&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/VCSPage&#10;../../Source/UI/WorkspacePage&#10;../../Source/UI/WorkspacePage/Menu&#10;../../Source/UI/WorkspacePage/Scroller&#10;"
+                       headerPath="../../Resources/iOS/AudioBus&#10;../../ThirdParty/VST_SDK/VST3_SDK&#10;../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Sidebars&#10;../../Source/UI/Sidebars/Rollovers&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Workspace&#10;../../Source/UI/Pages/Workspace/Menu&#10;../../Source/UI/Pages/Workspace/Scroller&#10;"
                        libraryPath="../../Resources/iOS/AudioBus"/>
         <CONFIGURATION name="Release" iosCompatibility="9.0" isDebug="0" optimisation="3"
                        targetName="Helio" cppLanguageStandard="c++11" cppLibType="libc++"
                        customXcodeFlags="TARGETED_DEVICE_FAMILY=2, PRODUCT_BUNDLE_IDENTIFIER=com.peterrudenko.helio"
-                       headerPath="../../Resources/iOS/AudioBus&#10;../../ThirdParty/VST_SDK/VST3_SDK&#10;../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/CommandPanels&#10;../../Source/UI/CommandPanels/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/InstrumentsPage&#10;../../Source/UI/InstrumentsPage/Editor&#10;../../Source/UI/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/ProjectPage&#10;../../Source/UI/Rollovers&#10;../../Source/UI/SettingsPage&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/VCSPage&#10;../../Source/UI/WorkspacePage&#10;../../Source/UI/WorkspacePage/Menu&#10;../../Source/UI/WorkspacePage/Scroller&#10;"
+                       headerPath="../../Resources/iOS/AudioBus&#10;../../ThirdParty/VST_SDK/VST3_SDK&#10;../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Sidebars&#10;../../Source/UI/Sidebars/Rollovers&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Workspace&#10;../../Source/UI/Pages/Workspace/Menu&#10;../../Source/UI/Pages/Workspace/Scroller&#10;"
                        libraryPath="../../Resources/iOS/AudioBus"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -1444,18 +1448,18 @@
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug 32-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="32-bit" isDebug="1" optimisation="1" targetName="Helio"
-                       headerPath="../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/CommandPanels&#10;../../Source/UI/CommandPanels/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/InstrumentsPage&#10;../../Source/UI/InstrumentsPage/Editor&#10;../../Source/UI/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/ProjectPage&#10;../../Source/UI/Rollovers&#10;../../Source/UI/SettingsPage&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/VCSPage&#10;../../Source/UI/WorkspacePage&#10;../../Source/UI/WorkspacePage/Menu&#10;../../Source/UI/WorkspacePage/Scroller&#10;"
+                       headerPath="../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Sidebars&#10;../../Source/UI/Sidebars/Rollovers&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Workspace&#10;../../Source/UI/Pages/Workspace/Menu&#10;../../Source/UI/Pages/Workspace/Scroller&#10;"
                        wholeProgramOptimisation="1" enableIncrementalLinking="1"/>
         <CONFIGURATION name="Debug x64" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="1" optimisation="1" targetName="Helio" headerPath="../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/CommandPanels&#10;../../Source/UI/CommandPanels/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/InstrumentsPage&#10;../../Source/UI/InstrumentsPage/Editor&#10;../../Source/UI/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/ProjectPage&#10;../../Source/UI/Rollovers&#10;../../Source/UI/SettingsPage&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/VCSPage&#10;../../Source/UI/WorkspacePage&#10;../../Source/UI/WorkspacePage/Menu&#10;../../Source/UI/WorkspacePage/Scroller&#10;"
+                       isDebug="1" optimisation="1" targetName="Helio" headerPath="../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Sidebars&#10;../../Source/UI/Sidebars/Rollovers&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Workspace&#10;../../Source/UI/Pages/Workspace/Menu&#10;../../Source/UI/Pages/Workspace/Scroller&#10;"
                        wholeProgramOptimisation="1" enableIncrementalLinking="1"/>
         <CONFIGURATION name="Release 32-bit" winWarningLevel="3" generateManifest="1"
                        winArchitecture="32-bit" isDebug="0" optimisation="3" targetName="Helio"
-                       useRuntimeLibDLL="0" headerPath="../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/CommandPanels&#10;../../Source/UI/CommandPanels/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/InstrumentsPage&#10;../../Source/UI/InstrumentsPage/Editor&#10;../../Source/UI/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/ProjectPage&#10;../../Source/UI/Rollovers&#10;../../Source/UI/SettingsPage&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/VCSPage&#10;../../Source/UI/WorkspacePage&#10;../../Source/UI/WorkspacePage/Menu&#10;../../Source/UI/WorkspacePage/Scroller&#10;"
+                       useRuntimeLibDLL="0" headerPath="../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Sidebars&#10;../../Source/UI/Sidebars/Rollovers&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Workspace&#10;../../Source/UI/Pages/Workspace/Menu&#10;../../Source/UI/Pages/Workspace/Scroller&#10;"
                        wholeProgramOptimisation="1" enableIncrementalLinking="1"/>
         <CONFIGURATION name="Release x64" winWarningLevel="3" generateManifest="1" winArchitecture="x64"
                        isDebug="0" optimisation="3" targetName="Helio" useRuntimeLibDLL="0"
-                       headerPath="../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/CommandPanels&#10;../../Source/UI/CommandPanels/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/InstrumentsPage&#10;../../Source/UI/InstrumentsPage/Editor&#10;../../Source/UI/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/ProjectPage&#10;../../Source/UI/Rollovers&#10;../../Source/UI/SettingsPage&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/VCSPage&#10;../../Source/UI/WorkspacePage&#10;../../Source/UI/WorkspacePage/Menu&#10;../../Source/UI/WorkspacePage/Scroller&#10;"
+                       headerPath="../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Sidebars&#10;../../Source/UI/Sidebars/Rollovers&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Workspace&#10;../../Source/UI/Pages/Workspace/Menu&#10;../../Source/UI/Pages/Workspace/Scroller&#10;"
                        enableIncrementalLinking="1" wholeProgramOptimisation="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -1481,12 +1485,12 @@
                 cppLanguageStandard="-std=c++11">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
-                       targetName="Helio" headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/CommandPanels&#10;../../Source/UI/CommandPanels/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/InstrumentsPage&#10;../../Source/UI/InstrumentsPage/Editor&#10;../../Source/UI/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/ProjectPage&#10;../../Source/UI/Rollovers&#10;../../Source/UI/SettingsPage&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/VCSPage&#10;../../Source/UI/WorkspacePage&#10;../../Source/UI/WorkspacePage/Menu&#10;../../Source/UI/WorkspacePage/Scroller&#10;"/>
+                       targetName="Helio" headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Sidebars&#10;../../Source/UI/Sidebars/Rollovers&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Workspace&#10;../../Source/UI/Pages/Workspace/Menu&#10;../../Source/UI/Pages/Workspace/Scroller&#10;"/>
         <CONFIGURATION name="Release32" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="3"
-                       targetName="Helio" headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/CommandPanels&#10;../../Source/UI/CommandPanels/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/InstrumentsPage&#10;../../Source/UI/InstrumentsPage/Editor&#10;../../Source/UI/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/ProjectPage&#10;../../Source/UI/Rollovers&#10;../../Source/UI/SettingsPage&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/VCSPage&#10;../../Source/UI/WorkspacePage&#10;../../Source/UI/WorkspacePage/Menu&#10;../../Source/UI/WorkspacePage/Scroller&#10;"
+                       targetName="Helio" headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Sidebars&#10;../../Source/UI/Sidebars/Rollovers&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Workspace&#10;../../Source/UI/Pages/Workspace/Menu&#10;../../Source/UI/Pages/Workspace/Scroller&#10;"
                        linuxArchitecture="-m32"/>
         <CONFIGURATION name="Release64" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="3"
-                       targetName="Helio" headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/CommandPanels&#10;../../Source/UI/CommandPanels/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/InstrumentsPage&#10;../../Source/UI/InstrumentsPage/Editor&#10;../../Source/UI/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/ProjectPage&#10;../../Source/UI/Rollovers&#10;../../Source/UI/SettingsPage&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/VCSPage&#10;../../Source/UI/WorkspacePage&#10;../../Source/UI/WorkspacePage/Menu&#10;../../Source/UI/WorkspacePage/Scroller&#10;"
+                       targetName="Helio" headerPath="../Projucer/JuceLibraryCode&#10;../../ThirdParty/ASIO/common&#10;../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Sidebars&#10;../../Source/UI/Sidebars/Rollovers&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Workspace&#10;../../Source/UI/Pages/Workspace/Menu&#10;../../Source/UI/Pages/Workspace/Scroller&#10;"
                        linuxArchitecture="-m64"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -1516,9 +1520,9 @@
                    extraDefs="JUCE_ENABLE_LIVE_CONSTANT_EDITOR=0">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" androidArchitectures="armeabi x86" isDebug="1" optimisation="1"
-                       targetName="Helio" headerPath="../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/CommandPanels&#10;../../Source/UI/CommandPanels/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/InstrumentsPage&#10;../../Source/UI/InstrumentsPage/Editor&#10;../../Source/UI/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/ProjectPage&#10;../../Source/UI/Rollovers&#10;../../Source/UI/SettingsPage&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/VCSPage&#10;../../Source/UI/WorkspacePage&#10;../../Source/UI/WorkspacePage/Menu&#10;../../Source/UI/WorkspacePage/Scroller&#10;"/>
+                       targetName="Helio" headerPath="../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Sidebars&#10;../../Source/UI/Sidebars/Rollovers&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Workspace&#10;../../Source/UI/Pages/Workspace/Menu&#10;../../Source/UI/Pages/Workspace/Scroller&#10;"/>
         <CONFIGURATION name="Release" androidArchitectures="" isDebug="0" optimisation="3"
-                       targetName="Helio" headerPath="../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/CommandPanels&#10;../../Source/UI/CommandPanels/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/InstrumentsPage&#10;../../Source/UI/InstrumentsPage/Editor&#10;../../Source/UI/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/ProjectPage&#10;../../Source/UI/Rollovers&#10;../../Source/UI/SettingsPage&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/VCSPage&#10;../../Source/UI/WorkspacePage&#10;../../Source/UI/WorkspacePage/Menu&#10;../../Source/UI/WorkspacePage/Scroller&#10;"/>
+                       targetName="Helio" headerPath="../../ThirdParty/JUCE/modules/juce_audio_basics&#10;../../ThirdParty/JUCE/modules/juce_audio_devices&#10;../../ThirdParty/JUCE/modules/juce_audio_formats&#10;../../ThirdParty/JUCE/modules/juce_audio_processors&#10;../../ThirdParty/JUCE/modules/juce_audio_utils&#10;../../ThirdParty/JUCE/modules/juce_audio_utils/players&#10;../../ThirdParty/JUCE/modules/juce_core&#10;../../ThirdParty/JUCE/modules/juce_cryptography&#10;../../ThirdParty/JUCE/modules/juce_data_structures&#10;../../ThirdParty/JUCE/modules/juce_events&#10;../../ThirdParty/JUCE/modules/juce_graphics&#10;../../ThirdParty/JUCE/modules/juce_gui_basics&#10;../../ThirdParty/JUCE/modules/juce_gui_extra&#10;../../ThirdParty/JUCE/modules/juce_opengl&#10;../../ThirdParty/JUCE/modules/juce_osc&#10;../../Source/&#10;../../Source/Core/&#10;../../Source/Core/App&#10;../../Source/Core/Audio&#10;../../Source/Core/Audio/BuiltIn&#10;../../Source/Core/Audio/Instruments&#10;../../Source/Core/Audio/Monitoring&#10;../../Source/Core/Audio/Transport&#10;../../Source/Core/Audio/Waveform&#10;../../Source/Core/Clipboard&#10;../../Source/Core/Midi&#10;../../Source/Core/Midi/Patterns&#10;../../Source/Core/Midi/Sequences&#10;../../Source/Core/Midi/Sequences/Events&#10;../../Source/Core/Network&#10;../../Source/Core/Serialization&#10;../../Source/Core/Supervisor&#10;../../Source/Core/Tools&#10;../../Source/Core/Translation&#10;../../Source/Core/Tree&#10;../../Source/Core/Tutorial&#10;../../Source/Core/Undo&#10;../../Source/Core/Undo/Actions&#10;../../Source/Core/VCS&#10;../../Source/Core/VCS/DiffLogic&#10;../../Source/Core/VCS/Network&#10;../../Source/UI/&#10;../../Source/UI/CodeEditor&#10;../../Source/UI/Menus&#10;../../Source/UI/Menus/Base&#10;../../Source/UI/Common&#10;../../Source/UI/Common/Meters&#10;../../Source/UI/Common/Origami&#10;../../Source/UI/Console&#10;../../Source/UI/Dialogs&#10;../../Source/UI/Headline&#10;../../Source/UI/Input&#10;../../Source/UI/Pages/Instruments&#10;../../Source/UI/Pages/Instruments/Editor&#10;../../Source/UI/Pages/Intro&#10;../../Source/UI/Sequencer&#10;../../Source/UI/Sequencer/AnnotationsMap&#10;../../Source/UI/Sequencer/AutomationMap&#10;../../Source/UI/Sequencer/Header&#10;../../Source/UI/Sequencer/Helpers&#10;../../Source/UI/Sequencer/PatternRoll&#10;../../Source/UI/Sequencer/PianoRoll&#10;../../Source/UI/Sequencer/TimeSignaturesMap&#10;../../Source/UI/Sequencer/TrackMap&#10;../../Source/UI/Sequencer/TriggersMap&#10;../../Source/UI/Sequencer/WaveformMap&#10;../../Source/UI/Popups&#10;../../Source/UI/Pages/Project&#10;../../Source/UI/Sidebars&#10;../../Source/UI/Sidebars/Rollovers&#10;../../Source/UI/Pages/Settings&#10;../../Source/UI/Themes&#10;../../Source/UI/Tree&#10;../../Source/UI/Pages/VCS&#10;../../Source/UI/Pages/Workspace&#10;../../Source/UI/Pages/Workspace/Menu&#10;../../Source/UI/Pages/Workspace/Scroller&#10;"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_osc" path="../../ThirdParty/JUCE/modules"/>

@@ -44,7 +44,7 @@ CommandPanel::CommandPanel()
     this->listBox->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
     //[/UserPreSize]
 
-    setSize (220, 300);
+    setSize (150, 300);
 
     //[Constructor]
     this->setFocusContainer(false);
@@ -186,7 +186,6 @@ void CommandPanel::updateContent(ReferenceCountedArray<CommandItem> commands, An
     const int newWidth = estimatedWidth + int(COMMAND_PANEL_BUTTON_HEIGHT * 2.5f);
     this->setSize(jmax(newWidth, this->getWidth()), jmin(newHeight, maxHeight));
 
-
     if (this->listBox)
     {
         if (animationType == Fading)
@@ -323,7 +322,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="CommandPanel" template="../../../Template"
                  componentName="" parentClasses="public Component, private ListBoxModel"
                  constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="220"
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="150"
                  initialHeight="300">
   <METHODS>
     <METHOD name="handleCommandMessage (int commandId)"/>

@@ -24,7 +24,7 @@ class ProjectTreeItem;
 //[/Headers]
 
 #include "../Themes/PanelBackgroundC.h"
-#include "../VCSPage/StageComponent.h"
+#include "../Pages/VCS/StageComponent.h"
 
 class VCSCommandPanel  : public Component,
                          private ChangeListener

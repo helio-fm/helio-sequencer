@@ -108,7 +108,7 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../Themes/PanelBackgroundC.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="539b662d2b873b49" memberName="stage" virtualName=""
-             explicitFocusOrder="0" pos="5 7 10M 14M" sourceFile="../VCSPage/StageComponent.cpp"
+             explicitFocusOrder="0" pos="5 7 10M 14M" sourceFile="../Pages/VCS/StageComponent.cpp"
              constructorParams="versionControl"/>
 </JUCER_COMPONENT>
 

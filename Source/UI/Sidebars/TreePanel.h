@@ -24,9 +24,9 @@ class LongTapController;
 
 #include "LongTapListener.h"
 
-#define TREE_COMPACT_WIDTH           (48)
-#define TREE_DEFAULT_WIDTH           (200)
-#define TREE_PHONE_WIDTH             (48)
+#define TREE_COMPACT_WIDTH           (72)
+#define TREE_DEFAULT_WIDTH           (72)
+#define TREE_PHONE_WIDTH             (72)
 
 class TreePanel : public Component,
                   public LongTapListener
