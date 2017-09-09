@@ -91,14 +91,11 @@ void AudioMonitor::audioDeviceAboutToStart(AudioIODevice *device)
 }
 
 void AudioMonitor::audioDeviceIOCallback(const float **inputChannelData,
-                                             int numInputChannels,
-                                             float **outputChannelData,
-                                             int numOutputChannels,
-                                             int numSamples)
+                                         int numInputChannels,
+                                         float **outputChannelData,
+                                         int numOutputChannels,
+                                         int numSamples)
 {
-    
-    
-    
     const int numChannels =
     jmin(AUDIO_MONITOR_MAX_CHANNELS, numOutputChannels);
     
@@ -131,7 +128,7 @@ void AudioMonitor::audioDeviceIOCallback(const float **inputChannelData,
         const float rootMeanSquare = sqrtf(pcmSquaresSum / numSamples);
         this->rms[channel] = rootMeanSquare;
 #endif
-        
+
         this->peak[channel] = pcmPeak;
         
         if (pcmPeak > AUDIO_MONITOR_CLIP_THRESHOLD)
@@ -171,16 +168,16 @@ float AudioMonitor::getInterpolatedSpectrumAtFrequency(float frequency) const
     const double resolution = (this->sampleRate / 2) / double(this->spectrumSize);
     
     const int index1 = roundFloatToInt(frequency / resolution);
+    const int safeIndex1 = jlimit(0, this->spectrumSize, index1);
     const double f1 = index1 * resolution;
-    const float y1 = (this->spectrum[0][jlimit(0, this->spectrumSize, index1)] +
-                      this->spectrum[1][jlimit(0, this->spectrumSize, index1)]) / 2.f;
+    const float y1 = (this->spectrum[0][safeIndex1].get() +
+                      this->spectrum[1][safeIndex1].get()) / 2.f;
     
     const int index2 = index1 + 1;
+    const int safeIndex2 = jlimit(0, this->spectrumSize, index2);
     const double f2 = index2 * resolution;
-    const float y2 = (this->spectrum[0][jlimit(0, this->spectrumSize, index2)] +
-                      this->spectrum[1][jlimit(0, this->spectrumSize, index2)]) / 2.f;
-    
-    //Logger::writeToLog(">> " + String(y1) + ", " + String(y2) + ", " + String(f1) + ", " + String(f2));
+    const float y2 = (this->spectrum[0][safeIndex2].get() +
+                      this->spectrum[1][safeIndex2].get()) / 2.f;
     
     return y1 + ((AudioCore::fastLog10(frequency) - AudioCore::fastLog10(f1)) /
                  (AudioCore::fastLog10(f2) - AudioCore::fastLog10(f1))) * (y2 - y1);
@@ -211,13 +208,12 @@ ListenerList<AudioMonitor::ClippingListener> &AudioMonitor::getListeners() noexc
 
 float AudioMonitor::getPeak(int channel) const
 {
-    //jmin(VOLUME_CALLBACK_MAX_CHANNELS, channel)
-    return this->peak[channel];
+    return this->peak[channel].get();
 }
 
 #if AUDIO_MONITOR_COMPUTES_RMS
 float AudioMonitor::getRootMeanSquare(int channel) const
 {
-    return this->rms[channel];
+    return this->rms[channel].get();
 }
 #endif

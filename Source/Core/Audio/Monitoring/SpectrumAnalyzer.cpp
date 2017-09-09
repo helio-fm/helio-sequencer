@@ -166,7 +166,7 @@ inline void SpectrumFFT::process(int bits)
 void SpectrumFFT::computeSpectrum(float *pcmbuffer,
                                   unsigned int pcmposition,
                                   unsigned int pcmlength,
-                                  float *spectrum,
+                                  Atomic<float> *spectrum,
                                   int length,
                                   int channel,
                                   int numchannels)
@@ -210,10 +210,9 @@ void SpectrumFFT::computeSpectrum(float *pcmbuffer,
         
         n = this->reverse(n, bits);
         
-        magnitude = FFT_SQRT((this->buffer[n].re *
-                              this->buffer[n].re)
-                             + (this->buffer[n].im *
-                                this->buffer[n].im));
+        magnitude = 
+            FFT_SQRT((this->buffer[n].re * this->buffer[n].re)
+                + (this->buffer[n].im * this->buffer[n].im));
         
         magnitude *= 2.5f; 
         

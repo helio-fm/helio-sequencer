@@ -41,10 +41,10 @@ public:
 
     void audioDeviceAboutToStart(AudioIODevice *device) override;
     void audioDeviceIOCallback(const float **inputChannelData,
-                                       int numInputChannels,
-                                       float **outputChannelData,
-                                       int numOutputChannels,
-                                       int numSamples) override;
+                               int numInputChannels,
+                               float **outputChannelData,
+                               int numOutputChannels,
+                               int numSamples) override;
     void audioDeviceStopped() override;
     
     //===------------------------------------------------------------------===//
@@ -82,12 +82,13 @@ public:
 private:
 
     SpectrumFFT fft;
-    float spectrum[AUDIO_MONITOR_MAX_CHANNELS][AUDIO_MONITOR_MAX_SPECTRUMSIZE];
 
-    float peak[AUDIO_MONITOR_MAX_CHANNELS];
+    Atomic<float> spectrum[AUDIO_MONITOR_MAX_CHANNELS][AUDIO_MONITOR_MAX_SPECTRUMSIZE];
+
+    Atomic<float> peak[AUDIO_MONITOR_MAX_CHANNELS];
 
 #if AUDIO_MONITOR_COMPUTES_RMS
-    float rms[AUDIO_MONITOR_MAX_CHANNELS];
+    Atomic<float> rms[AUDIO_MONITOR_MAX_CHANNELS];
 #endif
 
     int spectrumSize;
