@@ -141,12 +141,13 @@ String TranslationManager::findPluralFor(const String &baseLiteral, int64 target
 
 Array<TranslationManager::Locale> TranslationManager::getAvailableLocales() const
 {
+    const Locale comparator;
     Array<Locale> result;
     HashMap<String, Locale>::Iterator i(this->availableTranslations);
     
     while (i.next())
     {
-        result.addSorted(i.getValue(), i.getValue());
+        result.addSorted(comparator, i.getValue());
     }
     
     return result;
