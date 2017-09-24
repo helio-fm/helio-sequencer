@@ -89,12 +89,6 @@
     <Filter Include="Helio\Source\Core">
       <UniqueIdentifier>{54BC896B-E0F6-600F-E5F4-536141549909}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helio\Source\UI\CommandPanels\Base">
-      <UniqueIdentifier>{9D7CACA9-FF09-1D01-903D-427C25CEECF8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\UI\CommandPanels">
-      <UniqueIdentifier>{5869301A-454D-04DA-9F4D-D02E19B7BF73}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Helio\Source\UI\Common\Meters">
       <UniqueIdentifier>{61642DFB-6AF0-CF4D-C8D3-98FBA9E4AC54}</UniqueIdentifier>
     </Filter>
@@ -107,26 +101,47 @@
     <Filter Include="Helio\Source\UI\Dialogs">
       <UniqueIdentifier>{0561C51E-C552-84B4-AB5F-46EDEB333D43}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Helio\Source\UI\Headline">
+      <UniqueIdentifier>{4C891E23-50AE-CF71-A74C-EDC628FB031F}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Helio\Source\UI\Input">
       <UniqueIdentifier>{0B1C24F8-AF81-443F-D257-C425533FF0C4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helio\Source\UI\InstrumentsPage\Editor">
-      <UniqueIdentifier>{0783E7A9-CB3D-FA4C-8BD2-3F8D1452B8D1}</UniqueIdentifier>
+    <Filter Include="Helio\Source\UI\Menus\Base">
+      <UniqueIdentifier>{E7C161C0-52E5-3C1E-521E-F061E5D5B0E1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helio\Source\UI\InstrumentsPage">
-      <UniqueIdentifier>{C0AD2163-9A72-9C1F-1FEC-BA4D6739D77D}</UniqueIdentifier>
+    <Filter Include="Helio\Source\UI\Menus">
+      <UniqueIdentifier>{03297047-B5EB-E5B2-48B2-9C83E006A546}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helio\Source\UI\Intro">
-      <UniqueIdentifier>{4447BFBA-A8BF-CE33-4EC3-DB497FE10359}</UniqueIdentifier>
+    <Filter Include="Helio\Source\UI\Pages\Instruments\Editor">
+      <UniqueIdentifier>{B00307DF-F77B-7AED-F918-34C956DA2823}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Pages\Instruments">
+      <UniqueIdentifier>{519BD902-4BE0-1292-DDE1-6C0E58D85626}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Pages\Intro">
+      <UniqueIdentifier>{09DBB790-6B9B-8495-EFA9-C5A5E9F12B34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Pages\Project">
+      <UniqueIdentifier>{16BCEB16-D877-8583-51B1-944E2DEA8FCB}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Pages\Settings">
+      <UniqueIdentifier>{8AB8F26C-50B9-4475-7250-CDBAA8AACDE7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Pages\VCS">
+      <UniqueIdentifier>{3A315DC8-9F68-E509-C641-AB08D3CA59A0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Pages\Workspace\Menu">
+      <UniqueIdentifier>{40A7C051-971A-7AE4-E09C-47B19C637F10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Pages\Workspace">
+      <UniqueIdentifier>{1BCE6E5D-8959-22D8-08AF-E14D8BEDB82A}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Pages">
+      <UniqueIdentifier>{FC00852E-591C-1BEE-0BFB-6EDA0613BE67}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Source\UI\Popups">
       <UniqueIdentifier>{97C2C14B-E622-7A8D-30C8-F6BE30B326A5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\UI\Rollovers">
-      <UniqueIdentifier>{B23DE6C5-CC3A-07F6-B5CD-3A740DA41654}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\UI\ProjectPage">
-      <UniqueIdentifier>{EBC98F0F-98D8-175A-F91E-A91B7FA7AA16}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Source\UI\Sequencer\AnnotationsMap">
       <UniqueIdentifier>{40A4623C-B436-8ABC-24FF-726991126D83}</UniqueIdentifier>
@@ -158,23 +173,17 @@
     <Filter Include="Helio\Source\UI\Sequencer">
       <UniqueIdentifier>{51F62DE5-3494-7C22-D76B-2980A4C15C10}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helio\Source\UI\SettingsPage">
-      <UniqueIdentifier>{E11C35F5-BB8E-89B1-75A6-BFEE6C13C0FF}</UniqueIdentifier>
+    <Filter Include="Helio\Source\UI\Sidebars\Rollovers">
+      <UniqueIdentifier>{23033DEB-DE0A-47BE-DA48-DF5597497064}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\UI\Sidebars">
+      <UniqueIdentifier>{D8D108EB-AED3-51BB-D824-D7CCCCCBF580}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Source\UI\Themes">
       <UniqueIdentifier>{77ADD7C9-7DC0-864A-411A-3D71D415931E}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Source\UI\Tree">
       <UniqueIdentifier>{9D14293C-3CFD-AA49-0BEC-292A24F1EB55}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\UI\VCSPage">
-      <UniqueIdentifier>{8937AACE-8658-087D-2FF0-04F408B55941}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\UI\WorkspacePage\Menu">
-      <UniqueIdentifier>{02CEF23A-A874-D21B-8D33-0DEF54A721B4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\UI\WorkspacePage">
-      <UniqueIdentifier>{F4C2A184-981C-ABC7-5185-95583AA46DDD}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Source\UI">
       <UniqueIdentifier>{9C2E0FB4-0B0D-95BC-2CBB-DF47D4698F9F}</UniqueIdentifier>
@@ -199,6 +208,9 @@
     </Filter>
     <Filter Include="Juce Modules\juce_audio_basics\mpe">
       <UniqueIdentifier>{8C868E51-156D-A916-047C-0D9EA1393675}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Juce Modules\juce_audio_basics\native">
+      <UniqueIdentifier>{D0C0664E-18ED-2BD3-6ED4-EF3A0EDE0E20}</UniqueIdentifier>
     </Filter>
     <Filter Include="Juce Modules\juce_audio_basics\sources">
       <UniqueIdentifier>{EF2CAB40-0432-429B-C517-86ADF136BB8A}</UniqueIdentifier>
@@ -832,73 +844,13 @@
     <ClCompile Include="..\..\Source\Core\VCS\VersionControl.cpp">
       <Filter>Helio\Source\Core\VCS</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\Base\CommandItemComponent.cpp">
-      <Filter>Helio\Source\UI\CommandPanels\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\Base\CommandItemComponentMarker.cpp">
-      <Filter>Helio\Source\UI\CommandPanels\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\Base\CommandPanel.cpp">
-      <Filter>Helio\Source\UI\CommandPanels\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\AnnotationCommandPanel.cpp">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\ArpeggiatorEditorPanel.cpp">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\ArpeggiatorPanel.cpp">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\AutomationsCommandPanel.cpp">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\HybridRollCommandPanel.cpp">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\HybridRollCommandPanelDefault.cpp">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\HybridRollCommandPanelPhone.cpp">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\InstrumentCommandPanel.cpp">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\InstrumentsCommandPanel.cpp">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\LayerCommandPanel.cpp">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\MoveToLayerCommandPanel.cpp">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\NotesTuningPanel.cpp">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\ProjectCommandPanel.cpp">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\RootTreeItemPanelDefault.cpp">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\RootTreeItemPanelCompact.cpp">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\TimelineCommandPanel.cpp">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\TimeSignatureCommandPanel.cpp">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\CommandPanels\VCSCommandPanel.cpp">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Common\Meters\SpectrumComponent.cpp">
+    <ClCompile Include="..\..\Source\UI\Common\Meters\SpectrumMeter.cpp">
       <Filter>Helio\Source\UI\Common\Meters</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Common\Meters\VolumeComponent.cpp">
+    <ClCompile Include="..\..\Source\UI\Common\Meters\VolumePeakMeter.cpp">
+      <Filter>Helio\Source\UI\Common\Meters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Common\Meters\WaveformMeter.cpp">
       <Filter>Helio\Source\UI\Common\Meters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Common\Origami\Origami.cpp">
@@ -964,32 +916,206 @@
     <ClCompile Include="..\..\Source\UI\Dialogs\UpdateDialog.cpp">
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Headline\Headline.cpp">
+      <Filter>Helio\Source\UI\Headline</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Headline\HeadlineDropdown.cpp">
+      <Filter>Helio\Source\UI\Headline</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Headline\HeadlineItem.cpp">
+      <Filter>Helio\Source\UI\Headline</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Input\MultiTouchController.cpp">
       <Filter>Helio\Source\UI\Input</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\InstrumentsPage\Editor\AudioPluginEditorPage.cpp">
-      <Filter>Helio\Source\UI\InstrumentsPage\Editor</Filter>
+    <ClCompile Include="..\..\Source\UI\Menus\Base\CommandItemComponent.cpp">
+      <Filter>Helio\Source\UI\Menus\Base</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\InstrumentsPage\Editor\InstrumentEditor.cpp">
-      <Filter>Helio\Source\UI\InstrumentsPage\Editor</Filter>
+    <ClCompile Include="..\..\Source\UI\Menus\Base\CommandItemComponentMarker.cpp">
+      <Filter>Helio\Source\UI\Menus\Base</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\InstrumentsPage\Editor\InstrumentEditorConnector.cpp">
-      <Filter>Helio\Source\UI\InstrumentsPage\Editor</Filter>
+    <ClCompile Include="..\..\Source\UI\Menus\Base\CommandPanel.cpp">
+      <Filter>Helio\Source\UI\Menus\Base</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\InstrumentsPage\Editor\InstrumentEditorNode.cpp">
-      <Filter>Helio\Source\UI\InstrumentsPage\Editor</Filter>
+    <ClCompile Include="..\..\Source\UI\Menus\AnnotationCommandPanel.cpp">
+      <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\InstrumentsPage\Editor\InstrumentEditorPin.cpp">
-      <Filter>Helio\Source\UI\InstrumentsPage\Editor</Filter>
+    <ClCompile Include="..\..\Source\UI\Menus\ArpeggiatorEditorPanel.cpp">
+      <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\InstrumentsPage\InstrumentRow.cpp">
-      <Filter>Helio\Source\UI\InstrumentsPage</Filter>
+    <ClCompile Include="..\..\Source\UI\Menus\ArpeggiatorPanel.cpp">
+      <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\InstrumentsPage\InstrumentsPage.cpp">
-      <Filter>Helio\Source\UI\InstrumentsPage</Filter>
+    <ClCompile Include="..\..\Source\UI\Menus\AutomationsCommandPanel.cpp">
+      <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Intro\InitScreen.cpp">
-      <Filter>Helio\Source\UI\Intro</Filter>
+    <ClCompile Include="..\..\Source\UI\Menus\InstrumentCommandPanel.cpp">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Menus\InstrumentsCommandPanel.cpp">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Menus\LayerCommandPanel.cpp">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Menus\MoveToLayerCommandPanel.cpp">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Menus\NotesTuningPanel.cpp">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Menus\ProjectCommandPanel.cpp">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Menus\RootTreeItemPanelDefault.cpp">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Menus\RootTreeItemPanelCompact.cpp">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Menus\TimelineCommandPanel.cpp">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Menus\TimeSignatureCommandPanel.cpp">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Menus\VCSCommandPanel.cpp">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\AudioPluginEditorPage.cpp">
+      <Filter>Helio\Source\UI\Pages\Instruments\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditor.cpp">
+      <Filter>Helio\Source\UI\Pages\Instruments\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorConnector.cpp">
+      <Filter>Helio\Source\UI\Pages\Instruments\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorNode.cpp">
+      <Filter>Helio\Source\UI\Pages\Instruments\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorPin.cpp">
+      <Filter>Helio\Source\UI\Pages\Instruments\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Instruments\InstrumentRow.cpp">
+      <Filter>Helio\Source\UI\Pages\Instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Instruments\InstrumentsPage.cpp">
+      <Filter>Helio\Source\UI\Pages\Instruments</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Intro\InitScreen.cpp">
+      <Filter>Helio\Source\UI\Pages\Intro</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Project\ProjectPage.cpp">
+      <Filter>Helio\Source\UI\Pages\Project</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Project\ProjectPageDefault.cpp">
+      <Filter>Helio\Source\UI\Pages\Project</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Project\ProjectPagePhone.cpp">
+      <Filter>Helio\Source\UI\Pages\Project</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\AudioSettings.cpp">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\AuthorizationSettings.cpp">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\ComponentsList.cpp">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\IntroSettingsWrapper.cpp">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\LabeledSettingsWrapper.cpp">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\LogComponent.cpp">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\OpenGLSettings.cpp">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\PluginsList.cpp">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsListItemHighlighter.cpp">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsListItemSelection.cpp">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsPage.cpp">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\ThemeSettings.cpp">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\ThemeSettingsItem.cpp">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\TranslationSettings.cpp">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\TranslationSettingsItem.cpp">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\VCS\HistoryComponent.cpp">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\VCS\RevisionComponent.cpp">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\VCS\RevisionConnectorComponent.cpp">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\VCS\RevisionItemComponent.cpp">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\VCS\RevisionTooltipComponent.cpp">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\VCS\RevisionTreeComponent.cpp">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\VCS\StageComponent.cpp">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.cpp">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditorDefault.cpp">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditorPhone.cpp">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditorPhoneViewportContent.cpp">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Workspace\Menu\CreateProjectRow.cpp">
+      <Filter>Helio\Source\UI\Pages\Workspace\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Workspace\Menu\OpenProjectRow.cpp">
+      <Filter>Helio\Source\UI\Pages\Workspace\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Workspace\Menu\RecentProjectRow.cpp">
+      <Filter>Helio\Source\UI\Pages\Workspace\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Workspace\Menu\SignInRow.cpp">
+      <Filter>Helio\Source\UI\Pages\Workspace\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Workspace\Menu\WorkspaceMenu.cpp">
+      <Filter>Helio\Source\UI\Pages\Workspace\Menu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Workspace\LogoFader.cpp">
+      <Filter>Helio\Source\UI\Pages\Workspace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Workspace\LogoImage.cpp">
+      <Filter>Helio\Source\UI\Pages\Workspace</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Pages\Workspace\WorkspacePage.cpp">
+      <Filter>Helio\Source\UI\Pages\Workspace</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\ChordTooltip.cpp">
       <Filter>Helio\Source\UI\Popups</Filter>
@@ -1020,36 +1146,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\TooltipContainer.cpp">
       <Filter>Helio\Source\UI\Popups</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Rollovers\RolloverBackButtonLeft.cpp">
-      <Filter>Helio\Source\UI\Rollovers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Rollovers\RolloverBackButtonRight.cpp">
-      <Filter>Helio\Source\UI\Rollovers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Rollovers\RolloverHeaderLeft.cpp">
-      <Filter>Helio\Source\UI\Rollovers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Rollovers\RolloverHeaderRight.cpp">
-      <Filter>Helio\Source\UI\Rollovers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Rollovers\RolloverContainer.cpp">
-      <Filter>Helio\Source\UI\Rollovers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Rollovers\ProjectRollover.cpp">
-      <Filter>Helio\Source\UI\Rollovers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Rollovers\SettingsRollover.cpp">
-      <Filter>Helio\Source\UI\Rollovers</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\ProjectPage\ProjectPage.cpp">
-      <Filter>Helio\Source\UI\ProjectPage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\ProjectPage\ProjectPageDefault.cpp">
-      <Filter>Helio\Source\UI\ProjectPage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\ProjectPage\ProjectPagePhone.cpp">
-      <Filter>Helio\Source\UI\ProjectPage</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\AnnotationsMap\AnnotationLargeComponent.cpp">
       <Filter>Helio\Source\UI\Sequencer\AnnotationsMap</Filter>
@@ -1180,50 +1276,44 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\SequencerLayout.cpp">
       <Filter>Helio\Source\UI\Sequencer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\SettingsPage\AudioSettings.cpp">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClCompile Include="..\..\Source\UI\Sidebars\Rollovers\ProjectRollover.cpp">
+      <Filter>Helio\Source\UI\Sidebars\Rollovers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\SettingsPage\AuthorizationSettings.cpp">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClCompile Include="..\..\Source\UI\Sidebars\Rollovers\RolloverBackButtonLeft.cpp">
+      <Filter>Helio\Source\UI\Sidebars\Rollovers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\SettingsPage\ComponentsList.cpp">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClCompile Include="..\..\Source\UI\Sidebars\Rollovers\RolloverBackButtonRight.cpp">
+      <Filter>Helio\Source\UI\Sidebars\Rollovers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\SettingsPage\IntroSettingsWrapper.cpp">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClCompile Include="..\..\Source\UI\Sidebars\Rollovers\RolloverContainer.cpp">
+      <Filter>Helio\Source\UI\Sidebars\Rollovers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\SettingsPage\LabeledSettingsWrapper.cpp">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClCompile Include="..\..\Source\UI\Sidebars\Rollovers\RolloverHeaderLeft.cpp">
+      <Filter>Helio\Source\UI\Sidebars\Rollovers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\SettingsPage\LogComponent.cpp">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClCompile Include="..\..\Source\UI\Sidebars\Rollovers\RolloverHeaderRight.cpp">
+      <Filter>Helio\Source\UI\Sidebars\Rollovers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\SettingsPage\OpenGLSettings.cpp">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClCompile Include="..\..\Source\UI\Sidebars\Rollovers\SettingsRollover.cpp">
+      <Filter>Helio\Source\UI\Sidebars\Rollovers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\SettingsPage\PluginsList.cpp">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClCompile Include="..\..\Source\UI\Sidebars\HybridRollCommandPanel.cpp">
+      <Filter>Helio\Source\UI\Sidebars</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\SettingsPage\SettingsPage.cpp">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClCompile Include="..\..\Source\UI\Sidebars\HybridRollCommandPanelDefault.cpp">
+      <Filter>Helio\Source\UI\Sidebars</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\SettingsPage\SettingsListItemHighlighter.cpp">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClCompile Include="..\..\Source\UI\Sidebars\HybridRollCommandPanelPhone.cpp">
+      <Filter>Helio\Source\UI\Sidebars</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\SettingsPage\SettingsListItemSelection.cpp">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClCompile Include="..\..\Source\UI\Sidebars\TreePanel.cpp">
+      <Filter>Helio\Source\UI\Sidebars</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\SettingsPage\ThemeSettings.cpp">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClCompile Include="..\..\Source\UI\Sidebars\TreePanelDefault.cpp">
+      <Filter>Helio\Source\UI\Sidebars</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\SettingsPage\ThemeSettingsItem.cpp">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\SettingsPage\TranslationSettings.cpp">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\SettingsPage\TranslationSettingsItem.cpp">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClCompile Include="..\..\Source\UI\Sidebars\TreePanelPhone.cpp">
+      <Filter>Helio\Source\UI\Sidebars</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Themes\ComponentFader.cpp">
       <Filter>Helio\Source\UI\Themes</Filter>
@@ -1339,72 +1429,6 @@
     <ClCompile Include="..\..\Source\UI\Tree\TreeItemMenuButton.cpp">
       <Filter>Helio\Source\UI\Tree</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Tree\TreePanel.cpp">
-      <Filter>Helio\Source\UI\Tree</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Tree\TreePanelDefault.cpp">
-      <Filter>Helio\Source\UI\Tree</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Tree\TreePanelPhone.cpp">
-      <Filter>Helio\Source\UI\Tree</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\VCSPage\HistoryComponent.cpp">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\VCSPage\RevisionComponent.cpp">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\VCSPage\RevisionConnectorComponent.cpp">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\VCSPage\RevisionItemComponent.cpp">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\VCSPage\RevisionTooltipComponent.cpp">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\VCSPage\RevisionTreeComponent.cpp">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\VCSPage\StageComponent.cpp">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\VCSPage\VersionControlEditor.cpp">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\VCSPage\VersionControlEditorDefault.cpp">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\VCSPage\VersionControlEditorPhone.cpp">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\VCSPage\VersionControlEditorPhoneViewportContent.cpp">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\WorkspacePage\Menu\CreateProjectRow.cpp">
-      <Filter>Helio\Source\UI\WorkspacePage\Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\WorkspacePage\Menu\OpenProjectRow.cpp">
-      <Filter>Helio\Source\UI\WorkspacePage\Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\WorkspacePage\Menu\RecentProjectRow.cpp">
-      <Filter>Helio\Source\UI\WorkspacePage\Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\WorkspacePage\Menu\SignInRow.cpp">
-      <Filter>Helio\Source\UI\WorkspacePage\Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\WorkspacePage\Menu\WorkspaceMenu.cpp">
-      <Filter>Helio\Source\UI\WorkspacePage\Menu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\WorkspacePage\LogoFader.cpp">
-      <Filter>Helio\Source\UI\WorkspacePage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\WorkspacePage\LogoImage.cpp">
-      <Filter>Helio\Source\UI\WorkspacePage</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\WorkspacePage\WorkspacePage.cpp">
-      <Filter>Helio\Source\UI\WorkspacePage</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\MainLayout.cpp">
       <Filter>Helio\Source\UI</Filter>
     </ClCompile>
@@ -1421,9 +1445,6 @@
       <Filter>Juce Modules\juce_audio_basics\buffers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\effects\juce_CatmullRomInterpolator.cpp">
-      <Filter>Juce Modules\juce_audio_basics\effects</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\effects\juce_FFT.cpp">
       <Filter>Juce Modules\juce_audio_basics\effects</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\effects\juce_IIRFilter.cpp">
@@ -1484,6 +1505,9 @@
       <Filter>Juce Modules\juce_audio_basics\sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\sources\juce_IIRFilterAudioSource.cpp">
+      <Filter>Juce Modules\juce_audio_basics\sources</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\sources\juce_MemoryAudioSource.cpp">
       <Filter>Juce Modules\juce_audio_basics\sources</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\sources\juce_MixerAudioSource.cpp">
@@ -2731,6 +2755,15 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\layout\juce_FlexBox.cpp">
       <Filter>Juce Modules\juce_gui_basics\layout</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\layout\juce_Grid.cpp">
+      <Filter>Juce Modules\juce_gui_basics\layout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\layout\juce_GridItem.cpp">
+      <Filter>Juce Modules\juce_gui_basics\layout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\layout\juce_GridUnitTests.cpp">
+      <Filter>Juce Modules\juce_gui_basics\layout</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\layout\juce_GroupComponent.cpp">
       <Filter>Juce Modules\juce_gui_basics\layout</Filter>
     </ClCompile>
@@ -3570,73 +3603,13 @@
     <ClInclude Include="..\..\Source\Core\VCS\VersionControl.h">
       <Filter>Helio\Source\Core\VCS</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\Base\CommandItemComponent.h">
-      <Filter>Helio\Source\UI\CommandPanels\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\Base\CommandItemComponentMarker.h">
-      <Filter>Helio\Source\UI\CommandPanels\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\Base\CommandPanel.h">
-      <Filter>Helio\Source\UI\CommandPanels\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\AnnotationCommandPanel.h">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\ArpeggiatorEditorPanel.h">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\ArpeggiatorPanel.h">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\AutomationsCommandPanel.h">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\HybridRollCommandPanel.h">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\HybridRollCommandPanelDefault.h">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\HybridRollCommandPanelPhone.h">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\InstrumentCommandPanel.h">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\InstrumentsCommandPanel.h">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\LayerCommandPanel.h">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\MoveToLayerCommandPanel.h">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\NotesTuningPanel.h">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\ProjectCommandPanel.h">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\RootTreeItemPanelDefault.h">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\RootTreeItemPanelCompact.h">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\TimelineCommandPanel.h">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\TimeSignatureCommandPanel.h">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\CommandPanels\VCSCommandPanel.h">
-      <Filter>Helio\Source\UI\CommandPanels</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Common\Meters\SpectrumComponent.h">
+    <ClInclude Include="..\..\Source\UI\Common\Meters\SpectrumMeter.h">
       <Filter>Helio\Source\UI\Common\Meters</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Common\Meters\VolumeComponent.h">
+    <ClInclude Include="..\..\Source\UI\Common\Meters\VolumePeakMeter.h">
+      <Filter>Helio\Source\UI\Common\Meters</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Common\Meters\WaveformMeter.h">
       <Filter>Helio\Source\UI\Common\Meters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Common\Origami\Origami.h">
@@ -3726,6 +3699,15 @@
     <ClInclude Include="..\..\Source\UI\Dialogs\UpdateDialog.h">
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Headline\Headline.h">
+      <Filter>Helio\Source\UI\Headline</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Headline\HeadlineDropdown.h">
+      <Filter>Helio\Source\UI\Headline</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Headline\HeadlineItem.h">
+      <Filter>Helio\Source\UI\Headline</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Input\LongHoldController.h">
       <Filter>Helio\Source\UI\Input</Filter>
     </ClInclude>
@@ -3756,29 +3738,197 @@
     <ClInclude Include="..\..\Source\UI\Input\SmoothZoomListener.h">
       <Filter>Helio\Source\UI\Input</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\InstrumentsPage\Editor\AudioPluginEditorPage.h">
-      <Filter>Helio\Source\UI\InstrumentsPage\Editor</Filter>
+    <ClInclude Include="..\..\Source\UI\Menus\Base\CommandItemComponent.h">
+      <Filter>Helio\Source\UI\Menus\Base</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\InstrumentsPage\Editor\InstrumentEditor.h">
-      <Filter>Helio\Source\UI\InstrumentsPage\Editor</Filter>
+    <ClInclude Include="..\..\Source\UI\Menus\Base\CommandItemComponentMarker.h">
+      <Filter>Helio\Source\UI\Menus\Base</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\InstrumentsPage\Editor\InstrumentEditorConnector.h">
-      <Filter>Helio\Source\UI\InstrumentsPage\Editor</Filter>
+    <ClInclude Include="..\..\Source\UI\Menus\Base\CommandPanel.h">
+      <Filter>Helio\Source\UI\Menus\Base</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\InstrumentsPage\Editor\InstrumentEditorNode.h">
-      <Filter>Helio\Source\UI\InstrumentsPage\Editor</Filter>
+    <ClInclude Include="..\..\Source\UI\Menus\AnnotationCommandPanel.h">
+      <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\InstrumentsPage\Editor\InstrumentEditorPin.h">
-      <Filter>Helio\Source\UI\InstrumentsPage\Editor</Filter>
+    <ClInclude Include="..\..\Source\UI\Menus\ArpeggiatorEditorPanel.h">
+      <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\InstrumentsPage\InstrumentRow.h">
-      <Filter>Helio\Source\UI\InstrumentsPage</Filter>
+    <ClInclude Include="..\..\Source\UI\Menus\ArpeggiatorPanel.h">
+      <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\InstrumentsPage\InstrumentsPage.h">
-      <Filter>Helio\Source\UI\InstrumentsPage</Filter>
+    <ClInclude Include="..\..\Source\UI\Menus\AutomationsCommandPanel.h">
+      <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Intro\InitScreen.h">
-      <Filter>Helio\Source\UI\Intro</Filter>
+    <ClInclude Include="..\..\Source\UI\Menus\InstrumentCommandPanel.h">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Menus\InstrumentsCommandPanel.h">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Menus\LayerCommandPanel.h">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Menus\MoveToLayerCommandPanel.h">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Menus\NotesTuningPanel.h">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Menus\ProjectCommandPanel.h">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Menus\RootTreeItemPanelDefault.h">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Menus\RootTreeItemPanelCompact.h">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Menus\TimelineCommandPanel.h">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Menus\TimeSignatureCommandPanel.h">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Menus\VCSCommandPanel.h">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\AudioPluginEditorPage.h">
+      <Filter>Helio\Source\UI\Pages\Instruments\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditor.h">
+      <Filter>Helio\Source\UI\Pages\Instruments\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorConnector.h">
+      <Filter>Helio\Source\UI\Pages\Instruments\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorNode.h">
+      <Filter>Helio\Source\UI\Pages\Instruments\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorPin.h">
+      <Filter>Helio\Source\UI\Pages\Instruments\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Instruments\InstrumentRow.h">
+      <Filter>Helio\Source\UI\Pages\Instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Instruments\InstrumentsPage.h">
+      <Filter>Helio\Source\UI\Pages\Instruments</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Intro\InitScreen.h">
+      <Filter>Helio\Source\UI\Pages\Intro</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Project\ProjectPage.h">
+      <Filter>Helio\Source\UI\Pages\Project</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Project\ProjectPageDefault.h">
+      <Filter>Helio\Source\UI\Pages\Project</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Project\ProjectPagePhone.h">
+      <Filter>Helio\Source\UI\Pages\Project</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\AudioSettings.h">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\AuthorizationSettings.h">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\ColourChangeButton.h">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\ComponentsList.h">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\IntroSettingsWrapper.h">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\LabeledSettingsWrapper.h">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\LogComponent.h">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\OpenGLSettings.h">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\PluginsList.h">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsListItemHighlighter.h">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsListItemSelection.h">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsPage.h">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\ThemeSettings.h">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\ThemeSettingsItem.h">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\TranslationSettings.h">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\TranslationSettingsItem.h">
+      <Filter>Helio\Source\UI\Pages\Settings</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\VCS\HistoryComponent.h">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\VCS\RevisionComponent.h">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\VCS\RevisionConnectorComponent.h">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\VCS\RevisionItemComponent.h">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\VCS\RevisionTooltipComponent.h">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\VCS\RevisionTreeComponent.h">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\VCS\StageComponent.h">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.h">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditorDefault.h">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditorPhone.h">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditorPhoneViewportContent.h">
+      <Filter>Helio\Source\UI\Pages\VCS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Workspace\Menu\CreateProjectRow.h">
+      <Filter>Helio\Source\UI\Pages\Workspace\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Workspace\Menu\OpenProjectRow.h">
+      <Filter>Helio\Source\UI\Pages\Workspace\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Workspace\Menu\RecentProjectRow.h">
+      <Filter>Helio\Source\UI\Pages\Workspace\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Workspace\Menu\SignInRow.h">
+      <Filter>Helio\Source\UI\Pages\Workspace\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Workspace\Menu\WorkspaceMenu.h">
+      <Filter>Helio\Source\UI\Pages\Workspace\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Workspace\LogoFader.h">
+      <Filter>Helio\Source\UI\Pages\Workspace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Workspace\LogoImage.h">
+      <Filter>Helio\Source\UI\Pages\Workspace</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Pages\Workspace\WorkspacePage.h">
+      <Filter>Helio\Source\UI\Pages\Workspace</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\CenteredTooltipComponent.h">
       <Filter>Helio\Source\UI\Popups</Filter>
@@ -3827,36 +3977,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\TooltipContainer.h">
       <Filter>Helio\Source\UI\Popups</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Rollovers\RolloverBackButtonLeft.h">
-      <Filter>Helio\Source\UI\Rollovers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Rollovers\RolloverBackButtonRight.h">
-      <Filter>Helio\Source\UI\Rollovers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Rollovers\RolloverHeaderLeft.h">
-      <Filter>Helio\Source\UI\Rollovers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Rollovers\RolloverHeaderRight.h">
-      <Filter>Helio\Source\UI\Rollovers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Rollovers\RolloverContainer.h">
-      <Filter>Helio\Source\UI\Rollovers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Rollovers\ProjectRollover.h">
-      <Filter>Helio\Source\UI\Rollovers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Rollovers\SettingsRollover.h">
-      <Filter>Helio\Source\UI\Rollovers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\ProjectPage\ProjectPage.h">
-      <Filter>Helio\Source\UI\ProjectPage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\ProjectPage\ProjectPageDefault.h">
-      <Filter>Helio\Source\UI\ProjectPage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\ProjectPage\ProjectPagePhone.h">
-      <Filter>Helio\Source\UI\ProjectPage</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\AnnotationsMap\AnnotationLargeComponent.h">
       <Filter>Helio\Source\UI\Sequencer\AnnotationsMap</Filter>
@@ -3993,53 +4113,44 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\SequencerLayout.h">
       <Filter>Helio\Source\UI\Sequencer</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\SettingsPage\AudioSettings.h">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClInclude Include="..\..\Source\UI\Sidebars\Rollovers\ProjectRollover.h">
+      <Filter>Helio\Source\UI\Sidebars\Rollovers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\SettingsPage\AuthorizationSettings.h">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClInclude Include="..\..\Source\UI\Sidebars\Rollovers\RolloverBackButtonLeft.h">
+      <Filter>Helio\Source\UI\Sidebars\Rollovers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\SettingsPage\ColourChangeButton.h">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClInclude Include="..\..\Source\UI\Sidebars\Rollovers\RolloverBackButtonRight.h">
+      <Filter>Helio\Source\UI\Sidebars\Rollovers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\SettingsPage\ComponentsList.h">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClInclude Include="..\..\Source\UI\Sidebars\Rollovers\RolloverContainer.h">
+      <Filter>Helio\Source\UI\Sidebars\Rollovers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\SettingsPage\IntroSettingsWrapper.h">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClInclude Include="..\..\Source\UI\Sidebars\Rollovers\RolloverHeaderLeft.h">
+      <Filter>Helio\Source\UI\Sidebars\Rollovers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\SettingsPage\LabeledSettingsWrapper.h">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClInclude Include="..\..\Source\UI\Sidebars\Rollovers\RolloverHeaderRight.h">
+      <Filter>Helio\Source\UI\Sidebars\Rollovers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\SettingsPage\LogComponent.h">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClInclude Include="..\..\Source\UI\Sidebars\Rollovers\SettingsRollover.h">
+      <Filter>Helio\Source\UI\Sidebars\Rollovers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\SettingsPage\OpenGLSettings.h">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClInclude Include="..\..\Source\UI\Sidebars\HybridRollCommandPanel.h">
+      <Filter>Helio\Source\UI\Sidebars</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\SettingsPage\PluginsList.h">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClInclude Include="..\..\Source\UI\Sidebars\HybridRollCommandPanelDefault.h">
+      <Filter>Helio\Source\UI\Sidebars</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\SettingsPage\SettingsPage.h">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClInclude Include="..\..\Source\UI\Sidebars\HybridRollCommandPanelPhone.h">
+      <Filter>Helio\Source\UI\Sidebars</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\SettingsPage\SettingsListItemHighlighter.h">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClInclude Include="..\..\Source\UI\Sidebars\TreePanel.h">
+      <Filter>Helio\Source\UI\Sidebars</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\SettingsPage\SettingsListItemSelection.h">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClInclude Include="..\..\Source\UI\Sidebars\TreePanelDefault.h">
+      <Filter>Helio\Source\UI\Sidebars</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\SettingsPage\ThemeSettings.h">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\SettingsPage\ThemeSettingsItem.h">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\SettingsPage\TranslationSettings.h">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\SettingsPage\TranslationSettingsItem.h">
-      <Filter>Helio\Source\UI\SettingsPage</Filter>
+    <ClInclude Include="..\..\Source\UI\Sidebars\TreePanelPhone.h">
+      <Filter>Helio\Source\UI\Sidebars</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Themes\ComponentFader.h">
       <Filter>Helio\Source\UI\Themes</Filter>
@@ -4158,72 +4269,6 @@
     <ClInclude Include="..\..\Source\UI\Tree\TreeItemMenuButton.h">
       <Filter>Helio\Source\UI\Tree</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Tree\TreePanel.h">
-      <Filter>Helio\Source\UI\Tree</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Tree\TreePanelDefault.h">
-      <Filter>Helio\Source\UI\Tree</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Tree\TreePanelPhone.h">
-      <Filter>Helio\Source\UI\Tree</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\VCSPage\HistoryComponent.h">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\VCSPage\RevisionComponent.h">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\VCSPage\RevisionConnectorComponent.h">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\VCSPage\RevisionItemComponent.h">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\VCSPage\RevisionTooltipComponent.h">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\VCSPage\RevisionTreeComponent.h">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\VCSPage\StageComponent.h">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\VCSPage\VersionControlEditor.h">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\VCSPage\VersionControlEditorDefault.h">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\VCSPage\VersionControlEditorPhone.h">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\VCSPage\VersionControlEditorPhoneViewportContent.h">
-      <Filter>Helio\Source\UI\VCSPage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\WorkspacePage\Menu\CreateProjectRow.h">
-      <Filter>Helio\Source\UI\WorkspacePage\Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\WorkspacePage\Menu\OpenProjectRow.h">
-      <Filter>Helio\Source\UI\WorkspacePage\Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\WorkspacePage\Menu\RecentProjectRow.h">
-      <Filter>Helio\Source\UI\WorkspacePage\Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\WorkspacePage\Menu\SignInRow.h">
-      <Filter>Helio\Source\UI\WorkspacePage\Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\WorkspacePage\Menu\WorkspaceMenu.h">
-      <Filter>Helio\Source\UI\WorkspacePage\Menu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\WorkspacePage\LogoFader.h">
-      <Filter>Helio\Source\UI\WorkspacePage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\WorkspacePage\LogoImage.h">
-      <Filter>Helio\Source\UI\WorkspacePage</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\WorkspacePage\WorkspacePage.h">
-      <Filter>Helio\Source\UI\WorkspacePage</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\MainLayout.h">
       <Filter>Helio\Source\UI</Filter>
     </ClInclude>
@@ -4252,9 +4297,6 @@
       <Filter>Juce Modules\juce_audio_basics\effects</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\effects\juce_Decibels.h">
-      <Filter>Juce Modules\juce_audio_basics\effects</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\effects\juce_FFT.h">
       <Filter>Juce Modules\juce_audio_basics\effects</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\effects\juce_IIRFilter.h">
@@ -4314,6 +4356,9 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\mpe\juce_MPEZoneLayout.h">
       <Filter>Juce Modules\juce_audio_basics\mpe</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\native\juce_mac_CoreAudioLayouts.h">
+      <Filter>Juce Modules\juce_audio_basics\native</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\sources\juce_AudioSource.h">
       <Filter>Juce Modules\juce_audio_basics\sources</Filter>
     </ClInclude>
@@ -4324,6 +4369,9 @@
       <Filter>Juce Modules\juce_audio_basics\sources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\sources\juce_IIRFilterAudioSource.h">
+      <Filter>Juce Modules\juce_audio_basics\sources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\sources\juce_MemoryAudioSource.h">
       <Filter>Juce Modules\juce_audio_basics\sources</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\sources\juce_MixerAudioSource.h">
@@ -5653,6 +5701,12 @@
       <Filter>Juce Modules\juce_gui_basics\layout</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\layout\juce_FlexItem.h">
+      <Filter>Juce Modules\juce_gui_basics\layout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\layout\juce_Grid.h">
+      <Filter>Juce Modules\juce_gui_basics\layout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\layout\juce_GridItem.h">
       <Filter>Juce Modules\juce_gui_basics\layout</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\layout\juce_GroupComponent.h">
