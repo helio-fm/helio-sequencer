@@ -17,11 +17,8 @@
 
 #include "Common.h"
 #include "MidiSequence.h"
-#include "MidiEvent.h"
-#include "Transport.h"
-#include "ProjectTreeItem.h"
 #include "ProjectEventDispatcher.h"
-#include "SerializationKeys.h"
+#include "ProjectTreeItem.h"
 #include "UndoStack.h"
 #include "MidiTrack.h"
 

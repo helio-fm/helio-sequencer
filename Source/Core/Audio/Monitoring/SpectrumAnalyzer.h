@@ -29,12 +29,12 @@ public:
     SpectrumFFT();
     
     void computeSpectrum(float *pcmbuffer,
-                         unsigned int pcmposition,
-                         unsigned int pcmlength,
-                         float *spectrum,
-                         int length,
-                         int channel,
-                         int numchannels);
+        unsigned int pcmposition,
+        unsigned int pcmlength,
+        Atomic<float> *spectrum,
+        int length,
+        int channel,
+        int numchannels);
     
 private:
     

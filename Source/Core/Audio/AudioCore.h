@@ -89,6 +89,29 @@ public:
     {
         return fastLog2(val) / fastLog2(10.f);
     }
+
+    inline static float iecLevel(float dB)
+    {
+        float fDef = 1.f;
+
+        if (dB < -70.f) {
+            fDef = 0.f;
+        } else if (dB < -60.f) {
+            fDef = (dB + 70.f) * 0.0025f;
+        } else if (dB < -50.f) {
+            fDef = (dB + 60.f) * 0.005f + 0.025f;
+        } else if (dB < -40.f) {
+            fDef = (dB + 50.f) * 0.0075f + 0.075f;
+        } else if (dB < -30.f) {
+            fDef = (dB + 40.f) * 0.015f + 0.15f;
+        } else if (dB < -20.f) {
+            fDef = (dB + 30.f) * 0.02f + 0.3f;
+        } else { // if (dB < 0.f)
+            fDef = (dB + 20.f) * 0.025f + 0.5f;
+        }
+
+        return fDef;
+    }
     
 private:
 

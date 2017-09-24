@@ -189,9 +189,9 @@ void NoteComponent::mouseDown(const MouseEvent &e)
 {
     if (this->shouldGoQuickSelectLayerMode(e.mods))
     {
-        const bool selectOthers = false; // e.mods.isRightButtonDown();
-        const bool deselectOthers = !e.mods.isShiftDown();
-        this->activateCorrespondingTrack(selectOthers, deselectOthers);
+        const bool selectAll = false; // e.mods.isRightButtonDown();
+        const bool soloMode = !e.mods.isShiftDown();
+        this->activateCorrespondingTrack(selectAll, soloMode);
         return;
     }
     
@@ -664,13 +664,8 @@ void NoteComponent::mouseUp(const MouseEvent &e)
 void NoteComponent::mouseDoubleClick(const MouseEvent &e)
 {
     // Double right click - activate this layer and others
-    if (this->shouldGoQuickSelectLayerMode(e.mods))
-    {
-        if (const bool deselectOthers = e.mods.isRightButtonDown())
-        {
-            this->activateCorrespondingTrack(true, deselectOthers);
-        }
-    }
+    const bool selectAll = e.mods.isRightButtonDown();
+    this->activateCorrespondingTrack(selectAll, true);
 }
 
 //===----------------------------------------------------------------------===//
@@ -805,10 +800,10 @@ bool NoteComponent::belongsToAnySequence(Array<MidiSequence *> layers) const
     return false;
 }
 
-void NoteComponent::activateCorrespondingTrack(bool selectOthers, bool deselectOthers)
+void NoteComponent::activateCorrespondingTrack(bool selectAll, bool soloSelection)
 {
     MidiSequence *layer = this->getNote().getSequence();
-    this->roll.getProject().activateLayer(layer, selectOthers, deselectOthers);
+    this->roll.getProject().activateLayer(layer, selectAll, soloSelection);
 }
 
 

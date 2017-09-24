@@ -62,10 +62,10 @@ void SeparatorHorizontalReversed::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-    g.setColour(Colour(0x09ffffff));
+    g.setColour(Colours::white.withAlpha(11.f / 255.f));
     g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
 
-    g.setColour (Colour (0x0b000000));
+    g.setColour(Colours::black.withAlpha(45.f / 255.f));
     g.drawHorizontalLine(1, 0.f, float(this->getWidth()));
 
     //[/UserPaint]

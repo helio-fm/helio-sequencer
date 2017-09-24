@@ -237,15 +237,10 @@ void TrackScroller::resized()
 
 void TrackScroller::paintOverChildren(Graphics& g)
 {
-//    g.setColour(findColour(Origami::resizerLineColourId));
-//    g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
-//    g.setColour(findColour(Origami::resizerLineColourId).withMultipliedAlpha(0.5f));
-//    g.drawHorizontalLine(1, 0.f, float(this->getWidth()));
-    
-    g.setColour(Colours::black.withAlpha(0.35f));
+    g.setColour(this->findColour(TrackScroller::borderDarkLineColourId));
     g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
     
-    g.setColour(Colours::white.withAlpha(0.025f));
+    g.setColour(this->findColour(TrackScroller::borderLightLineColourId));
     g.drawHorizontalLine(1, 0.f, float(this->getWidth()));
 }
 

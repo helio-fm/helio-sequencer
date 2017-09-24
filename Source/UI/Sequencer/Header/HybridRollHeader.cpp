@@ -93,7 +93,7 @@ float HybridRollHeader::getAlignedAnchorForEvent(const MouseEvent &e) const
 {
     const MouseEvent parentEvent = e.getEventRelativeTo(&this->roll);
     
-#if MIDIROLL_HEADER_ALIGNS_TO_BEATS
+#if HYBRID_ROLL_HEADER_ALIGNS_TO_BEATS
     const float roundBeat = this->roll.getRoundBeatByXPosition(parentEvent.x);
     const int roundX = this->roll.getXPositionByBeat(roundBeat);
     const float absX = float(roundX) / float(this->roll.getWidth());
@@ -146,7 +146,7 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
     {
         // todo if playing, dont probe anything?
         
-#if MIDIROLL_HEADER_ALIGNS_TO_BEATS
+#if HYBRID_ROLL_HEADER_ALIGNS_TO_BEATS
         const float roundBeat = this->roll.getRoundBeatByXPosition(e.x);
         const double transportPosition = this->roll.getTransportPositionByBeat(roundBeat);
 #else
@@ -161,7 +161,7 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
     }
     else
     {
-#if MIDIROLL_HEADER_ALIGNS_TO_BEATS
+#if HYBRID_ROLL_HEADER_ALIGNS_TO_BEATS
         const MouseEvent parentEvent = e.getEventRelativeTo(&this->roll);
         const float roundBeat = this->roll.getRoundBeatByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
         const double transportPosition = this->roll.getTransportPositionByBeat(roundBeat);
@@ -179,7 +179,7 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
         {
             const MouseEvent parentEvent = e.getEventRelativeTo(&this->roll);
             
-#if MIDIROLL_HEADER_SELECTION_ALIGNS_TO_BEATS
+#if HYBRID_ROLL_HEADER_SELECTION_ALIGNS_TO_BEATS
             const float roundBeat = this->roll.getRoundBeatByXPosition(parentEvent.x);
             const int roundX = this->roll.getXPositionByBeat(roundBeat);
             const float newX = float(roundX + 1);
@@ -207,7 +207,7 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
             this->selectionIndicator->setBounds(0, this->getHeight() - this->selectionIndicator->getHeight(),
                                                 0, this->selectionIndicator->getHeight());
             
-#if MIDIROLL_HEADER_SELECTION_ALIGNS_TO_BEATS
+#if HYBRID_ROLL_HEADER_SELECTION_ALIGNS_TO_BEATS
             this->selectionIndicator->setStartAnchor(this->getAlignedAnchorForEvent(e));
 #else
             this->selectionIndicator->setStartAnchor(this->getUnalignedAnchorForEvent(e));
@@ -270,7 +270,7 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
         {
             const MouseEvent parentEvent = e.getEventRelativeTo(&this->roll);
             
-#if MIDIROLL_HEADER_SELECTION_ALIGNS_TO_BEATS
+#if HYBRID_ROLL_HEADER_SELECTION_ALIGNS_TO_BEATS
             const float roundBeat = this->roll.getRoundBeatByXPosition(parentEvent.x);
             const int roundX = this->roll.getXPositionByBeat(roundBeat);
             const MouseEvent parentGlobalSelection = parentEvent.withNewPosition(Point<int>(roundX - 1, this->roll.getHeight()));
@@ -282,7 +282,7 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
             
             if (this->selectionIndicator != nullptr)
             {
-#if MIDIROLL_HEADER_SELECTION_ALIGNS_TO_BEATS
+#if HYBRID_ROLL_HEADER_SELECTION_ALIGNS_TO_BEATS
                 this->selectionIndicator->setEndAnchor(this->getAlignedAnchorForEvent(e));
 #else
                 this->selectionIndicator->setEndAnchor(this->getUnalignedAnchorForEvent(e));
@@ -293,7 +293,7 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
         {
             //if (! this->transport.isPlaying())
             {
-#if MIDIROLL_HEADER_ALIGNS_TO_BEATS
+#if HYBRID_ROLL_HEADER_ALIGNS_TO_BEATS
                 const float roundBeat = this->roll.getRoundBeatByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
                 const double transportPosition = this->roll.getTransportPositionByBeat(roundBeat);
 #else
@@ -326,7 +326,7 @@ void HybridRollHeader::mouseUp(const MouseEvent &e)
     }
     else
     {
-#if MIDIROLL_HEADER_ALIGNS_TO_BEATS
+#if HYBRID_ROLL_HEADER_ALIGNS_TO_BEATS
         const float roundBeat = this->roll.getRoundBeatByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
         const double transportPosition = this->roll.getTransportPositionByBeat(roundBeat);
 #else
@@ -384,7 +384,7 @@ void HybridRollHeader::mouseDoubleClick(const MouseEvent &e)
     // this->roll.postCommandMessage(CommandIDs::AddAnnotation);
     // HelioCallout::emit(new TimelineCommandPanel(this->roll.getProject()), this, true);
 
-#if MIDIROLL_HEADER_ALIGNS_TO_BEATS
+#if HYBRID_ROLL_HEADER_ALIGNS_TO_BEATS
     const float roundBeat = this->roll.getRoundBeatByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);
     const double transportPosition = this->roll.getTransportPositionByBeat(roundBeat);
 #else

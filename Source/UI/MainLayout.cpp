@@ -17,45 +17,24 @@
 
 #include "Common.h"
 #include "MainLayout.h"
-
-#include "ComponentsList.h"
-#include "WorkspacePage.h"
-
-#include "TreeItem.h"
-#include "MidiTrackTreeItem.h"
-#include "SizeSwitcherComponent.h"
-
-#include "TreePanelPhone.h"
-#include "TreePanelDefault.h"
-
-#include "RootTreeItem.h"
-#include "ProjectTreeItem.h"
-#include "InstrumentsRootTreeItem.h"
-#include "SettingsTreeItem.h"
-
-#include "Config.h"
-#include "FileUtils.h"
-#include "DataEncoder.h"
-#include "Supervisor.h"
-
-#include "InitScreen.h"
-#include "GenericTooltip.h"
-#include "HelioTheme.h"
-#include "AudioCore.h"
-#include "PluginManager.h"
 #include "TooltipContainer.h"
-#include "ThemeSettings.h"
+#include "Headline.h"
+#include "HelioTheme.h"
+#include "App.h"
+#include "Workspace.h"
+#include "AudioCore.h"
 #include "Config.h"
 #include "SerializationKeys.h"
-#include "App.h"
-
-#include "Workspace.h"
 #include "MainWindow.h"
-#include "HelioCallout.h"
+#include "RootTreeItem.h"
+#include "GenericTooltip.h"
+#include "MidiTrackTreeItem.h"
+#include "Supervisor.h"
+#include "TreePanelPhone.h"
+#include "TreePanelDefault.h"
+#include "InitScreen.h"
 #include "HybridRollCommandPanel.h"
-
 #include "ColourSchemeManager.h"
-#include "ColourScheme.h"
 
 
 namespace KeyboardFocusDebugger
@@ -134,6 +113,9 @@ MainLayout::MainLayout() :
     this->tooltipContainer = new TooltipContainer();
     this->addChildComponent(this->tooltipContainer);
 
+    this->headline = new Headline();
+    this->addAndMakeVisible(this->headline);
+
     if (App::isRunningOnPhone())
     {
         this->treePanel = new TreePanelPhone();
@@ -150,9 +132,9 @@ MainLayout::MainLayout() :
 
     this->treeResizer = new ResizableEdgeComponent(this->treePanel,
             &this->treePanelConstrainer, ResizableEdgeComponent::rightEdge);
-    this->treeResizer->setAlwaysOnTop(true);
     this->addAndMakeVisible(this->treeResizer);
     this->treeResizer->setInterceptsMouseClicks(false, false); // no more resizable panel
+    this->treeResizer->toFront(false);
 
     this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);
@@ -177,6 +159,7 @@ MainLayout::~MainLayout()
     this->treePanel->setRoot(nullptr);
     this->treeResizer = nullptr;
     this->treePanel = nullptr;
+    this->headline = nullptr;
 }
 
 void MainLayout::init()
@@ -297,6 +280,8 @@ void MainLayout::showPage(Component *page, TreeItem *source)
         hideMarkersRecursive(App::Workspace().getTreeRoot());
         source->setMarkerVisible(true);
         this->treePanel->repaint();
+
+        this->headline->syncWithTree(source);
     }
 
     if (this->currentContent != nullptr)
@@ -440,7 +425,7 @@ Rectangle<int> MainLayout::getPageBounds() const
 {
     Rectangle<int> r(this->getLocalBounds());
     r.removeFromLeft(this->treePanel->getWidth());
-    r.removeFromRight(MIDIROLL_COMMANDPANEL_WIDTH); // a hack!
+    r.removeFromRight(HYBRID_ROLL_COMMANDPANEL_WIDTH); // a hack!
     return r;
 }
 
@@ -456,7 +441,9 @@ void MainLayout::resized()
     Rectangle<int> r(this->getLocalBounds());
 
     if (r.isEmpty()) { return; }
-    
+
+    this->headline->setBounds(r.removeFromTop(this->headline->getHeight()));
+
     this->treePanel->setBounds(r.removeFromLeft(this->treePanel->getWidth()));
 
     this->treeResizer->

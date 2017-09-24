@@ -451,7 +451,6 @@ void ProjectTreeItem::activateLayer(MidiSequence* sequence, bool selectOthers, b
             this->findTrackById<PianoTrackTreeItem>(sequence->getTrackId()))
         {
             PianoTrackTreeItem::selectAllPianoSiblings(item);
-            return;
         }
     }
     else

@@ -40,6 +40,7 @@
 #include "PanelBackgroundC.h"
 #include "PanelA.h"
 #include "PanelB.h"
+#include "TrackScroller.h"
 #include "App.h"
 
 #include "BinaryData.h"
@@ -571,8 +572,8 @@ void HelioTheme::drawCornerResizer(Graphics& g, int w, int h,
     bool /*isMouseOver*/, bool /*isMouseDragging*/)
 {
     const float lineThickness = jmin(w, h) * 0.05f;
-    const Colour col1(this->findColour(ResizableWindow::backgroundColourId).darker(0.2));
-    const Colour col2(this->findColour(ResizableWindow::backgroundColourId).brighter(0.04));
+    const Colour col1(this->findColour(ResizableWindow::backgroundColourId).darker(0.2f));
+    const Colour col2(this->findColour(ResizableWindow::backgroundColourId).brighter(0.04f));
 
     for (float i = 0.8f; i > 0.2f; i -= 0.25f)
     {
@@ -843,6 +844,8 @@ void HelioTheme::initColours(const ::ColourScheme &colours)
 
     // MainWindow
     this->setColour(ResizableWindow::backgroundColourId, colours.getPrimaryGradientColourA().brighter(0.045f));
+    this->setColour(TrackScroller::borderDarkLineColourId, colours.getPrimaryGradientColourA().darker(0.25f));
+    this->setColour(TrackScroller::borderLightLineColourId, Colours::white.withAlpha(0.025f));
     this->setColour(ScrollBar::backgroundColourId, Colours::transparentBlack);
     this->setColour(ScrollBar::thumbColourId, colours.getPanelFillColour().withAlpha(1.f));
 
@@ -916,7 +919,7 @@ void HelioTheme::initColours(const ::ColourScheme &colours)
     this->setColour(HybridRoll::barLineBevelColourId, Colours::white.withAlpha(0.015f));
     this->setColour(HybridRoll::beatLineColourId, colours.getBarColour().withAlpha(0.45f));
     this->setColour(HybridRoll::snapLineColourId, colours.getBarColour().withAlpha(0.1f));
-    this->setColour(HybridRoll::headerColourId, colours.getPrimaryGradientColourB());
+    this->setColour(HybridRoll::headerColourId, colours.getPrimaryGradientColourB().darker(0.025f));
 
     this->setColour(HybridRoll::playheadColourId, colours.getLassoBorderColour().withAlpha(0.5f));
     this->setColour(LassoComponent<void *>::lassoFillColourId, colours.getLassoFillColour().withAlpha(0.15f));

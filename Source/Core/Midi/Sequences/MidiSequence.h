@@ -23,7 +23,6 @@
 class ProjectTreeItem;
 class ProjectEventDispatcher;
 class MidiTrack;
-class MidiTrackTreeItem;
 class UndoStack;
 
 #define MIDI_IMPORT_SCALE 48
