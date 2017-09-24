@@ -165,58 +165,17 @@ const char* arrows_svg = (const char*) temp_binary_data_46;
 //================== beamed_note.svg ==================
 static const unsigned char temp_binary_data_47[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-"<!-- Created with Inkscape (http://www.inkscape.org/) -->\n"
-"\n"
 "<svg\n"
 "   xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n"
 "   xmlns:cc=\"http://creativecommons.org/ns#\"\n"
 "   xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
 "   xmlns:svg=\"http://www.w3.org/2000/svg\"\n"
 "   xmlns=\"http://www.w3.org/2000/svg\"\n"
-"   xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\"\n"
-"   xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"\n"
 "   width=\"744.09448819\"\n"
 "   height=\"1052.3622047\"\n"
 "   id=\"svg2\"\n"
-"   version=\"1.1\"\n"
-"   inkscape:version=\"0.48.2 r9819\"\n"
-"   sodipodi:docname=\"beamed_note.svg\">\n"
-"  <defs\n"
-"     id=\"defs4\" />\n"
-"  <sodipodi:namedview\n"
-"     id=\"base\"\n"
-"     pagecolor=\"#ffffff\"\n"
-"     bordercolor=\"#666666\"\n"
-"     borderopacity=\"1.0\"\n"
-"     inkscape:pageopacity=\"0.0\"\n"
-"     inkscape:pageshadow=\"2\"\n"
-"     inkscape:zoom=\"0.49497475\"\n"
-"     inkscape:cx=\"475.15743\"\n"
-"     inkscape:cy=\"455.79619\"\n"
-"     inkscape:document-units=\"px\"\n"
-"     inkscape:current-layer=\"layer1\"\n"
-"     showgrid=\"false\"\n"
-"     inkscape:window-width=\"832\"\n"
-"     inkscape:window-height=\"566\"\n"
-"     inkscape:window-x=\"0\"\n"
-"     inkscape:window-y=\"0\"\n"
-"     inkscape:window-maximized=\"0\" />\n"
-"  <metadata\n"
-"     id=\"metadata7\">\n"
-"    <rdf:RDF>\n"
-"      <cc:Work\n"
-"         rdf:about=\"\">\n"
-"        <dc:format>image/svg+xml</dc:format>\n"
-"        <dc:type\n"
-"           rdf:resource=\"http://purl.org/dc/dcmitype/StillImage\" />\n"
-"        <dc:title></dc:title>\n"
-"      </cc:Work>\n"
-"    </rdf:RDF>\n"
-"  </metadata>\n"
-"  <g\n"
-"     inkscape:label=\"Layer 1\"\n"
-"     inkscape:groupmode=\"layer\"\n"
-"     id=\"layer1\">\n"
+"   version=\"1.1\">\n"
+"  <g id=\"layer1\">\n"
 "    <path\n"
 "       style=\"fill:#000000\"\n"
 "       d=\"M 258.15625 357.4375 C 253.56295 357.72256 233.62651 361.41275 196.15625 368.90625 L 133.59375 381.4375 L 133.59375 440.3125 C 133.59375 506.47697 134.29593 501.33087 125.5 498.71875 C 73.956586 483.41201 36.91805 552.59262 87.4375 569.812"
@@ -233,57 +192,17 @@ const char* beamed_note_svg = (const char*) temp_binary_data_47;
 //================== bezier.svg ==================
 static const unsigned char temp_binary_data_48[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-"<!-- Created with Inkscape (http://www.inkscape.org/) -->\n"
-"\n"
 "<svg\n"
 "   xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n"
 "   xmlns:cc=\"http://creativecommons.org/ns#\"\n"
 "   xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
 "   xmlns:svg=\"http://www.w3.org/2000/svg\"\n"
 "   xmlns=\"http://www.w3.org/2000/svg\"\n"
-"   xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\"\n"
-"   xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"\n"
 "   width=\"744.09448819\"\n"
 "   height=\"1052.3622047\"\n"
 "   id=\"svg2\"\n"
-"   version=\"1.1\"\n"
-"   inkscape:version=\"0.48.2 r9819\"\n"
-"   sodipodi:docname=\"reroute.svg\">\n"
-"  <defs\n"
-"     id=\"defs4\" />\n"
-"  <sodipodi:namedview\n"
-"     id=\"base\"\n"
-"     pagecolor=\"#ffffff\"\n"
-"     bordercolor=\"#666666\"\n"
-"     borderopacity=\"1.0\"\n"
-"     inkscape:pageopacity=\"0.0\"\n"
-"     inkscape:pageshadow=\"2\"\n"
-"     inkscape:zoom=\"1.4\"\n"
-"     inkscape:cx=\"404.27528\"\n"
-"     inkscape:cy=\"561.78017\"\n"
-"     inkscape:document-units=\"px\"\n"
-"     inkscape:current-layer=\"layer1\"\n"
-"     showgrid=\"false\"\n"
-"     inkscape:window-width=\"800\"\n"
-"     inkscape:window-height=\"661\"\n"
-"     inkscape:window-x=\"0\"\n"
-"     inkscape:window-y=\"0\"\n"
-"     inkscape:window-maximized=\"0\" />\n"
-"  <metadata\n"
-"     id=\"metadata7\">\n"
-"    <rdf:RDF>\n"
-"      <cc:Work\n"
-"         rdf:about=\"\">\n"
-"        <dc:format>image/svg+xml</dc:format>\n"
-"        <dc:type\n"
-"           rdf:resource=\"http://purl.org/dc/dcmitype/StillImage\" />\n"
-"        <dc:title></dc:title>\n"
-"      </cc:Work>\n"
-"    </rdf:RDF>\n"
-"  </metadata>\n"
+"   version=\"1.1\">\n"
 "  <g\n"
-"     inkscape:label=\"Layer 1\"\n"
-"     inkscape:groupmode=\"layer\"\n"
 "     id=\"layer1\">\n"
 "    <path\n"
 "       style=\"fill:#000000\"\n"
@@ -293,8 +212,7 @@ static const unsigned char temp_binary_data_48[] =
 "2.60328,9.34988 l -3.01315,-4.37946 -29.69179,0.26479 -29.69178,0.26479 -0.5,6 -0.5,6 -17.5,0 -17.5,0 -0.30697,-4.80324 c -0.40921,-6.40316 -1.40861,-6.60555 -13.33308,-2.70006 -28.10702,9.20558 -49.38826,31.43746 -56.35956,58.87714 -2.06493,8.12776 "
 "-1.69806,8.94249 4.19637,9.31919 l 4.80324,0.30697 0,17.5 0,17.5 -17.5,0 -17.5,0 0,-17.5 0,-17.5 6.39767,-0.5 c 7.31198,-0.57146 7.11661,-0.34774 9.60654,-11 5.38994,-23.05889 19.12516,-43.72068 36.79944,-55.35711 7.99115,-5.26123 7.21114,-6.08754 -6"
 ".06501,-6.42499 l -11.09839,-0.28209 -3.02506,4.39677 c -11.53425,16.76445 -39.43176,3.76833 -31.83966,-14.83258 z\"\n"
-"       id=\"path11387\"\n"
-"       inkscape:connector-curvature=\"0\" />\n"
+"       id=\"path11387\" />\n"
 "  </g>\n"
 "</svg>\n";
 
@@ -348,58 +266,17 @@ const char* chevronright2_svg = (const char*) temp_binary_data_52;
 //================== clef.svg ==================
 static const unsigned char temp_binary_data_53[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-"<!-- Created with Inkscape (http://www.inkscape.org/) -->\n"
-"\n"
 "<svg\n"
 "   xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n"
 "   xmlns:cc=\"http://creativecommons.org/ns#\"\n"
 "   xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
 "   xmlns:svg=\"http://www.w3.org/2000/svg\"\n"
 "   xmlns=\"http://www.w3.org/2000/svg\"\n"
-"   xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\"\n"
-"   xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"\n"
 "   width=\"744.09448819\"\n"
 "   height=\"1052.3622047\"\n"
 "   id=\"svg2\"\n"
-"   version=\"1.1\"\n"
-"   inkscape:version=\"0.48.2 r9819\"\n"
-"   sodipodi:docname=\"knob2.svg\">\n"
-"  <defs\n"
-"     id=\"defs4\" />\n"
-"  <sodipodi:namedview\n"
-"     id=\"base\"\n"
-"     pagecolor=\"#ffffff\"\n"
-"     bordercolor=\"#666666\"\n"
-"     borderopacity=\"1.0\"\n"
-"     inkscape:pageopacity=\"0.0\"\n"
-"     inkscape:pageshadow=\"2\"\n"
-"     inkscape:zoom=\"1.979899\"\n"
-"     inkscape:cx=\"385.72085\"\n"
-"     inkscape:cy=\"538.87467\"\n"
-"     inkscape:document-units=\"px\"\n"
-"     inkscape:current-layer=\"layer1\"\n"
-"     showgrid=\"false\"\n"
-"     inkscape:window-width=\"800\"\n"
-"     inkscape:window-height=\"661\"\n"
-"     inkscape:window-x=\"0\"\n"
-"     inkscape:window-y=\"0\"\n"
-"     inkscape:window-maximized=\"0\" />\n"
-"  <metadata\n"
-"     id=\"metadata7\">\n"
-"    <rdf:RDF>\n"
-"      <cc:Work\n"
-"         rdf:about=\"\">\n"
-"        <dc:format>image/svg+xml</dc:format>\n"
-"        <dc:type\n"
-"           rdf:resource=\"http://purl.org/dc/dcmitype/StillImage\" />\n"
-"        <dc:title></dc:title>\n"
-"      </cc:Work>\n"
-"    </rdf:RDF>\n"
-"  </metadata>\n"
-"  <g\n"
-"     inkscape:label=\"Layer 1\"\n"
-"     inkscape:groupmode=\"layer\"\n"
-"     id=\"layer1\">\n"
+"   version=\"1.1\">\n"
+"  <g id=\"layer1\">\n"
 "    <path\n"
 "       style=\"fill:#000000\"\n"
 "       d=\"m 351.6073,621.42892 c -22.54805,-4.82601 -28.85899,-29.89181 -8.58566,-34.10054 14.93492,-3.10048 23.46192,10.41568 12.44041,19.71931 -4.72802,3.99107 -2.51596,5.72065 6.51139,5.09119 17.70646,-1.23464 26.91828,-11.29554 26.02901,-28.4281"
@@ -410,8 +287,7 @@ static const unsigned char temp_binary_data_53[] =
 "5671,-6.74778 -13.72054,1.43333 -24.12383,22.01737 -18.56913,53.48753 11.53537,65.35362 11.58138,4.56495 27.84078,6.46536 30.27027,3.538 z m 18.56899,-6.65821 c 8.08749,-7.45479 9.89185,-12.26275 9.86633,-26.29015 -0.0415,-22.79309 -10.62407,-34.2126"
 "1 -29.70469,-32.05388 -12.8426,1.45297 -12.94264,1.92848 -4.39684,20.89878 5.89643,13.08911 10.64877,25.32007 13.65951,35.1551 2.40918,7.86993 4.12034,8.24048 10.57569,2.29015 z m -34.54194,-99.88949 c 21.26879,-13.96583 29.19582,-27.55242 24.43614,-"
 "41.88249 -3.55868,-10.71417 -9.42114,-14.3476 -18.76624,-11.6309 -16.07497,4.67311 -23.46576,22.54333 -19.77182,47.80634 2.0374,13.93384 1.75022,13.81761 14.10192,5.70705 z\"\n"
-"       id=\"path5625\"\n"
-"       inkscape:connector-curvature=\"0\" />\n"
+"       id=\"path5625\" />\n"
 "  </g>\n"
 "</svg>\n";
 
@@ -453,60 +329,17 @@ const char* cloud2_svg = (const char*) temp_binary_data_56;
 //================== clouds.svg ==================
 static const unsigned char temp_binary_data_57[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-"<!-- Created with Inkscape (http://www.inkscape.org/) -->\n"
-"\n"
 "<svg\n"
 "   xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n"
 "   xmlns:cc=\"http://creativecommons.org/ns#\"\n"
 "   xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
 "   xmlns:svg=\"http://www.w3.org/2000/svg\"\n"
 "   xmlns=\"http://www.w3.org/2000/svg\"\n"
-"   xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\"\n"
-"   xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"\n"
 "   width=\"744.09448819\"\n"
 "   height=\"1052.3622047\"\n"
 "   id=\"svg2\"\n"
-"   version=\"1.1\"\n"
-"   inkscape:version=\"0.48.2 r9819\"\n"
-"   sodipodi:docname=\"saxophone.svg\">\n"
-"  <defs\n"
-"     id=\"defs4\" />\n"
-"  <sodipodi:namedview\n"
-"     id=\"base\"\n"
-"     pagecolor=\"#ffffff\"\n"
-"     bordercolor=\"#666666\"\n"
-"     borderopacity=\"1.0\"\n"
-"     inkscape:pageopacity=\"0.0\"\n"
-"     inkscape:pageshadow=\"2\"\n"
-"     inkscape:zoom=\"1.4\"\n"
-"     inkscape:cx=\"315.04952\"\n"
-"     inkscape:cy=\"532.47967\"\n"
-"     inkscape:document-units=\"px\"\n"
-"     inkscape:current-layer=\"layer1\"\n"
-"     showgrid=\"false\"\n"
-"     inkscape:window-width=\"617\"\n"
-"     inkscape:window-height=\"688\"\n"
-"     inkscape:window-x=\"0\"\n"
-"     inkscape:window-y=\"0\"\n"
-"     inkscape:window-maximized=\"0\"\n"
-"     showguides=\"true\"\n"
-"     inkscape:guide-bbox=\"true\" />\n"
-"  <metadata\n"
-"     id=\"metadata7\">\n"
-"    <rdf:RDF>\n"
-"      <cc:Work\n"
-"         rdf:about=\"\">\n"
-"        <dc:format>image/svg+xml</dc:format>\n"
-"        <dc:type\n"
-"           rdf:resource=\"http://purl.org/dc/dcmitype/StillImage\" />\n"
-"        <dc:title></dc:title>\n"
-"      </cc:Work>\n"
-"    </rdf:RDF>\n"
-"  </metadata>\n"
-"  <g\n"
-"     inkscape:label=\"Layer 1\"\n"
-"     inkscape:groupmode=\"layer\"\n"
-"     id=\"layer1\">\n"
+"   version=\"1.1\">\n"
+"  <g id=\"layer1\">\n"
 "    <path\n"
 "       style=\"fill:#000000\"\n"
 "       d=\"m 282.57141,616.8455 c -17.31206,-4.76603 -24.44309,-15.54073 -24.57125,-37.12616 l -0.0712,-12 -6.20249,-0.77292 c -13.21891,-1.64726 -23.83391,-8.18572 -28.57913,-17.60373 -8.55813,-16.98561 -2.55413,-42.6283 12.58267,-53.73974 4.05948,-"
@@ -515,8 +348,7 @@ static const unsigned char temp_binary_data_57[] =
 "4 -10.2645,28.5628 -25.71694,28.5628 -8.68728,0 -9.47645,1.07581 -3.0166,4.1123 16.00912,7.52517 10.2154,37.56549 -8.81257,45.69298 -4.06115,1.73466 -121.34895,1.57014 -127.70295,-0.17912 z m 128.67764,-12.19724 c 4.38885,-3.2206 6.52707,-8.1193 5.93"
 "733,-13.60257 -0.96389,-8.96218 -2.50743,-10.02784 -15.61497,-10.7807 -9.21163,-0.52909 -9.50961,-0.62154 -9.81652,-3.04565 -1.68649,-13.32075 -8.48889,-19.68919 -23.74981,-22.23472 l -7.76437,-1.29509 -1.28904,-6.31942 c -7.05405,-34.58173 -59.33705"
 ",-33.11068 -63.96809,1.79982 l -0.64129,4.83428 -5.77483,1.13612 c -25.96677,5.10866 -26.10005,43.61491 -0.1755,50.70353 9.0523,2.47519 119.31704,1.40213 122.85709,-1.1956 z\"\n"
-"       id=\"path9266\"\n"
-"       inkscape:connector-curvature=\"0\" />\n"
+"       id=\"path9266\" />\n"
 "  </g>\n"
 "</svg>\n";
 
@@ -536,60 +368,17 @@ const char* columns_svg = (const char*) temp_binary_data_58;
 //================== copy.svg ==================
 static const unsigned char temp_binary_data_59[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-"<!-- Created with Inkscape (http://www.inkscape.org/) -->\n"
-"\n"
 "<svg\n"
 "   xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n"
 "   xmlns:cc=\"http://creativecommons.org/ns#\"\n"
 "   xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
 "   xmlns:svg=\"http://www.w3.org/2000/svg\"\n"
 "   xmlns=\"http://www.w3.org/2000/svg\"\n"
-"   xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\"\n"
-"   xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"\n"
 "   width=\"744.09448819\"\n"
 "   height=\"1052.3622047\"\n"
 "   id=\"svg2\"\n"
-"   version=\"1.1\"\n"
-"   inkscape:version=\"0.48.2 r9819\"\n"
-"   sodipodi:docname=\"paste.svg\">\n"
-"  <defs\n"
-"     id=\"defs4\" />\n"
-"  <sodipodi:namedview\n"
-"     id=\"base\"\n"
-"     pagecolor=\"#ffffff\"\n"
-"     bordercolor=\"#666666\"\n"
-"     borderopacity=\"1.0\"\n"
-"     inkscape:pageopacity=\"0.0\"\n"
-"     inkscape:pageshadow=\"2\"\n"
-"     inkscape:zoom=\"1.4\"\n"
-"     inkscape:cx=\"315.84352\"\n"
-"     inkscape:cy=\"425.09849\"\n"
-"     inkscape:document-units=\"px\"\n"
-"     inkscape:current-layer=\"layer1\"\n"
-"     showgrid=\"false\"\n"
-"     inkscape:window-width=\"647\"\n"
-"     inkscape:window-height=\"749\"\n"
-"     inkscape:window-x=\"0\"\n"
-"     inkscape:window-y=\"0\"\n"
-"     inkscape:window-maximized=\"0\"\n"
-"     showguides=\"true\"\n"
-"     inkscape:guide-bbox=\"true\" />\n"
-"  <metadata\n"
-"     id=\"metadata7\">\n"
-"    <rdf:RDF>\n"
-"      <cc:Work\n"
-"         rdf:about=\"\">\n"
-"        <dc:format>image/svg+xml</dc:format>\n"
-"        <dc:type\n"
-"           rdf:resource=\"http://purl.org/dc/dcmitype/StillImage\" />\n"
-"        <dc:title></dc:title>\n"
-"      </cc:Work>\n"
-"    </rdf:RDF>\n"
-"  </metadata>\n"
-"  <g\n"
-"     inkscape:label=\"Layer 1\"\n"
-"     inkscape:groupmode=\"layer\"\n"
-"     id=\"layer1\">\n"
+"   version=\"1.1\">\n"
+"  <g id=\"layer1\">\n"
 "    <path\n"
 "       style=\"fill:#000000\"\n"
 "       d=\"m 189.32039,702.97568 c -0.26339,-0.691 -0.36287,-44.68137 -0.22106,-97.75637 l 0.25784,-96.5 45,-0.29536 c 47.01969,-0.30862 51.80653,0.0355 52.78977,3.79544 0.80421,3.07529 -3.74713,11.11847 -10.3998,18.37869 -3.90479,4.26139 -5.92024,7."
@@ -600,8 +389,7 @@ static const unsigned char temp_binary_data_59[] =
 "2174,-6.90031 6.08757,-9.841 2.984,-6.42464 2.09722,-7.13963 13.45281,10.84671 4.68773,7.425 12.17774,19.2375 16.64446,26.25 4.46672,7.0125 7.79047,12.73875 7.38611,12.725 -0.40436,-0.0138 -10.6352,-7.46119 -22.7352,-16.54987 z m 76.26186,-32.35986 c"
 " -25.86107,-19.41313 -24.49668,-18.02876 -21.4169,-21.7306 3.5709,-4.29215 7.49728,-10.85792 8.22354,-13.75158 0.35658,-1.4207 0.99935,-2.58309 1.4284,-2.58309 0.98769,0 35.38088,53.95555 34.77769,54.55875 -0.24552,0.24551 -10.60125,-7.17655 -23.0127"
 "3,-16.49348 z\"\n"
-"       id=\"path32422\"\n"
-"       inkscape:connector-curvature=\"0\" />\n"
+"       id=\"path32422\" />\n"
 "  </g>\n"
 "</svg>\n";
 
@@ -640,58 +428,17 @@ const char* cursor2_svg = (const char*) temp_binary_data_62;
 //================== diskette.svg ==================
 static const unsigned char temp_binary_data_63[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-"<!-- Created with Inkscape (http://www.inkscape.org/) -->\n"
-"\n"
 "<svg\n"
 "   xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n"
 "   xmlns:cc=\"http://creativecommons.org/ns#\"\n"
 "   xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
 "   xmlns:svg=\"http://www.w3.org/2000/svg\"\n"
 "   xmlns=\"http://www.w3.org/2000/svg\"\n"
-"   xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\"\n"
-"   xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"\n"
 "   width=\"744.09448819\"\n"
 "   height=\"1052.3622047\"\n"
 "   id=\"svg2\"\n"
-"   version=\"1.1\"\n"
-"   inkscape:version=\"0.48.2 r9819\"\n"
-"   sodipodi:docname=\"folder.svg\">\n"
-"  <defs\n"
-"     id=\"defs4\" />\n"
-"  <sodipodi:namedview\n"
-"     id=\"base\"\n"
-"     pagecolor=\"#ffffff\"\n"
-"     bordercolor=\"#666666\"\n"
-"     borderopacity=\"1.0\"\n"
-"     inkscape:pageopacity=\"0.0\"\n"
-"     inkscape:pageshadow=\"2\"\n"
-"     inkscape:zoom=\"1.4\"\n"
-"     inkscape:cx=\"365.66271\"\n"
-"     inkscape:cy=\"540.58154\"\n"
-"     inkscape:document-units=\"px\"\n"
-"     inkscape:current-layer=\"g6255\"\n"
-"     showgrid=\"false\"\n"
-"     inkscape:window-width=\"617\"\n"
-"     inkscape:window-height=\"688\"\n"
-"     inkscape:window-x=\"0\"\n"
-"     inkscape:window-y=\"0\"\n"
-"     inkscape:window-maximized=\"0\" />\n"
-"  <metadata\n"
-"     id=\"metadata7\">\n"
-"    <rdf:RDF>\n"
-"      <cc:Work\n"
-"         rdf:about=\"\">\n"
-"        <dc:format>image/svg+xml</dc:format>\n"
-"        <dc:type\n"
-"           rdf:resource=\"http://purl.org/dc/dcmitype/StillImage\" />\n"
-"        <dc:title></dc:title>\n"
-"      </cc:Work>\n"
-"    </rdf:RDF>\n"
-"  </metadata>\n"
-"  <g\n"
-"     inkscape:label=\"Layer 1\"\n"
-"     inkscape:groupmode=\"layer\"\n"
-"     id=\"layer1\">\n"
+"   version=\"1.1\">\n"
+"  <g id=\"layer1\">\n"
 "    <g\n"
 "       id=\"g6255\"\n"
 "       transform=\"translate(-42.857143,-20)\">\n"
@@ -701,8 +448,7 @@ static const unsigned char temp_binary_data_63[] =
 "4 -8.09128,83.02059 -6.50723,2.95438 -168.86013,2.95438 -175.36736,0 z m 145.67994,-40.80662 c -0.005,-44.99695 6.03888,-40.75 -57.99626,-40.75 -64.03514,0 -57.99079,-4.24695 -57.99626,40.75 l -0.004,30.75 58,0 58,0 -0.004,-30.75 z m -11.44707,-75.25"
 " c 5.14101,-4.74514 5.45081,-6.76098 5.45081,-35.46788 l 0,-26.53212 -52,0 -52,0 0,26.4349 c 0,30.43953 0.89969,34.42222 8.5,37.6272 5.67093,2.39137 87.24812,0.52328 90.04919,-2.0621 z m -33.54919,-29 0,-25 12.5,0 12.5,0 0,25 0,25 -12.5,0 -12.5,0 0,-"
 "25 z\"\n"
-"         id=\"path6257\"\n"
-"         inkscape:connector-curvature=\"0\" />\n"
+"         id=\"path6257\" />\n"
 "    </g>\n"
 "  </g>\n"
 "</svg>\n";
@@ -735,60 +481,17 @@ const char* drive_svg = (const char*) temp_binary_data_65;
 //================== eight_note.svg ==================
 static const unsigned char temp_binary_data_66[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-"<!-- Created with Inkscape (http://www.inkscape.org/) -->\n"
-"\n"
 "<svg\n"
 "   xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n"
 "   xmlns:cc=\"http://creativecommons.org/ns#\"\n"
 "   xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
 "   xmlns:svg=\"http://www.w3.org/2000/svg\"\n"
 "   xmlns=\"http://www.w3.org/2000/svg\"\n"
-"   xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\"\n"
-"   xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"\n"
 "   width=\"744.09448819\"\n"
 "   height=\"1052.3622047\"\n"
 "   id=\"svg2\"\n"
-"   version=\"1.1\"\n"
-"   inkscape:version=\"0.48.2 r9819\"\n"
-"   sodipodi:docname=\"eight_note.svg\">\n"
-"  <defs\n"
-"     id=\"defs4\" />\n"
-"  <sodipodi:namedview\n"
-"     id=\"base\"\n"
-"     pagecolor=\"#ffffff\"\n"
-"     bordercolor=\"#666666\"\n"
-"     borderopacity=\"1.0\"\n"
-"     inkscape:pageopacity=\"0.0\"\n"
-"     inkscape:pageshadow=\"2\"\n"
-"     inkscape:zoom=\"0.35355339\"\n"
-"     inkscape:cx=\"432.68609\"\n"
-"     inkscape:cy=\"437.51308\"\n"
-"     inkscape:document-units=\"px\"\n"
-"     inkscape:current-layer=\"layer1\"\n"
-"     showgrid=\"false\"\n"
-"     inkscape:window-width=\"617\"\n"
-"     inkscape:window-height=\"688\"\n"
-"     inkscape:window-x=\"0\"\n"
-"     inkscape:window-y=\"0\"\n"
-"     inkscape:window-maximized=\"0\"\n"
-"     showguides=\"true\"\n"
-"     inkscape:guide-bbox=\"true\" />\n"
-"  <metadata\n"
-"     id=\"metadata7\">\n"
-"    <rdf:RDF>\n"
-"      <cc:Work\n"
-"         rdf:about=\"\">\n"
-"        <dc:format>image/svg+xml</dc:format>\n"
-"        <dc:type\n"
-"           rdf:resource=\"http://purl.org/dc/dcmitype/StillImage\" />\n"
-"        <dc:title />\n"
-"      </cc:Work>\n"
-"    </rdf:RDF>\n"
-"  </metadata>\n"
-"  <g\n"
-"     inkscape:label=\"Layer 1\"\n"
-"     inkscape:groupmode=\"layer\"\n"
-"     id=\"layer1\">\n"
+"   version=\"1.1\">\n"
+"  <g id=\"layer1\">\n"
 "    <path\n"
 "       style=\"fill:#000000\"\n"
 "       d=\"M 303.65625 339 C 302.31278 338.93351 300.28555 339.62682 297.09375 340.78125 C 286.46856 344.62421 287.4375 337.11978 287.4375 416.78125 C 287.4375 455.45113 287.17191 487.0625 286.875 487.0625 C 286.57809 487.0625 284.53509 486.13389 282"
@@ -838,66 +541,24 @@ const char* folderopen_svg = (const char*) temp_binary_data_69;
 //================== folder.svg ==================
 static const unsigned char temp_binary_data_70[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-"<!-- Created with Inkscape (http://www.inkscape.org/) -->\n"
-"\n"
 "<svg\n"
 "   xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n"
 "   xmlns:cc=\"http://creativecommons.org/ns#\"\n"
 "   xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
 "   xmlns:svg=\"http://www.w3.org/2000/svg\"\n"
 "   xmlns=\"http://www.w3.org/2000/svg\"\n"
-"   xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\"\n"
-"   xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"\n"
 "   width=\"744.09448819\"\n"
 "   height=\"1052.3622047\"\n"
 "   id=\"svg2\"\n"
-"   version=\"1.1\"\n"
-"   inkscape:version=\"0.48.2 r9819\"\n"
-"   sodipodi:docname=\"hourglass.svg\">\n"
-"  <defs\n"
-"     id=\"defs4\" />\n"
-"  <sodipodi:namedview\n"
-"     id=\"base\"\n"
-"     pagecolor=\"#ffffff\"\n"
-"     bordercolor=\"#666666\"\n"
-"     borderopacity=\"1.0\"\n"
-"     inkscape:pageopacity=\"0.0\"\n"
-"     inkscape:pageshadow=\"2\"\n"
-"     inkscape:zoom=\"1.4\"\n"
-"     inkscape:cx=\"365.66271\"\n"
-"     inkscape:cy=\"540.58154\"\n"
-"     inkscape:document-units=\"px\"\n"
-"     inkscape:current-layer=\"layer1\"\n"
-"     showgrid=\"false\"\n"
-"     inkscape:window-width=\"617\"\n"
-"     inkscape:window-height=\"688\"\n"
-"     inkscape:window-x=\"0\"\n"
-"     inkscape:window-y=\"0\"\n"
-"     inkscape:window-maximized=\"0\" />\n"
-"  <metadata\n"
-"     id=\"metadata7\">\n"
-"    <rdf:RDF>\n"
-"      <cc:Work\n"
-"         rdf:about=\"\">\n"
-"        <dc:format>image/svg+xml</dc:format>\n"
-"        <dc:type\n"
-"           rdf:resource=\"http://purl.org/dc/dcmitype/StillImage\" />\n"
-"        <dc:title></dc:title>\n"
-"      </cc:Work>\n"
-"    </rdf:RDF>\n"
-"  </metadata>\n"
-"  <g\n"
-"     inkscape:label=\"Layer 1\"\n"
-"     inkscape:groupmode=\"layer\"\n"
-"     id=\"layer1\">\n"
+"   version=\"1.1\">\n"
+"  <g id=\"layer1\">\n"
 "    <path\n"
 "       style=\"fill:#000000\"\n"
 "       d=\"m 239.39908,580.28896 c -7.75013,-3.82066 -7.25623,2.80027 -7.25623,-97.27303 0,-111.93047 -4.95378,-99.07295 38.17327,-99.07857 33.61998,-0.004 31.43567,-0.73599 38.83213,13.00629 7.0848,13.16324 1.29559,11.98997 59.16158,11.98997 63.5043"
 "7,0 60.94847,-0.81962 61.83302,19.82844 l 0.5,11.67156 13.20495,0.60548 c 13.73831,0.62993 18.29505,2.01257 18.29505,5.55124 0,3.64842 -25.1501,121.14291 -26.67715,124.62846 -0.91208,2.08185 -3.38414,5.34435 -5.49347,7.25 l -3.83514,3.46482 -91.74712"
 ",-0.0228 c -82.03163,-0.0204 -92.09062,-0.19211 -94.99089,-1.62189 z m 20.09163,-74.65826 c 15.5627,-73.97161 2.6697,-64.69352 89.90214,-64.69553 l 67.75,-0.002 0,-7.9433 c 0,-11.99615 4.65799,-11.0567 -54.82138,-11.0567 -60.91949,0 -57.35588,0.90548"
 " -63.66681,-16.1772 -3.24573,-8.78565 -4.37775,-9.27475 -22.3394,-9.65177 -19.84776,-0.41662 -25.7032,0.26885 -28.80659,3.37224 -2.31128,2.31128 -3.95702,155.14655 -1.73304,160.94216 1.29538,3.3757 2.44055,-1.19897 13.71508,-54.78835 z\"\n"
-"       id=\"path5916\"\n"
-"       inkscape:connector-curvature=\"0\" />\n"
+"       id=\"path5916\" />\n"
 "  </g>\n"
 "</svg>\n";
 
@@ -971,58 +632,17 @@ const char* history_svg = (const char*) temp_binary_data_73;
 //================== hourglass.svg ==================
 static const unsigned char temp_binary_data_74[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-"<!-- Created with Inkscape (http://www.inkscape.org/) -->\n"
-"\n"
 "<svg\n"
 "   xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n"
 "   xmlns:cc=\"http://creativecommons.org/ns#\"\n"
 "   xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
 "   xmlns:svg=\"http://www.w3.org/2000/svg\"\n"
 "   xmlns=\"http://www.w3.org/2000/svg\"\n"
-"   xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\"\n"
-"   xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"\n"
 "   width=\"744.09448819\"\n"
 "   height=\"1052.3622047\"\n"
 "   id=\"svg2\"\n"
-"   version=\"1.1\"\n"
-"   inkscape:version=\"0.48.2 r9819\"\n"
-"   sodipodi:docname=\"trash_can.svg\">\n"
-"  <defs\n"
-"     id=\"defs4\" />\n"
-"  <sodipodi:namedview\n"
-"     id=\"base\"\n"
-"     pagecolor=\"#ffffff\"\n"
-"     bordercolor=\"#666666\"\n"
-"     borderopacity=\"1.0\"\n"
-"     inkscape:pageopacity=\"0.0\"\n"
-"     inkscape:pageshadow=\"2\"\n"
-"     inkscape:zoom=\"1.4\"\n"
-"     inkscape:cx=\"365.66271\"\n"
-"     inkscape:cy=\"540.58154\"\n"
-"     inkscape:document-units=\"px\"\n"
-"     inkscape:current-layer=\"layer1\"\n"
-"     showgrid=\"false\"\n"
-"     inkscape:window-width=\"617\"\n"
-"     inkscape:window-height=\"688\"\n"
-"     inkscape:window-x=\"0\"\n"
-"     inkscape:window-y=\"0\"\n"
-"     inkscape:window-maximized=\"0\" />\n"
-"  <metadata\n"
-"     id=\"metadata7\">\n"
-"    <rdf:RDF>\n"
-"      <cc:Work\n"
-"         rdf:about=\"\">\n"
-"        <dc:format>image/svg+xml</dc:format>\n"
-"        <dc:type\n"
-"           rdf:resource=\"http://purl.org/dc/dcmitype/StillImage\" />\n"
-"        <dc:title></dc:title>\n"
-"      </cc:Work>\n"
-"    </rdf:RDF>\n"
-"  </metadata>\n"
-"  <g\n"
-"     inkscape:label=\"Layer 1\"\n"
-"     inkscape:groupmode=\"layer\"\n"
-"     id=\"layer1\">\n"
+"   version=\"1.1\">\n"
+"  <g id=\"layer1\">\n"
 "    <g\n"
 "       id=\"g5291\"\n"
 "       transform=\"translate(-40,52.857143)\">\n"
@@ -1033,8 +653,7 @@ static const unsigned char temp_binary_data_74[] =
 "4.36604,37.85951 34.43271,65.29772 0.0235,9.68628 0.32729,10.11901 7.10298,10.11901 l 5.88337,0 0,9.5 0,9.5 -79.5,0 -79.5,0 0,-9.5 z m 134.90032,-12.75 c -0.21846,-7.12274 -0.18917,-7.09871 -26.40032,-21.65681 l -25,-13.88541 0.0104,-32.35389 c 0.013"
 "2,-41.15478 -0.0618,-40.94392 19.55652,-54.95063 9.93307,-7.09179 18.86473,-15.8514 22.33145,-21.90126 2.25668,-3.93818 4.48189,-4.35176 -18.00393,3.34622 -28.0642,9.60773 -28.10319,9.60676 -59.80835,-1.48572 -16.18747,-5.66341 -15.91659,-5.70595 -10"
 ".98416,1.72507 3.79178,5.71257 8.44074,9.8582 24.29186,21.66192 14.60321,10.87443 14.55568,10.71217 14.86522,50.75051 l 0.259,33.5 -25.49577,14 -25.49576,14 -0.0132,5.25 -0.0132,5.25 55,0 55,0 -0.0997,-3.25 z\"\n"
-"         id=\"path5293\"\n"
-"         inkscape:connector-curvature=\"0\" />\n"
+"         id=\"path5293\" />\n"
 "    </g>\n"
 "  </g>\n"
 "</svg>\n";
@@ -1089,58 +708,17 @@ const char* key_svg = (const char*) temp_binary_data_76;
 //================== knob.svg ==================
 static const unsigned char temp_binary_data_77[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-"<!-- Created with Inkscape (http://www.inkscape.org/) -->\n"
-"\n"
 "<svg\n"
 "   xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n"
 "   xmlns:cc=\"http://creativecommons.org/ns#\"\n"
 "   xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
 "   xmlns:svg=\"http://www.w3.org/2000/svg\"\n"
 "   xmlns=\"http://www.w3.org/2000/svg\"\n"
-"   xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\"\n"
-"   xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"\n"
 "   width=\"744.09448819\"\n"
 "   height=\"1052.3622047\"\n"
 "   id=\"svg2\"\n"
-"   version=\"1.1\"\n"
-"   inkscape:version=\"0.48.2 r9819\"\n"
-"   sodipodi:docname=\"settings.svg\">\n"
-"  <defs\n"
-"     id=\"defs4\" />\n"
-"  <sodipodi:namedview\n"
-"     id=\"base\"\n"
-"     pagecolor=\"#ffffff\"\n"
-"     bordercolor=\"#666666\"\n"
-"     borderopacity=\"1.0\"\n"
-"     inkscape:pageopacity=\"0.0\"\n"
-"     inkscape:pageshadow=\"2\"\n"
-"     inkscape:zoom=\"1.979899\"\n"
-"     inkscape:cx=\"385.72085\"\n"
-"     inkscape:cy=\"538.87467\"\n"
-"     inkscape:document-units=\"px\"\n"
-"     inkscape:current-layer=\"layer1\"\n"
-"     showgrid=\"false\"\n"
-"     inkscape:window-width=\"800\"\n"
-"     inkscape:window-height=\"661\"\n"
-"     inkscape:window-x=\"0\"\n"
-"     inkscape:window-y=\"0\"\n"
-"     inkscape:window-maximized=\"0\" />\n"
-"  <metadata\n"
-"     id=\"metadata7\">\n"
-"    <rdf:RDF>\n"
-"      <cc:Work\n"
-"         rdf:about=\"\">\n"
-"        <dc:format>image/svg+xml</dc:format>\n"
-"        <dc:type\n"
-"           rdf:resource=\"http://purl.org/dc/dcmitype/StillImage\" />\n"
-"        <dc:title></dc:title>\n"
-"      </cc:Work>\n"
-"    </rdf:RDF>\n"
-"  </metadata>\n"
-"  <g\n"
-"     inkscape:label=\"Layer 1\"\n"
-"     inkscape:groupmode=\"layer\"\n"
-"     id=\"layer1\">\n"
+"   version=\"1.1\">\n"
+"  <g id=\"layer1\">\n"
 "    <path\n"
 "       style=\"fill:#000000\"\n"
 "       d=\"m 323.39602,631.36921 c -73.62458,-9.19645 -119.57137,-89.07277 -90.3329,-157.03944 2.3933,-5.56337 2.81592,-5.67632 8.68497,-2.32115 5.54313,3.16884 10.10236,3.22982 12.97362,0.1735 4.33914,-4.61881 2.49432,-9.35912 -5.36954,-13.79721 -3."
@@ -1151,8 +729,7 @@ static const unsigned char temp_binary_data_77[] =
 ".57858 74.08213,-65.75167 51.98511,-110.46039 -28.50963,-57.68334 -111.47386,-57.68334 -139.96809,0 -29.0762,58.86148 24.14099,125.6743 87.98298,110.46039 z m -26,-14.00114 c -50.72948,-6.372 -72.43795,-69.14736 -36.50075,-105.55083 16.58346,-16.7986"
 "1 41.83481,-23.10469 63.58708,-15.87975 6.00862,1.99575 7.07829,-1.37587 -7.58633,23.9121 -14.42429,24.87354 -15.51267,29.83333 -7.0147,31.96618 5.26406,1.3212 7.43222,-1.21074 20.39475,-23.81676 13.97815,-24.3772 13.01095,-23.63548 20.40549,-15.6484"
 "9 39.85836,43.05178 4.72027,112.30351 -53.28554,105.01755 z\"\n"
-"       id=\"path4659\"\n"
-"       inkscape:connector-curvature=\"0\" />\n"
+"       id=\"path4659\" />\n"
 "  </g>\n"
 "</svg>\n";
 
@@ -1404,60 +981,17 @@ const char* minus2_svg = (const char*) temp_binary_data_81;
 //================== paste.svg ==================
 static const unsigned char temp_binary_data_82[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-"<!-- Created with Inkscape (http://www.inkscape.org/) -->\n"
-"\n"
 "<svg\n"
 "   xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n"
 "   xmlns:cc=\"http://creativecommons.org/ns#\"\n"
 "   xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
 "   xmlns:svg=\"http://www.w3.org/2000/svg\"\n"
 "   xmlns=\"http://www.w3.org/2000/svg\"\n"
-"   xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\"\n"
-"   xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"\n"
 "   width=\"744.09448819\"\n"
 "   height=\"1052.3622047\"\n"
 "   id=\"svg2\"\n"
-"   version=\"1.1\"\n"
-"   inkscape:version=\"0.48.2 r9819\"\n"
-"   sodipodi:docname=\"paste.svg\">\n"
-"  <defs\n"
-"     id=\"defs4\" />\n"
-"  <sodipodi:namedview\n"
-"     id=\"base\"\n"
-"     pagecolor=\"#ffffff\"\n"
-"     bordercolor=\"#666666\"\n"
-"     borderopacity=\"1.0\"\n"
-"     inkscape:pageopacity=\"0.0\"\n"
-"     inkscape:pageshadow=\"2\"\n"
-"     inkscape:zoom=\"1.979899\"\n"
-"     inkscape:cx=\"335.18158\"\n"
-"     inkscape:cy=\"397.73377\"\n"
-"     inkscape:document-units=\"px\"\n"
-"     inkscape:current-layer=\"layer1\"\n"
-"     showgrid=\"false\"\n"
-"     inkscape:window-width=\"736\"\n"
-"     inkscape:window-height=\"787\"\n"
-"     inkscape:window-x=\"0\"\n"
-"     inkscape:window-y=\"0\"\n"
-"     inkscape:window-maximized=\"0\"\n"
-"     showguides=\"true\"\n"
-"     inkscape:guide-bbox=\"true\" />\n"
-"  <metadata\n"
-"     id=\"metadata7\">\n"
-"    <rdf:RDF>\n"
-"      <cc:Work\n"
-"         rdf:about=\"\">\n"
-"        <dc:format>image/svg+xml</dc:format>\n"
-"        <dc:type\n"
-"           rdf:resource=\"http://purl.org/dc/dcmitype/StillImage\" />\n"
-"        <dc:title></dc:title>\n"
-"      </cc:Work>\n"
-"    </rdf:RDF>\n"
-"  </metadata>\n"
-"  <g\n"
-"     inkscape:label=\"Layer 1\"\n"
-"     inkscape:groupmode=\"layer\"\n"
-"     id=\"layer1\">\n"
+"   version=\"1.1\">\n"
+"  <g id=\"layer1\">\n"
 "    <path\n"
 "       style=\"fill:#000000\"\n"
 "       d=\"M 324.46875 544.0625 C 320.11763 543.9697 315.64297 545.08334 311.375 547.40625 C 302.34825 552.31923 299.3408 558.01448 298.5 571.78125 L 297.9375 581.28125 L 286.9375 581.84375 C 275.26756 582.4362 270.90438 583.85342 268 588 C 266.45273"
@@ -1561,58 +1095,17 @@ const char* quote_svg = (const char*) temp_binary_data_89;
 //================== reroute.svg ==================
 static const unsigned char temp_binary_data_90[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-"<!-- Created with Inkscape (http://www.inkscape.org/) -->\n"
-"\n"
 "<svg\n"
 "   xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n"
 "   xmlns:cc=\"http://creativecommons.org/ns#\"\n"
 "   xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
 "   xmlns:svg=\"http://www.w3.org/2000/svg\"\n"
 "   xmlns=\"http://www.w3.org/2000/svg\"\n"
-"   xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\"\n"
-"   xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"\n"
 "   width=\"744.09448819\"\n"
 "   height=\"1052.3622047\"\n"
 "   id=\"svg2\"\n"
-"   version=\"1.1\"\n"
-"   inkscape:version=\"0.48.2 r9819\"\n"
-"   sodipodi:docname=\"clef.svg\">\n"
-"  <defs\n"
-"     id=\"defs4\" />\n"
-"  <sodipodi:namedview\n"
-"     id=\"base\"\n"
-"     pagecolor=\"#ffffff\"\n"
-"     bordercolor=\"#666666\"\n"
-"     borderopacity=\"1.0\"\n"
-"     inkscape:pageopacity=\"0.0\"\n"
-"     inkscape:pageshadow=\"2\"\n"
-"     inkscape:zoom=\"1.979899\"\n"
-"     inkscape:cx=\"385.72085\"\n"
-"     inkscape:cy=\"538.87467\"\n"
-"     inkscape:document-units=\"px\"\n"
-"     inkscape:current-layer=\"layer1\"\n"
-"     showgrid=\"false\"\n"
-"     inkscape:window-width=\"800\"\n"
-"     inkscape:window-height=\"661\"\n"
-"     inkscape:window-x=\"0\"\n"
-"     inkscape:window-y=\"0\"\n"
-"     inkscape:window-maximized=\"0\" />\n"
-"  <metadata\n"
-"     id=\"metadata7\">\n"
-"    <rdf:RDF>\n"
-"      <cc:Work\n"
-"         rdf:about=\"\">\n"
-"        <dc:format>image/svg+xml</dc:format>\n"
-"        <dc:type\n"
-"           rdf:resource=\"http://purl.org/dc/dcmitype/StillImage\" />\n"
-"        <dc:title></dc:title>\n"
-"      </cc:Work>\n"
-"    </rdf:RDF>\n"
-"  </metadata>\n"
-"  <g\n"
-"     inkscape:label=\"Layer 1\"\n"
-"     inkscape:groupmode=\"layer\"\n"
-"     id=\"layer1\">\n"
+"   version=\"1.1\">\n"
+"  <g id=\"layer1\">\n"
 "    <path\n"
 "       style=\"fill:#000000\"\n"
 "       d=\"m 408.94679,580.3177 c -1.14391,-0.72081 -1.6187,-3.74392 -2,-12.73469 l -0.5,-11.78949 -28,-0.5 C 344.8738,554.694 339.30854,552.60509 332.33737,537.98639 l -1.62675,-3.41134 7.70922,-12.64077 c 8.86063,-14.52872 8.4746,-14.30829 12.94319"
@@ -1621,70 +1114,146 @@ static const unsigned char temp_binary_data_90[] =
 "3994,-22 13.7143,-22.29709 13.84853,-22.35917 49.7353,-23 l 28,-0.5 0.5,-11.70447 c 0.78225,-18.31175 0.8327,-18.30297 30.2356,5.26474 25.43035,20.38354 25.0558,17.85947 5.06559,34.13645 -34.6818,28.23958 -35.30119,28.39068 -35.30119,8.61215 l 0,-10."
 "80887 -19.03984,0 c -28.80565,0 -25.433,-3.25615 -68.3437,65.98284 -8.34158,13.45965 -13.78204,19.20411 -20.28698,21.42056 -6.34961,2.16353 -70.07731,2.41731 -70.89658,0.28233 z m 67.26276,-73.91165 c -2.49775,-4.00074 -5.95483,-8.62408 -7.6824,-10.2"
 "7408 l -3.14104,-3 -28.18611,-0.5 -28.18611,-0.5 0,-12 0,-12 32.95005,-0.26392 c 41.25097,-0.33041 46.13305,1.12382 53.93245,16.06493 l 1.8825,3.60626 -7.2762,12.04318 c -9.59987,15.8892 -8.85525,15.53371 -14.29314,6.82363 z\"\n"
-"       id=\"path6223\"\n"
-"       inkscape:connector-curvature=\"0\" />\n"
+"       id=\"path6223\" />\n"
 "  </g>\n"
 "</svg>\n";
 
 const char* reroute_svg = (const char*) temp_binary_data_90;
 
-//================== saxophone.svg ==================
+//================== roman1.svg ==================
 static const unsigned char temp_binary_data_91[] =
+"<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\r\n"
+"<svg version=\"1.1\" id=\"Layer_1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\"\r\n"
+"\t viewBox=\"0 0 496.158 496.158\" style=\"enable-background:new 0 0 496.158 496.158;\" xml:space=\"preserve\">\r\n"
+"<path fill=\"#000000\" d=\"M263.459,173.627c2.115-1.302,5.938-1.954,11.473-1.954v-6.347h-53.705v6.347\r\n"
+"\tc5.534,0,9.356,0.652,11.474,1.954c2.115,1.302,3.173,4.231,3.173,8.788v132.307c0,3.582-1.058,6.103-3.173,7.567\r\n"
+"\tc-2.117,1.464-5.939,2.197-11.474,2.197v6.347h53.705v-6.347c-5.534,0-9.357-0.732-11.473-2.197\r\n"
+"\tc-2.118-1.464-3.174-3.986-3.174-7.567V182.414C260.285,177.858,261.341,174.928,263.459,173.627z\"/>\r\n"
+"</svg>\r\n";
+
+const char* roman1_svg = (const char*) temp_binary_data_91;
+
+//================== roman2.svg ==================
+static const unsigned char temp_binary_data_92[] =
+"<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\r\n"
+"<svg version=\"1.1\" id=\"Layer_1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\"\r\n"
+"\t viewBox=\"0 0 496.158 496.158\" style=\"enable-background:new 0 0 496.158 496.158;\" xml:space=\"preserve\">\r\n"
+"<path fill=\"#000000\" d=\"M290.31,173.626c2.113-1.302,5.937-1.954,11.473-1.954v-6.347H194.375v6.347\r\n"
+"\tc5.533,0,9.356,0.652,11.472,1.954s3.176,4.231,3.176,8.787v132.308c0,3.582-1.06,6.103-3.176,7.567\r\n"
+"\tc-2.115,1.464-5.938,2.197-11.472,2.197v6.347h107.408v-6.347c-5.536,0-9.359-0.732-11.473-2.197\r\n"
+"\tc-2.118-1.465-3.174-3.986-3.174-7.567V182.413C287.137,177.858,288.192,174.928,290.31,173.626z M262.725,314.721\r\n"
+"\tc0,3.582-1.057,6.103-3.173,7.567c-2.117,1.464-5.941,2.197-11.474,2.197c-5.533,0-9.357-0.732-11.473-2.197\r\n"
+"\tc-2.118-1.465-3.174-3.986-3.174-7.567V182.413c0-4.556,1.056-7.485,3.174-8.787c2.115-1.302,5.939-1.954,11.473-1.954\r\n"
+"\tc5.532,0,9.356,0.652,11.474,1.954c2.116,1.302,3.173,4.231,3.173,8.787V314.721z\"/>\r\n"
+"</svg>\r\n";
+
+const char* roman2_svg = (const char*) temp_binary_data_92;
+
+//================== roman3.svg ==================
+static const unsigned char temp_binary_data_93[] =
+"<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\r\n"
+"<svg version=\"1.1\" id=\"Layer_1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\"\r\n"
+"\t viewBox=\"0 0 496.158 496.158\" style=\"enable-background:new 0 0 496.158 496.158;\" xml:space=\"preserve\">\r\n"
+"<path fill=\"#000000\" d=\"M317.162,173.625c2.115-1.301,5.939-1.952,11.473-1.952v-6.348H167.523v6.348\r\n"
+"\tc5.533,0,9.355,0.651,11.475,1.952c2.113,1.303,3.172,4.232,3.172,8.788v132.308c0,3.581-1.059,6.103-3.172,7.567\r\n"
+"\tc-2.119,1.465-5.941,2.197-11.475,2.197v6.347h161.111v-6.347c-5.533,0-9.357-0.732-11.473-2.197s-3.174-3.986-3.174-7.567V182.413\r\n"
+"\tC313.988,177.858,315.047,174.928,317.162,173.625z M235.873,314.721c0,3.581-1.057,6.103-3.172,7.567\r\n"
+"\tc-2.119,1.465-5.941,2.197-11.475,2.197s-9.357-0.732-11.473-2.197s-3.174-3.986-3.174-7.567V182.413\r\n"
+"\tc0-4.556,1.059-7.485,3.174-8.788c2.115-1.301,5.939-1.952,11.473-1.952s9.355,0.651,11.475,1.952\r\n"
+"\tc2.115,1.303,3.172,4.232,3.172,8.788V314.721z M289.578,314.721c0,3.581-1.059,6.103-3.172,7.567\r\n"
+"\tc-2.119,1.465-5.941,2.197-11.475,2.197c-5.535,0-9.357-0.732-11.473-2.197c-2.117-1.465-3.174-3.986-3.174-7.567V182.413\r\n"
+"\tc0-4.556,1.057-7.485,3.174-8.788c2.115-1.301,5.938-1.952,11.473-1.952c5.533,0,9.355,0.651,11.475,1.952\r\n"
+"\tc2.113,1.303,3.172,4.232,3.172,8.788V314.721z\"/>\r\n"
+"</svg>\r\n";
+
+const char* roman3_svg = (const char*) temp_binary_data_93;
+
+//================== roman4.svg ==================
+static const unsigned char temp_binary_data_94[] =
+"<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\r\n"
+"<svg version=\"1.1\" id=\"Layer_1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\"\r\n"
+"\t viewBox=\"0 0 496.158 496.158\" style=\"enable-background:new 0 0 496.158 496.158;\" xml:space=\"preserve\">\r\n"
+"<path fill=\"#000000\" d=\"M189.736,173.625c2.115-1.301,5.939-1.952,11.473-1.952v-6.348h-53.703v6.348\r\n"
+"\tc5.533,0,9.357,0.651,11.475,1.952c2.113,1.303,3.172,4.232,3.172,8.788v132.308c0,3.582-1.059,6.103-3.172,7.567\r\n"
+"\tc-2.117,1.465-5.941,2.197-11.475,2.197v6.347h53.703v-6.347c-5.533,0-9.357-0.732-11.473-2.197\r\n"
+"\tc-2.117-1.465-3.174-3.985-3.174-7.567V182.413C186.562,177.858,187.619,174.928,189.736,173.625z\"/>\r\n"
+"<path fill=\"#000000\" d=\"M307.152,165.326v6.348c5.533,0,9.766,0.651,12.695,1.952c1.869,0.815,2.807,2.319,2.807,4.517\r\n"
+"\tc0,1.221-0.285,2.646-0.855,4.271l-40.033,109.85l-36.615-109.85c-0.41-1.465-0.611-2.765-0.611-3.905\r\n"
+"\tc0-2.359,0.934-3.986,2.809-4.883c2.764-1.301,6.914-1.952,12.449-1.952v-6.348h-53.703v6.348c4.229,0,7.402,0.651,9.52,1.952\r\n"
+"\tc2.115,1.303,3.822,4.232,5.125,8.788l50.287,148.419h7.322l55.658-148.419c1.953-4.556,3.824-7.485,5.613-8.788\r\n"
+"\tc1.791-1.301,4.801-1.952,9.033-1.952v-6.348H307.152z\"/>\r\n"
+"</svg>\r\n";
+
+const char* roman4_svg = (const char*) temp_binary_data_94;
+
+//================== roman5.svg ==================
+static const unsigned char temp_binary_data_95[] =
+"<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\r\n"
+"<svg version=\"1.1\" id=\"Layer_1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\"\r\n"
+"\t viewBox=\"0 0 496.158 496.158\" style=\"enable-background:new 0 0 496.158 496.158;\" xml:space=\"preserve\">\r\n"
+"<path fill=\"#000000\" d=\"M277.859,165.326v6.348c5.532,0,9.765,0.651,12.694,1.952c1.87,0.815,2.808,2.319,2.808,4.517\r\n"
+"\tc0,1.221-0.286,2.645-0.855,4.271l-40.032,109.85l-36.617-109.85c-0.41-1.465-0.61-2.766-0.61-3.905\r\n"
+"\tc0-2.359,0.933-3.986,2.808-4.883c2.764-1.301,6.915-1.952,12.449-1.952v-6.348h-53.703v6.348c4.229,0,7.402,0.651,9.52,1.952\r\n"
+"\tc2.115,1.303,3.824,4.232,5.127,8.788l50.286,148.419h7.322l55.657-148.419c1.953-4.556,3.824-7.485,5.613-8.788\r\n"
+"\tc1.791-1.301,4.803-1.952,9.033-1.952v-6.348H277.859z\"/>\r\n"
+"</svg>\r\n";
+
+const char* roman5_svg = (const char*) temp_binary_data_95;
+
+//================== roman6.svg ==================
+static const unsigned char temp_binary_data_96[] =
+"<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\r\n"
+"<svg version=\"1.1\" id=\"Layer_1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\"\r\n"
+"\t viewBox=\"0 0 496.158 496.158\" style=\"enable-background:new 0 0 496.158 496.158;\" xml:space=\"preserve\">\r\n"
+"<path fill=\"#000000\" d=\"M248.567,165.326v6.347c5.532,0,9.765,0.652,12.693,1.954c1.871,0.814,2.808,2.317,2.808,4.516\r\n"
+"\tc0,1.221-0.285,2.645-0.854,4.271l-40.035,109.849l-36.615-109.849c-0.408-1.465-0.611-2.764-0.611-3.906\r\n"
+"\tc0-2.358,0.936-3.985,2.808-4.881c2.766-1.302,6.915-1.954,12.45-1.954v-6.347h-53.704v6.347c4.229,0,7.403,0.652,9.52,1.954\r\n"
+"\tc2.115,1.303,3.823,4.232,5.126,8.787l50.287,148.418h7.323l55.657-148.418c1.953-4.555,3.823-7.484,5.614-8.787\r\n"
+"\tc1.789-1.302,4.8-1.954,9.032-1.954v-6.347H248.567z\"/>\r\n"
+"<path fill=\"#000000\" d=\"M337.178,173.627c2.115-1.302,5.939-1.954,11.474-1.954v-6.347h-53.704v6.347\r\n"
+"\tc5.532,0,9.356,0.652,11.474,1.954c2.114,1.303,3.174,4.232,3.174,8.787v132.307c0,3.582-1.06,6.104-3.174,7.568\r\n"
+"\tc-2.117,1.465-5.941,2.197-11.474,2.197v6.346h53.704v-6.346c-5.534,0-9.358-0.732-11.474-2.197s-3.173-3.986-3.173-7.568V182.414\r\n"
+"\tC334.005,177.859,335.062,174.93,337.178,173.627z\"/>\r\n"
+"</svg>\r\n";
+
+const char* roman6_svg = (const char*) temp_binary_data_96;
+
+//================== roman7.svg ==================
+static const unsigned char temp_binary_data_97[] =
+"<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\r\n"
+"<svg version=\"1.1\" id=\"Layer_1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" x=\"0px\" y=\"0px\"\r\n"
+"\t viewBox=\"0 0 496.158 496.158\" style=\"enable-background:new 0 0 496.158 496.158;\" xml:space=\"preserve\">\r\n"
+"<path fill=\"#000000\" d=\"M219.274,165.326v6.347c5.532,0,9.765,0.652,12.694,1.954c1.87,0.814,2.807,2.317,2.807,4.516\r\n"
+"\tc0,1.221-0.286,2.645-0.854,4.271l-40.034,109.849l-36.616-109.849c-0.408-1.465-0.61-2.764-0.61-3.906\r\n"
+"\tc0-2.358,0.935-3.985,2.807-4.881c2.766-1.302,6.915-1.954,12.45-1.954v-6.347h-53.704v6.347c4.229,0,7.403,0.652,9.52,1.954\r\n"
+"\tc2.115,1.303,3.824,4.232,5.127,8.787l50.286,148.418h7.323l55.657-148.418c1.953-4.555,3.823-7.484,5.614-8.787\r\n"
+"\tc1.789-1.302,4.801-1.954,9.032-1.954v-6.347H219.274z\"/>\r\n"
+"<path fill=\"#000000\" d=\"M307.886,173.627c2.114-1.302,5.938-1.954,11.473-1.954v-6.347h-53.704v6.347\r\n"
+"\tc5.532,0,9.356,0.652,11.474,1.954c2.114,1.303,3.173,4.232,3.173,8.787v132.307c0,3.582-1.059,6.104-3.173,7.568\r\n"
+"\tc-2.117,1.465-5.941,2.197-11.474,2.197v6.346h53.704v-6.346c-5.534,0-9.358-0.732-11.473-2.197\r\n"
+"\tc-2.117-1.465-3.174-3.986-3.174-7.568V182.414C304.712,177.859,305.769,174.93,307.886,173.627z\"/>\r\n"
+"<path fill=\"#000000\" d=\"M366.472,173.627c2.115-1.302,5.938-1.954,11.473-1.954v-6.347h-53.704v6.347\r\n"
+"\tc5.533,0,9.356,0.652,11.474,1.954c2.114,1.303,3.174,4.232,3.174,8.787v132.307c0,3.582-1.06,6.104-3.174,7.568\r\n"
+"\tc-2.117,1.465-5.94,2.197-11.474,2.197v6.346h53.704v-6.346c-5.534,0-9.357-0.732-11.473-2.197\r\n"
+"\tc-2.117-1.465-3.173-3.986-3.173-7.568V182.414C363.299,177.859,364.355,174.93,366.472,173.627z\"/>\r\n"
+"</svg>\r\n";
+
+const char* roman7_svg = (const char*) temp_binary_data_97;
+
+//================== saxophone.svg ==================
+static const unsigned char temp_binary_data_98[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
-"<!-- Created with Inkscape (http://www.inkscape.org/) -->\n"
-"\n"
 "<svg\n"
 "   xmlns:dc=\"http://purl.org/dc/elements/1.1/\"\n"
 "   xmlns:cc=\"http://creativecommons.org/ns#\"\n"
 "   xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\"\n"
 "   xmlns:svg=\"http://www.w3.org/2000/svg\"\n"
 "   xmlns=\"http://www.w3.org/2000/svg\"\n"
-"   xmlns:sodipodi=\"http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd\"\n"
-"   xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"\n"
 "   width=\"744.09448819\"\n"
 "   height=\"1052.3622047\"\n"
 "   id=\"svg2\"\n"
-"   version=\"1.1\"\n"
-"   inkscape:version=\"0.48.2 r9819\"\n"
-"   sodipodi:docname=\"saxophone.svg\">\n"
-"  <defs\n"
-"     id=\"defs4\" />\n"
-"  <sodipodi:namedview\n"
-"     id=\"base\"\n"
-"     pagecolor=\"#ffffff\"\n"
-"     bordercolor=\"#666666\"\n"
-"     borderopacity=\"1.0\"\n"
-"     inkscape:pageopacity=\"0.0\"\n"
-"     inkscape:pageshadow=\"2\"\n"
-"     inkscape:zoom=\"1\"\n"
-"     inkscape:cx=\"277.70379\"\n"
-"     inkscape:cy=\"533.45796\"\n"
-"     inkscape:document-units=\"px\"\n"
-"     inkscape:current-layer=\"layer1\"\n"
-"     showgrid=\"false\"\n"
-"     inkscape:window-width=\"617\"\n"
-"     inkscape:window-height=\"688\"\n"
-"     inkscape:window-x=\"0\"\n"
-"     inkscape:window-y=\"0\"\n"
-"     inkscape:window-maximized=\"0\"\n"
-"     showguides=\"true\"\n"
-"     inkscape:guide-bbox=\"true\" />\n"
-"  <metadata\n"
-"     id=\"metadata7\">\n"
-"    <rdf:RDF>\n"
-"      <cc:Work\n"
-"         rdf:about=\"\">\n"
-"        <dc:format>image/svg+xml</dc:format>\n"
-"        <dc:type\n"
-"           rdf:resource=\"http://purl.org/dc/dcmitype/StillImage\" />\n"
-"        <dc:title></dc:title>\n"
-"      </cc:Work>\n"
-"    </rdf:RDF>\n"
-"  </metadata>\n"
-"  <g\n"
-"     inkscape:label=\"Layer 1\"\n"
-"     inkscape:groupmode=\"layer\"\n"
-"     id=\"layer1\">\n"
+"   version=\"1.1\">\n"
+"  <g id=\"layer1\">\n"
 "    <path\n"
 "       style=\"fill:#000000\"\n"
 "       d=\"M 371.90625 383.875 C 370.93534 383.88839 369.9307 383.93889 368.875 384 C 348.64136 385.17131 346.57096 390.34152 329.40625 483.28125 C 315.81467 556.87402 314.9047 560.77561 311.0625 562.25 C 306.00986 564.18888 305.68518 556.38125 309.9"
@@ -1702,10 +1271,10 @@ static const unsigned char temp_binary_data_91[] =
 "  </g>\n"
 "</svg>\n";
 
-const char* saxophone_svg = (const char*) temp_binary_data_91;
+const char* saxophone_svg = (const char*) temp_binary_data_98;
 
 //================== scissors.svg ==================
-static const unsigned char temp_binary_data_92[] =
+static const unsigned char temp_binary_data_99[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
 "<svg width=\"22px\" height=\"22px\" viewBox=\"0 0 22 22\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 "    <g id=\"Page-1\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
@@ -1720,10 +1289,10 @@ static const unsigned char temp_binary_data_92[] =
 "    </g>\n"
 "</svg>";
 
-const char* scissors_svg = (const char*) temp_binary_data_92;
+const char* scissors_svg = (const char*) temp_binary_data_99;
 
 //================== settings2.svg ==================
-static const unsigned char temp_binary_data_93[] =
+static const unsigned char temp_binary_data_100[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
 "<svg width=\"279px\" height=\"205px\" viewBox=\"0 0 279 205\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 "    <g id=\"Page-1\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
@@ -1747,19 +1316,19 @@ static const unsigned char temp_binary_data_93[] =
 "    </g>\n"
 "</svg>";
 
-const char* settings2_svg = (const char*) temp_binary_data_93;
+const char* settings2_svg = (const char*) temp_binary_data_100;
 
 //================== switch.svg ==================
-static const unsigned char temp_binary_data_94[] =
+static const unsigned char temp_binary_data_101[] =
 "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"32\" height=\"32\" viewBox=\"0 0 32 32\">\n"
 "\t<path d=\"M22.4 8.32h-16v-3.2l-6.4 5.44 6.4 5.12v-2.88h16v-4.48zM32 21.76l-6.4-5.44v3.2h-16v4.48h16v2.88l6.4-5.12z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* switch_svg = (const char*) temp_binary_data_94;
+const char* switch_svg = (const char*) temp_binary_data_101;
 
 //================== terminal.svg ==================
-static const unsigned char temp_binary_data_95[] =
+static const unsigned char temp_binary_data_102[] =
 "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
 "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n"
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"30\" height=\"32\" viewBox=\"0 0 30 32\">\n"
@@ -1767,10 +1336,10 @@ static const unsigned char temp_binary_data_95[] =
 ".179l-0.893-0.893q-0.179-0.179-0.179-0.411zM11.429 26.857v-1.143q0-0.25 0.161-0.411t0.411-0.161h17.143q0.25 0 0.411 0.161t0.161 0.411v1.143q0 0.25-0.161 0.411t-0.411 0.161h-17.143q-0.25 0-0.411-0.161t-0.161-0.411z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* terminal_svg = (const char*) temp_binary_data_95;
+const char* terminal_svg = (const char*) temp_binary_data_102;
 
 //================== times.svg ==================
-static const unsigned char temp_binary_data_96[] =
+static const unsigned char temp_binary_data_103[] =
 "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
 "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n"
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"25\" height=\"32\" viewBox=\"0 0 25 32\">\n"
@@ -1778,10 +1347,10 @@ static const unsigned char temp_binary_data_96[] =
 " 0.5 1.214t-0.5 1.214l-2.429 2.429q-0.5 0.5-1.214 0.5t-1.214-0.5l-5.25-5.25-5.25 5.25q-0.5 0.5-1.214 0.5t-1.214-0.5l-2.429-2.429q-0.5-0.5-0.5-1.214z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* times_svg = (const char*) temp_binary_data_96;
+const char* times_svg = (const char*) temp_binary_data_103;
 
 //================== toggle-off.svg ==================
-static const unsigned char temp_binary_data_97[] =
+static const unsigned char temp_binary_data_104[] =
 "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"16\" height=\"14\" viewBox=\"0 0 16 14\">\n"
 "<path fill=\"#000000\" d=\"M9 7q0-0.813-0.316-1.551t-0.855-1.277-1.277-0.855-1.551-0.316-1.551 0.316-1.277 0.855-0.855 1.277-0.316 1.551 0.316 1.551 0.855 1.277 1.277 0.855 1.551 0.316 1.551-0.316 1.277-0.855 0.855-1.277 0.316-1.551zM15 7q0-0.813-0.3"
@@ -1789,30 +1358,30 @@ static const unsigned char temp_binary_data_97[] =
 "-0.398t-1.594-1.066-1.066-1.594-0.398-1.941 0.398-1.941 1.066-1.594 1.594-1.066 1.941-0.398h6q1.016 0 1.941 0.398t1.594 1.066 1.066 1.594 0.398 1.941z\"></path>\n"
 "</svg>\n";
 
-const char* toggleoff_svg = (const char*) temp_binary_data_97;
+const char* toggleoff_svg = (const char*) temp_binary_data_104;
 
 //================== toggle-on.svg ==================
-static const unsigned char temp_binary_data_98[] =
+static const unsigned char temp_binary_data_105[] =
 "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"16\" height=\"14\" viewBox=\"0 0 16 14\">\n"
 "<path fill=\"#000000\" d=\"M0 7q0-1.016 0.398-1.941t1.066-1.594 1.594-1.066 1.941-0.398h6q1.016 0 1.941 0.398t1.594 1.066 1.066 1.594 0.398 1.941-0.398 1.941-1.066 1.594-1.594 1.066-1.941 0.398h-6q-1.016 0-1.941-0.398t-1.594-1.066-1.066-1.594-0.398-1"
 ".941zM11 11q0.813 0 1.551-0.316t1.277-0.855 0.855-1.277 0.316-1.551-0.316-1.551-0.855-1.277-1.277-0.855-1.551-0.316-1.551 0.316-1.277 0.855-0.855 1.277-0.316 1.551 0.316 1.551 0.855 1.277 1.277 0.855 1.551 0.316z\"></path>\n"
 "</svg>\n";
 
-const char* toggleon_svg = (const char*) temp_binary_data_98;
+const char* toggleon_svg = (const char*) temp_binary_data_105;
 
 //================== updown.svg ==================
-static const unsigned char temp_binary_data_99[] =
+static const unsigned char temp_binary_data_106[] =
 "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
 "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n"
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"32\" height=\"32\" viewBox=\"0 0 32 32\">\n"
 "\t<path d=\"M16 0l-7.36 11.68h14.718l-7.358-11.68zM16.002 32l7.358-11.68-14.72-0.002 7.362 11.682z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* updown_svg = (const char*) temp_binary_data_99;
+const char* updown_svg = (const char*) temp_binary_data_106;
 
 //================== volume-off.svg ==================
-static const unsigned char temp_binary_data_100[] =
+static const unsigned char temp_binary_data_107[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
 "<svg>\n"
 "  <path\n"
@@ -1825,10 +1394,10 @@ static const unsigned char temp_binary_data_100[] =
 "     id=\"path3088\" />\n"
 "</svg>\n";
 
-const char* volumeoff_svg = (const char*) temp_binary_data_100;
+const char* volumeoff_svg = (const char*) temp_binary_data_107;
 
 //================== volume-up.svg ==================
-static const unsigned char temp_binary_data_101[] =
+static const unsigned char temp_binary_data_108[] =
 "<?xml version=\"1.0\"?>\n"
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"30\" height=\"32\">\n"
 "    <path id=\"shapePath1\" d=\"M0,19.429 L0,12.572 C0,12.2627 0.113,11.9947 0.339,11.768 C0.565,11.5413 0.833,11.4283 1.143,11.429 L5.822,11.429 L11.768,5.483 C11.994,5.257 12.262,5.144 12.572,5.144 C12.882,5.144 13.15,5.257 13.376,5.483 C13.602,5.7"
@@ -1843,10 +1412,10 @@ static const unsigned char temp_binary_data_101[] =
 "01,23.665 18.001,23.355 L18,23.357 Z\" style=\"stroke:none;fill-rule:evenodd;fill:#000000;fill-opacity:1;\"/>\n"
 "</svg>\n";
 
-const char* volumeup_svg = (const char*) temp_binary_data_101;
+const char* volumeup_svg = (const char*) temp_binary_data_108;
 
 //================== waveform.svg ==================
-static const unsigned char temp_binary_data_102[] =
+static const unsigned char temp_binary_data_109[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
 "<!-- Created with Inkscape (http://www.inkscape.org/) -->\n"
 "\n"
@@ -1869,10 +1438,10 @@ static const unsigned char temp_binary_data_102[] =
 "92325 -1.86318,-4.96678 -5.4675,16.14644 -2.69558,15.79005 -3.65721,19.52831 -5.53867,21.53102 -2.7026,2.87678 -6.80742,3.15155 -9.8825,0.6615 z\"/>\n"
 "</svg>\n";
 
-const char* waveform_svg = (const char*) temp_binary_data_102;
+const char* waveform_svg = (const char*) temp_binary_data_109;
 
 //================== wipe-space.svg ==================
-static const unsigned char temp_binary_data_103[] =
+static const unsigned char temp_binary_data_110[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n"
 "<svg width=\"128px\" height=\"128px\" viewBox=\"0 0 128 128\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 "    <g id=\"Controls\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
@@ -1886,10 +1455,10 @@ static const unsigned char temp_binary_data_103[] =
 "    </g>\n"
 "</svg>";
 
-const char* wipespace_svg = (const char*) temp_binary_data_103;
+const char* wipespace_svg = (const char*) temp_binary_data_110;
 
 //================== zoom-in.svg ==================
-static const unsigned char temp_binary_data_104[] =
+static const unsigned char temp_binary_data_111[] =
 "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
 "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n"
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"32\" height=\"32\" viewBox=\"0 0 32 32\">\n"
@@ -1899,10 +1468,10 @@ static const unsigned char temp_binary_data_104[] =
 "301 0 4.173-1.872 4.173-4.175 0-1.12-0.437-2.171-1.232-2.957l-1.267-1.315zM7.333 15.333c0-3.676 2.991-6.667 6.667-6.667s6.667 2.991 6.667 6.667-2.991 6.667-6.667 6.667-6.667-2.991-6.667-6.667z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* zoomin_svg = (const char*) temp_binary_data_104;
+const char* zoomin_svg = (const char*) temp_binary_data_111;
 
 //================== zoom-out.svg ==================
-static const unsigned char temp_binary_data_105[] =
+static const unsigned char temp_binary_data_112[] =
 "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
 "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n"
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"32\" height=\"32\" viewBox=\"0 0 32 32\">\n"
@@ -1911,20 +1480,20 @@ static const unsigned char temp_binary_data_105[] =
 ".805 1.045 2.301 0 4.173-1.872 4.173-4.175 0-1.12-0.437-2.171-1.232-2.957zM7.333 15.333c0-3.676 2.991-6.667 6.667-6.667s6.667 2.991 6.667 6.667-2.991 6.667-6.667 6.667-6.667-2.991-6.667-6.667z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* zoomout_svg = (const char*) temp_binary_data_105;
+const char* zoomout_svg = (const char*) temp_binary_data_112;
 
 //================== defaultPattern.png ==================
-static const unsigned char temp_binary_data_106[] =
+static const unsigned char temp_binary_data_113[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,48,0,0,0,48,8,6,0,0,0,87,2,249,135,0,0,0,4,103,65,77,65,0,0,177,143,11,252,97,5,0,0,0,244,73,68,65,84,104,5,213,146,201,13,192,48,16,2,211,131,235,117,143,238,40,7,18,145,64,219,192,228,99,145,215,176,
 204,181,247,190,175,247,251,222,181,214,77,203,31,251,255,157,115,84,198,63,104,217,220,172,151,170,142,85,215,181,105,170,52,47,75,153,166,245,20,84,149,162,79,79,67,203,81,6,19,168,234,88,125,29,154,166,74,243,98,108,25,65,61,5,85,165,40,213,211,208,
 114,148,193,4,170,58,86,95,135,166,169,210,188,24,91,70,80,79,65,85,41,74,245,52,180,28,101,48,129,170,142,213,215,161,105,170,52,47,198,150,17,212,83,80,85,138,82,61,13,45,71,25,76,160,170,99,245,117,104,154,42,205,139,177,101,4,245,20,84,149,162,84,
 79,67,203,81,6,19,168,234,88,125,29,154,166,74,243,98,108,25,65,61,5,85,165,40,213,211,208,114,148,193,4,170,58,86,95,135,166,169,210,188,24,91,70,80,79,65,85,41,74,245,52,180,28,101,48,129,170,142,213,215,161,105,170,52,47,198,150,9,244,1,171,21,46,
 170,68,251,251,242,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* defaultPattern_png = (const char*) temp_binary_data_106;
+const char* defaultPattern_png = (const char*) temp_binary_data_113;
 
 //================== ColourSchemes.xml ==================
-static const unsigned char temp_binary_data_107[] =
+static const unsigned char temp_binary_data_114[] =
 "<ColourSchemes>\r\n"
 "    <Scheme Name=\"Black Book\" Id=\"1\">\r\n"
 "        <ColourMap\r\n"
@@ -2016,10 +1585,10 @@ static const unsigned char temp_binary_data_107[] =
 "    </Scheme>\r\n"
 "</ColourSchemes>\r\n";
 
-const char* ColourSchemes_xml = (const char*) temp_binary_data_107;
+const char* ColourSchemes_xml = (const char*) temp_binary_data_114;
 
 //================== DefaultArps.xml ==================
-static const unsigned char temp_binary_data_108[] =
+static const unsigned char temp_binary_data_115[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
 "\r\n"
 "<Arpeggiators>\r\n"
@@ -2127,10 +1696,10 @@ static const unsigned char temp_binary_data_108[] =
 "  </Arpeggiator>\r\n"
 "</Arpeggiators>";
 
-const char* DefaultArps_xml = (const char*) temp_binary_data_108;
+const char* DefaultArps_xml = (const char*) temp_binary_data_115;
 
 //================== DefaultScales.xml ==================
-static const unsigned char temp_binary_data_109[] =
+static const unsigned char temp_binary_data_116[] =
 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
 "<Scales>\r\n"
 "    <Scale Name=\"Ionian (Major)\" Intervals=\"2 2 1 2 2 2 1\" />\r\n"
@@ -2146,7 +1715,6 @@ static const unsigned char temp_binary_data_109[] =
 "    <Scale Name=\"Harmonic Minor\" Intervals=\"2 1 2 2 1 3 1\" />\r\n"
 "    <Scale Name=\"Harmonic Major 2\" Intervals=\"2 2 1 3 1 2 1\" />\r\n"
 "    <Scale Name=\"Harmonic Minor b5\" Intervals=\"2 1 2 1 2 3 1\" />\r\n"
-"    <Scale Name=\"Harmonic Minor Inverse\" Intervals=\"1 3 1 2 2 1 2\" />\r\n"
 "    <Scale Name=\"Ionian b5\" Intervals=\"2 2 1 1 3 2 1\" />\r\n"
 "    <Scale Name=\"Ionian #5\" Intervals=\"2 2 1 3 1 2 1\" />\r\n"
 "    <Scale Name=\"Ionian Augmented\" Intervals=\"2 2 1 3 1 2 1\" />\r\n"
@@ -2160,10 +1728,8 @@ static const unsigned char temp_binary_data_109[] =
 "    <Scale Name=\"Lydian Dominant b6\" Intervals=\"2 2 2 1 1 2 2\" />\r\n"
 "    <Scale Name=\"Lydian Augmented\" Intervals=\"2 2 2 2 1 2 1\" />\r\n"
 "    <Scale Name=\"Lydian Diminished\" Intervals=\"2 1 3 1 2 2 1\" />\r\n"
-"    <Scale Name=\"Lydian Augmented Dominant\" Intervals=\"2 2 2 2 1 1 2\" />\r\n"
 "    <Scale Name=\"Mixolydian b5\" Intervals=\"2 2 1 1 3 1 2\" />\r\n"
 "    <Scale Name=\"Mixolydian Augmented\" Intervals=\"2 2 1 3 1 1 2\" />\r\n"
-"    <Scale Name=\"Mixolydian Augmented Maj9\" Intervals=\"1 3 1 3 1 1 2\" />\r\n"
 "    <Scale Name=\"Dorian b2\" Intervals=\"1 2 2 2 2 1 2\" />\r\n"
 "    <Scale Name=\"Dorian b2 b4\" Intervals=\"1 2 1 3 2 1 2\" />\r\n"
 "    <Scale Name=\"Dorian b2 Maj7\" Intervals=\"1 2 1 2 3 2 1\" />\r\n"
@@ -2192,7 +1758,6 @@ static const unsigned char temp_binary_data_109[] =
 "    <Scale Name=\"Enigmatic\" Intervals=\"1 3 2 2 2 1 1\" />\r\n"
 "    <Scale Name=\"Enigmatic Minor\" Intervals=\"1 2 3 2 2 1 1\" />\r\n"
 "    <Scale Name=\"Hungarian Major\" Intervals=\"3 1 2 1 2 1 2\" />\r\n"
-"    <Scale Name=\"Hungarian Major Inverse\" Intervals=\"2 1 2 1 2 1 3\" />\r\n"
 "    <Scale Name=\"Neapolitan Major\" Intervals=\"1 2 2 2 2 2 1\" />\r\n"
 "    <Scale Name=\"Neapolitan Major b4\" Intervals=\"1 2 1 3 2 2 1\" />\r\n"
 "    <Scale Name=\"Neapolitan Major b5\" Intervals=\"1 2 2 1 3 2 1\" />\r\n"
@@ -2209,10 +1774,10 @@ static const unsigned char temp_binary_data_109[] =
 "    <Scale Name=\"Rock'n'Roll\" Intervals=\"3 1 1 2 2 1 2\" />\r\n"
 "</Scales>\r\n";
 
-const char* DefaultScales_xml = (const char*) temp_binary_data_109;
+const char* DefaultScales_xml = (const char*) temp_binary_data_116;
 
 //================== DefaultTranslations.xml ==================
-static const unsigned char temp_binary_data_110[] =
+static const unsigned char temp_binary_data_117[] =
 { 60,63,120,109,108,32,118,101,114,115,105,111,110,61,34,49,46,48,34,32,101,110,99,111,100,105,110,103,61,34,85,84,70,45,56,34,63,62,13,10,60,84,114,97,110,115,108,97,116,105,111,110,115,62,13,10,32,32,60,76,111,99,97,108,101,32,73,100,61,34,101,110,34,
 32,78,97,109,101,61,34,69,110,103,108,105,115,104,34,62,13,10,32,32,32,32,60,80,108,117,114,97,108,70,111,114,109,115,32,69,113,117,97,116,105,111,110,61,34,40,123,120,125,61,61,49,32,63,32,49,32,58,32,50,41,34,47,62,13,10,32,32,32,32,60,76,105,116,101,
 114,97,108,32,78,97,109,101,61,34,100,101,102,97,117,108,116,115,58,58,110,101,119,112,114,111,106,101,99,116,58,58,102,105,114,115,116,99,111,109,109,105,116,34,32,84,114,97,110,115,108,97,116,105,111,110,61,34,80,114,111,106,101,99,116,32,115,116,97,
@@ -4843,6 +4408,6 @@ static const unsigned char temp_binary_data_110[] =
 78,97,109,101,61,34,77,105,100,105,32,79,117,116,112,117,116,34,32,84,114,97,110,115,108,97,116,105,111,110,61,34,83,97,195,173,100,97,32,77,105,100,105,34,47,62,13,10,32,32,60,47,76,111,99,97,108,101,62,13,10,60,47,84,114,97,110,115,108,97,116,105,111,
 110,115,62,0,0 };
 
-const char* DefaultTranslations_xml = (const char*) temp_binary_data_110;
+const char* DefaultTranslations_xml = (const char*) temp_binary_data_117;
 
 }

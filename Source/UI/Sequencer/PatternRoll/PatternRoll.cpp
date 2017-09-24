@@ -28,7 +28,7 @@
 #include "SmoothZoomController.h"
 #include "MultiTouchController.h"
 #include "HelioTheme.h"
-#include "NoNotesPopup.h"
+#include "ChordBuilder.h"
 #include "HybridLassoComponent.h"
 #include "HybridRollEditMode.h"
 #include "SerializationKeys.h"

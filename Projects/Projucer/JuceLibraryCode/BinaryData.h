@@ -150,10 +150,10 @@ namespace BinaryData
     const int            arrows_svgSize = 963;
 
     extern const char*   beamed_note_svg;
-    const int            beamed_note_svgSize = 2656;
+    const int            beamed_note_svgSize = 1487;
 
     extern const char*   bezier_svg;
-    const int            bezier_svgSize = 3029;
+    const int            bezier_svgSize = 1836;
 
     extern const char*   brush_svg;
     const int            brush_svgSize = 783;
@@ -168,7 +168,7 @@ namespace BinaryData
     const int            chevronright2_svgSize = 602;
 
     extern const char*   clef_svg;
-    const int            clef_svgSize = 3589;
+    const int            clef_svgSize = 2388;
 
     extern const char*   clouddownload_svg;
     const int            clouddownload_svgSize = 730;
@@ -180,13 +180,13 @@ namespace BinaryData
     const int            cloud2_svgSize = 635;
 
     extern const char*   clouds_svg;
-    const int            clouds_svgSize = 3144;
+    const int            clouds_svgSize = 1889;
 
     extern const char*   columns_svg;
     const int            columns_svgSize = 621;
 
     extern const char*   copy_svg;
-    const int            copy_svgSize = 3481;
+    const int            copy_svgSize = 2230;
 
     extern const char*   crop_svg;
     const int            crop_svgSize = 326;
@@ -198,7 +198,7 @@ namespace BinaryData
     const int            cursor2_svgSize = 559;
 
     extern const char*   diskette_svg;
-    const int            diskette_svgSize = 2504;
+    const int            diskette_svgSize = 1306;
 
     extern const char*   download2_svg;
     const int            download2_svgSize = 754;
@@ -207,7 +207,7 @@ namespace BinaryData
     const int            drive_svgSize = 804;
 
     extern const char*   eight_note_svg;
-    const int            eight_note_svgSize = 2904;
+    const int            eight_note_svgSize = 1690;
 
     extern const char*   ellipsish_svg;
     const int            ellipsish_svgSize = 783;
@@ -219,7 +219,7 @@ namespace BinaryData
     const int            folderopen_svgSize = 674;
 
     extern const char*   folder_svg;
-    const int            folder_svgSize = 2651;
+    const int            folder_svgSize = 1451;
 
     extern const char*   folder2_svg;
     const int            folder2_svgSize = 433;
@@ -231,7 +231,7 @@ namespace BinaryData
     const int            history_svgSize = 713;
 
     extern const char*   hourglass_svg;
-    const int            hourglass_svgSize = 2961;
+    const int            hourglass_svgSize = 1759;
 
     extern const char*   insertspace_svg;
     const int            insertspace_svgSize = 1130;
@@ -240,7 +240,7 @@ namespace BinaryData
     const int            key_svgSize = 2282;
 
     extern const char*   knob_svg;
-    const int            knob_svgSize = 3479;
+    const int            knob_svgSize = 2275;
 
     extern const char*   logo2_svg;
     const int            logo2_svgSize = 25191;
@@ -255,7 +255,7 @@ namespace BinaryData
     const int            minus2_svgSize = 474;
 
     extern const char*   paste_svg;
-    const int            paste_svgSize = 4651;
+    const int            paste_svgSize = 3435;
 
     extern const char*   pause2_svg;
     const int            pause2_svgSize = 583;
@@ -279,10 +279,31 @@ namespace BinaryData
     const int            quote_svgSize = 485;
 
     extern const char*   reroute_svg;
-    const int            reroute_svgSize = 3140;
+    const int            reroute_svgSize = 1940;
+
+    extern const char*   roman1_svg;
+    const int            roman1_svgSize = 693;
+
+    extern const char*   roman2_svg;
+    const int            roman2_svgSize = 1001;
+
+    extern const char*   roman3_svg;
+    const int            roman3_svgSize = 1298;
+
+    extern const char*   roman4_svg;
+    const int            roman4_svgSize = 1204;
+
+    extern const char*   roman5_svg;
+    const int            roman5_svgSize = 794;
+
+    extern const char*   roman6_svg;
+    const int            roman6_svgSize = 1190;
+
+    extern const char*   roman7_svg;
+    const int            roman7_svgSize = 1606;
 
     extern const char*   saxophone_svg;
-    const int            saxophone_svgSize = 4405;
+    const int            saxophone_svgSize = 3192;
 
     extern const char*   scissors_svg;
     const int            scissors_svgSize = 2215;
@@ -336,7 +357,7 @@ namespace BinaryData
     const int            DefaultArps_xmlSize = 6981;
 
     extern const char*   DefaultScales_xml;
-    const int            DefaultScales_xmlSize = 4754;
+    const int            DefaultScales_xmlSize = 4463;
 
     extern const char*   DefaultTranslations_xml;
     const int            DefaultTranslations_xmlSize = 185385;
@@ -345,7 +366,7 @@ namespace BinaryData
     extern const char* namedResourceList[];
 
     // Number of elements in the namedResourceList array.
-    const int namedResourceListSize = 111;
+    const int namedResourceListSize = 118;
 
     // If you provide the name of one of the binary resource variables above, this function will
     // return the corresponding data and its size (or a null pointer if the name isn't found).

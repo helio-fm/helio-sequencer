@@ -23,6 +23,20 @@
 
 #define CHROMATIC_SCALE_SIZE 12
 
+enum Key
+{
+    I = 0,
+    II = 1,
+    III = 2,
+    IV = 3,
+    V = 4,
+    VI = 5,
+    VII = 6
+};
+
+Scale::Scale() {}
+Scale::Scale(const String &name) : name(name) {}
+
 //===----------------------------------------------------------------------===//
 // Helpers
 //===----------------------------------------------------------------------===//
@@ -32,6 +46,11 @@ int Scale::getSize() const noexcept
     return this->keys.size();
 }
 
+bool Scale::isValid() const noexcept
+{
+    return !this->keys.isEmpty() && !this->name.isEmpty();
+}
+
 String Scale::getName() const noexcept
 {
     return this->name;
@@ -39,43 +58,44 @@ String Scale::getName() const noexcept
 
 String Scale::getLocalizedName() const
 {
-    return TRANS(this->name.toLowerCase());
+    return TRANS(this->name);
 }
 
-Array<int> Scale::getPowerChord(int base) const
+Array<int> Scale::getPowerChord(Function fun, bool oneOctave) const
 {
     return {
-        this->getKey(0 + base),
-        this->getKey(4 + base) };
+        this->getKey(Key::I + fun, oneOctave),
+        this->getKey(Key::V + fun, oneOctave) };
 }
 
-Array<int> Scale::getTriad(int base) const
+Array<int> Scale::getTriad(Function fun, bool oneOctave) const
 {
     return {
-        this->getKey(0 + base),
-        this->getKey(2 + base),
-        this->getKey(4 + base) };
+        this->getKey(Key::I + fun, oneOctave),
+        this->getKey(Key::III + fun, oneOctave),
+        this->getKey(Key::V + fun, oneOctave) };
 }
 
-Array<int> Scale::getSeventhChord(int base) const
+Array<int> Scale::getSeventhChord(Function fun, bool oneOctave) const
 {
     return {
-        this->getKey(0 + base),
-        this->getKey(2 + base),
-        this->getKey(4 + base),
-        this->getKey(6 + base) };
+        this->getKey(Key::I + fun, oneOctave),
+        this->getKey(Key::III + fun, oneOctave),
+        this->getKey(Key::V + fun, oneOctave),
+        this->getKey(Key::VII + fun, oneOctave) };
 }
 
 bool Scale::seemsMinor() const
 {
-    return this->getKey(2) == 3;
+    return this->getKey(Key::III) == 3;
 }
 
-int Scale::getKey(int key, bool limitToSingleOctave /*= false*/) const
+int Scale::getKey(int key, bool shouldRestrictToOneOctave /*= false*/) const
 {
-    jassert(key >= 0 && key < 7);
+    jassert(key >= 0);
     const int idx = this->keys[key % this->getSize()];
-    return limitToSingleOctave ? idx : idx + (CHROMATIC_SCALE_SIZE * (key / this->getSize()));
+    return shouldRestrictToOneOctave ? idx :
+        idx + (CHROMATIC_SCALE_SIZE * (key / this->getSize()));
 }
 
 //===----------------------------------------------------------------------===//
@@ -88,15 +108,18 @@ XmlElement *Scale::serialize() const
     xml->setAttribute(Serialization::Core::scaleName, this->name);
 
     int prevKey = 0;
-    String invervals;
+    String intervals;
     for (auto key : this->keys)
     {
-        invervals += String(key - prevKey) + " ";
-        prevKey += key;
+        if (key > 0)
+        {
+            intervals += String(key - prevKey) + " ";
+            prevKey = key;
+        }
     }
 
-    invervals += String(CHROMATIC_SCALE_SIZE - prevKey);
-    xml->setAttribute(Serialization::Core::scaleIntervals, invervals);
+    intervals += String(CHROMATIC_SCALE_SIZE - prevKey);
+    xml->setAttribute(Serialization::Core::scaleIntervals, intervals);
 
     return xml;
 }
@@ -124,5 +147,6 @@ void Scale::deserialize(const XmlElement &xml)
 
 void Scale::reset()
 {
-    this->keys.clear();
+    this->keys.clearQuick();
+    this->name = {};
 }

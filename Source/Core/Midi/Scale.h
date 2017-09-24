@@ -23,20 +23,35 @@ class Scale final : public Serializable
 {
 public:
 
+    Scale();
+    explicit Scale(const String &name);
+
+    // These names only make sense in diatonic scales:
+    enum Function {
+        Tonic = 0,
+        Supertonic = 1,
+        Mediant = 2,
+        Subdominant = 3,
+        Dominant = 4,
+        Submediant = 5,
+        Subtonic = 6
+    };
+
     //===------------------------------------------------------------------===//
     // Helpers
     //===------------------------------------------------------------------===//
 
+    bool isValid() const noexcept;
     int getSize() const noexcept;
     String getName() const noexcept;
     String getLocalizedName() const;
 
-    Array<int> getPowerChord(int base) const;
-    Array<int> getTriad(int base) const;
-    Array<int> getSeventhChord(int base) const;
+    // Render target scale chords into chromatic scale (tonic = 0)
+    Array<int> getPowerChord(Function fun, bool restrictToOneOctave) const;
+    Array<int> getTriad(Function fun, bool restrictToOneOctave) const;
+    Array<int> getSeventhChord(Function fun, bool restrictToOneOctave) const;
 
-    // Flat third considered "minor"-ish
-    // (like Aeolian, Phrygian, Locrian, etc.)
+    // Flat third considered "minor"-ish (like Aeolian, Phrygian, Locrian etc.)
     bool seemsMinor() const;
 
     //===------------------------------------------------------------------===//
@@ -47,18 +62,35 @@ public:
     void deserialize(const XmlElement &xml) override;
     void reset() override;
 
+    //===------------------------------------------------------------------===//
+    // Operators
+    //===------------------------------------------------------------------===//
+
+    Scale &operator=(const Scale &other)
+    {
+        this->name = other.name;
+        this->keys = other.keys;
+        return *this;
+    }
+
+    // Simplified check, assume the name is unique
+    friend inline bool operator==(const Scale &l, const Scale &r)
+    { return (&l == &r || l.name == r.name); }
+
+    friend inline bool operator!=(const Scale &l, const Scale &r)
+    { return (&l != &r && l.name != r.name); }
+
 private:
 
-    // Key should be from 0 to 6
-    // Returned key starts from 0 as well
-    int getKey(int key, bool limitToSingleOctave = false) const;
+    // Key (input and returned) starts from 0
+    int getKey(int key, bool shouldRestrictToOneOctave = false) const;
 
     String name;
 
     // Simply holds key indices for chromatic scale
     // accessed by index in target scale,
-    // e.g. for major: keys[0] = 0, keys[1] = 2, keys[2] = 4, etc
+    // e.g. for Ionian: keys[0] = 0, keys[1] = 2, keys[2] = 4, etc
     Array<int> keys;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Scale)
+    JUCE_LEAK_DETECTOR(Scale)
 };

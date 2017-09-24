@@ -13,7 +13,6 @@
     <Scale Name="Harmonic Minor" Intervals="2 1 2 2 1 3 1" />
     <Scale Name="Harmonic Major 2" Intervals="2 2 1 3 1 2 1" />
     <Scale Name="Harmonic Minor b5" Intervals="2 1 2 1 2 3 1" />
-    <Scale Name="Harmonic Minor Inverse" Intervals="1 3 1 2 2 1 2" />
     <Scale Name="Ionian b5" Intervals="2 2 1 1 3 2 1" />
     <Scale Name="Ionian #5" Intervals="2 2 1 3 1 2 1" />
     <Scale Name="Ionian Augmented" Intervals="2 2 1 3 1 2 1" />
@@ -27,10 +26,8 @@
     <Scale Name="Lydian Dominant b6" Intervals="2 2 2 1 1 2 2" />
     <Scale Name="Lydian Augmented" Intervals="2 2 2 2 1 2 1" />
     <Scale Name="Lydian Diminished" Intervals="2 1 3 1 2 2 1" />
-    <Scale Name="Lydian Augmented Dominant" Intervals="2 2 2 2 1 1 2" />
     <Scale Name="Mixolydian b5" Intervals="2 2 1 1 3 1 2" />
     <Scale Name="Mixolydian Augmented" Intervals="2 2 1 3 1 1 2" />
-    <Scale Name="Mixolydian Augmented Maj9" Intervals="1 3 1 3 1 1 2" />
     <Scale Name="Dorian b2" Intervals="1 2 2 2 2 1 2" />
     <Scale Name="Dorian b2 b4" Intervals="1 2 1 3 2 1 2" />
     <Scale Name="Dorian b2 Maj7" Intervals="1 2 1 2 3 2 1" />
@@ -59,7 +56,6 @@
     <Scale Name="Enigmatic" Intervals="1 3 2 2 2 1 1" />
     <Scale Name="Enigmatic Minor" Intervals="1 2 3 2 2 1 1" />
     <Scale Name="Hungarian Major" Intervals="3 1 2 1 2 1 2" />
-    <Scale Name="Hungarian Major Inverse" Intervals="2 1 2 1 2 1 3" />
     <Scale Name="Neapolitan Major" Intervals="1 2 2 2 2 2 1" />
     <Scale Name="Neapolitan Major b4" Intervals="1 2 1 3 2 2 1" />
     <Scale Name="Neapolitan Major b5" Intervals="1 2 2 1 3 2 1" />

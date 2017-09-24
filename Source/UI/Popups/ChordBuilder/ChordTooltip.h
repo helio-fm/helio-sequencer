@@ -25,7 +25,7 @@ class ChordTooltip  : public Component
 {
 public:
 
-    ChordTooltip (const String &rootKey, const String &function, const String &chord);
+    ChordTooltip (String rootKey, String scale, String function);
 
     ~ChordTooltip();
 
@@ -43,10 +43,10 @@ private:
 
     ScopedPointer<Label> rootKeyLabel;
     ScopedPointer<Label> functionLabel;
-    ScopedPointer<Label> chordLabel;
+    ScopedPointer<Label> scaleLabel;
     ScopedPointer<Label> rooKeyValue;
     ScopedPointer<Label> functionValue;
-    ScopedPointer<Label> chordValue;
+    ScopedPointer<Label> scaleValue;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChordTooltip)
 };

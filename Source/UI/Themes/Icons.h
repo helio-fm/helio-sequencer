@@ -106,6 +106,14 @@ public:
     static const String toggleOn;
     static const String toggleOff;
 
+    static const String roman1;
+    static const String roman2;
+    static const String roman3;
+    static const String roman4;
+    static const String roman5;
+    static const String roman6;
+    static const String roman7;
+
     enum ColourIds
     {
         iconColourId        = 0x99010000,

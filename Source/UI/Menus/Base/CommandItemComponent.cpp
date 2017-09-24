@@ -41,6 +41,94 @@ inline int iconHeightByComponentHeight(int h)
     return int(h * 0.6);
 }
 
+//===----------------------------------------------------------------------===//
+// CommandItem
+//===----------------------------------------------------------------------===//
+
+CommandItem::CommandItem() :
+    commandId(0), isToggled(false),
+    hasSubmenu(false), hasTimer(false),
+    alignment(Alignment::Left)
+{
+}
+
+CommandItem::Ptr CommandItem::empty()
+{
+    CommandItem::Ptr description(new CommandItem());
+    description->colour = Colours::transparentBlack;
+    return description;
+}
+
+CommandItem::Ptr CommandItem::withParams(const String &targetIcon, int returnedId, const String &text /*= ""*/)
+{
+    CommandItem::Ptr description(new CommandItem());
+    description->iconName = targetIcon;
+    description->commandText = text;
+    description->commandId = returnedId;
+    description->isToggled = false;
+    description->hasSubmenu = false;
+    description->hasTimer = false;
+    return description;
+}
+
+CommandItem::Ptr CommandItem::withParams(Image image, int returnedId, const String &text /*= ""*/)
+{
+    CommandItem::Ptr description(new CommandItem());
+    description->image = image;
+    description->commandText = text;
+    description->commandId = returnedId;
+    description->isToggled = false;
+    description->hasSubmenu = false;
+    description->hasTimer = false;
+    return description;
+}
+
+CommandItem::Ptr CommandItem::withAlignment(Alignment alignment)
+{
+    CommandItem::Ptr description(this);
+    description->alignment = alignment;
+    return description;
+}
+
+CommandItem::Ptr CommandItem::withSubmenu()
+{
+    CommandItem::Ptr description(this);
+    description->hasSubmenu = true;
+    description->hasTimer = true; // a hack
+    return description;
+}
+
+CommandItem::Ptr CommandItem::withTimer()
+{
+    CommandItem::Ptr description(this);
+    description->hasTimer = true;
+    return description;
+}
+
+CommandItem::Ptr CommandItem::toggled(bool shouldBeToggled)
+{
+    CommandItem::Ptr description(this);
+    description->isToggled = shouldBeToggled;
+    return description;
+}
+
+CommandItem::Ptr CommandItem::withSubLabel(const String &text)
+{
+    CommandItem::Ptr description(this);
+    description->subText = text;
+    return description;
+}
+
+CommandItem::Ptr CommandItem::colouredWith(const Colour &colour)
+{
+    CommandItem::Ptr description(this);
+    description->colour = colour;
+    return description;
+}
+
+//===----------------------------------------------------------------------===//
+// Highlighters
+//===----------------------------------------------------------------------===//
 
 class ColourHighlighter : public Component
 {
@@ -54,19 +142,7 @@ public:
 
     void paint(Graphics &g) override
     {
-//        const float colorBoxSize = float(this->getHeight() - 16);
-//
-//        const Rectangle<float> colorBox =
-//        Rectangle<float>(0, 0, colorBoxSize, colorBoxSize).withCentre(Point<float>(this->getWidth() - colorBoxSize, this->getHeight() / 2));
-//
-//        g.setColour(Colours::black);
-//        g.drawRoundedRectangle(colorBox, 5.f, 4.f);
-//
-//        g.setColour(this->colour);
-//        g.fillRoundedRectangle(colorBox, 5.f);
-
         g.setColour(Colours::black.withAlpha(0.1f));
-//        g.drawRoundedRectangle(this->getLocalBounds().reduced(4).toFloat(), 5.f, 3.f);
         g.drawRoundedRectangle(this->getLocalBounds().reduced(4).toFloat(), 5.f, 1.f);
 
         g.setColour(this->colour.withAlpha(0.1f));
@@ -79,17 +155,14 @@ private:
 
 };
 
-
 class CommandDragHighlighter : public Component
 {
     public: void paint(Graphics &g) override
     {
         g.setColour(Colours::white.withAlpha(0.0175f));
         g.fillRoundedRectangle(this->getLocalBounds().toFloat(), 2.f);
-        //g.fillRect(this->getLocalBounds().toFloat());
     }
 };
-
 
 class CommandItemSelector : public Component
 {
@@ -219,7 +292,7 @@ void CommandItemComponent::resized()
     //[/UserPreResize]
 
     subLabel->setBounds (getWidth() - 4 - 128, (getHeight() / 2) - ((getHeight() - 0) / 2), 128, getHeight() - 0);
-    textLabel->setBounds (48, (getHeight() / 2) - ((getHeight() - 0) / 2), getWidth() - 48, getHeight() - 0);
+    textLabel->setBounds (48, (getHeight() / 2) - ((getHeight() - 0) / 2), getWidth() - 56, getHeight() - 0);
     submenuMarker->setBounds (getWidth() - 4 - 24, (getHeight() / 2) - ((getHeight() - 16) / 2), 24, getHeight() - 16);
     //[UserResized] Add your own custom resize handling here..
 
@@ -411,6 +484,9 @@ void CommandItemComponent::update(const CommandItem::Ptr desc)
         this->textLabel->setColour(Label::textColourId, Colour(0xbaffffff));
     }
 
+    this->textLabel->setJustificationType(desc->alignment == CommandItem::Left ?
+        Justification::centredLeft : Justification::centredRight);
+
     this->submenuMarker->setVisible(desc->hasSubmenu);
     this->description = desc;
 
@@ -439,6 +515,7 @@ Component *CommandItemComponent::createHighlighterComponent()
     desc2->subText = this->description->subText;
     desc2->hasSubmenu = this->description->hasSubmenu;
     desc2->colour = this->description->colour;
+    desc2->alignment = this->description->alignment;
     desc2->hasTimer = false;
     return new CommandItemComponent(this->parent, nullptr, desc2);
 
@@ -481,7 +558,7 @@ BEGIN_JUCER_METADATA
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default sans-serif font"
          fontsize="21" kerning="0" bold="0" italic="0" justification="34"/>
   <LABEL name="" id="14908053d7863001" memberName="textLabel" virtualName=""
-         explicitFocusOrder="0" pos="48 0Cc 48M 0M" textCol="baffffff"
+         explicitFocusOrder="0" pos="48 0Cc 56M 0M" textCol="baffffff"
          edTextCol="ff000000" edBkgCol="0" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default sans-serif font"
          fontsize="21" kerning="0" bold="0" italic="0" justification="33"/>
