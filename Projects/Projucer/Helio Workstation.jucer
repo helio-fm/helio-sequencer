@@ -278,6 +278,8 @@
           </GROUP>
           <FILE id="MrLUNm" name="MidiTrack.cpp" compile="1" resource="0" file="../../Source/Core/Midi/MidiTrack.cpp"/>
           <FILE id="BA8BhP" name="MidiTrack.h" compile="0" resource="0" file="../../Source/Core/Midi/MidiTrack.h"/>
+          <FILE id="Aqvnqy" name="Scale.cpp" compile="1" resource="0" file="../../Source/Core/Midi/Scale.cpp"/>
+          <FILE id="leo3vi" name="Scale.h" compile="0" resource="0" file="../../Source/Core/Midi/Scale.h"/>
         </GROUP>
         <GROUP id="{9C34DE9F-57B6-7B3A-C005-1E16E0BF57B2}" name="Network">
           <FILE id="zuzMlt" name="AuthorizationManager.cpp" compile="1" resource="0"
