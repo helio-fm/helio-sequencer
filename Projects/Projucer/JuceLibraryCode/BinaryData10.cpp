@@ -2129,8 +2129,90 @@ static const unsigned char temp_binary_data_108[] =
 
 const char* DefaultArps_xml = (const char*) temp_binary_data_108;
 
-//================== DefaultTranslations.xml ==================
+//================== DefaultScales.xml ==================
 static const unsigned char temp_binary_data_109[] =
+"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n"
+"<Scales>\r\n"
+"    <Scale Name=\"Ionian (Major)\" Intervals=\"2 2 1 2 2 2 1\" />\r\n"
+"    <Scale Name=\"Aeolian (Minor)\" Intervals=\"2 1 2 2 1 2 2\" />\r\n"
+"    <Scale Name=\"Lydian\" Intervals=\"2 2 2 1 2 2 1\" />\r\n"
+"    <Scale Name=\"Mixolydian\" Intervals=\"2 2 1 2 2 1 2\" />\r\n"
+"    <Scale Name=\"Dorian\" Intervals=\"2 1 2 2 2 1 2\" />\r\n"
+"    <Scale Name=\"Phrygian\" Intervals=\"1 2 2 2 1 2 2\" />\r\n"
+"    <Scale Name=\"Locrian\" Intervals=\"1 2 2 1 2 2 2\" />\r\n"
+"    <Scale Name=\"Melodic Major\" Intervals=\"2 2 1 2 1 2 2\" />\r\n"
+"    <Scale Name=\"Melodic Minor\" Intervals=\"2 1 2 2 2 2 1\" />\r\n"
+"    <Scale Name=\"Harmonic Major\" Intervals=\"2 2 1 2 1 3 1\" />\r\n"
+"    <Scale Name=\"Harmonic Minor\" Intervals=\"2 1 2 2 1 3 1\" />\r\n"
+"    <Scale Name=\"Harmonic Major 2\" Intervals=\"2 2 1 3 1 2 1\" />\r\n"
+"    <Scale Name=\"Harmonic Minor b5\" Intervals=\"2 1 2 1 2 3 1\" />\r\n"
+"    <Scale Name=\"Harmonic Minor Inverse\" Intervals=\"1 3 1 2 2 1 2\" />\r\n"
+"    <Scale Name=\"Ionian b5\" Intervals=\"2 2 1 1 3 2 1\" />\r\n"
+"    <Scale Name=\"Ionian #5\" Intervals=\"2 2 1 3 1 2 1\" />\r\n"
+"    <Scale Name=\"Ionian Augmented\" Intervals=\"2 2 1 3 1 2 1\" />\r\n"
+"    <Scale Name=\"Ionian Augmented #2\" Intervals=\"3 1 1 3 1 2 1\" />\r\n"
+"    <Scale Name=\"Ionian Augmented b9\" Intervals=\"1 3 1 3 1 2 1\" />\r\n"
+"    <Scale Name=\"Aeolian b1\" Intervals=\"3 1 2 2 1 2 1\" />\r\n"
+"    <Scale Name=\"Lydian #2\" Intervals=\"3 1 2 1 2 2 1\" />\r\n"
+"    <Scale Name=\"Lydian #6\" Intervals=\"2 2 2 1 3 1 1\" />\r\n"
+"    <Scale Name=\"Lydian #2 #6\" Intervals=\"3 1 2 1 3 1 1\" />\r\n"
+"    <Scale Name=\"Lydian Dominant\" Intervals=\"2 2 2 1 2 1 2\" />\r\n"
+"    <Scale Name=\"Lydian Dominant b6\" Intervals=\"2 2 2 1 1 2 2\" />\r\n"
+"    <Scale Name=\"Lydian Augmented\" Intervals=\"2 2 2 2 1 2 1\" />\r\n"
+"    <Scale Name=\"Lydian Diminished\" Intervals=\"2 1 3 1 2 2 1\" />\r\n"
+"    <Scale Name=\"Lydian Augmented Dominant\" Intervals=\"2 2 2 2 1 1 2\" />\r\n"
+"    <Scale Name=\"Mixolydian b5\" Intervals=\"2 2 1 1 3 1 2\" />\r\n"
+"    <Scale Name=\"Mixolydian Augmented\" Intervals=\"2 2 1 3 1 1 2\" />\r\n"
+"    <Scale Name=\"Mixolydian Augmented Maj9\" Intervals=\"1 3 1 3 1 1 2\" />\r\n"
+"    <Scale Name=\"Dorian b2\" Intervals=\"1 2 2 2 2 1 2\" />\r\n"
+"    <Scale Name=\"Dorian b2 b4\" Intervals=\"1 2 1 3 2 1 2\" />\r\n"
+"    <Scale Name=\"Dorian b2 Maj7\" Intervals=\"1 2 1 2 3 2 1\" />\r\n"
+"    <Scale Name=\"Dorian b9 #11\" Intervals=\"1 2 3 1 2 1 2\" />\r\n"
+"    <Scale Name=\"Phrygian b4\" Intervals=\"1 2 1 3 1 2 2\" />\r\n"
+"    <Scale Name=\"Phrygian b4 Maj7\" Intervals=\"1 2 1 3 1 3 1\" />\r\n"
+"    <Scale Name=\"Phrygian Dominant\" Intervals=\"1 3 1 2 1 2 2\" />\r\n"
+"    <Scale Name=\"Ultraphrygian\" Intervals=\"1 2 1 3 1 1 3\" />\r\n"
+"    <Scale Name=\"Locrian #6\" Intervals=\"1 2 2 1 3 1 2\" />\r\n"
+"    <Scale Name=\"Locrian bb7\" Intervals=\"1 2 2 1 2 1 3\" />\r\n"
+"    <Scale Name=\"Locrian bb3 bb7\" Intervals=\"1 1 3 1 2 1 3\" />\r\n"
+"    <Scale Name=\"Locrian Maj7\" Intervals=\"1 2 2 1 2 3 1\" />\r\n"
+"    <Scale Name=\"Locrian Dominant\" Intervals=\"1 3 1 1 2 2 2\" />\r\n"
+"    <Scale Name=\"Semilocrian b4\" Intervals=\"2 1 1 2 2 2 2\" />\r\n"
+"    <Scale Name=\"Superlocrian #6\" Intervals=\"1 2 1 2 3 1 2\" />\r\n"
+"    <Scale Name=\"Superlocrian bb3\" Intervals=\"1 1 2 2 2 2 2\" />\r\n"
+"    <Scale Name=\"Superlocrian Maj7\" Intervals=\"1 2 1 2 2 3 1\" />\r\n"
+"    <Scale Name=\"Superlocrian bb6 bb7\" Intervals=\"1 2 1 2 1 2 3\" />\r\n"
+"    <Scale Name=\"Ultralocrian\" Intervals=\"1 2 1 2 2 1 3\" />\r\n"
+"    <Scale Name=\"Ultralocrian bb3\" Intervals=\"1 1 2 2 2 1 3\" />\r\n"
+"    <Scale Name=\"Major Locrian\" Intervals=\"2 2 1 1 2 2 2\" />\r\n"
+"    <Scale Name=\"Leading Whole-Tone\" Intervals=\"2 2 2 2 2 1 1\" />\r\n"
+"    <Scale Name=\"Double Harmonic\" Intervals=\"1 3 1 2 1 3 1\" />\r\n"
+"    <Scale Name=\"Half Diminished\" Intervals=\"2 1 2 1 2 2 2\" />\r\n"
+"    <Scale Name=\"Altered Dominant\" Intervals=\"1 2 1 2 2 2 2\" />\r\n"
+"    <Scale Name=\"Enigmatic\" Intervals=\"1 3 2 2 2 1 1\" />\r\n"
+"    <Scale Name=\"Enigmatic Minor\" Intervals=\"1 2 3 2 2 1 1\" />\r\n"
+"    <Scale Name=\"Hungarian Major\" Intervals=\"3 1 2 1 2 1 2\" />\r\n"
+"    <Scale Name=\"Hungarian Major Inverse\" Intervals=\"2 1 2 1 2 1 3\" />\r\n"
+"    <Scale Name=\"Neapolitan Major\" Intervals=\"1 2 2 2 2 2 1\" />\r\n"
+"    <Scale Name=\"Neapolitan Major b4\" Intervals=\"1 2 1 3 2 2 1\" />\r\n"
+"    <Scale Name=\"Neapolitan Major b5\" Intervals=\"1 2 2 1 3 2 1\" />\r\n"
+"    <Scale Name=\"Neapolitan Minor\" Intervals=\"1 2 2 2 1 3 1\" />\r\n"
+"    <Scale Name=\"Romanian Major\" Intervals=\"1 3 2 1 2 1 2\" />\r\n"
+"    <Scale Name=\"Romanian Minor\" Intervals=\"2 1 3 1 2 1 2\" />\r\n"
+"    <Scale Name=\"Jazz Minor #5\" Intervals=\"2 1 2 3 1 2 1\" />\r\n"
+"    <Scale Name=\"Blues Heptatonic\" Intervals=\"2 1 2 1 3 1 2\" />\r\n"
+"    <Scale Name=\"Blues Heptatonic 2\" Intervals=\"3 2 1 1 2 1 2\" />\r\n"
+"    <Scale Name=\"Blues Phrygian\" Intervals=\"1 2 2 1 1 3 2\" />\r\n"
+"    <Scale Name=\"Blues Modified\" Intervals=\"2 1 2 1 1 3 2\" />\r\n"
+"    <Scale Name=\"Blues Mixed\" Intervals=\"3 1 1 1 1 3 2\" />\r\n"
+"    <Scale Name=\"Blues Leading Tone\" Intervals=\"3 2 1 1 3 1 1\" />\r\n"
+"    <Scale Name=\"Rock'n'Roll\" Intervals=\"3 1 1 2 2 1 2\" />\r\n"
+"</Scales>\r\n";
+
+const char* DefaultScales_xml = (const char*) temp_binary_data_109;
+
+//================== DefaultTranslations.xml ==================
+static const unsigned char temp_binary_data_110[] =
 { 60,63,120,109,108,32,118,101,114,115,105,111,110,61,34,49,46,48,34,32,101,110,99,111,100,105,110,103,61,34,85,84,70,45,56,34,63,62,13,10,60,84,114,97,110,115,108,97,116,105,111,110,115,62,13,10,32,32,60,76,111,99,97,108,101,32,73,100,61,34,101,110,34,
 32,78,97,109,101,61,34,69,110,103,108,105,115,104,34,62,13,10,32,32,32,32,60,80,108,117,114,97,108,70,111,114,109,115,32,69,113,117,97,116,105,111,110,61,34,40,123,120,125,61,61,49,32,63,32,49,32,58,32,50,41,34,47,62,13,10,32,32,32,32,60,76,105,116,101,
 114,97,108,32,78,97,109,101,61,34,100,101,102,97,117,108,116,115,58,58,110,101,119,112,114,111,106,101,99,116,58,58,102,105,114,115,116,99,111,109,109,105,116,34,32,84,114,97,110,115,108,97,116,105,111,110,61,34,80,114,111,106,101,99,116,32,115,116,97,
@@ -4761,6 +4843,6 @@ static const unsigned char temp_binary_data_109[] =
 78,97,109,101,61,34,77,105,100,105,32,79,117,116,112,117,116,34,32,84,114,97,110,115,108,97,116,105,111,110,61,34,83,97,195,173,100,97,32,77,105,100,105,34,47,62,13,10,32,32,60,47,76,111,99,97,108,101,62,13,10,60,47,84,114,97,110,115,108,97,116,105,111,
 110,115,62,0,0 };
 
-const char* DefaultTranslations_xml = (const char*) temp_binary_data_109;
+const char* DefaultTranslations_xml = (const char*) temp_binary_data_110;
 
 }
