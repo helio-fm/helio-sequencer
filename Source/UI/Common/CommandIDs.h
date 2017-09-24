@@ -171,7 +171,8 @@ namespace CommandIDs
 
         DismissModalDialogAsync         = 0x020000,
 
-        HeadlineSelectSubitem           = 0x020010, // more ids reserved for sub-items
+        SelectFunction                  = 0x020010,
+        SelectScale                     = 0x020100, // more ids reserved for sub-items
 
         YourNextCommandId               = 0x021000
     };

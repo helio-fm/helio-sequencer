@@ -81,6 +81,13 @@ namespace Serialization
         static const String clip = "Clip";
         static const String pattern = "Pattern";
 
+        // Scales
+        static const String scales = "Scales";
+        static const String scale = "Scale";
+        static const String scaleName = "Name";
+        static const String scaleIntervals = "Intervals";
+        static const String lastUsedScale = "LastUsedScale";
+
         static const String valueTag = "Key";
         static const String nameAttribute = "Name";
         static const String valueAttribute = "Value";

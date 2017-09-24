@@ -11754,42 +11754,42 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) throw
         case 0xbb1bd747:  numBytes = 356; return arrowleft2_svg;
         case 0x0e5c7104:  numBytes = 356; return arrowright2_svg;
         case 0x99f9262f:  numBytes = 963; return arrows_svg;
-        case 0xb75b5528:  numBytes = 2656; return beamed_note_svg;
-        case 0xe9a7a504:  numBytes = 3029; return bezier_svg;
+        case 0xb75b5528:  numBytes = 1487; return beamed_note_svg;
+        case 0xe9a7a504:  numBytes = 1836; return bezier_svg;
         case 0xfbd557df:  numBytes = 783; return brush_svg;
         case 0x17c70ead:  numBytes = 564; return check_svg;
         case 0x22961555:  numBytes = 602; return chevronleft2_svg;
         case 0x9629f4b6:  numBytes = 602; return chevronright2_svg;
-        case 0x2f591b6f:  numBytes = 3589; return clef_svg;
+        case 0x2f591b6f:  numBytes = 2388; return clef_svg;
         case 0xf90968e2:  numBytes = 730; return clouddownload_svg;
         case 0x1349731b:  numBytes = 648; return cloudupload_svg;
         case 0xeab33fc2:  numBytes = 635; return cloud2_svg;
-        case 0xee473783:  numBytes = 3144; return clouds_svg;
+        case 0xee473783:  numBytes = 1889; return clouds_svg;
         case 0xcf4f4f02:  numBytes = 621; return columns_svg;
-        case 0xe1dcda9a:  numBytes = 3481; return copy_svg;
+        case 0xe1dcda9a:  numBytes = 2230; return copy_svg;
         case 0x7e5be035:  numBytes = 326; return crop_svg;
         case 0x430720e3:  numBytes = 647; return cup_svg;
         case 0x9fec1741:  numBytes = 559; return cursor2_svg;
-        case 0x88a209a2:  numBytes = 2504; return diskette_svg;
+        case 0x88a209a2:  numBytes = 1306; return diskette_svg;
         case 0xff62d14f:  numBytes = 754; return download2_svg;
         case 0xae87b22f:  numBytes = 804; return drive_svg;
-        case 0x9a902647:  numBytes = 2904; return eight_note_svg;
+        case 0x9a902647:  numBytes = 1690; return eight_note_svg;
         case 0x5fe7f3dc:  numBytes = 783; return ellipsish_svg;
         case 0x60ad3cea:  numBytes = 771; return ellipsisv_svg;
         case 0x1ad9ad5d:  numBytes = 674; return folderopen_svg;
-        case 0xceaa2313:  numBytes = 2651; return folder_svg;
+        case 0xceaa2313:  numBytes = 1451; return folder_svg;
         case 0x0416fd29:  numBytes = 433; return folder2_svg;
         case 0xf2f18820:  numBytes = 3690; return heptagram2_svg;
         case 0x15006839:  numBytes = 713; return history_svg;
-        case 0x60fe41bd:  numBytes = 2961; return hourglass_svg;
+        case 0x60fe41bd:  numBytes = 1759; return hourglass_svg;
         case 0xdc862912:  numBytes = 1130; return insertspace_svg;
         case 0xcf6a4484:  numBytes = 2282; return key_svg;
-        case 0xe907111b:  numBytes = 3479; return knob_svg;
+        case 0xe907111b:  numBytes = 2275; return knob_svg;
         case 0xa07a920c:  numBytes = 25191; return logo2_svg;
         case 0xb560f4c7:  numBytes = 1777; return marquee_svg;
         case 0xdc083b84:  numBytes = 500; return menu_svg;
         case 0x6a7be267:  numBytes = 474; return minus2_svg;
-        case 0xc95d8ab8:  numBytes = 4651; return paste_svg;
+        case 0xc95d8ab8:  numBytes = 3435; return paste_svg;
         case 0xfaaca8a1:  numBytes = 583; return pause2_svg;
         case 0x30372c32:  numBytes = 551; return pencil_svg;
         case 0xd44746ec:  numBytes = 374; return pencil4_svg;
@@ -11797,8 +11797,15 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) throw
         case 0xa553677d:  numBytes = 639; return plus2_svg;
         case 0xe755acda:  numBytes = 1160; return poetry_svg;
         case 0xa7a08e21:  numBytes = 485; return quote_svg;
-        case 0xb8d48e9b:  numBytes = 3140; return reroute_svg;
-        case 0x88e72fee:  numBytes = 4405; return saxophone_svg;
+        case 0xb8d48e9b:  numBytes = 1940; return reroute_svg;
+        case 0x17119179:  numBytes = 693; return roman1_svg;
+        case 0x171fa8fa:  numBytes = 1001; return roman2_svg;
+        case 0x172dc07b:  numBytes = 1298; return roman3_svg;
+        case 0x173bd7fc:  numBytes = 1204; return roman4_svg;
+        case 0x1749ef7d:  numBytes = 794; return roman5_svg;
+        case 0x175806fe:  numBytes = 1190; return roman6_svg;
+        case 0x17661e7f:  numBytes = 1606; return roman7_svg;
+        case 0x88e72fee:  numBytes = 3192; return saxophone_svg;
         case 0x39207a3c:  numBytes = 2215; return scissors_svg;
         case 0xd979e694:  numBytes = 3563; return settings2_svg;
         case 0xeb51ead9:  numBytes = 326; return switch_svg;
@@ -11816,6 +11823,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) throw
         case 0xde5493f9:  numBytes = 317; return defaultPattern_png;
         case 0x607fea3a:  numBytes = 2880; return ColourSchemes_xml;
         case 0xec23d88d:  numBytes = 6981; return DefaultArps_xml;
+        case 0x712a9842:  numBytes = 4463; return DefaultScales_xml;
         case 0x7502f27b:  numBytes = 185385; return DefaultTranslations_xml;
         default: break;
     }
@@ -11917,6 +11925,13 @@ const char* namedResourceList[] =
     "poetry_svg",
     "quote_svg",
     "reroute_svg",
+    "roman1_svg",
+    "roman2_svg",
+    "roman3_svg",
+    "roman4_svg",
+    "roman5_svg",
+    "roman6_svg",
+    "roman7_svg",
     "saxophone_svg",
     "scissors_svg",
     "settings2_svg",
@@ -11935,6 +11950,7 @@ const char* namedResourceList[] =
     "defaultPattern_png",
     "ColourSchemes_xml",
     "DefaultArps_xml",
+    "DefaultScales_xml",
     "DefaultTranslations_xml"
 };
 

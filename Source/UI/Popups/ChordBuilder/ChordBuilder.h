@@ -21,33 +21,23 @@
 class NoteComponent;
 class MidiSequence;
 class PianoRoll;
+class ScalesCommandPanel;
+class FunctionsCommandPanel;
 
+#include "Scale.h"
 #include "PopupMenuComponent.h"
 //[/Headers]
 
-#include "PopupCustomButton.h"
-#include "PopupCustomButton.h"
-#include "PopupCustomButton.h"
-#include "PopupCustomButton.h"
-#include "PopupCustomButton.h"
-#include "PopupCustomButton.h"
-#include "PopupCustomButton.h"
-#include "PopupCustomButton.h"
-#include "PopupCustomButton.h"
-#include "PopupCustomButton.h"
-#include "PopupCustomButton.h"
-#include "PopupCustomButton.h"
-#include "PopupCustomButton.h"
-#include "PopupCustomButton.h"
+#include "../PopupCustomButton.h"
 
-class NoNotesPopup  : public PopupMenuComponent,
+class ChordBuilder  : public PopupMenuComponent,
                       public PopupButtonOwner
 {
 public:
 
-    NoNotesPopup (PianoRoll *caller, MidiSequence *layer);
+    ChordBuilder (PianoRoll *caller, MidiSequence *layer);
 
-    ~NoNotesPopup();
+    ~ChordBuilder();
 
     //[UserMethods]
 
@@ -60,6 +50,9 @@ public:
     bool onPopupButtonDrag(PopupButton *button) override;
     void onPopupButtonEndDragging(PopupButton *button) override;
 
+    void applyScale(const Scale &scale);
+    void applyFunction(Scale::Function function);
+
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -69,24 +62,26 @@ public:
     bool keyPressed (const KeyPress& key) override;
     void inputAttemptWhenModal() override;
 
-    // Binary resources:
-    static const char* acute_heptagram_svg;
-    static const int acute_heptagram_svgSize;
 
 private:
 
     //[UserVariables]
 
     PianoRoll *roll;
-    MidiSequence *targetLayer;
+    MidiSequence *sequence;
+
     int targetKey;
     float targetBeat;
+
     Point<int> draggingStartPosition;
     Point<int> draggingEndPosition;
     bool detectKeyAndBeat(); // returns true if key changes
 
+    Scale scale;
+    Scale::Function function;
+
     bool hasMadeChanges;
-    void buildChord(int n1, int n2, int n3);
+    void buildChord(Array<int> keys);
     void buildNewNote(bool shouldSendMidiMessage);
     void cancelChangesIfAny();
 
@@ -95,27 +90,9 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<PopupCustomButton> chordMinor1;
-    ScopedPointer<PopupCustomButton> chordMajor1;
-    ScopedPointer<PopupCustomButton> chordMinor2;
-    ScopedPointer<PopupCustomButton> chordMajor2;
-    ScopedPointer<PopupCustomButton> chordMinor3;
-    ScopedPointer<PopupCustomButton> chordMajor3;
-    ScopedPointer<PopupCustomButton> chordMinor4;
-    ScopedPointer<PopupCustomButton> chordMajor4;
-    ScopedPointer<PopupCustomButton> chordMinor5;
-    ScopedPointer<PopupCustomButton> chordMajor5;
-    ScopedPointer<PopupCustomButton> chordMinor6;
-    ScopedPointer<PopupCustomButton> chordMajor6;
-    ScopedPointer<PopupCustomButton> chordMinor7;
     ScopedPointer<PopupCustomButton> newNote;
-    ScopedPointer<Label> labelI;
-    ScopedPointer<Label> labelII;
-    ScopedPointer<Label> labelIII;
-    ScopedPointer<Label> labelIV;
-    ScopedPointer<Label> labelV;
-    ScopedPointer<Label> labelVI;
-    ScopedPointer<Label> labelVII;
+    ScopedPointer<ScalesCommandPanel> scalesList;
+    ScopedPointer<FunctionsCommandPanel> functionsList;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NoNotesPopup)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChordBuilder)
 };

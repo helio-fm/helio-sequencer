@@ -50,7 +50,7 @@ public:
     };
 
     void updateContent(ReferenceCountedArray<CommandItem> commands,
-        AnimationType animationType = SlideDown);
+        AnimationType animationType = SlideDown, bool adjustsWidth = true);
 
     static StringPairArray getColoursList();
 
@@ -67,8 +67,8 @@ private:
 
     ComponentAnimator animator;
 
+    bool shouldAdjustWidth;
     AnimationType lastAnimationType;
-
     ReferenceCountedArray<CommandItem> commandDescriptions;
 
 

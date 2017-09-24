@@ -88,8 +88,12 @@ void CommandPanel::resized()
 
     listBox->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
-    this->animator.cancelAllAnimations(false);
-    this->updateContent(this->commandDescriptions, this->lastAnimationType);
+    if (this->commandDescriptions.size() != 0)
+    {
+        this->animator.cancelAllAnimations(true);
+        this->updateContent(this->commandDescriptions, 
+            this->lastAnimationType, this->shouldAdjustWidth);
+    }
     //[/UserResized]
 }
 
@@ -150,43 +154,47 @@ StringPairArray CommandPanel::getColoursList()
 }
 
 
-#define ANIM_TIME_MS 150
+#define ANIM_TIME_MS 200
 #define FADE_ALPHA 0.5f
 #define TOPLEVEL_HEIGHT_MARGINS 170
 
-void CommandPanel::updateContent(ReferenceCountedArray<CommandItem> commands, AnimationType animationType)
+void CommandPanel::updateContent(ReferenceCountedArray<CommandItem> commands,
+    AnimationType animationType, bool adjustsWidth)
 {
     this->lastAnimationType = animationType;
+    this->shouldAdjustWidth = adjustsWidth;
     const bool firstTimeUpdate = (this->commandDescriptions.size() == 0);
 
-    this->commandDescriptions = commands;
     const int listBoxHeightOffset = this->getHeight() - this->listBox->getHeight();
     const int newHeight = firstTimeUpdate ? (commands.size() * COMMAND_PANEL_BUTTON_HEIGHT + listBoxHeightOffset) : this->getHeight();
-
-    int maxHeight = newHeight;
-
-    //Logger::writeToLog(String(topLevelComp->getHeight()));
-    maxHeight = App::Helio()->getWindow()->getHeight() - TOPLEVEL_HEIGHT_MARGINS;
+    const int maxHeight = App::Helio()->getWindow()->getHeight() - TOPLEVEL_HEIGHT_MARGINS;
 
     int estimatedWidth = 0;
-    ScopedPointer<CommandItemComponent> tempItem(new CommandItemComponent(nullptr, nullptr, CommandItem::empty()));
-    Font stringFont(tempItem->getFont());
-
-    for (auto && command : commands)
+    if (adjustsWidth)
     {
-        const int stringWidth = stringFont.getStringWidth(command->commandText) +
-                                stringFont.getStringWidth(command->subText);
+        ScopedPointer<CommandItemComponent> tempItem(new CommandItemComponent(nullptr, nullptr, CommandItem::empty()));
+        Font stringFont(tempItem->getFont());
 
-        if (estimatedWidth < stringWidth)
+        for (auto && command : commands)
         {
-            estimatedWidth = stringWidth;
+            const int stringWidth = stringFont.getStringWidth(command->commandText) +
+                stringFont.getStringWidth(command->subText);
+
+            if (estimatedWidth < stringWidth)
+            {
+                estimatedWidth = stringWidth;
+            }
         }
+
+        const int newWidth = estimatedWidth + int(COMMAND_PANEL_BUTTON_HEIGHT * 2.5f);
+        this->setSize(jmax(newWidth, this->getWidth()), jmin(newHeight, maxHeight));
+    }
+    else
+    {
+        this->setSize(this->getWidth(), jmin(newHeight, maxHeight));
     }
 
-    const int newWidth = estimatedWidth + int(COMMAND_PANEL_BUTTON_HEIGHT * 2.5f);
-    this->setSize(jmax(newWidth, this->getWidth()), jmin(newHeight, maxHeight));
-
-    if (this->listBox)
+    if (!firstTimeUpdate && commands != this->commandDescriptions)
     {
         if (animationType == Fading)
         {
@@ -216,6 +224,8 @@ void CommandPanel::updateContent(ReferenceCountedArray<CommandItem> commands, An
         this->removeChildComponent(this->listBox);
         this->listBox = nullptr;
     }
+
+    this->commandDescriptions = commands;
 
     this->listBox = new ListBox();
     this->listBox->setModel(this);

@@ -33,7 +33,7 @@
 #include "SmoothZoomController.h"
 #include "MultiTouchController.h"
 #include "HelioTheme.h"
-#include "NoNotesPopup.h"
+#include "ChordBuilder.h"
 #include "HybridLassoComponent.h"
 #include "HybridRollEditMode.h"
 #include "SerializationKeys.h"
@@ -846,7 +846,7 @@ void PianoRoll::mouseDoubleClick(const MouseEvent &e)
     // "Add chord" dialog
     if (! this->project.getEditMode().forbidsAddingEvents())
     {
-        auto popup = new NoNotesPopup(this, this->primaryActiveLayer);
+        auto popup = new ChordBuilder(this, this->primaryActiveLayer);
         const MouseEvent &e2(e.getEventRelativeTo(&App::Layout()));
         popup->setTopLeftPosition(e2.getPosition() - Point<int>(popup->getWidth(), popup->getHeight()) / 2);
         App::Layout().addAndMakeVisible(popup);

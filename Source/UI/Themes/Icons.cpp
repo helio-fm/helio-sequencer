@@ -88,6 +88,13 @@ const String Icons::stretchLeft = "stretchLeft";
 const String Icons::stretchRight = "stretchRight";
 const String Icons::toggleOn = "toggleOn";
 const String Icons::toggleOff = "toggleOff";
+const String Icons::roman1 = "roman1";
+const String Icons::roman2 = "roman2";
+const String Icons::roman3 = "roman3";
+const String Icons::roman4 = "roman4";
+const String Icons::roman5 = "roman5";
+const String Icons::roman6 = "roman6";
+const String Icons::roman7 = "roman7";
 
 
 struct BuiltInImageData
@@ -230,6 +237,14 @@ void Icons::setupBuiltInImages()
     
     builtInImages.set(Icons::toggleOn, BuiltInImageData(BinaryData::toggleon_svg, BinaryData::toggleon_svgSize));
     builtInImages.set(Icons::toggleOff, BuiltInImageData(BinaryData::toggleoff_svg, BinaryData::toggleoff_svgSize));
+
+    builtInImages.set(Icons::roman1, BuiltInImageData(BinaryData::roman1_svg, BinaryData::roman1_svgSize));
+    builtInImages.set(Icons::roman2, BuiltInImageData(BinaryData::roman2_svg, BinaryData::roman2_svgSize));
+    builtInImages.set(Icons::roman3, BuiltInImageData(BinaryData::roman3_svg, BinaryData::roman3_svgSize));
+    builtInImages.set(Icons::roman4, BuiltInImageData(BinaryData::roman4_svg, BinaryData::roman4_svgSize));
+    builtInImages.set(Icons::roman5, BuiltInImageData(BinaryData::roman5_svg, BinaryData::roman5_svgSize));
+    builtInImages.set(Icons::roman6, BuiltInImageData(BinaryData::roman6_svg, BinaryData::roman6_svgSize));
+    builtInImages.set(Icons::roman7, BuiltInImageData(BinaryData::roman7_svg, BinaryData::roman7_svgSize));
 }
 
 static const Path extractPathFromDrawable(const Drawable *d)

@@ -24,11 +24,18 @@ class IconComponent;
 
 struct CommandItem : public ReferenceCountedObject
 {
+    enum Alignment
+    {
+        Left,
+        Right
+    };
+
     Image image;
     String iconName;
     String commandText;
     String subText;
     Colour colour;
+    Alignment alignment;
     int commandId;
     bool isToggled;
     bool hasSubmenu;
@@ -36,78 +43,22 @@ struct CommandItem : public ReferenceCountedObject
 
     typedef ReferenceCountedObjectPtr<CommandItem> Ptr;
 
-    CommandItem() : commandId(0), isToggled(false), hasSubmenu(false) {}
+    CommandItem();
+    CommandItem::Ptr withAlignment(Alignment alignment);
+    CommandItem::Ptr withSubmenu();
+    CommandItem::Ptr withTimer();
+    CommandItem::Ptr toggled(bool shouldBeToggled);
+    CommandItem::Ptr withSubLabel(const String &text);
+    CommandItem::Ptr colouredWith(const Colour &colour);
 
-    static CommandItem::Ptr empty()
-    {
-        CommandItem::Ptr description(new CommandItem());
-        description->colour = Colours::transparentBlack;
-        return description;
-    }
+    static CommandItem::Ptr empty();
 
     static CommandItem::Ptr withParams(const String &targetIcon,
-                                       int returnedId,
-                                       const String &text = "")
-    {
-        CommandItem::Ptr description(new CommandItem());
-        description->iconName = targetIcon;
-        description->commandText = text;
-        description->commandId = returnedId;
-        description->isToggled = false;
-        description->hasSubmenu = false;
-        description->hasTimer = false;
-        return description;
-    }
+        int returnedId, const String &text = {});
 
     static CommandItem::Ptr withParams(Image image,
-        int returnedId,
-        const String &text = "")
-    {
-        CommandItem::Ptr description(new CommandItem());
-        description->image = image;
-        description->commandText = text;
-        description->commandId = returnedId;
-        description->isToggled = false;
-        description->hasSubmenu = false;
-        description->hasTimer = false;
-        return description;
-    }
+        int returnedId, const String &text = {});
 
-    CommandItem::Ptr withSubmenu()
-    {
-        CommandItem::Ptr description(this);
-        description->hasSubmenu = true;
-        description->hasTimer = true; // a hack
-        return description;
-    }
-
-    CommandItem::Ptr withTimer()
-    {
-        CommandItem::Ptr description(this);
-        description->hasTimer = true;
-        return description;
-    }
-
-    CommandItem::Ptr toggled(bool shouldBeToggled)
-    {
-        CommandItem::Ptr description(this);
-        description->isToggled = shouldBeToggled;
-        return description;
-    }
-
-    CommandItem::Ptr withSubLabel(const String &text)
-    {
-        CommandItem::Ptr description(this);
-        description->subText = text;
-        return description;
-    }
-
-    CommandItem::Ptr colouredWith(const Colour &colour)
-    {
-        CommandItem::Ptr description(this);
-        description->colour = colour;
-        return description;
-    }
 };
 
 //[/Headers]
