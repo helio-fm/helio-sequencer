@@ -59,7 +59,7 @@ float ClipComponent::getBeat() const
 
 String ClipComponent::getSelectionGroupId() const
 {
-    return this->clip.getPattern()->getPatternIdAsString();
+    return this->clip.getPattern()->getTrackId();
 }
 
 String ClipComponent::getId() const

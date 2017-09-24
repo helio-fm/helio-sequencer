@@ -152,7 +152,7 @@ float MidiSequence::getLengthInBeats() const
 }
 
 
-MidiTrack *MidiSequence::getTrack() const
+MidiTrack *MidiSequence::getTrack() const noexcept
 {
     return &this->track;
 }

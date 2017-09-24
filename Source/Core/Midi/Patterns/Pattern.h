@@ -100,18 +100,16 @@ public:
     void deserialize(const XmlElement &xml) override;
     void reset() override;
 
-    inline Uuid getPatternId() const noexcept;
-    inline String getPatternIdAsString() const;
-
     //===------------------------------------------------------------------===//
     // Helpers
     //===------------------------------------------------------------------===//
 
-    MidiTrack *getTrack() const;
+    MidiTrack *getTrack() const noexcept;
+    String getTrackId() const noexcept;
 
     friend inline bool operator==(const Pattern &lhs, const Pattern &rhs)
     {
-        return (&lhs == &rhs || lhs.id == rhs.id);
+        return (&lhs == &rhs);
     }
 
     int hashCode() const noexcept;
@@ -123,7 +121,6 @@ protected:
     ProjectTreeItem *getProject();
     UndoStack *getUndoStack();
 
-    Uuid id;
     Array<Clip> clips;
 
 private:

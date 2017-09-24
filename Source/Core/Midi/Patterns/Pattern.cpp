@@ -22,6 +22,7 @@
 #include "ProjectEventDispatcher.h"
 #include "UndoStack.h"
 #include "SerializationKeys.h"
+#include "MidiTrack.h"
 
 Pattern::Pattern(MidiTrack &parentTrack,
     ProjectEventDispatcher &dispatcher) :
@@ -104,7 +105,7 @@ bool Pattern::insert(Clip clip, const bool undoable)
     if (undoable)
     {
         this->getUndoStack()->perform(new PatternClipInsertAction(*this->getProject(),
-            this->getPatternIdAsString(),
+            this->getTrackId(),
             clip));
     }
     else
@@ -121,7 +122,7 @@ bool Pattern::remove(Clip clip, const bool undoable)
     if (undoable)
     {
         this->getUndoStack()->perform(new PatternClipRemoveAction(*this->getProject(),
-            this->getPatternIdAsString(),
+            this->getTrackId(),
             clip));
     }
     else
@@ -145,7 +146,7 @@ bool Pattern::change(Clip clip, Clip newClip, const bool undoable)
     if (undoable)
     {
         this->getUndoStack()->perform(new PatternClipChangeAction(*this->getProject(),
-            this->getPatternIdAsString(),
+            this->getTrackId(),
             clip,
             newClip));
     }
@@ -181,17 +182,7 @@ UndoStack *Pattern::getUndoStack()
     return this->eventDispatcher.getProject()->getUndoStack();
 }
 
-Uuid Pattern::getPatternId() const noexcept
-{
-    return this->id;
-}
-
-String Pattern::getPatternIdAsString() const
-{
-    return this->id.toString();
-}
-
-MidiTrack *Pattern::getTrack() const
+MidiTrack *Pattern::getTrack() const noexcept
 {
     return &this->track;
 }
@@ -234,7 +225,6 @@ void Pattern::notifyPatternChanged()
 XmlElement *Pattern::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::pattern);
-    xml->setAttribute("id", this->getPatternIdAsString());
 
     for (int i = 0; i < this->clips.size(); ++i)
     {
@@ -257,8 +247,6 @@ void Pattern::deserialize(const XmlElement &xml)
     {
         return;
     }
-
-    this->id = Uuid(root->getStringAttribute("id", this->getPatternIdAsString()));
 
     forEachXmlChildElementWithTagName(*root, e, Serialization::Core::clip)
     {
@@ -293,7 +281,12 @@ void Pattern::clearQuick()
 // Helpers
 //===----------------------------------------------------------------------===//
 
+String Pattern::getTrackId() const noexcept
+{
+    return this->track.getTrackId().toString();
+}
+
 int Pattern::hashCode() const noexcept
 {
-    return this->id.toString().hashCode();
+    return this->getTrackId().hashCode();
 }

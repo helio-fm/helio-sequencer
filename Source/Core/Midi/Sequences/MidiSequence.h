@@ -69,7 +69,7 @@ public:
     virtual float getFirstBeat() const;
     virtual float getLastBeat() const;
     float getLengthInBeats() const;
-    MidiTrack *getTrack() const;
+    MidiTrack *getTrack() const noexcept;
 
     //===------------------------------------------------------------------===//
     // OwnedArray wrapper
