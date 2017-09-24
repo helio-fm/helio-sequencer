@@ -140,6 +140,9 @@
     <Filter Include="Helio\Source\UI\Pages">
       <UniqueIdentifier>{FC00852E-591C-1BEE-0BFB-6EDA0613BE67}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Helio\Source\UI\Popups\ChordBuilder">
+      <UniqueIdentifier>{5D9E923B-DBB8-E56B-5598-7093DB60D402}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Helio\Source\UI\Popups">
       <UniqueIdentifier>{97C2C14B-E622-7A8D-30C8-F6BE30B326A5}</UniqueIdentifier>
     </Filter>
@@ -649,6 +652,9 @@
     <ClCompile Include="..\..\Source\Core\Midi\MidiTrack.cpp">
       <Filter>Helio\Source\Core\Midi</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Midi\Scale.cpp">
+      <Filter>Helio\Source\Core\Midi</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Network\AuthorizationManager.cpp">
       <Filter>Helio\Source\Core\Network</Filter>
     </ClCompile>
@@ -1117,16 +1123,16 @@
     <ClCompile Include="..\..\Source\UI\Pages\Workspace\WorkspacePage.cpp">
       <Filter>Helio\Source\UI\Pages\Workspace</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Popups\ChordTooltip.cpp">
-      <Filter>Helio\Source\UI\Popups</Filter>
+    <ClCompile Include="..\..\Source\UI\Popups\ChordBuilder\ChordBuilder.cpp">
+      <Filter>Helio\Source\UI\Popups\ChordBuilder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Popups\ChordBuilder\ChordTooltip.cpp">
+      <Filter>Helio\Source\UI\Popups\ChordBuilder</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\FailTooltip.cpp">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\HelioCallout.cpp">
-      <Filter>Helio\Source\UI\Popups</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Popups\NoNotesPopup.cpp">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Popups\PopupButton.cpp">
@@ -3348,6 +3354,9 @@
     <ClInclude Include="..\..\Source\Core\Midi\MidiTrack.h">
       <Filter>Helio\Source\Core\Midi</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Midi\Scale.h">
+      <Filter>Helio\Source\Core\Midi</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Network\AuthorizationManager.h">
       <Filter>Helio\Source\Core\Network</Filter>
     </ClInclude>
@@ -3930,10 +3939,13 @@
     <ClInclude Include="..\..\Source\UI\Pages\Workspace\WorkspacePage.h">
       <Filter>Helio\Source\UI\Pages\Workspace</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Popups\CenteredTooltipComponent.h">
-      <Filter>Helio\Source\UI\Popups</Filter>
+    <ClInclude Include="..\..\Source\UI\Popups\ChordBuilder\ChordBuilder.h">
+      <Filter>Helio\Source\UI\Popups\ChordBuilder</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Popups\ChordTooltip.h">
+    <ClInclude Include="..\..\Source\UI\Popups\ChordBuilder\ChordTooltip.h">
+      <Filter>Helio\Source\UI\Popups\ChordBuilder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Popups\CenteredTooltipComponent.h">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\FailTooltip.h">
@@ -3943,9 +3955,6 @@
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\HelioCallout.h">
-      <Filter>Helio\Source\UI\Popups</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Popups\NoNotesPopup.h">
       <Filter>Helio\Source\UI\Popups</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Popups\NotePopupListener.h">
@@ -6392,6 +6401,27 @@
     <None Include="..\..\Resources\Icons\reroute.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
+    <None Include="..\..\Resources\Icons\roman1.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\roman2.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\roman3.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\roman4.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\roman5.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\roman6.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
+    <None Include="..\..\Resources\Icons\roman7.svg">
+      <Filter>Helio\Resources\Icons</Filter>
+    </None>
     <None Include="..\..\Resources\Icons\saxophone.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
@@ -6444,6 +6474,9 @@
       <Filter>Helio\Resources\Themes</Filter>
     </None>
     <None Include="..\..\Resources\DefaultArps.xml">
+      <Filter>Helio\Resources</Filter>
+    </None>
+    <None Include="..\..\Resources\DefaultScales.xml">
       <Filter>Helio\Resources</Filter>
     </None>
     <None Include="..\..\Resources\DefaultTranslations.xml">
