@@ -17,6 +17,8 @@
 
 #include "Common.h"
 #include "TransientTreeItems.h"
+#include "PianoRollSelectionCommandPanel.h"
+#include "PatternRollSelectionCommandPanel.h"
 #include "CommandPanel.h"
 #include "CommandIDs.h"
 #include "Icons.h"
@@ -26,50 +28,6 @@
 //===----------------------------------------------------------------------===//
 // PianoRoll Selection Menu
 //===----------------------------------------------------------------------===//
-
-class PianoRollSelectionCommandPanel : public CommandPanel
-{
-public:
-
-    PianoRollSelectionCommandPanel::PianoRollSelectionCommandPanel(MidiTrackTreeItem &parentLayer) :
-        layerItem(parentLayer)
-    {
-        this->initDefaultCommands();
-    }
-
-    void handleCommandMessage(int commandId)
-    {
-        switch (commandId)
-        {
-        case CommandIDs::SelectAllEvents:
-            if (ProjectTreeItem *project = this->layerItem.getProject())
-            {
-                if (HybridRoll *roll = dynamic_cast<HybridRoll *>(project->getLastFocusedRoll()))
-                {
-                    roll->selectAll();
-                }
-            }
-
-            this->exit();
-            break;
-        default:
-            this->exit();
-            break;
-        }
-    }
-
-private:
-
-    void initDefaultCommands()
-    {
-        ReferenceCountedArray<CommandItem> cmds;
-        cmds.add(CommandItem::withParams(Icons::copy, CommandIDs::CopyEvents, TRANS("menu::selection::piano::copy")));
-        cmds.add(CommandItem::withParams(Icons::cut, CommandIDs::CutEvents, TRANS("menu::selection::piano::cut")));
-        cmds.add(CommandItem::withParams(Icons::trash, CommandIDs::DeleteEvents, TRANS("menu::selection::piano::delete")));
-        //cmds.add(CommandItem::withParams(Icons::trash, CommandIDs::RefactorRemoveOverlaps, TRANS("menu::selection::piano::cleanup")));
-        this->updateContent(cmds, CommandPanel::SlideRight);
-    }
-};
 
 Image PianoRollSelectionTreeItem::getIcon() const
 {

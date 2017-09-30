@@ -6,7 +6,8 @@
               companyEmail="peter.rudenko@gmail.com" companyName="Peter Rudenko"
               defines="JUCE_DONT_DECLARE_PROJECTINFO=1" displaySplashScreen="0"
               reportAppUsage="0" splashScreenColour="Dark" maxBinaryFileSize="2097152"
-              cppLanguageStandard="14">
+              cppLanguageStandard="14" usePrecompiledHeaders="0" precompiledHeaderFileName=""
+              precompiledHeaderExcludedWildcard="include_juce_*">
   <MAINGROUP id="szkQi0" name="Helio">
     <GROUP id="{005FBE8D-B17D-F49E-397E-DB420E759514}" name="Resources">
       <FILE id="x2W128" name="Icon.png" compile="0" resource="1" file="../../Resources/Icon.png"/>
@@ -717,10 +718,6 @@
                 file="../../Source/UI/Menus/ArpeggiatorEditorPanel.cpp"/>
           <FILE id="ezMMEU" name="ArpeggiatorEditorPanel.h" compile="0" resource="0"
                 file="../../Source/UI/Menus/ArpeggiatorEditorPanel.h"/>
-          <FILE id="Rv5M7p" name="ArpeggiatorPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/Menus/ArpeggiatorPanel.cpp"/>
-          <FILE id="bywjDN" name="ArpeggiatorPanel.h" compile="0" resource="0"
-                file="../../Source/UI/Menus/ArpeggiatorPanel.h"/>
           <FILE id="MYnON3" name="AutomationsCommandPanel.cpp" compile="1" resource="0"
                 file="../../Source/UI/Menus/AutomationsCommandPanel.cpp"/>
           <FILE id="JumAC2" name="AutomationsCommandPanel.h" compile="0" resource="0"
@@ -737,14 +734,18 @@
                 file="../../Source/UI/Menus/LayerCommandPanel.cpp"/>
           <FILE id="PkWGHl" name="LayerCommandPanel.h" compile="0" resource="0"
                 file="../../Source/UI/Menus/LayerCommandPanel.h"/>
-          <FILE id="TkKS69" name="MoveToLayerCommandPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/Menus/MoveToLayerCommandPanel.cpp"/>
-          <FILE id="oXLYPE" name="MoveToLayerCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/Menus/MoveToLayerCommandPanel.h"/>
           <FILE id="TmQdNC" name="NotesTuningPanel.cpp" compile="1" resource="0"
                 file="../../Source/UI/Menus/NotesTuningPanel.cpp"/>
           <FILE id="ywKB7T" name="NotesTuningPanel.h" compile="0" resource="0"
                 file="../../Source/UI/Menus/NotesTuningPanel.h"/>
+          <FILE id="P4AT8Y" name="PatternRollSelectionCommandPanel.cpp" compile="1"
+                resource="0" file="../../Source/UI/Menus/PatternRollSelectionCommandPanel.cpp"/>
+          <FILE id="mwbtT6" name="PatternRollSelectionCommandPanel.h" compile="0"
+                resource="0" file="../../Source/UI/Menus/PatternRollSelectionCommandPanel.h"/>
+          <FILE id="FICRWz" name="PianoRollSelectionCommandPanel.cpp" compile="1"
+                resource="0" file="../../Source/UI/Menus/PianoRollSelectionCommandPanel.cpp"/>
+          <FILE id="sBLseL" name="PianoRollSelectionCommandPanel.h" compile="0"
+                resource="0" file="../../Source/UI/Menus/PianoRollSelectionCommandPanel.h"/>
           <FILE id="eFoCKQ" name="ProjectCommandPanel.cpp" compile="1" resource="0"
                 file="../../Source/UI/Menus/ProjectCommandPanel.cpp"/>
           <FILE id="qz1Ccf" name="ProjectCommandPanel.h" compile="0" resource="0"
@@ -1463,7 +1464,8 @@
     </XCODE_IPHONE>
     <VS2015 targetFolder="../../Projects/VisualStudio2015" vstFolder="c:\Code\VST3"
             vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK" smallIcon="x2W128"
-            bigIcon="x2W128" toolset="v140_xp" IPPLibrary="">
+            bigIcon="x2W128" toolset="v140_xp" IPPLibrary="" usePrecompiledHeaders="1"
+            precompiledHeaderFileName="Common.h" precompiledHeaderExcludedWildcard="include_juce_*">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug 32-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="32-bit" isDebug="1" optimisation="1" targetName="Helio"

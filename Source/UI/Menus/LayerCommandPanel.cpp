@@ -41,6 +41,14 @@
 #include "Workspace.h"
 #include "App.h"
 
+// TODO rename as MidiTrackCommandPanel
+
+// TODO
+// Selection ->
+// inverse
+// select all
+
+
 LayerCommandPanel::LayerCommandPanel(MidiTrackTreeItem &parentLayer) :
     layerItem(parentLayer)
 {

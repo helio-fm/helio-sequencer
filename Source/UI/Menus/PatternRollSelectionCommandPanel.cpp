@@ -16,7 +16,6 @@
 */
 
 #include "Common.h"
-#include "MoveToLayerCommandPanel.h"
 #include "ProjectTreeItem.h"
 #include "PianoRollToolbox.h"
 #include "PianoTrackTreeItem.h"
