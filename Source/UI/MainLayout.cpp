@@ -28,6 +28,7 @@
 #include "MainWindow.h"
 #include "RootTreeItem.h"
 #include "GenericTooltip.h"
+#include "TransientTreeItems.h"
 #include "MidiTrackTreeItem.h"
 #include "Supervisor.h"
 #include "TreePanelPhone.h"
@@ -267,6 +268,27 @@ void hideMarkersRecursive(TreeItem *startFrom)
     }
 }
 
+void MainLayout::showTransientItem(
+    ScopedPointer<TransientTreeItem> newItem, TreeItem *parent)
+{
+    jassert(source != nullptr);
+    const auto treeRoot = App::Workspace().getTreeRoot();
+    hideMarkersRecursive(treeRoot);
+
+    // Cleanup: delete all existing transient items
+    OwnedArray<TreeItem> transients;
+    transients.addArray(treeRoot->findChildrenOfType<TransientTreeItem>());
+    transients.clear(true);
+
+    // Attach new item to the tree
+    TreeItem *item = newItem.release();
+    parent->addChildTreeItem(item);
+    item->setSelected(true, true, dontSendNotification);
+    item->setMarkerVisible(true);
+    this->treePanel->repaint();
+    this->headline->syncWithTree(item);
+}
+
 void MainLayout::showPage(Component *page, TreeItem *source)
 {
     App::dismissAllModalComponents();
@@ -280,7 +302,6 @@ void MainLayout::showPage(Component *page, TreeItem *source)
         hideMarkersRecursive(App::Workspace().getTreeRoot());
         source->setMarkerVisible(true);
         this->treePanel->repaint();
-
         this->headline->syncWithTree(source);
     }
 

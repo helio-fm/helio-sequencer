@@ -40,11 +40,9 @@ class TreeItem :
 public:
 
     explicit TreeItem(const String &nameStr);
-
     ~TreeItem() override;
     
     static const String xPathSeparator;
-
 
     static String createSafeName(const String &nameStr);
 
@@ -54,20 +52,13 @@ public:
     bool haveAllChildrenSelected() const;
     bool haveAllChildrenSelectedWithDeepSearch() const;
 
-    
     String getUniqueName() const override;
 
     TreePanel *findParentTreePanel() const;
 
     virtual void onItemMoved() {}
 
-
-    void addChildTreeItem(TreeItem *child, int insertIndex = -1)
-    {
-        this->addSubItem(child, insertIndex);
-        TreeItem::notifySubtreeMoved(child);
-    }
-
+    void addChildTreeItem(TreeItem *child, int insertIndex = -1);
 
     void setMarkerVisible(bool shouldBeVisible) noexcept;
     bool isMarkerVisible() const noexcept;
@@ -76,7 +67,6 @@ public:
     bool isGreyedOut() const noexcept;
 
     bool isCompactMode() const;
-
 
     template<typename T>
     static T *getActiveItem(TreeItem *root)
@@ -103,7 +93,6 @@ public:
 
     static TreeItem *getSelectedItem(Component *anyComponentInTree);
     static void getAllSelectedItems(Component *anyComponentInTree, OwnedArray<TreeItem> &selectedNodes);
-
     static bool isNodeInChildren(TreeItem *nodeToScan, TreeItem *nodeToCheck);
 
     template<typename T>
@@ -230,7 +219,7 @@ public:
     virtual Image getIcon() const = 0;
     virtual Font getFont() const;
     virtual Colour getColour() const;
-    virtual String getCaption() const; // a title for the component - as opposed to getName()
+    virtual String getCaption() const;
 
     //===------------------------------------------------------------------===//
     // Menu

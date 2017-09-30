@@ -58,19 +58,29 @@ void PopupCustomButton::paint (Graphics& g)
 #if 0
     //[/UserPrePaint]
 
-    g.setGradientFill (ColourGradient (Colour (0x59997cff),
-                                       static_cast<float> ((getWidth() / 2)), static_cast<float> (getHeight()),
-                                       Colour (0x548f84ff),
-                                       static_cast<float> ((getWidth() / 2)), static_cast<float> (getHeight() - -55),
+    {
+        float x = 3.0f, y = 3.0f, width = static_cast<float> (getWidth() - 6), height = static_cast<float> (getHeight() - 6);
+        Colour fillColour1 = Colour (0x59997cff), fillColour2 = Colour (0x548f84ff);
+        Colour strokeColour1 = Colour (0x6effffff), strokeColour2 = Colours::white;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       static_cast<float> ((getWidth() / 2)) - 3.0f + x,
+                                       static_cast<float> (getHeight()) - 3.0f + y,
+                                       fillColour2,
+                                       static_cast<float> ((getWidth() / 2)) - 3.0f + x,
+                                       static_cast<float> (getHeight() - -55) - 3.0f + y,
                                        true));
-    g.fillEllipse (3.0f, 3.0f, static_cast<float> (getWidth() - 6), static_cast<float> (getHeight() - 6));
-
-    g.setGradientFill (ColourGradient (Colour (0x6effffff),
-                                       static_cast<float> ((getWidth() / 2)), 0.0f,
-                                       Colours::white,
-                                       static_cast<float> ((getWidth() / 2)), static_cast<float> (-55),
+        g.fillEllipse (x, y, width, height);
+        g.setGradientFill (ColourGradient (strokeColour1,
+                                       static_cast<float> ((getWidth() / 2)) - 3.0f + x,
+                                       0.0f - 3.0f + y,
+                                       strokeColour2,
+                                       static_cast<float> ((getWidth() / 2)) - 3.0f + x,
+                                       static_cast<float> (-55) - 3.0f + y,
                                        true));
-    g.drawEllipse (3.0f, 3.0f, static_cast<float> (getWidth() - 6), static_cast<float> (getHeight() - 6), 1.500f);
+        g.drawEllipse (x, y, width, height, 1.500f);
+    }
 
     //[UserPaint] Add your own custom painting code here..
 #endif

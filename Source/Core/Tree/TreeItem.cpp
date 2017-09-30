@@ -275,6 +275,11 @@ void TreeItem::removeItemFromParent()
         }
     }
 }
+void TreeItem::addChildTreeItem(TreeItem *child, int insertIndex /*= -1*/)
+{
+    this->addSubItem(child, insertIndex);
+    TreeItem::notifySubtreeMoved(child);
+}
 
 
 //===----------------------------------------------------------------------===//

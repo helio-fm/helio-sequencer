@@ -425,6 +425,10 @@
                 file="../../Source/Core/Tree/TrackGroupTreeItem.cpp"/>
           <FILE id="eUdOwJ" name="TrackGroupTreeItem.h" compile="0" resource="0"
                 file="../../Source/Core/Tree/TrackGroupTreeItem.h"/>
+          <FILE id="uyfp7Z" name="TransientTreeItems.cpp" compile="1" resource="0"
+                file="../../Source/Core/Tree/TransientTreeItems.cpp"/>
+          <FILE id="go1bwD" name="TransientTreeItems.h" compile="0" resource="0"
+                file="../../Source/Core/Tree/TransientTreeItems.h"/>
           <FILE id="p4vaGG" name="TreeItem.cpp" compile="1" resource="0" file="../../Source/Core/Tree/TreeItem.cpp"/>
           <FILE id="nnj8WS" name="TreeItem.h" compile="0" resource="0" file="../../Source/Core/Tree/TreeItem.h"/>
           <FILE id="cKuziz" name="TreeItemChildrenSerializer.cpp" compile="1"

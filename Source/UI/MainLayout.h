@@ -18,6 +18,7 @@
 #pragma once
 
 class TreePanel;
+class TransientTreeItem;
 class TooltipContainer;
 class Headline;
 
@@ -48,22 +49,20 @@ public:
     void showConsole(bool alsoShowLog);
 
     static int getScrollerHeight();
-    
+
     
     //===------------------------------------------------------------------===//
     // Pages stack
     //===------------------------------------------------------------------===//
 
     LastShownTreeItems &getLastShownItems();
-
     WeakReference<TreeItem> getActiveTreeItem() const;
     
     void showPrevPageIfAny();
-    
     void showNextPageIfAny();
     
-    void showPage(Component *page,
-                  TreeItem *source = nullptr);
+    void showTransientItem(ScopedPointer<TransientTreeItem> newItem, TreeItem *parent);
+    void showPage(Component *page, TreeItem *source = nullptr);
 
     
     //===------------------------------------------------------------------===//
@@ -71,19 +70,12 @@ public:
     //===------------------------------------------------------------------===//
 
     void toggleShowTree();
-
     void setStatus(const String &text);
-
     void showTooltip(const String &message, int timeOutMs = 15000);
-
     void showTooltip(Component *newTooltip, int timeOutMs = 15000);
-
     void showTooltip(Component *newTooltip, Rectangle<int> callerScreenBounds, int timeOutMs = 15000);
-
     void showModalNonOwnedDialog(Component *targetComponent);
-
     void showBlockingNonModalDialog(Component *targetComponent);
-    
     Rectangle<int> getPageBounds() const;
     
     
@@ -92,11 +84,8 @@ public:
     //===------------------------------------------------------------------===//
 
     void resized() override;
-
     void childBoundsChanged(Component *child) override;
-
     void lookAndFeelChanged() override;
-
     bool keyPressed(const KeyPress &key) override;
 
 private:
