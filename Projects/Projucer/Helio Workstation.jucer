@@ -6,7 +6,8 @@
               companyEmail="peter.rudenko@gmail.com" companyName="Peter Rudenko"
               defines="JUCE_DONT_DECLARE_PROJECTINFO=1" displaySplashScreen="0"
               reportAppUsage="0" splashScreenColour="Dark" maxBinaryFileSize="2097152"
-              cppLanguageStandard="14">
+              cppLanguageStandard="14" usePrecompiledHeaders="0" precompiledHeaderFileName=""
+              precompiledHeaderExcludedWildcard="include_juce_*" companyCopyright="Peter Rudenko">
   <MAINGROUP id="szkQi0" name="Helio">
     <GROUP id="{005FBE8D-B17D-F49E-397E-DB420E759514}" name="Resources">
       <FILE id="x2W128" name="Icon.png" compile="0" resource="1" file="../../Resources/Icon.png"/>
@@ -1381,6 +1382,7 @@
         <FILE id="Szz4y0" name="MainWindow.cpp" compile="1" resource="0" file="../../Source/UI/MainWindow.cpp"/>
         <FILE id="TyXZte" name="MainWindow.h" compile="0" resource="0" file="../../Source/UI/MainWindow.h"/>
       </GROUP>
+      <FILE id="ElYokW" name="Common.cpp" compile="1" resource="0" file="../../Source/Common.cpp"/>
       <FILE id="ZpjqOm" name="Common.h" compile="0" resource="0" file="../../Source/Common.h"/>
     </GROUP>
   </MAINGROUP>
@@ -1427,7 +1429,8 @@
                   customXcassetsFolder="../../Resources/iOS/Images.xcassets" iosDevelopmentTeamID="EQL633LLC8"
                   userNotes="Warning! Make sure that:&#10; - IAA capability entitlement is added"
                   extraLinkerFlags="" externalLibraries="" extraFrameworks="Security"
-                  iosBackgroundAudio="0" prebuildCommand="pushd ../../ThirdParty/&#10;chmod a+x ./get_asio_and_vst_sdks.sh&#10;./get_asio_and_vst_sdks.sh&#10;popd">
+                  iosBackgroundAudio="0" prebuildCommand="pushd ../../ThirdParty/&#10;chmod a+x ./get_asio_and_vst_sdks.sh&#10;./get_asio_and_vst_sdks.sh&#10;popd"
+                  iosDeviceFamily="1,2">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" iosCompatibility="9.0" isDebug="1" optimisation="1"
                        targetName="Helio" cppLanguageStandard="c++11" cppLibType="libc++"
@@ -1459,7 +1462,9 @@
     </XCODE_IPHONE>
     <VS2015 targetFolder="../../Projects/VisualStudio2015" vstFolder="c:\Code\VST3"
             vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK" smallIcon="x2W128"
-            bigIcon="x2W128" toolset="v140_xp" IPPLibrary="">
+            bigIcon="x2W128" toolset="v140_xp" IPPLibrary="" usePrecompiledHeaders="1"
+            precompiledHeaderFileName="Common.h" precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*"
+            windowsTargetPlatformVersion="8.1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug 32-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="32-bit" isDebug="1" optimisation="1" targetName="Helio"
