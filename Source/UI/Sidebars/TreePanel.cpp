@@ -126,23 +126,6 @@ void TreePanel::handleCommandMessage(int commandId)
     }
 }
 
-
-void TreePanel::showModeIndicator()
-{
-    if (auto *i = this->findChildWithID(ModeIndicatorComponent::componentId))
-    {
-        this->fader.fadeIn(i, 200);
-    }
-}
-
-void TreePanel::hideModeIndicator()
-{
-    if (auto *i = this->findChildWithID(ModeIndicatorComponent::componentId))
-    {
-        this->fader.fadeOut(i, 150);
-    }
-}
-
 void TreePanel::showRenameLayerDialogAsync(MidiTrackTreeItem *item)
 {
     this->lastRenamedItem = item;

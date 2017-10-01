@@ -43,3 +43,28 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModeIndicatorComponent)
 };
+
+class ModeIndicatorOwner : public virtual Component
+{
+public:
+
+    void showModeIndicator();
+    void hideModeIndicator();
+    virtual void handleChangeMode() = 0;
+
+private:
+
+    ComponentFader modeIndicatorFader;
+
+};
+
+class ModeIndicatorTrigger : public Component
+{
+public:
+
+    ModeIndicatorTrigger();
+    void mouseUp(const MouseEvent& event);
+    void mouseEnter(const MouseEvent &event);
+    void mouseExit(const MouseEvent &event);
+
+};

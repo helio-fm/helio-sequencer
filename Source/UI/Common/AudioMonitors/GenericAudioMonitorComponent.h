@@ -31,10 +31,6 @@ public:
     void resized() override;
     void paint(Graphics &g) override;
 
-    void mouseUp(const MouseEvent& event) override;
-    void mouseEnter(const MouseEvent &event) override;
-    void mouseExit(const MouseEvent &event) override;
-
 private:
     
     class SpectrumBand

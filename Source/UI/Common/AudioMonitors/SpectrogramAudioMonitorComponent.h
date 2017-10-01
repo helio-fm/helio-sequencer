@@ -27,7 +27,7 @@ class SpectrogramAudioMonitorComponent :
 {
 public:
 
-    SpectrogramAudioMonitorComponent(WeakReference<AudioMonitor> targetAnalyzer);
+    explicit SpectrogramAudioMonitorComponent(WeakReference<AudioMonitor> targetAnalyzer);
     ~SpectrogramAudioMonitorComponent() override;
 
     void setTargetAnalyzer(WeakReference<AudioMonitor> targetAnalyzer);
@@ -37,10 +37,6 @@ public:
     //===------------------------------------------------------------------===//
 
     void paint(Graphics &g) override;
-
-    void mouseUp(const MouseEvent& event) override;
-    void mouseEnter(const MouseEvent &event) override;
-    void mouseExit(const MouseEvent &event) override;
 
 private:
 

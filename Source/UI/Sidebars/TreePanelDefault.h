@@ -60,6 +60,12 @@ public:
 private:
 
     //[UserVariables]
+    ComponentAnimator animator;
+    void switchMonitorsAnimated(Component *oldOne, Component *newOne);
+
+    ScopedPointer<GenericAudioMonitorComponent> genericMonitor;
+    ScopedPointer<WaveformAudioMonitorComponent> waveformMonitor;
+    ScopedPointer<SpectrogramAudioMonitorComponent> spectrogramMonitor;
     //[/UserVariables]
 
     ScopedPointer<PanelBackgroundC> background;
@@ -69,9 +75,9 @@ private:
     ScopedPointer<SeparatorHorizontalReversed> headLine;
     ScopedPointer<LighterShadowDownwards> headShadow;
     ScopedPointer<GradientVerticalReversed> gradient1;
-    ScopedPointer<SpectrogramAudioMonitorComponent> waveformMeter;
     ScopedPointer<SeparatorHorizontal> separator;
     ScopedPointer<Component> rootTreeItemPanel;
+    ScopedPointer<ModeIndicatorTrigger> modeIndicatorSelector;
     ScopedPointer<ModeIndicatorComponent> modeIndicator;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TreePanelDefault)

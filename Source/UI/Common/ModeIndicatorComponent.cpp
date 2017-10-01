@@ -44,7 +44,9 @@ public:
 
     void paint(Graphics &g) override
     {
-        g.fillAll(Colours::white.withAlpha(0.04f + this->brightness / 7.f));
+        g.setColour(Colours::white.withAlpha(0.1f + this->brightness / 2.f));
+        g.fillEllipse(0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
+        //g.fillAll();
     }
 
 private:
@@ -114,13 +116,64 @@ ModeIndicatorComponent::Mode ModeIndicatorComponent::scrollToNextMode()
 
 void ModeIndicatorComponent::resized()
 {
-    const int spacing = 2;
+    const int spacing = 4;
+    const int h = this->getHeight();
+    const int w = this->getWidth();
     const int length = this->bars.size();
-    const int w = ((this->getWidth() - spacing) / this->bars.size()) - spacing;
+    const int cw = (h + spacing) * length;
+    const int cx = w / 2 - cw / 2;
 
-    for (int i = 0; i < this->bars.size(); ++i)
+    for (int i = 0; i < length; ++i)
     {
-        const int x = spacing + (w + spacing) * i;
-        this->bars[i]->setBounds(x, spacing, w, this->getHeight() - (spacing * 2));
+        const int x = cx + (h + spacing) * i;
+        this->bars[i]->setBounds(x, 0, h, h);
+    }
+}
+
+void ModeIndicatorOwner::showModeIndicator()
+{
+    if (auto *i = this->findChildWithID(ModeIndicatorComponent::componentId))
+    {
+        this->modeIndicatorFader.fadeIn(i, 200);
+    }
+}
+
+void ModeIndicatorOwner::hideModeIndicator()
+{
+    if (auto *i = this->findChildWithID(ModeIndicatorComponent::componentId))
+    {
+        this->modeIndicatorFader.fadeOut(i, 150);
+    }
+}
+
+ModeIndicatorTrigger::ModeIndicatorTrigger()
+{
+    this->setInterceptsMouseClicks(true, false);
+}
+
+void ModeIndicatorTrigger::mouseUp(const MouseEvent& event)
+{
+    if (ModeIndicatorOwner *owner =
+        dynamic_cast<ModeIndicatorOwner *>(this->getParentComponent()))
+    {
+        owner->handleChangeMode();
+    }
+}
+
+void ModeIndicatorTrigger::mouseEnter(const MouseEvent &event)
+{
+    if (ModeIndicatorOwner *owner =
+        dynamic_cast<ModeIndicatorOwner *>(this->getParentComponent()))
+    {
+        owner->showModeIndicator();
+    }
+}
+
+void ModeIndicatorTrigger::mouseExit(const MouseEvent &event)
+{
+    if (ModeIndicatorOwner *owner =
+        dynamic_cast<ModeIndicatorOwner *>(this->getParentComponent()))
+    {
+        owner->hideModeIndicator();
     }
 }

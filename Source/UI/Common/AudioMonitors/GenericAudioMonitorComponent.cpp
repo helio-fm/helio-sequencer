@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "GenericAudioMonitorComponent.h"
 #include "AudioMonitor.h"
-#include "TreePanel.h"
 #include "AudioCore.h"
 
 #define HQ_METER_MAXDB (+4.0f)
@@ -46,7 +45,7 @@ GenericAudioMonitorComponent::GenericAudioMonitorComponent(WeakReference<AudioMo
       skewTime(0)
 {
     // (true, false) will enable switching rendering modes on click
-    this->setInterceptsMouseClicks(true, false);
+    this->setInterceptsMouseClicks(false, false);
 
     for (int band = 0; band < HQ_METER_NUM_BANDS; ++band)
     {
@@ -166,30 +165,6 @@ void GenericAudioMonitorComponent::paint(Graphics &g)
 
     // fillAlphaChannelWithCurrentBrush=true is evil, takes up to 9% of CPU on rendering
     g.drawImageAt(img, 0, 0, false);
-}
-
-void GenericAudioMonitorComponent::mouseUp(const MouseEvent& event)
-{
-    if (TreePanel *tp = dynamic_cast<TreePanel *>(this->getParentComponent()))
-    {
-        tp->handleChangeMode();
-    }
-}
-
-void GenericAudioMonitorComponent::mouseEnter(const MouseEvent &event)
-{
-    if (TreePanel *tp = dynamic_cast<TreePanel *>(this->getParentComponent()))
-    {
-        tp->showModeIndicator();
-    }
-}
-
-void GenericAudioMonitorComponent::mouseExit(const MouseEvent &event)
-{
-    if (TreePanel *tp = dynamic_cast<TreePanel *>(this->getParentComponent()))
-    {
-        tp->hideModeIndicator();
-    }
 }
 
 GenericAudioMonitorComponent::SpectrumBand::SpectrumBand() :

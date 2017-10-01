@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "WaveformAudioMonitorComponent.h"
-#include "TreePanel.h"
 #include "AudioMonitor.h"
 #include "AudioCore.h"
 
@@ -30,7 +29,7 @@ WaveformAudioMonitorComponent::WaveformAudioMonitorComponent(WeakReference<Audio
     audioMonitor(std::move(targetAnalyzer)),
     skewTime(0)
 {
-    this->setInterceptsMouseClicks(true, false);
+    this->setInterceptsMouseClicks(false, false);
     
     if (this->audioMonitor != nullptr)
     {
@@ -128,29 +127,5 @@ void WaveformAudioMonitorComponent::paint(Graphics &g)
         const float rmsR = iecLevel(this->rRmsBuffer[i].get()) * midH;
         g.drawVerticalLine(i * 2, midH - rmsL, midH);
         g.drawVerticalLine(i * 2, midH, midH + rmsR);
-    }
-}
-
-void WaveformAudioMonitorComponent::mouseUp(const MouseEvent& event)
-{
-    if (TreePanel *tp = dynamic_cast<TreePanel *>(this->getParentComponent()))
-    {
-        tp->handleChangeMode();
-    }
-}
-
-void WaveformAudioMonitorComponent::mouseEnter(const MouseEvent &event)
-{
-    if (TreePanel *tp = dynamic_cast<TreePanel *>(this->getParentComponent()))
-    {
-        tp->showModeIndicator();
-    }
-}
-
-void WaveformAudioMonitorComponent::mouseExit(const MouseEvent &event)
-{
-    if (TreePanel *tp = dynamic_cast<TreePanel *>(this->getParentComponent()))
-    {
-        tp->hideModeIndicator();
     }
 }

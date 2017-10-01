@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "SpectrogramAudioMonitorComponent.h"
-#include "TreePanel.h"
 #include "AudioMonitor.h"
 #include "AudioCore.h"
 
@@ -43,7 +42,7 @@ SpectrogramAudioMonitorComponent::SpectrogramAudioMonitorComponent(WeakReference
     head(0),
     skewTime(0)
 {
-    this->setInterceptsMouseClicks(true, false);
+    this->setInterceptsMouseClicks(false, false);
 
     if (this->audioMonitor != nullptr)
     {
@@ -138,29 +137,5 @@ void SpectrogramAudioMonitorComponent::paint(Graphics &g)
             g.setColour(Colours::white.withAlpha(v));
             g.drawHorizontalLine(h - j * 4, x * 2, x * 2 + 1);
         }
-    }
-}
-
-void SpectrogramAudioMonitorComponent::mouseUp(const MouseEvent& event)
-{
-    if (TreePanel *tp = dynamic_cast<TreePanel *>(this->getParentComponent()))
-    {
-        tp->handleChangeMode();
-    }
-}
-
-void SpectrogramAudioMonitorComponent::mouseEnter(const MouseEvent &event)
-{
-    if (TreePanel *tp = dynamic_cast<TreePanel *>(this->getParentComponent()))
-    {
-        tp->showModeIndicator();
-    }
-}
-
-void SpectrogramAudioMonitorComponent::mouseExit(const MouseEvent &event)
-{
-    if (TreePanel *tp = dynamic_cast<TreePanel *>(this->getParentComponent()))
-    {
-        tp->hideModeIndicator();
     }
 }
