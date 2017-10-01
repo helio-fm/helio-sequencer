@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "SpectrogramAudioMonitorComponent.h"
+#include "TreePanel.h"
 #include "AudioMonitor.h"
 #include "AudioCore.h"
 
@@ -32,8 +33,8 @@ SpectrogramAudioMonitorComponent::SpectrogramAudioMonitorComponent(WeakReference
     volumeAnalyzer(std::move(targetAnalyzer)),
     skewTime(0)
 {
-    this->setInterceptsMouseClicks(false, false);
-    
+    this->setInterceptsMouseClicks(true, false);
+
     if (this->volumeAnalyzer != nullptr)
     {
         this->startThread(5);
@@ -132,5 +133,29 @@ void SpectrogramAudioMonitorComponent::paint(Graphics &g)
         const float rmsR = iecLevel(this->rRmsBuffer[i].get()) * midH;
         g.drawVerticalLine(i, midH - rmsL, midH);
         g.drawVerticalLine(i, midH, midH + rmsR);
+    }
+}
+
+void SpectrogramAudioMonitorComponent::mouseUp(const MouseEvent& event)
+{
+    if (TreePanel *tp = dynamic_cast<TreePanel *>(this->getParentComponent()))
+    {
+        tp->handleChangeMode();
+    }
+}
+
+void SpectrogramAudioMonitorComponent::mouseEnter(const MouseEvent &event)
+{
+    if (TreePanel *tp = dynamic_cast<TreePanel *>(this->getParentComponent()))
+    {
+        tp->showModeIndicator();
+    }
+}
+
+void SpectrogramAudioMonitorComponent::mouseExit(const MouseEvent &event)
+{
+    if (TreePanel *tp = dynamic_cast<TreePanel *>(this->getParentComponent()))
+    {
+        tp->hideModeIndicator();
     }
 }

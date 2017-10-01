@@ -30,7 +30,10 @@ public:
         
     void resized() override;
     void paint(Graphics &g) override;
+
     void mouseUp(const MouseEvent& event) override;
+    void mouseEnter(const MouseEvent &event) override;
+    void mouseExit(const MouseEvent &event) override;
 
 private:
     
@@ -76,8 +79,6 @@ private:
     
     int bandCount;
     int skewTime;
-    
-    bool altMode;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GenericAudioMonitorComponent);
 };

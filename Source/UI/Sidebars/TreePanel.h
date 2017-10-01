@@ -23,6 +23,7 @@ class MidiTrackTreeItem;
 class LongTapController;
 
 #include "LongTapListener.h"
+#include "ComponentFader.h"
 
 #define TREE_COMPACT_WIDTH           (72)
 #define TREE_DEFAULT_WIDTH           (72)
@@ -40,6 +41,10 @@ public:
     virtual void setRootItemPanelSelected(bool shouldBeSelected) = 0;
     virtual void setAudioMonitor(AudioMonitor *audioMonitor) = 0;
     virtual Rectangle<int> getWorkingArea() = 0;
+
+    void showModeIndicator();
+    void hideModeIndicator();
+    virtual void handleChangeMode() = 0;
     
     void showRenameLayerDialogAsync(MidiTrackTreeItem *targetItem);
     void emitRollover(Component *newTargetComponent, const String &headerTitle);
@@ -54,10 +59,12 @@ protected:
     TreeItem *root;
     
     ScopedPointer<LongTapController> longTapRecognizer;
-    
+
     MidiTrackTreeItem *lastRenamedItem;
     String renameString;
-    
+
+    ComponentFader fader;
+
     void dismissCurrentRollover();
     ComponentAnimator rolloverFader;
     ScopedPointer<Component> currentRollover;

@@ -38,6 +38,8 @@
 #include "RolloverHeaderRight.h"
 #include "RolloverContainer.h"
 
+#include "ModeIndicatorComponent.h"
+
 #include "CommandIDs.h"
 
 TreePanel::TreePanel() : root(nullptr), lastRenamedItem(nullptr)
@@ -125,6 +127,21 @@ void TreePanel::handleCommandMessage(int commandId)
 }
 
 
+void TreePanel::showModeIndicator()
+{
+    if (auto *i = this->findChildWithID(ModeIndicatorComponent::componentId))
+    {
+        this->fader.fadeIn(i, 200);
+    }
+}
+
+void TreePanel::hideModeIndicator()
+{
+    if (auto *i = this->findChildWithID(ModeIndicatorComponent::componentId))
+    {
+        this->fader.fadeOut(i, 150);
+    }
+}
 
 void TreePanel::showRenameLayerDialogAsync(MidiTrackTreeItem *item)
 {
@@ -160,7 +177,7 @@ bool TreePanel::isCompactMode() const
 //===----------------------------------------------------------------------===//
 
 void TreePanel::emitRollover(Component *newTargetComponent,
-                                    const String &headerTitle)
+    const String &headerTitle)
 {
     Component *newHeader = new RolloverHeaderLeft(headerTitle);
     this->currentRollover = new RolloverContainer(newHeader, newTargetComponent);

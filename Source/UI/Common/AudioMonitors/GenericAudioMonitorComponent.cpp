@@ -63,12 +63,11 @@ GenericAudioMonitorComponent::GenericAudioMonitorComponent(WeakReference<AudioMo
       audioMonitor(std::move(monitor)),
       bandCount(HQ_METER_NUM_BANDS),
       spectrumFrequencies(kSpectrumFrequencies),
-      skewTime(0),
-      altMode(false)
+      skewTime(0)
 {
     // (true, false) will enable switching rendering modes on click
-    this->setInterceptsMouseClicks(false, false);
-    
+    this->setInterceptsMouseClicks(true, false);
+
     for (int band = 0; band < this->bandCount; ++band)
     {
         this->bands.add(new SpectrumBand());
@@ -135,7 +134,7 @@ void GenericAudioMonitorComponent::resized()
     for (int i = 0; i < this->bandCount; ++i)
     {
         this->bands[i]->reset();
-        this->bands[i]->setDashedLineMode(!this->altMode);
+        //this->bands[i]->setDashedLineMode(true);
     }
 }
 
@@ -165,17 +164,18 @@ void GenericAudioMonitorComponent::paint(Graphics &g)
             this->bands[i]->drawBand(g1, x, 0.f, (size - 2.f), float(height));
         }
 
-        if (this->altMode)
-        {
-            const int valueForMinus6dB = AudioCore::iecLevel(-6.f) * this->getHeight();
-            const int valueForMinus12dB = AudioCore::iecLevel(-12.f) * this->getHeight();
-            const int valueForMinus24dB = AudioCore::iecLevel(-24.f) * this->getHeight();
-            
-            g1.setColour(Colours::white.withAlpha(0.075f));
-            g1.drawHorizontalLine(height - valueForMinus6dB, 0.f, this->getWidth());
-            g1.drawHorizontalLine(height - valueForMinus12dB, 0.f, this->getWidth());
-            g1.drawHorizontalLine(height - valueForMinus24dB, 0.f, this->getWidth());
-        }
+        // Show levels?
+        //if (this->altMode)
+        //{
+        //    const int valueForMinus6dB = AudioCore::iecLevel(-6.f) * this->getHeight();
+        //    const int valueForMinus12dB = AudioCore::iecLevel(-12.f) * this->getHeight();
+        //    const int valueForMinus24dB = AudioCore::iecLevel(-24.f) * this->getHeight();
+        //    
+        //    g1.setColour(Colours::white.withAlpha(0.075f));
+        //    g1.drawHorizontalLine(height - valueForMinus6dB, 0.f, this->getWidth());
+        //    g1.drawHorizontalLine(height - valueForMinus12dB, 0.f, this->getWidth());
+        //    g1.drawHorizontalLine(height - valueForMinus24dB, 0.f, this->getWidth());
+        //}
     }
 
     // TODO draw peak levels:
@@ -206,11 +206,25 @@ void GenericAudioMonitorComponent::paint(Graphics &g)
 
 void GenericAudioMonitorComponent::mouseUp(const MouseEvent& event)
 {
-    this->altMode = !this->altMode;
-    
-    for (int i = 0; i < this->bandCount; ++i)
+    if (TreePanel *tp = dynamic_cast<TreePanel *>(this->getParentComponent()))
     {
-        this->bands[i]->setDashedLineMode(!this->altMode);
+        tp->handleChangeMode();
+    }
+}
+
+void GenericAudioMonitorComponent::mouseEnter(const MouseEvent &event)
+{
+    if (TreePanel *tp = dynamic_cast<TreePanel *>(this->getParentComponent()))
+    {
+        tp->showModeIndicator();
+    }
+}
+
+void GenericAudioMonitorComponent::mouseExit(const MouseEvent &event)
+{
+    if (TreePanel *tp = dynamic_cast<TreePanel *>(this->getParentComponent()))
+    {
+        tp->hideModeIndicator();
     }
 }
 

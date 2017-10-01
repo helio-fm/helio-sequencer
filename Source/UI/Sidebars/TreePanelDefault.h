@@ -20,7 +20,7 @@
 //[Headers]
 class GenericAudioMonitorComponent;
 class WaveformAudioMonitorComponent;
-class VolumePeakMeter;
+class ModeIndicatorComponent;
 
 #include "TreePanel.h"
 //[/Headers]
@@ -46,6 +46,7 @@ public:
     void setRootItemPanelSelected(bool shouldBeSelected) override;
     void setAudioMonitor(AudioMonitor *audioMonitor) override;
     Rectangle<int> getWorkingArea() override;
+    void handleChangeMode() override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -70,6 +71,7 @@ private:
     ScopedPointer<WaveformAudioMonitorComponent> waveformMeter;
     ScopedPointer<SeparatorHorizontal> separator;
     ScopedPointer<Component> rootTreeItemPanel;
+    ScopedPointer<ModeIndicatorComponent> modeIndicator;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TreePanelDefault)
 };

@@ -55,32 +55,62 @@ void MenuButton::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x0b000000));
-    g.drawEllipse (2.0f, 2.0f, static_cast<float> (getWidth() - 4), static_cast<float> (getHeight() - 4), 0.500f);
+    {
+        float x = 2.0f, y = 2.0f, width = static_cast<float> (getWidth() - 4), height = static_cast<float> (getHeight() - 4);
+        Colour strokeColour = Colour (0x0b000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (strokeColour);
+        g.drawEllipse (x, y, width, height, 0.500f);
+    }
 
-    g.setColour (Colour (0x0dffffff));
-    g.fillEllipse (3.0f, 3.0f, static_cast<float> (getWidth() - 6), static_cast<float> (getHeight() - 6));
+    {
+        float x = 3.0f, y = 3.0f, width = static_cast<float> (getWidth() - 6), height = static_cast<float> (getHeight() - 6);
+        Colour fillColour = Colour (0x0dffffff);
+        Colour strokeColour = Colour (0x27ffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillEllipse (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawEllipse (x, y, width, height, 0.500f);
+    }
 
-    g.setColour (Colour (0x27ffffff));
-    g.drawEllipse (3.0f, 3.0f, static_cast<float> (getWidth() - 6), static_cast<float> (getHeight() - 6), 0.500f);
+    {
+        float x = static_cast<float> ((getWidth() / 2) + -10 - (7 / 2)), y = static_cast<float> ((getHeight() / 2) + -30 - (7 / 2)), width = 7.0f, height = 7.0f;
+        Colour fillColour = Colour (0x1e000000);
+        Colour strokeColour = Colours::black;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillEllipse (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawEllipse (x, y, width, height, 0.100f);
+    }
 
-    g.setColour (Colour (0x1e000000));
-    g.fillEllipse (static_cast<float> ((getWidth() / 2) + -10 - (7 / 2)), static_cast<float> ((getHeight() / 2) + -30 - (7 / 2)), 7.0f, 7.0f);
+    {
+        float x = static_cast<float> ((getWidth() / 2) - (7 / 2)), y = static_cast<float> ((getHeight() / 2) + -30 - (7 / 2)), width = 7.0f, height = 7.0f;
+        Colour fillColour = Colour (0x1e000000);
+        Colour strokeColour = Colours::black;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillEllipse (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawEllipse (x, y, width, height, 0.100f);
+    }
 
-    g.setColour (Colours::black);
-    g.drawEllipse (static_cast<float> ((getWidth() / 2) + -10 - (7 / 2)), static_cast<float> ((getHeight() / 2) + -30 - (7 / 2)), 7.0f, 7.0f, 0.100f);
-
-    g.setColour (Colour (0x1e000000));
-    g.fillEllipse (static_cast<float> ((getWidth() / 2) - (7 / 2)), static_cast<float> ((getHeight() / 2) + -30 - (7 / 2)), 7.0f, 7.0f);
-
-    g.setColour (Colours::black);
-    g.drawEllipse (static_cast<float> ((getWidth() / 2) - (7 / 2)), static_cast<float> ((getHeight() / 2) + -30 - (7 / 2)), 7.0f, 7.0f, 0.100f);
-
-    g.setColour (Colour (0x1e000000));
-    g.fillEllipse (static_cast<float> ((getWidth() / 2) + 10 - (7 / 2)), static_cast<float> ((getHeight() / 2) + -30 - (7 / 2)), 7.0f, 7.0f);
-
-    g.setColour (Colours::black);
-    g.drawEllipse (static_cast<float> ((getWidth() / 2) + 10 - (7 / 2)), static_cast<float> ((getHeight() / 2) + -30 - (7 / 2)), 7.0f, 7.0f, 0.100f);
+    {
+        float x = static_cast<float> ((getWidth() / 2) + 10 - (7 / 2)), y = static_cast<float> ((getHeight() / 2) + -30 - (7 / 2)), width = 7.0f, height = 7.0f;
+        Colour fillColour = Colour (0x1e000000);
+        Colour strokeColour = Colours::black;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillEllipse (x, y, width, height);
+        g.setColour (strokeColour);
+        g.drawEllipse (x, y, width, height, 0.100f);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]

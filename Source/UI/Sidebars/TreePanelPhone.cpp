@@ -33,6 +33,7 @@
 
 #include "SpectralLogo.h"
 #include "GenericAudioMonitorComponent.h"
+#include "ModeIndicatorComponent.h"
 #include "App.h"
 #include "AudioCore.h"
 
@@ -59,6 +60,8 @@ TreePanelPhone::TreePanelPhone()
 
     addAndMakeVisible (separator = new SeparatorHorizontal());
     addAndMakeVisible (rootTreeItemPanel = new Component());
+
+    addAndMakeVisible (modeIndicator = new ModeIndicatorComponent (3));
 
 
     //[UserPreSize]
@@ -94,6 +97,7 @@ TreePanelPhone::~TreePanelPhone()
     spectrumMeter = nullptr;
     separator = nullptr;
     rootTreeItemPanel = nullptr;
+    modeIndicator = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -139,6 +143,7 @@ void TreePanelPhone::resized()
     spectrumMeter->setBounds (0, getHeight() - 62, getWidth() - 0, 62);
     separator->setBounds (0, getHeight() - 62 - 2, getWidth() - 0, 2);
     rootTreeItemPanel->setBounds (0, 0, getWidth() - 0, 48);
+    modeIndicator->setBounds (0, getHeight() - 8, getWidth() - 0, 8);
     //[UserResized] Add your own custom resize handling here..
 
     if (widthChanged)
@@ -180,8 +185,7 @@ void TreePanelPhone::setRoot(TreeItem *rootItem)
 void TreePanelPhone::setRootItemPanelSelected(bool shouldBeSelected)
 {
     this->rootTreeItemPanel->postCommandMessage(shouldBeSelected ?
-                                                CommandIDs::SelectRootItemPanel :
-                                                CommandIDs::DeselectRootItemPanel);
+        CommandIDs::SelectRootItemPanel : CommandIDs::DeselectRootItemPanel);
 }
 
 void TreePanelPhone::setAudioMonitor(AudioMonitor *audioMonitor)
@@ -192,6 +196,12 @@ void TreePanelPhone::setAudioMonitor(AudioMonitor *audioMonitor)
 Rectangle<int> TreePanelPhone::getWorkingArea()
 {
     return this->tree->getBounds();
+}
+
+void TreePanelPhone::handleChangeMode()
+{
+    this->modeIndicator->scrollToNextMode();
+    // TODO change components
 }
 //[/MiscUserCode]
 
@@ -232,6 +242,9 @@ BEGIN_JUCER_METADATA
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="faec82bf5da2e1" memberName="rootTreeItemPanel" virtualName=""
                     explicitFocusOrder="0" pos="0 0 0M 48" class="Component" params=""/>
+  <GENERICCOMPONENT name="" id="4b6240e11495d88b" memberName="modeIndicator" virtualName=""
+                    explicitFocusOrder="0" pos="0 0Rr 0M 8" class="ModeIndicatorComponent"
+                    params="3"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

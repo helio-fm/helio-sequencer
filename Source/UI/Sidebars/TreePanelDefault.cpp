@@ -31,10 +31,10 @@
 #include "Icons.h"
 #include "SerializationKeys.h"
 
-#include "SpectralLogo.h"
 #include "GenericAudioMonitorComponent.h"
 #include "WaveformAudioMonitorComponent.h"
 #include "SpectrogramAudioMonitorComponent.h"
+#include "ModeIndicatorComponent.h"
 #include "App.h"
 #include "AudioCore.h"
 
@@ -62,9 +62,10 @@ TreePanelDefault::TreePanelDefault()
     addAndMakeVisible (separator = new SeparatorHorizontal());
     addAndMakeVisible (rootTreeItemPanel = new Component());
 
+    addAndMakeVisible (modeIndicator = new ModeIndicatorComponent (3));
+
 
     //[UserPreSize]
-
     this->tree->setRootItemVisible(true);
     this->tree->setDefaultOpenness(true);
     this->tree->setFocusContainer(false);
@@ -96,6 +97,7 @@ TreePanelDefault::~TreePanelDefault()
     waveformMeter = nullptr;
     separator = nullptr;
     rootTreeItemPanel = nullptr;
+    modeIndicator = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -141,6 +143,7 @@ void TreePanelDefault::resized()
     waveformMeter->setBounds (0, getHeight() - 126, getWidth() - 0, 126);
     separator->setBounds (0, getHeight() - 126 - 2, getWidth() - 0, 2);
     rootTreeItemPanel->setBounds (0, 0, getWidth() - 0, 48);
+    modeIndicator->setBounds (0, getHeight() - 6, getWidth() - 0, 6);
     //[UserResized] Add your own custom resize handling here..
 
     if (widthChanged)
@@ -200,6 +203,12 @@ Rectangle<int> TreePanelDefault::getWorkingArea()
 {
     return this->tree->getBounds();
 }
+
+void TreePanelDefault::handleChangeMode()
+{
+    this->modeIndicator->scrollToNextMode();
+    // TODO change components
+}
 //[/MiscUserCode]
 
 #if 0
@@ -239,6 +248,9 @@ BEGIN_JUCER_METADATA
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="faec82bf5da2e1" memberName="rootTreeItemPanel" virtualName=""
                     explicitFocusOrder="0" pos="0 0 0M 48" class="Component" params=""/>
+  <GENERICCOMPONENT name="" id="4b6240e11495d88b" memberName="modeIndicator" virtualName=""
+                    explicitFocusOrder="0" pos="0 0Rr 0M 6" class="ModeIndicatorComponent"
+                    params="3"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
