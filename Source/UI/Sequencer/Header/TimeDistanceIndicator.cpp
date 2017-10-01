@@ -49,7 +49,7 @@ TimeDistanceIndicator::TimeDistanceIndicator()
 
     //[Constructor]
     this->setAlpha(0.f);
-    this->startTimer(17);
+    this->startTimerHz(60);
     //[/Constructor]
 }
 

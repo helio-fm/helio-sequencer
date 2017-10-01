@@ -26,7 +26,7 @@ public:
     DialogBackground() : appearMode(true)
     {
         this->setAlpha(0.f);
-        this->startTimer(17);
+        this->startTimerHz(60);
     }
     
     void handleCommandMessage(int commandId) override
@@ -34,7 +34,7 @@ public:
         if (commandId == CommandIDs::HideDialog)
         {
             this->appearMode = false;
-            this->startTimer(17);
+            this->startTimerHz(60);
         }
     }
 

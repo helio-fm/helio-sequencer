@@ -41,7 +41,7 @@ HybridRollExpandMark::HybridRollExpandMark(HybridRoll &parentRoll, float targetB
     setSize (256, 48);
 
     //[Constructor]
-    this->startTimer(17);
+    this->startTimerHz(60);
     //[/Constructor]
 }
 

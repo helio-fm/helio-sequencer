@@ -73,7 +73,7 @@ void ViewportKineticSlider::calculateDragSpeedForViewport(Viewport *targetViewpo
     
     if (! this->isTimerRunning())
     {
-        this->startTimer(17);
+        this->startTimerHz(60);
     }
 }
 
@@ -118,7 +118,7 @@ void ViewportKineticSlider::startAnimationForViewport(Viewport *targetViewport, 
     
     if (! this->isTimerRunning())
     {
-        this->startTimer(17);
+        this->startTimerHz(60);
     }
     
     //Logger::writeToLog("animators " + String(this->animators.size()));
