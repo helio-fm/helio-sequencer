@@ -22,12 +22,12 @@ class AudioMonitor;
 // The same as component width (and the same as sidebar width):
 #define WAVEFORM_METER_BUFFER_SIZE 72
 
-class WaveformMeter : public Component, private Thread, private AsyncUpdater
+class WaveformAudioMonitorComponent : public Component, private Thread, private AsyncUpdater
 {
 public:
 
-    WaveformMeter(WeakReference<AudioMonitor> targetAnalyzer);
-    ~WaveformMeter() override;
+    WaveformAudioMonitorComponent(WeakReference<AudioMonitor> targetAnalyzer);
+    ~WaveformAudioMonitorComponent() override;
 
     void setTargetAnalyzer(WeakReference<AudioMonitor> targetAnalyzer);
 
@@ -52,6 +52,6 @@ private:
 
     int skewTime;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveformMeter)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WaveformAudioMonitorComponent)
 
 };

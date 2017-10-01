@@ -32,8 +32,7 @@
 #include "SerializationKeys.h"
 
 #include "SpectralLogo.h"
-#include "SpectrumMeter.h"
-#include "VolumePeakMeter.h"
+#include "GenericAudioMonitorComponent.h"
 #include "App.h"
 #include "AudioCore.h"
 
@@ -56,14 +55,10 @@ TreePanelPhone::TreePanelPhone()
     addAndMakeVisible (headLine = new SeparatorHorizontalReversed());
     addAndMakeVisible (headShadow = new LighterShadowDownwards());
     addAndMakeVisible (gradient1 = new GradientVerticalReversed());
-    addAndMakeVisible (spectrumMeter = new SpectrumMeter (nullptr));
+    addAndMakeVisible (spectrumMeter = new GenericAudioMonitorComponent (nullptr));
 
     addAndMakeVisible (separator = new SeparatorHorizontal());
     addAndMakeVisible (rootTreeItemPanel = new Component());
-
-    addAndMakeVisible (peakMeterLeft = new VolumePeakMeter (nullptr, 0, VolumePeakMeter::Left));
-
-    addAndMakeVisible (peakMeterRight = new VolumePeakMeter (nullptr, 1, VolumePeakMeter::Right));
 
 
     //[UserPreSize]
@@ -99,8 +94,6 @@ TreePanelPhone::~TreePanelPhone()
     spectrumMeter = nullptr;
     separator = nullptr;
     rootTreeItemPanel = nullptr;
-    peakMeterLeft = nullptr;
-    peakMeterRight = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -146,8 +139,6 @@ void TreePanelPhone::resized()
     spectrumMeter->setBounds (0, getHeight() - 62, getWidth() - 0, 62);
     separator->setBounds (0, getHeight() - 62 - 2, getWidth() - 0, 2);
     rootTreeItemPanel->setBounds (0, 0, getWidth() - 0, 48);
-    peakMeterLeft->setBounds (0, getHeight() - 62, 8, 62);
-    peakMeterRight->setBounds (getWidth() - 8, getHeight() - 62, 8, 62);
     //[UserResized] Add your own custom resize handling here..
 
     if (widthChanged)
@@ -196,8 +187,6 @@ void TreePanelPhone::setRootItemPanelSelected(bool shouldBeSelected)
 void TreePanelPhone::setAudioMonitor(AudioMonitor *audioMonitor)
 {
     this->spectrumMeter->setTargetAnalyzer(audioMonitor);
-    this->peakMeterLeft->setTargetAnalyzer(audioMonitor);
-    this->peakMeterRight->setTargetAnalyzer(audioMonitor);
 }
 
 Rectangle<int> TreePanelPhone::getWorkingArea()
@@ -236,19 +225,13 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="-50 0 -100M 47" sourceFile="../Themes/GradientVerticalReversed.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="1c5204139a3bea83" memberName="spectrumMeter" virtualName=""
-                    explicitFocusOrder="0" pos="0 0Rr 0M 62" class="SpectrumMeter"
+                    explicitFocusOrder="0" pos="0 0Rr 0M 62" class="GenericAudioMonitorComponent"
                     params="nullptr"/>
   <JUCERCOMP name="" id="22d481533ce3ecd3" memberName="separator" virtualName=""
              explicitFocusOrder="0" pos="0 62Rr 0M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="faec82bf5da2e1" memberName="rootTreeItemPanel" virtualName=""
                     explicitFocusOrder="0" pos="0 0 0M 48" class="Component" params=""/>
-  <GENERICCOMPONENT name="" id="f36c1cf11c793cec" memberName="peakMeterLeft" virtualName=""
-                    explicitFocusOrder="0" pos="0 0Rr 8 62" class="VolumePeakMeter"
-                    params="nullptr, 0, VolumePeakMeter::Left"/>
-  <GENERICCOMPONENT name="" id="e90d6ee8a79197a7" memberName="peakMeterRight" virtualName=""
-                    explicitFocusOrder="0" pos="0Rr 0Rr 8 62" class="VolumePeakMeter"
-                    params="nullptr, 1, VolumePeakMeter::Right"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

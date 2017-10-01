@@ -16,8 +16,7 @@
 */
 
 #include "Common.h"
-#include "SpectrumMeter.h"
-#include "WaveformMeter.h"
+#include "GenericAudioMonitorComponent.h"
 #include "AudioMonitor.h"
 #include "TreePanel.h"
 #include "AudioCore.h"
@@ -59,7 +58,7 @@ static const float kSpectrumFrequenciesCompact[] =
     5000.f, 8000.f
 };
 
-SpectrumMeter::SpectrumMeter(WeakReference<AudioMonitor> monitor)
+GenericAudioMonitorComponent::GenericAudioMonitorComponent(WeakReference<AudioMonitor> monitor)
     : Thread("Spectrum Component"),
       audioMonitor(std::move(monitor)),
       bandCount(HQ_METER_NUM_BANDS),
@@ -81,7 +80,7 @@ SpectrumMeter::SpectrumMeter(WeakReference<AudioMonitor> monitor)
     }
 }
 
-void SpectrumMeter::setTargetAnalyzer(WeakReference<AudioMonitor> monitor)
+void GenericAudioMonitorComponent::setTargetAnalyzer(WeakReference<AudioMonitor> monitor)
 {
     if (monitor != nullptr)
     {
@@ -90,17 +89,17 @@ void SpectrumMeter::setTargetAnalyzer(WeakReference<AudioMonitor> monitor)
     }
 }
 
-SpectrumMeter::~SpectrumMeter()
+GenericAudioMonitorComponent::~GenericAudioMonitorComponent()
 { 
     this->stopThread(1000);
 }
 
-bool SpectrumMeter::isCompactMode() const
+bool GenericAudioMonitorComponent::isCompactMode() const
 {
     return (this->getWidth() == TREE_COMPACT_WIDTH);
 }
 
-void SpectrumMeter::run()
+void GenericAudioMonitorComponent::run()
 {
     while (! this->threadShouldExit())
     {
@@ -115,12 +114,12 @@ void SpectrumMeter::run()
     }
 }
 
-void SpectrumMeter::handleAsyncUpdate()
+void GenericAudioMonitorComponent::handleAsyncUpdate()
 {
     this->repaint();
 }
 
-void SpectrumMeter::resized()
+void GenericAudioMonitorComponent::resized()
 {
     if (this->isCompactMode())
     {
@@ -140,7 +139,7 @@ void SpectrumMeter::resized()
     }
 }
 
-void SpectrumMeter::paint(Graphics &g)
+void GenericAudioMonitorComponent::paint(Graphics &g)
 {
     if (this->audioMonitor == nullptr)
     {
@@ -178,12 +177,34 @@ void SpectrumMeter::paint(Graphics &g)
             g1.drawHorizontalLine(height - valueForMinus24dB, 0.f, this->getWidth());
         }
     }
-    
+
+    // TODO draw peak levels:
+
+    //{
+    //    Graphics g1(img);
+
+    //    this->peakBand.setValue(this->volumeAnalyzer->getPeak(this->channel));
+    //    const float left = (this->orientation == Left) ? 0.f : w;
+    //    const float right = w - left;
+    //    this->peakBand.drawBand(g1, left, right, h);
+    //}
+
+    //ColourGradient cg(Colours::red, 0.f, 0.f,
+    //    Colours::white.withAlpha(0.2f), 0.f, h,
+    //    false);
+
+    //cg.addColour(0.05f, Colours::red);
+    //cg.addColour(0.06f, Colours::yellow);
+    //cg.addColour(0.21f, Colours::white.withAlpha(0.2f));
+
+    //FillType brush3(cg);
+    //g.setFillType(brush3);
+
     // fillAlphaChannelWithCurrentBrush=true is evil, takes up to 9% of CPU on rendering
     g.drawImageAt(img, 0, 0, false);
 }
 
-void SpectrumMeter::mouseUp(const MouseEvent& event)
+void GenericAudioMonitorComponent::mouseUp(const MouseEvent& event)
 {
     this->altMode = !this->altMode;
     
@@ -193,7 +214,7 @@ void SpectrumMeter::mouseUp(const MouseEvent& event)
     }
 }
 
-SpectrumMeter::SpectrumBand::SpectrumBand() :
+GenericAudioMonitorComponent::SpectrumBand::SpectrumBand() :
     value(0.0f),
     valueHold(0.0f),
     valueDecay(HQ_METER_DECAY_RATE1),
@@ -206,17 +227,17 @@ SpectrumMeter::SpectrumBand::SpectrumBand() :
 {
 }
 
-void SpectrumMeter::SpectrumBand::setDashedLineMode(bool shouldDrawDashedLine)
+void GenericAudioMonitorComponent::SpectrumBand::setDashedLineMode(bool shouldDrawDashedLine)
 {
     this->drawsDashedLine = shouldDrawDashedLine;
 }
 
-void SpectrumMeter::SpectrumBand::setValue(float value)
+void GenericAudioMonitorComponent::SpectrumBand::setValue(float value)
 {
     this->value = value;
 }
 
-void SpectrumMeter::SpectrumBand::reset()
+void GenericAudioMonitorComponent::SpectrumBand::reset()
 {
     this->value = 0.0f;
     this->valueHold = 0.0f;
@@ -229,7 +250,7 @@ void SpectrumMeter::SpectrumBand::reset()
     this->drawsDashedLine = true;
 }
 
-inline void SpectrumMeter::SpectrumBand::drawBand(Graphics &g, float xx, float yy, float w, float h)
+inline void GenericAudioMonitorComponent::SpectrumBand::drawBand(Graphics &g, float xx, float yy, float w, float h)
 {
     const float vauleInDb = jlimit(HQ_METER_MINDB, HQ_METER_MAXDB, 20.0f * AudioCore::fastLog10(this->value));
     float valueInY = float(AudioCore::iecLevel(vauleInDb) * h);

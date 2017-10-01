@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "WaveformMeter.h"
+#include "SpectrogramAudioMonitorComponent.h"
 #include "AudioMonitor.h"
 #include "AudioCore.h"
 
@@ -27,7 +27,7 @@
 #define HQ_METER_DECAY_RATE2 (1.0f - 3E-7f)
 #define HQ_METER_CYCLES_BEFORE_PEAK_FALLOFF 100
 
-WaveformMeter::WaveformMeter(WeakReference<AudioMonitor> targetAnalyzer) :
+SpectrogramAudioMonitorComponent::SpectrogramAudioMonitorComponent(WeakReference<AudioMonitor> targetAnalyzer) :
     Thread("Volume Component"),
     volumeAnalyzer(std::move(targetAnalyzer)),
     skewTime(0)
@@ -40,12 +40,12 @@ WaveformMeter::WaveformMeter(WeakReference<AudioMonitor> targetAnalyzer) :
     }
 }
 
-WaveformMeter::~WaveformMeter()
+SpectrogramAudioMonitorComponent::~SpectrogramAudioMonitorComponent()
 {
     this->stopThread(1000);
 }
 
-void WaveformMeter::setTargetAnalyzer(WeakReference<AudioMonitor> targetAnalyzer)
+void SpectrogramAudioMonitorComponent::setTargetAnalyzer(WeakReference<AudioMonitor> targetAnalyzer)
 {
     if (targetAnalyzer != nullptr)
     {
@@ -54,7 +54,7 @@ void WaveformMeter::setTargetAnalyzer(WeakReference<AudioMonitor> targetAnalyzer
     }
 }
 
-void WaveformMeter::run()
+void SpectrogramAudioMonitorComponent::run()
 {
     while (! this->threadShouldExit())
     {
@@ -63,7 +63,7 @@ void WaveformMeter::run()
         this->triggerAsyncUpdate();
 
         // Shift buffers:
-        for (int i = 0; i < WAVEFORM_METER_BUFFER_SIZE - 1; ++i)
+        for (int i = 0; i < SPECTROGRAM_BUFFER_SIZE - 1; ++i)
         {
             this->lPeakBuffer[i] = this->lPeakBuffer[i + 1].get();
             this->rPeakBuffer[i] = this->rPeakBuffer[i + 1].get();
@@ -71,7 +71,7 @@ void WaveformMeter::run()
             this->rRmsBuffer[i] = this->rRmsBuffer[i + 1].get();
         }
 
-        const int i = WAVEFORM_METER_BUFFER_SIZE - 1;
+        const int i = SPECTROGRAM_BUFFER_SIZE - 1;
 
         // Push next values:
         this->lPeakBuffer[i] = this->volumeAnalyzer->getPeak(0);
@@ -84,7 +84,7 @@ void WaveformMeter::run()
     }
 }
 
-void WaveformMeter::handleAsyncUpdate()
+void SpectrogramAudioMonitorComponent::handleAsyncUpdate()
 {
     this->repaint();
 }
@@ -102,7 +102,7 @@ inline static float iecLevel(float peak)
     return AudioCore::iecLevel(vauleInDb);
 }
 
-void WaveformMeter::paint(Graphics &g)
+void SpectrogramAudioMonitorComponent::paint(Graphics &g)
 {
     if (this->volumeAnalyzer == nullptr)
     {
@@ -116,7 +116,7 @@ void WaveformMeter::paint(Graphics &g)
 
     g.setColour(Colours::white.withAlpha(0.05f));
 
-    for (int i = 0; i < WAVEFORM_METER_BUFFER_SIZE; ++i)
+    for (int i = 0; i < SPECTROGRAM_BUFFER_SIZE; ++i)
     {
         const float peakL = iecLevel(this->lPeakBuffer[i].get()) * midH;
         const float peakR = iecLevel(this->rPeakBuffer[i].get()) * midH;
@@ -126,7 +126,7 @@ void WaveformMeter::paint(Graphics &g)
 
     g.setColour(Colours::white.withAlpha(0.1f));
 
-    for (int i = 0; i < WAVEFORM_METER_BUFFER_SIZE; ++i)
+    for (int i = 0; i < SPECTROGRAM_BUFFER_SIZE; ++i)
     {
         const float rmsL = iecLevel(this->lRmsBuffer[i].get()) * midH;
         const float rmsR = iecLevel(this->rRmsBuffer[i].get()) * midH;

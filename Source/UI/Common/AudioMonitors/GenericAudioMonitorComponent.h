@@ -19,12 +19,12 @@
 
 #include "AudioMonitor.h"
 
-class SpectrumMeter : public Component, private Thread, private AsyncUpdater
+class GenericAudioMonitorComponent : public Component, private Thread, private AsyncUpdater
 {
 public:
 
-    explicit SpectrumMeter(WeakReference<AudioMonitor> monitor);
-    ~SpectrumMeter() override;
+    explicit GenericAudioMonitorComponent(WeakReference<AudioMonitor> monitor);
+    ~GenericAudioMonitorComponent() override;
     
     void setTargetAnalyzer(WeakReference<AudioMonitor> monitor);
         
@@ -79,5 +79,5 @@ private:
     
     bool altMode;
     
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectrumMeter);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GenericAudioMonitorComponent);
 };

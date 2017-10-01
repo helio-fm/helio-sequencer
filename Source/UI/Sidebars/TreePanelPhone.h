@@ -18,7 +18,7 @@
 #pragma once
 
 //[Headers]
-class SpectrumMeter;
+class GenericAudioMonitorComponent;
 class VolumePeakMeter;
 
 #include "TreePanel.h"
@@ -66,11 +66,9 @@ private:
     ScopedPointer<SeparatorHorizontalReversed> headLine;
     ScopedPointer<LighterShadowDownwards> headShadow;
     ScopedPointer<GradientVerticalReversed> gradient1;
-    ScopedPointer<SpectrumMeter> spectrumMeter;
+    ScopedPointer<GenericAudioMonitorComponent> spectrumMeter;
     ScopedPointer<SeparatorHorizontal> separator;
     ScopedPointer<Component> rootTreeItemPanel;
-    ScopedPointer<VolumePeakMeter> peakMeterLeft;
-    ScopedPointer<VolumePeakMeter> peakMeterRight;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TreePanelPhone)
 };
