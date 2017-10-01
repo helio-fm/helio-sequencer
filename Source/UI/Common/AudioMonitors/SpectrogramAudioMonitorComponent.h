@@ -19,10 +19,11 @@
 
 class AudioMonitor;
 
-// The same as component width (and the same as sidebar width):
-#define SPECTROGRAM_BUFFER_SIZE 72
+#define SPECTROGRAM_BUFFER_SIZE 36
+#define SPECTROGRAM_NUM_BANDS 32
 
-class SpectrogramAudioMonitorComponent : public Component, private Thread, private AsyncUpdater
+class SpectrogramAudioMonitorComponent :
+    public Component, private Thread, private AsyncUpdater
 {
 public:
 
@@ -46,14 +47,12 @@ private:
     void run() override;
     void handleAsyncUpdate() override;
     
-    WeakReference<AudioMonitor> volumeAnalyzer;
+    WeakReference<AudioMonitor> audioMonitor;
     
-    Atomic<float> lPeakBuffer[SPECTROGRAM_BUFFER_SIZE];
-    Atomic<float> rPeakBuffer[SPECTROGRAM_BUFFER_SIZE];
+    Atomic<float> peakBuffer[SPECTROGRAM_BUFFER_SIZE];
+    Atomic<float> spectrum[SPECTROGRAM_BUFFER_SIZE][SPECTROGRAM_NUM_BANDS];
 
-    Atomic<float> lRmsBuffer[SPECTROGRAM_BUFFER_SIZE];
-    Atomic<float> rRmsBuffer[SPECTROGRAM_BUFFER_SIZE];
-
+    Atomic<int> head;
     int skewTime;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectrogramAudioMonitorComponent)

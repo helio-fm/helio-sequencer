@@ -57,7 +57,7 @@ TreePanelDefault::TreePanelDefault()
     addAndMakeVisible (headLine = new SeparatorHorizontalReversed());
     addAndMakeVisible (headShadow = new LighterShadowDownwards());
     addAndMakeVisible (gradient1 = new GradientVerticalReversed());
-    addAndMakeVisible (waveformMeter = new WaveformAudioMonitorComponent (nullptr));
+    addAndMakeVisible (waveformMeter = new SpectrogramAudioMonitorComponent (nullptr));
 
     addAndMakeVisible (separator = new SeparatorHorizontal());
     addAndMakeVisible (rootTreeItemPanel = new Component());
@@ -241,7 +241,7 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="-50 0 -100M 47" sourceFile="../Themes/GradientVerticalReversed.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="1c5204139a3bea83" memberName="waveformMeter" virtualName=""
-                    explicitFocusOrder="0" pos="0 0Rr 0M 126" class="WaveformAudioMonitorComponent"
+                    explicitFocusOrder="0" pos="0 0Rr 0M 126" class="SpectrogramAudioMonitorComponent"
                     params="nullptr"/>
   <JUCERCOMP name="" id="22d481533ce3ecd3" memberName="separator" virtualName=""
              explicitFocusOrder="0" pos="0 126Rr 0M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"

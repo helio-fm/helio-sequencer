@@ -34,7 +34,7 @@ WaveformAudioMonitorComponent::WaveformAudioMonitorComponent(WeakReference<Audio
     
     if (this->audioMonitor != nullptr)
     {
-        this->startThread(5);
+        this->startThread(6);
     }
 }
 
@@ -48,7 +48,7 @@ void WaveformAudioMonitorComponent::setTargetAnalyzer(WeakReference<AudioMonitor
     if (targetAnalyzer != nullptr)
     {
         this->audioMonitor = targetAnalyzer;
-        this->startThread(5);
+        this->startThread(6);
     }
 }
 
@@ -56,9 +56,8 @@ void WaveformAudioMonitorComponent::run()
 {
     while (! this->threadShouldExit())
     {
-        Thread::sleep(jlimit(10, 100, 33 - this->skewTime));
+        Thread::sleep(jlimit(10, 100, 35 - this->skewTime));
         const double b = Time::getMillisecondCounterHiRes();
-        this->triggerAsyncUpdate();
 
         // Shift buffers:
         for (int i = 0; i < WAVEFORM_METER_BUFFER_SIZE - 1; ++i)
@@ -76,6 +75,8 @@ void WaveformAudioMonitorComponent::run()
         this->rPeakBuffer[i] = this->audioMonitor->getPeak(1);
         this->lRmsBuffer[i] = this->audioMonitor->getRootMeanSquare(0);
         this->rRmsBuffer[i] = this->audioMonitor->getRootMeanSquare(1);
+
+        this->triggerAsyncUpdate();
 
         const double a = Time::getMillisecondCounterHiRes();
         this->skewTime = int(a - b);

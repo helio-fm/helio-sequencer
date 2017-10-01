@@ -71,13 +71,9 @@ private:
     void run() override;
     void handleAsyncUpdate() override;
     
-    bool isCompactMode() const;
-    
     WeakReference<AudioMonitor> audioMonitor;
     OwnedArray<SpectrumBand> bands;
-    const float *spectrumFrequencies;
-    
-    int bandCount;
+
     int skewTime;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GenericAudioMonitorComponent);

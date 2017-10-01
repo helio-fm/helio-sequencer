@@ -20,6 +20,7 @@
 //[Headers]
 class GenericAudioMonitorComponent;
 class WaveformAudioMonitorComponent;
+class SpectrogramAudioMonitorComponent;
 class ModeIndicatorComponent;
 
 #include "TreePanel.h"
@@ -68,7 +69,7 @@ private:
     ScopedPointer<SeparatorHorizontalReversed> headLine;
     ScopedPointer<LighterShadowDownwards> headShadow;
     ScopedPointer<GradientVerticalReversed> gradient1;
-    ScopedPointer<WaveformAudioMonitorComponent> waveformMeter;
+    ScopedPointer<SpectrogramAudioMonitorComponent> waveformMeter;
     ScopedPointer<SeparatorHorizontal> separator;
     ScopedPointer<Component> rootTreeItemPanel;
     ScopedPointer<ModeIndicatorComponent> modeIndicator;

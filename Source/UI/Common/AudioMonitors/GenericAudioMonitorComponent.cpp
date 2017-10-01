@@ -27,27 +27,9 @@
 #define HQ_METER_DECAY_RATE2 (1.0f - 3E-7f)
 #define HQ_METER_CYCLES_BEFORE_PEAK_FALLOFF 20
 
-#define HQ_METER_NUM_BANDS 40
+#define HQ_METER_NUM_BANDS 12
 
 static const float kSpectrumFrequencies[] =
-{
-    /* Human Ear Response */
-      35.5f,    40.f,     45.f,
-       50.f,    56.f,     63.f,    71.f,    80.f,    90.f,
-      100.f,   112.f,    125.f,   140.f,   160.f,   180.f,
-      200.f,   224.f,    250.f,   280.f,   315.f,   355.f,
-      400.f,   450.f,    500.f,   560.f,   630.f,   710.f,
-      800.f,   900.f,   1000.f,  1120.f,  1250.f,  1400.f,
-     1600.f,  1800.f,   2000.f,  2240.f,  2500.f,  2800.f,
-     3150.f,  3550.f,   4000.f,  4500.f,  5000.f,  5600.f,
-     6300.f,  7100.f,   8000.f,  9000.f, 10000.f, 11200.f,
-    12500.f, 14000.f,  16000.f, 18000.f, 20000.f, 22400.f,
-    22400.f, 25000.f
-};
-
-#define HQ_METER_NUM_BANDS_COMPACT 12
-
-static const float kSpectrumFrequenciesCompact[] =
 {
     31.5f,
     50.f, 80.f,
@@ -61,14 +43,12 @@ static const float kSpectrumFrequenciesCompact[] =
 GenericAudioMonitorComponent::GenericAudioMonitorComponent(WeakReference<AudioMonitor> monitor)
     : Thread("Spectrum Component"),
       audioMonitor(std::move(monitor)),
-      bandCount(HQ_METER_NUM_BANDS),
-      spectrumFrequencies(kSpectrumFrequencies),
       skewTime(0)
 {
     // (true, false) will enable switching rendering modes on click
     this->setInterceptsMouseClicks(true, false);
 
-    for (int band = 0; band < this->bandCount; ++band)
+    for (int band = 0; band < HQ_METER_NUM_BANDS; ++band)
     {
         this->bands.add(new SpectrumBand());
     }
@@ -93,11 +73,6 @@ GenericAudioMonitorComponent::~GenericAudioMonitorComponent()
     this->stopThread(1000);
 }
 
-bool GenericAudioMonitorComponent::isCompactMode() const
-{
-    return (this->getWidth() == TREE_COMPACT_WIDTH);
-}
-
 void GenericAudioMonitorComponent::run()
 {
     while (! this->threadShouldExit())
@@ -120,18 +95,7 @@ void GenericAudioMonitorComponent::handleAsyncUpdate()
 
 void GenericAudioMonitorComponent::resized()
 {
-    if (this->isCompactMode())
-    {
-        this->spectrumFrequencies = kSpectrumFrequenciesCompact;
-        this->bandCount = HQ_METER_NUM_BANDS_COMPACT;
-    }
-    else
-    {
-        this->spectrumFrequencies = kSpectrumFrequencies;
-        this->bandCount = HQ_METER_NUM_BANDS;
-    }
-    
-    for (int i = 0; i < this->bandCount; ++i)
+    for (int i = 0; i < HQ_METER_NUM_BANDS; ++i)
     {
         this->bands[i]->reset();
         //this->bands[i]->setDashedLineMode(true);
@@ -153,13 +117,13 @@ void GenericAudioMonitorComponent::paint(Graphics &g)
     {
         Graphics g1(img);
 
-        const float size = float(width) / float(this->bandCount);
+        const float size = float(width) / float(HQ_METER_NUM_BANDS);
         
-        for (int i = 0; i < this->bandCount; ++i)
+        for (int i = 0; i < HQ_METER_NUM_BANDS; ++i)
         {
             g1.setColour(Colours::white.withAlpha(0.25f));
             const float x = float((i * size) + 1);
-            const float v = this->audioMonitor->getInterpolatedSpectrumAtFrequency(this->spectrumFrequencies[i]);
+            const float v = this->audioMonitor->getInterpolatedSpectrumAtFrequency(kSpectrumFrequencies[i]);
             this->bands[i]->setValue(v);
             this->bands[i]->drawBand(g1, x, 0.f, (size - 2.f), float(height));
         }
