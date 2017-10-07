@@ -35,23 +35,21 @@ public:
 
 private:
     
-    class SpectrumBand
+    class SpectrumBand final
     {
     public:
         
         SpectrumBand();
         void reset();
-        inline void drawBand(Graphics &g, float v,
-            float x, float y, float w, float h, uint32 timeNow);
+        inline void processSignal(float v, float h, uint32 timeNow);
         
-    private:
-                
         float value;
-        float valueDecayProgress;
+        float valueDecay;
         uint32 valueDecayStart;
 
         float peak;
-        float peakDecayProgress;
+        float peakDecay;
+        float peakDecayColour;
         uint32 peakDecayStart;
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectrumBand);
@@ -65,7 +63,13 @@ private:
     WeakReference<AudioMonitor> audioMonitor;
     OwnedArray<SpectrumBand> bands;
 
+    ScopedPointer<SpectrumBand> lPeakBand;
+    ScopedPointer<SpectrumBand> rPeakBand;
+
     Atomic<float> values[GENERIC_METER_NUM_BANDS];
+    Atomic<float> lPeak;
+    Atomic<float> rPeak;
+
     int skewTime;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GenericAudioMonitorComponent);

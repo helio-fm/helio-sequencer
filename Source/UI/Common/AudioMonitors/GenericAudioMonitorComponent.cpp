@@ -22,8 +22,10 @@
 
 #define GENERIC_METER_MAXDB (+4.0f)
 #define GENERIC_METER_MINDB (-70.0f)
-#define GENERIC_METER_BAND_FADE_MS 700.f
-#define GENERIC_METER_PEAK_FADE_MS 1400.f
+#define GENERIC_METER_BAND_FADE_MS 650.f
+#define GENERIC_METER_PEAK_FADE_MS 1300.f
+#define GENERIC_METER_PEAK_MAX_ALPHA 0.35f
+#define GENERIC_METER_SHOWS_VOLUME_PEAKS 1
 
 static const float kSpectrumFrequencies[] =
 {
@@ -49,6 +51,9 @@ GenericAudioMonitorComponent::GenericAudioMonitorComponent(WeakReference<AudioMo
         this->bands.add(new SpectrumBand());
     }
     
+    this->lPeakBand = new SpectrumBand();
+    this->rPeakBand = new SpectrumBand();
+
     if (this->audioMonitor != nullptr)
     {
         this->startThread(5);
@@ -78,8 +83,9 @@ void GenericAudioMonitorComponent::run()
 
         for (int i = 0; i < GENERIC_METER_NUM_BANDS; ++i)
         {
-            const float v = this->audioMonitor->getInterpolatedSpectrumAtFrequency(kSpectrumFrequencies[i]);
-            this->values[i].set(v);
+            this->lPeak = this->audioMonitor->getPeak(0);
+            this->rPeak = this->audioMonitor->getPeak(1);
+            this->values[i] = this->audioMonitor->getInterpolatedSpectrumAtFrequency(kSpectrumFrequencies[i]);
         }
 
         this->triggerAsyncUpdate();
@@ -108,18 +114,68 @@ void GenericAudioMonitorComponent::paint(Graphics &g)
         return;
     }
     
+    const float bw = 6.f; // w / float(GENERIC_METER_NUM_BANDS);
     const float w = float(this->getWidth());
     const float h = float(this->getHeight());
-    const float size = w / float(GENERIC_METER_NUM_BANDS);
     const uint32 timeNow = Time::getMillisecondCounter();
+
+#if GENERIC_METER_SHOWS_VOLUME_PEAKS
+
+    this->lPeakBand->processSignal(this->lPeak.get(), h, timeNow);
+    this->rPeakBand->processSignal(this->rPeak.get(), h, timeNow);
+
+    // Volume indicators:
+    // TODO pretty up their look and add yellow/red colors for clipped signal
+
+    //g.setColour(Colours::white.withAlpha(0.025f));
+    //g.fillRect(0.f, h - this->lPeakBand->value, w / 2.f, this->lPeakBand->value);
+    //g.fillRect(w / 2.f, h - this->rPeakBand->value, w / 2.f, this->rPeakBand->value);
+    ////g.drawHorizontalLine(h - this->lPeakBand->value, 0.f, w / 2.f);
+    ////g.drawHorizontalLine(h - this->rPeakBand->value, w / 2.f, w);
+
+    // Volume peaks:
+
+    const float lAlpha = (0.4f - this->lPeakBand->peakDecayColour) / 10.f;
+    const float yPeakL = (h - this->lPeakBand->peak - 1.f);
+    g.setColour(Colours::white.withAlpha(lAlpha));
+    //g.setGradientFill(ColourGradient(Colours::white.withAlpha(lAlpha), 0.f, 0.f, Colours::transparentWhite, w / 2.f, 0.f, false));
+    g.drawHorizontalLine(int(yPeakL), 0.f, w / 2.f);
+    //g.fillRect(0.f, h - this->lPeakBand->peak, w / 2.f, this->lPeakBand->peak);
+
+    const float rAlpha = (0.4f - this->rPeakBand->peakDecayColour) / 10.f;
+    const float yPeakR = (h - this->rPeakBand->peak - 1.f);
+    g.setColour(Colours::white.withAlpha(rAlpha));
+    //g.setGradientFill(ColourGradient(Colours::transparentWhite, w / 2.f, 0.f, Colours::white.withAlpha(rAlpha), w, 0.f, false));
+    g.drawHorizontalLine(int(yPeakR), w / 2.f, w);
+    //g.fillRect(w / 2.f, h - this->rPeakBand->peak, w / 2.f, this->rPeakBand->peak);
+
+#endif
+
+    // Spectrum bands:
 
     for (int i = 0; i < GENERIC_METER_NUM_BANDS; ++i)
     {
-        this->bands[i]->drawBand(g, this->values[i].get(),
-            i * size + 1.f, 0.f, size - 2.f, h, timeNow);
+        this->bands[i]->processSignal(this->values[i].get(), h, timeNow);
     }
 
-    // TODO draw peak levels:
+    g.setColour(Colours::white.withAlpha(0.25f));
+
+    for (int i = 0; i < GENERIC_METER_NUM_BANDS; ++i)
+    {
+        const float x = i * bw + 1.f;
+        for (int j = int(h + 1); j > (h - this->bands[i]->value); j -= 2)
+        {
+            g.drawHorizontalLine(j, x, x + bw - 2.f);
+        }
+    }
+
+    for (int i = 0; i < GENERIC_METER_NUM_BANDS; ++i)
+    {
+        const float x = i * bw + 1.f;
+        g.setColour(Colours::white.withAlpha(0.4f - this->bands[i]->peakDecayColour));
+        const float peakH = (h - this->bands[i]->peak - 2.f);
+        g.drawHorizontalLine(int(peakH), x, x + bw - 2.f);
+    }
 
     // Show levels?
     //if (this->altMode)
@@ -133,21 +189,15 @@ void GenericAudioMonitorComponent::paint(Graphics &g)
     //    g.drawHorizontalLine(height - valueForMinus12dB, 0.f, this->getWidth());
     //    g.drawHorizontalLine(height - valueForMinus24dB, 0.f, this->getWidth());
     //}
-
-    //{
-    //    this->peakBand.setValue(this->volumeAnalyzer->getPeak(this->channel));
-    //    const float left = (this->orientation == Left) ? 0.f : w;
-    //    const float right = w - left;
-    //    this->peakBand.drawBand(g1, left, right, h);
-    //}
 }
 
 GenericAudioMonitorComponent::SpectrumBand::SpectrumBand() :
     value(0.f),
-    valueDecayProgress(1.f),
+    valueDecay(1.f),
     valueDecayStart(0),
     peak(0.f),
-    peakDecayProgress(1.f),
+    peakDecay(1.f),
+    peakDecayColour(1.f),
     peakDecayStart(0)
 {
 }
@@ -155,32 +205,29 @@ GenericAudioMonitorComponent::SpectrumBand::SpectrumBand() :
 void GenericAudioMonitorComponent::SpectrumBand::reset()
 {
     this->value = 0.f;
-    this->valueDecayProgress = 1.f;
+    this->valueDecay = 1.f;
     this->peak = 0.f;
-    this->peakDecayProgress = 1.f;
+    this->peakDecay = 1.f;
+    this->peakDecayColour = GENERIC_METER_PEAK_MAX_ALPHA;
 }
 
-float timeToDistance(float time, float startSpeed = 0.f,
-    float midSpeed = 2.f, float endSpeed = 0.f) noexcept
+float timeToDistance(float time, float startSpeed = 0.f, float midSpeed = 2.f, float endSpeed = 0.f) noexcept
 {
     return (time < 0.5f) ? time * (startSpeed + time * (midSpeed - startSpeed))
         : 0.5f * (startSpeed + 0.5f * (midSpeed - startSpeed))
         + (time - 0.5f) * (midSpeed + (time - 0.5f) * (endSpeed - midSpeed));
 }
 
-inline void GenericAudioMonitorComponent::SpectrumBand::drawBand(
-    Graphics &g, float signal, float x, float y, float w, float h, uint32 timeNow)
+inline void GenericAudioMonitorComponent::SpectrumBand::processSignal(float signal, float h, uint32 timeNow)
 {
     const float valueInDb = jlimit(GENERIC_METER_MINDB,
         GENERIC_METER_MAXDB, 20.f * AudioCore::fastLog10(signal));
-
-    float valueInY = float(AudioCore::iecLevel(valueInDb) * h);
-    float peakToShow = valueInY;
+    const float valueInY = float(AudioCore::iecLevel(valueInDb) * h);
 
     if (this->value < valueInY)
     {
         this->value = valueInY;
-        this->valueDecayProgress = 0.f;
+        this->valueDecay = 0.f;
         this->valueDecayStart = Time::getMillisecondCounter();
     }
     else
@@ -190,9 +237,9 @@ inline void GenericAudioMonitorComponent::SpectrumBand::drawBand(
         if (newProgress >= 0.f && newProgress < 1.f)
         {
             newProgress = timeToDistance(newProgress);
-            const float delta = (newProgress - this->valueDecayProgress) / (1.f - this->valueDecayProgress);
-            jassert(newProgress >= this->valueDecayProgress);
-            this->valueDecayProgress = newProgress;
+            jassert(newProgress >= this->valueDecay);
+            const float delta = (newProgress - this->valueDecay) / (1.f - this->valueDecay);
+            this->valueDecay = newProgress;
             this->value -= (this->value * delta);
         }
         else
@@ -204,7 +251,7 @@ inline void GenericAudioMonitorComponent::SpectrumBand::drawBand(
     if (this->peak < this->value)
     {
         this->peak = this->value;
-        this->peakDecayProgress = 0.f;
+        this->peakDecay = 0.f;
         this->peakDecayStart = Time::getMillisecondCounter();
     }
     else
@@ -214,24 +261,16 @@ inline void GenericAudioMonitorComponent::SpectrumBand::drawBand(
         if (newProgress >= 0.f && newProgress < 1.f)
         {
             newProgress = timeToDistance(newProgress);
-            const float delta = (newProgress - this->peakDecayProgress) / (1.f - this->peakDecayProgress);
-            jassert(newProgress >= this->peakDecayProgress);
-            this->peakDecayProgress = newProgress;
+            jassert(newProgress >= this->peakDecay);
+            const float delta = (newProgress - this->peakDecay) / (1.f - this->peakDecay);
+            this->peakDecayColour = (newProgress * newProgress * newProgress) * GENERIC_METER_PEAK_MAX_ALPHA;
+            this->peakDecay = newProgress;
             this->peak -= (this->peak * delta);
         }
         else
         {
+            this->peakDecayColour = GENERIC_METER_PEAK_MAX_ALPHA;
             this->peak = 0.f;
         }
     }
-
-    g.setColour(Colours::white.withAlpha(0.25f));
-    for (int i = int(h + 1); i > float(h - this->value); i -= 2)
-    {
-        g.drawHorizontalLine(i, x, x + w);
-    }
-
-    g.setColour(Colours::white.withAlpha(0.375f - (this->peakDecayProgress * this->peakDecayProgress) / 3.f));
-    const float peakH = (h - this->peak - 2.f);
-    g.drawHorizontalLine(int(peakH), x, x + w);
 }
