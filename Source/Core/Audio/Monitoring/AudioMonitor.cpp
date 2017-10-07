@@ -108,27 +108,17 @@ void AudioMonitor::audioDeviceIOCallback(const float **inputChannelData,
     
     for (int channel = 0; channel < numChannels; ++channel)
     {
-#if AUDIO_MONITOR_COMPUTES_RMS
         float pcmSquaresSum = 0.f;
-#endif
-        
         float pcmPeak = 0.f;
         for (int samplePosition = 0; samplePosition < numSamples; ++samplePosition)
         {
             const float &pcmData = outputChannelData[channel][samplePosition];
-            
-#if AUDIO_MONITOR_COMPUTES_RMS
             pcmSquaresSum += (pcmData * pcmData);
-#endif
-            
             pcmPeak = jmax(pcmPeak, pcmData);
         }
         
-#if AUDIO_MONITOR_COMPUTES_RMS
         const float rootMeanSquare = sqrtf(pcmSquaresSum / numSamples);
         this->rms[channel] = rootMeanSquare;
-#endif
-
         this->peak[channel] = pcmPeak;
         
         if (pcmPeak > AUDIO_MONITOR_CLIP_THRESHOLD)
@@ -136,13 +126,11 @@ void AudioMonitor::audioDeviceIOCallback(const float **inputChannelData,
             this->asyncClippingWarning->triggerAsyncUpdate();
         }
         
-#if AUDIO_MONITOR_COMPUTES_RMS
         if (pcmPeak > AUDIO_MONITOR_OVERSATURATION_THRESHOLD &&
             (pcmPeak / rootMeanSquare) > AUDIO_MONITOR_OVERSATURATION_RATE)
         {
             this->asyncOversaturationWarning->triggerAsyncUpdate();
         }
-#endif
     }
     
 #if JUCE_IOS && HELIO_AUDIOBUS_SUPPORT
@@ -212,9 +200,7 @@ float AudioMonitor::getPeak(int channel) const
     return this->peak[channel].get();
 }
 
-#if AUDIO_MONITOR_COMPUTES_RMS
 float AudioMonitor::getRootMeanSquare(int channel) const
 {
     return this->rms[channel].get();
 }
-#endif
