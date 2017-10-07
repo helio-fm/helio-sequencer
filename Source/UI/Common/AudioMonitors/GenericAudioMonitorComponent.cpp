@@ -20,13 +20,10 @@
 #include "AudioMonitor.h"
 #include "AudioCore.h"
 
-#define HQ_METER_MAXDB (+4.0f)
-#define HQ_METER_MINDB (-70.0f)
-#define HQ_METER_DECAY_RATE1 (1.0f - 3E-5f)
-#define HQ_METER_DECAY_RATE2 (1.0f - 3E-7f)
-#define HQ_METER_CYCLES_BEFORE_PEAK_FALLOFF 20
-
-#define HQ_METER_NUM_BANDS 12
+#define GENERIC_METER_MAXDB (+4.0f)
+#define GENERIC_METER_MINDB (-70.0f)
+#define GENERIC_METER_BAND_FADE_MS 700.f
+#define GENERIC_METER_PEAK_FADE_MS 1400.f
 
 static const float kSpectrumFrequencies[] =
 {
@@ -47,7 +44,7 @@ GenericAudioMonitorComponent::GenericAudioMonitorComponent(WeakReference<AudioMo
     // (true, false) will enable switching rendering modes on click
     this->setInterceptsMouseClicks(false, false);
 
-    for (int band = 0; band < HQ_METER_NUM_BANDS; ++band)
+    for (int band = 0; band < GENERIC_METER_NUM_BANDS; ++band)
     {
         this->bands.add(new SpectrumBand());
     }
@@ -79,7 +76,11 @@ void GenericAudioMonitorComponent::run()
         Thread::sleep(jlimit(10, 100, 35 - this->skewTime));
         const double b = Time::getMillisecondCounterHiRes();
 
-        // TODO collect data??
+        for (int i = 0; i < GENERIC_METER_NUM_BANDS; ++i)
+        {
+            const float v = this->audioMonitor->getInterpolatedSpectrumAtFrequency(kSpectrumFrequencies[i]);
+            this->values[i].set(v);
+        }
 
         this->triggerAsyncUpdate();
         const double a = Time::getMillisecondCounterHiRes();
@@ -94,10 +95,9 @@ void GenericAudioMonitorComponent::handleAsyncUpdate()
 
 void GenericAudioMonitorComponent::resized()
 {
-    for (int i = 0; i < HQ_METER_NUM_BANDS; ++i)
+    for (int i = 0; i < this->bands.size(); ++i)
     {
         this->bands[i]->reset();
-        //this->bands[i]->setDashedLineMode(true);
     }
 }
 
@@ -108,156 +108,130 @@ void GenericAudioMonitorComponent::paint(Graphics &g)
         return;
     }
     
-    const int width = this->getWidth();
-    const int height = this->getHeight();
-    
-    Image img(Image::ARGB, width, height, true);
+    const float w = float(this->getWidth());
+    const float h = float(this->getHeight());
+    const float size = w / float(GENERIC_METER_NUM_BANDS);
+    const uint32 timeNow = Time::getMillisecondCounter();
 
+    for (int i = 0; i < GENERIC_METER_NUM_BANDS; ++i)
     {
-        Graphics g1(img);
-
-        const float size = float(width) / float(HQ_METER_NUM_BANDS);
-        
-        for (int i = 0; i < HQ_METER_NUM_BANDS; ++i)
-        {
-            g1.setColour(Colours::white.withAlpha(0.25f));
-            const float x = float((i * size) + 1);
-            const float v = this->audioMonitor->getInterpolatedSpectrumAtFrequency(kSpectrumFrequencies[i]);
-            this->bands[i]->setValue(v);
-            this->bands[i]->drawBand(g1, x, 0.f, (size - 2.f), float(height));
-        }
-
-        // Show levels?
-        //if (this->altMode)
-        //{
-        //    const int valueForMinus6dB = AudioCore::iecLevel(-6.f) * this->getHeight();
-        //    const int valueForMinus12dB = AudioCore::iecLevel(-12.f) * this->getHeight();
-        //    const int valueForMinus24dB = AudioCore::iecLevel(-24.f) * this->getHeight();
-        //    
-        //    g1.setColour(Colours::white.withAlpha(0.075f));
-        //    g1.drawHorizontalLine(height - valueForMinus6dB, 0.f, this->getWidth());
-        //    g1.drawHorizontalLine(height - valueForMinus12dB, 0.f, this->getWidth());
-        //    g1.drawHorizontalLine(height - valueForMinus24dB, 0.f, this->getWidth());
-        //}
+        this->bands[i]->drawBand(g, this->values[i].get(),
+            i * size + 1.f, 0.f, size - 2.f, h, timeNow);
     }
 
     // TODO draw peak levels:
 
+    // Show levels?
+    //if (this->altMode)
     //{
-    //    Graphics g1(img);
+    //    const int valueForMinus6dB = AudioCore::iecLevel(-6.f) * this->getHeight();
+    //    const int valueForMinus12dB = AudioCore::iecLevel(-12.f) * this->getHeight();
+    //    const int valueForMinus24dB = AudioCore::iecLevel(-24.f) * this->getHeight();
+    //    
+    //    g.setColour(Colours::white.withAlpha(0.075f));
+    //    g.drawHorizontalLine(height - valueForMinus6dB, 0.f, this->getWidth());
+    //    g.drawHorizontalLine(height - valueForMinus12dB, 0.f, this->getWidth());
+    //    g.drawHorizontalLine(height - valueForMinus24dB, 0.f, this->getWidth());
+    //}
 
+    //{
     //    this->peakBand.setValue(this->volumeAnalyzer->getPeak(this->channel));
     //    const float left = (this->orientation == Left) ? 0.f : w;
     //    const float right = w - left;
     //    this->peakBand.drawBand(g1, left, right, h);
     //}
-
-    //ColourGradient cg(Colours::red, 0.f, 0.f,
-    //    Colours::white.withAlpha(0.2f), 0.f, h,
-    //    false);
-
-    //cg.addColour(0.05f, Colours::red);
-    //cg.addColour(0.06f, Colours::yellow);
-    //cg.addColour(0.21f, Colours::white.withAlpha(0.2f));
-
-    //FillType brush3(cg);
-    //g.setFillType(brush3);
-
-    // fillAlphaChannelWithCurrentBrush=true is evil, takes up to 9% of CPU on rendering
-    g.drawImageAt(img, 0, 0, false);
 }
 
 GenericAudioMonitorComponent::SpectrumBand::SpectrumBand() :
-    value(0.0f),
-    valueHold(0.0f),
-    valueDecay(HQ_METER_DECAY_RATE1),
-    peak(0.0f),
-    peakHold(0.0f),
-    peakDecay(HQ_METER_DECAY_RATE2),
-    maxPeak(0.0f),
-    averagePeak(0.0f),
-    drawsDashedLine(true)
+    value(0.f),
+    valueDecayProgress(1.f),
+    valueDecayStart(0),
+    peak(0.f),
+    peakDecayProgress(1.f),
+    peakDecayStart(0)
 {
-}
-
-void GenericAudioMonitorComponent::SpectrumBand::setDashedLineMode(bool shouldDrawDashedLine)
-{
-    this->drawsDashedLine = shouldDrawDashedLine;
-}
-
-void GenericAudioMonitorComponent::SpectrumBand::setValue(float value)
-{
-    this->value = value;
 }
 
 void GenericAudioMonitorComponent::SpectrumBand::reset()
 {
-    this->value = 0.0f;
-    this->valueHold = 0.0f;
-    this->valueDecay = HQ_METER_DECAY_RATE1;
-    this->peak = 0.0f;
-    this->peakHold = 0.0f;
-    this->peakDecay = HQ_METER_DECAY_RATE2;
-    this->maxPeak = 0.0f;
-    this->averagePeak = 0.0f;
-    this->drawsDashedLine = true;
+    this->value = 0.f;
+    this->valueDecayProgress = 1.f;
+    this->peak = 0.f;
+    this->peakDecayProgress = 1.f;
 }
 
-inline void GenericAudioMonitorComponent::SpectrumBand::drawBand(Graphics &g, float xx, float yy, float w, float h)
+float timeToDistance(float time, float startSpeed = 0.f,
+    float midSpeed = 2.f, float endSpeed = 0.f) noexcept
 {
-    const float vauleInDb = jlimit(HQ_METER_MINDB, HQ_METER_MAXDB, 20.0f * AudioCore::fastLog10(this->value));
-    float valueInY = float(AudioCore::iecLevel(vauleInDb) * h);
-    
-    if (this->valueHold < valueInY)
+    return (time < 0.5f) ? time * (startSpeed + time * (midSpeed - startSpeed))
+        : 0.5f * (startSpeed + 0.5f * (midSpeed - startSpeed))
+        + (time - 0.5f) * (midSpeed + (time - 0.5f) * (endSpeed - midSpeed));
+}
+
+inline void GenericAudioMonitorComponent::SpectrumBand::drawBand(
+    Graphics &g, float signal, float x, float y, float w, float h, uint32 timeNow)
+{
+    const float valueInDb = jlimit(GENERIC_METER_MINDB,
+        GENERIC_METER_MAXDB, 20.f * AudioCore::fastLog10(signal));
+
+    float valueInY = float(AudioCore::iecLevel(valueInDb) * h);
+    float peakToShow = valueInY;
+
+    if (this->value < valueInY)
     {
-        this->valueHold = valueInY;
-        this->valueDecay = HQ_METER_DECAY_RATE1;
+        this->value = valueInY;
+        this->valueDecayProgress = 0.f;
+        this->valueDecayStart = Time::getMillisecondCounter();
     }
     else
     {
-        this->valueHold = int(this->valueHold * this->valueDecay);
-        
-        if (this->valueHold < valueInY)
+        const auto msElapsed = int(timeNow - this->valueDecayStart);
+        float newProgress = msElapsed / GENERIC_METER_BAND_FADE_MS;
+        if (newProgress >= 0.f && newProgress < 1.f)
         {
-            this->valueHold = valueInY;
+            newProgress = timeToDistance(newProgress);
+            const float delta = (newProgress - this->valueDecayProgress) / (1.f - this->valueDecayProgress);
+            jassert(newProgress >= this->valueDecayProgress);
+            this->valueDecayProgress = newProgress;
+            this->value -= (this->value * delta);
         }
         else
         {
-            this->valueDecay = this->valueDecay * this->valueDecay; // * this->valueDecay;
-            valueInY = this->valueHold;
+            this->value = 0.f;
         }
     }
-    
-    if (this->peak < valueInY)
+
+    if (this->peak < this->value)
     {
-        this->peak = valueInY;
-        this->peakHold = 0.0;
-        this->peakDecay = HQ_METER_DECAY_RATE2;
-    }
-    else if (++this->peakHold > HQ_METER_CYCLES_BEFORE_PEAK_FALLOFF)
-    {
-        this->peak = this->peak * this->peakDecay;
-        this->peakDecay = this->peakDecay * this->peakDecay; // * this->peakDecay;
-    }
-    
-    this->maxPeak = jmax(this->maxPeak, this->peak);
-    this->averagePeak = 0.0f; // todo!
-    
-    if (this->drawsDashedLine)
-    {
-        for (int i = int(h + 1); i > float(h - valueInY); i -= 2)
-        {
-            g.drawHorizontalLine(i, xx, xx + w);
-        }
-        
-        const float peakH = (h - this->peak - 1.f);
-        g.drawHorizontalLine(int(peakH), xx, xx + w);
+        this->peak = this->value;
+        this->peakDecayProgress = 0.f;
+        this->peakDecayStart = Time::getMillisecondCounter();
     }
     else
     {
-        g.fillRect(xx, h - valueInY, w, valueInY);
-
-        const float peakH = (h - this->peak - .5f);
-        g.drawLine(xx, peakH, xx + w, peakH);
+        const auto msElapsed = int(timeNow - this->peakDecayStart);
+        float newProgress = msElapsed / GENERIC_METER_PEAK_FADE_MS;
+        if (newProgress >= 0.f && newProgress < 1.f)
+        {
+            newProgress = timeToDistance(newProgress);
+            const float delta = (newProgress - this->peakDecayProgress) / (1.f - this->peakDecayProgress);
+            jassert(newProgress >= this->peakDecayProgress);
+            this->peakDecayProgress = newProgress;
+            this->peak -= (this->peak * delta);
+        }
+        else
+        {
+            this->peak = 0.f;
+        }
     }
+
+    g.setColour(Colours::white.withAlpha(0.25f));
+    for (int i = int(h + 1); i > float(h - this->value); i -= 2)
+    {
+        g.drawHorizontalLine(i, x, x + w);
+    }
+
+    g.setColour(Colours::white.withAlpha(0.375f - (this->peakDecayProgress * this->peakDecayProgress) / 3.f));
+    const float peakH = (h - this->peak - 2.f);
+    g.drawHorizontalLine(int(peakH), x, x + w);
 }

@@ -19,6 +19,8 @@
 
 #include "AudioMonitor.h"
 
+#define GENERIC_METER_NUM_BANDS 12
+
 class GenericAudioMonitorComponent : public Component, private Thread, private AsyncUpdater
 {
 public:
@@ -37,28 +39,21 @@ private:
     {
     public:
         
-        explicit SpectrumBand();
-        
-        void setDashedLineMode(bool shouldDrawDashedLine);
-        void setValue(float value);
+        SpectrumBand();
         void reset();
-        
-        inline void drawBand(Graphics &g, float xx, float yy, float w, float h);
+        inline void drawBand(Graphics &g, float v,
+            float x, float y, float w, float h, uint32 timeNow);
         
     private:
                 
         float value;
-        float valueHold;
-        float valueDecay;
-        float peak;
-        float peakHold;
-        float peakDecay;
-        
-        float maxPeak;
-        float averagePeak;
+        float valueDecayProgress;
+        uint32 valueDecayStart;
 
-        bool drawsDashedLine;
-        
+        float peak;
+        float peakDecayProgress;
+        uint32 peakDecayStart;
+
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectrumBand);
     };
     
@@ -70,6 +65,7 @@ private:
     WeakReference<AudioMonitor> audioMonitor;
     OwnedArray<SpectrumBand> bands;
 
+    Atomic<float> values[GENERIC_METER_NUM_BANDS];
     int skewTime;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GenericAudioMonitorComponent);
