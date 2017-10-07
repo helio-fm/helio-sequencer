@@ -91,8 +91,8 @@ private:
     Atomic<float> rms[AUDIO_MONITOR_MAX_CHANNELS];
 #endif
 
-    int spectrumSize;
-    double sampleRate;
+    Atomic<int> spectrumSize;
+    Atomic<double> sampleRate;
 
     ListenerList<ClippingListener> clippingListeners;
 

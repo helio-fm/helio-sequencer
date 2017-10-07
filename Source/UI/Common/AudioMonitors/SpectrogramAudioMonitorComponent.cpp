@@ -120,10 +120,10 @@ void SpectrogramAudioMonitorComponent::paint(Graphics &g)
     {
         for (int j = SPECTROGRAM_NUM_BANDS; j-- > 0; )
         {
-            const int x = i - start;
+            const float x = float(i - start);
             const float v = iecLevel(this->spectrum[i][j].get());
             g.setColour(Colours::white.withAlpha(v));
-            g.drawHorizontalLine(h - j * 4, x * 2, x * 2 + 1);
+            g.drawHorizontalLine(h - j * 4, x * 2.f, x * 2.f + 1.f);
         }
     }
 
@@ -132,10 +132,10 @@ void SpectrogramAudioMonitorComponent::paint(Graphics &g)
     {
         for (int j = SPECTROGRAM_NUM_BANDS; j-- > 0; )
         {
-            const int x = i + (SPECTROGRAM_BUFFER_SIZE - start);
+            const float x = float(i + (SPECTROGRAM_BUFFER_SIZE - start));
             const float v = iecLevel(this->spectrum[i][j].get());
             g.setColour(Colours::white.withAlpha(v));
-            g.drawHorizontalLine(h - j * 4, x * 2, x * 2 + 1);
+            g.drawHorizontalLine(h - j * 4, x * 2.f, x * 2.f + 1.f);
         }
     }
 }
