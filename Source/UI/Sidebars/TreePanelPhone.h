@@ -18,8 +18,8 @@
 #pragma once
 
 //[Headers]
-class SpectrumMeter;
-class VolumePeakMeter;
+class GenericAudioMonitorComponent;
+class ModeIndicatorComponent;
 
 #include "TreePanel.h"
 //[/Headers]
@@ -45,6 +45,7 @@ public:
     void setRootItemPanelSelected(bool shouldBeSelected) override;
     void setAudioMonitor(AudioMonitor *audioMonitor) override;
     Rectangle<int> getWorkingArea() override;
+    void handleChangeMode() override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -66,11 +67,10 @@ private:
     ScopedPointer<SeparatorHorizontalReversed> headLine;
     ScopedPointer<LighterShadowDownwards> headShadow;
     ScopedPointer<GradientVerticalReversed> gradient1;
-    ScopedPointer<SpectrumMeter> spectrumMeter;
+    ScopedPointer<GenericAudioMonitorComponent> spectrumMeter;
     ScopedPointer<SeparatorHorizontal> separator;
     ScopedPointer<Component> rootTreeItemPanel;
-    ScopedPointer<VolumePeakMeter> peakMeterLeft;
-    ScopedPointer<VolumePeakMeter> peakMeterRight;
+    ScopedPointer<ModeIndicatorComponent> modeIndicator;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TreePanelPhone)
 };

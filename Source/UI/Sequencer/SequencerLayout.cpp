@@ -164,7 +164,7 @@ public:
             this->deltaH = float(heightOffset);
             this->automations->setSize(this->automations->getWidth(), this->automations->getHeight() + heightOffset);
             this->automations->setTopLeftPosition(0, this->automations->getY() - heightOffset);
-            this->startTimer(17);
+            this->startTimerHz(60);
         }
     }
     
@@ -367,7 +367,7 @@ public:
         this->animationSpeed = ROLLS_SWITCH_ANIMATION_SPEED;
         this->scroller->switchToRoll((this->animationDirection > 0.f) ?
             this->patternRoll : this->pianoRoll);
-        this->startTimer(15);
+        this->startTimerHz(60);
     }
     
     void resized() override

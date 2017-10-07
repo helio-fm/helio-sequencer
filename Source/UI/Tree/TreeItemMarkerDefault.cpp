@@ -53,8 +53,14 @@ void TreeItemMarkerDefault::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x0fffffff));
-    g.fillRect (getWidth() - 3, 0, 3, getHeight() - 0);
+    {
+        int x = getWidth() - 3, y = 0, width = 3, height = getHeight() - 0;
+        Colour fillColour = Colour (0x0fffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]

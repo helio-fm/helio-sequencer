@@ -19,47 +19,39 @@
 
 #include "AudioMonitor.h"
 
-class SpectrumMeter : public Component, private Thread, private AsyncUpdater
+#define GENERIC_METER_NUM_BANDS 12
+
+class GenericAudioMonitorComponent : public Component, private Thread, private AsyncUpdater
 {
 public:
 
-    explicit SpectrumMeter(WeakReference<AudioMonitor> monitor);
-    ~SpectrumMeter() override;
+    explicit GenericAudioMonitorComponent(WeakReference<AudioMonitor> monitor);
+    ~GenericAudioMonitorComponent() override;
     
     void setTargetAnalyzer(WeakReference<AudioMonitor> monitor);
         
     void resized() override;
     void paint(Graphics &g) override;
-    void mouseUp(const MouseEvent& event) override;
 
 private:
     
-    class SpectrumBand
+    class SpectrumBand final
     {
     public:
         
-        explicit SpectrumBand();
-        
-        void setDashedLineMode(bool shouldDrawDashedLine);
-        void setValue(float value);
+        SpectrumBand();
         void reset();
+        inline void processSignal(float v, float h, uint32 timeNow);
         
-        inline void drawBand(Graphics &g, float xx, float yy, float w, float h);
-        
-    private:
-                
         float value;
-        float valueHold;
         float valueDecay;
-        float peak;
-        float peakHold;
-        float peakDecay;
-        
-        float maxPeak;
-        float averagePeak;
+        uint32 valueDecayStart;
 
-        bool drawsDashedLine;
-        
+        float peak;
+        float peakDecay;
+        float peakDecayColour;
+        uint32 peakDecayStart;
+
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectrumBand);
     };
     
@@ -68,16 +60,17 @@ private:
     void run() override;
     void handleAsyncUpdate() override;
     
-    bool isCompactMode() const;
-    
     WeakReference<AudioMonitor> audioMonitor;
     OwnedArray<SpectrumBand> bands;
-    const float *spectrumFrequencies;
-    
-    int bandCount;
+
+    ScopedPointer<SpectrumBand> lPeakBand;
+    ScopedPointer<SpectrumBand> rPeakBand;
+
+    Atomic<float> values[GENERIC_METER_NUM_BANDS];
+    Atomic<float> lPeak;
+    Atomic<float> rPeak;
+
     int skewTime;
     
-    bool altMode;
-    
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectrumMeter);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(GenericAudioMonitorComponent);
 };

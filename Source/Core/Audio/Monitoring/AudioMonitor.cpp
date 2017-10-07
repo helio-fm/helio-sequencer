@@ -102,33 +102,23 @@ void AudioMonitor::audioDeviceIOCallback(const float **inputChannelData,
     for (int channel = 0; channel < numChannels; ++channel)
     {
         this->fft.computeSpectrum(outputChannelData[channel], 0, numSamples,
-                                  this->spectrum[channel], this->spectrumSize,
+                                  this->spectrum[channel], this->spectrumSize.get(),
                                   channel, numOutputChannels);
     }
     
     for (int channel = 0; channel < numChannels; ++channel)
     {
-#if AUDIO_MONITOR_COMPUTES_RMS
         float pcmSquaresSum = 0.f;
-#endif
-        
         float pcmPeak = 0.f;
         for (int samplePosition = 0; samplePosition < numSamples; ++samplePosition)
         {
             const float &pcmData = outputChannelData[channel][samplePosition];
-            
-#if AUDIO_MONITOR_COMPUTES_RMS
             pcmSquaresSum += (pcmData * pcmData);
-#endif
-            
             pcmPeak = jmax(pcmPeak, pcmData);
         }
         
-#if AUDIO_MONITOR_COMPUTES_RMS
         const float rootMeanSquare = sqrtf(pcmSquaresSum / numSamples);
         this->rms[channel] = rootMeanSquare;
-#endif
-
         this->peak[channel] = pcmPeak;
         
         if (pcmPeak > AUDIO_MONITOR_CLIP_THRESHOLD)
@@ -136,13 +126,11 @@ void AudioMonitor::audioDeviceIOCallback(const float **inputChannelData,
             this->asyncClippingWarning->triggerAsyncUpdate();
         }
         
-#if AUDIO_MONITOR_COMPUTES_RMS
         if (pcmPeak > AUDIO_MONITOR_OVERSATURATION_THRESHOLD &&
             (pcmPeak / rootMeanSquare) > AUDIO_MONITOR_OVERSATURATION_RATE)
         {
             this->asyncOversaturationWarning->triggerAsyncUpdate();
         }
-#endif
     }
     
 #if JUCE_IOS && HELIO_AUDIOBUS_SUPPORT
@@ -165,16 +153,17 @@ void AudioMonitor::audioDeviceStopped()
 
 float AudioMonitor::getInterpolatedSpectrumAtFrequency(float frequency) const
 {
-    const float resolution = float(this->sampleRate / 2.f) / float(this->spectrumSize);
+    const float resolution = 
+        float(this->sampleRate.get() / 2.f) / float(this->spectrumSize.get());
     
     const int index1 = roundFloatToInt(frequency / resolution);
-    const int safeIndex1 = jlimit(0, this->spectrumSize, index1);
+    const int safeIndex1 = jlimit(0, this->spectrumSize.get(), index1);
     const float f1 = index1 * resolution;
     const float y1 = (this->spectrum[0][safeIndex1].get() +
                       this->spectrum[1][safeIndex1].get()) / 2.f;
     
     const int index2 = index1 + 1;
-    const int safeIndex2 = jlimit(0, this->spectrumSize, index2);
+    const int safeIndex2 = jlimit(0, this->spectrumSize.get(), index2);
     const float f2 = index2 * resolution;
     const float y2 = (this->spectrum[0][safeIndex2].get() +
                       this->spectrum[1][safeIndex2].get()) / 2.f;
@@ -211,9 +200,7 @@ float AudioMonitor::getPeak(int channel) const
     return this->peak[channel].get();
 }
 
-#if AUDIO_MONITOR_COMPUTES_RMS
 float AudioMonitor::getRootMeanSquare(int channel) const
 {
     return this->rms[channel].get();
 }
-#endif
