@@ -113,6 +113,5 @@ void PatternRollSelectionCommandPanel::initLayersPanel(bool shouldAddBackButton)
 
 void PatternRollSelectionCommandPanel::dismiss()
 {
-    this->roll.grabKeyboardFocus();
     this->getParentComponent()->exitModalState(0);
 }

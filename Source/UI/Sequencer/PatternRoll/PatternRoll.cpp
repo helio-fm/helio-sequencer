@@ -44,6 +44,7 @@
 #include "AutomationSequence.h"
 #include "AutomationClipComponent.h"
 #include "DummyClipComponent.h"
+#include "ComponentIDs.h"
 
 #define ROWS_OF_TWO_OCTAVES 24
 #define DEFAULT_CLIP_LENGTH 1.0f
@@ -63,6 +64,8 @@ PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
     WeakReference<AudioMonitor> clippingDetector) :
     HybridRoll(parentProject, viewportRef, clippingDetector)
 {
+    this->setComponentID(ComponentIDs::patternRollId);
+
     this->header->toFront(false);
     this->indicator->toFront(false);
     //this->reloadRollContent();
@@ -129,8 +132,6 @@ void PatternRoll::deleteSelection()
             pattern->remove(c, true);
         }
     }
-
-    this->grabKeyboardFocus(); // not working?
 }
 
 void PatternRoll::selectAll()
@@ -611,40 +612,6 @@ void PatternRoll::mouseUp(const MouseEvent &e)
         // process lasso selection logic
         HybridRoll::mouseUp(e);
     }
-}
-
-//===----------------------------------------------------------------------===//
-// Keyboard shortcuts
-//===----------------------------------------------------------------------===//
-
-bool PatternRoll::keyPressed(const KeyPress &key)
-{
-    if ((key == KeyPress::createFromDescription("command + x")) ||
-             (key == KeyPress::createFromDescription("ctrl + x")) ||
-             (key == KeyPress::createFromDescription("shift + delete")))
-    {
-        InternalClipboard::copy(*this, false);
-        this->deleteSelection();
-        return true;
-    }
-    else if ((key == KeyPress::createFromDescription("x")) ||
-             (key == KeyPress::createFromDescription("delete")) ||
-             (key == KeyPress::createFromDescription("backspace")))
-    {
-        this->deleteSelection();
-        return true;
-    }
-    else if ((key == KeyPress::createFromDescription("command + v")) ||
-             (key == KeyPress::createFromDescription("shift + insert")) ||
-             (key == KeyPress::createFromDescription("ctrl + v")) ||
-             (key == KeyPress::createFromDescription("command + shift + v")) ||
-             (key == KeyPress::createFromDescription("ctrl + shift + v")))
-    {
-        InternalClipboard::paste(*this);
-        return true;
-    }
-
-    return HybridRoll::keyPressed(key);
 }
 
 void PatternRoll::resized()

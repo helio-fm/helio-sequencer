@@ -38,11 +38,12 @@ HybridRollHeader::HybridRollHeader(Transport &transportRef, HybridRoll &rollRef,
     transport(transportRef),
     roll(rollRef),
     viewport(viewportRef),
-    isActive(false),
     soundProbeMode(false)
 {
     this->setOpaque(true);
     this->setAlwaysOnTop(true);
+    this->setWantsKeyboardFocus(false);
+    this->setFocusContainer(false);
     this->setSize(this->getParentWidth(), HYBRID_ROLL_HEADER_HEIGHT);
 }
 
@@ -69,12 +70,6 @@ void HybridRollHeader::setSoundProbeMode(bool shouldPlayOnClick)
         this->timeDistanceIndicator = nullptr;
         this->setMouseCursor(MouseCursor::NormalCursor);
     }
-}
-
-void HybridRollHeader::setActive(bool shouldBeActive)
-{
-    this->isActive = shouldBeActive;
-    this->repaint();
 }
 
 void HybridRollHeader::updateIndicatorPosition(SoundProbeIndicator *indicator, const MouseEvent &e)
@@ -402,9 +397,7 @@ void HybridRollHeader::paint(Graphics &g)
     const int paintEndX = this->viewport.getViewPositionX() + this->viewport.getViewWidth();
 
     const Colour backCol(this->findColour(HybridRoll::headerColourId));
-    const Colour frontCol(this->isActive ?
-                          backCol.contrasting().withMultipliedAlpha(0.2f) :
-                          backCol.contrasting().withMultipliedAlpha(0.1f));
+    const Colour frontCol(backCol.contrasting().withMultipliedAlpha(0.2f));
 
     g.setColour(backCol);
     g.fillRect(paintStartX, 0, paintEndX - paintStartX, HYBRID_ROLL_HEADER_HEIGHT);

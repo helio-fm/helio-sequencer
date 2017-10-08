@@ -20,6 +20,7 @@
 class NavigationSidebar;
 class TransientTreeItem;
 class TooltipContainer;
+class HotkeyScheme;
 class Headline;
 
 #include "LastShownTreeItems.h"
@@ -43,9 +44,7 @@ public:
 
     void init();
     void forceRestoreLastOpenedPage();
-    
-    void hideConsole();
-    void showConsole(bool alsoShowLog);
+    void toggleShowHideConsole();
 
     static int getScrollerHeight();
 
@@ -85,6 +84,9 @@ public:
     void childBoundsChanged(Component *child) override;
     void lookAndFeelChanged() override;
     bool keyPressed(const KeyPress &key) override;
+    bool keyStateChanged(bool isKeyDown) override;
+    void modifierKeysChanged(const ModifierKeys &modifiers) override;
+    void handleCommandMessage(int commandId) override;
 
 private:
 
@@ -104,6 +106,8 @@ private:
     ScopedPointer<TooltipContainer> tooltipContainer;
     
     LastShownTreeItems lastShownItems;
+
+    ScopedPointer<HotkeyScheme> hotkeyScheme;
     
 private:
 

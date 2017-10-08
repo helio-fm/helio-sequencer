@@ -48,37 +48,42 @@
         <KeyPress Receiver="PianoRoll" Command="Redo" Key="Control + Y" />
 
         <!-- Copy -->
-        <KeyPress Receiver="PianoRoll" Command="Copy" Key="Command + C" />
-        <KeyPress Receiver="PianoRoll" Command="Copy" Key="Control + C" />
-        <KeyPress Receiver="PianoRoll" Command="Copy" Key="Command + Insert" />
-        <KeyPress Receiver="PianoRoll" Command="Copy" Key="Control + Insert" />
+        <KeyPress Receiver="PianoRoll" Command="CopyEvents" Key="Command + C" />
+        <KeyPress Receiver="PianoRoll" Command="CopyEvents" Key="Control + C" />
+        <KeyPress Receiver="PianoRoll" Command="CopyEvents" Key="Command + Insert" />
+        <KeyPress Receiver="PianoRoll" Command="CopyEvents" Key="Control + Insert" />
 
         <!-- Cut -->
-        <KeyPress Receiver="PianoRoll" Command="Cut" Key="Command + X" />
-        <KeyPress Receiver="PianoRoll" Command="Cut" Key="Control + X" />
-        <KeyPress Receiver="PianoRoll" Command="Cut" Key="Shift + Delete" />
+        <KeyPress Receiver="PianoRoll" Command="CutEvents" Key="Command + X" />
+        <KeyPress Receiver="PianoRoll" Command="CutEvents" Key="Control + X" />
+        <KeyPress Receiver="PianoRoll" Command="CutEvents" Key="Shift + Delete" />
+
+        <!-- Delete -->
+        <KeyPress Receiver="PianoRoll" Command="DeleteEvents" Key="X" />
+        <KeyPress Receiver="PianoRoll" Command="DeleteEvents" Key="Delete" />
+        <KeyPress Receiver="PianoRoll" Command="DeleteEvents" Key="Backspace" />
 
         <!-- Paste -->
-        <KeyPress Receiver="PianoRoll" Command="Paste" Key="Command + V" />
-        <KeyPress Receiver="PianoRoll" Command="Paste" Key="Control + V" />
-        <KeyPress Receiver="PianoRoll" Command="Paste" Key="Shift + Insert" />
+        <KeyPress Receiver="PianoRoll" Command="PasteEvents" Key="Command + V" />
+        <KeyPress Receiver="PianoRoll" Command="PasteEvents" Key="Control + V" />
+        <KeyPress Receiver="PianoRoll" Command="PasteEvents" Key="Shift + Insert" />
 
         <!-- Playback control -->
-        <KeyPress Receiver="PianoRoll" Command="StopPlayback" Key="Escape" />
-        <KeyPress Receiver="PianoRoll" Command="ToggleStartStopPlayback" Key="Enter" />
+        <KeyPress Receiver="PianoRoll" Command="TransportPausePlayback" Key="Escape" />
+        <KeyPress Receiver="PianoRoll" Command="TransportStartPlayback" Key="Return" />
 
-        <!-- Tools -->
-        <KeyPress Receiver="PianoRoll" Command="SelectAll" Key="Command + A" />
-        <KeyPress Receiver="PianoRoll" Command="SelectAll" Key="Control + A" />
+        <!-- Selection -->
+        <KeyPress Receiver="PianoRoll" Command="SelectAllEvents" Key="Command + A" />
+        <KeyPress Receiver="PianoRoll" Command="SelectAllEvents" Key="Control + A" />
 
         <!-- Navigation -->
+        <KeyDown  Receiver="PianoRoll" Command="StartDragViewport" Key="Spacebar" />
+        <KeyUp    Receiver="PianoRoll" Command="EndDragViewport" Key="Spacebar" />
         <KeyPress Receiver="PianoRoll" Command="ZoomIn" Key="Z" />
         <KeyPress Receiver="PianoRoll" Command="ZoomOut" Key="Shift + Z" />
 
-        <!-- Space-dragging mode -->
-        <KeyDown Key="Spacebar" Receiver="PianoRoll" Command="StartSpaceDrag" />
-        <KeyUp Key="Spacebar" Receiver="PianoRoll" Command="EndSpaceDrag" />
-
+        <!-- Refactoring -->
+        <!-- TODO -->
 
         <!-- ======================= -->
         <!-- Pattern roll's specific -->
@@ -92,22 +97,37 @@
         <KeyPress Receiver="PatternRoll" Command="Redo" Key="Control + Y" />
 
         <!-- Copy -->
-        <KeyPress Receiver="PatternRoll" Command="Copy" Key="Command + C" />
-        <KeyPress Receiver="PatternRoll" Command="Copy" Key="Control + C" />
-        <KeyPress Receiver="PatternRoll" Command="Copy" Key="Command + Insert" />
-        <KeyPress Receiver="PatternRoll" Command="Copy" Key="Control + Insert" />
+        <KeyPress Receiver="PatternRoll" Command="CopyClips" Key="Command + C" />
+        <KeyPress Receiver="PatternRoll" Command="CopyClips" Key="Control + C" />
+        <KeyPress Receiver="PatternRoll" Command="CopyClips" Key="Command + Insert" />
+        <KeyPress Receiver="PatternRoll" Command="CopyClips" Key="Control + Insert" />
 
         <!-- Cut -->
-        <KeyPress Receiver="PatternRoll" Command="Cut" Key="Command + X" />
-        <KeyPress Receiver="PatternRoll" Command="Cut" Key="Control + X" />
-        <KeyPress Receiver="PatternRoll" Command="Cut" Key="Shift + Delete" />
+        <KeyPress Receiver="PatternRoll" Command="CutClips" Key="Command + X" />
+        <KeyPress Receiver="PatternRoll" Command="CutClips" Key="Control + X" />
+        <KeyPress Receiver="PatternRoll" Command="CutClips" Key="Shift + Delete" />
+
+        <!-- Delete -->
+        <KeyPress Receiver="PatternRoll" Command="DeleteClips" Key="X" />
+        <KeyPress Receiver="PatternRoll" Command="DeleteClips" Key="Delete" />
+        <KeyPress Receiver="PatternRoll" Command="DeleteClips" Key="Backspace" />
 
         <!-- Paste -->
-        <KeyPress Receiver="PatternRoll" Command="Paste" Key="Command + V" />
-        <KeyPress Receiver="PatternRoll" Command="Paste" Key="Control + V" />
-        <KeyPress Receiver="PatternRoll" Command="Paste" Key="Shift + Insert" />
+        <KeyPress Receiver="PatternRoll" Command="PasteClips" Key="Command + V" />
+        <KeyPress Receiver="PatternRoll" Command="PasteClips" Key="Control + V" />
+        <KeyPress Receiver="PatternRoll" Command="PasteClips" Key="Shift + Insert" />
+
+        <!-- Playback control -->
+        <KeyPress Receiver="PatternRoll" Command="TransportPausePlayback" Key="Escape" />
+        <KeyPress Receiver="PatternRoll" Command="TransportStartPlayback" Key="Return" />
+
+        <!-- Selection -->
+        <KeyPress Receiver="PatternRoll" Command="SelectAllClips" Key="Command + A" />
+        <KeyPress Receiver="PatternRoll" Command="SelectAllClips" Key="Control + A" />
 
         <!-- Navigation -->
+        <KeyDown  Receiver="PatternRoll" Command="StartDragViewport" Key="Spacebar" />
+        <KeyUp    Receiver="PatternRoll" Command="EndDragViewport" Key="Spacebar" />
         <KeyPress Receiver="PatternRoll" Command="ZoomIn" Key="Z" />
         <KeyPress Receiver="PatternRoll" Command="ZoomOut" Key="Shift + Z" />
 

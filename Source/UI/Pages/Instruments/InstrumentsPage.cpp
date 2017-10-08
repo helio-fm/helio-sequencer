@@ -34,6 +34,7 @@
 #include "CommandIDs.h"
 #include "App.h"
 #include "Workspace.h"
+#include "ComponentIDs.h"
 //[/MiscUserDefs]
 
 InstrumentsPage::InstrumentsPage(PluginManager &scanner, InstrumentsRootTreeItem &instrumentsTreeItem)
@@ -346,9 +347,8 @@ void InstrumentsPage::changeListenerCallback(ChangeBroadcaster *source)
 
         if (! this->pluginManager.isWorking())
         {
-            Component *progressIndicator = App::Layout().findChildWithID(ProgressTooltip::componentId);
-
-            if (progressIndicator)
+            if (Component *progressIndicator =
+                App::Layout().findChildWithID(ComponentIDs::progressTooltipId))
             {
                 // Nasty hack -_-
                 delete progressIndicator;

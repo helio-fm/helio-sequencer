@@ -202,8 +202,6 @@ void ToolsSidebar::handleCommandMessage (int commandId)
     switch (commandId)
     {
     case CommandIDs::ShowAnnotations:
-
-        // åñëè âûáðàíà êàêàÿ-òî àííîòàöèÿ, ïîêàçûâàåì åå ìåíþ, åñëè íåò - ïîêàçûâàåì îáùåå
     {
         const AnnotationEvent *selectedAnnotation = nullptr;
         const TimeSignatureEvent *selectedTimeSignature = nullptr;
@@ -270,7 +268,7 @@ void ToolsSidebar::handleCommandMessage (int commandId)
         if (HybridRoll *roll = this->project.getLastFocusedRoll())
         {
             this->project.getTransport().startPlayback();
-            roll->startFollowingIndicator();
+            roll->startFollowingPlayhead();
         }
         break;
 
@@ -278,15 +276,8 @@ void ToolsSidebar::handleCommandMessage (int commandId)
         if (HybridRoll *roll = this->project.getLastFocusedRoll())
         {
             this->project.getTransport().stopPlayback();
-            roll->stopFollowingIndicator();
+            roll->stopFollowingPlayhead();
         }
-        break;
-
-    case CommandIDs::EditEvents:
-        //if (HybridRoll *roll = this->project.getLastFocusedRoll())
-        //{
-        //    roll->showEditMenu();
-        //}
         break;
 
     case CommandIDs::DeleteEvents:
@@ -420,7 +411,7 @@ void ToolsSidebar::recreateCommandDescriptions()
     this->commandDescriptions.add(CommandItem::withParams(Icons::cursorTool, CommandIDs::CursorTool)->toggled(defaultMode));
     this->commandDescriptions.add(CommandItem::withParams(Icons::drawTool, CommandIDs::DrawTool)->toggled(drawMode));
     this->commandDescriptions.add(CommandItem::withParams(Icons::selectionTool, CommandIDs::SelectionTool)->toggled(selectionMode));
-    //    this->commandDescriptions.add(CommandItem::withParams(Icons::zoomTool, CommandIDs::ZoomTool)->toggled(zoomMode));
+//    this->commandDescriptions.add(CommandItem::withParams(Icons::zoomTool, CommandIDs::ZoomTool)->toggled(zoomMode));
     this->commandDescriptions.add(CommandItem::withParams(Icons::dragTool, CommandIDs::DragTool)->toggled(dragMode));
     this->commandDescriptions.add(CommandItem::withParams(Icons::wipeScapeTool, CommandIDs::WipeSpaceTool)->toggled(wipeSpaceMode));
     this->commandDescriptions.add(CommandItem::withParams(Icons::insertSpaceTool, CommandIDs::InsertSpaceTool)->toggled(insertSpaceMode));
@@ -432,7 +423,7 @@ void ToolsSidebar::recreateCommandDescriptions()
 
     this->commandDescriptions.add(CommandItem::withParams(Icons::volumeUp, CommandIDs::TweakNotesVolume));
     this->commandDescriptions.add(CommandItem::withParams(Icons::switcher, CommandIDs::MoveEventsToLayer));
-    //    this->commandDescriptions.add(CommandItem::withParams(Icons::ellipsis, CommandIDs::RefactorNotes));
+//    this->commandDescriptions.add(CommandItem::withParams(Icons::ellipsis, CommandIDs::RefactorNotes));
     this->commandDescriptions.add(CommandItem::withParams(Icons::arpeggiator, CommandIDs::ArpNotes));
 
     this->commandDescriptions.add(CommandItem::withParams(Icons::copy, CommandIDs::CopyEvents));

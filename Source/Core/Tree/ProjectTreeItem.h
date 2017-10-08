@@ -68,7 +68,7 @@ public:
     Transport &getTransport() const noexcept;
     ProjectInfo *getProjectInfo() const noexcept;
     ProjectTimeline *getTimeline() const noexcept;
-    HybridRollEditMode getEditMode() const noexcept;
+    HybridRollEditMode &getEditMode() noexcept;
     HybridRoll *getLastFocusedRoll() const;
 
     void repaintEditor();

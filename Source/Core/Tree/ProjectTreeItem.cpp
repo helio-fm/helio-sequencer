@@ -198,7 +198,7 @@ ProjectTimeline *ProjectTreeItem::getTimeline() const noexcept
     return this->timeline;
 }
 
-HybridRollEditMode ProjectTreeItem::getEditMode() const noexcept
+HybridRollEditMode &ProjectTreeItem::getEditMode() noexcept
 {
     return this->rollEditMode;
 }
@@ -335,15 +335,12 @@ void ProjectTreeItem::showEditor(MidiSequence *activeLayer, TreeItem *source)
         }
         
         this->editor->setActiveMidiLayers(pianoLayers, activeLayer); // before
-        
         App::Layout().showPage(this->editor, source);
-        this->editor->grabKeyboardFocus();
     }
     else if (AutomationSequence *autoLayer = dynamic_cast<AutomationSequence *>(activeLayer))
     {
         const bool editorWasShown = this->editor->toggleShowAutomationEditor(autoLayer);
         source->setGreyedOut(!editorWasShown);
-        this->editor->grabKeyboardFocus();
     }
 }
 
@@ -423,8 +420,6 @@ void ProjectTreeItem::showEditorsGroup(Array<MidiSequence *> layersGroup, TreeIt
 //
 //    this->origami->addPage(this->midiRollCommandPanel, false, false, true);
 //    this->workspace.showPage(this->origami, source);
-//
-//    firstFoundEditor->grabKeyboardFocus();
 }
 
 void ProjectTreeItem::updateActiveGroupEditors()

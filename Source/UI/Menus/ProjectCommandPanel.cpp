@@ -478,11 +478,6 @@ void ProjectCommandPanel::initInstrumentSelection()
 
 void ProjectCommandPanel::focusRollAndExit()
 {
-    if (HybridRoll *roll = this->project.getLastFocusedRoll())
-    {
-        roll->grabKeyboardFocus();
-    }
-    
     if (Component *parent = this->getParentComponent())
     {
         parent->exitModalState(0);

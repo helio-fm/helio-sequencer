@@ -112,9 +112,9 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject,
 
     this->setSize(this->viewport.getWidth(), this->viewport.getHeight());
 
-    this->setWantsKeyboardFocus(true);
-    this->setFocusContainer(true);
-    this->setMouseClickGrabsKeyboardFocus(true);
+    this->setMouseClickGrabsKeyboardFocus(false);
+    this->setWantsKeyboardFocus(false);
+    this->setFocusContainer(false);
 
     this->topShadow = new LightShadowDownwards();
     this->bottomShadow = new LightShadowUpwards();
@@ -369,7 +369,7 @@ Point<float> HybridRoll::getMultiTouchOrigin(const Point<float> &from)
 
 void HybridRoll::panByOffset(const int offsetX, const int offsetY)
 {
-    this->stopFollowingIndicator();
+    this->stopFollowingPlayhead();
 
     const bool needsToStretchRight = (offsetX >= (this->getWidth() - this->viewport.getViewWidth()));
     const bool needsToStretchLeft = (offsetX <= 0);
@@ -394,8 +394,6 @@ void HybridRoll::panByOffset(const int offsetX, const int offsetY)
             float(this->firstBar * NUM_BEATS_IN_BAR),
             float(this->lastBar + numBarsToExpand) * NUM_BEATS_IN_BAR);
         this->viewport.setViewPosition(offsetX, offsetY); // after setLastBar
-        this->grabKeyboardFocus();
-
         const float barCloseToTheRight = float(this->lastBar - numBarsToExpand);
         this->header->addAndMakeVisible(new HybridRollExpandMark(*this, barCloseToTheRight, numBarsToExpand));
     }
@@ -407,8 +405,6 @@ void HybridRoll::panByOffset(const int offsetX, const int offsetY)
             float(this->firstBar - numBarsToExpand) * NUM_BEATS_IN_BAR,
             float(this->lastBar * NUM_BEATS_IN_BAR));
         this->viewport.setViewPosition(offsetX + int(deltaW), offsetY); // after setFirstBar
-        this->grabKeyboardFocus();
-
         const float barCloseToTheLeft = float(this->firstBar);
         this->header->addAndMakeVisible(new HybridRollExpandMark(*this, barCloseToTheLeft, numBarsToExpand));
     }
@@ -422,7 +418,7 @@ void HybridRoll::panByOffset(const int offsetX, const int offsetY)
 
 void HybridRoll::panProportionally(const float absX, const float absY)
 {
-    this->stopFollowingIndicator();
+    this->stopFollowingPlayhead();
     this->viewport.setViewPositionProportionately(absX, absY);
     this->updateChildrenPositions();
 }
@@ -458,7 +454,7 @@ void HybridRoll::zoomOutImpulse()
 
 void HybridRoll::zoomAbsolute(const Point<float> &zoom)
 {
-//    this->stopFollowingIndicator();
+//    this->stopFollowingPlayhead();
 
     const float &newWidth = (this->getNumBars() * HYBRID_ROLL_MAX_BAR_WIDTH) * zoom.getX();
     const float &barsOnNewScreen = float(newWidth / HYBRID_ROLL_MAX_BAR_WIDTH);
@@ -471,7 +467,7 @@ void HybridRoll::zoomAbsolute(const Point<float> &zoom)
 
 void HybridRoll::zoomRelative(const Point<float> &origin, const Point<float> &factor)
 {
-    //this->stopFollowingIndicator();
+    //this->stopFollowingPlayhead();
 
     const Point<float> oldViewPosition = this->viewport.getViewPosition().toFloat();
     const Point<float> absoluteOrigin = oldViewPosition + origin;
@@ -495,7 +491,6 @@ void HybridRoll::zoomRelative(const Point<float> &origin, const Point<float> &fa
 
     this->resetDraggingAnchors();
     this->updateChildrenPositions();
-    //this->grabKeyboardFocus();
 }
 
 float HybridRoll::getZoomFactorX() const
@@ -951,260 +946,6 @@ void HybridRoll::longTapEvent(const MouseEvent &e)
     this->lassoComponent->beginLasso(e, this);
 }
 
-void HybridRoll::focusGained(FocusChangeType cause)
-{
-    // juce hack
-    if (Origami *parentOrigami = this->findParentComponentOfClass<Origami>())
-    {
-        parentOrigami->focusOfChildComponentChanged(cause);
-    }
-
-    this->header->setActive(true);
-}
-
-void HybridRoll::focusLost(FocusChangeType cause)
-{
-    this->header->setActive(false);
-}
-
-bool HybridRoll::keyPressed(const KeyPress &key)
-{
-    if (key == KeyPress::createFromDescription("command + a"))
-    {
-        this->selectAll();
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("command + z") ||
-             key == KeyPress::createFromDescription("ctrl + z"))
-    {
-        HYBRID_ROLL_BULK_REPAINT_START
-        this->project.undo();
-        HYBRID_ROLL_BULK_REPAINT_END
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("command + y") ||
-             key == KeyPress::createFromDescription("ctrl + y") ||
-             key == KeyPress::createFromDescription("command + shift + z") ||
-             key == KeyPress::createFromDescription("ctrl + shift + z"))
-    {
-        HYBRID_ROLL_BULK_REPAINT_START
-        this->project.redo();
-        HYBRID_ROLL_BULK_REPAINT_END
-        return true;
-    }
-    else if ((key == KeyPress::createFromDescription("command + c")) ||
-             (key == KeyPress::createFromDescription("command + insert")) ||
-             (key == KeyPress::createFromDescription("ctrl + c")) ||
-             (key == KeyPress::createFromDescription("ctrl + insert")))
-    {
-
-        InternalClipboard::copy(*this, false);
-        return true;
-    }
-    else if ((key == KeyPress::createFromDescription("command + shift + c")) ||
-             (key == KeyPress::createFromDescription("ctrl + shift + c")))
-    {
-        InternalClipboard::copy(*this, true);
-        return true;
-    }
-    else if ((key == KeyPress::createFromDescription("command + shift + x")) ||
-             (key == KeyPress::createFromDescription("ctrl + shift + x")))
-    {
-        // TODO move all PianoRollToolbox-related stuff to PianoRoll
-        if (this->selection.getNumSelected() > 0)
-        {
-            InternalClipboard::copy(*this, false);
-            this->project.checkpoint();
-            const float leftBeat = PianoRollToolbox::findStartBeat(this->selection);
-            const float rightBeat = PianoRollToolbox::findEndBeat(this->selection);
-            PianoRollToolbox::wipeSpace(this->project.getTracks(), leftBeat, rightBeat, true, false);
-            PianoRollToolbox::shiftEventsToTheRight(this->project.getTracks(),
-                leftBeat, -(rightBeat - leftBeat), false);
-            return true;
-        }
-    }
-    else if (key == KeyPress::createFromDescription("cursor left"))
-    {
-        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), -0.25f);
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("cursor right"))
-    {
-        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), 0.25f);
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("shift + cursor left"))
-    {
-        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), -0.25f * NUM_BEATS_IN_BAR);
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("shift + cursor right"))
-    {
-        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), 0.25f * NUM_BEATS_IN_BAR);
-        return true;
-    }
-    else if (key.isKeyCode(KeyPress::spaceKey))
-    {
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("escape"))
-    {
-        if (this->project.getTransport().isPlaying())
-        {
-            this->project.getTransport().stopPlayback();
-        }
-        else
-        {
-            this->resetAllClippingIndicators();
-            this->resetAllOversaturationIndicators();
-        }
-
-        App::Workspace().getAudioCore().mute();
-        App::Workspace().getAudioCore().unmute();
-
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("1"))
-    {
-        this->project.getEditMode().setMode(HybridRollEditMode::defaultMode);
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("2"))
-    {
-        this->project.getEditMode().setMode(HybridRollEditMode::drawMode);
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("3"))
-    {
-        this->project.getEditMode().setMode(HybridRollEditMode::selectionMode);
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("4"))
-    {
-        this->project.getEditMode().setMode(HybridRollEditMode::dragMode);
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("5"))
-    {
-        this->project.getEditMode().setMode(HybridRollEditMode::wipeSpaceMode);
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("6"))
-    {
-        this->project.getEditMode().setMode(HybridRollEditMode::insertSpaceMode);
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("z"))
-    {
-        this->zoomInImpulse();
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("shift + z"))
-    {
-        this->zoomOutImpulse();
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("command + s") ||
-             key == KeyPress::createFromDescription("ctrl + s"))
-    {
-        this->project.getDocument()->forceSave();
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("shift + Tab"))
-    {
-        if (VersionControlTreeItem *vcsTreeItem = this->project.findChildOfType<VersionControlTreeItem>())
-        {
-            vcsTreeItem->toggleQuickStash();
-            return true;
-        }
-    }
-    else if (key == KeyPress::returnKey)
-    {
-        if (this->project.getTransport().isPlaying())
-        {
-            //this->project.getTransport().stopPlayback();
-            this->startFollowingIndicator();
-        }
-        else
-        {
-            this->project.getTransport().startPlayback();
-            this->startFollowingIndicator();
-        }
-
-        return true;
-    }
-
-    return false;
-}
-
-bool HybridRoll::keyStateChanged(bool isKeyDown)
-{
-    if (isKeyDown && KeyPress::isKeyCurrentlyDown(KeyPress::spaceKey))
-    {
-        this->header->setSoundProbeMode(true);
-
-        // без этой проверки при отжатии space - режим сменится на предпредыдущий, а не должен
-        // а с ней - не включается плэйбек на space
-        //const bool alreadyHasDragMode = this->project.getEditMode().isMode(HybridRollEditMode::dragMode);
-        //if (! alreadyHasDragMode)
-        {
-            this->setSpaceDraggingMode(true);
-            return true;
-        }
-    }
-    else if (!isKeyDown && !KeyPress::isKeyCurrentlyDown(KeyPress::spaceKey))
-    {
-        this->header->setSoundProbeMode(false);
-
-        if (this->isUsingSpaceDraggingMode())
-        {
-            const Time lastMouseDownTime = Desktop::getInstance().getMainMouseSource().getLastMouseDownTime();
-            const bool noClicksWasDone = (lastMouseDownTime < this->timeEnteredDragMode);
-            const bool noDraggingWasDone = (this->draggedDistance < 5);
-            const bool notTooMuchTimeSpent = (Time::getCurrentTime() - this->timeEnteredDragMode).inMilliseconds() < 500;
-
-            if (noDraggingWasDone && noClicksWasDone && notTooMuchTimeSpent)
-            {
-                //Logger::writeToLog("toggling playback");
-
-                if (this->project.getTransport().isPlaying())
-                {
-                    this->project.getTransport().stopPlayback();
-                }
-                else
-                {
-                    this->project.getTransport().startPlayback();
-                }
-            }
-
-            this->setSpaceDraggingMode(false);
-            return true;
-        }
-    }
-
-    return false;
-}
-
-void HybridRoll::modifierKeysChanged(const ModifierKeys &modifiers)
-{
-    const bool altDrawingMode = modifiers.isCommandDown(); // || modifiers.isAltDown();
-
-    if (altDrawingMode)
-    {
-        //Logger::writeToLog("setAltDrawingMode(true)");
-        this->setAltDrawingMode(true);
-    }
-    else if (! altDrawingMode)
-    {
-        if (this->isUsingAltDrawingMode())
-        {
-            //Logger::writeToLog("setAltDrawingMode(false)");
-            this->setAltDrawingMode(false);
-        }
-    }
-}
-
-
 void HybridRoll::mouseMove(const MouseEvent &e)
 {
     this->updateWipeSpaceHelperIfNeeded(e);
@@ -1282,7 +1023,6 @@ void HybridRoll::mouseUp(const MouseEvent &e)
         return;
     }
 
-    this->grabKeyboardFocus();
     this->setMouseCursor(this->project.getEditMode().getCursor());
 
     if (this->isViewportZoomEvent(e))
@@ -1492,7 +1232,7 @@ void HybridRoll::onSeek(const double newPosition,
         this->transportLastCorrectPosition = newPosition;
     }
 
-#if MIDIROLL_FOLLOWS_INDICATOR
+#if HYBRID_ROLL_FOLLOWS_INDICATOR
 //    if (this->shouldFollowIndicator)
 //    {
 //        Logger::writeToLog("HybridRoll shouldFollowIndicator");
@@ -1514,36 +1254,36 @@ void HybridRoll::onPlay()
     this->resetAllClippingIndicators();
     this->resetAllOversaturationIndicators();
     
-#if MIDIROLL_FOLLOWS_INDICATOR
+#if HYBRID_ROLL_FOLLOWS_INDICATOR
 //    const bool indicatorIsWithinScreen = fabs(this->findIndicatorOffsetFromViewCentre()) < (this->viewport.getViewWidth() / 2);
 //    if (indicatorIsWithinScreen)
 //    {
-//        this->startFollowingIndicator();
+//        this->startFollowingPlayhead();
 //    }
 #endif
 }
 
 void HybridRoll::onStop()
 {
-#if MIDIROLL_FOLLOWS_INDICATOR
+#if HYBRID_ROLL_FOLLOWS_INDICATOR
     // todo sync screen back to indicator?
-    this->stopFollowingIndicator();
+    this->stopFollowingPlayhead();
     //this->scrollToSeekPosition();
 #endif
 }
 
-void HybridRoll::startFollowingIndicator()
+void HybridRoll::startFollowingPlayhead()
 {
-#if MIDIROLL_FOLLOWS_INDICATOR
+#if HYBRID_ROLL_FOLLOWS_INDICATOR
     this->transportIndicatorOffset = this->findIndicatorOffsetFromViewCentre();
     this->shouldFollowIndicator = true;
     this->triggerAsyncUpdate();
 #endif
 }
 
-void HybridRoll::stopFollowingIndicator()
+void HybridRoll::stopFollowingPlayhead()
 {
-#if MIDIROLL_FOLLOWS_INDICATOR
+#if HYBRID_ROLL_FOLLOWS_INDICATOR
     this->stopTimer();
     // this introduces the case when I change a note during playback, and the note component position is not updated
     //this->cancelPendingUpdate();
@@ -1553,8 +1293,8 @@ void HybridRoll::stopFollowingIndicator()
 
 void HybridRoll::scrollToSeekPosition()
 {
-#if MIDIROLL_FOLLOWS_INDICATOR
-    this->startFollowingIndicator();
+#if HYBRID_ROLL_FOLLOWS_INDICATOR
+    this->startFollowingPlayhead();
     this->startTimer(7);
 #else
     int indicatorX = 0;
@@ -1596,7 +1336,7 @@ void HybridRoll::handleAsyncUpdate()
         this->batchRepaintList.clear();
     }
 
-#if MIDIROLL_FOLLOWS_INDICATOR
+#if HYBRID_ROLL_FOLLOWS_INDICATOR
     if (this->shouldFollowIndicator &&
         !this->smoothZoomController->isZooming())
     {
@@ -1683,7 +1423,7 @@ void HybridRoll::hiResTimerCallback()
 
         if (lock.lockWasGained())
         {
-            this->stopFollowingIndicator();
+            this->stopFollowingPlayhead();
         }
     }
 

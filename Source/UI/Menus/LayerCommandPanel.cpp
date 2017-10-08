@@ -151,11 +151,6 @@ void LayerCommandPanel::handleCommandMessage(int commandId)
                 project->getUndoStack()->perform(new AutomationTrackRemoveAction(*project, layerId));
             }
             
-            if (HybridRoll *roll = dynamic_cast<HybridRoll *>(project->getLastFocusedRoll()))
-            {
-                roll->grabKeyboardFocus();
-            }
-            
             this->getParentComponent()->exitModalState(0);
             return;
         }
@@ -317,14 +312,6 @@ void LayerCommandPanel::initProjectSelection()
 
 void LayerCommandPanel::exit()
 {
-    if (ProjectTreeItem *project = this->layerItem.getProject())
-    {
-        if (HybridRoll *roll = dynamic_cast<HybridRoll *>(project->getLastFocusedRoll()))
-        {
-            roll->grabKeyboardFocus();
-        }
-    }
-    
     this->getParentComponent()->exitModalState(0);
 }
 

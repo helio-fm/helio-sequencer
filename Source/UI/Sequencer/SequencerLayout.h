@@ -52,7 +52,6 @@ public:
     
     HybridRoll *getRoll() const;
 
-
     //===------------------------------------------------------------------===//
     // FileDragAndDropTarget
     //===------------------------------------------------------------------===//
@@ -60,14 +59,12 @@ public:
     void filesDropped(const StringArray &filenames, int mouseX, int mouseY) override;
     bool isInterestedInFileDrag(const StringArray &files) override;
 
-
     //===------------------------------------------------------------------===//
-    // Component events
+    // Component
     //===------------------------------------------------------------------===//
 
     void resized() override;
-    // virtual void broughtToFront() override;
-    
+    void handleCommandMessage(int commandId) override;
 
     //===------------------------------------------------------------------===//
     // Serializable

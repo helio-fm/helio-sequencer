@@ -36,7 +36,7 @@ class Log;
 #include "Menu/WorkspaceMenu.h"
 
 class WorkspacePage  : public Component,
-                       public ButtonListener
+                       public Button::Listener
 {
 public:
 
@@ -62,10 +62,10 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<PanelBackgroundA> background;
-    ScopedPointer<MenuButton> menuButton;
+    ScopedPointer<Component> background;
+    ScopedPointer<Component> menuButton;
     ScopedPointer<LogoFader> logoImage;
-    ScopedPointer<LightShadowRightwards> shadow;
+    ScopedPointer<Component> shadow;
     ScopedPointer<TextButton> settingsButton;
     ScopedPointer<WorkspaceMenu> component;
 

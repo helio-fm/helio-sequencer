@@ -22,7 +22,7 @@
 #include "ProgressTooltip.h"
 
 //[MiscUserDefs]
-const String ProgressTooltip::componentId = "<ProgressTooltip::componentId>";
+#include "ComponentIDs.h"
 #define PROGRESS_TOOLTIP_FADEOUT_TIMS_MS 350
 //[/MiscUserDefs]
 
@@ -32,7 +32,7 @@ ProgressTooltip::ProgressTooltip()
 
 
     //[UserPreSize]
-    this->setComponentID(ProgressTooltip::componentId);
+    this->setComponentID(ComponentIDs::progressTooltipId);
     this->progressIndicator->startAnimating();
     //[/UserPreSize]
 

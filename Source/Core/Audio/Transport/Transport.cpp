@@ -253,6 +253,11 @@ void Transport::stopPlayback()
     }
 }
 
+void Transport::toggleStatStopPlayback()
+{
+    this->isPlaying() ? this->stopPlayback() : this->startPlayback();
+}
+
 bool Transport::isPlaying() const
 {
     return this->player->isThreadRunning();

@@ -28,12 +28,9 @@ class HybridRollHeader : public Component
 public:
 
     HybridRollHeader(Transport &transport, HybridRoll &roll, Viewport &viewport);
-
     ~HybridRollHeader() override;
     
     void setSoundProbeMode(bool shouldProbeOnClick);
-
-    void setActive(bool shouldBeActive);
 
 
     //===------------------------------------------------------------------===//
@@ -41,24 +38,16 @@ public:
     //===------------------------------------------------------------------===//
 
     void mouseUp(const MouseEvent &e) override;
-
     void mouseDown(const MouseEvent &e) override;
-
     void mouseDrag(const MouseEvent &e) override;
-
     void mouseMove(const MouseEvent &e) override;
-    
     void mouseEnter(const MouseEvent &e) override;
-    
     void mouseExit(const MouseEvent &e) override;
-    
     void mouseDoubleClick(const MouseEvent &e) override;
-
     void paint(Graphics &g) override;
 
 protected:
     
-    bool isActive;
     bool soundProbeMode;
     
     Transport &transport;

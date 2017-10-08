@@ -46,11 +46,11 @@
 WorkspacePage::WorkspacePage(MainLayout &workspaceRef)
     : workspace(workspaceRef)
 {
-    addAndMakeVisible (background = new PanelBackgroundA());
-    addAndMakeVisible (menuButton = new MenuButton());
+    addAndMakeVisible (background = new Component());
+    addAndMakeVisible (menuButton = new Component());
     addAndMakeVisible (logoImage = new LogoFader (true));
 
-    addAndMakeVisible (shadow = new LightShadowRightwards());
+    addAndMakeVisible (shadow = new Component());
     addAndMakeVisible (settingsButton = new TextButton (String()));
     settingsButton->setButtonText (TRANS("Settings"));
     settingsButton->addListener (this);
@@ -160,7 +160,7 @@ void WorkspacePage::handleCommandMessage (int commandId)
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="WorkspacePage" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="WorkspacePage" template="../../../Template"
                  componentName="" parentClasses="public Component" constructorParams="MainLayout &amp;workspaceRef"
                  variableInitialisers="workspace(workspaceRef)" snapPixels="8"
                  snapActive="1" snapShown="1" overlayOpacity="0.660" fixedSize="0"
@@ -181,7 +181,7 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="-200 -200 128 128" sourceFile="../Common/MenuButton.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="ea1b592642055bdc" memberName="logoImage" virtualName=""
-                    explicitFocusOrder="0" pos="0Cc 27.479%c 350 350" class="LogoFader"
+                    explicitFocusOrder="0" pos="0Cc 27.512%c 350 350" class="LogoFader"
                     params="true"/>
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
              explicitFocusOrder="0" pos="0 0 5 0M" sourceFile="../Themes/LightShadowRightwards.cpp"
@@ -190,7 +190,7 @@ BEGIN_JUCER_METADATA
               explicitFocusOrder="0" pos="-100 -100 56 48" buttonText="Settings"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <JUCERCOMP name="" id="25591a755b533290" memberName="component" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 40C 450 40.085%" sourceFile="Menu/WorkspaceMenu.cpp"
+             explicitFocusOrder="0" pos="0Cc 40C 450 40.033%" sourceFile="Menu/WorkspaceMenu.cpp"
              constructorParams="&amp;App::Workspace()"/>
 </JUCER_COMPONENT>
 

@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "ModeIndicatorComponent.h"
+#include "ComponentIDs.h"
 
 class ModeIndicatorBar : public Component, private Timer
 {
@@ -73,15 +74,13 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ModeIndicatorBar)
 };
 
-String ModeIndicatorComponent::componentId = "ModeIndicatorComponentId";
-
 ModeIndicatorComponent::ModeIndicatorComponent(int numModes) : activeMode(0)
 {
     this->setInterceptsMouseClicks(false, false);
     this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);
 
-    this->setComponentID(ModeIndicatorComponent::componentId);
+    this->setComponentID(ComponentIDs::modeIndicatorComponentId);
 
     // The normal default state is invisible
     this->setAlpha(0.f);
@@ -132,7 +131,7 @@ void ModeIndicatorComponent::resized()
 
 void ModeIndicatorOwnerComponent::showModeIndicator()
 {
-    if (auto *i = this->findChildWithID(ModeIndicatorComponent::componentId))
+    if (auto *i = this->findChildWithID(ComponentIDs::modeIndicatorComponentId))
     {
         this->modeIndicatorFader.fadeIn(i, 200);
     }
@@ -140,7 +139,7 @@ void ModeIndicatorOwnerComponent::showModeIndicator()
 
 void ModeIndicatorOwnerComponent::hideModeIndicator()
 {
-    if (auto *i = this->findChildWithID(ModeIndicatorComponent::componentId))
+    if (auto *i = this->findChildWithID(ComponentIDs::modeIndicatorComponentId))
     {
         this->modeIndicatorFader.fadeOut(i, 150);
     }

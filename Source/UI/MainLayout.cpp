@@ -35,7 +35,9 @@
 #include "InitScreen.h"
 #include "ToolsSidebar.h"
 #include "ColourSchemeManager.h"
-
+#include "HotkeyScheme.h"
+#include "ComponentIDs.h"
+#include "CommandIDs.h"
 
 namespace KeyboardFocusDebugger
 {
@@ -108,6 +110,7 @@ namespace KeyboardFocusDebugger
 MainLayout::MainLayout() :
     currentContent(nullptr)
 {
+    this->setComponentID(ComponentIDs::mainLayoutId);
     this->setVisible(false);
     
     this->tooltipContainer = new TooltipContainer();
@@ -126,8 +129,22 @@ MainLayout::MainLayout() :
     this->sidebarBorder->setInterceptsMouseClicks(false, false);
     this->sidebarBorder->toFront(false);
 
-    this->setWantsKeyboardFocus(false);
-    this->setFocusContainer(false);
+    this->hotkeyScheme = new HotkeyScheme();
+    {
+        // TODO hot-keys manager
+        const String hotkeysXmlString =
+            String(CharPointer_UTF8(BinaryData::DefaultHotkeys_xml),
+                BinaryData::DefaultHotkeys_xmlSize);
+        const ScopedPointer<XmlElement> hotkeysXml(XmlDocument::parse(hotkeysXmlString));
+        if (XmlElement *defaultScheme = hotkeysXml->getFirstChildElement())
+        {
+            this->hotkeyScheme->deserialize(*defaultScheme);
+        }
+    }
+
+    this->setMouseClickGrabsKeyboardFocus(true);
+    this->setWantsKeyboardFocus(true);
+    this->setFocusContainer(true);
 
     if (const bool quickStartMode = App::Workspace().isInitialized())
     {
@@ -145,6 +162,7 @@ MainLayout::MainLayout() :
 MainLayout::~MainLayout()
 {
     this->removeAllChildren();
+    this->hotkeyScheme = nullptr;
     this->sidebarBorder = nullptr;
     this->navSidebar = nullptr;
     this->headline = nullptr;
@@ -175,14 +193,9 @@ void MainLayout::forceRestoreLastOpenedPage()
     App::Workspace().activateSubItemWithId(Config::get(Serialization::UI::lastShownPageId));
 }
 
-void MainLayout::hideConsole()
+void MainLayout::toggleShowHideConsole()
 {
-    // todo
-}
-
-void MainLayout::showConsole(bool alsoShowLog)
-{
-    // todo
+    // TODO
 }
 
 int MainLayout::getScrollerHeight()
@@ -249,7 +262,7 @@ void hideMarkersRecursive(TreeItem *startFrom)
 void MainLayout::showTransientItem(
     ScopedPointer<TransientTreeItem> newItem, TreeItem *parent)
 {
-    jassert(source != nullptr);
+    jassert(parent != nullptr);
     const auto treeRoot = App::Workspace().getTreeRoot();
     hideMarkersRecursive(treeRoot);
 
@@ -306,7 +319,7 @@ void MainLayout::showPage(Component *page, TreeItem *source)
 
 #if HAS_FADING_PAGECHANGE
     {
-        this->currentContent->toFront(true);
+        this->currentContent->toFront(false);
 
 #if JUCE_WINDOWS
         if (MainWindow::isOpenGLRendererEnabled())
@@ -322,8 +335,7 @@ void MainLayout::showPage(Component *page, TreeItem *source)
     }
 #endif
 
-    this->currentContent->toFront(true);
-    this->currentContent->grabKeyboardFocus();
+    this->currentContent->toFront(false);
     
     Config::set(Serialization::UI::lastShownPageId, source->getItemIdentifierString());
 
@@ -458,54 +470,24 @@ void MainLayout::childBoundsChanged(Component *child)
     }
 }
 
-
 bool MainLayout::keyPressed(const KeyPress &key)
 {
-    // under Android, it sends here the ';' key, when you type a capital letter or a char like @, !, ?
+    // under Android, it sends here the ';' key, 
+    // when you type a capital letter or a char like @, !, ?
     // a piece of juce.
-
 #if HELIO_MOBILE
     return false;
 #endif
 
-    //Logger::writeToLog("MainLayout::keyPressed " + key.getTextDescription());
-    
-#if HELIO_DESKTOP
-
-    if (key == KeyPress::createFromDescription("command + ctrl + cursor left"))
+    if (this->hotkeyScheme->dispatchKeyPress(key,
+        this, this->currentContent.getComponent()))
     {
-        this->showPrevPageIfAny();
         return true;
     }
-    if (key == KeyPress::createFromDescription("command + ctrl + cursor right"))
-    {
-        this->showNextPageIfAny();
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("F2"))
-    {
-        if (MidiTrackTreeItem *primaryItem = dynamic_cast<MidiTrackTreeItem *>(this->getActiveTreeItem().get()))
-        {
-            // TODO rename track
-        }
-    }
-    else if (key == KeyPress::createFromDescription("Tab") &&
-             ! key.getModifiers().isAnyModifierKeyDown())
-    {
-        // TODO switch between pattern roll and piano roll
 
-        //Array <Component*> comps;
-        //KeyboardFocusDebugger::findAllFocusableComponents(this, comps);
-
-        //for (const auto &comp : comps)
-        //{
-        //    Logger::writeToLog(comp->getName());
-        //}
-    }
-    
 #if JUCE_ENABLE_LIVE_CONSTANT_EDITOR
 
-    else if (key == KeyPress::createFromDescription("command + r"))
+    if (key == KeyPress::createFromDescription("command + r"))
     {
         if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
         {
@@ -523,12 +505,35 @@ bool MainLayout::keyPressed(const KeyPress &key)
     }
 
 #endif
-#endif
-
-    if (this->currentContent)
-    {
-        this->currentContent->toFront(true);
-    }
-
+    
     return false;
+}
+
+bool MainLayout::keyStateChanged(bool isKeyDown)
+{
+    return this->hotkeyScheme->dispatchKeyStateChange(isKeyDown,
+        this, this->currentContent.getComponent());
+}
+
+void MainLayout::modifierKeysChanged(const ModifierKeys &modifiers)
+{
+    // TODO do I need to handle this?
+}
+
+void MainLayout::handleCommandMessage(int commandId)
+{
+    switch (commandId)
+    {
+    case CommandIDs::ShowPreviousPage:
+        this->showPrevPageIfAny();
+        break;
+    case CommandIDs::ShowNextPage:
+        this->showNextPageIfAny();
+        break;
+    case CommandIDs::ToggleShowHideConsole:
+        this->toggleShowHideConsole();
+        break;
+    default:
+        break;
+    }
 }

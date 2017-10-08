@@ -28,8 +28,6 @@ public:
     explicit ModeIndicatorComponent(int numModes);
     ~ModeIndicatorComponent();
 
-    static String componentId;
-
     typedef int Mode;
     Mode scrollToNextMode();
 

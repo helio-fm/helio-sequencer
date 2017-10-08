@@ -71,11 +71,6 @@ public:
     // Origami
     //===------------------------------------------------------------------===//
 
-    Component *getLastFocusedComponent() const
-    {
-        return this->lastFocusedComponent;
-    }
-
     virtual void addPage(Component *nonOwnedComponent,
                          bool addShadowAtStart = false,
                          bool addShadowAtEnd = true,
@@ -85,24 +80,10 @@ public:
                          int insertIndex = -1) = 0;
     
     int getMinimumCommonSize() const;
-    
     int getMaximumCommonSize() const;
-    
     bool removePageContaining(Component *component);
-
     void clear();
-
     bool containsComponent(Component *component) const;
-
-
-    //===------------------------------------------------------------------===//
-    // Component
-    //===------------------------------------------------------------------===//
-
-    void focusGained(FocusChangeType cause) override;
-
-    void focusOfChildComponentChanged(FocusChangeType cause) override;
-
 
 protected:
 
@@ -111,8 +92,6 @@ protected:
     OwnedArray<Origami::Page> pages;
 
 private:
-
-    SafePointer<Component> lastFocusedComponent;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Origami)
 

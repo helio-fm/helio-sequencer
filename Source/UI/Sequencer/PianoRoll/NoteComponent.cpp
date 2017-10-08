@@ -646,7 +646,6 @@ void NoteComponent::mouseUp(const MouseEvent &e)
             note->endTuning();
         }
 
-        this->roll.grabKeyboardFocus();
         this->setMouseCursor(MouseCursor::NormalCursor);
     }
 
@@ -865,7 +864,6 @@ void NoteComponent::endDragging(bool sendMidiMessage)
         this->stopSound();
     }
     
-    this->roll.grabKeyboardFocus();
     this->state = None;
 }
 
@@ -922,7 +920,6 @@ Note NoteComponent::continueResizingRight(float deltaLength)
 void NoteComponent::endResizingRight()
 {
     this->stopSound();
-    this->roll.grabKeyboardFocus();
     this->state = None;
 }
 
@@ -968,7 +965,6 @@ Note NoteComponent::continueResizingLeft(float deltaLength)
 void NoteComponent::endResizingLeft()
 {
     this->stopSound();
-    this->roll.grabKeyboardFocus();
     this->state = None;
 }
 
@@ -1015,7 +1011,6 @@ Note NoteComponent::continueGroupScalingRight(float absScaleFactor)
 
 void NoteComponent::endGroupScalingRight()
 {
-    this->roll.grabKeyboardFocus();
     this->state = None;
 }
 
@@ -1063,7 +1058,6 @@ Note NoteComponent::continueGroupScalingLeft(float absScaleFactor)
 
 void NoteComponent::endGroupScalingLeft()
 {
-    this->roll.grabKeyboardFocus();
     this->state = None;
 }
 

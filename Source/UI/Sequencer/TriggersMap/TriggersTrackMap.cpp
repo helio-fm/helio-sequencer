@@ -313,7 +313,7 @@ void TriggersTrackMap::onAddMidiEvent(const MidiEvent &event)
         component->setPreviousNeighbour(previousEventComponent);
 
         this->updateEventComponent(component);
-        component->toFront(true);
+        component->toFront(false);
         
         if (previousEventComponent)
         { previousEventComponent->setNextNeighbour(component); }
@@ -452,7 +452,6 @@ void TriggersTrackMap::reloadTrack()
             component->setPreviousNeighbour(previousEventComponent);
 
             //this->updateSustainPedalComponent(component); // double call? see resized() later
-            //component->toFront(true);
             
             if (previousEventComponent)
             { previousEventComponent->setNextNeighbour(component); }

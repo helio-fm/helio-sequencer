@@ -116,6 +116,19 @@ namespace Serialization
         static const String lastShownPageId = "LastShownPageId";
         static const String editorState = "EditorState";
 
+        namespace Hotkeys
+        {
+            static const String schemes = "HotkeySchemes";
+            static const String scheme = "HotkeyScheme";
+            static const String schemeName = "Name";
+            static const String keyPress = "KeyPress";
+            static const String keyDown = "KeyDown";
+            static const String keyUp = "KeyUp";
+            static const String hotkeyDescription = "Key";
+            static const String hotkeyReceiver = "Receiver";
+            static const String hotkeyCommand = "Command";
+        }
+
         namespace Colours
         {
             static const String schemes = "ColourSchemes";

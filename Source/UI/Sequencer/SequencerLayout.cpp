@@ -38,6 +38,7 @@
 #include "MainLayout.h"
 #include "AudioCore.h"
 #include "AudioMonitor.h"
+#include "ComponentIDs.h"
 
 // force compile template
 #include "AnnotationsMap/AnnotationsTrackMap.cpp"
@@ -152,7 +153,6 @@ public:
     void resizedByUser()
     {
         this->resized();
-        // this->roll->toFront(true);
     }
     
     void resizeAutomations(int heightOffset)
@@ -351,8 +351,11 @@ public:
     {
         this->animationDirection *= -1.f;
         this->animationSpeed = ROLLS_SWITCH_ANIMATION_SPEED;
-        this->scroller->switchToRoll((this->animationDirection > 0.f) ?
-            this->patternRoll : this->pianoRoll);
+        const bool patternMode = (this->animationDirection > 0.f);
+        this->scroller->switchToRoll(patternMode ? this->patternRoll : this->pianoRoll);
+        // Disabling inactive prevents it from receiving keyboard events:
+        this->patternRoll->setEnabled(patternMode);
+        this->pianoRoll->setEnabled(!patternMode);
         this->startTimerHz(60);
     }
     
@@ -446,7 +449,7 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
     project(parentProject),
     pianoRoll(nullptr)
 {
-    this->setName("MidiEditor");
+    this->setComponentID(ComponentIDs::sequencerLayoutId);
 
     // Create viewports, containing the rolls
     const WeakReference<AudioMonitor> clippingDetector =
@@ -550,11 +553,7 @@ void SequencerLayout::setActiveMidiLayers(Array<MidiSequence *> tracks, MidiSequ
 {
     //Logger::writeToLog("MidiEditor::setActiveMidiLayers");
     this->pianoRoll->setActiveMidiLayers(tracks, primaryTrack);
-
-    if (this->isShowing())
-    {
-        this->pianoRoll->grabKeyboardFocus();
-    }
+    //this->patternRoll->setActiveMidiLayers(tracks, primaryTrack);
 }
 
 void SequencerLayout::hideAutomationEditor(AutomationSequence *sequence)
@@ -567,10 +566,6 @@ void SequencerLayout::hideAutomationEditor(AutomationSequence *sequence)
 
 bool SequencerLayout::toggleShowAutomationEditor(AutomationSequence *sequence)
 {
-    // test rolls switching:
-    this->rollContainer->startRollSwitchAnimation();
-    return false;
-
     const String &trackId = sequence->getTrackId();
     
     // special case for the tempo track - let's show it on the scroller
@@ -689,7 +684,6 @@ void SequencerLayout::filesDropped(const juce::StringArray &filenames,
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
@@ -702,11 +696,17 @@ void SequencerLayout::resized()
     this->rollToolsSidebar->resized();
 }
 
-// void MidiEditor::broughtToFront()
-// {
-    // this->roll->toFront(true);
-// }
-
+void SequencerLayout::handleCommandMessage(int commandId)
+{
+    switch (commandId)
+    {
+    case CommandIDs::SwitchBetweenRolls:
+        this->rollContainer->startRollSwitchAnimation();
+        break;
+    default:
+        break;
+    }
+}
 
 //===----------------------------------------------------------------------===//
 // UI State Serialization

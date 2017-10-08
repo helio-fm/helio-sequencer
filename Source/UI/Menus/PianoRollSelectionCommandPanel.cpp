@@ -182,6 +182,5 @@ void PianoRollSelectionCommandPanel::initLayersPanel(bool shouldAddBackButton)
 
 void PianoRollSelectionCommandPanel::dismiss()
 {
-    this->roll.grabKeyboardFocus();
     this->getParentComponent()->exitModalState(0);
 }

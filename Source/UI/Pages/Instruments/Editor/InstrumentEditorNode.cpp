@@ -48,6 +48,7 @@ InstrumentEditorNode::InstrumentEditorNode(Instrument &graph, const uint32 filte
     numIns(0),
     numOuts(0)
 {
+    this->setWantsKeyboardFocus(false);
     this->setMouseCursor(MouseCursor::PointingHandCursor);
     this->setSize(250, 100);
 }
@@ -60,7 +61,7 @@ InstrumentEditorNode::~InstrumentEditorNode()
 void InstrumentEditorNode::mouseDown(const MouseEvent &e)
 {
     originalPos = this->localPointToGlobal(Point<int>());
-    this->toFront(true);
+    this->toFront(false);
 }
 
 void InstrumentEditorNode::mouseDrag(const MouseEvent &e)
