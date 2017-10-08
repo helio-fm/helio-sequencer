@@ -25,7 +25,7 @@ class MidiSequence;
 class AutomationSequence;
 class TrackScroller;
 class ProjectTreeItem;
-class HybridRollCommandPanel;
+class ToolsSidebar;
 class AutomationTrackMap;
 class AutomationTrackMapProxy;
 class MidiEditorSplitContainer;
@@ -89,7 +89,7 @@ private:
     ScopedPointer<PatternRoll> patternRoll;
     ScopedPointer<RollsSwitchingProxy> rollContainer; // лейаут для вьюпорта с роллом и минимап-скроллера внизу
     //ScopedPointer<Component> automationContainer; // лейаут для редактора автоматизации с тулбаром справа
-    ScopedPointer<HybridRollCommandPanel> rollCommandPanel; // тублар справа от роллов
+    ScopedPointer<ToolsSidebar> rollToolsSidebar; // тублар справа от роллов
 
     typedef HashMap<String, AutomationTrackMapProxy *> AutomationEditorsHashMap;
     AutomationEditorsHashMap automationEditorsLinks; // связки id слоев и редакторов автоматизации

@@ -19,12 +19,11 @@
 #include "Common.h"
 //[/Headers]
 
-#include "TreePanelDefault.h"
+#include "NavigationSidebar.h"
 
 //[MiscUserDefs]
 
 #include "SizeSwitcherComponent.h"
-#include "LongTapController.h"
 #include "MainLayout.h"
 #include "TreeItem.h"
 #include "IconComponent.h"
@@ -38,9 +37,6 @@
 #include "App.h"
 #include "AudioCore.h"
 
-#include "RootTreeItemPanelDefault.h"
-#include "RootTreeItemPanelCompact.h"
-
 #include "RolloverHeaderLeft.h"
 #include "RolloverHeaderRight.h"
 #include "RolloverContainer.h"
@@ -49,7 +45,7 @@
 
 //[/MiscUserDefs]
 
-TreePanelDefault::TreePanelDefault()
+NavigationSidebar::NavigationSidebar()
 {
     addAndMakeVisible (background = new PanelBackgroundC());
     addAndMakeVisible (shadow = new LighterShadowUpwards());
@@ -64,13 +60,6 @@ TreePanelDefault::TreePanelDefault()
 
 
     //[UserPreSize]
-    //this->tree->setRootItemVisible(true);
-    //this->tree->setDefaultOpenness(true);
-    //this->tree->setFocusContainer(false);
-    //this->tree->setWantsKeyboardFocus(false);
-    //this->tree->getViewport()->setWantsKeyboardFocus(false);
-    //this->tree->setOpenCloseButtonsVisible(false);
-
     this->genericMonitor = new GenericAudioMonitorComponent(nullptr);
     this->waveformMonitor = new WaveformAudioMonitorComponent(nullptr);
     this->spectrogramMonitor = new SpectrogramAudioMonitorComponent(nullptr);
@@ -88,7 +77,7 @@ TreePanelDefault::TreePanelDefault()
     //[/Constructor]
 }
 
-TreePanelDefault::~TreePanelDefault()
+NavigationSidebar::~NavigationSidebar()
 {
     //[Destructor_pre]
     this->spectrogramMonitor = nullptr;
@@ -112,7 +101,7 @@ TreePanelDefault::~TreePanelDefault()
     //[/Destructor]
 }
 
-void TreePanelDefault::paint (Graphics& g)
+void NavigationSidebar::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
@@ -121,26 +110,9 @@ void TreePanelDefault::paint (Graphics& g)
     //[/UserPaint]
 }
 
-void TreePanelDefault::resized()
+void NavigationSidebar::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
-    //const bool widthChanged = (this->tree->getWidth() != this->getWidth());
-
-    //if (widthChanged)
-    //{
-    //    if (this->isCompactMode())
-    //    {
-    //        this->rootTreeItemPanel = new RootTreeItemPanelCompact();
-    //    }
-    //    else
-    //    {
-    //        this->rootTreeItemPanel = new RootTreeItemPanelDefault();
-    //    }
-
-    //    this->addAndMakeVisible(this->rootTreeItemPanel);
-    //    this->rootTreeItemPanel->postCommandMessage(CommandIDs::UpdateRootItemPanel);
-    //}
-
     this->genericMonitor->setSize(this->getWidth(), AUDIO_MONITOR_HEIGHT);
     this->waveformMonitor->setSize(this->getWidth(), AUDIO_MONITOR_HEIGHT);
     this->spectrogramMonitor->setSize(this->getWidth(), AUDIO_MONITOR_HEIGHT);
@@ -160,60 +132,19 @@ void TreePanelDefault::resized()
     modeIndicatorSelector->setBounds (0, getHeight() - 126, getWidth() - 0, 126);
     modeIndicator->setBounds (0, getHeight() - 4 - 5, getWidth() - 0, 5);
     //[UserResized] Add your own custom resize handling here..
-
-    //spectrogramMonitor->setBounds(0, getHeight() - 126, getWidth() - 0, 126);
-
-    //if (widthChanged)
-    //{
-    //    this->tree->setIndentSize(this->isCompactMode() ? 0 : 7);
-
-    //    // Scrollbars on the tree are evil, as they mess up the whole UI
-    //    this->tree->getViewport()->setScrollBarsShown(false, false);
-
-    //    // Force reload components:
-    //    if (this->root != nullptr)
-    //    {
-    //        this->tree->setRootItem(nullptr);
-    //        this->tree->setRootItem(this->root);
-    //    }
-    //}
-
-    //if (this->currentRollover != nullptr &&
-    //    ! this->rolloverFader.isAnimating())
-    //{
-    //    this->currentRollover->setBounds(0, 0, this->getWidth(), this->tree->getBottom());
-    //}
     //[/UserResized]
 }
 
 
 //[MiscUserCode]
-void TreePanelDefault::setRoot(TreeItem *rootItem)
-{
-    this->root = rootItem;
-    //this->tree->setRootItem(rootItem);
-
-    //if (rootItem != nullptr)
-    //{
-    //    this->tree->getRootItem()->setOpen(true);
-    //    this->tree->setRootItemVisible(true);
-    //}
-}
-
-void TreePanelDefault::setRootItemPanelSelected(bool shouldBeSelected)
-{
-    //this->rootTreeItemPanel->postCommandMessage(shouldBeSelected ?
-    //    CommandIDs::SelectRootItemPanel : CommandIDs::DeselectRootItemPanel);
-}
-
-void TreePanelDefault::setAudioMonitor(AudioMonitor *audioMonitor)
+void NavigationSidebar::setAudioMonitor(AudioMonitor *audioMonitor)
 {
     this->spectrogramMonitor->setTargetAnalyzer(audioMonitor);
     this->waveformMonitor->setTargetAnalyzer(audioMonitor);
     this->genericMonitor->setTargetAnalyzer(audioMonitor);
 }
 
-void TreePanelDefault::handleChangeMode()
+void NavigationSidebar::handleChangeMode()
 {
     switch (this->modeIndicator->scrollToNextMode())
     {
@@ -232,7 +163,7 @@ void TreePanelDefault::handleChangeMode()
     }
 }
 
-void TreePanelDefault::switchMonitorsAnimated(Component *oldOne, Component *newOne)
+void NavigationSidebar::switchMonitorsAnimated(Component *oldOne, Component *newOne)
 {
     const int w = this->getWidth();
     const int y = this->getHeight() - AUDIO_MONITOR_HEIGHT;
@@ -249,10 +180,11 @@ void TreePanelDefault::switchMonitorsAnimated(Component *oldOne, Component *newO
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="TreePanelDefault" template="../../Template"
-                 componentName="" parentClasses="public TreePanel" constructorParams=""
-                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="0" initialWidth="72" initialHeight="640">
+<JUCER_COMPONENT documentType="Component" className="NavigationSidebar" template="../../Template"
+                 componentName="" parentClasses="public ModeIndicatorOwnerComponent"
+                 constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
+                 snapShown="1" overlayOpacity="0.330" fixedSize="0" initialWidth="72"
+                 initialHeight="640">
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="19597a6a5daad55d" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../Themes/PanelBackgroundC.cpp"
@@ -291,9 +223,9 @@ END_JUCER_METADATA
 // Binary resources - be careful not to edit any of these sections!
 
 // JUCER_RESOURCE: gray1x1_png, 150, "../../../../MainLayout/~icons/gray1x1.png"
-static const unsigned char resource_TreePanelDefault_gray1x1_png[] = { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,1,0,0,0,1,8,2,0,0,0,144,119,83,222,0,0,0,9,112,72,89,115,0,0,11,19,0,0,11,19,
+static const unsigned char resource_NavigationSidebar_gray1x1_png[] = { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,1,0,0,0,1,8,2,0,0,0,144,119,83,222,0,0,0,9,112,72,89,115,0,0,11,19,0,0,11,19,
 1,0,154,156,24,0,0,0,7,116,73,77,69,7,222,4,19,5,8,9,228,2,121,9,0,0,0,29,105,84,88,116,67,111,109,109,101,110,116,0,0,0,0,0,67,114,101,97,116,101,100,32,119,105,116,104,32,71,73,77,80,100,46,101,7,0,
 0,0,12,73,68,65,84,8,215,99,136,138,138,2,0,2,32,1,15,53,60,95,243,0,0,0,0,73,69,78,68,174,66,96,130,0,0};
 
-const char* TreePanelDefault::gray1x1_png = (const char*) resource_TreePanelDefault_gray1x1_png;
-const int TreePanelDefault::gray1x1_pngSize = 150;
+const char* NavigationSidebar::gray1x1_png = (const char*) resource_NavigationSidebar_gray1x1_png;
+const int NavigationSidebar::gray1x1_pngSize = 150;

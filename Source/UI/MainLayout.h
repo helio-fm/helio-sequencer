@@ -17,7 +17,7 @@
 
 #pragma once
 
-class TreePanel;
+class NavigationSidebar;
 class TransientTreeItem;
 class TooltipContainer;
 class Headline;
@@ -39,7 +39,6 @@ class MainLayout : public Component
 public:
 
     MainLayout();
-
     ~MainLayout() override;
 
     void init();
@@ -69,7 +68,6 @@ public:
     // UI
     //===------------------------------------------------------------------===//
 
-    void toggleShowTree();
     void setStatus(const String &text);
     void showTooltip(const String &message, int timeOutMs = 15000);
     void showTooltip(Component *newTooltip, int timeOutMs = 15000);
@@ -100,10 +98,8 @@ private:
     SafePointer<Component> currentContent;
 
     ScopedPointer<Headline> headline;
-
-    ScopedPointer<ResizableEdgeComponent> treeResizer;
-    ScopedPointer<TreePanel> treePanel;
-    ComponentBoundsConstrainer treePanelConstrainer;
+    ScopedPointer<NavigationSidebar> navSidebar;
+    ScopedPointer<ResizableEdgeComponent> sidebarBorder;
 
     ScopedPointer<TooltipContainer> tooltipContainer;
     

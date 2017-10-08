@@ -154,9 +154,6 @@ TreeItem *InstrumentTreeItem::findAudioPluginEditorForNodeId(uint32 nodeId) cons
 
 var InstrumentTreeItem::getDragSourceDescription()
 {
-    if (this->isCompactMode())
-    { return var::null; }
-
     return Serialization::Core::instrument;
 }
 

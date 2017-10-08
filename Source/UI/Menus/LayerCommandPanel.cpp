@@ -37,7 +37,7 @@
 #include "PianoTrackActions.h"
 #include "AutomationTrackActions.h"
 #include "UndoStack.h"
-#include "TreePanel.h"
+#include "NavigationSidebar.h"
 #include "Workspace.h"
 #include "App.h"
 
@@ -122,10 +122,11 @@ void LayerCommandPanel::handleCommandMessage(int commandId)
 
         case CommandIDs::RenameLayer:
         {
-            if (TreePanel *panel = this->layerItem.findParentTreePanel())
+            if (NavigationSidebar *panel = this->layerItem.findParentTreePanel())
             {
-                panel->showRenameLayerDialogAsync(&this->layerItem);
-                this->exit();
+                // TODO rename layer dialog
+                //this->showRenameLayerDialogAsync(&this->layerItem);
+                //this->exit();
             }
             
             break;

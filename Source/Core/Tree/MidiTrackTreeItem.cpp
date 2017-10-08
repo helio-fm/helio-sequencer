@@ -456,9 +456,6 @@ ProjectTreeItem *MidiTrackTreeItem::getProject() const
 
 var MidiTrackTreeItem::getDragSourceDescription()
 {
-    if (this->isCompactMode())
-    { return var::null; }
-
     return Serialization::Core::layer;
 }
 

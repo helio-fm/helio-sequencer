@@ -391,8 +391,8 @@ void HybridRoll::panByOffset(const int offsetX, const int offsetY)
     if (needsToStretchRight)
     {
         this->project.broadcastChangeViewBeatRange(
-            this->firstBar * NUM_BEATS_IN_BAR,
-            (this->lastBar + numBarsToExpand) * NUM_BEATS_IN_BAR);
+            float(this->firstBar * NUM_BEATS_IN_BAR),
+            float(this->lastBar + numBarsToExpand) * NUM_BEATS_IN_BAR);
         this->viewport.setViewPosition(offsetX, offsetY); // after setLastBar
         this->grabKeyboardFocus();
 
@@ -404,8 +404,8 @@ void HybridRoll::panByOffset(const int offsetX, const int offsetY)
         const float deltaW = float(this->barWidth * numBarsToExpand);
         this->clickAnchor.addXY(deltaW / SMOOTH_PAN_SPEED_MULTIPLIER, 0); // an ugly hack
         this->project.broadcastChangeViewBeatRange(
-            (this->firstBar - numBarsToExpand) * NUM_BEATS_IN_BAR,
-            this->lastBar * NUM_BEATS_IN_BAR);
+            float(this->firstBar - numBarsToExpand) * NUM_BEATS_IN_BAR,
+            float(this->lastBar * NUM_BEATS_IN_BAR));
         this->viewport.setViewPosition(offsetX + int(deltaW), offsetY); // after setFirstBar
         this->grabKeyboardFocus();
 

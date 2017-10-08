@@ -263,9 +263,6 @@ Component *TrackGroupTreeItem::createItemMenu()
 
 var TrackGroupTreeItem::getDragSourceDescription()
 {
-    if (this->isCompactMode())
-    { return var::null; }
-
     return Serialization::Core::layerGroup;
 }
 

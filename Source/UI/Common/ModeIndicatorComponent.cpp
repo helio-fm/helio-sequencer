@@ -130,7 +130,7 @@ void ModeIndicatorComponent::resized()
     }
 }
 
-void ModeIndicatorOwner::showModeIndicator()
+void ModeIndicatorOwnerComponent::showModeIndicator()
 {
     if (auto *i = this->findChildWithID(ModeIndicatorComponent::componentId))
     {
@@ -138,7 +138,7 @@ void ModeIndicatorOwner::showModeIndicator()
     }
 }
 
-void ModeIndicatorOwner::hideModeIndicator()
+void ModeIndicatorOwnerComponent::hideModeIndicator()
 {
     if (auto *i = this->findChildWithID(ModeIndicatorComponent::componentId))
     {
@@ -153,8 +153,8 @@ ModeIndicatorTrigger::ModeIndicatorTrigger()
 
 void ModeIndicatorTrigger::mouseUp(const MouseEvent& event)
 {
-    if (ModeIndicatorOwner *owner =
-        dynamic_cast<ModeIndicatorOwner *>(this->getParentComponent()))
+    if (ModeIndicatorOwnerComponent *owner =
+        dynamic_cast<ModeIndicatorOwnerComponent *>(this->getParentComponent()))
     {
         owner->handleChangeMode();
     }
@@ -162,8 +162,8 @@ void ModeIndicatorTrigger::mouseUp(const MouseEvent& event)
 
 void ModeIndicatorTrigger::mouseEnter(const MouseEvent &event)
 {
-    if (ModeIndicatorOwner *owner =
-        dynamic_cast<ModeIndicatorOwner *>(this->getParentComponent()))
+    if (ModeIndicatorOwnerComponent *owner =
+        dynamic_cast<ModeIndicatorOwnerComponent *>(this->getParentComponent()))
     {
         owner->showModeIndicator();
     }
@@ -171,8 +171,8 @@ void ModeIndicatorTrigger::mouseEnter(const MouseEvent &event)
 
 void ModeIndicatorTrigger::mouseExit(const MouseEvent &event)
 {
-    if (ModeIndicatorOwner *owner =
-        dynamic_cast<ModeIndicatorOwner *>(this->getParentComponent()))
+    if (ModeIndicatorOwnerComponent *owner =
+        dynamic_cast<ModeIndicatorOwnerComponent *>(this->getParentComponent()))
     {
         owner->hideModeIndicator();
     }

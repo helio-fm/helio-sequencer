@@ -44,7 +44,7 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ModeIndicatorComponent)
 };
 
-class ModeIndicatorOwner : public virtual Component
+class ModeIndicatorOwnerComponent : public Component
 {
 public:
 

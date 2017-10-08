@@ -29,11 +29,9 @@
 #include "SerializationKeys.h"
 #include "AnnotationSmallComponent.h"
 #include "TimeSignatureSmallComponent.h"
+#include "ToolsSidebar.h"
 #include "OrigamiHorizontal.h"
 #include "OrigamiVertical.h"
-#include "HybridRollCommandPanelPhone.h"
-#include "HybridRollCommandPanelDefault.h"
-#include "AutomationsCommandPanel.h"
 #include "PanelBackgroundC.h"
 #include "App.h"
 #include "Workspace.h"
@@ -216,28 +214,18 @@ public:
 
         this->roll.addRollListener(this);
         this->addAndMakeVisible(this->target);
-        
-        //this->commandPanel = new AutomationsCommandPanel();
-        //this->addAndMakeVisible(this->commandPanel);
-        //this->commandPanel->setAlwaysOnTop(true);
-        //
-        //this->commandPanel->setFocusContainer(false);
-        //this->commandPanel->setWantsKeyboardFocus(false);
 
         this->setSize(newOwnedComponent->getWidth(), newOwnedComponent->getHeight());
     }
     
     ~AutomationTrackMapProxy() override
     {
-        //this->removeChildComponent(this->commandPanel);
         this->removeChildComponent(this->target);
         this->roll.removeRollListener(this);
     }
     
     void resized() override
     {
-        //Logger::writeToLog("AutomationTrackMapProxy resized " + String(this->getHeight()));
-        //this->commandPanel->setBounds(this->getLocalBounds().removeFromRight(MIDIROLL_COMMANDPANEL_WIDTH));
         this->updateTargetBounds();
     }
     
@@ -300,8 +288,6 @@ private:
     HybridRoll &roll;
     
     ScopedPointer<Component> target;
-    
-    //ScopedPointer<Component> commandPanel;
     
     void handleAsyncUpdate() override
     {
@@ -509,14 +495,7 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
         this->scroller);
     
     // создаем тулбар и компонуем его с контейнером
-    if (App::isRunningOnPhone())
-    {
-        this->rollCommandPanel = new HybridRollCommandPanelPhone(this->project);
-    }
-    else
-    {
-        this->rollCommandPanel = new HybridRollCommandPanelDefault(this->project);
-    }
+    this->rollToolsSidebar = new ToolsSidebar(this->project);
 
     // TODO we may have multiple roll editors here
     //this->rollsOrigami = new OrigamiVertical();
@@ -535,7 +514,7 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
     // добавляем тулбар справа
     this->allEditorsAndCommandPanel = new OrigamiVertical();
     this->allEditorsAndCommandPanel->addPage(this->allEditorsContainer, true, true, false);
-    this->allEditorsAndCommandPanel->addPage(this->rollCommandPanel, false, false, true);
+    this->allEditorsAndCommandPanel->addPage(this->rollToolsSidebar, false, false, true);
 
     this->addAndMakeVisible(this->allEditorsAndCommandPanel);
 
@@ -551,7 +530,7 @@ SequencerLayout::~SequencerLayout()
     this->automationsOrigami = nullptr;
     
     //this->rollsOrigami = nullptr;
-    this->rollCommandPanel = nullptr;
+    this->rollToolsSidebar = nullptr;
     this->rollContainer = nullptr;
 
     this->patternRoll->removeRollListener(this->scroller);
@@ -720,7 +699,7 @@ void SequencerLayout::resized()
     this->allEditorsAndCommandPanel->setBounds(this->getLocalBounds());
 
     // a hack for themes changing
-    this->rollCommandPanel->resized();
+    this->rollToolsSidebar->resized();
 }
 
 // void MidiEditor::broughtToFront()

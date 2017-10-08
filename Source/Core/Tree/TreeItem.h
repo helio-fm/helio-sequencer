@@ -17,7 +17,7 @@
 
 #pragma once
 
-class TreePanel;
+class NavigationSidebar;
 
 #include "Serializable.h"
 
@@ -54,7 +54,7 @@ public:
 
     String getUniqueName() const override;
 
-    TreePanel *findParentTreePanel() const;
+    NavigationSidebar *findParentTreePanel() const;
 
     virtual void onItemMoved() {}
 
@@ -65,8 +65,6 @@ public:
 
     void setGreyedOut(bool shouldBeGreyedOut) noexcept;
     bool isGreyedOut() const noexcept;
-
-    bool isCompactMode() const;
 
     template<typename T>
     static T *getActiveItem(TreeItem *root)

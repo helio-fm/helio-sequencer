@@ -31,10 +31,9 @@
 #include "TransientTreeItems.h"
 #include "MidiTrackTreeItem.h"
 #include "Supervisor.h"
-#include "TreePanelPhone.h"
-#include "TreePanelDefault.h"
+#include "NavigationSidebar.h"
 #include "InitScreen.h"
-#include "HybridRollCommandPanel.h"
+#include "ToolsSidebar.h"
 #include "ColourSchemeManager.h"
 
 
@@ -117,25 +116,15 @@ MainLayout::MainLayout() :
     this->headline = new Headline();
     this->addAndMakeVisible(this->headline);
 
-    if (App::isRunningOnPhone())
-    {
-        this->treePanel = new TreePanelPhone();
-    }
-    else
-    {
-        this->treePanel = new TreePanelDefault();
-    }
+    this->navSidebar = new NavigationSidebar();
     
-    this->addAndMakeVisible(this->treePanel);
+    this->addAndMakeVisible(this->navSidebar);
     
-    //this->treePanelConstrainer.setMinimumWidth(TREE_MIN_WIDTH);
-    //this->treePanelConstrainer.setMaximumWidth(TREE_MAX_WIDTH);
-
-    this->treeResizer = new ResizableEdgeComponent(this->treePanel,
-            &this->treePanelConstrainer, ResizableEdgeComponent::rightEdge);
-    this->addAndMakeVisible(this->treeResizer);
-    this->treeResizer->setInterceptsMouseClicks(false, false); // no more resizable panel
-    this->treeResizer->toFront(false);
+    this->sidebarBorder = new ResizableEdgeComponent(this->navSidebar,
+        nullptr, ResizableEdgeComponent::rightEdge);
+    this->addAndMakeVisible(this->sidebarBorder);
+    this->sidebarBorder->setInterceptsMouseClicks(false, false);
+    this->sidebarBorder->toFront(false);
 
     this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);
@@ -156,10 +145,8 @@ MainLayout::MainLayout() :
 MainLayout::~MainLayout()
 {
     this->removeAllChildren();
-
-    this->treePanel->setRoot(nullptr);
-    this->treeResizer = nullptr;
-    this->treePanel = nullptr;
+    this->sidebarBorder = nullptr;
+    this->navSidebar = nullptr;
     this->headline = nullptr;
 }
 
@@ -170,17 +157,8 @@ void MainLayout::init()
         ht->updateBackgroundRenders();
     }
     
-    if (App::isRunningOnPhone())
-    {
-        this->treePanel->setSize(TREE_PHONE_WIDTH, this->getParentHeight());
-    }
-    else
-    {
-        this->treePanel->setSize(TREE_DEFAULT_WIDTH, this->getParentHeight());
-    }
-    
-    this->treePanel->setRoot(App::Workspace().getTreeRoot());
-    this->treePanel->setAudioMonitor(App::Workspace().getAudioCore().getMonitor());
+    this->navSidebar->setSize(NAVIGATION_SIDEBAR_WIDTH, this->getParentHeight());
+    this->navSidebar->setAudioMonitor(App::Workspace().getAudioCore().getMonitor());
     
     this->setVisible(true);
 
@@ -285,7 +263,7 @@ void MainLayout::showTransientItem(
     parent->addChildTreeItem(item);
     item->setSelected(true, true, dontSendNotification);
     item->setMarkerVisible(true);
-    this->treePanel->repaint();
+    this->navSidebar->repaint();
     this->headline->syncWithTree(item);
 }
 
@@ -301,7 +279,7 @@ void MainLayout::showPage(Component *page, TreeItem *source)
     {
         hideMarkersRecursive(App::Workspace().getTreeRoot());
         source->setMarkerVisible(true);
-        this->treePanel->repaint();
+        this->navSidebar->repaint();
         this->headline->syncWithTree(source);
     }
 
@@ -324,7 +302,7 @@ void MainLayout::showPage(Component *page, TreeItem *source)
     this->resized();
 
     this->currentContent->setExplicitFocusOrder(1);
-    this->treePanel->setExplicitFocusOrder(10);
+    this->navSidebar->setExplicitFocusOrder(10);
 
 #if HAS_FADING_PAGECHANGE
     {
@@ -348,10 +326,6 @@ void MainLayout::showPage(Component *page, TreeItem *source)
     this->currentContent->grabKeyboardFocus();
     
     Config::set(Serialization::UI::lastShownPageId, source->getItemIdentifierString());
-    
-    // Custom root panel hack
-    const bool rootSelected = nullptr != dynamic_cast<RootTreeItem *>(source);
-    this->treePanel->setRootItemPanelSelected(rootSelected);
 
     //const Component *focused = Component::getCurrentlyFocusedComponent();
     //Logger::outputDebugString(focused ? focused->getName() : "null");
@@ -445,8 +419,8 @@ void MainLayout::showBlockingNonModalDialog(Component *targetComponent)
 Rectangle<int> MainLayout::getPageBounds() const
 {
     Rectangle<int> r(this->getLocalBounds());
-    r.removeFromLeft(this->treePanel->getWidth());
-    r.removeFromRight(HYBRID_ROLL_COMMANDPANEL_WIDTH); // a hack!
+    r.removeFromLeft(this->navSidebar->getWidth());
+    r.removeFromRight(TOOLS_SIDEBAR_WIDTH); // a hack!
     return r;
 }
 
@@ -457,20 +431,13 @@ Rectangle<int> MainLayout::getPageBounds() const
 
 void MainLayout::resized()
 {
-    //Logger::writeToLog("> " + String(this->treePanel->getWidth()));
-
     Rectangle<int> r(this->getLocalBounds());
-
     if (r.isEmpty()) { return; }
 
     this->headline->setBounds(r.removeFromTop(this->headline->getHeight()));
-
-    this->treePanel->setBounds(r.removeFromLeft(this->treePanel->getWidth()));
-
-    this->treeResizer->
-    setBounds(this->treePanel->getBounds().
-              withWidth(2).
-              translated(this->treePanel->getWidth() - 1, 0));
+    this->navSidebar->setBounds(r.removeFromLeft(this->navSidebar->getWidth()));
+    this->sidebarBorder->setBounds(this->navSidebar->getBounds().
+        withWidth(2).translated(this->navSidebar->getWidth() - 1, 0));
 
     if (this->currentContent)
     {
@@ -485,7 +452,7 @@ void MainLayout::lookAndFeelChanged()
 
 void MainLayout::childBoundsChanged(Component *child)
 {
-    if (child == this->treePanel)
+    if (child == this->navSidebar)
     {
         this->resized();
     }
@@ -519,14 +486,13 @@ bool MainLayout::keyPressed(const KeyPress &key)
     {
         if (MidiTrackTreeItem *primaryItem = dynamic_cast<MidiTrackTreeItem *>(this->getActiveTreeItem().get()))
         {
-            this->treePanel->showRenameLayerDialogAsync(primaryItem);
-            return true;
+            // TODO rename track
         }
     }
     else if (key == KeyPress::createFromDescription("Tab") &&
              ! key.getModifiers().isAnyModifierKeyDown())
     {
-        this->toggleShowTree();
+        // TODO switch between pattern roll and piano roll
 
         //Array <Component*> comps;
         //KeyboardFocusDebugger::findAllFocusableComponents(this, comps);
@@ -565,36 +531,4 @@ bool MainLayout::keyPressed(const KeyPress &key)
     }
 
     return false;
-}
-
-//===----------------------------------------------------------------------===//
-// Private
-//===----------------------------------------------------------------------===//
-
-void MainLayout::toggleShowTree()
-{
-    if (this->treePanel->isCompactMode())
-    {
-#if HELIO_DESKTOP
-        this->fader.fadeOutSnapshot(this->treePanel, 100);
-#endif
-        
-        if (App::isRunningOnPhone())
-        {
-            this->treePanel->setSize(TREE_PHONE_WIDTH, this->treePanel->getHeight());
-        }
-        else
-        {
-            this->treePanel->setSize(TREE_DEFAULT_WIDTH, this->treePanel->getHeight());
-        }
-    }
-    else
-    {
-#if HELIO_DESKTOP
-        this->fader.fadeOutSnapshot(this->treePanel, 200);
-#endif
-        this->treePanel->setSize(TREE_COMPACT_WIDTH, this->treePanel->getHeight());
-    }
-
-    Supervisor::track(Serialization::Activities::toggleShowTree);
 }

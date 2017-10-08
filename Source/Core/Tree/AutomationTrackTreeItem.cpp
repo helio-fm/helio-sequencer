@@ -57,14 +57,7 @@ Image AutomationTrackTreeItem::getIcon() const
 
 void AutomationTrackTreeItem::paintItem(Graphics &g, int width, int height)
 {
-    if (this->isCompactMode())
-    {
-        TreeItemComponentCompact::paintBackground(g, width, height, false, false);
-    }
-    else
-    {
-        TreeItemComponentDefault::paintBackground(g, width, height, false, false);
-    }
+    TreeItemComponentDefault::paintBackground(g, width, height, false, false);
 }
 
 //===----------------------------------------------------------------------===//

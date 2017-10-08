@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "TreeItemComponent.h"
 #include "TreeItem.h"
-#include "TreePanel.h"
+#include "NavigationSidebar.h"
 #include "PanelBackgroundC.h"
 #include "ProjectTreeItem.h"
 #include "PianoTrackTreeItem.h"
@@ -142,19 +142,6 @@ void TreeItemComponent::emitCallout()
     }
 }
 
-void TreeItemComponent::emitRollover()
-{
-    Component *menu = this->item.createItemMenu();
-    
-    if (menu)
-    {
-        if (TreePanel *panel = this->item.findParentTreePanel())
-        {
-            panel->emitRollover(menu, this->item.getName());
-        }
-    }
-}
-
 
 //===----------------------------------------------------------------------===//
 // Component
@@ -176,7 +163,7 @@ void TreeItemComponent::mouseDoubleClick(const MouseEvent &event)
         PianoTrackTreeItem::selectAllPianoSiblings(layerItem);
         
         // or show rename dialog?
-        //if (TreePanel *panel = layerItem->findParentTreePanel())
+        //if (NavigationSidebar *panel = layerItem->findParentTreePanel())
         //{
         //    panel->showRenameLayerDialogAsync(layerItem);
         //}
@@ -207,11 +194,6 @@ void TreeItemComponent::mouseDown(const MouseEvent &event)
 //    }
     
     DraggingListBoxComponent::mouseDown(event);
-}
-
-bool TreeItemComponent::isCompactMode() const
-{
-    return (this->item.isCompactMode());
 }
 
 Colour TreeItemComponent::getItemColour() const

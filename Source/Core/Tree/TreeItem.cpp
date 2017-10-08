@@ -17,9 +17,8 @@
 
 #include "Common.h"
 #include "TreeItem.h"
-#include "TreePanel.h"
+#include "NavigationSidebar.h"
 #include "TreeItemComponentDefault.h"
-#include "TreeItemComponentCompact.h"
 #include "MainLayout.h"
 #include "HelioCallout.h"
 
@@ -62,9 +61,9 @@ String TreeItem::getUniqueName() const
     return String(this->getIndexInParent());
 }
 
-TreePanel *TreeItem::findParentTreePanel() const
+NavigationSidebar *TreeItem::findParentTreePanel() const
 {
-    return this->getOwnerView()->findParentComponentOfClass<TreePanel>();
+    return this->getOwnerView()->findParentComponentOfClass<NavigationSidebar>();
 }
 
 void TreeItem::setMarkerVisible(bool shouldBeVisible) noexcept
@@ -292,25 +291,13 @@ Component *TreeItem::createItemComponent()
     {
         return nullptr;
     }
-
-    if (this->isCompactMode())
-    {
-        return new TreeItemComponentCompact(*this);
-    }
     
     return new TreeItemComponentDefault(*this);
 }
 
 void TreeItem::paintItem(Graphics &g, int width, int height)
 {
-    if (this->isCompactMode())
-    {
-        TreeItemComponentCompact::paintBackground(g, width, height, this->isSelected(), this->isMarkerVisible());
-    }
-    else
-    {
-        TreeItemComponentDefault::paintBackground(g, width, height, this->isSelected(), this->isMarkerVisible());
-    }
+    TreeItemComponentDefault::paintBackground(g, width, height, this->isSelected(), this->isMarkerVisible());
 }
 
 void TreeItem::paintOpenCloseButton(Graphics &g, const Rectangle<float> &area,
@@ -322,9 +309,6 @@ void TreeItem::paintOpenCloseButton(Graphics &g, const Rectangle<float> &area,
 //    return;
 //#endif
 
-    if (this->isCompactMode())
-    { return; }
-
     Path p;
     p.addTriangle(0.0f, 0.0f, 1.0f, this->isOpen() ? 0.0f : 0.5f, this->isOpen() ? 0.5f : 0.0f, 1.0f);
 
@@ -334,18 +318,10 @@ void TreeItem::paintOpenCloseButton(Graphics &g, const Rectangle<float> &area,
 
 void TreeItem::paintHorizontalConnectingLine(Graphics &g, const Line<float> &line)
 {
-//    if (this->isCompactMode())
-//    {
-//        TreeViewItem::paintHorizontalConnectingLine(g, line);
-//    }
 }
 
 void TreeItem::paintVerticalConnectingLine(Graphics &g, const Line<float> &line)
 {
-//    if (this->isCompactMode())
-//    {
-//        TreeViewItem::paintVerticalConnectingLine(g, line);
-//    }
 }
 
 int TreeItem::getItemHeight() const
@@ -355,7 +331,7 @@ int TreeItem::getItemHeight() const
         return 0;
     }
 
-    return this->isCompactMode() ? int(TREE_ITEM_HEIGHT * 1.2) : TREE_ITEM_HEIGHT;
+    return TREE_ITEM_HEIGHT;
 }
 
 Font TreeItem::getFont() const
@@ -498,14 +474,4 @@ void TreeItem::setVisible(bool shouldBeVisible) noexcept
 void TreeItem::safeRename(const String &newName)
 {
     this->setName(TreeItem::createSafeName(newName));
-}
-
-bool TreeItem::isCompactMode() const
-{
-    if (this->getOwnerView() != nullptr)
-    {
-        return (this->getOwnerView()->getWidth() == TREE_COMPACT_WIDTH);
-    }
-    
-    return false;
 }

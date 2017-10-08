@@ -724,10 +724,6 @@
                 file="../../Source/UI/Menus/ArpeggiatorEditorPanel.cpp"/>
           <FILE id="ezMMEU" name="ArpeggiatorEditorPanel.h" compile="0" resource="0"
                 file="../../Source/UI/Menus/ArpeggiatorEditorPanel.h"/>
-          <FILE id="MYnON3" name="AutomationsCommandPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/Menus/AutomationsCommandPanel.cpp"/>
-          <FILE id="JumAC2" name="AutomationsCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/Menus/AutomationsCommandPanel.h"/>
           <FILE id="qiHiZv" name="InstrumentCommandPanel.cpp" compile="1" resource="0"
                 file="../../Source/UI/Menus/InstrumentCommandPanel.cpp"/>
           <FILE id="GfB3bQ" name="InstrumentCommandPanel.h" compile="0" resource="0"
@@ -756,14 +752,6 @@
                 file="../../Source/UI/Menus/ProjectCommandPanel.cpp"/>
           <FILE id="qz1Ccf" name="ProjectCommandPanel.h" compile="0" resource="0"
                 file="../../Source/UI/Menus/ProjectCommandPanel.h"/>
-          <FILE id="dGhFSn" name="RootTreeItemPanelDefault.cpp" compile="1" resource="0"
-                file="../../Source/UI/Menus/RootTreeItemPanelDefault.cpp"/>
-          <FILE id="VvAXjc" name="RootTreeItemPanelDefault.h" compile="0" resource="0"
-                file="../../Source/UI/Menus/RootTreeItemPanelDefault.h"/>
-          <FILE id="k0IOfp" name="RootTreeItemPanelCompact.cpp" compile="1" resource="0"
-                file="../../Source/UI/Menus/RootTreeItemPanelCompact.cpp"/>
-          <FILE id="jiVx41" name="RootTreeItemPanelCompact.h" compile="0" resource="0"
-                file="../../Source/UI/Menus/RootTreeItemPanelCompact.h"/>
           <FILE id="IWRyID" name="TimelineCommandPanel.cpp" compile="1" resource="0"
                 file="../../Source/UI/Menus/TimelineCommandPanel.cpp"/>
           <FILE id="YO5QtE" name="TimelineCommandPanel.h" compile="0" resource="0"
@@ -1221,28 +1209,13 @@
             <FILE id="OH4CU2" name="SettingsRollover.h" compile="0" resource="0"
                   file="../../Source/UI/Sidebars/Rollovers/SettingsRollover.h"/>
           </GROUP>
-          <FILE id="b6CqqP" name="HybridRollCommandPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/Sidebars/HybridRollCommandPanel.cpp"/>
-          <FILE id="s83bgw" name="HybridRollCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/Sidebars/HybridRollCommandPanel.h"/>
-          <FILE id="Ygx9Sk" name="HybridRollCommandPanelDefault.cpp" compile="1"
-                resource="0" file="../../Source/UI/Sidebars/HybridRollCommandPanelDefault.cpp"/>
-          <FILE id="KNnqZg" name="HybridRollCommandPanelDefault.h" compile="0"
-                resource="0" file="../../Source/UI/Sidebars/HybridRollCommandPanelDefault.h"/>
-          <FILE id="hGyrLG" name="HybridRollCommandPanelPhone.cpp" compile="1"
-                resource="0" file="../../Source/UI/Sidebars/HybridRollCommandPanelPhone.cpp"/>
-          <FILE id="McwvFz" name="HybridRollCommandPanelPhone.h" compile="0"
-                resource="0" file="../../Source/UI/Sidebars/HybridRollCommandPanelPhone.h"/>
-          <FILE id="dGDpzD" name="TreePanel.cpp" compile="1" resource="0" file="../../Source/UI/Sidebars/TreePanel.cpp"/>
-          <FILE id="mvAfd1" name="TreePanel.h" compile="0" resource="0" file="../../Source/UI/Sidebars/TreePanel.h"/>
-          <FILE id="YTrvBN" name="TreePanelDefault.cpp" compile="1" resource="0"
-                file="../../Source/UI/Sidebars/TreePanelDefault.cpp"/>
-          <FILE id="RpeyiT" name="TreePanelDefault.h" compile="0" resource="0"
-                file="../../Source/UI/Sidebars/TreePanelDefault.h"/>
-          <FILE id="Xxsq4j" name="TreePanelPhone.cpp" compile="1" resource="0"
-                file="../../Source/UI/Sidebars/TreePanelPhone.cpp"/>
-          <FILE id="ECVocc" name="TreePanelPhone.h" compile="0" resource="0"
-                file="../../Source/UI/Sidebars/TreePanelPhone.h"/>
+          <FILE id="CMwFuf" name="NavigationSidebar.cpp" compile="1" resource="0"
+                file="../../Source/UI/Sidebars/NavigationSidebar.cpp"/>
+          <FILE id="PaZ6gs" name="NavigationSidebar.h" compile="0" resource="0"
+                file="../../Source/UI/Sidebars/NavigationSidebar.h"/>
+          <FILE id="A4xm1x" name="ToolsSidebar.cpp" compile="1" resource="0"
+                file="../../Source/UI/Sidebars/ToolsSidebar.cpp"/>
+          <FILE id="xuHepp" name="ToolsSidebar.h" compile="0" resource="0" file="../../Source/UI/Sidebars/ToolsSidebar.h"/>
         </GROUP>
         <GROUP id="{F85E9949-99EB-1D99-18B7-41B94B555349}" name="Themes">
           <FILE id="O8SrxF" name="ComponentFader.cpp" compile="1" resource="0"
@@ -1366,14 +1339,14 @@
                 file="../../Source/UI/Tree/TreeItemComponent.cpp"/>
           <FILE id="D0Nb6p" name="TreeItemComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Tree/TreeItemComponent.h"/>
+          <FILE id="bCoHzI" name="TreeItemComponentCompact.cpp" compile="1" resource="0"
+                file="../../Source/UI/Tree/TreeItemComponentCompact.cpp"/>
+          <FILE id="JhPAbR" name="TreeItemComponentCompact.h" compile="0" resource="0"
+                file="../../Source/UI/Tree/TreeItemComponentCompact.h"/>
           <FILE id="k9S4ba" name="TreeItemComponentDefault.cpp" compile="1" resource="0"
                 file="../../Source/UI/Tree/TreeItemComponentDefault.cpp"/>
           <FILE id="P2rw09" name="TreeItemComponentDefault.h" compile="0" resource="0"
                 file="../../Source/UI/Tree/TreeItemComponentDefault.h"/>
-          <FILE id="waNblh" name="TreeItemComponentCompact.cpp" compile="1" resource="0"
-                file="../../Source/UI/Tree/TreeItemComponentCompact.cpp"/>
-          <FILE id="uiGvSF" name="TreeItemComponentCompact.h" compile="0" resource="0"
-                file="../../Source/UI/Tree/TreeItemComponentCompact.h"/>
           <FILE id="P8AjHQ" name="TreeItemMarkerDefault.cpp" compile="1" resource="0"
                 file="../../Source/UI/Tree/TreeItemMarkerDefault.cpp"/>
           <FILE id="ZvUke5" name="TreeItemMarkerDefault.h" compile="0" resource="0"
