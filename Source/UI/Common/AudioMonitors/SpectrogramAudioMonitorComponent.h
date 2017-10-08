@@ -19,21 +19,16 @@
 
 class AudioMonitor;
 
-class VolumePeakMeter : public Component, private Thread, private AsyncUpdater
+#define SPECTROGRAM_BUFFER_SIZE 36
+#define SPECTROGRAM_NUM_BANDS 32
+
+class SpectrogramAudioMonitorComponent :
+    public Component, private Thread, private AsyncUpdater
 {
 public:
 
-    enum Orientation
-    {
-        Left,
-        Right
-    };
-    
-    VolumePeakMeter(WeakReference<AudioMonitor> targetAnalyzer,
-                    int targetChannel,
-                    Orientation bandOrientation);
-    
-    ~VolumePeakMeter() override;
+    explicit SpectrogramAudioMonitorComponent(WeakReference<AudioMonitor> targetAnalyzer);
+    ~SpectrogramAudioMonitorComponent() override;
 
     void setTargetAnalyzer(WeakReference<AudioMonitor> targetAnalyzer);
 
@@ -45,42 +40,17 @@ public:
 
 private:
 
-    class Band
-    {
-    public:
-
-        explicit Band();
-
-        void setValue(float value);
-        void reset();
-
-        inline void drawBand(Graphics &g, float left, float right, float height);
-
-    private:
-
-        float value;
-        float valueHold;
-        float valueDecay;
-        float peak;
-        float peakHold;
-        float peakDecay;
-
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Band);
-    };
-
-private:
-
     void run() override;
     void handleAsyncUpdate() override;
     
-    WeakReference<AudioMonitor> volumeAnalyzer;
+    WeakReference<AudioMonitor> audioMonitor;
     
-    Band peakBand;
-    
-    int channel;
-    int skewTime;
-    Orientation orientation;
+    Atomic<float> peakBuffer[SPECTROGRAM_BUFFER_SIZE];
+    Atomic<float> spectrum[SPECTROGRAM_BUFFER_SIZE][SPECTROGRAM_NUM_BANDS];
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VolumePeakMeter)
+    Atomic<int> head;
+    int skewTime;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SpectrogramAudioMonitorComponent)
 
 };

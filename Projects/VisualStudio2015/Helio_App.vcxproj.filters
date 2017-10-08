@@ -89,8 +89,8 @@
     <Filter Include="Helio\Source\Core">
       <UniqueIdentifier>{54BC896B-E0F6-600F-E5F4-536141549909}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helio\Source\UI\Common\Meters">
-      <UniqueIdentifier>{61642DFB-6AF0-CF4D-C8D3-98FBA9E4AC54}</UniqueIdentifier>
+    <Filter Include="Helio\Source\UI\Common\AudioMonitors">
+      <UniqueIdentifier>{25C717BA-A987-D9B8-2236-D16498DEC24E}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Source\UI\Common\Origami">
       <UniqueIdentifier>{D70BF722-AC35-2A2C-4300-B5DF93964056}</UniqueIdentifier>
@@ -850,14 +850,14 @@
     <ClCompile Include="..\..\Source\Core\VCS\VersionControl.cpp">
       <Filter>Helio\Source\Core\VCS</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Common\Meters\SpectrumMeter.cpp">
-      <Filter>Helio\Source\UI\Common\Meters</Filter>
+    <ClCompile Include="..\..\Source\UI\Common\AudioMonitors\GenericAudioMonitorComponent.cpp">
+      <Filter>Helio\Source\UI\Common\AudioMonitors</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Common\Meters\VolumePeakMeter.cpp">
-      <Filter>Helio\Source\UI\Common\Meters</Filter>
+    <ClCompile Include="..\..\Source\UI\Common\AudioMonitors\SpectrogramAudioMonitorComponent.cpp">
+      <Filter>Helio\Source\UI\Common\AudioMonitors</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Common\Meters\WaveformMeter.cpp">
-      <Filter>Helio\Source\UI\Common\Meters</Filter>
+    <ClCompile Include="..\..\Source\UI\Common\AudioMonitors\WaveformAudioMonitorComponent.cpp">
+      <Filter>Helio\Source\UI\Common\AudioMonitors</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Common\Origami\Origami.cpp">
       <Filter>Helio\Source\UI\Common\Origami</Filter>
@@ -881,6 +881,9 @@
       <Filter>Helio\Source\UI\Common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Common\MenuButton.cpp">
+      <Filter>Helio\Source\UI\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Common\ModeIndicatorComponent.cpp">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Common\PlayButton.cpp">
@@ -1440,6 +1443,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\MainWindow.cpp">
       <Filter>Helio\Source\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Common.cpp">
+      <Filter>Helio\Source</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\buffers\juce_AudioChannelSet.cpp">
       <Filter>Juce Modules\juce_audio_basics\buffers</Filter>
@@ -3612,14 +3618,14 @@
     <ClInclude Include="..\..\Source\Core\VCS\VersionControl.h">
       <Filter>Helio\Source\Core\VCS</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Common\Meters\SpectrumMeter.h">
-      <Filter>Helio\Source\UI\Common\Meters</Filter>
+    <ClInclude Include="..\..\Source\UI\Common\AudioMonitors\GenericAudioMonitorComponent.h">
+      <Filter>Helio\Source\UI\Common\AudioMonitors</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Common\Meters\VolumePeakMeter.h">
-      <Filter>Helio\Source\UI\Common\Meters</Filter>
+    <ClInclude Include="..\..\Source\UI\Common\AudioMonitors\SpectrogramAudioMonitorComponent.h">
+      <Filter>Helio\Source\UI\Common\AudioMonitors</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Common\Meters\WaveformMeter.h">
-      <Filter>Helio\Source\UI\Common\Meters</Filter>
+    <ClInclude Include="..\..\Source\UI\Common\AudioMonitors\WaveformAudioMonitorComponent.h">
+      <Filter>Helio\Source\UI\Common\AudioMonitors</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Common\Origami\Origami.h">
       <Filter>Helio\Source\UI\Common\Origami</Filter>
@@ -3661,6 +3667,9 @@
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Common\MenuButton.h">
+      <Filter>Helio\Source\UI\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Common\ModeIndicatorComponent.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Common\PlayButton.h">

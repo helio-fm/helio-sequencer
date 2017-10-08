@@ -118,7 +118,7 @@ PopupButton::PopupButton(bool shouldShowConfirmImage)
     setSize (48, 48);
 
     //[Constructor]
-    this->startTimer(17);
+    this->startTimerHz(60);
     //[/Constructor]
 }
 

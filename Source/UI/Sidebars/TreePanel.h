@@ -23,12 +23,14 @@ class MidiTrackTreeItem;
 class LongTapController;
 
 #include "LongTapListener.h"
+#include "ModeIndicatorComponent.h"
 
 #define TREE_COMPACT_WIDTH           (72)
 #define TREE_DEFAULT_WIDTH           (72)
 #define TREE_PHONE_WIDTH             (72)
 
-class TreePanel : public Component,
+class TreePanel : public virtual Component,
+                  public virtual ModeIndicatorOwner,
                   public LongTapListener
 {
 public:
@@ -40,7 +42,7 @@ public:
     virtual void setRootItemPanelSelected(bool shouldBeSelected) = 0;
     virtual void setAudioMonitor(AudioMonitor *audioMonitor) = 0;
     virtual Rectangle<int> getWorkingArea() = 0;
-    
+
     void showRenameLayerDialogAsync(MidiTrackTreeItem *targetItem);
     void emitRollover(Component *newTargetComponent, const String &headerTitle);
     bool isCompactMode() const;
@@ -54,10 +56,10 @@ protected:
     TreeItem *root;
     
     ScopedPointer<LongTapController> longTapRecognizer;
-    
+
     MidiTrackTreeItem *lastRenamedItem;
     String renameString;
-    
+
     void dismissCurrentRollover();
     ComponentAnimator rolloverFader;
     ScopedPointer<Component> currentRollover;

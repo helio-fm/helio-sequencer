@@ -15,6 +15,7 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "Common.h"
 #include "Workspace.h"
 #include "Config.h"
 #include "SerializationKeys.h"

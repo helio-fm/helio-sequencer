@@ -22,12 +22,6 @@
 #define AUDIO_MONITOR_MAX_CHANNELS      2
 #define AUDIO_MONITOR_MAX_SPECTRUMSIZE  512
 
-#if HELIO_DESKTOP
-#   define AUDIO_MONITOR_COMPUTES_RMS 1
-#elif HELIO_MOBILE
-#   define AUDIO_MONITOR_COMPUTES_RMS 0
-#endif
-
 class AudioMonitor : public AudioIODeviceCallback
 {
 public:
@@ -68,10 +62,7 @@ public:
     //===------------------------------------------------------------------===//
     
     float getPeak(int channel) const;
-    
-#if AUDIO_MONITOR_COMPUTES_RMS
     float getRootMeanSquare(int channel) const;
-#endif
     
     //===------------------------------------------------------------------===//
     // Spectrum data
@@ -84,15 +75,11 @@ private:
     SpectrumFFT fft;
 
     Atomic<float> spectrum[AUDIO_MONITOR_MAX_CHANNELS][AUDIO_MONITOR_MAX_SPECTRUMSIZE];
-
     Atomic<float> peak[AUDIO_MONITOR_MAX_CHANNELS];
-
-#if AUDIO_MONITOR_COMPUTES_RMS
     Atomic<float> rms[AUDIO_MONITOR_MAX_CHANNELS];
-#endif
 
-    int spectrumSize;
-    double sampleRate;
+    Atomic<int> spectrumSize;
+    Atomic<double> sampleRate;
 
     ListenerList<ClippingListener> clippingListeners;
 

@@ -31,10 +31,10 @@
 #include "Icons.h"
 #include "SerializationKeys.h"
 
-#include "SpectralLogo.h"
-#include "SpectrumMeter.h"
-#include "WaveformMeter.h"
-#include "VolumePeakMeter.h"
+#include "GenericAudioMonitorComponent.h"
+#include "WaveformAudioMonitorComponent.h"
+#include "SpectrogramAudioMonitorComponent.h"
+#include "ModeIndicatorComponent.h"
 #include "App.h"
 #include "AudioCore.h"
 
@@ -44,6 +44,8 @@
 #include "RolloverHeaderLeft.h"
 #include "RolloverHeaderRight.h"
 #include "RolloverContainer.h"
+
+#define AUDIO_MONITOR_HEIGHT 126
 
 //[/MiscUserDefs]
 
@@ -57,18 +59,15 @@ TreePanelDefault::TreePanelDefault()
     addAndMakeVisible (headLine = new SeparatorHorizontalReversed());
     addAndMakeVisible (headShadow = new LighterShadowDownwards());
     addAndMakeVisible (gradient1 = new GradientVerticalReversed());
-    addAndMakeVisible (waveformMeter = new WaveformMeter (nullptr));
-
     addAndMakeVisible (separator = new SeparatorHorizontal());
     addAndMakeVisible (rootTreeItemPanel = new Component());
 
-    addAndMakeVisible (peakMeterLeft = new VolumePeakMeter (nullptr, 0, VolumePeakMeter::Left));
+    addAndMakeVisible (modeIndicatorSelector = new ModeIndicatorTrigger());
 
-    addAndMakeVisible (peakMeterRight = new VolumePeakMeter (nullptr, 1, VolumePeakMeter::Right));
+    addAndMakeVisible (modeIndicator = new ModeIndicatorComponent (3));
 
 
     //[UserPreSize]
-
     this->tree->setRootItemVisible(true);
     this->tree->setDefaultOpenness(true);
     this->tree->setFocusContainer(false);
@@ -76,9 +75,18 @@ TreePanelDefault::TreePanelDefault()
     this->tree->getViewport()->setWantsKeyboardFocus(false);
     this->tree->setOpenCloseButtonsVisible(false);
 
+    this->genericMonitor = new GenericAudioMonitorComponent(nullptr);
+    this->waveformMonitor = new WaveformAudioMonitorComponent(nullptr);
+    this->spectrogramMonitor = new SpectrogramAudioMonitorComponent(nullptr);
+
+    this->addChildComponent(this->genericMonitor);
+    this->addChildComponent(this->waveformMonitor);
+    this->addChildComponent(this->spectrogramMonitor);
+
+    this->genericMonitor->setVisible(true);
     //[/UserPreSize]
 
-    setSize (200, 640);
+    setSize (72, 640);
 
     //[Constructor]
     //[/Constructor]
@@ -87,6 +95,10 @@ TreePanelDefault::TreePanelDefault()
 TreePanelDefault::~TreePanelDefault()
 {
     //[Destructor_pre]
+    this->spectrogramMonitor = nullptr;
+    this->waveformMonitor = nullptr;
+    this->genericMonitor = nullptr;
+
     tree->setRootItem(nullptr);
     //[/Destructor_pre]
 
@@ -97,11 +109,10 @@ TreePanelDefault::~TreePanelDefault()
     headLine = nullptr;
     headShadow = nullptr;
     gradient1 = nullptr;
-    waveformMeter = nullptr;
     separator = nullptr;
     rootTreeItemPanel = nullptr;
-    peakMeterLeft = nullptr;
-    peakMeterRight = nullptr;
+    modeIndicatorSelector = nullptr;
+    modeIndicator = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -135,6 +146,14 @@ void TreePanelDefault::resized()
         this->addAndMakeVisible(this->rootTreeItemPanel);
         this->rootTreeItemPanel->postCommandMessage(CommandIDs::UpdateRootItemPanel);
     }
+
+    this->genericMonitor->setSize(this->getWidth(), AUDIO_MONITOR_HEIGHT);
+    this->waveformMonitor->setSize(this->getWidth(), AUDIO_MONITOR_HEIGHT);
+    this->spectrogramMonitor->setSize(this->getWidth(), AUDIO_MONITOR_HEIGHT);
+
+    this->genericMonitor->setTopLeftPosition(0, this->getHeight() - AUDIO_MONITOR_HEIGHT);
+    this->waveformMonitor->setTopLeftPosition(0, this->getHeight() - AUDIO_MONITOR_HEIGHT);
+    this->spectrogramMonitor->setTopLeftPosition(0, this->getHeight() - AUDIO_MONITOR_HEIGHT);
     //[/UserPreResize]
 
     background->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
@@ -144,12 +163,14 @@ void TreePanelDefault::resized()
     headLine->setBounds (0, 47, getWidth() - 0, 2);
     headShadow->setBounds (0, 48, getWidth() - 0, 6);
     gradient1->setBounds (-50, 0, getWidth() - -100, 47);
-    waveformMeter->setBounds (0, getHeight() - 126, getWidth() - 0, 126);
     separator->setBounds (0, getHeight() - 126 - 2, getWidth() - 0, 2);
     rootTreeItemPanel->setBounds (0, 0, getWidth() - 0, 48);
-    peakMeterLeft->setBounds (0, getHeight() - 126, 8, 126);
-    peakMeterRight->setBounds (getWidth() - 8, getHeight() - 126, 8, 126);
+    modeIndicatorSelector->setBounds (0, getHeight() - 126, getWidth() - 0, 126);
+    modeIndicator->setBounds (0, getHeight() - 4 - 5, getWidth() - 0, 5);
     //[UserResized] Add your own custom resize handling here..
+
+    //spectrogramMonitor->setBounds(0, getHeight() - 126, getWidth() - 0, 126);
+
 
     if (widthChanged)
     {
@@ -160,14 +181,16 @@ void TreePanelDefault::resized()
 //#elif HELIO_MOBILE
 //        this->tree->getViewport()->setScrollBarsShown(false, false);
 //#endif
+
         // Scrollbars on the tree are evil, as they mess up the whole UI
         this->tree->getViewport()->setScrollBarsShown(false, false);
+
         // Force reload components:
-    if (this->root != nullptr)
-    {
-      this->tree->setRootItem(nullptr);
-      this->tree->setRootItem(this->root);
-    }
+        if (this->root != nullptr)
+        {
+            this->tree->setRootItem(nullptr);
+            this->tree->setRootItem(this->root);
+        }
     }
 
     if (this->currentRollover != nullptr &&
@@ -195,21 +218,51 @@ void TreePanelDefault::setRoot(TreeItem *rootItem)
 void TreePanelDefault::setRootItemPanelSelected(bool shouldBeSelected)
 {
     this->rootTreeItemPanel->postCommandMessage(shouldBeSelected ?
-                                                CommandIDs::SelectRootItemPanel :
-                                                CommandIDs::DeselectRootItemPanel);
+        CommandIDs::SelectRootItemPanel : CommandIDs::DeselectRootItemPanel);
 }
 
 void TreePanelDefault::setAudioMonitor(AudioMonitor *audioMonitor)
 {
-    this->waveformMeter->setTargetAnalyzer(audioMonitor);
-    this->peakMeterLeft->setTargetAnalyzer(audioMonitor);
-    this->peakMeterRight->setTargetAnalyzer(audioMonitor);
+    this->spectrogramMonitor->setTargetAnalyzer(audioMonitor);
+    this->waveformMonitor->setTargetAnalyzer(audioMonitor);
+    this->genericMonitor->setTargetAnalyzer(audioMonitor);
 }
 
 Rectangle<int> TreePanelDefault::getWorkingArea()
 {
     return this->tree->getBounds();
 }
+
+void TreePanelDefault::handleChangeMode()
+{
+    switch (this->modeIndicator->scrollToNextMode())
+    {
+    case 0:
+        this->switchMonitorsAnimated(this->waveformMonitor, this->genericMonitor);
+        break;
+    case 1:
+        this->switchMonitorsAnimated(this->genericMonitor, this->spectrogramMonitor);
+        break;
+    case 2:
+        this->switchMonitorsAnimated(this->spectrogramMonitor, this->waveformMonitor);
+        break;
+
+    default:
+        break;
+    }
+}
+
+void TreePanelDefault::switchMonitorsAnimated(Component *oldOne, Component *newOne)
+{
+    const int w = this->getWidth();
+    const int y = this->getHeight() - AUDIO_MONITOR_HEIGHT;
+    this->animator.animateComponent(oldOne, oldOne->getBounds().translated(-w, 0), 0.f, 200, true, 0.f, 1.f);
+    newOne->setAlpha(0.f);
+    newOne->setVisible(true);
+    newOne->setTopLeftPosition(w, y);
+    this->animator.animateComponent(newOne, newOne->getBounds().translated(-w, 0), 1.f, 200, false, 1.f, 0.f);
+}
+
 //[/MiscUserCode]
 
 #if 0
@@ -219,7 +272,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="TreePanelDefault" template="../../Template"
                  componentName="" parentClasses="public TreePanel" constructorParams=""
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="0" initialWidth="200" initialHeight="640">
+                 overlayOpacity="0.330" fixedSize="0" initialWidth="72" initialHeight="640">
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="19597a6a5daad55d" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../Themes/PanelBackgroundC.cpp"
@@ -241,20 +294,17 @@ BEGIN_JUCER_METADATA
   <JUCERCOMP name="" id="f09d886c97d1c017" memberName="gradient1" virtualName=""
              explicitFocusOrder="0" pos="-50 0 -100M 47" sourceFile="../Themes/GradientVerticalReversed.cpp"
              constructorParams=""/>
-  <GENERICCOMPONENT name="" id="1c5204139a3bea83" memberName="waveformMeter" virtualName=""
-                    explicitFocusOrder="0" pos="0 0Rr 0M 126" class="WaveformMeter"
-                    params="nullptr"/>
   <JUCERCOMP name="" id="22d481533ce3ecd3" memberName="separator" virtualName=""
              explicitFocusOrder="0" pos="0 126Rr 0M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="faec82bf5da2e1" memberName="rootTreeItemPanel" virtualName=""
                     explicitFocusOrder="0" pos="0 0 0M 48" class="Component" params=""/>
-  <GENERICCOMPONENT name="" id="f36c1cf11c793cec" memberName="peakMeterLeft" virtualName=""
-                    explicitFocusOrder="0" pos="0 0Rr 8 126" class="VolumePeakMeter"
-                    params="nullptr, 0, VolumePeakMeter::Left"/>
-  <GENERICCOMPONENT name="" id="e90d6ee8a79197a7" memberName="peakMeterRight" virtualName=""
-                    explicitFocusOrder="0" pos="0Rr 0Rr 8 126" class="VolumePeakMeter"
-                    params="nullptr, 1, VolumePeakMeter::Right"/>
+  <GENERICCOMPONENT name="" id="9e1622013601218a" memberName="modeIndicatorSelector"
+                    virtualName="" explicitFocusOrder="0" pos="0 0Rr 0M 126" class="ModeIndicatorTrigger"
+                    params=""/>
+  <GENERICCOMPONENT name="" id="4b6240e11495d88b" memberName="modeIndicator" virtualName=""
+                    explicitFocusOrder="0" pos="0 4Rr 0M 5" class="ModeIndicatorComponent"
+                    params="3"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

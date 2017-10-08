@@ -351,7 +351,7 @@ void RenderDialog::timerCallback()
 
 void RenderDialog::startTrackingProgress()
 {
-    this->startTimer(17);
+    this->startTimerHz(60);
     this->indicator->startAnimating();
     this->animator.fadeIn(this->indicator, 250);
     this->renderButton->setButtonText(TRANS("dialog::render::abort"));

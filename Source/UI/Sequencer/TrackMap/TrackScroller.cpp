@@ -298,7 +298,7 @@ void TrackScroller::switchToRoll(HybridRoll *targetRoll)
     this->oldAreaBounds = this->getIndicatorBounds();
     this->oldMapBounds = this->getMapBounds().toFloat();
     this->roll = targetRoll;
-    this->startTimer(15);
+    this->startTimerHz(60);
 }
 
 //===----------------------------------------------------------------------===//

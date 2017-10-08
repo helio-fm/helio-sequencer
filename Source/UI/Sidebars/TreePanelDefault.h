@@ -18,9 +18,10 @@
 #pragma once
 
 //[Headers]
-class SpectrumMeter;
-class WaveformMeter;
-class VolumePeakMeter;
+class GenericAudioMonitorComponent;
+class WaveformAudioMonitorComponent;
+class SpectrogramAudioMonitorComponent;
+class ModeIndicatorComponent;
 
 #include "TreePanel.h"
 //[/Headers]
@@ -46,6 +47,7 @@ public:
     void setRootItemPanelSelected(bool shouldBeSelected) override;
     void setAudioMonitor(AudioMonitor *audioMonitor) override;
     Rectangle<int> getWorkingArea() override;
+    void handleChangeMode() override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -58,6 +60,12 @@ public:
 private:
 
     //[UserVariables]
+    ComponentAnimator animator;
+    void switchMonitorsAnimated(Component *oldOne, Component *newOne);
+
+    ScopedPointer<GenericAudioMonitorComponent> genericMonitor;
+    ScopedPointer<WaveformAudioMonitorComponent> waveformMonitor;
+    ScopedPointer<SpectrogramAudioMonitorComponent> spectrogramMonitor;
     //[/UserVariables]
 
     ScopedPointer<PanelBackgroundC> background;
@@ -67,11 +75,10 @@ private:
     ScopedPointer<SeparatorHorizontalReversed> headLine;
     ScopedPointer<LighterShadowDownwards> headShadow;
     ScopedPointer<GradientVerticalReversed> gradient1;
-    ScopedPointer<WaveformMeter> waveformMeter;
     ScopedPointer<SeparatorHorizontal> separator;
     ScopedPointer<Component> rootTreeItemPanel;
-    ScopedPointer<VolumePeakMeter> peakMeterLeft;
-    ScopedPointer<VolumePeakMeter> peakMeterRight;
+    ScopedPointer<ModeIndicatorTrigger> modeIndicatorSelector;
+    ScopedPointer<ModeIndicatorComponent> modeIndicator;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TreePanelDefault)
 };

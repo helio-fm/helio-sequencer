@@ -713,8 +713,8 @@ void ProjectTreeItem::load(const XmlElement &xml)
     const float r = float(NUM_BEATS_IN_BAR);
     const float viewStartWithMArgin = range.getX() - r;
     const float viewEndWithMArgin = range.getY() + r;
-    const int viewFirstBeat = int(floorf(viewStartWithMArgin / r) * r);
-    const int viewLastBeat = int(ceilf(viewEndWithMArgin / r) * r);
+    const float viewFirstBeat = floorf(viewStartWithMArgin / r) * r;
+    const float viewLastBeat = ceilf(viewEndWithMArgin / r) * r;
     this->broadcastChangeViewBeatRange(viewFirstBeat, viewLastBeat);
 
     //this->transport->deserialize(*root); // todo
