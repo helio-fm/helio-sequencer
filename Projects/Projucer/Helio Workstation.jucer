@@ -594,7 +594,9 @@
                 file="../../Source/UI/Common/ColourSwatches.cpp"/>
           <FILE id="OeoOMp" name="ColourSwatches.h" compile="0" resource="0"
                 file="../../Source/UI/Common/ColourSwatches.h"/>
+          <FILE id="DRQef0" name="CommandIDs.cpp" compile="1" resource="0" file="../../Source/UI/Common/CommandIDs.cpp"/>
           <FILE id="JpyU5z" name="CommandIDs.h" compile="0" resource="0" file="../../Source/UI/Common/CommandIDs.h"/>
+          <FILE id="ldEAFp" name="ComponentIDs.h" compile="0" resource="0" file="../../Source/UI/Common/ComponentIDs.h"/>
           <FILE id="wxzKUC" name="DraggingListBoxComponent.cpp" compile="1" resource="0"
                 file="../../Source/UI/Common/DraggingListBoxComponent.cpp"/>
           <FILE id="FnBPxh" name="DraggingListBoxComponent.h" compile="0" resource="0"
@@ -681,6 +683,9 @@
           <FILE id="Akkf81" name="HeadlineItem.h" compile="0" resource="0" file="../../Source/UI/Headline/HeadlineItem.h"/>
         </GROUP>
         <GROUP id="{89960E92-2826-B73B-FFA4-CFBFD275D8BA}" name="Input">
+          <FILE id="XSns48" name="HotkeyScheme.cpp" compile="1" resource="0"
+                file="../../Source/UI/Input/HotkeyScheme.cpp"/>
+          <FILE id="eRqNK8" name="HotkeyScheme.h" compile="0" resource="0" file="../../Source/UI/Input/HotkeyScheme.h"/>
           <FILE id="ER1gHO" name="LongHoldController.h" compile="0" resource="0"
                 file="../../Source/UI/Input/LongHoldController.h"/>
           <FILE id="xIjQQl" name="LongHoldListener.h" compile="0" resource="0"
