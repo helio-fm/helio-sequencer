@@ -149,6 +149,8 @@
               file="../../Resources/Themes/ColourSchemes.xml"/>
       </GROUP>
       <FILE id="dq4Pbr" name="DefaultArps.xml" compile="0" resource="1" file="../../Resources/DefaultArps.xml"/>
+      <FILE id="Ix28fT" name="DefaultHotkeys.xml" compile="0" resource="1"
+            file="../../Resources/DefaultHotkeys.xml"/>
       <FILE id="TgP2FQ" name="DefaultScales.xml" compile="0" resource="1"
             file="../../Resources/DefaultScales.xml"/>
       <FILE id="WrABxc" name="DefaultTranslations.xml" compile="0" resource="1"
