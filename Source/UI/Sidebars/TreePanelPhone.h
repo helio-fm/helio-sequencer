@@ -44,7 +44,6 @@ public:
     void setRoot(TreeItem *rootItem) override;
     void setRootItemPanelSelected(bool shouldBeSelected) override;
     void setAudioMonitor(AudioMonitor *audioMonitor) override;
-    Rectangle<int> getWorkingArea() override;
     void handleChangeMode() override;
     //[/UserMethods]
 

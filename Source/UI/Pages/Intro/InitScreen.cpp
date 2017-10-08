@@ -111,7 +111,7 @@ void InitScreen::parentSizeChanged()
         this->logoImage->startFade();
         #endif
 
-        this->startTimer(3000);
+        this->startTimer(1500);
     }
     //[/UserCode_parentSizeChanged]
 }

@@ -41,7 +41,6 @@ public:
     virtual void setRoot(TreeItem *rootItem) = 0;
     virtual void setRootItemPanelSelected(bool shouldBeSelected) = 0;
     virtual void setAudioMonitor(AudioMonitor *audioMonitor) = 0;
-    virtual Rectangle<int> getWorkingArea() = 0;
 
     void showRenameLayerDialogAsync(MidiTrackTreeItem *targetItem);
     void emitRollover(Component *newTargetComponent, const String &headerTitle);

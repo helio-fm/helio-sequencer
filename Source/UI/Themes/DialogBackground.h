@@ -53,7 +53,7 @@ private:
     {
         if (this->appearMode)
         {
-            this->setAlpha(this->getAlpha() + 0.2);
+            this->setAlpha(this->getAlpha() + 0.2f);
     
             if (this->getAlpha() == 1.f)
             {
@@ -62,7 +62,7 @@ private:
         }
     else
     {
-        this->setAlpha(this->getAlpha() - 0.2);
+        this->setAlpha(this->getAlpha() - 0.2f);
     
         if (this->getAlpha() == 0.f)
         {

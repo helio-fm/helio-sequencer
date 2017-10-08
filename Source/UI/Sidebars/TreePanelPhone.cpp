@@ -193,11 +193,6 @@ void TreePanelPhone::setAudioMonitor(AudioMonitor *audioMonitor)
     this->spectrumMeter->setTargetAnalyzer(audioMonitor);
 }
 
-Rectangle<int> TreePanelPhone::getWorkingArea()
-{
-    return this->tree->getBounds();
-}
-
 void TreePanelPhone::handleChangeMode()
 {
     this->modeIndicator->scrollToNextMode();

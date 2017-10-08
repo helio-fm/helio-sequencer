@@ -32,8 +32,6 @@
 #include "AnnotationCommandPanel.h"
 #include "TimeSignatureCommandPanel.h"
 #include "PianoRollToolbox.h"
-#include "ArpeggiatorPanel.h"
-#include "MoveToLayerCommandPanel.h"
 #include "NotesTuningPanel.h"
 #include "TriggersTrackMap.h"
 #include "App.h"
@@ -229,34 +227,6 @@ void HybridRollCommandPanel::handleCommandMessage (int commandId)
 
         case CommandIDs::Redo:
             this->project.redo();
-            break;
-
-        case CommandIDs::ArpNotes:
-            if (PianoRoll *roll = dynamic_cast<PianoRoll *>(this->project.getLastFocusedRoll()))
-            {
-                if (roll->getLassoSelection().getNumSelected() > 0)
-                {
-                    HelioCallout::emit(new ArpeggiatorPanel(roll->getTransport(), *roll), roll, true);
-                }
-                else
-                {
-                    App::Helio()->showTooltip(TRANS("warnings::emptyselection"));
-                }
-            }
-            break;
-
-        case CommandIDs::MoveEventsToLayer:
-            if (PianoRoll *roll = dynamic_cast<PianoRoll *>(this->project.getLastFocusedRoll()))
-            {
-                if (roll->getLassoSelection().getNumSelected() > 0)
-                {
-                    HelioCallout::emit(new MoveToLayerCommandPanel(*roll, roll->getProject()), roll, true);
-                }
-                else
-                {
-                    App::Helio()->showTooltip(TRANS("warnings::emptyselection"));
-                }
-            }
             break;
 
         case CommandIDs::TweakNotesVolume:

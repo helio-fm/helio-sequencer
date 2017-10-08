@@ -165,8 +165,8 @@ void TreePanel::emitRollover(Component *newTargetComponent,
     Component *newHeader = new RolloverHeaderLeft(headerTitle);
     this->currentRollover = new RolloverContainer(newHeader, newTargetComponent);
     //const Rectangle<int> r1(-this->getWidth(), 0, this->getWidth(), this->tree->getBottom());
-    const Rectangle<int> r1(this->getWidth(), 0, this->getWidth(), this->getWorkingArea().getBottom());
-    const Rectangle<int> r2(0, 0, this->getWidth(), this->getWorkingArea().getBottom());
+    const Rectangle<int> r1(this->getWidth(), 0, this->getWidth(), this->getBounds().getBottom());
+    const Rectangle<int> r2(0, 0, this->getWidth(), this->getBounds().getBottom());
     
     this->addAndMakeVisible(this->currentRollover);
     this->currentRollover->setBounds(r1);
@@ -179,7 +179,7 @@ void TreePanel::dismissCurrentRollover()
     if (this->currentRollover != nullptr)
     {
         //const Rectangle<int> r1(-this->getWidth(), 0, this->getWidth(), this->tree->getBottom());
-        const Rectangle<int> r1(this->getWidth(), 0, this->getWidth(), this->getWorkingArea().getBottom());
+        const Rectangle<int> r1(this->getWidth(), 0, this->getWidth(), this->getBounds().getBottom());
         this->rolloverFader.animateComponent(this->currentRollover, r1, 0.0, 200, true, 0.0, 0.0);
         this->currentRollover = nullptr;
     }

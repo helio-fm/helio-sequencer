@@ -41,7 +41,6 @@
 #include "InternalClipboard.h"
 #include "HelioCallout.h"
 #include "NotesTuningPanel.h"
-#include "ArpeggiatorPanel.h"
 #include "ArpeggiatorEditorPanel.h"
 #include "PianoRollToolbox.h"
 #include "NoteResizerLeft.h"
@@ -953,14 +952,7 @@ bool PianoRoll::keyPressed(const KeyPress &key)
             return true;
         }
     }
-    else if (key == KeyPress::createFromDescription("a"))
-    {
-        if (this->selection.getNumSelected() > 0)
-        {
-            HelioCallout::emit(new ArpeggiatorPanel(this->project.getTransport(), *this), this, true);
-            return true;
-        }
-    }
+
     else if (key == KeyPress::createFromDescription("o"))
     {
         HYBRID_ROLL_BULK_REPAINT_START
@@ -1000,6 +992,13 @@ bool PianoRoll::keyPressed(const KeyPress &key)
 //        return true;
 //    }
     
+    else if (key == KeyPress::createFromDescription("a"))
+    {
+        if (this->selection.getNumSelected() > 0)
+        {
+            // TODO show arps menu
+        }
+    }
     else if (key == KeyPress::createFromDescription("shift + a"))
     {
         if (this->selection.getNumSelected() > 0)

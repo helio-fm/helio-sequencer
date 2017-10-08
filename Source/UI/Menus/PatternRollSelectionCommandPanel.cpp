@@ -16,10 +16,11 @@
 */
 
 #include "Common.h"
+#include "PatternRollSelectionCommandPanel.h"
 #include "ProjectTreeItem.h"
 #include "PianoRollToolbox.h"
 #include "PianoTrackTreeItem.h"
-#include "PianoRoll.h"
+#include "PatternRoll.h"
 #include "NoteComponent.h"
 #include "Icons.h"
 #include "TriggersTrackMap.h"
@@ -35,19 +36,20 @@
 // Move-to-layer command panel
 //
 
-MoveToLayerCommandPanel::MoveToLayerCommandPanel(PianoRoll &targetRoll,
-                                                 ProjectTreeItem &parentProject) :
+PatternRollSelectionCommandPanel::PatternRollSelectionCommandPanel(
+    PatternRoll &targetRoll,
+    ProjectTreeItem &parentProject) :
     roll(targetRoll),
     project(parentProject)
 {
     this->initLayersPanel(false);
 }
 
-MoveToLayerCommandPanel::~MoveToLayerCommandPanel()
+PatternRollSelectionCommandPanel::~PatternRollSelectionCommandPanel()
 {
 }
 
-void MoveToLayerCommandPanel::handleCommandMessage(int commandId)
+void PatternRollSelectionCommandPanel::handleCommandMessage(int commandId)
 {
     const Array<PianoTrackTreeItem *> &layerItems =
         this->project.findChildrenOfType<PianoTrackTreeItem>();
@@ -80,7 +82,7 @@ void MoveToLayerCommandPanel::handleCommandMessage(int commandId)
     }
 }
 
-void MoveToLayerCommandPanel::initLayersPanel(bool shouldAddBackButton)
+void PatternRollSelectionCommandPanel::initLayersPanel(bool shouldAddBackButton)
 {
     ReferenceCountedArray<CommandItem> cmds;
     
@@ -109,7 +111,7 @@ void MoveToLayerCommandPanel::initLayersPanel(bool shouldAddBackButton)
     this->updateContent(cmds, CommandPanel::SlideLeft);
 }
 
-void MoveToLayerCommandPanel::dismiss()
+void PatternRollSelectionCommandPanel::dismiss()
 {
     this->roll.grabKeyboardFocus();
     this->getParentComponent()->exitModalState(0);

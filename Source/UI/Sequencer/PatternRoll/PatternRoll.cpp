@@ -36,8 +36,6 @@
 #include "InternalClipboard.h"
 #include "HelioCallout.h"
 #include "NotesTuningPanel.h"
-#include "ArpeggiatorPanel.h"
-#include "ArpeggiatorEditorPanel.h"
 #include "PianoRollToolbox.h"
 #include "Config.h"
 #include "SerializationKeys.h"

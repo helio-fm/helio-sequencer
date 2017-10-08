@@ -41,18 +41,12 @@ String PianoRollSelectionTreeItem::getCaption() const
 
 Component *PianoRollSelectionTreeItem::createItemMenu()
 {
-    return new PianoRollSelectionCommandPanel(*this, CommandPanel::SlideRight);
+    return nullptr; // new PianoRollSelectionCommandPanel(*this, CommandPanel::SlideRight);
 }
 
 //===----------------------------------------------------------------------===//
 // PatternRoll Selection Menu
 //===----------------------------------------------------------------------===//
-
-class PatternRollSelectionCommandPanel : public CommandPanel
-{
-public:
-
-};
 
 Image PatternRollSelectionTreeItem::getIcon() const
 {
@@ -66,5 +60,5 @@ String PatternRollSelectionTreeItem::getCaption() const
 
 Component *PatternRollSelectionTreeItem::createItemMenu()
 {
-    return new PatternRollSelectionCommandPanel(*this, CommandPanel::SlideRight);
+    return nullptr; // new PatternRollSelectionCommandPanel(*this, CommandPanel::SlideRight);
 }

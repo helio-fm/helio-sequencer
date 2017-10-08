@@ -46,7 +46,6 @@ public:
     void setRoot(TreeItem *rootItem) override;
     void setRootItemPanelSelected(bool shouldBeSelected) override;
     void setAudioMonitor(AudioMonitor *audioMonitor) override;
-    Rectangle<int> getWorkingArea() override;
     void handleChangeMode() override;
     //[/UserMethods]
 
@@ -69,14 +68,12 @@ private:
     //[/UserVariables]
 
     ScopedPointer<PanelBackgroundC> background;
-    ScopedPointer<TreeView> tree;
     ScopedPointer<LighterShadowUpwards> shadow;
     ScopedPointer<GradientVertical> gradient;
     ScopedPointer<SeparatorHorizontalReversed> headLine;
     ScopedPointer<LighterShadowDownwards> headShadow;
     ScopedPointer<GradientVerticalReversed> gradient1;
     ScopedPointer<SeparatorHorizontal> separator;
-    ScopedPointer<Component> rootTreeItemPanel;
     ScopedPointer<ModeIndicatorTrigger> modeIndicatorSelector;
     ScopedPointer<ModeIndicatorComponent> modeIndicator;
 

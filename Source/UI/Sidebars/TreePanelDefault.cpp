@@ -52,28 +52,24 @@
 TreePanelDefault::TreePanelDefault()
 {
     addAndMakeVisible (background = new PanelBackgroundC());
-    addAndMakeVisible (tree = new TreeView());
-
     addAndMakeVisible (shadow = new LighterShadowUpwards());
     addAndMakeVisible (gradient = new GradientVertical());
     addAndMakeVisible (headLine = new SeparatorHorizontalReversed());
     addAndMakeVisible (headShadow = new LighterShadowDownwards());
     addAndMakeVisible (gradient1 = new GradientVerticalReversed());
     addAndMakeVisible (separator = new SeparatorHorizontal());
-    addAndMakeVisible (rootTreeItemPanel = new Component());
-
     addAndMakeVisible (modeIndicatorSelector = new ModeIndicatorTrigger());
 
     addAndMakeVisible (modeIndicator = new ModeIndicatorComponent (3));
 
 
     //[UserPreSize]
-    this->tree->setRootItemVisible(true);
-    this->tree->setDefaultOpenness(true);
-    this->tree->setFocusContainer(false);
-    this->tree->setWantsKeyboardFocus(false);
-    this->tree->getViewport()->setWantsKeyboardFocus(false);
-    this->tree->setOpenCloseButtonsVisible(false);
+    //this->tree->setRootItemVisible(true);
+    //this->tree->setDefaultOpenness(true);
+    //this->tree->setFocusContainer(false);
+    //this->tree->setWantsKeyboardFocus(false);
+    //this->tree->getViewport()->setWantsKeyboardFocus(false);
+    //this->tree->setOpenCloseButtonsVisible(false);
 
     this->genericMonitor = new GenericAudioMonitorComponent(nullptr);
     this->waveformMonitor = new WaveformAudioMonitorComponent(nullptr);
@@ -99,18 +95,16 @@ TreePanelDefault::~TreePanelDefault()
     this->waveformMonitor = nullptr;
     this->genericMonitor = nullptr;
 
-    tree->setRootItem(nullptr);
+    //tree->setRootItem(nullptr);
     //[/Destructor_pre]
 
     background = nullptr;
-    tree = nullptr;
     shadow = nullptr;
     gradient = nullptr;
     headLine = nullptr;
     headShadow = nullptr;
     gradient1 = nullptr;
     separator = nullptr;
-    rootTreeItemPanel = nullptr;
     modeIndicatorSelector = nullptr;
     modeIndicator = nullptr;
 
@@ -130,22 +124,22 @@ void TreePanelDefault::paint (Graphics& g)
 void TreePanelDefault::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
-    const bool widthChanged = (this->tree->getWidth() != this->getWidth());
+    //const bool widthChanged = (this->tree->getWidth() != this->getWidth());
 
-    if (widthChanged)
-    {
-        if (this->isCompactMode())
-        {
-            this->rootTreeItemPanel = new RootTreeItemPanelCompact();
-        }
-        else
-        {
-            this->rootTreeItemPanel = new RootTreeItemPanelDefault();
-        }
+    //if (widthChanged)
+    //{
+    //    if (this->isCompactMode())
+    //    {
+    //        this->rootTreeItemPanel = new RootTreeItemPanelCompact();
+    //    }
+    //    else
+    //    {
+    //        this->rootTreeItemPanel = new RootTreeItemPanelDefault();
+    //    }
 
-        this->addAndMakeVisible(this->rootTreeItemPanel);
-        this->rootTreeItemPanel->postCommandMessage(CommandIDs::UpdateRootItemPanel);
-    }
+    //    this->addAndMakeVisible(this->rootTreeItemPanel);
+    //    this->rootTreeItemPanel->postCommandMessage(CommandIDs::UpdateRootItemPanel);
+    //}
 
     this->genericMonitor->setSize(this->getWidth(), AUDIO_MONITOR_HEIGHT);
     this->waveformMonitor->setSize(this->getWidth(), AUDIO_MONITOR_HEIGHT);
@@ -157,47 +151,38 @@ void TreePanelDefault::resized()
     //[/UserPreResize]
 
     background->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
-    tree->setBounds (0, 49, getWidth() - 0, getHeight() - 176);
     shadow->setBounds (0, getHeight() - 127 - 6, getWidth() - 0, 6);
     gradient->setBounds (-50, getHeight() - 127, getWidth() - -100, 127);
     headLine->setBounds (0, 47, getWidth() - 0, 2);
     headShadow->setBounds (0, 48, getWidth() - 0, 6);
     gradient1->setBounds (-50, 0, getWidth() - -100, 47);
     separator->setBounds (0, getHeight() - 126 - 2, getWidth() - 0, 2);
-    rootTreeItemPanel->setBounds (0, 0, getWidth() - 0, 48);
     modeIndicatorSelector->setBounds (0, getHeight() - 126, getWidth() - 0, 126);
     modeIndicator->setBounds (0, getHeight() - 4 - 5, getWidth() - 0, 5);
     //[UserResized] Add your own custom resize handling here..
 
     //spectrogramMonitor->setBounds(0, getHeight() - 126, getWidth() - 0, 126);
 
+    //if (widthChanged)
+    //{
+    //    this->tree->setIndentSize(this->isCompactMode() ? 0 : 7);
 
-    if (widthChanged)
-    {
-        this->tree->setIndentSize(this->isCompactMode() ? 0 : 7);
+    //    // Scrollbars on the tree are evil, as they mess up the whole UI
+    //    this->tree->getViewport()->setScrollBarsShown(false, false);
 
-//#if HELIO_DESKTOP
-//        this->tree->getViewport()->setScrollBarsShown(!this->isCompactMode(), false);
-//#elif HELIO_MOBILE
-//        this->tree->getViewport()->setScrollBarsShown(false, false);
-//#endif
+    //    // Force reload components:
+    //    if (this->root != nullptr)
+    //    {
+    //        this->tree->setRootItem(nullptr);
+    //        this->tree->setRootItem(this->root);
+    //    }
+    //}
 
-        // Scrollbars on the tree are evil, as they mess up the whole UI
-        this->tree->getViewport()->setScrollBarsShown(false, false);
-
-        // Force reload components:
-        if (this->root != nullptr)
-        {
-            this->tree->setRootItem(nullptr);
-            this->tree->setRootItem(this->root);
-        }
-    }
-
-    if (this->currentRollover != nullptr &&
-        ! this->rolloverFader.isAnimating())
-    {
-        this->currentRollover->setBounds(0, 0, this->getWidth(), this->tree->getBottom());
-    }
+    //if (this->currentRollover != nullptr &&
+    //    ! this->rolloverFader.isAnimating())
+    //{
+    //    this->currentRollover->setBounds(0, 0, this->getWidth(), this->tree->getBottom());
+    //}
     //[/UserResized]
 }
 
@@ -206,19 +191,19 @@ void TreePanelDefault::resized()
 void TreePanelDefault::setRoot(TreeItem *rootItem)
 {
     this->root = rootItem;
-    this->tree->setRootItem(rootItem);
+    //this->tree->setRootItem(rootItem);
 
-    if (rootItem != nullptr)
-    {
-        this->tree->getRootItem()->setOpen(true);
-        this->tree->setRootItemVisible(true);
-    }
+    //if (rootItem != nullptr)
+    //{
+    //    this->tree->getRootItem()->setOpen(true);
+    //    this->tree->setRootItemVisible(true);
+    //}
 }
 
 void TreePanelDefault::setRootItemPanelSelected(bool shouldBeSelected)
 {
-    this->rootTreeItemPanel->postCommandMessage(shouldBeSelected ?
-        CommandIDs::SelectRootItemPanel : CommandIDs::DeselectRootItemPanel);
+    //this->rootTreeItemPanel->postCommandMessage(shouldBeSelected ?
+    //    CommandIDs::SelectRootItemPanel : CommandIDs::DeselectRootItemPanel);
 }
 
 void TreePanelDefault::setAudioMonitor(AudioMonitor *audioMonitor)
@@ -226,11 +211,6 @@ void TreePanelDefault::setAudioMonitor(AudioMonitor *audioMonitor)
     this->spectrogramMonitor->setTargetAnalyzer(audioMonitor);
     this->waveformMonitor->setTargetAnalyzer(audioMonitor);
     this->genericMonitor->setTargetAnalyzer(audioMonitor);
-}
-
-Rectangle<int> TreePanelDefault::getWorkingArea()
-{
-    return this->tree->getBounds();
 }
 
 void TreePanelDefault::handleChangeMode()
@@ -277,8 +257,6 @@ BEGIN_JUCER_METADATA
   <JUCERCOMP name="" id="19597a6a5daad55d" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../Themes/PanelBackgroundC.cpp"
              constructorParams=""/>
-  <GENERICCOMPONENT name="" id="dab1f297d3cc7439" memberName="tree" virtualName=""
-                    explicitFocusOrder="0" pos="0 49 0M 176M" class="TreeView" params=""/>
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
              explicitFocusOrder="0" pos="0 127Rr 0M 6" sourceFile="../Themes/LighterShadowUpwards.cpp"
              constructorParams=""/>
@@ -297,8 +275,6 @@ BEGIN_JUCER_METADATA
   <JUCERCOMP name="" id="22d481533ce3ecd3" memberName="separator" virtualName=""
              explicitFocusOrder="0" pos="0 126Rr 0M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
-  <GENERICCOMPONENT name="" id="faec82bf5da2e1" memberName="rootTreeItemPanel" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 0M 48" class="Component" params=""/>
   <GENERICCOMPONENT name="" id="9e1622013601218a" memberName="modeIndicatorSelector"
                     virtualName="" explicitFocusOrder="0" pos="0 0Rr 0M 126" class="ModeIndicatorTrigger"
                     params=""/>

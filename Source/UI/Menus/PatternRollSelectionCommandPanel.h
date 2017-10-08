@@ -17,23 +17,23 @@
 
 #pragma once
 
-class PianoRoll;
+class PatternRoll;
 class ProjectTreeItem;
 
 #include "CommandPanel.h"
 
 //===----------------------------------------------------------------------===//
-// Move-to-layer command panel
+// PatternRoll selection command panel
 //===----------------------------------------------------------------------===//
 
-class MoveToLayerCommandPanel : public CommandPanel
+class PatternRollSelectionCommandPanel : public CommandPanel
 {
 public:
     
-    MoveToLayerCommandPanel(PianoRoll &targetRoll,
-                            ProjectTreeItem &parentProject);
+    PatternRollSelectionCommandPanel(PatternRoll &targetRoll,
+        ProjectTreeItem &parentProject);
     
-    ~MoveToLayerCommandPanel() override;
+    ~PatternRollSelectionCommandPanel() override;
     
     //===------------------------------------------------------------------===//
     // Component
@@ -46,7 +46,7 @@ private:
     void dismiss();
     void initLayersPanel(bool shouldAddBackButton);
 
-    PianoRoll &roll;
+    PatternRoll &roll;
     ProjectTreeItem &project;
     
 };
