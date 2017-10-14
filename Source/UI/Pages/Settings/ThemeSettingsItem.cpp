@@ -262,18 +262,14 @@ void ThemeSettingsItem::applyTheme(const ColourScheme &colours)
     if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
     {
         ColourSchemeManager::getInstance().setCurrentScheme(this->colours);
-
         ht->initColours(colours);
         ht->updateBackgroundRenders(true);
-        this->getTopLevelComponent()->resized();
-        this->getTopLevelComponent()->repaint();
-
-        Array<ProjectTreeItem *> projects = App::Workspace().getLoadedProjects();
-
-        for (int i = 0; i < projects.size(); ++i)
+        if (this->getTopLevelComponent() != nullptr)
         {
-            projects.getUnchecked(i)->repaintEditor();
+            this->getTopLevelComponent()->resized();
+            this->getTopLevelComponent()->repaint();
         }
+        App::Helio()->recreateLayout();
     }
 }
 

@@ -233,6 +233,16 @@ void App::showBlocker(Component *nonOwnedComponent)
     this->getWindow()->getWorkspaceComponent()->showBlockingNonModalDialog(nonOwnedComponent);
 }
 
+void App::recreateLayout()
+{
+    this->getWindow()->dismissLayoutComponent();
+    if (TreeItem *root = this->getWorkspace()->getTreeRoot())
+    {
+        root->recreateSubtreePages();
+    }
+    this->getWindow()->createLayoutComponent();
+}
+
 void App::dismissAllModalComponents()
 {
     while (Component *modal = Component::getCurrentlyModalComponent(0))
@@ -607,12 +617,7 @@ void App::handleAsyncUpdate()
 void App::changeListenerCallback(ChangeBroadcaster *source)
 {
     Logger::writeToLog("Reloading translations");
-    this->getWindow()->dismissWorkspaceComponent();
-    if (TreeItem *root = this->getWorkspace()->getTreeRoot())
-    {
-        root->recreateSubtreePages();
-    }
-    this->getWindow()->createWorkspaceComponent();
+    this->recreateLayout();
 }
 
 START_JUCE_APPLICATION(App)
