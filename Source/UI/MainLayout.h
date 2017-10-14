@@ -17,7 +17,6 @@
 
 #pragma once
 
-class NavigationSidebar;
 class TransientTreeItem;
 class TooltipContainer;
 class HotkeyScheme;
@@ -81,7 +80,6 @@ public:
     //===------------------------------------------------------------------===//
 
     void resized() override;
-    void childBoundsChanged(Component *child) override;
     void lookAndFeelChanged() override;
     bool keyPressed(const KeyPress &key) override;
     bool keyStateChanged(bool isKeyDown) override;
@@ -100,8 +98,6 @@ private:
     SafePointer<Component> currentContent;
 
     ScopedPointer<Headline> headline;
-    ScopedPointer<NavigationSidebar> navSidebar;
-    ScopedPointer<ResizableEdgeComponent> sidebarBorder;
 
     ScopedPointer<TooltipContainer> tooltipContainer;
     

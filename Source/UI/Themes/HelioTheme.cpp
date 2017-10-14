@@ -128,35 +128,31 @@ void HelioTheme::drawStretchableLayoutResizerBar(Graphics &g,
         int w, int h, bool isVerticalBar,
         bool isMouseOver, bool isMouseDragging)
 {
-    if (isMouseDragging)
-    {
-        g.setColour(findColour(Origami::resizerMovingShadowColourId));
-        g.drawVerticalLine(w - 2, 0.f, float(h));
-//        g.fillRect(0, 0, w, h);
+    //if (isMouseDragging)
+    //{
+    //    g.setColour(findColour(Origami::resizerMovingShadowColourId));
+    //    g.drawVerticalLine(w - 2, 0.f, float(h));
+    //    g.setColour(findColour(Origami::resizerMovingLineColourId));
+    //}
+    //else
+    //{
+    //    g.setColour(findColour(Origami::resizerShadowColourId));
+    //    g.drawVerticalLine(w - 2, 0.f, float(h));
+    //    g.setColour(findColour(Origami::resizerLineColourId));
+    //}
 
-        g.setColour(findColour(Origami::resizerMovingLineColourId));
-    }
-    else /*if (isMouseOver)*/
-    {
-        g.setColour(findColour(Origami::resizerShadowColourId));
-        g.drawVerticalLine(w - 2, 0.f, float(h));
-//        g.fillRect(0, 0, w, h);
-
-        g.setColour(findColour(Origami::resizerLineColourId));
-    }
-
-    if (w == 2)
-    {
-        //g.drawVerticalLine(0, 0.f, float(h));
-        //g.setColour(findColour(Origami::resizerLineColourId).withMultipliedAlpha(0.5f));
-        g.drawVerticalLine(1, 0.f, float(h));
-    }
-    else
-    {
-        //g.drawHorizontalLine(0, 0.f, float(w));
-        //g.setColour(findColour(Origami::resizerLineColourId).withMultipliedAlpha(0.5f));
-        g.drawVerticalLine(0, 0.f, float(h));
-    }
+    //if (w == 2)
+    //{
+    //    //g.drawVerticalLine(0, 0.f, float(h));
+    //    //g.setColour(findColour(Origami::resizerLineColourId).withMultipliedAlpha(0.5f));
+    //    g.drawVerticalLine(1, 0.f, float(h));
+    //}
+    //else
+    //{
+    //    //g.drawHorizontalLine(0, 0.f, float(w));
+    //    //g.setColour(findColour(Origami::resizerLineColourId).withMultipliedAlpha(0.5f));
+    //    g.drawVerticalLine(0, 0.f, float(h));
+    //}
 }
 
 
@@ -868,10 +864,10 @@ void HelioTheme::initColours(const ::ColourScheme &colours)
     this->setColour(InstrumentEditor::audioOutColourId, Colour(0x25ffffff));
 
     // Origami
-    this->setColour(Origami::resizerShadowColourId, Colours::white.withAlpha(0.07f));
-    this->setColour(Origami::resizerMovingShadowColourId, Colours::white.withAlpha(0.15f));
-    this->setColour(Origami::resizerLineColourId, Colours::black.withAlpha(0.12f));
-    this->setColour(Origami::resizerMovingLineColourId, Colours::black.withAlpha(0.25f));
+    this->setColour(Origami::resizerLineColourId, Colours::white.withAlpha(0.06f));
+    this->setColour(Origami::resizerShadowColourId, Colours::black.withAlpha(0.2f));
+    this->setColour(Origami::resizerMovingLineColourId, Colours::white.withAlpha(0.15f));
+    this->setColour(Origami::resizerMovingShadowColourId, Colours::black.withAlpha(0.3f));
 
     // ComboBox
     this->setColour(ComboBox::backgroundColourId, colours.getSecondaryGradientColourA().darker(0.05f));

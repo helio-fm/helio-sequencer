@@ -30,6 +30,7 @@
 #include "AnnotationSmallComponent.h"
 #include "TimeSignatureSmallComponent.h"
 #include "ToolsSidebar.h"
+#include "NavigationSidebar.h"
 #include "OrigamiHorizontal.h"
 #include "OrigamiVertical.h"
 #include "PanelBackgroundC.h"
@@ -98,7 +99,9 @@ public:
         
         this->resizer = new ResizableEdgeComponent(this->automations, this->constrainer, ResizableEdgeComponent::bottomEdge);
         this->resizer->setAlwaysOnTop(true);
-        this->resizer->setInterceptsMouseClicks(true, true);
+        
+        // FIXME: disabled resizing for now, need to implement a good automations editor
+        this->resizer->setInterceptsMouseClicks(false, false);
         
         this->resizer->setFocusContainer(false);
         this->resizer->setWantsKeyboardFocus(false);
@@ -499,13 +502,17 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
     
     // создаем тулбар и компонуем его с контейнером
     this->rollToolsSidebar = new ToolsSidebar(this->project);
+    this->rollNavSidebar = new NavigationSidebar();
+    this->rollNavSidebar->setSize(NAVIGATION_SIDEBAR_WIDTH, this->getParentHeight());
+    // Hopefully this doesn't crash, since sequencer layout is only created by a loaded project:
+    this->rollNavSidebar->setAudioMonitor(App::Workspace().getAudioCore().getMonitor());
+
 
     // TODO we may have multiple roll editors here
     //this->rollsOrigami = new OrigamiVertical();
     //this->rollsOrigami->addPage(this->rollContainer, false, false, false);
     // TODO fix focus troubles
     //this->rollsOrigami->setFocusContainer(false);
-    //this->rollsOrigami->setWantsKeyboardFocus(false);
     
     // создаем стек редакторов автоматизации
     this->automationsOrigami = new OrigamiHorizontal();
@@ -516,8 +523,13 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
 
     // добавляем тулбар справа
     this->allEditorsAndCommandPanel = new OrigamiVertical();
-    this->allEditorsAndCommandPanel->addPage(this->allEditorsContainer, true, true, false);
-    this->allEditorsAndCommandPanel->addPage(this->rollToolsSidebar, false, false, true);
+    this->allEditorsAndCommandPanel->addFixedPage(this->rollNavSidebar);
+    this->allEditorsAndCommandPanel->addEdgeAtTheEnd();
+    this->allEditorsAndCommandPanel->addFlexiblePage(this->allEditorsContainer);
+    this->allEditorsAndCommandPanel->addShadowAtTheStart();
+    this->allEditorsAndCommandPanel->addShadowAtTheEnd();
+    this->allEditorsAndCommandPanel->addFixedPage(this->rollToolsSidebar);
+    this->allEditorsAndCommandPanel->addEdgeAtTheStart();
 
     this->addAndMakeVisible(this->allEditorsAndCommandPanel);
 
@@ -534,6 +546,7 @@ SequencerLayout::~SequencerLayout()
     
     //this->rollsOrigami = nullptr;
     this->rollToolsSidebar = nullptr;
+    this->rollNavSidebar = nullptr;
     this->rollContainer = nullptr;
 
     this->patternRoll->removeRollListener(this->scroller);
@@ -648,8 +661,8 @@ bool SequencerLayout::toggleShowAutomationEditor(AutomationSequence *sequence)
         
         const int hNormal = newTrackMap->getHeight();
         const int hMax = sequence->getTrack()->isOnOffTrack() ? hNormal : (hNormal * 3);
-        const bool isFixedSize = sequence->getTrack()->isOnOffTrack();
-        this->automationsOrigami->addPage(newTrackMapProxy, false, false, isFixedSize, hNormal, hMax, 0);
+        //const bool isFixedSize = sequence->getTrack()->isOnOffTrack();
+        this->automationsOrigami->addFixedPage(newTrackMapProxy);
         
         this->resized();
         return true;

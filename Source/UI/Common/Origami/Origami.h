@@ -32,53 +32,46 @@ public:
         resizerMovingShadowColourId    = 0x99003004
     };
 
-
     class ChildConstrainer : public ComponentBoundsConstrainer
     {
     public:
-
         explicit ChildConstrainer(Origami &origamiRef) : origami(origamiRef) { }
-
         void applyBoundsToComponent(Component &component, Rectangle<int> bounds) override;
 
     private:
-
         Origami &origami;
-
     };
-
 
     typedef struct
     {
         SafePointer<Component> component;
         ScopedPointer<Component> shadowAtStart;
         ScopedPointer<Component> shadowAtEnd;
-        ScopedPointer<ResizableEdgeComponent> resizer;
+        ScopedPointer<Component> borderAtStart;
+        ScopedPointer<Component> borderAtEnd;
+        ScopedPointer<Component> resizer;
         ScopedPointer<Origami::ChildConstrainer> constrainer;
         int size;
-        int min;
-        int max;
+        int min = ORIGAMI_DEFAULT_MIN_SIZE;
+        int max = ORIGAMI_DEFAULT_MAX_SIZE;
         bool fixedSize;
     } Page;
 
-
     Origami();
-
     ~Origami() override;
-
 
     //===------------------------------------------------------------------===//
     // Origami
     //===------------------------------------------------------------------===//
 
-    virtual void addPage(Component *nonOwnedComponent,
-                         bool addShadowAtStart = false,
-                         bool addShadowAtEnd = true,
-                         bool fixedSize = false,
-                         int minSize = ORIGAMI_DEFAULT_MIN_SIZE,
-                         int maxSize = ORIGAMI_DEFAULT_MAX_SIZE,
-                         int insertIndex = -1) = 0;
-    
+    virtual void addFlexiblePage(Component *component) = 0;
+    virtual void addFixedPage(Component *component) = 0;
+    virtual void addShadowAtTheStart() = 0;
+    virtual void addShadowAtTheEnd() = 0;
+    virtual void addEdgeAtTheStart() = 0;
+    virtual void addEdgeAtTheEnd() = 0;
+    virtual void addResizer(int minSize, int maxSize) = 0;
+
     int getMinimumCommonSize() const;
     int getMaximumCommonSize() const;
     bool removePageContaining(Component *component);

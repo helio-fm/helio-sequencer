@@ -229,10 +229,11 @@ void HeadlineItem::mouseDown (const MouseEvent& e)
     //[UserCode_mouseDown] -- Add your code here...
     if (this->item != nullptr)
     {
-        HeadlineDropdown *hd = new HeadlineDropdown(this->item);
-        hd->setTopLeftPosition(this->getPosition());
-        hd->setAlpha(0.f);
-        App::Layout().showModalNonOwnedDialog(hd);
+        this->item->setSelected(true, true);
+        //HeadlineDropdown *hd = new HeadlineDropdown(this->item);
+        //hd->setTopLeftPosition(this->getPosition());
+        //hd->setAlpha(0.f);
+        //App::Layout().showModalNonOwnedDialog(hd);
     }
     //[/UserCode_mouseDown]
 }

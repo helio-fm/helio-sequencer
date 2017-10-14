@@ -31,8 +31,8 @@
 #include "TransientTreeItems.h"
 #include "MidiTrackTreeItem.h"
 #include "Supervisor.h"
-#include "NavigationSidebar.h"
 #include "InitScreen.h"
+#include "NavigationSidebar.h"
 #include "ToolsSidebar.h"
 #include "ColourSchemeManager.h"
 #include "HotkeyScheme.h"
@@ -119,16 +119,6 @@ MainLayout::MainLayout() :
     this->headline = new Headline();
     this->addAndMakeVisible(this->headline);
 
-    this->navSidebar = new NavigationSidebar();
-    
-    this->addAndMakeVisible(this->navSidebar);
-    
-    this->sidebarBorder = new ResizableEdgeComponent(this->navSidebar,
-        nullptr, ResizableEdgeComponent::rightEdge);
-    this->addAndMakeVisible(this->sidebarBorder);
-    this->sidebarBorder->setInterceptsMouseClicks(false, false);
-    this->sidebarBorder->toFront(false);
-
     this->hotkeyScheme = new HotkeyScheme();
     {
         // TODO hot-keys manager
@@ -163,8 +153,6 @@ MainLayout::~MainLayout()
 {
     this->removeAllChildren();
     this->hotkeyScheme = nullptr;
-    this->sidebarBorder = nullptr;
-    this->navSidebar = nullptr;
     this->headline = nullptr;
 }
 
@@ -174,9 +162,6 @@ void MainLayout::init()
     {
         ht->updateBackgroundRenders();
     }
-    
-    this->navSidebar->setSize(NAVIGATION_SIDEBAR_WIDTH, this->getParentHeight());
-    this->navSidebar->setAudioMonitor(App::Workspace().getAudioCore().getMonitor());
     
     this->setVisible(true);
 
@@ -276,7 +261,6 @@ void MainLayout::showTransientItem(
     parent->addChildTreeItem(item);
     item->setSelected(true, true, dontSendNotification);
     item->setMarkerVisible(true);
-    this->navSidebar->repaint();
     this->headline->syncWithTree(item);
 }
 
@@ -292,7 +276,6 @@ void MainLayout::showPage(Component *page, TreeItem *source)
     {
         hideMarkersRecursive(App::Workspace().getTreeRoot());
         source->setMarkerVisible(true);
-        this->navSidebar->repaint();
         this->headline->syncWithTree(source);
     }
 
@@ -315,7 +298,6 @@ void MainLayout::showPage(Component *page, TreeItem *source)
     this->resized();
 
     this->currentContent->setExplicitFocusOrder(1);
-    this->navSidebar->setExplicitFocusOrder(10);
 
 #if HAS_FADING_PAGECHANGE
     {
@@ -428,14 +410,14 @@ void MainLayout::showBlockingNonModalDialog(Component *targetComponent)
     targetComponent->toFront(false);
 }
 
+// a hack!
 Rectangle<int> MainLayout::getPageBounds() const
 {
     Rectangle<int> r(this->getLocalBounds());
-    r.removeFromLeft(this->navSidebar->getWidth());
-    r.removeFromRight(TOOLS_SIDEBAR_WIDTH); // a hack!
+    r.removeFromLeft(NAVIGATION_SIDEBAR_WIDTH);
+    r.removeFromRight(TOOLS_SIDEBAR_WIDTH);
     return r;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Component
@@ -447,9 +429,6 @@ void MainLayout::resized()
     if (r.isEmpty()) { return; }
 
     this->headline->setBounds(r.removeFromTop(this->headline->getHeight()));
-    this->navSidebar->setBounds(r.removeFromLeft(this->navSidebar->getWidth()));
-    this->sidebarBorder->setBounds(this->navSidebar->getBounds().
-        withWidth(2).translated(this->navSidebar->getWidth() - 1, 0));
 
     if (this->currentContent)
     {
@@ -460,14 +439,6 @@ void MainLayout::resized()
 void MainLayout::lookAndFeelChanged()
 {
     this->repaint();
-}
-
-void MainLayout::childBoundsChanged(Component *child)
-{
-    if (child == this->navSidebar)
-    {
-        this->resized();
-    }
 }
 
 bool MainLayout::keyPressed(const KeyPress &key)
