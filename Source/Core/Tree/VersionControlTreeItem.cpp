@@ -306,7 +306,7 @@ void VersionControlTreeItem::onItemMoved()
 // Popup
 //===----------------------------------------------------------------------===//
 
-Component *VersionControlTreeItem::createItemMenu()
+ScopedPointer<Component> VersionControlTreeItem::createItemMenu()
 {
     if (this->vcs)
     {

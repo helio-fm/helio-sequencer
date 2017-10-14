@@ -251,7 +251,7 @@ void TrackGroupTreeItem::onRename(const String &newName)
 // Menu
 //===----------------------------------------------------------------------===//
 
-Component *TrackGroupTreeItem::createItemMenu()
+ScopedPointer<Component> TrackGroupTreeItem::createItemMenu()
 {
     return nullptr;
 }

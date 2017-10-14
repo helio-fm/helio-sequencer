@@ -26,6 +26,8 @@
 #include "PanelBackgroundB.h"
 #include "HeadlineDropdown.h"
 #include "CommandPanel.h"
+#include "MainLayout.h"
+#include "App.h"
 
 class HeadlineItemHighlighter : public Component
 {
@@ -84,11 +86,41 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<TreeItem> targetItem)
             .getStringWidth(this->titleLabel->getText());
         this->setSize(textWidth + 64, this->getHeight());
 
-        if (Component *menu = this->item->createItemMenu())
+        // Create tree panel for the root,
+        // and generic menu for the rest:
+        if (this->item->getParentItem() == nullptr)
         {
-            this->content = menu;
+            ScopedPointer<TreeView> treeView(new TreeView());
+            treeView->setFocusContainer(false);
+            treeView->setWantsKeyboardFocus(false);
+            treeView->setRootItem(this->item);
+            treeView->getRootItem()->setOpen(true);
+            treeView->setRootItemVisible(true);
+            treeView->setDefaultOpenness(true);
+            treeView->getViewport()->setWantsKeyboardFocus(false);
+            treeView->getViewport()->setScrollBarsShown(false, false);
+            treeView->setOpenCloseButtonsVisible(false);
+            treeView->setIndentSize(4);
+            const auto treeContentBounds =
+                treeView->getViewport()->getViewedComponent()->getLocalBounds();
+            const auto w = treeContentBounds.getWidth();
+            const auto h = jmin(treeContentBounds.getHeight(),
+                App::Layout().getHeight() - 180);
+            treeView->setSize(w, h);
+            this->content = treeView.release();
             this->addAndMakeVisible(this->content);
             this->childBoundsChanged(this->content);
+        }
+        else if (ScopedPointer<Component> menu = this->item->createItemMenu())
+        {
+            this->content = menu.release();
+            this->addAndMakeVisible(this->content);
+            this->childBoundsChanged(this->content);
+        }
+        else
+        {
+            // TODO dismiss immediately?
+            this->setSize(this->getWidth(), 32);
         }
     }
 
@@ -240,10 +272,16 @@ void HeadlineDropdown::mouseExit (const MouseEvent& e)
 void HeadlineDropdown::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
-    //if (this->item != nullptr) {
-    //    this->item->setSelected(true, true);
-    //}
+    if (this->item != nullptr) {
+        this->item->setSelected(true, true);
+    }
     //[/UserCode_mouseDown]
+}
+
+void HeadlineDropdown::mouseUp (const MouseEvent& e)
+{
+    //[UserCode_mouseUp] -- Add your code here...
+    //[/UserCode_mouseUp]
 }
 
 void HeadlineDropdown::inputAttemptWhenModal()
@@ -318,6 +356,7 @@ BEGIN_JUCER_METADATA
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
     <METHOD name="inputAttemptWhenModal()"/>
     <METHOD name="mouseExit (const MouseEvent&amp; e)"/>
+    <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
     <PATH pos="0 0 100 100" fill=" radial: 0 16, 16 14, 0=33000000, 1=0"

@@ -525,7 +525,7 @@ void MidiTrackTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &drag
 // Menu
 //===----------------------------------------------------------------------===//
 
-Component *MidiTrackTreeItem::createItemMenu()
+ScopedPointer<Component> MidiTrackTreeItem::createItemMenu()
 {
     return new LayerCommandPanel(*this);
 }

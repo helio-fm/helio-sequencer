@@ -213,7 +213,15 @@ void HeadlineItem::resized()
 void HeadlineItem::mouseEnter (const MouseEvent& e)
 {
     //[UserCode_mouseEnter] -- Add your code here...
-    this->startTimer(200);
+    // A hacky way to prevent re-opening the menu again after the new page is shown.
+    // Showhow comparing current mouse screen position to e.getMouseDownScreenPosition()
+    // won't work (maybe a JUCE bug), so take this from getMainMouseSource:
+    const auto lastMouseDown =
+        Desktop::getInstance().getMainMouseSource().getLastMouseDownPosition().toInt();
+    if (lastMouseDown != e.getScreenPosition())
+    {
+        this->startTimer(200);
+    }
     //[/UserCode_mouseEnter]
 }
 
@@ -229,13 +237,24 @@ void HeadlineItem::mouseDown (const MouseEvent& e)
     //[UserCode_mouseDown] -- Add your code here...
     if (this->item != nullptr)
     {
-        this->item->setSelected(true, true);
-        //HeadlineDropdown *hd = new HeadlineDropdown(this->item);
-        //hd->setTopLeftPosition(this->getPosition());
-        //hd->setAlpha(0.f);
-        //App::Layout().showModalNonOwnedDialog(hd);
+        this->stopTimer();
+        if (this->item->isSelected())
+        {
+            this->showMenu();
+        }
+        else
+        {
+            this->item->setSelected(true, true);
+        }
     }
     //[/UserCode_mouseDown]
+}
+
+void HeadlineItem::mouseUp (const MouseEvent& e)
+{
+    //[UserCode_mouseUp] -- Add your code here...
+    this->stopTimer();
+    //[/UserCode_mouseUp]
 }
 
 
@@ -246,15 +265,15 @@ TreeItem *HeadlineItem::getTreeItem() const noexcept
     return this->item;
 }
 
-//Component *HeadlineItem::createHighlighterComponent()
-//{
-//    return new HeadlineItemHighlighter(this->internalPath1);
-//}
-
 void HeadlineItem::timerCallback()
 {
     this->stopTimer();
+    this->showMenu();
+}
 
+void HeadlineItem::showMenu()
+{
+    // FIXME If has menu:
     if (this->item != nullptr)
     {
         HeadlineDropdown *hd = new HeadlineDropdown(this->item);
@@ -279,6 +298,7 @@ BEGIN_JUCER_METADATA
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
     <METHOD name="mouseEnter (const MouseEvent&amp; e)"/>
     <METHOD name="mouseExit (const MouseEvent&amp; e)"/>
+    <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
     <PATH pos="0 0 100 100" fill="solid: cffffff" hasStroke="0" nonZeroWinding="1">s 0 0 l 16R 0 l 9R 16 l 16R 32 l 0 32 x</PATH>

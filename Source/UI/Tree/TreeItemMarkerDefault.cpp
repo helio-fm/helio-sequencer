@@ -54,8 +54,8 @@ void TreeItemMarkerDefault::paint (Graphics& g)
     //[/UserPrePaint]
 
     {
-        int x = getWidth() - 3, y = 0, width = 3, height = getHeight() - 0;
-        Colour fillColour = Colour (0x0fffffff);
+        int x = getWidth() - 4, y = 0, width = 4, height = getHeight() - 0;
+        Colour fillColour = Colour (0x15ffffff);
         //[UserPaintCustomArguments] Customize the painting arguments here..
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
@@ -88,7 +88,7 @@ BEGIN_JUCER_METADATA
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
                  overlayOpacity="0.330" fixedSize="1" initialWidth="32" initialHeight="32">
   <BACKGROUND backgroundColour="0">
-    <RECT pos="0Rr 0 3 0M" fill="solid: fffffff" hasStroke="0"/>
+    <RECT pos="0Rr 0 4 0M" fill="solid: 15ffffff" hasStroke="0"/>
   </BACKGROUND>
 </JUCER_COMPONENT>
 

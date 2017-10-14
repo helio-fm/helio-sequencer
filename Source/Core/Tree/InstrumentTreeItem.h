@@ -74,7 +74,7 @@ public:
     // Menu
     //===------------------------------------------------------------------===//
 
-    Component *createItemMenu() override;
+    ScopedPointer<Component> createItemMenu() override;
 
 
     //===------------------------------------------------------------------===//

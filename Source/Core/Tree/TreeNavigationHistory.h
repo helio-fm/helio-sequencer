@@ -52,14 +52,12 @@ public:
         {
             this->currentPageIndex--;
             
-            if (this->list[this->currentPageIndex] == nullptr)
+            if (this->list[this->currentPageIndex].wasObjectDeleted())
             {
-                //Logger::writeToLog("removeRange " + String(this->currentPageIndex));
                 this->list.removeRange(this->currentPageIndex, 1);
             }
             else
             {
-                //Logger::writeToLog("ok " + String(this->currentPageIndex));
                 break;
             }
         }
@@ -81,15 +79,13 @@ public:
         {
             this->currentPageIndex++;
             
-            if (this->list[this->currentPageIndex] == nullptr)
+            if (this->list[this->currentPageIndex].wasObjectDeleted())
             {
-                //Logger::writeToLog("removeRange " + String(this->currentPageIndex));
                 this->list.removeRange(this->currentPageIndex, 1);
                 this->currentPageIndex--;
             }
             else
             {
-                //Logger::writeToLog("ok " + String(this->currentPageIndex));
                 break;
             }
         }

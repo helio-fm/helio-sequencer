@@ -39,7 +39,7 @@ String PianoRollSelectionTreeItem::getCaption() const
     return TRANS("tree::selection::piano");
 }
 
-Component *PianoRollSelectionTreeItem::createItemMenu()
+ScopedPointer<Component> PianoRollSelectionTreeItem::createItemMenu()
 {
     return nullptr; // new PianoRollSelectionCommandPanel(*this, CommandPanel::SlideRight);
 }
@@ -58,7 +58,7 @@ String PatternRollSelectionTreeItem::getCaption() const
     return TRANS("tree::selection::pattern");
 }
 
-Component *PatternRollSelectionTreeItem::createItemMenu()
+juce::ScopedPointer<juce::Component> PatternRollSelectionTreeItem::createItemMenu()
 {
     return nullptr; // new PatternRollSelectionCommandPanel(*this, CommandPanel::SlideRight);
 }

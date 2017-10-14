@@ -222,7 +222,8 @@ ProjectPageDefault::ProjectPageDefault(ProjectTreeItem &parentProject)
     //[UserPreSize]
     this->revealLocationButton->setMouseCursor(MouseCursor::PointingHandCursor);
 
-    if (App::isRunningOnPhone())
+    // TODO remove this button?
+    //if (App::isRunningOnPhone())
     {
         this->menuButton->setVisible(false);
     }

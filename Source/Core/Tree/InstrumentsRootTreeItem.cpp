@@ -76,7 +76,7 @@ void InstrumentsRootTreeItem::recreatePage()
 // Menu
 //===----------------------------------------------------------------------===//
 
-Component *InstrumentsRootTreeItem::createItemMenu()
+ScopedPointer<Component> InstrumentsRootTreeItem::createItemMenu()
 {
     return new InstrumentsCommandPanel(*this);
 }

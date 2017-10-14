@@ -69,7 +69,7 @@ public:
 
     Image getIcon() const override;
     String getCaption() const override;
-    Component *createItemMenu() override;
+    ScopedPointer<Component> createItemMenu() override;
 
 private:
 
@@ -82,7 +82,7 @@ public:
 
     Image getIcon() const override;
     String getCaption() const override;
-    Component *createItemMenu() override;
+    ScopedPointer<Component> createItemMenu() override;
 
 private:
 

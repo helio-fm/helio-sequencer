@@ -132,13 +132,12 @@ void TreeItemComponent::setSelected(bool shouldBeSelected)
 
 void TreeItemComponent::emitCallout()
 {
-    Component *menu = this->item.createItemMenu();
-    
-    if (menu)
+    ScopedPointer<Component> menu = this->item.createItemMenu();
+    if (menu != nullptr)
     {
         //this->item.setSelected(false, false, dontSendNotification);
         //this->item.setSelected(true, true, dontSendNotification);
-        HelioCallout::emit(menu, this);
+        HelioCallout::emit(menu.release(), this);
     }
 }
 

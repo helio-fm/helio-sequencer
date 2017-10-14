@@ -189,7 +189,7 @@ void InstrumentTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dra
 // Menu
 //===----------------------------------------------------------------------===//
 
-Component *InstrumentTreeItem::createItemMenu()
+ScopedPointer<Component> InstrumentTreeItem::createItemMenu()
 {
     return new InstrumentCommandPanel(*this);
 }

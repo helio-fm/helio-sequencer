@@ -358,7 +358,7 @@ void MainLayout::showModalNonOwnedDialog(Component *targetComponent)
 
     this->addChildComponent(ownedTarget);
 
-    const int fadeInTime = 250;
+    const int fadeInTime = 200;
     Desktop::getInstance().getAnimator().animateComponent(ownedTarget,
         ownedTarget->getBounds(),
         1.f, fadeInTime, false, 0.0, 0.0);

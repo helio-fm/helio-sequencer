@@ -463,7 +463,7 @@ void ProjectTreeItem::activateLayer(MidiSequence* sequence, bool selectOthers, b
 // Menu
 //===----------------------------------------------------------------------===//
 
-Component *ProjectTreeItem::createItemMenu()
+ScopedPointer<Component> ProjectTreeItem::createItemMenu()
 {
     return new ProjectCommandPanel(*this, CommandPanel::SlideRight);
 }

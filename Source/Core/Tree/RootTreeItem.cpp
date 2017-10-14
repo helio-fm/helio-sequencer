@@ -284,7 +284,7 @@ MidiTrackTreeItem *RootTreeItem::addAutoLayer(TreeItem *parent, const String &na
 // Menu
 //===----------------------------------------------------------------------===//
 
-Component *RootTreeItem::createItemMenu()
+ScopedPointer<Component> RootTreeItem::createItemMenu()
 {
     return new WorkspaceMenu(&App::Workspace());
 }

@@ -223,7 +223,7 @@ public:
     // Menu
     //===------------------------------------------------------------------===//
 
-    virtual Component *createItemMenu()
+    virtual ScopedPointer<Component> createItemMenu()
     {
         return nullptr;
     }
