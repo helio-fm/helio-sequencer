@@ -278,7 +278,6 @@ void ThemeSettingsItem::setSelected(bool shouldBeSelected)
     if (shouldBeSelected)
     {
         this->applyTheme(this->colours);
-        this->listBox.updateContent();
     }
 }
 
