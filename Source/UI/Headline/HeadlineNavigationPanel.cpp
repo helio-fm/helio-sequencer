@@ -26,7 +26,7 @@
 #include "PanelBackgroundB.h"
 #include "HeadlineDropdown.h"
 #include "HelioCallout.h"
-#include "MainLayout.h"
+#include "Workspace.h"
 #include "App.h"
 //[/MiscUserDefs]
 
@@ -150,10 +150,10 @@ void HeadlineNavigationPanel::handleCommandMessage (int commandId)
     switch (commandId)
     {
     case CommandIDs::ShowPreviousPage:
-        App::Layout().showPrevPageIfAny();
+        App::Workspace().navigateBackwardIfPossible();
         break;
     case CommandIDs::ShowNextPage:
-        App::Layout().showNextPageIfAny();
+        App::Workspace().navigateForwardIfPossible();
         break;
     default:
         break;

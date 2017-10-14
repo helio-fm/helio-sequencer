@@ -38,6 +38,8 @@
 #include "HotkeyScheme.h"
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
+#include "Workspace.h"
+#include "App.h"
 
 namespace KeyboardFocusDebugger
 {
@@ -194,42 +196,8 @@ int MainLayout::getScrollerHeight()
 }
 
 //===----------------------------------------------------------------------===//
-// Pages stack
+// Pages
 //===----------------------------------------------------------------------===//
-
-TreeNavigationHistory &MainLayout::getNavigationHistory()
-{
-    return this->navigationHistory;
-}
-
-WeakReference<TreeItem> MainLayout::getActiveTreeItem() const
-{
-    return this->navigationHistory.getCurrentItem();
-}
-
-void MainLayout::showPrevPageIfAny()
-{
-    TreeItem *treeItem = this->navigationHistory.goBack();
-
-    if (treeItem != nullptr)
-    {
-        this->navigationHistory.setLocked(true);
-        treeItem->setSelected(true, true);
-        this->navigationHistory.setLocked(false);
-    }
-}
-
-void MainLayout::showNextPageIfAny()
-{
-    TreeItem *treeItem = this->navigationHistory.goForward();
-    
-    if (treeItem != nullptr)
-    {
-        this->navigationHistory.setLocked(true);
-        treeItem->setSelected(true, true);
-        this->navigationHistory.setLocked(false);
-    }
-}
 
 void hideMarkersRecursive(TreeItem *startFrom)
 {
@@ -262,8 +230,8 @@ void MainLayout::showTransientItem(
     item->setSelected(true, true, dontSendNotification);
     item->setMarkerVisible(true);
     // TODO
-    //this->navigationHistory.addItemIfNeeded
-    this->headline->syncWithTree(this->navigationHistory, item);
+    //App::Workspace().getNavigationHistory().addItemIfNeeded
+    this->headline->syncWithTree(App::Workspace().getNavigationHistory(), item);
 }
 
 void MainLayout::showPage(Component *page, TreeItem *source)
@@ -278,8 +246,8 @@ void MainLayout::showPage(Component *page, TreeItem *source)
     {
         hideMarkersRecursive(App::Workspace().getTreeRoot());
         source->setMarkerVisible(true);
-        this->navigationHistory.addItemIfNeeded(source);
-        this->headline->syncWithTree(this->navigationHistory, source);
+        App::Workspace().getNavigationHistory().addItemIfNeeded(source);
+        this->headline->syncWithTree(App::Workspace().getNavigationHistory(), source);
     }
 
     if (this->currentContent != nullptr)
@@ -498,10 +466,10 @@ void MainLayout::handleCommandMessage(int commandId)
     switch (commandId)
     {
     case CommandIDs::ShowPreviousPage:
-        this->showPrevPageIfAny();
+        App::Workspace().navigateBackwardIfPossible();
         break;
     case CommandIDs::ShowNextPage:
-        this->showNextPageIfAny();
+        App::Workspace().navigateForwardIfPossible();
         break;
     case CommandIDs::ToggleShowHideConsole:
         this->toggleShowHideConsole();

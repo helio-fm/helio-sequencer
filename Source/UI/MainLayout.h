@@ -20,9 +20,9 @@
 class TransientTreeItem;
 class TooltipContainer;
 class HotkeyScheme;
+class TreeItem;
 class Headline;
 
-#include "TreeNavigationHistory.h"
 #include "ComponentFader.h"
 
 #if HELIO_DESKTOP
@@ -48,14 +48,9 @@ public:
     static int getScrollerHeight();
     
     //===------------------------------------------------------------------===//
-    // Pages stack
+    // Pages
     //===------------------------------------------------------------------===//
 
-    WeakReference<TreeItem> getActiveTreeItem() const;
-    TreeNavigationHistory &getNavigationHistory();
-    void showPrevPageIfAny();
-    void showNextPageIfAny();
-    
     void showTransientItem(ScopedPointer<TransientTreeItem> newItem, TreeItem *parent);
     void showPage(Component *page, TreeItem *source = nullptr);
     
@@ -97,8 +92,6 @@ private:
 
     ScopedPointer<TooltipContainer> tooltipContainer;
     
-    TreeNavigationHistory navigationHistory;
-
     ScopedPointer<HotkeyScheme> hotkeyScheme;
     
 private:

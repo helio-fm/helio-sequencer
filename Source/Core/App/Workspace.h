@@ -25,6 +25,7 @@ class PluginManager;
 #include "Serializable.h"
 #include "DocumentOwner.h"
 #include "RecentFilesList.h"
+#include "TreeNavigationHistory.h"
 
 class Workspace : public DocumentOwner,
                   public RecentFilesList::Owner,
@@ -38,6 +39,11 @@ public:
 
     void init();
     bool isInitialized() const noexcept;
+
+    WeakReference<TreeItem> getActiveTreeItem() const;
+    TreeNavigationHistory &getNavigationHistory();
+    void navigateBackwardIfPossible();
+    void navigateForwardIfPossible();
 
     AudioCore &getAudioCore();
     PluginManager &getPluginManager();
@@ -107,7 +113,8 @@ private:
     ScopedPointer<PluginManager> pluginManager;
     
     ScopedPointer<RootTreeItem> treeRoot;
-    
+    TreeNavigationHistory navigationHistory;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Workspace)
 
 };

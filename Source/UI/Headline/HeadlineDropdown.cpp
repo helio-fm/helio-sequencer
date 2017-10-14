@@ -75,7 +75,7 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<TreeItem> targetItem)
     this->titleLabel->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]
 
-    setSize (256, 256);
+    setSize (256, 32);
 
     //[Constructor]
     if (this->item != nullptr)
@@ -120,7 +120,6 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<TreeItem> targetItem)
         else
         {
             // TODO dismiss immediately?
-            this->setSize(this->getWidth(), 32);
         }
     }
 
@@ -351,7 +350,7 @@ BEGIN_JUCER_METADATA
                  constructorParams="WeakReference&lt;TreeItem&gt; targetItem"
                  variableInitialisers="item(targetItem)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="256"
-                 initialHeight="256">
+                 initialHeight="32">
   <METHODS>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
     <METHOD name="inputAttemptWhenModal()"/>
@@ -377,7 +376,7 @@ BEGIN_JUCER_METADATA
                     explicitFocusOrder="0" pos="8 16c 32 32" class="IconComponent"
                     params="Icons::workspace"/>
   <GENERICCOMPONENT name="" id="b986fd50e3b5b1c5" memberName="content" virtualName=""
-                    explicitFocusOrder="0" pos="2 33 4M 34M" class="Component" params=""/>
+                    explicitFocusOrder="0" pos="2 33 4M 32M" class="Component" params=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

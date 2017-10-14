@@ -42,8 +42,8 @@ public:
     
     void closeButtonPressed() override;
 
-    void dismissWorkspaceComponent();
-    void createWorkspaceComponent();
+    void dismissLayoutComponent();
+    void createLayoutComponent();
     MainLayout *getWorkspaceComponent() const;
 
     void setOpenGLRendererEnabled(bool shouldBeEnabled);
@@ -75,7 +75,7 @@ private:
 
     ScopedPointer<Button> commandButtons[3];
 
-    ScopedPointer<MainLayout> workspace;
+    ScopedPointer<MainLayout> layout;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
 };
