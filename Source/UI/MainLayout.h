@@ -22,7 +22,7 @@ class TooltipContainer;
 class HotkeyScheme;
 class Headline;
 
-#include "LastShownTreeItems.h"
+#include "TreeNavigationHistory.h"
 #include "ComponentFader.h"
 
 #if HELIO_DESKTOP
@@ -46,21 +46,18 @@ public:
     void toggleShowHideConsole();
 
     static int getScrollerHeight();
-
     
     //===------------------------------------------------------------------===//
     // Pages stack
     //===------------------------------------------------------------------===//
 
-    LastShownTreeItems &getLastShownItems();
     WeakReference<TreeItem> getActiveTreeItem() const;
-    
+    TreeNavigationHistory &getNavigationHistory();
     void showPrevPageIfAny();
     void showNextPageIfAny();
     
     void showTransientItem(ScopedPointer<TransientTreeItem> newItem, TreeItem *parent);
     void showPage(Component *page, TreeItem *source = nullptr);
-
     
     //===------------------------------------------------------------------===//
     // UI
@@ -73,7 +70,6 @@ public:
     void showModalNonOwnedDialog(Component *targetComponent);
     void showBlockingNonModalDialog(Component *targetComponent);
     Rectangle<int> getPageBounds() const;
-    
     
     //===------------------------------------------------------------------===//
     // Component
@@ -101,7 +97,7 @@ private:
 
     ScopedPointer<TooltipContainer> tooltipContainer;
     
-    LastShownTreeItems lastShownItems;
+    TreeNavigationHistory navigationHistory;
 
     ScopedPointer<HotkeyScheme> hotkeyScheme;
     

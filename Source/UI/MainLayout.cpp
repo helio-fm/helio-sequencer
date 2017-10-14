@@ -197,37 +197,37 @@ int MainLayout::getScrollerHeight()
 // Pages stack
 //===----------------------------------------------------------------------===//
 
-LastShownTreeItems &MainLayout::getLastShownItems()
+TreeNavigationHistory &MainLayout::getNavigationHistory()
 {
-    return this->lastShownItems;
+    return this->navigationHistory;
 }
 
 WeakReference<TreeItem> MainLayout::getActiveTreeItem() const
 {
-    return this->lastShownItems.getCurrentItem();
+    return this->navigationHistory.getCurrentItem();
 }
 
 void MainLayout::showPrevPageIfAny()
 {
-    TreeItem *treeItem = this->lastShownItems.goBack();
+    TreeItem *treeItem = this->navigationHistory.goBack();
 
     if (treeItem != nullptr)
     {
-        this->lastShownItems.setLocked(true);
-        treeItem->showPage();
-        this->lastShownItems.setLocked(false);
+        this->navigationHistory.setLocked(true);
+        treeItem->setSelected(true, true);
+        this->navigationHistory.setLocked(false);
     }
 }
 
 void MainLayout::showNextPageIfAny()
 {
-    TreeItem *treeItem = this->lastShownItems.goForward();
+    TreeItem *treeItem = this->navigationHistory.goForward();
     
     if (treeItem != nullptr)
     {
-        this->lastShownItems.setLocked(true);
-        treeItem->showPage();
-        this->lastShownItems.setLocked(false);
+        this->navigationHistory.setLocked(true);
+        treeItem->setSelected(true, true);
+        this->navigationHistory.setLocked(false);
     }
 }
 
@@ -261,7 +261,9 @@ void MainLayout::showTransientItem(
     parent->addChildTreeItem(item);
     item->setSelected(true, true, dontSendNotification);
     item->setMarkerVisible(true);
-    this->headline->syncWithTree(item);
+    // TODO
+    //this->navigationHistory.addItemIfNeeded
+    this->headline->syncWithTree(this->navigationHistory, item);
 }
 
 void MainLayout::showPage(Component *page, TreeItem *source)
@@ -276,7 +278,8 @@ void MainLayout::showPage(Component *page, TreeItem *source)
     {
         hideMarkersRecursive(App::Workspace().getTreeRoot());
         source->setMarkerVisible(true);
-        this->headline->syncWithTree(source);
+        this->navigationHistory.addItemIfNeeded(source);
+        this->headline->syncWithTree(this->navigationHistory, source);
     }
 
     if (this->currentContent != nullptr)
@@ -291,7 +294,6 @@ void MainLayout::showPage(Component *page, TreeItem *source)
         this->removeChildComponent(this->currentContent);
     }
     
-    this->lastShownItems.addItemIfNeeded(source);
     this->currentContent = page;    
 
     this->addAndMakeVisible(this->currentContent);

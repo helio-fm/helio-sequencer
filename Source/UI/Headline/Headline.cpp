@@ -30,6 +30,7 @@ Headline::Headline()
 {
     addAndMakeVisible (bg = new PanelBackgroundB());
     addAndMakeVisible (separator = new SeparatorHorizontalReversed());
+    addAndMakeVisible (navPanel = new HeadlineNavigationPanel());
 
     //[UserPreSize]
     this->setFocusContainer(false);
@@ -49,6 +50,7 @@ Headline::~Headline()
 
     bg = nullptr;
     separator = nullptr;
+    navPanel = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -70,6 +72,7 @@ void Headline::resized()
 
     bg->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
     separator->setBounds (0, getHeight() - 2, getWidth() - 0, 2);
+    navPanel->setBounds (0, 0, 88, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -97,15 +100,16 @@ Array<TreeItem *> createSortedBranchArray(WeakReference<TreeItem> leaf)
     return result;
 }
 
-#define HEADLINE_ITEMS_OVERLAP 16
+#define HEADLINE_ITEMS_OVERLAP (16)
+#define HEADLINE_ROOT_X (72)
 
-void Headline::syncWithTree(WeakReference<TreeItem> leaf)
+void Headline::syncWithTree(TreeNavigationHistory &navHistory, WeakReference<TreeItem> root)
 {
-    Array<TreeItem *> branch = createSortedBranchArray(leaf);
+    Array<TreeItem *> branch = createSortedBranchArray(root);
 
     // Finds the first inconsistency point in the chain
     int firstInvalidUnitIndex = 0;
-    int fadePositionX = HEADLINE_ITEMS_OVERLAP - 6;
+    int fadePositionX = HEADLINE_ITEMS_OVERLAP + HEADLINE_ROOT_X;
     for (; firstInvalidUnitIndex < this->chain.size(); firstInvalidUnitIndex++)
     {
         if (this->chain[firstInvalidUnitIndex]->getTreeItem() != branch[firstInvalidUnitIndex])
@@ -137,7 +141,10 @@ void Headline::syncWithTree(WeakReference<TreeItem> leaf)
         this->animator.animateComponent(child, finalPos, 1.f, 300, false, 1.f, 0.f);
     }
 
+    this->navPanel->updateState(navHistory.canGoBackward(), navHistory.canGoForward());
+
     this->bg->toBack();
+    this->navPanel->toFront(false);
 }
 
 //[/MiscUserCode]
@@ -156,6 +163,9 @@ BEGIN_JUCER_METADATA
              constructorParams=""/>
   <JUCERCOMP name="" id="e5efefc65cac6ba7" memberName="separator" virtualName=""
              explicitFocusOrder="0" pos="0 0Rr 0M 2" sourceFile="../Themes/SeparatorHorizontalReversed.cpp"
+             constructorParams=""/>
+  <JUCERCOMP name="" id="666c39451424e53c" memberName="navPanel" virtualName=""
+             explicitFocusOrder="0" pos="0 0 88 0M" sourceFile="HeadlineNavigationPanel.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

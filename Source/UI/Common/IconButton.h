@@ -25,16 +25,27 @@ class IconButton : public IconComponent, public HighlightedComponent
 {
 public:
     
-    explicit IconButton(const String &iconName) : IconComponent(iconName)
+    explicit IconButton(const String &iconName,
+        int commandId = CommandIDs::IconButtonPressed) :
+        IconComponent(iconName),
+        commandId(commandId)
     {
         this->setInterceptsMouseClicks(true, false);
     }
     
+    explicit IconButton(Image targetImage,
+        int commandId = CommandIDs::IconButtonPressed) :
+        IconComponent(targetImage),
+        commandId(commandId)
+    {
+        this->setInterceptsMouseClicks(true, false);
+    }
+
     void mouseDown(const MouseEvent &e) override
     {
         if (this->getParentComponent() != nullptr)
         {
-            this->getParentComponent()->postCommandMessage(CommandIDs::IconButtonPressed);
+            this->getParentComponent()->postCommandMessage(this->commandId);
         }
     }
     
@@ -53,10 +64,14 @@ public:
     { HighlightedComponent::mouseExit(event); }
 
 private:
+
+    int commandId;
     
     Component *createHighlighterComponent() override
     {
-        return new IconButton(this->iconName);
+        return this->image.isNull() ?
+            new IconButton(this->iconName) :
+            new IconButton(this->image);
     }
     
 };

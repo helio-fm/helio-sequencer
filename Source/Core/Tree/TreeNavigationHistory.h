@@ -19,12 +19,12 @@
 
 #include "TreeItem.h"
 
-class LastShownTreeItems :
+class TreeNavigationHistory :
     public ChangeBroadcaster
 {
 public:
     
-    LastShownTreeItems() : isLocked(false), currentPageIndex(0) { }
+    TreeNavigationHistory() : isLocked(false), currentPageIndex(0) { }
     
     void setLocked(bool shouldBeLocked)
     {
@@ -43,12 +43,10 @@ public:
     
     TreeItem *goBack()
     {
-        if (this->currentPageIndex == 0)
+        if (!this->canGoBackward())
         {
             return nullptr;
         }
-        
-        //Logger::writeToLog("lastPagesList.size " + String(this->list.size()));
         
         while (this->list.size() > 0)
         {
@@ -74,13 +72,11 @@ public:
     
     TreeItem *goForward()
     {
-        if (this->currentPageIndex >= (this->list.size() - 1))
+        if (!this->canGoForward())
         {
             return nullptr;
         }
-        
-        //Logger::writeToLog("lastPagesList.size " + String(this->list.size()));
-        
+                
         while ((this->list.size() - 1) > this->currentPageIndex)
         {
             this->currentPageIndex++;
@@ -128,7 +124,7 @@ public:
     
 private:
     
-    Array< WeakReference<TreeItem> > list;
+    Array<WeakReference<TreeItem>> list;
     
     bool isLocked;
     

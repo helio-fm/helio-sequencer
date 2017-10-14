@@ -18,48 +18,43 @@
 #pragma once
 
 //[Headers]
+#include "HighlightedComponent.h"
+#include "IconButton.h"
 #include "TreeItem.h"
-#include "TreeNavigationHistory.h"
 
-class HeadlineItem;
+class IconComponent;
+class HeadlineDropdown;
 //[/Headers]
 
-#include "../Themes/PanelBackgroundB.h"
-#include "../Themes/SeparatorHorizontalReversed.h"
-#include "HeadlineNavigationPanel.h"
 
-class Headline  : public Component
+class HeadlineNavigationPanel  : public Component
 {
 public:
 
-    Headline ();
+    HeadlineNavigationPanel ();
 
-    ~Headline();
+    ~HeadlineNavigationPanel();
 
     //[UserMethods]
-
-    void syncWithTree(TreeNavigationHistory &navHistory,
-        WeakReference<TreeItem> root);
-
+    void updateState(bool canGoPrevious, bool canGoNext);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
+    void handleCommandMessage (int commandId) override;
 
 
 private:
 
     //[UserVariables]
-
-    ComponentAnimator animator;
-
-    OwnedArray<HeadlineItem> chain;
-
+    ScopedPointer<HeadlineDropdown> dropdown;
     //[/UserVariables]
 
-    ScopedPointer<PanelBackgroundB> bg;
-    ScopedPointer<SeparatorHorizontalReversed> separator;
-    ScopedPointer<HeadlineNavigationPanel> navPanel;
+    ScopedPointer<IconButton> navigatePrevious;
+    ScopedPointer<IconButton> navigateNext;
+    Path internalPath1;
+    Path internalPath2;
+    Path internalPath3;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Headline)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeadlineNavigationPanel)
 };
