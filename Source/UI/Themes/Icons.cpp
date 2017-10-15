@@ -82,7 +82,7 @@ const String Icons::insertSpaceTool = "insertSpaceTool";
 const String Icons::wipeScapeTool = "wipeScapeTool";
 const String Icons::cropTool = "cropTool";
 const String Icons::annotation = "annotation";
-const String Icons::arpeggiator = "arpeggiator";
+const String Icons::stack = "stack";
 const String Icons::switcher = "switcher";
 const String Icons::stretchLeft = "stretchLeft";
 const String Icons::stretchRight = "stretchRight";
@@ -229,7 +229,7 @@ void Icons::setupBuiltInImages()
     
     //builtInImages.set(Icons::annotation, BuiltInImageData(BinaryData::poetry_svg, BinaryData::poetry_svgSize));
     builtInImages.set(Icons::annotation, BuiltInImageData(BinaryData::quote_svg, BinaryData::quote_svgSize));
-    builtInImages.set(Icons::arpeggiator, BuiltInImageData(BinaryData::arpeggiator_svg, BinaryData::arpeggiator_svgSize));
+    builtInImages.set(Icons::stack, BuiltInImageData(BinaryData::arpeggiator_svg, BinaryData::arpeggiator_svgSize));
     builtInImages.set(Icons::switcher, BuiltInImageData(BinaryData::switch_svg, BinaryData::switch_svgSize));
     
     builtInImages.set(Icons::instrumentGraph, BuiltInImageData(BinaryData::waveform_svg, BinaryData::waveform_svgSize));

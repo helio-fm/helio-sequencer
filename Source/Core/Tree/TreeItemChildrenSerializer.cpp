@@ -26,6 +26,7 @@
 #include "InstrumentsRootTreeItem.h"
 #include "InstrumentTreeItem.h"
 #include "VersionControlTreeItem.h"
+#include "PatternEditorTreeItem.h"
 #include "SettingsTreeItem.h"
 
 void TreeItemChildrenSerializer::serializeChildren(const TreeItem &parentItem, XmlElement &parentXml)
@@ -78,6 +79,10 @@ void TreeItemChildrenSerializer::deserializeChildren(TreeItem &parentItem, const
         else if (type == Serialization::Core::versionControl)
         {
             child = new VersionControlTreeItem();
+        }
+        else if (type == Serialization::Core::patternSet)
+        {
+            child = new PatternEditorTreeItem();
         }
 
         if (child != nullptr)

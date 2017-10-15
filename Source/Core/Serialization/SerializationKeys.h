@@ -50,6 +50,7 @@ namespace Serialization
         static const String projectInfo = "ProjectInfo";
         static const String projectTimeStamp = "ProjectTimeStamp";
         static const String versionControl = "VersionControl";
+        static const String patternSet = "PatternSet";
         static const String layerGroup = "Group";
         static const String layer = "Layer";
         static const String pianoLayer = "PianoLayer";
