@@ -109,13 +109,13 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<TreeItem> targetItem)
             treeView->setSize(w, h);
             this->content = treeView.release();
             this->addAndMakeVisible(this->content);
-            this->childBoundsChanged(this->content);
+            this->syncWidthWithContent();
         }
         else if (ScopedPointer<Component> menu = this->item->createItemMenu())
         {
             this->content = menu.release();
             this->addAndMakeVisible(this->content);
-            this->childBoundsChanged(this->content);
+            this->syncWidthWithContent();
         }
         else
         {
@@ -314,13 +314,7 @@ T *findParent(Component *target)
 
 void HeadlineDropdown::childBoundsChanged(Component *child)
 {
-    if (child == this->content &&
-        this->getWidth() != this->content->getWidth() + 4 &&
-        this->getHeight() != this->content->getHeight() + 34)
-    {
-        const int w = jmax(this->getWidth(), this->content->getWidth() + 4);
-        this->setSize(w, this->content->getHeight() + 34);
-    }
+    this->syncWidthWithContent();
 }
 
 void HeadlineDropdown::timerCallback()
@@ -331,13 +325,23 @@ void HeadlineDropdown::timerCallback()
     HeadlineDropdown *root =
         findParent<HeadlineDropdown>(componentUnderMouse);
 
-    if (root != this)
+    if (componentUnderMouse != nullptr && root != this)
     {
         this->stopTimer();
         this->exitModalState(0);
         Desktop::getInstance().getAnimator()
             .animateComponent(this, this->getBounds(), 0.f, 150, true, 0.f, 1.f);
         delete this;
+    }
+}
+
+void HeadlineDropdown::syncWidthWithContent()
+{
+    if (this->getWidth() != this->content->getWidth() + 4 ||
+        this->getHeight() != this->content->getHeight() + 34)
+    {
+        const int w = jmax(this->getWidth(), this->content->getWidth() + 4);
+        this->setSize(w, this->content->getHeight() + 34);
     }
 }
 

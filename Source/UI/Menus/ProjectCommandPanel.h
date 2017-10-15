@@ -43,12 +43,12 @@ private:
     WeakReference<Instrument> lastSelectedInstrument;
 
     void initMainMenu(AnimationType animationType);
+    void initBatchMenu(AnimationType animationType);
     void initRenderMenu();
-    void initBatchMenu();
     void initInstrumentSelection();
     
-    void initAutomationsMenu(AnimationType animationType);
-    void initAutomationsControllersMenu();
+    void initNewSubItemsMenu(AnimationType animationType);
+    void initSubItemTypeSelectionMenu();
 
     bool haveSetBatchCheckpoint;
     
@@ -56,6 +56,6 @@ private:
     String createAutoLayerTempate(const String &name, int controllerNumber, const String &instrumentId = "") const;
     
     void proceedToRenderDialog(const String &extension);
-    void focusRollAndExit();
+    void dismiss();
 
 };

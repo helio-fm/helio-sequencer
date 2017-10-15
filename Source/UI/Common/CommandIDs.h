@@ -140,9 +140,12 @@ namespace CommandIDs
         RenderToOGG                     = 0x2031,
         RenderToWAV                     = 0x2032,
 
-        AddLayer                        = 0x2040,
-        AddLayerConfirmed               = 0x2041,
-        AddAutomation                   = 0x2042,
+        AddItemsMenu                    = 0x2040,
+        AddItemsMenuBack                = 0x2041,
+
+        AddMidiTrack                    = 0x2042,
+        AddMidiTrackConfirmed           = 0x2043,
+        AddAutomationTrack              = 0x2044,
 
         ImportMidi                      = 0x2050,
         ExportMidi                      = 0x2051,
@@ -156,11 +159,15 @@ namespace CommandIDs
         RefactorTransposeDown           = 0x2071,
         RefactorRemoveOverlaps          = 0x2072,
 
-        ProjectMainMenu                 = 0x2080,
-        ProjectRenderMenu               = 0x2081,
-        ProjectBatchMenu                = 0x2082,
-        ProjectAutomationsMenu          = 0x2083,
-        ProjectInstrumentsMenu          = 0x2084, // more ids reserved for instruments
+        ProjectPatternEditor            = 0x2080,
+        ProjectLinearEditor             = 0x2081,
+        ProjectVersionsEditor           = 0x2082,
+
+        ProjectMainMenu                 = 0x2090,
+        ProjectRenderMenu               = 0x2091,
+        ProjectBatchMenu                = 0x2092,
+        ProjectBatchMenuBack            = 0x2093,
+        ProjectInstrumentsMenu          = 0x2094, // more ids reserved for instruments
 
         AddTempoController              = 0x2500,
         AddCustomController             = 0x2501, // more ids reserved for controllers

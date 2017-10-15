@@ -197,12 +197,16 @@ int CommandIDs::getIdForName(const String &command)
         return RenderToOGG;
     case Hash("RenderToWAV"):
         return RenderToWAV;
-    case Hash("AddLayer"):
-        return AddLayer;
-    case Hash("AddLayerConfirmed"):
-        return AddLayerConfirmed;
-    case Hash("AddAutomation"):
-        return AddAutomation;
+    case Hash("AddItemsMenu"):
+        return AddItemsMenu;
+    case Hash("AddItemsMenuBack"):
+        return AddItemsMenuBack;
+    case Hash("AddMidiTrack"):
+        return AddMidiTrack;
+    case Hash("AddMidiTrackConfirmed"):
+        return AddMidiTrackConfirmed;
+    case Hash("AddAutomationTrack"):
+        return AddAutomationTrack;
     case Hash("ImportMidi"):
         return ImportMidi;
     case Hash("ExportMidi"):
@@ -221,14 +225,20 @@ int CommandIDs::getIdForName(const String &command)
         return RefactorTransposeDown;
     case Hash("RefactorRemoveOverlaps"):
         return RefactorRemoveOverlaps;
+    case Hash("ProjectPatternEditor"):
+        return ProjectPatternEditor;
+    case Hash("ProjectLinearEditor"):
+        return ProjectLinearEditor;
+    case Hash("ProjectVersionsEditor"):
+        return ProjectVersionsEditor;
     case Hash("ProjectMainMenu"):
         return ProjectMainMenu;
     case Hash("ProjectRenderMenu"):
         return ProjectRenderMenu;
     case Hash("ProjectBatchMenu"):
         return ProjectBatchMenu;
-    case Hash("ProjectAutomationsMenu"):
-        return ProjectAutomationsMenu;
+    case Hash("ProjectBatchMenuBack"):
+        return ProjectBatchMenuBack;
     case Hash("ProjectInstrumentsMenu"):
         return ProjectInstrumentsMenu;
     case Hash("AddTempoController"):

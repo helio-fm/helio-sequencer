@@ -53,6 +53,7 @@ private:
     WeakReference<TreeItem> item;
 
     void timerCallback() override;
+    void syncWidthWithContent();
 
     //[/UserVariables]
 

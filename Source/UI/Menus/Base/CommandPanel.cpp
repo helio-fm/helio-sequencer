@@ -170,7 +170,7 @@ void CommandPanel::updateContent(ReferenceCountedArray<CommandItem> commands,
     const int maxHeight = App::Helio()->getWindow()->getHeight() - TOPLEVEL_HEIGHT_MARGINS;
 
     int estimatedWidth = 0;
-    if (adjustsWidth)
+    if (this->shouldAdjustWidth)
     {
         ScopedPointer<CommandItemComponent> tempItem(new CommandItemComponent(nullptr, nullptr, CommandItem::empty()));
         Font stringFont(tempItem->getFont());
@@ -233,9 +233,7 @@ void CommandPanel::updateContent(ReferenceCountedArray<CommandItem> commands,
     this->listBox->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
     this->listBox->setRowHeight(COMMAND_PANEL_BUTTON_HEIGHT);
     this->listBox->updateContent();
-
     this->addAndMakeVisible(this->listBox);
-
 
     if (animationType == Fading)
     {
