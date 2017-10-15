@@ -755,6 +755,10 @@
                 file="../../Source/UI/Menus/NotesTuningPanel.cpp"/>
           <FILE id="ywKB7T" name="NotesTuningPanel.h" compile="0" resource="0"
                 file="../../Source/UI/Menus/NotesTuningPanel.h"/>
+          <FILE id="mqDWs1" name="PatternEditorCommandPanel.cpp" compile="1"
+                resource="0" file="../../Source/UI/Menus/PatternEditorCommandPanel.cpp"/>
+          <FILE id="gsKtVK" name="PatternEditorCommandPanel.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/PatternEditorCommandPanel.h"/>
           <FILE id="P4AT8Y" name="PatternRollSelectionCommandPanel.cpp" compile="1"
                 resource="0" file="../../Source/UI/Menus/PatternRollSelectionCommandPanel.cpp"/>
           <FILE id="mwbtT6" name="PatternRollSelectionCommandPanel.h" compile="0"
