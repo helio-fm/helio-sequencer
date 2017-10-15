@@ -49,6 +49,7 @@ Headline::Headline()
 Headline::~Headline()
 {
     //[Destructor_pre]
+    this->chain.clearQuick(true);
     //[/Destructor_pre]
 
     bg = nullptr;
@@ -83,6 +84,27 @@ void Headline::resized()
 
 //[MiscUserCode]
 
+void Headline::handleAsyncUpdate()
+{
+    //Logger::writeToLog("Headline::handleAsyncUpdate");
+    int posX = HEADLINE_ITEMS_OVERLAP + HEADLINE_ROOT_X;
+    for (int i = 0; i < this->chain.size(); ++i)
+    {
+        HeadlineItem *child = this->chain.getUnchecked(i);
+        const auto boundsBefore = child->getBounds();
+        child->updateContent();
+        const auto boundsAfter = child->getBounds().withX(posX - HEADLINE_ITEMS_OVERLAP);
+        this->animator.cancelAnimation(child, false);
+        if (boundsBefore != boundsAfter)
+        {
+            child->setBounds(boundsBefore);
+            this->animator.animateComponent(child, boundsAfter, 1.f, 250, false, 0.f, 0.f);
+        }
+
+        posX += boundsAfter.getWidth() - HEADLINE_ITEMS_OVERLAP;
+    }
+}
+
 Array<TreeItem *> createSortedBranchArray(WeakReference<TreeItem> leaf)
 {
     Array<TreeItem *> items;
@@ -103,10 +125,9 @@ Array<TreeItem *> createSortedBranchArray(WeakReference<TreeItem> leaf)
     return result;
 }
 
-// TODO: need to subscribe on tree item renames and moves
-
 void Headline::syncWithTree(TreeNavigationHistory &navHistory, WeakReference<TreeItem> root)
 {
+    //Logger::writeToLog("Headline::syncWithTree");
     Array<TreeItem *> branch = createSortedBranchArray(root);
 
     // Finds the first inconsistency point in the chain
@@ -125,6 +146,7 @@ void Headline::syncWithTree(TreeNavigationHistory &navHistory, WeakReference<Tre
     {
         const auto child = this->chain[i];
         const auto finalPos = child->getBounds().withX(fadePositionX - child->getWidth());
+        this->animator.cancelAnimation(child, false);
         this->animator.animateComponent(child, finalPos, 0.f, 200, true, 0.f, 1.f);
         this->chain.remove(i, true);
     }
@@ -132,7 +154,8 @@ void Headline::syncWithTree(TreeNavigationHistory &navHistory, WeakReference<Tre
     // Adds the new elements
     for (int i = firstInvalidUnitIndex, lastPosX = fadePositionX; i < branch.size(); i++)
     {
-        const auto child = new HeadlineItem(branch[i]);
+        const auto child = new HeadlineItem(branch[i], *this);
+        child->updateContent();
         this->chain.add(child);
         this->addAndMakeVisible(child);
         child->setTopLeftPosition(fadePositionX - child->getWidth(), 0);
@@ -156,9 +179,10 @@ void Headline::syncWithTree(TreeNavigationHistory &navHistory, WeakReference<Tre
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="Headline" template="../../Template"
-                 componentName="" parentClasses="public Component" constructorParams=""
-                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="600" initialHeight="34">
+                 componentName="" parentClasses="public Component, public AsyncUpdater"
+                 constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="600"
+                 initialHeight="34">
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="e14a947c03465d1b" memberName="bg" virtualName=""
              explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../Themes/PanelBackgroundB.cpp"

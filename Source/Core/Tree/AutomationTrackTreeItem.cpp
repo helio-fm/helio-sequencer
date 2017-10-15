@@ -41,8 +41,6 @@ AutomationTrackTreeItem::AutomationTrackTreeItem(const String &name) :
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), AutoLayerDeltas::layerController));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), AutoLayerDeltas::eventsAdded));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), PatternDeltas::clipsAdded));
-
-    this->setGreyedOut(true); // automations not visible by default
     
 #if HELIO_MOBILE
     // для мобил выключаю автоматизации нафиг, неюзабельно будет совершенно
@@ -306,7 +304,6 @@ void AutomationTrackTreeItem::resetMuteDelta(const XmlElement *state)
     if (willMute != this->isTrackMuted())
     {
         this->setTrackMuted(willMute);
-        this->repaintItem();
     }
 }
 
@@ -319,7 +316,6 @@ void AutomationTrackTreeItem::resetColourDelta(const XmlElement *state)
     if (colour != this->getTrackColour())
     {
         this->setTrackColour(colour);
-        this->repaintItem();
     }
 }
 

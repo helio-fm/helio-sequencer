@@ -269,11 +269,8 @@ void ProjectTreeItem::safeRename(const String &newName)
                               this->getId(),
                               true);
     }
-    
-    // notify workspace's document that he has been changed and needs to save
-    App::Workspace().sendChangeMessage();
 
-    this->repaintItem();
+    this->dispatchChangeTreeItemView();
 }
 
 void ProjectTreeItem::recreatePage()
@@ -331,7 +328,7 @@ void ProjectTreeItem::showEditor(MidiSequence *activeLayer, TreeItem *source)
     else if (AutomationSequence *autoLayer = dynamic_cast<AutomationSequence *>(activeLayer))
     {
         const bool editorWasShown = this->editor->toggleShowAutomationEditor(autoLayer);
-        source->setGreyedOut(!editorWasShown);
+        // TODO I really need a full-featured automation editor here >_<
     }
 }
 
@@ -340,7 +337,7 @@ void ProjectTreeItem::hideEditor(MidiSequence *activeLayer, TreeItem *source)
     if (AutomationSequence *autoLayer = dynamic_cast<AutomationSequence *>(activeLayer))
     {
         this->editor->hideAutomationEditor(autoLayer);
-        source->setGreyedOut(true);
+        // TODO I really need a full-featured automation editor here >_<
     }
 }
 

@@ -91,6 +91,7 @@ void VersionControlTreeItem::showPage()
     
     if (this->editor != nullptr)
     {
+        this->editor->updateState();
         App::Layout().showPage(this->editor, this);
     }
 }

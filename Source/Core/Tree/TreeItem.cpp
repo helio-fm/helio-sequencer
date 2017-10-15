@@ -17,8 +17,8 @@
 
 #include "Common.h"
 #include "TreeItem.h"
-#include "NavigationSidebar.h"
 #include "TreeItemComponentDefault.h"
+#include "App.h"
 #include "MainLayout.h"
 #include "HelioCallout.h"
 
@@ -32,8 +32,7 @@ String TreeItem::createSafeName(const String &nameStr)
 TreeItem::TreeItem(const String &nameStr) :
     name(TreeItem::createSafeName(nameStr)),
     markerIsVisible(false),
-    itemShouldBeVisible(true),
-    itemIsGreyedOut(false)
+    itemShouldBeVisible(true)
 {
 
 //#if HELIO_DESKTOP
@@ -47,23 +46,10 @@ TreeItem::TreeItem(const String &nameStr) :
 
 TreeItem::~TreeItem()
 {
-    // удаляем детей
+    this->removeAllChangeListeners();
     this->deleteAllSubItems();
-
-    // удаляем себя из дерева
     this->removeItemFromParent();
-
     this->masterReference.clear();
-}
-
-String TreeItem::getUniqueName() const
-{
-    return String(this->getIndexInParent());
-}
-
-NavigationSidebar *TreeItem::findParentTreePanel() const
-{
-    return this->getOwnerView()->findParentComponentOfClass<NavigationSidebar>();
 }
 
 void TreeItem::setMarkerVisible(bool shouldBeVisible) noexcept
@@ -74,22 +60,6 @@ void TreeItem::setMarkerVisible(bool shouldBeVisible) noexcept
 bool TreeItem::isMarkerVisible() const noexcept
 {
     return this->markerIsVisible;
-}
-
-void TreeItem::setGreyedOut(bool shouldBeGreyedOut) noexcept
-{
-    this->setSelected(false, false);
-
-    if (this->itemIsGreyedOut != shouldBeGreyedOut)
-    {
-        this->itemIsGreyedOut = shouldBeGreyedOut;
-        this->repaintItem();
-    }
-}
-
-bool TreeItem::isGreyedOut() const noexcept
-{
-    return this->itemIsGreyedOut;
 }
 
 int TreeItem::getNumSelectedSiblings() const
@@ -159,10 +129,6 @@ bool TreeItem::haveAllChildrenSelectedWithDeepSearch() const
 //===----------------------------------------------------------------------===//
 // Rename
 //===----------------------------------------------------------------------===//
-
-// TODO refactor:
-// I need a method to be called instead of repaintItem() - like notifyUpdateUI
-// And a way to update the headline when title/colour/mute/solo state changes
 
 void TreeItem::safeRename(const String &newName)
 {
@@ -282,6 +248,11 @@ void TreeItem::addChildTreeItem(TreeItem *child, int insertIndex /*= -1*/)
     notifySubtreeParentChanged(child);
 }
 
+void TreeItem::dispatchChangeTreeItemView()
+{
+    this->sendChangeMessage(); // update listeners
+    this->treeHasChanged(); // updates ownerView, if any
+}
 
 //===----------------------------------------------------------------------===//
 // Painting

@@ -110,13 +110,9 @@ void LayerCommandPanel::handleCommandMessage(int commandId)
 
         case CommandIDs::RenameLayer:
         {
-            if (NavigationSidebar *panel = this->layerItem.findParentTreePanel())
-            {
-                // TODO rename layer dialog
-                //this->showRenameLayerDialogAsync(&this->layerItem);
-                //this->exit();
-            }
-            
+            // TODO rename layer dialog
+            //this->showRenameLayerDialogAsync(&this->layerItem);
+            //this->exit();
             break;
         }
 

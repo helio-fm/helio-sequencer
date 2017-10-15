@@ -17,8 +17,6 @@
 
 #pragma once
 
-class NavigationSidebar;
-
 #include "Serializable.h"
 
 #if HELIO_DESKTOP
@@ -35,7 +33,8 @@ class NavigationSidebar;
 
 class TreeItem :
     public Serializable,
-    public TreeViewItem
+    public TreeViewItem,
+    public virtual ChangeBroadcaster // a way to notify any custom views (like headline) to update
 {
 public:
 
@@ -45,31 +44,30 @@ public:
     static const String xPathSeparator;
     static String createSafeName(const String &nameStr);
 
+    static TreeItem *getSelectedItem(Component *anyComponentInTree);
+    static void getAllSelectedItems(Component *anyComponentInTree, OwnedArray<TreeItem> &selectedNodes);
+    static bool isNodeInChildren(TreeItem *nodeToScan, TreeItem *nodeToCheck);
+
     int getNumSelectedSiblings() const;
     int getNumSelectedChildren() const;
     bool haveAllSiblingsSelected() const;
     bool haveAllChildrenSelected() const;
     bool haveAllChildrenSelectedWithDeepSearch() const;
 
-    String getUniqueName() const override;
-
-    NavigationSidebar *findParentTreePanel() const;
-
     virtual void onItemParentChanged() {}
 
-    void addChildTreeItem(TreeItem *child, int insertIndex = -1);
-
-    void setMarkerVisible(bool shouldBeVisible) noexcept;
-    bool isMarkerVisible() const noexcept;
-
-    void setGreyedOut(bool shouldBeGreyedOut) noexcept;
-    bool isGreyedOut() const noexcept;
-
     virtual void safeRename(const String &newName);
+    void addChildTreeItem(TreeItem *child, int insertIndex = -1);
+    void dispatchChangeTreeItemView();
+
+    // Some of the main properties for the views:
     virtual String getName() const;
     virtual Colour getColour() const;
     virtual Font getFont() const;
     virtual Image getIcon() const = 0;
+
+    bool isMarkerVisible() const noexcept;
+    void setMarkerVisible(bool shouldBeVisible) noexcept;
 
     template<typename T>
     static T *getActiveItem(TreeItem *root)
@@ -93,10 +91,6 @@ public:
     
         return nullptr;
     }
-
-    static TreeItem *getSelectedItem(Component *anyComponentInTree);
-    static void getAllSelectedItems(Component *anyComponentInTree, OwnedArray<TreeItem> &selectedNodes);
-    static bool isNodeInChildren(TreeItem *nodeToScan, TreeItem *nodeToCheck);
 
     template<typename T>
     T *findParentOfType() const
@@ -312,7 +306,6 @@ protected:
 
 private:
 
-    bool itemIsGreyedOut;
     bool itemShouldBeVisible;
 
     WeakReference<TreeItem>::Master masterReference;

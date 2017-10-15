@@ -310,7 +310,6 @@ void PianoTrackTreeItem::resetMuteDelta(const XmlElement *state)
     if (willMute != this->isTrackMuted())
     {
         this->setTrackMuted(willMute);
-        this->repaintItem();
     }
 }
 
@@ -323,7 +322,6 @@ void PianoTrackTreeItem::resetColourDelta(const XmlElement *state)
     if (colour != this->getTrackColour())
     {
         this->setTrackColour(colour);
-        this->repaintItem();
     }
 }
 

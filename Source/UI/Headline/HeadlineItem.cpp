@@ -52,8 +52,9 @@ private:
 
 //[/MiscUserDefs]
 
-HeadlineItem::HeadlineItem(WeakReference<TreeItem> treeItem)
-    : item(treeItem)
+HeadlineItem::HeadlineItem(WeakReference<TreeItem> treeItem, AsyncUpdater &parent)
+    : item(treeItem),
+      parentHeadline(parent)
 {
     addAndMakeVisible (titleLabel = new Label (String(),
                                                TRANS("Project")));
@@ -78,11 +79,7 @@ HeadlineItem::HeadlineItem(WeakReference<TreeItem> treeItem)
     //[Constructor]
     if (this->item != nullptr)
     {
-        this->icon->setIconImage(this->item->getIcon());
-        this->titleLabel->setText(this->item->getName(), dontSendNotification);
-        const int textWidth = this->titleLabel->getFont()
-            .getStringWidth(this->titleLabel->getText());
-        this->setSize(textWidth + 64, this->getHeight());
+        this->item->addChangeListener(this);
     }
     //[/Constructor]
 }
@@ -90,6 +87,10 @@ HeadlineItem::HeadlineItem(WeakReference<TreeItem> treeItem)
 HeadlineItem::~HeadlineItem()
 {
     //[Destructor_pre]
+    if (this->item != nullptr)
+    {
+        this->item->removeChangeListener(this);
+    }
     //[/Destructor_pre]
 
     titleLabel = nullptr;
@@ -173,7 +174,7 @@ void HeadlineItem::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    titleLabel->setBounds (34, 0, getWidth() - 44, 31);
+    titleLabel->setBounds (34, 0, 512, 31);
     icon->setBounds (8, (getHeight() / 2) - (32 / 2), 32, 32);
     internalPath1.clear();
     internalPath1.startNewSubPath (0.0f, 0.0f);
@@ -265,6 +266,23 @@ TreeItem *HeadlineItem::getTreeItem() const noexcept
     return this->item;
 }
 
+void HeadlineItem::updateContent()
+{
+    if (this->item != nullptr)
+    {
+        this->icon->setIconImage(this->item->getIcon());
+        this->titleLabel->setText(this->item->getName(), dontSendNotification);
+        const int textWidth = this->titleLabel->getFont()
+            .getStringWidth(this->titleLabel->getText());
+        this->setSize(textWidth + 64, this->getHeight());
+    }
+}
+
+void HeadlineItem::changeListenerCallback(ChangeBroadcaster* source)
+{
+    this->parentHeadline.triggerAsyncUpdate();
+}
+
 void HeadlineItem::timerCallback()
 {
     this->stopTimer();
@@ -290,8 +308,9 @@ void HeadlineItem::showMenu()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="HeadlineItem" template="../../Template"
-                 componentName="" parentClasses="public Component, private Timer"
-                 constructorParams="WeakReference&lt;TreeItem&gt; treeItem" variableInitialisers="item(treeItem)"
+                 componentName="" parentClasses="public Component, private Timer, private ChangeListener"
+                 constructorParams="WeakReference&lt;TreeItem&gt; treeItem, AsyncUpdater &amp;parent"
+                 variableInitialisers="item(treeItem),&#10;parentHeadline(parent)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="256" initialHeight="32">
   <METHODS>
@@ -310,7 +329,7 @@ BEGIN_JUCER_METADATA
           strokeColour=" radial: 10R 16, 17R 5, 0=55ffffff, 1=ffffff" nonZeroWinding="1">s 32R 0 l 17R 0 l 10R 16 l 17R 32 l 32R 32 x</PATH>
   </BACKGROUND>
   <LABEL name="" id="9a3c449859f61884" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="34 0 44M 31" textCol="ffffffff" edTextCol="ff000000"
+         explicitFocusOrder="0" pos="34 0 512 31" textCol="ffffffff" edTextCol="ff000000"
          edBkgCol="0" labelText="Project" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="18"
          kerning="0" bold="0" italic="0" justification="33"/>

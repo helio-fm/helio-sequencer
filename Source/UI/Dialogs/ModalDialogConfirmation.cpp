@@ -57,7 +57,7 @@ ModalDialogConfirmation::ModalDialogConfirmation(Component &owner, const String 
     this->messageLabel->setText(message, dontSendNotification);
     this->okButton->setButtonText(okText);
     this->cancelButton->setButtonText(cancelText);
-  this->separatorH->setAlphaMultiplier(2.5f);
+    this->separatorH->setAlphaMultiplier(2.5f);
     //[/UserPreSize]
 
     setSize (410, 180);
@@ -66,9 +66,8 @@ ModalDialogConfirmation::ModalDialogConfirmation(Component &owner, const String 
     this->rebound();
     this->setWantsKeyboardFocus(true);
     this->setInterceptsMouseClicks(true, true);
-    this->toFront(true);
     this->setAlwaysOnTop(true);
-    this->grabKeyboardFocus();
+    this->toFront(true);
     //[/Constructor]
 }
 
@@ -119,7 +118,10 @@ void ModalDialogConfirmation::resized()
     separatorH->setBounds (4, getHeight() - 52 - 2, getWidth() - 8, 2);
     separatorV->setBounds ((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
     //[UserResized] Add your own custom resize handling here..
-    this->grabKeyboardFocus();
+    if (this->isShowing())
+    {
+        this->grabKeyboardFocus();
+    }
     //[/UserResized]
 }
 

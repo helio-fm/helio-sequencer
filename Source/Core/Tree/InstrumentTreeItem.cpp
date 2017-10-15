@@ -90,6 +90,7 @@ void InstrumentTreeItem::safeRename(const String &newName)
 
     TreeItem::safeRename(newName);
     this->instrument->setName(newName);
+    this->dispatchChangeTreeItemView();
 }
 
 

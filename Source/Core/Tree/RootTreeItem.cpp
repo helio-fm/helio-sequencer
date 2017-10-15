@@ -81,6 +81,7 @@ void RootTreeItem::safeRename(const String &newName)
 {
     TreeItem::safeRename(newName);
     App::Workspace().getDocument()->renameFile(this->getName());
+    this->dispatchChangeTreeItemView();
 }
 
 void RootTreeItem::importMidi(File &file)

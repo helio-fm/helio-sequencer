@@ -243,6 +243,7 @@ void TrackGroupTreeItem::safeRename(const String &newName)
 {
     TreeItem::safeRename(newName);
     this->sortByNameAmongSiblings();
+    this->dispatchChangeTreeItemView();
 }
 
 

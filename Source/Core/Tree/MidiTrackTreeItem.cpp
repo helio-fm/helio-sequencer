@@ -126,11 +126,12 @@ void MidiTrackTreeItem::resetClipsDelta(const XmlElement *state)
     //this->reset(); // TODO test
     this->getPattern()->reset();
 
+    Pattern *pattern = this->getPattern();
     forEachXmlChildElementWithTagName(*state, e, Serialization::Core::clip)
     {
-        Clip c;
+        Clip c(pattern);
         c.deserialize(*e);
-        this->getPattern()->silentImport(c);
+        pattern->silentImport(c);
     }
 }
 
@@ -162,6 +163,7 @@ void MidiTrackTreeItem::setTrackName(const String &val)
 {
     this->safeRename(val);
     this->dispatchChangeTrackProperties(this);
+    this->dispatchChangeTreeItemView();
 }
 
 Colour MidiTrackTreeItem::getTrackColour() const noexcept
@@ -175,6 +177,7 @@ void MidiTrackTreeItem::setTrackColour(const Colour &val)
     {
         this->colour = val;
         this->dispatchChangeTrackProperties(this);
+        this->dispatchChangeTreeItemView();
     }
 }
 
@@ -189,6 +192,7 @@ void MidiTrackTreeItem::setTrackInstrumentId(const String &val)
     {
         this->instrumentId = val;
         this->dispatchChangeTrackProperties(this);
+        //this->dispatchChangeTreeItemView(); // instrument id is never displayed
     }
 }
 
@@ -203,6 +207,7 @@ void MidiTrackTreeItem::setTrackControllerNumber(int val)
     {
         this->controllerNumber = val;
         this->dispatchChangeTrackProperties(this);
+        //this->dispatchChangeTreeItemView(); // cc is never displayed
     }
 }
 
@@ -217,6 +222,7 @@ void MidiTrackTreeItem::setTrackMuted(bool shouldBeMuted)
     {
         this->mute = shouldBeMuted;
         this->dispatchChangeTrackProperties(this);
+        this->dispatchChangeTreeItemView();
     }
 }
 
@@ -297,8 +303,7 @@ void MidiTrackTreeItem::setXPath(const String &path)
         }
     }
 
-    const String &newName = parts[parts.size() - 1];
-    this->safeRename(newName);
+    this->name = TreeItem::createSafeName(parts[parts.size() - 1]);
 
     this->getParentItem()->removeSubItem(this->getIndexInParent(), false);
 
@@ -326,8 +331,8 @@ void MidiTrackTreeItem::setXPath(const String &path)
 
         insertIndex = i;
 
-        if ((newName.compareIgnoreCase(previousChildName) > 0) &&
-            (newName.compareIgnoreCase(currentChildName) <= 0))
+        if ((this->name.compareIgnoreCase(previousChildName) > 0) &&
+            (this->name.compareIgnoreCase(currentChildName) <= 0))
         {
             foundRightPlace = true;
             break;
@@ -386,7 +391,6 @@ void MidiTrackTreeItem::dispatchChangeTrackProperties(MidiTrack *const track)
     if (this->lastFoundParent != nullptr)
     {
         this->lastFoundParent->broadcastChangeTrackProperties(this);
-        this->repaintItem();
     }
 }
 

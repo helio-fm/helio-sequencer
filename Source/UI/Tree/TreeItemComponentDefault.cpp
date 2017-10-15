@@ -133,10 +133,8 @@ void TreeItemComponentDefault::paintIcon(Graphics &g)
 
 void TreeItemComponentDefault::paintText(Graphics &g, const Rectangle<float> &area)
 {
-    const float alpha = this->item.isGreyedOut() ? 0.5f : 1.f; //0.9f;
-
     g.setFont(this->item.getFont());
-    g.setColour(this->getItemColour().withMultipliedAlpha(alpha));
+    g.setColour(this->getItemColour());
     g.drawText(this->item.getName(), area, Justification::centredLeft, true);
 
     if (MidiTrackTreeItem *lti = dynamic_cast<MidiTrackTreeItem *>(&this->item))

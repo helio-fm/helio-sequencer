@@ -28,7 +28,8 @@ class HeadlineItem;
 #include "../Themes/SeparatorHorizontalReversed.h"
 #include "HeadlineNavigationPanel.h"
 
-class Headline  : public Component
+class Headline  : public Component,
+                  public AsyncUpdater
 {
 public:
 
@@ -38,8 +39,7 @@ public:
 
     //[UserMethods]
 
-    void syncWithTree(TreeNavigationHistory &navHistory,
-        WeakReference<TreeItem> root);
+    void syncWithTree(TreeNavigationHistory &history, WeakReference<TreeItem> root);
 
     //[/UserMethods]
 
@@ -51,8 +51,10 @@ private:
 
     //[UserVariables]
 
-    ComponentAnimator animator;
+    // A way to receive a single coalesced update from multiple signaling sub-items:
+    void handleAsyncUpdate() override;
 
+    ComponentAnimator animator;
     OwnedArray<HeadlineItem> chain;
 
     //[/UserVariables]
