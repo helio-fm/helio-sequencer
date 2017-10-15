@@ -794,8 +794,13 @@ void ProjectTreeItem::broadcastPostRemoveEvent(MidiSequence *const layer)
 void ProjectTreeItem::broadcastAddTrack(MidiTrack *const track)
 {
     this->isLayersHashOutdated = true;
-    this->registerVcsItem(track->getSequence());
-    this->registerVcsItem(track->getPattern());
+
+    if (VCS::TrackedItem *tracked = dynamic_cast<VCS::TrackedItem *>(track))
+    {
+        ScopedWriteLock lock(this->vcsInfoLock);
+        this->vcsItems.addIfNotAlreadyThere(tracked);
+    }
+
     this->changeListeners.call(&ProjectListener::onAddTrack, track);
     this->sendChangeMessage();
 }
@@ -803,8 +808,13 @@ void ProjectTreeItem::broadcastAddTrack(MidiTrack *const track)
 void ProjectTreeItem::broadcastRemoveTrack(MidiTrack *const track)
 {
     this->isLayersHashOutdated = true;
-    this->unregisterVcsItem(track->getSequence());
-    this->unregisterVcsItem(track->getPattern());
+
+    if (VCS::TrackedItem *tracked = dynamic_cast<VCS::TrackedItem *>(track))
+    {
+        ScopedWriteLock lock(this->vcsInfoLock);
+        this->vcsItems.removeAllInstancesOf(tracked);
+    }
+
     this->changeListeners.call(&ProjectListener::onRemoveTrack, track);
     this->sendChangeMessage();
 }
@@ -1027,67 +1037,11 @@ void ProjectTreeItem::changeListenerCallback(ChangeBroadcaster *source)
         DocumentOwner::sendChangeMessage();
         //this->getDocument()->save();
         
-        // todo! здесь есть баг в ios
-        // (или везде)
-        // после коммита вцс начинает строить дифф, и в это же время из основного потока мы все сохраняем
-        // в какой-то момент пак (баг именно в нем, видимо) не отдает данные дельты
-//#if HELIO_DESKTOP
-//        this->getDocument()->forceSave();
-//#endif
-    }
-}
-
-
-
-void ProjectTreeItem::registerVcsItem(const MidiSequence *layer)
-{
-    const auto children = this->findChildrenOfType<MidiTrackTreeItem>();
-    for (MidiTrackTreeItem *item : children)
-    {
-        if (item->getSequence() == layer)
-        {
-            ScopedWriteLock lock(this->vcsInfoLock);
-            this->vcsItems.addIfNotAlreadyThere(item);
-        }
-    }
-}
-
-void ProjectTreeItem::registerVcsItem(const Pattern *pattern)
-{
-    const auto children = this->findChildrenOfType<MidiTrackTreeItem>();
-    for (MidiTrackTreeItem *item : children)
-    {
-        if (item->getPattern() == pattern)
-        {
-            ScopedWriteLock lock(this->vcsInfoLock);
-            this->vcsItems.addIfNotAlreadyThere(item);
-        }
-    }
-}
-
-void ProjectTreeItem::unregisterVcsItem(const MidiSequence *layer)
-{
-    const auto children = this->findChildrenOfType<MidiTrackTreeItem>();
-    for (MidiTrackTreeItem *item : children)
-    {
-        if (item->getSequence() == layer)
-        {
-            ScopedWriteLock lock(this->vcsInfoLock);
-            this->vcsItems.removeAllInstancesOf(item);
-        }
-    }
-}
-
-void ProjectTreeItem::unregisterVcsItem(const Pattern *pattern)
-{
-    const auto children = this->findChildrenOfType<MidiTrackTreeItem>();
-    for (MidiTrackTreeItem *item : children)
-    {
-        if (item->getPattern() == pattern)
-        {
-            ScopedWriteLock lock(this->vcsInfoLock);
-            this->vcsItems.removeAllInstancesOf(item);
-        }
+        // FIXME! a bug reproduced in iOS when callin forceSave() here:
+        // VCS start rebuilding diff after a commit in a separate thread,
+        // at the same time main thread saves the project and flushes the VCS pack,
+        // and eventually the pack cannot get delta data.
+        //this->getDocument()->forceSave();
     }
 }
 

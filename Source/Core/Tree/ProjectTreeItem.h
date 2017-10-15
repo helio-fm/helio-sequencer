@@ -244,16 +244,8 @@ private:
 
 private:
 
-    void registerVcsItem(const MidiSequence *layer);
-    void registerVcsItem(const Pattern *pattern);
-
-    void unregisterVcsItem(const MidiSequence *layer);
-    void unregisterVcsItem(const Pattern *pattern);
-
     ReadWriteLock vcsInfoLock;
     Array<const VCS::TrackedItem *> vcsItems;
-
-private:
 
     ScopedPointer<UndoStack> undoStack;
 
