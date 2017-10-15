@@ -392,6 +392,27 @@ bool TreeItem::isNodeInChildren(TreeItem *nodeToScan, TreeItem *nodeToCheck)
     return false;
 }
 
+String TreeItem::getUniqueName() const
+{
+    return String(this->getIndexInParent());
+}
+
+bool TreeItem::mightContainSubItems()
+{
+    return (this->getNumSubItems() > 0);
+}
+
+void TreeItem::recreateSubtreePages()
+{
+    Array<TreeItem *> subtree;
+    this->collectChildrenOfType<TreeItem>(this, subtree, false);
+    this->recreatePage();
+
+    for (int i = 0; i < subtree.size(); ++i)
+    {
+        subtree.getUnchecked(i)->recreatePage();
+    }
+}
 
 void TreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
 {

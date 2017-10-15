@@ -1073,7 +1073,7 @@ void ProjectTreeItem::unregisterVcsItem(const MidiSequence *layer)
         if (item->getSequence() == layer)
         {
             ScopedWriteLock lock(this->vcsInfoLock);
-            this->vcsItems.addIfNotAlreadyThere(item);
+            this->vcsItems.removeAllInstancesOf(item);
         }
     }
 }
@@ -1086,7 +1086,7 @@ void ProjectTreeItem::unregisterVcsItem(const Pattern *pattern)
         if (item->getPattern() == pattern)
         {
             ScopedWriteLock lock(this->vcsInfoLock);
-            this->vcsItems.addIfNotAlreadyThere(item);
+            this->vcsItems.removeAllInstancesOf(item);
         }
     }
 }

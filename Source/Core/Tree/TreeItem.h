@@ -164,10 +164,8 @@ public:
         return static_cast<TreeItem *>(item);
     }
 
-    bool mightContainSubItems() override
-    {
-        return (this->getNumSubItems() > 0);
-    }
+    String getUniqueName() const override;
+    bool mightContainSubItems() override;
 
     //===------------------------------------------------------------------===//
     // Page stuff
@@ -175,18 +173,7 @@ public:
     
     virtual void showPage() = 0;
     virtual void recreatePage() {}
-    void recreateSubtreePages()
-    {
-        Array<TreeItem *> subtree;
-        this->collectChildrenOfType<TreeItem>(this, subtree, false);
-
-        this->recreatePage();
-
-        for (int i = 0; i < subtree.size(); ++i)
-        {
-            subtree.getUnchecked(i)->recreatePage();
-        }
-    }
+    void recreateSubtreePages();
 
     //===------------------------------------------------------------------===//
     // Dragging

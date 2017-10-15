@@ -58,9 +58,11 @@ MidiTrackTreeItem::~MidiTrackTreeItem()
     
     if (this->lastFoundParent != nullptr)
     {
-        this->removeItemFromParent();
+        // Important: first notify
         this->lastFoundParent->hideEditor(this->layer, this);
         this->lastFoundParent->broadcastRemoveTrack(this);
+        // Then disconnect from the tree
+        this->removeItemFromParent();
         TrackGroupTreeItem::removeAllEmptyGroupsInProject(this->lastFoundParent);
     }
 }
