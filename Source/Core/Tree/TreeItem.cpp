@@ -78,8 +78,6 @@ bool TreeItem::isMarkerVisible() const noexcept
 
 void TreeItem::setGreyedOut(bool shouldBeGreyedOut) noexcept
 {
-//    this->setSelected(! shouldBeGreyedOut, false);
-
     this->setSelected(false, false);
 
     if (this->itemIsGreyedOut != shouldBeGreyedOut)
@@ -91,7 +89,6 @@ void TreeItem::setGreyedOut(bool shouldBeGreyedOut) noexcept
 
 bool TreeItem::isGreyedOut() const noexcept
 {
-//    return !this->isSelected();
     return this->itemIsGreyedOut;
 }
 
@@ -163,25 +160,18 @@ bool TreeItem::haveAllChildrenSelectedWithDeepSearch() const
 // Rename
 //===----------------------------------------------------------------------===//
 
-void TreeItem::onRename(const String &newName)
+// TODO refactor:
+// I need a method to be called instead of repaintItem() - like notifyUpdateUI
+// And a way to update the headline when title/colour/mute/solo state changes
+
+void TreeItem::safeRename(const String &newName)
 {
-    //this->setSelected(true, true);
-    this->safeRename(newName);
+    this->name = TreeItem::createSafeName(newName);
 }
 
-String TreeItem::getName() const noexcept
+String TreeItem::getName() const
 {
     return this->name;
-}
-
-void TreeItem::setName(const String &newName) noexcept
-{
-    this->name = newName;
-}
-
-String TreeItem::getCaption() const
-{
-    return this->getName();
 }
 
 
@@ -274,10 +264,22 @@ void TreeItem::removeItemFromParent()
         }
     }
 }
+
+static void notifySubtreeParentChanged(TreeItem *node)
+{
+    node->onItemParentChanged();
+
+    for (int i = 0; i < node->getNumSubItems(); ++i)
+    {
+        TreeItem *child = static_cast<TreeItem *>(node->getSubItem(i));
+        notifySubtreeParentChanged(child);
+    }
+}
+
 void TreeItem::addChildTreeItem(TreeItem *child, int insertIndex /*= -1*/)
 {
     this->addSubItem(child, insertIndex);
-    TreeItem::notifySubtreeMoved(child);
+    notifySubtreeParentChanged(child);
 }
 
 
@@ -358,17 +360,6 @@ void TreeItem::openOrCloseAllSubGroups(TreeViewItem &item, bool shouldOpen)
         {
             openOrCloseAllSubGroups(*sub, shouldOpen);
         }
-    }
-}
-
-void TreeItem::notifySubtreeMoved(TreeItem *node)
-{
-    node->onItemMoved();
-
-    for (int i = 0; i < node->getNumSubItems(); ++i)
-    {
-        TreeItem *child = static_cast<TreeItem *>(node->getSubItem(i));
-        TreeItem::notifySubtreeMoved(child);
     }
 }
 
@@ -469,9 +460,4 @@ void TreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDet
 void TreeItem::setVisible(bool shouldBeVisible) noexcept
 {
     this->itemShouldBeVisible = shouldBeVisible;
-}
-
-void TreeItem::safeRename(const String &newName)
-{
-    this->setName(TreeItem::createSafeName(newName));
 }

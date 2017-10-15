@@ -56,7 +56,7 @@ Image InstrumentsRootTreeItem::getIcon() const
     return Icons::findByName(Icons::saxophone, TREE_LARGE_ICON_HEIGHT);
 }
 
-String InstrumentsRootTreeItem::getCaption() const
+String InstrumentsRootTreeItem::getName() const
 {
     return TRANS("tree::instruments");
 }

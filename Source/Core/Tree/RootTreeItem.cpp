@@ -77,11 +77,10 @@ void RootTreeItem::recreatePage()
     this->introPage = new WorkspacePage(App::Layout());
 }
 
-void RootTreeItem::onRename(const String &newName)
+void RootTreeItem::safeRename(const String &newName)
 {
-    TreeItem::onRename(newName);
+    TreeItem::safeRename(newName);
     App::Workspace().getDocument()->renameFile(this->getName());
-    TreeItem::notifySubtreeMoved(this);
 }
 
 void RootTreeItem::importMidi(File &file)
@@ -351,7 +350,7 @@ void RootTreeItem::deserialize(const XmlElement &xml)
 
     if (type != Serialization::Core::root) { return; }
 
-    this->setName(root->getStringAttribute("name"));
+    this->name = root->getStringAttribute("name", this->name);
 
     TreeItemChildrenSerializer::deserializeChildren(*this, *root);
 }

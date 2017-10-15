@@ -157,7 +157,7 @@ void MultiTouchController::initAnchors(const MouseEvent &event)
         //Logger::writeToLog("anchor2 " + String(anchor2.getX()) + ", " + String(anchor2.getY()));
     }
 
-    const int xLength = fabs(this->finger2Position.getX() - this->finger1Position.getX());
-    const int yLength = fabs(this->finger2Position.getY() - this->finger1Position.getY());
+    const float xLength = fabs(this->finger2Position.getX() - this->finger1Position.getX());
+    const float yLength = fabs(this->finger2Position.getY() - this->finger1Position.getY());
     this->zoomDiff.setXY(xLength, yLength);
 }

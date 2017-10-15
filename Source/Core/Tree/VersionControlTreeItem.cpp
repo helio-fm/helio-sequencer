@@ -111,7 +111,7 @@ String VersionControlTreeItem::getId() const
     return "";
 }
 
-String VersionControlTreeItem::getCaption() const
+String VersionControlTreeItem::getName() const
 {
     return TRANS("tree::vcs");
 }
@@ -292,7 +292,7 @@ void VersionControlTreeItem::toggleQuickStash()
 // Dragging
 //===----------------------------------------------------------------------===//
 
-void VersionControlTreeItem::onItemMoved()
+void VersionControlTreeItem::onItemParentChanged()
 {
     // Could be still uninitialized at this moment
     if (this->vcs == nullptr)

@@ -81,7 +81,7 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<TreeItem> targetItem)
     if (this->item != nullptr)
     {
         this->icon->setIconImage(this->item->getIcon());
-        this->titleLabel->setText(this->item->getCaption(), dontSendNotification);
+        this->titleLabel->setText(this->item->getName(), dontSendNotification);
         const int textWidth = this->titleLabel->getFont()
             .getStringWidth(this->titleLabel->getText());
         this->setSize(textWidth + 64, this->getHeight());
@@ -314,7 +314,9 @@ T *findParent(Component *target)
 
 void HeadlineDropdown::childBoundsChanged(Component *child)
 {
-    if (child == this->content)
+    if (child == this->content &&
+        this->getWidth() != this->content->getWidth() + 4 &&
+        this->getHeight() != this->content->getHeight() + 34)
     {
         const int w = jmax(this->getWidth(), this->content->getWidth() + 4);
         this->setSize(w, this->content->getHeight() + 34);
@@ -376,7 +378,7 @@ BEGIN_JUCER_METADATA
                     explicitFocusOrder="0" pos="8 16c 32 32" class="IconComponent"
                     params="Icons::workspace"/>
   <GENERICCOMPONENT name="" id="b986fd50e3b5b1c5" memberName="content" virtualName=""
-                    explicitFocusOrder="0" pos="2 33 4M 32M" class="Component" params=""/>
+                    explicitFocusOrder="0" pos="2 33 4M 34M" class="Component" params=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

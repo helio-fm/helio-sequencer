@@ -411,24 +411,24 @@ void ToolsSidebar::recreateCommandDescriptions()
     this->commandDescriptions.add(CommandItem::withParams(Icons::cursorTool, CommandIDs::CursorTool)->toggled(defaultMode));
     this->commandDescriptions.add(CommandItem::withParams(Icons::drawTool, CommandIDs::DrawTool)->toggled(drawMode));
     this->commandDescriptions.add(CommandItem::withParams(Icons::selectionTool, CommandIDs::SelectionTool)->toggled(selectionMode));
-//    this->commandDescriptions.add(CommandItem::withParams(Icons::zoomTool, CommandIDs::ZoomTool)->toggled(zoomMode));
+    //this->commandDescriptions.add(CommandItem::withParams(Icons::zoomTool, CommandIDs::ZoomTool)->toggled(zoomMode));
     this->commandDescriptions.add(CommandItem::withParams(Icons::dragTool, CommandIDs::DragTool)->toggled(dragMode));
     this->commandDescriptions.add(CommandItem::withParams(Icons::wipeScapeTool, CommandIDs::WipeSpaceTool)->toggled(wipeSpaceMode));
     this->commandDescriptions.add(CommandItem::withParams(Icons::insertSpaceTool, CommandIDs::InsertSpaceTool)->toggled(insertSpaceMode));
 
-    this->commandDescriptions.add(CommandItem::withParams(Icons::zoomIn, CommandIDs::ZoomIn));
-    this->commandDescriptions.add(CommandItem::withParams(Icons::zoomOut, CommandIDs::ZoomOut));
+    //this->commandDescriptions.add(CommandItem::withParams(Icons::zoomIn, CommandIDs::ZoomIn));
+    //this->commandDescriptions.add(CommandItem::withParams(Icons::zoomOut, CommandIDs::ZoomOut));
     this->commandDescriptions.add(CommandItem::withParams(Icons::undo, CommandIDs::Undo));
     this->commandDescriptions.add(CommandItem::withParams(Icons::redo, CommandIDs::Redo));
 
-    this->commandDescriptions.add(CommandItem::withParams(Icons::volumeUp, CommandIDs::TweakNotesVolume));
-    this->commandDescriptions.add(CommandItem::withParams(Icons::switcher, CommandIDs::MoveEventsToLayer));
-//    this->commandDescriptions.add(CommandItem::withParams(Icons::ellipsis, CommandIDs::RefactorNotes));
-    this->commandDescriptions.add(CommandItem::withParams(Icons::arpeggiator, CommandIDs::ArpNotes));
+    //this->commandDescriptions.add(CommandItem::withParams(Icons::volumeUp, CommandIDs::TweakNotesVolume));
+    //this->commandDescriptions.add(CommandItem::withParams(Icons::switcher, CommandIDs::MoveEventsToLayer));
+    //this->commandDescriptions.add(CommandItem::withParams(Icons::ellipsis, CommandIDs::RefactorNotes));
+    //this->commandDescriptions.add(CommandItem::withParams(Icons::arpeggiator, CommandIDs::ArpNotes));
 
-    this->commandDescriptions.add(CommandItem::withParams(Icons::copy, CommandIDs::CopyEvents));
-    this->commandDescriptions.add(CommandItem::withParams(Icons::paste, CommandIDs::PasteEvents));
-    this->commandDescriptions.add(CommandItem::withParams(Icons::trash, CommandIDs::DeleteEvents));
+    //this->commandDescriptions.add(CommandItem::withParams(Icons::copy, CommandIDs::CopyEvents));
+    //this->commandDescriptions.add(CommandItem::withParams(Icons::paste, CommandIDs::PasteEvents));
+    //this->commandDescriptions.add(CommandItem::withParams(Icons::trash, CommandIDs::DeleteEvents));
 }
 
 //===----------------------------------------------------------------------===//

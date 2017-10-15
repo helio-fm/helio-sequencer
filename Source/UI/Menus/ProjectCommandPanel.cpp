@@ -219,7 +219,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
             App::Helio()->showTooltip(TRANS("menu::project::render::savedto") + " '" + safeName + "'");
             App::Helio()->showModalComponent(new SuccessTooltip());
 #else
-            this->project.getDocument()->exportAs("*.mid;*.midi", TreeItem::createSafeName(this->project.getName() + ".mid"));
+            this->project.getDocument()->exportAs("*.mid;*.midi", this->project.getName() + ".mid");
 #endif
             this->getParentComponent()->exitModalState(0);
             return;
@@ -324,8 +324,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
         
         this->project.getUndoStack()->beginNewTransaction();
         this->project.getUndoStack()->perform(new AutomationTrackInsertAction(this->project,
-                                                                                autoLayerParams,
-                                                                                layerName));
+            autoLayerParams, layerName));
         
         this->focusRollAndExit();
         return;

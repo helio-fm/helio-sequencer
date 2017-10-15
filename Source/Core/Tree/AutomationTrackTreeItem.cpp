@@ -216,7 +216,7 @@ void AutomationTrackTreeItem::deserialize(const XmlElement &xml)
 
     this->deserializeVCSUuid(xml);
 
-    this->setName(xml.getStringAttribute("name"));
+    this->name = xml.getStringAttribute("name", this->name);
 
     this->deserializeTrackProperties(xml);
 

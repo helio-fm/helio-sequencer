@@ -37,7 +37,7 @@ public:
     Colour getColour() const override;
     Image getIcon() const override;
     void showPage() override;
-    void onRename(const String &newName) override;
+    void safeRename(const String &newName) override;
 
 
     //===------------------------------------------------------------------===//

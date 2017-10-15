@@ -322,7 +322,7 @@ void PianoRoll::zoomRelative(const Point<float> &origin, const Point<float> &fac
         const float newHeight = float(this->getHeight());
         const float mouseOffsetY = float(absoluteOrigin.getY() - oldViewPosition.getY());
         const float newViewPositionY = float((absoluteOrigin.getY() * newHeight) / oldHeight) - mouseOffsetY;
-        this->viewport.setViewPosition(Point<int>(oldViewPosition.getX(), int(newViewPositionY + 0.5f)));
+        this->viewport.setViewPosition(int(oldViewPosition.getX()), int(newViewPositionY + 0.5f));
     }
 
     HybridRoll::zoomRelative(origin, factor);
@@ -720,10 +720,10 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
     const float indicatorRoughBeat = this->getBeatByTransportPosition(this->project.getTransport().getSeekPosition());
     const float indicatorBeat = roundf(indicatorRoughBeat * 1000.f) / 1000.f;
 
-    const float firstBeat = mainSlot->getDoubleAttribute(Serialization::Clipboard::firstBeat);
-    const float lastBeat = mainSlot->getDoubleAttribute(Serialization::Clipboard::lastBeat);
+    const double firstBeat = mainSlot->getDoubleAttribute(Serialization::Clipboard::firstBeat);
+    const double lastBeat = mainSlot->getDoubleAttribute(Serialization::Clipboard::lastBeat);
     const bool indicatorIsWithinSelection = (indicatorBeat >= firstBeat) && (indicatorBeat < lastBeat);
-    const float startBeatAligned = roundf(firstBeat);
+    const float startBeatAligned = roundf(float(firstBeat));
     const float deltaBeat = (indicatorBeat - startBeatAligned);
 
     this->deselectAll();
@@ -803,7 +803,7 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
                     const bool isShiftPressed = Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown();
                     if (isShiftPressed)
                     {
-                        const float changeDelta = lastBeat - firstBeat;
+                        const float changeDelta = float(lastBeat - firstBeat);
                         PianoRollToolbox::shiftEventsToTheRight(this->project.getTracks(), indicatorBeat, changeDelta, false);
                     }
                 }
@@ -992,7 +992,6 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::TransportStartPlayback:
         if (this->project.getTransport().isPlaying())
         {
-            //this->project.getTransport().stopPlayback();
             this->startFollowingPlayhead();
         }
         else

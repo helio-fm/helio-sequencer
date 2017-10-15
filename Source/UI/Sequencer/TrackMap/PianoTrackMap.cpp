@@ -283,6 +283,6 @@ void PianoTrackMap::applyNoteBounds(TrackMapNoteComponent *nc)
 
     const float x = (mapWidth * (beat / projectLengthInBeats));
     const float w = (mapWidth * (nc->getLength() / projectLengthInBeats));
-    const int y = this->getHeight() - (nc->getKey() * this->componentHeight);
-    nc->setRealBounds(x, y, jmax(1.f, w), 1.f);
+    const int y = this->getHeight() - int(nc->getKey() * this->componentHeight);
+    nc->setRealBounds(x, y, jmax(1.f, w), 1);
 }

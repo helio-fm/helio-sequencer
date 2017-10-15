@@ -34,7 +34,7 @@ Image PianoRollSelectionTreeItem::getIcon() const
     return Icons::findByName(Icons::empty, TREE_LARGE_ICON_HEIGHT);
 }
 
-String PianoRollSelectionTreeItem::getCaption() const
+String PianoRollSelectionTreeItem::getName() const
 {
     return TRANS("tree::selection::piano");
 }
@@ -53,7 +53,7 @@ Image PatternRollSelectionTreeItem::getIcon() const
     return Icons::findByName(Icons::empty, TREE_LARGE_ICON_HEIGHT);
 }
 
-String PatternRollSelectionTreeItem::getCaption() const
+String PatternRollSelectionTreeItem::getName() const
 {
     return TRANS("tree::selection::pattern");
 }

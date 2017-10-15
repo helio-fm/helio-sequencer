@@ -78,7 +78,7 @@ void MidiTrackTreeItem::showPage()
     }
 }
 
-void MidiTrackTreeItem::onRename(const String &newName)
+void MidiTrackTreeItem::safeRename(const String &newName)
 {
     String fixedName = newName.replace("\\", "/");
     
@@ -88,8 +88,6 @@ void MidiTrackTreeItem::onRename(const String &newName)
     }
     
     this->setXPath(fixedName);
-    
-    TreeItem::notifySubtreeMoved(this); // сделать это default логикой для всех типов нодов?
 }
 
 void MidiTrackTreeItem::importMidi(const MidiMessageSequence &sequence)
@@ -162,7 +160,7 @@ int MidiTrackTreeItem::getTrackChannel() const noexcept
 
 void MidiTrackTreeItem::setTrackName(const String &val)
 {
-    this->onRename(val);
+    this->safeRename(val);
     this->dispatchChangeTrackProperties(this);
 }
 
@@ -304,10 +302,7 @@ void MidiTrackTreeItem::setXPath(const String &path)
 
     this->getParentItem()->removeSubItem(this->getIndexInParent(), false);
 
-
-    // пройти по всем чайлдам группы
-    // и вставить в нужное место, глядя на имена.
-
+    // and insert into the right place depending on path
     bool foundRightPlace = false;
     int insertIndex = 0;
     String previousChildName = "";
@@ -343,10 +338,10 @@ void MidiTrackTreeItem::setXPath(const String &path)
 
     if (!foundRightPlace) { ++insertIndex; }
 
+    // This will also send changed-parent notifications
     rootItem->addChildTreeItem(this, insertIndex);
     
-
-    // cleanup. убираем все пустые группы
+    // Cleanup all empty groups
     if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
     {
         TrackGroupTreeItem::removeAllEmptyGroupsInProject(parentProject);
@@ -459,7 +454,7 @@ var MidiTrackTreeItem::getDragSourceDescription()
     return Serialization::Core::layer;
 }
 
-void MidiTrackTreeItem::onItemMoved()
+void MidiTrackTreeItem::onItemParentChanged()
 {
     if (this->lastFoundParent)
     {

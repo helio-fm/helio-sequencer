@@ -54,7 +54,7 @@ Image SettingsTreeItem::getIcon() const
     return Icons::findByName(Icons::settings, TREE_LARGE_ICON_HEIGHT);
 }
 
-String SettingsTreeItem::getCaption() const
+String SettingsTreeItem::getName() const
 {
     return TRANS("tree::settings");
 }
@@ -121,6 +121,10 @@ void SettingsTreeItem::recreatePage()
     this->settingsPage = new SettingsPage(this->settingsList);
 }
 
+ScopedPointer<Component> SettingsTreeItem::createItemMenu()
+{
+    return nullptr;
+}
 
 //===----------------------------------------------------------------------===//
 // Serializable

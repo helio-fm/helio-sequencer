@@ -67,9 +67,9 @@ void HeadlineNavigationPanel::paint (Graphics& g)
 
     {
         float x = 0, y = 0;
-        Colour fillColour = Colour (0x0effffff);
+        Colour fillColour = Colour (0x0dffffff);
         //[UserPaintCustomArguments] Customize the painting arguments here..
-        fillColour = this->findColour(PanelBackgroundB::panelFillStartId).brighter(0.025f);
+        fillColour = this->findColour(PanelBackgroundB::panelFillStartId).brighter(0.03f);
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillPath (internalPath1, AffineTransform::translation(x, y));
@@ -185,7 +185,7 @@ BEGIN_JUCER_METADATA
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <PATH pos="0 0 100 100" fill="solid: effffff" hasStroke="0" nonZeroWinding="1">s 0 0 l 16R 0 l 9R 16 l 16R 32 l 0 32 x</PATH>
+    <PATH pos="0 0 100 100" fill="solid: dffffff" hasStroke="0" nonZeroWinding="1">s 0 0 l 16R 0 l 9R 16 l 16R 32 l 0 32 x</PATH>
     <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="1" stroke="1, mitered, butt"
           strokeColour=" radial: 9R 16, 16R 2, 0=77000000, 1=0" nonZeroWinding="1">s 32R 0 l 16R 0 l 9R 16 l 16R 32 l 32R 32 x</PATH>
     <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="1" stroke="0.5, mitered, butt"

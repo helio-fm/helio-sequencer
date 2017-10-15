@@ -253,6 +253,7 @@ public:
     
     void triggerBatchRepaintFor(FloatBoundsComponent *target);
 
+    bool isFollowingPlayhead() const noexcept;
     void startFollowingPlayhead();
     void stopFollowingPlayhead();
     

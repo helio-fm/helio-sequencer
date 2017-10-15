@@ -84,12 +84,12 @@ void TreeItemComponentDefault::paint(Graphics &g)
     this->paintIcon(g);
 
     g.setColour(Colours::white);
-    const int menuButtonOffset = this->menuButton->isVisible() ? (this->menuButton->getWidth() + 4) : 0;
+    const int menuButtonOffset = this->menuButton->isVisible() ? (this->menuButton->getWidth() + 4) : 8;
     
     this->paintText(g, Rectangle<float>(this->textX,
-                                        0.f,
-                                        float(this->getWidth()) - this->textX - menuButtonOffset,
-                                        float(this->getHeight())));
+        0.f,
+        float(this->getWidth()) - this->textX - menuButtonOffset,
+        float(this->getHeight())));
 
     const bool selectionChanged = (this->item.isSelected() != this->itemIsSelected);
     this->itemIsSelected = this->item.isSelected();
@@ -133,30 +133,25 @@ void TreeItemComponentDefault::paintIcon(Graphics &g)
 
 void TreeItemComponentDefault::paintText(Graphics &g, const Rectangle<float> &area)
 {
-    float alpha = 1.f; //0.9f;
-
-    if (this->item.isGreyedOut())
-    {
-        alpha = 0.5f;
-    }
+    const float alpha = this->item.isGreyedOut() ? 0.5f : 1.f; //0.9f;
 
     g.setFont(this->item.getFont());
     g.setColour(this->getItemColour().withMultipliedAlpha(alpha));
-    g.drawText(this->item.getCaption(), area, Justification::centredLeft, false);
+    g.drawText(this->item.getName(), area, Justification::centredLeft, true);
 
     if (MidiTrackTreeItem *lti = dynamic_cast<MidiTrackTreeItem *>(&this->item))
     {
         if (lti->isTrackMuted())
         {
             const float cY = area.getCentreY() + 2.f;
-            g.drawLine(area.getX(), cY, area.getX() + this->item.getFont().getStringWidth(this->item.getName()), cY, 1.f);
+            g.drawLine(area.getX(), cY, area.getX() +
+                this->item.getFont().getStringWidth(this->item.getName()), cY, 1.f);
         }
     }
 }
 
 void TreeItemComponentDefault::paintBackground(Graphics &g,
-                                               int width, int height,
-                                               bool isSelected, bool isActive)
+    int width, int height, bool isSelected, bool isActive)
 {
     if (isSelected || isActive)
     {

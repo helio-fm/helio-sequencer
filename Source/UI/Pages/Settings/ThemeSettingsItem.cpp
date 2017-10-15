@@ -41,16 +41,16 @@ public:
 
     void paint(Graphics& g) override
     {
-        const int paintStartY = 4;
-        const int paintEndY = this->getHeight() - 10;
-        const int lineStartY = paintStartY;
-        const int lineEndY = paintEndY + paintStartY;
+        const float paintStartY = 4.f;
+        const float paintEndY = float(this->getHeight()) - 10.f;
+        const float lineStartY = paintStartY;
+        const float lineEndY = paintEndY + paintStartY;
 
         g.setColour(Colours::white.withAlpha(0.2f));
         g.drawVerticalLine(41, lineStartY, lineEndY);
         g.drawVerticalLine(this->getWidth() - 1, lineStartY, lineEndY);
-        g.drawHorizontalLine(lineStartY - 1, 42, this->getWidth() - 1);
-        g.drawHorizontalLine(lineEndY, 42, this->getWidth() - 1);
+        g.drawHorizontalLine(int(lineStartY) - 1, 42.f, float(this->getWidth()) - 1.f);
+        g.drawHorizontalLine(int(lineEndY), 42.f, float(this->getWidth()) - 1.f);
     }
 };
 
@@ -117,19 +117,19 @@ void ThemeSettingsItem::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     if (this->theme != nullptr)
     {
-        const int paintStartY = 4;
-        const int paintEndY = this->getHeight() - 10;
-        const int lineStartY = paintStartY;
-        const int lineEndY = paintEndY + paintStartY;
+        const float paintStartY = 4.f;
+        const float paintEndY = float(this->getHeight()) - 10.f;
+        const float lineStartY = paintStartY;
+        const float lineEndY = paintEndY + paintStartY;
 
         g.setTiledImageFill(*this->rollImage.get(), 0, -3, 1.f);
-        g.fillRect(200, paintStartY, this->getWidth() - 200, paintEndY);
+        g.fillRect(200.f, paintStartY, float(this->getWidth()) - 200.f, paintEndY);
 
         const int barWidth = 64;
         const int dynamicGridSize = 4;
         int i = int(paintStartY / barWidth) + 2;
         const int j = int(this->getWidth() / barWidth);
-        const float beatWidth = barWidth / dynamicGridSize;
+        const int beatWidth = barWidth / dynamicGridSize;
 
         const Colour barStart = this->theme->findColour(HybridRoll::barLineColourId);
         const Colour barBevel = this->theme->findColour(HybridRoll::barLineBevelColourId);
@@ -141,7 +141,7 @@ void ThemeSettingsItem::paint (Graphics& g)
             // show every x'th
             if (i % 1 == 0)
             {
-                const float startX1 = (barWidth * i);
+                const int startX1 = barWidth * i;
 
                 g.setColour(barStart);
                 g.drawVerticalLine(startX1, lineStartY, lineEndY);
@@ -161,39 +161,39 @@ void ThemeSettingsItem::paint (Graphics& g)
         }
 
         g.setColour(this->colours.getPrimaryGradientColourA());
-        g.fillRect(41, paintStartY, 207, paintEndY);
+        g.fillRect(41.f, paintStartY, 207.f, paintEndY);
 
         // Outer glow
         g.setColour (this->colours.getPrimaryGradientColourA().brighter(0.2f));
         g.drawVerticalLine(41, lineStartY, lineEndY);
         g.drawVerticalLine(this->getWidth() - 1, lineStartY, lineEndY);
-        g.drawHorizontalLine(lineStartY - 1, 42, this->getWidth() - 1);
-        g.drawHorizontalLine(lineEndY, 42, this->getWidth() - 1);
+        g.drawHorizontalLine(int(lineStartY) - 1, 42.f, float(this->getWidth()) - 1.f);
+        g.drawHorizontalLine(int(lineEndY), 42.f, float(this->getWidth()) - 1.f);
 
         // Inner shadow
         g.setColour(this->colours.getPrimaryGradientColourA().darker(0.05f));
         g.drawVerticalLine(42, lineStartY, lineEndY);
         g.drawVerticalLine(this->getWidth() - 2, lineStartY, lineEndY);
-        g.drawHorizontalLine(lineStartY, 42, this->getWidth() - 1);
-        g.drawHorizontalLine(lineEndY - 1, 42, this->getWidth() - 1);
+        g.drawHorizontalLine(int(lineStartY), 42, float(this->getWidth()) - 1.f);
+        g.drawHorizontalLine(int(lineEndY) - 1, 42, float(this->getWidth()) - 1.f);
 
         // Roll shadow left
         g.setGradientFill (ColourGradient (Colour (0x15000000), 248.0f, 0.0f,
                                            Colour (0x00000000), 268.0f, 0.0f,  false));
-        g.fillRect (248, paintStartY, 20, paintEndY);
+        g.fillRect (248.f, paintStartY, 20.f, paintEndY);
 
         g.setGradientFill (ColourGradient (Colour (0x15000000), 248.0f, 0.0f,
                                            Colour (0x00000000), 260.0f, 0.0f, false));
-        g.fillRect (248, paintStartY, 12, paintEndY);
+        g.fillRect (248.f, paintStartY, 12.f, paintEndY);
 
         // Roll shadow right
-        g.setGradientFill(ColourGradient(Colour(0x15000000), this->getWidth(), 0.0f,
-            Colour(0x00000000), this->getWidth() - 20.f, 0.0f, false));
-        g.fillRect(this->getWidth() - 20, paintStartY, 20, paintEndY);
+        g.setGradientFill(ColourGradient(Colour(0x15000000), float(this->getWidth()), 0.0f,
+            Colour(0x00000000), float(this->getWidth()) - 20.f, 0.0f, false));
+        g.fillRect(float(this->getWidth()) - 20.f, paintStartY, 20.f, paintEndY);
 
-        g.setGradientFill(ColourGradient(Colour(0x15000000), this->getWidth(), 0.0f,
-            Colour(0x00000000), this->getWidth() - 12, 0.0f, false));
-        g.fillRect(this->getWidth() - 12, paintStartY, 12, paintEndY);
+        g.setGradientFill(ColourGradient(Colour(0x15000000), float(this->getWidth()), 0.0f,
+            Colour(0x00000000), float(this->getWidth()) - 12.f, 0.0f, false));
+        g.fillRect(float(this->getWidth()) - 12.f, paintStartY, 12.f, paintEndY);
 
         // Separators
         g.setColour (Colour (0x0f000000));

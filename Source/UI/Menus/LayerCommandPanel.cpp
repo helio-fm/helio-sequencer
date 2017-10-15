@@ -84,14 +84,8 @@ void LayerCommandPanel::handleCommandMessage(int commandId)
         {
             ProjectTreeItem *project = this->layerItem.getProject();
             const String &layerId = this->layerItem.getSequence()->getTrackId();
-            
             project->getUndoStack()->beginNewTransaction();
             project->getUndoStack()->perform(new MidiTrackMuteAction(*project, layerId, true));
-            
-            // instead of:
-            //this->layerItem.getSequence()->setMuted(true);
-            //this->layerItem.repaintItem();
-            
             this->exit();
         }
             break;
@@ -100,14 +94,8 @@ void LayerCommandPanel::handleCommandMessage(int commandId)
         {
             ProjectTreeItem *project = this->layerItem.getProject();
             const String &layerId = this->layerItem.getSequence()->getTrackId();
-            
             project->getUndoStack()->beginNewTransaction();
             project->getUndoStack()->perform(new MidiTrackMuteAction(*project, layerId, false));
-            
-            // instead of:
-            //this->layerItem.getSequence()->setMuted(false);
-            //this->layerItem.repaintItem();
-            
             this->exit();
         }
             break;
@@ -304,7 +292,8 @@ void LayerCommandPanel::initProjectSelection()
     for (int i = 0; i < projects.size(); ++i)
     {
         const bool isTicked = (projects[i] == currentProject);
-        cmds.add(CommandItem::withParams(isTicked ? Icons::apply : Icons::project, CommandIDs::MoveLayerToProject + i, projects[i]->getName()));
+        cmds.add(CommandItem::withParams(isTicked ? Icons::apply :
+            Icons::project, CommandIDs::MoveLayerToProject + i, projects[i]->getName()));
     }
     
     this->updateContent(cmds, CommandPanel::SlideLeft);

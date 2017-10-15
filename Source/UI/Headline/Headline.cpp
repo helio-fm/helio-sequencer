@@ -24,6 +24,9 @@
 //[MiscUserDefs]
 #include "HeadlineItem.h"
 #include "IconComponent.h"
+
+#define HEADLINE_ITEMS_OVERLAP (16)
+#define HEADLINE_ROOT_X (72)
 //[/MiscUserDefs]
 
 Headline::Headline()
@@ -100,8 +103,7 @@ Array<TreeItem *> createSortedBranchArray(WeakReference<TreeItem> leaf)
     return result;
 }
 
-#define HEADLINE_ITEMS_OVERLAP (16)
-#define HEADLINE_ROOT_X (72)
+// TODO: need to subscribe on tree item renames and moves
 
 void Headline::syncWithTree(TreeNavigationHistory &navHistory, WeakReference<TreeItem> root)
 {

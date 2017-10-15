@@ -36,11 +36,11 @@ public:
     
     ~VersionControlTreeItem() override;
 
+    String getName() const override;
     Colour getColour() const override;
     Image getIcon() const override;
     void showPage() override;
     void recreatePage() override;
-    String getCaption() const override;
     
     String getId() const;
     String getStatsString() const;
@@ -57,18 +57,10 @@ public:
     // Dragging
     //===------------------------------------------------------------------===//
 
-    void onItemMoved() override;
-
-    var getDragSourceDescription() override
-    {
-        return var::null;
-    }
-
+    void onItemParentChanged() override;
+    var getDragSourceDescription() override { return var::null; }
     bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override
     { return false; }
-
-    //virtual void itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) override
-    //{ }
 
 
     //===------------------------------------------------------------------===//

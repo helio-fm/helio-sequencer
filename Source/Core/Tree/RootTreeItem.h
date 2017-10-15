@@ -44,7 +44,7 @@ public:
     void showPage() override;
     void recreatePage() override;
 
-    void onRename(const String &newName) override;
+    void safeRename(const String &newName) override;
 
     void importMidi(File &file);
 

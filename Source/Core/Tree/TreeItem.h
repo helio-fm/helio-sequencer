@@ -43,7 +43,6 @@ public:
     ~TreeItem() override;
     
     static const String xPathSeparator;
-
     static String createSafeName(const String &nameStr);
 
     int getNumSelectedSiblings() const;
@@ -56,7 +55,7 @@ public:
 
     NavigationSidebar *findParentTreePanel() const;
 
-    virtual void onItemMoved() {}
+    virtual void onItemParentChanged() {}
 
     void addChildTreeItem(TreeItem *child, int insertIndex = -1);
 
@@ -65,6 +64,12 @@ public:
 
     void setGreyedOut(bool shouldBeGreyedOut) noexcept;
     bool isGreyedOut() const noexcept;
+
+    virtual void safeRename(const String &newName);
+    virtual String getName() const;
+    virtual Colour getColour() const;
+    virtual Font getFont() const;
+    virtual Image getIcon() const = 0;
 
     template<typename T>
     static T *getActiveItem(TreeItem *root)
@@ -202,35 +207,20 @@ public:
     //===------------------------------------------------------------------===//
 
     Component *createItemComponent() override;
-
     void paintItem(Graphics &g, int width, int height) override;
-
     void paintOpenCloseButton(Graphics &, const Rectangle<float> &area,
-                                      Colour backgroundColour, bool isMouseOver) override;
-
+        Colour backgroundColour, bool isMouseOver) override;
     void paintHorizontalConnectingLine(Graphics &, const Line<float> &line) override;
-
     void paintVerticalConnectingLine(Graphics &, const Line<float> &line) override;
-
     int getItemHeight() const override;
 
-    virtual Image getIcon() const = 0;
-    virtual Font getFont() const;
-    virtual Colour getColour() const;
-    virtual String getCaption() const;
 
     //===------------------------------------------------------------------===//
     // Menu
     //===------------------------------------------------------------------===//
 
-    virtual ScopedPointer<Component> createItemMenu()
-    {
-        return nullptr;
-    }
-
+    virtual ScopedPointer<Component> createItemMenu() = 0;
     void itemSelectionChanged(bool isNowSelected) override;
-
-    String getName() const noexcept; // an internal name
 
     //===------------------------------------------------------------------===//
     // Cleanup
@@ -238,12 +228,6 @@ public:
 
     static void deleteAllSelectedItems(Component *anyComponentInTree);
     static bool deleteItem(TreeItem *itemToDelete);
-
-    //===------------------------------------------------------------------===//
-    // Renamer
-    //===------------------------------------------------------------------===//
-
-    virtual void onRename(const String &newName);
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -254,23 +238,9 @@ public:
         this->deleteAllSubItems();
     }
 
-
-protected:
-
-    void setName(const String &newName) noexcept;
-
-    friend class RenameTreeItemCallback;
-
-    virtual String getNameForRenamingCallback() const
-    {
-        return this->getName();
-    }
-
 protected:
 
     void setVisible(bool shouldBeVisible) noexcept;
-
-    void safeRename(const String &newName);
 
     template<typename T>
     static void collectChildrenOfType(const TreeItem *rootNode, Array<T *> &resultArray, bool pickOnlySelectedOnes)
@@ -339,7 +309,6 @@ protected:
     void deleteAllSubItems();
 
     static void openOrCloseAllSubGroups(TreeViewItem &item, bool shouldOpen);
-    static void notifySubtreeMoved(TreeItem *node);
 
 private:
 

@@ -68,7 +68,7 @@ class PianoRollSelectionTreeItem : public TransientTreeItem
 public:
 
     Image getIcon() const override;
-    String getCaption() const override;
+    String getName() const override;
     ScopedPointer<Component> createItemMenu() override;
 
 private:
@@ -81,7 +81,7 @@ class PatternRollSelectionTreeItem : public TransientTreeItem
 public:
 
     Image getIcon() const override;
-    String getCaption() const override;
+    String getName() const override;
     ScopedPointer<Component> createItemMenu() override;
 
 private:

@@ -32,9 +32,9 @@ public:
     InstrumentsRootTreeItem();
     ~InstrumentsRootTreeItem() override;
 
+    String getName() const override;
     Colour getColour() const override;
     Image getIcon() const override;
-    String getCaption() const override;
 
     void showPage() override;
     void recreatePage() override;

@@ -239,11 +239,10 @@ Image TrackGroupTreeItem::getIcon() const
     return Icons::findByName(Icons::group, TREE_ICON_HEIGHT);
 }
 
-void TrackGroupTreeItem::onRename(const String &newName)
+void TrackGroupTreeItem::safeRename(const String &newName)
 {
-    TreeItem::onRename(newName);
+    TreeItem::safeRename(newName);
     this->sortByNameAmongSiblings();
-    TreeItem::notifySubtreeMoved(this); // сделать это default логикой для всех типов нодов?
 }
 
 
@@ -306,7 +305,7 @@ void TrackGroupTreeItem::deserialize(const XmlElement &xml)
 
     if (type != Serialization::Core::layerGroup) { return; }
 
-    this->setName(xml.getStringAttribute("name"));
+    this->name = xml.getStringAttribute("name", this->name);
 
     TreeItemChildrenSerializer::deserializeChildren(*this, xml);
 }

@@ -79,7 +79,7 @@ HeadlineItem::HeadlineItem(WeakReference<TreeItem> treeItem)
     if (this->item != nullptr)
     {
         this->icon->setIconImage(this->item->getIcon());
-        this->titleLabel->setText(this->item->getCaption(), dontSendNotification);
+        this->titleLabel->setText(this->item->getName(), dontSendNotification);
         const int textWidth = this->titleLabel->getFont()
             .getStringWidth(this->titleLabel->getText());
         this->setSize(textWidth + 64, this->getHeight());
@@ -116,7 +116,7 @@ void HeadlineItem::paint (Graphics& g)
 
     {
         float x = 0, y = 0;
-        Colour fillColour1 = Colour (0x33000000), fillColour2 = Colour (0x00000000);
+        Colour fillColour1 = Colour (0x22000000), fillColour2 = Colour (0x00000000);
         //[UserPaintCustomArguments] Customize the painting arguments here..
 
         // A hack - don't draw a shadow for the first item in chain
@@ -129,7 +129,7 @@ void HeadlineItem::paint (Graphics& g)
                                        16.0f - 0.0f + y,
                                        fillColour2,
                                        16.0f - 0.0f + x,
-                                       14.0f - 0.0f + y,
+                                       16.0f - 0.0f + y,
                                        true));
         g.fillPath (internalPath2, AffineTransform::translation(x, y));
     }
@@ -302,7 +302,7 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0">
     <PATH pos="0 0 100 100" fill="solid: cffffff" hasStroke="0" nonZeroWinding="1">s 0 0 l 16R 0 l 9R 16 l 16R 32 l 0 32 x</PATH>
-    <PATH pos="0 0 100 100" fill=" radial: 0 16, 16 14, 0=33000000, 1=0"
+    <PATH pos="0 0 100 100" fill=" radial: 0 16, 16 16, 0=22000000, 1=0"
           hasStroke="0" nonZeroWinding="1">s 0 0 l 40 0 l 40 32 l 0 32 x</PATH>
     <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="1" stroke="1, mitered, butt"
           strokeColour=" radial: 9R 16, 16R 2, 0=77000000, 1=0" nonZeroWinding="1">s 32R 0 l 16R 0 l 9R 16 l 16R 32 l 32R 32 x</PATH>

@@ -41,7 +41,7 @@ public:
 
     void showPage() override;
 
-    void onRename(const String &newName) override;
+    void safeRename(const String &newName) override;
 
 
     //===------------------------------------------------------------------===//

@@ -66,6 +66,10 @@ AudioPluginTreeItem::~AudioPluginTreeItem()
 {
 }
 
+ScopedPointer<Component> AudioPluginTreeItem::createItemMenu()
+{
+    return nullptr;
+}
 
 Colour AudioPluginTreeItem::getColour() const
 {
@@ -185,7 +189,7 @@ void AudioPluginTreeItem::deserialize(const XmlElement &xml)
 
     if (type != Serialization::Core::audioPlugin) { return; }
 
-    this->setName(xml.getStringAttribute("name"));
+    this->name = xml.getStringAttribute("name", this->name);
 
     TreeItemChildrenSerializer::deserializeChildren(*this, xml);
 }

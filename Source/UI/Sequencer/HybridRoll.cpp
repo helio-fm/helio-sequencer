@@ -1253,14 +1253,6 @@ void HybridRoll::onPlay()
 {
     this->resetAllClippingIndicators();
     this->resetAllOversaturationIndicators();
-    
-#if HYBRID_ROLL_FOLLOWS_INDICATOR
-//    const bool indicatorIsWithinScreen = fabs(this->findIndicatorOffsetFromViewCentre()) < (this->viewport.getViewWidth() / 2);
-//    if (indicatorIsWithinScreen)
-//    {
-//        this->startFollowingPlayhead();
-//    }
-#endif
 }
 
 void HybridRoll::onStop()
@@ -1272,8 +1264,18 @@ void HybridRoll::onStop()
 #endif
 }
 
+bool HybridRoll::isFollowingPlayhead() const noexcept
+{
+    return this->shouldFollowIndicator;
+}
+
 void HybridRoll::startFollowingPlayhead()
 {
+    if (this->isFollowingPlayhead())
+    {
+        return;
+    }
+
 #if HYBRID_ROLL_FOLLOWS_INDICATOR
     this->transportIndicatorOffset = this->findIndicatorOffsetFromViewCentre();
     this->shouldFollowIndicator = true;
@@ -1283,6 +1285,11 @@ void HybridRoll::startFollowingPlayhead()
 
 void HybridRoll::stopFollowingPlayhead()
 {
+    if (! this->isFollowingPlayhead())
+    {
+        return;
+    }
+
 #if HYBRID_ROLL_FOLLOWS_INDICATOR
     this->stopTimer();
     // this introduces the case when I change a note during playback, and the note component position is not updated
@@ -1409,7 +1416,6 @@ void HybridRoll::triggerBatchRepaintFor(FloatBoundsComponent *target)
     this->batchRepaintList.add(target);
     this->triggerAsyncUpdate();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Timer

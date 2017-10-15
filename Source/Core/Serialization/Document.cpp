@@ -135,14 +135,14 @@ void Document::saveAs()
 #endif
 }
 
-void Document::exportAs(const String &exportExtension, const String &defaultFilename)
+void Document::exportAs(const String &exportExtension,
+    const String &defaultFilenameWithExtension)
 {
 #if HELIO_DESKTOP
 
     FileChooser fc(TRANS("dialog::document::export"),
-                   FileUtils::getDocumentSlot(defaultFilename),
-                   (exportExtension),
-                   true);
+        FileUtils::getDocumentSlot(File::createLegalFileName(defaultFilenameWithExtension)),
+        exportExtension, true);
 
     if (fc.browseForFileToSave(true))
     {

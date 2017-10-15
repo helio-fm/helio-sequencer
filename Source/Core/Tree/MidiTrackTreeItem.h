@@ -45,7 +45,7 @@ public:
     Colour getColour() const override;
 
     void showPage() override;
-    void onRename(const String &newName) override;
+    void safeRename(const String &newName) override;
 
     void importMidi(const MidiMessageSequence &sequence);
 
@@ -106,7 +106,7 @@ public:
     // Dragging
     //===------------------------------------------------------------------===//
 
-    void onItemMoved() override;
+    void onItemParentChanged() override;
     var getDragSourceDescription() override;
     bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
     void itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) override;
@@ -139,10 +139,4 @@ protected:
     bool mute;
     bool solo;
 
-private:
-
-    String getNameForRenamingCallback() const override
-    {
-        return this->getXPath(); // allows edit full layer path
-    }
 };

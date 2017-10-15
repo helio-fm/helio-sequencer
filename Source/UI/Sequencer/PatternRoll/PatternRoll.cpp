@@ -507,10 +507,10 @@ void PatternRoll::clipboardPaste(const XmlElement &xml)
     const float indicatorRoughBeat = this->getBeatByTransportPosition(this->project.getTransport().getSeekPosition());
     const float indicatorBeat = roundf(indicatorRoughBeat * 1000.f) / 1000.f;
 
-    const float firstBeat = root->getDoubleAttribute(Serialization::Clipboard::firstBeat);
-    const float lastBeat = root->getDoubleAttribute(Serialization::Clipboard::lastBeat);
+    const double firstBeat = root->getDoubleAttribute(Serialization::Clipboard::firstBeat);
+    const double lastBeat = root->getDoubleAttribute(Serialization::Clipboard::lastBeat);
     const bool indicatorIsWithinSelection = (indicatorBeat >= firstBeat) && (indicatorBeat < lastBeat);
-    const float startBeatAligned = roundf(firstBeat);
+    const float startBeatAligned = roundf(float(firstBeat));
     const float deltaBeat = (indicatorBeat - startBeatAligned);
 
     this->deselectAll();
@@ -542,7 +542,7 @@ void PatternRoll::clipboardPaste(const XmlElement &xml)
                     const bool isShiftPressed = Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown();
                     if (isShiftPressed)
                     {
-                        const float changeDelta = lastBeat - firstBeat;
+                        const float changeDelta = float(lastBeat - firstBeat);
                         PianoRollToolbox::shiftEventsToTheRight(this->project.getTracks(), indicatorBeat, changeDelta, false);
                     }
                 }

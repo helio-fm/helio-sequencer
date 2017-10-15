@@ -242,7 +242,7 @@ void ProjectTreeItem::showPage()
     App::Layout().showPage(this->projectSettings, this);
 }
 
-void ProjectTreeItem::onRename(const String &newName)
+void ProjectTreeItem::safeRename(const String &newName)
 {
     if (newName == this->getName())
     {
@@ -255,13 +255,10 @@ void ProjectTreeItem::onRename(const String &newName)
         this->recentFilesList->removeById(this->getId());
     }
 
-    //TreeItem::onRename(newName);
-    //this->getDocument()->renameFile(this->getName());
-
-    this->setName(newName);
+    this->name = newName;
     
     this->getDocument()->renameFile(newName);
-    TreeItem::notifySubtreeMoved(this);
+    this->broadcastChangeProjectInfo(this->info);
 
     // notify recent files list
     if (this->recentFilesList != nullptr)
@@ -277,12 +274,6 @@ void ProjectTreeItem::onRename(const String &newName)
     App::Workspace().sendChangeMessage();
 
     this->repaintItem();
-}
-
-void ProjectTreeItem::repaintEditor()
-{
-    this->editor->resized();
-    this->editor->repaint();
 }
 
 void ProjectTreeItem::recreatePage()
@@ -472,11 +463,6 @@ ScopedPointer<Component> ProjectTreeItem::createItemMenu()
 //===----------------------------------------------------------------------===//
 // Dragging
 //===----------------------------------------------------------------------===//
-
-void ProjectTreeItem::onItemMoved()
-{
-    this->broadcastChangeProjectInfo(this->info);
-}
 
 bool ProjectTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
@@ -693,7 +679,7 @@ void ProjectTreeItem::load(const XmlElement &xml)
 
     if (root == nullptr) { return; }
 
-    this->setName(root->getStringAttribute("name"));
+    this->name = root->getStringAttribute("name", this->name);
 
     this->info->deserialize(*root);
     this->timeline->deserialize(*root);
@@ -972,6 +958,11 @@ void ProjectTreeItem::exportMidi(File &file) const
 //===----------------------------------------------------------------------===//
 // VCS::TrackedItemsSource
 //===----------------------------------------------------------------------===//
+
+String ProjectTreeItem::getVCSName() const
+{
+    return this->getName();
+}
 
 int ProjectTreeItem::getNumTrackedItems()
 {

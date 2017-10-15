@@ -227,7 +227,9 @@ void PianoTrackTreeItem::deserialize(const XmlElement &xml)
     if (type != Serialization::Core::pianoLayer) { return; }
 
     this->deserializeVCSUuid(xml);
-    this->setName(xml.getStringAttribute("name"));
+
+    this->name = xml.getStringAttribute("name", this->name);
+    
     this->deserializeTrackProperties(xml);
 
     // он все равно должен быть один, но так короче
