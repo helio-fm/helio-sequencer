@@ -234,6 +234,11 @@ void MainLayout::showTransientItem(
     this->headline->syncWithTree(App::Workspace().getNavigationHistory(), item);
 }
 
+bool MainLayout::isShowingPage(Component *page) const noexcept
+{
+    return (this->currentContent == page);
+}
+
 void MainLayout::showPage(Component *page, TreeItem *source)
 {
     App::dismissAllModalComponents();

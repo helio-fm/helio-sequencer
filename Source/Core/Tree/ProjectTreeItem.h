@@ -84,9 +84,10 @@ public:
 
     void safeRename(const String &newName) override;
 
-    void showEditor(MidiSequence *activeLayer, TreeItem *source);
-    void showEditorsGroup(Array<MidiSequence *> layersGroup, TreeItem *source);
+    void showPatternEditor(TreeItem *source);
+    void showLinearEditor(MidiSequence *activeLayer, TreeItem *source);
     void hideEditor(MidiSequence *activeLayer, TreeItem *source);
+    WeakReference<TreeItem> getLastShownTrack() const;
 
     void updateActiveGroupEditors();
     void activateLayer(MidiSequence* layer, bool selectOthers, bool deselectOthers);
@@ -228,13 +229,15 @@ private:
     ScopedPointer<Component> trackMap;
 #endif
 
-    ScopedPointer<SequencerLayout> editor;
+    ScopedPointer<SequencerLayout> sequencerLayout;
     HybridRollEditMode rollEditMode;
     ListenerList<ProjectListener> changeListeners;
     ScopedPointer<ProjectPage> projectSettings;
     ReadWriteLock tracksListLock;
     ScopedPointer<ProjectInfo> info;
     ScopedPointer<ProjectTimeline> timeline;
+
+    WeakReference<TreeItem> lastShownTrack;
 
 private:
 

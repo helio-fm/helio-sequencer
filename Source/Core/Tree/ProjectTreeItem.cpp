@@ -23,6 +23,7 @@
 #include "TrackGroupTreeItem.h"
 #include "PianoTrackTreeItem.h"
 #include "AutomationTrackTreeItem.h"
+#include "PatternEditorTreeItem.h"
 #include "MainLayout.h"
 #include "Document.h"
 #include "ProjectListener.h"
@@ -120,7 +121,7 @@ ProjectTreeItem::~ProjectTreeItem()
     this->projectSettings = nullptr;
 
     this->removeAllListeners();
-    this->editor = nullptr;
+    this->sequencerLayout = nullptr;
 
     this->timeline = nullptr;
     this->info = nullptr;
@@ -206,7 +207,7 @@ HybridRollEditMode &ProjectTreeItem::getEditMode() noexcept
 HybridRoll *ProjectTreeItem::getLastFocusedRoll() const
 {
     // todo!
-    return this->editor->getRoll();
+    return this->sequencerLayout->getRoll();
     
 //    if (this->origami != nullptr)
 //    {
@@ -275,12 +276,12 @@ void ProjectTreeItem::safeRename(const String &newName)
 
 void ProjectTreeItem::recreatePage()
 {
-    if (this->editor || this->projectSettings)
+    if (this->sequencerLayout || this->projectSettings)
     {
         this->savePageState();
     }
     
-    this->editor = new SequencerLayout(*this);
+    this->sequencerLayout = new SequencerLayout(*this);
     
     if (App::isRunningOnPhone())
     {
@@ -297,37 +298,46 @@ void ProjectTreeItem::recreatePage()
 
 void ProjectTreeItem::savePageState() const
 {
-    ScopedPointer<XmlElement> editorStateNode(this->editor->serialize());
+    ScopedPointer<XmlElement> editorStateNode(this->sequencerLayout->serialize());
     Config::set(Serialization::UI::editorState, editorStateNode);
 }
 
 void ProjectTreeItem::loadPageState()
 {
-    ScopedPointer<XmlElement> editorStateNode(Config::getXml(Serialization::UI::editorState));
-    if (editorStateNode != nullptr) {
-        this->editor->deserialize(*editorStateNode);
+    const ScopedPointer<XmlElement> editorStateNode(Config::getXml(Serialization::UI::editorState));
+    if (editorStateNode != nullptr)
+    {
+        this->sequencerLayout->deserialize(*editorStateNode);
     }
 }
 
-void ProjectTreeItem::showEditor(MidiSequence *activeLayer, TreeItem *source)
+void ProjectTreeItem::showPatternEditor(TreeItem *source)
 {
-    if (PianoSequence *pianoLayer = dynamic_cast<PianoSequence *>(activeLayer))
+    this->sequencerLayout->showPatternEditor();
+    App::Layout().showPage(this->sequencerLayout, source);
+}
+
+void ProjectTreeItem::showLinearEditor(MidiSequence *activeSequence, TreeItem *source)
+{
+    if (PianoSequence *pianoLayer = dynamic_cast<PianoSequence *>(activeSequence))
     {
         // todo collect selected pianotreeitems
         Array<PianoTrackTreeItem *> pianoTreeItems = this->findChildrenOfType<PianoTrackTreeItem>(true);
-        Array<MidiSequence *> pianoLayers;
+        Array<MidiSequence *> pianoSequences;
 
         for (int i = 0; i < pianoTreeItems.size(); ++i)
         {
-            pianoLayers.add(pianoTreeItems.getUnchecked(i)->getSequence());
+            pianoSequences.add(pianoTreeItems.getUnchecked(i)->getSequence());
         }
         
-        this->editor->setActiveMidiLayers(pianoLayers, activeLayer); // before
-        App::Layout().showPage(this->editor, source);
+        this->sequencerLayout->showLinearEditor(pianoSequences, activeSequence);
+        this->lastShownTrack = source;
+
+        App::Layout().showPage(this->sequencerLayout, source);
     }
-    else if (AutomationSequence *autoLayer = dynamic_cast<AutomationSequence *>(activeLayer))
+    else if (AutomationSequence *autoLayer = dynamic_cast<AutomationSequence *>(activeSequence))
     {
-        const bool editorWasShown = this->editor->toggleShowAutomationEditor(autoLayer);
+        const bool editorWasShown = this->sequencerLayout->toggleShowAutomationEditor(autoLayer);
         // TODO I really need a full-featured automation editor here >_<
     }
 }
@@ -336,78 +346,14 @@ void ProjectTreeItem::hideEditor(MidiSequence *activeLayer, TreeItem *source)
 {
     if (AutomationSequence *autoLayer = dynamic_cast<AutomationSequence *>(activeLayer))
     {
-        this->editor->hideAutomationEditor(autoLayer);
+        this->sequencerLayout->hideAutomationEditor(autoLayer);
         // TODO I really need a full-featured automation editor here >_<
     }
 }
 
-void ProjectTreeItem::showEditorsGroup(Array<MidiSequence *> layersGroup, TreeItem *source)
+WeakReference<TreeItem> ProjectTreeItem::getLastShownTrack() const
 {
-    //const auto tracks(this->getTracks());
-
-    if (layersGroup.size() == 0)
-    {
-        // todo show dummy component?
-        this->showPage();
-        return;
-    }
-    if (layersGroup.size() == 1)
-    {
-        // single-editor
-        this->showEditor(layersGroup[0], source);
-        return;
-    }
-    
-    // сейчас здесь баг - когда удаляешь слой из группы, фокус не меняется,
-    // потому что здесь ничего не происходит,
-    // активный слой указывает на невалидный пойнтер
-    // todo mark first layer, select others and show show all layers
-    
-//    this->origami = new OrigamiVertical();
-//    int editorIndex = 0;
-//    MidiEditor *firstFoundEditor = nullptr;
-//
-//    for (int i = 0; i < myLayers.size(); ++i)
-//    {
-//        const bool needsShadow = (editorIndex != (layersGroup.size() - 1));
-//        MidiSequence *layerIter = myLayers.getUnchecked(i);
-//
-//        if (layersGroup.contains(layerIter))
-//        {
-//            if (TreeItem *item = dynamic_cast<TreeItem *>(layerIter->getOwner()))
-//            {
-//                if (dynamic_cast<PianoSequence *>(layerIter))
-//                {
-//                    if (editorIndex >= this->splitscreenPianoEditors.size())
-//                    { break; }
-//
-//                    MidiEditor *foundEditor = this->splitscreenPianoEditors[editorIndex];
-//                    this->origami->addPage(foundEditor, false, needsShadow);
-//                    foundEditor->setActiveMidiLayer(layerIter);
-//
-//                    firstFoundEditor = (firstFoundEditor == nullptr) ? foundEditor : firstFoundEditor;
-//                }
-//                else if (dynamic_cast<AutomationSequence *>(layerIter))
-//                {
-//                    // todo!
-//                    
-//                    //if (editorIndex >= this->splitscreenAutoEditors.size())
-//                    //{ break; }
-//
-//                    //MidiEditor *foundEditor = this->splitscreenAutoEditors[editorIndex];
-//                    //this->origami->addPage(foundEditor, false, needsShadow);
-//                    //foundEditor->setActiveMidiLayer(layerIter);
-//
-//                    //firstFoundEditor = (firstFoundEditor == nullptr) ? foundEditor : firstFoundEditor;
-//                }
-//
-//                editorIndex += 1;
-//            }
-//        }
-//    }
-//
-//    this->origami->addPage(this->midiRollCommandPanel, false, false, true);
-//    this->workspace.showPage(this->origami, source);
+    return this->lastShownTrack;
 }
 
 void ProjectTreeItem::updateActiveGroupEditors()
@@ -656,7 +602,7 @@ XmlElement *ProjectTreeItem::save() const
     xml->setAttribute("seek", this->transport->getSeekPosition());
     
     // UI state is now stored in config
-    //xml->addChildElement(this->editor->serialize());
+    //xml->addChildElement(this->sequencerLayout->serialize());
 
     xml->addChildElement(this->undoStack->serialize());
     
@@ -683,6 +629,13 @@ void ProjectTreeItem::load(const XmlElement &xml)
 
     TreeItemChildrenSerializer::deserializeChildren(*this, *root);
 
+    // Legacy support: if no pattern set manager found, create one
+    if (nullptr == this->findChildOfType<PatternEditorTreeItem>())
+    {
+        // Try to place it after 'Versions' (presumably, index 1)
+        this->addChildTreeItem(new PatternEditorTreeItem(), 1);
+    }
+
     const auto range = this->broadcastChangeProjectBeatRange();
 
     // a hack to add some margin to project beat range,
@@ -698,7 +651,7 @@ void ProjectTreeItem::load(const XmlElement &xml)
     //this->transport->deserialize(*root); // todo
 
     // UI state is now stored in config
-    //this->editor->deserialize(*root);
+    //this->sequencerLayout->deserialize(*root);
     
     this->undoStack->deserialize(*root);
     
@@ -1022,7 +975,6 @@ bool ProjectTreeItem::deleteTrackedItem(VCS::TrackedItem *item)
 
     return true;
 }
-
 
 
 //===----------------------------------------------------------------------===//

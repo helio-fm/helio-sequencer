@@ -76,7 +76,7 @@ void MidiTrackTreeItem::showPage()
 {
     if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
     {
-        parentProject->showEditor(this->layer, this);
+        parentProject->showLinearEditor(this->layer, this);
     }
 }
 

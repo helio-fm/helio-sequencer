@@ -214,18 +214,13 @@ void TrackGroupTreeItem::showPage()
 {
     applySelectionPolicyForGroup(this);
     
-    Array<MidiTrackTreeItem *> myLayerItems(this->findChildrenOfType<MidiTrackTreeItem>());
-    
-    Array<MidiSequence *> myLayers;
-    
-    for (int i = 0; i < myLayerItems.size(); ++i)
+    Array<MidiTrackTreeItem *> subTracks(this->findChildrenOfType<MidiTrackTreeItem>());
+    if (! subTracks.isEmpty())
     {
-        myLayers.add(myLayerItems.getUnchecked(i)->getSequence());
-    }
-    
-    if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
-    {
-        parentProject->showEditorsGroup(myLayers, this);
+        if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
+        {
+            parentProject->showLinearEditor(subTracks.getFirst()->getSequence(), this);
+        }
     }
 }
 

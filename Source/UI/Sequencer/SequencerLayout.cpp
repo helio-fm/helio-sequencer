@@ -22,6 +22,8 @@
 #include "PianoRoll.h"
 #include "PatternRoll.h"
 #include "ProjectTreeItem.h"
+#include "PianoTrackTreeItem.h"
+#include "PatternEditorTreeItem.h"
 #include "TrackScroller.h"
 #include "PianoTrackMap.h"
 #include "AutomationTrackMap.h"
@@ -343,18 +345,27 @@ public:
         this->addAndMakeVisible(this->pianoViewport);
         this->addAndMakeVisible(this->patternViewport);
         this->addAndMakeVisible(this->scroller);
+
+        // Default state
+        this->patternRoll->setEnabled(false);
     }
-    
+
     ~RollsSwitchingProxy() override
     {
         this->removeAllChildren();
+    }
+
+    bool isPatternMode() const
+    {
+        return (this->animationDirection > 0.f);
+        //return this->patternRoll->isEnabled();
     }
 
     void startRollSwitchAnimation()
     {
         this->animationDirection *= -1.f;
         this->animationSpeed = ROLLS_SWITCH_ANIMATION_SPEED;
-        const bool patternMode = (this->animationDirection > 0.f);
+        const bool patternMode = this->isPatternMode();
         this->scroller->switchToRoll(patternMode ? this->patternRoll : this->pianoRoll);
         // Disabling inactive prevents it from receiving keyboard events:
         this->patternRoll->setEnabled(patternMode);
@@ -562,11 +573,23 @@ SequencerLayout::~SequencerLayout()
     this->pianoViewport = nullptr;
 }
 
-void SequencerLayout::setActiveMidiLayers(Array<MidiSequence *> tracks, MidiSequence *primaryTrack)
+
+void SequencerLayout::showPatternEditor()
 {
-    //Logger::writeToLog("MidiEditor::setActiveMidiLayers");
+    if (! this->rollContainer->isPatternMode())
+    {
+        this->rollContainer->startRollSwitchAnimation();
+    }
+}
+
+void SequencerLayout::showLinearEditor(Array<MidiSequence *> tracks, MidiSequence *primaryTrack)
+{
+    if (this->rollContainer->isPatternMode())
+    {
+        this->rollContainer->startRollSwitchAnimation();
+    }
+
     this->pianoRoll->setActiveMidiLayers(tracks, primaryTrack);
-    //this->patternRoll->setActiveMidiLayers(tracks, primaryTrack);
 }
 
 void SequencerLayout::hideAutomationEditor(AutomationSequence *sequence)
@@ -714,7 +737,21 @@ void SequencerLayout::handleCommandMessage(int commandId)
     switch (commandId)
     {
     case CommandIDs::SwitchBetweenRolls:
-        this->rollContainer->startRollSwitchAnimation();
+        if (this->rollContainer->isPatternMode())
+        {
+            if (this->project.getLastShownTrack() == nullptr)
+            {
+                this->project.selectChildOfType<PianoTrackTreeItem>();
+            }
+            else
+            {
+                this->project.getLastShownTrack()->setSelected(true, true);
+            }
+        }
+        else
+        {
+            this->project.selectChildOfType<PatternEditorTreeItem>();
+        }
         break;
     default:
         break;

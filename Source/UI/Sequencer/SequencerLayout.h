@@ -45,8 +45,9 @@ public:
     explicit SequencerLayout(ProjectTreeItem &parentProject);
     ~SequencerLayout() override;
 
-    void setActiveMidiLayers(Array<MidiSequence *> tracks, MidiSequence *primaryTrack);
-    
+    void showPatternEditor();
+    void showLinearEditor(Array<MidiSequence *> tracks, MidiSequence *primaryTrack);
+
     // returns true if editor was shown, else returns false
     bool toggleShowAutomationEditor(AutomationSequence *targetLayer);
     void hideAutomationEditor(AutomationSequence *targetLayer);

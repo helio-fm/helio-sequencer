@@ -98,7 +98,7 @@ void Headline::handleAsyncUpdate()
         if (boundsBefore != boundsAfter)
         {
             child->setBounds(boundsBefore);
-            this->animator.animateComponent(child, boundsAfter, 1.f, 250, false, 0.f, 0.f);
+            this->animator.animateComponent(child, boundsAfter, 1.f, 250, false, 1.f, 0.f);
         }
 
         posX += boundsAfter.getWidth() - HEADLINE_ITEMS_OVERLAP;

@@ -53,7 +53,8 @@ public:
 
     void showTransientItem(ScopedPointer<TransientTreeItem> newItem, TreeItem *parent);
     void showPage(Component *page, TreeItem *source = nullptr);
-    
+    bool isShowingPage(Component *page) const noexcept;
+
     //===------------------------------------------------------------------===//
     // UI
     //===------------------------------------------------------------------===//

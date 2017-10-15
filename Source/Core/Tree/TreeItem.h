@@ -123,6 +123,18 @@ public:
     }
 
     template<typename T>
+    bool selectChildOfType() const
+    {
+        if (T *child = this->findChildOfType<T>())
+        {
+            child->setSelected(true, true);
+            return true;
+        }
+
+        return false;
+    }
+
+    template<typename T>
     Array<T *> findChildrenOfType(bool pickOnlySelectedOnes = false) const
     {
         Array<T *> children;
