@@ -733,6 +733,9 @@
     <ClCompile Include="..\..\Source\Core\Tree\MidiTrackTreeItem.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Tree\PatternEditorTreeItem.cpp">
+      <Filter>Helio\Source\Core\Tree</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Tree\PianoTrackTreeItem.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
@@ -754,10 +757,16 @@
     <ClCompile Include="..\..\Source\Core\Tree\TrackGroupTreeItem.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Tree\TransientTreeItems.cpp">
+      <Filter>Helio\Source\Core\Tree</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Tree\TreeItem.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Tree\TreeItemChildrenSerializer.cpp">
+      <Filter>Helio\Source\Core\Tree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Tree\TreeNavigationHistory.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Tree\VersionControlTreeItem.cpp">
@@ -874,6 +883,9 @@
     <ClCompile Include="..\..\Source\UI\Common\ColourSwatches.cpp">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Common\CommandIDs.cpp">
+      <Filter>Helio\Source\UI\Common</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Common\DraggingListBoxComponent.cpp">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClCompile>
@@ -934,6 +946,12 @@
     <ClCompile Include="..\..\Source\UI\Headline\HeadlineItem.cpp">
       <Filter>Helio\Source\UI\Headline</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Headline\HeadlineNavigationPanel.cpp">
+      <Filter>Helio\Source\UI\Headline</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Input\HotkeyScheme.cpp">
+      <Filter>Helio\Source\UI\Input</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Input\MultiTouchController.cpp">
       <Filter>Helio\Source\UI\Input</Filter>
     </ClCompile>
@@ -952,12 +970,6 @@
     <ClCompile Include="..\..\Source\UI\Menus\ArpeggiatorEditorPanel.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\ArpeggiatorPanel.cpp">
-      <Filter>Helio\Source\UI\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\AutomationsCommandPanel.cpp">
-      <Filter>Helio\Source\UI\Menus</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Menus\InstrumentCommandPanel.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
@@ -967,19 +979,19 @@
     <ClCompile Include="..\..\Source\UI\Menus\LayerCommandPanel.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\MoveToLayerCommandPanel.cpp">
-      <Filter>Helio\Source\UI\Menus</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Menus\NotesTuningPanel.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Menus\PatternEditorCommandPanel.cpp">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Menus\PatternRollSelectionCommandPanel.cpp">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Menus\PianoRollSelectionCommandPanel.cpp">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Menus\ProjectCommandPanel.cpp">
-      <Filter>Helio\Source\UI\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\RootTreeItemPanelDefault.cpp">
-      <Filter>Helio\Source\UI\Menus</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\RootTreeItemPanelCompact.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Menus\TimelineCommandPanel.cpp">
@@ -1306,22 +1318,10 @@
     <ClCompile Include="..\..\Source\UI\Sidebars\Rollovers\SettingsRollover.cpp">
       <Filter>Helio\Source\UI\Sidebars\Rollovers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sidebars\HybridRollCommandPanel.cpp">
+    <ClCompile Include="..\..\Source\UI\Sidebars\NavigationSidebar.cpp">
       <Filter>Helio\Source\UI\Sidebars</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sidebars\HybridRollCommandPanelDefault.cpp">
-      <Filter>Helio\Source\UI\Sidebars</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sidebars\HybridRollCommandPanelPhone.cpp">
-      <Filter>Helio\Source\UI\Sidebars</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sidebars\TreePanel.cpp">
-      <Filter>Helio\Source\UI\Sidebars</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sidebars\TreePanelDefault.cpp">
-      <Filter>Helio\Source\UI\Sidebars</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sidebars\TreePanelPhone.cpp">
+    <ClCompile Include="..\..\Source\UI\Sidebars\ToolsSidebar.cpp">
       <Filter>Helio\Source\UI\Sidebars</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Themes\ComponentFader.cpp">
@@ -1423,10 +1423,10 @@
     <ClCompile Include="..\..\Source\UI\Tree\TreeItemComponent.cpp">
       <Filter>Helio\Source\UI\Tree</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Tree\TreeItemComponentDefault.cpp">
+    <ClCompile Include="..\..\Source\UI\Tree\TreeItemComponentCompact.cpp">
       <Filter>Helio\Source\UI\Tree</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Tree\TreeItemComponentCompact.cpp">
+    <ClCompile Include="..\..\Source\UI\Tree\TreeItemComponentDefault.cpp">
       <Filter>Helio\Source\UI\Tree</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Tree\TreeItemMarkerDefault.cpp">
@@ -3453,10 +3453,10 @@
     <ClInclude Include="..\..\Source\Core\Tree\InstrumentTreeItem.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Tree\LastShownTreeItems.h">
+    <ClInclude Include="..\..\Source\Core\Tree\MidiTrackTreeItem.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Tree\MidiTrackTreeItem.h">
+    <ClInclude Include="..\..\Source\Core\Tree\PatternEditorTreeItem.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Tree\PianoTrackTreeItem.h">
@@ -3489,10 +3489,16 @@
     <ClInclude Include="..\..\Source\Core\Tree\TrackGroupTreeItem.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Tree\TransientTreeItems.h">
+      <Filter>Helio\Source\Core\Tree</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Tree\TreeItem.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Tree\TreeItemChildrenSerializer.h">
+      <Filter>Helio\Source\Core\Tree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Tree\TreeNavigationHistory.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Tree\VersionControlTreeItem.h">
@@ -3645,6 +3651,9 @@
     <ClInclude Include="..\..\Source\UI\Common\CommandIDs.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Common\ComponentIDs.h">
+      <Filter>Helio\Source\UI\Common</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Common\DraggingListBoxComponent.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
@@ -3726,6 +3735,12 @@
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineItem.h">
       <Filter>Helio\Source\UI\Headline</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Headline\HeadlineNavigationPanel.h">
+      <Filter>Helio\Source\UI\Headline</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Input\HotkeyScheme.h">
+      <Filter>Helio\Source\UI\Input</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Input\LongHoldController.h">
       <Filter>Helio\Source\UI\Input</Filter>
     </ClInclude>
@@ -3771,12 +3786,6 @@
     <ClInclude Include="..\..\Source\UI\Menus\ArpeggiatorEditorPanel.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\ArpeggiatorPanel.h">
-      <Filter>Helio\Source\UI\Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\AutomationsCommandPanel.h">
-      <Filter>Helio\Source\UI\Menus</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Menus\InstrumentCommandPanel.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
@@ -3786,19 +3795,19 @@
     <ClInclude Include="..\..\Source\UI\Menus\LayerCommandPanel.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\MoveToLayerCommandPanel.h">
-      <Filter>Helio\Source\UI\Menus</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Menus\NotesTuningPanel.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Menus\PatternEditorCommandPanel.h">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Menus\PatternRollSelectionCommandPanel.h">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Menus\PianoRollSelectionCommandPanel.h">
+      <Filter>Helio\Source\UI\Menus</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Menus\ProjectCommandPanel.h">
-      <Filter>Helio\Source\UI\Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\RootTreeItemPanelDefault.h">
-      <Filter>Helio\Source\UI\Menus</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\RootTreeItemPanelCompact.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Menus\TimelineCommandPanel.h">
@@ -4152,22 +4161,10 @@
     <ClInclude Include="..\..\Source\UI\Sidebars\Rollovers\SettingsRollover.h">
       <Filter>Helio\Source\UI\Sidebars\Rollovers</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sidebars\HybridRollCommandPanel.h">
+    <ClInclude Include="..\..\Source\UI\Sidebars\NavigationSidebar.h">
       <Filter>Helio\Source\UI\Sidebars</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sidebars\HybridRollCommandPanelDefault.h">
-      <Filter>Helio\Source\UI\Sidebars</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sidebars\HybridRollCommandPanelPhone.h">
-      <Filter>Helio\Source\UI\Sidebars</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sidebars\TreePanel.h">
-      <Filter>Helio\Source\UI\Sidebars</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sidebars\TreePanelDefault.h">
-      <Filter>Helio\Source\UI\Sidebars</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sidebars\TreePanelPhone.h">
+    <ClInclude Include="..\..\Source\UI\Sidebars\ToolsSidebar.h">
       <Filter>Helio\Source\UI\Sidebars</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Themes\ComponentFader.h">
@@ -4272,10 +4269,10 @@
     <ClInclude Include="..\..\Source\UI\Tree\TreeItemComponent.h">
       <Filter>Helio\Source\UI\Tree</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Tree\TreeItemComponentDefault.h">
+    <ClInclude Include="..\..\Source\UI\Tree\TreeItemComponentCompact.h">
       <Filter>Helio\Source\UI\Tree</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Tree\TreeItemComponentCompact.h">
+    <ClInclude Include="..\..\Source\UI\Tree\TreeItemComponentDefault.h">
       <Filter>Helio\Source\UI\Tree</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Tree\TreeItemMarkerDefault.h">
@@ -6483,6 +6480,9 @@
       <Filter>Helio\Resources\Themes</Filter>
     </None>
     <None Include="..\..\Resources\DefaultArps.xml">
+      <Filter>Helio\Resources</Filter>
+    </None>
+    <None Include="..\..\Resources\DefaultHotkeys.xml">
       <Filter>Helio\Resources</Filter>
     </None>
     <None Include="..\..\Resources\DefaultScales.xml">

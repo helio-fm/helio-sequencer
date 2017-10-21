@@ -75,7 +75,7 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<TreeItem> targetItem)
     this->titleLabel->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]
 
-    setSize (256, 32);
+    setSize (150, 32);
 
     //[Constructor]
     if (this->item != nullptr)
@@ -355,7 +355,7 @@ BEGIN_JUCER_METADATA
                  componentName="" parentClasses="public Component, private Timer"
                  constructorParams="WeakReference&lt;TreeItem&gt; targetItem"
                  variableInitialisers="item(targetItem)" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="256"
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="150"
                  initialHeight="32">
   <METHODS>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>

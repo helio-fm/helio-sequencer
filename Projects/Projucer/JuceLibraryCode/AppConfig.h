@@ -34,8 +34,14 @@
 
 // BEGIN SECTION A
 
-#define JUCE_DISPLAY_SPLASH_SCREEN 0
-#define JUCE_REPORT_APP_USAGE 0
+#ifndef JUCE_DISPLAY_SPLASH_SCREEN
+ #define JUCE_DISPLAY_SPLASH_SCREEN 0
+#endif
+
+#ifndef JUCE_REPORT_APP_USAGE
+ #define JUCE_REPORT_APP_USAGE 0
+#endif
+
 
 // END SECTION A
 
@@ -56,15 +62,6 @@
 #define JUCE_MODULE_AVAILABLE_juce_gui_extra             1
 #define JUCE_MODULE_AVAILABLE_juce_opengl                1
 #define JUCE_MODULE_AVAILABLE_juce_osc                   1
-
-//==============================================================================
-#ifndef    JUCE_STANDALONE_APPLICATION
- #if defined(JucePlugin_Name) && defined(JucePlugin_Build_Standalone)
-  #define  JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
- #else
-  #define  JUCE_STANDALONE_APPLICATION 1
- #endif
-#endif
 
 #define JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED 1
 
@@ -100,7 +97,7 @@
 #endif
 
 #ifndef    JUCE_USE_WINRT_MIDI
- //#define JUCE_USE_WINRT_MIDI
+ //#define JUCE_USE_WINRT_MIDI 1
 #endif
 
 //==============================================================================
@@ -156,11 +153,11 @@
 // juce_core flags:
 
 #ifndef    JUCE_FORCE_DEBUG
- //#define JUCE_FORCE_DEBUG
+ //#define JUCE_FORCE_DEBUG 1
 #endif
 
 #ifndef    JUCE_LOG_ASSERTIONS
- //#define JUCE_LOG_ASSERTIONS
+ //#define JUCE_LOG_ASSERTIONS 1
 #endif
 
 #ifndef    JUCE_CHECK_MEMORY_LEAKS
@@ -168,11 +165,11 @@
 #endif
 
 #ifndef    JUCE_DONT_AUTOLINK_TO_WIN32_LIBRARIES
- //#define JUCE_DONT_AUTOLINK_TO_WIN32_LIBRARIES
+ //#define JUCE_DONT_AUTOLINK_TO_WIN32_LIBRARIES 1
 #endif
 
 #ifndef    JUCE_INCLUDE_ZLIB_CODE
- //#define JUCE_INCLUDE_ZLIB_CODE
+ //#define JUCE_INCLUDE_ZLIB_CODE 1
 #endif
 
 #ifndef    JUCE_USE_CURL
@@ -198,18 +195,18 @@
 // juce_graphics flags:
 
 #ifndef    JUCE_USE_COREIMAGE_LOADER
- //#define JUCE_USE_COREIMAGE_LOADER
+ //#define JUCE_USE_COREIMAGE_LOADER 1
 #endif
 
 #ifndef    JUCE_USE_DIRECTWRITE
- //#define JUCE_USE_DIRECTWRITE
+ //#define JUCE_USE_DIRECTWRITE 1
 #endif
 
 //==============================================================================
 // juce_gui_basics flags:
 
 #ifndef    JUCE_ENABLE_REPAINT_DEBUGGING
- //#define JUCE_ENABLE_REPAINT_DEBUGGING
+ //#define JUCE_ENABLE_REPAINT_DEBUGGING 1
 #endif
 
 #ifndef    JUCE_USE_XSHM
@@ -232,5 +229,13 @@
 #endif
 
 #ifndef    JUCE_ENABLE_LIVE_CONSTANT_EDITOR
- //#define JUCE_ENABLE_LIVE_CONSTANT_EDITOR
+ //#define JUCE_ENABLE_LIVE_CONSTANT_EDITOR 1
+#endif
+//==============================================================================
+#ifndef    JUCE_STANDALONE_APPLICATION
+ #if defined(JucePlugin_Name) && defined(JucePlugin_Build_Standalone)
+  #define  JUCE_STANDALONE_APPLICATION JucePlugin_Build_Standalone
+ #else
+  #define  JUCE_STANDALONE_APPLICATION 1
+ #endif
 #endif

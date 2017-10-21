@@ -30,7 +30,6 @@ class AudioMonitor;
 
 #include "../Themes/PanelBackgroundC.h"
 #include "../Themes/LighterShadowUpwards.h"
-#include "../Themes/GradientVertical.h"
 #include "../Themes/SeparatorHorizontalReversed.h"
 #include "../Themes/LighterShadowDownwards.h"
 #include "../Themes/GradientVerticalReversed.h"
@@ -69,7 +68,6 @@ private:
 
     ScopedPointer<PanelBackgroundC> background;
     ScopedPointer<LighterShadowUpwards> shadow;
-    ScopedPointer<GradientVertical> gradient;
     ScopedPointer<SeparatorHorizontalReversed> headLine;
     ScopedPointer<LighterShadowDownwards> headShadow;
     ScopedPointer<GradientVerticalReversed> gradient1;

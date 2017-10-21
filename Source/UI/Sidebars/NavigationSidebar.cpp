@@ -49,7 +49,6 @@ NavigationSidebar::NavigationSidebar()
 {
     addAndMakeVisible (background = new PanelBackgroundC());
     addAndMakeVisible (shadow = new LighterShadowUpwards());
-    addAndMakeVisible (gradient = new GradientVertical());
     addAndMakeVisible (headLine = new SeparatorHorizontalReversed());
     addAndMakeVisible (headShadow = new LighterShadowDownwards());
     addAndMakeVisible (gradient1 = new GradientVerticalReversed());
@@ -89,7 +88,6 @@ NavigationSidebar::~NavigationSidebar()
 
     background = nullptr;
     shadow = nullptr;
-    gradient = nullptr;
     headLine = nullptr;
     headShadow = nullptr;
     gradient1 = nullptr;
@@ -124,7 +122,6 @@ void NavigationSidebar::resized()
 
     background->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
     shadow->setBounds (0, getHeight() - 127 - 6, getWidth() - 0, 6);
-    gradient->setBounds (-50, getHeight() - 127, getWidth() - -100, 127);
     headLine->setBounds (0, 47, getWidth() - 0, 2);
     headShadow->setBounds (0, 48, getWidth() - 0, 6);
     gradient1->setBounds (-50, 0, getWidth() - -100, 47);
@@ -191,9 +188,6 @@ BEGIN_JUCER_METADATA
              constructorParams=""/>
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
              explicitFocusOrder="0" pos="0 127Rr 0M 6" sourceFile="../Themes/LighterShadowUpwards.cpp"
-             constructorParams=""/>
-  <JUCERCOMP name="" id="15cecf620af99284" memberName="gradient" virtualName=""
-             explicitFocusOrder="0" pos="-50 0Rr -100M 127" sourceFile="../Themes/GradientVertical.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="28ce45d9e84b729c" memberName="headLine" virtualName=""
              explicitFocusOrder="0" pos="0 47 0M 2" sourceFile="../Themes/SeparatorHorizontalReversed.cpp"
