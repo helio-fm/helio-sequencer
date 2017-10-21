@@ -135,7 +135,8 @@ void Headline::syncWithTree(TreeNavigationHistory &navHistory, WeakReference<Tre
     int fadePositionX = HEADLINE_ITEMS_OVERLAP + HEADLINE_ROOT_X;
     for (; firstInvalidUnitIndex < this->chain.size(); firstInvalidUnitIndex++)
     {
-        if (this->chain[firstInvalidUnitIndex]->getTreeItem() != branch[firstInvalidUnitIndex])
+        if (this->chain[firstInvalidUnitIndex]->getTreeItem().wasObjectDeleted() ||
+            this->chain[firstInvalidUnitIndex]->getTreeItem() != branch[firstInvalidUnitIndex])
         { break; }
 
         fadePositionX += (this->chain[firstInvalidUnitIndex]->getWidth() - HEADLINE_ITEMS_OVERLAP);

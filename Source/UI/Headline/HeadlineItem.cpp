@@ -261,7 +261,7 @@ void HeadlineItem::mouseUp (const MouseEvent& e)
 
 //[MiscUserCode]
 
-TreeItem *HeadlineItem::getTreeItem() const noexcept
+WeakReference<TreeItem> HeadlineItem::getTreeItem() const noexcept
 {
     return this->item;
 }

@@ -37,7 +37,7 @@ public:
     ~HeadlineItem();
 
     //[UserMethods]
-    TreeItem *getTreeItem() const noexcept;
+    WeakReference<TreeItem> getTreeItem() const noexcept;
     void updateContent();
     //[/UserMethods]
 

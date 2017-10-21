@@ -178,7 +178,7 @@ bool TreeItem::deleteItem(TreeItem *itemToDelete)
 
         if (switchTo != nullptr)
         {
-            switchTo->showPage();
+            switchTo->setSelected(true, true);
         }
         else if (parent != nullptr)
         {
@@ -186,7 +186,7 @@ bool TreeItem::deleteItem(TreeItem *itemToDelete)
             {
                 if (parent->isMarkerVisible())
                 {
-                    parent->showPage();
+                    parent->setSelected(true, true);
                     break;
                 }
 
