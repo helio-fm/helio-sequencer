@@ -50,9 +50,16 @@ public:
         
         while (this->list.size() > 0)
         {
+            const auto currentItem = this->getCurrentItem();
+
             this->currentPageIndex--;
-            
-            if (this->list[this->currentPageIndex].wasObjectDeleted())
+            const auto previousItem = this->getCurrentItem();
+            const bool previousItemIsTheSameAsCurrent =
+                ! previousItem.wasObjectDeleted() &&
+                ! currentItem.wasObjectDeleted() &&
+                currentItem == previousItem;
+
+            if (previousItem.wasObjectDeleted() || previousItemIsTheSameAsCurrent)
             {
                 this->list.removeRange(this->currentPageIndex, 1);
             }
@@ -77,9 +84,16 @@ public:
                 
         while ((this->list.size() - 1) > this->currentPageIndex)
         {
+            const auto currentItem = this->getCurrentItem();
+
             this->currentPageIndex++;
+            const auto nextItem = this->getCurrentItem();
+            const bool nextItemIsTheSameAsCurrent =
+                ! currentItem.wasObjectDeleted() &&
+                ! nextItem.wasObjectDeleted() &&
+                currentItem == nextItem;
             
-            if (this->list[this->currentPageIndex].wasObjectDeleted())
+            if (nextItem.wasObjectDeleted() || nextItemIsTheSameAsCurrent)
             {
                 this->list.removeRange(this->currentPageIndex, 1);
                 this->currentPageIndex--;
@@ -96,33 +110,52 @@ public:
         return treeItem;
     }
     
-    TreeItem *getCurrentItem() const
+    WeakReference<TreeItem> getCurrentItem() const
     {
         return this->list[this->currentPageIndex];
     }
     
-    void addItemIfNeeded(TreeItem *item)
+    bool addItemIfNeeded(TreeItem *item)
     {
-        if (this->isLocked)
+        if (this->isLocked.get())
         {
-            return;
+            return false;
         }
         
-        if (this->getCurrentItem() != item)
+        // First cleanup the list from deleted items
+        int i = 0;
+        while ((this->list.size() - 1) > i)
+        {
+            if (this->list[i].wasObjectDeleted())
+            {
+                this->list.removeRange(i, 1);
+            }
+            else
+            {
+                i++;
+            }
+        }
+
+        // Add, if valid and not duplicated
+        if (item != nullptr &&
+            this->getCurrentItem() != item)
         {
             this->list.removeRange(this->currentPageIndex + 1, this->list.size());
             this->list.add(item);
             this->currentPageIndex = this->list.size() - 1;
             this->sendChangeMessage();
-            //Logger::writeToLog("add, current = " + String(this->currentPageIndex));
+            return true;
         }
+
+        return false;
     }
     
 private:
     
     Array<WeakReference<TreeItem>> list;
     
-    bool isLocked;
+    // A way to prevent new items from being added when navigating back/forward
+    Atomic<bool> isLocked;
     
     int currentPageIndex;
     
