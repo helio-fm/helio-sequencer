@@ -36,7 +36,6 @@ public:
     ScopedPointer<Component> createItemMenu() override;
     void showPage() override;
 
-
     //===------------------------------------------------------------------===//
     // Dragging
     //===------------------------------------------------------------------===//
@@ -44,14 +43,6 @@ public:
     var getDragSourceDescription() override;
     bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
     void itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) override;
-
-
-    //===------------------------------------------------------------------===//
-    // Serializable
-    //===------------------------------------------------------------------===//
-
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
 
 private:
 

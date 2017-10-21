@@ -38,7 +38,7 @@ class TreeItem :
 {
 public:
 
-    explicit TreeItem(const String &nameStr);
+    TreeItem(const String &name, const String &type);
     ~TreeItem() override;
     
     static const String xPathSeparator;
@@ -226,10 +226,9 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    void reset() override
-    {
-        this->deleteAllSubItems();
-    }
+    void reset() override;
+    XmlElement *serialize() const override;
+    void deserialize(const XmlElement &xml) override;
 
 protected:
 
@@ -295,6 +294,7 @@ protected:
     }
 
     String name;
+    String type;
 
     bool markerIsVisible;
 

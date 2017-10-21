@@ -35,7 +35,7 @@
 #include "PianoLayerDiffLogic.h"
 
 PianoTrackTreeItem::PianoTrackTreeItem(const String &name) :
-    MidiTrackTreeItem(name)
+    MidiTrackTreeItem(name, Serialization::Core::pianoLayer)
 {
     this->layer = new PianoSequence(*this, *this);
     this->pattern = new Pattern(*this, *this);
@@ -205,8 +205,8 @@ XmlElement *PianoTrackTreeItem::serialize() const
 
     this->serializeVCSUuid(*xml);
 
-    xml->setAttribute("type", Serialization::Core::pianoLayer);
-    xml->setAttribute("name", this->name);
+    xml->setAttribute(Serialization::Core::treeItemType, this->type);
+    xml->setAttribute(Serialization::Core::treeItemName, this->name);
 
     this->serializeTrackProperties(*xml);
 
@@ -222,14 +222,7 @@ void PianoTrackTreeItem::deserialize(const XmlElement &xml)
 {
     this->reset();
 
-    const String& type = xml.getStringAttribute("type");
-
-    if (type != Serialization::Core::pianoLayer) { return; }
-
     this->deserializeVCSUuid(xml);
-
-    this->name = xml.getStringAttribute("name", this->name);
-    
     this->deserializeTrackProperties(xml);
 
     // он все равно должен быть один, но так короче
@@ -243,7 +236,8 @@ void PianoTrackTreeItem::deserialize(const XmlElement &xml)
         this->pattern->deserialize(*e);
     }
 
-    TreeItemChildrenSerializer::deserializeChildren(*this, xml);
+    // Proceed with basic properties and children
+    TreeItem::deserialize(xml);
 }
 
 

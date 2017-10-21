@@ -40,19 +40,9 @@
 // todo:
 // MergeTreeItem
 
-VersionControlTreeItem::VersionControlTreeItem() :
-    TreeItem("Versions"),
-    vcs(nullptr),
-    existingId(""),
-    existingKey("")
-{
-    this->initVCS();
-    this->initEditor();
-}
-
 VersionControlTreeItem::VersionControlTreeItem(String withExistingId,
                                                String withExistingKey) :
-    TreeItem("Versions"),
+    TreeItem("Versions", Serialization::Core::versionControl),
     vcs(nullptr),
     existingId(std::move(withExistingId)),
     existingKey(std::move(withExistingKey))
@@ -330,7 +320,7 @@ ScopedPointer<Component> VersionControlTreeItem::createItemMenu()
 XmlElement *VersionControlTreeItem::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::treeItem);
-    xml->setAttribute("type", Serialization::Core::versionControl);
+    xml->setAttribute(Serialization::Core::treeItemType, this->type);
 
     if (this->vcs)
     {
@@ -338,17 +328,12 @@ XmlElement *VersionControlTreeItem::serialize() const
     }
 
     TreeItemChildrenSerializer::serializeChildren(*this, *xml);
-
     return xml;
 }
 
 void VersionControlTreeItem::deserialize(const XmlElement &xml)
 {
     this->reset();
-
-    const String& type = xml.getStringAttribute("type");
-
-    if (type != Serialization::Core::versionControl) { return; }
 
     if (this->vcs)
     {
@@ -358,7 +343,8 @@ void VersionControlTreeItem::deserialize(const XmlElement &xml)
         }
     }
 
-    TreeItemChildrenSerializer::deserializeChildren(*this, xml);
+    // Proceed with basic properties and children
+    TreeItem::deserialize(xml);
 }
 
 void VersionControlTreeItem::reset()

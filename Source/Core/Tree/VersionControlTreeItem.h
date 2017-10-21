@@ -29,11 +29,7 @@ class VersionControlTreeItem :
 {
 public:
 
-    VersionControlTreeItem();
-
-    VersionControlTreeItem(String withExistingId,
-                           String withExistingKey);
-    
+    VersionControlTreeItem(String id = {}, String key = {});
     ~VersionControlTreeItem() override;
 
     String getName() const override;

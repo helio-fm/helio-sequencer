@@ -37,8 +37,8 @@
 
 #include "LayerCommandPanel.h"
 
-MidiTrackTreeItem::MidiTrackTreeItem(const String &name) :
-    TreeItem(name),
+MidiTrackTreeItem::MidiTrackTreeItem(const String &name, const String &type) :
+    TreeItem(name, type),
     colour(Colours::white), // TODO random color from my set
     channel(1),
     instrumentId(String::empty),

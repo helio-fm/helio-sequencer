@@ -55,7 +55,7 @@ public:
 
 
 AudioPluginTreeItem::AudioPluginTreeItem(uint32 pluginID, const String &name) :
-    TreeItem(name),
+    TreeItem(name, Serialization::Core::audioPlugin),
     audioPluginEditor(nullptr),
     filterID(pluginID)
 {
@@ -166,30 +166,4 @@ bool AudioPluginTreeItem::isInterestedInDragSource(const DragAndDropTarget::Sour
 
 void AudioPluginTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
 {
-}
-
-
-//===----------------------------------------------------------------------===//
-// Serializable
-//===----------------------------------------------------------------------===//
-
-XmlElement *AudioPluginTreeItem::serialize() const
-{
-    auto xml = new XmlElement(Serialization::Core::treeItem);
-    xml->setAttribute("type", Serialization::Core::audioPlugin);
-    xml->setAttribute("name", this->name);
-    return xml;
-}
-
-void AudioPluginTreeItem::deserialize(const XmlElement &xml)
-{
-    this->reset();
-
-    const String& type = xml.getStringAttribute("type");
-
-    if (type != Serialization::Core::audioPlugin) { return; }
-
-    this->name = xml.getStringAttribute("name", this->name);
-
-    TreeItemChildrenSerializer::deserializeChildren(*this, xml);
 }

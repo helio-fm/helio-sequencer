@@ -34,7 +34,6 @@ public:
 
     String getStatsString() const;
 
-    
     //===------------------------------------------------------------------===//
     // Dragging
     //===------------------------------------------------------------------===//
@@ -44,20 +43,10 @@ public:
     bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override
     { return false; }
 
-
     //===------------------------------------------------------------------===//
     // Menu
     //===------------------------------------------------------------------===//
 
     ScopedPointer<Component> createItemMenu() override;
 
-
-    //===------------------------------------------------------------------===//
-    // Serializable
-    //===------------------------------------------------------------------===//
-
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
-    void reset() override;
-    
 };

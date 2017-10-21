@@ -26,7 +26,7 @@
 #include "SerializationKeys.h"
 
 PatternEditorTreeItem::PatternEditorTreeItem() :
-    TreeItem("Patterns")
+    TreeItem("Patterns", Serialization::Core::patternSet)
 {
 }
 
@@ -86,32 +86,3 @@ ScopedPointer<Component> PatternEditorTreeItem::createItemMenu()
     return nullptr;
 }
 
-
-//===----------------------------------------------------------------------===//
-// Serializable
-//===----------------------------------------------------------------------===//
-
-XmlElement *PatternEditorTreeItem::serialize() const
-{
-    auto xml = new XmlElement(Serialization::Core::treeItem);
-    xml->setAttribute("type", Serialization::Core::patternSet);
-
-    TreeItemChildrenSerializer::serializeChildren(*this, *xml);
-
-    return xml;
-}
-
-void PatternEditorTreeItem::deserialize(const XmlElement &xml)
-{
-    this->reset();
-
-    const String& type = xml.getStringAttribute("type");
-    if (type != Serialization::Core::patternSet) { return; }
-
-    TreeItemChildrenSerializer::deserializeChildren(*this, xml);
-}
-
-void PatternEditorTreeItem::reset()
-{
-    TreeItem::reset();
-}

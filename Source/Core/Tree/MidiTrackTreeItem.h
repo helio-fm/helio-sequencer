@@ -36,7 +36,7 @@ class MidiTrackTreeItem :
 {
 public:
 
-    explicit MidiTrackTreeItem(const String &name);
+    explicit MidiTrackTreeItem(const String &name, const String &type);
 
     ~MidiTrackTreeItem() override;
 

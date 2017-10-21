@@ -18,19 +18,22 @@
 #include "Common.h"
 #include "TreeItem.h"
 #include "TreeItemComponentDefault.h"
+#include "TreeItemChildrenSerializer.h"
+#include "SerializationKeys.h"
 #include "App.h"
 #include "MainLayout.h"
 #include "HelioCallout.h"
 
 const String TreeItem::xPathSeparator = "/";
 
-String TreeItem::createSafeName(const String &nameStr)
+String TreeItem::createSafeName(const String &name)
 {
-    return File::createLegalFileName(nameStr).removeCharacters(TreeItem::xPathSeparator);
+    return File::createLegalFileName(name).removeCharacters(TreeItem::xPathSeparator);
 }
 
-TreeItem::TreeItem(const String &nameStr) :
-    name(TreeItem::createSafeName(nameStr)),
+TreeItem::TreeItem(const String &name, const String &type) :
+    name(TreeItem::createSafeName(name)),
+    type(type),
     markerIsVisible(false),
     itemShouldBeVisible(true)
 {
@@ -317,6 +320,42 @@ Colour TreeItem::getColour() const
     return Colour(100, 150, 200);
     //return this->colour; // todo
 }
+
+
+//===----------------------------------------------------------------------===//
+// Serializable
+//===----------------------------------------------------------------------===//
+
+void TreeItem::reset()
+{
+    this->deleteAllSubItems();
+}
+
+XmlElement *TreeItem::serialize() const
+{
+    auto xml = new XmlElement(Serialization::Core::treeItem);
+    xml->setAttribute(Serialization::Core::treeItemType, this->type);
+    xml->setAttribute(Serialization::Core::treeItemName, this->name);
+    TreeItemChildrenSerializer::serializeChildren(*this, *xml);
+    return xml;
+}
+
+void TreeItem::deserialize(const XmlElement &xml)
+{
+    // Do not reset here, subclasses may rely
+    // on this method in their deserialization
+    //this->reset();
+
+    // Legacy support:
+    const String nameFallback =
+        xml.getStringAttribute(Serialization::Core::treeItemName.toLowerCase(), this->name);
+
+    this->name =
+        xml.getStringAttribute(Serialization::Core::treeItemName, nameFallback);
+
+    TreeItemChildrenSerializer::deserializeChildren(*this, xml);
+}
+
 
 
 // protected static

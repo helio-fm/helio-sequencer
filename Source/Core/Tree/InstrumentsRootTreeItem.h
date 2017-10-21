@@ -23,9 +23,7 @@ class InstrumentTreeItem;
 
 #include "TreeItem.h"
 
-// todo fix pluginmanager dependency
-class InstrumentsRootTreeItem :
-    public TreeItem
+class InstrumentsRootTreeItem : public TreeItem
 {
 public:
 
@@ -39,20 +37,13 @@ public:
     void showPage() override;
     void recreatePage() override;
 
-    
     //===------------------------------------------------------------------===//
     // Dragging
     //===------------------------------------------------------------------===//
 
-    var getDragSourceDescription() override
-    {
-        return var::null;
-    }
-
+    var getDragSourceDescription() override { return var::null; }
     bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
-
     void itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) override;
-
 
     //===------------------------------------------------------------------===//
     // Menu
@@ -60,23 +51,12 @@ public:
 
     ScopedPointer<Component> createItemMenu() override;
 
-
-    //===------------------------------------------------------------------===//
-    // Serializable
-    //===------------------------------------------------------------------===//
-
-    XmlElement *serialize() const override;
-
-    void deserialize(const XmlElement &xml) override;
-
 private:
     
     friend class InstrumentsPage;
-
     friend class InstrumentsCommandPanel;
     
     InstrumentTreeItem *addInstrumentTreeItem(Instrument *instrument, int insertIndex = -1);
-
     ScopedPointer<InstrumentsPage> instrumentsPage;
 
 };

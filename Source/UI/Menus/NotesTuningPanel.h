@@ -37,7 +37,7 @@ class CommandItemComponent;
 class NotesTuningPanel  : public Component,
                           public ChangeBroadcaster,
                           private TransportListener,
-                          public SliderListener
+                          public Slider::Listener
 {
 public:
 

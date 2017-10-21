@@ -27,7 +27,7 @@
 #define GROUP_COMPACT_SEPARATOR 5
 
 TrackGroupTreeItem::TrackGroupTreeItem(const String &name) :
-    TreeItem(name)
+    TreeItem(name, Serialization::Core::layerGroup)
 {
 }
 
@@ -275,33 +275,4 @@ bool TrackGroupTreeItem::isInterestedInDragSource(const DragAndDropTarget::Sourc
     }
 
     return false;
-}
-
-
-//===----------------------------------------------------------------------===//
-// Serializable
-//===----------------------------------------------------------------------===//
-
-XmlElement *TrackGroupTreeItem::serialize() const
-{
-    auto xml = new XmlElement(Serialization::Core::treeItem);
-    xml->setAttribute("type", Serialization::Core::layerGroup);
-    xml->setAttribute("name", this->name);
-
-    TreeItemChildrenSerializer::serializeChildren(*this, *xml);
-
-    return xml;
-}
-
-void TrackGroupTreeItem::deserialize(const XmlElement &xml)
-{
-    this->reset();
-
-    const String& type = xml.getStringAttribute("type");
-
-    if (type != Serialization::Core::layerGroup) { return; }
-
-    this->name = xml.getStringAttribute("name", this->name);
-
-    TreeItemChildrenSerializer::deserializeChildren(*this, xml);
 }

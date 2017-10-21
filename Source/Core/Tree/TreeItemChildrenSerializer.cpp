@@ -45,7 +45,13 @@ void TreeItemChildrenSerializer::deserializeChildren(TreeItem &parentItem, const
 {
     forEachXmlChildElementWithTagName(parentXml, e, Serialization::Core::treeItem)
     {
-        const String type = e->getStringAttribute("type");
+        // Legacy support:
+        const String typeFallback = 
+            e->getStringAttribute(Serialization::Core::treeItemType.toLowerCase());
+
+        const String type =
+            e->getStringAttribute(Serialization::Core::treeItemType, typeFallback);
+
         TreeItem *child = nullptr;
 
         if (type == Serialization::Core::project)

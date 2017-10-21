@@ -62,15 +62,15 @@
 
 
 ProjectTreeItem::ProjectTreeItem(const String &name) :
-DocumentOwner(App::Workspace(), name, "hp"),
-    TreeItem(name)
+    DocumentOwner(App::Workspace(), name, "hp"),
+    TreeItem(name, Serialization::Core::project)
 {
     this->initialize();
 }
 
 ProjectTreeItem::ProjectTreeItem(const File &existingFile) :
     DocumentOwner(App::Workspace(), existingFile),
-    TreeItem(existingFile.getFileNameWithoutExtension())
+    TreeItem(existingFile.getFileNameWithoutExtension(), Serialization::Core::project)
 {
     this->initialize();
 }
@@ -549,7 +549,7 @@ XmlElement *ProjectTreeItem::serialize() const
     this->getDocument()->save(); // todo remove? will save on delete
 
     auto xml = new XmlElement(Serialization::Core::treeItem);
-    xml->setAttribute("type", Serialization::Core::project);
+    xml->setAttribute(Serialization::Core::treeItemType, this->type);
     xml->setAttribute("fullPath", this->getDocument()->getFullPath());
     xml->setAttribute("relativePath", this->getDocument()->getRelativePath());
     return xml;
@@ -558,10 +558,6 @@ XmlElement *ProjectTreeItem::serialize() const
 void ProjectTreeItem::deserialize(const XmlElement &xml)
 {
     this->reset();
-
-    const String& type = xml.getStringAttribute("type");
-
-    if (type != Serialization::Core::project) { return; }
 
     const String &fullPath = xml.getStringAttribute("fullPath");
     const String &relativePath = xml.getStringAttribute("relativePath");
@@ -622,12 +618,11 @@ void ProjectTreeItem::load(const XmlElement &xml)
 
     if (root == nullptr) { return; }
 
-    this->name = root->getStringAttribute("name", this->name);
-
     this->info->deserialize(*root);
     this->timeline->deserialize(*root);
 
-    TreeItemChildrenSerializer::deserializeChildren(*this, *root);
+    // Proceed with basic properties and children
+    TreeItem::deserialize(*root);
 
     // Legacy support: if no pattern set manager found, create one
     if (nullptr == this->findChildOfType<PatternEditorTreeItem>())

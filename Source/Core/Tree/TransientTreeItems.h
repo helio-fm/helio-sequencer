@@ -35,7 +35,7 @@ class TransientTreeItem : public TreeItem
 {
 public:
 
-    TransientTreeItem() : TreeItem("TransientTreeItem") {}
+    TransientTreeItem() : TreeItem({}, "TransientTreeItem") {}
     void showPage() override {}
     
     //===------------------------------------------------------------------===//

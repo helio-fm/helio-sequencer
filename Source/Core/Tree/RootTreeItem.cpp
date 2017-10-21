@@ -42,16 +42,14 @@
 
 
 RootTreeItem::RootTreeItem(const String &name) :
-    TreeItem(name)
+    TreeItem(name, Serialization::Core::root)
 {
     this->setVisible(false);
 }
 
 RootTreeItem::~RootTreeItem()
 {
-
 }
-
 
 Colour RootTreeItem::getColour() const
 {
@@ -324,36 +322,17 @@ void RootTreeItem::filesDropped(const StringArray &files, int insertIndex)
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *RootTreeItem::serialize() const
-{
-    auto xml = new XmlElement(Serialization::Core::treeItem);
-    xml->setAttribute("type", Serialization::Core::root);
-    xml->setAttribute("name", this->name);
-
-    TreeItemChildrenSerializer::serializeChildren(*this, *xml);
-
-    return xml;
-}
-
 void RootTreeItem::deserialize(const XmlElement &xml)
 {
-    this->reset();
-
     const XmlElement *root = xml.hasTagName(Serialization::Core::treeItem) ?
         &xml : xml.getChildByName(Serialization::Core::treeItem);
 
-    if (root == nullptr) { return; }
-
-    const String type = root->getStringAttribute("type");
-
-    if (type != Serialization::Core::root) { return; }
-
-    this->name = root->getStringAttribute("name", this->name);
-
-    TreeItemChildrenSerializer::deserializeChildren(*this, *root);
+    if (root != nullptr)
+    {
+        TreeItem::deserialize(*root);
+    }
 }

@@ -27,7 +27,7 @@
 #include "PatternDeltas.h"
 
 AutomationTrackTreeItem::AutomationTrackTreeItem(const String &name) :
-    MidiTrackTreeItem(name)
+    MidiTrackTreeItem(name, Serialization::Core::autoLayer)
 {
     this->layer = new AutomationSequence(*this, *this);
     this->pattern = new Pattern(*this, *this);
@@ -191,8 +191,8 @@ XmlElement *AutomationTrackTreeItem::serialize() const
 
     this->serializeVCSUuid(*xml);
 
-    xml->setAttribute("type", Serialization::Core::autoLayer);
-    xml->setAttribute("name", this->name);
+    xml->setAttribute(Serialization::Core::treeItemType, this->type);
+    xml->setAttribute(Serialization::Core::treeItemName, this->name);
 
     this->serializeTrackProperties(*xml);
 
@@ -208,14 +208,7 @@ void AutomationTrackTreeItem::deserialize(const XmlElement &xml)
 {
     this->reset();
 
-    const String& type = xml.getStringAttribute("type");
-
-    if (type != Serialization::Core::autoLayer) { return; }
-
     this->deserializeVCSUuid(xml);
-
-    this->name = xml.getStringAttribute("name", this->name);
-
     this->deserializeTrackProperties(xml);
 
     // он все равно должен быть один, но так короче
@@ -229,7 +222,8 @@ void AutomationTrackTreeItem::deserialize(const XmlElement &xml)
         this->pattern->deserialize(*e);
     }
 
-    TreeItemChildrenSerializer::deserializeChildren(*this, xml);
+    // Proceed with basic properties and children
+    TreeItem::deserialize(xml);
 }
 
 

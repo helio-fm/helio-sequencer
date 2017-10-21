@@ -26,8 +26,7 @@ class MidiTrackTreeItem;
 class ScriptTreeItem;
 class WorkspacePage;
 
-class RootTreeItem :
-    public TreeItem
+class RootTreeItem : public TreeItem
 {
 public:
 
@@ -48,7 +47,6 @@ public:
 
     void importMidi(File &file);
 
-
     //===------------------------------------------------------------------===//
     // Children
     //===------------------------------------------------------------------===//
@@ -67,25 +65,14 @@ public:
     MidiTrackTreeItem *addAutoLayer(TreeItem *parent, const String &name, int controllerNumber);
     ScriptTreeItem *addScript(TreeItem *parent, const String &path);
 
-
     //===------------------------------------------------------------------===//
     // Dragging
     //===------------------------------------------------------------------===//
 
-    var getDragSourceDescription() override
-    {
-        return var::null;
-    }
-
+    var getDragSourceDescription() override { return var::null; }
     bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
-
-    //virtual void itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) override
-    //{ }
-
     bool isInterestedInFileDrag(const StringArray &files) override;
-
     void filesDropped(const StringArray &files, int insertIndex) override;
-
 
     //===------------------------------------------------------------------===//
     // Menu
@@ -93,12 +80,9 @@ public:
 
     ScopedPointer<Component> createItemMenu() override;
 
-
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
-
-    XmlElement *serialize() const override;
 
     void deserialize(const XmlElement &xml) override;
 

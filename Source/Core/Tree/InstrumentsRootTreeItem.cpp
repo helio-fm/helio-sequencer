@@ -32,7 +32,7 @@
 #include "Workspace.h"
 
 InstrumentsRootTreeItem::InstrumentsRootTreeItem() :
-    TreeItem("Instruments")
+    TreeItem("Instruments", Serialization::Core::instrumentRoot)
 {
     this->recreatePage();
 
@@ -133,28 +133,6 @@ void InstrumentsRootTreeItem::itemDropped(const DragAndDropTarget::SourceDetails
 
     TreeItem::itemDropped(dragSourceDetails, insertIndex);
 }
-
-
-//===----------------------------------------------------------------------===//
-// Serializable
-//===----------------------------------------------------------------------===//
-
-XmlElement *InstrumentsRootTreeItem::serialize() const
-{
-    auto xml = new XmlElement(Serialization::Core::treeItem);
-    xml->setAttribute("type", Serialization::Core::instrumentRoot);
-    TreeItemChildrenSerializer::serializeChildren(*this, *xml);
-    return xml;
-}
-
-void InstrumentsRootTreeItem::deserialize(const XmlElement &xml)
-{
-    this->reset();
-    const String& type = xml.getStringAttribute("type");
-    if (type != Serialization::Core::instrumentRoot) { return; }
-    TreeItemChildrenSerializer::deserializeChildren(*this, xml);
-}
-
 
 //===----------------------------------------------------------------------===//
 // Private

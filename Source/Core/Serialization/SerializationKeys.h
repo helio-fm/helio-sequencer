@@ -21,12 +21,11 @@ namespace Serialization
 {
     namespace Core
     {
-        static const String firstLaunchSetupDone = "FirstLaunchSetupDone";
-
         static const String midiRoll = "MidiRoll";
         static const String editor = "Editor";
-        static const String treePanel = "TreePanel";
         static const String treeItem = "Node";
+        static const String treeItemType = "Type";
+        static const String treeItemName = "Name";
         static const String treeState = "TreeState";
         static const String selectedTreeItem = "SelectedNode";
         static const String treeItemId = "NodeId";
@@ -110,6 +109,7 @@ namespace Serialization
         static const String clipboard = "HelioClipboard";
 
         static const String lastUsedLogin = "LastUsedLogin";
+        static const String firstLaunchSetupDone = "FirstLaunchSetupDone";
     } // namespace Core
 
     namespace UI
