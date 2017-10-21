@@ -58,7 +58,8 @@ public:
     void startPlayback();
     bool isPlaying() const;
     void stopPlayback();
-    
+    void toggleStatStopPlayback();
+
     void startRender(const String &filename);
     bool isRendering() const;
     void stopRender();

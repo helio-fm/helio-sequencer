@@ -17,36 +17,36 @@
 
 #pragma once
 
-class PianoRoll;
-class ProjectTreeItem;
+#include "TreeItem.h"
 
-#include "CommandPanel.h"
-
-//===----------------------------------------------------------------------===//
-// Move-to-layer command panel
-//===----------------------------------------------------------------------===//
-
-class MoveToLayerCommandPanel : public CommandPanel
+class PatternEditorTreeItem : public TreeItem
 {
 public:
-    
-    MoveToLayerCommandPanel(PianoRoll &targetRoll,
-                            ProjectTreeItem &parentProject);
-    
-    ~MoveToLayerCommandPanel() override;
-    
-    //===------------------------------------------------------------------===//
-    // Component
-    //===------------------------------------------------------------------===//
-    
-    void handleCommandMessage(int commandId) override;
-    
-private:
 
-    void dismiss();
-    void initLayersPanel(bool shouldAddBackButton);
+    PatternEditorTreeItem();
+    ~PatternEditorTreeItem() override;
 
-    PianoRoll &roll;
-    ProjectTreeItem &project;
-    
+    String getName() const override;
+    Colour getColour() const override;
+    Image getIcon() const override;
+    void showPage() override;
+    void recreatePage() override;
+
+    String getStatsString() const;
+
+    //===------------------------------------------------------------------===//
+    // Dragging
+    //===------------------------------------------------------------------===//
+
+    void onItemParentChanged() override {}
+    var getDragSourceDescription() override { return var::null; }
+    bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override
+    { return false; }
+
+    //===------------------------------------------------------------------===//
+    // Menu
+    //===------------------------------------------------------------------===//
+
+    ScopedPointer<Component> createItemMenu() override;
+
 };

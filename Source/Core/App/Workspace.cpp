@@ -28,8 +28,6 @@
 #include "InstrumentsRootTreeItem.h"
 #include "ProjectTreeItem.h"
 #include "RootTreeItem.h"
-#include "MainLayout.h"
-#include "App.h"
 
 Workspace::Workspace() :
     DocumentOwner(*this, "Workspace", "helio"),
@@ -81,6 +79,41 @@ bool Workspace::isInitialized() const noexcept
     return this->wasInitialized;
 }
 
+//===----------------------------------------------------------------------===//
+// Navigation history
+//===----------------------------------------------------------------------===//
+
+TreeNavigationHistory &Workspace::getNavigationHistory()
+{
+    return this->navigationHistory;
+}
+
+WeakReference<TreeItem> Workspace::getActiveTreeItem() const
+{
+    return this->navigationHistory.getCurrentItem();
+}
+
+void Workspace::navigateBackwardIfPossible()
+{
+    TreeItem *treeItem = this->navigationHistory.goBack();
+
+    if (treeItem != nullptr)
+    {
+        const auto scopedHistoryLock(this->navigationHistory.lock());
+        treeItem->setSelected(true, true);
+    }
+}
+
+void Workspace::navigateForwardIfPossible()
+{
+    TreeItem *treeItem = this->navigationHistory.goForward();
+
+    if (treeItem != nullptr)
+    {
+        const auto scopedHistoryLock(this->navigationHistory.lock());
+        treeItem->setSelected(true, true);
+    }
+}
 
 //===----------------------------------------------------------------------===//
 // Accessors
@@ -181,7 +214,7 @@ void Workspace::unloadProjectById(const String &targetProjectId)
     Array<ProjectTreeItem *> projects =
     this->treeRoot->findChildrenOfType<ProjectTreeItem>();
     
-    TreeItem *currentShowingItem = App::Layout().getActiveTreeItem();
+    TreeItem *currentShowingItem = this->getActiveTreeItem();
     ProjectTreeItem *projectToDelete = nullptr;
     ProjectTreeItem *projectToSwitchTo = nullptr;
     
@@ -283,7 +316,7 @@ bool Workspace::autoload()
         FileUtils::getDocumentSlot(lastSavedFile.getFileName());
     }
     
-    Logger::writeToLog("MainLayout::autoload - " + lastSavedFile.getFullPathName());
+    Logger::writeToLog("Workspace::autoload - " + lastSavedFile.getFullPathName());
     
     if (lastSavedFile.existsAsFile())
     {

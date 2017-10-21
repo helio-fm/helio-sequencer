@@ -54,11 +54,16 @@ void LogoImage::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setColour (Colours::black);
-    jassert (drawable1 != 0);
-    if (drawable1 != 0)
-        drawable1->drawWithin (g, Rectangle<float> (0, 0, getWidth() - 0, getHeight() - 0),
-                               RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize, 1.000f);
+    {
+        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (Colours::black);
+        jassert (drawable1 != 0);
+        if (drawable1 != 0)
+            drawable1->drawWithin (g, Rectangle<float> (x, y, width, height),
+                                   RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize, 1.000f);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -81,7 +86,7 @@ void LogoImage::resized()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="LogoImage" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="LogoImage" template="../../../Template"
                  componentName="" parentClasses="public Component" constructorParams=""
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
                  overlayOpacity="0.330" fixedSize="1" initialWidth="400" initialHeight="400">

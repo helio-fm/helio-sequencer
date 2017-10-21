@@ -23,6 +23,7 @@
 
 //[MiscUserDefs]
 #include "HelioTheme.h"
+#include "ComponentIDs.h"
 
 class LabelWithPassword : public Label
 {
@@ -345,9 +346,8 @@ void AuthorizationDialog::changeListenerCallback(ChangeBroadcaster *source)
     AuthorizationManager *authManager = App::Helio()->getAuthManager();
     authManager->removeChangeListener(this);
 
-    Component *progressIndicator = App::Layout().findChildWithID(ProgressTooltip::componentId);
-
-    if (progressIndicator)
+    if (Component *progressIndicator =
+        App::Layout().findChildWithID(ComponentIDs::progressTooltipId))
     {
         delete progressIndicator;
 

@@ -30,13 +30,13 @@ class OpenGLSettings;
 class Log;
 //[/Headers]
 
-#include "../Themes/PanelBackgroundA.h"
-#include "../Common/MenuButton.h"
-#include "../Themes/LightShadowRightwards.h"
+#include "../../Themes/PanelBackgroundA.h"
+#include "../../Common/MenuButton.h"
+#include "../../Themes/LightShadowRightwards.h"
 #include "Menu/WorkspaceMenu.h"
 
 class WorkspacePage  : public Component,
-                       public ButtonListener
+                       public Button::Listener
 {
 public:
 

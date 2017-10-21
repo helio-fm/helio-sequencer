@@ -22,6 +22,8 @@
 #include "PianoRoll.h"
 #include "PatternRoll.h"
 #include "ProjectTreeItem.h"
+#include "PianoTrackTreeItem.h"
+#include "PatternEditorTreeItem.h"
 #include "TrackScroller.h"
 #include "PianoTrackMap.h"
 #include "AutomationTrackMap.h"
@@ -29,17 +31,17 @@
 #include "SerializationKeys.h"
 #include "AnnotationSmallComponent.h"
 #include "TimeSignatureSmallComponent.h"
+#include "ToolsSidebar.h"
+#include "NavigationSidebar.h"
 #include "OrigamiHorizontal.h"
 #include "OrigamiVertical.h"
-#include "HybridRollCommandPanelPhone.h"
-#include "HybridRollCommandPanelDefault.h"
-#include "AutomationsCommandPanel.h"
 #include "PanelBackgroundC.h"
 #include "App.h"
 #include "Workspace.h"
 #include "MainLayout.h"
 #include "AudioCore.h"
 #include "AudioMonitor.h"
+#include "ComponentIDs.h"
 
 // force compile template
 #include "AnnotationsMap/AnnotationsTrackMap.cpp"
@@ -99,7 +101,9 @@ public:
         
         this->resizer = new ResizableEdgeComponent(this->automations, this->constrainer, ResizableEdgeComponent::bottomEdge);
         this->resizer->setAlwaysOnTop(true);
-        this->resizer->setInterceptsMouseClicks(true, true);
+        
+        // FIXME: disabled resizing for now, need to implement a good automations editor
+        this->resizer->setInterceptsMouseClicks(false, false);
         
         this->resizer->setFocusContainer(false);
         this->resizer->setWantsKeyboardFocus(false);
@@ -154,7 +158,6 @@ public:
     void resizedByUser()
     {
         this->resized();
-        // this->roll->toFront(true);
     }
     
     void resizeAutomations(int heightOffset)
@@ -216,28 +219,18 @@ public:
 
         this->roll.addRollListener(this);
         this->addAndMakeVisible(this->target);
-        
-        //this->commandPanel = new AutomationsCommandPanel();
-        //this->addAndMakeVisible(this->commandPanel);
-        //this->commandPanel->setAlwaysOnTop(true);
-        //
-        //this->commandPanel->setFocusContainer(false);
-        //this->commandPanel->setWantsKeyboardFocus(false);
 
         this->setSize(newOwnedComponent->getWidth(), newOwnedComponent->getHeight());
     }
     
     ~AutomationTrackMapProxy() override
     {
-        //this->removeChildComponent(this->commandPanel);
         this->removeChildComponent(this->target);
         this->roll.removeRollListener(this);
     }
     
     void resized() override
     {
-        //Logger::writeToLog("AutomationTrackMapProxy resized " + String(this->getHeight()));
-        //this->commandPanel->setBounds(this->getLocalBounds().removeFromRight(MIDIROLL_COMMANDPANEL_WIDTH));
         this->updateTargetBounds();
     }
     
@@ -301,8 +294,6 @@ private:
     
     ScopedPointer<Component> target;
     
-    //ScopedPointer<Component> commandPanel;
-    
     void handleAsyncUpdate() override
     {
         this->updateTargetBounds();
@@ -354,19 +345,31 @@ public:
         this->addAndMakeVisible(this->pianoViewport);
         this->addAndMakeVisible(this->patternViewport);
         this->addAndMakeVisible(this->scroller);
+
+        // Default state
+        this->patternRoll->setEnabled(false);
     }
-    
+
     ~RollsSwitchingProxy() override
     {
         this->removeAllChildren();
+    }
+
+    bool isPatternMode() const
+    {
+        return (this->animationDirection > 0.f);
+        //return this->patternRoll->isEnabled();
     }
 
     void startRollSwitchAnimation()
     {
         this->animationDirection *= -1.f;
         this->animationSpeed = ROLLS_SWITCH_ANIMATION_SPEED;
-        this->scroller->switchToRoll((this->animationDirection > 0.f) ?
-            this->patternRoll : this->pianoRoll);
+        const bool patternMode = this->isPatternMode();
+        this->scroller->switchToRoll(patternMode ? this->patternRoll : this->pianoRoll);
+        // Disabling inactive prevents it from receiving keyboard events:
+        this->patternRoll->setEnabled(patternMode);
+        this->pianoRoll->setEnabled(!patternMode);
         this->startTimerHz(60);
     }
     
@@ -460,7 +463,7 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
     project(parentProject),
     pianoRoll(nullptr)
 {
-    this->setName("MidiEditor");
+    this->setComponentID(ComponentIDs::sequencerLayoutId);
 
     // Create viewports, containing the rolls
     const WeakReference<AudioMonitor> clippingDetector =
@@ -509,21 +512,18 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
         this->scroller);
     
     // создаем тулбар и компонуем его с контейнером
-    if (App::isRunningOnPhone())
-    {
-        this->rollCommandPanel = new HybridRollCommandPanelPhone(this->project);
-    }
-    else
-    {
-        this->rollCommandPanel = new HybridRollCommandPanelDefault(this->project);
-    }
+    this->rollToolsSidebar = new ToolsSidebar(this->project);
+    this->rollNavSidebar = new NavigationSidebar();
+    this->rollNavSidebar->setSize(NAVIGATION_SIDEBAR_WIDTH, this->getParentHeight());
+    // Hopefully this doesn't crash, since sequencer layout is only created by a loaded project:
+    this->rollNavSidebar->setAudioMonitor(App::Workspace().getAudioCore().getMonitor());
+
 
     // TODO we may have multiple roll editors here
     //this->rollsOrigami = new OrigamiVertical();
     //this->rollsOrigami->addPage(this->rollContainer, false, false, false);
     // TODO fix focus troubles
     //this->rollsOrigami->setFocusContainer(false);
-    //this->rollsOrigami->setWantsKeyboardFocus(false);
     
     // создаем стек редакторов автоматизации
     this->automationsOrigami = new OrigamiHorizontal();
@@ -534,8 +534,13 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
 
     // добавляем тулбар справа
     this->allEditorsAndCommandPanel = new OrigamiVertical();
-    this->allEditorsAndCommandPanel->addPage(this->allEditorsContainer, true, true, false);
-    this->allEditorsAndCommandPanel->addPage(this->rollCommandPanel, false, false, true);
+    this->allEditorsAndCommandPanel->addFixedPage(this->rollNavSidebar);
+    this->allEditorsAndCommandPanel->addEdgeAtTheEnd();
+    this->allEditorsAndCommandPanel->addFlexiblePage(this->allEditorsContainer);
+    this->allEditorsAndCommandPanel->addShadowAtTheStart();
+    this->allEditorsAndCommandPanel->addShadowAtTheEnd();
+    this->allEditorsAndCommandPanel->addFixedPage(this->rollToolsSidebar);
+    this->allEditorsAndCommandPanel->addEdgeAtTheStart();
 
     this->addAndMakeVisible(this->allEditorsAndCommandPanel);
 
@@ -551,7 +556,8 @@ SequencerLayout::~SequencerLayout()
     this->automationsOrigami = nullptr;
     
     //this->rollsOrigami = nullptr;
-    this->rollCommandPanel = nullptr;
+    this->rollToolsSidebar = nullptr;
+    this->rollNavSidebar = nullptr;
     this->rollContainer = nullptr;
 
     this->patternRoll->removeRollListener(this->scroller);
@@ -567,15 +573,23 @@ SequencerLayout::~SequencerLayout()
     this->pianoViewport = nullptr;
 }
 
-void SequencerLayout::setActiveMidiLayers(Array<MidiSequence *> tracks, MidiSequence *primaryTrack)
-{
-    //Logger::writeToLog("MidiEditor::setActiveMidiLayers");
-    this->pianoRoll->setActiveMidiLayers(tracks, primaryTrack);
 
-    if (this->isShowing())
+void SequencerLayout::showPatternEditor()
+{
+    if (! this->rollContainer->isPatternMode())
     {
-        this->pianoRoll->grabKeyboardFocus();
+        this->rollContainer->startRollSwitchAnimation();
     }
+}
+
+void SequencerLayout::showLinearEditor(Array<MidiSequence *> tracks, MidiSequence *primaryTrack)
+{
+    if (this->rollContainer->isPatternMode())
+    {
+        this->rollContainer->startRollSwitchAnimation();
+    }
+
+    this->pianoRoll->setActiveMidiLayers(tracks, primaryTrack);
 }
 
 void SequencerLayout::hideAutomationEditor(AutomationSequence *sequence)
@@ -588,10 +602,6 @@ void SequencerLayout::hideAutomationEditor(AutomationSequence *sequence)
 
 bool SequencerLayout::toggleShowAutomationEditor(AutomationSequence *sequence)
 {
-    // test rolls switching:
-    this->rollContainer->startRollSwitchAnimation();
-    return false;
-
     const String &trackId = sequence->getTrackId();
     
     // special case for the tempo track - let's show it on the scroller
@@ -674,8 +684,8 @@ bool SequencerLayout::toggleShowAutomationEditor(AutomationSequence *sequence)
         
         const int hNormal = newTrackMap->getHeight();
         const int hMax = sequence->getTrack()->isOnOffTrack() ? hNormal : (hNormal * 3);
-        const bool isFixedSize = sequence->getTrack()->isOnOffTrack();
-        this->automationsOrigami->addPage(newTrackMapProxy, false, false, isFixedSize, hNormal, hMax, 0);
+        //const bool isFixedSize = sequence->getTrack()->isOnOffTrack();
+        this->automationsOrigami->addFixedPage(newTrackMapProxy);
         
         this->resized();
         return true;
@@ -710,7 +720,6 @@ void SequencerLayout::filesDropped(const juce::StringArray &filenames,
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
@@ -720,14 +729,34 @@ void SequencerLayout::resized()
     this->allEditorsAndCommandPanel->setBounds(this->getLocalBounds());
 
     // a hack for themes changing
-    this->rollCommandPanel->resized();
+    this->rollToolsSidebar->resized();
 }
 
-// void MidiEditor::broughtToFront()
-// {
-    // this->roll->toFront(true);
-// }
-
+void SequencerLayout::handleCommandMessage(int commandId)
+{
+    switch (commandId)
+    {
+    case CommandIDs::SwitchBetweenRolls:
+        if (this->rollContainer->isPatternMode())
+        {
+            if (this->project.getLastShownTrack() == nullptr)
+            {
+                this->project.selectChildOfType<PianoTrackTreeItem>();
+            }
+            else
+            {
+                this->project.getLastShownTrack()->setSelected(true, true);
+            }
+        }
+        else
+        {
+            this->project.selectChildOfType<PatternEditorTreeItem>();
+        }
+        break;
+    default:
+        break;
+    }
+}
 
 //===----------------------------------------------------------------------===//
 // UI State Serialization

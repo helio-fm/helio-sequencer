@@ -303,7 +303,6 @@ void TimeSignaturesTrackMap<T>::onChangeViewBeatRange(float firstBeat, float las
 template<typename T>
 void TimeSignaturesTrackMap<T>::onTimeSignatureMoved(T *nc)
 {
-    this->roll.grabKeyboardFocus();
 }
 
 template<typename T>
@@ -347,10 +346,6 @@ void TimeSignaturesTrackMap<T>::onTimeSignatureTapped(T *nc)
     if (timeSignatureUnderSeekCursor == &nc->getEvent() && !wasPlaying)
     {
         this->showContextMenuFor(nc);
-    }
-    else
-    {
-        this->roll.grabKeyboardFocus();
     }
 }
 

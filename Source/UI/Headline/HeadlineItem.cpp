@@ -52,8 +52,9 @@ private:
 
 //[/MiscUserDefs]
 
-HeadlineItem::HeadlineItem(WeakReference<TreeItem> treeItem)
-    : item(treeItem)
+HeadlineItem::HeadlineItem(WeakReference<TreeItem> treeItem, AsyncUpdater &parent)
+    : item(treeItem),
+      parentHeadline(parent)
 {
     addAndMakeVisible (titleLabel = new Label (String(),
                                                TRANS("Project")));
@@ -78,11 +79,7 @@ HeadlineItem::HeadlineItem(WeakReference<TreeItem> treeItem)
     //[Constructor]
     if (this->item != nullptr)
     {
-        this->icon->setIconImage(this->item->getIcon());
-        this->titleLabel->setText(this->item->getCaption(), dontSendNotification);
-        const int textWidth = this->titleLabel->getFont()
-            .getStringWidth(this->titleLabel->getText());
-        this->setSize(textWidth + 64, this->getHeight());
+        this->item->addChangeListener(this);
     }
     //[/Constructor]
 }
@@ -90,6 +87,10 @@ HeadlineItem::HeadlineItem(WeakReference<TreeItem> treeItem)
 HeadlineItem::~HeadlineItem()
 {
     //[Destructor_pre]
+    if (this->item != nullptr)
+    {
+        this->item->removeChangeListener(this);
+    }
     //[/Destructor_pre]
 
     titleLabel = nullptr;
@@ -116,7 +117,7 @@ void HeadlineItem::paint (Graphics& g)
 
     {
         float x = 0, y = 0;
-        Colour fillColour1 = Colour (0x33000000), fillColour2 = Colour (0x00000000);
+        Colour fillColour1 = Colour (0x22000000), fillColour2 = Colour (0x00000000);
         //[UserPaintCustomArguments] Customize the painting arguments here..
 
         // A hack - don't draw a shadow for the first item in chain
@@ -129,7 +130,7 @@ void HeadlineItem::paint (Graphics& g)
                                        16.0f - 0.0f + y,
                                        fillColour2,
                                        16.0f - 0.0f + x,
-                                       14.0f - 0.0f + y,
+                                       16.0f - 0.0f + y,
                                        true));
         g.fillPath (internalPath2, AffineTransform::translation(x, y));
     }
@@ -173,7 +174,7 @@ void HeadlineItem::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    titleLabel->setBounds (34, 0, getWidth() - 44, 31);
+    titleLabel->setBounds (34, 0, 512, 31);
     icon->setBounds (8, (getHeight() / 2) - (32 / 2), 32, 32);
     internalPath1.clear();
     internalPath1.startNewSubPath (0.0f, 0.0f);
@@ -213,7 +214,15 @@ void HeadlineItem::resized()
 void HeadlineItem::mouseEnter (const MouseEvent& e)
 {
     //[UserCode_mouseEnter] -- Add your code here...
-    this->startTimer(200);
+    // A hacky way to prevent re-opening the menu again after the new page is shown.
+    // Showhow comparing current mouse screen position to e.getMouseDownScreenPosition()
+    // won't work (maybe a JUCE bug), so take this from getMainMouseSource:
+    const auto lastMouseDown =
+        Desktop::getInstance().getMainMouseSource().getLastMouseDownPosition().toInt();
+    if (lastMouseDown != e.getScreenPosition())
+    {
+        this->startTimer(200);
+    }
     //[/UserCode_mouseEnter]
 }
 
@@ -229,31 +238,60 @@ void HeadlineItem::mouseDown (const MouseEvent& e)
     //[UserCode_mouseDown] -- Add your code here...
     if (this->item != nullptr)
     {
-        HeadlineDropdown *hd = new HeadlineDropdown(this->item);
-        hd->setTopLeftPosition(this->getPosition());
-        hd->setAlpha(0.f);
-        App::Layout().showModalNonOwnedDialog(hd);
+        this->stopTimer();
+        if (this->item->isSelected())
+        {
+            this->showMenu();
+        }
+        else
+        {
+            this->item->setSelected(true, true);
+        }
     }
     //[/UserCode_mouseDown]
+}
+
+void HeadlineItem::mouseUp (const MouseEvent& e)
+{
+    //[UserCode_mouseUp] -- Add your code here...
+    this->stopTimer();
+    //[/UserCode_mouseUp]
 }
 
 
 //[MiscUserCode]
 
-TreeItem *HeadlineItem::getTreeItem() const noexcept
+WeakReference<TreeItem> HeadlineItem::getTreeItem() const noexcept
 {
     return this->item;
 }
 
-//Component *HeadlineItem::createHighlighterComponent()
-//{
-//    return new HeadlineItemHighlighter(this->internalPath1);
-//}
+void HeadlineItem::updateContent()
+{
+    if (this->item != nullptr)
+    {
+        this->icon->setIconImage(this->item->getIcon());
+        this->titleLabel->setText(this->item->getName(), dontSendNotification);
+        const int textWidth = this->titleLabel->getFont()
+            .getStringWidth(this->titleLabel->getText());
+        this->setSize(textWidth + 64, this->getHeight());
+    }
+}
+
+void HeadlineItem::changeListenerCallback(ChangeBroadcaster* source)
+{
+    this->parentHeadline.triggerAsyncUpdate();
+}
 
 void HeadlineItem::timerCallback()
 {
     this->stopTimer();
+    this->showMenu();
+}
 
+void HeadlineItem::showMenu()
+{
+    // FIXME If has menu:
     if (this->item != nullptr)
     {
         HeadlineDropdown *hd = new HeadlineDropdown(this->item);
@@ -270,18 +308,20 @@ void HeadlineItem::timerCallback()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="HeadlineItem" template="../../Template"
-                 componentName="" parentClasses="public Component, private Timer"
-                 constructorParams="WeakReference&lt;TreeItem&gt; treeItem" variableInitialisers="item(treeItem)"
+                 componentName="" parentClasses="public Component, private Timer, private ChangeListener"
+                 constructorParams="WeakReference&lt;TreeItem&gt; treeItem, AsyncUpdater &amp;parent"
+                 variableInitialisers="item(treeItem),&#10;parentHeadline(parent)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="256" initialHeight="32">
   <METHODS>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
     <METHOD name="mouseEnter (const MouseEvent&amp; e)"/>
     <METHOD name="mouseExit (const MouseEvent&amp; e)"/>
+    <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
     <PATH pos="0 0 100 100" fill="solid: cffffff" hasStroke="0" nonZeroWinding="1">s 0 0 l 16R 0 l 9R 16 l 16R 32 l 0 32 x</PATH>
-    <PATH pos="0 0 100 100" fill=" radial: 0 16, 16 14, 0=33000000, 1=0"
+    <PATH pos="0 0 100 100" fill=" radial: 0 16, 16 16, 0=22000000, 1=0"
           hasStroke="0" nonZeroWinding="1">s 0 0 l 40 0 l 40 32 l 0 32 x</PATH>
     <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="1" stroke="1, mitered, butt"
           strokeColour=" radial: 9R 16, 16R 2, 0=77000000, 1=0" nonZeroWinding="1">s 32R 0 l 16R 0 l 9R 16 l 16R 32 l 32R 32 x</PATH>
@@ -289,7 +329,7 @@ BEGIN_JUCER_METADATA
           strokeColour=" radial: 10R 16, 17R 5, 0=55ffffff, 1=ffffff" nonZeroWinding="1">s 32R 0 l 17R 0 l 10R 16 l 17R 32 l 32R 32 x</PATH>
   </BACKGROUND>
   <LABEL name="" id="9a3c449859f61884" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="34 0 44M 31" textCol="ffffffff" edTextCol="ff000000"
+         explicitFocusOrder="0" pos="34 0 512 31" textCol="ffffffff" edTextCol="ff000000"
          edBkgCol="0" labelText="Project" editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="18"
          kerning="0" bold="0" italic="0" justification="33"/>

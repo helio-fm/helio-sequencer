@@ -128,7 +128,7 @@ DocumentWindow("Helio",
         this->setOpenGLRendererEnabled(true);
     }
 
-    this->createWorkspaceComponent();
+    this->createLayoutComponent();
 
     //if (App::isRunningOnPhone())
     //{
@@ -150,7 +150,7 @@ MainWindow::~MainWindow()
         this->detachOpenGLContext();
     }
     
-    this->dismissWorkspaceComponent();
+    this->dismissLayoutComponent();
 }
 
 #if HELIO_HAS_CUSTOM_TITLEBAR
@@ -209,18 +209,18 @@ void MainWindow::closeButtonPressed()
 
 MainLayout *MainWindow::getWorkspaceComponent() const
 {
-    return this->workspace;
+    return this->layout;
 }
 
-void MainWindow::dismissWorkspaceComponent()
+void MainWindow::dismissLayoutComponent()
 {
     this->clearContentComponent();
-    this->workspace = nullptr;
+    this->layout = nullptr;
 }
 
-void MainWindow::createWorkspaceComponent()
+void MainWindow::createLayoutComponent()
 {
-    this->workspace = new MainLayout();
+    this->layout = new MainLayout();
 
 #if JUCE_ANDROID
     //const double dpi = Desktop::getInstance().getDisplays().getMainDisplay().dpi;
@@ -228,17 +228,17 @@ void MainWindow::createWorkspaceComponent()
 
     //if (hasRetina)
     //{
-    //    this->setContentOwned(new WorkspaceAndroidProxy(this->workspace), false);
+    //    this->setContentOwned(new WorkspaceAndroidProxy(this->layout), false);
     //}
     //else
     {
-        this->setContentNonOwned(this->workspace, false);
+        this->setContentNonOwned(this->layout, false);
     }
 #else
-    this->setContentNonOwned(this->workspace, false);
+    this->setContentNonOwned(this->layout, false);
 #endif
 
-    this->workspace->forceRestoreLastOpenedPage();
+    this->layout->forceRestoreLastOpenedPage();
 }
 
 static ScopedPointer<OpenGLContext> kOpenGLContext = nullptr;

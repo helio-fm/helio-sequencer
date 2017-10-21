@@ -646,7 +646,6 @@ void NoteComponent::mouseUp(const MouseEvent &e)
             note->endTuning();
         }
 
-        this->roll.grabKeyboardFocus();
         this->setMouseCursor(MouseCursor::NormalCursor);
     }
 
@@ -717,33 +716,33 @@ void NoteComponent::paintNewLook(Graphics &g)
     if (! this->activeState)
     {
         g.setColour(myColourL);
-        g.drawHorizontalLine(y1, x1 + 1.f, x2 - 1.f);
+        g.drawHorizontalLine(int(y1), x1 + 1.f, x2 - 1.f);
         g.setColour(myColourD);
-        g.drawHorizontalLine(y2, x1 + 1.f, x2 - 1.f);
+        g.drawHorizontalLine(int(y2), x1 + 1.f, x2 - 1.f);
         
         g.setColour(myColour);
         for (float y = y1 + 1.f; y <= y2 - 1.f; y += 1.f)
         {
             const float yMap = (y - y1) / yh * 3.1415926f;
             const float bevel = bevelCoeff * (1.f - (sin(yMap) - sin(yMap) / 2.5f));
-            g.drawHorizontalLine(y, x1 + bevel, x1 + bevel + 1.f);
-            g.drawHorizontalLine(y, x2 - bevel - 1.f, x2 - bevel);
+            g.drawHorizontalLine(int(y), x1 + bevel, x1 + bevel + 1.f);
+            g.drawHorizontalLine(int(y), x2 - bevel - 1.f, x2 - bevel);
         }
 
         return;
     }
     
     g.setColour(myColourL);
-    g.drawHorizontalLine(y1, x1 + 1.f, x2 - 1.f);
+    g.drawHorizontalLine(int(y1), x1 + 1.f, x2 - 1.f);
     g.setColour(myColourD);
-    g.drawHorizontalLine(y2, x1 + 1.f, x2 - 1.f);
+    g.drawHorizontalLine(int(y2), x1 + 1.f, x2 - 1.f);
     
     g.setColour(myColour);
     for (float y = y1 + 1.f; y <= y2 - 1.f; y += 1.f)
     {
         const float yMap = (y - y1) / yh * 3.1415926f;
         const float bevel = bevelCoeff * (1.f - (sin(yMap) - sin(yMap) / 2.5f));
-        g.drawHorizontalLine(y, x1 + bevel, x2 - bevel);
+        g.drawHorizontalLine(int(y), x1 + bevel, x2 - bevel);
     }
     
     const float sx = x1 + 2.f;
@@ -865,7 +864,6 @@ void NoteComponent::endDragging(bool sendMidiMessage)
         this->stopSound();
     }
     
-    this->roll.grabKeyboardFocus();
     this->state = None;
 }
 
@@ -922,7 +920,6 @@ Note NoteComponent::continueResizingRight(float deltaLength)
 void NoteComponent::endResizingRight()
 {
     this->stopSound();
-    this->roll.grabKeyboardFocus();
     this->state = None;
 }
 
@@ -968,7 +965,6 @@ Note NoteComponent::continueResizingLeft(float deltaLength)
 void NoteComponent::endResizingLeft()
 {
     this->stopSound();
-    this->roll.grabKeyboardFocus();
     this->state = None;
 }
 
@@ -1015,7 +1011,6 @@ Note NoteComponent::continueGroupScalingRight(float absScaleFactor)
 
 void NoteComponent::endGroupScalingRight()
 {
-    this->roll.grabKeyboardFocus();
     this->state = None;
 }
 
@@ -1063,7 +1058,6 @@ Note NoteComponent::continueGroupScalingLeft(float absScaleFactor)
 
 void NoteComponent::endGroupScalingLeft()
 {
-    this->roll.grabKeyboardFocus();
     this->state = None;
 }
 

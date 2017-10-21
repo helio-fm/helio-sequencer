@@ -193,27 +193,25 @@ String TranslationManager::getCurrentLocaleId() const
 
 
 //===----------------------------------------------------------------------===//
-// Static
+// Helpers
 //===----------------------------------------------------------------------===//
-
-SpinLock currentMappingsLock;
 
 String TranslationManager::translate(const String &text)
 {
-    const SpinLock::ScopedLockType sl(currentMappingsLock);
-    return TranslationManager::getInstance().getMappings().getValue(text, text);
+    const SpinLock::ScopedLockType sl(this->mappingsLock);
+    return this->getMappings().getValue(text, text);
 }
 
 String TranslationManager::translate(const String &text, const String &resultIfNotFound)
 {
-    const SpinLock::ScopedLockType sl(currentMappingsLock);
-    return TranslationManager::getInstance().getMappings().getValue(text, resultIfNotFound);
+    const SpinLock::ScopedLockType sl(this->mappingsLock);
+    return this->getMappings().getValue(text, resultIfNotFound);
 }
 
 String TranslationManager::translate(const String &baseLiteral, int64 targetNumber)
 {
-    const SpinLock::ScopedLockType sl(currentMappingsLock);
-    return TranslationManager::getInstance().findPluralFor(baseLiteral, targetNumber);
+    const SpinLock::ScopedLockType sl(this->mappingsLock);
+    return this->findPluralFor(baseLiteral, targetNumber);
 }
 
 
@@ -431,3 +429,7 @@ File TranslationManager::getDebugTranslationsFile()
     return File::getSpecialLocation(File::currentApplicationFile).getSiblingFile(debugTranslationsFileName);
 }
 
+int TranslationManager::Locale::compareElements(const Locale &first, const Locale &second)
+{
+    return first.localeName.compare(second.localeName);
+}

@@ -145,6 +145,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/InstrumentsRootTreeItem_74c5c1bf.o \
   $(JUCE_OBJDIR)/InstrumentTreeItem_fc13b882.o \
   $(JUCE_OBJDIR)/MidiTrackTreeItem_1dfb63b.o \
+  $(JUCE_OBJDIR)/PatternEditorTreeItem_35a7d6ae.o \
   $(JUCE_OBJDIR)/PianoTrackTreeItem_850d2d9d.o \
   $(JUCE_OBJDIR)/ProjectInfo_52f6a347.o \
   $(JUCE_OBJDIR)/ProjectTimeline_9655ff5a.o \
@@ -152,8 +153,10 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/RootTreeItem_3b150bd.o \
   $(JUCE_OBJDIR)/SettingsTreeItem_c1194ffe.o \
   $(JUCE_OBJDIR)/TrackGroupTreeItem_8371d50f.o \
+  $(JUCE_OBJDIR)/TransientTreeItems_f574f302.o \
   $(JUCE_OBJDIR)/TreeItem_3983613b.o \
   $(JUCE_OBJDIR)/TreeItemChildrenSerializer_7365544c.o \
+  $(JUCE_OBJDIR)/TreeNavigationHistory_ed66d482.o \
   $(JUCE_OBJDIR)/VersionControlTreeItem_f871c280.o \
   $(JUCE_OBJDIR)/AnnotationEventActions_e2dc4268.o \
   $(JUCE_OBJDIR)/AutomationTrackActions_7e56b4ff.o \
@@ -192,6 +195,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/OrigamiVertical_9fe96057.o \
   $(JUCE_OBJDIR)/ColourButton_d92c95b0.o \
   $(JUCE_OBJDIR)/ColourSwatches_e2a4628.o \
+  $(JUCE_OBJDIR)/CommandIDs_ca65c4df.o \
   $(JUCE_OBJDIR)/DraggingListBoxComponent_34f40031.o \
   $(JUCE_OBJDIR)/FatalErrorScreen_2f541f02.o \
   $(JUCE_OBJDIR)/MenuButton_1d9ba4c3.o \
@@ -212,22 +216,22 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/Headline_2606435d.o \
   $(JUCE_OBJDIR)/HeadlineDropdown_494f430e.o \
   $(JUCE_OBJDIR)/HeadlineItem_cd7bcd10.o \
+  $(JUCE_OBJDIR)/HeadlineNavigationPanel_eeb8893d.o \
+  $(JUCE_OBJDIR)/HotkeyScheme_81e868f8.o \
   $(JUCE_OBJDIR)/MultiTouchController_63afb603.o \
   $(JUCE_OBJDIR)/CommandItemComponent_4a58c510.o \
   $(JUCE_OBJDIR)/CommandItemComponentMarker_88aa182a.o \
   $(JUCE_OBJDIR)/CommandPanel_54120bea.o \
   $(JUCE_OBJDIR)/AnnotationCommandPanel_753f231f.o \
   $(JUCE_OBJDIR)/ArpeggiatorEditorPanel_592308f5.o \
-  $(JUCE_OBJDIR)/ArpeggiatorPanel_c14212a2.o \
-  $(JUCE_OBJDIR)/AutomationsCommandPanel_c5231c28.o \
   $(JUCE_OBJDIR)/InstrumentCommandPanel_65442bd7.o \
   $(JUCE_OBJDIR)/InstrumentsCommandPanel_b7074758.o \
   $(JUCE_OBJDIR)/LayerCommandPanel_c07f07bd.o \
-  $(JUCE_OBJDIR)/MoveToLayerCommandPanel_50892671.o \
   $(JUCE_OBJDIR)/NotesTuningPanel_5fadfa25.o \
+  $(JUCE_OBJDIR)/PatternEditorCommandPanel_72c1a989.o \
+  $(JUCE_OBJDIR)/PatternRollSelectionCommandPanel_adfdf14f.o \
+  $(JUCE_OBJDIR)/PianoRollSelectionCommandPanel_668e86b6.o \
   $(JUCE_OBJDIR)/ProjectCommandPanel_cb573e05.o \
-  $(JUCE_OBJDIR)/RootTreeItemPanelDefault_9dc5ca67.o \
-  $(JUCE_OBJDIR)/RootTreeItemPanelCompact_8677ee49.o \
   $(JUCE_OBJDIR)/TimelineCommandPanel_3e4bc8b1.o \
   $(JUCE_OBJDIR)/TimeSignatureCommandPanel_1f1b7cd7.o \
   $(JUCE_OBJDIR)/VCSCommandPanel_5a9dbb52.o \
@@ -336,12 +340,8 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/RolloverHeaderLeft_80cfdf98.o \
   $(JUCE_OBJDIR)/RolloverHeaderRight_d67999f5.o \
   $(JUCE_OBJDIR)/SettingsRollover_24ed91c7.o \
-  $(JUCE_OBJDIR)/HybridRollCommandPanel_69f5df98.o \
-  $(JUCE_OBJDIR)/HybridRollCommandPanelDefault_fb8db613.o \
-  $(JUCE_OBJDIR)/HybridRollCommandPanelPhone_99108200.o \
-  $(JUCE_OBJDIR)/TreePanel_bd8c37ea.o \
-  $(JUCE_OBJDIR)/TreePanelDefault_40c4bd81.o \
-  $(JUCE_OBJDIR)/TreePanelPhone_c99e8cee.o \
+  $(JUCE_OBJDIR)/NavigationSidebar_4b60998c.o \
+  $(JUCE_OBJDIR)/ToolsSidebar_9e5195a7.o \
   $(JUCE_OBJDIR)/ComponentFader_6572b0c.o \
   $(JUCE_OBJDIR)/FontSerializer_ad448bd4.o \
   $(JUCE_OBJDIR)/GradientVertical_67252d59.o \
@@ -375,8 +375,8 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/ShadowUpwards_83021913.o \
   $(JUCE_OBJDIR)/ViewportKineticSlider_45304cab.o \
   $(JUCE_OBJDIR)/TreeItemComponent_45f5f057.o \
-  $(JUCE_OBJDIR)/TreeItemComponentDefault_335c2074.o \
   $(JUCE_OBJDIR)/TreeItemComponentCompact_1c0e4456.o \
+  $(JUCE_OBJDIR)/TreeItemComponentDefault_335c2074.o \
   $(JUCE_OBJDIR)/TreeItemMarkerDefault_f4465881.o \
   $(JUCE_OBJDIR)/TreeItemMarkerCompact_dcf87c63.o \
   $(JUCE_OBJDIR)/TreeItemMenuButton_55ef6521.o \
@@ -709,6 +709,11 @@ $(JUCE_OBJDIR)/MidiTrackTreeItem_1dfb63b.o: ../../Source/Core/Tree/MidiTrackTree
 	@echo "Compiling MidiTrackTreeItem.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/PatternEditorTreeItem_35a7d6ae.o: ../../Source/Core/Tree/PatternEditorTreeItem.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling PatternEditorTreeItem.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/PianoTrackTreeItem_850d2d9d.o: ../../Source/Core/Tree/PianoTrackTreeItem.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling PianoTrackTreeItem.cpp"
@@ -744,6 +749,11 @@ $(JUCE_OBJDIR)/TrackGroupTreeItem_8371d50f.o: ../../Source/Core/Tree/TrackGroupT
 	@echo "Compiling TrackGroupTreeItem.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/TransientTreeItems_f574f302.o: ../../Source/Core/Tree/TransientTreeItems.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TransientTreeItems.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/TreeItem_3983613b.o: ../../Source/Core/Tree/TreeItem.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TreeItem.cpp"
@@ -752,6 +762,11 @@ $(JUCE_OBJDIR)/TreeItem_3983613b.o: ../../Source/Core/Tree/TreeItem.cpp
 $(JUCE_OBJDIR)/TreeItemChildrenSerializer_7365544c.o: ../../Source/Core/Tree/TreeItemChildrenSerializer.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TreeItemChildrenSerializer.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TreeNavigationHistory_ed66d482.o: ../../Source/Core/Tree/TreeNavigationHistory.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TreeNavigationHistory.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/VersionControlTreeItem_f871c280.o: ../../Source/Core/Tree/VersionControlTreeItem.cpp
@@ -944,6 +959,11 @@ $(JUCE_OBJDIR)/ColourSwatches_e2a4628.o: ../../Source/UI/Common/ColourSwatches.c
 	@echo "Compiling ColourSwatches.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/CommandIDs_ca65c4df.o: ../../Source/UI/Common/CommandIDs.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling CommandIDs.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/DraggingListBoxComponent_34f40031.o: ../../Source/UI/Common/DraggingListBoxComponent.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling DraggingListBoxComponent.cpp"
@@ -1044,6 +1064,16 @@ $(JUCE_OBJDIR)/HeadlineItem_cd7bcd10.o: ../../Source/UI/Headline/HeadlineItem.cp
 	@echo "Compiling HeadlineItem.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/HeadlineNavigationPanel_eeb8893d.o: ../../Source/UI/Headline/HeadlineNavigationPanel.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling HeadlineNavigationPanel.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/HotkeyScheme_81e868f8.o: ../../Source/UI/Input/HotkeyScheme.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling HotkeyScheme.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/MultiTouchController_63afb603.o: ../../Source/UI/Input/MultiTouchController.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling MultiTouchController.cpp"
@@ -1074,16 +1104,6 @@ $(JUCE_OBJDIR)/ArpeggiatorEditorPanel_592308f5.o: ../../Source/UI/Menus/Arpeggia
 	@echo "Compiling ArpeggiatorEditorPanel.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/ArpeggiatorPanel_c14212a2.o: ../../Source/UI/Menus/ArpeggiatorPanel.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling ArpeggiatorPanel.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/AutomationsCommandPanel_c5231c28.o: ../../Source/UI/Menus/AutomationsCommandPanel.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling AutomationsCommandPanel.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/InstrumentCommandPanel_65442bd7.o: ../../Source/UI/Menus/InstrumentCommandPanel.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling InstrumentCommandPanel.cpp"
@@ -1099,29 +1119,29 @@ $(JUCE_OBJDIR)/LayerCommandPanel_c07f07bd.o: ../../Source/UI/Menus/LayerCommandP
 	@echo "Compiling LayerCommandPanel.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/MoveToLayerCommandPanel_50892671.o: ../../Source/UI/Menus/MoveToLayerCommandPanel.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling MoveToLayerCommandPanel.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/NotesTuningPanel_5fadfa25.o: ../../Source/UI/Menus/NotesTuningPanel.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling NotesTuningPanel.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/PatternEditorCommandPanel_72c1a989.o: ../../Source/UI/Menus/PatternEditorCommandPanel.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling PatternEditorCommandPanel.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/PatternRollSelectionCommandPanel_adfdf14f.o: ../../Source/UI/Menus/PatternRollSelectionCommandPanel.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling PatternRollSelectionCommandPanel.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/PianoRollSelectionCommandPanel_668e86b6.o: ../../Source/UI/Menus/PianoRollSelectionCommandPanel.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling PianoRollSelectionCommandPanel.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/ProjectCommandPanel_cb573e05.o: ../../Source/UI/Menus/ProjectCommandPanel.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ProjectCommandPanel.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/RootTreeItemPanelDefault_9dc5ca67.o: ../../Source/UI/Menus/RootTreeItemPanelDefault.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling RootTreeItemPanelDefault.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/RootTreeItemPanelCompact_8677ee49.o: ../../Source/UI/Menus/RootTreeItemPanelCompact.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling RootTreeItemPanelCompact.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TimelineCommandPanel_3e4bc8b1.o: ../../Source/UI/Menus/TimelineCommandPanel.cpp
@@ -1664,34 +1684,14 @@ $(JUCE_OBJDIR)/SettingsRollover_24ed91c7.o: ../../Source/UI/Sidebars/Rollovers/S
 	@echo "Compiling SettingsRollover.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/HybridRollCommandPanel_69f5df98.o: ../../Source/UI/Sidebars/HybridRollCommandPanel.cpp
+$(JUCE_OBJDIR)/NavigationSidebar_4b60998c.o: ../../Source/UI/Sidebars/NavigationSidebar.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling HybridRollCommandPanel.cpp"
+	@echo "Compiling NavigationSidebar.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/HybridRollCommandPanelDefault_fb8db613.o: ../../Source/UI/Sidebars/HybridRollCommandPanelDefault.cpp
+$(JUCE_OBJDIR)/ToolsSidebar_9e5195a7.o: ../../Source/UI/Sidebars/ToolsSidebar.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling HybridRollCommandPanelDefault.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/HybridRollCommandPanelPhone_99108200.o: ../../Source/UI/Sidebars/HybridRollCommandPanelPhone.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling HybridRollCommandPanelPhone.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/TreePanel_bd8c37ea.o: ../../Source/UI/Sidebars/TreePanel.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TreePanel.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/TreePanelDefault_40c4bd81.o: ../../Source/UI/Sidebars/TreePanelDefault.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TreePanelDefault.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/TreePanelPhone_c99e8cee.o: ../../Source/UI/Sidebars/TreePanelPhone.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TreePanelPhone.cpp"
+	@echo "Compiling ToolsSidebar.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/ComponentFader_6572b0c.o: ../../Source/UI/Themes/ComponentFader.cpp
@@ -1859,14 +1859,14 @@ $(JUCE_OBJDIR)/TreeItemComponent_45f5f057.o: ../../Source/UI/Tree/TreeItemCompon
 	@echo "Compiling TreeItemComponent.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/TreeItemComponentDefault_335c2074.o: ../../Source/UI/Tree/TreeItemComponentDefault.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling TreeItemComponentDefault.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/TreeItemComponentCompact_1c0e4456.o: ../../Source/UI/Tree/TreeItemComponentCompact.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TreeItemComponentCompact.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/TreeItemComponentDefault_335c2074.o: ../../Source/UI/Tree/TreeItemComponentDefault.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling TreeItemComponentDefault.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/TreeItemMarkerDefault_f4465881.o: ../../Source/UI/Tree/TreeItemMarkerDefault.cpp

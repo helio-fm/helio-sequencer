@@ -24,12 +24,16 @@
 //[MiscUserDefs]
 #include "HeadlineItem.h"
 #include "IconComponent.h"
+
+#define HEADLINE_ITEMS_OVERLAP (16)
+#define HEADLINE_ROOT_X (72)
 //[/MiscUserDefs]
 
 Headline::Headline()
 {
     addAndMakeVisible (bg = new PanelBackgroundB());
     addAndMakeVisible (separator = new SeparatorHorizontalReversed());
+    addAndMakeVisible (navPanel = new HeadlineNavigationPanel());
 
     //[UserPreSize]
     this->setFocusContainer(false);
@@ -45,10 +49,12 @@ Headline::Headline()
 Headline::~Headline()
 {
     //[Destructor_pre]
+    this->chain.clearQuick(true);
     //[/Destructor_pre]
 
     bg = nullptr;
     separator = nullptr;
+    navPanel = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -70,12 +76,34 @@ void Headline::resized()
 
     bg->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
     separator->setBounds (0, getHeight() - 2, getWidth() - 0, 2);
+    navPanel->setBounds (0, 0, 88, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
 
 
 //[MiscUserCode]
+
+void Headline::handleAsyncUpdate()
+{
+    //Logger::writeToLog("Headline::handleAsyncUpdate");
+    int posX = HEADLINE_ITEMS_OVERLAP + HEADLINE_ROOT_X;
+    for (int i = 0; i < this->chain.size(); ++i)
+    {
+        HeadlineItem *child = this->chain.getUnchecked(i);
+        const auto boundsBefore = child->getBounds();
+        child->updateContent();
+        const auto boundsAfter = child->getBounds().withX(posX - HEADLINE_ITEMS_OVERLAP);
+        this->animator.cancelAnimation(child, false);
+        if (boundsBefore != boundsAfter)
+        {
+            child->setBounds(boundsBefore);
+            this->animator.animateComponent(child, boundsAfter, 1.f, 250, false, 1.f, 0.f);
+        }
+
+        posX += boundsAfter.getWidth() - HEADLINE_ITEMS_OVERLAP;
+    }
+}
 
 Array<TreeItem *> createSortedBranchArray(WeakReference<TreeItem> leaf)
 {
@@ -97,18 +125,18 @@ Array<TreeItem *> createSortedBranchArray(WeakReference<TreeItem> leaf)
     return result;
 }
 
-#define HEADLINE_ITEMS_OVERLAP 16
-
-void Headline::syncWithTree(WeakReference<TreeItem> leaf)
+void Headline::syncWithTree(TreeNavigationHistory &navHistory, WeakReference<TreeItem> root)
 {
-    Array<TreeItem *> branch = createSortedBranchArray(leaf);
+    //Logger::writeToLog("Headline::syncWithTree");
+    Array<TreeItem *> branch = createSortedBranchArray(root);
 
     // Finds the first inconsistency point in the chain
     int firstInvalidUnitIndex = 0;
-    int fadePositionX = HEADLINE_ITEMS_OVERLAP - 6;
+    int fadePositionX = HEADLINE_ITEMS_OVERLAP + HEADLINE_ROOT_X;
     for (; firstInvalidUnitIndex < this->chain.size(); firstInvalidUnitIndex++)
     {
-        if (this->chain[firstInvalidUnitIndex]->getTreeItem() != branch[firstInvalidUnitIndex])
+        if (this->chain[firstInvalidUnitIndex]->getTreeItem().wasObjectDeleted() ||
+            this->chain[firstInvalidUnitIndex]->getTreeItem() != branch[firstInvalidUnitIndex])
         { break; }
 
         fadePositionX += (this->chain[firstInvalidUnitIndex]->getWidth() - HEADLINE_ITEMS_OVERLAP);
@@ -119,6 +147,7 @@ void Headline::syncWithTree(WeakReference<TreeItem> leaf)
     {
         const auto child = this->chain[i];
         const auto finalPos = child->getBounds().withX(fadePositionX - child->getWidth());
+        this->animator.cancelAnimation(child, false);
         this->animator.animateComponent(child, finalPos, 0.f, 200, true, 0.f, 1.f);
         this->chain.remove(i, true);
     }
@@ -126,7 +155,8 @@ void Headline::syncWithTree(WeakReference<TreeItem> leaf)
     // Adds the new elements
     for (int i = firstInvalidUnitIndex, lastPosX = fadePositionX; i < branch.size(); i++)
     {
-        const auto child = new HeadlineItem(branch[i]);
+        const auto child = new HeadlineItem(branch[i], *this);
+        child->updateContent();
         this->chain.add(child);
         this->addAndMakeVisible(child);
         child->setTopLeftPosition(fadePositionX - child->getWidth(), 0);
@@ -137,7 +167,10 @@ void Headline::syncWithTree(WeakReference<TreeItem> leaf)
         this->animator.animateComponent(child, finalPos, 1.f, 300, false, 1.f, 0.f);
     }
 
+    this->navPanel->updateState(navHistory.canGoBackward(), navHistory.canGoForward());
+
     this->bg->toBack();
+    this->navPanel->toFront(false);
 }
 
 //[/MiscUserCode]
@@ -147,15 +180,19 @@ void Headline::syncWithTree(WeakReference<TreeItem> leaf)
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="Headline" template="../../Template"
-                 componentName="" parentClasses="public Component" constructorParams=""
-                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="600" initialHeight="34">
+                 componentName="" parentClasses="public Component, public AsyncUpdater"
+                 constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="600"
+                 initialHeight="34">
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="e14a947c03465d1b" memberName="bg" virtualName=""
              explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../Themes/PanelBackgroundB.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="e5efefc65cac6ba7" memberName="separator" virtualName=""
              explicitFocusOrder="0" pos="0 0Rr 0M 2" sourceFile="../Themes/SeparatorHorizontalReversed.cpp"
+             constructorParams=""/>
+  <JUCERCOMP name="" id="666c39451424e53c" memberName="navPanel" virtualName=""
+             explicitFocusOrder="0" pos="0 0 88 0M" sourceFile="HeadlineNavigationPanel.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

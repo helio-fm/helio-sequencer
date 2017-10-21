@@ -33,7 +33,7 @@
 #include "Workspace.h"
 
 SettingsTreeItem::SettingsTreeItem() :
-    TreeItem("Settings")
+    TreeItem("Settings", Serialization::Core::settings)
 {
     // Too much garbage in the main tree,
     // let's make it accessible from the button on the title page
@@ -54,7 +54,7 @@ Image SettingsTreeItem::getIcon() const
     return Icons::findByName(Icons::settings, TREE_LARGE_ICON_HEIGHT);
 }
 
-String SettingsTreeItem::getCaption() const
+String SettingsTreeItem::getName() const
 {
     return TRANS("tree::settings");
 }
@@ -121,23 +121,7 @@ void SettingsTreeItem::recreatePage()
     this->settingsPage = new SettingsPage(this->settingsList);
 }
 
-
-//===----------------------------------------------------------------------===//
-// Serializable
-//===----------------------------------------------------------------------===//
-
-XmlElement *SettingsTreeItem::serialize() const
+ScopedPointer<Component> SettingsTreeItem::createItemMenu()
 {
-    auto xml = new XmlElement(Serialization::Core::treeItem);
-    xml->setAttribute("type", Serialization::Core::settings);
-    TreeItemChildrenSerializer::serializeChildren(*this, *xml);
-    return xml;
-}
-
-void SettingsTreeItem::deserialize(const XmlElement &xml)
-{
-    this->reset();
-    const String& type = xml.getStringAttribute("type");
-    if (type != Serialization::Core::settings) { return; }
-    TreeItemChildrenSerializer::deserializeChildren(*this, xml);
+    return nullptr;
 }

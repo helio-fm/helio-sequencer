@@ -28,14 +28,18 @@
 #include "MainWindow.h"
 #include "RootTreeItem.h"
 #include "GenericTooltip.h"
+#include "TransientTreeItems.h"
 #include "MidiTrackTreeItem.h"
 #include "Supervisor.h"
-#include "TreePanelPhone.h"
-#include "TreePanelDefault.h"
 #include "InitScreen.h"
-#include "HybridRollCommandPanel.h"
+#include "NavigationSidebar.h"
+#include "ToolsSidebar.h"
 #include "ColourSchemeManager.h"
-
+#include "HotkeyScheme.h"
+#include "ComponentIDs.h"
+#include "CommandIDs.h"
+#include "Workspace.h"
+#include "App.h"
 
 namespace KeyboardFocusDebugger
 {
@@ -108,6 +112,7 @@ namespace KeyboardFocusDebugger
 MainLayout::MainLayout() :
     currentContent(nullptr)
 {
+    this->setComponentID(ComponentIDs::mainLayoutId);
     this->setVisible(false);
     
     this->tooltipContainer = new TooltipContainer();
@@ -116,28 +121,22 @@ MainLayout::MainLayout() :
     this->headline = new Headline();
     this->addAndMakeVisible(this->headline);
 
-    if (App::isRunningOnPhone())
+    this->hotkeyScheme = new HotkeyScheme();
     {
-        this->treePanel = new TreePanelPhone();
+        // TODO hot-keys manager
+        const String hotkeysXmlString =
+            String(CharPointer_UTF8(BinaryData::DefaultHotkeys_xml),
+                BinaryData::DefaultHotkeys_xmlSize);
+        const ScopedPointer<XmlElement> hotkeysXml(XmlDocument::parse(hotkeysXmlString));
+        if (XmlElement *defaultScheme = hotkeysXml->getFirstChildElement())
+        {
+            this->hotkeyScheme->deserialize(*defaultScheme);
+        }
     }
-    else
-    {
-        this->treePanel = new TreePanelDefault();
-    }
-    
-    this->addAndMakeVisible(this->treePanel);
-    
-    //this->treePanelConstrainer.setMinimumWidth(TREE_MIN_WIDTH);
-    //this->treePanelConstrainer.setMaximumWidth(TREE_MAX_WIDTH);
 
-    this->treeResizer = new ResizableEdgeComponent(this->treePanel,
-            &this->treePanelConstrainer, ResizableEdgeComponent::rightEdge);
-    this->addAndMakeVisible(this->treeResizer);
-    this->treeResizer->setInterceptsMouseClicks(false, false); // no more resizable panel
-    this->treeResizer->toFront(false);
-
-    this->setWantsKeyboardFocus(false);
-    this->setFocusContainer(false);
+    this->setMouseClickGrabsKeyboardFocus(true);
+    this->setWantsKeyboardFocus(true);
+    this->setFocusContainer(true);
 
     if (const bool quickStartMode = App::Workspace().isInitialized())
     {
@@ -155,10 +154,7 @@ MainLayout::MainLayout() :
 MainLayout::~MainLayout()
 {
     this->removeAllChildren();
-
-    this->treePanel->setRoot(nullptr);
-    this->treeResizer = nullptr;
-    this->treePanel = nullptr;
+    this->hotkeyScheme = nullptr;
     this->headline = nullptr;
 }
 
@@ -168,18 +164,6 @@ void MainLayout::init()
     {
         ht->updateBackgroundRenders();
     }
-    
-    if (App::isRunningOnPhone())
-    {
-        this->treePanel->setSize(TREE_PHONE_WIDTH, this->getParentHeight());
-    }
-    else
-    {
-        this->treePanel->setSize(TREE_DEFAULT_WIDTH, this->getParentHeight());
-    }
-    
-    this->treePanel->setRoot(App::Workspace().getTreeRoot());
-    this->treePanel->setAudioMonitor(App::Workspace().getAudioCore().getMonitor());
     
     this->setVisible(true);
 
@@ -196,14 +180,9 @@ void MainLayout::forceRestoreLastOpenedPage()
     App::Workspace().activateSubItemWithId(Config::get(Serialization::UI::lastShownPageId));
 }
 
-void MainLayout::hideConsole()
+void MainLayout::toggleShowHideConsole()
 {
-    // todo
-}
-
-void MainLayout::showConsole(bool alsoShowLog)
-{
-    // todo
+    // TODO
 }
 
 int MainLayout::getScrollerHeight()
@@ -217,42 +196,8 @@ int MainLayout::getScrollerHeight()
 }
 
 //===----------------------------------------------------------------------===//
-// Pages stack
+// Pages
 //===----------------------------------------------------------------------===//
-
-LastShownTreeItems &MainLayout::getLastShownItems()
-{
-    return this->lastShownItems;
-}
-
-WeakReference<TreeItem> MainLayout::getActiveTreeItem() const
-{
-    return this->lastShownItems.getCurrentItem();
-}
-
-void MainLayout::showPrevPageIfAny()
-{
-    TreeItem *treeItem = this->lastShownItems.goBack();
-
-    if (treeItem != nullptr)
-    {
-        this->lastShownItems.setLocked(true);
-        treeItem->showPage();
-        this->lastShownItems.setLocked(false);
-    }
-}
-
-void MainLayout::showNextPageIfAny()
-{
-    TreeItem *treeItem = this->lastShownItems.goForward();
-    
-    if (treeItem != nullptr)
-    {
-        this->lastShownItems.setLocked(true);
-        treeItem->showPage();
-        this->lastShownItems.setLocked(false);
-    }
-}
 
 void hideMarkersRecursive(TreeItem *startFrom)
 {
@@ -267,6 +212,33 @@ void hideMarkersRecursive(TreeItem *startFrom)
     }
 }
 
+void MainLayout::showTransientItem(
+    ScopedPointer<TransientTreeItem> newItem, TreeItem *parent)
+{
+    jassert(parent != nullptr);
+    const auto treeRoot = App::Workspace().getTreeRoot();
+    hideMarkersRecursive(treeRoot);
+
+    // Cleanup: delete all existing transient items
+    OwnedArray<TreeItem> transients;
+    transients.addArray(treeRoot->findChildrenOfType<TransientTreeItem>());
+    transients.clear(true);
+
+    // Attach new item to the tree
+    TreeItem *item = newItem.release();
+    parent->addChildTreeItem(item);
+    item->setSelected(true, true, dontSendNotification);
+    item->setMarkerVisible(true);
+    // TODO
+    //App::Workspace().getNavigationHistory().addItemIfNeeded
+    this->headline->syncWithTree(App::Workspace().getNavigationHistory(), item);
+}
+
+bool MainLayout::isShowingPage(Component *page) const noexcept
+{
+    return (this->currentContent == page);
+}
+
 void MainLayout::showPage(Component *page, TreeItem *source)
 {
     App::dismissAllModalComponents();
@@ -279,9 +251,8 @@ void MainLayout::showPage(Component *page, TreeItem *source)
     {
         hideMarkersRecursive(App::Workspace().getTreeRoot());
         source->setMarkerVisible(true);
-        this->treePanel->repaint();
-
-        this->headline->syncWithTree(source);
+        App::Workspace().getNavigationHistory().addItemIfNeeded(source);
+        this->headline->syncWithTree(App::Workspace().getNavigationHistory(), source);
     }
 
     if (this->currentContent != nullptr)
@@ -296,18 +267,16 @@ void MainLayout::showPage(Component *page, TreeItem *source)
         this->removeChildComponent(this->currentContent);
     }
     
-    this->lastShownItems.addItemIfNeeded(source);
     this->currentContent = page;    
 
     this->addAndMakeVisible(this->currentContent);
     this->resized();
 
     this->currentContent->setExplicitFocusOrder(1);
-    this->treePanel->setExplicitFocusOrder(10);
 
 #if HAS_FADING_PAGECHANGE
     {
-        this->currentContent->toFront(true);
+        this->currentContent->toFront(false);
 
 #if JUCE_WINDOWS
         if (MainWindow::isOpenGLRendererEnabled())
@@ -323,14 +292,9 @@ void MainLayout::showPage(Component *page, TreeItem *source)
     }
 #endif
 
-    this->currentContent->toFront(true);
-    this->currentContent->grabKeyboardFocus();
+    this->currentContent->toFront(false);
     
     Config::set(Serialization::UI::lastShownPageId, source->getItemIdentifierString());
-    
-    // Custom root panel hack
-    const bool rootSelected = nullptr != dynamic_cast<RootTreeItem *>(source);
-    this->treePanel->setRootItemPanelSelected(rootSelected);
 
     //const Component *focused = Component::getCurrentlyFocusedComponent();
     //Logger::outputDebugString(focused ? focused->getName() : "null");
@@ -367,7 +331,7 @@ void MainLayout::showModalNonOwnedDialog(Component *targetComponent)
 
     this->addChildComponent(ownedTarget);
 
-    const int fadeInTime = 250;
+    const int fadeInTime = 200;
     Desktop::getInstance().getAnimator().animateComponent(ownedTarget,
         ownedTarget->getBounds(),
         1.f, fadeInTime, false, 0.0, 0.0);
@@ -421,14 +385,14 @@ void MainLayout::showBlockingNonModalDialog(Component *targetComponent)
     targetComponent->toFront(false);
 }
 
+// a hack!
 Rectangle<int> MainLayout::getPageBounds() const
 {
     Rectangle<int> r(this->getLocalBounds());
-    r.removeFromLeft(this->treePanel->getWidth());
-    r.removeFromRight(HYBRID_ROLL_COMMANDPANEL_WIDTH); // a hack!
+    r.removeFromLeft(NAVIGATION_SIDEBAR_WIDTH);
+    r.removeFromRight(TOOLS_SIDEBAR_WIDTH);
     return r;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Component
@@ -436,20 +400,10 @@ Rectangle<int> MainLayout::getPageBounds() const
 
 void MainLayout::resized()
 {
-    //Logger::writeToLog("> " + String(this->treePanel->getWidth()));
-
     Rectangle<int> r(this->getLocalBounds());
-
     if (r.isEmpty()) { return; }
 
     this->headline->setBounds(r.removeFromTop(this->headline->getHeight()));
-
-    this->treePanel->setBounds(r.removeFromLeft(this->treePanel->getWidth()));
-
-    this->treeResizer->
-    setBounds(this->treePanel->getBounds().
-              withWidth(2).
-              translated(this->treePanel->getWidth() - 1, 0));
 
     if (this->currentContent)
     {
@@ -462,63 +416,24 @@ void MainLayout::lookAndFeelChanged()
     this->repaint();
 }
 
-void MainLayout::childBoundsChanged(Component *child)
-{
-    if (child == this->treePanel)
-    {
-        this->resized();
-    }
-}
-
-
 bool MainLayout::keyPressed(const KeyPress &key)
 {
-    // under Android, it sends here the ';' key, when you type a capital letter or a char like @, !, ?
+    // under Android, it sends here the ';' key, 
+    // when you type a capital letter or a char like @, !, ?
     // a piece of juce.
-
 #if HELIO_MOBILE
     return false;
 #endif
 
-    //Logger::writeToLog("MainLayout::keyPressed " + key.getTextDescription());
-    
-#if HELIO_DESKTOP
-
-    if (key == KeyPress::createFromDescription("command + ctrl + cursor left"))
+    if (this->hotkeyScheme->dispatchKeyPress(key,
+        this, this->currentContent.getComponent()))
     {
-        this->showPrevPageIfAny();
         return true;
     }
-    if (key == KeyPress::createFromDescription("command + ctrl + cursor right"))
-    {
-        this->showNextPageIfAny();
-        return true;
-    }
-    else if (key == KeyPress::createFromDescription("F2"))
-    {
-        if (MidiTrackTreeItem *primaryItem = dynamic_cast<MidiTrackTreeItem *>(this->getActiveTreeItem().get()))
-        {
-            this->treePanel->showRenameLayerDialogAsync(primaryItem);
-            return true;
-        }
-    }
-    else if (key == KeyPress::createFromDescription("Tab") &&
-             ! key.getModifiers().isAnyModifierKeyDown())
-    {
-        this->toggleShowTree();
 
-        //Array <Component*> comps;
-        //KeyboardFocusDebugger::findAllFocusableComponents(this, comps);
-
-        //for (const auto &comp : comps)
-        //{
-        //    Logger::writeToLog(comp->getName());
-        //}
-    }
-    
 #if JUCE_ENABLE_LIVE_CONSTANT_EDITOR
 
-    else if (key == KeyPress::createFromDescription("command + r"))
+    if (key == KeyPress::createFromDescription("command + r"))
     {
         if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
         {
@@ -536,44 +451,35 @@ bool MainLayout::keyPressed(const KeyPress &key)
     }
 
 #endif
-#endif
-
-    if (this->currentContent)
-    {
-        this->currentContent->toFront(true);
-    }
-
+    
     return false;
 }
 
-//===----------------------------------------------------------------------===//
-// Private
-//===----------------------------------------------------------------------===//
-
-void MainLayout::toggleShowTree()
+bool MainLayout::keyStateChanged(bool isKeyDown)
 {
-    if (this->treePanel->isCompactMode())
-    {
-#if HELIO_DESKTOP
-        this->fader.fadeOutSnapshot(this->treePanel, 100);
-#endif
-        
-        if (App::isRunningOnPhone())
-        {
-            this->treePanel->setSize(TREE_PHONE_WIDTH, this->treePanel->getHeight());
-        }
-        else
-        {
-            this->treePanel->setSize(TREE_DEFAULT_WIDTH, this->treePanel->getHeight());
-        }
-    }
-    else
-    {
-#if HELIO_DESKTOP
-        this->fader.fadeOutSnapshot(this->treePanel, 200);
-#endif
-        this->treePanel->setSize(TREE_COMPACT_WIDTH, this->treePanel->getHeight());
-    }
+    return this->hotkeyScheme->dispatchKeyStateChange(isKeyDown,
+        this, this->currentContent.getComponent());
+}
 
-    Supervisor::track(Serialization::Activities::toggleShowTree);
+void MainLayout::modifierKeysChanged(const ModifierKeys &modifiers)
+{
+    // TODO do I need to handle this?
+}
+
+void MainLayout::handleCommandMessage(int commandId)
+{
+    switch (commandId)
+    {
+    case CommandIDs::ShowPreviousPage:
+        App::Workspace().navigateBackwardIfPossible();
+        break;
+    case CommandIDs::ShowNextPage:
+        App::Workspace().navigateForwardIfPossible();
+        break;
+    case CommandIDs::ToggleShowHideConsole:
+        this->toggleShowHideConsole();
+        break;
+    default:
+        break;
+    }
 }

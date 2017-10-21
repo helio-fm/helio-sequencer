@@ -19,14 +19,17 @@
 
 //[Headers]
 #include "TreeItem.h"
+#include "TreeNavigationHistory.h"
 
 class HeadlineItem;
 //[/Headers]
 
 #include "../Themes/PanelBackgroundB.h"
 #include "../Themes/SeparatorHorizontalReversed.h"
+#include "HeadlineNavigationPanel.h"
 
-class Headline  : public Component
+class Headline  : public Component,
+                  public AsyncUpdater
 {
 public:
 
@@ -36,7 +39,7 @@ public:
 
     //[UserMethods]
 
-    void syncWithTree(WeakReference<TreeItem> child);
+    void syncWithTree(TreeNavigationHistory &history, WeakReference<TreeItem> root);
 
     //[/UserMethods]
 
@@ -48,14 +51,17 @@ private:
 
     //[UserVariables]
 
-    ComponentAnimator animator;
+    // A way to receive a single coalesced update from multiple signaling sub-items:
+    void handleAsyncUpdate() override;
 
+    ComponentAnimator animator;
     OwnedArray<HeadlineItem> chain;
 
     //[/UserVariables]
 
     ScopedPointer<PanelBackgroundB> bg;
     ScopedPointer<SeparatorHorizontalReversed> separator;
+    ScopedPointer<HeadlineNavigationPanel> navPanel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Headline)
 };

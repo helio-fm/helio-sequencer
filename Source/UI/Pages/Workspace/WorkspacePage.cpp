@@ -101,10 +101,10 @@ void WorkspacePage::resized()
 
     background->setBounds (0, -127, getWidth() - 0, getHeight() - -128);
     menuButton->setBounds (-200, -200, 128, 128);
-    logoImage->setBounds ((getWidth() / 2) - (350 / 2), proportionOfHeight (0.2748f) - (350 / 2), 350, 350);
+    logoImage->setBounds ((getWidth() / 2) - (400 / 2), proportionOfHeight (0.2751f) - (400 / 2), 400, 400);
     shadow->setBounds (0, 0, 5, getHeight() - 0);
     settingsButton->setBounds (-100, -100, 56, 48);
-    component->setBounds ((getWidth() / 2) - (450 / 2), (getHeight() / 2) + 40, 450, proportionOfHeight (0.4009f));
+    component->setBounds ((getWidth() / 2) - (450 / 2), (getHeight() / 2) + 40, 450, proportionOfHeight (0.4003f));
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -160,7 +160,7 @@ void WorkspacePage::handleCommandMessage (int commandId)
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="WorkspacePage" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="WorkspacePage" template="../../../Template"
                  componentName="" parentClasses="public Component" constructorParams="MainLayout &amp;workspaceRef"
                  variableInitialisers="workspace(workspaceRef)" snapPixels="8"
                  snapActive="1" snapShown="1" overlayOpacity="0.660" fixedSize="0"
@@ -175,22 +175,22 @@ BEGIN_JUCER_METADATA
           justification="36" typefaceStyle="Bold"/>
   </BACKGROUND>
   <JUCERCOMP name="" id="9e61167b79cef28c" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="0 -127 0M -128M" sourceFile="../Themes/PanelBackgroundA.cpp"
+             explicitFocusOrder="0" pos="0 -127 0M -128M" sourceFile="../../Themes/PanelBackgroundA.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="2ce00deefdf277e6" memberName="menuButton" virtualName=""
-             explicitFocusOrder="0" pos="-200 -200 128 128" sourceFile="../Common/MenuButton.cpp"
+             explicitFocusOrder="0" pos="-200 -200 128 128" sourceFile="../../Common/MenuButton.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="ea1b592642055bdc" memberName="logoImage" virtualName=""
-                    explicitFocusOrder="0" pos="0Cc 27.479%c 350 350" class="LogoFader"
+                    explicitFocusOrder="0" pos="0Cc 27.512%c 400 400" class="LogoFader"
                     params="true"/>
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="0 0 5 0M" sourceFile="../Themes/LightShadowRightwards.cpp"
+             explicitFocusOrder="0" pos="0 0 5 0M" sourceFile="../../Themes/LightShadowRightwards.cpp"
              constructorParams=""/>
   <TEXTBUTTON name="" id="ed7621895f01485c" memberName="settingsButton" virtualName=""
               explicitFocusOrder="0" pos="-100 -100 56 48" buttonText="Settings"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <JUCERCOMP name="" id="25591a755b533290" memberName="component" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 40C 450 40.085%" sourceFile="Menu/WorkspaceMenu.cpp"
+             explicitFocusOrder="0" pos="0Cc 40C 450 40.033%" sourceFile="Menu/WorkspaceMenu.cpp"
              constructorParams="&amp;App::Workspace()"/>
 </JUCER_COMPONENT>
 

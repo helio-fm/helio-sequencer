@@ -32,7 +32,6 @@ public:
     ~ProgressTooltip();
 
     //[UserMethods]
-    static const String componentId;
     //[/UserMethods]
 
     void paint (Graphics& g) override;

@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+    This is the list of a most common scales (and their modes),
+    borrowed from a book called 'The Scale Omnibus', which is highly recommended.
+    For simplicity's sake I've only taken heptatonic scales from there,
+    and I use them in the chord building tool (see Scale.h and ChordBuilder.h)
+ -->
 <Scales>
     <Scale Name="Ionian (Major)" Intervals="2 2 1 2 2 2 1" />
     <Scale Name="Aeolian (Minor)" Intervals="2 1 2 2 1 2 2" />

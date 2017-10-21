@@ -37,8 +37,8 @@
 
 #include "LayerCommandPanel.h"
 
-MidiTrackTreeItem::MidiTrackTreeItem(const String &name) :
-    TreeItem(name),
+MidiTrackTreeItem::MidiTrackTreeItem(const String &name, const String &type) :
+    TreeItem(name, type),
     colour(Colours::white), // TODO random color from my set
     channel(1),
     instrumentId(String::empty),
@@ -58,9 +58,11 @@ MidiTrackTreeItem::~MidiTrackTreeItem()
     
     if (this->lastFoundParent != nullptr)
     {
-        this->removeItemFromParent();
+        // Important: first notify
         this->lastFoundParent->hideEditor(this->layer, this);
         this->lastFoundParent->broadcastRemoveTrack(this);
+        // Then disconnect from the tree
+        this->removeItemFromParent();
         TrackGroupTreeItem::removeAllEmptyGroupsInProject(this->lastFoundParent);
     }
 }
@@ -74,11 +76,11 @@ void MidiTrackTreeItem::showPage()
 {
     if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
     {
-        parentProject->showEditor(this->layer, this);
+        parentProject->showLinearEditor(this->layer, this);
     }
 }
 
-void MidiTrackTreeItem::onRename(const String &newName)
+void MidiTrackTreeItem::safeRename(const String &newName)
 {
     String fixedName = newName.replace("\\", "/");
     
@@ -88,8 +90,6 @@ void MidiTrackTreeItem::onRename(const String &newName)
     }
     
     this->setXPath(fixedName);
-    
-    TreeItem::notifySubtreeMoved(this); // сделать это default логикой для всех типов нодов?
 }
 
 void MidiTrackTreeItem::importMidi(const MidiMessageSequence &sequence)
@@ -128,11 +128,12 @@ void MidiTrackTreeItem::resetClipsDelta(const XmlElement *state)
     //this->reset(); // TODO test
     this->getPattern()->reset();
 
+    Pattern *pattern = this->getPattern();
     forEachXmlChildElementWithTagName(*state, e, Serialization::Core::clip)
     {
-        Clip c;
+        Clip c(pattern);
         c.deserialize(*e);
-        this->getPattern()->silentImport(c);
+        pattern->silentImport(c);
     }
 }
 
@@ -162,8 +163,9 @@ int MidiTrackTreeItem::getTrackChannel() const noexcept
 
 void MidiTrackTreeItem::setTrackName(const String &val)
 {
-    this->onRename(val);
+    this->safeRename(val);
     this->dispatchChangeTrackProperties(this);
+    this->dispatchChangeTreeItemView();
 }
 
 Colour MidiTrackTreeItem::getTrackColour() const noexcept
@@ -177,6 +179,7 @@ void MidiTrackTreeItem::setTrackColour(const Colour &val)
     {
         this->colour = val;
         this->dispatchChangeTrackProperties(this);
+        this->dispatchChangeTreeItemView();
     }
 }
 
@@ -191,6 +194,7 @@ void MidiTrackTreeItem::setTrackInstrumentId(const String &val)
     {
         this->instrumentId = val;
         this->dispatchChangeTrackProperties(this);
+        //this->dispatchChangeTreeItemView(); // instrument id is never displayed
     }
 }
 
@@ -205,6 +209,7 @@ void MidiTrackTreeItem::setTrackControllerNumber(int val)
     {
         this->controllerNumber = val;
         this->dispatchChangeTrackProperties(this);
+        //this->dispatchChangeTreeItemView(); // cc is never displayed
     }
 }
 
@@ -219,6 +224,7 @@ void MidiTrackTreeItem::setTrackMuted(bool shouldBeMuted)
     {
         this->mute = shouldBeMuted;
         this->dispatchChangeTrackProperties(this);
+        this->dispatchChangeTreeItemView();
     }
 }
 
@@ -299,15 +305,11 @@ void MidiTrackTreeItem::setXPath(const String &path)
         }
     }
 
-    const String &newName = parts[parts.size() - 1];
-    this->safeRename(newName);
+    this->name = TreeItem::createSafeName(parts[parts.size() - 1]);
 
     this->getParentItem()->removeSubItem(this->getIndexInParent(), false);
 
-
-    // пройти по всем чайлдам группы
-    // и вставить в нужное место, глядя на имена.
-
+    // and insert into the right place depending on path
     bool foundRightPlace = false;
     int insertIndex = 0;
     String previousChildName = "";
@@ -331,8 +333,8 @@ void MidiTrackTreeItem::setXPath(const String &path)
 
         insertIndex = i;
 
-        if ((newName.compareIgnoreCase(previousChildName) > 0) &&
-            (newName.compareIgnoreCase(currentChildName) <= 0))
+        if ((this->name.compareIgnoreCase(previousChildName) > 0) &&
+            (this->name.compareIgnoreCase(currentChildName) <= 0))
         {
             foundRightPlace = true;
             break;
@@ -343,10 +345,10 @@ void MidiTrackTreeItem::setXPath(const String &path)
 
     if (!foundRightPlace) { ++insertIndex; }
 
+    // This will also send changed-parent notifications
     rootItem->addChildTreeItem(this, insertIndex);
     
-
-    // cleanup. убираем все пустые группы
+    // Cleanup all empty groups
     if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
     {
         TrackGroupTreeItem::removeAllEmptyGroupsInProject(parentProject);
@@ -391,7 +393,6 @@ void MidiTrackTreeItem::dispatchChangeTrackProperties(MidiTrack *const track)
     if (this->lastFoundParent != nullptr)
     {
         this->lastFoundParent->broadcastChangeTrackProperties(this);
-        this->repaintItem();
     }
 }
 
@@ -456,13 +457,10 @@ ProjectTreeItem *MidiTrackTreeItem::getProject() const
 
 var MidiTrackTreeItem::getDragSourceDescription()
 {
-    if (this->isCompactMode())
-    { return var::null; }
-
     return Serialization::Core::layer;
 }
 
-void MidiTrackTreeItem::onItemMoved()
+void MidiTrackTreeItem::onItemParentChanged()
 {
     if (this->lastFoundParent)
     {
@@ -528,7 +526,7 @@ void MidiTrackTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &drag
 // Menu
 //===----------------------------------------------------------------------===//
 
-Component *MidiTrackTreeItem::createItemMenu()
+ScopedPointer<Component> MidiTrackTreeItem::createItemMenu()
 {
     return new LayerCommandPanel(*this);
 }

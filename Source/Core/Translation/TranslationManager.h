@@ -39,11 +39,7 @@ public:
         String localeId;
         String localeName;
         String localeAuthor;
-
-        static int compareElements(const Locale &first, const Locale &second)
-        {
-            return first.localeName.compare(second.localeName);
-        }
+        static int compareElements(const Locale &first, const Locale &second);
     };
     
     static File getDownloadedTranslationsFile();
@@ -59,19 +55,18 @@ public:
     void loadLocaleWithName(const String &localeName);
     void loadLocaleWithId(const String &localeId);
 
-    String getCurrentLocaleName() const; // i.e. "Русский"
-    String getCurrentLocaleId() const; // i.e. "ru"
+    String getCurrentLocaleName() const; // e.g. "Русский"
+    String getCurrentLocaleId() const; // e.g. "ru"
     
     void reloadLocales();
 
-    
     //===------------------------------------------------------------------===//
-    // Static
+    // Helpers
     //===------------------------------------------------------------------===//
     
-    static String translate(const String &text);
-    static String translate(const String &text, const String &resultIfNotFound);
-    static String translate(const String &baseLiteral, int64 targetNumber);
+    String translate(const String &text);
+    String translate(const String &text, const String &resultIfNotFound);
+    String translate(const String &baseLiteral, int64 targetNumber);
     
 private:
     
@@ -95,7 +90,9 @@ private:
     TranslationManager() {}
     
     void timerCallback() override;
-    
+
+    SpinLock mappingsLock;
+
     ScopedPointer<JavascriptEngine> engine;
     String pluralEquation;
     String equationResult;

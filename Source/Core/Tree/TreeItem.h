@@ -17,8 +17,6 @@
 
 #pragma once
 
-class TreePanel;
-
 #include "Serializable.h"
 
 #if HELIO_DESKTOP
@@ -35,18 +33,20 @@ class TreePanel;
 
 class TreeItem :
     public Serializable,
-    public TreeViewItem
+    public TreeViewItem,
+    public virtual ChangeBroadcaster // a way to notify any custom views (like headline) to update
 {
 public:
 
-    explicit TreeItem(const String &nameStr);
-
+    TreeItem(const String &name, const String &type);
     ~TreeItem() override;
     
     static const String xPathSeparator;
-
-
     static String createSafeName(const String &nameStr);
+
+    static TreeItem *getSelectedItem(Component *anyComponentInTree);
+    static void getAllSelectedItems(Component *anyComponentInTree, OwnedArray<TreeItem> &selectedNodes);
+    static bool isNodeInChildren(TreeItem *nodeToScan, TreeItem *nodeToCheck);
 
     int getNumSelectedSiblings() const;
     int getNumSelectedChildren() const;
@@ -54,29 +54,20 @@ public:
     bool haveAllChildrenSelected() const;
     bool haveAllChildrenSelectedWithDeepSearch() const;
 
-    
-    String getUniqueName() const override;
+    virtual void onItemParentChanged() {}
 
-    TreePanel *findParentTreePanel() const;
+    virtual void safeRename(const String &newName);
+    void addChildTreeItem(TreeItem *child, int insertIndex = -1);
+    void dispatchChangeTreeItemView();
 
-    virtual void onItemMoved() {}
+    // Some of the main properties for the views:
+    virtual String getName() const;
+    virtual Colour getColour() const;
+    virtual Font getFont() const;
+    virtual Image getIcon() const = 0;
 
-
-    void addChildTreeItem(TreeItem *child, int insertIndex = -1)
-    {
-        this->addSubItem(child, insertIndex);
-        TreeItem::notifySubtreeMoved(child);
-    }
-
-
-    void setMarkerVisible(bool shouldBeVisible) noexcept;
     bool isMarkerVisible() const noexcept;
-
-    void setGreyedOut(bool shouldBeGreyedOut) noexcept;
-    bool isGreyedOut() const noexcept;
-
-    bool isCompactMode() const;
-
+    void setMarkerVisible(bool shouldBeVisible) noexcept;
 
     template<typename T>
     static T *getActiveItem(TreeItem *root)
@@ -100,11 +91,6 @@ public:
     
         return nullptr;
     }
-
-    static TreeItem *getSelectedItem(Component *anyComponentInTree);
-    static void getAllSelectedItems(Component *anyComponentInTree, OwnedArray<TreeItem> &selectedNodes);
-
-    static bool isNodeInChildren(TreeItem *nodeToScan, TreeItem *nodeToCheck);
 
     template<typename T>
     T *findParentOfType() const
@@ -134,6 +120,18 @@ public:
         }
 
         return nullptr;
+    }
+
+    template<typename T>
+    bool selectChildOfType() const
+    {
+        if (T *child = this->findChildOfType<T>())
+        {
+            child->setSelected(true, true);
+            return true;
+        }
+
+        return false;
     }
 
     template<typename T>
@@ -178,10 +176,8 @@ public:
         return static_cast<TreeItem *>(item);
     }
 
-    bool mightContainSubItems() override
-    {
-        return (this->getNumSubItems() > 0);
-    }
+    String getUniqueName() const override;
+    bool mightContainSubItems() override;
 
     //===------------------------------------------------------------------===//
     // Page stuff
@@ -189,18 +185,7 @@ public:
     
     virtual void showPage() = 0;
     virtual void recreatePage() {}
-    void recreateSubtreePages()
-    {
-        Array<TreeItem *> subtree;
-        this->collectChildrenOfType<TreeItem>(this, subtree, false);
-
-        this->recreatePage();
-
-        for (int i = 0; i < subtree.size(); ++i)
-        {
-            subtree.getUnchecked(i)->recreatePage();
-        }
-    }
+    void recreateSubtreePages();
 
     //===------------------------------------------------------------------===//
     // Dragging
@@ -215,35 +200,20 @@ public:
     //===------------------------------------------------------------------===//
 
     Component *createItemComponent() override;
-
     void paintItem(Graphics &g, int width, int height) override;
-
     void paintOpenCloseButton(Graphics &, const Rectangle<float> &area,
-                                      Colour backgroundColour, bool isMouseOver) override;
-
+        Colour backgroundColour, bool isMouseOver) override;
     void paintHorizontalConnectingLine(Graphics &, const Line<float> &line) override;
-
     void paintVerticalConnectingLine(Graphics &, const Line<float> &line) override;
-
     int getItemHeight() const override;
 
-    virtual Image getIcon() const = 0;
-    virtual Font getFont() const;
-    virtual Colour getColour() const;
-    virtual String getCaption() const; // a title for the component - as opposed to getName()
 
     //===------------------------------------------------------------------===//
     // Menu
     //===------------------------------------------------------------------===//
 
-    virtual Component *createItemMenu()
-    {
-        return nullptr;
-    }
-
+    virtual ScopedPointer<Component> createItemMenu() = 0;
     void itemSelectionChanged(bool isNowSelected) override;
-
-    String getName() const noexcept; // an internal name
 
     //===------------------------------------------------------------------===//
     // Cleanup
@@ -253,37 +223,16 @@ public:
     static bool deleteItem(TreeItem *itemToDelete);
 
     //===------------------------------------------------------------------===//
-    // Renamer
-    //===------------------------------------------------------------------===//
-
-    virtual void onRename(const String &newName);
-
-    //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
-    void reset() override
-    {
-        this->deleteAllSubItems();
-    }
-
-
-protected:
-
-    void setName(const String &newName) noexcept;
-
-    friend class RenameTreeItemCallback;
-
-    virtual String getNameForRenamingCallback() const
-    {
-        return this->getName();
-    }
+    void reset() override;
+    XmlElement *serialize() const override;
+    void deserialize(const XmlElement &xml) override;
 
 protected:
 
     void setVisible(bool shouldBeVisible) noexcept;
-
-    void safeRename(const String &newName);
 
     template<typename T>
     static void collectChildrenOfType(const TreeItem *rootNode, Array<T *> &resultArray, bool pickOnlySelectedOnes)
@@ -345,6 +294,7 @@ protected:
     }
 
     String name;
+    String type;
 
     bool markerIsVisible;
 
@@ -352,11 +302,9 @@ protected:
     void deleteAllSubItems();
 
     static void openOrCloseAllSubGroups(TreeViewItem &item, bool shouldOpen);
-    static void notifySubtreeMoved(TreeItem *node);
 
 private:
 
-    bool itemIsGreyedOut;
     bool itemShouldBeVisible;
 
     WeakReference<TreeItem>::Master masterReference;

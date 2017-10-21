@@ -22,7 +22,7 @@
 #include "RolloverHeaderRight.h"
 
 //[MiscUserDefs]
-#include "TreePanel.h"
+#include "NavigationSidebar.h"
 //[/MiscUserDefs]
 
 RolloverHeaderRight::RolloverHeaderRight(const String &headerTitle)

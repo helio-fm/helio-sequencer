@@ -23,6 +23,7 @@
 #include "TrackGroupTreeItem.h"
 #include "PianoTrackTreeItem.h"
 #include "AutomationTrackTreeItem.h"
+#include "PatternEditorTreeItem.h"
 #include "MainLayout.h"
 #include "Document.h"
 #include "ProjectListener.h"
@@ -61,15 +62,15 @@
 
 
 ProjectTreeItem::ProjectTreeItem(const String &name) :
-DocumentOwner(App::Workspace(), name, "hp"),
-    TreeItem(name)
+    DocumentOwner(App::Workspace(), name, "hp"),
+    TreeItem(name, Serialization::Core::project)
 {
     this->initialize();
 }
 
 ProjectTreeItem::ProjectTreeItem(const File &existingFile) :
     DocumentOwner(App::Workspace(), existingFile),
-    TreeItem(existingFile.getFileNameWithoutExtension())
+    TreeItem(existingFile.getFileNameWithoutExtension(), Serialization::Core::project)
 {
     this->initialize();
 }
@@ -120,7 +121,7 @@ ProjectTreeItem::~ProjectTreeItem()
     this->projectSettings = nullptr;
 
     this->removeAllListeners();
-    this->editor = nullptr;
+    this->sequencerLayout = nullptr;
 
     this->timeline = nullptr;
     this->info = nullptr;
@@ -198,7 +199,7 @@ ProjectTimeline *ProjectTreeItem::getTimeline() const noexcept
     return this->timeline;
 }
 
-HybridRollEditMode ProjectTreeItem::getEditMode() const noexcept
+HybridRollEditMode &ProjectTreeItem::getEditMode() noexcept
 {
     return this->rollEditMode;
 }
@@ -206,7 +207,7 @@ HybridRollEditMode ProjectTreeItem::getEditMode() const noexcept
 HybridRoll *ProjectTreeItem::getLastFocusedRoll() const
 {
     // todo!
-    return this->editor->getRoll();
+    return this->sequencerLayout->getRoll();
     
 //    if (this->origami != nullptr)
 //    {
@@ -242,7 +243,7 @@ void ProjectTreeItem::showPage()
     App::Layout().showPage(this->projectSettings, this);
 }
 
-void ProjectTreeItem::onRename(const String &newName)
+void ProjectTreeItem::safeRename(const String &newName)
 {
     if (newName == this->getName())
     {
@@ -255,13 +256,10 @@ void ProjectTreeItem::onRename(const String &newName)
         this->recentFilesList->removeById(this->getId());
     }
 
-    //TreeItem::onRename(newName);
-    //this->getDocument()->renameFile(this->getName());
-
-    this->setName(newName);
+    this->name = newName;
     
     this->getDocument()->renameFile(newName);
-    TreeItem::notifySubtreeMoved(this);
+    this->broadcastChangeProjectInfo(this->info);
 
     // notify recent files list
     if (this->recentFilesList != nullptr)
@@ -272,27 +270,18 @@ void ProjectTreeItem::onRename(const String &newName)
                               this->getId(),
                               true);
     }
-    
-    // notify workspace's document that he has been changed and needs to save
-    App::Workspace().sendChangeMessage();
 
-    this->repaintItem();
-}
-
-void ProjectTreeItem::repaintEditor()
-{
-    this->editor->resized();
-    this->editor->repaint();
+    this->dispatchChangeTreeItemView();
 }
 
 void ProjectTreeItem::recreatePage()
 {
-    if (this->editor || this->projectSettings)
+    if (this->sequencerLayout || this->projectSettings)
     {
         this->savePageState();
     }
     
-    this->editor = new SequencerLayout(*this);
+    this->sequencerLayout = new SequencerLayout(*this);
     
     if (App::isRunningOnPhone())
     {
@@ -309,41 +298,47 @@ void ProjectTreeItem::recreatePage()
 
 void ProjectTreeItem::savePageState() const
 {
-    ScopedPointer<XmlElement> editorStateNode(this->editor->serialize());
+    ScopedPointer<XmlElement> editorStateNode(this->sequencerLayout->serialize());
     Config::set(Serialization::UI::editorState, editorStateNode);
 }
 
 void ProjectTreeItem::loadPageState()
 {
-    ScopedPointer<XmlElement> editorStateNode(Config::getXml(Serialization::UI::editorState));
-    if (editorStateNode != nullptr) {
-        this->editor->deserialize(*editorStateNode);
+    const ScopedPointer<XmlElement> editorStateNode(Config::getXml(Serialization::UI::editorState));
+    if (editorStateNode != nullptr)
+    {
+        this->sequencerLayout->deserialize(*editorStateNode);
     }
 }
 
-void ProjectTreeItem::showEditor(MidiSequence *activeLayer, TreeItem *source)
+void ProjectTreeItem::showPatternEditor(TreeItem *source)
 {
-    if (PianoSequence *pianoLayer = dynamic_cast<PianoSequence *>(activeLayer))
+    this->sequencerLayout->showPatternEditor();
+    App::Layout().showPage(this->sequencerLayout, source);
+}
+
+void ProjectTreeItem::showLinearEditor(MidiSequence *activeSequence, TreeItem *source)
+{
+    if (PianoSequence *pianoLayer = dynamic_cast<PianoSequence *>(activeSequence))
     {
         // todo collect selected pianotreeitems
         Array<PianoTrackTreeItem *> pianoTreeItems = this->findChildrenOfType<PianoTrackTreeItem>(true);
-        Array<MidiSequence *> pianoLayers;
+        Array<MidiSequence *> pianoSequences;
 
         for (int i = 0; i < pianoTreeItems.size(); ++i)
         {
-            pianoLayers.add(pianoTreeItems.getUnchecked(i)->getSequence());
+            pianoSequences.add(pianoTreeItems.getUnchecked(i)->getSequence());
         }
         
-        this->editor->setActiveMidiLayers(pianoLayers, activeLayer); // before
-        
-        App::Layout().showPage(this->editor, source);
-        this->editor->grabKeyboardFocus();
+        this->sequencerLayout->showLinearEditor(pianoSequences, activeSequence);
+        this->lastShownTrack = source;
+
+        App::Layout().showPage(this->sequencerLayout, source);
     }
-    else if (AutomationSequence *autoLayer = dynamic_cast<AutomationSequence *>(activeLayer))
+    else if (AutomationSequence *autoLayer = dynamic_cast<AutomationSequence *>(activeSequence))
     {
-        const bool editorWasShown = this->editor->toggleShowAutomationEditor(autoLayer);
-        source->setGreyedOut(!editorWasShown);
-        this->editor->grabKeyboardFocus();
+        const bool editorWasShown = this->sequencerLayout->toggleShowAutomationEditor(autoLayer);
+        // TODO I really need a full-featured automation editor here >_<
     }
 }
 
@@ -351,80 +346,14 @@ void ProjectTreeItem::hideEditor(MidiSequence *activeLayer, TreeItem *source)
 {
     if (AutomationSequence *autoLayer = dynamic_cast<AutomationSequence *>(activeLayer))
     {
-        this->editor->hideAutomationEditor(autoLayer);
-        source->setGreyedOut(true);
+        this->sequencerLayout->hideAutomationEditor(autoLayer);
+        // TODO I really need a full-featured automation editor here >_<
     }
 }
 
-void ProjectTreeItem::showEditorsGroup(Array<MidiSequence *> layersGroup, TreeItem *source)
+WeakReference<TreeItem> ProjectTreeItem::getLastShownTrack() const
 {
-    //const auto tracks(this->getTracks());
-
-    if (layersGroup.size() == 0)
-    {
-        // todo show dummy component?
-        this->showPage();
-        return;
-    }
-    if (layersGroup.size() == 1)
-    {
-        // single-editor
-        this->showEditor(layersGroup[0], source);
-        return;
-    }
-    
-    // сейчас здесь баг - когда удаляешь слой из группы, фокус не меняется,
-    // потому что здесь ничего не происходит,
-    // активный слой указывает на невалидный пойнтер
-    // todo mark first layer, select others and show show all layers
-    
-//    this->origami = new OrigamiVertical();
-//    int editorIndex = 0;
-//    MidiEditor *firstFoundEditor = nullptr;
-//
-//    for (int i = 0; i < myLayers.size(); ++i)
-//    {
-//        const bool needsShadow = (editorIndex != (layersGroup.size() - 1));
-//        MidiSequence *layerIter = myLayers.getUnchecked(i);
-//
-//        if (layersGroup.contains(layerIter))
-//        {
-//            if (TreeItem *item = dynamic_cast<TreeItem *>(layerIter->getOwner()))
-//            {
-//                if (dynamic_cast<PianoSequence *>(layerIter))
-//                {
-//                    if (editorIndex >= this->splitscreenPianoEditors.size())
-//                    { break; }
-//
-//                    MidiEditor *foundEditor = this->splitscreenPianoEditors[editorIndex];
-//                    this->origami->addPage(foundEditor, false, needsShadow);
-//                    foundEditor->setActiveMidiLayer(layerIter);
-//
-//                    firstFoundEditor = (firstFoundEditor == nullptr) ? foundEditor : firstFoundEditor;
-//                }
-//                else if (dynamic_cast<AutomationSequence *>(layerIter))
-//                {
-//                    // todo!
-//                    
-//                    //if (editorIndex >= this->splitscreenAutoEditors.size())
-//                    //{ break; }
-//
-//                    //MidiEditor *foundEditor = this->splitscreenAutoEditors[editorIndex];
-//                    //this->origami->addPage(foundEditor, false, needsShadow);
-//                    //foundEditor->setActiveMidiLayer(layerIter);
-//
-//                    //firstFoundEditor = (firstFoundEditor == nullptr) ? foundEditor : firstFoundEditor;
-//                }
-//
-//                editorIndex += 1;
-//            }
-//        }
-//    }
-//
-//    this->origami->addPage(this->midiRollCommandPanel, false, false, true);
-//    this->workspace.showPage(this->origami, source);
-//
-//    firstFoundEditor->grabKeyboardFocus();
+    return this->lastShownTrack;
 }
 
 void ProjectTreeItem::updateActiveGroupEditors()
@@ -468,7 +397,7 @@ void ProjectTreeItem::activateLayer(MidiSequence* sequence, bool selectOthers, b
 // Menu
 //===----------------------------------------------------------------------===//
 
-Component *ProjectTreeItem::createItemMenu()
+ScopedPointer<Component> ProjectTreeItem::createItemMenu()
 {
     return new ProjectCommandPanel(*this, CommandPanel::SlideRight);
 }
@@ -477,11 +406,6 @@ Component *ProjectTreeItem::createItemMenu()
 //===----------------------------------------------------------------------===//
 // Dragging
 //===----------------------------------------------------------------------===//
-
-void ProjectTreeItem::onItemMoved()
-{
-    this->broadcastChangeProjectInfo(this->info);
-}
 
 bool ProjectTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
@@ -625,7 +549,7 @@ XmlElement *ProjectTreeItem::serialize() const
     this->getDocument()->save(); // todo remove? will save on delete
 
     auto xml = new XmlElement(Serialization::Core::treeItem);
-    xml->setAttribute("type", Serialization::Core::project);
+    xml->setAttribute(Serialization::Core::treeItemType, this->type);
     xml->setAttribute("fullPath", this->getDocument()->getFullPath());
     xml->setAttribute("relativePath", this->getDocument()->getRelativePath());
     return xml;
@@ -634,10 +558,6 @@ XmlElement *ProjectTreeItem::serialize() const
 void ProjectTreeItem::deserialize(const XmlElement &xml)
 {
     this->reset();
-
-    const String& type = xml.getStringAttribute("type");
-
-    if (type != Serialization::Core::project) { return; }
 
     const String &fullPath = xml.getStringAttribute("fullPath");
     const String &relativePath = xml.getStringAttribute("relativePath");
@@ -678,7 +598,7 @@ XmlElement *ProjectTreeItem::save() const
     xml->setAttribute("seek", this->transport->getSeekPosition());
     
     // UI state is now stored in config
-    //xml->addChildElement(this->editor->serialize());
+    //xml->addChildElement(this->sequencerLayout->serialize());
 
     xml->addChildElement(this->undoStack->serialize());
     
@@ -698,12 +618,18 @@ void ProjectTreeItem::load(const XmlElement &xml)
 
     if (root == nullptr) { return; }
 
-    this->setName(root->getStringAttribute("name"));
-
     this->info->deserialize(*root);
     this->timeline->deserialize(*root);
 
-    TreeItemChildrenSerializer::deserializeChildren(*this, *root);
+    // Proceed with basic properties and children
+    TreeItem::deserialize(*root);
+
+    // Legacy support: if no pattern set manager found, create one
+    if (nullptr == this->findChildOfType<PatternEditorTreeItem>())
+    {
+        // Try to place it after 'Versions' (presumably, index 1)
+        this->addChildTreeItem(new PatternEditorTreeItem(), 1);
+    }
 
     const auto range = this->broadcastChangeProjectBeatRange();
 
@@ -720,7 +646,7 @@ void ProjectTreeItem::load(const XmlElement &xml)
     //this->transport->deserialize(*root); // todo
 
     // UI state is now stored in config
-    //this->editor->deserialize(*root);
+    //this->sequencerLayout->deserialize(*root);
     
     this->undoStack->deserialize(*root);
     
@@ -816,8 +742,13 @@ void ProjectTreeItem::broadcastPostRemoveEvent(MidiSequence *const layer)
 void ProjectTreeItem::broadcastAddTrack(MidiTrack *const track)
 {
     this->isLayersHashOutdated = true;
-    this->registerVcsItem(track->getSequence());
-    this->registerVcsItem(track->getPattern());
+
+    if (VCS::TrackedItem *tracked = dynamic_cast<VCS::TrackedItem *>(track))
+    {
+        ScopedWriteLock lock(this->vcsInfoLock);
+        this->vcsItems.addIfNotAlreadyThere(tracked);
+    }
+
     this->changeListeners.call(&ProjectListener::onAddTrack, track);
     this->sendChangeMessage();
 }
@@ -825,8 +756,13 @@ void ProjectTreeItem::broadcastAddTrack(MidiTrack *const track)
 void ProjectTreeItem::broadcastRemoveTrack(MidiTrack *const track)
 {
     this->isLayersHashOutdated = true;
-    this->unregisterVcsItem(track->getSequence());
-    this->unregisterVcsItem(track->getPattern());
+
+    if (VCS::TrackedItem *tracked = dynamic_cast<VCS::TrackedItem *>(track))
+    {
+        ScopedWriteLock lock(this->vcsInfoLock);
+        this->vcsItems.removeAllInstancesOf(tracked);
+    }
+
     this->changeListeners.call(&ProjectListener::onRemoveTrack, track);
     this->sendChangeMessage();
 }
@@ -978,6 +914,11 @@ void ProjectTreeItem::exportMidi(File &file) const
 // VCS::TrackedItemsSource
 //===----------------------------------------------------------------------===//
 
+String ProjectTreeItem::getVCSName() const
+{
+    return this->getName();
+}
+
 int ProjectTreeItem::getNumTrackedItems()
 {
     ScopedReadLock lock(this->vcsInfoLock);
@@ -1031,7 +972,6 @@ bool ProjectTreeItem::deleteTrackedItem(VCS::TrackedItem *item)
 }
 
 
-
 //===----------------------------------------------------------------------===//
 // ChangeListener
 //===----------------------------------------------------------------------===//
@@ -1044,67 +984,11 @@ void ProjectTreeItem::changeListenerCallback(ChangeBroadcaster *source)
         DocumentOwner::sendChangeMessage();
         //this->getDocument()->save();
         
-        // todo! здесь есть баг в ios
-        // (или везде)
-        // после коммита вцс начинает строить дифф, и в это же время из основного потока мы все сохраняем
-        // в какой-то момент пак (баг именно в нем, видимо) не отдает данные дельты
-//#if HELIO_DESKTOP
-//        this->getDocument()->forceSave();
-//#endif
-    }
-}
-
-
-
-void ProjectTreeItem::registerVcsItem(const MidiSequence *layer)
-{
-    const auto children = this->findChildrenOfType<MidiTrackTreeItem>();
-    for (MidiTrackTreeItem *item : children)
-    {
-        if (item->getSequence() == layer)
-        {
-            ScopedWriteLock lock(this->vcsInfoLock);
-            this->vcsItems.addIfNotAlreadyThere(item);
-        }
-    }
-}
-
-void ProjectTreeItem::registerVcsItem(const Pattern *pattern)
-{
-    const auto children = this->findChildrenOfType<MidiTrackTreeItem>();
-    for (MidiTrackTreeItem *item : children)
-    {
-        if (item->getPattern() == pattern)
-        {
-            ScopedWriteLock lock(this->vcsInfoLock);
-            this->vcsItems.addIfNotAlreadyThere(item);
-        }
-    }
-}
-
-void ProjectTreeItem::unregisterVcsItem(const MidiSequence *layer)
-{
-    const auto children = this->findChildrenOfType<MidiTrackTreeItem>();
-    for (MidiTrackTreeItem *item : children)
-    {
-        if (item->getSequence() == layer)
-        {
-            ScopedWriteLock lock(this->vcsInfoLock);
-            this->vcsItems.addIfNotAlreadyThere(item);
-        }
-    }
-}
-
-void ProjectTreeItem::unregisterVcsItem(const Pattern *pattern)
-{
-    const auto children = this->findChildrenOfType<MidiTrackTreeItem>();
-    for (MidiTrackTreeItem *item : children)
-    {
-        if (item->getPattern() == pattern)
-        {
-            ScopedWriteLock lock(this->vcsInfoLock);
-            this->vcsItems.addIfNotAlreadyThere(item);
-        }
+        // FIXME! a bug reproduced in iOS when callin forceSave() here:
+        // VCS start rebuilding diff after a commit in a separate thread,
+        // at the same time main thread saves the project and flushes the VCS pack,
+        // and eventually the pack cannot get delta data.
+        //this->getDocument()->forceSave();
     }
 }
 

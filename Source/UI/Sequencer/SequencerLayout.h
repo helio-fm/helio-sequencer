@@ -25,7 +25,8 @@ class MidiSequence;
 class AutomationSequence;
 class TrackScroller;
 class ProjectTreeItem;
-class HybridRollCommandPanel;
+class ToolsSidebar;
+class NavigationSidebar;
 class AutomationTrackMap;
 class AutomationTrackMapProxy;
 class MidiEditorSplitContainer;
@@ -44,14 +45,14 @@ public:
     explicit SequencerLayout(ProjectTreeItem &parentProject);
     ~SequencerLayout() override;
 
-    void setActiveMidiLayers(Array<MidiSequence *> tracks, MidiSequence *primaryTrack);
-    
+    void showPatternEditor();
+    void showLinearEditor(Array<MidiSequence *> tracks, MidiSequence *primaryTrack);
+
     // returns true if editor was shown, else returns false
     bool toggleShowAutomationEditor(AutomationSequence *targetLayer);
     void hideAutomationEditor(AutomationSequence *targetLayer);
     
     HybridRoll *getRoll() const;
-
 
     //===------------------------------------------------------------------===//
     // FileDragAndDropTarget
@@ -60,14 +61,12 @@ public:
     void filesDropped(const StringArray &filenames, int mouseX, int mouseY) override;
     bool isInterestedInFileDrag(const StringArray &files) override;
 
-
     //===------------------------------------------------------------------===//
-    // Component events
+    // Component
     //===------------------------------------------------------------------===//
 
     void resized() override;
-    // virtual void broughtToFront() override;
-    
+    void handleCommandMessage(int commandId) override;
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -88,8 +87,9 @@ private:
     ScopedPointer<PianoRoll> pianoRoll;
     ScopedPointer<PatternRoll> patternRoll;
     ScopedPointer<RollsSwitchingProxy> rollContainer; // лейаут для вьюпорта с роллом и минимап-скроллера внизу
-    //ScopedPointer<Component> automationContainer; // лейаут для редактора автоматизации с тулбаром справа
-    ScopedPointer<HybridRollCommandPanel> rollCommandPanel; // тублар справа от роллов
+
+    ScopedPointer<NavigationSidebar> rollNavSidebar;
+    ScopedPointer<ToolsSidebar> rollToolsSidebar; // тублар справа от роллов
 
     typedef HashMap<String, AutomationTrackMapProxy *> AutomationEditorsHashMap;
     AutomationEditorsHashMap automationEditorsLinks; // связки id слоев и редакторов автоматизации

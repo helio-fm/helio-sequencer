@@ -115,7 +115,6 @@ void AnnotationCommandPanel::handleCommandMessage(int commandId)
             autoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
         }
 
-        roll->grabKeyboardFocus();
         this->getParentComponent()->exitModalState(0);
     }
     else

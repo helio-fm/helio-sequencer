@@ -37,6 +37,7 @@
 #include "Workspace.h"
 #include "App.h"
 #include "CommandIDs.h"
+#include "ComponentIDs.h"
 
 #if HELIO_DESKTOP
 #   define HAS_OPEN_PROJECT_ROW 1
@@ -163,7 +164,7 @@ void WorkspaceMenu::changeListenerCallback(ChangeBroadcaster *source)
     {
         authManager->removeChangeListener(this);
 
-        Component *progressIndicator = App::Layout().findChildWithID(ProgressTooltip::componentId);
+        Component *progressIndicator = App::Layout().findChildWithID(ComponentIDs::progressTooltipId);
 
         if (progressIndicator)
         {

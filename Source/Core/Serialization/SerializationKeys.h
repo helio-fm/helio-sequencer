@@ -21,12 +21,11 @@ namespace Serialization
 {
     namespace Core
     {
-        static const String firstLaunchSetupDone = "FirstLaunchSetupDone";
-
         static const String midiRoll = "MidiRoll";
         static const String editor = "Editor";
-        static const String treePanel = "TreePanel";
         static const String treeItem = "Node";
+        static const String treeItemType = "Type";
+        static const String treeItemName = "Name";
         static const String treeState = "TreeState";
         static const String selectedTreeItem = "SelectedNode";
         static const String treeItemId = "NodeId";
@@ -50,6 +49,7 @@ namespace Serialization
         static const String projectInfo = "ProjectInfo";
         static const String projectTimeStamp = "ProjectTimeStamp";
         static const String versionControl = "VersionControl";
+        static const String patternSet = "PatternSet";
         static const String layerGroup = "Group";
         static const String layer = "Layer";
         static const String pianoLayer = "PianoLayer";
@@ -109,12 +109,26 @@ namespace Serialization
         static const String clipboard = "HelioClipboard";
 
         static const String lastUsedLogin = "LastUsedLogin";
+        static const String firstLaunchSetupDone = "FirstLaunchSetupDone";
     } // namespace Core
 
     namespace UI
     {
         static const String lastShownPageId = "LastShownPageId";
         static const String editorState = "EditorState";
+
+        namespace Hotkeys
+        {
+            static const String schemes = "HotkeySchemes";
+            static const String scheme = "HotkeyScheme";
+            static const String schemeName = "Name";
+            static const String keyPress = "KeyPress";
+            static const String keyDown = "KeyDown";
+            static const String keyUp = "KeyUp";
+            static const String hotkeyDescription = "Key";
+            static const String hotkeyReceiver = "Receiver";
+            static const String hotkeyCommand = "Command";
+        }
 
         namespace Colours
         {

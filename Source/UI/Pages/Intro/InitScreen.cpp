@@ -36,8 +36,9 @@
 InitScreen::InitScreen()
 {
     addAndMakeVisible (bg = new PanelBackgroundA());
-    addAndMakeVisible (logoImage = new LogoFader());
-
+    addAndMakeVisible (headLine = new SeparatorHorizontalReversed());
+    addAndMakeVisible (headShadow = new LighterShadowDownwards());
+    addAndMakeVisible (gradient1 = new PanelBackgroundB());
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -60,7 +61,9 @@ InitScreen::~InitScreen()
     //[/Destructor_pre]
 
     bg = nullptr;
-    logoImage = nullptr;
+    headLine = nullptr;
+    headShadow = nullptr;
+    gradient1 = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -81,9 +84,10 @@ void InitScreen::resized()
     //[/UserPreResize]
 
     bg->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
-    logoImage->setBounds ((getWidth() / 2) - (300 / 2), (getHeight() / 2) + -50 - (300 / 2), 300, 300);
+    headLine->setBounds (0, 32, getWidth() - 0, 2);
+    headShadow->setBounds (0, 33, getWidth() - 0, 6);
+    gradient1->setBounds (-50, 0, getWidth() - -100, 32);
     //[UserResized] Add your own custom resize handling here..
-    logoImage->setCentrePosition(this->getWidth() / 2, (this->getHeight() / 2) - 5);
     //[/UserResized]
 }
 
@@ -106,12 +110,7 @@ void InitScreen::parentSizeChanged()
     if (this->isVisible())
     {
         this->rebound();
-
-        #if HELIO_DESKTOP
-        this->logoImage->startFade();
-        #endif
-
-        this->startTimer(3000);
+        this->startTimer(10);
     }
     //[/UserCode_parentSizeChanged]
 }
@@ -152,7 +151,7 @@ void InitScreen::rebound()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="InitScreen" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="InitScreen" template="../../../Template"
                  componentName="" parentClasses="public Component, private Timer"
                  constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="0" initialWidth="600"
@@ -165,11 +164,17 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="66a1a33f06322bfb" memberName="bg" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../Themes/PanelBackgroundA.cpp"
+             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../../Themes/PanelBackgroundA.cpp"
              constructorParams=""/>
-  <GENERICCOMPONENT name="" id="ea1b592642055bdc" memberName="logoImage" virtualName=""
-                    explicitFocusOrder="0" pos="0Cc -50Cc 300 300" class="LogoFader"
-                    params=""/>
+  <JUCERCOMP name="" id="28ce45d9e84b729c" memberName="headLine" virtualName=""
+             explicitFocusOrder="0" pos="0 32 0M 2" sourceFile="../../Themes/SeparatorHorizontalReversed.cpp"
+             constructorParams=""/>
+  <JUCERCOMP name="" id="1d398dc12e2047bd" memberName="headShadow" virtualName=""
+             explicitFocusOrder="0" pos="0 33 0M 6" sourceFile="../../Themes/LighterShadowDownwards.cpp"
+             constructorParams=""/>
+  <JUCERCOMP name="" id="f09d886c97d1c017" memberName="gradient1" virtualName=""
+             explicitFocusOrder="0" pos="-50 0 -100M 32" sourceFile="../../Themes/PanelBackgroundB.cpp"
+             constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

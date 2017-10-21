@@ -321,7 +321,7 @@ void AutomationTrackMap::onAddMidiEvent(const MidiEvent &event)
 
         component->setNextNeighbour(nextEventComponent);
         this->updateTempoComponent(component);
-        component->toFront(true);
+        component->toFront(false);
         //this->eventAnimator.fadeIn(component, 150);
         
         if (previousEventComponent)
@@ -474,7 +474,7 @@ void AutomationTrackMap::reloadTrack()
             
             component->setNextNeighbour(nextEventComponent);
             //this->updateTempoComponent(component);
-            component->toFront(true);
+            component->toFront(false);
             
             if (previousEventComponent)
             {

@@ -22,7 +22,7 @@
 #include "RolloverBackButtonLeft.h"
 
 //[MiscUserDefs]
-#include "TreePanel.h"
+#include "NavigationSidebar.h"
 //[/MiscUserDefs]
 
 RolloverBackButtonLeft::RolloverBackButtonLeft()

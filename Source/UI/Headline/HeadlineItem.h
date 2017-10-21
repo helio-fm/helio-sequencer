@@ -27,16 +27,18 @@ class HeadlineDropdown;
 
 
 class HeadlineItem  : public Component,
-                      private Timer
+                      private Timer,
+                      private ChangeListener
 {
 public:
 
-    HeadlineItem (WeakReference<TreeItem> treeItem);
+    HeadlineItem (WeakReference<TreeItem> treeItem, AsyncUpdater &parent);
 
     ~HeadlineItem();
 
     //[UserMethods]
-    TreeItem *getTreeItem() const noexcept;
+    WeakReference<TreeItem> getTreeItem() const noexcept;
+    void updateContent();
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -44,19 +46,20 @@ public:
     void mouseEnter (const MouseEvent& e) override;
     void mouseExit (const MouseEvent& e) override;
     void mouseDown (const MouseEvent& e) override;
+    void mouseUp (const MouseEvent& e) override;
 
 
 private:
 
     //[UserVariables]
 
+    void changeListenerCallback(ChangeBroadcaster* source) override;
     void timerCallback() override;
+    void showMenu();
 
     WeakReference<TreeItem> item;
-
     ScopedPointer<HeadlineDropdown> dropdown;
-
-    //Component *createHighlighterComponent() override;
+    AsyncUpdater &parentHeadline;
 
     //[/UserVariables]
 

@@ -87,8 +87,10 @@ void TimeSignatureCommandPanel::handleCommandMessage(int commandId)
             return;
         }
 
-        roll->grabKeyboardFocus();
-        this->getParentComponent()->exitModalState(0);
+        if (Component *parent = this->getParentComponent())
+        {
+            parent->exitModalState(0);
+        }
     }
     else
     {

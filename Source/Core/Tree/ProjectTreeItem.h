@@ -34,7 +34,7 @@ class TrackMap;
 class Transport;
 class ProjectInfo;
 class ProjectTimeline;
-class HybridRollCommandPanel;
+class ToolsSidebar;
 class UndoStack;
 class RecentFilesList;
 class Pattern;
@@ -68,10 +68,8 @@ public:
     Transport &getTransport() const noexcept;
     ProjectInfo *getProjectInfo() const noexcept;
     ProjectTimeline *getTimeline() const noexcept;
-    HybridRollEditMode getEditMode() const noexcept;
+    HybridRollEditMode &getEditMode() noexcept;
     HybridRoll *getLastFocusedRoll() const;
-
-    void repaintEditor();
     
     void importMidi(File &file);
     void exportMidi(File &file) const;
@@ -84,37 +82,28 @@ public:
     void savePageState() const;
     void loadPageState();
 
-    void onRename(const String &newName) override;
+    void safeRename(const String &newName) override;
 
-    void showEditor(MidiSequence *activeLayer, TreeItem *source);
-    void showEditorsGroup(Array<MidiSequence *> layersGroup, TreeItem *source);
+    void showPatternEditor(TreeItem *source);
+    void showLinearEditor(MidiSequence *activeLayer, TreeItem *source);
     void hideEditor(MidiSequence *activeLayer, TreeItem *source);
+    WeakReference<TreeItem> getLastShownTrack() const;
 
     void updateActiveGroupEditors();
     void activateLayer(MidiSequence* layer, bool selectOthers, bool deselectOthers);
-
 
     //===------------------------------------------------------------------===//
     // Menu
     //===------------------------------------------------------------------===//
 
-    Component *createItemMenu() override;
-
+    ScopedPointer<Component> createItemMenu() override;
 
     //===------------------------------------------------------------------===//
     // Dragging
     //===------------------------------------------------------------------===//
 
-    void onItemMoved() override;
-
-    var getDragSourceDescription() override
-    { return var::null; }
-
+    var getDragSourceDescription() override { return var::null; }
     bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
-
-    //virtual void itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) override
-    //{ }
-
 
     //===------------------------------------------------------------------===//
     // Undos
@@ -151,7 +140,6 @@ public:
         return nullptr;
     }
 
-
     //===------------------------------------------------------------------===//
     // Accessors
     //===------------------------------------------------------------------===//
@@ -159,7 +147,6 @@ public:
     Array<MidiTrack *> getTracks() const;
     Array<MidiTrack *> getSelectedTracks() const;
     Point<float> getProjectRangeInBeats() const;
-
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -169,7 +156,6 @@ public:
     void deserialize(const XmlElement &xml) override;
     void reset() override;
 
-
     //===------------------------------------------------------------------===//
     // Project listeners
     //===------------------------------------------------------------------===//
@@ -177,7 +163,6 @@ public:
     void addListener(ProjectListener *listener);
     void removeListener(ProjectListener *listener);
     void removeAllListeners();
-
 
     //===------------------------------------------------------------------===//
     // Broadcaster
@@ -202,24 +187,15 @@ public:
     void broadcastChangeViewBeatRange(float firstBeat, float lastBeat);
     Point<float> broadcastChangeProjectBeatRange();
 
-
     //===------------------------------------------------------------------===//
     // VCS::TrackedItemsSource
     //===------------------------------------------------------------------===//
 
-    String getVCSName() const override
-    {
-        return this->getName();
-    }
-
+    String getVCSName() const override;
     int getNumTrackedItems() override;
-
     VCS::TrackedItem *getTrackedItem(int index) override;
-
     VCS::TrackedItem *initTrackedItem(const String &type, const Uuid &id) override;
-
     bool deleteTrackedItem(VCS::TrackedItem *item) override;
-
 
     //===------------------------------------------------------------------===//
     // ChangeListener
@@ -234,13 +210,9 @@ protected:
     //===------------------------------------------------------------------===//
 
     bool onDocumentLoad(File &file) override;
-
     void onDocumentDidLoad(File &file) override;
-
     bool onDocumentSave(File &file) override;
-
     void onDocumentImport(File &file) override;
-
     bool onDocumentExport(File &file) override;
 
 private:
@@ -257,19 +229,15 @@ private:
     ScopedPointer<Component> trackMap;
 #endif
 
-    ScopedPointer<SequencerLayout> editor;
-
+    ScopedPointer<SequencerLayout> sequencerLayout;
     HybridRollEditMode rollEditMode;
-
     ListenerList<ProjectListener> changeListeners;
-
     ScopedPointer<ProjectPage> projectSettings;
-
     ReadWriteLock tracksListLock;
-
     ScopedPointer<ProjectInfo> info;
-
     ScopedPointer<ProjectTimeline> timeline;
+
+    WeakReference<TreeItem> lastShownTrack;
 
 private:
 
@@ -279,16 +247,8 @@ private:
 
 private:
 
-    void registerVcsItem(const MidiSequence *layer);
-    void registerVcsItem(const Pattern *pattern);
-
-    void unregisterVcsItem(const MidiSequence *layer);
-    void unregisterVcsItem(const Pattern *pattern);
-
     ReadWriteLock vcsInfoLock;
     Array<const VCS::TrackedItem *> vcsItems;
-
-private:
 
     ScopedPointer<UndoStack> undoStack;
 

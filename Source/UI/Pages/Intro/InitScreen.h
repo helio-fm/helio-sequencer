@@ -21,7 +21,10 @@
 class LogoFader;
 //[/Headers]
 
-#include "../Themes/PanelBackgroundA.h"
+#include "../../Themes/PanelBackgroundA.h"
+#include "../../Themes/SeparatorHorizontalReversed.h"
+#include "../../Themes/LighterShadowDownwards.h"
+#include "../../Themes/PanelBackgroundB.h"
 
 class InitScreen  : public Component,
                     private Timer
@@ -53,7 +56,9 @@ private:
     //[/UserVariables]
 
     ScopedPointer<PanelBackgroundA> bg;
-    ScopedPointer<LogoFader> logoImage;
+    ScopedPointer<SeparatorHorizontalReversed> headLine;
+    ScopedPointer<LighterShadowDownwards> headShadow;
+    ScopedPointer<PanelBackgroundB> gradient1;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InitScreen)
 };

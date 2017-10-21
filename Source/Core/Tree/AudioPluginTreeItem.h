@@ -27,41 +27,26 @@ class AudioPluginTreeItem : public TreeItem
 public:
 
     AudioPluginTreeItem(uint32 pluginID, const String &name);
-
     ~AudioPluginTreeItem() override;
 
     Colour getColour() const override;
-
     Image getIcon() const override;
-
     uint32 getNodeId() const noexcept;
 
+    ScopedPointer<Component> createItemMenu() override;
     void showPage() override;
-
 
     //===------------------------------------------------------------------===//
     // Dragging
     //===------------------------------------------------------------------===//
 
     var getDragSourceDescription() override;
-
     bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
-
     void itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) override;
-
-
-    //===------------------------------------------------------------------===//
-    // Serializable
-    //===------------------------------------------------------------------===//
-
-    XmlElement *serialize() const override;
-
-    void deserialize(const XmlElement &xml) override;
 
 private:
 
     ScopedPointer<Component> audioPluginEditor;
-
     const uint32 filterID;
 
 };

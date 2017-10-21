@@ -18,47 +18,43 @@
 #pragma once
 
 //[Headers]
-#include "IconComponent.h"
 #include "HighlightedComponent.h"
-#include "ComponentFader.h"
+#include "IconButton.h"
+#include "TreeItem.h"
+
+class IconComponent;
+class HeadlineDropdown;
 //[/Headers]
 
-#include "../Themes/ShadeLight.h"
-#include "../Tree/TreeItemMenuButton.h"
 
-class RootTreeItemPanelDefault  : public Component,
-                                  private ChangeListener
+class HeadlineNavigationPanel  : public Component
 {
 public:
 
-    RootTreeItemPanelDefault ();
+    HeadlineNavigationPanel ();
 
-    ~RootTreeItemPanelDefault();
+    ~HeadlineNavigationPanel();
 
     //[UserMethods]
+    void updateState(bool canGoPrevious, bool canGoNext);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
     void handleCommandMessage (int commandId) override;
-    void mouseEnter (const MouseEvent& e) override;
-    void mouseExit (const MouseEvent& e) override;
-    void mouseDown (const MouseEvent& e) override;
 
 
 private:
 
     //[UserVariables]
-    void changeListenerCallback(ChangeBroadcaster *source) override;
-    void updateLabels();
-
-    ComponentFader fader;
+    ScopedPointer<HeadlineDropdown> dropdown;
     //[/UserVariables]
 
-    ScopedPointer<ShadeLight> shade;
-    ScopedPointer<IconComponent> workspaceIcon;
-    ScopedPointer<Label> workspaceNameLabel;
-    ScopedPointer<TreeItemMenuButton> menuButton;
+    ScopedPointer<IconButton> navigatePrevious;
+    ScopedPointer<IconButton> navigateNext;
+    Path internalPath1;
+    Path internalPath2;
+    Path internalPath3;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RootTreeItemPanelDefault)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeadlineNavigationPanel)
 };

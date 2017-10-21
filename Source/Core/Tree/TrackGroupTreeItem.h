@@ -26,8 +26,7 @@ class TrackGroupTreeItem : public TreeItem
 {
 public:
 
-    explicit TrackGroupTreeItem(const String &name_);
-
+    explicit TrackGroupTreeItem(const String &name);
     ~TrackGroupTreeItem() override;
 
     static void removeAllEmptyGroupsInProject(ProjectTreeItem *project); // sanitize the tree
@@ -37,8 +36,7 @@ public:
     Colour getColour() const override;
     Image getIcon() const override;
     void showPage() override;
-    void onRename(const String &newName) override;
-
+    void safeRename(const String &newName) override;
 
     //===------------------------------------------------------------------===//
     // Dragging
@@ -46,22 +44,11 @@ public:
 
     var getDragSourceDescription() override;
     bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override;
-    //virtual void itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex) override
-    //{ }
-
 
     //===------------------------------------------------------------------===//
     // Menu
     //===------------------------------------------------------------------===//
 
-    Component *createItemMenu() override;
-
-
-    //===------------------------------------------------------------------===//
-    // Serializable
-    //===------------------------------------------------------------------===//
-
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ScopedPointer<Component> createItemMenu() override;
 
 };

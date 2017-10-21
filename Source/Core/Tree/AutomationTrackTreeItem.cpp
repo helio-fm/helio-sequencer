@@ -27,7 +27,7 @@
 #include "PatternDeltas.h"
 
 AutomationTrackTreeItem::AutomationTrackTreeItem(const String &name) :
-    MidiTrackTreeItem(name)
+    MidiTrackTreeItem(name, Serialization::Core::autoLayer)
 {
     this->layer = new AutomationSequence(*this, *this);
     this->pattern = new Pattern(*this, *this);
@@ -41,8 +41,6 @@ AutomationTrackTreeItem::AutomationTrackTreeItem(const String &name) :
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), AutoLayerDeltas::layerController));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), AutoLayerDeltas::eventsAdded));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), PatternDeltas::clipsAdded));
-
-    this->setGreyedOut(true); // automations not visible by default
     
 #if HELIO_MOBILE
     // для мобил выключаю автоматизации нафиг, неюзабельно будет совершенно
@@ -57,14 +55,7 @@ Image AutomationTrackTreeItem::getIcon() const
 
 void AutomationTrackTreeItem::paintItem(Graphics &g, int width, int height)
 {
-    if (this->isCompactMode())
-    {
-        TreeItemComponentCompact::paintBackground(g, width, height, false, false);
-    }
-    else
-    {
-        TreeItemComponentDefault::paintBackground(g, width, height, false, false);
-    }
+    TreeItemComponentDefault::paintBackground(g, width, height, false, false);
 }
 
 //===----------------------------------------------------------------------===//
@@ -200,8 +191,8 @@ XmlElement *AutomationTrackTreeItem::serialize() const
 
     this->serializeVCSUuid(*xml);
 
-    xml->setAttribute("type", Serialization::Core::autoLayer);
-    xml->setAttribute("name", this->name);
+    xml->setAttribute(Serialization::Core::treeItemType, this->type);
+    xml->setAttribute(Serialization::Core::treeItemName, this->name);
 
     this->serializeTrackProperties(*xml);
 
@@ -217,14 +208,7 @@ void AutomationTrackTreeItem::deserialize(const XmlElement &xml)
 {
     this->reset();
 
-    const String& type = xml.getStringAttribute("type");
-
-    if (type != Serialization::Core::autoLayer) { return; }
-
     this->deserializeVCSUuid(xml);
-
-    this->setName(xml.getStringAttribute("name"));
-
     this->deserializeTrackProperties(xml);
 
     // он все равно должен быть один, но так короче
@@ -238,7 +222,8 @@ void AutomationTrackTreeItem::deserialize(const XmlElement &xml)
         this->pattern->deserialize(*e);
     }
 
-    TreeItemChildrenSerializer::deserializeChildren(*this, xml);
+    // Proceed with basic properties and children
+    TreeItem::deserialize(xml);
 }
 
 
@@ -313,7 +298,6 @@ void AutomationTrackTreeItem::resetMuteDelta(const XmlElement *state)
     if (willMute != this->isTrackMuted())
     {
         this->setTrackMuted(willMute);
-        this->repaintItem();
     }
 }
 
@@ -326,7 +310,6 @@ void AutomationTrackTreeItem::resetColourDelta(const XmlElement *state)
     if (colour != this->getTrackColour())
     {
         this->setTrackColour(colour);
-        this->repaintItem();
     }
 }
 

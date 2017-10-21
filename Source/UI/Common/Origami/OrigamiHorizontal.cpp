@@ -20,56 +20,85 @@
 #include "LightShadowDownwards.h"
 #include "LightShadowUpwards.h"
 
-// надо как-то сохранять размеры компонентов
-// и иметь возможность устанавливать размер при добавлении страницы
 
-void OrigamiHorizontal::addPage(Component *nonOwnedComponent,
-                                bool addShadowAtStart /*= false*/,
-                                bool addShadowAtEnd /*= true*/,
-                                bool fixedHeight /*= false*/,
-                                int minSize /*= ORIGAMI_DEFAULT_MIN_SIZE*/,
-                                int maxSize /*= ORIGAMI_DEFAULT_MAX_SIZE*/,
-                                int insertIndex /*= -1*/)
+class HorizontalEdge : public Component
 {
-    if (this->containsComponent(nonOwnedComponent))
+public:
+
+    HorizontalEdge()
+    {
+        this->setWantsKeyboardFocus(false);
+        this->setInterceptsMouseClicks(false, false);
+    }
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(findColour(Origami::resizerLineColourId));
+        g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
+    }
+};
+
+class HorizontalEdgeTop : public Component
+{
+public:
+
+    HorizontalEdgeTop()
+    {
+        this->setWantsKeyboardFocus(false);
+        this->setInterceptsMouseClicks(false, false);
+    }
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(findColour(Origami::resizerShadowColourId));
+        g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
+        g.setColour(findColour(Origami::resizerLineColourId));
+        g.drawHorizontalLine(1, 0.f, float(this->getWidth()));
+    }
+};
+
+class HorizontalEdgeBottom : public Component
+{
+public:
+
+    HorizontalEdgeBottom()
+    {
+        this->setWantsKeyboardFocus(false);
+        this->setInterceptsMouseClicks(false, false);
+    }
+
+    void paint(Graphics &g) override
+    {
+        g.setColour(findColour(Origami::resizerLineColourId));
+        g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
+        g.setColour(findColour(Origami::resizerShadowColourId));
+        g.drawHorizontalLine(1, 0.f, float(this->getWidth()));
+    }
+};
+
+void OrigamiHorizontal::addFlexiblePage(Component *targetComponent)
+{
+    if (this->containsComponent(targetComponent))
     {
         return;
     }
 
     auto newPage = new Origami::Page();
 
-    newPage->fixedSize = fixedHeight;
-    newPage->component = nonOwnedComponent;
+    newPage->fixedSize = false;
+    newPage->component = targetComponent;
+    newPage->min = newPage->max = targetComponent->getHeight();
 
-    if (!fixedHeight)
-    {
-        newPage->component->setSize(this->getWidth(), this->getHeight());
-    }
+    newPage->component->setSize(this->getWidth(), this->getHeight());
 
-    newPage->min = fixedHeight ? nonOwnedComponent->getHeight() : minSize;
-    newPage->max = fixedHeight ? nonOwnedComponent->getHeight() : maxSize;
-    
-    newPage->constrainer = new Origami::ChildConstrainer(*this);
-    newPage->constrainer->setMinimumHeight(newPage->min);
-    newPage->constrainer->setMaximumHeight(newPage->max);
-    newPage->constrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
-
-    newPage->resizer =
-        new ResizableEdgeComponent(newPage->component,
-                                   newPage->constrainer,
-                                   ResizableEdgeComponent::bottomEdge);
-
-    newPage->resizer->toFront(false);
-    newPage->resizer->setAlwaysOnTop(true);
-
-    this->pages.insert(insertIndex, newPage);
+    this->pages.insert(-1, newPage);
 
     const int commonFixedHeight = this->getCommonFixedHeight();
 
     // выравниваем по высоте
     for (auto page : this->pages)
     {
-        if (! page->fixedSize)
+        if (!page->fixedSize)
         {
             Component *component = page->component;
             const int newHeight = (this->getHeight() - commonFixedHeight) / this->pages.size();
@@ -83,33 +112,106 @@ void OrigamiHorizontal::addPage(Component *nonOwnedComponent,
     }
 
     this->addAndMakeVisible(newPage->component);
+}
 
-    if (addShadowAtStart)
+
+void OrigamiHorizontal::addFixedPage(Component *targetComponent)
+{
+    if (this->containsComponent(targetComponent))
     {
-        newPage->shadowAtStart = new LightShadowDownwards();
-        newPage->shadowAtStart->setSize(10, 10);
-        newPage->shadowAtStart->setInterceptsMouseClicks(false, false);
-        this->addAndMakeVisible(newPage->shadowAtStart);
-    }
-    else
-    {
-        newPage->shadowAtStart = nullptr;
+        return;
     }
 
-    if (addShadowAtEnd)
+    auto newPage = new Origami::Page();
+
+    newPage->fixedSize = true;
+    newPage->component = targetComponent;
+    newPage->min = newPage->max = targetComponent->getHeight();
+
+    this->pages.insert(-1, newPage);
+
+    const int commonFixedHeight = this->getCommonFixedHeight();
+
+    for (auto page : this->pages)
     {
-        newPage->shadowAtEnd = new LightShadowUpwards();
-        newPage->shadowAtEnd->setSize(10, 10);
-        newPage->shadowAtEnd->setInterceptsMouseClicks(false, false);
-        this->addAndMakeVisible(newPage->shadowAtEnd);
-    }
-    else
-    {
-        newPage->shadowAtEnd = nullptr;
+        if (!page->fixedSize)
+        {
+            Component *component = page->component;
+            const int newHeight = (this->getHeight() - commonFixedHeight) / this->pages.size();
+            component->setSize(component->getWidth(), newHeight);
+            page->size = newHeight;
+        }
+        else
+        {
+            page->size = page->component->getHeight();
+        }
     }
 
-    this->addAndMakeVisible(newPage->resizer);
-    this->resized();
+    this->addAndMakeVisible(newPage->component);
+}
+
+void OrigamiHorizontal::addShadowAtTheStart()
+{
+    if (Page *page = this->pages.getLast())
+    {
+        page->shadowAtStart = new LightShadowDownwards();
+        page->shadowAtStart->setSize(10, 10);
+        page->shadowAtStart->setInterceptsMouseClicks(false, false);
+        this->addAndMakeVisible(page->shadowAtStart);
+    }
+}
+
+void OrigamiHorizontal::addShadowAtTheEnd()
+{
+    if (Page *page = this->pages.getLast())
+    {
+        page->shadowAtEnd = new LightShadowUpwards();
+        page->shadowAtEnd->setSize(10, 10);
+        page->shadowAtEnd->setInterceptsMouseClicks(false, false);
+        this->addAndMakeVisible(page->shadowAtEnd);
+    }
+}
+
+void OrigamiHorizontal::addEdgeAtTheStart()
+{
+    if (Page *page = this->pages.getLast())
+    {
+        page->borderAtStart = new HorizontalEdgeTop();
+        page->borderAtStart->setSize(2, 2);
+        this->addAndMakeVisible(page->borderAtStart);
+    }
+}
+
+void OrigamiHorizontal::addEdgeAtTheEnd()
+{
+    if (Page *page = this->pages.getLast())
+    {
+        page->borderAtEnd = new HorizontalEdgeBottom();
+        page->borderAtEnd->setSize(2, 2);
+        this->addAndMakeVisible(page->borderAtEnd);
+    }
+}
+
+void OrigamiHorizontal::addResizer(int minSize, int maxSize)
+{
+    if (Page *page = this->pages.getLast())
+    {
+        page->min = minSize;
+        page->max = maxSize;
+        page->constrainer = new Origami::ChildConstrainer(*this);
+        page->constrainer->setMinimumHeight(minSize);
+        page->constrainer->setMaximumHeight(maxSize);
+        page->constrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);
+
+        page->resizer =
+            new ResizableEdgeComponent(page->component,
+                page->constrainer,
+                ResizableEdgeComponent::bottomEdge);
+
+        this->addAndMakeVisible(page->resizer);
+        page->resizer->toFront(false);
+        page->resizer->setAlwaysOnTop(true);
+    }
 }
 
 
@@ -155,70 +257,31 @@ void OrigamiHorizontal::resized()
         Component *component = page->component;
         Rectangle<int> newBounds(r.removeFromTop(component->getHeight()));
         newBounds.setHeight(jmax(component->getHeight(), newBounds.getHeight()));
-        
-        component->setBounds(newBounds);
 
-        if (Component *shadow = page->shadowAtStart)
-        {
-            shadow->setBounds(component->getX(),
-                              component->getY(),
-                              component->getWidth(),
-                              shadow->getHeight());
-        }
-
-        if (Component *shadow = page->shadowAtEnd)
-        {
-            shadow->setBounds(component->getX(),
-                              component->getBottom() - shadow->getHeight(),
-                              component->getWidth(),
-                              shadow->getHeight());
-        }
-
-        ComponentBoundsConstrainer *constrainer = page->constrainer;
-        Component *resizer = page->resizer;
-
-        // настроить констрейнеры, так, чтоб
         if (Origami::Page *nextPage = this->pages[i + 1])
         {
-            resizer->setBounds(0, component->getBottom() - 2, component->getWidth(), 4);
+            this->updateLayout(page, newBounds);
 
-            if (! page->fixedSize)
+            if (page->constrainer != nullptr)
             {
-                const int nextSizeLimit = (nextPage->component->getHeight() - nextPage->min);
+                const int nextSizeLimit = (nextPage->component->getHeight() - 100);
                 const int newLimit = jmax(component->getHeight(), component->getHeight() + nextSizeLimit);
-                //Logger::writeToLog(String(newLimit));
-                constrainer->setMaximumHeight(newLimit);
-
-                if (nextPage->fixedSize)
-                {
-                    resizer->setInterceptsMouseClicks(false, false);
-                }
+                page->constrainer->setMaximumHeight(newLimit);
             }
         }
         else
         {
-            component->setTopLeftPosition(0, this->getHeight() - component->getHeight());
-            resizer->setBounds(0, component->getBottom() + 2, 0, 0);
+            newBounds.setY(this->getHeight() - component->getHeight());
+            this->updateLayout(page, newBounds);
 
             if (Origami::Page *prevPage = this->pages[i - 1])
             {
-                prevPage->component->setSize(prevPage->component->getWidth(),
-                                             this->getHeight() -
-                                             prevPage->component->getY() -
-                                             component->getHeight());
+                Rectangle<int> prevBounds(prevPage->component->getBounds());
+                prevBounds.setSize(prevPage->component->getWidth(),
+                    this->getHeight() - prevPage->component->getY() -
+                    component->getHeight());
 
-                prevPage->resizer->setBounds(0,
-                                             prevPage->component->getBottom() - 2,
-                                             prevPage->component->getWidth(),
-                                             4);
-                
-                if (Component *shadow = prevPage->shadowAtEnd)
-                {
-                    shadow->setBounds(prevPage->component->getX(),
-                                      prevPage->component->getBottom() - shadow->getHeight(),
-                                      prevPage->component->getWidth(),
-                                      shadow->getHeight());
-                }
+                this->updateLayout(prevPage, prevBounds);
             }
         }
     }
@@ -236,13 +299,6 @@ void OrigamiHorizontal::onPageResized(Component *component)
 
             if (Origami::Page *nextPage = this->pages[i + 1])
             {
-                //nextPage->constrainer->applyBoundsToComponent(nextPage->component,
-                //                                              Rectangle<int>(nextPage->component->getX(),
-                //                                                             nextPage->component->getY(),
-                //                                                             nextPage->component->getWidth(),
-                //                                                             nextPage->component->getHeight() - deltaHeight));
-                
-                // must be safe
                 nextPage->component->setSize(
                     nextPage->component->getWidth(),
                     nextPage->component->getHeight() - deltaHeight);
@@ -266,4 +322,37 @@ int OrigamiHorizontal::getCommonFixedHeight() const
     }
 
     return commonFixedHeight;
+}
+
+void OrigamiHorizontal::updateLayout(const Origami::Page *page, Rectangle<int> bounds)
+{
+    Component *c = page->component;
+    c->setBounds(bounds);
+
+    if (Component *shadow = page->shadowAtStart)
+    {
+        shadow->setBounds(c->getX(), c->getY(), c->getWidth(), shadow->getHeight());
+    }
+
+    if (Component *shadow = page->shadowAtEnd)
+    {
+        shadow->setBounds(c->getX(), c->getBottom() - shadow->getHeight(), c->getWidth(), shadow->getHeight());
+    }
+
+    if (Component *border = page->borderAtStart)
+    {
+        border->setBounds(c->getX(), c->getY() - 1, c->getWidth(), border->getHeight());
+        border->toFront(false);
+    }
+
+    if (Component *border = page->borderAtEnd)
+    {
+        border->setBounds(c->getX(), c->getBottom() - border->getHeight() + 1, c->getWidth(), border->getHeight());
+        border->toFront(false);
+    }
+
+    if (Component *resizer = page->resizer)
+    {
+        resizer->setBounds(0, c->getBottom() - 1, c->getWidth(), 2);
+    }
 }

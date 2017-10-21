@@ -96,6 +96,7 @@ void DraggingListBoxComponent::mouseUp(const MouseEvent &event)
         if (this->maxDragDistance < LISTBOX_DRAG_THRESHOLD)
         {
             this->setSelected(true);
+            return;
         }
         else
         {

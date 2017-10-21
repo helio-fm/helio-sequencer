@@ -41,7 +41,7 @@ public:
 
     void showPage() override;
 
-    void onRename(const String &newName) override;
+    void safeRename(const String &newName) override;
 
 
     //===------------------------------------------------------------------===//
@@ -74,7 +74,7 @@ public:
     // Menu
     //===------------------------------------------------------------------===//
 
-    Component *createItemMenu() override;
+    ScopedPointer<Component> createItemMenu() override;
 
 
     //===------------------------------------------------------------------===//

@@ -26,6 +26,8 @@
 #include "PanelBackgroundB.h"
 #include "HeadlineDropdown.h"
 #include "CommandPanel.h"
+#include "MainLayout.h"
+#include "App.h"
 
 class HeadlineItemHighlighter : public Component
 {
@@ -73,22 +75,51 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<TreeItem> targetItem)
     this->titleLabel->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]
 
-    setSize (256, 256);
+    setSize (150, 32);
 
     //[Constructor]
     if (this->item != nullptr)
     {
         this->icon->setIconImage(this->item->getIcon());
-        this->titleLabel->setText(this->item->getCaption(), dontSendNotification);
+        this->titleLabel->setText(this->item->getName(), dontSendNotification);
         const int textWidth = this->titleLabel->getFont()
             .getStringWidth(this->titleLabel->getText());
         this->setSize(textWidth + 64, this->getHeight());
 
-        if (Component *menu = this->item->createItemMenu())
+        // Create tree panel for the root,
+        // and generic menu for the rest:
+        if (this->item->getParentItem() == nullptr)
         {
-            this->content = menu;
+            ScopedPointer<TreeView> treeView(new TreeView());
+            treeView->setFocusContainer(false);
+            treeView->setWantsKeyboardFocus(false);
+            treeView->setRootItem(this->item);
+            treeView->getRootItem()->setOpen(true);
+            treeView->setRootItemVisible(true);
+            treeView->setDefaultOpenness(true);
+            treeView->getViewport()->setWantsKeyboardFocus(false);
+            treeView->getViewport()->setScrollBarsShown(false, false);
+            treeView->setOpenCloseButtonsVisible(false);
+            treeView->setIndentSize(4);
+            const auto treeContentBounds =
+                treeView->getViewport()->getViewedComponent()->getLocalBounds();
+            const auto w = treeContentBounds.getWidth();
+            const auto h = jmin(treeContentBounds.getHeight(),
+                App::Layout().getHeight() - 180);
+            treeView->setSize(w, h);
+            this->content = treeView.release();
             this->addAndMakeVisible(this->content);
-            this->childBoundsChanged(this->content);
+            this->syncWidthWithContent();
+        }
+        else if (ScopedPointer<Component> menu = this->item->createItemMenu())
+        {
+            this->content = menu.release();
+            this->addAndMakeVisible(this->content);
+            this->syncWidthWithContent();
+        }
+        else
+        {
+            // TODO dismiss immediately?
         }
     }
 
@@ -240,10 +271,16 @@ void HeadlineDropdown::mouseExit (const MouseEvent& e)
 void HeadlineDropdown::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
-    //if (this->item != nullptr) {
-    //    this->item->setSelected(true, true);
-    //}
+    if (this->item != nullptr) {
+        this->item->setSelected(true, true);
+    }
     //[/UserCode_mouseDown]
+}
+
+void HeadlineDropdown::mouseUp (const MouseEvent& e)
+{
+    //[UserCode_mouseUp] -- Add your code here...
+    //[/UserCode_mouseUp]
 }
 
 void HeadlineDropdown::inputAttemptWhenModal()
@@ -277,11 +314,7 @@ T *findParent(Component *target)
 
 void HeadlineDropdown::childBoundsChanged(Component *child)
 {
-    if (child == this->content)
-    {
-        const int w = jmax(this->getWidth(), this->content->getWidth() + 4);
-        this->setSize(w, this->content->getHeight() + 34);
-    }
+    this->syncWidthWithContent();
 }
 
 void HeadlineDropdown::timerCallback()
@@ -292,13 +325,23 @@ void HeadlineDropdown::timerCallback()
     HeadlineDropdown *root =
         findParent<HeadlineDropdown>(componentUnderMouse);
 
-    if (root != this)
+    if (componentUnderMouse != nullptr && root != this)
     {
         this->stopTimer();
         this->exitModalState(0);
         Desktop::getInstance().getAnimator()
             .animateComponent(this, this->getBounds(), 0.f, 150, true, 0.f, 1.f);
         delete this;
+    }
+}
+
+void HeadlineDropdown::syncWidthWithContent()
+{
+    if (this->getWidth() != this->content->getWidth() + 4 ||
+        this->getHeight() != this->content->getHeight() + 34)
+    {
+        const int w = jmax(this->getWidth(), this->content->getWidth() + 4);
+        this->setSize(w, this->content->getHeight() + 34);
     }
 }
 
@@ -312,12 +355,13 @@ BEGIN_JUCER_METADATA
                  componentName="" parentClasses="public Component, private Timer"
                  constructorParams="WeakReference&lt;TreeItem&gt; targetItem"
                  variableInitialisers="item(targetItem)" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="256"
-                 initialHeight="256">
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="150"
+                 initialHeight="32">
   <METHODS>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
     <METHOD name="inputAttemptWhenModal()"/>
     <METHOD name="mouseExit (const MouseEvent&amp; e)"/>
+    <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
     <PATH pos="0 0 100 100" fill=" radial: 0 16, 16 14, 0=33000000, 1=0"

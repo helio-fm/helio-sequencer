@@ -45,9 +45,6 @@ public:
 protected:
 
     void emitCallout();
-    void emitRollover();
-
-    bool isCompactMode() const;
     Colour getItemColour() const;
     
     ScopedPointer<LongTapController> longTapController;

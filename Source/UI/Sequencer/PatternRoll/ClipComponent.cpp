@@ -100,7 +100,7 @@ void ClipComponent::mouseDown(const MouseEvent &e)
 void ClipComponent::paint(Graphics& g)
 {
     g.setColour(Colours::floralwhite.withAlpha(0.5f));
-    g.fillRoundedRectangle(0, 0, this->getWidth(), this->getHeight(), 5);
+    g.fillRoundedRectangle(0.f, 0.f, float(this->getWidth()), float(this->getHeight()), 5);
 }
 
 

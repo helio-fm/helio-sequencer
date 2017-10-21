@@ -26,6 +26,7 @@
 #include "InstrumentsRootTreeItem.h"
 #include "InstrumentTreeItem.h"
 #include "VersionControlTreeItem.h"
+#include "PatternEditorTreeItem.h"
 #include "SettingsTreeItem.h"
 
 void TreeItemChildrenSerializer::serializeChildren(const TreeItem &parentItem, XmlElement &parentXml)
@@ -44,7 +45,13 @@ void TreeItemChildrenSerializer::deserializeChildren(TreeItem &parentItem, const
 {
     forEachXmlChildElementWithTagName(parentXml, e, Serialization::Core::treeItem)
     {
-        const String type = e->getStringAttribute("type");
+        // Legacy support:
+        const String typeFallback = 
+            e->getStringAttribute(Serialization::Core::treeItemType.toLowerCase());
+
+        const String type =
+            e->getStringAttribute(Serialization::Core::treeItemType, typeFallback);
+
         TreeItem *child = nullptr;
 
         if (type == Serialization::Core::project)
@@ -78,6 +85,10 @@ void TreeItemChildrenSerializer::deserializeChildren(TreeItem &parentItem, const
         else if (type == Serialization::Core::versionControl)
         {
             child = new VersionControlTreeItem();
+        }
+        else if (type == Serialization::Core::patternSet)
+        {
+            child = new PatternEditorTreeItem();
         }
 
         if (child != nullptr)

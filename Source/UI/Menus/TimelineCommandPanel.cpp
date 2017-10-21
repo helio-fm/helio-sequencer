@@ -140,10 +140,9 @@ void TimelineCommandPanel::handleCommandMessage(int commandId)
     }
     else if (commandId == CommandIDs::Cancel)
     {
-        if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
+        if (Component *parent = this->getParentComponent())
         {
-            this->getParentComponent()->exitModalState(0);
-            roll->grabKeyboardFocus();
+            parent->exitModalState(0);
         }
     }
     else

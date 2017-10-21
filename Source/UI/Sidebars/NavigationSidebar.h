@@ -22,31 +22,29 @@ class GenericAudioMonitorComponent;
 class WaveformAudioMonitorComponent;
 class SpectrogramAudioMonitorComponent;
 class ModeIndicatorComponent;
+class AudioMonitor;
 
-#include "TreePanel.h"
+#define NAVIGATION_SIDEBAR_WIDTH (72)
+#include "ModeIndicatorComponent.h"
 //[/Headers]
 
 #include "../Themes/PanelBackgroundC.h"
 #include "../Themes/LighterShadowUpwards.h"
-#include "../Themes/GradientVertical.h"
 #include "../Themes/SeparatorHorizontalReversed.h"
 #include "../Themes/LighterShadowDownwards.h"
 #include "../Themes/GradientVerticalReversed.h"
 #include "../Themes/SeparatorHorizontal.h"
 
-class TreePanelDefault  : public TreePanel
+class NavigationSidebar  : public ModeIndicatorOwnerComponent
 {
 public:
 
-    TreePanelDefault ();
+    NavigationSidebar ();
 
-    ~TreePanelDefault();
+    ~NavigationSidebar();
 
     //[UserMethods]
-    void setRoot(TreeItem *rootItem) override;
-    void setRootItemPanelSelected(bool shouldBeSelected) override;
-    void setAudioMonitor(AudioMonitor *audioMonitor) override;
-    Rectangle<int> getWorkingArea() override;
+    void setAudioMonitor(AudioMonitor *audioMonitor);
     void handleChangeMode() override;
     //[/UserMethods]
 
@@ -69,16 +67,13 @@ private:
     //[/UserVariables]
 
     ScopedPointer<PanelBackgroundC> background;
-    ScopedPointer<TreeView> tree;
     ScopedPointer<LighterShadowUpwards> shadow;
-    ScopedPointer<GradientVertical> gradient;
     ScopedPointer<SeparatorHorizontalReversed> headLine;
     ScopedPointer<LighterShadowDownwards> headShadow;
     ScopedPointer<GradientVerticalReversed> gradient1;
     ScopedPointer<SeparatorHorizontal> separator;
-    ScopedPointer<Component> rootTreeItemPanel;
     ScopedPointer<ModeIndicatorTrigger> modeIndicatorSelector;
     ScopedPointer<ModeIndicatorComponent> modeIndicator;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TreePanelDefault)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NavigationSidebar)
 };

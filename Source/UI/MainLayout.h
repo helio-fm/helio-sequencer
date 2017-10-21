@@ -17,11 +17,12 @@
 
 #pragma once
 
-class TreePanel;
+class TransientTreeItem;
 class TooltipContainer;
+class HotkeyScheme;
+class TreeItem;
 class Headline;
 
-#include "LastShownTreeItems.h"
 #include "ComponentFader.h"
 
 #if HELIO_DESKTOP
@@ -38,66 +39,44 @@ class MainLayout : public Component
 public:
 
     MainLayout();
-
     ~MainLayout() override;
 
     void init();
     void forceRestoreLastOpenedPage();
-    
-    void hideConsole();
-    void showConsole(bool alsoShowLog);
+    void toggleShowHideConsole();
 
     static int getScrollerHeight();
     
-    
     //===------------------------------------------------------------------===//
-    // Pages stack
+    // Pages
     //===------------------------------------------------------------------===//
 
-    LastShownTreeItems &getLastShownItems();
+    void showTransientItem(ScopedPointer<TransientTreeItem> newItem, TreeItem *parent);
+    void showPage(Component *page, TreeItem *source = nullptr);
+    bool isShowingPage(Component *page) const noexcept;
 
-    WeakReference<TreeItem> getActiveTreeItem() const;
-    
-    void showPrevPageIfAny();
-    
-    void showNextPageIfAny();
-    
-    void showPage(Component *page,
-                  TreeItem *source = nullptr);
-
-    
     //===------------------------------------------------------------------===//
     // UI
     //===------------------------------------------------------------------===//
 
-    void toggleShowTree();
-
     void setStatus(const String &text);
-
     void showTooltip(const String &message, int timeOutMs = 15000);
-
     void showTooltip(Component *newTooltip, int timeOutMs = 15000);
-
     void showTooltip(Component *newTooltip, Rectangle<int> callerScreenBounds, int timeOutMs = 15000);
-
     void showModalNonOwnedDialog(Component *targetComponent);
-
     void showBlockingNonModalDialog(Component *targetComponent);
-    
     Rectangle<int> getPageBounds() const;
-    
     
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
     void resized() override;
-
-    void childBoundsChanged(Component *child) override;
-
     void lookAndFeelChanged() override;
-
     bool keyPressed(const KeyPress &key) override;
+    bool keyStateChanged(bool isKeyDown) override;
+    void modifierKeysChanged(const ModifierKeys &modifiers) override;
+    void handleCommandMessage(int commandId) override;
 
 private:
 
@@ -112,13 +91,9 @@ private:
 
     ScopedPointer<Headline> headline;
 
-    ScopedPointer<ResizableEdgeComponent> treeResizer;
-    ScopedPointer<TreePanel> treePanel;
-    ComponentBoundsConstrainer treePanelConstrainer;
-
     ScopedPointer<TooltipContainer> tooltipContainer;
     
-    LastShownTreeItems lastShownItems;
+    ScopedPointer<HotkeyScheme> hotkeyScheme;
     
 private:
 

@@ -21,26 +21,20 @@ class ComponentsList;
 
 #include "TreeItem.h"
 
-// Invisible settings item
-// Needed to make "back" - "forward" buttons work right when showing settings page
-// Since it's invisible, let's make it simple asf
-
-class SettingsTreeItem :
-    public TreeItem
+class SettingsTreeItem : public TreeItem
 {
 public:
 
     SettingsTreeItem();
-
     ~SettingsTreeItem() override;
     
+    String getName() const override;
     Colour getColour() const override;
     Image getIcon() const override;
-    String getCaption() const override;
 
     void showPage() override;
     void recreatePage() override;
-
+    ScopedPointer<Component> createItemMenu() override;
     
     //===------------------------------------------------------------------===//
     // Dragging
@@ -51,15 +45,6 @@ public:
 
     bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override
     { return false; }
-
-
-    //===------------------------------------------------------------------===//
-    // Serializable
-    //===------------------------------------------------------------------===//
-
-    XmlElement *serialize() const override;
-
-    void deserialize(const XmlElement &xml) override;
 
 private:
 

@@ -51,7 +51,6 @@ class App : public JUCEApplication,
 public:
 
     App();
-
     ~App() override;
 
 
@@ -78,38 +77,28 @@ public:
     static void dismissAllModalComponents();
 
     void showTooltip(const String &text, int timeOutMs = 15000);
-
     void showTooltip(Component *newTooltip, int timeOutMs = 15000);
-
     void showTooltip(Component *newTooltip, Rectangle<int> callerScreenBounds, int timeOutMs = 15000);
-
     void showModalComponent(Component *nonOwnedComponent);
-
     void showBlocker(Component *nonOwnedComponent);
 
+    void recreateLayout();
     
     //===------------------------------------------------------------------===//
     // JUCEApplication
     //===------------------------------------------------------------------===//
 
     void initialise(const String &commandLine) override;
-
     void shutdown() override;
 
     const String getApplicationName() override;
-
     const String getApplicationVersion() override;
 
     bool moreThanOneInstanceAllowed() override;
-
     void anotherInstanceStarted(const String &commandLine) override;
-
     void systemRequestedQuit() override;
-
     void suspended() override;
-
     void resumed() override;
-
     void unhandledException(const std::exception *,
                             const String &sourceFilename,
                             int lineNumber) override;
@@ -120,49 +109,32 @@ public:
     //===------------------------------------------------------------------===//
 
     MainWindow *getWindow() const noexcept;
-
     class Workspace *getWorkspace() const noexcept;
-
     Config *getConfig() const noexcept;
-
     Supervisor *getSupervisor() const noexcept;
-
     InternalClipboard *getClipboard() const noexcept;
-    
     AuthorizationManager *getAuthManager() const noexcept;
-
     UpdateManager *getUpdateManager() const noexcept;
-
     HelioTheme *getTheme() const noexcept;
 
 private:
 
     HelioLogger logger;
-
     ScopedPointer<HelioTheme> theme;
-
     ScopedPointer<Config> config;
-
     ScopedPointer<Supervisor> supervisor;
-
     ScopedPointer<UpdateManager> updater;
-
     ScopedPointer<InternalClipboard> clipboard;
-
     ScopedPointer<class MainWindow> window;
-    
     ScopedPointer<AuthorizationManager> authorizationManager;
-
     ScopedPointer<class Workspace> workspace;
 
 private:
 
     String collectSomeSystemInfo();
-
     String getMacAddressList();
 
     void checkPlugin(const String &markerFile);
-    
     void changeListenerCallback(ChangeBroadcaster *source) override;
 
 private:
@@ -175,7 +147,6 @@ private:
     };
 
     App::RunMode detectRunMode(const String &commandLine);
-
     App::RunMode runMode;
     
     void handleAsyncUpdate() override;

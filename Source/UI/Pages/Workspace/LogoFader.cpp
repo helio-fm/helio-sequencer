@@ -22,7 +22,7 @@
 #include "SpectralLogo.h"
 
 #define DEFAULT_LOGO_SIZE 280
-#define OLD_LOGO_SIZE 350
+#define OLD_LOGO_SIZE 400
 
 LogoFader::LogoFader(bool useOldLogo)
 {
@@ -39,6 +39,8 @@ LogoFader::LogoFader(bool useOldLogo)
 
 LogoFader::~LogoFader()
 {
+    this->fader.cancelAllAnimations(false);
+    this->stopTimer();
     this->gfx = nullptr;
 }
 
@@ -51,24 +53,23 @@ void LogoFader::startFade()
 {
     this->fader.cancelAllAnimations(true);
 
-    this->startTimer(1000 / 50);
-    this->fadingDummy.setAlpha(0.4f);
-    this->gfx->setAlpha(0.55f);
+    this->gfx->setAlpha(0.f);
+    this->fadingDummy.setAlpha(0.f);
+    this->startTimerHz(60);
 
     this->fader.animateComponent(&this->fadingDummy,
                                  this->fadingDummy.getBounds(),
                                  1.f,
-                                 5000,
+                                 2500,
                                  false,
-                                 1.f,
-                                 1.f);
+                                 0.f,
+                                 0.f);
 }
 
 void LogoFader::timerCallback()
 {
-    this->gfx->setAlpha(this->fadingDummy.getAlpha());
-    
-    if (this->gfx->getAlpha() == 1.f)
+    this->gfx->setAlpha(0.33f + this->fadingDummy.getAlpha() / 3.f);
+    if (this->fadingDummy.getAlpha() == 1.f)
     {
         this->stopTimer();
     }

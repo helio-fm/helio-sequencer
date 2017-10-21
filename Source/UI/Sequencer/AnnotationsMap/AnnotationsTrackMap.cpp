@@ -278,7 +278,6 @@ void AnnotationsTrackMap<T>::onChangeViewBeatRange(float firstBeat, float lastBe
 template<typename T>
 void AnnotationsTrackMap<T>::onAnnotationMoved(T *nc)
 {
-    this->roll.grabKeyboardFocus();
 }
 
 template<typename T>
@@ -322,10 +321,6 @@ void AnnotationsTrackMap<T>::onAnnotationTapped(T *nc)
     if (annotationUnderSeekCursor == &nc->getEvent() && !wasPlaying)
     {
         this->showContextMenuFor(nc);
-    }
-    else
-    {
-        this->roll.grabKeyboardFocus();
     }
 }
 

@@ -27,7 +27,7 @@
 #define GROUP_COMPACT_SEPARATOR 5
 
 TrackGroupTreeItem::TrackGroupTreeItem(const String &name) :
-    TreeItem(name)
+    TreeItem(name, Serialization::Core::layerGroup)
 {
 }
 
@@ -214,18 +214,13 @@ void TrackGroupTreeItem::showPage()
 {
     applySelectionPolicyForGroup(this);
     
-    Array<MidiTrackTreeItem *> myLayerItems(this->findChildrenOfType<MidiTrackTreeItem>());
-    
-    Array<MidiSequence *> myLayers;
-    
-    for (int i = 0; i < myLayerItems.size(); ++i)
+    Array<MidiTrackTreeItem *> subTracks(this->findChildrenOfType<MidiTrackTreeItem>());
+    if (! subTracks.isEmpty())
     {
-        myLayers.add(myLayerItems.getUnchecked(i)->getSequence());
-    }
-    
-    if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
-    {
-        parentProject->showEditorsGroup(myLayers, this);
+        if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
+        {
+            parentProject->showLinearEditor(subTracks.getFirst()->getSequence(), this);
+        }
     }
 }
 
@@ -239,11 +234,11 @@ Image TrackGroupTreeItem::getIcon() const
     return Icons::findByName(Icons::group, TREE_ICON_HEIGHT);
 }
 
-void TrackGroupTreeItem::onRename(const String &newName)
+void TrackGroupTreeItem::safeRename(const String &newName)
 {
-    TreeItem::onRename(newName);
+    TreeItem::safeRename(newName);
     this->sortByNameAmongSiblings();
-    TreeItem::notifySubtreeMoved(this); // сделать это default логикой для всех типов нодов?
+    this->dispatchChangeTreeItemView();
 }
 
 
@@ -251,7 +246,7 @@ void TrackGroupTreeItem::onRename(const String &newName)
 // Menu
 //===----------------------------------------------------------------------===//
 
-Component *TrackGroupTreeItem::createItemMenu()
+ScopedPointer<Component> TrackGroupTreeItem::createItemMenu()
 {
     return nullptr;
 }
@@ -263,9 +258,6 @@ Component *TrackGroupTreeItem::createItemMenu()
 
 var TrackGroupTreeItem::getDragSourceDescription()
 {
-    if (this->isCompactMode())
-    { return var::null; }
-
     return Serialization::Core::layerGroup;
 }
 
@@ -283,33 +275,4 @@ bool TrackGroupTreeItem::isInterestedInDragSource(const DragAndDropTarget::Sourc
     }
 
     return false;
-}
-
-
-//===----------------------------------------------------------------------===//
-// Serializable
-//===----------------------------------------------------------------------===//
-
-XmlElement *TrackGroupTreeItem::serialize() const
-{
-    auto xml = new XmlElement(Serialization::Core::treeItem);
-    xml->setAttribute("type", Serialization::Core::layerGroup);
-    xml->setAttribute("name", this->name);
-
-    TreeItemChildrenSerializer::serializeChildren(*this, *xml);
-
-    return xml;
-}
-
-void TrackGroupTreeItem::deserialize(const XmlElement &xml)
-{
-    this->reset();
-
-    const String& type = xml.getStringAttribute("type");
-
-    if (type != Serialization::Core::layerGroup) { return; }
-
-    this->setName(xml.getStringAttribute("name"));
-
-    TreeItemChildrenSerializer::deserializeChildren(*this, xml);
 }

@@ -22,7 +22,7 @@
 #include "PlayButton.h"
 
 //[MiscUserDefs]
-#include "HybridRollCommandPanel.h"
+#include "ToolsSidebar.h"
 #include "HelioTheme.h"
 #include "CommandIDs.h"
 

@@ -36,8 +36,6 @@
 #include "InternalClipboard.h"
 #include "HelioCallout.h"
 #include "NotesTuningPanel.h"
-#include "ArpeggiatorPanel.h"
-#include "ArpeggiatorEditorPanel.h"
 #include "PianoRollToolbox.h"
 #include "Config.h"
 #include "SerializationKeys.h"
@@ -46,6 +44,7 @@
 #include "AutomationSequence.h"
 #include "AutomationClipComponent.h"
 #include "DummyClipComponent.h"
+#include "ComponentIDs.h"
 
 #define ROWS_OF_TWO_OCTAVES 24
 #define DEFAULT_CLIP_LENGTH 1.0f
@@ -65,6 +64,8 @@ PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
     WeakReference<AudioMonitor> clippingDetector) :
     HybridRoll(parentProject, viewportRef, clippingDetector)
 {
+    this->setComponentID(ComponentIDs::patternRollId);
+
     this->header->toFront(false);
     this->indicator->toFront(false);
     //this->reloadRollContent();
@@ -131,8 +132,6 @@ void PatternRoll::deleteSelection()
             pattern->remove(c, true);
         }
     }
-
-    this->grabKeyboardFocus(); // not working?
 }
 
 void PatternRoll::selectAll()
@@ -508,10 +507,10 @@ void PatternRoll::clipboardPaste(const XmlElement &xml)
     const float indicatorRoughBeat = this->getBeatByTransportPosition(this->project.getTransport().getSeekPosition());
     const float indicatorBeat = roundf(indicatorRoughBeat * 1000.f) / 1000.f;
 
-    const float firstBeat = root->getDoubleAttribute(Serialization::Clipboard::firstBeat);
-    const float lastBeat = root->getDoubleAttribute(Serialization::Clipboard::lastBeat);
+    const double firstBeat = root->getDoubleAttribute(Serialization::Clipboard::firstBeat);
+    const double lastBeat = root->getDoubleAttribute(Serialization::Clipboard::lastBeat);
     const bool indicatorIsWithinSelection = (indicatorBeat >= firstBeat) && (indicatorBeat < lastBeat);
-    const float startBeatAligned = roundf(firstBeat);
+    const float startBeatAligned = roundf(float(firstBeat));
     const float deltaBeat = (indicatorBeat - startBeatAligned);
 
     this->deselectAll();
@@ -543,7 +542,7 @@ void PatternRoll::clipboardPaste(const XmlElement &xml)
                     const bool isShiftPressed = Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown();
                     if (isShiftPressed)
                     {
-                        const float changeDelta = lastBeat - firstBeat;
+                        const float changeDelta = float(lastBeat - firstBeat);
                         PianoRollToolbox::shiftEventsToTheRight(this->project.getTracks(), indicatorBeat, changeDelta, false);
                     }
                 }
@@ -613,40 +612,6 @@ void PatternRoll::mouseUp(const MouseEvent &e)
         // process lasso selection logic
         HybridRoll::mouseUp(e);
     }
-}
-
-//===----------------------------------------------------------------------===//
-// Keyboard shortcuts
-//===----------------------------------------------------------------------===//
-
-bool PatternRoll::keyPressed(const KeyPress &key)
-{
-    if ((key == KeyPress::createFromDescription("command + x")) ||
-             (key == KeyPress::createFromDescription("ctrl + x")) ||
-             (key == KeyPress::createFromDescription("shift + delete")))
-    {
-        InternalClipboard::copy(*this, false);
-        this->deleteSelection();
-        return true;
-    }
-    else if ((key == KeyPress::createFromDescription("x")) ||
-             (key == KeyPress::createFromDescription("delete")) ||
-             (key == KeyPress::createFromDescription("backspace")))
-    {
-        this->deleteSelection();
-        return true;
-    }
-    else if ((key == KeyPress::createFromDescription("command + v")) ||
-             (key == KeyPress::createFromDescription("shift + insert")) ||
-             (key == KeyPress::createFromDescription("ctrl + v")) ||
-             (key == KeyPress::createFromDescription("command + shift + v")) ||
-             (key == KeyPress::createFromDescription("ctrl + shift + v")))
-    {
-        InternalClipboard::paste(*this);
-        return true;
-    }
-
-    return HybridRoll::keyPressed(key);
 }
 
 void PatternRoll::resized()

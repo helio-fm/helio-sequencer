@@ -25,6 +25,8 @@
 #include "ModalDialogConfirmation.h"
 #include "PianoTrackTreeItem.h"
 #include "AutomationTrackTreeItem.h"
+#include "VersionControlTreeItem.h"
+#include "PatternEditorTreeItem.h"
 #include "AutomationSequence.h"
 #include "MainLayout.h"
 #include "AudioCore.h"
@@ -63,21 +65,44 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
         case CommandIDs::Back:
             this->initMainMenu(CommandPanel::SlideRight);
             return;
-            
+
+        case CommandIDs::ProjectPatternEditor:
+            this->project.selectChildOfType<PatternEditorTreeItem>();
+            return;
+
+        case CommandIDs::ProjectLinearEditor:
+            if (this->project.getLastShownTrack() == nullptr)
+            {
+                this->project.selectChildOfType<PianoTrackTreeItem>();
+            }
+            else
+            {
+                this->project.getLastShownTrack()->setSelected(true, true);
+            }
+            return;
+
+        case CommandIDs::ProjectVersionsEditor:
+            this->project.selectChildOfType<VersionControlTreeItem>();
+            return;
+
         case CommandIDs::ProjectRenderMenu:
             this->initRenderMenu();
             return;
             
         case CommandIDs::ProjectBatchMenu:
-            this->initBatchMenu();
-            return;
-            
-        case CommandIDs::AddAutomation:
-            this->initAutomationsMenu(CommandPanel::SlideLeft);
+            this->initBatchMenu(CommandPanel::SlideLeft);
             return;
 
-        case CommandIDs::ProjectAutomationsMenu:
-            this->initAutomationsMenu(CommandPanel::SlideRight);
+        case CommandIDs::ProjectBatchMenuBack:
+            this->initBatchMenu(CommandPanel::SlideRight);
+            return;
+
+        case CommandIDs::AddItemsMenu:
+            this->initNewSubItemsMenu(CommandPanel::SlideLeft);
+            return;
+
+        case CommandIDs::AddItemsMenuBack:
+            this->initNewSubItemsMenu(CommandPanel::SlideRight);
             return;
             
         case CommandIDs::RenderToFLAC:
@@ -125,11 +150,11 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
                                                                                         TRANS("defaults::tempotrack::name")));
             }
 
-            this->focusRollAndExit();
+            this->dismiss();
             return;
         }
             
-        case CommandIDs::AddLayer:
+        case CommandIDs::AddMidiTrack:
         {
             Component *inputDialog =
             new ModalDialogInput(*this,
@@ -137,23 +162,23 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
                                  TRANS("dialog::addlayer::caption"),
                                  TRANS("dialog::addlayer::proceed"),
                                  TRANS("dialog::addlayer::cancel"),
-                                 CommandIDs::AddLayerConfirmed,
+                                 CommandIDs::AddMidiTrackConfirmed,
                                  CommandIDs::Cancel);
             
             App::Layout().showModalNonOwnedDialog(inputDialog);
             return;
         }
             
-        case CommandIDs::AddLayerConfirmed:
+        case CommandIDs::AddMidiTrackConfirmed:
         {
             this->project.setOpen(true);
             
             this->project.getUndoStack()->beginNewTransaction();
             this->project.getUndoStack()->perform(new PianoTrackInsertAction(this->project,
-                                                                                     this->createPianoLayerTempate(""),
-                                                                                     this->layerNameString));
+                this->createPianoLayerTempate(""),
+                this->layerNameString));
             
-            this->focusRollAndExit();
+            this->dismiss();
             return;
         }
             
@@ -219,7 +244,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
             App::Helio()->showTooltip(TRANS("menu::project::render::savedto") + " '" + safeName + "'");
             App::Helio()->showModalComponent(new SuccessTooltip());
 #else
-            this->project.getDocument()->exportAs("*.mid;*.midi", TreeItem::createSafeName(this->project.getName() + ".mid"));
+            this->project.getDocument()->exportAs("*.mid;*.midi", this->project.getName() + ".mid");
 #endif
             this->getParentComponent()->exitModalState(0);
             return;
@@ -300,7 +325,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
                 }
             }
             
-            this->focusRollAndExit();
+            this->dismiss();
             return;
         }
     }
@@ -310,7 +335,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
     {
         const int instrumentIndex = (commandId - CommandIDs::ProjectInstrumentsMenu);
         this->lastSelectedInstrument = instruments[instrumentIndex];
-        this->initAutomationsControllersMenu();
+        this->initSubItemTypeSelectionMenu();
         return;
     }
     
@@ -324,10 +349,9 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
         
         this->project.getUndoStack()->beginNewTransaction();
         this->project.getUndoStack()->perform(new AutomationTrackInsertAction(this->project,
-                                                                                autoLayerParams,
-                                                                                layerName));
+            autoLayerParams, layerName));
         
-        this->focusRollAndExit();
+        this->dismiss();
         return;
     }
 }
@@ -381,22 +405,22 @@ String ProjectCommandPanel::createAutoLayerTempate(const String &name, int contr
 void ProjectCommandPanel::initMainMenu(AnimationType animationType)
 {
     ReferenceCountedArray<CommandItem> cmds;
-    cmds.add(CommandItem::withParams(Icons::layer, CommandIDs::AddLayer, TRANS("menu::project::addlayer")));
+
+    cmds.add(CommandItem::withParams(Icons::group, CommandIDs::ProjectLinearEditor, TRANS("menu::project::editor::linear")));
+    cmds.add(CommandItem::withParams(Icons::stack, CommandIDs::ProjectPatternEditor, TRANS("menu::project::editor::pattern")));
+    cmds.add(CommandItem::withParams(Icons::vcs, CommandIDs::ProjectVersionsEditor, TRANS("menu::project::editor::vcs")));
+
+    // TODO separators
+    cmds.add(CommandItem::withParams(Icons::plus, CommandIDs::AddItemsMenu, TRANS("menu::project::additems"))->withSubmenu());
+    //cmds.add(CommandItem::withParams(Icons::plus, CommandIDs::AddMidiTrack, TRANS("menu::project::addlayer")));
 
 #if HELIO_DESKTOP
-    cmds.add(CommandItem::withParams(Icons::automation, CommandIDs::AddAutomation, TRANS("menu::project::addautomation"))->withSubmenu());
-    cmds.add(CommandItem::withParams(Icons::open, CommandIDs::ImportMidi, TRANS("menu::project::import::midi")));
+    //cmds.add(CommandItem::withParams(Icons::automation, CommandIDs::AddAutomationTrack, TRANS("menu::project::addautomation"))->withSubmenu());
+    //cmds.add(CommandItem::withParams(Icons::open, CommandIDs::ImportMidi, TRANS("menu::project::import::midi")));
     cmds.add(CommandItem::withParams(Icons::render, CommandIDs::ProjectRenderMenu, TRANS("menu::project::render"))->withSubmenu());
 #endif
 
-    const Array<MidiTrackTreeItem *> &layers = this->project.findChildrenOfType<MidiTrackTreeItem>();
-    const Array<Instrument *> &instruments = App::Workspace().getAudioCore().getInstruments();
-    if (instruments.size() > 1 && layers.size() > 0)
-    {
-        cmds.add(CommandItem::withParams(Icons::saxophone, CommandIDs::BatchChangeInstrument, TRANS("menu::project::change::instrument"))->withSubmenu());
-    }
-
-    cmds.add(CommandItem::withParams(Icons::group, CommandIDs::ProjectBatchMenu, TRANS("menu::project::refactor"))->withSubmenu());
+    cmds.add(CommandItem::withParams(Icons::ellipsis, CommandIDs::ProjectBatchMenu, TRANS("menu::project::refactor"))->withSubmenu());
     
 #if JUCE_IOS
     cmds.add(CommandItem::withParams(Icons::commit, CommandIDs::ExportMidi, TRANS("menu::project::render::midi")));
@@ -407,10 +431,14 @@ void ProjectCommandPanel::initMainMenu(AnimationType animationType)
     this->updateContent(cmds, animationType);
 }
 
-void ProjectCommandPanel::initAutomationsMenu(AnimationType animationType)
+void ProjectCommandPanel::initNewSubItemsMenu(AnimationType animationType)
 {
     ReferenceCountedArray<CommandItem> cmds;
     cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
+    cmds.add(CommandItem::withParams(Icons::layer, CommandIDs::AddMidiTrack, TRANS("menu::project::addlayer")));
+#if HELIO_DESKTOP
+    cmds.add(CommandItem::withParams(Icons::open, CommandIDs::ImportMidi, TRANS("menu::project::import::midi")));
+#endif
     cmds.add(CommandItem::withParams(Icons::automation, CommandIDs::AddTempoController, TRANS("menu::project::addtempo")));
 
     const Array<Instrument *> &instruments = App::Workspace().getAudioCore().getInstruments();
@@ -423,10 +451,10 @@ void ProjectCommandPanel::initAutomationsMenu(AnimationType animationType)
     this->updateContent(cmds, animationType);
 }
 
-void ProjectCommandPanel::initAutomationsControllersMenu()
+void ProjectCommandPanel::initSubItemTypeSelectionMenu()
 {
     ReferenceCountedArray<CommandItem> cmds;
-    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::ProjectAutomationsMenu, TRANS("menu::back"))->withTimer());
+    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::AddItemsMenuBack, TRANS("menu::back"))->withTimer());
     
     for (int i = 0; i < NUM_CONTROLLERS_TO_SHOW; ++i)
     {
@@ -452,20 +480,28 @@ void ProjectCommandPanel::initRenderMenu()
     this->updateContent(cmds, CommandPanel::SlideLeft);
 }
 
-void ProjectCommandPanel::initBatchMenu()
+void ProjectCommandPanel::initBatchMenu(AnimationType animationType)
 {
     ReferenceCountedArray<CommandItem> cmds;
     cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
     cmds.add(CommandItem::withParams(Icons::up, CommandIDs::RefactorTransposeUp, TRANS("menu::project::refactor::halftoneup")));
     cmds.add(CommandItem::withParams(Icons::down, CommandIDs::RefactorTransposeDown, TRANS("menu::project::refactor::halftonedown")));
     //cmds.add(CommandItem::withParams(Icons::group, CommandIDs::RefactorRemoveOverlaps, TRANS("menu::project::refactor::cleanup")));
-    this->updateContent(cmds, CommandPanel::SlideLeft);
+
+    const Array<MidiTrackTreeItem *> &layers = this->project.findChildrenOfType<MidiTrackTreeItem>();
+    const Array<Instrument *> &instruments = App::Workspace().getAudioCore().getInstruments();
+    if (instruments.size() > 1 && layers.size() > 0)
+    {
+        cmds.add(CommandItem::withParams(Icons::saxophone, CommandIDs::BatchChangeInstrument, TRANS("menu::project::change::instrument"))->withSubmenu());
+    }
+
+    this->updateContent(cmds, animationType);
 }
 
 void ProjectCommandPanel::initInstrumentSelection()
 {
     ReferenceCountedArray<CommandItem> cmds;
-    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
+    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::ProjectBatchMenuBack, TRANS("menu::back"))->withTimer());
     const Array<Instrument *> &info = App::Workspace().getAudioCore().getInstruments();
     
     for (int i = 0; i < info.size(); ++i)
@@ -476,13 +512,8 @@ void ProjectCommandPanel::initInstrumentSelection()
     this->updateContent(cmds, CommandPanel::SlideLeft);
 }
 
-void ProjectCommandPanel::focusRollAndExit()
+void ProjectCommandPanel::dismiss()
 {
-    if (HybridRoll *roll = this->project.getLastFocusedRoll())
-    {
-        roll->grabKeyboardFocus();
-    }
-    
     if (Component *parent = this->getParentComponent())
     {
         parent->exitModalState(0);

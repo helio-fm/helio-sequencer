@@ -65,12 +65,14 @@ TreeItemComponentDefault::TreeItemComponentDefault(TreeItem &i) :
     this->addChildComponent(this->pageMarker);
     
     this->menuButton = new TreeItemMenuButton();
-    
-    if (ScopedPointer<Component> hasMenu = this->item.createItemMenu())
-    {
-        this->menuButton->setAlpha(0.3f);
-        this->addAndMakeVisible(this->menuButton);
-    }
+
+    // Turn off all menus for now:
+    //ScopedPointer<Component> itemMenu = this->item.createItemMenu();
+    //if (itemMenu != nullptr)
+    //{
+    //    this->menuButton->setAlpha(0.3f);
+    //    this->addAndMakeVisible(this->menuButton);
+    //}
 }
 
 //===----------------------------------------------------------------------===//
@@ -82,31 +84,19 @@ void TreeItemComponentDefault::paint(Graphics &g)
     this->paintIcon(g);
 
     g.setColour(Colours::white);
-    const int menuButtonOffset = this->menuButton->isVisible() ? (this->menuButton->getWidth() + 4) : 0;
+    const int menuButtonOffset = this->menuButton->isVisible() ? (this->menuButton->getWidth() + 4) : 8;
     
     this->paintText(g, Rectangle<float>(this->textX,
-                                        0.f,
-                                        float(this->getWidth()) - this->textX - menuButtonOffset,
-                                        float(this->getHeight())));
+        0.f,
+        float(this->getWidth()) - this->textX - menuButtonOffset,
+        float(this->getHeight())));
 
     const bool selectionChanged = (this->item.isSelected() != this->itemIsSelected);
     this->itemIsSelected = this->item.isSelected();
 
-    if (selectionChanged)
+    if (selectionChanged && this->menuButton->isVisible())
     {
-        if (this->itemIsSelected)
-        {
-            this->menuButton->setAlpha(0.75f);
-            //this->animator.fadeIn(this->selectionFrame, 250);
-            //this->shiftTextRight();
-        }
-        else
-        {
-            this->menuButton->setAlpha(0.3f);
-            //this->selectionFrame->setVisible(false);
-            //this->animator.fadeOut(this->selectionFrame, 250);
-            //this->shiftTextLeft();
-        }
+        this->menuButton->setAlpha(this->itemIsSelected ? 0.75f : 0.3f);
     }
 
     const bool markerVisibilityChanged = (this->item.isMarkerVisible() != this->markerIsVisible);
@@ -143,39 +133,23 @@ void TreeItemComponentDefault::paintIcon(Graphics &g)
 
 void TreeItemComponentDefault::paintText(Graphics &g, const Rectangle<float> &area)
 {
-    float alpha = 1.f; //0.9f;
-
-    if (this->item.isGreyedOut())
-    {
-        alpha = 0.5f;
-    }
-
     g.setFont(this->item.getFont());
-    g.setColour(this->getItemColour().withMultipliedAlpha(alpha));
-    g.drawText(this->item.getCaption(), area, Justification::centredLeft, false);
+    g.setColour(this->getItemColour());
+    g.drawText(this->item.getName(), area, Justification::centredLeft, true);
 
-    // Looks no good, and we need to redraw it on state change
-    //if (ProjectTreeItem *pti = dynamic_cast<ProjectTreeItem *>(&this->item))
-    //{
-    //    if (pti->getDocument()->hasUnsavedChanges())
-    //    {
-    //        g.drawText("*", area.translated(-10, 0.f), Justification::centredRight, false);
-    //    }
-    //}
-    
     if (MidiTrackTreeItem *lti = dynamic_cast<MidiTrackTreeItem *>(&this->item))
     {
         if (lti->isTrackMuted())
         {
-            const int cY = int(area.getCentreY()) + 2;
-            g.drawLine(int(area.getX()), cY, int(area.getX()) + this->item.getFont().getStringWidth(this->item.getName()), cY, 1.f);
+            const float cY = area.getCentreY() + 2.f;
+            g.drawLine(area.getX(), cY, area.getX() +
+                this->item.getFont().getStringWidth(this->item.getName()), cY, 1.f);
         }
     }
 }
 
 void TreeItemComponentDefault::paintBackground(Graphics &g,
-                                               int width, int height,
-                                               bool isSelected, bool isActive)
+    int width, int height, bool isSelected, bool isActive)
 {
     if (isSelected || isActive)
     {

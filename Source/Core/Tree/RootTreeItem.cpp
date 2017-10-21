@@ -21,6 +21,7 @@
 #include "TreeItemChildrenSerializer.h"
 #include "ProjectTreeItem.h"
 #include "VersionControlTreeItem.h"
+#include "PatternEditorTreeItem.h"
 #include "TrackGroupTreeItem.h"
 #include "PianoTrackTreeItem.h"
 #include "AutomationTrackTreeItem.h"
@@ -41,16 +42,14 @@
 
 
 RootTreeItem::RootTreeItem(const String &name) :
-    TreeItem(name)
+    TreeItem(name, Serialization::Core::root)
 {
     this->setVisible(false);
 }
 
 RootTreeItem::~RootTreeItem()
 {
-
 }
-
 
 Colour RootTreeItem::getColour() const
 {
@@ -77,11 +76,11 @@ void RootTreeItem::recreatePage()
     this->introPage = new WorkspacePage(App::Layout());
 }
 
-void RootTreeItem::onRename(const String &newName)
+void RootTreeItem::safeRename(const String &newName)
 {
-    TreeItem::onRename(newName);
+    TreeItem::safeRename(newName);
     App::Workspace().getDocument()->renameFile(this->getName());
-    TreeItem::notifySubtreeMoved(this);
+    this->dispatchChangeTreeItemView();
 }
 
 void RootTreeItem::importMidi(File &file)
@@ -224,7 +223,8 @@ ProjectTreeItem *RootTreeItem::addDefaultProject(const File &projectLocation)
 ProjectTreeItem *RootTreeItem::createDefaultProjectChildren(ProjectTreeItem *newProject)
 {
     VersionControlTreeItem *vcs = this->addVCS(newProject);
-    
+    newProject->addChildTreeItem(new PatternEditorTreeItem());
+
     this->addPianoTrack(newProject, "Arps")->setTrackColour(Colours::orangered);
     this->addPianoTrack(newProject, "Counterpoint")->setTrackColour(Colours::gold);
     this->addPianoTrack(newProject, "Melodic")->setTrackColour(Colours::chartreuse);
@@ -284,7 +284,7 @@ MidiTrackTreeItem *RootTreeItem::addAutoLayer(TreeItem *parent, const String &na
 // Menu
 //===----------------------------------------------------------------------===//
 
-Component *RootTreeItem::createItemMenu()
+ScopedPointer<Component> RootTreeItem::createItemMenu()
 {
     return new WorkspaceMenu(&App::Workspace());
 }
@@ -322,36 +322,17 @@ void RootTreeItem::filesDropped(const StringArray &files, int insertIndex)
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *RootTreeItem::serialize() const
-{
-    auto xml = new XmlElement(Serialization::Core::treeItem);
-    xml->setAttribute("type", Serialization::Core::root);
-    xml->setAttribute("name", this->name);
-
-    TreeItemChildrenSerializer::serializeChildren(*this, *xml);
-
-    return xml;
-}
-
 void RootTreeItem::deserialize(const XmlElement &xml)
 {
-    this->reset();
-
     const XmlElement *root = xml.hasTagName(Serialization::Core::treeItem) ?
         &xml : xml.getChildByName(Serialization::Core::treeItem);
 
-    if (root == nullptr) { return; }
-
-    const String type = root->getStringAttribute("type");
-
-    if (type != Serialization::Core::root) { return; }
-
-    this->setName(root->getStringAttribute("name"));
-
-    TreeItemChildrenSerializer::deserializeChildren(*this, *root);
+    if (root != nullptr)
+    {
+        TreeItem::deserialize(*root);
+    }
 }

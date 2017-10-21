@@ -34,7 +34,7 @@
 
 
 InstrumentTreeItem::InstrumentTreeItem(Instrument *targetInstrument) :
-    TreeItem(""),
+    TreeItem({}, Serialization::Core::instrument),
     instrument(targetInstrument),
     instrumentEditor(nullptr)
 {
@@ -42,7 +42,7 @@ InstrumentTreeItem::InstrumentTreeItem(Instrument *targetInstrument) :
     
     if (this->instrument != nullptr)
     {
-        this->setName(this->instrument->getName());
+        this->name = this->instrument->getName();
         this->initInstrumentEditor();
     }
 }
@@ -55,7 +55,6 @@ InstrumentTreeItem::~InstrumentTreeItem()
     }
 
     this->deleteAllSubItems(); // перед отключением инструмента уберем все редакторы
-
     this->removeInstrumentEditor();
 }
 
@@ -81,7 +80,7 @@ void InstrumentTreeItem::showPage()
     App::Layout().showPage(this->instrumentEditor, this);
 }
 
-void InstrumentTreeItem::onRename(const String &newName)
+void InstrumentTreeItem::safeRename(const String &newName)
 {
     if (this->instrument.wasObjectDeleted())
     { 
@@ -89,9 +88,9 @@ void InstrumentTreeItem::onRename(const String &newName)
         return;
     }
 
-    TreeItem::onRename(newName);
+    TreeItem::safeRename(newName);
     this->instrument->setName(newName);
-    TreeItem::notifySubtreeMoved(this); // сделать это default логикой для всех типов нодов?
+    this->dispatchChangeTreeItemView();
 }
 
 
@@ -154,9 +153,6 @@ TreeItem *InstrumentTreeItem::findAudioPluginEditorForNodeId(uint32 nodeId) cons
 
 var InstrumentTreeItem::getDragSourceDescription()
 {
-    if (this->isCompactMode())
-    { return var::null; }
-
     return Serialization::Core::instrument;
 }
 
@@ -192,7 +188,7 @@ void InstrumentTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dra
 // Menu
 //===----------------------------------------------------------------------===//
 
-Component *InstrumentTreeItem::createItemMenu()
+ScopedPointer<Component> InstrumentTreeItem::createItemMenu()
 {
     return new InstrumentCommandPanel(*this);
 }
@@ -225,8 +221,8 @@ void InstrumentTreeItem::updateChildrenEditors()
 XmlElement *InstrumentTreeItem::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::treeItem);
-    xml->setAttribute("type", Serialization::Core::instrument);
-    xml->setAttribute("name", this->name);
+    xml->setAttribute(Serialization::Core::treeItemType, this->type);
+    xml->setAttribute(Serialization::Core::treeItemName, this->name);
     xml->setAttribute("id", this->instrument->getIdAndHash());
     return xml;
 }
@@ -235,13 +231,7 @@ void InstrumentTreeItem::deserialize(const XmlElement &xml)
 {
     this->reset();
 
-    const String& type = xml.getStringAttribute("type");
-
-    if (type != Serialization::Core::instrument) { return; }
-
-    this->setName(xml.getStringAttribute("name"));
-
-    const String& id = xml.getStringAttribute("id");
+    const String id = xml.getStringAttribute("id");
     this->instrument = this->audioCore->findInstrumentById(id);
 
     // если в аудиоядре инструмент исчез:
@@ -253,7 +243,8 @@ void InstrumentTreeItem::deserialize(const XmlElement &xml)
 
     this->initInstrumentEditor();
 
-    TreeItemChildrenSerializer::deserializeChildren(*this, xml);
+    // Proceed with basic properties and children
+    TreeItem::deserialize(xml);
 
     this->updateChildrenEditors();
 }

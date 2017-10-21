@@ -93,10 +93,9 @@ ModalDialogInput::ModalDialogInput(Component &owner, String &result, const Strin
     this->rebound();
     this->setWantsKeyboardFocus(true);
     this->setInterceptsMouseClicks(true, true);
-    this->toFront(true);
-    this->setAlwaysOnTop(true);
-    this->textEditor->grabKeyboardFocus();
     this->textEditor->setTextToShowWhenEmpty(message, Colours::black.withAlpha(0.5f));
+    this->setAlwaysOnTop(true);
+    this->toFront(true);
     this->updateOkButtonState();
 
     this->startTimer(100);
@@ -156,7 +155,10 @@ void ModalDialogInput::resized()
     separatorH->setBounds (4, getHeight() - 52 - 2, getWidth() - 8, 2);
     separatorV->setBounds ((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
     //[UserResized] Add your own custom resize handling here..
-    this->textEditor->grabKeyboardFocus();
+    if (this->isShowing())
+    {
+        this->textEditor->grabKeyboardFocus();
+    }
     //[/UserResized]
 }
 
@@ -185,7 +187,10 @@ void ModalDialogInput::buttonClicked (Button* buttonThatWasClicked)
 void ModalDialogInput::visibilityChanged()
 {
     //[UserCode_visibilityChanged] -- Add your code here...
-    this->textEditor->grabKeyboardFocus();
+    if (this->isShowing())
+    {
+        this->textEditor->grabKeyboardFocus();
+    }
     //[/UserCode_visibilityChanged]
 }
 

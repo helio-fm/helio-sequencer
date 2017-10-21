@@ -72,14 +72,20 @@ class TimelineWarningMarker;
 // Dirty hack for speedup, supposed to be used every time I need to repaint a lot of child components. 
 // Component::unfocusAllComponents() - prevents keyboard focus traverse hell
 // this->setVisible(false) - prevents redraw hell
+
+//#define HYBRID_ROLL_BULK_REPAINT_START \
+//    Component::unfocusAllComponents();  \
+//    this->setVisible(false);
+//
+//#define HYBRID_ROLL_BULK_REPAINT_END \
+//    this->setVisible(true); \
+//    this->grabKeyboardFocus();
+
 #define HYBRID_ROLL_BULK_REPAINT_START \
-    Component::unfocusAllComponents();  \
     this->setVisible(false);
 
 #define HYBRID_ROLL_BULK_REPAINT_END \
-    this->setVisible(true); \
-    this->grabKeyboardFocus();
-
+    this->setVisible(true);
 
 class HybridRoll :
     public Component,
@@ -247,8 +253,9 @@ public:
     
     void triggerBatchRepaintFor(FloatBoundsComponent *target);
 
-    void startFollowingIndicator();
-    void stopFollowingIndicator();
+    bool isFollowingPlayhead() const noexcept;
+    void startFollowingPlayhead();
+    void stopFollowingPlayhead();
     
     //===------------------------------------------------------------------===//
     // LassoSource
@@ -277,13 +284,6 @@ public:
     //===------------------------------------------------------------------===//
 
     void longTapEvent(const MouseEvent &e) override;
-    void focusGained(FocusChangeType cause) override;
-    void focusLost(FocusChangeType cause) override;
-
-    bool keyPressed(const KeyPress &key) override;
-    bool keyStateChanged(bool isKeyDown) override;
-    void modifierKeysChanged(const ModifierKeys &modifiers) override;
-
     void mouseMove(const MouseEvent &e) override;
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;

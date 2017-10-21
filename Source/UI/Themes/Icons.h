@@ -97,7 +97,7 @@ public:
     static const String cropTool;
     
     static const String annotation;
-    static const String arpeggiator;
+    static const String stack;
     static const String switcher;
 
     static const String stretchLeft;

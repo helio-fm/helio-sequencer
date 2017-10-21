@@ -17,24 +17,25 @@
 
 #include "Common.h"
 #include "TreeItem.h"
-#include "TreePanel.h"
 #include "TreeItemComponentDefault.h"
-#include "TreeItemComponentCompact.h"
+#include "TreeItemChildrenSerializer.h"
+#include "SerializationKeys.h"
+#include "App.h"
 #include "MainLayout.h"
 #include "HelioCallout.h"
 
 const String TreeItem::xPathSeparator = "/";
 
-String TreeItem::createSafeName(const String &nameStr)
+String TreeItem::createSafeName(const String &name)
 {
-    return File::createLegalFileName(nameStr).removeCharacters(TreeItem::xPathSeparator);
+    return File::createLegalFileName(name).removeCharacters(TreeItem::xPathSeparator);
 }
 
-TreeItem::TreeItem(const String &nameStr) :
-    name(TreeItem::createSafeName(nameStr)),
+TreeItem::TreeItem(const String &name, const String &type) :
+    name(TreeItem::createSafeName(name)),
+    type(type),
     markerIsVisible(false),
-    itemShouldBeVisible(true),
-    itemIsGreyedOut(false)
+    itemShouldBeVisible(true)
 {
 
 //#if HELIO_DESKTOP
@@ -48,23 +49,10 @@ TreeItem::TreeItem(const String &nameStr) :
 
 TreeItem::~TreeItem()
 {
-    // удаляем детей
+    this->removeAllChangeListeners();
     this->deleteAllSubItems();
-
-    // удаляем себя из дерева
     this->removeItemFromParent();
-
     this->masterReference.clear();
-}
-
-String TreeItem::getUniqueName() const
-{
-    return String(this->getIndexInParent());
-}
-
-TreePanel *TreeItem::findParentTreePanel() const
-{
-    return this->getOwnerView()->findParentComponentOfClass<TreePanel>();
 }
 
 void TreeItem::setMarkerVisible(bool shouldBeVisible) noexcept
@@ -75,25 +63,6 @@ void TreeItem::setMarkerVisible(bool shouldBeVisible) noexcept
 bool TreeItem::isMarkerVisible() const noexcept
 {
     return this->markerIsVisible;
-}
-
-void TreeItem::setGreyedOut(bool shouldBeGreyedOut) noexcept
-{
-//    this->setSelected(! shouldBeGreyedOut, false);
-
-    this->setSelected(false, false);
-
-    if (this->itemIsGreyedOut != shouldBeGreyedOut)
-    {
-        this->itemIsGreyedOut = shouldBeGreyedOut;
-        this->repaintItem();
-    }
-}
-
-bool TreeItem::isGreyedOut() const noexcept
-{
-//    return !this->isSelected();
-    return this->itemIsGreyedOut;
 }
 
 int TreeItem::getNumSelectedSiblings() const
@@ -164,25 +133,14 @@ bool TreeItem::haveAllChildrenSelectedWithDeepSearch() const
 // Rename
 //===----------------------------------------------------------------------===//
 
-void TreeItem::onRename(const String &newName)
+void TreeItem::safeRename(const String &newName)
 {
-    //this->setSelected(true, true);
-    this->safeRename(newName);
+    this->name = TreeItem::createSafeName(newName);
 }
 
-String TreeItem::getName() const noexcept
+String TreeItem::getName() const
 {
     return this->name;
-}
-
-void TreeItem::setName(const String &newName) noexcept
-{
-    this->name = newName;
-}
-
-String TreeItem::getCaption() const
-{
-    return this->getName();
 }
 
 
@@ -223,7 +181,7 @@ bool TreeItem::deleteItem(TreeItem *itemToDelete)
 
         if (switchTo != nullptr)
         {
-            switchTo->showPage();
+            switchTo->setSelected(true, true);
         }
         else if (parent != nullptr)
         {
@@ -231,7 +189,7 @@ bool TreeItem::deleteItem(TreeItem *itemToDelete)
             {
                 if (parent->isMarkerVisible())
                 {
-                    parent->showPage();
+                    parent->setSelected(true, true);
                     break;
                 }
 
@@ -276,6 +234,28 @@ void TreeItem::removeItemFromParent()
     }
 }
 
+static void notifySubtreeParentChanged(TreeItem *node)
+{
+    node->onItemParentChanged();
+
+    for (int i = 0; i < node->getNumSubItems(); ++i)
+    {
+        TreeItem *child = static_cast<TreeItem *>(node->getSubItem(i));
+        notifySubtreeParentChanged(child);
+    }
+}
+
+void TreeItem::addChildTreeItem(TreeItem *child, int insertIndex /*= -1*/)
+{
+    this->addSubItem(child, insertIndex);
+    notifySubtreeParentChanged(child);
+}
+
+void TreeItem::dispatchChangeTreeItemView()
+{
+    this->sendChangeMessage(); // update listeners
+    this->treeHasChanged(); // updates ownerView, if any
+}
 
 //===----------------------------------------------------------------------===//
 // Painting
@@ -287,25 +267,13 @@ Component *TreeItem::createItemComponent()
     {
         return nullptr;
     }
-
-    if (this->isCompactMode())
-    {
-        return new TreeItemComponentCompact(*this);
-    }
     
     return new TreeItemComponentDefault(*this);
 }
 
 void TreeItem::paintItem(Graphics &g, int width, int height)
 {
-    if (this->isCompactMode())
-    {
-        TreeItemComponentCompact::paintBackground(g, width, height, this->isSelected(), this->isMarkerVisible());
-    }
-    else
-    {
-        TreeItemComponentDefault::paintBackground(g, width, height, this->isSelected(), this->isMarkerVisible());
-    }
+    TreeItemComponentDefault::paintBackground(g, width, height, this->isSelected(), this->isMarkerVisible());
 }
 
 void TreeItem::paintOpenCloseButton(Graphics &g, const Rectangle<float> &area,
@@ -317,9 +285,6 @@ void TreeItem::paintOpenCloseButton(Graphics &g, const Rectangle<float> &area,
 //    return;
 //#endif
 
-    if (this->isCompactMode())
-    { return; }
-
     Path p;
     p.addTriangle(0.0f, 0.0f, 1.0f, this->isOpen() ? 0.0f : 0.5f, this->isOpen() ? 0.5f : 0.0f, 1.0f);
 
@@ -329,18 +294,10 @@ void TreeItem::paintOpenCloseButton(Graphics &g, const Rectangle<float> &area,
 
 void TreeItem::paintHorizontalConnectingLine(Graphics &g, const Line<float> &line)
 {
-//    if (this->isCompactMode())
-//    {
-//        TreeViewItem::paintHorizontalConnectingLine(g, line);
-//    }
 }
 
 void TreeItem::paintVerticalConnectingLine(Graphics &g, const Line<float> &line)
 {
-//    if (this->isCompactMode())
-//    {
-//        TreeViewItem::paintVerticalConnectingLine(g, line);
-//    }
 }
 
 int TreeItem::getItemHeight() const
@@ -350,7 +307,7 @@ int TreeItem::getItemHeight() const
         return 0;
     }
 
-    return this->isCompactMode() ? int(TREE_ITEM_HEIGHT * 1.2) : TREE_ITEM_HEIGHT;
+    return TREE_ITEM_HEIGHT;
 }
 
 Font TreeItem::getFont() const
@@ -365,6 +322,42 @@ Colour TreeItem::getColour() const
 }
 
 
+//===----------------------------------------------------------------------===//
+// Serializable
+//===----------------------------------------------------------------------===//
+
+void TreeItem::reset()
+{
+    this->deleteAllSubItems();
+}
+
+XmlElement *TreeItem::serialize() const
+{
+    auto xml = new XmlElement(Serialization::Core::treeItem);
+    xml->setAttribute(Serialization::Core::treeItemType, this->type);
+    xml->setAttribute(Serialization::Core::treeItemName, this->name);
+    TreeItemChildrenSerializer::serializeChildren(*this, *xml);
+    return xml;
+}
+
+void TreeItem::deserialize(const XmlElement &xml)
+{
+    // Do not reset here, subclasses may rely
+    // on this method in their deserialization
+    //this->reset();
+
+    // Legacy support:
+    const String nameFallback =
+        xml.getStringAttribute(Serialization::Core::treeItemName.toLowerCase(), this->name);
+
+    this->name =
+        xml.getStringAttribute(Serialization::Core::treeItemName, nameFallback);
+
+    TreeItemChildrenSerializer::deserializeChildren(*this, xml);
+}
+
+
+
 // protected static
 
 void TreeItem::openOrCloseAllSubGroups(TreeViewItem &item, bool shouldOpen)
@@ -377,17 +370,6 @@ void TreeItem::openOrCloseAllSubGroups(TreeViewItem &item, bool shouldOpen)
         {
             openOrCloseAllSubGroups(*sub, shouldOpen);
         }
-    }
-}
-
-void TreeItem::notifySubtreeMoved(TreeItem *node)
-{
-    node->onItemMoved();
-
-    for (int i = 0; i < node->getNumSubItems(); ++i)
-    {
-        TreeItem *child = static_cast<TreeItem *>(node->getSubItem(i));
-        TreeItem::notifySubtreeMoved(child);
     }
 }
 
@@ -449,6 +431,27 @@ bool TreeItem::isNodeInChildren(TreeItem *nodeToScan, TreeItem *nodeToCheck)
     return false;
 }
 
+String TreeItem::getUniqueName() const
+{
+    return String(this->getIndexInParent());
+}
+
+bool TreeItem::mightContainSubItems()
+{
+    return (this->getNumSubItems() > 0);
+}
+
+void TreeItem::recreateSubtreePages()
+{
+    Array<TreeItem *> subtree;
+    this->collectChildrenOfType<TreeItem>(this, subtree, false);
+    this->recreatePage();
+
+    for (int i = 0; i < subtree.size(); ++i)
+    {
+        subtree.getUnchecked(i)->recreatePage();
+    }
+}
 
 void TreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
 {
@@ -488,19 +491,4 @@ void TreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDet
 void TreeItem::setVisible(bool shouldBeVisible) noexcept
 {
     this->itemShouldBeVisible = shouldBeVisible;
-}
-
-void TreeItem::safeRename(const String &newName)
-{
-    this->setName(TreeItem::createSafeName(newName));
-}
-
-bool TreeItem::isCompactMode() const
-{
-    if (this->getOwnerView() != nullptr)
-    {
-        return (this->getOwnerView()->getWidth() == TREE_COMPACT_WIDTH);
-    }
-    
-    return false;
 }

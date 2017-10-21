@@ -42,6 +42,7 @@ public:
     void resized() override;
     void mouseExit (const MouseEvent& e) override;
     void mouseDown (const MouseEvent& e) override;
+    void mouseUp (const MouseEvent& e) override;
     void inputAttemptWhenModal() override;
 
 
@@ -52,6 +53,7 @@ private:
     WeakReference<TreeItem> item;
 
     void timerCallback() override;
+    void syncWidthWithContent();
 
     //[/UserVariables]
 
