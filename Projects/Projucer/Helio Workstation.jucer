@@ -440,6 +440,8 @@
                 resource="0" file="../../Source/Core/Tree/TreeItemChildrenSerializer.cpp"/>
           <FILE id="icgfCb" name="TreeItemChildrenSerializer.h" compile="0" resource="0"
                 file="../../Source/Core/Tree/TreeItemChildrenSerializer.h"/>
+          <FILE id="uyg8lp" name="TreeNavigationHistory.cpp" compile="1" resource="0"
+                file="../../Source/Core/Tree/TreeNavigationHistory.cpp"/>
           <FILE id="r7T3TH" name="TreeNavigationHistory.h" compile="0" resource="0"
                 file="../../Source/Core/Tree/TreeNavigationHistory.h"/>
           <FILE id="S6tz1q" name="VersionControlTreeItem.cpp" compile="1" resource="0"

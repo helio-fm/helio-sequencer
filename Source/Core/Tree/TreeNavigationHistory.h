@@ -19,144 +19,42 @@
 
 #include "TreeItem.h"
 
-class TreeNavigationHistory :
-    public ChangeBroadcaster
+class TreeNavigationHistoryLock final
+{
+public:
+    TreeNavigationHistoryLock() {}
+    ~TreeNavigationHistoryLock();
+private:
+    WeakReference<TreeNavigationHistoryLock>::Master masterReference;
+    friend class WeakReference<TreeNavigationHistoryLock>;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TreeNavigationHistoryLock)
+};
+
+class TreeNavigationHistory : public ChangeBroadcaster
 {
 public:
     
-    TreeNavigationHistory() : isLocked(false), currentPageIndex(0) { }
-    
-    void setLocked(bool shouldBeLocked)
-    {
-        this->isLocked = shouldBeLocked;
-    }
-    
-    bool canGoForward() const
-    {
-        return (this->currentPageIndex < (this->list.size() - 1));
-    }
-    
-    bool canGoBackward() const
-    {
-        return (this->currentPageIndex > 0);
-    }
-    
-    TreeItem *goBack()
-    {
-        if (!this->canGoBackward())
-        {
-            return nullptr;
-        }
+    TreeNavigationHistory();
+
+    ScopedPointer<TreeNavigationHistoryLock> lock();
         
-        while (this->list.size() > 0)
-        {
-            const auto currentItem = this->getCurrentItem();
-
-            this->currentPageIndex--;
-            const auto previousItem = this->getCurrentItem();
-            const bool previousItemIsTheSameAsCurrent =
-                ! previousItem.wasObjectDeleted() &&
-                ! currentItem.wasObjectDeleted() &&
-                currentItem == previousItem;
-
-            if (previousItem.wasObjectDeleted() || previousItemIsTheSameAsCurrent)
-            {
-                this->list.removeRange(this->currentPageIndex, 1);
-            }
-            else
-            {
-                break;
-            }
-        }
-        
-        this->sendChangeMessage();
-
-        TreeItem *treeItem = this->list[this->currentPageIndex];
-        return treeItem;
-    }
+    bool canGoForward() const;
+    bool canGoBackward() const;
     
-    TreeItem *goForward()
-    {
-        if (!this->canGoForward())
-        {
-            return nullptr;
-        }
-                
-        while ((this->list.size() - 1) > this->currentPageIndex)
-        {
-            const auto currentItem = this->getCurrentItem();
-
-            this->currentPageIndex++;
-            const auto nextItem = this->getCurrentItem();
-            const bool nextItemIsTheSameAsCurrent =
-                ! currentItem.wasObjectDeleted() &&
-                ! nextItem.wasObjectDeleted() &&
-                currentItem == nextItem;
-            
-            if (nextItem.wasObjectDeleted() || nextItemIsTheSameAsCurrent)
-            {
-                this->list.removeRange(this->currentPageIndex, 1);
-                this->currentPageIndex--;
-            }
-            else
-            {
-                break;
-            }
-        }
-        
-        this->sendChangeMessage();
-        
-        TreeItem *treeItem = this->list[this->currentPageIndex];
-        return treeItem;
-    }
+    WeakReference<TreeItem> goBack();
+    WeakReference<TreeItem> goForward();
     
-    WeakReference<TreeItem> getCurrentItem() const
-    {
-        return this->list[this->currentPageIndex];
-    }
-    
-    bool addItemIfNeeded(TreeItem *item)
-    {
-        if (this->isLocked.get())
-        {
-            return false;
-        }
-        
-        // First cleanup the list from deleted items
-        int i = 0;
-        while ((this->list.size() - 1) > i)
-        {
-            if (this->list[i].wasObjectDeleted())
-            {
-                this->list.removeRange(i, 1);
-            }
-            else
-            {
-                i++;
-            }
-        }
-
-        // Add, if valid and not duplicated
-        if (item != nullptr &&
-            this->getCurrentItem() != item)
-        {
-            this->list.removeRange(this->currentPageIndex + 1, this->list.size());
-            this->list.add(item);
-            this->currentPageIndex = this->list.size() - 1;
-            this->sendChangeMessage();
-            return true;
-        }
-
-        return false;
-    }
+    WeakReference<TreeItem> getCurrentItem() const;
+    bool addItemIfNeeded(TreeItem *item);
     
 private:
     
     Array<WeakReference<TreeItem>> list;
     
     // A way to prevent new items from being added when navigating back/forward
-    Atomic<bool> isLocked;
+    WeakReference<TreeNavigationHistoryLock> historyLock;
     
     int currentPageIndex;
-    
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TreeNavigationHistory)
 };

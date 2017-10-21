@@ -99,9 +99,8 @@ void Workspace::navigateBackwardIfPossible()
 
     if (treeItem != nullptr)
     {
-        this->navigationHistory.setLocked(true);
+        const auto scopedHistoryLock(this->navigationHistory.lock());
         treeItem->setSelected(true, true);
-        this->navigationHistory.setLocked(false);
     }
 }
 
@@ -111,9 +110,8 @@ void Workspace::navigateForwardIfPossible()
 
     if (treeItem != nullptr)
     {
-        this->navigationHistory.setLocked(true);
+        const auto scopedHistoryLock(this->navigationHistory.lock());
         treeItem->setSelected(true, true);
-        this->navigationHistory.setLocked(false);
     }
 }
 
