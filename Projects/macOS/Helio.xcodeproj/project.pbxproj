@@ -2200,7 +2200,6 @@
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO; }; name = Release; };
 		0877BE57A18DC5FC3BE5DB1D = {isa = XCBuildConfiguration; buildSettings = {
-				"CODE_SIGN_IDENTITY" = "Mac Developer";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -2217,6 +2216,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -2239,7 +2239,6 @@
 				WARNING_CFLAGS = -Wreorder;
 				ZERO_LINK = NO; }; name = Debug; };
 		F5E0E2B889D0504361FFF0C6 = {isa = XCBuildConfiguration; buildSettings = {
-				"CODE_SIGN_IDENTITY" = "Mac Developer";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -2256,6 +2255,7 @@
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				DEBUG_INFORMATION_FORMAT = "dwarf";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = c11;
@@ -2627,7 +2627,7 @@
 					20E4F2BF17372BD18581F900,
 					AA515E9B05A3DDAAB41F5F79,
 					00D3065F64B0B1FD6AD61CD5, ); buildRules = ( ); dependencies = (  ); name = "Helio - App"; productName = Helio; productReference = E2C1A2859123A25065D73061; productType = "com.apple.product-type.application"; };
-		08DB4A16C7B3991E0F547761 = {isa = PBXProject; buildConfigurationList = CBBEDDA3CEDC22AE3C172D11; attributes = { LastUpgradeCheck = 0830; TargetAttributes = { C52491ADC1C672FFBF6CD85B = { DevelopmentTeam = EQL633LLC8; SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; }; }; }; compatibilityVersion = "Xcode 3.2"; hasScannedForEncodings = 0; mainGroup = C26CB8AD40490BB25FE36466; projectDirPath = ""; projectRoot = ""; targets = (C52491ADC1C672FFBF6CD85B); };
+		08DB4A16C7B3991E0F547761 = {isa = PBXProject; buildConfigurationList = CBBEDDA3CEDC22AE3C172D11; attributes = { LastUpgradeCheck = 0830; ORGANIZATIONNAME = "Peter Rudenko"; TargetAttributes = { C52491ADC1C672FFBF6CD85B = { DevelopmentTeam = EQL633LLC8; SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; }; }; }; compatibilityVersion = "Xcode 3.2"; hasScannedForEncodings = 0; mainGroup = C26CB8AD40490BB25FE36466; projectDirPath = ""; projectRoot = ""; targets = (C52491ADC1C672FFBF6CD85B); };
 	};
 	rootObject = 08DB4A16C7B3991E0F547761;
 }

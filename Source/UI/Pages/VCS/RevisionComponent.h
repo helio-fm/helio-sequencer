@@ -28,7 +28,7 @@ class RevisionComponent  : public Component
 {
 public:
 
-    RevisionComponent (VersionControl &owner, const VCS::Revision target, bool isHead);
+    RevisionComponent (VersionControl &owner, const ValueTree revision, bool isHead);
 
     ~RevisionComponent();
 
@@ -115,7 +115,7 @@ private:
 
     VersionControl &vcs;
 
-    const VCS::Revision revision;
+    const ValueTree revision;
 
     bool selected;
 

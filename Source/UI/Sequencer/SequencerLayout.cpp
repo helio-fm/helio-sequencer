@@ -709,8 +709,8 @@ bool SequencerLayout::isInterestedInFileDrag(const StringArray &files)
     return (file.hasFileExtension("mid") || file.hasFileExtension("midi"));
 }
 
-void SequencerLayout::filesDropped(const juce::StringArray &filenames,
-                              int mouseX, int mouseY)
+void SequencerLayout::filesDropped(const StringArray &filenames,
+    int mouseX, int mouseY)
 {
     if (isInterestedInFileDrag(filenames))
     {

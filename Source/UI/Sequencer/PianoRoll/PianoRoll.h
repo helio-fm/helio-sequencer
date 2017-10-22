@@ -60,7 +60,7 @@ class PianoRoll : public HybridRoll
 public:
 
     static void repaintBackgroundsCache(HelioTheme &theme);
-    static CachedImage::Ptr renderRowsPattern(HelioTheme &theme, int height);
+    static Image renderRowsPattern(HelioTheme &theme, int height);
     
 public:
 

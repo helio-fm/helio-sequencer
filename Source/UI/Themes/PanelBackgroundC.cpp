@@ -87,11 +87,11 @@ void PanelBackgroundC::paint (Graphics& g)
 
 #if PANEL_C_HAS_PRERENDERED_BACKGROUND
 
-    const CachedImage::Ptr prerendered = static_cast<HelioTheme &>(this->getLookAndFeel()).getPanelsBgCache()[panelBgKey];
+    const Image prerendered = static_cast<HelioTheme &>(this->getLookAndFeel()).getPanelsBgCache()[panelBgKey];
 
-    if (prerendered != nullptr)
+    if (prerendered.isValid())
     {
-        Icons::drawImageRetinaAware(*prerendered, g, this->getWidth() / 2, this->getHeight() / 2);
+        Icons::drawImageRetinaAware(prerendered, g, this->getWidth() / 2, this->getHeight() / 2);
     }
 
 #else
@@ -157,7 +157,7 @@ void PanelBackgroundC::updateRender(HelioTheme &theme)
 {
 #if PANEL_C_HAS_PRERENDERED_BACKGROUND
 
-    if (theme.getPanelsBgCache()[panelBgKey] != nullptr)
+    if (theme.getPanelsBgCache()[panelBgKey].isValid())
     {
         return;
     }
@@ -165,10 +165,10 @@ void PanelBackgroundC::updateRender(HelioTheme &theme)
     const Desktop::Displays::Display &d = Desktop::getInstance().getDisplays().getMainDisplay();
     const int w = d.totalArea.getWidth() * int(d.scale);
     const int h = d.totalArea.getHeight() * int(d.scale);
-    Logger::writeToLog("Prerendering background with w:" + String(w) + ", h:" + String(h));
+    Logger::writeToLog("Rendering background with w:" + String(w) + ", h:" + String(h));
 
-    CachedImage::Ptr render(new CachedImage(Image::ARGB, w, h, true));
-    Graphics g(*render);
+    Image render(Image::ARGB, w, h, true);
+    Graphics g(render);
 
     drawPanel(g, theme);
 

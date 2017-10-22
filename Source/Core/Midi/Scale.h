@@ -78,7 +78,7 @@ public:
     { return (&l == &r || l.name == r.name); }
 
     friend inline bool operator!=(const Scale &l, const Scale &r)
-    { return (&l != &r && l.name != r.name); }
+    { return !operator== (l, r); }
 
 private:
 

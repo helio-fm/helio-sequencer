@@ -20,12 +20,12 @@
 #include "Instrument.h"
 #include "InstrumentEditor.h"
 
-InstrumentEditorPin::InstrumentEditorPin(Instrument &graph_, const uint32 filterID_,
-        const int index_, const bool isInput_) :
-    filterID(filterID_),
-    index(index_),
-    isInput(isInput_),
-    graph(graph_)
+InstrumentEditorPin::InstrumentEditorPin(Instrument &graph,
+    AudioProcessorGraph::NodeID nodeID, int index, bool isInput) :
+    nodeID(nodeID),
+    index(index),
+    isInput(isInput),
+    graph(graph)
 {
     setSize(16, 16);
 }
@@ -64,9 +64,9 @@ void InstrumentEditorPin::paint(Graphics &g)
 
 void InstrumentEditorPin::mouseDown(const MouseEvent &e)
 {
-    getGraphPanel()->beginConnectorDrag(isInput ? 0 : filterID,
+    getGraphPanel()->beginConnectorDrag(isInput ? 0 : nodeID,
                                         index,
-                                        isInput ? filterID : 0,
+                                        isInput ? nodeID : 0,
                                         index,
                                         e);
 }

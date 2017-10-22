@@ -82,11 +82,11 @@ void PanelBackgroundA::paint (Graphics& g)
 
     // Takes about 500ms on load
 
-    const CachedImage::Ptr prerendered = static_cast<HelioTheme &>(this->getLookAndFeel()).getPanelsBgCache()[panelBgKey];
+    const Image prerendered = static_cast<HelioTheme &>(this->getLookAndFeel()).getPanelsBgCache()[panelBgKey];
 
-    if (prerendered != nullptr)
+    if (prerendered.isValid())
     {
-        Icons::drawImageRetinaAware(*prerendered, g, this->getWidth() / 2, this->getHeight() / 2);
+        Icons::drawImageRetinaAware(prerendered, g, this->getWidth() / 2, this->getHeight() / 2);
     }
     else
     {
@@ -148,10 +148,10 @@ void PanelBackgroundA::updateRender(HelioTheme &theme)
     const int w = d.totalArea.getWidth() * scale;
     const int h = d.totalArea.getHeight() * scale;
 
-    Logger::writeToLog("Prerendering background with w:" + String(w) + ", h:" + String(h));
+    Logger::writeToLog("Rendering background with w:" + String(w) + ", h:" + String(h));
 
-    CachedImage::Ptr render(new CachedImage(Image::ARGB, w, h, true));
-    Graphics g(*render);
+    Image render(Image::ARGB, w, h, true);
+    Graphics g(render);
 
     g.setGradientFill (ColourGradient (theme.findColour(PanelBackgroundA::panelFillStartId),
                                        float((w / 2)), float((h / 2) + 25),

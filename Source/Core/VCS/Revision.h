@@ -23,65 +23,34 @@
 
 namespace VCS
 {
-    class Revision :
-        public ValueTree,
-        public Serializable
+    // First, this class was a wrapped around ValueTree
+    // But once JUCE developers have decided to make ValueTree final,
+    // I had to turn this into a set of static helper functions
+
+    class Revision final
     {
     public:
 
-        Revision();
+        static ValueTree create(Pack::Ptr pack, const String &name = String::empty);
+        static void copyProperties(ValueTree one, ValueTree another);
+        static void copyDeltas(ValueTree one, ValueTree another);
 
-        explicit Revision(Pack::Ptr pack, const String &name = String::empty);
+        static MD5 calculateHash(ValueTree revision);
+        static void incrementVersion(ValueTree revision);
+        static void flush(ValueTree revision);
 
-        explicit Revision(ValueTree other);
-        
-        // стирает свои свойства, копирует новые, игнорируя пак (оставляет свой).
-        void copyPropertiesFrom(const Revision &other);
+        static String getMessage(ValueTree revision);
+        static String getUuid(ValueTree revision);
+        static int64 getTimeStamp(ValueTree revision);
+        static bool isEmpty(ValueTree revision);
 
-        // стирает свои дельты, копирует новые.
-        void copyDeltasFrom(const Revision &other);
-
-        // setProperty, либо копирование дельт, если разные паки
-        void copyProperty(Identifier id, const RevisionItem::Ptr itemToCopy);
-
-
-        RevisionItem::Ptr getItemWithUuid(const Uuid &uuid);
-
-        // moves items' data from memory to pack
-        void flushData();
-
-        Pack::Ptr getPackPtr() const;
-
-        String getMessage() const;
-
-        String getUuid() const;
-
-        int64 getVersion() const;
-
-        int64 getTimeStamp() const;
-
-        void incrementVersion();
-
-        MD5 calculateHash() const;
-
-        bool isEmpty() const;
-
-
-        //===------------------------------------------------------------------===//
+        //===--------------------------------------------------------------===//
         // Serializable
-        //
+        //===--------------------------------------------------------------===//
 
-        XmlElement *serialize() const override;
-
-        void deserialize(const XmlElement &xml) override;
-
-        void reset() override;
-
-    private:
-
-        void resetAllDeltas();
-
-        JUCE_LEAK_DETECTOR(Revision);
+        static XmlElement *serialize(ValueTree revision);
+        static void deserialize(ValueTree revision, const XmlElement &xml);
+        static void reset(ValueTree revision);
 
     };
 }  // namespace VCS

@@ -22,17 +22,17 @@
 #include "Revision.h"
 //[/Headers]
 
-#include "../Themes/PanelBackgroundC.h"
-#include "../Themes/PanelA.h"
-#include "../Themes/ShadowDownwards.h"
+#include "../../Themes/PanelBackgroundC.h"
+#include "../../Themes/PanelA.h"
+#include "../../Themes/ShadowDownwards.h"
 
 class RevisionTooltipComponent  : public Component,
                                   public ListBoxModel,
-                                  public ButtonListener
+                                  public Button::Listener
 {
 public:
 
-    RevisionTooltipComponent (VersionControl &owner, const VCS::Revision target);
+    RevisionTooltipComponent (VersionControl &owner, const ValueTree revision);
 
     ~RevisionTooltipComponent();
 
@@ -70,9 +70,9 @@ private:
 
     VersionControl &vcs;
 
-    const VCS::Revision revision;
+    const ValueTree revision;
 
-    VCS::Revision revisionItemsOnly;
+    ValueTree revisionItemsOnly;
 
     //[/UserVariables]
 

@@ -1355,16 +1355,15 @@ void PianoRoll::repaintBackgroundsCache(HelioTheme &theme)
 
     for (int i = MIN_ROW_HEIGHT; i <= MAX_ROW_HEIGHT; ++i)
     {
-        CachedImage::Ptr pattern(PianoRoll::renderRowsPattern(theme, i));
-        theme.getRollBgCache().set(i, pattern);
+        theme.getRollBgCache().set(i, PianoRoll::renderRowsPattern(theme, i));
     }
 }
 
-CachedImage::Ptr PianoRoll::renderRowsPattern(HelioTheme &theme, int height)
+Image PianoRoll::renderRowsPattern(HelioTheme &theme, int height)
 {
-    CachedImage::Ptr patternImage(new CachedImage(Image::RGB, 128, height * ROWS_OF_TWO_OCTAVES, false));
+    Image patternImage(Image::RGB, 128, height * ROWS_OF_TWO_OCTAVES, false);
 
-    Graphics g(*patternImage);
+    Graphics g(patternImage);
 
     const Colour blackKey = theme.findColour(HybridRoll::blackKeyColourId);
     const Colour blackKeyBright = theme.findColour(HybridRoll::blackKeyBrightColourId);
@@ -1375,11 +1374,11 @@ CachedImage::Ptr PianoRoll::renderRowsPattern(HelioTheme &theme, int height)
 
     float currentHeight = float(height);
     float previousHeight = 0;
-    float pos_y = patternImage->getHeight() - currentHeight;
+    float pos_y = patternImage.getHeight() - currentHeight;
     const int lastOctaveReminder = 8;
 
     g.setColour(whiteKeyBright);
-    g.fillRect(patternImage->getBounds());
+    g.fillRect(patternImage.getBounds());
 
     // draw rows
     for (int i = lastOctaveReminder;
@@ -1400,18 +1399,18 @@ CachedImage::Ptr PianoRoll::renderRowsPattern(HelioTheme &theme, int height)
         case 8:
         case 10: // black keys
             g.setColour(octaveIsOdd ? blackKeyBright : blackKey);
-            g.fillRect(0, int(pos_y + 1), patternImage->getWidth(), int(previousHeight - 1));
+            g.fillRect(0, int(pos_y + 1), patternImage.getWidth(), int(previousHeight - 1));
             break;
 
         default: // white keys
             g.setColour(whiteKeyBrighter);
-            g.drawHorizontalLine(int(pos_y + 1), 0.f, float(patternImage->getWidth()));
+            g.drawHorizontalLine(int(pos_y + 1), 0.f, float(patternImage.getWidth()));
             break;
         }
 
         // fill divider line
         g.setColour(rowLine);
-        g.drawHorizontalLine(int(pos_y), 0.f, float(patternImage->getWidth()));
+        g.drawHorizontalLine(int(pos_y), 0.f, float(patternImage.getWidth()));
 
         currentHeight = float(height);
         pos_y -= currentHeight;

@@ -21,7 +21,7 @@
 static Array<PluginWindow *> activePluginWindows;
 
 PluginWindow::PluginWindow(Component *const uiComp,
-    AudioProcessorGraph::Node *owner,
+    AudioProcessorGraph::Node::Ptr owner,
     bool isGeneric,
     bool shouldMimicComponent)
 : 
@@ -49,10 +49,10 @@ PluginWindow::PluginWindow(Component *const uiComp,
     activePluginWindows.add(this);
 }
 
-void PluginWindow::closeCurrentlyOpenWindowsFor(const uint32 nodeId)
+void PluginWindow::closeCurrentlyOpenWindowsFor(const AudioProcessorGraph::NodeID nodeId)
 {
     for (int i = activePluginWindows.size(); --i >= 0;) {
-        if (activePluginWindows.getUnchecked(i)->owner->nodeId == nodeId) {
+        if (activePluginWindows.getUnchecked(i)->owner->nodeID == nodeId) {
             delete activePluginWindows.getUnchecked(i);
         }
     }
@@ -65,7 +65,7 @@ void PluginWindow::closeAllCurrentlyOpenWindows()
     }
 }
 
-PluginWindow *PluginWindow::getWindowFor(AudioProcessorGraph::Node *node,
+PluginWindow *PluginWindow::getWindowFor(AudioProcessorGraph::Node::Ptr node,
     bool useGenericView,
     bool shouldMimicComponent)
 {

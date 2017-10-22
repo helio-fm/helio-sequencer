@@ -2163,9 +2163,8 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = ("$(inherited)", "\"../../Resources/iOS/AudioBus\"");
 				OTHER_CPLUSPLUSFLAGS = "-Wno-reorder -Wno-inconsistent-missing-override";
-				PRODUCT_BUNDLE_IDENTIFIER = com.peterrudenko.helioworkstation;
-				PRODUCT_BUNDLE_IDENTIFIER=com.peterrudenko.helio;
-				TARGETED_DEVICE_FAMILY=2;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.peterrudenko.helio";
+				TARGETED_DEVICE_FAMILY = "2";
 				USE_HEADERMAP = NO; }; name = Debug; };
 		0A94FE1C4D4B7447A9195E63 = {isa = XCBuildConfiguration; buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -2203,9 +2202,8 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = ("$(inherited)", "\"../../Resources/iOS/AudioBus\"");
 				OTHER_CPLUSPLUSFLAGS = "-Wno-reorder -Wno-inconsistent-missing-override";
-				PRODUCT_BUNDLE_IDENTIFIER = com.peterrudenko.helioworkstation;
-				PRODUCT_BUNDLE_IDENTIFIER=com.peterrudenko.helio;
-				TARGETED_DEVICE_FAMILY=2;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.peterrudenko.helio";
+				TARGETED_DEVICE_FAMILY = "2";
 				USE_HEADERMAP = NO; }; name = Release; };
 		0877BE57A18DC5FC3BE5DB1D = {isa = XCBuildConfiguration; buildSettings = {
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -2641,7 +2639,7 @@
 					20E4F2BF17372BD18581F900,
 					AA515E9B05A3DDAAB41F5F79,
 					00D3065F64B0B1FD6AD61CD5, ); buildRules = ( ); dependencies = (  ); name = "Helio - App"; productName = Helio; productReference = E2C1A2859123A25065D73061; productType = "com.apple.product-type.application"; };
-		08DB4A16C7B3991E0F547761 = {isa = PBXProject; buildConfigurationList = CBBEDDA3CEDC22AE3C172D11; attributes = { LastUpgradeCheck = 0830; TargetAttributes = { C52491ADC1C672FFBF6CD85B = { DevelopmentTeam = EQL633LLC8; SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; }; }; }; compatibilityVersion = "Xcode 3.2"; hasScannedForEncodings = 0; mainGroup = C26CB8AD40490BB25FE36466; projectDirPath = ""; projectRoot = ""; targets = (C52491ADC1C672FFBF6CD85B); };
+		08DB4A16C7B3991E0F547761 = {isa = PBXProject; buildConfigurationList = CBBEDDA3CEDC22AE3C172D11; attributes = { LastUpgradeCheck = 0830; ORGANIZATIONNAME = "Peter Rudenko"; TargetAttributes = { C52491ADC1C672FFBF6CD85B = { DevelopmentTeam = EQL633LLC8; SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; }; }; }; compatibilityVersion = "Xcode 3.2"; hasScannedForEncodings = 0; mainGroup = C26CB8AD40490BB25FE36466; projectDirPath = ""; projectRoot = ""; targets = (C52491ADC1C672FFBF6CD85B); };
 	};
 	rootObject = 08DB4A16C7B3991E0F547761;
 }

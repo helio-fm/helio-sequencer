@@ -48,8 +48,8 @@ public:
     void updateComponents();
 
 
-    InstrumentEditorNode *getComponentForFilter(const uint32 filterID) const;
-    InstrumentEditorConnector *getComponentForConnection(const AudioProcessorGraph::Connection &conn) const;
+    InstrumentEditorNode *getComponentForNode(AudioProcessorGraph::NodeID id) const;
+    InstrumentEditorConnector *getComponentForConnection(AudioProcessorGraph::Connection conn) const;
     InstrumentEditorPin *findPinAt(const int x, const int y) const;
 
     void mouseDown(const MouseEvent &e) override;
@@ -63,12 +63,10 @@ public:
     // Dragging
     //===------------------------------------------------------------------===//
 
-    void beginConnectorDrag(const uint32 sourceFilterID, const int sourceFilterChannel,
-                            const uint32 destFilterID, const int destFilterChannel,
-                            const MouseEvent &e);
-
+    void beginConnectorDrag(AudioProcessorGraph::NodeID sourceID, int sourceChannel,
+        AudioProcessorGraph::NodeID destinationID, int destinationChannel,
+        const MouseEvent &e);
     void dragConnector(const MouseEvent &e);
-
     void endDraggingConnector(const MouseEvent &e);
 
 private:

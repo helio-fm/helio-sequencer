@@ -60,7 +60,7 @@ private:
     ComponentAnimator selectionAnimator;
     ScopedPointer<Component> selectionComponent;
 
-    CachedImage::Ptr rollImage;
+    Image rollImage;
 
     Component *createHighlighterComponent() override;
 

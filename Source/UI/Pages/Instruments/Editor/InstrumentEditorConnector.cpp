@@ -21,11 +21,9 @@
 #include "InstrumentEditor.h"
 #include "InstrumentEditorNode.h"
 
-InstrumentEditorConnector::InstrumentEditorConnector(Instrument &graph_) : sourceFilterID(0),
-    destFilterID(0),
-    sourceFilterChannel(0),
-    destFilterChannel(0),
-    instrument(graph_),
+InstrumentEditorConnector::InstrumentEditorConnector(Instrument &graph) :
+    connection({0, 0}, {0, 0}),
+    instrument(graph),
     lastInputX(0),
     lastInputY(0),
     lastOutputX(0),
@@ -36,22 +34,20 @@ InstrumentEditorConnector::InstrumentEditorConnector(Instrument &graph_) : sourc
     this->setAlwaysOnTop(true);
 }
 
-void InstrumentEditorConnector::setInput(const uint32 sourceFilterID_, const int sourceFilterChannel_)
+void InstrumentEditorConnector::setInput(const AudioProcessorGraph::NodeAndChannel node)
 {
-    if (sourceFilterID != sourceFilterID_ || sourceFilterChannel != sourceFilterChannel_)
+    if (this->connection.source != node)
     {
-        this->sourceFilterID = sourceFilterID_;
-        this->sourceFilterChannel = sourceFilterChannel_;
+        this->connection.source = node;
         this->update();
     }
 }
 
-void InstrumentEditorConnector::setOutput(const uint32 destFilterID_, const int destFilterChannel_)
+void InstrumentEditorConnector::setOutput(const AudioProcessorGraph::NodeAndChannel node)
 {
-    if (destFilterID != destFilterID_ || destFilterChannel != destFilterChannel_)
+    if (this->connection.destination != node)
     {
-        this->destFilterID = destFilterID_;
-        this->destFilterChannel = destFilterChannel_;
+        this->connection.destination = node;
         this->update();
     }
 }
@@ -76,9 +72,9 @@ void InstrumentEditorConnector::update()
     this->getPoints(x1, y1, x2, y2);
 
     if (lastInputX != x1
-            || lastInputY != y1
-            || lastOutputX != x2
-            || lastOutputY != y2)
+        || lastInputY != y1
+        || lastOutputX != x2
+        || lastOutputY != y2)
     {
         this->resizeToFit();
     }
@@ -109,18 +105,24 @@ void InstrumentEditorConnector::getPoints(float &x1, float &y1, float &x2, float
 
     if (InstrumentEditor *const hostPanel = this->getGraphPanel())
     {
-        if (InstrumentEditorNode *srcFilterComp = hostPanel->getComponentForFilter(sourceFilterID))
-        { srcFilterComp->getPinPos(sourceFilterChannel, false, x1, y1); }
+        if (InstrumentEditorNode *srcNodeComp =
+            hostPanel->getComponentForNode(this->connection.source.nodeID))
+        {
+            srcNodeComp->getPinPos(this->connection.source.channelIndex, false, x1, y1);
+        }
 
-        if (InstrumentEditorNode *dstFilterComp = hostPanel->getComponentForFilter(destFilterID))
-        { dstFilterComp->getPinPos(destFilterChannel, true, x2, y2); }
+        if (InstrumentEditorNode *dstNodeComp =
+            hostPanel->getComponentForNode(this->connection.destination.nodeID))
+        {
+            dstNodeComp->getPinPos(this->connection.destination.channelIndex, true, x2, y2);
+        }
     }
 }
 
 void InstrumentEditorConnector::paint(Graphics &g)
 {
-    if (sourceFilterChannel == Instrument::midiChannelNumber ||
-        destFilterChannel == Instrument::midiChannelNumber)
+    if (this->connection.source.channelIndex == Instrument::midiChannelNumber ||
+        this->connection.destination.channelIndex == Instrument::midiChannelNumber)
     {
         g.setColour(this->findColour(InstrumentEditor::midiInColourId));
     }
@@ -156,17 +158,18 @@ void InstrumentEditorConnector::mouseDrag(const MouseEvent &e)
     if ((!this->dragging) && ! e.mouseWasClicked())
     {
         this->dragging = true;
-        this->instrument.removeConnection(sourceFilterID, sourceFilterChannel, destFilterID, destFilterChannel);
+        this->instrument.removeConnection(this->connection);
 
-        double distanceFromStart, distanceFromEnd;
+        double distanceFromStart = 0.0, distanceFromEnd = 0.0;
         this->getDistancesFromEnds(e.x, e.y, distanceFromStart, distanceFromEnd);
         const bool isNearerSource = (distanceFromStart < distanceFromEnd);
 
-        this->getGraphPanel()->beginConnectorDrag(isNearerSource ? 0 : sourceFilterID,
-                sourceFilterChannel,
-                isNearerSource ? destFilterID : 0,
-                destFilterChannel,
-                e);
+        this->getGraphPanel()->beginConnectorDrag(
+            isNearerSource ? 0 : this->connection.source.nodeID,
+            this->connection.source.channelIndex,
+            isNearerSource ? this->connection.destination.nodeID : 0,
+            this->connection.destination.channelIndex,
+            e);
     }
     else if (this->dragging)
     {

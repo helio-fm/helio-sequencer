@@ -26,36 +26,26 @@ class InstrumentEditorConnector :
 {
 public:
 
-    explicit InstrumentEditorConnector(Instrument &graph_);
+    explicit InstrumentEditorConnector(Instrument &graph);
 
-    void setInput(const uint32 sourceFilterID_, const int sourceFilterChannel_);
-
-    void setOutput(const uint32 destFilterID_, const int destFilterChannel_);
+    void setInput(const AudioProcessorGraph::NodeAndChannel node);
+    void setOutput(const AudioProcessorGraph::NodeAndChannel node);
 
     void dragStart(int x, int y);
-
     void dragEnd(int x, int y);
 
     void update();
-
     void resizeToFit();
-
     void getPoints(float &x1, float &y1, float &x2, float &y2) const;
 
     void paint(Graphics &g) override;
-
     bool hitTest(int x, int y) override;
-
     void mouseDown(const MouseEvent &) override;
-
     void mouseDrag(const MouseEvent &e) override;
-
     void mouseUp(const MouseEvent &e) override;
-
     void resized() override;
 
-    uint32 sourceFilterID, destFilterID;
-    int sourceFilterChannel, destFilterChannel;
+    AudioProcessorGraph::Connection connection;
 
 private:
 
@@ -65,9 +55,7 @@ private:
     Path linePath, hitPath;
     bool dragging;
 
-
     DropShadowEffect shadow;
-
     InstrumentEditor *getGraphPanel() const noexcept;
 
     void getDistancesFromEnds(int x, int y, double &distanceFromStart, double &distanceFromEnd) const;

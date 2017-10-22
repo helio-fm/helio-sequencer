@@ -23,15 +23,6 @@ class ColourScheme;
 #define SHORT_FADE_TIME(component) (static_cast<HelioTheme &>((component)->getLookAndFeel()).getShortAnimationLength());
 #define LONG_FADE_TIME(component) (static_cast<HelioTheme &>((component)->getLookAndFeel()).getLongAnimationLength());
 
-struct CachedImage: public Image, public ReferenceCountedObject
-{
-public:
-    CachedImage(const PixelFormat format, int width, int height, bool clearImage) :
-        Image(format, width, height, clearImage) {}
-    
-    typedef ReferenceCountedObjectPtr<CachedImage> Ptr;
-};
-
 class HelioTheme : public LookAndFeel_V4
 {
 public:
@@ -211,12 +202,12 @@ public:
 
     
     
-    HashMap<String, CachedImage::Ptr> &getPanelsBgCache() noexcept
+    HashMap<String, Image> &getPanelsBgCache() noexcept
     {
         return this->panelsBgCache;
     }
     
-    HashMap<int, CachedImage::Ptr> &getRollBgCache() noexcept
+    HashMap<int, Image> &getRollBgCache() noexcept
     {
         return this->rollBgCache;
     }
@@ -230,9 +221,8 @@ protected:
     Typeface::Ptr textTypefaceCache;
     Typeface::Ptr headerTypefaceCache;
     
-    HashMap<String, CachedImage::Ptr> panelsBgCache;
-    HashMap<int, CachedImage::Ptr> rollBgCache;
-    //HashMap<int, CachedImage::Ptr> iconsCache; // todo?
+    HashMap<String, Image> panelsBgCache;
+    HashMap<int, Image> rollBgCache;
     
     JUCE_LEAK_DETECTOR(HelioTheme);
 

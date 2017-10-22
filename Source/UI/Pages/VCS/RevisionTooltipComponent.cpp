@@ -36,9 +36,10 @@
 
 //[/MiscUserDefs]
 
-RevisionTooltipComponent::RevisionTooltipComponent(VersionControl &owner, const VCS::Revision target)
+RevisionTooltipComponent::RevisionTooltipComponent(VersionControl &owner, const ValueTree revision)
     : vcs(owner),
-      revision(target)
+      revision(revision),
+      revisionItemsOnly("temporaryPropertyList")
 {
     addAndMakeVisible (background = new PanelBackgroundC());
     addAndMakeVisible (panel = new PanelA());
@@ -62,7 +63,7 @@ RevisionTooltipComponent::RevisionTooltipComponent(VersionControl &owner, const 
 
     for (int i = 0; i < this->revision.getNumProperties(); ++i)
     {
-        Identifier id = this->revision.getPropertyName(i);
+        const Identifier id = this->revision.getPropertyName(i);
         const var property = this->revision.getProperty(id);
 
         if (VCS::RevisionItem *item = dynamic_cast<VCS::RevisionItem *>(property.getObject()))
@@ -230,20 +231,20 @@ void RevisionTooltipComponent::paintListBoxItem(int rowNumber, Graphics &g,
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="RevisionTooltipComponent"
-                 template="../../Template" componentName="" parentClasses="public Component, public ListBoxModel"
-                 constructorParams="VersionControl &amp;owner, const VCS::Revision target"
-                 variableInitialisers="vcs(owner),&#10;revision(target)" snapPixels="8"
-                 snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
-                 initialWidth="320" initialHeight="240">
+                 template="../../../Template" componentName="" parentClasses="public Component, public ListBoxModel"
+                 constructorParams="VersionControl &amp;owner, const ValueTree revision"
+                 variableInitialisers="vcs(owner),&#10;revision(revision),&#10;revisionItemsOnly(&quot;temporaryPropertyList&quot;)"
+                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
+                 fixedSize="1" initialWidth="320" initialHeight="240">
   <METHODS>
     <METHOD name="inputAttemptWhenModal()"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="e29f8df9016fa10d" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../Themes/PanelBackgroundC.cpp"
+             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../../Themes/PanelBackgroundC.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="c5736d336280caba" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 60M" sourceFile="../Themes/PanelA.cpp"
+             explicitFocusOrder="0" pos="0 0 0M 60M" sourceFile="../../Themes/PanelA.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="d017e5395434bb4f" memberName="changesList" virtualName=""
                     explicitFocusOrder="0" pos="0 0 0M 60M" class="ListBox" params="&quot;&quot;, this"/>
@@ -253,7 +254,7 @@ BEGIN_JUCER_METADATA
               connectedEdges="4" needsCallback="1" radioGroupId="0"/>
   <JUCERCOMP name="" id="34270fb50cf926d8" memberName="shadow" virtualName=""
              explicitFocusOrder="0" pos="5 3R 10M 26" posRelativeX="c5736d336280caba"
-             posRelativeY="c5736d336280caba" sourceFile="../Themes/ShadowDownwards.cpp"
+             posRelativeY="c5736d336280caba" sourceFile="../../Themes/ShadowDownwards.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

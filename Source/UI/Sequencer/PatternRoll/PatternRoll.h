@@ -120,8 +120,8 @@ public:
     
 public:
 
-        static CachedImage::Ptr rowPattern;
-        static CachedImage::Ptr renderRowsPattern(HelioTheme &theme, int height);
+        static Image rowPattern;
+        static Image renderRowsPattern(HelioTheme &theme, int height);
         static void repaintBackgroundsCache(HelioTheme &theme)
         { rowPattern = PatternRoll::renderRowsPattern(theme, PATTERNROLL_ROW_HEIGHT); }
 
