@@ -1018,6 +1018,8 @@ void PianoRoll::handleCommandMessage(int commandId)
         break;
     }
 
+    HybridRoll::handleCommandMessage(commandId);
+
 // TODO more:
 //    else if (key == KeyPress::createFromDescription("cursor left"))
 //        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), -0.25f);

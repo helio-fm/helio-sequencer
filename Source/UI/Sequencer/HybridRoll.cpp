@@ -1377,8 +1377,8 @@ void HybridRoll::handleCommandMessage(int commandId)
     if (commandId == CommandIDs::AddAnnotation)
     {
         const float targetBeat = this->getPositionForNewTimelineEvent();
-        if (AnnotationsSequence *annotationsLayer =
-            dynamic_cast<AnnotationsSequence *>(this->project.getTimeline()->getAnnotations()))
+        if (AnnotationsSequence *annotationsLayer = dynamic_cast<AnnotationsSequence *>
+            (this->project.getTimeline()->getAnnotations()->getSequence()))
         {
             Component *dialog =
                 AnnotationDialog::createAddingDialog(*this, annotationsLayer, targetBeat);
@@ -1388,8 +1388,8 @@ void HybridRoll::handleCommandMessage(int commandId)
     else if (commandId == CommandIDs::AddTimeSignature)
     {
         const float targetBeat = this->getPositionForNewTimelineEvent();
-        if (TimeSignaturesSequence *signaturesLayer =
-            dynamic_cast<TimeSignaturesSequence *>(this->project.getTimeline()->getTimeSignatures()))
+        if (TimeSignaturesSequence *signaturesLayer = dynamic_cast<TimeSignaturesSequence *>
+            (this->project.getTimeline()->getTimeSignatures()->getSequence()))
         {
             Component *dialog =
                 TimeSignatureDialog::createAddingDialog(*this, signaturesLayer, targetBeat);

@@ -614,6 +614,18 @@ void PatternRoll::mouseUp(const MouseEvent &e)
     }
 }
 
+//===----------------------------------------------------------------------===//
+// Keyboard shortcuts
+//===----------------------------------------------------------------------===//
+
+// Handle all hot-key commands here:
+void PatternRoll::handleCommandMessage(int commandId)
+{
+    // TODO switch
+    HybridRoll::handleCommandMessage(commandId);
+}
+
+
 void PatternRoll::resized()
 {
     if (!this->isShowing())

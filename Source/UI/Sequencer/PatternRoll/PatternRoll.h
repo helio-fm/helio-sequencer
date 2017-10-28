@@ -107,6 +107,7 @@ public:
     void mouseDown(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
+    void handleCommandMessage(int commandId) override;
     void resized() override;
     void paint(Graphics &g) override;
     
