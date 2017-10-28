@@ -279,6 +279,10 @@
                   file="../../Source/Core/Midi/Sequences/AutomationSequence.cpp"/>
             <FILE id="GRKG5X" name="AutomationSequence.h" compile="0" resource="0"
                   file="../../Source/Core/Midi/Sequences/AutomationSequence.h"/>
+            <FILE id="lAYkD7" name="KeySignaturesSequence.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Midi/Sequences/KeySignaturesSequence.cpp"/>
+            <FILE id="DbpgGb" name="KeySignaturesSequence.h" compile="0" resource="0"
+                  file="../../Source/Core/Midi/Sequences/KeySignaturesSequence.h"/>
             <FILE id="MHE6co" name="MidiSequence.cpp" compile="1" resource="0"
                   file="../../Source/Core/Midi/Sequences/MidiSequence.cpp"/>
             <FILE id="SK7GBV" name="MidiSequence.h" compile="0" resource="0" file="../../Source/Core/Midi/Sequences/MidiSequence.h"/>

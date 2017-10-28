@@ -21,8 +21,6 @@
 #include "Scale.h"
 #include "Note.h"
 
-#define DEFAULT_ROOT_KEY 60
-
 class KeySignatureEvent : public MidiEvent
 {
 public:
@@ -31,7 +29,7 @@ public:
     KeySignatureEvent(const KeySignatureEvent &other);
     explicit KeySignatureEvent(MidiSequence *owner,
         float newBeat = 0.f,
-        Note::Key key = DEFAULT_ROOT_KEY, // i.e. C5
+        Note::Key key = KEY_C5,
         Scale scale = Scale::getChromaticScale());
 
     ~KeySignatureEvent() override;

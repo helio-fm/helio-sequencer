@@ -65,8 +65,8 @@ Array<MidiMessage> KeySignatureEvent::toMidiMessages() const
     // Hard-coded number of flats and sharps for major and minor keys in a circle of fifths,
     // where negative numbers represent flats and positive numbers represent sharps,
     // and index is a root key, starting from C:
-    static int majorCircle[] = {  0, 7,  2, -3, 4, -1, 6,  1, -4, 3, -2, 5 };
-    static int minorCircle[] = { -3, 4, -1, -6, 1, -4, 3, -2, -7, 0, -5, 2 };
+    static const int majorCircle[] = {  0, 7,  2, -3, 4, -1, 6,  1, -4, 3, -2, 5 };
+    static const int minorCircle[] = { -3, 4, -1, -6, 1, -4, 3, -2, -7, 0, -5, 2 };
     const int root = this->rootKey % 12;
     const int flatsOrSharps = isMinor ? minorCircle[root] : majorCircle[root];
 
@@ -149,7 +149,7 @@ XmlElement *KeySignatureEvent::serialize() const
 void KeySignatureEvent::deserialize(const XmlElement &xml)
 {
     this->reset();
-    this->rootKey = xml.getIntAttribute("key", DEFAULT_ROOT_KEY);
+    this->rootKey = xml.getIntAttribute("key", KEY_C5);
     this->beat = float(xml.getDoubleAttribute("beat"));
     this->id = xml.getStringAttribute("id");
 
@@ -162,7 +162,7 @@ void KeySignatureEvent::deserialize(const XmlElement &xml)
 
 void KeySignatureEvent::reset()
 {
-    this->rootKey = DEFAULT_ROOT_KEY;
+    this->rootKey = KEY_C5;
     this->scale = Scale::getChromaticScale();
 }
 

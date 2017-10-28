@@ -61,6 +61,7 @@ namespace Serialization
         static const String automation = "Automation";
         static const String annotations = "Annotations";
         static const String timeSignatures = "TimeSignatures";
+        static const String keySignatures = "KeySignatures";
 
         // Properties
         static const String trackId = "TrackId";

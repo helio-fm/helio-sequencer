@@ -19,6 +19,8 @@
 
 #include "MidiEvent.h"
 
+#define KEY_C5 60
+
 class Note : public MidiEvent
 {
 public:
