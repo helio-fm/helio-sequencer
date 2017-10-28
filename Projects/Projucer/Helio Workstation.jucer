@@ -471,6 +471,10 @@
                   file="../../Source/Core/Undo/Actions/AutomationEventActions.cpp"/>
             <FILE id="nW8GvH" name="AutomationEventActions.h" compile="0" resource="0"
                   file="../../Source/Core/Undo/Actions/AutomationEventActions.h"/>
+            <FILE id="ypiALi" name="KeySignatureEventActions.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Undo/Actions/KeySignatureEventActions.cpp"/>
+            <FILE id="SU9juX" name="KeySignatureEventActions.h" compile="0" resource="0"
+                  file="../../Source/Core/Undo/Actions/KeySignatureEventActions.h"/>
             <FILE id="T9sZeB" name="MidiTrackActions.cpp" compile="1" resource="0"
                   file="../../Source/Core/Undo/Actions/MidiTrackActions.cpp"/>
             <FILE id="BdOw67" name="MidiTrackActions.h" compile="0" resource="0"

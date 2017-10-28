@@ -81,7 +81,7 @@ private:
 
 };
 
-class HarmonicContextEventEventHashFunction
+class KeySignatureEventHashFunction
 {
 public:
     static int generateHash(const KeySignatureEvent key, const int upperLimit) noexcept
