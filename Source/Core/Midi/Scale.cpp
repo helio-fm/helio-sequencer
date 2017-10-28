@@ -36,6 +36,45 @@ enum Key
 
 Scale::Scale() {}
 Scale::Scale(const String &name) : name(name) {}
+Scale::Scale(const Scale &other) : name(other.name), keys(other.keys) {}
+
+//===----------------------------------------------------------------------===//
+// Hard-coded defaults
+//===----------------------------------------------------------------------===//
+
+inline static Array<int> getChromaticKeys()
+{ return { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }; }
+
+Scale Scale::getChromaticScale()
+{
+    Scale s;
+    s.keys = getChromaticKeys();
+    s.name = TRANS("Chromatic");
+    return s;
+}
+
+inline static Array<int> getNaturalMiniorKeys()
+{ return { 0, 2, 3, 5, 7, 8, 10 }; }
+
+Scale Scale::getNaturalMiniorScale()
+{
+    Scale s;
+    s.keys = getNaturalMiniorKeys();
+    s.name = TRANS("Aeolian");
+    return s;
+}
+
+inline static Array<int> getNaturalMajorKeys()
+{ return { 0, 2, 4, 5, 7, 9, 11 }; }
+
+
+Scale Scale::getNaturalMajorScale()
+{
+    Scale s;
+    s.keys = getNaturalMajorKeys();
+    s.name = TRANS("Ionian");
+    return s;
+}
 
 //===----------------------------------------------------------------------===//
 // Helpers
@@ -49,6 +88,11 @@ int Scale::getSize() const noexcept
 bool Scale::isValid() const noexcept
 {
     return !this->keys.isEmpty() && !this->name.isEmpty();
+}
+
+bool Scale::isChromatic() const noexcept
+{
+    return this->keys == getChromaticKeys();
 }
 
 String Scale::getName() const noexcept

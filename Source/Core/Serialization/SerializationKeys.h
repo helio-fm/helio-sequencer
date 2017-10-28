@@ -76,6 +76,7 @@ namespace Serialization
         static const String event = "Event";
         static const String annotation = "Annotation";
         static const String timeSignature = "TimeSignature";
+        static const String keySignature = "KeySignature";
 
         // Patterns
         static const String clip = "Clip";

@@ -23,6 +23,8 @@ class Note : public MidiEvent
 {
 public:
 
+    typedef int Key;
+
     Note();
 
     // конструктор копирвания и оператор копирования имеют разное поведение
@@ -138,7 +140,7 @@ public:
 
 protected:
 
-    int key;
+    Key key;
 
     float length, velocity;
 

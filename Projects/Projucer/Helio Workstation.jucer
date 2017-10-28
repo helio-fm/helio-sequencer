@@ -258,6 +258,10 @@
                     file="../../Source/Core/Midi/Sequences/Events/AutomationEvent.cpp"/>
               <FILE id="bjp15Z" name="AutomationEvent.h" compile="0" resource="0"
                     file="../../Source/Core/Midi/Sequences/Events/AutomationEvent.h"/>
+              <FILE id="nmFS1e" name="KeySignatureEvent.cpp" compile="1" resource="0"
+                    file="../../Source/Core/Midi/Sequences/Events/KeySignatureEvent.cpp"/>
+              <FILE id="m6kePQ" name="KeySignatureEvent.h" compile="0" resource="0"
+                    file="../../Source/Core/Midi/Sequences/Events/KeySignatureEvent.h"/>
               <FILE id="xdcqR0" name="MidiEvent.cpp" compile="1" resource="0" file="../../Source/Core/Midi/Sequences/Events/MidiEvent.cpp"/>
               <FILE id="bflbXk" name="MidiEvent.h" compile="0" resource="0" file="../../Source/Core/Midi/Sequences/Events/MidiEvent.h"/>
               <FILE id="anKLlo" name="Note.cpp" compile="1" resource="0" file="../../Source/Core/Midi/Sequences/Events/Note.cpp"/>

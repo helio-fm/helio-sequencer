@@ -24,6 +24,7 @@ class Scale final : public Serializable
 public:
 
     Scale();
+    Scale(const Scale &other);
     explicit Scale(const String &name);
 
     // These names only make sense in diatonic scales:
@@ -36,11 +37,12 @@ public:
         Submediant = 5,
         Subtonic = 6
     };
-
+    
     //===------------------------------------------------------------------===//
     // Helpers
     //===------------------------------------------------------------------===//
 
+    bool isChromatic() const noexcept;
     bool isValid() const noexcept;
     int getSize() const noexcept;
     String getName() const noexcept;
@@ -53,6 +55,14 @@ public:
 
     // Flat third considered "minor"-ish (like Aeolian, Phrygian, Locrian etc.)
     bool seemsMinor() const;
+
+    //===------------------------------------------------------------------===//
+    // Hard-coded defaults
+    //===------------------------------------------------------------------===//
+
+    static Scale getChromaticScale();
+    static Scale getNaturalMiniorScale();
+    static Scale getNaturalMajorScale();
 
     //===------------------------------------------------------------------===//
     // Serializable
