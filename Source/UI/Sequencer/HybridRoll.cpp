@@ -634,7 +634,7 @@ void HybridRoll::setBarWidth(const float newBarWidth)
     this->updateBounds();
 }
 
-#define MIN_BAR_WIDTH 12
+#define MIN_BAR_WIDTH 14
 #define MIN_BEAT_WIDTH 8
 
 void HybridRoll::computeVisibleBeatLines()
@@ -646,25 +646,23 @@ void HybridRoll::computeVisibleBeatLines()
     const auto tsSequence =
         this->project.getTimeline()->getTimeSignatures()->getSequence();
     
-    const float zeroCanvasOffset = this->firstBar * this->barWidth;
-    
+    const float zeroCanvasOffset = this->firstBar * this->barWidth; // usually a negative value
     const float viewPosX = float(this->viewport.getViewPositionX());
     const float paintStartX = viewPosX + zeroCanvasOffset;
     const float paintEndX = float(viewPosX + this->viewport.getViewWidth()) + zeroCanvasOffset;
     
-    const int paintStartBar = int(paintStartX / this->barWidth) - 1;
-    const int paintEndBar = int(paintEndX / this->barWidth) + 1;
+    const float paintStartBar = roundf(paintStartX / this->barWidth) - 1.f;
+    const float paintEndBar = roundf(paintEndX / this->barWidth) + 1.f;
     
     // Get number of snaps depending on bar width, 
     // 2 for 64, 4 for 128, 8 for 256, etc:
     const float nearestPowTwo = ceilf(log(this->barWidth) / log(2.f));
-    const float numSnaps = powf(2, jlimit(1.f, 6.f, nearestPowTwo - 5.f)); // like -4.f for twice as dense grid
+    const float numSnaps = powf(2, jlimit(1.f, 6.f, nearestPowTwo - 5.f)); // use -4.f for twice as dense grid
     const float snapWidth = this->barWidth / numSnaps;
 
     int numerator = TIME_SIGNATURE_DEFAULT_NUMERATOR;
     int denominator = TIME_SIGNATURE_DEFAULT_DENOMINATOR;
-    float i = float(paintStartBar);
-
+    float barIterator = float(this->firstBar);
     int nextSignatureIdx = 0;
 
     // Find a time signature to start from (or use default values):
@@ -673,7 +671,7 @@ void HybridRoll::computeVisibleBeatLines()
     {
         const auto signature =
             static_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(nextSignatureIdx));
-        
+
         if (signature->getBeat() >= (paintStartBar * NUM_BEATS_IN_BAR))
         {
             break;
@@ -681,76 +679,91 @@ void HybridRoll::computeVisibleBeatLines()
 
         numerator = signature->getNumerator();
         denominator = signature->getDenominator();
-        i = signature->getBeat() / NUM_BEATS_IN_BAR;
+        barIterator = signature->getBeat() / NUM_BEATS_IN_BAR;
     }
-    
+
+    // At this point we have barIterator pointing at the anchor,
+    // that is nearest to the left side of visible screen area
+    // (it could be either TimeSignatureEvent, or just the very first bar)
+
     float barWidthSum = 0.f;
-    while (i <= paintEndBar)
+    bool canDrawBarLine = false;
+
+    while (barIterator <= paintEndBar)
     {
-        // Expecting the bar to be full (if time signature does not change in between)
+        // We don't do anything else unless we have reached the left side of visible area
+        // Since we have already found the nearest time signature,
+        // we assume that time signature does not change in between,
+        // and we only need to count barWidthSum:
+
         float beatStep = 1.f / float(denominator);
         float barStep = beatStep * float(numerator);
-        const float barStartX = this->barWidth * i - zeroCanvasOffset;
+        const float barStartX = this->barWidth * barIterator - zeroCanvasOffset;
         const float stepWidth = this->barWidth * barStep;
+
         barWidthSum += stepWidth;
+        canDrawBarLine = barWidthSum > MIN_BAR_WIDTH;
+        barWidthSum = canDrawBarLine ? 0.f : barWidthSum;
 
-        if (barWidthSum > MIN_BAR_WIDTH &&
-            barStartX >= viewPosX)
+        // When in the drawing area:
+        if (barIterator > paintStartBar)
         {
-            visibleBars.add(barStartX);
-            barWidthSum = 0;
-        }
-        
-        // Check if we have more time signatures to come
-        TimeSignatureEvent *nextSignature = nullptr;
-        if (nextSignatureIdx < tsSequence->size())
-        {
-            nextSignature = static_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(nextSignatureIdx));
-        }
-        
-        // Now for the beat lines
-        bool lastFrame = false;
-        for (float j = 0.f; j < barStep && !lastFrame; j += beatStep)
-        {
-            const float beatStartX = barStartX + this->barWidth * j;
-            float nextBeatStartX = barStartX + this->barWidth * (j + beatStep);
-            
-            // Check for time signature change at this point
-            if (nextSignature != nullptr)
+            if (canDrawBarLine)
             {
-                const float tsBar = nextSignature->getBeat() / NUM_BEATS_IN_BAR;
-                if (tsBar <= (i + j + beatStep))
-                {
-                    numerator = nextSignature->getNumerator();
-                    denominator = nextSignature->getDenominator();
-                    barStep = (tsBar - i); // i.e. incomplete bar
-                    nextBeatStartX = barStartX + this->barWidth * barStep;
-                    nextSignatureIdx++;
-                    barWidthSum = 0;
-                    lastFrame = true;
-                }
+                visibleBars.add(barStartX);
             }
 
-            // Get snap lines and beat lines
-            for (float k = beatStartX + snapWidth;
-                 k < (nextBeatStartX - 1);
-                 k += snapWidth)
+            // Check if we have more time signatures to come
+            TimeSignatureEvent *nextSignature = nullptr;
+            if (nextSignatureIdx < tsSequence->size())
             {
-                if (k >= viewPosX)
+                nextSignature = static_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(nextSignatureIdx));
+            }
+
+            // Now for the beat lines
+            bool lastFrame = false;
+            for (float j = 0.f; j < barStep && !lastFrame; j += beatStep)
+            {
+                const float beatStartX = barStartX + this->barWidth * j;
+                float nextBeatStartX = barStartX + this->barWidth * (j + beatStep);
+
+                // Check for time signature change at this point
+                if (nextSignature != nullptr)
                 {
-                    visibleSnaps.add(k);
+                    const float tsBar = nextSignature->getBeat() / NUM_BEATS_IN_BAR;
+                    if (tsBar <= (barIterator + j + beatStep))
+                    {
+                        numerator = nextSignature->getNumerator();
+                        denominator = nextSignature->getDenominator();
+                        barStep = (tsBar - barIterator); // i.e. incomplete bar
+                        nextBeatStartX = barStartX + this->barWidth * barStep;
+                        nextSignatureIdx++;
+                        barWidthSum = MIN_BAR_WIDTH; // forces to draw the next bar line
+                        lastFrame = true;
+                    }
+                }
+
+                // Get snap lines and beat lines
+                for (float k = beatStartX + snapWidth;
+                    k < (nextBeatStartX - 1);
+                    k += snapWidth)
+                {
+                    if (k >= viewPosX)
+                    {
+                        visibleSnaps.add(k);
+                    }
+                }
+
+                if (beatStartX >= viewPosX &&
+                    j >= beatStep && // don't draw the first one as it is a bar line
+                    (nextBeatStartX - beatStartX) > MIN_BEAT_WIDTH)
+                {
+                    visibleBeats.add(beatStartX);
                 }
             }
-            
-            if (beatStartX >= viewPosX &&
-                j >= beatStep && // Don't draw the first one as it is a barline
-                (nextBeatStartX - beatStartX) > MIN_BEAT_WIDTH)
-            {
-                visibleBeats.add(beatStartX);
-            }
         }
-        
-        i += barStep;
+
+        barIterator += barStep;
     }
 }
 
