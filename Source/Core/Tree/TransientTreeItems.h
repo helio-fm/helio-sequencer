@@ -59,7 +59,7 @@ public:
     XmlElement *serialize() const override
     { return new XmlElement("TransientTreeItem"); }
 
-    void deserialize(const XmlElement &xml) override;
+    void deserialize(const XmlElement &xml) override {}
 
 };
 
