@@ -82,6 +82,10 @@ template class AnnotationsTrackMap<AnnotationLargeComponent>;
 #include "TimeSignaturesMap/TimeSignaturesTrackMap.cpp"
 template class TimeSignaturesTrackMap<TimeSignatureLargeComponent>;
 
+// force compile template
+#include "KeySignaturesMap/KeySignaturesTrackMap.cpp"
+template class KeySignaturesTrackMap<KeySignatureLargeComponent>;
+
 
 HybridRoll::HybridRoll(ProjectTreeItem &parentProject,
                    Viewport &viewportRef,

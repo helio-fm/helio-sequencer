@@ -39,6 +39,7 @@ class TimelineWarningMarker;
 #include "AnnotationLargeComponent.h"
 #include "TimeSignaturesTrackMap.h"
 #include "TimeSignatureLargeComponent.h"
+#include "KeySignatureLargeComponent.h"
 #include "Playhead.h"
 #include "TransportListener.h"
 #include "HybridRollEventComponent.h"
