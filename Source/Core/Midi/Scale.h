@@ -83,12 +83,23 @@ public:
         return *this;
     }
 
-    // Simplified check, assume the name is unique
     friend inline bool operator==(const Scale &l, const Scale &r)
-    { return (&l == &r || l.name == r.name); }
+    {
+        return &l == &r || (l.name == r.name && l.keys == r.keys);
+    }
 
     friend inline bool operator!=(const Scale &l, const Scale &r)
-    { return !operator== (l, r); }
+    {
+        return !operator== (l, r);
+    }
+
+    // Used to compare scales in version control
+    // (there may be lots of synonyms for the same sets of notes,
+    // e.g. Phrygian is called Zokuso in Japan and Ousak in Greece)
+    bool isEquivalentTo(const Scale &other)
+    {
+        return this->keys == other.keys;
+    }
 
 private:
 

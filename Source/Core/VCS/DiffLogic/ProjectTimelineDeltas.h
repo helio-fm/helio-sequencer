@@ -26,4 +26,8 @@ namespace ProjectTimelineDeltas
     static const String timeSignaturesAdded = "TimeSignaturesAdded";
     static const String timeSignaturesRemoved = "TimeSignaturesRemoved";
     static const String timeSignaturesChanged = "TimeSignaturesChanged";
+
+    static const String keySignaturesAdded = "KeySignaturesAdded";
+    static const String keySignaturesRemoved = "KeySignaturesRemoved";
+    static const String keySignaturesChanged = "KeySignaturesChanged";
 } // namespace ProjectTimelineDeltas
