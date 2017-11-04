@@ -670,6 +670,10 @@
           <FILE id="LnmUma" name="FadingDialog.cpp" compile="1" resource="0"
                 file="../../Source/UI/Dialogs/FadingDialog.cpp"/>
           <FILE id="zCMR8o" name="FadingDialog.h" compile="0" resource="0" file="../../Source/UI/Dialogs/FadingDialog.h"/>
+          <FILE id="nWRFrk" name="KeySignatureDialog.cpp" compile="1" resource="0"
+                file="../../Source/UI/Dialogs/KeySignatureDialog.cpp"/>
+          <FILE id="bQvpt2" name="KeySignatureDialog.h" compile="0" resource="0"
+                file="../../Source/UI/Dialogs/KeySignatureDialog.h"/>
           <FILE id="tcBjFI" name="ModalDialogConfirmation.cpp" compile="1" resource="0"
                 file="../../Source/UI/Dialogs/ModalDialogConfirmation.cpp"/>
           <FILE id="kEkcmA" name="ModalDialogConfirmation.h" compile="0" resource="0"
@@ -1482,7 +1486,7 @@
             vst3Folder="../../ThirdParty/VST_SDK/VST3_SDK" smallIcon="x2W128"
             bigIcon="x2W128" toolset="v140_xp" IPPLibrary="" usePrecompiledHeaders="1"
             precompiledHeaderFileName="Common.h" precompiledHeaderExcludedWildcard="BinaryData*;include_juce_*"
-            windowsTargetPlatformVersion="8.1">
+            windowsTargetPlatformVersion="8.1" extraCompilerFlags="/FC">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug 32-bit" winWarningLevel="4" generateManifest="1"
                        winArchitecture="32-bit" isDebug="1" optimisation="1" targetName="Helio"
@@ -1609,8 +1613,7 @@
                JUCE_USE_CURL="enabled" JUCE_USE_XSHM="enabled" JUCE_USE_XRENDER="disabled"
                JUCE_USE_XCURSOR="enabled" JUCE_WEB_BROWSER="disabled" JUCE_PLUGINHOST_VST="enabled"
                JUCE_PLUGINHOST_VST3="enabled" JUCE_PLUGINHOST_AU="enabled" JUCE_CATCH_UNHANDLED_EXCEPTIONS="enabled"
-               JUCE_ALLOW_STATIC_NULL_VARIABLES="enabled" JUCE_EXECUTE_APP_SUSPEND_ON_IOS_BACKGROUND_TASK="enabled"
-               JUCE_ENABLE_LIVE_CONSTANT_EDITOR="disabled"/>
+               JUCE_ALLOW_STATIC_NULL_VARIABLES="enabled" JUCE_EXECUTE_APP_SUSPEND_ON_IOS_BACKGROUND_TASK="enabled"/>
   <LIVE_SETTINGS>
     <OSX/>
     <WINDOWS/>
