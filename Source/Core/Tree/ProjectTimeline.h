@@ -36,7 +36,7 @@ public:
 
     MidiTrack *getAnnotations() const noexcept;
     MidiTrack *getTimeSignatures() const noexcept;
-
+    MidiTrack *getKeySignatures() const noexcept;
 
     //===------------------------------------------------------------------===//
     // VCS::TrackedItem
@@ -90,6 +90,8 @@ public:
     XmlElement *serializeTimeSignaturesDelta() const;
     void resetTimeSignaturesDelta(const XmlElement *state);
     
+    XmlElement *serializeKeySignaturesDelta() const;
+    void resetKeySignaturesDelta(const XmlElement *state);
 
 private:
 
@@ -103,15 +105,19 @@ private:
     
     Uuid annotationsId;
     Uuid timeSignaturesId;
+    Uuid keySignaturesId;
 
     ScopedPointer<MidiTrack> annotationsTrack;
     ScopedPointer<MidiTrack> timeSignaturesTrack;
+    ScopedPointer<MidiTrack> keySignaturesTrack;
 
     ScopedPointer<MidiSequence> annotationsSequence;
     ScopedPointer<MidiSequence> timeSignaturesSequence;
+    ScopedPointer<MidiSequence> keySignaturesSequence;
 
     friend class AnnotationsTrack;
     friend class TimeSignaturesTrack;
+    friend class KeySignaturesTrack;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectTimeline)
 };
