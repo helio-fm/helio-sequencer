@@ -24,21 +24,6 @@
 //[MiscUserDefs]
 #include "CommandIDs.h"
 #include "KeySignaturesSequence.h"
-
-static StringArray getMeters()
-{
-    StringArray c;
-    c.add("2/2");
-    c.add("2/4");
-    c.add("3/4");
-    c.add("4/4");
-    c.add("5/8");
-    c.add("6/8");
-    c.add("7/8");
-    c.add("9/8");
-    c.add("12/8");
-    return c;
-}
 //[/MiscUserDefs]
 
 KeySignatureDialog::KeySignatureDialog(Component &owner, KeySignaturesSequence *signaturesLayer, const KeySignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)

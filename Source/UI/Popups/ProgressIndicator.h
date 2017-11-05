@@ -22,10 +22,6 @@
 #include "Icons.h"
 #define PROGRESS_INDICATOR_UPDATE_TIMS_MS 17
 
-#if !defined M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
 class ProgressIndicator : public Component,
                           private Timer
 {

@@ -36,6 +36,18 @@ inline float roundf(float x)
 }
 #endif
 
+#if !defined M_PI
+#define M_PI 3.14159265358979323846
+#endif
+
+#if !defined M_PI_2
+#define M_PI_2 1.57079632679489661923
+#endif
+
+#if !defined M_2PI
+#define M_2PI 6.283185307179586476
+#endif
+
 // Internationalization
 #include "TranslationManager.h"
 #if defined TRANS

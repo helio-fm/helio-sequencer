@@ -25,13 +25,8 @@
 #define PEAK_MAX_ALPHA 0.35f
 #define BAND_FADE_MS 1000.f
 #define PEAK_FADE_MS 2500.f
-
 #define NUM_BANDS 70
 #define NUM_SEGMENTS_TO_SKIP 8
-
-#define M_PI        3.141592f
-#define M_PI_2      1.570796f
-#define M_2PI       6.283185f
 
 SpectralLogo::SpectralLogo()
     : Thread("Spectral Logo"),

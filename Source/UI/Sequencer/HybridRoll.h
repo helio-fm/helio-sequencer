@@ -82,6 +82,8 @@ class TimelineWarningMarker;
 //    this->setVisible(true); \
 //    this->grabKeyboardFocus();
 
+// Since keyboard focus is now only owned by the main layout, use only setVisible:
+
 #define HYBRID_ROLL_BULK_REPAINT_START \
     this->setVisible(false);
 
@@ -122,9 +124,8 @@ public:
         playheadColourId                 = 0x99002011
     };
     
-    HybridRoll(ProjectTreeItem &parentProject,
-        Viewport &viewportRef,
-        WeakReference<AudioMonitor> AudioMonitor);
+    HybridRoll(ProjectTreeItem &project, Viewport &viewport,
+        WeakReference<AudioMonitor> audioMonitor);
 
     ~HybridRoll() override;
 
@@ -147,11 +148,8 @@ public:
     //===------------------------------------------------------------------===//
     
     void addOwnedMap(Component *newTrackMap);
-    
     void removeOwnedMap(Component *existingTrackMap);
-    
-    template<typename T>
-    T *findOwnedMapOfType()
+    template<typename T> inline T *findOwnedMapOfType() const
     {
         for (int i = 0; i < this->trackMaps.size(); ++i)
         {

@@ -59,7 +59,7 @@ protected:
             ed.setColour (targetColourID, l.findColour (colourID));
     }
 
-    TextEditor *createEditorComponent()
+    TextEditor *createEditorComponent() override
     {
         TextEditor* const ed = new TextEditor (getName(), this->passwordCharacter);
         ed->applyFontToAllText (getLookAndFeel().getLabelFont (*this));

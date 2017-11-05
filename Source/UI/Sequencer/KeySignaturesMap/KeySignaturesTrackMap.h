@@ -22,8 +22,6 @@
 
 class HybridRoll;
 class ProjectTreeItem;
-class TrackStartIndicator;
-class TrackEndIndicator;
 
 template< typename T >
 class KeySignaturesTrackMap :
@@ -78,10 +76,8 @@ private:
     T *getPreviousEventComponent(int indexOfSorted) const;
     T *getNextEventComponent(int indexOfSorted) const;
     
-    void updateTrackRangeIndicatorsAnchors();
-    
 private:
-    
+
     float projectFirstBeat;
     float projectLastBeat;
 
@@ -90,10 +86,7 @@ private:
     
     HybridRoll &roll;
     ProjectTreeItem &project;
-    
-    ScopedPointer<TrackStartIndicator> trackStartIndicator;
-    ScopedPointer<TrackEndIndicator> trackEndIndicator;
-    
+        
     ComponentAnimator animator;
 
     OwnedArray<T> keySignatureComponents;

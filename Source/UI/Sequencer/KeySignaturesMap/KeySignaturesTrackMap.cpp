@@ -27,8 +27,6 @@
 #include "HelioCallout.h"
 #include "AnnotationCommandPanel.h"
 //#include "KeySignatureCommandPanel.h"
-#include "TrackStartIndicator.h"
-#include "TrackEndIndicator.h"
 
 #include "KeySignatureDialog.h"
 #include "App.h"
@@ -47,14 +45,6 @@ KeySignaturesTrackMap<T>::KeySignaturesTrackMap(ProjectTreeItem &parentProject, 
     this->setAlwaysOnTop(true);
     this->setInterceptsMouseClicks(false, true);
     
-    this->trackStartIndicator = new TrackStartIndicator();
-    this->addAndMakeVisible(this->trackStartIndicator);
-    
-    this->trackEndIndicator = new TrackEndIndicator();
-    this->addAndMakeVisible(this->trackEndIndicator);
-    
-    this->updateTrackRangeIndicatorsAnchors();
-    
     this->reloadTrackMap();
     
     this->project.addListener(this);
@@ -64,17 +54,6 @@ template<typename T>
 KeySignaturesTrackMap<T>::~KeySignaturesTrackMap()
 {
     this->project.removeListener(this);
-}
-
-template<typename T>
-void KeySignaturesTrackMap<T>::updateTrackRangeIndicatorsAnchors()
-{
-    const float rollLengthInBeats = (this->rollLastBeat - this->rollFirstBeat);
-    const float absStart = ((this->projectFirstBeat - this->rollFirstBeat) / rollLengthInBeats);
-    const float absEnd = ((this->projectLastBeat - this->rollFirstBeat) / rollLengthInBeats);
-    //Logger::writeToLog("updateTrackRangeIndicatorsAnchors: " + String(absStart) + ":" + String(absEnd));
-    this->trackStartIndicator->setAnchoredAt(absStart);
-    this->trackEndIndicator->setAnchoredAt(absEnd);
 }
 
 //===----------------------------------------------------------------------===//
@@ -87,27 +66,11 @@ void KeySignaturesTrackMap<T>::resized()
     //Logger::writeToLog("KeySignaturesTrackMap<T>::resized");
     this->setVisible(false);
 
-    T *previous = nullptr;
-
     for (int i = 0; i < this->keySignatureComponents.size(); ++i)
     {
         T *current = this->keySignatureComponents.getUnchecked(i);
         current->updateContent();
-
-        if (previous != nullptr)
-        {
-            this->applyKeySignatureBounds(previous, current);
-        }
-
-        if (i == (this->keySignatureComponents.size() - 1))
-        {
-            this->applyKeySignatureBounds(current, nullptr);
-        }
-
-        previous = current;
     }
-    
-    this->updateTrackRangeIndicatorsAnchors();
     
     this->setVisible(true);
 }
@@ -284,7 +247,6 @@ void KeySignaturesTrackMap<T>::onChangeProjectBeatRange(float firstBeat, float l
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
-    this->updateTrackRangeIndicatorsAnchors();
 }
 
 template<typename T>
