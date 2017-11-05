@@ -20,6 +20,7 @@
 class Instrument;
 class OrchestraPit;
 class PlayerThread;
+class PlayerThreadPool;
 class RendererThread;
 
 #include "TransportListener.h"
@@ -132,11 +133,11 @@ private:
     
     OrchestraPit &orchestra;
 
-    ScopedPointer<PlayerThread> player;
+    ScopedPointer<PlayerThreadPool> player;
     ScopedPointer<RendererThread> renderer;
-    
-    friend class PlayerThread;
+
     friend class RendererThread;
+    friend class PlayerThread;
 
 private:
 

@@ -19,23 +19,17 @@
 
 #include "Transport.h"
 
-class PlayerThread final : protected Thread
+class PlayerThread final : public Thread
 {
 public:
 
     explicit PlayerThread(Transport &transport);
     ~PlayerThread() override;
 
-protected:
-
-    Transport &transport;
-    friend class Transport;
-
-    //===------------------------------------------------------------------===//
-    // Thread
-    //===------------------------------------------------------------------===//
-
     void run() override;
 
+private:
+
+    Transport &transport;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayerThread)
 };
