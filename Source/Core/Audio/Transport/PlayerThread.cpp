@@ -29,9 +29,9 @@
 #define UPDATE_TIME_MS 35
 
 
-PlayerThread::PlayerThread(Transport &parentTransport) :
+PlayerThread::PlayerThread(Transport &transport) :
     Thread("PlayerThread"),
-    transport(parentTransport)
+    transport(transport)
 {
 }
 
@@ -86,7 +86,7 @@ void PlayerThread::run()
     // (some plugins just don't understand allNotesOff message)
     Array<HoldingNote> holdingNotes;
     
-    // Some shorthand labmdas:
+    // Some shorthands:
     auto sendMidiStart = [&uniqueInstruments]()
     {
         for (auto &instrument : uniqueInstruments)
@@ -136,39 +136,8 @@ void PlayerThread::run()
         if (! sequences.getNextMessage(wrapper))
         {
             nextEventTimeDelta = msPerTick * (endPositionInTime - prevTimeStamp);
-            
-#if PLAYER_THREAD_SENDS_SEEK_EVENTS
-            
-            const double targetTimeStamp = endPositionInTime;
-            const double targetTime = Time::getMillisecondCounterHiRes() + nextEventTimeDelta;
-            double deltaTime = targetTime - Time::getMillisecondCounterHiRes();
-            
-            while (deltaTime > UPDATE_TIME_MS)
-            {
-                // fixme! extremely unsafe, no message manager lock gained
-                this->transport.broadcastSeek((targetTimeStamp - deltaTime / msPerTick) / this->transport.getTotalTime(),
-                                              currentTimeMs,
-                                              totalTimeMs);
-                
-                Time::waitForMillisecondCounter(Time::getMillisecondCounter() + UPDATE_TIME_MS);
-                
-                if (this->threadShouldExit())
-                {
-                    sendHoldingNotesOffAndMidiStop();
-                    return;
-                }
-                
-                deltaTime = targetTime - Time::getMillisecondCounterHiRes();
-            }
-            
-            Time::waitForMillisecondCounter(Time::getMillisecondCounter() + uint32(deltaTime));
-            
-#else
-            
             Time::waitForMillisecondCounter(Time::getMillisecondCounter() + uint32(nextEventTimeDelta));
-
-#endif
-            
+                        
             if (this->transport.isLooped())
             {
                 //Logger::writeToLog("Sekk to time " + String(startPositionInTime));
@@ -187,45 +156,16 @@ void PlayerThread::run()
             }
         }
         
-        const bool shouldRewind = (this->transport.isLooped() &&
-                                   (wrapper.message.getTimeStamp() > endPositionInTime));
+        const bool shouldRewind =
+            (this->transport.isLooped() &&
+            (wrapper.message.getTimeStamp() > endPositionInTime));
         
-        const double nextEventTimeStamp = shouldRewind ? endPositionInTime : wrapper.message.getTimeStamp();
-        
-        //Logger::writeToLog(String(prevTimeStamp) + " > " + String(nextEventTimeStamp));
+        const double nextEventTimeStamp =
+            shouldRewind ? endPositionInTime : wrapper.message.getTimeStamp();
         
         nextEventTimeDelta = msPerTick * (nextEventTimeStamp - prevTimeStamp);
-        
         currentTimeMs += nextEventTimeDelta;
-        
-#if PLAYER_THREAD_SENDS_SEEK_EVENTS
-
-        const double targetTimeStamp = nextEventTimeStamp;
-        const double targetTime = Time::getMillisecondCounterHiRes() + nextEventTimeDelta;
-        double deltaTime = targetTime - Time::getMillisecondCounterHiRes();
-        
-        while (deltaTime > UPDATE_TIME_MS)
-        {
-            this->transport.broadcastSeek((targetTimeStamp - deltaTime / msPerTick) / this->transport.getTotalTime(),
-                                          currentTimeMs,
-                                          totalTimeMs);
-            
-            Time::waitForMillisecondCounter(Time::getMillisecondCounter() + UPDATE_TIME_MS);
-            
-            if (this->threadShouldExit())
-            {
-                sendHoldingNotesOffAndMidiStop();
-                return;
-            }
-        
-            deltaTime = targetTime - Time::getMillisecondCounterHiRes();
-        }
-        
-        
-        Time::waitForMillisecondCounter(Time::getMillisecondCounter() + uint32(deltaTime));
-        
-#else
-      
+              
         Time::waitForMillisecondCounter(Time::getMillisecondCounter() + uint32(nextEventTimeDelta));
         
         if (this->threadShouldExit())
@@ -233,8 +173,6 @@ void PlayerThread::run()
             sendHoldingNotesOffAndMidiStop();
             return;
         }
-        
-#endif
         
         prevTimeStamp = nextEventTimeStamp;
 
