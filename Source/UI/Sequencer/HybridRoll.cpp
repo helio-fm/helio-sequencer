@@ -51,6 +51,7 @@
 
 #include "ProjectTimeline.h"
 #include "AnnotationsSequence.h"
+#include "KeySignaturesSequence.h"
 #include "TimeSignaturesSequence.h"
 #include "PianoRollToolbox.h"
 #include "HybridRollListener.h"
@@ -1085,10 +1086,38 @@ void HybridRoll::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails
     }
 }
 
-
-void HybridRoll::moved()
+void HybridRoll::handleCommandMessage(int commandId)
 {
-    //this->sendChangeMessage();
+    if (commandId == CommandIDs::AddAnnotation)
+    {
+        const float targetBeat = this->getPositionForNewTimelineEvent();
+        if (AnnotationsSequence *sequence = dynamic_cast<AnnotationsSequence *>
+            (this->project.getTimeline()->getAnnotations()->getSequence()))
+        {
+            Component *dialog = AnnotationDialog::createAddingDialog(*this, sequence, targetBeat);
+            App::Layout().showModalNonOwnedDialog(dialog);
+        }
+    }
+    else if (commandId == CommandIDs::AddTimeSignature)
+    {
+        const float targetBeat = this->getPositionForNewTimelineEvent();
+        if (TimeSignaturesSequence *sequence = dynamic_cast<TimeSignaturesSequence *>
+            (this->project.getTimeline()->getTimeSignatures()->getSequence()))
+        {
+            Component *dialog = TimeSignatureDialog::createAddingDialog(*this, sequence, targetBeat);
+            App::Layout().showModalNonOwnedDialog(dialog);
+        }
+    }
+    else if (commandId == CommandIDs::AddKeySignature)
+    {
+        const float targetBeat = this->getPositionForNewTimelineEvent();
+        if (KeySignaturesSequence *sequence = dynamic_cast<KeySignaturesSequence *>
+            (this->project.getTimeline()->getKeySignatures()->getSequence()))
+        {
+            Component *dialog = KeySignatureDialog::createAddingDialog(*this, sequence, targetBeat);
+            App::Layout().showModalNonOwnedDialog(dialog);
+        }
+    }
 }
 
 void HybridRoll::resized()
@@ -1387,32 +1416,6 @@ void HybridRoll::handleAsyncUpdate()
         this->updateChildrenPositions();
     }
 #endif
-}
-
-void HybridRoll::handleCommandMessage(int commandId)
-{
-    if (commandId == CommandIDs::AddAnnotation)
-    {
-        const float targetBeat = this->getPositionForNewTimelineEvent();
-        if (AnnotationsSequence *annotationsLayer = dynamic_cast<AnnotationsSequence *>
-            (this->project.getTimeline()->getAnnotations()->getSequence()))
-        {
-            Component *dialog =
-                AnnotationDialog::createAddingDialog(*this, annotationsLayer, targetBeat);
-            App::Layout().showModalNonOwnedDialog(dialog);
-        }
-    }
-    else if (commandId == CommandIDs::AddTimeSignature)
-    {
-        const float targetBeat = this->getPositionForNewTimelineEvent();
-        if (TimeSignaturesSequence *signaturesLayer = dynamic_cast<TimeSignaturesSequence *>
-            (this->project.getTimeline()->getTimeSignatures()->getSequence()))
-        {
-            Component *dialog =
-                TimeSignatureDialog::createAddingDialog(*this, signaturesLayer, targetBeat);
-            App::Layout().showModalNonOwnedDialog(dialog);
-        }
-    }
 }
 
 double HybridRoll::findIndicatorOffsetFromViewCentre() const

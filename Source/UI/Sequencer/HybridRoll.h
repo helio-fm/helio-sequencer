@@ -290,8 +290,8 @@ public:
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
     void mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel) override;
-    void moved() override;
 
+    void handleCommandMessage(int commandId) override;
     void resized() override;
     void paint(Graphics &g) override;
 
@@ -342,7 +342,6 @@ protected:
     //===------------------------------------------------------------------===//
     
     void handleAsyncUpdate() override;
-    void handleCommandMessage(int commandId) override;
 
     double findIndicatorOffsetFromViewCentre() const;
     friend class HybridRollHeader;
