@@ -535,12 +535,10 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
     // добавляем тулбар справа
     this->allEditorsAndCommandPanel = new OrigamiVertical();
     this->allEditorsAndCommandPanel->addFixedPage(this->rollNavSidebar);
-    this->allEditorsAndCommandPanel->addEdgeAtTheEnd();
     this->allEditorsAndCommandPanel->addFlexiblePage(this->allEditorsContainer);
     this->allEditorsAndCommandPanel->addShadowAtTheStart();
     this->allEditorsAndCommandPanel->addShadowAtTheEnd();
     this->allEditorsAndCommandPanel->addFixedPage(this->rollToolsSidebar);
-    this->allEditorsAndCommandPanel->addEdgeAtTheStart();
 
     this->addAndMakeVisible(this->allEditorsAndCommandPanel);
 

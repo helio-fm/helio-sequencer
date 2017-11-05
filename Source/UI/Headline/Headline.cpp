@@ -26,7 +26,7 @@
 #include "IconComponent.h"
 
 #define HEADLINE_ITEMS_OVERLAP (16)
-#define HEADLINE_ROOT_X (72)
+#define HEADLINE_ROOT_X (64)
 //[/MiscUserDefs]
 
 Headline::Headline()
@@ -76,7 +76,7 @@ void Headline::resized()
 
     bg->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
     separator->setBounds (0, getHeight() - 2, getWidth() - 0, 2);
-    navPanel->setBounds (0, 0, 88, getHeight() - 0);
+    navPanel->setBounds (0, 0, 80, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -192,7 +192,7 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0 0Rr 0M 2" sourceFile="../Themes/SeparatorHorizontalReversed.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="666c39451424e53c" memberName="navPanel" virtualName=""
-             explicitFocusOrder="0" pos="0 0 88 0M" sourceFile="HeadlineNavigationPanel.cpp"
+             explicitFocusOrder="0" pos="0 0 80 0M" sourceFile="HeadlineNavigationPanel.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

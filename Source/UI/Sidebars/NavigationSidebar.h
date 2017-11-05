@@ -24,7 +24,7 @@ class SpectrogramAudioMonitorComponent;
 class ModeIndicatorComponent;
 class AudioMonitor;
 
-#define NAVIGATION_SIDEBAR_WIDTH (72)
+#define NAVIGATION_SIDEBAR_WIDTH (64)
 #include "ModeIndicatorComponent.h"
 //[/Headers]
 
@@ -46,6 +46,7 @@ public:
     //[UserMethods]
     void setAudioMonitor(AudioMonitor *audioMonitor);
     void handleChangeMode() override;
+    void paintOverChildren(Graphics& g) override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;

@@ -27,8 +27,6 @@ public:
     void addFixedPage(Component *component) override;
     void addShadowAtTheStart() override;
     void addShadowAtTheEnd() override;
-    void addEdgeAtTheStart() override;
-    void addEdgeAtTheEnd() override;
     void addResizer(int minSize, int maxSize) override;
 
     void onPageResized(Component *component) override;

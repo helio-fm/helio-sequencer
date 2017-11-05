@@ -23,7 +23,7 @@ class ProjectTreeItem;
 #include "TransportListener.h"
 #include "CommandItemComponent.h"
 
-#define TOOLS_SIDEBAR_WIDTH (72)
+#define TOOLS_SIDEBAR_WIDTH (64)
 #define TOOLS_SIDEBAR_ROW_HEIGHT (38)
 //[/Headers]
 
@@ -51,6 +51,7 @@ public:
     ~ToolsSidebar();
 
     //[UserMethods]
+    void paintOverChildren(Graphics& g) override;
     //[/UserMethods]
 
     void paint (Graphics& g) override;

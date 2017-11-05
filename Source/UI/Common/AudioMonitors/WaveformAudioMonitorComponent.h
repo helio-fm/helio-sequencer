@@ -20,7 +20,7 @@
 class AudioMonitor;
 
 // Set this depending on component width (or sidebar width):
-#define WAVEFORM_METER_BUFFER_SIZE 36
+#define WAVEFORM_METER_BUFFER_SIZE 32
 
 class WaveformAudioMonitorComponent :
     public Component, private Thread, private AsyncUpdater

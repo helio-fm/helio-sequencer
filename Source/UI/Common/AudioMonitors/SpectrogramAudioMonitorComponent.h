@@ -19,7 +19,7 @@
 
 class AudioMonitor;
 
-#define SPECTROGRAM_BUFFER_SIZE 36
+#define SPECTROGRAM_BUFFER_SIZE 32
 #define SPECTROGRAM_NUM_BANDS 32
 
 class SpectrogramAudioMonitorComponent :

@@ -19,12 +19,10 @@
 #include "HelioTheme.h"
 #include "MainWindow.h"
 #include "NavigationSidebar.h"
-#include "Origami.h"
 #include "BinaryData.h"
 #include "Icons.h"
 
 #include "MainWindow.h"
-#include "Origami.h"
 #include "HybridRoll.h"
 #include "NavigationSidebar.h"
 #include "InstrumentEditor.h"
@@ -128,31 +126,6 @@ void HelioTheme::drawStretchableLayoutResizerBar(Graphics &g,
         int w, int h, bool isVerticalBar,
         bool isMouseOver, bool isMouseDragging)
 {
-    //if (isMouseDragging)
-    //{
-    //    g.setColour(findColour(Origami::resizerMovingShadowColourId));
-    //    g.drawVerticalLine(w - 2, 0.f, float(h));
-    //    g.setColour(findColour(Origami::resizerMovingLineColourId));
-    //}
-    //else
-    //{
-    //    g.setColour(findColour(Origami::resizerShadowColourId));
-    //    g.drawVerticalLine(w - 2, 0.f, float(h));
-    //    g.setColour(findColour(Origami::resizerLineColourId));
-    //}
-
-    //if (w == 2)
-    //{
-    //    //g.drawVerticalLine(0, 0.f, float(h));
-    //    //g.setColour(findColour(Origami::resizerLineColourId).withMultipliedAlpha(0.5f));
-    //    g.drawVerticalLine(1, 0.f, float(h));
-    //}
-    //else
-    //{
-    //    //g.drawHorizontalLine(0, 0.f, float(w));
-    //    //g.setColour(findColour(Origami::resizerLineColourId).withMultipliedAlpha(0.5f));
-    //    g.drawVerticalLine(0, 0.f, float(h));
-    //}
 }
 
 
@@ -863,11 +836,11 @@ void HelioTheme::initColours(const ::ColourScheme &colours)
     this->setColour(InstrumentEditor::audioInColourId, Colour(0x25ffffff));
     this->setColour(InstrumentEditor::audioOutColourId, Colour(0x25ffffff));
 
-    // Origami
-    this->setColour(Origami::resizerLineColourId, Colours::white.withAlpha(0.06f));
-    this->setColour(Origami::resizerShadowColourId, Colours::black.withAlpha(0.2f));
-    this->setColour(Origami::resizerMovingLineColourId, Colours::white.withAlpha(0.15f));
-    this->setColour(Origami::resizerMovingShadowColourId, Colours::black.withAlpha(0.3f));
+    // Resizer
+    this->setColour(HelioTheme::resizerLineColourId, Colours::white.withAlpha(0.06f));
+    this->setColour(HelioTheme::resizerShadowColourId, Colours::black.withAlpha(0.2f));
+    this->setColour(HelioTheme::resizerMovingLineColourId, Colours::white.withAlpha(0.15f));
+    this->setColour(HelioTheme::resizerMovingShadowColourId, Colours::black.withAlpha(0.3f));
 
     // ComboBox
     this->setColour(ComboBox::backgroundColourId, colours.getSecondaryGradientColourA().darker(0.05f));

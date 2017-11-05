@@ -32,8 +32,8 @@ class AnnotationsSequence;
 class AnnotationDialog  : public FadingDialog,
                           public TextEditorListener,
                           public ColourButtonListener,
-                          public ButtonListener,
-                          public ComboBoxListener
+                          public Button::Listener,
+                          public ComboBox::Listener
 {
 public:
 
