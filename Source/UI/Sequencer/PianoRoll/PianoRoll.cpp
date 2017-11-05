@@ -63,17 +63,13 @@ PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
     HybridRoll(parentProject, viewportRef, clippingDetector),
     primaryActiveLayer(nullptr),
     numRows(128),
-    rowHeight(MIN_ROW_HEIGHT),
+    rowHeight(PIANOROLL_MIN_ROW_HEIGHT),
     draggingNote(nullptr),
     addNewNoteMode(false),
     mouseDownWasTriggered(false)
 {
     this->setComponentID(ComponentIDs::pianoRollId);
-
-    this->setRowHeight(MIN_ROW_HEIGHT + 5);
-
-    //this->helperVertical = new HelperRectangleVertical();
-    //this->addChildComponent(this->helperVertical);
+    this->setRowHeight(PIANOROLL_MIN_ROW_HEIGHT + 5);
 
     this->helperHorizontal = new HelperRectangleHorizontal();
     this->addChildComponent(this->helperHorizontal);
@@ -87,7 +83,6 @@ PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
 PianoRoll::~PianoRoll()
 {
 }
-
 
 void PianoRoll::deleteSelection()
 {
@@ -311,8 +306,8 @@ void PianoRoll::zoomRelative(const Point<float> &origin, const Point<float> &fac
         const float estimatedNewHeight = float(newRowHeight * this->getNumRows());
 
         if (estimatedNewHeight < this->viewport.getViewHeight() ||
-            newRowHeight > MAX_ROW_HEIGHT ||
-            newRowHeight < MIN_ROW_HEIGHT)
+            newRowHeight > PIANOROLL_MAX_ROW_HEIGHT ||
+            newRowHeight < PIANOROLL_MIN_ROW_HEIGHT)
         {
             newRowHeight = this->getRowHeight();
         }
@@ -330,8 +325,8 @@ void PianoRoll::zoomRelative(const Point<float> &origin, const Point<float> &fac
 
 void PianoRoll::zoomAbsolute(const Point<float> &zoom)
 {
-    const float &newHeight = (this->getNumRows() * MAX_ROW_HEIGHT) * zoom.getY();
-    const float &rowsOnNewScreen = float(newHeight / MAX_ROW_HEIGHT);
+    const float &newHeight = (this->getNumRows() * PIANOROLL_MAX_ROW_HEIGHT) * zoom.getY();
+    const float &rowsOnNewScreen = float(newHeight / PIANOROLL_MAX_ROW_HEIGHT);
     const float &viewHeight = float(this->viewport.getViewHeight());
     const float &newRowHeight = floorf(viewHeight / rowsOnNewScreen + .5f);
 
@@ -916,7 +911,7 @@ void PianoRoll::mouseUp(const MouseEvent &e)
 
 bool PianoRoll::dismissDraggingNoteIfNeeded()
 {
-    // todo dismissDraggingNoteIfNeeded on editmode change?
+    // todo dismissDraggingNoteIfNeeded on edit mode change?
     if (this->draggingNote != nullptr)
     {
 
@@ -1138,64 +1133,9 @@ void PianoRoll::resized()
 
 void PianoRoll::paint(Graphics &g)
 {
-#if PIANOROLL_HAS_PRERENDERED_BACKGROUND
-
-    g.setTiledImageFill(*(static_cast<HelioTheme &>(this->getLookAndFeel()).getRollBgCache()[this->rowHeight]), 0, 0, 1.f);
+    const auto &cache = static_cast<HelioTheme &>(this->getLookAndFeel()).getRollBgCache();
+    g.setTiledImageFill(cache[this->rowHeight], 0, HYBRID_ROLL_HEADER_HEIGHT, 1.f);
     g.fillRect(this->viewport.getViewArea());
-
-#else
-
-    const Colour blackKey = this->findColour(HybridRoll::blackKeyColourId);
-    const Colour blackKeyBright = this->findColour(HybridRoll::blackKeyBrightColourId);
-    const Colour whiteKey = this->findColour(HybridRoll::whiteKeyColourId);
-    const Colour whiteKeyBright = this->findColour(HybridRoll::whiteKeyBrightColourId);
-    const Colour whiteKeyBrighter = whiteKeyBright.brighter(0.025f);
-    const Colour rowLine = this->findColour(HybridRoll::rowLineColourId);
-
-    const float visibleWidth = float(this->viewport.getViewWidth());
-    const float visibleHeight = float(this->viewport.getViewHeight());
-    const Point<int> &viewPosition = this->viewport.getViewPosition();
-
-    const int keyStart = int(viewPosition.getY() / this->rowHeight);
-    const int keyEnd = int((viewPosition.getY() + visibleHeight) / this->rowHeight);
-
-    // Fill everything with white keys color
-    g.setColour(whiteKeyBright);
-    g.fillRect(float(viewPosition.getX()), float(viewPosition.getY()), visibleWidth, visibleHeight);
-
-    for (int i = keyStart; i <= keyEnd; i++)
-    {
-        const int lastOctaveReminder = 4;
-        const int yPos = HYBRID_ROLL_HEADER_HEIGHT + i * this->rowHeight;
-        const int noteNumber = (i + lastOctaveReminder) % 12;
-        const int octaveNumber = (i + lastOctaveReminder) / 12;
-        const bool octaveIsOdd = ((octaveNumber % 2) > 0);
-
-        switch (noteNumber)
-        {
-            case 1:
-            case 3:
-            case 5:
-            case 8:
-            case 10: // black keys
-                g.setColour(octaveIsOdd ? blackKeyBright : blackKey);
-                g.fillRect(float(viewPosition.getX()), float(yPos), visibleWidth, float(this->rowHeight));
-                break;
-
-            default: // white keys bevel
-                g.setColour(whiteKeyBrighter);
-                g.drawHorizontalLine(yPos + 1, float(viewPosition.getX()), float(viewPosition.getX() + visibleWidth));
-                break;
-        }
-
-        g.setColour(rowLine);
-        g.drawHorizontalLine(yPos, float(viewPosition.getX()), float(viewPosition.getX() + visibleWidth));
-    }
-
-    HelioTheme::drawNoiseWithin(this->viewport.getViewArea().toFloat(), this, g, 2.0);
-
-#endif
-
     HybridRoll::paint(g);
 }
 
@@ -1355,7 +1295,7 @@ void PianoRoll::repaintBackgroundsCache(HelioTheme &theme)
 {
     theme.getRollBgCache().clear();
 
-    for (int i = MIN_ROW_HEIGHT; i <= MAX_ROW_HEIGHT; ++i)
+    for (int i = PIANOROLL_MIN_ROW_HEIGHT; i <= PIANOROLL_MAX_ROW_HEIGHT; ++i)
     {
         theme.getRollBgCache().set(i, PianoRoll::renderRowsPattern(theme, i));
     }
@@ -1363,8 +1303,14 @@ void PianoRoll::repaintBackgroundsCache(HelioTheme &theme)
 
 Image PianoRoll::renderRowsPattern(HelioTheme &theme, int height)
 {
-    Image patternImage(Image::RGB, 128, height * ROWS_OF_TWO_OCTAVES, false);
+    if (height < PIANOROLL_MIN_ROW_HEIGHT)
+    {
+        return Image(Image::RGB, 1, 1, true);
+    }
 
+    // Image patterns of width 128px take up to 5mb of ram (rows from 6 to 30)
+    // Width 256px == ~10Mb. Prerendered patterns are drawing fast asf.
+    Image patternImage(Image::RGB, 128, height * ROWS_OF_TWO_OCTAVES, false);
     Graphics g(patternImage);
 
     const Colour blackKey = theme.findColour(HybridRoll::blackKeyColourId);

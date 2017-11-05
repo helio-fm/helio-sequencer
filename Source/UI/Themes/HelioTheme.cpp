@@ -907,9 +907,7 @@ void HelioTheme::updateBackgroundRenders(bool force)
         this->getRollBgCache().clear();
     }
     
-#if PIANOROLL_HAS_PRERENDERED_BACKGROUND
     PianoRoll::repaintBackgroundsCache(*this);
-#endif
 
 #if PATTERNROLL_HAS_PRERENDERED_BACKGROUND
     PatternRoll::repaintBackgroundsCache(*this);
@@ -927,4 +925,3 @@ void HelioTheme::updateBackgroundRenders(bool force)
     PanelBackgroundC::updateRender(*this);
 #endif
 }
-

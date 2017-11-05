@@ -17,30 +17,14 @@
 
 #pragma once
 
-#if JUCE_IOS
-#   define PIANOROLL_HAS_PRERENDERED_BACKGROUND 1
-#else
-#   define PIANOROLL_HAS_PRERENDERED_BACKGROUND 0
-#endif
-
 #if HELIO_DESKTOP
 #   define PIANOROLL_HAS_NOTE_RESIZERS 0
-#   if PIANOROLL_HAS_PRERENDERED_BACKGROUND
-#       define MAX_ROW_HEIGHT (30)
-#       define MIN_ROW_HEIGHT (8)
-#   else
-#       define MAX_ROW_HEIGHT (35)
-#       define MIN_ROW_HEIGHT (6)
-#   endif
+#   define PIANOROLL_MIN_ROW_HEIGHT (6)
+#   define PIANOROLL_MAX_ROW_HEIGHT (30)
 #elif HELIO_MOBILE
 #   define PIANOROLL_HAS_NOTE_RESIZERS 1
-#   if PIANOROLL_HAS_PRERENDERED_BACKGROUND
-#       define MAX_ROW_HEIGHT (40)
-#       define MIN_ROW_HEIGHT (10)
-#   else
-#       define MAX_ROW_HEIGHT (60)
-#       define MIN_ROW_HEIGHT (8)
-#   endif
+#   define PIANOROLL_MIN_ROW_HEIGHT (10)
+#   define PIANOROLL_MAX_ROW_HEIGHT (35)
 #endif
 
 class MidiSequence;
