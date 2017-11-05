@@ -69,7 +69,7 @@ void HeadlineNavigationPanel::paint (Graphics& g)
         float x = 0, y = 0;
         Colour fillColour = Colour (0x0dffffff);
         //[UserPaintCustomArguments] Customize the painting arguments here..
-        fillColour = this->findColour(PanelBackgroundB::panelFillStartId).brighter(0.03f);
+        fillColour = this->findColour(PanelBackgroundB::panelFillId).brighter(0.03f);
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillPath (internalPath1, AffineTransform::translation(x, y));

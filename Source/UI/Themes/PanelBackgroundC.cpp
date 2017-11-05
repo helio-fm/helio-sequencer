@@ -85,20 +85,17 @@ void PanelBackgroundC::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-#if PANEL_C_HAS_PRERENDERED_BACKGROUND
-
-    const Image prerendered = static_cast<HelioTheme &>(this->getLookAndFeel()).getPanelsBgCache()[panelBgKey];
-
+    auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
+    const Image prerendered = theme.getPanelsBgCache()[panelBgKey];
     if (prerendered.isValid())
     {
-        Icons::drawImageRetinaAware(prerendered, g, this->getWidth() / 2, this->getHeight() / 2);
+        g.setTiledImageFill(prerendered, 0, 0, 1.f);
+        g.fillAll();
     }
-
-#else
-
-    drawPanel(g, static_cast<HelioTheme &>(this->getLookAndFeel()));
-
-#endif
+    else
+    {
+        drawPanel(g, static_cast<HelioTheme &>(this->getLookAndFeel()));
+    }
 
     //[/UserPaint]
 }
@@ -117,64 +114,27 @@ void PanelBackgroundC::resized()
 
 static void drawPanel(Graphics& g, HelioTheme &theme)
 {
-    const Desktop::Displays::Display &d = Desktop::getInstance().getDisplays().getMainDisplay();
-    const int w = d.totalArea.getWidth() * int(d.scale);
-    const int h = d.totalArea.getHeight() * int(d.scale);
-
-    g.setGradientFill(ColourGradient(theme.findColour(PanelBackgroundC::panelFillStartId),
-        0.0f, static_cast<float> (h - -200),
-        theme.findColour(PanelBackgroundC::panelFillEndId),
-        static_cast<float> (w), 0.0f,
-        true));
-    g.fillRect(0, 0, w, h);
-
-    const auto shadeStart = theme.findColour(PanelBackgroundC::panelShadeStartId);
-    const auto shadeEnd = theme.findColour(PanelBackgroundC::panelShadeEndId);
-
-    if (shadeStart.getAlpha() > 0.f && shadeEnd.getAlpha() > 0.f)
-    {
-        g.setGradientFill(ColourGradient(shadeStart,
-            static_cast<float> (w * (0.8924f)), static_cast<float> (h * (0.9827f)),
-            shadeEnd,
-            80.0f, static_cast<float> (h * (0.0000f)),
-            false));
-
-        g.fillAll();
-
-        g.setGradientFill(ColourGradient(shadeStart,
-            static_cast<float> (w * (0.8924f)), static_cast<float> (h * (0.9827f)),
-            shadeEnd,
-            80.0f, static_cast<float> (h * (0.0000f)),
-            false));
-
-        g.fillAll();
-    }
-
+    g.setColour(theme.findColour(PanelBackgroundC::panelFillId));
+    g.fillAll();
     HelioTheme::drawNoise(theme, g);
 }
 
 void PanelBackgroundC::updateRender(HelioTheme &theme)
 {
-#if PANEL_C_HAS_PRERENDERED_BACKGROUND
-
     if (theme.getPanelsBgCache()[panelBgKey].isValid())
     {
         return;
     }
 
-    const Desktop::Displays::Display &d = Desktop::getInstance().getDisplays().getMainDisplay();
-    const int w = d.totalArea.getWidth() * int(d.scale);
-    const int h = d.totalArea.getHeight() * int(d.scale);
-    Logger::writeToLog("Rendering background with w:" + String(w) + ", h:" + String(h));
+    //const Desktop::Displays::Display &d = Desktop::getInstance().getDisplays().getMainDisplay();
+    const int w = 512; // d.totalArea.getWidth() * int(d.scale);
+    const int h = 512; // d.totalArea.getHeight() * int(d.scale);
+    //Logger::writeToLog("Rendering background with w:" + String(w) + ", h:" + String(h));
 
     Image render(Image::ARGB, w, h, true);
     Graphics g(render);
-
     drawPanel(g, theme);
-
     theme.getPanelsBgCache().set(panelBgKey, render);
-
-#endif
 }
 
 //[/MiscUserCode]

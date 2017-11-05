@@ -795,18 +795,8 @@ void HelioTheme::initColours(const ::ColourScheme &colours)
     // Panels
     this->setColour(PanelBackgroundA::panelFillStartId, colours.getPrimaryGradientColourA());
     this->setColour(PanelBackgroundA::panelFillEndId, colours.getPrimaryGradientColourB());
-    this->setColour(PanelBackgroundA::panelShadeStartId, colours.getShadingGradientColourA());
-    this->setColour(PanelBackgroundA::panelShadeEndId, colours.getShadingGradientColourB());
-
-    this->setColour(PanelBackgroundB::panelFillStartId, colours.getPrimaryGradientColourA());
-    this->setColour(PanelBackgroundB::panelFillEndId, colours.getPrimaryGradientColourB());
-    this->setColour(PanelBackgroundB::panelShadeStartId, colours.getShadingGradientColourA());
-    this->setColour(PanelBackgroundB::panelShadeEndId, colours.getShadingGradientColourB());
-
-    this->setColour(PanelBackgroundC::panelFillStartId, colours.getSecondaryGradientColourA());
-    this->setColour(PanelBackgroundC::panelFillEndId, colours.getSecondaryGradientColourB());
-    this->setColour(PanelBackgroundC::panelShadeStartId, colours.getShadingGradientColourA());
-    this->setColour(PanelBackgroundC::panelShadeEndId, colours.getShadingGradientColourB());
+    this->setColour(PanelBackgroundB::panelFillId, colours.getPrimaryGradientColourA());
+    this->setColour(PanelBackgroundC::panelFillId, colours.getSecondaryGradientColourA());
 
     this->setColour(PanelA::panelFillColourId, colours.getPanelFillColour());
     this->setColour(PanelA::panelBorderColourId, colours.getPanelBorderColour());

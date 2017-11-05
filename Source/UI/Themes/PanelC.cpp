@@ -123,36 +123,8 @@ void PanelC::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-    g.setGradientFill (ColourGradient (findColour(PanelBackgroundC::panelFillStartId),
-                                       0.0f, static_cast<float> (getHeight() - -200),
-                                       findColour(PanelBackgroundC::panelFillEndId),
-                                       static_cast<float> (getWidth()), 0.0f,
-                                       true));
+    g.setColour(findColour(PanelBackgroundC::panelFillId));
     g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 7.000f);
-
-    g.setGradientFill (ColourGradient (findColour(PanelBackgroundC::panelShadeStartId),
-                                       static_cast<float> (proportionOfWidth (0.5200f)), static_cast<float> (proportionOfHeight (1.2000f)),
-                                       findColour(PanelBackgroundC::panelShadeEndId),
-                                       static_cast<float> (proportionOfWidth (0.4800f)), static_cast<float> (proportionOfHeight (-0.2000f)),
-                                       false));
-    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 7.000f);
-
-#if HELIO_DESKTOP
-    g.setGradientFill (ColourGradient (findColour(PanelBackgroundC::panelShadeStartId),
-                                       static_cast<float> (proportionOfWidth (0.5200f)), static_cast<float> (proportionOfHeight (1.3000f)),
-                                       findColour(PanelBackgroundC::panelShadeEndId),
-                                       static_cast<float> (proportionOfWidth (0.4800f)), static_cast<float> (proportionOfHeight (-0.3000f)),
-                                       false));
-    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 7.000f);
-
-    g.setGradientFill (ColourGradient (findColour(PanelBackgroundC::panelShadeStartId),
-                                       static_cast<float> (proportionOfWidth (0.5200f)), static_cast<float> (proportionOfHeight (1.3000f)),
-                                       findColour(PanelBackgroundC::panelShadeEndId),
-                                       static_cast<float> (proportionOfWidth (0.4800f)), static_cast<float> (proportionOfHeight (-0.3000f)),
-                                       false));
-    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 7.000f);
-#endif
-
     g.setColour (Colour (0x44b9b9b9));
     g.drawRoundedRectangle (0.5f, 0.5f, static_cast<float> (getWidth() - 1), static_cast<float> (getHeight() - 1), 6.000f, 1.000f);
 

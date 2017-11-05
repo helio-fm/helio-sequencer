@@ -198,7 +198,7 @@ void TreeItemComponent::mouseDown(const MouseEvent &event)
 Colour TreeItemComponent::getItemColour() const
 {
     const Colour a(this->item.getColour());
-    const Colour b(this->findColour(PanelBackgroundC::panelFillEndId).withMultipliedSaturation(3.f));
+    const Colour b(this->findColour(PanelBackgroundC::panelFillId).withMultipliedSaturation(3.f));
     const Colour c(b.withBrightness(1.f - b.getBrightness()));
     const Colour d(a.interpolatedWith(c, 0.2f));
     return d;

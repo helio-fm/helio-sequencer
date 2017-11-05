@@ -52,61 +52,42 @@ PanelBackgroundB::~PanelBackgroundB()
     //[/Destructor]
 }
 
-void PanelBackgroundB::paint (Graphics& g)
+void PanelBackgroundB::paint(Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
 #if 0
     //[/UserPrePaint]
 
-    g.setGradientFill (ColourGradient (Colour (0xff48358c),
-                                       static_cast<float> ((getWidth() / 2)), 0.0f,
-                                       Colour (0xff2d3e61),
-                                       0.0f, static_cast<float> (proportionOfHeight (0.6500f)),
-                                       true));
-    g.fillRect (0, 0, getWidth() - 0, getHeight() - 0);
+    g.setGradientFill(ColourGradient(Colour(0xff48358c),
+        static_cast<float> ((getWidth() / 2)), 0.0f,
+        Colour(0xff2d3e61),
+        0.0f, static_cast<float> (proportionOfHeight(0.6500f)),
+        true));
+    g.fillRect(0, 0, getWidth() - 0, getHeight() - 0);
 
-    g.setGradientFill (ColourGradient (Colour (0x1e48358c),
-                                       static_cast<float> (proportionOfWidth (0.8924f)), static_cast<float> (proportionOfHeight (0.9827f)),
-                                       Colour (0x00000000),
-                                       80.0f, static_cast<float> (proportionOfHeight (0.0000f)),
-                                       false));
-    g.fillRect (0, 0, getWidth() - 0, getHeight() - 0);
+    g.setGradientFill(ColourGradient(Colour(0x1e48358c),
+        static_cast<float> (proportionOfWidth(0.8924f)), static_cast<float> (proportionOfHeight(0.9827f)),
+        Colour(0x00000000),
+        80.0f, static_cast<float> (proportionOfHeight(0.0000f)),
+        false));
+    g.fillRect(0, 0, getWidth() - 0, getHeight() - 0);
 
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-#if PANEL_B_HAS_PRERENDERED_BACKGROUND
-
-    const CachedImage::Ptr prerendered = static_cast<HelioTheme &>(this->getLookAndFeel()).getPanelsBgCache()[panelBgKey];
-
-    if (prerendered != nullptr)
+    auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
+    const Image prerendered = theme.getPanelsBgCache()[panelBgKey];
+    if (prerendered.isValid())
     {
-        Icons::drawImageRetinaAware(*prerendered, g, this->getWidth() / 2, this->getHeight() / 2);
+        g.setTiledImageFill(prerendered, 0, 0, 1.f);
+        g.fillAll();
+    }
+    else
+    {
+        g.setColour(findColour(PanelBackgroundB::panelFillId));
+        g.fillAll();
     }
 
-#else
-
-    g.setGradientFill (ColourGradient (findColour(PanelBackgroundB::panelFillStartId),
-                                       static_cast<float> ((getWidth() / 2)), 0.0f,
-                                       findColour(PanelBackgroundB::panelFillEndId),
-                                       0.0f, static_cast<float> (proportionOfHeight (0.6500f)),
-                                       true));
-
-    g.fillRect (0, 0, getWidth() - 0, getHeight() - 0);
-
-#if HELIO_DESKTOP
-    g.setGradientFill (ColourGradient (findColour(PanelBackgroundB::panelShadeStartId),
-                                       static_cast<float> (proportionOfWidth (0.8924f)), static_cast<float> (proportionOfHeight (0.9827f)),
-                                       findColour(PanelBackgroundB::panelShadeEndId),
-                                       80.0f, static_cast<float> (proportionOfHeight (0.0000f)),
-                                       false));
-
-    g.fillRect (0, 0, getWidth() - 0, getHeight() - 0);
-
-    HelioTheme::drawNoise(this, g, 0.5f);
-#endif
-
-#endif
     //[/UserPaint]
 }
 
@@ -124,52 +105,23 @@ void PanelBackgroundB::resized()
 
 void PanelBackgroundB::updateRender(HelioTheme &theme)
 {
-#if PANEL_B_HAS_PRERENDERED_BACKGROUND
-
-    if (theme.getPanelsBgCache()[panelBgKey] != nullptr)
+    if (theme.getPanelsBgCache()[panelBgKey].isValid())
     {
         return;
     }
 
-    const Desktop::Displays::Display &d = Desktop::getInstance().getDisplays().getMainDisplay();
-    const int scale = int(d.scale);
-    const int w = d.totalArea.getWidth() * scale;
-    const int h = d.totalArea.getHeight() * scale;
+    //const Desktop::Displays::Display &d = Desktop::getInstance().getDisplays().getMainDisplay();
+    //const int scale = int(d.scale);
+    const int w = 512; // d.totalArea.getWidth() * scale;
+    const int h = 512; // d.totalArea.getHeight() * scale;
+    //Logger::writeToLog("Prerendering background with w:" + String(w) + ", h:" + String(h));
 
-    Logger::writeToLog("Prerendering background with w:" + String(w) + ", h:" + String(h));
-
-    CachedImage::Ptr render(new CachedImage(Image::ARGB, w, h, true));
-    Graphics g(*render);
-
-    g.setGradientFill (ColourGradient (theme.findColour(PanelBackgroundB::panelFillStartId),
-                                       static_cast<float> ((w / 2)), 0.0f,
-                                       theme.findColour(PanelBackgroundB::panelFillEndId),
-                                       0.0f, static_cast<float> (h * (0.6500f)),
-                                       true));
-
+    Image render(Image::ARGB, w, h, true);
+    Graphics g(render);
+    g.setColour(theme.findColour(PanelBackgroundB::panelFillId));
     g.fillAll();
-
-    g.setGradientFill (ColourGradient (theme.findColour(PanelBackgroundB::panelShadeStartId),
-                                       static_cast<float> (w * (0.8924f)), static_cast<float> (h * (0.9827f)),
-                                       theme.findColour(PanelBackgroundB::panelShadeEndId),
-                                       80.0f, static_cast<float> (h * (0.0000f)),
-                                       false));
-
-    g.fillAll();
-
-    g.setGradientFill (ColourGradient (theme.findColour(PanelBackgroundB::panelShadeStartId),
-                                       static_cast<float> (w * (0.8924f)), static_cast<float> (h * (0.9827f)),
-                                       theme.findColour(PanelBackgroundB::panelShadeEndId),
-                                       80.0f, static_cast<float> (h * (0.0000f)),
-                                       false));
-
-    g.fillAll();
-
     HelioTheme::drawNoise(theme, g, 0.5f);
-
     theme.getPanelsBgCache().set(panelBgKey, render);
-
-#endif
 }
 
 //[/MiscUserCode]

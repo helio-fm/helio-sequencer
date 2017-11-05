@@ -19,10 +19,7 @@
 
 //[Headers]
 class HelioTheme;
-
-#if HELIO_MOBILE
-#   define PANEL_B_HAS_PRERENDERED_BACKGROUND 1
-#endif
+#define PANEL_B_HAS_PRERENDERED_BACKGROUND 1
 //[/Headers]
 
 
@@ -38,11 +35,7 @@ public:
 
     enum ColourIds
     {
-        panelFillStartId       = 0x99102000,
-        panelFillEndId         = 0x99102010,
-
-        panelShadeStartId      = 0x99102020,
-        panelShadeEndId        = 0x99102030,
+        panelFillId = 0x99102000,
     };
 
     static void updateRender(HelioTheme &theme);
