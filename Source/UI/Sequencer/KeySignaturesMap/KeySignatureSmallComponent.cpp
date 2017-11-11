@@ -27,7 +27,8 @@
 
 KeySignatureSmallComponent::KeySignatureSmallComponent(KeySignaturesTrackMap<KeySignatureSmallComponent> &parent, const KeySignatureEvent &targetEvent)
     : event(targetEvent),
-      editor(parent)
+      editor(parent),
+      textWidth(0.f)
 {
     addAndMakeVisible (signatureLabel = new Label (String(),
                                                    TRANS("...")));
@@ -102,10 +103,11 @@ const KeySignatureEvent &KeySignatureSmallComponent::getEvent() const
 void KeySignatureSmallComponent::setRealBounds(const Rectangle<float> bounds)
 {
     Rectangle<int> intBounds(bounds.toType<int>());
-    this->boundsOffset = Rectangle<float>(bounds.getX() - float(intBounds.getX()),
-                                          bounds.getY(),
-                                          bounds.getWidth() - float(intBounds.getWidth()),
-                                          bounds.getHeight());
+    this->boundsOffset =
+        Rectangle<float>(bounds.getX() - float(intBounds.getX()),
+            bounds.getY(),
+            bounds.getWidth() - float(intBounds.getWidth()),
+            bounds.getHeight());
 
     this->setBounds(intBounds);
 }
@@ -115,11 +117,21 @@ float KeySignatureSmallComponent::getBeat() const
     return this->event.getBeat();
 }
 
+float KeySignatureSmallComponent::getTextWidth() const
+{
+    return this->textWidth;
+}
+
 void KeySignatureSmallComponent::updateContent()
 {
-    // TODO show key signature string
-    //this->signatureLabel->setText(this->event.toString(), dontSendNotification);
-    this->repaint();
+    const String originalName = this->event.toString();
+    if (this->eventName != originalName)
+    {
+        this->eventName = originalName;
+        this->textWidth = float(this->signatureLabel->getFont().getStringWidth(originalName));
+        this->signatureLabel->setText(originalName, dontSendNotification);
+        this->repaint();
+    }
 }
 
 //[/MiscUserCode]
@@ -131,7 +143,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="KeySignatureSmallComponent"
                  template="../../../Template" componentName="" parentClasses="public Component"
                  constructorParams="KeySignaturesTrackMap&lt;KeySignatureSmallComponent&gt; &amp;parent, const KeySignatureEvent &amp;targetEvent"
-                 variableInitialisers="event(targetEvent),&#10;editor(parent)"
+                 variableInitialisers="event(targetEvent),&#10;editor(parent),&#10;textWidth(0.f)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="128" initialHeight="32">
   <METHODS>

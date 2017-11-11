@@ -36,6 +36,7 @@ public:
     //[UserMethods]
     const KeySignatureEvent &getEvent() const;
     float getBeat() const;
+    float getTextWidth() const;
 
     void updateContent();
     void setRealBounds(const Rectangle<float> bounds);
@@ -64,6 +65,9 @@ private:
 
     const KeySignatureEvent &event;
     KeySignaturesTrackMap<KeySignatureSmallComponent> &editor;
+
+    float textWidth;
+    String eventName;
 
     Rectangle<float> boundsOffset;
 

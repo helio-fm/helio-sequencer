@@ -256,7 +256,7 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
                              textArea.getWidth(),
                              textArea.getHeight(),
                              label.getJustificationType(),
-                             10,
+                             1, // max number of lines : TODO test
                              1.0);
 
         glyphs.createPath(textPath);

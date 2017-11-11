@@ -127,7 +127,8 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject,
     this->header = new HybridRollHeader(this->project.getTransport(), *this, this->viewport);
     this->annotationsTrack = new AnnotationsLargeMap(this->project, *this);
     this->timeSignaturesTrack = new TimeSignaturesLargeMap(this->project, *this);
-    
+    this->keySignaturesTrack = new KeySignaturesLargeMap(this->project, *this);
+
     this->indicator = new Playhead(*this, this->project.getTransport(), this);
 
     this->lassoComponent = new HybridLassoComponent();
@@ -139,6 +140,7 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject,
     this->addAndMakeVisible(this->header);
     this->addAndMakeVisible(this->annotationsTrack);
     this->addAndMakeVisible(this->timeSignaturesTrack);
+    this->addAndMakeVisible(this->keySignaturesTrack);
     this->addAndMakeVisible(this->indicator);
 
     this->addAndMakeVisible(this->lassoComponent);
@@ -1835,8 +1837,10 @@ void HybridRoll::updateChildrenBounds()
     this->header->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
     this->annotationsTrack->setBounds(0, viewY + HYBRID_ROLL_HEADER_HEIGHT, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
     this->timeSignaturesTrack->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
+    this->keySignaturesTrack->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
     this->annotationsTrack->toFront(false);
     this->timeSignaturesTrack->toFront(false);
+    this->keySignaturesTrack->toFront(false);
 
     if (this->wipeSpaceHelper)
     {
@@ -1871,8 +1875,10 @@ void HybridRoll::updateChildrenPositions()
     this->header->setTopLeftPosition(0, viewY);
     this->annotationsTrack->setTopLeftPosition(0, viewY + HYBRID_ROLL_HEADER_HEIGHT);
     this->timeSignaturesTrack->setTopLeftPosition(0, viewY);
+    this->keySignaturesTrack->setTopLeftPosition(0, viewY);
     this->annotationsTrack->toFront(false);
     this->timeSignaturesTrack->toFront(false);
+    this->keySignaturesTrack->toFront(false);
 
     if (this->wipeSpaceHelper)
     {

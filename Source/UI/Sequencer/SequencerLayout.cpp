@@ -31,6 +31,7 @@
 #include "SerializationKeys.h"
 #include "AnnotationSmallComponent.h"
 #include "TimeSignatureSmallComponent.h"
+#include "KeySignatureSmallComponent.h"
 #include "ToolsSidebar.h"
 #include "NavigationSidebar.h"
 #include "OrigamiHorizontal.h"
@@ -50,6 +51,10 @@ template class AnnotationsTrackMap<AnnotationSmallComponent>;
 // force compile template
 #include "TimeSignaturesMap/TimeSignaturesTrackMap.cpp"
 template class TimeSignaturesTrackMap<TimeSignatureSmallComponent>;
+
+// force compile template
+#include "KeySignaturesMap/KeySignaturesTrackMap.cpp"
+template class KeySignaturesTrackMap<KeySignatureSmallComponent>;
 
 
 #define MAX_NUM_SPLITSCREEN_EDITORS 2
@@ -491,6 +496,7 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
     this->scroller->addOwnedMap(new PianoTrackMap(this->project, *this->pianoRoll), false);
     this->scroller->addOwnedMap(new AnnotationsTrackMap<AnnotationSmallComponent>(this->project, *this->pianoRoll), false);
     this->scroller->addOwnedMap(new TimeSignaturesTrackMap<TimeSignatureSmallComponent>(this->project, *this->pianoRoll), false);
+    this->scroller->addOwnedMap(new KeySignaturesTrackMap<KeySignatureSmallComponent>(this->project, *this->pianoRoll), false);
     //this->scroller->addOwnedMap(new AutomationTrackMap(this->project, *this->roll, this->project.getDefaultTempoTrack()->getLayer()), true);
 
     this->pianoRoll->setBarWidth(HYBRID_ROLL_MAX_BAR_WIDTH);

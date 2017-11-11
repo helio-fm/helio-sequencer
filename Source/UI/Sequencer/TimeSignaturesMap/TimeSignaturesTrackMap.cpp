@@ -92,7 +92,6 @@ void TimeSignaturesTrackMap<T>::resized()
     for (int i = 0; i < this->timeSignatureComponents.size(); ++i)
     {
         T *current = this->timeSignatureComponents.getUnchecked(i);
-        current->updateContent();
 
         if (previous != nullptr)
         {
@@ -409,6 +408,7 @@ void TimeSignaturesTrackMap<T>::reloadTrackMap()
         {
             auto component = new T(*this, *timeSignature);
             this->addAndMakeVisible(component);
+            component->updateContent();
 
             this->timeSignatureComponents.addSorted(*component, component);
             this->timeSignaturesHash.set(*timeSignature, component);

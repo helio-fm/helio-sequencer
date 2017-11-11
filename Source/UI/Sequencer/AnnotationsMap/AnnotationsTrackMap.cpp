@@ -71,7 +71,6 @@ void AnnotationsTrackMap<T>::resized()
     for (int i = 0; i < this->annotationComponents.size(); ++i)
     {
         T *current = this->annotationComponents.getUnchecked(i);
-        current->updateContent();
 
         if (previous != nullptr)
         {
@@ -385,6 +384,7 @@ void AnnotationsTrackMap<T>::reloadTrackMap()
         {
             auto component = new T(*this, *annotation);
             this->addAndMakeVisible(component);
+            component->updateContent();
 
             this->annotationComponents.addSorted(*component, component);
             this->annotationsHash.set(*annotation, component);

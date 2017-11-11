@@ -433,6 +433,9 @@ protected:
     typedef TimeSignaturesTrackMap<TimeSignatureLargeComponent> TimeSignaturesLargeMap;
     ScopedPointer<TimeSignaturesLargeMap> timeSignaturesTrack;
 
+    typedef KeySignaturesTrackMap<KeySignatureLargeComponent> KeySignaturesLargeMap;
+    ScopedPointer<KeySignaturesLargeMap> keySignaturesTrack;
+
     ScopedPointer<Component> topShadow;
     ScopedPointer<Component> bottomShadow;
 

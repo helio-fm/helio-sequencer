@@ -29,13 +29,23 @@ KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesTrackMap<Key
     : event(targetEvent),
       editor(parent),
       anchor(targetEvent),
-      key(KEY_C5),
+      textWidth(0.f),
       mouseDownWasTriggered(false)
 {
+    addAndMakeVisible (signatureLabel = new Label (String(),
+                                                   TRANS("...")));
+    signatureLabel->setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    signatureLabel->setJustificationType (Justification::centredLeft);
+    signatureLabel->setEditable (false, false, false);
+    signatureLabel->setColour (Label::textColourId, Colour (0x77ffffff));
+    signatureLabel->setColour (TextEditor::textColourId, Colours::black);
+    signatureLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
 
     //[UserPreSize]
     this->setOpaque(false);
     this->setInterceptsMouseClicks(true, false);
+    this->signatureLabel->setInterceptsMouseClicks(false, false);
     this->setMouseCursor(MouseCursor::PointingHandCursor);
     //[/UserPreSize]
 
@@ -50,6 +60,7 @@ KeySignatureLargeComponent::~KeySignatureLargeComponent()
     //[Destructor_pre]
     //[/Destructor_pre]
 
+    signatureLabel = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -60,44 +71,7 @@ void KeySignatureLargeComponent::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    {
-        float x = 0, y = 0;
-        Colour fillColour = Colour (0x25fefefe);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillPath (internalPath1, AffineTransform::translation(x, y));
-    }
-
     //[UserPaint] Add your own custom painting code here..
-    const Font labelFont(19.00f, Font::plain);
-    g.setColour(Colour(0x88ffffff));
-
-    GlyphArrangement arr;
-
-    // TODO draw key and scale
-
-    //arr.addFittedText(labelFont,
-    //                  String(this->numerator),
-    //                  this->boundsOffset.getX() + 4.f,
-    //                  -3.f,
-    //                  float(this->getWidth()),
-    //                  24.f,
-    //                  Justification::centredLeft,
-    //                  1,
-    //                  0.85f);
-
-    //arr.addFittedText(labelFont,
-    //                  String(this->denominator),
-    //                  this->boundsOffset.getX() + 4.f,
-    //                  11.f,
-    //                  float(this->getWidth()),
-    //                  24.f,
-    //                  Justification::centredLeft,
-    //                  1,
-    //                  0.85f);
-    arr.draw(g);
-
     //[/UserPaint]
 }
 
@@ -106,13 +80,7 @@ void KeySignatureLargeComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    internalPath1.clear();
-    internalPath1.startNewSubPath (0.0f, 0.0f);
-    internalPath1.lineTo (5.0f, 0.0f);
-    internalPath1.lineTo (1.0f, 5.0f);
-    internalPath1.lineTo (0.0f, 6.0f);
-    internalPath1.closeSubPath();
-
+    signatureLabel->setBounds (0, 0, getWidth() - -4, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -235,13 +203,19 @@ float KeySignatureLargeComponent::getBeat() const
     return this->event.getBeat();
 }
 
+float KeySignatureLargeComponent::getTextWidth() const
+{
+    return this->textWidth;
+}
+
 void KeySignatureLargeComponent::updateContent()
 {
-    if (this->key != this->event.getRootKey() ||
-        this->scale != this->event.getScale())
+    const String originalName = this->event.toString();
+    if (this->eventName != originalName)
     {
-        this->key = this->event.getRootKey();
-        this->scale = this->event.getScale();
+        this->eventName = originalName;
+        this->textWidth = float(this->signatureLabel->getFont().getStringWidth(originalName));
+        this->signatureLabel->setText(originalName, dontSendNotification);
         this->repaint();
     }
 }
@@ -255,7 +229,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="KeySignatureLargeComponent"
                  template="../../../Template" componentName="" parentClasses="public Component"
                  constructorParams="KeySignaturesTrackMap&lt;KeySignatureLargeComponent&gt; &amp;parent, const KeySignatureEvent &amp;targetEvent"
-                 variableInitialisers="event(targetEvent),&#10;editor(parent),&#10;anchor(targetEvent),&#10;numerator(0),&#10;denominator(0),&#10;mouseDownWasTriggered(false)"
+                 variableInitialisers="event(targetEvent),&#10;editor(parent),&#10;anchor(targetEvent),&#10;textWidth(0.f),&#10;mouseDownWasTriggered(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="128" initialHeight="32">
   <METHODS>
@@ -265,9 +239,12 @@ BEGIN_JUCER_METADATA
     <METHOD name="mouseMove (const MouseEvent&amp; e)"/>
     <METHOD name="mouseDoubleClick (const MouseEvent&amp; e)"/>
   </METHODS>
-  <BACKGROUND backgroundColour="0">
-    <PATH pos="0 0 100 100" fill="solid: 25fefefe" hasStroke="0" nonZeroWinding="1">s 0 0 l 5 0 l 1 5 l 0 6 x</PATH>
-  </BACKGROUND>
+  <BACKGROUND backgroundColour="0"/>
+  <LABEL name="" id="3dbd8cef4b61c2fe" memberName="signatureLabel" virtualName=""
+         explicitFocusOrder="0" pos="0 0 -4M 0M" textCol="77ffffff" edTextCol="ff000000"
+         edBkgCol="0" labelText="..." editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="18"
+         kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

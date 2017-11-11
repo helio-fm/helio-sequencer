@@ -35,6 +35,7 @@ public:
     //[UserMethods]
     const KeySignatureEvent &getEvent() const;
     float getBeat() const;
+    float getTextWidth() const;
 
     void updateContent();
     void setRealBounds(const Rectangle<float> bounds);
@@ -71,8 +72,8 @@ private:
     ComponentDragger dragger;
     KeySignatureEvent anchor;
 
-    Note::Key key;
-    Scale scale;
+    float textWidth;
+    String eventName;
 
     Rectangle<float> boundsOffset;
     Point<int> clickOffset;
@@ -85,7 +86,7 @@ private:
 
     //[/UserVariables]
 
-    Path internalPath1;
+    ScopedPointer<Label> signatureLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeySignatureLargeComponent)
 };

@@ -66,10 +66,23 @@ void KeySignaturesTrackMap<T>::resized()
     //Logger::writeToLog("KeySignaturesTrackMap<T>::resized");
     this->setVisible(false);
 
+    T *previous = nullptr;
+
     for (int i = 0; i < this->keySignatureComponents.size(); ++i)
     {
         T *current = this->keySignatureComponents.getUnchecked(i);
-        current->updateContent();
+
+        if (previous != nullptr)
+        {
+            this->applyKeySignatureBounds(previous, current);
+        }
+
+        if (i == (this->keySignatureComponents.size() - 1))
+        {
+            this->applyKeySignatureBounds(current, nullptr);
+        }
+
+        previous = current;
     }
     
     this->setVisible(true);
@@ -371,6 +384,7 @@ void KeySignaturesTrackMap<T>::reloadTrackMap()
         {
             auto component = new T(*this, *keySignature);
             this->addAndMakeVisible(component);
+            component->updateContent();
 
             this->keySignatureComponents.addSorted(*component, component);
             this->keySignaturesHash.set(*keySignature, component);
@@ -399,7 +413,7 @@ void KeySignaturesTrackMap<T>::applyKeySignatureBounds(T *nc, T *nextOne)
     const float widthMargin = 32.f;
     const float componentsPadding = 10.f;
     const float maxWidth = nextX - x;
-    const float w = jmax(minWidth, jmin((maxWidth - componentsPadding), widthMargin));
+    const float w = jmax(minWidth, jmin((maxWidth - componentsPadding), (nc->getTextWidth() + widthMargin)));
 
     nc->setRealBounds(Rectangle<float>(x, 0.f, w, float(nc->getHeight())));
 }
