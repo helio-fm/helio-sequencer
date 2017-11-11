@@ -64,7 +64,7 @@ void ScaleEditor::onRadioButtonClicked(RadioButton *clickedButton)
         }
     }
 
-    this->scale = Scale(keys);
+    this->scale = this->scale.withKeys(keys);
     this->updateButtons();
 
     if (ScaleEditor::Listener *parentListener =
@@ -76,8 +76,15 @@ void ScaleEditor::onRadioButtonClicked(RadioButton *clickedButton)
 
 void ScaleEditor::setScale(const Scale &scale)
 {
-    this->scale = scale;
-    this->updateButtons();
+    if (!this->scale.isEquivalentTo(scale))
+    {
+        this->scale = scale;
+        this->updateButtons();
+    }
+    else
+    {
+        this->scale = scale;
+    }
 }
 
 void ScaleEditor::updateButtons()

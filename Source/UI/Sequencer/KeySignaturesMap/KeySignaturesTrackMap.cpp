@@ -317,7 +317,7 @@ void KeySignaturesTrackMap<T>::showContextMenuFor(T *nc)
     if (! this->project.getTransport().isPlaying())
     {
         Component *dialog =
-            KeySignatureDialog::createEditingDialog(*this, nc->getEvent());
+            KeySignatureDialog::createEditingDialog(*this, this->project.getTransport(), nc->getEvent());
         App::Layout().showModalNonOwnedDialog(dialog);
     }
 }

@@ -18,10 +18,11 @@
 #include "Common.h"
 #include "KeySelector.h"
 #include "CommandPanel.h"
+#include "Scale.h"
 
 KeySelector::KeySelector()
 {
-    const StringArray keys(KeySelector::getKeysList());
+    const StringArray keys(Scale::getKeyNames());
     for (int i = 0; i < keys.size(); ++i)
     {
         ScopedPointer<RadioButton> button(new RadioButton(keys[i], Colours::lightgrey.withAlpha(0.5f), this));

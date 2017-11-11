@@ -48,6 +48,14 @@ KeySignatureEvent::~KeySignatureEvent()
 {
 }
 
+
+String KeySignatureEvent::toString() const
+{
+    const int index = this->rootKey % CHROMATIC_SCALE_SIZE;
+    const String keyName = Scale::getKeyNames()[index];
+    return keyName + ", " + this->scale.getName();
+}
+
 Array<MidiMessage> KeySignatureEvent::toMidiMessages() const
 {
     // Basically, we can have any non-standard scale here:

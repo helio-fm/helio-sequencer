@@ -1114,7 +1114,8 @@ void HybridRoll::handleCommandMessage(int commandId)
         if (KeySignaturesSequence *sequence = dynamic_cast<KeySignaturesSequence *>
             (this->project.getTimeline()->getKeySignatures()->getSequence()))
         {
-            Component *dialog = KeySignatureDialog::createAddingDialog(*this, sequence, targetBeat);
+            Component *dialog = KeySignatureDialog::createAddingDialog(*this,
+                this->getTransport(), sequence, targetBeat);
             App::Layout().showModalNonOwnedDialog(dialog);
         }
     }

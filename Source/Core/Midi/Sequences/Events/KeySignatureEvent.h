@@ -34,6 +34,7 @@ public:
 
     ~KeySignatureEvent() override;
 
+    String toString() const;
     Array<MidiMessage> toMidiMessages() const override;
     
     KeySignatureEvent copyWithNewId() const;

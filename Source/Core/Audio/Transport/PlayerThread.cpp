@@ -47,7 +47,6 @@ PlayerThread::~PlayerThread()
 
 void PlayerThread::run()
 {
-    this->transport.rebuildSequencesIfNeeded();
     ProjectSequences sequences = this->transport.getSequences();
     Array<Instrument *> uniqueInstruments(sequences.getUniqueInstruments());
     
@@ -263,6 +262,7 @@ void PlayerThread::run()
             }
             else
             {
+                //Logger::writeToLog(String(wrapper.message.getNoteNumber()));
                 wrapper.listener->addMessageToQueue(wrapper.message);
             }
             

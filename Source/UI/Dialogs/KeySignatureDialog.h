@@ -20,28 +20,37 @@
 //[Headers]
 #include "FadingDialog.h"
 #include "KeySignatureEvent.h"
+#include "ScaleEditor.h"
+#include "KeySelector.h"
 
+class Transport;
 class KeySignaturesSequence;
 //[/Headers]
 
 #include "../Themes/PanelC.h"
 #include "../Themes/SeparatorHorizontal.h"
 #include "../Themes/SeparatorVertical.h"
+#include "../Common/PlayButton.h"
 
 class KeySignatureDialog  : public FadingDialog,
                             public TextEditorListener,
+                            public ScaleEditor::Listener,
+                            public KeySelector::Listener,
                             public Button::Listener,
                             public ComboBox::Listener
 {
 public:
 
-    KeySignatureDialog (Component &owner, KeySignaturesSequence *signaturesLayer, const KeySignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
+    KeySignatureDialog (Component &owner, Transport &transport, KeySignaturesSequence *signaturesLayer, const KeySignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
 
     ~KeySignatureDialog();
 
     //[UserMethods]
-    static KeySignatureDialog *createEditingDialog(Component &owner, const KeySignatureEvent &event);
-    static KeySignatureDialog *createAddingDialog(Component &owner, KeySignaturesSequence *annotationsLayer, float targetBeat);
+    static KeySignatureDialog *createEditingDialog(Component &owner,
+        Transport &transport, const KeySignatureEvent &event);
+    static KeySignatureDialog *createAddingDialog(Component &owner,
+        Transport &transport,  KeySignaturesSequence *annotationsLayer,
+        float targetBeat);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -60,6 +69,10 @@ private:
 
     //[UserVariables]
 
+    void onKeyChanged(int key) override;
+    void onScaleChanged(Scale scale) override;
+
+    Transport &transport;
     KeySignatureEvent targetEvent;
     KeySignaturesSequence *targetLayer;
     Component &ownerComponent;
@@ -74,15 +87,21 @@ private:
     void removeEvent();
     void cancelChangesIfAny();
 
+    int key;
+    Scale scale;
+
     //[/UserVariables]
 
     ScopedPointer<PanelC> background;
     ScopedPointer<Label> messageLabel;
     ScopedPointer<TextButton> removeEventButton;
     ScopedPointer<TextButton> okButton;
-    ScopedPointer<ComboBox> textEditor;
+    ScopedPointer<ComboBox> scaleNameEditor;
     ScopedPointer<SeparatorHorizontal> separatorH;
     ScopedPointer<SeparatorVertical> separatorV;
+    ScopedPointer<KeySelector> keySelector;
+    ScopedPointer<ScaleEditor> scaleEditor;
+    ScopedPointer<PlayButton> playButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeySignatureDialog)
 };

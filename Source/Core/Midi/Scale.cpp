@@ -19,8 +19,6 @@
 #include "Scale.h"
 #include "SerializationKeys.h"
 
-#define CHROMATIC_SCALE_SIZE 12
-
 enum Key
 {
     I = 0,
@@ -35,6 +33,20 @@ enum Key
 Scale::Scale() {}
 Scale::Scale(const String &name) : name(name) {}
 Scale::Scale(const Scale &other) : name(other.name), keys(other.keys) {}
+
+Scale Scale::withName(const String &name) const
+{
+    Scale s(*this);
+    s.name = name;
+    return s;
+}
+
+Scale Scale::withKeys(const Array<int> &keys) const
+{
+    Scale s(*this);
+    s.keys = keys;
+    return s;
+}
 
 //===----------------------------------------------------------------------===//
 // Hard-coded defaults
@@ -127,9 +139,30 @@ Array<int> Scale::getSeventhChord(Function fun, bool oneOctave) const
         this->getKey(Key::VII + fun, oneOctave) };
 }
 
+Array<int> Scale::getUpScale() const
+{
+    Array<int> res(this->keys);
+    res.add(CHROMATIC_SCALE_SIZE);
+    return res;
+}
+
+Array<int> Scale::getDownScale() const
+{
+    Array<int> res;
+    res.add(CHROMATIC_SCALE_SIZE);
+    for (int i = this->keys.size(); i --> 0; )
+    { res.add(this->keys[i]); }
+    return res;
+}
+
 bool Scale::seemsMinor() const
 {
     return this->getKey(Key::III) == 3;
+}
+
+bool Scale::hasKey(int key) const
+{
+    return this->keys.contains(key);
 }
 
 int Scale::getKey(int key, bool shouldRestrictToOneOctave /*= false*/) const
@@ -138,6 +171,28 @@ int Scale::getKey(int key, bool shouldRestrictToOneOctave /*= false*/) const
     const int idx = this->keys[key % this->getSize()];
     return shouldRestrictToOneOctave ? idx :
         idx + (CHROMATIC_SCALE_SIZE * (key / this->getSize()));
+}
+
+Scale &Scale::operator=(const Scale &other)
+{
+    this->name = other.name;
+    this->keys = other.keys;
+    return *this;
+}
+
+bool operator==(const Scale &l, const Scale &r)
+{
+    return &l == &r || (l.name == r.name && l.keys == r.keys);
+}
+
+bool operator!=(const Scale &l, const Scale &r)
+{
+    return !operator== (l, r);
+}
+
+bool Scale::isEquivalentTo(const Scale &other) const
+{
+    return this->keys == other.keys;
 }
 
 //===----------------------------------------------------------------------===//

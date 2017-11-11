@@ -50,6 +50,8 @@ public:
     void probeSoundAt(double absTrackPosition,
                       const MidiSequence *limitToLayer = nullptr);
     
+    void playSequence(const MidiMessageSequence &sequence);
+
     void startPlaybackLooped(double absLoopStart, double absLoopEnd);
     bool isLooped() const;
     double getLoopStart() const;
@@ -72,8 +74,6 @@ public:
 
     MidiMessage findFirstTempoEvent();
 
-    void rebuildSequencesInRealtime();
-    
     //===------------------------------------------------------------------===//
     // Sending messages at real-time
     //===------------------------------------------------------------------===//
@@ -143,6 +143,7 @@ private:
     ProjectSequences getSequences();
     void rebuildSequencesIfNeeded();
     
+    CriticalSection sequencesLock;
     ProjectSequences sequences;
     bool sequencesAreOutdated;
     

@@ -153,13 +153,6 @@ void Transport::setTotalTime(const double val)
 // Transport
 //===----------------------------------------------------------------------===//
 
-void Transport::rebuildSequencesInRealtime()
-{
-    // todo sequences write lock
-    //this->rebuildSequencesIfNeeded();
-    //this->sequences.seekToTime(this->lastSeekTimeStamp);
-}
-
 void Transport::seekToPosition(double absPosition)
 {
     double timeMs = 0.0;
@@ -202,6 +195,37 @@ void Transport::probeSoundAt(double absTrackPosition, const MidiSequence *limitT
             }
         }
     }
+}
+
+// Only used in a key signature dialog to test how scales sound
+void Transport::playSequence(const MidiMessageSequence &sequence)
+{
+    this->sequences.clear();
+    this->sequencesAreOutdated = true; // will update on the next playback
+    this->loopedMode = false;
+
+    MidiMessageSequence fixedSequence(sequence);
+    const double startPositionInTime = round(this->getSeekPosition() * this->getTotalTime());
+    fixedSequence.addTimeToMessages(startPositionInTime);
+
+    // using the last instrument (TODO something more clever in the future)
+    Instrument *targetInstrument = this->orchestra.getInstruments().getLast();
+    auto wrapper = new SequenceWrapper();
+    wrapper->layer = nullptr;
+    wrapper->sequence = fixedSequence;
+    wrapper->currentIndex = 0;
+    wrapper->instrument = targetInstrument;
+    wrapper->listener = &targetInstrument->getProcessorPlayer().getMidiMessageCollector();
+    this->sequences.addWrapper(wrapper);
+
+    if (this->player->isThreadRunning() &&
+        !this->player->threadShouldExit())
+    {
+        this->player->stopThread(PLAYER_THREAD_STOP_TIME_MS);
+        this->allNotesControllersAndSoundOff();
+    }
+
+    this->player->startThread(10);
 }
 
 void Transport::startPlayback()
@@ -670,7 +694,7 @@ void Transport::rebuildSequencesIfNeeded()
 
 ProjectSequences Transport::getSequences()
 {
-    // todo add lock
+    ScopedLock l(this->sequencesLock);
     return this->sequences;
 }
 
@@ -704,7 +728,8 @@ void Transport::updateLinkForTrack(const MidiTrack *track)
     }
     
     // set default instrument, if none found
-    this->linksCache.set(track->getTrackId().toString(), this->orchestra.getInstruments()[0]);
+    this->linksCache.set(track->getTrackId().toString(),
+        this->orchestra.getInstruments().getFirst());
 }
 
 void Transport::removeLinkForTrack(const MidiTrack *track)

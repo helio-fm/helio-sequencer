@@ -33,13 +33,6 @@ public:
         virtual void onKeyChanged(int key) = 0;
     };
 
-    inline static StringArray getKeysList(bool sharps = true)
-    {
-        return sharps ?
-            StringArray("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B") :
-            StringArray("C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B");
-    }
-
     void onRadioButtonClicked(RadioButton *button) override;
     void setSelectedKey(int key);
 
