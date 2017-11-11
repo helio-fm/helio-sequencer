@@ -26,6 +26,7 @@ class ColourButton;
 
 struct ColourButtonListener
 {
+    virtual ~ColourButtonListener() {}
     virtual void onColourButtonClicked(ColourButton *button) = 0;
 };
 //[/Headers]
@@ -48,6 +49,9 @@ public:
 
     Colour getColour() const noexcept
     { return this->colour; }
+
+    int getButtonIndex() const noexcept;
+    void setButtonIndex(int val);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -60,6 +64,7 @@ private:
     //[UserVariables]
     Component *createHighlighterComponent() override;
 
+    int index;
     Colour colour;
     ScopedPointer<IconComponent> checkMark;
     ColourButtonListener *owner;

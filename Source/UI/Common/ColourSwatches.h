@@ -17,35 +17,24 @@
 
 #pragma once
 
-//[Headers]
 #include "ColourButton.h"
-//[/Headers]
 
-
-class ColourSwatches  : public Component,
-                        public ColourButtonListener
+class ColourSwatches : public Component,
+    public ColourButtonListener
 {
 public:
 
-    ColourSwatches ();
-
+    ColourSwatches();
     ~ColourSwatches();
 
-    //[UserMethods]
     void onColourButtonClicked(ColourButton *button) override;
     void setSelectedColour(Colour colour);
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
     void resized() override;
-
 
 private:
 
-    //[UserVariables]
     OwnedArray<ColourButton> buttons;
-    //[/UserVariables]
-
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ColourSwatches)
 };

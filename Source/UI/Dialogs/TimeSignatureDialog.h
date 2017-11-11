@@ -30,8 +30,8 @@ class TimeSignaturesSequence;
 
 class TimeSignatureDialog  : public FadingDialog,
                              public TextEditorListener,
-                             public ButtonListener,
-                             public ComboBoxListener
+                             public Button::Listener,
+                             public ComboBox::Listener
 {
 public:
 

@@ -79,9 +79,10 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *annota
     textEditor->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     textEditor->addListener (this);
 
-    addAndMakeVisible (colourSwatches = new ColourSwatches());
     addAndMakeVisible (separatorH = new SeparatorHorizontal());
     addAndMakeVisible (separatorV = new SeparatorVertical());
+    addAndMakeVisible (colourSwatches = new ColourSwatches());
+
 
     //[UserPreSize]
     jassert(this->addsNewEvent || this->targetEvent.getSequence() != nullptr);
@@ -141,9 +142,9 @@ AnnotationDialog::~AnnotationDialog()
     removeEventButton = nullptr;
     okButton = nullptr;
     textEditor = nullptr;
-    colourSwatches = nullptr;
     separatorH = nullptr;
     separatorV = nullptr;
+    colourSwatches = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -177,9 +178,9 @@ void AnnotationDialog::resized()
     removeEventButton->setBounds (4, getHeight() - 4 - 48, 220, 48);
     okButton->setBounds (getWidth() - 4 - 221, getHeight() - 4 - 48, 221, 48);
     textEditor->setBounds ((getWidth() / 2) - ((getWidth() - 48) / 2), 58, getWidth() - 48, 36);
-    colourSwatches->setBounds ((getWidth() / 2) + 3 - ((getWidth() - 56) / 2), 102, getWidth() - 56, 34);
     separatorH->setBounds (4, getHeight() - 52 - 2, getWidth() - 8, 2);
     separatorV->setBounds ((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
+    colourSwatches->setBounds ((getWidth() / 2) + 2 - ((getWidth() - 56) / 2), 102, getWidth() - 56, 34);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -436,15 +437,15 @@ BEGIN_JUCER_METADATA
   <COMBOBOX name="" id="1923d71c308d2169" memberName="textEditor" virtualName=""
             explicitFocusOrder="0" pos="0Cc 58 48M 36" editable="1" layout="33"
             items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
-  <JUCERCOMP name="" id="12e51c6931db61b4" memberName="colourSwatches" virtualName=""
-             explicitFocusOrder="0" pos="3Cc 102 56M 34" sourceFile="../Common/ColourSwatches.cpp"
-             constructorParams=""/>
   <JUCERCOMP name="" id="e39d9e103e2a60e6" memberName="separatorH" virtualName=""
              explicitFocusOrder="0" pos="4 52Rr 8M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="1fb927654787aaf4" memberName="separatorV" virtualName=""
              explicitFocusOrder="0" pos="0Cc 4Rr 2 48" sourceFile="../Themes/SeparatorVertical.cpp"
              constructorParams=""/>
+  <GENERICCOMPONENT name="" id="123ea615ffefd36f" memberName="colourSwatches" virtualName=""
+                    explicitFocusOrder="0" pos="2Cc 102 56M 34" class="ColourSwatches"
+                    params=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
