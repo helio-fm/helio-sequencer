@@ -671,6 +671,7 @@ void HybridRoll::computeVisibleBeatLines()
     int denominator = TIME_SIGNATURE_DEFAULT_DENOMINATOR;
     float barIterator = float(this->firstBar);
     int nextSignatureIdx = 0;
+    bool firstEvent = true;
 
     // Find a time signature to start from (or use default values):
     // find a first time signature after a paint start and take a previous one, if any
@@ -678,6 +679,17 @@ void HybridRoll::computeVisibleBeatLines()
     {
         const auto signature =
             static_cast<TimeSignatureEvent *>(tsSequence->getUnchecked(nextSignatureIdx));
+
+        // The very first event defines what's before it (both time signature and offset)
+        if (firstEvent)
+        {
+            numerator = signature->getNumerator();
+            denominator = signature->getDenominator();
+            const float beatStep = 1.f / float(denominator);
+            const float barStep = beatStep * float(numerator);
+            barIterator += fmodf(signature->getBeat() / NUM_BEATS_IN_BAR - float(this->firstBar), barStep);
+            firstEvent = false;
+        }
 
         if (signature->getBeat() >= (paintStartBar * NUM_BEATS_IN_BAR))
         {

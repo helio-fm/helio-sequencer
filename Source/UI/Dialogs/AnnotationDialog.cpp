@@ -342,14 +342,18 @@ void AnnotationDialog::sendEventChange(AnnotationEvent newEvent)
 {
     if (this->originalSequence != nullptr)
     {
-        if (!this->addsNewEvent)
+        if (this->addsNewEvent)
+        {
+            this->originalSequence->change(this->originalEvent, newEvent, true);
+            this->originalEvent = newEvent;
+        }
+        else
         {
             this->cancelChangesIfAny();
             this->originalSequence->checkpoint();
+            this->originalSequence->change(this->originalEvent, newEvent, true);
+            this->hasMadeChanges = true;
         }
-
-        this->originalSequence->change(this->originalEvent, newEvent, true);
-        this->hasMadeChanges = true;
     }
 }
 
@@ -357,14 +361,17 @@ void AnnotationDialog::removeEvent()
 {
     if (this->originalSequence != nullptr)
     {
-        if (!this->addsNewEvent)
+        if (this->addsNewEvent)
+        {
+            this->originalSequence->remove(this->originalEvent, true);
+        }
+        else
         {
             this->cancelChangesIfAny();
             this->originalSequence->checkpoint();
+            this->originalSequence->remove(this->originalEvent, true);
+            this->hasMadeChanges = true;
         }
-
-        this->originalSequence->remove(this->originalEvent, true);
-        this->hasMadeChanges = true;
     }
 }
 

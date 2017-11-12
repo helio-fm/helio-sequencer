@@ -67,8 +67,11 @@ PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
     draggingNote(nullptr),
     addNewNoteMode(false),
     mouseDownWasTriggered(false),
-    defaultHighlighting(0, Scale::getNaturalMajorScale()) // default pattern (black and white keys)
+    defaultHighlighting() // default pattern (black and white keys)
 {
+    this->defaultHighlighting = new HighlightingScheme(0, Scale::getNaturalMajorScale());
+    this->defaultHighlighting->rows = renderBackgroundCacheFor(this->defaultHighlighting);
+
     this->setComponentID(ComponentIDs::pianoRollId);
     this->setRowHeight(PIANOROLL_MIN_ROW_HEIGHT + 5);
 
@@ -149,9 +152,7 @@ void PianoRoll::reloadRollContent()
 
     this->eventComponents.clear();
     this->componentsHashTable.clear();
-
     this->backgroundsCache.clear();
-    this->updateBackgroundCacheFor(this->defaultHighlighting);
 
     const auto &tracks = this->project.getTracks();
 
@@ -175,8 +176,8 @@ void PianoRoll::reloadRollContent()
             }
             else if (event->isTypeOf(MidiEvent::KeySignature))
             {
-                const KeySignatureEvent *key = static_cast<const KeySignatureEvent *>(event);
-                this->updateBackgroundCacheFor(key->getHighlightingScheme());
+                const auto &key = static_cast<const KeySignatureEvent &>(*event);
+                this->updateBackgroundCacheFor(key);
             }
         }
     }
@@ -466,8 +467,10 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
         if (oldKey.getRootKey() != newKey.getRootKey() ||
             !oldKey.getScale().isEquivalentTo(newKey.getScale()))
         {
-            this->backgroundsCache.remove(oldKey.getHighlightingScheme());
-            this->updateBackgroundCacheFor(newKey.getHighlightingScheme());
+            const int index = this->binarySearchForHighlightingScheme(&oldKey);
+            jassert(index >= 0);
+            this->backgroundsCache.remove(index);
+            this->updateBackgroundCacheFor(newKey);
         }
         this->repaint();
     }
@@ -509,9 +512,41 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
     {
         // Repainting background caches on the fly may be costly
         const KeySignatureEvent &key = static_cast<const KeySignatureEvent &>(event);
-        this->updateBackgroundCacheFor(key.getHighlightingScheme());
+        this->updateBackgroundCacheFor(key);
         this->repaint();
     }
+}
+
+int PianoRoll::binarySearchForHighlightingScheme(const KeySignatureEvent *const target) const noexcept
+{
+    int s = 0, e = this->backgroundsCache.size();
+
+    while (s < e)
+    {
+        auto scheme = this->backgroundsCache.getUnchecked(s);
+        if (HighlightingScheme::compareElements(target, scheme) == 0)
+        {
+            return s;
+        }
+
+        const auto halfway = (s + e) / 2;
+        if (halfway == s)
+        {
+            break;
+        }
+
+        scheme = this->backgroundsCache.getUnchecked(halfway);
+        if (HighlightingScheme::compareElements(target, scheme) >= 0)
+        {
+            s = halfway;
+        } 
+        else
+        {
+            e = halfway;
+        }
+    }
+
+    return -1;
 }
 
 void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
@@ -534,8 +569,10 @@ void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
     }
     else if (event.isTypeOf(MidiEvent::KeySignature))
     {
-        const KeySignatureEvent &key = static_cast<const KeySignatureEvent &>(event);
-        this->backgroundsCache.remove(key.getHighlightingScheme());
+        const KeySignatureEvent *key = static_cast<const KeySignatureEvent *>(&event);
+        const int index = this->binarySearchForHighlightingScheme(key);
+        jassert(index >= 0);
+        this->backgroundsCache.remove(index);
         this->repaint();
     }
 }
@@ -552,36 +589,67 @@ void PianoRoll::onResetTrackContent(MidiTrack *const track)
 {
     if (auto sequence = dynamic_cast<const PianoSequence *>(track->getSequence()))
     {
+        // FIXME ASAP, this is an overkill.
+        // Everytime a track is reset, the roll reloads - we'll need to reload when after all tracks are reset
         this->reloadRollContent();
+        // It is used on deserialize, import midi, reset and reset to vcs revision
+        // Remove onResetTrackContent and introduce onResetProjectContent?
     }
 }
 
 void PianoRoll::onAddTrack(MidiTrack *const track)
 {
-    if (auto sequence = dynamic_cast<const PianoSequence *>(track->getSequence()))
+    for (int j = 0; j < track->getSequence()->size(); ++j)
     {
-        if (sequence->size() > 0)
+        MidiEvent *event = track->getSequence()->getUnchecked(j);
+        if (event->isTypeOf(MidiEvent::Note))
         {
-            this->reloadRollContent();
+            Note *note = static_cast<Note *>(event);
+            auto noteComponent = new NoteComponent(*this, *note);
+
+            this->eventComponents.addSorted(*noteComponent, noteComponent);
+
+            const bool belongsToActiveTrack = noteComponent->belongsToAnySequence(this->activeLayers);
+            noteComponent->setActive(belongsToActiveTrack, true);
+
+            this->addAndMakeVisible(noteComponent);
+        }
+        else if (event->isTypeOf(MidiEvent::KeySignature))
+        {
+            const KeySignatureEvent &key = static_cast<const KeySignatureEvent &>(*event);
+            this->updateBackgroundCacheFor(key);
         }
     }
 }
 
 void PianoRoll::onRemoveTrack(MidiTrack *const track)
 {
-    if (auto sequence = dynamic_cast<const PianoSequence *>(track->getSequence()))
-    {
-        for (int i = 0; i < sequence->size(); ++i)
-        {
-            const Note &note = static_cast<const Note &>(*sequence->getUnchecked(i));
+    this->selection.deselectAll();
 
+    for (int i = 0; i < track->getSequence()->size(); ++i)
+    {
+        const auto event = track->getSequence()->getUnchecked(i);
+        if (event->isTypeOf(MidiEvent::KeySignature))
+        {
+            const Note &note = static_cast<const Note &>(*track->getSequence()->getUnchecked(i));
             if (NoteComponent *component = this->componentsHashTable[note])
             {
+                this->fader.fadeOut(component, 150);
+
                 this->selection.deselect(component);
-                this->removeChildComponent(component);
+
+                this->removeChildComponent(component); // O(N)
                 this->componentsHashTable.remove(note);
-                this->eventComponents.removeObject(component, true);
+                this->eventComponents.removeObject(component, true); // O(N)
             }
+        }
+        else if (event->isTypeOf(MidiEvent::KeySignature))
+        {
+            const KeySignatureEvent *key = static_cast<const KeySignatureEvent *>(event);
+            const int index = this->binarySearchForHighlightingScheme(key);
+            jassert(index >= 0);
+            this->backgroundsCache.remove(index);
+            this->repaint();
         }
     }
 }
@@ -1158,7 +1226,7 @@ void PianoRoll::paint(Graphics &g)
     const float paintEndBar = roundf(float(paintEndX) / this->barWidth) + this->firstBar + 1.f;
 
     int prevBarX = paintStartX;
-    const auto *prevScheme = &this->defaultHighlighting;
+    const HighlightingScheme *prevScheme = nullptr;
     const int y = this->viewport.getViewPositionY();
     const int h = this->viewport.getViewHeight();
 
@@ -1166,28 +1234,32 @@ void PianoRoll::paint(Graphics &g)
     {
         const auto key = static_cast<KeySignatureEvent *>(sequences->getUnchecked(nextKeyIdx));
         const int barX = int(((key->getBeat() / NUM_BEATS_IN_BAR) - float(this->firstBar))  * this->barWidth);
+        const int index = this->binarySearchForHighlightingScheme(key);
+        jassert(index >= 0);
 
         if (barX >= paintEndX)
         {
-            g.setTiledImageFill(this->backgroundsCache[*prevScheme][this->rowHeight], 0, HYBRID_ROLL_HEADER_HEIGHT, 1.f);
+            const auto s = (prevScheme == nullptr) ? this->backgroundsCache.getUnchecked(index) : prevScheme;
+            g.setTiledImageFill(s->rows.getUnchecked(this->rowHeight), 0, HYBRID_ROLL_HEADER_HEIGHT, 1.f);
             g.fillRect(prevBarX, y, barX - prevBarX, h);
             HybridRoll::paint(g);
             return;
         }
         else if (barX >= paintStartX)
         {
-            g.setTiledImageFill(this->backgroundsCache[*prevScheme][this->rowHeight], 0, HYBRID_ROLL_HEADER_HEIGHT, 1.f);
+            const auto s = (prevScheme == nullptr) ? this->backgroundsCache.getUnchecked(index) : prevScheme;
+            g.setTiledImageFill(s->rows.getUnchecked(this->rowHeight), 0, HYBRID_ROLL_HEADER_HEIGHT, 1.f);
             g.fillRect(prevBarX, y, barX - prevBarX, h);
         }
 
         prevBarX = barX;
-        prevScheme = &key->getHighlightingScheme();
+        prevScheme = this->backgroundsCache.getUnchecked(index);
     }
 
     if (prevBarX < paintEndX)
     {
-        // TODO getUnchecked
-        g.setTiledImageFill(this->backgroundsCache[*prevScheme][this->rowHeight], 0, HYBRID_ROLL_HEADER_HEIGHT, 1.f);
+        const auto s = (prevScheme == nullptr) ? this->defaultHighlighting : prevScheme;
+        g.setTiledImageFill(s->rows.getUnchecked(this->rowHeight), 0, HYBRID_ROLL_HEADER_HEIGHT, 1.f);
         g.fillRect(prevBarX, y, paintEndX - prevBarX, h);
         HybridRoll::paint(g);
     }
@@ -1345,38 +1417,23 @@ void PianoRoll::reset()
 // Background pattern images cache
 //===----------------------------------------------------------------------===//
 
-void PianoRoll::repaintBackgroundsCache()
+void PianoRoll::updateBackgroundCacheFor(const KeySignatureEvent &key)
 {
-    for (HighlighingSchemes::Iterator i(this->backgroundsCache); i.next();)
-    {
-        this->updateBackgroundCacheFor(i.getKey());
-    }
+    ScopedPointer<HighlightingScheme> scheme(new HighlightingScheme(key.getRootKey(), key.getScale()));
+    scheme->rows = renderBackgroundCacheFor(scheme);
+    this->backgroundsCache.addSorted(*this->defaultHighlighting, scheme.release());
 }
 
-void PianoRoll::updateBackgroundCacheFor(const KeySignatureEvent::HighlightingScheme &s)
+Array<Image> PianoRoll::renderBackgroundCacheFor(const HighlightingScheme *const scheme) const
 {
+    Array<Image> result;
     const auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
-    Array<Image> rows;
     for (int j = 0; j <= PIANOROLL_MAX_ROW_HEIGHT; ++j)
     {
-        rows.add(PianoRoll::renderRowsPattern(theme, s.scale, s.rootKey, j));
+        result.add(PianoRoll::renderRowsPattern(theme, scheme->scale, scheme->rootKey, j));
     }
-    this->backgroundsCache.set(s, rows);
+    return result;
 }
-
-//void PianoRoll::debugBgCache() const
-//{
-//    for (HighlighingSchemes::Iterator i(this->backgroundsCache); i.next();)
-//    {
-//        String debug = "";
-//        for (int j = 0; j < CHROMATIC_SCALE_SIZE; ++j)
-//        {
-//            debug += i.getKey().scale.hasKey(j) ? " + " : " . ";
-//        }
-//
-//        Logger::writeToLog(String(i.getKey().rootKey) + debug + " || " + String(i.getValue().size()));
-//    }
-//}
 
 Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
     const Scale &scale, int root, int height)
@@ -1409,8 +1466,8 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
 
     // draw rows
     for (int i = lastOctaveReminder;
-         (i < ROWS_OF_TWO_OCTAVES + lastOctaveReminder) && ((pos_y + previousHeight) >= 0.0f);
-         i++)
+        (i < ROWS_OF_TWO_OCTAVES + lastOctaveReminder) && ((pos_y + previousHeight) >= 0.0f);
+        i++)
     {
         const int noteNumber = (i % 12);
         const int octaveNumber = (i) / 12;
@@ -1448,4 +1505,34 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
     HelioTheme::drawNoise(theme, g, 2.f);
 
     return patternImage;
+}
+
+PianoRoll::HighlightingScheme::HighlightingScheme(int rootKey, const Scale &scale) :
+    rootKey(rootKey),
+    scale(scale)
+{
+}
+
+int PianoRoll::HighlightingScheme::compareElements(const KeySignatureEvent *const first, const HighlightingScheme *const second)
+{
+    const int keyDiff = first->getRootKey() - second->rootKey;
+    const int keyResult = (keyDiff > 0) - (keyDiff < 0);
+    if (keyResult != 0) { return keyDiff; }
+
+    if (first->getScale().isEquivalentTo(second->scale)) { return 0;  }
+
+    const int scaleDiff = first->getScale().hashCode() - second->scale.hashCode();
+    return (scaleDiff > 0) - (scaleDiff < 0);
+}
+
+int PianoRoll::HighlightingScheme::compareElements(const HighlightingScheme *const first, const HighlightingScheme *const second)
+{
+    const int keyDiff = first->rootKey - second->rootKey;
+    const int keyResult = (keyDiff > 0) - (keyDiff < 0);
+    if (keyResult != 0) { return keyDiff; }
+
+    if (first->scale.isEquivalentTo(second->scale)) { return 0; }
+
+    const int scaleDiff = first->scale.hashCode() - second->scale.hashCode();
+    return (scaleDiff > 0) - (scaleDiff < 0);
 }

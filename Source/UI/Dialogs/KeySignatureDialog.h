@@ -41,7 +41,7 @@ class KeySignatureDialog  : public FadingDialog,
 {
 public:
 
-    KeySignatureDialog (Component &owner, Transport &transport, KeySignaturesSequence *signaturesLayer, const KeySignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
+    KeySignatureDialog (Component &owner, Transport &transport, KeySignaturesSequence *keySequence, const KeySignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
 
     ~KeySignatureDialog();
 
@@ -85,7 +85,7 @@ private:
     bool hasMadeChanges;
     void sendEventChange(KeySignatureEvent newEvent);
     void removeEvent();
-    void cancelChangesIfAny();
+    bool cancelChangesIfAny();
 
     int key;
     Scale scale;

@@ -192,16 +192,27 @@ private:
 
 private:
 
-    void repaintBackgroundsCache();
-    void updateBackgroundCacheFor(const KeySignatureEvent::HighlightingScheme &);
+    struct HighlightingScheme final
+    {
+        HighlightingScheme(int rootKey, const Scale &scale);
+        Scale scale;
+        int rootKey;
+        Array<Image> rows;
+        static int compareElements(const KeySignatureEvent *const, const HighlightingScheme *const);
+        static int compareElements(const HighlightingScheme *const, const HighlightingScheme *const);
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HighlightingScheme);
+    };
+
+    void updateBackgroundCacheFor(const KeySignatureEvent &key);
+    Array<Image> renderBackgroundCacheFor(const HighlightingScheme *const scheme) const;
     static Image renderRowsPattern(const HelioTheme &, const Scale &, int root, int height);
-    typedef HashMap<KeySignatureEvent::HighlightingScheme, Array<Image>, HighlightingSchemeHashFunction> HighlighingSchemes;
-    HighlighingSchemes backgroundsCache;
-    KeySignatureEvent::HighlightingScheme defaultHighlighting;
+    OwnedArray<HighlightingScheme> backgroundsCache;
+    ScopedPointer<HighlightingScheme> defaultHighlighting;
+    int binarySearchForHighlightingScheme(const KeySignatureEvent *const e) const noexcept;
     friend class ThemeSettingsItem; // to be able to call renderRowsPattern
 
 private:
-    
+
     void focusToRegionAnimated(int startKey, int endKey, float startBeat, float endBeat);
     class FocusToRegionAnimator;
     ScopedPointer<Timer> focusToRegionAnimator;

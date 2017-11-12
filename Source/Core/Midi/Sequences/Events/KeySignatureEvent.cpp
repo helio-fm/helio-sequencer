@@ -24,8 +24,7 @@
 KeySignatureEvent::KeySignatureEvent() :
     MidiEvent(nullptr, MidiEvent::KeySignature, 0.f),
     rootKey(0),
-    scale(),
-    scheme(0, Scale())
+    scale()
 {
     //jassertfalse;
 }
@@ -33,8 +32,7 @@ KeySignatureEvent::KeySignatureEvent() :
 KeySignatureEvent::KeySignatureEvent(const KeySignatureEvent &other) :
     MidiEvent(other.sequence, MidiEvent::KeySignature, other.beat),
     rootKey(other.rootKey),
-    scale(other.scale),
-    scheme(other.rootKey, other.scale)
+    scale(other.scale)
 {
     this->id = other.getId();
 }
@@ -45,8 +43,7 @@ KeySignatureEvent::KeySignatureEvent(MidiSequence *owner,
     Scale scale /*= Scale()*/) :
     MidiEvent(owner, MidiEvent::KeySignature, newBeat),
     rootKey(key),
-    scale(scale),
-    scheme(key, scale)
+    scale(scale)
 {
 }
 
@@ -108,7 +105,6 @@ KeySignatureEvent KeySignatureEvent::withRootKey(Note::Key key) const
 {
     KeySignatureEvent e(*this);
     e.rootKey = key;
-    e.scheme.rootKey = key;
     return e;
 }
 
@@ -116,7 +112,6 @@ KeySignatureEvent KeySignatureEvent::withScale(Scale scale) const
 {
     KeySignatureEvent e(*this);
     e.scale = scale;
-    e.scheme.scale = scale;
     return e;
 }
 
@@ -174,9 +169,6 @@ void KeySignatureEvent::deserialize(const XmlElement &xml)
     {
         this->scale.deserialize(*e);
     }
-
-    this->scheme.rootKey = this->rootKey;
-    this->scheme.scale = this->scale;
 }
 
 void KeySignatureEvent::reset()
@@ -199,27 +191,5 @@ KeySignatureEvent &KeySignatureEvent::operator=(const KeySignatureEvent &right)
     this->beat = right.beat;
     this->rootKey = right.rootKey;
     this->scale = right.scale;
-    this->scheme.rootKey = right.rootKey;
-    this->scheme.scale = right.scale;
     return *this;
-}
-
-KeySignatureEvent::HighlightingScheme::HighlightingScheme() : scale(), rootKey(0) {}
-
-KeySignatureEvent::HighlightingScheme::HighlightingScheme(int rootKey, const Scale &scale) :
-    rootKey(rootKey),
-    scale(scale) {}
-
-KeySignatureEvent::HighlightingScheme::HighlightingScheme(int rootKey, const Array<int> &keys) :
-    rootKey(rootKey),
-    scale(Scale().withKeys(keys)) {}
-
-KeySignatureEvent::HighlightingScheme::HighlightingScheme(const HighlightingScheme &other) :
-    rootKey(other.rootKey),
-    scale(other.scale) {}
-
-int KeySignatureEvent::HighlightingScheme::hashCode() const
-{
-    const unsigned int hc = this->rootKey + this->scale.hashCode();
-    return static_cast<int>(hc);
 }
