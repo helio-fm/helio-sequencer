@@ -29,8 +29,8 @@ public:
     KeySignatureEvent(const KeySignatureEvent &other);
     explicit KeySignatureEvent(MidiSequence *owner,
         float newBeat = 0.f,
-        Note::Key key = KEY_C5,
-        Scale scale = Scale::getChromaticScale());
+        Note::Key key = 0,
+        Scale scale = Scale());
 
     ~KeySignatureEvent() override;
 
@@ -49,7 +49,7 @@ public:
     //===------------------------------------------------------------------===//
 
     Note::Key getRootKey() const noexcept;
-    Scale getScale() const noexcept;
+    const Scale &getScale() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -71,10 +71,31 @@ public:
 
     int hashCode() const noexcept;
 
+    // Refers to the same key and scale, but defines different equality and hash code functions.
+    // Only used in piano roll to keep track of pre-rendered highlighting patterns.
+    struct HighlightingScheme
+    {
+        HighlightingScheme();
+        HighlightingScheme(const HighlightingScheme &other);
+        HighlightingScheme(int rootKey, const Scale &scale);
+        HighlightingScheme(int rootKey, const Array<int> &keys);
+        friend inline bool operator==(const HighlightingScheme &lhs, const HighlightingScheme &rhs)
+        { return (lhs.rootKey == rhs.rootKey && lhs.scale.isEquivalentTo(rhs.scale)); }
+        int hashCode() const;
+        Scale scale;
+        int rootKey;
+        JUCE_LEAK_DETECTOR(HighlightingScheme)
+    };
+
+    inline const HighlightingScheme &getHighlightingScheme() const noexcept
+    { return this->scheme; }
+
 protected:
 
     Note::Key rootKey;
     Scale scale;
+
+    HighlightingScheme scheme;
 
 private:
 
@@ -85,7 +106,16 @@ private:
 class KeySignatureEventHashFunction
 {
 public:
-    static int generateHash(const KeySignatureEvent key, const int upperLimit) noexcept
+    static int generateHash(const KeySignatureEvent &key, const int upperLimit) noexcept
+    {
+        return static_cast<int>((static_cast<uint32>(key.hashCode())) % static_cast<uint32>(upperLimit));
+    }
+};
+
+class HighlightingSchemeHashFunction
+{
+public:
+    static int generateHash(const KeySignatureEvent::HighlightingScheme &key, const int upperLimit) noexcept
     {
         return static_cast<int>((static_cast<uint32>(key.hashCode())) % static_cast<uint32>(upperLimit));
     }

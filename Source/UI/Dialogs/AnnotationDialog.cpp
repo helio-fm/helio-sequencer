@@ -45,9 +45,9 @@ static StringPairArray getDynamics()
 }
 //[/MiscUserDefs]
 
-AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *annotationsLayer, const AnnotationEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
-    : targetEvent(editedEvent),
-      targetLayer(annotationsLayer),
+AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequence, const AnnotationEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
+    : originalEvent(editedEvent),
+      originalSequence(sequence),
       ownerComponent(owner),
       addsNewEvent(shouldAddNewEvent),
       hasMadeChanges(false)
@@ -85,7 +85,7 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *annota
 
 
     //[UserPreSize]
-    jassert(this->addsNewEvent || this->targetEvent.getSequence() != nullptr);
+    jassert(this->addsNewEvent || this->originalEvent.getSequence() != nullptr);
 
     if (this->addsNewEvent)
     {
@@ -93,10 +93,10 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *annota
         const auto keys(getDynamics().getAllKeys());
         const String key(keys[r.nextInt(keys.size())]);
         const Colour colour(Colour::fromString(getDynamics()[key]));
-        this->targetEvent = AnnotationEvent(annotationsLayer, targetBeat, key, colour);
+        this->originalEvent = AnnotationEvent(sequence, targetBeat, key, colour);
 
-        annotationsLayer->checkpoint();
-        annotationsLayer->insert(this->targetEvent, true);
+        sequence->checkpoint();
+        sequence->insert(this->originalEvent, true);
 
         this->messageLabel->setText(TRANS("dialog::annotation::add::caption"), dontSendNotification);
         this->okButton->setButtonText(TRANS("dialog::annotation::add::proceed"));
@@ -109,9 +109,9 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *annota
         this->removeEventButton->setButtonText(TRANS("dialog::annotation::edit::delete"));
     }
 
-    this->colourSwatches->setSelectedColour(this->targetEvent.getColour());
+    this->colourSwatches->setSelectedColour(this->originalEvent.getColour());
 
-    this->textEditor->setText(this->targetEvent.getDescription(), dontSendNotification);
+    this->textEditor->setText(this->originalEvent.getDescription(), dontSendNotification);
     this->textEditor->addItemList(getDynamics().getAllKeys(), 1);
     this->textEditor->addListener(this);
 
@@ -229,7 +229,7 @@ void AnnotationDialog::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
         this->updateOkButtonState();
 
         const String text(this->textEditor->getText());
-        AnnotationEvent newEvent = this->targetEvent.withDescription(text);
+        AnnotationEvent newEvent = this->originalEvent.withDescription(text);
         const String colourString(getDynamics()[text]);
 
         if (colourString.isNotEmpty())
@@ -334,36 +334,36 @@ void AnnotationDialog::onColourButtonClicked(ColourButton *clickedButton)
 {
     const Colour c(clickedButton->getColour());
     const AnnotationEvent newEvent =
-        this->targetEvent.withDescription(this->textEditor->getText()).withColour(c);
+        this->originalEvent.withDescription(this->textEditor->getText()).withColour(c);
     this->sendEventChange(newEvent);
 }
 
 void AnnotationDialog::sendEventChange(AnnotationEvent newEvent)
 {
-    if (this->targetLayer != nullptr)
+    if (this->originalSequence != nullptr)
     {
         if (!this->addsNewEvent)
         {
             this->cancelChangesIfAny();
-            this->targetLayer->checkpoint();
+            this->originalSequence->checkpoint();
         }
 
-        this->targetLayer->change(this->targetEvent, newEvent, true);
+        this->originalSequence->change(this->originalEvent, newEvent, true);
         this->hasMadeChanges = true;
     }
 }
 
 void AnnotationDialog::removeEvent()
 {
-    if (this->targetLayer != nullptr)
+    if (this->originalSequence != nullptr)
     {
         if (!this->addsNewEvent)
         {
             this->cancelChangesIfAny();
-            this->targetLayer->checkpoint();
+            this->originalSequence->checkpoint();
         }
 
-        this->targetLayer->remove(this->targetEvent, true);
+        this->originalSequence->remove(this->originalEvent, true);
         this->hasMadeChanges = true;
     }
 }
@@ -372,9 +372,9 @@ void AnnotationDialog::cancelChangesIfAny()
 {
     if (!this->addsNewEvent &&
         this->hasMadeChanges &&
-        this->targetLayer != nullptr)
+        this->originalSequence != nullptr)
     {
-        this->targetLayer->undo();
+        this->originalSequence->undo();
         this->hasMadeChanges = false;
     }
 }
@@ -389,9 +389,9 @@ void AnnotationDialog::cancelAndDisappear()
     this->cancelChangesIfAny(); // Discards possible changes
 
     if (this->addsNewEvent &&
-        this->targetLayer != nullptr)
+        this->originalSequence != nullptr)
     {
-        this->targetLayer->undo(); // Discards new event
+        this->originalSequence->undo(); // Discards new event
     }
 
     this->disappear();
@@ -404,8 +404,8 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="AnnotationDialog" template="../../Template"
                  componentName="" parentClasses="public FadingDialog, public TextEditorListener, public ColourButtonListener"
-                 constructorParams="Component &amp;owner, AnnotationsSequence *annotationsLayer, const AnnotationEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
-                 variableInitialisers="targetEvent(editedEvent),&#10;targetLayer(annotationsLayer),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false)"
+                 constructorParams="Component &amp;owner, AnnotationsSequence *sequence, const AnnotationEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
+                 variableInitialisers="originalEvent(editedEvent),&#10;originalSequence(sequence),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="450" initialHeight="204">
   <METHODS>

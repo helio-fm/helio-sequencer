@@ -25,21 +25,19 @@ class MidiEvent : public Serializable
 {
 public:
 
+    // TODO! replace ids with int sequences
     using Id = String;
-
-    // 128 бит нам ни к чему, пусть будет 64,
-    // с моими раскладами остается вероятность коллизии где-то 10^-8 .. 10^-11
-    // при самых пессимистичных прогнозах,
-    // а так, если на одном слое будет ~4000 нот, эта вероятность будет 4 * 10^-13
-
     //using Id = int64;
 
-    MidiEvent(MidiSequence *owner, float beat);
+    // Non-serialized field to be used instead of expensive dynamic casts:
+    enum Type { Note = 1, Auto = 2, Annotation = 3, TimeSignature = 4, KeySignature = 5 };
+    inline Type getType() const noexcept { return this->type; }
+    inline bool isTypeOf(Type val) const noexcept { return this->type == val; }
 
+    MidiEvent(MidiSequence *owner, Type type, float beat);
     ~MidiEvent() override;
 
     virtual Array<MidiMessage> toMidiMessages() const = 0;
-
 
     //===------------------------------------------------------------------===//
     // Accessors
@@ -79,5 +77,7 @@ protected:
     static Id createId() noexcept;
 
     Id id;
+
+    Type type;
     
 };

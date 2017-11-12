@@ -36,7 +36,6 @@ class TrackScroller :
 public:
 
     TrackScroller(Transport &transport, HybridRoll *roll);
-
     ~TrackScroller() override;
     
     enum ColourIds
@@ -46,7 +45,6 @@ public:
     };
 
     void addOwnedMap(Component *newTrackMap, bool shouldBringToFront);
-
     void removeOwnedMap(Component *existingTrackMap);
 
     void switchToRoll(HybridRoll *targetRoll);
@@ -65,43 +63,32 @@ public:
         return nullptr;
     }
 
-
     //===------------------------------------------------------------------===//
     // TrackScroller
     //===------------------------------------------------------------------===//
     
     void xyMoveByUser();
-
     void xMoveByUser();
-
     void resizeByUser();
-    
     void toggleStretchingMapAlaSublime();
-    
     
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
     
     void resized() override;
-
+    void paint(Graphics &g) override;
     void paintOverChildren(Graphics &g) override;
-
     void mouseDrag(const MouseEvent &event) override;
-    
     void mouseUp(const MouseEvent &event) override;
-    
     void mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel) override;
-
     
     //===------------------------------------------------------------------===//
     // HybridRollListener
     //===------------------------------------------------------------------===//
     
     void onMidiRollMoved(HybridRoll *targetRoll) override;
-    
     void onMidiRollResized(HybridRoll *targetRoll) override;
-    
     
     //===------------------------------------------------------------------===//
     // Additional horizontal dragger
@@ -157,9 +144,7 @@ public:
     private:
         
         TrackScroller &scroller;
-        
         ComponentDragger dragger;
-        
         ScopedPointer<ComponentBoundsConstrainer> moveConstrainer;
     };
     
@@ -172,7 +157,6 @@ protected:
 private:
     
     void handleAsyncUpdate() override;
-
     void timerCallback() override;
     
     Transport &transport;

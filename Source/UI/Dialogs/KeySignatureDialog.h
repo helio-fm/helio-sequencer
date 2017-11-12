@@ -73,8 +73,8 @@ private:
     void onScaleChanged(Scale scale) override;
 
     Transport &transport;
-    KeySignatureEvent targetEvent;
-    KeySignaturesSequence *targetLayer;
+    KeySignatureEvent originalEvent;
+    KeySignaturesSequence *originalSequence;
     Component &ownerComponent;
 
     inline void cancelAndDisappear();

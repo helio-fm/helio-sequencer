@@ -138,11 +138,13 @@ void KeySignatureLargeComponent::mouseDrag (const MouseEvent& e)
                 Array<KeySignatureEvent> groupDragBefore, groupDragAfter;
                 groupDragBefore.add(this->event);
                 groupDragAfter.add(this->event.withBeat(newBeat));
-                KeySignaturesSequence *autoLayer = static_cast<KeySignaturesSequence *>(this->event.getSequence());
-                autoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
+                KeySignaturesSequence *sequence = static_cast<KeySignaturesSequence *>(this->event.getSequence());
+                sequence->changeGroup(groupDragBefore, groupDragAfter, true);
             }
-
-            this->editor.alignKeySignatureComponent(this);
+            else
+            {
+                this->editor.alignKeySignatureComponent(this);
+            }
         }
     }
     //[/UserCode_mouseDrag]

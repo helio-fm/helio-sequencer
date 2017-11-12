@@ -894,11 +894,8 @@ void HelioTheme::updateBackgroundRenders(bool force)
     {
         Icons::clearPrerenderedCache();
         this->getPanelsBgCache().clear();
-        this->getRollBgCache().clear();
     }
     
-    PianoRoll::repaintBackgroundsCache(*this);
-
 #if PATTERNROLL_HAS_PRERENDERED_BACKGROUND
     PatternRoll::repaintBackgroundsCache(*this);
 #endif

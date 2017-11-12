@@ -188,11 +188,13 @@ void AnnotationLargeComponent::mouseDrag (const MouseEvent& e)
                 Array<AnnotationEvent> groupDragBefore, groupDragAfter;
                 groupDragBefore.add(this->event);
                 groupDragAfter.add(this->event.withBeat(newBeat));
-                AnnotationsSequence *autoLayer = static_cast<AnnotationsSequence *>(this->event.getSequence());
-                autoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
+                AnnotationsSequence *sequence = static_cast<AnnotationsSequence *>(this->event.getSequence());
+                sequence->changeGroup(groupDragBefore, groupDragAfter, true);
             }
-
-            this->editor.alignAnnotationComponent(this);
+            else
+            {
+                this->editor.alignAnnotationComponent(this);
+            }
         }
     }
     //[/UserCode_mouseDrag]

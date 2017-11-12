@@ -65,8 +65,8 @@ private:
 
     //[UserVariables]
 
-    AnnotationEvent targetEvent;
-    AnnotationsSequence *targetLayer;
+    AnnotationEvent originalEvent;
+    AnnotationsSequence *originalSequence;
     Component &ownerComponent;
 
     inline void cancelAndDisappear();

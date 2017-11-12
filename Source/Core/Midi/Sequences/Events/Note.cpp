@@ -22,7 +22,7 @@
 #include "SerializationKeys.h"
 
 
-Note::Note() : MidiEvent(nullptr, 0.f)
+Note::Note() : MidiEvent(nullptr, MidiEvent::Note, 0.f)
 {
     // needed for juce's Array to work
     //jassertfalse;
@@ -31,7 +31,7 @@ Note::Note() : MidiEvent(nullptr, 0.f)
 Note::Note(MidiSequence *owner,
     int keyVal, float beatVal,
     float lengthVal, float velocityVal) :
-    MidiEvent(owner, beatVal),
+    MidiEvent(owner, MidiEvent::Note, beatVal),
     key(keyVal),
     length(lengthVal),
     velocity(velocityVal)
@@ -39,7 +39,7 @@ Note::Note(MidiSequence *owner,
 }
 
 Note::Note(const Note &other) :
-    MidiEvent(other.sequence, other.beat),
+    MidiEvent(other.sequence, MidiEvent::Note, other.beat),
     key(other.key),
     length(other.length),
     velocity(other.velocity)
@@ -48,7 +48,7 @@ Note::Note(const Note &other) :
 }
 
 Note::Note(MidiSequence *newOwner, const Note &parametersToCopy) :
-    MidiEvent(newOwner, parametersToCopy.beat),
+    MidiEvent(newOwner, MidiEvent::Note, parametersToCopy.beat),
     key(parametersToCopy.key),
     length(parametersToCopy.length),
     velocity(parametersToCopy.velocity)

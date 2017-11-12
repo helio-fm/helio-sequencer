@@ -34,6 +34,7 @@ class PianoRollCellHighlighter;
 class HelperRectangle;
 class NoteResizerLeft;
 class NoteResizerRight;
+class Scale;
 
 #include "HelioTheme.h"
 #include "HybridRoll.h"
@@ -41,11 +42,6 @@ class NoteResizerRight;
 
 class PianoRoll : public HybridRoll
 {
-public:
-
-    static void repaintBackgroundsCache(HelioTheme &theme);
-    static Image renderRowsPattern(HelioTheme &theme, int height);
-    
 public:
 
     PianoRoll(ProjectTreeItem &parentProject,
@@ -195,6 +191,16 @@ private:
     int rowHeight;
 
 private:
+
+    void repaintBackgroundsCache();
+    void updateBackgroundCacheFor(const KeySignatureEvent::HighlightingScheme &);
+    static Image renderRowsPattern(const HelioTheme &, const Scale &, int root, int height);
+    typedef HashMap<KeySignatureEvent::HighlightingScheme, Array<Image>, HighlightingSchemeHashFunction> HighlighingSchemes;
+    HighlighingSchemes backgroundsCache;
+    KeySignatureEvent::HighlightingScheme defaultHighlighting;
+    friend class ThemeSettingsItem; // to be able to call renderRowsPattern
+
+private:
     
     void focusToRegionAnimated(int startKey, int endKey, float startBeat, float endBeat);
     class FocusToRegionAnimator;
@@ -204,7 +210,6 @@ private:
     
     OwnedArray<NoteComponent> ghostNotes;
     
-    //ScopedPointer<HelperRectangle> helperVertical;
     ScopedPointer<HelperRectangle> helperHorizontal;
 
     ScopedPointer<NoteResizerLeft> noteResizerLeft;

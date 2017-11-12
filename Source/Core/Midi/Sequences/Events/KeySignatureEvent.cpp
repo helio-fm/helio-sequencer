@@ -21,15 +21,20 @@
 #include "Transport.h"
 #include "SerializationKeys.h"
 
-KeySignatureEvent::KeySignatureEvent() : MidiEvent(nullptr, 0.f)
+KeySignatureEvent::KeySignatureEvent() :
+    MidiEvent(nullptr, MidiEvent::KeySignature, 0.f),
+    rootKey(0),
+    scale(),
+    scheme(0, Scale())
 {
     //jassertfalse;
 }
 
 KeySignatureEvent::KeySignatureEvent(const KeySignatureEvent &other) :
-    MidiEvent(other.sequence, other.beat),
+    MidiEvent(other.sequence, MidiEvent::KeySignature, other.beat),
     rootKey(other.rootKey),
-    scale(other.scale)
+    scale(other.scale),
+    scheme(other.rootKey, other.scale)
 {
     this->id = other.getId();
 }
@@ -37,10 +42,11 @@ KeySignatureEvent::KeySignatureEvent(const KeySignatureEvent &other) :
 KeySignatureEvent::KeySignatureEvent(MidiSequence *owner,
     float newBeat /*= 0.f*/,
     Note::Key key /*= 60*/,
-    Scale scale /*= Scale::getChromaticScale()*/) :
-    MidiEvent(owner, newBeat),
+    Scale scale /*= Scale()*/) :
+    MidiEvent(owner, MidiEvent::KeySignature, newBeat),
     rootKey(key),
-    scale(scale)
+    scale(scale),
+    scheme(key, scale)
 {
 }
 
@@ -102,6 +108,7 @@ KeySignatureEvent KeySignatureEvent::withRootKey(Note::Key key) const
 {
     KeySignatureEvent e(*this);
     e.rootKey = key;
+    e.scheme.rootKey = key;
     return e;
 }
 
@@ -109,6 +116,7 @@ KeySignatureEvent KeySignatureEvent::withScale(Scale scale) const
 {
     KeySignatureEvent e(*this);
     e.scale = scale;
+    e.scheme.scale = scale;
     return e;
 }
 
@@ -135,7 +143,7 @@ Note::Key KeySignatureEvent::getRootKey() const noexcept
     return this->rootKey;
 }
 
-Scale KeySignatureEvent::getScale() const noexcept
+const Scale &KeySignatureEvent::getScale() const noexcept
 {
     return this->scale;
 }
@@ -157,7 +165,7 @@ XmlElement *KeySignatureEvent::serialize() const
 void KeySignatureEvent::deserialize(const XmlElement &xml)
 {
     this->reset();
-    this->rootKey = xml.getIntAttribute("key", KEY_C5);
+    this->rootKey = xml.getIntAttribute("key", 0);
     this->beat = float(xml.getDoubleAttribute("beat"));
     this->id = xml.getStringAttribute("id");
 
@@ -166,17 +174,22 @@ void KeySignatureEvent::deserialize(const XmlElement &xml)
     {
         this->scale.deserialize(*e);
     }
+
+    this->scheme.rootKey = this->rootKey;
+    this->scheme.scale = this->scale;
 }
 
 void KeySignatureEvent::reset()
 {
     this->rootKey = KEY_C5;
-    this->scale = Scale::getChromaticScale();
+    this->scale = Scale();
 }
 
 int KeySignatureEvent::hashCode() const noexcept
 {
-    return this->rootKey + this->scale.getName().hashCode() + this->id.hashCode();
+    const unsigned int hash =
+        this->rootKey + this->scale.hashCode() + this->id.hashCode();
+    return (int)hash;
 }
 
 KeySignatureEvent &KeySignatureEvent::operator=(const KeySignatureEvent &right)
@@ -186,5 +199,27 @@ KeySignatureEvent &KeySignatureEvent::operator=(const KeySignatureEvent &right)
     this->beat = right.beat;
     this->rootKey = right.rootKey;
     this->scale = right.scale;
+    this->scheme.rootKey = right.rootKey;
+    this->scheme.scale = right.scale;
     return *this;
+}
+
+KeySignatureEvent::HighlightingScheme::HighlightingScheme() : scale(), rootKey(0) {}
+
+KeySignatureEvent::HighlightingScheme::HighlightingScheme(int rootKey, const Scale &scale) :
+    rootKey(rootKey),
+    scale(scale) {}
+
+KeySignatureEvent::HighlightingScheme::HighlightingScheme(int rootKey, const Array<int> &keys) :
+    rootKey(rootKey),
+    scale(Scale().withKeys(keys)) {}
+
+KeySignatureEvent::HighlightingScheme::HighlightingScheme(const HighlightingScheme &other) :
+    rootKey(other.rootKey),
+    scale(other.scale) {}
+
+int KeySignatureEvent::HighlightingScheme::hashCode() const
+{
+    const unsigned int hc = this->rootKey + this->scale.hashCode();
+    return static_cast<int>(hc);
 }

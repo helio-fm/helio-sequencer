@@ -79,10 +79,10 @@ public:
     inline int size() const
     { return this->midiEvents.size(); }
 
-    inline MidiEvent** begin() const noexcept
+    inline MidiEvent **begin() const noexcept
     { return this->midiEvents.begin(); }
     
-    inline MidiEvent** end() const noexcept
+    inline MidiEvent **end() const noexcept
     { return this->midiEvents.end(); }
     
     inline MidiEvent *getUnchecked(const int index) const

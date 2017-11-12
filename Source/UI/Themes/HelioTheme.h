@@ -164,9 +164,6 @@ public:
     HashMap<String, Image> &getPanelsBgCache() noexcept
     { return this->panelsBgCache; }
     
-    HashMap<int, Image> &getRollBgCache() noexcept
-    { return this->rollBgCache; }
-    
 protected:
     
     const Image backgroundNoise;
@@ -177,7 +174,6 @@ protected:
     Typeface::Ptr headerTypefaceCache;
     
     HashMap<String, Image> panelsBgCache;
-    HashMap<int, Image> rollBgCache;
     
     JUCE_LEAK_DETECTOR(HelioTheme);
 

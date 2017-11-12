@@ -27,7 +27,7 @@
 #include "Transport.h"
 #include "SerializationKeys.h"
 
-// TODO scales manager
+// TODO scales manager or resource manager
 
 static Array<Scale> loadDefaultScales()
 {
@@ -59,10 +59,10 @@ static Array<Scale> kDefaultScales = loadDefaultScales();
 
 //[/MiscUserDefs]
 
-KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, KeySignaturesSequence *signaturesLayer, const KeySignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
+KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, KeySignaturesSequence *keySequence, const KeySignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
     : transport(transport),
-      targetEvent(editedEvent),
-      targetLayer(signaturesLayer),
+      originalEvent(editedEvent),
+      originalSequence(keySequence),
       ownerComponent(owner),
       addsNewEvent(shouldAddNewEvent),
       hasMadeChanges(false),
@@ -117,7 +117,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
         this->scaleNameEditor->addItem(s.getName(), i + 1);
     }
 
-    jassert(this->addsNewEvent || this->targetEvent.getSequence() != nullptr);
+    jassert(this->addsNewEvent || this->originalEvent.getSequence() != nullptr);
 
     if (this->addsNewEvent)
     {
@@ -128,10 +128,10 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
         this->scaleEditor->setScale(this->scale);
         this->keySelector->setSelectedKey(this->key);
         this->scaleNameEditor->setSelectedItemIndex(i, dontSendNotification);
-        this->targetEvent = KeySignatureEvent(this->targetLayer, targetBeat, this->key, this->scale);
+        this->originalEvent = KeySignatureEvent(this->originalSequence, targetBeat, this->key, this->scale);
 
-        this->targetLayer->checkpoint();
-        this->targetLayer->insert(this->targetEvent, true);
+        this->originalSequence->checkpoint();
+        this->originalSequence->insert(this->originalEvent, true);
 
         this->messageLabel->setText(TRANS("dialog::keysignature::add::caption"), dontSendNotification);
         this->okButton->setButtonText(TRANS("dialog::keysignature::add::proceed"));
@@ -139,8 +139,8 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
     }
     else
     {
-        this->key = this->targetEvent.getRootKey();
-        this->scale = this->targetEvent.getScale();
+        this->key = this->originalEvent.getRootKey();
+        this->scale = this->originalEvent.getScale();
         this->scaleEditor->setScale(this->scale);
         this->keySelector->setSelectedKey(this->key);
         this->scaleNameEditor->setText(this->scale.getName(), dontSendNotification);
@@ -270,7 +270,7 @@ void KeySignatureDialog::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
             {
                 this->scale = s;
                 this->scaleEditor->setScale(this->scale);
-                KeySignatureEvent newEvent = this->targetEvent.withScale(scale);
+                KeySignatureEvent newEvent = this->originalEvent.withRootKey(this->key).withScale(scale);
                 this->sendEventChange(newEvent);
                 return;
             }
@@ -278,7 +278,7 @@ void KeySignatureDialog::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 
         this->scale = this->scale.withName(this->scaleNameEditor->getText());
         this->scaleEditor->setScale(this->scale);
-        KeySignatureEvent newEvent = this->targetEvent.withScale(scale);
+        KeySignatureEvent newEvent = this->originalEvent.withRootKey(this->key).withScale(scale);
         this->sendEventChange(newEvent);
         return;
 
@@ -423,30 +423,30 @@ void KeySignatureDialog::updateOkButtonState()
 
 void KeySignatureDialog::sendEventChange(KeySignatureEvent newEvent)
 {
-    if (this->targetLayer != nullptr)
+    if (this->originalSequence != nullptr)
     {
         if (!this->addsNewEvent)
         {
             this->cancelChangesIfAny();
-            this->targetLayer->checkpoint();
+            this->originalSequence->checkpoint();
         }
 
-        this->targetLayer->change(this->targetEvent, newEvent, true);
+        this->originalSequence->change(this->originalEvent, newEvent, true);
         this->hasMadeChanges = true;
     }
 }
 
 void KeySignatureDialog::removeEvent()
 {
-    if (this->targetLayer != nullptr)
+    if (this->originalSequence != nullptr)
     {
         if (!this->addsNewEvent)
         {
             this->cancelChangesIfAny();
-            this->targetLayer->checkpoint();
+            this->originalSequence->checkpoint();
         }
 
-        this->targetLayer->remove(this->targetEvent, true);
+        this->originalSequence->remove(this->originalEvent, true);
         this->hasMadeChanges = true;
     }
 }
@@ -455,9 +455,9 @@ void KeySignatureDialog::cancelChangesIfAny()
 {
     if (!this->addsNewEvent &&
         this->hasMadeChanges &&
-        this->targetLayer != nullptr)
+        this->originalSequence != nullptr)
     {
-        this->targetLayer->undo();
+        this->originalSequence->undo();
         this->hasMadeChanges = false;
     }
 }
@@ -472,9 +472,9 @@ void KeySignatureDialog::cancelAndDisappear()
     this->cancelChangesIfAny(); // Discards possible changes
 
     if (this->addsNewEvent &&
-        this->targetLayer != nullptr)
+        this->originalSequence != nullptr)
     {
-        this->targetLayer->undo(); // Discards new event
+        this->originalSequence->undo(); // Discards new event
     }
 
     this->disappear();
@@ -482,33 +482,39 @@ void KeySignatureDialog::cancelAndDisappear()
 
 void KeySignatureDialog::onKeyChanged(int key)
 {
-    this->key = key;
-    KeySignatureEvent newEvent = this->targetEvent.withRootKey(key);
-    this->sendEventChange(newEvent);
+    if (this->key != key)
+    {
+        this->key = key;
+        KeySignatureEvent newEvent = this->originalEvent.withRootKey(key).withScale(this->scale);
+        this->sendEventChange(newEvent);
+    }
 }
 
 void KeySignatureDialog::onScaleChanged(Scale scale)
 {
-    this->scale = scale;
-
-    // Update name, if found equivalent:
-    for (int i = 0; i < kDefaultScales.size(); ++i)
+    if (!this->scale.isEquivalentTo(scale))
     {
-        const auto &s = kDefaultScales.getUnchecked(i);
-        if (s.isEquivalentTo(scale))
+        this->scale = scale;
+
+        // Update name, if found equivalent:
+        for (int i = 0; i < kDefaultScales.size(); ++i)
         {
-            this->scaleNameEditor->setSelectedItemIndex(i, dontSendNotification);
-            this->scaleEditor->setScale(s);
-            this->scale = s;
-            break;
+            const auto &s = kDefaultScales.getUnchecked(i);
+            if (s.isEquivalentTo(scale))
+            {
+                this->scaleNameEditor->setSelectedItemIndex(i, dontSendNotification);
+                this->scaleEditor->setScale(s);
+                this->scale = s;
+                break;
+            }
         }
+
+        KeySignatureEvent newEvent = this->originalEvent.withRootKey(this->key).withScale(this->scale);
+        this->sendEventChange(newEvent);
+
+        // Don't erase user's text, but let user know the scale is unknown - how?
+        //this->scaleNameEditor->setText({}, dontSendNotification);
     }
-
-    KeySignatureEvent newEvent = this->targetEvent.withScale(this->scale);
-    this->sendEventChange(newEvent);
-
-    // Don't erase user's text, but let user know the scale is unknown - how?
-    //this->scaleNameEditor->setText({}, dontSendNotification);
 }
 
 //[/MiscUserCode]
@@ -519,8 +525,8 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="KeySignatureDialog" template="../../Template"
                  componentName="" parentClasses="public FadingDialog, public TextEditorListener, public ScaleEditor::Listener, public KeySelector::Listener"
-                 constructorParams="Component &amp;owner, Transport &amp;transport, KeySignaturesSequence *signaturesLayer, const KeySignatureEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
-                 variableInitialisers="transport(transport),&#10;targetEvent(editedEvent),&#10;targetLayer(signaturesLayer),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false),&#10;key(0)"
+                 constructorParams="Component &amp;owner, Transport &amp;transport, KeySignaturesSequence *keySequence, const KeySignatureEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
+                 variableInitialisers="transport(transport),&#10;originalEvent(editedEvent),&#10;originalSequence(keySequence),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false),&#10;key(0)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="430" initialHeight="250">
   <METHODS>

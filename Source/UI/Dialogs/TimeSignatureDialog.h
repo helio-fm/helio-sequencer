@@ -60,8 +60,8 @@ private:
 
     //[UserVariables]
 
-    TimeSignatureEvent targetEvent;
-    TimeSignaturesSequence *targetLayer;
+    TimeSignatureEvent originalEvent;
+    TimeSignaturesSequence *originalSequence;
     Component &ownerComponent;
 
     inline void cancelAndDisappear();

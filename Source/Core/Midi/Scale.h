@@ -103,6 +103,8 @@ public:
     // e.g. Phrygian is called Zokuso in Japan and Ousak in Greece)
     bool isEquivalentTo(const Scale &other) const;
 
+    int hashCode() const noexcept;
+
 private:
 
     // Key (input and returned) starts from 0

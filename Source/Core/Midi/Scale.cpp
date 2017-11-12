@@ -247,3 +247,15 @@ void Scale::reset()
     this->keys.clearQuick();
     this->name = {};
 }
+
+int Scale::hashCode() const noexcept
+{
+    // use unsigned ints to wrap values around
+    constexpr unsigned int prime = 31;
+    unsigned int hc = this->keys.size();
+    for (const auto k : this->keys)
+    {
+        hc = hc * prime + k;
+    }
+    return static_cast<int>(hc);
+}

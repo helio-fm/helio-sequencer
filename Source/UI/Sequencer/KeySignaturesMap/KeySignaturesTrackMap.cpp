@@ -96,8 +96,7 @@ void KeySignaturesTrackMap<T>::resized()
 template<typename T>
 void KeySignaturesTrackMap<T>::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    if (newEvent.getSequence() ==
-        this->project.getTimeline()->getKeySignatures()->getSequence())
+    if (oldEvent.isTypeOf(MidiEvent::KeySignature))
     {
         const KeySignatureEvent &keySignature = static_cast<const KeySignatureEvent &>(oldEvent);
         const KeySignatureEvent &newKeySignature = static_cast<const KeySignatureEvent &>(newEvent);
@@ -105,7 +104,6 @@ void KeySignaturesTrackMap<T>::onChangeMidiEvent(const MidiEvent &oldEvent, cons
         if (T *component = this->keySignaturesHash[keySignature])
         {
             this->alignKeySignatureComponent(component);
-
             this->keySignaturesHash.remove(keySignature);
             this->keySignaturesHash.set(newKeySignature, component);
         }
@@ -143,8 +141,7 @@ void KeySignaturesTrackMap<T>::alignKeySignatureComponent(T *component)
 template<typename T>
 void KeySignaturesTrackMap<T>::onAddMidiEvent(const MidiEvent &event)
 {
-    if (event.getSequence() ==
-        this->project.getTimeline()->getKeySignatures()->getSequence())
+    if (event.isTypeOf(MidiEvent::KeySignature))
     {
         const KeySignatureEvent &keySignature = static_cast<const KeySignatureEvent &>(event);
 
@@ -174,8 +171,7 @@ void KeySignaturesTrackMap<T>::onAddMidiEvent(const MidiEvent &event)
 template<typename T>
 void KeySignaturesTrackMap<T>::onRemoveMidiEvent(const MidiEvent &event)
 {
-    if (event.getSequence() ==
-        this->project.getTimeline()->getKeySignatures()->getSequence())
+    if (event.isTypeOf(MidiEvent::KeySignature))
     {
         const KeySignatureEvent &keySignature = static_cast<const KeySignatureEvent &>(event);
 
@@ -290,16 +286,14 @@ void KeySignaturesTrackMap<T>::onKeySignatureTapped(T *nc)
 
     for (int i = 0; i < keySignatures->size(); ++i)
     {
-        if (KeySignatureEvent *keySignature =
-            dynamic_cast<KeySignatureEvent *>(keySignatures->getUnchecked(i)))
-        {
-            const float seekBeat = this->roll.getBeatByTransportPosition(seekPosition);
+        const float seekBeat = this->roll.getBeatByTransportPosition(seekPosition);
+        KeySignatureEvent *keySignature =
+            static_cast<KeySignatureEvent *>(keySignatures->getUnchecked(i));
             
-            if (fabs(keySignature->getBeat() - seekBeat) < 0.1)
-            {
-                keySignatureUnderSeekCursor = keySignature;
-                break;
-            }
+        if (fabs(keySignature->getBeat() - seekBeat) < 0.1)
+        {
+            keySignatureUnderSeekCursor = keySignature;
+            break;
         }
     }
 
@@ -380,15 +374,13 @@ void KeySignaturesTrackMap<T>::reloadTrackMap()
     {
         MidiEvent *event = sequence->getUnchecked(j);
 
-        if (KeySignatureEvent *keySignature = dynamic_cast<KeySignatureEvent *>(event))
-        {
-            auto component = new T(*this, *keySignature);
-            this->addAndMakeVisible(component);
-            component->updateContent();
+        KeySignatureEvent *keySignature = static_cast<KeySignatureEvent *>(event);
+        auto component = new T(*this, *keySignature);
+        this->addAndMakeVisible(component);
+        component->updateContent();
 
-            this->keySignatureComponents.addSorted(*component, component);
-            this->keySignaturesHash.set(*keySignature, component);
-        }
+        this->keySignatureComponents.addSorted(*component, component);
+        this->keySignaturesHash.set(*keySignature, component);
     }
 
     this->resized();
