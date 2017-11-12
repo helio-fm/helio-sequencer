@@ -158,6 +158,9 @@
     <Filter Include="Helio\Source\UI\Sequencer\Helpers">
       <UniqueIdentifier>{B9140FA4-A12C-DD38-14BE-F83DF81F0C53}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Helio\Source\UI\Sequencer\KeySignaturesMap">
+      <UniqueIdentifier>{31E16807-CD04-3BC1-7BE0-2C230A651A33}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Helio\Source\UI\Sequencer\PatternRoll">
       <UniqueIdentifier>{37D29535-0F05-653F-2AAB-0914C631FE05}</UniqueIdentifier>
     </Filter>
@@ -625,6 +628,9 @@
     <ClCompile Include="..\..\Source\Core\Midi\Sequences\Events\AutomationEvent.cpp">
       <Filter>Helio\Source\Core\Midi\Sequences\Events</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Midi\Sequences\Events\KeySignatureEvent.cpp">
+      <Filter>Helio\Source\Core\Midi\Sequences\Events</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Midi\Sequences\Events\MidiEvent.cpp">
       <Filter>Helio\Source\Core\Midi\Sequences\Events</Filter>
     </ClCompile>
@@ -638,6 +644,9 @@
       <Filter>Helio\Source\Core\Midi\Sequences</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Midi\Sequences\AutomationSequence.cpp">
+      <Filter>Helio\Source\Core\Midi\Sequences</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Midi\Sequences\KeySignaturesSequence.cpp">
       <Filter>Helio\Source\Core\Midi\Sequences</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Midi\Sequences\MidiSequence.cpp">
@@ -781,6 +790,9 @@
     <ClCompile Include="..\..\Source\Core\Undo\Actions\AutomationEventActions.cpp">
       <Filter>Helio\Source\Core\Undo\Actions</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Undo\Actions\KeySignatureEventActions.cpp">
+      <Filter>Helio\Source\Core\Undo\Actions</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Undo\Actions\MidiTrackActions.cpp">
       <Filter>Helio\Source\Core\Undo\Actions</Filter>
     </ClCompile>
@@ -892,6 +904,9 @@
     <ClCompile Include="..\..\Source\UI\Common\FatalErrorScreen.cpp">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Common\KeySelector.cpp">
+      <Filter>Helio\Source\UI\Common</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Common\MenuButton.cpp">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClCompile>
@@ -902,6 +917,12 @@
       <Filter>Helio\Source\UI\Common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Common\PluginWindow.cpp">
+      <Filter>Helio\Source\UI\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Common\RadioButton.cpp">
+      <Filter>Helio\Source\UI\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Common\ScaleEditor.cpp">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Common\SizeSwitcherComponent.cpp">
@@ -920,6 +941,9 @@
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Dialogs\FadingDialog.cpp">
+      <Filter>Helio\Source\UI\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Dialogs\KeySignatureDialog.cpp">
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Dialogs\ModalDialogConfirmation.cpp">
@@ -1230,6 +1254,15 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\WipeSpaceHelper.cpp">
       <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\KeySignaturesMap\KeySignatureLargeComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\KeySignaturesMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\KeySignaturesMap\KeySignatureSmallComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer\KeySignaturesMap</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\KeySignaturesMap\KeySignaturesTrackMap.cpp">
+      <Filter>Helio\Source\UI\Sequencer\KeySignaturesMap</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponent.cpp">
       <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
@@ -3064,6 +3097,9 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_extra\misc\juce_PreferencesPanel.cpp">
       <Filter>Juce Modules\juce_gui_extra\misc</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_extra\misc\juce_PushNotifications.cpp">
+      <Filter>Juce Modules\juce_gui_extra\misc</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_extra\misc\juce_RecentlyOpenedFilesList.cpp">
       <Filter>Juce Modules\juce_gui_extra\misc</Filter>
     </ClCompile>
@@ -3073,7 +3109,13 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_extra\misc\juce_SystemTrayIconComponent.cpp">
       <Filter>Juce Modules\juce_gui_extra\misc</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_extra\native\juce_android_PushNotifications.cpp">
+      <Filter>Juce Modules\juce_gui_extra\native</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_extra\native\juce_android_WebBrowserComponent.cpp">
+      <Filter>Juce Modules\juce_gui_extra\native</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_extra\native\juce_ios_PushNotifications.cpp">
       <Filter>Juce Modules\juce_gui_extra\native</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_extra\native\juce_ios_UIViewComponent.mm">
@@ -3333,6 +3375,9 @@
     <ClInclude Include="..\..\Source\Core\Midi\Sequences\Events\AutomationEvent.h">
       <Filter>Helio\Source\Core\Midi\Sequences\Events</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Midi\Sequences\Events\KeySignatureEvent.h">
+      <Filter>Helio\Source\Core\Midi\Sequences\Events</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Midi\Sequences\Events\MidiEvent.h">
       <Filter>Helio\Source\Core\Midi\Sequences\Events</Filter>
     </ClInclude>
@@ -3346,6 +3391,9 @@
       <Filter>Helio\Source\Core\Midi\Sequences</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Midi\Sequences\AutomationSequence.h">
+      <Filter>Helio\Source\Core\Midi\Sequences</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Midi\Sequences\KeySignaturesSequence.h">
       <Filter>Helio\Source\Core\Midi\Sequences</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Midi\Sequences\MidiSequence.h">
@@ -3513,6 +3561,9 @@
     <ClInclude Include="..\..\Source\Core\Undo\Actions\AutomationEventActions.h">
       <Filter>Helio\Source\Core\Undo\Actions</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Undo\Actions\KeySignatureEventActions.h">
+      <Filter>Helio\Source\Core\Undo\Actions</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Undo\Actions\MidiTrackActions.h">
       <Filter>Helio\Source\Core\Undo\Actions</Filter>
     </ClInclude>
@@ -3660,6 +3711,9 @@
     <ClInclude Include="..\..\Source\UI\Common\FatalErrorScreen.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Common\KeySelector.h">
+      <Filter>Helio\Source\UI\Common</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Common\FloatBoundsComponent.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
@@ -3687,6 +3741,12 @@
     <ClInclude Include="..\..\Source\UI\Common\PluginWindow.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Common\RadioButton.h">
+      <Filter>Helio\Source\UI\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Common\ScaleEditor.h">
+      <Filter>Helio\Source\UI\Common</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Common\SelectableComponent.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
@@ -3709,6 +3769,9 @@
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Dialogs\FadingDialog.h">
+      <Filter>Helio\Source\UI\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Dialogs\KeySignatureDialog.h">
       <Filter>Helio\Source\UI\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Dialogs\ModalDialogConfirmation.h">
@@ -4067,6 +4130,15 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\WipeSpaceHelper.h">
       <Filter>Helio\Source\UI\Sequencer\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\KeySignaturesMap\KeySignatureLargeComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\KeySignaturesMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\KeySignaturesMap\KeySignatureSmallComponent.h">
+      <Filter>Helio\Source\UI\Sequencer\KeySignaturesMap</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\KeySignaturesMap\KeySignaturesTrackMap.h">
+      <Filter>Helio\Source\UI\Sequencer\KeySignaturesMap</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponent.h">
       <Filter>Helio\Source\UI\Sequencer\PatternRoll</Filter>
@@ -6010,6 +6082,9 @@
       <Filter>Juce Modules\juce_gui_extra\misc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_extra\misc\juce_PreferencesPanel.h">
+      <Filter>Juce Modules\juce_gui_extra\misc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_extra\misc\juce_PushNotifications.h">
       <Filter>Juce Modules\juce_gui_extra\misc</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_extra\misc\juce_RecentlyOpenedFilesList.h">
