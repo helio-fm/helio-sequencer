@@ -21,7 +21,7 @@ It aims to be a modern music creation software, featuring linear-based sequencer
  * Git clone,
  * Get [JUCE](https://juce.com/) submodule, if not yet done: `git submodule update --init`,
  * Get VST and ASIO SDKs (which can't be redistributed in this project due to licensing restrictions, but you may use `ThirdParty/get_asio_and_vst_sdks.sh` script to download and extract the SDKs sources if they're not found), you may skip this step for macOS and iOS projects, as the download script will be invoked automatically in the pre-build phase,
- * On Linux, you'll need to have the following packages installed: `libfreetype6-dev libx11-dev libxinerama-dev libxrandr-dev libxcursor-dev libxcomposite-dev mesa-common-dev freeglut3-dev libcurl4-openssl-dev libasound2-dev libjack-dev`,
+ * On Linux, you'll need to have the following packages installed: `libfreetype6-dev libx11-dev libxinerama-dev libxrandr-dev libxcursor-dev libxcomposite-dev mesa-common-dev freeglut3-dev libcurl4-openssl-dev libasound2-dev libjack-dev libc++-dev`,
  * Pick the right project for your OS from `Projects` directory and build.
 
 ### Links
