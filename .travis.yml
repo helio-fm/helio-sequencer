@@ -51,4 +51,6 @@ install:
 
 script:
   - export DISPLAY=localhost:1.0
+  - export CFLAGS+=-stdlib=libc++
+  - export LDFLAGS+=-stdlib=libc++
   - xvfb-run -a bash -c 'cd Projects/LinuxMakefile && make'
