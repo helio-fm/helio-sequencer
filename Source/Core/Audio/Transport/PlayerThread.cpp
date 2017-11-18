@@ -24,10 +24,7 @@
 
 #include "DataEncoder.h"
 
-
-// Should be less than PLAYER_THREAD_STOP_TIME_MS
-#define UPDATE_TIME_MS 35
-
+#define MINIMUM_STOP_CHECK_TIME_MS 1000
 
 PlayerThread::PlayerThread(Transport &transport) :
     Thread("PlayerThread"),
@@ -115,7 +112,7 @@ void PlayerThread::run()
         }
         
         // Wait until all plugins process the messages in their queues
-        Time::waitForMillisecondCounter(Time::getMillisecondCounter() + UPDATE_TIME_MS / 2);
+        Time::waitForMillisecondCounter(Time::getMillisecondCounter() + 50);
     };
     
     auto sendTempoChangeToEverybody = [&uniqueInstruments](const MidiMessage &tempoEvent)
@@ -133,11 +130,25 @@ void PlayerThread::run()
     {
         MessageWrapper wrapper;
 
-        if (! sequences.getNextMessage(wrapper))
+        if (!sequences.getNextMessage(wrapper))
         {
             nextEventTimeDelta = msPerTick * (endPositionInTime - prevTimeStamp);
-            Time::waitForMillisecondCounter(Time::getMillisecondCounter() + uint32(nextEventTimeDelta));
-                        
+            const uint32 targetTime = Time::getMillisecondCounter() + uint32(nextEventTimeDelta);
+
+            // Give thread a chance to exit by checking at least once a, say, second
+            while (nextEventTimeDelta > MINIMUM_STOP_CHECK_TIME_MS)
+            {
+                nextEventTimeDelta -= MINIMUM_STOP_CHECK_TIME_MS;
+                Thread::sleep(MINIMUM_STOP_CHECK_TIME_MS);
+                if (this->threadShouldExit())
+                {
+                    sendHoldingNotesOffAndMidiStop();
+                    return;
+                }
+            }
+
+            Time::waitForMillisecondCounter(targetTime);
+
             if (this->transport.isLooped())
             {
                 //Logger::writeToLog("Sekk to time " + String(startPositionInTime));
@@ -155,19 +166,31 @@ void PlayerThread::run()
                 return;
             }
         }
-        
+
         const bool shouldRewind =
             (this->transport.isLooped() &&
             (wrapper.message.getTimeStamp() > endPositionInTime));
-        
+
         const double nextEventTimeStamp =
             shouldRewind ? endPositionInTime : wrapper.message.getTimeStamp();
-        
+
         nextEventTimeDelta = msPerTick * (nextEventTimeStamp - prevTimeStamp);
         currentTimeMs += nextEventTimeDelta;
-              
-        Time::waitForMillisecondCounter(Time::getMillisecondCounter() + uint32(nextEventTimeDelta));
-        
+        const uint32 targetTime = Time::getMillisecondCounter() + uint32(nextEventTimeDelta);
+
+        while (nextEventTimeDelta > MINIMUM_STOP_CHECK_TIME_MS)
+        {
+            nextEventTimeDelta -= MINIMUM_STOP_CHECK_TIME_MS;
+            Thread::sleep(MINIMUM_STOP_CHECK_TIME_MS);
+            if (this->threadShouldExit())
+            {
+                sendHoldingNotesOffAndMidiStop();
+                return;
+            }
+        }
+
+        Time::waitForMillisecondCounter(targetTime);
+
         if (this->threadShouldExit())
         {
             sendHoldingNotesOffAndMidiStop();

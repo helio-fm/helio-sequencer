@@ -29,13 +29,11 @@
 #include "AudioCore.h"
 #include "HybridRoll.h"
 
-// This still won't help in a case when there are too long time distances
-// between events: player threads will wait too long to finish
 class PlayerThreadPool final
 {
 public:
 
-    PlayerThreadPool(Transport &transport, int poolSize = 10) :
+    PlayerThreadPool(Transport &transport, int poolSize = 5) :
         transport(transport),
         poolSize(poolSize)
     {
