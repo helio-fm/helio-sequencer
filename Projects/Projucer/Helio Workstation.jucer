@@ -623,6 +623,8 @@
                 file="../../Source/UI/Common/FatalErrorScreen.cpp"/>
           <FILE id="nq0jKL" name="FatalErrorScreen.h" compile="0" resource="0"
                 file="../../Source/UI/Common/FatalErrorScreen.h"/>
+          <FILE id="wZlPKT" name="KeySelector.cpp" compile="1" resource="0" file="../../Source/UI/Common/KeySelector.cpp"/>
+          <FILE id="beAclV" name="KeySelector.h" compile="0" resource="0" file="../../Source/UI/Common/KeySelector.h"/>
           <FILE id="KlCL6B" name="FloatBoundsComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Common/FloatBoundsComponent.h"/>
           <FILE id="UJMCTX" name="HelperRectangle.h" compile="0" resource="0"
@@ -642,6 +644,8 @@
           <FILE id="yXiN5u" name="PluginWindow.cpp" compile="1" resource="0"
                 file="../../Source/UI/Common/PluginWindow.cpp"/>
           <FILE id="MqJpUz" name="PluginWindow.h" compile="0" resource="0" file="../../Source/UI/Common/PluginWindow.h"/>
+          <FILE id="T2oiMf" name="RadioButton.cpp" compile="1" resource="0" file="../../Source/UI/Common/RadioButton.cpp"/>
+          <FILE id="r5J37w" name="RadioButton.h" compile="0" resource="0" file="../../Source/UI/Common/RadioButton.h"/>
           <FILE id="MA7sNa" name="SelectableComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Common/SelectableComponent.h"/>
           <FILE id="SncSXr" name="ShapeComponent.h" compile="0" resource="0"
