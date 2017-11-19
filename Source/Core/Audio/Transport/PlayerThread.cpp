@@ -66,8 +66,9 @@ void PlayerThread::run()
     
     this->transport.broadcastTempoChanged(msPerTick);
     
-    const double startPositionInTime = round(absStartPosition * this->transport.getTotalTime());
-    const double endPositionInTime = round(absEndPosition * this->transport.getTotalTime());
+    const double totalTime = this->transport.getTotalTime();
+    const double startPositionInTime = round(absStartPosition * totalTime);
+    const double endPositionInTime = round(absEndPosition * totalTime);
     
     sequences.seekToTime(startPositionInTime);
     double prevTimeStamp = startPositionInTime;
@@ -130,6 +131,7 @@ void PlayerThread::run()
     {
         MessageWrapper wrapper;
 
+        // Handle playback from the last event to the end of track:
         if (!sequences.getNextMessage(wrapper))
         {
             nextEventTimeDelta = msPerTick * (endPositionInTime - prevTimeStamp);
@@ -151,7 +153,7 @@ void PlayerThread::run()
 
             if (this->transport.isLooped())
             {
-                //Logger::writeToLog("Sekk to time " + String(startPositionInTime));
+                //Logger::writeToLog("Seek to time " + String(startPositionInTime));
                 sequences.seekToTime(startPositionInTime);
                 prevTimeStamp = startPositionInTime;
                 continue;
@@ -176,31 +178,33 @@ void PlayerThread::run()
 
         nextEventTimeDelta = msPerTick * (nextEventTimeStamp - prevTimeStamp);
         currentTimeMs += nextEventTimeDelta;
-        const uint32 targetTime = Time::getMillisecondCounter() + uint32(nextEventTimeDelta);
+        prevTimeStamp = nextEventTimeStamp;
 
-        while (nextEventTimeDelta > MINIMUM_STOP_CHECK_TIME_MS)
+        // Zero-delay check (we're playing a chord or so)
+        if (uint32(nextEventTimeDelta) != 0)
         {
-            nextEventTimeDelta -= MINIMUM_STOP_CHECK_TIME_MS;
-            Thread::sleep(MINIMUM_STOP_CHECK_TIME_MS);
+            const uint32 targetTime = Time::getMillisecondCounter() + uint32(nextEventTimeDelta);
+            while (nextEventTimeDelta > MINIMUM_STOP_CHECK_TIME_MS)
+            {
+                nextEventTimeDelta -= MINIMUM_STOP_CHECK_TIME_MS;
+                Thread::sleep(MINIMUM_STOP_CHECK_TIME_MS);
+                if (this->threadShouldExit())
+                {
+                    sendHoldingNotesOffAndMidiStop();
+                    return;
+                }
+            }
+
+            Time::waitForMillisecondCounter(targetTime);
+
             if (this->threadShouldExit())
             {
                 sendHoldingNotesOffAndMidiStop();
                 return;
             }
+
+            this->transport.broadcastSeek(prevTimeStamp / totalTime, currentTimeMs, totalTimeMs);
         }
-
-        Time::waitForMillisecondCounter(targetTime);
-
-        if (this->threadShouldExit())
-        {
-            sendHoldingNotesOffAndMidiStop();
-            return;
-        }
-        
-        prevTimeStamp = nextEventTimeStamp;
-
-        this->transport.broadcastSeek(prevTimeStamp / this->transport.getTotalTime(),
-                                      currentTimeMs, totalTimeMs);
         
         if (shouldRewind)
         {
