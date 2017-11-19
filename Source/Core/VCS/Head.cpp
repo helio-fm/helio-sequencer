@@ -28,6 +28,8 @@
 
 using namespace VCS;
 
+#define DIFF_BUILD_THREAD_STOP_TIMEOUT 5000
+
 Head::Head(const Head &other) :
     Thread("Diff Thread"),
     targetVcsItemsSource(other.targetVcsItemsSource),
@@ -166,7 +168,7 @@ bool VCS::Head::moveTo(const ValueTree revision)
 {
     if (this->isThreadRunning())
     {
-        this->stopThread(100);
+        this->stopThread(DIFF_BUILD_THREAD_STOP_TIMEOUT);
     }
 
     if (this->targetVcsItemsSource != nullptr)
@@ -495,7 +497,9 @@ void Head::rebuildDiffNow()
 {
     if (this->isThreadRunning())
     {
-        this->stopThread(50);
+        // Better to wait for a couple of seconds here than kill a thread by force
+        // and have leaked Diff and/or race due to hanging read-write locks
+        this->stopThread(DIFF_BUILD_THREAD_STOP_TIMEOUT);
     }
 
     this->startThread(9);

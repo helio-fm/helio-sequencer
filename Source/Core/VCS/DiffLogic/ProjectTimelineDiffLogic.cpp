@@ -320,17 +320,13 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
             ScopedPointer<XmlElement> targetDeltaData(this->target.createDeltaDataFor(j));
 
             const bool foundMissingKeySignature = !stateHasKeySignatures && checkIfDeltaIsKeySignatureType(targetDelta);
-            ScopedPointer<XmlElement> emptyKeySignaturesDeltaData(serializeLayer({}, ProjectTimelineDeltas::keySignaturesAdded));
-
             const bool foundMissingTimeSignature = !stateHasTimeSignatures && checkIfDeltaIsTimeSignatureType(targetDelta);
-            ScopedPointer<XmlElement> emptyTimeSignaturesDeltaData(serializeLayer({}, ProjectTimelineDeltas::timeSignaturesAdded));
-
             const bool foundMissingAnnotation = !stateHasAnnotations && checkIfDeltaIsAnnotationType(targetDelta);
-            ScopedPointer<XmlElement> emptyAnnotationDeltaData(serializeLayer({}, ProjectTimelineDeltas::annotationsAdded));
 
             if (foundMissingKeySignature)
             {
                 const bool incrementalMerge = (keySignaturesDeltaData != nullptr);
+                ScopedPointer<XmlElement> emptyKeySignaturesDeltaData(serializeLayer({}, ProjectTimelineDeltas::keySignaturesAdded));
 
                 if (targetDelta->getType() == ProjectTimelineDeltas::keySignaturesAdded)
                 {
@@ -351,6 +347,7 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
             else if (foundMissingTimeSignature)
             {
                 const bool incrementalMerge = (timeSignaturesDeltaData != nullptr);
+                ScopedPointer<XmlElement> emptyTimeSignaturesDeltaData(serializeLayer({}, ProjectTimelineDeltas::timeSignaturesAdded));
 
                 if (targetDelta->getType() == ProjectTimelineDeltas::timeSignaturesAdded)
                 {
@@ -371,6 +368,7 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
             else if (foundMissingAnnotation)
             {
                 const bool incrementalMerge = (annotationsDeltaData != nullptr);
+                ScopedPointer<XmlElement> emptyAnnotationDeltaData(serializeLayer({}, ProjectTimelineDeltas::annotationsAdded));
 
                 if (targetDelta->getType() == ProjectTimelineDeltas::annotationsAdded)
                 {
