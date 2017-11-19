@@ -107,7 +107,6 @@ void RendererThread::stop()
 {
     if (this->isThreadRunning())
     {
-        Supervisor::track(Serialization::Activities::transportAbortRender);
         this->stopThread(500);
     }
 

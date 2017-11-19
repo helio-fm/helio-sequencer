@@ -29,11 +29,95 @@
 #include "AudioCore.h"
 #include "HybridRoll.h"
 
-#if PLAYER_THREAD_SENDS_SEEK_EVENTS
-#   define PLAYER_THREAD_STOP_TIME_MS 1500
-#else
-#   define PLAYER_THREAD_STOP_TIME_MS 100
-#endif
+class PlayerThreadPool final
+{
+public:
+
+    PlayerThreadPool(Transport &transport, int poolSize = 5) :
+        transport(transport),
+        poolSize(poolSize)
+    {
+        for (int i = 0; i < poolSize; ++i)
+        {
+            this->players.add(new PlayerThread(transport));
+        }
+
+        this->currentPlayer = this->findNextFreePlayer();
+    }
+
+    void startPlayback()
+    {
+        if (this->currentPlayer->isThreadRunning())
+        {
+            this->currentPlayer->signalThreadShouldExit();
+            this->currentPlayer = findNextFreePlayer();
+        }
+
+        this->currentPlayer->startThread(10);
+    }
+    
+    void stopPlayback()
+    {
+        if (this->currentPlayer->isThreadRunning())
+        {
+            // Just signal player to stop:
+            // it might be waiting for the next midi event, so it won't stop immediately
+            this->currentPlayer->signalThreadShouldExit();
+        }
+    }
+
+    bool isPlaying() const
+    {
+        return (this->currentPlayer->isThreadRunning() &&
+            !this->currentPlayer->threadShouldExit());
+    }
+
+private:
+
+    PlayerThread *findNextFreePlayer()
+    {
+        this->cleanup();
+
+        for (auto player : this->players)
+        {
+            if (!player->isThreadRunning())
+            {
+                return player;
+            }
+        }
+
+        Logger::writeToLog("Warning: all playback threads are busy, adding one");
+        auto player = new PlayerThread(transport);
+        this->players.add(player);
+        return player;
+    }
+
+    void cleanup()
+    {
+        // Since all new players are added last,
+        // first ones are most likely to be stopped,
+        // so simply try to cleanup from the beginning until we meet a busy one:
+        while (this->players.size() > this->poolSize)
+        {
+            if (this->players.getFirst()->isThreadRunning())
+            {
+                return;
+            }
+
+            Logger::writeToLog("Removing a stale playback thread");
+            this->players.remove(0);
+        }
+    }
+
+    Transport &transport;
+    int poolSize;
+
+    OwnedArray<PlayerThread> players;
+    PlayerThread *currentPlayer;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayerThreadPool)
+};
+
 
 Transport::Transport(OrchestraPit &orchestraPit) :
     orchestra(orchestraPit),
@@ -48,7 +132,7 @@ Transport::Transport(OrchestraPit &orchestraPit) :
     projectFirstBeat(0.f),
     projectLastBeat(DEFAULT_NUM_BARS * NUM_BEATS_IN_BAR)
 {
-    this->player = new PlayerThread(*this);
+    this->player = new PlayerThreadPool(*this);
     this->renderer = new RendererThread(*this);
 
     this->orchestra.addOrchestraListener(this);
@@ -57,17 +141,8 @@ Transport::Transport(OrchestraPit &orchestraPit) :
 Transport::~Transport()
 {
     this->orchestra.removeOrchestraListener(this);
-    
-    if (this->player->isThreadRunning())
-    {
-        this->player->stopThread(500);
-    }
-    
-    if (this->renderer->isRecording())
-    {
-        this->renderer->stop();
-    }
-    
+    this->player = nullptr;
+    this->renderer = nullptr;
     this->transportListeners.clear();
 }
 
@@ -207,17 +282,14 @@ void Transport::probeSoundAt(double absTrackPosition, const MidiSequence *limitT
 void Transport::startPlayback()
 {
     this->rebuildSequencesIfNeeded();
-
-    if (this->player->isThreadRunning() &&
-        !this->player->threadShouldExit())
+    if (this->player->isPlaying())
     {
-        this->player->stopThread(PLAYER_THREAD_STOP_TIME_MS);
+        this->player->stopPlayback();
         this->allNotesControllersAndSoundOff();
     }
     
     this->loopedMode = false;
-    
-    this->player->startThread(10);
+    this->player->startPlayback();
     this->broadcastPlay();
 }
 
@@ -225,10 +297,9 @@ void Transport::startPlaybackLooped(double absLoopStart, double absLoopEnd)
 {
     this->rebuildSequencesIfNeeded();
     
-    if (this->player->isThreadRunning() &&
-        !this->player->threadShouldExit())
+    if (this->player->isPlaying())
     {
-        this->player->stopThread(PLAYER_THREAD_STOP_TIME_MS);
+        this->player->stopPlayback();
         this->allNotesControllersAndSoundOff();
     }
     
@@ -236,16 +307,15 @@ void Transport::startPlaybackLooped(double absLoopStart, double absLoopEnd)
     this->loopStart = jmax(0.0, absLoopStart);
     this->loopEnd = jmin(1.0, absLoopEnd);
     
-    this->player->startThread(10);
+    this->player->startPlayback();
     this->broadcastPlay();
 }
 
 void Transport::stopPlayback()
 {
-    if (this->player->isThreadRunning() &&
-        !this->player->threadShouldExit())
+    if (this->player->isPlaying())
     {
-        this->player->stopThread(PLAYER_THREAD_STOP_TIME_MS);
+        this->player->stopPlayback();
         this->allNotesControllersAndSoundOff();
         this->loopedMode = false;
         this->seekToPosition(this->getSeekPosition());
@@ -260,7 +330,7 @@ void Transport::toggleStatStopPlayback()
 
 bool Transport::isPlaying() const
 {
-    return this->player->isThreadRunning();
+    return this->player->isPlaying();
 }
 
 bool Transport::isLooped() const
@@ -441,8 +511,10 @@ void Transport::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
 {
     // todo stop playback only if the event is in future and getControllerNumber == 0 (not an automation)
     
-    if (this->player->isThreadRunning())
-    { this->stopPlayback(); }
+    if (this->isPlaying())
+    {
+        this->stopPlayback();
+    }
     
     // a hack
     if (newEvent.getControllerNumber() == MidiTrack::tempoController)
@@ -456,9 +528,7 @@ void Transport::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
 void Transport::onAddMidiEvent(const MidiEvent &event)
 {
     // todo stop playback only if the event is in future and getControllerNumber == 0 (not an automation)
-
-    if (this->player->isThreadRunning())
-    { this->stopPlayback(); }
+    this->stopPlayback();
     
     // a hack
     if (event.getControllerNumber() == MidiTrack::tempoController)
@@ -472,17 +542,14 @@ void Transport::onAddMidiEvent(const MidiEvent &event)
 void Transport::onRemoveMidiEvent(const MidiEvent &event)
 {
     // todo stop playback only if the event is in future and getControllerNumber == 0 (not an automation)
-
-    if (this->player->isThreadRunning())
-    { this->stopPlayback(); }
+    this->stopPlayback();
     
     this->sequencesAreOutdated = true;
 }
 
 void Transport::onPostRemoveMidiEvent(MidiSequence *const layer)
 {
-    if (this->player->isThreadRunning())
-    { this->stopPlayback(); }
+    this->stopPlayback();
     
     // a hack to re-calculate length and current time
     if (layer->getTrack()->getTrackControllerNumber() == MidiTrack::tempoController)
@@ -501,8 +568,7 @@ void Transport::onChangeTrackProperties(MidiTrack *const track)
 
 void Transport::onResetTrackContent(MidiTrack *const track)
 {
-    if (this->player->isThreadRunning())
-    { this->stopPlayback(); }
+    this->stopPlayback();
 
     this->sequencesAreOutdated = true;
     this->updateLinkForTrack(track);
@@ -510,8 +576,7 @@ void Transport::onResetTrackContent(MidiTrack *const track)
 
 void Transport::onAddTrack(MidiTrack *const track)
 {
-    if (this->player->isThreadRunning())
-    {this->stopPlayback(); }
+    this->stopPlayback();
     
     this->sequencesAreOutdated = true;
     this->tracksCache.addIfNotAlreadyThere(track);
@@ -520,8 +585,7 @@ void Transport::onAddTrack(MidiTrack *const track)
 
 void Transport::onRemoveTrack(MidiTrack *const track)
 {
-    if (this->player->isThreadRunning())
-    {this->stopPlayback(); }
+    this->stopPlayback();
     
     this->sequencesAreOutdated = true;
     this->tracksCache.removeAllInstancesOf(track);
@@ -530,10 +594,7 @@ void Transport::onRemoveTrack(MidiTrack *const track)
 
 void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
-    if (this->player->isThreadRunning())
-    {
-        this->stopPlayback();
-    }
+    this->stopPlayback();
     
     const double lastSeekPosition = float(this->getSeekPosition());
     const double seekBeat = this->projectFirstBeat + ((this->projectLastBeat - this->projectFirstBeat) * lastSeekPosition); // may be 0
