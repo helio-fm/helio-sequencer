@@ -147,6 +147,7 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
 {
     auto diff = new Diff(this->target);
 
+    // step 1:
     // the default policy is merging all changes
     // from changes into target (of corresponding types)
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
@@ -272,6 +273,136 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
         {
             auto stateDeltaCopy = new Delta(*stateDelta);
             diff->addOwnedDelta(stateDeltaCopy, stateDeltaData.release());
+        }
+    }
+
+    // step 2:
+    // resolve new delta types that may be missing in project history state,
+    // e.g., a project that was created with earlier versions of the app,
+    // which has a history tree with timeline initialised with annotation deltas
+    // and time signature deltas, but missing key signature deltas (introduced later)
+
+    bool stateHasAnnotations = false;
+    bool stateHasTimeSignatures = false;
+    bool stateHasKeySignatures = false;
+
+    for (int i = 0; i < initialState.getNumDeltas(); ++i)
+    {
+        const Delta *stateDelta = initialState.getDelta(i);
+        stateHasAnnotations = stateHasAnnotations || checkIfDeltaIsAnnotationType(stateDelta);
+        stateHasTimeSignatures = stateHasTimeSignatures || checkIfDeltaIsTimeSignatureType(stateDelta);
+        stateHasKeySignatures = stateHasKeySignatures || checkIfDeltaIsKeySignatureType(stateDelta);
+    }
+
+    for (int i = 0; i < initialState.getNumDeltas(); ++i)
+    {
+        const Delta *stateDelta = initialState.getDelta(i);
+
+        ScopedPointer<Delta> annotationsDelta(
+            new Delta(DeltaDescription(Serialization::VCS::headStateDelta),
+                ProjectTimelineDeltas::annotationsAdded));
+
+        ScopedPointer<Delta> keySignaturesDelta(
+            new Delta(DeltaDescription(Serialization::VCS::headStateDelta),
+                ProjectTimelineDeltas::keySignaturesAdded));
+
+        ScopedPointer<Delta> timeSignaturesDelta(
+            new Delta(DeltaDescription(Serialization::VCS::headStateDelta),
+                ProjectTimelineDeltas::timeSignaturesAdded));
+
+        ScopedPointer<XmlElement> annotationsDeltaData;
+        ScopedPointer<XmlElement> keySignaturesDeltaData;
+        ScopedPointer<XmlElement> timeSignaturesDeltaData;
+
+        for (int j = 0; j < this->target.getNumDeltas(); ++j)
+        {
+            const Delta *targetDelta = this->target.getDelta(j);
+            ScopedPointer<XmlElement> targetDeltaData(this->target.createDeltaDataFor(j));
+
+            const bool foundMissingKeySignature = !stateHasKeySignatures && checkIfDeltaIsKeySignatureType(targetDelta);
+            ScopedPointer<XmlElement> emptyKeySignaturesDeltaData(serializeLayer({}, ProjectTimelineDeltas::keySignaturesAdded));
+
+            const bool foundMissingTimeSignature = !stateHasTimeSignatures && checkIfDeltaIsTimeSignatureType(targetDelta);
+            ScopedPointer<XmlElement> emptyTimeSignaturesDeltaData(serializeLayer({}, ProjectTimelineDeltas::timeSignaturesAdded));
+
+            const bool foundMissingAnnotation = !stateHasAnnotations && checkIfDeltaIsAnnotationType(targetDelta);
+            ScopedPointer<XmlElement> emptyAnnotationDeltaData(serializeLayer({}, ProjectTimelineDeltas::annotationsAdded));
+
+            if (foundMissingKeySignature)
+            {
+                const bool incrementalMerge = (keySignaturesDeltaData != nullptr);
+
+                if (targetDelta->getType() == ProjectTimelineDeltas::keySignaturesAdded)
+                {
+                    keySignaturesDeltaData = mergeKeySignaturesAdded(
+                        incrementalMerge ? keySignaturesDeltaData : emptyKeySignaturesDeltaData, targetDeltaData);
+                }
+                else if (targetDelta->getType() == ProjectTimelineDeltas::keySignaturesRemoved)
+                {
+                    keySignaturesDeltaData = mergeKeySignaturesRemoved(
+                        incrementalMerge ? keySignaturesDeltaData : emptyKeySignaturesDeltaData, targetDeltaData);
+                }
+                else if (targetDelta->getType() == ProjectTimelineDeltas::keySignaturesChanged)
+                {
+                    keySignaturesDeltaData = mergeKeySignaturesChanged(
+                        incrementalMerge ? keySignaturesDeltaData : emptyKeySignaturesDeltaData, targetDeltaData);
+                }
+            }
+            else if (foundMissingTimeSignature)
+            {
+                const bool incrementalMerge = (timeSignaturesDeltaData != nullptr);
+
+                if (targetDelta->getType() == ProjectTimelineDeltas::timeSignaturesAdded)
+                {
+                    timeSignaturesDeltaData = mergeTimeSignaturesAdded(
+                        incrementalMerge ? timeSignaturesDeltaData : emptyTimeSignaturesDeltaData, targetDeltaData);
+                }
+                else if (targetDelta->getType() == ProjectTimelineDeltas::timeSignaturesRemoved)
+                {
+                    timeSignaturesDeltaData = mergeTimeSignaturesRemoved(
+                        incrementalMerge ? timeSignaturesDeltaData : emptyTimeSignaturesDeltaData, targetDeltaData);
+                }
+                else if (targetDelta->getType() == ProjectTimelineDeltas::timeSignaturesChanged)
+                {
+                    timeSignaturesDeltaData = mergeTimeSignaturesChanged(
+                        incrementalMerge ? timeSignaturesDeltaData : emptyTimeSignaturesDeltaData, targetDeltaData);
+                }
+            }
+            else if (foundMissingAnnotation)
+            {
+                const bool incrementalMerge = (annotationsDeltaData != nullptr);
+
+                if (targetDelta->getType() == ProjectTimelineDeltas::annotationsAdded)
+                {
+                    annotationsDeltaData = mergeAnnotationsAdded(
+                        incrementalMerge ? annotationsDeltaData : emptyAnnotationDeltaData, targetDeltaData);
+                }
+                else if (targetDelta->getType() == ProjectTimelineDeltas::annotationsRemoved)
+                {
+                    annotationsDeltaData = mergeAnnotationsRemoved(
+                        incrementalMerge ? annotationsDeltaData : emptyAnnotationDeltaData, targetDeltaData);
+                }
+                else if (targetDelta->getType() == ProjectTimelineDeltas::annotationsChanged)
+                {
+                    annotationsDeltaData = mergeAnnotationsChanged(
+                        incrementalMerge ? annotationsDeltaData : emptyAnnotationDeltaData, targetDeltaData);
+                }
+            }
+        }
+
+        if (annotationsDeltaData != nullptr)
+        {
+            diff->addOwnedDelta(annotationsDelta.release(), annotationsDeltaData.release());
+        }
+
+        if (timeSignaturesDeltaData != nullptr)
+        {
+            diff->addOwnedDelta(timeSignaturesDelta.release(), timeSignaturesDeltaData.release());
+        }
+
+        if (keySignaturesDeltaData != nullptr)
+        {
+            diff->addOwnedDelta(keySignaturesDelta.release(), keySignaturesDeltaData.release());
         }
     }
 
