@@ -202,25 +202,25 @@ String Transport::getTimeString(const RelativeTime &relTime, bool includeMillise
 
 double Transport::getSeekPosition() const
 {
-    ScopedReadLock lock(this->seekPositionLock);
+    const SpinLock::ScopedLockType lock(this->seekPositionLock);
     return this->seekPosition;
 }
 
 void Transport::setSeekPosition(const double absPosition)
 {
-    ScopedWriteLock lock(this->seekPositionLock);
+    const SpinLock::ScopedLockType lock(this->seekPositionLock);
     this->seekPosition = absPosition;
 }
 
 double Transport::getTotalTime() const
 {
-    ScopedReadLock lock(this->totalTimeLock);
+    const SpinLock::ScopedLockType lock(this->totalTimeLock);
     return this->totalTime;
 }
 
 void Transport::setTotalTime(const double val)
 {
-    ScopedWriteLock lock(this->totalTimeLock);
+    const SpinLock::ScopedLockType lock(this->totalTimeLock);
     this->totalTime = val;
 }
 
@@ -764,7 +764,7 @@ void Transport::rebuildSequencesIfNeeded()
 
 ProjectSequences Transport::getSequences()
 {
-    ScopedLock l(this->sequencesLock);
+    const SpinLock::ScopedLockType l(this->sequencesLock);
     return this->sequences;
 }
 

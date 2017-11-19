@@ -144,7 +144,7 @@ private:
     ProjectSequences getSequences();
     void rebuildSequencesIfNeeded();
     
-    CriticalSection sequencesLock;
+    SpinLock sequencesLock;
     ProjectSequences sequences;
     bool sequencesAreOutdated;
     
@@ -162,10 +162,10 @@ private:
     
 private:
 
-    ReadWriteLock seekPositionLock;
+    SpinLock seekPositionLock;
     double seekPosition;
 
-    ReadWriteLock totalTimeLock;
+    SpinLock totalTimeLock;
     double totalTime;
     
     double trackStartMs;
