@@ -80,8 +80,6 @@ public:
 
     void showPage() override;
     void recreatePage() override;
-    void savePageState() const;
-    void loadPageState();
 
     void safeRename(const String &newName) override;
 

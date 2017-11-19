@@ -162,7 +162,7 @@ String ProjectTreeItem::getId() const
         return vcsTreeItem->getId();
     }
 
-    return "";
+    return {};
 }
 
 String ProjectTreeItem::getStats() const
@@ -257,9 +257,10 @@ void ProjectTreeItem::safeRename(const String &newName)
 
 void ProjectTreeItem::recreatePage()
 {
+    ValueTree layoutState(Serialization::UI::sequencer);
     if (this->sequencerLayout || this->projectSettings)
     {
-        this->savePageState();
+        layoutState = this->sequencerLayout->serialize();
     }
     
     this->sequencerLayout = new SequencerLayout(*this);
@@ -274,17 +275,7 @@ void ProjectTreeItem::recreatePage()
     }
     
     this->broadcastChangeProjectBeatRange(); // let rolls update themselves
-    this->loadPageState();
-}
-
-void ProjectTreeItem::savePageState() const
-{
-    Config::save(Serialization::UI::editorState, this->sequencerLayout);
-}
-
-void ProjectTreeItem::loadPageState()
-{
-    Config::load(Serialization::UI::editorState, this->sequencerLayout);
+    this->sequencerLayout->deserialize(layoutState);
 }
 
 void ProjectTreeItem::showPatternEditor(TreeItem *source)
@@ -551,26 +542,19 @@ void ProjectTreeItem::reset()
     //this->broadcastChangeProjectBeatRange();
 }
 
-
 ValueTree ProjectTreeItem::save() const
 {
     ValueTree tree(Serialization::Core::project);
-    tree.setProperty("Name", this->name);
+
+    tree.setProperty(Serialization::Core::treeItemName, this->name);
 
     tree.appendChild(this->info->serialize());
     tree.appendChild(this->timeline->serialize());
-    
-    //tree.appendChild(this->player->serialize()); // todo instead of:
-    tree.setProperty("Seek", this->transport->getSeekPosition());
-    
-    // UI state is now stored in config
-    //tree.appendChild(this->sequencerLayout->serialize());
-
     tree.appendChild(this->undoStack->serialize());
-    
-    TreeItemChildrenSerializer::serializeChildren(*this, tree);
+    tree.appendChild(this->transport->serialize());
+    tree.appendChild(this->sequencerLayout->serialize());
 
-    this->savePageState();
+    TreeItemChildrenSerializer::serializeChildren(*this, tree);
 
     return tree;
 }
@@ -610,15 +594,11 @@ void ProjectTreeItem::load(const ValueTree &tree)
     const float viewLastBeat = ceilf(viewEndWithMArgin / r) * r;
     this->broadcastChangeViewBeatRange(viewFirstBeat, viewLastBeat);
 
-    //this->transport->deserialize(*root); // todo
-
-    // UI state is now stored in config
-    //this->sequencerLayout->deserialize(*root);
-    
     this->undoStack->deserialize(root);
-    
-    const float seek = float(root.getProperty("seek", 0.f));
-    this->transport->seekToPosition(seek);
+
+    // At least, when all tracks are ready:
+    this->transport->deserialize(root);
+    this->sequencerLayout->deserialize(root);
 }
 
 void ProjectTreeItem::importMidi(File &file)
