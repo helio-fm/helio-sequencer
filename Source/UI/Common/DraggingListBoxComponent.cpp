@@ -142,8 +142,8 @@ void DraggingListBoxComponent::mouseWheelMove(const MouseEvent &event,
             ViewportKineticSlider::instance().startAnimationForViewport(this->parentViewport, Point<float>(0.f, float(forwardWheel) / 50.f));
             
             const bool eventWasUsed =
-                (wheel.deltaX != 0 && this->parentViewport->getHorizontalScrollBar()->isVisible()) ||
-                (wheel.deltaY != 0 && this->parentViewport->getVerticalScrollBar()->isVisible());
+                (wheel.deltaX != 0 && this->parentViewport->getHorizontalScrollBar().isVisible()) ||
+                (wheel.deltaY != 0 && this->parentViewport->getVerticalScrollBar().isVisible());
             
             if (!eventWasUsed)
                 Component::mouseWheelMove(event, wheel);

@@ -58,7 +58,7 @@ String PatternRollSelectionTreeItem::getName() const
     return TRANS("tree::selection::pattern");
 }
 
-juce::ScopedPointer<juce::Component> PatternRollSelectionTreeItem::createItemMenu()
+ScopedPointer<Component> PatternRollSelectionTreeItem::createItemMenu()
 {
     return nullptr; // new PatternRollSelectionCommandPanel(*this, CommandPanel::SlideRight);
 }

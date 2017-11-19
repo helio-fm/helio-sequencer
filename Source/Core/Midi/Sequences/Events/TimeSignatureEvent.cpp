@@ -22,13 +22,13 @@
 #include "SerializationKeys.h"
 
 
-TimeSignatureEvent::TimeSignatureEvent() : MidiEvent(nullptr, 0.f)
+TimeSignatureEvent::TimeSignatureEvent() : MidiEvent(nullptr, MidiEvent::TimeSignature, 0.f)
 {
     //jassertfalse;
 }
 
 TimeSignatureEvent::TimeSignatureEvent(const TimeSignatureEvent &other) :
-    MidiEvent(other.sequence, other.beat),
+    MidiEvent(other.sequence, MidiEvent::TimeSignature, other.beat),
     numerator(other.numerator),
     denominator(other.denominator)
 {
@@ -36,10 +36,8 @@ TimeSignatureEvent::TimeSignatureEvent(const TimeSignatureEvent &other) :
 }
 
 TimeSignatureEvent::TimeSignatureEvent(MidiSequence *owner,
-                                       float newBeat,
-                                       int newNumerator,
-                                       int newDenominator) :
-    MidiEvent(owner, newBeat),
+    float newBeat, int newNumerator, int newDenominator) :
+    MidiEvent(owner, MidiEvent::TimeSignature, newBeat),
     numerator(newNumerator),
     denominator(newDenominator)
 {
@@ -172,7 +170,9 @@ void TimeSignatureEvent::reset()
 
 int TimeSignatureEvent::hashCode() const noexcept
 {
-    return this->numerator + (100 * this->denominator) + this->id.hashCode();
+    const unsigned int hash =
+        this->numerator + (100 * this->denominator) + this->id.hashCode();
+    return (int)hash;
 }
 
 TimeSignatureEvent &TimeSignatureEvent::operator=(const TimeSignatureEvent &right)

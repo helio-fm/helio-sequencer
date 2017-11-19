@@ -36,7 +36,7 @@ VersionControl::VersionControl(WeakReference<VCS::TrackedItemsSource> parent,
     pack(new Pack()),
     stashes(new StashesRepository(pack)),
     head(pack, parent),
-    root(pack, "root"),
+    root(Revision::create(pack, "root")),
     parentItem(parent),
     historyMergeVersion(1)
 {
@@ -60,7 +60,7 @@ VersionControl::VersionControl(WeakReference<VCS::TrackedItemsSource> parent,
         this->key.restoreFromBase64(existingKeyBase64);
     }
 
-    this->root = Revision(this->pack, TRANS("defaults::newproject::firstcommit"));
+    this->root = Revision::create(this->pack, TRANS("defaults::newproject::firstcommit"));
 
     this->remote = new Client(*this);
 
@@ -102,17 +102,17 @@ MD5 VersionControl::calculateHash() const
     return MD5(ids.joinIntoString("").toUTF8());
 }
 
-StringArray VersionControl::recursiveGetHashes(const Revision revision) const
+juce::StringArray VersionControl::recursiveGetHashes(const ValueTree revision) const
 {
     StringArray sum;
 
     for (int i = 0; i < revision.getNumChildren(); ++i)
     {
-        Revision child(revision.getChild(i));
+        ValueTree child(revision.getChild(i));
         sum.addArray(this->recursiveGetHashes(child));
     }
 
-    const String revisionSum(revision.calculateHash().toHexString());
+    const String revisionSum(Revision::calculateHash(revision).toHexString());
     sum.add(revisionSum);
     return sum;
 }
@@ -124,10 +124,10 @@ void VersionControl::mergeWith(VersionControl &remoteHistory)
     this->publicId = remoteHistory.getPublicId();
     this->historyMergeVersion = remoteHistory.getVersion();
 
-    Revision newHeadRevision(this->getRevisionById(this->root,
-                             remoteHistory.getHead().getHeadingRevision().getUuid()));
+    ValueTree newHeadRevision(this->getRevisionById(this->root,
+        Revision::getUuid(remoteHistory.getHead().getHeadingRevision())));
 
-    if (!newHeadRevision.isEmpty())
+    if (! Revision::isEmpty(newHeadRevision))
     {
         this->head.moveTo(newHeadRevision);
     }
@@ -136,17 +136,17 @@ void VersionControl::mergeWith(VersionControl &remoteHistory)
     this->sendChangeMessage();
 }
 
-void VersionControl::recursiveTreeMerge(Revision localRevision,
-                                        Revision remoteRevision)
+void VersionControl::recursiveTreeMerge(ValueTree localRevision,
+    ValueTree remoteRevision)
 {
     // сначала мерж двух ревизий.
     // проход по чайлдам идет потом, чтоб head.moveTo у чайлда имел дело
     // с уже смерженным родителем.
 
-    if (localRevision.calculateHash() != remoteRevision.calculateHash())
+    if (Revision::calculateHash(localRevision) != Revision::calculateHash(remoteRevision))
     {
-        localRevision.copyPropertiesFrom(remoteRevision);
-        localRevision.flushData();
+        Revision::copyProperties(localRevision, remoteRevision);
+        Revision::flush(localRevision);
 
         // amend не работает
         //Revision headRevision(this->head.getHeadingRevision());
@@ -170,14 +170,13 @@ void VersionControl::recursiveTreeMerge(Revision localRevision,
 
     for (int i = 0; i < remoteRevision.getNumChildren(); ++i)
     {
-        Revision remoteChild(remoteRevision.getChild(i));
+        ValueTree remoteChild(remoteRevision.getChild(i));
         bool remoteChildExistsInLocal = false;
 
         for (int j = 0; j < localRevision.getNumChildren(); ++j)
         {
-            Revision localChild(localRevision.getChild(j));
-
-            if (localChild.getUuid() == remoteChild.getUuid())
+            ValueTree localChild(localRevision.getChild(j));
+            if (Revision::getUuid(localChild) == Revision::getUuid(remoteChild))
             {
                 this->recursiveTreeMerge(localChild, remoteChild);
                 remoteChildExistsInLocal = true;
@@ -189,9 +188,9 @@ void VersionControl::recursiveTreeMerge(Revision localRevision,
         if (!remoteChildExistsInLocal)
         {
             // скопировать все свойства, кроме пака. только свойства, не чайлдов.
-            Revision newLocalChild(this->pack, "");
-            newLocalChild.copyPropertiesFrom(remoteChild);
-            newLocalChild.flushData();
+            ValueTree newLocalChild(Revision::create(this->pack));
+            Revision::copyProperties(newLocalChild, remoteChild);
+            Revision::flush(newLocalChild);
             localRevision.addChild(newLocalChild, -1, nullptr);
             this->recursiveTreeMerge(newLocalChild, remoteChild);
         }
@@ -240,18 +239,18 @@ void VersionControl::recursiveTreeMerge(Revision localRevision,
 // VCS
 //===----------------------------------------------------------------------===//
 
-void VersionControl::moveHead(const VCS::Revision revision)
+void VersionControl::moveHead(const ValueTree revision)
 {
-    if (! revision.isEmpty())
+    if (! Revision::isEmpty(revision))
     {
         this->head.moveTo(revision);
         this->sendChangeMessage();
     }
 }
 
-void VersionControl::checkout(const VCS::Revision revision)
+void VersionControl::checkout(const ValueTree revision)
 {
-    if (! revision.isEmpty())
+    if (! Revision::isEmpty(revision))
     {
         this->head.moveTo(revision);
         this->head.checkout();
@@ -260,11 +259,11 @@ void VersionControl::checkout(const VCS::Revision revision)
     }
 }
 
-void VersionControl::cherryPick(const VCS::Revision revision, const Array<Uuid> uuids)
+void VersionControl::cherryPick(const ValueTree revision, const Array<Uuid> uuids)
 {
-    if (! revision.isEmpty())
+    if (! Revision::isEmpty(revision))
     {
-        Revision headRevision(this->head.getHeadingRevision());
+        ValueTree headRevision(this->head.getHeadingRevision());
         this->head.moveTo(revision);
         this->head.cherryPick(uuids);
         this->head.moveTo(headRevision);
@@ -278,7 +277,7 @@ void VersionControl::quickAmendItem(TrackedItem *targetItem)
     RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Added, targetItem));
     this->head.getHeadingRevision().setProperty(revisionRecord->getUuid().toString(), var(revisionRecord), nullptr);
     this->head.moveTo(this->head.getHeadingRevision());
-    this->head.getHeadingRevision().flushData();
+    Revision::flush(this->head.getHeadingRevision());
     this->pack->flush();
     this->sendChangeMessage();
 }
@@ -287,7 +286,7 @@ bool VersionControl::resetChanges(SparseSet<int> selectedItems)
 {
     if (selectedItems.size() == 0) { return false; }
 
-    Revision allChanges(this->head.getDiff());
+    ValueTree allChanges(this->head.getDiff());
 
     for (int i = 0; i < selectedItems.size(); ++i)
     {
@@ -312,7 +311,7 @@ bool VersionControl::resetChanges(SparseSet<int> selectedItems)
 
 bool VersionControl::resetAllChanges()
 {
-    Revision allChanges(this->head.getDiff());
+    ValueTree allChanges(this->head.getDiff());
     
     for (int i = 0; i < allChanges.getNumProperties(); ++i)
     {
@@ -335,9 +334,8 @@ bool VersionControl::commit(SparseSet<int> selectedItems, const String &message)
 {
     if (selectedItems.size() == 0) { return false; }
 
-    Revision newRevision(this->pack, message);
-
-    Revision allChanges(this->head.getDiff().createCopy());
+    ValueTree newRevision(Revision::create(this->pack, message));
+    ValueTree allChanges(this->head.getDiff().createCopy());
 
     for (int i = 0; i < selectedItems.size(); ++i)
     {
@@ -351,14 +349,14 @@ bool VersionControl::commit(SparseSet<int> selectedItems, const String &message)
         newRevision.setProperty(id, property, nullptr);
     }
 
-    Revision headingRevision(this->head.getHeadingRevision());
+    ValueTree headingRevision(this->head.getHeadingRevision());
 
     if (!headingRevision.isValid()) { return false; }
 
     headingRevision.addChild(newRevision, -1, nullptr);
     this->head.moveTo(newRevision);
 
-    newRevision.flushData();
+    Revision::flush(newRevision);
     this->pack->flush();
 
     Supervisor::track(Serialization::Activities::vcsCommit);
@@ -372,13 +370,13 @@ bool VersionControl::commit(SparseSet<int> selectedItems, const String &message)
 // Stashes
 //===----------------------------------------------------------------------===//
 
-bool VersionControl::stash(SparseSet<int> selectedItems, const String &message, bool shouldKeepChanges)
+bool VersionControl::stash(SparseSet<int> selectedItems,
+    const String &message, bool shouldKeepChanges)
 {
     if (selectedItems.size() == 0) { return false; }
     
-    Revision newRevision(this->pack, message);
-    
-    Revision allChanges(this->head.getDiff().createCopy());
+    ValueTree newRevision(Revision::create(this->pack, message));
+    ValueTree allChanges(this->head.getDiff().createCopy());
     
     for (int i = 0; i < selectedItems.size(); ++i)
     {
@@ -405,11 +403,11 @@ bool VersionControl::stash(SparseSet<int> selectedItems, const String &message, 
     return true;
 }
 
-bool VersionControl::applyStash(const VCS::Revision stash, bool shouldKeepStash)
+bool VersionControl::applyStash(const ValueTree stash, bool shouldKeepStash)
 {
-    if (! stash.isEmpty())
+    if (! Revision::isEmpty(stash))
     {
-        Revision headRevision(this->head.getHeadingRevision());
+        ValueTree headRevision(this->head.getHeadingRevision());
         this->head.moveTo(stash);
         this->head.cherryPickAll();
         this->head.moveTo(headRevision);
@@ -442,7 +440,7 @@ bool VersionControl::quickStashAll()
     if (this->hasQuickStash())
     { return false; }
 
-    Revision allChanges(this->head.getDiff().createCopy());
+    ValueTree allChanges(this->head.getDiff().createCopy());
     this->stashes->storeQuickStash(allChanges);
     this->resetAllChanges();
 
@@ -478,10 +476,10 @@ XmlElement *VersionControl::serialize() const
 
     xml->setAttribute(Serialization::VCS::vcsHistoryVersion, String(this->historyMergeVersion));
     xml->setAttribute(Serialization::VCS::vcsHistoryId, this->publicId);
-    xml->setAttribute(Serialization::VCS::headRevisionId, this->head.getHeadingRevision().getUuid());
+    xml->setAttribute(Serialization::VCS::headRevisionId, Revision::getUuid(this->head.getHeadingRevision()));
     
     xml->addChildElement(this->key.serialize());
-    xml->addChildElement(this->root.serialize());
+    xml->addChildElement(Revision::serialize(this->root));
     xml->addChildElement(this->stashes->serialize());
     xml->addChildElement(this->pack->serialize());
     xml->addChildElement(this->head.serialize());
@@ -507,7 +505,7 @@ void VersionControl::deserialize(const XmlElement &xml)
     Logger::writeToLog("Head ID is " + headId);
 
     this->key.deserialize(*mainSlot);
-    this->root.deserialize(*mainSlot);
+    Revision::deserialize(this->root, *mainSlot);
     this->stashes->deserialize(*mainSlot);
     this->pack->deserialize(*mainSlot);
 
@@ -518,14 +516,14 @@ void VersionControl::deserialize(const XmlElement &xml)
         Logger::writeToLog("Loading index done in " + String(h2 - h1) + "ms");
     }
     
-    Revision headRevision(this->getRevisionById(this->root, headId));
+    ValueTree headRevision(this->getRevisionById(this->root, headId));
 
     // здесь мы раньше полностью десериализовали состояние хэда.
     // если дерево истории со временеи становится большим, moveTo со всеми мержами занимает кучу времени.
     // если работать в десятками тысяч событий, загрузка индекса длится ~2ms, а пересборка индекса - ~500ms
     // поэтому moveTo убираем, оставляем pointTo
     
-    if (!headRevision.isEmpty())
+    if (! Revision::isEmpty(headRevision))
     {
         const double t1 = Time::getMillisecondCounterHiRes();
 
@@ -540,7 +538,7 @@ void VersionControl::deserialize(const XmlElement &xml)
 
 void VersionControl::reset()
 {
-    this->root.reset();
+    Revision::reset(this->root);
     this->head.reset();
     this->stashes->reset();
     this->pack->reset();
@@ -562,26 +560,26 @@ void VersionControl::changeListenerCallback(ChangeBroadcaster* source)
 // Private
 //===----------------------------------------------------------------------===//
 
-Revision VersionControl::getRevisionById(const Revision startFrom, const String &id) const
+ValueTree VersionControl::getRevisionById(const ValueTree startFrom, const String &id) const
 {
     //Logger::writeToLog("getRevisionById, iterating " + startFrom.getUuid());
 
-    if (startFrom.getUuid() == id)
+    if (Revision::getUuid(startFrom) == id)
     {
         return startFrom;
     }
 
     for (int i = 0; i < startFrom.getNumChildren(); ++i)
     {
-        Revision child(startFrom.getChild(i));
-        Revision search(this->getRevisionById(child, id));
+        ValueTree child(startFrom.getChild(i));
+        ValueTree search(this->getRevisionById(child, id));
 
-        if (!search.isEmpty())
+        if (! Revision::isEmpty(search))
         {
             //Logger::writeToLog("search ok, returning " + search.getUuid());
             return search;
         }
     }
 
-    return Revision(this->pack, "");
+    return Revision::create(this->pack);
 }

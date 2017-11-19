@@ -47,7 +47,9 @@ namespace CommandIDs
         AddAnnotationConfirmed          = 0x0102,
         AddTimeSignature                = 0x0103,
         AddTimeSignatureConfirmed       = 0x0104,
-        JumpToAnnotation                = 0x0105, // more ids reserved for annotations
+        AddKeySignature                 = 0x0105,
+        AddKeySignatureConfirmed        = 0x0106,
+        JumpToAnnotation                = 0x0107, // more ids reserved for annotations
 
         // ArpeggiatorEditorPanel
         ResetArpeggiatorChanges         = 0x0200,

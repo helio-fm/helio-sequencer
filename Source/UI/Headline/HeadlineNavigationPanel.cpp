@@ -42,7 +42,7 @@ HeadlineNavigationPanel::HeadlineNavigationPanel()
     this->setWantsKeyboardFocus(false);
     //[/UserPreSize]
 
-    setSize (88, 32);
+    setSize (80, 32);
 
     //[Constructor]
     //[/Constructor]
@@ -69,7 +69,7 @@ void HeadlineNavigationPanel::paint (Graphics& g)
         float x = 0, y = 0;
         Colour fillColour = Colour (0x0dffffff);
         //[UserPaintCustomArguments] Customize the painting arguments here..
-        fillColour = this->findColour(PanelBackgroundB::panelFillStartId).brighter(0.03f);
+        fillColour = this->findColour(PanelBackgroundB::panelFillId).brighter(0.03f);
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillPath (internalPath1, AffineTransform::translation(x, y));
@@ -114,8 +114,8 @@ void HeadlineNavigationPanel::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    navigatePrevious->setBounds (7, (getHeight() / 2) + -1 - (32 / 2), 30, 32);
-    navigateNext->setBounds (36, (getHeight() / 2) + -1 - (32 / 2), 30, 32);
+    navigatePrevious->setBounds (5, (getHeight() / 2) + -1 - (32 / 2), 28, 32);
+    navigateNext->setBounds (32, (getHeight() / 2) + -1 - (32 / 2), 28, 32);
     internalPath1.clear();
     internalPath1.startNewSubPath (0.0f, 0.0f);
     internalPath1.lineTo (static_cast<float> (getWidth() - 16), 0.0f);
@@ -179,7 +179,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="HeadlineNavigationPanel"
                  template="../../Template" componentName="" parentClasses="public Component"
                  constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="88"
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="80"
                  initialHeight="32">
   <METHODS>
     <METHOD name="handleCommandMessage (int commandId)"/>
@@ -192,10 +192,10 @@ BEGIN_JUCER_METADATA
           strokeColour=" radial: 10R 16, 17R 5, 0=55ffffff, 1=ffffff" nonZeroWinding="1">s 32R 0 l 17R 0 l 10R 16 l 17R 32 l 32R 32 x</PATH>
   </BACKGROUND>
   <GENERICCOMPONENT name="" id="88e1e92c7548ba42" memberName="navigatePrevious" virtualName=""
-                    explicitFocusOrder="0" pos="7 -1Cc 30 32" class="IconButton"
+                    explicitFocusOrder="0" pos="5 -1Cc 28 32" class="IconButton"
                     params="Icons::findByName(Icons::left, 20), CommandIDs::ShowPreviousPage"/>
   <GENERICCOMPONENT name="" id="900658e63c264259" memberName="navigateNext" virtualName=""
-                    explicitFocusOrder="0" pos="36 -1Cc 30 32" class="IconButton"
+                    explicitFocusOrder="0" pos="32 -1Cc 28 32" class="IconButton"
                     params="Icons::findByName(Icons::right, 20), CommandIDs::ShowNextPage"/>
 </JUCER_COMPONENT>
 

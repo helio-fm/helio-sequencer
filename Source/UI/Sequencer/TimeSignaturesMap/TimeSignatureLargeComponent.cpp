@@ -169,11 +169,13 @@ void TimeSignatureLargeComponent::mouseDrag (const MouseEvent& e)
                 Array<TimeSignatureEvent> groupDragBefore, groupDragAfter;
                 groupDragBefore.add(this->event);
                 groupDragAfter.add(this->event.withBeat(newBeat));
-                TimeSignaturesSequence *autoLayer = static_cast<TimeSignaturesSequence *>(this->event.getSequence());
-                autoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
+                TimeSignaturesSequence *sequence = static_cast<TimeSignaturesSequence *>(this->event.getSequence());
+                sequence->changeGroup(groupDragBefore, groupDragAfter, true);
             }
-
-            this->editor.alignTimeSignatureComponent(this);
+            else
+            {
+                this->editor.alignTimeSignatureComponent(this);
+            }
         }
     }
     //[/UserCode_mouseDrag]

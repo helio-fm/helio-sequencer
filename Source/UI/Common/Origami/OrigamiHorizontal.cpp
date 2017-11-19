@@ -20,62 +20,6 @@
 #include "LightShadowDownwards.h"
 #include "LightShadowUpwards.h"
 
-
-class HorizontalEdge : public Component
-{
-public:
-
-    HorizontalEdge()
-    {
-        this->setWantsKeyboardFocus(false);
-        this->setInterceptsMouseClicks(false, false);
-    }
-
-    void paint(Graphics &g) override
-    {
-        g.setColour(findColour(Origami::resizerLineColourId));
-        g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
-    }
-};
-
-class HorizontalEdgeTop : public Component
-{
-public:
-
-    HorizontalEdgeTop()
-    {
-        this->setWantsKeyboardFocus(false);
-        this->setInterceptsMouseClicks(false, false);
-    }
-
-    void paint(Graphics &g) override
-    {
-        g.setColour(findColour(Origami::resizerShadowColourId));
-        g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
-        g.setColour(findColour(Origami::resizerLineColourId));
-        g.drawHorizontalLine(1, 0.f, float(this->getWidth()));
-    }
-};
-
-class HorizontalEdgeBottom : public Component
-{
-public:
-
-    HorizontalEdgeBottom()
-    {
-        this->setWantsKeyboardFocus(false);
-        this->setInterceptsMouseClicks(false, false);
-    }
-
-    void paint(Graphics &g) override
-    {
-        g.setColour(findColour(Origami::resizerLineColourId));
-        g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
-        g.setColour(findColour(Origami::resizerShadowColourId));
-        g.drawHorizontalLine(1, 0.f, float(this->getWidth()));
-    }
-};
-
 void OrigamiHorizontal::addFlexiblePage(Component *targetComponent)
 {
     if (this->containsComponent(targetComponent))
@@ -169,26 +113,6 @@ void OrigamiHorizontal::addShadowAtTheEnd()
         page->shadowAtEnd->setSize(10, 10);
         page->shadowAtEnd->setInterceptsMouseClicks(false, false);
         this->addAndMakeVisible(page->shadowAtEnd);
-    }
-}
-
-void OrigamiHorizontal::addEdgeAtTheStart()
-{
-    if (Page *page = this->pages.getLast())
-    {
-        page->borderAtStart = new HorizontalEdgeTop();
-        page->borderAtStart->setSize(2, 2);
-        this->addAndMakeVisible(page->borderAtStart);
-    }
-}
-
-void OrigamiHorizontal::addEdgeAtTheEnd()
-{
-    if (Page *page = this->pages.getLast())
-    {
-        page->borderAtEnd = new HorizontalEdgeBottom();
-        page->borderAtEnd->setSize(2, 2);
-        this->addAndMakeVisible(page->borderAtEnd);
     }
 }
 
@@ -338,19 +262,7 @@ void OrigamiHorizontal::updateLayout(const Origami::Page *page, Rectangle<int> b
     {
         shadow->setBounds(c->getX(), c->getBottom() - shadow->getHeight(), c->getWidth(), shadow->getHeight());
     }
-
-    if (Component *border = page->borderAtStart)
-    {
-        border->setBounds(c->getX(), c->getY() - 1, c->getWidth(), border->getHeight());
-        border->toFront(false);
-    }
-
-    if (Component *border = page->borderAtEnd)
-    {
-        border->setBounds(c->getX(), c->getBottom() - border->getHeight() + 1, c->getWidth(), border->getHeight());
-        border->toFront(false);
-    }
-
+    
     if (Component *resizer = page->resizer)
     {
         resizer->setBounds(0, c->getBottom() - 1, c->getWidth(), 2);

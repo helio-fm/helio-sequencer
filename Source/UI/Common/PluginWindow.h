@@ -20,27 +20,25 @@
 class PluginWindow : public DocumentWindow
 {
     PluginWindow(Component *const uiComp,
-        AudioProcessorGraph::Node *owner,
+        AudioProcessorGraph::Node::Ptr owner,
         bool isGeneric,
         bool shouldMimicComponent);
 
 public:
 
-    static PluginWindow *getWindowFor(AudioProcessorGraph::Node *node,
+    static PluginWindow *getWindowFor(AudioProcessorGraph::Node::Ptr node,
         bool useGenericView,
         bool shouldMimicComponent);
-
-    static void closeCurrentlyOpenWindowsFor(const uint32 nodeId);
-
-    static void closeAllCurrentlyOpenWindows();
-
     ~PluginWindow() override;
+
+    static void closeCurrentlyOpenWindowsFor(const AudioProcessorGraph::NodeID nodeId);
+    static void closeAllCurrentlyOpenWindows();
 
     void closeButtonPressed() override;
 
 private:
 
-    AudioProcessorGraph::Node *owner;
+    AudioProcessorGraph::Node::Ptr owner;
 
     bool isGeneric;
 

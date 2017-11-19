@@ -186,12 +186,7 @@ public:
         SequenceWrapper *foundWrapper = this->sequences.getUnchecked(targetSequenceIndex);
         MidiMessage &foundMessage = foundWrapper->sequence.getEventPointer(foundWrapper->currentIndex)->message;
         foundWrapper->currentIndex++;
-        
-        //if (foundMessage.isTempoMetaEvent())
-        //{
-        //    Logger::writeToLog("foundMessage.isTempoMetaEvent");
-        //}
-        
+                
         target.message = foundMessage;
         target.listener = foundWrapper->listener;
         target.instrument = foundWrapper->instrument;

@@ -42,9 +42,14 @@ PlayerThread::~PlayerThread()
 // Thread
 //===----------------------------------------------------------------------===//
 
+void PlayerThread::startPlayback(bool shouldBroadcastTransportEvents /*= true*/)
+{
+    this->broadcastMode = shouldBroadcastTransportEvents;
+    this->startThread(10);
+}
+
 void PlayerThread::run()
 {
-    this->transport.rebuildSequencesIfNeeded();
     ProjectSequences sequences = this->transport.getSequences();
     Array<Instrument *> uniqueInstruments(sequences.getUniqueInstruments());
     
@@ -64,7 +69,10 @@ void PlayerThread::run()
                                        currentTimeMs,
                                        msPerTick);
     
-    this->transport.broadcastTempoChanged(msPerTick);
+    if (this->broadcastMode)
+    {
+        this->transport.broadcastTempoChanged(msPerTick);
+    }
     
     const double totalTime = this->transport.getTotalTime();
     const double startPositionInTime = round(absStartPosition * totalTime);
@@ -163,8 +171,12 @@ void PlayerThread::run()
                 //Logger::writeToLog("Track finished");
                 sendHoldingNotesOffAndMidiStop();
                 this->transport.allNotesControllersAndSoundOff();
-                this->transport.seekToPosition(this->transport.getSeekPosition());
-                this->transport.broadcastStop();
+
+                if (this->broadcastMode)
+                {
+                    this->transport.seekToPosition(this->transport.getSeekPosition());
+                    this->transport.broadcastStop();
+                }
                 return;
             }
         }
@@ -203,7 +215,10 @@ void PlayerThread::run()
                 return;
             }
 
-            this->transport.broadcastSeek(prevTimeStamp / totalTime, currentTimeMs, totalTimeMs);
+            if (this->broadcastMode)
+            {
+                this->transport.broadcastSeek(prevTimeStamp / totalTime, currentTimeMs, totalTimeMs);
+            }
         }
         
         if (shouldRewind)
@@ -221,13 +236,18 @@ void PlayerThread::run()
             if (wrapper.message.isTempoMetaEvent())
             {
                 msPerTick = wrapper.message.getTempoSecondsPerQuarterNote() * 1000.f / TPQN;
-                this->transport.broadcastTempoChanged(msPerTick);
-                
+
+                if (this->broadcastMode)
+                {
+                    this->transport.broadcastTempoChanged(msPerTick);
+                }
+
                 // Sends this to everybody (need to do that for drum-machines) - TODO test
                 sendTempoChangeToEverybody(wrapper.message);
             }
             else
             {
+                //Logger::writeToLog(String(wrapper.message.getNoteNumber()));
                 wrapper.listener->addMessageToQueue(wrapper.message);
             }
             

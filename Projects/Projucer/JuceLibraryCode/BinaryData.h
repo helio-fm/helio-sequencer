@@ -360,7 +360,7 @@ namespace BinaryData
     const int            DefaultHotkeys_xmlSize = 6877;
 
     extern const char*   DefaultScales_xml;
-    const int            DefaultScales_xmlSize = 4697;
+    const int            DefaultScales_xmlSize = 4741;
 
     extern const char*   DefaultTranslations_xml;
     const int            DefaultTranslations_xmlSize = 185385;

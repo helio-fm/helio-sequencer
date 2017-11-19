@@ -20,20 +20,21 @@
 //[Headers]
 #include "FadingDialog.h"
 #include "AnnotationEvent.h"
+#include "ColourButton.h"
+#include "ColourSwatches.h"
 
 class AnnotationsSequence;
 //[/Headers]
 
 #include "../Themes/PanelC.h"
-#include "../Common/ColourSwatches.h"
 #include "../Themes/SeparatorHorizontal.h"
 #include "../Themes/SeparatorVertical.h"
 
 class AnnotationDialog  : public FadingDialog,
                           public TextEditorListener,
                           public ColourButtonListener,
-                          public ButtonListener,
-                          public ComboBoxListener
+                          public Button::Listener,
+                          public ComboBox::Listener
 {
 public:
 
@@ -64,8 +65,8 @@ private:
 
     //[UserVariables]
 
-    AnnotationEvent targetEvent;
-    AnnotationsSequence *targetLayer;
+    AnnotationEvent originalEvent;
+    AnnotationsSequence *originalSequence;
     Component &ownerComponent;
 
     inline void cancelAndDisappear();
@@ -85,9 +86,9 @@ private:
     ScopedPointer<TextButton> removeEventButton;
     ScopedPointer<TextButton> okButton;
     ScopedPointer<ComboBox> textEditor;
-    ScopedPointer<ColourSwatches> colourSwatches;
     ScopedPointer<SeparatorHorizontal> separatorH;
     ScopedPointer<SeparatorVertical> separatorV;
+    ScopedPointer<ColourSwatches> colourSwatches;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AnnotationDialog)
 };

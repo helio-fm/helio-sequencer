@@ -69,6 +69,10 @@ int CommandIDs::getIdForName(const String &command)
         return AddTimeSignature;
     case Hash("AddTimeSignatureConfirmed"):
         return AddTimeSignatureConfirmed;
+    case Hash("AddKeySignature"):
+        return AddKeySignature;
+    case Hash("AddKeySignatureConfirmed"):
+        return AddKeySignatureConfirmed;
     case Hash("JumpToAnnotation"):
         return JumpToAnnotation;
     case Hash("ResetArpeggiatorChanges"):

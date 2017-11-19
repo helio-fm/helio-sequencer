@@ -22,10 +22,9 @@ using namespace VCS;
 
 StashesRepository::StashesRepository(Pack::Ptr pack) :
     pack(pack),
-    userStashes(pack, "Stashes Root"),
-    quickStash(pack)
+    userStashes(Revision::create(pack, "Stashes Root")),
+    quickStash(Revision::create(pack))
 {
-    
 }
 
 int StashesRepository::getNumUserStashes() const
@@ -35,63 +34,62 @@ int StashesRepository::getNumUserStashes() const
 
 String StashesRepository::getUserStashDescription(int index) const
 {
-    return this->getUserStash(index).getMessage();
+    return Revision::getMessage(this->getUserStash(index));
 }
 
-Revision StashesRepository::getUserStash(int index) const
+ValueTree VCS::StashesRepository::getUserStash(int index) const
 {
-    return Revision(this->userStashes.getChild(index));
+    return this->userStashes.getChild(index);
 }
 
-Revision StashesRepository::getUserStashWithName(const String &stashName) const
+ValueTree VCS::StashesRepository::getUserStashWithName(const String &stashName) const
 {
     for (int i = 0; i < this->userStashes.getNumChildren(); ++i)
     {
-        Revision child(this->userStashes.getChild(i));
-        
-        if (child.getMessage() == stashName)
+        ValueTree child(this->userStashes.getChild(i));
+        if (Revision::getMessage(child) == stashName)
         {
             return child;
         }
     }
     
-    return Revision(this->pack, "");
+    return Revision::create(this->pack);
 }
 
-void StashesRepository::addStash(Revision newStash)
+void VCS::StashesRepository::addStash(ValueTree newStash)
 {
     this->userStashes.addChild(newStash, -1, nullptr);
-    newStash.flushData();
+    Revision::flush(newStash);
     this->pack->flush();
 }
 
-void StashesRepository::removeStash(Revision stashToRemove)
+void VCS::StashesRepository::removeStash(ValueTree stashToRemove)
 {
     // todo sanity checks?
     this->userStashes.removeChild(stashToRemove, nullptr);
 }
 
-Revision StashesRepository::getQuickStash() const
+ValueTree VCS::StashesRepository::getQuickStash() const
 {
     return this->quickStash;
 }
 
 bool StashesRepository::hasQuickStash() const
 {
-    return this->quickStash.isEmpty();
+    return Revision::isEmpty(this->quickStash);
 }
 
-void StashesRepository::storeQuickStash(Revision newStash)
+void VCS::StashesRepository::storeQuickStash(ValueTree newStash)
 {
-    this->quickStash.copyDeltasFrom(newStash);
+    Revision::copyDeltas(this->quickStash, newStash);
     this->quickStash.setProperty(Serialization::VCS::commitMessage, Serialization::VCS::quickStashId, nullptr);
-    this->quickStash.flushData();
+    Revision::flush(this->quickStash);
     this->pack->flush();
 }
 
 void StashesRepository::resetQuickStash()
 {
-    this->quickStash = Revision(this->pack);
+    this->quickStash = Revision::create(this->pack);
 }
 
 //===----------------------------------------------------------------------===//
@@ -105,12 +103,12 @@ XmlElement *StashesRepository::serialize() const
     auto userStashesXml = new XmlElement(Serialization::VCS::userStashes);
     xml->addChildElement(userStashesXml);
     
-    userStashesXml->addChildElement(this->userStashes.serialize());
+    userStashesXml->addChildElement(Revision::serialize(this->userStashes));
 
     auto quickStashXml = new XmlElement(Serialization::VCS::quickStash);
     xml->addChildElement(quickStashXml);
 
-    quickStashXml->addChildElement(this->quickStash.serialize());
+    quickStashXml->addChildElement(Revision::serialize(this->quickStash));
     
     return xml;
 }
@@ -127,18 +125,18 @@ void StashesRepository::deserialize(const XmlElement &xml)
     XmlElement *userStashesXml = root->getChildByName(Serialization::VCS::userStashes);
 
     if (userStashesXml != nullptr) {
-        this->userStashes.deserialize(*userStashesXml);
+        Revision::deserialize(this->userStashes, *userStashesXml);
     }
     
     XmlElement *quickStashXml = root->getChildByName(Serialization::VCS::quickStash);
 
     if (quickStashXml != nullptr) {
-        this->quickStash.deserialize(*quickStashXml);
+        Revision::deserialize(this->quickStash, *quickStashXml);
     }
 }
 
 void StashesRepository::reset()
 {
-    this->userStashes.reset();
-    this->quickStash.reset();
+    Revision::reset(this->userStashes);
+    Revision::reset(this->quickStash);
 }

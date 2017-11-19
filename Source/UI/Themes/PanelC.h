@@ -30,16 +30,6 @@ public:
     ~PanelC();
 
     //[UserMethods]
-
-    enum ColourIds
-    {
-        panelFillStartId       = 0x99103000,
-        panelFillEndId         = 0x99103010,
-
-        panelShadeStartId      = 0x99103020,
-        panelShadeEndId        = 0x99103030,
-    };
-
     //[/UserMethods]
 
     void paint (Graphics& g) override;

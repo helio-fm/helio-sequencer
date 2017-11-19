@@ -15,8 +15,6 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
 #include "Common.h"
 #include "PatternDiffLogic.h"
 #include "Clip.h"

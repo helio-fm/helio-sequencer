@@ -19,12 +19,25 @@
 
 #include "Serializable.h"
 
+#define CHROMATIC_SCALE_SIZE 12
+
 class Scale final : public Serializable
 {
 public:
 
     Scale();
+    Scale(const Scale &other);
     explicit Scale(const String &name);
+
+    Scale withName(const String &name) const;
+    Scale withKeys(const Array<int> &keys) const;
+
+    inline static StringArray getKeyNames(bool sharps = true)
+    {
+        return sharps ?
+            StringArray("C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B") :
+            StringArray("C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B");
+    }
 
     // These names only make sense in diatonic scales:
     enum Function {
@@ -36,11 +49,12 @@ public:
         Submediant = 5,
         Subtonic = 6
     };
-
+    
     //===------------------------------------------------------------------===//
     // Helpers
     //===------------------------------------------------------------------===//
 
+    bool isChromatic() const noexcept;
     bool isValid() const noexcept;
     int getSize() const noexcept;
     String getName() const noexcept;
@@ -51,8 +65,22 @@ public:
     Array<int> getTriad(Function fun, bool restrictToOneOctave) const;
     Array<int> getSeventhChord(Function fun, bool restrictToOneOctave) const;
 
+    Array<int> getUpScale() const;
+    Array<int> getDownScale() const;
+
     // Flat third considered "minor"-ish (like Aeolian, Phrygian, Locrian etc.)
     bool seemsMinor() const;
+
+    // True if specified chromatic key is in the scale
+    bool hasKey(int key) const;
+
+    //===------------------------------------------------------------------===//
+    // Hard-coded defaults
+    //===------------------------------------------------------------------===//
+
+    static Scale getChromaticScale();
+    static Scale getNaturalMiniorScale();
+    static Scale getNaturalMajorScale();
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -66,19 +94,16 @@ public:
     // Operators
     //===------------------------------------------------------------------===//
 
-    Scale &operator=(const Scale &other)
-    {
-        this->name = other.name;
-        this->keys = other.keys;
-        return *this;
-    }
+    Scale &operator=(const Scale &other);
+    friend bool operator==(const Scale &l, const Scale &r);
+    friend bool operator!=(const Scale &l, const Scale &r);
 
-    // Simplified check, assume the name is unique
-    friend inline bool operator==(const Scale &l, const Scale &r)
-    { return (&l == &r || l.name == r.name); }
+    // Used to compare scales in version control
+    // (there may be lots of synonyms for the same sets of notes,
+    // e.g. Phrygian is called Zokuso in Japan and Ousak in Greece)
+    bool isEquivalentTo(const Scale &other) const;
 
-    friend inline bool operator!=(const Scale &l, const Scale &r)
-    { return (&l != &r && l.name != r.name); }
+    int hashCode() const noexcept;
 
 private:
 

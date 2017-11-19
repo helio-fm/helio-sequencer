@@ -190,8 +190,6 @@ void InstrumentEditorNode::resized()
     }
 }
 
-
-
 void InstrumentEditorNode::getPinPos(const int index, const bool isInput, float &x, float &y)
 {
     for (int i = 0; i < this->getNumChildComponents(); ++i)

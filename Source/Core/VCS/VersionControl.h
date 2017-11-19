@@ -73,62 +73,40 @@ public:
     { this->historyMergeVersion += 1; }
 
     MD5 calculateHash() const;
-
     void mergeWith(VersionControl &remoteHistory);
-
 
     //===------------------------------------------------------------------===//
     // VCS
     //===------------------------------------------------------------------===//
 
     VersionControlEditor *createEditor();
-
     VCS::Head &getHead() { return this->head; }
+    ValueTree getRoot() { return this->root; }
 
-    VCS::Revision getRoot() { return this->root; }
-
-
-    void moveHead(const VCS::Revision revision);
-
-    void checkout(const VCS::Revision revision);
-
-    void cherryPick(const VCS::Revision revision, const Array<Uuid> uuids);
-
+    void moveHead(const ValueTree revision);
+    void checkout(const ValueTree revision);
+    void cherryPick(const ValueTree revision, const Array<Uuid> uuids);
 
     bool resetChanges(SparseSet<int> selectedItems);
-
     bool resetAllChanges();
-
     bool commit(SparseSet<int> selectedItems, const String &message);
-
     void quickAmendItem(VCS::TrackedItem *targetItem); // for projectinfo
 
-
     bool stash(SparseSet<int> selectedItems, const String &message, bool shouldKeepChanges = false);
-
-    bool applyStash(const VCS::Revision stash, bool shouldKeepStash = false);
-
+    bool applyStash(const ValueTree stash, bool shouldKeepStash = false);
     bool applyStash(const String &stashId, bool shouldKeepStash = false);
-
     
     bool hasQuickStash() const;
-    
     bool quickStashAll();
-
     bool applyQuickStash();
-
-
     
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
     XmlElement *serialize() const override;
-
     void deserialize(const XmlElement &xml) override;
-
     void reset() override;
-
 
     //===------------------------------------------------------------------===//
     // ChangeListener
@@ -138,31 +116,23 @@ public:
     
 protected:
 
-    StringArray recursiveGetHashes(const VCS::Revision revision) const;
-
-    void recursiveTreeMerge(VCS::Revision localRevision, VCS::Revision remoteRevision);
-
-    VCS::Revision getRevisionById(const VCS::Revision startFrom, const String &id) const;
+    StringArray recursiveGetHashes(const ValueTree revision) const;
+    void recursiveTreeMerge(ValueTree localRevision, ValueTree remoteRevision);
+    ValueTree getRevisionById(const ValueTree startFrom, const String &id) const;
 
     VCS::Pack::Ptr pack;
-
     VCS::StashesRepository::Ptr stashes;
-
     VCS::Head head;
 
-    // само дерево vcs
-    VCS::Revision root;
-
+    // the history tree itself
+    ValueTree root;
     ScopedPointer<VCS::Client> remote;
-
     WeakReference<VCS::TrackedItemsSource> parentItem;
 
 protected:
 
     String publicId;
-
     VCS::Key key;
-
     int64 historyMergeVersion;
 
 private:

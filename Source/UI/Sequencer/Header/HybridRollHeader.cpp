@@ -172,8 +172,6 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
         
         if (shouldStartSelection)
         {
-            const MouseEvent parentEvent = e.getEventRelativeTo(&this->roll);
-            
 #if HYBRID_ROLL_HEADER_SELECTION_ALIGNS_TO_BEATS
             const float roundBeat = this->roll.getRoundBeatByXPosition(parentEvent.x);
             const int roundX = this->roll.getXPositionByBeat(roundBeat);

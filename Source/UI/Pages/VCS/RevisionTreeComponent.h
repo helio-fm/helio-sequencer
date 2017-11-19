@@ -28,45 +28,35 @@ class RevisionTreeComponent : public Component
 public:
 
     explicit RevisionTreeComponent(VersionControl &owner);
-
     ~RevisionTreeComponent() override;
 
-
     void deselectAll();
-
     void selectComponent(RevisionComponent *revComponent, bool deselectOthers);
 
-
-    void showTooltipFor(RevisionComponent *revComponent, Point<int> clickPoint, const VCS::Revision revision);
-
-protected:
-
+    void showTooltipFor(RevisionComponent *revComponent,
+        Point<int> clickPoint, const ValueTree revision);
 
 private:
 
-    // buchheim tree layout methods, ported from python
-    // yee-haw, i did it
+    // Tree layout methods:
 
     RevisionComponent *initComponents(int depth,
-                                      const VCS::Revision revision,
-                                      RevisionComponent *parentRevisionComponent);
+        const ValueTree revision, RevisionComponent *parentRevisionComponent);
 
     RevisionComponent *firstWalk(RevisionComponent *v, float distance = 1.f);
 
     RevisionComponent *apportion(RevisionComponent *v,
-                                 RevisionComponent *default_ancestor,
-                                 float distance);
+        RevisionComponent *default_ancestor, float distance);
 
     void moveSubtree(RevisionComponent *wl, RevisionComponent *wr, float shift);
 
     void executeShifts(RevisionComponent *v);
 
     RevisionComponent *ancestor(RevisionComponent *vil,
-                                RevisionComponent *v,
-                                RevisionComponent *default_ancestor);
+        RevisionComponent *v, RevisionComponent *default_ancestor);
 
     float secondWalk(RevisionComponent *v, float &min,
-                     float m = 0.f, float depth = 0.f);
+        float m = 0.f, float depth = 0.f);
 
     void thirdWalk(RevisionComponent *v, float n);
 

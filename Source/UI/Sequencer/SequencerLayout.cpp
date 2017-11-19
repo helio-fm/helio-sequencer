@@ -31,6 +31,7 @@
 #include "SerializationKeys.h"
 #include "AnnotationSmallComponent.h"
 #include "TimeSignatureSmallComponent.h"
+#include "KeySignatureSmallComponent.h"
 #include "ToolsSidebar.h"
 #include "NavigationSidebar.h"
 #include "OrigamiHorizontal.h"
@@ -50,6 +51,10 @@ template class AnnotationsTrackMap<AnnotationSmallComponent>;
 // force compile template
 #include "TimeSignaturesMap/TimeSignaturesTrackMap.cpp"
 template class TimeSignaturesTrackMap<TimeSignatureSmallComponent>;
+
+// force compile template
+#include "KeySignaturesMap/KeySignaturesTrackMap.cpp"
+template class KeySignaturesTrackMap<KeySignatureSmallComponent>;
 
 
 #define MAX_NUM_SPLITSCREEN_EDITORS 2
@@ -491,6 +496,7 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
     this->scroller->addOwnedMap(new PianoTrackMap(this->project, *this->pianoRoll), false);
     this->scroller->addOwnedMap(new AnnotationsTrackMap<AnnotationSmallComponent>(this->project, *this->pianoRoll), false);
     this->scroller->addOwnedMap(new TimeSignaturesTrackMap<TimeSignatureSmallComponent>(this->project, *this->pianoRoll), false);
+    this->scroller->addOwnedMap(new KeySignaturesTrackMap<KeySignatureSmallComponent>(this->project, *this->pianoRoll), false);
     //this->scroller->addOwnedMap(new AutomationTrackMap(this->project, *this->roll, this->project.getDefaultTempoTrack()->getLayer()), true);
 
     this->pianoRoll->setBarWidth(HYBRID_ROLL_MAX_BAR_WIDTH);
@@ -535,12 +541,10 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
     // добавляем тулбар справа
     this->allEditorsAndCommandPanel = new OrigamiVertical();
     this->allEditorsAndCommandPanel->addFixedPage(this->rollNavSidebar);
-    this->allEditorsAndCommandPanel->addEdgeAtTheEnd();
     this->allEditorsAndCommandPanel->addFlexiblePage(this->allEditorsContainer);
     this->allEditorsAndCommandPanel->addShadowAtTheStart();
     this->allEditorsAndCommandPanel->addShadowAtTheEnd();
     this->allEditorsAndCommandPanel->addFixedPage(this->rollToolsSidebar);
-    this->allEditorsAndCommandPanel->addEdgeAtTheStart();
 
     this->addAndMakeVisible(this->allEditorsAndCommandPanel);
 
@@ -709,8 +713,8 @@ bool SequencerLayout::isInterestedInFileDrag(const StringArray &files)
     return (file.hasFileExtension("mid") || file.hasFileExtension("midi"));
 }
 
-void SequencerLayout::filesDropped(const juce::StringArray &filenames,
-                              int mouseX, int mouseY)
+void SequencerLayout::filesDropped(const StringArray &filenames,
+    int mouseX, int mouseY)
 {
     if (isInterestedInFileDrag(filenames))
     {

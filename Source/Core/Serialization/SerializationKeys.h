@@ -61,6 +61,7 @@ namespace Serialization
         static const String automation = "Automation";
         static const String annotations = "Annotations";
         static const String timeSignatures = "TimeSignatures";
+        static const String keySignatures = "KeySignatures";
 
         // Properties
         static const String trackId = "TrackId";
@@ -76,6 +77,7 @@ namespace Serialization
         static const String event = "Event";
         static const String annotation = "Annotation";
         static const String timeSignature = "TimeSignature";
+        static const String keySignature = "KeySignature";
 
         // Patterns
         static const String clip = "Clip";
@@ -377,6 +379,8 @@ namespace Serialization
         static const String annotationAfter = "AnnotationAfter";
         static const String timeSignatureBefore = "TimeSignatureBefore";
         static const String timeSignatureAfter = "TimeSignatureAfter";
+        static const String keySignatureBefore = "KeySignatureBefore";
+        static const String keySignatureAfter = "KeySignatureAfter";
         static const String eventBefore = "EventBefore";
         static const String eventAfter = "EventAfter";
         static const String noteBefore = "NoteBefore";
@@ -422,7 +426,14 @@ namespace Serialization
         static const String timeSignatureEventsGroupInsertAction = "TimeSignatureEventsGroupInsertAction";
         static const String timeSignatureEventsGroupRemoveAction = "TimeSignatureEventsGroupRemoveAction";
         static const String timeSignatureEventsGroupChangeAction = "TimeSignatureEventsGroupChangeAction";
-        
+
+        static const String keySignatureEventInsertAction = "KeySignatureEventInsertAction";
+        static const String keySignatureEventRemoveAction = "KeySignatureEventRemoveAction";
+        static const String keySignatureEventChangeAction = "KeySignatureEventChangeAction";
+        static const String keySignatureEventsGroupInsertAction = "KeySignatureEventsGroupInsertAction";
+        static const String keySignatureEventsGroupRemoveAction = "KeySignatureEventsGroupRemoveAction";
+        static const String keySignatureEventsGroupChangeAction = "KeySignatureEventsGroupChangeAction";
+
         static const String automationEventInsertAction = "AutomationEventInsertAction";
         static const String automationEventRemoveAction = "AutomationEventRemoveAction";
         static const String automationEventChangeAction = "AutomationEventChangeAction";

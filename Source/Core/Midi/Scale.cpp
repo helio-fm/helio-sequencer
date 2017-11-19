@@ -15,13 +15,9 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
-
 #include "Common.h"
 #include "Scale.h"
 #include "SerializationKeys.h"
-
-#define CHROMATIC_SCALE_SIZE 12
 
 enum Key
 {
@@ -36,6 +32,59 @@ enum Key
 
 Scale::Scale() {}
 Scale::Scale(const String &name) : name(name) {}
+Scale::Scale(const Scale &other) : name(other.name), keys(other.keys) {}
+
+Scale Scale::withName(const String &name) const
+{
+    Scale s(*this);
+    s.name = name;
+    return s;
+}
+
+Scale Scale::withKeys(const Array<int> &keys) const
+{
+    Scale s(*this);
+    s.keys = keys;
+    return s;
+}
+
+//===----------------------------------------------------------------------===//
+// Hard-coded defaults
+//===----------------------------------------------------------------------===//
+
+inline static Array<int> getChromaticKeys()
+{ return { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }; }
+
+Scale Scale::getChromaticScale()
+{
+    Scale s;
+    s.keys = getChromaticKeys();
+    s.name = TRANS("Chromatic");
+    return s;
+}
+
+inline static Array<int> getNaturalMiniorKeys()
+{ return { 0, 2, 3, 5, 7, 8, 10 }; }
+
+Scale Scale::getNaturalMiniorScale()
+{
+    Scale s;
+    s.keys = getNaturalMiniorKeys();
+    s.name = TRANS("Aeolian");
+    return s;
+}
+
+inline static Array<int> getNaturalMajorKeys()
+{ return { 0, 2, 4, 5, 7, 9, 11 }; }
+
+
+Scale Scale::getNaturalMajorScale()
+{
+    Scale s;
+    s.keys = getNaturalMajorKeys();
+    s.name = TRANS("Ionian");
+    return s;
+}
 
 //===----------------------------------------------------------------------===//
 // Helpers
@@ -49,6 +98,11 @@ int Scale::getSize() const noexcept
 bool Scale::isValid() const noexcept
 {
     return !this->keys.isEmpty() && !this->name.isEmpty();
+}
+
+bool Scale::isChromatic() const noexcept
+{
+    return this->keys == getChromaticKeys();
 }
 
 String Scale::getName() const noexcept
@@ -85,9 +139,30 @@ Array<int> Scale::getSeventhChord(Function fun, bool oneOctave) const
         this->getKey(Key::VII + fun, oneOctave) };
 }
 
+Array<int> Scale::getUpScale() const
+{
+    Array<int> res(this->keys);
+    res.add(CHROMATIC_SCALE_SIZE);
+    return res;
+}
+
+Array<int> Scale::getDownScale() const
+{
+    Array<int> res;
+    res.add(CHROMATIC_SCALE_SIZE);
+    for (int i = this->keys.size(); i --> 0; )
+    { res.add(this->keys[i]); }
+    return res;
+}
+
 bool Scale::seemsMinor() const
 {
     return this->getKey(Key::III) == 3;
+}
+
+bool Scale::hasKey(int key) const
+{
+    return this->keys.contains(key);
 }
 
 int Scale::getKey(int key, bool shouldRestrictToOneOctave /*= false*/) const
@@ -96,6 +171,28 @@ int Scale::getKey(int key, bool shouldRestrictToOneOctave /*= false*/) const
     const int idx = this->keys[key % this->getSize()];
     return shouldRestrictToOneOctave ? idx :
         idx + (CHROMATIC_SCALE_SIZE * (key / this->getSize()));
+}
+
+Scale &Scale::operator=(const Scale &other)
+{
+    this->name = other.name;
+    this->keys = other.keys;
+    return *this;
+}
+
+bool operator==(const Scale &l, const Scale &r)
+{
+    return &l == &r || (l.name == r.name && l.keys == r.keys);
+}
+
+bool operator!=(const Scale &l, const Scale &r)
+{
+    return !operator== (l, r);
+}
+
+bool Scale::isEquivalentTo(const Scale &other) const
+{
+    return this->keys == other.keys;
 }
 
 //===----------------------------------------------------------------------===//
@@ -149,4 +246,16 @@ void Scale::reset()
 {
     this->keys.clearQuick();
     this->name = {};
+}
+
+int Scale::hashCode() const noexcept
+{
+    // use unsigned ints to wrap values around
+    constexpr unsigned int prime = 31;
+    unsigned int hc = this->keys.size();
+    for (const auto k : this->keys)
+    {
+        hc = hc * prime + k;
+    }
+    return static_cast<int>(hc);
 }

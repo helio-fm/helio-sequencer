@@ -75,7 +75,7 @@ void RevisionTreeComponent::selectComponent(RevisionComponent *revComponent, boo
     revComponent->setSelected(true);
 }
 
-void RevisionTreeComponent::showTooltipFor(RevisionComponent *revComponent, Point<int> clickPoint, const VCS::Revision revision)
+void RevisionTreeComponent::showTooltipFor(RevisionComponent *revComponent, Point<int> clickPoint, const ValueTree revision)
 {
     if (Component *editor = this->findParentEditor())
     {
@@ -93,8 +93,7 @@ void RevisionTreeComponent::showTooltipFor(RevisionComponent *revComponent, Poin
 //===----------------------------------------------------------------------===//
 
 RevisionComponent *RevisionTreeComponent::initComponents(int depth,
-    const VCS::Revision revision,
-    RevisionComponent *parentRevisionComponent)
+    const ValueTree revision, RevisionComponent *parentRevisionComponent)
 {
     // create component for revision
     const bool isHead = (this->vcs.getHead().getHeadingRevision() == revision);
@@ -107,21 +106,11 @@ RevisionComponent *RevisionTreeComponent::initComponents(int depth,
 
     this->addAndMakeVisible(revisionComponent);
 
-    //if (parentRevisionComponent != nullptr)
-    //{
-    //    RevisionConnectorComponent *revisionConnector =
-    //        new RevisionConnectorComponent(parentRevisionComponent, revisionComponent);
-
-    //    //revisionConnector->resizeToFit();
-    //    this->addAndMakeVisible(revisionConnector);
-    //}
-
     for (int i = 0; i < revision.getNumChildren(); ++i)
     {
         RevisionComponent *child =
-        this->initComponents(depth + 1,
-                             VCS::Revision(revision.getChild(i)),
-                             revisionComponent);
+            this->initComponents(depth + 1,
+                revision.getChild(i), revisionComponent);
         revisionComponent->children.add(child);
     }
 

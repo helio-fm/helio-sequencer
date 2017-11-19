@@ -20,62 +20,6 @@
 #include "LightShadowRightwards.h"
 #include "LightShadowLeftwards.h"
 
-
-class VerticalEdge : public Component
-{
-public:
-
-    VerticalEdge()
-    {
-        this->setWantsKeyboardFocus(false);
-        this->setInterceptsMouseClicks(false, false);
-    }
-
-    void paint(Graphics &g) override
-    {
-        g.setColour(findColour(Origami::resizerLineColourId));
-        g.drawVerticalLine(0, 0.f, float(this->getHeight()));
-    }
-};
-
-class VerticalEdgeLeft : public Component
-{
-public:
-
-    VerticalEdgeLeft()
-    {
-        this->setWantsKeyboardFocus(false);
-        this->setInterceptsMouseClicks(false, false);
-    }
-
-    void paint(Graphics &g) override
-    {
-        g.setColour(findColour(Origami::resizerShadowColourId));
-        g.drawVerticalLine(0, 0.f, float(this->getHeight()));
-        g.setColour(findColour(Origami::resizerLineColourId));
-        g.drawVerticalLine(1, 0.f, float(this->getHeight()));
-    }
-};
-
-class VerticalEdgeRight : public Component
-{
-public:
-
-    VerticalEdgeRight()
-    {
-        this->setWantsKeyboardFocus(false);
-        this->setInterceptsMouseClicks(false, false);
-    }
-
-    void paint(Graphics &g) override
-    {
-        g.setColour(findColour(Origami::resizerLineColourId));
-        g.drawVerticalLine(0, 0.f, float(this->getHeight()));
-        g.setColour(findColour(Origami::resizerShadowColourId));
-        g.drawVerticalLine(1, 0.f, float(this->getHeight()));
-    }
-};
-
 void OrigamiVertical::addFlexiblePage(Component *targetComponent)
 {
     if (this->containsComponent(targetComponent))
@@ -162,26 +106,6 @@ void OrigamiVertical::addShadowAtTheEnd()
         page->shadowAtEnd = new LightShadowLeftwards();
         page->shadowAtEnd->setSize(10, 10);
         this->addAndMakeVisible(page->shadowAtEnd);
-    }
-}
-
-void OrigamiVertical::addEdgeAtTheStart()
-{
-    if (Page *page = this->pages.getLast())
-    {
-        page->borderAtStart = new VerticalEdgeLeft();
-        page->borderAtStart->setSize(2, 2);
-        this->addAndMakeVisible(page->borderAtStart);
-    }
-}
-
-void OrigamiVertical::addEdgeAtTheEnd()
-{
-    if (Page *page = this->pages.getLast())
-    {
-        page->borderAtEnd = new VerticalEdgeRight();
-        page->borderAtEnd->setSize(2, 2);
-        this->addAndMakeVisible(page->borderAtEnd);
     }
 }
 
@@ -335,19 +259,7 @@ void OrigamiVertical::updateLayout(const Origami::Page *page, Rectangle<int> bou
     {
         shadow->setBounds(c->getRight() - shadow->getWidth(), c->getY(), shadow->getWidth(), c->getHeight());
     }
-
-    if (Component *border = page->borderAtStart)
-    {
-        border->setBounds(c->getX() - 1, c->getY(), border->getWidth(), c->getHeight());
-        border->toFront(false);
-    }
-
-    if (Component *border = page->borderAtEnd)
-    {
-        border->setBounds(c->getRight() - border->getWidth() + 1, c->getY(), border->getWidth(), c->getHeight());
-        border->toFront(false);
-    }
-
+    
     if (Component *resizer = page->resizer)
     {
         resizer->setBounds(c->getRight() - 1, 0, 2, c->getHeight());

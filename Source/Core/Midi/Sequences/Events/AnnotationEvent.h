@@ -101,7 +101,7 @@ private:
 class AnnotationEventHashFunction
 {
 public:
-    static int generateHash(const AnnotationEvent key, const int upperLimit) noexcept
+    static int generateHash(const AnnotationEvent &key, const int upperLimit) noexcept
     {
         return static_cast<int>((static_cast<uint32>( key.hashCode())) % static_cast<uint32>( upperLimit));
     }

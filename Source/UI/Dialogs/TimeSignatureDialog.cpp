@@ -41,9 +41,9 @@ static StringArray getMeters()
 }
 //[/MiscUserDefs]
 
-TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequence *signaturesLayer, const TimeSignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
-    : targetEvent(editedEvent),
-      targetLayer(signaturesLayer),
+TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequence *timeSequence, const TimeSignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
+    : originalEvent(editedEvent),
+      originalSequence(timeSequence),
       ownerComponent(owner),
       addsNewEvent(shouldAddNewEvent),
       hasMadeChanges(false)
@@ -79,7 +79,7 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
     addAndMakeVisible (separatorV = new SeparatorVertical());
 
     //[UserPreSize]
-    jassert(this->addsNewEvent || this->targetEvent.getSequence() != nullptr);
+    jassert(this->addsNewEvent || this->originalEvent.getSequence() != nullptr);
 
     if (this->addsNewEvent)
     {
@@ -89,10 +89,10 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
         int numerator;
         int denominator;
         TimeSignatureEvent::parseString(meter, numerator, denominator);
-        this->targetEvent = TimeSignatureEvent(this->targetLayer, targetBeat, numerator, denominator);
+        this->originalEvent = TimeSignatureEvent(this->originalSequence, targetBeat, numerator, denominator);
 
-        this->targetLayer->checkpoint();
-        this->targetLayer->insert(this->targetEvent, true);
+        this->originalSequence->checkpoint();
+        this->originalSequence->insert(this->originalEvent, true);
 
         this->messageLabel->setText(TRANS("dialog::timesignature::add::caption"), dontSendNotification);
         this->okButton->setButtonText(TRANS("dialog::timesignature::add::proceed"));
@@ -105,7 +105,7 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
         this->removeEventButton->setButtonText(TRANS("dialog::timesignature::edit::delete"));
     }
 
-    this->textEditor->setText(this->targetEvent.toString(), dontSendNotification);
+    this->textEditor->setText(this->originalEvent.toString(), dontSendNotification);
     this->textEditor->addItemList(getMeters(), 1);
     this->textEditor->addListener(this);
 
@@ -227,7 +227,7 @@ void TimeSignatureDialog::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
             int denominator;
             TimeSignatureEvent::parseString(meterString, numerator, denominator);
 
-            TimeSignatureEvent newEvent = this->targetEvent
+            TimeSignatureEvent newEvent = this->originalEvent
                 .withNumerator(numerator)
                 .withDenominator(denominator);
 
@@ -322,31 +322,38 @@ void TimeSignatureDialog::updateOkButtonState()
 
 void TimeSignatureDialog::sendEventChange(TimeSignatureEvent newEvent)
 {
-    if (this->targetLayer != nullptr)
+    if (this->originalSequence != nullptr)
     {
-        if (!this->addsNewEvent)
+        if (this->addsNewEvent)
+        {
+            this->originalSequence->change(this->originalEvent, newEvent, true);
+            this->originalEvent = newEvent;
+        }
+        else
         {
             this->cancelChangesIfAny();
-            this->targetLayer->checkpoint();
+            this->originalSequence->checkpoint();
+            this->originalSequence->change(this->originalEvent, newEvent, true);
+            this->hasMadeChanges = true;
         }
-        
-        this->targetLayer->change(this->targetEvent, newEvent, true);
-        this->hasMadeChanges = true;
     }
 }
 
 void TimeSignatureDialog::removeEvent()
 {
-    if (this->targetLayer != nullptr)
+    if (this->originalSequence != nullptr)
     {
-        if (!this->addsNewEvent)
+        if (this->addsNewEvent)
+        {
+            this->originalSequence->remove(this->originalEvent, true);
+        }
+        else
         {
             this->cancelChangesIfAny();
-            this->targetLayer->checkpoint();
+            this->originalSequence->checkpoint();
+            this->originalSequence->remove(this->originalEvent, true);
+            this->hasMadeChanges = true;
         }
-        
-        this->targetLayer->remove(this->targetEvent, true);
-        this->hasMadeChanges = true;
     }
 }
 
@@ -354,9 +361,9 @@ void TimeSignatureDialog::cancelChangesIfAny()
 {
     if (!this->addsNewEvent &&
         this->hasMadeChanges &&
-        this->targetLayer != nullptr)
+        this->originalSequence != nullptr)
     {
-        this->targetLayer->undo();
+        this->originalSequence->undo();
         this->hasMadeChanges = false;
     }
 }
@@ -371,9 +378,9 @@ void TimeSignatureDialog::cancelAndDisappear()
     this->cancelChangesIfAny(); // Discards possible changes
 
     if (this->addsNewEvent &&
-        this->targetLayer != nullptr)
+        this->originalSequence != nullptr)
     {
-        this->targetLayer->undo(); // Discards new event
+        this->originalSequence->undo(); // Discards new event
     }
 
     this->disappear();
@@ -387,8 +394,8 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="TimeSignatureDialog" template="../../Template"
                  componentName="" parentClasses="public FadingDialog, public TextEditorListener"
-                 constructorParams="Component &amp;owner, TimeSignaturesSequence *signaturesLayer, const TimeSignatureEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
-                 variableInitialisers="targetEvent(editedEvent),&#10;targetLayer(signaturesLayer),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false)"
+                 constructorParams="Component &amp;owner, TimeSignaturesSequence *timeSequence, const TimeSignatureEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
+                 variableInitialisers="originalEvent(editedEvent),&#10;originalSequence(timeSequence),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="370" initialHeight="165">
   <METHODS>

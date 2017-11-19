@@ -39,6 +39,7 @@ class TimelineWarningMarker;
 #include "AnnotationLargeComponent.h"
 #include "TimeSignaturesTrackMap.h"
 #include "TimeSignatureLargeComponent.h"
+#include "KeySignatureLargeComponent.h"
 #include "Playhead.h"
 #include "TransportListener.h"
 #include "HybridRollEventComponent.h"
@@ -81,6 +82,8 @@ class TimelineWarningMarker;
 //    this->setVisible(true); \
 //    this->grabKeyboardFocus();
 
+// Since keyboard focus is now only owned by the main layout, use only setVisible:
+
 #define HYBRID_ROLL_BULK_REPAINT_START \
     this->setVisible(false);
 
@@ -121,9 +124,8 @@ public:
         playheadColourId                 = 0x99002011
     };
     
-    HybridRoll(ProjectTreeItem &parentProject,
-        Viewport &viewportRef,
-        WeakReference<AudioMonitor> AudioMonitor);
+    HybridRoll(ProjectTreeItem &project, Viewport &viewport,
+        WeakReference<AudioMonitor> audioMonitor);
 
     ~HybridRoll() override;
 
@@ -146,11 +148,8 @@ public:
     //===------------------------------------------------------------------===//
     
     void addOwnedMap(Component *newTrackMap);
-    
     void removeOwnedMap(Component *existingTrackMap);
-    
-    template<typename T>
-    T *findOwnedMapOfType()
+    template<typename T> inline T *findOwnedMapOfType() const
     {
         for (int i = 0; i < this->trackMaps.size(); ++i)
         {
@@ -289,8 +288,8 @@ public:
     void mouseDrag(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
     void mouseWheelMove(const MouseEvent &e, const MouseWheelDetails &wheel) override;
-    void moved() override;
 
+    void handleCommandMessage(int commandId) override;
     void resized() override;
     void paint(Graphics &g) override;
 
@@ -341,7 +340,6 @@ protected:
     //===------------------------------------------------------------------===//
     
     void handleAsyncUpdate() override;
-    void handleCommandMessage(int commandId) override;
 
     double findIndicatorOffsetFromViewCentre() const;
     friend class HybridRollHeader;
@@ -434,6 +432,9 @@ protected:
 
     typedef TimeSignaturesTrackMap<TimeSignatureLargeComponent> TimeSignaturesLargeMap;
     ScopedPointer<TimeSignaturesLargeMap> timeSignaturesTrack;
+
+    typedef KeySignaturesTrackMap<KeySignatureLargeComponent> KeySignaturesLargeMap;
+    ScopedPointer<KeySignaturesLargeMap> keySignaturesTrack;
 
     ScopedPointer<Component> topShadow;
     ScopedPointer<Component> bottomShadow;

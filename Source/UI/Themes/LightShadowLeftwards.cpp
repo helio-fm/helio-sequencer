@@ -22,6 +22,7 @@
 #include "LightShadowLeftwards.h"
 
 //[MiscUserDefs]
+#include "HelioTheme.h"
 //[/MiscUserDefs]
 
 LightShadowLeftwards::LightShadowLeftwards()
@@ -68,6 +69,8 @@ void LightShadowLeftwards::paint (Graphics& g)
     g.fillRect (getWidth() - proportionOfWidth (0.5000f), 0, proportionOfWidth (0.5000f), getHeight() - 0);
 
     //[UserPaint] Add your own custom painting code here..
+    g.setColour(findColour(HelioTheme::resizerShadowColourId));
+    g.drawVerticalLine(this->getWidth() - 1, 0.f, float(this->getHeight()));
     //[/UserPaint]
 }
 

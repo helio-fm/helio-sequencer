@@ -393,7 +393,11 @@ void ToolsSidebar::mouseMove (const MouseEvent& e)
 
 
 //[MiscUserCode]
-
+void ToolsSidebar::paintOverChildren(Graphics& g)
+{
+    g.setColour(findColour(HelioTheme::resizerLineColourId));
+    g.drawVerticalLine(0, 0.f, float(this->getHeight()));
+}
 
 void ToolsSidebar::recreateCommandDescriptions()
 {

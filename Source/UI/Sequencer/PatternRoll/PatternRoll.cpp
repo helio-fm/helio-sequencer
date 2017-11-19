@@ -614,6 +614,18 @@ void PatternRoll::mouseUp(const MouseEvent &e)
     }
 }
 
+//===----------------------------------------------------------------------===//
+// Keyboard shortcuts
+//===----------------------------------------------------------------------===//
+
+// Handle all hot-key commands here:
+void PatternRoll::handleCommandMessage(int commandId)
+{
+    // TODO switch
+    HybridRoll::handleCommandMessage(commandId);
+}
+
+
 void PatternRoll::resized()
 {
     if (!this->isShowing())
@@ -756,11 +768,11 @@ void PatternRoll::reset()
 // Bg images cache
 //===----------------------------------------------------------------------===//
 
-CachedImage::Ptr PatternRoll::renderRowsPattern(HelioTheme &theme, int height)
+Image PatternRoll::renderRowsPattern(HelioTheme &theme, int height)
 {
-    CachedImage::Ptr patternImage(new CachedImage(Image::RGB, 128, height * ROWS_OF_TWO_OCTAVES, false));
+    Image patternImage(Image::RGB, 128, height * ROWS_OF_TWO_OCTAVES, false);
 
-    Graphics g(*patternImage);
+    Graphics g(patternImage);
 
     const Colour blackKey = theme.findColour(HybridRoll::blackKeyColourId);
     const Colour blackKeyBright = theme.findColour(HybridRoll::blackKeyBrightColourId);
@@ -771,11 +783,11 @@ CachedImage::Ptr PatternRoll::renderRowsPattern(HelioTheme &theme, int height)
 
     float currentHeight = float(height);
     float previousHeight = 0;
-    float pos_y = patternImage->getHeight() - currentHeight;
+    float pos_y = patternImage.getHeight() - currentHeight;
     const int lastOctaveReminder = 8;
 
     g.setColour(whiteKeyBright);
-    g.fillRect(patternImage->getBounds());
+    g.fillRect(patternImage.getBounds());
 
     // draw rows
     for (int i = lastOctaveReminder;
@@ -796,18 +808,18 @@ CachedImage::Ptr PatternRoll::renderRowsPattern(HelioTheme &theme, int height)
         case 8:
         case 10: // black keys
             g.setColour(octaveIsOdd ? blackKeyBright : blackKey);
-            g.fillRect(0, int(pos_y + 1), patternImage->getWidth(), int(previousHeight - 1));
+            g.fillRect(0, int(pos_y + 1), patternImage.getWidth(), int(previousHeight - 1));
             break;
 
         default: // white keys
             g.setColour(whiteKeyBrighter);
-            g.drawHorizontalLine(int(pos_y + 1), 0.f, float(patternImage->getWidth()));
+            g.drawHorizontalLine(int(pos_y + 1), 0.f, float(patternImage.getWidth()));
             break;
         }
 
         // fill divider line
         g.setColour(rowLine);
-        g.drawHorizontalLine(int(pos_y), 0.f, float(patternImage->getWidth()));
+        g.drawHorizontalLine(int(pos_y), 0.f, float(patternImage.getWidth()));
 
         currentHeight = float(height);
         pos_y -= currentHeight;

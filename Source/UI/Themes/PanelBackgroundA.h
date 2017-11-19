@@ -22,10 +22,6 @@ class HelioTheme;
 
 // Used only in workspace page, so no prerendering
 #define PANEL_A_HAS_PRERENDERED_BACKGROUND 0
-
-//#if HELIO_MOBILE
-//#   define PANEL_A_HAS_PRERENDERED_BACKGROUND 1
-//#endif
 //[/Headers]
 
 
@@ -43,9 +39,6 @@ public:
     {
         panelFillStartId       = 0x99101000,
         panelFillEndId         = 0x99101010,
-
-        panelShadeStartId      = 0x99101020,
-        panelShadeEndId        = 0x99101030,
     };
 
     static void updateRender(HelioTheme &theme);

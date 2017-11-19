@@ -107,7 +107,7 @@ String VersionControlTreeItem::getName() const
     return TRANS("tree::vcs");
 }
 
-void countStatsFor(VCS::Revision rootRevision, int &numRevivions, int &numDeltas)
+void countStatsFor(ValueTree rootRevision, int &numRevivions, int &numDeltas)
 {
     for (int i = 0; i < rootRevision.getNumProperties(); ++i)
     {
@@ -125,7 +125,7 @@ void countStatsFor(VCS::Revision rootRevision, int &numRevivions, int &numDeltas
 
     for (int i = 0; i < numChildren; ++i)
     {
-        VCS::Revision childRevision(rootRevision.getChild(i));
+        ValueTree childRevision(rootRevision.getChild(i));
         countStatsFor(childRevision, numRevivions, numDeltas);
     }
 }
@@ -134,7 +134,7 @@ String VersionControlTreeItem::getStatsString() const
 {
     if (this->vcs)
     {
-        VCS::Revision root(this->vcs->getRoot());
+        ValueTree root(this->vcs->getRoot());
         
         int numRevisions = 1;
         int numDeltas = 0;

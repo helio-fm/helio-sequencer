@@ -122,7 +122,7 @@ void ThemeSettingsItem::paint (Graphics& g)
         const float lineStartY = paintStartY;
         const float lineEndY = paintEndY + paintStartY;
 
-        g.setTiledImageFill(*this->rollImage.get(), 0, -3, 1.f);
+        g.setTiledImageFill(this->rollImage, 0, -3, 1.f);
         g.fillRect(200.f, paintStartY, float(this->getWidth()) - 200.f, paintEndY);
 
         const int barWidth = 64;
@@ -306,7 +306,8 @@ void ThemeSettingsItem::updateDescription(bool isLastRowInList,
     this->schemeNameLabel->setText("\"" + colours.getName() + "\"", dontSendNotification);
     this->schemeNameLabel->setColour(Label::textColourId, this->theme->findColour(Label::textColourId));
 
-    this->rollImage = PianoRoll::renderRowsPattern(*this->theme, 7);
+    this->rollImage = PianoRoll::renderRowsPattern(*this->theme, Scale::getNaturalMajorScale(), 0, 7);
+
     this->repaint();
 }
 

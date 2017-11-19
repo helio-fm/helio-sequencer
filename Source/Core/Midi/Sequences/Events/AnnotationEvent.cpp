@@ -22,13 +22,13 @@
 #include "SerializationKeys.h"
 
 
-AnnotationEvent::AnnotationEvent() : MidiEvent(nullptr, 0.f)
+AnnotationEvent::AnnotationEvent() : MidiEvent(nullptr, MidiEvent::Annotation, 0.f)
 {
     //jassertfalse;
 }
 
 AnnotationEvent::AnnotationEvent(const AnnotationEvent &other) :
-    MidiEvent(other.sequence, other.beat),
+    MidiEvent(other.sequence, MidiEvent::Annotation, other.beat),
     description(other.description),
     colour(other.colour)
 {
@@ -39,7 +39,7 @@ AnnotationEvent::AnnotationEvent(MidiSequence *owner,
                      float newBeat,
                      String newDescription,
                      const Colour &newColour) :
-    MidiEvent(owner, newBeat),
+    MidiEvent(owner, MidiEvent::Annotation, newBeat),
     description(std::move(newDescription)),
     colour(newColour)
 {
@@ -149,8 +149,7 @@ void AnnotationEvent::reset()
 
 int AnnotationEvent::hashCode() const noexcept
 {
-    return this->getDescription().hashCode() +
-           this->getId().hashCode();
+    return this->getId().hashCode();
 }
 
 AnnotationEvent &AnnotationEvent::operator=(const AnnotationEvent &right)

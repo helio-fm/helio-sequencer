@@ -26,13 +26,13 @@
 #define MIN_INTERPOLATED_CONTROLLER_DELTA (0.01f)
 #define INTERPOLATED_EVENTS_STEP_MS (350)
 
-AutomationEvent::AutomationEvent() : MidiEvent(nullptr, 0.f)
+AutomationEvent::AutomationEvent() : MidiEvent(nullptr, MidiEvent::Auto, 0.f)
 {
     //jassertfalse;
 }
 
 AutomationEvent::AutomationEvent(const AutomationEvent &other) :
-    MidiEvent(other.sequence, other.beat),
+    MidiEvent(other.sequence, MidiEvent::Auto, other.beat),
     controllerValue(other.controllerValue),
     curvature(other.curvature)
 {
@@ -40,7 +40,7 @@ AutomationEvent::AutomationEvent(const AutomationEvent &other) :
 }
 
 AutomationEvent::AutomationEvent(MidiSequence *owner, float beatVal, float cValue) :
-    MidiEvent(owner, beatVal),
+    MidiEvent(owner, MidiEvent::Auto, beatVal),
     controllerValue(cValue),
     curvature(AUTOEVENT_DEFAULT_CURVATURE)
 {
@@ -305,9 +305,11 @@ void AutomationEvent::reset()
 
 int AutomationEvent::hashCode() const noexcept
 {
-    return roundFloatToInt(this->getControllerValue() * 1000) +
-           roundFloatToInt(this->getBeat() * 1000) +
-           this->getId().hashCode();
+    const unsigned int hash =
+        roundFloatToInt(this->getControllerValue() * 1000) +
+        roundFloatToInt(this->getBeat() * 1000) +
+        this->getId().hashCode();
+    return (int)hash;
 }
 
 AutomationEvent &AutomationEvent::operator=(const AutomationEvent &right)

@@ -114,7 +114,7 @@ Array<uint32> InstrumentTreeItem::getInstrumentNodeIds() const
 
     for (int i = 0; i < this->instrument->getNumNodes(); ++i)
     {
-        result.add(this->instrument->getNode(i)->nodeId);
+        result.add(this->instrument->getNode(i)->nodeID);
     }
 
     return result;
@@ -208,7 +208,8 @@ void InstrumentTreeItem::updateChildrenEditors()
         }
 
         // неюзабельно, используем только на мобилках
-        AudioPluginTreeItem *ap = new AudioPluginTreeItem(node->nodeId, node->getProcessor()->getName());
+        AudioPluginTreeItem *ap = new AudioPluginTreeItem(node->nodeID,
+            node->getProcessor()->getName());
         this->addChildTreeItem(ap);
     }
 }

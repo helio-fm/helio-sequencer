@@ -164,7 +164,7 @@ void HeadlineDropdown::paint (Graphics& g)
         float x = 0, y = 0;
         Colour fillColour = Colour (0x15ffffff);
         //[UserPaintCustomArguments] Customize the painting arguments here..
-        fillColour = this->findColour(PanelBackgroundB::panelFillStartId).brighter(0.035f);
+        fillColour = this->findColour(PanelBackgroundB::panelFillId).brighter(0.035f);
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillPath (internalPath2, AffineTransform::translation(x, y));

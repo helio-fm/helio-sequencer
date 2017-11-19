@@ -21,8 +21,7 @@
 #include "Transport.h"
 #include "SerializationKeys.h"
 
-
-Note::Note() : MidiEvent(nullptr, 0.f)
+Note::Note() : MidiEvent(nullptr, MidiEvent::Note, 0.f)
 {
     // needed for juce's Array to work
     //jassertfalse;
@@ -31,7 +30,7 @@ Note::Note() : MidiEvent(nullptr, 0.f)
 Note::Note(MidiSequence *owner,
     int keyVal, float beatVal,
     float lengthVal, float velocityVal) :
-    MidiEvent(owner, beatVal),
+    MidiEvent(owner, MidiEvent::Note, beatVal),
     key(keyVal),
     length(lengthVal),
     velocity(velocityVal)
@@ -39,7 +38,7 @@ Note::Note(MidiSequence *owner,
 }
 
 Note::Note(const Note &other) :
-    MidiEvent(other.sequence, other.beat),
+    MidiEvent(other.sequence, MidiEvent::Note, other.beat),
     key(other.key),
     length(other.length),
     velocity(other.velocity)
@@ -48,7 +47,7 @@ Note::Note(const Note &other) :
 }
 
 Note::Note(MidiSequence *newOwner, const Note &parametersToCopy) :
-    MidiEvent(newOwner, parametersToCopy.beat),
+    MidiEvent(newOwner, MidiEvent::Note, parametersToCopy.beat),
     key(parametersToCopy.key),
     length(parametersToCopy.length),
     velocity(parametersToCopy.velocity)
@@ -236,4 +235,45 @@ Note &Note::operator=(const Note &right)
 int Note::hashCode() const noexcept
 {
     return this->getId().hashCode();
+}
+
+int Note::compareElements(const MidiEvent *const first, const MidiEvent *const second)
+{
+    if (first == second) { return 0; }
+
+    const float diff = first->getBeat() - second->getBeat();
+    const int diffResult = (diff > 0.f) - (diff < 0.f);
+    if (diffResult != 0) { return diffResult; }
+
+    return first->getId().compare(second->getId());
+}
+
+int Note::compareElements(Note *const first, Note *const second)
+{
+    if (first == second) { return 0; }
+
+    const float beatDiff = first->getBeat() - second->getBeat();
+    const int beatResult = (beatDiff > 0.f) - (beatDiff < 0.f);
+    if (beatResult != 0) { return beatResult; }
+
+    const int keyDiff = first->getKey() - second->getKey();
+    const int keyResult = (keyDiff > 0) - (keyDiff < 0);
+    if (keyResult != 0) { return keyResult; }
+
+    return first->getId().compare(second->getId());
+}
+
+int Note::compareElements(const Note &first, const Note &second)
+{
+    if (&first == &second) { return 0; }
+
+    const float beatDiff = first.getBeat() - second.getBeat();
+    const int beatResult = (beatDiff > 0.f) - (beatDiff < 0.f);
+    if (beatResult != 0) { return beatResult; }
+
+    const int keyDiff = first.getKey() - second.getKey();
+    const int keyResult = (keyDiff > 0) - (keyDiff < 0);
+    if (keyResult != 0) { return keyResult; }
+
+    return first.getId().compare(second.getId());
 }

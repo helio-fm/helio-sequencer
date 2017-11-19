@@ -45,9 +45,9 @@ static StringPairArray getDynamics()
 }
 //[/MiscUserDefs]
 
-AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *annotationsLayer, const AnnotationEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
-    : targetEvent(editedEvent),
-      targetLayer(annotationsLayer),
+AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequence, const AnnotationEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
+    : originalEvent(editedEvent),
+      originalSequence(sequence),
       ownerComponent(owner),
       addsNewEvent(shouldAddNewEvent),
       hasMadeChanges(false)
@@ -79,12 +79,13 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *annota
     textEditor->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
     textEditor->addListener (this);
 
-    addAndMakeVisible (colourSwatches = new ColourSwatches());
     addAndMakeVisible (separatorH = new SeparatorHorizontal());
     addAndMakeVisible (separatorV = new SeparatorVertical());
+    addAndMakeVisible (colourSwatches = new ColourSwatches());
+
 
     //[UserPreSize]
-    jassert(this->addsNewEvent || this->targetEvent.getSequence() != nullptr);
+    jassert(this->addsNewEvent || this->originalEvent.getSequence() != nullptr);
 
     if (this->addsNewEvent)
     {
@@ -92,10 +93,10 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *annota
         const auto keys(getDynamics().getAllKeys());
         const String key(keys[r.nextInt(keys.size())]);
         const Colour colour(Colour::fromString(getDynamics()[key]));
-        this->targetEvent = AnnotationEvent(annotationsLayer, targetBeat, key, colour);
+        this->originalEvent = AnnotationEvent(sequence, targetBeat, key, colour);
 
-        annotationsLayer->checkpoint();
-        annotationsLayer->insert(this->targetEvent, true);
+        sequence->checkpoint();
+        sequence->insert(this->originalEvent, true);
 
         this->messageLabel->setText(TRANS("dialog::annotation::add::caption"), dontSendNotification);
         this->okButton->setButtonText(TRANS("dialog::annotation::add::proceed"));
@@ -108,9 +109,9 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *annota
         this->removeEventButton->setButtonText(TRANS("dialog::annotation::edit::delete"));
     }
 
-    this->colourSwatches->setSelectedColour(this->targetEvent.getColour());
+    this->colourSwatches->setSelectedColour(this->originalEvent.getColour());
 
-    this->textEditor->setText(this->targetEvent.getDescription(), dontSendNotification);
+    this->textEditor->setText(this->originalEvent.getDescription(), dontSendNotification);
     this->textEditor->addItemList(getDynamics().getAllKeys(), 1);
     this->textEditor->addListener(this);
 
@@ -141,9 +142,9 @@ AnnotationDialog::~AnnotationDialog()
     removeEventButton = nullptr;
     okButton = nullptr;
     textEditor = nullptr;
-    colourSwatches = nullptr;
     separatorH = nullptr;
     separatorV = nullptr;
+    colourSwatches = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -177,9 +178,9 @@ void AnnotationDialog::resized()
     removeEventButton->setBounds (4, getHeight() - 4 - 48, 220, 48);
     okButton->setBounds (getWidth() - 4 - 221, getHeight() - 4 - 48, 221, 48);
     textEditor->setBounds ((getWidth() / 2) - ((getWidth() - 48) / 2), 58, getWidth() - 48, 36);
-    colourSwatches->setBounds ((getWidth() / 2) + 3 - ((getWidth() - 56) / 2), 102, getWidth() - 56, 34);
     separatorH->setBounds (4, getHeight() - 52 - 2, getWidth() - 8, 2);
     separatorV->setBounds ((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
+    colourSwatches->setBounds ((getWidth() / 2) + 2 - ((getWidth() - 56) / 2), 102, getWidth() - 56, 34);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -228,7 +229,7 @@ void AnnotationDialog::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
         this->updateOkButtonState();
 
         const String text(this->textEditor->getText());
-        AnnotationEvent newEvent = this->targetEvent.withDescription(text);
+        AnnotationEvent newEvent = this->originalEvent.withDescription(text);
         const String colourString(getDynamics()[text]);
 
         if (colourString.isNotEmpty())
@@ -333,37 +334,44 @@ void AnnotationDialog::onColourButtonClicked(ColourButton *clickedButton)
 {
     const Colour c(clickedButton->getColour());
     const AnnotationEvent newEvent =
-        this->targetEvent.withDescription(this->textEditor->getText()).withColour(c);
+        this->originalEvent.withDescription(this->textEditor->getText()).withColour(c);
     this->sendEventChange(newEvent);
 }
 
 void AnnotationDialog::sendEventChange(AnnotationEvent newEvent)
 {
-    if (this->targetLayer != nullptr)
+    if (this->originalSequence != nullptr)
     {
-        if (!this->addsNewEvent)
+        if (this->addsNewEvent)
+        {
+            this->originalSequence->change(this->originalEvent, newEvent, true);
+            this->originalEvent = newEvent;
+        }
+        else
         {
             this->cancelChangesIfAny();
-            this->targetLayer->checkpoint();
+            this->originalSequence->checkpoint();
+            this->originalSequence->change(this->originalEvent, newEvent, true);
+            this->hasMadeChanges = true;
         }
-
-        this->targetLayer->change(this->targetEvent, newEvent, true);
-        this->hasMadeChanges = true;
     }
 }
 
 void AnnotationDialog::removeEvent()
 {
-    if (this->targetLayer != nullptr)
+    if (this->originalSequence != nullptr)
     {
-        if (!this->addsNewEvent)
+        if (this->addsNewEvent)
+        {
+            this->originalSequence->remove(this->originalEvent, true);
+        }
+        else
         {
             this->cancelChangesIfAny();
-            this->targetLayer->checkpoint();
+            this->originalSequence->checkpoint();
+            this->originalSequence->remove(this->originalEvent, true);
+            this->hasMadeChanges = true;
         }
-
-        this->targetLayer->remove(this->targetEvent, true);
-        this->hasMadeChanges = true;
     }
 }
 
@@ -371,9 +379,9 @@ void AnnotationDialog::cancelChangesIfAny()
 {
     if (!this->addsNewEvent &&
         this->hasMadeChanges &&
-        this->targetLayer != nullptr)
+        this->originalSequence != nullptr)
     {
-        this->targetLayer->undo();
+        this->originalSequence->undo();
         this->hasMadeChanges = false;
     }
 }
@@ -388,9 +396,9 @@ void AnnotationDialog::cancelAndDisappear()
     this->cancelChangesIfAny(); // Discards possible changes
 
     if (this->addsNewEvent &&
-        this->targetLayer != nullptr)
+        this->originalSequence != nullptr)
     {
-        this->targetLayer->undo(); // Discards new event
+        this->originalSequence->undo(); // Discards new event
     }
 
     this->disappear();
@@ -403,8 +411,8 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="AnnotationDialog" template="../../Template"
                  componentName="" parentClasses="public FadingDialog, public TextEditorListener, public ColourButtonListener"
-                 constructorParams="Component &amp;owner, AnnotationsSequence *annotationsLayer, const AnnotationEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
-                 variableInitialisers="targetEvent(editedEvent),&#10;targetLayer(annotationsLayer),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false)"
+                 constructorParams="Component &amp;owner, AnnotationsSequence *sequence, const AnnotationEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
+                 variableInitialisers="originalEvent(editedEvent),&#10;originalSequence(sequence),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="450" initialHeight="204">
   <METHODS>
@@ -436,15 +444,15 @@ BEGIN_JUCER_METADATA
   <COMBOBOX name="" id="1923d71c308d2169" memberName="textEditor" virtualName=""
             explicitFocusOrder="0" pos="0Cc 58 48M 36" editable="1" layout="33"
             items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
-  <JUCERCOMP name="" id="12e51c6931db61b4" memberName="colourSwatches" virtualName=""
-             explicitFocusOrder="0" pos="3Cc 102 56M 34" sourceFile="../Common/ColourSwatches.cpp"
-             constructorParams=""/>
   <JUCERCOMP name="" id="e39d9e103e2a60e6" memberName="separatorH" virtualName=""
              explicitFocusOrder="0" pos="4 52Rr 8M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="1fb927654787aaf4" memberName="separatorV" virtualName=""
              explicitFocusOrder="0" pos="0Cc 4Rr 2 48" sourceFile="../Themes/SeparatorVertical.cpp"
              constructorParams=""/>
+  <GENERICCOMPONENT name="" id="123ea615ffefd36f" memberName="colourSwatches" virtualName=""
+                    explicitFocusOrder="0" pos="2Cc 102 56M 34" class="ColourSwatches"
+                    params=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

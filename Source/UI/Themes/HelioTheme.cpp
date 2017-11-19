@@ -19,12 +19,10 @@
 #include "HelioTheme.h"
 #include "MainWindow.h"
 #include "NavigationSidebar.h"
-#include "Origami.h"
 #include "BinaryData.h"
 #include "Icons.h"
 
 #include "MainWindow.h"
-#include "Origami.h"
 #include "HybridRoll.h"
 #include "NavigationSidebar.h"
 #include "InstrumentEditor.h"
@@ -128,31 +126,6 @@ void HelioTheme::drawStretchableLayoutResizerBar(Graphics &g,
         int w, int h, bool isVerticalBar,
         bool isMouseOver, bool isMouseDragging)
 {
-    //if (isMouseDragging)
-    //{
-    //    g.setColour(findColour(Origami::resizerMovingShadowColourId));
-    //    g.drawVerticalLine(w - 2, 0.f, float(h));
-    //    g.setColour(findColour(Origami::resizerMovingLineColourId));
-    //}
-    //else
-    //{
-    //    g.setColour(findColour(Origami::resizerShadowColourId));
-    //    g.drawVerticalLine(w - 2, 0.f, float(h));
-    //    g.setColour(findColour(Origami::resizerLineColourId));
-    //}
-
-    //if (w == 2)
-    //{
-    //    //g.drawVerticalLine(0, 0.f, float(h));
-    //    //g.setColour(findColour(Origami::resizerLineColourId).withMultipliedAlpha(0.5f));
-    //    g.drawVerticalLine(1, 0.f, float(h));
-    //}
-    //else
-    //{
-    //    //g.drawHorizontalLine(0, 0.f, float(w));
-    //    //g.setColour(findColour(Origami::resizerLineColourId).withMultipliedAlpha(0.5f));
-    //    g.drawVerticalLine(0, 0.f, float(h));
-    //}
 }
 
 
@@ -283,7 +256,7 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
                              textArea.getWidth(),
                              textArea.getHeight(),
                              label.getJustificationType(),
-                             10,
+                             1, // max number of lines : TODO test
                              1.0);
 
         glyphs.createPath(textPath);
@@ -822,18 +795,8 @@ void HelioTheme::initColours(const ::ColourScheme &colours)
     // Panels
     this->setColour(PanelBackgroundA::panelFillStartId, colours.getPrimaryGradientColourA());
     this->setColour(PanelBackgroundA::panelFillEndId, colours.getPrimaryGradientColourB());
-    this->setColour(PanelBackgroundA::panelShadeStartId, colours.getShadingGradientColourA());
-    this->setColour(PanelBackgroundA::panelShadeEndId, colours.getShadingGradientColourB());
-
-    this->setColour(PanelBackgroundB::panelFillStartId, colours.getPrimaryGradientColourA());
-    this->setColour(PanelBackgroundB::panelFillEndId, colours.getPrimaryGradientColourB());
-    this->setColour(PanelBackgroundB::panelShadeStartId, colours.getShadingGradientColourA());
-    this->setColour(PanelBackgroundB::panelShadeEndId, colours.getShadingGradientColourB());
-
-    this->setColour(PanelBackgroundC::panelFillStartId, colours.getSecondaryGradientColourA());
-    this->setColour(PanelBackgroundC::panelFillEndId, colours.getSecondaryGradientColourB());
-    this->setColour(PanelBackgroundC::panelShadeStartId, colours.getShadingGradientColourA());
-    this->setColour(PanelBackgroundC::panelShadeEndId, colours.getShadingGradientColourB());
+    this->setColour(PanelBackgroundB::panelFillId, colours.getPrimaryGradientColourA());
+    this->setColour(PanelBackgroundC::panelFillId, colours.getSecondaryGradientColourA());
 
     this->setColour(PanelA::panelFillColourId, colours.getPanelFillColour());
     this->setColour(PanelA::panelBorderColourId, colours.getPanelBorderColour());
@@ -863,11 +826,11 @@ void HelioTheme::initColours(const ::ColourScheme &colours)
     this->setColour(InstrumentEditor::audioInColourId, Colour(0x25ffffff));
     this->setColour(InstrumentEditor::audioOutColourId, Colour(0x25ffffff));
 
-    // Origami
-    this->setColour(Origami::resizerLineColourId, Colours::white.withAlpha(0.06f));
-    this->setColour(Origami::resizerShadowColourId, Colours::black.withAlpha(0.2f));
-    this->setColour(Origami::resizerMovingLineColourId, Colours::white.withAlpha(0.15f));
-    this->setColour(Origami::resizerMovingShadowColourId, Colours::black.withAlpha(0.3f));
+    // Resizer
+    this->setColour(HelioTheme::resizerLineColourId, Colours::white.withAlpha(0.06f));
+    this->setColour(HelioTheme::resizerShadowColourId, Colours::black.withAlpha(0.2f));
+    this->setColour(HelioTheme::resizerMovingLineColourId, Colours::white.withAlpha(0.15f));
+    this->setColour(HelioTheme::resizerMovingShadowColourId, Colours::black.withAlpha(0.3f));
 
     // ComboBox
     this->setColour(ComboBox::backgroundColourId, colours.getSecondaryGradientColourA().darker(0.05f));
@@ -931,13 +894,8 @@ void HelioTheme::updateBackgroundRenders(bool force)
     {
         Icons::clearPrerenderedCache();
         this->getPanelsBgCache().clear();
-        this->getRollBgCache().clear();
     }
     
-#if PIANOROLL_HAS_PRERENDERED_BACKGROUND
-    PianoRoll::repaintBackgroundsCache(*this);
-#endif
-
 #if PATTERNROLL_HAS_PRERENDERED_BACKGROUND
     PatternRoll::repaintBackgroundsCache(*this);
 #endif
@@ -954,4 +912,3 @@ void HelioTheme::updateBackgroundRenders(bool force)
     PanelBackgroundC::updateRender(*this);
 #endif
 }
-

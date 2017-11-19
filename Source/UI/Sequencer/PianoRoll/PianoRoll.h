@@ -17,30 +17,14 @@
 
 #pragma once
 
-#if JUCE_IOS
-#   define PIANOROLL_HAS_PRERENDERED_BACKGROUND 1
-#else
-#   define PIANOROLL_HAS_PRERENDERED_BACKGROUND 0
-#endif
-
 #if HELIO_DESKTOP
 #   define PIANOROLL_HAS_NOTE_RESIZERS 0
-#   if PIANOROLL_HAS_PRERENDERED_BACKGROUND
-#       define MAX_ROW_HEIGHT (30)
-#       define MIN_ROW_HEIGHT (8)
-#   else
-#       define MAX_ROW_HEIGHT (35)
-#       define MIN_ROW_HEIGHT (6)
-#   endif
+#   define PIANOROLL_MIN_ROW_HEIGHT (6)
+#   define PIANOROLL_MAX_ROW_HEIGHT (30)
 #elif HELIO_MOBILE
 #   define PIANOROLL_HAS_NOTE_RESIZERS 1
-#   if PIANOROLL_HAS_PRERENDERED_BACKGROUND
-#       define MAX_ROW_HEIGHT (40)
-#       define MIN_ROW_HEIGHT (10)
-#   else
-#       define MAX_ROW_HEIGHT (60)
-#       define MIN_ROW_HEIGHT (8)
-#   endif
+#   define PIANOROLL_MIN_ROW_HEIGHT (10)
+#   define PIANOROLL_MAX_ROW_HEIGHT (35)
 #endif
 
 class MidiSequence;
@@ -50,6 +34,7 @@ class PianoRollCellHighlighter;
 class HelperRectangle;
 class NoteResizerLeft;
 class NoteResizerRight;
+class Scale;
 
 #include "HelioTheme.h"
 #include "HybridRoll.h"
@@ -57,11 +42,6 @@ class NoteResizerRight;
 
 class PianoRoll : public HybridRoll
 {
-public:
-
-    static void repaintBackgroundsCache(HelioTheme &theme);
-    static CachedImage::Ptr renderRowsPattern(HelioTheme &theme, int height);
-    
 public:
 
     PianoRoll(ProjectTreeItem &parentProject,
@@ -211,7 +191,48 @@ private:
     int rowHeight;
 
 private:
-    
+
+    class HighlightingScheme final
+    {
+    public:
+        HighlightingScheme(int rootKey, const Scale &scale);
+        
+        template<typename T1, typename T2>
+        static int compareElements(const T1 *const l, const T2 *const r)
+        {
+            const int keyDiff = l->getRootKey() - r->getRootKey();
+            const int keyResult = (keyDiff > 0) - (keyDiff < 0);
+            if (keyResult != 0) { return keyDiff; }
+
+            if (l->getScale().isEquivalentTo(r->getScale())) { return 0; }
+
+            const int scaleDiff = l->getScale().hashCode() - r->getScale().hashCode();
+            return (scaleDiff > 0) - (scaleDiff < 0);
+        }
+
+        const Scale &getScale() const noexcept { return this->scale; }
+        const int getRootKey() const noexcept { return this->rootKey; }
+        const Image getUnchecked(int i) const noexcept { return this->rows.getUnchecked(i); }
+        void setRows(Array<Image> val) { this->rows = val; }
+
+    private:
+        Scale scale;
+        int rootKey;
+        Array<Image> rows;
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HighlightingScheme);
+    };
+
+    void updateBackgroundCacheFor(const KeySignatureEvent &key);
+    void removeBackgroundCacheFor(const KeySignatureEvent &key);
+    Array<Image> renderBackgroundCacheFor(const HighlightingScheme *const scheme) const;
+    static Image renderRowsPattern(const HelioTheme &, const Scale &, int root, int height);
+    OwnedArray<HighlightingScheme> backgroundsCache;
+    ScopedPointer<HighlightingScheme> defaultHighlighting;
+    int binarySearchForHighlightingScheme(const KeySignatureEvent *const e) const noexcept;
+    friend class ThemeSettingsItem; // to be able to call renderRowsPattern
+
+private:
+
     void focusToRegionAnimated(int startKey, int endKey, float startBeat, float endBeat);
     class FocusToRegionAnimator;
     ScopedPointer<Timer> focusToRegionAnimator;
@@ -220,7 +241,6 @@ private:
     
     OwnedArray<NoteComponent> ghostNotes;
     
-    //ScopedPointer<HelperRectangle> helperVertical;
     ScopedPointer<HelperRectangle> helperHorizontal;
 
     ScopedPointer<NoteResizerLeft> noteResizerLeft;

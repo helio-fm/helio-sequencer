@@ -26,25 +26,22 @@ class InstrumentEditorPin :
 {
 public:
 
-    InstrumentEditorPin(Instrument &graph_, const uint32 filterID_,
-                        const int index_, const bool isInput_);
+    InstrumentEditorPin(Instrument &graph,
+        AudioProcessorGraph::NodeID nodeID,
+        int index, bool isInput);
 
     void paint(Graphics &g) override;
-
     void mouseDown(const MouseEvent &e) override;
-
     void mouseDrag(const MouseEvent &e) override;
-
     void mouseUp(const MouseEvent &e) override;
 
-    const uint32 filterID;
+    const AudioProcessorGraph::NodeID nodeID;
     const int index;
     const bool isInput;
 
 private:
 
     Instrument &graph;
-
     InstrumentEditor *getGraphPanel() const noexcept;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InstrumentEditorPin)

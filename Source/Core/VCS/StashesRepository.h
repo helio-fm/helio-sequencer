@@ -29,40 +29,26 @@ namespace VCS
 
         explicit StashesRepository(Pack::Ptr pack);
 
-
         int getNumUserStashes() const;
-
         String getUserStashDescription(int index) const;
-
-        Revision getUserStash(int index) const;
-
-        Revision getUserStashWithName(const String &stashName) const;
-
+        ValueTree getUserStash(int index) const;
+        ValueTree getUserStashWithName(const String &stashName) const;
         
-        Revision getQuickStash() const;
-        
+        ValueTree getQuickStash() const;
         bool hasQuickStash() const;
-        
-        void storeQuickStash(Revision newStash);
-
+        void storeQuickStash(ValueTree newStash);
         void resetQuickStash();
-
         
-        void addStash(Revision newStash);
-        
-        void removeStash(Revision stashToRemove);
+        void addStash(ValueTree newStash);
+        void removeStash(ValueTree stashToRemove);
 
-
-        //===------------------------------------------------------------------===//
+        //===--------------------------------------------------------------===//
         // Serializable
-        //
+        //===--------------------------------------------------------------===//
 
         XmlElement *serialize() const override;
-
         void deserialize(const XmlElement &xml) override;
-
         void reset() override;
-
 
         typedef ReferenceCountedObjectPtr<StashesRepository> Ptr;
 
@@ -70,11 +56,11 @@ namespace VCS
 
         Pack::Ptr pack;
 
-        // корневая нода для стэшей
-        Revision userStashes;
+        // root node for the stashes
+        ValueTree userStashes;
 
-        // ревизия для quick toggle changes on/off
-        Revision quickStash;
+        // root node for quick-toggled changes
+        ValueTree quickStash;
         
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(StashesRepository);
     };

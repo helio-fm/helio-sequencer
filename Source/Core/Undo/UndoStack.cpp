@@ -29,6 +29,7 @@
 #include "AnnotationEventActions.h"
 #include "AutomationEventActions.h"
 #include "TimeSignatureEventActions.h"
+#include "KeySignatureEventActions.h"
 #include "PatternActions.h"
 
 #define MAX_TRANSACTIONS_TO_STORE 10
@@ -143,6 +144,12 @@ struct UndoStack::ActionSet
         else if (tagName == Serialization::Undo::timeSignatureEventsGroupInsertAction)  { return new TimeSignatureEventsGroupInsertAction(this->project); }
         else if (tagName == Serialization::Undo::timeSignatureEventsGroupRemoveAction)  { return new TimeSignatureEventsGroupRemoveAction(this->project); }
         else if (tagName == Serialization::Undo::timeSignatureEventsGroupChangeAction)  { return new TimeSignatureEventsGroupChangeAction(this->project); }
+        else if (tagName == Serialization::Undo::keySignatureEventInsertAction)         { return new KeySignatureEventInsertAction(this->project); }
+        else if (tagName == Serialization::Undo::keySignatureEventRemoveAction)         { return new KeySignatureEventRemoveAction(this->project); }
+        else if (tagName == Serialization::Undo::keySignatureEventChangeAction)         { return new KeySignatureEventChangeAction(this->project); }
+        else if (tagName == Serialization::Undo::keySignatureEventsGroupInsertAction)   { return new KeySignatureEventsGroupInsertAction(this->project); }
+        else if (tagName == Serialization::Undo::keySignatureEventsGroupRemoveAction)   { return new KeySignatureEventsGroupRemoveAction(this->project); }
+        else if (tagName == Serialization::Undo::keySignatureEventsGroupChangeAction)   { return new KeySignatureEventsGroupChangeAction(this->project); }
         else if (tagName == Serialization::Undo::automationEventInsertAction)           { return new AutomationEventInsertAction(this->project); }
         else if (tagName == Serialization::Undo::automationEventRemoveAction)           { return new AutomationEventRemoveAction(this->project); }
         else if (tagName == Serialization::Undo::automationEventChangeAction)           { return new AutomationEventChangeAction(this->project); }

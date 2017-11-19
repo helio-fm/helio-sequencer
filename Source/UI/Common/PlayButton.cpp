@@ -37,14 +37,14 @@ public:
 
     void paint(Graphics &g) override
     {
-        const Colour colour1(Colours::black.withAlpha(0.1f));
+        const Colour colour1(this->findColour(Icons::iconColourId).withAlpha(0.1f));
         const int h = this->getHeight();
         const Rectangle<float> r(this->getLocalBounds()
                                  .withSizeKeepingCentre(h, h)
-                                 .reduced(5)
+                                 .reduced(3)
                                  .toFloat());
 
-        HelioTheme::drawDashedRectangle(g, r, colour1, 5.5f, 7.5f, 2.f, float(h / 2));
+        HelioTheme::drawDashedRectangle(g, r, colour1, 5.5f, 1.0f, 0.5f, float(h / 2));
     }
 };
 //[/MiscUserDefs]

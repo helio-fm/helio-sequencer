@@ -29,14 +29,13 @@
 #include "IconComponent.h"
 #include "Icons.h"
 #include "SerializationKeys.h"
-
 #include "GenericAudioMonitorComponent.h"
 #include "WaveformAudioMonitorComponent.h"
 #include "SpectrogramAudioMonitorComponent.h"
 #include "ModeIndicatorComponent.h"
 #include "App.h"
 #include "AudioCore.h"
-
+#include "HelioTheme.h"
 #include "RolloverHeaderLeft.h"
 #include "RolloverHeaderRight.h"
 #include "RolloverContainer.h"
@@ -134,6 +133,12 @@ void NavigationSidebar::resized()
 
 
 //[MiscUserCode]
+void NavigationSidebar::paintOverChildren(Graphics& g)
+{
+    g.setColour(findColour(HelioTheme::resizerLineColourId));
+    g.drawVerticalLine(this->getWidth() - 1, 0.f, float(this->getHeight()));
+}
+
 void NavigationSidebar::setAudioMonitor(AudioMonitor *audioMonitor)
 {
     this->spectrogramMonitor->setTargetAnalyzer(audioMonitor);

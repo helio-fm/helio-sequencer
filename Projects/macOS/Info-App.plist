@@ -13,7 +13,7 @@
     <key>CFBundleIconFile</key>
     <string>Icon.icns</string>
     <key>CFBundleIdentifier</key>
-    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <string>com.peterrudenko.helioworkstation</string>
     <key>CFBundleName</key>
     <string>Helio</string>
     <key>CFBundleDisplayName</key>

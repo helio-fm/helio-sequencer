@@ -30,96 +30,79 @@ namespace VCS
 
     class Head :
         private Thread,
-        public ChangeListener, // слушает, изменился ли проект, чтоб запустить билд при показе редактора
-        public ChangeBroadcaster, // оповещает о том, что дифф начал или закончил обновляться
+        public ChangeListener, // listens to project changes to set diff outdated
+        public ChangeBroadcaster, // broadcasts the diff rebuild has started/ended
         public Serializable
     {
     public:
 
         Head(const Head &other);
-
         explicit Head(Pack::Ptr packPtr,
              WeakReference<TrackedItemsSource> targetProject = nullptr);
 
         ~Head() override;
 
-
-        Revision getHeadingRevision() const;
+        ValueTree getHeadingRevision() const;
         
-        Revision getDiff() const;
+        ValueTree getDiff() const;
         bool isDiffOutdated() const;
         void setDiffOutdated(bool isOutdated);
 
-        bool isRebuildingDiff() const; // для change-listener'ов
+        bool isRebuildingDiff() const; // mainly for change-listeners
         void setRebuildingDiffMode(bool isBuildingNow);
         
         bool hasAnythingOnTheStage() const;
         bool hasTrackedItemsOnTheStage() const;
 
-        void mergeStateWith(Revision changes);
-
-        bool moveTo(const Revision &revision); // перестраивает индекс-состояние
-        
-        void pointTo(const Revision &revision); // не перестраивает индекс
-        
+        void mergeStateWith(ValueTree changes);
+        bool moveTo(const ValueTree revision); // rebuilds state index
+        void pointTo(const ValueTree revision); // does not rebuild index
         bool resetChangedItemToState(const VCS::RevisionItem::Ptr diffItem);
 
         void checkout();
-
         void cherryPick(const Array<Uuid> uuids);
-        
         void cherryPickAll();
 
-
-        void rebuildDiffIfNeeded(); // это вызывается в редакторе, когда он становится видимым
-
-        void rebuildDiffNow(); // это вызывается в редакторе, когда он видим и слышит изменения vcs
-
-        void rebuildDiffSynchronously(); // грязный хак для quick-stash
+        void rebuildDiffIfNeeded(); // called from the editor when it gets visible
+        void rebuildDiffNow(); // called from the visible editor, when it receives vcs change message 
+        void rebuildDiffSynchronously(); // a hack foe quick-stash
         
-        
-        //===------------------------------------------------------------------===//
+        //===--------------------------------------------------------------===//
         // Serializable
-        //
-        
+        //===--------------------------------------------------------------===//
+
         XmlElement *serialize() const override;
-        
         void deserialize(const XmlElement &xml) override;
-        
         void reset() override;
         
-        
-        //===------------------------------------------------------------------===//
+        //===--------------------------------------------------------------===//
         // ChangeListener
-        //
+        //===--------------------------------------------------------------===//
 
         void changeListenerCallback(ChangeBroadcaster *source) override;
 
     private:
 
-        //===------------------------------------------------------------------===//
+        //===--------------------------------------------------------------===//
         // Thread
-        //
+        //===--------------------------------------------------------------===//
 
         void run() override;
-
         void checkoutItem(VCS::RevisionItem::Ptr stateItem);
 
         ReadWriteLock outdatedMarkerLock;
         bool diffOutdated;
 
         ReadWriteLock diffLock;
-        Revision diff;
+        ValueTree diff;
         
         ReadWriteLock rebuildingDiffLock;
         bool rebuildingDiffMode;
 
     private:
 
-        Revision headingAt;
-
+        ValueTree headingAt;
         ReadWriteLock stateLock;
-
         ScopedPointer<HeadState> state;
 
     private:

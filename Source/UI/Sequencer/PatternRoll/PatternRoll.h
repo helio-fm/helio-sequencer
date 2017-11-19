@@ -107,6 +107,7 @@ public:
     void mouseDown(const MouseEvent &e) override;
     void mouseUp(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
+    void handleCommandMessage(int commandId) override;
     void resized() override;
     void paint(Graphics &g) override;
     
@@ -120,8 +121,8 @@ public:
     
 public:
 
-        static CachedImage::Ptr rowPattern;
-        static CachedImage::Ptr renderRowsPattern(HelioTheme &theme, int height);
+        static Image rowPattern;
+        static Image renderRowsPattern(HelioTheme &theme, int height);
         static void repaintBackgroundsCache(HelioTheme &theme)
         { rowPattern = PatternRoll::renderRowsPattern(theme, PATTERNROLL_ROW_HEIGHT); }
 

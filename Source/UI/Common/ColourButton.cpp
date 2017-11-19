@@ -46,7 +46,8 @@ public:
 //[/MiscUserDefs]
 
 ColourButton::ColourButton(Colour c, ColourButtonListener *listener)
-    : colour(c),
+    : index(0),
+      colour(c),
       owner(listener)
 {
 
@@ -148,6 +149,16 @@ void ColourButton::deselect()
         this->checkMark = nullptr;
     }
 }
+
+int ColourButton::getButtonIndex() const noexcept
+{
+    return this->index;
+}
+
+void ColourButton::setButtonIndex(int val)
+{
+    this->index = val;
+}
 //[/MiscUserCode]
 
 #if 0
@@ -157,9 +168,9 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="ColourButton" template="../../Template"
                  componentName="" parentClasses="public HighlightedComponent"
                  constructorParams="Colour c, ColourButtonListener *listener"
-                 variableInitialisers="colour(c),&#10;owner(listener)" snapPixels="8"
-                 snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"
-                 initialWidth="32" initialHeight="32">
+                 variableInitialisers="index(0),&#10;colour(c),&#10;owner(listener)"
+                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
+                 fixedSize="1" initialWidth="32" initialHeight="32">
   <METHODS>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
   </METHODS>

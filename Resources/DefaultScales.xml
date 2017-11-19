@@ -6,8 +6,8 @@
     and I use them in the chord building tool (see Scale.h and ChordBuilder.h)
  -->
 <Scales>
-    <Scale Name="Ionian (Major)" Intervals="2 2 1 2 2 2 1" />
-    <Scale Name="Aeolian (Minor)" Intervals="2 1 2 2 1 2 2" />
+    <Scale Name="Ionian" Intervals="2 2 1 2 2 2 1" /> <!-- a.k.a. Natural Major -->
+    <Scale Name="Aeolian" Intervals="2 1 2 2 1 2 2" /> <!-- a.k.a. Natural Minor -->
     <Scale Name="Lydian" Intervals="2 2 2 1 2 2 1" />
     <Scale Name="Mixolydian" Intervals="2 2 1 2 2 1 2" />
     <Scale Name="Dorian" Intervals="2 1 2 2 2 1 2" />

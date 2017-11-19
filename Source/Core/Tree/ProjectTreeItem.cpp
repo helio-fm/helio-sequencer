@@ -473,6 +473,7 @@ Array<MidiTrack *> ProjectTreeItem::getTracks() const
     
     // and explicitly add the only non-tree-owned layers
     tracks.add(this->timeline->getAnnotations());
+    tracks.add(this->timeline->getKeySignatures());
     tracks.add(this->timeline->getTimeSignatures());
 
     return tracks;
@@ -1000,6 +1001,9 @@ void ProjectTreeItem::rebuildSequencesHashIfNeeded()
 
         this->sequencesHash.set(this->timeline->getAnnotations()->getTrackId().toString(), 
             this->timeline->getAnnotations()->getSequence());
+
+        this->sequencesHash.set(this->timeline->getKeySignatures()->getTrackId().toString(),
+            this->timeline->getKeySignatures()->getSequence());
 
         this->sequencesHash.set(this->timeline->getTimeSignatures()->getTrackId().toString(),
             this->timeline->getTimeSignatures()->getSequence());

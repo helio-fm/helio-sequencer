@@ -23,15 +23,6 @@
 class Origami : public Component
 {
 public:
-
-    enum ColourIds
-    {
-        resizerLineColourId            = 0x99003001,
-        resizerShadowColourId          = 0x99003002,
-        resizerMovingLineColourId      = 0x99003003,
-        resizerMovingShadowColourId    = 0x99003004
-    };
-
     class ChildConstrainer : public ComponentBoundsConstrainer
     {
     public:
@@ -47,8 +38,6 @@ public:
         SafePointer<Component> component;
         ScopedPointer<Component> shadowAtStart;
         ScopedPointer<Component> shadowAtEnd;
-        ScopedPointer<Component> borderAtStart;
-        ScopedPointer<Component> borderAtEnd;
         ScopedPointer<Component> resizer;
         ScopedPointer<Origami::ChildConstrainer> constrainer;
         int size;
@@ -68,8 +57,6 @@ public:
     virtual void addFixedPage(Component *component) = 0;
     virtual void addShadowAtTheStart() = 0;
     virtual void addShadowAtTheEnd() = 0;
-    virtual void addEdgeAtTheStart() = 0;
-    virtual void addEdgeAtTheEnd() = 0;
     virtual void addResizer(int minSize, int maxSize) = 0;
 
     int getMinimumCommonSize() const;

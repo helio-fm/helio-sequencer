@@ -30,8 +30,8 @@ class TimeSignaturesSequence;
 
 class TimeSignatureDialog  : public FadingDialog,
                              public TextEditorListener,
-                             public ButtonListener,
-                             public ComboBoxListener
+                             public Button::Listener,
+                             public ComboBox::Listener
 {
 public:
 
@@ -60,8 +60,8 @@ private:
 
     //[UserVariables]
 
-    TimeSignatureEvent targetEvent;
-    TimeSignaturesSequence *targetLayer;
+    TimeSignatureEvent originalEvent;
+    TimeSignaturesSequence *originalSequence;
     Component &ownerComponent;
 
     inline void cancelAndDisappear();

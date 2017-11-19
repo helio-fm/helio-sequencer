@@ -26,10 +26,14 @@ public:
     explicit PlayerThread(Transport &transport);
     ~PlayerThread() override;
 
-    void run() override;
+    void startPlayback(bool shouldBroadcastTransportEvents = true);
 
 private:
 
+    void run() override;
+
     Transport &transport;
+    bool broadcastMode;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayerThread)
 };

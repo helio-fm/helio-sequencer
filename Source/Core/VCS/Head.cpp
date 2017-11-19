@@ -38,7 +38,6 @@ Head::Head(const Head &other) :
     headingAt(other.headingAt),
     state(new HeadState(other.state))
 {
-    
 }
 
 Head::Head(Pack::Ptr packPtr, WeakReference<TrackedItemsSource> targetProject) :
@@ -47,8 +46,8 @@ Head::Head(Pack::Ptr packPtr, WeakReference<TrackedItemsSource> targetProject) :
     pack(packPtr),
     diffOutdated(false),
     rebuildingDiffMode(false),
-    diff(packPtr, ""),
-    headingAt(packPtr, ""),
+    diff(Revision::create(packPtr)),
+    headingAt(Revision::create(packPtr)),
     state(nullptr)
 {
     if (targetVcsItemsSource != nullptr)
@@ -59,16 +58,14 @@ Head::Head(Pack::Ptr packPtr, WeakReference<TrackedItemsSource> targetProject) :
 
 Head::~Head()
 {
-
 }
 
-
-Revision Head::getHeadingRevision() const
+ValueTree Head::getHeadingRevision() const
 {
     return this->headingAt;
 }
 
-Revision Head::getDiff() const
+ValueTree Head::getDiff() const
 {
     ScopedReadLock lock(this->diffLock);
     return this->diff;
@@ -126,12 +123,11 @@ void Head::setRebuildingDiffMode(bool isBuildingNow)
     this->rebuildingDiffMode = isBuildingNow;
 }
 
-
-void Head::mergeStateWith(Revision changes)
+void Head::mergeStateWith(ValueTree changes)
 {
-    Logger::writeToLog("Head::mergeStateWith " + changes.getUuid());
+    Logger::writeToLog("Head::mergeStateWith " + Revision::getUuid(changes));
 
-    Revision headRevision(this->getHeadingRevision());
+    ValueTree headRevision(this->getHeadingRevision());
 
     for (int i = 0; i < changes.getNumProperties(); ++i)
     {
@@ -166,7 +162,7 @@ void Head::mergeStateWith(Revision changes)
     }
 }
 
-bool Head::moveTo(const Revision &revision)
+bool VCS::Head::moveTo(const ValueTree revision)
 {
     if (this->isThreadRunning())
     {
@@ -176,8 +172,8 @@ bool Head::moveTo(const Revision &revision)
     if (this->targetVcsItemsSource != nullptr)
     {
         // здесь надо будет пройтись до корня и запомнить все ревизии
-        Array<Revision> treePath;
-        Revision currentRevision(revision);
+        Array<ValueTree> treePath;
+        ValueTree currentRevision(revision);
 
         // сначала обнуляем состояние
         {
@@ -185,20 +181,20 @@ bool Head::moveTo(const Revision &revision)
             this->state = new HeadState();
         }
 
-        Logger::writeToLog("Head::moveTo " + currentRevision.getUuid());
+        Logger::writeToLog("Head::moveTo " + Revision::getUuid(currentRevision));
 
         while (currentRevision.isValid())
         {
             treePath.insert(0, currentRevision);
-            currentRevision = Revision(currentRevision.getParent());
+            currentRevision = currentRevision.getParent();
         }
 
         // затем, идти по ним в обратном порядке - от корня
         for (auto && i : treePath)
         {
-            const Revision rev(i);
+            const ValueTree rev(i);
 
-            Logger::writeToLog("Head::moveTo -> " + rev.getUuid());
+            Logger::writeToLog("Head::moveTo -> " + Revision::getUuid(rev));
 
             // собираем все дельты и применяем их к текущему состоянию
             for (int j = 0; j < rev.getNumProperties(); ++j)
@@ -235,7 +231,7 @@ bool Head::moveTo(const Revision &revision)
     return true;
 }
 
-void Head::pointTo(const Revision &revision)
+void Head::pointTo(const ValueTree revision)
 {
     this->headingAt = revision;
     this->setDiffOutdated(true);

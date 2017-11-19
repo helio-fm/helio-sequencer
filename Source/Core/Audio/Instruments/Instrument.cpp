@@ -97,33 +97,34 @@ void Instrument::initializeFrom(const PluginDescription &pluginDescription)
     this->processorGraph->clear();
     this->initializeDefaultNodes();
     
-    this->addNodeAsync(pluginDescription, 0.5f, 0.5f, [&](AudioProcessorGraph::Node *instrument)
-                       {
-                           if (instrument == nullptr) { return; }
+    this->addNodeAsync(pluginDescription, 0.5f, 0.5f, 
+        [&](AudioProcessorGraph::Node::Ptr instrument)
+        {
+            if (instrument == nullptr) { return; }
                            
-                           // ограничить 2мя?
-                           for (int i = 0; i < instrument->getProcessor()->getTotalNumInputChannels(); ++i)
-                           {
-                               this->addConnection(this->audioIn->nodeId, i, instrument->nodeId, i);
-                           }
+            // ограничить 2мя?
+            for (int i = 0; i < instrument->getProcessor()->getTotalNumInputChannels(); ++i)
+            {
+                this->addConnection(this->audioIn->nodeID, i, instrument->nodeID, i);
+            }
                            
-                           if (instrument->getProcessor()->acceptsMidi())
-                           {
-                               this->addConnection(this->midiIn->nodeId, Instrument::midiChannelNumber, instrument->nodeId, Instrument::midiChannelNumber);
-                           }
+            if (instrument->getProcessor()->acceptsMidi())
+            {
+                this->addConnection(this->midiIn->nodeID, Instrument::midiChannelNumber, instrument->nodeID, Instrument::midiChannelNumber);
+            }
                            
-                           for (int i = 0; i < instrument->getProcessor()->getTotalNumOutputChannels(); ++i)
-                           {
-                               this->addConnection(instrument->nodeId, i, this->audioOut->nodeId, i);
-                           }
+            for (int i = 0; i < instrument->getProcessor()->getTotalNumOutputChannels(); ++i)
+            {
+                this->addConnection(instrument->nodeID, i, this->audioOut->nodeID, i);
+            }
                            
-                           if (instrument->getProcessor()->producesMidi())
-                           {
-                               this->addConnection(instrument->nodeId, Instrument::midiChannelNumber, this->midiOut->nodeId, Instrument::midiChannelNumber);
-                           }
+            if (instrument->getProcessor()->producesMidi())
+            {
+                this->addConnection(instrument->nodeID, Instrument::midiChannelNumber, this->midiOut->nodeID, Instrument::midiChannelNumber);
+            }
                            
-                           this->sendChangeMessage();
-                       });
+            this->sendChangeMessage();
+        });
 }
 
 void Instrument::addNodeToFreeSpace(const PluginDescription &pluginDescription)
@@ -132,7 +133,7 @@ void Instrument::addNodeToFreeSpace(const PluginDescription &pluginDescription)
     float x = 0.5f;
     float y = 0.5f;
 
-    this->addNodeAsync(pluginDescription, x, y, [this](AudioProcessorGraph::Node *node)
+    this->addNodeAsync(pluginDescription, x, y, [this](AudioProcessorGraph::Node::Ptr node)
     {
         if (node != nullptr)
         {
@@ -141,8 +142,7 @@ void Instrument::addNodeToFreeSpace(const PluginDescription &pluginDescription)
     });
 }
 
-
-uint32 Instrument::getNextUID() noexcept
+AudioProcessorGraph::NodeID Instrument::getNextUID() noexcept
 {
     return ++lastUID;
 }
@@ -157,49 +157,50 @@ int Instrument::getNumNodes() const noexcept
     return this->processorGraph->getNumNodes();
 }
 
-const AudioProcessorGraph::Node::Ptr Instrument::getNode(const int index) const noexcept
+const AudioProcessorGraph::Node::Ptr Instrument::getNode(int index) const noexcept
 {
     return this->processorGraph->getNode(index);
 }
 
-const AudioProcessorGraph::Node::Ptr Instrument::getNodeForId(const uint32 uid) const noexcept
+const AudioProcessorGraph::Node::Ptr Instrument::getNodeForId(AudioProcessorGraph::NodeID uid) const noexcept
 {
     return this->processorGraph->getNodeForId(uid);
 }
 
 void Instrument::addNodeAsync(const PluginDescription &desc,
-                              double x, double y,
-                              std::function<void (AudioProcessorGraph::Node *)> f)
+    double x, double y,
+    std::function<void (AudioProcessorGraph::Node::Ptr)> f)
 {
     this->formatManager.
     createPluginInstanceAsync(desc,
-                              this->processorGraph->getSampleRate(),
-                              this->processorGraph->getBlockSize(),
-                              [this, desc, x, y, f](AudioPluginInstance *instance, const String &error)
-                              {
-                                  AudioProcessorGraph::Node *node = nullptr;
-                                  
-                                  if (instance != nullptr)
-                                  {
-                                      node = this->processorGraph->addNode(instance);
-                                  }
-                                  
-                                  if (node == nullptr)
-                                  {
-                                      f(nullptr);
-                                      return;
-                                  }
-                                  
-                                  this->configureNode(node, desc, x, y);
-                                  this->sendChangeMessage();
-                                  
-                                  f(node);
-                              });
+        this->processorGraph->getSampleRate(),
+        this->processorGraph->getBlockSize(),
+        [this, desc, x, y, f](AudioPluginInstance *instance, const String &error)
+    {
+        AudioProcessorGraph::Node::Ptr node = nullptr;
+
+        if (instance != nullptr)
+        {
+            node = this->processorGraph->addNode(instance);
+        }
+
+        if (node == nullptr)
+        {
+            f(nullptr);
+            return;
+        }
+
+        this->configureNode(node, desc, x, y);
+        this->sendChangeMessage();
+
+        f(node);
+    });
 }
 
-AudioProcessorGraph::Node *Instrument::addNode(Instrument *instrument, double x, double y)
+AudioProcessorGraph::Node::Ptr Instrument::addNode(Instrument *instrument, double x, double y)
 {
-    AudioProcessorGraph::Node *node = this->processorGraph->addNode(instrument->getProcessorGraph());
+    AudioProcessorGraph::Node::Ptr node =
+        this->processorGraph->addNode(instrument->getProcessorGraph());
     
     if (node != nullptr)
     {
@@ -211,14 +212,14 @@ AudioProcessorGraph::Node *Instrument::addNode(Instrument *instrument, double x,
     return node;
 }
 
-void Instrument::removeNode(const uint32 id)
+void Instrument::removeNode(AudioProcessorGraph::NodeID id)
 {
     PluginWindow::closeCurrentlyOpenWindowsFor(id);
     this->processorGraph->removeNode(id);
     this->sendChangeMessage();
 }
 
-void Instrument::disconnectNode(const uint32 id)
+void Instrument::disconnectNode(AudioProcessorGraph::NodeID id)
 {
     this->processorGraph->disconnectNode(id);
     this->sendChangeMessage();
@@ -230,9 +231,9 @@ void Instrument::removeIllegalConnections()
     this->sendChangeMessage();
 }
 
-void Instrument::setNodePosition(const int nodeId, double x, double y)
+void Instrument::setNodePosition(AudioProcessorGraph::NodeID id, double x, double y)
 {
-    const AudioProcessorGraph::Node::Ptr n(this->processorGraph->getNodeForId(nodeId));
+    const AudioProcessorGraph::Node::Ptr n(this->processorGraph->getNodeForId(id));
 
     if (n != nullptr)
     {
@@ -241,11 +242,11 @@ void Instrument::setNodePosition(const int nodeId, double x, double y)
     }
 }
 
-void Instrument::getNodePosition(const int nodeId, double &x, double &y) const
+void Instrument::getNodePosition(AudioProcessorGraph::NodeID id, double &x, double &y) const
 {
     x = y = 0;
 
-    const AudioProcessorGraph::Node::Ptr n(this->processorGraph->getNodeForId(nodeId));
+    const AudioProcessorGraph::Node::Ptr n(this->processorGraph->getNodeForId(id));
 
     if (n != nullptr)
     {
@@ -259,31 +260,31 @@ void Instrument::getNodePosition(const int nodeId, double &x, double &y) const
 // Default nodes' id's
 //===----------------------------------------------------------------------===//
 
-uint32 Instrument::getMidiInId() const
+AudioProcessorGraph::NodeID Instrument::getMidiInId() const
 {
     jassert(this->midiIn);
-    return this->midiIn->nodeId;
+    return this->midiIn->nodeID;
 }
 
-uint32 Instrument::getMidiOutId() const
+AudioProcessorGraph::NodeID Instrument::getMidiOutId() const
 {
     jassert(this->midiOut);
-    return this->midiOut->nodeId;
+    return this->midiOut->nodeID;
 }
 
-uint32 Instrument::getAudioInId() const
+AudioProcessorGraph::NodeID Instrument::getAudioInId() const
 {
     jassert(this->audioIn);
-    return this->audioIn->nodeId;
+    return this->audioIn->nodeID;
 }
 
-uint32 Instrument::getAudioOutId() const
+AudioProcessorGraph::NodeID Instrument::getAudioOutId() const
 {
     jassert(this->audioOut);
-    return this->audioOut->nodeId;
+    return this->audioOut->nodeID;
 }
 
-bool Instrument::isNodeStandardInputOrOutput(uint32 nodeId) const
+bool Instrument::isNodeStandardInputOrOutput(AudioProcessorGraph::NodeID nodeId) const
 {
     return nodeId == this->getMidiInId()
         || nodeId == this->getMidiOutId()
@@ -296,55 +297,48 @@ bool Instrument::isNodeStandardInputOrOutput(uint32 nodeId) const
 // Connections
 //===----------------------------------------------------------------------===//
 
-int Instrument::getNumConnections() const noexcept
+std::vector<AudioProcessorGraph::Connection> Instrument::getConnections() const noexcept
 {
-    return this->processorGraph->getNumConnections();
+    return this->processorGraph->getConnections();
 }
 
-const AudioProcessorGraph::Connection *Instrument::getConnection(const int index) const noexcept
+bool Instrument::isConnected(AudioProcessorGraph::Connection connection) const noexcept
 {
-    return this->processorGraph->getConnection(index);
+    return this->processorGraph->isConnected(connection);
 }
 
-const AudioProcessorGraph::Connection *Instrument::getConnectionBetween(
-    uint32 sourceFilterUID, int sourceFilterChannel,
-    uint32 destFilterUID, int destFilterChannel) const noexcept
+bool Instrument::canConnect(AudioProcessorGraph::Connection connection) const noexcept
 {
-    return this->processorGraph->getConnectionBetween(sourceFilterUID,
-            sourceFilterChannel, destFilterUID, destFilterChannel);
+    return this->processorGraph->canConnect(connection);
 }
 
-bool Instrument::canConnect(uint32 sourceFilterUID, int sourceFilterChannel,
-                            uint32 destFilterUID, int destFilterChannel) const noexcept
+bool Instrument::addConnection(
+    AudioProcessorGraph::NodeID sourceID,
+    int sourceChannel,
+    AudioProcessorGraph::NodeID destinationID,
+    int destinationChannel)
 {
-    return this->processorGraph->canConnect(sourceFilterUID, sourceFilterChannel,
-                                           destFilterUID, destFilterChannel);
+    AudioProcessorGraph::NodeAndChannel source;
+    source.nodeID = sourceID;
+    source.channelIndex = sourceChannel;
+
+    AudioProcessorGraph::NodeAndChannel destination;
+    destination.nodeID = destinationID;
+    destination.channelIndex = destinationChannel;
+
+    AudioProcessorGraph::Connection c(source, destination);
+    if (this->processorGraph->addConnection(c))
+    {
+        this->sendChangeMessage();
+        return true;
+    }
+
+    return false;
 }
 
-bool Instrument::addConnection(uint32 sourceFilterUID, int sourceFilterChannel,
-                               uint32 destFilterUID, int destFilterChannel)
+void Instrument::removeConnection(AudioProcessorGraph::Connection connection)
 {
-    const bool result =
-        this->processorGraph->addConnection(sourceFilterUID, sourceFilterChannel,
-                                            destFilterUID, destFilterChannel);
-
-    if (result)
-    { this->sendChangeMessage(); }
-
-    return result;
-}
-
-void Instrument::removeConnection(const int index)
-{
-    this->processorGraph->removeConnection(index);
-    this->sendChangeMessage();
-}
-
-void Instrument::removeConnection(uint32 sourceFilterUID, int sourceFilterChannel,
-                                  uint32 destFilterUID, int destFilterChannel)
-{
-    this->processorGraph->removeConnection(sourceFilterUID, sourceFilterChannel,
-                                          destFilterUID, destFilterChannel);
+    this->processorGraph->removeConnection(connection);
     this->sendChangeMessage();
 }
 
@@ -372,17 +366,13 @@ XmlElement *Instrument::serialize() const
         xml->addChildElement(this->createNodeXml(this->processorGraph->getNode(i)));
     }
 
-    const int numConnections = this->processorGraph->getNumConnections();
-    for (int i = 0; i < numConnections; ++i)
+    for (const auto c : this->getConnections())
     {
-        const AudioProcessorGraph::Connection *const fc = this->processorGraph->getConnection(i);
-
         auto e = new XmlElement(Serialization::Core::instrumentConnection);
-        e->setAttribute("srcFilter", static_cast<int>( fc->sourceNodeId));
-        e->setAttribute("srcChannel", fc->sourceChannelIndex);
-        e->setAttribute("dstFilter", static_cast<int>( fc->destNodeId));
-        e->setAttribute("dstChannel", fc->destChannelIndex);
-
+        e->setAttribute("srcFilter", static_cast<int>(c.source.nodeID));
+        e->setAttribute("srcChannel", c.source.channelIndex);
+        e->setAttribute("dstFilter", static_cast<int>(c.destination.nodeID));
+        e->setAttribute("dstChannel", c.destination.channelIndex);
         xml->addChildElement(e);
     }
 
@@ -393,14 +383,14 @@ void Instrument::deserialize(const XmlElement &xml)
 {
     this->reset();
 
-    const XmlElement *mainSlot = (xml.getTagName() == Serialization::Core::instrument) ?
-                                 &xml : xml.getChildByName(Serialization::Core::instrument);
+    const XmlElement *root = (xml.getTagName() == Serialization::Core::instrument) ?
+        &xml : xml.getChildByName(Serialization::Core::instrument);
 
-    if (mainSlot == nullptr)
+    if (root == nullptr)
     { return; }
 
-    this->instrumentID = mainSlot->getStringAttribute(Serialization::Core::instrumentId, this->instrumentID.toString());
-    this->instrumentName = mainSlot->getStringAttribute(Serialization::Core::instrumentName, this->instrumentName);
+    this->instrumentID = root->getStringAttribute(Serialization::Core::instrumentId, this->instrumentID.toString());
+    this->instrumentName = root->getStringAttribute(Serialization::Core::instrumentName, this->instrumentName);
 
     // Well this hack of an incredible ugliness
     // is here to handle loading of async-loaded AUv3 plugins
@@ -416,7 +406,7 @@ void Instrument::deserialize(const XmlElement &xml)
     
     Array<ConnectionDescription> connectionDescriptions;
     
-    forEachXmlChildElementWithTagName(*mainSlot, e, Serialization::Core::instrumentConnection)
+    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::instrumentConnection)
     {
         connectionDescriptions.add({
             static_cast<uint32>(e->getIntAttribute("srcFilter")),
@@ -426,41 +416,30 @@ void Instrument::deserialize(const XmlElement &xml)
         });
     }
     
-    forEachXmlChildElementWithTagName(*mainSlot, e, Serialization::Core::instrumentNode)
+    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::instrumentNode)
     {
-        this->createNodeFromXmlAsync(*e, [this, connectionDescriptions](AudioProcessorGraph::Node *)
-                                     {
-                                         // Try to create as many connections as possible
-                                         for (const auto &connectionInfo : connectionDescriptions)
-                                         {
-                                             this->addConnection(connectionInfo.srcFilter, connectionInfo.srcChannel,
-                                                                 connectionInfo.dstFilter, connectionInfo.dstChannel);
-                                         }
+        this->createNodeFromXmlAsync(*e,
+            [this, connectionDescriptions](AudioProcessorGraph::Node::Ptr)
+            {
+                // Try to create as many connections as possible
+                for (const auto &connectionInfo : connectionDescriptions)
+                {
+                    this->addConnection(connectionInfo.srcFilter, connectionInfo.srcChannel,
+                                        connectionInfo.dstFilter, connectionInfo.dstChannel);
+                }
                                          
-                                         this->processorGraph->removeIllegalConnections();
-                                         this->sendChangeMessage();
-                                     });
+                this->processorGraph->removeIllegalConnections();
+                this->sendChangeMessage();
+            });
     }
-
-//    forEachXmlChildElementWithTagName(*mainSlot, e, Serialization::Core::instrumentConnection)
-//    {
-//        this->addConnection(static_cast<uint32>( e->getIntAttribute("srcFilter")),
-//                            e->getIntAttribute("srcChannel"),
-//                            static_cast<uint32>( e->getIntAttribute("dstFilter")),
-//                            e->getIntAttribute("dstChannel"));
-//    }
-//
-//    this->processorGraph->removeIllegalConnections();
-//
-//    this->sendChangeMessage();
 }
 
-XmlElement *Instrument::createNodeXml(AudioProcessorGraph::Node *const node) const
+XmlElement *Instrument::createNodeXml(AudioProcessorGraph::Node::Ptr node) const
 {
     if (AudioPluginInstance *plugin = dynamic_cast<AudioPluginInstance *>(node->getProcessor()))
     {
         auto e = new XmlElement(Serialization::Core::instrumentNode);
-        e->setAttribute("uid", static_cast<int>(node->nodeId));
+        e->setAttribute("uid", static_cast<int>(node->nodeID));
         e->setAttribute("x", node->properties["x"].toString());
         e->setAttribute("y", node->properties["y"].toString());
         e->setAttribute("hash", node->properties["hash"].toString());
@@ -486,7 +465,7 @@ XmlElement *Instrument::createNodeXml(AudioProcessorGraph::Node *const node) con
 }
 
 void Instrument::createNodeFromXmlAsync(const XmlElement &xml,
-                                        std::function<void (AudioProcessorGraph::Node *)> f)
+    std::function<void (AudioProcessorGraph::Node::Ptr)> f)
 {
     PluginSmartDescription pd;
     
@@ -512,35 +491,35 @@ void Instrument::createNodeFromXmlAsync(const XmlElement &xml,
     
     formatManager.
     createPluginInstanceAsync(pd,
-                              this->processorGraph->getSampleRate(),
-                              this->processorGraph->getBlockSize(),
-                              [this, nodeStateBlock, nodeUid, nodeHash, nodeX, nodeY, nodeLastX, nodeLastY, f]
-                              (AudioPluginInstance *instance, const String &error)
-                              {
-                                  if (instance == nullptr)
-                                  {
-                                      f(nullptr);
-                                      return;
-                                  }
-                                  
-                                  AudioProcessorGraph::Node::Ptr node(this->processorGraph->addNode(instance, nodeUid));
-                                  
-                                  if (nodeStateBlock.getSize() > 0)
-                                  {
-                                      node->getProcessor()->
-                                      setStateInformation(nodeStateBlock.getData(),
-                                                          static_cast<int>(nodeStateBlock.getSize()));
-                                  }
-                                  
-                                  Uuid fallbackRandomHash;
-                                  node->properties.set("x", nodeX);
-                                  node->properties.set("y", nodeY);
-                                  node->properties.set("hash", nodeHash.isNotEmpty() ? nodeHash : fallbackRandomHash.toString());
-                                  node->properties.set("uiLastX", nodeLastX);
-                                  node->properties.set("uiLastY", nodeLastY);
-                                  
-                                  f(node);
-                              });
+        this->processorGraph->getSampleRate(),
+        this->processorGraph->getBlockSize(),
+        [this, nodeStateBlock, nodeUid, nodeHash, nodeX, nodeY, nodeLastX, nodeLastY, f]
+        (AudioPluginInstance *instance, const String &error)
+        {
+            if (instance == nullptr)
+            {
+                f(nullptr);
+                return;
+            }
+
+            AudioProcessorGraph::Node::Ptr node(this->processorGraph->addNode(instance, nodeUid));
+
+            if (nodeStateBlock.getSize() > 0)
+            {
+                node->getProcessor()->
+                    setStateInformation(nodeStateBlock.getData(),
+                        static_cast<int>(nodeStateBlock.getSize()));
+            }
+
+            Uuid fallbackRandomHash;
+            node->properties.set("x", nodeX);
+            node->properties.set("y", nodeY);
+            node->properties.set("hash", nodeHash.isNotEmpty() ? nodeHash : fallbackRandomHash.toString());
+            node->properties.set("uiLastX", nodeLastX);
+            node->properties.set("uiLastY", nodeLastY);
+
+            f(node);
+        });
 }
 
 void Instrument::createNodeFromXml(const XmlElement &xml)
@@ -596,16 +575,17 @@ void Instrument::initializeDefaultNodes()
     this->midiOut = this->addDefaultNode(*internalFormat.getDescriptionFor(InternalPluginFormat::midiOutputFilter), 0.9f, 0.85f);
 }
 
-AudioProcessorGraph::Node *Instrument::addDefaultNode(const PluginDescription &desc, double x, double y)
+AudioProcessorGraph::Node::Ptr Instrument::addDefaultNode(
+    const PluginDescription &desc, double x, double y)
 {
     String errorMessage;
     AudioPluginInstance *instance =
     formatManager.createPluginInstance(desc,
-                                       this->processorGraph->getSampleRate(),
-                                       this->processorGraph->getBlockSize(),
-                                       errorMessage);
+        this->processorGraph->getSampleRate(),
+        this->processorGraph->getBlockSize(),
+        errorMessage);
     
-    AudioProcessorGraph::Node *node = nullptr;
+    AudioProcessorGraph::Node::Ptr node = nullptr;
     
     if (instance != nullptr)
     {
@@ -623,9 +603,10 @@ AudioProcessorGraph::Node *Instrument::addDefaultNode(const PluginDescription &d
     return nullptr;
 }
 
-void Instrument::configureNode(AudioProcessorGraph::Node *node, const PluginDescription &desc, double x, double y)
+void Instrument::configureNode(AudioProcessorGraph::Node::Ptr node,
+    const PluginDescription &desc, double x, double y)
 {
-    // здесь надо собрать информацию о ноде из описания плагина, сделать хэш и запомнить его
+    // make a hash from a general instrument description
     const String descriptionString = (desc.name +
                                       desc.category +
                                       desc.descriptiveName +
@@ -642,26 +623,3 @@ void Instrument::configureNode(AudioProcessorGraph::Node *node, const PluginDesc
     node->properties.set("x", x);
     node->properties.set("y", y);
 }
-
-
-//===----------------------------------------------------------------------===//
-// Thread
-//===----------------------------------------------------------------------===//
-
-//void Instrument::run()
-//{
-//    // что делаем, если поток уже запущен?
-//    // что делаем при выходе?
-//    // что делаем с локами процессорграфа? введем переменную isReady?
-//    //
-//    if (this->initializationMode == FROM_PLUGIN)
-//    {
-//        //
-//    }
-//    else if (this->initializationMode == FROM_XML)
-//    {
-//        //
-//    }
-//}
-
-

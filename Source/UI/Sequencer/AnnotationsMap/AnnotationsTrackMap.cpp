@@ -71,7 +71,6 @@ void AnnotationsTrackMap<T>::resized()
     for (int i = 0; i < this->annotationComponents.size(); ++i)
     {
         T *current = this->annotationComponents.getUnchecked(i);
-        current->updateContent();
 
         if (previous != nullptr)
         {
@@ -97,8 +96,7 @@ void AnnotationsTrackMap<T>::resized()
 template<typename T>
 void AnnotationsTrackMap<T>::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    if (newEvent.getSequence() ==
-        this->project.getTimeline()->getAnnotations()->getSequence())
+    if (oldEvent.isTypeOf(MidiEvent::Annotation))
     {
         const AnnotationEvent &annotation = static_cast<const AnnotationEvent &>(oldEvent);
         const AnnotationEvent &newAnnotation = static_cast<const AnnotationEvent &>(newEvent);
@@ -144,8 +142,7 @@ void AnnotationsTrackMap<T>::alignAnnotationComponent(T *component)
 template<typename T>
 void AnnotationsTrackMap<T>::onAddMidiEvent(const MidiEvent &event)
 {
-    if (event.getSequence() ==
-        this->project.getTimeline()->getAnnotations()->getSequence())
+    if (event.isTypeOf(MidiEvent::Annotation))
     {
         const AnnotationEvent &annotation = static_cast<const AnnotationEvent &>(event);
 
@@ -175,8 +172,7 @@ void AnnotationsTrackMap<T>::onAddMidiEvent(const MidiEvent &event)
 template<typename T>
 void AnnotationsTrackMap<T>::onRemoveMidiEvent(const MidiEvent &event)
 {
-    if (event.getSequence() ==
-        this->project.getTimeline()->getAnnotations()->getSequence())
+    if (event.isTypeOf(MidiEvent::Annotation))
     {
         const AnnotationEvent &annotation = static_cast<const AnnotationEvent &>(event);
 
@@ -385,6 +381,7 @@ void AnnotationsTrackMap<T>::reloadTrackMap()
         {
             auto component = new T(*this, *annotation);
             this->addAndMakeVisible(component);
+            component->updateContent();
 
             this->annotationComponents.addSorted(*component, component);
             this->annotationsHash.set(*annotation, component);

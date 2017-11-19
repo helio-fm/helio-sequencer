@@ -21,9 +21,10 @@
 #include "MidiTrack.h"
 
 
-MidiEvent::MidiEvent(MidiSequence *owner, float beatVal) :
+MidiEvent::MidiEvent(MidiSequence *owner, Type type, float beatVal) :
     sequence(owner),
-    beat(beatVal)
+    beat(beatVal),
+    type(type)
 {
     this->id = this->createId();
 }
