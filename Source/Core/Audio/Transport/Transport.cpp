@@ -586,16 +586,25 @@ void Transport::onPostRemoveMidiEvent(MidiSequence *const layer)
 
 void Transport::onChangeTrackProperties(MidiTrack *const track)
 {
-    // TODO: stop playback only when instrument changes?
-    this->onResetTrackContent(track);
+    // Stop playback only when instrument changes:
+    const auto trackId = track->getTrackId().toString();
+    if (!linksCache.contains(trackId) ||
+        this->linksCache[trackId]->getInstrumentID() != track->getTrackInstrumentId())
+    {
+        this->stopPlayback();
+        this->sequencesAreOutdated = true;
+        this->updateLinkForTrack(track);
+    }
 }
 
-void Transport::onResetTrackContent(MidiTrack *const track)
+void Transport::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
     this->stopPlayback();
-
     this->sequencesAreOutdated = true;
-    this->updateLinkForTrack(track);
+    for (const auto &track : tracks)
+    {
+        this->updateLinkForTrack(track);
+    }
 }
 
 void Transport::onAddTrack(MidiTrack *const track)

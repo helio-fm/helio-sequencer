@@ -67,8 +67,8 @@ void KeySignaturesSequence::importMidi(const MidiMessageSequence &sequence)
         }
     }
 
-    this->notifyBeatRangeChanged();
-    this->notifySequenceChanged();
+    this->updateBeatRange(false);
+    this->invalidateSequenceCache();
 }
 
 
@@ -92,6 +92,7 @@ void KeySignaturesSequence::silentImport(const MidiEvent &eventToImport)
     this->signaturesHashTable.set(signature, storedSignature);
     
     this->updateBeatRange(false);
+    this->invalidateSequenceCache();
 }
 
 MidiEvent *KeySignaturesSequence::insert(const KeySignatureEvent &signature, bool undoable)
@@ -325,12 +326,12 @@ void KeySignaturesSequence::deserialize(const XmlElement &xml)
 
     this->sort();
     this->updateBeatRange(false);
-    this->notifySequenceChanged();
+    this->invalidateSequenceCache();
 }
 
 void KeySignaturesSequence::reset()
 {
     this->midiEvents.clear();
     this->signaturesHashTable.clear();
-    this->notifySequenceChanged();
+    this->invalidateSequenceCache();
 }

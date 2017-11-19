@@ -29,38 +29,28 @@ namespace VCS
     public:
 
         HeadState();
-        
         HeadState(const HeadState &other);
-        
         explicit HeadState(const HeadState *other);
-
         ~HeadState() override;
 
-
         void addItem(RevisionItem::Ptr item);
-
         void removeItem(RevisionItem::Ptr item);
-
         void mergeItem(RevisionItem::Ptr item);
 
-
-        //===------------------------------------------------------------------===//
+        //===--------------------------------------------------------------===//
         // TrackedItemsSource
-        //
+        //===--------------------------------------------------------------===//
 
         String getVCSName() const override
-        {
-            return "<head state>";
-        }
+        { return "<head state>"; }
         
         int getNumTrackedItems() override;
-
         TrackedItem *getTrackedItem(int index) override;
 
-
         RevisionItem::Ptr getItemWithSameUuid(RevisionItem::Ptr item) const;
-
         RevisionItem::Ptr getItemWithUuid(const Uuid &uuid) const;
+
+        void onResetState() override {}
 
     private:
 

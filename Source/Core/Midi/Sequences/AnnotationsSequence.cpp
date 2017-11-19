@@ -56,8 +56,8 @@ void AnnotationsSequence::importMidi(const MidiMessageSequence &sequence)
         }
     }
 
-    this->notifyBeatRangeChanged();
-    this->notifySequenceChanged();
+    this->updateBeatRange(false);
+    this->invalidateSequenceCache();
 }
 
 
@@ -82,6 +82,7 @@ void AnnotationsSequence::silentImport(const MidiEvent &eventToImport)
     this->annotationsHashTable.set(annotation, storedAnnotation);
     
     this->updateBeatRange(false);
+    this->invalidateSequenceCache();
 }
 
 MidiEvent *AnnotationsSequence::insert(const AnnotationEvent &annotation, bool undoable)
@@ -316,12 +317,12 @@ void AnnotationsSequence::deserialize(const XmlElement &xml)
 
     this->sort();
     this->updateBeatRange(false);
-    this->notifySequenceChanged();
+    this->invalidateSequenceCache();
 }
 
 void AnnotationsSequence::reset()
 {
     this->midiEvents.clear();
     this->annotationsHashTable.clear();
-    this->notifySequenceChanged();
+    this->invalidateSequenceCache();
 }

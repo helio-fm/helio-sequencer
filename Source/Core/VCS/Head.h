@@ -57,11 +57,11 @@ namespace VCS
         void mergeStateWith(ValueTree changes);
         bool moveTo(const ValueTree revision); // rebuilds state index
         void pointTo(const ValueTree revision); // does not rebuild index
-        bool resetChangedItemToState(const VCS::RevisionItem::Ptr diffItem);
 
         void checkout();
         void cherryPick(const Array<Uuid> uuids);
         void cherryPickAll();
+        bool resetChanges(const Array<RevisionItem::Ptr> &changes);
 
         void rebuildDiffIfNeeded(); // called from the editor when it gets visible
         void rebuildDiffNow(); // called from the visible editor, when it receives vcs change message 
@@ -89,6 +89,7 @@ namespace VCS
 
         void run() override;
         void checkoutItem(VCS::RevisionItem::Ptr stateItem);
+        bool resetChangedItemToState(const VCS::RevisionItem::Ptr diffItem);
 
         ReadWriteLock outdatedMarkerLock;
         bool diffOutdated;

@@ -48,8 +48,8 @@ public:
     double getTotalTime() const;
     void seekToPosition(double absPosition);
     
-    void probeSoundAt(double absTrackPosition,
-                      const MidiSequence *limitToLayer = nullptr);
+    void probeSoundAt(double absTrackPosition, 
+        const MidiSequence *limitToLayer = nullptr);
     
     void probeSequence(const MidiMessageSequence &sequence);
 
@@ -104,10 +104,10 @@ public:
     void onAddTrack(MidiTrack *const track) override;
     void onRemoveTrack(MidiTrack *const track) override;
     void onChangeTrackProperties(MidiTrack *const track) override;
-    void onResetTrackContent(MidiTrack *const track) override;
 
     void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
     void onChangeViewBeatRange(float firstBeat, float lastBeat) override {}
+    void onReloadProjectContent(const Array<MidiTrack *> &tracks) override;
 
     //===------------------------------------------------------------------===//
     // Listeners management

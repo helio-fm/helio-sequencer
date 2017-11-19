@@ -26,7 +26,6 @@ namespace VCS
     public:
 
         TrackedItemsSource() {}
-
         virtual ~TrackedItemsSource()
         {
             this->masterReference.clear();
@@ -35,14 +34,10 @@ namespace VCS
         virtual String getVCSName() const = 0;
 
         virtual int getNumTrackedItems() = 0;
-
         virtual TrackedItem *getTrackedItem(int index) = 0;
 
-        // это - для проекта:
         virtual TrackedItem *initTrackedItem(const String &type, const Uuid &id) { return nullptr; }
-
         virtual bool deleteTrackedItem(TrackedItem *item) { return false; }
-
         virtual void clearAllTrackedItems()
         {
             Array<TrackedItem *> itemsToClear;
@@ -57,6 +52,9 @@ namespace VCS
                 this->deleteTrackedItem(i);
             }
         }
+
+        // Called after checkout / reset to / etc
+        virtual void onResetState() = 0;
 
     private:
 

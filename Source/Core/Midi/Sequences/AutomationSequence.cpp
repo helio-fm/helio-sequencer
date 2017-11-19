@@ -38,9 +38,7 @@ AutomationSequence::AutomationSequence(MidiTrack &track,
 void AutomationSequence::importMidi(const MidiMessageSequence &sequence)
 {
     this->clearUndoHistory();
-    
     this->checkpoint();
-    
     this->reset();
     
     for (int i = 0; i < sequence.getNumEvents(); ++i)
@@ -58,8 +56,8 @@ void AutomationSequence::importMidi(const MidiMessageSequence &sequence)
         }
     }
     
-    this->notifyBeatRangeChanged();
-    this->notifySequenceChanged();
+    this->updateBeatRange(false);
+    this->invalidateSequenceCache();
 }
 
 
@@ -82,6 +80,7 @@ void AutomationSequence::silentImport(const MidiEvent &eventToImport)
     this->eventsHashTable.set(autoEvent, storedEvent);
 
     this->updateBeatRange(false);
+    this->invalidateSequenceCache();
 }
 
 MidiEvent *AutomationSequence::insert(const AutomationEvent &autoEvent, bool undoable)
@@ -266,7 +265,6 @@ bool AutomationSequence::changeGroup(const Array<AutomationEvent> eventsBefore,
         }
         
         this->sort();
-        this->notifySequenceChanged();
         this->updateBeatRange(true);
     }
 
@@ -321,13 +319,13 @@ void AutomationSequence::deserialize(const XmlElement &xml)
 
     this->sort();
     this->updateBeatRange(false);
-    this->notifySequenceChanged();
+    this->invalidateSequenceCache();
 }
 
 void AutomationSequence::reset()
 {
     this->clearQuick();
-    this->notifySequenceChanged();
+    this->invalidateSequenceCache();
 }
 
 void AutomationSequence::clearQuick()

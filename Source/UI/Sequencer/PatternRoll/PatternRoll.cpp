@@ -322,16 +322,6 @@ void PatternRoll::onChangeTrackProperties(MidiTrack *const track)
     }
 }
 
-void PatternRoll::onResetTrackContent(MidiTrack *const track)
-{
-    if (Pattern *pattern = track->getPattern())
-    {
-        this->tracks.removeAllInstancesOf(track);
-        this->tracks.addSorted(*track, track);
-        this->reloadRollContent();
-    }
-}
-
 void PatternRoll::onRemoveTrack(MidiTrack *const track)
 {
     this->tracks.removeAllInstancesOf(track);
@@ -416,6 +406,11 @@ void PatternRoll::onRemoveClip(const Clip &clip)
 void PatternRoll::onPostRemoveClip(Pattern *const pattern)
 {
     //
+}
+
+void PatternRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+{
+    this->reloadRollContent();
 }
 
 

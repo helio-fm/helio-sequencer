@@ -208,13 +208,9 @@ void KeySignaturesTrackMap<T>::onChangeTrackProperties(MidiTrack *const track)
 
 
 template< typename T >
-void KeySignaturesTrackMap<T>::onResetTrackContent(MidiTrack *const track)
+void KeySignaturesTrackMap<T>::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
-    if (this->project.getTimeline() != nullptr &&
-        track == this->project.getTimeline()->getKeySignatures())
-    {
-        this->reloadTrackMap();
-    }
+    this->reloadTrackMap();
 }
 
 template<typename T>
@@ -357,6 +353,10 @@ template<typename T>
 void KeySignaturesTrackMap<T>::reloadTrackMap()
 {
     //Logger::writeToLog("KeySignaturesTrackMap<T>::reloadTrackMap");
+    if (this->project.getTimeline() == nullptr)
+    {
+        return;
+    }
 
     for (int i = 0; i < this->keySignatureComponents.size(); ++i)
     {

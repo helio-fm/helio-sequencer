@@ -97,8 +97,7 @@ public:
     void dispatchPostRemoveClip(Pattern *const pattern) override;
 
     void dispatchChangeTrackProperties(MidiTrack *const track) override;
-    void dispatchChangeTrackBeatRange(MidiTrack *const track) override;
-    void dispatchChangeTrackContent(MidiTrack *const track) override;
+    void dispatchChangeProjectBeatRange() override;
 
     ProjectTreeItem *getProject() const override;
 

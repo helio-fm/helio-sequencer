@@ -208,16 +208,6 @@ void AnnotationsTrackMap<T>::onChangeTrackProperties(MidiTrack *const track)
 }
 
 template<typename T>
-void AnnotationsTrackMap<T>::onResetTrackContent(MidiTrack *const track)
-{
-    if (this->project.getTimeline() != nullptr &&
-        track == this->project.getTimeline()->getAnnotations())
-    {
-        this->reloadTrackMap();
-    }
-}
-
-template<typename T>
 void AnnotationsTrackMap<T>::onAddTrack(MidiTrack *const track)
 {
     if (this->project.getTimeline() != nullptr &&
@@ -264,6 +254,12 @@ void AnnotationsTrackMap<T>::onChangeViewBeatRange(float firstBeat, float lastBe
     this->rollFirstBeat = firstBeat;
     this->rollLastBeat = lastBeat;
     this->resized();
+}
+
+template<typename T>
+void AnnotationsTrackMap<T>::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+{
+    this->reloadTrackMap();
 }
 
 
@@ -358,7 +354,10 @@ float AnnotationsTrackMap<T>::getBeatByXPosition(int x) const
 template<typename T>
 void AnnotationsTrackMap<T>::reloadTrackMap()
 {
-    //Logger::writeToLog("AnnotationsTrackMap<T>::reloadTrackMap");
+    if (this->project.getTimeline() == nullptr)
+    {
+        return;
+    }
 
     for (int i = 0; i < this->annotationComponents.size(); ++i)
     {

@@ -175,9 +175,6 @@ void AutomationTrackTreeItem::resetStateTo(const VCS::TrackedItem &newState)
             this->resetClipsDelta(newDeltaData);
         }
     }
-    
-    this->getSequence()->notifySequenceChanged();
-    this->getSequence()->notifyBeatRangeChanged();
 }
 
 

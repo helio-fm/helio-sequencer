@@ -103,8 +103,8 @@ public:
     void notifyEventAdded(const MidiEvent &event);
     void notifyEventRemoved(const MidiEvent &event);
     void notifyEventRemovedPostAction();
-    void notifySequenceChanged();
-    void notifyBeatRangeChanged();
+
+    void invalidateSequenceCache();
     void updateBeatRange(bool shouldNotifyIfChanged);
 
     //===------------------------------------------------------------------===//

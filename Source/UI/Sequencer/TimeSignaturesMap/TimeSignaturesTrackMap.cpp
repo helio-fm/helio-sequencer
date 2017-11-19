@@ -235,13 +235,9 @@ void TimeSignaturesTrackMap<T>::onChangeTrackProperties(MidiTrack *const track)
 
 
 template< typename T >
-void TimeSignaturesTrackMap<T>::onResetTrackContent(MidiTrack *const track)
+void TimeSignaturesTrackMap<T>::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
-    if (this->project.getTimeline() != nullptr &&
-        track == this->project.getTimeline()->getTimeSignatures())
-    {
-        this->reloadTrackMap();
-    }
+    this->reloadTrackMap();
 }
 
 template<typename T>
@@ -386,7 +382,10 @@ float TimeSignaturesTrackMap<T>::getBeatByXPosition(int x) const
 template<typename T>
 void TimeSignaturesTrackMap<T>::reloadTrackMap()
 {
-    //Logger::writeToLog("TimeSignaturesTrackMap<T>::reloadTrackMap");
+    if (this->project.getTimeline() == nullptr)
+    {
+        return;
+    }
 
     for (int i = 0; i < this->timeSignatureComponents.size(); ++i)
     {

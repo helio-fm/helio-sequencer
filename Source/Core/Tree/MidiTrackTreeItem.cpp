@@ -396,19 +396,11 @@ void MidiTrackTreeItem::dispatchChangeTrackProperties(MidiTrack *const track)
     }
 }
 
-void MidiTrackTreeItem::dispatchChangeTrackBeatRange(MidiTrack *const track)
+void MidiTrackTreeItem::dispatchChangeProjectBeatRange()
 {
     if (this->lastFoundParent != nullptr)
     {
         this->lastFoundParent->broadcastChangeProjectBeatRange();
-    }
-}
-
-void MidiTrackTreeItem::dispatchChangeTrackContent(MidiTrack *const track)
-{
-    if (this->lastFoundParent != nullptr)
-    {
-        this->lastFoundParent->broadcastResetTrackContent(this);
     }
 }
 

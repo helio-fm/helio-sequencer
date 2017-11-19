@@ -551,18 +551,6 @@ void PianoRoll::onChangeTrackProperties(MidiTrack *const track)
     }
 }
 
-void PianoRoll::onResetTrackContent(MidiTrack *const track)
-{
-    if (auto sequence = dynamic_cast<const PianoSequence *>(track->getSequence()))
-    {
-        // FIXME ASAP, this is an overkill.
-        // Everytime a track is reset, the roll reloads - we'll need to reload when after all tracks are reset
-        this->reloadRollContent();
-        // It is used on deserialize, import midi, reset and reset to vcs revision
-        // Remove onResetTrackContent and introduce onResetProjectContent?
-    }
-}
-
 void PianoRoll::onAddTrack(MidiTrack *const track)
 {
     for (int j = 0; j < track->getSequence()->size(); ++j)
@@ -617,6 +605,11 @@ void PianoRoll::onRemoveTrack(MidiTrack *const track)
             this->repaint();
         }
     }
+}
+
+void PianoRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+{
+    this->reloadRollContent();
 }
 
 

@@ -77,8 +77,8 @@ void PianoSequence::importMidi(const MidiMessageSequence &sequence)
         }
     }
 
-    this->notifyBeatRangeChanged();
-    this->notifySequenceChanged();
+    this->updateBeatRange(false);
+    this->invalidateSequenceCache();
 }
 
 
@@ -101,6 +101,7 @@ void PianoSequence::silentImport(const MidiEvent &eventToImport)
     this->notesHashTable.set(note, storedNote);
 
     this->updateBeatRange(false);
+    this->invalidateSequenceCache();
 }
 
 MidiEvent *PianoSequence::insert(const Note &note, const bool undoable)
@@ -396,13 +397,13 @@ void PianoSequence::deserialize(const XmlElement &xml)
 
     this->sort();
     this->updateBeatRange(false);
-    this->notifySequenceChanged();
+    this->invalidateSequenceCache();
 }
 
 void PianoSequence::reset()
 {
     this->clearQuick();
-    this->notifySequenceChanged();
+    this->invalidateSequenceCache();
 }
 
 void PianoSequence::clearQuick()

@@ -56,8 +56,8 @@ void TimeSignaturesSequence::importMidi(const MidiMessageSequence &sequence)
         }
     }
 
-    this->notifyBeatRangeChanged();
-    this->notifySequenceChanged();
+    this->updateBeatRange(false);
+    this->invalidateSequenceCache();
 }
 
 
@@ -81,6 +81,7 @@ void TimeSignaturesSequence::silentImport(const MidiEvent &eventToImport)
     this->signaturesHashTable.set(signature, storedSignature);
     
     this->updateBeatRange(false);
+    this->invalidateSequenceCache();
 }
 
 MidiEvent *TimeSignaturesSequence::insert(const TimeSignatureEvent &signature, bool undoable)
@@ -324,12 +325,12 @@ void TimeSignaturesSequence::deserialize(const XmlElement &xml)
 
     this->sort();
     this->updateBeatRange(false);
-    this->notifySequenceChanged();
+    this->invalidateSequenceCache();
 }
 
 void TimeSignaturesSequence::reset()
 {
     this->midiEvents.clear();
     this->signaturesHashTable.clear();
-    this->notifySequenceChanged();
+    this->invalidateSequenceCache();
 }

@@ -384,12 +384,9 @@ void AutomationTrackMap::onChangeTrackProperties(MidiTrack *const track)
     }
 }
 
-void AutomationTrackMap::onResetTrackContent(MidiTrack *const track)
+void AutomationTrackMap::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
-    if (this->sequence != nullptr && track->getSequence() == this->sequence)
-    {
-        this->reloadTrack();
-    }
+    this->reloadTrack();
 }
 
 void AutomationTrackMap::onAddTrack(MidiTrack *const track)

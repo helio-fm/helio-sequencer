@@ -287,6 +287,7 @@ bool VersionControl::resetChanges(SparseSet<int> selectedItems)
     if (selectedItems.size() == 0) { return false; }
 
     ValueTree allChanges(this->head.getDiff());
+    Array<RevisionItem::Ptr> changesToReset;
 
     for (int i = 0; i < selectedItems.size(); ++i)
     {
@@ -299,12 +300,12 @@ bool VersionControl::resetChanges(SparseSet<int> selectedItems)
 
         if (RevisionItem *item = dynamic_cast<RevisionItem *>(property.getObject()))
         {
-            this->head.resetChangedItemToState(item);
+            changesToReset.add(item);
         }
     }
 
+    this->head.resetChanges(changesToReset);
     Supervisor::track(Serialization::Activities::vcsReset);
-    //this->sendChangeMessage();
 
     return true;
 }
@@ -312,20 +313,20 @@ bool VersionControl::resetChanges(SparseSet<int> selectedItems)
 bool VersionControl::resetAllChanges()
 {
     ValueTree allChanges(this->head.getDiff());
-    
+    Array<RevisionItem::Ptr> changesToReset;
+
     for (int i = 0; i < allChanges.getNumProperties(); ++i)
     {
         const Identifier id(allChanges.getPropertyName(i));
         const var property(allChanges.getProperty(id));
-        
         if (RevisionItem *item = dynamic_cast<RevisionItem *>(property.getObject()))
         {
-            this->head.resetChangedItemToState(item);
+            changesToReset.add(item);
         }
     }
     
+    this->head.resetChanges(changesToReset);
     Supervisor::track(Serialization::Activities::vcsReset);
-    //this->sendChangeMessage();
     
     return true;
 }

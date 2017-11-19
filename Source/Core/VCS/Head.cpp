@@ -351,14 +351,13 @@ void Head::checkout()
         }
     }
 
-    //this->targetVcsItemsSource->clearAllTrackedItems();
-
-
     for (int i = 0; i < this->state->getNumTrackedItems(); ++i)
     {
         RevisionItem::Ptr stateItem = static_cast<RevisionItem *>(this->state->getTrackedItem(i));
         this->checkoutItem(stateItem);
     }
+
+    this->targetVcsItemsSource->onResetState();
 }
 
 void Head::cherryPick(const Array<Uuid> uuids)
@@ -383,6 +382,8 @@ void Head::cherryPick(const Array<Uuid> uuids)
             }
         }
     }
+
+    this->targetVcsItemsSource->onResetState();
 }
 
 void Head::cherryPickAll()
@@ -398,6 +399,25 @@ void Head::cherryPickAll()
         RevisionItem::Ptr stateItem = static_cast<RevisionItem *>(this->state->getTrackedItem(i));
         this->checkoutItem(stateItem);
     }
+
+    this->targetVcsItemsSource->onResetState();
+}
+
+bool VCS::Head::resetChanges(const Array<RevisionItem::Ptr> &changes)
+{
+    if (this->targetVcsItemsSource == nullptr)
+    { return false; }
+    
+    if (this->state == nullptr)
+    { return false; }
+
+    for (const auto item : changes)
+    {
+        this->resetChangedItemToState(item);
+    }
+
+    this->targetVcsItemsSource->onResetState();
+    return true;
 }
 
 void Head::checkoutItem(VCS::RevisionItem::Ptr stateItem)

@@ -855,9 +855,10 @@ Array<NewSerializedDelta> createKeySignaturesDiffs(const XmlElement *state, cons
             {
                 foundEventInChanges = true;
 
-                const bool eventHasChanged = (stateEvent->getBeat() != changesEvent->getBeat() ||
-                    stateEvent->getRootKey() != changesEvent->getRootKey() ||
-                    ! stateEvent->getScale().isEquivalentTo(changesEvent->getScale()));
+                const bool eventHasChanged =
+                    (stateEvent->getBeat() != changesEvent->getBeat() ||
+                        stateEvent->getRootKey() != changesEvent->getRootKey() ||
+                        ! stateEvent->getScale().isEquivalentTo(changesEvent->getScale()));
 
                 if (eventHasChanged)
                 {

@@ -584,6 +584,9 @@ void ProjectTreeItem::reset()
     this->vcsItems.add(this->timeline);
     this->undoStack->clearUndoHistory();
     TreeItem::reset();
+    // TODO test if we need that really (I suggest we don't):
+    //this->broadcastReloadProjectContent();
+    //this->broadcastChangeProjectBeatRange();
 }
 
 
@@ -632,6 +635,7 @@ void ProjectTreeItem::load(const XmlElement &xml)
         this->addChildTreeItem(new PatternEditorTreeItem(), 1);
     }
 
+    this->broadcastReloadProjectContent();
     const auto range = this->broadcastChangeProjectBeatRange();
 
     // a hack to add some margin to project beat range,
@@ -673,9 +677,6 @@ void ProjectTreeItem::importMidi(File &file)
         return;
     }
     
-    // ‚‡ÊÌÓ.
-    //tempFile.convertTimestampTicksToSeconds();
-    
     for (int trackNum = 0; trackNum < tempFile.getNumTracks(); trackNum++)
     {
         const MidiMessageSequence *currentTrack = tempFile.getTrack(trackNum);
@@ -685,6 +686,7 @@ void ProjectTreeItem::importMidi(File &file)
         layer->importMidi(*currentTrack);
     }
     
+    this->broadcastReloadProjectContent();
     this->broadcastChangeProjectBeatRange();
     this->getDocument()->save();
 }
@@ -774,12 +776,6 @@ void ProjectTreeItem::broadcastChangeTrackProperties(MidiTrack *const track)
     this->sendChangeMessage();
 }
 
-void ProjectTreeItem::broadcastResetTrackContent(MidiTrack *const track)
-{
-    this->changeListeners.call(&ProjectListener::onResetTrackContent, track);
-    this->sendChangeMessage();
-}
-
 void ProjectTreeItem::broadcastAddClip(const Clip &clip)
 {
     this->changeListeners.call(&ProjectListener::onAddClip, clip);
@@ -827,6 +823,12 @@ Point<float> ProjectTreeItem::broadcastChangeProjectBeatRange()
     this->sendChangeMessage();
 
     return beatRange;
+}
+
+void ProjectTreeItem::broadcastReloadProjectContent()
+{
+    this->changeListeners.call(&ProjectListener::onReloadProjectContent, this->getTracks());
+    this->sendChangeMessage();
 }
 
 void ProjectTreeItem::broadcastChangeViewBeatRange(float firstBeat, float lastBeat)
@@ -972,6 +974,11 @@ bool ProjectTreeItem::deleteTrackedItem(VCS::TrackedItem *item)
     return true;
 }
 
+void ProjectTreeItem::onResetState()
+{
+    this->broadcastReloadProjectContent();
+    this->broadcastChangeProjectBeatRange();
+}
 
 //===----------------------------------------------------------------------===//
 // ChangeListener

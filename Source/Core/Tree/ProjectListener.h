@@ -44,10 +44,12 @@ public:
     virtual void onAddTrack(MidiTrack *const track) = 0;
     virtual void onRemoveTrack(MidiTrack *const track) = 0;
     virtual void onChangeTrackProperties(MidiTrack *const track) = 0;
-    virtual void onResetTrackContent(MidiTrack *const track) = 0;
 
     virtual void onChangeProjectInfo(const ProjectInfo *info) {}
     virtual void onChangeProjectBeatRange(float firstBeat, float lastBeat) = 0;
     virtual void onChangeViewBeatRange(float firstBeat, float lastBeat) = 0;
+
+    // Send on midi import, reload or reset by VCS
+    virtual void onReloadProjectContent(const Array<MidiTrack *> &tracks) = 0;
 
 };

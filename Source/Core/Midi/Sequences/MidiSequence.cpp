@@ -193,15 +193,9 @@ void MidiSequence::notifyEventRemovedPostAction()
     this->eventDispatcher.dispatchPostRemoveEvent(this);
 }
 
-void MidiSequence::notifySequenceChanged()
+void MidiSequence::invalidateSequenceCache()
 {
     this->cacheIsOutdated = true;
-    this->eventDispatcher.dispatchChangeTrackContent(&this->track);
-}
-
-void MidiSequence::notifyBeatRangeChanged()
-{
-    this->eventDispatcher.dispatchChangeTrackBeatRange(&this->track);
 }
 
 void MidiSequence::updateBeatRange(bool shouldNotifyIfChanged)
@@ -217,7 +211,7 @@ void MidiSequence::updateBeatRange(bool shouldNotifyIfChanged)
     
     if (shouldNotifyIfChanged)
     {
-        this->notifyBeatRangeChanged();
+        this->eventDispatcher.dispatchChangeProjectBeatRange();
     }
 }
 

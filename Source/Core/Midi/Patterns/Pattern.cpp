@@ -212,11 +212,6 @@ void Pattern::notifyClipRemovedPostAction()
     this->eventDispatcher.dispatchPostRemoveClip(this);
 }
 
-void Pattern::notifyPatternChanged()
-{
-    this->eventDispatcher.dispatchChangeTrackContent(&this->track);
-}
-
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -262,13 +257,11 @@ void Pattern::deserialize(const XmlElement &xml)
     }
 
     this->sort();
-    this->notifyPatternChanged();
 }
 
 void Pattern::reset()
 {
     this->clearQuick();
-    this->notifyPatternChanged();
 }
 
 void Pattern::clearQuick()

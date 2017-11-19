@@ -176,7 +176,6 @@ public:
     void broadcastAddTrack(MidiTrack *const track);
     void broadcastRemoveTrack(MidiTrack *const track);
     void broadcastChangeTrackProperties(MidiTrack *const track);
-    void broadcastResetTrackContent(MidiTrack *const track);
 
     void broadcastAddClip(const Clip &clip);
     void broadcastChangeClip(const Clip &oldClip, const Clip &newClip);
@@ -185,6 +184,7 @@ public:
 
     void broadcastChangeProjectInfo(const ProjectInfo *info);
     void broadcastChangeViewBeatRange(float firstBeat, float lastBeat);
+    void broadcastReloadProjectContent();
     Point<float> broadcastChangeProjectBeatRange();
 
     //===------------------------------------------------------------------===//
@@ -196,6 +196,7 @@ public:
     VCS::TrackedItem *getTrackedItem(int index) override;
     VCS::TrackedItem *initTrackedItem(const String &type, const Uuid &id) override;
     bool deleteTrackedItem(VCS::TrackedItem *item) override;
+    void onResetState() override;
 
     //===------------------------------------------------------------------===//
     // ChangeListener

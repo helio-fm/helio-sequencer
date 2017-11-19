@@ -371,12 +371,9 @@ void TriggersTrackMap::onChangeTrackProperties(MidiTrack *const track)
     }
 }
 
-void TriggersTrackMap::onResetTrackContent(MidiTrack *const track)
+void TriggersTrackMap::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
-    if (this->layer != nullptr && track->getSequence() == this->layer)
-    {
-        this->reloadTrack();
-    }
+    this->reloadTrack();
 }
 
 void TriggersTrackMap::onAddTrack(MidiTrack *const track)

@@ -92,18 +92,18 @@ ProjectTimeline::ProjectTimeline(ProjectTreeItem &parentProject,
 
     this->vcsDiffLogic = new VCS::ProjectTimelineDiffLogic(*this);
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectTimelineDeltas::annotationsAdded));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectTimelineDeltas::timeSignaturesAdded));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectTimelineDeltas::keySignaturesAdded));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectTimelineDeltas::timeSignaturesAdded));
 
     this->project.broadcastAddTrack(this->annotationsTrack);
-    this->project.broadcastAddTrack(this->timeSignaturesTrack);
     this->project.broadcastAddTrack(this->keySignaturesTrack);
+    this->project.broadcastAddTrack(this->timeSignaturesTrack);
 }
 
 ProjectTimeline::~ProjectTimeline()
 {
-    this->project.broadcastRemoveTrack(this->keySignaturesTrack);
     this->project.broadcastRemoveTrack(this->timeSignaturesTrack);
+    this->project.broadcastRemoveTrack(this->keySignaturesTrack);
     this->project.broadcastRemoveTrack(this->annotationsTrack);
 }
 
@@ -150,7 +150,7 @@ VCS::Delta *ProjectTimeline::getDelta(int index) const
     }
     else if (this->deltas[index]->getType() == ProjectTimelineDeltas::keySignaturesAdded)
     {
-        const int numEvents = this->timeSignaturesSequence->size();
+        const int numEvents = this->keySignaturesSequence->size();
         this->deltas[index]->setDescription(VCS::DeltaDescription("{x} key signatures", numEvents));
     }
 
@@ -208,24 +208,6 @@ void ProjectTimeline::resetStateTo(const VCS::TrackedItem &newState)
             keySignaturesChanged = true;
         }
     }
-    
-    if (annotationsChanged)
-    {
-        this->dispatchChangeTrackContent(this->annotationsTrack);
-        this->dispatchChangeTrackBeatRange(this->annotationsTrack);
-    }
-
-    if (timeSignaturesChanged)
-    {
-        this->dispatchChangeTrackContent(this->timeSignaturesTrack);
-        this->dispatchChangeTrackBeatRange(this->timeSignaturesTrack);
-    }
-
-    if (keySignaturesChanged)
-    {
-        this->dispatchChangeTrackContent(this->keySignaturesTrack);
-        this->dispatchChangeTrackBeatRange(this->keySignaturesTrack);
-    }
 }
 
 
@@ -258,16 +240,11 @@ void ProjectTimeline::dispatchChangeTrackProperties(MidiTrack *const track)
     this->project.broadcastChangeTrackProperties(track);
 }
 
-void ProjectTimeline::dispatchChangeTrackBeatRange(MidiTrack *const track)
+void ProjectTimeline::dispatchChangeProjectBeatRange()
 {
     this->project.broadcastChangeProjectBeatRange();
-}
 
-void ProjectTimeline::dispatchChangeTrackContent(MidiTrack *const track)
-{
-    this->project.broadcastResetTrackContent(track);
 }
-
 
 // Timeline sequences are the case where there are no patterns and clips
 // So just leave this empty:
@@ -290,8 +267,8 @@ ProjectTreeItem *ProjectTimeline::getProject() const
 void ProjectTimeline::reset()
 {
     this->annotationsSequence->reset();
-    this->timeSignaturesSequence->reset();
     this->keySignaturesSequence->reset();
+    this->timeSignaturesSequence->reset();
 }
 
 XmlElement *ProjectTimeline::serialize() const
@@ -301,12 +278,12 @@ XmlElement *ProjectTimeline::serialize() const
     this->serializeVCSUuid(*xml);
     xml->setAttribute("name", this->name);
     xml->setAttribute("annotationsId", this->annotationsId.toString());
-    xml->setAttribute("timeSignaturesId", this->timeSignaturesId.toString());
     xml->setAttribute("keySignaturesId", this->keySignaturesId.toString());
+    xml->setAttribute("timeSignaturesId", this->timeSignaturesId.toString());
 
     xml->addChildElement(this->annotationsSequence->serialize());
-    xml->addChildElement(this->timeSignaturesSequence->serialize());
     xml->addChildElement(this->keySignaturesSequence->serialize());
+    xml->addChildElement(this->timeSignaturesSequence->serialize());
 
     return xml;
 }
@@ -343,14 +320,14 @@ void ProjectTimeline::deserialize(const XmlElement &xml)
         this->annotationsSequence->deserialize(*e);
     }
 
-    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::timeSignatures)
-    {
-        this->timeSignaturesSequence->deserialize(*e);
-    }
-    
     forEachXmlChildElementWithTagName(*root, e, Serialization::Core::keySignatures)
     {
         this->keySignaturesSequence->deserialize(*e);
+    }
+
+    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::timeSignatures)
+    {
+        this->timeSignaturesSequence->deserialize(*e);
     }
 
     // Debug::

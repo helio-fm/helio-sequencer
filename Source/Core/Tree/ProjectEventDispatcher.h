@@ -47,9 +47,7 @@ public:
     // Sent on lightweight changes like mute/unmute, instrument change
     virtual void dispatchChangeTrackProperties(MidiTrack *const track) = 0;
     // Needed for project to calculate and send the total beat range
-    virtual void dispatchChangeTrackBeatRange(MidiTrack *const track) = 0;
-    // Send on midi import, reload or reset by VCS
-    virtual void dispatchChangeTrackContent(MidiTrack *const track) = 0;
+    virtual void dispatchChangeProjectBeatRange() = 0;
 
     virtual ProjectTreeItem *getProject() const { return nullptr; }
 };
@@ -69,6 +67,5 @@ public:
     void dispatchPostRemoveClip(Pattern *const pattern) override {}
 
     void dispatchChangeTrackProperties(MidiTrack *const track) override {}
-    void dispatchChangeTrackBeatRange(MidiTrack *const track) override {}
-    void dispatchChangeTrackContent(MidiTrack *const track) override {}
+    void dispatchChangeProjectBeatRange() override {}
 };

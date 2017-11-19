@@ -182,12 +182,9 @@ void PianoTrackMap::onChangeTrackProperties(MidiTrack *const track)
     this->repaint();
 }
 
-void PianoTrackMap::onResetTrackContent(MidiTrack *const track)
+void PianoTrackMap::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
-    if (!dynamic_cast<const PianoSequence *>(track->getSequence())) { return; }
-
     this->reloadTrackMap();
-
 }
 
 void PianoTrackMap::onAddTrack(MidiTrack *const track)
