@@ -38,6 +38,7 @@ public:
 
     virtual float getBeat() const = 0;
     virtual String getId() const = 0;
+    virtual void updateColours() = 0;
 
     //===------------------------------------------------------------------===//
     // Component

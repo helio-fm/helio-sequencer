@@ -35,9 +35,8 @@ public:
         dx(0.f),
         dw(0.f)
     {
-        this->setOpaque(false);
+        this->updateColour();
         this->setInterceptsMouseClicks(false, false);
-        this->setWantsKeyboardFocus(false);
         this->setPaintingIsUnclipped(true);
     }
 
@@ -45,37 +44,34 @@ public:
     inline float getBeat() const noexcept        { return this->note.getBeat(); }
     inline float getLength() const noexcept      { return this->note.getLength(); }
     inline float getVelocity() const noexcept    { return this->note.getVelocity(); }
+    inline void updateColour()
+    {
+        this->colour = this->note.getColour().
+            interpolatedWith(Colours::white, .35f).
+            withAlpha(.55f);
+    }
 
     void setRealBounds(float x, int y, float w, int h)
     {
-#if HELIO_DESKTOP
-        this->dx = x - float(int(x));
-        this->dw = w - float(int(w));
-#endif
-        this->setBounds(int(x), y, int(w), h);
+        this->dx = x - floorf(x);
+        this->dw = ceilf(w) - w;
+        this->setBounds(int(floorf(x)), y, int(ceilf(w)), h);
     }
     
     void paint(Graphics &g) override
     {
-        g.setColour(this->note.getColour().
-                    interpolatedWith(Colours::white, .35f).
-                    withAlpha(this->note.getVelocity() * .3f + .4f));
-
-#if HELIO_DESKTOP
-        g.drawHorizontalLine(0, this->dx, float(this->getWidth()) + this->dw + this->dx);
-#elif HELIO_MOBILE
-        g.drawHorizontalLine(0, 0, float(this->getWidth()));
-#endif
+        g.setColour(this->colour);
+        g.drawHorizontalLine(0, this->dx, float(this->getWidth()) - this->dw);
     }
 
 private:
 
     const Note &note;
-
     PianoTrackMap &map;
     
+    Colour colour;
+
     float dx;
-    
     float dw;
 
 };
@@ -90,8 +86,8 @@ PianoTrackMap::PianoTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentR
     rollLastBeat(0.f),
     componentHeight(1.f)
 {
-    this->setOpaque(false);
     this->setInterceptsMouseClicks(false, false);
+    this->setPaintingIsUnclipped(true);
     this->reloadTrackMap();
     this->project.addListener(this);
 }
@@ -179,6 +175,14 @@ void PianoTrackMap::onChangeTrackProperties(MidiTrack *const track)
 {
     if (!dynamic_cast<const PianoSequence *>(track->getSequence())) { return; }
 
+    this->setVisible(false);
+
+    for (int i = 0; i < this->eventComponents.size(); ++i)
+    {
+        this->eventComponents.getUnchecked(i)->updateColour();
+    }
+
+    this->setVisible(true);
     this->repaint();
 }
 

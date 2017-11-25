@@ -113,7 +113,7 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject,
     shouldFollowIndicator(false)
 {
     this->setOpaque(true);
-    this->setBufferedToImage(false);
+    this->setPaintingIsUnclipped(true);
 
     this->setSize(this->viewport.getWidth(), this->viewport.getHeight());
 
@@ -142,6 +142,11 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject,
     this->addAndMakeVisible(this->timeSignaturesTrack);
     this->addAndMakeVisible(this->keySignaturesTrack);
     this->addAndMakeVisible(this->indicator);
+
+    // A hack to put them in front of header (which is also alwaysOnTop):
+    this->annotationsTrack->toFront(false);
+    this->timeSignaturesTrack->toFront(false);
+    this->keySignaturesTrack->toFront(false);
 
     this->addAndMakeVisible(this->lassoComponent);
 
@@ -687,7 +692,7 @@ void HybridRoll::computeVisibleBeatLines()
             denominator = signature->getDenominator();
             const float beatStep = 1.f / float(denominator);
             const float barStep = beatStep * float(numerator);
-            barIterator += fmodf(signature->getBeat() / NUM_BEATS_IN_BAR - float(this->firstBar), barStep);
+            barIterator += fmodf(signature->getBeat() / NUM_BEATS_IN_BAR - float(this->firstBar), barStep) - barStep;
             firstEvent = false;
         }
 

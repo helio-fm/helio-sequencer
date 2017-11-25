@@ -61,6 +61,7 @@ void HybridRollEventComponent::setActive(bool val, bool force)
 void HybridRollEventComponent::setGhostMode()
 {
     this->ghostMode = true;
+    this->updateColours();
     this->repaint();
 }
 
@@ -103,6 +104,7 @@ void HybridRollEventComponent::setSelected(bool selected)
     if (this->selectedState != selected)
     {
         this->selectedState = selected;
+        this->updateColours();
         this->roll.triggerBatchRepaintFor(this);
     }
 }

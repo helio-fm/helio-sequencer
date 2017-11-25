@@ -46,10 +46,9 @@ NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, bool ghostMod
       groupScalingAnchor(event),
       firstChangeDone(false)
 {
+    this->updateColours();
     this->toFront(false);
-    this->setOpaque(false); // speedup
     this->setPaintingIsUnclipped(true); // speedup
-
     this->setFloatBounds(this->getRoll().getEventBounds(this));
 }
 
@@ -86,6 +85,18 @@ float NoteComponent::getLength() const
 float NoteComponent::getVelocity() const
 {
     return static_cast<const Note &>(this->midiEvent).getVelocity();
+}
+
+void NoteComponent::updateColours()
+{
+    this->colour = Colours::white
+        .interpolatedWith(this->getNote().getColour(), 0.5f)
+        .withAlpha(this->ghostMode ? 0.2f : 0.95f)
+        .darker(this->selectedState ? 0.5f : 0.f);
+
+    this->colourLighter = this->colour.brighter(0.125f);
+    this->colourDarker = this->colour.darker(0.175f);
+    this->colourVolume = Colours::black.withAlpha(0.4f);
 }
 
 bool NoteComponent::canResize() const
@@ -691,16 +702,17 @@ void NoteComponent::paint(Graphics &g)
 #endif
 }
 
+// Really fast approximation, we don't need accuracy here:
+// (using Bhaskara I's sine approximation, ~5% error)
+#define SQR_PI_5_F 49.3480220f
+#define MP_PI_F 3.1415926f
+static inline float fastSine(float x)
+{
+    return (16.f * x * (MP_PI_F - x)) / (SQR_PI_5_F - 4.f * x * (MP_PI_F - x));
+}
+
 void NoteComponent::paintNewLook(Graphics &g)
 {
-    const Colour myColour(Colours::white
-                          .interpolatedWith(this->getNote().getColour(), 0.5f)
-                          .withAlpha(this->ghostMode ? 0.2f : 0.95f)
-                          .darker(this->selectedState ? 0.5f : 0.f));
-    
-    const Colour myColourL(myColour.brighter(0.125f));
-    const Colour myColourD(myColour.darker(0.175f));
-    
     const float w = this->floatLocalBounds.getWidth() - .75f; // a small gap between notes
     const float h = this->floatLocalBounds.getHeight();
     const float x1 = this->floatLocalBounds.getX();
@@ -715,16 +727,16 @@ void NoteComponent::paintNewLook(Graphics &g)
     
     if (! this->activeState)
     {
-        g.setColour(myColourL);
+        g.setColour(this->colourLighter);
         g.drawHorizontalLine(int(y1), x1 + 1.f, x2 - 1.f);
-        g.setColour(myColourD);
+        g.setColour(this->colourDarker);
         g.drawHorizontalLine(int(y2), x1 + 1.f, x2 - 1.f);
         
-        g.setColour(myColour);
+        g.setColour(this->colour);
         for (float y = y1 + 1.f; y <= y2 - 1.f; y += 1.f)
         {
-            const float yMap = (y - y1) / yh * 3.1415926f;
-            const float bevel = bevelCoeff * (1.f - (sin(yMap) - sin(yMap) / 2.5f));
+            const float yMap = (y - y1) / yh * MP_PI_F;
+            const float bevel = bevelCoeff * (1.f - (fastSine(yMap) - fastSine(yMap) / 2.5f));
             g.drawHorizontalLine(int(y), x1 + bevel, x1 + bevel + 1.f);
             g.drawHorizontalLine(int(y), x2 - bevel - 1.f, x2 - bevel);
         }
@@ -732,12 +744,12 @@ void NoteComponent::paintNewLook(Graphics &g)
         return;
     }
     
-    g.setColour(myColourL);
+    g.setColour(this->colourLighter);
     g.drawHorizontalLine(int(y1), x1 + 1.f, x2 - 1.f);
-    g.setColour(myColourD);
+    g.setColour(this->colourDarker);
     g.drawHorizontalLine(int(y2), x1 + 1.f, x2 - 1.f);
     
-    g.setColour(myColour);
+    g.setColour(this->colour);
     for (float y = y1 + 1.f; y <= y2 - 1.f; y += 1.f)
     {
         const float yMap = (y - y1) / yh * 3.1415926f;
@@ -746,38 +758,33 @@ void NoteComponent::paintNewLook(Graphics &g)
     }
     
     const float sx = x1 + 2.f;
-    const float sw = w - 2.f;
-    
-    g.setColour(Colours::black.withAlpha(0.4f));
-    g.drawHorizontalLine(this->getHeight() - 2, sx, sw * this->getVelocity());
-    g.drawHorizontalLine(this->getHeight() - 3, sx, sw * this->getVelocity());
-    g.drawHorizontalLine(this->getHeight() - 4, sx, sw * this->getVelocity());
+    const float sw = (w - 2.f) * this->getVelocity();
+
+    g.setColour(this->colourVolume);
+    g.drawHorizontalLine(this->getHeight() - 2, sx, sw);
+    g.drawHorizontalLine(this->getHeight() - 3, sx, sw);
+    g.drawHorizontalLine(this->getHeight() - 4, sx, sw);
 }
 
 void NoteComponent::paintLegacyLook(Graphics &g)
 {
-    const Colour myColour(Colours::white
-                          .interpolatedWith(this->getNote().getColour(), 0.5f)
-                          .withAlpha(this->ghostMode ? 0.2f : 0.95f)
-                          .darker(this->selectedState ? 0.5f : 0.f));
-    
+    g.setColour(this->colour);
+
     if (! this->activeState)
     {
-        g.setColour(myColour);
         g.drawRoundedRectangle(this->floatLocalBounds.reduced(0.5f, 0.5f), 2.f, 1.0f);
         return;
     }
     
-    g.setColour(myColour);
     g.fillRoundedRectangle(this->floatLocalBounds, 2.f);
     
     const float sx = this->floatLocalBounds.getX() + 2.f;
-    const float sw = this->floatLocalBounds.getWidth() - 2.f - .75f;
-    
-    g.setColour(Colours::black.withAlpha(0.4f));
-    g.drawHorizontalLine(this->getHeight() - 2, sx, sw * this->getVelocity());
-    g.drawHorizontalLine(this->getHeight() - 3, sx, sw * this->getVelocity());
-    g.drawHorizontalLine(this->getHeight() - 4, sx, sw * this->getVelocity());
+    const float sw = (this->floatLocalBounds.getWidth() - 2.f - .75f) * this->getVelocity();
+
+    g.setColour(this->colourVolume);
+    g.drawHorizontalLine(this->getHeight() - 2, sx, sw);
+    g.drawHorizontalLine(this->getHeight() - 3, sx, sw);
+    g.drawHorizontalLine(this->getHeight() - 4, sx, sw);
 
 }
 

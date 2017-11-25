@@ -547,7 +547,14 @@ void PianoRoll::onChangeTrackProperties(MidiTrack *const track)
 {
     if (auto sequence = dynamic_cast<const PianoSequence *>(track->getSequence()))
     {
-        this->repaint();
+        for (int i = 0; i < this->eventComponents.size(); ++i)
+        {
+            const auto c = this->eventComponents.getUnchecked(i);
+            c->updateColours();
+            this->batchRepaintList.add(c);
+        }
+
+        this->triggerAsyncUpdate();
     }
 }
 

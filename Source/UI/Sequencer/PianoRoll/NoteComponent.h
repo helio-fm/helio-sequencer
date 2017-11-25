@@ -44,12 +44,13 @@ public:
     PianoRoll &getRoll() const;
 
     //===------------------------------------------------------------------===//
-    // Accessors
+    // Helpers
     //===------------------------------------------------------------------===//
 
     int getKey() const;
     float getLength() const;
     float getVelocity() const;
+    void updateColours() override;
 
     //===------------------------------------------------------------------===//
     // HybridRollEventComponent
@@ -124,7 +125,12 @@ protected:
     bool canResize() const;
 
     State state;
-    
+
+    Colour colour;
+    Colour colourLighter;
+    Colour colourDarker;
+    Colour colourVolume;
+
     friend class PianoRoll;
     friend class PianoRollToolbox;
     friend class NoteResizerLeft;

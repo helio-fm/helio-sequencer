@@ -31,8 +31,7 @@ public:
     ClipComponent(HybridRoll &editor, Clip clip);
     const Clip getClip() const;
     PatternRoll &getRoll() const;
-
-    //virtual void updateContent() = 0;
+    void updateColours() override {}
 
     //===------------------------------------------------------------------===//
     // HybridRollEventComponent
