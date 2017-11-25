@@ -93,6 +93,10 @@ ToolsSidebar::ToolsSidebar(ProjectTreeItem &parent)
 
 
     //[UserPreSize]
+    this->setOpaque(true);
+    this->setPaintingIsUnclipped(true);
+    this->setInterceptsMouseClicks(false, true);
+
     this->recreateCommandDescriptions();
 
     this->currentTime->setFont(Font(Font::getDefaultSansSerifFontName(), 22.00f, Font::plain));
@@ -107,11 +111,6 @@ ToolsSidebar::ToolsSidebar(ProjectTreeItem &parent)
 
     //[Constructor]
     this->setSize(TOOLS_SIDEBAR_WIDTH, 320);
-
-    // TODO some kind of helper to fix this?
-    this->setFocusContainer(false);
-    this->setWantsKeyboardFocus(false);
-    this->setMouseClickGrabsKeyboardFocus(false);
 
     for (int i = 0; i < this->getNumChildComponents(); ++i)
     {

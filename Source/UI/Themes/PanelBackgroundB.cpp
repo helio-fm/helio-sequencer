@@ -24,8 +24,6 @@
 //[MiscUserDefs]
 #include "HelioTheme.h"
 #include "Icons.h"
-
-static const String panelBgKey = "PanelBackgroundB";
 //[/MiscUserDefs]
 
 PanelBackgroundB::PanelBackgroundB()
@@ -39,6 +37,7 @@ PanelBackgroundB::PanelBackgroundB()
     //[Constructor]
     this->setOpaque(true);
     this->setInterceptsMouseClicks(false, false);
+    this->setPaintingIsUnclipped(true);
     //[/Constructor]
 }
 
@@ -76,16 +75,15 @@ void PanelBackgroundB::paint(Graphics& g)
 #endif
 
     auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
-    const Image prerendered = theme.getPanelsBgCache()[panelBgKey];
-    if (prerendered.isValid())
+    if (theme.getBgCache2().isValid())
     {
-        g.setTiledImageFill(prerendered, 0, 0, 1.f);
-        g.fillAll();
+        g.setTiledImageFill(theme.getBgCache2(), 0, 0, 1.f);
+        g.fillRect(this->getLocalBounds());
     }
     else
     {
         g.setColour(findColour(PanelBackgroundB::panelFillId));
-        g.fillAll();
+        g.fillRect(this->getLocalBounds());
     }
 
     //[/UserPaint]
@@ -105,7 +103,7 @@ void PanelBackgroundB::resized()
 
 void PanelBackgroundB::updateRender(HelioTheme &theme)
 {
-    if (theme.getPanelsBgCache()[panelBgKey].isValid())
+    if (theme.getBgCache2().isValid())
     {
         return;
     }
@@ -121,7 +119,7 @@ void PanelBackgroundB::updateRender(HelioTheme &theme)
     g.setColour(theme.findColour(PanelBackgroundB::panelFillId));
     g.fillAll();
     HelioTheme::drawNoise(theme, g, 0.5f);
-    theme.getPanelsBgCache().set(panelBgKey, render);
+    theme.getBgCache2() = render;
 }
 
 //[/MiscUserCode]

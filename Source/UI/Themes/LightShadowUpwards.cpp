@@ -28,12 +28,13 @@ LightShadowUpwards::LightShadowUpwards()
 {
 
     //[UserPreSize]
+    this->setInterceptsMouseClicks(false, false);
+    this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
     setSize (600, 40);
 
     //[Constructor]
-    this->setInterceptsMouseClicks(false, false);
     //[/Constructor]
 }
 

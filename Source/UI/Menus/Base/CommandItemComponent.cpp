@@ -138,6 +138,7 @@ public:
         colour(targetColour/*.interpolatedWith(Colours::white, 0.5f)*/)
     {
         this->setInterceptsMouseClicks(false, false);
+        this->setPaintingIsUnclipped(true);
     }
 
     void paint(Graphics &g) override
@@ -157,6 +158,14 @@ private:
 
 class CommandDragHighlighter : public Component
 {
+public:
+
+    CommandDragHighlighter()
+    {
+        this->setInterceptsMouseClicks(false, false);
+        this->setPaintingIsUnclipped(true);
+    }
+
     public: void paint(Graphics &g) override
     {
         g.setColour(Colours::white.withAlpha(0.0175f));
@@ -212,14 +221,15 @@ CommandItemComponent::CommandItemComponent(Component *parentCommandReceiver, Vie
     //[UserPreSize]
     this->toggleMarker = nullptr;
     this->lastMouseScreenPosition = { 0, 0 };
+    this->textLabel->setInterceptsMouseClicks(false, false);
+    this->setInterceptsMouseClicks(true, true);
+    this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
     setSize (512, 40);
 
     //[Constructor]
     this->setSize(this->getWidth(), COMMAND_PANEL_BUTTON_HEIGHT);
-    this->setInterceptsMouseClicks(true, true);
-    this->textLabel->setInterceptsMouseClicks(false, false);
     this->update(desc);
     //[/Constructor]
 }

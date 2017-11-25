@@ -113,6 +113,8 @@ MainLayout::MainLayout() :
     currentContent(nullptr)
 {
     this->setComponentID(ComponentIDs::mainLayoutId);
+    this->setInterceptsMouseClicks(false, true);
+    this->setOpaque(true);
     this->setVisible(false);
     
     this->tooltipContainer = new TooltipContainer();
@@ -348,10 +350,16 @@ void MainLayout::showBlockingNonModalDialog(Component *targetComponent)
     public:
         
         Blocker()
-        { this->setInterceptsMouseClicks(true, true); }
+        { 
+            this->setInterceptsMouseClicks(true, true);
+            this->setPaintingIsUnclipped(true);
+        }
         
         void paint(Graphics &g) override
-        { g.fillAll(Colours::white.withAlpha(0.05f)); }
+        {
+            g.setColour(Colours::white.withAlpha(0.05f));
+            g.fillRect(this->getLocalBounds());
+        }
         
         void parentHierarchyChanged() override
         { this->rebound(); }

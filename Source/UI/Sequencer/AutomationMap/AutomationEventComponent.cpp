@@ -41,7 +41,6 @@ AutomationEventComponent::AutomationEventComponent(AutomationTrackMap &parent, c
 
     this->setMouseCursor(MouseCursor::PointingHandCursor);
 
-    this->setOpaque(false);
     this->setInterceptsMouseClicks(true, false);
     this->setPaintingIsUnclipped(true);
     this->recreateConnector();

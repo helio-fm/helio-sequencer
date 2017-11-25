@@ -41,7 +41,6 @@ TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesTrackMap<
     addAndMakeVisible (component = new SeparatorVertical());
 
     //[UserPreSize]
-    this->setOpaque(false);
     this->setInterceptsMouseClicks(false, false);
     this->signatureLabel->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]

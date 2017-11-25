@@ -161,9 +161,10 @@ public:
             Button *closeButton,
             bool positionTitleBarButtonsOnLeft) override;
     
-    HashMap<String, Image> &getPanelsBgCache() noexcept
-    { return this->panelsBgCache; }
-    
+    inline Image &getBgCache1() noexcept { return this->bgCache1; }
+    inline Image &getBgCache2() noexcept { return this->bgCache2; }
+    inline Image &getBgCache3() noexcept { return this->bgCache3; }
+
 protected:
     
     const Image backgroundNoise;
@@ -173,8 +174,10 @@ protected:
     Typeface::Ptr textTypefaceCache;
     Typeface::Ptr headerTypefaceCache;
     
-    HashMap<String, Image> panelsBgCache;
-    
+    Image bgCache1;
+    Image bgCache2;
+    Image bgCache3;
+
     JUCE_LEAK_DETECTOR(HelioTheme);
 
 };

@@ -29,13 +29,13 @@ LightShadowLeftwards::LightShadowLeftwards()
 {
 
     //[UserPreSize]
+    this->setInterceptsMouseClicks(false, false);
+    this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
     setSize (40, 400);
 
     //[Constructor]
-    this->setWantsKeyboardFocus(false);
-    this->setInterceptsMouseClicks(false, false);
     //[/Constructor]
 }
 

@@ -28,6 +28,8 @@ ShadowHorizontalFading::ShadowHorizontalFading()
 {
 
     //[UserPreSize]
+    this->setInterceptsMouseClicks(false, false);
+    this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
     setSize (320, 320);

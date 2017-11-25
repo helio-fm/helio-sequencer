@@ -24,8 +24,6 @@
 //[MiscUserDefs]
 #include "HelioTheme.h"
 #include "Icons.h"
-
-static const String panelBgKey = "PanelBackgroundA";
 //[/MiscUserDefs]
 
 PanelBackgroundA::PanelBackgroundA()
@@ -39,6 +37,7 @@ PanelBackgroundA::PanelBackgroundA()
     //[Constructor]
     this->setOpaque(true);
     this->setInterceptsMouseClicks(false, false);
+    this->setPaintingIsUnclipped(true);
     //[/Constructor]
 }
 
@@ -78,10 +77,9 @@ void PanelBackgroundA::paint (Graphics& g)
 #endif
 
     auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
-    const Image prerendered = theme.getPanelsBgCache()[panelBgKey];
-    if (prerendered.isValid())
+    if (theme.getBgCache1().isValid())
     {
-        Icons::drawImageRetinaAware(prerendered, g, this->getWidth() / 2, this->getHeight() / 2);
+        Icons::drawImageRetinaAware(theme.getBgCache1(), g, this->getWidth() / 2, this->getHeight() / 2);
     }
     else
     {
@@ -91,9 +89,9 @@ void PanelBackgroundA::paint (Graphics& g)
                                            20.0f, 0.0f,
                                            true));
 
-        g.fillRect (0, 0, getWidth() - 0, getHeight() - 0);
+        g.fillRect (this->getLocalBounds());
 
-        HelioTheme::drawNoise(this, g, 1.f);
+        HelioTheme::drawNoiseWithin(this->getLocalBounds().toFloat(), this, g, 1.f);
     }
 
     //[/UserPaint]
@@ -115,7 +113,7 @@ void PanelBackgroundA::updateRender(HelioTheme &theme)
 {
 #if PANEL_A_HAS_PRERENDERED_BACKGROUND
 
-    if (theme.getPanelsBgCache()[panelBgKey].isValid())
+    if (theme.getBgCache1().isValid())
     {
         return;
     }
@@ -140,7 +138,7 @@ void PanelBackgroundA::updateRender(HelioTheme &theme)
     
     HelioTheme::drawNoise(theme, g);
 
-    theme.getPanelsBgCache().set(panelBgKey, render);
+    theme.getBgCache1() = render;
 
 #endif
 }

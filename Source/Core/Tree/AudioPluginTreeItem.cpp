@@ -36,7 +36,6 @@ public:
     explicit HelioAudioProcessorEditor(AudioProcessor *const p) :
         GenericAudioProcessorEditor(p)
     {
-        this->setOpaque(false);
         this->setFocusContainer(true);
 
         // установим ему масимальную высоту

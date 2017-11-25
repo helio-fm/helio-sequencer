@@ -36,8 +36,9 @@ Headline::Headline()
     addAndMakeVisible (navPanel = new HeadlineNavigationPanel());
 
     //[UserPreSize]
-    this->setFocusContainer(false);
-    this->setWantsKeyboardFocus(false);
+    this->setInterceptsMouseClicks(false, true);
+    this->setPaintingIsUnclipped(true);
+    this->setOpaque(true);
     //[/UserPreSize]
 
     setSize (600, 34);

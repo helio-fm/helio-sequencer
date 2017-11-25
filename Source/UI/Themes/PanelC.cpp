@@ -34,7 +34,6 @@ PanelC::PanelC()
     setSize (600, 400);
 
     //[Constructor]
-    this->setOpaque(false);
     this->setInterceptsMouseClicks(false, false);
     //[/Constructor]
 }

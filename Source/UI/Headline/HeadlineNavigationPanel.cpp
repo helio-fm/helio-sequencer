@@ -38,8 +38,8 @@ HeadlineNavigationPanel::HeadlineNavigationPanel()
 
 
     //[UserPreSize]
-    this->setFocusContainer(false);
-    this->setWantsKeyboardFocus(false);
+    this->setInterceptsMouseClicks(false, true);
+    this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
     setSize (80, 32);

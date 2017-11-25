@@ -28,7 +28,9 @@ PanelA::PanelA()
 {
 
     //[UserPreSize]
+    this->setOpaque(true);
     this->setInterceptsMouseClicks(false, false);
+    this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
     setSize (600, 400);

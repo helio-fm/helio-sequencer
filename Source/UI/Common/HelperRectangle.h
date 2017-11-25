@@ -23,7 +23,6 @@ public:
 
     HelperRectangle()
     {
-        this->setOpaque(false);
         this->setInterceptsMouseClicks(false, false);
     }
 

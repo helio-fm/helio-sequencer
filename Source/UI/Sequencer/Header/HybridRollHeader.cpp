@@ -40,8 +40,10 @@ HybridRollHeader::HybridRollHeader(Transport &transportRef, HybridRoll &rollRef,
     viewport(viewportRef),
     soundProbeMode(false)
 {
-    this->setOpaque(true);
     this->setAlwaysOnTop(true);
+    this->setOpaque(true);
+    this->setPaintingIsUnclipped(true);
+
     this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);
     this->setSize(this->getParentWidth(), HYBRID_ROLL_HEADER_HEIGHT);

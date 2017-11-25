@@ -25,7 +25,6 @@
 #include "HelioTheme.h"
 #include "Icons.h"
 
-static const String panelBgKey = "PanelBackgroundC";
 static void drawPanel(Graphics& g, HelioTheme &theme);
 //[/MiscUserDefs]
 
@@ -40,6 +39,7 @@ PanelBackgroundC::PanelBackgroundC()
     //[Constructor]
     this->setOpaque(true);
     this->setInterceptsMouseClicks(false, false);
+    this->setPaintingIsUnclipped(true);
     //[/Constructor]
 }
 
@@ -85,12 +85,17 @@ void PanelBackgroundC::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
 #endif
 
+    // TODO remove clipping and opaque everywhere possible
+    // this->setPaintingIsUnclipped(true);
+    // this->setOpaque(true);
+
+    // TrackMapNoteComponent::paint 
+
     auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
-    const Image prerendered = theme.getPanelsBgCache()[panelBgKey];
-    if (prerendered.isValid())
+    if (theme.getBgCache3().isValid())
     {
-        g.setTiledImageFill(prerendered, 0, 0, 1.f);
-        g.fillAll();
+        g.setTiledImageFill(theme.getBgCache3(), 0, 0, 1.f);
+        g.fillRect(this->getLocalBounds());
     }
     else
     {
@@ -121,7 +126,7 @@ static void drawPanel(Graphics& g, HelioTheme &theme)
 
 void PanelBackgroundC::updateRender(HelioTheme &theme)
 {
-    if (theme.getPanelsBgCache()[panelBgKey].isValid())
+    if (theme.getBgCache3().isValid())
     {
         return;
     }
@@ -134,7 +139,7 @@ void PanelBackgroundC::updateRender(HelioTheme &theme)
     Image render(Image::ARGB, w, h, true);
     Graphics g(render);
     drawPanel(g, theme);
-    theme.getPanelsBgCache().set(panelBgKey, render);
+    theme.getBgCache3() = render;
 }
 
 //[/MiscUserCode]

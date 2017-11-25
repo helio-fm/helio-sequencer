@@ -41,8 +41,6 @@ TriggerEventComponent::TriggerEventComponent(TriggersTrackMap &parent, const Aut
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
 
-    this->setOpaque(false);
-//    this->setInterceptsMouseClicks(false, false);
     this->setInterceptsMouseClicks(true, false);
     this->setPaintingIsUnclipped(true);
     this->recreateConnector();

@@ -41,7 +41,6 @@ AutomationCurveHelper::AutomationCurveHelper(AutomationTrackMap &parent, const A
 
     this->setMouseCursor(MouseCursor::UpDownResizeCursor);
 
-    this->setOpaque(false);
     this->setInterceptsMouseClicks(true, false);
     this->setPaintingIsUnclipped(true);
     //[/UserPreSize]

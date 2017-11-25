@@ -41,7 +41,6 @@ AnnotationSmallComponent::AnnotationSmallComponent(AnnotationsTrackMap<Annotatio
 
 
     //[UserPreSize]
-    this->setOpaque(false);
     this->setInterceptsMouseClicks(false, false);
     this->annotationLabel->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]

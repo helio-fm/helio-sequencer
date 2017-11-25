@@ -52,7 +52,6 @@ Playhead::Playhead(HybridRoll &parentRoll,
     //this->setName(String(Random::getSystemRandom().nextInt()));
 
     this->setInterceptsMouseClicks(false, false);
-    this->setOpaque(false);
     this->setAlwaysOnTop(true);
     this->setSize(this->playheadWidth, 1);
 

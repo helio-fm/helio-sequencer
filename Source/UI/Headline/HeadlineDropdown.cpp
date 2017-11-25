@@ -28,28 +28,6 @@
 #include "CommandPanel.h"
 #include "MainLayout.h"
 #include "App.h"
-
-class HeadlineItemHighlighter : public Component
-{
-public:
-
-    explicit HeadlineItemHighlighter(const Path &targetPath) :
-        path(targetPath) {}
-
-    void paint(Graphics &g) override
-    {
-        Colour fillColour = Colour(0x0cffffff);
-        g.setColour(fillColour);
-        g.fillPath(this->path);
-    }
-
-private:
-
-    Path path;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeadlineItemHighlighter)
-};
-
 //[/MiscUserDefs]
 
 HeadlineDropdown::HeadlineDropdown(WeakReference<TreeItem> targetItem)
@@ -70,9 +48,8 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<TreeItem> targetItem)
 
 
     //[UserPreSize]
-    this->setFocusContainer(false);
-    this->setWantsKeyboardFocus(false);
     this->titleLabel->setInterceptsMouseClicks(false, false);
+    this->setInterceptsMouseClicks(true, true);
     //[/UserPreSize]
 
     setSize (150, 32);

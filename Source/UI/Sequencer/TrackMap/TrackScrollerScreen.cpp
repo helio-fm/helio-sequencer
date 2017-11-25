@@ -24,8 +24,6 @@
 TrackScrollerScreen::TrackScrollerScreen(TrackScroller &scrollerRef) :
     scroller(scrollerRef)
 {
-    this->setOpaque(false);
-
     this->moveConstrainer = new ComponentBoundsConstrainer();
     this->moveConstrainer->setMinimumSize(4, 4);
     this->moveConstrainer->setMinimumOnscreenAmounts(0xffffff, 0xffffff, 0xffffff, 0xffffff);

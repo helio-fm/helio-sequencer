@@ -37,16 +37,16 @@ TriggersTrackMap::TriggersTrackMap(ProjectTreeItem &parentProject, HybridRoll &p
     rollFirstBeat(0.f),
     rollLastBeat(16.f)
 {
-    this->setFocusContainer(false);
-    this->setWantsKeyboardFocus(false);
-    
+    this->setAlwaysOnTop(true);
+    this->setInterceptsMouseClicks(false, true);
+    this->setPaintingIsUnclipped(true);
+
     this->leadingConnector = new TriggerEventConnector(nullptr, nullptr, DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE);
     this->addAndMakeVisible(this->leadingConnector);
     
     this->setMouseCursor(MouseCursor::CopyingCursor);
     
-    this->setOpaque(false);
-    this->setAlwaysOnTop(true);
+    //this->setAlwaysOnTop(true);
     this->setInterceptsMouseClicks(true, true);
     
     this->reloadTrack();
@@ -95,17 +95,6 @@ void TriggersTrackMap::resized()
     
     this->setVisible(true);
 }
-
-//void TriggersTrackMap::paint(Graphics &g)
-//{
-//    g.fillAll(Colours::black.withAlpha(0.04f));
-//===----------------------------------------------------------------------===//
-//    g.setColour(Colours::black.withAlpha(0.15f));
-//    g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
-//    
-//    g.setColour(Colours::white.withAlpha(0.05f));
-//    g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth()));
-//}
 
 void TriggersTrackMap::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
 {

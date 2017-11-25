@@ -26,6 +26,7 @@ public:
     explicit IconComponent(String name, float alpha = 1.f) :
         iconName(std::move(name))
     {
+        this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
         
         if (alpha < 1.f)

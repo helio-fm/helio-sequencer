@@ -44,7 +44,6 @@ AnnotationLargeComponent::AnnotationLargeComponent(AnnotationsTrackMap<Annotatio
 
 
     //[UserPreSize]
-    this->setOpaque(false);
     this->setInterceptsMouseClicks(true, false);
     this->annotationLabel->setInterceptsMouseClicks(false, false);
     this->setMouseCursor(MouseCursor::PointingHandCursor);

@@ -47,9 +47,8 @@ CommandPanel::CommandPanel()
     setSize (150, 300);
 
     //[Constructor]
-    this->setFocusContainer(false);
-    this->setWantsKeyboardFocus(false);
-    this->setMouseClickGrabsKeyboardFocus(false);
+    this->setPaintingIsUnclipped(true);
+    this->setInterceptsMouseClicks(false, true);
 
     for (int i = 0; i < this->getNumChildComponents(); ++i)
     {

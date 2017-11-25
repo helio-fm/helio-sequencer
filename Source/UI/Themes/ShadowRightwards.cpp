@@ -28,12 +28,13 @@ ShadowRightwards::ShadowRightwards()
 {
 
     //[UserPreSize]
+    this->setInterceptsMouseClicks(false, false);
+    this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
     setSize (40, 400);
 
     //[Constructor]
-    this->setInterceptsMouseClicks(false, false);
     //[/Constructor]
 }
 

@@ -47,7 +47,6 @@ public:
     {
         g.setColour(Colours::white.withAlpha(0.1f + this->brightness / 2.f));
         g.fillEllipse(0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
-        //g.fillAll();
     }
 
 private:
@@ -77,8 +76,7 @@ private:
 ModeIndicatorComponent::ModeIndicatorComponent(int numModes) : activeMode(0)
 {
     this->setInterceptsMouseClicks(false, false);
-    this->setWantsKeyboardFocus(false);
-    this->setFocusContainer(false);
+    this->setPaintingIsUnclipped(true);
 
     this->setComponentID(ComponentIDs::modeIndicatorComponentId);
 
@@ -148,6 +146,7 @@ void ModeIndicatorOwnerComponent::hideModeIndicator()
 ModeIndicatorTrigger::ModeIndicatorTrigger()
 {
     this->setInterceptsMouseClicks(true, false);
+    this->setPaintingIsUnclipped(true);
 }
 
 void ModeIndicatorTrigger::mouseUp(const MouseEvent& event)

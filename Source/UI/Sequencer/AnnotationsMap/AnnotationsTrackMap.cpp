@@ -40,10 +40,10 @@ AnnotationsTrackMap<T>::AnnotationsTrackMap(ProjectTreeItem &parentProject, Hybr
     rollFirstBeat(0.f),
     rollLastBeat(16.f)
 {
-    this->setOpaque(false);
     this->setAlwaysOnTop(true);
     this->setInterceptsMouseClicks(false, true);
-    
+    this->setPaintingIsUnclipped(true);
+
     this->reloadTrackMap();
     
     this->project.addListener(this);

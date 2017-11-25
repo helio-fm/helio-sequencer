@@ -51,16 +51,14 @@ AutomationTrackMap::AutomationTrackMap(ProjectTreeItem &parentProject,
     draggingEvent(nullptr),
     addNewEventMode(false)
 {
-    this->setFocusContainer(false);
-    this->setWantsKeyboardFocus(false);
-    
+    this->setAlwaysOnTop(true);
+    this->setInterceptsMouseClicks(false, true);
+    this->setPaintingIsUnclipped(true);
+
     this->leadingConnector = new ComponentConnectorCurve(nullptr, nullptr);
     this->addAndMakeVisible(this->leadingConnector);
     
     this->setMouseCursor(MouseCursor::CopyingCursor);
-    
-    this->setOpaque(false);
-    this->setInterceptsMouseClicks(true, true);
     
     this->reloadTrack();
     

@@ -893,7 +893,9 @@ void HelioTheme::updateBackgroundRenders(bool force)
     if (force)
     {
         Icons::clearPrerenderedCache();
-        this->getPanelsBgCache().clear();
+        this->bgCache1 = Image();
+        this->bgCache2 = Image();
+        this->bgCache3 = Image();
     }
     
 #if PATTERNROLL_HAS_PRERENDERED_BACKGROUND

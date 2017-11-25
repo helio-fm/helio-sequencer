@@ -29,6 +29,7 @@ SeparatorVertical::SeparatorVertical()
 
     //[UserPreSize]
     this->setInterceptsMouseClicks(false, false);
+    this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
     setSize (32, 32);

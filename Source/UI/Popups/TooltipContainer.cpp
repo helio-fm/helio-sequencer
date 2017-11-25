@@ -33,6 +33,8 @@ TooltipContainer::TooltipContainer()
 
 
     //[UserPreSize]
+    this->setInterceptsMouseClicks(false, true);
+    this->setPaintingIsUnclipped(true);
     this->setVisible(false);
     //[/UserPreSize]
 

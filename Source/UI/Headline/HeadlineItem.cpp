@@ -28,28 +28,6 @@
 #include "HelioCallout.h"
 #include "MainLayout.h"
 #include "App.h"
-
-class HeadlineItemHighlighter : public Component
-{
-public:
-
-    explicit HeadlineItemHighlighter(const Path &targetPath) :
-        path(targetPath) {}
-
-    void paint(Graphics &g) override
-    {
-        Colour fillColour = Colour(0x09ffffff);
-        g.setColour(fillColour);
-        g.fillPath(this->path);
-    }
-
-private:
-
-    Path path;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeadlineItemHighlighter)
-};
-
 //[/MiscUserDefs]
 
 HeadlineItem::HeadlineItem(WeakReference<TreeItem> treeItem, AsyncUpdater &parent)
@@ -69,9 +47,10 @@ HeadlineItem::HeadlineItem(WeakReference<TreeItem> treeItem, AsyncUpdater &paren
 
 
     //[UserPreSize]
-    this->setFocusContainer(false);
-    this->setWantsKeyboardFocus(false);
     this->titleLabel->setInterceptsMouseClicks(false, false);
+    this->setInterceptsMouseClicks(true, true);
+    this->setPaintingIsUnclipped(true);
+    this->setOpaque(false);
     //[/UserPreSize]
 
     setSize (256, 32);

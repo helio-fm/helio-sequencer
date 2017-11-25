@@ -58,6 +58,10 @@ NavigationSidebar::NavigationSidebar()
 
 
     //[UserPreSize]
+    this->setOpaque(true);
+    this->setPaintingIsUnclipped(true);
+    this->setInterceptsMouseClicks(false, true);
+
     this->genericMonitor = new GenericAudioMonitorComponent(nullptr);
     this->waveformMonitor = new WaveformAudioMonitorComponent(nullptr);
     this->spectrogramMonitor = new SpectrogramAudioMonitorComponent(nullptr);

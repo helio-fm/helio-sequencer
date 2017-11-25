@@ -65,6 +65,7 @@ public:
     // Component
     //===------------------------------------------------------------------===//
 
+    void paint(Graphics &g) override {}
     void resized() override;
     void handleCommandMessage(int commandId) override;
 

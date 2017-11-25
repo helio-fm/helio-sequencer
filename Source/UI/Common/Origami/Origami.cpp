@@ -24,16 +24,14 @@ Origami::Origami()
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
     this->setMouseClickGrabsKeyboardFocus(false);
-
     this->setInterceptsMouseClicks(false, true);
+    this->setPaintingIsUnclipped(true);
     this->setSize(256, 256); // not 0
 }
 
 Origami::~Origami()
 {
-
 }
-
 
 //===----------------------------------------------------------------------===//
 // Origami
