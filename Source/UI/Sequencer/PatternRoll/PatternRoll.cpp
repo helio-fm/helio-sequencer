@@ -68,7 +68,8 @@ PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
 
     this->header->toFront(false);
     this->indicator->toFront(false);
-    //this->reloadRollContent();
+    this->repaintBackgroundsCache();
+    this->reloadRollContent();
 }
 
 PatternRoll::~PatternRoll()
@@ -644,64 +645,8 @@ void PatternRoll::resized()
 
 void PatternRoll::paint(Graphics &g)
 {
-#if PATTERNROLL_HAS_PRERENDERED_BACKGROUND
-
-    g.setTiledImageFill(this->rowPattern, 0, PATTERN_ROLL_HEADER_OFFSET, 1.f);
+    g.setTiledImageFill(this->rowPattern, 0, HYBRID_ROLL_HEADER_HEIGHT, 1.f);
     g.fillRect(this->viewport.getViewArea());
-
-#else
-
-    const Colour blackKey = this->findColour(HybridRoll::blackKeyColourId);
-    const Colour blackKeyBright = this->findColour(HybridRoll::blackKeyBrightColourId);
-    const Colour whiteKey = this->findColour(HybridRoll::whiteKeyColourId);
-    const Colour whiteKeyBright = this->findColour(HybridRoll::whiteKeyBrightColourId);
-    const Colour whiteKeyBrighter = whiteKeyBright.brighter(0.025f);
-    const Colour rowLine = this->findColour(HybridRoll::rowLineColourId);
-
-    const float visibleWidth = float(this->viewport.getViewWidth());
-    const float visibleHeight = float(this->viewport.getViewHeight());
-    const Point<int> &viewPosition = this->viewport.getViewPosition();
-
-    const int keyStart = int(viewPosition.getY() / PATTERNROLL_ROW_HEIGHT);
-    const int keyEnd = int((viewPosition.getY() + visibleHeight) / PATTERNROLL_ROW_HEIGHT);
-
-    // Fill everything with white keys color
-    g.setColour(whiteKeyBright);
-    g.fillRect(float(viewPosition.getX()), float(viewPosition.getY()), visibleWidth, visibleHeight);
-
-    for (int i = keyStart; i <= keyEnd; i++)
-    {
-        const int lastOctaveReminder = 4;
-        const int yPos = HYBRID_ROLL_HEADER_HEIGHT + i * PATTERNROLL_ROW_HEIGHT;
-        const int noteNumber = (i + lastOctaveReminder) % 12;
-        const int octaveNumber = (i + lastOctaveReminder) / 12;
-        const bool octaveIsOdd = ((octaveNumber % 2) > 0);
-
-        switch (noteNumber)
-        {
-            case 1:
-            case 3:
-            case 5:
-            case 8:
-            case 10: // black keys
-                g.setColour(octaveIsOdd ? blackKeyBright : blackKey);
-                g.fillRect(float(viewPosition.getX()), float(yPos), visibleWidth, float(PATTERNROLL_ROW_HEIGHT));
-                break;
-
-            default: // white keys bevel
-                g.setColour(whiteKeyBrighter);
-                g.drawHorizontalLine(yPos + 1, float(viewPosition.getX()), float(viewPosition.getX() + visibleWidth));
-                break;
-        }
-
-        g.setColour(rowLine);
-        g.drawHorizontalLine(yPos, float(viewPosition.getX()), float(viewPosition.getX() + visibleWidth));
-    }
-
-    HelioTheme::drawNoiseWithin(this->viewport.getViewArea().toFloat(), this, g, 2.0);
-
-#endif
-
     HybridRoll::paint(g);
 }
 
@@ -764,7 +709,7 @@ void PatternRoll::reset()
 // Bg images cache
 //===----------------------------------------------------------------------===//
 
-Image PatternRoll::renderRowsPattern(HelioTheme &theme, int height)
+Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height) const
 {
     Image patternImage(Image::RGB, 128, height * ROWS_OF_TWO_OCTAVES, false);
 
@@ -824,4 +769,10 @@ Image PatternRoll::renderRowsPattern(HelioTheme &theme, int height)
     HelioTheme::drawNoise(theme, g, 2.f);
 
     return patternImage;
+}
+
+void PatternRoll::repaintBackgroundsCache()
+{
+    const HelioTheme &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
+    this->rowPattern = PatternRoll::renderRowsPattern(theme, PATTERNROLL_ROW_HEIGHT);
 }

@@ -18,10 +18,8 @@
 #pragma once
 
 #if JUCE_IOS
-#   define PATTERNROLL_HAS_PRERENDERED_BACKGROUND 1
 #   define PATTERNROLL_ROW_HEIGHT 96
 #else
-#   define PATTERNROLL_HAS_PRERENDERED_BACKGROUND 0
 #   define PATTERNROLL_ROW_HEIGHT 128
 #endif
 
@@ -121,10 +119,9 @@ public:
     
 public:
 
-        static Image rowPattern;
-        static Image renderRowsPattern(HelioTheme &theme, int height);
-        static void repaintBackgroundsCache(HelioTheme &theme)
-        { rowPattern = PatternRoll::renderRowsPattern(theme, PATTERNROLL_ROW_HEIGHT); }
+    Image rowPattern;
+    Image renderRowsPattern(const HelioTheme &theme, int height) const;
+    void repaintBackgroundsCache();
 
 private:
 

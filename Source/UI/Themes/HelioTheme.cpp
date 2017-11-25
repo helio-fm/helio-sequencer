@@ -897,10 +897,6 @@ void HelioTheme::updateBackgroundRenders(bool force)
         this->bgCache2 = Image();
         this->bgCache3 = Image();
     }
-    
-#if PATTERNROLL_HAS_PRERENDERED_BACKGROUND
-    PatternRoll::repaintBackgroundsCache(*this);
-#endif
 
 #if PANEL_A_HAS_PRERENDERED_BACKGROUND
     PanelBackgroundA::updateRender(*this);
