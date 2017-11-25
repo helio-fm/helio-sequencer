@@ -43,6 +43,7 @@ SpectrogramAudioMonitorComponent::SpectrogramAudioMonitorComponent(WeakReference
     skewTime(0)
 {
     this->setInterceptsMouseClicks(false, false);
+    this->setPaintingIsUnclipped(true);
 
     if (this->audioMonitor != nullptr)
     {

@@ -180,8 +180,9 @@ void PatternRoll::reloadRollContent()
         }
     }
 
-    this->setSize(this->getWidth(),
-        HYBRID_ROLL_HEADER_HEIGHT + this->getNumRows() * PATTERNROLL_ROW_HEIGHT);
+    const int h = HYBRID_ROLL_HEADER_HEIGHT + this->getNumRows() * PATTERNROLL_ROW_HEIGHT;
+    this->setSize(this->getWidth(), jmax(h, this->viewport.getViewHeight()));
+
     this->repaint(this->viewport.getViewArea());
 }
 
@@ -340,8 +341,8 @@ void PatternRoll::onRemoveTrack(MidiTrack *const track)
             }
         }
 
-        this->setSize(this->getWidth(),
-            HYBRID_ROLL_HEADER_HEIGHT + this->getNumRows() * PATTERNROLL_ROW_HEIGHT);
+        const int h = HYBRID_ROLL_HEADER_HEIGHT + this->getNumRows() * PATTERNROLL_ROW_HEIGHT;
+        this->setSize(this->getWidth(), jmax(h, this->viewport.getViewHeight()));
     }
 }
 

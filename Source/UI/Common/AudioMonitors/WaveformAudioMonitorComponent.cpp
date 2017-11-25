@@ -30,7 +30,8 @@ WaveformAudioMonitorComponent::WaveformAudioMonitorComponent(WeakReference<Audio
     skewTime(0)
 {
     this->setInterceptsMouseClicks(false, false);
-    
+    this->setPaintingIsUnclipped(true);
+
     if (this->audioMonitor != nullptr)
     {
         this->startThread(6);

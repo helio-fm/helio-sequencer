@@ -22,7 +22,7 @@
 #   define PATTERNROLL_ROW_HEIGHT 96
 #else
 #   define PATTERNROLL_HAS_PRERENDERED_BACKGROUND 0
-#   define PATTERNROLL_ROW_HEIGHT 64
+#   define PATTERNROLL_ROW_HEIGHT 128
 #endif
 
 class ClipComponent;

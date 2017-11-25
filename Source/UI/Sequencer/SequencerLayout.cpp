@@ -91,12 +91,6 @@ public:
         automations(targetAutomations),
         deltaH(0.f)
     {
-        this->setFocusContainer(false);
-        this->setWantsKeyboardFocus(false);
-        
-        this->automations->setFocusContainer(false);
-        this->automations->setWantsKeyboardFocus(false);
-        
         this->setInterceptsMouseClicks(false, true);
         this->setOpaque(true);
         
@@ -135,7 +129,7 @@ public:
     void paint(Graphics &g) override
     {
         const Colour backCol(this->findColour(HybridRoll::headerColourId).darker(0.05f));
-        g.fillAll(backCol);
+        g.fillRect(this->getLocalBounds());
     }
     
     void resized() override
@@ -216,9 +210,6 @@ public:
         roll(parentRoll),
         target(newOwnedComponent)
     {
-        this->setFocusContainer(false);
-        this->setWantsKeyboardFocus(false);
-
         this->setInterceptsMouseClicks(false, true);
         this->setOpaque(true);
 
@@ -252,7 +243,7 @@ public:
                                          0.f,
                                          float(this->getHeight() - 4), false));
         
-        g.fillAll();
+        g.fillRect(this->getLocalBounds());
         g.setColour(frontCol);
         
         for (const auto f : this->roll.getVisibleBars())
@@ -343,9 +334,9 @@ public:
         animationDirection(-1.f),
         animationSpeed(0.f)
     {
-        this->setFocusContainer(false);
-        this->setWantsKeyboardFocus(false);
         this->setInterceptsMouseClicks(false, true);
+        this->setPaintingIsUnclipped(true);
+        this->setOpaque(true);
 
         this->addAndMakeVisible(this->pianoViewport);
         this->addAndMakeVisible(this->patternViewport);
@@ -353,6 +344,7 @@ public:
 
         // Default state
         this->patternRoll->setEnabled(false);
+        this->patternViewport->setVisible(false);
     }
 
     ~RollsSwitchingProxy() override
@@ -375,17 +367,45 @@ public:
         // Disabling inactive prevents it from receiving keyboard events:
         this->patternRoll->setEnabled(patternMode);
         this->pianoRoll->setEnabled(!patternMode);
+        this->patternViewport->setVisible(true);
+        this->pianoViewport->setVisible(true);
+        this->resized();
         this->startTimerHz(60);
     }
     
+    void paint(Graphics& g) override {}
+
     void resized() override
+    {
+        this->updateAnimatedPositions();
+
+        Rectangle<int> r(this->getLocalBounds());
+        const int scrollerHeight = MainLayout::getScrollerHeight();
+        this->scroller->setBounds(r.removeFromBottom(scrollerHeight));
+
+        if ((this->pianoRoll->getBarWidth() * this->pianoRoll->getNumBars()) < this->getWidth())
+        {
+            this->pianoRoll->setBarWidth(float(this->getWidth()) / float(this->pianoRoll->getNumBars()));
+        }
+
+        if ((this->patternRoll->getBarWidth() * this->patternRoll->getNumBars()) < this->getWidth())
+        {
+            this->patternRoll->setBarWidth(float(this->getWidth()) / float(this->patternRoll->getNumBars()));
+        }
+
+        // Force update children bounds, even if they have just moved
+        this->pianoRoll->resized();
+        this->patternRoll->resized();
+    }
+
+    void updateAnimatedPositions()
     {
         jassert(this->pianoRoll);
         jassert(this->pianoViewport);
         jassert(this->patternRoll);
         jassert(this->patternViewport);
         jassert(this->scroller);
-        
+
         Rectangle<int> r(this->getLocalBounds());
         const int scrollerHeight = MainLayout::getScrollerHeight();
 
@@ -404,22 +424,6 @@ public:
         this->pianoViewport->setBounds(rollSize.withX(viewport1Pos));
         this->patternViewport->setBounds(rollSize.withX(viewport2Pos));
 #endif
-
-        this->scroller->setBounds(r.removeFromBottom(scrollerHeight));
-
-        if ((this->pianoRoll->getBarWidth() * this->pianoRoll->getNumBars()) < this->getWidth())
-        {
-            this->pianoRoll->setBarWidth(float(this->getWidth()) / float(this->pianoRoll->getNumBars()));
-        }
-
-        if ((this->patternRoll->getBarWidth() * this->patternRoll->getNumBars()) < this->getWidth())
-        {
-            this->patternRoll->setBarWidth(float(this->getWidth()) / float(this->patternRoll->getNumBars()));
-        }
-
-        // Force update children bounds, even if they have just moved
-        this->pianoRoll->resized();
-        this->patternRoll->resized();
     }
 
 private:
@@ -430,17 +434,23 @@ private:
         //this->animationSpeed = jlimit(0.000001f, 1.f, this->animationSpeed * 0.9f);
         this->animationSpeed *= ROLLS_SWITCH_ANIMATION_ACCELERATION;
 
-        // TODO notify scroller!
-        // change subscriptions on the fly of just send events to move its rectangles?
-
         if (this->animationPosition < 0.001f || this->animationPosition > 0.999f)
         {
             //Logger::writeToLog("Stopping rolls-switch animation");
+            const bool patternMode = this->isPatternMode();
+            if (patternMode)
+            { this->pianoViewport->setVisible(false); }
+            else
+            { this->patternViewport->setVisible(false); }
+
             this->animationPosition = jlimit(0.f, 1.f, this->animationPosition);
+            this->resized();
             this->stopTimer();
         }
-
-        this->resized();
+        else
+        {
+            this->updateAnimatedPositions();
+        }
     }
 
     SafePointer<HybridRoll> pianoRoll;
@@ -469,6 +479,9 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
     pianoRoll(nullptr)
 {
     this->setComponentID(ComponentIDs::sequencerLayoutId);
+    this->setInterceptsMouseClicks(false, true);
+    this->setPaintingIsUnclipped(true);
+    this->setOpaque(true);
 
     // Create viewports, containing the rolls
     const WeakReference<AudioMonitor> clippingDetector =
@@ -479,15 +492,17 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
     this->pianoViewport->setScrollBarsShown(false, false);
     this->pianoViewport->setWantsKeyboardFocus(false);
     this->pianoViewport->setFocusContainer(false);
+    this->pianoViewport->setPaintingIsUnclipped(true);
     
     this->pianoRoll = new PianoRoll(this->project,
         *this->pianoViewport, clippingDetector);
 
-    this->patternViewport = new Viewport("Viewport One");
+    this->patternViewport = new Viewport("Viewport Two");
     this->patternViewport->setInterceptsMouseClicks(false, true);
     this->patternViewport->setScrollBarsShown(false, false);
     this->patternViewport->setWantsKeyboardFocus(false);
     this->patternViewport->setFocusContainer(false);
+    this->patternViewport->setPaintingIsUnclipped(true);
 
     this->patternRoll = new PatternRoll(this->project,
         *this->patternViewport, clippingDetector);
@@ -547,9 +562,6 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
     this->allEditorsAndCommandPanel->addFixedPage(this->rollToolsSidebar);
 
     this->addAndMakeVisible(this->allEditorsAndCommandPanel);
-
-    this->setWantsKeyboardFocus(false);
-    this->setFocusContainer(false);
 }
 
 SequencerLayout::~SequencerLayout()

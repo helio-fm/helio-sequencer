@@ -174,6 +174,7 @@ void NavigationSidebar::switchMonitorsAnimated(Component *oldOne, Component *new
     const int w = this->getWidth();
     const int y = this->getHeight() - AUDIO_MONITOR_HEIGHT;
     this->animator.animateComponent(oldOne, oldOne->getBounds().translated(-w, 0), 0.f, 200, true, 0.f, 1.f);
+    oldOne->setVisible(false);
     newOne->setAlpha(0.f);
     newOne->setVisible(true);
     newOne->setTopLeftPosition(w, y);

@@ -45,6 +45,7 @@ GenericAudioMonitorComponent::GenericAudioMonitorComponent(WeakReference<AudioMo
 {
     // (true, false) will enable switching rendering modes on click
     this->setInterceptsMouseClicks(false, false);
+    this->setPaintingIsUnclipped(true);
 
     for (int band = 0; band < GENERIC_METER_NUM_BANDS; ++band)
     {
