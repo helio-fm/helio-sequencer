@@ -34,7 +34,7 @@ TimeSignatureCommandPanel::TimeSignatureCommandPanel(ProjectTreeItem &parentProj
     project(parentProject),
     event(targetEvent)
 {
-    ReferenceCountedArray<CommandItem> cmds;
+    CommandPanel::Items cmds;
     cmds.add(CommandItem::withParams(Icons::ellipsis, CommandIDs::ChangeTimeSignature, TRANS("menu::timesignature::change")));
     cmds.add(CommandItem::withParams(Icons::close, CommandIDs::DeleteTimeSignature, TRANS("menu::timesignature::delete")));
     this->updateContent(cmds, SlideDown);

@@ -49,7 +49,9 @@ public:
         SlideDown       = 0x050,
     };
 
-    void updateContent(ReferenceCountedArray<CommandItem> commands,
+    typedef ReferenceCountedArray<CommandItem> Items;
+
+    void updateContent(Items commands,
         AnimationType animationType = SlideDown, bool adjustsWidth = true);
 
     static StringPairArray getColoursList();
@@ -69,7 +71,7 @@ private:
 
     bool shouldAdjustWidth;
     AnimationType lastAnimationType;
-    ReferenceCountedArray<CommandItem> commandDescriptions;
+    Items commandDescriptions;
 
 
     //===------------------------------------------------------------------===//

@@ -42,7 +42,7 @@ void PatternEditorCommandPanel::handleCommandMessage(int commandId)
 
 void PatternEditorCommandPanel::initMainPanel()
 {
-    ReferenceCountedArray<CommandItem> cmds;
+    CommandPanel::Items cmds;
     //cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
     this->updateContent(cmds, CommandPanel::SlideLeft);
 }

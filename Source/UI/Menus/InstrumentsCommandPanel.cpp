@@ -31,7 +31,7 @@
 InstrumentsCommandPanel::InstrumentsCommandPanel(InstrumentsRootTreeItem &parentOrchestra) :
     instrumentsRoot(parentOrchestra)
 {
-    ReferenceCountedArray<CommandItem> cmds;
+    CommandPanel::Items cmds;
 
     const bool pluginsAreCurrentlyScanning = App::Workspace().getPluginManager().isWorking();
 
