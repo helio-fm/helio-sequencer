@@ -150,7 +150,6 @@ void TreeItemComponent::handleCommandMessage(int commandId)
     if (commandId == CommandIDs::MenuButtonPressed)
     {
         this->emitCallout();
-        //this->emitRollover();
     }
 }
 

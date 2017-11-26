@@ -27,9 +27,8 @@ namespace CommandIDs
         IconButtonPressed               = 0x0004,
         MenuButtonPressed               = 0x0005,
         RootTreeItemPressed             = 0x0006,
-        HideRollover                    = 0x0007,
-        HideDialog                      = 0x0008,
-        HideCallout                     = 0x0009,
+        HideDialog                      = 0x0007,
+        HideCallout                     = 0x0008,
 
         // TimeSignatureCommandPanel
         ChangeTimeSignature             = 0x0010,

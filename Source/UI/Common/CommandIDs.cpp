@@ -41,8 +41,6 @@ int CommandIDs::getIdForName(const String &command)
         return MenuButtonPressed;
     case Hash("RootTreeItemPressed"):
         return RootTreeItemPressed;
-    case Hash("HideRollover"):
-        return HideRollover;
     case Hash("HideDialog"):
         return HideDialog;
     case Hash("HideCallout"):

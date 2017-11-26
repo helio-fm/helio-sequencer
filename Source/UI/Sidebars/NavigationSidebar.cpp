@@ -36,9 +36,6 @@
 #include "App.h"
 #include "AudioCore.h"
 #include "HelioTheme.h"
-#include "RolloverHeaderLeft.h"
-#include "RolloverHeaderRight.h"
-#include "RolloverContainer.h"
 
 #define AUDIO_MONITOR_HEIGHT 126
 
