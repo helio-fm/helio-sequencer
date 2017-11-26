@@ -673,6 +673,10 @@
                 file="../../Source/UI/Dialogs/AuthorizationDialog.cpp"/>
           <FILE id="WCRnDA" name="AuthorizationDialog.h" compile="0" resource="0"
                 file="../../Source/UI/Dialogs/AuthorizationDialog.h"/>
+          <FILE id="DMEW3x" name="DialogComboBox.cpp" compile="1" resource="0"
+                file="../../Source/UI/Dialogs/DialogComboBox.cpp"/>
+          <FILE id="AOZaMT" name="DialogComboBox.h" compile="0" resource="0"
+                file="../../Source/UI/Dialogs/DialogComboBox.h"/>
           <FILE id="LnmUma" name="FadingDialog.cpp" compile="1" resource="0"
                 file="../../Source/UI/Dialogs/FadingDialog.cpp"/>
           <FILE id="zCMR8o" name="FadingDialog.h" compile="0" resource="0" file="../../Source/UI/Dialogs/FadingDialog.h"/>
