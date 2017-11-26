@@ -51,6 +51,8 @@ RolloverHeaderRight::RolloverHeaderRight(const String &headerTitle)
 
     //[UserPreSize]
     this->setInterceptsMouseClicks(true, false);
+    this->setMouseClickGrabsKeyboardFocus(false);
+
     this->detailsLabel->setInterceptsMouseClicks(false, false);
     this->titleLabel->setInterceptsMouseClicks(false, false);
     this->backButton->setInterceptsMouseClicks(false, false);

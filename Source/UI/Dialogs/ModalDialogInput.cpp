@@ -91,8 +91,8 @@ ModalDialogInput::ModalDialogInput(Component &owner, String &result, const Strin
 
     //[Constructor]
     this->rebound();
-    this->setWantsKeyboardFocus(true);
     this->setInterceptsMouseClicks(true, true);
+    this->setMouseClickGrabsKeyboardFocus(false);
     this->textEditor->setTextToShowWhenEmpty(message, Colours::black.withAlpha(0.5f));
     this->setAlwaysOnTop(true);
     this->toFront(true);
@@ -218,25 +218,6 @@ void ModalDialogInput::handleCommandMessage (int commandId)
     //[/UserCode_handleCommandMessage]
 }
 
-bool ModalDialogInput::keyPressed (const KeyPress& key)
-{
-    //[UserCode_keyPressed] -- Add your code here...
-    if (key.isKeyCode(KeyPress::escapeKey))
-    {
-        this->cancel();
-        return true;
-    }
-    else if (key.isKeyCode(KeyPress::returnKey) ||
-             key.isKeyCode(KeyPress::tabKey))
-    {
-        this->okay();
-        return true;
-    }
-
-    return false;  // Return true if your handler uses this key event, or false to allow it to be passed-on.
-    //[/UserCode_keyPressed]
-}
-
 void ModalDialogInput::inputAttemptWhenModal()
 {
     //[UserCode_inputAttemptWhenModal] -- Add your code here...
@@ -253,17 +234,27 @@ void ModalDialogInput::textEditorTextChanged(TextEditor &editor)
     this->updateOkButtonState();
 }
 
-void ModalDialogInput::textEditorReturnKeyPressed(TextEditor &)
+void ModalDialogInput::textEditorReturnKeyPressed(TextEditor &ed)
 {
-    if (this->targetString.isNotEmpty())
-    {
-        this->okay();
-    }
+    this->textEditorFocusLost(ed);
 }
 
 void ModalDialogInput::textEditorEscapeKeyPressed(TextEditor &)
 {
     this->cancel();
+}
+
+void ModalDialogInput::textEditorFocusLost(TextEditor &ed)
+{
+    this->updateOkButtonState();
+    if (this->targetString.isNotEmpty())
+    {
+        this->okay();
+    }
+    else
+    {
+        ed.grabKeyboardFocus();
+    }
 }
 
 void ModalDialogInput::updateOkButtonState()
@@ -278,6 +269,7 @@ void ModalDialogInput::timerCallback()
     if (! this->textEditor->hasKeyboardFocus(true))
     {
         this->textEditor->grabKeyboardFocus();
+        this->textEditor->selectAll();
         this->stopTimer();
     }
 }
@@ -297,7 +289,6 @@ BEGIN_JUCER_METADATA
   <METHODS>
     <METHOD name="parentSizeChanged()"/>
     <METHOD name="parentHierarchyChanged()"/>
-    <METHOD name="keyPressed (const KeyPress&amp; key)"/>
     <METHOD name="visibilityChanged()"/>
     <METHOD name="inputAttemptWhenModal()"/>
     <METHOD name="handleCommandMessage (int commandId)"/>

@@ -45,6 +45,7 @@ AnnotationLargeComponent::AnnotationLargeComponent(AnnotationsTrackMap<Annotatio
 
     //[UserPreSize]
     this->setInterceptsMouseClicks(true, false);
+    this->setMouseClickGrabsKeyboardFocus(false);
     this->annotationLabel->setInterceptsMouseClicks(false, false);
     this->setMouseCursor(MouseCursor::PointingHandCursor);
     this->annotationLabel->setVisible(false);

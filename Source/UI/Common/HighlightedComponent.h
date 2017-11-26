@@ -27,6 +27,7 @@ public:
         fadingHighlights(true)
     {
         this->setInterceptsMouseClicks(true, false);
+        this->setMouseClickGrabsKeyboardFocus(false);
     }
     
     void setUsesFadingHighlights(bool shouldFade)

@@ -33,6 +33,7 @@ public:
         listener(listener)
     {
         this->setInterceptsMouseClicks(true, false);
+        this->setMouseClickGrabsKeyboardFocus(false);
     }
     
     explicit IconButton(Image targetImage,
@@ -43,6 +44,7 @@ public:
         listener(listener)
     {
         this->setInterceptsMouseClicks(true, false);
+        this->setMouseClickGrabsKeyboardFocus(false);
     }
 
     void mouseDown(const MouseEvent &e) override

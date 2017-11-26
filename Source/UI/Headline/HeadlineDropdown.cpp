@@ -50,6 +50,7 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<TreeItem> targetItem)
     //[UserPreSize]
     this->titleLabel->setInterceptsMouseClicks(false, false);
     this->setInterceptsMouseClicks(true, true);
+    this->setMouseClickGrabsKeyboardFocus(false);
     //[/UserPreSize]
 
     setSize (150, 32);

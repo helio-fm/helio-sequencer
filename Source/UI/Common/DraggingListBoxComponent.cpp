@@ -34,6 +34,7 @@ DraggingListBoxComponent::DraggingListBoxComponent(Viewport *parent, bool disabl
     }
     
     this->setInterceptsMouseClicks(true, false);
+    this->setMouseClickGrabsKeyboardFocus(false);
 }
 
 

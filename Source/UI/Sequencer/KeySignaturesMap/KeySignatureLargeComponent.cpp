@@ -44,6 +44,7 @@ KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesTrackMap<Key
 
     //[UserPreSize]
     this->setInterceptsMouseClicks(true, false);
+    this->setMouseClickGrabsKeyboardFocus(false);
     this->signatureLabel->setInterceptsMouseClicks(false, false);
     this->setMouseCursor(MouseCursor::PointingHandCursor);
     //[/UserPreSize]

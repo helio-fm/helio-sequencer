@@ -38,7 +38,6 @@ TriggersTrackMap::TriggersTrackMap(ProjectTreeItem &parentProject, HybridRoll &p
     rollLastBeat(16.f)
 {
     this->setAlwaysOnTop(true);
-    this->setInterceptsMouseClicks(false, true);
     this->setPaintingIsUnclipped(true);
 
     this->leadingConnector = new TriggerEventConnector(nullptr, nullptr, DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE);
@@ -46,9 +45,9 @@ TriggersTrackMap::TriggersTrackMap(ProjectTreeItem &parentProject, HybridRoll &p
     
     this->setMouseCursor(MouseCursor::CopyingCursor);
     
-    //this->setAlwaysOnTop(true);
     this->setInterceptsMouseClicks(true, true);
-    
+    this->setMouseClickGrabsKeyboardFocus(false);
+
     this->reloadTrack();
     
     this->project.addListener(this);

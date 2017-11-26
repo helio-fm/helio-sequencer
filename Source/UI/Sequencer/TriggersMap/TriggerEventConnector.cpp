@@ -31,10 +31,8 @@ TriggerEventConnector::TriggerEventConnector(TriggerEventComponent *c1,
       anchorBeatChild1(0.f),
       anchorBeatChild2(0.f)
 {
-    this->setFocusContainer(false);
-    this->setWantsKeyboardFocus(false);
-    
     this->setInterceptsMouseClicks(true, false);
+    this->setMouseClickGrabsKeyboardFocus(false);
     this->setMouseCursor(MouseCursor::CopyingCursor);
     
     this->setSize(600, 32);

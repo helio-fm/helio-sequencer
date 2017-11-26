@@ -159,6 +159,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
     //[Constructor]
     this->rebound();
     this->setInterceptsMouseClicks(true, true);
+    this->setMouseClickGrabsKeyboardFocus(false);
     this->toFront(true);
     this->setAlwaysOnTop(true);
     this->updateOkButtonState();

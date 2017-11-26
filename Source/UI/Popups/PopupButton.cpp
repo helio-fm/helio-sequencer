@@ -113,6 +113,7 @@ PopupButton::PopupButton(bool shouldShowConfirmImage)
     this->mouseDownHighlighter->setAlpha(0.f);
     this->confirmationMark->setAlpha(0.f);
     this->setInterceptsMouseClicks(true, false);
+    this->setMouseClickGrabsKeyboardFocus(false);
     //[/UserPreSize]
 
     setSize (48, 48);

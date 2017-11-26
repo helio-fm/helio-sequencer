@@ -128,8 +128,8 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
 
     //[Constructor]
     this->rebound();
-    this->setWantsKeyboardFocus(true);
     this->setInterceptsMouseClicks(true, true);
+    this->setMouseClickGrabsKeyboardFocus(false);
     this->toFront(true);
     this->setAlwaysOnTop(true);
     this->updateOkButtonState();

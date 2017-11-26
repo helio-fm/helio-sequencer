@@ -352,6 +352,7 @@ void MainLayout::showBlockingNonModalDialog(Component *targetComponent)
         Blocker()
         { 
             this->setInterceptsMouseClicks(true, true);
+            this->setMouseClickGrabsKeyboardFocus(false);
             this->setPaintingIsUnclipped(true);
         }
         

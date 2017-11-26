@@ -38,10 +38,8 @@ TriggerEventComponent::TriggerEventComponent(TriggersTrackMap &parent, const Aut
 {
 
     //[UserPreSize]
-    this->setFocusContainer(false);
-    this->setWantsKeyboardFocus(false);
-
     this->setInterceptsMouseClicks(true, false);
+    this->setMouseClickGrabsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
     this->recreateConnector();
     this->setMouseCursor(MouseCursor::PointingHandCursor);

@@ -37,6 +37,7 @@ TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesTrackMap<
     //[UserPreSize]
     this->setOpaque(false);
     this->setInterceptsMouseClicks(true, false);
+    this->setMouseClickGrabsKeyboardFocus(false);
     this->setMouseCursor(MouseCursor::PointingHandCursor);
     //[/UserPreSize]
 

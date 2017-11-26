@@ -28,6 +28,7 @@ AutomationEventsConnector::AutomationEventsConnector(AutomationTrackMap &parentT
     this->setWantsKeyboardFocus(false);
     
     this->setInterceptsMouseClicks(true, false);
+    this->setMouseClickGrabsKeyboardFocus(false);
     this->setMouseCursor(MouseCursor::UpDownResizeCursor);
 }
 

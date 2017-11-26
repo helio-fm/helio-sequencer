@@ -83,8 +83,8 @@ RevisionComponent::RevisionComponent(VersionControl &owner, const ValueTree revi
     this->revisionDate->setText(App::getHumanReadableDate(Time(timestamp)), dontSendNotification);
 
     this->setInterceptsMouseClicks(true, false);
-    //this->background->setInterceptsMouseClicks(false, false);
-    //this->background2->setInterceptsMouseClicks(false, false);
+    this->setMouseClickGrabsKeyboardFocus(false);
+
     this->revisionDescription->setInterceptsMouseClicks(false, false);
     this->revisionDate->setInterceptsMouseClicks(false, false);
     //[/UserPreSize]

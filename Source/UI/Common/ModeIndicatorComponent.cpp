@@ -146,6 +146,7 @@ void ModeIndicatorOwnerComponent::hideModeIndicator()
 ModeIndicatorTrigger::ModeIndicatorTrigger()
 {
     this->setInterceptsMouseClicks(true, false);
+    this->setMouseClickGrabsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
 }
 
