@@ -45,6 +45,16 @@ public:
         this->currentPlayer = this->findNextFreePlayer();
     }
 
+    ~PlayerThreadPool()
+    {
+        // Send exit signal to all threads before they are stopped forcefully,
+        // so that we don't have to wait for each one separately.
+        for (int i = 0; i < this->players.size(); ++i)
+        {
+            this->players.getUnchecked(i)->signalThreadShouldExit();
+        }
+    }
+
     void startPlayback(bool shouldBroadcastTransportEvents = true)
     {
         if (this->currentPlayer->isThreadRunning())
@@ -135,15 +145,14 @@ Transport::Transport(OrchestraPit &orchestraPit) :
 {
     this->player = new PlayerThreadPool(*this);
     this->renderer = new RendererThread(*this);
-
     this->orchestra.addOrchestraListener(this);
 }
 
 Transport::~Transport()
 {
     this->orchestra.removeOrchestraListener(this);
-    this->player = nullptr;
     this->renderer = nullptr;
+    this->player = nullptr;
     this->transportListeners.clear();
 }
 

@@ -34,7 +34,7 @@ PlayerThread::PlayerThread(Transport &transport) :
 
 PlayerThread::~PlayerThread()
 {
-    this->stopThread(100);
+    this->stopThread(MINIMUM_STOP_CHECK_TIME_MS);
 }
 
 

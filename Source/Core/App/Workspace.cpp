@@ -40,6 +40,13 @@ Workspace::Workspace() :
 Workspace::~Workspace()
 {
     this->autosave();
+    
+    // To cleanup properly, remove all projects first (before instruments etc).
+    // Tree item destructor will remove the rest.
+    while (this->getLoadedProjects().size() > 0)
+    {
+        delete this->getLoadedProjects().getFirst();
+    }
 
     this->treeRoot = nullptr;
     
