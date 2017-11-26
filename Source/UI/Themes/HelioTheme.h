@@ -74,7 +74,14 @@ public:
         int buttonW, int buttonH, ComboBox &box) override;
     Font getComboBoxFont(ComboBox&) override;
     Label *createComboBoxTextBox(ComboBox&) override;
-    
+
+    //===------------------------------------------------------------------===//
+    // Text Editor
+    //===------------------------------------------------------------------===//
+
+    void fillTextEditorBackground(Graphics&, int w, int h, TextEditor&) override;
+    void drawTextEditorOutline(Graphics&, int w, int h, TextEditor&) override;
+
     //===------------------------------------------------------------------===//
     // Selection
     //===------------------------------------------------------------------===//

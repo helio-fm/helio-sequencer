@@ -49,12 +49,11 @@ CommandPanel::CommandPanel()
     //[Constructor]
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, true);
+    this->setMouseClickGrabsKeyboardFocus(false);
 
     for (int i = 0; i < this->getNumChildComponents(); ++i)
     {
         Component *c = this->getChildComponent(i);
-        c->setFocusContainer(false);
-        c->setWantsKeyboardFocus(false);
         c->setMouseClickGrabsKeyboardFocus(false);
     }
     //[/Constructor]
@@ -93,6 +92,12 @@ void CommandPanel::resized()
 void CommandPanel::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
+    if (this->getParentComponent() != nullptr)
+    {
+        // The default behavior is to pass command up the hierarchy,
+        // but subclasses may override handleCommandMessage to process the command instead.
+        this->getParentComponent()->postCommandMessage(commandId);
+    }
     //[/UserCode_handleCommandMessage]
 }
 
@@ -151,7 +156,7 @@ StringPairArray CommandPanel::getColoursList()
 #define FADE_ALPHA 0.5f
 #define TOPLEVEL_HEIGHT_MARGINS 170
 
-void CommandPanel::updateContent(ReferenceCountedArray<CommandItem> commands,
+void CommandPanel::updateContent(Items commands,
     AnimationType animationType, bool adjustsWidth)
 {
     this->lastAnimationType = animationType;

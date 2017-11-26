@@ -22,6 +22,7 @@
 #include "KeySignatureEvent.h"
 #include "ScaleEditor.h"
 #include "KeySelector.h"
+#include "DialogComboBox.h"
 
 class Transport;
 class KeySignaturesSequence;
@@ -36,8 +37,8 @@ class KeySignatureDialog  : public FadingDialog,
                             public TextEditorListener,
                             public ScaleEditor::Listener,
                             public KeySelector::Listener,
-                            public Button::Listener,
-                            public ComboBox::Listener
+                            private Timer,
+                            public Button::Listener
 {
 public:
 
@@ -56,12 +57,10 @@ public:
     void paint (Graphics& g) override;
     void resized() override;
     void buttonClicked (Button* buttonThatWasClicked) override;
-    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
     void visibilityChanged() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
     void handleCommandMessage (int commandId) override;
-    bool keyPressed (const KeyPress& key) override;
     void inputAttemptWhenModal() override;
 
 
@@ -71,6 +70,13 @@ private:
 
     void onKeyChanged(int key) override;
     void onScaleChanged(Scale scale) override;
+
+    void textEditorTextChanged(TextEditor&) override;
+    void textEditorReturnKeyPressed(TextEditor&) override;
+    void textEditorEscapeKeyPressed(TextEditor&) override;
+    void textEditorFocusLost(TextEditor&) override;
+
+    void timerCallback() override;
 
     Transport &transport;
     KeySignatureEvent originalEvent;
@@ -83,7 +89,7 @@ private:
 
     bool addsNewEvent;
     bool hasMadeChanges;
-    void sendEventChange(KeySignatureEvent newEvent);
+    void sendEventChange(const KeySignatureEvent &newEvent);
     void removeEvent();
     bool cancelChangesIfAny();
 
@@ -93,15 +99,16 @@ private:
     //[/UserVariables]
 
     ScopedPointer<PanelC> background;
+    ScopedPointer<DialogComboBox::Primer> comboPrimer;
     ScopedPointer<Label> messageLabel;
     ScopedPointer<TextButton> removeEventButton;
     ScopedPointer<TextButton> okButton;
-    ScopedPointer<ComboBox> scaleNameEditor;
     ScopedPointer<SeparatorHorizontal> separatorH;
     ScopedPointer<SeparatorVertical> separatorV;
     ScopedPointer<KeySelector> keySelector;
     ScopedPointer<ScaleEditor> scaleEditor;
     ScopedPointer<PlayButton> playButton;
+    ScopedPointer<TextEditor> scaleNameEditor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeySignatureDialog)
 };

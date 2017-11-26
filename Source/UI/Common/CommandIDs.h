@@ -181,15 +181,17 @@ namespace CommandIDs
 
         SelectFunction                  = 0x3010,
         SelectScale                     = 0x3011, // more ids reserved for sub-items
+        SelectTimeSignature             = 0x3200, // more ids reserved for sub-items
 
-        SwitchBetweenRolls              = 0x3200,
-        ShowPreviousPage                = 0x3201,
-        ShowNextPage                    = 0x3202,
-        ToggleShowHideConsole           = 0x3203,
+        SwitchBetweenRolls              = 0x3300,
+        ShowPreviousPage                = 0x3301,
+        ShowNextPage                    = 0x3302,
+        ToggleShowHideConsole           = 0x3303,
+        ToggleShowHideCombo             = 0x3304,
 
-        StartDragViewport               = 0x3204,
-        EndDragViewport                 = 0x3205,
-        YourNextCommandId = 0x3206
+        StartDragViewport               = 0x3305,
+        EndDragViewport                 = 0x3306,
+        YourNextCommandId = 0x3306
     };
 
     int getIdForName(const String &command);

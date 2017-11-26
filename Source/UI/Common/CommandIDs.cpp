@@ -259,6 +259,8 @@ int CommandIDs::getIdForName(const String &command)
         return SelectFunction;
     case Hash("SelectScale"):
         return SelectScale;
+    case Hash("SelectTimeSignature"):
+        return SelectTimeSignature;
     case Hash("SwitchBetweenRolls"):
         return SwitchBetweenRolls;
     case Hash("ShowPreviousPage"):
@@ -267,6 +269,8 @@ int CommandIDs::getIdForName(const String &command)
         return ShowNextPage;
     case Hash("ToggleShowHideConsole"):
         return ToggleShowHideConsole;
+    case Hash("ToggleShowHideCombo"):
+        return ToggleShowHideCombo;
     case Hash("StartDragViewport"):
         return StartDragViewport;
     case Hash("EndDragViewport"):

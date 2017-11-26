@@ -57,6 +57,12 @@ static Array<Scale> loadDefaultScales()
 
 static Array<Scale> kDefaultScales = loadDefaultScales();
 
+static inline void copyColourIfSpecified(Label& l, TextEditor& ed, int colourID, int targetColourID)
+{
+    if (l.isColourSpecified(colourID) || l.getLookAndFeel().isColourSpecified(colourID))
+        ed.setColour(targetColourID, l.findColour(colourID));
+}
+
 //[/MiscUserDefs]
 
 KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, KeySignaturesSequence *keySequence, const KeySignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
@@ -69,6 +75,8 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
       key(0)
 {
     addAndMakeVisible (background = new PanelC());
+    addAndMakeVisible (comboPrimer = new DialogComboBox::Primer());
+
     addAndMakeVisible (messageLabel = new Label (String(),
                                                  TRANS("...")));
     messageLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
@@ -88,13 +96,6 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
     okButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnTop);
     okButton->addListener (this);
 
-    addAndMakeVisible (scaleNameEditor = new ComboBox (String()));
-    scaleNameEditor->setEditableText (true);
-    scaleNameEditor->setJustificationType (Justification::centredLeft);
-    scaleNameEditor->setTextWhenNothingSelected (String());
-    scaleNameEditor->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    scaleNameEditor->addListener (this);
-
     addAndMakeVisible (separatorH = new SeparatorHorizontal());
     addAndMakeVisible (separatorV = new SeparatorVertical());
     addAndMakeVisible (keySelector = new KeySelector());
@@ -102,20 +103,22 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
     addAndMakeVisible (scaleEditor = new ScaleEditor());
 
     addAndMakeVisible (playButton = new PlayButton());
+    addAndMakeVisible (scaleNameEditor = new TextEditor (String()));
+    scaleNameEditor->setMultiLine (false);
+    scaleNameEditor->setReturnKeyStartsNewLine (false);
+    scaleNameEditor->setReadOnly (false);
+    scaleNameEditor->setScrollbarsShown (true);
+    scaleNameEditor->setCaretVisible (true);
+    scaleNameEditor->setPopupMenuEnabled (true);
+    scaleNameEditor->setText (String());
+
 
     //[UserPreSize]
     this->transport.stopPlayback();
 
     this->separatorH->setAlphaMultiplier(2.5f);
     this->scaleNameEditor->addListener(this);
-
-    // TODO my own nice popup menu
-
-    for (int i = 0; i < kDefaultScales.size(); ++i)
-    {
-        const auto &s = kDefaultScales.getUnchecked(i);
-        this->scaleNameEditor->addItem(s.getName(), i + 1);
-    }
+    this->scaleNameEditor->setFont(Font(Font::getDefaultSansSerifFontName(), 21.f, Font::plain));
 
     jassert(this->addsNewEvent || this->originalEvent.getSequence() != nullptr);
 
@@ -127,7 +130,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
         this->scale = kDefaultScales[i];
         this->scaleEditor->setScale(this->scale);
         this->keySelector->setSelectedKey(this->key);
-        this->scaleNameEditor->setSelectedItemIndex(i, dontSendNotification);
+        this->scaleNameEditor->setText(this->scale.getName());
         this->originalEvent = KeySignatureEvent(this->originalSequence, targetBeat, this->key, this->scale);
 
         this->originalSequence->checkpoint();
@@ -151,36 +154,47 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
     }
     //[/UserPreSize]
 
-    setSize (430, 250);
+    setSize (430, 260);
 
     //[Constructor]
     this->rebound();
-    this->setWantsKeyboardFocus(true);
     this->setInterceptsMouseClicks(true, true);
     this->toFront(true);
     this->setAlwaysOnTop(true);
     this->updateOkButtonState();
+
+    CommandPanel::Items menu;
+    for (int i = 0; i < kDefaultScales.size(); ++i)
+    {
+        const auto &s = kDefaultScales.getUnchecked(i);
+        menu.add(CommandItem::withParams(Icons::ellipsis, CommandIDs::SelectScale + i, s.getName()));
+    }
+    this->comboPrimer->initWith(this->scaleNameEditor.get(), menu);
+
+    this->startTimer(100);
     //[/Constructor]
 }
 
 KeySignatureDialog::~KeySignatureDialog()
 {
     //[Destructor_pre]
+    this->comboPrimer->cleanup();
     this->transport.stopPlayback();
-    scaleNameEditor->removeListener(this);
+    this->scaleNameEditor->removeListener(this);
     FadingDialog::fadeOut();
     //[/Destructor_pre]
 
     background = nullptr;
+    comboPrimer = nullptr;
     messageLabel = nullptr;
     removeEventButton = nullptr;
     okButton = nullptr;
-    scaleNameEditor = nullptr;
     separatorH = nullptr;
     separatorV = nullptr;
     keySelector = nullptr;
     scaleEditor = nullptr;
     playButton = nullptr;
+    scaleNameEditor = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -210,15 +224,16 @@ void KeySignatureDialog::resized()
     //[/UserPreResize]
 
     background->setBounds ((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
+    comboPrimer->setBounds ((getWidth() / 2) - ((getWidth() - 24) / 2), 12, getWidth() - 24, getHeight() - 72);
     messageLabel->setBounds ((getWidth() / 2) - ((getWidth() - 32) / 2), 4 + 12, getWidth() - 32, 36);
     removeEventButton->setBounds (4, getHeight() - 4 - 48, 210, 48);
     okButton->setBounds (getWidth() - 4 - 211, getHeight() - 4 - 48, 211, 48);
-    scaleNameEditor->setBounds ((getWidth() / 2) + -19 - ((getWidth() - 102) / 2), 146, getWidth() - 102, 36);
     separatorH->setBounds (4, getHeight() - 52 - 2, getWidth() - 8, 2);
     separatorV->setBounds ((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
-    keySelector->setBounds ((getWidth() / 2) + 2 - ((getWidth() - 40) / 2), 56, getWidth() - 40, 34);
-    scaleEditor->setBounds ((getWidth() / 2) + 2 - ((getWidth() - 40) / 2), 104, getWidth() - 40, 34);
-    playButton->setBounds ((getWidth() / 2) + 170 - (40 / 2), 144, 40, 40);
+    keySelector->setBounds ((getWidth() / 2) + 2 - ((getWidth() - 40) / 2), 58, getWidth() - 40, 34);
+    scaleEditor->setBounds ((getWidth() / 2) + 2 - ((getWidth() - 40) / 2), 108, getWidth() - 40, 34);
+    playButton->setBounds ((getWidth() / 2) + 170 - (40 / 2), 148, 40, 40);
+    scaleNameEditor->setBounds ((getWidth() / 2) + -20 - ((getWidth() - 100) / 2), 152, getWidth() - 100, 32);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -245,7 +260,7 @@ void KeySignatureDialog::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == okButton)
     {
         //[UserButtonCode_okButton] -- add your button handler code here..
-        if (scaleNameEditor->getText().isNotEmpty())
+        if (this->scaleNameEditor->getText().isNotEmpty())
         {
             this->disappear();
         }
@@ -254,39 +269,6 @@ void KeySignatureDialog::buttonClicked (Button* buttonThatWasClicked)
 
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
-}
-
-void KeySignatureDialog::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
-{
-    //[UsercomboBoxChanged_Pre]
-    //[/UsercomboBoxChanged_Pre]
-
-    if (comboBoxThatHasChanged == scaleNameEditor)
-    {
-        //[UserComboBoxCode_scaleNameEditor] -- add your combo box handling code here..
-        for (const auto &s : kDefaultScales)
-        {
-            if (s.getName() == this->scaleNameEditor->getText())
-            {
-                this->scale = s;
-                this->scaleEditor->setScale(this->scale);
-                KeySignatureEvent newEvent = this->originalEvent.withRootKey(this->key).withScale(scale);
-                this->sendEventChange(newEvent);
-                return;
-            }
-        }
-
-        this->scale = this->scale.withName(this->scaleNameEditor->getText());
-        this->scaleEditor->setScale(this->scale);
-        KeySignatureEvent newEvent = this->originalEvent.withRootKey(this->key).withScale(scale);
-        this->sendEventChange(newEvent);
-        return;
-
-        //[/UserComboBoxCode_scaleNameEditor]
-    }
-
-    //[UsercomboBoxChanged_Post]
-    //[/UsercomboBoxChanged_Post]
 }
 
 void KeySignatureDialog::visibilityChanged()
@@ -368,30 +350,19 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
         this->transport.stopPlayback();
         //this->playButton->setPlaying(false);
     }
-    //[/UserCode_handleCommandMessage]
-}
-
-bool KeySignatureDialog::keyPressed (const KeyPress& key)
-{
-    //[UserCode_keyPressed] -- Add your code here...
-    if (key.isKeyCode(KeyPress::escapeKey))
+    else
     {
-        this->cancelAndDisappear();
-        return true;
-    }
-    else if (key.isKeyCode(KeyPress::returnKey) ||
-             key.isKeyCode(KeyPress::tabKey))
-    {
-        if (scaleNameEditor->getText().isNotEmpty())
+        const int scaleIndex = commandId - CommandIDs::SelectScale;
+        if (scaleIndex >= 0 && scaleIndex < kDefaultScales.size())
         {
-            this->disappear();
+            this->scale = kDefaultScales[scaleIndex];
+            this->scaleEditor->setScale(this->scale);
+            this->scaleNameEditor->setText(this->scale.getName(), false);
+            const KeySignatureEvent newEvent = this->originalEvent.withRootKey(this->key).withScale(this->scale);
+            this->sendEventChange(newEvent);
         }
-
-        return true;
     }
-
-    return false;  // Return true if your handler uses this key event, or false to allow it to be passed-on.
-    //[/UserCode_keyPressed]
+    //[/UserCode_handleCommandMessage]
 }
 
 void KeySignatureDialog::inputAttemptWhenModal()
@@ -421,7 +392,7 @@ void KeySignatureDialog::updateOkButtonState()
     this->okButton->setEnabled(!textIsEmpty);
 }
 
-void KeySignatureDialog::sendEventChange(KeySignatureEvent newEvent)
+void KeySignatureDialog::sendEventChange(const KeySignatureEvent &newEvent)
 {
     if (this->originalSequence != nullptr)
     {
@@ -512,7 +483,8 @@ void KeySignatureDialog::onScaleChanged(Scale scale)
             const auto &s = kDefaultScales.getUnchecked(i);
             if (s.isEquivalentTo(scale))
             {
-                this->scaleNameEditor->setSelectedItemIndex(i, dontSendNotification);
+                //this->scaleNameEditor->setSelectedItemIndex(i, dontSendNotification);
+                this->scaleNameEditor->setText(s.getName());
                 this->scaleEditor->setScale(s);
                 this->scale = s;
                 break;
@@ -527,6 +499,48 @@ void KeySignatureDialog::onScaleChanged(Scale scale)
     }
 }
 
+void KeySignatureDialog::textEditorTextChanged(TextEditor &ed)
+{
+    this->updateOkButtonState();
+    this->scale = this->scale.withName(this->scaleNameEditor->getText());
+    this->scaleEditor->setScale(this->scale);
+    const KeySignatureEvent newEvent = this->originalEvent.withRootKey(this->key).withScale(scale);
+    this->sendEventChange(newEvent);
+}
+
+void KeySignatureDialog::textEditorReturnKeyPressed(TextEditor &ed)
+{
+    this->textEditorFocusLost(ed);
+}
+
+void KeySignatureDialog::textEditorEscapeKeyPressed(TextEditor &)
+{
+    this->cancelAndDisappear();
+}
+
+void KeySignatureDialog::textEditorFocusLost(TextEditor &)
+{
+    this->updateOkButtonState();
+    if (this->scaleNameEditor->getText().isNotEmpty())
+    {
+        this->disappear();
+    }
+    else
+    {
+        this->scaleNameEditor->grabKeyboardFocus();
+    }
+}
+
+void KeySignatureDialog::timerCallback()
+{
+    if (!this->scaleNameEditor->hasKeyboardFocus(false))
+    {
+        this->scaleNameEditor->grabKeyboardFocus();
+        this->scaleNameEditor->selectAll();
+        this->stopTimer();
+    }
+}
+
 //[/MiscUserCode]
 
 #if 0
@@ -534,15 +548,14 @@ void KeySignatureDialog::onScaleChanged(Scale scale)
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="KeySignatureDialog" template="../../Template"
-                 componentName="" parentClasses="public FadingDialog, public TextEditorListener, public ScaleEditor::Listener, public KeySelector::Listener"
+                 componentName="" parentClasses="public FadingDialog, public TextEditorListener, public ScaleEditor::Listener, public KeySelector::Listener, private Timer"
                  constructorParams="Component &amp;owner, Transport &amp;transport, KeySignaturesSequence *keySequence, const KeySignatureEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
                  variableInitialisers="transport(transport),&#10;originalEvent(editedEvent),&#10;originalSequence(keySequence),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false),&#10;key(0)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="430" initialHeight="250">
+                 fixedSize="1" initialWidth="430" initialHeight="260">
   <METHODS>
     <METHOD name="parentSizeChanged()"/>
     <METHOD name="parentHierarchyChanged()"/>
-    <METHOD name="keyPressed (const KeyPress&amp; key)"/>
     <METHOD name="visibilityChanged()"/>
     <METHOD name="inputAttemptWhenModal()"/>
     <METHOD name="handleCommandMessage (int commandId)"/>
@@ -553,6 +566,9 @@ BEGIN_JUCER_METADATA
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
              sourceFile="../Themes/PanelC.cpp" constructorParams=""/>
+  <GENERICCOMPONENT name="" id="524df900a9089845" memberName="comboPrimer" virtualName=""
+                    explicitFocusOrder="0" pos="0Cc 12 24M 72M" class="DialogComboBox::Primer"
+                    params=""/>
   <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc 12 32M 36" posRelativeY="e96b77baef792d3a"
          textCol="ffffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
@@ -565,9 +581,6 @@ BEGIN_JUCER_METADATA
   <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="okButton" virtualName=""
               explicitFocusOrder="0" pos="4Rr 4Rr 211 48" buttonText="..."
               connectedEdges="5" needsCallback="1" radioGroupId="0"/>
-  <COMBOBOX name="" id="1923d71c308d2169" memberName="scaleNameEditor" virtualName=""
-            explicitFocusOrder="0" pos="-19Cc 146 102M 36" editable="1" layout="33"
-            items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <JUCERCOMP name="" id="e39d9e103e2a60e6" memberName="separatorH" virtualName=""
              explicitFocusOrder="0" pos="4 52Rr 8M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
@@ -575,14 +588,18 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0Cc 4Rr 2 48" sourceFile="../Themes/SeparatorVertical.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="fa164e6b39caa19f" memberName="keySelector" virtualName=""
-                    explicitFocusOrder="0" pos="2Cc 56 40M 34" class="KeySelector"
+                    explicitFocusOrder="0" pos="2Cc 58 40M 34" class="KeySelector"
                     params=""/>
   <GENERICCOMPONENT name="" id="9716b1069cf3430e" memberName="scaleEditor" virtualName=""
-                    explicitFocusOrder="0" pos="2Cc 104 40M 34" class="ScaleEditor"
+                    explicitFocusOrder="0" pos="2Cc 108 40M 34" class="ScaleEditor"
                     params=""/>
   <JUCERCOMP name="" id="a80d33e93bb4cadb" memberName="playButton" virtualName=""
-             explicitFocusOrder="0" pos="170Cc 144 40 40" sourceFile="../Common/PlayButton.cpp"
+             explicitFocusOrder="0" pos="170Cc 148 40 40" sourceFile="../Common/PlayButton.cpp"
              constructorParams=""/>
+  <TEXTEDITOR name="" id="3f330f1d57714294" memberName="scaleNameEditor" virtualName=""
+              explicitFocusOrder="0" pos="-20Cc 152 100M 32" initialText=""
+              multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="1"
+              caret="1" popupmenu="1"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

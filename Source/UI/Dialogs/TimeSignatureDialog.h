@@ -20,6 +20,7 @@
 //[Headers]
 #include "FadingDialog.h"
 #include "TimeSignatureEvent.h"
+#include "DialogComboBox.h"
 
 class TimeSignaturesSequence;
 //[/Headers]
@@ -30,12 +31,12 @@ class TimeSignaturesSequence;
 
 class TimeSignatureDialog  : public FadingDialog,
                              public TextEditorListener,
-                             public Button::Listener,
-                             public ComboBox::Listener
+                             private Timer,
+                             public Button::Listener
 {
 public:
 
-    TimeSignatureDialog (Component &owner, TimeSignaturesSequence *signaturesLayer, const TimeSignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
+    TimeSignatureDialog (Component &owner, TimeSignaturesSequence *timeSequence, const TimeSignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
 
     ~TimeSignatureDialog();
 
@@ -47,12 +48,10 @@ public:
     void paint (Graphics& g) override;
     void resized() override;
     void buttonClicked (Button* buttonThatWasClicked) override;
-    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
     void visibilityChanged() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
     void handleCommandMessage (int commandId) override;
-    bool keyPressed (const KeyPress& key) override;
     void inputAttemptWhenModal() override;
 
 
@@ -64,25 +63,33 @@ private:
     TimeSignaturesSequence *originalSequence;
     Component &ownerComponent;
 
+    void textEditorTextChanged(TextEditor&) override;
+    void textEditorReturnKeyPressed(TextEditor&) override;
+    void textEditorEscapeKeyPressed(TextEditor&) override;
+    void textEditorFocusLost(TextEditor&) override;
+
+    void timerCallback() override;
+
     inline void cancelAndDisappear();
     inline void disappear();
     inline void updateOkButtonState();
 
     bool addsNewEvent;
     bool hasMadeChanges;
-    void sendEventChange(TimeSignatureEvent newEvent);
+    void sendEventChange(const TimeSignatureEvent &newEvent);
     void removeEvent();
     void cancelChangesIfAny();
 
     //[/UserVariables]
 
     ScopedPointer<PanelC> background;
+    ScopedPointer<DialogComboBox::Primer> comboPrimer;
     ScopedPointer<Label> messageLabel;
     ScopedPointer<TextButton> removeEventButton;
     ScopedPointer<TextButton> okButton;
-    ScopedPointer<ComboBox> textEditor;
     ScopedPointer<SeparatorHorizontal> separatorH;
     ScopedPointer<SeparatorVertical> separatorV;
+    ScopedPointer<TextEditor> textEditor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeSignatureDialog)
 };

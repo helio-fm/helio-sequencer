@@ -81,6 +81,11 @@ protected:
     
     virtual void setHighlighted(bool shouldBeHighlighted)
     {
+        if (this->highlighted == shouldBeHighlighted)
+        {
+            return;
+        }
+
         this->highlighted = shouldBeHighlighted;
         
         if (this->highlighted)

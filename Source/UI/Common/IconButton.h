@@ -26,24 +26,32 @@ class IconButton : public IconComponent, public HighlightedComponent
 public:
     
     explicit IconButton(const String &iconName,
-        int commandId = CommandIDs::IconButtonPressed) :
+        int commandId = CommandIDs::IconButtonPressed,
+        WeakReference<Component> listener = nullptr) :
         IconComponent(iconName),
-        commandId(commandId)
+        commandId(commandId),
+        listener(listener)
     {
         this->setInterceptsMouseClicks(true, false);
     }
     
     explicit IconButton(Image targetImage,
-        int commandId = CommandIDs::IconButtonPressed) :
+        int commandId = CommandIDs::IconButtonPressed,
+        WeakReference<Component> listener = nullptr) :
         IconComponent(targetImage),
-        commandId(commandId)
+        commandId(commandId),
+        listener(listener)
     {
         this->setInterceptsMouseClicks(true, false);
     }
 
     void mouseDown(const MouseEvent &e) override
     {
-        if (this->getParentComponent() != nullptr)
+        if (this->listener != nullptr)
+        {
+            this->listener->postCommandMessage(this->commandId);
+        }
+        else if (this->getParentComponent() != nullptr)
         {
             this->getParentComponent()->postCommandMessage(this->commandId);
         }
@@ -67,6 +75,8 @@ private:
 
     int commandId;
     
+    WeakReference<Component> listener;
+
     Component *createHighlighterComponent() override
     {
         return this->image.isNull() ?

@@ -169,6 +169,30 @@ Label *HelioTheme::createComboBoxTextBox(ComboBox &box)
     return new Label(String(), String());
 }
 
+//===----------------------------------------------------------------------===//
+// Text Editor
+//===----------------------------------------------------------------------===//
+
+void HelioTheme::fillTextEditorBackground(Graphics &g, int w, int h, TextEditor &ed)
+{
+    if (ed.isEnabled())
+    {
+        g.setColour(this->findColour(TextEditor::backgroundColourId));
+        g.fillRect(0, 0, w, h);
+    }
+}
+
+void HelioTheme::drawTextEditorOutline(Graphics &g, int w, int h, TextEditor &ed)
+{
+    if (ed.isEnabled())
+    {
+        g.setColour(this->findColour(TextEditor::outlineColourId));
+        g.drawVerticalLine(0, 1.f, h - 1.f);
+        g.drawVerticalLine(w - 1, 1.f, h - 1.f);
+        g.drawHorizontalLine(0, 1.f, w - 1.f);
+        g.drawHorizontalLine(h - 1, 1.f, w - 1.f);
+    }
+}
 
 //===----------------------------------------------------------------------===//
 // Selection
