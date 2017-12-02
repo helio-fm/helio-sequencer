@@ -155,8 +155,11 @@ void RendererThread::run()
     // чем нужно здесь. поэтому TPQN заменяю на 1000.
     // рефакторить лень.
     // когда-нибудь у меня будет куча времени и я все сделаю по-человечески.
-    const double lastFrame = totalTimeMs / 1000 * sampleRate;
-
+    const double lastFrame = totalTimeMs / 1000.0 * sampleRate;
+    
+    double msPerTick = this->transport.findFirstTempoEvent().getTempoSecondsPerQuarterNote();
+    double currentFrame = 0.0;
+    //double currentFrame = currentTimeMs / TPQN * sampleRate;
 
     // step 1. create a list of unique instruments with audio buffers for them.
     OwnedArray<RenderBuffer> subBuffers;
@@ -169,6 +172,7 @@ void RendererThread::run()
         subBuffer->instrument = instrument;
         subBuffer->sampleBuffer = AudioSampleBuffer(numOutChannels, bufferSize);
         subBuffers.add(subBuffer);
+        //Logger::writeToLog("Adding instrument: " + String(instrument->getName()));
     }
 
     // step 2. release resources, prepare to play, etc.
@@ -182,11 +186,6 @@ void RendererThread::run()
     }
 
     // step 3. render loop itself.
-    double msPerTick = this->transport.findFirstTempoEvent().getTempoSecondsPerQuarterNote();
-    double currentFrame = 0.0;
-    
-    //double currentFrame = currentTimeMs / TPQN * sampleRate;
-    
     sequences.seekToTime(0.0);
     
     MessageWrapper nextMessage;
@@ -259,11 +258,11 @@ void RendererThread::run()
             {
                 const ScopedLock lock(graph->getCallbackLock());
                 
-                //Logger::writeToLog("processBlock num midi events: " + String(subBuffers[i]->midiBuffer.getNumEvents()));
+                //Logger::writeToLog("processBlock num midi events: " + String(subBuffer->midiBuffer.getNumEvents()));
                 graph->processBlock(subBuffer->sampleBuffer, subBuffer->midiBuffer);
-                
-                // TODO test if I ever need this hack
-                //Thread::sleep(15);
+                subBuffer->midiBuffer.clear();
+
+                //Thread::yield();
             }
         }
 
