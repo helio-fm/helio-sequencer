@@ -5,28 +5,43 @@ dist: trusty
 notifications:
   email: false
 
+cache:
+  directories:
+    - ${TRAVIS_BUILD_DIR}/ThirdParty/VST_SDK
+    - ${TRAVIS_BUILD_DIR}/ThirdParty/ASIO
+
 branches:
   only:
     - master
     - develop
+    - fix-travis
 
-compiler:
-  - clang
-
-os:
-  - linux
-
-env:
-  - CONFIG=Release64
+matrix:
+  include:
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-3.9
+          packages:
+            - clang-3.9
+            - llvm-3.9-dev    # for LLVMgold.so
+            - libc++-dev
+      env:
+        - COMPILER_VER=-3.9
+        - CONFIG=Release64
+        - DISPLAY=localhost:1.0
+        - CFLAGS=-stdlib=libc++
+        - LDFLAGS=-stdlib=libc++
 
 before_install:
   - sudo apt-get update --fix-missing
   - sudo apt-get install -qq
       build-essential
-      clang
       unzip
       xvfb
-      libc++-dev
       libfreetype6-dev
       libx11-dev
       libxinerama-dev
@@ -39,18 +54,11 @@ before_install:
       libasound2-dev
       libjack-dev
   - pushd ThirdParty
-  - wget -w 1 -r -np -nd -nv http://www.steinberg.net/sdk_downloads/vstsdk367_03_03_2017_build_352.zip
-  - unzip -qq ./vstsdk367_03_03_2017_build_352.zip
-  - pushd VST_SDK
-  - ./copy_vst2_to_vst3_sdk.sh 
-  - popd
+  - ./get_asio_and_vst_sdks.sh 
   - popd
 
 install:
   - git submodule update --init --recursive
 
 script:
-  - export DISPLAY=localhost:1.0
-  - export CFLAGS+=-stdlib=libc++
-  - export LDFLAGS+=-stdlib=libc++
   - xvfb-run -a bash -c 'cd Projects/LinuxMakefile && make'
