@@ -87,12 +87,6 @@ void CommandPanel::resized()
 
     listBox->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
-    if (this->commandDescriptions.size() != 0)
-    {
-        this->animator.cancelAllAnimations(true);
-        this->updateContent(this->commandDescriptions, 
-            this->lastAnimationType, this->shouldAdjustWidth);
-    }
     //[/UserResized]
 }
 
