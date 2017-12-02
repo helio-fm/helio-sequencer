@@ -2124,7 +2124,7 @@
 					A984E65188F536F4CCEE5A1A,
 					0AD31DC053E94ECEB01FE5F8,
 					CB0AFE32B72C51DBB0B0F25E,
-					F39C0F5D0789D58DA39742B4, ); name = "Juce Modules"; sourceTree = "<group>"; };
+					F39C0F5D0789D58DA39742B4, ); name = "JUCE Modules"; sourceTree = "<group>"; };
 		D9C4E56A6D315504FA1A03B4 = {isa = PBXGroup; children = (
 					80172CF73E1171F21223A619,
 					049110EFE86677978F8FA611,
@@ -2152,7 +2152,7 @@
 					4DC24E231ED4FF0DD1223930,
 					3590821780CD003952E75600,
 					A21C1A6E00E9ABD83952F64E,
-					87F0954F4480A8A9C45B00F6, ); name = "Juce Library Code"; sourceTree = "<group>"; };
+					87F0954F4480A8A9C45B00F6, ); name = "JUCE Library Code"; sourceTree = "<group>"; };
 		7B2D429A428AE3B32770A452 = {isa = PBXGroup; children = (
 					66BCCCCB4F99E89B83C85CE0,
 					8397BFA61E3A91038949E22D,
@@ -2188,6 +2188,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
 				COPY_PHASE_STRIP = NO;
+				DEVELOPMENT_TEAM = EQL633LLC8;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -2213,6 +2214,7 @@
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
 				OTHER_CPLUSPLUSFLAGS = "-Wno-reorder -Wno-inconsistent-missing-override";
 				PRODUCT_BUNDLE_IDENTIFIER = com.peterrudenko.helioworkstation;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO; }; name = Debug; };
 		0A94FE1C4D4B7447A9195E63 = {isa = XCBuildConfiguration; buildSettings = {
@@ -2223,6 +2225,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				CONFIGURATION_BUILD_DIR = "$(PROJECT_DIR)/build/$(CONFIGURATION)";
 				DEAD_CODE_STRIPPING = YES;
+				DEVELOPMENT_TEAM = EQL633LLC8;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -2250,6 +2253,7 @@
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
 				OTHER_CPLUSPLUSFLAGS = "-Wno-reorder -Wno-inconsistent-missing-override";
 				PRODUCT_BUNDLE_IDENTIFIER = com.peterrudenko.helioworkstation;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO; }; name = Release; };
 		0877BE57A18DC5FC3BE5DB1D = {isa = XCBuildConfiguration; buildSettings = {
@@ -2690,7 +2694,7 @@
 					20E4F2BF17372BD18581F900,
 					AA515E9B05A3DDAAB41F5F79,
 					00D3065F64B0B1FD6AD61CD5, ); buildRules = ( ); dependencies = (  ); name = "Helio - App"; productName = Helio; productReference = E2C1A2859123A25065D73061; productType = "com.apple.product-type.application"; };
-		08DB4A16C7B3991E0F547761 = {isa = PBXProject; buildConfigurationList = CBBEDDA3CEDC22AE3C172D11; attributes = { LastUpgradeCheck = 0830; ORGANIZATIONNAME = "Peter Rudenko"; TargetAttributes = { C52491ADC1C672FFBF6CD85B = { DevelopmentTeam = EQL633LLC8; SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; }; }; }; compatibilityVersion = "Xcode 3.2"; hasScannedForEncodings = 0; mainGroup = C26CB8AD40490BB25FE36466; projectDirPath = ""; projectRoot = ""; targets = (C52491ADC1C672FFBF6CD85B); };
+		08DB4A16C7B3991E0F547761 = {isa = PBXProject; buildConfigurationList = CBBEDDA3CEDC22AE3C172D11; attributes = { LastUpgradeCheck = 0830; ORGANIZATIONNAME = "Peter Rudenko"; TargetAttributes = { C52491ADC1C672FFBF6CD85B = { DevelopmentTeam = EQL633LLC8; ProvisioningStyle = Automatic; SystemCapabilities = {com.apple.ApplicationGroups.iOS = { enabled = 0; }; com.apple.InAppPurchase = { enabled = 0; }; com.apple.InterAppAudio = { enabled = 0; }; com.apple.Push = { enabled = 0; }; com.apple.Sandbox = { enabled = 0; }; }; }; }; }; compatibilityVersion = "Xcode 3.2"; hasScannedForEncodings = 0; mainGroup = C26CB8AD40490BB25FE36466; projectDirPath = ""; projectRoot = ""; targets = (C52491ADC1C672FFBF6CD85B); };
 	};
 	rootObject = 08DB4A16C7B3991E0F547761;
 }
