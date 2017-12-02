@@ -5,6 +5,9 @@ dist: trusty
 notifications:
   email: false
 
+git:
+  submodules_depth: 1
+
 cache:
   directories:
     - ${TRAVIS_BUILD_DIR}/ThirdParty/VST_SDK
@@ -44,7 +47,7 @@ matrix:
             - xvfb
       env:
         - COMPILER_VER=-3.9
-        - CONFIG=Release64
+        - CONFIG=Travis
         - DISPLAY=localhost:1.0
         - CFLAGS=-stdlib=libc++
         - LDFLAGS=-stdlib=libc++
@@ -53,9 +56,6 @@ before_install:
   - pushd ThirdParty
   - ./get_asio_and_vst_sdks.sh 
   - popd
-
-install:
-  - git submodule update --init --recursive
 
 script:
   - xvfb-run -a bash -c 'cd Projects/LinuxMakefile && make'
