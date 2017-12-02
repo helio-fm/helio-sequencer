@@ -6,7 +6,7 @@
 
 echo Downloading SDKs..
 
-if [ ! -d "./VST_SDK" ]; then
+if [ ! -d "./VST_SDK/VST3_SDK" ]; then
     wget -w 1 -r -np -nd -nv http://www.steinberg.net/sdk_downloads/vstsdk367_03_03_2017_build_352.zip
     unzip ./vstsdk367_03_03_2017_build_352.zip
     pushd VST_SDK
@@ -15,7 +15,7 @@ if [ ! -d "./VST_SDK" ]; then
     rm ./vstsdk367_03_03_2017_build_352.zip
 fi
 
-if [ ! -d "./ASIO" ]; then
+if [ ! -d "./ASIO/asio" ]; then
     wget -w 1 -r -np -nd -nv http://www.steinberg.net/sdk_downloads/asiosdk2.3.zip
     unzip ./asiosdk2.3.zip
     mv ASIOSDK2.3 ASIO

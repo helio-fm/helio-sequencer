@@ -556,7 +556,7 @@ void App::checkPlugin(const String &markerFile)
     Process::setDockIconVisible(false);
 #endif
 
-    const File tempFile(FileUtils::getTemporaryFolder() + File::separatorString + markerFile);
+    const File tempFile(FileUtils::getTemporaryFolder() + File::getSeparatorString() + markerFile);
 
     try
     {

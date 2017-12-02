@@ -1,56 +1,61 @@
 language: cpp
-sudo: required
+sudo: false
 dist: trusty
 
 notifications:
   email: false
 
+git:
+  submodules_depth: 1
+
+cache:
+  directories:
+    - ${TRAVIS_BUILD_DIR}/ThirdParty/VST_SDK
+    - ${TRAVIS_BUILD_DIR}/ThirdParty/ASIO
+
 branches:
   only:
     - master
     - develop
+    - fix-travis
 
-compiler:
-  - clang
-
-os:
-  - linux
-
-env:
-  - CONFIG=Release64
+matrix:
+  include:
+    - os: linux
+      compiler: clang
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-3.9
+          packages:
+            - clang-3.9
+            - llvm-3.9-dev    # for LLVMgold.so
+            - libc++-dev
+            - libfreetype6-dev
+            - libx11-dev
+            - libxinerama-dev
+            - libxrandr-dev
+            - libxcursor-dev
+            - libxcomposite-dev
+            - mesa-common-dev
+            - freeglut3-dev
+            - libcurl4-gnutls-dev+
+            - libasound2-dev
+            - libjack-dev
+            - unzip
+            - xvfb
+      env:
+        - COMPILER_VER=-3.9
+        - CONFIG=Travis
+        - DISPLAY=localhost:1.0
+        - CFLAGS=-stdlib=libc++
+        - LDFLAGS=-stdlib=libc++
 
 before_install:
-  - sudo apt-get update --fix-missing
-  - sudo apt-get install -qq
-      build-essential
-      clang
-      unzip
-      xvfb
-      libc++-dev
-      libfreetype6-dev
-      libx11-dev
-      libxinerama-dev
-      libxrandr-dev
-      libxcursor-dev
-      libxcomposite-dev
-      mesa-common-dev
-      freeglut3-dev
-      libcurl4-gnutls-dev+
-      libasound2-dev
-      libjack-dev
   - pushd ThirdParty
-  - wget -w 1 -r -np -nd -nv http://www.steinberg.net/sdk_downloads/vstsdk367_03_03_2017_build_352.zip
-  - unzip -qq ./vstsdk367_03_03_2017_build_352.zip
-  - pushd VST_SDK
-  - ./copy_vst2_to_vst3_sdk.sh 
+  - ./get_asio_and_vst_sdks.sh 
   - popd
-  - popd
-
-install:
-  - git submodule update --init --recursive
 
 script:
-  - export DISPLAY=localhost:1.0
-  - export CFLAGS+=-stdlib=libc++
-  - export LDFLAGS+=-stdlib=libc++
   - xvfb-run -a bash -c 'cd Projects/LinuxMakefile && make'
