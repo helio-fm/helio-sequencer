@@ -121,7 +121,8 @@ public:
         beatLineColourId                 = 0x99002008,
         snapLineColourId                 = 0x99002009,
         headerColourId                   = 0x99002010,
-        playheadColourId                 = 0x99002011
+        headerSnapsColourId              = 0x99002011,
+        playheadColourId                 = 0x99002012
     };
     
     HybridRoll(ProjectTreeItem &project, Viewport &viewport,

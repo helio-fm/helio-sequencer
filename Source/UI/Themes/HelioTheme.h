@@ -33,9 +33,7 @@ public:
     enum ColourIds
     {
         resizerLineColourId = 0x99003001,
-        resizerShadowColourId = 0x99003002,
-        resizerMovingLineColourId = 0x99003003,
-        resizerMovingShadowColourId = 0x99003004
+        resizerShadowColourId = 0x99003002
     };
 
     void initResources();

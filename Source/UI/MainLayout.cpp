@@ -451,7 +451,7 @@ bool MainLayout::keyPressed(const KeyPress &key)
             ht->initColours(scheme);
             this->repaint();
 
-            scheme.exportColourChanges();
+            scheme.syncWithLiveConstantEditor();
             const ScopedPointer<XmlElement> xml(scheme.serialize());
             const String xmlString(xml->createDocument("", true, false, "UTF-8", 512));
             SystemClipboard::copyTextToClipboard(xmlString);

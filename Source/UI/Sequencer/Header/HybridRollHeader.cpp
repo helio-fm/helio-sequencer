@@ -397,7 +397,7 @@ void HybridRollHeader::paint(Graphics &g)
     const int paintEndX = this->viewport.getViewPositionX() + this->viewport.getViewWidth();
 
     const Colour backCol(this->findColour(HybridRoll::headerColourId));
-    const Colour frontCol(backCol.contrasting().withMultipliedAlpha(0.2f));
+    const Colour frontCol(this->findColour(HybridRoll::headerSnapsColourId));
 
     g.setColour(backCol);
     g.fillRect(paintStartX, 0, paintEndX - paintStartX, HYBRID_ROLL_HEADER_HEIGHT);

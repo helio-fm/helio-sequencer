@@ -802,46 +802,46 @@ void HelioTheme::initResources()
     Icons::setupBuiltInImages();
 }
 
-void HelioTheme::initColours(const ::ColourScheme &colours)
+void HelioTheme::initColours(const ::ColourScheme &s)
 {
     // A hack for icon base colors
-    this->setColour(Icons::iconColourId, colours.getIconBaseColour());
-    this->setColour(Icons::iconShadowColourId, colours.getIconShadowColour());
+    this->setColour(Icons::iconColourId, s.getIconBaseColour());
+    this->setColour(Icons::iconShadowColourId, s.getIconShadowColour());
 
     // Sliders
     this->setColour(Slider::rotarySliderOutlineColourId, Colours::transparentBlack);
-    this->setColour(Slider::rotarySliderFillColourId, colours.getTextColour());
+    this->setColour(Slider::rotarySliderFillColourId, s.getTextColour());
 
     // Labels
-    this->setColour(Label::textColourId, colours.getTextColour());
-    this->setColour(Label::outlineColourId, colours.getTextColour().contrasting());
+    this->setColour(Label::textColourId, s.getTextColour());
+    this->setColour(Label::outlineColourId, s.getTextColour().contrasting());
 
     // Panels
-    this->setColour(PanelBackgroundA::panelFillStartId, colours.getPrimaryGradientColourA());
-    this->setColour(PanelBackgroundA::panelFillEndId, colours.getPrimaryGradientColourB());
-    this->setColour(PanelBackgroundB::panelFillId, colours.getPrimaryGradientColourA());
-    this->setColour(PanelBackgroundC::panelFillId, colours.getSecondaryGradientColourA());
+    this->setColour(PanelBackgroundA::panelFillStartId, s.getPrimaryGradientColourA());
+    this->setColour(PanelBackgroundA::panelFillEndId, s.getPrimaryGradientColourB());
+    this->setColour(PanelBackgroundB::panelFillId, s.getPrimaryGradientColourA());
+    this->setColour(PanelBackgroundC::panelFillId, s.getSecondaryGradientColourA());
 
-    this->setColour(PanelA::panelFillColourId, colours.getPanelFillColour());
-    this->setColour(PanelA::panelBorderColourId, colours.getPanelBorderColour());
+    this->setColour(PanelA::panelFillColourId, s.getPanelFillColour());
+    this->setColour(PanelA::panelBorderColourId, s.getPanelBorderColour());
 
     // MainWindow
-    this->setColour(ResizableWindow::backgroundColourId, colours.getPrimaryGradientColourA().brighter(0.045f));
-    this->setColour(TrackScroller::borderDarkLineColourId, colours.getPrimaryGradientColourA().darker(0.25f));
+    this->setColour(ResizableWindow::backgroundColourId, s.getPrimaryGradientColourA().brighter(0.045f));
+    this->setColour(TrackScroller::borderDarkLineColourId, s.getPrimaryGradientColourA().darker(0.25f));
     this->setColour(TrackScroller::borderLightLineColourId, Colours::white.withAlpha(0.025f));
     this->setColour(ScrollBar::backgroundColourId, Colours::transparentBlack);
-    this->setColour(ScrollBar::thumbColourId, colours.getPanelFillColour().withAlpha(1.f));
+    this->setColour(ScrollBar::thumbColourId, s.getPanelFillColour().withAlpha(1.f));
 
     // TextButton
-    this->setColour(TextButton::buttonColourId, colours.getPanelFillColour());
-    this->setColour(TextButton::buttonOnColourId, colours.getPanelBorderColour());
-    this->setColour(TextButton::textColourOnId, colours.getTextColour().withMultipliedAlpha(0.75f));
-    this->setColour(TextButton::textColourOffId, colours.getTextColour().withMultipliedAlpha(0.5f));
+    this->setColour(TextButton::buttonColourId, s.getPanelFillColour());
+    this->setColour(TextButton::buttonOnColourId, s.getPanelBorderColour());
+    this->setColour(TextButton::textColourOnId, s.getTextColour().withMultipliedAlpha(0.75f));
+    this->setColour(TextButton::textColourOffId, s.getTextColour().withMultipliedAlpha(0.5f));
 
     // FileTreeComponent
     this->setColour(FileTreeComponent::backgroundColourId, Colours::transparentBlack);
     this->setColour(FileTreeComponent::textColourId, Colours::black);
-    this->setColour(FileTreeComponent::selectedItemBackgroundColourId, colours.getPanelFillColour());
+    this->setColour(FileTreeComponent::selectedItemBackgroundColourId, s.getPanelFillColour());
     this->setColour(FileTreeComponent::highlightColourId, Colours::black.withAlpha(0.2f));
 
     // InstrumentEditor
@@ -853,20 +853,18 @@ void HelioTheme::initColours(const ::ColourScheme &colours)
     // Resizer
     this->setColour(HelioTheme::resizerLineColourId, Colours::white.withAlpha(0.06f));
     this->setColour(HelioTheme::resizerShadowColourId, Colours::black.withAlpha(0.2f));
-    this->setColour(HelioTheme::resizerMovingLineColourId, Colours::white.withAlpha(0.15f));
-    this->setColour(HelioTheme::resizerMovingShadowColourId, Colours::black.withAlpha(0.3f));
 
     // ComboBox
-    this->setColour(ComboBox::backgroundColourId, colours.getSecondaryGradientColourA().darker(0.05f));
-    this->setColour(ComboBox::textColourId, colours.getTextColour());
+    this->setColour(ComboBox::backgroundColourId, s.getSecondaryGradientColourA().darker(0.05f));
+    this->setColour(ComboBox::textColourId, s.getTextColour());
     this->setColour(ComboBox::buttonColourId, Colours::black.withAlpha(0.6f));
     this->setColour(ComboBox::outlineColourId, Colours::black.withAlpha(0.5f));
     this->setColour(ComboBox::arrowColourId, Colours::white.withAlpha(0.7f));
 
     // CallOutBox
-    this->setColour(HelioCallout::blurColourId, colours.getSecondaryGradientColourB().darker(2.0f).withAlpha(0.35f));
-    this->setColour(HelioCallout::fillColourId, colours.getPrimaryGradientColourB().darker(2.0f).withAlpha(0.65f));
-    this->setColour(HelioCallout::frameColourId, colours.getPrimaryGradientColourB().brighter(0.75f).withAlpha(0.14f));
+    this->setColour(HelioCallout::blurColourId, s.getSecondaryGradientColourB().darker(2.0f).withAlpha(0.35f));
+    this->setColour(HelioCallout::fillColourId, s.getPrimaryGradientColourB().darker(2.0f).withAlpha(0.65f));
+    this->setColour(HelioCallout::frameColourId, s.getPrimaryGradientColourB().brighter(0.75f).withAlpha(0.14f));
 
     // PopupMenu
     this->setColour(PopupMenu::backgroundColourId, Colours::darkgrey.darker(0.5f));
@@ -875,16 +873,15 @@ void HelioTheme::initColours(const ::ColourScheme &colours)
     this->setColour(PopupMenu::highlightedTextColourId, Colours::white);
 
     // TextEditor
-    this->setColour(TextEditor::textColourId, Colours::white);
-    this->setColour(TextEditor::highlightedTextColourId, Colours::white);
-    this->setColour(TextEditor::outlineColourId, colours.getPanelBorderColour().withAlpha(0.1f));
+    this->setColour(TextEditor::textColourId, s.getTextColour());
+    this->setColour(TextEditor::highlightedTextColourId, s.getTextColour());
+    this->setColour(TextEditor::outlineColourId, s.getPanelBorderColour().withAlpha(0.1f));
     this->setColour(TextEditor::focusedOutlineColourId, Colours::black.withAlpha(0.2f));
-    this->setColour(TextEditor::shadowColourId, colours.getShadingGradientColourB());
-    this->setColour(TextEditor::backgroundColourId, colours.getPrimaryGradientColourA().darker(0.05f));
+    this->setColour(TextEditor::shadowColourId, s.getPrimaryGradientColourA().darker(0.05f));
+    this->setColour(TextEditor::backgroundColourId, s.getPrimaryGradientColourA().darker(0.05f));
     this->setColour(TextEditor::highlightColourId, Colours::black.withAlpha(0.25f));
     this->setColour(CaretComponent::caretColourId, Colours::white.withAlpha(0.35f));
     
-
     // Tree stuff
     this->setColour(TreeView::linesColourId, Colours::white.withAlpha(0.1f));
     this->setColour(TreeView::selectedItemBackgroundColourId, Colours::transparentBlack);
@@ -893,23 +890,25 @@ void HelioTheme::initColours(const ::ColourScheme &colours)
     this->setColour(SizeSwitcherComponent::borderColourId, Colours::white.withAlpha(0.09f));
 
     // HybridRoll
-    this->setColour(HybridRoll::blackKeyColourId, colours.getBlackKeyColour());
-    this->setColour(HybridRoll::blackKeyBrightColourId, colours.getBlackKeyColour().withMultipliedBrightness(1.15f));
-    this->setColour(HybridRoll::whiteKeyColourId, colours.getWhiteKeyColour());
-    this->setColour(HybridRoll::whiteKeyBrightColourId, colours.getWhiteKeyColour().withMultipliedBrightness(1.15f));
-    this->setColour(HybridRoll::rowLineColourId, colours.getRowColour());
-    this->setColour(HybridRoll::barLineColourId, colours.getBarColour().withAlpha(0.9f));
+    this->setColour(HybridRoll::blackKeyColourId, s.getBlackKeyColour());
+    this->setColour(HybridRoll::blackKeyBrightColourId, s.getBlackKeyColour().withMultipliedBrightness(1.15f));
+    this->setColour(HybridRoll::whiteKeyColourId, s.getWhiteKeyColour());
+    this->setColour(HybridRoll::whiteKeyBrightColourId, s.getWhiteKeyColour().withMultipliedBrightness(1.15f));
+    this->setColour(HybridRoll::rowLineColourId, s.getRowColour());
+    this->setColour(HybridRoll::barLineColourId, s.getBarColour().withAlpha(0.9f));
     this->setColour(HybridRoll::barLineBevelColourId, Colours::white.withAlpha(0.015f));
-    this->setColour(HybridRoll::beatLineColourId, colours.getBarColour().withAlpha(0.45f));
-    this->setColour(HybridRoll::snapLineColourId, colours.getBarColour().withAlpha(0.1f));
-    this->setColour(HybridRoll::headerColourId, colours.getPrimaryGradientColourB().darker(0.025f));
+    this->setColour(HybridRoll::beatLineColourId, s.getBarColour().withAlpha(0.45f));
+    this->setColour(HybridRoll::snapLineColourId, s.getBarColour().withAlpha(0.1f));
+    this->setColour(HybridRoll::headerColourId, s.getPrimaryGradientColourB().darker(0.025f));
+    this->setColour(HybridRoll::headerSnapsColourId, s.getPrimaryGradientColourB().darker(0.025f).contrasting().withMultipliedAlpha(0.25f));
+    this->setColour(HybridRoll::playheadColourId, s.getLassoBorderColour().withAlpha(0.6f));
+    this->setColour(HybridRoll::playheadShadeColourId, Colours::black.withAlpha(0.1f));
 
-    this->setColour(HybridRoll::playheadColourId, colours.getLassoBorderColour().withAlpha(0.5f));
-    this->setColour(LassoComponent<void *>::lassoFillColourId, colours.getLassoFillColour().withAlpha(0.15f));
-    this->setColour(LassoComponent<void *>::lassoOutlineColourId, colours.getLassoBorderColour().withAlpha(0.4f));
+    this->setColour(LassoComponent<void *>::lassoFillColourId, s.getLassoFillColour().withAlpha(0.15f));
+    this->setColour(LassoComponent<void *>::lassoOutlineColourId, s.getLassoBorderColour().withAlpha(0.4f));
 
-    this->setColour(HelperRectangle::fillColourId, colours.getLassoFillColour().withAlpha(0.08f));
-    this->setColour(HelperRectangle::outlineColourId, colours.getLassoBorderColour().withAlpha(0.3f));
+    this->setColour(HelperRectangle::fillColourId, s.getLassoFillColour().withAlpha(0.08f));
+    this->setColour(HelperRectangle::outlineColourId, s.getLassoBorderColour().withAlpha(0.3f));
 }
 
 void HelioTheme::updateBackgroundRenders(bool force)
