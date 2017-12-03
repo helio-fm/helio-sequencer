@@ -33,10 +33,9 @@ TreeItemComponent::TreeItemComponent(TreeItem &i) :
     DraggingListBoxComponent(i.getOwnerView()->getViewport(), false),
     item(i)
 {
-    this->setWantsKeyboardFocus(false);
-    this->setFocusContainer(false);
     this->setInterceptsMouseClicks(true, true);
-    
+    this->setMouseClickGrabsKeyboardFocus(false);
+
     this->longTapController = new LongTapController(*this);
     this->addMouseListener(this->longTapController, true); // on this and * children
 }
@@ -151,7 +150,6 @@ void TreeItemComponent::handleCommandMessage(int commandId)
     if (commandId == CommandIDs::MenuButtonPressed)
     {
         this->emitCallout();
-        //this->emitRollover();
     }
 }
 

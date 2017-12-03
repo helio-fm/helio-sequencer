@@ -66,6 +66,7 @@ PlayButton::PlayButton()
     this->playIcon->setInterceptsMouseClicks(false, false);
     this->pauseIcon->setInterceptsMouseClicks(false, false);
     this->setInterceptsMouseClicks(true, false);
+    this->setMouseClickGrabsKeyboardFocus(false);
     //[/UserPreSize]
 
     setSize (64, 64);

@@ -28,7 +28,7 @@
 class ModalDialogInput  : public FadingDialog,
                           public TextEditorListener,
                           private Timer,
-                          public ButtonListener
+                          public Button::Listener
 {
 public:
 
@@ -41,6 +41,7 @@ public:
     void textEditorTextChanged(TextEditor &editor) override;
     void textEditorReturnKeyPressed(TextEditor&) override;
     void textEditorEscapeKeyPressed(TextEditor&) override;
+    void textEditorFocusLost(TextEditor&) override;
 
     //[/UserMethods]
 
@@ -51,7 +52,6 @@ public:
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
     void handleCommandMessage (int commandId) override;
-    bool keyPressed (const KeyPress& key) override;
     void inputAttemptWhenModal() override;
 
 

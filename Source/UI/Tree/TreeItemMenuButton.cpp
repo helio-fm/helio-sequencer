@@ -44,6 +44,7 @@ TreeItemMenuButton::TreeItemMenuButton()
 
     //[UserPreSize]
     this->setInterceptsMouseClicks(true, false);
+    this->setMouseClickGrabsKeyboardFocus(false);
     //[/UserPreSize]
 
     setSize (32, 32);

@@ -33,9 +33,7 @@ public:
     enum ColourIds
     {
         resizerLineColourId = 0x99003001,
-        resizerShadowColourId = 0x99003002,
-        resizerMovingLineColourId = 0x99003003,
-        resizerMovingShadowColourId = 0x99003004
+        resizerShadowColourId = 0x99003002
     };
 
     void initResources();
@@ -74,7 +72,14 @@ public:
         int buttonW, int buttonH, ComboBox &box) override;
     Font getComboBoxFont(ComboBox&) override;
     Label *createComboBoxTextBox(ComboBox&) override;
-    
+
+    //===------------------------------------------------------------------===//
+    // Text Editor
+    //===------------------------------------------------------------------===//
+
+    void fillTextEditorBackground(Graphics&, int w, int h, TextEditor&) override;
+    void drawTextEditorOutline(Graphics&, int w, int h, TextEditor&) override;
+
     //===------------------------------------------------------------------===//
     // Selection
     //===------------------------------------------------------------------===//

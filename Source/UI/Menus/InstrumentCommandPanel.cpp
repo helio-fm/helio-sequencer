@@ -26,7 +26,7 @@
 InstrumentCommandPanel::InstrumentCommandPanel(InstrumentTreeItem &parentInstrument) :
     instrument(parentInstrument)
 {
-    ReferenceCountedArray<CommandItem> cmds;
+    CommandPanel::Items cmds;
     //cmds.add(CommandItem::withParams(Icons::reset, CommandIDs::UpdateInstrument, TRANS("menu::instrument::update")));
     //cmds.add(CommandItem::withParams(Icons::ellipsis, CommandIDs::RenameInstrument, TRANS("menu::instrument::rename")));
     cmds.add(CommandItem::withParams(Icons::trash, CommandIDs::DeleteInstrument, TRANS("menu::instrument::delete")));

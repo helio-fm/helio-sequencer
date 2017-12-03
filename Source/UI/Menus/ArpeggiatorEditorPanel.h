@@ -83,9 +83,9 @@ private:
     // TransportListener
     //
 
-    void onSeek(const double newPosition, const double currentTimeMs, const double totalTimeMs) override;
-    void onTempoChanged(const double newTempo) override;
-    void onTotalTimeChanged(const double timeMs) override;
+    void onSeek(double absolutePosition, double currentTimeMs, double totalTimeMs) override;
+    void onTempoChanged(double newTempo) override;
+    void onTotalTimeChanged(double timeMs) override;
     void onPlay() override;
     void onStop() override;
 

@@ -44,17 +44,15 @@ CommandPanel::CommandPanel()
     this->listBox->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
     //[/UserPreSize]
 
-    setSize (150, 300);
+    setSize (150, 150);
 
     //[Constructor]
-    this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, true);
+    this->setMouseClickGrabsKeyboardFocus(false);
 
     for (int i = 0; i < this->getNumChildComponents(); ++i)
     {
         Component *c = this->getChildComponent(i);
-        c->setFocusContainer(false);
-        c->setWantsKeyboardFocus(false);
         c->setMouseClickGrabsKeyboardFocus(false);
     }
     //[/Constructor]
@@ -87,12 +85,25 @@ void CommandPanel::resized()
 
     listBox->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
+    // Parent component may reposition and rebound menu at any time,
+    // need to update content bounds animation:
+    if (this->commandDescriptions.size() != 0)
+    {
+        this->updateContent(this->commandDescriptions,
+            this->lastAnimationType, this->shouldResizeToFitContent);
+    }
     //[/UserResized]
 }
 
 void CommandPanel::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
+    if (this->getParentComponent() != nullptr)
+    {
+        // The default behavior is to pass command up the hierarchy,
+        // but subclasses may override handleCommandMessage to process the command instead.
+        this->getParentComponent()->postCommandMessage(commandId);
+    }
     //[/UserCode_handleCommandMessage]
 }
 
@@ -151,43 +162,17 @@ StringPairArray CommandPanel::getColoursList()
 #define FADE_ALPHA 0.5f
 #define TOPLEVEL_HEIGHT_MARGINS 170
 
-void CommandPanel::updateContent(ReferenceCountedArray<CommandItem> commands,
+void CommandPanel::updateContent(Items commands,
     AnimationType animationType, bool adjustsWidth)
 {
     this->lastAnimationType = animationType;
-    this->shouldAdjustWidth = adjustsWidth;
-    const bool firstTimeUpdate = (this->commandDescriptions.size() == 0);
+    this->shouldResizeToFitContent = adjustsWidth;
 
-    const int listBoxHeightOffset = this->getHeight() - this->listBox->getHeight();
-    const int newHeight = firstTimeUpdate ? (commands.size() * COMMAND_PANEL_BUTTON_HEIGHT + listBoxHeightOffset) : this->getHeight();
-    const int maxHeight = App::Helio()->getWindow()->getHeight() - TOPLEVEL_HEIGHT_MARGINS;
+    const bool receivedNewCommands = commands != this->commandDescriptions;
+    this->commandDescriptions = commands;
 
-    int estimatedWidth = 0;
-    if (this->shouldAdjustWidth)
-    {
-        ScopedPointer<CommandItemComponent> tempItem(new CommandItemComponent(nullptr, nullptr, CommandItem::empty()));
-        Font stringFont(tempItem->getFont());
-
-        for (auto && command : commands)
-        {
-            const int stringWidth = stringFont.getStringWidth(command->commandText) +
-                stringFont.getStringWidth(command->subText);
-
-            if (estimatedWidth < stringWidth)
-            {
-                estimatedWidth = stringWidth;
-            }
-        }
-
-        const int newWidth = estimatedWidth + int(COMMAND_PANEL_BUTTON_HEIGHT * 2.5f);
-        this->setSize(jmax(newWidth, this->getWidth()), jmin(newHeight, maxHeight));
-    }
-    else
-    {
-        this->setSize(this->getWidth(), jmin(newHeight, maxHeight));
-    }
-
-    if (!firstTimeUpdate && commands != this->commandDescriptions)
+    // If has new commands, fade out old list and create a new one
+    if (receivedNewCommands)
     {
         if (animationType == Fading)
         {
@@ -215,19 +200,17 @@ void CommandPanel::updateContent(ReferenceCountedArray<CommandItem> commands,
         }
 
         this->removeChildComponent(this->listBox);
-        this->listBox = nullptr;
+
+        this->listBox = new ListBox();
+        this->listBox->setModel(this);
+        this->listBox->setMultipleSelectionEnabled(false);
+        this->listBox->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
+        this->listBox->setRowHeight(COMMAND_PANEL_BUTTON_HEIGHT);
+        this->listBox->updateContent();
+        this->addAndMakeVisible(this->listBox);
     }
 
-    this->commandDescriptions = commands;
-
-    this->listBox = new ListBox();
-    this->listBox->setModel(this);
-    this->listBox->setMultipleSelectionEnabled(false);
-    this->listBox->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
-    this->listBox->setRowHeight(COMMAND_PANEL_BUTTON_HEIGHT);
-    this->listBox->updateContent();
-    this->addAndMakeVisible(this->listBox);
-
+    // If no new command received, just update animation:
     if (animationType == Fading)
     {
         this->listBox->setBounds(this->getLocalBounds());
@@ -237,29 +220,54 @@ void CommandPanel::updateContent(ReferenceCountedArray<CommandItem> commands,
     {
         this->listBox->setAlpha(FADE_ALPHA);
         this->listBox->setBounds(this->getLocalBounds().translated(this->getWidth(), 0));
-        this->animator.animateComponent(this->listBox, this->getLocalBounds(), 1.f, ANIM_TIME_MS, true, 1.0, 0.0);
+        this->animator.animateComponent(this->listBox, this->getLocalBounds(), 1.f, ANIM_TIME_MS, false, 1.0, 0.0);
     }
     else if (animationType == SlideRight)
     {
         this->listBox->setAlpha(FADE_ALPHA);
         this->listBox->setBounds(this->getLocalBounds().translated(-this->getWidth(), 0));
-        this->animator.animateComponent(this->listBox, this->getLocalBounds(), 1.f, ANIM_TIME_MS, true, 1.0, 0.0);
+        this->animator.animateComponent(this->listBox, this->getLocalBounds(), 1.f, ANIM_TIME_MS, false, 1.0, 0.0);
     }
     else if (animationType == SlideUp)
     {
         this->listBox->setAlpha(FADE_ALPHA);
         this->listBox->setBounds(this->getLocalBounds().translated(0, this->getHeight()));
-        this->animator.animateComponent(this->listBox, this->getLocalBounds(), 1.f, ANIM_TIME_MS, true, 1.0, 0.0);
+        this->animator.animateComponent(this->listBox, this->getLocalBounds(), 1.f, ANIM_TIME_MS, false, 1.0, 0.0);
     }
     else if (animationType == SlideDown)
     {
         this->listBox->setAlpha(FADE_ALPHA);
         this->listBox->setBounds(this->getLocalBounds().translated(0, -this->getHeight()));
-        this->animator.animateComponent(this->listBox, this->getLocalBounds(), 1.f, ANIM_TIME_MS, true, 1.0, 0.0);
+        this->animator.animateComponent(this->listBox, this->getLocalBounds(), 1.f, ANIM_TIME_MS, false, 1.0, 0.0);
     }
     else
     {
         this->listBox->setBounds(this->getLocalBounds());
+    }
+
+    if (this->shouldResizeToFitContent && receivedNewCommands)
+    {
+        ScopedPointer<CommandItemComponent> tempItem(new CommandItemComponent(nullptr, nullptr, CommandItem::empty()));
+        Font stringFont(tempItem->getFont());
+
+        const int newHeight = jmax(this->getHeight(), commands.size() * COMMAND_PANEL_BUTTON_HEIGHT);
+        // Hard-coded for now:
+        const int maxHeight = COMMAND_PANEL_BUTTON_HEIGHT * 12; // App::Helio()->getWindow()->getHeight() - TOPLEVEL_HEIGHT_MARGINS;
+
+        int estimatedWidth = 0;
+        for (auto && command : commands)
+        {
+            const int stringWidth = stringFont.getStringWidth(command->commandText) +
+                stringFont.getStringWidth(command->subText);
+
+            if (estimatedWidth < stringWidth)
+            {
+                estimatedWidth = stringWidth;
+            }
+        }
+
+        const int newWidth = estimatedWidth + int(COMMAND_PANEL_BUTTON_HEIGHT * 2.5f);
+        this->setSize(jmax(newWidth, this->getWidth()), jmin(newHeight, maxHeight));
     }
 }
 
@@ -324,7 +332,7 @@ BEGIN_JUCER_METADATA
                  componentName="" parentClasses="public Component, private ListBoxModel"
                  constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="150"
-                 initialHeight="300">
+                 initialHeight="150">
   <METHODS>
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>

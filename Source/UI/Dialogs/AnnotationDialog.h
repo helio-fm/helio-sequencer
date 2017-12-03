@@ -22,6 +22,7 @@
 #include "AnnotationEvent.h"
 #include "ColourButton.h"
 #include "ColourSwatches.h"
+#include "DialogComboBox.h"
 
 class AnnotationsSequence;
 //[/Headers]
@@ -33,12 +34,12 @@ class AnnotationsSequence;
 class AnnotationDialog  : public FadingDialog,
                           public TextEditorListener,
                           public ColourButtonListener,
-                          public Button::Listener,
-                          public ComboBox::Listener
+                          private Timer,
+                          public Button::Listener
 {
 public:
 
-    AnnotationDialog (Component &owner, AnnotationsSequence *annotationsLayer, const AnnotationEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
+    AnnotationDialog (Component &owner, AnnotationsSequence *sequence, const AnnotationEvent &editedEvent, bool shouldAddNewEvent, float targetBeat);
 
     ~AnnotationDialog();
 
@@ -52,12 +53,10 @@ public:
     void paint (Graphics& g) override;
     void resized() override;
     void buttonClicked (Button* buttonThatWasClicked) override;
-    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
     void visibilityChanged() override;
     void parentHierarchyChanged() override;
     void parentSizeChanged() override;
     void handleCommandMessage (int commandId) override;
-    bool keyPressed (const KeyPress& key) override;
     void inputAttemptWhenModal() override;
 
 
@@ -69,26 +68,34 @@ private:
     AnnotationsSequence *originalSequence;
     Component &ownerComponent;
 
+    void textEditorTextChanged(TextEditor&) override;
+    void textEditorReturnKeyPressed(TextEditor&) override;
+    void textEditorEscapeKeyPressed(TextEditor&) override;
+    void textEditorFocusLost(TextEditor&) override;
+
+    void timerCallback() override;
+
     inline void cancelAndDisappear();
     inline void disappear();
     inline void updateOkButtonState();
 
     bool addsNewEvent;
     bool hasMadeChanges;
-    void sendEventChange(AnnotationEvent newEvent);
+    void sendEventChange(const AnnotationEvent &newEvent);
     void removeEvent();
     void cancelChangesIfAny();
 
     //[/UserVariables]
 
     ScopedPointer<PanelC> background;
+    ScopedPointer<DialogComboBox::Primer> comboPrimer;
     ScopedPointer<Label> messageLabel;
     ScopedPointer<TextButton> removeEventButton;
     ScopedPointer<TextButton> okButton;
-    ScopedPointer<ComboBox> textEditor;
     ScopedPointer<SeparatorHorizontal> separatorH;
     ScopedPointer<SeparatorVertical> separatorV;
     ScopedPointer<ColourSwatches> colourSwatches;
+    ScopedPointer<TextEditor> textEditor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AnnotationDialog)
 };

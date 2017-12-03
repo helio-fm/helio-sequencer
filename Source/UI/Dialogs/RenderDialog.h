@@ -32,9 +32,9 @@ class CommandItemComponent;
 
 class RenderDialog  : public FadingDialog,
                       private Timer,
-                      public ButtonListener,
-                      public LabelListener,
-                      public SliderListener
+                      public Button::Listener,
+                      public Label::Listener,
+                      public Slider::Listener
 {
 public:
 

@@ -21,18 +21,15 @@ class FloatBoundsComponent : public virtual Component
 {
 public:
 
-    virtual void setFloatBounds(const Rectangle<float> &b)
+    inline void setFloatBounds(const Rectangle<float> &b)
     {
-        const int bX = roundFloatToInt(b.getX()) - 1;
-        const int bY = roundFloatToInt(b.getY());
-        const int bW = roundFloatToInt(b.getWidth()) + 2;
-        const int bH = roundFloatToInt(b.getHeight());
+        const int bX = int(floorf(b.getX()));
+        const int bY = int(floorf(b.getY()));
+        const int bW = int(ceilf(b.getWidth()));
+        const int bH = int(ceilf(b.getHeight()));
 
-        const float dX = b.getX() - bX;
-        const float dW = b.getWidth() - bW;
-
-        this->floatLocalBounds.setX(dX);
-        this->floatLocalBounds.setWidth(bW + dW + dX);
+        this->floatLocalBounds.setX(b.getX() - bX);
+        this->floatLocalBounds.setWidth(b.getWidth());
         this->floatLocalBounds.setY(b.getY() - bY);
         this->floatLocalBounds.setHeight(b.getHeight());
 

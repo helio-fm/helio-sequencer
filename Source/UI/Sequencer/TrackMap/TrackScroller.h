@@ -102,6 +102,7 @@ public:
             scroller(scrollerRef)
         {
             this->setInterceptsMouseClicks(true, false);
+            this->setMouseClickGrabsKeyboardFocus(false);
             this->toBack();
             
             this->moveConstrainer = new MoveConstrainer(this->scroller);

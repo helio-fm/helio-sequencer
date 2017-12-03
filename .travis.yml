@@ -5,9 +5,6 @@ dist: trusty
 notifications:
   email: false
 
-git:
-  submodules_depth: 1
-
 cache:
   directories:
     - ${TRAVIS_BUILD_DIR}/ThirdParty/VST_SDK

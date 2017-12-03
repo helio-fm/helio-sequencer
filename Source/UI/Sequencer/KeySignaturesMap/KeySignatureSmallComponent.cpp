@@ -39,7 +39,6 @@ KeySignatureSmallComponent::KeySignatureSmallComponent(KeySignaturesTrackMap<Key
     signatureLabel->setColour (TextEditor::textColourId, Colours::black);
     signatureLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (component = new SeparatorVertical());
 
     //[UserPreSize]
     this->setInterceptsMouseClicks(false, false);
@@ -58,7 +57,6 @@ KeySignatureSmallComponent::~KeySignatureSmallComponent()
     //[/Destructor_pre]
 
     signatureLabel = nullptr;
-    component = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -79,7 +77,6 @@ void KeySignatureSmallComponent::resized()
     //[/UserPreResize]
 
     signatureLabel->setBounds (0, 2, getWidth() - -4, 16);
-    component->setBounds (0, 0, 2, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -154,9 +151,6 @@ BEGIN_JUCER_METADATA
          edBkgCol="0" labelText="..." editableSingleClick="0" editableDoubleClick="0"
          focusDiscardsChanges="0" fontname="Default font" fontsize="14"
          kerning="0" bold="0" italic="0" justification="33"/>
-  <JUCERCOMP name="" id="1e5a57ee127ef53d" memberName="component" virtualName=""
-             explicitFocusOrder="0" pos="0 0 2 0M" sourceFile="../../Themes/SeparatorVertical.cpp"
-             constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

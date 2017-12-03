@@ -31,8 +31,8 @@ class LabelWithPassword;
 
 class AuthorizationDialog  : public FadingDialog,
                              private ChangeListener,
-                             public ButtonListener,
-                             public LabelListener
+                             public Button::Listener,
+                             public Label::Listener
 {
 public:
 

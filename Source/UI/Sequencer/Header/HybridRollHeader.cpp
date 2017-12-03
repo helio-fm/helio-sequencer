@@ -27,6 +27,7 @@
 #include "HybridLassoComponent.h"
 #include "HeaderSelectionIndicator.h"
 #include "HelioCallout.h"
+#include "HelioTheme.h"
 #include "TimelineCommandPanel.h"
 #include "CommandIDs.h"
 
@@ -43,6 +44,16 @@ HybridRollHeader::HybridRollHeader(Transport &transportRef, HybridRoll &rollRef,
     this->setAlwaysOnTop(true);
     this->setOpaque(true);
     this->setPaintingIsUnclipped(true);
+
+    // Painting is the very bottleneck of this app,
+    // so make sure we no lookups/computations inside paint method
+    this->backColour = this->findColour(HybridRoll::headerColourId);
+    this->barColour = this->findColour(HybridRoll::headerSnapsColourId);
+    this->barShadeColour = this->backColour.darker(0.1f);
+    this->beatColour = this->barColour.withMultipliedAlpha(0.8f);
+    this->snapColour = this->barColour.withMultipliedAlpha(0.6f);
+    this->bevelLightColour = this->findColour(HelioTheme::resizerLineColourId).withMultipliedAlpha(0.35f); //Colours::white.withAlpha(0.025f);
+    this->bevelDarkColour = this->findColour(HelioTheme::resizerShadowColourId); //Colours::black.withAlpha(0.35f);
 
     this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);
@@ -79,23 +90,23 @@ void HybridRollHeader::updateIndicatorPosition(SoundProbeIndicator *indicator, c
     indicator->setAnchoredAt(this->getAlignedAnchorForEvent(e));
 }
 
-float HybridRollHeader::getUnalignedAnchorForEvent(const MouseEvent &e) const
+double HybridRollHeader::getUnalignedAnchorForEvent(const MouseEvent &e) const
 {
     const MouseEvent parentEvent = e.getEventRelativeTo(&this->roll);
-    const float absX = float(parentEvent.getPosition().getX()) / float(this->roll.getWidth());
+    const double absX = double(parentEvent.getPosition().getX()) / double(this->roll.getWidth());
     return absX;
 }
 
-float HybridRollHeader::getAlignedAnchorForEvent(const MouseEvent &e) const
+double HybridRollHeader::getAlignedAnchorForEvent(const MouseEvent &e) const
 {
     const MouseEvent parentEvent = e.getEventRelativeTo(&this->roll);
     
 #if HYBRID_ROLL_HEADER_ALIGNS_TO_BEATS
     const float roundBeat = this->roll.getRoundBeatByXPosition(parentEvent.x);
     const int roundX = this->roll.getXPositionByBeat(roundBeat);
-    const float absX = float(roundX) / float(this->roll.getWidth());
+    const double absX = double(roundX) / double(this->roll.getWidth());
 #else
-    const float absX = this->getUnalignedAnchorForEvent(e);
+    const double absX = this->getUnalignedAnchorForEvent(e);
 #endif
     
     return absX;
@@ -110,8 +121,8 @@ void HybridRollHeader::updateTimeDistanceIndicator()
         return;
     }
     
-    const float anchor1 = this->pointingIndicator->getAnchor();
-    const float anchor2 = this->playingIndicator->getAnchor();
+    const double anchor1 = this->pointingIndicator->getAnchor();
+    const double anchor2 = this->playingIndicator->getAnchor();
     
     const double seek1 = this->roll.getTransportPositionByXPosition(this->pointingIndicator->getX(), this->getWidth());
     const double seek2 = this->roll.getTransportPositionByXPosition(this->playingIndicator->getX(), this->getWidth());
@@ -396,35 +407,36 @@ void HybridRollHeader::paint(Graphics &g)
     const int paintStartX = this->viewport.getViewPositionX();
     const int paintEndX = this->viewport.getViewPositionX() + this->viewport.getViewWidth();
 
-    const Colour backCol(this->findColour(HybridRoll::headerColourId));
-    const Colour frontCol(backCol.contrasting().withMultipliedAlpha(0.2f));
-
-    g.setColour(backCol);
+    g.setColour(this->backColour);
     g.fillRect(paintStartX, 0, paintEndX - paintStartX, HYBRID_ROLL_HEADER_HEIGHT);
 
-    //HelioTheme::drawNoise(g, getWidth(), getHeight(), 3);
-    
-    g.setColour(frontCol);
-    
+    g.setColour(this->barColour);
     for (const auto f : this->roll.getVisibleBars())
     {
-        g.drawLine(f, float(this->getHeight() - 18), f, float(this->getHeight() - 1), 2.5f);
+        g.drawVerticalLine(int(floorf(f)), float(this->getHeight() - 17), float(this->getHeight() - 1));
     }
 
+    g.setColour(this->barShadeColour);
+    for (const auto f : this->roll.getVisibleBars())
+    {
+        g.drawVerticalLine(int(floorf(f)) + 1, float(this->getHeight() - 16), float(this->getHeight() - 1));
+    }
+
+    g.setColour(this->beatColour);
     for (const auto f : this->roll.getVisibleBeats())
     {
-        g.drawVerticalLine(int(f), float(this->getHeight() - 10), float(this->getHeight() - 1.f));
+        g.drawVerticalLine(int(floorf(f)), float(this->getHeight() - 10), float(this->getHeight() - 1));
     }
 
+    g.setColour(this->snapColour);
     for (const auto f : this->roll.getVisibleSnaps())
     {
-        g.drawVerticalLine(int(f), float(this->getHeight() - 3), float(this->getHeight() - 1.f));
+        g.drawVerticalLine(int(floorf(f)), float(this->getHeight() - 4), float(this->getHeight() - 1));
     }
 
-    g.setColour(Colours::white.withAlpha(0.025f));
+    g.setColour(this->bevelLightColour);
     g.drawHorizontalLine(this->getHeight() - 2, 0.f, float(this->getWidth()));
-    //g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
 
-    g.setColour(Colours::black.withAlpha(0.35f));
+    g.setColour(this->bevelDarkColour);
     g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth()));
 }

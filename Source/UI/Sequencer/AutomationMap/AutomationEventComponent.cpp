@@ -42,6 +42,7 @@ AutomationEventComponent::AutomationEventComponent(AutomationTrackMap &parent, c
     this->setMouseCursor(MouseCursor::PointingHandCursor);
 
     this->setInterceptsMouseClicks(true, false);
+    this->setMouseClickGrabsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
     this->recreateConnector();
     //[/UserPreSize]

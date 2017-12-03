@@ -41,7 +41,7 @@ public:
     Playhead(HybridRoll &parentRoll,
         Transport &owner,
         Playhead::Listener *movementListener = nullptr,
-        int width = 2);
+        int width = 1);
 
     ~Playhead() override;
 
@@ -50,33 +50,23 @@ public:
     // TransportListener
     //===------------------------------------------------------------------===//
 
-    void onSeek(const double newPosition,
-                        const double currentTimeMs,
-                        const double totalTimeMs) override;
-
-    void onTempoChanged(const double newTempo) override;
-
-    void onTotalTimeChanged(const double timeMs) override;
-
+    void onSeek(double absolutePosition, double currentTimeMs, double totalTimeMs) override;
+    void onTempoChanged(double newTempo) override;
+    void onTotalTimeChanged(double timeMs) override;
     void onPlay() override;
-
     void onStop() override;
-
 
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
     void paint(Graphics &g) override;
-
     void parentSizeChanged() override;
-
     void parentHierarchyChanged() override;
 
 protected:
 
     HybridRoll &roll;
-
     Transport &transport;
 
     int playheadWidth;
@@ -88,12 +78,11 @@ private:
     //===------------------------------------------------------------------===//
 
     void timerCallback() override;
-
     void tick();
 
     void parentChanged();
 
-    ReadWriteLock anchorsLock;
+    SpinLock anchorsLock;
     double timerStartTime;
     double timerStartPosition;
     double tempo;
@@ -106,10 +95,12 @@ private:
 
     void handleAsyncUpdate() override;
 
-
     void updatePosition(double position);
 
-    ReadWriteLock lastCorrectPositionLock;
+    Colour mainColour;
+    Colour shadeColour;
+
+    SpinLock lastCorrectPositionLock;
     double lastCorrectPosition;
 
     Listener *listener;

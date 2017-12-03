@@ -84,7 +84,7 @@ void PatternRollSelectionCommandPanel::handleCommandMessage(int commandId)
 
 void PatternRollSelectionCommandPanel::initLayersPanel(bool shouldAddBackButton)
 {
-    ReferenceCountedArray<CommandItem> cmds;
+    CommandPanel::Items cmds;
     
     if (shouldAddBackButton)
     {

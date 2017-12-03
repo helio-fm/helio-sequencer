@@ -59,12 +59,19 @@ void ColourSwatches::onColourButtonClicked(ColourButton *clickedButton)
     if (ColourButtonListener *parentListener =
         dynamic_cast<ColourButtonListener *>(this->getParentComponent()))
     {
+        this->lastSelectedColour = clickedButton->getColour();
         parentListener->onColourButtonClicked(clickedButton);
     }
 }
 
+Colour ColourSwatches::getColour() const noexcept
+{
+    return this->lastSelectedColour;
+}
+
 void ColourSwatches::setSelectedColour(Colour colour)
 {
+    this->lastSelectedColour = colour;
     for (const auto &button : this->buttons)
     {
         if (button->getColour() == colour)

@@ -49,6 +49,7 @@ HeadlineItem::HeadlineItem(WeakReference<TreeItem> treeItem, AsyncUpdater &paren
     //[UserPreSize]
     this->titleLabel->setInterceptsMouseClicks(false, false);
     this->setInterceptsMouseClicks(true, true);
+    this->setMouseClickGrabsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
     this->setOpaque(false);
     //[/UserPreSize]

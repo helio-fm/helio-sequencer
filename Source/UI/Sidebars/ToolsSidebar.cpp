@@ -502,20 +502,20 @@ void ToolsSidebar::handleAsyncUpdate()
 // TransportListener
 //===----------------------------------------------------------------------===//
 
-void ToolsSidebar::onSeek(const double newPosition,
-    const double currentTimeMs, const double totalTimeMs)
+void ToolsSidebar::onSeek(double absolutePosition,
+    double currentTimeMs, double totalTimeMs)
 {
     this->lastSeekTime = currentTimeMs; // todo locks?
     this->lastTotalTime = totalTimeMs;
     this->triggerAsyncUpdate();
 }
 
-void ToolsSidebar::onTempoChanged(const double newTempo)
+void ToolsSidebar::onTempoChanged(double newTempo)
 {
 
 }
 
-void ToolsSidebar::onTotalTimeChanged(const double timeMs)
+void ToolsSidebar::onTotalTimeChanged(double timeMs)
 {
     this->lastTotalTime = timeMs;
     this->totalTime->setText(Transport::getTimeString(this->lastTotalTime), dontSendNotification);

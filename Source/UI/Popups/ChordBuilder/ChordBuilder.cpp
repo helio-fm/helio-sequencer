@@ -108,7 +108,7 @@ public:
 
     ScalesCommandPanel(const Array<Scale> &scales) : scales(scales)
     {
-        ReferenceCountedArray<CommandItem> cmds;
+        CommandPanel::Items cmds;
         for (int i = 0; i < scales.size(); ++i)
         {
             cmds.add(CommandItem::withParams(String::empty,
@@ -144,7 +144,7 @@ public:
     FunctionsCommandPanel()
     {
         const auto funName = localizedFunctionNames();
-        ReferenceCountedArray<CommandItem> cmds;
+        CommandPanel::Items cmds;
         cmds.add(CommandItem::withParams(String::empty,
             CommandIDs::SelectFunction + 6, "VII - " + funName[6]));
         cmds.add(CommandItem::withParams(String::empty,

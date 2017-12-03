@@ -404,7 +404,7 @@ String ProjectCommandPanel::createAutoLayerTempate(const String &name, int contr
 
 void ProjectCommandPanel::initMainMenu(AnimationType animationType)
 {
-    ReferenceCountedArray<CommandItem> cmds;
+    CommandPanel::Items cmds;
 
     cmds.add(CommandItem::withParams(Icons::group, CommandIDs::ProjectLinearEditor, TRANS("menu::project::editor::linear")));
     cmds.add(CommandItem::withParams(Icons::stack, CommandIDs::ProjectPatternEditor, TRANS("menu::project::editor::pattern")));
@@ -433,7 +433,7 @@ void ProjectCommandPanel::initMainMenu(AnimationType animationType)
 
 void ProjectCommandPanel::initNewSubItemsMenu(AnimationType animationType)
 {
-    ReferenceCountedArray<CommandItem> cmds;
+    CommandPanel::Items cmds;
     cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
     cmds.add(CommandItem::withParams(Icons::layer, CommandIDs::AddMidiTrack, TRANS("menu::project::addlayer")));
 #if HELIO_DESKTOP
@@ -453,7 +453,7 @@ void ProjectCommandPanel::initNewSubItemsMenu(AnimationType animationType)
 
 void ProjectCommandPanel::initSubItemTypeSelectionMenu()
 {
-    ReferenceCountedArray<CommandItem> cmds;
+    CommandPanel::Items cmds;
     cmds.add(CommandItem::withParams(Icons::left, CommandIDs::AddItemsMenuBack, TRANS("menu::back"))->withTimer());
     
     for (int i = 0; i < NUM_CONTROLLERS_TO_SHOW; ++i)
@@ -471,7 +471,7 @@ void ProjectCommandPanel::initSubItemTypeSelectionMenu()
 
 void ProjectCommandPanel::initRenderMenu()
 {
-    ReferenceCountedArray<CommandItem> cmds;
+    CommandPanel::Items cmds;
     cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
     cmds.add(CommandItem::withParams(Icons::render, CommandIDs::RenderToWAV, TRANS("menu::project::render::wav")));
     cmds.add(CommandItem::withParams(Icons::render, CommandIDs::RenderToOGG, TRANS("menu::project::render::ogg")));
@@ -482,7 +482,7 @@ void ProjectCommandPanel::initRenderMenu()
 
 void ProjectCommandPanel::initBatchMenu(AnimationType animationType)
 {
-    ReferenceCountedArray<CommandItem> cmds;
+    CommandPanel::Items cmds;
     cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
     cmds.add(CommandItem::withParams(Icons::up, CommandIDs::RefactorTransposeUp, TRANS("menu::project::refactor::halftoneup")));
     cmds.add(CommandItem::withParams(Icons::down, CommandIDs::RefactorTransposeDown, TRANS("menu::project::refactor::halftonedown")));
@@ -500,7 +500,7 @@ void ProjectCommandPanel::initBatchMenu(AnimationType animationType)
 
 void ProjectCommandPanel::initInstrumentSelection()
 {
-    ReferenceCountedArray<CommandItem> cmds;
+    CommandPanel::Items cmds;
     cmds.add(CommandItem::withParams(Icons::left, CommandIDs::ProjectBatchMenuBack, TRANS("menu::back"))->withTimer());
     const Array<Instrument *> &info = App::Workspace().getAudioCore().getInstruments();
     

@@ -344,17 +344,17 @@ bool ArpeggiatorEditorPanel::keyPressed (const KeyPress& key)
 // TransportListener
 //
 
-void ArpeggiatorEditorPanel::onSeek(const double newPosition,
-                              const double currentTimeMs,
-                              const double totalTimeMs)
+void ArpeggiatorEditorPanel::onSeek(double absolutePosition,
+                              double currentTimeMs,
+                              double totalTimeMs)
 {
 }
 
-void ArpeggiatorEditorPanel::onTempoChanged(const double newTempo)
+void ArpeggiatorEditorPanel::onTempoChanged(double newTempo)
 {
 }
 
-void ArpeggiatorEditorPanel::onTotalTimeChanged(const double timeMs)
+void ArpeggiatorEditorPanel::onTotalTimeChanged(double timeMs)
 {
 }
 

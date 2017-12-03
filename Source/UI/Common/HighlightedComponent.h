@@ -27,6 +27,7 @@ public:
         fadingHighlights(true)
     {
         this->setInterceptsMouseClicks(true, false);
+        this->setMouseClickGrabsKeyboardFocus(false);
     }
     
     void setUsesFadingHighlights(bool shouldFade)
@@ -81,6 +82,11 @@ protected:
     
     virtual void setHighlighted(bool shouldBeHighlighted)
     {
+        if (this->highlighted == shouldBeHighlighted)
+        {
+            return;
+        }
+
         this->highlighted = shouldBeHighlighted;
         
         if (this->highlighted)

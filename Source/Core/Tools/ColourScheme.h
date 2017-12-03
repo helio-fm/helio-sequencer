@@ -26,7 +26,7 @@ class ColourScheme : public Serializable
 public:
 
     ColourScheme() {}
-    ColourScheme(const String &scheme);
+    explicit ColourScheme(const String &scheme);
     ColourScheme(const ColourScheme &other);
     ~ColourScheme() override {}
 
@@ -47,10 +47,6 @@ public:
     // Secondary background gradient
     Colour getSecondaryGradientColourA() const;
     Colour getSecondaryGradientColourB() const;
-
-    // Optional backgrounds shading gradient
-    Colour getShadingGradientColourA() const;
-    Colour getShadingGradientColourB() const;
 
     // Panel and button fill
     Colour getPanelFillColour() const;
@@ -77,12 +73,10 @@ public:
     // Serialization
     //===------------------------------------------------------------------===//
 
-    void exportColourChanges();
+    void syncWithLiveConstantEditor();
 
     XmlElement *serialize() const override;
-
     void deserialize(const XmlElement &xml) override;
-
     void reset() override;
 
 private:

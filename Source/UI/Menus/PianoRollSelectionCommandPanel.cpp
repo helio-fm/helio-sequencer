@@ -33,9 +33,9 @@
 #include "App.h"
 #include "CommandIDs.h"
 
-ReferenceCountedArray<CommandItem> createDefaultPanel()
+CommandPanel::Items createDefaultPanel()
 {
-    ReferenceCountedArray<CommandItem> cmds;
+    CommandPanel::Items cmds;
     cmds.add(CommandItem::withParams(Icons::copy, CommandIDs::CopyEvents, TRANS("menu::selection::piano::copy")));
     cmds.add(CommandItem::withParams(Icons::cut, CommandIDs::CutEvents, TRANS("menu::selection::piano::cut")));
     // todo cut with shifted time
@@ -51,9 +51,9 @@ ReferenceCountedArray<CommandItem> createDefaultPanel()
     return cmds;
 }
 
-ReferenceCountedArray<CommandItem> createRefactoringPanel()
+CommandPanel::Items createRefactoringPanel()
 {
-    ReferenceCountedArray<CommandItem> cmds;
+    CommandPanel::Items cmds;
     // TODO
     // Cleanup (remove overlaps)
     // Invert up
@@ -65,9 +65,9 @@ ReferenceCountedArray<CommandItem> createRefactoringPanel()
     return cmds;
 }
 
-ReferenceCountedArray<CommandItem> createLayersPanel(const Array<PianoTrackTreeItem *> &layers)
+CommandPanel::Items createLayersPanel(const Array<PianoTrackTreeItem *> &layers)
 {
-    ReferenceCountedArray<CommandItem> cmds;
+    CommandPanel::Items cmds;
     cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
 
     for (int i = 0; i < layers.size(); ++i)
@@ -80,9 +80,9 @@ ReferenceCountedArray<CommandItem> createLayersPanel(const Array<PianoTrackTreeI
     return cmds;
 }
 
-ReferenceCountedArray<CommandItem> createArpsPanel(int selectedArp)
+CommandPanel::Items createArpsPanel(int selectedArp)
 {
-    ReferenceCountedArray<CommandItem> cmds;
+    CommandPanel::Items cmds;
     const Array<Arpeggiator> arps = ArpeggiatorsManager::getInstance().getArps();
     cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
 
@@ -153,7 +153,7 @@ void PianoRollSelectionCommandPanel::handleCommandMessage(int commandId)
 
 void PianoRollSelectionCommandPanel::initLayersPanel(bool shouldAddBackButton)
 {
-    ReferenceCountedArray<CommandItem> cmds;
+    CommandPanel::Items cmds;
     
     if (shouldAddBackButton)
     {

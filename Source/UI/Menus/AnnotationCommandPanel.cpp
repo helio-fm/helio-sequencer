@@ -33,7 +33,7 @@ AnnotationCommandPanel::AnnotationCommandPanel(ProjectTreeItem &parentProject, c
     project(parentProject),
     annotation(targetAnnotation)
 {
-    ReferenceCountedArray<CommandItem> cmds;
+    CommandPanel::Items cmds;
     cmds.add(CommandItem::withParams(Icons::ellipsis, CommandIDs::RenameAnnotation, TRANS("menu::annotation::rename")));
     
     const StringPairArray colours(CommandPanel::getColoursList());

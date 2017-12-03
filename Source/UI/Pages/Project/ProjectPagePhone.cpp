@@ -344,14 +344,14 @@ static String getTimeString(const RelativeTime &time)
     return res;
 }
 
-void ProjectPagePhone::onSeek(const double absolutePosition,
-                                const double currentTimeMs, const double totalTimeMs)
+void ProjectPagePhone::onSeek(double absolutePosition,
+                                double currentTimeMs, double totalTimeMs)
 {
     const RelativeTime totalTime(totalTimeMs / 1000.0);
     this->lengthText->setText(getTimeString(totalTime), dontSendNotification);
 }
 
-void ProjectPagePhone::onTotalTimeChanged(const double timeMs)
+void ProjectPagePhone::onTotalTimeChanged(double timeMs)
 {
     const RelativeTime totalTime(timeMs / 1000.0);
     this->lengthText->setText(getTimeString(totalTime), dontSendNotification);

@@ -67,7 +67,7 @@ PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
     this->setComponentID(ComponentIDs::patternRollId);
 
     this->header->toFront(false);
-    this->indicator->toFront(false);
+    this->playhead->toFront(false);
     this->repaintBackgroundsCache();
     this->reloadRollContent();
 }

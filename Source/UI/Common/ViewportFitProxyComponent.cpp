@@ -29,6 +29,7 @@ ViewportFitProxyComponent::ViewportFitProxyComponent(Viewport &parentViewport,
     viewportDragStart(0, 0)
 {
     this->setInterceptsMouseClicks(true, true);
+    this->setMouseClickGrabsKeyboardFocus(false);
     this->addAndMakeVisible(this->target);
     this->setSize(this->target->getWidth(), this->target->getHeight());
     this->centerTargetToViewport();

@@ -33,14 +33,14 @@ public:
 
     //[UserMethods]
 
-    inline void setStartAnchor(float absX)
+    inline void setStartAnchor(double absX)
     {
         this->startAbsPosition = absX;
         this->endAbsPosition = absX;
         this->updateBounds();
     }
 
-    inline void setEndAnchor(float absX)
+    inline void setEndAnchor(double absX)
     {
         this->endAbsPosition = absX;
         this->updateBounds();
@@ -68,21 +68,18 @@ private:
         }
     }
 
-    float startAbsPosition;
-    float endAbsPosition;
+    double startAbsPosition;
+    double endAbsPosition;
 
     void updateBounds()
     {
-        const float start = jmin(this->startAbsPosition, this->endAbsPosition);
-        const float end = jmax(this->startAbsPosition, this->endAbsPosition);
+        const double start = jmin(this->startAbsPosition, this->endAbsPosition);
+        const double end = jmax(this->startAbsPosition, this->endAbsPosition);
 
-        const int startX = int(float(this->getParentWidth()) * start);
-        const int endX = int(float(this->getParentWidth()) * end);
+        const int startX = int(double(this->getParentWidth()) * start);
+        const int endX = int(double(this->getParentWidth()) * end);
 
-        this->setBounds(startX,
-                        this->getY(),
-                        (endX - startX),
-                        this->getHeight());
+        this->setBounds(startX, this->getY(), (endX - startX), this->getHeight());
     }
 
     //[/UserVariables]

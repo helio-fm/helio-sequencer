@@ -33,12 +33,12 @@ public:
 
     //[UserMethods]
 
-    float getAnchor() const
+    double getAnchor() const
     {
         return this->absPosition;
     }
 
-    inline void setAnchoredAt(float absX)
+    inline void setAnchoredAt(double absX)
     {
         this->absPosition = absX;
         this->updateBounds();
@@ -56,21 +56,13 @@ private:
 
     //[UserVariables]
 
-    float absPosition;
+    double absPosition;
 
     void updateBounds()
     {
-//#if HELIO_DESKTOP
-        this->setBounds(int(this->getParentWidth() * this->absPosition),
-                        0,
-                        int(this->getParentWidth() * (1.f - this->absPosition)),
-                        this->getParentHeight());
-//#elif HELIO_MOBILE
-//        this->setBounds((this->getParentWidth() * this->absPosition),
-//                        0,
-//                        this->getWidth(),
-//                        this->getParentHeight());
-//#endif
+        this->setBounds(int(double(this->getParentWidth()) * this->absPosition + 1.0), 0,
+            int(double(this->getParentWidth()) * (1.0 - this->absPosition) + 1.0),
+            this->getParentHeight());
     }
 
     //[/UserVariables]

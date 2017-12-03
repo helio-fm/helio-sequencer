@@ -68,10 +68,8 @@
 #include <limits.h>
 
 #if HELIO_DESKTOP
-//(defined (JUCE_MAC) || defined (JUCE_LINUX))
 #   define HYBRID_ROLL_FOLLOWS_INDICATOR 1
 #else
-//  on Windows and mobiles this sucks, so just turn it off.
 #   define HYBRID_ROLL_FOLLOWS_INDICATOR 0
 #endif
 
@@ -98,12 +96,12 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject,
     clickAnchor(0, 0),
     zoomAnchor(0, 0),
     barWidth(0),
-    firstBar(INT_MAX),
-    lastBar(INT_MIN),
+    firstBar(FLT_MAX),
+    lastBar(-FLT_MAX),
     trackFirstBeat(0.f),
     trackLastBeat(DEFAULT_NUM_BARS * NUM_BEATS_IN_BAR),
     header(nullptr),
-    indicator(nullptr),
+    playhead(nullptr),
     spaceDragMode(false),
     altDrawMode(false),
     draggedDistance(0),
@@ -129,7 +127,7 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject,
     this->timeSignaturesTrack = new TimeSignaturesLargeMap(this->project, *this);
     this->keySignaturesTrack = new KeySignaturesLargeMap(this->project, *this);
 
-    this->indicator = new Playhead(*this, this->project.getTransport(), this);
+    this->playhead = new Playhead(*this, this->project.getTransport(), this);
 
     this->lassoComponent = new HybridLassoComponent();
     this->lassoComponent->setWantsKeyboardFocus(false);
@@ -141,12 +139,7 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject,
     this->addAndMakeVisible(this->annotationsTrack);
     this->addAndMakeVisible(this->timeSignaturesTrack);
     this->addAndMakeVisible(this->keySignaturesTrack);
-    this->addAndMakeVisible(this->indicator);
-
-    // A hack to put them in front of header (which is also alwaysOnTop):
-    this->annotationsTrack->toFront(false);
-    this->timeSignaturesTrack->toFront(false);
-    this->keySignaturesTrack->toFront(false);
+    this->addAndMakeVisible(this->playhead);
 
     this->addAndMakeVisible(this->lassoComponent);
 
@@ -272,6 +265,7 @@ void HybridRoll::addOwnedMap(Component *newTrackMap)
     }
 
     newTrackMap->toFront(false);
+    this->playhead->toFront(false);
     this->resized();
 }
 
@@ -386,39 +380,38 @@ void HybridRoll::panByOffset(const int offsetX, const int offsetY)
     const bool needsToStretchRight = (offsetX >= (this->getWidth() - this->viewport.getViewWidth()));
     const bool needsToStretchLeft = (offsetX <= 0);
 
-    int numBarsToExpand = 1;
+    float numBarsToExpand = 1.f;
     if (this->barWidth <= 1)
     {
-        numBarsToExpand = 64;
+        numBarsToExpand = 64.f;
     }
     else if (this->barWidth <= 16)
     {
-        numBarsToExpand = 16;
+        numBarsToExpand = 16.f;
     }
     else if (this->barWidth <= 64)
     {
-        numBarsToExpand = 4;
+        numBarsToExpand = 4.f;
     }
     
     if (needsToStretchRight)
     {
         this->project.broadcastChangeViewBeatRange(
-            float(this->firstBar * NUM_BEATS_IN_BAR),
-            float(this->lastBar + numBarsToExpand) * NUM_BEATS_IN_BAR);
+            this->firstBar * float(NUM_BEATS_IN_BAR),
+            (this->lastBar + numBarsToExpand) * float(NUM_BEATS_IN_BAR));
         this->viewport.setViewPosition(offsetX, offsetY); // after setLastBar
-        const float barCloseToTheRight = float(this->lastBar - numBarsToExpand);
-        this->header->addAndMakeVisible(new HybridRollExpandMark(*this, barCloseToTheRight, numBarsToExpand));
+        const float barCloseToTheRight = this->lastBar - numBarsToExpand;
+        this->header->addAndMakeVisible(new HybridRollExpandMark(*this, barCloseToTheRight, int(numBarsToExpand)));
     }
     else if (needsToStretchLeft)
     {
         const float deltaW = float(this->barWidth * numBarsToExpand);
         this->clickAnchor.addXY(deltaW / SMOOTH_PAN_SPEED_MULTIPLIER, 0); // an ugly hack
         this->project.broadcastChangeViewBeatRange(
-            float(this->firstBar - numBarsToExpand) * NUM_BEATS_IN_BAR,
-            float(this->lastBar * NUM_BEATS_IN_BAR));
+            (this->firstBar - numBarsToExpand) * float(NUM_BEATS_IN_BAR),
+            this->lastBar * float(NUM_BEATS_IN_BAR));
         this->viewport.setViewPosition(offsetX + int(deltaW), offsetY); // after setFirstBar
-        const float barCloseToTheLeft = float(this->firstBar);
-        this->header->addAndMakeVisible(new HybridRollExpandMark(*this, barCloseToTheLeft, numBarsToExpand));
+        this->header->addAndMakeVisible(new HybridRollExpandMark(*this, this->firstBar, int(numBarsToExpand)));
     }
     else
     {
@@ -468,7 +461,7 @@ void HybridRoll::zoomAbsolute(const Point<float> &zoom)
 {
 //    this->stopFollowingPlayhead();
 
-    const float &newWidth = (this->getNumBars() * HYBRID_ROLL_MAX_BAR_WIDTH) * zoom.getX();
+    const float &newWidth = this->getNumBars() * HYBRID_ROLL_MAX_BAR_WIDTH * zoom.getX();
     const float &barsOnNewScreen = float(newWidth / HYBRID_ROLL_MAX_BAR_WIDTH);
     const float &viewWidth = float(this->viewport.getViewWidth());
     const float &newBarWidth = floorf(viewWidth / barsOnNewScreen + .5f);
@@ -489,8 +482,8 @@ void HybridRoll::zoomRelative(const Point<float> &origin, const Point<float> &fa
     const float estimatedNewWidth = newBarWidth * this->getNumBars();
 
     if (estimatedNewWidth < float(this->viewport.getViewWidth()))
-    { newBarWidth = (float(this->viewport.getWidth() + 1) / float(this->getNumBars())); } // a hack
-    //{ newBarWidth = (float(this->viewport.getViewWidth()) / float(this->getNumBars())); }
+    { newBarWidth = (float(this->viewport.getWidth() + 1) / this->getNumBars()); } // a hack
+    //{ newBarWidth = (float(this->viewport.getViewWidth()) / this->getNumBars()); }
 
     this->setBarWidth(newBarWidth);
 
@@ -507,7 +500,7 @@ void HybridRoll::zoomRelative(const Point<float> &origin, const Point<float> &fa
 
 float HybridRoll::getZoomFactorX() const
 {
-    const float &numBars = float(this->getNumBars());
+    const float &numBars = this->getNumBars();
     const float &viewWidth = float(this->viewport.getViewWidth());
     const float &barWidth = float(this->getBarWidth());
     const float &barsOnScreen = (viewWidth / barWidth);
@@ -526,14 +519,14 @@ float HybridRoll::getZoomFactorY() const
 
 int HybridRoll::getXPositionByTransportPosition(double absPosition, double canvasWidth) const
 {
-    const double rollLengthInBeats = (this->getLastBeat() - this->getFirstBeat());
-    const double projectLengthInBeats = (this->trackLastBeat - this->trackFirstBeat);
-    const double firstBeatOffset = (this->trackFirstBeat - this->getFirstBeat());
+    const double rollLengthInBeats = this->getLastBeat() - this->getFirstBeat();
+    const double projectLengthInBeats = this->trackLastBeat - this->trackFirstBeat;
+    const double firstBeatOffset = this->trackFirstBeat - this->getFirstBeat();
 
     const double trackWidth = canvasWidth * (projectLengthInBeats / rollLengthInBeats);
     const double trackStart = canvasWidth * (firstBeatOffset / rollLengthInBeats);
 
-    return int(trackStart + absPosition * trackWidth);
+    return int(floor(trackStart + absPosition * trackWidth));
 }
 
 double HybridRoll::getTransportPositionByXPosition(int xPosition, double canvasWidth) const
@@ -562,14 +555,14 @@ float HybridRoll::getBeatByTransportPosition(double absSeekPosition) const
 
 float HybridRoll::getBarByXPosition(int xPosition) const
 {
-    const int zeroCanvasOffset = int(this->getFirstBar() * this->getBarWidth());
-    const float bar = float(xPosition + zeroCanvasOffset) / float(this->getBarWidth());
+    const float zeroCanvasOffset = this->firstBar * this->getBarWidth();
+    const float bar = (float(xPosition) + zeroCanvasOffset) / this->getBarWidth();
     return bar;
 }
 
 int HybridRoll::getXPositionByBar(float targetBar) const
 {
-    return int((targetBar - this->getFirstBar()) * float(this->getBarWidth()));
+    return int(roundf((targetBar - this->firstBar) * this->getBarWidth()));
 }
 
 int HybridRoll::getXPositionByBeat(float targetBeat) const
@@ -596,10 +589,8 @@ float HybridRoll::getFloorBeatByXPosition(int x) const
         }
     }
 
-    const float lastAlignedBeat = float(this->lastBar * NUM_BEATS_IN_BAR);
-    const float firstAlignedBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
-    float beatNumber = (targetX / this->barWidth) * NUM_BEATS_IN_BAR + firstAlignedBeat;
-    return jmin(jmax(beatNumber, firstAlignedBeat), lastAlignedBeat);
+    const float beatNumber = (targetX / this->barWidth) * NUM_BEATS_IN_BAR + this->getFirstBeat();
+    return jmin(jmax(beatNumber, this->getFirstBeat()), this->getLastBeat());
 }
 
 float HybridRoll::getRoundBeatByXPosition(int x) const
@@ -621,13 +612,11 @@ float HybridRoll::getRoundBeatByXPosition(int x) const
         }
     }
 
-    const float lastAlignedBeat = float(this->lastBar * NUM_BEATS_IN_BAR);
-    const float firstAlignedBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
-    float beatNumber = (targetX / this->barWidth) * NUM_BEATS_IN_BAR + firstAlignedBeat;
-    return jmin(jmax(beatNumber, firstAlignedBeat), lastAlignedBeat);
+    const float beatNumber = (targetX / this->barWidth) * NUM_BEATS_IN_BAR + this->getFirstBeat();
+    return jmin(jmax(beatNumber, this->getFirstBeat()), this->getLastBeat());
 }
 
-void HybridRoll::setBarRange(int first, int last)
+void HybridRoll::setBarRange(float first, float last)
 {
     if (this->lastBar == last && this->firstBar == first)
     {
@@ -663,7 +652,7 @@ void HybridRoll::computeVisibleBeatLines()
     const float paintStartX = viewPosX + zeroCanvasOffset;
     const float paintEndX = float(viewPosX + this->viewport.getViewWidth()) + zeroCanvasOffset;
     
-    const float paintStartBar = roundf(paintStartX / this->barWidth) - 1.f;
+    const float paintStartBar = roundf(paintStartX / this->barWidth) - 2.f;
     const float paintEndBar = roundf(paintEndX / this->barWidth) + 1.f;
     
     // Get number of snaps depending on bar width, 
@@ -950,18 +939,18 @@ void HybridRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
     this->trackFirstBeat = firstBeat;
     this->trackLastBeat = lastBeat;
 
-    const int trackFirstBar = int(floorf(firstBeat / float(NUM_BEATS_IN_BAR)));
-    const int trackLastBar = int(ceilf(lastBeat / float(NUM_BEATS_IN_BAR)));
-    const int rollFirstBar = jmin(this->firstBar, trackFirstBar);
-    const int rollLastBar = jmax(this->lastBar, trackLastBar);
+    const float trackFirstBar = firstBeat / float(NUM_BEATS_IN_BAR);
+    const float trackLastBar = lastBeat / float(NUM_BEATS_IN_BAR);
+    const float rollFirstBar = jmin(this->firstBar, trackFirstBar);
+    const float rollLastBar = jmax(this->lastBar, trackLastBar);
 
     this->setBarRange(rollFirstBar, rollLastBar);
 }
 
 void HybridRoll::onChangeViewBeatRange(float firstBeat, float lastBeat)
 {
-    const int viewFirstBar = int(floorf(firstBeat / float(NUM_BEATS_IN_BAR)));
-    const int viewLastBar = int(ceilf(lastBeat / float(NUM_BEATS_IN_BAR)));
+    const float viewFirstBar = firstBeat / float(NUM_BEATS_IN_BAR);
+    const float viewLastBar = lastBeat / float(NUM_BEATS_IN_BAR);
     this->setBarRange(viewFirstBar, viewLastBar);
 }
 
@@ -1161,25 +1150,25 @@ void HybridRoll::paint(Graphics &g)
     g.setColour(barLine);
     for (const auto f : this->visibleBars)
     {
-        g.drawVerticalLine(int(f), paintStartY, paintEndY);
+        g.drawVerticalLine(int(floorf(f)), paintStartY, paintEndY);
     }
 
     g.setColour(barLineBevel);
     for (const auto f : this->visibleBars)
     {
-        g.drawVerticalLine(int(f + 1), paintStartY, paintEndY);
+        g.drawVerticalLine(int(floorf(f)) + 1, paintStartY, paintEndY);
     }
 
     g.setColour(beatLine);
     for (const auto f : this->visibleBeats)
     {
-        g.drawVerticalLine(int(f), paintStartY, paintEndY);
+        g.drawVerticalLine(int(floorf(f)), paintStartY, paintEndY);
     }
     
     g.setColour(snapLine);
     for (const auto f : this->visibleSnaps)
     {
-        g.drawVerticalLine(int(f), paintStartY, paintEndY);
+        g.drawVerticalLine(int(floorf(f)), paintStartY, paintEndY);
     }
 }
 
@@ -1289,13 +1278,13 @@ void HybridRoll::resetAllOversaturationIndicators()
 // TransportListener
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::onSeek(const double newPosition,
-                      const double currentTimeMs,
-                      const double totalTimeMs)
+void HybridRoll::onSeek(double absolutePosition,
+                      double currentTimeMs,
+                      double totalTimeMs)
 {
     {
         ScopedWriteLock lock(this->transportLastCorrectPositionLock);
-        this->transportLastCorrectPosition = newPosition;
+        this->transportLastCorrectPosition = absolutePosition;
     }
 
 #if HYBRID_ROLL_FOLLOWS_INDICATOR
@@ -1307,11 +1296,11 @@ void HybridRoll::onSeek(const double newPosition,
 #endif
 }
 
-void HybridRoll::onTempoChanged(const double newTempo)
+void HybridRoll::onTempoChanged(double newTempo)
 {
 }
 
-void HybridRoll::onTotalTimeChanged(const double timeMs)
+void HybridRoll::onTotalTimeChanged(double timeMs)
 {
 }
 
@@ -1324,7 +1313,7 @@ void HybridRoll::onPlay()
 void HybridRoll::onStop()
 {
 #if HYBRID_ROLL_FOLLOWS_INDICATOR
-    // todo sync screen back to indicator?
+    // todo sync screen back to playhead?
     this->stopFollowingPlayhead();
     //this->scrollToSeekPosition();
 #endif
@@ -1853,11 +1842,8 @@ void HybridRoll::updateChildrenBounds()
 
     this->header->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
     this->annotationsTrack->setBounds(0, viewY + HYBRID_ROLL_HEADER_HEIGHT, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
-    this->timeSignaturesTrack->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
-    this->keySignaturesTrack->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
-    this->annotationsTrack->toFront(false);
-    this->timeSignaturesTrack->toFront(false);
-    this->keySignaturesTrack->toFront(false);
+    this->timeSignaturesTrack->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT - 1);
+    this->keySignaturesTrack->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT - 1);
 
     if (this->wipeSpaceHelper)
     {
@@ -1893,9 +1879,6 @@ void HybridRoll::updateChildrenPositions()
     this->annotationsTrack->setTopLeftPosition(0, viewY + HYBRID_ROLL_HEADER_HEIGHT);
     this->timeSignaturesTrack->setTopLeftPosition(0, viewY);
     this->keySignaturesTrack->setTopLeftPosition(0, viewY);
-    this->annotationsTrack->toFront(false);
-    this->timeSignaturesTrack->toFront(false);
-    this->keySignaturesTrack->toFront(false);
 
     if (this->wipeSpaceHelper)
     {

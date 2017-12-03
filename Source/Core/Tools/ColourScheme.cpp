@@ -114,18 +114,6 @@ Colour ColourScheme::getSecondaryGradientColourB() const
     return JUCE_LIVE_CONSTANT(c);
 }
 
-Colour ColourScheme::getShadingGradientColourA() const
-{
-    const Colour c(this->colours[Serialization::UI::Colours::shadingGradientA]);
-    return JUCE_LIVE_CONSTANT(c);
-}
-
-Colour ColourScheme::getShadingGradientColourB() const
-{
-    const Colour c(this->colours[Serialization::UI::Colours::shadingGradientB]);
-    return JUCE_LIVE_CONSTANT(c);
-}
-
 Colour ColourScheme::getPanelFillColour() const
 {
     const Colour c(this->colours[Serialization::UI::Colours::panelFill]);
@@ -197,18 +185,13 @@ Colour ColourScheme::getIconShadowColour() const
 // Serialization
 //===----------------------------------------------------------------------===//
 
-void ColourScheme::exportColourChanges()
+void ColourScheme::syncWithLiveConstantEditor()
 {
-    // this WTF-alike-looking code is here
-    // to sync JUCE_LIVE_CONSTANT values
-    // back to the hashmap
     this->reset();
     this->colours.set(Serialization::UI::Colours::primaryGradientA, this->getPrimaryGradientColourA());
     this->colours.set(Serialization::UI::Colours::primaryGradientB, this->getPrimaryGradientColourB());
     this->colours.set(Serialization::UI::Colours::secondaryGradientA, this->getSecondaryGradientColourA());
     this->colours.set(Serialization::UI::Colours::secondaryGradientB, this->getSecondaryGradientColourB());
-    this->colours.set(Serialization::UI::Colours::shadingGradientA, this->getShadingGradientColourA());
-    this->colours.set(Serialization::UI::Colours::shadingGradientB, this->getShadingGradientColourB());
     this->colours.set(Serialization::UI::Colours::panelFill, this->getPanelFillColour());
     this->colours.set(Serialization::UI::Colours::lassoBorder, this->getLassoBorderColour());
     this->colours.set(Serialization::UI::Colours::panelBorder, this->getPanelBorderColour());
@@ -273,8 +256,6 @@ void ColourScheme::reset()
     this->colours.set(Serialization::UI::Colours::primaryGradientB, Colours::black);
     this->colours.set(Serialization::UI::Colours::secondaryGradientA, Colours::black);
     this->colours.set(Serialization::UI::Colours::secondaryGradientB, Colours::black);
-    this->colours.set(Serialization::UI::Colours::shadingGradientA, Colours::black);
-    this->colours.set(Serialization::UI::Colours::shadingGradientB, Colours::black);
     this->colours.set(Serialization::UI::Colours::panelFill, Colours::black);
     this->colours.set(Serialization::UI::Colours::lassoBorder, Colours::black);
     this->colours.set(Serialization::UI::Colours::panelBorder, Colours::black);

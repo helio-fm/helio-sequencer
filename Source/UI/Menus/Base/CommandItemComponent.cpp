@@ -222,6 +222,7 @@ CommandItemComponent::CommandItemComponent(Component *parentCommandReceiver, Vie
     this->toggleMarker = nullptr;
     this->lastMouseScreenPosition = { 0, 0 };
     this->textLabel->setInterceptsMouseClicks(false, false);
+    this->setMouseClickGrabsKeyboardFocus(false);
     this->setInterceptsMouseClicks(true, true);
     this->setPaintingIsUnclipped(true);
     //[/UserPreSize]

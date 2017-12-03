@@ -21,7 +21,7 @@
 class ProjectTreeItem;
 
 #include "TransportListener.h"
-#include "CommandItemComponent.h"
+#include "CommandPanel.h"
 
 #define TOOLS_SIDEBAR_WIDTH (64)
 #define TOOLS_SIDEBAR_ROW_HEIGHT (38)
@@ -79,7 +79,7 @@ private:
     double timerStartSeekTime;
     double timerStartSystemTime;
 
-    ReferenceCountedArray<CommandItem> commandDescriptions;
+    CommandPanel::Items commandDescriptions;
 
     void updateModeButtons();
     void emitAnnotationsCallout(Component *newAnnotationsMenu);
@@ -117,10 +117,10 @@ private:
     // TransportListener
     //===------------------------------------------------------------------===//
 
-    void onSeek(const double newPosition, const double currentTimeMs,
-        const double totalTimeMs) override;
-    void onTempoChanged(const double newTempo) override;
-    void onTotalTimeChanged(const double timeMs) override;
+    void onSeek(double absolutePosition, double currentTimeMs,
+        double totalTimeMs) override;
+    void onTempoChanged(double newTempo) override;
+    void onTotalTimeChanged(double timeMs) override;
     void onPlay() override;
     void onStop() override;
 

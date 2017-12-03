@@ -52,6 +52,7 @@ ColourButton::ColourButton(Colour c, ColourButtonListener *listener)
 {
 
     //[UserPreSize]
+    this->setMouseClickGrabsKeyboardFocus(false);
     //[/UserPreSize]
 
     setSize (32, 32);

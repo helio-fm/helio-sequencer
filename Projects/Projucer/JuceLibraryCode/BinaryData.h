@@ -351,7 +351,7 @@ namespace BinaryData
     const int            defaultPattern_pngSize = 317;
 
     extern const char*   ColourSchemes_xml;
-    const int            ColourSchemes_xmlSize = 2880;
+    const int            ColourSchemes_xmlSize = 2608;
 
     extern const char*   DefaultArps_xml;
     const int            DefaultArps_xmlSize = 6876;

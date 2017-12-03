@@ -17,8 +17,6 @@
             PanelBorder="afffffff"
             IconBase="29ffffff"
             IconShadow="ff000000"
-            ShadingGradientA="0"
-            ShadingGradientB="0"
         />
     </Scheme>
     <Scheme Name="Helio Theme" Id="0">
@@ -39,8 +37,6 @@
             PanelBorder="18ffffff"
             IconBase="3f000000"
             IconShadow="1dffffff"
-            ShadingGradientA="0"
-            ShadingGradientB="0"
         />
     </Scheme>
     <Scheme Name="Grayscale" Id="3">
@@ -61,8 +57,6 @@
             PanelBorder="afffffff"
             IconBase="3f000000"
             IconShadow="1dffffff"
-            ShadingGradientA="0"
-            ShadingGradientB="0"
         />
     </Scheme>
     <Scheme Name="Midnight Tracking" Id="2">
@@ -83,8 +77,6 @@
             PanelBorder="afffffff"
             IconBase="3f000000"
             IconShadow="1dffffff"
-            ShadingGradientA="0"
-            ShadingGradientB="0"
         />
     </Scheme>
 </ColourSchemes>

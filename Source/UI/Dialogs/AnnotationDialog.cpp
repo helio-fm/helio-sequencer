@@ -43,6 +43,8 @@ static StringPairArray getDynamics()
     c.set("Smorzando",          Colours::greenyellow.toString());
     return c;
 }
+
+static StringPairArray kDefaultDynamics = getDynamics();
 //[/MiscUserDefs]
 
 AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequence, const AnnotationEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
@@ -53,6 +55,8 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
       hasMadeChanges(false)
 {
     addAndMakeVisible (background = new PanelC());
+    addAndMakeVisible (comboPrimer = new DialogComboBox::Primer());
+
     addAndMakeVisible (messageLabel = new Label (String(),
                                                  TRANS("...")));
     messageLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
@@ -72,16 +76,18 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
     okButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnTop);
     okButton->addListener (this);
 
-    addAndMakeVisible (textEditor = new ComboBox (String()));
-    textEditor->setEditableText (true);
-    textEditor->setJustificationType (Justification::centredLeft);
-    textEditor->setTextWhenNothingSelected (String());
-    textEditor->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    textEditor->addListener (this);
-
     addAndMakeVisible (separatorH = new SeparatorHorizontal());
     addAndMakeVisible (separatorV = new SeparatorVertical());
     addAndMakeVisible (colourSwatches = new ColourSwatches());
+
+    addAndMakeVisible (textEditor = new TextEditor (String()));
+    textEditor->setMultiLine (false);
+    textEditor->setReturnKeyStartsNewLine (false);
+    textEditor->setReadOnly (false);
+    textEditor->setScrollbarsShown (true);
+    textEditor->setCaretVisible (true);
+    textEditor->setPopupMenuEnabled (true);
+    textEditor->setText (String());
 
 
     //[UserPreSize]
@@ -90,9 +96,9 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
     if (this->addsNewEvent)
     {
         Random r;
-        const auto keys(getDynamics().getAllKeys());
+        const auto keys(kDefaultDynamics.getAllKeys());
         const String key(keys[r.nextInt(keys.size())]);
-        const Colour colour(Colour::fromString(getDynamics()[key]));
+        const Colour colour(Colour::fromString(kDefaultDynamics[key]));
         this->originalEvent = AnnotationEvent(sequence, targetBeat, key, colour);
 
         sequence->checkpoint();
@@ -111,22 +117,35 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
 
     this->colourSwatches->setSelectedColour(this->originalEvent.getColour());
 
-    this->textEditor->setText(this->originalEvent.getDescription(), dontSendNotification);
-    this->textEditor->addItemList(getDynamics().getAllKeys(), 1);
     this->textEditor->addListener(this);
+    this->textEditor->setFont(Font(Font::getDefaultSansSerifFontName(), 21.f, Font::plain));
+    this->textEditor->setText(this->originalEvent.getDescription(), dontSendNotification);
 
     this->separatorH->setAlphaMultiplier(2.5f);
     //[/UserPreSize]
 
-    setSize (450, 204);
+    setSize (450, 220);
 
     //[Constructor]
     this->rebound();
-    this->setWantsKeyboardFocus(true);
     this->setInterceptsMouseClicks(true, true);
+    this->setMouseClickGrabsKeyboardFocus(false);
     this->toFront(true);
     this->setAlwaysOnTop(true);
     this->updateOkButtonState();
+
+    const auto &dynamicsNames = kDefaultDynamics.getAllKeys();
+    const auto &dynamicsColours = kDefaultDynamics.getAllValues();
+    CommandPanel::Items menu;
+    for (int i = 0; i < kDefaultDynamics.size(); ++i)
+    {
+        const Colour c = Colour::fromString(dynamicsColours[i]);
+        menu.add(CommandItem::withParams(Icons::annotation,
+            CommandIDs::JumpToAnnotation + i, dynamicsNames[i])->colouredWith(c));
+    }
+    this->comboPrimer->initWith(this->textEditor.get(), menu);
+
+    this->startTimer(100);
     //[/Constructor]
 }
 
@@ -138,13 +157,14 @@ AnnotationDialog::~AnnotationDialog()
     //[/Destructor_pre]
 
     background = nullptr;
+    comboPrimer = nullptr;
     messageLabel = nullptr;
     removeEventButton = nullptr;
     okButton = nullptr;
-    textEditor = nullptr;
     separatorH = nullptr;
     separatorV = nullptr;
     colourSwatches = nullptr;
+    textEditor = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -174,13 +194,14 @@ void AnnotationDialog::resized()
     //[/UserPreResize]
 
     background->setBounds ((getWidth() / 2) - ((getWidth() - 8) / 2), 4, getWidth() - 8, getHeight() - 8);
-    messageLabel->setBounds ((getWidth() / 2) - ((getWidth() - 48) / 2), 4 + 12, getWidth() - 48, 36);
+    comboPrimer->setBounds ((getWidth() / 2) - ((getWidth() - 24) / 2), 12, getWidth() - 24, getHeight() - 72);
+    messageLabel->setBounds ((getWidth() / 2) - ((getWidth() - 48) / 2), 4 + 16, getWidth() - 48, 36);
     removeEventButton->setBounds (4, getHeight() - 4 - 48, 220, 48);
     okButton->setBounds (getWidth() - 4 - 221, getHeight() - 4 - 48, 221, 48);
-    textEditor->setBounds ((getWidth() / 2) - ((getWidth() - 48) / 2), 58, getWidth() - 48, 36);
     separatorH->setBounds (4, getHeight() - 52 - 2, getWidth() - 8, 2);
     separatorV->setBounds ((getWidth() / 2) - (2 / 2), getHeight() - 4 - 48, 2, 48);
-    colourSwatches->setBounds ((getWidth() / 2) + 2 - ((getWidth() - 56) / 2), 102, getWidth() - 56, 34);
+    colourSwatches->setBounds ((getWidth() / 2) + 2 - ((getWidth() - 56) / 2), 106, getWidth() - 56, 34);
+    textEditor->setBounds ((getWidth() / 2) - ((getWidth() - 48) / 2), 66, getWidth() - 48, 32);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -218,38 +239,6 @@ void AnnotationDialog::buttonClicked (Button* buttonThatWasClicked)
     //[/UserbuttonClicked_Post]
 }
 
-void AnnotationDialog::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
-{
-    //[UsercomboBoxChanged_Pre]
-    //[/UsercomboBoxChanged_Pre]
-
-    if (comboBoxThatHasChanged == textEditor)
-    {
-        //[UserComboBoxCode_textEditor] -- add your combo box handling code here..
-        this->updateOkButtonState();
-
-        const String text(this->textEditor->getText());
-        AnnotationEvent newEvent = this->originalEvent.withDescription(text);
-        const String colourString(getDynamics()[text]);
-
-        if (colourString.isNotEmpty())
-        {
-            const Colour c(Colour::fromString(colourString));
-            this->colourSwatches->setSelectedColour(c);
-            newEvent = newEvent.withColour(c);
-        }
-
-        if (text.isNotEmpty())
-        {
-            this->sendEventChange(newEvent);
-        }
-        //[/UserComboBoxCode_textEditor]
-    }
-
-    //[UsercomboBoxChanged_Post]
-    //[/UsercomboBoxChanged_Post]
-}
-
 void AnnotationDialog::visibilityChanged()
 {
     //[UserCode_visibilityChanged] -- Add your code here...
@@ -277,30 +266,19 @@ void AnnotationDialog::handleCommandMessage (int commandId)
     {
         this->cancelAndDisappear();
     }
-    //[/UserCode_handleCommandMessage]
-}
-
-bool AnnotationDialog::keyPressed (const KeyPress& key)
-{
-    //[UserCode_keyPressed] -- Add your code here...
-    if (key.isKeyCode(KeyPress::escapeKey))
+    else
     {
-        this->cancelAndDisappear();
-        return true;
-    }
-    else if (key.isKeyCode(KeyPress::returnKey) ||
-             key.isKeyCode(KeyPress::tabKey))
-    {
-        if (textEditor->getText().isNotEmpty())
+        const int targetIndex = commandId - CommandIDs::JumpToAnnotation;
+        if (targetIndex >= 0 && targetIndex < kDefaultDynamics.size())
         {
-            this->disappear();
+            const String text = kDefaultDynamics.getAllKeys()[targetIndex];
+            const String colourString(kDefaultDynamics[text]);
+            const Colour c(Colour::fromString(colourString));
+            this->colourSwatches->setSelectedColour(c);
+            this->textEditor->setText(text, true);
         }
-
-        return true;
     }
-
-    return false; // Return true if your handler uses this key event, or false to allow it to be passed-on.
-    //[/UserCode_keyPressed]
+    //[/UserCode_handleCommandMessage]
 }
 
 void AnnotationDialog::inputAttemptWhenModal()
@@ -338,7 +316,7 @@ void AnnotationDialog::onColourButtonClicked(ColourButton *clickedButton)
     this->sendEventChange(newEvent);
 }
 
-void AnnotationDialog::sendEventChange(AnnotationEvent newEvent)
+void AnnotationDialog::sendEventChange(const AnnotationEvent &newEvent)
 {
     if (this->originalSequence != nullptr)
     {
@@ -391,6 +369,51 @@ void AnnotationDialog::disappear()
     delete this;
 }
 
+void AnnotationDialog::textEditorTextChanged(TextEditor&)
+{
+    this->updateOkButtonState();
+
+    const String text(this->textEditor->getText());
+    AnnotationEvent newEvent = this->originalEvent.withDescription(text);
+    const Colour c(this->colourSwatches->getColour());
+    this->colourSwatches->setSelectedColour(c);
+    newEvent = newEvent.withColour(c);
+    this->sendEventChange(newEvent);
+}
+
+void AnnotationDialog::textEditorReturnKeyPressed(TextEditor &ed)
+{
+    this->textEditorFocusLost(ed);
+}
+
+void AnnotationDialog::textEditorEscapeKeyPressed(TextEditor&)
+{
+    this->cancelAndDisappear();
+}
+
+void AnnotationDialog::textEditorFocusLost(TextEditor&)
+{
+    this->updateOkButtonState();
+    if (this->textEditor->getText().isNotEmpty())
+    {
+        this->disappear();
+    }
+    else
+    {
+        this->textEditor->grabKeyboardFocus();
+    }
+}
+
+void AnnotationDialog::timerCallback()
+{
+    if (!this->textEditor->hasKeyboardFocus(false))
+    {
+        this->textEditor->grabKeyboardFocus();
+        this->textEditor->selectAll();
+        this->stopTimer();
+    }
+}
+
 void AnnotationDialog::cancelAndDisappear()
 {
     this->cancelChangesIfAny(); // Discards possible changes
@@ -410,15 +433,14 @@ void AnnotationDialog::cancelAndDisappear()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="AnnotationDialog" template="../../Template"
-                 componentName="" parentClasses="public FadingDialog, public TextEditorListener, public ColourButtonListener"
+                 componentName="" parentClasses="public FadingDialog, public TextEditorListener, public ColourButtonListener, private Timer"
                  constructorParams="Component &amp;owner, AnnotationsSequence *sequence, const AnnotationEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
                  variableInitialisers="originalEvent(editedEvent),&#10;originalSequence(sequence),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="450" initialHeight="204">
+                 fixedSize="1" initialWidth="450" initialHeight="220">
   <METHODS>
     <METHOD name="parentSizeChanged()"/>
     <METHOD name="parentHierarchyChanged()"/>
-    <METHOD name="keyPressed (const KeyPress&amp; key)"/>
     <METHOD name="visibilityChanged()"/>
     <METHOD name="inputAttemptWhenModal()"/>
     <METHOD name="handleCommandMessage (int commandId)"/>
@@ -429,8 +451,11 @@ BEGIN_JUCER_METADATA
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
              sourceFile="../Themes/PanelC.cpp" constructorParams=""/>
+  <GENERICCOMPONENT name="" id="524df900a9089845" memberName="comboPrimer" virtualName=""
+                    explicitFocusOrder="0" pos="0Cc 12 24M 72M" class="DialogComboBox::Primer"
+                    params=""/>
   <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
-         explicitFocusOrder="0" pos="0Cc 12 48M 36" posRelativeY="e96b77baef792d3a"
+         explicitFocusOrder="0" pos="0Cc 16 48M 36" posRelativeY="e96b77baef792d3a"
          textCol="ffffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default serif font" fontsize="21" kerning="0" bold="0"
@@ -441,9 +466,6 @@ BEGIN_JUCER_METADATA
   <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="okButton" virtualName=""
               explicitFocusOrder="0" pos="4Rr 4Rr 221 48" buttonText="..."
               connectedEdges="5" needsCallback="1" radioGroupId="0"/>
-  <COMBOBOX name="" id="1923d71c308d2169" memberName="textEditor" virtualName=""
-            explicitFocusOrder="0" pos="0Cc 58 48M 36" editable="1" layout="33"
-            items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
   <JUCERCOMP name="" id="e39d9e103e2a60e6" memberName="separatorH" virtualName=""
              explicitFocusOrder="0" pos="4 52Rr 8M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
@@ -451,8 +473,11 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0Cc 4Rr 2 48" sourceFile="../Themes/SeparatorVertical.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="123ea615ffefd36f" memberName="colourSwatches" virtualName=""
-                    explicitFocusOrder="0" pos="2Cc 102 56M 34" class="ColourSwatches"
+                    explicitFocusOrder="0" pos="2Cc 106 56M 34" class="ColourSwatches"
                     params=""/>
+  <TEXTEDITOR name="" id="3f330f1d57714294" memberName="textEditor" virtualName=""
+              explicitFocusOrder="0" pos="0Cc 66 48M 32" initialText="" multiline="0"
+              retKeyStartsLine="0" readonly="0" scrollbars="1" caret="1" popupmenu="1"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

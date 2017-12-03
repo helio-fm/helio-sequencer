@@ -41,8 +41,6 @@ int CommandIDs::getIdForName(const String &command)
         return MenuButtonPressed;
     case Hash("RootTreeItemPressed"):
         return RootTreeItemPressed;
-    case Hash("HideRollover"):
-        return HideRollover;
     case Hash("HideDialog"):
         return HideDialog;
     case Hash("HideCallout"):
@@ -259,6 +257,8 @@ int CommandIDs::getIdForName(const String &command)
         return SelectFunction;
     case Hash("SelectScale"):
         return SelectScale;
+    case Hash("SelectTimeSignature"):
+        return SelectTimeSignature;
     case Hash("SwitchBetweenRolls"):
         return SwitchBetweenRolls;
     case Hash("ShowPreviousPage"):
@@ -267,6 +267,8 @@ int CommandIDs::getIdForName(const String &command)
         return ShowNextPage;
     case Hash("ToggleShowHideConsole"):
         return ToggleShowHideConsole;
+    case Hash("ToggleShowHideCombo"):
+        return ToggleShowHideCombo;
     case Hash("StartDragViewport"):
         return StartDragViewport;
     case Hash("EndDragViewport"):

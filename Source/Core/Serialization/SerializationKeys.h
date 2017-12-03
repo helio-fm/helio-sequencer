@@ -146,9 +146,6 @@ namespace Serialization
             static const String secondaryGradientA = "SecondaryGradientA";
             static const String secondaryGradientB = "SecondaryGradientB";
 
-            static const String shadingGradientA = "ShadingGradientA";
-            static const String shadingGradientB = "ShadingGradientB";
-
             static const String panelFill = "PanelFill";
             static const String panelBorder = "PanelBorder";
 
