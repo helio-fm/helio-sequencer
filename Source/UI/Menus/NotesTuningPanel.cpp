@@ -481,17 +481,17 @@ void NotesTuningPanel::endTuning()
 // TransportListener
 //
 
-void NotesTuningPanel::onSeek(const double newPosition,
-                              const double currentTimeMs,
-                              const double totalTimeMs)
+void NotesTuningPanel::onSeek(double absolutePosition,
+                              double currentTimeMs,
+                              double totalTimeMs)
 {
 }
 
-void NotesTuningPanel::onTempoChanged(const double newTempo)
+void NotesTuningPanel::onTempoChanged(double newTempo)
 {
 }
 
-void NotesTuningPanel::onTotalTimeChanged(const double timeMs)
+void NotesTuningPanel::onTotalTimeChanged(double timeMs)
 {
 }
 

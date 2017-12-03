@@ -31,6 +31,7 @@ SoundProbeIndicator::SoundProbeIndicator()
 
     //[UserPreSize]
     this->setInterceptsMouseClicks(false, false);
+    this->setPaintingIsUnclipped(true);
     this->setAlwaysOnTop(true);
     //[/UserPreSize]
 

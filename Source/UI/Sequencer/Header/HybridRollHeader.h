@@ -54,14 +54,22 @@ protected:
     HybridRoll &roll;
     Viewport &viewport;
     
+    Colour backColour;
+    Colour barColour;
+    Colour barShadeColour;
+    Colour beatColour;
+    Colour snapColour;
+    Colour bevelLightColour;
+    Colour bevelDarkColour;
+
     ScopedPointer<SoundProbeIndicator> playingIndicator;
     ScopedPointer<SoundProbeIndicator> pointingIndicator;
     ScopedPointer<TimeDistanceIndicator> timeDistanceIndicator;
     ScopedPointer<HeaderSelectionIndicator> selectionIndicator;
 
     void updateIndicatorPosition(SoundProbeIndicator *indicator, const MouseEvent &e);
-    float getUnalignedAnchorForEvent(const MouseEvent &e) const;
-    float getAlignedAnchorForEvent(const MouseEvent &e) const;
+    double getUnalignedAnchorForEvent(const MouseEvent &e) const;
+    double getAlignedAnchorForEvent(const MouseEvent &e) const;
     void updateTimeDistanceIndicator();
 
 };

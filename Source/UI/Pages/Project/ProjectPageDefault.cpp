@@ -433,14 +433,14 @@ static String getTimeString(const RelativeTime &time)
     return res;
 }
 
-void ProjectPageDefault::onSeek(const double absolutePosition,
-                         const double currentTimeMs, const double totalTimeMs)
+void ProjectPageDefault::onSeek(double absolutePosition,
+                         double currentTimeMs, double totalTimeMs)
 {
     const RelativeTime totalTime(totalTimeMs / 1000.0);
     this->lengthText->setText(getTimeString(totalTime), dontSendNotification);
 }
 
-void ProjectPageDefault::onTotalTimeChanged(const double timeMs)
+void ProjectPageDefault::onTotalTimeChanged(double timeMs)
 {
     const RelativeTime totalTime(timeMs / 1000.0);
     this->lengthText->setText(getTimeString(totalTime), dontSendNotification);

@@ -38,7 +38,7 @@ public:
         return this->timeLabel;
     }
 
-    inline void setAnchoredBetween(float absX1, float absX2)
+    inline void setAnchoredBetween(double absX1, double absX2)
     {
         this->startAbsPosition = jmin(absX1, absX2);
         this->endAbsPosition = jmax(absX1, absX2);
@@ -67,18 +67,14 @@ private:
         }
     }
 
-    float startAbsPosition;
-    float endAbsPosition;
+    double startAbsPosition;
+    double endAbsPosition;
 
     void updateBounds()
     {
-        const int startX = int(float(this->getParentWidth()) * this->startAbsPosition);
-        const int endX = int(float(this->getParentWidth()) * this->endAbsPosition);
-
-        this->setBounds(startX,
-                        this->getY(),
-                        (endX - startX),
-                        this->getHeight());
+        const int startX = int(double(this->getParentWidth()) * this->startAbsPosition);
+        const int endX = int(double(this->getParentWidth()) * this->endAbsPosition);
+        this->setBounds(startX, this->getY(), (endX - startX), this->getHeight());
     }
 
     //[/UserVariables]

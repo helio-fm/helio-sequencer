@@ -32,12 +32,12 @@ public:
 
     //[UserMethods]
 
-    float getAnchor() const
+    double getAnchor() const
     {
         return this->absPosition;
     }
 
-    inline void setAnchoredAt(float absX)
+    inline void setAnchoredAt(double absX)
     {
         this->absPosition = absX;
         this->updateBounds();
@@ -55,15 +55,12 @@ private:
 
     //[UserVariables]
 
-    float absPosition;
+    double absPosition;
 
     void updateBounds()
     {
-        const int x = int((this->getParentWidth() * this->absPosition) - (this->getWidth() / 2));
-        this->setBounds(x,
-                        0,
-                        this->getWidth(),
-                        this->getParentHeight());
+        const int x = int(double(this->getParentWidth()) * this->absPosition - double(this->getWidth()) / 2.0);
+        this->setBounds(x, 0, this->getWidth(), this->getParentHeight());
     }
 
     //[/UserVariables]

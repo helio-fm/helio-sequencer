@@ -21,19 +21,10 @@
 #include "PianoRoll.h"
 #include "PlayerThread.h"
 
-#define FREE_SPACE 4
-
-
-//#if PLAYER_THREAD_SENDS_SEEK_EVENTS
-//#   define PLAYHEAD_ESTIMATES_MOVEMENT 0
-//#else
-#   define PLAYHEAD_ESTIMATES_MOVEMENT 1
-//#endif
+#define FREE_SPACE 2
 
 //#define PLAYHEAD_UPDATE_TIME_MS (1000 / 50)
 #define PLAYHEAD_UPDATE_TIME_MS 7
-
-// TODO: check deadlocks?
 
 Playhead::Playhead(HybridRoll &parentRoll,
     Transport &owner,
@@ -48,10 +39,11 @@ Playhead::Playhead(HybridRoll &parentRoll,
     timerStartPosition(0.0),
     listener(movementListener)
 {
-    // debug
-    //this->setName(String(Random::getSystemRandom().nextInt()));
+    this->mainColour = this->findColour(PianoRoll::playheadColourId);
+    this->shadeColour = this->findColour(PianoRoll::playheadShadeColourId);
 
     this->setInterceptsMouseClicks(false, false);
+    this->setPaintingIsUnclipped(true);
     this->setAlwaysOnTop(true);
     this->setSize(this->playheadWidth, 1);
 
@@ -72,36 +64,32 @@ Playhead::~Playhead()
 // TransportListener
 //===----------------------------------------------------------------------===//
 
-void Playhead::onSeek(const double newPosition,
-                                const double currentTimeMs,
-                                const double totalTimeMs)
+void Playhead::onSeek(double absolutePosition,
+    double currentTimeMs, double totalTimeMs)
 {
     //Logger::writeToLog("Playhead::onSeek " + String(newPosition));
     //Logger::writeToLog(this->getName() + " onSeek newPosition = " + String(newPosition));
 
     {
-        ScopedWriteLock lock(this->lastCorrectPositionLock);
-        this->lastCorrectPosition = newPosition;
+        SpinLock::ScopedLockType lock(this->lastCorrectPositionLock);
+        this->lastCorrectPosition = absolutePosition;
     }
 
     this->triggerAsyncUpdate();
 
-#if PLAYHEAD_ESTIMATES_MOVEMENT
     if (this->isTimerRunning())
     {
-        ScopedWriteLock lock(this->anchorsLock);
+        SpinLock::ScopedLockType lock(this->anchorsLock);
         this->timerStartTime = Time::getMillisecondCounterHiRes();
         this->timerStartPosition = this->lastCorrectPosition;
         //this->startTimer(PLAYHEAD_UPDATE_TIME_MS);
     }
-#endif
 }
 
-void Playhead::onTempoChanged(const double newTempo)
+void Playhead::onTempoChanged(double newTempo)
 {
     //Logger::writeToLog("Playhead::onTempoChanged " + String(newTempo));
-#if PLAYHEAD_ESTIMATES_MOVEMENT
-    ScopedWriteLock lock(this->anchorsLock);
+    SpinLock::ScopedLockType lock(this->anchorsLock);
     this->tempo = jmax(newTempo, 0.01);
         
     if (this->isTimerRunning())
@@ -109,40 +97,33 @@ void Playhead::onTempoChanged(const double newTempo)
         this->timerStartTime = Time::getMillisecondCounterHiRes();
         this->timerStartPosition = this->lastCorrectPosition;
     }
-#endif
 }
 
-void Playhead::onTotalTimeChanged(const double timeMs)
+void Playhead::onTotalTimeChanged(double timeMs)
 {
 }
 
 void Playhead::onPlay()
 {
-    //Logger::writeToLog("Playhead::onPlay");
-#if PLAYHEAD_ESTIMATES_MOVEMENT
     {
-        ScopedWriteLock lock(this->anchorsLock);
+        SpinLock::ScopedLockType lock(this->anchorsLock);
         this->timerStartTime = Time::getMillisecondCounterHiRes();
         this->timerStartPosition = this->lastCorrectPosition;
     }
 
     //Logger::writeToLog("   !!!!! Playhead startTimer");
     this->startTimer(PLAYHEAD_UPDATE_TIME_MS);
-#endif
 }
 
 void Playhead::onStop()
 {
-    //Logger::writeToLog("Playhead::onStop");
-#if PLAYHEAD_ESTIMATES_MOVEMENT
     this->stopTimer();
 
     {
-        ScopedWriteLock lock(this->anchorsLock);
+        SpinLock::ScopedLockType lock(this->anchorsLock);
         this->timerStartTime = 0.0;
         this->timerStartPosition = 0.0;
     }
-#endif
 }
 
 
@@ -152,13 +133,6 @@ void Playhead::onStop()
 
 void Playhead::timerCallback()
 {
-    //Logger::writeToLog("Playhead::hiResTimerCallback");
-//    MessageManagerLock lock(Thread::getCurrentThread());
-//    if (lock.lockWasGained())
-//    {
-//        this->tick();
-//    }
-
     this->triggerAsyncUpdate();
 }
 
@@ -180,7 +154,7 @@ void Playhead::handleAsyncUpdate()
         double position;
         
         {
-            ScopedReadLock lock(this->lastCorrectPositionLock);
+            SpinLock::ScopedLockType lock(this->lastCorrectPositionLock);
             position = this->lastCorrectPosition;
         }
         
@@ -195,28 +169,20 @@ void Playhead::handleAsyncUpdate()
 
 void Playhead::paint(Graphics &g)
 {
-    //Logger::writeToLog("Playhead::paint");
-    const Colour playheadColour(this->findColour(PianoRoll::playheadColourId));
-    const Colour playheadShade(playheadColour.withMultipliedBrightness(1.5f));
-    
-    g.setColour(playheadColour);
-    //g.fillRect(0, 0, this->getWidth() - FREE_SPACE, this->getHeight());
+    g.setColour(this->mainColour);
     g.drawVerticalLine(0, 0.f, float(this->getHeight()));
 
-    g.setColour(playheadShade);
-    //g.setColour(Colours::black.withAlpha(0.5f));
+    g.setColour(this->shadeColour);
     g.drawVerticalLine(1, 0.f, float(this->getHeight()));
 }
 
 void Playhead::parentSizeChanged()
 {
-    //Logger::writeToLog("Playhead::parentSizeChanged");
     this->parentChanged();
 }
 
 void Playhead::parentHierarchyChanged()
 {
-    //Logger::writeToLog("Playhead::parentHierarchyChanged");
     this->parentChanged();
 }
 
@@ -224,12 +190,10 @@ void Playhead::parentChanged()
 {
     if (this->getParentComponent() != nullptr)
     {
-        //Logger::writeToLog("Playhead::parentChanged");
         this->setSize(this->playheadWidth, this->getParentHeight());
         
         if (this->isTimerRunning())
         {
-            //Logger::writeToLog("this->isTimerRunning()");
             this->tick();
         }
         else
@@ -237,7 +201,7 @@ void Playhead::parentChanged()
             double position;
             
             {
-                ScopedReadLock lock(this->lastCorrectPositionLock);
+                SpinLock::ScopedLockType lock(this->lastCorrectPositionLock);
                 position = this->lastCorrectPosition;
             }
             
@@ -249,34 +213,26 @@ void Playhead::parentChanged()
 
 void Playhead::updatePosition(double position)
 {
-    //Logger::writeToLog("Playhead::updatePosition " + String(position));
-    //Logger::writeToLog("Playhead::getParentWidth " + String(this->getParentWidth()));
-    const int &newX = this->roll.getXPositionByTransportPosition(position, float(this->getParentWidth()));
+    const int &newX = this->roll.getXPositionByTransportPosition(position, double(this->getParentWidth()));
     this->setTopLeftPosition(newX, 0);
-    //this->setBounds(newX, 0, this->indicatorWidth, this->getParentHeight());
 
     if (this->listener != nullptr)
     {
         this->listener->onPlayheadMoved(newX);
     }
-
-    //Logger::writeToLog("Playhead " + String(this->getX()) + " " + String(this->getY()) + " " + String(this->getWidth()) + " " + String(this->getHeight()));
 }
 
 void Playhead::tick()
 {
-#if PLAYHEAD_ESTIMATES_MOVEMENT
-    //Logger::writeToLog("Playhead::tick");
     double estimatedPosition;
     
     {
-        ScopedReadLock lock(this->anchorsLock);
+        SpinLock::ScopedLockType lock(this->anchorsLock);
         const double timeOffsetMs = Time::getMillisecondCounterHiRes() - this->timerStartTime;
         const double positionOffset = (timeOffsetMs / this->transport.getTotalTime()) / this->tempo;
         estimatedPosition = this->timerStartPosition + positionOffset;
     }
     
     this->updatePosition(estimatedPosition);
-#endif
 }
 

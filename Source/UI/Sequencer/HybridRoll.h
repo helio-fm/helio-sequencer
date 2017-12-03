@@ -55,13 +55,12 @@ class TimelineWarningMarker;
 #include "Serializable.h"
 
 #if HELIO_DESKTOP
-#   define HYBRID_ROLL_MAX_BAR_WIDTH (250)
+#   define HYBRID_ROLL_MAX_BAR_WIDTH (192)
 #   define HYBRID_ROLL_HEADER_HEIGHT (48)
 #elif HELIO_MOBILE
-#   define HYBRID_ROLL_MAX_BAR_WIDTH (300)
+#   define HYBRID_ROLL_MAX_BAR_WIDTH (256)
 #   define HYBRID_ROLL_HEADER_HEIGHT (48)
 #endif
-
 
 // Track is measured in quarter beats
 #define NUM_BEATS_IN_BAR 4
@@ -83,7 +82,6 @@ class TimelineWarningMarker;
 //    this->grabKeyboardFocus();
 
 // Since keyboard focus is now only owned by the main layout, use only setVisible:
-
 #define HYBRID_ROLL_BULK_REPAINT_START \
     this->setVisible(false);
 
@@ -122,7 +120,8 @@ public:
         snapLineColourId                 = 0x99002009,
         headerColourId                   = 0x99002010,
         headerSnapsColourId              = 0x99002011,
-        playheadColourId                 = 0x99002012
+        playheadColourId                 = 0x99002012,
+        playheadShadeColourId            = 0x99002013
     };
     
     HybridRoll(ProjectTreeItem &project, Viewport &viewport,
@@ -228,15 +227,15 @@ public:
     float getFloorBeatByXPosition(int x) const;
     float getRoundBeatByXPosition(int x) const;
     
-    inline int getLastBar() const noexcept { return this->lastBar; }
-    inline float getLastBeat() const noexcept { return float(this->lastBar * NUM_BEATS_IN_BAR); }
+    inline float getLastBar() const noexcept { return this->lastBar; }
+    inline float getLastBeat() const noexcept { return this->lastBar * float(NUM_BEATS_IN_BAR); }
     
-    inline int getFirstBar() const noexcept { return this->firstBar; }
-    inline float getFirstBeat() const noexcept { return float(this->firstBar * NUM_BEATS_IN_BAR); }
+    inline float getFirstBar() const noexcept { return this->firstBar; }
+    inline float getFirstBeat() const noexcept { return this->firstBar * float(NUM_BEATS_IN_BAR); }
     
-    void setBarRange(int first, int last);
-    inline int getNumBars() const { return this->lastBar - this->firstBar; }
-    inline int getNumBeats() const { return this->getNumBars() * NUM_BEATS_IN_BAR; }
+    void setBarRange(float first, float last);
+    inline float getNumBars() const { return this->lastBar - this->firstBar; }
+    inline float getNumBeats() const { return this->getNumBars() * NUM_BEATS_IN_BAR; }
 
     virtual void setBarWidth(const float newBarWidth);
     float getBarWidth() const noexcept { return this->barWidth; }
@@ -325,9 +324,9 @@ protected:
     // TransportListener
     //===------------------------------------------------------------------===//
     
-    void onSeek(const double absolutePosition, const double currentTimeMs, const double totalTimeMs) override;
-    void onTempoChanged(const double newTempo) override;
-    void onTotalTimeChanged(const double timeMs) override;
+    void onSeek(double absolutePosition, double currentTimeMs, double totalTimeMs) override;
+    void onTempoChanged(double newTempo) override;
+    void onTotalTimeChanged(double timeMs) override;
     void onPlay() override;
     void onStop() override;
 
@@ -409,8 +408,8 @@ protected:
     bool isWipeSpaceEvent(const MouseEvent &e) const;
     bool isInsertSpaceEvent(const MouseEvent &e) const;
 
-    int firstBar;
-    int lastBar;
+    float firstBar;
+    float lastBar;
 
     float trackFirstBeat;
     float trackLastBeat;
@@ -426,7 +425,7 @@ protected:
     ComponentFader fader;
 
     ScopedPointer<HybridRollHeader> header;
-    ScopedPointer<Playhead> indicator;
+    ScopedPointer<Playhead> playhead;
     
     typedef AnnotationsTrackMap<AnnotationLargeComponent> AnnotationsLargeMap;
     ScopedPointer<AnnotationsLargeMap> annotationsTrack;
