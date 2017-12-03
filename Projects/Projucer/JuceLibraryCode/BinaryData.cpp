@@ -11821,9 +11821,10 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) throw
         case 0xfebd99dd:  numBytes = 1080; return zoomin_svg;
         case 0x236bbec0:  numBytes = 928; return zoomout_svg;
         case 0xde5493f9:  numBytes = 317; return defaultPattern_png;
-        case 0x607fea3a:  numBytes = 2880; return ColourSchemes_xml;
-        case 0xec23d88d:  numBytes = 6981; return DefaultArps_xml;
-        case 0x712a9842:  numBytes = 4463; return DefaultScales_xml;
+        case 0x607fea3a:  numBytes = 2608; return ColourSchemes_xml;
+        case 0xec23d88d:  numBytes = 6876; return DefaultArps_xml;
+        case 0x6644d5b8:  numBytes = 6877; return DefaultHotkeys_xml;
+        case 0x712a9842:  numBytes = 4741; return DefaultScales_xml;
         case 0x7502f27b:  numBytes = 185385; return DefaultTranslations_xml;
         default: break;
     }
@@ -11950,6 +11951,7 @@ const char* namedResourceList[] =
     "defaultPattern_png",
     "ColourSchemes_xml",
     "DefaultArps_xml",
+    "DefaultHotkeys_xml",
     "DefaultScales_xml",
     "DefaultTranslations_xml"
 };
