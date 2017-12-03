@@ -69,7 +69,7 @@ private:
 
     ComponentAnimator animator;
 
-    bool shouldAdjustWidth;
+    bool shouldResizeToFitContent;
     AnimationType lastAnimationType;
     Items commandDescriptions;
 
