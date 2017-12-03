@@ -23,7 +23,6 @@ class KeySignatureEvent;
 #include "KeySignaturesTrackMap.h"
 //[/Headers]
 
-#include "../../Themes/SeparatorVertical.h"
 
 class KeySignatureSmallComponent  : public Component
 {
@@ -74,7 +73,6 @@ private:
     //[/UserVariables]
 
     ScopedPointer<Label> signatureLabel;
-    ScopedPointer<SeparatorVertical> component;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeySignatureSmallComponent)
 };

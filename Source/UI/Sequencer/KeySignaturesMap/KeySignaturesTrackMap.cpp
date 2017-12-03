@@ -402,7 +402,7 @@ void KeySignaturesTrackMap<T>::applyKeySignatureBounds(T *nc, T *nextOne)
     const float nextX = mapWidth * (nextBeat / projectLengthInBeats);
 
     const float minWidth = 10.f;
-    const float widthMargin = 32.f;
+    const float widthMargin = 16.f;
     const float componentsPadding = 10.f;
     const float maxWidth = nextX - x;
     const float w = jmax(minWidth, jmin((maxWidth - componentsPadding), (nc->getTextWidth() + widthMargin)));

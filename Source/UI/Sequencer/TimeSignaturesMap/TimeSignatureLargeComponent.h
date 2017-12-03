@@ -85,7 +85,8 @@ private:
 
     //[/UserVariables]
 
-    Path internalPath1;
+    ScopedPointer<Label> numeratorLabel;
+    ScopedPointer<Label> denominatorLabel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TimeSignatureLargeComponent)
 };

@@ -18,6 +18,7 @@
 //[Headers]
 #include "Common.h"
 #include "TimeSignaturesSequence.h"
+#include "HybridRoll.h"
 //[/Headers]
 
 #include "TimeSignatureLargeComponent.h"
@@ -33,12 +34,35 @@ TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesTrackMap<
       denominator(0),
       mouseDownWasTriggered(false)
 {
+    addAndMakeVisible (numeratorLabel = new Label (String(),
+                                                   String()));
+    numeratorLabel->setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    numeratorLabel->setJustificationType (Justification::centredLeft);
+    numeratorLabel->setEditable (false, false, false);
+    numeratorLabel->setColour (Label::textColourId, Colour (0xaaffffff));
+    numeratorLabel->setColour (TextEditor::textColourId, Colours::black);
+    numeratorLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
+    addAndMakeVisible (denominatorLabel = new Label (String(),
+                                                     String()));
+    denominatorLabel->setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    denominatorLabel->setJustificationType (Justification::centredLeft);
+    denominatorLabel->setEditable (false, false, false);
+    denominatorLabel->setColour (Label::textColourId, Colour (0xaaffffff));
+    denominatorLabel->setColour (TextEditor::textColourId, Colours::black);
+    denominatorLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+
 
     //[UserPreSize]
-    this->setOpaque(false);
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
+    this->numeratorLabel->setInterceptsMouseClicks(false, false);
+    this->denominatorLabel->setInterceptsMouseClicks(false, false);
     this->setMouseCursor(MouseCursor::PointingHandCursor);
+
+    // Component size should be always fixed and small (~32x64px),
+    // so we better cache it to avoid text rendering all the time
+    this->setBufferedToImage(true);
     //[/UserPreSize]
 
     setSize (128, 32);
@@ -52,6 +76,8 @@ TimeSignatureLargeComponent::~TimeSignatureLargeComponent()
     //[Destructor_pre]
     //[/Destructor_pre]
 
+    numeratorLabel = nullptr;
+    denominatorLabel = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -63,41 +89,19 @@ void TimeSignatureLargeComponent::paint (Graphics& g)
     //[/UserPrePaint]
 
     {
-        float x = 0, y = 0;
-        Colour fillColour = Colour (0x25fefefe);
+        int x = 2, y = 0, width = getWidth() - 2, height = getHeight() - 0;
+        Colour fillColour = Colour (0xff898989);
         //[UserPaintCustomArguments] Customize the painting arguments here..
+        fillColour = this->findColour(HybridRoll::headerColourId);
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
-        g.fillPath (internalPath1, AffineTransform::translation(x, y));
+        g.fillRect (x, y, width, height);
     }
 
     //[UserPaint] Add your own custom painting code here..
-    const Font labelFont(19.00f, Font::plain);
-    g.setColour(Colour(0x88ffffff));
-
-    GlyphArrangement arr;
-
-    arr.addFittedText(labelFont,
-                      String(this->numerator),
-                      this->boundsOffset.getX() + 4.f,
-                      -3.f,
-                      float(this->getWidth()),
-                      24.f,
-                      Justification::centredLeft,
-                      1,
-                      0.85f);
-
-    arr.addFittedText(labelFont,
-                      String(this->denominator),
-                      this->boundsOffset.getX() + 4.f,
-                      11.f,
-                      float(this->getWidth()),
-                      24.f,
-                      Justification::centredLeft,
-                      1,
-                      0.85f);
-    arr.draw(g);
-
+    g.setColour(this->findColour(HybridRoll::headerSnapsColourId).withMultipliedAlpha(0.25f));
+    g.drawHorizontalLine(this->getHeight() - 1, 2.f, float(this->getWidth()));
+    //g.drawHorizontalLine(this->getHeight() - 2, 2.f, float(this->getWidth()));
     //[/UserPaint]
 }
 
@@ -106,13 +110,8 @@ void TimeSignatureLargeComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    internalPath1.clear();
-    internalPath1.startNewSubPath (0.0f, 0.0f);
-    internalPath1.lineTo (5.0f, 0.0f);
-    internalPath1.lineTo (1.0f, 5.0f);
-    internalPath1.lineTo (0.0f, 6.0f);
-    internalPath1.closeSubPath();
-
+    numeratorLabel->setBounds (-1, getHeight() - 14 - 12, getWidth() - -6, 12);
+    denominatorLabel->setBounds (-1, getHeight() - 3 - 12, getWidth() - -6, 12);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -244,6 +243,8 @@ void TimeSignatureLargeComponent::updateContent()
     {
         this->numerator = this->event.getNumerator();
         this->denominator = this->event.getDenominator();
+        this->numeratorLabel->setText(String(this->numerator), dontSendNotification);
+        this->denominatorLabel->setText(String(this->denominator), dontSendNotification);
         this->repaint();
     }
 }
@@ -268,8 +269,18 @@ BEGIN_JUCER_METADATA
     <METHOD name="mouseDoubleClick (const MouseEvent&amp; e)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <PATH pos="0 0 100 100" fill="solid: 25fefefe" hasStroke="0" nonZeroWinding="1">s 0 0 l 5 0 l 1 5 l 0 6 x</PATH>
+    <RECT pos="2 0 2M 0M" fill="solid: ff898989" hasStroke="0"/>
   </BACKGROUND>
+  <LABEL name="" id="3dbd8cef4b61c2fe" memberName="numeratorLabel" virtualName=""
+         explicitFocusOrder="0" pos="-1 14Rr -6M 12" textCol="aaffffff"
+         edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="16" kerning="0" bold="0" italic="0" justification="33"/>
+  <LABEL name="" id="48b6c750cc766a42" memberName="denominatorLabel" virtualName=""
+         explicitFocusOrder="0" pos="-1 3Rr -6M 12" textCol="aaffffff"
+         edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="16" kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

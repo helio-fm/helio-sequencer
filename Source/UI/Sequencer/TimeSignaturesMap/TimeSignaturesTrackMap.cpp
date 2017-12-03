@@ -69,9 +69,9 @@ TimeSignaturesTrackMap<T>::~TimeSignaturesTrackMap()
 template<typename T>
 void TimeSignaturesTrackMap<T>::updateTrackRangeIndicatorsAnchors()
 {
-    const float rollLengthInBeats = (this->rollLastBeat - this->rollFirstBeat);
-    const float absStart = ((this->projectFirstBeat - this->rollFirstBeat) / rollLengthInBeats);
-    const float absEnd = ((this->projectLastBeat - this->rollFirstBeat) / rollLengthInBeats);
+    const double rollLengthInBeats = double(this->rollLastBeat - this->rollFirstBeat);
+    const double absStart = double(this->projectFirstBeat - this->rollFirstBeat) / rollLengthInBeats;
+    const double absEnd = double(this->projectLastBeat - this->rollFirstBeat) / rollLengthInBeats;
     //Logger::writeToLog("updateTrackRangeIndicatorsAnchors: " + String(absStart) + ":" + String(absEnd));
     this->trackStartIndicator->setAnchoredAt(absStart);
     this->trackEndIndicator->setAnchoredAt(absEnd);
@@ -438,7 +438,7 @@ void TimeSignaturesTrackMap<T>::applyTimeSignatureBounds(T *nc, T *nextOne)
     const float maxWidth = nextX - x;
     const float w = jmax(minWidth, jmin((maxWidth - componentsPadding), widthMargin));
 
-    nc->setRealBounds(Rectangle<float>(x, 0.f, w, float(nc->getHeight())));
+    nc->setRealBounds(Rectangle<float>(x, 0.f, w, float(this->getHeight())));
 }
 
 template<typename T>

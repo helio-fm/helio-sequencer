@@ -75,31 +75,45 @@ void AnnotationLargeComponent::paint (Graphics& g)
 #if 0
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x88ffffff));
-    g.setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
-    g.drawText (TRANS("..."),
-                4, 4, getWidth() - 6, getHeight() - 8,
-                Justification::centredLeft, true);
+    {
+        int x = 4, y = 4, width = getWidth() - 6, height = getHeight() - 8;
+        String text (TRANS("..."));
+        Colour fillColour = Colour (0x88ffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+        g.drawText (text, x, y, width, height,
+                    Justification::centredLeft, true);
+    }
 
-    g.setColour (Colour (0x20ffffff));
-    g.fillRect (0, 0, getWidth() - 0, 3);
+    {
+        int x = 0, y = 0, width = getWidth() - 0, height = 3;
+        Colour fillColour = Colour (0x20ffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+    }
 
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-    g.setColour(this->event.getColour().interpolatedWith(Colours::white, 0.5f).withAlpha(75.f / 255.f));
-    g.fillRect(0, 2, this->getWidth(), 3);
+    g.setColour(this->event.getColour().interpolatedWith(Colours::white, 0.5f).withAlpha(0.5f));
+    g.drawHorizontalLine(2, 0.5f, float(this->getWidth()));
+    g.drawHorizontalLine(3, 0.5f, float(this->getWidth()));
+    //g.drawHorizontalLine(4, 0.5f, float(this->getWidth()));
 
     if (this->event.getDescription().isNotEmpty())
     {
         const Font labelFont(16.00f, Font::plain);
-        g.setColour(this->event.getColour().interpolatedWith(Colours::white, 0.55f).withAlpha(200.f / 255.f));
+        g.setColour(this->event.getColour().interpolatedWith(Colours::white, 0.55f).withAlpha(0.9f));
 
         GlyphArrangement arr;
         arr.addFittedText(labelFont,
                           this->event.getDescription(),
-                          4.f + this->boundsOffset.getX(),
-                          2.f,
+                          2.f + this->boundsOffset.getX(),
+                          1.f,
                           float(this->getWidth()) - 16.f,
                           float(this->getHeight()) - 8.f,
                           Justification::centredLeft,

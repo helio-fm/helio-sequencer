@@ -18,6 +18,7 @@
 //[Headers]
 #include "Common.h"
 #include "KeySignaturesSequence.h"
+#include "HybridRoll.h"
 //[/Headers]
 
 #include "KeySignatureLargeComponent.h"
@@ -34,10 +35,10 @@ KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesTrackMap<Key
 {
     addAndMakeVisible (signatureLabel = new Label (String(),
                                                    TRANS("...")));
-    signatureLabel->setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
+    signatureLabel->setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
     signatureLabel->setJustificationType (Justification::centredLeft);
     signatureLabel->setEditable (false, false, false);
-    signatureLabel->setColour (Label::textColourId, Colour (0x77ffffff));
+    signatureLabel->setColour (Label::textColourId, Colour (0x99ffffff));
     signatureLabel->setColour (TextEditor::textColourId, Colours::black);
     signatureLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
@@ -49,7 +50,7 @@ KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesTrackMap<Key
     this->setMouseCursor(MouseCursor::PointingHandCursor);
     //[/UserPreSize]
 
-    setSize (128, 32);
+    setSize (128, 24);
 
     //[Constructor]
     //[/Constructor]
@@ -69,6 +70,11 @@ KeySignatureLargeComponent::~KeySignatureLargeComponent()
 void KeySignatureLargeComponent::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
+    const Colour lineCol(this->findColour(HybridRoll::headerSnapsColourId));
+    g.setColour(lineCol);
+    g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
+    g.drawHorizontalLine(1, 0.f, float(this->getWidth()));
+    //g.drawHorizontalLine(2, 0.f, float(this->getWidth()));
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..
@@ -80,7 +86,7 @@ void KeySignatureLargeComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    signatureLabel->setBounds (0, 0, getWidth() - -4, getHeight() - 0);
+    signatureLabel->setBounds (-1, -2, getWidth() - -8, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -233,7 +239,7 @@ BEGIN_JUCER_METADATA
                  constructorParams="KeySignaturesTrackMap&lt;KeySignatureLargeComponent&gt; &amp;parent, const KeySignatureEvent &amp;targetEvent"
                  variableInitialisers="event(targetEvent),&#10;editor(parent),&#10;anchor(targetEvent),&#10;textWidth(0.f),&#10;mouseDownWasTriggered(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="128" initialHeight="32">
+                 fixedSize="1" initialWidth="128" initialHeight="24">
   <METHODS>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
     <METHOD name="mouseDrag (const MouseEvent&amp; e)"/>
@@ -243,10 +249,10 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="signatureLabel" virtualName=""
-         explicitFocusOrder="0" pos="0 0 -4M 0M" textCol="77ffffff" edTextCol="ff000000"
-         edBkgCol="0" labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="18"
-         kerning="0" bold="0" italic="0" justification="33"/>
+         explicitFocusOrder="0" pos="-1 -2 -8M 24" textCol="99ffffff"
+         edTextCol="ff000000" edBkgCol="0" labelText="..." editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="16" kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

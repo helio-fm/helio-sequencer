@@ -511,7 +511,7 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
     this->scroller->addOwnedMap(new PianoTrackMap(this->project, *this->pianoRoll), false);
     this->scroller->addOwnedMap(new AnnotationsTrackMap<AnnotationSmallComponent>(this->project, *this->pianoRoll), false);
     this->scroller->addOwnedMap(new TimeSignaturesTrackMap<TimeSignatureSmallComponent>(this->project, *this->pianoRoll), false);
-    this->scroller->addOwnedMap(new KeySignaturesTrackMap<KeySignatureSmallComponent>(this->project, *this->pianoRoll), false);
+    //this->scroller->addOwnedMap(new KeySignaturesTrackMap<KeySignatureSmallComponent>(this->project, *this->pianoRoll), false);
     //this->scroller->addOwnedMap(new AutomationTrackMap(this->project, *this->roll, this->project.getDefaultTempoTrack()->getLayer()), true);
 
     this->pianoRoll->setBarWidth(HYBRID_ROLL_MAX_BAR_WIDTH);

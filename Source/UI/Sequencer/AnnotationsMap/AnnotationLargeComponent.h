@@ -25,7 +25,7 @@ class AnnotationEvent;
 
 
 class AnnotationLargeComponent  : public Component,
-                                  public LabelListener
+                                  public Label::Listener
 {
 public:
 
