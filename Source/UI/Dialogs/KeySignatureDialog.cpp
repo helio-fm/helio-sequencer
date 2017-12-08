@@ -27,36 +27,6 @@
 #include "Transport.h"
 #include "SerializationKeys.h"
 
-// TODO scales manager or resource manager
-
-static Array<Scale> loadDefaultScales()
-{
-    Array<Scale> result;
-    const String scalesXml =
-        String(CharPointer_UTF8(BinaryData::DefaultScales_xml),
-            BinaryData::DefaultScales_xmlSize);
-
-    ScopedPointer<XmlElement> xml(XmlDocument::parse(scalesXml));
-
-    if (xml == nullptr) { return result; }
-
-    const XmlElement *root = xml->hasTagName(Serialization::Core::scales) ?
-        xml.get() : xml->getChildByName(Serialization::Core::scales);
-
-    if (root == nullptr) { return result; }
-
-    forEachXmlChildElementWithTagName(*root, scaleRoot, Serialization::Core::scale)
-    {
-        Scale s;
-        s.deserialize(*scaleRoot);
-        result.add(s);
-    }
-
-    return result;
-}
-
-static Array<Scale> kDefaultScales = loadDefaultScales();
-
 static inline void copyColourIfSpecified(Label& l, TextEditor& ed, int colourID, int targetColourID)
 {
     if (l.isColourSpecified(colourID) || l.getLookAndFeel().isColourSpecified(colourID))
@@ -70,6 +40,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
       originalEvent(editedEvent),
       originalSequence(keySequence),
       ownerComponent(owner),
+      defaultScales(Scale::getDefaultScalesCache()),
       addsNewEvent(shouldAddNewEvent),
       hasMadeChanges(false),
       key(0)
@@ -125,9 +96,9 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
     if (this->addsNewEvent)
     {
         Random r;
-        const auto i = r.nextInt(kDefaultScales.size());
+        const auto i = r.nextInt(this->defaultScales.size());
         this->key = 0;
-        this->scale = kDefaultScales[i];
+        this->scale = this->defaultScales[i];
         this->scaleEditor->setScale(this->scale);
         this->keySelector->setSelectedKey(this->key);
         this->scaleNameEditor->setText(this->scale.getName());
@@ -165,9 +136,9 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
     this->updateOkButtonState();
 
     CommandPanel::Items menu;
-    for (int i = 0; i < kDefaultScales.size(); ++i)
+    for (int i = 0; i < this->defaultScales.size(); ++i)
     {
-        const auto &s = kDefaultScales.getUnchecked(i);
+        const auto &s = this->defaultScales.getUnchecked(i);
         menu.add(CommandItem::withParams(Icons::ellipsis, CommandIDs::SelectScale + i, s.getName()));
     }
     this->comboPrimer->initWith(this->scaleNameEditor.get(), menu);
@@ -354,9 +325,9 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
     else
     {
         const int scaleIndex = commandId - CommandIDs::SelectScale;
-        if (scaleIndex >= 0 && scaleIndex < kDefaultScales.size())
+        if (scaleIndex >= 0 && scaleIndex < this->defaultScales.size())
         {
-            this->scale = kDefaultScales[scaleIndex];
+            this->scale = this->defaultScales[scaleIndex];
             this->scaleEditor->setScale(this->scale);
             this->scaleNameEditor->setText(this->scale.getName(), false);
             const KeySignatureEvent newEvent = this->originalEvent.withRootKey(this->key).withScale(this->scale);
@@ -479,12 +450,11 @@ void KeySignatureDialog::onScaleChanged(Scale scale)
         this->scale = scale;
 
         // Update name, if found equivalent:
-        for (int i = 0; i < kDefaultScales.size(); ++i)
+        for (int i = 0; i < this->defaultScales.size(); ++i)
         {
-            const auto &s = kDefaultScales.getUnchecked(i);
+            const auto &s = this->defaultScales.getUnchecked(i);
             if (s.isEquivalentTo(scale))
             {
-                //this->scaleNameEditor->setSelectedItemIndex(i, dontSendNotification);
                 this->scaleNameEditor->setText(s.getName());
                 this->scaleEditor->setScale(s);
                 this->scale = s;
@@ -551,7 +521,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="KeySignatureDialog" template="../../Template"
                  componentName="" parentClasses="public FadingDialog, public TextEditorListener, public ScaleEditor::Listener, public KeySelector::Listener, private Timer"
                  constructorParams="Component &amp;owner, Transport &amp;transport, KeySignaturesSequence *keySequence, const KeySignatureEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
-                 variableInitialisers="transport(transport),&#10;originalEvent(editedEvent),&#10;originalSequence(keySequence),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false),&#10;key(0)"
+                 variableInitialisers="transport(transport),&#10;originalEvent(editedEvent),&#10;originalSequence(keySequence),&#10;ownerComponent(owner),&#10;defaultScales(Scale::getDefaultScalesCache()),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false),&#10;key(0)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="430" initialHeight="260">
   <METHODS>

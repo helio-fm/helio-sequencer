@@ -63,6 +63,8 @@ private:
     TimeSignaturesSequence *originalSequence;
     Component &ownerComponent;
 
+    const StringPairArray defailtMeters;
+
     void textEditorTextChanged(TextEditor&) override;
     void textEditorReturnKeyPressed(TextEditor&) override;
     void textEditorEscapeKeyPressed(TextEditor&) override;

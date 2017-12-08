@@ -61,3 +61,44 @@ inline float roundf(float x)
 #else
 #   define HELIO_DESKTOP 1
 #endif
+
+template<class T>
+class ResourceCache final : private DeletedAtShutdown
+{
+public:
+
+    ResourceCache() {}
+    ~ResourceCache() { this->clearSingletonInstance(); }
+
+    Array<T> get(const String &tag, const char *const resourceName)
+    {
+        if (!this->cache.isEmpty())
+        {
+            return this->cache;
+        }
+
+        int numBytes;
+        const String resourceXml =
+            BinaryData::getNamedResource(resourceName, numBytes);
+
+        ScopedPointer<XmlElement> xml(XmlDocument::parse(resourceXml));
+        if (xml == nullptr) { return this->cache; }
+
+        forEachXmlChildElementWithTagName(*xml, resourceRoot, tag)
+        {
+            T t;
+            t.deserialize(*resourceRoot);
+            this->cache.add(t);
+        }
+
+        return this->cache;
+    }
+
+    juce_DeclareSingleton(ResourceCache<T>, false)
+
+private:
+
+    Array<T> cache;
+
+    JUCE_DECLARE_NON_COPYABLE(ResourceCache<T>)
+};

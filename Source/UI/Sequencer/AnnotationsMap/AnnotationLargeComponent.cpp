@@ -44,6 +44,7 @@ AnnotationLargeComponent::AnnotationLargeComponent(AnnotationsTrackMap<Annotatio
 
 
     //[UserPreSize]
+    this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->annotationLabel->setInterceptsMouseClicks(false, false);

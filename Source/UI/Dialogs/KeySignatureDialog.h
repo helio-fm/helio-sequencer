@@ -83,6 +83,8 @@ private:
     KeySignaturesSequence *originalSequence;
     Component &ownerComponent;
 
+    const Array<Scale> defaultScales;
+
     inline void cancelAndDisappear();
     inline void disappear();
     inline void updateOkButtonState();

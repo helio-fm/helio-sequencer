@@ -25,22 +25,7 @@
 #include "CommandIDs.h"
 #include "TimeSignaturesSequence.h"
 
-//static StringArray getMeters()
-//{
-//    StringArray c;
-//    c.add("2/2");
-//    c.add("2/4");
-//    c.add("3/4");
-//    c.add("4/4");
-//    c.add("5/8");
-//    c.add("6/8");
-//    c.add("7/8");
-//    c.add("9/8");
-//    c.add("12/8");
-//    return c;
-//}
-
-static StringPairArray getMeters()
+static StringPairArray getDefaultMeters()
 {
     StringPairArray c;
     c.set("Common time", "4/4");
@@ -54,14 +39,13 @@ static StringPairArray getMeters()
     c.set("12/8", "12/8");
     return c;
 }
-
-static StringPairArray kDefaultMeters = getMeters();
 //[/MiscUserDefs]
 
 TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequence *timeSequence, const TimeSignatureEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
     : originalEvent(editedEvent),
       originalSequence(timeSequence),
       ownerComponent(owner),
+      defailtMeters(getDefaultMeters()),
       addsNewEvent(shouldAddNewEvent),
       hasMadeChanges(false)
 {
@@ -101,13 +85,13 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
 
     //[UserPreSize]
     jassert(this->addsNewEvent || this->originalEvent.getSequence() != nullptr);
-    const auto &meterNames = kDefaultMeters.getAllKeys();
-    const auto &meterValues = kDefaultMeters.getAllValues();
+    const auto &meterNames = this->defailtMeters.getAllKeys();
+    const auto &meterValues = this->defailtMeters.getAllValues();
 
     if (this->addsNewEvent)
     {
         Random r;
-        const String meter(meterValues[r.nextInt(kDefaultMeters.size())]);
+        const String meter(meterValues[r.nextInt(this->defailtMeters.size())]);
         int numerator;
         int denominator;
         TimeSignatureEvent::parseString(meter, numerator, denominator);
@@ -145,7 +129,7 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
     this->updateOkButtonState();
 
     CommandPanel::Items menu;
-    for (int i = 0; i < kDefaultMeters.size(); ++i)
+    for (int i = 0; i < this->defailtMeters.size(); ++i)
     {
         const auto &s = meterNames[i];
         menu.add(CommandItem::withParams(Icons::empty, CommandIDs::SelectTimeSignature + i, s));
@@ -274,10 +258,10 @@ void TimeSignatureDialog::handleCommandMessage (int commandId)
     else
     {
         const int targetIndex = commandId - CommandIDs::SelectTimeSignature;
-        if (targetIndex >= 0 && targetIndex < kDefaultMeters.size())
+        if (targetIndex >= 0 && targetIndex < this->defailtMeters.size())
         {
-            const String title = kDefaultMeters.getAllKeys()[targetIndex];
-            const String time(kDefaultMeters[title]);
+            const String title = this->defailtMeters.getAllKeys()[targetIndex];
+            const String time(this->defailtMeters[title]);
             this->textEditor->setText(time, true);
         }
     }
@@ -438,7 +422,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="TimeSignatureDialog" template="../../Template"
                  componentName="" parentClasses="public FadingDialog, public TextEditorListener, private Timer"
                  constructorParams="Component &amp;owner, TimeSignaturesSequence *timeSequence, const TimeSignatureEvent &amp;editedEvent, bool shouldAddNewEvent, float targetBeat"
-                 variableInitialisers="originalEvent(editedEvent),&#10;originalSequence(timeSequence),&#10;ownerComponent(owner),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false)"
+                 variableInitialisers="originalEvent(editedEvent),&#10;originalSequence(timeSequence),&#10;ownerComponent(owner),&#10;defailtMeters(getDefaultMeters()),&#10;addsNewEvent(shouldAddNewEvent),&#10;hasMadeChanges(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="370" initialHeight="185">
   <METHODS>

@@ -25,26 +25,43 @@
 #include "AnnotationsSequence.h"
 #include "CommandIDs.h"
 
-static StringPairArray getDynamics()
+static Array<String> getDynamics()
 {
-    StringPairArray c;
-    c.set("Pianissimo",         Colours::greenyellow.toString());
-    c.set("Piano",              Colours::gold.toString());
-    c.set("Mezzo-piano",        Colours::tomato.toString());
-    c.set("Mezzo-forte",        Colours::orangered.toString());
-    c.set("Forte",              Colours::red.toString());
-    c.set("Fortissimo",         Colours::fuchsia.toString());
-    c.set("Al niente",          Colours::white.toString());
-    c.set("Calmando",           Colours::royalblue.toString());
-    c.set("Crescendo",          Colours::red.toString());
-    c.set("Dal niente",         Colours::aqua.toString());
-    c.set("Diminuendo",         Colours::blue.toString());
-    c.set("Marcato",            Colours::lime.toString());
-    c.set("Smorzando",          Colours::greenyellow.toString());
-    return c;
+    return {
+        "Pianissimo",
+        "Piano",
+        "Mezzo-piano",
+        "Mezzo-forte",
+        "Forte",
+        "Fortissimo",
+        "Al niente",
+        "Calmando",
+        "Crescendo",
+        "Dal niente",
+        "Diminuendo",
+        "Marcato",
+        "Smorzando"
+    };
 }
 
-static StringPairArray kDefaultDynamics = getDynamics();
+static Array<Colour> getColours()
+{
+    return {
+        Colours::greenyellow,
+        Colours::gold,
+        Colours::tomato,
+        Colours::orangered,
+        Colours::red,
+        Colours::fuchsia,
+        Colours::white,
+        Colours::royalblue,
+        Colours::red,
+        Colours::aqua,
+        Colours::blue,
+        Colours::lime,
+        Colours::greenyellow
+    };
+}
 //[/MiscUserDefs]
 
 AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequence, const AnnotationEvent &editedEvent, bool shouldAddNewEvent, float targetBeat)
@@ -96,9 +113,10 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
     if (this->addsNewEvent)
     {
         Random r;
-        const auto keys(kDefaultDynamics.getAllKeys());
-        const String key(keys[r.nextInt(keys.size())]);
-        const Colour colour(Colour::fromString(kDefaultDynamics[key]));
+        const auto keys(getDynamics());
+        const int i = r.nextInt(keys.size());
+        const String key(keys[i]);
+        const Colour colour(getColours()[i]);
         this->originalEvent = AnnotationEvent(sequence, targetBeat, key, colour);
 
         sequence->checkpoint();
@@ -134,14 +152,15 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
     this->setAlwaysOnTop(true);
     this->updateOkButtonState();
 
-    const auto &dynamicsNames = kDefaultDynamics.getAllKeys();
-    const auto &dynamicsColours = kDefaultDynamics.getAllValues();
+    const auto dynamics = getDynamics();
+    const auto colours = getColours();
     CommandPanel::Items menu;
-    for (int i = 0; i < kDefaultDynamics.size(); ++i)
+    for (int i = 0; i < getDynamics().size(); ++i)
     {
-        const Colour c = Colour::fromString(dynamicsColours[i]);
-        menu.add(CommandItem::withParams(Icons::annotation,
-            CommandIDs::JumpToAnnotation + i, dynamicsNames[i])->colouredWith(c));
+        const auto cmd = CommandItem::withParams(Icons::annotation,
+            CommandIDs::JumpToAnnotation + i, dynamics[i])->
+            colouredWith(colours[i]);
+        menu.add(cmd);
     }
     this->comboPrimer->initWith(this->textEditor.get(), menu);
 
@@ -269,12 +288,12 @@ void AnnotationDialog::handleCommandMessage (int commandId)
     else
     {
         const int targetIndex = commandId - CommandIDs::JumpToAnnotation;
-        if (targetIndex >= 0 && targetIndex < kDefaultDynamics.size())
+        const auto dynamics = getDynamics();
+        const auto colours = getColours();
+        if (targetIndex >= 0 && targetIndex < dynamics.size())
         {
-            const String text = kDefaultDynamics.getAllKeys()[targetIndex];
-            const String colourString(kDefaultDynamics[text]);
-            const Colour c(Colour::fromString(colourString));
-            this->colourSwatches->setSelectedColour(c);
+            const String text = dynamics[targetIndex];
+            this->colourSwatches->setSelectedColour(colours[targetIndex]);
             this->textEditor->setText(text, true);
         }
     }

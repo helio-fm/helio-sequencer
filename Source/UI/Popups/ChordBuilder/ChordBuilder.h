@@ -70,6 +70,8 @@ private:
     PianoRoll *roll;
     MidiSequence *sequence;
 
+    const Array<Scale> defaultScales;
+
     int targetKey;
     float targetBeat;
 

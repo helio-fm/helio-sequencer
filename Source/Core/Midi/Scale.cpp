@@ -19,6 +19,14 @@
 #include "Scale.h"
 #include "SerializationKeys.h"
 
+juce_ImplementSingleton(ResourceCache<Scale>)
+
+Array<Scale> Scale::getDefaultScalesCache()
+{
+    return ResourceCache<Scale>::getInstance()->
+        get(Serialization::Core::scale, "DefaultScales_xml");
+}
+
 enum Key
 {
     I = 0,

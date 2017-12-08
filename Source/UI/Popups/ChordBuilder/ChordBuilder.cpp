@@ -63,32 +63,6 @@ static Label *createLabel(const String &text)
     return newLabel;
 }
 
-static Array<Scale> loadDefaultScales()
-{
-    Array<Scale> result;
-    const String scalesXml =
-        String(CharPointer_UTF8(BinaryData::DefaultScales_xml),
-            BinaryData::DefaultScales_xmlSize);
-
-    ScopedPointer<XmlElement> xml(XmlDocument::parse(scalesXml));
-
-    if (xml == nullptr) { return result; }
-
-    const XmlElement *root = xml->hasTagName(Serialization::Core::scales) ?
-        xml.get() : xml->getChildByName(Serialization::Core::scales);
-
-    if (root == nullptr) { return result; }
-
-    forEachXmlChildElementWithTagName(*root, scaleRoot, Serialization::Core::scale)
-    {
-        Scale s;
-        s.deserialize(*scaleRoot);
-        result.add(s);
-    }
-
-    return result;
-}
-
 static Array<String> localizedFunctionNames()
 {
     return {
@@ -112,7 +86,7 @@ public:
         for (int i = 0; i < scales.size(); ++i)
         {
             cmds.add(CommandItem::withParams(String::empty,
-                CommandIDs::SelectScale + i, scales[i].getLocalizedName())->withAlignment(CommandItem::Right));
+                CommandIDs::SelectScale + i, scales[i].getName())->withAlignment(CommandItem::Right));
         }
         this->updateContent(cmds, CommandPanel::SlideLeft, false);
     }
@@ -180,22 +154,21 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(FunctionsCommandPanel)
 };
 
-static Array<Scale> kDefaultScales = loadDefaultScales();
-
 //[/MiscUserDefs]
 
 ChordBuilder::ChordBuilder(PianoRoll *caller, MidiSequence *layer)
     : PopupMenuComponent(caller),
       roll(caller),
       sequence(layer),
+      defaultScales(Scale::getDefaultScalesCache()),
       hasMadeChanges(false),
       draggingStartPosition(0, 0),
       draggingEndPosition(0, 0),
-      scale(kDefaultScales[0]),
+      scale(defaultScales[0]),
       function(Scale::Tonic)
 {
     addAndMakeVisible (newNote = new PopupCustomButton (createLabel("+")));
-    addAndMakeVisible (scalesList = new ScalesCommandPanel (kDefaultScales));
+    addAndMakeVisible (scalesList = new ScalesCommandPanel (this->defaultScales));
 
     addAndMakeVisible (functionsList = new FunctionsCommandPanel());
 
@@ -315,16 +288,13 @@ void ChordBuilder::handleCommandMessage (int commandId)
 bool ChordBuilder::keyPressed (const KeyPress& key)
 {
     //[UserCode_keyPressed] -- Add your code here...
-
-    // Let's dismiss on any keypress
-    //if (key.isKeyCode(KeyPress::escapeKey))
+    if (key.isKeyCode(KeyPress::escapeKey))
     {
-        //this->cancelChangesIfAny();
-        this->dismissAsDone();
-        return true;
+        this->cancelChangesIfAny();
     }
 
-    return false;  // Return true if your handler uses this key event, or false to allow it to be passed-on.
+    this->dismissAsDone();
+    return true;
     //[/UserCode_keyPressed]
 }
 
@@ -560,7 +530,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="ChordBuilder" template="../../../Template"
                  componentName="" parentClasses="public PopupMenuComponent, public PopupButtonOwner"
-                 constructorParams="PianoRoll *caller, MidiSequence *layer" variableInitialisers="PopupMenuComponent(caller),&#10;roll(caller),&#10;sequence(layer),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0),&#10;scale(kDefaultScales[0]),&#10;function(Scale::Tonic)"
+                 constructorParams="PianoRoll *caller, MidiSequence *layer" variableInitialisers="PopupMenuComponent(caller),&#10;roll(caller),&#10;sequence(layer),&#10;defaultScales(Scale::getDefaultScalesCache()),&#10;hasMadeChanges(false),&#10;draggingStartPosition(0, 0),&#10;draggingEndPosition(0, 0),&#10;scale(defaultScales[0]),&#10;function(Scale::Tonic)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="500" initialHeight="500">
   <METHODS>
@@ -580,7 +550,7 @@ BEGIN_JUCER_METADATA
              constructorParams="createLabel(&quot;+&quot;)"/>
   <GENERICCOMPONENT name="" id="5186723628bce1d6" memberName="scalesList" virtualName=""
                     explicitFocusOrder="0" pos="-140Cc 0Cc 172 224" class="ScalesCommandPanel"
-                    params="kDefaultScales"/>
+                    params="this-&gt;defaultScales"/>
   <GENERICCOMPONENT name="" id="2b87eb6e536e9c5b" memberName="functionsList" virtualName=""
                     explicitFocusOrder="0" pos="140Cc 0Cc 176 224" class="FunctionsCommandPanel"
                     params=""/>
