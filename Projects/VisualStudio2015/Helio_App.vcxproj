@@ -2344,6 +2344,7 @@
     <ClInclude Include="..\..\Source\Core\Serialization\Document.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\DocumentOwner.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\FileUtils.h"/>
+    <ClInclude Include="..\..\Source\Core\Serialization\ResourceCache.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\Serializable.h"/>
     <ClInclude Include="..\..\Source\Core\Serialization\SerializationKeys.h"/>
     <ClInclude Include="..\..\Source\Core\Supervisor\Session.h"/>

@@ -18,8 +18,7 @@
 #include "Common.h"
 #include "Scale.h"
 #include "SerializationKeys.h"
-
-juce_ImplementSingleton(ResourceCache<Scale>)
+#include "ResourceCache.h"
 
 Array<Scale> Scale::getDefaultScalesCache()
 {

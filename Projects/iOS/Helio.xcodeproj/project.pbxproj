@@ -857,6 +857,7 @@
 		9B0745AC8EDBA5DC5B3A993E = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatternDiffLogic.h; path = ../../Source/Core/VCS/DiffLogic/PatternDiffLogic.h; sourceTree = "SOURCE_ROOT"; };
 		9B2F789B9C2CDC76836BBDDE = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = Pack.cpp; path = ../../Source/Core/VCS/Pack.cpp; sourceTree = "SOURCE_ROOT"; };
 		9B30B564D4CB34121289A617 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AutomationEvent.h; path = ../../Source/Core/Midi/Sequences/Events/AutomationEvent.h; sourceTree = "SOURCE_ROOT"; };
+		9BC4947AA737FCCA8F48DC32 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ResourceCache.h; path = ../../Source/Core/Serialization/ResourceCache.h; sourceTree = "SOURCE_ROOT"; };
 		9BCD653A822231B2ACDE833F = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RenderDialog.h; path = ../../Source/UI/Dialogs/RenderDialog.h; sourceTree = "SOURCE_ROOT"; };
 		9BDF198288FC65B28FA17EEE = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ArpeggiatorEditorPanel.h; path = ../../Source/UI/Menus/ArpeggiatorEditorPanel.h; sourceTree = "SOURCE_ROOT"; };
 		9C1B795932802974FD982B39 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RevisionComponent.h; path = ../../Source/UI/Pages/VCS/RevisionComponent.h; sourceTree = "SOURCE_ROOT"; };
@@ -1430,6 +1431,7 @@
 					1BEBBF53DFFC88A738C02FD8,
 					1D3E391A6EF5E6DBFFEF6662,
 					17BA7607D2C3E950702095D8,
+					9BC4947AA737FCCA8F48DC32,
 					A797173F1F4C165290FA4E1E,
 					AC92C2151D0DEC9448D88839, ); name = Serialization; sourceTree = "<group>"; };
 		08A702187F7DD81C70C681EF = {isa = PBXGroup; children = (
