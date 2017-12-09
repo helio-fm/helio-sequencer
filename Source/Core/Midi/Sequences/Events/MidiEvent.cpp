@@ -61,6 +61,7 @@ Colour MidiEvent::getColour() const noexcept
 
 MidiEvent::Id MidiEvent::getId() const noexcept
 {
+    //jassert(this->id > 0);
     return this->id;
 }
 

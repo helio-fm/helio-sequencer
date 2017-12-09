@@ -88,8 +88,8 @@ public:
 protected:
 
     Key key;
-
-    float length, velocity;
+    float length;
+    float velocity;
 
 private:
 
@@ -97,13 +97,16 @@ private:
 
 };
 
-
 class NoteHashFunction
 {
 public:
-    
     static int generateHash(const Note &key, const int upperLimit) noexcept
     {
-        return static_cast<int>((static_cast<uint32>( key.hashCode())) % static_cast<uint32>( upperLimit));
+        return static_cast<int>((static_cast<uint32>(key.hashCode())) % static_cast<uint32>(upperLimit));
+    }
+
+    inline size_t operator()(const Note &key) const noexcept
+    {
+        return generateHash(key, INT_MAX);
     }
 };

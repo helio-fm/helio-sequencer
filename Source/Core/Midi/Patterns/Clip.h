@@ -84,4 +84,9 @@ public:
     {
         return static_cast<int>((static_cast<uint32>(clip.hashCode())) % static_cast<uint32>(upperLimit));
     }
+
+    inline size_t operator()(const Clip &key) const noexcept
+    {
+        return generateHash(key, INT_MAX);
+    }
 };

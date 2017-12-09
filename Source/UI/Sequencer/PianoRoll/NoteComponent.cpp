@@ -760,10 +760,12 @@ void NoteComponent::paintNewLook(Graphics &g)
     const float sx = x1 + 2.f;
     const float sw = (w - 2.f) * this->getVelocity();
 
-    g.setColour(this->colourVolume);
-    g.drawHorizontalLine(this->getHeight() - 2, sx, sw);
-    g.drawHorizontalLine(this->getHeight() - 3, sx, sw);
-    g.drawHorizontalLine(this->getHeight() - 4, sx, sw);
+    g.setColour(Colours::black);
+    g.drawText(String(this->getId()), this->getLocalBounds().translated(5, 0), Justification::centredLeft, false);
+    //g.setColour(this->colourVolume);
+    //g.drawHorizontalLine(this->getHeight() - 2, sx, sw);
+    //g.drawHorizontalLine(this->getHeight() - 3, sx, sw);
+    //g.drawHorizontalLine(this->getHeight() - 4, sx, sw);
 }
 
 void NoteComponent::paintLegacyLook(Graphics &g)

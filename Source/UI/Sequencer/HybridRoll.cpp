@@ -177,8 +177,6 @@ HybridRoll::~HybridRoll()
 
     this->removeMouseListener(this->multiTouchController);
     this->removeMouseListener(this->longTapController);
-
-    this->eventComponents.clear();
 }
 
 
@@ -849,28 +847,6 @@ bool HybridRoll::isUsingAnyAltMode() const
 Lasso &HybridRoll::getLassoSelection()
 {
     return this->selection;
-}
-
-void HybridRoll::selectEventsInRange(float startBeat, 
-    float endBeat, bool shouldClearAllOthers)
-{
-    if (shouldClearAllOthers)
-    {
-        this->selection.deselectAll();
-    }
-
-    for (int i = 0; i < this->eventComponents.size(); ++i)
-    {
-        HybridRollEventComponent *ec = this->eventComponents.getUnchecked(i);
-        if (ec->isActive() &&
-            ec->getBeat() >= startBeat &&
-            ec->getBeat() < endBeat)
-        {
-            this->selection.addToSelection(ec);
-            //this->selection.addToSelectionBasedOnModifiers(ec, Desktop::getInstance().getMainMouseSource().getCurrentModifiers());
-        }
-    }
-
 }
 
 void HybridRoll::selectEvent(SelectableComponent *event, bool shouldClearAllOthers)
@@ -1947,11 +1923,6 @@ void HybridRoll::changeListenerCallback(ChangeBroadcaster *source)
     this->setMouseCursor(cursor);
 
     const bool interactsWithChildren = this->project.getEditMode().shouldInteractWithChildren();
-
-    for (int i = 0; i < this->eventComponents.size(); ++i)
-    {
-        HybridRollEventComponent *child = this->eventComponents.getUnchecked(i);
-        child->setInterceptsMouseClicks(interactsWithChildren, interactsWithChildren);
-        child->setMouseCursor(interactsWithChildren ? MouseCursor::NormalCursor : cursor);
-    }
+    this->setChildrenInteraction(interactsWithChildren,
+        interactsWithChildren ? MouseCursor::NormalCursor : cursor);
 }

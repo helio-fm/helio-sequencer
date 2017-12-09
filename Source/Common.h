@@ -26,8 +26,15 @@
 #pragma warning(disable: 4100)
 // Hides class member
 #pragma warning(disable: 4458)
+// std::uninitialized_copy::_Unchecked_iterators::_Deprecate
+#pragma warning(disable: 4996)
 
 #include "JuceHeader.h"
+
+#include "../../ThirdParty/SparseHashMap/sparsepp/spp.h"
+
+template <class Key, class T, class HashFcn = spp::spp_hash<Key>, class EqualKey = std::equal_to<Key>>
+using SparseHashMap = spp::sparse_hash_map<Key, T, HashFcn, EqualKey>;
 
 #if _MSC_VER
 inline float roundf(float x)

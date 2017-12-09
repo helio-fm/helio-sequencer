@@ -1,3 +1,6 @@
 [submodule "ThirdParty/JUCE"]
 	path = ThirdParty/JUCE
 	url = https://github.com/WeAreROLI/JUCE.git
+[submodule "ThirdParty/SparseHashMap"]
+	path = ThirdParty/SparseHashMap
+	url = https://github.com/greg7mdp/sparsepp.git

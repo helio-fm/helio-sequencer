@@ -166,6 +166,8 @@ public:
     // Modes
     //===------------------------------------------------------------------===//
     
+    virtual void setChildrenInteraction(bool interceptMouse, MouseCursor c) = 0;
+
     bool isInSelectionMode() const;
     bool isInDragMode() const;
     // ...
@@ -260,8 +262,10 @@ public:
     // LassoSource
     //===------------------------------------------------------------------===//
 
+    virtual void selectEventsInRange(float startBeat,
+        float endBeat, bool shouldClearAllOthers) = 0;
+
     Lasso &getLassoSelection() override;
-    void selectEventsInRange(float startBeat, float endBeat, bool shouldClearAllOthers);
     void selectEvent(SelectableComponent *event, bool shouldClearAllOthers);
     void deselectEvent(SelectableComponent *event);
     void deselectAll();
@@ -398,8 +402,6 @@ protected:
     ScopedPointer<InsertSpaceHelper> insertSpaceHelper;
 
     Lasso selection;
-
-    OwnedArray<HybridRollEventComponent> eventComponents;
 
     bool isViewportZoomEvent(const MouseEvent &e) const;
     bool isViewportDragEvent(const MouseEvent &e) const;

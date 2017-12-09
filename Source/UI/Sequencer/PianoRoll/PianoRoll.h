@@ -39,6 +39,7 @@ class Scale;
 #include "HelioTheme.h"
 #include "HybridRoll.h"
 #include "Note.h"
+#include "Clip.h"
 
 class PianoRoll : public HybridRoll
 {
@@ -71,7 +72,7 @@ public:
     //===------------------------------------------------------------------===//
 
     void selectAll() override;
-
+    void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
 
     //===------------------------------------------------------------------===//
     // Ghost notes
@@ -128,6 +129,9 @@ public:
     //===------------------------------------------------------------------===//
     // LassoSource
     //===------------------------------------------------------------------===//
+
+    void selectEventsInRange(float startBeat,
+        float endBeat, bool shouldClearAllOthers) override;
 
     void findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
         const Rectangle<int> &rectangle) override;
@@ -246,6 +250,10 @@ private:
     ScopedPointer<NoteResizerLeft> noteResizerLeft;
     ScopedPointer<NoteResizerRight> noteResizerRight;
     
-    HashMap<Note, NoteComponent *, NoteHashFunction> componentsHashTable;
+    typedef SparseHashMap<Note, NoteComponent *, NoteHashFunction> EventComponentsMap;
+    EventComponentsMap componentsMap;
+
+    //typedef SparseHashMap<Clip, EventComponentsMap, ClipHashFunction> ClipsMap;
+    //EventComponentsMap clipsMap;
 
 };
