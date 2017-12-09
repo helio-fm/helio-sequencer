@@ -22,6 +22,22 @@
 #include "UndoStack.h"
 #include "MidiTrack.h"
 
+struct EventIdGenerator
+{
+    static String generateId(uint8 length = 2)
+    {
+        String id;
+        Random r;
+        r.setSeedRandomly();
+        static const char idChars[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        for (size_t i = 0; i < length; ++i)
+        {
+            id += idChars[r.nextInt(62)];
+        }
+        return id;
+    }
+};
+
 MidiSequence::MidiSequence(MidiTrack &parentTrack,
     ProjectEventDispatcher &dispatcher) :
     track(parentTrack),
@@ -213,6 +229,18 @@ void MidiSequence::updateBeatRange(bool shouldNotifyIfChanged)
     {
         this->eventDispatcher.dispatchChangeProjectBeatRange();
     }
+}
+
+String MidiSequence::createUniqueEventId() const noexcept
+{
+    uint8 length = 2;
+    String eventId = EventIdGenerator::generateId(length);
+    while (this->usedEventIds.contains(eventId))
+    {
+        length++;
+        eventId = EventIdGenerator::generateId(length);
+    }
+    return eventId;
 }
 
 //===----------------------------------------------------------------------===//

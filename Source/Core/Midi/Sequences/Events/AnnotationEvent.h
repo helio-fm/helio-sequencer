@@ -24,85 +24,51 @@ class AnnotationEvent : public MidiEvent
 public:
 
     AnnotationEvent();
-
     AnnotationEvent(const AnnotationEvent &other);
+    AnnotationEvent(WeakReference<MidiSequence> owner,
+        const AnnotationEvent &parametersToCopy);
 
-    explicit AnnotationEvent(MidiSequence *owner,
-                    float newBeat = 0.f,
-                    String newDescription = "",
-                    const Colour &newColour = Colours::white);
-
-    ~AnnotationEvent() override;
+    explicit AnnotationEvent(WeakReference<MidiSequence> owner,
+        float newBeat = 0.f,
+        String newDescription = "",
+        const Colour &newColour = Colours::white);
     
-
     Array<MidiMessage> toMidiMessages() const override;
-
     
     AnnotationEvent copyWithNewId() const;
-    
     AnnotationEvent withDeltaBeat(float beatOffset) const;
-    
     AnnotationEvent withBeat(float newBeat) const;
-
     AnnotationEvent withDescription(const String &newDescription) const;
-    
     AnnotationEvent withColour(const Colour &newColour) const;
-
     AnnotationEvent withParameters(const XmlElement &xml) const;
-
 
     //===------------------------------------------------------------------===//
     // Accessors
     //===------------------------------------------------------------------===//
 
     String getDescription() const noexcept;
-
     Colour getColour() const noexcept;
-
 
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
     XmlElement *serialize() const override;
-
     void deserialize(const XmlElement &xml) override;
-
     void reset() override;
 
-
     //===------------------------------------------------------------------===//
-    // Stuff for hashtables
+    // Helpers
     //===------------------------------------------------------------------===//
 
-    AnnotationEvent &operator=(const AnnotationEvent &right);
-
-    friend inline bool operator==(const AnnotationEvent &lhs, const AnnotationEvent &rhs)
-    {
-        return (lhs.getId() == rhs.getId());
-    }
-
-    int hashCode() const noexcept;
-
+    void applyChanges(const AnnotationEvent &parameters);
 
 protected:
 
     String description;
-    
     Colour colour;
 
 private:
 
     JUCE_LEAK_DETECTOR(AnnotationEvent);
-
-};
-
-
-class AnnotationEventHashFunction
-{
-public:
-    static int generateHash(const AnnotationEvent &key, const int upperLimit) noexcept
-    {
-        return static_cast<int>((static_cast<uint32>( key.hashCode())) % static_cast<uint32>( upperLimit));
-    }
 };

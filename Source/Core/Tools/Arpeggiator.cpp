@@ -20,6 +20,7 @@
 #include "SerializationKeys.h"
 #include "PianoRollToolbox.h"
 #include "Note.h"
+#include "MidiSequence.h"
 #include "SerializationKeys.h"
 
 Arpeggiator::Arpeggiator() :
@@ -113,8 +114,7 @@ Arpeggiator Arpeggiator::withSequenceFromXml(const XmlElement &xml) const
     
     forEachXmlChildElementWithTagName(*root, e, Serialization::Core::note)
     {
-        Note &&n = Note().withParameters(*e).copyWithNewId();
-        xmlPattern.add(n);
+        xmlPattern.add(Note().withParameters(*e).copyWithNewId());
     }
     
     if (xmlPattern.size() == 0)
@@ -181,7 +181,7 @@ Array<Arpeggiator::Key> Arpeggiator::createArpKeys() const
     
     for (int i = 0; i < sortedArp.size(); ++i)
     {
-        const Note &&n = sortedArp.getUnchecked(i);
+        const Note n(sortedArp.getUnchecked(i));
         const bool keyIsBelow = (n.getKey() < arpRootKey);
         
         Arpeggiator::Key ak;
@@ -245,8 +245,7 @@ void Arpeggiator::deserialize(const XmlElement &xml)
     
     forEachXmlChildElementWithTagName(*seq, e, Serialization::Core::note)
     {
-        Note &&n = Note().withParameters(*e).copyWithNewId();
-        xmlPattern.add(n);
+        xmlPattern.add(Note().withParameters(*e).copyWithNewId());
     }
     
     this->sequence = xmlPattern;

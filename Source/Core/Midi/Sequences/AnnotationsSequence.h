@@ -24,15 +24,14 @@ class AnnotationsSequence : public MidiSequence
 {
 public:
 
-    explicit AnnotationsSequence(MidiTrack &track, ProjectEventDispatcher &dispatcher);
-
+    explicit AnnotationsSequence(MidiTrack &track,
+        ProjectEventDispatcher &dispatcher);
 
     //===------------------------------------------------------------------===//
     // Import/export
     //===------------------------------------------------------------------===//
 
     void importMidi(const MidiMessageSequence &sequence) override;
-
 
     //===------------------------------------------------------------------===//
     // Undoable track editing
@@ -41,37 +40,26 @@ public:
     void silentImport(const MidiEvent &eventToImport) override;
     
     MidiEvent *insert(const AnnotationEvent &annotationToCopy, bool undoable);
-
     bool remove(const AnnotationEvent &annotation, bool undoable);
-
-    bool change(const AnnotationEvent &annotation, const AnnotationEvent &newAnnotation, bool undoable);
+    bool change(const AnnotationEvent &annotation,
+        const AnnotationEvent &newAnnotation,
+        bool undoable);
 
     bool insertGroup(Array<AnnotationEvent> &annotations, bool undoable);
-    
     bool removeGroup(Array<AnnotationEvent> &annotations, bool undoable);
-    
     bool changeGroup(Array<AnnotationEvent> &annotationsBefore,
-                     Array<AnnotationEvent> &annotationsAfter,
-                     bool undoable);
-
+        Array<AnnotationEvent> &annotationsAfter,
+        bool undoable);
 
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
     XmlElement *serialize() const override;
-
     void deserialize(const XmlElement &xml) override;
-
     void reset() override;
 
 private:
 
-    // быстрый доступ к указателю на событие по соответствующим ему параметрам
-    HashMap<AnnotationEvent, AnnotationEvent *, AnnotationEventHashFunction> annotationsHashTable;
-
-private:
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AnnotationsSequence);
-
 };

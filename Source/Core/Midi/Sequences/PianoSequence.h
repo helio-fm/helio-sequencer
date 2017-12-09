@@ -26,8 +26,7 @@ class PianoSequence : public MidiSequence
 {
 public:
 
-    explicit PianoSequence(MidiTrack &track, ProjectEventDispatcher &dispatcher);
-
+    PianoSequence(MidiTrack &track, ProjectEventDispatcher &dispatcher);
 
     //===------------------------------------------------------------------===//
     // Import/export
@@ -35,35 +34,29 @@ public:
 
     void importMidi(const MidiMessageSequence &sequence) override;
 
-
     //===------------------------------------------------------------------===//
-    // Undoable track editing
+    // Undo-able track editing
     //===------------------------------------------------------------------===//
 
     void silentImport(const MidiEvent &eventToImport) override;
     
-    
     MidiEvent *insert(const Note &note, const bool undoable);
-
     bool remove(const Note &note, const bool undoable);
-
-    bool change(const Note &note, const Note &newNote, const bool undoable);
+    bool change(const Note &note,
+        const Note &newNote,
+        bool undoable);
 
     bool insertGroup(Array<Note> &notes, bool undoable);
-    
     bool removeGroup(Array<Note> &notes, bool undoable);
-    
     bool changeGroup(Array<Note> &eventsBefore,
-                     Array<Note> &eventsAfter,
-                     bool undoable);
+        Array<Note> &eventsAfter,
+        bool undoable);
 
-    
     //===------------------------------------------------------------------===//
     // Batch operations
     //===------------------------------------------------------------------===//
     
     void transposeAll(int keyDelta, bool shouldCheckpoint = true);
-    
     
     //===------------------------------------------------------------------===//
     // Accessors
@@ -71,29 +64,15 @@ public:
     
     float getLastBeat() const override; // overriding to set beat+length
     
-    
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
     XmlElement *serialize() const override;
-
     void deserialize(const XmlElement &xml) override;
-
     void reset() override;
-
-protected:
-
-    void clearQuick() override;
-
-private:
-
-    // быстрый доступ к указателю на событие по соответствующим ему параметрам
-    // todo вот прям быстрый? замени на dense_hash_map или flat_hash_map
-    HashMap<Note, Note *, NoteHashFunction> notesHashTable;
 
 private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoSequence);
-
 };

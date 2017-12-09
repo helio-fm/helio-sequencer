@@ -28,21 +28,16 @@ public:
     typedef int Key;
 
     Note();
-
-    // конструктор копирвания и оператор копирования имеют разное поведение
-    // первый копирует указатель на слой, чтоб можно было создать точную копию ноты (см массивы)
-    // оператор копирования только заполняет параметры, не трогая указатель - это нужно для undo/redo операций
     Note(const Note &other);
-    explicit Note(MidiSequence *owner,
+    Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy);
+
+    explicit Note(WeakReference<MidiSequence> owner,
          int keyVal = 0, float beatVal = 0.f,
          float lengthVal = 1.f, float velocityVal = 1.f);
 
-    Note(MidiSequence *newOwner, const Note &parametersToCopy);
-    ~Note() override {}
-
     Array<MidiMessage> toMidiMessages() const override;
     
-    Note copyWithNewId(MidiSequence *newOwner = nullptr) const;
+    Note copyWithNewId(WeakReference<MidiSequence> owner = nullptr) const;
     Note withBeat(float newBeat) const;
     Note withKeyBeat(int newKey, float newBeat) const;
     Note withDeltaBeat(float deltaPosition) const;
@@ -72,14 +67,7 @@ public:
     // Helpers
     //===------------------------------------------------------------------===//
     
-    Note &operator=(const Note &right);
-
-    friend inline bool operator==(const Note &lhs, const Note &rhs)
-    {
-        return (&lhs == &rhs || lhs.id == rhs.id);
-    }
-
-    int hashCode() const noexcept;
+    void applyChanges(const Note &parameters);
 
     static int compareElements(const MidiEvent *const first, const MidiEvent *const second);
     static int compareElements(Note *const first, Note *const second);
@@ -95,18 +83,4 @@ private:
 
     JUCE_LEAK_DETECTOR(Note);
 
-};
-
-class NoteHashFunction
-{
-public:
-    static int generateHash(const Note &key, const int upperLimit) noexcept
-    {
-        return static_cast<int>((static_cast<uint32>(key.hashCode())) % static_cast<uint32>(upperLimit));
-    }
-
-    inline size_t operator()(const Note &key) const noexcept
-    {
-        return generateHash(key, INT_MAX);
-    }
 };

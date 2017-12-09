@@ -24,12 +24,9 @@
 #include "MidiTrackTreeItem.h"
 #include "UndoStack.h"
 
-
 AutomationSequence::AutomationSequence(MidiTrack &track,
     ProjectEventDispatcher &dispatcher) :
-    MidiSequence(track, dispatcher)
-{
-}
+    MidiSequence(track, dispatcher) {}
 
 //===----------------------------------------------------------------------===//
 // Import/export
@@ -60,7 +57,6 @@ void AutomationSequence::importMidi(const MidiMessageSequence &sequence)
     this->invalidateSequenceCache();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Undoable track editing
 //===----------------------------------------------------------------------===//
@@ -70,158 +66,149 @@ void AutomationSequence::silentImport(const MidiEvent &eventToImport)
     const AutomationEvent &autoEvent =
         static_cast<const AutomationEvent &>(eventToImport);
 
-    if (this->eventsHashTable.contains(autoEvent))
-    { return; }
+    if (this->usedEventIds.contains(autoEvent.getId()))
+    {
+        return;
+    }
 
-    auto storedEvent = new AutomationEvent(this);
-    *storedEvent = autoEvent;
+    const auto storedEvent = new AutomationEvent(this, autoEvent);
     
     this->midiEvents.addSorted(*storedEvent, storedEvent);
-    this->eventsHashTable.set(autoEvent, storedEvent);
+    this->usedEventIds.insert(storedEvent->getId());
 
     this->updateBeatRange(false);
     this->invalidateSequenceCache();
 }
 
-MidiEvent *AutomationSequence::insert(const AutomationEvent &autoEvent, bool undoable)
+MidiEvent *AutomationSequence::insert(const AutomationEvent &eventParams, bool undoable)
 {
-    if (AutomationEvent *matchingEvent = this->eventsHashTable[autoEvent])
+    if (this->usedEventIds.contains(eventParams.getId()))
     {
-        return nullptr; // exists
+        return nullptr;
     }
 
     if (undoable)
     {
-        this->getUndoStack()->perform(new AutomationEventInsertAction(*this->getProject(),
-                                                                      this->getTrackId(),
-                                                                      autoEvent));
+        this->getUndoStack()->
+            perform(new AutomationEventInsertAction(*this->getProject(),
+                this->getTrackId(), eventParams));
     }
     else
     {
-        auto storedEvent = new AutomationEvent(this);
-        *storedEvent = autoEvent;
-
-        this->midiEvents.addSorted(*storedEvent, storedEvent);
-
-        this->eventsHashTable.set(autoEvent, storedEvent);
-
-        this->notifyEventAdded(*storedEvent);
+        const auto ownedEvent = new AutomationEvent(this, eventParams);
+        this->midiEvents.addSorted(*ownedEvent, ownedEvent);
+        this->usedEventIds.insert(ownedEvent->getId());
+        this->notifyEventAdded(*ownedEvent);
         this->updateBeatRange(true);
-
-        return storedEvent;
+        return ownedEvent;
     }
 
     return nullptr;
 }
 
-bool AutomationSequence::remove(const AutomationEvent &autoEvent, bool undoable)
+bool AutomationSequence::remove(const AutomationEvent &eventParams, bool undoable)
 {
     if (undoable)
     {
-        this->getUndoStack()->perform(new AutomationEventRemoveAction(*this->getProject(),
-                                                                      this->getTrackId(),
-                                                                      autoEvent));
+        this->getUndoStack()->
+            perform(new AutomationEventRemoveAction(*this->getProject(),
+                this->getTrackId(), eventParams));
     }
     else
     {
-        if (AutomationEvent *matchingEvent = this->eventsHashTable[autoEvent])
+        const int index = this->midiEvents.indexOfSorted(eventParams, &eventParams);
+        if (index >= 0)
         {
-            this->notifyEventRemoved(*matchingEvent);
-            this->midiEvents.removeObject(matchingEvent);
-            this->eventsHashTable.removeValue(matchingEvent);
+            MidiEvent *const removedEvent = this->midiEvents[index];
+            this->notifyEventRemoved(*removedEvent);
+            this->usedEventIds.erase(removedEvent->getId());
+            this->midiEvents.remove(index, true);
             this->updateBeatRange(true);
             this->notifyEventRemovedPostAction();
             return true;
         }
-        
-        
-            return false;
-        
+
+        return false;
     }
 
     return true;
 }
 
-bool AutomationSequence::change(const AutomationEvent &autoEvent, const AutomationEvent &newAutoEvent, bool undoable)
+bool AutomationSequence::change(const AutomationEvent &oldParams,
+    const AutomationEvent &newParams, bool undoable)
 {
     if (undoable)
     {
-        this->getUndoStack()->perform(new AutomationEventChangeAction(*this->getProject(),
-                                                                      this->getTrackId(),
-                                                                      autoEvent,
-                                                                      newAutoEvent));
+        this->getUndoStack()->
+            perform(new AutomationEventChangeAction(*this->getProject(),
+                this->getTrackId(), oldParams, newParams));
     }
     else
     {
-        if (AutomationEvent *matchingEvent = this->eventsHashTable[autoEvent])
+        const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
+        if (index >= 0)
         {
-            (*matchingEvent) = newAutoEvent;
-
-            this->eventsHashTable.removeValue(matchingEvent);
-            this->eventsHashTable.set(newAutoEvent, matchingEvent);
-            
-            this->sort();
-            
-            this->notifyEventChanged(autoEvent, *matchingEvent);
+            const AutomationEvent eventBefore(this, oldParams);
+            const auto changedEvent = static_cast<AutomationEvent *>(this->midiEvents[index]);
+            changedEvent->applyChanges(newParams);
+            this->midiEvents.remove(index, false);
+            this->midiEvents.addSorted(*changedEvent, changedEvent);
+            this->notifyEventChanged(eventBefore, *changedEvent);
             this->updateBeatRange(true);
             return true;
         }
-        
-        
-            return false;
-        
+
+        return false;
     }
 
     return true;
 }
 
-bool AutomationSequence::insertGroup(Array<AutomationEvent> &events, bool undoable)
+bool AutomationSequence::insertGroup(Array<AutomationEvent> &group, bool undoable)
 {
     if (undoable)
     {
-        this->getUndoStack()->perform(new AutomationEventsGroupInsertAction(*this->getProject(),
-                                                                            this->getTrackId(),
-                                                                            events));
+        this->getUndoStack()->
+            perform(new AutomationEventsGroupInsertAction(*this->getProject(),
+                this->getTrackId(), group));
     }
     else
     {
-        for (int i = 0; i < events.size(); ++i)
+        for (int i = 0; i < group.size(); ++i)
         {
-            const AutomationEvent &autoEvent = events.getUnchecked(i);
-            auto storedEvent = new AutomationEvent(this);
-            *storedEvent = autoEvent;
-            
-            this->midiEvents.add(storedEvent); // sorted later
-            this->eventsHashTable.set(autoEvent, storedEvent);
-            this->notifyEventAdded(*storedEvent);
+            const AutomationEvent &eventParams = group.getUnchecked(i);
+            auto ownedEvent = new AutomationEvent(this, eventParams);
+            this->midiEvents.addSorted(*ownedEvent, ownedEvent);
+            this->usedEventIds.insert(ownedEvent->getId());
+            this->notifyEventAdded(*ownedEvent);
         }
         
-        this->sort();
         this->updateBeatRange(true);
     }
     
     return true;
 }
 
-bool AutomationSequence::removeGroup(Array<AutomationEvent> &events, bool undoable)
+bool AutomationSequence::removeGroup(Array<AutomationEvent> &group, bool undoable)
 {
     if (undoable)
     {
-        this->getUndoStack()->perform(new AutomationEventsGroupRemoveAction(*this->getProject(),
-                                                                            this->getTrackId(),
-                                                                            events));
+        this->getUndoStack()->
+            perform(new AutomationEventsGroupRemoveAction(*this->getProject(),
+                this->getTrackId(), group));
     }
     else
     {
-        for (int i = 0; i < events.size(); ++i)
+        for (int i = 0; i < group.size(); ++i)
         {
-            const AutomationEvent &autoEvent = events.getUnchecked(i);
-            
-            if (AutomationEvent *matchingEvent = this->eventsHashTable[autoEvent])
+            const AutomationEvent &autoEvent = group.getUnchecked(i);
+            const int index = this->midiEvents.indexOfSorted(autoEvent, &autoEvent);
+            if (index >= 0)
             {
-                this->notifyEventRemoved(*matchingEvent);
-                this->midiEvents.removeObject(matchingEvent);
-                this->eventsHashTable.removeValue(matchingEvent);
+                const auto removedEvent = this->midiEvents[index];
+                this->notifyEventRemoved(*removedEvent);
+                this->usedEventIds.erase(removedEvent->getId());
+                this->midiEvents.remove(index, true);
             }
         }
         
@@ -232,45 +219,40 @@ bool AutomationSequence::removeGroup(Array<AutomationEvent> &events, bool undoab
     return true;
 }
 
-bool AutomationSequence::changeGroup(const Array<AutomationEvent> eventsBefore,
-                                  const Array<AutomationEvent> eventsAfter,
-                                  bool undoable)
+bool AutomationSequence::changeGroup(const Array<AutomationEvent> groupBefore,
+    const Array<AutomationEvent> groupAfter, bool undoable)
 {
-    jassert(eventsBefore.size() == eventsAfter.size());
+    jassert(groupBefore.size() == groupAfter.size());
 
     if (undoable)
     {
-        this->getUndoStack()->perform(new AutomationEventsGroupChangeAction(*this->getProject(),
-                                                                            this->getTrackId(),
-                                                                            eventsBefore,
-                                                                            eventsAfter));
+        this->getUndoStack()->
+            perform(new AutomationEventsGroupChangeAction(*this->getProject(),
+                this->getTrackId(), groupBefore, groupAfter));
     }
     else
     {
-        for (int i = 0; i < eventsBefore.size(); ++i)
+        for (int i = 0; i < groupBefore.size(); ++i)
         {
-            // doing this sucks
-            //this->change(eventsBefore[i], eventsAfter[i], false);
-            
-            const AutomationEvent &autoEvent = eventsBefore.getUnchecked(i);
-            const AutomationEvent &newAutoEvent = eventsAfter.getUnchecked(i);
-            
-            if (AutomationEvent *matchingEvent = this->eventsHashTable[autoEvent])
+            const AutomationEvent &oldParams = groupBefore.getUnchecked(i);
+            const AutomationEvent &newParams = groupAfter.getUnchecked(i);
+            const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
+            if (index >= 0)
             {
-                (*matchingEvent) = newAutoEvent;
-                //this->eventsHashTable.removeValue(matchingEvent);
-                this->eventsHashTable.set(newAutoEvent, matchingEvent);
-                //this->notifyEventChanged(autoEvent, *matchingEvent); // lets notify the whole layer change
+                const AutomationEvent eventBefore(this, oldParams);
+                const auto changedEvent = static_cast<AutomationEvent *>(this->midiEvents[index]);
+                changedEvent->applyChanges(newParams);
+                this->midiEvents.remove(index, false);
+                this->midiEvents.addSorted(*changedEvent, changedEvent);
+                this->notifyEventChanged(eventBefore, *changedEvent);
             }
         }
         
-        this->sort();
         this->updateBeatRange(true);
     }
 
     return true;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -291,7 +273,7 @@ XmlElement *AutomationSequence::serialize() const
 
 void AutomationSequence::deserialize(const XmlElement &xml)
 {
-    this->clearQuick();
+    this->reset();
 
     const XmlElement *root = 
         (xml.getTagName() == Serialization::Core::automation) ?
@@ -308,13 +290,12 @@ void AutomationSequence::deserialize(const XmlElement &xml)
         auto event = new AutomationEvent(this, 0, 0);
         event->deserialize(*e);
         
-        //this->midiEvents.addSorted(*event, event); // sorted later
-        this->midiEvents.add(event);
+        this->midiEvents.add(event); // sorted later
         
         lastBeat = jmax(lastBeat, event->getBeat());
         firstBeat = jmin(firstBeat, event->getBeat());
 
-        this->eventsHashTable.set(*event, event);
+        this->usedEventIds.insert(event->getId());
     }
 
     this->sort();
@@ -324,12 +305,7 @@ void AutomationSequence::deserialize(const XmlElement &xml)
 
 void AutomationSequence::reset()
 {
-    this->clearQuick();
+    this->midiEvents.clear();
+    this->usedEventIds.clear();
     this->invalidateSequenceCache();
-}
-
-void AutomationSequence::clearQuick()
-{
-    this->midiEvents.clearQuick(true);
-    this->eventsHashTable.clear();
 }

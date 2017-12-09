@@ -26,98 +26,61 @@ class AutomationEvent : public MidiEvent
 public:
 
     AutomationEvent();
-
     AutomationEvent(const AutomationEvent &other);
+    AutomationEvent(WeakReference<MidiSequence> owner,
+        const AutomationEvent &parametersToCopy);
 
-    explicit AutomationEvent(MidiSequence *owner,
-                    float beatVal = 0.f,
-                    float controllerValue = 0.f);
-
-    ~AutomationEvent() override;
+    explicit AutomationEvent(WeakReference<MidiSequence> owner,
+        float beatVal = 0.f,
+        float controllerValue = 0.f);
 
     Array<MidiMessage> toMidiMessages() const override;
-
     
     AutomationEvent copyWithNewId() const;
-
     AutomationEvent withBeat(float newBeat) const;
-
     AutomationEvent withDeltaBeat(float deltaBeat) const;
-
     AutomationEvent withInvertedControllerValue() const;
-
     AutomationEvent withParameters(float newBeat, float newControllerValue) const;
-
     AutomationEvent withCurvature(float newCurvature) const;
-
     AutomationEvent withParameters(const XmlElement &xml) const;
     
-
     //===------------------------------------------------------------------===//
     // Accessors
     //===------------------------------------------------------------------===//
 
     float getControllerValue() const noexcept;
-
     float getCurvature() const noexcept;
-    
     
     //===------------------------------------------------------------------===//
     // Pedal helpers
     //===------------------------------------------------------------------===//
     
     bool isPedalDownEvent() const noexcept;
-
     bool isPedalUpEvent() const noexcept;
-    
+
     static AutomationEvent pedalUpEvent(MidiSequence *owner, float beatVal = 0.f);
-
     static AutomationEvent pedalDownEvent(MidiSequence *owner, float beatVal = 0.f);
-
 
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
     XmlElement *serialize() const override;
-
     void deserialize(const XmlElement &xml) override;
-
     void reset() override;
 
-
     //===------------------------------------------------------------------===//
-    // Stuff for hashtables
+    // Helpers
     //===------------------------------------------------------------------===//
 
-    AutomationEvent &operator=(const AutomationEvent &right);
-
-    friend inline bool operator==(const AutomationEvent &lhs, const AutomationEvent &rhs)
-    {
-        return (lhs.getId() == rhs.getId());
-    }
-
-    int hashCode() const noexcept;
-
+    void applyChanges(const AutomationEvent &parameters);
 
 protected:
 
     float controllerValue;
-
     float curvature;
 
 private:
 
     JUCE_LEAK_DETECTOR(AutomationEvent);
-
-};
-
-
-class AutomationEventHashFunction
-{
-public:
-    static int generateHash(const AutomationEvent key, const int upperLimit) noexcept
-    {
-        return static_cast<int>((static_cast<uint32>( key.hashCode())) % static_cast<uint32>( upperLimit));
-    }
 };

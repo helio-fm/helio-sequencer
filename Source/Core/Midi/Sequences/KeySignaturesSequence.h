@@ -24,15 +24,14 @@ class KeySignaturesSequence : public MidiSequence
 {
 public:
 
-    explicit KeySignaturesSequence(MidiTrack &track, ProjectEventDispatcher &dispatcher);
-
+    explicit KeySignaturesSequence(MidiTrack &track,
+        ProjectEventDispatcher &dispatcher);
 
     //===------------------------------------------------------------------===//
     // Import/export
     //===------------------------------------------------------------------===//
 
     void importMidi(const MidiMessageSequence &sequence) override;
-
 
     //===------------------------------------------------------------------===//
     // Undoable track editing
@@ -41,37 +40,26 @@ public:
     void silentImport(const MidiEvent &eventToImport) override;
     
     MidiEvent *insert(const KeySignatureEvent &signatureToCopy, bool undoable);
-
     bool remove(const KeySignatureEvent &signature, bool undoable);
-
-    bool change(const KeySignatureEvent &signature, const KeySignatureEvent &newSignature, bool undoable);
+    bool change(const KeySignatureEvent &signature,
+        const KeySignatureEvent &newSignature,
+        bool undoable);
 
     bool insertGroup(Array<KeySignatureEvent> &signatures, bool undoable);
-    
     bool removeGroup(Array<KeySignatureEvent> &signatures, bool undoable);
-    
     bool changeGroup(Array<KeySignatureEvent> &signaturesBefore,
-                     Array<KeySignatureEvent> &signaturesAfter,
-                     bool undoable);
-
+        Array<KeySignatureEvent> &signaturesAfter,
+        bool undoable);
 
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
     XmlElement *serialize() const override;
-
     void deserialize(const XmlElement &xml) override;
-
     void reset() override;
 
 private:
 
-    // быстрый доступ к указателю на событие по соответствующим ему параметрам
-    HashMap<KeySignatureEvent, KeySignatureEvent *, KeySignatureEventHashFunction> signaturesHashTable;
-
-private:
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(KeySignaturesSequence);
-
 };

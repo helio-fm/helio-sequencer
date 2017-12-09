@@ -24,8 +24,8 @@ class AutomationSequence : public MidiSequence
 {
 public:
 
-    explicit AutomationSequence(MidiTrack &track, ProjectEventDispatcher &dispatcher);
-
+    explicit AutomationSequence(MidiTrack &track,
+        ProjectEventDispatcher &dispatcher);
 
     //===------------------------------------------------------------------===//
     // Undoable track editing
@@ -34,21 +34,16 @@ public:
     void silentImport(const MidiEvent &eventToImport) override;
 
     MidiEvent *insert(const AutomationEvent &autoEvent, bool undoable);
-
     bool remove(const AutomationEvent &autoEvent, bool undoable);
-
     bool change(const AutomationEvent &autoEvent,
-                const AutomationEvent &newAutoEvent,
-                bool undoable);
+        const AutomationEvent &newAutoEvent,
+        bool undoable);
     
     bool insertGroup(Array<AutomationEvent> &events, bool undoable);
-    
     bool removeGroup(Array<AutomationEvent> &events, bool undoable);
-    
     bool changeGroup(Array<AutomationEvent> eventsBefore,
-                     Array<AutomationEvent> eventsAfter,
-                     bool undoable);
-
+        Array<AutomationEvent> eventsAfter,
+        bool undoable);
 
     //===------------------------------------------------------------------===//
     // Import/export
@@ -56,28 +51,15 @@ public:
 
     void importMidi(const MidiMessageSequence &sequence) override;
 
-
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
     XmlElement *serialize() const override;
-
     void deserialize(const XmlElement &xml) override;
-
     void reset() override;
-
-protected:
-
-    void clearQuick() override;
-
-private:
-
-    // быстрый доступ к указателю на событие по соответствующим ему параметрам
-    HashMap<AutomationEvent, AutomationEvent *, AutomationEventHashFunction> eventsHashTable;
-
+    
 private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationSequence);
-
 };

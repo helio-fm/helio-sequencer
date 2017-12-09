@@ -37,20 +37,22 @@ KeySignatureEvent::KeySignatureEvent(const KeySignatureEvent &other) :
     this->id = other.getId();
 }
 
-KeySignatureEvent::KeySignatureEvent(MidiSequence *owner,
+KeySignatureEvent::KeySignatureEvent(WeakReference<MidiSequence> owner,
     float newBeat /*= 0.f*/,
     Note::Key key /*= 60*/,
     Scale scale /*= Scale()*/) :
     MidiEvent(owner, MidiEvent::KeySignature, newBeat),
     rootKey(key),
-    scale(scale)
-{
-}
+    scale(scale) {}
 
-KeySignatureEvent::~KeySignatureEvent()
+KeySignatureEvent::KeySignatureEvent(WeakReference<MidiSequence> owner,
+    const KeySignatureEvent &parametersToCopy) :
+    MidiEvent(owner, MidiEvent::KeySignature, parametersToCopy.beat),
+    rootKey(parametersToCopy.rootKey),
+    scale(parametersToCopy.scale)
 {
+    this->id = parametersToCopy.getId();
 }
-
 
 String KeySignatureEvent::toString() const
 {
@@ -177,19 +179,11 @@ void KeySignatureEvent::reset()
     this->scale = Scale();
 }
 
-int KeySignatureEvent::hashCode() const noexcept
+void KeySignatureEvent::applyChanges(const KeySignatureEvent &parameters)
 {
-    const unsigned int hash =
-        this->rootKey + this->scale.hashCode() + this->id.hashCode();
-    return (int)hash;
-}
-
-KeySignatureEvent &KeySignatureEvent::operator=(const KeySignatureEvent &right)
-{
-    //this->sequence = *right.getLayer(); // never do this
-    this->id = right.id;
-    this->beat = right.beat;
-    this->rootKey = right.rootKey;
-    this->scale = right.scale;
-    return *this;
+    jassert(this->id == parameters.id);
+    //this->id = parameters.id;
+    this->beat = parameters.beat;
+    this->rootKey = parameters.rootKey;
+    this->scale = parameters.scale;
 }

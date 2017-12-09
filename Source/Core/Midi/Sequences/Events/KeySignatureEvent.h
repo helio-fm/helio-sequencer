@@ -27,12 +27,13 @@ public:
 
     KeySignatureEvent();
     KeySignatureEvent(const KeySignatureEvent &other);
-    explicit KeySignatureEvent(MidiSequence *owner,
+    KeySignatureEvent(WeakReference<MidiSequence> owner,
+        const KeySignatureEvent &parametersToCopy);
+
+    explicit KeySignatureEvent(WeakReference<MidiSequence> owner,
         float newBeat = 0.f,
         Note::Key key = 0,
         Scale scale = Scale());
-
-    ~KeySignatureEvent() override;
 
     String toString() const;
     Array<MidiMessage> toMidiMessages() const override;
@@ -60,16 +61,10 @@ public:
     void reset() override;
 
     //===------------------------------------------------------------------===//
-    // Stuff for hash tables
+    // Helpers
     //===------------------------------------------------------------------===//
 
-    KeySignatureEvent &operator=(const KeySignatureEvent &right);
-    friend inline bool operator==(const KeySignatureEvent &lhs, const KeySignatureEvent &rhs)
-    {
-        return (lhs.getId() == rhs.getId());
-    }
-
-    int hashCode() const noexcept;
+    void applyChanges(const KeySignatureEvent &parameters);
 
 protected:
 
@@ -80,13 +75,4 @@ private:
 
     JUCE_LEAK_DETECTOR(KeySignatureEvent);
 
-};
-
-class KeySignatureEventHashFunction
-{
-public:
-    static int generateHash(const KeySignatureEvent &key, const int upperLimit) noexcept
-    {
-        return static_cast<int>((static_cast<uint32>(key.hashCode())) % static_cast<uint32>(upperLimit));
-    }
 };
