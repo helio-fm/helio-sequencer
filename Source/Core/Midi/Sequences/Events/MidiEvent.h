@@ -60,10 +60,15 @@ public:
         return code;
     }
 
-    friend inline bool operator==(const MidiEvent &lhs, const MidiEvent &rhs)
+    friend inline bool operator==(const MidiEvent &l, const MidiEvent &r)
     {
-        return (&lhs == &rhs ||
-            (lhs.sequence == rhs.sequence && lhs.id == rhs.id));
+        // Events are considered equal when they have the same id,
+        // and they are either owned by the same track, or one of them
+        // does not belong any track, i.e. is just a set of parameters
+        // for undo/redo action or VCS delta.
+        return (&l == &r ||
+            ((l.sequence == nullptr || r.sequence == nullptr) && l.id == r.id) ||
+            (l.sequence != nullptr && l.sequence == r.sequence && l.id == r.id));
     }
 
     static int compareElements(const MidiEvent *const first, const MidiEvent *const second)

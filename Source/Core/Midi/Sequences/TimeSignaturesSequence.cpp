@@ -71,8 +71,7 @@ void TimeSignaturesSequence::silentImport(const MidiEvent &eventToImport)
         return;
     }
 
-    TimeSignatureEvent *storedSignature = new TimeSignatureEvent(this);
-    storedSignature->applyChanges(signature);
+    TimeSignatureEvent *storedSignature = new TimeSignatureEvent(this, signature);
     
     this->midiEvents.addSorted(*storedSignature, storedSignature);
     this->usedEventIds.insert(storedSignature->getId());
@@ -149,12 +148,11 @@ bool TimeSignaturesSequence::change(const TimeSignatureEvent &oldParams,
         const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
         if (index >= 0)
         {
-            const TimeSignatureEvent eventBefore(this, oldParams);
             auto changedEvent = static_cast<TimeSignatureEvent *>(this->midiEvents[index]);
             changedEvent->applyChanges(newParams);
             this->midiEvents.remove(index, false);
             this->midiEvents.addSorted(*changedEvent, changedEvent);
-            this->notifyEventChanged(eventBefore, *changedEvent);
+            this->notifyEventChanged(oldParams, *changedEvent);
             this->updateBeatRange(true);
             return true;
         }
@@ -240,12 +238,11 @@ bool TimeSignaturesSequence::changeGroup(Array<TimeSignatureEvent> &groupBefore,
             const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
             if (index >= 0)
             {
-                const TimeSignatureEvent eventBefore(this, oldParams);
                 const auto changedEvent = static_cast<TimeSignatureEvent *>(this->midiEvents[index]);
                 changedEvent->applyChanges(newParams);
                 this->midiEvents.remove(index, false);
                 this->midiEvents.addSorted(*changedEvent, changedEvent);
-                this->notifyEventChanged(eventBefore, *changedEvent);
+                this->notifyEventChanged(oldParams, *changedEvent);
             }
         }
 

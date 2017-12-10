@@ -148,7 +148,6 @@ void AnnotationEvent::reset() {}
 void AnnotationEvent::applyChanges(const AnnotationEvent &other)
 {
     jassert(this->id == other.id);
-    //this->id = other.id;
     this->description = other.description;
     this->colour = other.colour;
     this->beat = other.beat;

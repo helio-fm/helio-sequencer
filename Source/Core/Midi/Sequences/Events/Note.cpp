@@ -215,7 +215,6 @@ void Note::reset() {}
 void Note::applyChanges(const Note &other)
 {
     jassert(this->id == other.id);
-    //this->id = other.id;
     this->beat = other.beat;
     this->key = other.key;
     this->length = other.length;

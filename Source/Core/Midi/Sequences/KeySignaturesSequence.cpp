@@ -163,12 +163,11 @@ bool KeySignaturesSequence::change(const KeySignatureEvent &oldParams,
         const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
         if (index >= 0)
         {
-            const KeySignatureEvent eventBefore(this, oldParams);
             const auto changedEvent = static_cast<KeySignatureEvent *>(this->midiEvents[index]);
             changedEvent->applyChanges(newParams);
             this->midiEvents.remove(index, false);
             this->midiEvents.addSorted(*changedEvent, changedEvent);
-            this->notifyEventChanged(eventBefore, *changedEvent);
+            this->notifyEventChanged(oldParams, *changedEvent);
             this->updateBeatRange(true);
             return true;
         }
@@ -254,12 +253,11 @@ bool KeySignaturesSequence::changeGroup(Array<KeySignatureEvent> &groupBefore,
             const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
             if (index >= 0)
             {
-                const KeySignatureEvent eventBefore(this, oldParams);
                 const auto changedEvent = static_cast<KeySignatureEvent *>(this->midiEvents[index]);
                 changedEvent->applyChanges(newParams);
                 this->midiEvents.remove(index, false);
                 this->midiEvents.addSorted(*changedEvent, changedEvent);
-                this->notifyEventChanged(eventBefore, *changedEvent);
+                this->notifyEventChanged(oldParams, *changedEvent);
             }
         }
 

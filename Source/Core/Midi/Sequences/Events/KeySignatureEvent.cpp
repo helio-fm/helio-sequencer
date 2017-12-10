@@ -182,7 +182,6 @@ void KeySignatureEvent::reset()
 void KeySignatureEvent::applyChanges(const KeySignatureEvent &parameters)
 {
     jassert(this->id == parameters.id);
-    //this->id = parameters.id;
     this->beat = parameters.beat;
     this->rootKey = parameters.rootKey;
     this->scale = parameters.scale;

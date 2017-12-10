@@ -586,7 +586,7 @@ void PianoRoll::onRemoveTrack(MidiTrack *const track)
     for (int i = 0; i < track->getSequence()->size(); ++i)
     {
         const auto event = track->getSequence()->getUnchecked(i);
-        if (event->isTypeOf(MidiEvent::KeySignature))
+        if (event->isTypeOf(MidiEvent::Note))
         {
             const Note &note = static_cast<const Note &>(*event);
             if (ScopedPointer<NoteComponent> componentDeleter = this->componentsMap[note])

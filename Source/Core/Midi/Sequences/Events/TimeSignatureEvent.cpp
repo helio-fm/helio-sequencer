@@ -172,7 +172,6 @@ void TimeSignatureEvent::reset() {}
 void TimeSignatureEvent::applyChanges(const TimeSignatureEvent &parameters)
 {
     jassert(this->id == parameters.id);
-    //this->id = parameters.id;
     this->beat = parameters.beat;
     this->numerator = parameters.numerator;
     this->denominator = parameters.denominator;

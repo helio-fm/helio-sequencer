@@ -148,12 +148,11 @@ bool AutomationSequence::change(const AutomationEvent &oldParams,
         const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
         if (index >= 0)
         {
-            const AutomationEvent eventBefore(this, oldParams);
             const auto changedEvent = static_cast<AutomationEvent *>(this->midiEvents[index]);
             changedEvent->applyChanges(newParams);
             this->midiEvents.remove(index, false);
             this->midiEvents.addSorted(*changedEvent, changedEvent);
-            this->notifyEventChanged(eventBefore, *changedEvent);
+            this->notifyEventChanged(oldParams, *changedEvent);
             this->updateBeatRange(true);
             return true;
         }
@@ -239,12 +238,11 @@ bool AutomationSequence::changeGroup(const Array<AutomationEvent> groupBefore,
             const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
             if (index >= 0)
             {
-                const AutomationEvent eventBefore(this, oldParams);
                 const auto changedEvent = static_cast<AutomationEvent *>(this->midiEvents[index]);
                 changedEvent->applyChanges(newParams);
                 this->midiEvents.remove(index, false);
                 this->midiEvents.addSorted(*changedEvent, changedEvent);
-                this->notifyEventChanged(eventBefore, *changedEvent);
+                this->notifyEventChanged(oldParams, *changedEvent);
             }
         }
         

@@ -301,7 +301,6 @@ void AutomationEvent::reset() {}
 void AutomationEvent::applyChanges(const AutomationEvent &parameters)
 {
     jassert(this->id == parameters.id);
-    //this->id = parameters.id;
     this->beat = parameters.beat;
     this->controllerValue = parameters.controllerValue;
     this->curvature = parameters.curvature;

@@ -713,7 +713,7 @@ void ProjectTreeItem::removeAllListeners()
 
 void ProjectTreeItem::broadcastChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    jassert(oldEvent.isValid());
+    //jassert(oldEvent.isValid()); // old event is allowed to be un-owned
     jassert(newEvent.isValid());
     this->changeListeners.call(&ProjectListener::onChangeMidiEvent, oldEvent, newEvent);
     this->sendChangeMessage();
@@ -965,17 +965,17 @@ VCS::TrackedItem *ProjectTreeItem::initTrackedItem(const String &type, const Uui
 {
     if (type == Serialization::Core::pianoLayer)
     {
-        MidiTrackTreeItem *layer = new PianoTrackTreeItem("empty");
-        layer->setVCSUuid(id);
-        this->addChildTreeItem(layer);
-        return layer;
+        MidiTrackTreeItem *track = new PianoTrackTreeItem("empty");
+        track->setVCSUuid(id);
+        this->addChildTreeItem(track);
+        return track;
     }
     if (type == Serialization::Core::autoLayer)
     {
-        MidiTrackTreeItem *layer = new AutomationTrackTreeItem("empty");
-        layer->setVCSUuid(id);
-        this->addChildTreeItem(layer);
-        return layer;
+        MidiTrackTreeItem *track = new AutomationTrackTreeItem("empty");
+        track->setVCSUuid(id);
+        this->addChildTreeItem(track);
+        return track;
     }
     else if (type == Serialization::Core::projectInfo)
     {
@@ -995,10 +995,11 @@ bool ProjectTreeItem::deleteTrackedItem(VCS::TrackedItem *item)
 {
     if (dynamic_cast<MidiTrackTreeItem *>(item))
     {
-        delete item;
+        delete item; // will call broadcastRemoveTrack in destructor
+        return true;
     }
 
-    return true;
+    return false;
 }
 
 void ProjectTreeItem::onResetState()

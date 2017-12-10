@@ -169,12 +169,11 @@ bool PianoSequence::change(const Note &oldParams, const Note &newParams, bool un
         jassert(index >= 0);
         if (index >= 0)
         {
-            const Note noteBefore(this, oldParams);
             const auto changedNote = static_cast<Note *>(this->midiEvents[index]);
             changedNote->applyChanges(newParams);
             this->midiEvents.remove(index, false);
             this->midiEvents.addSorted(*changedNote, changedNote);
-            this->notifyEventChanged(noteBefore, *changedNote);
+            this->notifyEventChanged(oldParams, *changedNote);
             this->updateBeatRange(true);
             return true;
         }
@@ -262,15 +261,11 @@ bool PianoSequence::changeGroup(Array<Note> &groupBefore,
             jassert(index >= 0);
             if (index >= 0)
             {
-                // instead of doing another binary chop, assume we have target note too,
-                // and construct identical one (see == operator in MidiEvent)
-                // for receiver's hash-maps to be able to find and replace it with new one:
-                const Note noteBefore(this, oldParams);
                 const auto changedNote = static_cast<Note *>(this->midiEvents[index]);
                 changedNote->applyChanges(newParams);
                 this->midiEvents.remove(index, false);
                 this->midiEvents.addSorted(*changedNote, changedNote);
-                this->notifyEventChanged(noteBefore, *changedNote);
+                this->notifyEventChanged(oldParams, *changedNote);
             }
         }
 

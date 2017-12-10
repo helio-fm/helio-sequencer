@@ -150,12 +150,11 @@ bool AnnotationsSequence::change(const AnnotationEvent &oldParams,
         const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
         if (index >= 0)
         {
-            const AnnotationEvent eventBefore(this, oldParams);
             const auto changedEvent = static_cast<AnnotationEvent *>(this->midiEvents[index]);
             changedEvent->applyChanges(newParams);
             this->midiEvents.remove(index, false);
             this->midiEvents.addSorted(*changedEvent, changedEvent);
-            this->notifyEventChanged(eventBefore, *changedEvent);
+            this->notifyEventChanged(oldParams, *changedEvent);
             this->updateBeatRange(true);
             return true;
         }
@@ -242,12 +241,11 @@ bool AnnotationsSequence::changeGroup(Array<AnnotationEvent> &groupBefore,
             const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
             if (index >= 0)
             {
-                const AnnotationEvent eventBefore(this, oldParams);
                 const auto changedEvent = static_cast<AnnotationEvent *>(this->midiEvents[index]);
                 changedEvent->applyChanges(newParams);
                 this->midiEvents.remove(index, false);
                 this->midiEvents.addSorted(*changedEvent, changedEvent);
-                this->notifyEventChanged(eventBefore, *changedEvent);
+                this->notifyEventChanged(oldParams, *changedEvent);
             }
         }
 
