@@ -18,27 +18,23 @@
 #include "Common.h"
 #include "KeySignatureEventActions.h"
 #include "KeySignaturesSequence.h"
-#include "ProjectTreeItem.h"
+#include "MidiTrackSource.h"
 #include "SerializationKeys.h"
-
 
 //===----------------------------------------------------------------------===//
 // Insert
 //===----------------------------------------------------------------------===//
 
-KeySignatureEventInsertAction::KeySignatureEventInsertAction(ProjectTreeItem &parentProject,
-                                                         String targetTrackId,
-                                                         const KeySignatureEvent &event) :
-    UndoAction(parentProject),
+KeySignatureEventInsertAction::KeySignatureEventInsertAction(MidiTrackSource &source,
+    String targetTrackId, const KeySignatureEvent &event) :
+    UndoAction(source),
     trackId(std::move(targetTrackId)),
-    event(event)
-{
-}
+    event(event) {}
 
 bool KeySignatureEventInsertAction::perform()
 {
     if (KeySignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
     {
         return (sequence->insert(this->event, false) != nullptr);
     }
@@ -49,7 +45,7 @@ bool KeySignatureEventInsertAction::perform()
 bool KeySignatureEventInsertAction::undo()
 {
     if (KeySignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
     {
         return sequence->remove(this->event, false);
     }
@@ -82,24 +78,20 @@ void KeySignatureEventInsertAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Remove
 //===----------------------------------------------------------------------===//
 
-KeySignatureEventRemoveAction::KeySignatureEventRemoveAction(ProjectTreeItem &parentProject,
-                                                         String targetTrackId,
-                                                         const KeySignatureEvent &target) :
-    UndoAction(parentProject),
+KeySignatureEventRemoveAction::KeySignatureEventRemoveAction(MidiTrackSource &source,
+    String targetTrackId, const KeySignatureEvent &target) :
+    UndoAction(source),
     trackId(std::move(targetTrackId)),
-    event(target)
-{
-}
+    event(target) {}
 
 bool KeySignatureEventRemoveAction::perform()
 {
     if (KeySignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
     {
         return sequence->remove(this->event, false);
     }
@@ -110,7 +102,7 @@ bool KeySignatureEventRemoveAction::perform()
 bool KeySignatureEventRemoveAction::undo()
 {
     if (KeySignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
     {
         return (sequence->insert(this->event, false) != nullptr);
     }
@@ -143,27 +135,21 @@ void KeySignatureEventRemoveAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Change
 //===----------------------------------------------------------------------===//
 
-KeySignatureEventChangeAction::KeySignatureEventChangeAction(ProjectTreeItem &parentProject,
-                                                         String targetTrackId,
-                                                         const KeySignatureEvent &target,
-                                                         const KeySignatureEvent &newParameters) :
-    UndoAction(parentProject),
+KeySignatureEventChangeAction::KeySignatureEventChangeAction(MidiTrackSource &source,
+    String targetTrackId, const KeySignatureEvent &target, const KeySignatureEvent &newParameters) :
+    UndoAction(source),
     trackId(std::move(targetTrackId)),
     eventBefore(target),
-    eventAfter(newParameters)
-{
-
-}
+    eventAfter(newParameters) {}
 
 bool KeySignatureEventChangeAction::perform()
 {
     if (KeySignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
     {
         return sequence->change(this->eventBefore, this->eventAfter, false);
     }
@@ -174,7 +160,7 @@ bool KeySignatureEventChangeAction::perform()
 bool KeySignatureEventChangeAction::undo()
 {
     if (KeySignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
     {
         return sequence->change(this->eventAfter, this->eventBefore, false);
     }
@@ -190,7 +176,7 @@ int KeySignatureEventChangeAction::getSizeInUnits()
 UndoAction *KeySignatureEventChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
     if (KeySignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
     {
         if (KeySignatureEventChangeAction *nextChanger =
             dynamic_cast<KeySignatureEventChangeAction *>(nextAction))
@@ -201,7 +187,7 @@ UndoAction *KeySignatureEventChangeAction::createCoalescedAction(UndoAction *nex
             
             if (idsAreEqual)
             {
-                return new KeySignatureEventChangeAction(this->project,
+                return new KeySignatureEventChangeAction(this->source,
                     this->trackId, this->eventBefore, nextChanger->eventAfter);
             }
         }
@@ -245,15 +231,13 @@ void KeySignatureEventChangeAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Insert Group
 //===----------------------------------------------------------------------===//
 
-KeySignatureEventsGroupInsertAction::KeySignatureEventsGroupInsertAction(ProjectTreeItem &parentProject,
-                                                                     String targetTrackId,
-                                                                     Array<KeySignatureEvent> &target) :
-    UndoAction(parentProject),
+KeySignatureEventsGroupInsertAction::KeySignatureEventsGroupInsertAction(MidiTrackSource &source,
+    String targetTrackId, Array<KeySignatureEvent> &target) :
+    UndoAction(source),
     trackId(std::move(targetTrackId))
 {
     this->signatures.swapWith(target);
@@ -262,7 +246,7 @@ KeySignatureEventsGroupInsertAction::KeySignatureEventsGroupInsertAction(Project
 bool KeySignatureEventsGroupInsertAction::perform()
 {
     if (KeySignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
     {
         return sequence->insertGroup(this->signatures, false);
     }
@@ -273,7 +257,7 @@ bool KeySignatureEventsGroupInsertAction::perform()
 bool KeySignatureEventsGroupInsertAction::undo()
 {
     if (KeySignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
     {
         return sequence->removeGroup(this->signatures, false);
     }
@@ -318,15 +302,13 @@ void KeySignatureEventsGroupInsertAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Remove Group
 //===----------------------------------------------------------------------===//
 
-KeySignatureEventsGroupRemoveAction::KeySignatureEventsGroupRemoveAction(ProjectTreeItem &parentProject,
-                                                                     String targetTrackId,
-                                                                     Array<KeySignatureEvent> &target) :
-    UndoAction(parentProject),
+KeySignatureEventsGroupRemoveAction::KeySignatureEventsGroupRemoveAction(MidiTrackSource &source,
+    String targetTrackId, Array<KeySignatureEvent> &target) :
+    UndoAction(source),
     trackId(std::move(targetTrackId))
 {
     this->signatures.swapWith(target);
@@ -335,7 +317,7 @@ KeySignatureEventsGroupRemoveAction::KeySignatureEventsGroupRemoveAction(Project
 bool KeySignatureEventsGroupRemoveAction::perform()
 {
     if (KeySignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
     {
         return sequence->removeGroup(this->signatures, false);
     }
@@ -346,7 +328,7 @@ bool KeySignatureEventsGroupRemoveAction::perform()
 bool KeySignatureEventsGroupRemoveAction::undo()
 {
     if (KeySignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
     {
         return sequence->insertGroup(this->signatures, false);
     }
@@ -391,16 +373,13 @@ void KeySignatureEventsGroupRemoveAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Change Group
 //===----------------------------------------------------------------------===//
 
-KeySignatureEventsGroupChangeAction::KeySignatureEventsGroupChangeAction(ProjectTreeItem &parentProject,
-                                                                     String targetTrackId,
-                                                                     const Array<KeySignatureEvent> state1,
-                                                                     const Array<KeySignatureEvent> state2) :
-    UndoAction(parentProject),
+KeySignatureEventsGroupChangeAction::KeySignatureEventsGroupChangeAction(MidiTrackSource &source,
+    String targetTrackId, const Array<KeySignatureEvent> state1, const Array<KeySignatureEvent> state2) :
+    UndoAction(source),
     trackId(std::move(targetTrackId))
 {
     this->eventsBefore.addArray(state1);
@@ -410,7 +389,7 @@ KeySignatureEventsGroupChangeAction::KeySignatureEventsGroupChangeAction(Project
 bool KeySignatureEventsGroupChangeAction::perform()
 {
     if (KeySignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
     {
         return sequence->changeGroup(this->eventsBefore, this->eventsAfter, false);
     }
@@ -421,7 +400,7 @@ bool KeySignatureEventsGroupChangeAction::perform()
 bool KeySignatureEventsGroupChangeAction::undo()
 {
     if (KeySignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
     {
         return sequence->changeGroup(this->eventsAfter, this->eventsBefore, false);
     }
@@ -438,7 +417,7 @@ int KeySignatureEventsGroupChangeAction::getSizeInUnits()
 UndoAction *KeySignatureEventsGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
     if (KeySignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<KeySignaturesSequence>(this->trackId))
     {
         if (KeySignatureEventsGroupChangeAction *nextChanger =
             dynamic_cast<KeySignatureEventsGroupChangeAction *>(nextAction))
@@ -454,7 +433,7 @@ UndoAction *KeySignatureEventsGroupChangeAction::createCoalescedAction(UndoActio
             
             if (arraysContainSameEvents)
             {
-                return new KeySignatureEventsGroupChangeAction(this->project,
+                return new KeySignatureEventsGroupChangeAction(this->source,
                     this->trackId, this->eventsBefore, nextChanger->eventsAfter);
             }
         }
@@ -463,7 +442,6 @@ UndoAction *KeySignatureEventsGroupChangeAction::createCoalescedAction(UndoActio
     (void) nextAction;
     return nullptr;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Serializable

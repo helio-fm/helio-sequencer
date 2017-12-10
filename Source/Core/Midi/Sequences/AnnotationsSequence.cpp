@@ -20,6 +20,7 @@
 #include "Note.h"
 #include "AnnotationEventActions.h"
 #include "SerializationKeys.h"
+#include "ProjectTreeItem.h"
 #include "UndoStack.h"
 
 AnnotationsSequence::AnnotationsSequence(MidiTrack &track, 

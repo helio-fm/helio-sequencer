@@ -19,28 +19,23 @@
 #include "NoteActions.h"
 #include "MidiTrack.h"
 #include "PianoSequence.h"
-#include "ProjectTreeItem.h"
+#include "MidiTrackSource.h"
 #include "SerializationKeys.h"
-
 
 //===----------------------------------------------------------------------===//
 // Insert
 //===----------------------------------------------------------------------===//
 
-NoteInsertAction::NoteInsertAction(ProjectTreeItem &parentProject,
-                                   String targetTrackId,
-                                   const Note &event) :
-    UndoAction(parentProject),
+NoteInsertAction::NoteInsertAction(MidiTrackSource &source,
+    String targetTrackId, const Note &event) :
+    UndoAction(source),
     trackId(std::move(targetTrackId)),
-    note(event)
-{
-
-}
+    note(event) {}
 
 bool NoteInsertAction::perform()
 {
     if (PianoSequence *sequence =
-        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
+        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return (sequence->insert(this->note, false) != nullptr);
     }
@@ -51,7 +46,7 @@ bool NoteInsertAction::perform()
 bool NoteInsertAction::undo()
 {
     if (PianoSequence *sequence =
-        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
+        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return sequence->remove(this->note, false);
     }
@@ -84,25 +79,20 @@ void NoteInsertAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Remove
 //===----------------------------------------------------------------------===//
 
-NoteRemoveAction::NoteRemoveAction(ProjectTreeItem &parentProject,
-                                   String targetTrackId,
-                                   const Note &event) :
-    UndoAction(parentProject),
+NoteRemoveAction::NoteRemoveAction(MidiTrackSource &source,
+    String targetTrackId, const Note &event) :
+    UndoAction(source),
     trackId(std::move(targetTrackId)),
-    note(event)
-{
-
-}
+    note(event) {}
 
 bool NoteRemoveAction::perform()
 {
     if (PianoSequence *sequence =
-        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
+        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return sequence->remove(this->note, false);
     }
@@ -113,7 +103,7 @@ bool NoteRemoveAction::perform()
 bool NoteRemoveAction::undo()
 {
     if (PianoSequence *sequence =
-        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
+        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return (sequence->insert(this->note, false) != nullptr);
     }
@@ -146,16 +136,13 @@ void NoteRemoveAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Change
 //===----------------------------------------------------------------------===//
 
-NoteChangeAction::NoteChangeAction(ProjectTreeItem &parentProject,
-                                   String targetTrackId,
-                                   const Note &note,
-                                   const Note &newParameters) :
-    UndoAction(parentProject),
+NoteChangeAction::NoteChangeAction(MidiTrackSource &source,
+    String targetTrackId, const Note &note, const Note &newParameters) :
+    UndoAction(source),
     trackId(std::move(targetTrackId)),
     noteBefore(note),
     noteAfter(newParameters)
@@ -166,7 +153,7 @@ NoteChangeAction::NoteChangeAction(ProjectTreeItem &parentProject,
 bool NoteChangeAction::perform()
 {
     if (PianoSequence *sequence =
-        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
+        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return sequence->change(this->noteBefore, this->noteAfter, false);
     }
@@ -177,7 +164,7 @@ bool NoteChangeAction::perform()
 bool NoteChangeAction::undo()
 {
     if (PianoSequence *sequence =
-        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
+        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return sequence->change(this->noteAfter, this->noteBefore, false);
     }
@@ -193,7 +180,7 @@ int NoteChangeAction::getSizeInUnits()
 UndoAction *NoteChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
     if (PianoSequence *sequence =
-        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
+        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         if (NoteChangeAction *nextChanger =
             dynamic_cast<NoteChangeAction *>(nextAction))
@@ -205,7 +192,7 @@ UndoAction *NoteChangeAction::createCoalescedAction(UndoAction *nextAction)
             
             if (idsAreEqual)
             {
-                return new NoteChangeAction(this->project,
+                return new NoteChangeAction(this->source,
                     this->trackId, this->noteBefore, nextChanger->noteAfter);
             }
         }
@@ -249,15 +236,13 @@ void NoteChangeAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Insert Group
 //===----------------------------------------------------------------------===//
 
-NotesGroupInsertAction::NotesGroupInsertAction(ProjectTreeItem &parentProject,
-                                               String targetTrackId,
-                                               Array<Note> &target) :
-    UndoAction(parentProject),
+NotesGroupInsertAction::NotesGroupInsertAction(MidiTrackSource &source,
+    String targetTrackId, Array<Note> &target) :
+    UndoAction(source),
     trackId(std::move(targetTrackId))
 {
     this->notes.swapWith(target);
@@ -266,7 +251,7 @@ NotesGroupInsertAction::NotesGroupInsertAction(ProjectTreeItem &parentProject,
 bool NotesGroupInsertAction::perform()
 {
     if (PianoSequence *sequence =
-        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
+        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return sequence->insertGroup(this->notes, false);
     }
@@ -277,7 +262,7 @@ bool NotesGroupInsertAction::perform()
 bool NotesGroupInsertAction::undo()
 {
     if (PianoSequence *sequence =
-        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
+        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return sequence->removeGroup(this->notes, false);
     }
@@ -322,15 +307,13 @@ void NotesGroupInsertAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Remove Group
 //===----------------------------------------------------------------------===//
 
-NotesGroupRemoveAction::NotesGroupRemoveAction(ProjectTreeItem &parentProject,
-                                               String targetTrackId,
-                                               Array<Note> &target) :
-    UndoAction(parentProject),
+NotesGroupRemoveAction::NotesGroupRemoveAction(MidiTrackSource &source,
+    String targetTrackId, Array<Note> &target) :
+    UndoAction(source),
     trackId(std::move(targetTrackId))
 {
     this->notes.swapWith(target);
@@ -339,7 +322,7 @@ NotesGroupRemoveAction::NotesGroupRemoveAction(ProjectTreeItem &parentProject,
 bool NotesGroupRemoveAction::perform()
 {
     if (PianoSequence *sequence =
-        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
+        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return sequence->removeGroup(this->notes, false);
     }
@@ -350,7 +333,7 @@ bool NotesGroupRemoveAction::perform()
 bool NotesGroupRemoveAction::undo()
 {
     if (PianoSequence *sequence =
-        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
+        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return sequence->insertGroup(this->notes, false);
     }
@@ -395,16 +378,13 @@ void NotesGroupRemoveAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Change Group
 //===----------------------------------------------------------------------===//
 
-NotesGroupChangeAction::NotesGroupChangeAction(ProjectTreeItem &parentProject,
-                                               String targetTrackId,
-                                               Array<Note> &state1,
-                                               Array<Note> &state2) :
-    UndoAction(parentProject),
+NotesGroupChangeAction::NotesGroupChangeAction(MidiTrackSource &source,
+    String targetTrackId, Array<Note> &state1, Array<Note> &state2) :
+    UndoAction(source),
     trackId(std::move(targetTrackId))
 {
     this->notesBefore.swapWith(state1);
@@ -414,7 +394,7 @@ NotesGroupChangeAction::NotesGroupChangeAction(ProjectTreeItem &parentProject,
 bool NotesGroupChangeAction::perform()
 {
     if (PianoSequence *sequence =
-        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
+        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return sequence->changeGroup(this->notesBefore, this->notesAfter, false);
     }
@@ -425,7 +405,7 @@ bool NotesGroupChangeAction::perform()
 bool NotesGroupChangeAction::undo()
 {
     if (PianoSequence *sequence =
-        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
+        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         return sequence->changeGroup(this->notesAfter, this->notesBefore, false);
     }
@@ -442,7 +422,7 @@ int NotesGroupChangeAction::getSizeInUnits()
 UndoAction *NotesGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
     if (PianoSequence *sequence =
-        this->project.findSequenceByTrackId<PianoSequence>(this->trackId))
+        this->source.findSequenceByTrackId<PianoSequence>(this->trackId))
     {
         if (NotesGroupChangeAction *nextChanger =
             dynamic_cast<NotesGroupChangeAction *>(nextAction))
@@ -466,7 +446,7 @@ UndoAction *NotesGroupChangeAction::createCoalescedAction(UndoAction *nextAction
                 }
             }
             
-            return new NotesGroupChangeAction(this->project,
+            return new NotesGroupChangeAction(this->source,
                 this->trackId, this->notesBefore, nextChanger->notesAfter);
         }
     }
@@ -474,7 +454,6 @@ UndoAction *NotesGroupChangeAction::createCoalescedAction(UndoAction *nextAction
     (void) nextAction;
     return nullptr;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Serializable

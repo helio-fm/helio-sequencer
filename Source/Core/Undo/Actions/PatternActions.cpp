@@ -17,28 +17,25 @@
 
 #include "Common.h"
 #include "PatternActions.h"
-#include "ProjectTreeItem.h"
+#include "MidiTrackSource.h"
 #include "MidiSequence.h"
 #include "TreeItem.h"
 #include "SerializationKeys.h"
-
 
 //===----------------------------------------------------------------------===//
 // Insert Clip
 //===----------------------------------------------------------------------===//
 
-PatternClipInsertAction::PatternClipInsertAction(ProjectTreeItem &project,
+PatternClipInsertAction::PatternClipInsertAction(MidiTrackSource &source,
     String trackId, const Clip &target) :
-    UndoAction(project),
+    UndoAction(source),
     trackId(std::move(trackId)),
-    clip(target)
-{
-}
+    clip(target) {}
 
 bool PatternClipInsertAction::perform()
 {
     if (Pattern *pattern = 
-        this->project.findPatternByTrackId(this->trackId))
+        this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->insert(this->clip, false);
     }
@@ -49,7 +46,7 @@ bool PatternClipInsertAction::perform()
 bool PatternClipInsertAction::undo()
 {
     if (Pattern *pattern =
-        this->project.findPatternByTrackId(this->trackId))
+        this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->remove(this->clip, false);
     }
@@ -82,23 +79,20 @@ void PatternClipInsertAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Remove Instance
 //===----------------------------------------------------------------------===//
 
-PatternClipRemoveAction::PatternClipRemoveAction(ProjectTreeItem &project,
+PatternClipRemoveAction::PatternClipRemoveAction(MidiTrackSource &source,
     String trackId, const Clip &target) :
-    UndoAction(project),
+    UndoAction(source),
     trackId(std::move(trackId)),
-    clip(target)
-{
-}
+    clip(target) {}
 
 bool PatternClipRemoveAction::perform()
 {
     if (Pattern *pattern =
-        this->project.findPatternByTrackId(this->trackId))
+        this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->remove(this->clip, false);
     }
@@ -109,7 +103,7 @@ bool PatternClipRemoveAction::perform()
 bool PatternClipRemoveAction::undo()
 {
     if (Pattern *pattern =
-        this->project.findPatternByTrackId(this->trackId))
+        this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->insert(this->clip, false);
     }
@@ -142,16 +136,15 @@ void PatternClipRemoveAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Change Instance
 //===----------------------------------------------------------------------===//
 
-PatternClipChangeAction::PatternClipChangeAction(ProjectTreeItem &project,
+PatternClipChangeAction::PatternClipChangeAction(MidiTrackSource &source,
     String trackId,
     const Clip &target,
     const Clip &newParameters) :
-    UndoAction(project),
+    UndoAction(source),
     trackId(std::move(trackId)),
     clipBefore(target),
     clipAfter(newParameters)
@@ -162,7 +155,7 @@ PatternClipChangeAction::PatternClipChangeAction(ProjectTreeItem &project,
 bool PatternClipChangeAction::perform()
 {
     if (Pattern *pattern =
-        this->project.findPatternByTrackId(this->trackId))
+        this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->change(this->clipBefore, this->clipAfter, false);
     }
@@ -173,7 +166,7 @@ bool PatternClipChangeAction::perform()
 bool PatternClipChangeAction::undo()
 {
     if (Pattern *pattern =
-        this->project.findPatternByTrackId(this->trackId))
+        this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->change(this->clipAfter, this->clipBefore, false);
     }
@@ -189,7 +182,7 @@ int PatternClipChangeAction::getSizeInUnits()
 UndoAction *PatternClipChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
     if (Pattern *pattern = 
-        this->project.findPatternByTrackId(this->trackId))
+        this->source.findPatternByTrackId(this->trackId))
     {
         if (PatternClipChangeAction *nextChanger =
             dynamic_cast<PatternClipChangeAction *>(nextAction))
@@ -200,7 +193,7 @@ UndoAction *PatternClipChangeAction::createCoalescedAction(UndoAction *nextActio
 
             if (idsAreEqual)
             {
-                return new PatternClipChangeAction(this->project,
+                return new PatternClipChangeAction(this->source,
                     this->trackId, this->clipBefore, nextChanger->clipAfter);
             }
         }

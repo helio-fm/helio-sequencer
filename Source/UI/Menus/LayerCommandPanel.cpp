@@ -128,11 +128,11 @@ void LayerCommandPanel::handleCommandMessage(int commandId)
             
             if (dynamic_cast<PianoTrackTreeItem *>(&this->layerItem))
             {
-                project->getUndoStack()->perform(new PianoTrackRemoveAction(*project, layerId));
+                project->getUndoStack()->perform(new PianoTrackRemoveAction(*project, project, layerId));
             }
             else if (dynamic_cast<AutomationTrackTreeItem *>(&this->layerItem))
             {
-                project->getUndoStack()->perform(new AutomationTrackRemoveAction(*project, layerId));
+                project->getUndoStack()->perform(new AutomationTrackRemoveAction(*project, project, layerId));
             }
             
             this->getParentComponent()->exitModalState(0);

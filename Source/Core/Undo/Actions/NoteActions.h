@@ -18,7 +18,7 @@
 #pragma once
 
 class PianoSequence;
-class ProjectTreeItem;
+class MidiTrackSource;
 
 #include "Note.h"
 #include "UndoAction.h"
@@ -32,10 +32,10 @@ class NoteInsertAction : public UndoAction
 {
 public:
 
-    explicit NoteInsertAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit NoteInsertAction(MidiTrackSource &source) :
+    UndoAction(source) {}
     
-    NoteInsertAction(ProjectTreeItem &project,
+    NoteInsertAction(MidiTrackSource &source,
                      String trackId,
                      const Note &target);
 
@@ -64,10 +64,10 @@ class NoteRemoveAction : public UndoAction
 {
 public:
     
-    explicit NoteRemoveAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit NoteRemoveAction(MidiTrackSource &source) :
+    UndoAction(source) {}
 
-    NoteRemoveAction(ProjectTreeItem &project,
+    NoteRemoveAction(MidiTrackSource &source,
                      String trackId,
                      const Note &target);
 
@@ -96,10 +96,10 @@ class NoteChangeAction : public UndoAction
 {
 public:
     
-    explicit NoteChangeAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit NoteChangeAction(MidiTrackSource &source) :
+    UndoAction(source) {}
 
-    NoteChangeAction(ProjectTreeItem &project,
+    NoteChangeAction(MidiTrackSource &source,
                      String trackId,
                      const Note &note,
                      const Note &newParameters);
@@ -133,10 +133,10 @@ class NotesGroupInsertAction : public UndoAction
 {
 public:
     
-    explicit NotesGroupInsertAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit NotesGroupInsertAction(MidiTrackSource &source) :
+    UndoAction(source) {}
     
-    NotesGroupInsertAction(ProjectTreeItem &project,
+    NotesGroupInsertAction(MidiTrackSource &source,
                            String trackId,
                            Array<Note> &target);
     
@@ -166,10 +166,10 @@ class NotesGroupRemoveAction : public UndoAction
 {
 public:
     
-    explicit NotesGroupRemoveAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit NotesGroupRemoveAction(MidiTrackSource &source) :
+    UndoAction(source) {}
     
-    NotesGroupRemoveAction(ProjectTreeItem &project,
+    NotesGroupRemoveAction(MidiTrackSource &source,
                            String trackId,
                            Array<Note> &target);
     
@@ -199,10 +199,10 @@ class NotesGroupChangeAction : public UndoAction
 {
 public:
     
-    explicit NotesGroupChangeAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit NotesGroupChangeAction(MidiTrackSource &source) :
+    UndoAction(source) {}
 
-    NotesGroupChangeAction(ProjectTreeItem &project,
+    NotesGroupChangeAction(MidiTrackSource &source,
                            String trackId,
                            Array<Note> &state1,
                            Array<Note> &state2);

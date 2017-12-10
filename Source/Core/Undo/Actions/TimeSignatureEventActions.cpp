@@ -18,27 +18,23 @@
 #include "Common.h"
 #include "TimeSignatureEventActions.h"
 #include "TimeSignaturesSequence.h"
-#include "ProjectTreeItem.h"
+#include "MidiTrackSource.h"
 #include "SerializationKeys.h"
-
 
 //===----------------------------------------------------------------------===//
 // Insert
 //===----------------------------------------------------------------------===//
 
-TimeSignatureEventInsertAction::TimeSignatureEventInsertAction(ProjectTreeItem &parentProject,
-                                                         String targetTrackId,
-                                                         const TimeSignatureEvent &event) :
-    UndoAction(parentProject),
+TimeSignatureEventInsertAction::TimeSignatureEventInsertAction(MidiTrackSource &source,
+    String targetTrackId, const TimeSignatureEvent &event) :
+    UndoAction(source),
     trackId(std::move(targetTrackId)),
-    event(event)
-{
-}
+    event(event) {}
 
 bool TimeSignatureEventInsertAction::perform()
 {
     if (TimeSignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
         return (sequence->insert(this->event, false) != nullptr);
     }
@@ -49,7 +45,7 @@ bool TimeSignatureEventInsertAction::perform()
 bool TimeSignatureEventInsertAction::undo()
 {
     if (TimeSignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
         return sequence->remove(this->event, false);
     }
@@ -82,24 +78,20 @@ void TimeSignatureEventInsertAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Remove
 //===----------------------------------------------------------------------===//
 
-TimeSignatureEventRemoveAction::TimeSignatureEventRemoveAction(ProjectTreeItem &parentProject,
-                                                         String targetTrackId,
-                                                         const TimeSignatureEvent &target) :
-    UndoAction(parentProject),
+TimeSignatureEventRemoveAction::TimeSignatureEventRemoveAction(MidiTrackSource &source,
+    String targetTrackId, const TimeSignatureEvent &target) :
+    UndoAction(source),
     trackId(std::move(targetTrackId)),
-    event(target)
-{
-}
+    event(target) {}
 
 bool TimeSignatureEventRemoveAction::perform()
 {
     if (TimeSignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
         return sequence->remove(this->event, false);
     }
@@ -110,7 +102,7 @@ bool TimeSignatureEventRemoveAction::perform()
 bool TimeSignatureEventRemoveAction::undo()
 {
     if (TimeSignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
         return (sequence->insert(this->event, false) != nullptr);
     }
@@ -143,27 +135,21 @@ void TimeSignatureEventRemoveAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Change
 //===----------------------------------------------------------------------===//
 
-TimeSignatureEventChangeAction::TimeSignatureEventChangeAction(ProjectTreeItem &parentProject,
-                                                         String targetTrackId,
-                                                         const TimeSignatureEvent &target,
-                                                         const TimeSignatureEvent &newParameters) :
-    UndoAction(parentProject),
+TimeSignatureEventChangeAction::TimeSignatureEventChangeAction(MidiTrackSource &source,
+    String targetTrackId, const TimeSignatureEvent &target, const TimeSignatureEvent &newParameters) :
+    UndoAction(source),
     trackId(std::move(targetTrackId)),
     eventBefore(target),
-    eventAfter(newParameters)
-{
-
-}
+    eventAfter(newParameters) {}
 
 bool TimeSignatureEventChangeAction::perform()
 {
     if (TimeSignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
         return sequence->change(this->eventBefore, this->eventAfter, false);
     }
@@ -174,7 +160,7 @@ bool TimeSignatureEventChangeAction::perform()
 bool TimeSignatureEventChangeAction::undo()
 {
     if (TimeSignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
         return sequence->change(this->eventAfter, this->eventBefore, false);
     }
@@ -190,7 +176,7 @@ int TimeSignatureEventChangeAction::getSizeInUnits()
 UndoAction *TimeSignatureEventChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
     if (TimeSignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
         if (TimeSignatureEventChangeAction *nextChanger =
             dynamic_cast<TimeSignatureEventChangeAction *>(nextAction))
@@ -201,7 +187,7 @@ UndoAction *TimeSignatureEventChangeAction::createCoalescedAction(UndoAction *ne
             
             if (idsAreEqual)
             {
-                return new TimeSignatureEventChangeAction(this->project,
+                return new TimeSignatureEventChangeAction(this->source,
                     this->trackId, this->eventBefore, nextChanger->eventAfter);
             }
         }
@@ -245,15 +231,13 @@ void TimeSignatureEventChangeAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Insert Group
 //===----------------------------------------------------------------------===//
 
-TimeSignatureEventsGroupInsertAction::TimeSignatureEventsGroupInsertAction(ProjectTreeItem &parentProject,
-                                                                     String targetTrackId,
-                                                                     Array<TimeSignatureEvent> &target) :
-    UndoAction(parentProject),
+TimeSignatureEventsGroupInsertAction::TimeSignatureEventsGroupInsertAction(MidiTrackSource &source,
+    String targetTrackId, Array<TimeSignatureEvent> &target) :
+    UndoAction(source),
     trackId(std::move(targetTrackId))
 {
     this->signatures.swapWith(target);
@@ -262,7 +246,7 @@ TimeSignatureEventsGroupInsertAction::TimeSignatureEventsGroupInsertAction(Proje
 bool TimeSignatureEventsGroupInsertAction::perform()
 {
     if (TimeSignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
         return sequence->insertGroup(this->signatures, false);
     }
@@ -273,7 +257,7 @@ bool TimeSignatureEventsGroupInsertAction::perform()
 bool TimeSignatureEventsGroupInsertAction::undo()
 {
     if (TimeSignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
         return sequence->removeGroup(this->signatures, false);
     }
@@ -318,15 +302,13 @@ void TimeSignatureEventsGroupInsertAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Remove Group
 //===----------------------------------------------------------------------===//
 
-TimeSignatureEventsGroupRemoveAction::TimeSignatureEventsGroupRemoveAction(ProjectTreeItem &parentProject,
-                                                                     String targetTrackId,
-                                                                     Array<TimeSignatureEvent> &target) :
-    UndoAction(parentProject),
+TimeSignatureEventsGroupRemoveAction::TimeSignatureEventsGroupRemoveAction(MidiTrackSource &source,
+    String targetTrackId, Array<TimeSignatureEvent> &target) :
+    UndoAction(source),
     trackId(std::move(targetTrackId))
 {
     this->signatures.swapWith(target);
@@ -335,7 +317,7 @@ TimeSignatureEventsGroupRemoveAction::TimeSignatureEventsGroupRemoveAction(Proje
 bool TimeSignatureEventsGroupRemoveAction::perform()
 {
     if (TimeSignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
         return sequence->removeGroup(this->signatures, false);
     }
@@ -346,7 +328,7 @@ bool TimeSignatureEventsGroupRemoveAction::perform()
 bool TimeSignatureEventsGroupRemoveAction::undo()
 {
     if (TimeSignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
         return sequence->insertGroup(this->signatures, false);
     }
@@ -391,16 +373,13 @@ void TimeSignatureEventsGroupRemoveAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Change Group
 //===----------------------------------------------------------------------===//
 
-TimeSignatureEventsGroupChangeAction::TimeSignatureEventsGroupChangeAction(ProjectTreeItem &parentProject,
-                                                                     String targetTrackId,
-                                                                     const Array<TimeSignatureEvent> state1,
-                                                                     const Array<TimeSignatureEvent> state2) :
-    UndoAction(parentProject),
+TimeSignatureEventsGroupChangeAction::TimeSignatureEventsGroupChangeAction(MidiTrackSource &source,
+    String targetTrackId, const Array<TimeSignatureEvent> state1, const Array<TimeSignatureEvent> state2) :
+    UndoAction(source),
     trackId(std::move(targetTrackId))
 {
     this->eventsBefore.addArray(state1);
@@ -410,7 +389,7 @@ TimeSignatureEventsGroupChangeAction::TimeSignatureEventsGroupChangeAction(Proje
 bool TimeSignatureEventsGroupChangeAction::perform()
 {
     if (TimeSignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
         return sequence->changeGroup(this->eventsBefore, this->eventsAfter, false);
     }
@@ -421,7 +400,7 @@ bool TimeSignatureEventsGroupChangeAction::perform()
 bool TimeSignatureEventsGroupChangeAction::undo()
 {
     if (TimeSignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
         return sequence->changeGroup(this->eventsAfter, this->eventsBefore, false);
     }
@@ -438,7 +417,7 @@ int TimeSignatureEventsGroupChangeAction::getSizeInUnits()
 UndoAction *TimeSignatureEventsGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
     if (TimeSignaturesSequence *sequence =
-        this->project.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
+        this->source.findSequenceByTrackId<TimeSignaturesSequence>(this->trackId))
     {
         if (TimeSignatureEventsGroupChangeAction *nextChanger =
             dynamic_cast<TimeSignatureEventsGroupChangeAction *>(nextAction))
@@ -454,7 +433,7 @@ UndoAction *TimeSignatureEventsGroupChangeAction::createCoalescedAction(UndoActi
             
             if (arraysContainSameEvents)
             {
-                return new TimeSignatureEventsGroupChangeAction(this->project,
+                return new TimeSignatureEventsGroupChangeAction(this->source,
                     this->trackId, this->eventsBefore, nextChanger->eventsAfter);
             }
         }
@@ -463,7 +442,6 @@ UndoAction *TimeSignatureEventsGroupChangeAction::createCoalescedAction(UndoActi
     (void) nextAction;
     return nullptr;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Serializable

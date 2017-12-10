@@ -17,11 +17,11 @@
 
 #pragma once
 
-class ProjectTreeItem;
+class MidiTrackSource;
 
 #include "PianoSequence.h"
 #include "UndoAction.h"
-
+#include "TreeItem.h"
 
 //===----------------------------------------------------------------------===//
 // Insert
@@ -31,12 +31,13 @@ class PianoTrackInsertAction : public UndoAction
 {
 public:
 
-    explicit PianoTrackInsertAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    PianoTrackInsertAction(MidiTrackSource &source,
+        WeakReference<TreeItem> parentTreeItem);
 
-    PianoTrackInsertAction(ProjectTreeItem &project,
-                           String serializedState,
-                           String xPath);
+    PianoTrackInsertAction(MidiTrackSource &source,
+        WeakReference<TreeItem> parentTreeItem,
+        String serializedState,
+        String xPath);
 
     bool perform() override;
     bool undo() override;
@@ -47,6 +48,8 @@ public:
     void reset() override;
     
 private:
+
+    WeakReference<TreeItem> parentTreeItem;
 
     String trackId;
     
@@ -56,7 +59,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE(PianoTrackInsertAction)
 };
 
-
 //===----------------------------------------------------------------------===//
 // Remove
 //===----------------------------------------------------------------------===//
@@ -65,11 +67,12 @@ class PianoTrackRemoveAction : public UndoAction
 {
 public:
 
-    explicit PianoTrackRemoveAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    PianoTrackRemoveAction(MidiTrackSource &source,
+        WeakReference<TreeItem> parentTreeItem);
     
-    PianoTrackRemoveAction(ProjectTreeItem &project,
-                           String trackId);
+    PianoTrackRemoveAction(MidiTrackSource &source,
+        WeakReference<TreeItem> parentTreeItem,
+        String trackId);
 
     bool perform() override;
     bool undo() override;
@@ -80,6 +83,8 @@ public:
     void reset() override;
     
 private:
+
+    WeakReference<TreeItem> parentTreeItem;
 
     String trackId;
     int numEvents;

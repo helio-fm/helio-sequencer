@@ -34,18 +34,18 @@
 
 #define MAX_TRANSACTIONS_TO_STORE 10
 
-
 struct UndoStack::ActionSet
 {
-    ActionSet (ProjectTreeItem &parentProject, String  transactionName) :
+    ActionSet(ProjectTreeItem &parentProject, String transactionName) :
     project(parentProject),
-    name(std::move(transactionName))
-    {}
+    name(std::move(transactionName)) {}
     
     bool perform() const
     {
-        for (int i = 0; i < actions.size(); ++i) {
-            if (! actions.getUnchecked(i)->perform()) {
+        for (int i = 0; i < actions.size(); ++i)
+        {
+            if (! actions.getUnchecked(i)->perform())
+            {
                 return false;
             }
         }
@@ -55,10 +55,10 @@ struct UndoStack::ActionSet
     
     bool undo() const
     {
-        //Logger::writeToLog(String(actions.size()) + " actions");
-        
-        for (int i = actions.size(); --i >= 0;) {
-            if (! actions.getUnchecked(i)->undo()) {
+        for (int i = actions.size(); --i >= 0;)
+        {
+            if (! actions.getUnchecked(i)->undo())
+            {
                 return false;
             }
         }
@@ -85,7 +85,6 @@ struct UndoStack::ActionSet
         
         for (int i = 0; i < this->actions.size(); ++i)
         {
-            // prependChildElement здесь не даст особого выигрыша (в большинстве транзакций только одно событие), а только запутает
             xml->addChildElement(this->actions.getUnchecked(i)->serialize());
         }
         
@@ -115,10 +114,10 @@ struct UndoStack::ActionSet
     
     UndoAction *createUndoActionsByTagName(const String &tagName)
     {
-        if      (tagName == Serialization::Undo::pianoTrackInsertAction)                { return new PianoTrackInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::pianoTrackRemoveAction)                { return new PianoTrackRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::automationTrackInsertAction)           { return new AutomationTrackInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::automationTrackRemoveAction)           { return new AutomationTrackRemoveAction(this->project); }
+        if      (tagName == Serialization::Undo::pianoTrackInsertAction)                { return new PianoTrackInsertAction(this->project, &this->project); }
+        else if (tagName == Serialization::Undo::pianoTrackRemoveAction)                { return new PianoTrackRemoveAction(this->project, &this->project); }
+        else if (tagName == Serialization::Undo::automationTrackInsertAction)           { return new AutomationTrackInsertAction(this->project, &this->project); }
+        else if (tagName == Serialization::Undo::automationTrackRemoveAction)           { return new AutomationTrackRemoveAction(this->project, &this->project); }
         else if (tagName == Serialization::Undo::midiTrackRenameAction)                 { return new MidiTrackRenameAction(this->project); }
         else if (tagName == Serialization::Undo::midiTrackChangeColourAction)           { return new MidiTrackChangeColourAction(this->project); }
         else if (tagName == Serialization::Undo::midiTrackChangeInstrumentAction)       { return new MidiTrackChangeInstrumentAction(this->project); }
@@ -167,25 +166,17 @@ struct UndoStack::ActionSet
     ProjectTreeItem &project;
 };
 
-//==============================================================================
 UndoStack::UndoStack (ProjectTreeItem &parentProject,
-                      const int maxNumberOfUnitsToKeep,
-                      const int minimumTransactions) :
-project(parentProject),
-totalUnitsStored(0),
-nextIndex(0),
-newTransaction(true),
-reentrancyCheck(false)
-{
-    setMaxNumberOfStoredUnits (maxNumberOfUnitsToKeep,
-                               minimumTransactions);
-}
+    const int maxNumberOfUnitsToKeep,
+    const int minimumTransactions) :
+    project(parentProject),
+    totalUnitsStored(0),
+    nextIndex(0),
+    newTransaction(true),
+    reentrancyCheck(false),
+    maxNumUnitsToKeep(maxNumberOfUnitsToKeep),
+    minimumTransactionsToKeep(minimumTransactions) {}
 
-UndoStack::~UndoStack()
-{
-}
-
-//==============================================================================
 void UndoStack::clearUndoHistory()
 {
     transactions.clear();
@@ -194,24 +185,12 @@ void UndoStack::clearUndoHistory()
     sendChangeMessage();
 }
 
-int UndoStack::getNumberOfUnitsTakenUpByStoredCommands() const
-{
-    return totalUnitsStored;
-}
-
-void UndoStack::setMaxNumberOfStoredUnits (const int maxNumberOfUnitsToKeep,
-                                           const int minimumTransactions)
-{
-    maxNumUnitsToKeep          = jmax (1, maxNumberOfUnitsToKeep);
-    minimumTransactionsToKeep  = jmax (1, minimumTransactions);
-}
-
-//==============================================================================
 bool UndoStack::perform (UndoAction* const newAction, const String& actionName)
 {
     if (perform (newAction))
     {
-        if (actionName.isNotEmpty()) {
+        if (actionName.isNotEmpty())
+        {
             setCurrentTransactionName (actionName);
         }
         
@@ -221,7 +200,7 @@ bool UndoStack::perform (UndoAction* const newAction, const String& actionName)
     return false;
 }
 
-bool UndoStack::perform (UndoAction* const newAction)
+bool UndoStack::perform (UndoAction *const newAction)
 {
     if (newAction != nullptr)
     {
@@ -236,22 +215,16 @@ bool UndoStack::perform (UndoAction* const newAction)
         
         if (action->perform())
         {
-            ActionSet* actionSet = getCurrentSet();
-            
-            //Logger::writeToLog("size before " + String(actionSet->actions.size()));
+            ActionSet *actionSet = getCurrentSet();
             
             if (actionSet != nullptr && ! newTransaction)
             {
-                // здесь имеет смысл пробежаться по всему стеку, вызывая createCoalescedAction,
-                // так как если в транзакции повторяются несколько разнородных событий,
-                // то стек будет распухать
                 for (signed int i = (actionSet->actions.size() - 1); i >= 0; --i)
                 {
                     if (UndoAction *const lastAction = actionSet->actions[i])
                     {
                         if (UndoAction *const coalescedAction = lastAction->createCoalescedAction(action))
                         {
-                            //Logger::writeToLog("createCoalescedAction");
                             action = coalescedAction;
                             totalUnitsStored -= lastAction->getSizeInUnits();
                             actionSet->actions.remove(i);
@@ -259,17 +232,6 @@ bool UndoStack::perform (UndoAction* const newAction)
                         }
                     }
                 }
-                
-                //if (UndoAction* const lastAction = actionSet->actions.getLast())
-                //{
-                //    if (UndoAction* const coalescedAction = lastAction->createCoalescedAction (action))
-                //    {
-                //        Logger::writeToLog("remove last");
-                //        action = coalescedAction;
-                //        totalUnitsStored -= lastAction->getSizeInUnits();
-                //        actionSet->actions.removeLast();
-                //    }
-                //}
             }
             else
             {
@@ -334,7 +296,6 @@ void UndoStack::setCurrentTransactionName (const String& newName) noexcept
     }
 }
 
-//==============================================================================
 UndoStack::ActionSet* UndoStack::getCurrentSet() const noexcept     { return transactions [nextIndex - 1]; }
 UndoStack::ActionSet* UndoStack::getNextSet() const noexcept        { return transactions [nextIndex]; }
 
@@ -425,7 +386,6 @@ int UndoStack::getNumActionsInCurrentTransaction() const
     
     return 0;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Serializable

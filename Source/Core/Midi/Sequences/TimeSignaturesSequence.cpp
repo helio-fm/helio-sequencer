@@ -20,6 +20,7 @@
 #include "Note.h"
 #include "TimeSignatureEventActions.h"
 #include "SerializationKeys.h"
+#include "ProjectTreeItem.h"
 #include "UndoStack.h"
 
 TimeSignaturesSequence::TimeSignaturesSequence(MidiTrack &track,

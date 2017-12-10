@@ -46,11 +46,12 @@ class Pattern;
 #include "ProjectSequencesWrapper.h"
 #include "HybridRollEditMode.h"
 #include "MidiSequence.h"
+#include "MidiTrackSource.h"
 
-// todo depends on AudioCore
 class ProjectTreeItem :
     public TreeItem,
     public DocumentOwner,
+    public MidiTrackSource,
     public VCS::TrackedItemsSource,  // vcs stuff
     public ChangeListener // subscribed to VersionControl
 {
@@ -114,31 +115,6 @@ public:
     void undo();
     void redo();
     void clearUndoHistory();
-
-    Pattern *findPatternByTrackId(const String &uuid);
-
-    template<typename T>
-    T *findSequenceByTrackId(const String &trackId)
-    {
-        this->rebuildSequencesHashIfNeeded();
-        return dynamic_cast<T *>(this->sequencesHash[trackId].get());
-    }
-
-    template<typename T>
-    T *findTrackById(const String &uuid) const
-    {
-        Array<T *> allChildren = this->findChildrenOfType<T>();
-        
-        for (int i = 0; i < allChildren.size(); ++i)
-        {
-            if (allChildren.getUnchecked(i)->getTrackId().toString() == uuid)
-            {
-                return allChildren.getUnchecked(i);
-            }
-        }
-        
-        return nullptr;
-    }
 
     //===------------------------------------------------------------------===//
     // Accessors
@@ -216,6 +192,14 @@ protected:
     void onDocumentImport(File &file) override;
     bool onDocumentExport(File &file) override;
 
+    //===------------------------------------------------------------------===//
+    // MidiTrackSource
+    //===------------------------------------------------------------------===//
+
+    MidiTrack *getTrackById(const String &trackId) override;
+    Pattern *getPatternByTrackId(const String &trackId) override;
+    MidiSequence *getSequenceByTrackId(const String &trackId) override;
+
 private:
 
     void collectTracks(Array<MidiTrack *> &resultArray, bool onlySelected = false) const;
@@ -254,7 +238,7 @@ private:
     ScopedPointer<UndoStack> undoStack;
 
     bool isLayersHashOutdated;
-    HashMap<String, WeakReference<MidiSequence> > sequencesHash;
+    SparseHashMap<String, WeakReference<MidiSequence>, StringHash> sequencesHash;
 
     void rebuildSequencesHashIfNeeded();
 

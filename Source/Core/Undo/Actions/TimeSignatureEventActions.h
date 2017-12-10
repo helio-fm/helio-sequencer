@@ -18,7 +18,7 @@
 #pragma once
 
 class TimeSignaturesSequence;
-class ProjectTreeItem;
+class MidiTrackSource;
 
 #include "TimeSignatureEvent.h"
 #include "UndoAction.h"
@@ -32,10 +32,10 @@ class TimeSignatureEventInsertAction : public UndoAction
 {
 public:
     
-    explicit TimeSignatureEventInsertAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit TimeSignatureEventInsertAction(MidiTrackSource &source) :
+    UndoAction(source) {}
 
-    TimeSignatureEventInsertAction(ProjectTreeItem &project,
+    TimeSignatureEventInsertAction(MidiTrackSource &source,
                                    String trackId,
                                    const TimeSignatureEvent &target);
 
@@ -64,10 +64,10 @@ class TimeSignatureEventRemoveAction : public UndoAction
 {
 public:
     
-    explicit TimeSignatureEventRemoveAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit TimeSignatureEventRemoveAction(MidiTrackSource &source) :
+    UndoAction(source) {}
 
-    TimeSignatureEventRemoveAction(ProjectTreeItem &project,
+    TimeSignatureEventRemoveAction(MidiTrackSource &source,
                                    String trackId,
                                    const TimeSignatureEvent &target);
 
@@ -96,10 +96,10 @@ class TimeSignatureEventChangeAction : public UndoAction
 {
 public:
     
-    explicit TimeSignatureEventChangeAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit TimeSignatureEventChangeAction(MidiTrackSource &source) :
+    UndoAction(source) {}
 
-    TimeSignatureEventChangeAction(ProjectTreeItem &project,
+    TimeSignatureEventChangeAction(MidiTrackSource &source,
                                    String trackId,
                                    const TimeSignatureEvent &target,
                                    const TimeSignatureEvent &newParameters);
@@ -133,10 +133,10 @@ class TimeSignatureEventsGroupInsertAction : public UndoAction
 {
 public:
     
-    explicit TimeSignatureEventsGroupInsertAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit TimeSignatureEventsGroupInsertAction(MidiTrackSource &source) :
+    UndoAction(source) {}
     
-    TimeSignatureEventsGroupInsertAction(ProjectTreeItem &project,
+    TimeSignatureEventsGroupInsertAction(MidiTrackSource &source,
                                          String trackId,
                                          Array<TimeSignatureEvent> &target);
     
@@ -166,10 +166,10 @@ class TimeSignatureEventsGroupRemoveAction : public UndoAction
 {
 public:
     
-    explicit TimeSignatureEventsGroupRemoveAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit TimeSignatureEventsGroupRemoveAction(MidiTrackSource &source) :
+    UndoAction(source) {}
     
-    TimeSignatureEventsGroupRemoveAction(ProjectTreeItem &project,
+    TimeSignatureEventsGroupRemoveAction(MidiTrackSource &source,
                                          String trackId,
                                          Array<TimeSignatureEvent> &target);
     
@@ -199,10 +199,10 @@ class TimeSignatureEventsGroupChangeAction : public UndoAction
 {
 public:
     
-    explicit TimeSignatureEventsGroupChangeAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit TimeSignatureEventsGroupChangeAction(MidiTrackSource &source) :
+    UndoAction(source) {}
 
-    TimeSignatureEventsGroupChangeAction(ProjectTreeItem &project,
+    TimeSignatureEventsGroupChangeAction(MidiTrackSource &source,
                                          String trackId,
                                          const Array<TimeSignatureEvent> state1,
                                          const Array<TimeSignatureEvent> state2);

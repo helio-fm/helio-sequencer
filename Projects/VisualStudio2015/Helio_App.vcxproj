@@ -2362,6 +2362,7 @@
     <ClInclude Include="..\..\Source\Core\Tree\InstrumentsRootTreeItem.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\InstrumentTreeItem.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\MidiTrackTreeItem.h"/>
+    <ClInclude Include="..\..\Source\Core\Tree\MidiTrackSource.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\PatternEditorTreeItem.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\PianoTrackTreeItem.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\ProjectInfo.h"/>

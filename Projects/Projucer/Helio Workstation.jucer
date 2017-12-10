@@ -404,6 +404,8 @@
                 file="../../Source/Core/Tree/MidiTrackTreeItem.cpp"/>
           <FILE id="TIdQYG" name="MidiTrackTreeItem.h" compile="0" resource="0"
                 file="../../Source/Core/Tree/MidiTrackTreeItem.h"/>
+          <FILE id="wvDyFy" name="MidiTrackSource.h" compile="0" resource="0"
+                file="../../Source/Core/Tree/MidiTrackSource.h"/>
           <FILE id="UWSr5u" name="PatternEditorTreeItem.cpp" compile="1" resource="0"
                 file="../../Source/Core/Tree/PatternEditorTreeItem.cpp"/>
           <FILE id="ALNCy6" name="PatternEditorTreeItem.h" compile="0" resource="0"

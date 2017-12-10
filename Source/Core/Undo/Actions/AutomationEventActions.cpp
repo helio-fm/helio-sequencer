@@ -18,28 +18,23 @@
 #include "Common.h"
 #include "AutomationEventActions.h"
 #include "AutomationSequence.h"
-#include "ProjectTreeItem.h"
+#include "MidiTrackSource.h"
 #include "SerializationKeys.h"
-
 
 //===----------------------------------------------------------------------===//
 // Insert
 //===----------------------------------------------------------------------===//
 
-AutomationEventInsertAction::AutomationEventInsertAction(ProjectTreeItem &parentProject,
-                                                         String targetTrackId,
-                                                         const AutomationEvent &event) :
-    UndoAction(parentProject),
+AutomationEventInsertAction::AutomationEventInsertAction(MidiTrackSource &source,
+    String targetTrackId, const AutomationEvent &event) :
+    UndoAction(source),
     trackId(std::move(targetTrackId)),
-    event(event)
-{
-
-}
+    event(event) {}
 
 bool AutomationEventInsertAction::perform()
 {
     if (AutomationSequence *sequence =
-        this->project.findSequenceByTrackId<AutomationSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return (sequence->insert(this->event, false) != nullptr);
     }
@@ -50,7 +45,7 @@ bool AutomationEventInsertAction::perform()
 bool AutomationEventInsertAction::undo()
 {
     if (AutomationSequence *sequence =
-        this->project.findSequenceByTrackId<AutomationSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return sequence->remove(this->event, false);
     }
@@ -83,25 +78,20 @@ void AutomationEventInsertAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Remove
 //===----------------------------------------------------------------------===//
 
-AutomationEventRemoveAction::AutomationEventRemoveAction(ProjectTreeItem &parentProject,
-                                                         String targetTrackId,
-                                                         const AutomationEvent &target) :
-    UndoAction(parentProject),
+AutomationEventRemoveAction::AutomationEventRemoveAction(MidiTrackSource &source,
+    String targetTrackId, const AutomationEvent &target) :
+    UndoAction(source),
     trackId(std::move(targetTrackId)),
-    event(target)
-{
-
-}
+    event(target) {}
 
 bool AutomationEventRemoveAction::perform()
 {
     if (AutomationSequence *sequence =
-        this->project.findSequenceByTrackId<AutomationSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return sequence->remove(this->event, false);
     }
@@ -112,7 +102,7 @@ bool AutomationEventRemoveAction::perform()
 bool AutomationEventRemoveAction::undo()
 {
     if (AutomationSequence *sequence =
-        this->project.findSequenceByTrackId<AutomationSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return (sequence->insert(this->event, false) != nullptr);
     }
@@ -145,27 +135,21 @@ void AutomationEventRemoveAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Change
 //===----------------------------------------------------------------------===//
 
-AutomationEventChangeAction::AutomationEventChangeAction(ProjectTreeItem &parentProject,
-                                                         String targetTrackId,
-                                                         const AutomationEvent &target,
-                                                         const AutomationEvent &newParameters) :
-    UndoAction(parentProject),
+AutomationEventChangeAction::AutomationEventChangeAction(MidiTrackSource &source,
+    String targetTrackId, const AutomationEvent &target, const AutomationEvent &newParameters) :
+    UndoAction(source),
     trackId(std::move(targetTrackId)),
     eventBefore(target),
-    eventAfter(newParameters)
-{
-
-}
+    eventAfter(newParameters) {}
 
 bool AutomationEventChangeAction::perform()
 {
     if (AutomationSequence *sequence =
-        this->project.findSequenceByTrackId<AutomationSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return sequence->change(this->eventBefore, this->eventAfter, false);
     }
@@ -176,7 +160,7 @@ bool AutomationEventChangeAction::perform()
 bool AutomationEventChangeAction::undo()
 {
     if (AutomationSequence *sequence =
-        this->project.findSequenceByTrackId<AutomationSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return sequence->change(this->eventAfter, this->eventBefore, false);
     }
@@ -192,7 +176,7 @@ int AutomationEventChangeAction::getSizeInUnits()
 UndoAction *AutomationEventChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
     if (AutomationSequence *sequence =
-        this->project.findSequenceByTrackId<AutomationSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         if (AutomationEventChangeAction *nextChanger =
             dynamic_cast<AutomationEventChangeAction *>(nextAction))
@@ -203,7 +187,7 @@ UndoAction *AutomationEventChangeAction::createCoalescedAction(UndoAction *nextA
             
             if (idsAreEqual)
             {
-                return new AutomationEventChangeAction(this->project,
+                return new AutomationEventChangeAction(this->source,
                     this->trackId, this->eventBefore, nextChanger->eventAfter);
             }
         }
@@ -247,15 +231,13 @@ void AutomationEventChangeAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Insert Group
 //===----------------------------------------------------------------------===//
 
-AutomationEventsGroupInsertAction::AutomationEventsGroupInsertAction(ProjectTreeItem &parentProject,
-                                                                     String targetLayerId,
-                                                                     Array<AutomationEvent> &target) :
-    UndoAction(parentProject),
+AutomationEventsGroupInsertAction::AutomationEventsGroupInsertAction(MidiTrackSource &source,
+    String targetLayerId, Array<AutomationEvent> &target) :
+    UndoAction(source),
     trackId(std::move(targetLayerId))
 {
     this->events.swapWith(target);
@@ -264,7 +246,7 @@ AutomationEventsGroupInsertAction::AutomationEventsGroupInsertAction(ProjectTree
 bool AutomationEventsGroupInsertAction::perform()
 {
     if (AutomationSequence *sequence =
-        this->project.findSequenceByTrackId<AutomationSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return sequence->insertGroup(this->events, false);
     }
@@ -275,7 +257,7 @@ bool AutomationEventsGroupInsertAction::perform()
 bool AutomationEventsGroupInsertAction::undo()
 {
     if (AutomationSequence *sequence =
-        this->project.findSequenceByTrackId<AutomationSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return sequence->removeGroup(this->events, false);
     }
@@ -320,15 +302,13 @@ void AutomationEventsGroupInsertAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Remove Group
 //===----------------------------------------------------------------------===//
 
-AutomationEventsGroupRemoveAction::AutomationEventsGroupRemoveAction(ProjectTreeItem &parentProject,
-                                                                     String targetTrackId,
-                                                                     Array<AutomationEvent> &target) :
-    UndoAction(parentProject),
+AutomationEventsGroupRemoveAction::AutomationEventsGroupRemoveAction(MidiTrackSource &source,
+    String targetTrackId, Array<AutomationEvent> &target) :
+    UndoAction(source),
     trackId(std::move(targetTrackId))
 {
     this->events.swapWith(target);
@@ -337,7 +317,7 @@ AutomationEventsGroupRemoveAction::AutomationEventsGroupRemoveAction(ProjectTree
 bool AutomationEventsGroupRemoveAction::perform()
 {
     if (AutomationSequence *sequence =
-        this->project.findSequenceByTrackId<AutomationSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return sequence->removeGroup(this->events, false);
     }
@@ -348,7 +328,7 @@ bool AutomationEventsGroupRemoveAction::perform()
 bool AutomationEventsGroupRemoveAction::undo()
 {
     if (AutomationSequence *sequence =
-        this->project.findSequenceByTrackId<AutomationSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return sequence->insertGroup(this->events, false);
     }
@@ -393,16 +373,13 @@ void AutomationEventsGroupRemoveAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Change Group
 //===----------------------------------------------------------------------===//
 
-AutomationEventsGroupChangeAction::AutomationEventsGroupChangeAction(ProjectTreeItem &parentProject,
-                                                                     String targetTrackId,
-                                                                     const Array<AutomationEvent> state1,
-                                                                     const Array<AutomationEvent> state2) :
-    UndoAction(parentProject),
+AutomationEventsGroupChangeAction::AutomationEventsGroupChangeAction(MidiTrackSource &source,
+    String targetTrackId, const Array<AutomationEvent> state1, const Array<AutomationEvent> state2) :
+    UndoAction(source),
     trackId(std::move(targetTrackId))
 {
     this->eventsBefore.addArray(state1);
@@ -412,7 +389,7 @@ AutomationEventsGroupChangeAction::AutomationEventsGroupChangeAction(ProjectTree
 bool AutomationEventsGroupChangeAction::perform()
 {
     if (AutomationSequence *sequence =
-        this->project.findSequenceByTrackId<AutomationSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return sequence->changeGroup(this->eventsBefore, this->eventsAfter, false);
     }
@@ -423,7 +400,7 @@ bool AutomationEventsGroupChangeAction::perform()
 bool AutomationEventsGroupChangeAction::undo()
 {
     if (AutomationSequence *sequence =
-        this->project.findSequenceByTrackId<AutomationSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         return sequence->changeGroup(this->eventsAfter, this->eventsBefore, false);
     }
@@ -440,7 +417,7 @@ int AutomationEventsGroupChangeAction::getSizeInUnits()
 UndoAction *AutomationEventsGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
     if (AutomationSequence *sequence =
-        this->project.findSequenceByTrackId<AutomationSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AutomationSequence>(this->trackId))
     {
         if (AutomationEventsGroupChangeAction *nextChanger =
             dynamic_cast<AutomationEventsGroupChangeAction *>(nextAction))
@@ -457,7 +434,7 @@ UndoAction *AutomationEventsGroupChangeAction::createCoalescedAction(UndoAction 
             
             if (arraysContainSameNotes)
             {
-                return new AutomationEventsGroupChangeAction(this->project,
+                return new AutomationEventsGroupChangeAction(this->source,
                     this->trackId, this->eventsBefore, nextChanger->eventsAfter);
             }
         }
@@ -466,7 +443,6 @@ UndoAction *AutomationEventsGroupChangeAction::createCoalescedAction(UndoAction 
     (void) nextAction;
     return nullptr;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Serializable

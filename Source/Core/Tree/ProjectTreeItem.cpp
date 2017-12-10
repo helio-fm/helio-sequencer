@@ -220,13 +220,6 @@ HybridRoll *ProjectTreeItem::getLastFocusedRoll() const
 //    return nullptr;
 }
 
-Pattern *ProjectTreeItem::findPatternByTrackId(const String &uuid)
-{
-    // TODO implement
-    return nullptr;
-}
-
-
 Colour ProjectTreeItem::getColour() const
 {
     return Colour(0xffa489ff);
@@ -916,6 +909,36 @@ void ProjectTreeItem::exportMidi(File &file) const
     tempFile.writeTo(*out);
 }
 
+//===----------------------------------------------------------------------===//
+// MidiTrackSource
+//===----------------------------------------------------------------------===//
+
+MidiTrack *ProjectTreeItem::getTrackById(const String &trackId)
+{
+    Array<MidiTrackTreeItem *> allChildren = this->findChildrenOfType<MidiTrackTreeItem>();
+
+    for (int i = 0; i < allChildren.size(); ++i)
+    {
+        if (allChildren.getUnchecked(i)->getTrackId().toString() == trackId)
+        {
+            return allChildren.getUnchecked(i);
+        }
+    }
+
+    return nullptr;
+}
+
+Pattern *ProjectTreeItem::getPatternByTrackId(const String &uuid)
+{
+    // TODO!
+    return nullptr;
+}
+
+MidiSequence *ProjectTreeItem::getSequenceByTrackId(const String &trackId)
+{
+    this->rebuildSequencesHashIfNeeded();
+    return this->sequencesHash[trackId].get();
+}
 
 //===----------------------------------------------------------------------===//
 // VCS::TrackedItemsSource
@@ -1010,21 +1033,21 @@ void ProjectTreeItem::rebuildSequencesHashIfNeeded()
     {
         this->sequencesHash.clear();
 
-        this->sequencesHash.set(this->timeline->getAnnotations()->getTrackId().toString(), 
-            this->timeline->getAnnotations()->getSequence());
+        this->sequencesHash[this->timeline->getAnnotations()->getTrackId().toString()] =
+            this->timeline->getAnnotations()->getSequence();
 
-        this->sequencesHash.set(this->timeline->getKeySignatures()->getTrackId().toString(),
-            this->timeline->getKeySignatures()->getSequence());
+        this->sequencesHash[this->timeline->getKeySignatures()->getTrackId().toString()] =
+            this->timeline->getKeySignatures()->getSequence();
 
-        this->sequencesHash.set(this->timeline->getTimeSignatures()->getTrackId().toString(),
-            this->timeline->getTimeSignatures()->getSequence());
+        this->sequencesHash[this->timeline->getTimeSignatures()->getTrackId().toString()] =
+            this->timeline->getTimeSignatures()->getSequence();
         
-        Array<MidiTrack *> children = this->findChildrenOfType<MidiTrack>();
+        const Array<MidiTrack *> children = this->findChildrenOfType<MidiTrack>();
         
         for (int i = 0; i < children.size(); ++i)
         {
             const MidiTrack *track = children.getUnchecked(i);
-            this->sequencesHash.set(track->getTrackId().toString(), track->getSequence());
+            this->sequencesHash[track->getTrackId().toString()] = track->getSequence();
         }
         
         this->isLayersHashOutdated = false;

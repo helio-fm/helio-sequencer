@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "AnnotationEventActions.h"
 #include "AnnotationsSequence.h"
-#include "ProjectTreeItem.h"
+#include "MidiTrackSource.h"
 #include "SerializationKeys.h"
 
 
@@ -26,19 +26,16 @@
 // Insert
 //===----------------------------------------------------------------------===//
 
-AnnotationEventInsertAction::AnnotationEventInsertAction(ProjectTreeItem &parentProject,
-                                                         String targetTrackId,
-                                                         const AnnotationEvent &event) :
-    UndoAction(parentProject),
+AnnotationEventInsertAction::AnnotationEventInsertAction(MidiTrackSource &source,
+    String targetTrackId, const AnnotationEvent &event) :
+    UndoAction(source),
     trackId(std::move(targetTrackId)),
-    event(event)
-{
-}
+    event(event) {}
 
 bool AnnotationEventInsertAction::perform()
 {
     if (AnnotationsSequence *sequence =
-        this->project.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
         return (sequence->insert(this->event, false) != nullptr);
     }
@@ -49,7 +46,7 @@ bool AnnotationEventInsertAction::perform()
 bool AnnotationEventInsertAction::undo()
 {
     if (AnnotationsSequence *sequence =
-        this->project.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
         return sequence->remove(this->event, false);
     }
@@ -82,24 +79,20 @@ void AnnotationEventInsertAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Remove
 //===----------------------------------------------------------------------===//
 
-AnnotationEventRemoveAction::AnnotationEventRemoveAction(ProjectTreeItem &parentProject,
-                                                         String targetTrackId,
-                                                         const AnnotationEvent &target) :
-    UndoAction(parentProject),
+AnnotationEventRemoveAction::AnnotationEventRemoveAction(MidiTrackSource &source,
+    String targetTrackId, const AnnotationEvent &target) :
+    UndoAction(source),
     trackId(std::move(targetTrackId)),
-    event(target)
-{
-}
+    event(target) {}
 
 bool AnnotationEventRemoveAction::perform()
 {
     if (AnnotationsSequence *sequence =
-        this->project.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
         return sequence->remove(this->event, false);
     }
@@ -110,7 +103,7 @@ bool AnnotationEventRemoveAction::perform()
 bool AnnotationEventRemoveAction::undo()
 {
     if (AnnotationsSequence *sequence =
-        this->project.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
         return (sequence->insert(this->event, false) != nullptr);
     }
@@ -143,26 +136,21 @@ void AnnotationEventRemoveAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Change
 //===----------------------------------------------------------------------===//
 
-AnnotationEventChangeAction::AnnotationEventChangeAction(ProjectTreeItem &parentProject,
-                                                         String targetTrackId,
-                                                         const AnnotationEvent &target,
-                                                         const AnnotationEvent &newParameters) :
-    UndoAction(parentProject),
+AnnotationEventChangeAction::AnnotationEventChangeAction(MidiTrackSource &source,
+    String targetTrackId, const AnnotationEvent &target, const AnnotationEvent &newParameters) :
+    UndoAction(source),
     trackId(std::move(targetTrackId)),
     eventBefore(target),
-    eventAfter(newParameters)
-{
-}
+    eventAfter(newParameters) {}
 
 bool AnnotationEventChangeAction::perform()
 {
     if (AnnotationsSequence *sequence =
-        this->project.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
         return sequence->change(this->eventBefore, this->eventAfter, false);
     }
@@ -173,7 +161,7 @@ bool AnnotationEventChangeAction::perform()
 bool AnnotationEventChangeAction::undo()
 {
     if (AnnotationsSequence *sequence =
-        this->project.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
         return sequence->change(this->eventAfter, this->eventBefore, false);
     }
@@ -189,7 +177,7 @@ int AnnotationEventChangeAction::getSizeInUnits()
 UndoAction *AnnotationEventChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
     if (AnnotationsSequence *sequence =
-        this->project.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
         if (AnnotationEventChangeAction *nextChanger =
             dynamic_cast<AnnotationEventChangeAction *>(nextAction))
@@ -200,7 +188,7 @@ UndoAction *AnnotationEventChangeAction::createCoalescedAction(UndoAction *nextA
             
             if (idsAreEqual)
             {
-                return new AnnotationEventChangeAction(this->project,
+                return new AnnotationEventChangeAction(this->source,
                     this->trackId, this->eventBefore, nextChanger->eventAfter);
             }
         }
@@ -244,15 +232,13 @@ void AnnotationEventChangeAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Insert Group
 //===----------------------------------------------------------------------===//
 
-AnnotationEventsGroupInsertAction::AnnotationEventsGroupInsertAction(ProjectTreeItem &parentProject,
-                                                                     String targetTrackId,
-                                                                     Array<AnnotationEvent> &target) :
-    UndoAction(parentProject),
+AnnotationEventsGroupInsertAction::AnnotationEventsGroupInsertAction(MidiTrackSource &source,
+    String targetTrackId, Array<AnnotationEvent> &target) :
+    UndoAction(source),
     trackId(std::move(targetTrackId))
 {
     this->annotations.swapWith(target);
@@ -261,7 +247,7 @@ AnnotationEventsGroupInsertAction::AnnotationEventsGroupInsertAction(ProjectTree
 bool AnnotationEventsGroupInsertAction::perform()
 {
     if (AnnotationsSequence *sequence =
-        this->project.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
         return sequence->insertGroup(this->annotations, false);
     }
@@ -272,7 +258,7 @@ bool AnnotationEventsGroupInsertAction::perform()
 bool AnnotationEventsGroupInsertAction::undo()
 {
     if (AnnotationsSequence *sequence =
-        this->project.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
         return sequence->removeGroup(this->annotations, false);
     }
@@ -317,15 +303,13 @@ void AnnotationEventsGroupInsertAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Remove Group
 //===----------------------------------------------------------------------===//
 
-AnnotationEventsGroupRemoveAction::AnnotationEventsGroupRemoveAction(ProjectTreeItem &parentProject,
-                                                                     String targetTrackId,
-                                                                     Array<AnnotationEvent> &target) :
-    UndoAction(parentProject),
+AnnotationEventsGroupRemoveAction::AnnotationEventsGroupRemoveAction(MidiTrackSource &source,
+    String targetTrackId, Array<AnnotationEvent> &target) :
+    UndoAction(source),
     trackId(std::move(targetTrackId))
 {
     this->annotations.swapWith(target);
@@ -334,7 +318,7 @@ AnnotationEventsGroupRemoveAction::AnnotationEventsGroupRemoveAction(ProjectTree
 bool AnnotationEventsGroupRemoveAction::perform()
 {
     if (AnnotationsSequence *sequence =
-        this->project.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
         return sequence->removeGroup(this->annotations, false);
     }
@@ -345,7 +329,7 @@ bool AnnotationEventsGroupRemoveAction::perform()
 bool AnnotationEventsGroupRemoveAction::undo()
 {
     if (AnnotationsSequence *sequence =
-        this->project.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
         return sequence->insertGroup(this->annotations, false);
     }
@@ -390,16 +374,13 @@ void AnnotationEventsGroupRemoveAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Change Group
 //===----------------------------------------------------------------------===//
 
-AnnotationEventsGroupChangeAction::AnnotationEventsGroupChangeAction(ProjectTreeItem &parentProject,
-                                                                     String targetTrackId,
-                                                                     const Array<AnnotationEvent> state1,
-                                                                     const Array<AnnotationEvent> state2) :
-    UndoAction(parentProject),
+AnnotationEventsGroupChangeAction::AnnotationEventsGroupChangeAction(MidiTrackSource &source,
+    String targetTrackId, const Array<AnnotationEvent> state1, const Array<AnnotationEvent> state2) :
+    UndoAction(source),
     trackId(std::move(targetTrackId))
 {
     this->eventsBefore.addArray(state1);
@@ -409,7 +390,7 @@ AnnotationEventsGroupChangeAction::AnnotationEventsGroupChangeAction(ProjectTree
 bool AnnotationEventsGroupChangeAction::perform()
 {
     if (AnnotationsSequence *sequence =
-        this->project.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
         return sequence->changeGroup(this->eventsBefore, this->eventsAfter, false);
     }
@@ -420,7 +401,7 @@ bool AnnotationEventsGroupChangeAction::perform()
 bool AnnotationEventsGroupChangeAction::undo()
 {
     if (AnnotationsSequence *sequence =
-        this->project.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
         return sequence->changeGroup(this->eventsAfter, this->eventsBefore, false);
     }
@@ -437,7 +418,7 @@ int AnnotationEventsGroupChangeAction::getSizeInUnits()
 UndoAction *AnnotationEventsGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
     if (AnnotationsSequence *sequence =
-        this->project.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
+        this->source.findSequenceByTrackId<AnnotationsSequence>(this->trackId))
     {
         if (AnnotationEventsGroupChangeAction *nextChanger =
             dynamic_cast<AnnotationEventsGroupChangeAction *>(nextAction))
@@ -454,7 +435,7 @@ UndoAction *AnnotationEventsGroupChangeAction::createCoalescedAction(UndoAction 
             
             if (arraysContainSameEvents)
             {
-                return new AnnotationEventsGroupChangeAction(this->project,
+                return new AnnotationEventsGroupChangeAction(this->source,
                     this->trackId, this->eventsBefore, nextChanger->eventsAfter);
             }
         }
@@ -463,7 +444,6 @@ UndoAction *AnnotationEventsGroupChangeAction::createCoalescedAction(UndoAction 
     (void) nextAction;
     return nullptr;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Serializable

@@ -18,7 +18,7 @@
 #pragma once
 
 class AnnotationsSequence;
-class ProjectTreeItem;
+class MidiTrackSource;
 
 #include "AnnotationEvent.h"
 #include "UndoAction.h"
@@ -32,10 +32,10 @@ class AnnotationEventInsertAction : public UndoAction
 {
 public:
     
-    explicit AnnotationEventInsertAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AnnotationEventInsertAction(MidiTrackSource &source) :
+    UndoAction(source) {}
 
-    AnnotationEventInsertAction(ProjectTreeItem &project,
+    AnnotationEventInsertAction(MidiTrackSource &source,
                                 String trackId,
                                 const AnnotationEvent &target);
 
@@ -64,10 +64,10 @@ class AnnotationEventRemoveAction : public UndoAction
 {
 public:
     
-    explicit AnnotationEventRemoveAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AnnotationEventRemoveAction(MidiTrackSource &source) :
+    UndoAction(source) {}
 
-    AnnotationEventRemoveAction(ProjectTreeItem &project,
+    AnnotationEventRemoveAction(MidiTrackSource &source,
                                 String trackId,
                                 const AnnotationEvent &target);
 
@@ -96,13 +96,13 @@ class AnnotationEventChangeAction : public UndoAction
 {
 public:
     
-    explicit AnnotationEventChangeAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AnnotationEventChangeAction(MidiTrackSource &source) :
+    UndoAction(source) {}
 
-    AnnotationEventChangeAction(ProjectTreeItem &project,
-                                String trackId,
-                                const AnnotationEvent &target,
-                                const AnnotationEvent &newParameters);
+    AnnotationEventChangeAction(MidiTrackSource &source,
+        String trackId,
+        const AnnotationEvent &target,
+        const AnnotationEvent &newParameters);
 
     bool perform() override;
     bool undo() override;
@@ -133,10 +133,10 @@ class AnnotationEventsGroupInsertAction : public UndoAction
 {
 public:
     
-    explicit AnnotationEventsGroupInsertAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AnnotationEventsGroupInsertAction(MidiTrackSource &source) :
+    UndoAction(source) {}
     
-    AnnotationEventsGroupInsertAction(ProjectTreeItem &project,
+    AnnotationEventsGroupInsertAction(MidiTrackSource &source,
                                       String trackId,
                                       Array<AnnotationEvent> &target);
     
@@ -166,10 +166,10 @@ class AnnotationEventsGroupRemoveAction : public UndoAction
 {
 public:
     
-    explicit AnnotationEventsGroupRemoveAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AnnotationEventsGroupRemoveAction(MidiTrackSource &source) :
+    UndoAction(source) {}
     
-    AnnotationEventsGroupRemoveAction(ProjectTreeItem &project,
+    AnnotationEventsGroupRemoveAction(MidiTrackSource &source,
                                       String trackId,
                                       Array<AnnotationEvent> &target);
     
@@ -199,10 +199,10 @@ class AnnotationEventsGroupChangeAction : public UndoAction
 {
 public:
     
-    explicit AnnotationEventsGroupChangeAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AnnotationEventsGroupChangeAction(MidiTrackSource &source) :
+    UndoAction(source) {}
 
-    AnnotationEventsGroupChangeAction(ProjectTreeItem &project,
+    AnnotationEventsGroupChangeAction(MidiTrackSource &source,
                                       String trackId,
                                       const Array<AnnotationEvent> state1,
                                       const Array<AnnotationEvent> state2);

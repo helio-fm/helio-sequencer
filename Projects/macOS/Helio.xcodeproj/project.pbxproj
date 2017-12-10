@@ -469,6 +469,7 @@
 		20E0F00CDD59C33423F22B2E = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LogoutThread.h; path = ../../Source/Core/Network/LogoutThread.h; sourceTree = "SOURCE_ROOT"; };
 		20F688409E591413D72D8F6B = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = InstrumentEditorPin.cpp; path = ../../Source/UI/Pages/Instruments/Editor/InstrumentEditorPin.cpp; sourceTree = "SOURCE_ROOT"; };
 		2169E2BB39478EFE564BE7AA = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = InitScreen.cpp; path = ../../Source/UI/Pages/Intro/InitScreen.cpp; sourceTree = "SOURCE_ROOT"; };
+		220A24F76867F3482C18702E = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MidiTrackSource.h; path = ../../Source/Core/Tree/MidiTrackSource.h; sourceTree = "SOURCE_ROOT"; };
 		220F852BD955D68095E99674 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = NoteComponent.cpp; path = ../../Source/UI/Sequencer/PianoRoll/NoteComponent.cpp; sourceTree = "SOURCE_ROOT"; };
 		2214B6080F2E5F0491991107 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PatternActions.h; path = ../../Source/Core/Undo/Actions/PatternActions.h; sourceTree = "SOURCE_ROOT"; };
 		2232FA7E284ABDCE49EF2D6F = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ScaleEditor.cpp; path = ../../Source/UI/Common/ScaleEditor.cpp; sourceTree = "SOURCE_ROOT"; };
@@ -1465,6 +1466,7 @@
 					617733922973680C6528FE0D,
 					02ECE269F4418B511DA43CDF,
 					706BDC114DE8BBB2DFFDF555,
+					220A24F76867F3482C18702E,
 					AB7ECAD67957AA7CC536478E,
 					1C819BCEC56DF1E901B6392F,
 					FBCC59ADFE9587E2203E1863,
