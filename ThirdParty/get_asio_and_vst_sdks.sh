@@ -9,7 +9,7 @@ echo Downloading SDKs..
 if [ ! -d "./VST_SDK/VST3_SDK" ]; then
     wget -w 1 -r -np -nd -nv http://www.steinberg.net/sdk_downloads/vstsdk367_03_03_2017_build_352.zip
     unzip ./vstsdk367_03_03_2017_build_352.zip
-    pushd VST_SDK
+    pushd ./VST_SDK
     ./copy_vst2_to_vst3_sdk.sh 
     popd
     rm ./vstsdk367_03_03_2017_build_352.zip
@@ -18,7 +18,10 @@ fi
 if [ ! -d "./ASIO/common" ]; then
     wget -w 1 -r -np -nd -nv http://www.steinberg.net/sdk_downloads/asiosdk2.3.zip
     unzip ./asiosdk2.3.zip
-    mv ASIOSDK2.3 ASIO
+    if [ -d "./ASIO" ]; then
+    	rm -rf ./ASIO
+    fi
+    mv ./ASIOSDK2.3 ./ASIO
     rm ./asiosdk2.3.zip
 fi
 
