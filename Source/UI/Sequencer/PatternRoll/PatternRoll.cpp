@@ -58,7 +58,6 @@
 //    }
 //}
 
-
 PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
     Viewport &viewportRef,
     WeakReference<AudioMonitor> clippingDetector) :
@@ -74,8 +73,8 @@ PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
 
 PatternRoll::~PatternRoll()
 {
+    this->clearRollContent();
 }
-
 
 void PatternRoll::deleteSelection()
 {
@@ -140,16 +139,22 @@ void PatternRoll::selectAll()
     // TODO
 }
 
+void PatternRoll::clearRollContent()
+{
+    OwnedArray<ClipComponent> deleters;
+    for (const auto &e : this->componentsMap)
+    {
+        deleters.add(e.second);
+    }
+
+    this->componentsMap.clear();
+}
+
 void PatternRoll::reloadRollContent()
 {
     this->selection.deselectAll();
 
-    for (const auto &e : this->componentsMap)
-    {
-        this->removeChildComponent(e.second);
-    }
-
-    this->componentsMap.clear();
+    this->clearRollContent();
 
     for (auto track : this->tracks)
     {
@@ -345,10 +350,9 @@ void PatternRoll::onRemoveTrack(MidiTrack *const track)
         for (int i = 0; i < pattern->size(); ++i)
         {
             const Clip &clip = pattern->getUnchecked(i);
-            if (ClipComponent *component = this->componentsMap[clip])
+            if (ScopedPointer<ClipComponent> componentDeleter = this->componentsMap[clip])
             {
-                this->selection.deselect(component);
-                this->removeChildComponent(component);
+                this->selection.deselect(componentDeleter);
                 this->componentsMap.erase(clip);
             }
         }
@@ -404,12 +408,10 @@ void PatternRoll::onChangeClip(const Clip &clip, const Clip &newClip)
 
 void PatternRoll::onRemoveClip(const Clip &clip)
 {
-    if (ClipComponent *component = this->componentsMap[clip])
+    if (ScopedPointer<ClipComponent> componentDeleter = this->componentsMap[clip])
     {
-        this->fader.fadeOut(component, 150);
-        this->selection.deselect(component);
-
-        this->removeChildComponent(component);
+        this->fader.fadeOut(componentDeleter, 150);
+        this->selection.deselect(componentDeleter);
         this->componentsMap.erase(clip);
     }
 }

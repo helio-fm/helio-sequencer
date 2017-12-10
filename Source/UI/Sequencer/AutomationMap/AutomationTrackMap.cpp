@@ -292,8 +292,8 @@ void AutomationTrackMap::onChangeMidiEvent(const MidiEvent &oldEvent, const Midi
                 nextEventComponent->setNextNeighbour(this->getNextEventComponent(indexOfSorted + 1));
             }
             
-            this->eventsHash.remove(autoEvent);
-            this->eventsHash.set(newAutoEvent, component);
+            this->eventsHash.erase(autoEvent);
+            this->eventsHash[newAutoEvent] = component;
             
             if (indexOfSorted == 0 || indexOfSorted == 1)
             {
@@ -327,7 +327,7 @@ void AutomationTrackMap::onAddMidiEvent(const MidiEvent &event)
             previousEventComponent->setNextNeighbour(component);
         }
 
-        this->eventsHash.set(autoEvent, component);
+        this->eventsHash[autoEvent] = component;
         
         if (indexOfSorted == 0)
         {
@@ -352,9 +352,9 @@ void AutomationTrackMap::onRemoveMidiEvent(const MidiEvent &event)
         {
             //this->eventAnimator.fadeOut(component, 150);
             this->removeChildComponent(component);
-            this->eventsHash.remove(autoEvent);
+            this->eventsHash.erase(autoEvent);
             
-            // update links and connectors for neighbours
+            // update links and connectors for neighbors
             const int indexOfSorted = this->eventComponents.indexOfSorted(*component, component);
             AutomationEventComponent *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
             AutomationEventComponent *nextEventComponent(this->getNextEventComponent(indexOfSorted));
@@ -408,6 +408,14 @@ void AutomationTrackMap::onChangeProjectBeatRange(float firstBeat, float lastBea
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
+
+    if (this->rollFirstBeat > firstBeat ||
+        this->rollLastBeat < lastBeat)
+    {
+        this->rollFirstBeat = firstBeat;
+        this->rollLastBeat = lastBeat;
+        this->resized();
+    }
 
     // move first event to the first projects's beat
 //    if (AutomationSequence *autoLayer = dynamic_cast<AutomationSequence *>(this->layer.get()))
@@ -476,7 +484,7 @@ void AutomationTrackMap::reloadTrack()
                 previousEventComponent->setNextNeighbour(component);
             }
             
-            this->eventsHash.set(*autoEvent, component);
+            this->eventsHash[*autoEvent] = component;
         }
     }
     

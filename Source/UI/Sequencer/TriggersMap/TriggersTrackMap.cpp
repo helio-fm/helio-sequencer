@@ -271,8 +271,8 @@ void TriggersTrackMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEv
                 { oneMoreNext->setPreviousNeighbour(nextEventComponent); }
             }
             
-            this->eventsHash.remove(autoEvent);
-            this->eventsHash.set(newAutoEvent, component);
+            this->eventsHash.erase(autoEvent);
+            this->eventsHash[newAutoEvent] = component;
             
             if (indexOfSorted == 0 || indexOfSorted == 1)
             {
@@ -309,7 +309,7 @@ void TriggersTrackMap::onAddMidiEvent(const MidiEvent &event)
         if (nextEventComponent)
         { nextEventComponent->setPreviousNeighbour(component); }
 
-        this->eventsHash.set(autoEvent, component);
+        this->eventsHash[autoEvent] = component;
         
         if (indexOfSorted == 0)
         {
@@ -328,9 +328,9 @@ void TriggersTrackMap::onRemoveMidiEvent(const MidiEvent &event)
         {
             //this->eventAnimator.fadeOut(component, 150);
             this->removeChildComponent(component);
-            this->eventsHash.remove(autoEvent);
+            this->eventsHash.erase(autoEvent);
             
-            // update links and connectors for neighbours
+            // update links and connectors for neighbors
             const int indexOfSorted = this->eventComponents.indexOfSorted(*component, component);
             TriggerEventComponent *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
             TriggerEventComponent *nextEventComponent(this->getNextEventComponent(indexOfSorted));
@@ -385,6 +385,14 @@ void TriggersTrackMap::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
+
+    if (this->rollFirstBeat > firstBeat ||
+        this->rollLastBeat < lastBeat)
+    {
+        this->rollFirstBeat = firstBeat;
+        this->rollLastBeat = lastBeat;
+        this->resized();
+    }
 }
 
 void TriggersTrackMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
@@ -444,7 +452,7 @@ void TriggersTrackMap::reloadTrack()
             if (nextEventComponent)
             { nextEventComponent->setPreviousNeighbour(component); }
 
-            this->eventsHash.set(*autoEvent, component);
+            this->eventsHash[*autoEvent] = component;
         }
     }
     

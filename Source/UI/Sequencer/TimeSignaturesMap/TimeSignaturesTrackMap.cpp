@@ -129,8 +129,8 @@ void TimeSignaturesTrackMap<T>::onChangeMidiEvent(const MidiEvent &oldEvent, con
         {
             this->alignTimeSignatureComponent(component);
 
-            this->timeSignaturesHash.remove(timeSignature);
-            this->timeSignaturesHash.set(newTimeSignature, component);
+            this->timeSignaturesHash.erase(timeSignature);
+            this->timeSignaturesHash[newTimeSignature] = component;
         }
     }
 }
@@ -185,7 +185,7 @@ void TimeSignaturesTrackMap<T>::onAddMidiEvent(const MidiEvent &event)
         if (previousEventComponent)
         { this->applyTimeSignatureBounds(previousEventComponent, component); }
 
-        this->timeSignaturesHash.set(timeSignature, component);
+        this->timeSignaturesHash[timeSignature] = component;
 
         component->setAlpha(0.f);
         const Rectangle<int> bounds(component->getBounds());
@@ -209,7 +209,7 @@ void TimeSignaturesTrackMap<T>::onRemoveMidiEvent(const MidiEvent &event)
                                             0.f, 250, true, 0.0, 0.0);
 
             this->removeChildComponent(component);
-            this->timeSignaturesHash.remove(timeSignature);
+            this->timeSignaturesHash.erase(timeSignature);
 
             const int indexOfSorted = this->timeSignatureComponents.indexOfSorted(*component, component);
             T *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
@@ -267,7 +267,7 @@ void TimeSignaturesTrackMap<T>::onRemoveTrack(MidiTrack *const track)
             if (T *component = this->timeSignaturesHash[timeSignature])
             {
                 this->removeChildComponent(component);
-                this->timeSignaturesHash.removeValue(component);
+                this->timeSignaturesHash.erase(timeSignature);
                 this->timeSignatureComponents.removeObject(component, true);
             }
         }
@@ -279,7 +279,18 @@ void TimeSignaturesTrackMap<T>::onChangeProjectBeatRange(float firstBeat, float 
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
-    this->updateTrackRangeIndicatorsAnchors();
+
+    if (this->rollFirstBeat > firstBeat ||
+        this->rollLastBeat < lastBeat)
+    {
+        this->rollFirstBeat = firstBeat;
+        this->rollLastBeat = lastBeat;
+        this->resized();
+    }
+    else
+    {
+        this->updateTrackRangeIndicatorsAnchors();
+    }
 }
 
 template<typename T>
@@ -410,7 +421,7 @@ void TimeSignaturesTrackMap<T>::reloadTrackMap()
             component->updateContent();
 
             this->timeSignatureComponents.addSorted(*component, component);
-            this->timeSignaturesHash.set(*timeSignature, component);
+            this->timeSignaturesHash[*timeSignature] = component;
         }
     }
 

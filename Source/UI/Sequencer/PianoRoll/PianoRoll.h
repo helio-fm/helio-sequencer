@@ -53,7 +53,6 @@ public:
 
     void deleteSelection();
     
-    void reloadRollContent() override;
     int getNumActiveLayers() const noexcept;
     MidiSequence *getActiveMidiLayer(int index) const noexcept;
     MidiSequence *getPrimaryActiveMidiLayer() const noexcept;
@@ -180,6 +179,9 @@ private:
 
 private:
 
+    void clearRollContent();
+    void reloadRollContent();
+    
     void updateChildrenBounds() override;
     void updateChildrenPositions() override;
 
@@ -250,10 +252,10 @@ private:
     ScopedPointer<NoteResizerLeft> noteResizerLeft;
     ScopedPointer<NoteResizerRight> noteResizerRight;
     
-    typedef SparseHashMap<Note, NoteComponent *, NoteHashFunction> EventComponentsMap;
+    typedef SparseHashMap<Note, NoteComponent *, MidiEventHash> EventComponentsMap;
     EventComponentsMap componentsMap;
 
-    //typedef SparseHashMap<Clip, EventComponentsMap, ClipHashFunction> ClipsMap;
+    typedef SparseHashMap<Clip, EventComponentsMap, ClipHashFunction> ClipsMap;
     //EventComponentsMap clipsMap;
 
 };

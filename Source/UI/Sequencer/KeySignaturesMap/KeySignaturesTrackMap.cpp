@@ -104,8 +104,8 @@ void KeySignaturesTrackMap<T>::onChangeMidiEvent(const MidiEvent &oldEvent, cons
         if (T *component = this->keySignaturesHash[keySignature])
         {
             this->alignKeySignatureComponent(component);
-            this->keySignaturesHash.remove(keySignature);
-            this->keySignaturesHash.set(newKeySignature, component);
+            this->keySignaturesHash.erase(keySignature);
+            this->keySignaturesHash[newKeySignature] = component;
         }
     }
 }
@@ -159,7 +159,7 @@ void KeySignaturesTrackMap<T>::onAddMidiEvent(const MidiEvent &event)
         if (previousEventComponent)
         { this->applyKeySignatureBounds(previousEventComponent, component); }
 
-        this->keySignaturesHash.set(keySignature, component);
+        this->keySignaturesHash[keySignature] = component;
 
         component->setAlpha(0.f);
         const Rectangle<int> bounds(component->getBounds());
@@ -182,7 +182,7 @@ void KeySignaturesTrackMap<T>::onRemoveMidiEvent(const MidiEvent &event)
                                             0.f, 250, true, 0.0, 0.0);
 
             this->removeChildComponent(component);
-            this->keySignaturesHash.remove(keySignature);
+            this->keySignaturesHash.erase(keySignature);
 
             const int indexOfSorted = this->keySignatureComponents.indexOfSorted(*component, component);
             T *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
@@ -240,7 +240,7 @@ void KeySignaturesTrackMap<T>::onRemoveTrack(MidiTrack *const track)
             if (T *component = this->keySignaturesHash[keySignature])
             {
                 this->removeChildComponent(component);
-                this->keySignaturesHash.removeValue(component);
+                this->keySignaturesHash.erase(keySignature);
                 this->keySignatureComponents.removeObject(component, true);
             }
         }
@@ -252,6 +252,14 @@ void KeySignaturesTrackMap<T>::onChangeProjectBeatRange(float firstBeat, float l
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
+
+    if (this->rollFirstBeat > firstBeat ||
+        this->rollLastBeat < lastBeat)
+    {
+        this->rollFirstBeat = firstBeat;
+        this->rollLastBeat = lastBeat;
+        this->resized();
+    }
 }
 
 template<typename T>
@@ -380,7 +388,7 @@ void KeySignaturesTrackMap<T>::reloadTrackMap()
         component->updateContent();
 
         this->keySignatureComponents.addSorted(*component, component);
-        this->keySignaturesHash.set(*keySignature, component);
+        this->keySignaturesHash[*keySignature] = component;
     }
 
     this->resized();

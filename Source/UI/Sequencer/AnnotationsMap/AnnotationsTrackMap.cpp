@@ -105,8 +105,8 @@ void AnnotationsTrackMap<T>::onChangeMidiEvent(const MidiEvent &oldEvent, const 
         {
             this->alignAnnotationComponent(component);
 
-            this->annotationsHash.remove(annotation);
-            this->annotationsHash.set(newAnnotation, component);
+            this->annotationsHash.erase(annotation);
+            this->annotationsHash[newAnnotation] = component;
         }
     }
 }
@@ -160,7 +160,7 @@ void AnnotationsTrackMap<T>::onAddMidiEvent(const MidiEvent &event)
         if (previousEventComponent)
         { this->applyAnnotationBounds(previousEventComponent, component); }
 
-        this->annotationsHash.set(annotation, component);
+        this->annotationsHash[annotation] = component;
 
         component->setAlpha(0.f);
         const Rectangle<int> bounds(component->getBounds());
@@ -183,7 +183,7 @@ void AnnotationsTrackMap<T>::onRemoveMidiEvent(const MidiEvent &event)
                                             0.f, 250, true, 0.0, 0.0);
 
             this->removeChildComponent(component);
-            this->annotationsHash.remove(annotation);
+            this->annotationsHash.erase(annotation);
 
             const int indexOfSorted = this->annotationComponents.indexOfSorted(*component, component);
             T *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
@@ -234,7 +234,7 @@ void AnnotationsTrackMap<T>::onRemoveTrack(MidiTrack *const track)
             if (T *component = this->annotationsHash[annotation])
             {
                 this->removeChildComponent(component);
-                this->annotationsHash.removeValue(component);
+                this->annotationsHash.erase(annotation);
                 this->annotationComponents.removeObject(component, true);
             }
         }
@@ -246,6 +246,14 @@ void AnnotationsTrackMap<T>::onChangeProjectBeatRange(float firstBeat, float las
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
+
+    if (this->rollFirstBeat > firstBeat ||
+        this->rollLastBeat < lastBeat)
+    {
+        this->rollFirstBeat = firstBeat;
+        this->rollLastBeat = lastBeat;
+        this->resized();
+    }
 }
 
 template<typename T>
@@ -383,7 +391,7 @@ void AnnotationsTrackMap<T>::reloadTrackMap()
             component->updateContent();
 
             this->annotationComponents.addSorted(*component, component);
-            this->annotationsHash.set(*annotation, component);
+            this->annotationsHash[*annotation] = component;
         }
     }
 

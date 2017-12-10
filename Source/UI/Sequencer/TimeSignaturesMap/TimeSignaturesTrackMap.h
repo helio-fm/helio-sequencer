@@ -97,7 +97,7 @@ private:
     ComponentAnimator animator;
 
     OwnedArray<T> timeSignatureComponents;
-    HashMap<TimeSignatureEvent, T *, TimeSignatureEventHashFunction> timeSignaturesHash;
+    SparseHashMap<TimeSignatureEvent, T *, MidiEventHash> timeSignaturesHash;
     
 };
 

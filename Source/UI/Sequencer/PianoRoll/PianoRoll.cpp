@@ -83,6 +83,7 @@ PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
 
 PianoRoll::~PianoRoll()
 {
+    this->clearRollContent();
 }
 
 void PianoRoll::deleteSelection()
@@ -138,20 +139,26 @@ void PianoRoll::deleteSelection()
     }
 }
 
-void PianoRoll::reloadRollContent()
-{
-    this->selection.deselectAll();
 
+void PianoRoll::clearRollContent()
+{
+    OwnedArray<NoteComponent> deleters;
     for (const auto &e : this->componentsMap)
     {
-        this->removeChildComponent(e.second);
+        deleters.add(e.second);
     }
 
     this->componentsMap.clear();
+}
+
+void PianoRoll::reloadRollContent()
+{
+    this->selection.deselectAll();
     this->backgroundsCache.clear();
 
-    const auto &tracks = this->project.getTracks();
+    this->clearRollContent();
 
+    const auto &tracks = this->project.getTracks();
     for (auto track : tracks)
     {
         for (int j = 0; j < track->getSequence()->size(); ++j)
@@ -448,13 +455,10 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
     {
         const Note &note = static_cast<const Note &>(oldEvent);
         const Note &newNote = static_cast<const Note &>(newEvent);
-
         if (NoteComponent *component = this->componentsMap[note])
         {
-            //component->repaint(); // если делать так - будут дикие тормоза, поэтому:
-            this->batchRepaintList.add(component);
+            this->batchRepaintList.add(component); // instead of component->repaint();
             this->triggerAsyncUpdate();
-
             this->componentsMap.erase(note);
             this->componentsMap[newNote] = component;
         }
@@ -468,7 +472,6 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
         {
             this->removeBackgroundCacheFor(oldKey);
             this->updateBackgroundCacheFor(newKey);
-            //this->cleanupStaleBackgroundCaches();
         }
         this->repaint();
     }
@@ -521,13 +524,10 @@ void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
     if (event.isTypeOf(MidiEvent::Note))
     {
         const Note &note = static_cast<const Note &>(event);
-        if (NoteComponent *component = this->componentsMap[note])
+        if (ScopedPointer<NoteComponent> deletedComponent = this->componentsMap[note])
         {
-            this->fader.fadeOut(component, 150);
-
-            this->selection.deselect(component);
-
-            this->removeChildComponent(component); // O(N)
+            this->fader.fadeOut(deletedComponent, 150);
+            this->selection.deselect(deletedComponent);
             this->componentsMap.erase(note);
         }
     }
@@ -535,7 +535,6 @@ void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
     {
         const KeySignatureEvent &key = static_cast<const KeySignatureEvent &>(event);
         this->removeBackgroundCacheFor(key);
-        //this->cleanupStaleBackgroundCaches();
         this->repaint();
     }
 }
@@ -559,14 +558,16 @@ void PianoRoll::onAddTrack(MidiTrack *const track)
 {
     for (int j = 0; j < track->getSequence()->size(); ++j)
     {
-        MidiEvent *event = track->getSequence()->getUnchecked(j);
+        const MidiEvent *const event = track->getSequence()->getUnchecked(j);
         if (event->isTypeOf(MidiEvent::Note))
         {
-            Note *note = static_cast<Note *>(event);
+            const Note *const note = static_cast<const Note *const>(event);
             auto noteComponent = new NoteComponent(*this, *note);
 
             const bool belongsToActiveTrack = noteComponent->belongsToAnySequence(this->activeLayers);
             noteComponent->setActive(belongsToActiveTrack, true);
+
+            this->componentsMap[*note] = noteComponent;
 
             this->addAndMakeVisible(noteComponent);
         }
@@ -578,10 +579,6 @@ void PianoRoll::onAddTrack(MidiTrack *const track)
     }
 }
 
-// The problem here is O(N) removal
-// We may assume all enabled components are midi event components?
-//
-
 void PianoRoll::onRemoveTrack(MidiTrack *const track)
 {
     this->selection.deselectAll();
@@ -592,13 +589,10 @@ void PianoRoll::onRemoveTrack(MidiTrack *const track)
         if (event->isTypeOf(MidiEvent::KeySignature))
         {
             const Note &note = static_cast<const Note &>(*event);
-            if (NoteComponent *component = this->componentsMap[note])
+            if (ScopedPointer<NoteComponent> componentDeleter = this->componentsMap[note])
             {
-                this->fader.fadeOut(component, 150);
-
-                this->selection.deselect(component);
-
-                this->removeChildComponent(component); // O(N)
+                this->fader.fadeOut(componentDeleter, 150);
+                this->selection.deselect(componentDeleter);
                 this->componentsMap.erase(note);
             }
         }
@@ -606,7 +600,6 @@ void PianoRoll::onRemoveTrack(MidiTrack *const track)
         {
             const KeySignatureEvent &key = static_cast<const KeySignatureEvent &>(*event);
             this->removeBackgroundCacheFor(key);
-            //this->cleanupStaleBackgroundCaches();
             this->repaint();
         }
     }
@@ -1021,14 +1014,10 @@ void PianoRoll::handleCommandMessage(int commandId)
         this->deleteSelection();
         break;
     case CommandIDs::Undo:
-        HYBRID_ROLL_BULK_REPAINT_START
         this->project.undo();
-        HYBRID_ROLL_BULK_REPAINT_END
         break;
     case CommandIDs::Redo:
-        HYBRID_ROLL_BULK_REPAINT_START
         this->project.redo();
-        HYBRID_ROLL_BULK_REPAINT_END
         break;
     case CommandIDs::StartDragViewport:
         this->header->setSoundProbeMode(true);
@@ -1187,6 +1176,11 @@ void PianoRoll::resized()
     for (const auto &e : this->componentsMap)
     {
         NoteComponent *const component = e.second;
+        component->setFloatBounds(this->getEventBounds(component));
+    }
+
+    for (const auto component : this->ghostNotes)
+    {
         component->setFloatBounds(this->getEventBounds(component));
     }
 

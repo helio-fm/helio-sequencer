@@ -720,18 +720,22 @@ void ProjectTreeItem::removeAllListeners()
 
 void ProjectTreeItem::broadcastChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
+    jassert(oldEvent.isValid());
+    jassert(newEvent.isValid());
     this->changeListeners.call(&ProjectListener::onChangeMidiEvent, oldEvent, newEvent);
     this->sendChangeMessage();
 }
 
 void ProjectTreeItem::broadcastAddEvent(const MidiEvent &event)
 {
+    jassert(event.isValid());
     this->changeListeners.call(&ProjectListener::onAddMidiEvent, event);
     this->sendChangeMessage();
 }
 
 void ProjectTreeItem::broadcastRemoveEvent(const MidiEvent &event)
 {
+    jassert(event.isValid());
     this->changeListeners.call(&ProjectListener::onRemoveMidiEvent, event);
     this->sendChangeMessage();
 }

@@ -44,7 +44,6 @@ public:
 
     void deleteSelection();
     void selectAll() override;
-    void reloadRollContent() override;
     int getNumRows() const noexcept;
 
     //===------------------------------------------------------------------===//
@@ -133,6 +132,9 @@ public:
     void repaintBackgroundsCache();
 
 private:
+
+    void clearRollContent();
+    void reloadRollContent();
 
     void insertNewClipAt(const MouseEvent &e);
     

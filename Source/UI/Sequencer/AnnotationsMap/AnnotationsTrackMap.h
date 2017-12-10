@@ -94,6 +94,6 @@ private:
     ComponentAnimator animator;
 
     OwnedArray<T> annotationComponents;
-    HashMap<AnnotationEvent, T *, AnnotationEventHashFunction> annotationsHash;
+    SparseHashMap<AnnotationEvent, T *, MidiEventHash> annotationsHash;
     
 };

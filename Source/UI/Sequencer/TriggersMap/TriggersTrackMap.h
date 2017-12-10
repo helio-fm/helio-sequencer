@@ -101,6 +101,6 @@ private:
     ScopedPointer<TriggerEventConnector> leadingConnector;
 
     OwnedArray<TriggerEventComponent> eventComponents;
-    HashMap<AutomationEvent, TriggerEventComponent *, AutomationEventHashFunction> eventsHash;
+    SparseHashMap<AutomationEvent, TriggerEventComponent *, MidiEventHash> eventsHash;
     
 };
