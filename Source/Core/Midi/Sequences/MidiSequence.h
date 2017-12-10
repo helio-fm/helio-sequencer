@@ -111,6 +111,7 @@ public:
     // Helpers
     //===------------------------------------------------------------------===//
 
+    String createUniqueEventId() const noexcept;
     String getTrackId() const noexcept;
     int getChannel() const noexcept;
 
@@ -126,9 +127,6 @@ private:
 
 protected:
 
-    // clearQuick the arrays and don't send any notifications
-    virtual void clearQuick() {}
-
     float lastEndBeat;
     float lastStartBeat;
     
@@ -136,6 +134,7 @@ protected:
     UndoStack *getUndoStack();
 
     OwnedArray<MidiEvent> midiEvents;
+    SparseHashSet<MidiEvent::Id, StringHash> usedEventIds;
     
 private:
 

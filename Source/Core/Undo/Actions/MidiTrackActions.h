@@ -17,7 +17,7 @@
 
 #pragma once
 
-class ProjectTreeItem;
+class MidiTrackSource;
 
 #include "UndoAction.h"
 
@@ -29,10 +29,10 @@ class MidiTrackRenameAction : public UndoAction
 {
 public:
 
-    explicit MidiTrackRenameAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit MidiTrackRenameAction(MidiTrackSource &source) :
+    UndoAction(source) {}
     
-    MidiTrackRenameAction(ProjectTreeItem &project,
+    MidiTrackRenameAction(MidiTrackSource &source,
                           String trackId,
                           String newXPath);
 
@@ -62,10 +62,10 @@ class MidiTrackChangeColourAction : public UndoAction
 {
 public:
 
-    explicit MidiTrackChangeColourAction(ProjectTreeItem &project) :
-        UndoAction(project) {}
+    explicit MidiTrackChangeColourAction(MidiTrackSource &source) :
+        UndoAction(source) {}
 
-    MidiTrackChangeColourAction(ProjectTreeItem &project,
+    MidiTrackChangeColourAction(MidiTrackSource &source,
                                 String trackId,
                                 const Colour &newColour);
 
@@ -96,10 +96,10 @@ class MidiTrackChangeInstrumentAction : public UndoAction
 {
 public:
 
-    explicit MidiTrackChangeInstrumentAction(ProjectTreeItem &project) :
-        UndoAction(project) {}
+    explicit MidiTrackChangeInstrumentAction(MidiTrackSource &source) :
+        UndoAction(source) {}
 
-    MidiTrackChangeInstrumentAction(ProjectTreeItem &project,
+    MidiTrackChangeInstrumentAction(MidiTrackSource &source,
                                     String trackId,
                                     String newInstrumentId);
 
@@ -130,10 +130,10 @@ class MidiTrackMuteAction : public UndoAction
 {
 public:
 
-    explicit MidiTrackMuteAction(ProjectTreeItem &project) :
-        UndoAction(project) {}
+    explicit MidiTrackMuteAction(MidiTrackSource &source) :
+        UndoAction(source) {}
 
-    MidiTrackMuteAction(ProjectTreeItem &project,
+    MidiTrackMuteAction(MidiTrackSource &source,
                         String trackId,
                         bool shouldBeMuted);
 

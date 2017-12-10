@@ -59,6 +59,7 @@ private:
 
     void applyNoteBounds(TrackMapNoteComponent *nc);
     void reloadTrackMap();
+    void clearTrackMap();
 
     float projectFirstBeat;
     float projectLastBeat;
@@ -71,7 +72,7 @@ private:
     HybridRoll &roll;
     ProjectTreeItem &project;
     
-    OwnedArray<TrackMapNoteComponent> eventComponents;
-    HashMap<Note, TrackMapNoteComponent *, NoteHashFunction> componentsHashTable;
+    SparseHashMap<Note, TrackMapNoteComponent *, MidiEventHash> componentsMap;
     
+    JUCE_LEAK_DETECTOR(PianoTrackMap)
 };

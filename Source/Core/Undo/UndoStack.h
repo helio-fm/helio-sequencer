@@ -17,9 +17,9 @@
 
 #pragma once
 
-class UndoAction;
 class ProjectTreeItem;
 
+#include "UndoAction.h"
 #include "Serializable.h"
 
 class UndoStack : public ChangeBroadcaster, public Serializable
@@ -27,17 +27,11 @@ class UndoStack : public ChangeBroadcaster, public Serializable
 public:
 
     explicit UndoStack(ProjectTreeItem &parentProject,
-              int maxNumberOfUnitsToKeep = 30000,
-              int minimumTransactionsToKeep = 30);
-
-    ~UndoStack() override;
+        int maxNumberOfUnitsToKeep = 30000,
+        int minimumTransactionsToKeep = 30);
     
     void clearUndoHistory();
-    
-    int getNumberOfUnitsTakenUpByStoredCommands() const;
-    void setMaxNumberOfStoredUnits(int maxNumberOfUnitsToKeep,
-                                   int minimumTransactionsToKeep);
-    
+
     bool perform(UndoAction *action);
     bool perform(UndoAction *action, const String &actionName);
     
@@ -51,9 +45,6 @@ public:
     bool undo();
     bool undoCurrentTransactionOnly();
     
-    void getActionsInCurrentTransaction(Array<const UndoAction *> &actionsFound) const;
-    int getNumActionsInCurrentTransaction() const;
-    
     bool canRedo() const noexcept;
     String getRedoDescription() const;
     bool redo();
@@ -64,10 +55,30 @@ public:
     
 private:
 
+    void getActionsInCurrentTransaction(Array<const UndoAction *> &actionsFound) const;
+    int getNumActionsInCurrentTransaction() const;
+
     ProjectTreeItem &project;
     
-    struct ActionSet;
-    friend struct ContainerDeletePolicy<ActionSet>;
+    struct ActionSet
+    {
+        ActionSet(ProjectTreeItem &parentProject, String transactionName);
+
+        bool perform() const;
+        bool undo() const;
+        int getTotalSize() const;
+
+        XmlElement *serialize() const;
+        void deserialize(const XmlElement &xml);
+        void reset();
+
+        UndoAction *createUndoActionsByTagName(const String &tagName);
+
+        OwnedArray<UndoAction> actions;
+        String name;
+
+        ProjectTreeItem &project;
+    };
     
     OwnedArray<ActionSet> transactions;
     String newTransactionName;

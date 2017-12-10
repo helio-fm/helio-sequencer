@@ -17,11 +17,11 @@
 
 #pragma once
 
-class ProjectTreeItem;
+class MidiTrackSource;
 
 #include "AutomationSequence.h"
 #include "UndoAction.h"
-
+#include "TreeItem.h"
 
 //===----------------------------------------------------------------------===//
 // Insert
@@ -31,12 +31,13 @@ class AutomationTrackInsertAction : public UndoAction
 {
 public:
 
-    explicit AutomationTrackInsertAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    AutomationTrackInsertAction(MidiTrackSource &source,
+        WeakReference<TreeItem> parentTreeItem);
     
-    AutomationTrackInsertAction(ProjectTreeItem &project,
-                                String serializedState,
-                                String xPath);
+    AutomationTrackInsertAction(MidiTrackSource &source,
+        WeakReference<TreeItem> parentTreeItem,
+        String serializedState,
+        String xPath);
 
     bool perform() override;
     bool undo() override;
@@ -47,6 +48,8 @@ public:
     void reset() override;
     
 private:
+
+    WeakReference<TreeItem> parentTreeItem;
 
     String trackId;
     
@@ -65,11 +68,12 @@ class AutomationTrackRemoveAction : public UndoAction
 {
 public:
 
-    explicit AutomationTrackRemoveAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    AutomationTrackRemoveAction(MidiTrackSource &source,
+        WeakReference<TreeItem> parentTreeItem);
     
-    AutomationTrackRemoveAction(ProjectTreeItem &project,
-                                String trackId);
+    AutomationTrackRemoveAction(MidiTrackSource &source,
+        WeakReference<TreeItem> parentTreeItem,
+        String trackId);
 
     bool perform() override;
     bool undo() override;
@@ -80,6 +84,8 @@ public:
     void reset() override;
     
 private:
+
+    WeakReference<TreeItem> parentTreeItem;
 
     String trackId;
     int numEvents;

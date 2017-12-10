@@ -17,29 +17,31 @@
 
 #include "Common.h"
 #include "PianoTrackActions.h"
-#include "ProjectTreeItem.h"
+#include "MidiTrackSource.h"
 #include "PianoTrackTreeItem.h"
-#include "TreeItem.h"
 #include "SerializationKeys.h"
-
 
 //===----------------------------------------------------------------------===//
 // Insert
 //===----------------------------------------------------------------------===//
 
-PianoTrackInsertAction::PianoTrackInsertAction(ProjectTreeItem &parentProject,
-                                                               String targetSerializedState,
-                                                               String targetXPath) :
-    UndoAction(parentProject),
+PianoTrackInsertAction::PianoTrackInsertAction(MidiTrackSource &source,
+    WeakReference<TreeItem> parentTreeItem) :
+    UndoAction(source),
+    parentTreeItem(parentTreeItem) {}
+
+PianoTrackInsertAction::PianoTrackInsertAction(MidiTrackSource &source,
+    WeakReference<TreeItem> parentTreeItem,
+    String targetSerializedState, String targetXPath) :
+    UndoAction(source),
+    parentTreeItem(parentTreeItem),
     serializedState(std::move(targetSerializedState)),
-    trackName(std::move(targetXPath))
-{
-}
+    trackName(std::move(targetXPath)) {}
 
 bool PianoTrackInsertAction::perform()
 {
     MidiTrackTreeItem *track = new PianoTrackTreeItem("empty");
-    this->project.addChildTreeItem(track);
+    this->parentTreeItem->addChildTreeItem(track);
     
     ScopedPointer<XmlElement> trackState = XmlDocument::parse(this->serializedState);
     track->deserialize(*trackState);
@@ -53,11 +55,11 @@ bool PianoTrackInsertAction::perform()
 bool PianoTrackInsertAction::undo()
 {
     if (PianoTrackTreeItem *treeItem =
-        this->project.findTrackById<PianoTrackTreeItem>(this->trackId))
+        this->source.findTrackById<PianoTrackTreeItem>(this->trackId))
     {
         // here the item state should be the same as when it was created
         // so don't serialize anything again
-        return TreeItem::deleteItem(treeItem);
+        return this->parentTreeItem->deleteItem(treeItem);
     }
     
     return false;
@@ -91,28 +93,32 @@ void PianoTrackInsertAction::reset()
     this->serializedState.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Remove
 //===----------------------------------------------------------------------===//
 
-PianoTrackRemoveAction::PianoTrackRemoveAction(ProjectTreeItem &parentProject,
+PianoTrackRemoveAction::PianoTrackRemoveAction(MidiTrackSource &source,
+    WeakReference<TreeItem> parentTreeItem) :
+    UndoAction(source),
+    parentTreeItem(parentTreeItem) {}
+
+PianoTrackRemoveAction::PianoTrackRemoveAction(MidiTrackSource &source,
+    WeakReference<TreeItem> parentTreeItem,
     String targetTrackId) :
-    UndoAction(parentProject),
+    UndoAction(source),
+    parentTreeItem(parentTreeItem),
     trackId(std::move(targetTrackId)),
-    numEvents(0)
-{
-}
+    numEvents(0) {}
 
 bool PianoTrackRemoveAction::perform()
 {
     if (PianoTrackTreeItem *treeItem =
-        this->project.findTrackById<PianoTrackTreeItem>(this->trackId))
+        this->source.findTrackById<PianoTrackTreeItem>(this->trackId))
     {
         this->numEvents = treeItem->getSequence()->size();
         this->serializedTreeItem = treeItem->serialize();
         this->trackName = treeItem->getTrackName();
-        return TreeItem::deleteItem(treeItem);
+        return this->parentTreeItem->deleteItem(treeItem);
     }
     
     return false;
@@ -123,7 +129,7 @@ bool PianoTrackRemoveAction::undo()
     if (this->serializedTreeItem != nullptr)
     {
         MidiTrackTreeItem *track = new PianoTrackTreeItem("empty");
-        this->project.addChildTreeItem(track);
+        this->parentTreeItem->addChildTreeItem(track);
         track->deserialize(*this->serializedTreeItem);
         track->setTrackName(this->trackName);
         return true;

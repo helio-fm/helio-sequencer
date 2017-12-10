@@ -58,7 +58,6 @@
 //    }
 //}
 
-
 PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
     Viewport &viewportRef,
     WeakReference<AudioMonitor> clippingDetector) :
@@ -74,8 +73,8 @@ PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
 
 PatternRoll::~PatternRoll()
 {
+    this->clearRollContent();
 }
-
 
 void PatternRoll::deleteSelection()
 {
@@ -140,17 +139,22 @@ void PatternRoll::selectAll()
     // TODO
 }
 
+void PatternRoll::clearRollContent()
+{
+    OwnedArray<ClipComponent> deleters;
+    for (const auto &e : this->componentsMap)
+    {
+        deleters.add(e.second);
+    }
+
+    this->componentsMap.clear();
+}
+
 void PatternRoll::reloadRollContent()
 {
     this->selection.deselectAll();
 
-    for (int i = 0; i < this->eventComponents.size(); ++i)
-    {
-        this->removeChildComponent(this->eventComponents.getUnchecked(i));
-    }
-
-    this->eventComponents.clear();
-    this->componentsHashTable.clear();
+    this->clearRollContent();
 
     for (auto track : this->tracks)
     {
@@ -174,8 +178,7 @@ void PatternRoll::reloadRollContent()
 
             if (clipComponent != nullptr)
             {
-                this->eventComponents.add(clipComponent);
-                this->componentsHashTable.set(clip, clipComponent);
+                this->componentsMap[clip] = clipComponent;
                 this->addAndMakeVisible(clipComponent);
             }
         }
@@ -190,6 +193,20 @@ void PatternRoll::reloadRollContent()
 int PatternRoll::getNumRows() const noexcept
 {
     return this->tracks.size();
+}
+
+//===----------------------------------------------------------------------===//
+// HybridRoll
+//===----------------------------------------------------------------------===//
+
+void PatternRoll::setChildrenInteraction(bool interceptsMouse, MouseCursor cursor)
+{
+    for (const auto &e : this->componentsMap)
+    {
+        ClipComponent *const child = e.second;
+        child->setInterceptsMouseClicks(interceptsMouse, interceptsMouse);
+        child->setMouseCursor(cursor);
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -333,12 +350,10 @@ void PatternRoll::onRemoveTrack(MidiTrack *const track)
         for (int i = 0; i < pattern->size(); ++i)
         {
             const Clip &clip = pattern->getUnchecked(i);
-            if (ClipComponent *component = this->componentsHashTable[clip])
+            if (ScopedPointer<ClipComponent> componentDeleter = this->componentsMap[clip])
             {
-                this->selection.deselect(component);
-                this->removeChildComponent(component);
-                this->componentsHashTable.remove(clip);
-                this->eventComponents.removeObject(component, true);
+                this->selection.deselect(componentDeleter);
+                this->componentsMap.erase(clip);
             }
         }
 
@@ -373,35 +388,31 @@ void PatternRoll::onAddClip(const Clip &clip)
 
         this->fader.fadeIn(clipComponent, 150);
 
-        this->eventComponents.add(clipComponent);
         this->selectEvent(clipComponent, false);
 
-        this->componentsHashTable.set(clip, clipComponent);
+        this->componentsMap[clip] = clipComponent;
     }
 }
 
 void PatternRoll::onChangeClip(const Clip &clip, const Clip &newClip)
 {
-    if (ClipComponent *component = this->componentsHashTable[clip])
+    if (ClipComponent *component = this->componentsMap[clip])
     {
         this->batchRepaintList.add(component);
         this->triggerAsyncUpdate();
 
-        this->componentsHashTable.remove(clip);
-        this->componentsHashTable.set(newClip, component);
+        this->componentsMap.erase(clip);
+        this->componentsMap[newClip] = component;
     }
 }
 
 void PatternRoll::onRemoveClip(const Clip &clip)
 {
-    if (ClipComponent *component = this->componentsHashTable[clip])
+    if (ScopedPointer<ClipComponent> componentDeleter = this->componentsMap[clip])
     {
-        this->fader.fadeOut(component, 150);
-        this->selection.deselect(component);
-
-        this->removeChildComponent(component);
-        this->componentsHashTable.remove(clip);
-        this->eventComponents.removeObject(component, true);
+        this->fader.fadeOut(componentDeleter, 150);
+        this->selection.deselect(componentDeleter);
+        this->componentsMap.erase(clip);
     }
 }
 
@@ -415,29 +426,46 @@ void PatternRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks)
     this->reloadRollContent();
 }
 
-
 //===----------------------------------------------------------------------===//
 // LassoSource
 //===----------------------------------------------------------------------===//
+
+void PatternRoll::selectEventsInRange(float startBeat, float endBeat, bool shouldClearAllOthers)
+{
+    if (shouldClearAllOthers)
+    {
+        this->selection.deselectAll();
+    }
+
+    for (const auto &e : this->componentsMap)
+    {
+        HybridRollEventComponent *const ec = e.second;
+        if (ec->isActive() &&
+            ec->getBeat() >= startBeat &&
+            ec->getBeat() < endBeat)
+        {
+            this->selection.addToSelection(ec);
+        }
+    }
+}
 
 void PatternRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, const Rectangle<int> &rectangle)
 {
     bool shouldInvalidateSelectionCache = false;
 
-    for (int i = 0; i < this->eventComponents.size(); ++i)
+    for (const auto &e : this->componentsMap)
     {
-        ClipComponent *clip = static_cast<ClipComponent *>(this->eventComponents.getUnchecked(i));
-        clip->setSelected(this->selection.isSelected(clip));
+        ClipComponent *const component = e.second;
+        component->setSelected(this->selection.isSelected(component));
     }
 
-    for (int i = 0; i < this->eventComponents.size(); ++i)
+    for (const auto &e : this->componentsMap)
     {
-        ClipComponent *clip = static_cast<ClipComponent *>(this->eventComponents.getUnchecked(i));
-
-        if (rectangle.intersects(clip->getBounds()) && clip->isActive())
+        ClipComponent *const component = e.second;
+        if (rectangle.intersects(component->getBounds()) && component->isActive())
         {
             shouldInvalidateSelectionCache = true;
-            itemsFound.addIfNotAlreadyThere(clip);
+            itemsFound.addIfNotAlreadyThere(component);
         }
     }
 
@@ -632,10 +660,10 @@ void PatternRoll::resized()
 
     HYBRID_ROLL_BULK_REPAINT_START
 
-    for (int i = 0; i < this->eventComponents.size(); ++i)
+    for (const auto &e : this->componentsMap)
     {
-        ClipComponent *clip = static_cast<ClipComponent *>(this->eventComponents.getUnchecked(i));
-        clip->setFloatBounds(this->getEventBounds(clip));
+        ClipComponent *const component = e.second;
+        component->setFloatBounds(this->getEventBounds(component));
     }
 
     HybridRoll::resized();

@@ -17,29 +17,30 @@
 
 #include "Common.h"
 #include "AutomationTrackActions.h"
-#include "ProjectTreeItem.h"
+#include "MidiTrackSource.h"
 #include "AutomationTrackTreeItem.h"
-#include "TreeItem.h"
 #include "SerializationKeys.h"
-
 
 //===----------------------------------------------------------------------===//
 // Insert
 //===----------------------------------------------------------------------===//
 
-AutomationTrackInsertAction::AutomationTrackInsertAction(ProjectTreeItem &parentProject,
-                                                             String targetSerializedState,
-                                                             String targetXPath) :
-    UndoAction(parentProject),
+AutomationTrackInsertAction::AutomationTrackInsertAction(MidiTrackSource &source,
+    WeakReference<TreeItem> parentTreeItem) :
+    UndoAction(source), parentTreeItem(parentTreeItem) {}
+
+AutomationTrackInsertAction::AutomationTrackInsertAction(MidiTrackSource &source,
+    WeakReference<TreeItem> parentTreeItem,
+    String targetSerializedState, String targetXPath) :
+    UndoAction(source),
+    parentTreeItem(parentTreeItem),
     serializedState(std::move(targetSerializedState)),
-    trackName(std::move(targetXPath))
-{
-}
+    trackName(std::move(targetXPath)) {}
 
 bool AutomationTrackInsertAction::perform()
 {
     MidiTrackTreeItem *track = new AutomationTrackTreeItem("empty");
-    this->project.addChildTreeItem(track);
+    this->parentTreeItem->addChildTreeItem(track);
     
     ScopedPointer<XmlElement> layerState = XmlDocument::parse(this->serializedState);
     track->deserialize(*layerState);
@@ -53,11 +54,11 @@ bool AutomationTrackInsertAction::perform()
 bool AutomationTrackInsertAction::undo()
 {
     if (AutomationTrackTreeItem *treeItem =
-        this->project.findTrackById<AutomationTrackTreeItem>(this->trackId))
+        this->source.findTrackById<AutomationTrackTreeItem>(this->trackId))
     {
         // here the item state should be the same as when it was created
         // so don't serialize anything again
-        return TreeItem::deleteItem(treeItem);
+        return this->parentTreeItem->deleteItem(treeItem);
     }
     
     return false;
@@ -91,28 +92,30 @@ void AutomationTrackInsertAction::reset()
     this->serializedState.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Remove
 //===----------------------------------------------------------------------===//
 
-AutomationTrackRemoveAction::AutomationTrackRemoveAction(ProjectTreeItem &parentProject,
-                                                         String targetLayerId) :
-    UndoAction(parentProject),
+AutomationTrackRemoveAction::AutomationTrackRemoveAction(MidiTrackSource &source,
+    WeakReference<TreeItem> parentTreeItem) :
+    UndoAction(source), parentTreeItem(parentTreeItem) {}
+
+AutomationTrackRemoveAction::AutomationTrackRemoveAction(MidiTrackSource &source,
+    WeakReference<TreeItem> parentTreeItem, String targetLayerId) :
+    UndoAction(source),
+    parentTreeItem(parentTreeItem),
     trackId(std::move(targetLayerId)),
-    numEvents(0)
-{
-}
+    numEvents(0) {}
 
 bool AutomationTrackRemoveAction::perform()
 {
     if (AutomationTrackTreeItem *treeItem =
-        this->project.findTrackById<AutomationTrackTreeItem>(this->trackId))
+        this->source.findTrackById<AutomationTrackTreeItem>(this->trackId))
     {
         this->numEvents = treeItem->getSequence()->size();
         this->serializedTreeItem = treeItem->serialize();
         this->trackName = treeItem->getTrackName();
-        return TreeItem::deleteItem(treeItem);
+        return this->parentTreeItem->deleteItem(treeItem);
     }
     
     return false;
@@ -123,7 +126,7 @@ bool AutomationTrackRemoveAction::undo()
     if (this->serializedTreeItem != nullptr)
     {
         MidiTrackTreeItem *track = new AutomationTrackTreeItem("empty");
-        this->project.addChildTreeItem(track);
+        this->parentTreeItem->addChildTreeItem(track);
         track->deserialize(*this->serializedTreeItem);
         track->setTrackName(this->trackName);
         return true;

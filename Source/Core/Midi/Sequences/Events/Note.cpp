@@ -27,15 +27,13 @@ Note::Note() : MidiEvent(nullptr, MidiEvent::Note, 0.f)
     //jassertfalse;
 }
 
-Note::Note(MidiSequence *owner,
+Note::Note(WeakReference<MidiSequence> owner,
     int keyVal, float beatVal,
     float lengthVal, float velocityVal) :
     MidiEvent(owner, MidiEvent::Note, beatVal),
     key(keyVal),
     length(lengthVal),
-    velocity(velocityVal)
-{
-}
+    velocity(velocityVal) {}
 
 Note::Note(const Note &other) :
     MidiEvent(other.sequence, MidiEvent::Note, other.beat),
@@ -46,15 +44,16 @@ Note::Note(const Note &other) :
     this->id = other.getId();
 }
 
-Note::Note(MidiSequence *newOwner, const Note &parametersToCopy) :
-    MidiEvent(newOwner, MidiEvent::Note, parametersToCopy.beat),
+Note::Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy) :
+    MidiEvent(owner, MidiEvent::Note, parametersToCopy.beat),
     key(parametersToCopy.key),
     length(parametersToCopy.length),
     velocity(parametersToCopy.velocity)
 {
+    // This constructor assume you know what you're doing,
+    // and the id is unique within a target sequence
     this->id = parametersToCopy.getId();
 }
-
 
 Array<MidiMessage> Note::toMidiMessages() const
 {
@@ -74,19 +73,18 @@ Array<MidiMessage> Note::toMidiMessages() const
     return result;
 }
 
-Note Note::copyWithNewId(MidiSequence *newOwner) const
+Note Note::copyWithNewId(WeakReference<MidiSequence> owner) const
 {
     Note n(*this);
     n.id = this->createId();
     
-    if (newOwner != nullptr)
+    if (owner != nullptr)
     {
-        n.sequence = newOwner;
+        n.sequence = owner;
     }
     
     return n;
 }
-
 
 static float roundBeat(float beat)
 {
@@ -199,9 +197,6 @@ void Note::deserialize(const XmlElement &xml)
 {
     this->reset();
 
-    //const Note old(*this);
-
-    // здесь никаких проверок. посмотри, как быстро будет работать сериализация.
     const int xmlKey = xml.getIntAttribute("key");
     const float xmlBeat = float(xml.getDoubleAttribute("beat"));
     const float xmlLength = float(xml.getDoubleAttribute("len"));
@@ -215,26 +210,15 @@ void Note::deserialize(const XmlElement &xml)
     this->id = xmlId;
 }
 
-void Note::reset()
-{
-}
+void Note::reset() {}
 
-
-Note &Note::operator=(const Note &right)
+void Note::applyChanges(const Note &other)
 {
-    //if (this == &right) { return *this; }
-    //this->sequence = right.sequence; // never do this
-    this->id = right.id;
-    this->beat = right.beat;
-    this->key = right.key;
-    this->length = right.length;
-    this->velocity = right.velocity;
-    return *this;
-}
-
-int Note::hashCode() const noexcept
-{
-    return this->getId().hashCode();
+    jassert(this->id == other.id);
+    this->beat = other.beat;
+    this->key = other.key;
+    this->length = other.length;
+    this->velocity = other.velocity;
 }
 
 int Note::compareElements(const MidiEvent *const first, const MidiEvent *const second)

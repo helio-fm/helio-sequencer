@@ -27,90 +27,55 @@ class TimeSignatureEvent : public MidiEvent
 {
 public:
 
-
     TimeSignatureEvent();
-
     TimeSignatureEvent(const TimeSignatureEvent &other);
+    TimeSignatureEvent(WeakReference<MidiSequence> owner,
+        const TimeSignatureEvent &parametersToCopy);
 
-    explicit TimeSignatureEvent(MidiSequence *owner,
-                    float newBeat = 0.f,
-                    int newNumerator = TIME_SIGNATURE_DEFAULT_NUMERATOR,
-                    int newDenominator = TIME_SIGNATURE_DEFAULT_DENOMINATOR);
+    explicit TimeSignatureEvent(WeakReference<MidiSequence> owner,
+        float newBeat = 0.f,
+        int newNumerator = TIME_SIGNATURE_DEFAULT_NUMERATOR,
+        int newDenominator = TIME_SIGNATURE_DEFAULT_DENOMINATOR);
 
-    ~TimeSignatureEvent() override;
-    
     static void parseString(const String &data, int &numerator, int &denominator);
     
-
     Array<MidiMessage> toMidiMessages() const override;
-    
     TimeSignatureEvent copyWithNewId() const;
-    
     TimeSignatureEvent withDeltaBeat(float beatOffset) const;
-    
     TimeSignatureEvent withBeat(float newBeat) const;
-
     TimeSignatureEvent withNumerator(const int newNumerator) const;
-    
     TimeSignatureEvent withDenominator(const int newDenominator) const;
-
     TimeSignatureEvent withParameters(const XmlElement &xml) const;
-
 
     //===------------------------------------------------------------------===//
     // Accessors
     //===------------------------------------------------------------------===//
 
     int getNumerator() const noexcept;
-
     int getDenominator() const noexcept;
-
     String toString() const noexcept;
-
 
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
     XmlElement *serialize() const override;
-
     void deserialize(const XmlElement &xml) override;
-
     void reset() override;
 
-
     //===------------------------------------------------------------------===//
-    // Stuff for hashtables
+    // Helpers
     //===------------------------------------------------------------------===//
 
-    TimeSignatureEvent &operator=(const TimeSignatureEvent &right);
-
-    friend inline bool operator==(const TimeSignatureEvent &lhs, const TimeSignatureEvent &rhs)
-    {
-        return (lhs.getId() == rhs.getId());
-    }
-
-    int hashCode() const noexcept;
-
+    void applyChanges(const TimeSignatureEvent &parameters);
 
 protected:
 
     int numerator;
-    
     int denominator;
 
 private:
 
     JUCE_LEAK_DETECTOR(TimeSignatureEvent);
 
-};
-
-
-class TimeSignatureEventHashFunction
-{
-public:
-    static int generateHash(const TimeSignatureEvent &key, const int upperLimit) noexcept
-    {
-        return static_cast<int>((static_cast<uint32>(key.hashCode())) % static_cast<uint32>(upperLimit));
-    }
 };

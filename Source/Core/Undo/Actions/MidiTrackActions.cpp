@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "MidiTrackActions.h"
-#include "ProjectTreeItem.h"
+#include "MidiTrackSource.h"
 #include "SerializationKeys.h"
 #include "MidiTrack.h"
 
@@ -25,18 +25,16 @@
 // Rename/Move
 //===----------------------------------------------------------------------===//
 
-MidiTrackRenameAction::MidiTrackRenameAction(ProjectTreeItem &parentProject,
+MidiTrackRenameAction::MidiTrackRenameAction(MidiTrackSource &source,
     String targetTrackId, String newXPath) :
-    UndoAction(parentProject),
+    UndoAction(source),
     trackId(std::move(targetTrackId)),
-    xPathAfter(std::move(newXPath))
-{
-}
+    xPathAfter(std::move(newXPath)) {}
 
 bool MidiTrackRenameAction::perform()
 {
     if (MidiTrack *track =
-        this->project.findTrackById<MidiTrack>(this->trackId))
+        this->source.findTrackById<MidiTrack>(this->trackId))
     {
         this->xPathBefore = track->getTrackName();
         track->setTrackName(this->xPathAfter);
@@ -49,7 +47,7 @@ bool MidiTrackRenameAction::perform()
 bool MidiTrackRenameAction::undo()
 {
     if (MidiTrack *track =
-        this->project.findTrackById<MidiTrack>(this->trackId))
+        this->source.findTrackById<MidiTrack>(this->trackId))
     {
         track->setTrackName(this->xPathBefore);
         return true;
@@ -86,15 +84,14 @@ void MidiTrackRenameAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Change Colour
 //===----------------------------------------------------------------------===//
 
-MidiTrackChangeColourAction::MidiTrackChangeColourAction(ProjectTreeItem &parentProject,
+MidiTrackChangeColourAction::MidiTrackChangeColourAction(MidiTrackSource &source,
     String targetTrackId,
     const Colour &newColour) :
-    UndoAction(parentProject),
+    UndoAction(source),
     trackId(std::move(targetTrackId)),
     colourAfter(newColour)
 {
@@ -103,7 +100,7 @@ MidiTrackChangeColourAction::MidiTrackChangeColourAction(ProjectTreeItem &parent
 bool MidiTrackChangeColourAction::perform()
 {
     if (MidiTrack *track =
-        this->project.findTrackById<MidiTrack>(this->trackId))
+        this->source.findTrackById<MidiTrack>(this->trackId))
     {
         this->colourBefore = track->getTrackColour();
         track->setTrackColour(this->colourAfter);
@@ -116,7 +113,7 @@ bool MidiTrackChangeColourAction::perform()
 bool MidiTrackChangeColourAction::undo()
 {
     if (MidiTrack *track =
-        this->project.findTrackById<MidiTrack>(this->trackId))
+        this->source.findTrackById<MidiTrack>(this->trackId))
     {
         track->setTrackColour(this->colourBefore);
         return true;
@@ -151,24 +148,21 @@ void MidiTrackChangeColourAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Change Instrument
 //===----------------------------------------------------------------------===//
 
-MidiTrackChangeInstrumentAction::MidiTrackChangeInstrumentAction(ProjectTreeItem &parentProject,
+MidiTrackChangeInstrumentAction::MidiTrackChangeInstrumentAction(MidiTrackSource &source,
     String targetTrackId,
     String newInstrumentId) :
-    UndoAction(parentProject),
+    UndoAction(source),
     trackId(std::move(targetTrackId)),
-    instrumentIdAfter(std::move(newInstrumentId))
-{
-}
+    instrumentIdAfter(std::move(newInstrumentId)) {}
 
 bool MidiTrackChangeInstrumentAction::perform()
 {
     if (MidiTrack *track =
-        this->project.findTrackById<MidiTrack>(this->trackId))
+        this->source.findTrackById<MidiTrack>(this->trackId))
     {
         this->instrumentIdBefore = track->getTrackInstrumentId();
         track->setTrackInstrumentId(this->instrumentIdAfter);
@@ -181,7 +175,7 @@ bool MidiTrackChangeInstrumentAction::perform()
 bool MidiTrackChangeInstrumentAction::undo()
 {
     if (MidiTrack *track =
-        this->project.findTrackById<MidiTrack>(this->trackId))
+        this->source.findTrackById<MidiTrack>(this->trackId))
     {
         track->setTrackInstrumentId(this->instrumentIdBefore);
         return true;
@@ -216,24 +210,21 @@ void MidiTrackChangeInstrumentAction::reset()
     this->trackId.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Mute/Unmute
 //===----------------------------------------------------------------------===//
 
-MidiTrackMuteAction::MidiTrackMuteAction(ProjectTreeItem &parentProject,
+MidiTrackMuteAction::MidiTrackMuteAction(MidiTrackSource &source,
     String targetTrackId,
     bool shouldBeMuted) :
-    UndoAction(parentProject),
+    UndoAction(source),
     trackId(std::move(targetTrackId)),
-    muteStateAfter(shouldBeMuted)
-{
-}
+    muteStateAfter(shouldBeMuted) {}
 
 bool MidiTrackMuteAction::perform()
 {
     if (MidiTrack *track =
-        this->project.findTrackById<MidiTrack>(this->trackId))
+        this->source.findTrackById<MidiTrack>(this->trackId))
     {
         this->muteStateBefore = track->isTrackMuted();
         track->setTrackMuted(this->muteStateAfter);
@@ -246,7 +237,7 @@ bool MidiTrackMuteAction::perform()
 bool MidiTrackMuteAction::undo()
 {
     if (MidiTrack *track =
-        this->project.findTrackById<MidiTrack>(this->trackId))
+        this->source.findTrackById<MidiTrack>(this->trackId))
     {
         track->setTrackMuted(this->muteStateBefore);
         return true;

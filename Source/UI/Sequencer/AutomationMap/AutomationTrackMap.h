@@ -108,7 +108,7 @@ private:
     ScopedPointer<ComponentConnectorCurve> leadingConnector;
 
     OwnedArray<AutomationEventComponent> eventComponents;
-    HashMap<AutomationEvent, AutomationEventComponent *, AutomationEventHashFunction> eventsHash;
+    SparseHashMap<AutomationEvent, AutomationEventComponent *, MidiEventHash> eventsHash;
     
     AutomationEventComponent *draggingEvent;
     bool addNewEventMode;

@@ -19,11 +19,11 @@
 
 class TransientTreeItem;
 class TooltipContainer;
-class HotkeyScheme;
 class TreeItem;
 class Headline;
 
 #include "ComponentFader.h"
+#include "HotkeyScheme.h"
 
 #if HELIO_DESKTOP
 #   define HAS_FADING_PAGECHANGE 1
@@ -93,7 +93,7 @@ private:
 
     ScopedPointer<TooltipContainer> tooltipContainer;
     
-    ScopedPointer<HotkeyScheme> hotkeyScheme;
+    HotkeyScheme hotkeyScheme;
     
 private:
 

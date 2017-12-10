@@ -1,5 +1,7 @@
-language: cpp
+language: generic
 sudo: false
+
+os: linux
 dist: trusty
 
 notifications:
@@ -14,40 +16,40 @@ branches:
   only:
     - master
     - develop
-    - fix-travis
+    - tech-debt
+
+addons_shortcuts:
+  addons_clang40: &clang40
+    apt:
+      sources: [ 'ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0' ]
+      packages: [ 'clang-4.0', 'libc++-dev', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
+  addons_clang50: &clang50
+    apt:
+      sources: [ 'ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0' ]
+      packages: [ 'clang-5.0', 'libc++-dev', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
+  addons_gcc5: &gcc5
+    apt:
+      sources: [ 'ubuntu-toolchain-r-test' ]
+      packages: [ 'g++-5', 'gcc-5', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
+  addons_gcc6: &gcc6
+    apt:
+      sources: [ 'ubuntu-toolchain-r-test' ]
+      packages: [ 'g++-6', 'gcc-6', 'libfreetype6-dev', 'libx11-dev', 'libxinerama-dev', 'libxrandr-dev', 'libxcursor-dev', 'libxcomposite-dev', 'mesa-common-dev', 'freeglut3-dev', 'libcurl4-gnutls-dev+', 'libasound2-dev', 'libjack-dev', 'unzip', 'xvfb' ]
 
 matrix:
   include:
-    - os: linux
-      compiler: clang
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-3.9
-          packages:
-            - clang-3.9
-            - llvm-3.9-dev    # for LLVMgold.so
-            - libc++-dev
-            - libfreetype6-dev
-            - libx11-dev
-            - libxinerama-dev
-            - libxrandr-dev
-            - libxcursor-dev
-            - libxcomposite-dev
-            - mesa-common-dev
-            - freeglut3-dev
-            - libcurl4-gnutls-dev+
-            - libasound2-dev
-            - libjack-dev
-            - unzip
-            - xvfb
-      env:
-        - COMPILER_VER=-3.9
-        - CONFIG=Travis
-        - DISPLAY=localhost:1.0
-        - CFLAGS=-stdlib=libc++
-        - LDFLAGS=-stdlib=libc++
+    - compiler: "clang-4.0"
+      addons: *clang40
+      env: CC=clang-4.0 CXX=clang++-4.0 CONFIG=Travis DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
+    - compiler: "clang-5.0"
+      addons: *clang50
+      env: CC=clang-5.0 CXX=clang++-5.0 CONFIG=Travis DISPLAY=localhost:1.0 CFLAGS=-stdlib=libc++ LDFLAGS=-stdlib=libc++
+    - compiler: "gcc-5"
+      addons: *gcc5
+      env: CC=gcc-5 CXX=g++-5 CONFIG=Travis DISPLAY=localhost:1.0
+    - compiler: "gcc-6"
+      addons: *gcc6
+      env: CC=gcc-6 CXX=g++-6 CONFIG=Travis DISPLAY=localhost:1.0
 
 before_install:
   - pushd ThirdParty

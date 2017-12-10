@@ -94,9 +94,9 @@ PianoTrackMap::PianoTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentR
 
 PianoTrackMap::~PianoTrackMap()
 {
+    this->clearTrackMap();
     this->project.removeListener(this);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Component
@@ -108,9 +108,9 @@ void PianoTrackMap::resized()
     
     this->setVisible(false);
 
-    for (int i = 0; i < this->eventComponents.size(); ++i)
+    for (const auto &e : this->componentsMap)
     {
-        this->applyNoteBounds(this->eventComponents.getUnchecked(i));
+        this->applyNoteBounds(e.second);
     }
 
     this->setVisible(true);
@@ -123,51 +123,43 @@ void PianoTrackMap::resized()
 
 void PianoTrackMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    if (!dynamic_cast<const Note *>(&oldEvent)) { return; }
-
-    const Note &note = static_cast<const Note &>(oldEvent);
-    const Note &newNote = static_cast<const Note &>(newEvent);
-
-    if (TrackMapNoteComponent *component = this->componentsHashTable[note])
+    if (oldEvent.isTypeOf(MidiEvent::Note))
     {
-        //component->setVisible(false);
-        this->applyNoteBounds(component);
-        //component->repaint(); // for volume changes
-        //component->setVisible(true);
-
-        this->componentsHashTable.set(newNote, component);
+        const Note &note = static_cast<const Note &>(oldEvent);
+        const Note &newNote = static_cast<const Note &>(newEvent);
+        if (TrackMapNoteComponent *component = this->componentsMap[note])
+        {
+            this->applyNoteBounds(component);
+            this->componentsMap.erase(note);
+            this->componentsMap[newNote] = component;
+        }
     }
 }
 
 void PianoTrackMap::onAddMidiEvent(const MidiEvent &event)
 {
-    if (!dynamic_cast<const Note *>(&event)) { return; }
+    if (event.isTypeOf(MidiEvent::Note))
+    {
+        const Note &note = static_cast<const Note &>(event);
 
-    const Note &note = static_cast<const Note &>(event);
+        auto component = new TrackMapNoteComponent(*this, note);
+        this->addAndMakeVisible(component);
+        this->applyNoteBounds(component);
+        component->toFront(false);
 
-    auto component = new TrackMapNoteComponent(*this, note);
-    this->addAndMakeVisible(component);
-    this->applyNoteBounds(component);
-    component->toFront(false);
-
-    //this->eventAnimator.fadeIn(component, 150);
-    this->eventComponents.add(component);
-
-    this->componentsHashTable.set(note, component);
+        this->componentsMap[note] = component;
+    }
 }
 
 void PianoTrackMap::onRemoveMidiEvent(const MidiEvent &event)
 {
-    if (!dynamic_cast<const Note *>(&event)) { return; }
-
-    const Note &note = static_cast<const Note &>(event);
-
-    if (TrackMapNoteComponent *component = this->componentsHashTable[note])
+    if (event.isTypeOf(MidiEvent::Note))
     {
-        //this->eventAnimator.fadeOut(component, 150);
-        this->removeChildComponent(component);
-        this->componentsHashTable.remove(note);
-        this->eventComponents.removeObject(component, true);
+        const Note &note = static_cast<const Note &>(event);
+        if (ScopedPointer<TrackMapNoteComponent> deleter = this->componentsMap[note])
+        {
+            this->componentsMap.erase(note);
+        }
     }
 }
 
@@ -177,9 +169,9 @@ void PianoTrackMap::onChangeTrackProperties(MidiTrack *const track)
 
     this->setVisible(false);
 
-    for (int i = 0; i < this->eventComponents.size(); ++i)
+    for (const auto &e : this->componentsMap)
     {
-        this->eventComponents.getUnchecked(i)->updateColour();
+        e.second->updateColour();
     }
 
     this->setVisible(true);
@@ -208,12 +200,9 @@ void PianoTrackMap::onRemoveTrack(MidiTrack *const track)
     for (int i = 0; i < track->getSequence()->size(); ++i)
     {
         const Note &note = static_cast<const Note &>(*track->getSequence()->getUnchecked(i));
-
-        if (TrackMapNoteComponent *component = this->componentsHashTable[note])
+        if (ScopedPointer<TrackMapNoteComponent> deletedComponent = this->componentsMap[note])
         {
-            this->removeChildComponent(component);
-            this->componentsHashTable.remove(note);
-            this->eventComponents.removeObject(component, true);
+            this->componentsMap.erase(note);
         }
     }
 }
@@ -222,6 +211,14 @@ void PianoTrackMap::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
+
+    if (this->rollFirstBeat > firstBeat ||
+        this->rollLastBeat < lastBeat)
+    {
+        this->rollFirstBeat = firstBeat;
+        this->rollLastBeat = lastBeat;
+        this->resized();
+    }
 }
 
 void PianoTrackMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
@@ -238,18 +235,11 @@ void PianoTrackMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
 
 void PianoTrackMap::reloadTrackMap()
 {
-    for (int i = 0; i < this->eventComponents.size(); ++i)
-    {
-        this->removeChildComponent(this->eventComponents.getUnchecked(i));
-    }
-
-    this->eventComponents.clear();
-    this->componentsHashTable.clear();
-
-    const auto &tracks = this->project.getTracks();
+    this->clearTrackMap();
 
     this->setVisible(false);
 
+    const auto &tracks = this->project.getTracks();
     for (auto track : tracks)
     {
         for (int j = 0; j < track->getSequence()->size(); ++j)
@@ -259,12 +249,7 @@ void PianoTrackMap::reloadTrackMap()
             if (Note *note = dynamic_cast<Note *>(event))
             {
                 auto noteComponent = new TrackMapNoteComponent(*this, *note);
-
-                this->eventComponents.add(noteComponent);
-                this->componentsHashTable.set(*note, noteComponent);
-
-                //const bool &belongsToActiveLayer = noteComponent->belongsToLayer(this->activeLayer);
-                //noteComponent->setActive(belongsToActiveLayer);
+                this->componentsMap[*note] = noteComponent;
                 this->addAndMakeVisible(noteComponent);
             }
         }
@@ -272,6 +257,17 @@ void PianoTrackMap::reloadTrackMap()
 
     this->resized();
     this->setVisible(true);
+}
+
+void PianoTrackMap::clearTrackMap()
+{
+    OwnedArray<TrackMapNoteComponent> deleters;
+    for (const auto &e : this->componentsMap)
+    {
+        deleters.add(e.second);
+    }
+
+    this->componentsMap.clear();
 }
 
 void PianoTrackMap::applyNoteBounds(TrackMapNoteComponent *nc)

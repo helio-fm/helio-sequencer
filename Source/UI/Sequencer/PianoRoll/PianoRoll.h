@@ -39,6 +39,7 @@ class Scale;
 #include "HelioTheme.h"
 #include "HybridRoll.h"
 #include "Note.h"
+#include "Clip.h"
 
 class PianoRoll : public HybridRoll
 {
@@ -52,7 +53,6 @@ public:
 
     void deleteSelection();
     
-    void reloadRollContent() override;
     int getNumActiveLayers() const noexcept;
     MidiSequence *getActiveMidiLayer(int index) const noexcept;
     MidiSequence *getPrimaryActiveMidiLayer() const noexcept;
@@ -71,7 +71,7 @@ public:
     //===------------------------------------------------------------------===//
 
     void selectAll() override;
-
+    void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
 
     //===------------------------------------------------------------------===//
     // Ghost notes
@@ -129,6 +129,9 @@ public:
     // LassoSource
     //===------------------------------------------------------------------===//
 
+    void selectEventsInRange(float startBeat,
+        float endBeat, bool shouldClearAllOthers) override;
+
     void findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
         const Rectangle<int> &rectangle) override;
 
@@ -176,6 +179,9 @@ private:
 
 private:
 
+    void clearRollContent();
+    void reloadRollContent();
+    
     void updateChildrenBounds() override;
     void updateChildrenPositions() override;
 
@@ -246,6 +252,10 @@ private:
     ScopedPointer<NoteResizerLeft> noteResizerLeft;
     ScopedPointer<NoteResizerRight> noteResizerRight;
     
-    HashMap<Note, NoteComponent *, NoteHashFunction> componentsHashTable;
+    typedef SparseHashMap<Note, NoteComponent *, MidiEventHash> EventComponentsMap;
+    EventComponentsMap componentsMap;
+
+    typedef SparseHashMap<Clip, EventComponentsMap, ClipHash> ClipsMap;
+    //EventComponentsMap clipsMap;
 
 };

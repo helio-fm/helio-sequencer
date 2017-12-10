@@ -39,17 +39,18 @@ AutomationEvent::AutomationEvent(const AutomationEvent &other) :
     this->id = other.getId();
 }
 
-AutomationEvent::AutomationEvent(MidiSequence *owner, float beatVal, float cValue) :
+AutomationEvent::AutomationEvent(WeakReference<MidiSequence> owner, float beatVal, float cValue) :
     MidiEvent(owner, MidiEvent::Auto, beatVal),
     controllerValue(cValue),
-    curvature(AUTOEVENT_DEFAULT_CURVATURE)
+    curvature(AUTOEVENT_DEFAULT_CURVATURE) {}
+
+AutomationEvent::AutomationEvent(WeakReference<MidiSequence> owner,
+    const AutomationEvent &parametersToCopy) :
+    MidiEvent(owner, MidiEvent::Auto, parametersToCopy.beat),
+    controllerValue(parametersToCopy.controllerValue),
+    curvature(parametersToCopy.curvature)
 {
-
-}
-
-AutomationEvent::~AutomationEvent()
-{
-
+    this->id = parametersToCopy.getId();
 }
 
 float linearTween(float delta, float factor)
@@ -281,7 +282,6 @@ XmlElement *AutomationEvent::serialize() const
     xml->setAttribute("val", this->controllerValue);
     xml->setAttribute("beat", this->beat);
     xml->setAttribute("curve", this->curvature);
-    //xml->setAttribute("id", this->id.toString());
     xml->setAttribute("id", this->id);
     return xml;
 }
@@ -290,37 +290,18 @@ void AutomationEvent::deserialize(const XmlElement &xml)
 {
     this->reset();
 
-    // здесь никаких проверок. посмотри, как быстро будет работать сериализация.
     this->controllerValue = float(xml.getDoubleAttribute("val"));
     this->curvature = float(xml.getDoubleAttribute("curve", AUTOEVENT_DEFAULT_CURVATURE));
     this->beat = float(xml.getDoubleAttribute("beat"));
     this->id = xml.getStringAttribute("id");
 }
 
-void AutomationEvent::reset()
+void AutomationEvent::reset() {}
+
+void AutomationEvent::applyChanges(const AutomationEvent &parameters)
 {
-    // здесь ничего пока не чистим, это не нужно и вообще, проверь скорость работы сериализации.
-}
-
-
-int AutomationEvent::hashCode() const noexcept
-{
-    const unsigned int hash =
-        roundFloatToInt(this->getControllerValue() * 1000) +
-        roundFloatToInt(this->getBeat() * 1000) +
-        this->getId().hashCode();
-    return (int)hash;
-}
-
-AutomationEvent &AutomationEvent::operator=(const AutomationEvent &right)
-{
-    //if (this == &right) { return *this; }
-
-    //this->sequence = right.sequence; // never do this
-    this->id = right.id;
-    this->beat = right.beat;
-    this->curvature = right.curvature;
-    this->controllerValue = right.controllerValue;
-
-    return *this;
+    jassert(this->id == parameters.id);
+    this->beat = parameters.beat;
+    this->controllerValue = parameters.controllerValue;
+    this->curvature = parameters.curvature;
 }

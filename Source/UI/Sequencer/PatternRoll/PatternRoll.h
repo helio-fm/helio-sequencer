@@ -44,8 +44,13 @@ public:
 
     void deleteSelection();
     void selectAll() override;
-    void reloadRollContent() override;
     int getNumRows() const noexcept;
+
+    //===------------------------------------------------------------------===//
+    // HybridRoll
+    //===------------------------------------------------------------------===//
+
+    void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
 
     //===------------------------------------------------------------------===//
     // Ghost notes
@@ -88,6 +93,9 @@ public:
     // LassoSource
     //===------------------------------------------------------------------===//
 
+    void selectEventsInRange(float startBeat,
+        float endBeat, bool shouldClearAllOthers) override;
+
     void findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
         const Rectangle<int> &rectangle) override;
 
@@ -125,6 +133,9 @@ public:
 
 private:
 
+    void clearRollContent();
+    void reloadRollContent();
+
     void insertNewClipAt(const MouseEvent &e);
     
 private:
@@ -139,6 +150,7 @@ private:
 
     OwnedArray<ClipComponent> ghostClips;
     
-    HashMap<Clip, ClipComponent *, ClipHashFunction> componentsHashTable;
+    typedef SparseHashMap<Clip, ClipComponent *, ClipHash> ClipComponentsMap;
+    ClipComponentsMap componentsMap;
 
 };

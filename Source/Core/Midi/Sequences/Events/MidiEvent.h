@@ -25,16 +25,14 @@ class MidiEvent : public Serializable
 {
 public:
 
-    // TODO! replace ids with int sequences
     using Id = String;
-    //using Id = int64;
 
     // Non-serialized field to be used instead of expensive dynamic casts:
     enum Type { Note = 1, Auto = 2, Annotation = 3, TimeSignature = 4, KeySignature = 5 };
     inline Type getType() const noexcept { return this->type; }
     inline bool isTypeOf(Type val) const noexcept { return this->type == val; }
 
-    MidiEvent(MidiSequence *owner, Type type, float beat);
+    MidiEvent(WeakReference<MidiSequence> owner, Type type, float beat);
     ~MidiEvent() override;
 
     virtual Array<MidiMessage> toMidiMessages() const = 0;
@@ -43,20 +41,36 @@ public:
     // Accessors
     //===------------------------------------------------------------------===//
 
+    bool isValid() const noexcept;
+
     MidiSequence *getSequence() const noexcept;
+    Colour getColour() const noexcept;
+
     int getControllerNumber() const noexcept;
     int getChannel() const noexcept;
-    Colour getColour() const noexcept;
+
     Id getId() const noexcept;
     float getBeat() const noexcept;
+    
+    inline HashCode hashCode() const noexcept
+    {
+        const HashCode code =
+            static_cast<HashCode>(this->beat)
+            + static_cast<HashCode>(this->getId().hashCode());
+        return code;
+    }
 
-    // эта штука используется для сортировки списка событий:
-    // сортировка списка событий нужна в двух целях
-    // для бинарного поиска конкретного элемента по отсортированному списку
-    // и для быстрого экспорта в MidiMessageSequence для плеера
-    // это означает, что он должен возвращать 0 (равенство) в случае равенства указателей
-    // и это означает, что она всегда должна сортировать список одинаково
-    // то есть, если по позиции и ключу они одинаковы, сравниваем по адйишнику
+    friend inline bool operator==(const MidiEvent &l, const MidiEvent &r)
+    {
+        // Events are considered equal when they have the same id,
+        // and they are either owned by the same track, or one of them
+        // does not belong any track, i.e. is just a set of parameters
+        // for undo/redo action or VCS delta.
+        return (&l == &r ||
+            ((l.sequence == nullptr || r.sequence == nullptr) && l.id == r.id) ||
+            (l.sequence != nullptr && l.sequence == r.sequence && l.id == r.id));
+    }
+
     static int compareElements(const MidiEvent *const first, const MidiEvent *const second)
     {
         if (first == second) { return 0; }
@@ -70,14 +84,20 @@ public:
 
 protected:
 
-    MidiSequence *sequence;
-
-    float beat;
-
-    static Id createId() noexcept;
+    WeakReference<MidiSequence> sequence;
 
     Id id;
-
     Type type;
-    
+    float beat;
+
+    Id createId() const noexcept;
+
+};
+
+struct MidiEventHash
+{
+    inline HashCode operator()(const MidiEvent &key) const noexcept
+    {
+        return key.hashCode() % HASH_CODE_MAX;
+    }
 };

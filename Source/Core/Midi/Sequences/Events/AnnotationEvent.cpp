@@ -35,18 +35,21 @@ AnnotationEvent::AnnotationEvent(const AnnotationEvent &other) :
     this->id = other.getId();
 }
 
-AnnotationEvent::AnnotationEvent(MidiSequence *owner,
+AnnotationEvent::AnnotationEvent(WeakReference<MidiSequence> owner,
                      float newBeat,
                      String newDescription,
                      const Colour &newColour) :
     MidiEvent(owner, MidiEvent::Annotation, newBeat),
     description(std::move(newDescription)),
-    colour(newColour)
-{
-}
+    colour(newColour) {}
 
-AnnotationEvent::~AnnotationEvent()
+AnnotationEvent::AnnotationEvent(WeakReference<MidiSequence> owner,
+    const AnnotationEvent &parametersToCopy) :
+    MidiEvent(owner, MidiEvent::Annotation, parametersToCopy.beat),
+    description(parametersToCopy.description),
+    colour(parametersToCopy.colour)
 {
+    this->id = parametersToCopy.getId();
 }
 
 Array<MidiMessage> AnnotationEvent::toMidiMessages() const
@@ -134,33 +137,18 @@ void AnnotationEvent::deserialize(const XmlElement &xml)
 {
     this->reset();
 
-    // здесь никаких проверок. посмотри, как быстро будет работать сериализация.
     this->description = xml.getStringAttribute("text");
     this->colour = Colour::fromString(xml.getStringAttribute("col"));
     this->beat = float(xml.getDoubleAttribute("beat"));
     this->id = xml.getStringAttribute("id");
 }
 
-void AnnotationEvent::reset()
+void AnnotationEvent::reset() {}
+
+void AnnotationEvent::applyChanges(const AnnotationEvent &other)
 {
-    // здесь ничего пока не чистим, это не нужно и вообще, проверь скорость работы сериализации.
-}
-
-
-int AnnotationEvent::hashCode() const noexcept
-{
-    return this->getId().hashCode();
-}
-
-AnnotationEvent &AnnotationEvent::operator=(const AnnotationEvent &right)
-{
-    //if (this == &right) { return *this; }
-
-    //this->sequence = *right.getLayer(); // never do this
-    this->id = right.id;
-    this->beat = right.beat;
-    this->description = right.description;
-    this->colour = right.colour;
-
-    return *this;
+    jassert(this->id == other.id);
+    this->description = other.description;
+    this->colour = other.colour;
+    this->beat = other.beat;
 }

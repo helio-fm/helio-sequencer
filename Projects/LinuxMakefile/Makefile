@@ -435,11 +435,18 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/include_juce_opengl_1ea9a6e3.o \
   $(JUCE_OBJDIR)/include_juce_osc_7d711795.o \
 
+PCH_SRC = ../../Source/Common.h
+PCH_OUT = ../../Source/Common.h.gch
+
 .PHONY: clean all
 
 all : $(JUCE_OUTDIR)/$(JUCE_TARGET_APP)
 
-$(JUCE_OUTDIR)/$(JUCE_TARGET_APP) : check-pkg-config $(OBJECTS_APP) $(RESOURCES)
+$(PCH_OUT): $(PCH_SRC)
+	@echo "Generating precompiled header"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OUTDIR)/$(JUCE_TARGET_APP) : check-pkg-config $(PCH_OUT) $(OBJECTS_APP) $(RESOURCES)
 	@echo Linking "Helio - App"
 	-$(V_AT)mkdir -p $(JUCE_BINDIR)
 	-$(V_AT)mkdir -p $(JUCE_LIBDIR)

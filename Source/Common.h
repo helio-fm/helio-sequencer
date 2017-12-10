@@ -17,17 +17,57 @@
 
 #pragma once
 
-#ifndef JUCE_ANDROID
-#   define JUCE_USE_FREETYPE_AMALGAMATED 1
-#   define JUCE_AMALGAMATED_INCLUDE 1
-#endif
+//===----------------------------------------------------------------------===//
+// Pragmas
+//===----------------------------------------------------------------------===//
 
 // Unreferenced formal parameter
 #pragma warning(disable: 4100)
 // Hides class member
 #pragma warning(disable: 4458)
+// std::uninitialized_copy::_Unchecked_iterators::_Deprecate
+#pragma warning(disable: 4996)
+
+//===----------------------------------------------------------------------===//
+// JUCE
+//===----------------------------------------------------------------------===//
+
+#if !defined JUCE_ANDROID
+#   define JUCE_USE_FREETYPE_AMALGAMATED 1
+#   define JUCE_AMALGAMATED_INCLUDE 1
+#endif
 
 #include "JuceHeader.h"
+
+//===----------------------------------------------------------------------===//
+// SparsePP
+//===----------------------------------------------------------------------===//
+
+#include "../../ThirdParty/SparseHashMap/sparsepp/spp.h"
+
+template <class Key, class T, class HashFcn = spp::spp_hash<Key>, class EqualKey = std::equal_to<Key>>
+using SparseHashMap = spp::sparse_hash_map<Key, T, HashFcn, EqualKey>;
+
+template <class Value, class HashFcn = spp::spp_hash<Value>, class EqualKey = std::equal_to<Value>>
+using SparseHashSet = spp::sparse_hash_set<Value, HashFcn, EqualKey>;
+
+typedef size_t HashCode;
+
+#if !defined HASH_CODE_MAX
+#   define HASH_CODE_MAX SIZE_MAX
+#endif
+
+struct StringHash
+{
+    inline HashCode operator()(const juce::String &key) const noexcept
+    {
+        return static_cast<HashCode>(key.hashCode()) % HASH_CODE_MAX;
+    }
+};
+
+//===----------------------------------------------------------------------===//
+// Various defines
+//===----------------------------------------------------------------------===//
 
 #if _MSC_VER
 inline float roundf(float x)
@@ -37,27 +77,32 @@ inline float roundf(float x)
 #endif
 
 #if !defined M_PI
-#define M_PI 3.14159265358979323846
+#   define M_PI 3.14159265358979323846
 #endif
 
 #if !defined M_PI_2
-#define M_PI_2 1.57079632679489661923
+#   define M_PI_2 1.57079632679489661923
 #endif
 
 #if !defined M_2PI
-#define M_2PI 6.283185307179586476
+#   define M_2PI 6.283185307179586476
 #endif
-
-// Internationalization
-#include "TranslationManager.h"
-#if defined TRANS
-#   undef TRANS
-#endif
-#define TRANS(stringLiteral) TranslationManager::getInstance().translate(stringLiteral)
-#define TRANS_PLURAL(stringLiteral, intValue) TranslationManager::getInstance().translate(stringLiteral, intValue)
 
 #if JUCE_ANDROID || JUCE_IOS
 #   define HELIO_MOBILE 1
 #else
 #   define HELIO_DESKTOP 1
 #endif
+
+//===----------------------------------------------------------------------===//
+// Internationalization
+//===----------------------------------------------------------------------===//
+
+#include "TranslationManager.h"
+
+#if defined TRANS
+#   undef TRANS
+#endif
+
+#define TRANS(stringLiteral) TranslationManager::getInstance().translate(stringLiteral)
+#define TRANS_PLURAL(stringLiteral, intValue) TranslationManager::getInstance().translate(stringLiteral, intValue)

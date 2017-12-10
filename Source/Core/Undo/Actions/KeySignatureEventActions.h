@@ -18,7 +18,7 @@
 #pragma once
 
 class KeySignaturesSequence;
-class ProjectTreeItem;
+class MidiTrackSource;
 
 #include "KeySignatureEvent.h"
 #include "UndoAction.h"
@@ -32,10 +32,10 @@ class KeySignatureEventInsertAction : public UndoAction
 {
 public:
     
-    explicit KeySignatureEventInsertAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit KeySignatureEventInsertAction(MidiTrackSource &source) :
+    UndoAction(source) {}
 
-    KeySignatureEventInsertAction(ProjectTreeItem &project,
+    KeySignatureEventInsertAction(MidiTrackSource &source,
                                    String trackId,
                                    const KeySignatureEvent &target);
 
@@ -64,10 +64,10 @@ class KeySignatureEventRemoveAction : public UndoAction
 {
 public:
     
-    explicit KeySignatureEventRemoveAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit KeySignatureEventRemoveAction(MidiTrackSource &source) :
+    UndoAction(source) {}
 
-    KeySignatureEventRemoveAction(ProjectTreeItem &project,
+    KeySignatureEventRemoveAction(MidiTrackSource &source,
                                    String trackId,
                                    const KeySignatureEvent &target);
 
@@ -96,10 +96,10 @@ class KeySignatureEventChangeAction : public UndoAction
 {
 public:
     
-    explicit KeySignatureEventChangeAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit KeySignatureEventChangeAction(MidiTrackSource &source) :
+    UndoAction(source) {}
 
-    KeySignatureEventChangeAction(ProjectTreeItem &project,
+    KeySignatureEventChangeAction(MidiTrackSource &source,
                                    String trackId,
                                    const KeySignatureEvent &target,
                                    const KeySignatureEvent &newParameters);
@@ -133,10 +133,10 @@ class KeySignatureEventsGroupInsertAction : public UndoAction
 {
 public:
     
-    explicit KeySignatureEventsGroupInsertAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit KeySignatureEventsGroupInsertAction(MidiTrackSource &source) :
+    UndoAction(source) {}
     
-    KeySignatureEventsGroupInsertAction(ProjectTreeItem &project,
+    KeySignatureEventsGroupInsertAction(MidiTrackSource &source,
                                          String trackId,
                                          Array<KeySignatureEvent> &target);
     
@@ -166,10 +166,10 @@ class KeySignatureEventsGroupRemoveAction : public UndoAction
 {
 public:
     
-    explicit KeySignatureEventsGroupRemoveAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit KeySignatureEventsGroupRemoveAction(MidiTrackSource &source) :
+    UndoAction(source) {}
     
-    KeySignatureEventsGroupRemoveAction(ProjectTreeItem &project,
+    KeySignatureEventsGroupRemoveAction(MidiTrackSource &source,
                                          String trackId,
                                          Array<KeySignatureEvent> &target);
     
@@ -199,10 +199,10 @@ class KeySignatureEventsGroupChangeAction : public UndoAction
 {
 public:
     
-    explicit KeySignatureEventsGroupChangeAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit KeySignatureEventsGroupChangeAction(MidiTrackSource &source) :
+    UndoAction(source) {}
 
-    KeySignatureEventsGroupChangeAction(ProjectTreeItem &project,
+    KeySignatureEventsGroupChangeAction(MidiTrackSource &source,
                                          String trackId,
                                          const Array<KeySignatureEvent> state1,
                                          const Array<KeySignatureEvent> state2);

@@ -436,9 +436,9 @@ static TreeItem *selectActiveSubItemWithId(TreeViewItem *item, const String &id)
         
         for (int i = 0; i < item->getNumSubItems(); ++i)
         {
-            if (TreeItem *treeItem = selectActiveSubItemWithId(item->getSubItem(i), id))
+            if (TreeItem *subItem = selectActiveSubItemWithId(item->getSubItem(i), id))
             {
-                return treeItem;
+                return subItem;
             }
         }
     }

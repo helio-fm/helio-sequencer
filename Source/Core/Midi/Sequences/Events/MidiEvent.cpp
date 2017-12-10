@@ -20,20 +20,21 @@
 #include "MidiSequence.h"
 #include "MidiTrack.h"
 
-
-MidiEvent::MidiEvent(MidiSequence *owner, Type type, float beatVal) :
+MidiEvent::MidiEvent(WeakReference<MidiSequence> owner, Type type, float beatVal) :
     sequence(owner),
-    beat(beatVal),
-    type(type)
+    type(type),
+    beat(beatVal)
 {
     this->id = this->createId();
 }
 
-MidiEvent::~MidiEvent()
+MidiEvent::~MidiEvent() {}
+
+
+bool MidiEvent::isValid() const noexcept
 {
-
+    return this->sequence != nullptr && this->id.isNotEmpty();
 }
-
 
 MidiSequence *MidiEvent::getSequence() const noexcept
 {
@@ -69,12 +70,12 @@ float MidiEvent::getBeat() const noexcept
     return this->beat;
 }
 
-//static MidiEvent::Id recentId = 0;
-
-MidiEvent::Id MidiEvent::createId() noexcept
+MidiEvent::Id MidiEvent::createId() const noexcept
 {
-    Uuid uuid;
-    return uuid.toString().substring(16, 32);
-//    return ++recentId;
-}
+    if (this->sequence != nullptr)
+    {
+        return this->sequence->createUniqueEventId();
+    }
 
+    return {};
+}

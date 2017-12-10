@@ -19,13 +19,12 @@
 #include "KeySignaturesSequence.h"
 #include "KeySignatureEventActions.h"
 #include "SerializationKeys.h"
+#include "ProjectTreeItem.h"
 #include "UndoStack.h"
 
 KeySignaturesSequence::KeySignaturesSequence(MidiTrack &track,
     ProjectEventDispatcher &dispatcher) :
-    MidiSequence(track, dispatcher)
-{
-}
+    MidiSequence(track, dispatcher) {}
 
 //===----------------------------------------------------------------------===//
 // Import/export
@@ -78,26 +77,27 @@ void KeySignaturesSequence::importMidi(const MidiMessageSequence &sequence)
 
 void KeySignaturesSequence::silentImport(const MidiEvent &eventToImport)
 {
-    const KeySignatureEvent &signature = static_cast<const KeySignatureEvent &>(eventToImport);
+    const KeySignatureEvent &signature =
+        static_cast<const KeySignatureEvent &>(eventToImport);
+    jassert(signature.isValid());
 
-    if (this->signaturesHashTable.contains(signature))
+    if (this->usedEventIds.contains(signature.getId()))
     {
         return;
     }
 
-    KeySignatureEvent *storedSignature = new KeySignatureEvent(this);
-    *storedSignature = signature;
+    const auto storedSignature = new KeySignatureEvent(this, signature);
     
     this->midiEvents.addSorted(*storedSignature, storedSignature);
-    this->signaturesHashTable.set(signature, storedSignature);
-    
+    this->usedEventIds.insert(storedSignature->getId());
+
     this->updateBeatRange(false);
     this->invalidateSequenceCache();
 }
 
-MidiEvent *KeySignaturesSequence::insert(const KeySignatureEvent &signature, bool undoable)
+MidiEvent *KeySignaturesSequence::insert(const KeySignatureEvent &eventParams, bool undoable)
 {
-    if (this->signaturesHashTable.contains(signature))
+    if (this->usedEventIds.contains(eventParams.getId()))
     {
         return nullptr;
     }
@@ -106,20 +106,16 @@ MidiEvent *KeySignaturesSequence::insert(const KeySignatureEvent &signature, boo
     {
         this->getUndoStack()->
             perform(new KeySignatureEventInsertAction(*this->getProject(),
-                this->getTrackId(), signature));
+                this->getTrackId(), eventParams));
     }
     else
     {
-        KeySignatureEvent *storedSignature = new KeySignatureEvent(this);
-        *storedSignature = signature;
-        
-        this->midiEvents.addSorted(*storedSignature, storedSignature);
-        this->signaturesHashTable.set(signature, storedSignature);
-
-        this->notifyEventAdded(*storedSignature);
+        const auto ownedSignature = new KeySignatureEvent(this, eventParams);
+        this->midiEvents.addSorted(*ownedSignature, ownedSignature);
+        this->usedEventIds.insert(ownedSignature->getId());
+        this->notifyEventAdded(*ownedSignature);
         this->updateBeatRange(true);
-
-        return storedSignature;
+        return ownedSignature;
     }
 
     return nullptr;
@@ -135,42 +131,43 @@ bool KeySignaturesSequence::remove(const KeySignatureEvent &signature, bool undo
     }
     else
     {
-        if (KeySignatureEvent *matchingSignature = this->signaturesHashTable[signature])
+        const int index = this->midiEvents.indexOfSorted(signature, &signature);
+        if (index >= 0)
         {
-            this->notifyEventRemoved(*matchingSignature);
-            this->midiEvents.removeObject(matchingSignature);
-            this->signaturesHashTable.removeValue(matchingSignature);
+            MidiEvent *const removedEvent = this->midiEvents[index];
+            this->notifyEventRemoved(*removedEvent);
+            this->usedEventIds.erase(removedEvent->getId());
+            this->midiEvents.remove(index, true);
             this->updateBeatRange(true);
             this->notifyEventRemovedPostAction();
             return true;
         }
         
-        
-            return false;
-        
+        return false;
     }
 
     return true;
 }
 
-bool KeySignaturesSequence::change(const KeySignatureEvent &signature,
-    const KeySignatureEvent &newSignature, bool undoable)
+bool KeySignaturesSequence::change(const KeySignatureEvent &oldParams,
+    const KeySignatureEvent &newParams, bool undoable)
 {
     if (undoable)
     {
         this->getUndoStack()->
             perform(new KeySignatureEventChangeAction(*this->getProject(),
-                this->getTrackId(), signature, newSignature));
+                this->getTrackId(), oldParams, newParams));
     }
     else
     {
-        if (KeySignatureEvent *matchingSignature = this->signaturesHashTable[signature])
+        const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
+        if (index >= 0)
         {
-            (*matchingSignature) = newSignature;
-            this->signaturesHashTable.set(newSignature, matchingSignature);
-            this->sort();
-
-            this->notifyEventChanged(signature, *matchingSignature);
+            const auto changedEvent = static_cast<KeySignatureEvent *>(this->midiEvents[index]);
+            changedEvent->applyChanges(newParams);
+            this->midiEvents.remove(index, false);
+            this->midiEvents.addSorted(*changedEvent, changedEvent);
+            this->notifyEventChanged(oldParams, *changedEvent);
             this->updateBeatRange(true);
             return true;
         }
@@ -181,53 +178,51 @@ bool KeySignaturesSequence::change(const KeySignatureEvent &signature,
     return true;
 }
 
-bool KeySignaturesSequence::insertGroup(Array<KeySignatureEvent> &signatures, bool undoable)
+bool KeySignaturesSequence::insertGroup(Array<KeySignatureEvent> &group, bool undoable)
 {
     if (undoable)
     {
         this->getUndoStack()->
             perform(new KeySignatureEventsGroupInsertAction(*this->getProject(),
-                this->getTrackId(), signatures));
+                this->getTrackId(), group));
     }
     else
     {
-        for (int i = 0; i < signatures.size(); ++i)
+        for (int i = 0; i < group.size(); ++i)
         {
-            const KeySignatureEvent &signature = signatures.getUnchecked(i);
-            KeySignatureEvent *storedSignature = new KeySignatureEvent(this);
-            *storedSignature = signature;
-            
-            this->midiEvents.add(storedSignature); // sorted later
-            this->signaturesHashTable.set(signature, storedSignature);
-            this->notifyEventAdded(*storedSignature);
+            const KeySignatureEvent &eventParams = group.getUnchecked(i);
+            const auto ownedEvent = new KeySignatureEvent(this, eventParams);
+            this->midiEvents.addSorted(*ownedEvent, ownedEvent);
+            this->usedEventIds.insert(ownedEvent->getId());
+            this->notifyEventAdded(*ownedEvent);
         }
         
-        this->sort();
         this->updateBeatRange(true);
     }
     
     return true;
 }
 
-bool KeySignaturesSequence::removeGroup(Array<KeySignatureEvent> &signatures, bool undoable)
+bool KeySignaturesSequence::removeGroup(Array<KeySignatureEvent> &group, bool undoable)
 {
     if (undoable)
     {
         this->getUndoStack()->
             perform(new KeySignatureEventsGroupRemoveAction(*this->getProject(),
-                this->getTrackId(), signatures));
+                this->getTrackId(), group));
     }
     else
     {
-        for (int i = 0; i < signatures.size(); ++i)
+        for (int i = 0; i < group.size(); ++i)
         {
-            const KeySignatureEvent &signature = signatures.getUnchecked(i);
-            
-            if (KeySignatureEvent *matchingSignature = this->signaturesHashTable[signature])
+            const KeySignatureEvent &signature = group.getUnchecked(i);
+            const int index = this->midiEvents.indexOfSorted(signature, &signature);
+            if (index >= 0)
             {
-                this->notifyEventRemoved(*matchingSignature);
-                this->midiEvents.removeObject(matchingSignature);
-                this->signaturesHashTable.removeValue(matchingSignature);
+                const auto removedEvent = this->midiEvents[index];
+                this->notifyEventRemoved(*removedEvent);
+                this->usedEventIds.erase(removedEvent->getId());
+                this->midiEvents.remove(index, true);
             }
         }
         
@@ -238,44 +233,39 @@ bool KeySignaturesSequence::removeGroup(Array<KeySignatureEvent> &signatures, bo
     return true;
 }
 
-bool KeySignaturesSequence::changeGroup(Array<KeySignatureEvent> &signaturesBefore,
-                                      Array<KeySignatureEvent> &signaturesAfter,
-                                      bool undoable)
+bool KeySignaturesSequence::changeGroup(Array<KeySignatureEvent> &groupBefore,
+    Array<KeySignatureEvent> &groupAfter, bool undoable)
 {
-    jassert(signaturesBefore.size() == signaturesAfter.size());
+    jassert(groupBefore.size() == groupAfter.size());
 
     if (undoable)
     {
         this->getUndoStack()->
             perform(new KeySignatureEventsGroupChangeAction(*this->getProject(),
-                this->getTrackId(), signaturesBefore, signaturesAfter));
+                this->getTrackId(), groupBefore, groupAfter));
     }
     else
     {
-        for (int i = 0; i < signaturesBefore.size(); ++i)
+        for (int i = 0; i < groupBefore.size(); ++i)
         {
-            // doing this sucks
-            //this->change(signaturesBefore[i], signaturesAfter[i], false);
-            
-            const KeySignatureEvent &signature = signaturesBefore.getUnchecked(i);
-            const KeySignatureEvent &newSignature = signaturesAfter.getUnchecked(i);
-            
-            if (KeySignatureEvent *matchingSignature = this->signaturesHashTable[signature])
+            const KeySignatureEvent &oldParams = groupBefore.getUnchecked(i);
+            const KeySignatureEvent &newParams = groupAfter.getUnchecked(i);
+            const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
+            if (index >= 0)
             {
-                (*matchingSignature) = newSignature;
-                
-                this->signaturesHashTable.set(newSignature, matchingSignature);
-                this->notifyEventChanged(signature, *matchingSignature);
+                const auto changedEvent = static_cast<KeySignatureEvent *>(this->midiEvents[index]);
+                changedEvent->applyChanges(newParams);
+                this->midiEvents.remove(index, false);
+                this->midiEvents.addSorted(*changedEvent, changedEvent);
+                this->notifyEventChanged(oldParams, *changedEvent);
             }
         }
 
-        this->sort();
         this->updateBeatRange(true);
     }
 
     return true;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -288,8 +278,7 @@ XmlElement *KeySignaturesSequence::serialize() const
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         const MidiEvent *event = this->midiEvents.getUnchecked(i);
-        xml->prependChildElement(event->serialize()); // todo test
-        //xml->addChildElement(event->serialize());
+        xml->prependChildElement(event->serialize());
     }
 
     return xml;
@@ -299,10 +288,11 @@ void KeySignaturesSequence::deserialize(const XmlElement &xml)
 {
     this->reset();
 
-    const XmlElement *mainSlot = (xml.getTagName() == Serialization::Core::keySignatures) ?
-                                 &xml : xml.getChildByName(Serialization::Core::keySignatures);
+    const XmlElement *root =
+        (xml.getTagName() == Serialization::Core::keySignatures) ?
+        &xml : xml.getChildByName(Serialization::Core::keySignatures);
 
-    if (mainSlot == nullptr)
+    if (root == nullptr)
     {
         return;
     }
@@ -310,18 +300,17 @@ void KeySignaturesSequence::deserialize(const XmlElement &xml)
     float lastBeat = 0;
     float firstBeat = 0;
 
-    forEachXmlChildElementWithTagName(*mainSlot, e, Serialization::Core::keySignature)
+    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::keySignature)
     {
-        KeySignatureEvent *signature = new KeySignatureEvent(this);
+        auto signature = new KeySignatureEvent(this);
         signature->deserialize(*e);
         
-        //this->midiEvents.addSorted(*signature, signature); // sorted later
-        this->midiEvents.add(signature);
+        this->midiEvents.add(signature); // sorted later
 
         lastBeat = jmax(lastBeat, signature->getBeat());
         firstBeat = jmin(firstBeat, signature->getBeat());
 
-        this->signaturesHashTable.set(*signature, signature);
+        this->usedEventIds.insert(signature->getId());
     }
 
     this->sort();
@@ -332,6 +321,6 @@ void KeySignaturesSequence::deserialize(const XmlElement &xml)
 void KeySignaturesSequence::reset()
 {
     this->midiEvents.clear();
-    this->signaturesHashTable.clear();
+    this->usedEventIds.clear();
     this->invalidateSequenceCache();
 }

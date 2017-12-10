@@ -62,7 +62,7 @@ public:
     static int compareElements(const Clip &first,
         const Clip &second);
 
-    int hashCode() const noexcept;
+    HashCode hashCode() const noexcept;
 
 private:
 
@@ -76,12 +76,10 @@ private:
     JUCE_LEAK_DETECTOR(Clip);
 };
 
-class ClipHashFunction
+struct ClipHash
 {
-public:
-
-    static int generateHash(Clip clip, const int upperLimit) noexcept
+    inline HashCode operator()(const Clip &key) const noexcept
     {
-        return static_cast<int>((static_cast<uint32>(clip.hashCode())) % static_cast<uint32>(upperLimit));
+        return key.hashCode() % HASH_CODE_MAX;
     }
 };

@@ -35,16 +35,19 @@ TimeSignatureEvent::TimeSignatureEvent(const TimeSignatureEvent &other) :
     this->id = other.getId();
 }
 
-TimeSignatureEvent::TimeSignatureEvent(MidiSequence *owner,
+TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiSequence> owner,
     float newBeat, int newNumerator, int newDenominator) :
     MidiEvent(owner, MidiEvent::TimeSignature, newBeat),
     numerator(newNumerator),
-    denominator(newDenominator)
-{
-}
+    denominator(newDenominator) {}
 
-TimeSignatureEvent::~TimeSignatureEvent()
+TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiSequence> owner,
+    const TimeSignatureEvent &parametersToCopy) :
+    MidiEvent(owner, MidiEvent::TimeSignature, parametersToCopy.beat),
+    numerator(parametersToCopy.numerator),
+    denominator(parametersToCopy.denominator)
 {
+    this->id = parametersToCopy.getId();
 }
 
 void TimeSignatureEvent::parseString(const String &data, int &numerator, int &denominator)
@@ -163,25 +166,13 @@ void TimeSignatureEvent::deserialize(const XmlElement &xml)
     this->id = xml.getStringAttribute("id");
 }
 
-void TimeSignatureEvent::reset()
-{
-}
+void TimeSignatureEvent::reset() {}
 
 
-int TimeSignatureEvent::hashCode() const noexcept
+void TimeSignatureEvent::applyChanges(const TimeSignatureEvent &parameters)
 {
-    const unsigned int hash =
-        this->numerator + (100 * this->denominator) + this->id.hashCode();
-    return (int)hash;
-}
-
-TimeSignatureEvent &TimeSignatureEvent::operator=(const TimeSignatureEvent &right)
-{
-    //if (this == &right) { return *this; }
-    //this->sequence = *right.getLayer(); // never do this
-    this->id = right.id;
-    this->beat = right.beat;
-    this->numerator = right.numerator;
-    this->denominator = right.denominator;
-    return *this;
+    jassert(this->id == parameters.id);
+    this->beat = parameters.beat;
+    this->numerator = parameters.numerator;
+    this->denominator = parameters.denominator;
 }

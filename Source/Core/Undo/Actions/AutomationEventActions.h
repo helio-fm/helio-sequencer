@@ -18,7 +18,7 @@
 #pragma once
 
 class AutomationSequence;
-class ProjectTreeItem;
+class MidiTrackSource;
 
 #include "AutomationEvent.h"
 #include "UndoAction.h"
@@ -32,10 +32,10 @@ class AutomationEventInsertAction : public UndoAction
 {
 public:
     
-    explicit AutomationEventInsertAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AutomationEventInsertAction(MidiTrackSource &source) :
+    UndoAction(source) {}
 
-    AutomationEventInsertAction(ProjectTreeItem &project,
+    AutomationEventInsertAction(MidiTrackSource &source,
                                 String trackId,
                                 const AutomationEvent &target);
 
@@ -64,10 +64,10 @@ class AutomationEventRemoveAction : public UndoAction
 {
 public:
     
-    explicit AutomationEventRemoveAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AutomationEventRemoveAction(MidiTrackSource &source) :
+    UndoAction(source) {}
 
-    AutomationEventRemoveAction(ProjectTreeItem &project,
+    AutomationEventRemoveAction(MidiTrackSource &source,
                                 String trackId,
                                 const AutomationEvent &target);
 
@@ -96,10 +96,10 @@ class AutomationEventChangeAction : public UndoAction
 {
 public:
     
-    explicit AutomationEventChangeAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AutomationEventChangeAction(MidiTrackSource &source) :
+    UndoAction(source) {}
 
-    AutomationEventChangeAction(ProjectTreeItem &project,
+    AutomationEventChangeAction(MidiTrackSource &source,
                                 String trackId,
                                 const AutomationEvent &target,
                                 const AutomationEvent &newParameters);
@@ -133,10 +133,10 @@ class AutomationEventsGroupInsertAction : public UndoAction
 {
 public:
     
-    explicit AutomationEventsGroupInsertAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AutomationEventsGroupInsertAction(MidiTrackSource &source) :
+    UndoAction(source) {}
     
-    AutomationEventsGroupInsertAction(ProjectTreeItem &project,
+    AutomationEventsGroupInsertAction(MidiTrackSource &source,
                                       String trackId,
                                       Array<AutomationEvent> &target);
     
@@ -166,10 +166,10 @@ class AutomationEventsGroupRemoveAction : public UndoAction
 {
 public:
     
-    explicit AutomationEventsGroupRemoveAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AutomationEventsGroupRemoveAction(MidiTrackSource &source) :
+    UndoAction(source) {}
     
-    AutomationEventsGroupRemoveAction(ProjectTreeItem &project,
+    AutomationEventsGroupRemoveAction(MidiTrackSource &source,
                                       String trackId,
                                       Array<AutomationEvent> &target);
     
@@ -199,10 +199,10 @@ class AutomationEventsGroupChangeAction : public UndoAction
 {
 public:
     
-    explicit AutomationEventsGroupChangeAction(ProjectTreeItem &project) :
-    UndoAction(project) {}
+    explicit AutomationEventsGroupChangeAction(MidiTrackSource &source) :
+    UndoAction(source) {}
 
-    AutomationEventsGroupChangeAction(ProjectTreeItem &project,
+    AutomationEventsGroupChangeAction(MidiTrackSource &source,
                                       String trackId,
                                       const Array<AutomationEvent> state1,
                                       const Array<AutomationEvent> state2);

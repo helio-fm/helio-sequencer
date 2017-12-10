@@ -17,7 +17,7 @@
 
 #pragma once
 
-class ProjectTreeItem;
+class MidiTrackSource;
 
 #include "UndoAction.h"
 #include "Pattern.h"
@@ -31,10 +31,10 @@ class PatternClipInsertAction : public UndoAction
 {
 public:
 
-    explicit PatternClipInsertAction(ProjectTreeItem &project) :
-        UndoAction(project) {}
+    explicit PatternClipInsertAction(MidiTrackSource &source) :
+        UndoAction(source) {}
 
-    PatternClipInsertAction(ProjectTreeItem &project,
+    PatternClipInsertAction(MidiTrackSource &source,
         String trackId, const Clip &target);
 
     bool perform() override;
@@ -62,10 +62,10 @@ class PatternClipRemoveAction : public UndoAction
 {
 public:
 
-    explicit PatternClipRemoveAction(ProjectTreeItem &project) :
-        UndoAction(project) {}
+    explicit PatternClipRemoveAction(MidiTrackSource &source) :
+        UndoAction(source) {}
 
-    PatternClipRemoveAction(ProjectTreeItem &project,
+    PatternClipRemoveAction(MidiTrackSource &source,
         String trackId, const Clip &target);
 
     bool perform() override;
@@ -93,10 +93,10 @@ class PatternClipChangeAction : public UndoAction
 {
 public:
 
-    explicit PatternClipChangeAction(ProjectTreeItem &project) :
-        UndoAction(project) {}
+    explicit PatternClipChangeAction(MidiTrackSource &source) :
+        UndoAction(source) {}
 
-    PatternClipChangeAction(ProjectTreeItem &project,
+    PatternClipChangeAction(MidiTrackSource &source,
         String trackId,
         const Clip &target,
         const Clip &newParameters);

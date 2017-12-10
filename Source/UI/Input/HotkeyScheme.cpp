@@ -19,9 +19,19 @@
 #include "HotkeyScheme.h"
 #include "CommandIDs.h"
 #include "SerializationKeys.h"
+#include "ResourceCache.h"
 
-HotkeyScheme::HotkeyScheme()
+const HotkeyScheme HotkeyScheme::getDefaultScheme()
 {
+    return ResourceCache<HotkeyScheme>::getInstance()->
+        get(Serialization::UI::Hotkeys::scheme, "DefaultHotkeys_xml").getFirst();
+}
+
+HotkeyScheme::HotkeyScheme() {}
+
+HotkeyScheme::HotkeyScheme(const HotkeyScheme &other)
+{
+    operator= (other);
 }
 
 bool HotkeyScheme::dispatchKeyPress(KeyPress keyPress,
@@ -198,4 +208,16 @@ void HotkeyScheme::reset()
     this->keyUps.clearQuick();
     this->receiverChildren.clear();
     this->lastReceiver = nullptr;
+}
+
+HotkeyScheme &HotkeyScheme::operator=(const HotkeyScheme &other)
+{
+    this->name = other.name;
+    this->keyPresses.clearQuick();
+    this->keyDowns.clearQuick();
+    this->keyUps.clearQuick();
+    this->keyPresses.addArray(other.keyPresses);
+    this->keyDowns.addArray(other.keyDowns);
+    this->keyUps.addArray(other.keyUps);
+    return *this;
 }

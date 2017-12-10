@@ -363,7 +363,7 @@ void ProjectTimeline::resetAnnotationsDelta(const XmlElement *state)
     forEachXmlChildElementWithTagName(*state, e, Serialization::Core::annotation)
     {
         this->annotationsSequence->silentImport(
-            AnnotationEvent(this->annotationsSequence).withParameters(*e));
+            AnnotationEvent(this->annotationsSequence.get()).withParameters(*e));
     }
 }
 
@@ -388,7 +388,7 @@ void ProjectTimeline::resetTimeSignaturesDelta(const XmlElement *state)
     forEachXmlChildElementWithTagName(*state, e, Serialization::Core::timeSignature)
     {
         this->timeSignaturesSequence->silentImport(
-            TimeSignatureEvent(this->timeSignaturesSequence).withParameters(*e));
+            TimeSignatureEvent(this->timeSignaturesSequence.get()).withParameters(*e));
     }
 }
 
@@ -413,6 +413,6 @@ void ProjectTimeline::resetKeySignaturesDelta(const XmlElement *state)
     forEachXmlChildElementWithTagName(*state, e, Serialization::Core::keySignature)
     {
         this->keySignaturesSequence->silentImport(
-            KeySignatureEvent(this->keySignaturesSequence).withParameters(*e));
+            KeySignatureEvent(this->keySignaturesSequence.get()).withParameters(*e));
     }
 }

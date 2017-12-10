@@ -220,13 +220,6 @@ HybridRoll *ProjectTreeItem::getLastFocusedRoll() const
 //    return nullptr;
 }
 
-Pattern *ProjectTreeItem::findPatternByTrackId(const String &uuid)
-{
-    // TODO implement
-    return nullptr;
-}
-
-
 Colour ProjectTreeItem::getColour() const
 {
     return Colour(0xffa489ff);
@@ -720,18 +713,22 @@ void ProjectTreeItem::removeAllListeners()
 
 void ProjectTreeItem::broadcastChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
+    //jassert(oldEvent.isValid()); // old event is allowed to be un-owned
+    jassert(newEvent.isValid());
     this->changeListeners.call(&ProjectListener::onChangeMidiEvent, oldEvent, newEvent);
     this->sendChangeMessage();
 }
 
 void ProjectTreeItem::broadcastAddEvent(const MidiEvent &event)
 {
+    jassert(event.isValid());
     this->changeListeners.call(&ProjectListener::onAddMidiEvent, event);
     this->sendChangeMessage();
 }
 
 void ProjectTreeItem::broadcastRemoveEvent(const MidiEvent &event)
 {
+    jassert(event.isValid());
     this->changeListeners.call(&ProjectListener::onRemoveMidiEvent, event);
     this->sendChangeMessage();
 }
@@ -912,6 +909,36 @@ void ProjectTreeItem::exportMidi(File &file) const
     tempFile.writeTo(*out);
 }
 
+//===----------------------------------------------------------------------===//
+// MidiTrackSource
+//===----------------------------------------------------------------------===//
+
+MidiTrack *ProjectTreeItem::getTrackById(const String &trackId)
+{
+    Array<MidiTrackTreeItem *> allChildren = this->findChildrenOfType<MidiTrackTreeItem>();
+
+    for (int i = 0; i < allChildren.size(); ++i)
+    {
+        if (allChildren.getUnchecked(i)->getTrackId().toString() == trackId)
+        {
+            return allChildren.getUnchecked(i);
+        }
+    }
+
+    return nullptr;
+}
+
+Pattern *ProjectTreeItem::getPatternByTrackId(const String &uuid)
+{
+    // TODO!
+    return nullptr;
+}
+
+MidiSequence *ProjectTreeItem::getSequenceByTrackId(const String &trackId)
+{
+    this->rebuildSequencesHashIfNeeded();
+    return this->sequencesHash[trackId].get();
+}
 
 //===----------------------------------------------------------------------===//
 // VCS::TrackedItemsSource
@@ -938,17 +965,17 @@ VCS::TrackedItem *ProjectTreeItem::initTrackedItem(const String &type, const Uui
 {
     if (type == Serialization::Core::pianoLayer)
     {
-        MidiTrackTreeItem *layer = new PianoTrackTreeItem("empty");
-        layer->setVCSUuid(id);
-        this->addChildTreeItem(layer);
-        return layer;
+        MidiTrackTreeItem *track = new PianoTrackTreeItem("empty");
+        track->setVCSUuid(id);
+        this->addChildTreeItem(track);
+        return track;
     }
     if (type == Serialization::Core::autoLayer)
     {
-        MidiTrackTreeItem *layer = new AutomationTrackTreeItem("empty");
-        layer->setVCSUuid(id);
-        this->addChildTreeItem(layer);
-        return layer;
+        MidiTrackTreeItem *track = new AutomationTrackTreeItem("empty");
+        track->setVCSUuid(id);
+        this->addChildTreeItem(track);
+        return track;
     }
     else if (type == Serialization::Core::projectInfo)
     {
@@ -968,10 +995,11 @@ bool ProjectTreeItem::deleteTrackedItem(VCS::TrackedItem *item)
 {
     if (dynamic_cast<MidiTrackTreeItem *>(item))
     {
-        delete item;
+        delete item; // will call broadcastRemoveTrack in destructor
+        return true;
     }
 
-    return true;
+    return false;
 }
 
 void ProjectTreeItem::onResetState()
@@ -1006,21 +1034,21 @@ void ProjectTreeItem::rebuildSequencesHashIfNeeded()
     {
         this->sequencesHash.clear();
 
-        this->sequencesHash.set(this->timeline->getAnnotations()->getTrackId().toString(), 
-            this->timeline->getAnnotations()->getSequence());
+        this->sequencesHash[this->timeline->getAnnotations()->getTrackId().toString()] =
+            this->timeline->getAnnotations()->getSequence();
 
-        this->sequencesHash.set(this->timeline->getKeySignatures()->getTrackId().toString(),
-            this->timeline->getKeySignatures()->getSequence());
+        this->sequencesHash[this->timeline->getKeySignatures()->getTrackId().toString()] =
+            this->timeline->getKeySignatures()->getSequence();
 
-        this->sequencesHash.set(this->timeline->getTimeSignatures()->getTrackId().toString(),
-            this->timeline->getTimeSignatures()->getSequence());
+        this->sequencesHash[this->timeline->getTimeSignatures()->getTrackId().toString()] =
+            this->timeline->getTimeSignatures()->getSequence();
         
-        Array<MidiTrack *> children = this->findChildrenOfType<MidiTrack>();
+        const Array<MidiTrack *> children = this->findChildrenOfType<MidiTrack>();
         
         for (int i = 0; i < children.size(); ++i)
         {
             const MidiTrack *track = children.getUnchecked(i);
-            this->sequencesHash.set(track->getTrackId().toString(), track->getSequence());
+            this->sequencesHash[track->getTrackId().toString()] = track->getSequence();
         }
         
         this->isLayersHashOutdated = false;

@@ -34,158 +34,141 @@
 
 #define MAX_TRANSACTIONS_TO_STORE 10
 
-
-struct UndoStack::ActionSet
-{
-    ActionSet (ProjectTreeItem &parentProject, String  transactionName) :
-    project(parentProject),
-    name(std::move(transactionName))
-    {}
-    
-    bool perform() const
-    {
-        for (int i = 0; i < actions.size(); ++i) {
-            if (! actions.getUnchecked(i)->perform()) {
-                return false;
-            }
-        }
-        
-        return true;
-    }
-    
-    bool undo() const
-    {
-        //Logger::writeToLog(String(actions.size()) + " actions");
-        
-        for (int i = actions.size(); --i >= 0;) {
-            if (! actions.getUnchecked(i)->undo()) {
-                return false;
-            }
-        }
-        
-        return true;
-    }
-    
-    int getTotalSize() const
-    {
-        int total = 0;
-        
-        for (int i = actions.size(); --i >= 0;) {
-            total += actions.getUnchecked(i)->getSizeInUnits();
-        }
-        
-        return total;
-    }
-    
-    XmlElement *serialize() const
-    {
-        auto xml = new XmlElement(Serialization::Undo::transaction);
-        
-        xml->setAttribute(Serialization::Undo::name, this->name);
-        
-        for (int i = 0; i < this->actions.size(); ++i)
-        {
-            // prependChildElement здесь не даст особого выигрыша (в большинстве транзакций только одно событие), а только запутает
-            xml->addChildElement(this->actions.getUnchecked(i)->serialize());
-        }
-        
-        return xml;
-    }
-    
-    void deserialize(const XmlElement &xml)
-    {
-        this->reset();
-        
-        this->name = xml.getStringAttribute(Serialization::Undo::name);
-        
-        forEachXmlChildElement(xml, childActionXml)
-        {
-            if (UndoAction *action = createUndoActionsByTagName(childActionXml->getTagName()))
-            {
-                action->deserialize(*childActionXml);
-                this->actions.add(action);
-            }
-        }
-    }
-    
-    void reset()
-    {
-        this->actions.clear();
-    }
-    
-    UndoAction *createUndoActionsByTagName(const String &tagName)
-    {
-        if      (tagName == Serialization::Undo::pianoTrackInsertAction)                { return new PianoTrackInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::pianoTrackRemoveAction)                { return new PianoTrackRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::automationTrackInsertAction)           { return new AutomationTrackInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::automationTrackRemoveAction)           { return new AutomationTrackRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::midiTrackRenameAction)                 { return new MidiTrackRenameAction(this->project); }
-        else if (tagName == Serialization::Undo::midiTrackChangeColourAction)           { return new MidiTrackChangeColourAction(this->project); }
-        else if (tagName == Serialization::Undo::midiTrackChangeInstrumentAction)       { return new MidiTrackChangeInstrumentAction(this->project); }
-        else if (tagName == Serialization::Undo::midiTrackMuteAction)                   { return new MidiTrackMuteAction(this->project); }
-        else if (tagName == Serialization::Undo::patternClipInsertAction)               { return new PatternClipInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::patternClipRemoveAction)               { return new PatternClipRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::patternClipChangeAction)               { return new PatternClipChangeAction(this->project); }
-        else if (tagName == Serialization::Undo::noteInsertAction)                      { return new NoteInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::noteRemoveAction)                      { return new NoteRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::noteChangeAction)                      { return new NoteChangeAction(this->project); }
-        else if (tagName == Serialization::Undo::notesGroupInsertAction)                { return new NotesGroupInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::notesGroupRemoveAction)                { return new NotesGroupRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::notesGroupChangeAction)                { return new NotesGroupChangeAction(this->project); }
-        else if (tagName == Serialization::Undo::annotationEventInsertAction)           { return new AnnotationEventInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::annotationEventRemoveAction)           { return new AnnotationEventRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::annotationEventChangeAction)           { return new AnnotationEventChangeAction(this->project); }
-        else if (tagName == Serialization::Undo::annotationEventsGroupInsertAction)     { return new AnnotationEventsGroupInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::annotationEventsGroupRemoveAction)     { return new AnnotationEventsGroupRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::annotationEventsGroupChangeAction)     { return new AnnotationEventsGroupChangeAction(this->project); }
-        else if (tagName == Serialization::Undo::timeSignatureEventInsertAction)        { return new TimeSignatureEventInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::timeSignatureEventRemoveAction)        { return new TimeSignatureEventRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::timeSignatureEventChangeAction)        { return new TimeSignatureEventChangeAction(this->project); }
-        else if (tagName == Serialization::Undo::timeSignatureEventsGroupInsertAction)  { return new TimeSignatureEventsGroupInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::timeSignatureEventsGroupRemoveAction)  { return new TimeSignatureEventsGroupRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::timeSignatureEventsGroupChangeAction)  { return new TimeSignatureEventsGroupChangeAction(this->project); }
-        else if (tagName == Serialization::Undo::keySignatureEventInsertAction)         { return new KeySignatureEventInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::keySignatureEventRemoveAction)         { return new KeySignatureEventRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::keySignatureEventChangeAction)         { return new KeySignatureEventChangeAction(this->project); }
-        else if (tagName == Serialization::Undo::keySignatureEventsGroupInsertAction)   { return new KeySignatureEventsGroupInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::keySignatureEventsGroupRemoveAction)   { return new KeySignatureEventsGroupRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::keySignatureEventsGroupChangeAction)   { return new KeySignatureEventsGroupChangeAction(this->project); }
-        else if (tagName == Serialization::Undo::automationEventInsertAction)           { return new AutomationEventInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::automationEventRemoveAction)           { return new AutomationEventRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::automationEventChangeAction)           { return new AutomationEventChangeAction(this->project); }
-        else if (tagName == Serialization::Undo::automationEventsGroupInsertAction)     { return new AutomationEventsGroupInsertAction(this->project); }
-        else if (tagName == Serialization::Undo::automationEventsGroupRemoveAction)     { return new AutomationEventsGroupRemoveAction(this->project); }
-        else if (tagName == Serialization::Undo::automationEventsGroupChangeAction)     { return new AutomationEventsGroupChangeAction(this->project); }
-        
-        // Here we could meet deprecated legacy actions
-        return nullptr;
-    }
-    
-    OwnedArray<UndoAction> actions;
-    String name;
-    
-    ProjectTreeItem &project;
-};
-
-//==============================================================================
-UndoStack::UndoStack (ProjectTreeItem &parentProject,
-                      const int maxNumberOfUnitsToKeep,
-                      const int minimumTransactions) :
+UndoStack::ActionSet::ActionSet(ProjectTreeItem &parentProject, String transactionName) :
 project(parentProject),
-totalUnitsStored(0),
-nextIndex(0),
-newTransaction(true),
-reentrancyCheck(false)
+name(std::move(transactionName)) {}
+    
+bool UndoStack::ActionSet::perform() const
 {
-    setMaxNumberOfStoredUnits (maxNumberOfUnitsToKeep,
-                               minimumTransactions);
+    for (int i = 0; i < actions.size(); ++i)
+    {
+        if (! actions.getUnchecked(i)->perform())
+        {
+            return false;
+        }
+    }
+        
+    return true;
+}
+    
+bool UndoStack::ActionSet::undo() const
+{
+    for (int i = actions.size(); --i >= 0;)
+    {
+        if (! actions.getUnchecked(i)->undo())
+        {
+            return false;
+        }
+    }
+        
+    return true;
+}
+    
+int UndoStack::ActionSet::getTotalSize() const
+{
+    int total = 0;
+        
+    for (int i = actions.size(); --i >= 0;) {
+        total += actions.getUnchecked(i)->getSizeInUnits();
+    }
+        
+    return total;
+}
+    
+XmlElement *UndoStack::ActionSet::serialize() const
+{
+    auto xml = new XmlElement(Serialization::Undo::transaction);
+        
+    xml->setAttribute(Serialization::Undo::name, this->name);
+        
+    for (int i = 0; i < this->actions.size(); ++i)
+    {
+        xml->addChildElement(this->actions.getUnchecked(i)->serialize());
+    }
+        
+    return xml;
+}
+    
+void UndoStack::ActionSet::deserialize(const XmlElement &xml)
+{
+    this->reset();
+        
+    this->name = xml.getStringAttribute(Serialization::Undo::name);
+        
+    forEachXmlChildElement(xml, childActionXml)
+    {
+        if (UndoAction *action = createUndoActionsByTagName(childActionXml->getTagName()))
+        {
+            action->deserialize(*childActionXml);
+            this->actions.add(action);
+        }
+    }
+}
+    
+void UndoStack::ActionSet::reset()
+{
+    this->actions.clear();
+}
+    
+UndoAction *UndoStack::ActionSet::createUndoActionsByTagName(const String &tagName)
+{
+    if      (tagName == Serialization::Undo::pianoTrackInsertAction)                { return new PianoTrackInsertAction(this->project, &this->project); }
+    else if (tagName == Serialization::Undo::pianoTrackRemoveAction)                { return new PianoTrackRemoveAction(this->project, &this->project); }
+    else if (tagName == Serialization::Undo::automationTrackInsertAction)           { return new AutomationTrackInsertAction(this->project, &this->project); }
+    else if (tagName == Serialization::Undo::automationTrackRemoveAction)           { return new AutomationTrackRemoveAction(this->project, &this->project); }
+    else if (tagName == Serialization::Undo::midiTrackRenameAction)                 { return new MidiTrackRenameAction(this->project); }
+    else if (tagName == Serialization::Undo::midiTrackChangeColourAction)           { return new MidiTrackChangeColourAction(this->project); }
+    else if (tagName == Serialization::Undo::midiTrackChangeInstrumentAction)       { return new MidiTrackChangeInstrumentAction(this->project); }
+    else if (tagName == Serialization::Undo::midiTrackMuteAction)                   { return new MidiTrackMuteAction(this->project); }
+    else if (tagName == Serialization::Undo::patternClipInsertAction)               { return new PatternClipInsertAction(this->project); }
+    else if (tagName == Serialization::Undo::patternClipRemoveAction)               { return new PatternClipRemoveAction(this->project); }
+    else if (tagName == Serialization::Undo::patternClipChangeAction)               { return new PatternClipChangeAction(this->project); }
+    else if (tagName == Serialization::Undo::noteInsertAction)                      { return new NoteInsertAction(this->project); }
+    else if (tagName == Serialization::Undo::noteRemoveAction)                      { return new NoteRemoveAction(this->project); }
+    else if (tagName == Serialization::Undo::noteChangeAction)                      { return new NoteChangeAction(this->project); }
+    else if (tagName == Serialization::Undo::notesGroupInsertAction)                { return new NotesGroupInsertAction(this->project); }
+    else if (tagName == Serialization::Undo::notesGroupRemoveAction)                { return new NotesGroupRemoveAction(this->project); }
+    else if (tagName == Serialization::Undo::notesGroupChangeAction)                { return new NotesGroupChangeAction(this->project); }
+    else if (tagName == Serialization::Undo::annotationEventInsertAction)           { return new AnnotationEventInsertAction(this->project); }
+    else if (tagName == Serialization::Undo::annotationEventRemoveAction)           { return new AnnotationEventRemoveAction(this->project); }
+    else if (tagName == Serialization::Undo::annotationEventChangeAction)           { return new AnnotationEventChangeAction(this->project); }
+    else if (tagName == Serialization::Undo::annotationEventsGroupInsertAction)     { return new AnnotationEventsGroupInsertAction(this->project); }
+    else if (tagName == Serialization::Undo::annotationEventsGroupRemoveAction)     { return new AnnotationEventsGroupRemoveAction(this->project); }
+    else if (tagName == Serialization::Undo::annotationEventsGroupChangeAction)     { return new AnnotationEventsGroupChangeAction(this->project); }
+    else if (tagName == Serialization::Undo::timeSignatureEventInsertAction)        { return new TimeSignatureEventInsertAction(this->project); }
+    else if (tagName == Serialization::Undo::timeSignatureEventRemoveAction)        { return new TimeSignatureEventRemoveAction(this->project); }
+    else if (tagName == Serialization::Undo::timeSignatureEventChangeAction)        { return new TimeSignatureEventChangeAction(this->project); }
+    else if (tagName == Serialization::Undo::timeSignatureEventsGroupInsertAction)  { return new TimeSignatureEventsGroupInsertAction(this->project); }
+    else if (tagName == Serialization::Undo::timeSignatureEventsGroupRemoveAction)  { return new TimeSignatureEventsGroupRemoveAction(this->project); }
+    else if (tagName == Serialization::Undo::timeSignatureEventsGroupChangeAction)  { return new TimeSignatureEventsGroupChangeAction(this->project); }
+    else if (tagName == Serialization::Undo::keySignatureEventInsertAction)         { return new KeySignatureEventInsertAction(this->project); }
+    else if (tagName == Serialization::Undo::keySignatureEventRemoveAction)         { return new KeySignatureEventRemoveAction(this->project); }
+    else if (tagName == Serialization::Undo::keySignatureEventChangeAction)         { return new KeySignatureEventChangeAction(this->project); }
+    else if (tagName == Serialization::Undo::keySignatureEventsGroupInsertAction)   { return new KeySignatureEventsGroupInsertAction(this->project); }
+    else if (tagName == Serialization::Undo::keySignatureEventsGroupRemoveAction)   { return new KeySignatureEventsGroupRemoveAction(this->project); }
+    else if (tagName == Serialization::Undo::keySignatureEventsGroupChangeAction)   { return new KeySignatureEventsGroupChangeAction(this->project); }
+    else if (tagName == Serialization::Undo::automationEventInsertAction)           { return new AutomationEventInsertAction(this->project); }
+    else if (tagName == Serialization::Undo::automationEventRemoveAction)           { return new AutomationEventRemoveAction(this->project); }
+    else if (tagName == Serialization::Undo::automationEventChangeAction)           { return new AutomationEventChangeAction(this->project); }
+    else if (tagName == Serialization::Undo::automationEventsGroupInsertAction)     { return new AutomationEventsGroupInsertAction(this->project); }
+    else if (tagName == Serialization::Undo::automationEventsGroupRemoveAction)     { return new AutomationEventsGroupRemoveAction(this->project); }
+    else if (tagName == Serialization::Undo::automationEventsGroupChangeAction)     { return new AutomationEventsGroupChangeAction(this->project); }
+        
+    // Here we could meet deprecated legacy actions
+    return nullptr;
 }
 
-UndoStack::~UndoStack()
-{
-}
+UndoStack::UndoStack (ProjectTreeItem &parentProject,
+    const int maxNumberOfUnitsToKeep,
+    const int minimumTransactions) :
+    project(parentProject),
+    totalUnitsStored(0),
+    nextIndex(0),
+    newTransaction(true),
+    reentrancyCheck(false),
+    maxNumUnitsToKeep(maxNumberOfUnitsToKeep),
+    minimumTransactionsToKeep(minimumTransactions) {}
 
-//==============================================================================
 void UndoStack::clearUndoHistory()
 {
     transactions.clear();
@@ -194,24 +177,12 @@ void UndoStack::clearUndoHistory()
     sendChangeMessage();
 }
 
-int UndoStack::getNumberOfUnitsTakenUpByStoredCommands() const
-{
-    return totalUnitsStored;
-}
-
-void UndoStack::setMaxNumberOfStoredUnits (const int maxNumberOfUnitsToKeep,
-                                           const int minimumTransactions)
-{
-    maxNumUnitsToKeep          = jmax (1, maxNumberOfUnitsToKeep);
-    minimumTransactionsToKeep  = jmax (1, minimumTransactions);
-}
-
-//==============================================================================
 bool UndoStack::perform (UndoAction* const newAction, const String& actionName)
 {
     if (perform (newAction))
     {
-        if (actionName.isNotEmpty()) {
+        if (actionName.isNotEmpty())
+        {
             setCurrentTransactionName (actionName);
         }
         
@@ -221,7 +192,7 @@ bool UndoStack::perform (UndoAction* const newAction, const String& actionName)
     return false;
 }
 
-bool UndoStack::perform (UndoAction* const newAction)
+bool UndoStack::perform (UndoAction *const newAction)
 {
     if (newAction != nullptr)
     {
@@ -236,22 +207,16 @@ bool UndoStack::perform (UndoAction* const newAction)
         
         if (action->perform())
         {
-            ActionSet* actionSet = getCurrentSet();
-            
-            //Logger::writeToLog("size before " + String(actionSet->actions.size()));
+            ActionSet *actionSet = getCurrentSet();
             
             if (actionSet != nullptr && ! newTransaction)
             {
-                // здесь имеет смысл пробежаться по всему стеку, вызывая createCoalescedAction,
-                // так как если в транзакции повторяются несколько разнородных событий,
-                // то стек будет распухать
                 for (signed int i = (actionSet->actions.size() - 1); i >= 0; --i)
                 {
                     if (UndoAction *const lastAction = actionSet->actions[i])
                     {
                         if (UndoAction *const coalescedAction = lastAction->createCoalescedAction(action))
                         {
-                            //Logger::writeToLog("createCoalescedAction");
                             action = coalescedAction;
                             totalUnitsStored -= lastAction->getSizeInUnits();
                             actionSet->actions.remove(i);
@@ -259,17 +224,6 @@ bool UndoStack::perform (UndoAction* const newAction)
                         }
                     }
                 }
-                
-                //if (UndoAction* const lastAction = actionSet->actions.getLast())
-                //{
-                //    if (UndoAction* const coalescedAction = lastAction->createCoalescedAction (action))
-                //    {
-                //        Logger::writeToLog("remove last");
-                //        action = coalescedAction;
-                //        totalUnitsStored -= lastAction->getSizeInUnits();
-                //        actionSet->actions.removeLast();
-                //    }
-                //}
             }
             else
             {
@@ -334,7 +288,6 @@ void UndoStack::setCurrentTransactionName (const String& newName) noexcept
     }
 }
 
-//==============================================================================
 UndoStack::ActionSet* UndoStack::getCurrentSet() const noexcept     { return transactions [nextIndex - 1]; }
 UndoStack::ActionSet* UndoStack::getNextSet() const noexcept        { return transactions [nextIndex]; }
 
@@ -425,7 +378,6 @@ int UndoStack::getNumActionsInCurrentTransaction() const
     
     return 0;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Serializable

@@ -27,14 +27,9 @@
 
 #include <float.h>
 
-// todo optimize data structures >_<
-// using std::dense_hash_map ?
-
 PianoSequence::PianoSequence(MidiTrack &track,
     ProjectEventDispatcher &dispatcher) :
-    MidiSequence(track, dispatcher)
-{
-}
+    MidiSequence(track, dispatcher) {}
 
 //===----------------------------------------------------------------------===//
 // Import/export
@@ -57,7 +52,7 @@ void PianoSequence::importMidi(const MidiMessageSequence &sequence)
             const float velocity = messageOn.getVelocity() / 128.f;
             const float beat = float(startTimestamp);
 
-            // ищем соответствующий note-off:
+            // find corresponding note-off:
             const int noteOffIndex = sequence.getIndexOfMatchingKeyUp(i);
 
             if (noteOffIndex > 0)
@@ -69,7 +64,7 @@ void PianoSequence::importMidi(const MidiMessageSequence &sequence)
                 {
                     const float length = float(endTimestamp - startTimestamp);
 
-                    // bottleneck warning!
+                    // bottleneck warning
                     const Note note(this, key, beat, length, velocity);
                     this->silentImport(note);
                 }
@@ -81,77 +76,74 @@ void PianoSequence::importMidi(const MidiMessageSequence &sequence)
     this->invalidateSequenceCache();
 }
 
-
 //===----------------------------------------------------------------------===//
-// Undoable track editing
+// Undo-able track editing
 //===----------------------------------------------------------------------===//
 
 void PianoSequence::silentImport(const MidiEvent &eventToImport)
 {
     const Note &note = static_cast<const Note &>(eventToImport);
+    jassert(note.isValid());
 
-    if (this->notesHashTable.contains(note))
-    { return; }
+    if (this->usedEventIds.contains(note.getId()))
+    {
+        return;
+    }
 
-    auto const storedNote = new Note(this);
-    *storedNote = note;
+    const auto storedNote = new Note(this, note);
     
-    // we need it to be sorted just because of sequence building performance?
     this->midiEvents.addSorted(*storedNote, storedNote); // bottleneck warning
-    this->notesHashTable.set(note, storedNote);
+    this->usedEventIds.insert(storedNote->getId());
 
     this->updateBeatRange(false);
     this->invalidateSequenceCache();
 }
 
-MidiEvent *PianoSequence::insert(const Note &note, const bool undoable)
+MidiEvent *PianoSequence::insert(const Note &eventParams, const bool undoable)
 {
-    if (this->notesHashTable.contains(note))
+    if (this->usedEventIds.contains(eventParams.getId()))
     {
         return nullptr;
     }
 
     if (undoable)
     {
-        this->getUndoStack()->perform(new NoteInsertAction(*this->getProject(),
-                                                           this->getTrackId(),
-                                                           note));
+        this->getUndoStack()->
+            perform(new NoteInsertAction(*this->getProject(),
+                this->getTrackId(), eventParams));
     }
     else
     {
-        auto storedNote = new Note(this, note);
-        
-        this->midiEvents.addSorted(*storedNote, storedNote);
-        this->notesHashTable.set(note, storedNote);
-
-        this->notifyEventAdded(*storedNote);
+        const auto ownedNote = new Note(this, eventParams);
+        this->midiEvents.addSorted(*ownedNote, ownedNote);
+        this->usedEventIds.insert(ownedNote->getId());
+        this->notifyEventAdded(*ownedNote);
         this->updateBeatRange(true);
-
-        return storedNote;
+        return ownedNote;
     }
 
     return nullptr;
 }
 
-bool PianoSequence::remove(const Note &note, const bool undoable)
+bool PianoSequence::remove(const Note &eventParams, const bool undoable)
 {
     if (undoable)
     {
-        this->getUndoStack()->perform(new NoteRemoveAction(*this->getProject(),
-                                                           this->getTrackId(),
-                                                           note));
+        this->getUndoStack()->
+            perform(new NoteRemoveAction(*this->getProject(),
+                this->getTrackId(), eventParams));
     }
     else
     {
-        // fixme! use dense_hash_map of <int noteHash, Note *objectPointer>
-        if (Note *matchingNote = this->notesHashTable[note])
+        const int index = this->midiEvents.indexOfSorted(eventParams, &eventParams);
+        jassert(index >= 0);
+        if (index >= 0)
         {
-            this->notifyEventRemoved(*matchingNote);
-            
-            const int matchingNoteIndex = this->indexOfSorted(matchingNote);
-            this->midiEvents.remove(matchingNoteIndex, true);
-            
-            this->notesHashTable.remove(note);
+            MidiEvent *const removedNote = this->midiEvents[index];
+            jassert(removedNote->isValid());
+            this->notifyEventRemoved(*removedNote);
+            this->usedEventIds.erase(removedNote->getId());
+            this->midiEvents.remove(index, true);
             this->updateBeatRange(true);
             this->notifyEventRemovedPostAction();
             return true;
@@ -163,30 +155,25 @@ bool PianoSequence::remove(const Note &note, const bool undoable)
     return true;
 }
 
-bool PianoSequence::change(const Note &note,
-                        const Note &newNote,
-                        const bool undoable)
+bool PianoSequence::change(const Note &oldParams, const Note &newParams, bool undoable)
 {
     if (undoable)
     {
-        this->getUndoStack()->perform(new NoteChangeAction(*this->getProject(),
-                                                           this->getTrackId(),
-                                                           note,
-                                                           newNote));
+        this->getUndoStack()->
+            perform(new NoteChangeAction(*this->getProject(),
+                this->getTrackId(), oldParams, newParams));
     }
     else
     {
-        if (Note *matchingNote = this->notesHashTable[note])
+        const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
+        jassert(index >= 0);
+        if (index >= 0)
         {
-            // fixme - remove and addSorted instead?
-            (*matchingNote) = newNote;
-
-            this->notesHashTable.set(newNote, matchingNote);
-
-            // fixme - remove and addSorted instead?
-            this->sort();
-
-            this->notifyEventChanged(note, *matchingNote);
+            const auto changedNote = static_cast<Note *>(this->midiEvents[index]);
+            changedNote->applyChanges(newParams);
+            this->midiEvents.remove(index, false);
+            this->midiEvents.addSorted(*changedNote, changedNote);
+            this->notifyEventChanged(oldParams, *changedNote);
             this->updateBeatRange(true);
             return true;
         }
@@ -197,57 +184,52 @@ bool PianoSequence::change(const Note &note,
     return true;
 }
 
-
-bool PianoSequence::insertGroup(Array<Note> &notes, bool undoable)
+bool PianoSequence::insertGroup(Array<Note> &group, bool undoable)
 {
     if (undoable)
     {
-        this->getUndoStack()->perform(new NotesGroupInsertAction(*this->getProject(),
-                                                                 this->getTrackId(),
-                                                                 notes));
+        this->getUndoStack()->
+            perform(new NotesGroupInsertAction(*this->getProject(),
+                this->getTrackId(), group));
     }
     else
     {
-        for (int i = 0; i < notes.size(); ++i)
+        for (int i = 0; i < group.size(); ++i)
         {
-            const Note &note = notes.getUnchecked(i);
-            auto storedNote = new Note(this, note);
-            
-            this->midiEvents.add(storedNote); // sorted later
-            this->notesHashTable.set(note, storedNote);
-            this->notifyEventAdded(*storedNote);
+            const Note &eventParams = group.getUnchecked(i);
+            const auto ownedNote = new Note(this, eventParams);
+            this->midiEvents.addSorted(*ownedNote, ownedNote);
+            this->usedEventIds.insert(ownedNote->getId());
+            this->notifyEventAdded(*ownedNote);
         }
 
-        this->sort();
         this->updateBeatRange(true);
     }
 
     return true;
 }
 
-bool PianoSequence::removeGroup(Array<Note> &notes, bool undoable)
+bool PianoSequence::removeGroup(Array<Note> &group, bool undoable)
 {
     if (undoable)
     {
-        this->getUndoStack()->perform(new NotesGroupRemoveAction(*this->getProject(),
-                                                                 this->getTrackId(),
-                                                                 notes));
+        this->getUndoStack()->
+            perform(new NotesGroupRemoveAction(*this->getProject(),
+                this->getTrackId(), group));
     }
     else
     {
-        for (int i = 0; i < notes.size(); ++i)
+        for (int i = 0; i < group.size(); ++i)
         {
-            const Note &note = notes.getUnchecked(i);
-
-            if (Note *matchingNote = this->notesHashTable[note])
+            const Note &note = group.getUnchecked(i);
+            const int index = this->midiEvents.indexOfSorted(note, &note);
+            jassert(index >= 0);
+            if (index >= 0)
             {
-                this->notifyEventRemoved(*matchingNote);
-                
-                const int matchingNoteIndex = this->indexOfSorted(matchingNote);
-                this->midiEvents.remove(matchingNoteIndex, true);
-                //this->midiEvents.removeObject(matchingNote);
-                
-                this->notesHashTable.remove(note);
+                const auto removedNote = this->midiEvents[index];
+                this->notifyEventRemoved(*removedNote);
+                this->usedEventIds.erase(removedNote->getId());
+                this->midiEvents.remove(index, true);
             }
         }
 
@@ -258,36 +240,35 @@ bool PianoSequence::removeGroup(Array<Note> &notes, bool undoable)
     return true;
 }
 
-bool PianoSequence::changeGroup(Array<Note> &notesBefore,
-                             Array<Note> &notesAfter,
-                             bool undoable)
+bool PianoSequence::changeGroup(Array<Note> &groupBefore,
+    Array<Note> &groupAfter, bool undoable)
 {
-    jassert(notesBefore.size() == notesAfter.size());
+    jassert(groupBefore.size() == groupAfter.size());
 
     if (undoable)
     {
-        this->getUndoStack()->perform(new NotesGroupChangeAction(*this->getProject(),
-                                                                 this->getTrackId(),
-                                                                 notesBefore,
-                                                                 notesAfter));
+        this->getUndoStack()->
+            perform(new NotesGroupChangeAction(*this->getProject(),
+                this->getTrackId(), groupBefore, groupAfter));
     }
     else
     {
-        for (int i = 0; i < notesBefore.size(); ++i)
+        for (int i = 0; i < groupBefore.size(); ++i)
         {
-            const Note &note = notesBefore.getUnchecked(i);
-            const Note &newNote = notesAfter.getUnchecked(i);
-
-            if (Note *matchingNote = this->notesHashTable[note])
+            const Note &oldParams = groupBefore.getUnchecked(i);
+            const Note &newParams = groupAfter.getUnchecked(i);
+            const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
+            jassert(index >= 0);
+            if (index >= 0)
             {
-                (*matchingNote) = newNote;
-
-                this->notesHashTable.set(newNote, matchingNote);
-                this->notifyEventChanged(note, *matchingNote);
+                const auto changedNote = static_cast<Note *>(this->midiEvents[index]);
+                changedNote->applyChanges(newParams);
+                this->midiEvents.remove(index, false);
+                this->midiEvents.addSorted(*changedNote, changedNote);
+                this->notifyEventChanged(oldParams, *changedNote);
             }
         }
 
-        this->sort();
         this->updateBeatRange(true);
     }
 
@@ -327,17 +308,15 @@ void PianoSequence::transposeAll(int keyDelta, bool shouldCheckpoint)
     this->changeGroup(groupBefore, groupAfter, true);
 }
 
-
 //===----------------------------------------------------------------------===//
 // Accessors
 //===----------------------------------------------------------------------===//
 
 float PianoSequence::getLastBeat() const
 {
-    // todo fix
-    // сейчас тут скрыт один баг: последний бит считается по последнему событию
-    // но могут быть и предыдущие, которые длиннее его
-    // в общем, я пока закрою глаза на это
+    // FIXME:
+    // the last beat is now simply taken from the last event
+    // but it may be the case where previous events are longer that the last
 
     if (this->midiEvents.size() == 0)
     {
@@ -347,7 +326,6 @@ float PianoSequence::getLastBeat() const
     const Note &note = static_cast<const Note &>(*this->midiEvents.getLast());
     return note.getBeat() + note.getLength();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -360,7 +338,7 @@ XmlElement *PianoSequence::serialize() const
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         const MidiEvent *event = this->midiEvents.getUnchecked(i);
-        xml->prependChildElement(event->serialize());
+        xml->prependChildElement(event->serialize()); // faster than addChildElement
     }
     
     return xml;
@@ -368,14 +346,16 @@ XmlElement *PianoSequence::serialize() const
 
 void PianoSequence::deserialize(const XmlElement &xml)
 {
-    this->clearQuick();
+    this->reset();
 
     const XmlElement *root = 
         (xml.getTagName() == Serialization::Core::track) ?
         &xml : xml.getChildByName(Serialization::Core::track);
 
     if (root == nullptr)
-    { return; }
+    {
+        return;
+    }
 
     float lastBeat = 0;
     float firstBeat = 0;
@@ -385,14 +365,13 @@ void PianoSequence::deserialize(const XmlElement &xml)
         auto note = new Note(this);
         note->deserialize(*e);
 
-        //this->midiEvents.addSorted(*note, note); // sorted later
-        this->midiEvents.add(note);
+        this->midiEvents.add(note); // sorted later
 
         const float noteEnd = (note->getBeat() + note->getLength());
         lastBeat = jmax(lastBeat, noteEnd);
         firstBeat = jmin(firstBeat, note->getBeat());
 
-        this->notesHashTable.set(*note, note);
+        this->usedEventIds.insert(note->getId());
     }
 
     this->sort();
@@ -402,12 +381,7 @@ void PianoSequence::deserialize(const XmlElement &xml)
 
 void PianoSequence::reset()
 {
-    this->clearQuick();
+    this->midiEvents.clear();
+    this->usedEventIds.clear();
     this->invalidateSequenceCache();
-}
-
-void PianoSequence::clearQuick()
-{
-    this->midiEvents.clearQuick(true);
-    this->notesHashTable.clear();
 }

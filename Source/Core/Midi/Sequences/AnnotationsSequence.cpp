@@ -20,15 +20,12 @@
 #include "Note.h"
 #include "AnnotationEventActions.h"
 #include "SerializationKeys.h"
+#include "ProjectTreeItem.h"
 #include "UndoStack.h"
-
 
 AnnotationsSequence::AnnotationsSequence(MidiTrack &track, 
     ProjectEventDispatcher &dispatcher) :
-    MidiSequence(track, dispatcher)
-{
-}
-
+    MidiSequence(track, dispatcher) {}
 
 //===----------------------------------------------------------------------===//
 // Import/export
@@ -60,77 +57,74 @@ void AnnotationsSequence::importMidi(const MidiMessageSequence &sequence)
     this->invalidateSequenceCache();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Undoable track editing
 //===----------------------------------------------------------------------===//
 
 void AnnotationsSequence::silentImport(const MidiEvent &eventToImport)
 {
-    const AnnotationEvent &annotation = static_cast<const AnnotationEvent &>(eventToImport);
+    const AnnotationEvent &annotation =
+        static_cast<const AnnotationEvent &>(eventToImport);
+    jassert(annotation.isValid());
 
-    if (this->annotationsHashTable.contains(annotation))
+    if (this->usedEventIds.contains(annotation.getId()))
     {
         return;
     }
 
-    AnnotationEvent *storedAnnotation = new AnnotationEvent(this);
-    *storedAnnotation = annotation;
+    AnnotationEvent *storedAnnotation = new AnnotationEvent(this, annotation);
     
     this->midiEvents.addSorted(*storedAnnotation, storedAnnotation);
-    //this->midiEvents.add(storedAnnotation);
-    this->annotationsHashTable.set(annotation, storedAnnotation);
-    
+    this->usedEventIds.insert(storedAnnotation->getId());
+
     this->updateBeatRange(false);
     this->invalidateSequenceCache();
 }
 
-MidiEvent *AnnotationsSequence::insert(const AnnotationEvent &annotation, bool undoable)
+MidiEvent *AnnotationsSequence::insert(const AnnotationEvent &eventParams, bool undoable)
 {
-    if (this->annotationsHashTable.contains(annotation))
+    if (this->usedEventIds.contains(eventParams.getId()))
     {
         return nullptr;
     }
 
     if (undoable)
     {
-        this->getUndoStack()->perform(new AnnotationEventInsertAction(*this->getProject(),
-            this->getTrackId(), annotation));
+        this->getUndoStack()->
+            perform(new AnnotationEventInsertAction(*this->getProject(),
+                this->getTrackId(), eventParams));
     }
     else
     {
-        AnnotationEvent *storedAnnotation = new AnnotationEvent(this);
-        *storedAnnotation = annotation;
-        
-        this->midiEvents.addSorted(*storedAnnotation, storedAnnotation);
-        //this->midiEvents.add(storedAnnotation);
-
-        this->annotationsHashTable.set(annotation, storedAnnotation);
-
-        this->notifyEventAdded(*storedAnnotation);
+        const auto ownedEvent = new AnnotationEvent(this, eventParams);
+        this->midiEvents.addSorted(*ownedEvent, ownedEvent);
+        this->usedEventIds.insert(ownedEvent->getId());
+        this->notifyEventAdded(*ownedEvent);
         this->updateBeatRange(true);
-
-        return storedAnnotation;
+        return ownedEvent;
     }
 
     return nullptr;
 }
 
-bool AnnotationsSequence::remove(const AnnotationEvent &annotation, bool undoable)
+bool AnnotationsSequence::remove(const AnnotationEvent &eventParams, bool undoable)
 {
     if (undoable)
     {
-        this->getUndoStack()->perform(new AnnotationEventRemoveAction(*this->getProject(),
-                                                                      this->getTrackId(),
-                                                                      annotation));
+        this->getUndoStack()->
+            perform(new AnnotationEventRemoveAction(*this->getProject(),
+                this->getTrackId(), eventParams));
     }
     else
     {
-        if (AnnotationEvent *matchingAnnotation = this->annotationsHashTable[annotation])
+        const int index = this->midiEvents.indexOfSorted(eventParams, &eventParams);
+        if (index >= 0)
         {
-            this->notifyEventRemoved(*matchingAnnotation);
-            this->midiEvents.removeObject(matchingAnnotation);
-            this->annotationsHashTable.removeValue(matchingAnnotation);
+            MidiEvent *const removedEvent = this->midiEvents[index];
+            jassert(removedEvent->isValid());
+            this->notifyEventRemoved(*removedEvent);
+            this->usedEventIds.erase(removedEvent->getId());
+            this->midiEvents.remove(index, true);
             this->updateBeatRange(true);
             this->notifyEventRemovedPostAction();
             return true;
@@ -142,26 +136,25 @@ bool AnnotationsSequence::remove(const AnnotationEvent &annotation, bool undoabl
     return true;
 }
 
-bool AnnotationsSequence::change(const AnnotationEvent &annotation,
-                              const AnnotationEvent &newAnnotation,
-                              bool undoable)
+bool AnnotationsSequence::change(const AnnotationEvent &oldParams,
+    const AnnotationEvent &newParams, bool undoable)
 {
     if (undoable)
     {
-        this->getUndoStack()->perform(new AnnotationEventChangeAction(*this->getProject(),
-                                                                      this->getTrackId(),
-                                                                      annotation,
-                                                                      newAnnotation));
+        this->getUndoStack()->
+            perform(new AnnotationEventChangeAction(*this->getProject(),
+                this->getTrackId(), oldParams, newParams));
     }
     else
     {
-        if (AnnotationEvent *matchingAnnotation = this->annotationsHashTable[annotation])
+        const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
+        if (index >= 0)
         {
-            (*matchingAnnotation) = newAnnotation;
-            this->annotationsHashTable.set(newAnnotation, matchingAnnotation);
-            this->sort();
-
-            this->notifyEventChanged(annotation, *matchingAnnotation);
+            const auto changedEvent = static_cast<AnnotationEvent *>(this->midiEvents[index]);
+            changedEvent->applyChanges(newParams);
+            this->midiEvents.remove(index, false);
+            this->midiEvents.addSorted(*changedEvent, changedEvent);
+            this->notifyEventChanged(oldParams, *changedEvent);
             this->updateBeatRange(true);
             return true;
         }
@@ -172,53 +165,52 @@ bool AnnotationsSequence::change(const AnnotationEvent &annotation,
     return true;
 }
 
-bool AnnotationsSequence::insertGroup(Array<AnnotationEvent> &annotations, bool undoable)
+bool AnnotationsSequence::insertGroup(Array<AnnotationEvent> &group, bool undoable)
 {
     if (undoable)
     {
-        this->getUndoStack()->perform(new AnnotationEventsGroupInsertAction(*this->getProject(),
-                                                                            this->getTrackId(),
-                                                                            annotations));
+        this->getUndoStack()->
+            perform(new AnnotationEventsGroupInsertAction(*this->getProject(),
+                this->getTrackId(), group));
     }
     else
     {
-        for (int i = 0; i < annotations.size(); ++i)
+        for (int i = 0; i < group.size(); ++i)
         {
-            const AnnotationEvent &annotation = annotations.getUnchecked(i);
-            AnnotationEvent *storedAnnotation = new AnnotationEvent(this);
-            *storedAnnotation = annotation;
-            
-            this->midiEvents.add(storedAnnotation); // sorted later
-            this->annotationsHashTable.set(annotation, storedAnnotation);
-            this->notifyEventAdded(*storedAnnotation);
+            const AnnotationEvent &eventParams = group.getUnchecked(i);
+            const auto ownedEvent = new AnnotationEvent(this, eventParams);
+            jassert(ownedEvent->isValid());
+            this->midiEvents.addSorted(*ownedEvent, ownedEvent);
+            this->usedEventIds.insert(ownedEvent->getId());
+            this->notifyEventAdded(*ownedEvent);
         }
         
-        this->sort();
         this->updateBeatRange(true);
     }
     
     return true;
 }
 
-bool AnnotationsSequence::removeGroup(Array<AnnotationEvent> &annotations, bool undoable)
+bool AnnotationsSequence::removeGroup(Array<AnnotationEvent> &group, bool undoable)
 {
     if (undoable)
     {
-        this->getUndoStack()->perform(new AnnotationEventsGroupRemoveAction(*this->getProject(),
-                                                                            this->getTrackId(),
-                                                                            annotations));
+        this->getUndoStack()->
+            perform(new AnnotationEventsGroupRemoveAction(*this->getProject(),
+                this->getTrackId(), group));
     }
     else
     {
-        for (int i = 0; i < annotations.size(); ++i)
+        for (int i = 0; i < group.size(); ++i)
         {
-            const AnnotationEvent &annotation = annotations.getUnchecked(i);
-            
-            if (AnnotationEvent *matchingAnnotation = this->annotationsHashTable[annotation])
+            const AnnotationEvent &annotation = group.getUnchecked(i);
+            const int index = this->midiEvents.indexOfSorted(annotation, &annotation);
+            if (index >= 0)
             {
-                this->notifyEventRemoved(*matchingAnnotation);
-                this->midiEvents.removeObject(matchingAnnotation);
-                this->annotationsHashTable.removeValue(matchingAnnotation);
+                const auto removedEvent = this->midiEvents[index];
+                this->notifyEventRemoved(*removedEvent);
+                this->usedEventIds.erase(removedEvent->getId());
+                this->midiEvents.remove(index, true);
             }
         }
         
@@ -229,45 +221,39 @@ bool AnnotationsSequence::removeGroup(Array<AnnotationEvent> &annotations, bool 
     return true;
 }
 
-bool AnnotationsSequence::changeGroup(Array<AnnotationEvent> &annotationsBefore,
-                                   Array<AnnotationEvent> &annotationsAfter,
-                                   bool undoable)
+bool AnnotationsSequence::changeGroup(Array<AnnotationEvent> &groupBefore,
+    Array<AnnotationEvent> &groupAfter, bool undoable)
 {
-    jassert(annotationsBefore.size() == annotationsAfter.size());
+    jassert(groupBefore.size() == groupAfter.size());
 
     if (undoable)
     {
-        this->getUndoStack()->perform(new AnnotationEventsGroupChangeAction(*this->getProject(),
-                                                                            this->getTrackId(),
-                                                                            annotationsBefore,
-                                                                            annotationsAfter));
+        this->getUndoStack()->
+            perform(new AnnotationEventsGroupChangeAction(*this->getProject(),
+                this->getTrackId(), groupBefore, groupAfter));
     }
     else
     {
-        for (int i = 0; i < annotationsBefore.size(); ++i)
+        for (int i = 0; i < groupBefore.size(); ++i)
         {
-            // doing this sucks
-            //this->change(annotationsBefore[i], annotationsAfter[i], false);
-            
-            const AnnotationEvent &annotation = annotationsBefore.getUnchecked(i);
-            const AnnotationEvent &newAnnotation = annotationsAfter.getUnchecked(i);
-            
-            if (AnnotationEvent *matchingAnnotation = this->annotationsHashTable[annotation])
+            const AnnotationEvent &oldParams = groupBefore.getUnchecked(i);
+            const AnnotationEvent &newParams = groupAfter.getUnchecked(i);
+            const int index = this->midiEvents.indexOfSorted(oldParams, &oldParams);
+            if (index >= 0)
             {
-                (*matchingAnnotation) = newAnnotation;
-                
-                this->annotationsHashTable.set(newAnnotation, matchingAnnotation);
-                this->notifyEventChanged(annotation, *matchingAnnotation);
+                const auto changedEvent = static_cast<AnnotationEvent *>(this->midiEvents[index]);
+                changedEvent->applyChanges(newParams);
+                this->midiEvents.remove(index, false);
+                this->midiEvents.addSorted(*changedEvent, changedEvent);
+                this->notifyEventChanged(oldParams, *changedEvent);
             }
         }
 
-        this->sort();
         this->updateBeatRange(true);
     }
 
     return true;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -290,10 +276,11 @@ void AnnotationsSequence::deserialize(const XmlElement &xml)
 {
     this->reset();
 
-    const XmlElement *mainSlot = (xml.getTagName() == Serialization::Core::annotations) ?
-                                 &xml : xml.getChildByName(Serialization::Core::annotations);
+    const XmlElement *root =
+        (xml.getTagName() == Serialization::Core::annotations) ?
+        &xml : xml.getChildByName(Serialization::Core::annotations);
 
-    if (mainSlot == nullptr)
+    if (root == nullptr)
     {
         return;
     }
@@ -301,18 +288,17 @@ void AnnotationsSequence::deserialize(const XmlElement &xml)
     float lastBeat = 0;
     float firstBeat = 0;
 
-    forEachXmlChildElementWithTagName(*mainSlot, e, Serialization::Core::annotation)
+    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::annotation)
     {
         AnnotationEvent *annotation = new AnnotationEvent(this);
         annotation->deserialize(*e);
         
-        //this->midiEvents.addSorted(*annotation, annotation); // sorted later
-        this->midiEvents.add(annotation);
+        this->midiEvents.add(annotation); // sorted later
 
         lastBeat = jmax(lastBeat, annotation->getBeat());
         firstBeat = jmin(firstBeat, annotation->getBeat());
 
-        this->annotationsHashTable.set(*annotation, annotation);
+        this->usedEventIds.insert(annotation->getId());
     }
 
     this->sort();
@@ -323,6 +309,6 @@ void AnnotationsSequence::deserialize(const XmlElement &xml)
 void AnnotationsSequence::reset()
 {
     this->midiEvents.clear();
-    this->annotationsHashTable.clear();
+    this->usedEventIds.clear();
     this->invalidateSequenceCache();
 }

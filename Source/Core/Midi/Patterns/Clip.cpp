@@ -125,9 +125,11 @@ int Clip::compareElements(const Clip &first, const Clip &second)
     return diffResult;
 }
 
-int Clip::hashCode() const noexcept
+HashCode Clip::hashCode() const noexcept
 {
-    return this->getId().hashCode();
+    const HashCode code = static_cast<HashCode>(this->startBeat)
+        + static_cast<HashCode>(this->getId().hashCode());
+    return code;
 }
 
 Clip::Id Clip::createId() noexcept

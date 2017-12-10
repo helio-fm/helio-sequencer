@@ -65,28 +65,14 @@ class TimelineWarningMarker;
 // Track is measured in quarter beats
 #define NUM_BEATS_IN_BAR 4
 
-// For the empty project:
 #define DEFAULT_NUM_BARS 8
 
-
-// Dirty hack for speedup, supposed to be used every time I need to repaint a lot of child components. 
-// Component::unfocusAllComponents() - prevents keyboard focus traverse hell
-// this->setVisible(false) - prevents redraw hell
-
-//#define HYBRID_ROLL_BULK_REPAINT_START \
-//    Component::unfocusAllComponents();  \
-//    this->setVisible(false);
-//
-//#define HYBRID_ROLL_BULK_REPAINT_END \
-//    this->setVisible(true); \
-//    this->grabKeyboardFocus();
-
-// Since keyboard focus is now only owned by the main layout, use only setVisible:
 #define HYBRID_ROLL_BULK_REPAINT_START \
     this->setVisible(false);
 
 #define HYBRID_ROLL_BULK_REPAINT_END \
     this->setVisible(true);
+
 
 class HybridRoll :
     public Component,
@@ -135,7 +121,6 @@ public:
     HybridRollEditMode getEditMode() const;
 
     virtual void selectAll() = 0;
-    virtual void reloadRollContent() = 0;
     virtual Rectangle<float> getEventBounds(FloatBoundsComponent *nc) const = 0;
     
     void scrollToSeekPosition();
@@ -166,6 +151,8 @@ public:
     // Modes
     //===------------------------------------------------------------------===//
     
+    virtual void setChildrenInteraction(bool interceptMouse, MouseCursor c) = 0;
+
     bool isInSelectionMode() const;
     bool isInDragMode() const;
     // ...
@@ -260,8 +247,10 @@ public:
     // LassoSource
     //===------------------------------------------------------------------===//
 
+    virtual void selectEventsInRange(float startBeat,
+        float endBeat, bool shouldClearAllOthers) = 0;
+
     Lasso &getLassoSelection() override;
-    void selectEventsInRange(float startBeat, float endBeat, bool shouldClearAllOthers);
     void selectEvent(SelectableComponent *event, bool shouldClearAllOthers);
     void deselectEvent(SelectableComponent *event);
     void deselectAll();
@@ -330,10 +319,10 @@ protected:
     void onPlay() override;
     void onStop() override;
 
-    ReadWriteLock transportLastCorrectPositionLock;
+    SpinLock transportLastCorrectPositionLock;
     double transportLastCorrectPosition;
-    double transportIndicatorOffset;
-    bool shouldFollowIndicator;
+    double playheadOffset;
+    bool shouldFollowPlayhead;
     
     //===------------------------------------------------------------------===//
     // AsyncUpdater
@@ -341,7 +330,7 @@ protected:
     
     void handleAsyncUpdate() override;
 
-    double findIndicatorOffsetFromViewCentre() const;
+    double findPlayheadOffsetFromViewCentre() const;
     friend class HybridRollHeader;
     
     //===------------------------------------------------------------------===//
@@ -399,8 +388,6 @@ protected:
 
     Lasso selection;
 
-    OwnedArray<HybridRollEventComponent> eventComponents;
-
     bool isViewportZoomEvent(const MouseEvent &e) const;
     bool isViewportDragEvent(const MouseEvent &e) const;
     bool isAddEvent(const MouseEvent &e) const;
@@ -411,8 +398,8 @@ protected:
     float firstBar;
     float lastBar;
 
-    float trackFirstBeat;
-    float trackLastBeat;
+    float projectFirstBeat;
+    float projectLastBeat;
 
     float barWidth;
     float beatDelta;
