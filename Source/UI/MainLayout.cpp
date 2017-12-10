@@ -35,7 +35,6 @@
 #include "NavigationSidebar.h"
 #include "ToolsSidebar.h"
 #include "ColourSchemeManager.h"
-#include "HotkeyScheme.h"
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
 #include "Workspace.h"
@@ -123,18 +122,7 @@ MainLayout::MainLayout() :
     this->headline = new Headline();
     this->addAndMakeVisible(this->headline);
 
-    this->hotkeyScheme = new HotkeyScheme();
-    {
-        // TODO hot-keys manager
-        const String hotkeysXmlString =
-            String(CharPointer_UTF8(BinaryData::DefaultHotkeys_xml),
-                BinaryData::DefaultHotkeys_xmlSize);
-        const ScopedPointer<XmlElement> hotkeysXml(XmlDocument::parse(hotkeysXmlString));
-        if (XmlElement *defaultScheme = hotkeysXml->getFirstChildElement())
-        {
-            this->hotkeyScheme->deserialize(*defaultScheme);
-        }
-    }
+    this->hotkeyScheme = HotkeyScheme::getDefaultScheme();
 
     this->setMouseClickGrabsKeyboardFocus(true);
     this->setWantsKeyboardFocus(true);
@@ -156,7 +144,6 @@ MainLayout::MainLayout() :
 MainLayout::~MainLayout()
 {
     this->removeAllChildren();
-    this->hotkeyScheme = nullptr;
     this->headline = nullptr;
 }
 
@@ -434,7 +421,7 @@ bool MainLayout::keyPressed(const KeyPress &key)
     return false;
 #endif
 
-    if (this->hotkeyScheme->dispatchKeyPress(key,
+    if (this->hotkeyScheme.dispatchKeyPress(key,
         this, this->currentContent.getComponent()))
     {
         return true;
@@ -466,7 +453,7 @@ bool MainLayout::keyPressed(const KeyPress &key)
 
 bool MainLayout::keyStateChanged(bool isKeyDown)
 {
-    return this->hotkeyScheme->dispatchKeyStateChange(isKeyDown,
+    return this->hotkeyScheme.dispatchKeyStateChange(isKeyDown,
         this, this->currentContent.getComponent());
 }
 

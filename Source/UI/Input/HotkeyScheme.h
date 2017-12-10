@@ -24,6 +24,9 @@ class HotkeyScheme final : public Serializable
 public:
 
     HotkeyScheme();
+    HotkeyScheme(const HotkeyScheme &other);
+
+    static const HotkeyScheme getDefaultScheme();
 
     class Hotkey final
     {
@@ -40,6 +43,8 @@ public:
     bool dispatchKeyStateChange(bool isKeyDown,
         WeakReference<Component> keyPressReceiver,
         WeakReference<Component> messageReceiverParent);
+
+    HotkeyScheme &operator=(const HotkeyScheme &other);
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -63,5 +68,5 @@ private:
         WeakReference<Component> root,
         WeakReference<Component> target);
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HotkeyScheme)
+    JUCE_LEAK_DETECTOR(HotkeyScheme)
 };
