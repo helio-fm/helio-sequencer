@@ -40,8 +40,6 @@ public:
         Viewport &viewportRef,
         WeakReference<AudioMonitor> clippingDetector);
 
-    ~PatternRoll() override;
-
     void deleteSelection();
     void selectAll() override;
     int getNumRows() const noexcept;
@@ -75,7 +73,7 @@ public:
     //===------------------------------------------------------------------===//
 
     void onAddMidiEvent(const MidiEvent &event) override;
-    void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
+    void onChangeMidiEvent(const MidiEvent &e1, const MidiEvent &e2) override;
     void onRemoveMidiEvent(const MidiEvent &event) override;
     void onPostRemoveMidiEvent(MidiSequence *const layer) override;
 
@@ -131,15 +129,9 @@ public:
     Image renderRowsPattern(const HelioTheme &theme, int height) const;
     void repaintBackgroundsCache();
 
-private:
-
-    void clearRollContent();
     void reloadRollContent();
-
     void insertNewClipAt(const MouseEvent &e);
-    
-private:
-    
+
     void focusToRegionAnimated(int startKey, int endKey, float startBeat, float endBeat);
     class FocusToRegionAnimator;
     ScopedPointer<Timer> focusToRegionAnimator;
@@ -150,7 +142,8 @@ private:
 
     OwnedArray<ClipComponent> ghostClips;
     
-    typedef SparseHashMap<Clip, ClipComponent *, ClipHash> ClipComponentsMap;
+    typedef SparseHashMap<Clip, UniquePtr<ClipComponent>, ClipHash> ClipComponentsMap;
     ClipComponentsMap componentsMap;
 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRoll)
 };

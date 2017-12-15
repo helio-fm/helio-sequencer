@@ -66,8 +66,11 @@ struct StringHash
 };
 
 //===----------------------------------------------------------------------===//
-// Various defines
+// Various helpers
 //===----------------------------------------------------------------------===//
+
+template <class T>
+using UniquePtr = std::unique_ptr<T>;
 
 #if _MSC_VER
 inline float roundf(float x)

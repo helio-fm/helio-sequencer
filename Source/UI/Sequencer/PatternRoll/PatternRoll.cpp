@@ -71,11 +71,6 @@ PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
     this->reloadRollContent();
 }
 
-PatternRoll::~PatternRoll()
-{
-    this->clearRollContent();
-}
-
 void PatternRoll::deleteSelection()
 {
     if (this->selection.getNumSelected() == 0)
@@ -86,7 +81,6 @@ void PatternRoll::deleteSelection()
     // Avoids crash
     this->hideAllGhostClips();
 
-    // раскидать this->selection по массивам
     OwnedArray< Array<Clip> > selections;
 
     for (int i = 0; i < this->selection.getNumSelected(); ++i)
@@ -139,22 +133,11 @@ void PatternRoll::selectAll()
     // TODO
 }
 
-void PatternRoll::clearRollContent()
-{
-    OwnedArray<ClipComponent> deleters;
-    for (const auto &e : this->componentsMap)
-    {
-        deleters.add(e.second);
-    }
-
-    this->componentsMap.clear();
-}
-
 void PatternRoll::reloadRollContent()
 {
     this->selection.deselectAll();
 
-    this->clearRollContent();
+    this->componentsMap.clear();
 
     for (auto track : this->tracks)
     {
@@ -178,7 +161,7 @@ void PatternRoll::reloadRollContent()
 
             if (clipComponent != nullptr)
             {
-                this->componentsMap[clip] = clipComponent;
+                this->componentsMap[clip] = UniquePtr<ClipComponent>(clipComponent);
                 this->addAndMakeVisible(clipComponent);
             }
         }
@@ -203,7 +186,7 @@ void PatternRoll::setChildrenInteraction(bool interceptsMouse, MouseCursor curso
 {
     for (const auto &e : this->componentsMap)
     {
-        ClipComponent *const child = e.second;
+        const auto child = e.second.get();
         child->setInterceptsMouseClicks(interceptsMouse, interceptsMouse);
         child->setMouseCursor(cursor);
     }
@@ -350,7 +333,7 @@ void PatternRoll::onRemoveTrack(MidiTrack *const track)
         for (int i = 0; i < pattern->size(); ++i)
         {
             const Clip &clip = pattern->getUnchecked(i);
-            if (ScopedPointer<ClipComponent> componentDeleter = this->componentsMap[clip])
+            if (const auto componentDeleter = this->componentsMap[clip].get())
             {
                 this->selection.deselect(componentDeleter);
                 this->componentsMap.erase(clip);
@@ -379,6 +362,7 @@ void PatternRoll::onAddClip(const Clip &clip)
 
     if (clipComponent != nullptr)
     {
+        this->componentsMap[clip] = UniquePtr<ClipComponent>(clipComponent);
         this->addAndMakeVisible(clipComponent);
 
         this->batchRepaintList.add(clipComponent);
@@ -387,31 +371,28 @@ void PatternRoll::onAddClip(const Clip &clip)
         clipComponent->toFront(false);
 
         this->fader.fadeIn(clipComponent, 150);
-
         this->selectEvent(clipComponent, false);
-
-        this->componentsMap[clip] = clipComponent;
     }
 }
 
 void PatternRoll::onChangeClip(const Clip &clip, const Clip &newClip)
 {
-    if (ClipComponent *component = this->componentsMap[clip])
+    if (const auto component = this->componentsMap[clip].release())
     {
+        this->componentsMap.erase(clip);
+        this->componentsMap[newClip] = UniquePtr<ClipComponent>(component);
+
         this->batchRepaintList.add(component);
         this->triggerAsyncUpdate();
-
-        this->componentsMap.erase(clip);
-        this->componentsMap[newClip] = component;
     }
 }
 
 void PatternRoll::onRemoveClip(const Clip &clip)
 {
-    if (ScopedPointer<ClipComponent> componentDeleter = this->componentsMap[clip])
+    if (const auto deletedComponent = this->componentsMap[clip].get())
     {
-        this->fader.fadeOut(componentDeleter, 150);
-        this->selection.deselect(componentDeleter);
+        this->fader.fadeOut(deletedComponent, 150);
+        this->selection.deselect(deletedComponent);
         this->componentsMap.erase(clip);
     }
 }
@@ -439,12 +420,12 @@ void PatternRoll::selectEventsInRange(float startBeat, float endBeat, bool shoul
 
     for (const auto &e : this->componentsMap)
     {
-        HybridRollEventComponent *const ec = e.second;
-        if (ec->isActive() &&
-            ec->getBeat() >= startBeat &&
-            ec->getBeat() < endBeat)
+        const auto component = e.second.get();
+        if (component->isActive() &&
+            component->getBeat() >= startBeat &&
+            component->getBeat() < endBeat)
         {
-            this->selection.addToSelection(ec);
+            this->selection.addToSelection(component);
         }
     }
 }
@@ -455,13 +436,13 @@ void PatternRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
 
     for (const auto &e : this->componentsMap)
     {
-        ClipComponent *const component = e.second;
+        const auto component = e.second.get();
         component->setSelected(this->selection.isSelected(component));
     }
 
     for (const auto &e : this->componentsMap)
     {
-        ClipComponent *const component = e.second;
+        const auto component = e.second.get();
         if (rectangle.intersects(component->getBounds()) && component->isActive())
         {
             shouldInvalidateSelectionCache = true;
@@ -662,7 +643,7 @@ void PatternRoll::resized()
 
     for (const auto &e : this->componentsMap)
     {
-        ClipComponent *const component = e.second;
+        const auto component = e.second.get();
         component->setFloatBounds(this->getEventBounds(component));
     }
 
@@ -732,15 +713,13 @@ void PatternRoll::reset()
 {
 }
 
-
 //===----------------------------------------------------------------------===//
-// Bg images cache
+// Background images cache
 //===----------------------------------------------------------------------===//
 
 Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height) const
 {
     Image patternImage(Image::RGB, 128, height * ROWS_OF_TWO_OCTAVES, false);
-
     Graphics g(patternImage);
 
     const Colour blackKey = theme.findColour(HybridRoll::blackKeyColourId);

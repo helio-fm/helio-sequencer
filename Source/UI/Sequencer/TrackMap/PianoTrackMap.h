@@ -43,7 +43,7 @@ public:
     // ProjectListener
     //===------------------------------------------------------------------===//
 
-    void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
+    void onChangeMidiEvent(const MidiEvent &e1, const MidiEvent &e2) override;
     void onAddMidiEvent(const MidiEvent &event) override;
     void onRemoveMidiEvent(const MidiEvent &event) override;
 
@@ -59,7 +59,6 @@ private:
 
     void applyNoteBounds(TrackMapNoteComponent *nc);
     void reloadTrackMap();
-    void clearTrackMap();
 
     float projectFirstBeat;
     float projectLastBeat;
@@ -72,7 +71,7 @@ private:
     HybridRoll &roll;
     ProjectTreeItem &project;
     
-    SparseHashMap<Note, TrackMapNoteComponent *, MidiEventHash> componentsMap;
+    SparseHashMap<Note, UniquePtr<TrackMapNoteComponent>, MidiEventHash> componentsMap;
     
     JUCE_LEAK_DETECTOR(PianoTrackMap)
 };

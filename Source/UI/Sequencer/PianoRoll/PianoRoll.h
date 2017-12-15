@@ -49,8 +49,6 @@ public:
               Viewport &viewportRef,
               WeakReference<AudioMonitor> clippingDetector);
 
-    ~PianoRoll() override;
-
     void deleteSelection();
     
     int getNumActiveLayers() const noexcept;
@@ -179,7 +177,6 @@ private:
 
 private:
 
-    void clearRollContent();
     void reloadRollContent();
     
     void updateChildrenBounds() override;
@@ -252,10 +249,11 @@ private:
     ScopedPointer<NoteResizerLeft> noteResizerLeft;
     ScopedPointer<NoteResizerRight> noteResizerRight;
     
-    typedef SparseHashMap<Note, NoteComponent *, MidiEventHash> EventComponentsMap;
+    typedef SparseHashMap<Note, UniquePtr<NoteComponent>, MidiEventHash> EventComponentsMap;
     EventComponentsMap componentsMap;
 
-    typedef SparseHashMap<Clip, EventComponentsMap, ClipHash> ClipsMap;
-    //EventComponentsMap clipsMap;
+    typedef SparseHashMap<Clip, UniquePtr<EventComponentsMap>, ClipHash> ClipsMap;
+    ClipsMap clipsMap;
 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRoll)
 };

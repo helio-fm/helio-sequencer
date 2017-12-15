@@ -19,6 +19,7 @@
 #include "MainLayout.h"
 #include "PianoRoll.h"
 #include "HybridRollHeader.h"
+#include "Pattern.h"
 #include "MidiSequence.h"
 #include "PianoSequence.h"
 #include "AutomationSequence.h"
@@ -81,11 +82,6 @@ PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
     this->reloadRollContent();
 }
 
-PianoRoll::~PianoRoll()
-{
-    this->clearRollContent();
-}
-
 void PianoRoll::deleteSelection()
 {
     if (this->selection.getNumSelected() == 0)
@@ -139,49 +135,47 @@ void PianoRoll::deleteSelection()
     }
 }
 
-
-void PianoRoll::clearRollContent()
-{
-    OwnedArray<NoteComponent> deleters;
-    for (const auto &e : this->componentsMap)
-    {
-        deleters.add(e.second);
-    }
-
-    this->componentsMap.clear();
-}
-
 void PianoRoll::reloadRollContent()
 {
     this->selection.deselectAll();
     this->backgroundsCache.clear();
 
-    this->clearRollContent();
+    this->componentsMap.clear();
 
     const auto &tracks = this->project.getTracks();
     for (auto track : tracks)
     {
-        for (int j = 0; j < track->getSequence()->size(); ++j)
-        {
-            MidiEvent *event = track->getSequence()->getUnchecked(j);
-            if (event->isTypeOf(MidiEvent::Note))
+        //for (int p = 0; p < track->getPattern()->size(); ++p)
+        //{
+        //    Clip clip = track->getPattern()->getUnchecked(p);
+        //    UniquePointer<EventComponentsMap> clipMap(new EventComponentsMap());
+
+            for (int s = 0; s < track->getSequence()->size(); ++s)
             {
-                Note *note = static_cast<Note *>(event);
-                auto noteComponent = new NoteComponent(*this, *note);
+                MidiEvent *event = track->getSequence()->getUnchecked(s);
+                if (event->isTypeOf(MidiEvent::Note))
+                {
+                    Note *note = static_cast<Note *>(event);
+                    auto noteComponent = new NoteComponent(*this, *note);
 
-                this->componentsMap[*note] = noteComponent;
+                    this->componentsMap[*note] = UniquePtr<NoteComponent>(noteComponent);
+                    //(*clipMap)[*note] = noteComponent;
 
-                const bool belongsToActiveTrack = noteComponent->belongsToAnySequence(this->activeLayers);
-                noteComponent->setActive(belongsToActiveTrack, true);
+                    const bool belongsToActiveTrack = noteComponent->belongsToAnySequence(this->activeLayers);
+                    noteComponent->setActive(belongsToActiveTrack, true);
 
-                this->addAndMakeVisible(noteComponent);
+                    this->addAndMakeVisible(noteComponent);
+                }
+                else if (event->isTypeOf(MidiEvent::KeySignature))
+                {
+                    const auto &key = static_cast<const KeySignatureEvent &>(*event);
+                    this->updateBackgroundCacheFor(key);
+                }
             }
-            else if (event->isTypeOf(MidiEvent::KeySignature))
-            {
-                const auto &key = static_cast<const KeySignatureEvent &>(*event);
-                this->updateBackgroundCacheFor(key);
-            }
-        }
+
+        //    this->componentsMaps.add(clipMap.release());
+        //    this->clipsMap[clip] = this->componentsMaps.getLast();
+        //}
     }
 
     this->resized();
@@ -201,7 +195,7 @@ void PianoRoll::setActiveMidiLayers(Array<MidiSequence *> newLayers, MidiSequenc
 
     for (const auto &e : this->componentsMap)
     {
-        NoteComponent *const noteComponent = e.second;
+        const auto noteComponent = e.second.get();
         const bool belongsToNewLayers = noteComponent->belongsToAnySequence(newLayers);
         const bool belongsToOldLayers = noteComponent->belongsToAnySequence(this->activeLayers);
         noteComponent->setActive(belongsToNewLayers);
@@ -246,10 +240,10 @@ void PianoRoll::selectAll()
 {
     for (const auto &e : this->componentsMap)
     {
-        NoteComponent *const child = e.second;
-        if (child->belongsToAnySequence(this->activeLayers))
+        const auto childComponent = e.second.get();
+        if (childComponent->belongsToAnySequence(this->activeLayers))
         {
-            this->selection.addToSelection(child);
+            this->selection.addToSelection(childComponent);
         }
     }
 }
@@ -258,9 +252,9 @@ void PianoRoll::setChildrenInteraction(bool interceptsMouse, MouseCursor cursor)
 {
     for (const auto &e : this->componentsMap)
     {
-        NoteComponent *const child = e.second;
-        child->setInterceptsMouseClicks(interceptsMouse, interceptsMouse);
-        child->setMouseCursor(cursor);
+        const auto childComponent = e.second.get();
+        childComponent->setInterceptsMouseClicks(interceptsMouse, interceptsMouse);
+        childComponent->setMouseCursor(cursor);
     }
 }
 
@@ -455,12 +449,15 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
     {
         const Note &note = static_cast<const Note &>(oldEvent);
         const Note &newNote = static_cast<const Note &>(newEvent);
-        if (NoteComponent *component = this->componentsMap[note])
+        if (const auto component = this->componentsMap[note].release())
         {
-            this->batchRepaintList.add(component); // instead of component->repaint();
-            this->triggerAsyncUpdate();
+            // Pass ownership to another key:
             this->componentsMap.erase(note);
-            this->componentsMap[newNote] = component;
+            // (always erase before as it may happen both events have the same hash code)
+            this->componentsMap[newNote] = UniquePtr<NoteComponent>(component);
+            // Schedule to be repainted later:
+            this->batchRepaintList.add(component);
+            this->triggerAsyncUpdate();
         }
     }
     else if (oldEvent.isTypeOf(MidiEvent::KeySignature))
@@ -486,20 +483,17 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
         const Note &note = static_cast<const Note &>(event);
 
         auto component = new NoteComponent(*this, note);
+        this->componentsMap[note] = UniquePtr<NoteComponent>(component);
         this->addAndMakeVisible(component);
 
-        this->batchRepaintList.add(component);
-        this->triggerAsyncUpdate(); // instead of updateBounds
-
-        //component->toFront(false); // already at the front
         this->fader.fadeIn(component, 150);
-
         this->selectEvent(component, false); // selectEvent(component, true)
 
         const bool isActive = component->belongsToAnySequence(this->activeLayers);
         component->setActive(isActive);
 
-        this->componentsMap[note] = component;
+        this->batchRepaintList.add(component);
+        this->triggerAsyncUpdate(); // instead of updateBounds
 
         if (this->addNewNoteMode)
         {
@@ -524,7 +518,7 @@ void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
     if (event.isTypeOf(MidiEvent::Note))
     {
         const Note &note = static_cast<const Note &>(event);
-        if (ScopedPointer<NoteComponent> deletedComponent = this->componentsMap[note])
+        if (NoteComponent *deletedComponent = this->componentsMap[note].get())
         {
             this->fader.fadeOut(deletedComponent, 150);
             this->selection.deselect(deletedComponent);
@@ -545,7 +539,7 @@ void PianoRoll::onChangeTrackProperties(MidiTrack *const track)
     {
         for (const auto &e : this->componentsMap)
         {
-            const auto component = e.second;
+            const auto component = e.second.get();
             component->updateColours();
             this->batchRepaintList.add(component);
         }
@@ -561,13 +555,12 @@ void PianoRoll::onAddTrack(MidiTrack *const track)
         const MidiEvent *const event = track->getSequence()->getUnchecked(j);
         if (event->isTypeOf(MidiEvent::Note))
         {
-            const Note *const note = static_cast<const Note *const>(event);
+            const auto note = static_cast<const Note *const>(event);
             auto noteComponent = new NoteComponent(*this, *note);
+            this->componentsMap[*note] = UniquePtr<NoteComponent>(noteComponent);
 
             const bool belongsToActiveTrack = noteComponent->belongsToAnySequence(this->activeLayers);
             noteComponent->setActive(belongsToActiveTrack, true);
-
-            this->componentsMap[*note] = noteComponent;
 
             this->addAndMakeVisible(noteComponent);
         }
@@ -589,10 +582,10 @@ void PianoRoll::onRemoveTrack(MidiTrack *const track)
         if (event->isTypeOf(MidiEvent::Note))
         {
             const Note &note = static_cast<const Note &>(*event);
-            if (ScopedPointer<NoteComponent> componentDeleter = this->componentsMap[note])
+            if (NoteComponent *deletedComponent = this->componentsMap[note].get())
             {
-                this->fader.fadeOut(componentDeleter, 150);
-                this->selection.deselect(componentDeleter);
+                this->fader.fadeOut(deletedComponent, 150);
+                this->selection.deselect(deletedComponent);
                 this->componentsMap.erase(note);
             }
         }
@@ -623,12 +616,12 @@ void PianoRoll::selectEventsInRange(float startBeat, float endBeat, bool shouldC
 
     for (const auto &e : this->componentsMap)
     {
-        HybridRollEventComponent *const ec = e.second;
-        if (ec->isActive() &&
-            ec->getBeat() >= startBeat &&
-            ec->getBeat() < endBeat)
+        const auto component = e.second.get();
+        if (component->isActive() &&
+            component->getBeat() >= startBeat &&
+            component->getBeat() < endBeat)
         {
-            this->selection.addToSelection(ec);
+            this->selection.addToSelection(component);
         }
     }
 }
@@ -639,13 +632,13 @@ void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, c
 
     for (const auto &e : this->componentsMap)
     {
-        NoteComponent *const component = e.second;
+        const auto component = e.second.get();
         component->setSelected(this->selection.isSelected(component));
     }
 
     for (const auto &e : this->componentsMap)
     {
-        NoteComponent *const component = e.second;
+        const auto component = e.second.get();
         if (rectangle.intersects(component->getBounds()) && component->isActive())
         {
             shouldInvalidateSelectionCache = true;
@@ -658,7 +651,6 @@ void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, c
         this->selection.invalidateCache();
     }
 }
-
 
 //===----------------------------------------------------------------------===//
 // ClipboardOwner
@@ -1175,7 +1167,7 @@ void PianoRoll::resized()
 
     for (const auto &e : this->componentsMap)
     {
-        NoteComponent *const component = e.second;
+        const auto component = e.second.get();
         component->setFloatBounds(this->getEventBounds(component));
     }
 
