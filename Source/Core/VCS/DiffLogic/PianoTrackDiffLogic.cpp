@@ -158,16 +158,9 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
 {
     auto diff = new Diff(this->target);
 
-    // merge-политика по умолчанию:
-    // на каждую дельту таргета пытаемся наложить все дельты изменений.
-    // (если типы дельт соответствуют друг другу)
-
-    // здесь кроется баг - если какого-то типа дельты не было в модели изначально, с первого коммита,
-    // его не будет и в стейте, и он постоянно будет светиться в изменениях ((
-    // по уму, сначала надо добавить те дельты, типов которых нет в стейте (пропуская дельты нот!)
-    // но этот кейс, скорее всего, никогда не всплывет. на всякий случай - todo
-    // (мне счас типа не до этого)
-    
+    // step 1:
+    // the default policy is merging all changes
+    // from changes into target (of corresponding types)
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
         const Delta *stateDelta = initialState.getDelta(i);
@@ -175,8 +168,8 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
 
         bool deltaFoundInChanges = false;
 
-        // для нот в итоге надо выдать одну дельту типа NotesAdded
-        // на которую наложить все дельты изменений нот одно за другим.
+        // for every supported type we need to spit out 
+        // a delta of type eventsAdded with all events merged in there
 
         ScopedPointer<Delta> notesDelta(new Delta(
             DeltaDescription(Serialization::VCS::headStateDelta),
@@ -189,7 +182,6 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
             PatternDeltas::clipsAdded));
 
         ScopedPointer<XmlElement> clipsDeltaData;
-
 
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
         {
@@ -236,27 +228,19 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
             if (bothDeltasAreNotesType)
             {
                 deltaFoundInChanges = true;
+                const bool incrementalMerge = (notesDeltaData != nullptr);
 
                 if (targetDelta->getType() == PianoSequenceDeltas::notesAdded)
                 {
-                    if (notesDeltaData != nullptr)
-                    { notesDeltaData = mergeNotesAdded(notesDeltaData, targetDeltaData); }
-                    else
-                    { notesDeltaData = mergeNotesAdded(stateDeltaData, targetDeltaData); }
+                    notesDeltaData = mergeNotesAdded(incrementalMerge ? notesDeltaData : stateDeltaData, targetDeltaData);
                 }
                 else if (targetDelta->getType() == PianoSequenceDeltas::notesRemoved)
                 {
-                    if (notesDeltaData != nullptr)
-                    { notesDeltaData = mergeNotesRemoved(notesDeltaData, targetDeltaData); }
-                    else
-                    { notesDeltaData = mergeNotesRemoved(stateDeltaData, targetDeltaData); }
+                    notesDeltaData = mergeNotesRemoved(incrementalMerge ? notesDeltaData : stateDeltaData, targetDeltaData);
                 }
                 else if (targetDelta->getType() == PianoSequenceDeltas::notesChanged)
                 {
-                    if (notesDeltaData != nullptr)
-                    { notesDeltaData = mergeNotesChanged(notesDeltaData, targetDeltaData); }
-                    else
-                    { notesDeltaData = mergeNotesChanged(stateDeltaData, targetDeltaData); }
+                    notesDeltaData = mergeNotesChanged(incrementalMerge ? notesDeltaData : stateDeltaData, targetDeltaData);
                 }
             }
 
@@ -267,27 +251,19 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
             if (bothDeltasArePatternType)
             {
                 deltaFoundInChanges = true;
+                const bool incrementalMerge = (clipsDeltaData != nullptr);
 
                 if (targetDelta->getType() == PatternDeltas::clipsAdded)
                 {
-                    if (clipsDeltaData != nullptr)
-                    { clipsDeltaData = PatternDiffHelpers::mergeClipsAdded(clipsDeltaData, targetDeltaData); }
-                    else
-                    { clipsDeltaData = PatternDiffHelpers::mergeClipsAdded(stateDeltaData, targetDeltaData); }
+                    clipsDeltaData = PatternDiffHelpers::mergeClipsAdded(incrementalMerge ? clipsDeltaData : stateDeltaData, targetDeltaData);
                 }
                 else if (targetDelta->getType() == PatternDeltas::clipsRemoved)
                 {
-                    if (clipsDeltaData != nullptr)
-                    { clipsDeltaData = PatternDiffHelpers::mergeClipsRemoved(clipsDeltaData, targetDeltaData); }
-                    else
-                    { clipsDeltaData = PatternDiffHelpers::mergeClipsRemoved(stateDeltaData, targetDeltaData); }
+                    clipsDeltaData = PatternDiffHelpers::mergeClipsRemoved(incrementalMerge ? clipsDeltaData : stateDeltaData, targetDeltaData);
                 }
                 else if (targetDelta->getType() == PatternDeltas::clipsChanged)
                 {
-                    if (clipsDeltaData != nullptr)
-                    { clipsDeltaData = PatternDiffHelpers::mergeClipsChanged(clipsDeltaData, targetDeltaData); }
-                    else
-                    { clipsDeltaData = PatternDiffHelpers::mergeClipsChanged(stateDeltaData, targetDeltaData); }
+                    clipsDeltaData = PatternDiffHelpers::mergeClipsChanged(incrementalMerge ? clipsDeltaData : stateDeltaData, targetDeltaData);
                 }
             }
         }
@@ -306,6 +282,60 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
         {
             auto stateDeltaCopy = new Delta(*stateDelta);
             diff->addOwnedDelta(stateDeltaCopy, stateDeltaData.release());
+        }
+    }
+
+    // step 2:
+    // resolve new delta types that may be missing in project history state,
+    // e.g., a project that was created with earlier versions of the app,
+    // which has a history tree with tracks initialised without patterns/clips
+    // which was introduced later. As the app evolves, new types of deltas are
+    // to be resolved here (for example, I'll need a `solo` track flag in future)
+
+    bool stateHasClips = false;
+    // TODO: bool stateHasSoloFlags = false;
+
+    for (int i = 0; i < initialState.getNumDeltas(); ++i)
+    {
+        const Delta *stateDelta = initialState.getDelta(i);
+        stateHasClips = stateHasClips || PatternDiffHelpers::checkIfDeltaIsPatternType(stateDelta);
+    }
+
+    for (int i = 0; i < initialState.getNumDeltas(); ++i)
+    {
+        ScopedPointer<XmlElement> clipsDeltaData;
+        ScopedPointer<Delta> clipsDelta(new Delta(
+            DeltaDescription(Serialization::VCS::headStateDelta),
+            PatternDeltas::clipsAdded));
+
+        for (int j = 0; j < this->target.getNumDeltas(); ++j)
+        {
+            const Delta *targetDelta = this->target.getDelta(j);
+            ScopedPointer<XmlElement> targetDeltaData(this->target.createDeltaDataFor(j));
+            const bool foundMissingClip = !stateHasClips && PatternDiffHelpers::checkIfDeltaIsPatternType(targetDelta);
+            if (foundMissingClip)
+            {
+                ScopedPointer<XmlElement> emptyClipDeltaData(serializeLayer({}, PatternDeltas::clipsAdded));
+                const bool incrementalMerge = (clipsDeltaData != nullptr);
+
+                if (targetDelta->getType() == PatternDeltas::clipsAdded)
+                {
+                    clipsDeltaData = PatternDiffHelpers::mergeClipsAdded(incrementalMerge ? clipsDeltaData : emptyClipDeltaData, targetDeltaData);
+                }
+                else if (targetDelta->getType() == PatternDeltas::clipsRemoved)
+                {
+                    clipsDeltaData = PatternDiffHelpers::mergeClipsRemoved(incrementalMerge ? clipsDeltaData : emptyClipDeltaData, targetDeltaData);
+                }
+                else if (targetDelta->getType() == PatternDeltas::clipsChanged)
+                {
+                    clipsDeltaData = PatternDiffHelpers::mergeClipsChanged(incrementalMerge ? clipsDeltaData : emptyClipDeltaData, targetDeltaData);
+                }
+            }
+        }
+        
+        if (clipsDeltaData != nullptr)
+        {
+            diff->addOwnedDelta(clipsDelta.release(), clipsDeltaData.release());
         }
     }
 

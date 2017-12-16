@@ -289,8 +289,6 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
 
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
-        const Delta *stateDelta = initialState.getDelta(i);
-
         ScopedPointer<Delta> annotationsDelta(
             new Delta(DeltaDescription(Serialization::VCS::headStateDelta),
                 ProjectTimelineDeltas::annotationsAdded));
