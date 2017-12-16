@@ -503,27 +503,27 @@
         </GROUP>
         <GROUP id="{93158781-1E3A-C291-199C-658344E36869}" name="VCS">
           <GROUP id="{7066A342-DF54-461D-76B4-F0789077D1ED}" name="DiffLogic">
-            <FILE id="qTenLU" name="AutoLayerDeltas.h" compile="0" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/AutoLayerDeltas.h"/>
-            <FILE id="ebFjSs" name="AutomationLayerDiffLogic.cpp" compile="1" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/AutomationLayerDiffLogic.cpp"/>
-            <FILE id="WHSmnd" name="AutomationLayerDiffLogic.h" compile="0" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/AutomationLayerDiffLogic.h"/>
+            <FILE id="SBYx0I" name="AutoSequenceDeltas.h" compile="0" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/AutoSequenceDeltas.h"/>
+            <FILE id="cUPXik" name="AutomationTrackDiffLogic.cpp" compile="1" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/AutomationTrackDiffLogic.cpp"/>
+            <FILE id="sJ9yi6" name="AutomationTrackDiffLogic.h" compile="0" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/AutomationTrackDiffLogic.h"/>
             <FILE id="tzU3Zw" name="DiffLogic.cpp" compile="1" resource="0" file="../../Source/Core/VCS/DiffLogic/DiffLogic.cpp"/>
             <FILE id="o2iVIn" name="DiffLogic.h" compile="0" resource="0" file="../../Source/Core/VCS/DiffLogic/DiffLogic.h"/>
             <FILE id="vlvaNu" name="MidiTrackDeltas.h" compile="0" resource="0"
                   file="../../Source/Core/VCS/DiffLogic/MidiTrackDeltas.h"/>
             <FILE id="sUuTah" name="PatternDeltas.h" compile="0" resource="0" file="../../Source/Core/VCS/DiffLogic/PatternDeltas.h"/>
-            <FILE id="mLsD5l" name="PatternDiffLogic.h" compile="0" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/PatternDiffLogic.h"/>
-            <FILE id="mYgPFf" name="PatternDiffLogic.cpp" compile="1" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/PatternDiffLogic.cpp"/>
-            <FILE id="u0jV9C" name="PianoLayerDeltas.h" compile="0" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/PianoLayerDeltas.h"/>
-            <FILE id="ABF3BH" name="PianoLayerDiffLogic.cpp" compile="1" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/PianoLayerDiffLogic.cpp"/>
-            <FILE id="mwPnWU" name="PianoLayerDiffLogic.h" compile="0" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/PianoLayerDiffLogic.h"/>
+            <FILE id="IXQhWN" name="PatternDiffHelpers.cpp" compile="1" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/PatternDiffHelpers.cpp"/>
+            <FILE id="Ngf98g" name="PatternDiffHelpers.h" compile="0" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/PatternDiffHelpers.h"/>
+            <FILE id="Lg4Vim" name="PianoSequenceDeltas.h" compile="0" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/PianoSequenceDeltas.h"/>
+            <FILE id="AJDAjB" name="PianoTrackDiffLogic.cpp" compile="1" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/PianoTrackDiffLogic.cpp"/>
+            <FILE id="iQgRoL" name="PianoTrackDiffLogic.h" compile="0" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/PianoTrackDiffLogic.h"/>
             <FILE id="BQjXo4" name="ProjectInfoDeltas.h" compile="0" resource="0"
                   file="../../Source/Core/VCS/DiffLogic/ProjectInfoDeltas.h"/>
             <FILE id="QkAb4q" name="ProjectInfoDiffLogic.cpp" compile="1" resource="0"

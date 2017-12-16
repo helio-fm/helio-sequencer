@@ -17,9 +17,14 @@
 
 #pragma once
 
-namespace PianoLayerDeltas
+namespace AutoSequenceDeltas
 {
-    static const String notesAdded = "NotesAdded";
-    static const String notesRemoved = "NotesRemoved";
-    static const String notesChanged = "NotesChanged";
-} // namespace PianoLayerDeltas
+    static const String layerPath = "LayerPath";
+    static const String layerMute = "LayerMute";
+    static const String layerColour = "LayerColour";
+    static const String layerInstrument = "LayerInstrument";
+    static const String layerController = "LayerController";
+    static const String eventsAdded = "EventsAdded";
+    static const String eventsRemoved = "EventsRemoved";
+    static const String eventsChanged = "EventsChanged";
+}  // namespace AutoSequenceDeltas

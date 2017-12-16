@@ -31,7 +31,6 @@ namespace VCS
     public:
 
         explicit ProjectTimelineDiffLogic(TrackedItem &targetItem);
-        ~ProjectTimelineDiffLogic() override;
 
         //===--------------------------------------------------------------===//
         // DiffLogic

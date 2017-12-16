@@ -58,19 +58,12 @@ static bool checkIfDeltaIsTimeSignatureType(const Delta *delta);
 static bool checkIfDeltaIsKeySignatureType(const Delta *delta);
 
 ProjectTimelineDiffLogic::ProjectTimelineDiffLogic(TrackedItem &targetItem) :
-    DiffLogic(targetItem)
-{
-}
-
-ProjectTimelineDiffLogic::~ProjectTimelineDiffLogic()
-{
-}
+    DiffLogic(targetItem) {}
 
 const String ProjectTimelineDiffLogic::getType() const
 {
     return Serialization::Core::projectTimeline;
 }
-
 
 // assuming this is used only on checkout and resetting changes
 void ProjectTimelineDiffLogic::resetStateTo(const TrackedItem &newState)

@@ -27,25 +27,19 @@ class PianoTrackTreeItem;
 
 namespace VCS
 {
-    class PianoLayerDiffLogic : public DiffLogic
+    class PianoTrackDiffLogic : public DiffLogic
     {
     public:
 
-        explicit PianoLayerDiffLogic(TrackedItem &targetItem);
+        explicit PianoTrackDiffLogic(TrackedItem &targetItem);
 
-        ~PianoLayerDiffLogic() override;
-
-        //===------------------------------------------------------------------===//
+        //===--------------------------------------------------------------===//
         // DiffLogic
-        //
+        //===--------------------------------------------------------------===//
 
         const String getType() const override;
-
         void resetStateTo(const TrackedItem &newState) override;
-
         Diff *createDiff(const TrackedItem &initialState) const override;
-
         Diff *createMergedItem(const TrackedItem &initialState) const override;
-
     };
 } // namespace VCS

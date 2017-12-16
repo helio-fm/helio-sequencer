@@ -16,11 +16,11 @@
 */
 
 #include "Common.h"
-#include "PianoLayerDiffLogic.h"
+#include "PianoTrackDiffLogic.h"
 #include "PianoTrackTreeItem.h"
-#include "PianoLayerDeltas.h"
+#include "PianoSequenceDeltas.h"
 #include "MidiTrackDeltas.h"
-#include "PatternDiffLogic.h"
+#include "PatternDiffHelpers.h"
 #include "Note.h"
 #include "PianoSequence.h"
 #include "SerializationKeys.h"
@@ -53,29 +53,21 @@ static XmlElement *serializeLayer(Array<const MidiEvent *> changes, const String
 static bool checkIfDeltaIsNotesType(const Delta *delta);
 
 
-PianoLayerDiffLogic::PianoLayerDiffLogic(TrackedItem &targetItem) :
-    DiffLogic(targetItem)
-{
-}
+PianoTrackDiffLogic::PianoTrackDiffLogic(TrackedItem &targetItem) :
+    DiffLogic(targetItem) {}
 
-PianoLayerDiffLogic::~PianoLayerDiffLogic()
-{
-}
-
-const String PianoLayerDiffLogic::getType() const
+const String PianoTrackDiffLogic::getType() const
 {
     return Serialization::Core::pianoLayer;
 }
 
-
-// предполагается, что это используется только применительно
-// к айтемам проекта. в 2х случаях - при чекауте и при ресете изменений.
-void PianoLayerDiffLogic::resetStateTo(const TrackedItem &newState)
+// assuming this is used only on checkout and resetting changes
+void PianoTrackDiffLogic::resetStateTo(const TrackedItem &newState)
 {
     this->target.resetStateTo(newState);
 }
 
-Diff *PianoLayerDiffLogic::createDiff(const TrackedItem &initialState) const
+Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const
 {
     auto diff = new Diff(this->target);
 
@@ -135,7 +127,7 @@ Diff *PianoLayerDiffLogic::createDiff(const TrackedItem &initialState) const
             }
             // дифф рассчитывает, что у состояния будет одна нотная дельта типа notesAdded
             // остальные тут не имеют смысла //else if (this->checkIfDeltaIsNotesType(myDelta))
-            else if (myDelta->getType() == PianoLayerDeltas::notesAdded)
+            else if (myDelta->getType() == PianoSequenceDeltas::notesAdded)
             {
                 Array<NewSerializedDelta> fullDeltas = 
                     createEventsDiffs(stateDeltaData, myDeltaData);
@@ -148,7 +140,7 @@ Diff *PianoLayerDiffLogic::createDiff(const TrackedItem &initialState) const
             else if (myDelta->getType() == PatternDeltas::clipsAdded)
             {
                 Array<NewSerializedDelta> fullDeltas = 
-                    PatternDiffLogic::createClipsDiffs(stateDeltaData, myDeltaData);
+                    PatternDiffHelpers::createClipsDiffs(stateDeltaData, myDeltaData);
 
                 for (auto fullDelta : fullDeltas)
                 {
@@ -162,7 +154,7 @@ Diff *PianoLayerDiffLogic::createDiff(const TrackedItem &initialState) const
 }
 
 
-Diff *PianoLayerDiffLogic::createMergedItem(const TrackedItem &initialState) const
+Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) const
 {
     auto diff = new Diff(this->target);
 
@@ -188,7 +180,7 @@ Diff *PianoLayerDiffLogic::createMergedItem(const TrackedItem &initialState) con
 
         ScopedPointer<Delta> notesDelta(new Delta(
             DeltaDescription(Serialization::VCS::headStateDelta),
-            PianoLayerDeltas::notesAdded));
+            PianoSequenceDeltas::notesAdded));
 
         ScopedPointer<XmlElement> notesDeltaData;
 
@@ -245,21 +237,21 @@ Diff *PianoLayerDiffLogic::createMergedItem(const TrackedItem &initialState) con
             {
                 deltaFoundInChanges = true;
 
-                if (targetDelta->getType() == PianoLayerDeltas::notesAdded)
+                if (targetDelta->getType() == PianoSequenceDeltas::notesAdded)
                 {
                     if (notesDeltaData != nullptr)
                     { notesDeltaData = mergeNotesAdded(notesDeltaData, targetDeltaData); }
                     else
                     { notesDeltaData = mergeNotesAdded(stateDeltaData, targetDeltaData); }
                 }
-                else if (targetDelta->getType() == PianoLayerDeltas::notesRemoved)
+                else if (targetDelta->getType() == PianoSequenceDeltas::notesRemoved)
                 {
                     if (notesDeltaData != nullptr)
                     { notesDeltaData = mergeNotesRemoved(notesDeltaData, targetDeltaData); }
                     else
                     { notesDeltaData = mergeNotesRemoved(stateDeltaData, targetDeltaData); }
                 }
-                else if (targetDelta->getType() == PianoLayerDeltas::notesChanged)
+                else if (targetDelta->getType() == PianoSequenceDeltas::notesChanged)
                 {
                     if (notesDeltaData != nullptr)
                     { notesDeltaData = mergeNotesChanged(notesDeltaData, targetDeltaData); }
@@ -269,8 +261,8 @@ Diff *PianoLayerDiffLogic::createMergedItem(const TrackedItem &initialState) con
             }
 
             const bool bothDeltasArePatternType =
-                PatternDiffLogic::checkIfDeltaIsPatternType(stateDelta) &&
-                PatternDiffLogic::checkIfDeltaIsPatternType(targetDelta);
+                PatternDiffHelpers::checkIfDeltaIsPatternType(stateDelta) &&
+                PatternDiffHelpers::checkIfDeltaIsPatternType(targetDelta);
 
             if (bothDeltasArePatternType)
             {
@@ -279,23 +271,23 @@ Diff *PianoLayerDiffLogic::createMergedItem(const TrackedItem &initialState) con
                 if (targetDelta->getType() == PatternDeltas::clipsAdded)
                 {
                     if (clipsDeltaData != nullptr)
-                    { clipsDeltaData = PatternDiffLogic::mergeClipsAdded(clipsDeltaData, targetDeltaData); }
+                    { clipsDeltaData = PatternDiffHelpers::mergeClipsAdded(clipsDeltaData, targetDeltaData); }
                     else
-                    { clipsDeltaData = PatternDiffLogic::mergeClipsAdded(stateDeltaData, targetDeltaData); }
+                    { clipsDeltaData = PatternDiffHelpers::mergeClipsAdded(stateDeltaData, targetDeltaData); }
                 }
                 else if (targetDelta->getType() == PatternDeltas::clipsRemoved)
                 {
                     if (clipsDeltaData != nullptr)
-                    { clipsDeltaData = PatternDiffLogic::mergeClipsRemoved(clipsDeltaData, targetDeltaData); }
+                    { clipsDeltaData = PatternDiffHelpers::mergeClipsRemoved(clipsDeltaData, targetDeltaData); }
                     else
-                    { clipsDeltaData = PatternDiffLogic::mergeClipsRemoved(stateDeltaData, targetDeltaData); }
+                    { clipsDeltaData = PatternDiffHelpers::mergeClipsRemoved(stateDeltaData, targetDeltaData); }
                 }
                 else if (targetDelta->getType() == PatternDeltas::clipsChanged)
                 {
                     if (clipsDeltaData != nullptr)
-                    { clipsDeltaData = PatternDiffLogic::mergeClipsChanged(clipsDeltaData, targetDeltaData); }
+                    { clipsDeltaData = PatternDiffHelpers::mergeClipsChanged(clipsDeltaData, targetDeltaData); }
                     else
-                    { clipsDeltaData = PatternDiffLogic::mergeClipsChanged(stateDeltaData, targetDeltaData); }
+                    { clipsDeltaData = PatternDiffHelpers::mergeClipsChanged(stateDeltaData, targetDeltaData); }
                 }
             }
         }
@@ -375,7 +367,7 @@ XmlElement *mergeNotesAdded(const XmlElement *state, const XmlElement *changes)
         }
     }
 
-    return serializeLayer(result, PianoLayerDeltas::notesAdded);
+    return serializeLayer(result, PianoSequenceDeltas::notesAdded);
 }
 
 XmlElement *mergeNotesRemoved(const XmlElement *state, const XmlElement *changes)
@@ -405,7 +397,7 @@ XmlElement *mergeNotesRemoved(const XmlElement *state, const XmlElement *changes
         }
     }
 
-    return serializeLayer(result, PianoLayerDeltas::notesAdded);
+    return serializeLayer(result, PianoSequenceDeltas::notesAdded);
 }
 
 XmlElement *mergeNotesChanged(const XmlElement *state, const XmlElement *changes)
@@ -438,7 +430,7 @@ XmlElement *mergeNotesChanged(const XmlElement *state, const XmlElement *changes
         }
     }
 
-    return serializeLayer(result, PianoLayerDeltas::notesAdded);
+    return serializeLayer(result, PianoSequenceDeltas::notesAdded);
 }
 
 
@@ -569,7 +561,7 @@ Array<NewSerializedDelta> createEventsDiffs(const XmlElement *state, const XmlEl
         res.add(serializeLayerChanges(addedNotes,
             "added {x} notes",
             addedNotes.size(),
-            PianoLayerDeltas::notesAdded));
+            PianoSequenceDeltas::notesAdded));
     }
 
     if (removedNotes.size() > 0)
@@ -577,7 +569,7 @@ Array<NewSerializedDelta> createEventsDiffs(const XmlElement *state, const XmlEl
         res.add(serializeLayerChanges(removedNotes,
             "removed {x} notes",
             removedNotes.size(),
-            PianoLayerDeltas::notesRemoved));
+            PianoSequenceDeltas::notesRemoved));
     }
 
     if (changedNotes.size() > 0)
@@ -585,7 +577,7 @@ Array<NewSerializedDelta> createEventsDiffs(const XmlElement *state, const XmlEl
         res.add(serializeLayerChanges(changedNotes,
             "changed {x} notes",
             changedNotes.size(),
-            PianoLayerDeltas::notesChanged));
+            PianoSequenceDeltas::notesChanged));
     }
 
     return res;
@@ -642,7 +634,7 @@ XmlElement *serializeLayer(Array<const MidiEvent *> changes, const String &tag)
 
 bool checkIfDeltaIsNotesType(const Delta *delta)
 {
-    return (delta->getType() == PianoLayerDeltas::notesAdded ||
-            delta->getType() == PianoLayerDeltas::notesRemoved ||
-            delta->getType() == PianoLayerDeltas::notesChanged);
+    return (delta->getType() == PianoSequenceDeltas::notesAdded ||
+            delta->getType() == PianoSequenceDeltas::notesRemoved ||
+            delta->getType() == PianoSequenceDeltas::notesChanged);
 }
