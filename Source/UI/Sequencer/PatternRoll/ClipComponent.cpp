@@ -23,7 +23,7 @@
 #include "PatternRoll.h"
 #include "Pattern.h"
 
-ClipComponent::ClipComponent(HybridRoll &editor, Clip clip) :
+ClipComponent::ClipComponent(HybridRoll &editor, const Clip &clip) :
     HybridRollEventComponent(editor),
     clip(clip)
 {

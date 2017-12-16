@@ -147,7 +147,7 @@ void PatternRoll::reloadRollContent()
 
         for (int j = 0; j < pattern->size(); ++j)
         {
-            const Clip &clip = pattern->getUnchecked(j);
+            const Clip &clip = *pattern->getUnchecked(j);
             ClipComponent *clipComponent = nullptr;
 
             if (auto pianoLayer = dynamic_cast<PianoSequence *>(sequence))
@@ -332,7 +332,7 @@ void PatternRoll::onRemoveTrack(MidiTrack *const track)
     {
         for (int i = 0; i < pattern->size(); ++i)
         {
-            const Clip &clip = pattern->getUnchecked(i);
+            const Clip &clip = *pattern->getUnchecked(i);
             if (const auto componentDeleter = this->componentsMap[clip].get())
             {
                 this->selection.deselect(componentDeleter);

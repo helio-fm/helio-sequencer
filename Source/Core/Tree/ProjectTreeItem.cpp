@@ -805,7 +805,10 @@ void ProjectTreeItem::broadcastChangeProjectInfo(const ProjectInfo *info)
 
 Point<float> ProjectTreeItem::broadcastChangeProjectBeatRange()
 {
+    // FIXME: bottleneck warning (will call collectTracks every time an event changes):
+    // TODO cache current track list
     const Point<float> &beatRange = this->getProjectRangeInBeats();
+
     const float &firstBeat = beatRange.getX();
     const float &lastBeat = beatRange.getY();
     

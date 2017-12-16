@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "Clip.h"
+#include "Pattern.h"
 #include "SerializationKeys.h"
 
 Clip::Clip()
@@ -28,16 +29,19 @@ Clip::Clip()
 Clip::Clip(const Clip &other) :
     pattern(other.pattern),
     startBeat(other.startBeat),
-    id(other.id)
-{
-}
+    id(other.id) {}
 
-Clip::Clip(Pattern *owner, float beatVal) :
+Clip::Clip(WeakReference<Pattern> owner, float beatVal) :
     pattern(owner),
     startBeat(beatVal)
 {
     id = this->createId();
 }
+
+Clip::Clip(WeakReference<Pattern> owner, const Clip &parametersToCopy) :
+    pattern(owner),
+    startBeat(parametersToCopy.startBeat),
+    id(parametersToCopy.id) {}
 
 Pattern *Clip::getPattern() const noexcept
 {
@@ -55,16 +59,21 @@ String Clip::getId() const noexcept
     return this->id;
 }
 
+bool Clip::isValid() const noexcept
+{
+    return this->pattern != nullptr && this->id.isNotEmpty();
+}
+
 Clip Clip::copyWithNewId(Pattern *newOwner) const
 {
     Clip c(*this);
-    c.id = this->createId();
 
     if (newOwner != nullptr)
     {
         c.pattern = newOwner;
     }
 
+    c.id = c.createId();
     return c;
 }
 
@@ -106,15 +115,6 @@ void Clip::reset()
     this->startBeat = 0.f;
 }
 
-Clip &Clip::operator=(const Clip &right)
-{
-    //if (this == &right) { return *this; }
-    //this->pattern = right.pattern; // never do this
-    this->id = right.id;
-    this->startBeat = right.startBeat;
-    return *this;
-}
-
 int Clip::compareElements(const Clip &first, const Clip &second)
 {
     if (&first == &second) { return 0; }
@@ -125,6 +125,17 @@ int Clip::compareElements(const Clip &first, const Clip &second)
     return diffResult;
 }
 
+int Clip::compareElements(const Clip *const first, const Clip *const second)
+{
+    return Clip::compareElements(*first, *second);
+}
+
+void Clip::applyChanges(const Clip &other)
+{
+    jassert(this->id == other.id);
+    this->startBeat = other.startBeat;
+}
+
 HashCode Clip::hashCode() const noexcept
 {
     const HashCode code = static_cast<HashCode>(this->startBeat)
@@ -132,8 +143,12 @@ HashCode Clip::hashCode() const noexcept
     return code;
 }
 
-Clip::Id Clip::createId() noexcept
+Clip::Id Clip::createId() const noexcept
 {
-    Uuid uuid;
-    return uuid.toString();
+    if (this->pattern != nullptr)
+    {
+        return this->pattern->createUniqueClipId();
+    }
+
+    return {};
 }

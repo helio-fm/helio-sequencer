@@ -25,7 +25,7 @@
 #include "MidiTrack.h"
 
 AutomationClipComponent::AutomationClipComponent(MidiTrack *targetTrack,
-    HybridRoll &editor, Clip clip) :
+    HybridRoll &editor, const Clip &clip) :
     ClipComponent(editor, clip),
     track(targetTrack)
 {

@@ -25,7 +25,7 @@
 #include "MidiTrack.h"
 
 PianoClipComponent::PianoClipComponent(MidiTrack *targetTrack,
-    HybridRoll &editor, Clip clip) :
+    HybridRoll &editor, const Clip &clip) :
     ClipComponent(editor, clip),
     track(targetTrack)
 {
