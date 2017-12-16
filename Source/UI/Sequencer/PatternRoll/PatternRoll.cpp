@@ -161,7 +161,7 @@ void PatternRoll::reloadRollContent()
 
             if (clipComponent != nullptr)
             {
-                this->componentsMap[clip] = UniquePtr<ClipComponent>(clipComponent);
+                this->componentsMap[clip] = UniquePointer<ClipComponent>(clipComponent);
                 this->addAndMakeVisible(clipComponent);
             }
         }
@@ -362,7 +362,7 @@ void PatternRoll::onAddClip(const Clip &clip)
 
     if (clipComponent != nullptr)
     {
-        this->componentsMap[clip] = UniquePtr<ClipComponent>(clipComponent);
+        this->componentsMap[clip] = UniquePointer<ClipComponent>(clipComponent);
         this->addAndMakeVisible(clipComponent);
 
         this->batchRepaintList.add(clipComponent);
@@ -380,7 +380,7 @@ void PatternRoll::onChangeClip(const Clip &clip, const Clip &newClip)
     if (const auto component = this->componentsMap[clip].release())
     {
         this->componentsMap.erase(clip);
-        this->componentsMap[newClip] = UniquePtr<ClipComponent>(component);
+        this->componentsMap[newClip] = UniquePointer<ClipComponent>(component);
 
         this->batchRepaintList.add(component);
         this->triggerAsyncUpdate();

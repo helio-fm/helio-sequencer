@@ -157,7 +157,7 @@ void PianoRoll::reloadRollContent()
                     Note *note = static_cast<Note *>(event);
                     auto noteComponent = new NoteComponent(*this, *note);
 
-                    this->componentsMap[*note] = UniquePtr<NoteComponent>(noteComponent);
+                    this->componentsMap[*note] = UniquePointer<NoteComponent>(noteComponent);
                     //(*clipMap)[*note] = noteComponent;
 
                     const bool belongsToActiveTrack = noteComponent->belongsToAnySequence(this->activeLayers);
@@ -453,7 +453,7 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
             // Pass ownership to another key:
             this->componentsMap.erase(note);
             // (always erase before as it may happen both events have the same hash code)
-            this->componentsMap[newNote] = UniquePtr<NoteComponent>(component);
+            this->componentsMap[newNote] = UniquePointer<NoteComponent>(component);
             // Schedule to be repainted later:
             this->batchRepaintList.add(component);
             this->triggerAsyncUpdate();
@@ -482,7 +482,7 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
         const Note &note = static_cast<const Note &>(event);
 
         auto component = new NoteComponent(*this, note);
-        this->componentsMap[note] = UniquePtr<NoteComponent>(component);
+        this->componentsMap[note] = UniquePointer<NoteComponent>(component);
         this->addAndMakeVisible(component);
 
         this->fader.fadeIn(component, 150);
@@ -556,7 +556,7 @@ void PianoRoll::onAddTrack(MidiTrack *const track)
         {
             const auto note = static_cast<const Note *const>(event);
             auto noteComponent = new NoteComponent(*this, *note);
-            this->componentsMap[*note] = UniquePtr<NoteComponent>(noteComponent);
+            this->componentsMap[*note] = UniquePointer<NoteComponent>(noteComponent);
 
             const bool belongsToActiveTrack = noteComponent->belongsToAnySequence(this->activeLayers);
             noteComponent->setActive(belongsToActiveTrack, true);

@@ -70,7 +70,7 @@ struct StringHash
 //===----------------------------------------------------------------------===//
 
 template <class T>
-using UniquePtr = std::unique_ptr<T>;
+using UniquePointer = std::unique_ptr<T>;
 
 #if _MSC_VER
 inline float roundf(float x)

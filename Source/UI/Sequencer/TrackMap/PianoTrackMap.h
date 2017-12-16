@@ -71,7 +71,7 @@ private:
     HybridRoll &roll;
     ProjectTreeItem &project;
     
-    SparseHashMap<Note, UniquePtr<TrackMapNoteComponent>, MidiEventHash> componentsMap;
+    SparseHashMap<Note, UniquePointer<TrackMapNoteComponent>, MidiEventHash> componentsMap;
     
     JUCE_LEAK_DETECTOR(PianoTrackMap)
 };

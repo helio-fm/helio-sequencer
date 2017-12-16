@@ -127,7 +127,7 @@ void PianoTrackMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent
         if (const auto component = this->componentsMap[note].release())
         {
             this->componentsMap.erase(note);
-            this->componentsMap[newNote] = UniquePtr<TrackMapNoteComponent>(component);
+            this->componentsMap[newNote] = UniquePointer<TrackMapNoteComponent>(component);
             this->applyNoteBounds(component);
         }
     }
@@ -140,7 +140,7 @@ void PianoTrackMap::onAddMidiEvent(const MidiEvent &event)
         const Note &note = static_cast<const Note &>(event);
 
         auto component = new TrackMapNoteComponent(*this, note);
-        this->componentsMap[note] = UniquePtr<TrackMapNoteComponent>(component);
+        this->componentsMap[note] = UniquePointer<TrackMapNoteComponent>(component);
 
         this->addAndMakeVisible(component);
         this->applyNoteBounds(component);
@@ -245,7 +245,7 @@ void PianoTrackMap::reloadTrackMap()
             if (Note *note = dynamic_cast<Note *>(event))
             {
                 auto noteComponent = new TrackMapNoteComponent(*this, *note);
-                this->componentsMap[*note] = UniquePtr<TrackMapNoteComponent>(noteComponent);
+                this->componentsMap[*note] = UniquePointer<TrackMapNoteComponent>(noteComponent);
                 this->addAndMakeVisible(noteComponent);
             }
         }

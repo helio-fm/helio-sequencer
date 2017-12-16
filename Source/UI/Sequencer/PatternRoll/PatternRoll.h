@@ -142,7 +142,7 @@ private:
 
     OwnedArray<ClipComponent> ghostClips;
     
-    typedef SparseHashMap<Clip, UniquePtr<ClipComponent>, ClipHash> ClipComponentsMap;
+    typedef SparseHashMap<Clip, UniquePointer<ClipComponent>, ClipHash> ClipComponentsMap;
     ClipComponentsMap componentsMap;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRoll)
