@@ -1166,6 +1166,10 @@
                   file="../../Source/UI/Sequencer/PatternRoll/PianoClipComponent.cpp"/>
             <FILE id="pPYJa2" name="PianoClipComponent.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/PatternRoll/PianoClipComponent.h"/>
+            <FILE id="iw3RJL" name="MidiTrackHeaderComponent.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/PatternRoll/MidiTrackHeaderComponent.cpp"/>
+            <FILE id="dia7oD" name="MidiTrackHeaderComponent.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/PatternRoll/MidiTrackHeaderComponent.h"/>
             <FILE id="Fq4aoW" name="PatternRoll.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/PatternRoll/PatternRoll.cpp"/>
             <FILE id="MXsdDW" name="PatternRoll.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PatternRoll/PatternRoll.h"/>
           </GROUP>
