@@ -36,6 +36,8 @@
 #include "NavigationSidebar.h"
 #include "OrigamiHorizontal.h"
 #include "OrigamiVertical.h"
+#include "NoteComponent.h"
+#include "ClipComponent.h"
 #include "PanelBackgroundC.h"
 #include "App.h"
 #include "Workspace.h"

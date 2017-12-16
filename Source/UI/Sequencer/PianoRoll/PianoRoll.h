@@ -32,12 +32,12 @@ class NoteComponent;
 class PianoRollReboundThread;
 class PianoRollCellHighlighter;
 class HelperRectangle;
-class NoteResizerLeft;
-class NoteResizerRight;
 class Scale;
 
-#include "HelioTheme.h"
 #include "HybridRoll.h"
+#include "HelioTheme.h"
+#include "NoteResizerLeft.h"
+#include "NoteResizerRight.h"
 #include "Note.h"
 #include "Clip.h"
 

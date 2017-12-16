@@ -32,6 +32,7 @@
 #include "Note.h"
 #include "App.h"
 #include "Workspace.h"
+#include "MainWindow.h"
 #include "AudioCore.h"
 #include "NoteComponent.h"
 #include "HelperRectangle.h"
@@ -48,8 +49,6 @@
 #include "NotesTuningPanel.h"
 #include "ArpeggiatorEditorPanel.h"
 #include "PianoRollToolbox.h"
-#include "NoteResizerLeft.h"
-#include "NoteResizerRight.h"
 #include "Config.h"
 #include "SerializationKeys.h"
 #include "ComponentIDs.h"
@@ -1186,8 +1185,12 @@ void PianoRoll::paint(Graphics &g)
     const auto sequences = this->project.getTimeline()->getKeySignatures()->getSequence();
     const int paintStartX = this->viewport.getViewPositionX();
     const int paintEndX = paintStartX + this->viewport.getViewWidth();
-    const float paintStartBar = roundf(float(paintStartX) / this->barWidth) + this->firstBar - 1.f;
-    const float paintEndBar = roundf(float(paintEndX) / this->barWidth) + this->firstBar + 1.f;
+
+    // I guess there's a weird bug in JUCE OpenGL shaders,
+    // so that OpenGL images tiling offset differs by 1 from native renderers.
+    // FIXME: someday I may need to investigate this issue and propose them a fix
+    const int paintOffsetY = MainWindow::isOpenGLRendererEnabled() ?
+        HYBRID_ROLL_HEADER_HEIGHT + 1 : HYBRID_ROLL_HEADER_HEIGHT;
 
     int prevBarX = paintStartX;
     const HighlightingScheme *prevScheme = nullptr;
@@ -1211,7 +1214,7 @@ void PianoRoll::paint(Graphics &g)
         if (barX >= paintEndX)
         {
             const auto s = (prevScheme == nullptr) ? this->backgroundsCache.getUnchecked(index) : prevScheme;
-            g.setTiledImageFill(s->getUnchecked(this->rowHeight), 0, HYBRID_ROLL_HEADER_HEIGHT, 1.f);
+            g.setTiledImageFill(s->getUnchecked(this->rowHeight), 0, paintOffsetY, 1.f);
             g.fillRect(prevBarX, y, barX - prevBarX, h);
             HybridRoll::paint(g);
             return;
@@ -1219,7 +1222,7 @@ void PianoRoll::paint(Graphics &g)
         else if (barX >= paintStartX)
         {
             const auto s = (prevScheme == nullptr) ? this->backgroundsCache.getUnchecked(index) : prevScheme;
-            g.setTiledImageFill(s->getUnchecked(this->rowHeight), 0, HYBRID_ROLL_HEADER_HEIGHT, 1.f);
+            g.setTiledImageFill(s->getUnchecked(this->rowHeight), 0, paintOffsetY, 1.f);
             g.fillRect(prevBarX, y, barX - prevBarX, h);
         }
 
@@ -1230,7 +1233,7 @@ void PianoRoll::paint(Graphics &g)
     if (prevBarX < paintEndX)
     {
         const auto s = (prevScheme == nullptr) ? this->defaultHighlighting : prevScheme;
-        g.setTiledImageFill(s->getUnchecked(this->rowHeight), 0, HYBRID_ROLL_HEADER_HEIGHT, 1.f);
+        g.setTiledImageFill(s->getUnchecked(this->rowHeight), 0, paintOffsetY, 1.f);
         g.fillRect(prevBarX, y, paintEndX - prevBarX, h);
         HybridRoll::paint(g);
     }
