@@ -174,7 +174,7 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
 AutomationEvent AutomationEvent::copyWithNewId() const
 {
     AutomationEvent ae(*this);
-    ae.id = this->createId();
+    ae.id = ae.createId();
     return ae;
 }
 

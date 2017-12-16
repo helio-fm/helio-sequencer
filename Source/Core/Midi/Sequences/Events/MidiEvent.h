@@ -33,7 +33,6 @@ public:
     inline bool isTypeOf(Type val) const noexcept { return this->type == val; }
 
     MidiEvent(WeakReference<MidiSequence> owner, Type type, float beat);
-    ~MidiEvent() override;
 
     virtual Array<MidiMessage> toMidiMessages() const = 0;
 

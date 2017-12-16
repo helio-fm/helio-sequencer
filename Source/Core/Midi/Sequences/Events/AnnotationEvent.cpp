@@ -99,7 +99,7 @@ AnnotationEvent AnnotationEvent::withParameters(const XmlElement &xml) const
 AnnotationEvent AnnotationEvent::copyWithNewId() const
 {
     AnnotationEvent ae(*this);
-    ae.id = this->createId();
+    ae.id = ae.createId();
     return ae;
 }
 

@@ -155,7 +155,8 @@ bool PianoSequence::remove(const Note &eventParams, const bool undoable)
     return true;
 }
 
-bool PianoSequence::change(const Note &oldParams, const Note &newParams, bool undoable)
+bool PianoSequence::change(const Note &oldParams,
+    const Note &newParams, bool undoable)
 {
     if (undoable)
     {
@@ -312,7 +313,7 @@ void PianoSequence::transposeAll(int keyDelta, bool shouldCheckpoint)
 // Accessors
 //===----------------------------------------------------------------------===//
 
-float PianoSequence::getLastBeat() const
+float PianoSequence::getLastBeat() const noexcept
 {
     // FIXME:
     // the last beat is now simply taken from the last event
@@ -357,20 +358,12 @@ void PianoSequence::deserialize(const XmlElement &xml)
         return;
     }
 
-    float lastBeat = 0;
-    float firstBeat = 0;
-
     forEachXmlChildElementWithTagName(*root, e, Serialization::Core::note)
     {
         auto note = new Note(this);
         note->deserialize(*e);
 
         this->midiEvents.add(note); // sorted later
-
-        const float noteEnd = (note->getBeat() + note->getLength());
-        lastBeat = jmax(lastBeat, noteEnd);
-        firstBeat = jmin(firstBeat, note->getBeat());
-
         this->usedEventIds.insert(note->getId());
     }
 

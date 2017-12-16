@@ -62,7 +62,7 @@ public:
     // Accessors
     //===------------------------------------------------------------------===//
     
-    float getLastBeat() const override; // overriding to set beat+length
+    float getLastBeat() const noexcept override; // overriding to set beat+length
     
     //===------------------------------------------------------------------===//
     // Serializable

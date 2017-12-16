@@ -70,7 +70,7 @@ public:
     void applyChanges(const Note &parameters);
 
     static int compareElements(const MidiEvent *const first, const MidiEvent *const second);
-    static int compareElements(Note *const first, Note *const second);
+    static int compareElements(const Note *const first, const Note *const second);
     static int compareElements(const Note &first, const Note &second);
 
 protected:

@@ -118,7 +118,7 @@ TimeSignatureEvent TimeSignatureEvent::withParameters(const XmlElement &xml) con
 TimeSignatureEvent TimeSignatureEvent::copyWithNewId() const
 {
     TimeSignatureEvent e(*this);
-    e.id = this->createId();
+    e.id = e.createId();
     return e;
 }
 

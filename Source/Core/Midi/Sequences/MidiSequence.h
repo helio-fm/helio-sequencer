@@ -65,9 +65,9 @@ public:
     // Accessors
     //===------------------------------------------------------------------===//
 
-    virtual float getFirstBeat() const;
-    virtual float getLastBeat() const;
-    float getLengthInBeats() const;
+    virtual float getFirstBeat() const noexcept;
+    virtual float getLastBeat() const noexcept;
+    float getLengthInBeats() const noexcept;
     MidiTrack *getTrack() const noexcept;
 
     //===------------------------------------------------------------------===//
