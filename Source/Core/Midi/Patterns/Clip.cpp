@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "Clip.h"
 #include "Pattern.h"
+#include "MidiTrack.h"
 #include "SerializationKeys.h"
 
 Clip::Clip()
@@ -62,6 +63,12 @@ String Clip::getId() const noexcept
 bool Clip::isValid() const noexcept
 {
     return this->pattern != nullptr && this->id.isNotEmpty();
+}
+
+Colour Clip::getColour() const noexcept
+{
+    jassert(this->pattern);
+    return this->pattern->getTrack()->getTrackColour();
 }
 
 Clip Clip::copyWithNewId(Pattern *newOwner) const

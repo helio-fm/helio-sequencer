@@ -28,7 +28,6 @@ class HelioTheme : public LookAndFeel_V4
 public:
 
     HelioTheme();
-    ~HelioTheme() override;
 
     void initResources();
     void initColours(const ::ColourScheme &colours);

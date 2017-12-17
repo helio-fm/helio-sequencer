@@ -31,7 +31,9 @@ static StringPairArray getDefaultMeters()
     c.set("Common time", "4/4");
     c.set("Alla breve", "2/4");
     c.set("Waltz time", "3/4");
-    c.set("4/4", "4/4");
+    c.set("5/4", "5/4");
+    c.set("6/4", "6/4");
+    c.set("7/4", "7/4");
     c.set("5/8", "5/8");
     c.set("6/8", "6/8");
     c.set("7/8", "7/8");

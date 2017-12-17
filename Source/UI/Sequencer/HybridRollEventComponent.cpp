@@ -27,7 +27,6 @@ HybridRollEventComponent::HybridRollEventComponent(HybridRoll &editor, bool isGh
     selectedState(false),
     activeState(true),
     anchorBeat(0),
-    colour(Colours::white),
     ghostMode(isGhost),
     clickOffset(0, 0)    
 {

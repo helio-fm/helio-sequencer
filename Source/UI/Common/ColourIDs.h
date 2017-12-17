@@ -20,7 +20,10 @@
 namespace ColourIDs
 {
     // JUCE internal colour id's all look like 0x1xxxxxx;
-    // so we start from 0x2000000 to make sure id's do not overlap:
+    // so we start from 0x2000000 to make sure id's do not overlap.
+
+    // The colour are generated in HelioTheme::initColours,
+    // based on current colour scheme containing a number of common colours.
 
     namespace Common
     {
@@ -43,6 +46,9 @@ namespace ColourIDs
         static const int headerSnaps            = 0x2000110;
         static const int playhead               = 0x2000111;
         static const int playheadShade          = 0x2000112;
+        static const int trackHeaderFill        = 0x2000113;
+        static const int trackHeaderBorderLight = 0x2000114;
+        static const int trackHeaderBorderDark  = 0x2000115;
     }
 
     namespace Callout

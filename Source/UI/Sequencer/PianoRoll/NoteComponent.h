@@ -27,7 +27,6 @@ class NoteComponent : public HybridRollEventComponent
 public:
 
     NoteComponent(PianoRoll &gridRef, const Note &eventRef, bool ghostMode = false);
-    ~NoteComponent() override;
 
     enum State
     {
@@ -40,9 +39,6 @@ public:
         Dragging
     };
     
-    const Note &getNote() const;
-    PianoRoll &getRoll() const;
-
     //===------------------------------------------------------------------===//
     // Helpers
     //===------------------------------------------------------------------===//
@@ -50,6 +46,10 @@ public:
     int getKey() const;
     float getLength() const;
     float getVelocity() const;
+
+    const Note &getNote() const;
+    PianoRoll &getRoll() const;
+
     void updateColours() override;
 
     //===------------------------------------------------------------------===//

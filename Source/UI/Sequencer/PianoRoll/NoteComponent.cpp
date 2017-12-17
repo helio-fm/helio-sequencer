@@ -48,14 +48,9 @@ NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, bool ghostMod
 {
     this->updateColours();
     this->toFront(false);
-    this->setPaintingIsUnclipped(true); // speedup
+    this->setPaintingIsUnclipped(true);
     this->setFloatBounds(this->getRoll().getEventBounds(this));
 }
-
-NoteComponent::~NoteComponent()
-{
-}
-
 
 const Note &NoteComponent::getNote() const
 {
@@ -66,7 +61,6 @@ PianoRoll &NoteComponent::getRoll() const
 {
     return static_cast<PianoRoll &>(this->roll);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Accessors
@@ -123,7 +117,6 @@ void NoteComponent::setQuickSelectLayerMode(bool value)
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // HybridRollEventComponent
 //===----------------------------------------------------------------------===//
@@ -149,7 +142,6 @@ String NoteComponent::getId() const
 {
     return this->midiEvent.getId();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Component
@@ -762,9 +754,7 @@ void NoteComponent::paintLegacyLook(Graphics &g)
     g.drawHorizontalLine(this->getHeight() - 2, sx, sw);
     g.drawHorizontalLine(this->getHeight() - 3, sx, sw);
     g.drawHorizontalLine(this->getHeight() - 4, sx, sw);
-
 }
-
 
 //===----------------------------------------------------------------------===//
 // Helpers
@@ -788,7 +778,6 @@ void NoteComponent::activateCorrespondingTrack(bool selectAll, bool soloSelectio
     MidiSequence *layer = this->getNote().getSequence();
     this->roll.getProject().activateLayer(layer, selectAll, soloSelection);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Dragging
@@ -851,7 +840,6 @@ void NoteComponent::endDragging(bool sendMidiMessage)
     this->state = None;
 }
 
-
 //===----------------------------------------------------------------------===//
 // Resizing Right
 //===----------------------------------------------------------------------===//
@@ -907,7 +895,6 @@ void NoteComponent::endResizingRight()
     this->state = None;
 }
 
-
 //===----------------------------------------------------------------------===//
 // Resizing Left
 //===----------------------------------------------------------------------===//
@@ -951,7 +938,6 @@ void NoteComponent::endResizingLeft()
     this->stopSound();
     this->state = None;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Group Scaling Right
@@ -998,7 +984,6 @@ void NoteComponent::endGroupScalingRight()
     this->state = None;
 }
 
-
 //===----------------------------------------------------------------------===//
 // Group Scaling Left
 //===----------------------------------------------------------------------===//
@@ -1044,7 +1029,6 @@ void NoteComponent::endGroupScalingLeft()
 {
     this->state = None;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Velocity

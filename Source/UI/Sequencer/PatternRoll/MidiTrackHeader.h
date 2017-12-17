@@ -48,6 +48,10 @@ private:
 
     //[UserVariables]
     const MidiTrack &track;
+
+    Colour borderLightColour;
+    Colour borderDarkColour;
+    Colour fillColour;
     //[/UserVariables]
 
     ScopedPointer<Label> trackNameLabel;

@@ -373,7 +373,7 @@ public:
         this->patternViewport->setVisible(true);
         this->pianoViewport->setVisible(true);
         this->resized();
-        this->startTimerHz(60);
+        this->startTimerHz(90);
     }
     
     void paint(Graphics& g) override {}

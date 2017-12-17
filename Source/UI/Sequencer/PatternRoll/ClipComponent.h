@@ -29,9 +29,21 @@ class ClipComponent : public HybridRollEventComponent
 public:
 
     ClipComponent(HybridRoll &editor, const Clip &clip);
-    const Clip getClip() const;
-    PatternRoll &getRoll() const;
-    void updateColours() override {}
+
+    enum State
+    {
+        None,
+        Dragging
+    };
+
+    //===------------------------------------------------------------------===//
+    // Helpers
+    //===------------------------------------------------------------------===//
+
+    const Clip &getClip() const noexcept;
+    PatternRoll &getRoll() const noexcept;
+
+    void updateColours() override;
 
     //===------------------------------------------------------------------===//
     // HybridRollEventComponent
@@ -54,6 +66,11 @@ public:
 protected:
 
     const Clip &clip;
+
+    Colour headColour;
+    Colour headColourLighter;
+    Colour headColourDarker;
+    Colour fillColour;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ClipComponent)
 };

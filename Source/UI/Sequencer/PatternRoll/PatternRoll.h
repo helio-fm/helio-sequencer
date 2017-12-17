@@ -113,6 +113,7 @@ public:
     void handleCommandMessage(int commandId) override;
     void resized() override;
     void paint(Graphics &g) override;
+    void parentSizeChanged() override;
     
     //===------------------------------------------------------------------===//
     // Serializable
@@ -131,6 +132,7 @@ protected:
     void updateChildrenBounds() override;
     void updateChildrenPositions() override;
     void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
+    void updateRollSize();
 
 public:
 

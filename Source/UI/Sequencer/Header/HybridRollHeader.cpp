@@ -52,8 +52,8 @@ HybridRollHeader::HybridRollHeader(Transport &transportRef, HybridRoll &rollRef,
     this->barShadeColour = this->backColour.darker(0.1f);
     this->beatColour = this->barColour.withMultipliedAlpha(0.8f);
     this->snapColour = this->barColour.withMultipliedAlpha(0.6f);
-    this->bevelLightColour = this->findColour(ColourIDs::Common::borderLineLight).withMultipliedAlpha(0.35f); //Colours::white.withAlpha(0.025f);
-    this->bevelDarkColour = this->findColour(ColourIDs::Common::borderLineDark); //Colours::black.withAlpha(0.35f);
+    this->bevelLightColour = this->findColour(ColourIDs::Common::borderLineLight).withMultipliedAlpha(0.35f);
+    this->bevelDarkColour = this->findColour(ColourIDs::Common::borderLineDark);
 
     this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);

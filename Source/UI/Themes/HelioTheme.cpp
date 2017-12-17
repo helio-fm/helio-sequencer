@@ -53,15 +53,8 @@
 #   define TEXTBUTTON_FONT (23.f)
 #endif
 
-
 HelioTheme::HelioTheme() :
-    backgroundNoise(ImageCache::getFromMemory(BinaryData::defaultPattern_png, BinaryData::defaultPattern_pngSize))
-{
-}
-
-HelioTheme::~HelioTheme()
-{
-}
+    backgroundNoise(ImageCache::getFromMemory(BinaryData::defaultPattern_png, BinaryData::defaultPattern_pngSize)) {}
 
 void HelioTheme::drawNoise(Component *target, Graphics &g, float alphaMultiply /*= 1.f*/)
 {
@@ -218,9 +211,6 @@ void HelioTheme::drawLasso(Graphics &g, Component &lassoComp)
     
     g.setColour(lassoComp.findColour(0x1000441 /*lassoOutlineColourId*/));
     
-    //Colour lassoOutlineColourId(lassoComp.findColour(MidiEventComponentLasso::lassoOutlineColourId));
-    //HelioTheme::drawDashedRectangle(g, r, lassoOutlineColourId, dashLength, dashWidth, cornersRound);
-    
     Path path;
     path.addQuadrilateral(r.getBottomRight().getX(), r.getBottomRight().getY(),
                           r.getTopRight().getX(), r.getTopRight().getY(),
@@ -300,7 +290,6 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
         g.setColour(label.findColour(Label::outlineColourId));
     }
 }
-
 
 //===----------------------------------------------------------------------===//
 // Button
@@ -881,7 +870,7 @@ void HelioTheme::initColours(const ::ColourScheme &s)
     this->setColour(ColourIDs::Instrument::audioIn, Colour(0x25ffffff));
     this->setColour(ColourIDs::Instrument::audioOut, Colour(0x25ffffff));
 
-    // Resizer
+    // Borders
     this->setColour(ColourIDs::Common::borderLineLight, Colours::white.withAlpha(0.06f));
     this->setColour(ColourIDs::Common::borderLineDark, Colours::black.withAlpha(0.2f));
 
@@ -904,6 +893,9 @@ void HelioTheme::initColours(const ::ColourScheme &s)
     this->setColour(ColourIDs::Roll::headerSnaps, s.getPrimaryGradientColourB().darker(0.025f).contrasting().withMultipliedAlpha(0.25f));
     this->setColour(ColourIDs::Roll::playhead, s.getLassoBorderColour().withAlpha(0.6f));
     this->setColour(ColourIDs::Roll::playheadShade, Colours::black.withAlpha(0.1f));
+    this->setColour(ColourIDs::Roll::trackHeaderFill, s.getBlackKeyColour().brighter(0.025f));
+    this->setColour(ColourIDs::Roll::trackHeaderBorderLight, Colours::white.withAlpha(0.15f));
+    this->setColour(ColourIDs::Roll::trackHeaderBorderDark, Colours::black.withAlpha(0.25f));
 
     this->setColour(ColourIDs::HelperRectangle::fill, s.getLassoFillColour().withAlpha(0.08f));
     this->setColour(ColourIDs::HelperRectangle::outline, s.getLassoBorderColour().withAlpha(0.3f));

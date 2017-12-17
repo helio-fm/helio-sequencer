@@ -185,9 +185,7 @@ void PatternRoll::reloadRollContent()
         }
     }
 
-    const int h = HYBRID_ROLL_HEADER_HEIGHT + this->getNumRows() * (PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT);
-    this->setSize(this->getWidth(), jmax(h, this->viewport.getViewHeight()));
-
+    this->updateRollSize();
     this->repaint(this->viewport.getViewArea());
 }
 
@@ -210,6 +208,12 @@ void PatternRoll::setChildrenInteraction(bool interceptsMouse, MouseCursor curso
     }
 }
 
+void PatternRoll::updateRollSize()
+{
+    const int h = HYBRID_ROLL_HEADER_HEIGHT + this->getNumRows() * (PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT);
+    this->setSize(this->getWidth(), jmax(h, this->viewport.getHeight()));
+}
+
 void PatternRoll::updateChildrenBounds()
 {
     //this->insertTrackHelper->setBounds(TODO);
@@ -221,9 +225,9 @@ void PatternRoll::updateChildrenBounds()
         const int trackIndex = this->tracks.indexOfSorted(track, &track);
         const int y = trackIndex * (PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT);
         const Rectangle<int> bounds(this->getViewport().getViewPositionX(),
-            HYBRID_ROLL_HEADER_HEIGHT + y + 1,
+            HYBRID_ROLL_HEADER_HEIGHT + y,
             this->getViewport().getViewWidth(),
-            PATTERN_ROLL_TRACK_HEADER_HEIGHT - 1);
+            PATTERN_ROLL_TRACK_HEADER_HEIGHT);
         component->setBounds(bounds);
     }
 
@@ -240,7 +244,7 @@ void PatternRoll::updateChildrenPositions()
         const auto &track = component->getTrack();
         const int trackIndex = this->tracks.indexOfSorted(track, &track);
         const int y = trackIndex * (PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT);
-        component->setTopLeftPosition(this->getViewport().getViewPositionX(), HYBRID_ROLL_HEADER_HEIGHT + y + 1);
+        component->setTopLeftPosition(this->getViewport().getViewPositionX(), HYBRID_ROLL_HEADER_HEIGHT + y);
     }
 
     HybridRoll::updateChildrenPositions();
@@ -308,8 +312,8 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) c
         (sequenceStartBeat + clipBeat - viewStartOffsetBeat) / NUM_BEATS_IN_BAR;
 
     const float y = float(trackIndex * (PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT));
-    return Rectangle<float> (x, HYBRID_ROLL_HEADER_HEIGHT + y + 1 + PATTERN_ROLL_TRACK_HEADER_HEIGHT,
-        w, float(PATTERN_ROLL_CLIP_HEIGHT - 1));
+    return Rectangle<float> (x, HYBRID_ROLL_HEADER_HEIGHT + y + PATTERN_ROLL_TRACK_HEADER_HEIGHT,
+        w, float(PATTERN_ROLL_CLIP_HEIGHT));
 }
 
 float PatternRoll::getBeatByComponentPosition(float x) const
@@ -406,12 +410,19 @@ void PatternRoll::onChangeTrackProperties(MidiTrack *const track)
     if (Pattern *pattern = track->getPattern())
     {
         // track name could change here so we have to keep track array sorted by name:
-        Logger::writeToLog("onChangeTrackProperties " + track->getTrackId().toString() + ", " + track->getTrackName());
         //this->tracks.removeAllInstancesOf(track);
         //this->tracks.addSorted(*track, track);
         this->tracks.sort();
-        this->repaint();
+
+        // TODO only repaint clips of a changed track?
+        for (const auto &e : this->clipComponents)
+        {
+            const auto component = e.second.get();
+            component->updateColours();
+        }
     }
+
+    this->repaint();
 }
 
 void PatternRoll::onRemoveTrack(MidiTrack *const track)
@@ -435,8 +446,7 @@ void PatternRoll::onRemoveTrack(MidiTrack *const track)
             }
         }
 
-        const int h = HYBRID_ROLL_HEADER_HEIGHT + this->getNumRows() * (PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT);
-        this->setSize(this->getWidth(), jmax(h, this->viewport.getViewHeight()));
+        this->updateRollSize();
     }
 }
 
@@ -721,7 +731,6 @@ void PatternRoll::handleCommandMessage(int commandId)
     HybridRoll::handleCommandMessage(commandId);
 }
 
-
 void PatternRoll::resized()
 {
     if (!this->isShowing())
@@ -749,13 +758,17 @@ void PatternRoll::paint(Graphics &g)
     HybridRoll::paint(g);
 }
 
+void PatternRoll::parentSizeChanged()
+{
+    this->updateRollSize();
+}
+
 void PatternRoll::insertNewClipAt(const MouseEvent &e)
 {
     float draggingBeat = this->getBeatByMousePosition(e.x);
     const auto pattern = this->getPatternByMousePosition(e.y);
     this->addClip(pattern, draggingBeat);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -782,8 +795,9 @@ void PatternRoll::deserialize(const XmlElement &xml)
 {
     this->reset();
 
-    const XmlElement *root = (xml.getTagName() == Serialization::Core::midiRoll) ?
-                             &xml : xml.getChildByName(Serialization::Core::midiRoll);
+    const XmlElement *root =
+        (xml.getTagName() == Serialization::Core::midiRoll) ?
+        &xml : xml.getChildByName(Serialization::Core::midiRoll);
 
     if (root == nullptr)
     { return; }
@@ -802,7 +816,7 @@ void PatternRoll::deserialize(const XmlElement &xml)
 void PatternRoll::reset() {}
 
 //===----------------------------------------------------------------------===//
-// Background images cache
+// Background image cache
 //===----------------------------------------------------------------------===//
 
 Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height) const
@@ -810,56 +824,10 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height) const
     Image patternImage(Image::RGB, 128, height * ROWS_OF_TWO_OCTAVES, false);
     Graphics g(patternImage);
 
-    const Colour blackKey = theme.findColour(ColourIDs::Roll::blackKey);
-    const Colour blackKeyBright = theme.findColour(ColourIDs::Roll::blackKeyAlt);
     const Colour whiteKey = theme.findColour(ColourIDs::Roll::whiteKey);
-    const Colour whiteKeyBright = theme.findColour(ColourIDs::Roll::whiteKeyAlt);
-    const Colour whiteKeyBrighter = whiteKeyBright.brighter(0.025f);
-    const Colour rowLine = theme.findColour(ColourIDs::Roll::rowLine);
 
-    float currentHeight = float(height);
-    float previousHeight = 0;
-    float pos_y = patternImage.getHeight() - currentHeight;
-    const int lastOctaveReminder = 8;
-
-    g.setColour(whiteKeyBright);
+    g.setColour(whiteKey);
     g.fillRect(patternImage.getBounds());
-
-    // draw rows
-    for (int i = lastOctaveReminder;
-         (i < ROWS_OF_TWO_OCTAVES + lastOctaveReminder) && ((pos_y + previousHeight) >= 0.0f);
-         i++)
-    {
-        const int noteNumber = i % 12;
-        const int octaveNumber = i / 12;
-        const bool octaveIsOdd = ((octaveNumber % 2) > 0);
-
-        previousHeight = currentHeight;
-
-        switch (noteNumber)
-        {
-        case 1:
-        case 3:
-        case 5:
-        case 8:
-        case 10: // black keys
-            g.setColour(octaveIsOdd ? blackKeyBright : blackKey);
-            g.fillRect(0, int(pos_y + 1), patternImage.getWidth(), int(previousHeight - 1));
-            break;
-
-        default: // white keys
-            g.setColour(whiteKeyBrighter);
-            g.drawHorizontalLine(int(pos_y + 1), 0.f, float(patternImage.getWidth()));
-            break;
-        }
-
-        // fill divider line
-        g.setColour(rowLine);
-        g.drawHorizontalLine(int(pos_y), 0.f, float(patternImage.getWidth()));
-
-        currentHeight = float(height);
-        pos_y -= currentHeight;
-    }
 
     HelioTheme::drawNoise(theme, g, 2.f);
 
@@ -869,5 +837,6 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height) const
 void PatternRoll::repaintBackgroundsCache()
 {
     const HelioTheme &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
-    this->rowPattern = PatternRoll::renderRowsPattern(theme, PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT);
+    this->rowPattern = PatternRoll::renderRowsPattern(theme,
+        PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT);
 }

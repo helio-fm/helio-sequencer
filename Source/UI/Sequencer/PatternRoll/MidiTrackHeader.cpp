@@ -23,6 +23,7 @@
 
 //[MiscUserDefs]
 #include "MidiTrack.h"
+#include "ColourIDs.h"
 //[/MiscUserDefs]
 
 MidiTrackHeader::MidiTrackHeader(const MidiTrack &track)
@@ -33,18 +34,28 @@ MidiTrackHeader::MidiTrackHeader(const MidiTrack &track)
     trackNameLabel->setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
     trackNameLabel->setJustificationType (Justification::centredLeft);
     trackNameLabel->setEditable (true, true, false);
+    trackNameLabel->setColour (Label::outlineColourId, Colour (0x00000000));
     trackNameLabel->setColour (TextEditor::textColourId, Colours::black);
     trackNameLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
     trackNameLabel->addListener (this);
 
 
     //[UserPreSize]
+    this->setPaintingIsUnclipped(true);
+
+    this->fillColour = this->findColour(ColourIDs::Roll::trackHeaderFill);
+    this->borderLightColour = this->findColour(ColourIDs::Common::borderLineLight);
+    this->borderDarkColour = this->findColour(ColourIDs::Common::borderLineDark);
     //[/UserPreSize]
 
     setSize (400, 24);
 
     //[Constructor]
     this->updateContent();
+
+    // Prevent grabbing a focus by track name editor:
+    this->trackNameLabel->setFocusContainer(false);
+    this->trackNameLabel->setWantsKeyboardFocus(false);
     //[/Constructor]
 }
 
@@ -62,21 +73,17 @@ MidiTrackHeader::~MidiTrackHeader()
 void MidiTrackHeader::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
-
-    //g.setColour(this->findColour(MidiTrackHeaderComponent::headerColourId));
-    //g.fillRect(this->getLocalBounds());
-
-    //g.setColour(this->bevelLightColour);
-    //g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
-
-    //g.setColour(this->bevelDarkColour);
-    //g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth()));
-
     //[/UserPrePaint]
 
-    g.fillAll (Colour (0xff464646));
-
     //[UserPaint] Add your own custom painting code here..
+    g.setColour(this->fillColour);
+    g.fillRect(this->getLocalBounds());
+
+    g.setColour(this->borderDarkColour);
+    g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
+
+    g.setColour(this->borderLightColour);
+    g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth()));
     //[/UserPaint]
 }
 
@@ -85,7 +92,7 @@ void MidiTrackHeader::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    trackNameLabel->setBounds (0, 0, proportionOfWidth (0.5000f), getHeight() - 0);
+    trackNameLabel->setBounds (6, 0, proportionOfWidth (0.4800f), getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -128,9 +135,9 @@ BEGIN_JUCER_METADATA
                  variableInitialisers="track(track)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="400"
                  initialHeight="24">
-  <BACKGROUND backgroundColour="ff464646"/>
+  <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="e57adff1b4a0a2b6" memberName="trackNameLabel" virtualName=""
-         explicitFocusOrder="0" pos="0 0 50% 0M" edTextCol="ff000000"
+         explicitFocusOrder="0" pos="6 0 48% 0M" outlineCol="0" edTextCol="ff000000"
          edBkgCol="0" labelText="label text" editableSingleClick="1" editableDoubleClick="1"
          focusDiscardsChanges="0" fontname="Default font" fontsize="16"
          kerning="0" bold="0" italic="0" justification="33"/>

@@ -537,14 +537,14 @@ void PianoRoll::onChangeTrackProperties(MidiTrack *const track)
 {
     if (auto sequence = dynamic_cast<const PianoSequence *>(track->getSequence()))
     {
+        // TODO only repaint notes of a changed track?
         for (const auto &e : this->eventComponents)
         {
             const auto component = e.second.get();
             component->updateColours();
-            this->batchRepaintList.add(component);
         }
 
-        this->triggerAsyncUpdate();
+        this->repaint();
     }
 }
 

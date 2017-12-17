@@ -38,6 +38,7 @@ public:
 
     Pattern *getPattern() const noexcept;
     float getStartBeat() const noexcept;
+    Colour getColour() const noexcept;
     String getId() const noexcept;
     bool isValid() const noexcept;
 
