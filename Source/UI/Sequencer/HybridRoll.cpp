@@ -86,10 +86,9 @@ template class TimeSignaturesTrackMap<TimeSignatureLargeComponent>;
 template class KeySignaturesTrackMap<KeySignatureLargeComponent>;
 
 
-HybridRoll::HybridRoll(ProjectTreeItem &parentProject,
-                   Viewport &viewportRef,
-                   WeakReference<AudioMonitor> AudioMonitor) :
-    clippingDetector(std::move(AudioMonitor)),
+HybridRoll::HybridRoll(ProjectTreeItem &parentProject, Viewport &viewportRef,
+    WeakReference<AudioMonitor> audioMonitor) :
+    clippingDetector(std::move(audioMonitor)),
     project(parentProject),
     viewport(viewportRef),
     viewportAnchor(0, 0),
@@ -179,7 +178,6 @@ HybridRoll::~HybridRoll()
     this->removeMouseListener(this->longTapController);
 }
 
-
 Viewport &HybridRoll::getViewport() const noexcept
 {
     return this->viewport;
@@ -194,7 +192,6 @@ ProjectTreeItem &HybridRoll::getProject() const noexcept
 {
     return this->project;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Timeline events
@@ -297,7 +294,6 @@ bool HybridRoll::isInDragMode() const
     return (this->project.getEditMode().isMode(HybridRollEditMode::dragMode));
 }
 
-
 //===----------------------------------------------------------------------===//
 // HybridRoll listeners management
 //===----------------------------------------------------------------------===//
@@ -329,7 +325,6 @@ void HybridRoll::broadcastRollResized()
 {
     this->listeners.call(&HybridRollListener::onMidiRollResized, this);
 }
-
 
 //===----------------------------------------------------------------------===//
 // MultiTouchListener
@@ -365,7 +360,6 @@ Point<float> HybridRoll::getMultiTouchOrigin(const Point<float> &from)
 {
     return (from - this->viewport.getViewPosition().toFloat());
 }
-
 
 //===----------------------------------------------------------------------===//
 // SmoothPanListener
@@ -430,7 +424,6 @@ Point<int> HybridRoll::getPanOffset() const
 {
     return this->viewport.getViewPosition();
 }
-
 
 //===----------------------------------------------------------------------===//
 // SmoothZoomListener
@@ -509,7 +502,6 @@ float HybridRoll::getZoomFactorY() const
 {
     return 1.f;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Accessors
@@ -778,7 +770,6 @@ void HybridRoll::computeVisibleBeatLines()
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // Alternative keydown modes (space for drag, etc.)
 //===----------------------------------------------------------------------===//
@@ -838,7 +829,6 @@ bool HybridRoll::isUsingAnyAltMode() const
 {
     return this->isUsingAltDrawingMode() || this->isUsingSpaceDraggingMode();
 }
-
 
 //===----------------------------------------------------------------------===//
 // LassoSource
@@ -934,7 +924,6 @@ void HybridRoll::onChangeViewBeatRange(float firstBeat, float lastBeat)
     const float viewLastBar = lastBeat / float(NUM_BEATS_IN_BAR);
     this->setBarRange(viewFirstBar, viewLastBar);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Component
@@ -1340,7 +1329,6 @@ void HybridRoll::scrollToSeekPosition()
 #endif
 }
 
-
 //===----------------------------------------------------------------------===//
 // AsyncUpdater
 //===----------------------------------------------------------------------===//
@@ -1433,7 +1421,6 @@ void HybridRoll::hiResTimerCallback()
 
     this->triggerAsyncUpdate();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Events check
@@ -1556,7 +1543,6 @@ void HybridRoll::continueDragging(const MouseEvent &e)
     this->smoothPanController->panByOffset(this->getMouseOffset(e.source.getScreenPosition()).toInt());
 }
 
-
 //===----------------------------------------------------------------------===//
 // Wipe space tool
 //===----------------------------------------------------------------------===//
@@ -1637,7 +1623,6 @@ void HybridRoll::endWipingSpaceIfNeeded()
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // Insert space tool
 //===----------------------------------------------------------------------===//
@@ -1716,7 +1701,6 @@ void HybridRoll::endInsertingSpaceIfNeeded()
         this->insertSpaceHelper->snapWidth();
     }
 }
-
 
 //===----------------------------------------------------------------------===//
 // Zooming
@@ -1866,7 +1850,6 @@ void HybridRoll::updateChildrenPositions()
 
     this->broadcastRollMoved();
 }
-
 
 //===----------------------------------------------------------------------===//
 // ChangeListener

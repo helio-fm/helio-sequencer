@@ -19,6 +19,8 @@
 #include "MainLayout.h"
 #include "PatternRoll.h"
 #include "HybridRollHeader.h"
+#include "MidiTrackHeader.h"
+#include "MidiTrackInsertHelper.h"
 #include "Pattern.h"
 #include "PianoTrackTreeItem.h"
 #include "AutomationTrackTreeItem.h"
@@ -63,10 +65,13 @@ PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
     WeakReference<AudioMonitor> clippingDetector) :
     HybridRoll(parentProject, viewportRef, clippingDetector)
 {
+    // TODO: pattern roll doesn't need neither annotations track map nor key signatures track map
+
     this->setComponentID(ComponentIDs::patternRollId);
 
-    this->header->toFront(false);
-    this->playhead->toFront(false);
+    this->insertTrackHelper = new MidiTrackInsertHelper();
+    this->addAndMakeVisible(this->insertTrackHelper);
+
     this->repaintBackgroundsCache();
     this->reloadRollContent();
 }
@@ -81,7 +86,7 @@ void PatternRoll::deleteSelection()
     // Avoids crash
     this->hideAllGhostClips();
 
-    OwnedArray< Array<Clip> > selections;
+    OwnedArray<Array<Clip>> selections;
 
     for (int i = 0; i < this->selection.getNumSelected(); ++i)
     {
@@ -137,37 +142,49 @@ void PatternRoll::reloadRollContent()
 {
     this->selection.deselectAll();
 
-    this->componentsMap.clear();
+    this->trackHeaders.clear();
+    this->clipComponents.clear();
 
-    for (auto track : this->tracks)
+    this->tracks.clearQuick();
+
+    for (auto track : this->project.getTracks())
     {
         auto sequence = track->getSequence();
-        auto pattern = track->getPattern();
         jassert(sequence != nullptr);
 
-        for (int j = 0; j < pattern->size(); ++j)
+        // Only show tracks with patterns (i.e. ignore timeline tracks)
+        if (auto pattern = track->getPattern())
         {
-            const Clip &clip = *pattern->getUnchecked(j);
-            ClipComponent *clipComponent = nullptr;
+            this->tracks.addSorted(*track, track);
 
-            if (auto pianoLayer = dynamic_cast<PianoSequence *>(sequence))
-            {
-                clipComponent = new PianoClipComponent(track, *this, clip);
-            }
-            else if (auto autoLayer = dynamic_cast<AutomationSequence *>(sequence))
-            {
-                clipComponent = new AutomationClipComponent(track, *this, clip);
-            }
+            MidiTrackHeader *const trackHeader = new MidiTrackHeader(*track);
+            this->trackHeaders[track] = UniquePointer<MidiTrackHeader>(trackHeader);
+            this->addAndMakeVisible(trackHeader);
 
-            if (clipComponent != nullptr)
+            for (int j = 0; j < pattern->size(); ++j)
             {
-                this->componentsMap[clip] = UniquePointer<ClipComponent>(clipComponent);
-                this->addAndMakeVisible(clipComponent);
+                const Clip &clip = *pattern->getUnchecked(j);
+                ClipComponent *clipComponent = nullptr;
+
+                if (auto pianoLayer = dynamic_cast<PianoSequence *>(sequence))
+                {
+                    clipComponent = new PianoClipComponent(track, *this, clip);
+                }
+                else if (auto autoLayer = dynamic_cast<AutomationSequence *>(sequence))
+                {
+                    clipComponent = new AutomationClipComponent(track, *this, clip);
+                }
+
+                if (clipComponent != nullptr)
+                {
+                    this->clipComponents[clip] = UniquePointer<ClipComponent>(clipComponent);
+                    this->addAndMakeVisible(clipComponent);
+                }
             }
         }
     }
 
-    const int h = HYBRID_ROLL_HEADER_HEIGHT + this->getNumRows() * PATTERNROLL_ROW_HEIGHT;
+    const int h = HYBRID_ROLL_HEADER_HEIGHT + this->getNumRows() * (PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT);
     this->setSize(this->getWidth(), jmax(h, this->viewport.getViewHeight()));
 
     this->repaint(this->viewport.getViewArea());
@@ -184,12 +201,48 @@ int PatternRoll::getNumRows() const noexcept
 
 void PatternRoll::setChildrenInteraction(bool interceptsMouse, MouseCursor cursor)
 {
-    for (const auto &e : this->componentsMap)
+    for (const auto &e : this->clipComponents)
     {
         const auto child = e.second.get();
         child->setInterceptsMouseClicks(interceptsMouse, interceptsMouse);
         child->setMouseCursor(cursor);
     }
+}
+
+void PatternRoll::updateChildrenBounds()
+{
+    //this->insertTrackHelper->setBounds(TODO);
+
+    for (const auto &e : this->trackHeaders)
+    {
+        const auto component = e.second.get();
+        const auto &track = component->getTrack();
+        const int trackIndex = this->tracks.indexOfSorted(track, &track);
+        const int y = trackIndex * (PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT);
+        const Rectangle<int> bounds(this->getViewport().getViewPositionX(),
+            HYBRID_ROLL_HEADER_HEIGHT + y + 1,
+            this->getViewport().getViewWidth(),
+            PATTERN_ROLL_TRACK_HEADER_HEIGHT - 1);
+        component->setBounds(bounds);
+    }
+
+    HybridRoll::updateChildrenBounds();
+}
+
+void PatternRoll::updateChildrenPositions()
+{
+    //this->insertTrackHelper->setTopLeftPosition(TODO);
+
+    for (const auto &e : this->trackHeaders)
+    {
+        const auto component = e.second.get();
+        const auto &track = component->getTrack();
+        const int trackIndex = this->tracks.indexOfSorted(track, &track);
+        const int y = trackIndex * (PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT);
+        component->setTopLeftPosition(this->getViewport().getViewPositionX(), HYBRID_ROLL_HEADER_HEIGHT + y + 1);
+    }
+
+    HybridRoll::updateChildrenPositions();
 }
 
 //===----------------------------------------------------------------------===//
@@ -219,7 +272,6 @@ void PatternRoll::hideAllGhostClips()
     this->ghostClips.clear();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Clip management
 //===----------------------------------------------------------------------===//
@@ -248,15 +300,15 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) c
     const float viewStartOffsetBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
     const int trackIndex = this->tracks.indexOfSorted(*track, track);
     const float sequenceLength = sequence->getLengthInBeats();
-    const float sequenceStartBeat = 0.f; // TODO? sequence->getFirstBeat();
+    const float sequenceStartBeat = sequence->getFirstBeat();
 
     const float w = this->barWidth * sequenceLength / NUM_BEATS_IN_BAR;
     const float x = this->barWidth *
         (sequenceStartBeat + clipBeat - viewStartOffsetBeat) / NUM_BEATS_IN_BAR;
 
-    const float y = float(trackIndex * PATTERNROLL_ROW_HEIGHT);
-    return Rectangle<float> (x, HYBRID_ROLL_HEADER_HEIGHT + y + 1,
-        w, float(PATTERNROLL_ROW_HEIGHT - 1));
+    const float y = float(trackIndex * (PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT));
+    return Rectangle<float> (x, HYBRID_ROLL_HEADER_HEIGHT + y + 1 + PATTERN_ROLL_TRACK_HEADER_HEIGHT,
+        w, float(PATTERN_ROLL_CLIP_HEIGHT - 1));
 }
 
 float PatternRoll::getBeatByComponentPosition(float x) const
@@ -273,10 +325,9 @@ Pattern *PatternRoll::getPatternByMousePosition(int y) const
 {
     const int patternIndex =
         jlimit(0, this->getNumRows() - 1,
-            int(y / PATTERNROLL_ROW_HEIGHT));
+            int(y / (PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT)));
     return this->tracks.getUnchecked(patternIndex)->getPattern();
 }
-
 
 //===----------------------------------------------------------------------===//
 // ProjectListener
@@ -309,17 +360,55 @@ void PatternRoll::onAddTrack(MidiTrack *const track)
 {
     if (Pattern *pattern = track->getPattern())
     {
+        auto sequence = track->getSequence();
+        jassert(sequence != nullptr);
+
         this->tracks.addSorted(*track, track);
-        this->reloadRollContent();
+
+        MidiTrackHeader *const trackHeader = new MidiTrackHeader(*track);
+        this->trackHeaders[track] = UniquePointer<MidiTrackHeader>(trackHeader);
+        this->addAndMakeVisible(trackHeader);
+
+        for (int j = 0; j < pattern->size(); ++j)
+        {
+            const Clip &clip = *pattern->getUnchecked(j);
+            ClipComponent *clipComponent = nullptr;
+
+            if (auto pianoLayer = dynamic_cast<PianoSequence *>(sequence))
+            {
+                clipComponent = new PianoClipComponent(track, *this, clip);
+            }
+            else if (auto autoLayer = dynamic_cast<AutomationSequence *>(sequence))
+            {
+                clipComponent = new AutomationClipComponent(track, *this, clip);
+            }
+
+            if (clipComponent != nullptr)
+            {
+                this->clipComponents[clip] = UniquePointer<ClipComponent>(clipComponent);
+                this->addAndMakeVisible(clipComponent);
+            }
+        }
     }
 }
 
 void PatternRoll::onChangeTrackProperties(MidiTrack *const track)
 {
+    if (MidiTrackHeader *header = this->trackHeaders[track].get())
+    {
+        if (&header->getTrack() == track)
+        {
+            header->updateContent();
+        }
+    }
+
     if (Pattern *pattern = track->getPattern())
     {
-        this->tracks.removeAllInstancesOf(track);
-        this->tracks.addSorted(*track, track);
+        // track name could change here so we have to keep track array sorted by name:
+        Logger::writeToLog("onChangeTrackProperties " + track->getTrackId().toString() + ", " + track->getTrackName());
+        //this->tracks.removeAllInstancesOf(track);
+        //this->tracks.addSorted(*track, track);
+        this->tracks.sort();
         this->repaint();
     }
 }
@@ -328,19 +417,24 @@ void PatternRoll::onRemoveTrack(MidiTrack *const track)
 {
     this->tracks.removeAllInstancesOf(track);
 
+    if (MidiTrackHeader *deletedHeader = this->trackHeaders[track].get())
+    {
+        this->trackHeaders.erase(track);
+    }
+
     if (Pattern *pattern = track->getPattern())
     {
         for (int i = 0; i < pattern->size(); ++i)
         {
             const Clip &clip = *pattern->getUnchecked(i);
-            if (const auto componentDeleter = this->componentsMap[clip].get())
+            if (const auto deletedComponent = this->clipComponents[clip].get())
             {
-                this->selection.deselect(componentDeleter);
-                this->componentsMap.erase(clip);
+                this->selection.deselect(deletedComponent);
+                this->clipComponents.erase(clip);
             }
         }
 
-        const int h = HYBRID_ROLL_HEADER_HEIGHT + this->getNumRows() * PATTERNROLL_ROW_HEIGHT;
+        const int h = HYBRID_ROLL_HEADER_HEIGHT + this->getNumRows() * (PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT);
         this->setSize(this->getWidth(), jmax(h, this->viewport.getViewHeight()));
     }
 }
@@ -362,7 +456,7 @@ void PatternRoll::onAddClip(const Clip &clip)
 
     if (clipComponent != nullptr)
     {
-        this->componentsMap[clip] = UniquePointer<ClipComponent>(clipComponent);
+        this->clipComponents[clip] = UniquePointer<ClipComponent>(clipComponent);
         this->addAndMakeVisible(clipComponent);
 
         this->batchRepaintList.add(clipComponent);
@@ -377,10 +471,10 @@ void PatternRoll::onAddClip(const Clip &clip)
 
 void PatternRoll::onChangeClip(const Clip &clip, const Clip &newClip)
 {
-    if (const auto component = this->componentsMap[clip].release())
+    if (const auto component = this->clipComponents[clip].release())
     {
-        this->componentsMap.erase(clip);
-        this->componentsMap[newClip] = UniquePointer<ClipComponent>(component);
+        this->clipComponents.erase(clip);
+        this->clipComponents[newClip] = UniquePointer<ClipComponent>(component);
 
         this->batchRepaintList.add(component);
         this->triggerAsyncUpdate();
@@ -389,11 +483,11 @@ void PatternRoll::onChangeClip(const Clip &clip, const Clip &newClip)
 
 void PatternRoll::onRemoveClip(const Clip &clip)
 {
-    if (const auto deletedComponent = this->componentsMap[clip].get())
+    if (const auto deletedComponent = this->clipComponents[clip].get())
     {
         this->fader.fadeOut(deletedComponent, 150);
         this->selection.deselect(deletedComponent);
-        this->componentsMap.erase(clip);
+        this->clipComponents.erase(clip);
     }
 }
 
@@ -418,7 +512,7 @@ void PatternRoll::selectEventsInRange(float startBeat, float endBeat, bool shoul
         this->selection.deselectAll();
     }
 
-    for (const auto &e : this->componentsMap)
+    for (const auto &e : this->clipComponents)
     {
         const auto component = e.second.get();
         if (component->isActive() &&
@@ -434,13 +528,13 @@ void PatternRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
 {
     bool shouldInvalidateSelectionCache = false;
 
-    for (const auto &e : this->componentsMap)
+    for (const auto &e : this->clipComponents)
     {
         const auto component = e.second.get();
         component->setSelected(this->selection.isSelected(component));
     }
 
-    for (const auto &e : this->componentsMap)
+    for (const auto &e : this->clipComponents)
     {
         const auto component = e.second.get();
         if (rectangle.intersects(component->getBounds()) && component->isActive())
@@ -465,16 +559,13 @@ XmlElement *PatternRoll::clipboardCopy() const
 {
     auto xml = new XmlElement(Serialization::Clipboard::clipboard);
 
-    const Lasso::GroupedSelections &selections = this->selection.getGroupedSelections();
-    Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
-
     float firstBeat = FLT_MAX;
     float lastBeat = -FLT_MAX;
 
-    while (selectionsMapIterator.next())
+    for (const auto s : selection.getGroupedSelections())
     {
-        SelectionProxyArray::Ptr patternSelection(selectionsMapIterator.getValue());
-        const String patternId = selectionsMapIterator.getKey();
+        const auto patternSelection(s.second);
+        const String patternId(s.first);
 
         // create xml parent with layer id
         auto patternIdParent = new XmlElement(Serialization::Clipboard::pattern);
@@ -507,7 +598,6 @@ void PatternRoll::clipboardPaste(const XmlElement &xml)
 
     if (root == nullptr) { return; }
 
-    float trackLength = 0;
     bool didCheckpoint = false;
 
     const float indicatorRoughBeat = this->getBeatByTransportPosition(this->project.getTransport().getSeekPosition());
@@ -529,7 +619,6 @@ void PatternRoll::clipboardPaste(const XmlElement &xml)
         if (nullptr != this->project.findPatternByTrackId(patternId))
         {
             Pattern *targetPattern = this->project.findPatternByTrackId(patternId);
-            PianoTrackTreeItem *targetLayerItem = this->project.findTrackById<PianoTrackTreeItem>(patternId);
             
             forEachXmlChildElementWithTagName(*patternElement, clipElement, Serialization::Core::clip)
             {
@@ -641,7 +730,7 @@ void PatternRoll::resized()
 
     HYBRID_ROLL_BULK_REPAINT_START
 
-    for (const auto &e : this->componentsMap)
+    for (const auto &e : this->clipComponents)
     {
         const auto component = e.second.get();
         component->setFloatBounds(this->getEventBounds(component));
@@ -709,9 +798,7 @@ void PatternRoll::deserialize(const XmlElement &xml)
     // restore selection?
 }
 
-void PatternRoll::reset()
-{
-}
+void PatternRoll::reset() {}
 
 //===----------------------------------------------------------------------===//
 // Background images cache
@@ -781,5 +868,5 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height) const
 void PatternRoll::repaintBackgroundsCache()
 {
     const HelioTheme &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
-    this->rowPattern = PatternRoll::renderRowsPattern(theme, PATTERNROLL_ROW_HEIGHT);
+    this->rowPattern = PatternRoll::renderRowsPattern(theme, PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT);
 }

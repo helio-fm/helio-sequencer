@@ -64,6 +64,11 @@ public:
     static int compareElements(const MidiTrack &first, const MidiTrack &second);
     static int compareElements(const MidiTrack *first, const MidiTrack *second);
 
+    inline HashCode hashCode() const noexcept
+    {
+        return static_cast<HashCode>(this->getTrackId().toString().hashCode());
+    }
+
     void serializeTrackProperties(XmlElement &xml) const;
     void deserializeTrackProperties(const XmlElement &xml);
 
@@ -84,6 +89,14 @@ protected:
 
     virtual void setTrackId(const Uuid &val) = 0;
 
+};
+
+struct MidiTrackHash
+{
+    inline HashCode operator()(const MidiTrack *const key) const noexcept
+    {
+        return key->hashCode() % HASH_CODE_MAX;
+    }
 };
 
 class EmptyMidiTrack : public MidiTrack

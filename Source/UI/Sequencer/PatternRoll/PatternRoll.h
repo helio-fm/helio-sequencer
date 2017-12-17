@@ -18,17 +18,22 @@
 #pragma once
 
 #if JUCE_IOS
-#   define PATTERNROLL_ROW_HEIGHT 96
+#   define PATTERN_ROLL_CLIP_HEIGHT 64
+#   define PATTERN_ROLL_TRACK_HEADER_HEIGHT 32
 #else
-#   define PATTERNROLL_ROW_HEIGHT 128
+#   define PATTERN_ROLL_CLIP_HEIGHT 64
+#   define PATTERN_ROLL_TRACK_HEADER_HEIGHT 32
 #endif
 
 class ClipComponent;
+class MidiTrackHeader;
+class MidiTrackInsertHelper;
 class PianoRollReboundThread;
 class PianoRollCellHighlighter;
 
 #include "HelioTheme.h"
 #include "HybridRoll.h"
+#include "MidiTrack.h"
 #include "Pattern.h"
 #include "Clip.h"
 
@@ -43,12 +48,6 @@ public:
     void deleteSelection();
     void selectAll() override;
     int getNumRows() const noexcept;
-
-    //===------------------------------------------------------------------===//
-    // HybridRoll
-    //===------------------------------------------------------------------===//
-
-    void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
 
     //===------------------------------------------------------------------===//
     // Ghost notes
@@ -123,6 +122,16 @@ public:
     void deserialize(const XmlElement &xml) override;
     void reset() override;
     
+protected:
+
+    //===------------------------------------------------------------------===//
+    // HybridRoll
+    //===------------------------------------------------------------------===//
+
+    void updateChildrenBounds() override;
+    void updateChildrenPositions() override;
+    void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
+
 public:
 
     Image rowPattern;
@@ -141,9 +150,14 @@ private:
     Array<MidiTrack *> tracks;
 
     OwnedArray<ClipComponent> ghostClips;
-    
+
+    ScopedPointer<MidiTrackInsertHelper> insertTrackHelper;
+
+    typedef SparseHashMap<const MidiTrack *, UniquePointer<MidiTrackHeader>, MidiTrackHash> TrackHeadersMap;
+    TrackHeadersMap trackHeaders;
+
     typedef SparseHashMap<Clip, UniquePointer<ClipComponent>, ClipHash> ClipComponentsMap;
-    ClipComponentsMap componentsMap;
+    ClipComponentsMap clipComponents;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRoll)
 };

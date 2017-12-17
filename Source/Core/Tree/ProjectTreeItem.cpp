@@ -206,18 +206,7 @@ HybridRollEditMode &ProjectTreeItem::getEditMode() noexcept
 
 HybridRoll *ProjectTreeItem::getLastFocusedRoll() const
 {
-    // todo!
     return this->sequencerLayout->getRoll();
-    
-//    if (this->origami != nullptr)
-//    {
-//        if (Component *lastFocused = this->origami->getLastFocusedComponent())
-//        {
-//            return dynamic_cast<HybridRoll *>(lastFocused);
-//        }
-//    }
-//    
-//    return nullptr;
 }
 
 Colour ProjectTreeItem::getColour() const

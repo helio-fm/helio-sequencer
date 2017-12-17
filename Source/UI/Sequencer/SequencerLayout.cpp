@@ -714,7 +714,10 @@ bool SequencerLayout::toggleShowAutomationEditor(AutomationSequence *sequence)
 
 HybridRoll *SequencerLayout::getRoll() const
 {
-    return this->pianoRoll;
+    if (this->rollContainer->isPatternMode())
+    { return this->patternRoll; }
+    else
+    { return this->pianoRoll; }
 }
 
 //===----------------------------------------------------------------------===//
