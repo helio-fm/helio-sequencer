@@ -23,6 +23,7 @@
 class SelectionProxyArray : public Array<SelectableComponent *>, public ReferenceCountedObject
 {
 public:
+
     SelectionProxyArray() {}
 
     typedef ReferenceCountedObjectPtr<SelectionProxyArray> Ptr;
@@ -38,10 +39,11 @@ public:
     {
         return static_cast<T *>(this->getUnchecked(index));
     }
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SelectionProxyArray);
 };
 
-class Lasso :
-    public SelectedItemSet<SelectableComponent *>
+class Lasso : public SelectedItemSet<SelectableComponent *>
 {
 public:
 
@@ -79,8 +81,7 @@ public:
         return this->bounds;
     }
     
-    
-    typedef HashMap< String, SelectionProxyArray::Ptr > GroupedSelections;
+    typedef SparseHashMap<String, SelectionProxyArray::Ptr, StringHash> GroupedSelections;
 
     void invalidateCache()
     {
@@ -122,8 +123,6 @@ private:
 
     void rebuildCache() const
     {
-        //Logger::writeToLog("rebuildCache");
-
         for (int i = 0; i < this->getNumSelected(); ++i)
         {
             SelectableComponent *item = this->getSelectedItem(i);
@@ -141,8 +140,7 @@ private:
             }
             
             targetArray->add(item);
-            this->selectionsCache.set(groupId, targetArray);
+            this->selectionsCache[groupId] = targetArray;
         }
     }
-
 };

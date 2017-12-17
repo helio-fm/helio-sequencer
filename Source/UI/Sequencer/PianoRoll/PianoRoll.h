@@ -69,7 +69,6 @@ public:
     //===------------------------------------------------------------------===//
 
     void selectAll() override;
-    void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
 
     //===------------------------------------------------------------------===//
     // Ghost notes
@@ -181,6 +180,7 @@ private:
     
     void updateChildrenBounds() override;
     void updateChildrenPositions() override;
+    void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
 
     void insertNewNoteAt(const MouseEvent &e);
     bool dismissDraggingNoteIfNeeded();
@@ -250,7 +250,7 @@ private:
     ScopedPointer<NoteResizerRight> noteResizerRight;
     
     typedef SparseHashMap<Note, UniquePointer<NoteComponent>, MidiEventHash> EventComponentsMap;
-    EventComponentsMap componentsMap;
+    EventComponentsMap eventComponents;
 
     typedef SparseHashMap<Clip, UniquePointer<EventComponentsMap>, ClipHash> ClipsMap;
     ClipsMap clipsMap;
