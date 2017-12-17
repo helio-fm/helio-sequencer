@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "PatternDiffLogic.h"
+#include "PatternDiffHelpers.h"
 #include "Clip.h"
 #include "Pattern.h"
 #include "SerializationKeys.h"
@@ -59,7 +59,7 @@ XmlElement *serializePattern(Array<Clip> changes, const String &tag)
     return xml;
 }
 
-NewSerializedDelta PatternDiffLogic::serializePatternChanges(Array<Clip> changes,
+NewSerializedDelta PatternDiffHelpers::serializePatternChanges(Array<Clip> changes,
     const String &description, int64 numChanges, const String &deltaType)
 {
     NewSerializedDelta changesFullDelta;
@@ -68,14 +68,14 @@ NewSerializedDelta PatternDiffLogic::serializePatternChanges(Array<Clip> changes
     return changesFullDelta;
 }
 
-bool PatternDiffLogic::checkIfDeltaIsPatternType(const Delta *delta)
+bool PatternDiffHelpers::checkIfDeltaIsPatternType(const Delta *delta)
 {
     return (delta->getType() == PatternDeltas::clipsAdded ||
         delta->getType() == PatternDeltas::clipsRemoved ||
         delta->getType() == PatternDeltas::clipsChanged);
 }
 
-XmlElement *PatternDiffLogic::mergeClipsAdded(const XmlElement *state,
+XmlElement *PatternDiffHelpers::mergeClipsAdded(const XmlElement *state,
     const XmlElement *changes)
 {
     Array<Clip> stateClips;
@@ -106,7 +106,7 @@ XmlElement *PatternDiffLogic::mergeClipsAdded(const XmlElement *state,
     return serializePattern(result, PatternDeltas::clipsAdded);
 }
 
-XmlElement *PatternDiffLogic::mergeClipsRemoved(const XmlElement *state, 
+XmlElement *PatternDiffHelpers::mergeClipsRemoved(const XmlElement *state, 
     const XmlElement *changes)
 {
     Array<Clip> stateClips;
@@ -135,7 +135,7 @@ XmlElement *PatternDiffLogic::mergeClipsRemoved(const XmlElement *state,
     return serializePattern(result, PatternDeltas::clipsAdded);
 }
 
-XmlElement *PatternDiffLogic::mergeClipsChanged(const XmlElement *state, 
+XmlElement *PatternDiffHelpers::mergeClipsChanged(const XmlElement *state, 
     const XmlElement *changes)
 {
     Array<Clip> stateClips;
@@ -168,7 +168,7 @@ XmlElement *PatternDiffLogic::mergeClipsChanged(const XmlElement *state,
     return serializePattern(result, PatternDeltas::clipsAdded);
 }
 
-Array<VCS::NewSerializedDelta> PatternDiffLogic::createClipsDiffs(
+Array<VCS::NewSerializedDelta> PatternDiffHelpers::createClipsDiffs(
     const XmlElement *state, const XmlElement *changes)
 {
     Array<Clip> stateClips;

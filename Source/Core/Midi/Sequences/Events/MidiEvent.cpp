@@ -28,9 +28,6 @@ MidiEvent::MidiEvent(WeakReference<MidiSequence> owner, Type type, float beatVal
     this->id = this->createId();
 }
 
-MidiEvent::~MidiEvent() {}
-
-
 bool MidiEvent::isValid() const noexcept
 {
     return this->sequence != nullptr && this->id.isNotEmpty();

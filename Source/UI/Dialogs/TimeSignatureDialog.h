@@ -25,7 +25,7 @@
 class TimeSignaturesSequence;
 //[/Headers]
 
-#include "../Themes/PanelC.h"
+#include "../Themes/DialogPanel.h"
 #include "../Themes/SeparatorHorizontal.h"
 #include "../Themes/SeparatorVertical.h"
 
@@ -84,7 +84,7 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<PanelC> background;
+    ScopedPointer<DialogPanel> background;
     ScopedPointer<DialogComboBox::Primer> comboPrimer;
     ScopedPointer<Label> messageLabel;
     ScopedPointer<TextButton> removeEventButton;

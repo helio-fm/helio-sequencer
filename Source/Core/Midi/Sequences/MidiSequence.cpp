@@ -45,9 +45,7 @@ MidiSequence::MidiSequence(MidiTrack &parentTrack,
     lastStartBeat(0.f),
     lastEndBeat(0.f),
     cachedSequence(),
-    cacheIsOutdated(false)
-{
-}
+    cacheIsOutdated(false) {}
 
 MidiSequence::~MidiSequence()
 {
@@ -58,13 +56,13 @@ void MidiSequence::sort()
 {
     if (this->midiEvents.size() > 0)
     {
-        this->midiEvents.sort(*this->midiEvents.getUnchecked(0));
+        this->midiEvents.sort(*this->midiEvents.getFirst());
     }
 }
 
 //===----------------------------------------------------------------------===//
 // Undoing // TODO move this to project interface
-//
+//===----------------------------------------------------------------------===//
 
 void MidiSequence::checkpoint()
 {
@@ -93,10 +91,9 @@ void MidiSequence::clearUndoHistory()
     this->getUndoStack()->clearUndoHistory();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Import/export
-//
+//===----------------------------------------------------------------------===//
 
 MidiMessageSequence MidiSequence::exportMidi() const
 {
@@ -123,7 +120,7 @@ MidiMessageSequence MidiSequence::exportMidi() const
         }
 
         this->cachedSequence.updateMatchedPairs();
-        //this->cachedSequence.sort();
+        //this->cachedSequence.sort(); // will be sorted by caller
         this->cacheIsOutdated = false;
     }
 
@@ -132,9 +129,9 @@ MidiMessageSequence MidiSequence::exportMidi() const
 
 //===----------------------------------------------------------------------===//
 // Accessors
-//
+//===----------------------------------------------------------------------===//
 
-float MidiSequence::getFirstBeat() const
+float MidiSequence::getFirstBeat() const noexcept
 {
     if (this->midiEvents.size() == 0)
     {
@@ -144,7 +141,7 @@ float MidiSequence::getFirstBeat() const
     return this->midiEvents.getFirst()->getBeat();
 }
 
-float MidiSequence::getLastBeat() const
+float MidiSequence::getLastBeat() const noexcept
 {
     if (this->midiEvents.size() == 0)
     {
@@ -154,7 +151,7 @@ float MidiSequence::getLastBeat() const
     return this->midiEvents.getLast()->getBeat();
 }
 
-float MidiSequence::getLengthInBeats() const
+float MidiSequence::getLengthInBeats() const noexcept
 {
     if (this->midiEvents.size() == 0)
     {
@@ -183,12 +180,12 @@ UndoStack *MidiSequence::getUndoStack()
 
 //===----------------------------------------------------------------------===//
 // Events change listener
-//
+//===----------------------------------------------------------------------===//
 
-void MidiSequence::notifyEventChanged(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void MidiSequence::notifyEventChanged(const MidiEvent &e1, const MidiEvent &e2)
 {
     this->cacheIsOutdated = true;
-    this->eventDispatcher.dispatchChangeEvent(oldEvent, newEvent);
+    this->eventDispatcher.dispatchChangeEvent(e1, e2);
 }
 
 void MidiSequence::notifyEventAdded(const MidiEvent &event)

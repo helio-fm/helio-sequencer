@@ -19,64 +19,52 @@
 #include "Common.h"
 //[/Headers]
 
-#include "SeparatorVerticalReversed.h"
+#include "MidiTrackInsertHelper.h"
 
 //[MiscUserDefs]
+#include "IconComponent.h"
 //[/MiscUserDefs]
 
-SeparatorVerticalReversed::SeparatorVerticalReversed()
+MidiTrackInsertHelper::MidiTrackInsertHelper()
 {
+    addAndMakeVisible (plusImage = new IconComponent (Icons::plus));
+
 
     //[UserPreSize]
-    this->setInterceptsMouseClicks(false, false);
-    this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
-    setSize (32, 32);
+    setSize (400, 64);
 
     //[Constructor]
     //[/Constructor]
 }
 
-SeparatorVerticalReversed::~SeparatorVerticalReversed()
+MidiTrackInsertHelper::~MidiTrackInsertHelper()
 {
     //[Destructor_pre]
     //[/Destructor_pre]
 
+    plusImage = nullptr;
 
     //[Destructor]
     //[/Destructor]
 }
 
-void SeparatorVerticalReversed::paint (Graphics& g)
+void MidiTrackInsertHelper::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
-#if 0
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x7bffffff));
-    g.fillRect (0, 1, getWidth() - 0, 1);
-
-    g.setColour (Colour (0x5d000000));
-    g.fillRect (0, 0, getWidth() - 0, 1);
-
     //[UserPaint] Add your own custom painting code here..
-#endif
-
-    g.setColour (Colour (0x09ffffff));
-    g.drawVerticalLine(1, 0.f, float(this->getHeight()));
-
-    g.setColour (Colour (0x0b000000));
-    g.drawVerticalLine(0, 0.f, float(this->getHeight()));
-
     //[/UserPaint]
 }
 
-void SeparatorVerticalReversed::resized()
+void MidiTrackInsertHelper::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
+    plusImage->setBounds ((getWidth() / 2) - (32 / 2), (getHeight() / 2) - (32 / 2), 32, 32);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -89,15 +77,14 @@ void SeparatorVerticalReversed::resized()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="SeparatorVerticalReversed"
-                 template="../../Template" componentName="" parentClasses="public Component"
-                 constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="32"
-                 initialHeight="32">
-  <BACKGROUND backgroundColour="0">
-    <RECT pos="0 1 0M 1" fill="solid: 7bffffff" hasStroke="0"/>
-    <RECT pos="0 0 0M 1" fill="solid: 5d000000" hasStroke="0"/>
-  </BACKGROUND>
+<JUCER_COMPONENT documentType="Component" className="MidiTrackInsertHelper" template="../../../Template"
+                 componentName="" parentClasses="public Component" constructorParams=""
+                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
+                 overlayOpacity="0.330" fixedSize="1" initialWidth="400" initialHeight="64">
+  <BACKGROUND backgroundColour="0"/>
+  <GENERICCOMPONENT name="" id="79f90a69d0b95011" memberName="plusImage" virtualName=""
+                    explicitFocusOrder="0" pos="0Cc 0Cc 32 32" class="IconComponent"
+                    params="Icons::plus"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

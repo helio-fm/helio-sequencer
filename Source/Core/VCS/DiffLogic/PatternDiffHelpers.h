@@ -17,34 +17,26 @@
 
 #pragma once
 
-class MidiEvent;
-class MidiSequence;
-class AutomationTrackTreeItem;
-
-#include "Diff.h"
-#include "DiffLogic.h"
+#include "PatternDeltas.h"
+#include "Pattern.h"
+#include "Delta.h"
 
 namespace VCS
 {
-    class AutomationLayerDiffLogic : public DiffLogic
+    class PatternDiffHelpers
     {
     public:
 
-        explicit AutomationLayerDiffLogic(TrackedItem &targetItem);
+        static NewSerializedDelta serializePatternChanges(Array<Clip> changes,
+            const String &description, int64 numChanges,
+            const String &deltaType);
 
-        ~AutomationLayerDiffLogic() override;
+        static bool checkIfDeltaIsPatternType(const Delta *delta);
 
-        //===------------------------------------------------------------------===//
-        // DiffLogic
-        //
+        static XmlElement *mergeClipsAdded(const XmlElement *state, const XmlElement *changes);
+        static XmlElement *mergeClipsRemoved(const XmlElement *state, const XmlElement *changes);
+        static XmlElement *mergeClipsChanged(const XmlElement *state, const XmlElement *changes);
 
-        const String getType() const override;
-
-        void resetStateTo(const TrackedItem &newState) override;
-
-        Diff *createDiff(const TrackedItem &initialState) const override;
-
-        Diff *createMergedItem(const TrackedItem &initialState) const override;
-
+        static Array<NewSerializedDelta> createClipsDiffs(const XmlElement *state, const XmlElement *changes);
     };
 } // namespace VCS

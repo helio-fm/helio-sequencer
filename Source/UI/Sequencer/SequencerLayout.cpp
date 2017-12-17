@@ -36,6 +36,10 @@
 #include "NavigationSidebar.h"
 #include "OrigamiHorizontal.h"
 #include "OrigamiVertical.h"
+#include "NoteComponent.h"
+#include "ClipComponent.h"
+#include "MidiTrackHeader.h"
+#include "MidiTrackInsertHelper.h"
 #include "PanelBackgroundC.h"
 #include "App.h"
 #include "Workspace.h"
@@ -43,6 +47,7 @@
 #include "AudioCore.h"
 #include "AudioMonitor.h"
 #include "ComponentIDs.h"
+#include "ColourIDs.h"
 
 // force compile template
 #include "AnnotationsMap/AnnotationsTrackMap.cpp"
@@ -128,7 +133,7 @@ public:
     
     void paint(Graphics &g) override
     {
-        const Colour backCol(this->findColour(HybridRoll::headerColourId).darker(0.05f));
+        const Colour backCol(this->findColour(ColourIDs::Roll::headerFill).darker(0.05f));
         g.fillRect(this->getLocalBounds());
     }
     
@@ -232,7 +237,7 @@ public:
     
     void paint(Graphics &g) override
     {
-        const Colour backCol(this->findColour(HybridRoll::headerColourId));
+        const Colour backCol(this->findColour(ColourIDs::Roll::headerFill));
         const Colour frontCol(backCol.contrasting().withMultipliedAlpha(0.5f));
         const float pX = float(this->roll.getViewport().getViewPositionX());
         
@@ -370,7 +375,7 @@ public:
         this->patternViewport->setVisible(true);
         this->pianoViewport->setVisible(true);
         this->resized();
-        this->startTimerHz(60);
+        this->startTimerHz(90);
     }
     
     void paint(Graphics& g) override {}
@@ -712,7 +717,10 @@ bool SequencerLayout::toggleShowAutomationEditor(AutomationSequence *sequence)
 
 HybridRoll *SequencerLayout::getRoll() const
 {
-    return this->pianoRoll;
+    if (this->rollContainer->isPatternMode())
+    { return this->patternRoll; }
+    else
+    { return this->pianoRoll; }
 }
 
 //===----------------------------------------------------------------------===//

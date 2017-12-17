@@ -18,25 +18,19 @@
 #pragma once
 
 //[Headers]
+class IconComponent;
 //[/Headers]
 
 
-class PanelA  : public Component
+class MidiTrackInsertHelper  : public Component
 {
 public:
 
-    PanelA ();
+    MidiTrackInsertHelper ();
 
-    ~PanelA();
+    ~MidiTrackInsertHelper();
 
     //[UserMethods]
-
-    enum ColourIds
-    {
-        panelFillColourId       = 0x99105000,
-        panelBorderColourId     = 0x99105010,
-    };
-
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -48,6 +42,7 @@ private:
     //[UserVariables]
     //[/UserVariables]
 
+    ScopedPointer<IconComponent> plusImage;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PanelA)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MidiTrackInsertHelper)
 };

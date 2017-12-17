@@ -25,12 +25,6 @@ public:
 
     HybridLassoComponent();
 
-    enum ColourIds
-    {
-        lassoFillColourId       = 0x1000440,
-        lassoOutlineColourId    = 0x1000441,
-    };
-
     virtual void beginLasso(const MouseEvent &e,
         LassoSource<SelectableComponent *> *const lassoSource);
 

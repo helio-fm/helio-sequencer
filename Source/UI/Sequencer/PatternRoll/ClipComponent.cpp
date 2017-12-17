@@ -23,24 +23,38 @@
 #include "PatternRoll.h"
 #include "Pattern.h"
 
-ClipComponent::ClipComponent(HybridRoll &editor, Clip clip) :
+ClipComponent::ClipComponent(HybridRoll &editor, const Clip &clip) :
     HybridRollEventComponent(editor),
     clip(clip)
 {
-    this->setWantsKeyboardFocus(false);
+    this->updateColours();
+    this->toFront(false);
+    this->setPaintingIsUnclipped(true);
     this->setFloatBounds(this->getRoll().getEventBounds(this));
 }
 
-const Clip ClipComponent::getClip() const
+const Clip &ClipComponent::getClip() const noexcept
 {
     return this->clip;
 }
 
-PatternRoll &ClipComponent::getRoll() const
+PatternRoll &ClipComponent::getRoll() const noexcept
 {
     return static_cast<PatternRoll &>(this->roll);
 }
 
+void ClipComponent::updateColours()
+{
+    this->headColour = Colours::white
+        .interpolatedWith(this->getClip().getColour(), 0.5f)
+        .withAlpha(this->ghostMode ? 0.2f : 0.95f)
+        .brighter(this->selectedState ? 0.5f : 0.f);
+
+    this->headColourLighter = this->headColour.brighter(0.125f);
+    this->headColourDarker = this->headColour.darker(0.35f);
+
+    this->fillColour = headColour.withMultipliedAlpha(0.5f);
+}
 
 //===----------------------------------------------------------------------===//
 // HybridRollEventComponent
@@ -66,7 +80,6 @@ String ClipComponent::getId() const
 {
     return this->clip.getId();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Component
@@ -99,10 +112,21 @@ void ClipComponent::mouseDown(const MouseEvent &e)
 
 void ClipComponent::paint(Graphics& g)
 {
-    g.setColour(Colours::floralwhite.withAlpha(0.5f));
-    g.fillRoundedRectangle(0.f, 0.f, float(this->getWidth()), float(this->getHeight()), 5);
-}
+    g.setColour(this->fillColour);
+    g.fillRect(1.f, 1.f, float(this->getWidth() - 2), float(this->getHeight() - 2));
 
+    g.setColour(this->headColourLighter);
+    g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
+
+    g.setColour(this->headColour);
+    g.drawHorizontalLine(1, 0.f, float(this->getWidth()));
+    g.drawHorizontalLine(2, 0.f, float(this->getWidth()));
+
+    g.setColour(this->headColourDarker);
+    g.drawVerticalLine(0, 3.f, float(this->getHeight() - 1));
+    g.drawVerticalLine(this->getWidth() - 1, 3.f, float(this->getHeight() - 1));
+    g.drawHorizontalLine(this->getHeight() - 1, 1.f, float(this->getWidth() - 1));
+}
 
 //===----------------------------------------------------------------------===//
 // Helpers

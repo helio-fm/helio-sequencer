@@ -31,7 +31,9 @@ static StringPairArray getDefaultMeters()
     c.set("Common time", "4/4");
     c.set("Alla breve", "2/4");
     c.set("Waltz time", "3/4");
-    c.set("4/4", "4/4");
+    c.set("5/4", "5/4");
+    c.set("6/4", "6/4");
+    c.set("7/4", "7/4");
     c.set("5/8", "5/8");
     c.set("6/8", "6/8");
     c.set("7/8", "7/8");
@@ -49,7 +51,7 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
       addsNewEvent(shouldAddNewEvent),
       hasMadeChanges(false)
 {
-    addAndMakeVisible (background = new PanelC());
+    addAndMakeVisible (background = new DialogPanel());
     addAndMakeVisible (comboPrimer = new DialogComboBox::Primer());
 
     addAndMakeVisible (messageLabel = new Label (String(),
@@ -437,7 +439,7 @@ BEGIN_JUCER_METADATA
   </BACKGROUND>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
-             sourceFile="../Themes/PanelC.cpp" constructorParams=""/>
+             sourceFile="../Themes/DialogPanel.cpp" constructorParams=""/>
   <GENERICCOMPONENT name="" id="524df900a9089845" memberName="comboPrimer" virtualName=""
                     explicitFocusOrder="0" pos="0Cc 12 24M 72M" class="DialogComboBox::Primer"
                     params=""/>

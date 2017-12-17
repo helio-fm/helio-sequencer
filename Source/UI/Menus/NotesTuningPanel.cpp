@@ -151,7 +151,7 @@ NotesTuningPanel::NotesTuningPanel(ProjectTreeItem &parentProject, PianoRoll &ta
 
     addAndMakeVisible (tuningDiagram = new NotesTuningDiagram (this, this->roll.getLassoSelection()));
 
-    addAndMakeVisible (panel = new PanelA());
+    addAndMakeVisible (panel = new FramePanel());
     addAndMakeVisible (resetButton = new CommandItemComponent (this, nullptr, CommandItem::withParams(Icons::reset, CommandIDs::ResetVolumeChanges)));
 
     addAndMakeVisible (playButton = new PlayButton());
@@ -545,7 +545,7 @@ BEGIN_JUCER_METADATA
                     explicitFocusOrder="0" pos="0 96 0M 88" class="NotesTuningDiagram"
                     params="this, this-&gt;roll.getLassoSelection()"/>
   <JUCERCOMP name="" id="8013b7ac0b043720" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="0 96 0M 88" sourceFile="../Themes/PanelA.cpp"
+             explicitFocusOrder="0" pos="0 96 0M 88" sourceFile="../Themes/FramePanel.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="34c972d7b22acf17" memberName="resetButton" virtualName=""
                     explicitFocusOrder="0" pos="85c 213c 58 58" class="CommandItemComponent"

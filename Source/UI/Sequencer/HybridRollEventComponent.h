@@ -63,7 +63,6 @@ protected:
     bool activeState;
     float anchorBeat;
 
-    Colour colour;
     bool ghostMode;
 
     // сдвиг мыши от нуля компонента во время клика.

@@ -76,13 +76,12 @@ Array<MidiMessage> Note::toMidiMessages() const
 Note Note::copyWithNewId(WeakReference<MidiSequence> owner) const
 {
     Note n(*this);
-    n.id = this->createId();
-    
     if (owner != nullptr)
     {
         n.sequence = owner;
     }
     
+    n.id = n.createId();
     return n;
 }
 
@@ -232,7 +231,7 @@ int Note::compareElements(const MidiEvent *const first, const MidiEvent *const s
     return first->getId().compare(second->getId());
 }
 
-int Note::compareElements(Note *const first, Note *const second)
+int Note::compareElements(const Note *const first, const Note *const second)
 {
     if (first == second) { return 0; }
 
@@ -249,15 +248,5 @@ int Note::compareElements(Note *const first, Note *const second)
 
 int Note::compareElements(const Note &first, const Note &second)
 {
-    if (&first == &second) { return 0; }
-
-    const float beatDiff = first.getBeat() - second.getBeat();
-    const int beatResult = (beatDiff > 0.f) - (beatDiff < 0.f);
-    if (beatResult != 0) { return beatResult; }
-
-    const int keyDiff = first.getKey() - second.getKey();
-    const int keyResult = (keyDiff > 0) - (keyDiff < 0);
-    if (keyResult != 0) { return keyResult; }
-
-    return first.getId().compare(second.getId());
+    return Note::compareElements(&first, &second);
 }

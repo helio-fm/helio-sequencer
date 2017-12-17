@@ -32,12 +32,12 @@ class NoteComponent;
 class PianoRollReboundThread;
 class PianoRollCellHighlighter;
 class HelperRectangle;
-class NoteResizerLeft;
-class NoteResizerRight;
 class Scale;
 
-#include "HelioTheme.h"
 #include "HybridRoll.h"
+#include "HelioTheme.h"
+#include "NoteResizerLeft.h"
+#include "NoteResizerRight.h"
 #include "Note.h"
 #include "Clip.h"
 
@@ -48,8 +48,6 @@ public:
     PianoRoll(ProjectTreeItem &parentProject,
               Viewport &viewportRef,
               WeakReference<AudioMonitor> clippingDetector);
-
-    ~PianoRoll() override;
 
     void deleteSelection();
     
@@ -71,7 +69,6 @@ public:
     //===------------------------------------------------------------------===//
 
     void selectAll() override;
-    void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
 
     //===------------------------------------------------------------------===//
     // Ghost notes
@@ -179,11 +176,11 @@ private:
 
 private:
 
-    void clearRollContent();
     void reloadRollContent();
     
     void updateChildrenBounds() override;
     void updateChildrenPositions() override;
+    void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
 
     void insertNewNoteAt(const MouseEvent &e);
     bool dismissDraggingNoteIfNeeded();
@@ -252,10 +249,11 @@ private:
     ScopedPointer<NoteResizerLeft> noteResizerLeft;
     ScopedPointer<NoteResizerRight> noteResizerRight;
     
-    typedef SparseHashMap<Note, NoteComponent *, MidiEventHash> EventComponentsMap;
-    EventComponentsMap componentsMap;
+    typedef SparseHashMap<Note, UniquePointer<NoteComponent>, MidiEventHash> EventComponentsMap;
+    EventComponentsMap eventComponents;
 
-    typedef SparseHashMap<Clip, EventComponentsMap, ClipHash> ClipsMap;
-    //EventComponentsMap clipsMap;
+    typedef SparseHashMap<Clip, UniquePointer<EventComponentsMap>, ClipHash> ClipsMap;
+    ClipsMap clipsMap;
 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRoll)
 };

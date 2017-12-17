@@ -19,28 +19,25 @@
 #include "DiffLogic.h"
 #include "SerializationKeys.h"
 
-#include "PianoLayerDiffLogic.h"
-#include "AutomationLayerDiffLogic.h"
+#include "PianoTrackDiffLogic.h"
+#include "AutomationTrackDiffLogic.h"
 #include "ProjectTimelineDiffLogic.h"
 #include "ProjectInfoDiffLogic.h"
 
 using namespace VCS;
 
-
-class DummyDiffLogic : public AutomationLayerDiffLogic
+class DummyDiffLogic : public AutomationTrackDiffLogic
 {
 public:
     
-    explicit DummyDiffLogic(TrackedItem &targetItem) : AutomationLayerDiffLogic(targetItem)
-    {
-    }
+    explicit DummyDiffLogic(TrackedItem &targetItem) :
+        AutomationTrackDiffLogic(targetItem) {}
     
     const String getType() const override
     {
         return "DummyDiffLogic";
     }
 };
-
 
 DiffLogic *DiffLogic::createLogicCopy(TrackedItem &copyFrom, TrackedItem &targetItem)
 {
@@ -52,11 +49,11 @@ DiffLogic *DiffLogic::createLogicFor(TrackedItem &targetItem, const String &type
 {
     if (type == Serialization::Core::pianoLayer)
     {
-        return new PianoLayerDiffLogic(targetItem);
+        return new PianoTrackDiffLogic(targetItem);
     }
     if (type == Serialization::Core::autoLayer)
     {
-        return new AutomationLayerDiffLogic(targetItem);
+        return new AutomationTrackDiffLogic(targetItem);
     }
     else if (type == Serialization::Core::projectTimeline)
     {
@@ -68,7 +65,4 @@ DiffLogic *DiffLogic::createLogicFor(TrackedItem &targetItem, const String &type
     }
 
     return new DummyDiffLogic(targetItem);
-    
-//    jassertfalse;
-//    return nullptr;
 }

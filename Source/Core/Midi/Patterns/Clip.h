@@ -21,7 +21,10 @@
 
 class Pattern;
 
-// Just an instance of a midi layer on a certain position
+// Just an instance of a midi sequence on a certain position.
+// In future we it should have adjustable length too
+// (and a stack of parametric modifiers like user-defined arps, etc.)
+
 class Clip : public Serializable
 {
 public:
@@ -30,11 +33,14 @@ public:
 
     Clip();
     Clip(const Clip &other);
-    explicit Clip(Pattern *owner, float beatVal = 0.f);
+    Clip(WeakReference<Pattern> owner, const Clip &parametersToCopy);
+    explicit Clip(WeakReference<Pattern> owner, float beatVal = 0.f);
 
     Pattern *getPattern() const noexcept;
     float getStartBeat() const noexcept;
+    Colour getColour() const noexcept;
     String getId() const noexcept;
+    bool isValid() const noexcept;
 
     Clip copyWithNewId(Pattern *newOwner = nullptr) const;
     Clip withParameters(const XmlElement &xml) const;
@@ -52,26 +58,27 @@ public:
     // Helpers
     //===------------------------------------------------------------------===//
 
-    Clip &operator=(const Clip &right);
-
-    friend inline bool operator==(const Clip &lhs, const Clip &rhs)
+    friend inline bool operator==(const Clip &l, const Clip &r)
     {
-        return (&lhs == &rhs || lhs.id == rhs.id);
+        return (&l == &r ||
+            ((l.pattern == nullptr || r.pattern == nullptr) && l.id == r.id) ||
+            (l.pattern != nullptr && l.pattern == r.pattern && l.id == r.id));
     }
 
-    static int compareElements(const Clip &first,
-        const Clip &second);
+    static int compareElements(const Clip &first, const Clip &second);
+    static int compareElements(const Clip *const first, const Clip *const second);
 
+    void applyChanges(const Clip &parameters);
     HashCode hashCode() const noexcept;
 
 private:
 
-    Pattern *pattern;
+    WeakReference<Pattern> pattern;
 
     float startBeat;
     String id;
 
-    static Id createId() noexcept;
+    Id createId() const noexcept;
 
     JUCE_LEAK_DETECTOR(Clip);
 };

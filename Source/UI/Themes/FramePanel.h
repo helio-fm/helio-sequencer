@@ -21,13 +21,13 @@
 //[/Headers]
 
 
-class GradientVertical  : public Component
+class FramePanel  : public Component
 {
 public:
 
-    GradientVertical ();
+    FramePanel ();
 
-    ~GradientVertical();
+    ~FramePanel();
 
     //[UserMethods]
     //[/UserMethods]
@@ -42,5 +42,5 @@ private:
     //[/UserVariables]
 
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GradientVertical)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FramePanel)
 };

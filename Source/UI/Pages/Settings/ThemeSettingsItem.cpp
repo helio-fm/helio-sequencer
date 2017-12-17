@@ -34,6 +34,7 @@
 #include "SettingsListItemHighlighter.h"
 #include "SettingsListItemSelection.h"
 #include "ColourSchemeManager.h"
+#include "ColourIDs.h"
 
 class ThemeSettingsItemHighlighter : public Component
 {
@@ -131,10 +132,10 @@ void ThemeSettingsItem::paint (Graphics& g)
         const int j = int(this->getWidth() / barWidth);
         const int beatWidth = barWidth / dynamicGridSize;
 
-        const Colour barStart = this->theme->findColour(HybridRoll::barLineColourId);
-        const Colour barBevel = this->theme->findColour(HybridRoll::barLineBevelColourId);
-        const Colour beatStart = this->theme->findColour(HybridRoll::beatLineColourId);
-        const Colour snapStart = this->theme->findColour(HybridRoll::snapLineColourId);
+        const Colour barStart = this->theme->findColour(ColourIDs::Roll::barLine);
+        const Colour barBevel = this->theme->findColour(ColourIDs::Roll::barLineBevel);
+        const Colour beatStart = this->theme->findColour(ColourIDs::Roll::beatLine);
+        const Colour snapStart = this->theme->findColour(ColourIDs::Roll::snapLine);
 
         while (i <= j)
         {

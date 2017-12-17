@@ -27,9 +27,9 @@
 #include "HybridLassoComponent.h"
 #include "HeaderSelectionIndicator.h"
 #include "HelioCallout.h"
-#include "HelioTheme.h"
 #include "TimelineCommandPanel.h"
 #include "CommandIDs.h"
+#include "ColourIDs.h"
 
 #define HYBRID_ROLL_HEADER_ALIGNS_TO_BEATS 1
 #define HYBRID_ROLL_HEADER_SELECTION_ALIGNS_TO_BEATS 0
@@ -47,21 +47,17 @@ HybridRollHeader::HybridRollHeader(Transport &transportRef, HybridRoll &rollRef,
 
     // Painting is the very bottleneck of this app,
     // so make sure we no lookups/computations inside paint method
-    this->backColour = this->findColour(HybridRoll::headerColourId);
-    this->barColour = this->findColour(HybridRoll::headerSnapsColourId);
+    this->backColour = this->findColour(ColourIDs::Roll::headerFill);
+    this->barColour = this->findColour(ColourIDs::Roll::headerSnaps);
     this->barShadeColour = this->backColour.darker(0.1f);
     this->beatColour = this->barColour.withMultipliedAlpha(0.8f);
     this->snapColour = this->barColour.withMultipliedAlpha(0.6f);
-    this->bevelLightColour = this->findColour(HelioTheme::resizerLineColourId).withMultipliedAlpha(0.35f); //Colours::white.withAlpha(0.025f);
-    this->bevelDarkColour = this->findColour(HelioTheme::resizerShadowColourId); //Colours::black.withAlpha(0.35f);
+    this->bevelLightColour = this->findColour(ColourIDs::Common::borderLineLight).withMultipliedAlpha(0.35f);
+    this->bevelDarkColour = this->findColour(ColourIDs::Common::borderLineDark);
 
     this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);
     this->setSize(this->getParentWidth(), HYBRID_ROLL_HEADER_HEIGHT);
-}
-
-HybridRollHeader::~HybridRollHeader()
-{
 }
 
 void HybridRollHeader::setSoundProbeMode(bool shouldPlayOnClick)

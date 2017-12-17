@@ -27,7 +27,7 @@ class AutomationClipComponent : public ClipComponent
 public:
 
     AutomationClipComponent(MidiTrack *track,
-        HybridRoll &editor, Clip clip);
+        HybridRoll &editor, const Clip &clip);
 
 protected:
 

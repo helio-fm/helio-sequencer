@@ -30,7 +30,7 @@ ModalDialogConfirmation::ModalDialogConfirmation(Component &owner, const String 
       okCommand(okCode),
       cancelCommand(cancelCode)
 {
-    addAndMakeVisible (background = new PanelC());
+    addAndMakeVisible (background = new DialogPanel());
     addAndMakeVisible (messageLabel = new Label (String(),
                                                  TRANS("...")));
     messageLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
@@ -222,7 +222,7 @@ BEGIN_JUCER_METADATA
   </BACKGROUND>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
-             sourceFile="../Themes/PanelC.cpp" constructorParams=""/>
+             sourceFile="../Themes/DialogPanel.cpp" constructorParams=""/>
   <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc 12 32M 96" posRelativeY="e96b77baef792d3a"
          textCol="ffffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."

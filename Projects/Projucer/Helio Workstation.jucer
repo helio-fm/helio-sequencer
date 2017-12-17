@@ -503,27 +503,27 @@
         </GROUP>
         <GROUP id="{93158781-1E3A-C291-199C-658344E36869}" name="VCS">
           <GROUP id="{7066A342-DF54-461D-76B4-F0789077D1ED}" name="DiffLogic">
-            <FILE id="qTenLU" name="AutoLayerDeltas.h" compile="0" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/AutoLayerDeltas.h"/>
-            <FILE id="ebFjSs" name="AutomationLayerDiffLogic.cpp" compile="1" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/AutomationLayerDiffLogic.cpp"/>
-            <FILE id="WHSmnd" name="AutomationLayerDiffLogic.h" compile="0" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/AutomationLayerDiffLogic.h"/>
+            <FILE id="SBYx0I" name="AutoSequenceDeltas.h" compile="0" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/AutoSequenceDeltas.h"/>
+            <FILE id="cUPXik" name="AutomationTrackDiffLogic.cpp" compile="1" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/AutomationTrackDiffLogic.cpp"/>
+            <FILE id="sJ9yi6" name="AutomationTrackDiffLogic.h" compile="0" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/AutomationTrackDiffLogic.h"/>
             <FILE id="tzU3Zw" name="DiffLogic.cpp" compile="1" resource="0" file="../../Source/Core/VCS/DiffLogic/DiffLogic.cpp"/>
             <FILE id="o2iVIn" name="DiffLogic.h" compile="0" resource="0" file="../../Source/Core/VCS/DiffLogic/DiffLogic.h"/>
             <FILE id="vlvaNu" name="MidiTrackDeltas.h" compile="0" resource="0"
                   file="../../Source/Core/VCS/DiffLogic/MidiTrackDeltas.h"/>
             <FILE id="sUuTah" name="PatternDeltas.h" compile="0" resource="0" file="../../Source/Core/VCS/DiffLogic/PatternDeltas.h"/>
-            <FILE id="mLsD5l" name="PatternDiffLogic.h" compile="0" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/PatternDiffLogic.h"/>
-            <FILE id="mYgPFf" name="PatternDiffLogic.cpp" compile="1" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/PatternDiffLogic.cpp"/>
-            <FILE id="u0jV9C" name="PianoLayerDeltas.h" compile="0" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/PianoLayerDeltas.h"/>
-            <FILE id="ABF3BH" name="PianoLayerDiffLogic.cpp" compile="1" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/PianoLayerDiffLogic.cpp"/>
-            <FILE id="mwPnWU" name="PianoLayerDiffLogic.h" compile="0" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/PianoLayerDiffLogic.h"/>
+            <FILE id="IXQhWN" name="PatternDiffHelpers.cpp" compile="1" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/PatternDiffHelpers.cpp"/>
+            <FILE id="Ngf98g" name="PatternDiffHelpers.h" compile="0" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/PatternDiffHelpers.h"/>
+            <FILE id="Lg4Vim" name="PianoSequenceDeltas.h" compile="0" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/PianoSequenceDeltas.h"/>
+            <FILE id="AJDAjB" name="PianoTrackDiffLogic.cpp" compile="1" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/PianoTrackDiffLogic.cpp"/>
+            <FILE id="iQgRoL" name="PianoTrackDiffLogic.h" compile="0" resource="0"
+                  file="../../Source/Core/VCS/DiffLogic/PianoTrackDiffLogic.h"/>
             <FILE id="BQjXo4" name="ProjectInfoDeltas.h" compile="0" resource="0"
                   file="../../Source/Core/VCS/DiffLogic/ProjectInfoDeltas.h"/>
             <FILE id="QkAb4q" name="ProjectInfoDiffLogic.cpp" compile="1" resource="0"
@@ -616,6 +616,7 @@
           <FILE id="OeoOMp" name="ColourSwatches.h" compile="0" resource="0"
                 file="../../Source/UI/Common/ColourSwatches.h"/>
           <FILE id="DRQef0" name="CommandIDs.cpp" compile="1" resource="0" file="../../Source/UI/Common/CommandIDs.cpp"/>
+          <FILE id="RbTNhz" name="ColourIDs.h" compile="0" resource="0" file="../../Source/UI/Common/ColourIDs.h"/>
           <FILE id="JpyU5z" name="CommandIDs.h" compile="0" resource="0" file="../../Source/UI/Common/CommandIDs.h"/>
           <FILE id="ldEAFp" name="ComponentIDs.h" compile="0" resource="0" file="../../Source/UI/Common/ComponentIDs.h"/>
           <FILE id="wxzKUC" name="DraggingListBoxComponent.cpp" compile="1" resource="0"
@@ -655,10 +656,6 @@
                 file="../../Source/UI/Common/SelectableComponent.h"/>
           <FILE id="SncSXr" name="ShapeComponent.h" compile="0" resource="0"
                 file="../../Source/UI/Common/ShapeComponent.h"/>
-          <FILE id="QOhiaM" name="SizeSwitcherComponent.cpp" compile="1" resource="0"
-                file="../../Source/UI/Common/SizeSwitcherComponent.cpp"/>
-          <FILE id="dxl6Io" name="SizeSwitcherComponent.h" compile="0" resource="0"
-                file="../../Source/UI/Common/SizeSwitcherComponent.h"/>
           <FILE id="XuVuyC" name="SpectralLogo.cpp" compile="1" resource="0"
                 file="../../Source/UI/Common/SpectralLogo.cpp"/>
           <FILE id="c1jtLI" name="SpectralLogo.h" compile="0" resource="0" file="../../Source/UI/Common/SpectralLogo.h"/>
@@ -1119,14 +1116,6 @@
                   file="../../Source/UI/Sequencer/Helpers/InsertSpaceHelper.cpp"/>
             <FILE id="EVuhkP" name="InsertSpaceHelper.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/Helpers/InsertSpaceHelper.h"/>
-            <FILE id="w0etn6" name="NoteResizerLeft.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/NoteResizerLeft.cpp"/>
-            <FILE id="ppVYXM" name="NoteResizerLeft.h" compile="0" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/NoteResizerLeft.h"/>
-            <FILE id="Q8VjKU" name="NoteResizerRight.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/NoteResizerRight.cpp"/>
-            <FILE id="PXfrGQ" name="NoteResizerRight.h" compile="0" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/NoteResizerRight.h"/>
             <FILE id="NOqCjM" name="TimelineWarningMarker.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/Helpers/TimelineWarningMarker.cpp"/>
             <FILE id="amNgBo" name="TimelineWarningMarker.h" compile="0" resource="0"
@@ -1166,6 +1155,14 @@
                   file="../../Source/UI/Sequencer/PatternRoll/PianoClipComponent.cpp"/>
             <FILE id="pPYJa2" name="PianoClipComponent.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/PatternRoll/PianoClipComponent.h"/>
+            <FILE id="iw3RJL" name="MidiTrackHeader.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/PatternRoll/MidiTrackHeader.cpp"/>
+            <FILE id="dia7oD" name="MidiTrackHeader.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/PatternRoll/MidiTrackHeader.h"/>
+            <FILE id="HSdBe5" name="MidiTrackInsertHelper.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/PatternRoll/MidiTrackInsertHelper.cpp"/>
+            <FILE id="wWCavd" name="MidiTrackInsertHelper.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/PatternRoll/MidiTrackInsertHelper.h"/>
             <FILE id="Fq4aoW" name="PatternRoll.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/PatternRoll/PatternRoll.cpp"/>
             <FILE id="MXsdDW" name="PatternRoll.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PatternRoll/PatternRoll.h"/>
           </GROUP>
@@ -1173,6 +1170,14 @@
             <FILE id="nkGHj5" name="NoteComponent.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/PianoRoll/NoteComponent.cpp"/>
             <FILE id="o50CGJ" name="NoteComponent.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PianoRoll/NoteComponent.h"/>
+            <FILE id="yO3CxI" name="NoteResizerLeft.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/PianoRoll/NoteResizerLeft.cpp"/>
+            <FILE id="PLz3l6" name="NoteResizerRight.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/PianoRoll/NoteResizerRight.cpp"/>
+            <FILE id="ZWUEkO" name="NoteResizerLeft.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/PianoRoll/NoteResizerLeft.h"/>
+            <FILE id="ZMJ4fn" name="NoteResizerRight.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/PianoRoll/NoteResizerRight.h"/>
             <FILE id="XGD7Q7" name="PianoRoll.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/PianoRoll/PianoRoll.cpp"/>
             <FILE id="xgYNf4" name="PianoRoll.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PianoRoll/PianoRoll.h"/>
             <FILE id="BuUwgB" name="PianoRollToolbox.cpp" compile="1" resource="0"
@@ -1262,26 +1267,10 @@
                 file="../../Source/UI/Themes/FontSerializer.cpp"/>
           <FILE id="ByVeKa" name="FontSerializer.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/FontSerializer.h"/>
-          <FILE id="JvCpsS" name="GradientVertical.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/GradientVertical.cpp"/>
-          <FILE id="LqY3hE" name="GradientVertical.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/GradientVertical.h"/>
-          <FILE id="J2A6nX" name="GradientVerticalReversed.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/GradientVerticalReversed.cpp"/>
-          <FILE id="jZs8Yn" name="GradientVerticalReversed.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/GradientVerticalReversed.h"/>
           <FILE id="UTkx9C" name="HelioTheme.cpp" compile="1" resource="0" file="../../Source/UI/Themes/HelioTheme.cpp"/>
           <FILE id="OSxFyU" name="HelioTheme.h" compile="0" resource="0" file="../../Source/UI/Themes/HelioTheme.h"/>
           <FILE id="e3IJC6" name="Icons.cpp" compile="1" resource="0" file="../../Source/UI/Themes/Icons.cpp"/>
           <FILE id="cuElFX" name="Icons.h" compile="0" resource="0" file="../../Source/UI/Themes/Icons.h"/>
-          <FILE id="t2AHRH" name="LighterShadowDownwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/LighterShadowDownwards.cpp"/>
-          <FILE id="HYJ18q" name="LighterShadowDownwards.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/LighterShadowDownwards.h"/>
-          <FILE id="PyzEGt" name="LighterShadowUpwards.cpp" compile="1" resource="0"
-                file="../../Source/UI/Themes/LighterShadowUpwards.cpp"/>
-          <FILE id="n19TK2" name="LighterShadowUpwards.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/LighterShadowUpwards.h"/>
           <FILE id="pWyeEN" name="LightShadowDownwards.cpp" compile="1" resource="0"
                 file="../../Source/UI/Themes/LightShadowDownwards.cpp"/>
           <FILE id="WWrfj6" name="LightShadowDownwards.h" compile="0" resource="0"
@@ -1298,10 +1287,18 @@
                 file="../../Source/UI/Themes/LightShadowUpwards.cpp"/>
           <FILE id="Y9JXQ8" name="LightShadowUpwards.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/LightShadowUpwards.h"/>
-          <FILE id="assiuD" name="PanelA.cpp" compile="1" resource="0" file="../../Source/UI/Themes/PanelA.cpp"/>
-          <FILE id="jNvXXq" name="PanelA.h" compile="0" resource="0" file="../../Source/UI/Themes/PanelA.h"/>
-          <FILE id="cvHAwt" name="PanelB.cpp" compile="1" resource="0" file="../../Source/UI/Themes/PanelB.cpp"/>
-          <FILE id="JT4HHV" name="PanelB.h" compile="0" resource="0" file="../../Source/UI/Themes/PanelB.h"/>
+          <FILE id="t2AHRH" name="LighterShadowDownwards.cpp" compile="1" resource="0"
+                file="../../Source/UI/Themes/LighterShadowDownwards.cpp"/>
+          <FILE id="HYJ18q" name="LighterShadowDownwards.h" compile="0" resource="0"
+                file="../../Source/UI/Themes/LighterShadowDownwards.h"/>
+          <FILE id="PyzEGt" name="LighterShadowUpwards.cpp" compile="1" resource="0"
+                file="../../Source/UI/Themes/LighterShadowUpwards.cpp"/>
+          <FILE id="n19TK2" name="LighterShadowUpwards.h" compile="0" resource="0"
+                file="../../Source/UI/Themes/LighterShadowUpwards.h"/>
+          <FILE id="assiuD" name="FramePanel.cpp" compile="1" resource="0" file="../../Source/UI/Themes/FramePanel.cpp"/>
+          <FILE id="jNvXXq" name="FramePanel.h" compile="0" resource="0" file="../../Source/UI/Themes/FramePanel.h"/>
+          <FILE id="N4N3KP" name="DialogPanel.cpp" compile="1" resource="0" file="../../Source/UI/Themes/DialogPanel.cpp"/>
+          <FILE id="IdO4fh" name="DialogPanel.h" compile="0" resource="0" file="../../Source/UI/Themes/DialogPanel.h"/>
           <FILE id="pX96CH" name="PanelBackgroundA.cpp" compile="1" resource="0"
                 file="../../Source/UI/Themes/PanelBackgroundA.cpp"/>
           <FILE id="oQQzCv" name="PanelBackgroundA.h" compile="0" resource="0"
@@ -1314,8 +1311,6 @@
                 file="../../Source/UI/Themes/PanelBackgroundC.cpp"/>
           <FILE id="IxtKep" name="PanelBackgroundC.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/PanelBackgroundC.h"/>
-          <FILE id="N4N3KP" name="PanelC.cpp" compile="1" resource="0" file="../../Source/UI/Themes/PanelC.cpp"/>
-          <FILE id="IdO4fh" name="PanelC.h" compile="0" resource="0" file="../../Source/UI/Themes/PanelC.h"/>
           <FILE id="Xbp07z" name="SeparatorHorizontal.cpp" compile="1" resource="0"
                 file="../../Source/UI/Themes/SeparatorHorizontal.cpp"/>
           <FILE id="kpXD8z" name="SeparatorHorizontal.h" compile="0" resource="0"
@@ -1336,14 +1331,6 @@
                 file="../../Source/UI/Themes/SeparatorVertical.cpp"/>
           <FILE id="seMoCv" name="SeparatorVertical.h" compile="0" resource="0"
                 file="../../Source/UI/Themes/SeparatorVertical.h"/>
-          <FILE id="iRbt21" name="SeparatorVerticalReversed.cpp" compile="1"
-                resource="0" file="../../Source/UI/Themes/SeparatorVerticalReversed.cpp"/>
-          <FILE id="YTE3PY" name="SeparatorVerticalReversed.h" compile="0" resource="0"
-                file="../../Source/UI/Themes/SeparatorVerticalReversed.h"/>
-          <FILE id="RMdOFy" name="ShadeDark.cpp" compile="1" resource="0" file="../../Source/UI/Themes/ShadeDark.cpp"/>
-          <FILE id="ZZVzNa" name="ShadeDark.h" compile="0" resource="0" file="../../Source/UI/Themes/ShadeDark.h"/>
-          <FILE id="UoMMEf" name="ShadeLight.cpp" compile="1" resource="0" file="../../Source/UI/Themes/ShadeLight.cpp"/>
-          <FILE id="txHWTv" name="ShadeLight.h" compile="0" resource="0" file="../../Source/UI/Themes/ShadeLight.h"/>
           <FILE id="gwNBw8" name="ShadowDownwards.cpp" compile="1" resource="0"
                 file="../../Source/UI/Themes/ShadowDownwards.cpp"/>
           <FILE id="TdDFDM" name="ShadowDownwards.h" compile="0" resource="0"

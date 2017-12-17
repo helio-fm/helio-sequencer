@@ -24,6 +24,7 @@
 //[MiscUserDefs]
 #include "ToolsSidebar.h"
 #include "HelioTheme.h"
+#include "ColourIDs.h"
 #include "CommandIDs.h"
 
 class PlayButtonHighlighter : public Component
@@ -37,7 +38,7 @@ public:
 
     void paint(Graphics &g) override
     {
-        const Colour colour1(this->findColour(Icons::iconColourId).withAlpha(0.1f));
+        const Colour colour1(this->findColour(ColourIDs::Icons::fill).withAlpha(0.1f));
         const int h = this->getHeight();
         const Rectangle<float> r(this->getLocalBounds()
                                  .withSizeKeepingCentre(h, h)

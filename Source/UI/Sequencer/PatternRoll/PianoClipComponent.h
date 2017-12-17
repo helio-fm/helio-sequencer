@@ -25,7 +25,7 @@ class PianoClipComponent : public ClipComponent
 {
 public:
 
-    PianoClipComponent(MidiTrack *track, HybridRoll &editor, Clip clip);
+    PianoClipComponent(MidiTrack *track, HybridRoll &editor, const Clip &clip);
 
 protected:
 

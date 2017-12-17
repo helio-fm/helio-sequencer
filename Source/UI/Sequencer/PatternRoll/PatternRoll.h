@@ -18,17 +18,22 @@
 #pragma once
 
 #if JUCE_IOS
-#   define PATTERNROLL_ROW_HEIGHT 96
+#   define PATTERN_ROLL_CLIP_HEIGHT 64
+#   define PATTERN_ROLL_TRACK_HEADER_HEIGHT 32
 #else
-#   define PATTERNROLL_ROW_HEIGHT 128
+#   define PATTERN_ROLL_CLIP_HEIGHT 64
+#   define PATTERN_ROLL_TRACK_HEADER_HEIGHT 32
 #endif
 
 class ClipComponent;
+class MidiTrackHeader;
+class MidiTrackInsertHelper;
 class PianoRollReboundThread;
 class PianoRollCellHighlighter;
 
 #include "HelioTheme.h"
 #include "HybridRoll.h"
+#include "MidiTrack.h"
 #include "Pattern.h"
 #include "Clip.h"
 
@@ -40,17 +45,9 @@ public:
         Viewport &viewportRef,
         WeakReference<AudioMonitor> clippingDetector);
 
-    ~PatternRoll() override;
-
     void deleteSelection();
     void selectAll() override;
     int getNumRows() const noexcept;
-
-    //===------------------------------------------------------------------===//
-    // HybridRoll
-    //===------------------------------------------------------------------===//
-
-    void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
 
     //===------------------------------------------------------------------===//
     // Ghost notes
@@ -75,7 +72,7 @@ public:
     //===------------------------------------------------------------------===//
 
     void onAddMidiEvent(const MidiEvent &event) override;
-    void onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override;
+    void onChangeMidiEvent(const MidiEvent &e1, const MidiEvent &e2) override;
     void onRemoveMidiEvent(const MidiEvent &event) override;
     void onPostRemoveMidiEvent(MidiSequence *const layer) override;
 
@@ -116,6 +113,7 @@ public:
     void handleCommandMessage(int commandId) override;
     void resized() override;
     void paint(Graphics &g) override;
+    void parentSizeChanged() override;
     
     //===------------------------------------------------------------------===//
     // Serializable
@@ -125,21 +123,26 @@ public:
     void deserialize(const XmlElement &xml) override;
     void reset() override;
     
+protected:
+
+    //===------------------------------------------------------------------===//
+    // HybridRoll
+    //===------------------------------------------------------------------===//
+
+    void updateChildrenBounds() override;
+    void updateChildrenPositions() override;
+    void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
+    void updateRollSize();
+
 public:
 
     Image rowPattern;
     Image renderRowsPattern(const HelioTheme &theme, int height) const;
     void repaintBackgroundsCache();
 
-private:
-
-    void clearRollContent();
     void reloadRollContent();
-
     void insertNewClipAt(const MouseEvent &e);
-    
-private:
-    
+
     void focusToRegionAnimated(int startKey, int endKey, float startBeat, float endBeat);
     class FocusToRegionAnimator;
     ScopedPointer<Timer> focusToRegionAnimator;
@@ -149,8 +152,14 @@ private:
     Array<MidiTrack *> tracks;
 
     OwnedArray<ClipComponent> ghostClips;
-    
-    typedef SparseHashMap<Clip, ClipComponent *, ClipHash> ClipComponentsMap;
-    ClipComponentsMap componentsMap;
 
+    ScopedPointer<MidiTrackInsertHelper> insertTrackHelper;
+
+    typedef SparseHashMap<const MidiTrack *, UniquePointer<MidiTrackHeader>, MidiTrackHash> TrackHeadersMap;
+    TrackHeadersMap trackHeaders;
+
+    typedef SparseHashMap<Clip, UniquePointer<ClipComponent>, ClipHash> ClipComponentsMap;
+    ClipComponentsMap clipComponents;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRoll)
 };

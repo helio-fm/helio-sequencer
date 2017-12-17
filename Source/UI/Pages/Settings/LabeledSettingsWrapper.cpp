@@ -26,7 +26,7 @@
 
 LabeledSettingsWrapper::LabeledSettingsWrapper(Component *targetComponent, const String &title)
 {
-    addAndMakeVisible (panel = new PanelA());
+    addAndMakeVisible (panel = new FramePanel());
     addAndMakeVisible (titleLabel = new Label (String(),
                                                TRANS("...")));
     titleLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
@@ -116,7 +116,7 @@ BEGIN_JUCER_METADATA
                  overlayOpacity="0.330" fixedSize="1" initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="563306a3a7769fb" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="5 40 10M 48M" sourceFile="../Themes/PanelA.cpp"
+             explicitFocusOrder="0" pos="5 40 10M 48M" sourceFile="../Themes/FramePanel.cpp"
              constructorParams=""/>
   <LABEL name="" id="9f16871b637bd1bd" memberName="titleLabel" virtualName=""
          explicitFocusOrder="0" pos="8 8 576 26" edTextCol="ff000000"

@@ -24,7 +24,7 @@ class HybridRoll;
 
 
 class HybridRollExpandMark  : public Component,
-                            private Timer
+                              private Timer
 {
 public:
 

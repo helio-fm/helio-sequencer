@@ -20,7 +20,7 @@
 //[Headers]
 //[/Headers]
 
-#include "../Themes/PanelA.h"
+#include "../Themes/FramePanel.h"
 
 class LabeledSettingsWrapper  : public Component
 {
@@ -44,7 +44,7 @@ private:
     SafePointer<Component> target;
     //[/UserVariables]
 
-    ScopedPointer<PanelA> panel;
+    ScopedPointer<FramePanel> panel;
     ScopedPointer<Label> titleLabel;
     ScopedPointer<Component> targetBounds;
 

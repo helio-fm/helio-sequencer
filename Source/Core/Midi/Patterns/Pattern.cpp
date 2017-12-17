@@ -24,13 +24,31 @@
 #include "SerializationKeys.h"
 #include "MidiTrack.h"
 
+struct ClipIdGenerator
+{
+    static String generateId(uint8 length = 2)
+    {
+        String id;
+        Random r;
+        r.setSeedRandomly();
+        static const char idChars[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        for (size_t i = 0; i < length; ++i)
+        {
+            id += idChars[r.nextInt(62)];
+        }
+        return id;
+    }
+};
+
 Pattern::Pattern(MidiTrack &parentTrack,
     ProjectEventDispatcher &dispatcher) :
     track(parentTrack),
-    eventDispatcher(dispatcher)
+    eventDispatcher(dispatcher),
+    lastStartBeat(0.f),
+    lastEndBeat(0.f)
 {
-    // Add default single instance?
-    this->clips.add(Clip(this));
+    // Add default single instance (we need to have at least one clip on a pattern):
+    this->clips.add(new Clip(this));
 }
 
 Pattern::~Pattern()
@@ -38,12 +56,50 @@ Pattern::~Pattern()
     this->masterReference.clear();
 }
 
+//===----------------------------------------------------------------------===//
+// Accessors
+//===----------------------------------------------------------------------===//
+
+ProjectTreeItem *Pattern::getProject()
+{
+    return this->eventDispatcher.getProject();
+}
+
+UndoStack *Pattern::getUndoStack()
+{
+    return this->eventDispatcher.getProject()->getUndoStack();
+}
+
+MidiTrack *Pattern::getTrack() const noexcept
+{
+    return &this->track;
+}
+
+float Pattern::getFirstBeat() const noexcept
+{
+    if (this->clips.size() == 0)
+    {
+        return FLT_MAX;
+    }
+
+    return this->clips.getFirst()->getStartBeat();
+}
+
+float Pattern::getLastBeat() const noexcept
+{
+    if (this->clips.size() == 0)
+    {
+        return -FLT_MAX;
+    }
+
+    return this->clips.getLast()->getStartBeat();
+}
+
 void Pattern::sort()
 {
     if (this->clips.size() > 0)
     {
-        const Clip clip(this);
-        this->clips.sort(clip);
+        this->clips.sort(*this->clips.getFirst());
     }
 }
 
@@ -82,56 +138,69 @@ void Pattern::clearUndoHistory()
 // Clip Actions
 //===----------------------------------------------------------------------===//
 
-Array<Clip> &Pattern::getClips() noexcept
+OwnedArray<Clip> &Pattern::getClips() noexcept
 {
     return this->clips;
 }
 
 void Pattern::silentImport(const Clip &clip)
 {
-    if (! this->clips.contains(clip))
+    if (this->usedClipIds.contains(clip.getId()))
     {
-        this->clips.addSorted(clip, clip);
+        return;
     }
+
+    const auto storedClip = new Clip(this, clip);
+    this->clips.addSorted(*storedClip, storedClip);
+    this->usedClipIds.insert(storedClip->getId());
+    this->updateBeatRange(false);
 }
 
-bool Pattern::insert(Clip clip, const bool undoable)
+bool Pattern::insert(Clip clipParams, const bool undoable)
 {
-    if (this->clips.contains(clip))
+    if (this->usedClipIds.contains(clipParams.getId()))
     {
         return false;
     }
 
     if (undoable)
     {
-        this->getUndoStack()->perform(new PatternClipInsertAction(*this->getProject(),
-            this->getTrackId(),
-            clip));
+        this->getUndoStack()->
+            perform(new PatternClipInsertAction(*this->getProject(),
+                this->getTrackId(), clipParams));
     }
     else
     {
-        this->clips.addSorted(clip, clip);
-        this->notifyClipAdded(clip);
+        const auto ownedClip = new Clip(this, clipParams);
+        this->clips.addSorted(*ownedClip, ownedClip);
+        this->usedClipIds.insert(ownedClip->getId());
+        this->notifyClipAdded(*ownedClip);
+        this->updateBeatRange(true);
     }
 
     return true;
 }
 
-bool Pattern::remove(Clip clip, const bool undoable)
+bool Pattern::remove(Clip clipParams, const bool undoable)
 {
     if (undoable)
     {
-        this->getUndoStack()->perform(new PatternClipRemoveAction(*this->getProject(),
-            this->getTrackId(),
-            clip));
+        this->getUndoStack()->
+            perform(new PatternClipRemoveAction(*this->getProject(),
+                this->getTrackId(), clipParams));
     }
     else
     {
-        int index = this->clips.indexOfSorted(clip, clip);
+        const int index = this->clips.indexOfSorted(clipParams, &clipParams);
+        jassert(index >= 0);
         if (index >= 0)
         {
-            this->clips.remove(index);
-            this->notifyClipRemoved(clip);
+            Clip *const removedClip = this->clips[index];
+            jassert(removedClip->isValid());
+            this->notifyClipRemoved(*removedClip);
+            this->usedClipIds.erase(removedClip->getId());
+            this->clips.remove(index, true);
+            this->updateBeatRange(true);
             return true;
         }
 
@@ -141,23 +210,25 @@ bool Pattern::remove(Clip clip, const bool undoable)
     return true;
 }
 
-bool Pattern::change(Clip clip, Clip newClip, const bool undoable)
+bool Pattern::change(Clip oldParams, Clip newParams, const bool undoable)
 {
     if (undoable)
     {
-        this->getUndoStack()->perform(new PatternClipChangeAction(*this->getProject(),
-            this->getTrackId(),
-            clip,
-            newClip));
+        this->getUndoStack()->
+            perform(new PatternClipChangeAction(*this->getProject(),
+                this->getTrackId(), oldParams, newParams));
     }
     else
     {
-        int index = this->clips.indexOfSorted(clip, clip);
+        const int index = this->clips.indexOfSorted(oldParams, &oldParams);
+        jassert(index >= 0);
         if (index >= 0)
         {
-            this->clips.remove(index);
-            this->clips.addSorted(newClip, newClip);
-            this->notifyClipChanged(clip, newClip);
+            const auto changedClip = this->clips[index];
+            changedClip->applyChanges(newParams);
+            this->clips.remove(index, false);
+            this->clips.addSorted(*changedClip, changedClip);
+            this->notifyClipChanged(oldParams, *changedClip);
             return true;
         }
 
@@ -166,27 +237,6 @@ bool Pattern::change(Clip clip, Clip newClip, const bool undoable)
 
     return true;
 }
-
-
-//===----------------------------------------------------------------------===//
-// Accessors
-//===----------------------------------------------------------------------===//
-
-ProjectTreeItem *Pattern::getProject()
-{
-    return this->eventDispatcher.getProject();
-}
-
-UndoStack *Pattern::getUndoStack()
-{
-    return this->eventDispatcher.getProject()->getUndoStack();
-}
-
-MidiTrack *Pattern::getTrack() const noexcept
-{
-    return &this->track;
-}
-
 
 //===----------------------------------------------------------------------===//
 // Events change listener
@@ -212,6 +262,22 @@ void Pattern::notifyClipRemovedPostAction()
     this->eventDispatcher.dispatchPostRemoveClip(this);
 }
 
+void Pattern::updateBeatRange(bool shouldNotifyIfChanged)
+{
+    if (this->lastStartBeat == this->getFirstBeat() &&
+        this->lastEndBeat == this->getLastBeat())
+    {
+        return;
+    }
+
+    this->lastStartBeat = this->getFirstBeat();
+    this->lastEndBeat = this->getLastBeat();
+
+    if (shouldNotifyIfChanged)
+    {
+        this->eventDispatcher.dispatchChangeProjectBeatRange();
+    }
+}
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -223,8 +289,7 @@ XmlElement *Pattern::serialize() const
 
     for (int i = 0; i < this->clips.size(); ++i)
     {
-        const Clip clip = this->clips.getUnchecked(i);
-        xml->prependChildElement(clip.serialize());
+        xml->prependChildElement(this->clips.getUnchecked(i)->serialize());
     }
 
     return xml;
@@ -232,7 +297,7 @@ XmlElement *Pattern::serialize() const
 
 void Pattern::deserialize(const XmlElement &xml)
 {
-    this->clearQuick();
+    this->reset();
 
     const XmlElement *root =
         (xml.getTagName() == Serialization::Core::pattern) ?
@@ -245,30 +310,39 @@ void Pattern::deserialize(const XmlElement &xml)
 
     forEachXmlChildElementWithTagName(*root, e, Serialization::Core::clip)
     {
-        Clip c(this);
-        c.deserialize(*e);
-        this->clips.add(c);
+        auto clip = new Clip(this);
+        clip->deserialize(*e);
+        this->clips.add(clip); // sorted later
+        this->usedClipIds.insert(clip->getId());
     }
 
     // Fallback to single clip at zero bar, if no clips found
     if (this->clips.size() == 0)
     {
-        this->clips.add(Clip(this));
+        this->clips.add(new Clip(this));
     }
 
     this->sort();
+    this->updateBeatRange(false);
 }
 
 void Pattern::reset()
 {
-    this->clearQuick();
+    this->clips.clear(true);
+    this->usedClipIds.clear();
 }
 
-void Pattern::clearQuick()
+String Pattern::createUniqueClipId() const noexcept
 {
-    this->clips.clearQuick();
+    uint8 length = 2;
+    String eventId = ClipIdGenerator::generateId(length);
+    while (this->usedClipIds.contains(eventId))
+    {
+        length++;
+        eventId = ClipIdGenerator::generateId(length);
+    }
+    return eventId;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Helpers

@@ -17,30 +17,14 @@
 
 #pragma once
 
-//[Headers]
-//[/Headers]
-
-
-class PanelB  : public Component
+namespace AutoSequenceDeltas
 {
-public:
-
-    PanelB ();
-
-    ~PanelB();
-
-    //[UserMethods]
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
-    void resized() override;
-
-
-private:
-
-    //[UserVariables]
-    //[/UserVariables]
-
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PanelB)
-};
+    static const String layerPath = "LayerPath";
+    static const String layerMute = "LayerMute";
+    static const String layerColour = "LayerColour";
+    static const String layerInstrument = "LayerInstrument";
+    static const String layerController = "LayerController";
+    static const String eventsAdded = "EventsAdded";
+    static const String eventsRemoved = "EventsRemoved";
+    static const String eventsChanged = "EventsChanged";
+}  // namespace AutoSequenceDeltas

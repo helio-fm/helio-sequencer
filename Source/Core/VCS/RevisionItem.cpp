@@ -17,9 +17,7 @@
 
 #include "Common.h"
 #include "RevisionItem.h"
-
 #include "DiffLogic.h"
-#include "PianoLayerDiffLogic.h"
 
 using namespace VCS;
 

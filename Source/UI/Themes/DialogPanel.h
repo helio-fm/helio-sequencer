@@ -17,9 +17,30 @@
 
 #pragma once
 
-namespace PianoLayerDeltas
+//[Headers]
+//[/Headers]
+
+
+class DialogPanel  : public Component
 {
-    static const String notesAdded = "NotesAdded";
-    static const String notesRemoved = "NotesRemoved";
-    static const String notesChanged = "NotesChanged";
-} // namespace PianoLayerDeltas
+public:
+
+    DialogPanel ();
+
+    ~DialogPanel();
+
+    //[UserMethods]
+    //[/UserMethods]
+
+    void paint (Graphics& g) override;
+    void resized() override;
+
+
+private:
+
+    //[UserVariables]
+    //[/UserVariables]
+
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DialogPanel)
+};

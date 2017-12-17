@@ -26,7 +26,7 @@ class ProgressIndicator;
 class CommandItemComponent;
 //[/Headers]
 
-#include "../Themes/PanelC.h"
+#include "../Themes/DialogPanel.h"
 #include "../Themes/SeparatorHorizontalFading.h"
 #include "../Themes/SeparatorHorizontal.h"
 
@@ -79,7 +79,7 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<PanelC> background;
+    ScopedPointer<DialogPanel> background;
     ScopedPointer<TextButton> renderButton;
     ScopedPointer<Label> filenameEditor;
     ScopedPointer<Label> filenameLabel;

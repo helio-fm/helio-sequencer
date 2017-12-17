@@ -76,7 +76,6 @@ private:
 
 };
 
-
 PianoTrackMap::PianoTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll) :
     project(parentProject),
     roll(parentRoll),
@@ -94,7 +93,6 @@ PianoTrackMap::PianoTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentR
 
 PianoTrackMap::~PianoTrackMap()
 {
-    this->clearTrackMap();
     this->project.removeListener(this);
 }
 
@@ -110,12 +108,11 @@ void PianoTrackMap::resized()
 
     for (const auto &e : this->componentsMap)
     {
-        this->applyNoteBounds(e.second);
+        this->applyNoteBounds(e.second.get());
     }
 
     this->setVisible(true);
 }
-
 
 //===----------------------------------------------------------------------===//
 // ProjectListener
@@ -127,11 +124,11 @@ void PianoTrackMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent
     {
         const Note &note = static_cast<const Note &>(oldEvent);
         const Note &newNote = static_cast<const Note &>(newEvent);
-        if (TrackMapNoteComponent *component = this->componentsMap[note])
+        if (const auto component = this->componentsMap[note].release())
         {
-            this->applyNoteBounds(component);
             this->componentsMap.erase(note);
-            this->componentsMap[newNote] = component;
+            this->componentsMap[newNote] = UniquePointer<TrackMapNoteComponent>(component);
+            this->applyNoteBounds(component);
         }
     }
 }
@@ -143,11 +140,11 @@ void PianoTrackMap::onAddMidiEvent(const MidiEvent &event)
         const Note &note = static_cast<const Note &>(event);
 
         auto component = new TrackMapNoteComponent(*this, note);
+        this->componentsMap[note] = UniquePointer<TrackMapNoteComponent>(component);
+
         this->addAndMakeVisible(component);
         this->applyNoteBounds(component);
         component->toFront(false);
-
-        this->componentsMap[note] = component;
     }
 }
 
@@ -156,7 +153,7 @@ void PianoTrackMap::onRemoveMidiEvent(const MidiEvent &event)
     if (event.isTypeOf(MidiEvent::Note))
     {
         const Note &note = static_cast<const Note &>(event);
-        if (ScopedPointer<TrackMapNoteComponent> deleter = this->componentsMap[note])
+        if (const auto deletedComponent = this->componentsMap[note].get())
         {
             this->componentsMap.erase(note);
         }
@@ -200,7 +197,7 @@ void PianoTrackMap::onRemoveTrack(MidiTrack *const track)
     for (int i = 0; i < track->getSequence()->size(); ++i)
     {
         const Note &note = static_cast<const Note &>(*track->getSequence()->getUnchecked(i));
-        if (ScopedPointer<TrackMapNoteComponent> deletedComponent = this->componentsMap[note])
+        if (const auto deletedComponent = this->componentsMap[note].get())
         {
             this->componentsMap.erase(note);
         }
@@ -228,14 +225,13 @@ void PianoTrackMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
     this->resized();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Private
 //===----------------------------------------------------------------------===//
 
 void PianoTrackMap::reloadTrackMap()
 {
-    this->clearTrackMap();
+    this->componentsMap.clear();
 
     this->setVisible(false);
 
@@ -249,7 +245,7 @@ void PianoTrackMap::reloadTrackMap()
             if (Note *note = dynamic_cast<Note *>(event))
             {
                 auto noteComponent = new TrackMapNoteComponent(*this, *note);
-                this->componentsMap[*note] = noteComponent;
+                this->componentsMap[*note] = UniquePointer<TrackMapNoteComponent>(noteComponent);
                 this->addAndMakeVisible(noteComponent);
             }
         }
@@ -257,17 +253,6 @@ void PianoTrackMap::reloadTrackMap()
 
     this->resized();
     this->setVisible(true);
-}
-
-void PianoTrackMap::clearTrackMap()
-{
-    OwnedArray<TrackMapNoteComponent> deleters;
-    for (const auto &e : this->componentsMap)
-    {
-        deleters.add(e.second);
-    }
-
-    this->componentsMap.clear();
 }
 
 void PianoTrackMap::applyNoteBounds(TrackMapNoteComponent *nc)

@@ -48,14 +48,9 @@ NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, bool ghostMod
 {
     this->updateColours();
     this->toFront(false);
-    this->setPaintingIsUnclipped(true); // speedup
+    this->setPaintingIsUnclipped(true);
     this->setFloatBounds(this->getRoll().getEventBounds(this));
 }
-
-NoteComponent::~NoteComponent()
-{
-}
-
 
 const Note &NoteComponent::getNote() const
 {
@@ -66,7 +61,6 @@ PianoRoll &NoteComponent::getRoll() const
 {
     return static_cast<PianoRoll &>(this->roll);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Accessors
@@ -123,7 +117,6 @@ void NoteComponent::setQuickSelectLayerMode(bool value)
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // HybridRollEventComponent
 //===----------------------------------------------------------------------===//
@@ -149,7 +142,6 @@ String NoteComponent::getId() const
 {
     return this->midiEvent.getId();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Component
@@ -358,7 +350,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         return;
     }
     
-    Lasso &selection = this->roll.getLassoSelection();
+    const auto &selection = this->roll.getLassoSelection();
 
     if (this->state == ResizingRight)
     {
@@ -368,24 +360,19 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         if (lengthChanged)
         {
             this->checkpointIfNeeded();
-            
-            const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
-            Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
-            
-            while (selectionsMapIterator.next())
+            for (const auto i : selection.getGroupedSelections())
             {
-                SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-                
+                const auto sequenceSelection(i.second);
                 Array<Note> groupDragBefore, groupDragAfter;
                 
-                for (int i = 0; i < layerSelection->size(); ++i)
+                for (int i = 0; i < sequenceSelection->size(); ++i)
                 {
-                    NoteComponent *nc = static_cast<NoteComponent *>(layerSelection->getUnchecked(i));
+                    NoteComponent *nc = static_cast<NoteComponent *>(sequenceSelection->getUnchecked(i));
                     groupDragBefore.add(nc->getNote());
                     groupDragAfter.add(nc->continueResizingRight(deltaLength));
                 }
                 
-                getPianoLayer(layerSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                getPianoLayer(sequenceSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
             }
         }
         else
@@ -401,24 +388,19 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         if (lengthChanged)
         {
             this->checkpointIfNeeded();
-            
-            const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
-            Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
-            
-            while (selectionsMapIterator.next())
+            for (const auto i : selection.getGroupedSelections())
             {
-                SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-
+                const auto sequenceSelection(i.second);
                 Array<Note> groupDragBefore, groupDragAfter;
                 
-                for (int i = 0; i < layerSelection->size(); ++i)
+                for (int i = 0; i < sequenceSelection->size(); ++i)
                 {
-                    NoteComponent *nc = static_cast<NoteComponent *>(layerSelection->getUnchecked(i));
+                    NoteComponent *nc = static_cast<NoteComponent *>(sequenceSelection->getUnchecked(i));
                     groupDragBefore.add(nc->getNote());
                     groupDragAfter.add(nc->continueResizingLeft(deltaLength));
                 }
                 
-                getPianoLayer(layerSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                getPianoLayer(sequenceSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
             }
         }
         else
@@ -434,24 +416,19 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         if (scaleFactorChanged)
         {
             this->checkpointIfNeeded();
-            
-            const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
-            Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
-            
-            while (selectionsMapIterator.next())
+            for (const auto i : selection.getGroupedSelections())
             {
-                SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-
+                const auto sequenceSelection(i.second);
                 Array<Note> groupDragBefore, groupDragAfter;
                 
-                for (int i = 0; i < layerSelection->size(); ++i)
+                for (int i = 0; i < sequenceSelection->size(); ++i)
                 {
-                    NoteComponent *nc = static_cast<NoteComponent *>(layerSelection->getUnchecked(i));
+                    NoteComponent *nc = static_cast<NoteComponent *>(sequenceSelection->getUnchecked(i));
                     groupDragBefore.add(nc->getNote());
                     groupDragAfter.add(nc->continueGroupScalingRight(groupScaleFactor));
                 }
                 
-                getPianoLayer(layerSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                getPianoLayer(sequenceSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
             }
         }
         else
@@ -467,24 +444,19 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         if (scaleFactorChanged)
         {
             this->checkpointIfNeeded();
-            
-            const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
-            Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
-            
-            while (selectionsMapIterator.next())
+            for (const auto i : selection.getGroupedSelections())
             {
-                SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-                
+                const auto sequenceSelection(i.second);
                 Array<Note> groupDragBefore, groupDragAfter;
                 
-                for (int i = 0; i < layerSelection->size(); ++i)
+                for (int i = 0; i < sequenceSelection->size(); ++i)
                 {
-                    NoteComponent *nc = static_cast<NoteComponent *>(layerSelection->getUnchecked(i));
+                    NoteComponent *nc = static_cast<NoteComponent *>(sequenceSelection->getUnchecked(i));
                     groupDragBefore.add(nc->getNote());
                     groupDragAfter.add(nc->continueGroupScalingLeft(groupScaleFactor));
                 }
                 
-                getPianoLayer(layerSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                getPianoLayer(sequenceSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
             }
         }
         else
@@ -523,23 +495,19 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                 this->stopSound();
             }
             
-            const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
-            Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
-            
-            while (selectionsMapIterator.next())
+            for (const auto i : selection.getGroupedSelections())
             {
-                SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-
+                const auto sequenceSelection(i.second);
                 Array<Note> groupDragBefore, groupDragAfter;
                 
-                for (int i = 0; i < layerSelection->size(); ++i)
+                for (int i = 0; i < sequenceSelection->size(); ++i)
                 {
-                    NoteComponent *nc = static_cast<NoteComponent *>(layerSelection->getUnchecked(i));
+                    NoteComponent *nc = static_cast<NoteComponent *>(sequenceSelection->getUnchecked(i));
                     groupDragBefore.add(nc->getNote());
                     groupDragAfter.add(nc->continueDragging(deltaBeat, deltaKey, shouldSendMidi));
                 }
                 
-                getPianoLayer(layerSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                getPianoLayer(sequenceSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
             }
         }
     }
@@ -547,18 +515,14 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     {
         this->checkpointIfNeeded();
         
-        const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
-        Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
-        
-        while (selectionsMapIterator.next())
+        for (const auto i : selection.getGroupedSelections())
         {
-            SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-
+            const auto sequenceSelection(i.second);
             Array<Note> groupTuneBefore, groupTuneAfter;
             
-            for (int i = 0; i < layerSelection->size(); ++i)
+            for (int i = 0; i < sequenceSelection->size(); ++i)
             {
-                NoteComponent *nc = static_cast<NoteComponent *>(layerSelection->getUnchecked(i));
+                NoteComponent *nc = static_cast<NoteComponent *>(sequenceSelection->getUnchecked(i));
                 groupTuneBefore.add(nc->getNote());
                 
                 Note tuned(nc->continueTuning(e));
@@ -568,7 +532,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                 //this->roll.triggerBatchRepaintFor(nc);
             }
             
-            getPianoLayer(layerSelection)->changeGroup(groupTuneBefore, groupTuneAfter, true);
+            getPianoLayer(sequenceSelection)->changeGroup(groupTuneBefore, groupTuneAfter, true);
         }
     }
 }
@@ -790,9 +754,7 @@ void NoteComponent::paintLegacyLook(Graphics &g)
     g.drawHorizontalLine(this->getHeight() - 2, sx, sw);
     g.drawHorizontalLine(this->getHeight() - 3, sx, sw);
     g.drawHorizontalLine(this->getHeight() - 4, sx, sw);
-
 }
-
 
 //===----------------------------------------------------------------------===//
 // Helpers
@@ -816,7 +778,6 @@ void NoteComponent::activateCorrespondingTrack(bool selectAll, bool soloSelectio
     MidiSequence *layer = this->getNote().getSequence();
     this->roll.getProject().activateLayer(layer, selectAll, soloSelection);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Dragging
@@ -879,7 +840,6 @@ void NoteComponent::endDragging(bool sendMidiMessage)
     this->state = None;
 }
 
-
 //===----------------------------------------------------------------------===//
 // Resizing Right
 //===----------------------------------------------------------------------===//
@@ -935,7 +895,6 @@ void NoteComponent::endResizingRight()
     this->state = None;
 }
 
-
 //===----------------------------------------------------------------------===//
 // Resizing Left
 //===----------------------------------------------------------------------===//
@@ -979,7 +938,6 @@ void NoteComponent::endResizingLeft()
     this->stopSound();
     this->state = None;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Group Scaling Right
@@ -1026,7 +984,6 @@ void NoteComponent::endGroupScalingRight()
     this->state = None;
 }
 
-
 //===----------------------------------------------------------------------===//
 // Group Scaling Left
 //===----------------------------------------------------------------------===//
@@ -1072,7 +1029,6 @@ void NoteComponent::endGroupScalingLeft()
 {
     this->state = None;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Velocity

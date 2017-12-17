@@ -25,7 +25,7 @@ class ProjectTreeItem;
 class ProgressIndicator;
 //[/Headers]
 
-#include "../Themes/PanelC.h"
+#include "../Themes/DialogPanel.h"
 #include "../Themes/SeparatorHorizontal.h"
 
 class UpdateDialog  : public FadingDialog,
@@ -56,7 +56,7 @@ private:
     //[UserVariables]
     //[/UserVariables]
 
-    ScopedPointer<PanelC> background;
+    ScopedPointer<DialogPanel> background;
     ScopedPointer<TextButton> updateButton;
     ScopedPointer<Label> titleLabel;
     ScopedPointer<TextButton> cancelButton;

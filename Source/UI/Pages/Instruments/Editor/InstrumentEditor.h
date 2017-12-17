@@ -30,23 +30,12 @@ class InstrumentEditor :
 {
 public:
 
-    enum ColourIds
-    {
-        midiInColourId       = 0x99004000,
-        midiOutColourId      = 0x99004010,
-        audioInColourId      = 0x99004020,
-        audioOutColourId     = 0x99004030,
-    };
-
-
     InstrumentEditor(Instrument &instrument,
                      WeakReference<AudioCore> audioCoreRef);
 
     ~InstrumentEditor() override;
 
-
     void updateComponents();
-
 
     InstrumentEditorNode *getComponentForNode(AudioProcessorGraph::NodeID id) const;
     InstrumentEditorConnector *getComponentForConnection(AudioProcessorGraph::Connection conn) const;
@@ -57,7 +46,6 @@ public:
 
     // Listens to instrument and audio device
     void changeListenerCallback(ChangeBroadcaster *) override;
-
 
     //===------------------------------------------------------------------===//
     // Dragging
@@ -72,11 +60,8 @@ public:
 private:
 
     Instrument &instrument;
-
     ScopedPointer<Component> background;
-
     ScopedPointer<InstrumentEditorConnector> draggingConnector;
-
     WeakReference<AudioCore> audioCore;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InstrumentEditor)

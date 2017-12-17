@@ -18,29 +18,43 @@
 #pragma once
 
 //[Headers]
+class MidiTrack;
 //[/Headers]
 
 
-class PanelC  : public Component
+class MidiTrackHeader  : public Component,
+                         public Label::Listener
 {
 public:
 
-    PanelC ();
+    MidiTrackHeader (const MidiTrack &track);
 
-    ~PanelC();
+    ~MidiTrackHeader();
 
     //[UserMethods]
+
+
+
+    void updateContent();
+    const MidiTrack &getTrack() const noexcept;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
+    void labelTextChanged (Label* labelThatHasChanged) override;
 
 
 private:
 
     //[UserVariables]
+    const MidiTrack &track;
+
+    Colour borderLightColour;
+    Colour borderDarkColour;
+    Colour fillColour;
     //[/UserVariables]
 
+    ScopedPointer<Label> trackNameLabel;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PanelC)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MidiTrackHeader)
 };

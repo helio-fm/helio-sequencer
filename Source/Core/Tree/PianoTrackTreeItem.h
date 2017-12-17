@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "PianoLayerDiffLogic.h"
+#include "PianoTrackDiffLogic.h"
 #include "MidiTrackTreeItem.h"
 
 class PianoTrackTreeItem : public MidiTrackTreeItem
@@ -35,54 +35,37 @@ public:
     //===------------------------------------------------------------------===//
 
     int getNumDeltas() const override;
-
     VCS::Delta *getDelta(int index) const override;
-
     XmlElement *createDeltaDataFor(int index) const override;
-
     VCS::DiffLogic *getDiffLogic() const override;
-
     void resetStateTo(const VCS::TrackedItem &newState) override;
     
-
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
     XmlElement *serialize() const override;
-
     void deserialize(const XmlElement &xml) override;
-
 
     //===------------------------------------------------------------------===//
     // Deltas
     //===------------------------------------------------------------------===//
 
     XmlElement *serializePathDelta() const;
-
     XmlElement *serializeMuteDelta() const;
-
     XmlElement *serializeColourDelta() const;
-
     XmlElement *serializeInstrumentDelta() const;
-
     XmlElement *serializeEventsDelta() const;
 
     void resetPathDelta(const XmlElement *state);
-
     void resetMuteDelta(const XmlElement *state);
-
     void resetColourDelta(const XmlElement *state);
-
     void resetInstrumentDelta(const XmlElement *state);
-
     void resetEventsDelta(const XmlElement *state);
-
 
 private:
 
-    ScopedPointer<VCS::PianoLayerDiffLogic> vcsDiffLogic;
-
+    ScopedPointer<VCS::PianoTrackDiffLogic> vcsDiffLogic;
     OwnedArray<VCS::Delta> deltas;
 
 };

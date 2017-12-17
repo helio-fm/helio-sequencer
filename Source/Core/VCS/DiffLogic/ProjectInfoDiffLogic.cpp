@@ -26,16 +26,7 @@
 using namespace VCS;
 
 ProjectInfoDiffLogic::ProjectInfoDiffLogic(TrackedItem &targetItem) :
-    DiffLogic(targetItem)
-{
-
-}
-
-ProjectInfoDiffLogic::~ProjectInfoDiffLogic()
-{
-
-}
-
+    DiffLogic(targetItem) {}
 
 //===----------------------------------------------------------------------===//
 // DiffLogic

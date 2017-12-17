@@ -17,32 +17,9 @@
 
 #pragma once
 
-//[Headers]
-//[/Headers]
-
-#include "LighterShadowUpwards.h"
-
-class ShadeDark  : public Component
+namespace PianoSequenceDeltas
 {
-public:
-
-    ShadeDark ();
-
-    ~ShadeDark();
-
-    //[UserMethods]
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
-    void resized() override;
-
-
-private:
-
-    //[UserVariables]
-    //[/UserVariables]
-
-    ScopedPointer<LighterShadowUpwards> component;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ShadeDark)
-};
+    static const String notesAdded = "NotesAdded";
+    static const String notesRemoved = "NotesRemoved";
+    static const String notesChanged = "NotesChanged";
+} // namespace PianoSequenceDeltas

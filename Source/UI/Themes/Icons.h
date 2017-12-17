@@ -114,12 +114,6 @@ public:
     static const String roman6;
     static const String roman7;
 
-    enum ColourIds
-    {
-        iconColourId        = 0x99010000,
-        iconShadowColourId  = 0x99011000
-    };
-
     static void clearBuiltInImages();
     static void setupBuiltInImages();
     

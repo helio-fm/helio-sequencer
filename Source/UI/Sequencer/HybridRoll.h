@@ -73,7 +73,6 @@ class TimelineWarningMarker;
 #define HYBRID_ROLL_BULK_REPAINT_END \
     this->setVisible(true);
 
-
 class HybridRoll :
     public Component,
     public Serializable,
@@ -92,23 +91,6 @@ class HybridRoll :
     protected AudioMonitor::ClippingListener // for displaying clipping indicator components
 {
 public:
-
-    enum ColourIds
-    {
-        blackKeyColourId                 = 0x99002001,
-        blackKeyBrightColourId           = 0x99002002,
-        whiteKeyColourId                 = 0x99002003,
-        whiteKeyBrightColourId           = 0x99002004,
-        rowLineColourId                  = 0x99002005,
-        barLineColourId                  = 0x99002006,
-        barLineBevelColourId             = 0x99002007,
-        beatLineColourId                 = 0x99002008,
-        snapLineColourId                 = 0x99002009,
-        headerColourId                   = 0x99002010,
-        headerSnapsColourId              = 0x99002011,
-        playheadColourId                 = 0x99002012,
-        playheadShadeColourId            = 0x99002013
-    };
     
     HybridRoll(ProjectTreeItem &project, Viewport &viewport,
         WeakReference<AudioMonitor> audioMonitor);
@@ -150,8 +132,6 @@ public:
     //===------------------------------------------------------------------===//
     // Modes
     //===------------------------------------------------------------------===//
-    
-    virtual void setChildrenInteraction(bool interceptMouse, MouseCursor c) = 0;
 
     bool isInSelectionMode() const;
     bool isInDragMode() const;
@@ -227,9 +207,9 @@ public:
     virtual void setBarWidth(const float newBarWidth);
     float getBarWidth() const noexcept { return this->barWidth; }
 
-    Array<float> &getVisibleBars() noexcept { return this->visibleBars; }
-    Array<float> &getVisibleBeats() noexcept { return this->visibleBeats; }
-    Array<float> &getVisibleSnaps() noexcept { return this->visibleSnaps; }
+    inline const Array<float> &getVisibleBars() const noexcept  { return this->visibleBars; }
+    inline const Array<float> &getVisibleBeats() const noexcept { return this->visibleBeats; }
+    inline const Array<float> &getVisibleSnaps() const noexcept { return this->visibleSnaps; }
     
     bool isUsingAnyAltMode() const;
     void setSpaceDraggingMode(bool dragMode);
@@ -341,8 +321,11 @@ protected:
     
 protected:
     
+    // These two methods are supposed to layout non-midi-event children
     virtual void updateChildrenBounds();
     virtual void updateChildrenPositions();
+    virtual void setChildrenInteraction(bool interceptMouse, MouseCursor c) = 0;
+
     void updateBounds();
     
     WeakReference<AudioMonitor> clippingDetector;
@@ -375,7 +358,6 @@ protected:
     
     ScopedPointer<WipeSpaceHelper> wipeSpaceHelper;
 
-    
     void initInsertSpaceHelper(int xPosition);
     void updateInsertSpaceHelperIfNeeded(const MouseEvent &e);
     void removeInsertSpaceHelper();

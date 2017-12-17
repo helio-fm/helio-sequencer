@@ -42,7 +42,7 @@ InstrumentsPage::InstrumentsPage(PluginManager &scanner, InstrumentsRootTreeItem
       instrumentsRoot(instrumentsTreeItem)
 {
     addAndMakeVisible (background = new PanelBackgroundB());
-    addAndMakeVisible (panel = new PanelA());
+    addAndMakeVisible (panel = new FramePanel());
     addAndMakeVisible (pluginsList = new ListBox ("Instruments", this));
 
     addAndMakeVisible (initButton = new TextButton ("saxophone"));
@@ -377,7 +377,7 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../Themes/PanelBackgroundB.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="d37f5d299f347b6c" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="20 20 40M 90M" sourceFile="../Themes/PanelA.cpp"
+             explicitFocusOrder="0" pos="20 20 40M 90M" sourceFile="../Themes/FramePanel.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="1b089ba42e39d447" memberName="pluginsList" virtualName=""
                     explicitFocusOrder="0" pos="25 24 50M 99M" class="ListBox" params="&quot;Instruments&quot;, this"/>

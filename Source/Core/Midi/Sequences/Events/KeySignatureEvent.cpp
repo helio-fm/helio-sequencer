@@ -127,7 +127,7 @@ KeySignatureEvent KeySignatureEvent::withParameters(const XmlElement &xml) const
 KeySignatureEvent KeySignatureEvent::copyWithNewId() const
 {
     KeySignatureEvent e(*this);
-    e.id = this->createId();
+    e.id = e.createId();
     return e;
 }
 

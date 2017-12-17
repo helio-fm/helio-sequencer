@@ -242,6 +242,7 @@ void MainWindow::createLayoutComponent()
 }
 
 static ScopedPointer<OpenGLContext> kOpenGLContext = nullptr;
+static Atomic<int> kOpenGlEnabled = 0;
 
 void MainWindow::setOpenGLRendererEnabled(bool shouldBeEnabled)
 {
@@ -264,6 +265,7 @@ void MainWindow::attachOpenGLContext()
     kOpenGLContext->setPixelFormat(OpenGLPixelFormat(8, 8, 0, 0));
     kOpenGLContext->setMultisamplingEnabled(false);
     kOpenGLContext->attachTo(*this);
+    kOpenGlEnabled = 1;
 }
 
 void MainWindow::detachOpenGLContext()
@@ -271,10 +273,10 @@ void MainWindow::detachOpenGLContext()
     Logger::writeToLog("Detaching OpenGL context.");
     kOpenGLContext->detach();
     kOpenGLContext = nullptr;
+    kOpenGlEnabled = 0;
 }
 
 bool MainWindow::isOpenGLRendererEnabled() noexcept
 {
-    return (kOpenGLContext != nullptr);
+    return kOpenGlEnabled.get() != 0;
 }
-

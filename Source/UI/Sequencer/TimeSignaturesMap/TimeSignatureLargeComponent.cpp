@@ -19,6 +19,7 @@
 #include "Common.h"
 #include "TimeSignaturesSequence.h"
 #include "HybridRoll.h"
+#include "ColourIDs.h"
 //[/Headers]
 
 #include "TimeSignatureLargeComponent.h"
@@ -92,14 +93,14 @@ void TimeSignatureLargeComponent::paint (Graphics& g)
         int x = 2, y = 0, width = getWidth() - 2, height = getHeight() - 0;
         Colour fillColour = Colour (0xff898989);
         //[UserPaintCustomArguments] Customize the painting arguments here..
-        fillColour = this->findColour(HybridRoll::headerColourId);
+        fillColour = this->findColour(ColourIDs::Roll::headerFill);
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRect (x, y, width, height);
     }
 
     //[UserPaint] Add your own custom painting code here..
-    g.setColour(this->findColour(HybridRoll::headerSnapsColourId).withMultipliedAlpha(0.25f));
+    g.setColour(this->findColour(ColourIDs::Roll::headerSnaps).withMultipliedAlpha(0.25f));
     g.drawHorizontalLine(this->getHeight() - 1, 2.f, float(this->getWidth()));
     //g.drawHorizontalLine(this->getHeight() - 2, 2.f, float(this->getWidth()));
     //[/UserPaint]

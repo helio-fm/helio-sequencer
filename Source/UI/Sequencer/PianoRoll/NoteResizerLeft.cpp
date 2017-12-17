@@ -19,21 +19,21 @@
 #include "Common.h"
 //[/Headers]
 
-#include "NoteResizerRight.h"
+#include "NoteResizerLeft.h"
 
 //[MiscUserDefs]
 #include "HybridRoll.h"
 #include "PianoRoll.h"
 #include "PianoSequence.h"
-#include "PianoRollToolbox.h"
 #include "NoteComponent.h"
+#include "PianoRollToolbox.h"
 #include <float.h>
 //[/MiscUserDefs]
 
-NoteResizerRight::NoteResizerRight(HybridRoll &parentRoll)
+NoteResizerLeft::NoteResizerLeft(HybridRoll &parentRoll)
     : roll(parentRoll)
 {
-    addAndMakeVisible (resizeIcon = new IconComponent (Icons::stretchRight));
+    addAndMakeVisible (resizeIcon = new IconComponent (Icons::stretchLeft));
 
 
     //[UserPreSize]
@@ -49,7 +49,7 @@ NoteResizerRight::NoteResizerRight(HybridRoll &parentRoll)
     //[/Constructor]
 }
 
-NoteResizerRight::~NoteResizerRight()
+NoteResizerLeft::~NoteResizerLeft()
 {
     //[Destructor_pre]
     Desktop::getInstance().getAnimator().animateComponent(this, this->getBounds(), 0.f, 100, true, 0.0, 0.0);
@@ -61,65 +61,67 @@ NoteResizerRight::~NoteResizerRight()
     //[/Destructor]
 }
 
-void NoteResizerRight::paint (Graphics& g)
+void NoteResizerLeft::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
     g.setColour (Colour (0x1affffff));
-    g.fillRect (0, 0, 2, getHeight() - 0);
+    g.fillRect (getWidth() - 2, 0, 2, getHeight() - 0);
 
     g.setColour (Colour (0x20ffffff));
-    g.fillEllipse (static_cast<float> (0 - (96 / 2)), static_cast<float> (0 - (96 / 2)), 96.0f, 96.0f);
+    g.fillEllipse (static_cast<float> (getWidth() - (96 / 2)), static_cast<float> (0 - (96 / 2)), 96.0f, 96.0f);
 
     g.setColour (Colour (0x30ffffff));
-    g.drawEllipse (static_cast<float> (0 - (96 / 2)), static_cast<float> (0 - (96 / 2)), 96.0f, 96.0f, 1.000f);
+    g.drawEllipse (static_cast<float> (getWidth() - (96 / 2)), static_cast<float> (0 - (96 / 2)), 96.0f, 96.0f, 1.000f);
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
 }
 
-void NoteResizerRight::resized()
+void NoteResizerLeft::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    resizeIcon->setBounds (8, 8, 24, 24);
+    resizeIcon->setBounds (getWidth() - 8 - 24, 8, 24, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
 
-bool NoteResizerRight::hitTest (int x, int y)
+bool NoteResizerLeft::hitTest (int x, int y)
 {
     //[UserCode_hitTest] -- Add your code here...
+    const int xCenter = this->getWidth();
+    const int dx = x - xCenter;
     const int r = 96 / 2;
-    return (x * x) + (y * y) < (r * r);
+    return (dx * dx) + (y * y) < (r * r);
     //[/UserCode_hitTest]
 }
 
-void NoteResizerRight::mouseEnter (const MouseEvent& e)
+void NoteResizerLeft::mouseEnter (const MouseEvent& e)
 {
     //[UserCode_mouseEnter] -- Add your code here...
     this->resizeIcon->setAlpha(1.f);
     //[/UserCode_mouseEnter]
 }
 
-void NoteResizerRight::mouseExit (const MouseEvent& e)
+void NoteResizerLeft::mouseExit (const MouseEvent& e)
 {
     //[UserCode_mouseExit] -- Add your code here...
     this->resizeIcon->setAlpha(0.5f);
     //[/UserCode_mouseExit]
 }
 
-void NoteResizerRight::mouseDown (const MouseEvent& e)
+void NoteResizerLeft::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
     this->dragger.startDraggingComponent(this, e);
 
     const Lasso &selection = this->roll.getLassoSelection();
-    const float groupStartBeat = PianoRollToolbox::findStartBeat(selection);
+    const float groupEndBeat = PianoRollToolbox::findEndBeat(selection);
 
-    this->noteComponent = this->findRightMostEvent(selection);
+    this->noteComponent = this->findLeftMostEvent(selection);
 
     for (int i = 0; i < selection.getNumSelected(); i++)
     {
@@ -128,13 +130,13 @@ void NoteResizerRight::mouseDown (const MouseEvent& e)
             if (selection.shouldDisplayGhostNotes())
             { note->getRoll().showGhostNoteFor(note); }
 
-            note->startGroupScalingRight(groupStartBeat);
+            note->startGroupScalingLeft(groupEndBeat);
         }
     }
     //[/UserCode_mouseDown]
 }
 
-void NoteResizerRight::mouseDrag (const MouseEvent& e)
+void NoteResizerLeft::mouseDrag (const MouseEvent& e)
 {
     //[UserCode_mouseDrag] -- Add your code here...
     this->dragger.dragComponent(this, e, nullptr);
@@ -143,33 +145,25 @@ void NoteResizerRight::mouseDrag (const MouseEvent& e)
 
     float groupScaleFactor = 1.f;
     const bool scaleFactorChanged =
-        this->noteComponent->getGroupScaleRightFactor(
-            e.withNewPosition(Point<int>(0, 0))
-            .getEventRelativeTo(this->noteComponent), groupScaleFactor);
+        this->noteComponent->getGroupScaleLeftFactor(e.withNewPosition(Point<int>(this->getWidth(), 0)).getEventRelativeTo(this->noteComponent), groupScaleFactor);
 
     if (scaleFactorChanged)
     {
         this->noteComponent->checkpointIfNeeded();
-
-        const Lasso::GroupedSelections &selections = selection.getGroupedSelections();
-        Lasso::GroupedSelections::Iterator selectionsMapIterator(selections);
-
-        while (selectionsMapIterator.next())
+        for (const auto i : selection.getGroupedSelections())
         {
-            SelectionProxyArray::Ptr layerSelection(selectionsMapIterator.getValue());
-
+            const auto sequenceSelection(i.second);
             Array<Note> groupDragBefore, groupDragAfter;
 
             for (int i = 0; i < selection.getNumSelected(); ++i)
             {
                 NoteComponent *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
                 groupDragBefore.add(nc->getNote());
-                groupDragAfter.add(nc->continueGroupScalingRight(groupScaleFactor));
+                groupDragAfter.add(nc->continueGroupScalingLeft(groupScaleFactor));
             }
 
-            const auto &event = layerSelection->getFirstAs<NoteComponent>()->getNote();
+            const auto &event = sequenceSelection->getFirstAs<NoteComponent>()->getNote();
             PianoSequence *pianoLayer = static_cast<PianoSequence *>(event.getSequence());
-
             pianoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
         }
     }
@@ -178,7 +172,7 @@ void NoteResizerRight::mouseDrag (const MouseEvent& e)
     //[/UserCode_mouseDrag]
 }
 
-void NoteResizerRight::mouseUp (const MouseEvent &e)
+void NoteResizerLeft::mouseUp (const MouseEvent& e)
 {
     //[UserCode_mouseUp] -- Add your code here...
     const Lasso &selection = this->roll.getLassoSelection();
@@ -195,37 +189,36 @@ void NoteResizerRight::mouseUp (const MouseEvent &e)
 
 //[MiscUserCode]
 
-NoteComponent *NoteResizerRight::findRightMostEvent(const Lasso &selection)
+NoteComponent *NoteResizerLeft::findLeftMostEvent(const Lasso &selection)
 {
-    NoteComponent *mc = nullptr;
-    float rightMostBeat = -FLT_MAX;
+    HybridRollEventComponent *mc = nullptr;
+    float leftMostBeat = FLT_MAX;
 
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
-        NoteComponent *currentEvent = static_cast<NoteComponent *>(selection.getSelectedItem(i));
-        const float beatPlusLength = currentEvent->getBeat() + currentEvent->getLength();
+        HybridRollEventComponent *const e = selection.getItemAs<HybridRollEventComponent>(i);
 
-        if (rightMostBeat < beatPlusLength)
+        if (leftMostBeat > e->getBeat())
         {
-            rightMostBeat = beatPlusLength;
-            mc = currentEvent;
+            leftMostBeat = e->getBeat();
+            mc = e;
         }
     }
 
-    return mc;
+    return static_cast<NoteComponent *>(mc);
 }
 
-void NoteResizerRight::updateBounds(NoteComponent *anchorComponent)
+void NoteResizerLeft::updateBounds(NoteComponent *anchorComponent)
 {
     const Lasso &selection = this->roll.getLassoSelection();
-    const float groupEndBeat = (anchorComponent != nullptr) ?
-                                (anchorComponent->getBeat() + anchorComponent->getLength()) :
-                                PianoRollToolbox::findEndBeat(selection);
+    const float groupStartBeat = (anchorComponent != nullptr) ?
+                                  anchorComponent->getBeat() :
+                                  PianoRollToolbox::findStartBeat(selection);
 
-    const int xAnchor = this->roll.getXPositionByBeat(groupEndBeat);
+    const int xAnchor = this->roll.getXPositionByBeat(groupStartBeat);
     const int yAnchor = this->roll.getViewport().getViewPositionY() + HYBRID_ROLL_HEADER_HEIGHT;
     const int h = this->roll.getViewport().getViewHeight();
-    this->setBounds(xAnchor, yAnchor, this->getWidth(), h);
+    this->setBounds(xAnchor - this->getWidth(), yAnchor, this->getWidth(), h);
 
     if (this->getAlpha() == 0.f && !this->fader.isAnimating())
     {
@@ -233,7 +226,7 @@ void NoteResizerRight::updateBounds(NoteComponent *anchorComponent)
     }
 }
 
-void NoteResizerRight::updateTopPosition()
+void NoteResizerLeft::updateTopPosition()
 {
     const int yAnchor = this->roll.getViewport().getViewPositionY() + HYBRID_ROLL_HEADER_HEIGHT;
     this->setTopLeftPosition(this->getX(), yAnchor);
@@ -245,7 +238,7 @@ void NoteResizerRight::updateTopPosition()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="NoteResizerRight" template="../../../Template"
+<JUCER_COMPONENT documentType="Component" className="NoteResizerLeft" template="../../../Template"
                  componentName="" parentClasses="public Component" constructorParams="HybridRoll &amp;parentRoll"
                  variableInitialisers="roll(parentRoll)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="64"
@@ -259,13 +252,13 @@ BEGIN_JUCER_METADATA
     <METHOD name="hitTest (int x, int y)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <RECT pos="0 0 2 0M" fill="solid: 1affffff" hasStroke="0"/>
-    <ELLIPSE pos="0c 0c 96 96" fill="solid: 20ffffff" hasStroke="1" stroke="1, mitered, butt"
+    <RECT pos="0Rr 0 2 0M" fill="solid: 1affffff" hasStroke="0"/>
+    <ELLIPSE pos="0Rc 0c 96 96" fill="solid: 20ffffff" hasStroke="1" stroke="1, mitered, butt"
              strokeColour="solid: 30ffffff"/>
   </BACKGROUND>
   <GENERICCOMPONENT name="" id="79f90a69d0b95011" memberName="resizeIcon" virtualName=""
-                    explicitFocusOrder="0" pos="8 8 24 24" class="IconComponent"
-                    params="Icons::stretchRight"/>
+                    explicitFocusOrder="0" pos="8Rr 8 24 24" class="IconComponent"
+                    params="Icons::stretchLeft"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

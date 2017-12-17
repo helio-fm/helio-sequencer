@@ -26,6 +26,7 @@
 #include "PanelBackgroundB.h"
 #include "HeadlineDropdown.h"
 #include "HelioCallout.h"
+#include "ColourIDs.h"
 #include "Workspace.h"
 #include "App.h"
 //[/MiscUserDefs]
@@ -69,7 +70,7 @@ void HeadlineNavigationPanel::paint (Graphics& g)
         float x = 0, y = 0;
         Colour fillColour = Colour (0x0dffffff);
         //[UserPaintCustomArguments] Customize the painting arguments here..
-        fillColour = this->findColour(PanelBackgroundB::panelFillId).brighter(0.03f);
+        fillColour = this->findColour(ColourIDs::BackgroundB::fill).brighter(0.03f);
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillPath (internalPath1, AffineTransform::translation(x, y));

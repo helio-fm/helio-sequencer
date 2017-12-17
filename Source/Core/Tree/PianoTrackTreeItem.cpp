@@ -30,9 +30,9 @@
 
 #include "Delta.h"
 #include "PatternDeltas.h"
-#include "PianoLayerDeltas.h"
+#include "PianoSequenceDeltas.h"
 #include "MidiTrackDeltas.h"
-#include "PianoLayerDiffLogic.h"
+#include "PianoTrackDiffLogic.h"
 
 PianoTrackTreeItem::PianoTrackTreeItem(const String &name) :
     MidiTrackTreeItem(name, Serialization::Core::pianoLayer)
@@ -43,13 +43,13 @@ PianoTrackTreeItem::PianoTrackTreeItem(const String &name) :
     // this will be set by transport
     //this->layer->setInstrumentId(this->workspace.getDefaultInstrument()->getInstrumentID());
 
-    this->vcsDiffLogic = new VCS::PianoLayerDiffLogic(*this);
+    this->vcsDiffLogic = new VCS::PianoTrackDiffLogic(*this);
 
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), MidiTrackDeltas::trackPath));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), MidiTrackDeltas::trackMute));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), MidiTrackDeltas::trackColour));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), MidiTrackDeltas::trackInstrument));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), PianoLayerDeltas::notesAdded));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), PianoSequenceDeltas::notesAdded));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), PatternDeltas::clipsAdded));
 }
 
@@ -88,7 +88,7 @@ void PianoTrackTreeItem::selectAllPianoSiblings(PianoTrackTreeItem *layerItem)
 
 VCS::Delta *PianoTrackTreeItem::getDelta(int index) const
 {
-    if (this->deltas[index]->getType() == PianoLayerDeltas::notesAdded)
+    if (this->deltas[index]->getType() == PianoSequenceDeltas::notesAdded)
     {
         const int numEvents = this->getSequence()->size();
 
@@ -136,7 +136,7 @@ XmlElement *PianoTrackTreeItem::createDeltaDataFor(int index) const
     {
         return this->serializeInstrumentDelta();
     }
-    else if (this->deltas[index]->getType() == PianoLayerDeltas::notesAdded)
+    else if (this->deltas[index]->getType() == PianoSequenceDeltas::notesAdded)
     {
         return this->serializeEventsDelta();
     }
@@ -178,8 +178,8 @@ void PianoTrackTreeItem::resetStateTo(const VCS::TrackedItem &newState)
             this->resetInstrumentDelta(newDeltaData);
         }
         // the current layer state is supposed to have
-        // a single note delta of type PianoLayerDeltas::notesAdded
-        else if (newDelta->getType() == PianoLayerDeltas::notesAdded)
+        // a single note delta of type PianoSequenceDeltas::notesAdded
+        else if (newDelta->getType() == PianoSequenceDeltas::notesAdded)
         {
             this->resetEventsDelta(newDeltaData);
         }
@@ -272,7 +272,7 @@ XmlElement *PianoTrackTreeItem::serializeInstrumentDelta() const
 
 XmlElement *PianoTrackTreeItem::serializeEventsDelta() const
 {
-    auto xml = new XmlElement(PianoLayerDeltas::notesAdded);
+    auto xml = new XmlElement(PianoSequenceDeltas::notesAdded);
 
     // да, дублируется сериализация :( причем 2 раза
     for (int i = 0; i < this->getSequence()->size(); ++i)
@@ -325,7 +325,7 @@ void PianoTrackTreeItem::resetInstrumentDelta(const XmlElement *state)
 
 void PianoTrackTreeItem::resetEventsDelta(const XmlElement *state)
 {
-    jassert(state->getTagName() == PianoLayerDeltas::notesAdded);
+    jassert(state->getTagName() == PianoSequenceDeltas::notesAdded);
 
     //this->reset(); // TODO test
     this->getSequence()->reset();

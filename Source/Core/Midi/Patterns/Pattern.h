@@ -36,6 +36,14 @@ public:
     ~Pattern() override;
     
     //===------------------------------------------------------------------===//
+    // Accessors
+    //===------------------------------------------------------------------===//
+
+    float getFirstBeat() const noexcept;
+    float getLastBeat() const noexcept;
+    MidiTrack *getTrack() const noexcept;
+
+    //===------------------------------------------------------------------===//
     // Undoing
     //===------------------------------------------------------------------===//
 
@@ -66,21 +74,16 @@ public:
     inline int size() const
     { return this->clips.size(); }
 
-    inline Clip* begin() const noexcept
+    inline Clip** begin() const noexcept
     { return this->clips.begin(); }
     
-    inline Clip* end() const noexcept
+    inline Clip** end() const noexcept
     { return this->clips.end(); }
     
-    inline Clip getUnchecked(const int index) const
+    inline Clip *getUnchecked(const int index) const
     { return this->clips.getUnchecked(index); }
-
-    inline int indexOfSorted(const Clip &clip) const
-    {
-        return this->clips.indexOfSorted(clip, clip);
-    }
-
-    inline Array<Clip> &getClips() noexcept;
+    
+    inline OwnedArray<Clip> &getClips() noexcept;
     
     //===------------------------------------------------------------------===//
     // Events change listener
@@ -90,6 +93,7 @@ public:
     void notifyClipAdded(const Clip &clip);
     void notifyClipRemoved(const Clip &clip);
     void notifyClipRemovedPostAction();
+    void updateBeatRange(bool shouldNotifyIfChanged);
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -103,7 +107,7 @@ public:
     // Helpers
     //===------------------------------------------------------------------===//
 
-    MidiTrack *getTrack() const noexcept;
+    String createUniqueClipId() const noexcept;
     String getTrackId() const noexcept;
 
     friend inline bool operator==(const Pattern &lhs, const Pattern &rhs)
@@ -117,10 +121,14 @@ protected:
 
     void clearQuick();
 
+    float lastEndBeat;
+    float lastStartBeat;
+
     ProjectTreeItem *getProject();
     UndoStack *getUndoStack();
 
-    Array<Clip> clips;
+    OwnedArray<Clip> clips;
+    SparseHashSet<Clip::Id, StringHash> usedClipIds;
 
 private:
     

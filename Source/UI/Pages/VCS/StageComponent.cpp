@@ -75,7 +75,7 @@ StageComponent::StageComponent(VersionControl &versionControl)
     addAndMakeVisible (shadow = new LightShadowDownwards());
     addAndMakeVisible (indicator = new ProgressIndicator());
 
-    addAndMakeVisible (panel = new PanelA());
+    addAndMakeVisible (panel = new FramePanel());
     addAndMakeVisible (changesList = new ListBox ("", this));
 
 
@@ -456,7 +456,7 @@ BEGIN_JUCER_METADATA
                     explicitFocusOrder="0" pos="0Cc 0Cc 32 32" class="ProgressIndicator"
                     params=""/>
   <JUCERCOMP name="" id="83da04584c2ed03b" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="0 35 0M 85M" sourceFile="../Themes/PanelA.cpp"
+             explicitFocusOrder="0" pos="0 35 0M 85M" sourceFile="../Themes/FramePanel.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="d017e5395434bb4f" memberName="changesList" virtualName=""
                     explicitFocusOrder="0" pos="1 36 2M 87M" class="ListBox" params="&quot;&quot;, this"/>

@@ -19,25 +19,27 @@
 #include "Common.h"
 //[/Headers]
 
-#include "GradientVertical.h"
+#include "FramePanel.h"
 
 //[MiscUserDefs]
 //[/MiscUserDefs]
 
-GradientVertical::GradientVertical()
+FramePanel::FramePanel()
 {
 
     //[UserPreSize]
+    this->setOpaque(true);
     this->setInterceptsMouseClicks(false, false);
+    this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
-    setSize (256, 256);
+    setSize (600, 400);
 
     //[Constructor]
     //[/Constructor]
 }
 
-GradientVertical::~GradientVertical()
+FramePanel::~FramePanel()
 {
     //[Destructor_pre]
     //[/Destructor_pre]
@@ -47,23 +49,37 @@ GradientVertical::~GradientVertical()
     //[/Destructor]
 }
 
-void GradientVertical::paint (Graphics& g)
+void FramePanel::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
+#if 0
     //[/UserPrePaint]
 
-    g.setGradientFill (ColourGradient (Colour (0x05ffffff),
-                                       static_cast<float> ((getWidth() / 2)), static_cast<float> (-32),
-                                       Colour (0x02ffffff),
-                                       static_cast<float> ((getWidth() / 2)), static_cast<float> (getHeight() - -32),
-                                       true));
-    g.fillRect (0, 0, getWidth() - 0, getHeight() - 0);
+    {
+        float x = 0.0f, y = 0.0f, width = static_cast<float> (getWidth() - 0), height = static_cast<float> (getHeight() - 0);
+        Colour strokeColour = Colour (0x77ffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (strokeColour);
+        g.drawRoundedRectangle (x, y, width, height, 2.000f, 0.700f);
+    }
 
     //[UserPaint] Add your own custom painting code here..
+#endif
+
+//    g.setColour (findColour(FramePanel::panelFillColourId));
+//    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 2.000f);
+
+//    g.setColour (findColour(FramePanel::panelBorderColourId));
+//    g.drawRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 2.000f, 0.500f);
+
+    g.setColour (Colours::white.withAlpha(0.55f));
+    g.drawRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 2.000f, 0.750f);
+
     //[/UserPaint]
 }
 
-void GradientVertical::resized()
+void FramePanel::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
@@ -80,13 +96,13 @@ void GradientVertical::resized()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="GradientVertical" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="FramePanel" template="../../Template"
                  componentName="" parentClasses="public Component" constructorParams=""
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="256" initialHeight="256">
+                 overlayOpacity="0.330" fixedSize="0" initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="0">
-    <RECT pos="0 0 0M 0M" fill=" radial: 0C -32, 0C -32R, 0=5ffffff, 1=2ffffff"
-          hasStroke="0"/>
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="2" fill="solid: 0" hasStroke="1"
+               stroke="0.7, mitered, butt" strokeColour="solid: 77ffffff"/>
   </BACKGROUND>
 </JUCER_COMPONENT>
 

@@ -25,7 +25,7 @@ class PullComponent;
 #include "Client.h"
 //[/Headers]
 
-#include "../Themes/PanelA.h"
+#include "../Themes/FramePanel.h"
 #include "../Themes/LightShadowDownwards.h"
 
 class HistoryComponent  : public Component,
@@ -58,7 +58,7 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<PanelA> panel;
+    ScopedPointer<FramePanel> panel;
     ScopedPointer<Viewport> revisionViewport;
     ScopedPointer<TextButton> pushButton;
     ScopedPointer<TextButton> pullButton;

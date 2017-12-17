@@ -193,10 +193,10 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/PianoTrackActions_78338acf.o \
   $(JUCE_OBJDIR)/TimeSignatureEventActions_c6f6be42.o \
   $(JUCE_OBJDIR)/UndoStack_c8cfe6ea.o \
-  $(JUCE_OBJDIR)/AutomationLayerDiffLogic_5a3fe36f.o \
+  $(JUCE_OBJDIR)/AutomationTrackDiffLogic_d3a28db5.o \
   $(JUCE_OBJDIR)/DiffLogic_e39316b3.o \
-  $(JUCE_OBJDIR)/PatternDiffLogic_3ab83d19.o \
-  $(JUCE_OBJDIR)/PianoLayerDiffLogic_a6808bcb.o \
+  $(JUCE_OBJDIR)/PatternDiffHelpers_2a43df40.o \
+  $(JUCE_OBJDIR)/PianoTrackDiffLogic_1fe33611.o \
   $(JUCE_OBJDIR)/ProjectInfoDiffLogic_85d6d922.o \
   $(JUCE_OBJDIR)/ProjectTimelineDiffLogic_dd926f6f.o \
   $(JUCE_OBJDIR)/PullThread_38e0532a.o \
@@ -231,7 +231,6 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/PluginWindow_66751815.o \
   $(JUCE_OBJDIR)/RadioButton_45b0c9c5.o \
   $(JUCE_OBJDIR)/ScaleEditor_6bc10d0f.o \
-  $(JUCE_OBJDIR)/SizeSwitcherComponent_cef9f113.o \
   $(JUCE_OBJDIR)/SpectralLogo_f6755a41.o \
   $(JUCE_OBJDIR)/ViewportFitProxyComponent_a93fb792.o \
   $(JUCE_OBJDIR)/AnnotationDialog_bb76a597.o \
@@ -338,8 +337,6 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/ComponentConnectorCurve_50e8f885.o \
   $(JUCE_OBJDIR)/HybridRollExpandMark_c3022404.o \
   $(JUCE_OBJDIR)/InsertSpaceHelper_7c318421.o \
-  $(JUCE_OBJDIR)/NoteResizerLeft_c91c2c99.o \
-  $(JUCE_OBJDIR)/NoteResizerRight_97b6ed14.o \
   $(JUCE_OBJDIR)/TimelineWarningMarker_6d5c36fb.o \
   $(JUCE_OBJDIR)/WipeSpaceHelper_16b49913.o \
   $(JUCE_OBJDIR)/KeySignatureLargeComponent_99338c78.o \
@@ -349,8 +346,12 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/AutomationClipComponent_ecbdf1e4.o \
   $(JUCE_OBJDIR)/DummyClipComponent_76f3c1e1.o \
   $(JUCE_OBJDIR)/PianoClipComponent_726e7f60.o \
+  $(JUCE_OBJDIR)/MidiTrackHeader_edf82885.o \
+  $(JUCE_OBJDIR)/MidiTrackInsertHelper_7c398a7f.o \
   $(JUCE_OBJDIR)/PatternRoll_9707f85b.o \
   $(JUCE_OBJDIR)/NoteComponent_465c17d2.o \
+  $(JUCE_OBJDIR)/NoteResizerLeft_c3d11e3a.o \
+  $(JUCE_OBJDIR)/NoteResizerRight_f3a02f93.o \
   $(JUCE_OBJDIR)/PianoRoll_c125538d.o \
   $(JUCE_OBJDIR)/PianoRollToolbox_31a5c270.o \
   $(JUCE_OBJDIR)/TimeSignatureLargeComponent_3afd89e2.o \
@@ -371,30 +372,24 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/ToolsSidebar_9e5195a7.o \
   $(JUCE_OBJDIR)/ComponentFader_6572b0c.o \
   $(JUCE_OBJDIR)/FontSerializer_ad448bd4.o \
-  $(JUCE_OBJDIR)/GradientVertical_67252d59.o \
-  $(JUCE_OBJDIR)/GradientVerticalReversed_56a2f63b.o \
   $(JUCE_OBJDIR)/HelioTheme_d6ec9067.o \
   $(JUCE_OBJDIR)/Icons_7879bcb1.o \
-  $(JUCE_OBJDIR)/LighterShadowDownwards_5a0a0425.o \
-  $(JUCE_OBJDIR)/LighterShadowUpwards_3589fd0c.o \
   $(JUCE_OBJDIR)/LightShadowDownwards_329253f2.o \
   $(JUCE_OBJDIR)/LightShadowLeftwards_3042da2d.o \
   $(JUCE_OBJDIR)/LightShadowRightwards_b4145968.o \
   $(JUCE_OBJDIR)/LightShadowUpwards_7f8ddc19.o \
-  $(JUCE_OBJDIR)/PanelA_cd3f5b50.o \
-  $(JUCE_OBJDIR)/PanelB_cd4d72d1.o \
+  $(JUCE_OBJDIR)/LighterShadowDownwards_5a0a0425.o \
+  $(JUCE_OBJDIR)/LighterShadowUpwards_3589fd0c.o \
+  $(JUCE_OBJDIR)/FramePanel_4a84952a.o \
+  $(JUCE_OBJDIR)/DialogPanel_d1de90b3.o \
   $(JUCE_OBJDIR)/PanelBackgroundA_49900242.o \
   $(JUCE_OBJDIR)/PanelBackgroundB_499e19c3.o \
   $(JUCE_OBJDIR)/PanelBackgroundC_49ac3144.o \
-  $(JUCE_OBJDIR)/PanelC_cd5b8a52.o \
   $(JUCE_OBJDIR)/SeparatorHorizontal_240c2780.o \
   $(JUCE_OBJDIR)/SeparatorHorizontalReversed_385cd962.o \
   $(JUCE_OBJDIR)/SeparatorHorizontalFading_a0277f19.o \
   $(JUCE_OBJDIR)/SeparatorHorizontalFadingReversed_481787fb.o \
   $(JUCE_OBJDIR)/SeparatorVertical_65878792.o \
-  $(JUCE_OBJDIR)/SeparatorVerticalReversed_e5480774.o \
-  $(JUCE_OBJDIR)/ShadeDark_2a393f5a.o \
-  $(JUCE_OBJDIR)/ShadeLight_b6da9a7c.o \
   $(JUCE_OBJDIR)/ShadowDownwards_29eb3a6c.o \
   $(JUCE_OBJDIR)/ShadowHorizontalFading_a0923750.o \
   $(JUCE_OBJDIR)/ShadowLeftwards_279bc0a7.o \
@@ -868,9 +863,9 @@ $(JUCE_OBJDIR)/UndoStack_c8cfe6ea.o: ../../Source/Core/Undo/UndoStack.cpp
 	@echo "Compiling UndoStack.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/AutomationLayerDiffLogic_5a3fe36f.o: ../../Source/Core/VCS/DiffLogic/AutomationLayerDiffLogic.cpp
+$(JUCE_OBJDIR)/AutomationTrackDiffLogic_d3a28db5.o: ../../Source/Core/VCS/DiffLogic/AutomationTrackDiffLogic.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling AutomationLayerDiffLogic.cpp"
+	@echo "Compiling AutomationTrackDiffLogic.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/DiffLogic_e39316b3.o: ../../Source/Core/VCS/DiffLogic/DiffLogic.cpp
@@ -878,14 +873,14 @@ $(JUCE_OBJDIR)/DiffLogic_e39316b3.o: ../../Source/Core/VCS/DiffLogic/DiffLogic.c
 	@echo "Compiling DiffLogic.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/PatternDiffLogic_3ab83d19.o: ../../Source/Core/VCS/DiffLogic/PatternDiffLogic.cpp
+$(JUCE_OBJDIR)/PatternDiffHelpers_2a43df40.o: ../../Source/Core/VCS/DiffLogic/PatternDiffHelpers.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling PatternDiffLogic.cpp"
+	@echo "Compiling PatternDiffHelpers.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/PianoLayerDiffLogic_a6808bcb.o: ../../Source/Core/VCS/DiffLogic/PianoLayerDiffLogic.cpp
+$(JUCE_OBJDIR)/PianoTrackDiffLogic_1fe33611.o: ../../Source/Core/VCS/DiffLogic/PianoTrackDiffLogic.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling PianoLayerDiffLogic.cpp"
+	@echo "Compiling PianoTrackDiffLogic.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/ProjectInfoDiffLogic_85d6d922.o: ../../Source/Core/VCS/DiffLogic/ProjectInfoDiffLogic.cpp
@@ -1056,11 +1051,6 @@ $(JUCE_OBJDIR)/RadioButton_45b0c9c5.o: ../../Source/UI/Common/RadioButton.cpp
 $(JUCE_OBJDIR)/ScaleEditor_6bc10d0f.o: ../../Source/UI/Common/ScaleEditor.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ScaleEditor.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/SizeSwitcherComponent_cef9f113.o: ../../Source/UI/Common/SizeSwitcherComponent.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling SizeSwitcherComponent.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/SpectralLogo_f6755a41.o: ../../Source/UI/Common/SpectralLogo.cpp
@@ -1593,16 +1583,6 @@ $(JUCE_OBJDIR)/InsertSpaceHelper_7c318421.o: ../../Source/UI/Sequencer/Helpers/I
 	@echo "Compiling InsertSpaceHelper.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/NoteResizerLeft_c91c2c99.o: ../../Source/UI/Sequencer/Helpers/NoteResizerLeft.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling NoteResizerLeft.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/NoteResizerRight_97b6ed14.o: ../../Source/UI/Sequencer/Helpers/NoteResizerRight.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling NoteResizerRight.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/TimelineWarningMarker_6d5c36fb.o: ../../Source/UI/Sequencer/Helpers/TimelineWarningMarker.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TimelineWarningMarker.cpp"
@@ -1648,6 +1628,16 @@ $(JUCE_OBJDIR)/PianoClipComponent_726e7f60.o: ../../Source/UI/Sequencer/PatternR
 	@echo "Compiling PianoClipComponent.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/MidiTrackHeader_edf82885.o: ../../Source/UI/Sequencer/PatternRoll/MidiTrackHeader.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling MidiTrackHeader.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/MidiTrackInsertHelper_7c398a7f.o: ../../Source/UI/Sequencer/PatternRoll/MidiTrackInsertHelper.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling MidiTrackInsertHelper.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/PatternRoll_9707f85b.o: ../../Source/UI/Sequencer/PatternRoll/PatternRoll.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling PatternRoll.cpp"
@@ -1656,6 +1646,16 @@ $(JUCE_OBJDIR)/PatternRoll_9707f85b.o: ../../Source/UI/Sequencer/PatternRoll/Pat
 $(JUCE_OBJDIR)/NoteComponent_465c17d2.o: ../../Source/UI/Sequencer/PianoRoll/NoteComponent.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling NoteComponent.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/NoteResizerLeft_c3d11e3a.o: ../../Source/UI/Sequencer/PianoRoll/NoteResizerLeft.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling NoteResizerLeft.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/NoteResizerRight_f3a02f93.o: ../../Source/UI/Sequencer/PianoRoll/NoteResizerRight.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling NoteResizerRight.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/PianoRoll_c125538d.o: ../../Source/UI/Sequencer/PianoRoll/PianoRoll.cpp
@@ -1758,16 +1758,6 @@ $(JUCE_OBJDIR)/FontSerializer_ad448bd4.o: ../../Source/UI/Themes/FontSerializer.
 	@echo "Compiling FontSerializer.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/GradientVertical_67252d59.o: ../../Source/UI/Themes/GradientVertical.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling GradientVertical.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/GradientVerticalReversed_56a2f63b.o: ../../Source/UI/Themes/GradientVerticalReversed.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling GradientVerticalReversed.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/HelioTheme_d6ec9067.o: ../../Source/UI/Themes/HelioTheme.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling HelioTheme.cpp"
@@ -1776,16 +1766,6 @@ $(JUCE_OBJDIR)/HelioTheme_d6ec9067.o: ../../Source/UI/Themes/HelioTheme.cpp
 $(JUCE_OBJDIR)/Icons_7879bcb1.o: ../../Source/UI/Themes/Icons.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling Icons.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/LighterShadowDownwards_5a0a0425.o: ../../Source/UI/Themes/LighterShadowDownwards.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling LighterShadowDownwards.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/LighterShadowUpwards_3589fd0c.o: ../../Source/UI/Themes/LighterShadowUpwards.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling LighterShadowUpwards.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/LightShadowDownwards_329253f2.o: ../../Source/UI/Themes/LightShadowDownwards.cpp
@@ -1808,14 +1788,24 @@ $(JUCE_OBJDIR)/LightShadowUpwards_7f8ddc19.o: ../../Source/UI/Themes/LightShadow
 	@echo "Compiling LightShadowUpwards.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/PanelA_cd3f5b50.o: ../../Source/UI/Themes/PanelA.cpp
+$(JUCE_OBJDIR)/LighterShadowDownwards_5a0a0425.o: ../../Source/UI/Themes/LighterShadowDownwards.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling PanelA.cpp"
+	@echo "Compiling LighterShadowDownwards.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/PanelB_cd4d72d1.o: ../../Source/UI/Themes/PanelB.cpp
+$(JUCE_OBJDIR)/LighterShadowUpwards_3589fd0c.o: ../../Source/UI/Themes/LighterShadowUpwards.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling PanelB.cpp"
+	@echo "Compiling LighterShadowUpwards.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/FramePanel_4a84952a.o: ../../Source/UI/Themes/FramePanel.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling FramePanel.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/DialogPanel_d1de90b3.o: ../../Source/UI/Themes/DialogPanel.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling DialogPanel.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/PanelBackgroundA_49900242.o: ../../Source/UI/Themes/PanelBackgroundA.cpp
@@ -1831,11 +1821,6 @@ $(JUCE_OBJDIR)/PanelBackgroundB_499e19c3.o: ../../Source/UI/Themes/PanelBackgrou
 $(JUCE_OBJDIR)/PanelBackgroundC_49ac3144.o: ../../Source/UI/Themes/PanelBackgroundC.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling PanelBackgroundC.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/PanelC_cd5b8a52.o: ../../Source/UI/Themes/PanelC.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling PanelC.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/SeparatorHorizontal_240c2780.o: ../../Source/UI/Themes/SeparatorHorizontal.cpp
@@ -1861,21 +1846,6 @@ $(JUCE_OBJDIR)/SeparatorHorizontalFadingReversed_481787fb.o: ../../Source/UI/The
 $(JUCE_OBJDIR)/SeparatorVertical_65878792.o: ../../Source/UI/Themes/SeparatorVertical.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling SeparatorVertical.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/SeparatorVerticalReversed_e5480774.o: ../../Source/UI/Themes/SeparatorVerticalReversed.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling SeparatorVerticalReversed.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/ShadeDark_2a393f5a.o: ../../Source/UI/Themes/ShadeDark.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling ShadeDark.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/ShadeLight_b6da9a7c.o: ../../Source/UI/Themes/ShadeLight.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling ShadeLight.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/ShadowDownwards_29eb3a6c.o: ../../Source/UI/Themes/ShadowDownwards.cpp

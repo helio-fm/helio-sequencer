@@ -63,8 +63,14 @@ void InsertSpaceHelper::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x0bffffff));
-    g.fillRect (23, 0, getWidth() - 46, getHeight() - 0);
+    {
+        int x = 23, y = 0, width = getWidth() - 46, height = getHeight() - 0;
+        Colour fillColour = Colour (0x0bffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]

@@ -29,7 +29,7 @@ class CommandItemComponent;
 #include "../Themes/PanelBackgroundC.h"
 #include "../Popups/PopupButton.h"
 #include "../Popups/PopupButton.h"
-#include "../Themes/PanelA.h"
+#include "../Themes/FramePanel.h"
 #include "../Common/PlayButton.h"
 #include "../Themes/ShadowDownwards.h"
 #include "../Popups/PopupButton.h"
@@ -100,7 +100,7 @@ private:
     ScopedPointer<Slider> volumeSliderMulti;
     ScopedPointer<Slider> volumeSliderLinear;
     ScopedPointer<NotesTuningDiagram> tuningDiagram;
-    ScopedPointer<PanelA> panel;
+    ScopedPointer<FramePanel> panel;
     ScopedPointer<CommandItemComponent> resetButton;
     ScopedPointer<PlayButton> playButton;
     ScopedPointer<ShadowDownwards> shadowDown;

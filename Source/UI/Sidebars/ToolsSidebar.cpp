@@ -44,6 +44,7 @@
 #include "MainLayout.h"
 #include "Workspace.h"
 #include "CommandIDs.h"
+#include "ColourIDs.h"
 
 #if HELIO_DESKTOP
 #   define TOOLS_SIDEBAR_SHOWS_ANNOTATION_DETAILS (false)
@@ -66,7 +67,6 @@ ToolsSidebar::ToolsSidebar(ProjectTreeItem &parent)
 
     addAndMakeVisible (headLine = new SeparatorHorizontalReversed());
     addAndMakeVisible (shadow = new LighterShadowUpwards());
-    addAndMakeVisible (gradient2 = new GradientVertical());
     addAndMakeVisible (separator = new SeparatorHorizontal());
     addAndMakeVisible (totalTime = new Label (String(),
                                               TRANS("...")));
@@ -88,7 +88,6 @@ ToolsSidebar::ToolsSidebar(ProjectTreeItem &parent)
 
     addAndMakeVisible (playButton = new PlayButton());
     addAndMakeVisible (headShadow = new LighterShadowDownwards());
-    addAndMakeVisible (gradient = new GradientVerticalReversed());
     addAndMakeVisible (annotationsButton = new CommandItemComponent (this, nullptr, CommandItem::withParams(Icons::menu, CommandIDs::ShowAnnotations)));
 
 
@@ -139,13 +138,11 @@ ToolsSidebar::~ToolsSidebar()
     listBox = nullptr;
     headLine = nullptr;
     shadow = nullptr;
-    gradient2 = nullptr;
     separator = nullptr;
     totalTime = nullptr;
     currentTime = nullptr;
     playButton = nullptr;
     headShadow = nullptr;
-    gradient = nullptr;
     annotationsButton = nullptr;
 
     //[Destructor]
@@ -171,13 +168,11 @@ void ToolsSidebar::resized()
     listBox->setBounds (0, 49, getWidth() - 0, getHeight() - 177);
     headLine->setBounds (0, 47, getWidth() - 0, 2);
     shadow->setBounds (0, getHeight() - 127 - 6, getWidth() - 0, 6);
-    gradient2->setBounds (0, getHeight() - 127, getWidth() - 0, 127);
     separator->setBounds (0, getHeight() - 126 - 2, getWidth() - 0, 2);
     totalTime->setBounds ((getWidth() / 2) - (72 / 2), getHeight() - 18 - (28 / 2), 72, 28);
     currentTime->setBounds ((getWidth() / 2) - (72 / 2), getHeight() - 46 - (32 / 2), 72, 32);
     playButton->setBounds ((getWidth() / 2) - ((getWidth() - 0) / 2), getHeight() - 92 - (64 / 2), getWidth() - 0, 64);
     headShadow->setBounds (0, 48, getWidth() - 0, 6);
-    gradient->setBounds (0, 0, getWidth() - 0, 47);
     annotationsButton->setBounds ((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 45);
     //[UserResized] Add your own custom resize handling here..
     //Logger::writeToLog("HybridRollCommandPanel updateContent");
@@ -394,7 +389,7 @@ void ToolsSidebar::mouseMove (const MouseEvent& e)
 //[MiscUserCode]
 void ToolsSidebar::paintOverChildren(Graphics& g)
 {
-    g.setColour(findColour(HelioTheme::resizerLineColourId));
+    g.setColour(this->findColour(ColourIDs::Common::borderLineLight));
     g.drawVerticalLine(0, 0.f, float(this->getHeight()));
 }
 
@@ -450,7 +445,7 @@ Component *ToolsSidebar::refreshComponentForRow(int rowNumber,
 
     if (existingComponentToUpdate != nullptr)
     {
-        if (CommandItemComponent *row = 
+        if (CommandItemComponent *row =
             dynamic_cast<CommandItemComponent *>(existingComponentToUpdate))
         {
             row->setSelected(isRowSelected);
@@ -459,7 +454,7 @@ Component *ToolsSidebar::refreshComponentForRow(int rowNumber,
     }
     else
     {
-        CommandItemComponent *row = 
+        CommandItemComponent *row =
             new CommandItemComponent(this, this->listBox->getViewport(), itemDescription);
         row->setSelected(isRowSelected);
         return row;
@@ -599,9 +594,6 @@ BEGIN_JUCER_METADATA
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
              explicitFocusOrder="0" pos="0 127Rr 0M 6" sourceFile="../Themes/LighterShadowUpwards.cpp"
              constructorParams=""/>
-  <JUCERCOMP name="" id="15cecf620af99284" memberName="gradient2" virtualName=""
-             explicitFocusOrder="0" pos="0 0Rr 0M 127" sourceFile="../Themes/GradientVertical.cpp"
-             constructorParams=""/>
   <JUCERCOMP name="" id="22d481533ce3ecd3" memberName="separator" virtualName=""
              explicitFocusOrder="0" pos="0 126Rr 0M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
@@ -620,9 +612,6 @@ BEGIN_JUCER_METADATA
              constructorParams=""/>
   <JUCERCOMP name="" id="1d398dc12e2047bd" memberName="headShadow" virtualName=""
              explicitFocusOrder="0" pos="0 48 0M 6" sourceFile="../Themes/LighterShadowDownwards.cpp"
-             constructorParams=""/>
-  <JUCERCOMP name="" id="f09d886c97d1c017" memberName="gradient" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 47" sourceFile="../Themes/GradientVerticalReversed.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="34c972d7b22acf17" memberName="annotationsButton"
                     virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 45" class="CommandItemComponent"
