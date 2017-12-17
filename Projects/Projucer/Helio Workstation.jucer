@@ -1162,6 +1162,10 @@
                   file="../../Source/UI/Sequencer/PatternRoll/MidiTrackHeader.cpp"/>
             <FILE id="dia7oD" name="MidiTrackHeader.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/PatternRoll/MidiTrackHeader.h"/>
+            <FILE id="HSdBe5" name="MidiTrackInsertHelper.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/PatternRoll/MidiTrackInsertHelper.cpp"/>
+            <FILE id="wWCavd" name="MidiTrackInsertHelper.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/PatternRoll/MidiTrackInsertHelper.h"/>
             <FILE id="Fq4aoW" name="PatternRoll.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/PatternRoll/PatternRoll.cpp"/>
             <FILE id="MXsdDW" name="PatternRoll.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PatternRoll/PatternRoll.h"/>
           </GROUP>
