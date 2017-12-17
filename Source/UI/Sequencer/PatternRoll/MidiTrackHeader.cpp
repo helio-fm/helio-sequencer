@@ -19,12 +19,14 @@
 #include "Common.h"
 //[/Headers]
 
-#include "MidiTrackHeaderComponent.h"
+#include "MidiTrackHeader.h"
 
 //[MiscUserDefs]
+#include "MidiTrack.h"
 //[/MiscUserDefs]
 
-MidiTrackHeaderComponent::MidiTrackHeaderComponent()
+MidiTrackHeader::MidiTrackHeader(const MidiTrack &track)
+    : track(track)
 {
     addAndMakeVisible (trackNameLabel = new Label (String(),
                                                    TRANS("label text")));
@@ -42,10 +44,11 @@ MidiTrackHeaderComponent::MidiTrackHeaderComponent()
     setSize (400, 24);
 
     //[Constructor]
+    this->updateContent();
     //[/Constructor]
 }
 
-MidiTrackHeaderComponent::~MidiTrackHeaderComponent()
+MidiTrackHeader::~MidiTrackHeader()
 {
     //[Destructor_pre]
     //[/Destructor_pre]
@@ -56,13 +59,13 @@ MidiTrackHeaderComponent::~MidiTrackHeaderComponent()
     //[/Destructor]
 }
 
-void MidiTrackHeaderComponent::paint (Graphics& g)
+void MidiTrackHeader::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
-    
+
     //g.setColour(this->findColour(MidiTrackHeaderComponent::headerColourId));
     //g.fillRect(this->getLocalBounds());
-    
+
     //g.setColour(this->bevelLightColour);
     //g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
 
@@ -71,11 +74,13 @@ void MidiTrackHeaderComponent::paint (Graphics& g)
 
     //[/UserPrePaint]
 
+    g.fillAll (Colour (0xff464646));
+
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
 }
 
-void MidiTrackHeaderComponent::resized()
+void MidiTrackHeader::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
@@ -85,7 +90,7 @@ void MidiTrackHeaderComponent::resized()
     //[/UserResized]
 }
 
-void MidiTrackHeaderComponent::labelTextChanged (Label* labelThatHasChanged)
+void MidiTrackHeader::labelTextChanged (Label* labelThatHasChanged)
 {
     //[UserlabelTextChanged_Pre]
     //[/UserlabelTextChanged_Pre]
@@ -102,18 +107,28 @@ void MidiTrackHeaderComponent::labelTextChanged (Label* labelThatHasChanged)
 
 
 //[MiscUserCode]
+void MidiTrackHeader::updateContent()
+{
+    this->trackNameLabel->setText(this->track.getTrackName(), dontSendNotification);
+    // TODO colours etc.
+}
+
+const MidiTrack &MidiTrackHeader::getTrack() const noexcept
+{
+    return this->track;
+}
 //[/MiscUserCode]
 
 #if 0
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="MidiTrackHeaderComponent"
-                 template="../../../Template" componentName="" parentClasses="public Component"
-                 constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
+<JUCER_COMPONENT documentType="Component" className="MidiTrackHeader" template="../../../Template"
+                 componentName="" parentClasses="public Component" constructorParams="const MidiTrack &amp;track"
+                 variableInitialisers="track(track)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="400"
                  initialHeight="24">
-  <BACKGROUND backgroundColour="0"/>
+  <BACKGROUND backgroundColour="ff464646"/>
   <LABEL name="" id="e57adff1b4a0a2b6" memberName="trackNameLabel" virtualName=""
          explicitFocusOrder="0" pos="0 0 50% 0M" edTextCol="ff000000"
          edBkgCol="0" labelText="label text" editableSingleClick="1" editableDoubleClick="1"

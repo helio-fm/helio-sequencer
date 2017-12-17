@@ -18,19 +18,22 @@
 #pragma once
 
 //[Headers]
+class MidiTrack;
 //[/Headers]
 
 
-class MidiTrackHeaderComponent  : public Component,
-                                  public Label::Listener
+class MidiTrackHeader  : public Component,
+                         public Label::Listener
 {
 public:
 
-    MidiTrackHeaderComponent ();
+    MidiTrackHeader (const MidiTrack &track);
 
-    ~MidiTrackHeaderComponent();
+    ~MidiTrackHeader();
 
     //[UserMethods]
+    void updateContent();
+    const MidiTrack &getTrack() const noexcept;
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -41,9 +44,10 @@ public:
 private:
 
     //[UserVariables]
+    const MidiTrack &track;
     //[/UserVariables]
 
     ScopedPointer<Label> trackNameLabel;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MidiTrackHeaderComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MidiTrackHeader)
 };

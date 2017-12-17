@@ -1119,14 +1119,6 @@
                   file="../../Source/UI/Sequencer/Helpers/InsertSpaceHelper.cpp"/>
             <FILE id="EVuhkP" name="InsertSpaceHelper.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/Helpers/InsertSpaceHelper.h"/>
-            <FILE id="w0etn6" name="NoteResizerLeft.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/NoteResizerLeft.cpp"/>
-            <FILE id="ppVYXM" name="NoteResizerLeft.h" compile="0" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/NoteResizerLeft.h"/>
-            <FILE id="Q8VjKU" name="NoteResizerRight.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/NoteResizerRight.cpp"/>
-            <FILE id="PXfrGQ" name="NoteResizerRight.h" compile="0" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/NoteResizerRight.h"/>
             <FILE id="NOqCjM" name="TimelineWarningMarker.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/Helpers/TimelineWarningMarker.cpp"/>
             <FILE id="amNgBo" name="TimelineWarningMarker.h" compile="0" resource="0"
@@ -1166,10 +1158,10 @@
                   file="../../Source/UI/Sequencer/PatternRoll/PianoClipComponent.cpp"/>
             <FILE id="pPYJa2" name="PianoClipComponent.h" compile="0" resource="0"
                   file="../../Source/UI/Sequencer/PatternRoll/PianoClipComponent.h"/>
-            <FILE id="iw3RJL" name="MidiTrackHeaderComponent.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/PatternRoll/MidiTrackHeaderComponent.cpp"/>
-            <FILE id="dia7oD" name="MidiTrackHeaderComponent.h" compile="0" resource="0"
-                  file="../../Source/UI/Sequencer/PatternRoll/MidiTrackHeaderComponent.h"/>
+            <FILE id="iw3RJL" name="MidiTrackHeader.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/PatternRoll/MidiTrackHeader.cpp"/>
+            <FILE id="dia7oD" name="MidiTrackHeader.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/PatternRoll/MidiTrackHeader.h"/>
             <FILE id="Fq4aoW" name="PatternRoll.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/PatternRoll/PatternRoll.cpp"/>
             <FILE id="MXsdDW" name="PatternRoll.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PatternRoll/PatternRoll.h"/>
           </GROUP>
@@ -1177,6 +1169,14 @@
             <FILE id="nkGHj5" name="NoteComponent.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/PianoRoll/NoteComponent.cpp"/>
             <FILE id="o50CGJ" name="NoteComponent.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PianoRoll/NoteComponent.h"/>
+            <FILE id="yO3CxI" name="NoteResizerLeft.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/PianoRoll/NoteResizerLeft.cpp"/>
+            <FILE id="PLz3l6" name="NoteResizerRight.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/PianoRoll/NoteResizerRight.cpp"/>
+            <FILE id="ZWUEkO" name="NoteResizerLeft.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/PianoRoll/NoteResizerLeft.h"/>
+            <FILE id="ZMJ4fn" name="NoteResizerRight.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/PianoRoll/NoteResizerRight.h"/>
             <FILE id="XGD7Q7" name="PianoRoll.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/PianoRoll/PianoRoll.cpp"/>
             <FILE id="xgYNf4" name="PianoRoll.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PianoRoll/PianoRoll.h"/>
             <FILE id="BuUwgB" name="PianoRollToolbox.cpp" compile="1" resource="0"
