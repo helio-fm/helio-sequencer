@@ -52,13 +52,7 @@ class SizeSwitcherComponent :
 {
 public:
 
-    enum ColourIds
-    {
-        borderColourId       = 0x99008000,
-    };
-
     SizeSwitcherComponent(Component *target, int min, int mid, int max);
-
 
     //===------------------------------------------------------------------===//
     // Component

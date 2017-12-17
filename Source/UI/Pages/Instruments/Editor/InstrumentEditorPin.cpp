@@ -19,6 +19,7 @@
 #include "InstrumentEditorPin.h"
 #include "Instrument.h"
 #include "InstrumentEditor.h"
+#include "ColourIDs.h"
 
 InstrumentEditorPin::InstrumentEditorPin(Instrument &graph,
     AudioProcessorGraph::NodeID nodeID, int index, bool isInput) :
@@ -39,9 +40,9 @@ void InstrumentEditorPin::paint(Graphics &g)
     if (this->isInput)
     {
         if (isMidiChannel)
-        { g.setColour(this->findColour(InstrumentEditor::midiInColourId)); }
+        { g.setColour(this->findColour(ColourIDs::Instrument::midiInColourId)); }
         else
-        { g.setColour(this->findColour(InstrumentEditor::audioInColourId)); }
+        { g.setColour(this->findColour(ColourIDs::Instrument::audioInColourId)); }
 
         g.drawEllipse(w * 0.1f, h * 0.1f, w * 0.8f, h * 0.8f, 4.000f);
     }
@@ -50,9 +51,9 @@ void InstrumentEditorPin::paint(Graphics &g)
         Colour pinFill;
 
         if (isMidiChannel)
-        { pinFill = (this->findColour(InstrumentEditor::midiOutColourId)); }
+        { pinFill = (this->findColour(ColourIDs::Instrument::midiOutColourId)); }
         else
-        { pinFill = (this->findColour(InstrumentEditor::audioOutColourId)); }
+        { pinFill = (this->findColour(ColourIDs::Instrument::audioOutColourId)); }
 
         g.setColour(pinFill);
         g.fillEllipse(0, 0, w, h);

@@ -47,6 +47,7 @@
 #include "AutomationClipComponent.h"
 #include "DummyClipComponent.h"
 #include "ComponentIDs.h"
+#include "ColourIDs.h"
 
 #define ROWS_OF_TWO_OCTAVES 24
 #define DEFAULT_CLIP_LENGTH 1.0f
@@ -809,12 +810,12 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height) const
     Image patternImage(Image::RGB, 128, height * ROWS_OF_TWO_OCTAVES, false);
     Graphics g(patternImage);
 
-    const Colour blackKey = theme.findColour(HybridRoll::blackKeyColourId);
-    const Colour blackKeyBright = theme.findColour(HybridRoll::blackKeyBrightColourId);
-    const Colour whiteKey = theme.findColour(HybridRoll::whiteKeyColourId);
-    const Colour whiteKeyBright = theme.findColour(HybridRoll::whiteKeyBrightColourId);
+    const Colour blackKey = theme.findColour(ColourIDs::Roll::blackKeyColourId);
+    const Colour blackKeyBright = theme.findColour(ColourIDs::Roll::blackKeyBrightColourId);
+    const Colour whiteKey = theme.findColour(ColourIDs::Roll::whiteKeyColourId);
+    const Colour whiteKeyBright = theme.findColour(ColourIDs::Roll::whiteKeyBrightColourId);
     const Colour whiteKeyBrighter = whiteKeyBright.brighter(0.025f);
-    const Colour rowLine = theme.findColour(HybridRoll::rowLineColourId);
+    const Colour rowLine = theme.findColour(ColourIDs::Roll::rowLineColourId);
 
     float currentHeight = float(height);
     float previousHeight = 0;

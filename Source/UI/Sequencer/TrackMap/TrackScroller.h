@@ -37,12 +37,6 @@ public:
 
     TrackScroller(Transport &transport, HybridRoll *roll);
     ~TrackScroller() override;
-    
-    enum ColourIds
-    {
-        borderDarkLineColourId = 0x99200010,
-        borderLightLineColourId = 0x99200020,
-    };
 
     void addOwnedMap(Component *newTrackMap, bool shouldBringToFront);
     void removeOwnedMap(Component *existingTrackMap);

@@ -18,7 +18,8 @@
 #include "Common.h"
 #include "Playhead.h"
 #include "Transport.h"
-#include "PianoRoll.h"
+#include "HybridRoll.h"
+#include "ColourIDs.h"
 #include "PlayerThread.h"
 
 #define FREE_SPACE 2
@@ -39,8 +40,8 @@ Playhead::Playhead(HybridRoll &parentRoll,
     timerStartPosition(0.0),
     listener(movementListener)
 {
-    this->mainColour = this->findColour(PianoRoll::playheadColourId);
-    this->shadeColour = this->findColour(PianoRoll::playheadShadeColourId);
+    this->mainColour = this->findColour(ColourIDs::Roll::playheadColourId);
+    this->shadeColour = this->findColour(ColourIDs::Roll::playheadShadeColourId);
 
     this->setInterceptsMouseClicks(false, false);
     this->setPaintingIsUnclipped(true);

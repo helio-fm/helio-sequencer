@@ -23,6 +23,7 @@
 
 //[MiscUserDefs]
 #include "HelioTheme.h"
+#include "ColourIDs.h"
 #include "Icons.h"
 //[/MiscUserDefs]
 
@@ -83,9 +84,9 @@ void PanelBackgroundA::paint (Graphics& g)
     }
     else
     {
-        g.setGradientFill (ColourGradient (findColour(PanelBackgroundA::panelFillStartId),
+        g.setGradientFill (ColourGradient (findColour(ColourIDs::BackgroundA::panelFillStartId),
                                            float((getWidth() / 2)), float((getHeight() / 2) + 25),
-                                           findColour(PanelBackgroundA::panelFillEndId),
+                                           findColour(ColourIDs::BackgroundA::panelFillEndId),
                                            20.0f, 0.0f,
                                            true));
 
@@ -128,9 +129,9 @@ void PanelBackgroundA::updateRender(HelioTheme &theme)
     Image render(Image::ARGB, w, h, true);
     Graphics g(render);
 
-    g.setGradientFill (ColourGradient (theme.findColour(PanelBackgroundA::panelFillStartId),
+    g.setGradientFill (ColourGradient (theme.findColour(ColourIDs::BackgroundA::panelFillStartId),
                                        float((w / 2)), float((h / 2) + 25),
-                                       theme.findColour(PanelBackgroundA::panelFillEndId),
+                                       theme.findColour(ColourIDs::BackgroundA::panelFillEndId),
                                        20.0f, 0.0f,
                                        true));
 

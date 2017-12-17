@@ -30,12 +30,6 @@ public:
     HelioTheme();
     ~HelioTheme() override;
 
-    enum ColourIds
-    {
-        resizerLineColourId = 0x99003001,
-        resizerShadowColourId = 0x99003002
-    };
-
     void initResources();
     void initColours(const ::ColourScheme &colours);
     void updateBackgroundRenders(bool force = false);

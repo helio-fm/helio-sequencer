@@ -65,6 +65,8 @@
 #include "AudioCore.h"
 #include "AudioMonitor.h"
 
+#include "ColourIDs.h"
+
 #include <limits.h>
 
 #if HELIO_DESKTOP
@@ -1107,10 +1109,10 @@ void HybridRoll::resized()
 
 void HybridRoll::paint(Graphics &g)
 {
-    const Colour barLine = findColour(HybridRoll::barLineColourId);
-    const Colour barLineBevel = findColour(HybridRoll::barLineBevelColourId);
-    const Colour beatLine = findColour(HybridRoll::beatLineColourId);
-    const Colour snapLine = findColour(HybridRoll::snapLineColourId);
+    const Colour barLine = findColour(ColourIDs::Roll::barLineColourId);
+    const Colour barLineBevel = findColour(ColourIDs::Roll::barLineBevelColourId);
+    const Colour beatLine = findColour(ColourIDs::Roll::beatLineColourId);
+    const Colour snapLine = findColour(ColourIDs::Roll::snapLineColourId);
     
     this->computeVisibleBeatLines();
 

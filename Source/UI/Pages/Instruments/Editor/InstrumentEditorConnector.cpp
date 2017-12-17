@@ -20,6 +20,7 @@
 #include "Instrument.h"
 #include "InstrumentEditor.h"
 #include "InstrumentEditorNode.h"
+#include "ColourIDs.h"
 
 InstrumentEditorConnector::InstrumentEditorConnector(Instrument &graph) :
     connection({0, 0}, {0, 0}),
@@ -124,11 +125,11 @@ void InstrumentEditorConnector::paint(Graphics &g)
     if (this->connection.source.channelIndex == Instrument::midiChannelNumber ||
         this->connection.destination.channelIndex == Instrument::midiChannelNumber)
     {
-        g.setColour(this->findColour(InstrumentEditor::midiInColourId));
+        g.setColour(this->findColour(ColourIDs::Instrument::midiInColourId));
     }
     else
     {
-        g.setColour(this->findColour(InstrumentEditor::audioInColourId));
+        g.setColour(this->findColour(ColourIDs::Instrument::audioInColourId));
     }
 
     g.fillPath(linePath);

@@ -44,6 +44,7 @@
 #include "MainLayout.h"
 #include "Workspace.h"
 #include "CommandIDs.h"
+#include "ColourIDs.h"
 
 #if HELIO_DESKTOP
 #   define TOOLS_SIDEBAR_SHOWS_ANNOTATION_DETAILS (false)
@@ -394,7 +395,7 @@ void ToolsSidebar::mouseMove (const MouseEvent& e)
 //[MiscUserCode]
 void ToolsSidebar::paintOverChildren(Graphics& g)
 {
-    g.setColour(findColour(HelioTheme::resizerLineColourId));
+    g.setColour(this->findColour(ColourIDs::Common::resizerLineColourId));
     g.drawVerticalLine(0, 0.f, float(this->getHeight()));
 }
 

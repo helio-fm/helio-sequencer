@@ -45,6 +45,7 @@
 #include "AudioCore.h"
 #include "AudioMonitor.h"
 #include "ComponentIDs.h"
+#include "ColourIDs.h"
 
 // force compile template
 #include "AnnotationsMap/AnnotationsTrackMap.cpp"
@@ -130,7 +131,7 @@ public:
     
     void paint(Graphics &g) override
     {
-        const Colour backCol(this->findColour(HybridRoll::headerColourId).darker(0.05f));
+        const Colour backCol(this->findColour(ColourIDs::Roll::headerColourId).darker(0.05f));
         g.fillRect(this->getLocalBounds());
     }
     
@@ -234,7 +235,7 @@ public:
     
     void paint(Graphics &g) override
     {
-        const Colour backCol(this->findColour(HybridRoll::headerColourId));
+        const Colour backCol(this->findColour(ColourIDs::Roll::headerColourId));
         const Colour frontCol(backCol.contrasting().withMultipliedAlpha(0.5f));
         const float pX = float(this->roll.getViewport().getViewPositionX());
         

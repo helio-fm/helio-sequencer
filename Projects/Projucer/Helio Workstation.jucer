@@ -616,6 +616,7 @@
           <FILE id="OeoOMp" name="ColourSwatches.h" compile="0" resource="0"
                 file="../../Source/UI/Common/ColourSwatches.h"/>
           <FILE id="DRQef0" name="CommandIDs.cpp" compile="1" resource="0" file="../../Source/UI/Common/CommandIDs.cpp"/>
+          <FILE id="RbTNhz" name="ColourIDs.h" compile="0" resource="0" file="../../Source/UI/Common/ColourIDs.h"/>
           <FILE id="JpyU5z" name="CommandIDs.h" compile="0" resource="0" file="../../Source/UI/Common/CommandIDs.h"/>
           <FILE id="ldEAFp" name="ComponentIDs.h" compile="0" resource="0" file="../../Source/UI/Common/ComponentIDs.h"/>
           <FILE id="wxzKUC" name="DraggingListBoxComponent.cpp" compile="1" resource="0"

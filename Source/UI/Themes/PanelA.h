@@ -30,13 +30,6 @@ public:
     ~PanelA();
 
     //[UserMethods]
-
-    enum ColourIds
-    {
-        panelFillColourId       = 0x99105000,
-        panelBorderColourId     = 0x99105010,
-    };
-
     //[/UserMethods]
 
     void paint (Graphics& g) override;

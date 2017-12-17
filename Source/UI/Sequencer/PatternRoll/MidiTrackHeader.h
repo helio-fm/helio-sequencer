@@ -32,6 +32,9 @@ public:
     ~MidiTrackHeader();
 
     //[UserMethods]
+
+
+
     void updateContent();
     const MidiTrack &getTrack() const noexcept;
     //[/UserMethods]

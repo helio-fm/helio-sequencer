@@ -23,6 +23,7 @@
 
 //[MiscUserDefs]
 #include "HelioTheme.h"
+#include "ColourIDs.h"
 #include "Icons.h"
 //[/MiscUserDefs]
 
@@ -82,7 +83,7 @@ void PanelBackgroundB::paint(Graphics& g)
     }
     else
     {
-        g.setColour(findColour(PanelBackgroundB::panelFillId));
+        g.setColour(this->findColour(ColourIDs::BackgroundB::panelFillId));
         g.fillRect(this->getLocalBounds());
     }
 
@@ -116,7 +117,7 @@ void PanelBackgroundB::updateRender(HelioTheme &theme)
 
     Image render(Image::ARGB, w, h, true);
     Graphics g(render);
-    g.setColour(theme.findColour(PanelBackgroundB::panelFillId));
+    g.setColour(theme.findColour(ColourIDs::BackgroundB::panelFillId));
     g.fillAll();
     HelioTheme::drawNoise(theme, g, 0.5f);
     theme.getBgCache2() = render;

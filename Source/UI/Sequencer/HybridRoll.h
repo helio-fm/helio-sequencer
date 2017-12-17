@@ -91,23 +91,6 @@ class HybridRoll :
     protected AudioMonitor::ClippingListener // for displaying clipping indicator components
 {
 public:
-
-    enum ColourIds
-    {
-        blackKeyColourId                 = 0x99002001,
-        blackKeyBrightColourId           = 0x99002002,
-        whiteKeyColourId                 = 0x99002003,
-        whiteKeyBrightColourId           = 0x99002004,
-        rowLineColourId                  = 0x99002005,
-        barLineColourId                  = 0x99002006,
-        barLineBevelColourId             = 0x99002007,
-        beatLineColourId                 = 0x99002008,
-        snapLineColourId                 = 0x99002009,
-        headerColourId                   = 0x99002010,
-        headerSnapsColourId              = 0x99002011,
-        playheadColourId                 = 0x99002012,
-        playheadShadeColourId            = 0x99002013
-    };
     
     HybridRoll(ProjectTreeItem &project, Viewport &viewport,
         WeakReference<AudioMonitor> audioMonitor);

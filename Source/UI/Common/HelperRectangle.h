@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "ColourIDs.h"
+
 class HelperRectangle : public Component
 {
 public:
@@ -26,15 +28,9 @@ public:
         this->setInterceptsMouseClicks(false, false);
     }
 
-    enum ColourIds
-    {
-        fillColourId       = 0x99007000,
-        outlineColourId    = 0x99007010,
-    };
-
     void paint(Graphics &g) override
     {
-        g.setColour(this->findColour(HelperRectangle::fillColourId));
+        g.setColour(this->findColour(ColourIDs::HelperRectangle::fillColourId));
         g.fillRect(0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
     }
 
@@ -46,10 +42,10 @@ class HelperRectangleVertical : public HelperRectangle
 public:
     void paint(Graphics &g) override
     {
-        g.setColour(this->findColour(HelperRectangle::fillColourId));
+        g.setColour(this->findColour(ColourIDs::HelperRectangle::fillColourId));
         g.fillRect(0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
 
-        g.setColour(this->findColour(HelperRectangle::outlineColourId));
+        g.setColour(this->findColour(ColourIDs::HelperRectangle::outlineColourId));
         g.drawVerticalLine(0, 0.f, float(this->getHeight()));
         g.drawVerticalLine(this->getWidth() - 1, 0.f, float(this->getHeight()));
     }
@@ -60,10 +56,10 @@ class HelperRectangleHorizontal : public HelperRectangle
 public:
     void paint(Graphics &g) override
     {
-        g.setColour(this->findColour(HelperRectangle::fillColourId));
+        g.setColour(this->findColour(ColourIDs::HelperRectangle::fillColourId));
         g.fillRect(0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
 
-        g.setColour(this->findColour(HelperRectangle::outlineColourId));
+        g.setColour(this->findColour(ColourIDs::HelperRectangle::outlineColourId));
         g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
         g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth()));
     }

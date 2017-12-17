@@ -52,6 +52,7 @@
 #include "Config.h"
 #include "SerializationKeys.h"
 #include "ComponentIDs.h"
+#include "ColourIDs.h"
 
 #define ROWS_OF_TWO_OCTAVES 24
 #define DEFAULT_NOTE_LENGTH 0.25f
@@ -1467,13 +1468,13 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
     Image patternImage(Image::RGB, 128, height * ROWS_OF_TWO_OCTAVES, false);
     Graphics g(patternImage);
 
-    const Colour blackKey = theme.findColour(HybridRoll::blackKeyColourId);
-    const Colour blackKeyBright = theme.findColour(HybridRoll::blackKeyBrightColourId);
-    const Colour whiteKey = theme.findColour(HybridRoll::whiteKeyColourId);
-    const Colour whiteKeyBright = theme.findColour(HybridRoll::whiteKeyBrightColourId);
+    const Colour blackKey = theme.findColour(ColourIDs::Roll::blackKeyColourId);
+    const Colour blackKeyBright = theme.findColour(ColourIDs::Roll::blackKeyBrightColourId);
+    const Colour whiteKey = theme.findColour(ColourIDs::Roll::whiteKeyColourId);
+    const Colour whiteKeyBright = theme.findColour(ColourIDs::Roll::whiteKeyBrightColourId);
     const Colour rootKey = whiteKeyBright.brighter(0.085f);
     const Colour rootKeyBright = whiteKeyBright.brighter(0.090f);
-    const Colour rowLine = theme.findColour(HybridRoll::rowLineColourId);
+    const Colour rowLine = theme.findColour(ColourIDs::Roll::rowLineColourId);
 
     float currentHeight = float(height);
     float previousHeight = 0;

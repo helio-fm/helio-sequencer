@@ -32,14 +32,7 @@ public:
     ~PanelBackgroundB();
 
     //[UserMethods]
-
-    enum ColourIds
-    {
-        panelFillId = 0x99102000,
-    };
-
     static void updateRender(HelioTheme &theme);
-
     //[/UserMethods]
 
     void paint (Graphics& g) override;

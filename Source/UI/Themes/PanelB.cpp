@@ -22,7 +22,7 @@
 #include "PanelB.h"
 
 //[MiscUserDefs]
-#include "PanelA.h"
+#include "ColourIDs.h"
 //[/MiscUserDefs]
 
 PanelB::PanelB()
@@ -62,10 +62,10 @@ void PanelB::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-    g.setColour (findColour(PanelA::panelFillColourId));
+    g.setColour (findColour(ColourIDs::Panel::panelFillColourId));
     g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 2.000f);
 
-    g.setColour (findColour(PanelA::panelBorderColourId));
+    g.setColour (findColour(ColourIDs::Panel::panelBorderColourId));
     g.drawRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 2.000f, 0.500f);
 
     //[/UserPaint]

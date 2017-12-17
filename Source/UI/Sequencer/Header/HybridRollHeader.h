@@ -28,10 +28,8 @@ class HybridRollHeader : public Component
 public:
 
     HybridRollHeader(Transport &transport, HybridRoll &roll, Viewport &viewport);
-    ~HybridRollHeader() override;
     
     void setSoundProbeMode(bool shouldProbeOnClick);
-
 
     //===------------------------------------------------------------------===//
     // Component

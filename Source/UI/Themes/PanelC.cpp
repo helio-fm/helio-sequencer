@@ -23,6 +23,7 @@
 
 //[MiscUserDefs]
 #include "PanelBackgroundC.h"
+#include "ColourIDs.h"
 //[/MiscUserDefs]
 
 PanelC::PanelC()
@@ -122,7 +123,7 @@ void PanelC::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-    g.setColour(findColour(PanelBackgroundC::panelFillId));
+    g.setColour(findColour(ColourIDs::BackgroundC::panelFillId));
     g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 7.000f);
     g.setColour (Colour (0x44b9b9b9));
     g.drawRoundedRectangle (0.5f, 0.5f, static_cast<float> (getWidth() - 1), static_cast<float> (getHeight() - 1), 6.000f, 1.000f);

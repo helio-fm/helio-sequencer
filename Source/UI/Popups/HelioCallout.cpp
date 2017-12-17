@@ -21,6 +21,7 @@
 #include "ComponentFader.h"
 #include "DialogBackground.h"
 #include "CommandIDs.h"
+#include "ColourIDs.h"
 #include "App.h"
 
 static int kClickCounterOnPopupClose = 0;
@@ -139,13 +140,13 @@ void HelioCallout::drawBackground(Graphics &g, const Path &path, Image &cachedIm
     {
         cachedImage = Image(Image::ARGB, this->getWidth(), this->getHeight(), true);
         Graphics g2(cachedImage);
-        DropShadow(this->findColour(HelioCallout::blurColourId), 7, Point<int> (0, 1)).drawForPath(g2, path);
+        DropShadow(this->findColour(ColourIDs::Callout::blurColourId), 7, Point<int> (0, 1)).drawForPath(g2, path);
     }
     
     g.setColour(Colours::black);
     g.drawImageAt(cachedImage, 0, 0);
     
-    g.setColour(this->findColour(HelioCallout::fillColourId));
+    g.setColour(this->findColour(ColourIDs::Callout::fillColourId));
     g.fillPath(path);
     
 #elif HELIO_MOBILE
@@ -155,7 +156,7 @@ void HelioCallout::drawBackground(Graphics &g, const Path &path, Image &cachedIm
     
 #endif
     
-    g.setColour(this->findColour(HelioCallout::frameColourId));
+    g.setColour(this->findColour(ColourIDs::Callout::frameColourId));
     g.strokePath(path, PathStrokeType(1.0f));
 }
 

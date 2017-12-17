@@ -23,6 +23,7 @@
 
 //[MiscUserDefs]
 #include "HelioTheme.h"
+#include "ColourIDs.h"
 #include "Icons.h"
 
 static void drawPanel(Graphics& g, HelioTheme &theme);
@@ -119,7 +120,7 @@ void PanelBackgroundC::resized()
 
 static void drawPanel(Graphics& g, HelioTheme &theme)
 {
-    g.setColour(theme.findColour(PanelBackgroundC::panelFillId));
+    g.setColour(theme.findColour(ColourIDs::BackgroundC::panelFillId));
     g.fillAll();
     HelioTheme::drawNoise(theme, g);
 }
