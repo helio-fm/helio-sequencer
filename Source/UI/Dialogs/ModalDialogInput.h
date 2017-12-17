@@ -21,7 +21,7 @@
 #include "FadingDialog.h"
 //[/Headers]
 
-#include "../Themes/PanelC.h"
+#include "../Themes/DialogPanel.h"
 #include "../Themes/SeparatorHorizontal.h"
 #include "../Themes/SeparatorVertical.h"
 
@@ -88,7 +88,7 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<PanelC> background;
+    ScopedPointer<DialogPanel> background;
     ScopedPointer<Label> messageLabel;
     ScopedPointer<TextButton> cancelButton;
     ScopedPointer<TextButton> okButton;

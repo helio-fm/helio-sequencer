@@ -90,7 +90,7 @@ private:
 
 AuthorizationDialog::AuthorizationDialog()
 {
-    addAndMakeVisible (background = new PanelC());
+    addAndMakeVisible (background = new DialogPanel());
     addAndMakeVisible (loginButton = new TextButton (String()));
     loginButton->setButtonText (TRANS("dialog::auth::proceed"));
     loginButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnTop);
@@ -390,7 +390,7 @@ BEGIN_JUCER_METADATA
   </BACKGROUND>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
-             sourceFile="../Themes/PanelC.cpp" constructorParams=""/>
+             sourceFile="../Themes/DialogPanel.cpp" constructorParams=""/>
   <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="loginButton" virtualName=""
               explicitFocusOrder="0" pos="4Rr 4Rr 390 48" buttonText="dialog::auth::proceed"
               connectedEdges="5" needsCallback="1" radioGroupId="0"/>

@@ -32,7 +32,7 @@ class CommandItemComponent;
 //[/Headers]
 
 #include "../Themes/PanelBackgroundB.h"
-#include "../Themes/PanelA.h"
+#include "../Themes/FramePanel.h"
 #include "../Themes/LightShadowDownwards.h"
 #include "../Themes/SeparatorHorizontalFading.h"
 #include "../Themes/SeparatorHorizontalFading.h"
@@ -97,7 +97,7 @@ private:
     //[/UserVariables]
 
     ScopedPointer<PanelBackgroundB> background;
-    ScopedPointer<PanelA> panel;
+    ScopedPointer<FramePanel> panel;
     ScopedPointer<ListBox> pluginsList;
     ScopedPointer<TextButton> initButton;
     ScopedPointer<TextButton> removeButton;

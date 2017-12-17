@@ -71,7 +71,7 @@ KeySignatureLargeComponent::~KeySignatureLargeComponent()
 void KeySignatureLargeComponent::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
-    const Colour lineCol(this->findColour(ColourIDs::Roll::headerSnapsColourId));
+    const Colour lineCol(this->findColour(ColourIDs::Roll::headerSnaps));
     g.setColour(lineCol);
     g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
     g.drawHorizontalLine(1, 0.f, float(this->getWidth()));

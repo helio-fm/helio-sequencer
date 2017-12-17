@@ -365,8 +365,8 @@ Image Icons::findByName(const String &name, int maxSize)
         return prerenderedVectors[nameKey];
     }
     
-    const Colour iconBaseColour(App::Helio()->getTheme()->findColour(ColourIDs::Icons::iconColourId));
-    const Colour iconShadeColour(App::Helio()->getTheme()->findColour(ColourIDs::Icons::iconShadowColourId));
+    const Colour iconBaseColour(App::Helio()->getTheme()->findColour(ColourIDs::Icons::fill));
+    const Colour iconShadeColour(App::Helio()->getTheme()->findColour(ColourIDs::Icons::shadow));
     Image prerenderedImage = renderVector(name, fixedSize, iconBaseColour, iconShadeColour);
     prerenderedVectors.set(nameKey, prerenderedImage);
 
@@ -385,8 +385,8 @@ Image Icons::findByName(const String &name, int maxSize, LookAndFeel &lf)
 
     const int fixedSize = int(floorf(float(maxSize) / float(kRoundFactor))) * kRoundFactor * retinaFactor;
 
-    const Colour iconBaseColour(lf.findColour(ColourIDs::Icons::iconColourId));
-    const Colour iconShadeColour(lf.findColour(ColourIDs::Icons::iconShadowColourId));
+    const Colour iconBaseColour(lf.findColour(ColourIDs::Icons::fill));
+    const Colour iconShadeColour(lf.findColour(ColourIDs::Icons::shadow));
     Image prerenderedImage = renderVector(name, fixedSize, iconBaseColour, iconShadeColour);
     return prerenderedImage;
 }

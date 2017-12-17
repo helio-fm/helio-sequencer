@@ -125,11 +125,11 @@ void InstrumentEditorConnector::paint(Graphics &g)
     if (this->connection.source.channelIndex == Instrument::midiChannelNumber ||
         this->connection.destination.channelIndex == Instrument::midiChannelNumber)
     {
-        g.setColour(this->findColour(ColourIDs::Instrument::midiInColourId));
+        g.setColour(this->findColour(ColourIDs::Instrument::midiIn));
     }
     else
     {
-        g.setColour(this->findColour(ColourIDs::Instrument::audioInColourId));
+        g.setColour(this->findColour(ColourIDs::Instrument::audioIn));
     }
 
     g.fillPath(linePath);

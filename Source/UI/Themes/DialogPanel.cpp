@@ -19,14 +19,14 @@
 #include "Common.h"
 //[/Headers]
 
-#include "PanelC.h"
+#include "DialogPanel.h"
 
 //[MiscUserDefs]
 #include "PanelBackgroundC.h"
 #include "ColourIDs.h"
 //[/MiscUserDefs]
 
-PanelC::PanelC()
+DialogPanel::DialogPanel()
 {
 
     //[UserPreSize]
@@ -39,7 +39,7 @@ PanelC::PanelC()
     //[/Constructor]
 }
 
-PanelC::~PanelC()
+DialogPanel::~DialogPanel()
 {
     //[Destructor_pre]
     //[/Destructor_pre]
@@ -49,13 +49,11 @@ PanelC::~PanelC()
     //[/Destructor]
 }
 
-void PanelC::paint (Graphics& g)
+void DialogPanel::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
 #if 0
     //[/UserPrePaint]
-
-    g.fillAll (Colour (0xffefefef));
 
     {
         float x = 0.0f, y = 0.0f, width = static_cast<float> (getWidth() - 0), height = static_cast<float> (getHeight() - 0);
@@ -123,7 +121,7 @@ void PanelC::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-    g.setColour(findColour(ColourIDs::BackgroundC::panelFillId));
+    g.setColour(findColour(ColourIDs::BackgroundC::fill));
     g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 7.000f);
     g.setColour (Colour (0x44b9b9b9));
     g.drawRoundedRectangle (0.5f, 0.5f, static_cast<float> (getWidth() - 1), static_cast<float> (getHeight() - 1), 6.000f, 1.000f);
@@ -131,7 +129,7 @@ void PanelC::paint (Graphics& g)
     //[/UserPaint]
 }
 
-void PanelC::resized()
+void DialogPanel::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
@@ -148,7 +146,7 @@ void PanelC::resized()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="PanelC" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="DialogPanel" template="../../Template"
                  componentName="" parentClasses="public Component" constructorParams=""
                  variableInitialisers="" snapPixels="8" snapActive="0" snapShown="1"
                  overlayOpacity="0.330" fixedSize="0" initialWidth="600" initialHeight="400">

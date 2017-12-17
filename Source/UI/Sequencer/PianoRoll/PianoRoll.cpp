@@ -1468,13 +1468,13 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
     Image patternImage(Image::RGB, 128, height * ROWS_OF_TWO_OCTAVES, false);
     Graphics g(patternImage);
 
-    const Colour blackKey = theme.findColour(ColourIDs::Roll::blackKeyColourId);
-    const Colour blackKeyBright = theme.findColour(ColourIDs::Roll::blackKeyBrightColourId);
-    const Colour whiteKey = theme.findColour(ColourIDs::Roll::whiteKeyColourId);
-    const Colour whiteKeyBright = theme.findColour(ColourIDs::Roll::whiteKeyBrightColourId);
+    const Colour blackKey = theme.findColour(ColourIDs::Roll::blackKey);
+    const Colour blackKeyBright = theme.findColour(ColourIDs::Roll::blackKeyAlt);
+    const Colour whiteKey = theme.findColour(ColourIDs::Roll::whiteKey);
+    const Colour whiteKeyBright = theme.findColour(ColourIDs::Roll::whiteKeyAlt);
     const Colour rootKey = whiteKeyBright.brighter(0.085f);
     const Colour rootKeyBright = whiteKeyBright.brighter(0.090f);
-    const Colour rowLine = theme.findColour(ColourIDs::Roll::rowLineColourId);
+    const Colour rowLine = theme.findColour(ColourIDs::Roll::rowLine);
 
     float currentHeight = float(height);
     float previousHeight = 0;

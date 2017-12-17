@@ -42,7 +42,7 @@ RevisionTooltipComponent::RevisionTooltipComponent(VersionControl &owner, const 
       revisionItemsOnly("temporaryPropertyList")
 {
     addAndMakeVisible (background = new PanelBackgroundC());
-    addAndMakeVisible (panel = new PanelA());
+    addAndMakeVisible (panel = new FramePanel());
     addAndMakeVisible (changesList = new ListBox ("", this));
 
     addAndMakeVisible (checkoutRevisionButton = new TextButton (String()));
@@ -244,7 +244,7 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../../Themes/PanelBackgroundC.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="c5736d336280caba" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 60M" sourceFile="../../Themes/PanelA.cpp"
+             explicitFocusOrder="0" pos="0 0 0M 60M" sourceFile="../../Themes/FramePanel.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="d017e5395434bb4f" memberName="changesList" virtualName=""
                     explicitFocusOrder="0" pos="0 0 0M 60M" class="ListBox" params="&quot;&quot;, this"/>

@@ -120,7 +120,7 @@ void PanelBackgroundC::resized()
 
 static void drawPanel(Graphics& g, HelioTheme &theme)
 {
-    g.setColour(theme.findColour(ColourIDs::BackgroundC::panelFillId));
+    g.setColour(theme.findColour(ColourIDs::BackgroundC::fill));
     g.fillAll();
     HelioTheme::drawNoise(theme, g);
 }

@@ -26,7 +26,7 @@ class ProgressIndicator;
 //[/Headers]
 
 #include "../Themes/LightShadowDownwards.h"
-#include "../Themes/PanelA.h"
+#include "../Themes/FramePanel.h"
 
 class StageComponent  : public Component,
                         public ListBoxModel,
@@ -102,7 +102,7 @@ private:
     ScopedPointer<Label> titleLabel;
     ScopedPointer<LightShadowDownwards> shadow;
     ScopedPointer<ProgressIndicator> indicator;
-    ScopedPointer<PanelA> panel;
+    ScopedPointer<FramePanel> panel;
     ScopedPointer<ListBox> changesList;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StageComponent)

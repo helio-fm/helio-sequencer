@@ -60,19 +60,35 @@ void PanelBackgroundA::paint (Graphics& g)
 
     g.fillAll (Colour (0xff373365));
 
-    g.setGradientFill (ColourGradient (Colour (0xff48358c),
-                                       static_cast<float> ((getWidth() / 2)), static_cast<float> ((getHeight() / 2)),
-                                       Colour (0xff2d3e61),
-                                       20.0f, 0.0f,
+    {
+        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
+        Colour fillColour1 = Colour (0xff48358c), fillColour2 = Colour (0xff2d3e61);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       static_cast<float> ((getWidth() / 2)) - 0.0f + x,
+                                       static_cast<float> ((getHeight() / 2)) - 0.0f + y,
+                                       fillColour2,
+                                       20.0f - 0.0f + x,
+                                       0.0f - 0.0f + y,
                                        true));
-    g.fillRect (0, 0, getWidth() - 0, getHeight() - 0);
+        g.fillRect (x, y, width, height);
+    }
 
-    g.setGradientFill (ColourGradient (Colour (0x1e48358c),
-                                       static_cast<float> (proportionOfWidth (0.7500f)), static_cast<float> (proportionOfHeight (0.6500f)),
-                                       Colour (0x00000000),
-                                       0.0f, static_cast<float> (proportionOfHeight (0.0000f)),
+    {
+        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
+        Colour fillColour1 = Colour (0x1e48358c), fillColour2 = Colour (0x00000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       static_cast<float> (proportionOfWidth (0.7500f)) - 0.0f + x,
+                                       static_cast<float> (proportionOfHeight (0.6500f)) - 0.0f + y,
+                                       fillColour2,
+                                       0.0f - 0.0f + x,
+                                       static_cast<float> (proportionOfHeight (0.0000f)) - 0.0f + y,
                                        false));
-    g.fillRect (0, 0, getWidth() - 0, getHeight() - 0);
+        g.fillRect (x, y, width, height);
+    }
 
     //[UserPaint] Add your own custom painting code here..
 #endif
@@ -84,9 +100,9 @@ void PanelBackgroundA::paint (Graphics& g)
     }
     else
     {
-        g.setGradientFill (ColourGradient (findColour(ColourIDs::BackgroundA::panelFillStartId),
+        g.setGradientFill (ColourGradient (findColour(ColourIDs::BackgroundA::fillStart),
                                            float((getWidth() / 2)), float((getHeight() / 2) + 25),
-                                           findColour(ColourIDs::BackgroundA::panelFillEndId),
+                                           findColour(ColourIDs::BackgroundA::fillEnd),
                                            20.0f, 0.0f,
                                            true));
 
@@ -129,14 +145,14 @@ void PanelBackgroundA::updateRender(HelioTheme &theme)
     Image render(Image::ARGB, w, h, true);
     Graphics g(render);
 
-    g.setGradientFill (ColourGradient (theme.findColour(ColourIDs::BackgroundA::panelFillStartId),
+    g.setGradientFill (ColourGradient (theme.findColour(ColourIDs::BackgroundA::fillStart),
                                        float((w / 2)), float((h / 2) + 25),
-                                       theme.findColour(ColourIDs::BackgroundA::panelFillEndId),
+                                       theme.findColour(ColourIDs::BackgroundA::fillEnd),
                                        20.0f, 0.0f,
                                        true));
 
     g.fillAll();
-    
+
     HelioTheme::drawNoise(theme, g);
 
     theme.getBgCache1() = render;

@@ -21,13 +21,13 @@
 //[/Headers]
 
 
-class PanelB  : public Component
+class DialogPanel  : public Component
 {
 public:
 
-    PanelB ();
+    DialogPanel ();
 
-    ~PanelB();
+    ~DialogPanel();
 
     //[UserMethods]
     //[/UserMethods]
@@ -42,5 +42,5 @@ private:
     //[/UserVariables]
 
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PanelB)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DialogPanel)
 };

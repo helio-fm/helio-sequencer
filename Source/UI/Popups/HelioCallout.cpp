@@ -140,13 +140,13 @@ void HelioCallout::drawBackground(Graphics &g, const Path &path, Image &cachedIm
     {
         cachedImage = Image(Image::ARGB, this->getWidth(), this->getHeight(), true);
         Graphics g2(cachedImage);
-        DropShadow(this->findColour(ColourIDs::Callout::blurColourId), 7, Point<int> (0, 1)).drawForPath(g2, path);
+        DropShadow(this->findColour(ColourIDs::Callout::blur), 7, Point<int> (0, 1)).drawForPath(g2, path);
     }
     
     g.setColour(Colours::black);
     g.drawImageAt(cachedImage, 0, 0);
     
-    g.setColour(this->findColour(ColourIDs::Callout::fillColourId));
+    g.setColour(this->findColour(ColourIDs::Callout::fill));
     g.fillPath(path);
     
 #elif HELIO_MOBILE
@@ -156,7 +156,7 @@ void HelioCallout::drawBackground(Graphics &g, const Path &path, Image &cachedIm
     
 #endif
     
-    g.setColour(this->findColour(ColourIDs::Callout::frameColourId));
+    g.setColour(this->findColour(ColourIDs::Callout::frame));
     g.strokePath(path, PathStrokeType(1.0f));
 }
 

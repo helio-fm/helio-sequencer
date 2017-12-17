@@ -23,7 +23,7 @@
 //[/Headers]
 
 #include "../../Themes/PanelBackgroundC.h"
-#include "../../Themes/PanelA.h"
+#include "../../Themes/FramePanel.h"
 #include "../../Themes/ShadowDownwards.h"
 
 class RevisionTooltipComponent  : public Component,
@@ -77,7 +77,7 @@ private:
     //[/UserVariables]
 
     ScopedPointer<PanelBackgroundC> background;
-    ScopedPointer<PanelA> panel;
+    ScopedPointer<FramePanel> panel;
     ScopedPointer<ListBox> changesList;
     ScopedPointer<TextButton> checkoutRevisionButton;
     ScopedPointer<ShadowDownwards> shadow;

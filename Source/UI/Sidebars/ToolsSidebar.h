@@ -31,11 +31,9 @@ class ProjectTreeItem;
 #include "../Themes/PanelBackgroundC.h"
 #include "../Themes/SeparatorHorizontalReversed.h"
 #include "../Themes/LighterShadowUpwards.h"
-#include "../Themes/GradientVertical.h"
 #include "../Themes/SeparatorHorizontal.h"
 #include "../Common/PlayButton.h"
 #include "../Themes/LighterShadowDownwards.h"
-#include "../Themes/GradientVerticalReversed.h"
 
 class ToolsSidebar  : public Component,
                       protected TransportListener,
@@ -131,13 +129,11 @@ private:
     ScopedPointer<ListBox> listBox;
     ScopedPointer<SeparatorHorizontalReversed> headLine;
     ScopedPointer<LighterShadowUpwards> shadow;
-    ScopedPointer<GradientVertical> gradient2;
     ScopedPointer<SeparatorHorizontal> separator;
     ScopedPointer<Label> totalTime;
     ScopedPointer<Label> currentTime;
     ScopedPointer<PlayButton> playButton;
     ScopedPointer<LighterShadowDownwards> headShadow;
-    ScopedPointer<GradientVerticalReversed> gradient;
     ScopedPointer<CommandItemComponent> annotationsButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ToolsSidebar)

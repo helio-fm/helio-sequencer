@@ -1109,10 +1109,10 @@ void HybridRoll::resized()
 
 void HybridRoll::paint(Graphics &g)
 {
-    const Colour barLine = findColour(ColourIDs::Roll::barLineColourId);
-    const Colour barLineBevel = findColour(ColourIDs::Roll::barLineBevelColourId);
-    const Colour beatLine = findColour(ColourIDs::Roll::beatLineColourId);
-    const Colour snapLine = findColour(ColourIDs::Roll::snapLineColourId);
+    const Colour barLine = findColour(ColourIDs::Roll::barLine);
+    const Colour barLineBevel = findColour(ColourIDs::Roll::barLineBevel);
+    const Colour beatLine = findColour(ColourIDs::Roll::beatLine);
+    const Colour snapLine = findColour(ColourIDs::Roll::snapLine);
     
     this->computeVisibleBeatLines();
 

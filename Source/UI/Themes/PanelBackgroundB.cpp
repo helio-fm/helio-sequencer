@@ -83,7 +83,7 @@ void PanelBackgroundB::paint(Graphics& g)
     }
     else
     {
-        g.setColour(this->findColour(ColourIDs::BackgroundB::panelFillId));
+        g.setColour(this->findColour(ColourIDs::BackgroundB::fill));
         g.fillRect(this->getLocalBounds());
     }
 
@@ -117,7 +117,7 @@ void PanelBackgroundB::updateRender(HelioTheme &theme)
 
     Image render(Image::ARGB, w, h, true);
     Graphics g(render);
-    g.setColour(theme.findColour(ColourIDs::BackgroundB::panelFillId));
+    g.setColour(theme.findColour(ColourIDs::BackgroundB::fill));
     g.fillAll();
     HelioTheme::drawNoise(theme, g, 0.5f);
     theme.getBgCache2() = render;

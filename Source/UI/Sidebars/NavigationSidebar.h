@@ -32,7 +32,6 @@ class AudioMonitor;
 #include "../Themes/LighterShadowUpwards.h"
 #include "../Themes/SeparatorHorizontalReversed.h"
 #include "../Themes/LighterShadowDownwards.h"
-#include "../Themes/GradientVerticalReversed.h"
 #include "../Themes/SeparatorHorizontal.h"
 
 class NavigationSidebar  : public ModeIndicatorOwnerComponent
@@ -71,7 +70,6 @@ private:
     ScopedPointer<LighterShadowUpwards> shadow;
     ScopedPointer<SeparatorHorizontalReversed> headLine;
     ScopedPointer<LighterShadowDownwards> headShadow;
-    ScopedPointer<GradientVerticalReversed> gradient1;
     ScopedPointer<SeparatorHorizontal> separator;
     ScopedPointer<ModeIndicatorTrigger> modeIndicatorSelector;
     ScopedPointer<ModeIndicatorComponent> modeIndicator;

@@ -36,7 +36,7 @@
 
 UpdateDialog::UpdateDialog()
 {
-    addAndMakeVisible (background = new PanelC());
+    addAndMakeVisible (background = new DialogPanel());
     addAndMakeVisible (updateButton = new TextButton (String()));
     updateButton->setButtonText (TRANS("dialog::update::proceed"));
     updateButton->setConnectedEdges (Button::ConnectedOnTop);
@@ -286,7 +286,7 @@ BEGIN_JUCER_METADATA
   </BACKGROUND>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
-             sourceFile="../Themes/PanelC.cpp" constructorParams=""/>
+             sourceFile="../Themes/DialogPanel.cpp" constructorParams=""/>
   <TEXTBUTTON name="" id="7855caa7c65c5c11" memberName="updateButton" virtualName=""
               explicitFocusOrder="0" pos="75.5Cc 0R 283 42" posRelativeY="fee11f38ba63ec9"
               buttonText="dialog::update::proceed" connectedEdges="4" needsCallback="1"

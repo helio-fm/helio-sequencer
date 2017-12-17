@@ -45,7 +45,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
       hasMadeChanges(false),
       key(0)
 {
-    addAndMakeVisible (background = new PanelC());
+    addAndMakeVisible (background = new DialogPanel());
     addAndMakeVisible (comboPrimer = new DialogComboBox::Primer());
 
     addAndMakeVisible (messageLabel = new Label (String(),
@@ -536,7 +536,7 @@ BEGIN_JUCER_METADATA
   </BACKGROUND>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
-             sourceFile="../Themes/PanelC.cpp" constructorParams=""/>
+             sourceFile="../Themes/DialogPanel.cpp" constructorParams=""/>
   <GENERICCOMPONENT name="" id="524df900a9089845" memberName="comboPrimer" virtualName=""
                     explicitFocusOrder="0" pos="0Cc 12 24M 72M" class="DialogComboBox::Primer"
                     params=""/>

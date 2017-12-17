@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "AudioPluginEditorPage.h"
 #include "PanelBackgroundB.h"
-#include "PanelA.h"
+#include "FramePanel.h"
 
 AudioPluginEditorPage::AudioPluginEditorPage(Component *contentOwned)
 {
@@ -28,7 +28,7 @@ AudioPluginEditorPage::AudioPluginEditorPage(Component *contentOwned)
     this->background = new PanelBackgroundB();
     this->addAndMakeVisible(this->background);
 
-    this->panel = new PanelA();
+    this->panel = new FramePanel();
     this->addAndMakeVisible(this->panel);
 
     if (DocumentWindow *w = dynamic_cast<DocumentWindow *>(contentOwned))

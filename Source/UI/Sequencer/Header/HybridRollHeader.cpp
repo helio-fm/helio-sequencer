@@ -47,13 +47,13 @@ HybridRollHeader::HybridRollHeader(Transport &transportRef, HybridRoll &rollRef,
 
     // Painting is the very bottleneck of this app,
     // so make sure we no lookups/computations inside paint method
-    this->backColour = this->findColour(ColourIDs::Roll::headerColourId);
-    this->barColour = this->findColour(ColourIDs::Roll::headerSnapsColourId);
+    this->backColour = this->findColour(ColourIDs::Roll::headerFill);
+    this->barColour = this->findColour(ColourIDs::Roll::headerSnaps);
     this->barShadeColour = this->backColour.darker(0.1f);
     this->beatColour = this->barColour.withMultipliedAlpha(0.8f);
     this->snapColour = this->barColour.withMultipliedAlpha(0.6f);
-    this->bevelLightColour = this->findColour(ColourIDs::Common::resizerLineColourId).withMultipliedAlpha(0.35f); //Colours::white.withAlpha(0.025f);
-    this->bevelDarkColour = this->findColour(ColourIDs::Common::resizerShadowColourId); //Colours::black.withAlpha(0.35f);
+    this->bevelLightColour = this->findColour(ColourIDs::Common::borderLineLight).withMultipliedAlpha(0.35f); //Colours::white.withAlpha(0.025f);
+    this->bevelDarkColour = this->findColour(ColourIDs::Common::borderLineDark); //Colours::black.withAlpha(0.35f);
 
     this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);

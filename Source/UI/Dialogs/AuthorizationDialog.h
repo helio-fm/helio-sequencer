@@ -25,7 +25,7 @@ class DocumentOwner;
 class LabelWithPassword;
 //[/Headers]
 
-#include "../Themes/PanelC.h"
+#include "../Themes/DialogPanel.h"
 #include "../Themes/SeparatorHorizontal.h"
 #include "../Themes/SeparatorVertical.h"
 
@@ -65,7 +65,7 @@ private:
     bool validateTextFields() const;
     //[/UserVariables]
 
-    ScopedPointer<PanelC> background;
+    ScopedPointer<DialogPanel> background;
     ScopedPointer<TextButton> loginButton;
     ScopedPointer<Label> emailEditor;
     ScopedPointer<Label> emailLabel;

@@ -241,10 +241,10 @@ void TrackScroller::paint(Graphics &g)
 
 void TrackScroller::paintOverChildren(Graphics& g)
 {
-    g.setColour(this->findColour(ColourIDs::TrackScroller::borderDarkLineColourId));
+    g.setColour(this->findColour(ColourIDs::TrackScroller::borderLineDark));
     g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
     
-    g.setColour(this->findColour(ColourIDs::TrackScroller::borderLightLineColourId));
+    g.setColour(this->findColour(ColourIDs::TrackScroller::borderLineLight));
     g.drawHorizontalLine(1, 0.f, float(this->getWidth()));
 }
 

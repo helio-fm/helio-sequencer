@@ -131,7 +131,7 @@ public:
     
     void paint(Graphics &g) override
     {
-        const Colour backCol(this->findColour(ColourIDs::Roll::headerColourId).darker(0.05f));
+        const Colour backCol(this->findColour(ColourIDs::Roll::headerFill).darker(0.05f));
         g.fillRect(this->getLocalBounds());
     }
     
@@ -235,7 +235,7 @@ public:
     
     void paint(Graphics &g) override
     {
-        const Colour backCol(this->findColour(ColourIDs::Roll::headerColourId));
+        const Colour backCol(this->findColour(ColourIDs::Roll::headerFill));
         const Colour frontCol(backCol.contrasting().withMultipliedAlpha(0.5f));
         const float pX = float(this->roll.getViewport().getViewPositionX());
         

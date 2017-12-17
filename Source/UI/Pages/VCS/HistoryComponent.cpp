@@ -36,7 +36,7 @@
 HistoryComponent::HistoryComponent(VersionControl &owner)
     : vcs(owner)
 {
-    addAndMakeVisible (panel = new PanelA());
+    addAndMakeVisible (panel = new FramePanel());
     addAndMakeVisible (revisionViewport = new Viewport());
 
     addAndMakeVisible (pushButton = new TextButton ("push"));
@@ -187,7 +187,7 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="ffffff"/>
   <JUCERCOMP name="" id="fa0c0fc3d6eee313" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="0 35 0M 85M" sourceFile="../Themes/PanelA.cpp"
+             explicitFocusOrder="0" pos="0 35 0M 85M" sourceFile="../Themes/FramePanel.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="34a64657988c0f04" memberName="revisionViewport" virtualName=""
                     explicitFocusOrder="0" pos="1 36 2M 87M" class="Viewport" params=""/>

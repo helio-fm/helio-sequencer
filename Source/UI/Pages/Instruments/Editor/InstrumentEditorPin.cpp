@@ -40,9 +40,9 @@ void InstrumentEditorPin::paint(Graphics &g)
     if (this->isInput)
     {
         if (isMidiChannel)
-        { g.setColour(this->findColour(ColourIDs::Instrument::midiInColourId)); }
+        { g.setColour(this->findColour(ColourIDs::Instrument::midiIn)); }
         else
-        { g.setColour(this->findColour(ColourIDs::Instrument::audioInColourId)); }
+        { g.setColour(this->findColour(ColourIDs::Instrument::audioIn)); }
 
         g.drawEllipse(w * 0.1f, h * 0.1f, w * 0.8f, h * 0.8f, 4.000f);
     }
@@ -51,9 +51,9 @@ void InstrumentEditorPin::paint(Graphics &g)
         Colour pinFill;
 
         if (isMidiChannel)
-        { pinFill = (this->findColour(ColourIDs::Instrument::midiOutColourId)); }
+        { pinFill = (this->findColour(ColourIDs::Instrument::midiOut)); }
         else
-        { pinFill = (this->findColour(ColourIDs::Instrument::audioOutColourId)); }
+        { pinFill = (this->findColour(ColourIDs::Instrument::audioOut)); }
 
         g.setColour(pinFill);
         g.fillEllipse(0, 0, w, h);

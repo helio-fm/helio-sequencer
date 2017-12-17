@@ -23,7 +23,6 @@
 
 //[MiscUserDefs]
 
-#include "SizeSwitcherComponent.h"
 #include "MainLayout.h"
 #include "TreeItem.h"
 #include "IconComponent.h"
@@ -47,7 +46,6 @@ NavigationSidebar::NavigationSidebar()
     addAndMakeVisible (shadow = new LighterShadowUpwards());
     addAndMakeVisible (headLine = new SeparatorHorizontalReversed());
     addAndMakeVisible (headShadow = new LighterShadowDownwards());
-    addAndMakeVisible (gradient1 = new GradientVerticalReversed());
     addAndMakeVisible (separator = new SeparatorHorizontal());
     addAndMakeVisible (modeIndicatorSelector = new ModeIndicatorTrigger());
 
@@ -90,7 +88,6 @@ NavigationSidebar::~NavigationSidebar()
     shadow = nullptr;
     headLine = nullptr;
     headShadow = nullptr;
-    gradient1 = nullptr;
     separator = nullptr;
     modeIndicatorSelector = nullptr;
     modeIndicator = nullptr;
@@ -124,7 +121,6 @@ void NavigationSidebar::resized()
     shadow->setBounds (0, getHeight() - 127 - 6, getWidth() - 0, 6);
     headLine->setBounds (0, 47, getWidth() - 0, 2);
     headShadow->setBounds (0, 48, getWidth() - 0, 6);
-    gradient1->setBounds (-50, 0, getWidth() - -100, 47);
     separator->setBounds (0, getHeight() - 126 - 2, getWidth() - 0, 2);
     modeIndicatorSelector->setBounds (0, getHeight() - 126, getWidth() - 0, 126);
     modeIndicator->setBounds (0, getHeight() - 4 - 5, getWidth() - 0, 5);
@@ -136,7 +132,7 @@ void NavigationSidebar::resized()
 //[MiscUserCode]
 void NavigationSidebar::paintOverChildren(Graphics& g)
 {
-    g.setColour(this->findColour(ColourIDs::Common::resizerLineColourId));
+    g.setColour(this->findColour(ColourIDs::Common::borderLineLight));
     g.drawVerticalLine(this->getWidth() - 1, 0.f, float(this->getHeight()));
 }
 
@@ -201,9 +197,6 @@ BEGIN_JUCER_METADATA
              constructorParams=""/>
   <JUCERCOMP name="" id="1d398dc12e2047bd" memberName="headShadow" virtualName=""
              explicitFocusOrder="0" pos="0 48 0M 6" sourceFile="../Themes/LighterShadowDownwards.cpp"
-             constructorParams=""/>
-  <JUCERCOMP name="" id="f09d886c97d1c017" memberName="gradient1" virtualName=""
-             explicitFocusOrder="0" pos="-50 0 -100M 47" sourceFile="../Themes/GradientVerticalReversed.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="22d481533ce3ecd3" memberName="separator" virtualName=""
              explicitFocusOrder="0" pos="0 126Rr 0M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"

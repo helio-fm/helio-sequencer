@@ -30,7 +30,7 @@ public:
 
     void paint(Graphics &g) override
     {
-        g.setColour(this->findColour(ColourIDs::HelperRectangle::fillColourId));
+        g.setColour(this->findColour(ColourIDs::HelperRectangle::fill));
         g.fillRect(0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
     }
 
@@ -42,10 +42,10 @@ class HelperRectangleVertical : public HelperRectangle
 public:
     void paint(Graphics &g) override
     {
-        g.setColour(this->findColour(ColourIDs::HelperRectangle::fillColourId));
+        g.setColour(this->findColour(ColourIDs::HelperRectangle::fill));
         g.fillRect(0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
 
-        g.setColour(this->findColour(ColourIDs::HelperRectangle::outlineColourId));
+        g.setColour(this->findColour(ColourIDs::HelperRectangle::outline));
         g.drawVerticalLine(0, 0.f, float(this->getHeight()));
         g.drawVerticalLine(this->getWidth() - 1, 0.f, float(this->getHeight()));
     }
@@ -56,10 +56,10 @@ class HelperRectangleHorizontal : public HelperRectangle
 public:
     void paint(Graphics &g) override
     {
-        g.setColour(this->findColour(ColourIDs::HelperRectangle::fillColourId));
+        g.setColour(this->findColour(ColourIDs::HelperRectangle::fill));
         g.fillRect(0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
 
-        g.setColour(this->findColour(ColourIDs::HelperRectangle::outlineColourId));
+        g.setColour(this->findColour(ColourIDs::HelperRectangle::outline));
         g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
         g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth()));
     }
