@@ -241,8 +241,8 @@ void MainWindow::createLayoutComponent()
     this->layout->forceRestoreLastOpenedPage();
 }
 
-static ScopedPointer<OpenGLContext> kOpenGLContext = nullptr;
-static Atomic<int> kOpenGlEnabled = 0;
+static ScopedPointer<OpenGLContext> kOpenGLContext(nullptr);
+static Atomic<int> kOpenGlEnabled(0);
 
 void MainWindow::setOpenGLRendererEnabled(bool shouldBeEnabled)
 {

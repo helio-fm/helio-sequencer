@@ -22,7 +22,7 @@
 #include "AnnotationEvent.h"
 #include "ColourButton.h"
 #include "ColourSwatches.h"
-#include "DialogComboBox.h"
+#include "MobileComboBox.h"
 
 class AnnotationsSequence;
 //[/Headers]
@@ -88,7 +88,7 @@ private:
     //[/UserVariables]
 
     ScopedPointer<DialogPanel> background;
-    ScopedPointer<DialogComboBox::Primer> comboPrimer;
+    ScopedPointer<MobileComboBox::Primer> comboPrimer;
     ScopedPointer<Label> messageLabel;
     ScopedPointer<TextButton> removeEventButton;
     ScopedPointer<TextButton> okButton;

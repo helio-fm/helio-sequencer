@@ -20,7 +20,7 @@
 //[Headers]
 #include "FadingDialog.h"
 #include "TimeSignatureEvent.h"
-#include "DialogComboBox.h"
+#include "MobileComboBox.h"
 
 class TimeSignaturesSequence;
 //[/Headers]
@@ -85,7 +85,7 @@ private:
     //[/UserVariables]
 
     ScopedPointer<DialogPanel> background;
-    ScopedPointer<DialogComboBox::Primer> comboPrimer;
+    ScopedPointer<MobileComboBox::Primer> comboPrimer;
     ScopedPointer<Label> messageLabel;
     ScopedPointer<TextButton> removeEventButton;
     ScopedPointer<TextButton> okButton;

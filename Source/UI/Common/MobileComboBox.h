@@ -26,13 +26,13 @@
 #include "../Themes/LighterShadowDownwards.h"
 #include "../Themes/SeparatorHorizontalReversed.h"
 
-class DialogComboBox  : public Component
+class MobileComboBox  : public Component
 {
 public:
 
-    DialogComboBox (WeakReference<Component> editor);
+    MobileComboBox (WeakReference<Component> editor);
 
-    ~DialogComboBox();
+    ~MobileComboBox();
 
     //[UserMethods]
 
@@ -55,11 +55,12 @@ public:
         ~Primer() override;
         void handleCommandMessage(int commandId) override;
         void initWith(WeakReference<Component> textEditor, CommandPanel::Items menu);
+        void updateMenu(CommandPanel::Items menu);
         void cleanup();
     private:
         ComponentAnimator animator;
-        ScopedPointer<DialogComboBox> combo;
-        ScopedPointer<DialogComboBox::Trigger> comboTrigger;
+        ScopedPointer<MobileComboBox> combo;
+        ScopedPointer<MobileComboBox::Trigger> comboTrigger;
         WeakReference<Component> textEditor;
     };
     //[/UserMethods]
@@ -74,17 +75,17 @@ public:
 private:
 
     //[UserVariables]
-    WeakReference<DialogComboBox::Primer> primer;
+    WeakReference<MobileComboBox::Primer> primer;
     WeakReference<Component> editor;
     ComponentAnimator animator;
     //[/UserVariables]
 
     ScopedPointer<PanelBackgroundC> background;
     ScopedPointer<CommandPanel> menu;
-    ScopedPointer<DialogComboBox::Trigger> triggerButtton;
+    ScopedPointer<MobileComboBox::Trigger> triggerButtton;
     ScopedPointer<LighterShadowDownwards> shadow;
     ScopedPointer<SeparatorHorizontalReversed> separator;
     ScopedPointer<Label> currentNameLabel;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DialogComboBox)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MobileComboBox)
 };

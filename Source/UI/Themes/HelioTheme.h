@@ -57,16 +57,6 @@ public:
             bool isMouseOver, bool isMouseDragging) override;
 
     //===------------------------------------------------------------------===//
-    // Combo box
-    //===------------------------------------------------------------------===//
-
-    void drawComboBox(Graphics &g, int width, int height,
-        bool isButtonDown, int buttonX, int buttonY,
-        int buttonW, int buttonH, ComboBox &box) override;
-    Font getComboBoxFont(ComboBox&) override;
-    Label *createComboBoxTextBox(ComboBox&) override;
-
-    //===------------------------------------------------------------------===//
     // Text Editor
     //===------------------------------------------------------------------===//
 

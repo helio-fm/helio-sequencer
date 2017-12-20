@@ -22,7 +22,7 @@
 #include "KeySignatureEvent.h"
 #include "ScaleEditor.h"
 #include "KeySelector.h"
-#include "DialogComboBox.h"
+#include "MobileComboBox.h"
 
 class Transport;
 class KeySignaturesSequence;
@@ -101,7 +101,7 @@ private:
     //[/UserVariables]
 
     ScopedPointer<DialogPanel> background;
-    ScopedPointer<DialogComboBox::Primer> comboPrimer;
+    ScopedPointer<MobileComboBox::Primer> comboPrimer;
     ScopedPointer<Label> messageLabel;
     ScopedPointer<TextButton> removeEventButton;
     ScopedPointer<TextButton> okButton;

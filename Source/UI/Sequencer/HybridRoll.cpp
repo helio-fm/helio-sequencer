@@ -207,7 +207,6 @@ float HybridRoll::getPositionForNewTimelineEvent() const
 {
     const double playheadOffset = this->findPlayheadOffsetFromViewCentre();
     const bool playheadIsWithinScreen = fabs(playheadOffset) < (this->viewport.getViewWidth() / 2);
-    float targetBeat = 0.f;
 
     // If playhead is visible, put new event on it's position, otherwise just align to the screen center
     if (playheadIsWithinScreen)
@@ -1825,7 +1824,6 @@ void HybridRoll::updateChildrenBounds()
 
 void HybridRoll::updateChildrenPositions()
 {
-    const int &viewWidth = this->viewport.getViewWidth();
     const int &viewHeight = this->viewport.getViewHeight();
     const int &viewX = this->viewport.getViewPositionX();
     const int &viewY = this->viewport.getViewPositionY();

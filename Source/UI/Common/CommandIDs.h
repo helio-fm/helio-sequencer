@@ -190,7 +190,13 @@ namespace CommandIDs
 
         StartDragViewport               = 0x3305,
         EndDragViewport                 = 0x3306,
-        YourNextCommandId = 0x3306
+
+        SelectAudioDeviceType           = 0x3400,
+        SelectAudioDevice               = 0x3500,
+        SelectSampleRate                = 0x3600,
+        SelectBufferSize                = 0x3700,
+
+        YourNextCommandId               = 0x4000
     };
 
     int getIdForName(const String &command);

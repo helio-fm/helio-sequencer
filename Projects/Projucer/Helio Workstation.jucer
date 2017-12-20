@@ -639,6 +639,10 @@
           <FILE id="ZZe4ma" name="IconComponent.h" compile="0" resource="0" file="../../Source/UI/Common/IconComponent.h"/>
           <FILE id="Vmic9K" name="MenuButton.cpp" compile="1" resource="0" file="../../Source/UI/Common/MenuButton.cpp"/>
           <FILE id="e8taDy" name="MenuButton.h" compile="0" resource="0" file="../../Source/UI/Common/MenuButton.h"/>
+          <FILE id="bkogLX" name="MobileComboBox.cpp" compile="1" resource="0"
+                file="../../Source/UI/Common/MobileComboBox.cpp"/>
+          <FILE id="tumRST" name="MobileComboBox.h" compile="0" resource="0"
+                file="../../Source/UI/Common/MobileComboBox.h"/>
           <FILE id="niHMec" name="ModeIndicatorComponent.cpp" compile="1" resource="0"
                 file="../../Source/UI/Common/ModeIndicatorComponent.cpp"/>
           <FILE id="EhpPoR" name="ModeIndicatorComponent.h" compile="0" resource="0"
@@ -673,10 +677,6 @@
                 file="../../Source/UI/Dialogs/AuthorizationDialog.cpp"/>
           <FILE id="WCRnDA" name="AuthorizationDialog.h" compile="0" resource="0"
                 file="../../Source/UI/Dialogs/AuthorizationDialog.h"/>
-          <FILE id="DMEW3x" name="DialogComboBox.cpp" compile="1" resource="0"
-                file="../../Source/UI/Dialogs/DialogComboBox.cpp"/>
-          <FILE id="AOZaMT" name="DialogComboBox.h" compile="0" resource="0"
-                file="../../Source/UI/Dialogs/DialogComboBox.h"/>
           <FILE id="LnmUma" name="FadingDialog.cpp" compile="1" resource="0"
                 file="../../Source/UI/Dialogs/FadingDialog.cpp"/>
           <FILE id="zCMR8o" name="FadingDialog.h" compile="0" resource="0" file="../../Source/UI/Dialogs/FadingDialog.h"/>

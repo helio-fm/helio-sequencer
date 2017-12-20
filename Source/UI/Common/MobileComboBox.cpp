@@ -19,20 +19,20 @@
 #include "Common.h"
 //[/Headers]
 
-#include "DialogComboBox.h"
+#include "MobileComboBox.h"
 
 //[MiscUserDefs]
 #include "CommandPanel.h"
 
 //[/MiscUserDefs]
 
-DialogComboBox::DialogComboBox(WeakReference<Component> editor)
+MobileComboBox::MobileComboBox(WeakReference<Component> editor)
     : editor(editor)
 {
     addAndMakeVisible (background = new PanelBackgroundC());
     addAndMakeVisible (menu = new CommandPanel());
 
-    addAndMakeVisible (triggerButtton = new DialogComboBox::Trigger());
+    addAndMakeVisible (triggerButtton = new MobileComboBox::Trigger());
 
     addAndMakeVisible (shadow = new LighterShadowDownwards());
     addAndMakeVisible (separator = new SeparatorHorizontalReversed());
@@ -56,7 +56,7 @@ DialogComboBox::DialogComboBox(WeakReference<Component> editor)
     //[/Constructor]
 }
 
-DialogComboBox::~DialogComboBox()
+MobileComboBox::~MobileComboBox()
 {
     //[Destructor_pre]
     //[/Destructor_pre]
@@ -72,7 +72,7 @@ DialogComboBox::~DialogComboBox()
     //[/Destructor]
 }
 
-void DialogComboBox::paint (Graphics& g)
+void MobileComboBox::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
@@ -81,7 +81,7 @@ void DialogComboBox::paint (Graphics& g)
     //[/UserPaint]
 }
 
-void DialogComboBox::resized()
+void MobileComboBox::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
@@ -96,7 +96,7 @@ void DialogComboBox::resized()
     //[/UserResized]
 }
 
-void DialogComboBox::parentHierarchyChanged()
+void MobileComboBox::parentHierarchyChanged()
 {
     //[UserCode_parentHierarchyChanged] -- Add your code here...
     if (this->primer != nullptr)
@@ -106,7 +106,7 @@ void DialogComboBox::parentHierarchyChanged()
     //[/UserCode_parentHierarchyChanged]
 }
 
-void DialogComboBox::parentSizeChanged()
+void MobileComboBox::parentSizeChanged()
 {
     //[UserCode_parentSizeChanged] -- Add your code here...
     if (this->primer != nullptr)
@@ -116,7 +116,7 @@ void DialogComboBox::parentSizeChanged()
     //[/UserCode_parentSizeChanged]
 }
 
-void DialogComboBox::handleCommandMessage (int commandId)
+void MobileComboBox::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
     if (this->getParentComponent() != nullptr && this->editor != nullptr)
@@ -134,46 +134,51 @@ void DialogComboBox::handleCommandMessage (int commandId)
 
 
 //[MiscUserCode]
-void DialogComboBox::initMenu(CommandPanel::Items menu)
+void MobileComboBox::initMenu(CommandPanel::Items menu)
 {
     this->menu->updateContent(menu);
 }
 
-void DialogComboBox::initText(TextEditor *editor)
+void MobileComboBox::initText(TextEditor *editor)
 {
     this->currentNameLabel->setFont(editor->getFont());
     this->currentNameLabel->setText(editor->getText(), dontSendNotification);
 }
 
-DialogComboBox::Primer::Primer()
+MobileComboBox::Primer::Primer()
 {
     this->setInterceptsMouseClicks(false, false);
 }
 
-DialogComboBox::Primer::~Primer()
+MobileComboBox::Primer::~Primer()
 {
     this->cleanup();
 }
 
-void DialogComboBox::Primer::initWith(WeakReference<Component> editor, CommandPanel::Items menu)
+void MobileComboBox::Primer::initWith(WeakReference<Component> editor, CommandPanel::Items menu)
 {
     this->toFront(false);
     this->textEditor = editor;
-    this->combo = new DialogComboBox(editor);
+    this->combo = new MobileComboBox(editor);
     this->combo->initMenu(menu);
-    this->comboTrigger = new DialogComboBox::Trigger(this);
+    this->comboTrigger = new MobileComboBox::Trigger(this);
     if (this->textEditor != nullptr)
     {
         this->textEditor->addAndMakeVisible(this->comboTrigger);
     }
 }
 
-void DialogComboBox::Primer::cleanup()
+void MobileComboBox::Primer::updateMenu(CommandPanel::Items menu)
+{
+    this->combo->initMenu(menu);
+}
+
+void MobileComboBox::Primer::cleanup()
 {
     // Need to be called before target text editor is deleted
     this->comboTrigger = nullptr;
 }
-void DialogComboBox::Primer::handleCommandMessage(int commandId)
+void MobileComboBox::Primer::handleCommandMessage(int commandId)
 {
     if (commandId == CommandIDs::ToggleShowHideCombo &&
         this->getParentComponent() != nullptr &&
@@ -188,21 +193,21 @@ void DialogComboBox::Primer::handleCommandMessage(int commandId)
     }
 }
 
-DialogComboBox::Trigger::Trigger(WeakReference<Component> listener) :
+MobileComboBox::Trigger::Trigger(WeakReference<Component> listener) :
     IconButton(Icons::findByName(Icons::down, 16), CommandIDs::ToggleShowHideCombo, listener)
 {}
 
-void DialogComboBox::Trigger::parentHierarchyChanged()
+void MobileComboBox::Trigger::parentHierarchyChanged()
 {
     this->updateBounds();
 }
 
-void DialogComboBox::Trigger::parentSizeChanged()
+void MobileComboBox::Trigger::parentSizeChanged()
 {
     this->updateBounds();
 }
 
-void DialogComboBox::Trigger::updateBounds()
+void MobileComboBox::Trigger::updateBounds()
 {
     if (Component *parent = this->getParentComponent())
     {
@@ -221,7 +226,7 @@ void DialogComboBox::Trigger::updateBounds()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="DialogComboBox" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="MobileComboBox" template="../../Template"
                  componentName="" parentClasses="public Component" constructorParams="WeakReference&lt;Component&gt; editor"
                  variableInitialisers="editor(editor)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="400"
@@ -239,7 +244,7 @@ BEGIN_JUCER_METADATA
                     explicitFocusOrder="0" pos="2 34 4M 34M" class="CommandPanel"
                     params=""/>
   <GENERICCOMPONENT name="" id="8ec691832b64961b" memberName="triggerButtton" virtualName=""
-                    explicitFocusOrder="0" pos="0Rr 0 32 32" class="DialogComboBox::Trigger"
+                    explicitFocusOrder="0" pos="0Rr 0 32 32" class="MobileComboBox::Trigger"
                     params=""/>
   <JUCERCOMP name="" id="cdb9ae0975a381d3" memberName="shadow" virtualName=""
              explicitFocusOrder="0" pos="1 33 2M 16" sourceFile="../Themes/LighterShadowDownwards.cpp"

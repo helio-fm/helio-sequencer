@@ -395,6 +395,7 @@
     <ClCompile Include="..\..\Source\UI\Common\FatalErrorScreen.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\KeySelector.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\MenuButton.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Common\MobileComboBox.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\ModeIndicatorComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\PlayButton.cpp"/>
     <ClCompile Include="..\..\Source\UI\Common\PluginWindow.cpp"/>
@@ -404,7 +405,6 @@
     <ClCompile Include="..\..\Source\UI\Common\ViewportFitProxyComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Dialogs\AnnotationDialog.cpp"/>
     <ClCompile Include="..\..\Source\UI\Dialogs\AuthorizationDialog.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Dialogs\DialogComboBox.cpp"/>
     <ClCompile Include="..\..\Source\UI\Dialogs\FadingDialog.cpp"/>
     <ClCompile Include="..\..\Source\UI\Dialogs\KeySignatureDialog.cpp"/>
     <ClCompile Include="..\..\Source\UI\Dialogs\ModalDialogConfirmation.cpp"/>
@@ -2435,6 +2435,7 @@
     <ClInclude Include="..\..\Source\UI\Common\IconButton.h"/>
     <ClInclude Include="..\..\Source\UI\Common\IconComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Common\MenuButton.h"/>
+    <ClInclude Include="..\..\Source\UI\Common\MobileComboBox.h"/>
     <ClInclude Include="..\..\Source\UI\Common\ModeIndicatorComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Common\PlayButton.h"/>
     <ClInclude Include="..\..\Source\UI\Common\PluginWindow.h"/>
@@ -2446,7 +2447,6 @@
     <ClInclude Include="..\..\Source\UI\Common\ViewportFitProxyComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Dialogs\AnnotationDialog.h"/>
     <ClInclude Include="..\..\Source\UI\Dialogs\AuthorizationDialog.h"/>
-    <ClInclude Include="..\..\Source\UI\Dialogs\DialogComboBox.h"/>
     <ClInclude Include="..\..\Source\UI\Dialogs\FadingDialog.h"/>
     <ClInclude Include="..\..\Source\UI\Dialogs\KeySignatureDialog.h"/>
     <ClInclude Include="..\..\Source\UI\Dialogs\ModalDialogConfirmation.h"/>

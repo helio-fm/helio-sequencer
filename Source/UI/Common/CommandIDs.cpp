@@ -273,6 +273,14 @@ int CommandIDs::getIdForName(const String &command)
         return StartDragViewport;
     case Hash("EndDragViewport"):
         return EndDragViewport;
+    case Hash("SelectAudioDeviceType"):
+        return SelectAudioDeviceType;
+    case Hash("SelectAudioDevice"):
+        return SelectAudioDevice;
+    case Hash("SelectSampleRate"):
+        return SelectSampleRate;
+    case Hash("SelectBufferSize"):
+        return SelectBufferSize;
     default:
         return 0;
     };

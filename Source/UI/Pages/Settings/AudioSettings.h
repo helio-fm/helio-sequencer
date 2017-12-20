@@ -19,11 +19,11 @@
 
 //[Headers]
 class AudioCore;
+#include "MobileComboBox.h"
 //[/Headers]
 
 
-class AudioSettings  : public Component,
-                       public ComboBoxListener
+class AudioSettings  : public Component
 {
 public:
 
@@ -36,44 +36,34 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
     void visibilityChanged() override;
+    void handleCommandMessage (int commandId) override;
 
 
 private:
 
     //[UserVariables]
-
     void applyDeviceType(AudioDeviceManager &deviceManager, const String &deviceTypeName);
-
     void applyDevice(AudioDeviceManager &deviceManager, const String &deviceName);
-
     void applySampleRate(AudioDeviceManager &deviceManager, double sampleRate);
-
-    void applyLatency(AudioDeviceManager &deviceManager, const int &newBufferSize);
-
+    void applyBufferSize(AudioDeviceManager &deviceManager, int bufferSize);
 
     void syncDeviceTypesList(AudioDeviceManager &deviceManager);
-
     void syncDevicesList(AudioDeviceManager &deviceManager);
-
     void syncSampleRatesList(AudioDeviceManager &deviceManager);
-
-    void syncLatencySlider(AudioDeviceManager &deviceManager);
-
+    void syncBufferSizesList(AudioDeviceManager &deviceManager);
 
     AudioCore &audioCore;
-
     //[/UserVariables]
 
-    ScopedPointer<ComboBox> deviceTypes;
-    ScopedPointer<Label> deviceTypesLabel;
-    ScopedPointer<ComboBox> devices;
-    ScopedPointer<Label> devicesLabel;
-    ScopedPointer<ComboBox> sampleRates;
-    ScopedPointer<Label> sampleRatesLabel;
-    ScopedPointer<Label> latencyLabel;
-    ScopedPointer<ComboBox> latency;
+    ScopedPointer<MobileComboBox::Primer> sampleRateComboPrimer;
+    ScopedPointer<MobileComboBox::Primer> bufferSizeComboPrimer;
+    ScopedPointer<MobileComboBox::Primer> deviceTypeComboPrimer;
+    ScopedPointer<MobileComboBox::Primer> deviceComboPrimer;
+    ScopedPointer<TextEditor> deviceTypeEditor;
+    ScopedPointer<TextEditor> deviceEditor;
+    ScopedPointer<TextEditor> sampleRateEditor;
+    ScopedPointer<TextEditor> bufferSizeEditor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioSettings)
 };

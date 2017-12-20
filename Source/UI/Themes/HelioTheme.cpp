@@ -100,9 +100,6 @@ void HelioTheme::drawDashedRectangle(Graphics &g, const Rectangle<float> &r, con
     g.strokePath(path, PathStrokeType(dashThickness));
 }
 
-
-
-
 Typeface::Ptr HelioTheme::getTypefaceForFont(const Font &font)
 {
     if (font.getTypefaceName() == Font::getDefaultSansSerifFontName() ||
@@ -120,70 +117,23 @@ void HelioTheme::drawStretchableLayoutResizerBar(Graphics &g,
 {
 }
 
-
-void HelioTheme::drawComboBox(Graphics &g, int width, int height,
-                              bool isButtonDown, int buttonX, int buttonY,
-                              int buttonW, int buttonH, ComboBox &box)
-{
-    g.setColour(box.findColour(ComboBox::backgroundColourId));
-    g.fillRoundedRectangle(1.f, 1.f, float(width - 2), float(height - 2), 2.f);
-
-//    if (box.isEnabled() && box.hasKeyboardFocus(false))
-
-    g.setColour(box.findColour(ComboBox::outlineColourId));
-    g.drawRoundedRectangle(1.f, 1.f, float(width - 2), float(height - 2), 2.0f, 1.0f);
-
-//    const bool needsHighlight = box.hasKeyboardFocus(true);
-//    const Colour baseColour(box.findColour(ComboBox::buttonColourId).darker(needsHighlight ? 0.2f : 0.0f));
-
-    if (box.isEnabled())
-    {
-        const float arrowX = 0.3f;
-        const float arrowH = 0.2f;
-
-        Path p;
-        p.addTriangle(buttonX + buttonW * 0.5f,            buttonY + buttonH * (0.4f + arrowH),
-                      buttonX + buttonW * (1.0f - arrowX), buttonY + buttonH * 0.4f,
-                      buttonX + buttonW * arrowX,          buttonY + buttonH * 0.4f);
-
-        g.setColour(box.findColour(ComboBox::arrowColourId));
-        g.fillPath(p);
-    }
-}
-
-Font HelioTheme::getComboBoxFont(ComboBox &box)
-{
-    return Font(jmax(16.0f, box.getHeight() * 0.65f));
-}
-
-Label *HelioTheme::createComboBoxTextBox(ComboBox &box)
-{
-    return new Label(String(), String());
-}
-
 //===----------------------------------------------------------------------===//
 // Text Editor
 //===----------------------------------------------------------------------===//
 
 void HelioTheme::fillTextEditorBackground(Graphics &g, int w, int h, TextEditor &ed)
 {
-    if (ed.isEnabled())
-    {
-        g.setColour(this->findColour(TextEditor::backgroundColourId));
-        g.fillRect(0, 0, w, h);
-    }
+    g.setColour(this->findColour(TextEditor::backgroundColourId));
+    g.fillRect(0, 0, w, h);
 }
 
 void HelioTheme::drawTextEditorOutline(Graphics &g, int w, int h, TextEditor &ed)
 {
-    if (ed.isEnabled())
-    {
-        g.setColour(this->findColour(TextEditor::outlineColourId));
-        g.drawVerticalLine(0, 1.f, h - 1.f);
-        g.drawVerticalLine(w - 1, 1.f, h - 1.f);
-        g.drawHorizontalLine(0, 1.f, w - 1.f);
-        g.drawHorizontalLine(h - 1, 1.f, w - 1.f);
-    }
+    g.setColour(this->findColour(TextEditor::outlineColourId));
+    g.drawVerticalLine(0, 1.f, h - 1.f);
+    g.drawVerticalLine(w - 1, 1.f, h - 1.f);
+    g.drawHorizontalLine(0, 1.f, w - 1.f);
+    g.drawHorizontalLine(h - 1, 1.f, w - 1.f);
 }
 
 //===----------------------------------------------------------------------===//
@@ -253,7 +203,6 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
             textToDraw = String::repeatedString(String::charToString(passwordCharacter), label.getText().length());
         }
         
-        const float alpha = label.isEnabled() ? 1.0f : 0.5f;
         const Font font(this->getLabelFont(label));
 
         Path textPath;
@@ -262,6 +211,10 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
         const Rectangle<float> textArea =
             label.getBorderSize().subtractedFrom(label.getLocalBounds()).toFloat();
 
+        // For large labels assume this is a dialog text,
+        // for every other force fit text into a single line:
+        const int maxLines = (textArea.getHeight() < 64) ? 1 : 10;
+
         glyphs.addFittedText(font,
                              textToDraw,
                              textArea.getX(),
@@ -269,20 +222,12 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
                              textArea.getWidth(),
                              textArea.getHeight(),
                              label.getJustificationType(),
-                             1, // max number of lines : TODO test
+                             maxLines,
                              1.0);
 
         glyphs.createPath(textPath);
 
-        // заголовки будут без обводки, это стремно смотрится
-        if (label.getName().contains("outline"))
-        {
-            g.setColour(label.findColour(Label::outlineColourId).withMultipliedAlpha(alpha));
-            PathStrokeType strokeType(label.getFont().getHeight() / 10.f);
-            g.strokePath(textPath, strokeType);
-        }
-
-        g.setColour(label.findColour(Label::textColourId).withMultipliedAlpha(alpha));
+        g.setColour(label.findColour(Label::textColourId));
         g.fillPath(textPath);
     }
     else if (label.isEnabled())
@@ -443,13 +388,12 @@ Font HelioTheme::getPopupMenuFont()
 
 void HelioTheme::drawPopupMenuBackground(Graphics &g, int width, int height)
 {
-    g.setColour(findColour(ComboBox::backgroundColourId));
+    g.setColour(findColour(TextEditor::backgroundColourId));
     g.fillRect(0, 0, width, height);
     
-    g.setColour(findColour(ComboBox::outlineColourId));
+    g.setColour(findColour(TextEditor::outlineColourId));
     g.drawRect(0.0f, 0.0f, static_cast<float>(width), static_cast<float>(height), 1.000f);
 }
-
 
 void HelioTheme::drawPopupMenuItem(Graphics& g, const Rectangle<int>& area,
                                    const bool isSeparator, const bool isActive,
@@ -812,13 +756,6 @@ void HelioTheme::initColours(const ::ColourScheme &s)
     this->setColour(TextButton::buttonOnColourId, s.getPanelBorderColour());
     this->setColour(TextButton::textColourOnId, s.getTextColour().withMultipliedAlpha(0.75f));
     this->setColour(TextButton::textColourOffId, s.getTextColour().withMultipliedAlpha(0.5f));
-
-    // ComboBox
-    this->setColour(ComboBox::backgroundColourId, s.getSecondaryGradientColourA().darker(0.05f));
-    this->setColour(ComboBox::textColourId, s.getTextColour());
-    this->setColour(ComboBox::buttonColourId, Colours::black.withAlpha(0.6f));
-    this->setColour(ComboBox::outlineColourId, Colours::black.withAlpha(0.5f));
-    this->setColour(ComboBox::arrowColourId, Colours::white.withAlpha(0.7f));
 
     // PopupMenu
     this->setColour(PopupMenu::backgroundColourId, s.getSecondaryGradientColourA().darker(0.05f));

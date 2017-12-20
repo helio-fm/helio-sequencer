@@ -46,7 +46,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
       key(0)
 {
     addAndMakeVisible (background = new DialogPanel());
-    addAndMakeVisible (comboPrimer = new DialogComboBox::Primer());
+    addAndMakeVisible (comboPrimer = new MobileComboBox::Primer());
 
     addAndMakeVisible (messageLabel = new Label (String(),
                                                  TRANS("...")));
@@ -538,7 +538,7 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
              sourceFile="../Themes/DialogPanel.cpp" constructorParams=""/>
   <GENERICCOMPONENT name="" id="524df900a9089845" memberName="comboPrimer" virtualName=""
-                    explicitFocusOrder="0" pos="0Cc 12 24M 72M" class="DialogComboBox::Primer"
+                    explicitFocusOrder="0" pos="0Cc 12 24M 72M" class="MobileComboBox::Primer"
                     params=""/>
   <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc 12 32M 36" posRelativeY="e96b77baef792d3a"

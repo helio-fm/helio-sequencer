@@ -226,6 +226,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/FatalErrorScreen_2f541f02.o \
   $(JUCE_OBJDIR)/KeySelector_58be6196.o \
   $(JUCE_OBJDIR)/MenuButton_1d9ba4c3.o \
+  $(JUCE_OBJDIR)/MobileComboBox_bdac55f1.o \
   $(JUCE_OBJDIR)/ModeIndicatorComponent_7338ae83.o \
   $(JUCE_OBJDIR)/PlayButton_38579458.o \
   $(JUCE_OBJDIR)/PluginWindow_66751815.o \
@@ -235,7 +236,6 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/ViewportFitProxyComponent_a93fb792.o \
   $(JUCE_OBJDIR)/AnnotationDialog_bb76a597.o \
   $(JUCE_OBJDIR)/AuthorizationDialog_ebcfd46b.o \
-  $(JUCE_OBJDIR)/DialogComboBox_157eeac5.o \
   $(JUCE_OBJDIR)/FadingDialog_905af7a1.o \
   $(JUCE_OBJDIR)/KeySignatureDialog_b4559c41.o \
   $(JUCE_OBJDIR)/ModalDialogConfirmation_23a5c174.o \
@@ -1028,6 +1028,11 @@ $(JUCE_OBJDIR)/MenuButton_1d9ba4c3.o: ../../Source/UI/Common/MenuButton.cpp
 	@echo "Compiling MenuButton.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/MobileComboBox_bdac55f1.o: ../../Source/UI/Common/MobileComboBox.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling MobileComboBox.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/ModeIndicatorComponent_7338ae83.o: ../../Source/UI/Common/ModeIndicatorComponent.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ModeIndicatorComponent.cpp"
@@ -1071,11 +1076,6 @@ $(JUCE_OBJDIR)/AnnotationDialog_bb76a597.o: ../../Source/UI/Dialogs/AnnotationDi
 $(JUCE_OBJDIR)/AuthorizationDialog_ebcfd46b.o: ../../Source/UI/Dialogs/AuthorizationDialog.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling AuthorizationDialog.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/DialogComboBox_157eeac5.o: ../../Source/UI/Dialogs/DialogComboBox.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling DialogComboBox.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/FadingDialog_905af7a1.o: ../../Source/UI/Dialogs/FadingDialog.cpp

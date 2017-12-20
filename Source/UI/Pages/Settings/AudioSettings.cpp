@@ -28,79 +28,72 @@
 AudioSettings::AudioSettings(AudioCore &core)
     : audioCore(core)
 {
-    addAndMakeVisible (deviceTypes = new ComboBox (String()));
-    deviceTypes->setEditableText (false);
-    deviceTypes->setJustificationType (Justification::centredLeft);
-    deviceTypes->setTextWhenNothingSelected (String());
-    deviceTypes->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    deviceTypes->addItem (TRANS("DirectSound"), 1);
-    deviceTypes->addItem (TRANS("ASIO"), 2);
-    deviceTypes->addListener (this);
+    addAndMakeVisible (sampleRateComboPrimer = new MobileComboBox::Primer());
 
-    addAndMakeVisible (deviceTypesLabel = new Label (String(),
-                                                     TRANS("settings::audio::device")));
-    deviceTypesLabel->setFont (Font (Font::getDefaultSansSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    deviceTypesLabel->setJustificationType (Justification::centredLeft);
-    deviceTypesLabel->setEditable (false, false, false);
-    deviceTypesLabel->setColour (Label::textColourId, Colour (0xbcffffff));
-    deviceTypesLabel->setColour (TextEditor::textColourId, Colours::black);
-    deviceTypesLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    addAndMakeVisible (bufferSizeComboPrimer = new MobileComboBox::Primer());
 
-    addAndMakeVisible (devices = new ComboBox (String()));
-    devices->setEditableText (false);
-    devices->setJustificationType (Justification::centredLeft);
-    devices->setTextWhenNothingSelected (String());
-    devices->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    devices->addListener (this);
+    addAndMakeVisible (deviceTypeComboPrimer = new MobileComboBox::Primer());
 
-    addAndMakeVisible (devicesLabel = new Label (String(),
-                                                 TRANS("settings::audio::driver")));
-    devicesLabel->setFont (Font (Font::getDefaultSansSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    devicesLabel->setJustificationType (Justification::centredLeft);
-    devicesLabel->setEditable (false, false, false);
-    devicesLabel->setColour (Label::textColourId, Colour (0xbcffffff));
-    devicesLabel->setColour (TextEditor::textColourId, Colours::black);
-    devicesLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    addAndMakeVisible (deviceComboPrimer = new MobileComboBox::Primer());
 
-    addAndMakeVisible (sampleRates = new ComboBox (String()));
-    sampleRates->setEditableText (false);
-    sampleRates->setJustificationType (Justification::centredLeft);
-    sampleRates->setTextWhenNothingSelected (String());
-    sampleRates->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    sampleRates->addListener (this);
+    addAndMakeVisible (deviceTypeEditor = new TextEditor (String()));
+    deviceTypeEditor->setMultiLine (false);
+    deviceTypeEditor->setReturnKeyStartsNewLine (false);
+    deviceTypeEditor->setReadOnly (true);
+    deviceTypeEditor->setScrollbarsShown (false);
+    deviceTypeEditor->setCaretVisible (false);
+    deviceTypeEditor->setPopupMenuEnabled (false);
+    deviceTypeEditor->setText (String());
 
-    addAndMakeVisible (sampleRatesLabel = new Label (String(),
-                                                     TRANS("settings::audio::samplerate")));
-    sampleRatesLabel->setFont (Font (Font::getDefaultSansSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    sampleRatesLabel->setJustificationType (Justification::centredLeft);
-    sampleRatesLabel->setEditable (false, false, false);
-    sampleRatesLabel->setColour (Label::textColourId, Colour (0xbcffffff));
-    sampleRatesLabel->setColour (TextEditor::textColourId, Colours::black);
-    sampleRatesLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    addAndMakeVisible (deviceEditor = new TextEditor (String()));
+    deviceEditor->setMultiLine (false);
+    deviceEditor->setReturnKeyStartsNewLine (false);
+    deviceEditor->setReadOnly (true);
+    deviceEditor->setScrollbarsShown (false);
+    deviceEditor->setCaretVisible (false);
+    deviceEditor->setPopupMenuEnabled (false);
+    deviceEditor->setText (String());
 
-    addAndMakeVisible (latencyLabel = new Label (String(),
-                                                 TRANS("settings::audio::buffersize")));
-    latencyLabel->setFont (Font (Font::getDefaultSansSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    latencyLabel->setJustificationType (Justification::centredLeft);
-    latencyLabel->setEditable (false, false, false);
-    latencyLabel->setColour (Label::textColourId, Colour (0xbcffffff));
-    latencyLabel->setColour (TextEditor::textColourId, Colours::black);
-    latencyLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
+    addAndMakeVisible (sampleRateEditor = new TextEditor (String()));
+    sampleRateEditor->setMultiLine (false);
+    sampleRateEditor->setReturnKeyStartsNewLine (false);
+    sampleRateEditor->setReadOnly (true);
+    sampleRateEditor->setScrollbarsShown (false);
+    sampleRateEditor->setCaretVisible (false);
+    sampleRateEditor->setPopupMenuEnabled (false);
+    sampleRateEditor->setText (String());
 
-    addAndMakeVisible (latency = new ComboBox (String()));
-    latency->setEditableText (false);
-    latency->setJustificationType (Justification::centredLeft);
-    latency->setTextWhenNothingSelected (String());
-    latency->setTextWhenNoChoicesAvailable (TRANS("(no choices)"));
-    latency->addListener (this);
+    addAndMakeVisible (bufferSizeEditor = new TextEditor (String()));
+    bufferSizeEditor->setMultiLine (false);
+    bufferSizeEditor->setReturnKeyStartsNewLine (false);
+    bufferSizeEditor->setReadOnly (true);
+    bufferSizeEditor->setScrollbarsShown (false);
+    bufferSizeEditor->setCaretVisible (false);
+    bufferSizeEditor->setPopupMenuEnabled (false);
+    bufferSizeEditor->setText (String());
 
 
     //[UserPreSize]
     //[/UserPreSize]
 
-    setSize (550, 300);
+    setSize (550, 200);
 
     //[Constructor]
+    this->deviceTypeEditor->setFont(Font(Font::getDefaultSansSerifFontName(), 18.f, Font::plain));
+    this->deviceEditor->setFont(Font(Font::getDefaultSansSerifFontName(), 18.f, Font::plain));
+    this->sampleRateEditor->setFont(Font(Font::getDefaultSansSerifFontName(), 18.f, Font::plain));
+    this->bufferSizeEditor->setFont(Font(Font::getDefaultSansSerifFontName(), 18.f, Font::plain));
+
+    this->deviceTypeEditor->setInterceptsMouseClicks(false, true);
+    this->deviceEditor->setInterceptsMouseClicks(false, true);
+    this->sampleRateEditor->setInterceptsMouseClicks(false, true);
+    this->bufferSizeEditor->setInterceptsMouseClicks(false, true);
+
+    CommandPanel::Items emptyMenu;
+    this->deviceTypeComboPrimer->initWith(this->deviceTypeEditor.get(), emptyMenu);
+    this->deviceComboPrimer->initWith(this->deviceEditor.get(), emptyMenu);
+    this->sampleRateComboPrimer->initWith(this->sampleRateEditor.get(), emptyMenu);
+    this->bufferSizeComboPrimer->initWith(this->bufferSizeEditor.get(), emptyMenu);
     //[/Constructor]
 }
 
@@ -109,14 +102,14 @@ AudioSettings::~AudioSettings()
     //[Destructor_pre]
     //[/Destructor_pre]
 
-    deviceTypes = nullptr;
-    deviceTypesLabel = nullptr;
-    devices = nullptr;
-    devicesLabel = nullptr;
-    sampleRates = nullptr;
-    sampleRatesLabel = nullptr;
-    latencyLabel = nullptr;
-    latency = nullptr;
+    sampleRateComboPrimer = nullptr;
+    bufferSizeComboPrimer = nullptr;
+    deviceTypeComboPrimer = nullptr;
+    deviceComboPrimer = nullptr;
+    deviceTypeEditor = nullptr;
+    deviceEditor = nullptr;
+    sampleRateEditor = nullptr;
+    bufferSizeEditor = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -125,9 +118,13 @@ AudioSettings::~AudioSettings()
 void AudioSettings::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
+#if 0
     //[/UserPrePaint]
 
+    g.fillAll (Colours::black);
+
     //[UserPaint] Add your own custom painting code here..
+#endif
     //[/UserPaint]
 }
 
@@ -136,69 +133,16 @@ void AudioSettings::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    deviceTypes->setBounds (16, 39, getWidth() - 38, 26);
-    deviceTypesLabel->setBounds (8, 8, getWidth() - 22, 24);
-    devices->setBounds (16, (getHeight() / 2) + -26 - (26 / 2), getWidth() - 38, 26);
-    devicesLabel->setBounds (8, 80, getWidth() - 22, 24);
-    sampleRates->setBounds (16, (getHeight() / 2) + 46 - (26 / 2), getWidth() - 38, 26);
-    sampleRatesLabel->setBounds (8, 152, getWidth() - 22, 24);
-    latencyLabel->setBounds (8, 236 - (24 / 2), getWidth() - 22, 24);
-    latency->setBounds (16, (getHeight() / 2) + 119 - (26 / 2), getWidth() - 38, 26);
+    sampleRateComboPrimer->setBounds (4, 4, getWidth() - 8, getHeight() - 8);
+    bufferSizeComboPrimer->setBounds (4, 4, getWidth() - 8, getHeight() - 8);
+    deviceTypeComboPrimer->setBounds (4, 4, getWidth() - 8, getHeight() - 8);
+    deviceComboPrimer->setBounds (4, 4, getWidth() - 8, getHeight() - 8);
+    deviceTypeEditor->setBounds (16, 12, getWidth() - 32, 32);
+    deviceEditor->setBounds (16, 60, getWidth() - 32, 32);
+    sampleRateEditor->setBounds (16, 108, getWidth() - 32, 32);
+    bufferSizeEditor->setBounds (16, 156, getWidth() - 32, 32);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
-}
-
-void AudioSettings::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
-{
-    //[UsercomboBoxChanged_Pre]
-    //[/UsercomboBoxChanged_Pre]
-
-    if (comboBoxThatHasChanged == deviceTypes)
-    {
-        //[UserComboBoxCode_deviceTypes] -- add your combo box handling code here..
-
-        AudioDeviceManager &deviceManager = this->audioCore.getDevice();
-        const int &selectedIndex = this->deviceTypes->getSelectedItemIndex();
-        const String &selectedText = this->deviceTypes->getItemText(selectedIndex);
-
-        this->applyDeviceType(deviceManager, selectedText);
-
-        //[/UserComboBoxCode_deviceTypes]
-    }
-    else if (comboBoxThatHasChanged == devices)
-    {
-        //[UserComboBoxCode_devices] -- add your combo box handling code here..
-
-        AudioDeviceManager &deviceManager = this->audioCore.getDevice();
-        const int &selectedIndex = this->devices->getSelectedItemIndex();
-        const String &selectedText = this->devices->getItemText(selectedIndex);
-        this->applyDevice(deviceManager, selectedText);
-
-        //[/UserComboBoxCode_devices]
-    }
-    else if (comboBoxThatHasChanged == sampleRates)
-    {
-        //[UserComboBoxCode_sampleRates] -- add your combo box handling code here..
-
-        AudioDeviceManager &deviceManager = this->audioCore.getDevice();
-        const int &selectedIndex = this->sampleRates->getSelectedItemIndex();
-        const String &selectedText = this->sampleRates->getItemText(selectedIndex);
-        this->applySampleRate(deviceManager, selectedText.getDoubleValue());
-
-        //[/UserComboBoxCode_sampleRates]
-    }
-    else if (comboBoxThatHasChanged == latency)
-    {
-        //[UserComboBoxCode_latency] -- add your combo box handling code here..
-        AudioDeviceManager &deviceManager = this->audioCore.getDevice();
-        const int &selectedIndex = this->latency->getSelectedItemIndex();
-        const String &selectedText = this->latency->getItemText(selectedIndex);
-        this->applyLatency(deviceManager, selectedText.getIntValue());
-        //[/UserComboBoxCode_latency]
-    }
-
-    //[UsercomboBoxChanged_Post]
-    //[/UsercomboBoxChanged_Post]
 }
 
 void AudioSettings::visibilityChanged()
@@ -211,9 +155,54 @@ void AudioSettings::visibilityChanged()
         this->syncDeviceTypesList(deviceManager);
         this->syncDevicesList(deviceManager);
         this->syncSampleRatesList(deviceManager);
-        this->syncLatencySlider(deviceManager);
+        this->syncBufferSizesList(deviceManager);
     }
     //[/UserCode_visibilityChanged]
+}
+
+void AudioSettings::handleCommandMessage (int commandId)
+{
+    //[UserCode_handleCommandMessage] -- Add your code here...
+    AudioDeviceManager &deviceManager = this->audioCore.getDevice();
+    const OwnedArray<AudioIODeviceType> &deviceTypes = deviceManager.getAvailableDeviceTypes();
+
+    const int deviceTypeIndex = commandId - CommandIDs::SelectAudioDeviceType;
+    if (deviceTypeIndex >= 0 && deviceTypeIndex < deviceTypes.size())
+    {
+        this->applyDeviceType(deviceManager, deviceTypes[deviceTypeIndex]->getTypeName());
+        return;
+    }
+
+    if (const auto currentType = deviceManager.getCurrentDeviceTypeObject())
+    {
+        const StringArray &deviceNames = currentType->getDeviceNames();
+        const int deviceIndex = commandId - CommandIDs::SelectAudioDevice;
+        if (deviceIndex >= 0 && deviceIndex < deviceNames.size())
+        {
+            this->applyDevice(deviceManager, deviceNames[deviceIndex]);
+            return;
+        }
+    }
+
+    if (const auto currentDevice = deviceManager.getCurrentAudioDevice())
+    {
+        const Array<double> rates(currentDevice->getAvailableSampleRates());
+        const int rateIndex = commandId - CommandIDs::SelectSampleRate;
+        if (rateIndex >= 0 && rateIndex < rates.size())
+        {
+            this->applySampleRate(deviceManager, rates[rateIndex]);
+            return;
+        }
+
+        const Array<int> bufferSizes(currentDevice->getAvailableBufferSizes());
+        const int bufferIndex = commandId - CommandIDs::SelectBufferSize;
+        if (bufferIndex >= 0 && bufferIndex < bufferSizes.size())
+        {
+            this->applyBufferSize(deviceManager, bufferSizes[bufferIndex]);
+            return;
+        }
+    }
+    //[/UserCode_handleCommandMessage]
 }
 
 
@@ -233,7 +222,7 @@ void AudioSettings::applyDeviceType(AudioDeviceManager &deviceManager, const Str
     this->syncDeviceTypesList(deviceManager);
     this->syncDevicesList(deviceManager);
     this->syncSampleRatesList(deviceManager);
-    this->syncLatencySlider(deviceManager);
+    this->syncBufferSizesList(deviceManager);
 }
 
 void AudioSettings::applyDevice(AudioDeviceManager &deviceManager, const String &deviceName)
@@ -246,7 +235,7 @@ void AudioSettings::applyDevice(AudioDeviceManager &deviceManager, const String 
 
     this->syncDevicesList(deviceManager);
     this->syncSampleRatesList(deviceManager);
-    this->syncLatencySlider(deviceManager);
+    this->syncBufferSizesList(deviceManager);
 }
 
 void AudioSettings::applySampleRate(AudioDeviceManager &deviceManager, double sampleRate)
@@ -258,109 +247,120 @@ void AudioSettings::applySampleRate(AudioDeviceManager &deviceManager, double sa
     deviceManager.setAudioDeviceSetup(deviceSetup, true);
 
     this->syncSampleRatesList(deviceManager);
-    this->syncLatencySlider(deviceManager);
+    this->syncBufferSizesList(deviceManager);
 }
 
-void AudioSettings::applyLatency(AudioDeviceManager &deviceManager, const int &newBufferSize)
+void AudioSettings::applyBufferSize(AudioDeviceManager &deviceManager, int bufferSize)
 {
     AudioDeviceManager::AudioDeviceSetup deviceSetup;
     deviceManager.getAudioDeviceSetup(deviceSetup);
 
-    deviceSetup.bufferSize = newBufferSize;
+    deviceSetup.bufferSize = bufferSize;
     deviceManager.setAudioDeviceSetup(deviceSetup, true);
-
-    //this->syncLatencySlider(deviceManager);
+    this->syncBufferSizesList(deviceManager);
 }
-
 
 void AudioSettings::syncDeviceTypesList(AudioDeviceManager &deviceManager)
 {
-    this->deviceTypes->clear(dontSendNotification);
     const String &currentTypeName = deviceManager.getCurrentAudioDeviceType();
     const OwnedArray<AudioIODeviceType> &types = deviceManager.getAvailableDeviceTypes();
 
+    CommandPanel::Items menu;
     for (int i = 0; i < types.size(); ++i)
     {
         const String &typeName = types[i]->getTypeName();
-        const int typeId = (i + 1); // not 0
-        this->deviceTypes->addItem(typeName, typeId);
+        const bool isSelected = typeName == currentTypeName;
+        menu.add(CommandItem::withParams(isSelected ? Icons::apply : Icons::empty,
+            CommandIDs::SelectAudioDeviceType + i, typeName));
 
-        if (typeName == currentTypeName)
+        if (isSelected)
         {
-            this->deviceTypes->setSelectedId(typeId, dontSendNotification);
+            this->deviceTypeEditor->setText(TRANS("settings::audio::device") +
+                ": " + typeName, dontSendNotification);
         }
     }
+
+    this->deviceTypeComboPrimer->updateMenu(menu);
 }
 
 void AudioSettings::syncDevicesList(AudioDeviceManager &deviceManager)
 {
-    this->devices->clear(dontSendNotification);
     const AudioIODevice *currentDevice = deviceManager.getCurrentAudioDevice();
     const AudioIODeviceType *currentType = deviceManager.getCurrentDeviceTypeObject();
 
-    if (!currentType) { return; }
+    if (currentDevice == nullptr || currentType == nullptr) { return; }
 
+    CommandPanel::Items menu;
     const StringArray &devices = currentType->getDeviceNames();
 
     for (int i = 0; i < devices.size(); ++i)
     {
         const String &deviceName = devices[i];
-        const int deviceId = (i + 1); // not 0
-        this->devices->addItem(deviceName, deviceId);
+        const bool isSelected = deviceName == currentDevice->getName();
+        menu.add(CommandItem::withParams(isSelected ? Icons::apply : Icons::empty,
+            CommandIDs::SelectAudioDevice + i, deviceName));
 
-        if (currentDevice)
+        if (isSelected)
         {
-            if (deviceName == currentDevice->getName())
-            {
-                this->devices->setSelectedId(deviceId, dontSendNotification);
-            }
+            this->deviceEditor->setText(TRANS("settings::audio::driver") +
+                ": " + deviceName, dontSendNotification);
         }
     }
+
+    this->deviceComboPrimer->updateMenu(menu);
 }
 
 void AudioSettings::syncSampleRatesList(AudioDeviceManager &deviceManager)
 {
-    this->sampleRates->clear(dontSendNotification);
     AudioIODevice *currentDevice = deviceManager.getCurrentAudioDevice();
 
-    if (!currentDevice) { return; }
+    if (currentDevice == nullptr) { return; }
 
+    CommandPanel::Items menu;
     const Array<double> rates(currentDevice->getAvailableSampleRates());
 
     for (int i = 0; i < rates.size(); ++i)
     {
         const double &sampleRate = rates[i];
-        const int rateId = (i + 1); // not 0
-        this->sampleRates->addItem(String(sampleRate), rateId);
+        const bool isSelected = sampleRate == currentDevice->getCurrentSampleRate();
+        menu.add(CommandItem::withParams(isSelected ? Icons::apply : Icons::empty,
+            CommandIDs::SelectSampleRate + i, String(sampleRate)));
 
-        if (sampleRate == currentDevice->getCurrentSampleRate())
+        if (isSelected)
         {
-            this->sampleRates->setSelectedId(rateId, dontSendNotification);
+            this->sampleRateEditor->setText(TRANS("settings::audio::samplerate") +
+                ": " + String(sampleRate), dontSendNotification);
         }
     }
+
+    this->sampleRateComboPrimer->updateMenu(menu);
 }
 
-void AudioSettings::syncLatencySlider(AudioDeviceManager &deviceManager)
+void AudioSettings::syncBufferSizesList(AudioDeviceManager &deviceManager)
 {
-    this->latency->clear(dontSendNotification);
     AudioIODevice *currentDevice = deviceManager.getCurrentAudioDevice();
 
-    if (!currentDevice) { return; }
+    if (currentDevice == nullptr) { return; }
 
-    const Array<int> buffers(currentDevice->getAvailableBufferSizes());
+    CommandPanel::Items menu;
+    const Array<int> bufferSizes(currentDevice->getAvailableBufferSizes());
     const int currentBufferSize = currentDevice->getCurrentBufferSizeSamples();
 
-    for (int i = 0; i < buffers.size(); ++i)
+    for (int i = 0; i < bufferSizes.size(); ++i)
     {
-        const int &buffer = buffers[i];
-        const int bufferId = (i + 1); // not 0
-        this->latency->addItem(String(buffer), bufferId);
+        const int &bufferSize = bufferSizes[i];
+        const bool isSelected = bufferSize == currentBufferSize;
+        menu.add(CommandItem::withParams(isSelected ? Icons::apply : Icons::empty,
+            CommandIDs::SelectBufferSize + i, String(bufferSize)));
 
-        if (buffer == currentBufferSize)
+        if (isSelected)
         {
-            this->latency->setSelectedId(bufferId, dontSendNotification);
+            this->bufferSizeEditor->setText(TRANS("settings::audio::buffersize") +
+                ": " + String(bufferSize), dontSendNotification);
         }
     }
+
+    this->bufferSizeComboPrimer->updateMenu(menu);
 }
 
 //[/MiscUserCode]
@@ -369,49 +369,40 @@ void AudioSettings::syncLatencySlider(AudioDeviceManager &deviceManager)
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="AudioSettings" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="AudioSettings" template="../../../Template"
                  componentName="" parentClasses="public Component" constructorParams="AudioCore &amp;core"
                  variableInitialisers="audioCore(core)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="550"
-                 initialHeight="300">
+                 initialHeight="200">
   <METHODS>
     <METHOD name="visibilityChanged()"/>
+    <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
-  <BACKGROUND backgroundColour="4d4d4d"/>
-  <COMBOBOX name="" id="31ccb7cf6ce25097" memberName="deviceTypes" virtualName=""
-            explicitFocusOrder="0" pos="16 39 38M 26" editable="0" layout="33"
-            items="DirectSound&#10;ASIO" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
-  <LABEL name="" id="a76abc06dc30e785" memberName="deviceTypesLabel" virtualName=""
-         explicitFocusOrder="0" pos="8 8 22M 24" textCol="bcffffff" edTextCol="ff000000"
-         edBkgCol="0" labelText="settings::audio::device" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default sans-serif font"
-         fontsize="21" kerning="0" bold="0" italic="0" justification="33"/>
-  <COMBOBOX name="" id="c40779f2a1d82e01" memberName="devices" virtualName=""
-            explicitFocusOrder="0" pos="16 -26Cc 38M 26" editable="0" layout="33"
-            items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
-  <LABEL name="" id="1a168043cfef2cb0" memberName="devicesLabel" virtualName=""
-         explicitFocusOrder="0" pos="8 80 22M 24" textCol="bcffffff" edTextCol="ff000000"
-         edBkgCol="0" labelText="settings::audio::driver" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default sans-serif font"
-         fontsize="21" kerning="0" bold="0" italic="0" justification="33"/>
-  <COMBOBOX name="" id="6266c722bfb5105a" memberName="sampleRates" virtualName=""
-            explicitFocusOrder="0" pos="16 46Cc 38M 26" editable="0" layout="33"
-            items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
-  <LABEL name="" id="46a4ed98959925ad" memberName="sampleRatesLabel" virtualName=""
-         explicitFocusOrder="0" pos="8 152 22M 24" textCol="bcffffff"
-         edTextCol="ff000000" edBkgCol="0" labelText="settings::audio::samplerate"
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default sans-serif font" fontsize="21" kerning="0"
-         bold="0" italic="0" justification="33"/>
-  <LABEL name="" id="29668fa4fff702a8" memberName="latencyLabel" virtualName=""
-         explicitFocusOrder="0" pos="8 236c 22M 24" textCol="bcffffff"
-         edTextCol="ff000000" edBkgCol="0" labelText="settings::audio::buffersize"
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default sans-serif font" fontsize="21" kerning="0"
-         bold="0" italic="0" justification="33"/>
-  <COMBOBOX name="" id="5961361c40500925" memberName="latency" virtualName=""
-            explicitFocusOrder="0" pos="16 119Cc 38M 26" editable="0" layout="33"
-            items="" textWhenNonSelected="" textWhenNoItems="(no choices)"/>
+  <BACKGROUND backgroundColour="ff000000"/>
+  <GENERICCOMPONENT name="" id="b8d926f809ea9d18" memberName="sampleRateComboPrimer"
+                    virtualName="" explicitFocusOrder="0" pos="4 4 8M 8M" class="MobileComboBox::Primer"
+                    params=""/>
+  <GENERICCOMPONENT name="" id="f314396fef5c1957" memberName="bufferSizeComboPrimer"
+                    virtualName="" explicitFocusOrder="0" pos="4 4 8M 8M" class="MobileComboBox::Primer"
+                    params=""/>
+  <GENERICCOMPONENT name="" id="524df900a9089845" memberName="deviceTypeComboPrimer"
+                    virtualName="" explicitFocusOrder="0" pos="4 4 8M 8M" class="MobileComboBox::Primer"
+                    params=""/>
+  <GENERICCOMPONENT name="" id="1b5648cb76a38566" memberName="deviceComboPrimer"
+                    virtualName="" explicitFocusOrder="0" pos="4 4 8M 8M" class="MobileComboBox::Primer"
+                    params=""/>
+  <TEXTEDITOR name="" id="4fd07309a20b15b6" memberName="deviceTypeEditor" virtualName=""
+              explicitFocusOrder="0" pos="16 12 32M 32" initialText="" multiline="0"
+              retKeyStartsLine="0" readonly="1" scrollbars="0" caret="0" popupmenu="0"/>
+  <TEXTEDITOR name="" id="fa9f51f63481813" memberName="deviceEditor" virtualName=""
+              explicitFocusOrder="0" pos="16 60 32M 32" initialText="" multiline="0"
+              retKeyStartsLine="0" readonly="1" scrollbars="0" caret="0" popupmenu="0"/>
+  <TEXTEDITOR name="" id="269505831c2d23ad" memberName="sampleRateEditor" virtualName=""
+              explicitFocusOrder="0" pos="16 108 32M 32" initialText="" multiline="0"
+              retKeyStartsLine="0" readonly="1" scrollbars="0" caret="0" popupmenu="0"/>
+  <TEXTEDITOR name="" id="42608864c0766e06" memberName="bufferSizeEditor" virtualName=""
+              explicitFocusOrder="0" pos="16 156 32M 32" initialText="" multiline="0"
+              retKeyStartsLine="0" readonly="1" scrollbars="0" caret="0" popupmenu="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
