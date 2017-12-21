@@ -23,7 +23,7 @@
 
 const HotkeyScheme HotkeyScheme::getDefaultScheme()
 {
-    return ResourceCache<HotkeyScheme>::getInstance()->
+    return ResourceCache<HotkeyScheme>::getInstance().
         get(Serialization::UI::Hotkeys::scheme, "DefaultHotkeys_xml").getFirst();
 }
 

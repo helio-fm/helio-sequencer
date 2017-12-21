@@ -150,9 +150,9 @@ void NoteResizerLeft::mouseDrag (const MouseEvent& e)
     if (scaleFactorChanged)
     {
         this->noteComponent->checkpointIfNeeded();
-        for (const auto i : selection.getGroupedSelections())
+        for (const auto s : selection.getGroupedSelections())
         {
-            const auto sequenceSelection(i.second);
+            const auto sequenceSelection(s.second);
             Array<Note> groupDragBefore, groupDragAfter;
 
             for (int i = 0; i < selection.getNumSelected(); ++i)

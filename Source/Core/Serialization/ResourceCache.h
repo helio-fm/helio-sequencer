@@ -18,12 +18,17 @@
 #pragma once
 
 template<typename T>
-class ResourceCache final : private DeletedAtShutdown
+class ResourceCache final
 {
 public:
 
     ResourceCache() {}
-    ~ResourceCache() { this->clearSingletonInstance(); }
+
+    static ResourceCache<T> &getInstance()
+    {
+        static ResourceCache<T> Instance;
+        return Instance;
+    }
 
     Array<T> get(const String &tag, const char *const resourceName)
     {
@@ -49,17 +54,9 @@ public:
         return this->cache;
     }
 
-    juce_DeclareSingleton(ResourceCache<T>, false)
-
 private:
 
     Array<T> cache;
 
     JUCE_DECLARE_NON_COPYABLE(ResourceCache<T>)
 };
-
-template<typename T>
-ResourceCache<T>* ResourceCache<T>::_singletonInstance = nullptr;
-
-template<typename T>
-CriticalSection ResourceCache<T>::_singletonLock;

@@ -22,7 +22,7 @@
 
 Array<Scale> Scale::getDefaultScalesCache()
 {
-    return ResourceCache<Scale>::getInstance()->
+    return ResourceCache<Scale>::getInstance().
         get(Serialization::Core::scale, "DefaultScales_xml");
 }
 

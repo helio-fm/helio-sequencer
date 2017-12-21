@@ -1012,9 +1012,9 @@ void PianoRollToolbox::moveToLayer(Lasso &selection, MidiSequence *layer, bool s
     PianoChangeGroupsPerLayer deferredRemovals;
     PianoChangeGroupProxy::Ptr insertionsForTargetLayer(new PianoChangeGroupProxy());
     
-    for (const auto i : selection.getGroupedSelections())
+    for (const auto s : selection.getGroupedSelections())
     {
-        const auto layerSelection(i.second);
+        const auto layerSelection(s.second);
         MidiSequence *midiLayer = layerSelection->getFirstAs<NoteComponent>()->getNote().getSequence();
 
         if (PianoSequence *sourcePianoLayer = dynamic_cast<PianoSequence *>(midiLayer))
@@ -1115,9 +1115,9 @@ bool PianoRollToolbox::arpeggiate(Lasso &selection,
     PianoChangeGroupsPerLayer deferredRemovals;
     PianoChangeGroupsPerLayer deferredInsertions;
 
-    for (const auto i : selection.getGroupedSelections())
+    for (const auto s : selection.getGroupedSelections())
     {
-        const auto layerSelection(i.second);
+        const auto layerSelection(s.second);
         PianoSequence *pianoLayer = getPianoLayer(layerSelection);
         
         jassert(pianoLayer);
@@ -1125,9 +1125,9 @@ bool PianoRollToolbox::arpeggiate(Lasso &selection,
         // 1. sort selection
         PianoChangeGroupProxy::Ptr sortedSelection(new PianoChangeGroupProxy());
         
-        for (int i = 0; i < layerSelection->size(); ++i)
+        for (int l = 0; l < layerSelection->size(); ++l)
         {
-            NoteComponent *nc = static_cast<NoteComponent *>(layerSelection->getUnchecked(i));
+            NoteComponent *nc = static_cast<NoteComponent *>(layerSelection->getUnchecked(l));
             sortedSelection->addSorted(nc->getNote(), nc->getNote());
         }
         
@@ -1418,9 +1418,9 @@ void PianoRollToolbox::changeVolumeLinear(Lasso &selection, float volumeDelta)
     if (selection.getNumSelected() == 0)
     { return; }
 
-    for (const auto i : selection.getGroupedSelections())
+    for (const auto s : selection.getGroupedSelections())
     {
-        const auto layerSelection(i.second);
+        const auto layerSelection(s.second);
         PianoSequence *pianoLayer = getPianoLayer(layerSelection);
         jassert(pianoLayer);
 
@@ -1442,9 +1442,9 @@ void PianoRollToolbox::changeVolumeMultiplied(Lasso &selection, float volumeFact
     if (selection.getNumSelected() == 0)
     { return; }
 
-    for (const auto i : selection.getGroupedSelections())
+    for (const auto s : selection.getGroupedSelections())
     {
-        const auto layerSelection(i.second);
+        const auto layerSelection(s.second);
         PianoSequence *pianoLayer = getPianoLayer(layerSelection);
         jassert(pianoLayer);
 
@@ -1485,9 +1485,9 @@ void PianoRollToolbox::changeVolumeSine(Lasso &selection, float volumeFactor)
     const float startBeat = PianoRollToolbox::findStartBeat(selection);
     const float endBeat = PianoRollToolbox::findEndBeat(selection);
     
-    for (const auto i : selection.getGroupedSelections())
+    for (const auto s : selection.getGroupedSelections())
     {
-        const auto layerSelection(i.second);
+        const auto layerSelection(s.second);
         PianoSequence *pianoLayer = getPianoLayer(layerSelection);
         jassert(pianoLayer);
         
@@ -1521,9 +1521,9 @@ void PianoRollToolbox::deleteSelection(Lasso &selection)
     if (selection.getNumSelected() == 0)
     { return; }
 
-    for (const auto i : selection.getGroupedSelections())
+    for (const auto s : selection.getGroupedSelections())
     {
-        const auto layerSelection(i.second);
+        const auto layerSelection(s.second);
         PianoSequence *pianoLayer = getPianoLayer(layerSelection);
         jassert(pianoLayer);
         
@@ -1535,9 +1535,9 @@ void PianoRollToolbox::deleteSelection(Lasso &selection)
             notesToDelete.add(nc->getNote());
         }
         
-        for (auto && i : notesToDelete)
+        for (auto && n : notesToDelete)
         {
-            pianoLayer->remove(i, true);
+            pianoLayer->remove(n, true);
         }
     }
 }
@@ -1550,9 +1550,9 @@ void PianoRollToolbox::shiftKeyRelative(Lasso &selection,
 
     bool didCheckpoint = false;
     
-    for (const auto i : selection.getGroupedSelections())
+    for (const auto s : selection.getGroupedSelections())
     {
-        const auto layerSelection(i.second);
+        const auto layerSelection(s.second);
         PianoSequence *pianoLayer = getPianoLayer(layerSelection);
         jassert(pianoLayer);
 
@@ -1597,9 +1597,9 @@ void PianoRollToolbox::shiftBeatRelative(Lasso &selection, float deltaBeat, bool
 
     bool didCheckpoint = false;
 
-    for (const auto i : selection.getGroupedSelections())
+    for (const auto s : selection.getGroupedSelections())
     {
-        const auto layerSelection(i.second);
+        const auto layerSelection(s.second);
         PianoSequence *pianoLayer = getPianoLayer(layerSelection);
         jassert(pianoLayer);
 
@@ -1639,9 +1639,9 @@ void PianoRollToolbox::inverseChord(Lasso &selection,
 
     bool didCheckpoint = false;
     
-    for (const auto i : selection.getGroupedSelections())
+    for (const auto s : selection.getGroupedSelections())
     {
-        const auto layerSelection(i.second);
+        const auto layerSelection(s.second);
         PianoSequence *pianoLayer = getPianoLayer(layerSelection);
         jassert(pianoLayer);
 

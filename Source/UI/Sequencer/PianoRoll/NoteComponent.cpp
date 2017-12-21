@@ -123,8 +123,6 @@ void NoteComponent::setQuickSelectLayerMode(bool value)
 
 void NoteComponent::setSelected(bool selected)
 {
-    // как-то так?
-    //this->roll.wantVolumeSliderFor(this, selected);
     HybridRollEventComponent::setSelected(selected);
 }
 
@@ -360,9 +358,9 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         if (lengthChanged)
         {
             this->checkpointIfNeeded();
-            for (const auto i : selection.getGroupedSelections())
+            for (const auto s : selection.getGroupedSelections())
             {
-                const auto sequenceSelection(i.second);
+                const auto sequenceSelection(s.second);
                 Array<Note> groupDragBefore, groupDragAfter;
                 
                 for (int i = 0; i < sequenceSelection->size(); ++i)
@@ -388,9 +386,9 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         if (lengthChanged)
         {
             this->checkpointIfNeeded();
-            for (const auto i : selection.getGroupedSelections())
+            for (const auto s : selection.getGroupedSelections())
             {
-                const auto sequenceSelection(i.second);
+                const auto sequenceSelection(s.second);
                 Array<Note> groupDragBefore, groupDragAfter;
                 
                 for (int i = 0; i < sequenceSelection->size(); ++i)
@@ -416,9 +414,9 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         if (scaleFactorChanged)
         {
             this->checkpointIfNeeded();
-            for (const auto i : selection.getGroupedSelections())
+            for (const auto s : selection.getGroupedSelections())
             {
-                const auto sequenceSelection(i.second);
+                const auto sequenceSelection(s.second);
                 Array<Note> groupDragBefore, groupDragAfter;
                 
                 for (int i = 0; i < sequenceSelection->size(); ++i)
@@ -444,9 +442,9 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         if (scaleFactorChanged)
         {
             this->checkpointIfNeeded();
-            for (const auto i : selection.getGroupedSelections())
+            for (const auto s : selection.getGroupedSelections())
             {
-                const auto sequenceSelection(i.second);
+                const auto sequenceSelection(s.second);
                 Array<Note> groupDragBefore, groupDragAfter;
                 
                 for (int i = 0; i < sequenceSelection->size(); ++i)
@@ -495,9 +493,9 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                 this->stopSound();
             }
             
-            for (const auto i : selection.getGroupedSelections())
+            for (const auto s : selection.getGroupedSelections())
             {
-                const auto sequenceSelection(i.second);
+                const auto sequenceSelection(s.second);
                 Array<Note> groupDragBefore, groupDragAfter;
                 
                 for (int i = 0; i < sequenceSelection->size(); ++i)
@@ -515,9 +513,9 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     {
         this->checkpointIfNeeded();
         
-        for (const auto i : selection.getGroupedSelections())
+        for (const auto s : selection.getGroupedSelections())
         {
-            const auto sequenceSelection(i.second);
+            const auto sequenceSelection(s.second);
             Array<Note> groupTuneBefore, groupTuneAfter;
             
             for (int i = 0; i < sequenceSelection->size(); ++i)
