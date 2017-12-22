@@ -25,7 +25,7 @@ public:
     String getText()
     {
 #if JUCE_DEBUG
-        ScopedReadLock lock(this->logLock);
+        const ScopedReadLock lock(this->logLock);
         return this->log;
 #else
         return String::empty;
@@ -37,7 +37,7 @@ protected:
     void logMessage(const String &message) override
     {
 #if JUCE_DEBUG
-        ScopedWriteLock lock(this->logLock);
+        const ScopedWriteLock lock(this->logLock);
         this->log += message;
         this->log += "\n";
         Logger::outputDebugString(message);

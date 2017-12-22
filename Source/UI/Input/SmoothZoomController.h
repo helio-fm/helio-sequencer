@@ -19,17 +19,10 @@
 
 #include "SmoothZoomListener.h"
 
-#if JUCE_LINUX
-#    define SMOOTH_ZOOM_TIMER_DELAY_MS 7
-#    define ZOOM_STOP_FACTOR 0.01f
-#    define ZOOM_DECAY_FACTOR 0.75f
-#    define ZOOM_INITIAL_SPEED 1.0f
-#else
-#    define SMOOTH_ZOOM_TIMER_DELAY_MS 7
-#    define ZOOM_STOP_FACTOR 0.004f
-#    define ZOOM_DECAY_FACTOR 0.7f
-#    define ZOOM_INITIAL_SPEED 0.6f
-#endif
+#define SMOOTH_ZOOM_TIMER_DELAY_MS 8
+#define ZOOM_STOP_FACTOR 0.001f
+#define ZOOM_DECAY_FACTOR 0.77f
+#define ZOOM_INITIAL_SPEED 0.55f
 
 class SmoothZoomController : private Thread, private WaitableEvent, private AsyncUpdater
 {
@@ -38,8 +31,10 @@ public:
     explicit SmoothZoomController(SmoothZoomListener &parent) :
         Thread("SmoothZoomController"),
         listener(parent),
-        factor(0.f, 0.f),
-        origin(0, 0),
+        factorX(0.f),
+        factorY(0.f),
+        originX(0.f),
+        originY(0.f),
         timerDelay(SMOOTH_ZOOM_TIMER_DELAY_MS),
         zoomStopFactor(ZOOM_STOP_FACTOR),
         zoomDecayFactor(ZOOM_DECAY_FACTOR),
@@ -52,46 +47,40 @@ public:
     {
         this->signalThreadShouldExit();
         this->signal();
-        this->stopThread(1000);
+        this->stopThread(500);
     }
 
-    int getTimerDelay() const { return timerDelay; }
-    void setTimerDelay(int val) { this->timerDelay = val; }
-
-    float getZoomStopFactor() const { return zoomStopFactor; }
-    void setZoomStopFactor(float val) { this->zoomStopFactor = val; }
-
-    float getZoomDecayFactor() const { return zoomDecayFactor; }
-    void setZoomReduxFactor(float val) { this->zoomDecayFactor = val; }
-
-    float getInitialZoomSpeed() const { return initialZoomSpeed; }
-    void setInitialZoomSpeed(float val) { this->initialZoomSpeed = val; }
+    inline int getTimerDelay() const noexcept { return timerDelay; }
+    inline float getZoomStopFactor() const noexcept { return zoomStopFactor; }
+    inline float getZoomDecayFactor() const noexcept { return zoomDecayFactor; }
+    inline float getInitialZoomSpeed() const noexcept { return initialZoomSpeed; }
 
     bool isZooming() const
     {
-        ScopedReadLock lock(this->dataLock);
-        return !this->factor.isOrigin();
+        return fabs(this->factorX.get()) > 0.f;
     }
 
     void cancelZoom()
     {
-        ScopedWriteLock lock(this->dataLock);
-        this->factor.setXY(float(), float());
+        this->factorX = 0.f;
+        this->factorY = 0.f;
     }
 
     void zoomRelative(const Point<float> &from, const Point<float> &zoom)
     {
         if (! this->isZooming())
         {
-            ScopedWriteLock lock(this->dataLock);
-            this->factor = zoom;
-            this->origin = from;
+            this->factorX = zoom.getX();
+            this->factorY = zoom.getY();
+            this->originX = from.getX();
+            this->originY = from.getY();
         }
         else
         {
-            ScopedWriteLock lock(this->dataLock);
-            this->factor = (this->factor + zoom) / 2.f;
-            this->origin = (this->origin + from) / 2;
+            this->factorX = (this->factorX.get() + zoom.getX()) / 2.f;
+            this->factorY = (this->factorY.get() + zoom.getY()) / 2.f;
+            this->originX = (this->originX.get() + from.getX()) / 2.f;
+            this->originY = (this->originY.get() + from.getY()) / 2.f;
         }
 
         WaitableEvent::signal();
@@ -101,8 +90,7 @@ private:
 
     inline bool stillNeedsZoom() const
     {
-        ScopedReadLock lock(this->dataLock);
-        return (this->factor.getDistanceFromOrigin() >= this->zoomStopFactor);
+        return juce_hypot(this->factorX.get(), this->factorY.get()) >= this->zoomStopFactor;
     }
 
     void run() override
@@ -112,11 +100,8 @@ private:
             while (this->stillNeedsZoom())
             {
                 const double b = Time::getMillisecondCounterHiRes();
-
-                {
-                    ScopedWriteLock lock(this->dataLock);
-                    this->factor *= this->zoomDecayFactor;
-                }
+                this->factorX = this->factorX.get() * this->zoomDecayFactor;
+                this->factorY = this->factorY.get() * this->zoomDecayFactor;
 
                 this->triggerAsyncUpdate();
                 
@@ -137,16 +122,16 @@ private:
 
     void handleAsyncUpdate() override
     {
-        ScopedReadLock lock(this->dataLock);
-        this->listener.zoomRelative(this->origin, this->factor);
+        this->listener.zoomRelative({ this->originX.get(), this->originY.get() },
+            { this->factorX.get(), this->factorY.get() });
     }
-
 
     SmoothZoomListener &listener;
 
-    ReadWriteLock dataLock;
-    Point<float> factor;
-    Point<float> origin;
+    Atomic<float> factorX;
+    Atomic<float> factorY;
+    Atomic<float> originX;
+    Atomic<float> originY;
 
 private:
 

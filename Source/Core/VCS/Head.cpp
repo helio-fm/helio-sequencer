@@ -69,7 +69,7 @@ ValueTree Head::getHeadingRevision() const
 
 ValueTree Head::getDiff() const
 {
-    ScopedReadLock lock(this->diffLock);
+    const ScopedReadLock lock(this->diffLock);
     return this->diff;
 }
 
@@ -103,25 +103,25 @@ bool Head::hasTrackedItemsOnTheStage() const
 
 bool Head::isDiffOutdated() const
 {
-    ScopedReadLock lock(this->outdatedMarkerLock);
+    const ScopedReadLock lock(this->outdatedMarkerLock);
     return this->diffOutdated;
 }
 
 void Head::setDiffOutdated(bool isOutdated)
 {
-    ScopedWriteLock lock(this->outdatedMarkerLock);
+    const ScopedWriteLock lock(this->outdatedMarkerLock);
     this->diffOutdated = isOutdated;
 }
 
 bool Head::isRebuildingDiff() const
 {
-    ScopedReadLock lock(this->rebuildingDiffLock);
+    const ScopedReadLock lock(this->rebuildingDiffLock);
     return this->rebuildingDiffMode;
 }
 
 void Head::setRebuildingDiffMode(bool isBuildingNow)
 {
-    ScopedWriteLock lock(this->rebuildingDiffLock);
+    const ScopedWriteLock lock(this->rebuildingDiffLock);
     this->rebuildingDiffMode = isBuildingNow;
 }
 
@@ -179,7 +179,7 @@ bool VCS::Head::moveTo(const ValueTree revision)
 
         // сначала обнуляем состояние
         {
-            ScopedWriteLock lock(this->stateLock);
+            const ScopedWriteLock lock(this->stateLock);
             this->state = new HeadState();
         }
 
@@ -517,7 +517,7 @@ XmlElement *Head::serialize() const
     auto stateDataXml = new XmlElement(Serialization::VCS::headIndexData);
 
     {
-        ScopedReadLock lock(this->stateLock);
+        const ScopedReadLock lock(this->stateLock);
         
         for (int i = 0; i < this->state->getNumTrackedItems(); ++i)
         {
@@ -617,12 +617,12 @@ void Head::run()
     this->sendChangeMessage();
 
     {
-        ScopedWriteLock lock(this->diffLock);
+        const ScopedWriteLock lock(this->diffLock);
         this->diff.removeAllChildren(nullptr);
         this->diff.removeAllProperties(nullptr);
     }
 
-    ScopedReadLock threadStateLock(this->stateLock);
+    const ScopedReadLock threadStateLock(this->stateLock);
 
     for (int i = 0; i < this->state->getNumTrackedItems(); ++i)
     {
@@ -662,7 +662,7 @@ void Head::run()
                     RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Changed, itemDiff));
                     var revisionVar(revisionRecord);
 
-                    ScopedWriteLock itemDiffLock(this->diffLock);
+                    const ScopedWriteLock itemDiffLock(this->diffLock);
                     this->diff.setProperty(stateItem->getUuid().toString(), revisionVar, nullptr);
                 }
 
@@ -678,7 +678,7 @@ void Head::run()
             RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Removed, emptyDiff));
             var revisionVar(revisionRecord);
 
-            ScopedWriteLock emptyDiffLock(this->diffLock);
+            const ScopedWriteLock emptyDiffLock(this->diffLock);
             this->diff.setProperty(stateItem->getUuid().toString(), revisionVar, nullptr);
         }
     }
@@ -715,7 +715,7 @@ void Head::run()
             RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Added, targetItem));
             var revisionVar(revisionRecord);
 
-            ScopedWriteLock lock(this->diffLock);
+            const ScopedWriteLock lock(this->diffLock);
             this->diff.setProperty(targetItem->getUuid().toString(), revisionVar, nullptr);
         }
     }
@@ -740,12 +740,12 @@ void Head::rebuildDiffSynchronously()
     this->setRebuildingDiffMode(true);
     
     {
-        ScopedWriteLock lock(this->diffLock);
+        const ScopedWriteLock lock(this->diffLock);
         this->diff.removeAllChildren(nullptr);
         this->diff.removeAllProperties(nullptr);
     }
     
-    ScopedReadLock rebuildStateLock(this->stateLock);
+    const ScopedReadLock rebuildStateLock(this->stateLock);
     
     for (int i = 0; i < this->state->getNumTrackedItems(); ++i)
     {
@@ -771,7 +771,7 @@ void Head::rebuildDiffSynchronously()
                     RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Changed, itemDiff));
                     var revisionVar(revisionRecord);
                     
-                    ScopedWriteLock lock(this->diffLock);
+                    const ScopedWriteLock lock(this->diffLock);
                     this->diff.setProperty(stateItem->getUuid().toString(), revisionVar, nullptr);
                 }
                 
@@ -787,7 +787,7 @@ void Head::rebuildDiffSynchronously()
             RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Removed, emptyDiff));
             var revisionVar(revisionRecord);
             
-            ScopedWriteLock lock(this->diffLock);
+            const ScopedWriteLock lock(this->diffLock);
             this->diff.setProperty(stateItem->getUuid().toString(), revisionVar, nullptr);
         }
     }
@@ -817,7 +817,7 @@ void Head::rebuildDiffSynchronously()
             RevisionItem::Ptr revisionRecord(new RevisionItem(this->pack, RevisionItem::Added, targetItem));
             var revisionVar(revisionRecord);
             
-            ScopedWriteLock lock(this->diffLock);
+            const ScopedWriteLock lock(this->diffLock);
             this->diff.setProperty(targetItem->getUuid().toString(), revisionVar, nullptr);
         }
     }

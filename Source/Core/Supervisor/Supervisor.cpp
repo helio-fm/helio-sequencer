@@ -44,7 +44,7 @@ Supervisor::~Supervisor()
     this->sessionManager->stopSubmit();
 
     {
-        ScopedWriteLock lock(this->sessionLock);
+        const ScopedWriteLock lock(this->sessionLock);
         this->currentSession->finish();
     }
 
@@ -54,14 +54,14 @@ Supervisor::~Supervisor()
 
 void Supervisor::trackActivity(const String &key)
 {
-    ScopedWriteLock lock(this->sessionLock);
+    const ScopedWriteLock lock(this->sessionLock);
     this->currentSession->onActivity(key);
 }
 
 void Supervisor::trackException(const std::exception *e, const String &sourceFilename, int lineNumber)
 {
     {
-        ScopedWriteLock lock(this->sessionLock);
+        const ScopedWriteLock lock(this->sessionLock);
         this->currentSession->onException(e, sourceFilename, lineNumber);
     }
 }
@@ -71,7 +71,7 @@ void Supervisor::trackCrash()
     this->sessionManager->stopSubmit();
     
     {
-        ScopedWriteLock lock(this->sessionLock);
+        const ScopedWriteLock lock(this->sessionLock);
         this->currentSession->onCrash();
         this->currentSession->finish();
     }

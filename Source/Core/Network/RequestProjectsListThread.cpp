@@ -32,9 +32,7 @@
 
 RequestProjectsListThread::RequestProjectsListThread() :
     Thread("RequestProjectsList"),
-    listener(nullptr)
-{
-}
+    listener(nullptr) {}
 
 RequestProjectsListThread::~RequestProjectsListThread()
 {
@@ -51,7 +49,7 @@ void RequestProjectsListThread::requestListAndEmail(RequestProjectsListThread::L
 void RequestProjectsListThread::run()
 {
     {
-        ScopedWriteLock lock(this->listLock);
+        const ScopedWriteLock lock(this->listLock);
         this->projectsList.clear();
     }
 
@@ -142,7 +140,7 @@ void RequestProjectsListThread::run()
                         if (description.projectId.isNotEmpty() && 
                             description.projectKey.isNotEmpty())
                         {
-                            ScopedWriteLock lock(this->listLock);
+                            const ScopedWriteLock lock(this->listLock);
                             this->projectsList.add(description);
                         }
                     }
@@ -165,7 +163,7 @@ void RequestProjectsListThread::run()
             MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
                 {
                     RequestProjectsListThread *self = static_cast<RequestProjectsListThread *>(data);
-                    ScopedReadLock lock(self->listLock);
+                    const ScopedReadLock lock(self->listLock);
                     self->listener->listRequestOk(self->userEmail, self->projectsList);
                     return nullptr;
                 },

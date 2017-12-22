@@ -49,28 +49,27 @@ SyncThread::~SyncThread()
 
 SyncThread::State SyncThread::getState() const
 {
-    ScopedReadLock lock(this->stateLock);
+    const ScopedReadLock lock(this->stateLock);
     return this->state;
 }
 
 void SyncThread::setState(SyncThread::State val)
 {
-    ScopedWriteLock lock(this->stateLock);
+    const ScopedWriteLock lock(this->stateLock);
     this->state = val;
     this->sendChangeMessage();
 }
 
 float SyncThread::getProgress() const
 {
-    ScopedReadLock lock(this->progressLock);
+    const ScopedReadLock lock(this->progressLock);
     const float percents = (float(this->bytesSent) / float(this->totalBytes));
     return (percents > 100.f) ? 0.f : percents;
-//    return percents;
 }
 
 void SyncThread::setProgress(int sent, int total)
 {
-    ScopedWriteLock lock(this->progressLock);
+    const ScopedWriteLock lock(this->progressLock);
     this->bytesSent = sent;
     this->totalBytes = total;
     this->sendChangeMessage();

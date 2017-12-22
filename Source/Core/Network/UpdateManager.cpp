@@ -140,7 +140,7 @@ UpdateManager::~UpdateManager()
 
 bool UpdateManager::hasUpdatePending() const
 {
-    ScopedReadLock lock(this->statusLock);
+    const ScopedReadLock lock(this->statusLock);
     return (this->updateStatus == UpdateManager::MajorChanges ||
             this->updateStatus == UpdateManager::MinorChanges ||
             this->updateStatus == UpdateManager::RevisionChanges);
@@ -148,32 +148,32 @@ bool UpdateManager::hasUpdatePending() const
 
 bool UpdateManager::hasRevisionUpdate() const
 {
-    ScopedReadLock lock(this->statusLock);
+    const ScopedReadLock lock(this->statusLock);
     return (this->updateStatus == UpdateManager::RevisionChanges);
 }
 
 bool UpdateManager::hasMinorUpdate() const
 {
-    ScopedReadLock lock(this->statusLock);
+    const ScopedReadLock lock(this->statusLock);
     return (this->updateStatus == UpdateManager::MinorChanges);
 }
 
 bool UpdateManager::hasMajorUpdate() const
 {
-    ScopedReadLock lock(this->statusLock);
+    const ScopedReadLock lock(this->statusLock);
     return (this->updateStatus == UpdateManager::MajorChanges);
 }
 
 
 String UpdateManager::getLatestVersion() const
 {
-    ScopedReadLock lock(this->statusLock);
+    const ScopedReadLock lock(this->statusLock);
     return this->latestVersion;
 }
 
 String UpdateManager::getUpdateUrl() const
 {
-    ScopedReadLock lock(this->statusLock);
+    const ScopedReadLock lock(this->statusLock);
     return this->updateUrl;
 }
 
@@ -194,7 +194,7 @@ void UpdateManager::onUpdateThreadDone(UpdateStatus status,
                                        const String &newVersion,
                                        const String &url)
 {
-    ScopedWriteLock lock(this->statusLock);
+    const ScopedWriteLock lock(this->statusLock);
     this->updateStatus = status;
     this->latestVersion = newVersion;
     this->updateUrl = url;

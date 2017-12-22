@@ -40,7 +40,7 @@ RequestTranslationsThread::~RequestTranslationsThread()
 
 const String &RequestTranslationsThread::getLatestResponse()
 {
-    ScopedReadLock lock(this->dataLock);
+    const ScopedReadLock lock(this->dataLock);
     return this->latestResponse;
 }
 
@@ -72,7 +72,7 @@ void RequestTranslationsThread::run()
         if (downloadStream != nullptr && statusCode == 200)
         {
             {
-                ScopedWriteLock lock(this->dataLock);
+                const ScopedWriteLock lock(this->dataLock);
                 this->latestResponse = downloadStream->readEntireStreamAsString();
             }
 

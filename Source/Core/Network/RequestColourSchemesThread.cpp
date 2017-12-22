@@ -26,9 +26,7 @@
 
 RequestColourSchemesThread::RequestColourSchemesThread() :
     Thread("RequestColourSchemes"),
-    listener(nullptr)
-{
-}
+    listener(nullptr) {}
 
 RequestColourSchemesThread::~RequestColourSchemesThread()
 {
@@ -37,7 +35,7 @@ RequestColourSchemesThread::~RequestColourSchemesThread()
 
 String RequestColourSchemesThread::getLastFetchedData() const
 {
-    ScopedReadLock lock(this->dataLock);
+    const ScopedReadLock lock(this->dataLock);
     return this->lastFetchedData;
 }
 
@@ -73,7 +71,7 @@ void RequestColourSchemesThread::run()
         if (downloadStream != nullptr && statusCode == 200)
         {
             {
-                ScopedWriteLock lock(this->dataLock);
+                const ScopedWriteLock lock(this->dataLock);
                 this->lastFetchedData = downloadStream->readEntireStreamAsString();
             }
             

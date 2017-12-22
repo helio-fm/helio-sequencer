@@ -111,7 +111,7 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject, Viewport &viewportRef,
     altDrawMode(false),
     draggedDistance(0),
     timeEnteredDragMode(0),
-    transportLastCorrectPosition(0.0),
+    lastTransportPosition(0.0),
     playheadOffset(0.0),
     shouldFollowPlayhead(false)
 {
@@ -539,7 +539,7 @@ double HybridRoll::getTransportPositionByXPosition(int xPosition, double canvasW
 double HybridRoll::getTransportPositionByBeat(float targetBeat) const
 {
     const double projectLengthInBeats = (this->projectLastBeat - this->projectFirstBeat);
-    return double((targetBeat - this->projectFirstBeat) / projectLengthInBeats);
+    return double(targetBeat - this->projectFirstBeat) / projectLengthInBeats;
 }
 
 float HybridRoll::getBeatByTransportPosition(double absSeekPosition) const
@@ -1156,17 +1156,17 @@ void HybridRoll::onPlayheadMoved(int playheadX)
     if (this->shouldFollowPlayhead &&
         !this->smoothZoomController->isZooming())
     {
-        if (fabs(this->playheadOffset) > 1.0)
+        const int viewHalfWidth = this->viewport.getViewWidth() / 2;
+        const int viewportCentreX = this->viewport.getViewPositionX() + viewHalfWidth;
+        double offset = double(playheadX) - double(viewportCentreX);
+
+        if (fabs(offset) > 1.0)
         {
-            const double newPlayheadDelta = fabs(this->playheadOffset - (this->playheadOffset * 0.975));
-            this->playheadOffset += (jmax(1.0, newPlayheadDelta) * ((this->playheadOffset < 0.0) ? 1.0 : -1.0));
-        }
-        else
-        {
-            this->playheadOffset = 0.0;
+            const double newPlayheadDelta = fabs(offset - (offset * 0.985));
+            offset += (jmax(1.0, newPlayheadDelta) * ((offset < 0.0) ? 1.0 : -1.0));
         }
         
-        this->viewport.setViewPosition(playheadX - int(this->playheadOffset) - (this->viewport.getViewWidth() / 2),
+        this->viewport.setViewPosition(playheadX - int(offset) - viewHalfWidth,
                                        this->viewport.getViewPositionY());
         
         this->updateChildrenPositions();
@@ -1184,12 +1184,7 @@ void HybridRoll::onClippingWarning()
         return;
     }
     
-    float clippingBeat = 0.f;
-    
-    {
-        SpinLock::ScopedLockType lock(this->transportLastCorrectPositionLock);
-        clippingBeat = this->getBeatByTransportPosition(this->transportLastCorrectPosition);
-    }
+    const float clippingBeat = this->getBeatByTransportPosition(this->lastTransportPosition.get());
     
     if (this->clippingIndicators.size() > 0)
     {
@@ -1220,13 +1215,8 @@ void HybridRoll::onOversaturationWarning()
         return;
     }
     
-    float warningBeat = 0.f;
-    
-    {
-        SpinLock::ScopedLockType lock(this->transportLastCorrectPositionLock);
-        warningBeat = this->getBeatByTransportPosition(this->transportLastCorrectPosition);
-    }
-    
+    const float warningBeat = this->getBeatByTransportPosition(this->lastTransportPosition.get());
+
     if (this->oversaturationIndicators.size() > 0)
     {
         const float lastMarkerEndBeat = this->oversaturationIndicators.getLast()->getEndBeat();
@@ -1254,13 +1244,9 @@ void HybridRoll::resetAllOversaturationIndicators()
 //===----------------------------------------------------------------------===//
 
 void HybridRoll::onSeek(double absolutePosition,
-                      double currentTimeMs,
-                      double totalTimeMs)
+    double currentTimeMs, double totalTimeMs)
 {
-    {
-        SpinLock::ScopedLockType lock(this->transportLastCorrectPositionLock);
-        this->transportLastCorrectPosition = absolutePosition;
-    }
+    this->lastTransportPosition = absolutePosition;
 }
 
 void HybridRoll::onTempoChanged(double newTempo) {}
@@ -1320,15 +1306,9 @@ void HybridRoll::scrollToSeekPosition()
 {
 #if ROLL_VIEW_FOLLOWS_PLAYHEAD
     this->startFollowingPlayhead();
-    this->startTimer(7);
+    this->startTimer(8);
 #else
-    int playheadX = 0;
-
-    {
-        ScopedReadLock lock(this->transportLastCorrectPositionLock);
-        playheadX = this->getXPositionByTransportPosition(this->transportLastCorrectPosition, float(this->getWidth()));
-    }
-
+    const int playheadX = this->getXPositionByTransportPosition(this->lastTransportPosition.get(), float(this->getWidth()));
     this->viewport.setViewPosition(playheadX - (this->viewport.getViewWidth() / 3), this->viewport.getViewPositionY());
     this->updateChildrenBounds();
 #endif
@@ -1364,12 +1344,7 @@ void HybridRoll::handleAsyncUpdate()
     if (this->shouldFollowPlayhead &&
         !this->smoothZoomController->isZooming())
     {
-        int playheadX = 0;
-
-        {
-            SpinLock::ScopedLockType lock(this->transportLastCorrectPositionLock);
-            playheadX = this->getXPositionByTransportPosition(this->transportLastCorrectPosition, float(this->getWidth()));
-        }
+        const int playheadX = this->getXPositionByTransportPosition(this->lastTransportPosition.get(), float(this->getWidth()));
 
         if (fabs(this->playheadOffset) > 1.0)
         {
@@ -1391,15 +1366,9 @@ void HybridRoll::handleAsyncUpdate()
 
 double HybridRoll::findPlayheadOffsetFromViewCentre() const
 {
-    int playheadX = 0;
-
-    {
-        SpinLock::ScopedLockType lock(this->transportLastCorrectPositionLock);
-        playheadX = this->getXPositionByTransportPosition(this->transportLastCorrectPosition, float(this->getWidth()));
-    }
-
-    const int &viewportCentreX = (this->viewport.getViewPositionX() + this->viewport.getViewWidth() / 2);
-    return playheadX - viewportCentreX;
+    const int playheadX = this->getXPositionByTransportPosition(this->lastTransportPosition.get(), float(this->getWidth()));
+    const int viewportCentreX = this->viewport.getViewPositionX() + this->viewport.getViewWidth() / 2;
+    return double(playheadX) - double(viewportCentreX);
 }
 
 void HybridRoll::triggerBatchRepaintFor(FloatBoundsComponent *target)

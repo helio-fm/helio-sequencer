@@ -260,7 +260,7 @@ void StageComponent::changeListenerCallback(ChangeBroadcaster *source)
 Component *StageComponent::refreshComponentForRow(int rowNumber,
         bool isRowSelected, Component *existingComponentToUpdate)
 {
-    ScopedReadLock lock(this->diffLock);
+    const ScopedReadLock lock(this->diffLock);
 
     // juce out-of-range fix
     const int numProps = this->lastDiff.getNumProperties();
@@ -302,7 +302,7 @@ void StageComponent::listBoxItemDoubleClicked(int row, const MouseEvent &e)
 
 int StageComponent::getNumRows()
 {
-    ScopedReadLock lock(this->diffLock);
+    const ScopedReadLock lock(this->diffLock);
     const int numProps = this->lastDiff.getNumProperties();
     return numProps;
 }
@@ -383,7 +383,7 @@ void StageComponent::toggleButtonAction()
 
 void StageComponent::updateList()
 {
-    ScopedWriteLock lock(this->diffLock);
+    const ScopedWriteLock lock(this->diffLock);
     this->lastDiff = this->vcs.getHead().getDiff().createCopy();
     this->changesList->deselectAllRows();
     this->changesList->updateContent();
@@ -392,7 +392,7 @@ void StageComponent::updateList()
 
 void StageComponent::clearList()
 {
-    ScopedWriteLock lock(this->diffLock);
+    const ScopedWriteLock lock(this->diffLock);
     this->lastDiff = ValueTree();
     this->changesList->deselectAllRows();
     this->changesList->updateContent();

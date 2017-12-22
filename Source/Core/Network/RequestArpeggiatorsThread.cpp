@@ -30,10 +30,7 @@
 
 RequestArpeggiatorsThread::RequestArpeggiatorsThread() :
     Thread("RequestArpeggiators"),
-    listener(nullptr)
-{
-
-}
+    listener(nullptr) {}
 
 RequestArpeggiatorsThread::~RequestArpeggiatorsThread()
 {
@@ -42,7 +39,7 @@ RequestArpeggiatorsThread::~RequestArpeggiatorsThread()
 
 String RequestArpeggiatorsThread::getLastFetchedData() const
 {
-    ScopedReadLock lock(this->dataLock);
+    const ScopedReadLock lock(this->dataLock);
     return this->lastFetchedData;
 }
 
@@ -95,7 +92,7 @@ void RequestArpeggiatorsThread::run()
         {
             if (! pushMode)
             {
-                ScopedWriteLock lock(this->dataLock);
+                const ScopedWriteLock lock(this->dataLock);
                 this->lastFetchedData = downloadStream->readEntireStreamAsString();
             }
 

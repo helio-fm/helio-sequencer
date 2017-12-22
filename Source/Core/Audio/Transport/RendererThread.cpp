@@ -29,9 +29,7 @@ RendererThread::RendererThread(Transport &parentTrasport) :
     Thread("RendererThread"),
     transport(parentTrasport),
     writer(nullptr),
-    percentsDone(0.f)
-{
-}
+    percentsDone(0.f) {}
 
 RendererThread::~RendererThread()
 {

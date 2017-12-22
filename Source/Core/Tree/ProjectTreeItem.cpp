@@ -447,7 +447,7 @@ void ProjectTreeItem::clearUndoHistory()
 
 Array<MidiTrack *> ProjectTreeItem::getTracks() const
 {
-    ScopedReadLock lock(this->tracksListLock);
+    const ScopedReadLock lock(this->tracksListLock);
     Array<MidiTrack *> tracks;
 
     // now get all layers inside a tree hierarchy
@@ -463,7 +463,7 @@ Array<MidiTrack *> ProjectTreeItem::getTracks() const
 
 Array<MidiTrack *> ProjectTreeItem::getSelectedTracks() const
 {
-    ScopedReadLock lock(this->tracksListLock);
+    const ScopedReadLock lock(this->tracksListLock);
     Array<MidiTrack *> tracks;
     this->collectTracks(tracks, true);
     return tracks;
@@ -734,7 +734,7 @@ void ProjectTreeItem::broadcastAddTrack(MidiTrack *const track)
 
     if (VCS::TrackedItem *tracked = dynamic_cast<VCS::TrackedItem *>(track))
     {
-        ScopedWriteLock lock(this->vcsInfoLock);
+        const ScopedWriteLock lock(this->vcsInfoLock);
         this->vcsItems.addIfNotAlreadyThere(tracked);
     }
 
@@ -748,7 +748,7 @@ void ProjectTreeItem::broadcastRemoveTrack(MidiTrack *const track)
 
     if (VCS::TrackedItem *tracked = dynamic_cast<VCS::TrackedItem *>(track))
     {
-        ScopedWriteLock lock(this->vcsInfoLock);
+        const ScopedWriteLock lock(this->vcsInfoLock);
         this->vcsItems.removeAllInstancesOf(tracked);
     }
 
@@ -943,13 +943,13 @@ String ProjectTreeItem::getVCSName() const
 
 int ProjectTreeItem::getNumTrackedItems()
 {
-    ScopedReadLock lock(this->vcsInfoLock);
+    const ScopedReadLock lock(this->vcsInfoLock);
     return this->vcsItems.size();
 }
 
 VCS::TrackedItem *ProjectTreeItem::getTrackedItem(int index)
 {
-    ScopedReadLock lock(this->vcsInfoLock);
+    const ScopedReadLock lock(this->vcsInfoLock);
     return const_cast<VCS::TrackedItem *>(this->vcsItems[index]);
 }
 

@@ -91,7 +91,7 @@ bool Pack::containsDeltaDataFor(const Uuid &itemId,
 XmlElement *Pack::createDeltaDataFor(const Uuid &itemId,
                                      const Uuid &deltaId) const
 {
-    ScopedLock lock(this->packLocker);
+    const ScopedLock lock(this->packLocker);
     
     if (this->packStream != nullptr)
     {
@@ -122,7 +122,7 @@ void Pack::setDeltaDataFor(const Uuid &itemId,
                            const Uuid &deltaId,
                            const XmlElement &data)
 {
-    ScopedLock lock(this->packLocker);
+    const ScopedLock lock(this->packLocker);
 
     auto block = new PackDataBlock();
     block->itemId = itemId;
@@ -143,7 +143,7 @@ void Pack::setDeltaDataFor(const Uuid &itemId,
 
 XmlElement *Pack::serialize() const
 {
-    ScopedLock lock(this->packLocker);
+    const ScopedLock lock(this->packLocker);
 
     auto xml = new XmlElement(Serialization::VCS::pack);
 
@@ -181,7 +181,7 @@ XmlElement *Pack::serialize() const
 
 void Pack::deserialize(const XmlElement &xml)
 {
-    ScopedLock lock(this->packLocker);
+    const ScopedLock lock(this->packLocker);
 
     this->reset();
 
@@ -215,7 +215,7 @@ void Pack::deserialize(const XmlElement &xml)
 
 void Pack::reset()
 {
-    ScopedLock lock(this->packStreamLock);
+    const ScopedLock lock(this->packStreamLock);
 
     this->headers.clear();
     this->unsavedData.clear();
@@ -231,7 +231,7 @@ void Pack::reset()
 
 void Pack::flush()
 {
-    ScopedLock lock(this->packStreamLock);
+    const ScopedLock lock(this->packStreamLock);
 
     TemporaryFile tempFile(*this->packFile);
     ScopedPointer<FileOutputStream> tempOutputStream(tempFile.getFile().createOutputStream());
@@ -295,7 +295,7 @@ void Pack::flush()
 
 XmlElement *Pack::createXmlData(const PackDataHeader *header) const
 {
-    ScopedLock lock(this->packStreamLock);
+    const ScopedLock lock(this->packStreamLock);
     MemoryBlock mb;
     this->packStream->setPosition(header->startPosition);
     this->packStream->readIntoMemoryBlock(mb, header->numBytes);

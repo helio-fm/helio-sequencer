@@ -68,11 +68,9 @@ StringArray PluginManager::getFilesToScan() const
 
 bool PluginManager::isWorking() const
 {
-    ScopedReadLock lock(this->workingFlagLock);
+    const ScopedReadLock lock(this->workingFlagLock);
     return this->working;
 }
-
-
 
 void PluginManager::runInitialScan()
 {
@@ -89,7 +87,7 @@ void PluginManager::runInitialScan()
     FileSearchPath pathToScan = this->getTypicalFolders();
 
     {
-        ScopedWriteLock filesLock(this->filesListLock);
+        const ScopedWriteLock filesLock(this->filesListLock);
         //this->filesToScan.addIfNotAlreadyThere(BuiltInSynth::sineId); // add built-in synths
         this->filesToScan.addIfNotAlreadyThere(BuiltInSynth::pianoId); // add built-in synths
 
@@ -146,7 +144,7 @@ void PluginManager::scanFolderAndAddResults(const File &dir)
     }
 
     {
-        ScopedWriteLock lock(this->filesListLock);
+        const ScopedWriteLock lock(this->filesListLock);
 
         AudioPluginFormatManager formatManager;
         AudioCore::initAudioFormats(formatManager);
@@ -177,7 +175,7 @@ void PluginManager::run()
     while (!this->threadShouldExit())
     {
         {
-            ScopedWriteLock lock(this->workingFlagLock);
+            const ScopedWriteLock lock(this->workingFlagLock);
             this->working = true;
         }
         
@@ -272,7 +270,7 @@ void PluginManager::run()
         catch (...) { }
 
         {
-            ScopedWriteLock lock(this->workingFlagLock);
+            const ScopedWriteLock lock(this->workingFlagLock);
             this->working = false;
             
             Logger::writeToLog("Done scanning for audio plugins");

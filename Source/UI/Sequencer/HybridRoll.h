@@ -299,8 +299,8 @@ protected:
     void onPlay() override;
     void onStop() override;
 
-    SpinLock transportLastCorrectPositionLock;
-    double transportLastCorrectPosition;
+    Atomic<double> lastTransportPosition; // modified from a player thread
+
     double playheadOffset;
     bool shouldFollowPlayhead;
     
