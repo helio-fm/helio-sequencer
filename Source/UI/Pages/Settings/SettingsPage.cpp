@@ -22,10 +22,6 @@
 #include "SettingsPage.h"
 
 //[MiscUserDefs]
-#include "MainLayout.h"
-#include "ComponentsList.h"
-#include "AudioSettings.h"
-#include "ThemeSettings.h"
 //[/MiscUserDefs]
 
 SettingsPage::SettingsPage(Component *settingsList)
@@ -37,7 +33,13 @@ SettingsPage::SettingsPage(Component *settingsList)
     addAndMakeVisible (shadow = new LightShadowRightwards());
 
     //[UserPreSize]
-    viewport->setViewedComponent(settingsList, false);
+    this->viewport->setViewedComponent(settingsList, false);
+
+#if HELIO_MOBILE
+    this->viewport->setScrollBarThickness(32);
+#else
+    this->viewport->setScrollBarThickness(2);
+#endif
     //[/UserPreSize]
 
     setSize (600, 400);

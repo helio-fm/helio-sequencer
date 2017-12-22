@@ -21,11 +21,14 @@ class ComponentsList : public Component
 {
 public:
 
-    ComponentsList();
+    ComponentsList(int paddingLeft = 0, int paddingRight = 0);
 
     void resized() override;
 
 private:
+
+    int paddingLeft;
+    int paddingRight;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ComponentsList)
 };

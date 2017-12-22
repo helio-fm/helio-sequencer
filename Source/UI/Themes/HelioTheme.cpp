@@ -192,18 +192,22 @@ void HelioTheme::drawLabel(Graphics &g, Label &label)
     this->drawLabel(g, label, 0);
 }
 
+#define SMOOTH_RENDERED_FONT 1
+
 void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharacter)
 {
     if (! label.isBeingEdited())
     {
-        String textToDraw = label.getText();
-        
-        if (passwordCharacter != 0)
-        {
-            textToDraw = String::repeatedString(String::charToString(passwordCharacter), label.getText().length());
-        }
-        
         const Font font(this->getLabelFont(label));
+        const String textToDraw = (passwordCharacter != 0) ?
+            String::repeatedString(String::charToString(passwordCharacter), label.getText().length()) :
+            label.getText();
+
+        // For large labels assume this is a dialog text,
+        // for every other force fit text into a single line:
+        const int maxLines = (label.getHeight() < 64) ? 1 : 10;
+
+#if SMOOTH_RENDERED_FONT
 
         Path textPath;
         GlyphArrangement glyphs;
@@ -211,24 +215,39 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
         const Rectangle<float> textArea =
             label.getBorderSize().subtractedFrom(label.getLocalBounds()).toFloat();
 
-        // For large labels assume this is a dialog text,
-        // for every other force fit text into a single line:
-        const int maxLines = (textArea.getHeight() < 64) ? 1 : 10;
-
         glyphs.addFittedText(font,
-                             textToDraw,
-                             textArea.getX(),
-                             textArea.getY(),
-                             textArea.getWidth(),
-                             textArea.getHeight(),
-                             label.getJustificationType(),
-                             maxLines,
-                             1.0);
+            textToDraw,
+            textArea.getX(),
+            textArea.getY(),
+            textArea.getWidth(),
+            textArea.getHeight(),
+            label.getJustificationType(),
+            maxLines,
+            1.0);
 
         glyphs.createPath(textPath);
 
         g.setColour(label.findColour(Label::textColourId));
         g.fillPath(textPath);
+
+#else
+
+        const Rectangle<int> textArea =
+            label.getBorderSize().subtractedFrom(label.getLocalBounds());
+
+        // For large labels assume this is a dialog text,
+        // for every other force fit text into a single line:
+        const int maxLines = (textArea.getHeight() < 64) ? 1 : 10;
+
+        g.setFont(font);
+        g.setColour(label.findColour(Label::textColourId));
+        g.drawFittedText(textToDraw,
+            textArea.getX(), textArea.getY(),
+            textArea.getWidth(), textArea.getHeight(),
+            label.getJustificationType(),
+            maxLines, 1.0);
+
+#endif
     }
     else if (label.isEnabled())
     {
@@ -796,7 +815,7 @@ void HelioTheme::initColours(const ::ColourScheme &s)
     this->setColour(ColourIDs::BackgroundC::fill, s.getSecondaryGradientColourA());
 
     this->setColour(ColourIDs::Panel::fill, s.getPanelFillColour());
-    this->setColour(ColourIDs::Panel::border, s.getPanelBorderColour());
+    this->setColour(ColourIDs::Panel::border, s.getPanelBorderColour().withAlpha(0.225f));
 
     this->setColour(ColourIDs::TrackScroller::borderLineDark, s.getPrimaryGradientColourA().darker(0.25f));
     this->setColour(ColourIDs::TrackScroller::borderLineLight, Colours::white.withAlpha(0.025f));

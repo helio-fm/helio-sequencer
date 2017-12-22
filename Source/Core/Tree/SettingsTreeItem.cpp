@@ -84,35 +84,26 @@ void SettingsTreeItem::recreatePage()
     this->audioSettings = nullptr;
     this->settingsList = nullptr;
     
-
-    Logger::writeToLog("settingsList");
-    this->settingsList = new ComponentsList();
+    this->settingsList = new ComponentsList(0, 6);
     
-    Logger::writeToLog("translationSettingsWrapper");
     this->translationSettings = new TranslationSettings();
     const String untranslatedLanguageCaption(CharPointer_UTF8("Language / Sprache / Langue / Idioma / Lingua / \xd0\xaf\xd0\xb7\xd1\x8b\xd0\xba"));
     this->translationSettingsWrapper = new LabeledSettingsWrapper(this->translationSettings, untranslatedLanguageCaption);
     this->settingsList->addAndMakeVisible(this->translationSettingsWrapper);
     
-    //Logger::writeToLog("authSettingsWrapper");
     //this->authSettings = new AuthorizationSettings();
     //this->authSettingsWrapper = new LabeledSettingsWrapper(this->authSettings, TRANS("settings::auth"));
     //this->settingsList->addAndMakeVisible(this->authSettingsWrapper);
 
-    Logger::writeToLog("themeSettingsWrapper");
     this->themeSettings = new ThemeSettings();
     this->themeSettingsWrapper = new LabeledSettingsWrapper(this->themeSettings, TRANS("settings::ui"));
     this->settingsList->addAndMakeVisible(this->themeSettingsWrapper);
     
-//#if ! HELIO_MOBILE
-    Logger::writeToLog("audioSettingsWrapper");
     this->audioSettings = new AudioSettings(App::Workspace().getAudioCore());
     this->audioSettingsWrapper = new LabeledSettingsWrapper(this->audioSettings, TRANS("settings::audio"));
     this->settingsList->addAndMakeVisible(this->audioSettingsWrapper);
-//#endif
     
 #if ! HELIO_MOBILE
-    Logger::writeToLog("openGLSettingsWrapper");
     this->openGLSettings = new OpenGLSettings();
     this->openGLSettingsWrapper = new LabeledSettingsWrapper(this->openGLSettings, TRANS("settings::renderer"));
     this->settingsList->addAndMakeVisible(this->openGLSettingsWrapper);

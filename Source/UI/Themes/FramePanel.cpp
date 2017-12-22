@@ -22,6 +22,7 @@
 #include "FramePanel.h"
 
 //[MiscUserDefs]
+#include "ColourIDs.h"
 //[/MiscUserDefs]
 
 FramePanel::FramePanel()
@@ -67,14 +68,15 @@ void FramePanel::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-//    g.setColour (findColour(FramePanel::panelFillColourId));
-//    g.fillRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 2.000f);
+    g.setColour(this->findColour(ColourIDs::Panel::border));
 
-//    g.setColour (findColour(FramePanel::panelBorderColourId));
-//    g.drawRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 2.000f, 0.500f);
+    const float w = float(this->getWidth());
+    const float h = float(this->getHeight());
 
-    g.setColour (Colours::white.withAlpha(0.55f));
-    g.drawRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0), 2.000f, 0.750f);
+    g.drawVerticalLine(0, 1.f, h - 1.f);
+    g.drawVerticalLine(int(w) - 1, 1.f, h - 1.f);
+    g.drawHorizontalLine(0, 1.f, w - 1.f);
+    g.drawHorizontalLine(int(h) - 1, 1.f, w - 1.f);
 
     //[/UserPaint]
 }

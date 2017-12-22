@@ -18,7 +18,9 @@
 #include "Common.h"
 #include "ComponentsList.h"
 
-ComponentsList::ComponentsList()
+ComponentsList::ComponentsList(int paddingLeft, int paddingRight) :
+    paddingLeft(paddingLeft),
+    paddingRight(paddingRight)
 {
     this->setSize(800, 600);
 }
@@ -35,8 +37,8 @@ void ComponentsList::resized()
     for (int i = 0; i < this->getNumChildComponents(); ++i)
     {
         Component *item = this->getChildComponent(i);
-        item->setSize(this->getWidth(), item->getHeight());
-        item->setTopLeftPosition(0, h);
+        item->setSize(this->getWidth() - this->paddingLeft - this->paddingRight, item->getHeight());
+        item->setTopLeftPosition(this->paddingLeft, h);
         h += item->getHeight();
     }
 

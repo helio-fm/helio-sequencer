@@ -61,11 +61,9 @@ template class TimeSignaturesTrackMap<TimeSignatureSmallComponent>;
 #include "KeySignaturesMap/KeySignaturesTrackMap.cpp"
 template class KeySignaturesTrackMap<KeySignatureSmallComponent>;
 
-
 #define MAX_NUM_SPLITSCREEN_EDITORS 2
 #define MINIMUM_ROLLS_HEIGHT 250
 #define VERTICAL_ROLLS_LAYOUT 1
-
 
 //===----------------------------------------------------------------------===//
 // Splitter
@@ -352,15 +350,9 @@ public:
         this->patternViewport->setVisible(false);
     }
 
-    ~RollsSwitchingProxy() override
-    {
-        this->removeAllChildren();
-    }
-
-    bool isPatternMode() const
+    inline bool isPatternMode() const noexcept
     {
         return (this->animationDirection > 0.f);
-        //return this->patternRoll->isEnabled();
     }
 
     void startRollSwitchAnimation()
@@ -375,14 +367,18 @@ public:
         this->patternViewport->setVisible(true);
         this->pianoViewport->setVisible(true);
         this->resized();
-        this->startTimerHz(90);
+        this->startTimerHz(60);
     }
-    
-    void paint(Graphics& g) override {}
 
     void resized() override
     {
-        this->updateAnimatedPositions();
+        jassert(this->pianoRoll);
+        jassert(this->pianoViewport);
+        jassert(this->patternRoll);
+        jassert(this->patternViewport);
+        jassert(this->scroller);
+
+        this->updateAnimatedBounds();
 
         Rectangle<int> r(this->getLocalBounds());
         const int scrollerHeight = MainLayout::getScrollerHeight();
@@ -403,15 +399,9 @@ public:
         this->patternRoll->resized();
     }
 
-    void updateAnimatedPositions()
+    void updateAnimatedBounds()
     {
-        jassert(this->pianoRoll);
-        jassert(this->pianoViewport);
-        jassert(this->patternRoll);
-        jassert(this->patternViewport);
-        jassert(this->scroller);
-
-        Rectangle<int> r(this->getLocalBounds());
+        const Rectangle<int> r(this->getLocalBounds());
         const int scrollerHeight = MainLayout::getScrollerHeight();
 
 #if VERTICAL_ROLLS_LAYOUT
@@ -431,26 +421,44 @@ public:
 #endif
     }
 
+    void updateAnimatedPositions()
+    {
+        const Rectangle<int> r(this->getLocalBounds());
+        const int scrollerHeight = MainLayout::getScrollerHeight();
+
+#if VERTICAL_ROLLS_LAYOUT
+        const float rollViewportHeight = float(r.getHeight() - scrollerHeight + 1);
+        const int viewport1Pos = int(this->animationPosition * rollViewportHeight);
+        const int viewport2Pos = int(this->animationPosition * rollViewportHeight - rollViewportHeight);
+        this->pianoViewport->setTopLeftPosition(0, viewport1Pos);
+        this->patternViewport->setTopLeftPosition(0, viewport2Pos);
+#else
+        const float rollViewportWidth = float(r.getWidth());
+        const int viewport1Pos = int(this->animationPosition * rollViewportWidth);
+        const int viewport2Pos = int(this->animationPosition * rollViewportWidth - rollViewportWidth);
+        this->pianoViewport->setTopLeftPosition(viewport1Pos, 0);
+        this->patternViewport->setTopLeftPosition(viewport2Pos, 0);
+#endif
+    }
+
 private:
 
     void timerCallback() override
     {
         this->animationPosition += this->animationDirection * this->animationSpeed;
-        //this->animationSpeed = jlimit(0.000001f, 1.f, this->animationSpeed * 0.9f);
         this->animationSpeed *= ROLLS_SWITCH_ANIMATION_ACCELERATION;
 
         if (this->animationPosition < 0.001f || this->animationPosition > 0.999f)
         {
-            //Logger::writeToLog("Stopping rolls-switch animation");
-            const bool patternMode = this->isPatternMode();
-            if (patternMode)
+            this->stopTimer();
+
+            if (this->isPatternMode())
             { this->pianoViewport->setVisible(false); }
             else
             { this->patternViewport->setVisible(false); }
 
             this->animationPosition = jlimit(0.f, 1.f, this->animationPosition);
             this->resized();
-            this->stopTimer();
         }
         else
         {
