@@ -887,7 +887,7 @@ bool ProjectTreeItem::onDocumentExport(File &file)
 void ProjectTreeItem::exportMidi(File &file) const
 {
     MidiFile tempFile;
-    tempFile.setTicksPerQuarterNote(Transport::millisecondsPerBeat);
+    tempFile.setTicksPerQuarterNote(int(MS_PER_BEAT));
     
     const auto &tracks = this->getTracks();
     

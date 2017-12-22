@@ -282,18 +282,18 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
             const int key = KEY_C5 + this->key + scaleKeys.getUnchecked(i);
 
             MidiMessage eventNoteOn(MidiMessage::noteOn(1, key, 1.f));
-            const float &startTime = float(i * Transport::millisecondsPerBeat);
+            const double startTime = double(i) * MS_PER_BEAT;
             eventNoteOn.setTimeStamp(startTime);
 
             MidiMessage eventNoteOff(MidiMessage::noteOff(1, key));
-            const float &endTime = (i + 0.5f) * Transport::millisecondsPerBeat;
+            const double endTime = double(i + 0.5) * MS_PER_BEAT;
             eventNoteOff.setTimeStamp(endTime);
 
             s.addEvent(eventNoteOn);
             s.addEvent(eventNoteOff);
         }
 
-        double timeOffset = (scaleKeys.size() + 1.0)  * Transport::millisecondsPerBeat;
+        double timeOffset = double(scaleKeys.size() + 1.0) * MS_PER_BEAT;
 
         // Then play triad chord
         const auto triadKeys = scale.getTriad(Scale::Tonic, false);
@@ -302,11 +302,11 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
             const int key = KEY_C5 + this->key + triadKeys.getUnchecked(i);
 
             MidiMessage eventNoteOn(MidiMessage::noteOn(1, key, 1.f));
-            const float &startTime = float(i * Transport::millisecondsPerBeat);
+            const double startTime = double(i) * MS_PER_BEAT;
             eventNoteOn.setTimeStamp(timeOffset);
 
             MidiMessage eventNoteOff(MidiMessage::noteOff(1, key));
-            const float &endTime = float((timeOffset + 0.5f) * Transport::millisecondsPerBeat);
+            const double endTime = double(timeOffset + 0.5f) * MS_PER_BEAT;
             eventNoteOff.setTimeStamp(endTime);
 
             s.addEvent(eventNoteOn);

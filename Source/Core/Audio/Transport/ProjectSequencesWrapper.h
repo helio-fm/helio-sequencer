@@ -55,11 +55,9 @@ public:
     
     ProjectSequences(const ProjectSequences &other) :
     sequences(other.sequences),
-    uniqueInstruments(other.uniqueInstruments)
-    {
-    }
+    uniqueInstruments(other.uniqueInstruments) {}
     
-    Array<Instrument *> getUniqueInstruments() const
+    inline Array<Instrument *> getUniqueInstruments() const noexcept
     {
         return this->uniqueInstruments;
     }
@@ -70,13 +68,13 @@ public:
         return this->sequences.add(newWrapper);
     }
     
-    void clear()
+    inline void clear()
     {
         this->uniqueInstruments.clear();
         this->sequences.clear();
     }
     
-    bool empty() const
+    inline bool empty() const
     {
         return (this->sequences.size() == 0);
     }
@@ -134,15 +132,15 @@ public:
         }
     }
     
-    int getNextIndexAtTime(const MidiMessageSequence &sequence,
-                           const double timeStamp) const
+    int getNextIndexAtTime(const MidiMessageSequence &sequence, double timeStamp) const
     {
-        const int numEvents = sequence.getNumEvents();
-        
         int i = 0;
-        for (; i < numEvents; ++i)
+        for (; i < sequence.getNumEvents(); ++i)
         {
-            if (sequence.getEventPointer(i)->message.getTimeStamp() >= timeStamp)
+            const double eventTs = sequence.getEventPointer(i)->message.getTimeStamp();
+            // I guess here we can safely round a timestamp (since it has been already multiplied by MS_PER_BEAT)
+            // to fix possible playhead positioning issues (the x position accuracy depends on roll zoom level):
+            if (round(eventTs) >= timeStamp)
             {
                 break;
             }

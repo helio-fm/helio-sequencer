@@ -724,7 +724,7 @@ void NoteComponent::paintNewLook(Graphics &g)
 
 #ifdef DEBUG
     g.setColour(Colours::black);
-    g.drawText(String(this->getId()), this->getLocalBounds().translated(5, 0), Justification::centredLeft, false);
+    g.drawText(String(this->getBeat()), this->getLocalBounds().translated(5, 0), Justification::centredLeft, false);
 #else
     g.setColour(this->colourVolume);
     g.drawHorizontalLine(this->getHeight() - 2, sx, sw);

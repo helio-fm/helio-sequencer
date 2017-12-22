@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "Note.h"
 #include "MidiSequence.h"
-#include "Transport.h"
 #include "SerializationKeys.h"
 
 Note::Note() : MidiEvent(nullptr, MidiEvent::Note, 0.f)
@@ -60,11 +59,11 @@ Array<MidiMessage> Note::toMidiMessages() const
     Array<MidiMessage> result;
 
     MidiMessage eventNoteOn(MidiMessage::noteOn(this->getChannel(), this->key, velocity));
-    const float &startTime = this->beat * Transport::millisecondsPerBeat;
+    const double startTime = double(this->beat) * MS_PER_BEAT;
     eventNoteOn.setTimeStamp(startTime);
 
     MidiMessage eventNoteOff(MidiMessage::noteOff(this->getChannel(), this->key));
-    const float &endTime = (this->beat + this->length) * Transport::millisecondsPerBeat;
+    const double endTime = double(this->beat + this->length) * MS_PER_BEAT;
     eventNoteOff.setTimeStamp(endTime);
 
     result.add(eventNoteOn);

@@ -18,9 +18,7 @@
 #include "Common.h"
 #include "TimeSignatureEvent.h"
 #include "MidiSequence.h"
-#include "Transport.h"
 #include "SerializationKeys.h"
-
 
 TimeSignatureEvent::TimeSignatureEvent() : MidiEvent(nullptr, MidiEvent::TimeSignature, 0.f)
 {
@@ -75,7 +73,7 @@ Array<MidiMessage> TimeSignatureEvent::toMidiMessages() const
 {
     Array<MidiMessage> result;
     MidiMessage event(MidiMessage::timeSignatureMetaEvent(this->numerator, this->denominator));
-    event.setTimeStamp(this->beat * Transport::millisecondsPerBeat);
+    event.setTimeStamp(this->beat * MS_PER_BEAT);
     result.add(event);
     return result;
 }

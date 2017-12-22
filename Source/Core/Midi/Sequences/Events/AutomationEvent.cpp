@@ -105,7 +105,7 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
 
         if (isTempoTrack)
         {
-            cc = MidiMessage::tempoMetaEvent(int((1.f - this->controllerValue) * Transport::millisecondsPerBeat * 1000));
+            cc = MidiMessage::tempoMetaEvent(int((1.f - this->controllerValue) * MS_PER_BEAT * 1000));
         }
         else
         {
@@ -115,7 +115,7 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
         
         }
 
-        const float &startTime = this->beat * Transport::millisecondsPerBeat;
+        const double startTime = this->beat * MS_PER_BEAT;
         cc.setTimeStamp(startTime);
         result.add(cc);
 
@@ -130,8 +130,8 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
             
             if (controllerDelta > MIN_INTERPOLATED_CONTROLLER_DELTA)
             {
-                const float nextTime = nextEvent->beat * Transport::millisecondsPerBeat;
-                float interpolatedEventTimeStamp = startTime + INTERPOLATED_EVENTS_STEP_MS;
+                const double nextTime = nextEvent->beat * MS_PER_BEAT;
+                double interpolatedEventTimeStamp = startTime + INTERPOLATED_EVENTS_STEP_MS;
                 
                 while (interpolatedEventTimeStamp < nextTime)
                 {
@@ -149,7 +149,7 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
                     
                     if (isTempoTrack)
                     {
-                        MidiMessage ci(MidiMessage::tempoMetaEvent(int((1.f - interpolatedControllerValue) * Transport::millisecondsPerBeat * 1000)));
+                        MidiMessage ci(MidiMessage::tempoMetaEvent(int((1.f - interpolatedControllerValue) * MS_PER_BEAT * 1000)));
                         ci.setTimeStamp(interpolatedEventTimeStamp);
                         result.add(ci);
                     }

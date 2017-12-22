@@ -576,11 +576,11 @@ float HybridRoll::getFloorBeatByXPosition(int x) const
     float targetX = float(x);
     for (float snapX : allSnaps)
     {
-        const float dist = fabs(x - snapX);
-        if (dist < d && snapX < x)
+        const float distance = fabs(x - snapX);
+        if (distance < d && snapX < x)
         {
-            d = dist;
-            targetX = snapX;
+            d = distance;
+            targetX = floorf(snapX);
         }
     }
 
@@ -599,11 +599,12 @@ float HybridRoll::getRoundBeatByXPosition(int x) const
     float targetX = float(x);
     for (float snapX : allSnaps)
     {
-        const float dist = fabs(x - snapX);
-        if (dist < d)
+        const float distance = fabs(x - snapX);
+        if (distance < d)
         {
-            d = dist;
-            targetX = snapX;
+            d = distance;
+            // get lowest beat possible for target x position:
+            targetX = floorf(snapX);
         }
     }
 
@@ -1158,17 +1159,13 @@ void HybridRoll::onPlayheadMoved(int playheadX)
     {
         const int viewHalfWidth = this->viewport.getViewWidth() / 2;
         const int viewportCentreX = this->viewport.getViewPositionX() + viewHalfWidth;
-        double offset = double(playheadX) - double(viewportCentreX);
-
-        if (fabs(offset) > 1.0)
-        {
-            const double newPlayheadDelta = fabs(offset - (offset * 0.985));
-            offset += (jmax(1.0, newPlayheadDelta) * ((offset < 0.0) ? 1.0 : -1.0));
-        }
-        
-        this->viewport.setViewPosition(playheadX - int(offset) - viewHalfWidth,
-                                       this->viewport.getViewPositionY());
-        
+        const double offset = double(playheadX) - double(viewportCentreX);
+        // Smoothness should depend on zoom level (TODO it smarter):
+        const double smoothCoefficient = (this->barWidth > 300) ? 0.915 : 0.975;
+        const double smoothThreshold = (this->barWidth > 300) ? 128.0 : 5.0;
+        const double newOffset = (abs(offset) < smoothThreshold) ? 0.0 : offset * smoothCoefficient;
+        const int newViewPosX = playheadX - viewHalfWidth - int(round(newOffset));
+        this->viewport.setViewPosition(newViewPosX, this->viewport.getViewPositionY());
         this->updateChildrenPositions();
     }
 }
@@ -1348,8 +1345,7 @@ void HybridRoll::handleAsyncUpdate()
 
         if (fabs(this->playheadOffset) > 1.0)
         {
-            const double newPlayheadDelta = fabs(this->playheadOffset - (this->playheadOffset * 0.975));
-            this->playheadOffset += (jmax(1.0, newPlayheadDelta) * ((this->playheadOffset < 0.0) ? 1.0 : -1.0));
+            this->playheadOffset *= 0.975;
         }
         else
         {

@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "KeySignatureEvent.h"
 #include "MidiSequence.h"
-#include "Transport.h"
 #include "SerializationKeys.h"
 
 KeySignatureEvent::KeySignatureEvent() :
@@ -84,7 +83,7 @@ Array<MidiMessage> KeySignatureEvent::toMidiMessages() const
     const int flatsOrSharps = isMinor ? minorCircle[root] : majorCircle[root];
 
     MidiMessage event(MidiMessage::keySignatureMetaEvent(flatsOrSharps, isMinor));
-    event.setTimeStamp(this->beat * Transport::millisecondsPerBeat);
+    event.setTimeStamp(this->beat * MS_PER_BEAT);
     result.add(event);
     return result;
 }

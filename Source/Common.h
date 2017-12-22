@@ -97,6 +97,10 @@ inline float roundf(float x)
 #   define HELIO_DESKTOP 1
 #endif
 
+#define MS_PER_BEAT 500.0
+
+#define NUM_BEATS_IN_BAR 4
+
 //===----------------------------------------------------------------------===//
 // Internationalization
 //===----------------------------------------------------------------------===//

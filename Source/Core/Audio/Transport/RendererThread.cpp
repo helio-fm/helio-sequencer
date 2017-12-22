@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "RendererThread.h"
-#include "ProjectSequencesWrapper.h"
 #include "Instrument.h"
 #include "Supervisor.h"
 #include "SerializationKeys.h"
@@ -138,7 +137,7 @@ void RendererThread::run()
     this->transport.rebuildSequencesIfNeeded();
     ProjectSequences sequences = this->transport.getSequences();
     const int bufferSize = 512;
-    const double TPQN = Transport::millisecondsPerBeat; // ticks-per-quarter-note
+    const double TPQN = MS_PER_BEAT; // ticks-per-quarter-note
 
     // assuming that number of channels and sample rate is equal for all instruments
     const int numOutChannels = sequences.getNumOutputChannels();

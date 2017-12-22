@@ -302,7 +302,7 @@ void AnnotationsTrackMap<T>::onAnnotationTapped(T *nc)
         }
     }
 
-    const double newSeekPosition = this->roll.getTransportPositionByBeat(nc->getBeat() - 0.01f);
+    const double newSeekPosition = this->roll.getTransportPositionByBeat(nc->getBeat());
     const bool wasPlaying = this->project.getTransport().isPlaying();
 
     if (wasPlaying)

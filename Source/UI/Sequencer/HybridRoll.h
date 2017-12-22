@@ -62,9 +62,6 @@ class TimelineWarningMarker;
 #   define HYBRID_ROLL_HEADER_HEIGHT (48)
 #endif
 
-// Track is measured in quarter beats
-#define NUM_BEATS_IN_BAR 4
-
 #define DEFAULT_NUM_BARS 8
 
 #define HYBRID_ROLL_BULK_REPAINT_START \

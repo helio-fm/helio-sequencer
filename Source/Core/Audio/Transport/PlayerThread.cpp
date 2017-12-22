@@ -28,15 +28,12 @@
 
 PlayerThread::PlayerThread(Transport &transport) :
     Thread("PlayerThread"),
-    transport(transport)
-{
-}
+    transport(transport) {}
 
 PlayerThread::~PlayerThread()
 {
     this->stopThread(MINIMUM_STOP_CHECK_TIME_MS);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Thread
@@ -53,7 +50,7 @@ void PlayerThread::run()
     ProjectSequences sequences = this->transport.getSequences();
     Array<Instrument *> uniqueInstruments(sequences.getUniqueInstruments());
     
-    double TPQN = Transport::millisecondsPerBeat; // ticks-per-quarter-note
+    double TPQN = MS_PER_BEAT; // ticks-per-quarter-note
     double nextEventTimeDelta = 0.0;
     
     double tempoAtTheEndOfTrack = 0.0;

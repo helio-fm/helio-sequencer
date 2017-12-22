@@ -18,9 +18,7 @@
 #include "Common.h"
 #include "AnnotationEvent.h"
 #include "MidiSequence.h"
-#include "Transport.h"
 #include "SerializationKeys.h"
-
 
 AnnotationEvent::AnnotationEvent() : MidiEvent(nullptr, MidiEvent::Annotation, 0.f)
 {
@@ -56,7 +54,7 @@ Array<MidiMessage> AnnotationEvent::toMidiMessages() const
 {
     Array<MidiMessage> result;
     MidiMessage event(MidiMessage::textMetaEvent(1, this->getDescription()));
-    event.setTimeStamp(this->beat * Transport::millisecondsPerBeat);
+    event.setTimeStamp(this->beat * MS_PER_BEAT);
     result.add(event);
     return result;
 }

@@ -34,8 +34,6 @@ public:
 
     explicit Transport(OrchestraPit &orchestraPit);
     ~Transport() override;
-
-    static const int millisecondsPerBeat = 500;
     
     static String getTimeString(double timeMs, bool includeMilliseconds = false);
     static String getTimeString(const RelativeTime &relTime, bool includeMilliseconds = false);
@@ -44,8 +42,8 @@ public:
     // Transport
     //===------------------------------------------------------------------===//
     
-    double getSeekPosition() const;
-    double getTotalTime() const;
+    double getSeekPosition() const noexcept;
+    double getTotalTime() const noexcept;
     void seekToPosition(double absPosition);
     
     void probeSoundAt(double absTrackPosition, 
@@ -162,17 +160,14 @@ private:
     
 private:
 
-    SpinLock seekPositionLock;
-    double seekPosition;
-
-    SpinLock totalTimeLock;
-    double totalTime;
+    Atomic<double> seekPosition;
+    Atomic<double> totalTime;
     
-    double trackStartMs;
-    double trackEndMs;
+    Atomic<double> trackStartMs;
+    Atomic<double> trackEndMs;
     
-    float projectFirstBeat;
-    float projectLastBeat;
+    Atomic<float> projectFirstBeat;
+    Atomic<float> projectLastBeat;
 
     ListenerList<TransportListener> transportListeners;
 

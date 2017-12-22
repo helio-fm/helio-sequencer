@@ -370,6 +370,9 @@ public:
         this->startTimerHz(60);
     }
 
+    // This simply prevents a JUCE assertion about opaque component with no painting method
+    void paint(Graphics &g) {}
+
     void resized() override
     {
         jassert(this->pianoRoll);

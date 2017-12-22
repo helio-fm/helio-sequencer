@@ -129,14 +129,13 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PlayerThreadPool)
 };
 
-
 Transport::Transport(OrchestraPit &orchestraPit) :
     orchestra(orchestraPit),
     seekPosition(0.0),
     trackStartMs(0.0),
     trackEndMs(0.0),
     sequencesAreOutdated(true),
-    totalTime(Transport::millisecondsPerBeat * 8),
+    totalTime(MS_PER_BEAT * 8.0),
     loopedMode(false),
     loopStart(0.0),
     loopEnd(0.0),
@@ -209,30 +208,25 @@ String Transport::getTimeString(const RelativeTime &relTime, bool includeMillise
 // Accessors
 //===----------------------------------------------------------------------===//
 
-double Transport::getSeekPosition() const
+double Transport::getSeekPosition() const noexcept
 {
-    const SpinLock::ScopedLockType lock(this->seekPositionLock);
-    return this->seekPosition;
+    return this->seekPosition.get();
 }
 
 void Transport::setSeekPosition(const double absPosition)
 {
-    const SpinLock::ScopedLockType lock(this->seekPositionLock);
     this->seekPosition = absPosition;
 }
 
-double Transport::getTotalTime() const
+double Transport::getTotalTime() const noexcept
 {
-    const SpinLock::ScopedLockType lock(this->totalTimeLock);
-    return this->totalTime;
+    return this->totalTime.get();
 }
 
 void Transport::setTotalTime(const double val)
 {
-    const SpinLock::ScopedLockType lock(this->totalTimeLock);
     this->totalTime = val;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Transport
@@ -638,8 +632,9 @@ void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
     this->stopPlayback();
     
-    const double lastSeekPosition = float(this->getSeekPosition());
-    const double seekBeat = this->projectFirstBeat + ((this->projectLastBeat - this->projectFirstBeat) * lastSeekPosition); // may be 0
+    const double seekBeat = double(this->projectFirstBeat.get()) +
+        double(this->projectLastBeat.get() - this->projectFirstBeat.get()) * this->seekPosition.get(); // may be 0
+
     //const double roundSeekBeat = round(seekBeat * 1000.0) / 1000.0;
     const double newBeatRange = (lastBeat - firstBeat); // may also be 0
     const double newSeekPosition = ((newBeatRange == 0.0) ? 0.0 : ((seekBeat - firstBeat) / newBeatRange));
@@ -648,13 +643,13 @@ void Transport::onChangeProjectBeatRange(float firstBeat, float lastBeat)
     //          |----------- 0.7 ----|
     // |--------+----------- 0.5 ----+---------------|
     //
-    //  1. calc seek position as beat
-    //  2. calc (seekBeat - newFirstBeat) / (newLastBeat - newFirstBeat)
+    //  1. compute seek position as beat
+    //  2. compute (seekBeat - newFirstBeat) / (newLastBeat - newFirstBeat)
     //
     
-    this->trackStartMs = firstBeat * Transport::millisecondsPerBeat;
-    this->trackEndMs = lastBeat * Transport::millisecondsPerBeat;
-    this->setTotalTime(this->trackEndMs - this->trackStartMs);
+    this->trackStartMs = double(firstBeat) * MS_PER_BEAT;
+    this->trackEndMs = double(lastBeat) * MS_PER_BEAT;
+    this->setTotalTime(this->trackEndMs.get() - this->trackStartMs.get());
     
     // real track total time changed
     double tempo = 0.0;
@@ -681,7 +676,7 @@ void Transport::calcTimeAndTempoAt(const double targetAbsPosition,
     this->rebuildSequencesIfNeeded();
     this->sequences.seekToZeroIndexes();
     
-    const double TPQN = Transport::millisecondsPerBeat; // ticks-per-quarter-note
+    const double TPQN = MS_PER_BEAT; // ticks-per-quarter-note
     const double targetTime = round(targetAbsPosition * this->getTotalTime());
     
     outTimeMs = 0.0;
@@ -734,7 +729,7 @@ MidiMessage Transport::findFirstTempoEvent()
         }
     }
     
-    return MidiMessage::tempoMetaEvent(Transport::millisecondsPerBeat * 1000);
+    return MidiMessage::tempoMetaEvent(int(MS_PER_BEAT) * 1000);
 }
 
 
@@ -752,7 +747,7 @@ void Transport::rebuildSequencesIfNeeded()
         {
             const auto layer = this->tracksCache.getUnchecked(i)->getSequence();
             MidiMessageSequence sequence(layer->exportMidi());
-            sequence.addTimeToMessages(-this->trackStartMs);
+            sequence.addTimeToMessages(-this->trackStartMs.get());
             
             if (sequence.getNumEvents() > 0)
             {
