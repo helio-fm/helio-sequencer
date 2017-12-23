@@ -47,7 +47,7 @@ bool PianoTrackInsertAction::perform()
     track->deserialize(*trackState);
 
     this->trackId = track->getTrackId().toString();
-    track->setTrackName(this->trackName);
+    track->setTrackName(this->trackName, true);
 
     return true;
 }
@@ -131,7 +131,7 @@ bool PianoTrackRemoveAction::undo()
         MidiTrackTreeItem *track = new PianoTrackTreeItem("empty");
         this->parentTreeItem->addChildTreeItem(track);
         track->deserialize(*this->serializedTreeItem);
-        track->setTrackName(this->trackName);
+        track->setTrackName(this->trackName, true);
         return true;
     }
     

@@ -37,7 +37,7 @@ bool MidiTrackRenameAction::perform()
         this->source.findTrackById<MidiTrack>(this->trackId))
     {
         this->xPathBefore = track->getTrackName();
-        track->setTrackName(this->xPathAfter);
+        track->setTrackName(this->xPathAfter, true);
         return true;
     }
     
@@ -49,7 +49,7 @@ bool MidiTrackRenameAction::undo()
     if (MidiTrack *track =
         this->source.findTrackById<MidiTrack>(this->trackId))
     {
-        track->setTrackName(this->xPathBefore);
+        track->setTrackName(this->xPathBefore, true);
         return true;
     }
     
@@ -103,7 +103,7 @@ bool MidiTrackChangeColourAction::perform()
         this->source.findTrackById<MidiTrack>(this->trackId))
     {
         this->colourBefore = track->getTrackColour();
-        track->setTrackColour(this->colourAfter);
+        track->setTrackColour(this->colourAfter, true);
         return true;
     }
 
@@ -115,7 +115,7 @@ bool MidiTrackChangeColourAction::undo()
     if (MidiTrack *track =
         this->source.findTrackById<MidiTrack>(this->trackId))
     {
-        track->setTrackColour(this->colourBefore);
+        track->setTrackColour(this->colourBefore, true);
         return true;
     }
 
@@ -165,7 +165,7 @@ bool MidiTrackChangeInstrumentAction::perform()
         this->source.findTrackById<MidiTrack>(this->trackId))
     {
         this->instrumentIdBefore = track->getTrackInstrumentId();
-        track->setTrackInstrumentId(this->instrumentIdAfter);
+        track->setTrackInstrumentId(this->instrumentIdAfter, true);
         return true;
     }
 
@@ -177,7 +177,7 @@ bool MidiTrackChangeInstrumentAction::undo()
     if (MidiTrack *track =
         this->source.findTrackById<MidiTrack>(this->trackId))
     {
-        track->setTrackInstrumentId(this->instrumentIdBefore);
+        track->setTrackInstrumentId(this->instrumentIdBefore, true);
         return true;
     }
 
@@ -227,7 +227,7 @@ bool MidiTrackMuteAction::perform()
         this->source.findTrackById<MidiTrack>(this->trackId))
     {
         this->muteStateBefore = track->isTrackMuted();
-        track->setTrackMuted(this->muteStateAfter);
+        track->setTrackMuted(this->muteStateAfter, true);
         return true;
     }
 
@@ -239,7 +239,7 @@ bool MidiTrackMuteAction::undo()
     if (MidiTrack *track =
         this->source.findTrackById<MidiTrack>(this->trackId))
     {
-        track->setTrackMuted(this->muteStateBefore);
+        track->setTrackMuted(this->muteStateBefore, true);
         return true;
     }
 

@@ -27,6 +27,7 @@ ClipComponent::ClipComponent(HybridRoll &editor, const Clip &clip) :
     HybridRollEventComponent(editor),
     clip(clip)
 {
+    jassert(clip.isValid());
     this->updateColours();
     this->toFront(false);
     this->setPaintingIsUnclipped(true);
@@ -35,6 +36,7 @@ ClipComponent::ClipComponent(HybridRoll &editor, const Clip &clip) :
 
 const Clip &ClipComponent::getClip() const noexcept
 {
+    jassert(clip.isValid());
     return this->clip;
 }
 
@@ -45,6 +47,7 @@ PatternRoll &ClipComponent::getRoll() const noexcept
 
 void ClipComponent::updateColours()
 {
+    jassert(clip.isValid());
     this->headColour = Colours::white
         .interpolatedWith(this->getClip().getColour(), 0.5f)
         .withAlpha(this->ghostMode ? 0.2f : 0.95f)

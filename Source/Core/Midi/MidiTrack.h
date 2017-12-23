@@ -39,20 +39,25 @@ public:
     virtual Uuid getTrackId() const noexcept = 0;
     virtual int getTrackChannel() const noexcept = 0;
 
+    // sendNotifications argument here is only meant to be true,
+    // when changing properties from user actions (see undo/redo action classes);
+    // deserialization and resetting VCS state should always call
+    // setX(123, false) to prevent notification hell
+
     virtual String getTrackName() const noexcept = 0;
-    virtual void setTrackName(const String &val) = 0;
+    virtual void setTrackName(const String &val, bool sendNotifications) = 0;
 
     virtual Colour getTrackColour() const noexcept = 0;
-    virtual void setTrackColour(const Colour &val) = 0;
+    virtual void setTrackColour(const Colour &val, bool sendNotifications) = 0;
 
     virtual String getTrackInstrumentId() const noexcept = 0;
-    virtual void setTrackInstrumentId(const String &val) = 0;
+    virtual void setTrackInstrumentId(const String &val, bool sendNotifications) = 0;
         
     virtual int getTrackControllerNumber() const noexcept = 0;
-    virtual void setTrackControllerNumber(int val) = 0;
+    virtual void setTrackControllerNumber(int val, bool sendNotifications) = 0;
 
     virtual bool isTrackMuted() const noexcept = 0;
-    virtual void setTrackMuted(bool shouldBeMuted) = 0;
+    virtual void setTrackMuted(bool shouldBeMuted, bool sendNotifications) = 0;
 
     virtual MidiSequence *getSequence() const noexcept = 0;
     virtual Pattern *getPattern() const noexcept = 0;
@@ -110,19 +115,19 @@ public:
     int getTrackChannel() const noexcept override { return 0; }
 
     String getTrackName() const noexcept override { return String::empty; }
-    void setTrackName(const String &val) override {}
+    void setTrackName(const String &val, bool sendNotifications) override {}
 
     Colour getTrackColour() const noexcept override { return Colours::white; }
-    void setTrackColour(const Colour &val) override {};
+    void setTrackColour(const Colour &val, bool sendNotifications) override {};
 
     String getTrackInstrumentId() const noexcept override { return String::empty; }
-    void setTrackInstrumentId(const String &val) override {};
+    void setTrackInstrumentId(const String &val, bool sendNotifications) override {};
 
     int getTrackControllerNumber() const noexcept override { return 0; }
-    void setTrackControllerNumber(int val) override {};
+    void setTrackControllerNumber(int val, bool sendNotifications) override {};
 
     bool isTrackMuted() const noexcept override { return false; }
-    void setTrackMuted(bool shouldBeMuted) override {};
+    void setTrackMuted(bool shouldBeMuted, bool sendNotifications) override {};
 
     MidiSequence *getSequence() const noexcept override { return nullptr; }
     Pattern *getPattern() const noexcept override { return nullptr; }

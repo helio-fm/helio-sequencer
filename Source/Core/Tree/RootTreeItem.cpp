@@ -225,10 +225,10 @@ ProjectTreeItem *RootTreeItem::createDefaultProjectChildren(ProjectTreeItem *new
     VersionControlTreeItem *vcs = this->addVCS(newProject);
     newProject->addChildTreeItem(new PatternEditorTreeItem());
 
-    this->addPianoTrack(newProject, "Arps")->setTrackColour(Colours::orangered);
-    this->addPianoTrack(newProject, "Counterpoint")->setTrackColour(Colours::gold);
-    this->addPianoTrack(newProject, "Melodic")->setTrackColour(Colours::chartreuse);
-    this->addAutoLayer(newProject, "Tempo", MidiTrack::tempoController)->setTrackColour(Colours::floralwhite);
+    this->addPianoTrack(newProject, "Arps")->setTrackColour(Colours::orangered, true);
+    this->addPianoTrack(newProject, "Counterpoint")->setTrackColour(Colours::gold, true);
+    this->addPianoTrack(newProject, "Melodic")->setTrackColour(Colours::chartreuse, true);
+    this->addAutoLayer(newProject, "Tempo", MidiTrack::tempoController)->setTrackColour(Colours::floralwhite, true);
 
     newProject->getDocument()->save();
     newProject->broadcastChangeProjectBeatRange();
@@ -272,7 +272,7 @@ MidiTrackTreeItem *RootTreeItem::addPianoTrack(TreeItem *parent, const String &n
 MidiTrackTreeItem *RootTreeItem::addAutoLayer(TreeItem *parent, const String &name, int controllerNumber)
 {
     MidiTrackTreeItem *item = new AutomationTrackTreeItem(name);
-    item->setTrackControllerNumber(controllerNumber);
+    item->setTrackControllerNumber(controllerNumber, false);
     AutomationSequence *itemLayer = static_cast<AutomationSequence *>(item->getSequence());
     parent->addChildTreeItem(item);
     itemLayer->insert(AutomationEvent(itemLayer, 0, 0.5), false);

@@ -46,10 +46,9 @@ MidiTrackTreeItem::MidiTrackTreeItem(const String &name, const String &type) :
     mute(false),
     solo(false)
 {
-    // есть связанный с этим открытый баг, когда это поле остается нулевым. отстой.
     this->lastFoundParent = this->findParentOfType<ProjectTreeItem>();
-    // здесь мы не оповещаем родительский проект о добавлении нового слоя,
-    // т.к. при создании слой еще ни к кому не приаттачен
+    // do not dispatch new track events here,
+    // as newly created track is not attached to any parent
 }
 
 MidiTrackTreeItem::~MidiTrackTreeItem()
@@ -96,8 +95,6 @@ void MidiTrackTreeItem::importMidi(const MidiMessageSequence &sequence)
 {
     this->layer->importMidi(sequence);
 }
-
-
 
 //===----------------------------------------------------------------------===//
 // VCS::TrackedItem
@@ -161,11 +158,14 @@ int MidiTrackTreeItem::getTrackChannel() const noexcept
     return this->channel;
 }
 
-void MidiTrackTreeItem::setTrackName(const String &val)
+void MidiTrackTreeItem::setTrackName(const String &val, bool sendNotifications)
 {
     this->safeRename(val);
-    this->dispatchChangeTrackProperties(this);
-    this->dispatchChangeTreeItemView();
+    if (sendNotifications)
+    {
+        this->dispatchChangeTrackProperties(this);
+        this->dispatchChangeTreeItemView();
+    }
 }
 
 Colour MidiTrackTreeItem::getTrackColour() const noexcept
@@ -173,13 +173,16 @@ Colour MidiTrackTreeItem::getTrackColour() const noexcept
     return this->colour;
 }
 
-void MidiTrackTreeItem::setTrackColour(const Colour &val)
+void MidiTrackTreeItem::setTrackColour(const Colour &val, bool sendNotifications)
 {
     if (this->colour != val)
     {
         this->colour = val;
-        this->dispatchChangeTrackProperties(this);
-        this->dispatchChangeTreeItemView();
+        if (sendNotifications)
+        {
+            this->dispatchChangeTrackProperties(this);
+            this->dispatchChangeTreeItemView();
+        }
     }
 }
 
@@ -188,13 +191,17 @@ String MidiTrackTreeItem::getTrackInstrumentId() const noexcept
     return this->instrumentId;
 }
 
-void MidiTrackTreeItem::setTrackInstrumentId(const String &val)
+void MidiTrackTreeItem::setTrackInstrumentId(const String &val, bool sendNotifications)
 {
     if (this->instrumentId != val)
     {
         this->instrumentId = val;
-        this->dispatchChangeTrackProperties(this);
-        //this->dispatchChangeTreeItemView(); // instrument id is never displayed
+        if (sendNotifications)
+        {
+            this->dispatchChangeTrackProperties(this);
+            // instrument id is not displayed anywhere, fix this is it does someday
+            //this->dispatchChangeTreeItemView();
+        }
     }
 }
 
@@ -203,13 +210,17 @@ int MidiTrackTreeItem::getTrackControllerNumber() const noexcept
     return this->controllerNumber;
 }
 
-void MidiTrackTreeItem::setTrackControllerNumber(int val)
+void MidiTrackTreeItem::setTrackControllerNumber(int val, bool sendNotifications)
 {
     if (this->controllerNumber != val)
     {
         this->controllerNumber = val;
-        this->dispatchChangeTrackProperties(this);
-        //this->dispatchChangeTreeItemView(); // cc is never displayed
+        if (sendNotifications)
+        {
+            this->dispatchChangeTrackProperties(this);
+            // controller value is not displayed anywhere, fix this is it does someday
+            //this->dispatchChangeTreeItemView();
+        }
     }
 }
 
@@ -218,13 +229,16 @@ bool MidiTrackTreeItem::isTrackMuted() const noexcept
     return this->mute;
 }
 
-void MidiTrackTreeItem::setTrackMuted(bool shouldBeMuted)
+void MidiTrackTreeItem::setTrackMuted(bool shouldBeMuted, bool sendNotifications)
 {
     if (this->mute != shouldBeMuted)
     {
         this->mute = shouldBeMuted;
-        this->dispatchChangeTrackProperties(this);
-        this->dispatchChangeTreeItemView();
+        if (sendNotifications)
+        {
+            this->dispatchChangeTrackProperties(this);
+            this->dispatchChangeTreeItemView();
+        }
     }
 }
 
@@ -237,7 +251,6 @@ Pattern *MidiTrackTreeItem::getPattern() const noexcept
 {
     return this->pattern;
 }
-
 
 //===----------------------------------------------------------------------===//
 // ProjectEventDispatcher
@@ -506,11 +519,9 @@ void MidiTrackTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &drag
 
         if (InstrumentTreeItem *iti = dynamic_cast<InstrumentTreeItem *>(selected))
         {
-            this->setTrackInstrumentId(iti->getInstrumentIdAndHash());
+            this->setTrackInstrumentId(iti->getInstrumentIdAndHash(), true);
         }
     }
-
-    //TreeItem::itemDropped(dragSourceDetails, insertIndex);
 }
 
 

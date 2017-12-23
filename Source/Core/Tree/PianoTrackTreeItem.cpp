@@ -300,7 +300,7 @@ void PianoTrackTreeItem::resetMuteDelta(const XmlElement *state)
     
     if (willMute != this->isTrackMuted())
     {
-        this->setTrackMuted(willMute);
+        this->setTrackMuted(willMute, false);
     }
 }
 
@@ -312,7 +312,7 @@ void PianoTrackTreeItem::resetColourDelta(const XmlElement *state)
 
     if (colour != this->getTrackColour())
     {
-        this->setTrackColour(colour);
+        this->setTrackColour(colour, false);
     }
 }
 
@@ -320,7 +320,7 @@ void PianoTrackTreeItem::resetInstrumentDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == MidiTrackDeltas::trackInstrument);
     const String &instrumentId(state->getStringAttribute(Serialization::VCS::delta));
-    this->setTrackInstrumentId(instrumentId);
+    this->setTrackInstrumentId(instrumentId, false);
 }
 
 void PianoTrackTreeItem::resetEventsDelta(const XmlElement *state)

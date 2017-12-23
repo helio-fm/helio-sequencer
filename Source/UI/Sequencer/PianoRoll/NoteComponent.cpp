@@ -719,18 +719,17 @@ void NoteComponent::paintNewLook(Graphics &g)
         g.drawHorizontalLine(int(y), x1 + bevel, x2 - bevel);
     }
     
+//#ifdef DEBUG
+//    g.setColour(Colours::black);
+//    g.drawText(String(this->getBeat()), this->getLocalBounds().translated(5, 0), Justification::centredLeft, false);
+//#else
     const float sx = x1 + 2.f;
     const float sw = (w - 2.f) * this->getVelocity();
-
-#ifdef DEBUG
-    g.setColour(Colours::black);
-    g.drawText(String(this->getBeat()), this->getLocalBounds().translated(5, 0), Justification::centredLeft, false);
-#else
     g.setColour(this->colourVolume);
     g.drawHorizontalLine(this->getHeight() - 2, sx, sw);
     g.drawHorizontalLine(this->getHeight() - 3, sx, sw);
     g.drawHorizontalLine(this->getHeight() - 4, sx, sw);
-#endif
+//#endif
 }
 
 void NoteComponent::paintLegacyLook(Graphics &g)

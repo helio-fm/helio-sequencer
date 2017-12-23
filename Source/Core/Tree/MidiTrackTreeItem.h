@@ -65,19 +65,19 @@ public:
     int getTrackChannel() const noexcept override;
 
     String getTrackName() const noexcept override;
-    void setTrackName(const String &val) override;
+    void setTrackName(const String &val, bool sendNotifications) override;
 
     Colour getTrackColour() const noexcept override;
-    void setTrackColour(const Colour &val) override;
+    void setTrackColour(const Colour &val, bool sendNotifications) override;
 
     String getTrackInstrumentId() const noexcept override;
-    void setTrackInstrumentId(const String &val) override;
+    void setTrackInstrumentId(const String &val, bool sendNotifications) override;
 
     int getTrackControllerNumber() const noexcept override;
-    void setTrackControllerNumber(int val) override;
+    void setTrackControllerNumber(int val, bool sendNotifications) override;
 
     bool isTrackMuted() const noexcept override;
-    void setTrackMuted(bool shouldBeMuted) override;
+    void setTrackMuted(bool shouldBeMuted, bool sendNotifications) override;
 
     MidiSequence *getSequence() const noexcept override;
     Pattern *getPattern() const noexcept override;

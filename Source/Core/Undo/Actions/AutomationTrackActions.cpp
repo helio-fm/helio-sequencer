@@ -46,7 +46,7 @@ bool AutomationTrackInsertAction::perform()
     track->deserialize(*layerState);
     
     this->trackId = track->getTrackId().toString();
-    track->setTrackName(this->trackName);
+    track->setTrackName(this->trackName, true);
     
     return true;
 }
@@ -128,7 +128,7 @@ bool AutomationTrackRemoveAction::undo()
         MidiTrackTreeItem *track = new AutomationTrackTreeItem("empty");
         this->parentTreeItem->addChildTreeItem(track);
         track->deserialize(*this->serializedTreeItem);
-        track->setTrackName(this->trackName);
+        track->setTrackName(this->trackName, true);
         return true;
     }
     

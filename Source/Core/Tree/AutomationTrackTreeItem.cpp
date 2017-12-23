@@ -294,7 +294,7 @@ void AutomationTrackTreeItem::resetMuteDelta(const XmlElement *state)
     
     if (willMute != this->isTrackMuted())
     {
-        this->setTrackMuted(willMute);
+        this->setTrackMuted(willMute, false);
     }
 }
 
@@ -306,7 +306,7 @@ void AutomationTrackTreeItem::resetColourDelta(const XmlElement *state)
 
     if (colour != this->getTrackColour())
     {
-        this->setTrackColour(colour);
+        this->setTrackColour(colour, false);
     }
 }
 
@@ -314,14 +314,14 @@ void AutomationTrackTreeItem::resetInstrumentDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == AutoSequenceDeltas::layerInstrument);
     const String &instrumentId(state->getStringAttribute(Serialization::VCS::delta));
-    this->setTrackInstrumentId(instrumentId);
+    this->setTrackInstrumentId(instrumentId, false);
 }
 
 void AutomationTrackTreeItem::resetControllerDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == AutoSequenceDeltas::layerController);
     const int ccNumber(state->getIntAttribute(Serialization::VCS::delta));
-    this->setTrackControllerNumber(ccNumber);
+    this->setTrackControllerNumber(ccNumber, false);
 }
 
 void AutomationTrackTreeItem::resetEventsDelta(const XmlElement *state)

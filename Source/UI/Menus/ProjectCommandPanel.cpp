@@ -388,9 +388,9 @@ String ProjectCommandPanel::createAutoLayerTempate(const String &name, int contr
     ScopedPointer<MidiTrackTreeItem> newItem = new AutomationTrackTreeItem(name);
     auto itemLayer = static_cast<AutomationSequence *>(newItem->getSequence());
     
-    newItem->setTrackControllerNumber(controllerNumber);
-    newItem->setTrackInstrumentId(instrumentId);
-    newItem->setTrackColour(Colours::royalblue);
+    newItem->setTrackControllerNumber(controllerNumber, false);
+    newItem->setTrackInstrumentId(instrumentId, false);
+    newItem->setTrackColour(Colours::royalblue, false);
     
     // init with one event
     const float defaultCV = newItem->isOnOffTrack() ? 1.f : 0.5f;

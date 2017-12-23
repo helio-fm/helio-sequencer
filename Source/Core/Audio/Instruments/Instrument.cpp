@@ -366,7 +366,7 @@ XmlElement *Instrument::serialize() const
         xml->addChildElement(this->createNodeXml(this->processorGraph->getNode(i)));
     }
 
-    for (const auto c : this->getConnections())
+    for (const auto &c : this->getConnections())
     {
         auto e = new XmlElement(Serialization::Core::instrumentConnection);
         e->setAttribute("srcFilter", static_cast<int>(c.source.nodeID));

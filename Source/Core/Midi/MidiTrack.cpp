@@ -74,11 +74,15 @@ void MidiTrack::deserializeTrackProperties(const XmlElement &xml)
             this->getTrackControllerNumber());
 
     this->setTrackId(trackId);
-    this->setTrackColour(colour);
-    this->setTrackInstrumentId(instrumentId);
-    this->setTrackControllerNumber(controllerNumber);
-    this->setTrackInstrumentId(instrumentId);
-    this->setTrackMuted(muted);
+
+    // Do not send notifications:
+    // track is not supposed to update listeners meanwhile loading,
+    // its up to caller to make sure the views are updated after
+    this->setTrackColour(colour, false);
+    this->setTrackInstrumentId(instrumentId, false);
+    this->setTrackControllerNumber(controllerNumber, false);
+    this->setTrackInstrumentId(instrumentId, false);
+    this->setTrackMuted(muted, false);
 }
 
 bool MidiTrack::isTempoTrack() const noexcept

@@ -24,7 +24,7 @@
 Clip::Clip()
 {
     // needed for juce's Array to work
-    jassertfalse;
+    //jassertfalse;
 }
 
 Clip::Clip(const Clip &other) :
