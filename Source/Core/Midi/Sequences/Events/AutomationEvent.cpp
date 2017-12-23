@@ -115,10 +115,9 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
         
         }
 
-        const double startTime = this->beat * MS_PER_BEAT;
+        const double startTime = round(this->beat * MS_PER_BEAT);
         cc.setTimeStamp(startTime);
         result.add(cc);
-
         
         // добавить интерполированные события, если таковые должны быть
         const int indexOfThis = this->getSequence()->indexOfSorted(this);
@@ -131,7 +130,7 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
             if (controllerDelta > MIN_INTERPOLATED_CONTROLLER_DELTA)
             {
                 const double nextTime = nextEvent->beat * MS_PER_BEAT;
-                double interpolatedEventTimeStamp = startTime + INTERPOLATED_EVENTS_STEP_MS;
+                double interpolatedEventTimeStamp = round(startTime + INTERPOLATED_EVENTS_STEP_MS);
                 
                 while (interpolatedEventTimeStamp < nextTime)
                 {
@@ -178,15 +177,9 @@ AutomationEvent AutomationEvent::copyWithNewId() const
     return ae;
 }
 
-static float roundBeat(float beat)
-{
-    return roundf(beat * 1000.f) / 1000.f;
-}
-
 AutomationEvent AutomationEvent::withBeat(float newBeat) const
 {
     AutomationEvent ae(*this);
-    //ae.beat = newBeat;
     ae.beat = roundBeat(newBeat);
     return ae;
 }
@@ -194,7 +187,6 @@ AutomationEvent AutomationEvent::withBeat(float newBeat) const
 AutomationEvent AutomationEvent::withDeltaBeat(float deltaBeat) const
 {
     AutomationEvent ae(*this);
-    //ae.beat = this->beat + deltaBeat;
     ae.beat = roundBeat(this->beat + deltaBeat);
     return ae;
 }

@@ -73,7 +73,7 @@ Array<MidiMessage> TimeSignatureEvent::toMidiMessages() const
 {
     Array<MidiMessage> result;
     MidiMessage event(MidiMessage::timeSignatureMetaEvent(this->numerator, this->denominator));
-    event.setTimeStamp(this->beat * MS_PER_BEAT);
+    event.setTimeStamp(round(this->beat * MS_PER_BEAT));
     result.add(event);
     return result;
 }

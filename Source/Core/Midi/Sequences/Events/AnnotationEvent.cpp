@@ -54,7 +54,7 @@ Array<MidiMessage> AnnotationEvent::toMidiMessages() const
 {
     Array<MidiMessage> result;
     MidiMessage event(MidiMessage::textMetaEvent(1, this->getDescription()));
-    event.setTimeStamp(this->beat * MS_PER_BEAT);
+    event.setTimeStamp(round(this->beat * MS_PER_BEAT));
     result.add(event);
     return result;
 }

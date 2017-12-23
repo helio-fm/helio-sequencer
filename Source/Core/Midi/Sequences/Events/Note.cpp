@@ -59,11 +59,11 @@ Array<MidiMessage> Note::toMidiMessages() const
     Array<MidiMessage> result;
 
     MidiMessage eventNoteOn(MidiMessage::noteOn(this->getChannel(), this->key, velocity));
-    const double startTime = double(this->beat) * MS_PER_BEAT;
+    const double startTime = round(double(this->beat) * MS_PER_BEAT);
     eventNoteOn.setTimeStamp(startTime);
 
     MidiMessage eventNoteOff(MidiMessage::noteOff(this->getChannel(), this->key));
-    const double endTime = double(this->beat + this->length) * MS_PER_BEAT;
+    const double endTime = round(double(this->beat + this->length) * MS_PER_BEAT);
     eventNoteOff.setTimeStamp(endTime);
 
     result.add(eventNoteOn);
@@ -84,16 +84,9 @@ Note Note::copyWithNewId(WeakReference<MidiSequence> owner) const
     return n;
 }
 
-static float roundBeat(float beat)
-{
-    return roundf(beat * 16.f) / 16.f;
-    //return roundf(beat * 1000.f) / 1000.f;
-}
-
 Note Note::withBeat(float newBeat) const
 {
     Note other(*this);
-    //other.beat = newBeat;
     other.beat = roundBeat(newBeat);
     return other;
 }
@@ -102,7 +95,6 @@ Note Note::withKeyBeat(int newKey, float newBeat) const
 {
     Note other(*this);
     other.key = jmin(jmax(newKey, 0), 128);
-    //other.beat = newBeat;
     other.beat = roundBeat(newBeat);
     return other;
 }
@@ -110,7 +102,6 @@ Note Note::withKeyBeat(int newKey, float newBeat) const
 Note Note::withDeltaBeat(float deltaPosition) const
 {
     Note other(*this);
-    //other.beat = other.beat + deltaPosition;
     other.beat = roundBeat(other.beat + deltaPosition);
     return other;
 }
@@ -127,7 +118,6 @@ Note Note::withDeltaKey(int deltaKey) const
 Note Note::withLength(float newLength) const
 {
     Note other(*this);
-    //other.length = jmax(MIN_LENGTH, newLength);
     other.length = jmax(MIN_LENGTH, roundBeat(newLength));
     return other;
 }
@@ -135,7 +125,6 @@ Note Note::withLength(float newLength) const
 Note Note::withDeltaLength(float deltaLength) const
 {
     Note other(*this);
-    //other.length = jmax(MIN_LENGTH, other.length + deltaLength);
     other.length = jmax(MIN_LENGTH, roundBeat(other.length + deltaLength));
     return other;
 }
@@ -202,7 +191,7 @@ void Note::deserialize(const XmlElement &xml)
     const String& xmlId = xml.getStringAttribute("id");
 
     this->key = xmlKey;
-    this->beat = xmlBeat;
+    this->beat = roundBeat(xmlBeat);
     this->length = xmlLength;
     this->velocity = jmax(jmin(xmlVelocity, 1.f), 0.f);
     this->id = xmlId;
@@ -213,7 +202,7 @@ void Note::reset() {}
 void Note::applyChanges(const Note &other)
 {
     jassert(this->id == other.id);
-    this->beat = other.beat;
+    this->beat = roundBeat(other.beat);
     this->key = other.key;
     this->length = other.length;
     this->velocity = other.velocity;

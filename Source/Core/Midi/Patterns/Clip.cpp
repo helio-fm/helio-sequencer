@@ -34,7 +34,7 @@ Clip::Clip(const Clip &other) :
 
 Clip::Clip(WeakReference<Pattern> owner, float beatVal) :
     pattern(owner),
-    startBeat(beatVal)
+    startBeat(roundBeat(beatVal))
 {
     id = this->createId();
 }
@@ -89,11 +89,6 @@ Clip Clip::withParameters(const XmlElement &xml) const
     Clip c(*this);
     c.deserialize(xml);
     return c;
-}
-
-static float roundBeat(float beat)
-{
-    return roundf(beat * 16.f) / 16.f;
 }
 
 Clip Clip::withDeltaBeat(float deltaPosition) const

@@ -138,9 +138,7 @@ public:
         for (; i < sequence.getNumEvents(); ++i)
         {
             const double eventTs = sequence.getEventPointer(i)->message.getTimeStamp();
-            // I guess here we can safely round a timestamp (since it has been already multiplied by MS_PER_BEAT)
-            // to fix possible playhead positioning issues (the x position accuracy depends on roll zoom level):
-            if (round(eventTs) >= timeStamp)
+            if (eventTs >= timeStamp)
             {
                 break;
             }

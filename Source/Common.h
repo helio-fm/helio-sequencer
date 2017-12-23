@@ -101,6 +101,12 @@ inline float roundf(float x)
 
 #define NUM_BEATS_IN_BAR 4
 
+// Rolls allow up to 16 divisions per beat, there's no need for better accuracy:
+inline float roundBeat(float beat)
+{
+    return roundf(beat * 16.f) / 16.f;
+}
+
 //===----------------------------------------------------------------------===//
 // Internationalization
 //===----------------------------------------------------------------------===//

@@ -23,7 +23,7 @@
 MidiEvent::MidiEvent(WeakReference<MidiSequence> owner, Type type, float beatVal) :
     sequence(owner),
     type(type),
-    beat(beatVal)
+    beat(roundBeat(beatVal))
 {
     this->id = this->createId();
 }

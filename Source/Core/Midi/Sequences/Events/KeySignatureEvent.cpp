@@ -83,7 +83,7 @@ Array<MidiMessage> KeySignatureEvent::toMidiMessages() const
     const int flatsOrSharps = isMinor ? minorCircle[root] : majorCircle[root];
 
     MidiMessage event(MidiMessage::keySignatureMetaEvent(flatsOrSharps, isMinor));
-    event.setTimeStamp(this->beat * MS_PER_BEAT);
+    event.setTimeStamp(round(this->beat * MS_PER_BEAT));
     result.add(event);
     return result;
 }

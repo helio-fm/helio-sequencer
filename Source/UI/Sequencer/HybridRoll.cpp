@@ -580,11 +580,11 @@ float HybridRoll::getFloorBeatByXPosition(int x) const
         if (distance < d && snapX < x)
         {
             d = distance;
-            targetX = floorf(snapX);
+            targetX = snapX;
         }
     }
 
-    const float beatNumber = (targetX / this->barWidth) * NUM_BEATS_IN_BAR + this->getFirstBeat();
+    const float beatNumber = roundBeat(targetX / this->barWidth * NUM_BEATS_IN_BAR + this->getFirstBeat());
     return jmin(jmax(beatNumber, this->getFirstBeat()), this->getLastBeat());
 }
 
@@ -604,11 +604,11 @@ float HybridRoll::getRoundBeatByXPosition(int x) const
         {
             d = distance;
             // get lowest beat possible for target x position:
-            targetX = floorf(snapX);
+            targetX = snapX;
         }
     }
 
-    const float beatNumber = (targetX / this->barWidth) * NUM_BEATS_IN_BAR + this->getFirstBeat();
+    const float beatNumber = roundBeat(targetX / this->barWidth * NUM_BEATS_IN_BAR + this->getFirstBeat());
     return jmin(jmax(beatNumber, this->getFirstBeat()), this->getLastBeat());
 }
 
