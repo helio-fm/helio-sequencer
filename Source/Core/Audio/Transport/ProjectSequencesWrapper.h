@@ -59,23 +59,27 @@ public:
     
     inline Array<Instrument *> getUniqueInstruments() const noexcept
     {
+        const SpinLock::ScopedLockType lock(this->instrumentsLock);
         return this->uniqueInstruments;
     }
     
     SequenceWrapper *addWrapper(SequenceWrapper *const newWrapper) noexcept
     {
+        const SpinLock::ScopedLockType lock(this->sequencesLock);
         this->uniqueInstruments.addIfNotAlreadyThere(newWrapper->instrument);
         return this->sequences.add(newWrapper);
     }
     
     inline void clear()
     {
+        const SpinLock::ScopedLockType lock(this->sequencesLock);
         this->uniqueInstruments.clear();
         this->sequences.clear();
     }
     
     inline bool empty() const
     {
+        const SpinLock::ScopedLockType lock(this->sequencesLock);
         return (this->sequences.size() == 0);
     }
     
@@ -83,6 +87,8 @@ public:
     {
         if (this->empty())
         { return 0.0; }
+
+        const SpinLock::ScopedLockType lock(this->sequencesLock);
 
         // TODO: something more reasonable?
         return this->sequences[0]->instrument->getProcessorGraph()->getSampleRate();
@@ -93,6 +99,8 @@ public:
         if (this->empty())
         { return 0; }
 
+        const SpinLock::ScopedLockType lock(this->sequencesLock);
+
         // TODO: something more reasonable?
         return this->sequences[0]->instrument->getProcessorGraph()->getTotalNumOutputChannels();
     }
@@ -101,19 +109,21 @@ public:
     {
         if (this->empty())
         { return 0; }
-        
+
+        const SpinLock::ScopedLockType lock(this->sequencesLock);
+
         // TODO: something more reasonable?
         return this->sequences[0]->instrument->getProcessorGraph()->getTotalNumInputChannels();
     }
 
     ReferenceCountedArray<SequenceWrapper> getAllFor(const MidiSequence *midiLayer)
     {
+        const SpinLock::ScopedLockType lock(this->sequencesLock);
+
         ReferenceCountedArray<SequenceWrapper> result;
-        
         for (int i = 0; i < this->sequences.size(); ++i)
         {
             SequenceWrapper::Ptr seq(this->sequences[i]);
-            
             if (midiLayer == nullptr || midiLayer == seq->layer)
             {
                 result.add(seq);
@@ -125,6 +135,8 @@ public:
 
     void seekToTime(double position)
     {
+        const SpinLock::ScopedLockType lock(this->sequencesLock);
+        
         for (int i = 0; i < this->sequences.size(); ++i)
         {
             SequenceWrapper *wrapper = this->sequences.getUnchecked(i);
@@ -132,23 +144,10 @@ public:
         }
     }
     
-    int getNextIndexAtTime(const MidiMessageSequence &sequence, double timeStamp) const
-    {
-        int i = 0;
-        for (; i < sequence.getNumEvents(); ++i)
-        {
-            const double eventTs = sequence.getEventPointer(i)->message.getTimeStamp();
-            if (eventTs >= timeStamp)
-            {
-                break;
-            }
-        }
-        
-        return i;
-    }
-    
     void seekToZeroIndexes()
     {
+        const SpinLock::ScopedLockType lock(this->sequencesLock);
+
         for (int i = 0; i < this->sequences.size(); ++i)
         {
             this->sequences.getUnchecked(i)->currentIndex = 0;
@@ -157,6 +156,8 @@ public:
     
     bool getNextMessage(MessageWrapper &target)
     {
+        const SpinLock::ScopedLockType lock(this->sequencesLock);
+
         double minTimeStamp = DBL_MAX;
         int targetSequenceIndex = -1;
 
@@ -189,24 +190,26 @@ public:
 
         return true;
     }
-
-    double getLastEventTimestamp() const
+    
+private:
+    
+    int getNextIndexAtTime(const MidiMessageSequence &sequence, double timeStamp) const
     {
-        double lastEventTimestamp = 0.f;
-
-        for (int i = 0; i < this->sequences.size(); ++i)
+        int i = 0;
+        for (; i < sequence.getNumEvents(); ++i)
         {
-            const SequenceWrapper *wrapper = this->sequences.getUnchecked(i);
-            const double &endTime = wrapper->sequence.getEndTime();
-
-            if (lastEventTimestamp < endTime)
+            const double eventTs = sequence.getEventPointer(i)->message.getTimeStamp();
+            if (eventTs >= timeStamp)
             {
-                lastEventTimestamp = endTime;
+                break;
             }
         }
-
-        return lastEventTimestamp;
+        
+        return i;
     }
+
+    SpinLock instrumentsLock;
+    SpinLock sequencesLock;
     
     JUCE_LEAK_DETECTOR(ProjectSequences)
 };
