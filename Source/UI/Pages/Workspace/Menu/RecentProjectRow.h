@@ -25,7 +25,6 @@ class IconComponent;
 #include "DraggingListBoxComponent.h"
 //[/Headers]
 
-#include "../../Themes/SeparatorHorizontalFading.h"
 
 class RecentProjectRow  : public DraggingListBoxComponent
 {
@@ -64,7 +63,6 @@ private:
     ScopedPointer<IconComponent> activenessImage;
     ScopedPointer<IconComponent> remoteIndicatorImage;
     ScopedPointer<IconComponent> localIndicatorImage;
-    ScopedPointer<SeparatorHorizontalFading> separator;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RecentProjectRow)
 };

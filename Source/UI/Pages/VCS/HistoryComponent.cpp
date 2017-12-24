@@ -54,8 +54,6 @@ HistoryComponent::HistoryComponent(VersionControl &owner)
     revisionTreeLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     revisionTreeLabel->setJustificationType (Justification::centredLeft);
     revisionTreeLabel->setEditable (false, false, false);
-    revisionTreeLabel->setColour (TextEditor::textColourId, Colours::black);
-    revisionTreeLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (shadow = new LightShadowDownwards());
 
@@ -177,7 +175,7 @@ void HistoryComponent::rebuildRevisionTree()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="HistoryComponent" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="HistoryComponent" template="../../../Template"
                  componentName="" parentClasses="public Component" constructorParams="VersionControl &amp;owner"
                  variableInitialisers="vcs(owner)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="0" initialWidth="600"
@@ -187,7 +185,7 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="ffffff"/>
   <JUCERCOMP name="" id="fa0c0fc3d6eee313" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="0 35 0M 85M" sourceFile="../Themes/FramePanel.cpp"
+             explicitFocusOrder="0" pos="0 35 0M 85M" sourceFile="../../Themes/FramePanel.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="34a64657988c0f04" memberName="revisionViewport" virtualName=""
                     explicitFocusOrder="0" pos="1 36 2M 87M" class="Viewport" params=""/>
@@ -200,14 +198,14 @@ BEGIN_JUCER_METADATA
               posRelativeH="fe1cf713999527d3" buttonText="" connectedEdges="4"
               needsCallback="1" radioGroupId="0"/>
   <LABEL name="" id="158da5e6e58ab3ae" memberName="revisionTreeLabel"
-         virtualName="" explicitFocusOrder="0" pos="0 14c 406 32" edTextCol="ff000000"
-         edBkgCol="0" labelText="vcs::history::caption" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
-         fontsize="21" kerning="0" bold="0" italic="0" justification="33"/>
+         virtualName="" explicitFocusOrder="0" pos="0 14c 406 32" labelText="vcs::history::caption"
+         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
+         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
+         italic="0" justification="33"/>
   <JUCERCOMP name="" id="34270fb50cf926d8" memberName="shadow" virtualName=""
              explicitFocusOrder="0" pos="8 0R 16M 16" posRelativeX="fa0c0fc3d6eee313"
              posRelativeY="fa0c0fc3d6eee313" posRelativeW="fa0c0fc3d6eee313"
-             sourceFile="../Themes/LightShadowDownwards.cpp" constructorParams=""/>
+             sourceFile="../../Themes/LightShadowDownwards.cpp" constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

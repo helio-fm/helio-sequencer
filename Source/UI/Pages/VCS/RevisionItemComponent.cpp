@@ -87,17 +87,12 @@ RevisionItemComponent::RevisionItemComponent(ListBox &parentListBox, VCS::Head &
     itemLabel->setFont (Font (Font::getDefaultSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
     itemLabel->setJustificationType (Justification::centredLeft);
     itemLabel->setEditable (false, false, false);
-    itemLabel->setColour (TextEditor::textColourId, Colours::black);
-    itemLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (deltasLabel = new Label (String(),
                                                 TRANS("...")));
     deltasLabel->setFont (Font (Font::getDefaultSansSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
     deltasLabel->setJustificationType (Justification::topLeft);
     deltasLabel->setEditable (false, false, false);
-    deltasLabel->setColour (Label::textColourId, Colour (0xbaffffff));
-    deltasLabel->setColour (TextEditor::textColourId, Colours::black);
-    deltasLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (separator = new SeparatorHorizontal());
 
@@ -133,6 +128,12 @@ void RevisionItemComponent::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     DraggingListBoxComponent::paint(g);
     //[/UserPrePaint]
+
+    {
+        int x = getWidth() - 8 - 64, y = (getHeight() / 2) - (64 / 2), width = 64, height = 64;
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -280,7 +281,7 @@ bool RevisionItemComponent::isSelected() const
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="RevisionItemComponent" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="RevisionItemComponent" template="../../../Template"
                  componentName="" parentClasses="public DraggingListBoxComponent"
                  constructorParams="ListBox &amp;parentListBox, VCS::Head &amp;owner"
                  variableInitialisers="DraggingListBoxComponent(parentListBox.getViewport()),&#10;list(parentListBox),&#10;head(owner),&#10;row(0)"
@@ -290,18 +291,16 @@ BEGIN_JUCER_METADATA
     <IMAGE pos="8Rr 0Cc 64 64" resource="" opacity="1" mode="1"/>
   </BACKGROUND>
   <LABEL name="" id="c261305e2de1ebf2" memberName="itemLabel" virtualName=""
-         explicitFocusOrder="0" pos="5 3 10M 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default serif font" fontsize="16"
-         kerning="0" bold="0" italic="0" justification="33"/>
+         explicitFocusOrder="0" pos="5 3 10M 24" labelText="..." editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
+         fontsize="16" kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="" id="12427a53408d61ee" memberName="deltasLabel" virtualName=""
          explicitFocusOrder="0" pos="10 2R 90M 34M" posRelativeY="c261305e2de1ebf2"
-         textCol="baffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default sans-serif font" fontsize="16" kerning="0"
-         bold="0" italic="0" justification="9"/>
+         labelText="..." editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default sans-serif font" fontsize="16"
+         kerning="0" bold="0" italic="0" justification="9"/>
   <JUCERCOMP name="" id="2e5e217f3d476ef8" memberName="separator" virtualName=""
-             explicitFocusOrder="0" pos="10 1Rr 20M 3" sourceFile="../Themes/SeparatorHorizontal.cpp"
+             explicitFocusOrder="0" pos="10 1Rr 20M 3" sourceFile="../../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

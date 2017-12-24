@@ -26,7 +26,7 @@
 #include "../Themes/SeparatorVertical.h"
 
 class ModalDialogConfirmation  : public FadingDialog,
-                                 public ButtonListener
+                                 public Button::Listener
 {
 public:
 

@@ -25,13 +25,13 @@ class ProgressIndicator;
 #include "Revision.h"
 //[/Headers]
 
-#include "../Themes/LightShadowDownwards.h"
-#include "../Themes/FramePanel.h"
+#include "../../Themes/LightShadowDownwards.h"
+#include "../../Themes/FramePanel.h"
 
 class StageComponent  : public Component,
                         public ListBoxModel,
                         public ChangeListener,
-                        public ButtonListener
+                        public Button::Listener
 {
 public:
 

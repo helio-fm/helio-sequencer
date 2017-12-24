@@ -23,7 +23,7 @@ class ShapeComponent;
 
 
 class AuthorizationSettings  : public Component,
-                               public LabelListener
+                               public Label::Listener
 {
 public:
 

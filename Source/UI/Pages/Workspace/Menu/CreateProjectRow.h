@@ -24,7 +24,7 @@ class IconComponent;
 #include "CommandIDs.h"
 //[/Headers]
 
-#include "../../Themes/SeparatorHorizontalFading.h"
+#include "../../../Themes/SeparatorHorizontalFading.h"
 
 class CreateProjectRow  : public DraggingListBoxComponent
 {

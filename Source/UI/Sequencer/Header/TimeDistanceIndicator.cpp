@@ -34,10 +34,6 @@ TimeDistanceIndicator::TimeDistanceIndicator()
     timeLabel->setFont (Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     timeLabel->setJustificationType (Justification::centred);
     timeLabel->setEditable (false, false, false);
-    timeLabel->setColour (Label::textColourId, Colours::white);
-    timeLabel->setColour (Label::outlineColourId, Colour (0x00000000));
-    timeLabel->setColour (TextEditor::textColourId, Colours::black);
-    timeLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
 
     //[UserPreSize]
@@ -70,8 +66,14 @@ void TimeDistanceIndicator::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x3dffffff));
-    g.fillRoundedRectangle (3.0f, 0.0f, static_cast<float> (getWidth() - 6), 2.0f, 1.000f);
+    {
+        float x = 3.0f, y = 0.0f, width = static_cast<float> (getWidth() - 6), height = 2.0f;
+        Colour fillColour = Colour (0x3dffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRoundedRectangle (x, y, width, height, 1.000f);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -122,8 +124,7 @@ BEGIN_JUCER_METADATA
     <ROUNDRECT pos="3 0 6M 2" cornerSize="1" fill="solid: 3dffffff" hasStroke="0"/>
   </BACKGROUND>
   <LABEL name="" id="76c238702c82d339" memberName="timeLabel" virtualName=""
-         explicitFocusOrder="0" pos="0Cc 4 0M 20" textCol="ffffffff" outlineCol="0"
-         edTextCol="ff000000" edBkgCol="0" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="0Cc 4 0M 20" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="21" kerning="0" bold="0" italic="0" justification="36"/>
 </JUCER_COMPONENT>

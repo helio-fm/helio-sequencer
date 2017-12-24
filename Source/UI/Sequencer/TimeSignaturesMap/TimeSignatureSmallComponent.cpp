@@ -34,9 +34,6 @@ TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesTrackMap<
     signatureLabel->setFont (Font (14.00f, Font::plain).withTypefaceStyle ("Regular"));
     signatureLabel->setJustificationType (Justification::centredLeft);
     signatureLabel->setEditable (false, false, false);
-    signatureLabel->setColour (Label::textColourId, Colour (0x77ffffff));
-    signatureLabel->setColour (TextEditor::textColourId, Colours::black);
-    signatureLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (component = new SeparatorVertical());
 
@@ -137,10 +134,9 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="signatureLabel" virtualName=""
-         explicitFocusOrder="0" pos="0 4 -16M 16" textCol="77ffffff" edTextCol="ff000000"
-         edBkgCol="0" labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="14"
-         kerning="0" bold="0" italic="0" justification="33"/>
+         explicitFocusOrder="0" pos="0 4 -16M 16" labelText="..." editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="14" kerning="0" bold="0" italic="0" justification="33"/>
   <JUCERCOMP name="" id="1e5a57ee127ef53d" memberName="component" virtualName=""
              explicitFocusOrder="0" pos="0 0 2 0M" sourceFile="../../Themes/SeparatorVertical.cpp"
              constructorParams=""/>

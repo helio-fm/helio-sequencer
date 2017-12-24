@@ -21,14 +21,14 @@
 #include "ProjectPage.h"
 //[/Headers]
 
-#include "../Themes/PanelBackgroundB.h"
-#include "../Themes/LightShadowRightwards.h"
-#include "../Themes/SeparatorHorizontalFading.h"
-#include "../Themes/SeparatorHorizontalFading.h"
-#include "../Themes/SeparatorHorizontalFading.h"
+#include "../../Themes/PanelBackgroundB.h"
+#include "../../Themes/LightShadowRightwards.h"
+#include "../../Themes/SeparatorHorizontalFading.h"
+#include "../../Themes/SeparatorHorizontalFading.h"
+#include "../../Themes/SeparatorHorizontalFading.h"
 
 class ProjectPagePhone  : public ProjectPage,
-                          public LabelListener
+                          public Label::Listener
 {
 public:
 

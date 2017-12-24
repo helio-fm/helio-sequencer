@@ -57,17 +57,12 @@ RevisionComponent::RevisionComponent(VersionControl &owner, const ValueTree revi
     revisionDescription->setFont (Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     revisionDescription->setJustificationType (Justification::centred);
     revisionDescription->setEditable (false, false, false);
-    revisionDescription->setColour (TextEditor::textColourId, Colours::black);
-    revisionDescription->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (revisionDate = new Label (String(),
                                                  TRANS("...")));
     revisionDate->setFont (Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     revisionDate->setJustificationType (Justification::centred);
     revisionDate->setEditable (false, false, false);
-    revisionDate->setColour (Label::textColourId, Colour (0x99ffffff));
-    revisionDate->setColour (TextEditor::textColourId, Colours::black);
-    revisionDate->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
 
     //[UserPreSize]
@@ -122,17 +117,41 @@ void RevisionComponent::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x0bffffff));
-    g.fillRoundedRectangle (static_cast<float> ((getWidth() / 2) - (80 / 2)), static_cast<float> ((getHeight() / 2) + 2), 80.0f, 1.0f, 10.000f);
+    {
+        float x = static_cast<float> ((getWidth() / 2) - (80 / 2)), y = static_cast<float> ((getHeight() / 2) + 2), width = 80.0f, height = 1.0f;
+        Colour fillColour = Colour (0x0bffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRoundedRectangle (x, y, width, height, 10.000f);
+    }
 
-    g.setColour (Colour (0x0d000000));
-    g.fillRoundedRectangle (static_cast<float> ((getWidth() / 2) - (80 / 2)), static_cast<float> ((getHeight() / 2) + 1), 80.0f, 1.0f, 10.000f);
+    {
+        float x = static_cast<float> ((getWidth() / 2) - (80 / 2)), y = static_cast<float> ((getHeight() / 2) + 1), width = 80.0f, height = 1.0f;
+        Colour fillColour = Colour (0x0d000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRoundedRectangle (x, y, width, height, 10.000f);
+    }
 
-    g.setColour (Colour (0x25ffffff));
-    g.fillRoundedRectangle (static_cast<float> ((getWidth() / 2) - (35 / 2)), static_cast<float> (getHeight() - (4 / 2)), 35.0f, 4.0f, 10.000f);
+    {
+        float x = static_cast<float> ((getWidth() / 2) - (35 / 2)), y = static_cast<float> (getHeight() - (4 / 2)), width = 35.0f, height = 4.0f;
+        Colour fillColour = Colour (0x25ffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRoundedRectangle (x, y, width, height, 10.000f);
+    }
 
-    g.setColour (Colour (0x25ffffff));
-    g.fillRoundedRectangle (static_cast<float> ((getWidth() / 2) - (35 / 2)), static_cast<float> (0 - (4 / 2)), 35.0f, 4.0f, 10.000f);
+    {
+        float x = static_cast<float> ((getWidth() / 2) - (35 / 2)), y = static_cast<float> (0 - (4 / 2)), width = 35.0f, height = 4.0f;
+        Colour fillColour = Colour (0x25ffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRoundedRectangle (x, y, width, height, 10.000f);
+    }
 
     //[UserPaint] Add your own custom painting code here..
 
@@ -200,7 +219,7 @@ bool RevisionComponent::isSelected() const
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="RevisionComponent" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="RevisionComponent" template="../../../Template"
                  componentName="" parentClasses="public Component" constructorParams="VersionControl &amp;owner, const ValueTree revision, bool isHead"
                  variableInitialisers="vcs(owner)&#10;revision(revision),&#10;selected(false),&#10;isHeadRevision(isHead),&#10;x(0.f),&#10;y(0.f),&#10;mod(0.f),&#10;shift(0.f),&#10;change(0.f),&#10;number(0),&#10;parent(nullptr),&#10;thread(nullptr),&#10;leftmostSibling(nullptr)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
@@ -216,15 +235,14 @@ BEGIN_JUCER_METADATA
     <ROUNDRECT pos="0Cc 0c 35 4" cornerSize="10" fill="solid: 25ffffff" hasStroke="0"/>
   </BACKGROUND>
   <LABEL name="" id="45b178bfb039403" memberName="revisionDescription"
-         virtualName="" explicitFocusOrder="0" pos="4 2Cr 8M 21" edTextCol="ff000000"
-         edBkgCol="0" labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="21"
-         kerning="0" bold="0" italic="0" justification="36"/>
+         virtualName="" explicitFocusOrder="0" pos="4 2Cr 8M 21" labelText="..."
+         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
+         fontname="Default font" fontsize="21" kerning="0" bold="0" italic="0"
+         justification="36"/>
   <LABEL name="" id="30ac314958873bc0" memberName="revisionDate" virtualName=""
-         explicitFocusOrder="0" pos="4 -1C 8M 21" textCol="99ffffff" edTextCol="ff000000"
-         edBkgCol="0" labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="21"
-         kerning="0" bold="0" italic="0" justification="36"/>
+         explicitFocusOrder="0" pos="4 -1C 8M 21" labelText="..." editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="21" kerning="0" bold="0" italic="0" justification="36"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

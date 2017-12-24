@@ -40,18 +40,12 @@ TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesTrackMap<
     numeratorLabel->setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
     numeratorLabel->setJustificationType (Justification::centredLeft);
     numeratorLabel->setEditable (false, false, false);
-    numeratorLabel->setColour (Label::textColourId, Colour (0xaaffffff));
-    numeratorLabel->setColour (TextEditor::textColourId, Colours::black);
-    numeratorLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (denominatorLabel = new Label (String(),
                                                      String()));
     denominatorLabel->setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
     denominatorLabel->setJustificationType (Justification::centredLeft);
     denominatorLabel->setEditable (false, false, false);
-    denominatorLabel->setColour (Label::textColourId, Colour (0xaaffffff));
-    denominatorLabel->setColour (TextEditor::textColourId, Colours::black);
-    denominatorLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
 
     //[UserPreSize]
@@ -273,13 +267,11 @@ BEGIN_JUCER_METADATA
     <RECT pos="2 0 2M 0M" fill="solid: ff898989" hasStroke="0"/>
   </BACKGROUND>
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="numeratorLabel" virtualName=""
-         explicitFocusOrder="0" pos="-1 14Rr -6M 12" textCol="aaffffff"
-         edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
+         explicitFocusOrder="0" pos="-1 14Rr -6M 12" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="16" kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="" id="48b6c750cc766a42" memberName="denominatorLabel" virtualName=""
-         explicitFocusOrder="0" pos="-1 3Rr -6M 12" textCol="aaffffff"
-         edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="0"
+         explicitFocusOrder="0" pos="-1 3Rr -6M 12" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="16" kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>

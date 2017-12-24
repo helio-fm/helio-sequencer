@@ -79,9 +79,6 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
     messageLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     messageLabel->setJustificationType (Justification::centred);
     messageLabel->setEditable (false, false, false);
-    messageLabel->setColour (Label::textColourId, Colours::white);
-    messageLabel->setColour (TextEditor::textColourId, Colours::black);
-    messageLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (removeEventButton = new TextButton (String()));
     removeEventButton->setButtonText (TRANS("..."));
@@ -475,10 +472,9 @@ BEGIN_JUCER_METADATA
                     params=""/>
   <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc 16 48M 36" posRelativeY="e96b77baef792d3a"
-         textCol="ffffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
-         italic="0" justification="36"/>
+         labelText="..." editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
+         kerning="0" bold="0" italic="0" justification="36"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="removeEventButton"
               virtualName="" explicitFocusOrder="0" pos="4 4Rr 220 48" buttonText="..."
               connectedEdges="6" needsCallback="1" radioGroupId="0"/>

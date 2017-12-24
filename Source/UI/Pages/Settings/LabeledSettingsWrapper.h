@@ -20,7 +20,7 @@
 //[Headers]
 //[/Headers]
 
-#include "../Themes/FramePanel.h"
+#include "../../Themes/FramePanel.h"
 
 class LabeledSettingsWrapper  : public Component
 {

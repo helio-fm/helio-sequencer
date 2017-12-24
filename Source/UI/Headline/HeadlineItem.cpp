@@ -40,9 +40,6 @@ HeadlineItem::HeadlineItem(WeakReference<TreeItem> treeItem, AsyncUpdater &paren
     titleLabel->setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
     titleLabel->setJustificationType (Justification::centredLeft);
     titleLabel->setEditable (false, false, false);
-    titleLabel->setColour (Label::textColourId, Colours::white);
-    titleLabel->setColour (TextEditor::textColourId, Colours::black);
-    titleLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (icon = new IconComponent (Icons::workspace));
 
@@ -310,10 +307,10 @@ BEGIN_JUCER_METADATA
           strokeColour=" radial: 10R 16, 17R 5, 0=55ffffff, 1=ffffff" nonZeroWinding="1">s 32R 0 l 17R 0 l 10R 16 l 17R 32 l 32R 32 x</PATH>
   </BACKGROUND>
   <LABEL name="" id="9a3c449859f61884" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="34 0 512 31" textCol="ffffffff" edTextCol="ff000000"
-         edBkgCol="0" labelText="Project" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="18"
-         kerning="0" bold="0" italic="0" justification="33"/>
+         explicitFocusOrder="0" pos="34 0 512 31" labelText="Project"
+         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
+         fontname="Default font" fontsize="18" kerning="0" bold="0" italic="0"
+         justification="33"/>
   <GENERICCOMPONENT name="" id="f10feab7d241bacb" memberName="icon" virtualName=""
                     explicitFocusOrder="0" pos="8 0Cc 32 32" class="IconComponent"
                     params="Icons::workspace"/>

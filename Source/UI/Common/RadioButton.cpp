@@ -28,7 +28,7 @@ class RadioButtonFrame : public Component
 {
 public:
 
-    RadioButtonFrame(float alpha) : alpha(alpha) 
+    RadioButtonFrame(float alpha) : alpha(alpha)
     {
         this->setInterceptsMouseClicks(false, false);
     }
@@ -66,8 +66,6 @@ RadioButton::RadioButton(const String &text, Colour c, RadioButtonListener *list
     label->setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
     label->setJustificationType (Justification::centred);
     label->setEditable (false, false, false);
-    label->setColour (TextEditor::textColourId, Colours::black);
-    label->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
 
     //[UserPreSize]
@@ -196,10 +194,9 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="ff14851992cbe505" memberName="label" virtualName=""
-         explicitFocusOrder="0" pos="0 3 0M 3M" edTextCol="ff000000" edBkgCol="0"
-         labelText="C#" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="18"
-         kerning="0" bold="0" italic="0" justification="36"/>
+         explicitFocusOrder="0" pos="0 3 0M 3M" labelText="C#" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="18" kerning="0" bold="0" italic="0" justification="36"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

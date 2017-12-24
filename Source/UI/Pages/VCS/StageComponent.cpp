@@ -69,8 +69,6 @@ StageComponent::StageComponent(VersionControl &versionControl)
     titleLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     titleLabel->setJustificationType (Justification::centredLeft);
     titleLabel->setEditable (false, false, false);
-    titleLabel->setColour (TextEditor::textColourId, Colours::black);
-    titleLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (shadow = new LightShadowDownwards());
     addAndMakeVisible (indicator = new ProgressIndicator());
@@ -135,7 +133,7 @@ void StageComponent::resized()
     //[/UserPreResize]
 
     toggleChangesButton->setBounds (8, 35 + (getHeight() - 85), 96, 48);
-    horizontalCenter->setBounds (0, 0, proportionOfWidth (0.5063f), 8);
+    horizontalCenter->setBounds (0, 0, proportionOfWidth (0.5072f), 8);
     commitButton->setBounds (getWidth() - 8 - 96, 35 + (getHeight() - 85), 96, 48);
     resetButton->setBounds ((getWidth() - 8 - 96) + -5 - 96, 35 + (getHeight() - 85), 96, 48);
     titleLabel->setBounds (0, 14 - (32 / 2), 406, 32);
@@ -419,7 +417,7 @@ void StageComponent::stopProgressAnimation()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="StageComponent" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="StageComponent" template="../../../Template"
                  componentName="" parentClasses="public Component, public ListBoxModel, public ChangeListener"
                  constructorParams="VersionControl &amp;versionControl" variableInitialisers="vcs(versionControl)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
@@ -444,19 +442,19 @@ BEGIN_JUCER_METADATA
               posRelativeH="fe1cf713999527d3" buttonText="" connectedEdges="4"
               needsCallback="1" radioGroupId="0"/>
   <LABEL name="" id="660583b19bbfaa6b" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="0 14c 406 32" edTextCol="ff000000"
-         edBkgCol="0" labelText="vcs::stage::caption" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
-         fontsize="21" kerning="0" bold="0" italic="0" justification="33"/>
+         explicitFocusOrder="0" pos="0 14c 406 32" labelText="vcs::stage::caption"
+         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
+         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
+         italic="0" justification="33"/>
   <JUCERCOMP name="" id="34270fb50cf926d8" memberName="shadow" virtualName=""
              explicitFocusOrder="0" pos="8 0R 16M 16" posRelativeX="43f5d7064958b68a"
-             posRelativeY="83da04584c2ed03b" sourceFile="../Themes/LightShadowDownwards.cpp"
+             posRelativeY="83da04584c2ed03b" sourceFile="../../Themes/LightShadowDownwards.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="92641fd94a728225" memberName="indicator" virtualName=""
                     explicitFocusOrder="0" pos="0Cc 0Cc 32 32" class="ProgressIndicator"
                     params=""/>
   <JUCERCOMP name="" id="83da04584c2ed03b" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="0 35 0M 85M" sourceFile="../Themes/FramePanel.cpp"
+             explicitFocusOrder="0" pos="0 35 0M 85M" sourceFile="../../Themes/FramePanel.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="d017e5395434bb4f" memberName="changesList" virtualName=""
                     explicitFocusOrder="0" pos="1 36 2M 87M" class="ListBox" params="&quot;&quot;, this"/>

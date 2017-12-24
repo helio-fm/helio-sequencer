@@ -36,17 +36,12 @@ TranslationSettingsItem::TranslationSettingsItem(ListBox &parentListBox)
     localeLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     localeLabel->setJustificationType (Justification::centredLeft);
     localeLabel->setEditable (false, false, false);
-    localeLabel->setColour (TextEditor::textColourId, Colours::black);
-    localeLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (authorLabel = new Label (String(),
                                                 TRANS("...")));
     authorLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     authorLabel->setJustificationType (Justification::centredRight);
     authorLabel->setEditable (false, false, false);
-    authorLabel->setColour (Label::textColourId, Colour (0x32ffffff));
-    authorLabel->setColour (TextEditor::textColourId, Colours::black);
-    authorLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (separator = new SeparatorHorizontal());
 
@@ -137,23 +132,22 @@ Component *TranslationSettingsItem::createHighlighterComponent()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="TranslationSettingsItem"
-                 template="../../Template" componentName="" parentClasses="public DraggingListBoxComponent"
+                 template="../../../Template" componentName="" parentClasses="public DraggingListBoxComponent"
                  constructorParams="ListBox &amp;parentListBox" variableInitialisers="DraggingListBoxComponent(parentListBox.getViewport())"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="350" initialHeight="32">
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="c261305e2de1ebf2" memberName="localeLabel" virtualName=""
-         explicitFocusOrder="0" pos="48 0 38% 2M" edTextCol="ff000000"
-         edBkgCol="0" labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
-         kerning="0" bold="0" italic="0" justification="33"/>
-  <LABEL name="" id="a7e8c6a3ddd9ea22" memberName="authorLabel" virtualName=""
-         explicitFocusOrder="0" pos="12Rr 0 47.714% 2M" textCol="32ffffff"
-         edTextCol="ff000000" edBkgCol="0" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="48 0 38% 2M" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
-         fontsize="21" kerning="0" bold="0" italic="0" justification="34"/>
+         fontsize="21" kerning="0" bold="0" italic="0" justification="33"/>
+  <LABEL name="" id="a7e8c6a3ddd9ea22" memberName="authorLabel" virtualName=""
+         explicitFocusOrder="0" pos="12Rr 0 47.714% 2M" labelText="..."
+         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
+         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
+         italic="0" justification="34"/>
   <JUCERCOMP name="" id="6f5a73e394d91c2a" memberName="separator" virtualName=""
-             explicitFocusOrder="0" pos="55 0Rr 65M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
+             explicitFocusOrder="0" pos="55 0Rr 65M 2" sourceFile="../../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

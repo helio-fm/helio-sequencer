@@ -85,10 +85,7 @@ ThemeSettingsItem::ThemeSettingsItem(ListBox &parentListBox)
     schemeNameLabel->setFont (Font (Font::getDefaultSerifFontName(), 18.00f, Font::plain).withTypefaceStyle ("Regular"));
     schemeNameLabel->setJustificationType (Justification::centredLeft);
     schemeNameLabel->setEditable (false, false, false);
-    schemeNameLabel->setColour (TextEditor::textColourId, Colours::black);
-    schemeNameLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    addAndMakeVisible (separator = new SeparatorHorizontal());
 
     //[UserPreSize]
     this->selectionComponent = new ThemeSettingsItemSelection();
@@ -107,7 +104,6 @@ ThemeSettingsItem::~ThemeSettingsItem()
     //[/Destructor_pre]
 
     schemeNameLabel = nullptr;
-    separator = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -213,31 +209,71 @@ void ThemeSettingsItem::paint (Graphics& g)
 #if 0
     //[/UserPrePaint]
 
-    g.setColour (Colour (0xff2a50a5));
-    g.fillRect (41, 4, 207, getHeight() - 10);
+    {
+        int x = 41, y = 4, width = 207, height = getHeight() - 10;
+        Colour fillColour = Colour (0xff2a50a5);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+    }
 
-    g.setColour (Colour (0xff234aff));
-    g.drawRoundedRectangle (40.0f, 3.0f, static_cast<float> (getWidth() - 43), static_cast<float> (getHeight() - 8), 6.000f, 1.000f);
+    {
+        float x = 40.0f, y = 3.0f, width = static_cast<float> (getWidth() - 43), height = static_cast<float> (getHeight() - 8);
+        Colour strokeColour = Colour (0xff234aff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (strokeColour);
+        g.drawRoundedRectangle (x, y, width, height, 6.000f, 1.000f);
+    }
 
-    g.setGradientFill (ColourGradient (Colour (0x15000000),
-                                       248.0f, 0.0f,
-                                       Colour (0x00000000),
-                                       268.0f, 0.0f,
+    {
+        int x = 248, y = 4, width = 20, height = getHeight() - 10;
+        Colour fillColour1 = Colour (0x15000000), fillColour2 = Colour (0x00000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       248.0f - 248.0f + x,
+                                       0.0f - 4.0f + y,
+                                       fillColour2,
+                                       268.0f - 248.0f + x,
+                                       0.0f - 4.0f + y,
                                        false));
-    g.fillRect (248, 4, 20, getHeight() - 10);
+        g.fillRect (x, y, width, height);
+    }
 
-    g.setGradientFill (ColourGradient (Colour (0x15000000),
-                                       248.0f, 0.0f,
-                                       Colour (0x00000000),
-                                       260.0f, 0.0f,
+    {
+        int x = 248, y = 4, width = 12, height = getHeight() - 10;
+        Colour fillColour1 = Colour (0x15000000), fillColour2 = Colour (0x00000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       248.0f - 248.0f + x,
+                                       0.0f - 4.0f + y,
+                                       fillColour2,
+                                       260.0f - 248.0f + x,
+                                       0.0f - 4.0f + y,
                                        false));
-    g.fillRect (248, 4, 12, getHeight() - 10);
+        g.fillRect (x, y, width, height);
+    }
 
-    g.setColour (Colour (0x0b000000));
-    g.fillRect (248, 4, 1, getHeight() - 10);
+    {
+        int x = 248, y = 4, width = 1, height = getHeight() - 10;
+        Colour fillColour = Colour (0x0b000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+    }
 
-    g.setColour (Colour (0x09ffffff));
-    g.fillRect (247, 4, 1, getHeight() - 10);
+    {
+        int x = 247, y = 4, width = 1, height = getHeight() - 10;
+        Colour fillColour = Colour (0x09ffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+    }
 
     //[UserPaint] Add your own custom painting code here..
 #endif
@@ -250,7 +286,6 @@ void ThemeSettingsItem::resized()
     //[/UserPreResize]
 
     schemeNameLabel->setBounds (67, 2, 174, getHeight() - 6);
-    separator->setBounds (56, getHeight() - -8 - 2, getWidth() - 80, 2);
     //[UserResized] Add your own custom resize handling here..
     this->selectionComponent->setBounds(this->getLocalBounds());
     //[/UserResized]
@@ -285,7 +320,6 @@ void ThemeSettingsItem::setSelected(bool shouldBeSelected)
 void ThemeSettingsItem::updateDescription(bool isLastRowInList,
     bool isCurrentTheme, const ColourScheme &colours)
 {
-    this->separator->setVisible(!isLastRowInList);
     if (isCurrentTheme)
     {
         this->selectionAnimator.fadeIn(this->selectionComponent, 150);
@@ -323,7 +357,7 @@ Component *ThemeSettingsItem::createHighlighterComponent()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="ThemeSettingsItem" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="ThemeSettingsItem" template="../../../Template"
                  componentName="" parentClasses="public DraggingListBoxComponent"
                  constructorParams="ListBox &amp;parentListBox" variableInitialisers="DraggingListBoxComponent(parentListBox.getViewport()),&#10;listBox(parentListBox)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
@@ -340,13 +374,9 @@ BEGIN_JUCER_METADATA
     <RECT pos="247 4 1 10M" fill="solid: 9ffffff" hasStroke="0"/>
   </BACKGROUND>
   <LABEL name="" id="c261305e2de1ebf2" memberName="schemeNameLabel" virtualName=""
-         explicitFocusOrder="0" pos="67 2 174 6M" edTextCol="ff000000"
-         edBkgCol="0" labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default serif font" fontsize="18"
-         kerning="0" bold="0" italic="0" justification="33"/>
-  <JUCERCOMP name="" id="6f5a73e394d91c2a" memberName="separator" virtualName=""
-             explicitFocusOrder="0" pos="56 -8Rr 80M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
-             constructorParams=""/>
+         explicitFocusOrder="0" pos="67 2 174 6M" labelText="..." editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
+         fontsize="18" kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

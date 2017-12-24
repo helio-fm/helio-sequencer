@@ -42,9 +42,6 @@ ProjectPageDefault::ProjectPageDefault(ProjectTreeItem &parentProject)
     projectTitleEditor->setFont (Font (Font::getDefaultSerifFontName(), 37.00f, Font::plain).withTypefaceStyle ("Regular"));
     projectTitleEditor->setJustificationType (Justification::topLeft);
     projectTitleEditor->setEditable (true, true, false);
-    projectTitleEditor->setColour (Label::textColourId, Colours::white);
-    projectTitleEditor->setColour (TextEditor::textColourId, Colours::white);
-    projectTitleEditor->setColour (TextEditor::backgroundColourId, Colour (0x1a000000));
     projectTitleEditor->addListener (this);
 
     addAndMakeVisible (projectTitleLabel = new Label (String(),
@@ -52,18 +49,12 @@ ProjectPageDefault::ProjectPageDefault(ProjectTreeItem &parentProject)
     projectTitleLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     projectTitleLabel->setJustificationType (Justification::topRight);
     projectTitleLabel->setEditable (false, false, false);
-    projectTitleLabel->setColour (Label::textColourId, Colour (0x99ffffff));
-    projectTitleLabel->setColour (TextEditor::textColourId, Colours::black);
-    projectTitleLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (authorEditor = new Label (String(),
                                                  TRANS("...")));
     authorEditor->setFont (Font (Font::getDefaultSerifFontName(), 37.00f, Font::plain).withTypefaceStyle ("Regular"));
     authorEditor->setJustificationType (Justification::topLeft);
     authorEditor->setEditable (true, true, false);
-    authorEditor->setColour (Label::textColourId, Colours::white);
-    authorEditor->setColour (TextEditor::textColourId, Colours::white);
-    authorEditor->setColour (TextEditor::backgroundColourId, Colour (0x1a000000));
     authorEditor->addListener (this);
 
     addAndMakeVisible (authorLabel = new Label (String(),
@@ -71,18 +62,12 @@ ProjectPageDefault::ProjectPageDefault(ProjectTreeItem &parentProject)
     authorLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     authorLabel->setJustificationType (Justification::topRight);
     authorLabel->setEditable (false, false, false);
-    authorLabel->setColour (Label::textColourId, Colour (0x99ffffff));
-    authorLabel->setColour (TextEditor::textColourId, Colours::black);
-    authorLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (descriptionEditor = new Label (String(),
                                                       TRANS("...")));
     descriptionEditor->setFont (Font (Font::getDefaultSerifFontName(), 37.00f, Font::plain).withTypefaceStyle ("Regular"));
     descriptionEditor->setJustificationType (Justification::topLeft);
     descriptionEditor->setEditable (true, true, false);
-    descriptionEditor->setColour (Label::textColourId, Colours::white);
-    descriptionEditor->setColour (TextEditor::textColourId, Colours::white);
-    descriptionEditor->setColour (TextEditor::backgroundColourId, Colour (0x1a000000));
     descriptionEditor->addListener (this);
 
     addAndMakeVisible (descriptionLabel = new Label (String(),
@@ -90,99 +75,66 @@ ProjectPageDefault::ProjectPageDefault(ProjectTreeItem &parentProject)
     descriptionLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     descriptionLabel->setJustificationType (Justification::topRight);
     descriptionLabel->setEditable (false, false, false);
-    descriptionLabel->setColour (Label::textColourId, Colour (0x99ffffff));
-    descriptionLabel->setColour (TextEditor::textColourId, Colours::black);
-    descriptionLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (locationLabel = new Label (String(),
                                                   TRANS("page::project::filelocation")));
     locationLabel->setFont (Font (Font::getDefaultSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
     locationLabel->setJustificationType (Justification::topRight);
     locationLabel->setEditable (false, false, true);
-    locationLabel->setColour (Label::textColourId, Colour (0x55ffffff));
-    locationLabel->setColour (TextEditor::textColourId, Colours::black);
-    locationLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (locationText = new Label (String(),
                                                  TRANS("...")));
     locationText->setFont (Font (Font::getDefaultSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
     locationText->setJustificationType (Justification::topLeft);
     locationText->setEditable (false, false, true);
-    locationText->setColour (Label::textColourId, Colour (0xaaffffff));
-    locationText->setColour (TextEditor::textColourId, Colours::black);
-    locationText->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (contentStatsLabel = new Label (String(),
                                                       TRANS("page::project::stats::content")));
     contentStatsLabel->setFont (Font (Font::getDefaultSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
     contentStatsLabel->setJustificationType (Justification::topRight);
     contentStatsLabel->setEditable (false, false, true);
-    contentStatsLabel->setColour (Label::textColourId, Colour (0x55ffffff));
-    contentStatsLabel->setColour (TextEditor::textColourId, Colours::black);
-    contentStatsLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (contentStatsText = new Label (String(),
                                                      TRANS("...")));
     contentStatsText->setFont (Font (Font::getDefaultSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
     contentStatsText->setJustificationType (Justification::topLeft);
     contentStatsText->setEditable (false, false, true);
-    contentStatsText->setColour (Label::textColourId, Colour (0xaaffffff));
-    contentStatsText->setColour (TextEditor::textColourId, Colours::black);
-    contentStatsText->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (vcsStatsLabel = new Label (String(),
                                                   TRANS("page::project::stats::vcs")));
     vcsStatsLabel->setFont (Font (Font::getDefaultSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
     vcsStatsLabel->setJustificationType (Justification::topRight);
     vcsStatsLabel->setEditable (false, false, true);
-    vcsStatsLabel->setColour (Label::textColourId, Colour (0x55ffffff));
-    vcsStatsLabel->setColour (TextEditor::textColourId, Colours::black);
-    vcsStatsLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (vcsStatsText = new Label (String(),
                                                  TRANS("...")));
     vcsStatsText->setFont (Font (Font::getDefaultSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
     vcsStatsText->setJustificationType (Justification::topLeft);
     vcsStatsText->setEditable (false, false, true);
-    vcsStatsText->setColour (Label::textColourId, Colour (0xaaffffff));
-    vcsStatsText->setColour (TextEditor::textColourId, Colours::black);
-    vcsStatsText->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (startTimeLabel = new Label (String(),
                                                    TRANS("page::project::startdate")));
     startTimeLabel->setFont (Font (Font::getDefaultSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
     startTimeLabel->setJustificationType (Justification::topRight);
     startTimeLabel->setEditable (false, false, true);
-    startTimeLabel->setColour (Label::textColourId, Colour (0x55ffffff));
-    startTimeLabel->setColour (TextEditor::textColourId, Colours::black);
-    startTimeLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (startTimeText = new Label (String(),
                                                   TRANS("...")));
     startTimeText->setFont (Font (Font::getDefaultSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
     startTimeText->setJustificationType (Justification::topLeft);
     startTimeText->setEditable (false, false, true);
-    startTimeText->setColour (Label::textColourId, Colour (0xaaffffff));
-    startTimeText->setColour (TextEditor::textColourId, Colours::black);
-    startTimeText->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (lengthLabel = new Label (String(),
                                                 TRANS("page::project::duration")));
     lengthLabel->setFont (Font (Font::getDefaultSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
     lengthLabel->setJustificationType (Justification::topRight);
     lengthLabel->setEditable (false, false, true);
-    lengthLabel->setColour (Label::textColourId, Colour (0x55ffffff));
-    lengthLabel->setColour (TextEditor::textColourId, Colours::black);
-    lengthLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (lengthText = new Label (String(),
                                                TRANS("...")));
     lengthText->setFont (Font (Font::getDefaultSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
     lengthText->setJustificationType (Justification::topLeft);
     lengthText->setEditable (false, false, true);
-    lengthText->setColour (Label::textColourId, Colour (0xaaffffff));
-    lengthText->setColour (TextEditor::textColourId, Colours::black);
-    lengthText->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (level1 = new Component());
     level1->setName ("level1");
@@ -195,18 +147,12 @@ ProjectPageDefault::ProjectPageDefault(ProjectTreeItem &parentProject)
     licenseLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     licenseLabel->setJustificationType (Justification::topRight);
     licenseLabel->setEditable (false, false, true);
-    licenseLabel->setColour (Label::textColourId, Colour (0x99ffffff));
-    licenseLabel->setColour (TextEditor::textColourId, Colours::black);
-    licenseLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (licenseEditor = new Label (String(),
                                                   TRANS("...")));
     licenseEditor->setFont (Font (Font::getDefaultSerifFontName(), 37.00f, Font::plain).withTypefaceStyle ("Regular"));
     licenseEditor->setJustificationType (Justification::topLeft);
     licenseEditor->setEditable (true, true, false);
-    licenseEditor->setColour (Label::textColourId, Colour (0xccffffff));
-    licenseEditor->setColour (TextEditor::textColourId, Colours::white);
-    licenseEditor->setColour (TextEditor::backgroundColourId, Colour (0x1a000000));
     licenseEditor->addListener (this);
 
     addAndMakeVisible (menuButton = new MenuButton());
@@ -289,29 +235,29 @@ void ProjectPageDefault::resized()
     //[/UserPreResize]
 
     background->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
-    projectTitleEditor->setBounds ((getWidth() / 2) + -100, proportionOfHeight (0.0751f) + 20, 440, 48);
-    projectTitleLabel->setBounds ((getWidth() / 2) + -104 - 202, proportionOfHeight (0.0751f) + 0, 202, 48);
-    authorEditor->setBounds ((getWidth() / 2) + -100, proportionOfHeight (0.0751f) + 90, 440, 48);
-    authorLabel->setBounds ((getWidth() / 2) + -104 - 202, proportionOfHeight (0.0751f) + 70, 202, 48);
-    descriptionEditor->setBounds ((getWidth() / 2) + -100, proportionOfHeight (0.0751f) + 160, 440, 48);
-    descriptionLabel->setBounds ((getWidth() / 2) + -104 - 202, proportionOfHeight (0.0751f) + 140, 202, 48);
-    locationLabel->setBounds ((getWidth() / 2) + -104 - 300, (proportionOfHeight (0.0751f) + 310) + 138, 300, 32);
-    locationText->setBounds ((getWidth() / 2) + -100, (proportionOfHeight (0.0751f) + 310) + 138, 400, 96);
-    contentStatsLabel->setBounds ((getWidth() / 2) + -104 - 300, (proportionOfHeight (0.0751f) + 310) + 106, 300, 32);
-    contentStatsText->setBounds ((getWidth() / 2) + -100, (proportionOfHeight (0.0751f) + 310) + 106, 400, 32);
-    vcsStatsLabel->setBounds ((getWidth() / 2) + -104 - 300, (proportionOfHeight (0.0751f) + 310) + 76, 300, 32);
-    vcsStatsText->setBounds ((getWidth() / 2) + -100, (proportionOfHeight (0.0751f) + 310) + 76, 400, 32);
-    startTimeLabel->setBounds ((getWidth() / 2) + -104 - 300, (proportionOfHeight (0.0751f) + 310) + 46, 300, 32);
-    startTimeText->setBounds ((getWidth() / 2) + -100, (proportionOfHeight (0.0751f) + 310) + 46, 400, 32);
-    lengthLabel->setBounds ((getWidth() / 2) + -104 - 300, (proportionOfHeight (0.0751f) + 310) + 16, 300, 32);
-    lengthText->setBounds ((getWidth() / 2) + -100, (proportionOfHeight (0.0751f) + 310) + 16, 400, 32);
-    level1->setBounds (32, proportionOfHeight (0.0751f), 150, 24);
-    level2->setBounds (32, proportionOfHeight (0.0751f) + 310, 150, 24);
-    licenseLabel->setBounds ((getWidth() / 2) + -104 - 202, proportionOfHeight (0.0751f) + 210, 202, 48);
-    licenseEditor->setBounds ((getWidth() / 2) + -100, proportionOfHeight (0.0751f) + 230, 440, 48);
+    projectTitleEditor->setBounds ((getWidth() / 2) + -100, proportionOfHeight (0.0755f) + 20, 440, 48);
+    projectTitleLabel->setBounds ((getWidth() / 2) + -104 - 202, proportionOfHeight (0.0755f) + 0, 202, 48);
+    authorEditor->setBounds ((getWidth() / 2) + -100, proportionOfHeight (0.0755f) + 90, 440, 48);
+    authorLabel->setBounds ((getWidth() / 2) + -104 - 202, proportionOfHeight (0.0755f) + 70, 202, 48);
+    descriptionEditor->setBounds ((getWidth() / 2) + -100, proportionOfHeight (0.0755f) + 160, 440, 48);
+    descriptionLabel->setBounds ((getWidth() / 2) + -104 - 202, proportionOfHeight (0.0755f) + 140, 202, 48);
+    locationLabel->setBounds ((getWidth() / 2) + -104 - 300, (proportionOfHeight (0.0755f) + 310) + 138, 300, 32);
+    locationText->setBounds ((getWidth() / 2) + -100, (proportionOfHeight (0.0755f) + 310) + 138, 400, 96);
+    contentStatsLabel->setBounds ((getWidth() / 2) + -104 - 300, (proportionOfHeight (0.0755f) + 310) + 106, 300, 32);
+    contentStatsText->setBounds ((getWidth() / 2) + -100, (proportionOfHeight (0.0755f) + 310) + 106, 400, 32);
+    vcsStatsLabel->setBounds ((getWidth() / 2) + -104 - 300, (proportionOfHeight (0.0755f) + 310) + 76, 300, 32);
+    vcsStatsText->setBounds ((getWidth() / 2) + -100, (proportionOfHeight (0.0755f) + 310) + 76, 400, 32);
+    startTimeLabel->setBounds ((getWidth() / 2) + -104 - 300, (proportionOfHeight (0.0755f) + 310) + 46, 300, 32);
+    startTimeText->setBounds ((getWidth() / 2) + -100, (proportionOfHeight (0.0755f) + 310) + 46, 400, 32);
+    lengthLabel->setBounds ((getWidth() / 2) + -104 - 300, (proportionOfHeight (0.0755f) + 310) + 16, 300, 32);
+    lengthText->setBounds ((getWidth() / 2) + -100, (proportionOfHeight (0.0755f) + 310) + 16, 400, 32);
+    level1->setBounds (32, proportionOfHeight (0.0755f), 150, 24);
+    level2->setBounds (32, proportionOfHeight (0.0755f) + 310, 150, 24);
+    licenseLabel->setBounds ((getWidth() / 2) + -104 - 202, proportionOfHeight (0.0755f) + 210, 202, 48);
+    licenseEditor->setBounds ((getWidth() / 2) + -100, proportionOfHeight (0.0755f) + 230, 440, 48);
     menuButton->setBounds ((getWidth() / 2) - (128 / 2), getHeight() - -16 - (128 / 2), 128, 128);
     shadow->setBounds (0, 0, 5, getHeight() - 0);
-    revealLocationButton->setBounds (((getWidth() / 2) + -100) + -150, ((proportionOfHeight (0.0751f) + 310) + 138) + 0, 400 - -150, 24);
+    revealLocationButton->setBounds (((getWidth() / 2) + -100) + -150, ((proportionOfHeight (0.0755f) + 310) + 138) + 0, 400 - -150, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -451,7 +397,7 @@ void ProjectPageDefault::onTotalTimeChanged(double timeMs)
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="ProjectPageDefault" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="ProjectPageDefault" template="../../../Template"
                  componentName="" parentClasses="public ProjectPage" constructorParams="ProjectTreeItem &amp;parentProject"
                  variableInitialisers="ProjectPage(parentProject)" snapPixels="4"
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="0"
@@ -461,127 +407,110 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="e130bb0b9ed67f09" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../Themes/PanelBackgroundB.cpp"
+             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../../Themes/PanelBackgroundB.cpp"
              constructorParams=""/>
   <LABEL name="" id="a162c9dbc90775e7" memberName="projectTitleEditor"
          virtualName="" explicitFocusOrder="0" pos="-100C 20 440 48" posRelativeY="b6ea6ccc6b9be1f8"
-         textCol="ffffffff" edTextCol="ffffffff" edBkgCol="1a000000" labelText="..."
-         editableSingleClick="1" editableDoubleClick="1" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="37" kerning="0" bold="0"
-         italic="0" justification="9"/>
-  <LABEL name="" id="b93b5ef0dc95ee24" memberName="projectTitleLabel"
-         virtualName="" explicitFocusOrder="0" pos="-104Cr 0 202 48" posRelativeY="b6ea6ccc6b9be1f8"
-         textCol="99ffffff" edTextCol="ff000000" edBkgCol="0" labelText="page::project::title"
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
-         italic="0" justification="10"/>
-  <LABEL name="" id="9c63b5388edfe183" memberName="authorEditor" virtualName=""
-         explicitFocusOrder="0" pos="-100C 90 440 48" posRelativeY="b6ea6ccc6b9be1f8"
-         textCol="ffffffff" edTextCol="ffffffff" edBkgCol="1a000000" labelText="..."
-         editableSingleClick="1" editableDoubleClick="1" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="37" kerning="0" bold="0"
-         italic="0" justification="9"/>
-  <LABEL name="" id="cf32360d33639f7f" memberName="authorLabel" virtualName=""
-         explicitFocusOrder="0" pos="-104Cr 70 202 48" posRelativeY="b6ea6ccc6b9be1f8"
-         textCol="99ffffff" edTextCol="ff000000" edBkgCol="0" labelText="page::project::author"
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
-         italic="0" justification="10"/>
-  <LABEL name="" id="5b9fd0ca53fe4337" memberName="descriptionEditor"
-         virtualName="" explicitFocusOrder="0" pos="-100C 160 440 48"
-         posRelativeY="b6ea6ccc6b9be1f8" textCol="ffffffff" edTextCol="ffffffff"
-         edBkgCol="1a000000" labelText="..." editableSingleClick="1" editableDoubleClick="1"
+         labelText="..." editableSingleClick="1" editableDoubleClick="1"
          focusDiscardsChanges="0" fontname="Default serif font" fontsize="37"
          kerning="0" bold="0" italic="0" justification="9"/>
+  <LABEL name="" id="b93b5ef0dc95ee24" memberName="projectTitleLabel"
+         virtualName="" explicitFocusOrder="0" pos="-104Cr 0 202 48" posRelativeY="b6ea6ccc6b9be1f8"
+         labelText="page::project::title" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
+         kerning="0" bold="0" italic="0" justification="10"/>
+  <LABEL name="" id="9c63b5388edfe183" memberName="authorEditor" virtualName=""
+         explicitFocusOrder="0" pos="-100C 90 440 48" posRelativeY="b6ea6ccc6b9be1f8"
+         labelText="..." editableSingleClick="1" editableDoubleClick="1"
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="37"
+         kerning="0" bold="0" italic="0" justification="9"/>
+  <LABEL name="" id="cf32360d33639f7f" memberName="authorLabel" virtualName=""
+         explicitFocusOrder="0" pos="-104Cr 70 202 48" posRelativeY="b6ea6ccc6b9be1f8"
+         labelText="page::project::author" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
+         kerning="0" bold="0" italic="0" justification="10"/>
+  <LABEL name="" id="5b9fd0ca53fe4337" memberName="descriptionEditor"
+         virtualName="" explicitFocusOrder="0" pos="-100C 160 440 48"
+         posRelativeY="b6ea6ccc6b9be1f8" labelText="..." editableSingleClick="1"
+         editableDoubleClick="1" focusDiscardsChanges="0" fontname="Default serif font"
+         fontsize="37" kerning="0" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="1a7ebced267e73e8" memberName="descriptionLabel" virtualName=""
          explicitFocusOrder="0" pos="-104Cr 140 202 48" posRelativeY="b6ea6ccc6b9be1f8"
-         textCol="99ffffff" edTextCol="ff000000" edBkgCol="0" labelText="page::project::description"
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
-         italic="0" justification="10"/>
+         labelText="page::project::description" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
+         fontsize="21" kerning="0" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="cf836ffeded76ad1" memberName="locationLabel" virtualName=""
          explicitFocusOrder="0" pos="-104Cr 138 300 32" posRelativeY="91994c13c1a34ef8"
-         textCol="55ffffff" edTextCol="ff000000" edBkgCol="0" labelText="page::project::filelocation"
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="1"
-         fontname="Default serif font" fontsize="16" kerning="0" bold="0"
-         italic="0" justification="10"/>
-  <LABEL name="" id="e68c5a019e000a0b" memberName="locationText" virtualName=""
-         explicitFocusOrder="0" pos="-100C 138 400 96" posRelativeY="91994c13c1a34ef8"
-         textCol="aaffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="1"
-         fontname="Default serif font" fontsize="16" kerning="0" bold="0"
-         italic="0" justification="9"/>
-  <LABEL name="" id="e824154c21ea01f1" memberName="contentStatsLabel"
-         virtualName="" explicitFocusOrder="0" pos="-104Cr 106 300 32"
-         posRelativeY="91994c13c1a34ef8" textCol="55ffffff" edTextCol="ff000000"
-         edBkgCol="0" labelText="page::project::stats::content" editableSingleClick="0"
+         labelText="page::project::filelocation" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="1" fontname="Default serif font"
          fontsize="16" kerning="0" bold="0" italic="0" justification="10"/>
+  <LABEL name="" id="e68c5a019e000a0b" memberName="locationText" virtualName=""
+         explicitFocusOrder="0" pos="-100C 138 400 96" posRelativeY="91994c13c1a34ef8"
+         labelText="..." editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="1" fontname="Default serif font" fontsize="16"
+         kerning="0" bold="0" italic="0" justification="9"/>
+  <LABEL name="" id="e824154c21ea01f1" memberName="contentStatsLabel"
+         virtualName="" explicitFocusOrder="0" pos="-104Cr 106 300 32"
+         posRelativeY="91994c13c1a34ef8" labelText="page::project::stats::content"
+         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="1"
+         fontname="Default serif font" fontsize="16" kerning="0" bold="0"
+         italic="0" justification="10"/>
   <LABEL name="" id="4c13747d72949ab9" memberName="contentStatsText" virtualName=""
          explicitFocusOrder="0" pos="-100C 106 400 32" posRelativeY="91994c13c1a34ef8"
-         textCol="aaffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="1"
-         fontname="Default serif font" fontsize="16" kerning="0" bold="0"
-         italic="0" justification="9"/>
+         labelText="..." editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="1" fontname="Default serif font" fontsize="16"
+         kerning="0" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="fa70bc89acdb3acf" memberName="vcsStatsLabel" virtualName=""
          explicitFocusOrder="0" pos="-104Cr 76 300 32" posRelativeY="91994c13c1a34ef8"
-         textCol="55ffffff" edTextCol="ff000000" edBkgCol="0" labelText="page::project::stats::vcs"
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="1"
-         fontname="Default serif font" fontsize="16" kerning="0" bold="0"
-         italic="0" justification="10"/>
+         labelText="page::project::stats::vcs" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="1" fontname="Default serif font"
+         fontsize="16" kerning="0" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="6e9d6e323ae75809" memberName="vcsStatsText" virtualName=""
          explicitFocusOrder="0" pos="-100C 76 400 32" posRelativeY="91994c13c1a34ef8"
-         textCol="aaffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="1"
-         fontname="Default serif font" fontsize="16" kerning="0" bold="0"
-         italic="0" justification="9"/>
+         labelText="..." editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="1" fontname="Default serif font" fontsize="16"
+         kerning="0" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="1ca8b26361947f73" memberName="startTimeLabel" virtualName=""
          explicitFocusOrder="0" pos="-104Cr 46 300 32" posRelativeY="91994c13c1a34ef8"
-         textCol="55ffffff" edTextCol="ff000000" edBkgCol="0" labelText="page::project::startdate"
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="1"
-         fontname="Default serif font" fontsize="16" kerning="0" bold="0"
-         italic="0" justification="10"/>
+         labelText="page::project::startdate" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="1" fontname="Default serif font"
+         fontsize="16" kerning="0" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="5c9cf4e334ddde90" memberName="startTimeText" virtualName=""
          explicitFocusOrder="0" pos="-100C 46 400 32" posRelativeY="91994c13c1a34ef8"
-         textCol="aaffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="1"
-         fontname="Default serif font" fontsize="16" kerning="0" bold="0"
-         italic="0" justification="9"/>
+         labelText="..." editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="1" fontname="Default serif font" fontsize="16"
+         kerning="0" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="54f9aec3fdb83582" memberName="lengthLabel" virtualName=""
          explicitFocusOrder="0" pos="-104Cr 16 300 32" posRelativeY="91994c13c1a34ef8"
-         textCol="55ffffff" edTextCol="ff000000" edBkgCol="0" labelText="page::project::duration"
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="1"
-         fontname="Default serif font" fontsize="16" kerning="0" bold="0"
-         italic="0" justification="10"/>
+         labelText="page::project::duration" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="1" fontname="Default serif font" fontsize="16"
+         kerning="0" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="3849b372a1b522da" memberName="lengthText" virtualName=""
          explicitFocusOrder="0" pos="-100C 16 400 32" posRelativeY="91994c13c1a34ef8"
-         textCol="aaffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="1"
-         fontname="Default serif font" fontsize="16" kerning="0" bold="0"
-         italic="0" justification="9"/>
+         labelText="..." editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="1" fontname="Default serif font" fontsize="16"
+         kerning="0" bold="0" italic="0" justification="9"/>
   <GENERICCOMPONENT name="level1" id="b6ea6ccc6b9be1f8" memberName="level1" virtualName=""
-                    explicitFocusOrder="0" pos="32 7.511% 150 24" class="Component"
+                    explicitFocusOrder="0" pos="32 7.552% 150 24" class="Component"
                     params=""/>
   <GENERICCOMPONENT name="level2" id="91994c13c1a34ef8" memberName="level2" virtualName=""
                     explicitFocusOrder="0" pos="32 310 150 24" posRelativeY="b6ea6ccc6b9be1f8"
                     class="Component" params=""/>
   <LABEL name="" id="ed8bce664dddb1d1" memberName="licenseLabel" virtualName=""
          explicitFocusOrder="0" pos="-104Cr 210 202 48" posRelativeY="b6ea6ccc6b9be1f8"
-         textCol="99ffffff" edTextCol="ff000000" edBkgCol="0" labelText="page::project::license"
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="1"
-         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
-         italic="0" justification="10"/>
+         labelText="page::project::license" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="1" fontname="Default serif font" fontsize="21"
+         kerning="0" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="63b4a599dbfa30da" memberName="licenseEditor" virtualName=""
          explicitFocusOrder="0" pos="-100C 230 440 48" posRelativeY="b6ea6ccc6b9be1f8"
-         textCol="ccffffff" edTextCol="ffffffff" edBkgCol="1a000000" labelText="..."
-         editableSingleClick="1" editableDoubleClick="1" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="37" kerning="0" bold="0"
-         italic="0" justification="9"/>
+         labelText="..." editableSingleClick="1" editableDoubleClick="1"
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="37"
+         kerning="0" bold="0" italic="0" justification="9"/>
   <JUCERCOMP name="" id="2ce00deefdf277e6" memberName="menuButton" virtualName=""
-             explicitFocusOrder="0" pos="0Cc -16Rc 128 128" sourceFile="../Common/MenuButton.cpp"
+             explicitFocusOrder="0" pos="0Cc -16Rc 128 128" sourceFile="../../Common/MenuButton.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="0 0 5 0M" sourceFile="../Themes/LightShadowRightwards.cpp"
+             explicitFocusOrder="0" pos="0 0 5 0M" sourceFile="../../Themes/LightShadowRightwards.cpp"
              constructorParams=""/>
   <IMAGEBUTTON name="" id="6ab32d6eda6c96a8" memberName="revealLocationButton"
                virtualName="" explicitFocusOrder="0" pos="-150 0 -150M 24" posRelativeX="e68c5a019e000a0b"

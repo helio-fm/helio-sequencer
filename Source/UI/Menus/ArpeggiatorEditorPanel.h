@@ -39,9 +39,9 @@ class ArpeggiatorEditorPanel  : public Component,
                                 public ChangeBroadcaster,
                                 private TransportListener,
                                 private ChangeListener,
-                                public ButtonListener,
-                                public ComboBoxListener,
-                                public LabelListener
+                                public Button::Listener,
+                                public ComboBox::Listener,
+                                public Label::Listener
 {
 public:
 

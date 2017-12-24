@@ -47,9 +47,6 @@ UpdateDialog::UpdateDialog()
     titleLabel->setFont (Font (Font::getDefaultSerifFontName(), 28.00f, Font::plain).withTypefaceStyle ("Regular"));
     titleLabel->setJustificationType (Justification::centredLeft);
     titleLabel->setEditable (true, true, false);
-    titleLabel->setColour (Label::textColourId, Colours::white);
-    titleLabel->setColour (TextEditor::textColourId, Colours::black);
-    titleLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
     titleLabel->addListener (this);
 
     addAndMakeVisible (cancelButton = new TextButton (String()));
@@ -62,36 +59,24 @@ UpdateDialog::UpdateDialog()
     descriptionLabel1->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     descriptionLabel1->setJustificationType (Justification::centredLeft);
     descriptionLabel1->setEditable (false, false, false);
-    descriptionLabel1->setColour (Label::textColourId, Colour (0x77ffffff));
-    descriptionLabel1->setColour (TextEditor::textColourId, Colours::black);
-    descriptionLabel1->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (descriptionLabel2 = new Label (String(),
                                                       TRANS("dialog::update::version::available")));
     descriptionLabel2->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     descriptionLabel2->setJustificationType (Justification::centredLeft);
     descriptionLabel2->setEditable (false, false, false);
-    descriptionLabel2->setColour (Label::textColourId, Colour (0x99ffffff));
-    descriptionLabel2->setColour (TextEditor::textColourId, Colours::black);
-    descriptionLabel2->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (installedVersionLabel = new Label (String(),
                                                           TRANS("...")));
     installedVersionLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     installedVersionLabel->setJustificationType (Justification::centredRight);
     installedVersionLabel->setEditable (false, false, false);
-    installedVersionLabel->setColour (Label::textColourId, Colour (0x55ffffff));
-    installedVersionLabel->setColour (TextEditor::textColourId, Colours::black);
-    installedVersionLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (availableVersionLabel = new Label (String(),
                                                           TRANS("...")));
     availableVersionLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     availableVersionLabel->setJustificationType (Justification::centredRight);
     availableVersionLabel->setEditable (false, false, false);
-    availableVersionLabel->setColour (Label::textColourId, Colour (0x77ffffff));
-    availableVersionLabel->setColour (TextEditor::textColourId, Colours::black);
-    availableVersionLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (forceUpdateButton = new TextButton (String()));
     forceUpdateButton->setButtonText (TRANS("dialog::update::proceed"));
@@ -118,9 +103,9 @@ UpdateDialog::UpdateDialog()
         this->updateButton->setVisible(true);
         this->forceUpdateButton->setVisible(false);
     }
-  
+
   this->separatorH->setAlphaMultiplier(2.5f);
-  //[/UserPreSize]
+    //[/UserPreSize]
 
     setSize (500, 190);
 
@@ -293,38 +278,35 @@ BEGIN_JUCER_METADATA
               radioGroupId="0"/>
   <LABEL name="" id="9c63b5388edfe183" memberName="titleLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc 15 464 40" posRelativeY="e96b77baef792d3a"
-         textCol="ffffffff" edTextCol="ff000000" edBkgCol="0" labelText="dialog::update::minor"
-         editableSingleClick="1" editableDoubleClick="1" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="28" kerning="0" bold="0"
-         italic="0" justification="33"/>
+         labelText="dialog::update::minor" editableSingleClick="1" editableDoubleClick="1"
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="28"
+         kerning="0" bold="0" italic="0" justification="33"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="cancelButton" virtualName=""
               explicitFocusOrder="0" pos="-150Cc 0R 136 42" posRelativeY="fee11f38ba63ec9"
               buttonText="dialog::update::cancel" connectedEdges="4" needsCallback="1"
               radioGroupId="0"/>
   <LABEL name="" id="cf32360d33639f7f" memberName="descriptionLabel1"
          virtualName="" explicitFocusOrder="0" pos="-114Cc 59 208 24"
-         posRelativeY="e96b77baef792d3a" textCol="77ffffff" edTextCol="ff000000"
-         edBkgCol="0" labelText="dialog::update::version::installed" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
-         fontsize="21" kerning="0" bold="0" italic="0" justification="33"/>
+         posRelativeY="e96b77baef792d3a" labelText="dialog::update::version::installed"
+         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
+         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
+         italic="0" justification="33"/>
   <LABEL name="" id="45eb7fb0b9758df1" memberName="descriptionLabel2"
          virtualName="" explicitFocusOrder="0" pos="-114Cc 87 208 24"
-         posRelativeY="e96b77baef792d3a" textCol="99ffffff" edTextCol="ff000000"
-         edBkgCol="0" labelText="dialog::update::version::available" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
-         fontsize="21" kerning="0" bold="0" italic="0" justification="33"/>
+         posRelativeY="e96b77baef792d3a" labelText="dialog::update::version::available"
+         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
+         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
+         italic="0" justification="33"/>
   <LABEL name="" id="9ee14541a0070623" memberName="installedVersionLabel"
          virtualName="" explicitFocusOrder="0" pos="106Cc 63 216 24" posRelativeY="e96b77baef792d3a"
-         textCol="55ffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
-         italic="0" justification="34"/>
+         labelText="..." editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
+         kerning="0" bold="0" italic="0" justification="34"/>
   <LABEL name="" id="c4486b9eacc8fa89" memberName="availableVersionLabel"
          virtualName="" explicitFocusOrder="0" pos="106Cc 91 216 24" posRelativeY="e96b77baef792d3a"
-         textCol="77ffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
-         italic="0" justification="34"/>
+         labelText="..." editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
+         kerning="0" bold="0" italic="0" justification="34"/>
   <TEXTBUTTON name="" id="29470b579dfe9508" memberName="forceUpdateButton"
               virtualName="" explicitFocusOrder="0" pos="4 4Rr 8M 48" buttonText="dialog::update::proceed"
               connectedEdges="4" needsCallback="1" radioGroupId="0"/>

@@ -363,7 +363,7 @@ void WorkspaceMenu::paintListBoxItem(int rowNumber, Graphics &g, int width, int 
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="WorkspaceMenu" template="../../../Template"
+<JUCER_COMPONENT documentType="Component" className="WorkspaceMenu" template="../../../../Template"
                  componentName="" parentClasses="public Component, public ListBoxModel, private ChangeListener"
                  constructorParams="Workspace *parentWorkspace" variableInitialisers="workspace(parentWorkspace)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
@@ -373,15 +373,15 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="c3e4abefb218ce57" memberName="component" virtualName=""
-             explicitFocusOrder="0" pos="22 2 44M 4M" sourceFile="../../Themes/ShadowHorizontalFading.cpp"
+             explicitFocusOrder="0" pos="22 2 44M 4M" sourceFile="../../../Themes/ShadowHorizontalFading.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="ae05579f2fbb226b" memberName="listBox" virtualName=""
                     explicitFocusOrder="0" pos="48 2 96M 5M" class="ListBox" params=""/>
   <JUCERCOMP name="" id="a09914d60dab2768" memberName="separator1" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 0 0M 3" sourceFile="../../Themes/SeparatorHorizontalFadingReversed.cpp"
+             explicitFocusOrder="0" pos="0Cc 0 0M 3" sourceFile="../../../Themes/SeparatorHorizontalFadingReversed.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="5b285323b956eb4e" memberName="separator2" virtualName=""
-             explicitFocusOrder="0" pos="0 0Rr 2M 3" sourceFile="../../Themes/SeparatorHorizontalFading.cpp"
+             explicitFocusOrder="0" pos="0 0Rr 2M 3" sourceFile="../../../Themes/SeparatorHorizontalFading.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

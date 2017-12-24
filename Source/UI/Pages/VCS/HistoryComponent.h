@@ -25,11 +25,11 @@ class PullComponent;
 #include "Client.h"
 //[/Headers]
 
-#include "../Themes/FramePanel.h"
-#include "../Themes/LightShadowDownwards.h"
+#include "../../Themes/FramePanel.h"
+#include "../../Themes/LightShadowDownwards.h"
 
 class HistoryComponent  : public Component,
-                          public ButtonListener
+                          public Button::Listener
 {
 public:
 

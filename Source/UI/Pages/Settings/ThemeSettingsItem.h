@@ -25,7 +25,6 @@ class IconComponent;
 class HelioTheme;
 //[/Headers]
 
-#include "../Themes/SeparatorHorizontal.h"
 
 class ThemeSettingsItem  : public DraggingListBoxComponent
 {
@@ -67,7 +66,6 @@ private:
     //[/UserVariables]
 
     ScopedPointer<Label> schemeNameLabel;
-    ScopedPointer<SeparatorHorizontal> separator;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ThemeSettingsItem)
 };

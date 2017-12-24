@@ -22,7 +22,7 @@ class Console;
 #include "DraggingListBoxComponent.h"
 //[/Headers]
 
-#include "../Themes/SeparatorHorizontal.h"
+#include "../../Themes/SeparatorHorizontal.h"
 
 class TranslationSettingsItem  : public DraggingListBoxComponent
 {

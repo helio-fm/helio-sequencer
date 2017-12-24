@@ -37,9 +37,6 @@ AnnotationLargeComponent::AnnotationLargeComponent(AnnotationsTrackMap<Annotatio
     annotationLabel->setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
     annotationLabel->setJustificationType (Justification::centredLeft);
     annotationLabel->setEditable (true, true, false);
-    annotationLabel->setColour (Label::textColourId, Colour (0x99ffffff));
-    annotationLabel->setColour (TextEditor::textColourId, Colours::black);
-    annotationLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
     annotationLabel->addListener (this);
 
 
@@ -313,10 +310,10 @@ BEGIN_JUCER_METADATA
     <RECT pos="0 0 0M 3" fill="solid: 20ffffff" hasStroke="0"/>
   </BACKGROUND>
   <LABEL name="annotationLabel" id="3dbd8cef4b61c2fe" memberName="annotationLabel"
-         virtualName="" explicitFocusOrder="0" pos="4 -40 6M 8M" textCol="99ffffff"
-         edTextCol="ff000000" edBkgCol="0" labelText="" editableSingleClick="1"
-         editableDoubleClick="1" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="16" kerning="0" bold="0" italic="0" justification="33"/>
+         virtualName="" explicitFocusOrder="0" pos="4 -40 6M 8M" labelText=""
+         editableSingleClick="1" editableDoubleClick="1" focusDiscardsChanges="0"
+         fontname="Default font" fontsize="16" kerning="0" bold="0" italic="0"
+         justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

@@ -53,19 +53,35 @@ void LighterShadowDownwards::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    g.setGradientFill (ColourGradient (Colour (0x09000000),
-                                       0.0f, 0.0f,
-                                       Colour (0x00000000),
-                                       0.0f, static_cast<float> (getHeight()),
+    {
+        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
+        Colour fillColour1 = Colour (0x09000000), fillColour2 = Colour (0x00000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       0.0f - 0.0f + x,
+                                       0.0f - 0.0f + y,
+                                       fillColour2,
+                                       0.0f - 0.0f + x,
+                                       static_cast<float> (getHeight()) - 0.0f + y,
                                        false));
-    g.fillRect (0, 0, getWidth() - 0, getHeight() - 0);
+        g.fillRect (x, y, width, height);
+    }
 
-    g.setGradientFill (ColourGradient (Colour (0x09000000),
-                                       0.0f, 0.0f,
-                                       Colour (0x00000000),
-                                       0.0f, static_cast<float> (proportionOfHeight (0.5000f)),
+    {
+        int x = 0, y = 0, width = getWidth() - 0, height = proportionOfHeight (0.5000f);
+        Colour fillColour1 = Colour (0x09000000), fillColour2 = Colour (0x00000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       0.0f - 0.0f + x,
+                                       0.0f - 0.0f + y,
+                                       fillColour2,
+                                       0.0f - 0.0f + x,
+                                       static_cast<float> (proportionOfHeight (0.5000f)) - 0.0f + y,
                                        false));
-    g.fillRect (0, 0, getWidth() - 0, proportionOfHeight (0.5000f));
+        g.fillRect (x, y, width, height);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]

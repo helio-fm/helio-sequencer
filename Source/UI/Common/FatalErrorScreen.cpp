@@ -32,9 +32,6 @@ FatalErrorScreen::FatalErrorScreen()
     messageLabel->setFont (Font (Font::getDefaultSerifFontName(), 28.00f, Font::plain).withTypefaceStyle ("Regular"));
     messageLabel->setJustificationType (Justification::centred);
     messageLabel->setEditable (false, false, false);
-    messageLabel->setColour (Label::textColourId, Colour (0x6cffffff));
-    messageLabel->setColour (TextEditor::textColourId, Colours::black);
-    messageLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (separator2 = new SeparatorHorizontalFading());
     addAndMakeVisible (separator1 = new SeparatorHorizontalFading());
@@ -101,8 +98,7 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../Themes/PanelBackgroundA.cpp"
              constructorParams=""/>
   <LABEL name="" id="49d9df10162c3f76" memberName="messageLabel" virtualName=""
-         explicitFocusOrder="0" pos="0Cc 25.496% 500 88" textCol="6cffffff"
-         edTextCol="ff000000" edBkgCol="0" labelText="warnings::smallscreen"
+         explicitFocusOrder="0" pos="0Cc 25.521% 500 88" labelText="warnings::smallscreen"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default serif font" fontsize="28" kerning="0" bold="0"
          italic="0" justification="36"/>

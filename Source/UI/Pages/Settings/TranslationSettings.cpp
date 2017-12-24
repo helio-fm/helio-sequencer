@@ -204,7 +204,7 @@ int TranslationSettings::getNumRows()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="TranslationSettings" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="TranslationSettings" template="../../../Template"
                  componentName="" parentClasses="public Component, public ListBoxModel, private ChangeListener"
                  constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="600"
@@ -218,7 +218,7 @@ BEGIN_JUCER_METADATA
   <JUCERCOMP name="" id="34270fb50cf926d8" memberName="shadow" virtualName=""
              explicitFocusOrder="0" pos="0 -1 0M 11" posRelativeX="c5bde2fac9c39997"
              posRelativeY="c5bde2fac9c39997" posRelativeW="c5bde2fac9c39997"
-             sourceFile="../Themes/SeparatorHorizontal.cpp" constructorParams=""/>
+             sourceFile="../../Themes/SeparatorHorizontal.cpp" constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

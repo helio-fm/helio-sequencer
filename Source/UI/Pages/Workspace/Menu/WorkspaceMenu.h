@@ -29,9 +29,9 @@ class Workspace;
 #endif
 //[/Headers]
 
-#include "../../Themes/ShadowHorizontalFading.h"
-#include "../../Themes/SeparatorHorizontalFadingReversed.h"
-#include "../../Themes/SeparatorHorizontalFading.h"
+#include "../../../Themes/ShadowHorizontalFading.h"
+#include "../../../Themes/SeparatorHorizontalFadingReversed.h"
+#include "../../../Themes/SeparatorHorizontalFading.h"
 
 class WorkspaceMenu  : public Component,
                        public ListBoxModel,

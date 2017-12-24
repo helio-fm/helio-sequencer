@@ -37,12 +37,10 @@ MobileComboBox::MobileComboBox(WeakReference<Component> editor)
     addAndMakeVisible (shadow = new LighterShadowDownwards());
     addAndMakeVisible (separator = new SeparatorHorizontalReversed());
     addAndMakeVisible (currentNameLabel = new Label (String(),
-                                                     String()));
+                                                     TRANS("...")));
     currentNameLabel->setFont (Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     currentNameLabel->setJustificationType (Justification::centredLeft);
     currentNameLabel->setEditable (false, false, false);
-    currentNameLabel->setColour (TextEditor::textColourId, Colours::black);
-    currentNameLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
 
     //[UserPreSize]
@@ -253,10 +251,9 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="1 32 2M 2" sourceFile="../Themes/SeparatorHorizontalReversed.cpp"
              constructorParams=""/>
   <LABEL name="" id="cc2095775f3aaed2" memberName="currentNameLabel" virtualName=""
-         explicitFocusOrder="0" pos="0 0 0M 32" edTextCol="ff000000" edBkgCol="0"
-         labelText="" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="21"
-         kerning="0" bold="0" italic="0" justification="33"/>
+         explicitFocusOrder="0" pos="0 0 0M 32" labelText="..." editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="21" kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

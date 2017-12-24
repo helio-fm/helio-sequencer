@@ -54,11 +54,23 @@ void SeparatorHorizontalReversed::paint (Graphics& g)
 #if 0
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x0dffffff));
-    g.fillRect (0, 0, getWidth() - 0, 1);
+    {
+        int x = 0, y = 0, width = getWidth() - 0, height = 1;
+        Colour fillColour = Colour (0x0dffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+    }
 
-    g.setColour (Colour (0x1a000000));
-    g.fillRect (0, 1, getWidth() - 0, 1);
+    {
+        int x = 0, y = 1, width = getWidth() - 0, height = 1;
+        Colour fillColour = Colour (0x1a000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (fillColour);
+        g.fillRect (x, y, width, height);
+    }
 
     //[UserPaint] Add your own custom painting code here..
 #endif

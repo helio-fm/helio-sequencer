@@ -39,9 +39,6 @@ KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesTrackMap<Key
     signatureLabel->setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
     signatureLabel->setJustificationType (Justification::centredLeft);
     signatureLabel->setEditable (false, false, false);
-    signatureLabel->setColour (Label::textColourId, Colour (0x99ffffff));
-    signatureLabel->setColour (TextEditor::textColourId, Colours::black);
-    signatureLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
 
     //[UserPreSize]
@@ -250,8 +247,7 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="signatureLabel" virtualName=""
-         explicitFocusOrder="0" pos="-1 -2 -8M 24" textCol="99ffffff"
-         edTextCol="ff000000" edBkgCol="0" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="-1 -2 -8M 24" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="16" kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>

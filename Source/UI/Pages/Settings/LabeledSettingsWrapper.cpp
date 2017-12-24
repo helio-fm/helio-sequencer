@@ -32,8 +32,6 @@ LabeledSettingsWrapper::LabeledSettingsWrapper(Component *targetComponent, const
     titleLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     titleLabel->setJustificationType (Justification::centredLeft);
     titleLabel->setEditable (false, false, false);
-    titleLabel->setColour (TextEditor::textColourId, Colours::black);
-    titleLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (targetBounds = new Component());
 
@@ -110,19 +108,18 @@ void LabeledSettingsWrapper::showNonOwned(Component *targetComponent, const Stri
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="LabeledSettingsWrapper" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="LabeledSettingsWrapper" template="../../../Template"
                  componentName="" parentClasses="public Component" constructorParams="Component *targetComponent, const String &amp;title"
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
                  overlayOpacity="0.330" fixedSize="1" initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="563306a3a7769fb" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="5 40 10M 48M" sourceFile="../Themes/FramePanel.cpp"
+             explicitFocusOrder="0" pos="5 40 10M 48M" sourceFile="../../Themes/FramePanel.cpp"
              constructorParams=""/>
   <LABEL name="" id="9f16871b637bd1bd" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="8 8 576 26" edTextCol="ff000000"
-         edBkgCol="0" labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
-         kerning="0" bold="0" italic="0" justification="33"/>
+         explicitFocusOrder="0" pos="8 8 576 26" labelText="..." editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
+         fontsize="21" kerning="0" bold="0" italic="0" justification="33"/>
   <GENERICCOMPONENT name="" id="a0e12bb33465d20d" memberName="targetBounds" virtualName=""
                     explicitFocusOrder="0" pos="12 48 24M 64M" class="Component"
                     params=""/>

@@ -35,9 +35,6 @@ AnnotationSmallComponent::AnnotationSmallComponent(AnnotationsTrackMap<Annotatio
     annotationLabel->setFont (Font (12.00f, Font::plain).withTypefaceStyle ("Regular"));
     annotationLabel->setJustificationType (Justification::centredLeft);
     annotationLabel->setEditable (false, false, false);
-    annotationLabel->setColour (Label::textColourId, Colour (0x99ffffff));
-    annotationLabel->setColour (TextEditor::textColourId, Colours::black);
-    annotationLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
 
     //[UserPreSize]
@@ -151,8 +148,7 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="annotationLabel" virtualName=""
-         explicitFocusOrder="0" pos="-2 4Rr -4M 16" textCol="99ffffff"
-         edTextCol="ff000000" edBkgCol="0" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="-2 4Rr -4M 16" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="12" kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>

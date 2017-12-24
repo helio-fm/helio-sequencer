@@ -29,8 +29,8 @@ class ProgressIndicator;
 #include "../Themes/SeparatorHorizontal.h"
 
 class UpdateDialog  : public FadingDialog,
-                      public ButtonListener,
-                      public LabelListener
+                      public Button::Listener,
+                      public Label::Listener
 {
 public:
 

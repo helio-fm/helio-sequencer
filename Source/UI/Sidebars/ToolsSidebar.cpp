@@ -73,18 +73,12 @@ ToolsSidebar::ToolsSidebar(ProjectTreeItem &parent)
     totalTime->setFont (Font (Font::getDefaultSansSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
     totalTime->setJustificationType (Justification::centred);
     totalTime->setEditable (false, false, false);
-    totalTime->setColour (Label::textColourId, Colour (0x77ffffff));
-    totalTime->setColour (TextEditor::textColourId, Colours::black);
-    totalTime->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (currentTime = new Label (String(),
                                                 TRANS("...")));
     currentTime->setFont (Font (Font::getDefaultSansSerifFontName(), 28.00f, Font::plain).withTypefaceStyle ("Regular"));
     currentTime->setJustificationType (Justification::centred);
     currentTime->setEditable (false, false, false);
-    currentTime->setColour (Label::textColourId, Colour (0x77ffffff));
-    currentTime->setColour (TextEditor::textColourId, Colours::black);
-    currentTime->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (playButton = new PlayButton());
     addAndMakeVisible (headShadow = new LighterShadowDownwards());
@@ -598,13 +592,11 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0 126Rr 0M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
   <LABEL name="" id="700073f74a17c931" memberName="totalTime" virtualName=""
-         explicitFocusOrder="0" pos="0Cc 18Rc 72 28" textCol="77ffffff"
-         edTextCol="ff000000" edBkgCol="0" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="0Cc 18Rc 72 28" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default sans-serif font"
          fontsize="16" kerning="0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="b9e867ece7f52ad8" memberName="currentTime" virtualName=""
-         explicitFocusOrder="0" pos="0Cc 46Rc 72 32" textCol="77ffffff"
-         edTextCol="ff000000" edBkgCol="0" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="0Cc 46Rc 72 32" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default sans-serif font"
          fontsize="28" kerning="0" bold="0" italic="0" justification="36"/>
   <JUCERCOMP name="" id="bb2e14336f795a57" memberName="playButton" virtualName=""

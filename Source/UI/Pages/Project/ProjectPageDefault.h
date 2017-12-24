@@ -21,13 +21,13 @@
 #include "ProjectPage.h"
 //[/Headers]
 
-#include "../Themes/PanelBackgroundB.h"
-#include "../Common/MenuButton.h"
-#include "../Themes/LightShadowRightwards.h"
+#include "../../Themes/PanelBackgroundB.h"
+#include "../../Common/MenuButton.h"
+#include "../../Themes/LightShadowRightwards.h"
 
 class ProjectPageDefault  : public ProjectPage,
-                            public LabelListener,
-                            public ButtonListener
+                            public Label::Listener,
+                            public Button::Listener
 {
 public:
 

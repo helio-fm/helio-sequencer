@@ -20,12 +20,12 @@
 //[Headers]
 //[/Headers]
 
-#include "../Themes/SeparatorHorizontal.h"
+#include "../../Themes/SeparatorHorizontal.h"
 
 class TranslationSettings  : public Component,
                              public ListBoxModel,
                              private ChangeListener,
-                             public ButtonListener
+                             public Button::Listener
 {
 public:
 

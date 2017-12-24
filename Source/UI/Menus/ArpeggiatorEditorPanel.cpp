@@ -79,8 +79,6 @@ ArpeggiatorEditorPanel::ArpeggiatorEditorPanel(ProjectTreeItem &parentProject, P
     label->setFont (Font (15.00f, Font::plain).withTypefaceStyle ("Regular"));
     label->setJustificationType (Justification::centredLeft);
     label->setEditable (false, false, false);
-    label->setColour (TextEditor::textColourId, Colours::black);
-    label->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (scaleList = new ComboBox (String()));
     scaleList->setEditableText (false);
@@ -108,9 +106,6 @@ ArpeggiatorEditorPanel::ArpeggiatorEditorPanel(ProjectTreeItem &parentProject, P
     nameLabel->setFont (Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     nameLabel->setJustificationType (Justification::centredLeft);
     nameLabel->setEditable (true, true, false);
-    nameLabel->setColour (Label::textColourId, Colours::white);
-    nameLabel->setColour (TextEditor::textColourId, Colours::black);
-    nameLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
     nameLabel->addListener (this);
 
 
@@ -509,10 +504,10 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="8 252 280 8" sourceFile="../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
   <LABEL name="" id="e767a45eea00a91b" memberName="label" virtualName=""
-         explicitFocusOrder="0" pos="16 264 48 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="Scale:" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="15"
-         kerning="0" bold="0" italic="0" justification="33"/>
+         explicitFocusOrder="0" pos="16 264 48 24" labelText="Scale:"
+         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
+         fontname="Default font" fontsize="15" kerning="0" bold="0" italic="0"
+         justification="33"/>
   <COMBOBOX name="" id="662752ccbefedf0b" memberName="scaleList" virtualName=""
             explicitFocusOrder="0" pos="72 264 216 24" editable="0" layout="33"
             items="0.25&#10;0.5&#10;0.66&#10;0.75&#10;1.0&#10;1.5&#10;2.0&#10;2.5&#10;3.0"
@@ -524,8 +519,7 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="8 40 280 8" sourceFile="../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
   <LABEL name="" id="cddce1bf4458c4c9" memberName="nameLabel" virtualName=""
-         explicitFocusOrder="0" pos="16 48 264 24" textCol="ffffffff"
-         edTextCol="ff000000" edBkgCol="0" labelText="Name" editableSingleClick="1"
+         explicitFocusOrder="0" pos="16 48 264 24" labelText="Name" editableSingleClick="1"
          editableDoubleClick="1" focusDiscardsChanges="0" fontname="Default font"
          fontsize="21" kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>

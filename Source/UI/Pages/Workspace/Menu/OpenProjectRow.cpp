@@ -28,7 +28,7 @@
 class OpenProjectHighlighter : public Component
 {
 public:
-    
+
     OpenProjectHighlighter()
     {
         this->setInterceptsMouseClicks(false, false);
@@ -53,8 +53,6 @@ OpenProjectRow::OpenProjectRow(Component &parentComponent, ListBox &parentListBo
     openProjectLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     openProjectLabel->setJustificationType (Justification::centredLeft);
     openProjectLabel->setEditable (false, false, false);
-    openProjectLabel->setColour (TextEditor::textColourId, Colours::black);
-    openProjectLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (shadow = new SeparatorHorizontalFading());
 
@@ -113,7 +111,7 @@ Component *OpenProjectRow::createHighlighterComponent()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="OpenProjectRow" template="../../../Template"
+<JUCER_COMPONENT documentType="Component" className="OpenProjectRow" template="../../../../Template"
                  componentName="" parentClasses="public DraggingListBoxComponent"
                  constructorParams="Component &amp;parentComponent, ListBox &amp;parentListBox"
                  variableInitialisers="DraggingListBoxComponent(parentListBox.getViewport()),&#10;parent(parentComponent)"
@@ -124,12 +122,12 @@ BEGIN_JUCER_METADATA
                     explicitFocusOrder="0" pos="32c 8Cc 24 24" class="IconComponent"
                     params="Icons::open"/>
   <LABEL name="" id="8ebb161d0a976635" memberName="openProjectLabel" virtualName=""
-         explicitFocusOrder="0" pos="54 23 261 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="menu::workspace::project::open" editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
-         fontsize="21" kerning="0" bold="0" italic="0" justification="33"/>
+         explicitFocusOrder="0" pos="54 23 261 24" labelText="menu::workspace::project::open"
+         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
+         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
+         italic="0" justification="33"/>
   <JUCERCOMP name="" id="ee264fb9c050a680" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="22 6 44M 3" sourceFile="../../Themes/SeparatorHorizontalFading.cpp"
+             explicitFocusOrder="0" pos="22 6 44M 3" sourceFile="../../../Themes/SeparatorHorizontalFading.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

@@ -39,9 +39,6 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<TreeItem> targetItem)
     titleLabel->setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
     titleLabel->setJustificationType (Justification::centredLeft);
     titleLabel->setEditable (false, false, false);
-    titleLabel->setColour (Label::textColourId, Colours::white);
-    titleLabel->setColour (TextEditor::textColourId, Colours::black);
-    titleLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (icon = new IconComponent (Icons::workspace));
 
@@ -54,7 +51,7 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<TreeItem> targetItem)
     this->setMouseClickGrabsKeyboardFocus(false);
     //[/UserPreSize]
 
-    setSize (150, 32);
+    setSize (150, 34);
 
     //[Constructor]
     if (this->item != nullptr)
@@ -335,7 +332,7 @@ BEGIN_JUCER_METADATA
                  constructorParams="WeakReference&lt;TreeItem&gt; targetItem"
                  variableInitialisers="item(targetItem)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="150"
-                 initialHeight="32">
+                 initialHeight="34">
   <METHODS>
     <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
     <METHOD name="inputAttemptWhenModal()"/>
@@ -353,10 +350,10 @@ BEGIN_JUCER_METADATA
           strokeColour=" radial: 3R 32, 17R 5, 0=27ffffff, 1=bffffff" nonZeroWinding="1">s -24R 0 l 17R 0 l 10R 16 l 3R 32 l -24R 32 x</PATH>
   </BACKGROUND>
   <LABEL name="" id="9a3c449859f61884" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="34 0 44M 31" textCol="ffffffff" edTextCol="ff000000"
-         edBkgCol="0" labelText="Project" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="18"
-         kerning="0" bold="0" italic="0" justification="33"/>
+         explicitFocusOrder="0" pos="34 0 44M 31" labelText="Project"
+         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
+         fontname="Default font" fontsize="18" kerning="0" bold="0" italic="0"
+         justification="33"/>
   <GENERICCOMPONENT name="" id="f10feab7d241bacb" memberName="icon" virtualName=""
                     explicitFocusOrder="0" pos="8 16c 32 32" class="IconComponent"
                     params="Icons::workspace"/>

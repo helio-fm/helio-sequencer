@@ -146,7 +146,6 @@ NotesTuningPanel::NotesTuningPanel(ProjectTreeItem &parentProject, PianoRoll &ta
     volumeSliderLinear->setRange (0, 10, 0);
     volumeSliderLinear->setSliderStyle (Slider::RotaryHorizontalDrag);
     volumeSliderLinear->setTextBoxStyle (Slider::NoTextBox, true, 80, 20);
-    volumeSliderLinear->setColour (Slider::textBoxTextColourId, Colour (0x00000000));
     volumeSliderLinear->addListener (this);
 
     addAndMakeVisible (tuningDiagram = new NotesTuningDiagram (this, this->roll.getLassoSelection()));
@@ -161,7 +160,6 @@ NotesTuningPanel::NotesTuningPanel(ProjectTreeItem &parentProject, PianoRoll &ta
     sineSlider->setRange (0, 10, 0);
     sineSlider->setSliderStyle (Slider::RotaryHorizontalDrag);
     sineSlider->setTextBoxStyle (Slider::NoTextBox, true, 80, 20);
-    sineSlider->setColour (Slider::textBoxTextColourId, Colour (0x00000000));
     sineSlider->addListener (this);
 
     addAndMakeVisible (linearLabel = new Label (String(),
@@ -169,27 +167,18 @@ NotesTuningPanel::NotesTuningPanel(ProjectTreeItem &parentProject, PianoRoll &ta
     linearLabel->setFont (Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     linearLabel->setJustificationType (Justification::centred);
     linearLabel->setEditable (false, false, false);
-    linearLabel->setColour (Label::textColourId, Colour (0x3fffffff));
-    linearLabel->setColour (TextEditor::textColourId, Colours::black);
-    linearLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (multiLabel = new Label (String(),
                                                TRANS("*")));
     multiLabel->setFont (Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     multiLabel->setJustificationType (Justification::centred);
     multiLabel->setEditable (false, false, false);
-    multiLabel->setColour (Label::textColourId, Colour (0x3fffffff));
-    multiLabel->setColour (TextEditor::textColourId, Colours::black);
-    multiLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (sineLabel = new Label (String(),
                                               TRANS("~")));
     sineLabel->setFont (Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     sineLabel->setJustificationType (Justification::centred);
     sineLabel->setEditable (false, false, false);
-    sineLabel->setColour (Label::textColourId, Colour (0x3fffffff));
-    sineLabel->setColour (TextEditor::textColourId, Colours::black);
-    sineLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
 
     //[UserPreSize]
@@ -538,9 +527,9 @@ BEGIN_JUCER_METADATA
           needsCallback="1"/>
   <SLIDER name="" id="612822c144ea1163" memberName="volumeSliderLinear"
           virtualName="" explicitFocusOrder="0" pos="46c 56c 64 64" posRelativeX="901299ec4e766469"
-          posRelativeY="901299ec4e766469" textboxtext="0" min="0" max="10"
-          int="0" style="RotaryHorizontalDrag" textBoxPos="NoTextBox" textBoxEditable="0"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          posRelativeY="901299ec4e766469" min="0" max="10" int="0" style="RotaryHorizontalDrag"
+          textBoxPos="NoTextBox" textBoxEditable="0" textBoxWidth="80"
+          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
   <GENERICCOMPONENT name="" id="808594cf08a73350" memberName="tuningDiagram" virtualName=""
                     explicitFocusOrder="0" pos="0 96 0M 88" class="NotesTuningDiagram"
                     params="this, this-&gt;roll.getLassoSelection()"/>
@@ -561,24 +550,21 @@ BEGIN_JUCER_METADATA
              constructorParams="false"/>
   <SLIDER name="" id="bdc5e7b689607511" memberName="sineSlider" virtualName=""
           explicitFocusOrder="0" pos="206c 56c 64 64" posRelativeX="901299ec4e766469"
-          posRelativeY="901299ec4e766469" textboxtext="0" min="0" max="10"
-          int="0" style="RotaryHorizontalDrag" textBoxPos="NoTextBox" textBoxEditable="0"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          posRelativeY="901299ec4e766469" min="0" max="10" int="0" style="RotaryHorizontalDrag"
+          textBoxPos="NoTextBox" textBoxEditable="0" textBoxWidth="80"
+          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
   <LABEL name="" id="2ef200f2e484c3e7" memberName="linearLabel" virtualName=""
-         explicitFocusOrder="0" pos="18 0 56 24" textCol="3fffffff" edTextCol="ff000000"
-         edBkgCol="0" labelText="+" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="21"
-         kerning="0" bold="0" italic="0" justification="36"/>
+         explicitFocusOrder="0" pos="18 0 56 24" labelText="+" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="21" kerning="0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="434928c32f07c6b9" memberName="multiLabel" virtualName=""
-         explicitFocusOrder="0" pos="98 5 56 24" textCol="3fffffff" edTextCol="ff000000"
-         edBkgCol="0" labelText="*" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="21"
-         kerning="0" bold="0" italic="0" justification="36"/>
+         explicitFocusOrder="0" pos="98 5 56 24" labelText="*" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="21" kerning="0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="6fcffdd210c02711" memberName="sineLabel" virtualName=""
-         explicitFocusOrder="0" pos="178 0 56 24" textCol="3fffffff" edTextCol="ff000000"
-         edBkgCol="0" labelText="~" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="21"
-         kerning="0" bold="0" italic="0" justification="36"/>
+         explicitFocusOrder="0" pos="178 0 56 24" labelText="~" editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="21" kerning="0" bold="0" italic="0" justification="36"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

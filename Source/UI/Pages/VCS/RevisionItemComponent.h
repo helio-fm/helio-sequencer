@@ -23,7 +23,7 @@
 #include "Head.h"
 //[/Headers]
 
-#include "../Themes/SeparatorHorizontal.h"
+#include "../../Themes/SeparatorHorizontal.h"
 
 class RevisionItemComponent  : public DraggingListBoxComponent
 {

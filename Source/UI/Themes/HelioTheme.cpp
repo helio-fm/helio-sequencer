@@ -123,13 +123,13 @@ void HelioTheme::drawStretchableLayoutResizerBar(Graphics &g,
 
 void HelioTheme::fillTextEditorBackground(Graphics &g, int w, int h, TextEditor &ed)
 {
-    g.setColour(this->findColour(TextEditor::backgroundColourId));
+    g.setColour(ed.findColour(TextEditor::backgroundColourId));
     g.fillRect(0, 0, w, h);
 }
 
 void HelioTheme::drawTextEditorOutline(Graphics &g, int w, int h, TextEditor &ed)
 {
-    g.setColour(this->findColour(TextEditor::outlineColourId));
+    g.setColour(ed.findColour(TextEditor::outlineColourId));
     g.drawVerticalLine(0, 1.f, h - 1.f);
     g.drawVerticalLine(w - 1, 1.f, h - 1.f);
     g.drawHorizontalLine(0, 1.f, w - 1.f);
@@ -207,6 +207,9 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
         // for every other force fit text into a single line:
         const int maxLines = (label.getHeight() < 64) ? 1 : 10;
 
+        const float alpha = 0.5f + jlimit(0.f, 1.f, (font.getHeight() - 8.f) / 16.f) / 2.f;
+        const Colour colour = label.findColour(Label::textColourId).withMultipliedAlpha(alpha);
+
 #if SMOOTH_RENDERED_FONT
 
         Path textPath;
@@ -227,7 +230,7 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
 
         glyphs.createPath(textPath);
 
-        g.setColour(label.findColour(Label::textColourId));
+        g.setColour(colour);
         g.fillPath(textPath);
 
 #else
@@ -235,12 +238,8 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
         const Rectangle<int> textArea =
             label.getBorderSize().subtractedFrom(label.getLocalBounds());
 
-        // For large labels assume this is a dialog text,
-        // for every other force fit text into a single line:
-        const int maxLines = (textArea.getHeight() < 64) ? 1 : 10;
-
         g.setFont(font);
-        g.setColour(label.findColour(Label::textColourId));
+        g.setColour(colour);
         g.drawFittedText(textToDraw,
             textArea.getX(), textArea.getY(),
             textArea.getWidth(), textArea.getHeight(),

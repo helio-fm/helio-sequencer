@@ -202,18 +202,12 @@ CommandItemComponent::CommandItemComponent(Component *parentCommandReceiver, Vie
     subLabel->setFont (Font (Font::getDefaultSansSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     subLabel->setJustificationType (Justification::centredRight);
     subLabel->setEditable (false, false, false);
-    subLabel->setColour (Label::textColourId, Colour (0x59ffffff));
-    subLabel->setColour (TextEditor::textColourId, Colours::black);
-    subLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (textLabel = new Label (String(),
                                               TRANS("...")));
     textLabel->setFont (Font (Font::getDefaultSansSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     textLabel->setJustificationType (Justification::centredLeft);
     textLabel->setEditable (false, false, false);
-    textLabel->setColour (Label::textColourId, Colour (0xbaffffff));
-    textLabel->setColour (TextEditor::textColourId, Colours::black);
-    textLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (submenuMarker = new IconComponent (Icons::right, 0.25f));
 
@@ -564,13 +558,11 @@ BEGIN_JUCER_METADATA
     <RECT pos="0 0Rr 0M 1" fill="solid: f000000" hasStroke="0"/>
   </BACKGROUND>
   <LABEL name="" id="8de701891a585730" memberName="subLabel" virtualName=""
-         explicitFocusOrder="0" pos="4Rr 0Cc 128 0M" textCol="59ffffff"
-         edTextCol="ff000000" edBkgCol="0" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="4Rr 0Cc 128 0M" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default sans-serif font"
          fontsize="21" kerning="0" bold="0" italic="0" justification="34"/>
   <LABEL name="" id="14908053d7863001" memberName="textLabel" virtualName=""
-         explicitFocusOrder="0" pos="48 0Cc 56M 0M" textCol="baffffff"
-         edTextCol="ff000000" edBkgCol="0" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="48 0Cc 56M 0M" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default sans-serif font"
          fontsize="21" kerning="0" bold="0" italic="0" justification="33"/>
   <GENERICCOMPONENT name="" id="1e71bff8af38b714" memberName="submenuMarker" virtualName=""

@@ -57,17 +57,12 @@ SignInRow::SignInRow(Component &parentComponent, ListBox &parentListBox)
     actionLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     actionLabel->setJustificationType (Justification::centredLeft);
     actionLabel->setEditable (false, false, false);
-    actionLabel->setColour (TextEditor::textColourId, Colours::black);
-    actionLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (descriptionLabel = new Label (String(),
                                                      TRANS("...")));
     descriptionLabel->setFont (Font (Font::getDefaultSansSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
     descriptionLabel->setJustificationType (Justification::topLeft);
     descriptionLabel->setEditable (false, false, false);
-    descriptionLabel->setColour (Label::textColourId, Colour (0x77ffffff));
-    descriptionLabel->setColour (TextEditor::textColourId, Colours::black);
-    descriptionLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (loginImage = new IconComponent (Icons::login));
 
@@ -102,8 +97,14 @@ void SignInRow::paint (Graphics& g)
     {
     //[/UserPrePaint]
 
-    g.setColour (Colour (0x30000000));
-    g.drawRoundedRectangle (10.0f, 6.0f, static_cast<float> (getWidth() - 20), static_cast<float> (getHeight() - 5), 10.000f, 2.000f);
+    {
+        float x = 10.0f, y = 6.0f, width = static_cast<float> (getWidth() - 20), height = static_cast<float> (getHeight() - 5);
+        Colour strokeColour = Colour (0x30000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setColour (strokeColour);
+        g.drawRoundedRectangle (x, y, width, height, 10.000f, 2.000f);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     }
@@ -149,7 +150,7 @@ void SignInRow::updateContent()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="SignInRow" template="../../../Template"
+<JUCER_COMPONENT documentType="Component" className="SignInRow" template="../../../../Template"
                  componentName="" parentClasses="public DraggingListBoxComponent"
                  constructorParams="Component &amp;parentComponent, ListBox &amp;parentListBox"
                  variableInitialisers="DraggingListBoxComponent(parentListBox.getViewport()),&#10;parent(parentComponent)"
@@ -160,16 +161,14 @@ BEGIN_JUCER_METADATA
                stroke="2, mitered, butt" strokeColour="solid: 30000000"/>
   </BACKGROUND>
   <LABEL name="" id="c261305e2de1ebf2" memberName="actionLabel" virtualName=""
-         explicitFocusOrder="0" pos="54 8 274 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
-         kerning="0" bold="0" italic="0" justification="33"/>
+         explicitFocusOrder="0" pos="54 8 274 24" labelText="..." editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
+         fontsize="21" kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="" id="12427a53408d61ee" memberName="descriptionLabel" virtualName=""
          explicitFocusOrder="0" pos="0 0R 76M 18" posRelativeX="c261305e2de1ebf2"
-         posRelativeY="c261305e2de1ebf2" textCol="77ffffff" edTextCol="ff000000"
-         edBkgCol="0" labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default sans-serif font" fontsize="16"
-         kerning="0" bold="0" italic="0" justification="9"/>
+         posRelativeY="c261305e2de1ebf2" labelText="..." editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default sans-serif font"
+         fontsize="16" kerning="0" bold="0" italic="0" justification="9"/>
   <GENERICCOMPONENT name="" id="42f3ed34561654ef" memberName="loginImage" virtualName=""
                     explicitFocusOrder="0" pos="16 2Cc 24 24" class="IconComponent"
                     params="Icons::login"/>

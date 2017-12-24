@@ -51,9 +51,6 @@ RenderDialog::RenderDialog(ProjectTreeItem &parentProject, const File &renderTo,
     filenameEditor->setFont (Font (Font::getDefaultSerifFontName(), 28.00f, Font::plain).withTypefaceStyle ("Regular"));
     filenameEditor->setJustificationType (Justification::topLeft);
     filenameEditor->setEditable (true, true, false);
-    filenameEditor->setColour (Label::textColourId, Colours::white);
-    filenameEditor->setColour (TextEditor::textColourId, Colours::white);
-    filenameEditor->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
     filenameEditor->addListener (this);
 
     addAndMakeVisible (filenameLabel = new Label (String(),
@@ -61,9 +58,6 @@ RenderDialog::RenderDialog(ProjectTreeItem &parentProject, const File &renderTo,
     filenameLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     filenameLabel->setJustificationType (Justification::centredLeft);
     filenameLabel->setEditable (false, false, false);
-    filenameLabel->setColour (Label::textColourId, Colour (0x77ffffff));
-    filenameLabel->setColour (TextEditor::textColourId, Colours::black);
-    filenameLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (cancelButton = new TextButton (String()));
     cancelButton->setButtonText (TRANS("dialog::render::close"));
@@ -85,9 +79,6 @@ RenderDialog::RenderDialog(ProjectTreeItem &parentProject, const File &renderTo,
     pathEditor->setFont (Font (Font::getDefaultSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
     pathEditor->setJustificationType (Justification::centredLeft);
     pathEditor->setEditable (false, false, false);
-    pathEditor->setColour (Label::textColourId, Colour (0xbcffffff));
-    pathEditor->setColour (TextEditor::textColourId, Colours::black);
-    pathEditor->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (component3 = new SeparatorHorizontalFading());
     addAndMakeVisible (separatorH = new SeparatorHorizontal());
@@ -400,16 +391,14 @@ BEGIN_JUCER_METADATA
               connectedEdges="4" needsCallback="1" radioGroupId="0"/>
   <LABEL name="" id="9c63b5388edfe183" memberName="filenameEditor" virtualName=""
          explicitFocusOrder="0" pos="25Cc 71 406 32" posRelativeY="e96b77baef792d3a"
-         textCol="ffffffff" edTextCol="ffffffff" edBkgCol="0" labelText="..."
-         editableSingleClick="1" editableDoubleClick="1" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="28" kerning="0" bold="0"
-         italic="0" justification="9"/>
+         labelText="..." editableSingleClick="1" editableDoubleClick="1"
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="28"
+         kerning="0" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="cf32360d33639f7f" memberName="filenameLabel" virtualName=""
          explicitFocusOrder="0" pos="29Cc 16 414 22" posRelativeY="e96b77baef792d3a"
-         textCol="77ffffff" edTextCol="ff000000" edBkgCol="0" labelText="dialog::render::caption"
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
-         italic="0" justification="33"/>
+         labelText="dialog::render::caption" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
+         kerning="0" bold="0" italic="0" justification="33"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="cancelButton" virtualName=""
               explicitFocusOrder="0" pos="0 -74Rr 255 48" buttonText="dialog::render::close"
               connectedEdges="6" needsCallback="1" radioGroupId="0"/>
@@ -425,10 +414,9 @@ BEGIN_JUCER_METADATA
                     params="this, nullptr, CommandItem::withParams(Icons::open, CommandIDs::Browse)"/>
   <LABEL name="" id="2310f57af9b4eefb" memberName="pathEditor" virtualName=""
          explicitFocusOrder="0" pos="25Cc 48 406 24" posRelativeY="e96b77baef792d3a"
-         textCol="bcffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="16" kerning="0" bold="0"
-         italic="0" justification="33"/>
+         labelText="..." editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="16"
+         kerning="0" bold="0" italic="0" justification="33"/>
   <JUCERCOMP name="" id="ab3833b58a212645" memberName="component3" virtualName=""
              explicitFocusOrder="0" pos="32 121 456 8" sourceFile="../Themes/SeparatorHorizontalFading.cpp"
              constructorParams=""/>

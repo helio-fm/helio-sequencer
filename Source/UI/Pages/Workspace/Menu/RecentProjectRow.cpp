@@ -59,17 +59,12 @@ RecentProjectRow::RecentProjectRow(WorkspaceMenu &parent, ListBox &parentListBox
     titleLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     titleLabel->setJustificationType (Justification::centredLeft);
     titleLabel->setEditable (false, false, false);
-    titleLabel->setColour (TextEditor::textColourId, Colours::black);
-    titleLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (dateLabel = new Label (String(),
                                               TRANS("...")));
     dateLabel->setFont (Font (Font::getDefaultSerifFontName(), 12.00f, Font::plain).withTypefaceStyle ("Regular"));
     dateLabel->setJustificationType (Justification::centredLeft);
     dateLabel->setEditable (false, false, false);
-    dateLabel->setColour (Label::textColourId, Colour (0x77ffffff));
-    dateLabel->setColour (TextEditor::textColourId, Colours::black);
-    dateLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (activenessImage = new IconComponent (Icons::project));
 
@@ -77,7 +72,6 @@ RecentProjectRow::RecentProjectRow(WorkspaceMenu &parent, ListBox &parentListBox
 
     addAndMakeVisible (localIndicatorImage = new IconComponent (Icons::local));
 
-    addAndMakeVisible (separator = new SeparatorHorizontalFading());
 
     //[UserPreSize]
     //this->selectionComponent = new RecentFileSelectionComponent();
@@ -101,7 +95,6 @@ RecentProjectRow::~RecentProjectRow()
     activenessImage = nullptr;
     remoteIndicatorImage = nullptr;
     localIndicatorImage = nullptr;
-    separator = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -126,7 +119,6 @@ void RecentProjectRow::resized()
     activenessImage->setBounds (32 - (40 / 2), (getHeight() / 2) + -4 - (40 / 2), 40, 40);
     remoteIndicatorImage->setBounds (getWidth() - -62 - 24, getHeight() - 12 - 24, 24, 24);
     localIndicatorImage->setBounds (getWidth() - -32 - 24, getHeight() - 12 - 24, 24, 24);
-    separator->setBounds (22, getHeight() - -5 - 3, getWidth() - 44, 3);
     //[UserResized] Add your own custom resize handling here..
     //this->selectionComponent->setBounds(this->getLocalBounds());
     //[/UserResized]
@@ -153,8 +145,6 @@ void RecentProjectRow::setSelected(bool shouldBeSelected)
 void RecentProjectRow::updateDescription(bool isLastRow, const RecentFileDescription::Ptr file)
 {
     //Logger::writeToLog("Updating info for: " + file->title);
-    this->separator->setVisible(! isLastRow);
-
     this->targetFile = file;
 
     this->titleLabel->setText(this->targetFile->title, dontSendNotification);
@@ -180,7 +170,7 @@ Component *RecentProjectRow::createHighlighterComponent()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="RecentProjectRow" template="../../../Template"
+<JUCER_COMPONENT documentType="Component" className="RecentProjectRow" template="../../../../Template"
                  componentName="" parentClasses="public DraggingListBoxComponent"
                  constructorParams="WorkspaceMenu &amp;parent, ListBox &amp;parentListBox"
                  variableInitialisers="DraggingListBoxComponent(parentListBox.getViewport()),&#10;parentList(parent),&#10;isSelected(false)"
@@ -188,13 +178,11 @@ BEGIN_JUCER_METADATA
                  fixedSize="1" initialWidth="350" initialHeight="56">
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="c261305e2de1ebf2" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="54 5 84M 24" edTextCol="ff000000"
-         edBkgCol="0" labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
-         kerning="0" bold="0" italic="0" justification="33"/>
+         explicitFocusOrder="0" pos="54 5 84M 24" labelText="..." editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
+         fontsize="21" kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="" id="a7e8c6a3ddd9ea22" memberName="dateLabel" virtualName=""
-         explicitFocusOrder="0" pos="54 28 144M 16" textCol="77ffffff"
-         edTextCol="ff000000" edBkgCol="0" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="54 28 144M 16" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
          fontsize="12" kerning="0" bold="0" italic="0" justification="33"/>
   <GENERICCOMPONENT name="" id="42f3ed34561654ef" memberName="activenessImage" virtualName=""
@@ -206,9 +194,6 @@ BEGIN_JUCER_METADATA
   <GENERICCOMPONENT name="" id="da3b844443a7cf14" memberName="localIndicatorImage"
                     virtualName="" explicitFocusOrder="0" pos="-32Rr 12Rr 24 24"
                     class="IconComponent" params="Icons::local"/>
-  <JUCERCOMP name="" id="513aa871684efa1a" memberName="separator" virtualName=""
-             explicitFocusOrder="0" pos="22 -5Rr 44M 3" sourceFile="../../Themes/SeparatorHorizontalFading.cpp"
-             constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

@@ -101,9 +101,6 @@ AuthorizationDialog::AuthorizationDialog()
     emailEditor->setFont (Font (Font::getDefaultSerifFontName(), 37.00f, Font::plain).withTypefaceStyle ("Regular"));
     emailEditor->setJustificationType (Justification::centredLeft);
     emailEditor->setEditable (true, true, false);
-    emailEditor->setColour (Label::textColourId, Colours::white);
-    emailEditor->setColour (TextEditor::textColourId, Colours::black);
-    emailEditor->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
     emailEditor->addListener (this);
 
     addAndMakeVisible (emailLabel = new Label (String(),
@@ -111,18 +108,12 @@ AuthorizationDialog::AuthorizationDialog()
     emailLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     emailLabel->setJustificationType (Justification::topRight);
     emailLabel->setEditable (false, false, false);
-    emailLabel->setColour (Label::textColourId, Colour (0x77ffffff));
-    emailLabel->setColour (TextEditor::textColourId, Colours::black);
-    emailLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (passwordLabel = new Label (String(),
                                                   TRANS("dialog::auth::password")));
     passwordLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     passwordLabel->setJustificationType (Justification::topRight);
     passwordLabel->setEditable (false, false, false);
-    passwordLabel->setColour (Label::textColourId, Colour (0x77ffffff));
-    passwordLabel->setColour (TextEditor::textColourId, Colours::black);
-    passwordLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (cancelButton = new TextButton (String()));
     cancelButton->setButtonText (TRANS("dialog::auth::cancel"));
@@ -396,22 +387,19 @@ BEGIN_JUCER_METADATA
               connectedEdges="5" needsCallback="1" radioGroupId="0"/>
   <LABEL name="" id="9c63b5388edfe183" memberName="emailEditor" virtualName=""
          explicitFocusOrder="0" pos="54.5Cc 32 369 40" posRelativeY="e96b77baef792d3a"
-         textCol="ffffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
-         editableSingleClick="1" editableDoubleClick="1" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="37" kerning="0" bold="0"
-         italic="0" justification="33"/>
+         labelText="..." editableSingleClick="1" editableDoubleClick="1"
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="37"
+         kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="" id="cf32360d33639f7f" memberName="emailLabel" virtualName=""
          explicitFocusOrder="0" pos="-193.5Cc 24 111 47" posRelativeY="e96b77baef792d3a"
-         textCol="77ffffff" edTextCol="ff000000" edBkgCol="0" labelText="dialog::auth::email"
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
-         italic="0" justification="10"/>
+         labelText="dialog::auth::email" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
+         kerning="0" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="c134a00c2bb2de66" memberName="passwordLabel" virtualName=""
          explicitFocusOrder="0" pos="-193.5Cc 84 111 51" posRelativeY="e96b77baef792d3a"
-         textCol="77ffffff" edTextCol="ff000000" edBkgCol="0" labelText="dialog::auth::password"
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
-         italic="0" justification="10"/>
+         labelText="dialog::auth::password" editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
+         kerning="0" bold="0" italic="0" justification="10"/>
   <TEXTBUTTON name="" id="27c5d30533a1f7a9" memberName="cancelButton" virtualName=""
               explicitFocusOrder="0" pos="4 4Rr 131 48" buttonText="dialog::auth::cancel"
               connectedEdges="6" needsCallback="1" radioGroupId="0"/>

@@ -43,9 +43,6 @@ ModalDialogInput::ModalDialogInput(Component &owner, String &result, const Strin
     messageLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     messageLabel->setJustificationType (Justification::centred);
     messageLabel->setEditable (false, false, false);
-    messageLabel->setColour (Label::textColourId, Colours::white);
-    messageLabel->setColour (TextEditor::textColourId, Colours::black);
-    messageLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
     addAndMakeVisible (cancelButton = new TextButton (String()));
     cancelButton->setButtonText (TRANS("..."));
@@ -64,12 +61,6 @@ ModalDialogInput::ModalDialogInput(Component &owner, String &result, const Strin
     textEditor->setScrollbarsShown (false);
     textEditor->setCaretVisible (true);
     textEditor->setPopupMenuEnabled (true);
-    textEditor->setColour (TextEditor::textColourId, Colour (0xe5ffffff));
-    textEditor->setColour (TextEditor::backgroundColourId, Colour (0x1a000000));
-    textEditor->setColour (TextEditor::highlightColourId, Colour (0x40ffffff));
-    textEditor->setColour (TextEditor::outlineColourId, Colour (0x00ffffff));
-    textEditor->setColour (TextEditor::shadowColourId, Colour (0x0f000000));
-    textEditor->setColour (CaretComponent::caretColourId, Colour (0x77ffffff));
     textEditor->setText (String());
 
     addAndMakeVisible (separatorH = new SeparatorHorizontal());
@@ -301,10 +292,9 @@ BEGIN_JUCER_METADATA
              sourceFile="../Themes/DialogPanel.cpp" constructorParams=""/>
   <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc 12 60M 36" posRelativeY="e96b77baef792d3a"
-         textCol="ffffffff" edTextCol="ff000000" edBkgCol="0" labelText="..."
-         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
-         italic="0" justification="36"/>
+         labelText="..." editableSingleClick="0" editableDoubleClick="0"
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
+         kerning="0" bold="0" italic="0" justification="36"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="cancelButton" virtualName=""
               explicitFocusOrder="0" pos="4 4Rr 220 48" buttonText="..." connectedEdges="6"
               needsCallback="1" radioGroupId="0"/>
@@ -312,10 +302,8 @@ BEGIN_JUCER_METADATA
               explicitFocusOrder="0" pos="4Rr 4Rr 221 48" buttonText="..."
               connectedEdges="5" needsCallback="1" radioGroupId="0"/>
   <TEXTEDITOR name="" id="4d16d51ea0c579db" memberName="textEditor" virtualName=""
-              explicitFocusOrder="0" pos="0Cc 58 60M 36" textcol="e5ffffff"
-              bkgcol="1a000000" hilitecol="40ffffff" outlinecol="ffffff" shadowcol="f000000"
-              caretcol="77ffffff" initialText="" multiline="0" retKeyStartsLine="0"
-              readonly="0" scrollbars="0" caret="1" popupmenu="1"/>
+              explicitFocusOrder="0" pos="0Cc 58 60M 36" initialText="" multiline="0"
+              retKeyStartsLine="0" readonly="0" scrollbars="0" caret="1" popupmenu="1"/>
   <JUCERCOMP name="" id="e39d9e103e2a60e6" memberName="separatorH" virtualName=""
              explicitFocusOrder="0" pos="4 52Rr 8M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
