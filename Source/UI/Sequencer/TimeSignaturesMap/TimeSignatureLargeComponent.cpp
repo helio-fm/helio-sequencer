@@ -20,6 +20,7 @@
 #include "TimeSignaturesSequence.h"
 #include "HybridRoll.h"
 #include "ColourIDs.h"
+#include "CachedLabelImage.h"
 //[/Headers]
 
 #include "TimeSignatureLargeComponent.h"
@@ -55,9 +56,11 @@ TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesTrackMap<
     this->denominatorLabel->setInterceptsMouseClicks(false, false);
     this->setMouseCursor(MouseCursor::PointingHandCursor);
 
-    // Component size should be always fixed and small (~32x64px),
-    // so we better cache it to avoid text rendering all the time
-    this->setBufferedToImage(true);
+    this->numeratorLabel->setBufferedToImage(true);
+    this->numeratorLabel->setCachedComponentImage(new CachedLabelImage(*this->numeratorLabel));
+
+    this->denominatorLabel->setBufferedToImage(true);
+    this->denominatorLabel->setCachedComponentImage(new CachedLabelImage(*this->denominatorLabel));
     //[/UserPreSize]
 
     setSize (128, 32);
@@ -105,8 +108,8 @@ void TimeSignatureLargeComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    numeratorLabel->setBounds (-1, getHeight() - 14 - 12, getWidth() - -6, 12);
-    denominatorLabel->setBounds (-1, getHeight() - 3 - 12, getWidth() - -6, 12);
+    numeratorLabel->setBounds (-1, getHeight() - 14 - 12, 32, 12);
+    denominatorLabel->setBounds (-1, getHeight() - 3 - 12, 32, 12);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -240,7 +243,6 @@ void TimeSignatureLargeComponent::updateContent()
         this->denominator = this->event.getDenominator();
         this->numeratorLabel->setText(String(this->numerator), dontSendNotification);
         this->denominatorLabel->setText(String(this->denominator), dontSendNotification);
-        this->repaint();
     }
 }
 
@@ -267,11 +269,11 @@ BEGIN_JUCER_METADATA
     <RECT pos="2 0 2M 0M" fill="solid: ff898989" hasStroke="0"/>
   </BACKGROUND>
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="numeratorLabel" virtualName=""
-         explicitFocusOrder="0" pos="-1 14Rr -6M 12" labelText="" editableSingleClick="0"
+         explicitFocusOrder="0" pos="-1 14Rr 32 12" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="16" kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="" id="48b6c750cc766a42" memberName="denominatorLabel" virtualName=""
-         explicitFocusOrder="0" pos="-1 3Rr -6M 12" labelText="" editableSingleClick="0"
+         explicitFocusOrder="0" pos="-1 3Rr 32 12" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="16" kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>

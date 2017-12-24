@@ -18,6 +18,7 @@
 //[Headers]
 #include "Common.h"
 #include "TimeSignaturesSequence.h"
+#include "CachedLabelImage.h"
 //[/Headers]
 
 #include "TimeSignatureSmallComponent.h"
@@ -40,6 +41,9 @@ TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesTrackMap<
     //[UserPreSize]
     this->setInterceptsMouseClicks(false, false);
     this->signatureLabel->setInterceptsMouseClicks(false, false);
+
+    this->signatureLabel->setBufferedToImage(true);
+    this->signatureLabel->setCachedComponentImage(new CachedLabelImage(*this->signatureLabel));
     //[/UserPreSize]
 
     setSize (128, 32);
@@ -74,7 +78,7 @@ void TimeSignatureSmallComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    signatureLabel->setBounds (0, 4, getWidth() - -16, 16);
+    signatureLabel->setBounds (0, 4, 48, 16);
     component->setBounds (0, 0, 2, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
@@ -114,7 +118,6 @@ float TimeSignatureSmallComponent::getBeat() const
 void TimeSignatureSmallComponent::updateContent()
 {
     this->signatureLabel->setText(this->event.toString(), dontSendNotification);
-    this->repaint();
 }
 
 //[/MiscUserCode]
@@ -134,7 +137,7 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="signatureLabel" virtualName=""
-         explicitFocusOrder="0" pos="0 4 -16M 16" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="0 4 48 16" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="14" kerning="0" bold="0" italic="0" justification="33"/>
   <JUCERCOMP name="" id="1e5a57ee127ef53d" memberName="component" virtualName=""

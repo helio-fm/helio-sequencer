@@ -608,6 +608,8 @@
             <FILE id="vKQRAK" name="OrigamiVertical.h" compile="0" resource="0"
                   file="../../Source/UI/Common/Origami/OrigamiVertical.h"/>
           </GROUP>
+          <FILE id="sxp8Vs" name="CachedLabelImage.h" compile="0" resource="0"
+                file="../../Source/UI/Common/CachedLabelImage.h"/>
           <FILE id="CY4MW2" name="ColourButton.cpp" compile="1" resource="0"
                 file="../../Source/UI/Common/ColourButton.cpp"/>
           <FILE id="VrkDkH" name="ColourButton.h" compile="0" resource="0" file="../../Source/UI/Common/ColourButton.h"/>

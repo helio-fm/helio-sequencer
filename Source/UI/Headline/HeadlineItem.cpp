@@ -25,6 +25,7 @@
 #include "IconComponent.h"
 #include "PanelBackgroundB.h"
 #include "HeadlineDropdown.h"
+#include "CachedLabelImage.h"
 #include "HelioCallout.h"
 #include "ColourIDs.h"
 #include "MainLayout.h"
@@ -50,6 +51,10 @@ HeadlineItem::HeadlineItem(WeakReference<TreeItem> treeItem, AsyncUpdater &paren
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
     this->setOpaque(false);
+
+    this->titleLabel->setBufferedToImage(true);
+    this->titleLabel->setCachedComponentImage(new CachedLabelImage(*this->titleLabel));
+
     //[/UserPreSize]
 
     setSize (256, 32);
@@ -152,7 +157,7 @@ void HeadlineItem::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    titleLabel->setBounds (34, 0, 512, 31);
+    titleLabel->setBounds (34, 5, 256, 21);
     icon->setBounds (8, (getHeight() / 2) - (32 / 2), 32, 32);
     internalPath1.clear();
     internalPath1.startNewSubPath (0.0f, 0.0f);
@@ -252,7 +257,8 @@ void HeadlineItem::updateContent()
         this->titleLabel->setText(this->item->getName(), dontSendNotification);
         const int textWidth = this->titleLabel->getFont()
             .getStringWidth(this->titleLabel->getText());
-        this->setSize(textWidth + 64, this->getHeight());
+        const int maxTextWidth = this->titleLabel->getWidth();
+        this->setSize(jmin(textWidth, maxTextWidth) + 64, this->getHeight());
     }
 }
 
@@ -307,7 +313,7 @@ BEGIN_JUCER_METADATA
           strokeColour=" radial: 10R 16, 17R 5, 0=55ffffff, 1=ffffff" nonZeroWinding="1">s 32R 0 l 17R 0 l 10R 16 l 17R 32 l 32R 32 x</PATH>
   </BACKGROUND>
   <LABEL name="" id="9a3c449859f61884" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="34 0 512 31" labelText="Project"
+         explicitFocusOrder="0" pos="34 5 256 21" labelText="Project"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default font" fontsize="18" kerning="0" bold="0" italic="0"
          justification="33"/>

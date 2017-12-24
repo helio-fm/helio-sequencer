@@ -43,6 +43,7 @@
 #include "App.h"
 #include "MainLayout.h"
 #include "Workspace.h"
+#include "CachedLabelImage.h"
 #include "CommandIDs.h"
 #include "ColourIDs.h"
 
@@ -98,6 +99,11 @@ ToolsSidebar::ToolsSidebar(ProjectTreeItem &parent)
     this->listBox->setMultipleSelectionEnabled(false);
     this->listBox->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
     this->listBox->setRowHeight(TOOLS_SIDEBAR_ROW_HEIGHT);
+
+    // This one doesn't change too frequently:
+    this->totalTime->setBufferedToImage(true);
+    this->totalTime->setCachedComponentImage(new CachedLabelImage(*this->totalTime));
+
     //[/UserPreSize]
 
     setSize (64, 640);

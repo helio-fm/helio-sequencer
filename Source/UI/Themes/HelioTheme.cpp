@@ -86,8 +86,7 @@ void HelioTheme::drawDashedRectangle(Graphics &g, const Rectangle<float> &r, con
     path.addQuadrilateral(r.getBottomRight().getX(), r.getBottomRight().getY(),
                           r.getTopRight().getX(), r.getTopRight().getY(),
                           r.getTopLeft().getX(), r.getTopLeft().getY(),
-                          r.getBottomLeft().getX(), r.getBottomLeft().getY()
-                          );
+                          r.getBottomLeft().getX(), r.getBottomLeft().getY());
     
     path = path.createPathWithRoundedCorners(cornerRadius);
     
@@ -113,9 +112,7 @@ Typeface::Ptr HelioTheme::getTypefaceForFont(const Font &font)
 
 void HelioTheme::drawStretchableLayoutResizerBar(Graphics &g,
         int w, int h, bool isVerticalBar,
-        bool isMouseOver, bool isMouseDragging)
-{
-}
+        bool isMouseOver, bool isMouseDragging) {}
 
 //===----------------------------------------------------------------------===//
 // Text Editor
@@ -194,10 +191,22 @@ void HelioTheme::drawLabel(Graphics &g, Label &label)
 
 #define SMOOTH_RENDERED_FONT 1
 
+// Label rendering is one of the most time-consuming bottlenecks in the app.
+// Calling this method too often should be avoided at any costs:
+// relatively small labels that are always on the screen (line headline titles,
+// annotations, key/time signatures, track headers) should be set cached to images,
+// and they also should have fixed sizes (not dependent on a container component's size)
+// so that resizing a parent won't force resizing, re-rendering and re-caching a label.
+// Such labels should be re-rendered only when their content changes.
+
+// TODO test on retina screens
+
 void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharacter)
 {
     if (! label.isBeingEdited())
     {
+        //Logger::writeToLog("drawLabel: " + label.getText());
+
         const Font font(this->getLabelFont(label));
         const String textToDraw = (passwordCharacter != 0) ?
             String::repeatedString(String::charToString(passwordCharacter), label.getText().length()) :
@@ -207,7 +216,7 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
         // for every other force fit text into a single line:
         const int maxLines = (label.getHeight() < 64) ? 1 : 10;
 
-        const float alpha = 0.5f + jlimit(0.f, 1.f, (font.getHeight() - 8.f) / 16.f) / 2.f;
+        const float alpha = 0.5f + jlimit(0.f, 1.f, (font.getHeight() - 8.f) / 12.f) / 2.f;
         const Colour colour = label.findColour(Label::textColourId).withMultipliedAlpha(alpha);
 
 #if SMOOTH_RENDERED_FONT

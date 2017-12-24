@@ -398,11 +398,6 @@ void TimeSignaturesTrackMap<T>::reloadTrackMap()
         return;
     }
 
-    for (int i = 0; i < this->timeSignatureComponents.size(); ++i)
-    {
-        this->removeChildComponent(this->timeSignatureComponents.getUnchecked(i));
-    }
-
     this->timeSignatureComponents.clear();
     this->timeSignaturesHash.clear();
 

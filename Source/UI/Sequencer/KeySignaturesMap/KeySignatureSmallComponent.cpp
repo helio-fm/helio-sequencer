@@ -73,7 +73,7 @@ void KeySignatureSmallComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    signatureLabel->setBounds (0, 2, getWidth() - -4, 16);
+    signatureLabel->setBounds (0, 2, 132, 16);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -144,7 +144,7 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="signatureLabel" virtualName=""
-         explicitFocusOrder="0" pos="0 2 -4M 16" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="0 2 132 16" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="14" kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>

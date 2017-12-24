@@ -18,6 +18,7 @@
 //[Headers]
 #include "Common.h"
 #include "AnnotationsSequence.h"
+#include "CachedLabelImage.h"
 //[/Headers]
 
 #include "AnnotationSmallComponent.h"
@@ -40,6 +41,10 @@ AnnotationSmallComponent::AnnotationSmallComponent(AnnotationsTrackMap<Annotatio
     //[UserPreSize]
     this->setInterceptsMouseClicks(false, false);
     this->annotationLabel->setInterceptsMouseClicks(false, false);
+
+    // Label is small and fixed size, do not redraw it all the time:
+    this->annotationLabel->setBufferedToImage(true);
+    this->annotationLabel->setCachedComponentImage(new CachedLabelImage(*this->annotationLabel));
     //[/UserPreSize]
 
     setSize (128, 32);
@@ -75,7 +80,7 @@ void AnnotationSmallComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    annotationLabel->setBounds (-2, getHeight() - 4 - 16, getWidth() - -4, 16);
+    annotationLabel->setBounds (-2, getHeight() - 4 - 16, 160, 16);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -148,7 +153,7 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="annotationLabel" virtualName=""
-         explicitFocusOrder="0" pos="-2 4Rr -4M 16" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="-2 4Rr 160 16" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="12" kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>

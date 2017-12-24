@@ -20,6 +20,7 @@
 #include "KeySignaturesSequence.h"
 #include "HybridRoll.h"
 #include "ColourIDs.h"
+#include "CachedLabelImage.h"
 //[/Headers]
 
 #include "KeySignatureLargeComponent.h"
@@ -45,6 +46,10 @@ KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesTrackMap<Key
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->signatureLabel->setInterceptsMouseClicks(false, false);
+
+    this->signatureLabel->setBufferedToImage(true);
+    this->signatureLabel->setCachedComponentImage(new CachedLabelImage(*this->signatureLabel));
+
     this->setMouseCursor(MouseCursor::PointingHandCursor);
     //[/UserPreSize]
 
@@ -84,7 +89,7 @@ void KeySignatureLargeComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    signatureLabel->setBounds (-1, -2, getWidth() - -8, 24);
+    signatureLabel->setBounds (-1, -2, 192, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -247,7 +252,7 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="signatureLabel" virtualName=""
-         explicitFocusOrder="0" pos="-1 -2 -8M 24" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="-1 -2 192 24" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="16" kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>

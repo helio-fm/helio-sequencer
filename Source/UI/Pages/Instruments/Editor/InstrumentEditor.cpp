@@ -39,7 +39,6 @@ audioCore(std::move(audioCoreRef))
     this->instrument.addChangeListener(this);
     this->audioCore->getDevice().addChangeListener(this);
     
-    this->setBufferedToImage(true);
     this->setOpaque(true);
     
     this->setWantsKeyboardFocus(true);

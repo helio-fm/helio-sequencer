@@ -48,7 +48,6 @@ VersionControlEditorPhoneViewportContent::VersionControlEditorPhoneViewportConte
 
     //[Constructor]
     this->setOpaque(true);
-    //this->setBufferedToImage(true);
 
     this->setWantsKeyboardFocus(true);
     this->setFocusContainer(true);
