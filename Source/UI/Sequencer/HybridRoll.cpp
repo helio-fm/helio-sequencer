@@ -93,7 +93,10 @@ template class KeySignaturesTrackMap<KeySignatureLargeComponent>;
 
 
 HybridRoll::HybridRoll(ProjectTreeItem &parentProject, Viewport &viewportRef,
-    WeakReference<AudioMonitor> audioMonitor) :
+    WeakReference<AudioMonitor> audioMonitor,
+    bool hasAnnotationsTrack,
+    bool hasKeySignaturesTrack,
+    bool hasTimeSignaturesTrack) :
     clippingDetector(std::move(audioMonitor)),
     project(parentProject),
     viewport(viewportRef),
@@ -128,9 +131,21 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject, Viewport &viewportRef,
     this->bottomShadow = new LightShadowUpwards();
 
     this->header = new HybridRollHeader(this->project.getTransport(), *this, this->viewport);
-    this->annotationsTrack = new AnnotationsLargeMap(this->project, *this);
-    this->timeSignaturesTrack = new TimeSignaturesLargeMap(this->project, *this);
-    this->keySignaturesTrack = new KeySignaturesLargeMap(this->project, *this);
+
+    if (hasAnnotationsTrack)
+    {
+        this->annotationsTrack = new AnnotationsLargeMap(this->project, *this);
+    }
+
+    if (hasTimeSignaturesTrack)
+    {
+        this->timeSignaturesTrack = new TimeSignaturesLargeMap(this->project, *this);
+    }
+
+    if (hasKeySignaturesTrack)
+    {
+        this->keySignaturesTrack = new KeySignaturesLargeMap(this->project, *this);
+    }
 
     this->playhead = new Playhead(*this, this->project.getTransport(), this);
 
@@ -141,9 +156,22 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject, Viewport &viewportRef,
     this->addAndMakeVisible(this->topShadow);
     this->addAndMakeVisible(this->bottomShadow);
     this->addAndMakeVisible(this->header);
-    this->addAndMakeVisible(this->annotationsTrack);
-    this->addAndMakeVisible(this->timeSignaturesTrack);
-    this->addAndMakeVisible(this->keySignaturesTrack);
+
+    if (this->annotationsTrack)
+    {
+        this->addAndMakeVisible(this->annotationsTrack);
+    }
+
+    if (this->timeSignaturesTrack)
+    {
+        this->addAndMakeVisible(this->timeSignaturesTrack);
+    }
+
+    if (this->keySignaturesTrack)
+    {
+        this->addAndMakeVisible(this->keySignaturesTrack);
+    }
+
     this->addAndMakeVisible(this->playhead);
 
     this->addAndMakeVisible(this->lassoComponent);
@@ -1761,11 +1789,22 @@ void HybridRoll::updateChildrenBounds()
 
     this->topShadow->setBounds(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT, viewWidth, shadowSize);
     this->bottomShadow->setBounds(viewX, viewY + viewHeight - shadowSize, viewWidth, shadowSize);
-
     this->header->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
-    this->annotationsTrack->setBounds(0, viewY + HYBRID_ROLL_HEADER_HEIGHT, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
-    this->timeSignaturesTrack->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT - 1);
-    this->keySignaturesTrack->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT - 1);
+
+    if (this->annotationsTrack)
+    {
+        this->annotationsTrack->setBounds(0, viewY + HYBRID_ROLL_HEADER_HEIGHT, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
+    }
+
+    if (this->timeSignaturesTrack)
+    {
+        this->timeSignaturesTrack->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT - 1);
+    }
+
+    if (this->keySignaturesTrack)
+    {
+        this->keySignaturesTrack->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT - 1);
+    }
 
     if (this->wipeSpaceHelper)
     {
@@ -1795,11 +1834,22 @@ void HybridRoll::updateChildrenPositions()
 
     this->topShadow->setTopLeftPosition(viewX, viewY + HYBRID_ROLL_HEADER_HEIGHT);
     this->bottomShadow->setTopLeftPosition(viewX, viewY + viewHeight - shadowSize);
-
     this->header->setTopLeftPosition(0, viewY);
-    this->annotationsTrack->setTopLeftPosition(0, viewY + HYBRID_ROLL_HEADER_HEIGHT);
-    this->timeSignaturesTrack->setTopLeftPosition(0, viewY);
-    this->keySignaturesTrack->setTopLeftPosition(0, viewY);
+
+    if (this->annotationsTrack)
+    {
+        this->annotationsTrack->setTopLeftPosition(0, viewY + HYBRID_ROLL_HEADER_HEIGHT);
+    }
+
+    if (this->timeSignaturesTrack)
+    {
+        this->timeSignaturesTrack->setTopLeftPosition(0, viewY);
+    }
+
+    if (this->keySignaturesTrack)
+    {
+        this->keySignaturesTrack->setTopLeftPosition(0, viewY);
+    }
 
     if (this->wipeSpaceHelper)
     {

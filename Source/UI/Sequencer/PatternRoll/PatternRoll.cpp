@@ -20,7 +20,6 @@
 #include "PatternRoll.h"
 #include "HybridRollHeader.h"
 #include "MidiTrackHeader.h"
-#include "MidiTrackInsertHelper.h"
 #include "Pattern.h"
 #include "PianoTrackTreeItem.h"
 #include "AutomationTrackTreeItem.h"
@@ -52,6 +51,11 @@
 #define ROWS_OF_TWO_OCTAVES 24
 #define DEFAULT_CLIP_LENGTH 1.0f
 
+inline static constexpr int rowHeight()
+{
+    return PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT;
+}
+
 //void dumpDebugInfo(Array<MidiTrack *> tracks)
 //{
 //    Logger::writeToLog("--- tracks:");
@@ -64,13 +68,13 @@
 PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
     Viewport &viewportRef,
     WeakReference<AudioMonitor> clippingDetector) :
-    HybridRoll(parentProject, viewportRef, clippingDetector)
+    HybridRoll(parentProject, viewportRef, clippingDetector, false, true, true)
 {
     // TODO: pattern roll doesn't need neither annotations track map nor key signatures track map
 
     this->setComponentID(ComponentIDs::patternRollId);
 
-    this->insertTrackHelper = new MidiTrackInsertHelper();
+    this->insertTrackHelper = new MidiTrackHeader(nullptr);
     this->addAndMakeVisible(this->insertTrackHelper);
 
     this->repaintBackgroundsCache();
@@ -158,7 +162,7 @@ void PatternRoll::reloadRollContent()
         {
             this->tracks.addSorted(*track, track);
 
-            MidiTrackHeader *const trackHeader = new MidiTrackHeader(*track);
+            MidiTrackHeader *const trackHeader = new MidiTrackHeader(track);
             this->trackHeaders[track] = UniquePointer<MidiTrackHeader>(trackHeader);
             this->addAndMakeVisible(trackHeader);
 
@@ -210,25 +214,29 @@ void PatternRoll::setChildrenInteraction(bool interceptsMouse, MouseCursor curso
 
 void PatternRoll::updateRollSize()
 {
-    const int h = HYBRID_ROLL_HEADER_HEIGHT + this->getNumRows() * (PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT);
+    const int addTrackHelper = PATTERN_ROLL_TRACK_HEADER_HEIGHT;
+    const int h = HYBRID_ROLL_HEADER_HEIGHT + this->getNumRows() * rowHeight() + addTrackHelper;
     this->setSize(this->getWidth(), jmax(h, this->viewport.getHeight()));
 }
 
 void PatternRoll::updateChildrenBounds()
 {
-    //this->insertTrackHelper->setBounds(TODO);
+    const int viewX = this->getViewport().getViewPositionX();
+    const int viewW = this->getViewport().getViewWidth();
+
+    const int insertTrackHelperY = this->tracks.size() * rowHeight();
+    this->insertTrackHelper->setBounds(viewX,
+        HYBRID_ROLL_HEADER_HEIGHT + insertTrackHelperY,
+        viewW, PATTERN_ROLL_TRACK_HEADER_HEIGHT);
 
     for (const auto &e : this->trackHeaders)
     {
         const auto component = e.second.get();
-        const auto &track = component->getTrack();
-        const int trackIndex = this->tracks.indexOfSorted(track, &track);
-        const int y = trackIndex * (PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT);
-        const Rectangle<int> bounds(this->getViewport().getViewPositionX(),
-            HYBRID_ROLL_HEADER_HEIGHT + y,
-            this->getViewport().getViewWidth(),
-            PATTERN_ROLL_TRACK_HEADER_HEIGHT);
-        component->setBounds(bounds);
+        const auto track = component->getTrack();
+        const int trackIndex = this->tracks.indexOfSorted(*track, track);
+        const int y = trackIndex * rowHeight();
+        component->setBounds(viewX, HYBRID_ROLL_HEADER_HEIGHT + y,
+            viewW, PATTERN_ROLL_TRACK_HEADER_HEIGHT);
     }
 
     HybridRoll::updateChildrenBounds();
@@ -236,15 +244,19 @@ void PatternRoll::updateChildrenBounds()
 
 void PatternRoll::updateChildrenPositions()
 {
-    //this->insertTrackHelper->setTopLeftPosition(TODO);
+    const int viewX = this->getViewport().getViewPositionX();
+
+    const int insertTrackHelperY = this->tracks.size() * rowHeight();
+    this->insertTrackHelper->setTopLeftPosition(viewX,
+        HYBRID_ROLL_HEADER_HEIGHT + insertTrackHelperY);
 
     for (const auto &e : this->trackHeaders)
     {
         const auto component = e.second.get();
-        const auto &track = component->getTrack();
-        const int trackIndex = this->tracks.indexOfSorted(track, &track);
-        const int y = trackIndex * (PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT);
-        component->setTopLeftPosition(this->getViewport().getViewPositionX(), HYBRID_ROLL_HEADER_HEIGHT + y);
+        const auto track = component->getTrack();
+        const int trackIndex = this->tracks.indexOfSorted(*track, track);
+        const int y = trackIndex * rowHeight();
+        component->setTopLeftPosition(viewX, HYBRID_ROLL_HEADER_HEIGHT + y);
     }
 
     HybridRoll::updateChildrenPositions();
@@ -311,7 +323,7 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) c
     const float x = this->barWidth *
         (sequenceStartBeat + clipBeat - viewStartOffsetBeat) / NUM_BEATS_IN_BAR;
 
-    const float y = float(trackIndex * (PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT));
+    const float y = float(trackIndex * rowHeight());
     return Rectangle<float> (x, HYBRID_ROLL_HEADER_HEIGHT + y + PATTERN_ROLL_TRACK_HEADER_HEIGHT,
         w, float(PATTERN_ROLL_CLIP_HEIGHT));
 }
@@ -328,9 +340,7 @@ float PatternRoll::getBeatByMousePosition(int x) const
 
 Pattern *PatternRoll::getPatternByMousePosition(int y) const
 {
-    const int patternIndex =
-        jlimit(0, this->getNumRows() - 1,
-            int(y / (PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT)));
+    const int patternIndex = jlimit(0, this->getNumRows() - 1, int(y / rowHeight()));
     return this->tracks.getUnchecked(patternIndex)->getPattern();
 }
 
@@ -370,7 +380,7 @@ void PatternRoll::onAddTrack(MidiTrack *const track)
 
         this->tracks.addSorted(*track, track);
 
-        MidiTrackHeader *const trackHeader = new MidiTrackHeader(*track);
+        MidiTrackHeader *const trackHeader = new MidiTrackHeader(track);
         this->trackHeaders[track] = UniquePointer<MidiTrackHeader>(trackHeader);
         this->addAndMakeVisible(trackHeader);
 
@@ -401,7 +411,7 @@ void PatternRoll::onChangeTrackProperties(MidiTrack *const track)
 {
     if (MidiTrackHeader *header = this->trackHeaders[track].get())
     {
-        if (&header->getTrack() == track)
+        if (header->getTrack() == track)
         {
             header->updateContent();
         }
@@ -561,6 +571,32 @@ void PatternRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
     }
 }
 
+//===----------------------------------------------------------------------===//
+// SmoothZoomListener
+//===----------------------------------------------------------------------===//
+
+void PatternRoll::zoomRelative(const Point<float> &origin, const Point<float> &factor)
+{
+    const float yZoomThreshold = 0.005f;
+    if (fabs(factor.getY()) > yZoomThreshold)
+    {
+        // TODO: should we zoom rows?
+    }
+
+    HybridRoll::zoomRelative(origin, factor);
+}
+
+void PatternRoll::zoomAbsolute(const Point<float> &zoom)
+{
+    // TODO: should we zoom rows?
+    HybridRoll::zoomAbsolute(zoom);
+}
+
+float PatternRoll::getZoomFactorY() const
+{
+    const float &viewHeight = float(this->viewport.getViewHeight());
+    return (viewHeight / float(this->getHeight()));
+}
 
 //===----------------------------------------------------------------------===//
 // ClipboardOwner
@@ -829,7 +865,7 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height) const
     g.setColour(whiteKey);
     g.fillRect(patternImage.getBounds());
 
-    HelioTheme::drawNoise(theme, g, 2.f);
+    HelioTheme::drawNoise(theme, g, 1.75f);
 
     return patternImage;
 }
@@ -837,6 +873,5 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height) const
 void PatternRoll::repaintBackgroundsCache()
 {
     const HelioTheme &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
-    this->rowPattern = PatternRoll::renderRowsPattern(theme,
-        PATTERN_ROLL_CLIP_HEIGHT + PATTERN_ROLL_TRACK_HEADER_HEIGHT);
+    this->rowPattern = PatternRoll::renderRowsPattern(theme, rowHeight());
 }

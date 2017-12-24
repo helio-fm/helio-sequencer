@@ -23,38 +23,45 @@ class MidiTrack;
 
 
 class MidiTrackHeader  : public Component,
-                         public Label::Listener
+                         public TextEditor::Listener,
+                         public Button::Listener
 {
 public:
 
-    MidiTrackHeader (const MidiTrack &track);
+    MidiTrackHeader (const MidiTrack *track);
 
     ~MidiTrackHeader();
 
     //[UserMethods]
-
-
-
     void updateContent();
-    const MidiTrack &getTrack() const noexcept;
+    const MidiTrack *getTrack() const noexcept;
+    inline bool isDetached() const noexcept { return this->track == nullptr; }
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void labelTextChanged (Label* labelThatHasChanged) override;
+    void buttonClicked (Button* buttonThatWasClicked) override;
 
 
 private:
 
     //[UserVariables]
-    const MidiTrack &track;
+    void textEditorReturnKeyPressed(TextEditor&) override;
+    void textEditorEscapeKeyPressed(TextEditor&) override;
+    void textEditorFocusLost(TextEditor&) override;
 
+    const MidiTrack *track;
+
+    Image fillImage;
     Colour borderLightColour;
     Colour borderDarkColour;
-    Colour fillColour;
+    Colour lineColour;
+    int textWidth;
     //[/UserVariables]
 
+    ScopedPointer<TextEditor> trackNameEditor;
     ScopedPointer<Label> trackNameLabel;
+    ScopedPointer<ImageButton> setNameButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MidiTrackHeader)
 };

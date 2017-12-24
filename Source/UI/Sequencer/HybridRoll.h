@@ -90,7 +90,10 @@ class HybridRoll :
 public:
     
     HybridRoll(ProjectTreeItem &project, Viewport &viewport,
-        WeakReference<AudioMonitor> audioMonitor);
+        WeakReference<AudioMonitor> audioMonitor,
+        bool hasAnnotationsTrack = true,
+        bool hasKeySignaturesTrack = true,
+        bool hasTimeSignaturesTrack = true);
 
     ~HybridRoll() override;
 

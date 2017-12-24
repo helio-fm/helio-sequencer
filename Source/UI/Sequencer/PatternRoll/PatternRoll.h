@@ -27,7 +27,6 @@
 
 class ClipComponent;
 class MidiTrackHeader;
-class MidiTrackInsertHelper;
 class PianoRollReboundThread;
 class PianoRollCellHighlighter;
 
@@ -97,6 +96,14 @@ public:
         const Rectangle<int> &rectangle) override;
 
     //===------------------------------------------------------------------===//
+    // SmoothZoomListener
+    //===------------------------------------------------------------------===//
+
+    void zoomRelative(const Point<float> &origin, const Point<float> &factor) override;
+    void zoomAbsolute(const Point<float> &zoom) override;
+    float getZoomFactorY() const override;
+
+    //===------------------------------------------------------------------===//
     // ClipboardOwner
     //===------------------------------------------------------------------===//
 
@@ -153,7 +160,7 @@ private:
 
     OwnedArray<ClipComponent> ghostClips;
 
-    ScopedPointer<MidiTrackInsertHelper> insertTrackHelper;
+    ScopedPointer<MidiTrackHeader> insertTrackHelper;
 
     typedef SparseHashMap<const MidiTrack *, UniquePointer<MidiTrackHeader>, MidiTrackHash> TrackHeadersMap;
     TrackHeadersMap trackHeaders;

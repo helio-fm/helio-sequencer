@@ -67,7 +67,7 @@ public:
     //===------------------------------------------------------------------===//
 
     static int compareElements(const MidiTrack &first, const MidiTrack &second);
-    static int compareElements(const MidiTrack *first, const MidiTrack *second);
+    static int compareElements(const MidiTrack *const first, const MidiTrack *const second);
 
     inline HashCode hashCode() const noexcept
     {

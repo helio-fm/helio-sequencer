@@ -113,6 +113,12 @@ void ClipComponent::mouseDown(const MouseEvent &e)
     }
 }
 
+void ClipComponent::mouseDoubleClick(const MouseEvent &e)
+{
+    // TODO signal to switch to piano roll and focus on a clip area
+    //this->getRoll().
+}
+
 void ClipComponent::paint(Graphics& g)
 {
     g.setColour(this->fillColour);

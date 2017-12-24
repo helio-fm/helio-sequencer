@@ -25,7 +25,7 @@ int MidiTrack::compareElements(const MidiTrack &first, const MidiTrack &second)
     return first.getTrackName().compareNatural(second.getTrackName());
 }
 
-int MidiTrack::compareElements(const MidiTrack *first, const MidiTrack *second)
+int MidiTrack::compareElements(const MidiTrack *const first, const MidiTrack *const second)
 {
     if (first == second) { return 0; }
     return first->getTrackName().compareNatural(second->getTrackName());

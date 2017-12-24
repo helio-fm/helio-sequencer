@@ -77,7 +77,7 @@ ToolsSidebar::ToolsSidebar(ProjectTreeItem &parent)
 
     addAndMakeVisible (currentTime = new Label (String(),
                                                 TRANS("...")));
-    currentTime->setFont (Font (Font::getDefaultSansSerifFontName(), 28.00f, Font::plain).withTypefaceStyle ("Regular"));
+    currentTime->setFont (Font (Font::getDefaultSansSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
     currentTime->setJustificationType (Justification::centred);
     currentTime->setEditable (false, false, false);
 
@@ -92,8 +92,6 @@ ToolsSidebar::ToolsSidebar(ProjectTreeItem &parent)
     this->setInterceptsMouseClicks(false, true);
 
     this->recreateCommandDescriptions();
-
-    this->currentTime->setFont(Font(Font::getDefaultSansSerifFontName(), 22.00f, Font::plain));
 
     this->listBox->setModel(this);
     this->listBox->setMultipleSelectionEnabled(false);
@@ -604,7 +602,7 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="b9e867ece7f52ad8" memberName="currentTime" virtualName=""
          explicitFocusOrder="0" pos="0Cc 46Rc 72 32" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default sans-serif font"
-         fontsize="28" kerning="0" bold="0" italic="0" justification="36"/>
+         fontsize="21" kerning="0" bold="0" italic="0" justification="36"/>
   <JUCERCOMP name="" id="bb2e14336f795a57" memberName="playButton" virtualName=""
              explicitFocusOrder="0" pos="0Cc 92Rc 0M 64" sourceFile="../Common/PlayButton.cpp"
              constructorParams=""/>

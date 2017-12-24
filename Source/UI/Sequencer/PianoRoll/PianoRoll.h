@@ -77,7 +77,6 @@ public:
     void showGhostNoteFor(NoteComponent *targetNoteComponent);
     void hideAllGhostNotes();
     
-
     //===------------------------------------------------------------------===//
     // SmoothZoomListener
     //===------------------------------------------------------------------===//
@@ -85,7 +84,6 @@ public:
     void zoomRelative(const Point<float> &origin, const Point<float> &factor) override;
     void zoomAbsolute(const Point<float> &zoom) override;
     float getZoomFactorY() const override;
-
 
     //===------------------------------------------------------------------===//
     // Note management
@@ -98,7 +96,6 @@ public:
     void getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber) const;
     int getYPositionByKey(int targetKey) const;
     
-
     //===------------------------------------------------------------------===//
     // Drag helpers
     //===------------------------------------------------------------------===//
@@ -106,7 +103,6 @@ public:
     void showHelpers();
     void hideHelpers();
     void moveHelpers(const float deltaBeat, const int deltaKey);
-
 
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -121,7 +117,6 @@ public:
     void onChangeTrackProperties(MidiTrack *const track) override;
     void onReloadProjectContent(const Array<MidiTrack *> &tracks) override;
 
-
     //===------------------------------------------------------------------===//
     // LassoSource
     //===------------------------------------------------------------------===//
@@ -132,14 +127,12 @@ public:
     void findLassoItemsInArea(Array<SelectableComponent *> &itemsFound,
         const Rectangle<int> &rectangle) override;
 
-
     //===------------------------------------------------------------------===//
     // ClipboardOwner
     //===------------------------------------------------------------------===//
 
     XmlElement *clipboardCopy() const override;
     void clipboardPaste(const XmlElement &xml) override;
-
 
     //===------------------------------------------------------------------===//
     // Component
@@ -152,7 +145,6 @@ public:
     void handleCommandMessage(int commandId) override;
     void resized() override;
     void paint(Graphics &g) override;
-
     
     //===------------------------------------------------------------------===//
     // HybridRoll's legacy
@@ -160,7 +152,6 @@ public:
     
     void handleAsyncUpdate() override;
 
-    
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//

@@ -516,7 +516,6 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\DummyClipComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\PianoClipComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\MidiTrackHeader.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\MidiTrackInsertHelper.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\PatternRoll.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\NoteComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\NoteResizerLeft.cpp"/>
@@ -1758,6 +1757,9 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\drawables\juce_SVGParser.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\filebrowser\juce_ContentSharer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\filebrowser\juce_DirectoryContentsDisplayComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1926,6 +1928,9 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\mouse\juce_MouseListener.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\native\juce_android_ContentSharer.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\native\juce_android_FileChooser.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1933,6 +1938,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\native\juce_common_MimeTypes.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\native\juce_ios_ContentSharer.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\native\juce_linux_FileChooser.cpp">
@@ -2421,6 +2429,7 @@
     <ClInclude Include="..\..\Source\UI\Common\Origami\Origami.h"/>
     <ClInclude Include="..\..\Source\UI\Common\Origami\OrigamiHorizontal.h"/>
     <ClInclude Include="..\..\Source\UI\Common\Origami\OrigamiVertical.h"/>
+    <ClInclude Include="..\..\Source\UI\Common\CachedLabelImage.h"/>
     <ClInclude Include="..\..\Source\UI\Common\ColourButton.h"/>
     <ClInclude Include="..\..\Source\UI\Common\ColourSwatches.h"/>
     <ClInclude Include="..\..\Source\UI\Common\ColourIDs.h"/>
@@ -2574,7 +2583,6 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\DummyClipComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\PianoClipComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\MidiTrackHeader.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\MidiTrackInsertHelper.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\PatternRoll.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NoteComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NoteResizerLeft.h"/>
@@ -3019,6 +3027,7 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\geometry\juce_BorderSize.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\geometry\juce_EdgeTable.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\geometry\juce_Line.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\geometry\juce_Parallelogram.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\geometry\juce_Path.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\geometry\juce_PathIterator.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_graphics\geometry\juce_PathStrokeType.h"/>
@@ -3081,6 +3090,7 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\drawables\juce_DrawableRectangle.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\drawables\juce_DrawableShape.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\drawables\juce_DrawableText.h"/>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\filebrowser\juce_ContentSharer.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\filebrowser\juce_DirectoryContentsDisplayComponent.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\filebrowser\juce_DirectoryContentsList.h"/>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_gui_basics\filebrowser\juce_FileBrowserComponent.h"/>

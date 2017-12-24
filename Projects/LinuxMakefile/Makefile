@@ -347,7 +347,6 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/DummyClipComponent_76f3c1e1.o \
   $(JUCE_OBJDIR)/PianoClipComponent_726e7f60.o \
   $(JUCE_OBJDIR)/MidiTrackHeader_edf82885.o \
-  $(JUCE_OBJDIR)/MidiTrackInsertHelper_7c398a7f.o \
   $(JUCE_OBJDIR)/PatternRoll_9707f85b.o \
   $(JUCE_OBJDIR)/NoteComponent_465c17d2.o \
   $(JUCE_OBJDIR)/NoteResizerLeft_c3d11e3a.o \
@@ -1631,11 +1630,6 @@ $(JUCE_OBJDIR)/PianoClipComponent_726e7f60.o: ../../Source/UI/Sequencer/PatternR
 $(JUCE_OBJDIR)/MidiTrackHeader_edf82885.o: ../../Source/UI/Sequencer/PatternRoll/MidiTrackHeader.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling MidiTrackHeader.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/MidiTrackInsertHelper_7c398a7f.o: ../../Source/UI/Sequencer/PatternRoll/MidiTrackInsertHelper.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling MidiTrackInsertHelper.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/PatternRoll_9707f85b.o: ../../Source/UI/Sequencer/PatternRoll/PatternRoll.cpp
