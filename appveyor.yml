@@ -5,7 +5,7 @@ branches:
   - master
 skip_tags: true
 image: Visual Studio 2015
-configuration: Release x64
+configuration: Release 64-bit
 platform: x64
 clone_depth: 1
 install:

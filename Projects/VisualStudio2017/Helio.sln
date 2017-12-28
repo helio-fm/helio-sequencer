@@ -1,0 +1,26 @@
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2017
+
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Helio - App", "Helio_App.vcxproj", "{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug 32-bit|Win32 = Debug 32-bit|Win32
+		Debug 64-bit|x64 = Debug 64-bit|x64
+		Release 32-bit|Win32 = Release 32-bit|Win32
+		Release 64-bit|x64 = Release 64-bit|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Debug 32-bit|Win32.ActiveCfg = Debug 32-bit|Win32
+		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Debug 32-bit|Win32.Build.0 = Debug 32-bit|Win32
+		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Debug 64-bit|x64.ActiveCfg = Debug 64-bit|x64
+		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Debug 64-bit|x64.Build.0 = Debug 64-bit|x64
+		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Release 32-bit|Win32.ActiveCfg = Release 32-bit|Win32
+		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Release 32-bit|Win32.Build.0 = Release 32-bit|Win32
+		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Release 64-bit|x64.ActiveCfg = Release 64-bit|x64
+		{E8BB8855-4F53-F073-2B0C-FA828AA9DF91}.Release 64-bit|x64.Build.0 = Release 64-bit|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
