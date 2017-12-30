@@ -73,7 +73,7 @@ void AnnotationLargeComponent::paint (Graphics& g)
     //[/UserPrePaint]
 
     {
-        int x = 4, y = 4, width = getWidth() - 6, height = getHeight() - 8;
+        int x = 2, y = 1, width = getWidth() - 6, height = getHeight() - 8;
         String text (TRANS("..."));
         Colour fillColour = Colour (0x88ffffff);
         //[UserPaintCustomArguments] Customize the painting arguments here..
@@ -303,7 +303,7 @@ BEGIN_JUCER_METADATA
     <METHOD name="mouseDoubleClick (const MouseEvent&amp; e)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <TEXT pos="4 4 6M 8M" fill="solid: 88ffffff" hasStroke="0" text="..."
+    <TEXT pos="2 1 6M 8M" fill="solid: 88ffffff" hasStroke="0" text="..."
           fontname="Default font" fontsize="16" kerning="0" bold="0" italic="0"
           justification="33"/>
     <RECT pos="0 0 0M 3" fill="solid: 20ffffff" hasStroke="0"/>

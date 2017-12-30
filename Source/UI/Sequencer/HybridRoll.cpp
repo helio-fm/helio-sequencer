@@ -1796,14 +1796,14 @@ void HybridRoll::updateChildrenBounds()
         this->annotationsTrack->setBounds(0, viewY + HYBRID_ROLL_HEADER_HEIGHT, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
     }
 
+    if (this->keySignaturesTrack)
+    {
+        this->keySignaturesTrack->setBounds(0, viewY + HYBRID_ROLL_HEADER_HEIGHT, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT);
+    }
+
     if (this->timeSignaturesTrack)
     {
         this->timeSignaturesTrack->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT - 1);
-    }
-
-    if (this->keySignaturesTrack)
-    {
-        this->keySignaturesTrack->setBounds(0, viewY, this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT - 1);
     }
 
     if (this->wipeSpaceHelper)
@@ -1841,14 +1841,14 @@ void HybridRoll::updateChildrenPositions()
         this->annotationsTrack->setTopLeftPosition(0, viewY + HYBRID_ROLL_HEADER_HEIGHT);
     }
 
+    if (this->keySignaturesTrack)
+    {
+        this->keySignaturesTrack->setTopLeftPosition(0, viewY + HYBRID_ROLL_HEADER_HEIGHT);
+    }
+
     if (this->timeSignaturesTrack)
     {
         this->timeSignaturesTrack->setTopLeftPosition(0, viewY);
-    }
-
-    if (this->keySignaturesTrack)
-    {
-        this->keySignaturesTrack->setTopLeftPosition(0, viewY);
     }
 
     if (this->wipeSpaceHelper)

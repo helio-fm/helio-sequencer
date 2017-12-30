@@ -68,7 +68,7 @@ inline static constexpr int rowHeight()
 PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
     Viewport &viewportRef,
     WeakReference<AudioMonitor> clippingDetector) :
-    HybridRoll(parentProject, viewportRef, clippingDetector, false, true, true)
+    HybridRoll(parentProject, viewportRef, clippingDetector, false, false, true)
 {
     // TODO: pattern roll doesn't need neither annotations track map nor key signatures track map
 

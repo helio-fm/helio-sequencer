@@ -439,7 +439,7 @@ void TimeSignaturesTrackMap<T>::applyTimeSignatureBounds(T *nc, T *nextOne)
     const float nextX = mapWidth * (nextBeat / projectLengthInBeats);
 
     const float minWidth = 10.f;
-    const float widthMargin = 32.f;
+    const float widthMargin = 26.f;
     const float componentsPadding = 10.f;
     const float maxWidth = nextX - x;
     const float w = jmax(minWidth, jmin((maxWidth - componentsPadding), widthMargin));

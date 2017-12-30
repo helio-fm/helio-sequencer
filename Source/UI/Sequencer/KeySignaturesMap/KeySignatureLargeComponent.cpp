@@ -75,8 +75,8 @@ void KeySignatureLargeComponent::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     const Colour lineCol(this->findColour(ColourIDs::Roll::headerSnaps));
     g.setColour(lineCol);
-    g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
-    g.drawHorizontalLine(1, 0.f, float(this->getWidth()));
+    g.drawHorizontalLine(2, 0.f, float(this->getWidth()));
+    g.drawHorizontalLine(3, 0.f, float(this->getWidth()));
     //g.drawHorizontalLine(2, 0.f, float(this->getWidth()));
     //[/UserPrePaint]
 
@@ -89,7 +89,7 @@ void KeySignatureLargeComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    signatureLabel->setBounds (-1, -2, 192, 24);
+    signatureLabel->setBounds (-2, 1, 192, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -252,7 +252,7 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="signatureLabel" virtualName=""
-         explicitFocusOrder="0" pos="-1 -2 192 24" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="-2 1 192 24" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="16" kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>

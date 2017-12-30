@@ -38,13 +38,13 @@ TimeSignatureLargeComponent::TimeSignatureLargeComponent(TimeSignaturesTrackMap<
 {
     addAndMakeVisible (numeratorLabel = new Label (String(),
                                                    String()));
-    numeratorLabel->setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    numeratorLabel->setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
     numeratorLabel->setJustificationType (Justification::centredLeft);
     numeratorLabel->setEditable (false, false, false);
 
     addAndMakeVisible (denominatorLabel = new Label (String(),
                                                      String()));
-    denominatorLabel->setFont (Font (16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    denominatorLabel->setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
     denominatorLabel->setJustificationType (Justification::centredLeft);
     denominatorLabel->setEditable (false, false, false);
 
@@ -86,20 +86,11 @@ void TimeSignatureLargeComponent::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    {
-        int x = 2, y = 0, width = getWidth() - 2, height = getHeight() - 0;
-        Colour fillColour = Colour (0xff898989);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        fillColour = this->findColour(ColourIDs::Roll::headerFill);
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillRect (x, y, width, height);
-    }
-
     //[UserPaint] Add your own custom painting code here..
-    g.setColour(this->findColour(ColourIDs::Roll::headerSnaps).withMultipliedAlpha(0.25f));
-    g.drawHorizontalLine(this->getHeight() - 1, 2.f, float(this->getWidth()));
-    //g.drawHorizontalLine(this->getHeight() - 2, 2.f, float(this->getWidth()));
+    const Colour lineCol(this->findColour(ColourIDs::Roll::headerSnaps));
+    g.setColour(lineCol);
+    g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
+    g.drawHorizontalLine(1, 0.f, float(this->getWidth()));
     //[/UserPaint]
 }
 
@@ -108,8 +99,8 @@ void TimeSignatureLargeComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    numeratorLabel->setBounds (-1, getHeight() - 14 - 12, 32, 12);
-    denominatorLabel->setBounds (-1, getHeight() - 3 - 12, 32, 12);
+    numeratorLabel->setBounds (-2, 4, 32, 14);
+    denominatorLabel->setBounds (-2, 17, 32, 14);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -265,17 +256,15 @@ BEGIN_JUCER_METADATA
     <METHOD name="mouseMove (const MouseEvent&amp; e)"/>
     <METHOD name="mouseDoubleClick (const MouseEvent&amp; e)"/>
   </METHODS>
-  <BACKGROUND backgroundColour="0">
-    <RECT pos="2 0 2M 0M" fill="solid: ff898989" hasStroke="0"/>
-  </BACKGROUND>
+  <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="numeratorLabel" virtualName=""
-         explicitFocusOrder="0" pos="-1 14Rr 32 12" labelText="" editableSingleClick="0"
+         explicitFocusOrder="0" pos="-2 4 32 14" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="16" kerning="0" bold="0" italic="0" justification="33"/>
+         fontsize="18" kerning="0" bold="0" italic="0" justification="33"/>
   <LABEL name="" id="48b6c750cc766a42" memberName="denominatorLabel" virtualName=""
-         explicitFocusOrder="0" pos="-1 3Rr 32 12" labelText="" editableSingleClick="0"
+         explicitFocusOrder="0" pos="-2 17 32 14" labelText="" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="16" kerning="0" bold="0" italic="0" justification="33"/>
+         fontsize="18" kerning="0" bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
