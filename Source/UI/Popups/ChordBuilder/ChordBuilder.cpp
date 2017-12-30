@@ -37,22 +37,13 @@
 #include "BinaryData.h"
 #include "Icons.h"
 
-#define NEWCHORD_POPUP_MENU_SIZE_DESKTOP   (500)
-#define NEWCHORD_POPUP_LABEL_SIZE_DESKTOP  (32)
-#define NEWCHORD_POPUP_MENU_SIZE_TABLET    (500)
-#define NEWCHORD_POPUP_LABEL_SIZE_TABLET   (32)
-#define NEWCHORD_POPUP_MENU_SIZE_PHONE     (350)
-#define NEWCHORD_POPUP_LABEL_SIZE_PHONE    (24)
-#define NEWCHORD_POPUP_DEFAULT_NOTE_LENGTH (4)
+#define NEWCHORD_POPUP_MENU_SIZE            (500)
+#define NEWCHORD_POPUP_LABEL_SIZE           (32)
+#define NEWCHORD_POPUP_DEFAULT_NOTE_LENGTH  (4)
 
 static Label *createLabel(const String &text)
 {
-#if HELIO_DESKTOP
-    const int size = NEWCHORD_POPUP_LABEL_SIZE_DESKTOP;
-#elif HELIO_MOBILE
-    const int size = App::isRunningOnPhone() ? NEWCHORD_POPUP_LABEL_SIZE_PHONE : NEWCHORD_POPUP_LABEL_SIZE_TABLET;
-#endif
-
+    const int size = NEWCHORD_POPUP_LABEL_SIZE;
     auto newLabel = new Label(text, text);
     newLabel->setJustificationType(Justification::centred);
     newLabel->setBounds(0, 0, size * 2, size);
@@ -189,18 +180,7 @@ ChordBuilder::ChordBuilder(PianoRoll *caller, MidiSequence *layer)
 
     //[Constructor]
 
-#if HELIO_DESKTOP
-    this->setSize(NEWCHORD_POPUP_MENU_SIZE_DESKTOP, NEWCHORD_POPUP_MENU_SIZE_DESKTOP);
-#elif HELIO_MOBILE
-    if (App::isRunningOnPhone())
-    {
-        this->setSize(NEWCHORD_POPUP_MENU_SIZE_PHONE, NEWCHORD_POPUP_MENU_SIZE_PHONE);
-    }
-    else
-    {
-        this->setSize(NEWCHORD_POPUP_MENU_SIZE_TABLET, NEWCHORD_POPUP_MENU_SIZE_TABLET);
-    }
-#endif
+    this->setSize(NEWCHORD_POPUP_MENU_SIZE, NEWCHORD_POPUP_MENU_SIZE);
 
     this->setFocusContainer(true);
 

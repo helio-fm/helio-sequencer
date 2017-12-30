@@ -854,7 +854,7 @@ void HelioTheme::initColours(const ::ColourScheme &s)
     this->setColour(ColourIDs::Roll::beatLine, s.getBarColour().withAlpha(0.45f));
     this->setColour(ColourIDs::Roll::snapLine, s.getBarColour().withAlpha(0.1f));
     this->setColour(ColourIDs::Roll::headerFill, s.getPrimaryGradientColourB().darker(0.025f));
-    this->setColour(ColourIDs::Roll::headerSnaps, s.getPrimaryGradientColourB().darker(0.025f).contrasting().withMultipliedAlpha(0.25f));
+    this->setColour(ColourIDs::Roll::headerSnaps, s.getPrimaryGradientColourB().darker(0.025f).contrasting().withMultipliedAlpha(0.35f));
     this->setColour(ColourIDs::Roll::playhead, s.getLassoBorderColour().withAlpha(0.6f));
     this->setColour(ColourIDs::Roll::playheadShade, Colours::black.withAlpha(0.1f));
     this->setColour(ColourIDs::Roll::trackHeaderFill, s.getBlackKeyColour().brighter(0.025f));

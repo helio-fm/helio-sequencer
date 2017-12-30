@@ -54,13 +54,8 @@ class TimelineWarningMarker;
 #include "AudioMonitor.h"
 #include "Serializable.h"
 
-#if HELIO_DESKTOP
-#   define HYBRID_ROLL_MAX_BAR_WIDTH (192)
-#   define HYBRID_ROLL_HEADER_HEIGHT (48)
-#elif HELIO_MOBILE
-#   define HYBRID_ROLL_MAX_BAR_WIDTH (256)
-#   define HYBRID_ROLL_HEADER_HEIGHT (48)
-#endif
+#define HYBRID_ROLL_MAX_BAR_WIDTH (192)
+#define HYBRID_ROLL_HEADER_HEIGHT (40)
 
 #define DEFAULT_NUM_BARS 8
 

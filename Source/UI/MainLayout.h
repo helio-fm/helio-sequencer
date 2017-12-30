@@ -31,9 +31,6 @@ class Headline;
 #   define HAS_FADING_PAGECHANGE 0
 #endif
 
-#define TRACK_SCROLLER_HEIGHT_DEFAULT (128)
-#define TRACK_SCROLLER_HEIGHT_PHONE (64)
-
 class MainLayout : public Component
 {
 public:
@@ -45,7 +42,10 @@ public:
     void forceRestoreLastOpenedPage();
     void toggleShowHideConsole();
 
-    static int getScrollerHeight();
+    static constexpr int getScrollerHeight()
+    {
+        return (40 + 32);
+    }
     
     //===------------------------------------------------------------------===//
     // Pages

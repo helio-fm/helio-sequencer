@@ -174,16 +174,6 @@ void MainLayout::toggleShowHideConsole()
     // TODO
 }
 
-int MainLayout::getScrollerHeight()
-{
-    if (App::isRunningOnPhone())
-    {
-        return TRACK_SCROLLER_HEIGHT_PHONE;
-    }
-    
-    return TRACK_SCROLLER_HEIGHT_DEFAULT;
-}
-
 //===----------------------------------------------------------------------===//
 // Pages
 //===----------------------------------------------------------------------===//

@@ -110,7 +110,7 @@ void WaveformAudioMonitorComponent::paint(Graphics &g)
     
     const float midH = float(this->getHeight()) / 2.f;
 
-    g.setColour(Colours::white.withAlpha(0.07f));
+    g.setColour(Colours::white.withAlpha(0.1f));
 
     for (int i = 0; i < WAVEFORM_METER_BUFFER_SIZE; ++i)
     {
@@ -119,7 +119,7 @@ void WaveformAudioMonitorComponent::paint(Graphics &g)
         g.drawVerticalLine(1 + i * 2, midH - peakL, midH + peakR);
     }
 
-    g.setColour(Colours::white.withAlpha(0.12f));
+    g.setColour(Colours::white.withAlpha(0.15f));
 
     for (int i = 0; i < WAVEFORM_METER_BUFFER_SIZE; ++i)
     {

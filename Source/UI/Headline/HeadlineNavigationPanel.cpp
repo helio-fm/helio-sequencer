@@ -43,7 +43,7 @@ HeadlineNavigationPanel::HeadlineNavigationPanel()
     this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
 
-    setSize (80, 32);
+    setSize (66, 32);
 
     //[Constructor]
     //[/Constructor]
@@ -115,8 +115,8 @@ void HeadlineNavigationPanel::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    navigatePrevious->setBounds (5, (getHeight() / 2) + -1 - (32 / 2), 28, 32);
-    navigateNext->setBounds (32, (getHeight() / 2) + -1 - (32 / 2), 28, 32);
+    navigatePrevious->setBounds (2, (getHeight() / 2) + -1 - (32 / 2), 25, 32);
+    navigateNext->setBounds (25, (getHeight() / 2) + -1 - (32 / 2), 25, 32);
     internalPath1.clear();
     internalPath1.startNewSubPath (0.0f, 0.0f);
     internalPath1.lineTo (static_cast<float> (getWidth() - 16), 0.0f);
@@ -180,7 +180,7 @@ BEGIN_JUCER_METADATA
 <JUCER_COMPONENT documentType="Component" className="HeadlineNavigationPanel"
                  template="../../Template" componentName="" parentClasses="public Component"
                  constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="80"
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="66"
                  initialHeight="32">
   <METHODS>
     <METHOD name="handleCommandMessage (int commandId)"/>
@@ -193,10 +193,10 @@ BEGIN_JUCER_METADATA
           strokeColour=" radial: 10R 16, 17R 5, 0=55ffffff, 1=ffffff" nonZeroWinding="1">s 32R 0 l 17R 0 l 10R 16 l 17R 32 l 32R 32 x</PATH>
   </BACKGROUND>
   <GENERICCOMPONENT name="" id="88e1e92c7548ba42" memberName="navigatePrevious" virtualName=""
-                    explicitFocusOrder="0" pos="5 -1Cc 28 32" class="IconButton"
+                    explicitFocusOrder="0" pos="2 -1Cc 25 32" class="IconButton"
                     params="Icons::findByName(Icons::left, 20), CommandIDs::ShowPreviousPage"/>
   <GENERICCOMPONENT name="" id="900658e63c264259" memberName="navigateNext" virtualName=""
-                    explicitFocusOrder="0" pos="32 -1Cc 28 32" class="IconButton"
+                    explicitFocusOrder="0" pos="25 -1Cc 25 32" class="IconButton"
                     params="Icons::findByName(Icons::right, 20), CommandIDs::ShowNextPage"/>
 </JUCER_COMPONENT>
 

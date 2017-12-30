@@ -36,7 +36,10 @@
 #include "AudioCore.h"
 #include "ColourIDs.h"
 
-#define AUDIO_MONITOR_HEIGHT 126
+static inline constexpr int getAudioMonitorHeight()
+{
+    return MainLayout::getScrollerHeight() - 2;
+}
 
 //[/MiscUserDefs]
 
@@ -108,21 +111,21 @@ void NavigationSidebar::paint (Graphics& g)
 void NavigationSidebar::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
-    this->genericMonitor->setSize(this->getWidth(), AUDIO_MONITOR_HEIGHT);
-    this->waveformMonitor->setSize(this->getWidth(), AUDIO_MONITOR_HEIGHT);
-    this->spectrogramMonitor->setSize(this->getWidth(), AUDIO_MONITOR_HEIGHT);
+    this->genericMonitor->setSize(this->getWidth(), getAudioMonitorHeight());
+    this->waveformMonitor->setSize(this->getWidth(), getAudioMonitorHeight());
+    this->spectrogramMonitor->setSize(this->getWidth(), getAudioMonitorHeight());
 
-    this->genericMonitor->setTopLeftPosition(0, this->getHeight() - AUDIO_MONITOR_HEIGHT);
-    this->waveformMonitor->setTopLeftPosition(0, this->getHeight() - AUDIO_MONITOR_HEIGHT);
-    this->spectrogramMonitor->setTopLeftPosition(0, this->getHeight() - AUDIO_MONITOR_HEIGHT);
+    this->genericMonitor->setTopLeftPosition(0, this->getHeight() - getAudioMonitorHeight());
+    this->waveformMonitor->setTopLeftPosition(0, this->getHeight() - getAudioMonitorHeight());
+    this->spectrogramMonitor->setTopLeftPosition(0, this->getHeight() - getAudioMonitorHeight());
     //[/UserPreResize]
 
     background->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
-    shadow->setBounds (0, getHeight() - 127 - 6, getWidth() - 0, 6);
-    headLine->setBounds (0, 47, getWidth() - 0, 2);
-    headShadow->setBounds (0, 48, getWidth() - 0, 6);
-    separator->setBounds (0, getHeight() - 126 - 2, getWidth() - 0, 2);
-    modeIndicatorSelector->setBounds (0, getHeight() - 126, getWidth() - 0, 126);
+    shadow->setBounds (0, getHeight() - 71 - 6, getWidth() - 0, 6);
+    headLine->setBounds (0, 39, getWidth() - 0, 2);
+    headShadow->setBounds (0, 40, getWidth() - 0, 6);
+    separator->setBounds (0, getHeight() - 70 - 2, getWidth() - 0, 2);
+    modeIndicatorSelector->setBounds (0, getHeight() - 70, getWidth() - 0, 70);
     modeIndicator->setBounds (0, getHeight() - 4 - 5, getWidth() - 0, 5);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
@@ -148,13 +151,13 @@ void NavigationSidebar::handleChangeMode()
     switch (this->modeIndicator->scrollToNextMode())
     {
     case 0:
-        this->switchMonitorsAnimated(this->waveformMonitor, this->genericMonitor);
+        this->switchMonitorsAnimated(this->spectrogramMonitor, this->genericMonitor);
         break;
     case 1:
-        this->switchMonitorsAnimated(this->genericMonitor, this->spectrogramMonitor);
+        this->switchMonitorsAnimated(this->genericMonitor, this->waveformMonitor);
         break;
     case 2:
-        this->switchMonitorsAnimated(this->spectrogramMonitor, this->waveformMonitor);
+        this->switchMonitorsAnimated(this->waveformMonitor, this->spectrogramMonitor);
         break;
 
     default:
@@ -165,7 +168,7 @@ void NavigationSidebar::handleChangeMode()
 void NavigationSidebar::switchMonitorsAnimated(Component *oldOne, Component *newOne)
 {
     const int w = this->getWidth();
-    const int y = this->getHeight() - AUDIO_MONITOR_HEIGHT;
+    const int y = this->getHeight() - getAudioMonitorHeight();
     this->animator.animateComponent(oldOne, oldOne->getBounds().translated(-w, 0), 0.f, 200, true, 0.f, 1.f);
     oldOne->setVisible(false);
     newOne->setAlpha(0.f);
@@ -190,19 +193,19 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../Themes/PanelBackgroundC.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="0 127Rr 0M 6" sourceFile="../Themes/LighterShadowUpwards.cpp"
+             explicitFocusOrder="0" pos="0 71Rr 0M 6" sourceFile="../Themes/LighterShadowUpwards.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="28ce45d9e84b729c" memberName="headLine" virtualName=""
-             explicitFocusOrder="0" pos="0 47 0M 2" sourceFile="../Themes/SeparatorHorizontalReversed.cpp"
+             explicitFocusOrder="0" pos="0 39 0M 2" sourceFile="../Themes/SeparatorHorizontalReversed.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="1d398dc12e2047bd" memberName="headShadow" virtualName=""
-             explicitFocusOrder="0" pos="0 48 0M 6" sourceFile="../Themes/LighterShadowDownwards.cpp"
+             explicitFocusOrder="0" pos="0 40 0M 6" sourceFile="../Themes/LighterShadowDownwards.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="22d481533ce3ecd3" memberName="separator" virtualName=""
-             explicitFocusOrder="0" pos="0 126Rr 0M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
+             explicitFocusOrder="0" pos="0 70Rr 0M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="9e1622013601218a" memberName="modeIndicatorSelector"
-                    virtualName="" explicitFocusOrder="0" pos="0 0Rr 0M 126" class="ModeIndicatorTrigger"
+                    virtualName="" explicitFocusOrder="0" pos="0 0Rr 0M 70" class="ModeIndicatorTrigger"
                     params=""/>
   <GENERICCOMPONENT name="" id="4b6240e11495d88b" memberName="modeIndicator" virtualName=""
                     explicitFocusOrder="0" pos="0 4Rr 0M 5" class="ModeIndicatorComponent"

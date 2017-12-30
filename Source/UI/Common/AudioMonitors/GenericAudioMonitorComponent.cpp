@@ -29,8 +29,7 @@
 
 static const float kSpectrumFrequencies[] =
 {
-    31.5f,
-    50.f, 80.f,
+    63.f,
     125.f, 200.f,
     315.f, 500.f,
     800.f, 1250.f,
@@ -115,7 +114,7 @@ void GenericAudioMonitorComponent::paint(Graphics &g)
         return;
     }
     
-    const float bw = 6.f; // w / float(GENERIC_METER_NUM_BANDS);
+    const float bw = 5.f; // w / float(GENERIC_METER_NUM_BANDS);
     const float w = float(this->getWidth());
     const float h = float(this->getHeight());
     const uint32 timeNow = Time::getMillisecondCounter();
@@ -136,19 +135,15 @@ void GenericAudioMonitorComponent::paint(Graphics &g)
 
     // Volume peaks:
 
-    const float lAlpha = (0.4f - this->lPeakBand->peakDecayColour) / 10.f;
+    const float lAlpha = (0.4f - this->lPeakBand->peakDecayColour) / 4.f;
     const float yPeakL = (h - this->lPeakBand->peak - 1.f);
     g.setColour(Colours::white.withAlpha(lAlpha));
-    //g.setGradientFill(ColourGradient(Colours::white.withAlpha(lAlpha), 0.f, 0.f, Colours::transparentWhite, w / 2.f, 0.f, false));
-    g.drawHorizontalLine(int(yPeakL), 0.f, w / 2.f);
-    //g.fillRect(0.f, h - this->lPeakBand->peak, w / 2.f, this->lPeakBand->peak);
+    g.drawHorizontalLine(int(yPeakL), 3.f, w / 2.f - 2.f);
 
-    const float rAlpha = (0.4f - this->rPeakBand->peakDecayColour) / 10.f;
+    const float rAlpha = (0.4f - this->rPeakBand->peakDecayColour) / 4.f;
     const float yPeakR = (h - this->rPeakBand->peak - 1.f);
     g.setColour(Colours::white.withAlpha(rAlpha));
-    //g.setGradientFill(ColourGradient(Colours::transparentWhite, w / 2.f, 0.f, Colours::white.withAlpha(rAlpha), w, 0.f, false));
-    g.drawHorizontalLine(int(yPeakR), w / 2.f, w);
-    //g.fillRect(w / 2.f, h - this->rPeakBand->peak, w / 2.f, this->rPeakBand->peak);
+    g.drawHorizontalLine(int(yPeakR), w / 2.f + 2, w - 3.f);
 
 #endif
 

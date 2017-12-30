@@ -102,7 +102,7 @@ PianoTrackMap::~PianoTrackMap()
 
 void PianoTrackMap::resized()
 {
-    this->componentHeight = float(this->getHeight()) / 128.f;
+    this->componentHeight = float(this->getHeight()) / 128.f; // TODO remove hard-coded value
     
     this->setVisible(false);
 

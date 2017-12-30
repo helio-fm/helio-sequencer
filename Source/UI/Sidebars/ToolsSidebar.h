@@ -23,11 +23,10 @@ class ProjectTreeItem;
 #include "TransportListener.h"
 #include "CommandPanel.h"
 
-#define TOOLS_SIDEBAR_WIDTH (64)
+#define TOOLS_SIDEBAR_WIDTH (50)
 #define TOOLS_SIDEBAR_ROW_HEIGHT (38)
 //[/Headers]
 
-#include "../Themes/PanelBackgroundC.h"
 #include "../Themes/PanelBackgroundC.h"
 #include "../Themes/SeparatorHorizontalReversed.h"
 #include "../Themes/LighterShadowUpwards.h"
@@ -124,7 +123,6 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<PanelBackgroundC> headBg;
     ScopedPointer<PanelBackgroundC> bodyBg;
     ScopedPointer<ListBox> listBox;
     ScopedPointer<SeparatorHorizontalReversed> headLine;

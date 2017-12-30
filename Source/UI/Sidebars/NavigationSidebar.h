@@ -24,7 +24,7 @@ class SpectrogramAudioMonitorComponent;
 class ModeIndicatorComponent;
 class AudioMonitor;
 
-#define NAVIGATION_SIDEBAR_WIDTH (64)
+#define NAVIGATION_SIDEBAR_WIDTH (50)
 #include "ModeIndicatorComponent.h"
 //[/Headers]
 

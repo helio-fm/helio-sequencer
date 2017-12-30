@@ -409,19 +409,19 @@ void HybridRollHeader::paint(Graphics &g)
     g.setColour(this->barColour);
     for (const auto f : this->roll.getVisibleBars())
     {
-        g.drawVerticalLine(int(floorf(f)), float(this->getHeight() - 17), float(this->getHeight() - 1));
+        g.drawVerticalLine(int(floorf(f)), float(this->getHeight() - 14), float(this->getHeight() - 1));
     }
 
     g.setColour(this->barShadeColour);
     for (const auto f : this->roll.getVisibleBars())
     {
-        g.drawVerticalLine(int(floorf(f)) + 1, float(this->getHeight() - 16), float(this->getHeight() - 1));
+        g.drawVerticalLine(int(floorf(f)) + 1, float(this->getHeight() - 13), float(this->getHeight() - 1));
     }
 
     g.setColour(this->beatColour);
     for (const auto f : this->roll.getVisibleBeats())
     {
-        g.drawVerticalLine(int(floorf(f)), float(this->getHeight() - 10), float(this->getHeight() - 1));
+        g.drawVerticalLine(int(floorf(f)), float(this->getHeight() - 8), float(this->getHeight() - 1));
     }
 
     g.setColour(this->snapColour);

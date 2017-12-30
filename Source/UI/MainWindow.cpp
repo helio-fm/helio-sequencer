@@ -130,11 +130,6 @@ DocumentWindow("Helio",
 
     this->createLayoutComponent();
 
-    //if (App::isRunningOnPhone())
-    //{
-    //    this->setContentOwned(new FatalErrorScreen(), false);
-    //}
-
     this->setVisible(true);
 
 #if JUCE_IOS

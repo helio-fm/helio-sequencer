@@ -19,8 +19,10 @@
 
 class AudioMonitor;
 
-#define SPECTROGRAM_BUFFER_SIZE 32
-#define SPECTROGRAM_NUM_BANDS 32
+#include "NavigationSidebar.h"
+
+#define SPECTROGRAM_BUFFER_SIZE (NAVIGATION_SIDEBAR_WIDTH / 2)
+#define SPECTROGRAM_NUM_BANDS (NAVIGATION_SIDEBAR_WIDTH / 2)
 
 class SpectrogramAudioMonitorComponent :
     public Component, private Thread, private AsyncUpdater

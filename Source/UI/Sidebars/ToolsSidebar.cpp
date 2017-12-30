@@ -62,7 +62,6 @@ ToolsSidebar::ToolsSidebar(ProjectTreeItem &parent)
       timerStartSeekTime(0.0),
       timerStartSystemTime(0.0)
 {
-    addAndMakeVisible (headBg = new PanelBackgroundC());
     addAndMakeVisible (bodyBg = new PanelBackgroundC());
     addAndMakeVisible (listBox = new ListBox());
 
@@ -71,13 +70,13 @@ ToolsSidebar::ToolsSidebar(ProjectTreeItem &parent)
     addAndMakeVisible (separator = new SeparatorHorizontal());
     addAndMakeVisible (totalTime = new Label (String(),
                                               TRANS("...")));
-    totalTime->setFont (Font (Font::getDefaultSansSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
+    totalTime->setFont (Font (Font::getDefaultSansSerifFontName(), 14.00f, Font::plain).withTypefaceStyle ("Regular"));
     totalTime->setJustificationType (Justification::centred);
     totalTime->setEditable (false, false, false);
 
     addAndMakeVisible (currentTime = new Label (String(),
                                                 TRANS("...")));
-    currentTime->setFont (Font (Font::getDefaultSansSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    currentTime->setFont (Font (Font::getDefaultSansSerifFontName(), 16.00f, Font::plain).withTypefaceStyle ("Regular"));
     currentTime->setJustificationType (Justification::centred);
     currentTime->setEditable (false, false, false);
 
@@ -99,8 +98,12 @@ ToolsSidebar::ToolsSidebar(ProjectTreeItem &parent)
     this->listBox->setRowHeight(TOOLS_SIDEBAR_ROW_HEIGHT);
 
     // This one doesn't change too frequently:
-    this->totalTime->setBufferedToImage(true);
-    this->totalTime->setCachedComponentImage(new CachedLabelImage(*this->totalTime));
+    //this->totalTime->setBufferedToImage(true);
+    //this->totalTime->setCachedComponentImage(new CachedLabelImage(*this->totalTime));
+
+    // TODO: remove these and show timings somewhere else
+    this->totalTime->setVisible(false);
+    this->currentTime->setVisible(false);
 
     //[/UserPreSize]
 
@@ -131,7 +134,6 @@ ToolsSidebar::~ToolsSidebar()
     this->project.getTransport().removeTransportListener(this);
     //[/Destructor_pre]
 
-    headBg = nullptr;
     bodyBg = nullptr;
     listBox = nullptr;
     headLine = nullptr;
@@ -161,30 +163,21 @@ void ToolsSidebar::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    headBg->setBounds (0, 0, getWidth() - 0, 48);
-    bodyBg->setBounds (0, 48, getWidth() - 0, getHeight() - 48);
-    listBox->setBounds (0, 49, getWidth() - 0, getHeight() - 177);
-    headLine->setBounds (0, 47, getWidth() - 0, 2);
-    shadow->setBounds (0, getHeight() - 127 - 6, getWidth() - 0, 6);
-    separator->setBounds (0, getHeight() - 126 - 2, getWidth() - 0, 2);
-    totalTime->setBounds ((getWidth() / 2) - (72 / 2), getHeight() - 18 - (28 / 2), 72, 28);
-    currentTime->setBounds ((getWidth() / 2) - (72 / 2), getHeight() - 46 - (32 / 2), 72, 32);
-    playButton->setBounds ((getWidth() / 2) - ((getWidth() - 0) / 2), getHeight() - 92 - (64 / 2), getWidth() - 0, 64);
-    headShadow->setBounds (0, 48, getWidth() - 0, 6);
-    annotationsButton->setBounds ((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 45);
+    bodyBg->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
+    listBox->setBounds (0, 41, getWidth() - 0, getHeight() - 113);
+    headLine->setBounds (0, 39, getWidth() - 0, 2);
+    shadow->setBounds (0, getHeight() - 71 - 6, getWidth() - 0, 6);
+    separator->setBounds (0, getHeight() - 70 - 2, getWidth() - 0, 2);
+    totalTime->setBounds ((getWidth() / 2) + 80 - (72 / 2), getHeight() - 9 - 18, 72, 18);
+    currentTime->setBounds ((getWidth() / 2) + 80 - (72 / 2), getHeight() - 26 - 22, 72, 22);
+    playButton->setBounds ((getWidth() / 2) - (48 / 2), getHeight() - 12 - 48, 48, 48);
+    headShadow->setBounds (0, 40, getWidth() - 0, 6);
+    annotationsButton->setBounds ((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 39);
     //[UserResized] Add your own custom resize handling here..
     //Logger::writeToLog("HybridRollCommandPanel updateContent");
     // a hack for themes changing
     this->listBox->updateContent();
     this->annotationsButton->resized();
-
-#if HELIO_DESKTOP
-    playButton->setBounds ((getWidth() / 2) - ((getWidth() - 0) / 2), getHeight() - 88 - (64 / 2), getWidth() - 0, 48);
-    totalTime->setBounds ((getWidth() / 2) - (72 / 2), getHeight() - 28 - (28 / 2), 72, 28);
-    currentTime->setBounds ((getWidth() / 2) - (72 / 2), getHeight() - 54 - (32 / 2), 72, 32);
-    annotationsButton->setBounds ((getWidth() / 2) - ((getWidth() - 0) / 2), 28 - (36 / 2), getWidth() - 0, 36);
-#endif
-
     //[/UserResized]
 }
 
@@ -578,39 +571,37 @@ BEGIN_JUCER_METADATA
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
-  <JUCERCOMP name="" id="8f95c631b98e644b" memberName="headBg" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 48" sourceFile="../Themes/PanelBackgroundC.cpp"
-             constructorParams=""/>
   <JUCERCOMP name="" id="19597a6a5daad55d" memberName="bodyBg" virtualName=""
-             explicitFocusOrder="0" pos="0 48 0M 48M" sourceFile="../Themes/PanelBackgroundC.cpp"
+             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../Themes/PanelBackgroundC.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="381fa571a3dfc5cd" memberName="listBox" virtualName=""
-                    explicitFocusOrder="0" pos="0 49 0M 177M" class="ListBox" params=""/>
+                    explicitFocusOrder="0" pos="0 41 0M 113M" class="ListBox" params=""/>
   <JUCERCOMP name="" id="28ce45d9e84b729c" memberName="headLine" virtualName=""
-             explicitFocusOrder="0" pos="0 47 0M 2" sourceFile="../Themes/SeparatorHorizontalReversed.cpp"
+             explicitFocusOrder="0" pos="0 39 0M 2" sourceFile="../Themes/SeparatorHorizontalReversed.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="0 127Rr 0M 6" sourceFile="../Themes/LighterShadowUpwards.cpp"
+             explicitFocusOrder="0" pos="0 71Rr 0M 6" sourceFile="../Themes/LighterShadowUpwards.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="22d481533ce3ecd3" memberName="separator" virtualName=""
-             explicitFocusOrder="0" pos="0 126Rr 0M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
+             explicitFocusOrder="0" pos="0 70Rr 0M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
   <LABEL name="" id="700073f74a17c931" memberName="totalTime" virtualName=""
-         explicitFocusOrder="0" pos="0Cc 18Rc 72 28" labelText="..." editableSingleClick="0"
+         explicitFocusOrder="0" pos="80Cc 9Rr 72 18" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default sans-serif font"
-         fontsize="16" kerning="0" bold="0" italic="0" justification="36"/>
+         fontsize="14" kerning="0" bold="0" italic="0" justification="36"/>
   <LABEL name="" id="b9e867ece7f52ad8" memberName="currentTime" virtualName=""
-         explicitFocusOrder="0" pos="0Cc 46Rc 72 32" labelText="..." editableSingleClick="0"
-         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default sans-serif font"
-         fontsize="21" kerning="0" bold="0" italic="0" justification="36"/>
+         explicitFocusOrder="0" pos="80Cc 26Rr 72 22" labelText="..."
+         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
+         fontname="Default sans-serif font" fontsize="16" kerning="0"
+         bold="0" italic="0" justification="36"/>
   <JUCERCOMP name="" id="bb2e14336f795a57" memberName="playButton" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 92Rc 0M 64" sourceFile="../Common/PlayButton.cpp"
+             explicitFocusOrder="0" pos="0Cc 12Rr 48 48" sourceFile="../Common/PlayButton.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="1d398dc12e2047bd" memberName="headShadow" virtualName=""
-             explicitFocusOrder="0" pos="0 48 0M 6" sourceFile="../Themes/LighterShadowDownwards.cpp"
+             explicitFocusOrder="0" pos="0 40 0M 6" sourceFile="../Themes/LighterShadowDownwards.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="34c972d7b22acf17" memberName="annotationsButton"
-                    virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 45" class="CommandItemComponent"
+                    virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 39" class="CommandItemComponent"
                     params="this, nullptr, CommandItem::withParams(Icons::menu, CommandIDs::ShowAnnotations)"/>
 </JUCER_COMPONENT>
 
