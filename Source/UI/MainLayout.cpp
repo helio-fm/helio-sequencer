@@ -411,6 +411,11 @@ bool MainLayout::keyPressed(const KeyPress &key)
     return false;
 #endif
 
+    if (Component::getNumCurrentlyModalComponents() > 0)
+    {
+        return false;
+    }
+
     if (this->hotkeyScheme.dispatchKeyPress(key,
         this, this->currentContent.getComponent()))
     {
@@ -443,6 +448,11 @@ bool MainLayout::keyPressed(const KeyPress &key)
 
 bool MainLayout::keyStateChanged(bool isKeyDown)
 {
+    if (Component::getNumCurrentlyModalComponents() > 0)
+    {
+        return false;
+    }
+
     return this->hotkeyScheme.dispatchKeyStateChange(isKeyDown,
         this, this->currentContent.getComponent());
 }
