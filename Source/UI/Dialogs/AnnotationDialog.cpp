@@ -410,7 +410,11 @@ void AnnotationDialog::textEditorEscapeKeyPressed(TextEditor&)
 void AnnotationDialog::textEditorFocusLost(TextEditor&)
 {
     this->updateOkButtonState();
-    if (this->textEditor->getText().isNotEmpty())
+
+    const Component *focusedComponent = Component::getCurrentlyFocusedComponent();
+    if (this->textEditor->getText().isNotEmpty() &&
+        focusedComponent != this->okButton &&
+        focusedComponent != this->removeEventButton)
     {
         this->disappear();
     }

@@ -489,7 +489,11 @@ void KeySignatureDialog::textEditorEscapeKeyPressed(TextEditor &)
 void KeySignatureDialog::textEditorFocusLost(TextEditor &)
 {
     this->updateOkButtonState();
-    if (this->scaleNameEditor->getText().isNotEmpty())
+
+    const Component *focusedComponent = Component::getCurrentlyFocusedComponent();
+    if (this->scaleNameEditor->getText().isNotEmpty() &&
+        focusedComponent != this->okButton &&
+        focusedComponent != this->removeEventButton)
     {
         this->disappear();
     }
