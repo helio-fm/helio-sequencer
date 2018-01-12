@@ -23,7 +23,7 @@
 
 // todo rework as ProfileManager?
 
-class AuthorizationManager :
+class AuthManager :
     public ChangeBroadcaster,
     private Timer,
     private LoginThread::Listener,
@@ -32,9 +32,7 @@ class AuthorizationManager :
 {
 public:
     
-    AuthorizationManager();
-    
-    ~AuthorizationManager() override;
+    AuthManager();
 
     enum AuthState
     {
@@ -49,19 +47,14 @@ public:
         RequestFailed,
         ConnectionFailed
     };
-    
 
     AuthState getAuthorizationState() const;
-
     RequestState getLastRequestState() const;
-
     String getUserLoginOfCurrentSession() const;
     
     Array<RemoteProjectDescription> getListOfRemoteProjects();
 
-
     void login(const String &login, const String &passwordHash);
-
     void logout();
 
     void requestSessionData();
@@ -69,7 +62,6 @@ public:
 private:
 
     bool isBusy() const;
-
     void timerCallback() override;
 
     Array<RemoteProjectDescription> lastReceivedProjects;

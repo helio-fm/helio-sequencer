@@ -22,7 +22,6 @@ class LoginThread : private Thread
 public:
     
     LoginThread();
-    
     ~LoginThread() override;
     
     class Listener
@@ -44,13 +43,11 @@ private:
     void run() override;
     
     URL url;
-    
     String email;
-    
     String passwordHash;
     
     LoginThread::Listener *listener;
     
-    friend class AuthorizationManager;
+    friend class AuthManager;
     
 };

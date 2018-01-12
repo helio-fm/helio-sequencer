@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "RequestProjectsListThread.h"
 
-#include "AuthorizationManager.h"
+#include "AuthManager.h"
 #include "Config.h"
 
 #include "DataEncoder.h"

@@ -21,7 +21,7 @@
 #include "MainLayout.h"
 #include "Icons.h"
 #include "SerializationKeys.h"
-#include "AuthorizationSettings.h"
+#include "AuthSettings.h"
 #include "AudioSettings.h"
 #include "ThemeSettings.h"
 #include "OpenGLSettings.h"

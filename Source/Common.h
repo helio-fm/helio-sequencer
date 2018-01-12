@@ -72,6 +72,9 @@ struct StringHash
 template <class T>
 using UniquePointer = std::unique_ptr<T>;
 
+template <class T>
+using Function = std::function<T>;
+
 #if _MSC_VER
 inline float roundf(float x)
 {

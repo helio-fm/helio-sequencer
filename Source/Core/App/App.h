@@ -41,7 +41,7 @@ class AudioCore;
 class Supervisor;
 class UpdateManager;
 class InternalClipboard;
-class AuthorizationManager;
+class AuthManager;
 
 class App : public JUCEApplication,
             private AsyncUpdater,
@@ -49,10 +49,6 @@ class App : public JUCEApplication,
 
 {
 public:
-
-    App();
-    ~App() override;
-
 
     //===------------------------------------------------------------------===//
     // Static
@@ -113,7 +109,7 @@ public:
     Config *getConfig() const noexcept;
     Supervisor *getSupervisor() const noexcept;
     InternalClipboard *getClipboard() const noexcept;
-    AuthorizationManager *getAuthManager() const noexcept;
+    AuthManager *getAuthManager() const noexcept;
     UpdateManager *getUpdateManager() const noexcept;
     HelioTheme *getTheme() const noexcept;
 
@@ -126,7 +122,7 @@ private:
     ScopedPointer<UpdateManager> updater;
     ScopedPointer<InternalClipboard> clipboard;
     ScopedPointer<class MainWindow> window;
-    ScopedPointer<AuthorizationManager> authorizationManager;
+    ScopedPointer<AuthManager> authorizationManager;
     ScopedPointer<class Workspace> workspace;
 
 private:

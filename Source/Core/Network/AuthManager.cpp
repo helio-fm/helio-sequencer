@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "AuthorizationManager.h"
+#include "AuthManager.h"
 
 #include "LoginThread.h"
 #include "LogoutThread.h"
@@ -34,7 +34,7 @@
 
 #define REMOTE_UPDATE_TIMEOUT_MS (1000 * 60 * 30)
 
-AuthorizationManager::AuthorizationManager() :
+AuthManager::AuthManager() :
     authState(Unknown),
     lastRequestState(RequestSucceed)
 {
@@ -46,29 +46,23 @@ AuthorizationManager::AuthorizationManager() :
     this->startTimer(REMOTE_UPDATE_TIMEOUT_MS);
 }
 
-AuthorizationManager::~AuthorizationManager()
-{
-    //===------------------------------------------------------------------===//
-}
-
-
-AuthorizationManager::AuthState AuthorizationManager::getAuthorizationState() const
+AuthManager::AuthState AuthManager::getAuthorizationState() const
 {
     return (this->authState);
 }
 
-AuthorizationManager::RequestState AuthorizationManager::getLastRequestState() const
+AuthManager::RequestState AuthManager::getLastRequestState() const
 {
     return (this->lastRequestState);
 }
 
-String AuthorizationManager::getUserLoginOfCurrentSession() const
+String AuthManager::getUserLoginOfCurrentSession() const
 {
     return this->currentLogin;
 }
 
 
-void AuthorizationManager::login(const String &login, const String &passwordHash)
+void AuthManager::login(const String &login, const String &passwordHash)
 {
     if (this->isBusy())
     {
@@ -78,7 +72,7 @@ void AuthorizationManager::login(const String &login, const String &passwordHash
     this->loginThread->login(this, login, passwordHash);
 }
 
-void AuthorizationManager::logout()
+void AuthManager::logout()
 {
     if (this->isBusy())
     {
@@ -88,12 +82,12 @@ void AuthorizationManager::logout()
     this->logoutThread->logout(this);
 }
 
-Array<RemoteProjectDescription> AuthorizationManager::getListOfRemoteProjects()
+Array<RemoteProjectDescription> AuthManager::getListOfRemoteProjects()
 {
     return this->lastReceivedProjects;
 };
 
-bool AuthorizationManager::isBusy() const
+bool AuthManager::isBusy() const
 {
     return (this->loginThread->isThreadRunning() ||
             this->logoutThread->isThreadRunning() ||
@@ -105,12 +99,12 @@ bool AuthorizationManager::isBusy() const
 // Updating session
 //===----------------------------------------------------------------------===//
 
-void AuthorizationManager::timerCallback()
+void AuthManager::timerCallback()
 {
     this->requestSessionData();
 }
 
-void AuthorizationManager::requestSessionData()
+void AuthManager::requestSessionData()
 {
     this->projectListThread->requestListAndEmail(this);
 }
@@ -120,7 +114,7 @@ void AuthorizationManager::requestSessionData()
 // LoginThread::Listener
 //===----------------------------------------------------------------------===//
 
-void AuthorizationManager::loginOk(const String &userEmail)
+void AuthManager::loginOk(const String &userEmail)
 {
     this->lastRequestState = RequestSucceed;
     this->authState = LoggedIn;
@@ -133,7 +127,7 @@ void AuthorizationManager::loginOk(const String &userEmail)
     this->sendChangeMessage();
 }
 
-void AuthorizationManager::loginAuthorizationFailed()
+void AuthManager::loginAuthorizationFailed()
 {
     this->lastRequestState = RequestFailed;
     this->authState = NotLoggedIn;
@@ -142,7 +136,7 @@ void AuthorizationManager::loginAuthorizationFailed()
     this->sendChangeMessage();
 }
 
-void AuthorizationManager::loginConnectionFailed()
+void AuthManager::loginConnectionFailed()
 {
     this->lastRequestState = ConnectionFailed;
     this->authState = Unknown;
@@ -155,7 +149,7 @@ void AuthorizationManager::loginConnectionFailed()
 // LogoutThread::Listener
 //===----------------------------------------------------------------------===//
 
-void AuthorizationManager::logoutOk()
+void AuthManager::logoutOk()
 {
     this->lastRequestState = RequestSucceed;
     this->authState = NotLoggedIn;
@@ -164,13 +158,13 @@ void AuthorizationManager::logoutOk()
     this->sendChangeMessage();
 }
 
-void AuthorizationManager::logoutFailed()
+void AuthManager::logoutFailed()
 {
     this->lastRequestState = RequestFailed;
     this->sendChangeMessage();
 }
 
-void AuthorizationManager::logoutConnectionFailed()
+void AuthManager::logoutConnectionFailed()
 {
     this->lastRequestState = ConnectionFailed;
     this->sendChangeMessage();
@@ -181,7 +175,7 @@ void AuthorizationManager::logoutConnectionFailed()
 // RequestProjectsListThread::Listener
 //===----------------------------------------------------------------------===//
 
-void AuthorizationManager::listRequestOk(const String &userEmail, Array<RemoteProjectDescription> list)
+void AuthManager::listRequestOk(const String &userEmail, Array<RemoteProjectDescription> list)
 {
     //Logger::writeToLog("listRequestOk: " + userEmail);
     this->lastRequestState = RequestSucceed;
@@ -191,7 +185,7 @@ void AuthorizationManager::listRequestOk(const String &userEmail, Array<RemotePr
     this->sendChangeMessage();
 }
 
-void AuthorizationManager::listRequestAuthorizationFailed()
+void AuthManager::listRequestAuthorizationFailed()
 {
     //Logger::writeToLog("listRequestAuthorizationFailed: ");
     this->lastRequestState = RequestFailed;
@@ -199,7 +193,7 @@ void AuthorizationManager::listRequestAuthorizationFailed()
     this->sendChangeMessage();
 }
 
-void AuthorizationManager::listRequestConnectionFailed()
+void AuthManager::listRequestConnectionFailed()
 {
     //Logger::writeToLog("listRequestConnectionFailed: ");
     this->lastRequestState = ConnectionFailed;

@@ -79,7 +79,7 @@ private:
 };
 
 #include "App.h"
-#include "AuthorizationManager.h"
+#include "AuthManager.h"
 #include "ProgressTooltip.h"
 #include "SuccessTooltip.h"
 #include "FailTooltip.h"
@@ -334,7 +334,7 @@ bool AuthorizationDialog::validateTextFields() const
 
 void AuthorizationDialog::changeListenerCallback(ChangeBroadcaster *source)
 {
-    AuthorizationManager *authManager = App::Helio()->getAuthManager();
+    AuthManager *authManager = App::Helio()->getAuthManager();
     authManager->removeChangeListener(this);
 
     if (Component *progressIndicator =
@@ -342,16 +342,16 @@ void AuthorizationDialog::changeListenerCallback(ChangeBroadcaster *source)
     {
         delete progressIndicator;
 
-        if (authManager->getLastRequestState() == AuthorizationManager::RequestSucceed)
+        if (authManager->getLastRequestState() == AuthManager::RequestSucceed)
         {
             App::Helio()->showModalComponent(new SuccessTooltip());
             delete this;
         }
-        else if (authManager->getLastRequestState() == AuthorizationManager::RequestFailed)
+        else if (authManager->getLastRequestState() == AuthManager::RequestFailed)
         {
             App::Helio()->showModalComponent(new FailTooltip());
         }
-        if (authManager->getLastRequestState() == AuthorizationManager::ConnectionFailed)
+        if (authManager->getLastRequestState() == AuthManager::ConnectionFailed)
         {
             App::Helio()->showModalComponent(new FailTooltip());
         }

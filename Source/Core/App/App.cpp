@@ -21,7 +21,7 @@
 #include "UpdateManager.h"
 #include "TranslationManager.h"
 #include "ArpeggiatorsManager.h"
-#include "AuthorizationManager.h"
+#include "AuthManager.h"
 
 #include "HelioTheme.h"
 #include "ThemeSettings.h"
@@ -44,15 +44,6 @@
 #include "MainWindow.h"
 #include "Workspace.h"
 #include "RootTreeItem.h"
-
-App::App()
-{
-}
-
-App::~App()
-{
-}
-
 
 //===----------------------------------------------------------------------===//
 // Static
@@ -114,20 +105,23 @@ bool App::isRunningOnDesktop()
 
 String App::getAppReadableVersion()
 {
-    String v;
+    static String v;
     
-    if (String(APP_VERSION_REVISION).getIntValue() > 0)
+    if (v.isEmpty())
     {
-        v << APP_VERSION_MAJOR << "." << APP_VERSION_MINOR << "." << APP_VERSION_REVISION;
-    }
-    else
-    {
-        v << APP_VERSION_MAJOR << "." << APP_VERSION_MINOR;
-    }
+        if (String(APP_VERSION_REVISION).getIntValue() > 0)
+        {
+            v << APP_VERSION_MAJOR << "." << APP_VERSION_MINOR << "." << APP_VERSION_REVISION;
+        }
+        else
+        {
+            v << APP_VERSION_MAJOR << "." << APP_VERSION_MINOR;
+        }
 
-    if (String(APP_VERSION_NAME).isNotEmpty())
-    {
-        v << " (" << APP_VERSION_NAME << ")";
+        if (String(APP_VERSION_NAME).isNotEmpty())
+        {
+            v << " (" << APP_VERSION_NAME << ")";
+        }
     }
 
     return v;
@@ -288,7 +282,7 @@ void App::initialise(const String &commandLine)
         this->theme->initResources();
         LookAndFeel::setDefaultLookAndFeel(this->theme);
 
-        this->authorizationManager = new AuthorizationManager();
+        this->authorizationManager = new AuthManager();
         this->clipboard = new InternalClipboard();
 
         TranslationManager::getInstance().initialise(commandLine);
@@ -471,7 +465,7 @@ Supervisor *App::getSupervisor() const noexcept
     return this->supervisor;
 }
 
-AuthorizationManager *App::getAuthManager() const noexcept
+AuthManager *App::getAuthManager() const noexcept
 {
     return this->authorizationManager;
 }

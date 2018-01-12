@@ -19,7 +19,7 @@
 #include "Common.h"
 //[/Headers]
 
-#include "AuthorizationSettings.h"
+#include "AuthSettings.h"
 
 //[MiscUserDefs]
 
@@ -27,13 +27,13 @@
 
 #include "App.h"
 #include "MainWindow.h"
-#include "AuthorizationManager.h"
+#include "AuthManager.h"
 #include "ShapeComponent.h"
 #include "Config.h"
 #include "SerializationKeys.h"
 //[/MiscUserDefs]
 
-AuthorizationSettings::AuthorizationSettings()
+AuthSettings::AuthSettings()
 {
     addAndMakeVisible (emailEditor = new Label ("emailEditor",
                                                 TRANS("...")));
@@ -80,7 +80,7 @@ AuthorizationSettings::AuthorizationSettings()
     //[/Constructor]
 }
 
-AuthorizationSettings::~AuthorizationSettings()
+AuthSettings::~AuthSettings()
 {
     //[Destructor_pre]
     //[/Destructor_pre]
@@ -94,7 +94,7 @@ AuthorizationSettings::~AuthorizationSettings()
     //[/Destructor]
 }
 
-void AuthorizationSettings::paint (Graphics& g)
+void AuthSettings::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
@@ -103,7 +103,7 @@ void AuthorizationSettings::paint (Graphics& g)
     //[/UserPaint]
 }
 
-void AuthorizationSettings::resized()
+void AuthSettings::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
@@ -116,7 +116,7 @@ void AuthorizationSettings::resized()
     //[/UserResized]
 }
 
-void AuthorizationSettings::labelTextChanged (Label* labelThatHasChanged)
+void AuthSettings::labelTextChanged (Label* labelThatHasChanged)
 {
     //[UserlabelTextChanged_Pre]
     //[/UserlabelTextChanged_Pre]
@@ -136,7 +136,7 @@ void AuthorizationSettings::labelTextChanged (Label* labelThatHasChanged)
     //[/UserlabelTextChanged_Post]
 }
 
-void AuthorizationSettings::visibilityChanged()
+void AuthSettings::visibilityChanged()
 {
     //[UserCode_visibilityChanged] -- Add your code here...
     //[/UserCode_visibilityChanged]
@@ -145,7 +145,7 @@ void AuthorizationSettings::visibilityChanged()
 
 //[MiscUserCode]
 
-//void AuthorizationSettings::changeListenerCallback(ChangeBroadcaster *source)
+//void AuthSettings::changeListenerCallback(ChangeBroadcaster *source)
 //{
 //    AuthorizationManager *authManager = App::Helio()->getAuthManager();
 //    authManager->removeChangeListener(this);
@@ -178,7 +178,7 @@ void AuthorizationSettings::visibilityChanged()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="AuthorizationSettings" template="../../../Template"
+<JUCER_COMPONENT documentType="Component" className="AuthSettings" template="../../../Template"
                  componentName="" parentClasses="public Component" constructorParams=""
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
                  overlayOpacity="0.330" fixedSize="1" initialWidth="600" initialHeight="128">

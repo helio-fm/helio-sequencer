@@ -22,7 +22,7 @@
 #include "DataEncoder.h"
 #include "HelioServerDefines.h"
 #include "App.h"
-#include "AuthorizationManager.h"
+#include "AuthManager.h"
 #include "Config.h"
 #include "Supervisor.h"
 #include "SerializationKeys.h"
@@ -53,7 +53,7 @@ void RemovalThread::run()
     removeUrl = removeUrl.withParameter(Serialization::Network::clientCheck, saltedIdHash);
     removeUrl = removeUrl.withParameter(Serialization::Network::key, keyHash);
     
-    const bool loggedIn = (App::Helio()->getAuthManager()->getAuthorizationState() == AuthorizationManager::LoggedIn);
+    const bool loggedIn = (App::Helio()->getAuthManager()->getAuthorizationState() == AuthManager::LoggedIn);
     
     if (loggedIn)
     {

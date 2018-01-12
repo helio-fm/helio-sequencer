@@ -25,9 +25,6 @@
 #include "SerializationKeys.h"
 #include "ArpeggiatorsManager.h"
 
-#define NUM_CONNECT_ATTEMPTS 4
-
-
 RequestArpeggiatorsThread::RequestArpeggiatorsThread() :
     Thread("RequestArpeggiators"),
     listener(nullptr) {}

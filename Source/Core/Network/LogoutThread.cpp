@@ -27,13 +27,9 @@
 
 #define NUM_CONNECT_ATTEMPTS 3
 
-
 LogoutThread::LogoutThread() :
     Thread("Logout"),
-    listener(nullptr)
-{
-
-}
+    listener(nullptr) {}
 
 LogoutThread::~LogoutThread()
 {

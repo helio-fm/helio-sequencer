@@ -300,12 +300,14 @@
           <FILE id="leo3vi" name="Scale.h" compile="0" resource="0" file="../../Source/Core/Midi/Scale.h"/>
         </GROUP>
         <GROUP id="{9C34DE9F-57B6-7B3A-C005-1E16E0BF57B2}" name="Network">
-          <FILE id="zuzMlt" name="AuthorizationManager.cpp" compile="1" resource="0"
-                file="../../Source/Core/Network/AuthorizationManager.cpp"/>
-          <FILE id="lk1Vh2" name="AuthorizationManager.h" compile="0" resource="0"
-                file="../../Source/Core/Network/AuthorizationManager.h"/>
+          <FILE id="zuzMlt" name="AuthManager.cpp" compile="1" resource="0" file="../../Source/Core/Network/AuthManager.cpp"/>
+          <FILE id="lk1Vh2" name="AuthManager.h" compile="0" resource="0" file="../../Source/Core/Network/AuthManager.h"/>
           <FILE id="wvwATY" name="HelioServerDefines.h" compile="0" resource="0"
                 file="../../Source/Core/Network/HelioServerDefines.h"/>
+          <FILE id="e2QUXO" name="HttpConnection.cpp" compile="1" resource="0"
+                file="../../Source/Core/Network/HttpConnection.cpp"/>
+          <FILE id="P2JsYR" name="HttpConnection.h" compile="0" resource="0"
+                file="../../Source/Core/Network/HttpConnection.h"/>
           <FILE id="AQpXQd" name="LoginThread.cpp" compile="1" resource="0" file="../../Source/Core/Network/LoginThread.cpp"/>
           <FILE id="URoFvA" name="LoginThread.h" compile="0" resource="0" file="../../Source/Core/Network/LoginThread.h"/>
           <FILE id="gRRURg" name="LogoutThread.cpp" compile="1" resource="0"
@@ -866,10 +868,9 @@
             <FILE id="zErgDe" name="AudioSettings.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/AudioSettings.cpp"/>
             <FILE id="qPsjoy" name="AudioSettings.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/AudioSettings.h"/>
-            <FILE id="a36Z1B" name="AuthorizationSettings.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Pages/Settings/AuthorizationSettings.cpp"/>
-            <FILE id="zqmI1k" name="AuthorizationSettings.h" compile="0" resource="0"
-                  file="../../Source/UI/Pages/Settings/AuthorizationSettings.h"/>
+            <FILE id="a36Z1B" name="AuthSettings.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Settings/AuthSettings.cpp"/>
+            <FILE id="zqmI1k" name="AuthSettings.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/AuthSettings.h"/>
             <FILE id="sCV3Ea" name="ColourChangeButton.h" compile="0" resource="0"
                   file="../../Source/UI/Pages/Settings/ColourChangeButton.h"/>
             <FILE id="V92mWI" name="ComponentsList.cpp" compile="1" resource="0"

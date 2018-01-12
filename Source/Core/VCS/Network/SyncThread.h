@@ -31,10 +31,7 @@ namespace VCS
                    String projectId,
                    MemoryBlock projectKey,
                    ScopedPointer<XmlElement> pushContent);
-
-        ~SyncThread() override;
-
-
+        
         enum State
         {
             readyToRock,
@@ -54,13 +51,10 @@ namespace VCS
             allDone
         };
 
-
         SyncThread::State getState() const;
-
         void setState(SyncThread::State val);
 
         float getProgress() const;
-
         void setProgress(int sent, int total);
 
     protected:
@@ -68,21 +62,12 @@ namespace VCS
         URL url;
 
         String localId;
-
         MemoryBlock localKey;
-
         ScopedPointer<XmlElement> localXml;
 
+        Atomic<int> bytesSent;
+        Atomic<int> totalBytes;
+        Atomic<int> state;
 
-        ReadWriteLock stateLock;
-
-        SyncThread::State state;
-
-
-        ReadWriteLock progressLock;
-
-        int bytesSent;
-
-        int totalBytes;
     };
 }  // namespace VCS

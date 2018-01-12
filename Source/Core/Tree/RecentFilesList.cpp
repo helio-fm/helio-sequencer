@@ -22,7 +22,7 @@
 #include "SerializationKeys.h"
 
 #include "App.h"
-#include "AuthorizationManager.h"
+#include "AuthManager.h"
 
 RecentFilesList::RecentFilesList()
 {

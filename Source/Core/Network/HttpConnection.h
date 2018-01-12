@@ -17,33 +17,37 @@
 
 #pragma once
 
-class LogoutThread : private Thread
+class HttpConnection
 {
 public:
-    
-    LogoutThread();
-    ~LogoutThread() override;
-    
-    class Listener
+
+    typedef Function<void(int, int)> ProgressCallback;
+
+    HttpConnection(URL url, ProgressCallback progressCallback = nullptr);
+
+    struct Response
     {
-    public:
-        virtual ~Listener() {}
-    private:
-        virtual void logoutOk() = 0;
-        virtual void logoutFailed() = 0;
-        virtual void logoutConnectionFailed() = 0;
-        friend class LogoutThread;
+        Response();
+        Result result;
+        int statusCode;
+        StringPairArray headers;
+        var jsonBody;
+        ScopedPointer<XmlElement> xmlBody;
     };
-    
-    void logout(LogoutThread::Listener *authListener);
-    
+
+    enum ResponseType
+    {
+        Json,
+        Xml,
+        Raw
+    };
+
+    Response request(ResponseType type = Json) const;
+
+    URL url;
+    ProgressCallback progressCallback;
+
 private:
 
-    void run() override;
-    
-    URL url;
-    
-    LogoutThread::Listener *listener;
-    friend class AuthManager;
-
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HttpConnection)
 };

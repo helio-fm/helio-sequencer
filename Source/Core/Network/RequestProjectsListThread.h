@@ -60,6 +60,6 @@ private:
     
     String userEmail;
     
-    friend class AuthorizationManager;
+    friend class AuthManager;
     
 };

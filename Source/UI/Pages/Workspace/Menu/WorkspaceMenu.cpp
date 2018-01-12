@@ -28,7 +28,7 @@
 #include "OpenProjectRow.h"
 #include "App.h"
 #include "MainLayout.h"
-#include "AuthorizationManager.h"
+#include "AuthManager.h"
 #include "AuthorizationDialog.h"
 #include "ProgressTooltip.h"
 #include "SuccessTooltip.h"
@@ -129,8 +129,8 @@ void WorkspaceMenu::handleCommandMessage (int commandId)
     }
     else if (commandId == CommandIDs::LoginLogout)
     {
-        AuthorizationManager *authManager = App::Helio()->getAuthManager();
-        const bool isLoggedIn = (authManager->getAuthorizationState() == AuthorizationManager::LoggedIn);
+        AuthManager *authManager = App::Helio()->getAuthManager();
+        const bool isLoggedIn = (authManager->getAuthorizationState() == AuthManager::LoggedIn);
 
         if (!isLoggedIn)
         {
@@ -153,7 +153,7 @@ void WorkspaceMenu::handleCommandMessage (int commandId)
 
 void WorkspaceMenu::changeListenerCallback(ChangeBroadcaster *source)
 {
-    AuthorizationManager *authManager = App::Helio()->getAuthManager();
+    AuthManager *authManager = App::Helio()->getAuthManager();
 
     if (source == this->workspace)
     {
@@ -170,15 +170,15 @@ void WorkspaceMenu::changeListenerCallback(ChangeBroadcaster *source)
         {
             delete progressIndicator;
 
-            if (authManager->getLastRequestState() == AuthorizationManager::RequestSucceed)
+            if (authManager->getLastRequestState() == AuthManager::RequestSucceed)
             {
                 App::Helio()->showModalComponent(new SuccessTooltip());
             }
-            else if (authManager->getLastRequestState() == AuthorizationManager::RequestFailed)
+            else if (authManager->getLastRequestState() == AuthManager::RequestFailed)
             {
                 App::Helio()->showModalComponent(new FailTooltip());
             }
-            if (authManager->getLastRequestState() == AuthorizationManager::ConnectionFailed)
+            if (authManager->getLastRequestState() == AuthManager::ConnectionFailed)
             {
                 App::Helio()->showModalComponent(new FailTooltip());
             }

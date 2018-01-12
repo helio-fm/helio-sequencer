@@ -22,9 +22,10 @@
 #include "DataEncoder.h"
 #include "HelioServerDefines.h"
 #include "App.h"
-#include "AuthorizationManager.h"
+#include "AuthManager.h"
 #include "Config.h"
 #include "Supervisor.h"
+#include "HttpConnection.h"
 #include "SerializationKeys.h"
 
 using namespace VCS;
@@ -35,9 +36,7 @@ PushThread::PushThread(URL pushUrl,
                        MemoryBlock projectKey,
                        ScopedPointer<XmlElement> pushContent) :
     SyncThread(pushUrl, projectId, projectKey, pushContent),
-    title(std::move(projectTitle))
-{
-}
+    title(std::move(projectTitle)) {}
 
 void PushThread::run()
 {
@@ -56,6 +55,19 @@ void PushThread::run()
     URL fetchUrl(this->url);
     fetchUrl = fetchUrl.withParameter(Serialization::Network::fetch, this->localId);
     fetchUrl = fetchUrl.withParameter(Serialization::Network::clientCheck, saltedIdHash);
+
+    // TODO like this:
+
+    //const HttpConnection connection(fetchUrl,
+    //    [this](int bytesSent, int bytesTotal) { this->setProgress(bytesSent, bytesTotal); });
+
+    //const auto response = connection.requestJson();
+
+    //if (response.result.failed() || (response.statusCode != 200 && response.statusCode != 404))
+    //{
+    //    this->setState(SyncThread::fetchHistoryError);
+    //    return;
+    //}
 
     {
         int statusCode = 0;
@@ -174,7 +186,7 @@ void PushThread::run()
     pushUrl = pushUrl.withFileToUpload(Serialization::Network::file, tempFile.getFile(), "application/octet-stream");
     pushUrl = pushUrl.withParameter(Serialization::Network::key, keyHash);
 
-    const bool loggedIn = (App::Helio()->getAuthManager()->getAuthorizationState() == AuthorizationManager::LoggedIn);
+    const bool loggedIn = (App::Helio()->getAuthManager()->getAuthorizationState() == AuthManager::LoggedIn);
 
     if (loggedIn)
     {

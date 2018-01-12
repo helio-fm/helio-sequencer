@@ -28,12 +28,9 @@
 
 #define NUM_CONNECT_ATTEMPTS 3
 
-
 LoginThread::LoginThread() :
     Thread("Login"),
-    listener(nullptr)
-{
-}
+    listener(nullptr) {}
 
 LoginThread::~LoginThread()
 {

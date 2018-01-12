@@ -39,37 +39,27 @@ SyncThread::SyncThread(URL pushUrl,
     localKey(std::move(projectKey)),
     localXml(std::move(pushContent)),
     bytesSent(0),
-    totalBytes(0)
-{
-}
-
-SyncThread::~SyncThread()
-{
-}
+    totalBytes(0) {}
 
 SyncThread::State SyncThread::getState() const
 {
-    const ScopedReadLock lock(this->stateLock);
-    return this->state;
+    return (SyncThread::State)this->state.get();
 }
 
 void SyncThread::setState(SyncThread::State val)
 {
-    const ScopedWriteLock lock(this->stateLock);
     this->state = val;
     this->sendChangeMessage();
 }
 
 float SyncThread::getProgress() const
 {
-    const ScopedReadLock lock(this->progressLock);
-    const float percents = (float(this->bytesSent) / float(this->totalBytes));
+    const float percents = (float(this->bytesSent.get()) / float(this->totalBytes.get()));
     return (percents > 100.f) ? 0.f : percents;
 }
 
 void SyncThread::setProgress(int sent, int total)
 {
-    const ScopedWriteLock lock(this->progressLock);
     this->bytesSent = sent;
     this->totalBytes = total;
     this->sendChangeMessage();

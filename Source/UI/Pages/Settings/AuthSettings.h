@@ -22,14 +22,14 @@ class ShapeComponent;
 //[/Headers]
 
 
-class AuthorizationSettings  : public Component,
+class AuthSettings  : public Component,
                                public Label::Listener
 {
 public:
 
-    AuthorizationSettings ();
+    AuthSettings ();
 
-    ~AuthorizationSettings();
+    ~AuthSettings();
 
     //[UserMethods]
     //[/UserMethods]
@@ -50,5 +50,5 @@ private:
     ScopedPointer<Label> passwordEditor;
     ScopedPointer<Label> passwordLabel;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AuthorizationSettings)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AuthSettings)
 };
