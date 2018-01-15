@@ -51,8 +51,9 @@ Used fonts and icons taken from various free icon fonts (see [Icomoon](https://i
 
 All Helio logos and translations are also distrubuted under [CC-BY](https://creativecommons.org/licenses/by/3.0/).
 
-#### Additional translation and proofreading credits
+#### Translation and proofreading credits (in alphabetical order)
 
-Dario Silva - Brazilian Portuguese  
-Jacques Viviers - Afrikaans  
 Claudio Stano - Italian  
+Dario Silva - Brazilian Portuguese  
+Dawid Bugajski - Polish  
+Jacques Viviers - Afrikaans  
