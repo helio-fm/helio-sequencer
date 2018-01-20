@@ -21,7 +21,6 @@
 
 #include "DataEncoder.h"
 #include "HelioServerDefines.h"
-#include "Supervisor.h"
 #include "SerializationKeys.h"
 #include "TranslationManager.h"
 

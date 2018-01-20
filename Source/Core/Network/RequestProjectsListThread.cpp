@@ -23,8 +23,6 @@
 
 #include "DataEncoder.h"
 #include "HelioServerDefines.h"
-
-#include "Supervisor.h"
 #include "SerializationKeys.h"
 
 #define NUM_CONNECT_ATTEMPTS 4

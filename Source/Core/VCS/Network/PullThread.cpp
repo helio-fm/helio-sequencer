@@ -21,7 +21,6 @@
 #include "Client.h"
 #include "DataEncoder.h"
 #include "HelioServerDefines.h"
-#include "Supervisor.h"
 #include "SerializationKeys.h"
 
 using namespace VCS;
@@ -85,11 +84,8 @@ void PullThread::run()
 
         if (remoteXml == nullptr)
         {
-            // видимо, неверный ключ
             //const String obfustatedKey = DataEncoder::obfuscateString(this->localKey.toBase64Encoding());
             //Logger::writeToLog("Possible, wrong key: " + obfustatedKey);
-
-            Supervisor::track(Serialization::Activities::vcsPullError);
             this->setState(SyncThread::fetchHistoryError);
             return;
         }
@@ -136,7 +132,6 @@ void PullThread::run()
     }
     else
     {
-        Supervisor::track(Serialization::Activities::vcsMergeError);
         this->setState(SyncThread::mergeError);
         return;
     }
@@ -154,7 +149,5 @@ void PullThread::run()
     //debugFile.replaceWithText(localXmlForDebug->createDocument("", false, true, "UTF-8", 512));
 
     Time::waitForMillisecondCounter(Time::getMillisecondCounter() + 350);
-
-    Supervisor::track(Serialization::Activities::vcsPull);
     this->setState(SyncThread::allDone);
 }

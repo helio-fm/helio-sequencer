@@ -22,7 +22,6 @@
 #include "HelioServerDefines.h"
 #include "DataEncoder.h"
 #include "SerializationKeys.h"
-#include "Supervisor.h"
 #include "UpdateDialog.h"
 
 #if JUCE_WINDOWS

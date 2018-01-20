@@ -28,6 +28,5 @@
 #define HELIO_LOGIN_URL ("https://helioworkstation.com/api/v2/login/")
 #define HELIO_LOGOUT_URL ("https://helioworkstation.com/api/v2/logout/")
 #define HELIO_PROJECTLIST_URL ("https://helioworkstation.com/api/v2/projects/")
-#define HELIO_SUPERVISOR_URL ("https://helioworkstation.com/api/v2/statistics/")
 #define HELIO_COLOUR_SCHEMES_URL ("https://helioworkstation.com/api/v2/colours/")
 #define HELIO_TRANSLATIONS_HELP_URL ("https://helioworkstation.com/translations/")

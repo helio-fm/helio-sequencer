@@ -24,7 +24,6 @@
 #include "App.h"
 #include "AuthManager.h"
 #include "Config.h"
-#include "Supervisor.h"
 #include "SerializationKeys.h"
 
 using namespace VCS;
@@ -78,7 +77,6 @@ void RemovalThread::run()
 
         if (removalStream == nullptr)
         {
-            Supervisor::track(Serialization::Activities::networkConnectionError);
             this->setState(SyncThread::syncError);
             return;
         }
@@ -111,7 +109,6 @@ void RemovalThread::run()
         }
     }
 
-    Supervisor::track(Serialization::Activities::vcsDelete);
     this->setState(SyncThread::allDone);
 
     // On success we ask the auth manager to update his projects list.

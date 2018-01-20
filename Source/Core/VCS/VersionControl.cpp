@@ -24,7 +24,6 @@
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
 #include "Client.h"
-#include "Supervisor.h"
 #include "SerializationKeys.h"
 
 using namespace VCS;
@@ -254,7 +253,6 @@ void VersionControl::checkout(const ValueTree revision)
     {
         this->head.moveTo(revision);
         this->head.checkout();
-        Supervisor::track(Serialization::Activities::vcsCheckoutRevision);
         this->sendChangeMessage();
     }
 }
@@ -267,7 +265,6 @@ void VersionControl::cherryPick(const ValueTree revision, const Array<Uuid> uuid
         this->head.moveTo(revision);
         this->head.cherryPick(uuids);
         this->head.moveTo(headRevision);
-        Supervisor::track(Serialization::Activities::vcsCheckoutItems);
         this->sendChangeMessage();
     }
 }
@@ -305,8 +302,6 @@ bool VersionControl::resetChanges(SparseSet<int> selectedItems)
     }
 
     this->head.resetChanges(changesToReset);
-    Supervisor::track(Serialization::Activities::vcsReset);
-
     return true;
 }
 
@@ -326,8 +321,6 @@ bool VersionControl::resetAllChanges()
     }
     
     this->head.resetChanges(changesToReset);
-    Supervisor::track(Serialization::Activities::vcsReset);
-    
     return true;
 }
 
@@ -360,9 +353,7 @@ bool VersionControl::commit(SparseSet<int> selectedItems, const String &message)
     Revision::flush(newRevision);
     this->pack->flush();
 
-    Supervisor::track(Serialization::Activities::vcsCommit);
     this->sendChangeMessage();
-
     return true;
 }
 
@@ -398,9 +389,7 @@ bool VersionControl::stash(SparseSet<int> selectedItems,
         this->resetChanges(selectedItems);
     }
     
-    Supervisor::track(Serialization::Activities::vcsStash);
     this->sendChangeMessage();
-    
     return true;
 }
 
@@ -418,7 +407,6 @@ bool VersionControl::applyStash(const ValueTree stash, bool shouldKeepStash)
             this->stashes->removeStash(stash);
         }
         
-        Supervisor::track(Serialization::Activities::vcsApplyStash);
         this->sendChangeMessage();
         return true;
     }
@@ -445,9 +433,7 @@ bool VersionControl::quickStashAll()
     this->stashes->storeQuickStash(allChanges);
     this->resetAllChanges();
 
-    Supervisor::track(Serialization::Activities::vcsStash);
     this->sendChangeMessage();
-    
     return true;
 }
 
@@ -461,7 +447,6 @@ bool VersionControl::applyQuickStash()
     tempHead.cherryPickAll();
     this->stashes->resetQuickStash();
     
-    Supervisor::track(Serialization::Activities::vcsApplyStash);
     this->sendChangeMessage();
     return true;
 }

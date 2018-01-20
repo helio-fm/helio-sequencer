@@ -348,16 +348,6 @@
           <FILE id="EGpzhA" name="SerializationKeys.h" compile="0" resource="0"
                 file="../../Source/Core/Serialization/SerializationKeys.h"/>
         </GROUP>
-        <GROUP id="{DB9A0586-E202-C531-4B19-C250BD2E8A50}" name="Supervisor">
-          <FILE id="FdxpBe" name="Session.cpp" compile="1" resource="0" file="../../Source/Core/Supervisor/Session.cpp"/>
-          <FILE id="fmPwhm" name="Session.h" compile="0" resource="0" file="../../Source/Core/Supervisor/Session.h"/>
-          <FILE id="BANyiT" name="SessionManager.cpp" compile="1" resource="0"
-                file="../../Source/Core/Supervisor/SessionManager.cpp"/>
-          <FILE id="qhYFYo" name="SessionManager.h" compile="0" resource="0"
-                file="../../Source/Core/Supervisor/SessionManager.h"/>
-          <FILE id="NFrvOs" name="Supervisor.cpp" compile="1" resource="0" file="../../Source/Core/Supervisor/Supervisor.cpp"/>
-          <FILE id="wNdFR8" name="Supervisor.h" compile="0" resource="0" file="../../Source/Core/Supervisor/Supervisor.h"/>
-        </GROUP>
         <GROUP id="{9E5597E2-60FF-A8DF-6BF4-CEDC3BA07BFA}" name="Tools">
           <FILE id="OBUm5E" name="Arpeggiator.cpp" compile="1" resource="0" file="../../Source/Core/Tools/Arpeggiator.cpp"/>
           <FILE id="s1W0F3" name="Arpeggiator.h" compile="0" resource="0" file="../../Source/Core/Tools/Arpeggiator.h"/>

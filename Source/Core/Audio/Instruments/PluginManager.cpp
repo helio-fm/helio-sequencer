@@ -21,7 +21,6 @@
 #include "AudioCore.h"
 #include "FileUtils.h"
 #include "Config.h"
-#include "Supervisor.h"
 #include "SerializationKeys.h"
 
 #include "BuiltInSynthFormat.h"
@@ -265,7 +264,6 @@ void PluginManager::run()
             }
 
             Config::save(Serialization::Core::pluginManager, this);
-            Supervisor::track(Serialization::Activities::scanPlugins);
         }
         catch (...) { }
 

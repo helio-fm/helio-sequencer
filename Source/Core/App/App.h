@@ -38,7 +38,6 @@ class HelioTheme;
 class Config;
 class ApiCore;
 class AudioCore;
-class Supervisor;
 class UpdateManager;
 class InternalClipboard;
 class AuthManager;
@@ -95,10 +94,6 @@ public:
     void systemRequestedQuit() override;
     void suspended() override;
     void resumed() override;
-    void unhandledException(const std::exception *,
-                            const String &sourceFilename,
-                            int lineNumber) override;
-
 
     //===------------------------------------------------------------------===//
     // Accessors
@@ -107,7 +102,6 @@ public:
     MainWindow *getWindow() const noexcept;
     class Workspace *getWorkspace() const noexcept;
     Config *getConfig() const noexcept;
-    Supervisor *getSupervisor() const noexcept;
     InternalClipboard *getClipboard() const noexcept;
     AuthManager *getAuthManager() const noexcept;
     UpdateManager *getUpdateManager() const noexcept;
@@ -118,7 +112,6 @@ private:
     HelioLogger logger;
     ScopedPointer<HelioTheme> theme;
     ScopedPointer<Config> config;
-    ScopedPointer<Supervisor> supervisor;
     ScopedPointer<UpdateManager> updater;
     ScopedPointer<InternalClipboard> clipboard;
     ScopedPointer<class MainWindow> window;
@@ -127,7 +120,6 @@ private:
 
 private:
 
-    String collectSomeSystemInfo();
     String getMacAddressList();
 
     void checkPlugin(const String &markerFile);

@@ -30,7 +30,6 @@
 #include "GenericTooltip.h"
 #include "TransientTreeItems.h"
 #include "MidiTrackTreeItem.h"
-#include "Supervisor.h"
 #include "InitScreen.h"
 #include "NavigationSidebar.h"
 #include "ToolsSidebar.h"

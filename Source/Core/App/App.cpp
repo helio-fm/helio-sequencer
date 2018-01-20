@@ -28,7 +28,6 @@
 #include "DataEncoder.h"
 #include "PluginManager.h"
 #include "Config.h"
-#include "Supervisor.h"
 #include "InternalClipboard.h"
 #include "FontSerializer.h"
 #include "FileUtils.h"
@@ -252,19 +251,12 @@ void App::dismissAllModalComponents()
 // JUCEApplication
 //===----------------------------------------------------------------------===//
 
-static void handleCrash(void *)
-{
-    App::Helio()->getSupervisor()->trackCrash();
-}
-
 void App::initialise(const String &commandLine)
 {
     this->runMode = detectRunMode(commandLine);
 
     if (this->runMode == App::NORMAL)
     {
-        SystemStats::setApplicationCrashHandler(handleCrash);
-        
         Desktop::getInstance().setOrientationsEnabled(Desktop::rotatedClockwise + Desktop::rotatedAntiClockwise);
         FileUtils::fixCurrentWorkingDirectory();
         
@@ -272,10 +264,7 @@ void App::initialise(const String &commandLine)
         Logger::writeToLog("Helio Workstation");
         Logger::writeToLog("Ver. " + App::getAppReadableVersion());
         
-        Logger::writeToLog(this->collectSomeSystemInfo());
-        
         this->config = new Config();
-        this->supervisor = new Supervisor();
         this->updater = new UpdateManager();
 
         this->theme = new HelioTheme();
@@ -294,7 +283,7 @@ void App::initialise(const String &commandLine)
         
         TranslationManager::getInstance().addChangeListener(this);
         
-        // Desktop versions will be initializaed by InitScreen component.
+        // Desktop versions will be initialised by InitScreen component.
 #if HELIO_MOBILE
         App::Workspace().init();
         App::Layout().init();
@@ -326,7 +315,6 @@ void App::shutdown()
 
         this->clipboard = nullptr;
         this->authorizationManager = nullptr;
-        this->supervisor = nullptr;
         this->config = nullptr;
         this->theme = nullptr;
 
@@ -374,7 +362,7 @@ bool App::moreThanOneInstanceAllowed()
 void App::anotherInstanceStarted(const String &commandLine)
 {
     // This will get called if the user launches another copy of the app
-    // todo read commandline && exec
+    // todo read command line && exec
     
     //this->getWindow()->toFront(true);
 
@@ -430,12 +418,6 @@ void App::resumed()
 #endif
 }
 
-void App::unhandledException(const std::exception *e, const String &sourceFilename, int lineNumber)
-{
-    this->getSupervisor()->trackException(e, sourceFilename, lineNumber);
-}
-
-
 //===----------------------------------------------------------------------===//
 // Accessors
 //===----------------------------------------------------------------------===//
@@ -460,11 +442,6 @@ InternalClipboard *App::getClipboard() const noexcept
     return this->clipboard;
 }
 
-Supervisor *App::getSupervisor() const noexcept
-{
-    return this->supervisor;
-}
-
 AuthManager *App::getAuthManager() const noexcept
 {
     return this->authorizationManager;
@@ -484,33 +461,6 @@ HelioTheme *App::getTheme() const noexcept
 //===----------------------------------------------------------------------===//
 // Private
 //===----------------------------------------------------------------------===//
-
-String App::collectSomeSystemInfo()
-{
-    String systemInfo;
-    const Desktop::Displays::Display &dis = Desktop::getInstance().getDisplays().getMainDisplay();
-    const Rectangle<int> rect(dis.totalArea);
-    const double scale(dis.scale);
-    const auto cmScreenSize = App::getScreenInCm();
-
-    systemInfo
-            << "Resolution: " << rect.getWidth() << ":" << rect.getHeight() << newLine
-            << "Display scale: " << scale << newLine
-            << "Screen area: " << String(cmScreenSize.x) << " x " << String(cmScreenSize.y) << " cm."
-            
-            << "User logon name: "  << SystemStats::getLogonName() << newLine
-            << "Full user name: "   << SystemStats::getFullUserName() << newLine
-            << "Host name: "        << SystemStats::getComputerName() << newLine
-
-            << "Current working directory: "         << File::getCurrentWorkingDirectory().getFullPathName() << newLine
-            << "User documents directory: "          << File::getSpecialLocation(File::userDocumentsDirectory).getFullPathName() << newLine
-            << "User application data directory: "   << File::getSpecialLocation(File::userApplicationDataDirectory).getFullPathName() << newLine
-            << "Common application data directory: " << File::getSpecialLocation(File::commonApplicationDataDirectory).getFullPathName() << newLine
-            << "Temp directory: "                    << File::getSpecialLocation(File::tempDirectory).getFullPathName() << newLine
-            << newLine;
-
-    return systemInfo;
-}
 
 String App::getMacAddressList()
 {

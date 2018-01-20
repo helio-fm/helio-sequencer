@@ -31,7 +31,6 @@
 #include "Config.h"
 #include "ChordTooltip.h"
 #include "Transport.h"
-#include "Supervisor.h"
 #include "SerializationKeys.h"
 #include "CommandPanel.h"
 #include "BinaryData.h"

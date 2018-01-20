@@ -22,8 +22,6 @@
 #include "HelioServerDefines.h"
 
 #include "Config.h"
-
-#include "Supervisor.h"
 #include "SerializationKeys.h"
 
 #define NUM_CONNECT_ATTEMPTS 3

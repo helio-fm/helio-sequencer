@@ -24,7 +24,6 @@
 #include "App.h"
 #include "AuthManager.h"
 #include "Config.h"
-#include "Supervisor.h"
 #include "HttpConnection.h"
 #include "SerializationKeys.h"
 
@@ -101,7 +100,6 @@ void PushThread::run()
         if (fileExists && !fileCanBeDecrypted)
         {
             Logger::writeToLog("Wrong key!");
-            Supervisor::track(Serialization::Activities::vcsPushError);
             this->setState(SyncThread::fetchHistoryError);
             return;
         }
@@ -149,7 +147,6 @@ void PushThread::run()
     }
     else
     {
-        Supervisor::track(Serialization::Activities::vcsMergeError);
         this->setState(SyncThread::mergeError);
         return;
     }
@@ -244,7 +241,6 @@ void PushThread::run()
         }
     }
 
-    Supervisor::track(Serialization::Activities::vcsPush);
     this->setState(SyncThread::allDone);
 
     // On success we ask the auth manager to update his projects list.
