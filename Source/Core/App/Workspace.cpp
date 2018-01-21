@@ -371,7 +371,7 @@ bool Workspace::onDocumentLoad(File &file)
         return true;
     }
     
-    // если что-то пошло не так, создаем воркспейс по дефолту
+    // fallback to default workspace if loading fails
     this->createEmptyWorkspace();
     return false;
 }
@@ -499,6 +499,15 @@ void Workspace::deserialize(const XmlElement &xml)
         }
     }
     
+    // If no instruments root item is found for whatever reason
+    // (i.e. malformed tree), make sure to add one:
+    if (nullptr == this->treeRoot->findChildOfType<InstrumentsRootTreeItem>())
+    { this->treeRoot->addChildTreeItem(new InstrumentsRootTreeItem(), 0); }
+    
+    // The same hack for settings root:
+    if (nullptr == this->treeRoot->findChildOfType<SettingsTreeItem>())
+    { this->treeRoot->addChildTreeItem(new SettingsTreeItem(), 0); }
+
     if (! foundActiveNode)
     {
         // Fallback to the main page
