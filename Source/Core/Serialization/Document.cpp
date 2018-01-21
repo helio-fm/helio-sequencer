@@ -217,7 +217,6 @@ void Document::import(const String &filePattern)
 #endif
 }
 
-
 bool Document::fileHasBeenModified() const
 {
     return this->fileModificationTime != this->workingFile.getLastModificationTime()
@@ -267,6 +266,15 @@ int64 Document::calculateFileHashCode(const File &file) const
 
 bool Document::internalSave(File result)
 {
+    const String fullPath = result.getFullPathName();
+    const auto firstCharAfterLastSlash = fullPath.lastIndexOfChar(File::getSeparatorChar()) + 1;
+    const auto lastDot = fullPath.lastIndexOfChar('.');
+    const bool hasEmptyName = (lastDot == firstCharAfterLastSlash);
+    if (hasEmptyName)
+    {
+        return false;
+    }
+
     const bool savedOk = this->owner.onDocumentSave(result);
 
     if (savedOk)
@@ -277,11 +285,8 @@ bool Document::internalSave(File result)
         this->owner.onDocumentDidSave(result);
         return true;
     }
-    
-    
-        Logger::writeToLog("Document::internalSave failed :: " + result.getFullPathName());
-    
-    
+
+    Logger::writeToLog("Document::internalSave failed :: " + result.getFullPathName());
     return false;
 }
 

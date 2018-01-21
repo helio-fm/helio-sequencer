@@ -281,16 +281,17 @@ String DataEncoder::deobfuscateString(const String &buffer)
 
 bool DataEncoder::saveObfuscated(const File &file, XmlElement *xml)
 {
+    const String xmlString(xml->createDocument("", false, true, "UTF-8", 512));
+
 // Writes as plain text for debugging purposes:
 //#if defined _DEBUG
-//    
-//    const String xmlString(xml->createDocument("", false, true, "UTF-8", 512));
+//
 //    const String xmlEncoded = xmlString;
-//    return file.replaceWithText(xmlEncoded);
-//    
+//    const File file2(file.getFullPathName() + "_debug");
+//    file2.replaceWithText(xmlEncoded);
+//
 //#else
     
-    const String xmlString(xml->createDocument("", false, true, "UTF-8", 512));
     const MemoryBlock &compressed = compress(xmlString);
     const MemoryBlock &xorBlock = doXor(compressed);
     
