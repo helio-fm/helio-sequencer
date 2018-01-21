@@ -533,8 +533,8 @@ XmlElement *ProjectTreeItem::serialize() const
 
     auto xml = new XmlElement(Serialization::Core::treeItem);
     xml->setAttribute(Serialization::Core::treeItemType, this->type);
-    xml->setAttribute("fullPath", this->getDocument()->getFullPath());
-    xml->setAttribute("relativePath", this->getDocument()->getRelativePath());
+    xml->setAttribute(Serialization::Core::fullPath, this->getDocument()->getFullPath());
+    xml->setAttribute(Serialization::Core::relativePath, this->getDocument()->getRelativePath());
     return xml;
 }
 
@@ -542,8 +542,8 @@ void ProjectTreeItem::deserialize(const XmlElement &xml)
 {
     this->reset();
 
-    const String &fullPath = xml.getStringAttribute("fullPath");
-    const String &relativePath = xml.getStringAttribute("relativePath");
+    const String &fullPath = xml.getStringAttribute(Serialization::Core::fullPath);
+    const String &relativePath = xml.getStringAttribute(Serialization::Core::relativePath);
     
     File relativeFile =
     File(App::Workspace().getDocument()->getFile().
@@ -600,7 +600,7 @@ void ProjectTreeItem::load(const XmlElement &xml)
     this->reset();
 
     const XmlElement *root = xml.hasTagName(Serialization::Core::project) ?
-                             &xml : xml.getChildByName(Serialization::Core::project);
+        &xml : xml.getChildByName(Serialization::Core::project);
 
     if (root == nullptr) { return; }
 

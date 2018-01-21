@@ -32,8 +32,6 @@ public:
 
     explicit RootTreeItem(const String &name);
 
-    ~RootTreeItem() override;
-
     Colour getColour() const override;
     Image getIcon() const override;
 

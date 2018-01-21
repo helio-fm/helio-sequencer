@@ -47,10 +47,6 @@ RootTreeItem::RootTreeItem(const String &name) :
     this->setVisible(false);
 }
 
-RootTreeItem::~RootTreeItem()
-{
-}
-
 Colour RootTreeItem::getColour() const
 {
     return Colour(0xffffbe92);

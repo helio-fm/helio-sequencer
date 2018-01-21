@@ -48,6 +48,7 @@ Workspace::~Workspace()
         delete this->getLoadedProjects().getFirst();
     }
 
+    this->previousVersionTree = nullptr;
     this->treeRoot = nullptr;
     
     this->recentFilesList->removeChangeListener(this);
@@ -456,10 +457,21 @@ XmlElement *Workspace::serialize() const
     auto xml = new XmlElement(Serialization::Core::workspace);
     
     // TODO serialize window size and position
-    
+
+    auto treeRootXml = new XmlElement(Serialization::Core::treeRoot);
+    treeRootXml->setAttribute(Serialization::Core::treeItemVersion, "2.0");
+    treeRootXml->addChildElement(this->treeRoot->serialize());
+    xml->addChildElement(treeRootXml);
+
+    // Saves legacy tree along with the most recent one
+    if (this->previousVersionTree != nullptr)
+    {
+        const auto legacyCopy = new XmlElement(*this->previousVersionTree);
+        xml->addChildElement(legacyCopy);
+    }
+
     xml->addChildElement(this->audioCore->serialize());
     xml->addChildElement(this->pluginManager->serialize());
-    xml->addChildElement(this->treeRoot->serialize());
     xml->addChildElement(this->recentFilesList->serialize());
     
     // TODO serialize tree openness state?
@@ -475,21 +487,34 @@ void Workspace::deserialize(const XmlElement &xml)
     this->reset();
     
     const XmlElement *root = xml.hasTagName(Serialization::Core::workspace) ?
-    &xml : xml.getChildByName(Serialization::Core::workspace);
+        &xml : xml.getChildByName(Serialization::Core::workspace);
     
     if (root == nullptr)
     {
         // Since we are supposed to be the root element, let's attempt to deserialize anyway
         root = xml.getFirstChildElement();
     }
-    
+
+    // Creates a deep copy of legacy tree to be saved later as-is:
+    if (const auto legacyTree = root->getChildByName(Serialization::Core::treeItem))
+    {
+        this->previousVersionTree = new XmlElement(*legacyTree);
+    }
+
+    // Try to load legacy tree unless found a new one:
+    const XmlElement *treeRoot = this->previousVersionTree;
+    if (const auto newTreeRoot = root->getChildByName(Serialization::Core::treeRoot))
+    {
+        treeRoot = newTreeRoot;
+    }
+
     this->recentFilesList->deserialize(*root);
     this->audioCore->deserialize(*root);
     this->pluginManager->deserialize(*root);
-    this->treeRoot->deserialize(*root);
+    
+    this->treeRoot->deserialize(*treeRoot);
     
     bool foundActiveNode = false;
-    
     if (XmlElement *treeStateNode = root->getChildByName(Serialization::Core::treeState))
     {
         forEachXmlChildElementWithTagName(*treeStateNode, e, Serialization::Core::selectedTreeItem)

@@ -23,12 +23,14 @@ namespace Serialization
     {
         static const String midiRoll = "MidiRoll";
         static const String editor = "Editor";
+        static const String treeRoot = "Tree";
         static const String treeItem = "Node";
         static const String treeItemType = "Type";
         static const String treeItemName = "Name";
         static const String treeState = "TreeState";
-        static const String selectedTreeItem = "SelectedNode";
         static const String treeItemId = "NodeId";
+        static const String treeItemVersion = "Version";
+        static const String selectedTreeItem = "SelectedNode";
 
         static const String workspace = "Workspace";
         static const String root = "Root";
@@ -64,6 +66,8 @@ namespace Serialization
         static const String keySignatures = "KeySignatures";
 
         // Properties
+        static const String fullPath = "FullPath";
+        static const String relativePath = "RelativePath";
         static const String trackId = "TrackId";
         static const String trackColour = "Colour";
         static const String trackChannel = "Channel";

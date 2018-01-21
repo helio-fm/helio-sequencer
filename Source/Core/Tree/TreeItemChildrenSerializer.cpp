@@ -68,7 +68,7 @@ void TreeItemChildrenSerializer::deserializeChildren(TreeItem &parentItem, const
         }
         else if (type == Serialization::Core::pianoLayer)
         {
-            child = new PianoTrackTreeItem( "");
+            child = new PianoTrackTreeItem("");
         }
         else if (type == Serialization::Core::autoLayer)
         {
@@ -97,9 +97,4 @@ void TreeItemChildrenSerializer::deserializeChildren(TreeItem &parentItem, const
             child->deserialize(*e);
         }
     }
-
-    // todo. загрузка долгая и стремная. рассылаются кучи событий,
-    // перебилдится кэш миди кучу раз. чо за фигня, чувак.
-
-    // and we need to go deeper.
 }
