@@ -22,12 +22,15 @@
 #include "FileUtils.h"
 #include "DataEncoder.h"
 #include "AudioCore.h"
+#include "Instrument.h"
+#include "AudioMonitor.h"
 #include "RootTreeItem.h"
 #include "PluginManager.h"
 #include "SettingsTreeItem.h"
 #include "InstrumentsRootTreeItem.h"
 #include "ProjectTreeItem.h"
 #include "RootTreeItem.h"
+#include "WorkspacePage.h"
 
 Workspace::Workspace() :
     DocumentOwner(*this, "Workspace", "helio"),
