@@ -624,10 +624,10 @@ void ProjectTreeItem::load(const XmlElement &xml)
     // then to round beats to nearest bars
     // because rolls' view ranges are rounded to bars
     const float r = float(NUM_BEATS_IN_BAR);
-    const float viewStartWithMArgin = range.getX() - r;
-    const float viewEndWithMArgin = range.getY() + r;
-    const float viewFirstBeat = floorf(viewStartWithMArgin / r) * r;
-    const float viewLastBeat = ceilf(viewEndWithMArgin / r) * r;
+    const float viewStartWithMargin = range.getX() - r;
+    const float viewEndWithMargin = range.getY() + r;
+    const float viewFirstBeat = floorf(viewStartWithMargin / r) * r;
+    const float viewLastBeat = ceilf(viewEndWithMargin / r) * r;
     this->broadcastChangeViewBeatRange(viewFirstBeat, viewLastBeat);
 
     //this->transport->deserialize(*root); // todo

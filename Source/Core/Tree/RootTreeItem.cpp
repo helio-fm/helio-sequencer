@@ -226,9 +226,11 @@ ProjectTreeItem *RootTreeItem::createDefaultProjectChildren(ProjectTreeItem *new
     this->addPianoTrack(newProject, "Melodic")->setTrackColour(Colours::chartreuse, true);
     this->addAutoLayer(newProject, "Tempo", MidiTrack::tempoController)->setTrackColour(Colours::floralwhite, true);
 
+    newProject->broadcastReloadProjectContent();
+    const auto range = newProject->broadcastChangeProjectBeatRange();
+    newProject->broadcastChangeViewBeatRange(range.getX(), range.getY());
     newProject->getDocument()->save();
-    newProject->broadcastChangeProjectBeatRange();
-    
+
     // notify recent files list
     App::Workspace().getRecentFilesList().
     onProjectStateChanged(newProject->getName(),
