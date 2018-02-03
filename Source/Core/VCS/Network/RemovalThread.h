@@ -21,7 +21,7 @@
 
 namespace VCS
 {
-    class RemovalThread : public SyncThread
+    class RemovalThread final : public SyncThread
     {
     public:
 

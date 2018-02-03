@@ -17,7 +17,7 @@
 
 #pragma once
 
-class HelioApiRequest
+class HelioApiRequest final
 {
 public:
 

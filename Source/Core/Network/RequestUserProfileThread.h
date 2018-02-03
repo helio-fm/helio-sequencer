@@ -24,7 +24,7 @@
 #include "Config.h"
 #include "SerializationKeys.h"
 
-class RequestUserProfileThread : private Thread
+class RequestUserProfileThread final : private Thread
 {
 public:
     

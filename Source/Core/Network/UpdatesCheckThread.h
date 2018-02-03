@@ -24,7 +24,7 @@
 #include "Config.h"
 #include "SerializationKeys.h"
 
-class LoginThread : private Thread
+class UpdatesCheckThread final : private Thread
 {
 public:
     

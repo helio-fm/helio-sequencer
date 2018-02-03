@@ -23,7 +23,7 @@ class VersionControl;
 
 namespace VCS
 {
-    class PullThread : public SyncThread
+    class PullThread final : public SyncThread
     {
     public:
 

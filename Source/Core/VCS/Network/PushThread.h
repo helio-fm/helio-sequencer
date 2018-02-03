@@ -21,7 +21,7 @@
 
 namespace VCS
 {
-    class PushThread : public SyncThread
+    class PushThread final : public SyncThread
     {
     public:
 
