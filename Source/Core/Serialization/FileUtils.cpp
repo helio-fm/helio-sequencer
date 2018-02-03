@@ -123,12 +123,7 @@ static File getFirstSlot(String location1,
 
 File FileUtils::getConfigSlot(const String &fileName)
 {
-#if JUCE_LINUX
-    auto location1 = "~/.config";
-#else
     auto location1 = File::getSpecialLocation(File::userApplicationDataDirectory).getFullPathName();
-#endif
-
     auto location2 = File::getSpecialLocation(File::userDocumentsDirectory).getFullPathName();
     return getFirstSlot(location1, location2, fileName);
 }

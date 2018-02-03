@@ -22,18 +22,18 @@
 #include "SerializationKeys.h"
 
 #include "App.h"
-#include "AuthManager.h"
+#include "SessionManager.h"
 
 RecentFilesList::RecentFilesList()
 {
-    App::Helio()->getAuthManager()->addChangeListener(this);
+    App::Helio()->getSessionManager()->addChangeListener(this);
     //Config::load(Serialization::Core::recentFiles, this);
     // todo update list
 }
 
 RecentFilesList::~RecentFilesList()
 {
-    App::Helio()->getAuthManager()->removeChangeListener(this);
+    App::Helio()->getSessionManager()->removeChangeListener(this);
     //Config::save(Serialization::Core::recentFiles, this);
     this->masterReference.clear();
 }
@@ -199,7 +199,7 @@ void RecentFilesList::reset()
 
 void RecentFilesList::forceUpdate()
 {
-    this->remoteFiles = App::Helio()->getAuthManager()->getListOfRemoteProjects();
+    this->remoteFiles = App::Helio()->getSessionManager()->getListOfRemoteProjects();
     
 //    for (int i = 0; i < this->remoteFiles.size(); ++i)
 //    {

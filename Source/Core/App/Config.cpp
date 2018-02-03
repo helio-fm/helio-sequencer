@@ -74,8 +74,6 @@ void Config::load(const String &key, Serializable *serializer)
     App::Helio()->getConfig()->loadConfig(key, serializer);
 }
 
-
-
 Config::Config(const int millisecondsBeforeSaving) :
     fileLock("Config Lock"),
     needsWriting(false),
@@ -200,7 +198,6 @@ void Config::timerCallback()
     this->stopTimer();
 }
 
-
 void Config::saveConfig(const String &key, const Serializable *serializer)
 {
     ScopedPointer<XmlElement> serialized(serializer->serialize());
@@ -216,7 +213,6 @@ void Config::loadConfig(const String &key, Serializable *serializer)
         serializer->deserialize(*xml);
     }
 }
-
 
 void Config::propertyChanged()
 {

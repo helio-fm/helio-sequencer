@@ -40,7 +40,7 @@ class ApiCore;
 class AudioCore;
 class UpdateManager;
 class InternalClipboard;
-class AuthManager;
+class SessionManager;
 
 class App : public JUCEApplication,
             private AsyncUpdater,
@@ -103,7 +103,7 @@ public:
     class Workspace *getWorkspace() const noexcept;
     Config *getConfig() const noexcept;
     InternalClipboard *getClipboard() const noexcept;
-    AuthManager *getAuthManager() const noexcept;
+    SessionManager *getSessionManager() const noexcept;
     UpdateManager *getUpdateManager() const noexcept;
     HelioTheme *getTheme() const noexcept;
 
@@ -115,7 +115,7 @@ private:
     ScopedPointer<UpdateManager> updater;
     ScopedPointer<InternalClipboard> clipboard;
     ScopedPointer<class MainWindow> window;
-    ScopedPointer<AuthManager> authorizationManager;
+    ScopedPointer<SessionManager> sessionManager;
     ScopedPointer<class Workspace> workspace;
 
 private:

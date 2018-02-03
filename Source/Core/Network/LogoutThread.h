@@ -21,8 +21,14 @@ class LogoutThread : private Thread
 {
 public:
     
-    LogoutThread();
-    ~LogoutThread() override;
+    LogoutThread() :
+        Thread("Logout"),
+        listener(nullptr) {}
+
+    ~LogoutThread() override
+    {
+        this->stopThread(100);
+    }
     
     class Listener
     {
@@ -35,15 +41,79 @@ public:
         friend class LogoutThread;
     };
     
-    void logout(LogoutThread::Listener *authListener);
+    void logout(LogoutThread::Listener *authListener)
+    {
+        jassert(!this->isThreadRunning());
+        this->listener = authListener;
+        this->startThread(3);
+    }
     
 private:
 
-    void run() override;
-    
-    URL url;
+    void run() override
+    {
+        const String deviceId(Config::getMachineId());
+        const String saltedDeviceId = deviceId + HELIO_SALT;
+        const String saltedDeviceIdHash = SHA256(saltedDeviceId.toUTF8()).toHexString();
+
+        for (int i = 0; i < NUM_CONNECT_ATTEMPTS; ++i)
+        {
+            URL url(HELIO_LOGOUT_URL);
+            url = url.withParameter(Serialization::Network::deviceId, deviceId);
+            url = url.withParameter(Serialization::Network::clientCheck, saltedDeviceIdHash);
+
+            {
+                int statusCode = 0;
+                StringPairArray responseHeaders;
+
+                ScopedPointer<InputStream> downloadStream(
+                    url.createInputStream(true, nullptr, nullptr, HELIO_USERAGENT, 0, &responseHeaders, &statusCode));
+
+                if (!downloadStream)
+                {
+                    continue;
+                }
+
+                const String rawResult = downloadStream->readEntireStreamAsString().trim();
+                const String result = DataEncoder::deobfuscateString(rawResult);
+
+                // Logger::writeToLog("Logout, result: " + result);
+
+                if (statusCode != 200)
+                {
+                    MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+                    {
+                        LogoutThread *self = static_cast<LogoutThread *>(data);
+                        self->listener->logoutFailed();
+                        return nullptr;
+                    },
+                        this);
+
+                    return;
+                }
+
+                MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+                {
+                    LogoutThread *self = static_cast<LogoutThread *>(data);
+                    self->listener->logoutOk();
+                    return nullptr;
+                },
+                    this);
+
+                return;
+            }
+        }
+
+        MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+        {
+            LogoutThread *self = static_cast<LogoutThread *>(data);
+            self->listener->logoutConnectionFailed();
+            return nullptr;
+        },
+            this);
+    }
     
     LogoutThread::Listener *listener;
-    friend class AuthManager;
+    friend class SessionManager;
 
 };

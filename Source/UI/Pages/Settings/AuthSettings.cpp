@@ -27,7 +27,7 @@
 
 #include "App.h"
 #include "MainWindow.h"
-#include "AuthManager.h"
+#include "SessionManager.h"
 #include "ShapeComponent.h"
 #include "Config.h"
 #include "SerializationKeys.h"

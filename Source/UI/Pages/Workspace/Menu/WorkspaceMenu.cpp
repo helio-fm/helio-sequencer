@@ -28,7 +28,7 @@
 #include "OpenProjectRow.h"
 #include "App.h"
 #include "MainLayout.h"
-#include "AuthManager.h"
+#include "SessionManager.h"
 #include "AuthorizationDialog.h"
 #include "ProgressTooltip.h"
 #include "SuccessTooltip.h"
@@ -129,8 +129,8 @@ void WorkspaceMenu::handleCommandMessage (int commandId)
     }
     else if (commandId == CommandIDs::LoginLogout)
     {
-        AuthManager *authManager = App::Helio()->getAuthManager();
-        const bool isLoggedIn = (authManager->getAuthorizationState() == AuthManager::LoggedIn);
+        SessionManager *authManager = App::Helio()->getSessionManager();
+        const bool isLoggedIn = (authManager->getAuthorizationState() == SessionManager::LoggedIn);
 
         if (!isLoggedIn)
         {
@@ -153,7 +153,7 @@ void WorkspaceMenu::handleCommandMessage (int commandId)
 
 void WorkspaceMenu::changeListenerCallback(ChangeBroadcaster *source)
 {
-    AuthManager *authManager = App::Helio()->getAuthManager();
+    SessionManager *authManager = App::Helio()->getSessionManager();
 
     if (source == this->workspace)
     {
@@ -170,15 +170,15 @@ void WorkspaceMenu::changeListenerCallback(ChangeBroadcaster *source)
         {
             delete progressIndicator;
 
-            if (authManager->getLastRequestState() == AuthManager::RequestSucceed)
+            if (authManager->getLastRequestState() == SessionManager::RequestSucceed)
             {
                 App::Helio()->showModalComponent(new SuccessTooltip());
             }
-            else if (authManager->getLastRequestState() == AuthManager::RequestFailed)
+            else if (authManager->getLastRequestState() == SessionManager::RequestFailed)
             {
                 App::Helio()->showModalComponent(new FailTooltip());
             }
-            if (authManager->getLastRequestState() == AuthManager::ConnectionFailed)
+            if (authManager->getLastRequestState() == SessionManager::ConnectionFailed)
             {
                 App::Helio()->showModalComponent(new FailTooltip());
             }

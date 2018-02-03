@@ -24,15 +24,15 @@
 #include "Config.h"
 #include "SerializationKeys.h"
 
-class LoginThread : private Thread
+class RequestUserProfileThread : private Thread
 {
 public:
     
 #define NUM_LOGIN_ATTEMPTS 3
 
-    LoginThread() : Thread("Login"), listener(nullptr) {}
+    RequestUserProfileThread() : Thread("RequestUserProfile"), listener(nullptr) {}
 
-    ~LoginThread() override
+    ~RequestUserProfileThread() override
     {
         this->stopThread(1000);
     }
@@ -96,6 +96,77 @@ private:
                 self->listener->loginAuthorizationFailed();
                 return nullptr;
             }, this);
+            return;
+        }
+
+
+        const Identifier idProperty("id");
+        const Identifier keyProperty("key");
+        const Identifier titleProperty("title");
+        const Identifier timeProperty("time");
+        const Identifier emailProperty("email");
+
+        if (json.isArray())
+        {
+            for (int i = 0; i < json.size(); ++i)
+            {
+                var &child(json[i]);
+                jassert(!child.isVoid());
+
+                if (DynamicObject *obj = child.getDynamicObject())
+                {
+                    NamedValueSet &props(obj->getProperties());
+                    RemoteProjectDescription description;
+
+                    for (int j = 0; j < props.size(); ++j)
+                    {
+                        const Identifier key(props.getName(j));
+                        var value(props[key]);
+
+                        if (key == idProperty)
+                        {
+                            description.projectId = value;
+                            //Logger::writeToLog("::" + description.projectId + "::");
+                        }
+                        else if (key == keyProperty)
+                        {
+                            description.projectKey = DataEncoder::deobfuscateString(value);
+                            //Logger::writeToLog("::" + description.projectKey + "::");
+                        }
+                        else if (key == titleProperty)
+                        {
+                            description.projectTitle = value;
+                            //Logger::writeToLog("::" + description.projectTitle + "::");
+                        }
+                        else if (key == timeProperty)
+                        {
+                            description.lastModifiedTime = int64(value) * 1000;
+                        }
+                        else if (key == emailProperty)
+                        {
+                            this->userEmail = value;
+                        }
+                    }
+
+                    if (description.projectId.isNotEmpty() &&
+                        description.projectKey.isNotEmpty())
+                    {
+                        const ScopedWriteLock lock(this->listLock);
+                        this->projectsList.add(description);
+                    }
+                }
+            }
+        }
+
+        if (this->userEmail.isEmpty())
+        {
+            MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+            {
+                RequestProjectsListThread *self = static_cast<RequestProjectsListThread *>(data);
+                self->listener->listRequestAuthorizationFailed();
+                return nullptr;
+            }, this);
+
             return;
         }
 

@@ -300,38 +300,28 @@
           <FILE id="leo3vi" name="Scale.h" compile="0" resource="0" file="../../Source/Core/Midi/Scale.h"/>
         </GROUP>
         <GROUP id="{9C34DE9F-57B6-7B3A-C005-1E16E0BF57B2}" name="Network">
-          <FILE id="zuzMlt" name="AuthManager.cpp" compile="1" resource="0" file="../../Source/Core/Network/AuthManager.cpp"/>
-          <FILE id="lk1Vh2" name="AuthManager.h" compile="0" resource="0" file="../../Source/Core/Network/AuthManager.h"/>
-          <FILE id="wvwATY" name="HelioServerDefines.h" compile="0" resource="0"
-                file="../../Source/Core/Network/HelioServerDefines.h"/>
-          <FILE id="e2QUXO" name="HttpConnection.cpp" compile="1" resource="0"
-                file="../../Source/Core/Network/HttpConnection.cpp"/>
-          <FILE id="P2JsYR" name="HttpConnection.h" compile="0" resource="0"
-                file="../../Source/Core/Network/HttpConnection.h"/>
-          <FILE id="AQpXQd" name="LoginThread.cpp" compile="1" resource="0" file="../../Source/Core/Network/LoginThread.cpp"/>
+          <FILE id="e2QUXO" name="HelioApiRequest.cpp" compile="1" resource="0"
+                file="../../Source/Core/Network/HelioApiRequest.cpp"/>
+          <FILE id="P2JsYR" name="HelioApiRequest.h" compile="0" resource="0"
+                file="../../Source/Core/Network/HelioApiRequest.h"/>
+          <FILE id="wvwATY" name="HelioApiRoutes.h" compile="0" resource="0"
+                file="../../Source/Core/Network/HelioApiRoutes.h"/>
           <FILE id="URoFvA" name="LoginThread.h" compile="0" resource="0" file="../../Source/Core/Network/LoginThread.h"/>
-          <FILE id="gRRURg" name="LogoutThread.cpp" compile="1" resource="0"
-                file="../../Source/Core/Network/LogoutThread.cpp"/>
           <FILE id="hwTQ3u" name="LogoutThread.h" compile="0" resource="0" file="../../Source/Core/Network/LogoutThread.h"/>
-          <FILE id="Z5bnce" name="RequestArpeggiatorsThread.cpp" compile="1"
-                resource="0" file="../../Source/Core/Network/RequestArpeggiatorsThread.cpp"/>
-          <FILE id="tWSneE" name="RequestArpeggiatorsThread.h" compile="0" resource="0"
-                file="../../Source/Core/Network/RequestArpeggiatorsThread.h"/>
-          <FILE id="Ize9Ch" name="RequestColourSchemesThread.cpp" compile="1"
-                resource="0" file="../../Source/Core/Network/RequestColourSchemesThread.cpp"/>
-          <FILE id="u0IggO" name="RequestColourSchemesThread.h" compile="0" resource="0"
-                file="../../Source/Core/Network/RequestColourSchemesThread.h"/>
-          <FILE id="dMoTHp" name="RequestProjectsListThread.cpp" compile="1"
-                resource="0" file="../../Source/Core/Network/RequestProjectsListThread.cpp"/>
-          <FILE id="LOQNXe" name="RequestProjectsListThread.h" compile="0" resource="0"
-                file="../../Source/Core/Network/RequestProjectsListThread.h"/>
-          <FILE id="j8fCjc" name="RequestTranslationsThread.cpp" compile="1"
-                resource="0" file="../../Source/Core/Network/RequestTranslationsThread.cpp"/>
-          <FILE id="zj6UaQ" name="RequestTranslationsThread.h" compile="0" resource="0"
-                file="../../Source/Core/Network/RequestTranslationsThread.h"/>
-          <FILE id="n13un8" name="UpdateManager.cpp" compile="1" resource="0"
-                file="../../Source/Core/Network/UpdateManager.cpp"/>
-          <FILE id="q43RNd" name="UpdateManager.h" compile="0" resource="0" file="../../Source/Core/Network/UpdateManager.h"/>
+          <FILE id="tezH4X" name="RequestResourceThread.h" compile="0" resource="0"
+                file="../../Source/Core/Network/RequestResourceThread.h"/>
+          <FILE id="VT4WH4" name="RequestUserProfileThread.h" compile="0" resource="0"
+                file="../../Source/Core/Network/RequestUserProfileThread.h"/>
+          <FILE id="TQIxzu" name="TokenCheckThread.h" compile="0" resource="0"
+                file="../../Source/Core/Network/TokenCheckThread.h"/>
+          <FILE id="BbTLUC" name="TokenUpdateThread.h" compile="0" resource="0"
+                file="../../Source/Core/Network/TokenUpdateThread.h"/>
+          <FILE id="tjW6qo" name="UpdatesCheckThread.h" compile="0" resource="0"
+                file="../../Source/Core/Network/UpdatesCheckThread.h"/>
+          <FILE id="zuzMlt" name="SessionManager.cpp" compile="1" resource="0"
+                file="../../Source/Core/Network/SessionManager.cpp"/>
+          <FILE id="lk1Vh2" name="SessionManager.h" compile="0" resource="0"
+                file="../../Source/Core/Network/SessionManager.h"/>
         </GROUP>
         <GROUP id="{B690F2B3-8242-3091-4182-FD3492158B1A}" name="Serialization">
           <FILE id="E2KE99" name="Autosaver.cpp" compile="1" resource="0" file="../../Source/Core/Serialization/Autosaver.cpp"/>

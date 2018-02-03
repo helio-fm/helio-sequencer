@@ -25,7 +25,7 @@
 #include "DocumentOwner.h"
 #include "App.h"
 #include "MainLayout.h"
-#include "AuthManager.h"
+#include "SessionManager.h"
 #include "ProjectTreeItem.h"
 #include "PlayerThread.h"
 #include "ProgressIndicator.h"

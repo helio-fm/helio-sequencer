@@ -22,7 +22,7 @@
 #include "DataEncoder.h"
 #include "HelioServerDefines.h"
 #include "App.h"
-#include "AuthManager.h"
+#include "SessionManager.h"
 #include "Config.h"
 #include "SerializationKeys.h"
 
@@ -52,7 +52,7 @@ void RemovalThread::run()
     removeUrl = removeUrl.withParameter(Serialization::Network::clientCheck, saltedIdHash);
     removeUrl = removeUrl.withParameter(Serialization::Network::key, keyHash);
     
-    const bool loggedIn = (App::Helio()->getAuthManager()->getAuthorizationState() == AuthManager::LoggedIn);
+    const bool loggedIn = (App::Helio()->getSessionManager()->getAuthorizationState() == SessionManager::LoggedIn);
     
     if (loggedIn)
     {
@@ -112,5 +112,5 @@ void RemovalThread::run()
     this->setState(SyncThread::allDone);
 
     // On success we ask the auth manager to update his projects list.
-    App::Helio()->getAuthManager()->requestSessionData();
+    App::Helio()->getSessionManager()->reloadRemoteProjectsList();
 }

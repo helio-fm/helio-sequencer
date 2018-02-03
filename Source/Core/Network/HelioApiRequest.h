@@ -17,37 +17,32 @@
 
 #pragma once
 
-class RequestTranslationsThread : private Thread
+class HelioApiRequest
 {
 public:
-    
-    RequestTranslationsThread();
-    
-    ~RequestTranslationsThread() override;
 
-    class Listener
+    typedef Function<void(int, int)> ProgressCallback;
+
+    HelioApiRequest(URL url, ProgressCallback progressCallback = nullptr);
+
+    struct Response
     {
-    public:
-        virtual ~Listener() {}
-    private:
-        virtual void translationsRequestOk() = 0;
-        virtual void translationsRequestFailed() = 0;
-        friend class RequestTranslationsThread;
+        Response();
+        Response(const Response & other) :
+            result(result), statusCode(statusCode),
+            headers(headers), jsonBody(jsonBody) {}
+        Result result;
+        int statusCode;
+        StringPairArray headers;
+        var jsonBody;
     };
 
-    void requestTranslations(RequestTranslationsThread::Listener *authListener);
-    
-    const String &getLatestResponse();
-    
-private:
-    
-    void run() override;
+    Response request() const;
 
     URL url;
-    
-    ReadWriteLock dataLock;
-    String latestResponse;
-    
-    RequestTranslationsThread::Listener *listener;
-    
+    ProgressCallback progressCallback;
+
+private:
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HelioApiRequest)
 };

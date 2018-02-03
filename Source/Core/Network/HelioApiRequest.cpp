@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "HttpConnection.h"
+#include "HelioApiRequest.h"
 #include "App.h"
 #include "Config.h"
 
@@ -25,16 +25,13 @@
 // Let OS set the default timeout:
 #define CONNECTION_TIMEOUT_MS (0)
 
-// This is a testing back-end, which is supposed to be moved to https://helio.fm, once it is ready:
-#define BASE_URL "https://musehackers.com/api/v1/"
-
-HttpConnection::HttpConnection(URL url, ProgressCallback progressCallback) :
+HelioApiRequest::HelioApiRequest(URL url, ProgressCallback progressCallback) :
     url(url),
     progressCallback(progressCallback) {}
 
 static bool progressCallbackInternal(void *const context, int bytesSent, int totalBytes)
 {
-    const auto connection = static_cast<const HttpConnection *const>(context);
+    const auto connection = static_cast<const HelioApiRequest *const>(context);
     if (connection->progressCallback != nullptr)
     {
         connection->progressCallback(bytesSent, totalBytes);
@@ -43,11 +40,11 @@ static bool progressCallbackInternal(void *const context, int bytesSent, int tot
     return true; // always continue
 }
 
-HttpConnection::Response::Response() :
+HelioApiRequest::Response::Response() :
     statusCode(0),
     result(Result::fail({})) {}
 
-HttpConnection::Response HttpConnection::request(ResponseType type) const
+HelioApiRequest::Response HelioApiRequest::request() const
 {
     Response response;
 
@@ -59,7 +56,7 @@ HttpConnection::Response HttpConnection::request(ResponseType type) const
         << "\n"
         << "Device-Id: " << deviceId
         << "\n"
-        << "Authorization: " << authToken
+        << "Authorization: Bearer " << authToken
         << "\n"
         << "Platform: " << SystemStats::getOperatingSystemName();
     

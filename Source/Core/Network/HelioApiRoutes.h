@@ -17,37 +17,19 @@
 
 #pragma once
 
-class HttpConnection
+namespace HelioFM
 {
-public:
+    // This is a testing back-end, which is supposed
+    // to be moved to https://helio.fm, once it is ready:
+    static const String baseURL = "https://musehackers.com";
 
-    typedef Function<void(int, int)> ProgressCallback;
-
-    HttpConnection(URL url, ProgressCallback progressCallback = nullptr);
-
-    struct Response
+    namespace Api
     {
-        Response();
-        Result result;
-        int statusCode;
-        StringPairArray headers;
-        var jsonBody;
-        ScopedPointer<XmlElement> xmlBody;
-    };
+        namespace V1
+        {
+            static const String join = "/api/v1/join";
+            static const String login = "/api/v1/login";
+        } // namespace V1
+    } // namespace API
+}  // namespace Serialization
 
-    enum ResponseType
-    {
-        Json,
-        Xml,
-        Raw
-    };
-
-    Response request(ResponseType type = Json) const;
-
-    URL url;
-    ProgressCallback progressCallback;
-
-private:
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HttpConnection)
-};

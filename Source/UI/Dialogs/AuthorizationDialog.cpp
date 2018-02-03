@@ -25,6 +25,15 @@
 #include "HelioTheme.h"
 #include "ComponentIDs.h"
 
+#include "App.h"
+#include "SessionManager.h"
+#include "ProgressTooltip.h"
+#include "SuccessTooltip.h"
+#include "FailTooltip.h"
+#include "MainLayout.h"
+#include "Config.h"
+#include "SerializationKeys.h"
+
 class LabelWithPassword : public Label
 {
 public:
@@ -45,7 +54,7 @@ public:
         return this->passwordCharacter;
     }
 
-    void paint (Graphics& g) override
+    void paint (Graphics &g) override
     {
         HelioTheme &ht = static_cast<HelioTheme &>(getLookAndFeel());
         ht.drawLabel (g, *this, getPasswordCharacter());
@@ -77,15 +86,6 @@ private:
     juce_wchar passwordCharacter;
 
 };
-
-#include "App.h"
-#include "AuthManager.h"
-#include "ProgressTooltip.h"
-#include "SuccessTooltip.h"
-#include "FailTooltip.h"
-#include "MainLayout.h"
-#include "Config.h"
-#include "SerializationKeys.h"
 //[/MiscUserDefs]
 
 AuthorizationDialog::AuthorizationDialog()
@@ -311,13 +311,13 @@ void AuthorizationDialog::login()
 {
     Config::set(Serialization::Core::lastUsedLogin, this->emailEditor->getText());
 
-    App::Helio()->getAuthManager()->addChangeListener(this);
+    App::Helio()->getSessionManager()->addChangeListener(this);
     App::Helio()->showModalComponent(new ProgressTooltip());
 
     const String passwordHash = SHA256(this->passwordEditor->getText().toUTF8()).toHexString();
     const String email = this->emailEditor->getText();
 
-    App::Helio()->getAuthManager()->login(email, passwordHash);
+    App::Helio()->getSessionManager()->login(email, passwordHash);
 }
 
 bool AuthorizationDialog::validateTextFields() const
@@ -334,7 +334,7 @@ bool AuthorizationDialog::validateTextFields() const
 
 void AuthorizationDialog::changeListenerCallback(ChangeBroadcaster *source)
 {
-    AuthManager *authManager = App::Helio()->getAuthManager();
+    SessionManager *authManager = App::Helio()->getSessionManager();
     authManager->removeChangeListener(this);
 
     if (Component *progressIndicator =
@@ -342,16 +342,16 @@ void AuthorizationDialog::changeListenerCallback(ChangeBroadcaster *source)
     {
         delete progressIndicator;
 
-        if (authManager->getLastRequestState() == AuthManager::RequestSucceed)
+        if (authManager->getLastRequestState() == SessionManager::RequestSucceed)
         {
             App::Helio()->showModalComponent(new SuccessTooltip());
             delete this;
         }
-        else if (authManager->getLastRequestState() == AuthManager::RequestFailed)
+        else if (authManager->getLastRequestState() == SessionManager::RequestFailed)
         {
             App::Helio()->showModalComponent(new FailTooltip());
         }
-        if (authManager->getLastRequestState() == AuthManager::ConnectionFailed)
+        if (authManager->getLastRequestState() == SessionManager::ConnectionFailed)
         {
             App::Helio()->showModalComponent(new FailTooltip());
         }

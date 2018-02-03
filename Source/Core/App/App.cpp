@@ -21,7 +21,7 @@
 #include "UpdateManager.h"
 #include "TranslationManager.h"
 #include "ArpeggiatorsManager.h"
-#include "AuthManager.h"
+#include "SessionManager.h"
 
 #include "HelioTheme.h"
 #include "ThemeSettings.h"
@@ -271,7 +271,7 @@ void App::initialise(const String &commandLine)
         this->theme->initResources();
         LookAndFeel::setDefaultLookAndFeel(this->theme);
 
-        this->authorizationManager = new AuthManager();
+        this->sessionManager = new SessionManager();
         this->clipboard = new InternalClipboard();
 
         TranslationManager::getInstance().initialise(commandLine);
@@ -314,7 +314,7 @@ void App::shutdown()
         this->workspace = nullptr;
 
         this->clipboard = nullptr;
-        this->authorizationManager = nullptr;
+        this->sessionManager = nullptr;
         this->config = nullptr;
         this->theme = nullptr;
 
@@ -442,9 +442,9 @@ InternalClipboard *App::getClipboard() const noexcept
     return this->clipboard;
 }
 
-AuthManager *App::getAuthManager() const noexcept
+SessionManager *App::getSessionManager() const noexcept
 {
-    return this->authorizationManager;
+    return this->sessionManager;
 }
 
 UpdateManager *App::getUpdateManager() const noexcept

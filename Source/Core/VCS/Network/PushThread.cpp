@@ -22,9 +22,9 @@
 #include "DataEncoder.h"
 #include "HelioServerDefines.h"
 #include "App.h"
-#include "AuthManager.h"
+#include "SessionManager.h"
 #include "Config.h"
-#include "HttpConnection.h"
+#include "HelioApiRequest.h"
 #include "SerializationKeys.h"
 
 using namespace VCS;
@@ -183,7 +183,7 @@ void PushThread::run()
     pushUrl = pushUrl.withFileToUpload(Serialization::Network::file, tempFile.getFile(), "application/octet-stream");
     pushUrl = pushUrl.withParameter(Serialization::Network::key, keyHash);
 
-    const bool loggedIn = (App::Helio()->getAuthManager()->getAuthorizationState() == AuthManager::LoggedIn);
+    const bool loggedIn = (App::Helio()->getSessionManager()->getAuthorizationState() == SessionManager::LoggedIn);
 
     if (loggedIn)
     {
@@ -244,5 +244,5 @@ void PushThread::run()
     this->setState(SyncThread::allDone);
 
     // On success we ask the auth manager to update his projects list.
-    App::Helio()->getAuthManager()->requestSessionData();
+    App::Helio()->getSessionManager()->reloadRemoteProjectsList();
 }

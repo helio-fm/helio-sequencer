@@ -19,11 +19,13 @@
 
 #include "LoginThread.h"
 #include "LogoutThread.h"
-#include "RequestProjectsListThread.h"
+#include "TokenCheckThread.h"
+#include "TokenUpdateThread.h"
+#include "RequestResourceThread.h"
+#include "RequestUserProfileThread.h"
+#include "UpdatesCheckThread.h"
 
-// todo rework as ProfileManager?
-
-class AuthManager :
+class SessionManager :
     public ChangeBroadcaster,
     private Timer,
     private LoginThread::Listener,
@@ -32,9 +34,26 @@ class AuthManager :
 {
 public:
     
-    AuthManager();
+    SessionManager();
 
-    enum AuthState
+    class Token
+    {
+    public:
+        enum State
+        {
+            Unknown,
+            Valid,
+            Expired
+        };
+
+    private:
+
+        State state;
+        Time timeIssued;
+        String payload;
+    };
+
+    enum SessionState
     {
         LoggedIn,
         NotLoggedIn,
@@ -48,26 +67,24 @@ public:
         ConnectionFailed
     };
 
-    AuthState getAuthorizationState() const;
+    SessionState getAuthorizationState() const;
     RequestState getLastRequestState() const;
     String getUserLoginOfCurrentSession() const;
     
+    void reloadRemoteProjectsList();
     Array<RemoteProjectDescription> getListOfRemoteProjects();
 
     void login(const String &login, const String &passwordHash);
     void logout();
 
-    void requestSessionData();
-
 private:
 
-    bool isBusy() const;
     void timerCallback() override;
 
     Array<RemoteProjectDescription> lastReceivedProjects;
     String currentLogin;
     
-    AuthState authState;
+    SessionState authState;
     RequestState lastRequestState;
     
     ScopedPointer<LoginThread> loginThread;
@@ -78,7 +95,7 @@ private:
     
     // will be called on the main thread:
     
-    void loginOk(const String &userEmail) override;
+    void loginOk(const String &userEmail, const String &newToken) override;
     void loginAuthorizationFailed() override;
     void loginConnectionFailed() override;
     

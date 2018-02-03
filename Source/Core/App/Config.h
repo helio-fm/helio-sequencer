@@ -20,48 +20,35 @@
 class Serializable;
 
 class Config :
-    public PropertySet,
+    protected PropertySet,
     private Timer
 {
 public:
 
-    static String getMachineId();
+    explicit Config(const int millisecondsBeforeSaving = 3000);
+    ~Config() override;
 
+    static String getMachineId();
     static bool hasNewMachineId();
 
     static void set(const String &keyName, const var &value);
-
     static void set(const String &keyName, const XmlElement *xml);
 
     static String get(StringRef keyName, const String &defaultReturnValue = String::empty);
-    
     static bool contains(StringRef keyName);
-
     static XmlElement *getXml(StringRef keyName);
 
     static void save(const String &key, const Serializable *serializer);
-
     static void load(const String &key, Serializable *serializer);
-
-
-public:
-
-    explicit Config(const int millisecondsBeforeSaving = 3000);
-
-    ~Config() override;
-
-    bool machineIdChanged();
-
-    void saveConfig(const String &key, const Serializable *serializer);
-
-    void loadConfig(const String &key, Serializable *serializer);
 
 protected:
 
+    void saveConfig(const String &key, const Serializable *serializer);
     bool saveIfNeeded();
-
+    void loadConfig(const String &key, Serializable *serializer);
     bool reload();
 
+    bool machineIdChanged();
     void propertyChanged() override;
 
 private:
@@ -69,15 +56,10 @@ private:
     void timerCallback() override;
 
     InterProcessLock fileLock;
-
     File propertiesFile;
     
     bool needsWriting;
-    
     int saveTimeout;
 
-private:
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Config)
-
 };
