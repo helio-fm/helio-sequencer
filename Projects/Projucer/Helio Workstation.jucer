@@ -373,6 +373,18 @@
           <FILE id="nw4n10" name="Serializable.h" compile="0" resource="0" file="../../Source/Core/Serialization/Serializable.h"/>
           <FILE id="EGpzhA" name="SerializationKeys.h" compile="0" resource="0"
                 file="../../Source/Core/Serialization/SerializationKeys.h"/>
+          <FILE id="KXPMri" name="Serializer.h" compile="0" resource="0" file="../../Source/Core/Serialization/Serializer.h"/>
+          <FILE id="l2qFPw" name="BinarySerializer.cpp" compile="1" resource="0"
+                file="../../Source/Core/Serialization/BinarySerializer.cpp"/>
+          <FILE id="qhE1Yp" name="BinarySerializer.h" compile="0" resource="0"
+                file="../../Source/Core/Serialization/BinarySerializer.h"/>
+          <FILE id="rfubMR" name="JsonSerializer.cpp" compile="1" resource="0"
+                file="../../Source/Core/Serialization/JsonSerializer.cpp"/>
+          <FILE id="AKOSjj" name="JsonSerializer.h" compile="0" resource="0"
+                file="../../Source/Core/Serialization/JsonSerializer.h"/>
+          <FILE id="xyA5ne" name="XmlSerializer.cpp" compile="1" resource="0"
+                file="../../Source/Core/Serialization/XmlSerializer.cpp"/>
+          <FILE id="cf5hpo" name="XmlSerializer.h" compile="0" resource="0" file="../../Source/Core/Serialization/XmlSerializer.h"/>
         </GROUP>
         <GROUP id="{979A75EC-73DC-C02F-D56E-866D72FF00D2}" name="Tree">
           <FILE id="rSZUTM" name="RecentFilesList.cpp" compile="1" resource="0"
