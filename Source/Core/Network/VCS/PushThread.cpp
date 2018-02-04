@@ -20,7 +20,6 @@
 #include "VersionControl.h"
 #include "Client.h"
 #include "DataEncoder.h"
-#include "HelioServerDefines.h"
 #include "App.h"
 #include "SessionManager.h"
 #include "Config.h"
@@ -39,7 +38,7 @@ PushThread::PushThread(URL pushUrl,
 
 void PushThread::run()
 {
-    const String saltedId = this->localId + HELIO_SALT;
+    const String saltedId = this->localId + "salt";
     const String saltedIdHash = SHA256(saltedId.toUTF8()).toHexString();
     const String keyHash = SHA256(this->localKey.toString().toUTF8()).toHexString();
     
@@ -76,7 +75,7 @@ void PushThread::run()
             fetchUrl.createInputStream(true,
                 syncProgressCallback,
                 static_cast<void *>(this),
-                HELIO_USERAGENT,
+                "useragent",
                 0,
                 &responseHeaders,
                 &statusCode));
@@ -207,7 +206,7 @@ void PushThread::run()
             pushUrl.createInputStream(true,
                 syncProgressCallback,
                 static_cast<void *>(this),
-                HELIO_USERAGENT,
+                "useragent",
                 0,
                 &responseHeaders,
                 &statusCode));
@@ -242,7 +241,4 @@ void PushThread::run()
     }
 
     this->setState(SyncThread::allDone);
-
-    // On success we ask the auth manager to update his projects list.
-    App::Helio()->getSessionManager()->reloadRemoteProjectsList();
 }

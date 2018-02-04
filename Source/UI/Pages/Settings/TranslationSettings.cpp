@@ -26,8 +26,8 @@
 #include "MainWindow.h"
 #include "TranslationManager.h"
 #include "TranslationSettingsItem.h"
-#include "HelioServerDefines.h"
 #include "DataEncoder.h"
+#include "HelioApiRoutes.h"
 
 #if HELIO_DESKTOP
 #   define TRANSLATION_SETTINGS_ROW_HEIGHT (32)
@@ -113,7 +113,7 @@ void TranslationSettings::buttonClicked (Button* buttonThatWasClicked)
     {
         //[UserButtonCode_helpButton] -- add your button handler code here..
         //Logger::writeToLog(DataEncoder::obfuscate(HELIO_TRANSLATIONS_HELP_URL));
-        URL updateUrl(HELIO_TRANSLATIONS_HELP_URL);
+        URL updateUrl(HelioFM::translationsURL);
         updateUrl.launchInDefaultBrowser();
         //[/UserButtonCode_helpButton]
     }

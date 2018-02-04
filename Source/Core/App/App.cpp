@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "App.h"
 #include "AudioCore.h"
-#include "UpdateManager.h"
 #include "TranslationManager.h"
 #include "ArpeggiatorsManager.h"
 #include "SessionManager.h"
@@ -66,6 +65,11 @@ MainLayout &App::Layout()
 MainWindow &App::Window()
 {
     return *App::Helio()->getWindow();
+}
+
+SessionManager &App::Backend()
+{
+    return *App::Helio()->getSessionManager();
 }
 
 Point<double> App::getScreenInCm()
@@ -265,7 +269,7 @@ void App::initialise(const String &commandLine)
         Logger::writeToLog("Ver. " + App::getAppReadableVersion());
         
         this->config = new Config();
-        this->updater = new UpdateManager();
+        //this->updater = new UpdateManager();
 
         this->theme = new HelioTheme();
         this->theme->initResources();
@@ -445,11 +449,6 @@ InternalClipboard *App::getClipboard() const noexcept
 SessionManager *App::getSessionManager() const noexcept
 {
     return this->sessionManager;
-}
-
-UpdateManager *App::getUpdateManager() const noexcept
-{
-    return this->updater;
 }
 
 HelioTheme *App::getTheme() const noexcept

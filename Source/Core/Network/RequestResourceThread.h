@@ -45,14 +45,14 @@ public:
         friend class RequestResourceThread;
     };
     
-    void login(RequestResourceThread::Listener *authListener, String resourceName)
+    void requestResource(RequestResourceThread::Listener *listener, String resourceName)
     {
         if (this->isThreadRunning())
         {
             return;
         }
 
-        this->listener = authListener;
+        this->listener = listener;
         this->resourceName = resourceName;
         this->startThread(3);
     }
@@ -61,8 +61,9 @@ private:
     
     void run() override
     {
-        const HelioApiRequest request(HelioFM::Api::V1::requestResource);
-        this->response = request.get(params);
+        const String uri = HelioFM::Api::V1::requestResource + "/" + this->resourceName.toLowerCase();
+        const HelioApiRequest request(uri);
+        this->response = request.get();
 
         if (this->response.result.failed())
         {
@@ -89,12 +90,14 @@ private:
         MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
         {
             const auto self = static_cast<RequestResourceThread *>(ptr);
-            self->listener->requestResourceOk(TODO resource);
+            // TODO get resource from the response
+            self->listener->requestResourceOk(self->resource);
             return nullptr;
         }, this);
     }
     
     String resourceName;
+    ValueTree resource;
 
     HelioApiRequest::Response response;
     RequestResourceThread::Listener *listener;

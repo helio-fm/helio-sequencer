@@ -18,11 +18,13 @@
 #pragma once
 
 #include "Serializable.h"
+#include "RequestResourceThread.h"
 
 class TranslationManager :
     public ChangeBroadcaster,
     private Serializable,
-    private Timer
+    private Timer,
+    private RequestResourceThread::Listener
 {
 public:
 
@@ -76,6 +78,10 @@ private:
     void deserialize(const XmlElement &xml) override;
     void reset() override;
     
+    void requestResourceOk(const ValueTree &resource) override;
+    void requestResourceFailed(const Array<String> &errors) override;
+    void requestResourceConnectionFailed() override;
+
 private:
     
     TranslationManager() {}

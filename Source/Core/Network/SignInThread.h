@@ -44,7 +44,7 @@ public:
         friend class SignInThread;
     };
     
-    void login(SignInThread::Listener *listener, String userEmail, String userPassword)
+    void signIn(SignInThread::Listener *listener, String userEmail, String userPassword)
     {
         if (this->isThreadRunning())
         {
@@ -113,10 +113,9 @@ private:
     
     String email;
     String password;
-
     HelioApiRequest::Response response;
 
     SignInThread::Listener *listener;
-    
+
     friend class SessionManager;
 };

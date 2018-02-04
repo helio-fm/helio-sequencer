@@ -239,6 +239,7 @@ namespace Serialization
             static const String password = "password";
             static const String passwordConfirmation = "password_confirmation";
 
+            static const String bearer = "bearer";
             static const String deviceId = "device_id";
             static const String platformId = "platform_id";
 

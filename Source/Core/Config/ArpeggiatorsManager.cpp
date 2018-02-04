@@ -54,7 +54,6 @@ bool ArpeggiatorsManager::replaceArpWithId(const String &id, const Arpeggiator &
         {
             this->arps.setUnchecked(i, arp);
             this->saveConfigArps();
-            this->push();
             this->sendChangeMessage();
             return true;
         }
@@ -69,54 +68,8 @@ void ArpeggiatorsManager::addArp(const Arpeggiator &arp)
     {
         this->arps.add(arp);
         this->saveConfigArps();
-        this->push();
         this->sendChangeMessage();
     }
-}
-
-bool ArpeggiatorsManager::isPullPending() const
-{
-    if (this->requestArpsThread == nullptr)
-    {
-        return false;
-    }
-    
-    return this->requestArpsThread->isThreadRunning();
-}
-
-bool ArpeggiatorsManager::isPushPending() const
-{
-    if (this->updateArpsThread == nullptr)
-    {
-        return false;
-    }
-    
-    return this->updateArpsThread->isThreadRunning();
-}
-
-void ArpeggiatorsManager::pull()
-{
-    if (this->isPullPending() || this->isPushPending())
-    {
-        return;
-    }
-    
-    this->requestArpsThread = new RequestArpeggiatorsThread();
-    this->requestArpsThread->requestArps(this);
-}
-
-void ArpeggiatorsManager::push()
-{
-    if (this->isPullPending() || this->isPushPending())
-    {
-        return;
-    }
-    
-    ScopedPointer<XmlElement> xml(this->serialize());
-    const String xmlString(xml->createDocument("", false, true, "UTF-8", 512));
-
-    this->requestArpsThread = new RequestArpeggiatorsThread();
-    this->requestArpsThread->updateArps(xmlString, this);
 }
 
 
@@ -226,33 +179,7 @@ String ArpeggiatorsManager::getConfigArps()
 void ArpeggiatorsManager::timerCallback()
 {
     this->stopTimer();
-    this->pull();
-}
-
-
-//===----------------------------------------------------------------------===//
-// RequestTranslationsThread::Listener
-//===----------------------------------------------------------------------===//
-
-void ArpeggiatorsManager::arpsRequestOk(RequestArpeggiatorsThread *thread)
-{
-    Logger::writeToLog("ArpeggiatorsManager::arpsRequestOk");
-    
-    if (thread == this->requestArpsThread)
-    {
-        ScopedPointer<XmlElement> xml(XmlDocument::parse(thread->getLastFetchedData()));
-        
-        if (xml != nullptr)
-        {
-            this->deserialize(*xml);
-            this->saveConfigArps();
-        }
-    }
-}
-
-void ArpeggiatorsManager::arpsRequestFailed(RequestArpeggiatorsThread *thread)
-{
-    Logger::writeToLog("ArpeggiatorsManager::arpsRequestConnectionFailed");
+    // TODO update arps from the server
 }
 
 

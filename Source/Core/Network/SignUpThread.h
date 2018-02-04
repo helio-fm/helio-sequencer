@@ -43,7 +43,7 @@ public:
         friend class SignUpThread;
     };
     
-    void login(SignUpThread::Listener *listener,
+    void signUp(SignUpThread::Listener *listener,
         String userName, String userLogin,
         String userEmail, String userPassword)
     {
@@ -119,9 +119,7 @@ private:
     String name;
     String login;
     String password;
-
     HelioApiRequest::Response response;
+
     SignUpThread::Listener *listener;
-    
-    friend class SessionManager;
 };

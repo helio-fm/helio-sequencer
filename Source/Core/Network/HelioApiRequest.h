@@ -36,6 +36,7 @@ public:
     };
 
     Response post(const var payload) const;
+    Response get() const;
 
     ProgressCallback progressCallback;
 

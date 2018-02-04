@@ -22,7 +22,7 @@
 
 class IconComponent;
 
-struct CommandItem : public ReferenceCountedObject
+struct CommandItem final : public ReferenceCountedObject
 {
     enum Alignment
     {

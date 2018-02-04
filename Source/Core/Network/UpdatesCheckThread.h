@@ -34,6 +34,11 @@ public:
         this->stopThread(1000);
     }
     
+    struct UpdateInfo final
+    {
+        // TODO
+    };
+
     class Listener
     {
     public:
@@ -61,7 +66,7 @@ private:
     void run() override
     {
         const HelioApiRequest request(HelioFM::Api::V1::requestUpdatesInfo);
-        this->response = request.get(params);
+        this->response = request.get();
 
         if (this->response.result.failed())
         {
@@ -93,6 +98,8 @@ private:
         }, this);
     }
     
+    
+    UpdateInfo updateInfo;
     HelioApiRequest::Response response;
     UpdatesCheckThread::Listener *listener;
     

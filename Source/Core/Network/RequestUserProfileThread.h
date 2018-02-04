@@ -24,6 +24,19 @@
 #include "Config.h"
 #include "SerializationKeys.h"
 
+struct UserProfile final : public ReferenceCountedObject
+{
+    // TODO
+
+    typedef ReferenceCountedObjectPtr<UserProfile> Ptr;
+
+    static UserProfile::Ptr empty()
+    {
+        return UserProfile::Ptr(new UserProfile());
+    }
+
+};
+
 class RequestUserProfileThread final : private Thread
 {
 public:
@@ -33,7 +46,7 @@ public:
     {
         this->stopThread(1000);
     }
-    
+
     class Listener
     {
     public:
@@ -45,7 +58,7 @@ public:
         friend class RequestUserProfileThread;
     };
     
-    void login(RequestUserProfileThread::Listener *authListener)
+    void requestUserProfile(RequestUserProfileThread::Listener *authListener)
     {
         if (this->isThreadRunning())
         {
@@ -61,13 +74,13 @@ private:
     void run() override
     {
         const HelioApiRequest request(HelioFM::Api::V1::requestUserProfile);
-        this->response = request.get(params);
+        this->response = request.get();
 
         if (this->response.result.failed())
         {
             MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
             {
-                LoginThread *self = static_cast<LoginThread *>(ptr);
+                const auto self = static_cast<RequestUserProfileThread *>(ptr);
                 self->listener->requestProfileConnectionFailed();
                 return nullptr;
             }, this);
@@ -93,6 +106,7 @@ private:
         }, this);
     }
     
+    UserProfile::Ptr userProfile;
     HelioApiRequest::Response response;
     RequestUserProfileThread::Listener *listener;
     

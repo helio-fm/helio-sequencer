@@ -22,6 +22,7 @@ namespace HelioFM
     // This is a testing back-end, which is supposed
     // to be moved to https://helio.fm, once it is ready:
     static const String baseURL = "https://musehackers.com";
+    static const String translationsURL = baseURL + "/translations";
 
     namespace Api
     {
@@ -34,6 +35,7 @@ namespace HelioFM
             static const String requestResource = "/api/v1/clients/helio/resources";
             static const String requestUpdatesInfo = "/api/v1/clients/helio/info";
             static const String requestUserProfile = "/api/v1/profile";
+            static const String vcs = "/api/v1/vcs/:user/:project";
         } // namespace V1
     } // namespace API
 }  // namespace HelioFM

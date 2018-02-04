@@ -23,7 +23,6 @@
 #include "RemovalThread.h"
 #include "DataEncoder.h"
 #include "FileUtils.h"
-#include "HelioServerDefines.h"
 
 #include "App.h"
 #include "ProgressTooltip.h"
@@ -39,15 +38,7 @@ Client::Client(VersionControl &versionControl) :
     lastRemovalState(SyncThread::readyToRock),
     pushThread(nullptr),
     pullThread(nullptr),
-    removalThread(nullptr)
-{
-    //===------------------------------------------------------------------===//
-}
-
-Client::~Client()
-{
-
-}
+    removalThread(nullptr) {}
 
 bool Client::push()
 {
@@ -60,7 +51,7 @@ bool Client::push()
     ScopedPointer<XmlElement> vcsXml(this->vcs.serialize());
 
     this->pushThread =
-        new PushThread(URL(HELIO_VCS_REMOTE_URL),
+        new PushThread(URL(HelioFM::Api::V1::vcs),
                        this->vcs.getPublicId(),
                        this->vcs.getParentName(),
                        this->vcs.getKey(),
@@ -86,7 +77,7 @@ bool Client::pull()
     ScopedPointer<XmlElement> vcsXml(this->vcs.serialize());
 
     this->pullThread =
-        new PullThread(URL(HELIO_VCS_REMOTE_URL),
+        new PullThread(URL(HelioFM::Api::V1::vcs),
                        this->vcs.getPublicId(),
                        this->vcs.getKey(),
                        vcsXml);
@@ -109,9 +100,9 @@ bool Client::remove()
     if (this->isRemoving()) { return false; }
     
     this->removalThread =
-    new RemovalThread(URL(HELIO_VCS_REMOTE_URL),
-                      this->vcs.getPublicId(),
-                      this->vcs.getKey());
+        new RemovalThread(URL(HelioFM::Api::V1::vcs),
+                          this->vcs.getPublicId(),
+                          this->vcs.getKey());
     
     this->removalThread->startThread(5);
     

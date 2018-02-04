@@ -199,13 +199,6 @@ void RecentFilesList::reset()
 
 void RecentFilesList::forceUpdate()
 {
-    this->remoteFiles = App::Helio()->getSessionManager()->getListOfRemoteProjects();
-    
-//    for (int i = 0; i < this->remoteFiles.size(); ++i)
-//    {
-//        Logger::writeToLog("Received remote file: " + this->remoteFiles[i].projectTitle);
-//    }
-    
     this->sendChangeMessage();
 }
 
@@ -217,15 +210,15 @@ void RecentFilesList::changeListenerCallback(ChangeBroadcaster *source)
 ReferenceCountedArray<RecentFileDescription> RecentFilesList::createCoalescedList() const
 {
     ReferenceCountedArray<RecentFileDescription> resultList;
-    
+    ReferenceCountedArray<RecentFileDescription> remoteFiles; // TODO
+
     // adds remote files
-    for (auto && remoteFile : this->remoteFiles)
+    for (auto && remoteFile : remoteFiles)
     {
         RecentFileDescription::Ptr description = new RecentFileDescription();
-        description->projectId = remoteFile.projectId;
-        description->projectKey = remoteFile.projectKey;
-        description->title = remoteFile.projectTitle;
-        description->lastModifiedTime = remoteFile.lastModifiedTime;
+        description->projectId = remoteFile->projectId;
+        description->title = remoteFile->title;
+        description->lastModifiedTime = remoteFile->lastModifiedTime;
         description->path = "";
         description->isLoaded = false;
         
@@ -234,7 +227,7 @@ ReferenceCountedArray<RecentFileDescription> RecentFilesList::createCoalescedLis
         
         for (auto && localFile : this->localFiles)
         {
-            if (localFile->projectId == remoteFile.projectId)
+            if (localFile->projectId == remoteFile->projectId)
             {
                 localVersion = localFile;
                 description->lastModifiedTime = localVersion->lastModifiedTime;
@@ -257,9 +250,9 @@ ReferenceCountedArray<RecentFileDescription> RecentFilesList::createCoalescedLis
     {
         bool alreadyAdded = false;
         
-        for (auto && remoteFile : this->remoteFiles)
+        for (auto && remoteFile : remoteFiles)
         {
-            if (localFile->projectId == remoteFile.projectId)
+            if (localFile->projectId == remoteFile->projectId)
             {
                 alreadyAdded = true;
                 break;

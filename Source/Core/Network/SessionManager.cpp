@@ -19,8 +19,6 @@
 #include "SessionManager.h"
 
 #include "Config.h"
-#include "LoginThread.h"
-#include "LogoutThread.h"
 
 #include "AuthorizationDialog.h"
 #include "HelioTheme.h"
@@ -30,14 +28,11 @@
 #include "SuccessTooltip.h"
 #include "FailTooltip.h"
 
-#include "ArpeggiatorsManager.h"
-
 // Try to update our sliding session and reload user profile after 15 seconds
 #define UPDATE_SESSION_TIMEOUT_MS (1000 * 15)
 
 SessionManager::SessionManager() :
-    authState(Unknown),
-    lastRequestState(RequestSucceed)
+    authState(Unknown)
 {
     this->startTimer(UPDATE_SESSION_TIMEOUT_MS);
 }
@@ -52,27 +47,23 @@ SessionManager::SessionState SessionManager::getAuthorizationState() const
     return this->authState;
 }
 
-SessionManager::RequestState SessionManager::getLastRequestState() const
-{
-    return this->lastRequestState;
-}
-
 String SessionManager::getUserLoginOfCurrentSession() const
 {
     return this->currentLogin;
 }
 
-
-void SessionManager::login(const String &login, const String &passwordHash)
+void SessionManager::signIn(const String &login, const String &passwordHash)
 {
     const auto signInThread = this->getRequestThread<SignInThread>();
-    signInThread->login(this, login, passwordHash);
+    signInThread->signIn(this, login, passwordHash);
 }
 
-void SessionManager::logout()
+void SessionManager::signOut()
 {
-    // TODO just remove the token and cleanup projects list?
-    this->logoutThread->logout(this);
+    Config::set(Serialization::Api::sessionLastUpdateTime, Time::getCurrentTime().toISO8601(true));
+    Config::set(Serialization::Api::sessionLastToken, {});
+    this->currentLogin = {};
+    this->userProfile = UserProfile::empty();
 }
 
 //===----------------------------------------------------------------------===//
@@ -81,95 +72,126 @@ void SessionManager::logout()
 
 void SessionManager::timerCallback()
 {
-    const Time nowMinusHalfDay = Time::getCurrentTime() - RelativeTime::hours(12);
-    const Time lastSessionUpdateTime = Time::fromISO8601(Config::get(Serialization::Api::sessionLastUpdateTime));
     const String lastSessionToken = SessionManager::getApiToken();
-    const String deviceId = Config::getMachineId();
+    const Time nowMinusHalfDay = Time::getCurrentTime() - RelativeTime::hours(12);
+    const Time lastSessionUpdateTime =
+        Time::fromISO8601(Config::get(Serialization::Api::sessionLastUpdateTime));
+
     if (lastSessionToken.isNotEmpty() &&
         lastSessionUpdateTime < nowMinusHalfDay)
     {
-        this->reloginThread->relogin(this, lastSessionToken, deviceId);
+        const auto tokenUpdateThread = this->getRequestThread<TokenUpdateThread>();
+        tokenUpdateThread->updateToken(this, lastSessionToken);
     }
 
-    // TODO reloadUserProfile
+    const auto userProfileThread = this->getRequestThread<RequestUserProfileThread>();
+    userProfileThread->requestUserProfile(this);
 }
 
 //===----------------------------------------------------------------------===//
-// ReloginThread::Listener
-//===----------------------------------------------------------------------===//
-
-void SessionManager::reloginOk(const String &newToken)
-{
-    Config::set(Serialization::Api::sessionLastUpdateTime, Time::getCurrentTime().toISO8601(true));
-    Config::set(Serialization::Api::sessionLastToken, newToken);
-    this->sendChangeMessage();
-}
-
-void SessionManager::reloginAuthorizationFailed()
-{
-    Config::set(Serialization::Api::sessionLastToken, {});
-    this->lastReceivedProjects.clear();
-    this->sendChangeMessage();
-}
-
-void SessionManager::reloginConnectionFailed()
-{
-    this->lastRequestState = ConnectionFailed;
-    this->authState = Unknown;
-    this->lastReceivedProjects.clear();
-    this->sendChangeMessage();
-}
-
-//===----------------------------------------------------------------------===//
-// LoginThread::Listener
+// SignInThread::Listener
 //===----------------------------------------------------------------------===//
 
 void SessionManager::signInOk(const String &userEmail, const String &newToken)
 {
-    this->lastRequestState = RequestSucceed;
     this->authState = LoggedIn;
     this->currentLogin = userEmail;
-    
-    // a dirty hack
-    ArpeggiatorsManager::getInstance().pull();
-
     this->sendChangeMessage();
 }
 
-void SessionManager::signInAuthorizationFailed()
+void SessionManager::signInFailed(const Array<String> &errors)
 {
-    this->lastRequestState = RequestFailed;
     this->authState = NotLoggedIn;
     this->sendChangeMessage();
 }
 
 void SessionManager::signInConnectionFailed()
 {
-    this->lastRequestState = ConnectionFailed;
     this->authState = Unknown;
     this->sendChangeMessage();
 }
 
-
 //===----------------------------------------------------------------------===//
-// LogoutThread::Listener
+// SignUpThread::Listener
 //===----------------------------------------------------------------------===//
 
-void SessionManager::logoutOk()
+void SessionManager::signUpOk(const String &userEmail, const String &newToken)
 {
-    this->lastRequestState = RequestSucceed;
     this->authState = NotLoggedIn;
     this->sendChangeMessage();
 }
 
-void SessionManager::logoutFailed()
+void SessionManager::signUpFailed(const Array<String> &errors)
 {
-    this->lastRequestState = RequestFailed;
     this->sendChangeMessage();
 }
 
-void SessionManager::logoutConnectionFailed()
+void SessionManager::signUpConnectionFailed()
 {
-    this->lastRequestState = ConnectionFailed;
     this->sendChangeMessage();
+}
+
+//===----------------------------------------------------------------------===//
+// TokenCheckThread::Listener
+//===----------------------------------------------------------------------===//
+
+void SessionManager::tokenCheckOk()
+{
+
+}
+
+void SessionManager::tokenCheckFailed(const Array<String> &errors)
+{
+
+}
+
+void SessionManager::tokenCheckConnectionFailed()
+{
+
+}
+
+//===----------------------------------------------------------------------===//
+// TokenUpdateThread::Listener
+//===----------------------------------------------------------------------===//
+
+void SessionManager::tokenUpdateOk(const String &newToken)
+{
+    Config::set(Serialization::Api::sessionLastToken, newToken);
+    Config::set(Serialization::Api::sessionLastUpdateTime,
+        Time::getCurrentTime().toISO8601(true));
+    //this->sendChangeMessage();
+}
+
+void SessionManager::tokenUpdateFailed(const Array<String> &errors)
+{
+    Config::set(Serialization::Api::sessionLastToken, {});
+    this->userProfile = UserProfile::empty();
+    this->sendChangeMessage();
+}
+
+void SessionManager::tokenUpdateConnectionFailed()
+{
+    this->authState = Unknown;
+    this->userProfile = UserProfile::empty();
+    this->sendChangeMessage();
+}
+
+//===----------------------------------------------------------------------===//
+// RequestUserProfileThread::Listener
+//===----------------------------------------------------------------------===//
+
+void SessionManager::requestProfileOk(const UserProfile::Ptr profile)
+{
+    this->userProfile = profile;
+    this->sendChangeMessage();
+}
+
+void SessionManager::requestProfileFailed(const Array<String> &errors)
+{
+
+}
+
+void SessionManager::requestProfileConnectionFailed()
+{
+
 }

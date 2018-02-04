@@ -38,7 +38,6 @@ class HelioTheme;
 class Config;
 class ApiCore;
 class AudioCore;
-class UpdateManager;
 class InternalClipboard;
 class SessionManager;
 
@@ -58,6 +57,7 @@ public:
     static class Workspace &Workspace();
     static class MainLayout &Layout();
     static class MainWindow &Window();
+    static class SessionManager &Backend();
 
     static Point<double> getScreenInCm();
     static bool isRunningOnPhone();
@@ -104,7 +104,6 @@ public:
     Config *getConfig() const noexcept;
     InternalClipboard *getClipboard() const noexcept;
     SessionManager *getSessionManager() const noexcept;
-    UpdateManager *getUpdateManager() const noexcept;
     HelioTheme *getTheme() const noexcept;
 
 private:
@@ -112,7 +111,6 @@ private:
     HelioLogger logger;
     ScopedPointer<HelioTheme> theme;
     ScopedPointer<Config> config;
-    ScopedPointer<UpdateManager> updater;
     ScopedPointer<InternalClipboard> clipboard;
     ScopedPointer<class MainWindow> window;
     ScopedPointer<SessionManager> sessionManager;

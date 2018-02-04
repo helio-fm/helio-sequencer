@@ -25,11 +25,14 @@
 #include "RequestUserProfileThread.h"
 #include "UpdatesCheckThread.h"
 
-class SessionManager :
+class SessionManager final :
     public ChangeBroadcaster,
     private Timer,
     private SignInThread::Listener,
-    private SignUpThread::Listener
+    private SignUpThread::Listener,
+    private TokenCheckThread::Listener,
+    private TokenUpdateThread::Listener,
+    private RequestUserProfileThread::Listener
 {
 public:
     
@@ -37,57 +40,21 @@ public:
 
     static String getApiToken();
 
-    class Token
-    {
-    public:
-        enum State
-        {
-            Unknown,
-            Valid,
-            Expired
-        };
-
-    private:
-
-        State state;
-        Time timeIssued;
-        String payload;
-    };
-
     enum SessionState
     {
         LoggedIn,
         NotLoggedIn,
         Unknown
     };
-    
-    enum RequestState
-    {
-        RequestSucceed,
-        RequestFailed,
-        ConnectionFailed
-    };
 
     SessionState getAuthorizationState() const;
-    RequestState getLastRequestState() const;
     String getUserLoginOfCurrentSession() const;
     
-    void login(const String &login, const String &passwordHash);
-    void logout();
-
-private:
-
-    void timerCallback() override;
-
-    String currentLogin;
-    
-    SessionState authState;
-    RequestState lastRequestState;
-    
-    OwnedArray<Thread> requestThreads;
+    void signIn(const String &login, const String &passwordHash);
+    void signOut();
 
     template<typename T>
-    T *getRequestThread() const
+    T *getRequestThread()
     {
         for (const auto thread : this->requestThreads)
         {
@@ -103,17 +70,38 @@ private:
         return static_cast<T *>(this->requestThreads.add(new T()));
     }
 
+private:
+
+    void timerCallback() override;
+
+    String currentLogin;
+    SessionState authState;
+    UserProfile::Ptr userProfile;
+
+    OwnedArray<Thread> requestThreads;
 
 private:
     
     // will be called on the main thread:
     
     void signInOk(const String &userEmail, const String &newToken) override;
-    void signInAuthorizationFailed() override;
+    void signInFailed(const Array<String> &errors) override;
     void signInConnectionFailed() override;
-    
-    void logoutOk() override;
-    void logoutFailed() override;
-    void logoutConnectionFailed() override;
+
+    void signUpOk(const String &userEmail, const String &newToken) override;
+    void signUpFailed(const Array<String> &errors) override;
+    void signUpConnectionFailed() override;
+
+    void tokenCheckOk() override;
+    void tokenCheckFailed(const Array<String> &errors) override;
+    void tokenCheckConnectionFailed() override;
+
+    void tokenUpdateOk(const String &newToken) override;
+    void tokenUpdateFailed(const Array<String> &errors) override;
+    void tokenUpdateConnectionFailed() override;
+
+    void requestProfileOk(const UserProfile::Ptr profile) override;
+    void requestProfileFailed(const Array<String> &errors) override;
+    void requestProfileConnectionFailed() override;
 
 };

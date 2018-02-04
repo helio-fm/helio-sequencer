@@ -20,7 +20,6 @@
 #include "VersionControl.h"
 #include "Client.h"
 #include "DataEncoder.h"
-#include "HelioServerDefines.h"
 #include "SerializationKeys.h"
 
 using namespace VCS;
@@ -42,7 +41,7 @@ XmlElement *PullThread::createMergedStateData()
 
 void PullThread::run()
 {
-    const String saltedId = this->localId + HELIO_SALT;
+    const String saltedId = this->localId + "salt";
     const String saltedIdHash = SHA256(saltedId.toUTF8()).toHexString();
 
     //===------------------------------------------------------------------===//
@@ -65,7 +64,7 @@ void PullThread::run()
             fetchUrl.createInputStream(true,
                 syncProgressCallback,
                 static_cast<void *>(this),
-                HELIO_USERAGENT,
+                "useragent",
                 0,
                 &responseHeaders,
                 &statusCode));

@@ -134,3 +134,10 @@ HelioApiRequest::Response HelioApiRequest::post(const var payload) const
 
     return response;
 }
+
+HelioApiRequest::Response HelioApiRequest::get() const
+{
+    // TODO
+    Response response;
+    return response;
+}

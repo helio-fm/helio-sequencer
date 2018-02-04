@@ -317,7 +317,7 @@ void AuthorizationDialog::login()
     const String passwordHash = SHA256(this->passwordEditor->getText().toUTF8()).toHexString();
     const String email = this->emailEditor->getText();
 
-    App::Helio()->getSessionManager()->login(email, passwordHash);
+    App::Helio()->getSessionManager()->signIn(email, passwordHash);
 }
 
 bool AuthorizationDialog::validateTextFields() const
@@ -342,19 +342,19 @@ void AuthorizationDialog::changeListenerCallback(ChangeBroadcaster *source)
     {
         delete progressIndicator;
 
-        if (authManager->getLastRequestState() == SessionManager::RequestSucceed)
-        {
-            App::Helio()->showModalComponent(new SuccessTooltip());
-            delete this;
-        }
-        else if (authManager->getLastRequestState() == SessionManager::RequestFailed)
-        {
-            App::Helio()->showModalComponent(new FailTooltip());
-        }
-        if (authManager->getLastRequestState() == SessionManager::ConnectionFailed)
-        {
-            App::Helio()->showModalComponent(new FailTooltip());
-        }
+        //if (authManager->getLastRequestState() == SessionManager::RequestSucceed)
+        //{
+        //    App::Helio()->showModalComponent(new SuccessTooltip());
+        //    delete this;
+        //}
+        //else if (authManager->getLastRequestState() == SessionManager::RequestFailed)
+        //{
+        //    App::Helio()->showModalComponent(new FailTooltip());
+        //}
+        //if (authManager->getLastRequestState() == SessionManager::ConnectionFailed)
+        //{
+        //    App::Helio()->showModalComponent(new FailTooltip());
+        //}
     }
 }
 

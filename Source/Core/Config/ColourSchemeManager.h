@@ -17,71 +17,64 @@
 
 #pragma once
 
-#include "Arpeggiator.h"
+#include "ColourScheme.h"
 #include "Serializable.h"
-#include "RequestArpeggiatorsThread.h"
+#include "RequestResourceThread.h"
 
-class ArpeggiatorsManager :
+class ColourSchemeManager :
     public ChangeBroadcaster,
     private Serializable,
     private Timer,
-    private RequestArpeggiatorsThread::Listener
+    private RequestResourceThread::Listener
 {
 public:
 
-    static ArpeggiatorsManager &getInstance()
+    static ColourSchemeManager &getInstance()
     {
-        static ArpeggiatorsManager Instance;
+        static ColourSchemeManager Instance;
         return Instance;
     }
-    
+
     void initialise(const String &commandLine);
     void shutdown();
-
-    static File getDebugArpsFile();
-    
-    bool isPullPending() const;
-    bool isPushPending() const;
-    
     void pull();
-    void push();
-    
-    Array<Arpeggiator> getArps() const;
-    bool replaceArpWithId(const String &id, const Arpeggiator &arp);
-    void addArp(const Arpeggiator &arp);
-    
+
+    Array<ColourScheme> getSchemes() const;
+    ColourScheme getCurrentScheme() const;
+    void setCurrentScheme(const ColourScheme &scheme);
+
 private:
-    
+
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
-    
+
     XmlElement *serialize() const override;
     void deserialize(const XmlElement &xml) override;
     void reset() override;
     
 private:
-    
-    ScopedPointer<RequestArpeggiatorsThread> requestArpsThread;
-    ScopedPointer<RequestArpeggiatorsThread> updateArpsThread;
 
-    void arpsRequestOk(RequestArpeggiatorsThread *thread) override;
-    void arpsRequestFailed(RequestArpeggiatorsThread *thread) override;
-    
+    ScopedPointer<RequestResourceThread> requestThread;
+
+    void requestResourceOk(const ValueTree &resource) override;
+    void requestResourceFailed(const Array<String> &errors) override;
+    void requestResourceConnectionFailed() override;
+
 private:
-    
-    Array<Arpeggiator> arps;
-    
-    ArpeggiatorsManager() {}
+
+    Array<ColourScheme> schemes;
+
+    ColourSchemeManager() {}
     void timerCallback() override;
-    
-    void reloadArps();
 
-    void saveConfigArps();
-    String getConfigArps();
-    
+    void reloadSchemes();
+
+    void saveConfigSchemes();
+    String getConfigSchemes();
+
 private:
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ArpeggiatorsManager)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ColourSchemeManager)
 
 };

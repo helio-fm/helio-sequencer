@@ -20,7 +20,6 @@
 #include "VersionControl.h"
 #include "Client.h"
 #include "DataEncoder.h"
-#include "HelioServerDefines.h"
 #include "App.h"
 #include "SessionManager.h"
 #include "Config.h"
@@ -37,7 +36,7 @@ RemovalThread::RemovalThread(URL pushUrl,
 
 void RemovalThread::run()
 {
-    const String saltedId = this->localId + HELIO_SALT;
+    const String saltedId = this->localId + "salt";
     const String saltedIdHash = SHA256(saltedId.toUTF8()).toHexString();
     const String keyHash = SHA256(this->localKey.toString().toUTF8()).toHexString();
     
@@ -70,7 +69,7 @@ void RemovalThread::run()
             removeUrl.createInputStream(true,
                 syncProgressCallback,
                 static_cast<void *>(this),
-                HELIO_USERAGENT,
+                "todo useragent",
                 0,
                 &responseHeaders,
                 &statusCode));
@@ -110,7 +109,4 @@ void RemovalThread::run()
     }
 
     this->setState(SyncThread::allDone);
-
-    // On success we ask the auth manager to update his projects list.
-    App::Helio()->getSessionManager()->reloadRemoteProjectsList();
 }

@@ -142,7 +142,7 @@ void WorkspaceMenu::handleCommandMessage (int commandId)
         {
             App::Helio()->showModalComponent(new ProgressTooltip());
             authManager->addChangeListener(this);
-            authManager->logout();
+            authManager->signOut();
         }
     }
     //[/UserCode_handleCommandMessage]
@@ -170,18 +170,18 @@ void WorkspaceMenu::changeListenerCallback(ChangeBroadcaster *source)
         {
             delete progressIndicator;
 
-            if (authManager->getLastRequestState() == SessionManager::RequestSucceed)
-            {
-                App::Helio()->showModalComponent(new SuccessTooltip());
-            }
-            else if (authManager->getLastRequestState() == SessionManager::RequestFailed)
-            {
-                App::Helio()->showModalComponent(new FailTooltip());
-            }
-            if (authManager->getLastRequestState() == SessionManager::ConnectionFailed)
-            {
-                App::Helio()->showModalComponent(new FailTooltip());
-            }
+            //if (authManager->getLastRequestState() == SessionManager::RequestSucceed)
+            //{
+            //    App::Helio()->showModalComponent(new SuccessTooltip());
+            //}
+            //else if (authManager->getLastRequestState() == SessionManager::RequestFailed)
+            //{
+            //    App::Helio()->showModalComponent(new FailTooltip());
+            //}
+            //if (authManager->getLastRequestState() == SessionManager::ConnectionFailed)
+            //{
+            //    App::Helio()->showModalComponent(new FailTooltip());
+            //}
 
             // For workspace page:
             this->listBox->updateContent();

@@ -64,25 +64,11 @@ void ColourSchemeManager::setCurrentScheme(const ColourScheme &scheme)
     Config::set(Serialization::UI::Colours::appliedScheme, xmlString);
 }
 
-bool ColourSchemeManager::isPullPending() const
-{
-    if (this->requestThread == nullptr)
-    {
-        return false;
-    }
-    
-    return this->requestThread->isThreadRunning();
-}
-
 void ColourSchemeManager::pull()
 {
-    if (this->isPullPending())
-    {
-        return;
-    }
-    
-    this->requestThread = new RequestColourSchemesThread();
-    this->requestThread->requestSchemes(this);
+    // TODO
+    this->requestThread = new RequestResourceThread();
+    this->requestThread->requestResource(this, "ColourScheme");
 }
 
 
@@ -187,24 +173,20 @@ void ColourSchemeManager::timerCallback()
 // RequestTranslationsThread::Listener
 //===----------------------------------------------------------------------===//
 
-void ColourSchemeManager::schemesRequestOk(RequestColourSchemesThread *thread)
+void ColourSchemeManager::requestResourceOk(const ValueTree &resource)
 {
-    Logger::writeToLog("ColourSchemeManager::schemesRequestOk");
-    
-    if (thread == this->requestThread)
-    {
-        ScopedPointer<XmlElement> xml(XmlDocument::parse(thread->getLastFetchedData()));
-        
-        if (xml != nullptr)
-        {
-            this->deserialize(*xml);
-            this->saveConfigSchemes();
-            this->sendChangeMessage();
-        }
-    }
+    Logger::writeToLog("ColourSchemeManager::requestResourceOk");
+    //this->deserialize(resource);
+    this->saveConfigSchemes();
+    this->sendChangeMessage();
 }
 
-void ColourSchemeManager::schemesRequestFailed(RequestColourSchemesThread *thread)
+void ColourSchemeManager::requestResourceFailed(const Array<String> &errors)
 {
-    Logger::writeToLog("ColourSchemeManager::schemesRequestConnectionFailed");
+    Logger::writeToLog("ColourSchemeManager::requestResourceFailed: " + errors.getFirst());
+}
+
+void ColourSchemeManager::requestResourceConnectionFailed()
+{
+    Logger::writeToLog("ColourSchemeManager::requestResourceConnectionFailed");
 }

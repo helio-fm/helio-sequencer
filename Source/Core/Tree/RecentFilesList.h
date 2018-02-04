@@ -21,7 +21,6 @@ class DocumentOwner;
 class RecentFilesList;
 
 #include "Serializable.h"
-#include "RequestProjectsListThread.h"
 
 class RecentFileDescription : public ReferenceCountedObject
 {
@@ -30,6 +29,7 @@ public:
     // filled for both remote and local projects
     String title;
     String projectId;
+    String projectKey;
     bool hasRemoteCopy;
     bool hasLocalCopy;
     int64 lastModifiedTime; // in ms
@@ -38,11 +38,6 @@ public:
     String path;
     bool isLoaded;
 
-    // filled for remote projects
-    String projectKey;
-    //int numCommitsToPush; // todo in next version?
-    //int numCommitsToPull; // how do i do that, yo?
-
     typedef ReferenceCountedObjectPtr<RecentFileDescription> Ptr;
 
     static int compareElements(RecentFileDescription::Ptr first, RecentFileDescription::Ptr second)
@@ -50,7 +45,6 @@ public:
         // time diff in seconds
         return int(second->lastModifiedTime / 1000) - int(first->lastModifiedTime / 1000);
     }
-    
 };
 
 class RecentFilesList :
@@ -61,37 +55,27 @@ class RecentFilesList :
 public:
     
     RecentFilesList();
-    
     ~RecentFilesList() override;
     
     void forceUpdate();
     
-    
     void onProjectStateChanged(const String &title, const String &path, const String &id, bool isLoaded);
     
     void removeByPath(const String &path);
-    
     void removeById(const String &id);
-    
     void cleanup();
     
     
     RecentFileDescription::Ptr getItem(int index) const;
-    
     int getNumItems() const;
     
     class Owner
     {
     public:
-        
         virtual ~Owner() {}
-        
         virtual RecentFilesList &getRecentFilesList() const = 0;
-        
         virtual bool onClickedLoadRecentFile(RecentFileDescription::Ptr fileDescription) = 0;
-        
         virtual void onClickedUnloadRecentFile(RecentFileDescription::Ptr fileDescription) = 0;
-        
     };
     
     //===------------------------------------------------------------------===//
@@ -99,9 +83,7 @@ public:
     //===------------------------------------------------------------------===//
 
     XmlElement *serialize() const override;
-
     void deserialize(const XmlElement &xml) override;
-
     void reset() override;
 
 private:
@@ -115,18 +97,13 @@ private:
     
     // returns found item's index - or -1, if not found
     int findIndexByPath(const String &path) const;
-
     int findIndexById(const String &id) const;
 
     ReadWriteLock listLock;
-
     ReferenceCountedArray<RecentFileDescription> localFiles;
 
     ReferenceCountedArray<RecentFileDescription> createCoalescedList() const;
     
-    Array<RemoteProjectDescription> remoteFiles;
-    
     WeakReference<RecentFilesList>::Master masterReference;
     friend class WeakReference<RecentFilesList>;
-
 };

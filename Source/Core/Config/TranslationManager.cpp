@@ -18,8 +18,9 @@
 #include "Common.h"
 #include "TranslationManager.h"
 #include "SerializationKeys.h"
-
+#include "RequestResourceThread.h"
 #include "App.h"
+#include "SessionManager.h"
 #include "Config.h"
 #include "DataEncoder.h"
 #include "BinaryData.h"
@@ -375,43 +376,45 @@ void TranslationManager::setSelectedLocaleId(const String &localeId)
 void TranslationManager::timerCallback()
 {
     this->stopTimer();
-    this->requestTranslationsThread = new RequestTranslationsThread();
-    this->requestTranslationsThread->requestTranslations(this);
+    const auto requestTranslationsThread =
+        App::Backend().getRequestThread<RequestResourceThread>();
+    requestTranslationsThread->requestResource(this, "translations");
 }
-
 
 //===----------------------------------------------------------------------===//
 // RequestTranslationsThread::Listener
 //===----------------------------------------------------------------------===//
 
-void TranslationManager::translationsRequestOk()
+void TranslationManager::requestResourceOk(const ValueTree &resource)
 {
-    Logger::writeToLog("TranslationManager::translationsRequestOk");
-    const String translations(DataEncoder::deobfuscateString(this->requestTranslationsThread->getLatestResponse()));
-    ScopedPointer<XmlElement> xml(XmlDocument::parse(translations));
+    Logger::writeToLog("TranslationManager::requestResourceOk");
+    //ScopedPointer<XmlElement> xml(XmlDocument::parse(translations));
+    //if (xml)
+    //{
+    //    const bool seemsToBeValid = xml->hasTagName(Serialization::Locales::translations);
+    //    if (seemsToBeValid)
+    //    {
+    //        Logger::writeToLog("TranslationManager :: downloaded translations file seems to be valid");
+    //        DataEncoder::saveObfuscated(this->getDownloadedTranslationsFile(), xml);
 
-    if (xml)
-    {
-        const bool seemsToBeValid = xml->hasTagName(Serialization::Locales::translations);
-        if (seemsToBeValid)
-        {
-            Logger::writeToLog("TranslationManager :: downloaded translations file seems to be valid");
-            DataEncoder::saveObfuscated(this->getDownloadedTranslationsFile(), xml);
-            
-            Logger::writeToLog("TranslationManager :: applying new translations");
-            this->deserialize(*xml);
-            // Don't send redunant change messages,
-            // as translations are going to be updated at the very start of the app:
-            //this->sendChangeMessage();
-        }
-    }
+    //        Logger::writeToLog("TranslationManager :: applying new translations");
+    //        this->deserialize(*xml);
+    //        // Don't send redunant change messages,
+    //        // as translations are going to be updated at the very start of the app:
+    //        //this->sendChangeMessage();
+    //    }
+    //}
 }
 
-void TranslationManager::translationsRequestFailed()
+void TranslationManager::requestResourceFailed(const Array<String> &errors)
 {
-    Logger::writeToLog("TranslationManager::translationsRequestConnectionFailed");
+    Logger::writeToLog("TranslationManager::requestResourceFailed " + errors.getFirst());
 }
 
+void TranslationManager::requestResourceConnectionFailed()
+{
+    Logger::writeToLog("TranslationManager::requestResourceConnectionFailed");
+}
 
 //===----------------------------------------------------------------------===//
 // Static

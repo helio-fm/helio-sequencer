@@ -45,13 +45,14 @@ public:
         friend class TokenUpdateThread;
     };
     
-    void login(TokenUpdateThread::Listener *listener)
+    void updateToken(TokenUpdateThread::Listener *listener, String lastValidToken)
     {
         if (this->isThreadRunning())
         {
             return;
         }
 
+        this->oldToken = lastValidToken;
         this->listener = listener;
         this->startThread(3);
     }
@@ -60,6 +61,15 @@ private:
     
     void run() override
     {
+        // Construct payload object:
+        DynamicObject::Ptr session(new DynamicObject());
+        session->setProperty(Serialization::Api::V1::bearer, this->oldToken);
+        session->setProperty(Serialization::Api::V1::deviceId, Config::getMachineId());
+        session->setProperty(Serialization::Api::V1::platformId, SystemStats::getOperatingSystemName());
+
+        DynamicObject::Ptr payload(new DynamicObject());
+        payload->setProperty(Serialization::Api::V1::session, var(session));
+
         const HelioApiRequest request(HelioFM::Api::V1::tokenUpdate);
         this->response = request.post(var(payload));
 
@@ -74,9 +84,8 @@ private:
             return;
         }
 
-        this->newToken = this->response.jsonBody.getProperty(Serialization::Network::token, {});
-
-        if (this->response.statusCode != 200 || this->newToken.isEmpty())
+        const bool hasToken = this->response.jsonBody.contains(Serialization::Api::V1::token);
+        if (this->response.statusCode != 200 || !hasToken)
         {
             MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
             {
@@ -90,12 +99,13 @@ private:
         MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
         {
             const auto self = static_cast<TokenUpdateThread *>(ptr);
-            self->listener->tokenUpdateOk(self->newToken);
+            const auto newToken = self->response.jsonBody[Serialization::Api::V1::token];
+            self->listener->tokenUpdateOk(newToken);
             return nullptr;
         }, this);
     }
     
-    String newToken;
+    String oldToken;
     HelioApiRequest::Response response;
     TokenUpdateThread::Listener *listener;
     

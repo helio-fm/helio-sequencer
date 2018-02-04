@@ -17,65 +17,55 @@
 
 #pragma once
 
-#include "ColourScheme.h"
+#include "Arpeggiator.h"
 #include "Serializable.h"
-#include "RequestColourSchemesThread.h"
 
-class ColourSchemeManager :
+class ArpeggiatorsManager :
     public ChangeBroadcaster,
     private Serializable,
-    private Timer,
-    private RequestColourSchemesThread::Listener
+    private Timer
 {
 public:
 
-    static ColourSchemeManager &getInstance()
+    static ArpeggiatorsManager &getInstance()
     {
-        static ColourSchemeManager Instance;
+        static ArpeggiatorsManager Instance;
         return Instance;
     }
-
+    
     void initialise(const String &commandLine);
     void shutdown();
 
-    bool isPullPending() const;
-    void pull();
-
-    Array<ColourScheme> getSchemes() const;
-    ColourScheme getCurrentScheme() const;
-    void setCurrentScheme(const ColourScheme &scheme);
-
+    static File getDebugArpsFile();
+    
+    Array<Arpeggiator> getArps() const;
+    bool replaceArpWithId(const String &id, const Arpeggiator &arp);
+    void addArp(const Arpeggiator &arp);
+    
 private:
-
+    
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
-
+    
     XmlElement *serialize() const override;
     void deserialize(const XmlElement &xml) override;
     void reset() override;
     
 private:
+    
+    Array<Arpeggiator> arps;
+    
+    ArpeggiatorsManager() {}
+    void timerCallback() override;
+    
+    void reloadArps();
 
-    ScopedPointer<RequestColourSchemesThread> requestThread;
-
-    void schemesRequestOk(RequestColourSchemesThread *thread) override;
-    void schemesRequestFailed(RequestColourSchemesThread *thread) override;
+    void saveConfigArps();
+    String getConfigArps();
     
 private:
 
-    Array<ColourScheme> schemes;
-
-    ColourSchemeManager() {}
-    void timerCallback() override;
-
-    void reloadSchemes();
-
-    void saveConfigSchemes();
-    String getConfigSchemes();
-
-private:
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ColourSchemeManager)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ArpeggiatorsManager)
 
 };
