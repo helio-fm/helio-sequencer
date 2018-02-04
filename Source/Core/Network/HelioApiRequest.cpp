@@ -17,17 +17,12 @@
 
 #include "Common.h"
 #include "HelioApiRequest.h"
+#include "SessionManager.h"
 #include "App.h"
-#include "Config.h"
-
-#define NUM_CONNECT_ATTEMPTS (3)
 
 // Let OS set the default timeout:
 #define CONNECTION_TIMEOUT_MS (0)
-
-HelioApiRequest::HelioApiRequest(URL url, ProgressCallback progressCallback) :
-    url(url),
-    progressCallback(progressCallback) {}
+#define NUM_CONNECT_ATTEMPTS (3)
 
 static bool progressCallbackInternal(void *const context, int bytesSent, int totalBytes)
 {
@@ -44,42 +39,97 @@ HelioApiRequest::Response::Response() :
     statusCode(0),
     result(Result::fail({})) {}
 
-HelioApiRequest::Response HelioApiRequest::request() const
-{
-    Response response;
+HelioApiRequest::HelioApiRequest(String apiEndpoint, ProgressCallback progressCallback) :
+    apiEndpoint(std::move(apiEndpoint)),
+    progressCallback(progressCallback) {}
 
-    const String deviceId(Config::getMachineId());
-    const String authToken = "TODO";
+static String getPostHeaders()
+{
     String extraHeaders;
     extraHeaders
+        << "Content-Type: application/json"
+        << "\n"
         << "User-Agent: Helio " << App::getAppReadableVersion()
         << "\n"
-        << "Device-Id: " << deviceId
+        << "Authorization: Bearer " << SessionManager::getApiToken()
         << "\n"
-        << "Authorization: Bearer " << authToken
+        << "Platform-Id: " << SystemStats::getOperatingSystemName()
         << "\n"
-        << "Platform: " << SystemStats::getOperatingSystemName();
-    
-    ScopedPointer<InputStream> stream;
-    for (int i = 0; stream == nullptr && i < NUM_CONNECT_ATTEMPTS; ++i)
+        << "Device-Id: " << Config::getMachineId();
+
+    return extraHeaders;
+}
+
+static Array<String> parseVarAsArray(const var &json, const String &prefix = {})
+{
+    Array<String> result;
+    if (json.isArray())
     {
-        Logger::writeToLog("Connecting to " + this->url.toString(true));
-        stream = this->url.createInputStream(true,
+        for (int i = 0; i < json.size(); ++i)
+        {
+            const var &message(json[i]);
+            if (message.isString())
+            {
+                result.add(prefix + message);
+            }
+        }
+    }
+    return result;
+}
+
+HelioApiRequest::Response HelioApiRequest::post(const var payload) const
+{
+    const String jsonPayload = JSON::toString(payload);
+    const URL url = URL(HelioFM::baseURL + this->apiEndpoint)
+        .withPOSTData(MemoryBlock(jsonPayload.toRawUTF8(), jsonPayload.getNumBytesAsUTF8() + 1));
+
+    Response response;
+    ScopedPointer<InputStream> stream;
+    int i = 0;
+
+    do
+    {
+        Logger::writeToLog("Connecting to " + this->apiEndpoint);
+        stream = url.createInputStream(true,
             progressCallbackInternal, (void *)(this),
-            extraHeaders, CONNECTION_TIMEOUT_MS,
+            getPostHeaders(), CONNECTION_TIMEOUT_MS,
             &response.headers, &response.statusCode);
     }
+    while (stream == nullptr && i++ < NUM_CONNECT_ATTEMPTS);
 
     if (stream == nullptr)
     {
         return response;
     }
 
-    // TODO process unauthorized requests etc
-
-    if (response.statusCode >= 200 && response.statusCode < 300)
+    // Try to parse response as JSON object wrapping all properties
+    const String responseBody = stream->readEntireStreamAsString();
+    if (responseBody.isNotEmpty())
     {
-        response.result = JSON::parse(stream->readEntireStreamAsString(), response.jsonBody);
+        var parsedJson;
+        response.result = JSON::parse(responseBody, parsedJson);
+        if (DynamicObject *responseObject = parsedJson.getDynamicObject())
+        {
+            response.jsonBody = responseObject->getProperties();
+
+            // Try to parse errors
+            if (response.statusCode < 200 && response.statusCode >= 300)
+            {
+                // Response may contain `errors` object or array with detailed descriptions
+                const var errorsJson = responseObject->getProperty(Serialization::Api::V1::errors);
+                if (DynamicObject *errorsObject = errorsJson.getDynamicObject())
+                {
+                    for (const auto &error : errorsObject->getProperties())
+                    {
+                        response.errors.addArray(parseVarAsArray(errorsJson, error.name + " "));
+                    }
+                }
+                else
+                {
+                    response.errors.addArray(parseVarAsArray(errorsJson));
+                }
+            }
+        }
     }
 
     return response;

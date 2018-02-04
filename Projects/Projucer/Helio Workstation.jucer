@@ -306,12 +306,12 @@
                 file="../../Source/Core/Network/HelioApiRequest.h"/>
           <FILE id="wvwATY" name="HelioApiRoutes.h" compile="0" resource="0"
                 file="../../Source/Core/Network/HelioApiRoutes.h"/>
-          <FILE id="URoFvA" name="LoginThread.h" compile="0" resource="0" file="../../Source/Core/Network/LoginThread.h"/>
-          <FILE id="hwTQ3u" name="LogoutThread.h" compile="0" resource="0" file="../../Source/Core/Network/LogoutThread.h"/>
           <FILE id="tezH4X" name="RequestResourceThread.h" compile="0" resource="0"
                 file="../../Source/Core/Network/RequestResourceThread.h"/>
           <FILE id="VT4WH4" name="RequestUserProfileThread.h" compile="0" resource="0"
                 file="../../Source/Core/Network/RequestUserProfileThread.h"/>
+          <FILE id="URoFvA" name="SignInThread.h" compile="0" resource="0" file="../../Source/Core/Network/SignInThread.h"/>
+          <FILE id="hwTQ3u" name="SignUpThread.h" compile="0" resource="0" file="../../Source/Core/Network/SignUpThread.h"/>
           <FILE id="TQIxzu" name="TokenCheckThread.h" compile="0" resource="0"
                 file="../../Source/Core/Network/TokenCheckThread.h"/>
           <FILE id="BbTLUC" name="TokenUpdateThread.h" compile="0" resource="0"

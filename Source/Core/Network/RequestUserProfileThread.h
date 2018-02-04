@@ -27,11 +27,8 @@
 class RequestUserProfileThread final : private Thread
 {
 public:
-    
-#define NUM_LOGIN_ATTEMPTS 3
 
     RequestUserProfileThread() : Thread("RequestUserProfile"), listener(nullptr) {}
-
     ~RequestUserProfileThread() override
     {
         this->stopThread(1000);
@@ -42,14 +39,13 @@ public:
     public:
         virtual ~Listener() {}
     private:
-        virtual void loginOk(const String &userEmail, const String &newToken) = 0;
-        virtual void loginAuthorizationFailed() = 0;
-        virtual void loginConnectionFailed() = 0;
-        friend class LoginThread;
+        virtual void requestProfileOk(const UserProfile::Ptr profile) = 0;
+        virtual void requestProfileFailed(const Array<String> &errors) = 0;
+        virtual void requestProfileConnectionFailed() = 0;
+        friend class RequestUserProfileThread;
     };
     
-    void login(LoginThread::Listener *authListener,
-        String userEmail, String userPasswordHash)
+    void login(RequestUserProfileThread::Listener *authListener)
     {
         if (this->isThreadRunning())
         {
@@ -57,8 +53,6 @@ public:
         }
 
         this->listener = authListener;
-        this->email = userEmail;
-        this->passwordHash = userPasswordHash;
         this->startThread(3);
     }
     
@@ -66,122 +60,41 @@ private:
     
     void run() override
     {
-        const String deviceId(Config::getMachineId());
-        const URL url = URL(HelioFM::Api::V1::login)
-            .withParameter(Serialization::Network::email, this->email)
-            .withParameter(Serialization::Network::passwordHash, this->passwordHash)
-            .withParameter(Serialization::Network::deviceId, deviceId);
+        const HelioApiRequest request(HelioFM::Api::V1::requestUserProfile);
+        this->response = request.get(params);
 
-        const HelioApiRequest request(url);
-        const auto response = request.request();
-
-        if (response.result.failed())
+        if (this->response.result.failed())
         {
-            MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+            MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
             {
-                LoginThread *self = static_cast<LoginThread *>(data);
-                self->listener->loginConnectionFailed();
+                LoginThread *self = static_cast<LoginThread *>(ptr);
+                self->listener->requestProfileConnectionFailed();
                 return nullptr;
             }, this);
             return;
         }
 
-        this->token = response.jsonBody.getProperty(Serialization::Network::token, {});
-
-        if (response.statusCode != 200 || this->token.isEmpty())
+        if (this->response.statusCode != 200)
         {
-            MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+            MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
             {
-                LoginThread *self = static_cast<LoginThread *>(data);
-                self->listener->loginAuthorizationFailed();
+                const auto self = static_cast<RequestUserProfileThread *>(ptr);
+                self->listener->requestProfileFailed(self->response.errors);
                 return nullptr;
             }, this);
             return;
         }
 
-
-        const Identifier idProperty("id");
-        const Identifier keyProperty("key");
-        const Identifier titleProperty("title");
-        const Identifier timeProperty("time");
-        const Identifier emailProperty("email");
-
-        if (json.isArray())
+        MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
         {
-            for (int i = 0; i < json.size(); ++i)
-            {
-                var &child(json[i]);
-                jassert(!child.isVoid());
-
-                if (DynamicObject *obj = child.getDynamicObject())
-                {
-                    NamedValueSet &props(obj->getProperties());
-                    RemoteProjectDescription description;
-
-                    for (int j = 0; j < props.size(); ++j)
-                    {
-                        const Identifier key(props.getName(j));
-                        var value(props[key]);
-
-                        if (key == idProperty)
-                        {
-                            description.projectId = value;
-                            //Logger::writeToLog("::" + description.projectId + "::");
-                        }
-                        else if (key == keyProperty)
-                        {
-                            description.projectKey = DataEncoder::deobfuscateString(value);
-                            //Logger::writeToLog("::" + description.projectKey + "::");
-                        }
-                        else if (key == titleProperty)
-                        {
-                            description.projectTitle = value;
-                            //Logger::writeToLog("::" + description.projectTitle + "::");
-                        }
-                        else if (key == timeProperty)
-                        {
-                            description.lastModifiedTime = int64(value) * 1000;
-                        }
-                        else if (key == emailProperty)
-                        {
-                            this->userEmail = value;
-                        }
-                    }
-
-                    if (description.projectId.isNotEmpty() &&
-                        description.projectKey.isNotEmpty())
-                    {
-                        const ScopedWriteLock lock(this->listLock);
-                        this->projectsList.add(description);
-                    }
-                }
-            }
-        }
-
-        if (this->userEmail.isEmpty())
-        {
-            MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
-            {
-                RequestProjectsListThread *self = static_cast<RequestProjectsListThread *>(data);
-                self->listener->listRequestAuthorizationFailed();
-                return nullptr;
-            }, this);
-
-            return;
-        }
-
-        MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
-        {
-            LoginThread *self = static_cast<LoginThread *>(data);
-            self->listener->loginOk(self->email, self->token);
+            const auto self = static_cast<RequestUserProfileThread *>(ptr);
+            self->listener->requestProfileOk(self->userProfile);
             return nullptr;
         }, this);
     }
     
-    String email;
-    String passwordHash;
-    String token;
-    LoginThread::Listener *listener;
+    HelioApiRequest::Response response;
+    RequestUserProfileThread::Listener *listener;
     
     friend class SessionManager;
 };

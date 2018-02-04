@@ -20,19 +20,14 @@
 #include "DataEncoder.h"
 #include "HelioApiRoutes.h"
 #include "HelioApiRequest.h"
-
-#include "Config.h"
 #include "SerializationKeys.h"
 
 class TokenCheckThread final : private Thread
 {
 public:
-    
-#define NUM_LOGIN_ATTEMPTS 3
 
-    LoginThread() : Thread("Login"), listener(nullptr) {}
-
-    ~LoginThread() override
+    TokenCheckThread() : Thread("TokenCheck"), listener(nullptr) {}
+    ~TokenCheckThread() override
     {
         this->stopThread(1000);
     }
@@ -42,23 +37,20 @@ public:
     public:
         virtual ~Listener() {}
     private:
-        virtual void loginOk(const String &userEmail, const String &newToken) = 0;
-        virtual void loginAuthorizationFailed() = 0;
-        virtual void loginConnectionFailed() = 0;
-        friend class LoginThread;
+        virtual void tokenCheckOk() = 0;
+        virtual void tokenCheckFailed(const Array<String> &errors) = 0;
+        virtual void tokenCheckConnectionFailed() = 0;
+        friend class TokenCheckThread;
     };
     
-    void login(LoginThread::Listener *authListener,
-        String userEmail, String userPasswordHash)
+    void login(TokenCheckThread::Listener *listener)
     {
         if (this->isThreadRunning())
         {
             return;
         }
 
-        this->listener = authListener;
-        this->email = userEmail;
-        this->passwordHash = userPasswordHash;
+        this->listener = listener;
         this->startThread(3);
     }
     
@@ -66,51 +58,41 @@ private:
     
     void run() override
     {
-        const String deviceId(Config::getMachineId());
-        const URL url = URL(HelioFM::Api::V1::login)
-            .withParameter(Serialization::Network::email, this->email)
-            .withParameter(Serialization::Network::passwordHash, this->passwordHash)
-            .withParameter(Serialization::Network::deviceId, deviceId);
+        const HelioApiRequest request(HelioFM::Api::V1::tokenCheck);
+        this->response = request.get();
 
-        const HelioApiRequest request(url);
-        const auto response = request.request();
-
-        if (response.result.failed())
+        if (this->response.result.failed())
         {
-            MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+            MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
             {
-                LoginThread *self = static_cast<LoginThread *>(data);
-                self->listener->loginConnectionFailed();
+                const auto self = static_cast<TokenCheckThread *>(ptr);
+                self->listener->tokenCheckConnectionFailed();
                 return nullptr;
             }, this);
             return;
         }
 
-        this->token = response.jsonBody.getProperty(Serialization::Network::token, {});
-
-        if (response.statusCode != 200 || this->token.isEmpty())
+        if (this->response.statusCode != 200)
         {
-            MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+            MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
             {
-                LoginThread *self = static_cast<LoginThread *>(data);
-                self->listener->loginAuthorizationFailed();
+                const auto self = static_cast<TokenCheckThread *>(ptr);
+                self->listener->tokenCheckFailed(self->response.errors);
                 return nullptr;
             }, this);
             return;
         }
 
-        MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+        MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
         {
-            LoginThread *self = static_cast<LoginThread *>(data);
-            self->listener->loginOk(self->email, self->token);
+            const auto self = static_cast<TokenCheckThread *>(ptr);
+            self->listener->tokenCheckOk();
             return nullptr;
         }, this);
     }
-    
-    String email;
-    String passwordHash;
-    String token;
-    LoginThread::Listener *listener;
+
+    HelioApiRequest::Response response;
+    TokenCheckThread::Listener *listener;
     
     friend class SessionManager;
 };

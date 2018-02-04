@@ -17,8 +17,8 @@
 
 #pragma once
 
-#include "LoginThread.h"
-#include "LogoutThread.h"
+#include "SignInThread.h"
+#include "SignUpThread.h"
 #include "TokenCheckThread.h"
 #include "TokenUpdateThread.h"
 #include "RequestResourceThread.h"
@@ -28,13 +28,14 @@
 class SessionManager :
     public ChangeBroadcaster,
     private Timer,
-    private LoginThread::Listener,
-    private LogoutThread::Listener,
-    private RequestProjectsListThread::Listener
+    private SignInThread::Listener,
+    private SignUpThread::Listener
 {
 public:
     
     SessionManager();
+
+    static String getApiToken();
 
     class Token
     {
@@ -71,9 +72,6 @@ public:
     RequestState getLastRequestState() const;
     String getUserLoginOfCurrentSession() const;
     
-    void reloadRemoteProjectsList();
-    Array<RemoteProjectDescription> getListOfRemoteProjects();
-
     void login(const String &login, const String &passwordHash);
     void logout();
 
@@ -81,30 +79,41 @@ private:
 
     void timerCallback() override;
 
-    Array<RemoteProjectDescription> lastReceivedProjects;
     String currentLogin;
     
     SessionState authState;
     RequestState lastRequestState;
     
-    ScopedPointer<LoginThread> loginThread;
-    ScopedPointer<LogoutThread> logoutThread;
-    ScopedPointer<RequestProjectsListThread> projectListThread;
+    OwnedArray<Thread> requestThreads;
+
+    template<typename T>
+    T *getRequestThread() const
+    {
+        for (const auto thread : this->requestThreads)
+        {
+            if (!thread->isThreadRunning())
+            {
+                if (T *target = dynamic_cast<T *>(thread))
+                {
+                    return target;
+                }
+            }
+        }
+
+        return static_cast<T *>(this->requestThreads.add(new T()));
+    }
+
 
 private:
     
     // will be called on the main thread:
     
-    void loginOk(const String &userEmail, const String &newToken) override;
-    void loginAuthorizationFailed() override;
-    void loginConnectionFailed() override;
+    void signInOk(const String &userEmail, const String &newToken) override;
+    void signInAuthorizationFailed() override;
+    void signInConnectionFailed() override;
     
     void logoutOk() override;
     void logoutFailed() override;
     void logoutConnectionFailed() override;
-    
-    void listRequestOk(const String &userEmail, Array<RemoteProjectDescription> list) override;
-    void listRequestAuthorizationFailed() override;
-    void listRequestConnectionFailed() override;
 
 };

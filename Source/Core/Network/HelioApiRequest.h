@@ -23,26 +23,25 @@ public:
 
     typedef Function<void(int, int)> ProgressCallback;
 
-    HelioApiRequest(URL url, ProgressCallback progressCallback = nullptr);
+    HelioApiRequest(String apiEndpoint, ProgressCallback progressCallback = nullptr);
 
-    struct Response
+    struct Response final
     {
         Response();
-        Response(const Response & other) :
-            result(result), statusCode(statusCode),
-            headers(headers), jsonBody(jsonBody) {}
         Result result;
         int statusCode;
         StringPairArray headers;
-        var jsonBody;
+        NamedValueSet jsonBody;
+        Array<String> errors; // optional detailed errors descriptions
     };
 
-    Response request() const;
+    Response post(const var payload) const;
 
-    URL url;
     ProgressCallback progressCallback;
 
 private:
+
+    String apiEndpoint;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HelioApiRequest)
 };

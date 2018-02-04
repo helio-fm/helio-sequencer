@@ -28,11 +28,8 @@ class RequestResourceThread final : private Thread
 {
 public:
     
-#define NUM_LOGIN_ATTEMPTS 3
-
-    LoginThread() : Thread("Login"), listener(nullptr) {}
-
-    ~LoginThread() override
+    RequestResourceThread() : Thread("RequestResource"), listener(nullptr) {}
+    ~RequestResourceThread() override
     {
         this->stopThread(1000);
     }
@@ -42,14 +39,13 @@ public:
     public:
         virtual ~Listener() {}
     private:
-        virtual void loginOk(const String &userEmail, const String &newToken) = 0;
-        virtual void loginAuthorizationFailed() = 0;
-        virtual void loginConnectionFailed() = 0;
-        friend class LoginThread;
+        virtual void requestResourceOk(const ValueTree &resource) = 0;
+        virtual void requestResourceFailed(const Array<String> &errors) = 0;
+        virtual void requestResourceConnectionFailed() = 0;
+        friend class RequestResourceThread;
     };
     
-    void login(LoginThread::Listener *authListener,
-        String userEmail, String userPasswordHash)
+    void login(RequestResourceThread::Listener *authListener, String resourceName)
     {
         if (this->isThreadRunning())
         {
@@ -57,8 +53,7 @@ public:
         }
 
         this->listener = authListener;
-        this->email = userEmail;
-        this->passwordHash = userPasswordHash;
+        this->resourceName = resourceName;
         this->startThread(3);
     }
     
@@ -66,51 +61,43 @@ private:
     
     void run() override
     {
-        const String deviceId(Config::getMachineId());
-        const URL url = URL(HelioFM::Api::V1::login)
-            .withParameter(Serialization::Network::email, this->email)
-            .withParameter(Serialization::Network::passwordHash, this->passwordHash)
-            .withParameter(Serialization::Network::deviceId, deviceId);
+        const HelioApiRequest request(HelioFM::Api::V1::requestResource);
+        this->response = request.get(params);
 
-        const HelioApiRequest request(url);
-        const auto response = request.request();
-
-        if (response.result.failed())
+        if (this->response.result.failed())
         {
-            MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+            MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
             {
-                LoginThread *self = static_cast<LoginThread *>(data);
-                self->listener->loginConnectionFailed();
+                const auto self = static_cast<RequestResourceThread *>(ptr);
+                self->listener->requestResourceConnectionFailed();
                 return nullptr;
             }, this);
             return;
         }
 
-        this->token = response.jsonBody.getProperty(Serialization::Network::token, {});
-
-        if (response.statusCode != 200 || this->token.isEmpty())
+        if (this->response.statusCode != 200)
         {
-            MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+            MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
             {
-                LoginThread *self = static_cast<LoginThread *>(data);
-                self->listener->loginAuthorizationFailed();
+                const auto self = static_cast<RequestResourceThread *>(ptr);
+                self->listener->requestResourceFailed(self->response.errors);
                 return nullptr;
             }, this);
             return;
         }
 
-        MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+        MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
         {
-            LoginThread *self = static_cast<LoginThread *>(data);
-            self->listener->loginOk(self->email, self->token);
+            const auto self = static_cast<RequestResourceThread *>(ptr);
+            self->listener->requestResourceOk(TODO resource);
             return nullptr;
         }, this);
     }
     
-    String email;
-    String passwordHash;
-    String token;
-    LoginThread::Listener *listener;
+    String resourceName;
+
+    HelioApiRequest::Response response;
+    RequestResourceThread::Listener *listener;
     
     friend class SessionManager;
 };

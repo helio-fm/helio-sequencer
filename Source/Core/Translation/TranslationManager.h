@@ -18,13 +18,11 @@
 #pragma once
 
 #include "Serializable.h"
-#include "RequestTranslationsThread.h"
 
 class TranslationManager :
     public ChangeBroadcaster,
     private Serializable,
-    private Timer,
-    private RequestTranslationsThread::Listener
+    private Timer
 {
 public:
 
@@ -77,13 +75,6 @@ private:
     XmlElement *serialize() const override;
     void deserialize(const XmlElement &xml) override;
     void reset() override;
-    
-private:
-    
-    ScopedPointer<RequestTranslationsThread> requestTranslationsThread;
-
-    void translationsRequestOk() override;
-    void translationsRequestFailed() override;
     
 private:
     

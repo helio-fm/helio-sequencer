@@ -219,8 +219,35 @@ namespace Serialization
         static const String deltaType = "Type";
 
         static const String headStateDelta = "HeadState";
-    }  // namespace VCS
-    
+    } // namespace VCS
+
+    namespace Api
+    {
+        // Session
+        static const String sessionLastUpdateTime = "SessionLastUpdateTime";
+        static const String sessionLastToken = "SessionLastToken";
+
+        // JSON payload keys
+        namespace V1
+        {
+            static const String user = "user";
+            static const String session = "session";
+
+            static const String name = "name";
+            static const String email = "email";
+            static const String login = "login";
+            static const String password = "password";
+            static const String passwordConfirmation = "password_confirmation";
+
+            static const String deviceId = "device_id";
+            static const String platformId = "platform_id";
+
+            static const String token = "token";
+            static const String errors = "errors";
+        } // namespace V1
+    } // namespace Api
+
+    // TODO remove
     namespace Network
     {
         static const String clientCheck = "check";

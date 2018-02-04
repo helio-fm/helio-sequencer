@@ -21,7 +21,6 @@
 #include "Config.h"
 #include "LoginThread.h"
 #include "LogoutThread.h"
-#include "RequestProjectsListThread.h"
 
 #include "AuthorizationDialog.h"
 #include "HelioTheme.h"
@@ -33,28 +32,29 @@
 
 #include "ArpeggiatorsManager.h"
 
-// Try to update our sliding session and reload projects list after 15 seconds
+// Try to update our sliding session and reload user profile after 15 seconds
 #define UPDATE_SESSION_TIMEOUT_MS (1000 * 15)
 
 SessionManager::SessionManager() :
     authState(Unknown),
     lastRequestState(RequestSucceed)
 {
-    this->loginThread = new LoginThread();
-    this->logoutThread = new LogoutThread();
-    this->projectListThread = new RequestProjectsListThread();
-
     this->startTimer(UPDATE_SESSION_TIMEOUT_MS);
+}
+
+String SessionManager::getApiToken()
+{
+    return Config::get(Serialization::Api::sessionLastToken, {});
 }
 
 SessionManager::SessionState SessionManager::getAuthorizationState() const
 {
-    return (this->authState);
+    return this->authState;
 }
 
 SessionManager::RequestState SessionManager::getLastRequestState() const
 {
-    return (this->lastRequestState);
+    return this->lastRequestState;
 }
 
 String SessionManager::getUserLoginOfCurrentSession() const
@@ -65,7 +65,8 @@ String SessionManager::getUserLoginOfCurrentSession() const
 
 void SessionManager::login(const String &login, const String &passwordHash)
 {
-    this->loginThread->login(this, login, passwordHash);
+    const auto signInThread = this->getRequestThread<SignInThread>();
+    signInThread->login(this, login, passwordHash);
 }
 
 void SessionManager::logout()
@@ -74,11 +75,6 @@ void SessionManager::logout()
     this->logoutThread->logout(this);
 }
 
-Array<RemoteProjectDescription> SessionManager::getListOfRemoteProjects()
-{
-    return this->lastReceivedProjects;
-};
-
 //===----------------------------------------------------------------------===//
 // Updating session
 //===----------------------------------------------------------------------===//
@@ -86,8 +82,8 @@ Array<RemoteProjectDescription> SessionManager::getListOfRemoteProjects()
 void SessionManager::timerCallback()
 {
     const Time nowMinusHalfDay = Time::getCurrentTime() - RelativeTime::hours(12);
-    const Time lastSessionUpdateTime = Time::fromISO8601(Config::get(Serialization::Core::sessionLastUpdateTime));
-    const String lastSessionToken = Config::get(Serialization::Core::sessionLastToken);
+    const Time lastSessionUpdateTime = Time::fromISO8601(Config::get(Serialization::Api::sessionLastUpdateTime));
+    const String lastSessionToken = SessionManager::getApiToken();
     const String deviceId = Config::getMachineId();
     if (lastSessionToken.isNotEmpty() &&
         lastSessionUpdateTime < nowMinusHalfDay)
@@ -95,12 +91,7 @@ void SessionManager::timerCallback()
         this->reloginThread->relogin(this, lastSessionToken, deviceId);
     }
 
-    this->reloadRemoteProjectsList();
-}
-
-void SessionManager::reloadRemoteProjectsList()
-{
-    this->projectListThread->requestListAndEmail(this);
+    // TODO reloadUserProfile
 }
 
 //===----------------------------------------------------------------------===//
@@ -109,14 +100,14 @@ void SessionManager::reloadRemoteProjectsList()
 
 void SessionManager::reloginOk(const String &newToken)
 {
-    Config::set(Serialization::Core::sessionLastUpdateTime, Time::getCurrentTime().toISO8601(true));
-    Config::set(Serialization::Core::sessionLastToken, newToken);
+    Config::set(Serialization::Api::sessionLastUpdateTime, Time::getCurrentTime().toISO8601(true));
+    Config::set(Serialization::Api::sessionLastToken, newToken);
     this->sendChangeMessage();
 }
 
 void SessionManager::reloginAuthorizationFailed()
 {
-    Config::set(Serialization::Core::sessionLastToken, {});
+    Config::set(Serialization::Api::sessionLastToken, {});
     this->lastReceivedProjects.clear();
     this->sendChangeMessage();
 }
@@ -133,12 +124,11 @@ void SessionManager::reloginConnectionFailed()
 // LoginThread::Listener
 //===----------------------------------------------------------------------===//
 
-void SessionManager::loginOk(const String &userEmail, const String &newToken)
+void SessionManager::signInOk(const String &userEmail, const String &newToken)
 {
     this->lastRequestState = RequestSucceed;
     this->authState = LoggedIn;
     this->currentLogin = userEmail;
-    this->reloadRemoteProjectsList();
     
     // a dirty hack
     ArpeggiatorsManager::getInstance().pull();
@@ -146,20 +136,17 @@ void SessionManager::loginOk(const String &userEmail, const String &newToken)
     this->sendChangeMessage();
 }
 
-void SessionManager::loginAuthorizationFailed()
+void SessionManager::signInAuthorizationFailed()
 {
     this->lastRequestState = RequestFailed;
     this->authState = NotLoggedIn;
-    this->lastReceivedProjects.clear();
-    
     this->sendChangeMessage();
 }
 
-void SessionManager::loginConnectionFailed()
+void SessionManager::signInConnectionFailed()
 {
     this->lastRequestState = ConnectionFailed;
     this->authState = Unknown;
-    this->lastReceivedProjects.clear();
     this->sendChangeMessage();
 }
 
@@ -172,8 +159,6 @@ void SessionManager::logoutOk()
 {
     this->lastRequestState = RequestSucceed;
     this->authState = NotLoggedIn;
-    this->lastReceivedProjects.clear();
-    
     this->sendChangeMessage();
 }
 
@@ -188,36 +173,3 @@ void SessionManager::logoutConnectionFailed()
     this->lastRequestState = ConnectionFailed;
     this->sendChangeMessage();
 }
-
-
-//===----------------------------------------------------------------------===//
-// RequestProjectsListThread::Listener
-//===----------------------------------------------------------------------===//
-
-void SessionManager::listRequestOk(const String &userEmail, Array<RemoteProjectDescription> list)
-{
-    //Logger::writeToLog("listRequestOk: " + userEmail);
-    this->lastRequestState = RequestSucceed;
-    this->authState = LoggedIn;
-    this->lastReceivedProjects = list;
-    this->currentLogin = userEmail;
-    this->sendChangeMessage();
-}
-
-void SessionManager::listRequestAuthorizationFailed()
-{
-    //Logger::writeToLog("listRequestAuthorizationFailed: ");
-    this->lastRequestState = RequestFailed;
-    this->authState = NotLoggedIn;
-    this->sendChangeMessage();
-}
-
-void SessionManager::listRequestConnectionFailed()
-{
-    //Logger::writeToLog("listRequestConnectionFailed: ");
-    this->lastRequestState = ConnectionFailed;
-    this->authState = Unknown;
-    this->lastReceivedProjects.clear();
-    this->sendChangeMessage();
-}
-

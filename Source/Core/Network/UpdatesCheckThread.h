@@ -27,12 +27,9 @@
 class UpdatesCheckThread final : private Thread
 {
 public:
-    
-#define NUM_LOGIN_ATTEMPTS 3
 
-    LoginThread() : Thread("Login"), listener(nullptr) {}
-
-    ~LoginThread() override
+    UpdatesCheckThread() : Thread("UpdatesCheck"), listener(nullptr) {}
+    ~UpdatesCheckThread() override
     {
         this->stopThread(1000);
     }
@@ -42,23 +39,20 @@ public:
     public:
         virtual ~Listener() {}
     private:
-        virtual void loginOk(const String &userEmail, const String &newToken) = 0;
-        virtual void loginAuthorizationFailed() = 0;
-        virtual void loginConnectionFailed() = 0;
-        friend class LoginThread;
+        virtual void updatesCheckOk(const UpdateInfo &info) = 0;
+        virtual void updatesCheckFailed(const Array<String> &errors) = 0;
+        virtual void updatesCheckConnectionFailed() = 0;
+        friend class UpdatesCheckThread;
     };
     
-    void login(LoginThread::Listener *authListener,
-        String userEmail, String userPasswordHash)
+    void login(UpdatesCheckThread::Listener *listener)
     {
         if (this->isThreadRunning())
         {
             return;
         }
 
-        this->listener = authListener;
-        this->email = userEmail;
-        this->passwordHash = userPasswordHash;
+        this->listener = listener;
         this->startThread(3);
     }
     
@@ -66,123 +60,41 @@ private:
     
     void run() override
     {
-        const String deviceId(Config::getMachineId());
-        const URL url = URL(HelioFM::Api::V1::login)
-            .withParameter(Serialization::Network::email, this->email)
-            .withParameter(Serialization::Network::passwordHash, this->passwordHash)
-            .withParameter(Serialization::Network::deviceId, deviceId);
+        const HelioApiRequest request(HelioFM::Api::V1::requestUpdatesInfo);
+        this->response = request.get(params);
 
-        const HelioApiRequest request(url);
-        const auto response = request.request();
-
-        if (response.result.failed())
+        if (this->response.result.failed())
         {
-            MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+            MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
             {
-                LoginThread *self = static_cast<LoginThread *>(data);
-                self->listener->loginConnectionFailed();
+                const auto self = static_cast<UpdatesCheckThread *>(ptr);
+                self->listener->updatesCheckConnectionFailed();
                 return nullptr;
             }, this);
             return;
         }
 
-        this->token = response.jsonBody.getProperty(Serialization::Network::token, {});
-
-        if (response.statusCode != 200 || this->token.isEmpty())
+        if (this->response.statusCode != 200)
         {
-            MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
+            MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
             {
-                LoginThread *self = static_cast<LoginThread *>(data);
-                self->listener->loginAuthorizationFailed();
+                const auto self = static_cast<UpdatesCheckThread *>(ptr);
+                self->listener->updatesCheckFailed(self->response.errors);
                 return nullptr;
             }, this);
             return;
         }
-
-        int responseUpdateStatus = 0;
-        String responseLatestVersion;
-        String responseUpdateUrl;
-
+        
+        MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
         {
-            const Identifier statusProperty(Serialization::Network::updateStatus);
-            const Identifier versionProperty(Serialization::Network::latestVersion);
-            const Identifier urlProperty(Serialization::Network::updateUrl);
-
-            if (DynamicObject *obj = json.getDynamicObject())
-            {
-                NamedValueSet &props(obj->getProperties());
-                for (int j = 0; j < props.size(); ++j)
-                {
-                    const Identifier key(props.getName(j));
-                    var value(props[key]);
-
-                    if (key == statusProperty)
-                    {
-                        responseUpdateStatus = value;
-                    }
-                    else if (key == versionProperty)
-                    {
-                        responseLatestVersion = value;
-                    }
-                    else if (key == urlProperty)
-                    {
-                        responseUpdateUrl = value;
-                    }
-                }
-            }
-
-            Logger::writeToLog("Update status: " + String(responseUpdateStatus));
-            Logger::writeToLog("Latest version: " + responseLatestVersion);
-            Logger::writeToLog("Update url: " + responseUpdateUrl);
-
-            switch (responseUpdateStatus)
-            {
-            case 1:
-                this->onUpdateThreadDone(UpdateManager::RevisionChanges, responseLatestVersion, responseUpdateUrl);
-                break;
-
-            case 2:
-                this->onUpdateThreadDone(UpdateManager::MinorChanges, responseLatestVersion, responseUpdateUrl);
-                break;
-
-            case 3:
-                this->onUpdateThreadDone(UpdateManager::MajorChanges, responseLatestVersion, responseUpdateUrl);
-                break;
-
-            default: // 0 and else:
-                this->onUpdateThreadDone(UpdateManager::UpToDate, responseLatestVersion, responseUpdateUrl);
-                break;
-            }
-        }
-
-        this->sendChangeMessage();
-
-#if UPDATE_MANAGER_SHOWS_UPDATE_DIALOG
-        if (!this->deferredDialogLauncher->isWaitingToLaunch())
-        {
-            if (this->hasMinorUpdate())
-            {
-                this->deferredDialogLauncher->launchDialogInInterval(UPDATE_MANAGER_MINOR_UPDATE_TIMER_MS);
-            }
-            else if (this->hasMajorUpdate())
-            {
-                this->deferredDialogLauncher->launchDialogInInterval(UPDATE_MANAGER_MAJOR_UPDATE_TIMER_MS);
-            }
-        }
-#endif
-
-        MessageManager::getInstance()->callFunctionOnMessageThread([](void *data) -> void*
-        {
-            LoginThread *self = static_cast<LoginThread *>(data);
-            self->listener->loginOk(self->email, self->token);
+            const auto self = static_cast<UpdatesCheckThread *>(ptr);
+            self->listener->updatesCheckOk(self->updateInfo);
             return nullptr;
         }, this);
     }
     
-    String email;
-    String passwordHash;
-    String token;
-    LoginThread::Listener *listener;
+    HelioApiRequest::Response response;
+    UpdatesCheckThread::Listener *listener;
     
     friend class SessionManager;
 };
