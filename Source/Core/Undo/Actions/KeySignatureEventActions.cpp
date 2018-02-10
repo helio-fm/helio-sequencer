@@ -60,10 +60,10 @@ int KeySignatureEventInsertAction::getSizeInUnits()
 
 ValueTree KeySignatureEventInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::keySignatureEventInsertAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    xml->prependChildElement(this->event.serialize());
-    return xml;
+    ValueTree tree(Serialization::Undo::keySignatureEventInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.addChild(this->event.serialize());
+    return tree;
 }
 
 void KeySignatureEventInsertAction::deserialize(const ValueTree &tree)
@@ -117,10 +117,10 @@ int KeySignatureEventRemoveAction::getSizeInUnits()
 
 ValueTree KeySignatureEventRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::keySignatureEventRemoveAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    xml->prependChildElement(this->event.serialize());
-    return xml;
+    ValueTree tree(Serialization::Undo::keySignatureEventRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.addChild(this->event.serialize());
+    return tree;
 }
 
 void KeySignatureEventRemoveAction::deserialize(const ValueTree &tree)
@@ -199,18 +199,18 @@ UndoAction *KeySignatureEventChangeAction::createCoalescedAction(UndoAction *nex
 
 ValueTree KeySignatureEventChangeAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::keySignatureEventChangeAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::keySignatureEventChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
     auto KeySignatureBeforeChild = new XmlElement(Serialization::Undo::keySignatureBefore);
     KeySignatureBeforeChild->prependChildElement(this->eventBefore.serialize());
-    xml->prependChildElement(KeySignatureBeforeChild);
+    tree.addChild(KeySignatureBeforeChild);
     
     auto KeySignatureAfterChild = new XmlElement(Serialization::Undo::keySignatureAfter);
     KeySignatureAfterChild->prependChildElement(this->eventAfter.serialize());
-    xml->prependChildElement(KeySignatureAfterChild);
+    tree.addChild(KeySignatureAfterChild);
     
-    return xml;
+    return tree;
 }
 
 void KeySignatureEventChangeAction::deserialize(const ValueTree &tree)
@@ -272,15 +272,15 @@ int KeySignatureEventsGroupInsertAction::getSizeInUnits()
 
 ValueTree KeySignatureEventsGroupInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::keySignatureEventsGroupInsertAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::keySignatureEventsGroupInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
     for (int i = 0; i < this->signatures.size(); ++i)
     {
-        xml->prependChildElement(this->signatures.getUnchecked(i).serialize());
+        tree.addChild(this->signatures.getUnchecked(i).serialize());
     }
     
-    return xml;
+    return tree;
 }
 
 void KeySignatureEventsGroupInsertAction::deserialize(const ValueTree &tree)
@@ -343,15 +343,15 @@ int KeySignatureEventsGroupRemoveAction::getSizeInUnits()
 
 ValueTree KeySignatureEventsGroupRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::keySignatureEventsGroupRemoveAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::keySignatureEventsGroupRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
     for (int i = 0; i < this->signatures.size(); ++i)
     {
-        xml->prependChildElement(this->signatures.getUnchecked(i).serialize());
+        tree.addChild(this->signatures.getUnchecked(i).serialize());
     }
     
-    return xml;
+    return tree;
 }
 
 void KeySignatureEventsGroupRemoveAction::deserialize(const ValueTree &tree)
@@ -449,8 +449,8 @@ UndoAction *KeySignatureEventsGroupChangeAction::createCoalescedAction(UndoActio
 
 ValueTree KeySignatureEventsGroupChangeAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::keySignatureEventsGroupChangeAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::keySignatureEventsGroupChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
     auto groupBeforeChild = new XmlElement(Serialization::Undo::groupBefore);
     auto groupAfterChild = new XmlElement(Serialization::Undo::groupAfter);
@@ -465,10 +465,10 @@ ValueTree KeySignatureEventsGroupChangeAction::serialize() const
         groupAfterChild->prependChildElement(this->eventsAfter.getUnchecked(i).serialize());
     }
     
-    xml->prependChildElement(groupBeforeChild);
-    xml->prependChildElement(groupAfterChild);
+    tree.addChild(groupBeforeChild);
+    tree.addChild(groupAfterChild);
     
-    return xml;
+    return tree;
 }
 
 void KeySignatureEventsGroupChangeAction::deserialize(const ValueTree &tree)

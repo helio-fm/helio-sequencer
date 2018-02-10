@@ -531,11 +531,11 @@ ValueTree ProjectTreeItem::serialize() const
 {
     this->getDocument()->save(); // todo remove? will save on delete
 
-    auto xml = new XmlElement(Serialization::Core::treeItem);
-    xml->setAttribute(Serialization::Core::treeItemType, this->type);
-    xml->setAttribute("fullPath", this->getDocument()->getFullPath());
-    xml->setAttribute("relativePath", this->getDocument()->getRelativePath());
-    return xml;
+    ValueTree tree(Serialization::Core::treeItem);
+    tree.setProperty(Serialization::Core::treeItemType, this->type);
+    tree.setProperty("fullPath", this->getDocument()->getFullPath());
+    tree.setProperty("relativePath", this->getDocument()->getRelativePath());
+    return tree;
 }
 
 void ProjectTreeItem::deserialize(const ValueTree &tree)
@@ -574,25 +574,25 @@ void ProjectTreeItem::reset()
 
 XmlElement *ProjectTreeItem::save() const
 {
-    auto xml = new XmlElement(Serialization::Core::project);
-    xml->setAttribute("name", this->name);
+    ValueTree tree(Serialization::Core::project);
+    tree.setProperty("name", this->name);
 
-    xml->addChildElement(this->info->serialize());
-    xml->addChildElement(this->timeline->serialize());
+    tree.addChild(this->info->serialize());
+    tree.addChild(this->timeline->serialize());
     
-    //xml->addChildElement(this->player->serialize()); // todo instead of:
-    xml->setAttribute("seek", this->transport->getSeekPosition());
+    //tree.addChild(this->player->serialize()); // todo instead of:
+    tree.setProperty("seek", this->transport->getSeekPosition());
     
     // UI state is now stored in config
-    //xml->addChildElement(this->sequencerLayout->serialize());
+    //tree.addChild(this->sequencerLayout->serialize());
 
-    xml->addChildElement(this->undoStack->serialize());
+    tree.addChild(this->undoStack->serialize());
     
     TreeItemChildrenSerializer::serializeChildren(*this, *xml);
 
     this->savePageState();
 
-    return xml;
+    return tree;
 }
 
 void ProjectTreeItem::load(const XmlElement &xml)

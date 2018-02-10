@@ -60,10 +60,10 @@ int TimeSignatureEventInsertAction::getSizeInUnits()
 
 ValueTree TimeSignatureEventInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::timeSignatureEventInsertAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    xml->prependChildElement(this->event.serialize());
-    return xml;
+    ValueTree tree(Serialization::Undo::timeSignatureEventInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.addChild(this->event.serialize());
+    return tree;
 }
 
 void TimeSignatureEventInsertAction::deserialize(const ValueTree &tree)
@@ -117,10 +117,10 @@ int TimeSignatureEventRemoveAction::getSizeInUnits()
 
 ValueTree TimeSignatureEventRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::timeSignatureEventRemoveAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    xml->prependChildElement(this->event.serialize());
-    return xml;
+    ValueTree tree(Serialization::Undo::timeSignatureEventRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.addChild(this->event.serialize());
+    return tree;
 }
 
 void TimeSignatureEventRemoveAction::deserialize(const ValueTree &tree)
@@ -199,18 +199,18 @@ UndoAction *TimeSignatureEventChangeAction::createCoalescedAction(UndoAction *ne
 
 ValueTree TimeSignatureEventChangeAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::timeSignatureEventChangeAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::timeSignatureEventChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
     auto timeSignatureBeforeChild = new XmlElement(Serialization::Undo::timeSignatureBefore);
     timeSignatureBeforeChild->prependChildElement(this->eventBefore.serialize());
-    xml->prependChildElement(timeSignatureBeforeChild);
+    tree.addChild(timeSignatureBeforeChild);
     
     auto timeSignatureAfterChild = new XmlElement(Serialization::Undo::timeSignatureAfter);
     timeSignatureAfterChild->prependChildElement(this->eventAfter.serialize());
-    xml->prependChildElement(timeSignatureAfterChild);
+    tree.addChild(timeSignatureAfterChild);
     
-    return xml;
+    return tree;
 }
 
 void TimeSignatureEventChangeAction::deserialize(const ValueTree &tree)
@@ -272,15 +272,15 @@ int TimeSignatureEventsGroupInsertAction::getSizeInUnits()
 
 ValueTree TimeSignatureEventsGroupInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::timeSignatureEventsGroupInsertAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::timeSignatureEventsGroupInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
     for (int i = 0; i < this->signatures.size(); ++i)
     {
-        xml->prependChildElement(this->signatures.getUnchecked(i).serialize());
+        tree.addChild(this->signatures.getUnchecked(i).serialize());
     }
     
-    return xml;
+    return tree;
 }
 
 void TimeSignatureEventsGroupInsertAction::deserialize(const ValueTree &tree)
@@ -343,15 +343,15 @@ int TimeSignatureEventsGroupRemoveAction::getSizeInUnits()
 
 ValueTree TimeSignatureEventsGroupRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::timeSignatureEventsGroupRemoveAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::timeSignatureEventsGroupRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
     for (int i = 0; i < this->signatures.size(); ++i)
     {
-        xml->prependChildElement(this->signatures.getUnchecked(i).serialize());
+        tree.addChild(this->signatures.getUnchecked(i).serialize());
     }
     
-    return xml;
+    return tree;
 }
 
 void TimeSignatureEventsGroupRemoveAction::deserialize(const ValueTree &tree)
@@ -449,8 +449,8 @@ UndoAction *TimeSignatureEventsGroupChangeAction::createCoalescedAction(UndoActi
 
 ValueTree TimeSignatureEventsGroupChangeAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::timeSignatureEventsGroupChangeAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::timeSignatureEventsGroupChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
     auto groupBeforeChild = new XmlElement(Serialization::Undo::groupBefore);
     auto groupAfterChild = new XmlElement(Serialization::Undo::groupAfter);
@@ -465,10 +465,10 @@ ValueTree TimeSignatureEventsGroupChangeAction::serialize() const
         groupAfterChild->prependChildElement(this->eventsAfter.getUnchecked(i).serialize());
     }
     
-    xml->prependChildElement(groupBeforeChild);
-    xml->prependChildElement(groupAfterChild);
+    tree.addChild(groupBeforeChild);
+    tree.addChild(groupAfterChild);
     
-    return xml;
+    return tree;
 }
 
 void TimeSignatureEventsGroupChangeAction::deserialize(const ValueTree &tree)

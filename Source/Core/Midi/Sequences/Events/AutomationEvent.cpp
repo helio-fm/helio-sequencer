@@ -270,12 +270,12 @@ AutomationEvent AutomationEvent::pedalDownEvent(MidiSequence *owner, float beatV
 
 ValueTree AutomationEvent::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::event);
-    xml->setAttribute("val", this->controllerValue);
-    xml->setAttribute("beat", this->beat);
-    xml->setAttribute("curve", this->curvature);
-    xml->setAttribute("id", this->id);
-    return xml;
+    ValueTree tree(Serialization::Core::event);
+    tree.setProperty("val", this->controllerValue);
+    tree.setProperty("beat", this->beat);
+    tree.setProperty("curve", this->curvature);
+    tree.setProperty("id", this->id);
+    return tree;
 }
 
 void AutomationEvent::deserialize(const ValueTree &tree)

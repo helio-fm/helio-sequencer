@@ -207,9 +207,9 @@ void ColourScheme::syncWithLiveConstantEditor()
 
 ValueTree ColourScheme::serialize() const
 {
-    auto xml = new XmlElement(Serialization::UI::Colours::scheme);
-    xml->setAttribute(Serialization::UI::Colours::name, this->name);
-    xml->setAttribute(Serialization::UI::Colours::id, this->id);
+    ValueTree tree(Serialization::UI::Colours::scheme);
+    tree.setProperty(Serialization::UI::Colours::name, this->name);
+    tree.setProperty(Serialization::UI::Colours::id, this->id);
 
     auto mapXml = new XmlElement(Serialization::UI::Colours::colourMap);
 
@@ -219,8 +219,8 @@ ValueTree ColourScheme::serialize() const
         mapXml->setAttribute(i.getKey(), i.getValue().toString());
     }
 
-    xml->addChildElement(mapXml);
-    return xml;
+    tree.addChild(mapXml);
+    return tree;
 }
 
 void ColourScheme::deserialize(const ValueTree &tree)

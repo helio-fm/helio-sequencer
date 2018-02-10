@@ -61,10 +61,10 @@ int PatternClipInsertAction::getSizeInUnits()
 
 ValueTree PatternClipInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::patternClipInsertAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    xml->prependChildElement(this->clip.serialize());
-    return xml;
+    ValueTree tree(Serialization::Undo::patternClipInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.addChild(this->clip.serialize());
+    return tree;
 }
 
 void PatternClipInsertAction::deserialize(const ValueTree &tree)
@@ -118,10 +118,10 @@ int PatternClipRemoveAction::getSizeInUnits()
 
 ValueTree PatternClipRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::patternClipRemoveAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    xml->prependChildElement(this->clip.serialize());
-    return xml;
+    ValueTree tree(Serialization::Undo::patternClipRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.addChild(this->clip.serialize());
+    return tree;
 }
 
 void PatternClipRemoveAction::deserialize(const ValueTree &tree)
@@ -205,18 +205,18 @@ UndoAction *PatternClipChangeAction::createCoalescedAction(UndoAction *nextActio
 
 ValueTree PatternClipChangeAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::patternClipChangeAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::patternClipChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
 
     auto instanceBeforeChild = new XmlElement(Serialization::Undo::instanceBefore);
     instanceBeforeChild->prependChildElement(this->clipBefore.serialize());
-    xml->prependChildElement(instanceBeforeChild);
+    tree.addChild(instanceBeforeChild);
 
     auto instanceAfterChild = new XmlElement(Serialization::Undo::instanceAfter);
     instanceAfterChild->prependChildElement(this->clipAfter.serialize());
-    xml->prependChildElement(instanceAfterChild);
+    tree.addChild(instanceAfterChild);
 
-    return xml;
+    return tree;
 }
 
 void PatternClipChangeAction::deserialize(const ValueTree &tree)

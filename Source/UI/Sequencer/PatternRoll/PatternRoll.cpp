@@ -604,7 +604,7 @@ float PatternRoll::getZoomFactorY() const
 
 XmlElement *PatternRoll::clipboardCopy() const
 {
-    auto xml = new XmlElement(Serialization::Clipboard::clipboard);
+    ValueTree tree(Serialization::Clipboard::clipboard);
 
     float firstBeat = FLT_MAX;
     float lastBeat = -FLT_MAX;
@@ -617,7 +617,7 @@ XmlElement *PatternRoll::clipboardCopy() const
         // create xml parent with layer id
         auto patternIdParent = new XmlElement(Serialization::Clipboard::pattern);
         patternIdParent->setAttribute(Serialization::Clipboard::patternId, patternId);
-        xml->addChildElement(patternIdParent);
+        tree.addChild(patternIdParent);
 
         for (int i = 0; i < patternSelection->size(); ++i)
         {
@@ -631,10 +631,10 @@ XmlElement *PatternRoll::clipboardCopy() const
         }
     }
 
-    xml->setAttribute(Serialization::Clipboard::firstBeat, firstBeat);
-    xml->setAttribute(Serialization::Clipboard::lastBeat, lastBeat);
+    tree.setProperty(Serialization::Clipboard::firstBeat, firstBeat);
+    tree.setProperty(Serialization::Clipboard::lastBeat, lastBeat);
 
-    return xml;
+    return tree;
 }
 
 void PatternRoll::clipboardPaste(const XmlElement &xml)
@@ -812,19 +812,19 @@ void PatternRoll::insertNewClipAt(const MouseEvent &e)
 
 ValueTree PatternRoll::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::midiRoll);
+    ValueTree tree(Serialization::Core::midiRoll);
 
-    xml->setAttribute("barWidth", this->getBarWidth());
+    tree.setProperty("barWidth", this->getBarWidth());
 
-    xml->setAttribute("startBar", this->getBarByXPosition(this->getViewport().getViewPositionX()));
-    xml->setAttribute("endBar", this->getBarByXPosition(this->getViewport().getViewPositionX() + this->getViewport().getViewWidth()));
+    tree.setProperty("startBar", this->getBarByXPosition(this->getViewport().getViewPositionX()));
+    tree.setProperty("endBar", this->getBarByXPosition(this->getViewport().getViewPositionX() + this->getViewport().getViewWidth()));
 
-    xml->setAttribute("y", this->getViewport().getViewPositionY());
+    tree.setProperty("y", this->getViewport().getViewPositionY());
 
     // m?
-    //xml->setAttribute("selection", this->getLassoSelection().serialize());
+    //tree.setProperty("selection", this->getLassoSelection().serialize());
 
-    return xml;
+    return tree;
 }
 
 void PatternRoll::deserialize(const ValueTree &tree)

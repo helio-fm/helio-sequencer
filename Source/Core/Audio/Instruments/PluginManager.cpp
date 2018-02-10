@@ -350,14 +350,14 @@ void PluginManager::scanPossibleSubfolders(const StringArray &possibleSubfolders
 ValueTree PluginManager::serialize() const
 {
     const ScopedReadLock lock(this->pluginsListLock);
-    auto xml = new XmlElement(Serialization::Core::pluginManager);
+    ValueTree tree(Serialization::Core::pluginManager);
 
     for (int i = 0; i < this->pluginsList.getNumTypes(); ++i)
     {
-        xml->prependChildElement(this->pluginsList.getType(i)->createXml());
+        tree.addChild(this->pluginsList.getType(i)->createXml());
     }
 
-    return xml;
+    return tree;
 }
 
 void PluginManager::deserialize(const ValueTree &tree)

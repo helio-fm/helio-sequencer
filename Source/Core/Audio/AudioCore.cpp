@@ -235,7 +235,7 @@ ValueTree AudioCore::serialize() const
     // сериализовать все инструменты вместе с их графами
     // мета-граф не трогаем
 
-    auto xml = new XmlElement(Serialization::Core::audioCore);
+    ValueTree tree(Serialization::Core::audioCore);
 
     {
         auto orchestra = new XmlElement(Serialization::Core::orchestra);
@@ -246,16 +246,16 @@ ValueTree AudioCore::serialize() const
             orchestra->addChildElement(instrument->serialize());
         }
 
-        xml->addChildElement(orchestra);
+        tree.addChild(orchestra);
     }
 
     {
         auto settings = new XmlElement(Serialization::Core::audioSettings);
         settings->addChildElement(this->deviceManager.createStateXml());
-        xml->addChildElement(settings);
+        tree.addChild(settings);
     }
 
-    return xml;
+    return tree;
 }
 
 void AudioCore::deserialize(const ValueTree &tree)

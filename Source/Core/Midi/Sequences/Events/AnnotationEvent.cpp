@@ -123,12 +123,12 @@ Colour AnnotationEvent::getColour() const noexcept
 
 ValueTree AnnotationEvent::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::annotation);
-    xml->setAttribute("text", this->description);
-    xml->setAttribute("col", this->colour.toString());
-    xml->setAttribute("beat", this->beat);
-    xml->setAttribute("id", this->id);
-    return xml;
+    ValueTree tree(Serialization::Core::annotation);
+    tree.setProperty("text", this->description);
+    tree.setProperty("col", this->colour.toString());
+    tree.setProperty("beat", this->beat);
+    tree.setProperty("id", this->id);
+    return tree;
 }
 
 void AnnotationEvent::deserialize(const ValueTree &tree)

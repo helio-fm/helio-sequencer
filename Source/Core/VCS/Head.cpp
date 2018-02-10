@@ -512,7 +512,7 @@ void Head::rebuildDiffNow()
 
 ValueTree VCS::Head::serialize() const
 {
-    auto xml = new XmlElement(Serialization::VCS::head);
+    ValueTree tree(Serialization::VCS::head);
     auto stateXml = new XmlElement(Serialization::VCS::headIndex);
     auto stateDataXml = new XmlElement(Serialization::VCS::headIndexData);
 
@@ -540,9 +540,9 @@ ValueTree VCS::Head::serialize() const
         }
     }
     
-    xml->addChildElement(stateXml);
-    xml->addChildElement(stateDataXml);
-    return xml;
+    tree.addChild(stateXml);
+    tree.addChild(stateDataXml);
+    return tree;
 }
 
 void VCS::Head::deserialize(const ValueTree &tree)

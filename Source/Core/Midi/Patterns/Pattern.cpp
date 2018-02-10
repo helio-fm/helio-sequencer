@@ -285,14 +285,14 @@ void Pattern::updateBeatRange(bool shouldNotifyIfChanged)
 
 ValueTree Pattern::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::pattern);
+    ValueTree tree(Serialization::Core::pattern);
 
     for (int i = 0; i < this->clips.size(); ++i)
     {
-        xml->prependChildElement(this->clips.getUnchecked(i)->serialize());
+        tree.addChild(this->clips.getUnchecked(i)->serialize());
     }
 
-    return xml;
+    return tree;
 }
 
 void Pattern::deserialize(const ValueTree &tree)

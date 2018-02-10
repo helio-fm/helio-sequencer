@@ -61,10 +61,10 @@ int AnnotationEventInsertAction::getSizeInUnits()
 
 ValueTree AnnotationEventInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::annotationEventInsertAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    xml->prependChildElement(this->event.serialize());
-    return xml;
+    ValueTree tree(Serialization::Undo::annotationEventInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.addChild(this->event.serialize());
+    return tree;
 }
 
 void AnnotationEventInsertAction::deserialize(const ValueTree &tree)
@@ -118,10 +118,10 @@ int AnnotationEventRemoveAction::getSizeInUnits()
 
 ValueTree AnnotationEventRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::annotationEventRemoveAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    xml->prependChildElement(this->event.serialize());
-    return xml;
+    ValueTree tree(Serialization::Undo::annotationEventRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.addChild(this->event.serialize());
+    return tree;
 }
 
 void AnnotationEventRemoveAction::deserialize(const ValueTree &tree)
@@ -200,18 +200,18 @@ UndoAction *AnnotationEventChangeAction::createCoalescedAction(UndoAction *nextA
 
 ValueTree AnnotationEventChangeAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::annotationEventChangeAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::annotationEventChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
     auto annotationBeforeChild = new XmlElement(Serialization::Undo::annotationBefore);
     annotationBeforeChild->prependChildElement(this->eventBefore.serialize());
-    xml->prependChildElement(annotationBeforeChild);
+    tree.addChild(annotationBeforeChild);
     
     auto annotationAfterChild = new XmlElement(Serialization::Undo::annotationAfter);
     annotationAfterChild->prependChildElement(this->eventAfter.serialize());
-    xml->prependChildElement(annotationAfterChild);
+    tree.addChild(annotationAfterChild);
     
-    return xml;
+    return tree;
 }
 
 void AnnotationEventChangeAction::deserialize(const ValueTree &tree)
@@ -273,15 +273,15 @@ int AnnotationEventsGroupInsertAction::getSizeInUnits()
 
 ValueTree AnnotationEventsGroupInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::annotationEventsGroupInsertAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::annotationEventsGroupInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
     for (int i = 0; i < this->annotations.size(); ++i)
     {
-        xml->prependChildElement(this->annotations.getUnchecked(i).serialize());
+        tree.addChild(this->annotations.getUnchecked(i).serialize());
     }
     
-    return xml;
+    return tree;
 }
 
 void AnnotationEventsGroupInsertAction::deserialize(const ValueTree &tree)
@@ -344,15 +344,15 @@ int AnnotationEventsGroupRemoveAction::getSizeInUnits()
 
 ValueTree AnnotationEventsGroupRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::annotationEventsGroupRemoveAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::annotationEventsGroupRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
     for (int i = 0; i < this->annotations.size(); ++i)
     {
-        xml->prependChildElement(this->annotations.getUnchecked(i).serialize());
+        tree.addChild(this->annotations.getUnchecked(i).serialize());
     }
     
-    return xml;
+    return tree;
 }
 
 void AnnotationEventsGroupRemoveAction::deserialize(const ValueTree &tree)
@@ -451,8 +451,8 @@ UndoAction *AnnotationEventsGroupChangeAction::createCoalescedAction(UndoAction 
 
 ValueTree AnnotationEventsGroupChangeAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::annotationEventsGroupChangeAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::annotationEventsGroupChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
     auto groupBeforeChild = new XmlElement(Serialization::Undo::groupBefore);
     auto groupAfterChild = new XmlElement(Serialization::Undo::groupAfter);
@@ -467,10 +467,10 @@ ValueTree AnnotationEventsGroupChangeAction::serialize() const
         groupAfterChild->prependChildElement(this->eventsAfter.getUnchecked(i).serialize());
     }
     
-    xml->prependChildElement(groupBeforeChild);
-    xml->prependChildElement(groupAfterChild);
+    tree.addChild(groupBeforeChild);
+    tree.addChild(groupAfterChild);
     
-    return xml;
+    return tree;
 }
 
 void AnnotationEventsGroupChangeAction::deserialize(const ValueTree &tree)

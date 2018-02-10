@@ -151,10 +151,10 @@ bool HotkeyScheme::sendHotkeyCommand(Hotkey key,
 
 ValueTree HotkeyScheme::serialize() const
 {
-    auto xml = new XmlElement(Serialization::UI::Hotkeys::scheme);
-    xml->setAttribute(Serialization::UI::Hotkeys::schemeName, this->name);
+    ValueTree tree(Serialization::UI::Hotkeys::scheme);
+    tree.setProperty(Serialization::UI::Hotkeys::schemeName, this->name);
     // Not implemented (cannot convert command id's to string messages back)
-    return xml;
+    return tree;
 }
 
 static inline HotkeyScheme::Hotkey createHotkey(XmlElement *e)

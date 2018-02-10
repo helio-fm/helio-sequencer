@@ -319,16 +319,16 @@ ScopedPointer<Component> VersionControlTreeItem::createItemMenu()
 
 ValueTree VersionControlTreeItem::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::treeItem);
-    xml->setAttribute(Serialization::Core::treeItemType, this->type);
+    ValueTree tree(Serialization::Core::treeItem);
+    tree.setProperty(Serialization::Core::treeItemType, this->type);
 
     if (this->vcs)
     {
-        xml->addChildElement(this->vcs->serialize());
+        tree.addChild(this->vcs->serialize());
     }
 
     TreeItemChildrenSerializer::serializeChildren(*this, *xml);
-    return xml;
+    return tree;
 }
 
 void VersionControlTreeItem::deserialize(const ValueTree &tree)

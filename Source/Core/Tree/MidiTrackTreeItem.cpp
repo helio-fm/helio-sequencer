@@ -107,15 +107,15 @@ String MidiTrackTreeItem::getVCSName() const
 
 XmlElement *MidiTrackTreeItem::serializeClipsDelta() const
 {
-    auto xml = new XmlElement(PatternDeltas::clipsAdded);
+    ValueTree tree(PatternDeltas::clipsAdded);
 
     for (int i = 0; i < this->getPattern()->size(); ++i)
     {
         const auto clip = this->getPattern()->getUnchecked(i);
-        xml->addChildElement(clip->serialize());
+        tree.addChild(clip->serialize());
     }
 
-    return xml;
+    return tree;
 }
 
 void MidiTrackTreeItem::resetClipsDelta(const XmlElement *state)

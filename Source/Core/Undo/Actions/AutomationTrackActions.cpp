@@ -71,11 +71,11 @@ int AutomationTrackInsertAction::getSizeInUnits()
 
 ValueTree AutomationTrackInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::automationTrackInsertAction);
-    xml->setAttribute(Serialization::Undo::xPath, this->trackName);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    xml->prependChildElement(XmlDocument::parse(this->serializedState));
-    return xml;
+    ValueTree tree(Serialization::Undo::automationTrackInsertAction);
+    tree.setProperty(Serialization::Undo::xPath, this->trackName);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.addChild(XmlDocument::parse(this->serializedState));
+    return tree;
 }
 
 void AutomationTrackInsertAction::deserialize(const ValueTree &tree)
@@ -147,11 +147,11 @@ int AutomationTrackRemoveAction::getSizeInUnits()
 
 ValueTree AutomationTrackRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::automationTrackRemoveAction);
-    xml->setAttribute(Serialization::Undo::xPath, this->trackName);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    xml->prependChildElement(new XmlElement(*this->serializedTreeItem)); // deep copy
-    return xml;
+    ValueTree tree(Serialization::Undo::automationTrackRemoveAction);
+    tree.setProperty(Serialization::Undo::xPath, this->trackName);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.addChild(new XmlElement(*this->serializedTreeItem)); // deep copy
+    return tree;
 }
 
 void AutomationTrackRemoveAction::deserialize(const ValueTree &tree)

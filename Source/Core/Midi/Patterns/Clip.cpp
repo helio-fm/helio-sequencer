@@ -100,10 +100,10 @@ Clip Clip::withDeltaBeat(float deltaPosition) const
 
 ValueTree Clip::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::clip);
-    xml->setAttribute("start", this->startBeat);
-    xml->setAttribute("id", this->id);
-    return xml;
+    ValueTree tree(Serialization::Core::clip);
+    tree.setProperty("start", this->startBeat);
+    tree.setProperty("id", this->id);
+    return tree;
 }
 
 void Clip::deserialize(const ValueTree &tree)

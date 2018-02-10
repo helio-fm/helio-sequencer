@@ -273,15 +273,15 @@ bool KeySignaturesSequence::changeGroup(Array<KeySignatureEvent> &groupBefore,
 
 ValueTree KeySignaturesSequence::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::keySignatures);
+    ValueTree tree(Serialization::Core::keySignatures);
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         const MidiEvent *event = this->midiEvents.getUnchecked(i);
-        xml->prependChildElement(event->serialize());
+        tree.addChild(event->serialize());
     }
 
-    return xml;
+    return tree;
 }
 
 void KeySignaturesSequence::deserialize(const ValueTree &tree)

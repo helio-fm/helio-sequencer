@@ -77,16 +77,16 @@ int UndoStack::ActionSet::getTotalSize() const
     
 XmlElement *UndoStack::ActionSet::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::transaction);
+    ValueTree tree(Serialization::Undo::transaction);
         
-    xml->setAttribute(Serialization::Undo::name, this->name);
+    tree.setProperty(Serialization::Undo::name, this->name);
         
     for (int i = 0; i < this->actions.size(); ++i)
     {
-        xml->addChildElement(this->actions.getUnchecked(i)->serialize());
+        tree.addChild(this->actions.getUnchecked(i)->serialize());
     }
         
-    return xml;
+    return tree;
 }
     
 void UndoStack::ActionSet::deserialize(const XmlElement &xml)
@@ -385,7 +385,7 @@ int UndoStack::getNumActionsInCurrentTransaction() const
 
 ValueTree UndoStack::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::undoStack);
+    ValueTree tree(Serialization::Undo::undoStack);
     
     int currentIndex = (this->nextIndex - 1);
     int numStoredTransactions = 0;
@@ -395,14 +395,14 @@ ValueTree UndoStack::serialize() const
     {
         if (ActionSet *action = this->transactions[currentIndex])
         {
-            xml->prependChildElement(action->serialize());
+            tree.addChild(action->serialize());
         }
         
         --currentIndex;
         ++numStoredTransactions;
     }
     
-    return xml;
+    return tree;
 }
 
 void UndoStack::deserialize(const ValueTree &tree)

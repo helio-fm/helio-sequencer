@@ -221,11 +221,11 @@ void InstrumentTreeItem::updateChildrenEditors()
 
 ValueTree InstrumentTreeItem::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::treeItem);
-    xml->setAttribute(Serialization::Core::treeItemType, this->type);
-    xml->setAttribute(Serialization::Core::treeItemName, this->name);
-    xml->setAttribute("id", this->instrument->getIdAndHash());
-    return xml;
+    ValueTree tree(Serialization::Core::treeItem);
+    tree.setProperty(Serialization::Core::treeItemType, this->type);
+    tree.setProperty(Serialization::Core::treeItemName, this->name);
+    tree.setProperty("id", this->instrument->getIdAndHash());
+    return tree;
 }
 
 void InstrumentTreeItem::deserialize(const ValueTree &tree)

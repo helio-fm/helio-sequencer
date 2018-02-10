@@ -334,15 +334,15 @@ float PianoSequence::getLastBeat() const noexcept
 
 ValueTree PianoSequence::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::track);
+    ValueTree tree(Serialization::Core::track);
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         const MidiEvent *event = this->midiEvents.getUnchecked(i);
-        xml->prependChildElement(event->serialize()); // faster than addChildElement
+        tree.addChild(event->serialize()); // faster than addChildElement
     }
     
-    return xml;
+    return tree;
 }
 
 void PianoSequence::deserialize(const ValueTree &tree)

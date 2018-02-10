@@ -27,16 +27,7 @@ Arpeggiator::Arpeggiator() :
     reversedMode(false),
     relativeMappingMode(true),
     limitToChordMode(false),
-    scale(1.f)
-{
-    
-}
-
-Arpeggiator::~Arpeggiator()
-{
-    
-}
-
+    scale(1.f) {}
 
 //===----------------------------------------------------------------------===//
 // Accessors
@@ -210,7 +201,7 @@ Array<Arpeggiator::Key> Arpeggiator::createArpKeys() const
 
 ValueTree Arpeggiator::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Arps::arpeggiator);
+    ValueTree tree(Serialization::Arps::arpeggiator);
     auto seq = new XmlElement(Serialization::Arps::sequence);
     
     for (int i = 0; i < this->sequence.size(); ++i)
@@ -218,17 +209,17 @@ ValueTree Arpeggiator::serialize() const
         seq->addChildElement(this->sequence.getUnchecked(i).serialize());
     }
     
-    xml->addChildElement(seq);
+    tree.addChild(seq);
     
-    xml->setAttribute(Serialization::Arps::isReversed, this->reversedMode);
-    xml->setAttribute(Serialization::Arps::relativeMapping, this->relativeMappingMode);
-    xml->setAttribute(Serialization::Arps::limitsToChord, this->limitToChordMode);
-    xml->setAttribute(Serialization::Arps::scale, this->scale);
+    tree.setProperty(Serialization::Arps::isReversed, this->reversedMode);
+    tree.setProperty(Serialization::Arps::relativeMapping, this->relativeMappingMode);
+    tree.setProperty(Serialization::Arps::limitsToChord, this->limitToChordMode);
+    tree.setProperty(Serialization::Arps::scale, this->scale);
 
-    xml->setAttribute(Serialization::Arps::id, this->id.toString());
-    xml->setAttribute(Serialization::Arps::name, this->name);
+    tree.setProperty(Serialization::Arps::id, this->id.toString());
+    tree.setProperty(Serialization::Arps::name, this->name);
 
-    return xml;
+    return tree;
 }
 
 void Arpeggiator::deserialize(const ValueTree &tree)

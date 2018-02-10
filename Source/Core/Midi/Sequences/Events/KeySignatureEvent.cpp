@@ -150,12 +150,12 @@ const Scale &KeySignatureEvent::getScale() const noexcept
 
 ValueTree KeySignatureEvent::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::keySignature);
-    xml->setAttribute("key", this->rootKey);
-    xml->setAttribute("beat", this->beat);
-    xml->setAttribute("id", this->id);
-    xml->addChildElement(this->scale.serialize());
-    return xml;
+    ValueTree tree(Serialization::Core::keySignature);
+    tree.setProperty("key", this->rootKey);
+    tree.setProperty("beat", this->beat);
+    tree.setProperty("id", this->id);
+    tree.addChild(this->scale.serialize());
+    return tree;
 }
 
 void KeySignatureEvent::deserialize(const ValueTree &tree)

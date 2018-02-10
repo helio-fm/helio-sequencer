@@ -259,15 +259,15 @@ bool TimeSignaturesSequence::changeGroup(Array<TimeSignatureEvent> &groupBefore,
 
 ValueTree TimeSignaturesSequence::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::timeSignatures);
+    ValueTree tree(Serialization::Core::timeSignatures);
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         const MidiEvent *event = this->midiEvents.getUnchecked(i);
-        xml->prependChildElement(event->serialize()); // faster than addChildElement
+        tree.addChild(event->serialize()); // faster than addChildElement
     }
 
-    return xml;
+    return tree;
 }
 
 void TimeSignaturesSequence::deserialize(const ValueTree &tree)

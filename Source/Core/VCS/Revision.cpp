@@ -216,21 +216,21 @@ XmlElement *Revision::serialize(ValueTree revision)
             if (const RevisionItem *revItem =
                 dynamic_cast<RevisionItem *>(property.getObject()))
             {
-                xml->prependChildElement(revItem->serialize());
+                tree.addChild(revItem->serialize());
             }
         }
         else if (property.isString() || property.isInt64())
         {
-            xml->setAttribute(id.toString(), property.toString());
+            tree.setProperty(id.toString(), property.toString());
         }
     }
 
     for (int i = 0; i < revision.getNumChildren(); ++i)
     {
-        xml->prependChildElement(Revision::serialize(revision.getChild(i)));
+        tree.addChild(Revision::serialize(revision.getChild(i)));
     }
 
-    return xml;
+    return tree;
 }
 
 void Revision::deserialize(ValueTree revision, const XmlElement &xml)

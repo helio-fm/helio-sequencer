@@ -63,11 +63,11 @@ int MidiTrackRenameAction::getSizeInUnits()
 
 ValueTree MidiTrackRenameAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::midiTrackRenameAction);
-    xml->setAttribute(Serialization::Undo::xPathBefore, this->xPathBefore);
-    xml->setAttribute(Serialization::Undo::xPathAfter, this->xPathAfter);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    return xml;
+    ValueTree tree(Serialization::Undo::midiTrackRenameAction);
+    tree.setProperty(Serialization::Undo::xPathBefore, this->xPathBefore);
+    tree.setProperty(Serialization::Undo::xPathAfter, this->xPathAfter);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    return tree;
 }
 
 void MidiTrackRenameAction::deserialize(const ValueTree &tree)
@@ -129,11 +129,11 @@ int MidiTrackChangeColourAction::getSizeInUnits()
 
 ValueTree MidiTrackChangeColourAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::midiTrackChangeColourAction);
-    xml->setAttribute(Serialization::Undo::colourBefore, this->colourBefore.toString());
-    xml->setAttribute(Serialization::Undo::colourAfter, this->colourAfter.toString());
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    return xml;
+    ValueTree tree(Serialization::Undo::midiTrackChangeColourAction);
+    tree.setProperty(Serialization::Undo::colourBefore, this->colourBefore.toString());
+    tree.setProperty(Serialization::Undo::colourAfter, this->colourAfter.toString());
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    return tree;
 }
 
 void MidiTrackChangeColourAction::deserialize(const ValueTree &tree)
@@ -191,11 +191,11 @@ int MidiTrackChangeInstrumentAction::getSizeInUnits()
 
 ValueTree MidiTrackChangeInstrumentAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::midiTrackChangeInstrumentAction);
-    xml->setAttribute(Serialization::Undo::instrumentIdBefore, this->instrumentIdBefore);
-    xml->setAttribute(Serialization::Undo::instrumentIdAfter, this->instrumentIdAfter);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    return xml;
+    ValueTree tree(Serialization::Undo::midiTrackChangeInstrumentAction);
+    tree.setProperty(Serialization::Undo::instrumentIdBefore, this->instrumentIdBefore);
+    tree.setProperty(Serialization::Undo::instrumentIdAfter, this->instrumentIdAfter);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    return tree;
 }
 
 void MidiTrackChangeInstrumentAction::deserialize(const ValueTree &tree)
@@ -263,11 +263,11 @@ bool stringToBool(const String &val)
 
 ValueTree MidiTrackMuteAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::midiTrackMuteAction);
-    xml->setAttribute(Serialization::Undo::muteStateBefore, boolToString(this->muteStateBefore));
-    xml->setAttribute(Serialization::Undo::muteStateAfter, boolToString(this->muteStateAfter));
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    return xml;
+    ValueTree tree(Serialization::Undo::midiTrackMuteAction);
+    tree.setProperty(Serialization::Undo::muteStateBefore, boolToString(this->muteStateBefore));
+    tree.setProperty(Serialization::Undo::muteStateAfter, boolToString(this->muteStateAfter));
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    return tree;
 }
 
 void MidiTrackMuteAction::deserialize(const ValueTree &tree)

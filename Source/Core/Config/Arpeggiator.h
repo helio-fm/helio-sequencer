@@ -20,12 +20,11 @@
 #include "Note.h"
 #include "Serializable.h"
 
-class Arpeggiator : public Serializable
+class Arpeggiator final : public Serializable
 {
 public:
     
     Arpeggiator();
-    ~Arpeggiator() override;
 
     String getId() const;
     String getName() const;

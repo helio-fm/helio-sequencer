@@ -79,14 +79,14 @@ void ArpeggiatorsManager::addArp(const Arpeggiator &arp)
 
 ValueTree ArpeggiatorsManager::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Arps::arpeggiators);
+    ValueTree tree(Serialization::Arps::arpeggiators);
     
     for (int i = 0; i < this->arps.size(); ++i)
     {
-        xml->addChildElement(this->arps.getUnchecked(i).serialize());
+        tree.addChild(this->arps.getUnchecked(i).serialize());
     }
     
-    return xml;
+    return tree;
 }
 
 void ArpeggiatorsManager::deserialize(const ValueTree &tree)

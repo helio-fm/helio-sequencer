@@ -651,15 +651,15 @@ NewSerializedDelta serializeLayerChanges(Array<const MidiEvent *> changes,
 
 XmlElement *serializeLayer(Array<const MidiEvent *> changes, const String &tag)
 {
-    auto xml = new XmlElement(tag);
+    ValueTree tree(tag);
 
     for (int i = 0; i < changes.size(); ++i)
     {
         const MidiEvent *event = changes.getUnchecked(i);
-        xml->addChildElement(event->serialize());
+        tree.addChild(event->serialize());
     }
 
-    return xml;
+    return tree;
 }
 
 bool checkIfDeltaIsNotesType(const Delta *delta)

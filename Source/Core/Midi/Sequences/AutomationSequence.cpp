@@ -258,15 +258,15 @@ bool AutomationSequence::changeGroup(const Array<AutomationEvent> groupBefore,
 
 ValueTree AutomationSequence::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::automation);
+    ValueTree tree(Serialization::Core::automation);
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         MidiEvent *event = this->midiEvents.getUnchecked(i);
-        xml->addChildElement(event->serialize());
+        tree.addChild(event->serialize());
     }
     
-    return xml;
+    return tree;
 }
 
 void AutomationSequence::deserialize(const ValueTree &tree)

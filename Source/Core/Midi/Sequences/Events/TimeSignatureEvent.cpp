@@ -147,12 +147,12 @@ String TimeSignatureEvent::toString() const noexcept
 
 ValueTree TimeSignatureEvent::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::timeSignature);
-    xml->setAttribute("numerator", this->numerator);
-    xml->setAttribute("denominator", this->denominator);
-    xml->setAttribute("beat", this->beat);
-    xml->setAttribute("id", this->id);
-    return xml;
+    ValueTree tree(Serialization::Core::timeSignature);
+    tree.setProperty("numerator", this->numerator);
+    tree.setProperty("denominator", this->denominator);
+    tree.setProperty("beat", this->beat);
+    tree.setProperty("id", this->id);
+    return tree;
 }
 
 void TimeSignatureEvent::deserialize(const ValueTree &tree)

@@ -137,7 +137,7 @@ int RecentFilesList::getNumItems() const
 ValueTree RecentFilesList::serialize() const
 {
     const ScopedReadLock lock(this->listLock);
-    auto xml = new XmlElement(Serialization::Core::recentFiles);
+    ValueTree tree(Serialization::Core::recentFiles);
 
     for (auto && localFile : this->localFiles)
     {
@@ -146,10 +146,10 @@ ValueTree RecentFilesList::serialize() const
         item->setAttribute("path", localFile->path);
         item->setAttribute("id", localFile->projectId);
         item->setAttribute("time", String(localFile->lastModifiedTime));
-        xml->addChildElement(item);
+        tree.addChild(item);
     }
 
-    return xml;
+    return tree;
 }
 
 void RecentFilesList::deserialize(const ValueTree &tree)

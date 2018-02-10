@@ -60,13 +60,13 @@ ValueTree VCS::Delta::serialize() const
 {
     auto const xml = new XmlElement(Serialization::VCS::delta);
 
-    xml->setAttribute(Serialization::VCS::deltaType, this->type);
-    xml->setAttribute(Serialization::VCS::deltaName, this->description.stringToTranslate);
-    xml->setAttribute(Serialization::VCS::deltaStringParam, this->description.stringParameter);
-    xml->setAttribute(Serialization::VCS::deltaIntParam, String(this->description.intParameter));
-    xml->setAttribute(Serialization::VCS::deltaId, this->vcsUuid.toString());
+    tree.setProperty(Serialization::VCS::deltaType, this->type);
+    tree.setProperty(Serialization::VCS::deltaName, this->description.stringToTranslate);
+    tree.setProperty(Serialization::VCS::deltaStringParam, this->description.stringParameter);
+    tree.setProperty(Serialization::VCS::deltaIntParam, String(this->description.intParameter));
+    tree.setProperty(Serialization::VCS::deltaId, this->vcsUuid.toString());
 
-    return xml;
+    return tree;
 }
 
 void VCS::Delta::deserialize(const ValueTree &tree)

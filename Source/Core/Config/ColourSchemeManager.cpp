@@ -78,14 +78,14 @@ void ColourSchemeManager::pull()
 
 ValueTree ColourSchemeManager::serialize() const
 {
-    auto xml = new XmlElement(Serialization::UI::Colours::schemes);
+    ValueTree tree(Serialization::UI::Colours::schemes);
     
     for (int i = 0; i < this->schemes.size(); ++i)
     {
-        xml->addChildElement(this->schemes.getUnchecked(i).serialize());
+        tree.addChild(this->schemes.getUnchecked(i).serialize());
     }
     
-    return xml;
+    return tree;
 }
 
 void ColourSchemeManager::deserialize(const ValueTree &tree)

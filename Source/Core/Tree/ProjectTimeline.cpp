@@ -276,16 +276,16 @@ ValueTree ProjectTimeline::serialize() const
     XmlElement *xml = new XmlElement(this->vcsDiffLogic->getType());
 
     this->serializeVCSUuid(*xml);
-    xml->setAttribute("name", this->name);
-    xml->setAttribute("annotationsId", this->annotationsId.toString());
-    xml->setAttribute("keySignaturesId", this->keySignaturesId.toString());
-    xml->setAttribute("timeSignaturesId", this->timeSignaturesId.toString());
+    tree.setProperty("name", this->name);
+    tree.setProperty("annotationsId", this->annotationsId.toString());
+    tree.setProperty("keySignaturesId", this->keySignaturesId.toString());
+    tree.setProperty("timeSignaturesId", this->timeSignaturesId.toString());
 
-    xml->addChildElement(this->annotationsSequence->serialize());
-    xml->addChildElement(this->keySignaturesSequence->serialize());
-    xml->addChildElement(this->timeSignaturesSequence->serialize());
+    tree.addChild(this->annotationsSequence->serialize());
+    tree.addChild(this->keySignaturesSequence->serialize());
+    tree.addChild(this->timeSignaturesSequence->serialize());
 
-    return xml;
+    return tree;
 }
 
 void ProjectTimeline::deserialize(const ValueTree &tree)
@@ -344,15 +344,15 @@ void ProjectTimeline::deserialize(const ValueTree &tree)
 
 XmlElement *ProjectTimeline::serializeAnnotationsDelta() const
 {
-    auto xml = new XmlElement(ProjectTimelineDeltas::annotationsAdded);
+    ValueTree tree(ProjectTimelineDeltas::annotationsAdded);
 
     for (int i = 0; i < this->annotationsSequence->size(); ++i)
     {
         const MidiEvent *event = this->annotationsSequence->getUnchecked(i);
-        xml->addChildElement(event->serialize());
+        tree.addChild(event->serialize());
     }
 
-    return xml;
+    return tree;
 }
 
 void ProjectTimeline::resetAnnotationsDelta(const XmlElement *state)
@@ -369,15 +369,15 @@ void ProjectTimeline::resetAnnotationsDelta(const XmlElement *state)
 
 XmlElement *ProjectTimeline::serializeTimeSignaturesDelta() const
 {
-    auto xml = new XmlElement(ProjectTimelineDeltas::timeSignaturesAdded);
+    ValueTree tree(ProjectTimelineDeltas::timeSignaturesAdded);
 
     for (int i = 0; i < this->timeSignaturesSequence->size(); ++i)
     {
         const MidiEvent *event = this->timeSignaturesSequence->getUnchecked(i);
-        xml->addChildElement(event->serialize());
+        tree.addChild(event->serialize());
     }
     
-    return xml;
+    return tree;
 }
 
 void ProjectTimeline::resetTimeSignaturesDelta(const XmlElement *state)
@@ -394,15 +394,15 @@ void ProjectTimeline::resetTimeSignaturesDelta(const XmlElement *state)
 
 XmlElement *ProjectTimeline::serializeKeySignaturesDelta() const
 {
-    auto xml = new XmlElement(ProjectTimelineDeltas::keySignaturesAdded);
+    ValueTree tree(ProjectTimelineDeltas::keySignaturesAdded);
 
     for (int i = 0; i < this->keySignaturesSequence->size(); ++i)
     {
         const MidiEvent *event = this->keySignaturesSequence->getUnchecked(i);
-        xml->addChildElement(event->serialize());
+        tree.addChild(event->serialize());
     }
 
-    return xml;
+    return tree;
 }
 
 void ProjectTimeline::resetKeySignaturesDelta(const XmlElement *state)

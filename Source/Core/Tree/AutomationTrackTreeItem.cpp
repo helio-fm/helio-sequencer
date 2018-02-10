@@ -184,21 +184,21 @@ void AutomationTrackTreeItem::resetStateTo(const VCS::TrackedItem &newState)
 
 ValueTree AutomationTrackTreeItem::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::treeItem);
+    ValueTree tree(Serialization::Core::treeItem);
 
     this->serializeVCSUuid(*xml);
 
-    xml->setAttribute(Serialization::Core::treeItemType, this->type);
-    xml->setAttribute(Serialization::Core::treeItemName, this->name);
+    tree.setProperty(Serialization::Core::treeItemType, this->type);
+    tree.setProperty(Serialization::Core::treeItemName, this->name);
 
     this->serializeTrackProperties(*xml);
 
-    xml->addChildElement(this->layer->serialize());
-    xml->addChildElement(this->pattern->serialize());
+    tree.addChild(this->layer->serialize());
+    tree.addChild(this->pattern->serialize());
 
     TreeItemChildrenSerializer::serializeChildren(*this, *xml);
 
-    return xml;
+    return tree;
 }
 
 void AutomationTrackTreeItem::deserialize(const ValueTree &tree)
@@ -232,50 +232,50 @@ void AutomationTrackTreeItem::deserialize(const ValueTree &tree)
 
 XmlElement *AutomationTrackTreeItem::serializePathDelta() const
 {
-    auto xml = new XmlElement(AutoSequenceDeltas::layerPath);
-    xml->setAttribute(Serialization::VCS::delta, this->getTrackName());
-    return xml;
+    ValueTree tree(AutoSequenceDeltas::layerPath);
+    tree.setProperty(Serialization::VCS::delta, this->getTrackName());
+    return tree;
 }
 
 XmlElement *AutomationTrackTreeItem::serializeMuteDelta() const
 {
-    auto xml = new XmlElement(AutoSequenceDeltas::layerMute);
-    xml->setAttribute(Serialization::VCS::delta, this->getTrackMuteStateAsString());
-    return xml;
+    ValueTree tree(AutoSequenceDeltas::layerMute);
+    tree.setProperty(Serialization::VCS::delta, this->getTrackMuteStateAsString());
+    return tree;
 }
 
 XmlElement *AutomationTrackTreeItem::serializeColourDelta() const
 {
-    auto xml = new XmlElement(AutoSequenceDeltas::layerColour);
-    xml->setAttribute(Serialization::VCS::delta, this->getTrackColour().toString());
-    return xml;
+    ValueTree tree(AutoSequenceDeltas::layerColour);
+    tree.setProperty(Serialization::VCS::delta, this->getTrackColour().toString());
+    return tree;
 }
 
 XmlElement *AutomationTrackTreeItem::serializeInstrumentDelta() const
 {
-    auto xml = new XmlElement(AutoSequenceDeltas::layerInstrument);
-    xml->setAttribute(Serialization::VCS::delta, this->getTrackInstrumentId());
-    return xml;
+    ValueTree tree(AutoSequenceDeltas::layerInstrument);
+    tree.setProperty(Serialization::VCS::delta, this->getTrackInstrumentId());
+    return tree;
 }
 
 XmlElement *AutomationTrackTreeItem::serializeControllerDelta() const
 {
-    auto xml = new XmlElement(AutoSequenceDeltas::layerController);
-    xml->setAttribute(Serialization::VCS::delta, this->getTrackControllerNumber());
-    return xml;
+    ValueTree tree(AutoSequenceDeltas::layerController);
+    tree.setProperty(Serialization::VCS::delta, this->getTrackControllerNumber());
+    return tree;
 }
 
 XmlElement *AutomationTrackTreeItem::serializeEventsDelta() const
 {
-    auto xml = new XmlElement(AutoSequenceDeltas::eventsAdded);
+    ValueTree tree(AutoSequenceDeltas::eventsAdded);
 
     for (int i = 0; i < this->getSequence()->size(); ++i)
     {
         const MidiEvent *event = this->getSequence()->getUnchecked(i);
-        xml->addChildElement(event->serialize());
+        tree.addChild(event->serialize());
     }
 
-    return xml;
+    return tree;
 }
 
 

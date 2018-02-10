@@ -338,7 +338,7 @@ XmlElement *DataEncoder::loadObfuscated(const File &file)
 //    const String decodedResult = result;
 //    
 //    XmlElement *xml = XmlDocument::parse(decodedResult);
-//    return xml;
+//    return tree;
 //    
 //#else
     
@@ -356,7 +356,7 @@ XmlElement *DataEncoder::loadObfuscated(const File &file)
             const MemoryBlock &xorBlock = doXor(subBlock);
             const String &uncompressed = decompress(xorBlock);
             XmlElement *xml = XmlDocument::parse(uncompressed);
-            return xml;
+            return tree;
         }
     }
     

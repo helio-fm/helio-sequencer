@@ -98,19 +98,19 @@ void StashesRepository::resetQuickStash()
 
 ValueTree VCS::StashesRepository::serialize() const
 {
-    auto xml = new XmlElement(Serialization::VCS::stashesRepository);
+    ValueTree tree(Serialization::VCS::stashesRepository);
     
     auto userStashesXml = new XmlElement(Serialization::VCS::userStashes);
-    xml->addChildElement(userStashesXml);
+    tree.addChild(userStashesXml);
     
     userStashesXml->addChildElement(Revision::serialize(this->userStashes));
 
     auto quickStashXml = new XmlElement(Serialization::VCS::quickStash);
-    xml->addChildElement(quickStashXml);
+    tree.addChild(quickStashXml);
 
     quickStashXml->addChildElement(Revision::serialize(this->quickStash));
     
-    return xml;
+    return tree;
 }
 
 void VCS::StashesRepository::deserialize(const ValueTree &tree)

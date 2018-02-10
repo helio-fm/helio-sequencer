@@ -162,16 +162,16 @@ ValueTree VCS::RevisionItem::serialize() const
 
     this->serializeVCSUuid(*xml);
 
-    xml->setAttribute(Serialization::VCS::revisionItemType, this->getType());
-    xml->setAttribute(Serialization::VCS::revisionItemName, this->getVCSName());
-    xml->setAttribute(Serialization::VCS::revisionItemDiffLogic, this->getDiffLogic()->getType());
+    tree.setProperty(Serialization::VCS::revisionItemType, this->getType());
+    tree.setProperty(Serialization::VCS::revisionItemName, this->getVCSName());
+    tree.setProperty(Serialization::VCS::revisionItemDiffLogic, this->getDiffLogic()->getType());
 
     for (auto delta : this->deltas)
     {
-        xml->prependChildElement(delta->serialize());
+        tree.addChild(delta->serialize());
     }
 
-    return xml;
+    return tree;
 }
 
 void VCS::RevisionItem::deserialize(const ValueTree &tree)

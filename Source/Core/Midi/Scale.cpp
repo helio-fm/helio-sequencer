@@ -208,8 +208,8 @@ bool Scale::isEquivalentTo(const Scale &other) const
 
 ValueTree Scale::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::scale);
-    xml->setAttribute(Serialization::Core::scaleName, this->name);
+    ValueTree tree(Serialization::Core::scale);
+    tree.setProperty(Serialization::Core::scaleName, this->name);
 
     int prevKey = 0;
     String intervals;
@@ -223,9 +223,9 @@ ValueTree Scale::serialize() const
     }
 
     intervals += String(CHROMATIC_SCALE_SIZE - prevKey);
-    xml->setAttribute(Serialization::Core::scaleIntervals, intervals);
+    tree.setProperty(Serialization::Core::scaleIntervals, intervals);
 
-    return xml;
+    return tree;
 }
 
 void Scale::deserialize(const ValueTree &tree)

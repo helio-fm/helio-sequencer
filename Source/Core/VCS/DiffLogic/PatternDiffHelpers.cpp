@@ -49,14 +49,14 @@ void deserializePatternChanges(const XmlElement *state, const XmlElement *change
 
 XmlElement *serializePattern(Array<Clip> changes, const String &tag)
 {
-    auto xml = new XmlElement(tag);
+    ValueTree tree(tag);
 
     for (int i = 0; i < changes.size(); ++i)
     {
-        xml->addChildElement(changes.getUnchecked(i).serialize());
+        tree.addChild(changes.getUnchecked(i).serialize());
     }
 
-    return xml;
+    return tree;
 }
 
 NewSerializedDelta PatternDiffHelpers::serializePatternChanges(Array<Clip> changes,

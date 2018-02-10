@@ -145,7 +145,7 @@ ValueTree VCS::Pack::serialize() const
 {
     const ScopedLock lock(this->packLocker);
 
-    auto xml = new XmlElement(Serialization::VCS::pack);
+    ValueTree tree(Serialization::VCS::pack);
 
     // скидываем временный файл
     if (this->packStream != nullptr)
@@ -159,7 +159,7 @@ ValueTree VCS::Pack::serialize() const
             packItem->setAttribute(Serialization::VCS::packItemDeltaId, header->deltaId.toString());
             packItem->addChildElement(deltaData);
 
-            xml->prependChildElement(packItem);
+            tree.addChild(packItem);
         }
     }
 
@@ -173,10 +173,10 @@ ValueTree VCS::Pack::serialize() const
         packItem->setAttribute(Serialization::VCS::packItemDeltaId, block->deltaId.toString());
         packItem->addChildElement(deltaData);
 
-        xml->prependChildElement(packItem);
+        tree.addChild(packItem);
     }
 
-    return xml;
+    return tree;
 }
 
 void VCS::Pack::deserialize(const ValueTree &tree)

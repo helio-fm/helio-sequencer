@@ -356,14 +356,14 @@ void Instrument::reset()
 
 ValueTree Instrument::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::instrument);
-    xml->setAttribute(Serialization::Core::instrumentId, this->instrumentID.toString());
-    xml->setAttribute(Serialization::Core::instrumentName, this->instrumentName);
+    ValueTree tree(Serialization::Core::instrument);
+    tree.setProperty(Serialization::Core::instrumentId, this->instrumentID.toString());
+    tree.setProperty(Serialization::Core::instrumentName, this->instrumentName);
 
     const int numNodes = this->processorGraph->getNumNodes();
     for (int i = 0; i < numNodes; ++i)
     {
-        xml->addChildElement(this->createNodeXml(this->processorGraph->getNode(i)));
+        tree.addChild(this->createNodeXml(this->processorGraph->getNode(i)));
     }
 
     for (const auto &c : this->getConnections())
@@ -373,10 +373,10 @@ ValueTree Instrument::serialize() const
         e->setAttribute("srcChannel", c.source.channelIndex);
         e->setAttribute("dstFilter", static_cast<int>(c.destination.nodeID));
         e->setAttribute("dstChannel", c.destination.channelIndex);
-        xml->addChildElement(e);
+        tree.addChild(e);
     }
 
-    return xml;
+    return tree;
 }
 
 void Instrument::deserialize(const ValueTree &tree)

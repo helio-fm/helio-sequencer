@@ -171,13 +171,13 @@ float Note::getVelocity() const noexcept
 
 ValueTree Note::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::note);
-    xml->setAttribute("key", this->key);
-    xml->setAttribute("beat", this->beat);
-    xml->setAttribute("len", this->length);
-    xml->setAttribute("vel", roundFloatToInt(this->velocity * VELOCITY_SAVE_ACCURACY));
-    xml->setAttribute("id", this->id);
-    return xml;
+    ValueTree tree(Serialization::Core::note);
+    tree.setProperty("key", this->key);
+    tree.setProperty("beat", this->beat);
+    tree.setProperty("len", this->length);
+    tree.setProperty("vel", roundFloatToInt(this->velocity * VELOCITY_SAVE_ACCURACY));
+    tree.setProperty("id", this->id);
+    return tree;
 }
 
 void Note::deserialize(const ValueTree &tree)

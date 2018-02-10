@@ -72,11 +72,11 @@ int PianoTrackInsertAction::getSizeInUnits()
 
 ValueTree PianoTrackInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::pianoTrackInsertAction);
-    xml->setAttribute(Serialization::Undo::xPath, this->trackName);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    xml->prependChildElement(XmlDocument::parse(this->serializedState));
-    return xml;
+    ValueTree tree(Serialization::Undo::pianoTrackInsertAction);
+    tree.setProperty(Serialization::Undo::xPath, this->trackName);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.addChild(XmlDocument::parse(this->serializedState));
+    return tree;
 }
 
 void PianoTrackInsertAction::deserialize(const ValueTree &tree)
@@ -150,11 +150,11 @@ int PianoTrackRemoveAction::getSizeInUnits()
 
 ValueTree PianoTrackRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::pianoTrackRemoveAction);
-    xml->setAttribute(Serialization::Undo::xPath, this->trackName);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    xml->prependChildElement(new XmlElement(*this->serializedTreeItem)); // deep copy
-    return xml;
+    ValueTree tree(Serialization::Undo::pianoTrackRemoveAction);
+    tree.setProperty(Serialization::Undo::xPath, this->trackName);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.addChild(new XmlElement(*this->serializedTreeItem)); // deep copy
+    return tree;
 }
 
 void PianoTrackRemoveAction::deserialize(const ValueTree &tree)

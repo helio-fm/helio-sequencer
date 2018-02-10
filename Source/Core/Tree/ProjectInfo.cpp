@@ -138,17 +138,17 @@ void ProjectInfo::resetStateTo(const TrackedItem &newState)
 
 ValueTree ProjectInfo::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::projectInfo);
+    ValueTree tree(Serialization::Core::projectInfo);
 
     this->serializeVCSUuid(*xml);
 
-    xml->setAttribute(Serialization::Core::projectTimeStamp, String(this->initTimestamp));
-    xml->setAttribute(ProjectInfoDeltas::projectLicense, this->getLicense());
-//    xml->setAttribute(ProjectInfoDeltas::projectFullName, this->getFullName());
-    xml->setAttribute(ProjectInfoDeltas::projectAuthor, this->getAuthor());
-    xml->setAttribute(ProjectInfoDeltas::projectDescription, this->getDescription());
+    tree.setProperty(Serialization::Core::projectTimeStamp, String(this->initTimestamp));
+    tree.setProperty(ProjectInfoDeltas::projectLicense, this->getLicense());
+//    tree.setProperty(ProjectInfoDeltas::projectFullName, this->getFullName());
+    tree.setProperty(ProjectInfoDeltas::projectAuthor, this->getAuthor());
+    tree.setProperty(ProjectInfoDeltas::projectDescription, this->getDescription());
 
-    return xml;
+    return tree;
 }
 
 void ProjectInfo::deserialize(const ValueTree &tree)
@@ -185,30 +185,30 @@ void ProjectInfo::reset()
 
 XmlElement *ProjectInfo::serializeLicenseDelta() const
 {
-    auto xml = new XmlElement(ProjectInfoDeltas::projectLicense);
-    xml->setAttribute(Serialization::VCS::delta, this->getLicense());
-    return xml;
+    ValueTree tree(ProjectInfoDeltas::projectLicense);
+    tree.setProperty(Serialization::VCS::delta, this->getLicense());
+    return tree;
 }
 
 XmlElement *ProjectInfo::serializeFullNameDelta() const
 {
-    auto xml = new XmlElement(ProjectInfoDeltas::projectFullName);
-    xml->setAttribute(Serialization::VCS::delta, this->getFullName());
-    return xml;
+    ValueTree tree(ProjectInfoDeltas::projectFullName);
+    tree.setProperty(Serialization::VCS::delta, this->getFullName());
+    return tree;
 }
 
 XmlElement *ProjectInfo::serializeAuthorDelta() const
 {
-    auto xml = new XmlElement(ProjectInfoDeltas::projectAuthor);
-    xml->setAttribute(Serialization::VCS::delta, this->getAuthor());
-    return xml;
+    ValueTree tree(ProjectInfoDeltas::projectAuthor);
+    tree.setProperty(Serialization::VCS::delta, this->getAuthor());
+    return tree;
 }
 
 XmlElement *ProjectInfo::serializeDescriptionDelta() const
 {
-    auto xml = new XmlElement(ProjectInfoDeltas::projectDescription);
-    xml->setAttribute(Serialization::VCS::delta, this->getDescription());
-    return xml;
+    ValueTree tree(ProjectInfoDeltas::projectDescription);
+    tree.setProperty(Serialization::VCS::delta, this->getDescription());
+    return tree;
 }
 
 void ProjectInfo::resetLicenseDelta(const XmlElement *state)

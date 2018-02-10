@@ -458,19 +458,19 @@ bool VersionControl::applyQuickStash()
 
 ValueTree VersionControl::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::versionControl);
+    ValueTree tree(Serialization::Core::versionControl);
 
-    xml->setAttribute(Serialization::VCS::vcsHistoryVersion, String(this->historyMergeVersion));
-    xml->setAttribute(Serialization::VCS::vcsHistoryId, this->publicId);
-    xml->setAttribute(Serialization::VCS::headRevisionId, Revision::getUuid(this->head.getHeadingRevision()));
+    tree.setProperty(Serialization::VCS::vcsHistoryVersion, String(this->historyMergeVersion));
+    tree.setProperty(Serialization::VCS::vcsHistoryId, this->publicId);
+    tree.setProperty(Serialization::VCS::headRevisionId, Revision::getUuid(this->head.getHeadingRevision()));
     
-    xml->addChildElement(this->key.serialize());
-    xml->addChildElement(Revision::serialize(this->root));
-    xml->addChildElement(this->stashes->serialize());
-    xml->addChildElement(this->pack->serialize());
-    xml->addChildElement(this->head.serialize());
+    tree.addChild(this->key.serialize());
+    tree.addChild(Revision::serialize(this->root));
+    tree.addChild(this->stashes->serialize());
+    tree.addChild(this->pack->serialize());
+    tree.addChild(this->head.serialize());
     
-    return xml;
+    return tree;
 }
 
 void VersionControl::deserialize(const ValueTree &tree)

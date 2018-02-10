@@ -198,21 +198,21 @@ void PianoTrackTreeItem::resetStateTo(const VCS::TrackedItem &newState)
 
 ValueTree PianoTrackTreeItem::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::treeItem);
+    ValueTree tree(Serialization::Core::treeItem);
 
     this->serializeVCSUuid(*xml);
 
-    xml->setAttribute(Serialization::Core::treeItemType, this->type);
-    xml->setAttribute(Serialization::Core::treeItemName, this->name);
+    tree.setProperty(Serialization::Core::treeItemType, this->type);
+    tree.setProperty(Serialization::Core::treeItemName, this->name);
 
     this->serializeTrackProperties(*xml);
 
-    xml->addChildElement(this->layer->serialize());
-    xml->addChildElement(this->pattern->serialize());
+    tree.addChild(this->layer->serialize());
+    tree.addChild(this->pattern->serialize());
 
     TreeItemChildrenSerializer::serializeChildren(*this, *xml);
 
-    return xml;
+    return tree;
 }
 
 void PianoTrackTreeItem::deserialize(const ValueTree &tree)
@@ -244,44 +244,44 @@ void PianoTrackTreeItem::deserialize(const ValueTree &tree)
 
 XmlElement *PianoTrackTreeItem::serializePathDelta() const
 {
-    auto xml = new XmlElement(MidiTrackDeltas::trackPath);
-    xml->setAttribute(Serialization::VCS::delta, this->getTrackName());
-    return xml;
+    ValueTree tree(MidiTrackDeltas::trackPath);
+    tree.setProperty(Serialization::VCS::delta, this->getTrackName());
+    return tree;
 }
 
 XmlElement *PianoTrackTreeItem::serializeMuteDelta() const
 {
-    auto xml = new XmlElement(MidiTrackDeltas::trackMute);
-    xml->setAttribute(Serialization::VCS::delta, this->getTrackMuteStateAsString());
-    return xml;
+    ValueTree tree(MidiTrackDeltas::trackMute);
+    tree.setProperty(Serialization::VCS::delta, this->getTrackMuteStateAsString());
+    return tree;
 }
 
 XmlElement *PianoTrackTreeItem::serializeColourDelta() const
 {
-    auto xml = new XmlElement(MidiTrackDeltas::trackColour);
-    xml->setAttribute(Serialization::VCS::delta, this->getTrackColour().toString());
-    return xml;
+    ValueTree tree(MidiTrackDeltas::trackColour);
+    tree.setProperty(Serialization::VCS::delta, this->getTrackColour().toString());
+    return tree;
 }
 
 XmlElement *PianoTrackTreeItem::serializeInstrumentDelta() const
 {
-    auto xml = new XmlElement(MidiTrackDeltas::trackInstrument);
-    xml->setAttribute(Serialization::VCS::delta, this->getTrackInstrumentId());
-    return xml;
+    ValueTree tree(MidiTrackDeltas::trackInstrument);
+    tree.setProperty(Serialization::VCS::delta, this->getTrackInstrumentId());
+    return tree;
 }
 
 XmlElement *PianoTrackTreeItem::serializeEventsDelta() const
 {
-    auto xml = new XmlElement(PianoSequenceDeltas::notesAdded);
+    ValueTree tree(PianoSequenceDeltas::notesAdded);
 
     // да, дублируется сериализация :( причем 2 раза
     for (int i = 0; i < this->getSequence()->size(); ++i)
     {
         const MidiEvent *event = this->getSequence()->getUnchecked(i);
-        xml->addChildElement(event->serialize());
+        tree.addChild(event->serialize());
     }
 
-    return xml;
+    return tree;
 }
 
 

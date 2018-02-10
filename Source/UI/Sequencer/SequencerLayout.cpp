@@ -799,9 +799,9 @@ void SequencerLayout::handleCommandMessage(int commandId)
 ValueTree SequencerLayout::serialize() const
 {
     // задел на будущее, типа
-    auto xml = new XmlElement(Serialization::Core::editor);
-    xml->addChildElement(this->pianoRoll->serialize());
-    return xml;
+    ValueTree tree(Serialization::Core::editor);
+    tree.addChild(this->pianoRoll->serialize());
+    return tree;
 }
 
 void SequencerLayout::deserialize(const ValueTree &tree)

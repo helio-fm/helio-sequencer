@@ -453,21 +453,21 @@ void Workspace::activateSubItemWithId(const String &id)
 
 ValueTree Workspace::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::workspace);
+    ValueTree tree(Serialization::Core::workspace);
     
     // TODO serialize window size and position
     
-    xml->addChildElement(this->audioCore->serialize());
-    xml->addChildElement(this->pluginManager->serialize());
-    xml->addChildElement(this->treeRoot->serialize());
-    xml->addChildElement(this->recentFilesList->serialize());
+    tree.addChild(this->audioCore->serialize());
+    tree.addChild(this->pluginManager->serialize());
+    tree.addChild(this->treeRoot->serialize());
+    tree.addChild(this->recentFilesList->serialize());
     
     // TODO serialize tree openness state?
     auto treeStateNode = new XmlElement(Serialization::Core::treeState);
     addAllActiveItemIds(this->treeRoot, *treeStateNode);
-    xml->addChildElement(treeStateNode);
+    tree.addChild(treeStateNode);
     
-    return xml;
+    return tree;
 }
 
 void Workspace::deserialize(const ValueTree &tree)

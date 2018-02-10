@@ -61,9 +61,9 @@ namespace VCS
 
         ValueTree serialize() const override
         {
-            auto xml = new XmlElement(Serialization::VCS::vcsHistoryKey);
-            xml->setAttribute("Data", this->key.toBase64Encoding());
-            return xml;
+            ValueTree tree(Serialization::VCS::vcsHistoryKey);
+            tree.setProperty("Data", this->key.toBase64Encoding());
+            return tree;
         }
 
         void deserialize(const ValueTree &tree) override

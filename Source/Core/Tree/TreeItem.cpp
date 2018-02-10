@@ -333,11 +333,11 @@ void TreeItem::reset()
 
 ValueTree TreeItem::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::treeItem);
-    xml->setAttribute(Serialization::Core::treeItemType, this->type);
-    xml->setAttribute(Serialization::Core::treeItemName, this->name);
+    ValueTree tree(Serialization::Core::treeItem);
+    tree.setProperty(Serialization::Core::treeItemType, this->type);
+    tree.setProperty(Serialization::Core::treeItemName, this->name);
     TreeItemChildrenSerializer::serializeChildren(*this, *xml);
-    return xml;
+    return tree;
 }
 
 void TreeItem::deserialize(const ValueTree &tree)
