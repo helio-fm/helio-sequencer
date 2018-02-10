@@ -19,7 +19,6 @@
 #include "Config.h"
 #include "App.h"
 #include "DataEncoder.h"
-#include "Serializable.h"
 #include "FileUtils.h"
 #include "SerializationKeys.h"
 

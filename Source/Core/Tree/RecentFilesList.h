@@ -20,7 +20,6 @@
 class DocumentOwner;
 class RecentFilesList;
 
-#include "Serializable.h"
 
 class RecentFileDescription : public ReferenceCountedObject
 {

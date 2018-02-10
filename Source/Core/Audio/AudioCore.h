@@ -20,7 +20,6 @@
 class Instrument;
 class AudioMonitor;
 
-#include "Serializable.h"
 #include "OrchestraPit.h"
 
 class AudioCore :

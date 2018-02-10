@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "Serializable.h"
 #include "RevisionItem.h"
 #include "Pack.h"
 

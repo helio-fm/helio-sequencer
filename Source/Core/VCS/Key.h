@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "Serializable.h"
 
 // 128 * 32bit = 4096-bit key
 // or 8 * 64-byte blocks

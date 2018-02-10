@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "TreeItemChildrenSerializer.h"
-#include "Serializable.h"
 #include "TreeItem.h"
 #include "ProjectTreeItem.h"
 #include "TrackGroupTreeItem.h"

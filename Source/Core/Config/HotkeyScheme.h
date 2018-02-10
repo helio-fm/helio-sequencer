@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "Serializable.h"
 
 class HotkeyScheme final : public Serializable
 {

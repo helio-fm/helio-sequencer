@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "Serializable.h"
 #include "SerializationKeys.h"
 
 namespace VCS

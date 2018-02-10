@@ -52,7 +52,6 @@ class TimelineWarningMarker;
 #include "Lasso.h"
 #include "HybridRollEditMode.h"
 #include "AudioMonitor.h"
-#include "Serializable.h"
 
 #define HYBRID_ROLL_MAX_BAR_WIDTH (192)
 #define HYBRID_ROLL_HEADER_HEIGHT (40)

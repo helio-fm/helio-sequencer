@@ -21,7 +21,6 @@ class AudioCore;
 class FilterInGraph;
 class Instrument;
 
-#include "Serializable.h"
 
 class Instrument :
     public Serializable,

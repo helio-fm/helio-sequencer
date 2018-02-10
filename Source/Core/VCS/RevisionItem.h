@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "Serializable.h"
 #include "TrackedItem.h"
 #include "Pack.h"
 

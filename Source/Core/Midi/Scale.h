@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "Serializable.h"
 
 #define CHROMATIC_SCALE_SIZE 12
 

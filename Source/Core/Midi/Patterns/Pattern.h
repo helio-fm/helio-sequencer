@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "Serializable.h"
 #include "Clip.h"
 
 class ProjectEventDispatcher;

@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "Serializable.h"
 
 // A simple wrapper around colour map hashmap
 // Used for serialization and JUCE_LIVE_CONSTANTs macros

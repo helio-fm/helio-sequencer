@@ -18,7 +18,6 @@
 #pragma once
 
 #include "Note.h"
-#include "Serializable.h"
 
 class Arpeggiator final : public Serializable
 {

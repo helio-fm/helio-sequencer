@@ -18,7 +18,6 @@
 #pragma once
 
 #include "Arpeggiator.h"
-#include "Serializable.h"
 
 class ArpeggiatorsManager :
     public ChangeBroadcaster,

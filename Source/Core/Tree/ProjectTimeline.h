@@ -22,7 +22,6 @@ class ProjectTreeItem;
 #include "MidiTrack.h"
 #include "ProjectTimelineDiffLogic.h"
 #include "ProjectEventDispatcher.h"
-#include "Serializable.h"
 
 class ProjectTimeline :
     public ProjectEventDispatcher,

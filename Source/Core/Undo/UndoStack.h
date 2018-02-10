@@ -20,7 +20,6 @@
 class ProjectTreeItem;
 
 #include "UndoAction.h"
-#include "Serializable.h"
 
 class UndoStack : public ChangeBroadcaster, public Serializable
 {

@@ -18,7 +18,6 @@
 #pragma once
 
 #include "ColourScheme.h"
-#include "Serializable.h"
 #include "RequestResourceThread.h"
 
 class ColourSchemeManager :

@@ -24,7 +24,6 @@ class VersionControlEditor;
 #include "TrackedItemsSource.h"
 #include "SafeTreeItemPointer.h"
 
-#include "Serializable.h"
 #include "ProjectListener.h"
 
 #include "Delta.h"

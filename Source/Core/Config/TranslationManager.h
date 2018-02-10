@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "Serializable.h"
 #include "RequestResourceThread.h"
 
 class TranslationManager :

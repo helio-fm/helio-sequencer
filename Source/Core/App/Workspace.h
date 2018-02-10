@@ -22,7 +22,6 @@ class ProjectTreeItem;
 class RootTreeItem;
 class PluginManager;
 
-#include "Serializable.h"
 #include "DocumentOwner.h"
 #include "RecentFilesList.h"
 #include "TreeNavigationHistory.h"

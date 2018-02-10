@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "Serializable.h"
 
 #if HELIO_DESKTOP
 #   define TREE_ICON_HEIGHT (16)

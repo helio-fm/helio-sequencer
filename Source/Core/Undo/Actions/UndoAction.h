@@ -19,7 +19,6 @@
 
 class MidiTrackSource;
 
-#include "Serializable.h"
 
 class UndoAction : public Serializable
 {

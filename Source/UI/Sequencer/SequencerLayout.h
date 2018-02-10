@@ -33,7 +33,6 @@ class MidiEditorSplitContainer;
 class Origami;
 class Headline;
 
-#include "Serializable.h"
 
 class SequencerLayout :
     public Component,

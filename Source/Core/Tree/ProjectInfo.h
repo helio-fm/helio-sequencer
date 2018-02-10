@@ -20,7 +20,6 @@
 class ProjectTreeItem;
 class Delta;
 
-#include "Serializable.h"
 #include "ProjectInfoDiffLogic.h"
 #include "TrackedItem.h"
 
