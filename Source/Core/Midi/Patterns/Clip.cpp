@@ -98,7 +98,7 @@ Clip Clip::withDeltaBeat(float deltaPosition) const
     return other;
 }
 
-XmlElement *Clip::serialize() const
+ValueTree Clip::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::clip);
     xml->setAttribute("start", this->startBeat);
@@ -106,10 +106,10 @@ XmlElement *Clip::serialize() const
     return xml;
 }
 
-void Clip::deserialize(const XmlElement &xml)
+void Clip::deserialize(const ValueTree &tree)
 {
-    this->startBeat = float(xml.getDoubleAttribute("start", this->startBeat));
-    this->id = xml.getStringAttribute("id", this->id);
+    this->startBeat = float(tree.getDoubleAttribute("start", this->startBeat));
+    this->id = tree.getStringAttribute("id", this->id);
 }
 
 void Clip::reset()

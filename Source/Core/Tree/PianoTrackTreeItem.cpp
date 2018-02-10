@@ -196,7 +196,7 @@ void PianoTrackTreeItem::resetStateTo(const VCS::TrackedItem &newState)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *PianoTrackTreeItem::serialize() const
+ValueTree PianoTrackTreeItem::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::treeItem);
 
@@ -215,26 +215,26 @@ XmlElement *PianoTrackTreeItem::serialize() const
     return xml;
 }
 
-void PianoTrackTreeItem::deserialize(const XmlElement &xml)
+void PianoTrackTreeItem::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    this->deserializeVCSUuid(xml);
-    this->deserializeTrackProperties(xml);
+    this->deserializeVCSUuid(tree);
+    this->deserializeTrackProperties(tree);
 
     // он все равно должен быть один, но так короче
-    forEachXmlChildElementWithTagName(xml, e, Serialization::Core::track)
+    forEachXmlChildElementWithTagName(tree, e, Serialization::Core::track)
     {
         this->layer->deserialize(*e);
     }
 
-    forEachXmlChildElementWithTagName(xml, e, Serialization::Core::pattern)
+    forEachXmlChildElementWithTagName(tree, e, Serialization::Core::pattern)
     {
         this->pattern->deserialize(*e);
     }
 
     // Proceed with basic properties and children
-    TreeItem::deserialize(xml);
+    TreeItem::deserialize(tree);
 }
 
 

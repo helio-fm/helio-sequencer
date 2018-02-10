@@ -317,7 +317,7 @@ ScopedPointer<Component> VersionControlTreeItem::createItemMenu()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *VersionControlTreeItem::serialize() const
+ValueTree VersionControlTreeItem::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::treeItem);
     xml->setAttribute(Serialization::Core::treeItemType, this->type);
@@ -331,20 +331,20 @@ XmlElement *VersionControlTreeItem::serialize() const
     return xml;
 }
 
-void VersionControlTreeItem::deserialize(const XmlElement &xml)
+void VersionControlTreeItem::deserialize(const ValueTree &tree)
 {
     this->reset();
 
     if (this->vcs)
     {
-        forEachXmlChildElementWithTagName(xml, e, Serialization::Core::versionControl)
+        forEachXmlChildElementWithTagName(tree, e, Serialization::Core::versionControl)
         {
             this->vcs->deserialize(*e);
         }
     }
 
     // Proceed with basic properties and children
-    TreeItem::deserialize(xml);
+    TreeItem::deserialize(tree);
 }
 
 void VersionControlTreeItem::reset()

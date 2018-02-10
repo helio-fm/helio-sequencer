@@ -205,7 +205,7 @@ void ColourScheme::syncWithLiveConstantEditor()
     this->colours.set(Serialization::UI::Colours::iconShadow, this->getIconShadowColour());
 }
 
-XmlElement *ColourScheme::serialize() const
+ValueTree ColourScheme::serialize() const
 {
     auto xml = new XmlElement(Serialization::UI::Colours::scheme);
     xml->setAttribute(Serialization::UI::Colours::name, this->name);
@@ -223,11 +223,11 @@ XmlElement *ColourScheme::serialize() const
     return xml;
 }
 
-void ColourScheme::deserialize(const XmlElement &xml)
+void ColourScheme::deserialize(const ValueTree &tree)
 {
     const XmlElement *root =
-        xml.hasTagName(Serialization::UI::Colours::scheme) ?
-        &xml : xml.getChildByName(Serialization::UI::Colours::scheme);
+        tree.hasTagName(Serialization::UI::Colours::scheme) ?
+        &tree : tree.getChildByName(Serialization::UI::Colours::scheme);
 
     if (root == nullptr) { return; }
 

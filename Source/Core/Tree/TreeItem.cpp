@@ -331,7 +331,7 @@ void TreeItem::reset()
     this->deleteAllSubItems();
 }
 
-XmlElement *TreeItem::serialize() const
+ValueTree TreeItem::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::treeItem);
     xml->setAttribute(Serialization::Core::treeItemType, this->type);
@@ -340,7 +340,7 @@ XmlElement *TreeItem::serialize() const
     return xml;
 }
 
-void TreeItem::deserialize(const XmlElement &xml)
+void TreeItem::deserialize(const ValueTree &tree)
 {
     // Do not reset here, subclasses may rely
     // on this method in their deserialization
@@ -348,12 +348,12 @@ void TreeItem::deserialize(const XmlElement &xml)
 
     // Legacy support:
     const String nameFallback =
-        xml.getStringAttribute(Serialization::Core::treeItemName.toLowerCase(), this->name);
+        tree.getStringAttribute(Serialization::Core::treeItemName.toLowerCase(), this->name);
 
     this->name =
-        xml.getStringAttribute(Serialization::Core::treeItemName, nameFallback);
+        tree.getStringAttribute(Serialization::Core::treeItemName, nameFallback);
 
-    TreeItemChildrenSerializer::deserializeChildren(*this, xml);
+    TreeItemChildrenSerializer::deserializeChildren(*this, tree);
 }
 
 

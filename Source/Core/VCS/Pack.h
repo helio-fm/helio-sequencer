@@ -69,9 +69,9 @@ namespace VCS
         // Serializable
         //
 
-        XmlElement *serialize() const override;
+        ValueTree serialize() const override;
 
-        void deserialize(const XmlElement &xml) override;
+        void deserialize(const ValueTree &tree) override;
 
         void reset() override;
 

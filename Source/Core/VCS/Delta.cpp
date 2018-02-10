@@ -56,7 +56,7 @@ String Delta::getType() const
     return this->type;
 }
 
-XmlElement *Delta::serialize() const
+ValueTree VCS::Delta::serialize() const
 {
     auto const xml = new XmlElement(Serialization::VCS::delta);
 
@@ -69,12 +69,12 @@ XmlElement *Delta::serialize() const
     return xml;
 }
 
-void Delta::deserialize(const XmlElement &xml)
+void VCS::Delta::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root = xml.hasTagName(Serialization::VCS::delta) ?
-                             &xml : xml.getChildByName(Serialization::VCS::delta);
+    const XmlElement *root = tree.hasTagName(Serialization::VCS::delta) ?
+                             &tree : tree.getChildByName(Serialization::VCS::delta);
 
     if (root == nullptr) { return; }
 

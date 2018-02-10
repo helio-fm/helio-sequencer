@@ -59,19 +59,19 @@ namespace VCS
         // Serializable
         //
 
-        XmlElement *serialize() const override
+        ValueTree serialize() const override
         {
             auto xml = new XmlElement(Serialization::VCS::vcsHistoryKey);
             xml->setAttribute("Data", this->key.toBase64Encoding());
             return xml;
         }
 
-        void deserialize(const XmlElement &xml) override
+        void deserialize(const ValueTree &tree) override
         {
             this->reset();
 
-            const XmlElement *mainSlot = xml.hasTagName(Serialization::VCS::vcsHistoryKey) ?
-                                         &xml : xml.getChildByName(Serialization::VCS::vcsHistoryKey);
+            const XmlElement *mainSlot = tree.hasTagName(Serialization::VCS::vcsHistoryKey) ?
+                                         &tree : tree.getChildByName(Serialization::VCS::vcsHistoryKey);
 
             if (mainSlot == nullptr) { return; }
 

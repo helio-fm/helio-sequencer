@@ -456,7 +456,7 @@ bool VersionControl::applyQuickStash()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *VersionControl::serialize() const
+ValueTree VersionControl::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::versionControl);
 
@@ -473,12 +473,12 @@ XmlElement *VersionControl::serialize() const
     return xml;
 }
 
-void VersionControl::deserialize(const XmlElement &xml)
+void VersionControl::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *mainSlot = xml.hasTagName(Serialization::Core::versionControl) ?
-                                 &xml : xml.getChildByName(Serialization::Core::versionControl);
+    const XmlElement *mainSlot = tree.hasTagName(Serialization::Core::versionControl) ?
+                                 &tree : tree.getChildByName(Serialization::Core::versionControl);
 
     if (mainSlot == nullptr) { return; }
 

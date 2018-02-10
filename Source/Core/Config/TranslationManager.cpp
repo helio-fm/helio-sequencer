@@ -220,18 +220,18 @@ String TranslationManager::translate(const String &baseLiteral, int64 targetNumb
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *TranslationManager::serialize() const
+ValueTree TranslationManager::serialize() const
 {
     auto emptyXml = new XmlElement(Serialization::Locales::translations);
     return emptyXml;
 }
 
-void TranslationManager::deserialize(const XmlElement &xml)
+void TranslationManager::deserialize(const ValueTree &tree)
 {
     this->reset();
     
-    const XmlElement *root = xml.hasTagName(Serialization::Locales::translations) ?
-        &xml : xml.getChildByName(Serialization::Locales::translations);
+    const XmlElement *root = tree.hasTagName(Serialization::Locales::translations) ?
+        &tree : tree.getChildByName(Serialization::Locales::translations);
     
     if (root == nullptr) { return; }
     

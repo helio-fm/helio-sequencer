@@ -354,7 +354,7 @@ void Instrument::reset()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *Instrument::serialize() const
+ValueTree Instrument::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::instrument);
     xml->setAttribute(Serialization::Core::instrumentId, this->instrumentID.toString());
@@ -379,12 +379,12 @@ XmlElement *Instrument::serialize() const
     return xml;
 }
 
-void Instrument::deserialize(const XmlElement &xml)
+void Instrument::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root = (xml.getTagName() == Serialization::Core::instrument) ?
-        &xml : xml.getChildByName(Serialization::Core::instrument);
+    const XmlElement *root = (tree.getTagName() == Serialization::Core::instrument) ?
+        &tree : tree.getChildByName(Serialization::Core::instrument);
 
     if (root == nullptr)
     { return; }

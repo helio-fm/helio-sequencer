@@ -134,7 +134,7 @@ int RecentFilesList::getNumItems() const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *RecentFilesList::serialize() const
+ValueTree RecentFilesList::serialize() const
 {
     const ScopedReadLock lock(this->listLock);
     auto xml = new XmlElement(Serialization::Core::recentFiles);
@@ -152,14 +152,14 @@ XmlElement *RecentFilesList::serialize() const
     return xml;
 }
 
-void RecentFilesList::deserialize(const XmlElement &xml)
+void RecentFilesList::deserialize(const ValueTree &tree)
 {
     this->reset();
 
     const ScopedWriteLock lock(this->listLock);
 
-    const XmlElement *root = xml.hasTagName(Serialization::Core::recentFiles) ?
-                             &xml : xml.getChildByName(Serialization::Core::recentFiles);
+    const XmlElement *root = tree.hasTagName(Serialization::Core::recentFiles) ?
+                             &tree : tree.getChildByName(Serialization::Core::recentFiles);
 
     if (root == nullptr) { return; }
 

@@ -77,7 +77,7 @@ void ArpeggiatorsManager::addArp(const Arpeggiator &arp)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *ArpeggiatorsManager::serialize() const
+ValueTree ArpeggiatorsManager::serialize() const
 {
     auto xml = new XmlElement(Serialization::Arps::arpeggiators);
     
@@ -89,12 +89,12 @@ XmlElement *ArpeggiatorsManager::serialize() const
     return xml;
 }
 
-void ArpeggiatorsManager::deserialize(const XmlElement &xml)
+void ArpeggiatorsManager::deserialize(const ValueTree &tree)
 {
     this->reset();
     
-    const XmlElement *root = xml.hasTagName(Serialization::Arps::arpeggiators) ?
-        &xml : xml.getChildByName(Serialization::Arps::arpeggiators);
+    const XmlElement *root = tree.hasTagName(Serialization::Arps::arpeggiators) ?
+        &tree : tree.getChildByName(Serialization::Arps::arpeggiators);
     
     if (root == nullptr) { return; }
     

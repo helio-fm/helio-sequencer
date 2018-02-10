@@ -182,7 +182,7 @@ void AutomationTrackTreeItem::resetStateTo(const VCS::TrackedItem &newState)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *AutomationTrackTreeItem::serialize() const
+ValueTree AutomationTrackTreeItem::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::treeItem);
 
@@ -201,26 +201,26 @@ XmlElement *AutomationTrackTreeItem::serialize() const
     return xml;
 }
 
-void AutomationTrackTreeItem::deserialize(const XmlElement &xml)
+void AutomationTrackTreeItem::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    this->deserializeVCSUuid(xml);
-    this->deserializeTrackProperties(xml);
+    this->deserializeVCSUuid(tree);
+    this->deserializeTrackProperties(tree);
 
     // он все равно должен быть один, но так короче
-    forEachXmlChildElementWithTagName(xml, e, Serialization::Core::automation)
+    forEachXmlChildElementWithTagName(tree, e, Serialization::Core::automation)
     {
         this->layer->deserialize(*e);
     }
 
-    forEachXmlChildElementWithTagName(xml, e, Serialization::Core::pattern)
+    forEachXmlChildElementWithTagName(tree, e, Serialization::Core::pattern)
     {
         this->pattern->deserialize(*e);
     }
 
     // Proceed with basic properties and children
-    TreeItem::deserialize(xml);
+    TreeItem::deserialize(tree);
 }
 
 

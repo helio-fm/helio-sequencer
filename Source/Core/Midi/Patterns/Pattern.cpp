@@ -283,7 +283,7 @@ void Pattern::updateBeatRange(bool shouldNotifyIfChanged)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *Pattern::serialize() const
+ValueTree Pattern::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::pattern);
 
@@ -295,13 +295,13 @@ XmlElement *Pattern::serialize() const
     return xml;
 }
 
-void Pattern::deserialize(const XmlElement &xml)
+void Pattern::deserialize(const ValueTree &tree)
 {
     this->reset();
 
     const XmlElement *root =
-        (xml.getTagName() == Serialization::Core::pattern) ?
-        &xml : xml.getChildByName(Serialization::Core::pattern);
+        (tree.getTagName() == Serialization::Core::pattern) ?
+        &tree : tree.getChildByName(Serialization::Core::pattern);
 
     if (root == nullptr)
     {

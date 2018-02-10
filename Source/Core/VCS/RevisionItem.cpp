@@ -156,7 +156,7 @@ DiffLogic *VCS::RevisionItem::getDiffLogic() const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *RevisionItem::serialize() const
+ValueTree VCS::RevisionItem::serialize() const
 {
     auto const xml = new XmlElement(Serialization::VCS::revisionItem);
 
@@ -174,12 +174,12 @@ XmlElement *RevisionItem::serialize() const
     return xml;
 }
 
-void RevisionItem::deserialize(const XmlElement &xml)
+void VCS::RevisionItem::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root = xml.hasTagName(Serialization::VCS::revisionItem) ?
-                             &xml : xml.getChildByName(Serialization::VCS::revisionItem);
+    const XmlElement *root = tree.hasTagName(Serialization::VCS::revisionItem) ?
+                             &tree : tree.getChildByName(Serialization::VCS::revisionItem);
 
     if (root == nullptr) { return; }
 

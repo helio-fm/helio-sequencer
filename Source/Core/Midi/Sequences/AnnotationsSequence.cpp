@@ -259,7 +259,7 @@ bool AnnotationsSequence::changeGroup(Array<AnnotationEvent> &groupBefore,
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *AnnotationsSequence::serialize() const
+ValueTree AnnotationsSequence::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::annotations);
 
@@ -272,13 +272,13 @@ XmlElement *AnnotationsSequence::serialize() const
     return xml;
 }
 
-void AnnotationsSequence::deserialize(const XmlElement &xml)
+void AnnotationsSequence::deserialize(const ValueTree &tree)
 {
     this->reset();
 
     const XmlElement *root =
-        (xml.getTagName() == Serialization::Core::annotations) ?
-        &xml : xml.getChildByName(Serialization::Core::annotations);
+        (tree.getTagName() == Serialization::Core::annotations) ?
+        &tree : tree.getChildByName(Serialization::Core::annotations);
 
     if (root == nullptr)
     {

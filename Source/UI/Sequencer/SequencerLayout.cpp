@@ -796,7 +796,7 @@ void SequencerLayout::handleCommandMessage(int commandId)
 // UI State Serialization
 //===----------------------------------------------------------------------===//
 
-XmlElement *SequencerLayout::serialize() const
+ValueTree SequencerLayout::serialize() const
 {
     // задел на будущее, типа
     auto xml = new XmlElement(Serialization::Core::editor);
@@ -804,12 +804,12 @@ XmlElement *SequencerLayout::serialize() const
     return xml;
 }
 
-void SequencerLayout::deserialize(const XmlElement &xml)
+void SequencerLayout::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root = (xml.getTagName() == Serialization::Core::editor) ?
-                             &xml : xml.getChildByName(Serialization::Core::editor);
+    const XmlElement *root = (tree.getTagName() == Serialization::Core::editor) ?
+                             &tree : tree.getChildByName(Serialization::Core::editor);
 
     if (root == nullptr)
     { return; }

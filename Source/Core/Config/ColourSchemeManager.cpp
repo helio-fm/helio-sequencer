@@ -76,7 +76,7 @@ void ColourSchemeManager::pull()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *ColourSchemeManager::serialize() const
+ValueTree ColourSchemeManager::serialize() const
 {
     auto xml = new XmlElement(Serialization::UI::Colours::schemes);
     
@@ -88,12 +88,12 @@ XmlElement *ColourSchemeManager::serialize() const
     return xml;
 }
 
-void ColourSchemeManager::deserialize(const XmlElement &xml)
+void ColourSchemeManager::deserialize(const ValueTree &tree)
 {
     this->reset();
     
-    const XmlElement *root = xml.hasTagName(Serialization::UI::Colours::schemes) ?
-        &xml : xml.getChildByName(Serialization::UI::Colours::schemes);
+    const XmlElement *root = tree.hasTagName(Serialization::UI::Colours::schemes) ?
+        &tree : tree.getChildByName(Serialization::UI::Colours::schemes);
     
     if (root == nullptr) { return; }
     

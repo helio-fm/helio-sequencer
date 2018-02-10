@@ -96,7 +96,7 @@ void StashesRepository::resetQuickStash()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *StashesRepository::serialize() const
+ValueTree VCS::StashesRepository::serialize() const
 {
     auto xml = new XmlElement(Serialization::VCS::stashesRepository);
     
@@ -113,12 +113,12 @@ XmlElement *StashesRepository::serialize() const
     return xml;
 }
 
-void StashesRepository::deserialize(const XmlElement &xml)
+void VCS::StashesRepository::deserialize(const ValueTree &tree)
 {
     this->reset();
     
-    const XmlElement *root = xml.hasTagName(Serialization::VCS::stashesRepository) ?
-        &xml : xml.getChildByName(Serialization::VCS::stashesRepository);
+    const XmlElement *root = tree.hasTagName(Serialization::VCS::stashesRepository) ?
+        &tree : tree.getChildByName(Serialization::VCS::stashesRepository);
     
     if (root == nullptr) { return; }
 

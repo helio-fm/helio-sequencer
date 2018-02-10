@@ -169,7 +169,7 @@ float Note::getVelocity() const noexcept
 // 128 would be enough, but
 #define VELOCITY_SAVE_ACCURACY 1024.f
 
-XmlElement *Note::serialize() const
+ValueTree Note::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::note);
     xml->setAttribute("key", this->key);
@@ -180,15 +180,15 @@ XmlElement *Note::serialize() const
     return xml;
 }
 
-void Note::deserialize(const XmlElement &xml)
+void Note::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const int xmlKey = xml.getIntAttribute("key");
-    const float xmlBeat = float(xml.getDoubleAttribute("beat"));
-    const float xmlLength = float(xml.getDoubleAttribute("len"));
-    const float xmlVelocity = float(xml.getIntAttribute("vel")) / VELOCITY_SAVE_ACCURACY;
-    const String& xmlId = xml.getStringAttribute("id");
+    const int xmlKey = tree.getIntAttribute("key");
+    const float xmlBeat = float(tree.getDoubleAttribute("beat"));
+    const float xmlLength = float(tree.getDoubleAttribute("len"));
+    const float xmlVelocity = float(tree.getIntAttribute("vel")) / VELOCITY_SAVE_ACCURACY;
+    const String& xmlId = tree.getStringAttribute("id");
 
     this->key = xmlKey;
     this->beat = roundBeat(xmlBeat);

@@ -149,7 +149,7 @@ bool HotkeyScheme::sendHotkeyCommand(Hotkey key,
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *HotkeyScheme::serialize() const
+ValueTree HotkeyScheme::serialize() const
 {
     auto xml = new XmlElement(Serialization::UI::Hotkeys::scheme);
     xml->setAttribute(Serialization::UI::Hotkeys::schemeName, this->name);
@@ -169,13 +169,13 @@ static inline HotkeyScheme::Hotkey createHotkey(XmlElement *e)
     return key;
 }
 
-void HotkeyScheme::deserialize(const XmlElement &xml)
+void HotkeyScheme::deserialize(const ValueTree &tree)
 {
     this->reset();
 
     const XmlElement *root =
-        (xml.getTagName() == Serialization::UI::Hotkeys::scheme) ?
-        &xml : xml.getChildByName(Serialization::UI::Hotkeys::scheme);
+        (tree.getTagName() == Serialization::UI::Hotkeys::scheme) ?
+        &tree : tree.getChildByName(Serialization::UI::Hotkeys::scheme);
 
     if (root == nullptr)
     {

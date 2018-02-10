@@ -383,7 +383,7 @@ int UndoStack::getNumActionsInCurrentTransaction() const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *UndoStack::serialize() const
+ValueTree UndoStack::serialize() const
 {
     auto xml = new XmlElement(Serialization::Undo::undoStack);
     
@@ -405,10 +405,10 @@ XmlElement *UndoStack::serialize() const
     return xml;
 }
 
-void UndoStack::deserialize(const XmlElement &xml)
+void UndoStack::deserialize(const ValueTree &tree)
 {
-    const XmlElement *root = (xml.getTagName() == Serialization::Undo::undoStack) ?
-    &xml : xml.getChildByName(Serialization::Undo::undoStack);
+    const XmlElement *root = (tree.getTagName() == Serialization::Undo::undoStack) ?
+    &tree : tree.getChildByName(Serialization::Undo::undoStack);
     
     if (root == nullptr)
     { return; }

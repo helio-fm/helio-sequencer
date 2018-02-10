@@ -347,7 +347,7 @@ void PluginManager::scanPossibleSubfolders(const StringArray &possibleSubfolders
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *PluginManager::serialize() const
+ValueTree PluginManager::serialize() const
 {
     const ScopedReadLock lock(this->pluginsListLock);
     auto xml = new XmlElement(Serialization::Core::pluginManager);
@@ -360,14 +360,14 @@ XmlElement *PluginManager::serialize() const
     return xml;
 }
 
-void PluginManager::deserialize(const XmlElement &xml)
+void PluginManager::deserialize(const ValueTree &tree)
 {
     this->reset();
 
     const ScopedWriteLock lock(this->pluginsListLock);
 
-    const XmlElement *mainSlot = xml.hasTagName(Serialization::Core::pluginManager) ?
-                                 &xml : xml.getChildByName(Serialization::Core::pluginManager);
+    const XmlElement *mainSlot = tree.hasTagName(Serialization::Core::pluginManager) ?
+                                 &tree : tree.getChildByName(Serialization::Core::pluginManager);
 
     if (mainSlot == nullptr) { return; }
 

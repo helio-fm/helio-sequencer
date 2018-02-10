@@ -1339,7 +1339,7 @@ void PianoRoll::updateChildrenPositions()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *PianoRoll::serialize() const
+ValueTree PianoRoll::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::midiRoll);
     
@@ -1357,12 +1357,12 @@ XmlElement *PianoRoll::serialize() const
     return xml;
 }
 
-void PianoRoll::deserialize(const XmlElement &xml)
+void PianoRoll::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root = (xml.getTagName() == Serialization::Core::midiRoll) ?
-                             &xml : xml.getChildByName(Serialization::Core::midiRoll);
+    const XmlElement *root = (tree.getTagName() == Serialization::Core::midiRoll) ?
+                             &tree : tree.getChildByName(Serialization::Core::midiRoll);
 
     if (root == nullptr)
     { return; }

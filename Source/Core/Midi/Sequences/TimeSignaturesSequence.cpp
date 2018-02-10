@@ -257,7 +257,7 @@ bool TimeSignaturesSequence::changeGroup(Array<TimeSignatureEvent> &groupBefore,
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *TimeSignaturesSequence::serialize() const
+ValueTree TimeSignaturesSequence::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::timeSignatures);
 
@@ -270,13 +270,13 @@ XmlElement *TimeSignaturesSequence::serialize() const
     return xml;
 }
 
-void TimeSignaturesSequence::deserialize(const XmlElement &xml)
+void TimeSignaturesSequence::deserialize(const ValueTree &tree)
 {
     this->reset();
 
     const XmlElement *root =
-        (xml.getTagName() == Serialization::Core::timeSignatures) ?
-        &xml : xml.getChildByName(Serialization::Core::timeSignatures);
+        (tree.getTagName() == Serialization::Core::timeSignatures) ?
+        &tree : tree.getChildByName(Serialization::Core::timeSignatures);
 
     if (root == nullptr)
     {

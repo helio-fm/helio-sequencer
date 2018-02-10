@@ -206,7 +206,7 @@ bool Scale::isEquivalentTo(const Scale &other) const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *Scale::serialize() const
+ValueTree Scale::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::scale);
     xml->setAttribute(Serialization::Core::scaleName, this->name);
@@ -228,10 +228,10 @@ XmlElement *Scale::serialize() const
     return xml;
 }
 
-void Scale::deserialize(const XmlElement &xml)
+void Scale::deserialize(const ValueTree &tree)
 {
-    const XmlElement *root = (xml.getTagName() == Serialization::Core::scale) ?
-        &xml : xml.getChildByName(Serialization::Core::scale);
+    const XmlElement *root = (tree.getTagName() == Serialization::Core::scale) ?
+        &tree : tree.getChildByName(Serialization::Core::scale);
 
     if (root == nullptr) { return; }
 

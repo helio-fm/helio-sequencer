@@ -332,7 +332,7 @@ float PianoSequence::getLastBeat() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *PianoSequence::serialize() const
+ValueTree PianoSequence::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::track);
 
@@ -345,13 +345,13 @@ XmlElement *PianoSequence::serialize() const
     return xml;
 }
 
-void PianoSequence::deserialize(const XmlElement &xml)
+void PianoSequence::deserialize(const ValueTree &tree)
 {
     this->reset();
 
     const XmlElement *root = 
-        (xml.getTagName() == Serialization::Core::track) ?
-        &xml : xml.getChildByName(Serialization::Core::track);
+        (tree.getTagName() == Serialization::Core::track) ?
+        &tree : tree.getChildByName(Serialization::Core::track);
 
     if (root == nullptr)
     {

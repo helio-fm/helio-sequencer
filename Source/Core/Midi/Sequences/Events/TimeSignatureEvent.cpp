@@ -145,7 +145,7 @@ String TimeSignatureEvent::toString() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *TimeSignatureEvent::serialize() const
+ValueTree TimeSignatureEvent::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::timeSignature);
     xml->setAttribute("numerator", this->numerator);
@@ -155,13 +155,13 @@ XmlElement *TimeSignatureEvent::serialize() const
     return xml;
 }
 
-void TimeSignatureEvent::deserialize(const XmlElement &xml)
+void TimeSignatureEvent::deserialize(const ValueTree &tree)
 {
     this->reset();
-    this->numerator = xml.getIntAttribute("numerator", TIME_SIGNATURE_DEFAULT_NUMERATOR);
-    this->denominator = xml.getIntAttribute("denominator", TIME_SIGNATURE_DEFAULT_DENOMINATOR);
-    this->beat = float(xml.getDoubleAttribute("beat"));
-    this->id = xml.getStringAttribute("id");
+    this->numerator = tree.getIntAttribute("numerator", TIME_SIGNATURE_DEFAULT_NUMERATOR);
+    this->denominator = tree.getIntAttribute("denominator", TIME_SIGNATURE_DEFAULT_DENOMINATOR);
+    this->beat = float(tree.getDoubleAttribute("beat"));
+    this->id = tree.getStringAttribute("id");
 }
 
 void TimeSignatureEvent::reset() {}

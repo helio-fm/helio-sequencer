@@ -84,7 +84,7 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    void deserialize(const XmlElement &xml) override;
+    void deserialize(const ValueTree &tree) override;
 
 private:
 

@@ -219,7 +219,7 @@ void InstrumentTreeItem::updateChildrenEditors()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *InstrumentTreeItem::serialize() const
+ValueTree InstrumentTreeItem::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::treeItem);
     xml->setAttribute(Serialization::Core::treeItemType, this->type);
@@ -228,11 +228,11 @@ XmlElement *InstrumentTreeItem::serialize() const
     return xml;
 }
 
-void InstrumentTreeItem::deserialize(const XmlElement &xml)
+void InstrumentTreeItem::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const String id = xml.getStringAttribute("id");
+    const String id = tree.getStringAttribute("id");
     this->instrument = this->audioCore->findInstrumentById(id);
 
     // если в аудиоядре инструмент исчез:
@@ -245,7 +245,7 @@ void InstrumentTreeItem::deserialize(const XmlElement &xml)
     this->initInstrumentEditor();
 
     // Proceed with basic properties and children
-    TreeItem::deserialize(xml);
+    TreeItem::deserialize(tree);
 
     this->updateChildrenEditors();
 }

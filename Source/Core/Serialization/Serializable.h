@@ -19,19 +19,15 @@
 
 namespace juce
 {
-    class XmlElement;
-} // namespace juce
+    class ValueTree;
+}
 
 class Serializable
 {
 public:
     
     virtual ~Serializable() {}
-
-    virtual juce::XmlElement *serialize() const = 0;
-
-    virtual void deserialize(const juce::XmlElement &xml) = 0;
-
+    virtual juce::ValueTree serialize() const = 0;
+    virtual void deserialize(const juce::ValueTree &tree) = 0;
     virtual void reset() = 0;
-
 };

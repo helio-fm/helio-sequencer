@@ -527,7 +527,7 @@ Point<float> ProjectTreeItem::getProjectRangeInBeats() const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *ProjectTreeItem::serialize() const
+ValueTree ProjectTreeItem::serialize() const
 {
     this->getDocument()->save(); // todo remove? will save on delete
 
@@ -538,12 +538,12 @@ XmlElement *ProjectTreeItem::serialize() const
     return xml;
 }
 
-void ProjectTreeItem::deserialize(const XmlElement &xml)
+void ProjectTreeItem::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const String &fullPath = xml.getStringAttribute("fullPath");
-    const String &relativePath = xml.getStringAttribute("relativePath");
+    const String &fullPath = tree.getStringAttribute("fullPath");
+    const String &relativePath = tree.getStringAttribute("relativePath");
     
     File relativeFile =
     File(App::Workspace().getDocument()->getFile().

@@ -810,7 +810,7 @@ void PatternRoll::insertNewClipAt(const MouseEvent &e)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *PatternRoll::serialize() const
+ValueTree PatternRoll::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::midiRoll);
 
@@ -827,13 +827,13 @@ XmlElement *PatternRoll::serialize() const
     return xml;
 }
 
-void PatternRoll::deserialize(const XmlElement &xml)
+void PatternRoll::deserialize(const ValueTree &tree)
 {
     this->reset();
 
     const XmlElement *root =
-        (xml.getTagName() == Serialization::Core::midiRoll) ?
-        &xml : xml.getChildByName(Serialization::Core::midiRoll);
+        (tree.getTagName() == Serialization::Core::midiRoll) ?
+        &tree : tree.getChildByName(Serialization::Core::midiRoll);
 
     if (root == nullptr)
     { return; }

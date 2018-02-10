@@ -271,7 +271,7 @@ void ProjectTimeline::reset()
     this->timeSignaturesSequence->reset();
 }
 
-XmlElement *ProjectTimeline::serialize() const
+ValueTree ProjectTimeline::serialize() const
 {
     XmlElement *xml = new XmlElement(this->vcsDiffLogic->getType());
 
@@ -288,12 +288,12 @@ XmlElement *ProjectTimeline::serialize() const
     return xml;
 }
 
-void ProjectTimeline::deserialize(const XmlElement &xml)
+void ProjectTimeline::deserialize(const ValueTree &tree)
 {
     this->reset();
     
-    const XmlElement *root = xml.hasTagName(this->vcsDiffLogic->getType()) ?
-        &xml : xml.getChildByName(this->vcsDiffLogic->getType());
+    const XmlElement *root = tree.hasTagName(this->vcsDiffLogic->getType()) ?
+        &tree : tree.getChildByName(this->vcsDiffLogic->getType());
     
     if (root == nullptr)
     {

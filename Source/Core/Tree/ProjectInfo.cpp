@@ -136,7 +136,7 @@ void ProjectInfo::resetStateTo(const TrackedItem &newState)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *ProjectInfo::serialize() const
+ValueTree ProjectInfo::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::projectInfo);
 
@@ -151,12 +151,12 @@ XmlElement *ProjectInfo::serialize() const
     return xml;
 }
 
-void ProjectInfo::deserialize(const XmlElement &xml)
+void ProjectInfo::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root = xml.hasTagName(Serialization::Core::projectInfo) ?
-                             &xml : xml.getChildByName(Serialization::Core::projectInfo);
+    const XmlElement *root = tree.hasTagName(Serialization::Core::projectInfo) ?
+                             &tree : tree.getChildByName(Serialization::Core::projectInfo);
 
     if (root == nullptr) { return; }
 

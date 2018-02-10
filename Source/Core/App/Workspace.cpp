@@ -451,7 +451,7 @@ void Workspace::activateSubItemWithId(const String &id)
     selectActiveSubItemWithId(this->treeRoot, id);
 }
 
-XmlElement *Workspace::serialize() const
+ValueTree Workspace::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::workspace);
     
@@ -470,17 +470,17 @@ XmlElement *Workspace::serialize() const
     return xml;
 }
 
-void Workspace::deserialize(const XmlElement &xml)
+void Workspace::deserialize(const ValueTree &tree)
 {
     this->reset();
     
-    const XmlElement *root = xml.hasTagName(Serialization::Core::workspace) ?
-    &xml : xml.getChildByName(Serialization::Core::workspace);
+    const XmlElement *root = tree.hasTagName(Serialization::Core::workspace) ?
+    &tree : tree.getChildByName(Serialization::Core::workspace);
     
     if (root == nullptr)
     {
         // Since we are supposed to be the root element, let's attempt to deserialize anyway
-        root = xml.getFirstChildElement();
+        root = tree.getFirstChildElement();
     }
     
     this->recentFilesList->deserialize(*root);

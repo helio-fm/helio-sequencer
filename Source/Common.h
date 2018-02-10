@@ -38,6 +38,7 @@
 #endif
 
 #include "JuceHeader.h"
+#include "Serializable.h"
 
 //===----------------------------------------------------------------------===//
 // SparsePP

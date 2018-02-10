@@ -510,7 +510,7 @@ void Head::rebuildDiffNow()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *Head::serialize() const
+ValueTree VCS::Head::serialize() const
 {
     auto xml = new XmlElement(Serialization::VCS::head);
     auto stateXml = new XmlElement(Serialization::VCS::headIndex);
@@ -545,12 +545,12 @@ XmlElement *Head::serialize() const
     return xml;
 }
 
-void Head::deserialize(const XmlElement &xml)
+void VCS::Head::deserialize(const ValueTree &tree)
 {
     this->reset();
     
-    const XmlElement *headRoot = xml.hasTagName(Serialization::VCS::head) ?
-        &xml : xml.getChildByName(Serialization::VCS::head);
+    const XmlElement *headRoot = tree.hasTagName(Serialization::VCS::head) ?
+        &tree : tree.getChildByName(Serialization::VCS::head);
     if (headRoot == nullptr) { return; }
     
     const XmlElement *indexRoot = headRoot->getChildByName(Serialization::VCS::headIndex);

@@ -141,7 +141,7 @@ void Pack::setDeltaDataFor(const Uuid &itemId,
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *Pack::serialize() const
+ValueTree VCS::Pack::serialize() const
 {
     const ScopedLock lock(this->packLocker);
 
@@ -179,14 +179,14 @@ XmlElement *Pack::serialize() const
     return xml;
 }
 
-void Pack::deserialize(const XmlElement &xml)
+void VCS::Pack::deserialize(const ValueTree &tree)
 {
     const ScopedLock lock(this->packLocker);
 
     this->reset();
 
-    const XmlElement *root = xml.hasTagName(Serialization::VCS::pack) ?
-                             &xml : xml.getChildByName(Serialization::VCS::pack);
+    const XmlElement *root = tree.hasTagName(Serialization::VCS::pack) ?
+                             &tree : tree.getChildByName(Serialization::VCS::pack);
 
     if (root == nullptr) { return; }
 

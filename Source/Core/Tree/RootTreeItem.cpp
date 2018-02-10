@@ -326,10 +326,10 @@ void RootTreeItem::filesDropped(const StringArray &files, int insertIndex)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-void RootTreeItem::deserialize(const XmlElement &xml)
+void RootTreeItem::deserialize(const ValueTree &tree)
 {
-    const XmlElement *root = xml.hasTagName(Serialization::Core::treeItem) ?
-        &xml : xml.getChildByName(Serialization::Core::treeItem);
+    const XmlElement *root = tree.hasTagName(Serialization::Core::treeItem) ?
+        &tree : tree.getChildByName(Serialization::Core::treeItem);
 
     if (root != nullptr)
     {

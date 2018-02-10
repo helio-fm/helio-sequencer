@@ -49,8 +49,8 @@ public:
     String getRedoDescription() const;
     bool redo();
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
     
 private:

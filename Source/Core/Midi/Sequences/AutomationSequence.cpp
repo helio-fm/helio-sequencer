@@ -256,7 +256,7 @@ bool AutomationSequence::changeGroup(const Array<AutomationEvent> groupBefore,
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *AutomationSequence::serialize() const
+ValueTree AutomationSequence::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::automation);
 
@@ -269,13 +269,13 @@ XmlElement *AutomationSequence::serialize() const
     return xml;
 }
 
-void AutomationSequence::deserialize(const XmlElement &xml)
+void AutomationSequence::deserialize(const ValueTree &tree)
 {
     this->reset();
 
     const XmlElement *root = 
-        (xml.getTagName() == Serialization::Core::automation) ?
-        &xml : xml.getChildByName(Serialization::Core::automation);
+        (tree.getTagName() == Serialization::Core::automation) ?
+        &tree : tree.getChildByName(Serialization::Core::automation);
 
     if (root == nullptr)
     { return; }

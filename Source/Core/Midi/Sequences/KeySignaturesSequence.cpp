@@ -271,7 +271,7 @@ bool KeySignaturesSequence::changeGroup(Array<KeySignatureEvent> &groupBefore,
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *KeySignaturesSequence::serialize() const
+ValueTree KeySignaturesSequence::serialize() const
 {
     auto xml = new XmlElement(Serialization::Core::keySignatures);
 
@@ -284,13 +284,13 @@ XmlElement *KeySignaturesSequence::serialize() const
     return xml;
 }
 
-void KeySignaturesSequence::deserialize(const XmlElement &xml)
+void KeySignaturesSequence::deserialize(const ValueTree &tree)
 {
     this->reset();
 
     const XmlElement *root =
-        (xml.getTagName() == Serialization::Core::keySignatures) ?
-        &xml : xml.getChildByName(Serialization::Core::keySignatures);
+        (tree.getTagName() == Serialization::Core::keySignatures) ?
+        &tree : tree.getChildByName(Serialization::Core::keySignatures);
 
     if (root == nullptr)
     {

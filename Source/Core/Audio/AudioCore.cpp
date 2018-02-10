@@ -227,7 +227,7 @@ void AudioCore::autodetect()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *AudioCore::serialize() const
+ValueTree AudioCore::serialize() const
 {
     Logger::writeToLog("AudioCore::serialize");
 
@@ -258,7 +258,7 @@ XmlElement *AudioCore::serialize() const
     return xml;
 }
 
-void AudioCore::deserialize(const XmlElement &xml)
+void AudioCore::deserialize(const ValueTree &tree)
 {
     Logger::writeToLog("AudioCore::deserialize");
 
@@ -266,8 +266,8 @@ void AudioCore::deserialize(const XmlElement &xml)
 
     this->reset();
 
-    const XmlElement *root = xml.hasTagName(Serialization::Core::audioCore) ?
-                             &xml : xml.getChildByName(Serialization::Core::audioCore);
+    const XmlElement *root = tree.hasTagName(Serialization::Core::audioCore) ?
+                             &tree : tree.getChildByName(Serialization::Core::audioCore);
 
     if (root == nullptr) { return; }
 
