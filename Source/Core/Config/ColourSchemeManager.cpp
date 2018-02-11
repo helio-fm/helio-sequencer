@@ -95,12 +95,12 @@ void ColourSchemeManager::deserialize(const ValueTree &tree)
     const auto root = tree.hasType(Serialization::UI::Colours::schemes) ?
         tree : tree.getChildWithName(Serialization::UI::Colours::schemes);
     
-    if (root == nullptr) { return; }
+    if (!root.isValid()) { return; }
     
-    forEachXmlChildElementWithTagName(*root, schemeXml, Serialization::UI::Colours::scheme)
+    forEachValueTreeChildWithType(root, schemeNode, Serialization::UI::Colours::scheme)
     {
         ColourScheme cs;
-        cs.deserialize(*schemeXml);
+        cs.deserialize(schemeNode);
         this->schemes.add(cs);
     }
     

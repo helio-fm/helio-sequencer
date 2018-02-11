@@ -191,7 +191,6 @@ void AudioCore::initDefaultInstrument()
     this->addInstrument(desc, "Default");
 }
 
-
 //===----------------------------------------------------------------------===//
 // Setup
 //===----------------------------------------------------------------------===//
@@ -219,7 +218,7 @@ void AudioCore::autodetect()
 
         AudioDeviceManager::AudioDeviceSetup deviceSetup;
         this->deviceManager.getAudioDeviceSetup(deviceSetup);
-        this->deviceManager.setAudioDeviceSetup(deviceSetup, true); // чтоб запомнил и сохранил?
+        this->deviceManager.setAudioDeviceSetup(deviceSetup, true);
     }
 }
 
@@ -243,7 +242,7 @@ ValueTree AudioCore::serialize() const
         for (int i = 0; i < this->instruments.size(); ++i)
         {
             Instrument *instrument = this->instruments.getUnchecked(i);
-            orchestra->addChildElement(instrument->serialize());
+            orchestra.appendChild(instrument->serialize());
         }
 
         tree.appendChild(orchestra);
@@ -251,7 +250,10 @@ ValueTree AudioCore::serialize() const
 
     {
         ValueTree settings(Serialization::Core::audioSettings);
-        settings->addChildElement(this->deviceManager.createStateXml());
+        ScopedPointer<XmlElement> deviceStateXml(this->deviceManager.createStateXml());
+        // FIXME do not rely upon JUCE's xml serialization here:
+        const String deviceStateString = deviceStateXml->createDocument();
+        settings.setProperty(Serialization::Core::audioDevice, deviceStateString);
         tree.appendChild(settings);
     }
 
@@ -269,36 +271,34 @@ void AudioCore::deserialize(const ValueTree &tree)
     const auto root = tree.hasType(Serialization::Core::audioCore) ?
     tree : tree.getChildWithName(Serialization::Core::audioCore);
 
-    if (root == nullptr) { return; }
+    if (!root.isValid()) { return; }
 
 
-    const XmlElement *orchestra =
-        root->getChildByName(Serialization::Core::orchestra);
-
-    if (orchestra != nullptr)
+    const auto orchestra = root.getChildWithName(Serialization::Core::orchestra);
+    if (orchestra.isValid())
     {
-        forEachXmlChildElement(*orchestra, instrumentNode)
+        for (const auto &instrumentNode : orchestra)
         {
             //Logger::writeToLog("--- instrument ---");
             //Logger::writeToLog(instrumentNode->createDocument(""));
             Instrument *instrument = new Instrument(this->formatManager, "");
             this->addInstrumentToDevice(instrument);
-            instrument->deserialize(*instrumentNode);
+            instrument->deserialize(instrumentNode);
             this->instruments.add(instrument);
         }
     }
 
 
-    const XmlElement *setup =
-        root->getChildByName(Serialization::Core::audioSettings);
-
-    if (setup != nullptr)
+    const auto audioSettings = root.getChildWithName(Serialization::Core::audioSettings);
+    const String deviceState = audioSettings.getProperty(Serialization::Core::audioDevice);
+    if (audioSettings.isValid())
     {
         Logger::writeToLog("--- setup ---");
-        Logger::writeToLog(setup->createDocument(""));
+        Logger::writeToLog(deviceState);
         Logger::writeToLog("--- setup ---");
         AudioDeviceManager &device = this->getDevice();
-        device.initialise(0, 2, setup->getFirstChildElement(), true);
+        const ScopedPointer<XmlElement> deviceStateXml(XmlDocument::parse(deviceState));
+        device.initialise(0, 2, audioSettings.getChild(0), true);
         return;
     }
 

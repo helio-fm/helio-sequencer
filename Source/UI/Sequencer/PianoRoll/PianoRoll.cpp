@@ -655,7 +655,7 @@ void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, c
 // ClipboardOwner
 //===----------------------------------------------------------------------===//
 
-XmlElement *PianoRoll::clipboardCopy() const
+ValueTree PianoRoll::clipboardCopy() const
 {
     ValueTree tree(Serialization::Clipboard::clipboard);
     
@@ -748,27 +748,27 @@ XmlElement *PianoRoll::clipboardCopy() const
     return tree;
 }
 
-void PianoRoll::clipboardPaste(const XmlElement &xml)
+void PianoRoll::clipboardPaste(const ValueTree &tree)
 {
-    const XmlElement *mainSlot = (xml.getTagName() == Serialization::Clipboard::clipboard) ?
-        xml : xml.getChildWithName(Serialization::Clipboard::clipboard);
+    const auto root = tree.hasType(Serialization::Clipboard::clipboard) ?
+        tree : tree.getChildWithName(Serialization::Clipboard::clipboard);
 
-    if (mainSlot == nullptr) { return; }
+    if (!root.isValid()) { return; }
 
     bool didCheckpoint = false;
 
     const float indicatorRoughBeat = this->getBeatByTransportPosition(this->project.getTransport().getSeekPosition());
     const float indicatorBeat = roundf(indicatorRoughBeat * 1000.f) / 1000.f;
 
-    const double firstBeat = mainSlot->getDoubleAttribute(Serialization::Clipboard::firstBeat);
-    const double lastBeat = mainSlot->getDoubleAttribute(Serialization::Clipboard::lastBeat);
+    const double firstBeat = root.getProperty(Serialization::Clipboard::firstBeat);
+    const double lastBeat = root.getProperty(Serialization::Clipboard::lastBeat);
     const bool indicatorIsWithinSelection = (indicatorBeat >= firstBeat) && (indicatorBeat < lastBeat);
     const float startBeatAligned = roundf(float(firstBeat));
     const float deltaBeat = (indicatorBeat - startBeatAligned);
 
     this->deselectAll();
 
-    forEachXmlChildElementWithTagName(*mainSlot, layerElement, Serialization::Core::layer)
+    forEachValueTreeChildWithType(root, layerElement, Serialization::Core::layer)
     {
         Array<Note> pastedNotes;
 
@@ -789,10 +789,10 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
             if (correspondingTreeItemExists)
             {
                 Array<AutomationEvent> pastedEvents;
-                
-                forEachXmlChildElementWithTagName(*layerElement, autoElement, Serialization::Core::event)
+
+                forEachValueTreeChildWithType(layerElement, autoElement, Serialization::Core::event)
                 {
-                    AutomationEvent &&ae = AutomationEvent(targetLayer).withParameters(*autoElement).copyWithNewId();
+                    const auto &ae = AutomationEvent(targetLayer).withParameters(autoElement).copyWithNewId();
                     pastedEvents.add(ae.withDeltaBeat(deltaBeat));
                 }
                 
@@ -806,9 +806,9 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
             // no check for a tree item as there isn't any for ProjectTimeline
             Array<AnnotationEvent> pastedAnnotations;
             
-            forEachXmlChildElementWithTagName(*layerElement, annotationElement, Serialization::Core::annotation)
+            forEachValueTreeChildWithType(layerElement, annotationElement, Serialization::Core::annotation)
             {
-                AnnotationEvent &&ae = AnnotationEvent(targetLayer).withParameters(*annotationElement).copyWithNewId();
+                const auto &ae = AnnotationEvent(targetLayer).withParameters(annotationElement).copyWithNewId();
                 pastedAnnotations.add(ae.withDeltaBeat(deltaBeat));
             }
             
@@ -826,9 +826,9 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
                 targetLayer = static_cast<PianoSequence *>(this->primaryActiveLayer);
             }
             
-            forEachXmlChildElementWithTagName(*layerElement, noteElement, Serialization::Core::note)
+            forEachValueTreeChildWithType(layerElement, noteElement, Serialization::Core::note)
             {
-                Note &&n = Note(targetLayer).withParameters(*noteElement).copyWithNewId();
+                const auto &n = Note(targetLayer).withParameters(noteElement).copyWithNewId();
                 pastedNotes.add(n.withDeltaBeat(deltaBeat));
             }
             
@@ -851,7 +851,6 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
                 targetLayer->insertGroup(pastedNotes, true);
             }
         }
-
     }
 
     return;
@@ -1361,19 +1360,19 @@ void PianoRoll::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root = (tree.getTagName() == Serialization::Core::midiRoll) ?
+    const auto root = tree.hasType(Serialization::Core::midiRoll) ?
         tree : tree.getChildWithName(Serialization::Core::midiRoll);
 
-    if (root == nullptr)
+    if (!root.isValid())
     { return; }
     
-    this->setBarWidth(float(root->getDoubleAttribute("barWidth", this->getBarWidth())));
-    this->setRowHeight(root->getIntAttribute("rowHeight", this->getRowHeight()));
+    this->setBarWidth(float(root.getProperty("barWidth", this->getBarWidth())));
+    this->setRowHeight(root.getProperty("rowHeight", this->getRowHeight()));
 
     // FIXME doesn't work right for now, as view range is sent after this
-    const float startBar = float(root->getDoubleAttribute("startBar", 0.0));
+    const float startBar = float(root.getProperty("startBar", 0.0));
     const int x = this->getXPositionByBar(startBar);
-    const int y = root->getIntAttribute("y");
+    const int y = root.getProperty("y");
     this->getViewport().setViewPosition(x, y);
 
     // restore selection?

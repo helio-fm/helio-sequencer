@@ -169,7 +169,7 @@ const AudioProcessorGraph::Node::Ptr Instrument::getNodeForId(AudioProcessorGrap
 
 void Instrument::addNodeAsync(const PluginDescription &desc,
     double x, double y,
-    std::function<void (AudioProcessorGraph::Node::Ptr)> f)
+    Function<void (AudioProcessorGraph::Node::Ptr)> f)
 {
     this->formatManager.
     createPluginInstanceAsync(desc,
@@ -363,7 +363,7 @@ ValueTree Instrument::serialize() const
     const int numNodes = this->processorGraph->getNumNodes();
     for (int i = 0; i < numNodes; ++i)
     {
-        tree.appendChild(this->createNodeXml(this->processorGraph->getNode(i)));
+        tree.appendChild(this->serializeNode(this->processorGraph->getNode(i)));
     }
 
     for (const auto &c : this->getConnections())
@@ -383,10 +383,10 @@ void Instrument::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root = (tree.getTagName() == Serialization::Core::instrument) ?
+    const auto root = tree.hasType(Serialization::Core::instrument) ?
         tree : tree.getChildWithName(Serialization::Core::instrument);
 
-    if (root == nullptr)
+    if (!root.isValid())
     { return; }
 
     this->instrumentID = root.getProperty(Serialization::Core::instrumentId, this->instrumentID.toString());
@@ -406,19 +406,19 @@ void Instrument::deserialize(const ValueTree &tree)
     
     Array<ConnectionDescription> connectionDescriptions;
     
-    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::instrumentConnection)
+    forEachValueTreeChildWithType(root, e, Serialization::Core::instrumentConnection)
     {
         connectionDescriptions.add({
-            static_cast<uint32>(e->getIntAttribute("srcFilter")),
-            static_cast<uint32>(e->getIntAttribute("dstFilter")),
-            e->getIntAttribute("srcChannel"),
-            e->getIntAttribute("dstChannel")
+            static_cast<int>(e.getProperty("srcFilter")),
+            static_cast<int>(e.getProperty("dstFilter")),
+            e.getProperty("srcChannel"),
+            e.getProperty("dstChannel")
         });
     }
     
-    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::instrumentNode)
+    forEachValueTreeChildWithType(root, e, Serialization::Core::instrumentNode)
     {
-        this->createNodeFromXmlAsync(*e,
+        this->deserializeNodeAsync(e,
             [this, connectionDescriptions](AudioProcessorGraph::Node::Ptr)
             {
                 // Try to create as many connections as possible
@@ -434,60 +434,59 @@ void Instrument::deserialize(const ValueTree &tree)
     }
 }
 
-XmlElement *Instrument::createNodeXml(AudioProcessorGraph::Node::Ptr node) const
+ValueTree Instrument::serializeNode(AudioProcessorGraph::Node::Ptr node) const
 {
     if (AudioPluginInstance *plugin = dynamic_cast<AudioPluginInstance *>(node->getProcessor()))
     {
-        ValueTree e(Serialization::Core::instrumentNode);
-        e.setProperty("uid", static_cast<int>(node->nodeID));
-        e.setProperty("x", node->properties["x"].toString());
-        e.setProperty("y", node->properties["y"].toString());
-        e.setProperty("hash", node->properties["hash"].toString());
-        e.setProperty("uiLastX", node->properties["uiLastX"].toString());
-        e.setProperty("uiLastY", node->properties["uiLastY"].toString());
+        ValueTree tree(Serialization::Core::instrumentNode);
+        tree.setProperty("uid", static_cast<int>(node->nodeID));
+        tree.setProperty("x", node->properties["x"].toString());
+        tree.setProperty("y", node->properties["y"].toString());
+        tree.setProperty("hash", node->properties["hash"].toString());
+        tree.setProperty("uiLastX", node->properties["uiLastX"].toString());
+        tree.setProperty("uiLastY", node->properties["uiLastY"].toString());
 
         PluginSmartDescription pd;
         plugin->fillInPluginDescription(pd);
 
-        e.appendChild(pd.createXml());
+        tree.appendChild(pd.serialize());
 
         ValueTree state(Serialization::Core::pluginState);
 
         MemoryBlock m;
         node->getProcessor()->getStateInformation(m);
         state->addTextElement(m.toBase64Encoding());
-        e.appendChild(state);
+        tree.appendChild(state);
 
-        return e;
+        return tree;
     }
     
-    return nullptr;
+    return {};
 }
 
-void Instrument::createNodeFromXmlAsync(const XmlElement &xml,
-    std::function<void (AudioProcessorGraph::Node::Ptr)> f)
+void Instrument::deserializeNodeAsync(const ValueTree &tree,
+    Function<void (AudioProcessorGraph::Node::Ptr)> f)
 {
     PluginSmartDescription pd;
-    
-    forEachXmlChildElement(xml, e)
+    for (const auto &e : tree)
     {
-        if (pd.loadFromXml(*e))
-        { break; }
+        pd.deserialize(e);
+        if (pd.isValid()) { break; }
     }
     
     MemoryBlock nodeStateBlock;
-    const XmlElement *const state = xml.getChildByName(Serialization::Core::pluginState);
-    if (state != nullptr)
+    const auto state = tree.getChildWithName(Serialization::Core::pluginState);
+    if (state.isValid())
     {
         nodeStateBlock.fromBase64Encoding(state->getAllSubText());
     }
     
-    const uint32 nodeUid = xml.getIntAttribute("uid");
-    const String nodeHash = xml.getStringAttribute("hash");
-    const double nodeX = xml.getDoubleAttribute("x");
-    const double nodeY = xml.getDoubleAttribute("y");
-    const double nodeLastX = xml.getDoubleAttribute("uiLastX");
-    const double nodeLastY = xml.getDoubleAttribute("uiLastY");
+    const int nodeUid = tree.getProperty("uid");
+    const String nodeHash = tree.getProperty("hash");
+    const double nodeX = tree.getProperty("x");
+    const double nodeY = tree.getProperty("y");
+    const double nodeLastX = tree.getProperty("uiLastX");
+    const double nodeLastY = tree.getProperty("uiLastY");
     
     formatManager.
     createPluginInstanceAsync(pd,
@@ -522,14 +521,13 @@ void Instrument::createNodeFromXmlAsync(const XmlElement &xml,
         });
 }
 
-void Instrument::createNodeFromXml(const XmlElement &xml)
+void Instrument::deserializeNode(const ValueTree &tree)
 {
     PluginSmartDescription pd;
-
-    forEachXmlChildElement(xml, e)
+    for (const auto &e : tree)
     {
-        if (pd.loadFromXml(*e))
-        { break; }
+        pd.deserialize(e);
+        if (pd.isValid()) { break; }
     }
     
     String errorMessage;
@@ -545,25 +543,25 @@ void Instrument::createNodeFromXml(const XmlElement &xml)
         return;
     }
 
-    AudioProcessorGraph::Node::Ptr node(this->processorGraph->addNode(instance, xml.getIntAttribute("uid")));
+    const int nodeUid = tree.getProperty("uid");
+    AudioProcessorGraph::Node::Ptr node(this->processorGraph->addNode(instance, nodeUid));
 
-    const XmlElement *const state = xml.getChildByName(Serialization::Core::pluginState);
-
-    if (state != nullptr)
+    const auto state = tree.getChildWithName(Serialization::Core::pluginState);
+    if (state.isValid())
     {
         MemoryBlock m;
         m.fromBase64Encoding(state->getAllSubText());
         node->getProcessor()->setStateInformation(m.getData(), static_cast<int>( m.getSize()));
     }
 
-    const String& hash = xml.getStringAttribute("hash");
+    const String &hash = tree.getProperty("hash");
     Uuid fallbackRandomHash;
     
-    node->properties.set("x", xml.getDoubleAttribute("x"));
-    node->properties.set("y", xml.getDoubleAttribute("y"));
+    node->properties.set("x", tree.getProperty("x"));
+    node->properties.set("y", tree.getProperty("y"));
     node->properties.set("hash", hash.isNotEmpty() ? hash : fallbackRandomHash.toString());
-    node->properties.set("uiLastX", xml.getIntAttribute("uiLastX"));
-    node->properties.set("uiLastY", xml.getIntAttribute("uiLastY"));
+    node->properties.set("uiLastX", tree.getProperty("uiLastX"));
+    node->properties.set("uiLastY", tree.getProperty("uiLastY"));
 }
 
 void Instrument::initializeDefaultNodes()

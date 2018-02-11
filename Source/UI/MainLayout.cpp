@@ -365,9 +365,10 @@ bool MainLayout::keyPressed(const KeyPress &key)
             this->repaint();
 
             scheme.syncWithLiveConstantEditor();
-            const ScopedPointer<XmlElement> xml(scheme.serialize());
-            const String xmlString(xml->createDocument("", true, false, "UTF-8", 512));
-            SystemClipboard::copyTextToClipboard(xmlString);
+            const auto schemeNode(scheme.serialize());
+            // FIXME serialize before:
+            const String schemeNodeString(schemeNode->createDocument(""));
+            SystemClipboard::copyTextToClipboard(schemeNodeString);
             return true;
         }
     }

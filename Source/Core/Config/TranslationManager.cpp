@@ -233,10 +233,10 @@ void TranslationManager::deserialize(const ValueTree &tree)
     const auto root = tree.hasType(Serialization::Locales::translations) ?
         tree : tree.getChildWithName(Serialization::Locales::translations);
     
-    if (root == nullptr) { return; }
+    if (!root.isValid()) { return; }
     
     // First, fill up the available translations
-    forEachXmlChildElementWithTagName(*root, locale, Serialization::Locales::locale)
+    forEachValueTreeChildWithType(root, locale, Serialization::Locales::locale)
     {
         const String localeId = locale.getProperty(Serialization::Locales::id).toLowerCase();
         const String localeName = locale.getProperty(Serialization::Locales::name);
@@ -252,25 +252,25 @@ void TranslationManager::deserialize(const ValueTree &tree)
     // Now detect the right one and load
     const String selectedLocaleId = this->getSelectedLocaleId();
     
-    forEachXmlChildElementWithTagName(*root, locale, Serialization::Locales::locale)
+    forEachValueTreeChildWithType(root, locale, Serialization::Locales::locale)
     {
         const String localeId =
         locale.getProperty(Serialization::Locales::id).toLowerCase();
         
         if (localeId == selectedLocaleId)
         {
-            forEachXmlChildElementWithTagName(*locale, pluralForms, Serialization::Locales::pluralForms)
+            forEachValueTreeChildWithType(locale, pluralForms, Serialization::Locales::pluralForms)
             {
                 this->pluralEquation = pluralForms.getProperty(Serialization::Locales::equation);
             }
 
-            forEachXmlChildElementWithTagName(*locale, pluralLiteral, Serialization::Locales::pluralLiteral)
+            forEachValueTreeChildWithType(locale, pluralLiteral, Serialization::Locales::pluralLiteral)
             {
                 const String baseLiteral = pluralLiteral.getProperty(Serialization::Locales::name);
 
                 StringPairArray formsAndTranslations;
                 
-                forEachXmlChildElementWithTagName(*pluralLiteral, pluralTranslation, Serialization::Locales::translation)
+                forEachValueTreeChildWithType(pluralLiteral, pluralTranslation, Serialization::Locales::translation)
                 {
                     const String translatedLiteral = pluralTranslation.getProperty(Serialization::Locales::name);
                     const String pluralForm = pluralTranslation.getProperty(Serialization::Locales::pluralForm);
@@ -280,7 +280,7 @@ void TranslationManager::deserialize(const ValueTree &tree)
                 this->plurals.set(baseLiteral, formsAndTranslations);
             }
 
-            forEachXmlChildElementWithTagName(*locale, literal, Serialization::Locales::literal)
+            forEachValueTreeChildWithType(locale, literal, Serialization::Locales::literal)
             {
                 const String literalName = literal.getProperty(Serialization::Locales::name);
                 const String translatedLiteral = literal.getProperty(Serialization::Locales::translation);

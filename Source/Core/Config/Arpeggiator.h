@@ -36,7 +36,7 @@ public:
     float getScale() const;
     
     Arpeggiator withName(const String &newName) const;
-    Arpeggiator withSequenceFromXml(const XmlElement &xml) const;
+    //Arpeggiator withSequenceFromXml(const XmlElement &xml) const;
     Arpeggiator withSequence(const Array<Note> &arpSequence) const;
     Arpeggiator reversed(bool shouldBeReversed) const;
     Arpeggiator mappedRelative(bool shouldBeMappedRelative) const;

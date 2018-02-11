@@ -29,11 +29,9 @@ PullThread::PullThread(URL pushUrl,
                        MemoryBlock projectKey,
                        ScopedPointer<XmlElement> pushContent) :
     SyncThread(pushUrl, projectId, projectKey, pushContent),
-    mergedVCS(nullptr)
-{
-}
+    mergedVCS(nullptr) {}
 
-XmlElement *PullThread::createMergedStateData()
+ValueTree PullThread::createMergedStateData()
 {
     jassert(this->mergedVCS);
     return this->mergedVCS->serialize();

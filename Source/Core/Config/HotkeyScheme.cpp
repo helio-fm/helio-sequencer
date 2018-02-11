@@ -27,8 +27,6 @@ const HotkeyScheme HotkeyScheme::getDefaultScheme()
         get(Serialization::UI::Hotkeys::scheme, "DefaultHotkeys_xml").getFirst();
 }
 
-HotkeyScheme::HotkeyScheme() {}
-
 HotkeyScheme::HotkeyScheme(const HotkeyScheme &other)
 {
     operator= (other);
@@ -157,7 +155,7 @@ ValueTree HotkeyScheme::serialize() const
     return tree;
 }
 
-static inline HotkeyScheme::Hotkey createHotkey(XmlElement *e)
+static inline HotkeyScheme::Hotkey createHotkey(const ValueTree &e)
 {
     HotkeyScheme::Hotkey key;
     auto keyPressDesc = e.getProperty(Serialization::UI::Hotkeys::hotkeyDescription);
@@ -173,28 +171,28 @@ void HotkeyScheme::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root =
-        (tree.getTagName() == Serialization::UI::Hotkeys::scheme) ?
+    const auto root =
+        tree.hasType(Serialization::UI::Hotkeys::scheme) ?
         tree : tree.getChildWithName(Serialization::UI::Hotkeys::scheme);
 
-    if (root == nullptr)
+    if (!root.isValid())
     {
         return;
     }
 
     this->name = root.getProperty(Serialization::UI::Hotkeys::schemeName);
 
-    forEachXmlChildElementWithTagName(*root, e, Serialization::UI::Hotkeys::keyPress)
+    forEachValueTreeChildWithType(root, e, Serialization::UI::Hotkeys::keyPress)
     {
         this->keyPresses.add(createHotkey(e));
     }
 
-    forEachXmlChildElementWithTagName(*root, e, Serialization::UI::Hotkeys::keyDown)
+    forEachValueTreeChildWithType(root, e, Serialization::UI::Hotkeys::keyDown)
     {
         this->keyDowns.add(createHotkey(e));
     }
 
-    forEachXmlChildElementWithTagName(*root, e, Serialization::UI::Hotkeys::keyUp)
+    forEachValueTreeChildWithType(root, e, Serialization::UI::Hotkeys::keyUp)
     {
         this->keyUps.add(createHotkey(e));
     }

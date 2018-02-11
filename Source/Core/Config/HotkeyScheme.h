@@ -17,7 +17,6 @@
 
 #pragma once
 
-
 class HotkeyScheme final : public Serializable
 {
 public:

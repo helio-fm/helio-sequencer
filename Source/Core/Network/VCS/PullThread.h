@@ -32,7 +32,7 @@ namespace VCS
                    MemoryBlock projectKey,
                    ScopedPointer<XmlElement> pushContent);
 
-        XmlElement *createMergedStateData();
+        ValueTree createMergedStateData();
         
         void run() override;
 

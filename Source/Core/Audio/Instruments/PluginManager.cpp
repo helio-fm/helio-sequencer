@@ -22,13 +22,13 @@
 #include "FileUtils.h"
 #include "Config.h"
 #include "SerializationKeys.h"
-
 #include "BuiltInSynthFormat.h"
+#include "PluginSmartDescription.h"
 
 PluginManager::PluginManager() :
-Thread("Plugin Scanner Thread"),
-working(false),
-usingExternalProcess(false)
+    Thread("Plugin Scanner Thread"),
+    working(false),
+    usingExternalProcess(false)
 {
     this->startThread(0);
     Config::load(Serialization::Core::pluginManager, this);
@@ -233,8 +233,6 @@ void PluginManager::run()
                 else
                 {
                     const String pluginPath(i);
-                    //const File pluginFile(pluginPath);
-                    
                     KnownPluginList knownPluginList;
                     OwnedArray<PluginDescription> typesFound;
                     
@@ -248,7 +246,7 @@ void PluginManager::run()
                     }
                     catch (...) {}
                     
-                    // если мы дошли до сих пор, то все хорошо и плагин нас не обрушил
+                    // at this point we are still alive and plugin haven't crashed the app
                     if (typesFound.size() != 0)
                     {
                         for (auto type : typesFound)
@@ -354,7 +352,8 @@ ValueTree PluginManager::serialize() const
 
     for (int i = 0; i < this->pluginsList.getNumTypes(); ++i)
     {
-        tree.appendChild(this->pluginsList.getType(i)->createXml());
+        PluginSmartDescription pd(this->pluginsList.getType(i));
+        tree.appendChild(pd.serialize());
     }
 
     return tree;
@@ -366,15 +365,15 @@ void PluginManager::deserialize(const ValueTree &tree)
 
     const ScopedWriteLock lock(this->pluginsListLock);
 
-    const auto mainSlot = tree.hasType(Serialization::Core::pluginManager) ?
+    const auto root = tree.hasType(Serialization::Core::pluginManager) ?
         tree : tree.getChildWithName(Serialization::Core::pluginManager);
 
-    if (mainSlot == nullptr) { return; }
+    if (!root.isValid()) { return; }
 
-    forEachXmlChildElement(*mainSlot, child)
+    for (const auto &child : root)
     {
-        PluginDescription pluginDescription;
-        pluginDescription.loadFromXml(*child);
+        PluginSmartDescription pluginDescription;
+        pluginDescription.deserialize(child);
         this->pluginsList.addType(pluginDescription);
     }
 

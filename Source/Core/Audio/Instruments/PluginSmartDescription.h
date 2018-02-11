@@ -17,27 +17,21 @@
 
 #pragma once
 
-class PluginSmartDescription : public PluginDescription
+class PluginSmartDescription final : public PluginDescription, public Serializable
 {
 public:
 
-    PluginSmartDescription() noexcept;
+    PluginSmartDescription();
+    explicit PluginSmartDescription(const PluginDescription *other);
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
+    void reset() override;
 
-    ~PluginSmartDescription() noexcept;
-
-    XmlElement *createXml() const;
-
-    bool loadFromXml(const XmlElement &xml);
+    bool isValid() const;
 
 protected:
 
     void verify();
-
-private:
-
-    PluginSmartDescription(const PluginSmartDescription &other);
-
-    PluginSmartDescription &operator= (const PluginSmartDescription &other);
 
     JUCE_LEAK_DETECTOR(PluginSmartDescription)
 

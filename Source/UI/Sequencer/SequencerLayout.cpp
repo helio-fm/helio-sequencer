@@ -808,16 +808,13 @@ void SequencerLayout::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root = (tree.getTagName() == Serialization::Core::editor) ?
+    const auto root = tree.hasType(Serialization::Core::editor) ?
         tree : tree.getChildWithName(Serialization::Core::editor);
 
-    if (root == nullptr)
+    if (!root.isValid())
     { return; }
 
-    if (XmlElement *firstChild = root->getFirstChildElement())
-    {
-        this->pianoRoll->deserialize(*firstChild);
-    }
+    this->pianoRoll->deserialize(root.getChild(0));
 }
 
 void SequencerLayout::reset()

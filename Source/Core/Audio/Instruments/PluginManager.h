@@ -17,7 +17,6 @@
 
 #pragma once
 
-
 class PluginManager :
     public Serializable,
     public Thread,

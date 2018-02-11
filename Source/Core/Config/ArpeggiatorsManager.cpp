@@ -96,12 +96,12 @@ void ArpeggiatorsManager::deserialize(const ValueTree &tree)
     const auto root = tree.hasType(Serialization::Arps::arpeggiators) ?
         tree : tree.getChildWithName(Serialization::Arps::arpeggiators);
     
-    if (root == nullptr) { return; }
+    if (!root.isValid()) { return; }
     
-    forEachXmlChildElementWithTagName(*root, arpXml, Serialization::Arps::arpeggiator)
+    forEachValueTreeChildWithType(root, arpNode, Serialization::Arps::arpeggiator)
     {
         Arpeggiator arp;
-        arp.deserialize(*arpXml);
+        arp.deserialize(arpNode);
         this->arps.add(arp);
     }
     

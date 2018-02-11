@@ -19,61 +19,65 @@
 #include "PluginSmartDescription.h"
 #include "SerializationKeys.h"
 
-PluginSmartDescription::PluginSmartDescription() noexcept
-{
-}
+PluginSmartDescription::PluginSmartDescription() {}
+PluginSmartDescription::PluginSmartDescription(const PluginDescription *other) : PluginDescription(*other) {}
 
-PluginSmartDescription::~PluginSmartDescription() noexcept
+ValueTree PluginSmartDescription::serialize() const
 {
-}
+    ValueTree tree(Serialization::Core::plugin);
+    tree.setProperty("name", this->name);
 
-XmlElement *PluginSmartDescription::createXml() const
-{
-    ValueTree const e(Serialization::Core::plugin);
-    e.setProperty("name", name);
-
-    if (descriptiveName != name)
+    if (this->descriptiveName != this->name)
     {
-        e.setProperty("descriptiveName", descriptiveName);
+        tree.setProperty("descriptiveName", this->descriptiveName);
     }
 
-    e.setProperty("format", pluginFormatName);
-    e.setProperty("category", category);
-    e.setProperty("manufacturer", manufacturerName);
-    e.setProperty("version", version);
-    e.setProperty("file", fileOrIdentifier);
-    e.setProperty("uid", String::toHexString(uid));
-    e.setProperty("isInstrument", isInstrument);
-    e.setProperty("fileTime", String::toHexString(lastFileModTime.toMilliseconds()));
-    e.setProperty("numInputs", numInputChannels);
-    e.setProperty("numOutputs", numOutputChannels);
+    tree.setProperty("format", this->pluginFormatName);
+    tree.setProperty("category", this->category);
+    tree.setProperty("manufacturer", this->manufacturerName);
+    tree.setProperty("version", this->version);
+    tree.setProperty("file", this->fileOrIdentifier);
+    tree.setProperty("uid", String::toHexString(this->uid));
+    tree.setProperty("isInstrument", this->isInstrument);
+    tree.setProperty("fileTime", String::toHexString(this->lastFileModTime.toMilliseconds()));
+    tree.setProperty("numInputs", this->numInputChannels);
+    tree.setProperty("numOutputs", this->numOutputChannels);
 
-    return e;
+    return tree;
 }
 
-bool PluginSmartDescription::loadFromXml(const XmlElement &xml)
+void PluginSmartDescription::deserialize(const ValueTree &tree)
 {
-    if (xml.hasTagName(Serialization::Core::plugin))
+    this->reset();
+
+    if (tree.hasType(Serialization::Core::plugin))
     {
-        name                = xml.getStringAttribute("name");
-        descriptiveName     = xml.getStringAttribute("descriptiveName", name);
-        pluginFormatName    = xml.getStringAttribute("format");
-        category            = xml.getStringAttribute("category");
-        manufacturerName    = xml.getStringAttribute("manufacturer");
-        version             = xml.getStringAttribute("version");
-        fileOrIdentifier    = xml.getStringAttribute("file");
-        uid                 = xml.getStringAttribute("uid").getHexValue32();
-        lastFileModTime     = Time(xml.getStringAttribute("fileTime").getHexValue64());
-        isInstrument        = xml.getBoolAttribute("isInstrument", false);
-        numInputChannels    = xml.getIntAttribute("numInputs");
-        numOutputChannels   = xml.getIntAttribute("numOutputs");
+        this->name = tree.getProperty("name");
+        this->descriptiveName = tree.getProperty("descriptiveName", name);
+        this->pluginFormatName = tree.getProperty("format");
+        this->category = tree.getProperty("category");
+        this->manufacturerName = tree.getProperty("manufacturer");
+        this->version = tree.getProperty("version");
+        this->fileOrIdentifier = tree.getProperty("file");
+        this->uid = tree.getProperty("uid").toString().getHexValue32();
+        this->lastFileModTime = Time(tree.getProperty("fileTime").toString().getHexValue64());
+        this->isInstrument = tree.getProperty("isInstrument", false);
+        this->numInputChannels = tree.getProperty("numInputs");
+        this->numOutputChannels = tree.getProperty("numOutputs");
 
         this->verify();
-
-        return true;
     }
+}
 
-    return false;
+void PluginSmartDescription::reset()
+{
+    this->name = {};
+    this->uid = {};
+}
+
+bool PluginSmartDescription::isValid() const
+{
+    return this->name.isNotEmpty();
 }
 
 void PluginSmartDescription::verify()

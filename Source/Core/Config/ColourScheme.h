@@ -17,7 +17,6 @@
 
 #pragma once
 
-
 // A simple wrapper around colour map hashmap
 // Used for serialization and JUCE_LIVE_CONSTANTs macros
 class ColourScheme : public Serializable
@@ -29,7 +28,7 @@ public:
     ColourScheme(const ColourScheme &other);
     ~ColourScheme() override {}
 
-    typedef HashMap<String, Colour> ColourMap;
+    typedef HashMap<Identifier, Colour> ColourMap;
 
     void randomize();
 

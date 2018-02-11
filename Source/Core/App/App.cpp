@@ -42,6 +42,7 @@
 #include "MainWindow.h"
 #include "Workspace.h"
 #include "RootTreeItem.h"
+#include "PluginSmartDescription.h"
 
 //===----------------------------------------------------------------------===//
 // Static
@@ -528,18 +529,18 @@ void App::checkPlugin(const String &markerFile)
                         scanner.scanAndAddFile(pluginPath, false, typesFound, *format);
                     }
 
-                    // если мы дошли до сих пор, то все хорошо и плагин нас не обрушил
-                    // так и запишем.
+                    // если мы дошли до сих пор, то все хорошо и плагин нас не обрушил - так и запишем.
                     if (typesFound.size() != 0)
                     {
-                        ScopedPointer<XmlElement> typesXml(new XmlElement(Serialization::Core::instrumentRoot));
+                        ValueTree typesNode(Serialization::Core::instrumentRoot);
 
-                        for (auto i : typesFound)
+                        for (const auto description : typesFound)
                         {
-                            typesXml.appendChild(i->createXml());
+                            PluginSmartDescription sd(description);
+                            typesNode.appendChild(sd.serialize());
                         }
 
-                        DataEncoder::saveObfuscated(tempFile, typesXml);
+                        DataEncoder::saveObfuscated(tempFile, typesNode);
                     }
                 }
             }

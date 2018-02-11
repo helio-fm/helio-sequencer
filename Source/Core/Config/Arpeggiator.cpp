@@ -70,13 +70,14 @@ float Arpeggiator::getScale() const
 
 String Arpeggiator::exportSequenceAsTrack() const
 {
-    ScopedPointer<XmlElement> seq = new XmlElement(Serialization::Core::track);
+    ValueTree seq(Serialization::Core::track);
     
     for (int i = 0; i < this->sequence.size(); ++i)
     {
         seq.appendChild(this->sequence.getUnchecked(i).serialize());
     }
     
+    // FIXME serialize somehow
     return seq->createDocument("", false, false, "UTF-8", 1024);
 }
 
@@ -92,30 +93,30 @@ Arpeggiator Arpeggiator::withName(const String &newName) const
     return arp;
 }
 
-Arpeggiator Arpeggiator::withSequenceFromXml(const XmlElement &xml) const
-{
-    Arpeggiator arp(*this);
-
-    const XmlElement *root = (xml.getTagName() == Serialization::Core::track) ?
-        xml : xml.getChildWithName(Serialization::Core::track);
-    
-    if (root == nullptr) { return arp; }
-    
-    Array<Note> xmlPattern;
-    
-    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::note)
-    {
-        xmlPattern.add(Note().withParameters(*e).copyWithNewId());
-    }
-    
-    if (xmlPattern.size() == 0)
-    {
-        return arp;
-    }
-    
-    arp.sequence = xmlPattern;
-    return arp;
-}
+//Arpeggiator Arpeggiator::withSequenceFromXml(const XmlElement &xml) const
+//{
+//    Arpeggiator arp(*this);
+//
+//    const auto root = xml.hasType(Serialization::Core::track) ?
+//        xml : xml.getChildWithName(Serialization::Core::track);
+//    
+//    if (!root.isValid()) { return arp; }
+//    
+//    Array<Note> xmlPattern;
+//    
+//    forEachValueTreeChildWithType(root, e, Serialization::Core::note)
+//    {
+//        xmlPattern.add(Note().withParameters(*e).copyWithNewId());
+//    }
+//    
+//    if (xmlPattern.size() == 0)
+//    {
+//        return arp;
+//    }
+//    
+//    arp.sequence = xmlPattern;
+//    return arp;
+//}
 
 Arpeggiator Arpeggiator::withSequence(const Array<Note> &arpSequence) const
 {
@@ -224,27 +225,27 @@ ValueTree Arpeggiator::serialize() const
 
 void Arpeggiator::deserialize(const ValueTree &tree)
 {
-    const XmlElement *root = (tree.getTagName() == Serialization::Arps::arpeggiator) ?
-    tree : tree.getChildWithName(Serialization::Arps::arpeggiator);
+    const auto root = tree.hasType(Serialization::Arps::arpeggiator) ?
+        tree : tree.getChildWithName(Serialization::Arps::arpeggiator);
     
-    if (root == nullptr) { return; }
+    if (!root.isValid()) { return; }
 
     
-    const XmlElement *seq = root->getChildByName(Serialization::Arps::sequence);
+    const auto seq = root.getChildWithName(Serialization::Arps::sequence);
     
     Array<Note> xmlPattern;
     
-    forEachXmlChildElementWithTagName(*seq, e, Serialization::Core::note)
+    forEachValueTreeChildWithType(seq, e, Serialization::Core::note)
     {
-        xmlPattern.add(Note().withParameters(*e).copyWithNewId());
+        xmlPattern.add(Note().withParameters(e).copyWithNewId());
     }
     
     this->sequence = xmlPattern;
 
-    this->reversedMode = tree.getBoolAttribute(Serialization::Arps::isReversed, false);
-    this->relativeMappingMode = tree.getBoolAttribute(Serialization::Arps::relativeMapping, true);
-    this->limitToChordMode = tree.getBoolAttribute(Serialization::Arps::limitsToChord, false);
-    this->scale = float(tree.getDoubleAttribute(Serialization::Arps::scale, 1.f));
+    this->reversedMode = tree.getProperty(Serialization::Arps::isReversed, false);
+    this->relativeMappingMode = tree.getProperty(Serialization::Arps::relativeMapping, true);
+    this->limitToChordMode = tree.getProperty(Serialization::Arps::limitsToChord, false);
+    this->scale = float(tree.getProperty(Serialization::Arps::scale, 1.f));
     
     this->id = tree.getProperty(Serialization::Arps::id, this->getId());
     this->name = tree.getProperty(Serialization::Arps::name, this->getName());

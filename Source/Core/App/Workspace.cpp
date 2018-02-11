@@ -363,11 +363,11 @@ void Workspace::createEmptyWorkspace()
 
 bool Workspace::onDocumentLoad(File &file)
 {
-    ScopedPointer<XmlElement> xml(DataEncoder::loadObfuscated(file));
+    const ValueTree tree(DataEncoder::loadObfuscated(file));
     
-    if (xml)
+    if (tree.isValid())
     {
-        this->deserialize(*xml);
+        this->deserialize(tree);
         return true;
     }
     
@@ -378,8 +378,8 @@ bool Workspace::onDocumentLoad(File &file)
 
 bool Workspace::onDocumentSave(File &file)
 {
-    ScopedPointer<XmlElement> xml(this->serialize());
-    return DataEncoder::saveObfuscated(file, xml);
+    const auto document(this->serialize());
+    return DataEncoder::saveObfuscated(file, document);
 }
 
 void Workspace::onDocumentImport(File &file)
@@ -411,8 +411,9 @@ static void addAllActiveItemIds(TreeViewItem *item, ValueTree &parent)
     {
         if (treeItem->isMarkerVisible())
         {
-            parent.createNewChildElement(Serialization::Core::selectedTreeItem)->
-                setAttribute(Serialization::Core::treeItemId, item->getItemIdentifierString());
+            ValueTree child(Serialization::Core::selectedTreeItem);
+            child.setProperty(Serialization::Core::treeItemId, item->getItemIdentifierString());
+            parent.appendChild(child);
         }
         
         for (int i = 0; i < item->getNumSubItems(); ++i)
@@ -474,13 +475,13 @@ void Workspace::deserialize(const ValueTree &tree)
 {
     this->reset();
     
-    const auto root = tree.hasType(Serialization::Core::workspace) ?
+    auto root = tree.hasType(Serialization::Core::workspace) ?
         tree : tree.getChildWithName(Serialization::Core::workspace);
     
     if (root.isValid())
     {
         // Since we are supposed to be the root element, let's attempt to deserialize anyway
-        root = tree.getFirstChildElement();
+        root = tree.getChild(0);
     }
     
     this->recentFilesList->deserialize(root);
@@ -489,10 +490,10 @@ void Workspace::deserialize(const ValueTree &tree)
     this->treeRoot->deserialize(root);
     
     bool foundActiveNode = false;
-    
-    if (XmlElement *treeStateNode = root->getChildByName(Serialization::Core::treeState))
+    const auto treeStateNode = root.getChildWithName(Serialization::Core::treeState);
+    if (treeStateNode.isValid())
     {
-        forEachXmlChildElementWithTagName(*treeStateNode, e, Serialization::Core::selectedTreeItem)
+        forEachValueTreeChildWithType(treeStateNode, e, Serialization::Core::selectedTreeItem)
         {
             const String id = e.getProperty(Serialization::Core::treeItemId);
             foundActiveNode = (nullptr != selectActiveSubItemWithId(this->treeRoot, id));

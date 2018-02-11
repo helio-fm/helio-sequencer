@@ -123,7 +123,7 @@ DocumentWindow("Helio",
     const bool shouldEnableOpenGLByDefault = false;
 #endif
 
-    if ((openGLState == Serialization::Core::enabledState) || shouldEnableOpenGLByDefault)
+    if ((openGLState == Serialization::Core::enabledState.toString()) || shouldEnableOpenGLByDefault)
     {
         this->setOpenGLRendererEnabled(true);
     }

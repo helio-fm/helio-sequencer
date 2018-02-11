@@ -57,7 +57,7 @@ public:
 
     AudioProcessorGraph::Node::Ptr addNode(Instrument *instrument, double x, double y);
     void addNodeAsync(const PluginDescription &desc, double x, double y,
-        std::function<void (AudioProcessorGraph::Node::Ptr)> f);
+        Function<void (AudioProcessorGraph::Node::Ptr)> f);
 
     void removeNode(AudioProcessorGraph::NodeID id);
     void disconnectNode(AudioProcessorGraph::NodeID id);
@@ -134,10 +134,10 @@ private:
     AudioProcessorGraph::NodeID lastUID;
     AudioProcessorGraph::NodeID getNextUID() noexcept;
 
-    XmlElement *createNodeXml(AudioProcessorGraph::Node::Ptr node) const;
-    void createNodeFromXml(const XmlElement &xml);
-    void createNodeFromXmlAsync(const XmlElement &xml,
-        std::function<void (AudioProcessorGraph::Node::Ptr)> f);
+    ValueTree serializeNode(AudioProcessorGraph::Node::Ptr node) const;
+    void deserializeNode(const ValueTree &tree);
+    void deserializeNodeAsync(const ValueTree &tree,
+        Function<void (AudioProcessorGraph::Node::Ptr)> f);
 
 private:
 

@@ -602,7 +602,7 @@ float PatternRoll::getZoomFactorY() const
 // ClipboardOwner
 //===----------------------------------------------------------------------===//
 
-XmlElement *PatternRoll::clipboardCopy() const
+ValueTree PatternRoll::clipboardCopy() const
 {
     ValueTree tree(Serialization::Clipboard::clipboard);
 
@@ -637,28 +637,28 @@ XmlElement *PatternRoll::clipboardCopy() const
     return tree;
 }
 
-void PatternRoll::clipboardPaste(const XmlElement &xml)
+void PatternRoll::clipboardPaste(const ValueTree &tree)
 {
-    const XmlElement *root =
-        (xml.getTagName() == Serialization::Clipboard::clipboard) ?
-        xml : xml.getChildWithName(Serialization::Clipboard::clipboard);
+    const auto root =
+        tree.hasType(Serialization::Clipboard::clipboard) ?
+        tree : tree.getChildWithName(Serialization::Clipboard::clipboard);
 
-    if (root == nullptr) { return; }
+    if (!root.isValid()) { return; }
 
     bool didCheckpoint = false;
 
     const float indicatorRoughBeat = this->getBeatByTransportPosition(this->project.getTransport().getSeekPosition());
     const float indicatorBeat = roundf(indicatorRoughBeat * 1000.f) / 1000.f;
 
-    const double firstBeat = root->getDoubleAttribute(Serialization::Clipboard::firstBeat);
-    const double lastBeat = root->getDoubleAttribute(Serialization::Clipboard::lastBeat);
+    const double firstBeat = root.getProperty(Serialization::Clipboard::firstBeat);
+    const double lastBeat = root.getProperty(Serialization::Clipboard::lastBeat);
     const bool indicatorIsWithinSelection = (indicatorBeat >= firstBeat) && (indicatorBeat < lastBeat);
     const float startBeatAligned = roundf(float(firstBeat));
     const float deltaBeat = (indicatorBeat - startBeatAligned);
 
     this->deselectAll();
 
-    forEachXmlChildElementWithTagName(*root, patternElement, Serialization::Core::pattern)
+    forEachValueTreeChildWithType(root, patternElement, Serialization::Core::pattern)
     {
         Array<Clip> pastedClips;
         const String patternId = patternElement.getProperty(Serialization::Clipboard::patternId);
@@ -667,9 +667,9 @@ void PatternRoll::clipboardPaste(const XmlElement &xml)
         {
             Pattern *targetPattern = this->project.findPatternByTrackId(patternId);
             
-            forEachXmlChildElementWithTagName(*patternElement, clipElement, Serialization::Core::clip)
+            forEachValueTreeChildWithType(patternElement, clipElement, Serialization::Core::clip)
             {
-                Clip &&c = Clip(targetPattern).withParameters(*clipElement).copyWithNewId();
+                Clip &&c = Clip(targetPattern).withParameters(clipElement).copyWithNewId();
                 pastedClips.add(c.withDeltaBeat(deltaBeat));
             }
             
@@ -695,7 +695,6 @@ void PatternRoll::clipboardPaste(const XmlElement &xml)
                 }
             }
         }
-
     }
 
     return;
@@ -831,19 +830,19 @@ void PatternRoll::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root =
-        (tree.getTagName() == Serialization::Core::midiRoll) ?
+    const auto root =
+        tree.hasType(Serialization::Core::midiRoll) ?
         tree : tree.getChildWithName(Serialization::Core::midiRoll);
 
-    if (root == nullptr)
+    if (!root.isValid())
     { return; }
 
-    this->setBarWidth(float(root->getDoubleAttribute("barWidth", this->getBarWidth())));
+    this->setBarWidth(float(root.getProperty("barWidth", this->getBarWidth())));
 
     // FIXME doesn't work right for now, as view range is sent after this
-    const float startBar = float(root->getDoubleAttribute("startBar", 0.0));
+    const float startBar = float(root.getProperty("startBar", 0.0));
     const int x = this->getXPositionByBar(startBar);
-    const int y = root->getIntAttribute("y");
+    const int y = root.getProperty("y");
     this->getViewport().setViewPosition(x, y);
 
     // restore selection?

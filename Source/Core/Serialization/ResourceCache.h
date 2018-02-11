@@ -44,7 +44,7 @@ public:
         ScopedPointer<XmlElement> xml(XmlDocument::parse(resourceXml));
         if (xml == nullptr) { return this->cache; }
 
-        forEachXmlChildElementWithTagName(*xml, resourceRoot, tag)
+        forEachValueTreeChildWithType(xml, resourceRoot, tag)
         {
             T t;
             t.deserialize(*resourceRoot);

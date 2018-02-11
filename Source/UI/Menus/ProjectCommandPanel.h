@@ -52,8 +52,8 @@ private:
 
     bool haveSetBatchCheckpoint;
     
-    String createPianoLayerTempate(const String &name) const;
-    String createAutoLayerTempate(const String &name, int controllerNumber, const String &instrumentId = "") const;
+    ValueTree createPianoLayerTempate(const String &name) const;
+    ValueTree createAutoLayerTempate(const String &name, int controllerNumber, const String &instrumentId = "") const;
     
     void proceedToRenderDialog(const String &extension);
     void dismiss();

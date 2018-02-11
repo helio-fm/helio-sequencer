@@ -31,8 +31,8 @@ public:
     static String getMachineId();
     static bool hasNewMachineId();
 
-    static void set(const String &keyName, const var &value);
-    static void set(const String &keyName, const XmlElement *xml);
+    static void set(const Identifier &keyName, const var &value);
+    static void set(const Identifier &keyName, const XmlElement *xml);
 
     static String get(StringRef keyName, const String &defaultReturnValue = String::empty);
     static bool contains(StringRef keyName);

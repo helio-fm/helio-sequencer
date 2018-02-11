@@ -38,14 +38,14 @@ bool Config::hasNewMachineId()
     return App::Helio()->getConfig()->machineIdChanged();
 }
 
-void Config::set(const String &keyName, const var &value)
+void Config::set(const Identifier &keyName, const var &value)
 {
-    App::Helio()->getConfig()->setValue(keyName, value);
+    App::Helio()->getConfig()->setValue(keyName.toString(), value);
 }
 
-void Config::set(const String &keyName, const XmlElement *xml)
+void Config::set(const Identifier &keyName, const XmlElement *xml)
 {
-    App::Helio()->getConfig()->setValue(keyName, xml);
+    App::Helio()->getConfig()->setValue(keyName.toString(), xml);
 }
 
 String Config::get(StringRef keyName, const String &defaultReturnValue /*= String::empty*/)
@@ -162,23 +162,21 @@ bool Config::reload()
 
     InterProcessLock::ScopedLockType fLock(this->fileLock);
 
-    //if (!fLock.isLocked()) { return false; }
-
     ScopedPointer<XmlElement> doc(DataEncoder::loadObfuscated(this->propertiesFile));
 
     if (doc != nullptr)
     {
         if (doc->hasTagName(Serialization::Core::globalConfig))
         {
-            forEachXmlChildElementWithTagName(*doc, e, Serialization::Core::valueTag)
+            forEachValueTreeChildWithType(doc, e, Serialization::Core::valueTag)
             {
                 const String name(e.getProperty(Serialization::Core::nameAttribute));
 
                 if (name.isNotEmpty())
                 {
                     getAllProperties().set(name,
-                                           e->getFirstChildElement() != nullptr
-                                           ? e->getFirstChildElement()->createDocument(String::empty, true)
+                                           e.getChild(0) != nullptr
+                                           ? e.getChild(0)->createDocument(String::empty, true)
                                            : e.getProperty(Serialization::Core::valueAttribute));
                 }
             }
@@ -199,7 +197,8 @@ void Config::timerCallback()
 
 void Config::saveConfig(const String &key, const Serializable *serializer)
 {
-    ScopedPointer<XmlElement> serialized(serializer->serialize());
+    const auto value(serializer->serialize());
+    // TODO serialize somehow
     this->setValue(key, serialized);
 }
 

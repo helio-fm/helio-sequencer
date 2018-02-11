@@ -107,8 +107,8 @@ public:
     // ClipboardOwner
     //===------------------------------------------------------------------===//
 
-    XmlElement *clipboardCopy() const override;
-    void clipboardPaste(const XmlElement &xml) override;
+    ValueTree clipboardCopy() const override;
+    void clipboardPaste(const ValueTree &tree) override;
 
     //===------------------------------------------------------------------===//
     // Component

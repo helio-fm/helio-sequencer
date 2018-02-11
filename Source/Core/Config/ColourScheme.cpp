@@ -225,24 +225,23 @@ ValueTree ColourScheme::serialize() const
 
 void ColourScheme::deserialize(const ValueTree &tree)
 {
-    const XmlElement *root =
-        tree.hasTagName(Serialization::UI::Colours::scheme) ?
+    const auto root =
+        tree.hasType(Serialization::UI::Colours::scheme) ?
         tree : tree.getChildWithName(Serialization::UI::Colours::scheme);
 
-    if (root == nullptr) { return; }
+    if (!root.isValid()) { return; }
 
     this->reset();
 
     this->name = root.getProperty(Serialization::UI::Colours::name);
     this->id = root.getProperty(Serialization::UI::Colours::id);
 
-    const XmlElement *mapXml =
-        root->getChildByName(Serialization::UI::Colours::colourMap);
-
-    for (int i = 0; i < mapXml->getNumAttributes(); ++i)
+    const auto map = root.getChildWithName(Serialization::UI::Colours::colourMap);
+    for (int i = 0; i < map.getNumProperties(); ++i)
     {
-        const Colour c(Colour::fromString(mapXml->getAttributeValue(i)));
-        this->colours.set(mapXml->getAttributeName(i), c);
+        const auto propertyName = map.getPropertyName(i);
+        const Colour c(Colour::fromString(map[propertyName].toString()));
+        this->colours.set(propertyName.toString(), c);
     }
 }
 
