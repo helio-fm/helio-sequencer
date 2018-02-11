@@ -116,10 +116,10 @@ KeySignatureEvent KeySignatureEvent::withScale(Scale scale) const
     return e;
 }
 
-KeySignatureEvent KeySignatureEvent::withParameters(const XmlElement &xml) const
+KeySignatureEvent KeySignatureEvent::withParameters(const ValueTree &parameters) const
 {
     KeySignatureEvent e(*this);
-    e.deserialize(xml);
+    e.deserialize(parameters);
     return e;
 }
 
@@ -161,14 +161,14 @@ ValueTree KeySignatureEvent::serialize() const
 void KeySignatureEvent::deserialize(const ValueTree &tree)
 {
     this->reset();
-    this->rootKey = tree.getIntAttribute("key", 0);
-    this->beat = float(tree.getDoubleAttribute("beat"));
+    this->rootKey = tree.getProperty("key", 0);
+    this->beat = tree.getProperty("beat");
     this->id = tree.getProperty("id");
 
     // Anyway there is only one child scale for now:
-    forEachXmlChildElementWithTagName(tree, e, Serialization::Core::scale)
+    forEachValueTreeChildWithType(tree, e, Serialization::Core::scale)
     {
-        this->scale.deserialize(*e);
+        this->scale.deserialize(e);
     }
 }
 

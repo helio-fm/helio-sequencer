@@ -84,10 +84,10 @@ Clip Clip::copyWithNewId(Pattern *newOwner) const
     return c;
 }
 
-Clip Clip::withParameters(const XmlElement &xml) const
+Clip Clip::withParameters(const ValueTree &tree) const
 {
     Clip c(*this);
-    c.deserialize(xml);
+    c.deserialize(tree);
     return c;
 }
 
@@ -108,7 +108,7 @@ ValueTree Clip::serialize() const
 
 void Clip::deserialize(const ValueTree &tree)
 {
-    this->startBeat = float(tree.getDoubleAttribute("start", this->startBeat));
+    this->startBeat = float(tree.getProperty("start", this->startBeat));
     this->id = tree.getProperty("id", this->id);
 }
 

@@ -276,11 +276,11 @@ void AnnotationsSequence::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root =
-        (tree.getTagName() == Serialization::Core::annotations) ?
+    const auto root =
+        tree.hasType(Serialization::Core::annotations) ?
         tree : tree.getChildWithName(Serialization::Core::annotations);
 
-    if (root == nullptr)
+    if (!root.isValid())
     {
         return;
     }
@@ -288,10 +288,10 @@ void AnnotationsSequence::deserialize(const ValueTree &tree)
     float lastBeat = 0;
     float firstBeat = 0;
 
-    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::annotation)
+    forEachValueTreeChildWithType(root, e, Serialization::Core::annotation)
     {
         AnnotationEvent *annotation = new AnnotationEvent(this);
-        annotation->deserialize(*e);
+        annotation->deserialize(e);
         
         this->midiEvents.add(annotation); // sorted later
 

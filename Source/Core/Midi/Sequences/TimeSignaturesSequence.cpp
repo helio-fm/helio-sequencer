@@ -274,11 +274,11 @@ void TimeSignaturesSequence::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root =
-        (tree.getTagName() == Serialization::Core::timeSignatures) ?
+    const auto root =
+        tree.hasType(Serialization::Core::timeSignatures) ?
         tree : tree.getChildWithName(Serialization::Core::timeSignatures);
 
-    if (root == nullptr)
+    if (!root.isValid())
     {
         return;
     }
@@ -286,10 +286,10 @@ void TimeSignaturesSequence::deserialize(const ValueTree &tree)
     float lastBeat = 0;
     float firstBeat = 0;
 
-    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::timeSignature)
+    forEachValueTreeChildWithType(root, e, Serialization::Core::timeSignature)
     {
         TimeSignatureEvent *signature = new TimeSignatureEvent(this);
-        signature->deserialize(*e);
+        signature->deserialize(e);
         
         this->midiEvents.add(signature); // sorted later
 

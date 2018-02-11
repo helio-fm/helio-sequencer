@@ -213,13 +213,12 @@ AutomationEvent AutomationEvent::withCurvature(float newCurvature) const
     return ae;
 }
 
-AutomationEvent AutomationEvent::withParameters(const XmlElement &xml) const
+AutomationEvent AutomationEvent::withParameters(const ValueTree &parameters) const
 {
     AutomationEvent ae(*this);
-    ae.deserialize(xml);
+    ae.deserialize(parameters);
     return ae;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Accessors
@@ -282,9 +281,9 @@ void AutomationEvent::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    this->controllerValue = float(tree.getDoubleAttribute("val"));
-    this->curvature = float(tree.getDoubleAttribute("curve", AUTOEVENT_DEFAULT_CURVATURE));
-    this->beat = float(tree.getDoubleAttribute("beat"));
+    this->controllerValue = float(tree.getProperty("val"));
+    this->curvature = float(tree.getProperty("curve", AUTOEVENT_DEFAULT_CURVATURE));
+    this->beat = float(tree.getProperty("beat"));
     this->id = tree.getProperty("id");
 }
 

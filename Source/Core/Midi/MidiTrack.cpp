@@ -31,46 +31,46 @@ int MidiTrack::compareElements(const MidiTrack *const first, const MidiTrack *co
     return first->getTrackName().compareNatural(second->getTrackName());
 }
 
-void MidiTrack::serializeTrackProperties(XmlElement &xml) const
+void MidiTrack::serializeTrackProperties(ValueTree &tree) const
 {
-    xml.setAttribute(Serialization::Core::trackId,
+    tree.setProperty(Serialization::Core::trackId,
         this->getTrackId().toString());
-    xml.setAttribute(Serialization::Core::trackColour,
+    tree.setProperty(Serialization::Core::trackColour,
         this->getTrackColour().toString());
-    xml.setAttribute(Serialization::Core::trackMuteState,
+    tree.setProperty(Serialization::Core::trackMuteState,
         this->getTrackMuteStateAsString());
-    xml.setAttribute(Serialization::Core::trackChannel,
+    tree.setProperty(Serialization::Core::trackChannel,
         this->getTrackChannel());
-    xml.setAttribute(Serialization::Core::trackInstrumentId,
+    tree.setProperty(Serialization::Core::trackInstrumentId,
         this->getTrackInstrumentId());
-    xml.setAttribute(Serialization::Core::trackControllerNumber,
+    tree.setProperty(Serialization::Core::trackControllerNumber,
         this->getTrackControllerNumber());
 }
 
-void MidiTrack::deserializeTrackProperties(const XmlElement &xml)
+void MidiTrack::deserializeTrackProperties(const ValueTree &tree)
 {
-    auto trackId =
-        Uuid(xml.getStringAttribute(Serialization::Core::trackId,
+    const auto trackId =
+        Uuid(tree.getProperty(Serialization::Core::trackId,
             this->getTrackId().toString()));
 
-    auto colour =
-        Colour::fromString(xml.getStringAttribute(Serialization::Core::trackColour,
-            this->getTrackColour().toString()));
+    const auto colour =
+        tree.getProperty(Serialization::Core::trackColour,
+            this->getTrackColour().toString()).toString();
 
-    auto muted =
+    const auto muted =
         MidiTrack::isTrackMuted(
-            xml.getStringAttribute(Serialization::Core::trackMuteState));
+            tree.getProperty(Serialization::Core::trackMuteState));
 
-    auto channel =
-        xml.getIntAttribute(Serialization::Core::trackChannel,
+    const auto channel =
+        tree.getProperty(Serialization::Core::trackChannel,
             this->getTrackChannel());
 
-    auto instrumentId =
-        xml.getStringAttribute(Serialization::Core::trackInstrumentId,
+    const auto instrumentId =
+        tree.getProperty(Serialization::Core::trackInstrumentId,
             this->getTrackInstrumentId());
 
-    auto controllerNumber =
-        xml.getIntAttribute(Serialization::Core::trackControllerNumber,
+    const auto controllerNumber =
+        tree.getProperty(Serialization::Core::trackControllerNumber,
             this->getTrackControllerNumber());
 
     this->setTrackId(trackId);
@@ -78,7 +78,7 @@ void MidiTrack::deserializeTrackProperties(const XmlElement &xml)
     // Do not send notifications:
     // track is not supposed to update listeners meanwhile loading,
     // its up to caller to make sure the views are updated after
-    this->setTrackColour(colour, false);
+    this->setTrackColour(Colour::fromString(colour), false);
     this->setTrackInstrumentId(instrumentId, false);
     this->setTrackControllerNumber(controllerNumber, false);
     this->setTrackInstrumentId(instrumentId, false);

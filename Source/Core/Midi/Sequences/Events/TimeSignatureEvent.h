@@ -45,7 +45,7 @@ public:
     TimeSignatureEvent withBeat(float newBeat) const;
     TimeSignatureEvent withNumerator(const int newNumerator) const;
     TimeSignatureEvent withDenominator(const int newDenominator) const;
-    TimeSignatureEvent withParameters(const XmlElement &xml) const;
+    TimeSignatureEvent withParameters(const ValueTree &parameters) const;
 
     //===------------------------------------------------------------------===//
     // Accessors

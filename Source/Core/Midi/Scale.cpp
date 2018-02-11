@@ -230,10 +230,10 @@ ValueTree Scale::serialize() const
 
 void Scale::deserialize(const ValueTree &tree)
 {
-    const XmlElement *root = (tree.getTagName() == Serialization::Core::scale) ?
+    const auto root = tree.hasType(Serialization::Core::scale) ?
         tree : tree.getChildWithName(Serialization::Core::scale);
 
-    if (root == nullptr) { return; }
+    if (!root.isValid()) { return; }
 
     this->reset();
 

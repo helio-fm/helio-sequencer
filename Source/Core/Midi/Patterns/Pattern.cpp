@@ -299,19 +299,19 @@ void Pattern::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root =
-        (tree.getTagName() == Serialization::Core::pattern) ?
+    const auto root =
+        tree.hasType(Serialization::Core::pattern) ?
         tree : tree.getChildWithName(Serialization::Core::pattern);
 
-    if (root == nullptr)
+    if (!root.isValid())
     {
         return;
     }
 
-    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::clip)
+    forEachValueTreeChildWithType(root, e, Serialization::Core::clip)
     {
         auto clip = new Clip(this);
-        clip->deserialize(*e);
+        clip->deserialize(e);
         this->clips.add(clip); // sorted later
         this->usedClipIds.insert(clip->getId());
     }

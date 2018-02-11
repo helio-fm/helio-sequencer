@@ -45,7 +45,7 @@ public:
     Note withLength(float newLength) const;
     Note withDeltaLength(float deltaLength) const;
     Note withVelocity(float newVelocity) const;
-    Note withParameters(const XmlElement &xml) const;
+    Note withParameters(const ValueTree &parameters) const;
 
     //===------------------------------------------------------------------===//
     // Accessors

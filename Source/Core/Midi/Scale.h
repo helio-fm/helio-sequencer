@@ -17,7 +17,6 @@
 
 #pragma once
 
-
 #define CHROMATIC_SCALE_SIZE 12
 
 class Scale final : public Serializable

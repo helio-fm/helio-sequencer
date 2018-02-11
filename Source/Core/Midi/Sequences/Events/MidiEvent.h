@@ -17,7 +17,6 @@
 
 #pragma once
 
-
 class MidiSequence;
 
 class MidiEvent : public Serializable

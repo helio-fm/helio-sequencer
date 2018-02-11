@@ -17,7 +17,6 @@
 
 #pragma once
 
-
 class Pattern;
 
 // Just an instance of a midi sequence on a certain position.
@@ -42,7 +41,7 @@ public:
     bool isValid() const noexcept;
 
     Clip copyWithNewId(Pattern *newOwner = nullptr) const;
-    Clip withParameters(const XmlElement &xml) const;
+    Clip withParameters(const ValueTree &tree) const;
     Clip withDeltaBeat(float deltaPosition) const;
 
     //===------------------------------------------------------------------===//

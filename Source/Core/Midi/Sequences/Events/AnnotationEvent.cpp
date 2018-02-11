@@ -87,10 +87,10 @@ AnnotationEvent AnnotationEvent::withColour(const Colour &newColour) const
     return ae;
 }
 
-AnnotationEvent AnnotationEvent::withParameters(const XmlElement &xml) const
+AnnotationEvent AnnotationEvent::withParameters(const ValueTree &parameters) const
 {
     AnnotationEvent ae(*this);
-    ae.deserialize(xml);
+    ae.deserialize(parameters);
     return ae;
 }
 
@@ -137,7 +137,7 @@ void AnnotationEvent::deserialize(const ValueTree &tree)
 
     this->description = tree.getProperty("text");
     this->colour = Colour::fromString(tree.getProperty("col"));
-    this->beat = float(tree.getDoubleAttribute("beat"));
+    this->beat = float(tree.getProperty("beat"));
     this->id = tree.getProperty("id");
 }
 

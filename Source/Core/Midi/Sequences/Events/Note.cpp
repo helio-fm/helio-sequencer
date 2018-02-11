@@ -136,10 +136,10 @@ Note Note::withVelocity(float newVelocity) const
     return other;
 }
 
-Note Note::withParameters(const XmlElement &xml) const
+Note Note::withParameters(const ValueTree &parameters) const
 {
     Note n(*this);
-    n.deserialize(xml);
+    n.deserialize(parameters);
     return n;
 }
 
@@ -184,10 +184,10 @@ void Note::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const int xmlKey = tree.getIntAttribute("key");
-    const float xmlBeat = float(tree.getDoubleAttribute("beat"));
-    const float xmlLength = float(tree.getDoubleAttribute("len"));
-    const float xmlVelocity = float(tree.getIntAttribute("vel")) / VELOCITY_SAVE_ACCURACY;
+    const int xmlKey = tree.getProperty("key");
+    const float xmlBeat = float(tree.getProperty("beat"));
+    const float xmlLength = float(tree.getProperty("len"));
+    const float xmlVelocity = float(tree.getProperty("vel")) / VELOCITY_SAVE_ACCURACY;
     const String& xmlId = tree.getProperty("id");
 
     this->key = xmlKey;

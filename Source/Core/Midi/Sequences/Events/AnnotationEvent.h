@@ -40,7 +40,7 @@ public:
     AnnotationEvent withBeat(float newBeat) const;
     AnnotationEvent withDescription(const String &newDescription) const;
     AnnotationEvent withColour(const Colour &newColour) const;
-    AnnotationEvent withParameters(const XmlElement &xml) const;
+    AnnotationEvent withParameters(const ValueTree &parameters) const;
 
     //===------------------------------------------------------------------===//
     // Accessors

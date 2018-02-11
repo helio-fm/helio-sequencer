@@ -349,19 +349,19 @@ void PianoSequence::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root = 
-        (tree.getTagName() == Serialization::Core::track) ?
+    const auto root =
+        tree.hasType(Serialization::Core::track) ?
         tree : tree.getChildWithName(Serialization::Core::track);
 
-    if (root == nullptr)
+    if (!root.isValid())
     {
         return;
     }
 
-    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::note)
+    forEachValueTreeChildWithType(root, e, Serialization::Core::note)
     {
         auto note = new Note(this);
-        note->deserialize(*e);
+        note->deserialize(e);
 
         this->midiEvents.add(note); // sorted later
         this->usedEventIds.insert(note->getId());

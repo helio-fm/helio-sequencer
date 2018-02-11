@@ -273,20 +273,20 @@ void AutomationSequence::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root = 
-        (tree.getTagName() == Serialization::Core::automation) ?
+    const auto root =
+        tree.hasType(Serialization::Core::automation) ?
         tree : tree.getChildWithName(Serialization::Core::automation);
 
-    if (root == nullptr)
+    if (!root.isValid())
     { return; }
 
     float firstBeat = 0;
     float lastBeat = 0;
 
-    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::event)
+    forEachValueTreeChildWithType(root, e, Serialization::Core::event)
     {
         auto event = new AutomationEvent(this, 0, 0);
-        event->deserialize(*e);
+        event->deserialize(e);
         
         this->midiEvents.add(event); // sorted later
         

@@ -43,7 +43,7 @@ public:
     KeySignatureEvent withBeat(float newBeat) const;
     KeySignatureEvent withRootKey(Note::Key key) const;
     KeySignatureEvent withScale(Scale scale) const;
-    KeySignatureEvent withParameters(const XmlElement &xml) const;
+    KeySignatureEvent withParameters(const ValueTree &parameters) const;
 
     //===------------------------------------------------------------------===//
     // Accessors

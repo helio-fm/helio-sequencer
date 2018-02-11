@@ -106,10 +106,10 @@ TimeSignatureEvent TimeSignatureEvent::withDenominator(const int newDenominator)
     return e;
 }
 
-TimeSignatureEvent TimeSignatureEvent::withParameters(const XmlElement &xml) const
+TimeSignatureEvent TimeSignatureEvent::withParameters(const ValueTree &parameters) const
 {
     TimeSignatureEvent e(*this);
-    e.deserialize(xml);
+    e.deserialize(parameters);
     return e;
 }
 
@@ -158,9 +158,9 @@ ValueTree TimeSignatureEvent::serialize() const
 void TimeSignatureEvent::deserialize(const ValueTree &tree)
 {
     this->reset();
-    this->numerator = tree.getIntAttribute("numerator", TIME_SIGNATURE_DEFAULT_NUMERATOR);
-    this->denominator = tree.getIntAttribute("denominator", TIME_SIGNATURE_DEFAULT_DENOMINATOR);
-    this->beat = float(tree.getDoubleAttribute("beat"));
+    this->numerator = tree.getProperty("numerator", TIME_SIGNATURE_DEFAULT_NUMERATOR);
+    this->denominator = tree.getProperty("denominator", TIME_SIGNATURE_DEFAULT_DENOMINATOR);
+    this->beat = float(tree.getProperty("beat"));
     this->id = tree.getProperty("id");
 }
 

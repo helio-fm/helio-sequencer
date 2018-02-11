@@ -42,7 +42,7 @@ public:
     AutomationEvent withInvertedControllerValue() const;
     AutomationEvent withParameters(float newBeat, float newControllerValue) const;
     AutomationEvent withCurvature(float newCurvature) const;
-    AutomationEvent withParameters(const XmlElement &xml) const;
+    AutomationEvent withParameters(const ValueTree &parameters) const;
     
     //===------------------------------------------------------------------===//
     // Accessors

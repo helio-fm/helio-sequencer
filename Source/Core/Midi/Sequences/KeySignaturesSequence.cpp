@@ -288,11 +288,11 @@ void KeySignaturesSequence::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root =
-        (tree.getTagName() == Serialization::Core::keySignatures) ?
+    const auto root =
+        tree.hasType(Serialization::Core::keySignatures) ?
         tree : tree.getChildWithName(Serialization::Core::keySignatures);
 
-    if (root == nullptr)
+    if (!root.isValid())
     {
         return;
     }
@@ -300,10 +300,10 @@ void KeySignaturesSequence::deserialize(const ValueTree &tree)
     float lastBeat = 0;
     float firstBeat = 0;
 
-    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::keySignature)
+    forEachValueTreeChildWithType(root, e, Serialization::Core::keySignature)
     {
         auto signature = new KeySignatureEvent(this);
-        signature->deserialize(*e);
+        signature->deserialize(e);
         
         this->midiEvents.add(signature); // sorted later
 
