@@ -111,6 +111,9 @@ inline float roundBeat(float beat)
     return roundf(beat * 16.f) / 16.f;
 }
 
+#define forEachValueTreeChildWithType(parentElement, childName, requiredType) \
+    for (const auto &childName : parentElement) if (childName.hasType(requiredType))
+
 //===----------------------------------------------------------------------===//
 // Internationalization
 //===----------------------------------------------------------------------===//

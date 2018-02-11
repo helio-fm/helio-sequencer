@@ -43,20 +43,16 @@ RevisionItem::RevisionItem(Pack::Ptr packPtr, Type type, TrackedItem *targetToCo
         for (int i = 0; i < targetToCopy->getNumDeltas(); ++i)
         {
             this->deltas.add(new Delta(*targetToCopy->getDelta(i)));
-            this->deltasData.add(targetToCopy->createDeltaDataFor(i));
+            this->deltasData.add(targetToCopy->serializeDeltaData(i));
         }
     }
 }
-
-RevisionItem::~RevisionItem() {}
-
-
 
 void RevisionItem::flushData()
 {
     for (int i = 0; i < this->deltasData.size(); ++i)
     {
-        this->pack->setDeltaDataFor(this->getUuid(), this->deltas[i]->getUuid(), *this->deltasData[i]);
+        this->pack->setDeltaDataFor(this->getUuid(), this->deltas[i]->getUuid(), this->deltasData[i]);
     }
 
     this->deltasData.clear();
@@ -87,10 +83,10 @@ String RevisionItem::getTypeAsString() const
         return TRANS("vcs::delta::type::changed");
     }
 
-    return "";
+    return {};
 }
 
-void RevisionItem::importDataForDelta(const XmlElement *deltaDataToCopy, const String &deltaUuid)
+void VCS::RevisionItem::importDataForDelta(const ValueTree &deltaDataToCopy, const String &deltaUuid)
 {
     for (int i = 0; i < this->deltas.size(); ++i)
     {
@@ -100,10 +96,10 @@ void RevisionItem::importDataForDelta(const XmlElement *deltaDataToCopy, const S
         {
             while (this->deltasData.size() <= i)
             {
-                this->deltasData.add(new XmlElement("dummy"));
+                this->deltasData.add(ValueTree("dummy"));
             }
             
-            ValueTree deepCopy(*deltaDataToCopy);
+            const ValueTree deepCopy(deltaDataToCopy.createCopy());
             this->deltasData.set(i, deepCopy);
             break;
         }
@@ -125,12 +121,12 @@ Delta *RevisionItem::getDelta(int index) const
     return this->deltas[index];
 }
 
-XmlElement *RevisionItem::createDeltaDataFor(int index) const
+ValueTree VCS::RevisionItem::serializeDeltaData(int deltaIndex) const
 {
     // ситуация, когда мы представляем незакоммиченные изменения, и *все* сериализованные данные у нас есть
-    if (index < this->deltasData.size())
+    if (deltaIndex < this->deltasData.size())
     {
-        return new XmlElement(*this->deltasData[index]);
+        return ValueTree(this->deltasData[deltaIndex]);
     }
 
     // иначе мы представляем собой тупо запись в дереве истории,
@@ -138,7 +134,7 @@ XmlElement *RevisionItem::createDeltaDataFor(int index) const
     // надо как-то обратиться к паку
     // и запросить эти данные по паре item id : delta id
 
-    return this->pack->createDeltaDataFor(this->getUuid(), this->deltas[index]->getUuid());
+    return this->pack->createDeltaDataFor(this->getUuid(), this->deltas[deltaIndex]->getUuid());
 }
 
 String RevisionItem::getVCSName() const
@@ -158,13 +154,13 @@ DiffLogic *VCS::RevisionItem::getDiffLogic() const
 
 ValueTree VCS::RevisionItem::serialize() const
 {
-    ValueTree const xml(Serialization::VCS::revisionItem);
+    ValueTree tree(Serialization::VCS::revisionItem);
 
-    this->serializeVCSUuid(*xml);
+    this->serializeVCSUuid(tree);
 
     tree.setProperty(Serialization::VCS::revisionItemType, this->getType());
     tree.setProperty(Serialization::VCS::revisionItemName, this->getVCSName());
-    tree.setProperty(Serialization::VCS::revisionItemDiffLogic, this->getDiffLogic()->getType());
+    tree.setProperty(Serialization::VCS::revisionItemDiffLogic, this->getDiffLogic()->getType().toString());
 
     for (auto delta : this->deltas)
     {
@@ -181,13 +177,13 @@ void VCS::RevisionItem::deserialize(const ValueTree &tree)
     const auto root = tree.hasType(Serialization::VCS::revisionItem) ?
         tree : tree.getChildWithName(Serialization::VCS::revisionItem);
 
-    if (root == nullptr) { return; }
+    if (!root.isValid()) { return; }
 
-    this->deserializeVCSUuid(*root);
+    this->deserializeVCSUuid(root);
 
     this->description = root.getProperty(Serialization::VCS::revisionItemName, "");
 
-    const int type = root->getIntAttribute(Serialization::VCS::revisionItemType, Undefined);
+    const int type = root.getProperty(Serialization::VCS::revisionItemType, Undefined);
     this->vcsItemType = static_cast<Type>(type);
 
     const String logicType =
@@ -198,10 +194,10 @@ void VCS::RevisionItem::deserialize(const ValueTree &tree)
 
     this->logic = DiffLogic::createLogicFor(*this, logicType);
 
-    forEachXmlChildElement(*root, e)
+    for (const auto &e : root)
     {
         Delta *delta(new Delta(DeltaDescription(""), ""));
-        delta->deserialize(*e);
+        delta->deserialize(e);
         this->deltas.add(delta);
     }
 }

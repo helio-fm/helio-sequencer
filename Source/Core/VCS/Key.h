@@ -17,7 +17,6 @@
 
 #pragma once
 
-
 // 128 * 32bit = 4096-bit key
 // or 8 * 64-byte blocks
 #define KEY_SIZE 128
@@ -54,9 +53,9 @@ namespace VCS
         }
 
 
-        //===------------------------------------------------------------------===//
+        //===--------------------------------------------------------------===//
         // Serializable
-        //
+        //===--------------------------------------------------------------===//
 
         ValueTree serialize() const override
         {
@@ -69,12 +68,12 @@ namespace VCS
         {
             this->reset();
 
-            const auto mainSlot = tree.hasType(Serialization::VCS::vcsHistoryKey) ?
-        tree : tree.getChildWithName(Serialization::VCS::vcsHistoryKey);
+            const auto root = tree.hasType(Serialization::VCS::vcsHistoryKey) ?
+                tree : tree.getChildWithName(Serialization::VCS::vcsHistoryKey);
 
-            if (mainSlot == nullptr) { return; }
+            if (!root.isValid()) { return; }
 
-            const String key64Data(mainSlot.getProperty("Data"));
+            const String key64Data = root.getProperty("Data");
 
             this->key.fromBase64Encoding(key64Data);
         }

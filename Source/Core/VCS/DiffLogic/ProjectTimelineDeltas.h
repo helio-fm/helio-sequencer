@@ -19,15 +19,15 @@
 
 namespace ProjectTimelineDeltas
 {
-    static const String annotationsAdded = "AnnotationsAdded";
-    static const String annotationsRemoved = "AnnotationsRemoved";
-    static const String annotationsChanged = "AnnotationsChanged";
+    static const Identifier annotationsAdded = "AnnotationsAdded";
+    static const Identifier annotationsRemoved = "AnnotationsRemoved";
+    static const Identifier annotationsChanged = "AnnotationsChanged";
 
-    static const String timeSignaturesAdded = "TimeSignaturesAdded";
-    static const String timeSignaturesRemoved = "TimeSignaturesRemoved";
-    static const String timeSignaturesChanged = "TimeSignaturesChanged";
+    static const Identifier timeSignaturesAdded = "TimeSignaturesAdded";
+    static const Identifier timeSignaturesRemoved = "TimeSignaturesRemoved";
+    static const Identifier timeSignaturesChanged = "TimeSignaturesChanged";
 
-    static const String keySignaturesAdded = "KeySignaturesAdded";
-    static const String keySignaturesRemoved = "KeySignaturesRemoved";
-    static const String keySignaturesChanged = "KeySignaturesChanged";
+    static const Identifier keySignaturesAdded = "KeySignaturesAdded";
+    static const Identifier keySignaturesRemoved = "KeySignaturesRemoved";
+    static const Identifier keySignaturesChanged = "KeySignaturesChanged";
 } // namespace ProjectTimelineDeltas

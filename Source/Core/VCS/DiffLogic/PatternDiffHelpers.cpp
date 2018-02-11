@@ -23,31 +23,31 @@
 
 using namespace VCS;
 
-void deserializePatternChanges(const XmlElement *state, const XmlElement *changes,
+void deserializePatternChanges(const ValueTree &state, const ValueTree &changes,
     Array<Clip> &stateClips, Array<Clip> &changesClips)
 {
-    if (state != nullptr)
+    if (state.isValid())
     {
-        forEachXmlChildElementWithTagName(*state, e, Serialization::Core::clip)
+        forEachValueTreeChildWithType(state, e, Serialization::Core::clip)
         {
             Clip clip;
-            clip.deserialize(*e);
+            clip.deserialize(e);
             stateClips.addSorted(clip, clip);
         }
     }
 
-    if (changes != nullptr)
+    if (changes.isValid())
     {
-        forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::clip)
+        forEachValueTreeChildWithType(changes, e, Serialization::Core::clip)
         {
             Clip clip;
-            clip.deserialize(*e);
+            clip.deserialize(e);
             changesClips.addSorted(clip, clip);
         }
     }
 }
 
-XmlElement *serializePattern(Array<Clip> changes, const String &tag)
+ValueTree serializePattern(Array<Clip> changes, const Identifier &tag)
 {
     ValueTree tree(tag);
 
@@ -59,10 +59,10 @@ XmlElement *serializePattern(Array<Clip> changes, const String &tag)
     return tree;
 }
 
-NewSerializedDelta PatternDiffHelpers::serializePatternChanges(Array<Clip> changes,
-    const String &description, int64 numChanges, const String &deltaType)
+DeltaDiff PatternDiffHelpers::serializePatternChanges(Array<Clip> changes,
+    const String &description, int64 numChanges, const Identifier &deltaType)
 {
-    NewSerializedDelta changesFullDelta;
+    DeltaDiff changesFullDelta;
     changesFullDelta.delta = new Delta(DeltaDescription(description, numChanges), deltaType);
     changesFullDelta.deltaData = serializePattern(changes, deltaType);
     return changesFullDelta;
@@ -70,13 +70,12 @@ NewSerializedDelta PatternDiffHelpers::serializePatternChanges(Array<Clip> chang
 
 bool PatternDiffHelpers::checkIfDeltaIsPatternType(const Delta *delta)
 {
-    return (delta->getType() == PatternDeltas::clipsAdded ||
-        delta->getType() == PatternDeltas::clipsRemoved ||
-        delta->getType() == PatternDeltas::clipsChanged);
+    return (delta->hasType(PatternDeltas::clipsAdded) ||
+        delta->hasType(PatternDeltas::clipsRemoved) ||
+        delta->hasType(PatternDeltas::clipsChanged));
 }
 
-XmlElement *PatternDiffHelpers::mergeClipsAdded(const XmlElement *state,
-    const XmlElement *changes)
+ValueTree PatternDiffHelpers::mergeClipsAdded(const ValueTree &state, const ValueTree &changes)
 {
     Array<Clip> stateClips;
     Array<Clip> changesClips;
@@ -106,8 +105,7 @@ XmlElement *PatternDiffHelpers::mergeClipsAdded(const XmlElement *state,
     return serializePattern(result, PatternDeltas::clipsAdded);
 }
 
-XmlElement *PatternDiffHelpers::mergeClipsRemoved(const XmlElement *state, 
-    const XmlElement *changes)
+ValueTree PatternDiffHelpers::mergeClipsRemoved(const ValueTree &state, const ValueTree &changes)
 {
     Array<Clip> stateClips;
     Array<Clip> changesClips;
@@ -135,8 +133,7 @@ XmlElement *PatternDiffHelpers::mergeClipsRemoved(const XmlElement *state,
     return serializePattern(result, PatternDeltas::clipsAdded);
 }
 
-XmlElement *PatternDiffHelpers::mergeClipsChanged(const XmlElement *state, 
-    const XmlElement *changes)
+ValueTree PatternDiffHelpers::mergeClipsChanged(const ValueTree &state, const ValueTree &changes)
 {
     Array<Clip> stateClips;
     Array<Clip> changesClips;
@@ -168,15 +165,14 @@ XmlElement *PatternDiffHelpers::mergeClipsChanged(const XmlElement *state,
     return serializePattern(result, PatternDeltas::clipsAdded);
 }
 
-Array<VCS::NewSerializedDelta> PatternDiffHelpers::createClipsDiffs(
-    const XmlElement *state, const XmlElement *changes)
+Array<VCS::DeltaDiff> PatternDiffHelpers::createClipsDiffs(const ValueTree &state, const ValueTree &changes)
 {
     Array<Clip> stateClips;
     Array<Clip> changesClips;
 
     deserializePatternChanges(state, changes, stateClips, changesClips);
 
-    Array<NewSerializedDelta> res;
+    Array<DeltaDiff> res;
 
     Array<Clip> addedClips;
     Array<Clip> removedClips;

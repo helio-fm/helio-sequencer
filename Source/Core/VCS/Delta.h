@@ -21,18 +21,24 @@
 
 namespace VCS
 {
-    class DeltaDescription
+    class DeltaDescription final
     {
     public:
         
-        explicit DeltaDescription(String text) :
-        stringToTranslate(std::move(text)), intParameter(defaultNumChanges), stringParameter(String::empty) {}
-        
+        explicit DeltaDescription(const Identifier &text) :
+            stringToTranslate(text.toString()),
+            intParameter(defaultNumChanges),
+            stringParameter() {}
+
         DeltaDescription(String text, int64 numChanges) :
-            stringToTranslate(std::move(text)), intParameter(numChanges), stringParameter(String::empty) {}
+            stringToTranslate(std::move(text)),
+            intParameter(numChanges),
+            stringParameter() {}
         
         DeltaDescription(String text, String parameter) :
-            stringToTranslate(std::move(text)), intParameter(defaultNumChanges), stringParameter(std::move(parameter)) {}
+            stringToTranslate(std::move(text)),
+            intParameter(defaultNumChanges),
+            stringParameter(std::move(parameter)) {}
         
         DeltaDescription(const DeltaDescription &other) :
             stringToTranslate(other.stringToTranslate),
@@ -44,7 +50,9 @@ namespace VCS
         static int64 defaultNumChanges;
         
         DeltaDescription(String text, int64 numChanges, String parameter) :
-            stringToTranslate(std::move(text)), intParameter(numChanges), stringParameter(std::move(parameter)) {}
+            stringToTranslate(std::move(text)),
+            intParameter(numChanges),
+            stringParameter(std::move(parameter)) {}
 
         String getFullText() const
         {
@@ -69,56 +77,44 @@ namespace VCS
         friend class Delta;
     };
     
-    class Delta : public Serializable
+    class Delta final : public Serializable
     {
     public:
 
         Delta(const Delta &other);
-
-        Delta(const DeltaDescription &deltaDescription, String deltaType) :
+        Delta(const DeltaDescription &deltaDescription, Identifier deltaType) :
             description(deltaDescription),
-            type(std::move(deltaType))
-        {}
-
-        ~Delta() override {}
+            type(deltaType) {}
         
         // i.e. "added 45 notes" or "layer color changed"
         String getHumanReadableText() const;
-
         DeltaDescription getDescription() const;
-
         void setDescription(const DeltaDescription &newDescription);
-        
         Uuid getUuid() const;
 
-        String getType() const;
+        Identifier getType() const;
+        bool hasType(const Identifier &id) const;
 
-
-        //===------------------------------------------------------------------===//
+        //===--------------------------------------------------------------===//
         // Serializable
-        //
+        //===--------------------------------------------------------------===//
 
         ValueTree serialize() const override;
-
         void deserialize(const ValueTree &tree) override;
-
         void reset() override;
 
     private:
 
         Uuid vcsUuid;
-
         DeltaDescription description;
-
-        String type;
+        Identifier type;
 
         JUCE_LEAK_DETECTOR(Delta)
-
     };
 
-    struct NewSerializedDelta
+    struct DeltaDiff final
     {
-        Delta *delta;
-        XmlElement *deltaData;
+        ScopedPointer<Delta> delta;
+        ValueTree deltaData;
     };
 } // namespace VCS

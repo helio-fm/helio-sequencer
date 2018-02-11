@@ -43,8 +43,6 @@ using namespace VCS;
 
 Pack::Pack()
 {
-    // todo иногда пишет в корень диска c: ? wtf
-
     this->packFile =
         new File(FileUtils::getTempSlot("pack_" + this->uuid.toString() + ".vcs"));
 }
@@ -55,7 +53,6 @@ Pack::~Pack()
     this->packWriteLocker = nullptr;
     this->packFile->deleteFile();
 }
-
 
 //===----------------------------------------------------------------------===//
 // DeltaDataSource
@@ -88,8 +85,7 @@ bool Pack::containsDeltaDataFor(const Uuid &itemId,
     return false;
 }
 
-XmlElement *Pack::createDeltaDataFor(const Uuid &itemId,
-                                     const Uuid &deltaId) const
+ValueTree Pack::createDeltaDataFor(const Uuid &itemId, const Uuid &deltaId) const
 {
     const ScopedLock lock(this->packLocker);
     
@@ -120,7 +116,7 @@ XmlElement *Pack::createDeltaDataFor(const Uuid &itemId,
 
 void Pack::setDeltaDataFor(const Uuid &itemId,
                            const Uuid &deltaId,
-                           const XmlElement &data)
+                           const ValueTree &data)
 {
     const ScopedLock lock(this->packLocker);
 
@@ -128,7 +124,6 @@ void Pack::setDeltaDataFor(const Uuid &itemId,
     block->itemId = itemId;
     block->deltaId = deltaId;
 
-    // несохраненные данные в памяти незачем обфусцировать
     MemoryOutputStream ms(block->data, false);
     data.writeToStream(ms, "", true, false);
     ms.flush();
@@ -188,9 +183,9 @@ void VCS::Pack::deserialize(const ValueTree &tree)
     const auto root = tree.hasType(Serialization::VCS::pack) ?
         tree : tree.getChildWithName(Serialization::VCS::pack);
 
-    if (root == nullptr) { return; }
+    if (!root.isValid()) { return; }
 
-    forEachXmlChildElementWithTagName(*root, e, Serialization::VCS::packItem)
+    forEachValueTreeChildWithType(root, e, Serialization::VCS::packItem)
     {
         // грузим все в память
         auto block = new PackDataBlock();
@@ -199,7 +194,7 @@ void VCS::Pack::deserialize(const ValueTree &tree)
 
         MemoryOutputStream ms(block->data, false);
 
-        if (XmlElement *firstChild = e->getFirstChildElement())
+        if (XmlElement *firstChild = e.getChild(0))
         {
             firstChild->writeToStream(ms, "", true, false);
         }

@@ -47,8 +47,8 @@ namespace VCS
         // Serializable
         //===--------------------------------------------------------------===//
 
-        static XmlElement *serialize(ValueTree revision);
-        static void deserialize(ValueTree revision, const XmlElement &xml);
+        static ValueTree serialize(ValueTree revision);
+        static void deserialize(ValueTree revision, const const ValueTree &tree);
         static void reset(ValueTree revision);
 
     };

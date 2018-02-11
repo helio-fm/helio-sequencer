@@ -19,7 +19,7 @@
 
 namespace PianoSequenceDeltas
 {
-    static const String notesAdded = "NotesAdded";
-    static const String notesRemoved = "NotesRemoved";
-    static const String notesChanged = "NotesChanged";
+    static const Identifier notesAdded = "NotesAdded";
+    static const Identifier notesRemoved = "NotesRemoved";
+    static const Identifier notesChanged = "NotesChanged";
 } // namespace PianoSequenceDeltas

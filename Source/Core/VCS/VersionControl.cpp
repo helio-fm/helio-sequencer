@@ -190,7 +190,7 @@ void VersionControl::recursiveTreeMerge(ValueTree localRevision,
             ValueTree newLocalChild(Revision::create(this->pack));
             Revision::copyProperties(newLocalChild, remoteChild);
             Revision::flush(newLocalChild);
-            localRevision.appendChild(newLocalChild, -1, nullptr);
+            localRevision.appendChild(newLocalChild);
             this->recursiveTreeMerge(newLocalChild, remoteChild);
         }
     }
@@ -347,7 +347,7 @@ bool VersionControl::commit(SparseSet<int> selectedItems, const String &message)
 
     if (!headingRevision.isValid()) { return false; }
 
-    headingRevision.appendChild(newRevision, -1, nullptr);
+    headingRevision.appendChild(newRevision);
     this->head.moveTo(newRevision);
 
     Revision::flush(newRevision);
@@ -480,7 +480,7 @@ void VersionControl::deserialize(const ValueTree &tree)
     const auto root = tree.hasType(Serialization::Core::versionControl) ?
         tree : tree.getChildWithName(Serialization::Core::versionControl);
 
-    if (root == nullptr) { return; }
+    if (!root.isValid()) { return; }
 
     const String timeStamp = root.getProperty(Serialization::VCS::vcsHistoryVersion);
     this->historyMergeVersion = timeStamp.getLargeIntValue();

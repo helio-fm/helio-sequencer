@@ -39,8 +39,6 @@ namespace VCS
         explicit Head(Pack::Ptr packPtr,
              WeakReference<TrackedItemsSource> targetProject = nullptr);
 
-        ~Head() override;
-
         ValueTree getHeadingRevision() const;
         
         ValueTree getDiff() const;

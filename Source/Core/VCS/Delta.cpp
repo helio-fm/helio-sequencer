@@ -51,21 +51,24 @@ Uuid Delta::getUuid() const
     return this->vcsUuid;
 }
 
-String Delta::getType() const
+Identifier VCS::Delta::getType() const
 {
     return this->type;
 }
 
+bool VCS::Delta::hasType(const Identifier &id) const
+{
+    return (this->type == id);
+}
+
 ValueTree VCS::Delta::serialize() const
 {
-    ValueTree const xml(Serialization::VCS::delta);
-
-    tree.setProperty(Serialization::VCS::deltaType, this->type);
+    ValueTree tree(Serialization::VCS::delta);
+    tree.setProperty(Serialization::VCS::deltaType, this->type.toString());
     tree.setProperty(Serialization::VCS::deltaName, this->description.stringToTranslate);
     tree.setProperty(Serialization::VCS::deltaStringParam, this->description.stringParameter);
     tree.setProperty(Serialization::VCS::deltaIntParam, String(this->description.intParameter));
     tree.setProperty(Serialization::VCS::deltaId, this->vcsUuid.toString());
-
     return tree;
 }
 
@@ -76,21 +79,17 @@ void VCS::Delta::deserialize(const ValueTree &tree)
     const auto root = tree.hasType(Serialization::VCS::delta) ?
         tree : tree.getChildWithName(Serialization::VCS::delta);
 
-    if (root == nullptr) { return; }
+    if (!root.isValid()) { return; }
 
     this->vcsUuid = root.getProperty(Serialization::VCS::deltaId, this->vcsUuid.toString());
-    this->type = root.getProperty(Serialization::VCS::deltaType, undefinedDelta);
+    this->type = root.getProperty(Serialization::VCS::deltaType, undefinedDelta).toString();
 
     const String descriptionName = root.getProperty(Serialization::VCS::deltaName, String::empty);
     const String descriptionStringParam = root.getProperty(Serialization::VCS::deltaStringParam, String::empty);
     const int64 descriptionIntParam =
-        root.getProperty(Serialization::VCS::deltaIntParam,
-                                 String(DeltaDescription::defaultNumChanges)).getLargeIntValue();
+        root.getProperty(Serialization::VCS::deltaIntParam, String(DeltaDescription::defaultNumChanges));
     
     this->description = DeltaDescription(descriptionName, descriptionIntParam, descriptionStringParam);
 }
 
-void Delta::reset()
-{
-
-}
+void Delta::reset() {}

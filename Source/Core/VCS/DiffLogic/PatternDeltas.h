@@ -19,7 +19,7 @@
 
 namespace PatternDeltas
 {
-    static const String clipsAdded = "ClipsAdded";
-    static const String clipsRemoved = "ClipsRemoved";
-    static const String clipsChanged = "ClipsChanged";
+    static const Identifier clipsAdded = "ClipsAdded";
+    static const Identifier clipsRemoved = "ClipsRemoved";
+    static const Identifier clipsChanged = "ClipsChanged";
 } // namespace PatternDeltas

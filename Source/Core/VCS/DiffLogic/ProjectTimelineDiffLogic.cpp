@@ -29,29 +29,29 @@ using namespace VCS;
 
 // TODO refactor, lots of duplicated code
 
-static XmlElement *mergeAnnotationsAdded(const XmlElement *state, const XmlElement *changes);
-static XmlElement *mergeAnnotationsRemoved(const XmlElement *state, const XmlElement *changes);
-static XmlElement *mergeAnnotationsChanged(const XmlElement *state, const XmlElement *changes);
+static ValueTree mergeAnnotationsAdded(const ValueTree &state, const ValueTree &changes);
+static ValueTree mergeAnnotationsRemoved(const ValueTree &state, const ValueTree &changes);
+static ValueTree mergeAnnotationsChanged(const ValueTree &state, const ValueTree &changes);
 
-static XmlElement *mergeTimeSignaturesAdded(const XmlElement *state, const XmlElement *changes);
-static XmlElement *mergeTimeSignaturesRemoved(const XmlElement *state, const XmlElement *changes);
-static XmlElement *mergeTimeSignaturesChanged(const XmlElement *state, const XmlElement *changes);
+static ValueTree mergeTimeSignaturesAdded(const ValueTree &state, const ValueTree &changes);
+static ValueTree mergeTimeSignaturesRemoved(const ValueTree &state, const ValueTree &changes);
+static ValueTree mergeTimeSignaturesChanged(const ValueTree &state, const ValueTree &changes);
 
-static XmlElement *mergeKeySignaturesAdded(const XmlElement *state, const XmlElement *changes);
-static XmlElement *mergeKeySignaturesRemoved(const XmlElement *state, const XmlElement *changes);
-static XmlElement *mergeKeySignaturesChanged(const XmlElement *state, const XmlElement *changes);
+static ValueTree mergeKeySignaturesAdded(const ValueTree &state, const ValueTree &changes);
+static ValueTree mergeKeySignaturesRemoved(const ValueTree &state, const ValueTree &changes);
+static ValueTree mergeKeySignaturesChanged(const ValueTree &state, const ValueTree &changes);
 
-static Array<NewSerializedDelta> createAnnotationsDiffs(const XmlElement *state, const XmlElement *changes);
-static Array<NewSerializedDelta> createTimeSignaturesDiffs(const XmlElement *state, const XmlElement *changes);
-static Array<NewSerializedDelta> createKeySignaturesDiffs(const XmlElement *state, const XmlElement *changes);
+static Array<DeltaDiff> createAnnotationsDiffs(const ValueTree &state, const ValueTree &changes);
+static Array<DeltaDiff> createTimeSignaturesDiffs(const ValueTree &state, const ValueTree &changes);
+static Array<DeltaDiff> createKeySignaturesDiffs(const ValueTree &state, const ValueTree &changes);
 
-static void deserializeChanges(const XmlElement *state, const XmlElement *changes,
+static void deserializeChanges(const ValueTree &state, const ValueTree &changes,
     OwnedArray<MidiEvent> &stateEvents, OwnedArray<MidiEvent> &changesEvents);
 
-static NewSerializedDelta serializeChanges(Array<const MidiEvent *> changes,
-    const String &description, int64 numChanges, const String &deltaType);
+static DeltaDiff serializeChanges(Array<const MidiEvent *> changes,
+    const String &description, int64 numChanges, const Identifier &deltaType);
 
-static XmlElement *serializeLayer(Array<const MidiEvent *> changes, const String &tag);
+static ValueTree serializeLayer(Array<const MidiEvent *> changes, const Identifier &tag);
 
 static bool checkIfDeltaIsAnnotationType(const Delta *delta);
 static bool checkIfDeltaIsTimeSignatureType(const Delta *delta);
@@ -60,7 +60,7 @@ static bool checkIfDeltaIsKeySignatureType(const Delta *delta);
 ProjectTimelineDiffLogic::ProjectTimelineDiffLogic(TrackedItem &targetItem) :
     DiffLogic(targetItem) {}
 
-const String ProjectTimelineDiffLogic::getType() const
+const juce::Identifier VCS::ProjectTimelineDiffLogic::getType() const
 {
     return Serialization::Core::projectTimeline;
 }
@@ -79,8 +79,8 @@ Diff *ProjectTimelineDiffLogic::createDiff(const TrackedItem &initialState) cons
     {
         const Delta *myDelta = this->target.getDelta(i);
 
-        ScopedPointer<XmlElement> myDeltaData(this->target.createDeltaDataFor(i));
-        ScopedPointer<XmlElement> stateDeltaData;
+        const auto myDeltaData(this->target.serializeDeltaData(i));
+        ValueTree stateDeltaData;
 
         bool deltaFoundInState = false;
         bool dataHasChanged = false;
@@ -91,43 +91,37 @@ Diff *ProjectTimelineDiffLogic::createDiff(const TrackedItem &initialState) cons
 
             if (myDelta->getType() == stateDelta->getType())
             {
-                stateDeltaData = initialState.createDeltaDataFor(j);
-                deltaFoundInState = (stateDeltaData != nullptr);
-                dataHasChanged = (! myDeltaData->isEquivalentTo(stateDeltaData, true));
+                stateDeltaData = initialState.serializeDeltaData(j);
+                deltaFoundInState = (stateDeltaData.isValid());
+                dataHasChanged = (! myDeltaData.isEquivalentTo(stateDeltaData));
                 break;
             }
         }
 
         if (!deltaFoundInState || (deltaFoundInState && dataHasChanged))
         {
-            if (myDelta->getType() == ProjectTimelineDeltas::annotationsAdded)
+            if (myDelta->hasType(ProjectTimelineDeltas::annotationsAdded))
             {
-                const auto fullDeltas =
-                    createAnnotationsDiffs(stateDeltaData, myDeltaData);
-
-                for (auto fullDelta : fullDeltas)
+                const auto fullDeltas = createAnnotationsDiffs(stateDeltaData, myDeltaData);
+                for (auto &fullDelta : fullDeltas)
                 {
-                    diff->addOwnedDelta(fullDelta.delta, fullDelta.deltaData);
+                    diff->applyDelta(fullDelta);
                 }
             }
-            else if (myDelta->getType() == ProjectTimelineDeltas::timeSignaturesAdded)
+            else if (myDelta->hasType(ProjectTimelineDeltas::timeSignaturesAdded))
             {
-                const auto fullDeltas =
-                    createTimeSignaturesDiffs(stateDeltaData, myDeltaData);
-                
-                for (auto fullDelta : fullDeltas)
+                const auto fullDeltas = createTimeSignaturesDiffs(stateDeltaData, myDeltaData);
+                for (auto &fullDelta : fullDeltas)
                 {
-                    diff->addOwnedDelta(fullDelta.delta, fullDelta.deltaData);
+                    diff->applyDelta(fullDelta);
                 }
             }
-            else if (myDelta->getType() == ProjectTimelineDeltas::keySignaturesAdded)
+            else if (myDelta->hasType(ProjectTimelineDeltas::keySignaturesAdded))
             {
-                const auto fullDeltas =
-                    createKeySignaturesDiffs(stateDeltaData, myDeltaData);
-
-                for (auto fullDelta : fullDeltas)
+                const auto fullDeltas = createKeySignaturesDiffs(stateDeltaData, myDeltaData);
+                for (auto &fullDelta : fullDeltas)
                 {
-                    diff->addOwnedDelta(fullDelta.delta, fullDelta.deltaData);
+                    diff->applyDelta(fullDelta);
                 }
             }
         }
@@ -146,7 +140,7 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
         const Delta *stateDelta = initialState.getDelta(i);
-        ScopedPointer<XmlElement> stateDeltaData(initialState.createDeltaDataFor(i));
+        const auto stateDeltaData(initialState.serializeDeltaData(i));
 
         // for every supported type we need to spit out 
         // a delta of type eventsAdded with all events merged in there
@@ -162,16 +156,16 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
             new Delta(DeltaDescription(Serialization::VCS::headStateDelta),
                 ProjectTimelineDeltas::keySignaturesAdded));
 
-        ScopedPointer<XmlElement> annotationsDeltaData;
-        ScopedPointer<XmlElement> timeSignaturesDeltaData;
-        ScopedPointer<XmlElement> keySignaturesDeltaData;
+        ValueTree annotationsDeltaData;
+        ValueTree timeSignaturesDeltaData;
+        ValueTree keySignaturesDeltaData;
 
         bool deltaFoundInChanges = false;
 
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
         {
             const Delta *targetDelta = this->target.getDelta(j);
-            ScopedPointer<XmlElement> targetDeltaData(this->target.createDeltaDataFor(j));
+            const auto targetDeltaData(this->target.serializeDeltaData(j));
 
             const bool bothDeltasAreAnnotationType =
                 checkIfDeltaIsAnnotationType(stateDelta) && checkIfDeltaIsAnnotationType(targetDelta);
@@ -185,19 +179,19 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
             if (bothDeltasAreAnnotationType)
             {
                 deltaFoundInChanges = true;
-                const bool incrementalMerge = (annotationsDeltaData != nullptr);
+                const bool incrementalMerge = annotationsDeltaData.isValid();
 
-                if (targetDelta->getType() == ProjectTimelineDeltas::annotationsAdded)
+                if (targetDelta->hasType(ProjectTimelineDeltas::annotationsAdded))
                 {
                     annotationsDeltaData = mergeAnnotationsAdded(
                         incrementalMerge ? annotationsDeltaData : stateDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->getType() == ProjectTimelineDeltas::annotationsRemoved)
+                else if (targetDelta->hasType(ProjectTimelineDeltas::annotationsRemoved))
                 {
                     annotationsDeltaData = mergeAnnotationsRemoved(
                         incrementalMerge ? annotationsDeltaData : stateDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->getType() == ProjectTimelineDeltas::annotationsChanged)
+                else if (targetDelta->hasType(ProjectTimelineDeltas::annotationsChanged))
                 {
                     annotationsDeltaData = mergeAnnotationsChanged(
                         incrementalMerge ? annotationsDeltaData : stateDeltaData, targetDeltaData);
@@ -206,19 +200,19 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
             else if (bothDeltasAreTimeSignatureType)
             {
                 deltaFoundInChanges = true;
-                const bool incrementalMerge = (timeSignaturesDeltaData != nullptr);
+                const bool incrementalMerge = timeSignaturesDeltaData.isValid();
                 
-                if (targetDelta->getType() == ProjectTimelineDeltas::timeSignaturesAdded)
+                if (targetDelta->hasType(ProjectTimelineDeltas::timeSignaturesAdded))
                 {
                     timeSignaturesDeltaData = mergeTimeSignaturesAdded(
                         incrementalMerge ? timeSignaturesDeltaData : stateDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->getType() == ProjectTimelineDeltas::timeSignaturesRemoved)
+                else if (targetDelta->hasType(ProjectTimelineDeltas::timeSignaturesRemoved))
                 {
                     timeSignaturesDeltaData = mergeTimeSignaturesRemoved(
                         incrementalMerge ? timeSignaturesDeltaData : stateDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->getType() == ProjectTimelineDeltas::timeSignaturesChanged)
+                else if (targetDelta->hasType(ProjectTimelineDeltas::timeSignaturesChanged))
                 {
                     timeSignaturesDeltaData = mergeTimeSignaturesChanged(
                         incrementalMerge ? timeSignaturesDeltaData : stateDeltaData, targetDeltaData);
@@ -227,19 +221,19 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
             else if (bothDeltasAreKeySignatureType)
             {
                 deltaFoundInChanges = true;
-                const bool incrementalMerge = (keySignaturesDeltaData != nullptr);
+                const bool incrementalMerge = keySignaturesDeltaData.isValid();
 
-                if (targetDelta->getType() == ProjectTimelineDeltas::keySignaturesAdded)
+                if (targetDelta->hasType(ProjectTimelineDeltas::keySignaturesAdded))
                 {
                     keySignaturesDeltaData = mergeKeySignaturesAdded(
                         incrementalMerge ? keySignaturesDeltaData : stateDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->getType() == ProjectTimelineDeltas::keySignaturesRemoved)
+                else if (targetDelta->hasType(ProjectTimelineDeltas::keySignaturesRemoved))
                 {
                     keySignaturesDeltaData = mergeKeySignaturesRemoved(
                         incrementalMerge ? keySignaturesDeltaData : stateDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->getType() == ProjectTimelineDeltas::keySignaturesChanged)
+                else if (targetDelta->hasType(ProjectTimelineDeltas::keySignaturesChanged))
                 {
                     keySignaturesDeltaData = mergeKeySignaturesChanged(
                         incrementalMerge ? keySignaturesDeltaData : stateDeltaData, targetDeltaData);
@@ -247,25 +241,25 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
             }
         }
 
-        if (annotationsDeltaData != nullptr)
+        if (annotationsDeltaData.isValid())
         {
-            diff->addOwnedDelta(annotationsDelta.release(), annotationsDeltaData.release());
+            diff->applyDelta(annotationsDelta.release(), annotationsDeltaData);
         }
         
-        if (timeSignaturesDeltaData != nullptr)
+        if (timeSignaturesDeltaData.isValid())
         {
-            diff->addOwnedDelta(timeSignaturesDelta.release(), timeSignaturesDeltaData.release());
+            diff->applyDelta(timeSignaturesDelta.release(), timeSignaturesDeltaData);
         }
         
-        if (keySignaturesDeltaData != nullptr)
+        if (keySignaturesDeltaData.isValid())
         {
-            diff->addOwnedDelta(keySignaturesDelta.release(), keySignaturesDeltaData.release());
+            diff->applyDelta(keySignaturesDelta.release(), keySignaturesDeltaData);
         }
 
         if (! deltaFoundInChanges)
         {
             auto stateDeltaCopy = new Delta(*stateDelta);
-            diff->addOwnedDelta(stateDeltaCopy, stateDeltaData.release());
+            diff->applyDelta(stateDeltaCopy, stateDeltaData);
         }
     }
 
@@ -301,14 +295,14 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
             new Delta(DeltaDescription(Serialization::VCS::headStateDelta),
                 ProjectTimelineDeltas::timeSignaturesAdded));
 
-        ScopedPointer<XmlElement> annotationsDeltaData;
-        ScopedPointer<XmlElement> keySignaturesDeltaData;
-        ScopedPointer<XmlElement> timeSignaturesDeltaData;
+        ValueTree annotationsDeltaData;
+        ValueTree keySignaturesDeltaData;
+        ValueTree timeSignaturesDeltaData;
 
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
         {
             const Delta *targetDelta = this->target.getDelta(j);
-            ScopedPointer<XmlElement> targetDeltaData(this->target.createDeltaDataFor(j));
+            const auto targetDeltaData(this->target.serializeDeltaData(j));
 
             const bool foundMissingKeySignature = !stateHasKeySignatures && checkIfDeltaIsKeySignatureType(targetDelta);
             const bool foundMissingTimeSignature = !stateHasTimeSignatures && checkIfDeltaIsTimeSignatureType(targetDelta);
@@ -316,20 +310,20 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
 
             if (foundMissingKeySignature)
             {
-                const bool incrementalMerge = (keySignaturesDeltaData != nullptr);
-                ScopedPointer<XmlElement> emptyKeySignaturesDeltaData(serializeLayer({}, ProjectTimelineDeltas::keySignaturesAdded));
+                const bool incrementalMerge = keySignaturesDeltaData.isValid();
+                ValueTree emptyKeySignaturesDeltaData(serializeLayer({}, ProjectTimelineDeltas::keySignaturesAdded));
 
-                if (targetDelta->getType() == ProjectTimelineDeltas::keySignaturesAdded)
+                if (targetDelta->hasType(ProjectTimelineDeltas::keySignaturesAdded))
                 {
                     keySignaturesDeltaData = mergeKeySignaturesAdded(
                         incrementalMerge ? keySignaturesDeltaData : emptyKeySignaturesDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->getType() == ProjectTimelineDeltas::keySignaturesRemoved)
+                else if (targetDelta->hasType(ProjectTimelineDeltas::keySignaturesRemoved))
                 {
                     keySignaturesDeltaData = mergeKeySignaturesRemoved(
                         incrementalMerge ? keySignaturesDeltaData : emptyKeySignaturesDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->getType() == ProjectTimelineDeltas::keySignaturesChanged)
+                else if (targetDelta->hasType(ProjectTimelineDeltas::keySignaturesChanged))
                 {
                     keySignaturesDeltaData = mergeKeySignaturesChanged(
                         incrementalMerge ? keySignaturesDeltaData : emptyKeySignaturesDeltaData, targetDeltaData);
@@ -337,20 +331,20 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
             }
             else if (foundMissingTimeSignature)
             {
-                const bool incrementalMerge = (timeSignaturesDeltaData != nullptr);
-                ScopedPointer<XmlElement> emptyTimeSignaturesDeltaData(serializeLayer({}, ProjectTimelineDeltas::timeSignaturesAdded));
+                const bool incrementalMerge = timeSignaturesDeltaData.isValid();
+                ValueTree emptyTimeSignaturesDeltaData(serializeLayer({}, ProjectTimelineDeltas::timeSignaturesAdded));
 
-                if (targetDelta->getType() == ProjectTimelineDeltas::timeSignaturesAdded)
+                if (targetDelta->hasType(ProjectTimelineDeltas::timeSignaturesAdded))
                 {
                     timeSignaturesDeltaData = mergeTimeSignaturesAdded(
                         incrementalMerge ? timeSignaturesDeltaData : emptyTimeSignaturesDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->getType() == ProjectTimelineDeltas::timeSignaturesRemoved)
+                else if (targetDelta->hasType(ProjectTimelineDeltas::timeSignaturesRemoved))
                 {
                     timeSignaturesDeltaData = mergeTimeSignaturesRemoved(
                         incrementalMerge ? timeSignaturesDeltaData : emptyTimeSignaturesDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->getType() == ProjectTimelineDeltas::timeSignaturesChanged)
+                else if (targetDelta->hasType(ProjectTimelineDeltas::timeSignaturesChanged))
                 {
                     timeSignaturesDeltaData = mergeTimeSignaturesChanged(
                         incrementalMerge ? timeSignaturesDeltaData : emptyTimeSignaturesDeltaData, targetDeltaData);
@@ -358,20 +352,20 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
             }
             else if (foundMissingAnnotation)
             {
-                const bool incrementalMerge = (annotationsDeltaData != nullptr);
-                ScopedPointer<XmlElement> emptyAnnotationDeltaData(serializeLayer({}, ProjectTimelineDeltas::annotationsAdded));
+                const bool incrementalMerge = annotationsDeltaData.isValid();
+                ValueTree emptyAnnotationDeltaData(serializeLayer({}, ProjectTimelineDeltas::annotationsAdded));
 
-                if (targetDelta->getType() == ProjectTimelineDeltas::annotationsAdded)
+                if (targetDelta->hasType(ProjectTimelineDeltas::annotationsAdded))
                 {
                     annotationsDeltaData = mergeAnnotationsAdded(
                         incrementalMerge ? annotationsDeltaData : emptyAnnotationDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->getType() == ProjectTimelineDeltas::annotationsRemoved)
+                else if (targetDelta->hasType(ProjectTimelineDeltas::annotationsRemoved))
                 {
                     annotationsDeltaData = mergeAnnotationsRemoved(
                         incrementalMerge ? annotationsDeltaData : emptyAnnotationDeltaData, targetDeltaData);
                 }
-                else if (targetDelta->getType() == ProjectTimelineDeltas::annotationsChanged)
+                else if (targetDelta->hasType(ProjectTimelineDeltas::annotationsChanged))
                 {
                     annotationsDeltaData = mergeAnnotationsChanged(
                         incrementalMerge ? annotationsDeltaData : emptyAnnotationDeltaData, targetDeltaData);
@@ -379,19 +373,19 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
             }
         }
 
-        if (annotationsDeltaData != nullptr)
+        if (annotationsDeltaData.isValid())
         {
-            diff->addOwnedDelta(annotationsDelta.release(), annotationsDeltaData.release());
+            diff->applyDelta(annotationsDelta.release(), annotationsDeltaData);
         }
 
-        if (timeSignaturesDeltaData != nullptr)
+        if (timeSignaturesDeltaData.isValid())
         {
-            diff->addOwnedDelta(timeSignaturesDelta.release(), timeSignaturesDeltaData.release());
+            diff->applyDelta(timeSignaturesDelta.release(), timeSignaturesDeltaData);
         }
 
-        if (keySignaturesDeltaData != nullptr)
+        if (keySignaturesDeltaData.isValid())
         {
-            diff->addOwnedDelta(keySignaturesDelta.release(), keySignaturesDeltaData.release());
+            diff->applyDelta(keySignaturesDelta.release(), keySignaturesDeltaData);
         }
     }
 
@@ -402,7 +396,7 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
 // Merge annotations
 //===----------------------------------------------------------------------===//
 
-XmlElement *mergeAnnotationsAdded(const XmlElement *state, const XmlElement *changes)
+juce::ValueTree mergeAnnotationsAdded(const ValueTree &state, const ValueTree &changes)
 {
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
@@ -440,7 +434,7 @@ XmlElement *mergeAnnotationsAdded(const XmlElement *state, const XmlElement *cha
     return serializeLayer(result, ProjectTimelineDeltas::annotationsAdded);
 }
 
-XmlElement *mergeAnnotationsRemoved(const XmlElement *state, const XmlElement *changes)
+juce::ValueTree mergeAnnotationsRemoved(const ValueTree &state, const ValueTree &changes)
 {
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
@@ -475,7 +469,7 @@ XmlElement *mergeAnnotationsRemoved(const XmlElement *state, const XmlElement *c
     return serializeLayer(result, ProjectTimelineDeltas::annotationsAdded);
 }
 
-XmlElement *mergeAnnotationsChanged(const XmlElement *state, const XmlElement *changes)
+juce::ValueTree mergeAnnotationsChanged(const ValueTree &state, const ValueTree &changes)
 {
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
@@ -516,7 +510,7 @@ XmlElement *mergeAnnotationsChanged(const XmlElement *state, const XmlElement *c
 // Merge time signatures
 //===----------------------------------------------------------------------===//
 
-XmlElement *mergeTimeSignaturesAdded(const XmlElement *state, const XmlElement *changes)
+ValueTree mergeTimeSignaturesAdded(const ValueTree &state, const ValueTree &changes)
 {
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
@@ -554,7 +548,7 @@ XmlElement *mergeTimeSignaturesAdded(const XmlElement *state, const XmlElement *
     return serializeLayer(result, ProjectTimelineDeltas::timeSignaturesAdded);
 }
 
-XmlElement *mergeTimeSignaturesRemoved(const XmlElement *state, const XmlElement *changes)
+ValueTree mergeTimeSignaturesRemoved(const ValueTree &state, const ValueTree &changes)
 {
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
@@ -590,7 +584,7 @@ XmlElement *mergeTimeSignaturesRemoved(const XmlElement *state, const XmlElement
     return serializeLayer(result, ProjectTimelineDeltas::timeSignaturesAdded);
 }
 
-XmlElement *mergeTimeSignaturesChanged(const XmlElement *state, const XmlElement *changes)
+ValueTree mergeTimeSignaturesChanged(const ValueTree &state, const ValueTree &changes)
 {
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
@@ -630,7 +624,7 @@ XmlElement *mergeTimeSignaturesChanged(const XmlElement *state, const XmlElement
 // Merge key signatures
 //===----------------------------------------------------------------------===//
 
-XmlElement *mergeKeySignaturesAdded(const XmlElement *state, const XmlElement *changes)
+ValueTree mergeKeySignaturesAdded(const ValueTree &state, const ValueTree &changes)
 {
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
@@ -668,7 +662,7 @@ XmlElement *mergeKeySignaturesAdded(const XmlElement *state, const XmlElement *c
     return serializeLayer(result, ProjectTimelineDeltas::keySignaturesAdded);
 }
 
-XmlElement *mergeKeySignaturesRemoved(const XmlElement *state, const XmlElement *changes)
+ValueTree mergeKeySignaturesRemoved(const ValueTree &state, const ValueTree &changes)
 {
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
@@ -704,7 +698,7 @@ XmlElement *mergeKeySignaturesRemoved(const XmlElement *state, const XmlElement 
     return serializeLayer(result, ProjectTimelineDeltas::keySignaturesAdded);
 }
 
-XmlElement *mergeKeySignaturesChanged(const XmlElement *state, const XmlElement *changes)
+ValueTree mergeKeySignaturesChanged(const ValueTree &state, const ValueTree &changes)
 {
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
@@ -745,13 +739,13 @@ XmlElement *mergeKeySignaturesChanged(const XmlElement *state, const XmlElement 
 // Diff
 //===----------------------------------------------------------------------===//
 
-Array<NewSerializedDelta> createAnnotationsDiffs(const XmlElement *state, const XmlElement *changes)
+Array<DeltaDiff> createAnnotationsDiffs(const ValueTree &state, const ValueTree &changes)
 {
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
     deserializeChanges(state, changes, stateEvents, changesEvents);
 
-    Array<NewSerializedDelta> res;
+    Array<DeltaDiff> res;
     Array<const MidiEvent *> addedEvents;
     Array<const MidiEvent *> removedEvents;
     Array<const MidiEvent *> changedEvents;
@@ -846,14 +840,14 @@ Array<NewSerializedDelta> createAnnotationsDiffs(const XmlElement *state, const 
     return res;
 }
 
-Array<NewSerializedDelta> createTimeSignaturesDiffs(const XmlElement *state, const XmlElement *changes)
+Array<DeltaDiff> createTimeSignaturesDiffs(const ValueTree &state, const ValueTree &changes)
 {
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
     
     deserializeChanges(state, changes, stateEvents, changesEvents);
     
-    Array<NewSerializedDelta> res;
+    Array<DeltaDiff> res;
     Array<const MidiEvent *> addedEvents;
     Array<const MidiEvent *> removedEvents;
     Array<const MidiEvent *> changedEvents;
@@ -948,13 +942,13 @@ Array<NewSerializedDelta> createTimeSignaturesDiffs(const XmlElement *state, con
     return res;
 }
 
-Array<NewSerializedDelta> createKeySignaturesDiffs(const XmlElement *state, const XmlElement *changes)
+Array<DeltaDiff> createKeySignaturesDiffs(const ValueTree &state, const ValueTree &changes)
 {
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
     deserializeChanges(state, changes, stateEvents, changesEvents);
 
-    Array<NewSerializedDelta> res;
+    Array<DeltaDiff> res;
     Array<const MidiEvent *> addedEvents;
     Array<const MidiEvent *> removedEvents;
     Array<const MidiEvent *> changedEvents;
@@ -1054,68 +1048,68 @@ Array<NewSerializedDelta> createKeySignaturesDiffs(const XmlElement *state, cons
 // Serialization
 //===----------------------------------------------------------------------===//
 
-void deserializeChanges(const XmlElement *state, const XmlElement *changes,
+void deserializeChanges(const ValueTree &state, const ValueTree &changes,
     OwnedArray<MidiEvent> &stateEvents, OwnedArray<MidiEvent> &changesEvents)
 {
-    if (state != nullptr)
+    if (state.isValid())
     {
-        forEachXmlChildElementWithTagName(*state, e, Serialization::Core::annotation)
+        forEachValueTreeChildWithType(state, e, Serialization::Core::annotation)
         {
             AnnotationEvent *event = new AnnotationEvent();
-            event->deserialize(*e);
+            event->deserialize(e);
             stateEvents.addSorted(*event, event);
         }
 
-        forEachXmlChildElementWithTagName(*state, e, Serialization::Core::timeSignature)
+        forEachValueTreeChildWithType(state, e, Serialization::Core::timeSignature)
         {
             TimeSignatureEvent *event = new TimeSignatureEvent();
-            event->deserialize(*e);
+            event->deserialize(e);
             stateEvents.addSorted(*event, event);
         }
 
-        forEachXmlChildElementWithTagName(*state, e, Serialization::Core::keySignature)
+        forEachValueTreeChildWithType(state, e, Serialization::Core::keySignature)
         {
             KeySignatureEvent *event = new KeySignatureEvent();
-            event->deserialize(*e);
+            event->deserialize(e);
             stateEvents.addSorted(*event, event);
         }
     }
 
-    if (changes != nullptr)
+    if (changes.isValid())
     {
-        forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::annotation)
+        forEachValueTreeChildWithType(changes, e, Serialization::Core::annotation)
         {
             AnnotationEvent *event = new AnnotationEvent();
-            event->deserialize(*e);
+            event->deserialize(e);
             changesEvents.addSorted(*event, event);
         }
         
-        forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::timeSignature)
+        forEachValueTreeChildWithType(changes, e, Serialization::Core::timeSignature)
         {
             TimeSignatureEvent *event = new TimeSignatureEvent();
-            event->deserialize(*e);
+            event->deserialize(e);
             changesEvents.addSorted(*event, event);
         }
 
-        forEachXmlChildElementWithTagName(*changes, e, Serialization::Core::keySignature)
+        forEachValueTreeChildWithType(changes, e, Serialization::Core::keySignature)
         {
             KeySignatureEvent *event = new KeySignatureEvent();
-            event->deserialize(*e);
+            event->deserialize(e);
             changesEvents.addSorted(*event, event);
         }
     }
 }
 
-NewSerializedDelta serializeChanges(Array<const MidiEvent *> changes,
-        const String &description, int64 numChanges, const String &deltaType)
+DeltaDiff serializeChanges(Array<const MidiEvent *> changes,
+        const String &description, int64 numChanges, const Identifier &deltaType)
 {
-    NewSerializedDelta changesFullDelta;
+    DeltaDiff changesFullDelta;
     changesFullDelta.delta = new Delta(DeltaDescription(description, numChanges), deltaType);
     changesFullDelta.deltaData = serializeLayer(changes, deltaType);
     return changesFullDelta;
 }
 
-XmlElement *serializeLayer(Array<const MidiEvent *> changes, const String &tag)
+ValueTree serializeLayer(Array<const MidiEvent *> changes, const Identifier &tag)
 {
     ValueTree tree(tag);
 
@@ -1130,21 +1124,21 @@ XmlElement *serializeLayer(Array<const MidiEvent *> changes, const String &tag)
 
 bool checkIfDeltaIsAnnotationType(const Delta *delta)
 {
-    return (delta->getType() == ProjectTimelineDeltas::annotationsAdded ||
-        delta->getType() == ProjectTimelineDeltas::annotationsChanged ||
-        delta->getType() == ProjectTimelineDeltas::annotationsRemoved);
+    return (delta->hasType(ProjectTimelineDeltas::annotationsAdded) ||
+        delta->hasType(ProjectTimelineDeltas::annotationsChanged) ||
+        delta->hasType(ProjectTimelineDeltas::annotationsRemoved));
 }
 
 bool checkIfDeltaIsTimeSignatureType(const Delta *delta)
 {
-    return (delta->getType() == ProjectTimelineDeltas::timeSignaturesAdded ||
-        delta->getType() == ProjectTimelineDeltas::timeSignaturesChanged ||
-        delta->getType() == ProjectTimelineDeltas::timeSignaturesRemoved);
+    return (delta->hasType(ProjectTimelineDeltas::timeSignaturesAdded) ||
+        delta->hasType(ProjectTimelineDeltas::timeSignaturesChanged) ||
+        delta->hasType(ProjectTimelineDeltas::timeSignaturesRemoved));
 }
 
 bool checkIfDeltaIsKeySignatureType(const Delta *delta)
 {
-    return (delta->getType() == ProjectTimelineDeltas::keySignaturesAdded ||
-        delta->getType() == ProjectTimelineDeltas::keySignaturesRemoved ||
-        delta->getType() == ProjectTimelineDeltas::keySignaturesChanged);
+    return (delta->hasType(ProjectTimelineDeltas::keySignaturesAdded) ||
+        delta->hasType(ProjectTimelineDeltas::keySignaturesRemoved) ||
+        delta->hasType(ProjectTimelineDeltas::keySignaturesChanged));
 }

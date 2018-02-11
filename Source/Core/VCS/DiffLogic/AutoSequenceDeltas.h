@@ -19,12 +19,12 @@
 
 namespace AutoSequenceDeltas
 {
-    static const String layerPath = "LayerPath";
-    static const String layerMute = "LayerMute";
-    static const String layerColour = "LayerColour";
-    static const String layerInstrument = "LayerInstrument";
-    static const String layerController = "LayerController";
-    static const String eventsAdded = "EventsAdded";
-    static const String eventsRemoved = "EventsRemoved";
-    static const String eventsChanged = "EventsChanged";
+    static const Identifier layerPath = "LayerPath";
+    static const Identifier layerMute = "LayerMute";
+    static const Identifier layerColour = "LayerColour";
+    static const Identifier layerInstrument = "LayerInstrument";
+    static const Identifier layerController = "LayerController";
+    static const Identifier eventsAdded = "EventsAdded";
+    static const Identifier eventsRemoved = "EventsRemoved";
+    static const Identifier eventsChanged = "EventsChanged";
 }  // namespace AutoSequenceDeltas

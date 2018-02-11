@@ -17,7 +17,6 @@
 
 #pragma once
 
-
 namespace VCS
 {
     struct PackDataHeader
@@ -42,38 +41,26 @@ namespace VCS
     public:
 
         Pack();
-
         ~Pack() override;
 
         void flush(); // пусть vcs вызывает после коммита всех изменений
 
-
-        //===------------------------------------------------------------------===//
+        //===--------------------------------------------------------------===//
         // DeltaDataSource
-        //
-        
-        bool containsDeltaDataFor(const Uuid &itemId,
-                                  const Uuid &deltaId) const;
-        
-        XmlElement *createDeltaDataFor(const Uuid &itemId,
-                                       const Uuid &deltaId) const;
+        //===--------------------------------------------------------------===//
 
-
+        bool containsDeltaDataFor(const Uuid &itemId, const Uuid &deltaId) const;
+        ValueTree createDeltaDataFor(const Uuid &itemId, const Uuid &deltaId) const;
         void setDeltaDataFor(const Uuid &itemId,
-                                     const Uuid &deltaId,
-                                     const XmlElement &data);
+            const Uuid &deltaId, const ValueTree &data);
 
-
-        //===------------------------------------------------------------------===//
+        //===--------------------------------------------------------------===//
         // Serializable
-        //
+        //===--------------------------------------------------------------===//
 
         ValueTree serialize() const override;
-
         void deserialize(const ValueTree &tree) override;
-
         void reset() override;
-
 
         typedef ReferenceCountedObjectPtr<Pack> Ptr;
 
@@ -86,21 +73,16 @@ namespace VCS
         // todo locks?
 
         OwnedArray<PackDataHeader> headers;
-
         OwnedArray<PackDataBlock> unsavedData;
 
         ScopedPointer<File> packFile;
-
         CriticalSection packStreamLock;
 
         ScopedPointer<FileInputStream> packStream;
-
         ScopedPointer<FileOutputStream> packWriteLocker;
         
         CriticalSection packLocker;
-
         Uuid uuid;
-
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Pack);
 

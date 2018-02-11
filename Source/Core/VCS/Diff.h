@@ -23,8 +23,8 @@ namespace VCS
 {
     class DiffLogic;
 
-    // Diff - это просто будущий RevisionItem.
-    // в дифф можно добавлять данные (это делает DiffLogic), а в RevisionItem - нельзя.
+    // You can think of a Diff as of mutable RevisionItem.
+    // DiffLogic fills diff with data and after that diff is used to create RevisionItem.
 
     class Diff : public TrackedItem
     {
@@ -32,39 +32,26 @@ namespace VCS
 
         explicit Diff(TrackedItem &diffTarget);
 
-        ~Diff() override;
-
         bool hasAnyChanges() const;
-
-        // manages new Delta and XmlElement
-        void addOwnedDelta(Delta *newDelta, XmlElement *newDeltaData);
-
+        void applyDelta(DeltaDiff deltaDiff);
+        void applyDelta(Delta *newDelta, ValueTree data);
         void clear();
-
 
         //===--------------------------------------------------------------===//
         // TrackedItem
         //===--------------------------------------------------------------===//
 
         int getNumDeltas() const override;
-
         Delta *getDelta(int index) const override;
-
-        XmlElement *createDeltaDataFor(int index) const override;
-
+        ValueTree serializeDeltaData(int deltaIndex) const override;
         String getVCSName() const override;
-
         DiffLogic *getDiffLogic() const override;
-        
         void resetStateTo(const TrackedItem &newState) override { }
-
 
     protected:
 
         OwnedArray<Delta> deltas;
-
-        OwnedArray<XmlElement> deltasData;
-
+        Array<ValueTree> deltasData;
         String description;
 
     private:
