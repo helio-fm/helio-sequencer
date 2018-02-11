@@ -21,230 +21,231 @@ namespace Serialization
 {
     namespace Core
     {
-        static const String midiRoll = "MidiRoll";
-        static const String editor = "Editor";
-        static const String treeItem = "Node";
-        static const String treeItemType = "Type";
-        static const String treeItemName = "Name";
-        static const String treeState = "TreeState";
-        static const String selectedTreeItem = "SelectedNode";
-        static const String treeItemId = "NodeId";
+        static const Identifier midiRoll = "MidiRoll";
+        static const Identifier editor = "Editor";
+        static const Identifier treeItem = "Node";
+        static const Identifier treeItemType = "Type";
+        static const Identifier treeItemName = "Name";
+        static const Identifier treeState = "TreeState";
+        static const Identifier selectedTreeItem = "SelectedNode";
+        static const Identifier treeItemId = "NodeId";
 
-        static const String workspace = "Workspace";
-        static const String root = "Root";
-        static const String settings = "Settings";
+        static const Identifier workspace = "Workspace";
+        static const Identifier root = "Root";
+        static const Identifier settings = "Settings";
 
-        static const String instrumentRoot = "Instruments";
-        static const String instrument = "Instrument";
-        static const String instrumentId = "Uuid";
-        static const String instrumentName = "Name";
-        static const String instrumentNode = "Node";
-        static const String instrumentConnection = "Connection";
-        static const String audioPlugin = "PluginSettings";
+        static const Identifier instrumentRoot = "Instruments";
+        static const Identifier instrument = "Instrument";
+        static const Identifier instrumentId = "Uuid";
+        static const Identifier instrumentName = "Name";
+        static const Identifier instrumentNode = "Node";
+        static const Identifier instrumentConnection = "Connection";
+        static const Identifier audioPlugin = "PluginSettings";
 
-        static const String plugin = "Plugin";
-        static const String pluginState = "State";
+        static const Identifier plugin = "Plugin";
+        static const Identifier pluginState = "State";
 
-        static const String project = "Project";
-        static const String projectInfo = "ProjectInfo";
-        static const String projectTimeStamp = "ProjectTimeStamp";
-        static const String versionControl = "VersionControl";
-        static const String patternSet = "PatternSet";
-        static const String layerGroup = "Group";
-        static const String layer = "Layer";
-        static const String pianoLayer = "PianoLayer";
-        static const String autoLayer = "AutoLayer";
-        static const String projectTimeline = "ProjectTimeline";
+        static const Identifier project = "Project";
+        static const Identifier projectInfo = "ProjectInfo";
+        static const Identifier projectTimeStamp = "ProjectTimeStamp";
+        static const Identifier versionControl = "VersionControl";
+        static const Identifier patternSet = "PatternSet";
+        static const Identifier layerGroup = "Group";
+        static const Identifier layer = "Layer";
+        static const Identifier pianoLayer = "PianoLayer";
+        static const Identifier autoLayer = "AutoLayer";
+        static const Identifier projectTimeline = "ProjectTimeline";
 
         // Sequences
-        static const String track = "Track";
-        static const String automation = "Automation";
-        static const String annotations = "Annotations";
-        static const String timeSignatures = "TimeSignatures";
-        static const String keySignatures = "KeySignatures";
+        static const Identifier track = "Track";
+        static const Identifier automation = "Automation";
+        static const Identifier annotations = "Annotations";
+        static const Identifier timeSignatures = "TimeSignatures";
+        static const Identifier keySignatures = "KeySignatures";
 
         // Properties
-        static const String trackId = "TrackId";
-        static const String trackColour = "Colour";
-        static const String trackChannel = "Channel";
-        static const String trackInstrumentId = "InstrumentId";
-        static const String trackControllerNumber = "Controller";
-        static const String trackMuteState = "Mute";
-        static const String trackSoloState = "Solo";
+        static const Identifier trackId = "TrackId";
+        static const Identifier trackColour = "Colour";
+        static const Identifier trackChannel = "Channel";
+        static const Identifier trackInstrumentId = "InstrumentId";
+        static const Identifier trackControllerNumber = "Controller";
+        static const Identifier trackMuteState = "Mute";
+        static const Identifier trackSoloState = "Solo";
 
         // Events
-        static const String note = "Note";
-        static const String event = "Event";
-        static const String annotation = "Annotation";
-        static const String timeSignature = "TimeSignature";
-        static const String keySignature = "KeySignature";
+        static const Identifier note = "Note";
+        static const Identifier event = "Event";
+        static const Identifier annotation = "Annotation";
+        static const Identifier timeSignature = "TimeSignature";
+        static const Identifier keySignature = "KeySignature";
 
         // Patterns
-        static const String clip = "Clip";
-        static const String pattern = "Pattern";
+        static const Identifier clip = "Clip";
+        static const Identifier pattern = "Pattern";
 
         // Scales
-        static const String scales = "Scales";
-        static const String scale = "Scale";
-        static const String scaleName = "Name";
-        static const String scaleIntervals = "Intervals";
-        static const String lastUsedScale = "LastUsedScale";
+        static const Identifier scales = "Scales";
+        static const Identifier scale = "Scale";
+        static const Identifier scaleName = "Name";
+        static const Identifier scaleIntervals = "Intervals";
+        static const Identifier lastUsedScale = "LastUsedScale";
 
-        static const String valueTag = "Key";
-        static const String nameAttribute = "Name";
-        static const String valueAttribute = "Value";
-        static const String machineID = "MachineID";
-        static const String lastWorkspace = "LastWorkspace";
-        static const String globalConfig = "GlobalConfig";
-        static const String openGLState = "OpenGL";
-        static const String enabledState = "Enabled";
-        static const String disabledState = "Disabled";
+        static const Identifier valueTag = "Key";
+        static const Identifier nameAttribute = "Name";
+        static const Identifier valueAttribute = "Value";
+        static const Identifier machineID = "MachineID";
+        static const Identifier lastWorkspace = "LastWorkspace";
+        static const Identifier globalConfig = "GlobalConfig";
+        static const Identifier openGLState = "OpenGL";
+        static const Identifier enabledState = "Enabled";
+        static const Identifier disabledState = "Disabled";
 
-        static const String pluginManager = "PluginManager";
-        static const String audioSettings = "AudioSettings";
-        static const String audioCore = "AudioCore";
-        static const String orchestra = "Orchestra";
+        static const Identifier pluginManager = "PluginManager";
+        static const Identifier audioSettings = "AudioSettings";
+        static const Identifier audioDevice = "AudioDevice";
+        static const Identifier audioCore = "AudioCore";
+        static const Identifier orchestra = "Orchestra";
 
-        static const String recentFiles = "RecentFiles";
-        static const String recentFileItem = "File";
+        static const Identifier recentFiles = "RecentFiles";
+        static const Identifier recentFileItem = "File";
         
-        static const String clipboard = "HelioClipboard";
+        static const Identifier clipboard = "HelioClipboard";
 
-        static const String lastUsedLogin = "LastUsedLogin";
-        static const String firstLaunchSetupDone = "FirstLaunchSetupDone";
+        static const Identifier lastUsedLogin = "LastUsedLogin";
+        static const Identifier firstLaunchSetupDone = "FirstLaunchSetupDone";
     } // namespace Core
 
     namespace UI
     {
-        static const String lastShownPageId = "LastShownPageId";
-        static const String editorState = "EditorState";
+        static const Identifier lastShownPageId = "LastShownPageId";
+        static const Identifier editorState = "EditorState";
 
         namespace Hotkeys
         {
-            static const String schemes = "HotkeySchemes";
-            static const String scheme = "HotkeyScheme";
-            static const String schemeName = "Name";
-            static const String keyPress = "KeyPress";
-            static const String keyDown = "KeyDown";
-            static const String keyUp = "KeyUp";
-            static const String hotkeyDescription = "Key";
-            static const String hotkeyReceiver = "Receiver";
-            static const String hotkeyCommand = "Command";
+            static const Identifier schemes = "HotkeySchemes";
+            static const Identifier scheme = "HotkeyScheme";
+            static const Identifier schemeName = "Name";
+            static const Identifier keyPress = "KeyPress";
+            static const Identifier keyDown = "KeyDown";
+            static const Identifier keyUp = "KeyUp";
+            static const Identifier hotkeyDescription = "Key";
+            static const Identifier hotkeyReceiver = "Receiver";
+            static const Identifier hotkeyCommand = "Command";
         }
 
         namespace Colours
         {
-            static const String schemes = "ColourSchemes";
-            static const String appliedScheme = "AppliedScheme";
-            static const String scheme = "Scheme";
-            static const String colourMap = "ColourMap";
-            static const String name = "Name";
-            static const String id = "Id";
+            static const Identifier schemes = "ColourSchemes";
+            static const Identifier appliedScheme = "AppliedScheme";
+            static const Identifier scheme = "Scheme";
+            static const Identifier colourMap = "ColourMap";
+            static const Identifier name = "Name";
+            static const Identifier id = "Id";
 
-            static const String primaryGradientA = "PrimaryGradientA";
-            static const String primaryGradientB = "PrimaryGradientB";
-            static const String secondaryGradientA = "SecondaryGradientA";
-            static const String secondaryGradientB = "SecondaryGradientB";
+            static const Identifier primaryGradientA = "PrimaryGradientA";
+            static const Identifier primaryGradientB = "PrimaryGradientB";
+            static const Identifier secondaryGradientA = "SecondaryGradientA";
+            static const Identifier secondaryGradientB = "SecondaryGradientB";
 
-            static const String panelFill = "PanelFill";
-            static const String panelBorder = "PanelBorder";
+            static const Identifier panelFill = "PanelFill";
+            static const Identifier panelBorder = "PanelBorder";
 
-            static const String lassoFill = "LassoFill";
-            static const String lassoBorder = "LassoBorder";
+            static const Identifier lassoFill = "LassoFill";
+            static const Identifier lassoBorder = "LassoBorder";
 
-            static const String blackKey = "BlackKey";
-            static const String whiteKey = "WhiteKey";
+            static const Identifier blackKey = "BlackKey";
+            static const Identifier whiteKey = "WhiteKey";
 
-            static const String row = "Row";
-            static const String beat = "Beat";
-            static const String bar = "Bar";
+            static const Identifier row = "Row";
+            static const Identifier beat = "Beat";
+            static const Identifier bar = "Bar";
 
-            static const String text = "Text";
+            static const Identifier text = "Text";
 
-            static const String iconBase = "IconBase";
-            static const String iconShadow = "IconShadow";
+            static const Identifier iconBase = "IconBase";
+            static const Identifier iconShadow = "IconShadow";
         } // namespace Colours
         
     } // namespace UI
     
     namespace Clipboard
     {
-        static const String clipboard = "Clipboard";
-        static const String layer = "Layer";
-        static const String layerId = "LayerId";
-        static const String pattern = "Pattern";
-        static const String patternId = "PatternId";
-        static const String firstBeat = "FirstBeat";
-        static const String lastBeat = "LastBeat";
+        static const Identifier clipboard = "Clipboard";
+        static const Identifier layer = "Layer";
+        static const Identifier layerId = "LayerId";
+        static const Identifier pattern = "Pattern";
+        static const Identifier patternId = "PatternId";
+        static const Identifier firstBeat = "FirstBeat";
+        static const Identifier lastBeat = "LastBeat";
     } // namespace Clipboard
 
     namespace VCS
     {
-        static const String vcsHistoryKey = "HistoryKey";
-        static const String vcsHistoryId = "HistoryId";
-        static const String vcsHistoryVersion = "HistoryVersion";
+        static const Identifier vcsHistoryKey = "HistoryKey";
+        static const Identifier vcsHistoryId = "HistoryId";
+        static const Identifier vcsHistoryVersion = "HistoryVersion";
         
-        static const String stashesRepository = "StashesRepository";
-        static const String userStashes = "UserStashes";
-        static const String quickStash = "QuickStash";
-        static const String quickStashId = "QuickStashId";
+        static const Identifier stashesRepository = "StashesRepository";
+        static const Identifier userStashes = "UserStashes";
+        static const Identifier quickStash = "QuickStash";
+        static const Identifier quickStashId = "QuickStashId";
 
-        static const String pack = "Pack";
-        static const String packItem = "Record";
-        static const String packItemRevId = "ItemId";
-        static const String packItemDeltaId = "DeltaId";
+        static const Identifier pack = "Pack";
+        static const Identifier packItem = "Record";
+        static const Identifier packItemRevId = "ItemId";
+        static const Identifier packItemDeltaId = "DeltaId";
 
-        static const String revision = "Revision";
-        static const String head = "Head";
-        static const String headIndex = "HeadIndex";
-        static const String headIndexData = "HeadIndexData";
-        static const String headRevisionId = "HeadRevisionId";
-        static const String commitMessage = "Message";
-        static const String commitTimeStamp = "Date";
-        static const String commitVersion = "Version";
-        static const String commitId = "Uuid";
+        static const Identifier revision = "Revision";
+        static const Identifier head = "Head";
+        static const Identifier headIndex = "HeadIndex";
+        static const Identifier headIndexData = "HeadIndexData";
+        static const Identifier headRevisionId = "HeadRevisionId";
+        static const Identifier commitMessage = "Message";
+        static const Identifier commitTimeStamp = "Date";
+        static const Identifier commitVersion = "Version";
+        static const Identifier commitId = "Uuid";
 
-        static const String vcsItemId = "VCSUuid";
+        static const Identifier vcsItemId = "VCSUuid";
 
-        static const String revisionItem = "RevisionItem";
-        static const String revisionItemType = "Type";
-        static const String revisionItemName = "Name";
-        static const String revisionItemDiffLogic = "DiffLogic";
+        static const Identifier revisionItem = "RevisionItem";
+        static const Identifier revisionItemType = "Type";
+        static const Identifier revisionItemName = "Name";
+        static const Identifier revisionItemDiffLogic = "DiffLogic";
 
-        static const String delta = "Delta";
-        static const String deltaId = "Uuid";
-        static const String deltaName = "Name";
-        static const String deltaIntParam = "IntParam";
-        static const String deltaStringParam = "StringParam";
-        static const String deltaType = "Type";
+        static const Identifier delta = "Delta";
+        static const Identifier deltaId = "Uuid";
+        static const Identifier deltaName = "Name";
+        static const Identifier deltaIntParam = "IntParam";
+        static const Identifier deltaStringParam = "StringParam";
+        static const Identifier deltaType = "Type";
 
-        static const String headStateDelta = "HeadState";
+        static const Identifier headStateDelta = "HeadState";
     } // namespace VCS
 
     namespace Api
     {
         // Session
-        static const String sessionLastUpdateTime = "SessionLastUpdateTime";
-        static const String sessionLastToken = "SessionLastToken";
+        static const Identifier sessionLastUpdateTime = "SessionLastUpdateTime";
+        static const Identifier sessionLastToken = "SessionLastToken";
 
         // JSON payload keys
         namespace V1
         {
-            static const String user = "user";
-            static const String session = "session";
+            static const Identifier user = "user";
+            static const Identifier session = "session";
 
-            static const String name = "name";
-            static const String email = "email";
-            static const String login = "login";
-            static const String password = "password";
-            static const String passwordConfirmation = "password_confirmation";
+            static const Identifier name = "name";
+            static const Identifier email = "email";
+            static const Identifier login = "login";
+            static const Identifier password = "password";
+            static const Identifier passwordConfirmation = "password_confirmation";
 
-            static const String bearer = "bearer";
-            static const String deviceId = "device_id";
-            static const String platformId = "platform_id";
+            static const Identifier bearer = "bearer";
+            static const Identifier deviceId = "device_id";
+            static const Identifier platformId = "platform_id";
 
-            static const String token = "token";
-            static const String errors = "errors";
+            static const Identifier token = "token";
+            static const Identifier errors = "errors";
         } // namespace V1
     } // namespace Api
 
@@ -280,125 +281,125 @@ namespace Serialization
     
     namespace Locales
     {
-        static const String metaSymbol = "{x}";
+        static const Identifier metaSymbol = "{x}";
 
-        static const String wrapperClassName = "PluralForm";
-        static const String wrapperMethodName = "Detect";
-        static const String currentLocale = "CurrentLocale";
+        static const Identifier wrapperClassName = "PluralForm";
+        static const Identifier wrapperMethodName = "Detect";
+        static const Identifier currentLocale = "CurrentLocale";
         
-        static const String translations = "Translations";
-        static const String locale = "Locale";
-        static const String literal = "Literal";
-        static const String author = "Author";
-        static const String name = "Name";
-        static const String id = "Id";
+        static const Identifier translations = "Translations";
+        static const Identifier locale = "Locale";
+        static const Identifier literal = "Literal";
+        static const Identifier author = "Author";
+        static const Identifier name = "Name";
+        static const Identifier id = "Id";
         
-        static const String pluralForms = "PluralForms";
-        static const String equation = "Equation";
+        static const Identifier pluralForms = "PluralForms";
+        static const Identifier equation = "Equation";
         
-        static const String pluralLiteral = "PluralLiteral";
-        static const String pluralForm = "PluralForm";
-        static const String translation = "Translation";
+        static const Identifier pluralLiteral = "PluralLiteral";
+        static const Identifier pluralForm = "PluralForm";
+        static const Identifier translation = "Translation";
     }  // namespace Locales
     
     namespace Arps
     {
-        static const String arpeggiator = "Arpeggiator";
-        static const String arpeggiators = "Arpeggiators";
+        static const Identifier arpeggiator = "Arpeggiator";
+        static const Identifier arpeggiators = "Arpeggiators";
         
-        static const String sequence = "Sequence";
-        static const String isReversed = "IsReversed";
-        static const String relativeMapping = "RelativeMapping";
-        static const String limitsToChord = "LimitsToChord";
-        static const String scale = "Scale";
+        static const Identifier sequence = "Sequence";
+        static const Identifier isReversed = "IsReversed";
+        static const Identifier relativeMapping = "RelativeMapping";
+        static const Identifier limitsToChord = "LimitsToChord";
+        static const Identifier scale = "Scale";
 
-        static const String id = "Id";
-        static const String name = "Name";
+        static const Identifier id = "Id";
+        static const Identifier name = "Name";
     }  // namespace Arps
     
     namespace Undo
     {
-        static const String undoStack = "UndoStack";
-        static const String transaction = "Transaction";
+        static const Identifier undoStack = "UndoStack";
+        static const Identifier transaction = "Transaction";
 
-        static const String name = "Name";
-        static const String xPath = "Path";
-        static const String trackId = "TrackId";
-        static const String group = "Group";
+        static const Identifier name = "Name";
+        static const Identifier xPath = "Path";
+        static const Identifier trackId = "TrackId";
+        static const Identifier group = "Group";
 
-        static const String xPathBefore = "PathBefore";
-        static const String xPathAfter = "PathAfter";
-        static const String colourBefore = "ColourBefore";
-        static const String colourAfter = "ColourAfter";
-        static const String instrumentIdBefore = "InstrumentIdBefore";
-        static const String instrumentIdAfter = "InstrumentIdAfter";
-        static const String muteStateBefore = "MuteStateBefore";
-        static const String muteStateAfter = "MuteStateAfter";
+        static const Identifier xPathBefore = "PathBefore";
+        static const Identifier xPathAfter = "PathAfter";
+        static const Identifier colourBefore = "ColourBefore";
+        static const Identifier colourAfter = "ColourAfter";
+        static const Identifier instrumentIdBefore = "InstrumentIdBefore";
+        static const Identifier instrumentIdAfter = "InstrumentIdAfter";
+        static const Identifier muteStateBefore = "MuteStateBefore";
+        static const Identifier muteStateAfter = "MuteStateAfter";
         
-        static const String annotationBefore = "AnnotationBefore";
-        static const String annotationAfter = "AnnotationAfter";
-        static const String timeSignatureBefore = "TimeSignatureBefore";
-        static const String timeSignatureAfter = "TimeSignatureAfter";
-        static const String keySignatureBefore = "KeySignatureBefore";
-        static const String keySignatureAfter = "KeySignatureAfter";
-        static const String eventBefore = "EventBefore";
-        static const String eventAfter = "EventAfter";
-        static const String noteBefore = "NoteBefore";
-        static const String noteAfter = "NoteAfter";
-        static const String groupBefore = "GroupBefore";
-        static const String groupAfter = "GroupAfter";
-        static const String instanceBefore = "InstanceBefore";
-        static const String instanceAfter = "InstanceAfter";
+        static const Identifier annotationBefore = "AnnotationBefore";
+        static const Identifier annotationAfter = "AnnotationAfter";
+        static const Identifier timeSignatureBefore = "TimeSignatureBefore";
+        static const Identifier timeSignatureAfter = "TimeSignatureAfter";
+        static const Identifier keySignatureBefore = "KeySignatureBefore";
+        static const Identifier keySignatureAfter = "KeySignatureAfter";
+        static const Identifier eventBefore = "EventBefore";
+        static const Identifier eventAfter = "EventAfter";
+        static const Identifier noteBefore = "NoteBefore";
+        static const Identifier noteAfter = "NoteAfter";
+        static const Identifier groupBefore = "GroupBefore";
+        static const Identifier groupAfter = "GroupAfter";
+        static const Identifier instanceBefore = "InstanceBefore";
+        static const Identifier instanceAfter = "InstanceAfter";
 
-        static const String pianoTrackInsertAction = "PianoTrackInsertAction";
-        static const String pianoTrackRemoveAction = "PianoTrackRemoveAction";
+        static const Identifier pianoTrackInsertAction = "PianoTrackInsertAction";
+        static const Identifier pianoTrackRemoveAction = "PianoTrackRemoveAction";
         
-        static const String automationTrackInsertAction = "AutomationTrackInsertAction";
-        static const String automationTrackRemoveAction = "AutomationTrackRemoveAction";
+        static const Identifier automationTrackInsertAction = "AutomationTrackInsertAction";
+        static const Identifier automationTrackRemoveAction = "AutomationTrackRemoveAction";
         
-        static const String midiTrackRenameAction = "MidiTrackRenameAction";
+        static const Identifier midiTrackRenameAction = "MidiTrackRenameAction";
         
-        static const String midiTrackChangeColourAction = "MidiTrackChangeColourAction";
-        static const String midiTrackChangeInstrumentAction = "MidiTrackChangeInstrumentAction";
-        static const String midiTrackMuteAction = "MidiTrackMuteAction";
+        static const Identifier midiTrackChangeColourAction = "MidiTrackChangeColourAction";
+        static const Identifier midiTrackChangeInstrumentAction = "MidiTrackChangeInstrumentAction";
+        static const Identifier midiTrackMuteAction = "MidiTrackMuteAction";
         
-        static const String patternClipInsertAction = "PatternClipInsertAction";
-        static const String patternClipRemoveAction = "PatternClipRemoveAction";
-        static const String patternClipChangeAction = "PatternClipChangeAction";
+        static const Identifier patternClipInsertAction = "PatternClipInsertAction";
+        static const Identifier patternClipRemoveAction = "PatternClipRemoveAction";
+        static const Identifier patternClipChangeAction = "PatternClipChangeAction";
 
-        static const String noteInsertAction = "NoteInsertAction";
-        static const String noteRemoveAction = "NoteRemoveAction";
-        static const String noteChangeAction = "NoteChangeAction";
-        static const String notesGroupInsertAction = "NotesGroupInsertAction";
-        static const String notesGroupRemoveAction = "NotesGroupRemoveAction";
-        static const String notesGroupChangeAction = "NotesGroupChangeAction";
+        static const Identifier noteInsertAction = "NoteInsertAction";
+        static const Identifier noteRemoveAction = "NoteRemoveAction";
+        static const Identifier noteChangeAction = "NoteChangeAction";
+        static const Identifier notesGroupInsertAction = "NotesGroupInsertAction";
+        static const Identifier notesGroupRemoveAction = "NotesGroupRemoveAction";
+        static const Identifier notesGroupChangeAction = "NotesGroupChangeAction";
         
-        static const String annotationEventInsertAction = "AnnotationEventInsertAction";
-        static const String annotationEventRemoveAction = "AnnotationEventRemoveAction";
-        static const String annotationEventChangeAction = "AnnotationEventChangeAction";
-        static const String annotationEventsGroupInsertAction = "AnnotationEventsGroupInsertAction";
-        static const String annotationEventsGroupRemoveAction = "AnnotationEventsGroupRemoveAction";
-        static const String annotationEventsGroupChangeAction = "AnnotationEventsGroupChangeAction";
+        static const Identifier annotationEventInsertAction = "AnnotationEventInsertAction";
+        static const Identifier annotationEventRemoveAction = "AnnotationEventRemoveAction";
+        static const Identifier annotationEventChangeAction = "AnnotationEventChangeAction";
+        static const Identifier annotationEventsGroupInsertAction = "AnnotationEventsGroupInsertAction";
+        static const Identifier annotationEventsGroupRemoveAction = "AnnotationEventsGroupRemoveAction";
+        static const Identifier annotationEventsGroupChangeAction = "AnnotationEventsGroupChangeAction";
 
-        static const String timeSignatureEventInsertAction = "TimeSignatureEventInsertAction";
-        static const String timeSignatureEventRemoveAction = "TimeSignatureEventRemoveAction";
-        static const String timeSignatureEventChangeAction = "TimeSignatureEventChangeAction";
-        static const String timeSignatureEventsGroupInsertAction = "TimeSignatureEventsGroupInsertAction";
-        static const String timeSignatureEventsGroupRemoveAction = "TimeSignatureEventsGroupRemoveAction";
-        static const String timeSignatureEventsGroupChangeAction = "TimeSignatureEventsGroupChangeAction";
+        static const Identifier timeSignatureEventInsertAction = "TimeSignatureEventInsertAction";
+        static const Identifier timeSignatureEventRemoveAction = "TimeSignatureEventRemoveAction";
+        static const Identifier timeSignatureEventChangeAction = "TimeSignatureEventChangeAction";
+        static const Identifier timeSignatureEventsGroupInsertAction = "TimeSignatureEventsGroupInsertAction";
+        static const Identifier timeSignatureEventsGroupRemoveAction = "TimeSignatureEventsGroupRemoveAction";
+        static const Identifier timeSignatureEventsGroupChangeAction = "TimeSignatureEventsGroupChangeAction";
 
-        static const String keySignatureEventInsertAction = "KeySignatureEventInsertAction";
-        static const String keySignatureEventRemoveAction = "KeySignatureEventRemoveAction";
-        static const String keySignatureEventChangeAction = "KeySignatureEventChangeAction";
-        static const String keySignatureEventsGroupInsertAction = "KeySignatureEventsGroupInsertAction";
-        static const String keySignatureEventsGroupRemoveAction = "KeySignatureEventsGroupRemoveAction";
-        static const String keySignatureEventsGroupChangeAction = "KeySignatureEventsGroupChangeAction";
+        static const Identifier keySignatureEventInsertAction = "KeySignatureEventInsertAction";
+        static const Identifier keySignatureEventRemoveAction = "KeySignatureEventRemoveAction";
+        static const Identifier keySignatureEventChangeAction = "KeySignatureEventChangeAction";
+        static const Identifier keySignatureEventsGroupInsertAction = "KeySignatureEventsGroupInsertAction";
+        static const Identifier keySignatureEventsGroupRemoveAction = "KeySignatureEventsGroupRemoveAction";
+        static const Identifier keySignatureEventsGroupChangeAction = "KeySignatureEventsGroupChangeAction";
 
-        static const String automationEventInsertAction = "AutomationEventInsertAction";
-        static const String automationEventRemoveAction = "AutomationEventRemoveAction";
-        static const String automationEventChangeAction = "AutomationEventChangeAction";
-        static const String automationEventsGroupInsertAction = "AutomationEventsGroupInsertAction";
-        static const String automationEventsGroupRemoveAction = "AutomationEventsGroupRemoveAction";
-        static const String automationEventsGroupChangeAction = "AutomationEventsGroupChangeAction";
+        static const Identifier automationEventInsertAction = "AutomationEventInsertAction";
+        static const Identifier automationEventRemoveAction = "AutomationEventRemoveAction";
+        static const Identifier automationEventChangeAction = "AutomationEventChangeAction";
+        static const Identifier automationEventsGroupInsertAction = "AutomationEventsGroupInsertAction";
+        static const Identifier automationEventsGroupRemoveAction = "AutomationEventsGroupRemoveAction";
+        static const Identifier automationEventsGroupChangeAction = "AutomationEventsGroupChangeAction";
     } // namespace Undo
 }  // namespace Serialization
