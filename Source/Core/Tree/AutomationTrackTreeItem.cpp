@@ -99,39 +99,39 @@ VCS::Delta *AutomationTrackTreeItem::getDelta(int index) const
     return this->deltas[index];
 }
 
-XmlElement *AutomationTrackTreeItem::createDeltaDataFor(int index) const
+ValueTree AutomationTrackTreeItem::serializeDeltaData(int deltaIndex) const
 {
-    if (this->deltas[index]->getType() == AutoSequenceDeltas::layerPath)
+    if (this->deltas[deltaIndex]->getType() == AutoSequenceDeltas::layerPath)
     {
         return this->serializePathDelta();
     }
-    if (this->deltas[index]->getType() == AutoSequenceDeltas::layerMute)
+    if (this->deltas[deltaIndex]->getType() == AutoSequenceDeltas::layerMute)
     {
         return this->serializeMuteDelta();
     }
-    else if (this->deltas[index]->getType() == AutoSequenceDeltas::layerColour)
+    else if (this->deltas[deltaIndex]->getType() == AutoSequenceDeltas::layerColour)
     {
         return this->serializeColourDelta();
     }
-    else if (this->deltas[index]->getType() == AutoSequenceDeltas::layerInstrument)
+    else if (this->deltas[deltaIndex]->getType() == AutoSequenceDeltas::layerInstrument)
     {
         return this->serializeInstrumentDelta();
     }
-    else if (this->deltas[index]->getType() == AutoSequenceDeltas::layerController)
+    else if (this->deltas[deltaIndex]->getType() == AutoSequenceDeltas::layerController)
     {
         return this->serializeControllerDelta();
     }
-    else if (this->deltas[index]->getType() == AutoSequenceDeltas::eventsAdded)
+    else if (this->deltas[deltaIndex]->getType() == AutoSequenceDeltas::eventsAdded)
     {
         return this->serializeEventsDelta();
     }
-    else if (this->deltas[index]->getType() == PatternDeltas::clipsAdded)
+    else if (this->deltas[deltaIndex]->getType() == PatternDeltas::clipsAdded)
     {
         return this->serializeClipsDelta();
     }
 
     jassertfalse;
-    return nullptr;
+    return {};
 }
 
 VCS::DiffLogic *AutomationTrackTreeItem::getDiffLogic() const
@@ -144,33 +144,33 @@ void AutomationTrackTreeItem::resetStateTo(const VCS::TrackedItem &newState)
     for (int i = 0; i < newState.getNumDeltas(); ++i)
     {
         const VCS::Delta *newDelta = newState.getDelta(i);
-        ScopedPointer<XmlElement> newDeltaData(newState.createDeltaDataFor(i));
+        const auto newDeltaData(newState.serializeDeltaData(i));
         
-        if (newDelta->getType() == AutoSequenceDeltas::layerPath)
+        if (newDelta->hasType(AutoSequenceDeltas::layerPath))
         {
             this->resetPathDelta(newDeltaData);
         }
-        else if (newDelta->getType() == AutoSequenceDeltas::layerMute)
+        else if (newDelta->hasType(AutoSequenceDeltas::layerMute))
         {
             this->resetMuteDelta(newDeltaData);
         }
-        else if (newDelta->getType() == AutoSequenceDeltas::layerColour)
+        else if (newDelta->hasType(AutoSequenceDeltas::layerColour))
         {
             this->resetColourDelta(newDeltaData);
         }
-        else if (newDelta->getType() == AutoSequenceDeltas::layerInstrument)
+        else if (newDelta->hasType(AutoSequenceDeltas::layerInstrument))
         {
             this->resetInstrumentDelta(newDeltaData);
         }
-        else if (newDelta->getType() == AutoSequenceDeltas::layerController)
+        else if (newDelta->hasType(AutoSequenceDeltas::layerController))
         {
             this->resetControllerDelta(newDeltaData);
         }
-        else if (newDelta->getType() == AutoSequenceDeltas::eventsAdded)
+        else if (newDelta->hasType(AutoSequenceDeltas::eventsAdded))
         {
             this->resetEventsDelta(newDeltaData);
         }
-        else if (newDelta->getType() == PatternDeltas::clipsAdded)
+        else if (newDelta->hasType(PatternDeltas::clipsAdded))
         {
             this->resetClipsDelta(newDeltaData);
         }
@@ -186,17 +186,17 @@ ValueTree AutomationTrackTreeItem::serialize() const
 {
     ValueTree tree(Serialization::Core::treeItem);
 
-    this->serializeVCSUuid(*xml);
+    this->serializeVCSUuid(tree);
 
     tree.setProperty(Serialization::Core::treeItemType, this->type);
     tree.setProperty(Serialization::Core::treeItemName, this->name);
 
-    this->serializeTrackProperties(*xml);
+    this->serializeTrackProperties(tree);
 
     tree.appendChild(this->layer->serialize());
     tree.appendChild(this->pattern->serialize());
 
-    TreeItemChildrenSerializer::serializeChildren(*this, *xml);
+    TreeItemChildrenSerializer::serializeChildren(*this, tree);
 
     return tree;
 }
@@ -209,14 +209,14 @@ void AutomationTrackTreeItem::deserialize(const ValueTree &tree)
     this->deserializeTrackProperties(tree);
 
     // он все равно должен быть один, но так короче
-    forEachXmlChildElementWithTagName(tree, e, Serialization::Core::automation)
+    forEachValueTreeChildWithType(tree, e, Serialization::Core::automation)
     {
-        this->layer->deserialize(*e);
+        this->layer->deserialize(e);
     }
 
-    forEachXmlChildElementWithTagName(tree, e, Serialization::Core::pattern)
+    forEachValueTreeChildWithType(tree, e, Serialization::Core::pattern)
     {
-        this->pattern->deserialize(*e);
+        this->pattern->deserialize(e);
     }
 
     // Proceed with basic properties and children
@@ -230,42 +230,42 @@ void AutomationTrackTreeItem::deserialize(const ValueTree &tree)
 
 // вот все это можно вынести в LayerTreeItem
 
-XmlElement *AutomationTrackTreeItem::serializePathDelta() const
+ValueTree AutomationTrackTreeItem::serializePathDelta() const
 {
     ValueTree tree(AutoSequenceDeltas::layerPath);
     tree.setProperty(Serialization::VCS::delta, this->getTrackName());
     return tree;
 }
 
-XmlElement *AutomationTrackTreeItem::serializeMuteDelta() const
+ValueTree AutomationTrackTreeItem::serializeMuteDelta() const
 {
     ValueTree tree(AutoSequenceDeltas::layerMute);
     tree.setProperty(Serialization::VCS::delta, this->getTrackMuteStateAsString());
     return tree;
 }
 
-XmlElement *AutomationTrackTreeItem::serializeColourDelta() const
+ValueTree AutomationTrackTreeItem::serializeColourDelta() const
 {
     ValueTree tree(AutoSequenceDeltas::layerColour);
     tree.setProperty(Serialization::VCS::delta, this->getTrackColour().toString());
     return tree;
 }
 
-XmlElement *AutomationTrackTreeItem::serializeInstrumentDelta() const
+ValueTree AutomationTrackTreeItem::serializeInstrumentDelta() const
 {
     ValueTree tree(AutoSequenceDeltas::layerInstrument);
     tree.setProperty(Serialization::VCS::delta, this->getTrackInstrumentId());
     return tree;
 }
 
-XmlElement *AutomationTrackTreeItem::serializeControllerDelta() const
+ValueTree AutomationTrackTreeItem::serializeControllerDelta() const
 {
     ValueTree tree(AutoSequenceDeltas::layerController);
     tree.setProperty(Serialization::VCS::delta, this->getTrackControllerNumber());
     return tree;
 }
 
-XmlElement *AutomationTrackTreeItem::serializeEventsDelta() const
+ValueTree AutomationTrackTreeItem::serializeEventsDelta() const
 {
     ValueTree tree(AutoSequenceDeltas::eventsAdded);
 
@@ -279,16 +279,16 @@ XmlElement *AutomationTrackTreeItem::serializeEventsDelta() const
 }
 
 
-void AutomationTrackTreeItem::resetPathDelta(const XmlElement *state)
+void AutomationTrackTreeItem::resetPathDelta(const ValueTree &state)
 {
-    jassert(state->getTagName() == AutoSequenceDeltas::layerPath);
+    jassert(state.hasType(AutoSequenceDeltas::layerPath));
     const String &path(state.getProperty(Serialization::VCS::delta));
     this->setXPath(path);
 }
 
-void AutomationTrackTreeItem::resetMuteDelta(const XmlElement *state)
+void AutomationTrackTreeItem::resetMuteDelta(const ValueTree &state)
 {
-    jassert(state->getTagName() == AutoSequenceDeltas::layerMute);
+    jassert(state.hasType(AutoSequenceDeltas::layerMute));
     const String &muteState(state.getProperty(Serialization::VCS::delta));
     const bool willMute = MidiTrack::isTrackMuted(muteState);
     
@@ -298,9 +298,9 @@ void AutomationTrackTreeItem::resetMuteDelta(const XmlElement *state)
     }
 }
 
-void AutomationTrackTreeItem::resetColourDelta(const XmlElement *state)
+void AutomationTrackTreeItem::resetColourDelta(const ValueTree &state)
 {
-    jassert(state->getTagName() == AutoSequenceDeltas::layerColour);
+    jassert(state.hasType(AutoSequenceDeltas::layerColour));
     const String &colourString(state.getProperty(Serialization::VCS::delta));
     const Colour &colour(Colour::fromString(colourString));
 
@@ -310,29 +310,29 @@ void AutomationTrackTreeItem::resetColourDelta(const XmlElement *state)
     }
 }
 
-void AutomationTrackTreeItem::resetInstrumentDelta(const XmlElement *state)
+void AutomationTrackTreeItem::resetInstrumentDelta(const ValueTree &state)
 {
-    jassert(state->getTagName() == AutoSequenceDeltas::layerInstrument);
+    jassert(state.hasType(AutoSequenceDeltas::layerInstrument));
     const String &instrumentId(state.getProperty(Serialization::VCS::delta));
     this->setTrackInstrumentId(instrumentId, false);
 }
 
-void AutomationTrackTreeItem::resetControllerDelta(const XmlElement *state)
+void AutomationTrackTreeItem::resetControllerDelta(const ValueTree &state)
 {
-    jassert(state->getTagName() == AutoSequenceDeltas::layerController);
-    const int ccNumber(state->getIntAttribute(Serialization::VCS::delta));
+    jassert(state.hasType(AutoSequenceDeltas::layerController));
+    const int ccNumber(state.getProperty(Serialization::VCS::delta));
     this->setTrackControllerNumber(ccNumber, false);
 }
 
-void AutomationTrackTreeItem::resetEventsDelta(const XmlElement *state)
+void AutomationTrackTreeItem::resetEventsDelta(const ValueTree &state)
 {
-    jassert(state->getTagName() == AutoSequenceDeltas::eventsAdded);
+    jassert(state.hasType(AutoSequenceDeltas::eventsAdded));
 
     this->reset();
     this->getSequence()->reset();
 
-    forEachXmlChildElementWithTagName(*state, e, Serialization::Core::event)
+    forEachValueTreeChildWithType(state, e, Serialization::Core::event)
     {
-        this->getSequence()->silentImport(AutomationEvent(this->getSequence()).withParameters(*e));
+        this->getSequence()->silentImport(AutomationEvent(this->getSequence()).withParameters(e));
     }
 }

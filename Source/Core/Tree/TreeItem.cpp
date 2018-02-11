@@ -31,9 +31,9 @@ String TreeItem::createSafeName(const String &name)
     return File::createLegalFileName(name).removeCharacters(TreeItem::xPathSeparator);
 }
 
-TreeItem::TreeItem(const String &name, const String &type) :
+TreeItem::TreeItem(const String &name, const Identifier &type) :
     name(TreeItem::createSafeName(name)),
-    type(type),
+    type(type.toString()),
     markerIsVisible(false),
     itemShouldBeVisible(true)
 {
@@ -336,7 +336,7 @@ ValueTree TreeItem::serialize() const
     ValueTree tree(Serialization::Core::treeItem);
     tree.setProperty(Serialization::Core::treeItemType, this->type);
     tree.setProperty(Serialization::Core::treeItemName, this->name);
-    TreeItemChildrenSerializer::serializeChildren(*this, *xml);
+    TreeItemChildrenSerializer::serializeChildren(*this, tree);
     return tree;
 }
 
@@ -346,12 +346,7 @@ void TreeItem::deserialize(const ValueTree &tree)
     // on this method in their deserialization
     //this->reset();
 
-    // Legacy support:
-    const String nameFallback =
-        tree.getProperty(Serialization::Core::treeItemName.toLowerCase(), this->name);
-
-    this->name =
-        tree.getProperty(Serialization::Core::treeItemName, nameFallback);
+    this->name = tree.getProperty(Serialization::Core::treeItemName);
 
     TreeItemChildrenSerializer::deserializeChildren(*this, tree);
 }

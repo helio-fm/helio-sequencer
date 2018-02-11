@@ -157,23 +157,23 @@ VCS::Delta *ProjectTimeline::getDelta(int index) const
     return this->deltas[index];
 }
 
-XmlElement *ProjectTimeline::createDeltaDataFor(int index) const
+ValueTree ProjectTimeline::serializeDeltaData(int deltaIndex) const
 {
-    if (this->deltas[index]->getType() == ProjectTimelineDeltas::annotationsAdded)
+    if (this->deltas[deltaIndex]->getType() == ProjectTimelineDeltas::annotationsAdded)
     {
         return this->serializeAnnotationsDelta();
     }
-    else if (this->deltas[index]->getType() == ProjectTimelineDeltas::timeSignaturesAdded)
+    else if (this->deltas[deltaIndex]->getType() == ProjectTimelineDeltas::timeSignaturesAdded)
     {
         return this->serializeTimeSignaturesDelta();
     }
-    else if (this->deltas[index]->getType() == ProjectTimelineDeltas::keySignaturesAdded)
+    else if (this->deltas[deltaIndex]->getType() == ProjectTimelineDeltas::keySignaturesAdded)
     {
         return this->serializeKeySignaturesDelta();
     }
 
     jassertfalse;
-    return nullptr;
+    return {};
 }
 
 VCS::DiffLogic *ProjectTimeline::getDiffLogic() const
@@ -190,19 +190,19 @@ void ProjectTimeline::resetStateTo(const VCS::TrackedItem &newState)
     for (int i = 0; i < newState.getNumDeltas(); ++i)
     {
         const VCS::Delta *newDelta = newState.getDelta(i);
-        ScopedPointer<XmlElement> newDeltaData(newState.createDeltaDataFor(i));
+        const auto newDeltaData(newState.serializeDeltaData(i));
         
-        if (newDelta->getType() == ProjectTimelineDeltas::annotationsAdded)
+        if (newDelta->hasType(ProjectTimelineDeltas::annotationsAdded))
         {
             this->resetAnnotationsDelta(newDeltaData);
             annotationsChanged = true;
         }
-        else if (newDelta->getType() == ProjectTimelineDeltas::timeSignaturesAdded)
+        else if (newDelta->hasType(ProjectTimelineDeltas::timeSignaturesAdded))
         {
             this->resetTimeSignaturesDelta(newDeltaData);
             timeSignaturesChanged = true;
         }
-        else if (newDelta->getType() == ProjectTimelineDeltas::keySignaturesAdded)
+        else if (newDelta->hasType(ProjectTimelineDeltas::keySignaturesAdded))
         {
             this->resetKeySignaturesDelta(newDeltaData);
             keySignaturesChanged = true;
@@ -295,7 +295,7 @@ void ProjectTimeline::deserialize(const ValueTree &tree)
     const auto root = tree.hasType(this->vcsDiffLogic->getType()) ?
         tree : tree.getChildWithName(this->vcsDiffLogic->getType());
     
-    if (root == nullptr)
+    if (!root.isValid())
     {
         return;
     }
@@ -324,19 +324,19 @@ void ProjectTimeline::deserialize(const ValueTree &tree)
     //    }
     //}
 
-    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::annotations)
+    forEachValueTreeChildWithType(root, e, Serialization::Core::annotations)
     {
-        this->annotationsSequence->deserialize(*e);
+        this->annotationsSequence->deserialize(e);
     }
 
-    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::keySignatures)
+    forEachValueTreeChildWithType(root, e, Serialization::Core::keySignatures)
     {
-        this->keySignaturesSequence->deserialize(*e);
+        this->keySignaturesSequence->deserialize(e);
     }
 
-    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::timeSignatures)
+    forEachValueTreeChildWithType(root, e, Serialization::Core::timeSignatures)
     {
-        this->timeSignaturesSequence->deserialize(*e);
+        this->timeSignaturesSequence->deserialize(e);
     }
 
     // Debug::
@@ -351,7 +351,7 @@ void ProjectTimeline::deserialize(const ValueTree &tree)
 // Deltas
 //===----------------------------------------------------------------------===//
 
-XmlElement *ProjectTimeline::serializeAnnotationsDelta() const
+ValueTree ProjectTimeline::serializeAnnotationsDelta() const
 {
     ValueTree tree(ProjectTimelineDeltas::annotationsAdded);
 
@@ -364,19 +364,19 @@ XmlElement *ProjectTimeline::serializeAnnotationsDelta() const
     return tree;
 }
 
-void ProjectTimeline::resetAnnotationsDelta(const XmlElement *state)
+void ProjectTimeline::resetAnnotationsDelta(const ValueTree &state)
 {
-    jassert(state->getTagName() == ProjectTimelineDeltas::annotationsAdded);
+    jassert(state.hasType(ProjectTimelineDeltas::annotationsAdded));
     this->annotationsSequence->reset();
 
-    forEachXmlChildElementWithTagName(*state, e, Serialization::Core::annotation)
+    forEachValueTreeChildWithType(state, e, Serialization::Core::annotation)
     {
         this->annotationsSequence->silentImport(
-            AnnotationEvent(this->annotationsSequence.get()).withParameters(*e));
+            AnnotationEvent(this->annotationsSequence.get()).withParameters(e));
     }
 }
 
-XmlElement *ProjectTimeline::serializeTimeSignaturesDelta() const
+ValueTree ProjectTimeline::serializeTimeSignaturesDelta() const
 {
     ValueTree tree(ProjectTimelineDeltas::timeSignaturesAdded);
 
@@ -389,19 +389,19 @@ XmlElement *ProjectTimeline::serializeTimeSignaturesDelta() const
     return tree;
 }
 
-void ProjectTimeline::resetTimeSignaturesDelta(const XmlElement *state)
+void ProjectTimeline::resetTimeSignaturesDelta(const ValueTree &state)
 {
-    jassert(state->getTagName() == ProjectTimelineDeltas::timeSignaturesAdded);
+    jassert(state.hasType(ProjectTimelineDeltas::timeSignaturesAdded));
     this->timeSignaturesSequence->reset();
     
-    forEachXmlChildElementWithTagName(*state, e, Serialization::Core::timeSignature)
+    forEachValueTreeChildWithType(state, e, Serialization::Core::timeSignature)
     {
         this->timeSignaturesSequence->silentImport(
-            TimeSignatureEvent(this->timeSignaturesSequence.get()).withParameters(*e));
+            TimeSignatureEvent(this->timeSignaturesSequence.get()).withParameters(e));
     }
 }
 
-XmlElement *ProjectTimeline::serializeKeySignaturesDelta() const
+ValueTree ProjectTimeline::serializeKeySignaturesDelta() const
 {
     ValueTree tree(ProjectTimelineDeltas::keySignaturesAdded);
 
@@ -414,14 +414,14 @@ XmlElement *ProjectTimeline::serializeKeySignaturesDelta() const
     return tree;
 }
 
-void ProjectTimeline::resetKeySignaturesDelta(const XmlElement *state)
+void ProjectTimeline::resetKeySignaturesDelta(const ValueTree &state)
 {
-    jassert(state->getTagName() == ProjectTimelineDeltas::keySignaturesAdded);
+    jassert(state.hasType(ProjectTimelineDeltas::keySignaturesAdded));
     this->keySignaturesSequence->reset();
 
-    forEachXmlChildElementWithTagName(*state, e, Serialization::Core::keySignature)
+    forEachValueTreeChildWithType(state, e, Serialization::Core::keySignature)
     {
         this->keySignaturesSequence->silentImport(
-            KeySignatureEvent(this->keySignaturesSequence.get()).withParameters(*e));
+            KeySignatureEvent(this->keySignaturesSequence.get()).withParameters(e));
     }
 }

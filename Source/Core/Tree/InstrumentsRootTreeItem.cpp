@@ -88,14 +88,7 @@ ScopedPointer<Component> InstrumentsRootTreeItem::createItemMenu()
 
 bool InstrumentsRootTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
-    //if (TreeView *treeView = dynamic_cast<TreeView *>(dragSourceDetails.sourceComponent.get()))
-    //{
-    //    TreeItem *selected = TreeItem::getSelectedItem(treeView);
-
-    //if (TreeItem::isNodeInChildren(selected, this))
-    //{ return false; }
-
-    bool isInterested = (dragSourceDetails.description == Serialization::Core::instrument);
+    bool isInterested = (dragSourceDetails.description == Serialization::Core::instrument.toString());
 
     isInterested |= (nullptr != dynamic_cast<PluginDescriptionWrapper *>(dragSourceDetails.description.getObject()));
 
@@ -103,8 +96,6 @@ bool InstrumentsRootTreeItem::isInterestedInDragSource(const DragAndDropTarget::
     { this->setOpen(true); }
 
     return isInterested;
-
-    //}
 }
 
 void InstrumentsRootTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)

@@ -44,7 +44,7 @@ public:
     String getVCSName() const override;
     int getNumDeltas() const override;
     VCS::Delta *getDelta(int index) const override;
-    XmlElement *createDeltaDataFor(int index) const override;
+    ValueTree serializeDeltaData(int deltaIndex) const override;
     VCS::DiffLogic *getDiffLogic() const override;
     void resetStateTo(const VCS::TrackedItem &newState) override;
     
@@ -82,14 +82,14 @@ public:
     // Deltas
     //===------------------------------------------------------------------===//
 
-    XmlElement *serializeAnnotationsDelta() const;
-    void resetAnnotationsDelta(const XmlElement *state);
+    ValueTree serializeAnnotationsDelta() const;
+    void resetAnnotationsDelta(const ValueTree &state);
 
-    XmlElement *serializeTimeSignaturesDelta() const;
-    void resetTimeSignaturesDelta(const XmlElement *state);
+    ValueTree serializeTimeSignaturesDelta() const;
+    void resetTimeSignaturesDelta(const ValueTree &state);
     
-    XmlElement *serializeKeySignaturesDelta() const;
-    void resetKeySignaturesDelta(const XmlElement *state);
+    ValueTree serializeKeySignaturesDelta() const;
+    void resetKeySignaturesDelta(const ValueTree &state);
 
 private:
 

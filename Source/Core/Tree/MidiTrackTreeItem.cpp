@@ -37,7 +37,7 @@
 
 #include "LayerCommandPanel.h"
 
-MidiTrackTreeItem::MidiTrackTreeItem(const String &name, const String &type) :
+MidiTrackTreeItem::MidiTrackTreeItem(const String &name, const Identifier &type) :
     TreeItem(name, type),
     colour(Colours::white), // TODO random color from my set
     channel(1),
@@ -105,7 +105,7 @@ String MidiTrackTreeItem::getVCSName() const
     return this->getXPath();
 }
 
-XmlElement *MidiTrackTreeItem::serializeClipsDelta() const
+ValueTree MidiTrackTreeItem::serializeClipsDelta() const
 {
     ValueTree tree(PatternDeltas::clipsAdded);
 
@@ -118,18 +118,18 @@ XmlElement *MidiTrackTreeItem::serializeClipsDelta() const
     return tree;
 }
 
-void MidiTrackTreeItem::resetClipsDelta(const XmlElement *state)
+void MidiTrackTreeItem::resetClipsDelta(const ValueTree &state)
 {
-    jassert(state->getTagName() == PatternDeltas::clipsAdded);
+    jassert(state.hasType(PatternDeltas::clipsAdded));
 
     //this->reset(); // TODO test
     this->getPattern()->reset();
 
     Pattern *pattern = this->getPattern();
-    forEachXmlChildElementWithTagName(*state, e, Serialization::Core::clip)
+    forEachValueTreeChildWithType(state, e, Serialization::Core::clip)
     {
         Clip c(pattern);
-        c.deserialize(*e);
+        c.deserialize(e);
         pattern->silentImport(c);
     }
 }
@@ -462,7 +462,7 @@ ProjectTreeItem *MidiTrackTreeItem::getProject() const
 
 var MidiTrackTreeItem::getDragSourceDescription()
 {
-    return Serialization::Core::layer;
+    return Serialization::Core::layer.toString();
 }
 
 void MidiTrackTreeItem::onItemParentChanged()
@@ -503,7 +503,7 @@ void MidiTrackTreeItem::onItemParentChanged()
 
 bool MidiTrackTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
-    bool isInterested = (dragSourceDetails.description == Serialization::Core::instrument);
+    bool isInterested = (Serialization::Core::instrument.toString() == dragSourceDetails.description.toString());
 
     if (isInterested)
     { this->setOpen(true); }

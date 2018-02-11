@@ -161,14 +161,14 @@ void RecentFilesList::deserialize(const ValueTree &tree)
     const auto root = tree.hasType(Serialization::Core::recentFiles) ?
         tree : tree.getChildWithName(Serialization::Core::recentFiles);
 
-    if (root == nullptr) { return; }
+    if (!root.isValid()) { return; }
 
-    forEachXmlChildElementWithTagName(*root, child, Serialization::Core::recentFileItem)
+    forEachValueTreeChildWithType(root, child, Serialization::Core::recentFileItem)
     {
         const String title = child.getProperty("title", "");
         const String path = child.getProperty("path", "");
-        const int64 time = child.getProperty("time", "").getLargeIntValue();
         const String id = child.getProperty("id", "");
+        const int64 time = child.getProperty("time");
 
         if (path != "")
         {

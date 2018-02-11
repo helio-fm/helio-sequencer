@@ -23,8 +23,6 @@ class TreeItemChildrenSerializer
 {
 public:
 
-    static void serializeChildren(const TreeItem &parentItem, XmlElement &parentXml);
-
-    static void deserializeChildren(TreeItem &parentItem, const XmlElement &parentXml);
-
+    static void serializeChildren(const TreeItem &parentItem, ValueTree &parent);
+    static void deserializeChildren(TreeItem &parentItem, const ValueTree &parent);
 };

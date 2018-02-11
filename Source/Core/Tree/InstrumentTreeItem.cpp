@@ -153,7 +153,7 @@ TreeItem *InstrumentTreeItem::findAudioPluginEditorForNodeId(uint32 nodeId) cons
 
 var InstrumentTreeItem::getDragSourceDescription()
 {
-    return Serialization::Core::instrument;
+    return Serialization::Core::instrument.toString();
 }
 
 bool InstrumentTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)

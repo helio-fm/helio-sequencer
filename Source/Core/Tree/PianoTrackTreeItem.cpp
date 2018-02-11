@@ -118,35 +118,35 @@ VCS::Delta *PianoTrackTreeItem::getDelta(int index) const
     return this->deltas[index];
 }
 
-XmlElement *PianoTrackTreeItem::createDeltaDataFor(int index) const
+ValueTree PianoTrackTreeItem::serializeDeltaData(int deltaIndex) const
 {
-    if (this->deltas[index]->getType() == MidiTrackDeltas::trackPath)
+    if (this->deltas[deltaIndex]->getType() == MidiTrackDeltas::trackPath)
     {
         return this->serializePathDelta();
     }
-    if (this->deltas[index]->getType() == MidiTrackDeltas::trackMute)
+    if (this->deltas[deltaIndex]->getType() == MidiTrackDeltas::trackMute)
     {
         return this->serializeMuteDelta();
     }
-    else if (this->deltas[index]->getType() == MidiTrackDeltas::trackColour)
+    else if (this->deltas[deltaIndex]->getType() == MidiTrackDeltas::trackColour)
     {
         return this->serializeColourDelta();
     }
-    else if (this->deltas[index]->getType() == MidiTrackDeltas::trackInstrument)
+    else if (this->deltas[deltaIndex]->getType() == MidiTrackDeltas::trackInstrument)
     {
         return this->serializeInstrumentDelta();
     }
-    else if (this->deltas[index]->getType() == PianoSequenceDeltas::notesAdded)
+    else if (this->deltas[deltaIndex]->getType() == PianoSequenceDeltas::notesAdded)
     {
         return this->serializeEventsDelta();
     }
-    else if (this->deltas[index]->getType() == PatternDeltas::clipsAdded)
+    else if (this->deltas[deltaIndex]->getType() == PatternDeltas::clipsAdded)
     {
         return this->serializeClipsDelta();
     }
 
     jassertfalse;
-    return nullptr;
+    return {};
 }
 
 VCS::DiffLogic *PianoTrackTreeItem::getDiffLogic() const
@@ -159,32 +159,32 @@ void PianoTrackTreeItem::resetStateTo(const VCS::TrackedItem &newState)
     for (int i = 0; i < newState.getNumDeltas(); ++i)
     {
         const VCS::Delta *newDelta = newState.getDelta(i);
-        ScopedPointer<XmlElement> newDeltaData(newState.createDeltaDataFor(i));
+        const auto newDeltaData(newState.serializeDeltaData(i));
         
-        if (newDelta->getType() == MidiTrackDeltas::trackPath)
+        if (newDelta->hasType(MidiTrackDeltas::trackPath))
         {
             this->resetPathDelta(newDeltaData);
         }
-        else if (newDelta->getType() == MidiTrackDeltas::trackMute)
+        else if (newDelta->hasType(MidiTrackDeltas::trackMute))
         {
             this->resetMuteDelta(newDeltaData);
         }
-        else if (newDelta->getType() == MidiTrackDeltas::trackColour)
+        else if (newDelta->hasType(MidiTrackDeltas::trackColour))
         {
             this->resetColourDelta(newDeltaData);
         }
-        else if (newDelta->getType() == MidiTrackDeltas::trackInstrument)
+        else if (newDelta->hasType(MidiTrackDeltas::trackInstrument))
         {
             this->resetInstrumentDelta(newDeltaData);
         }
         // the current layer state is supposed to have
         // a single note delta of type PianoSequenceDeltas::notesAdded
-        else if (newDelta->getType() == PianoSequenceDeltas::notesAdded)
+        else if (newDelta->hasType(PianoSequenceDeltas::notesAdded))
         {
             this->resetEventsDelta(newDeltaData);
         }
         // same rule applies to clips state:
-        else if (newDelta->getType() == PatternDeltas::clipsAdded)
+        else if (newDelta->hasType(PatternDeltas::clipsAdded))
         {
             this->resetClipsDelta(newDeltaData);
         }
@@ -200,17 +200,17 @@ ValueTree PianoTrackTreeItem::serialize() const
 {
     ValueTree tree(Serialization::Core::treeItem);
 
-    this->serializeVCSUuid(*xml);
+    this->serializeVCSUuid(tree);
 
     tree.setProperty(Serialization::Core::treeItemType, this->type);
     tree.setProperty(Serialization::Core::treeItemName, this->name);
 
-    this->serializeTrackProperties(*xml);
+    this->serializeTrackProperties(tree);
 
     tree.appendChild(this->layer->serialize());
     tree.appendChild(this->pattern->serialize());
 
-    TreeItemChildrenSerializer::serializeChildren(*this, *xml);
+    TreeItemChildrenSerializer::serializeChildren(*this, tree);
 
     return tree;
 }
@@ -223,14 +223,14 @@ void PianoTrackTreeItem::deserialize(const ValueTree &tree)
     this->deserializeTrackProperties(tree);
 
     // он все равно должен быть один, но так короче
-    forEachXmlChildElementWithTagName(tree, e, Serialization::Core::track)
+    forEachValueTreeChildWithType(tree, e, Serialization::Core::track)
     {
-        this->layer->deserialize(*e);
+        this->layer->deserialize(e);
     }
 
-    forEachXmlChildElementWithTagName(tree, e, Serialization::Core::pattern)
+    forEachValueTreeChildWithType(tree, e, Serialization::Core::pattern)
     {
-        this->pattern->deserialize(*e);
+        this->pattern->deserialize(e);
     }
 
     // Proceed with basic properties and children
@@ -242,35 +242,35 @@ void PianoTrackTreeItem::deserialize(const ValueTree &tree)
 // Deltas
 //===----------------------------------------------------------------------===//
 
-XmlElement *PianoTrackTreeItem::serializePathDelta() const
+juce::ValueTree PianoTrackTreeItem::serializePathDelta() const
 {
     ValueTree tree(MidiTrackDeltas::trackPath);
     tree.setProperty(Serialization::VCS::delta, this->getTrackName());
     return tree;
 }
 
-XmlElement *PianoTrackTreeItem::serializeMuteDelta() const
+juce::ValueTree PianoTrackTreeItem::serializeMuteDelta() const
 {
     ValueTree tree(MidiTrackDeltas::trackMute);
     tree.setProperty(Serialization::VCS::delta, this->getTrackMuteStateAsString());
     return tree;
 }
 
-XmlElement *PianoTrackTreeItem::serializeColourDelta() const
+juce::ValueTree PianoTrackTreeItem::serializeColourDelta() const
 {
     ValueTree tree(MidiTrackDeltas::trackColour);
     tree.setProperty(Serialization::VCS::delta, this->getTrackColour().toString());
     return tree;
 }
 
-XmlElement *PianoTrackTreeItem::serializeInstrumentDelta() const
+juce::ValueTree PianoTrackTreeItem::serializeInstrumentDelta() const
 {
     ValueTree tree(MidiTrackDeltas::trackInstrument);
     tree.setProperty(Serialization::VCS::delta, this->getTrackInstrumentId());
     return tree;
 }
 
-XmlElement *PianoTrackTreeItem::serializeEventsDelta() const
+juce::ValueTree PianoTrackTreeItem::serializeEventsDelta() const
 {
     ValueTree tree(PianoSequenceDeltas::notesAdded);
 
@@ -285,16 +285,16 @@ XmlElement *PianoTrackTreeItem::serializeEventsDelta() const
 }
 
 
-void PianoTrackTreeItem::resetPathDelta(const XmlElement *state)
+void PianoTrackTreeItem::resetPathDelta(const ValueTree &state)
 {
-    jassert(state->getTagName() == MidiTrackDeltas::trackPath);
+    jassert(state.hasType(MidiTrackDeltas::trackPath));
     const String &path(state.getProperty(Serialization::VCS::delta));
     this->setXPath(path);
 }
 
-void PianoTrackTreeItem::resetMuteDelta(const XmlElement *state)
+void PianoTrackTreeItem::resetMuteDelta(const ValueTree &state)
 {
-    jassert(state->getTagName() == MidiTrackDeltas::trackMute);
+    jassert(state.hasType(MidiTrackDeltas::trackMute));
     const String &muteState(state.getProperty(Serialization::VCS::delta));
     const bool willMute = MidiTrack::isTrackMuted(muteState);
     
@@ -304,9 +304,9 @@ void PianoTrackTreeItem::resetMuteDelta(const XmlElement *state)
     }
 }
 
-void PianoTrackTreeItem::resetColourDelta(const XmlElement *state)
+void PianoTrackTreeItem::resetColourDelta(const ValueTree &state)
 {
-    jassert(state->getTagName() == MidiTrackDeltas::trackColour);
+    jassert(state.hasType(MidiTrackDeltas::trackColour));
     const String &colourString(state.getProperty(Serialization::VCS::delta));
     const Colour &colour(Colour::fromString(colourString));
 
@@ -316,23 +316,23 @@ void PianoTrackTreeItem::resetColourDelta(const XmlElement *state)
     }
 }
 
-void PianoTrackTreeItem::resetInstrumentDelta(const XmlElement *state)
+void PianoTrackTreeItem::resetInstrumentDelta(const ValueTree &state)
 {
-    jassert(state->getTagName() == MidiTrackDeltas::trackInstrument);
+    jassert(state.hasType(MidiTrackDeltas::trackInstrument));
     const String &instrumentId(state.getProperty(Serialization::VCS::delta));
     this->setTrackInstrumentId(instrumentId, false);
 }
 
-void PianoTrackTreeItem::resetEventsDelta(const XmlElement *state)
+void PianoTrackTreeItem::resetEventsDelta(const ValueTree &state)
 {
-    jassert(state->getTagName() == PianoSequenceDeltas::notesAdded);
+    jassert(state.hasType(PianoSequenceDeltas::notesAdded));
 
     //this->reset(); // TODO test
     this->getSequence()->reset();
 
-    forEachXmlChildElementWithTagName(*state, e, Serialization::Core::note)
+    forEachValueTreeChildWithType(state, e, Serialization::Core::note)
     {
-        this->getSequence()->silentImport(Note(this->getSequence()).withParameters(*e));
+        this->getSequence()->silentImport(Note(this->getSequence()).withParameters(e));
     }
 }
 

@@ -36,7 +36,7 @@ class MidiTrackTreeItem :
 {
 public:
 
-    explicit MidiTrackTreeItem(const String &name, const String &type);
+    explicit MidiTrackTreeItem(const String &name, const Identifier &type);
 
     ~MidiTrackTreeItem() override;
 
@@ -54,8 +54,8 @@ public:
     //===------------------------------------------------------------------===//
 
     String getVCSName() const override;
-    XmlElement *serializeClipsDelta() const;
-    void resetClipsDelta(const XmlElement *state);
+    ValueTree serializeClipsDelta() const;
+    void resetClipsDelta(const ValueTree &state);
 
     //===------------------------------------------------------------------===//
     // MidiTrack

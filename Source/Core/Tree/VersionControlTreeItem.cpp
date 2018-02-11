@@ -327,7 +327,7 @@ ValueTree VersionControlTreeItem::serialize() const
         tree.appendChild(this->vcs->serialize());
     }
 
-    TreeItemChildrenSerializer::serializeChildren(*this, *xml);
+    TreeItemChildrenSerializer::serializeChildren(*this, tree);
     return tree;
 }
 
@@ -337,9 +337,9 @@ void VersionControlTreeItem::deserialize(const ValueTree &tree)
 
     if (this->vcs)
     {
-        forEachXmlChildElementWithTagName(tree, e, Serialization::Core::versionControl)
+        forEachValueTreeChildWithType(tree, e, Serialization::Core::versionControl)
         {
-            this->vcs->deserialize(*e);
+            this->vcs->deserialize(e);
         }
     }
 

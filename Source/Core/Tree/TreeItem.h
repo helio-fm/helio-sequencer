@@ -17,7 +17,6 @@
 
 #pragma once
 
-
 #if HELIO_DESKTOP
 #   define TREE_ICON_HEIGHT (16)
 #   define TREE_LARGE_ICON_HEIGHT (24)
@@ -37,7 +36,7 @@ class TreeItem :
 {
 public:
 
-    TreeItem(const String &name, const String &type);
+    TreeItem(const String &name, const Identifier &type);
     ~TreeItem() override;
     
     static const String xPathSeparator;

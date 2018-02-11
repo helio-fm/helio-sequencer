@@ -36,7 +36,7 @@ public:
 
     int getNumDeltas() const override;
     VCS::Delta *getDelta(int index) const override;
-    XmlElement *createDeltaDataFor(int index) const override;
+    ValueTree serializeDeltaData(int deltaIndex) const override;
     VCS::DiffLogic *getDiffLogic() const override;
     void resetStateTo(const VCS::TrackedItem &newState) override;
     
@@ -51,17 +51,17 @@ public:
     // Deltas
     //===------------------------------------------------------------------===//
 
-    XmlElement *serializePathDelta() const;
-    XmlElement *serializeMuteDelta() const;
-    XmlElement *serializeColourDelta() const;
-    XmlElement *serializeInstrumentDelta() const;
-    XmlElement *serializeEventsDelta() const;
+    ValueTree serializePathDelta() const;
+    ValueTree serializeMuteDelta() const;
+    ValueTree serializeColourDelta() const;
+    ValueTree serializeInstrumentDelta() const;
+    ValueTree serializeEventsDelta() const;
 
-    void resetPathDelta(const XmlElement *state);
-    void resetMuteDelta(const XmlElement *state);
-    void resetColourDelta(const XmlElement *state);
-    void resetInstrumentDelta(const XmlElement *state);
-    void resetEventsDelta(const XmlElement *state);
+    void resetPathDelta(const ValueTree &state);
+    void resetMuteDelta(const ValueTree &state);
+    void resetColourDelta(const ValueTree &state);
+    void resetInstrumentDelta(const ValueTree &state);
+    void resetEventsDelta(const ValueTree &state);
 
 private:
 

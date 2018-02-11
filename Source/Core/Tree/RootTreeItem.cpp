@@ -296,15 +296,7 @@ ScopedPointer<Component> RootTreeItem::createItemMenu()
 
 bool RootTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
-    //if (TreeView *treeView = dynamic_cast<TreeView *>(dragSourceDetails.sourceComponent.get()))
-    //{
-    //    TreeItem *selected = TreeItem::getSelectedItem(treeView);
-
-    //if (TreeItem::isNodeInChildren(selected, this))
-    //{ return false; }
-
-    return (dragSourceDetails.description == Serialization::Core::project);
-    //}
+    return (dragSourceDetails.description == Serialization::Core::project.toString());
 }
 
 bool RootTreeItem::isInterestedInFileDrag(const StringArray &files)
@@ -331,8 +323,8 @@ void RootTreeItem::deserialize(const ValueTree &tree)
     const auto root = tree.hasType(Serialization::Core::treeItem) ?
         tree : tree.getChildWithName(Serialization::Core::treeItem);
 
-    if (root != nullptr)
+    if (root.isValid())
     {
-        TreeItem::deserialize(*root);
+        TreeItem::deserialize(root);
     }
 }

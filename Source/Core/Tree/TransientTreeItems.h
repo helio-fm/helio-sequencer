@@ -57,7 +57,7 @@ public:
     // but they won't be deserialized back on project load
 
     ValueTree serialize() const override
-    { return new XmlElement("TransientTreeItem"); }
+    { return ValueTree("TransientTreeItem"); }
 
     void deserialize(const ValueTree &tree) override {}
 

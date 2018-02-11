@@ -28,28 +28,23 @@
 #include "PatternEditorTreeItem.h"
 #include "SettingsTreeItem.h"
 
-void TreeItemChildrenSerializer::serializeChildren(const TreeItem &parentItem, XmlElement &parentXml)
+void TreeItemChildrenSerializer::serializeChildren(const TreeItem &parentItem, ValueTree &parent)
 {
     for (int i = 0; i < parentItem.getNumSubItems(); ++i)
     {
         if (TreeViewItem *sub = parentItem.getSubItem(i))
         {
             TreeItem *treeItem = static_cast<TreeItem *>(sub);
-            parentXml.addChildElement(treeItem->serialize());
+            parent.appendChild(treeItem->serialize());
         }
     }
 }
 
-void TreeItemChildrenSerializer::deserializeChildren(TreeItem &parentItem, const XmlElement &parentXml)
+void TreeItemChildrenSerializer::deserializeChildren(TreeItem &parentItem, const ValueTree &parent)
 {
-    forEachXmlChildElementWithTagName(parentXml, e, Serialization::Core::treeItem)
+    forEachValueTreeChildWithType(parent, e, Serialization::Core::treeItem)
     {
-        // Legacy support:
-        const String typeFallback = 
-            e.getProperty(Serialization::Core::treeItemType.toLowerCase());
-
-        const String type =
-            e.getProperty(Serialization::Core::treeItemType, typeFallback);
+        const auto type = Identifier(e.getProperty(Serialization::Core::treeItemType));
 
         TreeItem *child = nullptr;
 
@@ -93,12 +88,7 @@ void TreeItemChildrenSerializer::deserializeChildren(TreeItem &parentItem, const
         if (child != nullptr)
         {
             parentItem.addChildTreeItem(child);
-            child->deserialize(*e);
+            child->deserialize(e);
         }
     }
-
-    // todo. загрузка долгая и стремная. рассылаются кучи событий,
-    // перебилдится кэш миди кучу раз. чо за фигня, чувак.
-
-    // and we need to go deeper.
 }

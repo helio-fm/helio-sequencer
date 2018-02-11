@@ -170,7 +170,7 @@ public:
     String getVCSName() const override;
     int getNumTrackedItems() override;
     VCS::TrackedItem *getTrackedItem(int index) override;
-    VCS::TrackedItem *initTrackedItem(const String &type, const Uuid &id) override;
+    VCS::TrackedItem *initTrackedItem(const Identifier &type, const Uuid &id) override;
     bool deleteTrackedItem(VCS::TrackedItem *item) override;
     void onResetState() override;
 
@@ -227,8 +227,8 @@ private:
 private:
 
     void initialize();
-    XmlElement *save() const;
-    void load(const XmlElement &xml);
+    ValueTree save() const;
+    void load(const ValueTree &tree);
 
 private:
 

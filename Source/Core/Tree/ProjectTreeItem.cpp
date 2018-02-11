@@ -99,7 +99,6 @@ void ProjectTreeItem::initialize()
     this->recreatePage();
 }
 
-
 ProjectTreeItem::~ProjectTreeItem()
 {
     // the main policy: all data is to be autosaved
@@ -280,7 +279,7 @@ void ProjectTreeItem::recreatePage()
 
 void ProjectTreeItem::savePageState() const
 {
-    ScopedPointer<XmlElement> editorStateNode(this->sequencerLayout->serialize());
+    const auto editorStateNode = this->sequencerLayout->serialize();
     Config::set(Serialization::UI::editorState, editorStateNode);
 }
 
@@ -391,17 +390,8 @@ ScopedPointer<Component> ProjectTreeItem::createItemMenu()
 
 bool ProjectTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
-    //if (TreeView *treeView = dynamic_cast<TreeView *>(dragSourceDetails.sourceComponent.get()))
-    //{
-    //    TreeItem *selected = TreeItem::getSelectedItem(treeView);
-
-    //if (TreeItem::isNodeInChildren(selected, this))
-    //{ return false; }
-
-    return (dragSourceDetails.description == Serialization::Core::layer) ||
-           (dragSourceDetails.description == Serialization::Core::layerGroup);
-
-    //}
+    return (dragSourceDetails.description == Serialization::Core::layer.toString()) ||
+           (dragSourceDetails.description == Serialization::Core::layerGroup.toString());
 }
 
 
@@ -572,7 +562,7 @@ void ProjectTreeItem::reset()
 }
 
 
-XmlElement *ProjectTreeItem::save() const
+juce::ValueTree ProjectTreeItem::save() const
 {
     ValueTree tree(Serialization::Core::project);
     tree.setProperty("name", this->name);
@@ -588,27 +578,27 @@ XmlElement *ProjectTreeItem::save() const
 
     tree.appendChild(this->undoStack->serialize());
     
-    TreeItemChildrenSerializer::serializeChildren(*this, *xml);
+    TreeItemChildrenSerializer::serializeChildren(*this, tree);
 
     this->savePageState();
 
     return tree;
 }
 
-void ProjectTreeItem::load(const XmlElement &xml)
+void ProjectTreeItem::load(const ValueTree &tree)
 {
     this->reset();
 
     const auto root = tree.hasType(Serialization::Core::project) ?
-        xml : xml.getChildWithName(Serialization::Core::project);
+        tree : tree.getChildWithName(Serialization::Core::project);
 
-    if (root == nullptr) { return; }
+    if (!root.isValid()) { return; }
 
-    this->info->deserialize(*root);
-    this->timeline->deserialize(*root);
+    this->info->deserialize(root);
+    this->timeline->deserialize(root);
 
     // Proceed with basic properties and children
-    TreeItem::deserialize(*root);
+    TreeItem::deserialize(root);
 
     // Legacy support: if no pattern set manager found, create one
     if (nullptr == this->findChildOfType<PatternEditorTreeItem>())
@@ -635,9 +625,9 @@ void ProjectTreeItem::load(const XmlElement &xml)
     // UI state is now stored in config
     //this->sequencerLayout->deserialize(*root);
     
-    this->undoStack->deserialize(*root);
+    this->undoStack->deserialize(root);
     
-    const float seek = float(root->getDoubleAttribute("seek", 0.f));
+    const float seek = float(root.getProperty("seek", 0.f));
     this->transport->seekToPosition(seek);
 }
 
@@ -835,11 +825,11 @@ bool ProjectTreeItem::onDocumentLoad(File &file)
 {
     if (file.existsAsFile())
     {
-        ScopedPointer<XmlElement> xml(DataEncoder::loadObfuscated(file));
+        const ValueTree tree(DataEncoder::loadObfuscated(file));
 
-        if (xml)
+        if (tree.isValid())
         {
-            this->load(*xml);
+            this->load(tree);
             return true;
         }
     }
@@ -861,7 +851,7 @@ void ProjectTreeItem::onDocumentDidLoad(File &file)
 
 bool ProjectTreeItem::onDocumentSave(File &file)
 {
-    ScopedPointer<XmlElement> xml(this->save());
+    const auto projectNode(this->save());
     return DataEncoder::saveObfuscated(file, xml);
 }
 
@@ -953,7 +943,7 @@ VCS::TrackedItem *ProjectTreeItem::getTrackedItem(int index)
     return const_cast<VCS::TrackedItem *>(this->vcsItems[index]);
 }
 
-VCS::TrackedItem *ProjectTreeItem::initTrackedItem(const String &type, const Uuid &id)
+VCS::TrackedItem *ProjectTreeItem::initTrackedItem(const Identifier &type, const Uuid &id)
 {
     if (type == Serialization::Core::pianoLayer)
     {

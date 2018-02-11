@@ -258,7 +258,7 @@ ScopedPointer<Component> TrackGroupTreeItem::createItemMenu()
 
 var TrackGroupTreeItem::getDragSourceDescription()
 {
-    return Serialization::Core::layerGroup;
+    return Serialization::Core::layerGroup.toString();
 }
 
 bool TrackGroupTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
@@ -270,8 +270,8 @@ bool TrackGroupTreeItem::isInterestedInDragSource(const DragAndDropTarget::Sourc
         if (TreeItem::isNodeInChildren(selected, this))
         { return false; }
 
-        return (dragSourceDetails.description == Serialization::Core::layer) ||
-               (dragSourceDetails.description == Serialization::Core::layerGroup);
+        return (dragSourceDetails.description == Serialization::Core::layer.toString()) ||
+               (dragSourceDetails.description == Serialization::Core::layerGroup.toString());
     }
 
     return false;
