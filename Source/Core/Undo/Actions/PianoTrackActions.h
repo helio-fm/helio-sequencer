@@ -36,7 +36,7 @@ public:
 
     PianoTrackInsertAction(MidiTrackSource &source,
         WeakReference<TreeItem> parentTreeItem,
-        String serializedState,
+        ValueTree serializedState,
         String xPath);
 
     bool perform() override;
@@ -52,9 +52,9 @@ private:
     WeakReference<TreeItem> parentTreeItem;
 
     String trackId;
-    
     String trackName;
-    String serializedState;
+
+    ValueTree trackState;
 
     JUCE_DECLARE_NON_COPYABLE(PianoTrackInsertAction)
 };
@@ -89,7 +89,7 @@ private:
     String trackId;
     int numEvents;
     
-    ScopedPointer<XmlElement> serializedTreeItem;
+    ValueTree serializedTreeItem;
     String trackName;
 
     JUCE_DECLARE_NON_COPYABLE(PianoTrackRemoveAction)

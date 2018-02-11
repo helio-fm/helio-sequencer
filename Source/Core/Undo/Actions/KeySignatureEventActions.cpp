@@ -217,11 +217,11 @@ void KeySignatureEventChangeAction::deserialize(const ValueTree &tree)
 {
     this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    const auto KeySignatureBeforeChild = tree.getChildWithName(Serialization::Undo::keySignatureBefore);
-    const auto KeySignatureAfterChild = tree.getChildWithName(Serialization::Undo::keySignatureAfter);
+    const auto keySignatureBeforeChild = tree.getChildWithName(Serialization::Undo::keySignatureBefore);
+    const auto keySignatureAfterChild = tree.getChildWithName(Serialization::Undo::keySignatureAfter);
     
-    this->eventBefore.deserialize(*KeySignatureBeforeChild->getFirstChildElement());
-    this->eventAfter.deserialize(*KeySignatureAfterChild->getFirstChildElement());
+    this->eventBefore.deserialize(keySignatureBeforeChild.getChild(0));
+    this->eventAfter.deserialize(keySignatureAfterChild.getChild(0));
 }
 
 void KeySignatureEventChangeAction::reset()
@@ -288,10 +288,10 @@ void KeySignatureEventsGroupInsertAction::deserialize(const ValueTree &tree)
     this->reset();
     this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    forEachXmlChildElement(tree, noteXml)
+    for (const auto &params : tree)
     {
         KeySignatureEvent ae;
-        ae.deserialize(*noteXml);
+        ae.deserialize(params);
         this->signatures.add(ae);
     }
 }
@@ -359,10 +359,10 @@ void KeySignatureEventsGroupRemoveAction::deserialize(const ValueTree &tree)
     this->reset();
     this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    forEachXmlChildElement(tree, noteXml)
+    for (const auto &params : tree)
     {
         KeySignatureEvent ae;
-        ae.deserialize(*noteXml);
+        ae.deserialize(params);
         this->signatures.add(ae);
     }
 }
@@ -479,17 +479,17 @@ void KeySignatureEventsGroupChangeAction::deserialize(const ValueTree &tree)
     const auto groupBeforeChild = tree.getChildWithName(Serialization::Undo::groupBefore);
     const auto groupAfterChild = tree.getChildWithName(Serialization::Undo::groupAfter);
     
-    forEachXmlChildElement(*groupBeforeChild, eventXml)
+    for (const auto &params : groupBeforeChild)
     {
         KeySignatureEvent ae;
-        ae.deserialize(*eventXml);
+        ae.deserialize(params);
         this->eventsBefore.add(ae);
     }
     
-    forEachXmlChildElement(*groupAfterChild, eventXml)
+    for (const auto &params : groupAfterChild)
     {
         KeySignatureEvent ae;
-        ae.deserialize(*eventXml);
+        ae.deserialize(params);
         this->eventsAfter.add(ae);
     }
 }

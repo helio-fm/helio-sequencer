@@ -223,11 +223,11 @@ void PatternClipChangeAction::deserialize(const ValueTree &tree)
 {
     this->trackId = tree.getProperty(Serialization::Undo::trackId);
 
-    auto instanceBeforeChild = tree.getChildByName(Serialization::Undo::instanceBefore);
-    auto instanceAfterChild = tree.getChildByName(Serialization::Undo::instanceAfter);
+    auto instanceBeforeChild = tree.getChildWithName(Serialization::Undo::instanceBefore);
+    auto instanceAfterChild = tree.getChildWithName(Serialization::Undo::instanceAfter);
 
-    this->clipBefore.deserialize(*instanceBeforeChild->getFirstChildElement());
-    this->clipAfter.deserialize(*instanceAfterChild->getFirstChildElement());
+    this->clipBefore.deserialize(instanceBeforeChild.getChild(0));
+    this->clipAfter.deserialize(instanceAfterChild.getChild(0));
 }
 
 void PatternClipChangeAction::reset()

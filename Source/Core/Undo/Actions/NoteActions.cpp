@@ -222,11 +222,11 @@ void NoteChangeAction::deserialize(const ValueTree &tree)
 {
     this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    XmlElement *noteBeforeChild = tree.getChildWithName(Serialization::Undo::noteBefore);
+    const auto noteBeforeChild = tree.getChildWithName(Serialization::Undo::noteBefore);
     const auto noteAfterChild = tree.getChildWithName(Serialization::Undo::noteAfter);
     
-    this->noteBefore.deserialize(*noteBeforeChild->getFirstChildElement());
-    this->noteAfter.deserialize(*noteAfterChild->getFirstChildElement());
+    this->noteBefore.deserialize(noteBeforeChild.getChild(0));
+    this->noteAfter.deserialize(noteAfterChild.getChild(0));
 }
 
 void NoteChangeAction::reset()
@@ -293,10 +293,10 @@ void NotesGroupInsertAction::deserialize(const ValueTree &tree)
     this->reset();
     this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    forEachXmlChildElement(tree, noteXml)
+    for (const auto &props : tree)
     {
         Note n;
-        n.deserialize(*noteXml);
+        n.deserialize(props);
         this->notes.add(n);
     }
 }
@@ -364,10 +364,10 @@ void NotesGroupRemoveAction::deserialize(const ValueTree &tree)
     this->reset();
     this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    forEachXmlChildElement(tree, noteXml)
+    for (const auto &props : tree)
     {
         Note n;
-        n.deserialize(*noteXml);
+        n.deserialize(props);
         this->notes.add(n);
     }
 }
@@ -492,17 +492,17 @@ void NotesGroupChangeAction::deserialize(const ValueTree &tree)
     const auto groupBeforeChild = tree.getChildWithName(Serialization::Undo::groupBefore);
     const auto groupAfterChild = tree.getChildWithName(Serialization::Undo::groupAfter);
 
-    forEachXmlChildElement(*groupBeforeChild, noteXml)
+    for (const auto &props : groupBeforeChild)
     {
         Note n;
-        n.deserialize(*noteXml);
+        n.deserialize(props);
         this->notesBefore.add(n);
     }
 
-    forEachXmlChildElement(*groupAfterChild, noteXml)
+    for (const auto &props : groupAfterChild)
     {
         Note n;
-        n.deserialize(*noteXml);
+        n.deserialize(props);
         this->notesAfter.add(n);
     }
 }

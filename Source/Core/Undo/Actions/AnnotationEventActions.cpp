@@ -221,8 +221,8 @@ void AnnotationEventChangeAction::deserialize(const ValueTree &tree)
     const auto annotationBeforeChild = tree.getChildWithName(Serialization::Undo::annotationBefore);
     const auto annotationAfterChild = tree.getChildWithName(Serialization::Undo::annotationAfter);
     
-    this->eventBefore.deserialize(*annotationBeforeChild->getFirstChildElement());
-    this->eventAfter.deserialize(*annotationAfterChild->getFirstChildElement());
+    this->eventBefore.deserialize(annotationBeforeChild.getChild(0));
+    this->eventAfter.deserialize(annotationAfterChild.getChild(0));
 }
 
 void AnnotationEventChangeAction::reset()
@@ -289,10 +289,10 @@ void AnnotationEventsGroupInsertAction::deserialize(const ValueTree &tree)
     this->reset();
     this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    forEachXmlChildElement(tree, noteXml)
+    for (const auto &params : tree)
     {
         AnnotationEvent ae;
-        ae.deserialize(*noteXml);
+        ae.deserialize(params);
         this->annotations.add(ae);
     }
 }
@@ -360,10 +360,10 @@ void AnnotationEventsGroupRemoveAction::deserialize(const ValueTree &tree)
     this->reset();
     this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    forEachXmlChildElement(tree, noteXml)
+    for (const auto &params : tree)
     {
         AnnotationEvent ae;
-        ae.deserialize(*noteXml);
+        ae.deserialize(params);
         this->annotations.add(ae);
     }
 }
@@ -481,17 +481,17 @@ void AnnotationEventsGroupChangeAction::deserialize(const ValueTree &tree)
     const auto groupBeforeChild = tree.getChildWithName(Serialization::Undo::groupBefore);
     const auto groupAfterChild = tree.getChildWithName(Serialization::Undo::groupAfter);
     
-    forEachXmlChildElement(*groupBeforeChild, eventXml)
+    for (const auto &params : groupBeforeChild)
     {
         AnnotationEvent ae;
-        ae.deserialize(*eventXml);
+        ae.deserialize(params);
         this->eventsBefore.add(ae);
     }
     
-    forEachXmlChildElement(*groupAfterChild, eventXml)
+    for (const auto &params : groupAfterChild)
     {
         AnnotationEvent ae;
-        ae.deserialize(*eventXml);
+        ae.deserialize(params);
         this->eventsAfter.add(ae);
     }
 }

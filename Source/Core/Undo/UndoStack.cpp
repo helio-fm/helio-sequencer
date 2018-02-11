@@ -75,7 +75,7 @@ int UndoStack::ActionSet::getTotalSize() const
     return total;
 }
     
-XmlElement *UndoStack::ActionSet::serialize() const
+ValueTree UndoStack::ActionSet::serialize() const
 {
     ValueTree tree(Serialization::Undo::transaction);
         
@@ -89,17 +89,17 @@ XmlElement *UndoStack::ActionSet::serialize() const
     return tree;
 }
     
-void UndoStack::ActionSet::deserialize(const XmlElement &xml)
+void UndoStack::ActionSet::deserialize(const ValueTree &tree)
 {
     this->reset();
         
-    this->name = xml.getStringAttribute(Serialization::Undo::name);
+    this->name = tree.getProperty(Serialization::Undo::name);
         
-    forEachXmlChildElement(xml, childActionXml)
+    for (const auto &childAction : tree)
     {
-        if (UndoAction *action = createUndoActionsByTagName(childActionXml->getTagName()))
+        if (UndoAction *action = createUndoActionsByTagName(childAction.getType()))
         {
-            action->deserialize(*childActionXml);
+            action->deserialize(childAction);
             this->actions.add(action);
         }
     }
@@ -110,7 +110,7 @@ void UndoStack::ActionSet::reset()
     this->actions.clear();
 }
     
-UndoAction *UndoStack::ActionSet::createUndoActionsByTagName(const String &tagName)
+UndoAction *UndoStack::ActionSet::createUndoActionsByTagName(const Identifier &tagName)
 {
     if      (tagName == Serialization::Undo::pianoTrackInsertAction)                { return new PianoTrackInsertAction(this->project, &this->project); }
     else if (tagName == Serialization::Undo::pianoTrackRemoveAction)                { return new PianoTrackRemoveAction(this->project, &this->project); }
@@ -248,48 +248,48 @@ bool UndoStack::perform (UndoAction *const newAction)
 
 void UndoStack::clearFutureTransactions()
 {
-    while (nextIndex < transactions.size())
+    while (this->nextIndex < this->transactions.size())
     {
-        totalUnitsStored -= transactions.getLast()->getTotalSize();
-        transactions.removeLast();
+        this->totalUnitsStored -= transactions.getLast()->getTotalSize();
+        this->transactions.removeLast();
     }
     
-    while (nextIndex > 0
-           && totalUnitsStored > maxNumUnitsToKeep
-           && transactions.size() > minimumTransactionsToKeep)
+    while (this->nextIndex > 0
+           && this->totalUnitsStored > this->maxNumUnitsToKeep
+           && this->transactions.size() > this->minimumTransactionsToKeep)
     {
-        totalUnitsStored -= transactions.getFirst()->getTotalSize();
-        transactions.remove (0);
-        --nextIndex;
+        this->totalUnitsStored -= this->transactions.getFirst()->getTotalSize();
+        this->transactions.remove (0);
+        --this->nextIndex;
         
         // if this fails, then some actions may not be returning
         // consistent results from their getSizeInUnits() method
-        jassert (totalUnitsStored >= 0);
+        jassert (this->totalUnitsStored >= 0);
     }
 }
 
 void UndoStack::beginNewTransaction() noexcept
 {
-    beginNewTransaction (String());
+    this->beginNewTransaction({});
 }
 
-void UndoStack::beginNewTransaction (const String& actionName) noexcept
+void UndoStack::beginNewTransaction(const String &actionName) noexcept
 {
-    newTransaction = true;
-    newTransactionName = actionName;
+    this->newTransaction = true;
+    this->newTransactionName = actionName;
 }
 
-void UndoStack::setCurrentTransactionName (const String& newName) noexcept
+void UndoStack::setCurrentTransactionName(const String &newName) noexcept
 {
-    if (newTransaction) {
-        newTransactionName = newName;
-    } else if (ActionSet* action = getCurrentSet()) {
+    if (this->newTransaction) {
+        this->newTransactionName = newName;
+    } else if (ActionSet *action = getCurrentSet()) {
         action->name = newName;
     }
 }
 
-UndoStack::ActionSet* UndoStack::getCurrentSet() const noexcept     { return transactions [nextIndex - 1]; }
-UndoStack::ActionSet* UndoStack::getNextSet() const noexcept        { return transactions [nextIndex]; }
+UndoStack::ActionSet *UndoStack::getCurrentSet() const noexcept     { return transactions [nextIndex - 1]; }
+UndoStack::ActionSet *UndoStack::getNextSet() const noexcept        { return transactions [nextIndex]; }
 
 bool UndoStack::canUndo() const noexcept   { return getCurrentSet() != nullptr; }
 bool UndoStack::canRedo() const noexcept   { return getNextSet()    != nullptr; }
@@ -407,18 +407,18 @@ ValueTree UndoStack::serialize() const
 
 void UndoStack::deserialize(const ValueTree &tree)
 {
-    const XmlElement *root = (tree.getTagName() == Serialization::Undo::undoStack) ?
+    const auto root = tree.hasType(Serialization::Undo::undoStack) ?
         tree : tree.getChildWithName(Serialization::Undo::undoStack);
     
-    if (root == nullptr)
+    if (!root.isValid())
     { return; }
     
     this->reset();
     
-    forEachXmlChildElement(*root, childTransactionXml)
+    for (const auto &childTransaction : root)
     {
         auto actionSet = new ActionSet(this->project, String::empty);
-        actionSet->deserialize(*childTransactionXml);
+        actionSet->deserialize(childTransaction);
         this->transactions.insert(this->nextIndex, actionSet);
         ++this->nextIndex;
     }

@@ -220,8 +220,8 @@ void AutomationEventChangeAction::deserialize(const ValueTree &tree)
     const auto eventBeforeChild = tree.getChildWithName(Serialization::Undo::eventBefore);
     const auto eventAfterChild = tree.getChildWithName(Serialization::Undo::eventAfter);
     
-    this->eventBefore.deserialize(*eventBeforeChild->getFirstChildElement());
-    this->eventAfter.deserialize(*eventAfterChild->getFirstChildElement());
+    this->eventBefore.deserialize(eventBeforeChild.getChild(0));
+    this->eventAfter.deserialize(eventAfterChild.getChild(0));
 }
 
 void AutomationEventChangeAction::reset()
@@ -288,10 +288,10 @@ void AutomationEventsGroupInsertAction::deserialize(const ValueTree &tree)
     this->reset();
     this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    forEachXmlChildElement(tree, noteXml)
+    for (const auto &params : tree)
     {
         AutomationEvent ae;
-        ae.deserialize(*noteXml);
+        ae.deserialize(params);
         this->events.add(ae);
     }
 }
@@ -359,10 +359,10 @@ void AutomationEventsGroupRemoveAction::deserialize(const ValueTree &tree)
     this->reset();
     this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    forEachXmlChildElement(tree, noteXml)
+    for (const auto &params : tree)
     {
         AutomationEvent ae;
-        ae.deserialize(*noteXml);
+        ae.deserialize(params);
         this->events.add(ae);
     }
 }
@@ -481,17 +481,17 @@ void AutomationEventsGroupChangeAction::deserialize(const ValueTree &tree)
     const auto groupBeforeChild = tree.getChildWithName(Serialization::Undo::groupBefore);
     const auto groupAfterChild = tree.getChildWithName(Serialization::Undo::groupAfter);
     
-    forEachXmlChildElement(*groupBeforeChild, eventXml)
+    for (const auto &params : groupBeforeChild)
     {
         AutomationEvent ae;
-        ae.deserialize(*eventXml);
+        ae.deserialize(params);
         this->eventsBefore.add(ae);
     }
     
-    forEachXmlChildElement(*groupAfterChild, eventXml)
+    for (const auto &params : groupAfterChild)
     {
         AutomationEvent ae;
-        ae.deserialize(*eventXml);
+        ae.deserialize(params);
         this->eventsAfter.add(ae);
     }
 }

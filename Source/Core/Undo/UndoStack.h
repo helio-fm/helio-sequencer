@@ -21,7 +21,7 @@ class ProjectTreeItem;
 
 #include "UndoAction.h"
 
-class UndoStack : public ChangeBroadcaster, public Serializable
+class UndoStack final : public ChangeBroadcaster, public Serializable
 {
 public:
 
@@ -59,7 +59,7 @@ private:
 
     ProjectTreeItem &project;
     
-    struct ActionSet
+    struct ActionSet final : public Serializable
     {
         ActionSet(ProjectTreeItem &parentProject, String transactionName);
 
@@ -67,11 +67,11 @@ private:
         bool undo() const;
         int getTotalSize() const;
 
-        XmlElement *serialize() const;
-        void deserialize(const XmlElement &xml);
+        ValueTree serialize() const;
+        void deserialize(const ValueTree &tree);
         void reset();
 
-        UndoAction *createUndoActionsByTagName(const String &tagName);
+        UndoAction *createUndoActionsByTagName(const Identifier &tagName);
 
         OwnedArray<UndoAction> actions;
         String name;

@@ -138,8 +138,8 @@ ValueTree MidiTrackChangeColourAction::serialize() const
 
 void MidiTrackChangeColourAction::deserialize(const ValueTree &tree)
 {
-    this->colourBefore = Colour::fromString(tree.getProperty(Serialization::Undo::colourBefore));
-    this->colourAfter = Colour::fromString(tree.getProperty(Serialization::Undo::colourAfter));
+    this->colourBefore = Colour::fromString(tree.getProperty(Serialization::Undo::colourBefore).toString());
+    this->colourAfter = Colour::fromString(tree.getProperty(Serialization::Undo::colourAfter).toString());
     this->trackId = tree.getProperty(Serialization::Undo::trackId);
 }
 

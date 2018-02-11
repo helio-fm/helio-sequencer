@@ -220,8 +220,8 @@ void TimeSignatureEventChangeAction::deserialize(const ValueTree &tree)
     const auto timeSignatureBeforeChild = tree.getChildWithName(Serialization::Undo::timeSignatureBefore);
     const auto timeSignatureAfterChild = tree.getChildWithName(Serialization::Undo::timeSignatureAfter);
     
-    this->eventBefore.deserialize(*timeSignatureBeforeChild->getFirstChildElement());
-    this->eventAfter.deserialize(*timeSignatureAfterChild->getFirstChildElement());
+    this->eventBefore.deserialize(timeSignatureBeforeChild.getChild(0));
+    this->eventAfter.deserialize(timeSignatureAfterChild.getChild(0));
 }
 
 void TimeSignatureEventChangeAction::reset()
@@ -288,10 +288,10 @@ void TimeSignatureEventsGroupInsertAction::deserialize(const ValueTree &tree)
     this->reset();
     this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    forEachXmlChildElement(tree, noteXml)
+    for (const auto &params : tree)
     {
         TimeSignatureEvent ae;
-        ae.deserialize(*noteXml);
+        ae.deserialize(params);
         this->signatures.add(ae);
     }
 }
@@ -359,10 +359,10 @@ void TimeSignatureEventsGroupRemoveAction::deserialize(const ValueTree &tree)
     this->reset();
     this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    forEachXmlChildElement(tree, noteXml)
+    for (const auto &params : tree)
     {
         TimeSignatureEvent ae;
-        ae.deserialize(*noteXml);
+        ae.deserialize(params);
         this->signatures.add(ae);
     }
 }
@@ -479,17 +479,17 @@ void TimeSignatureEventsGroupChangeAction::deserialize(const ValueTree &tree)
     const auto groupBeforeChild = tree.getChildWithName(Serialization::Undo::groupBefore);
     const auto groupAfterChild = tree.getChildWithName(Serialization::Undo::groupAfter);
     
-    forEachXmlChildElement(*groupBeforeChild, eventXml)
+    for (const auto &params : groupBeforeChild)
     {
         TimeSignatureEvent ae;
-        ae.deserialize(*eventXml);
+        ae.deserialize(params);
         this->eventsBefore.add(ae);
     }
     
-    forEachXmlChildElement(*groupAfterChild, eventXml)
+    for (const auto &params : groupAfterChild)
     {
         TimeSignatureEvent ae;
-        ae.deserialize(*eventXml);
+        ae.deserialize(params);
         this->eventsAfter.add(ae);
     }
 }
