@@ -63,14 +63,14 @@ ValueTree NoteInsertAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::noteInsertAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    tree.addChild(this->note.serialize());
+    tree.appendChild(this->note.serialize());
     return tree;
 }
 
 void NoteInsertAction::deserialize(const ValueTree &tree)
 {
-    this->trackId = tree.getStringAttribute(Serialization::Undo::trackId);
-    this->note.deserialize(*tree.getFirstChildElement());
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->note.deserialize(tree.getChild(0));
 }
 
 void NoteInsertAction::reset()
@@ -120,14 +120,14 @@ ValueTree NoteRemoveAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::noteRemoveAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    tree.addChild(this->note.serialize());
+    tree.appendChild(this->note.serialize());
     return tree;
 }
 
 void NoteRemoveAction::deserialize(const ValueTree &tree)
 {
-    this->trackId = tree.getStringAttribute(Serialization::Undo::trackId);
-    this->note.deserialize(*tree.getFirstChildElement());
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->note.deserialize(tree.getChild(0));
 }
 
 void NoteRemoveAction::reset()
@@ -207,23 +207,23 @@ ValueTree NoteChangeAction::serialize() const
     ValueTree tree(Serialization::Undo::noteChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
-    auto noteBeforeChild = new XmlElement(Serialization::Undo::noteBefore);
-    noteBeforeChild->prependChildElement(this->noteBefore.serialize());
-    tree.addChild(noteBeforeChild);
+    ValueTree noteBeforeChild(Serialization::Undo::noteBefore);
+    noteBeforeChild.appendChild(this->noteBefore.serialize());
+    tree.appendChild(noteBeforeChild);
 
-    auto noteAfterChild = new XmlElement(Serialization::Undo::noteAfter);
-    noteAfterChild->prependChildElement(this->noteAfter.serialize());
-    tree.addChild(noteAfterChild);
+    ValueTree noteAfterChild(Serialization::Undo::noteAfter);
+    noteAfterChild.appendChild(this->noteAfter.serialize());
+    tree.appendChild(noteAfterChild);
 
     return tree;
 }
 
 void NoteChangeAction::deserialize(const ValueTree &tree)
 {
-    this->trackId = tree.getStringAttribute(Serialization::Undo::trackId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    XmlElement *noteBeforeChild = tree.getChildByName(Serialization::Undo::noteBefore);
-    XmlElement *noteAfterChild = tree.getChildByName(Serialization::Undo::noteAfter);
+    XmlElement *noteBeforeChild = tree.getChildWithName(Serialization::Undo::noteBefore);
+    const auto noteAfterChild = tree.getChildWithName(Serialization::Undo::noteAfter);
     
     this->noteBefore.deserialize(*noteBeforeChild->getFirstChildElement());
     this->noteAfter.deserialize(*noteAfterChild->getFirstChildElement());
@@ -282,7 +282,7 @@ ValueTree NotesGroupInsertAction::serialize() const
     
     for (int i = 0; i < this->notes.size(); ++i)
     {
-        tree.addChild(this->notes.getUnchecked(i).serialize());
+        tree.appendChild(this->notes.getUnchecked(i).serialize());
     }
     
     return tree;
@@ -291,7 +291,7 @@ ValueTree NotesGroupInsertAction::serialize() const
 void NotesGroupInsertAction::deserialize(const ValueTree &tree)
 {
     this->reset();
-    this->trackId = tree.getStringAttribute(Serialization::Undo::trackId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
     forEachXmlChildElement(tree, noteXml)
     {
@@ -353,7 +353,7 @@ ValueTree NotesGroupRemoveAction::serialize() const
     
     for (int i = 0; i < this->notes.size(); ++i)
     {
-        tree.addChild(this->notes.getUnchecked(i).serialize());
+        tree.appendChild(this->notes.getUnchecked(i).serialize());
     }
     
     return tree;
@@ -362,7 +362,7 @@ ValueTree NotesGroupRemoveAction::serialize() const
 void NotesGroupRemoveAction::deserialize(const ValueTree &tree)
 {
     this->reset();
-    this->trackId = tree.getStringAttribute(Serialization::Undo::trackId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
     forEachXmlChildElement(tree, noteXml)
     {
@@ -464,21 +464,21 @@ ValueTree NotesGroupChangeAction::serialize() const
     ValueTree tree(Serialization::Undo::notesGroupChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
-    auto groupBeforeChild = new XmlElement(Serialization::Undo::groupBefore);
-    auto groupAfterChild = new XmlElement(Serialization::Undo::groupAfter);
+    ValueTree groupBeforeChild(Serialization::Undo::groupBefore);
+    ValueTree groupAfterChild(Serialization::Undo::groupAfter);
     
     for (int i = 0; i < this->notesBefore.size(); ++i)
     {
-        groupBeforeChild->prependChildElement(this->notesBefore.getUnchecked(i).serialize());
+        groupBeforeChild.appendChild(this->notesBefore.getUnchecked(i).serialize());
     }
     
     for (int i = 0; i < this->notesAfter.size(); ++i)
     {
-        groupAfterChild->prependChildElement(this->notesAfter.getUnchecked(i).serialize());
+        groupAfterChild.appendChild(this->notesAfter.getUnchecked(i).serialize());
     }
     
-    tree.addChild(groupBeforeChild);
-    tree.addChild(groupAfterChild);
+    tree.appendChild(groupBeforeChild);
+    tree.appendChild(groupAfterChild);
     
     return tree;
 }
@@ -487,10 +487,10 @@ void NotesGroupChangeAction::deserialize(const ValueTree &tree)
 {
     this->reset();
     
-    this->trackId = tree.getStringAttribute(Serialization::Undo::trackId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    XmlElement *groupBeforeChild = tree.getChildByName(Serialization::Undo::groupBefore);
-    XmlElement *groupAfterChild = tree.getChildByName(Serialization::Undo::groupAfter);
+    const auto groupBeforeChild = tree.getChildWithName(Serialization::Undo::groupBefore);
+    const auto groupAfterChild = tree.getChildWithName(Serialization::Undo::groupAfter);
 
     forEachXmlChildElement(*groupBeforeChild, noteXml)
     {

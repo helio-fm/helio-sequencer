@@ -289,7 +289,7 @@ ValueTree Pattern::serialize() const
 
     for (int i = 0; i < this->clips.size(); ++i)
     {
-        tree.addChild(this->clips.getUnchecked(i)->serialize());
+        tree.appendChild(this->clips.getUnchecked(i)->serialize());
     }
 
     return tree;
@@ -301,7 +301,7 @@ void Pattern::deserialize(const ValueTree &tree)
 
     const XmlElement *root =
         (tree.getTagName() == Serialization::Core::pattern) ?
-        &tree : tree.getChildByName(Serialization::Core::pattern);
+        tree : tree.getChildWithName(Serialization::Core::pattern);
 
     if (root == nullptr)
     {

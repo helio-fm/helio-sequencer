@@ -160,9 +160,9 @@ ValueTree HotkeyScheme::serialize() const
 static inline HotkeyScheme::Hotkey createHotkey(XmlElement *e)
 {
     HotkeyScheme::Hotkey key;
-    auto keyPressDesc = e->getStringAttribute(Serialization::UI::Hotkeys::hotkeyDescription);
-    auto receiver = e->getStringAttribute(Serialization::UI::Hotkeys::hotkeyReceiver);
-    auto command = e->getStringAttribute(Serialization::UI::Hotkeys::hotkeyCommand);
+    auto keyPressDesc = e.getProperty(Serialization::UI::Hotkeys::hotkeyDescription);
+    auto receiver = e.getProperty(Serialization::UI::Hotkeys::hotkeyReceiver);
+    auto command = e.getProperty(Serialization::UI::Hotkeys::hotkeyCommand);
     key.keyPress = KeyPress::createFromDescription(keyPressDesc);
     key.commandId = CommandIDs::getIdForName(command);
     key.componentId = receiver;
@@ -175,14 +175,14 @@ void HotkeyScheme::deserialize(const ValueTree &tree)
 
     const XmlElement *root =
         (tree.getTagName() == Serialization::UI::Hotkeys::scheme) ?
-        &tree : tree.getChildByName(Serialization::UI::Hotkeys::scheme);
+        tree : tree.getChildWithName(Serialization::UI::Hotkeys::scheme);
 
     if (root == nullptr)
     {
         return;
     }
 
-    this->name = root->getStringAttribute(Serialization::UI::Hotkeys::schemeName);
+    this->name = root.getProperty(Serialization::UI::Hotkeys::schemeName);
 
     forEachXmlChildElementWithTagName(*root, e, Serialization::UI::Hotkeys::keyPress)
     {

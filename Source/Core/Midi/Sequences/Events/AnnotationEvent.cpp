@@ -135,10 +135,10 @@ void AnnotationEvent::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    this->description = tree.getStringAttribute("text");
-    this->colour = Colour::fromString(tree.getStringAttribute("col"));
+    this->description = tree.getProperty("text");
+    this->colour = Colour::fromString(tree.getProperty("col"));
     this->beat = float(tree.getDoubleAttribute("beat"));
-    this->id = tree.getStringAttribute("id");
+    this->id = tree.getProperty("id");
 }
 
 void AnnotationEvent::reset() {}

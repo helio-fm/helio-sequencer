@@ -339,7 +339,7 @@ ValueTree PianoSequence::serialize() const
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         const MidiEvent *event = this->midiEvents.getUnchecked(i);
-        tree.addChild(event->serialize()); // faster than addChildElement
+        tree.appendChild(event->serialize()); // faster than addChildElement
     }
     
     return tree;
@@ -351,7 +351,7 @@ void PianoSequence::deserialize(const ValueTree &tree)
 
     const XmlElement *root = 
         (tree.getTagName() == Serialization::Core::track) ?
-        &tree : tree.getChildByName(Serialization::Core::track);
+        tree : tree.getChildWithName(Serialization::Core::track);
 
     if (root == nullptr)
     {

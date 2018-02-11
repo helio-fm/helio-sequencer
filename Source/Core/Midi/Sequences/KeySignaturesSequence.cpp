@@ -278,7 +278,7 @@ ValueTree KeySignaturesSequence::serialize() const
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         const MidiEvent *event = this->midiEvents.getUnchecked(i);
-        tree.addChild(event->serialize());
+        tree.appendChild(event->serialize());
     }
 
     return tree;
@@ -290,7 +290,7 @@ void KeySignaturesSequence::deserialize(const ValueTree &tree)
 
     const XmlElement *root =
         (tree.getTagName() == Serialization::Core::keySignatures) ?
-        &tree : tree.getChildByName(Serialization::Core::keySignatures);
+        tree : tree.getChildWithName(Serialization::Core::keySignatures);
 
     if (root == nullptr)
     {

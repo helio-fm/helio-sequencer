@@ -46,10 +46,10 @@ void TreeItemChildrenSerializer::deserializeChildren(TreeItem &parentItem, const
     {
         // Legacy support:
         const String typeFallback = 
-            e->getStringAttribute(Serialization::Core::treeItemType.toLowerCase());
+            e.getProperty(Serialization::Core::treeItemType.toLowerCase());
 
         const String type =
-            e->getStringAttribute(Serialization::Core::treeItemType, typeFallback);
+            e.getProperty(Serialization::Core::treeItemType, typeFallback);
 
         TreeItem *child = nullptr;
 

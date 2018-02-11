@@ -103,7 +103,7 @@ void RevisionItem::importDataForDelta(const XmlElement *deltaDataToCopy, const S
                 this->deltasData.add(new XmlElement("dummy"));
             }
             
-            auto deepCopy = new XmlElement(*deltaDataToCopy);
+            ValueTree deepCopy(*deltaDataToCopy);
             this->deltasData.set(i, deepCopy);
             break;
         }
@@ -158,7 +158,7 @@ DiffLogic *VCS::RevisionItem::getDiffLogic() const
 
 ValueTree VCS::RevisionItem::serialize() const
 {
-    auto const xml = new XmlElement(Serialization::VCS::revisionItem);
+    ValueTree const xml(Serialization::VCS::revisionItem);
 
     this->serializeVCSUuid(*xml);
 
@@ -168,7 +168,7 @@ ValueTree VCS::RevisionItem::serialize() const
 
     for (auto delta : this->deltas)
     {
-        tree.addChild(delta->serialize());
+        tree.appendChild(delta->serialize());
     }
 
     return tree;
@@ -178,20 +178,20 @@ void VCS::RevisionItem::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root = tree.hasTagName(Serialization::VCS::revisionItem) ?
-                             &tree : tree.getChildByName(Serialization::VCS::revisionItem);
+    const auto root = tree.hasType(Serialization::VCS::revisionItem) ?
+        tree : tree.getChildWithName(Serialization::VCS::revisionItem);
 
     if (root == nullptr) { return; }
 
     this->deserializeVCSUuid(*root);
 
-    this->description = root->getStringAttribute(Serialization::VCS::revisionItemName, "");
+    this->description = root.getProperty(Serialization::VCS::revisionItemName, "");
 
     const int type = root->getIntAttribute(Serialization::VCS::revisionItemType, Undefined);
     this->vcsItemType = static_cast<Type>(type);
 
     const String logicType =
-        root->getStringAttribute(Serialization::VCS::revisionItemDiffLogic,
+        root.getProperty(Serialization::VCS::revisionItemDiffLogic,
                                  "");
 
     jassert(logicType != "");

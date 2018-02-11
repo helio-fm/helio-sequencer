@@ -363,17 +363,17 @@ ValueTree Instrument::serialize() const
     const int numNodes = this->processorGraph->getNumNodes();
     for (int i = 0; i < numNodes; ++i)
     {
-        tree.addChild(this->createNodeXml(this->processorGraph->getNode(i)));
+        tree.appendChild(this->createNodeXml(this->processorGraph->getNode(i)));
     }
 
     for (const auto &c : this->getConnections())
     {
-        auto e = new XmlElement(Serialization::Core::instrumentConnection);
-        e->setAttribute("srcFilter", static_cast<int>(c.source.nodeID));
-        e->setAttribute("srcChannel", c.source.channelIndex);
-        e->setAttribute("dstFilter", static_cast<int>(c.destination.nodeID));
-        e->setAttribute("dstChannel", c.destination.channelIndex);
-        tree.addChild(e);
+        ValueTree e(Serialization::Core::instrumentConnection);
+        e.setProperty("srcFilter", static_cast<int>(c.source.nodeID));
+        e.setProperty("srcChannel", c.source.channelIndex);
+        e.setProperty("dstFilter", static_cast<int>(c.destination.nodeID));
+        e.setProperty("dstChannel", c.destination.channelIndex);
+        tree.appendChild(e);
     }
 
     return tree;
@@ -384,13 +384,13 @@ void Instrument::deserialize(const ValueTree &tree)
     this->reset();
 
     const XmlElement *root = (tree.getTagName() == Serialization::Core::instrument) ?
-        &tree : tree.getChildByName(Serialization::Core::instrument);
+        tree : tree.getChildWithName(Serialization::Core::instrument);
 
     if (root == nullptr)
     { return; }
 
-    this->instrumentID = root->getStringAttribute(Serialization::Core::instrumentId, this->instrumentID.toString());
-    this->instrumentName = root->getStringAttribute(Serialization::Core::instrumentName, this->instrumentName);
+    this->instrumentID = root.getProperty(Serialization::Core::instrumentId, this->instrumentID.toString());
+    this->instrumentName = root.getProperty(Serialization::Core::instrumentName, this->instrumentName);
 
     // Well this hack of an incredible ugliness
     // is here to handle loading of async-loaded AUv3 plugins
@@ -438,25 +438,25 @@ XmlElement *Instrument::createNodeXml(AudioProcessorGraph::Node::Ptr node) const
 {
     if (AudioPluginInstance *plugin = dynamic_cast<AudioPluginInstance *>(node->getProcessor()))
     {
-        auto e = new XmlElement(Serialization::Core::instrumentNode);
-        e->setAttribute("uid", static_cast<int>(node->nodeID));
-        e->setAttribute("x", node->properties["x"].toString());
-        e->setAttribute("y", node->properties["y"].toString());
-        e->setAttribute("hash", node->properties["hash"].toString());
-        e->setAttribute("uiLastX", node->properties["uiLastX"].toString());
-        e->setAttribute("uiLastY", node->properties["uiLastY"].toString());
+        ValueTree e(Serialization::Core::instrumentNode);
+        e.setProperty("uid", static_cast<int>(node->nodeID));
+        e.setProperty("x", node->properties["x"].toString());
+        e.setProperty("y", node->properties["y"].toString());
+        e.setProperty("hash", node->properties["hash"].toString());
+        e.setProperty("uiLastX", node->properties["uiLastX"].toString());
+        e.setProperty("uiLastY", node->properties["uiLastY"].toString());
 
         PluginSmartDescription pd;
         plugin->fillInPluginDescription(pd);
 
-        e->addChildElement(pd.createXml());
+        e.appendChild(pd.createXml());
 
-        auto state = new XmlElement(Serialization::Core::pluginState);
+        ValueTree state(Serialization::Core::pluginState);
 
         MemoryBlock m;
         node->getProcessor()->getStateInformation(m);
         state->addTextElement(m.toBase64Encoding());
-        e->addChildElement(state);
+        e.appendChild(state);
 
         return e;
     }

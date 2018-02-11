@@ -800,7 +800,7 @@ ValueTree SequencerLayout::serialize() const
 {
     // задел на будущее, типа
     ValueTree tree(Serialization::Core::editor);
-    tree.addChild(this->pianoRoll->serialize());
+    tree.appendChild(this->pianoRoll->serialize());
     return tree;
 }
 
@@ -809,7 +809,7 @@ void SequencerLayout::deserialize(const ValueTree &tree)
     this->reset();
 
     const XmlElement *root = (tree.getTagName() == Serialization::Core::editor) ?
-                             &tree : tree.getChildByName(Serialization::Core::editor);
+        tree : tree.getChildWithName(Serialization::Core::editor);
 
     if (root == nullptr)
     { return; }

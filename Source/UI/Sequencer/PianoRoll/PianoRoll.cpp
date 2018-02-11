@@ -668,16 +668,16 @@ XmlElement *PianoRoll::clipboardCopy() const
         const String trackId(s.first);
 
         // create xml parent with layer id
-        auto layerIdParent = new XmlElement(Serialization::Clipboard::layer);
-        layerIdParent->setAttribute(Serialization::Clipboard::layerId, trackId);
-        tree.addChild(layerIdParent);
+        ValueTree layerIdParent(Serialization::Clipboard::layer);
+        layerIdParent.setProperty(Serialization::Clipboard::layerId, trackId);
+        tree.appendChild(layerIdParent);
 
         for (int i = 0; i < sequenceSelection->size(); ++i)
         {
             if (const NoteComponent *noteComponent =
                 dynamic_cast<NoteComponent *>(sequenceSelection->getUnchecked(i)))
             {
-                layerIdParent->addChildElement(noteComponent->getNote().serialize());
+                layerIdParent.appendChild(noteComponent->getNote().serialize());
 
                 if (firstBeat > noteComponent->getBeat())
                 {
@@ -701,9 +701,9 @@ XmlElement *PianoRoll::clipboardCopy() const
         // todo copy from
         const auto timeline = this->project.getTimeline();
         const auto annotations = timeline->getAnnotations()->getSequence();
-        auto annotationLayerIdParent = new XmlElement(Serialization::Clipboard::layer);
-        annotationLayerIdParent->setAttribute(Serialization::Clipboard::layerId, annotations->getTrackId());
-        tree.addChild(annotationLayerIdParent);
+        ValueTree annotationLayerIdParent(Serialization::Clipboard::layer);
+        annotationLayerIdParent.setProperty(Serialization::Clipboard::layerId, annotations->getTrackId());
+        tree.appendChild(annotationLayerIdParent);
 
         for (int i = 0; i < annotations->size(); ++i)
         {
@@ -713,7 +713,7 @@ XmlElement *PianoRoll::clipboardCopy() const
                 if (const bool eventFitsInRange =
                     (event->getBeat() >= firstBeat) && (event->getBeat() < lastBeat))
                 {
-                    annotationLayerIdParent->addChildElement(event->serialize());
+                    annotationLayerIdParent.appendChild(event->serialize());
                 }
             }
         }
@@ -723,9 +723,9 @@ XmlElement *PianoRoll::clipboardCopy() const
         for (auto automation : automations)
         {
             MidiSequence *autoLayer = automation->getSequence();
-            auto autoLayerIdParent = new XmlElement(Serialization::Clipboard::layer);
-            autoLayerIdParent->setAttribute(Serialization::Clipboard::layerId, autoLayer->getTrackId());
-            tree.addChild(autoLayerIdParent);
+            ValueTree autoLayerIdParent(Serialization::Clipboard::layer);
+            autoLayerIdParent.setProperty(Serialization::Clipboard::layerId, autoLayer->getTrackId());
+            tree.appendChild(autoLayerIdParent);
             
             for (int j = 0; j < autoLayer->size(); ++j)
             {
@@ -735,7 +735,7 @@ XmlElement *PianoRoll::clipboardCopy() const
                     if (const bool eventFitsInRange =
                         (event->getBeat() >= firstBeat) && (event->getBeat() < lastBeat))
                     {
-                        autoLayerIdParent->addChildElement(event->serialize());
+                        autoLayerIdParent.appendChild(event->serialize());
                     }
                 }
             }
@@ -751,7 +751,7 @@ XmlElement *PianoRoll::clipboardCopy() const
 void PianoRoll::clipboardPaste(const XmlElement &xml)
 {
     const XmlElement *mainSlot = (xml.getTagName() == Serialization::Clipboard::clipboard) ?
-                                 &xml : xml.getChildByName(Serialization::Clipboard::clipboard);
+        xml : xml.getChildWithName(Serialization::Clipboard::clipboard);
 
     if (mainSlot == nullptr) { return; }
 
@@ -772,7 +772,7 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
     {
         Array<Note> pastedNotes;
 
-        const String layerId = layerElement->getStringAttribute(Serialization::Clipboard::layerId);
+        const String layerId = layerElement.getProperty(Serialization::Clipboard::layerId);
         
         // TODO: store layer type in copy-paste info
         // when pasting, use these priorities:
@@ -1362,7 +1362,7 @@ void PianoRoll::deserialize(const ValueTree &tree)
     this->reset();
 
     const XmlElement *root = (tree.getTagName() == Serialization::Core::midiRoll) ?
-                             &tree : tree.getChildByName(Serialization::Core::midiRoll);
+        tree : tree.getChildWithName(Serialization::Core::midiRoll);
 
     if (root == nullptr)
     { return; }

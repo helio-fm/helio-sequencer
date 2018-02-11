@@ -74,14 +74,14 @@ ValueTree AutomationTrackInsertAction::serialize() const
     ValueTree tree(Serialization::Undo::automationTrackInsertAction);
     tree.setProperty(Serialization::Undo::xPath, this->trackName);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    tree.addChild(XmlDocument::parse(this->serializedState));
+    tree.appendChild(XmlDocument::parse(this->serializedState));
     return tree;
 }
 
 void AutomationTrackInsertAction::deserialize(const ValueTree &tree)
 {
-    this->trackName = tree.getStringAttribute(Serialization::Undo::xPath);
-    this->trackId = tree.getStringAttribute(Serialization::Undo::trackId);
+    this->trackName = tree.getProperty(Serialization::Undo::xPath);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     this->serializedState = tree.getFirstChildElement()->createDocument("");
 }
 
@@ -150,15 +150,15 @@ ValueTree AutomationTrackRemoveAction::serialize() const
     ValueTree tree(Serialization::Undo::automationTrackRemoveAction);
     tree.setProperty(Serialization::Undo::xPath, this->trackName);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    tree.addChild(new XmlElement(*this->serializedTreeItem)); // deep copy
+    tree.appendChild(new XmlElement(*this->serializedTreeItem)); // deep copy
     return tree;
 }
 
 void AutomationTrackRemoveAction::deserialize(const ValueTree &tree)
 {
-    this->trackName = tree.getStringAttribute(Serialization::Undo::xPath);
-    this->trackId = tree.getStringAttribute(Serialization::Undo::trackId);
-    this->serializedTreeItem = new XmlElement(*tree.getFirstChildElement()); // deep copy
+    this->trackName = tree.getProperty(Serialization::Undo::xPath);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->serializedTreeItem = new XmlElement(tree.getChild(0)); // deep copy
 }
 
 void AutomationTrackRemoveAction::reset()

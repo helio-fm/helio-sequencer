@@ -348,10 +348,10 @@ void TreeItem::deserialize(const ValueTree &tree)
 
     // Legacy support:
     const String nameFallback =
-        tree.getStringAttribute(Serialization::Core::treeItemName.toLowerCase(), this->name);
+        tree.getProperty(Serialization::Core::treeItemName.toLowerCase(), this->name);
 
     this->name =
-        tree.getStringAttribute(Serialization::Core::treeItemName, nameFallback);
+        tree.getProperty(Serialization::Core::treeItemName, nameFallback);
 
     TreeItemChildrenSerializer::deserializeChildren(*this, tree);
 }

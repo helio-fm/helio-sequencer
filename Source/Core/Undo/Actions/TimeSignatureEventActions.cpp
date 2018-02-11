@@ -62,14 +62,14 @@ ValueTree TimeSignatureEventInsertAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::timeSignatureEventInsertAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    tree.addChild(this->event.serialize());
+    tree.appendChild(this->event.serialize());
     return tree;
 }
 
 void TimeSignatureEventInsertAction::deserialize(const ValueTree &tree)
 {
-    this->trackId = tree.getStringAttribute(Serialization::Undo::trackId);
-    this->event.deserialize(*tree.getFirstChildElement());
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->event.deserialize(tree.getChild(0));
 }
 
 void TimeSignatureEventInsertAction::reset()
@@ -119,14 +119,14 @@ ValueTree TimeSignatureEventRemoveAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::timeSignatureEventRemoveAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    tree.addChild(this->event.serialize());
+    tree.appendChild(this->event.serialize());
     return tree;
 }
 
 void TimeSignatureEventRemoveAction::deserialize(const ValueTree &tree)
 {
-    this->trackId = tree.getStringAttribute(Serialization::Undo::trackId);
-    this->event.deserialize(*tree.getFirstChildElement());
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->event.deserialize(tree.getChild(0));
 }
 
 void TimeSignatureEventRemoveAction::reset()
@@ -202,23 +202,23 @@ ValueTree TimeSignatureEventChangeAction::serialize() const
     ValueTree tree(Serialization::Undo::timeSignatureEventChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
-    auto timeSignatureBeforeChild = new XmlElement(Serialization::Undo::timeSignatureBefore);
-    timeSignatureBeforeChild->prependChildElement(this->eventBefore.serialize());
-    tree.addChild(timeSignatureBeforeChild);
+    ValueTree timeSignatureBeforeChild(Serialization::Undo::timeSignatureBefore);
+    timeSignatureBeforeChild.appendChild(this->eventBefore.serialize());
+    tree.appendChild(timeSignatureBeforeChild);
     
-    auto timeSignatureAfterChild = new XmlElement(Serialization::Undo::timeSignatureAfter);
-    timeSignatureAfterChild->prependChildElement(this->eventAfter.serialize());
-    tree.addChild(timeSignatureAfterChild);
+    ValueTree timeSignatureAfterChild(Serialization::Undo::timeSignatureAfter);
+    timeSignatureAfterChild.appendChild(this->eventAfter.serialize());
+    tree.appendChild(timeSignatureAfterChild);
     
     return tree;
 }
 
 void TimeSignatureEventChangeAction::deserialize(const ValueTree &tree)
 {
-    this->trackId = tree.getStringAttribute(Serialization::Undo::trackId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    XmlElement *timeSignatureBeforeChild = tree.getChildByName(Serialization::Undo::timeSignatureBefore);
-    XmlElement *timeSignatureAfterChild = tree.getChildByName(Serialization::Undo::timeSignatureAfter);
+    const auto timeSignatureBeforeChild = tree.getChildWithName(Serialization::Undo::timeSignatureBefore);
+    const auto timeSignatureAfterChild = tree.getChildWithName(Serialization::Undo::timeSignatureAfter);
     
     this->eventBefore.deserialize(*timeSignatureBeforeChild->getFirstChildElement());
     this->eventAfter.deserialize(*timeSignatureAfterChild->getFirstChildElement());
@@ -277,7 +277,7 @@ ValueTree TimeSignatureEventsGroupInsertAction::serialize() const
     
     for (int i = 0; i < this->signatures.size(); ++i)
     {
-        tree.addChild(this->signatures.getUnchecked(i).serialize());
+        tree.appendChild(this->signatures.getUnchecked(i).serialize());
     }
     
     return tree;
@@ -286,7 +286,7 @@ ValueTree TimeSignatureEventsGroupInsertAction::serialize() const
 void TimeSignatureEventsGroupInsertAction::deserialize(const ValueTree &tree)
 {
     this->reset();
-    this->trackId = tree.getStringAttribute(Serialization::Undo::trackId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
     forEachXmlChildElement(tree, noteXml)
     {
@@ -348,7 +348,7 @@ ValueTree TimeSignatureEventsGroupRemoveAction::serialize() const
     
     for (int i = 0; i < this->signatures.size(); ++i)
     {
-        tree.addChild(this->signatures.getUnchecked(i).serialize());
+        tree.appendChild(this->signatures.getUnchecked(i).serialize());
     }
     
     return tree;
@@ -357,7 +357,7 @@ ValueTree TimeSignatureEventsGroupRemoveAction::serialize() const
 void TimeSignatureEventsGroupRemoveAction::deserialize(const ValueTree &tree)
 {
     this->reset();
-    this->trackId = tree.getStringAttribute(Serialization::Undo::trackId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
     forEachXmlChildElement(tree, noteXml)
     {
@@ -452,21 +452,21 @@ ValueTree TimeSignatureEventsGroupChangeAction::serialize() const
     ValueTree tree(Serialization::Undo::timeSignatureEventsGroupChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
     
-    auto groupBeforeChild = new XmlElement(Serialization::Undo::groupBefore);
-    auto groupAfterChild = new XmlElement(Serialization::Undo::groupAfter);
+    ValueTree groupBeforeChild(Serialization::Undo::groupBefore);
+    ValueTree groupAfterChild(Serialization::Undo::groupAfter);
     
     for (int i = 0; i < this->eventsBefore.size(); ++i)
     {
-        groupBeforeChild->prependChildElement(this->eventsBefore.getUnchecked(i).serialize());
+        groupBeforeChild.appendChild(this->eventsBefore.getUnchecked(i).serialize());
     }
     
     for (int i = 0; i < this->eventsAfter.size(); ++i)
     {
-        groupAfterChild->prependChildElement(this->eventsAfter.getUnchecked(i).serialize());
+        groupAfterChild.appendChild(this->eventsAfter.getUnchecked(i).serialize());
     }
     
-    tree.addChild(groupBeforeChild);
-    tree.addChild(groupAfterChild);
+    tree.appendChild(groupBeforeChild);
+    tree.appendChild(groupAfterChild);
     
     return tree;
 }
@@ -474,10 +474,10 @@ ValueTree TimeSignatureEventsGroupChangeAction::serialize() const
 void TimeSignatureEventsGroupChangeAction::deserialize(const ValueTree &tree)
 {
     this->reset();
-    this->trackId = tree.getStringAttribute(Serialization::Undo::trackId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    XmlElement *groupBeforeChild = tree.getChildByName(Serialization::Undo::groupBefore);
-    XmlElement *groupAfterChild = tree.getChildByName(Serialization::Undo::groupAfter);
+    const auto groupBeforeChild = tree.getChildWithName(Serialization::Undo::groupBefore);
+    const auto groupAfterChild = tree.getChildWithName(Serialization::Undo::groupAfter);
     
     forEachXmlChildElement(*groupBeforeChild, eventXml)
     {

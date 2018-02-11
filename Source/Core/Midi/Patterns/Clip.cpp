@@ -109,7 +109,7 @@ ValueTree Clip::serialize() const
 void Clip::deserialize(const ValueTree &tree)
 {
     this->startBeat = float(tree.getDoubleAttribute("start", this->startBeat));
-    this->id = tree.getStringAttribute("id", this->id);
+    this->id = tree.getProperty("id", this->id);
 }
 
 void Clip::reset()

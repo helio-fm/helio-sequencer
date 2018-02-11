@@ -238,7 +238,7 @@ ValueTree AudioCore::serialize() const
     ValueTree tree(Serialization::Core::audioCore);
 
     {
-        auto orchestra = new XmlElement(Serialization::Core::orchestra);
+        ValueTree orchestra(Serialization::Core::orchestra);
 
         for (int i = 0; i < this->instruments.size(); ++i)
         {
@@ -246,13 +246,13 @@ ValueTree AudioCore::serialize() const
             orchestra->addChildElement(instrument->serialize());
         }
 
-        tree.addChild(orchestra);
+        tree.appendChild(orchestra);
     }
 
     {
-        auto settings = new XmlElement(Serialization::Core::audioSettings);
+        ValueTree settings(Serialization::Core::audioSettings);
         settings->addChildElement(this->deviceManager.createStateXml());
-        tree.addChild(settings);
+        tree.appendChild(settings);
     }
 
     return tree;
@@ -266,8 +266,8 @@ void AudioCore::deserialize(const ValueTree &tree)
 
     this->reset();
 
-    const XmlElement *root = tree.hasTagName(Serialization::Core::audioCore) ?
-                             &tree : tree.getChildByName(Serialization::Core::audioCore);
+    const auto root = tree.hasType(Serialization::Core::audioCore) ?
+    tree : tree.getChildWithName(Serialization::Core::audioCore);
 
     if (root == nullptr) { return; }
 

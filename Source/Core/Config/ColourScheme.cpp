@@ -211,15 +211,15 @@ ValueTree ColourScheme::serialize() const
     tree.setProperty(Serialization::UI::Colours::name, this->name);
     tree.setProperty(Serialization::UI::Colours::id, this->id);
 
-    auto mapXml = new XmlElement(Serialization::UI::Colours::colourMap);
+    ValueTree mapXml(Serialization::UI::Colours::colourMap);
 
     ColourMap::Iterator i(this->colours);
     while (i.next())
     {
-        mapXml->setAttribute(i.getKey(), i.getValue().toString());
+        mapXml.setProperty(i.getKey(), i.getValue().toString());
     }
 
-    tree.addChild(mapXml);
+    tree.appendChild(mapXml);
     return tree;
 }
 
@@ -227,14 +227,14 @@ void ColourScheme::deserialize(const ValueTree &tree)
 {
     const XmlElement *root =
         tree.hasTagName(Serialization::UI::Colours::scheme) ?
-        &tree : tree.getChildByName(Serialization::UI::Colours::scheme);
+        tree : tree.getChildWithName(Serialization::UI::Colours::scheme);
 
     if (root == nullptr) { return; }
 
     this->reset();
 
-    this->name = root->getStringAttribute(Serialization::UI::Colours::name);
-    this->id = root->getStringAttribute(Serialization::UI::Colours::id);
+    this->name = root.getProperty(Serialization::UI::Colours::name);
+    this->id = root.getProperty(Serialization::UI::Colours::id);
 
     const XmlElement *mapXml =
         root->getChildByName(Serialization::UI::Colours::colourMap);

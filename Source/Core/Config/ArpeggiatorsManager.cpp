@@ -83,7 +83,7 @@ ValueTree ArpeggiatorsManager::serialize() const
     
     for (int i = 0; i < this->arps.size(); ++i)
     {
-        tree.addChild(this->arps.getUnchecked(i).serialize());
+        tree.appendChild(this->arps.getUnchecked(i).serialize());
     }
     
     return tree;
@@ -93,8 +93,8 @@ void ArpeggiatorsManager::deserialize(const ValueTree &tree)
 {
     this->reset();
     
-    const XmlElement *root = tree.hasTagName(Serialization::Arps::arpeggiators) ?
-        &tree : tree.getChildByName(Serialization::Arps::arpeggiators);
+    const auto root = tree.hasType(Serialization::Arps::arpeggiators) ?
+        tree : tree.getChildWithName(Serialization::Arps::arpeggiators);
     
     if (root == nullptr) { return; }
     

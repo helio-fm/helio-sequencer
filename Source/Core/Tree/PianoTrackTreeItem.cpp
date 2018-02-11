@@ -207,8 +207,8 @@ ValueTree PianoTrackTreeItem::serialize() const
 
     this->serializeTrackProperties(*xml);
 
-    tree.addChild(this->layer->serialize());
-    tree.addChild(this->pattern->serialize());
+    tree.appendChild(this->layer->serialize());
+    tree.appendChild(this->pattern->serialize());
 
     TreeItemChildrenSerializer::serializeChildren(*this, *xml);
 
@@ -278,7 +278,7 @@ XmlElement *PianoTrackTreeItem::serializeEventsDelta() const
     for (int i = 0; i < this->getSequence()->size(); ++i)
     {
         const MidiEvent *event = this->getSequence()->getUnchecked(i);
-        tree.addChild(event->serialize());
+        tree.appendChild(event->serialize());
     }
 
     return tree;
@@ -288,14 +288,14 @@ XmlElement *PianoTrackTreeItem::serializeEventsDelta() const
 void PianoTrackTreeItem::resetPathDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == MidiTrackDeltas::trackPath);
-    const String &path(state->getStringAttribute(Serialization::VCS::delta));
+    const String &path(state.getProperty(Serialization::VCS::delta));
     this->setXPath(path);
 }
 
 void PianoTrackTreeItem::resetMuteDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == MidiTrackDeltas::trackMute);
-    const String &muteState(state->getStringAttribute(Serialization::VCS::delta));
+    const String &muteState(state.getProperty(Serialization::VCS::delta));
     const bool willMute = MidiTrack::isTrackMuted(muteState);
     
     if (willMute != this->isTrackMuted())
@@ -307,7 +307,7 @@ void PianoTrackTreeItem::resetMuteDelta(const XmlElement *state)
 void PianoTrackTreeItem::resetColourDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == MidiTrackDeltas::trackColour);
-    const String &colourString(state->getStringAttribute(Serialization::VCS::delta));
+    const String &colourString(state.getProperty(Serialization::VCS::delta));
     const Colour &colour(Colour::fromString(colourString));
 
     if (colour != this->getTrackColour())
@@ -319,7 +319,7 @@ void PianoTrackTreeItem::resetColourDelta(const XmlElement *state)
 void PianoTrackTreeItem::resetInstrumentDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == MidiTrackDeltas::trackInstrument);
-    const String &instrumentId(state->getStringAttribute(Serialization::VCS::delta));
+    const String &instrumentId(state.getProperty(Serialization::VCS::delta));
     this->setTrackInstrumentId(instrumentId, false);
 }
 

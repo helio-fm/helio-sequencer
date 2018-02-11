@@ -119,16 +119,16 @@ bool Config::saveIfNeeded()
     for (int i = 0; i < getAllProperties().size(); ++i)
     {
         XmlElement *const e = doc.createNewChildElement(Serialization::Core::valueTag);
-        e->setAttribute(Serialization::Core::nameAttribute, getAllProperties().getAllKeys() [i]);
+        e.setProperty(Serialization::Core::nameAttribute, getAllProperties().getAllKeys() [i]);
 
         // if the value seems to contain xml, store it as such..
         if (XmlElement *const childElement = XmlDocument::parse(getAllProperties().getAllValues()[i]))
         {
-            e->addChildElement(childElement);
+            e.appendChild(childElement);
         }
         else
         {
-            e->setAttribute(Serialization::Core::valueAttribute,
+            e.setProperty(Serialization::Core::valueAttribute,
                             getAllProperties().getAllValues() [i]);
         }
     }
@@ -172,14 +172,14 @@ bool Config::reload()
         {
             forEachXmlChildElementWithTagName(*doc, e, Serialization::Core::valueTag)
             {
-                const String name(e->getStringAttribute(Serialization::Core::nameAttribute));
+                const String name(e.getProperty(Serialization::Core::nameAttribute));
 
                 if (name.isNotEmpty())
                 {
                     getAllProperties().set(name,
                                            e->getFirstChildElement() != nullptr
                                            ? e->getFirstChildElement()->createDocument(String::empty, true)
-                                           : e->getStringAttribute(Serialization::Core::valueAttribute));
+                                           : e.getProperty(Serialization::Core::valueAttribute));
                 }
             }
 

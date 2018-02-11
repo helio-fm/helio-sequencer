@@ -141,12 +141,12 @@ ValueTree RecentFilesList::serialize() const
 
     for (auto && localFile : this->localFiles)
     {
-        auto item = new XmlElement(Serialization::Core::recentFileItem);
-        item->setAttribute("title", localFile->title);
-        item->setAttribute("path", localFile->path);
-        item->setAttribute("id", localFile->projectId);
-        item->setAttribute("time", String(localFile->lastModifiedTime));
-        tree.addChild(item);
+        ValueTree item(Serialization::Core::recentFileItem);
+        item.setProperty("title", localFile->title);
+        item.setProperty("path", localFile->path);
+        item.setProperty("id", localFile->projectId);
+        item.setProperty("time", String(localFile->lastModifiedTime));
+        tree.appendChild(item);
     }
 
     return tree;
@@ -158,17 +158,17 @@ void RecentFilesList::deserialize(const ValueTree &tree)
 
     const ScopedWriteLock lock(this->listLock);
 
-    const XmlElement *root = tree.hasTagName(Serialization::Core::recentFiles) ?
-                             &tree : tree.getChildByName(Serialization::Core::recentFiles);
+    const auto root = tree.hasType(Serialization::Core::recentFiles) ?
+        tree : tree.getChildWithName(Serialization::Core::recentFiles);
 
     if (root == nullptr) { return; }
 
     forEachXmlChildElementWithTagName(*root, child, Serialization::Core::recentFileItem)
     {
-        const String title = child->getStringAttribute("title", "");
-        const String path = child->getStringAttribute("path", "");
-        const int64 time = child->getStringAttribute("time", "").getLargeIntValue();
-        const String id = child->getStringAttribute("id", "");
+        const String title = child.getProperty("title", "");
+        const String path = child.getProperty("path", "");
+        const int64 time = child.getProperty("time", "").getLargeIntValue();
+        const String id = child.getProperty("id", "");
 
         if (path != "")
         {

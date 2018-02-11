@@ -536,7 +536,7 @@ void App::checkPlugin(const String &markerFile)
 
                         for (auto i : typesFound)
                         {
-                            typesXml->addChildElement(i->createXml());
+                            typesXml.appendChild(i->createXml());
                         }
 
                         DataEncoder::saveObfuscated(tempFile, typesXml);

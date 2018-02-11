@@ -190,7 +190,7 @@ void VersionControl::recursiveTreeMerge(ValueTree localRevision,
             ValueTree newLocalChild(Revision::create(this->pack));
             Revision::copyProperties(newLocalChild, remoteChild);
             Revision::flush(newLocalChild);
-            localRevision.addChild(newLocalChild, -1, nullptr);
+            localRevision.appendChild(newLocalChild, -1, nullptr);
             this->recursiveTreeMerge(newLocalChild, remoteChild);
         }
     }
@@ -347,7 +347,7 @@ bool VersionControl::commit(SparseSet<int> selectedItems, const String &message)
 
     if (!headingRevision.isValid()) { return false; }
 
-    headingRevision.addChild(newRevision, -1, nullptr);
+    headingRevision.appendChild(newRevision, -1, nullptr);
     this->head.moveTo(newRevision);
 
     Revision::flush(newRevision);
@@ -464,11 +464,11 @@ ValueTree VersionControl::serialize() const
     tree.setProperty(Serialization::VCS::vcsHistoryId, this->publicId);
     tree.setProperty(Serialization::VCS::headRevisionId, Revision::getUuid(this->head.getHeadingRevision()));
     
-    tree.addChild(this->key.serialize());
-    tree.addChild(Revision::serialize(this->root));
-    tree.addChild(this->stashes->serialize());
-    tree.addChild(this->pack->serialize());
-    tree.addChild(this->head.serialize());
+    tree.appendChild(this->key.serialize());
+    tree.appendChild(Revision::serialize(this->root));
+    tree.appendChild(this->stashes->serialize());
+    tree.appendChild(this->pack->serialize());
+    tree.appendChild(this->head.serialize());
     
     return tree;
 }
@@ -477,27 +477,27 @@ void VersionControl::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *mainSlot = tree.hasTagName(Serialization::Core::versionControl) ?
-                                 &tree : tree.getChildByName(Serialization::Core::versionControl);
+    const auto root = tree.hasType(Serialization::Core::versionControl) ?
+        tree : tree.getChildWithName(Serialization::Core::versionControl);
 
-    if (mainSlot == nullptr) { return; }
+    if (root == nullptr) { return; }
 
-    const String timeStamp = mainSlot->getStringAttribute(Serialization::VCS::vcsHistoryVersion);
+    const String timeStamp = root.getProperty(Serialization::VCS::vcsHistoryVersion);
     this->historyMergeVersion = timeStamp.getLargeIntValue();
 
-    this->publicId = mainSlot->getStringAttribute(Serialization::VCS::vcsHistoryId, this->publicId);
+    this->publicId = root.getProperty(Serialization::VCS::vcsHistoryId, this->publicId);
 
-    const String headId = mainSlot->getStringAttribute(Serialization::VCS::headRevisionId);
+    const String headId = root.getProperty(Serialization::VCS::headRevisionId);
     Logger::writeToLog("Head ID is " + headId);
 
-    this->key.deserialize(*mainSlot);
-    Revision::deserialize(this->root, *mainSlot);
-    this->stashes->deserialize(*mainSlot);
-    this->pack->deserialize(*mainSlot);
+    this->key.deserialize(root);
+    Revision::deserialize(this->root, root);
+    this->stashes->deserialize(root);
+    this->pack->deserialize(root);
 
     {
         const double h1 = Time::getMillisecondCounterHiRes();
-        this->head.deserialize(*mainSlot);
+        this->head.deserialize(root);
         const double h2 = Time::getMillisecondCounterHiRes();
         Logger::writeToLog("Loading index done in " + String(h2 - h1) + "ms");
     }

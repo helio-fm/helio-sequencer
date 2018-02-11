@@ -83,7 +83,7 @@ XmlElement *UndoStack::ActionSet::serialize() const
         
     for (int i = 0; i < this->actions.size(); ++i)
     {
-        tree.addChild(this->actions.getUnchecked(i)->serialize());
+        tree.appendChild(this->actions.getUnchecked(i)->serialize());
     }
         
     return tree;
@@ -395,7 +395,7 @@ ValueTree UndoStack::serialize() const
     {
         if (ActionSet *action = this->transactions[currentIndex])
         {
-            tree.addChild(action->serialize());
+            tree.appendChild(action->serialize());
         }
         
         --currentIndex;
@@ -408,7 +408,7 @@ ValueTree UndoStack::serialize() const
 void UndoStack::deserialize(const ValueTree &tree)
 {
     const XmlElement *root = (tree.getTagName() == Serialization::Undo::undoStack) ?
-    &tree : tree.getChildByName(Serialization::Undo::undoStack);
+        tree : tree.getChildWithName(Serialization::Undo::undoStack);
     
     if (root == nullptr)
     { return; }

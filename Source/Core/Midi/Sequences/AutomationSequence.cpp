@@ -263,7 +263,7 @@ ValueTree AutomationSequence::serialize() const
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         MidiEvent *event = this->midiEvents.getUnchecked(i);
-        tree.addChild(event->serialize());
+        tree.appendChild(event->serialize());
     }
     
     return tree;
@@ -275,7 +275,7 @@ void AutomationSequence::deserialize(const ValueTree &tree)
 
     const XmlElement *root = 
         (tree.getTagName() == Serialization::Core::automation) ?
-        &tree : tree.getChildByName(Serialization::Core::automation);
+        tree : tree.getChildWithName(Serialization::Core::automation);
 
     if (root == nullptr)
     { return; }

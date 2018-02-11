@@ -216,7 +216,7 @@ XmlElement *Revision::serialize(ValueTree revision)
             if (const RevisionItem *revItem =
                 dynamic_cast<RevisionItem *>(property.getObject()))
             {
-                tree.addChild(revItem->serialize());
+                tree.appendChild(revItem->serialize());
             }
         }
         else if (property.isString() || property.isInt64())
@@ -227,7 +227,7 @@ XmlElement *Revision::serialize(ValueTree revision)
 
     for (int i = 0; i < revision.getNumChildren(); ++i)
     {
-        tree.addChild(Revision::serialize(revision.getChild(i)));
+        tree.appendChild(Revision::serialize(revision.getChild(i)));
     }
 
     return tree;
@@ -239,7 +239,7 @@ void Revision::deserialize(ValueTree revision, const XmlElement &xml)
 
     const XmlElement *root =
         xml.hasTagName(revision.getType().toString()) ?
-        &xml : xml.getChildByName(revision.getType().toString());
+        xml : xml.getChildWithName(revision.getType().toString());
 
     if (root == nullptr) { return; }
 
@@ -256,7 +256,7 @@ void Revision::deserialize(ValueTree revision, const XmlElement &xml)
         {
             ValueTree child(revision.createCopy());
             Revision::deserialize(child, *e);
-            revision.addChild(child, 0, nullptr);
+            revision.appendChild(child, 0, nullptr);
         }
         else
         {

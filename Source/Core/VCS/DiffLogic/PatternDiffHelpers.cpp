@@ -53,7 +53,7 @@ XmlElement *serializePattern(Array<Clip> changes, const String &tag)
 
     for (int i = 0; i < changes.size(); ++i)
     {
-        tree.addChild(changes.getUnchecked(i).serialize());
+        tree.appendChild(changes.getUnchecked(i).serialize());
     }
 
     return tree;

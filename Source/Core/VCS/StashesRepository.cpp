@@ -58,7 +58,7 @@ ValueTree VCS::StashesRepository::getUserStashWithName(const String &stashName) 
 
 void VCS::StashesRepository::addStash(ValueTree newStash)
 {
-    this->userStashes.addChild(newStash, -1, nullptr);
+    this->userStashes.appendChild(newStash, -1, nullptr);
     Revision::flush(newStash);
     this->pack->flush();
 }
@@ -100,15 +100,15 @@ ValueTree VCS::StashesRepository::serialize() const
 {
     ValueTree tree(Serialization::VCS::stashesRepository);
     
-    auto userStashesXml = new XmlElement(Serialization::VCS::userStashes);
-    tree.addChild(userStashesXml);
+    ValueTree userStashesXml(Serialization::VCS::userStashes);
+    tree.appendChild(userStashesXml);
     
-    userStashesXml->addChildElement(Revision::serialize(this->userStashes));
+    userStashesXml.appendChild(Revision::serialize(this->userStashes));
 
-    auto quickStashXml = new XmlElement(Serialization::VCS::quickStash);
-    tree.addChild(quickStashXml);
+    ValueTree quickStashXml(Serialization::VCS::quickStash);
+    tree.appendChild(quickStashXml);
 
-    quickStashXml->addChildElement(Revision::serialize(this->quickStash));
+    quickStashXml.appendChild(Revision::serialize(this->quickStash));
     
     return tree;
 }
@@ -117,8 +117,8 @@ void VCS::StashesRepository::deserialize(const ValueTree &tree)
 {
     this->reset();
     
-    const XmlElement *root = tree.hasTagName(Serialization::VCS::stashesRepository) ?
-        &tree : tree.getChildByName(Serialization::VCS::stashesRepository);
+    const auto root = tree.hasType(Serialization::VCS::stashesRepository) ?
+        tree : tree.getChildWithName(Serialization::VCS::stashesRepository);
     
     if (root == nullptr) { return; }
 

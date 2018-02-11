@@ -74,7 +74,7 @@ String Arpeggiator::exportSequenceAsTrack() const
     
     for (int i = 0; i < this->sequence.size(); ++i)
     {
-        seq->addChildElement(this->sequence.getUnchecked(i).serialize());
+        seq.appendChild(this->sequence.getUnchecked(i).serialize());
     }
     
     return seq->createDocument("", false, false, "UTF-8", 1024);
@@ -97,7 +97,7 @@ Arpeggiator Arpeggiator::withSequenceFromXml(const XmlElement &xml) const
     Arpeggiator arp(*this);
 
     const XmlElement *root = (xml.getTagName() == Serialization::Core::track) ?
-        &xml : xml.getChildByName(Serialization::Core::track);
+        xml : xml.getChildWithName(Serialization::Core::track);
     
     if (root == nullptr) { return arp; }
     
@@ -202,14 +202,14 @@ Array<Arpeggiator::Key> Arpeggiator::createArpKeys() const
 ValueTree Arpeggiator::serialize() const
 {
     ValueTree tree(Serialization::Arps::arpeggiator);
-    auto seq = new XmlElement(Serialization::Arps::sequence);
+    ValueTree seq(Serialization::Arps::sequence);
     
     for (int i = 0; i < this->sequence.size(); ++i)
     {
-        seq->addChildElement(this->sequence.getUnchecked(i).serialize());
+        seq.appendChild(this->sequence.getUnchecked(i).serialize());
     }
     
-    tree.addChild(seq);
+    tree.appendChild(seq);
     
     tree.setProperty(Serialization::Arps::isReversed, this->reversedMode);
     tree.setProperty(Serialization::Arps::relativeMapping, this->relativeMappingMode);
@@ -225,7 +225,7 @@ ValueTree Arpeggiator::serialize() const
 void Arpeggiator::deserialize(const ValueTree &tree)
 {
     const XmlElement *root = (tree.getTagName() == Serialization::Arps::arpeggiator) ?
-        &tree : tree.getChildByName(Serialization::Arps::arpeggiator);
+    tree : tree.getChildWithName(Serialization::Arps::arpeggiator);
     
     if (root == nullptr) { return; }
 
@@ -246,8 +246,8 @@ void Arpeggiator::deserialize(const ValueTree &tree)
     this->limitToChordMode = tree.getBoolAttribute(Serialization::Arps::limitsToChord, false);
     this->scale = float(tree.getDoubleAttribute(Serialization::Arps::scale, 1.f));
     
-    this->id = tree.getStringAttribute(Serialization::Arps::id, this->getId());
-    this->name = tree.getStringAttribute(Serialization::Arps::name, this->getName());
+    this->id = tree.getProperty(Serialization::Arps::id, this->getId());
+    this->name = tree.getProperty(Serialization::Arps::name, this->getName());
 }
 
 void Arpeggiator::reset()

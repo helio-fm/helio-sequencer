@@ -264,7 +264,7 @@ ValueTree TimeSignaturesSequence::serialize() const
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         const MidiEvent *event = this->midiEvents.getUnchecked(i);
-        tree.addChild(event->serialize()); // faster than addChildElement
+        tree.appendChild(event->serialize()); // faster than addChildElement
     }
 
     return tree;
@@ -276,7 +276,7 @@ void TimeSignaturesSequence::deserialize(const ValueTree &tree)
 
     const XmlElement *root =
         (tree.getTagName() == Serialization::Core::timeSignatures) ?
-        &tree : tree.getChildByName(Serialization::Core::timeSignatures);
+        tree : tree.getChildWithName(Serialization::Core::timeSignatures);
 
     if (root == nullptr)
     {

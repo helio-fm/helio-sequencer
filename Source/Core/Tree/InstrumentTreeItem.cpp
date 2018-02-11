@@ -232,7 +232,7 @@ void InstrumentTreeItem::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const String id = tree.getStringAttribute("id");
+    const String id = tree.getProperty("id");
     this->instrument = this->audioCore->findInstrumentById(id);
 
     // если в аудиоядре инструмент исчез:

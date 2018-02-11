@@ -328,8 +328,8 @@ void RootTreeItem::filesDropped(const StringArray &files, int insertIndex)
 
 void RootTreeItem::deserialize(const ValueTree &tree)
 {
-    const XmlElement *root = tree.hasTagName(Serialization::Core::treeItem) ?
-        &tree : tree.getChildByName(Serialization::Core::treeItem);
+    const auto root = tree.hasType(Serialization::Core::treeItem) ?
+        tree : tree.getChildWithName(Serialization::Core::treeItem);
 
     if (root != nullptr)
     {

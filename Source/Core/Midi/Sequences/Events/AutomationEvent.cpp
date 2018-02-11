@@ -285,7 +285,7 @@ void AutomationEvent::deserialize(const ValueTree &tree)
     this->controllerValue = float(tree.getDoubleAttribute("val"));
     this->curvature = float(tree.getDoubleAttribute("curve", AUTOEVENT_DEFAULT_CURVATURE));
     this->beat = float(tree.getDoubleAttribute("beat"));
-    this->id = tree.getStringAttribute("id");
+    this->id = tree.getProperty("id");
 }
 
 void AutomationEvent::reset() {}

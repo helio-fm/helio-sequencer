@@ -405,7 +405,7 @@ bool Workspace::onDocumentExport(File &file)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-static void addAllActiveItemIds(TreeViewItem *item, XmlElement &parent)
+static void addAllActiveItemIds(TreeViewItem *item, ValueTree &parent)
 {
     if (TreeItem *treeItem = dynamic_cast<TreeItem *>(item))
     {
@@ -457,15 +457,15 @@ ValueTree Workspace::serialize() const
     
     // TODO serialize window size and position
     
-    tree.addChild(this->audioCore->serialize());
-    tree.addChild(this->pluginManager->serialize());
-    tree.addChild(this->treeRoot->serialize());
-    tree.addChild(this->recentFilesList->serialize());
+    tree.appendChild(this->audioCore->serialize());
+    tree.appendChild(this->pluginManager->serialize());
+    tree.appendChild(this->treeRoot->serialize());
+    tree.appendChild(this->recentFilesList->serialize());
     
     // TODO serialize tree openness state?
-    auto treeStateNode = new XmlElement(Serialization::Core::treeState);
-    addAllActiveItemIds(this->treeRoot, *treeStateNode);
-    tree.addChild(treeStateNode);
+    ValueTree treeStateNode(Serialization::Core::treeState);
+    addAllActiveItemIds(this->treeRoot, treeStateNode);
+    tree.appendChild(treeStateNode);
     
     return tree;
 }
@@ -474,19 +474,19 @@ void Workspace::deserialize(const ValueTree &tree)
 {
     this->reset();
     
-    const XmlElement *root = tree.hasTagName(Serialization::Core::workspace) ?
-    &tree : tree.getChildByName(Serialization::Core::workspace);
+    const auto root = tree.hasType(Serialization::Core::workspace) ?
+        tree : tree.getChildWithName(Serialization::Core::workspace);
     
-    if (root == nullptr)
+    if (root.isValid())
     {
         // Since we are supposed to be the root element, let's attempt to deserialize anyway
         root = tree.getFirstChildElement();
     }
     
-    this->recentFilesList->deserialize(*root);
-    this->audioCore->deserialize(*root);
-    this->pluginManager->deserialize(*root);
-    this->treeRoot->deserialize(*root);
+    this->recentFilesList->deserialize(root);
+    this->audioCore->deserialize(root);
+    this->pluginManager->deserialize(root);
+    this->treeRoot->deserialize(root);
     
     bool foundActiveNode = false;
     
@@ -494,7 +494,7 @@ void Workspace::deserialize(const ValueTree &tree)
     {
         forEachXmlChildElementWithTagName(*treeStateNode, e, Serialization::Core::selectedTreeItem)
         {
-            const String id = e->getStringAttribute(Serialization::Core::treeItemId);
+            const String id = e.getProperty(Serialization::Core::treeItemId);
             foundActiveNode = (nullptr != selectActiveSubItemWithId(this->treeRoot, id));
         }
     }

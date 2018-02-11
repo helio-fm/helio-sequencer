@@ -615,16 +615,16 @@ XmlElement *PatternRoll::clipboardCopy() const
         const String patternId(s.first);
 
         // create xml parent with layer id
-        auto patternIdParent = new XmlElement(Serialization::Clipboard::pattern);
-        patternIdParent->setAttribute(Serialization::Clipboard::patternId, patternId);
-        tree.addChild(patternIdParent);
+        ValueTree patternIdParent(Serialization::Clipboard::pattern);
+        patternIdParent.setProperty(Serialization::Clipboard::patternId, patternId);
+        tree.appendChild(patternIdParent);
 
         for (int i = 0; i < patternSelection->size(); ++i)
         {
             if (const ClipComponent *clipComponent =
                 dynamic_cast<ClipComponent *>(patternSelection->getUnchecked(i)))
             {
-                patternIdParent->addChildElement(clipComponent->getClip().serialize());
+                patternIdParent.appendChild(clipComponent->getClip().serialize());
                 firstBeat = jmin(firstBeat, clipComponent->getBeat());
                 lastBeat = jmax(lastBeat, clipComponent->getBeat());
             }
@@ -641,7 +641,7 @@ void PatternRoll::clipboardPaste(const XmlElement &xml)
 {
     const XmlElement *root =
         (xml.getTagName() == Serialization::Clipboard::clipboard) ?
-        &xml : xml.getChildByName(Serialization::Clipboard::clipboard);
+        xml : xml.getChildWithName(Serialization::Clipboard::clipboard);
 
     if (root == nullptr) { return; }
 
@@ -661,7 +661,7 @@ void PatternRoll::clipboardPaste(const XmlElement &xml)
     forEachXmlChildElementWithTagName(*root, patternElement, Serialization::Core::pattern)
     {
         Array<Clip> pastedClips;
-        const String patternId = patternElement->getStringAttribute(Serialization::Clipboard::patternId);
+        const String patternId = patternElement.getProperty(Serialization::Clipboard::patternId);
         
         if (nullptr != this->project.findPatternByTrackId(patternId))
         {
@@ -833,7 +833,7 @@ void PatternRoll::deserialize(const ValueTree &tree)
 
     const XmlElement *root =
         (tree.getTagName() == Serialization::Core::midiRoll) ?
-        &tree : tree.getChildByName(Serialization::Core::midiRoll);
+        tree : tree.getChildWithName(Serialization::Core::midiRoll);
 
     if (root == nullptr)
     { return; }

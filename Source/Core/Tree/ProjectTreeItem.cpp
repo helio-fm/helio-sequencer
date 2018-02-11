@@ -542,8 +542,8 @@ void ProjectTreeItem::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const String &fullPath = tree.getStringAttribute("fullPath");
-    const String &relativePath = tree.getStringAttribute("relativePath");
+    const String &fullPath = tree.getProperty("fullPath");
+    const String &relativePath = tree.getProperty("relativePath");
     
     File relativeFile =
     File(App::Workspace().getDocument()->getFile().
@@ -577,16 +577,16 @@ XmlElement *ProjectTreeItem::save() const
     ValueTree tree(Serialization::Core::project);
     tree.setProperty("name", this->name);
 
-    tree.addChild(this->info->serialize());
-    tree.addChild(this->timeline->serialize());
+    tree.appendChild(this->info->serialize());
+    tree.appendChild(this->timeline->serialize());
     
-    //tree.addChild(this->player->serialize()); // todo instead of:
+    //tree.appendChild(this->player->serialize()); // todo instead of:
     tree.setProperty("seek", this->transport->getSeekPosition());
     
     // UI state is now stored in config
-    //tree.addChild(this->sequencerLayout->serialize());
+    //tree.appendChild(this->sequencerLayout->serialize());
 
-    tree.addChild(this->undoStack->serialize());
+    tree.appendChild(this->undoStack->serialize());
     
     TreeItemChildrenSerializer::serializeChildren(*this, *xml);
 
@@ -599,8 +599,8 @@ void ProjectTreeItem::load(const XmlElement &xml)
 {
     this->reset();
 
-    const XmlElement *root = xml.hasTagName(Serialization::Core::project) ?
-                             &xml : xml.getChildByName(Serialization::Core::project);
+    const auto root = tree.hasType(Serialization::Core::project) ?
+        xml : xml.getChildWithName(Serialization::Core::project);
 
     if (root == nullptr) { return; }
 

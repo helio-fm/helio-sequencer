@@ -513,8 +513,8 @@ void Head::rebuildDiffNow()
 ValueTree VCS::Head::serialize() const
 {
     ValueTree tree(Serialization::VCS::head);
-    auto stateXml = new XmlElement(Serialization::VCS::headIndex);
-    auto stateDataXml = new XmlElement(Serialization::VCS::headIndexData);
+    ValueTree stateXml(Serialization::VCS::headIndex);
+    ValueTree stateDataXml(Serialization::VCS::headIndexData);
 
     {
         const ScopedReadLock lock(this->stateLock);
@@ -523,25 +523,25 @@ ValueTree VCS::Head::serialize() const
         {
             const RevisionItem::Ptr stateItem = static_cast<RevisionItem *>(this->state->getTrackedItem(i));
             XmlElement *serializedItem = stateItem->serialize();
-            stateXml->addChildElement(serializedItem);
+            stateXml.appendChild(serializedItem);
             
             // exports also deltas data
             for (int j = 0; j < stateItem->getNumDeltas(); ++j)
             {
                 XmlElement *deltaData = stateItem->createDeltaDataFor(j);
                 
-                auto packItem = new XmlElement(Serialization::VCS::packItem);
-                packItem->setAttribute(Serialization::VCS::packItemRevId, stateItem->getUuid().toString());
-                packItem->setAttribute(Serialization::VCS::packItemDeltaId, stateItem->getDelta(j)->getUuid().toString());
-                packItem->addChildElement(deltaData);
+                ValueTree packItem(Serialization::VCS::packItem);
+                packItem.setProperty(Serialization::VCS::packItemRevId, stateItem->getUuid().toString());
+                packItem.setProperty(Serialization::VCS::packItemDeltaId, stateItem->getDelta(j)->getUuid().toString());
+                packItem.appendChild(deltaData);
                 
-                stateDataXml->prependChildElement(packItem);
+                stateDataXml.appendChild(packItem);
             }
         }
     }
     
-    tree.addChild(stateXml);
-    tree.addChild(stateDataXml);
+    tree.appendChild(stateXml);
+    tree.appendChild(stateDataXml);
     return tree;
 }
 
@@ -549,8 +549,8 @@ void VCS::Head::deserialize(const ValueTree &tree)
 {
     this->reset();
     
-    const XmlElement *headRoot = tree.hasTagName(Serialization::VCS::head) ?
-        &tree : tree.getChildByName(Serialization::VCS::head);
+    const auto headRoot = tree.hasType(Serialization::VCS::head) ?
+        tree : tree.getChildWithName(Serialization::VCS::head);
     if (headRoot == nullptr) { return; }
     
     const XmlElement *indexRoot = headRoot->getChildByName(Serialization::VCS::headIndex);
@@ -569,8 +569,8 @@ void VCS::Head::deserialize(const ValueTree &tree)
         // import deltas data
         forEachXmlChildElementWithTagName(*dataRoot, dataElement, Serialization::VCS::packItem)
         {
-            const String packItemRevId = dataElement->getStringAttribute(Serialization::VCS::packItemRevId);
-            const String packItemDeltaId = dataElement->getStringAttribute(Serialization::VCS::packItemDeltaId);
+            const String packItemRevId = dataElement.getProperty(Serialization::VCS::packItemRevId);
+            const String packItemDeltaId = dataElement.getProperty(Serialization::VCS::packItemDeltaId);
             const XmlElement *deltaData = dataElement->getFirstChildElement();
             
             if (packItemRevId == stateItem->getUuid().toString())

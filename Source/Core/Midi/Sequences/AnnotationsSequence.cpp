@@ -266,7 +266,7 @@ ValueTree AnnotationsSequence::serialize() const
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         const MidiEvent *event = this->midiEvents.getUnchecked(i);
-        tree.addChild(event->serialize());
+        tree.appendChild(event->serialize());
     }
 
     return tree;
@@ -278,7 +278,7 @@ void AnnotationsSequence::deserialize(const ValueTree &tree)
 
     const XmlElement *root =
         (tree.getTagName() == Serialization::Core::annotations) ?
-        &tree : tree.getChildByName(Serialization::Core::annotations);
+        tree : tree.getChildWithName(Serialization::Core::annotations);
 
     if (root == nullptr)
     {

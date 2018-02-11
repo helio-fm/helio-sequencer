@@ -273,17 +273,17 @@ void ProjectTimeline::reset()
 
 ValueTree ProjectTimeline::serialize() const
 {
-    XmlElement *xml = new XmlElement(this->vcsDiffLogic->getType());
+    ValueTree tree(this->vcsDiffLogic->getType());
 
-    this->serializeVCSUuid(*xml);
+    this->serializeVCSUuid(tree);
     tree.setProperty("name", this->name);
     tree.setProperty("annotationsId", this->annotationsId.toString());
     tree.setProperty("keySignaturesId", this->keySignaturesId.toString());
     tree.setProperty("timeSignaturesId", this->timeSignaturesId.toString());
 
-    tree.addChild(this->annotationsSequence->serialize());
-    tree.addChild(this->keySignaturesSequence->serialize());
-    tree.addChild(this->timeSignaturesSequence->serialize());
+    tree.appendChild(this->annotationsSequence->serialize());
+    tree.appendChild(this->keySignaturesSequence->serialize());
+    tree.appendChild(this->timeSignaturesSequence->serialize());
 
     return tree;
 }
@@ -292,28 +292,37 @@ void ProjectTimeline::deserialize(const ValueTree &tree)
 {
     this->reset();
     
-    const XmlElement *root = tree.hasTagName(this->vcsDiffLogic->getType()) ?
-        &tree : tree.getChildByName(this->vcsDiffLogic->getType());
+    const auto root = tree.hasType(this->vcsDiffLogic->getType()) ?
+        tree : tree.getChildWithName(this->vcsDiffLogic->getType());
     
     if (root == nullptr)
     {
         return;
     }
 
-    this->deserializeVCSUuid(*root);
-    this->name = root->getStringAttribute("name", this->name);
+    this->deserializeVCSUuid(root);
+    this->name = root.getProperty("name", this->name);
 
     this->annotationsId =
-        Uuid(root->getStringAttribute("annotationsId",
+        Uuid(root.getProperty("annotationsId",
             this->annotationsId.toString()));
 
     this->timeSignaturesId =
-        Uuid(root->getStringAttribute("timeSignaturesId",
+        Uuid(root.getProperty("timeSignaturesId",
             this->timeSignaturesId.toString()));
 
     this->keySignaturesId =
-        Uuid(root->getStringAttribute("keySignaturesId",
+        Uuid(root.getProperty("keySignaturesId",
             this->keySignaturesId.toString()));
+
+    // TODO
+    //for (const auto &e : root)
+    //{
+    //    if (e.hasType(Serialization::Core::annotations))
+    //    {
+
+    //    }
+    //}
 
     forEachXmlChildElementWithTagName(*root, e, Serialization::Core::annotations)
     {
@@ -349,7 +358,7 @@ XmlElement *ProjectTimeline::serializeAnnotationsDelta() const
     for (int i = 0; i < this->annotationsSequence->size(); ++i)
     {
         const MidiEvent *event = this->annotationsSequence->getUnchecked(i);
-        tree.addChild(event->serialize());
+        tree.appendChild(event->serialize());
     }
 
     return tree;
@@ -374,7 +383,7 @@ XmlElement *ProjectTimeline::serializeTimeSignaturesDelta() const
     for (int i = 0; i < this->timeSignaturesSequence->size(); ++i)
     {
         const MidiEvent *event = this->timeSignaturesSequence->getUnchecked(i);
-        tree.addChild(event->serialize());
+        tree.appendChild(event->serialize());
     }
     
     return tree;
@@ -399,7 +408,7 @@ XmlElement *ProjectTimeline::serializeKeySignaturesDelta() const
     for (int i = 0; i < this->keySignaturesSequence->size(); ++i)
     {
         const MidiEvent *event = this->keySignaturesSequence->getUnchecked(i);
-        tree.addChild(event->serialize());
+        tree.appendChild(event->serialize());
     }
 
     return tree;

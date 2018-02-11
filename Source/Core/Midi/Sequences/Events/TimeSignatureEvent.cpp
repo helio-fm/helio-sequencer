@@ -161,7 +161,7 @@ void TimeSignatureEvent::deserialize(const ValueTree &tree)
     this->numerator = tree.getIntAttribute("numerator", TIME_SIGNATURE_DEFAULT_NUMERATOR);
     this->denominator = tree.getIntAttribute("denominator", TIME_SIGNATURE_DEFAULT_DENOMINATOR);
     this->beat = float(tree.getDoubleAttribute("beat"));
-    this->id = tree.getStringAttribute("id");
+    this->id = tree.getProperty("id");
 }
 
 void TimeSignatureEvent::reset() {}

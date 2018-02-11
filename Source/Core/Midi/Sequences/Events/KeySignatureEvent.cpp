@@ -154,7 +154,7 @@ ValueTree KeySignatureEvent::serialize() const
     tree.setProperty("key", this->rootKey);
     tree.setProperty("beat", this->beat);
     tree.setProperty("id", this->id);
-    tree.addChild(this->scale.serialize());
+    tree.appendChild(this->scale.serialize());
     return tree;
 }
 
@@ -163,7 +163,7 @@ void KeySignatureEvent::deserialize(const ValueTree &tree)
     this->reset();
     this->rootKey = tree.getIntAttribute("key", 0);
     this->beat = float(tree.getDoubleAttribute("beat"));
-    this->id = tree.getStringAttribute("id");
+    this->id = tree.getProperty("id");
 
     // Anyway there is only one child scale for now:
     forEachXmlChildElementWithTagName(tree, e, Serialization::Core::scale)

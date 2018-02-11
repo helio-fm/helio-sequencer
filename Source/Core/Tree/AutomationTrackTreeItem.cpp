@@ -193,8 +193,8 @@ ValueTree AutomationTrackTreeItem::serialize() const
 
     this->serializeTrackProperties(*xml);
 
-    tree.addChild(this->layer->serialize());
-    tree.addChild(this->pattern->serialize());
+    tree.appendChild(this->layer->serialize());
+    tree.appendChild(this->pattern->serialize());
 
     TreeItemChildrenSerializer::serializeChildren(*this, *xml);
 
@@ -272,7 +272,7 @@ XmlElement *AutomationTrackTreeItem::serializeEventsDelta() const
     for (int i = 0; i < this->getSequence()->size(); ++i)
     {
         const MidiEvent *event = this->getSequence()->getUnchecked(i);
-        tree.addChild(event->serialize());
+        tree.appendChild(event->serialize());
     }
 
     return tree;
@@ -282,14 +282,14 @@ XmlElement *AutomationTrackTreeItem::serializeEventsDelta() const
 void AutomationTrackTreeItem::resetPathDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == AutoSequenceDeltas::layerPath);
-    const String &path(state->getStringAttribute(Serialization::VCS::delta));
+    const String &path(state.getProperty(Serialization::VCS::delta));
     this->setXPath(path);
 }
 
 void AutomationTrackTreeItem::resetMuteDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == AutoSequenceDeltas::layerMute);
-    const String &muteState(state->getStringAttribute(Serialization::VCS::delta));
+    const String &muteState(state.getProperty(Serialization::VCS::delta));
     const bool willMute = MidiTrack::isTrackMuted(muteState);
     
     if (willMute != this->isTrackMuted())
@@ -301,7 +301,7 @@ void AutomationTrackTreeItem::resetMuteDelta(const XmlElement *state)
 void AutomationTrackTreeItem::resetColourDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == AutoSequenceDeltas::layerColour);
-    const String &colourString(state->getStringAttribute(Serialization::VCS::delta));
+    const String &colourString(state.getProperty(Serialization::VCS::delta));
     const Colour &colour(Colour::fromString(colourString));
 
     if (colour != this->getTrackColour())
@@ -313,7 +313,7 @@ void AutomationTrackTreeItem::resetColourDelta(const XmlElement *state)
 void AutomationTrackTreeItem::resetInstrumentDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == AutoSequenceDeltas::layerInstrument);
-    const String &instrumentId(state->getStringAttribute(Serialization::VCS::delta));
+    const String &instrumentId(state.getProperty(Serialization::VCS::delta));
     this->setTrackInstrumentId(instrumentId, false);
 }
 

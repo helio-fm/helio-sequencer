@@ -472,14 +472,14 @@ NewSerializedDelta createPathDiff(const XmlElement *state, const XmlElement *cha
 {
     NewSerializedDelta res;
     res.deltaData = new XmlElement(*changes);
-    res.delta = new Delta(DeltaDescription("moved from {x}", state->getStringAttribute(Serialization::VCS::delta)),
+    res.delta = new Delta(DeltaDescription("moved from {x}", state.getProperty(Serialization::VCS::delta)),
                           MidiTrackDeltas::trackPath);
     return res;
 }
 
 NewSerializedDelta createMuteDiff(const XmlElement *state, const XmlElement *changes)
 {
-    const bool muted = MidiTrack::isTrackMuted(changes->getStringAttribute(Serialization::VCS::delta));
+    const bool muted = MidiTrack::isTrackMuted(changes.getProperty(Serialization::VCS::delta));
     NewSerializedDelta res;
     res.deltaData = new XmlElement(*changes);
     res.delta = new Delta(muted ? 
@@ -656,7 +656,7 @@ XmlElement *serializeLayer(Array<const MidiEvent *> changes, const String &tag)
     for (int i = 0; i < changes.size(); ++i)
     {
         const MidiEvent *event = changes.getUnchecked(i);
-        tree.addChild(event->serialize());
+        tree.appendChild(event->serialize());
     }
 
     return tree;

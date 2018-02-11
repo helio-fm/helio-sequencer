@@ -155,18 +155,18 @@ void ProjectInfo::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root = tree.hasTagName(Serialization::Core::projectInfo) ?
-                             &tree : tree.getChildByName(Serialization::Core::projectInfo);
+    const auto root = tree.hasType(Serialization::Core::projectInfo) ?
+        tree : tree.getChildWithName(Serialization::Core::projectInfo);
 
     if (root == nullptr) { return; }
 
     this->deserializeVCSUuid(*root);
 
-    this->initTimestamp = root->getStringAttribute(Serialization::Core::projectTimeStamp).getLargeIntValue();
-    this->license = root->getStringAttribute(ProjectInfoDeltas::projectLicense);
-//    this->fullName = root->getStringAttribute(ProjectInfoDeltas::projectFullName);
-    this->author = root->getStringAttribute(ProjectInfoDeltas::projectAuthor);
-    this->description = root->getStringAttribute(ProjectInfoDeltas::projectDescription);
+    this->initTimestamp = root.getProperty(Serialization::Core::projectTimeStamp).getLargeIntValue();
+    this->license = root.getProperty(ProjectInfoDeltas::projectLicense);
+//    this->fullName = root.getProperty(ProjectInfoDeltas::projectFullName);
+    this->author = root.getProperty(ProjectInfoDeltas::projectAuthor);
+    this->description = root.getProperty(ProjectInfoDeltas::projectDescription);
 
     this->project.broadcastChangeProjectInfo(this);
 }
@@ -214,7 +214,7 @@ XmlElement *ProjectInfo::serializeDescriptionDelta() const
 void ProjectInfo::resetLicenseDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == ProjectInfoDeltas::projectLicense);
-    const String delta(state->getStringAttribute(Serialization::VCS::delta));
+    const String delta(state.getProperty(Serialization::VCS::delta));
 
     if (delta != this->license)
     {
@@ -225,7 +225,7 @@ void ProjectInfo::resetLicenseDelta(const XmlElement *state)
 void ProjectInfo::resetFullNameDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == ProjectInfoDeltas::projectFullName);
-    const String delta(state->getStringAttribute(Serialization::VCS::delta));
+    const String delta(state.getProperty(Serialization::VCS::delta));
 
     if (delta != this->getFullName())
     {
@@ -236,7 +236,7 @@ void ProjectInfo::resetFullNameDelta(const XmlElement *state)
 void ProjectInfo::resetAuthorDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == ProjectInfoDeltas::projectAuthor);
-    const String delta(state->getStringAttribute(Serialization::VCS::delta));
+    const String delta(state.getProperty(Serialization::VCS::delta));
 
     if (delta != this->author)
     {
@@ -247,7 +247,7 @@ void ProjectInfo::resetAuthorDelta(const XmlElement *state)
 void ProjectInfo::resetDescriptionDelta(const XmlElement *state)
 {
     jassert(state->getTagName() == ProjectInfoDeltas::projectDescription);
-    const String delta(state->getStringAttribute(Serialization::VCS::delta));
+    const String delta(state.getProperty(Serialization::VCS::delta));
 
     if (delta != this->description)
     {

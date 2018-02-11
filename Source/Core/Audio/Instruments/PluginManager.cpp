@@ -354,7 +354,7 @@ ValueTree PluginManager::serialize() const
 
     for (int i = 0; i < this->pluginsList.getNumTypes(); ++i)
     {
-        tree.addChild(this->pluginsList.getType(i)->createXml());
+        tree.appendChild(this->pluginsList.getType(i)->createXml());
     }
 
     return tree;
@@ -366,8 +366,8 @@ void PluginManager::deserialize(const ValueTree &tree)
 
     const ScopedWriteLock lock(this->pluginsListLock);
 
-    const XmlElement *mainSlot = tree.hasTagName(Serialization::Core::pluginManager) ?
-                                 &tree : tree.getChildByName(Serialization::Core::pluginManager);
+    const auto mainSlot = tree.hasType(Serialization::Core::pluginManager) ?
+        tree : tree.getChildWithName(Serialization::Core::pluginManager);
 
     if (mainSlot == nullptr) { return; }
 

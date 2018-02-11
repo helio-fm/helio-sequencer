@@ -1122,7 +1122,7 @@ XmlElement *serializeLayer(Array<const MidiEvent *> changes, const String &tag)
     for (int i = 0; i < changes.size(); ++i)
     {
         const MidiEvent *event = changes.getUnchecked(i);
-        tree.addChild(event->serialize());
+        tree.appendChild(event->serialize());
     }
 
     return tree;

@@ -82,7 +82,7 @@ ValueTree ColourSchemeManager::serialize() const
     
     for (int i = 0; i < this->schemes.size(); ++i)
     {
-        tree.addChild(this->schemes.getUnchecked(i).serialize());
+        tree.appendChild(this->schemes.getUnchecked(i).serialize());
     }
     
     return tree;
@@ -92,8 +92,8 @@ void ColourSchemeManager::deserialize(const ValueTree &tree)
 {
     this->reset();
     
-    const XmlElement *root = tree.hasTagName(Serialization::UI::Colours::schemes) ?
-        &tree : tree.getChildByName(Serialization::UI::Colours::schemes);
+    const auto root = tree.hasType(Serialization::UI::Colours::schemes) ?
+        tree : tree.getChildWithName(Serialization::UI::Colours::schemes);
     
     if (root == nullptr) { return; }
     

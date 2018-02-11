@@ -69,12 +69,12 @@ namespace VCS
         {
             this->reset();
 
-            const XmlElement *mainSlot = tree.hasTagName(Serialization::VCS::vcsHistoryKey) ?
-                                         &tree : tree.getChildByName(Serialization::VCS::vcsHistoryKey);
+            const auto mainSlot = tree.hasType(Serialization::VCS::vcsHistoryKey) ?
+        tree : tree.getChildWithName(Serialization::VCS::vcsHistoryKey);
 
             if (mainSlot == nullptr) { return; }
 
-            const String key64Data(mainSlot->getStringAttribute("Data"));
+            const String key64Data(mainSlot.getProperty("Data"));
 
             this->key.fromBase64Encoding(key64Data);
         }

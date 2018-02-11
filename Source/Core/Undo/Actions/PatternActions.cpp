@@ -63,14 +63,14 @@ ValueTree PatternClipInsertAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::patternClipInsertAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    tree.addChild(this->clip.serialize());
+    tree.appendChild(this->clip.serialize());
     return tree;
 }
 
 void PatternClipInsertAction::deserialize(const ValueTree &tree)
 {
-    this->trackId = tree.getStringAttribute(Serialization::Undo::trackId);
-    this->clip.deserialize(*tree.getFirstChildElement());
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->clip.deserialize(tree.getChild(0));
 }
 
 void PatternClipInsertAction::reset()
@@ -120,14 +120,14 @@ ValueTree PatternClipRemoveAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::patternClipRemoveAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    tree.addChild(this->clip.serialize());
+    tree.appendChild(this->clip.serialize());
     return tree;
 }
 
 void PatternClipRemoveAction::deserialize(const ValueTree &tree)
 {
-    this->trackId = tree.getStringAttribute(Serialization::Undo::trackId);
-    this->clip.deserialize(*tree.getFirstChildElement());
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->clip.deserialize(tree.getChild(0));
 }
 
 void PatternClipRemoveAction::reset()
@@ -208,20 +208,20 @@ ValueTree PatternClipChangeAction::serialize() const
     ValueTree tree(Serialization::Undo::patternClipChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId);
 
-    auto instanceBeforeChild = new XmlElement(Serialization::Undo::instanceBefore);
-    instanceBeforeChild->prependChildElement(this->clipBefore.serialize());
-    tree.addChild(instanceBeforeChild);
+    ValueTree instanceBeforeChild(Serialization::Undo::instanceBefore);
+    instanceBeforeChild.appendChild(this->clipBefore.serialize());
+    tree.appendChild(instanceBeforeChild);
 
-    auto instanceAfterChild = new XmlElement(Serialization::Undo::instanceAfter);
-    instanceAfterChild->prependChildElement(this->clipAfter.serialize());
-    tree.addChild(instanceAfterChild);
+    ValueTree instanceAfterChild(Serialization::Undo::instanceAfter);
+    instanceAfterChild.appendChild(this->clipAfter.serialize());
+    tree.appendChild(instanceAfterChild);
 
     return tree;
 }
 
 void PatternClipChangeAction::deserialize(const ValueTree &tree)
 {
-    this->trackId = tree.getStringAttribute(Serialization::Undo::trackId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
 
     auto instanceBeforeChild = tree.getChildByName(Serialization::Undo::instanceBefore);
     auto instanceAfterChild = tree.getChildByName(Serialization::Undo::instanceAfter);

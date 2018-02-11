@@ -58,7 +58,7 @@ String Delta::getType() const
 
 ValueTree VCS::Delta::serialize() const
 {
-    auto const xml = new XmlElement(Serialization::VCS::delta);
+    ValueTree const xml(Serialization::VCS::delta);
 
     tree.setProperty(Serialization::VCS::deltaType, this->type);
     tree.setProperty(Serialization::VCS::deltaName, this->description.stringToTranslate);
@@ -73,18 +73,18 @@ void VCS::Delta::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root = tree.hasTagName(Serialization::VCS::delta) ?
-                             &tree : tree.getChildByName(Serialization::VCS::delta);
+    const auto root = tree.hasType(Serialization::VCS::delta) ?
+        tree : tree.getChildWithName(Serialization::VCS::delta);
 
     if (root == nullptr) { return; }
 
-    this->vcsUuid = root->getStringAttribute(Serialization::VCS::deltaId, this->vcsUuid.toString());
-    this->type = root->getStringAttribute(Serialization::VCS::deltaType, undefinedDelta);
+    this->vcsUuid = root.getProperty(Serialization::VCS::deltaId, this->vcsUuid.toString());
+    this->type = root.getProperty(Serialization::VCS::deltaType, undefinedDelta);
 
-    const String descriptionName = root->getStringAttribute(Serialization::VCS::deltaName, String::empty);
-    const String descriptionStringParam = root->getStringAttribute(Serialization::VCS::deltaStringParam, String::empty);
+    const String descriptionName = root.getProperty(Serialization::VCS::deltaName, String::empty);
+    const String descriptionStringParam = root.getProperty(Serialization::VCS::deltaStringParam, String::empty);
     const int64 descriptionIntParam =
-        root->getStringAttribute(Serialization::VCS::deltaIntParam,
+        root.getProperty(Serialization::VCS::deltaIntParam,
                                  String(DeltaDescription::defaultNumChanges)).getLargeIntValue();
     
     this->description = DeltaDescription(descriptionName, descriptionIntParam, descriptionStringParam);

@@ -154,12 +154,12 @@ ValueTree VCS::Pack::serialize() const
         {
             XmlElement *deltaData = this->createXmlData(header);
 
-            auto packItem = new XmlElement(Serialization::VCS::packItem);
-            packItem->setAttribute(Serialization::VCS::packItemRevId, header->itemId.toString());
-            packItem->setAttribute(Serialization::VCS::packItemDeltaId, header->deltaId.toString());
-            packItem->addChildElement(deltaData);
+            ValueTree packItem(Serialization::VCS::packItem);
+            packItem.setProperty(Serialization::VCS::packItemRevId, header->itemId.toString());
+            packItem.setProperty(Serialization::VCS::packItemDeltaId, header->deltaId.toString());
+            packItem.appendChild(deltaData);
 
-            tree.addChild(packItem);
+            tree.appendChild(packItem);
         }
     }
 
@@ -168,12 +168,12 @@ ValueTree VCS::Pack::serialize() const
     {
         XmlElement *deltaData = XmlDocument::parse(block->data.toString());
 
-        auto packItem = new XmlElement(Serialization::VCS::packItem);
-        packItem->setAttribute(Serialization::VCS::packItemRevId, block->itemId.toString());
-        packItem->setAttribute(Serialization::VCS::packItemDeltaId, block->deltaId.toString());
-        packItem->addChildElement(deltaData);
+        ValueTree packItem(Serialization::VCS::packItem);
+        packItem.setProperty(Serialization::VCS::packItemRevId, block->itemId.toString());
+        packItem.setProperty(Serialization::VCS::packItemDeltaId, block->deltaId.toString());
+        packItem.appendChild(deltaData);
 
-        tree.addChild(packItem);
+        tree.appendChild(packItem);
     }
 
     return tree;
@@ -185,8 +185,8 @@ void VCS::Pack::deserialize(const ValueTree &tree)
 
     this->reset();
 
-    const XmlElement *root = tree.hasTagName(Serialization::VCS::pack) ?
-                             &tree : tree.getChildByName(Serialization::VCS::pack);
+    const auto root = tree.hasType(Serialization::VCS::pack) ?
+        tree : tree.getChildWithName(Serialization::VCS::pack);
 
     if (root == nullptr) { return; }
 
@@ -194,8 +194,8 @@ void VCS::Pack::deserialize(const ValueTree &tree)
     {
         // грузим все в память
         auto block = new PackDataBlock();
-        block->itemId = e->getStringAttribute(Serialization::VCS::packItemRevId);
-        block->deltaId = e->getStringAttribute(Serialization::VCS::packItemDeltaId);
+        block->itemId = e.getProperty(Serialization::VCS::packItemRevId);
+        block->deltaId = e.getProperty(Serialization::VCS::packItemDeltaId);
 
         MemoryOutputStream ms(block->data, false);
 

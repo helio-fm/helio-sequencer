@@ -188,7 +188,7 @@ void Note::deserialize(const ValueTree &tree)
     const float xmlBeat = float(tree.getDoubleAttribute("beat"));
     const float xmlLength = float(tree.getDoubleAttribute("len"));
     const float xmlVelocity = float(tree.getIntAttribute("vel")) / VELOCITY_SAVE_ACCURACY;
-    const String& xmlId = tree.getStringAttribute("id");
+    const String& xmlId = tree.getProperty("id");
 
     this->key = xmlKey;
     this->beat = roundBeat(xmlBeat);

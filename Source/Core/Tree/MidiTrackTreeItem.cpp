@@ -112,7 +112,7 @@ XmlElement *MidiTrackTreeItem::serializeClipsDelta() const
     for (int i = 0; i < this->getPattern()->size(); ++i)
     {
         const auto clip = this->getPattern()->getUnchecked(i);
-        tree.addChild(clip->serialize());
+        tree.appendChild(clip->serialize());
     }
 
     return tree;

@@ -29,24 +29,24 @@ PluginSmartDescription::~PluginSmartDescription() noexcept
 
 XmlElement *PluginSmartDescription::createXml() const
 {
-    auto const e = new XmlElement(Serialization::Core::plugin);
-    e->setAttribute("name", name);
+    ValueTree const e(Serialization::Core::plugin);
+    e.setProperty("name", name);
 
     if (descriptiveName != name)
     {
-        e->setAttribute("descriptiveName", descriptiveName);
+        e.setProperty("descriptiveName", descriptiveName);
     }
 
-    e->setAttribute("format", pluginFormatName);
-    e->setAttribute("category", category);
-    e->setAttribute("manufacturer", manufacturerName);
-    e->setAttribute("version", version);
-    e->setAttribute("file", fileOrIdentifier);
-    e->setAttribute("uid", String::toHexString(uid));
-    e->setAttribute("isInstrument", isInstrument);
-    e->setAttribute("fileTime", String::toHexString(lastFileModTime.toMilliseconds()));
-    e->setAttribute("numInputs", numInputChannels);
-    e->setAttribute("numOutputs", numOutputChannels);
+    e.setProperty("format", pluginFormatName);
+    e.setProperty("category", category);
+    e.setProperty("manufacturer", manufacturerName);
+    e.setProperty("version", version);
+    e.setProperty("file", fileOrIdentifier);
+    e.setProperty("uid", String::toHexString(uid));
+    e.setProperty("isInstrument", isInstrument);
+    e.setProperty("fileTime", String::toHexString(lastFileModTime.toMilliseconds()));
+    e.setProperty("numInputs", numInputChannels);
+    e.setProperty("numOutputs", numOutputChannels);
 
     return e;
 }

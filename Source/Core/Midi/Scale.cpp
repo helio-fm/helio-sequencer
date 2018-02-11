@@ -231,14 +231,14 @@ ValueTree Scale::serialize() const
 void Scale::deserialize(const ValueTree &tree)
 {
     const XmlElement *root = (tree.getTagName() == Serialization::Core::scale) ?
-        &tree : tree.getChildByName(Serialization::Core::scale);
+        tree : tree.getChildWithName(Serialization::Core::scale);
 
     if (root == nullptr) { return; }
 
     this->reset();
 
-    this->name = root->getStringAttribute(Serialization::Core::scaleName, this->name);
-    const String intervals = root->getStringAttribute(Serialization::Core::scaleIntervals);
+    this->name = root.getProperty(Serialization::Core::scaleName, this->name);
+    const String intervals = root.getProperty(Serialization::Core::scaleIntervals);
     StringArray tokens;
     tokens.addTokens(intervals, true);
     int key = 0;

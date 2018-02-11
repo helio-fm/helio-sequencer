@@ -72,9 +72,9 @@ ValueTree MidiTrackRenameAction::serialize() const
 
 void MidiTrackRenameAction::deserialize(const ValueTree &tree)
 {
-    this->xPathBefore = tree.getStringAttribute(Serialization::Undo::xPathBefore);
-    this->xPathAfter = tree.getStringAttribute(Serialization::Undo::xPathAfter);
-    this->trackId = tree.getStringAttribute(Serialization::Undo::trackId);
+    this->xPathBefore = tree.getProperty(Serialization::Undo::xPathBefore);
+    this->xPathAfter = tree.getProperty(Serialization::Undo::xPathAfter);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
 }
 
 void MidiTrackRenameAction::reset()
@@ -138,9 +138,9 @@ ValueTree MidiTrackChangeColourAction::serialize() const
 
 void MidiTrackChangeColourAction::deserialize(const ValueTree &tree)
 {
-    this->colourBefore = Colour::fromString(tree.getStringAttribute(Serialization::Undo::colourBefore));
-    this->colourAfter = Colour::fromString(tree.getStringAttribute(Serialization::Undo::colourAfter));
-    this->trackId = tree.getStringAttribute(Serialization::Undo::trackId);
+    this->colourBefore = Colour::fromString(tree.getProperty(Serialization::Undo::colourBefore));
+    this->colourAfter = Colour::fromString(tree.getProperty(Serialization::Undo::colourAfter));
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
 }
 
 void MidiTrackChangeColourAction::reset()
@@ -200,9 +200,9 @@ ValueTree MidiTrackChangeInstrumentAction::serialize() const
 
 void MidiTrackChangeInstrumentAction::deserialize(const ValueTree &tree)
 {
-    this->instrumentIdBefore = tree.getStringAttribute(Serialization::Undo::instrumentIdBefore);
-    this->instrumentIdAfter = tree.getStringAttribute(Serialization::Undo::instrumentIdAfter);
-    this->trackId = tree.getStringAttribute(Serialization::Undo::trackId);
+    this->instrumentIdBefore = tree.getProperty(Serialization::Undo::instrumentIdBefore);
+    this->instrumentIdAfter = tree.getProperty(Serialization::Undo::instrumentIdAfter);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
 }
 
 void MidiTrackChangeInstrumentAction::reset()
@@ -272,9 +272,9 @@ ValueTree MidiTrackMuteAction::serialize() const
 
 void MidiTrackMuteAction::deserialize(const ValueTree &tree)
 {
-    this->muteStateBefore = stringToBool(tree.getStringAttribute(Serialization::Undo::muteStateBefore));
-    this->muteStateAfter = stringToBool(tree.getStringAttribute(Serialization::Undo::muteStateAfter));
-    this->trackId = tree.getStringAttribute(Serialization::Undo::trackId);
+    this->muteStateBefore = stringToBool(tree.getProperty(Serialization::Undo::muteStateBefore));
+    this->muteStateAfter = stringToBool(tree.getProperty(Serialization::Undo::muteStateAfter));
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
 }
 
 void MidiTrackMuteAction::reset()
