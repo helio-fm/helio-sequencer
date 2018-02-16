@@ -57,3 +57,4 @@ Claudio Stano - Italian
 Dario Silva - Brazilian Portuguese  
 Dawid Bugajski - Polish  
 Jacques Viviers - Afrikaans  
+Kotone Itaya - Japanese  
