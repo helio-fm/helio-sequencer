@@ -17,3 +17,43 @@
 
 #include "Common.h"
 #include "BinarySerializer.h"
+
+Result BinarySerializer::saveToFile(File file, const ValueTree &tree) const
+{
+    FileOutputStream os(file);
+    if (os.openedOk())
+    {
+        os.setPosition(0);
+        os.truncate();
+        tree.writeToStream(os);
+        return Result::ok();
+    }
+
+    return Result::fail("Failed to serialize");
+}
+
+Result BinarySerializer::loadFromFile(const File &file, ValueTree &tree) const
+{
+    return Result::fail("not implemented");
+}
+
+Result BinarySerializer::saveToString(String &string, const ValueTree &tree) const
+{
+    return Result::fail("not implemented");
+}
+
+Result BinarySerializer::loadFromString(const String &string, ValueTree &tree) const
+{
+    return Result::fail("not implemented");
+}
+
+bool BinarySerializer::supportsFileWithExtension(const String &extension) const
+{
+    return extension.endsWithIgnoreCase("helio");
+}
+
+bool BinarySerializer::supportsFileWithHeader(const String &header) const
+{
+    // TODO
+    return false;
+}

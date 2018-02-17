@@ -17,18 +17,19 @@
 
 #pragma once
 
-class FileUtils
+#include "Serializer.h"
+
+class LegacySerializer final : public Serializer
 {
 public:
 
-    static void fixCurrentWorkingDirectory();
+    Result saveToFile(File file, const ValueTree &tree) const override;
+    Result loadFromFile(const File &file, ValueTree &tree) const override;
 
-    static String getTemporaryFolder();
+    Result saveToString(String &string, const ValueTree &tree) const override;
+    Result loadFromString(const String &string, ValueTree &tree) const override;
 
-    static File getDocumentSlot(const String &fileName);
-
-    static File getConfigSlot(const String &fileName);
-
-    static File getTempSlot(const String &fileName);
+    bool supportsFileWithExtension(const String &extension) const override;
+    bool supportsFileWithHeader(const String &header) const override;
 
 };

@@ -362,13 +362,13 @@
         <GROUP id="{B690F2B3-8242-3091-4182-FD3492158B1A}" name="Serialization">
           <FILE id="E2KE99" name="Autosaver.cpp" compile="1" resource="0" file="../../Source/Core/Serialization/Autosaver.cpp"/>
           <FILE id="AqX33p" name="Autosaver.h" compile="0" resource="0" file="../../Source/Core/Serialization/Autosaver.h"/>
-          <FILE id="CyjlO4" name="DataEncoder.cpp" compile="1" resource="0" file="../../Source/Core/Serialization/DataEncoder.cpp"/>
-          <FILE id="G4hhAa" name="DataEncoder.h" compile="0" resource="0" file="../../Source/Core/Serialization/DataEncoder.h"/>
           <FILE id="rJb2Ee" name="Document.cpp" compile="1" resource="0" file="../../Source/Core/Serialization/Document.cpp"/>
           <FILE id="uWTVv3" name="Document.h" compile="0" resource="0" file="../../Source/Core/Serialization/Document.h"/>
+          <FILE id="crDTl7" name="DocumentHelpers.cpp" compile="1" resource="0"
+                file="../../Source/Core/Serialization/DocumentHelpers.cpp"/>
+          <FILE id="hRViZu" name="DocumentHelpers.h" compile="0" resource="0"
+                file="../../Source/Core/Serialization/DocumentHelpers.h"/>
           <FILE id="NeGEM2" name="DocumentOwner.h" compile="0" resource="0" file="../../Source/Core/Serialization/DocumentOwner.h"/>
-          <FILE id="crDTl7" name="FileUtils.cpp" compile="1" resource="0" file="../../Source/Core/Serialization/FileUtils.cpp"/>
-          <FILE id="hRViZu" name="FileUtils.h" compile="0" resource="0" file="../../Source/Core/Serialization/FileUtils.h"/>
           <FILE id="L4Vl4B" name="ResourceCache.h" compile="0" resource="0" file="../../Source/Core/Serialization/ResourceCache.h"/>
           <FILE id="nw4n10" name="Serializable.h" compile="0" resource="0" file="../../Source/Core/Serialization/Serializable.h"/>
           <FILE id="EGpzhA" name="SerializationKeys.h" compile="0" resource="0"
@@ -382,6 +382,10 @@
                 file="../../Source/Core/Serialization/JsonSerializer.cpp"/>
           <FILE id="AKOSjj" name="JsonSerializer.h" compile="0" resource="0"
                 file="../../Source/Core/Serialization/JsonSerializer.h"/>
+          <FILE id="G0JRnw" name="LegacySerializer.cpp" compile="1" resource="0"
+                file="../../Source/Core/Serialization/LegacySerializer.cpp"/>
+          <FILE id="KmOUpH" name="LegacySerializer.h" compile="0" resource="0"
+                file="../../Source/Core/Serialization/LegacySerializer.h"/>
           <FILE id="xyA5ne" name="XmlSerializer.cpp" compile="1" resource="0"
                 file="../../Source/Core/Serialization/XmlSerializer.cpp"/>
           <FILE id="cf5hpo" name="XmlSerializer.h" compile="0" resource="0" file="../../Source/Core/Serialization/XmlSerializer.h"/>

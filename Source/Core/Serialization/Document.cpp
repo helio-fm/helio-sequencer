@@ -18,23 +18,19 @@
 #include "Common.h"
 #include "Document.h"
 #include "DocumentOwner.h"
-#include "FileUtils.h"
+#include "DocumentHelpers.h"
 #include "App.h"
 
-Document::Document(DocumentOwner &parentWorkspace,
-                   DocumentOwner &documentOwner,
+Document::Document(DocumentOwner &documentOwner,
                    const String &defaultName,
                    const String &defaultExtension) :
-    workspace(parentWorkspace),
     owner(documentOwner),
     extension(defaultExtension),
     hasChanges(true)
 {
     const String safeName = File::createLegalFileName(defaultName + "." + defaultExtension);
 
-    this->workingFile =
-        FileUtils::getDocumentSlot(safeName);
-
+    this->workingFile = DocumentHelpers::getDocumentSlot(safeName);
     if (this->workingFile.existsAsFile())
     {
         this->workingFile = this->workingFile.getNonexistentSibling(true);
@@ -44,10 +40,8 @@ Document::Document(DocumentOwner &parentWorkspace,
     this->owner.addChangeListener(this);
 }
 
-Document::Document(DocumentOwner &parentWorkspace,
-                   DocumentOwner &documentOwner,
+Document::Document(DocumentOwner &documentOwner,
                    const File &existingFile) :
-    workspace(parentWorkspace),
     owner(documentOwner),
     extension(existingFile.getFileExtension().replace(",", ""))
 {
@@ -74,12 +68,6 @@ String Document::getFullPath() const
 {
     return this->workingFile.getFullPathName();
 }
-
-String Document::getRelativePath() const
-{
-    return this->workingFile.getRelativePathFrom(this->workspace.getDocument()->getFile().getParentDirectory());
-}
-
 
 void Document::renameFile(const String &newName)
 {
@@ -141,7 +129,7 @@ void Document::exportAs(const String &exportExtension,
 #if HELIO_DESKTOP
 
     FileChooser fc(TRANS("dialog::document::export"),
-        FileUtils::getDocumentSlot(File::createLegalFileName(defaultFilenameWithExtension)),
+        DocumentHelpers::getDocumentSlot(File::createLegalFileName(defaultFilenameWithExtension)),
         exportExtension, true);
 
     if (fc.browseForFileToSave(true))
@@ -163,14 +151,11 @@ void Document::exportAs(const String &exportExtension,
 // Load
 //===----------------------------------------------------------------------===//
 
-bool Document::load(const String &filename, const String &alternateRelativeFile)
+bool Document::load(const File &file, const File &relativeFile)
 {
-    File relativeFile =
-        File(this->workspace.getDocument()->getFile().
-             getParentDirectory().getChildFile(alternateRelativeFile));
-
-    if (!File(filename).existsAsFile())
+    if (!file.existsAsFile())
     {
+
         if (!relativeFile.existsAsFile())
         {
 
@@ -195,7 +180,7 @@ bool Document::load(const String &filename, const String &alternateRelativeFile)
     }
     else
     {
-        return this->internalLoad(File(filename));
+        return this->internalLoad(file);
     }
     
     return false;
@@ -217,7 +202,6 @@ void Document::import(const String &filePattern)
 #endif
 }
 
-
 bool Document::fileHasBeenModified() const
 {
     return this->fileModificationTime != this->workingFile.getLastModificationTime()
@@ -232,6 +216,10 @@ void Document::updateHash()
     this->fileHashCode = this->calculateFileHashCode(this->workingFile);
 }
 
+bool Document::hasUnsavedChanges() const noexcept
+{
+    return this->hasChanges;
+}
 
 //===----------------------------------------------------------------------===//
 // Protected

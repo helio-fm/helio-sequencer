@@ -23,17 +23,15 @@ class DocumentOwner : public virtual ChangeBroadcaster
 {
 public:
 
-    DocumentOwner(DocumentOwner &workspace, const String &name, const String &extension)
+    DocumentOwner(const String &name, const String &extension)
     {
-        this->document = new Document(workspace, *this, name, extension);
+        this->document = new Document(*this, name, extension);
     }
 
-    DocumentOwner(DocumentOwner &workspace, const File &existingFile)
+    DocumentOwner(const File &existingFile)
     {
-        this->document = new Document(workspace, *this, existingFile);
+        this->document = new Document(*this, existingFile);
     }
-
-    ~DocumentOwner() override {}
 
     Document *getDocument() const noexcept
     { return this->document; }
@@ -41,15 +39,10 @@ public:
 protected:
 
     virtual bool onDocumentLoad(File &file) = 0;
-
     virtual void onDocumentDidLoad(File &file) {}
-
     virtual bool onDocumentSave(File &file) = 0;
-
     virtual void onDocumentDidSave(File &file) {}
-
     virtual void onDocumentImport(File &file) = 0;
-
     virtual bool onDocumentExport(File &file) = 0;
 
     friend class Document;

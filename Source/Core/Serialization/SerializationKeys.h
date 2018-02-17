@@ -22,7 +22,6 @@ namespace Serialization
     namespace Core
     {
         static const Identifier midiRoll = "MidiRoll";
-        static const Identifier editor = "Editor";
         static const Identifier treeItem = "Node";
         static const Identifier treeItemType = "Type";
         static const Identifier treeItemName = "Name";
@@ -33,17 +32,8 @@ namespace Serialization
         static const Identifier workspace = "Workspace";
         static const Identifier root = "Root";
         static const Identifier settings = "Settings";
-
-        static const Identifier instrumentRoot = "Instruments";
-        static const Identifier instrument = "Instrument";
-        static const Identifier instrumentId = "Uuid";
-        static const Identifier instrumentName = "Name";
-        static const Identifier instrumentNode = "Node";
-        static const Identifier instrumentConnection = "Connection";
-        static const Identifier audioPlugin = "PluginSettings";
-
-        static const Identifier plugin = "Plugin";
-        static const Identifier pluginState = "State";
+        static const Identifier instrumentsList = "Instruments";
+        static const Identifier instrumentRoot = "Instrument";
 
         static const Identifier project = "Project";
         static const Identifier projectInfo = "ProjectInfo";
@@ -90,21 +80,11 @@ namespace Serialization
         static const Identifier scaleIntervals = "Intervals";
         static const Identifier lastUsedScale = "LastUsedScale";
 
-        static const Identifier valueTag = "Key";
-        static const Identifier nameAttribute = "Name";
-        static const Identifier valueAttribute = "Value";
-        static const Identifier machineID = "MachineID";
-        static const Identifier lastWorkspace = "LastWorkspace";
-        static const Identifier globalConfig = "GlobalConfig";
+        static const Identifier machineID = "DeviceId";
+        static const Identifier globalConfig = "Config";
         static const Identifier openGLState = "OpenGL";
         static const Identifier enabledState = "Enabled";
         static const Identifier disabledState = "Disabled";
-
-        static const Identifier pluginManager = "PluginManager";
-        static const Identifier audioSettings = "AudioSettings";
-        static const Identifier audioDevice = "AudioDevice";
-        static const Identifier audioCore = "AudioCore";
-        static const Identifier orchestra = "Orchestra";
 
         static const Identifier recentFiles = "RecentFiles";
         static const Identifier recentFileItem = "File";
@@ -114,6 +94,48 @@ namespace Serialization
         static const Identifier lastUsedLogin = "LastUsedLogin";
         static const Identifier firstLaunchSetupDone = "FirstLaunchSetupDone";
     } // namespace Core
+
+    namespace Audio
+    {
+        static const Identifier instrument = "Instrument";
+        static const Identifier instrumentId = "Uuid";
+        static const Identifier instrumentName = "Name";
+        static const Identifier instrumentNode = "Node";
+        static const Identifier instrumentConnection = "Connection";
+        static const Identifier audioPlugin = "PluginSettings";
+
+        static const Identifier plugin = "Plugin";
+        static const Identifier pluginState = "State";
+        static const Identifier pluginName = "Name";
+        static const Identifier pluginDescription = "DescriptiveName";
+        static const Identifier pluginFormat = "Format";
+        static const Identifier pluginCategory = "Category";
+        static const Identifier pluginManufacturer = "Manufacturer";
+        static const Identifier pluginVersion = "Version";
+        static const Identifier pluginFile = "File";
+        static const Identifier pluginFileModTime = "FileTime";
+        static const Identifier pluginUid = "Uid";
+        static const Identifier pluginIsInstrument = "IsInstrument";
+        static const Identifier pluginNumInputs = "NumInputs";
+        static const Identifier pluginNumOutputs = "NumOutputs";
+
+        static const Identifier midiInput = "MidiInput";
+        static const Identifier midiInputName = "Name";
+        static const Identifier defaultMidiOutput = "DefaultMidiOutput";
+
+        static const Identifier pluginManager = "PluginManager";
+        static const Identifier audioCore = "AudioCore";
+        static const Identifier orchestra = "Orchestra";
+
+        static const Identifier audioDevice = "AudioDevice";
+        static const Identifier audioDeviceType = "AudioDeviceType";
+        static const Identifier audioOutputDeviceName = "AudioOutputDeviceName";
+        static const Identifier audioInputDeviceName = "AudioInputDeviceName";
+        static const Identifier audioDeviceRate = "AudioDeviceRate";
+        static const Identifier audioDeviceBufferSize = "AudioDeviceBufferSize";
+        static const Identifier audioDeviceInputChannels = "AudioDeviceInputChannels";
+        static const Identifier audioDeviceOutputChannels = "AudioDeviceOutputChannels";
+    } // namespace Audio
 
     namespace UI
     {
@@ -248,36 +270,6 @@ namespace Serialization
             static const Identifier errors = "errors";
         } // namespace V1
     } // namespace Api
-
-    // TODO remove
-    namespace Network
-    {
-        static const String clientCheck = "check";
-        static const String deviceId = "helioClient";
-        
-        static const String action = "action";
-        static const String version = "version";
-        static const String platform = "platform";
-        static const String major = "major";
-        static const String minor = "minor";
-        static const String revision = "revision";
-        static const String bit = "bit";
-        
-        static const String updateStatus = "status";
-        static const String latestVersion = "latestVersion";
-        static const String updateUrl = "url";
-
-        static const String email = "email";
-        static const String passwordHash = "passwordHash";
-        static const String fetch = "fetch";
-        static const String push = "push";
-        static const String remove = "delete";
-        static const String file = "file";
-        static const String data = "data";
-        static const String key = "vcsIdHash";
-        static const String realKey = "vcsId";
-        static const String title = "title";
-    }  // namespace Network
     
     namespace Locales
     {

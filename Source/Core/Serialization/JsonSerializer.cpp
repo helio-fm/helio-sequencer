@@ -17,3 +17,40 @@
 
 #include "Common.h"
 #include "JsonSerializer.h"
+
+Result JsonSerializer::saveToFile(File file, const ValueTree &tree) const
+{
+    return Result::fail("not implemented");
+}
+
+Result JsonSerializer::loadFromFile(const File &file, ValueTree &tree) const
+{
+    return Result::fail("not implemented");
+}
+
+Result JsonSerializer::saveToString(String &string, const ValueTree &tree) const
+{
+    return Result::fail("not implemented");
+}
+
+Result JsonSerializer::loadFromString(const String &string, ValueTree &tree) const
+{
+    return Result::fail("not implemented");
+    //var json;
+    //Result result = JSON::parse(string, json);
+    //if (result.wasOk())
+    //{
+    //    // TODO
+    //    return result;
+    //}
+}
+
+bool JsonSerializer::supportsFileWithExtension(const String &extension) const
+{
+    return extension.endsWithIgnoreCase("json");
+}
+
+bool JsonSerializer::supportsFileWithHeader(const String &header) const
+{
+    return header.startsWithChar('[') || header.startsWithChar('{');
+}

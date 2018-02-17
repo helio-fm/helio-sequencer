@@ -17,3 +17,46 @@
 
 #include "Common.h"
 #include "XmlSerializer.h"
+
+Result XmlSerializer::saveToFile(File file, const ValueTree &tree) const
+{
+    const auto saved = file.replaceWithText(tree.toXmlString());
+    return saved ? Result::ok() : Result::fail({});
+}
+
+Result XmlSerializer::loadFromFile(const File &file, ValueTree &tree) const
+{
+    XmlDocument document(file);
+    ScopedPointer<XmlElement> xml(document.getDocumentElement());
+    if (xml != nullptr)
+    {
+        tree = ValueTree::fromXml(*xml);
+        return Result::ok();
+    }
+
+    return Result::fail("Failed to parse xml data");
+}
+
+Result XmlSerializer::saveToString(String &string, const ValueTree &tree) const
+{
+    string = tree.toXmlString();
+    return Result::ok();
+}
+
+Result XmlSerializer::loadFromString(const String &string, ValueTree &tree) const
+{
+    XmlDocument document(string);
+    ScopedPointer<XmlElement> xml(document.getDocumentElement());
+    tree = ValueTree::fromXml(*xml);
+    return Result::ok();
+}
+
+bool XmlSerializer::supportsFileWithExtension(const String &extension) const
+{
+    return extension.endsWithIgnoreCase("xml");
+}
+
+bool XmlSerializer::supportsFileWithHeader(const String &header) const
+{
+    return header.startsWithIgnoreCase("<?xml");
+}
