@@ -56,7 +56,8 @@ public:
     // Setup
     //===------------------------------------------------------------------===//
 
-    void autodetect();
+    void autodetectDeviceSetup();
+
     AudioDeviceManager &getDevice() noexcept;
     AudioPluginFormatManager &getFormatManager() noexcept;
     AudioMonitor *getMonitor() const noexcept;
@@ -117,12 +118,17 @@ private:
     void addInstrumentToDevice(Instrument *instrument);
     void removeInstrumentFromDevice(Instrument *instrument);
 
+    ValueTree serializeDeviceManager() const;
+    void deserializeDeviceManager(const ValueTree &tree);
+
     OwnedArray<Instrument> instruments;
     ScopedPointer<AudioMonitor> audioMonitor;
 
     AudioPluginFormatManager formatManager;
     AudioDeviceManager deviceManager;
-    
+
+    StringArray customMidiInputs;
+
     WeakReference<AudioCore>::Master masterReference;
     friend class WeakReference<AudioCore>;
 

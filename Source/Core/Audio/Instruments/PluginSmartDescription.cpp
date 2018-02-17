@@ -19,29 +19,32 @@
 #include "PluginSmartDescription.h"
 #include "SerializationKeys.h"
 
+using namespace Serialization;
+
 PluginSmartDescription::PluginSmartDescription() {}
-PluginSmartDescription::PluginSmartDescription(const PluginDescription *other) : PluginDescription(*other) {}
+PluginSmartDescription::PluginSmartDescription(const PluginDescription *other) :
+    PluginDescription(*other) {}
 
 ValueTree PluginSmartDescription::serialize() const
 {
-    ValueTree tree(Serialization::Core::plugin);
-    tree.setProperty("name", this->name);
+    ValueTree tree(Audio::plugin);
+    tree.setProperty(Audio::pluginName, this->name);
 
     if (this->descriptiveName != this->name)
     {
-        tree.setProperty("descriptiveName", this->descriptiveName);
+        tree.setProperty(Audio::pluginDescription, this->descriptiveName);
     }
 
-    tree.setProperty("format", this->pluginFormatName);
-    tree.setProperty("category", this->category);
-    tree.setProperty("manufacturer", this->manufacturerName);
-    tree.setProperty("version", this->version);
-    tree.setProperty("file", this->fileOrIdentifier);
-    tree.setProperty("uid", String::toHexString(this->uid));
-    tree.setProperty("isInstrument", this->isInstrument);
-    tree.setProperty("fileTime", String::toHexString(this->lastFileModTime.toMilliseconds()));
-    tree.setProperty("numInputs", this->numInputChannels);
-    tree.setProperty("numOutputs", this->numOutputChannels);
+    tree.setProperty(Audio::pluginFormat, this->pluginFormatName);
+    tree.setProperty(Audio::pluginCategory, this->category);
+    tree.setProperty(Audio::pluginManufacturer, this->manufacturerName);
+    tree.setProperty(Audio::pluginVersion, this->version);
+    tree.setProperty(Audio::pluginFile, this->fileOrIdentifier);
+    tree.setProperty(Audio::pluginFileModTime, String::toHexString(this->lastFileModTime.toMilliseconds()));
+    tree.setProperty(Audio::pluginUid, String::toHexString(this->uid));
+    tree.setProperty(Audio::pluginIsInstrument, this->isInstrument);
+    tree.setProperty(Audio::pluginNumInputs, this->numInputChannels);
+    tree.setProperty(Audio::pluginNumOutputs, this->numOutputChannels);
 
     return tree;
 }
@@ -50,20 +53,23 @@ void PluginSmartDescription::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    if (tree.hasType(Serialization::Core::plugin))
+    const auto root = tree.hasType(Audio::plugin) ?
+        tree : tree.getChildWithName(Audio::plugin);
+
+    if (root.isValid())
     {
-        this->name = tree.getProperty("name");
-        this->descriptiveName = tree.getProperty("descriptiveName", name);
-        this->pluginFormatName = tree.getProperty("format");
-        this->category = tree.getProperty("category");
-        this->manufacturerName = tree.getProperty("manufacturer");
-        this->version = tree.getProperty("version");
-        this->fileOrIdentifier = tree.getProperty("file");
-        this->uid = tree.getProperty("uid").toString().getHexValue32();
-        this->lastFileModTime = Time(tree.getProperty("fileTime").toString().getHexValue64());
-        this->isInstrument = tree.getProperty("isInstrument", false);
-        this->numInputChannels = tree.getProperty("numInputs");
-        this->numOutputChannels = tree.getProperty("numOutputs");
+        this->name = root.getProperty(Audio::pluginName);
+        this->descriptiveName = root.getProperty(Audio::pluginDescription, name);
+        this->pluginFormatName = root.getProperty(Audio::pluginFormat);
+        this->category = root.getProperty(Audio::pluginCategory);
+        this->manufacturerName = root.getProperty(Audio::pluginManufacturer);
+        this->version = root.getProperty(Audio::pluginVersion);
+        this->fileOrIdentifier = root.getProperty(Audio::pluginFile);
+        this->lastFileModTime = Time(root.getProperty(Audio::pluginFileModTime).toString().getHexValue64());
+        this->uid = root.getProperty(Audio::pluginUid).toString().getHexValue32();
+        this->isInstrument = root.getProperty(Audio::pluginIsInstrument, false);
+        this->numInputChannels = root.getProperty(Audio::pluginNumInputs);
+        this->numOutputChannels = root.getProperty(Audio::pluginNumOutputs);
 
         this->verify();
     }

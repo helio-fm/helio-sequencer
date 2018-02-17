@@ -22,7 +22,6 @@
 #include "PluginWindow.h"
 #include "OrchestraPit.h"
 #include "Instrument.h"
-#include "DataEncoder.h"
 #include "SerializationKeys.h"
 #include "AudioMonitor.h"
 #include "AudiobusOutput.h"
@@ -43,11 +42,6 @@ AudioCore::AudioCore()
 
     AudioCore::initAudioFormats(this->formatManager);
 
-    // requesting 0 inputs and only 2 outputs because of fucking alsa
-    this->deviceManager.initialise(0, 2, nullptr, true);
-
-    this->autodetect();
-
 #if HELIO_AUDIOBUS_SUPPORT
     AudiobusOutput::init();
 #endif
@@ -63,7 +57,7 @@ AudioCore::~AudioCore()
     this->audioMonitor = nullptr;
 
     //ScopedPointer<XmlElement> test(this->metaInstrument->serialize());
-    //DataEncoder::saveObfuscated(File("111.txt"), test);
+    //DocumentReader::saveObfuscated(File("111.txt"), test);
 
     this->deviceManager.closeAudioDevice();
     this->masterReference.clear();
@@ -195,17 +189,20 @@ void AudioCore::initDefaultInstrument()
 // Setup
 //===----------------------------------------------------------------------===//
 
-void AudioCore::autodetect()
+void AudioCore::autodetectDeviceSetup()
 {
-    Logger::writeToLog("AudioCore::autodetect");
+    Logger::writeToLog("AudioCore::autodetectDeviceSetup");
+    
+    // requesting 0 inputs and only 2 outputs because of freaking alsa
+    this->deviceManager.initialise(0, 2, nullptr, true);
 
-    AudioIODeviceType *device_type =
+    const auto deviceType =
         this->deviceManager.getCurrentDeviceTypeObject();
 
-    AudioIODevice *device =
+    const auto device =
         this->deviceManager.getCurrentAudioDevice();
 
-    if (!device_type || !device)
+    if (!deviceType || !device)
     {
         const OwnedArray<AudioIODeviceType> &types =
             this->deviceManager.getAvailableDeviceTypes();
@@ -222,6 +219,154 @@ void AudioCore::autodetect()
     }
 }
 
+ValueTree AudioCore::serializeDeviceManager() const
+{
+    using namespace Serialization;
+
+    ValueTree tree(Audio::audioDevice);
+    AudioDeviceManager::AudioDeviceSetup currentSetup;
+    this->deviceManager.getAudioDeviceSetup(currentSetup);
+
+    tree.setProperty(Audio::audioDeviceType, this->deviceManager.getCurrentAudioDeviceType());
+    tree.setProperty(Audio::audioOutputDeviceName, currentSetup.outputDeviceName);
+    tree.setProperty(Audio::audioInputDeviceName, currentSetup.inputDeviceName);
+
+    const auto currentAudioDevice = this->deviceManager.getCurrentAudioDevice();
+    if (currentAudioDevice != nullptr)
+    {
+        tree.setProperty(Audio::audioDeviceRate,
+            currentAudioDevice->getCurrentSampleRate());
+
+        if (currentAudioDevice->getDefaultBufferSize() !=
+            currentAudioDevice->getCurrentBufferSizeSamples())
+        {
+            tree.setProperty(Audio::audioDeviceBufferSize,
+                currentAudioDevice->getCurrentBufferSizeSamples());
+        }
+
+        if (!currentSetup.useDefaultInputChannels)
+        {
+            tree.setProperty(Audio::audioDeviceInputChannels,
+                currentSetup.inputChannels.toString(2));
+        }
+
+        if (!currentSetup.useDefaultOutputChannels)
+        {
+            tree.setProperty(Audio::audioDeviceOutputChannels,
+                currentSetup.outputChannels.toString(2));
+        }
+    }
+
+    const StringArray availableMidiDevices(MidiInput::getDevices());
+    for (const auto &midiInputName : availableMidiDevices)
+    {
+        if (this->deviceManager.isMidiInputEnabled(midiInputName))
+        {
+            ValueTree midiInputNode(Audio::midiInput);
+            midiInputNode.setProperty(Audio::midiInputName, midiInputName);
+            tree.appendChild(midiInputNode);
+        }
+    }
+
+    // Add any midi devices that have been enabled before, but which aren't currently
+    // open because the device has been disconnected:
+    if (!this->customMidiInputs.isEmpty())
+    {
+        for (const auto &midiInputName : this->customMidiInputs)
+        {
+            if (!availableMidiDevices.contains(midiInputName, true))
+            {
+                ValueTree midiInputNode(Audio::midiInput);
+                midiInputNode.setProperty(Audio::midiInputName, midiInputName);
+                tree.appendChild(midiInputNode);
+            }
+        }
+    }
+
+    const String defaultMidiOutput(this->deviceManager.getDefaultMidiOutputName());
+    if (defaultMidiOutput.isNotEmpty())
+    {
+        tree.setProperty(Audio::defaultMidiOutput, defaultMidiOutput);
+    }
+
+    return tree;
+}
+
+void AudioCore::deserializeDeviceManager(const ValueTree &tree)
+{
+    using namespace Serialization;
+
+    const auto root = tree.hasType(Audio::audioDevice) ?
+        tree : tree.getChildWithName(Audio::audioDevice);
+
+    if (!root.isValid())
+    {
+        this->autodetectDeviceSetup();
+        return;
+    }
+
+    // A hack: this will call scanDevicesIfNeeded():
+    const auto &availableDeviceTypes = this->deviceManager.getAvailableDeviceTypes();
+
+    String error;
+    AudioDeviceManager::AudioDeviceSetup setup;
+    setup.inputDeviceName = tree.getProperty(Audio::audioInputDeviceName);
+    setup.outputDeviceName = tree.getProperty(Audio::audioOutputDeviceName);
+
+    String currentDeviceType = tree.getProperty(Audio::audioDeviceType);
+    AudioIODeviceType *foundType = nullptr;
+
+    for (const auto availableType : availableDeviceTypes)
+    {
+        if (availableType->getTypeName() == currentDeviceType)
+        {
+            foundType = availableType;
+        }
+    }
+
+    if (foundType == nullptr && !availableDeviceTypes.isEmpty())
+    {
+        // TODO search for device types with the same i/o device names?
+        currentDeviceType = availableDeviceTypes.getFirst()->getTypeName();
+    }
+
+    this->deviceManager.setCurrentAudioDeviceType(currentDeviceType, true);
+
+    setup.bufferSize = tree.getProperty(Audio::audioDeviceBufferSize, setup.bufferSize);
+    setup.sampleRate = tree.getProperty(Audio::audioDeviceRate, setup.sampleRate);
+
+    const var defaultTwoChannels("11");
+    const String inputChannels = tree.getProperty(Audio::audioDeviceInputChannels, defaultTwoChannels);
+    const String outputChannels = tree.getProperty(Audio::audioDeviceOutputChannels, defaultTwoChannels);
+    setup.inputChannels.parseString(inputChannels, 2);
+    setup.outputChannels.parseString(outputChannels, 2);
+
+    setup.useDefaultInputChannels = !tree.hasProperty(Audio::audioDeviceInputChannels);
+    setup.useDefaultOutputChannels = !tree.hasProperty(Audio::audioDeviceOutputChannels);
+
+    error = this->deviceManager.setAudioDeviceSetup(setup, true);
+
+    this->customMidiInputs.clearQuick();
+    forEachValueTreeChildWithType(tree, c, Audio::midiInput)
+    {
+        this->customMidiInputs.add(c.getProperty(Audio::midiInputName));
+    }
+
+    const StringArray allMidiIns(MidiInput::getDevices());
+    for (const auto &midiIn : allMidiIns)
+    {
+        this->deviceManager.setMidiInputEnabled(midiIn,
+            this->customMidiInputs.contains(midiIn));
+    }
+
+    if (error.isNotEmpty())
+    {
+        error = this->deviceManager.initialise(0, 2, nullptr, false);
+    }
+
+    this->deviceManager.setDefaultMidiOutput(tree.getProperty(Audio::defaultMidiOutput));
+}
+
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
@@ -229,58 +374,48 @@ void AudioCore::autodetect()
 ValueTree AudioCore::serialize() const
 {
     Logger::writeToLog("AudioCore::serialize");
+    using namespace Serialization;
 
-    // сериализовать настройки
-    // сериализовать все инструменты вместе с их графами
-    // мета-граф не трогаем
+    // serializes all settings and instruments (with their graphs)
+    // deviceManager's graph is not serialized but managed dynamically
 
-    ValueTree tree(Serialization::Core::audioCore);
-
+    ValueTree tree(Audio::audioCore);
+    ValueTree orchestra(Audio::orchestra);
+    for (int i = 0; i < this->instruments.size(); ++i)
     {
-        ValueTree orchestra(Serialization::Core::orchestra);
-
-        for (int i = 0; i < this->instruments.size(); ++i)
-        {
-            Instrument *instrument = this->instruments.getUnchecked(i);
-            orchestra.appendChild(instrument->serialize());
-        }
-
-        tree.appendChild(orchestra);
+        Instrument *instrument = this->instruments.getUnchecked(i);
+        orchestra.appendChild(instrument->serialize());
     }
 
-    {
-        ValueTree settings(Serialization::Core::audioSettings);
-        ScopedPointer<XmlElement> deviceStateXml(this->deviceManager.createStateXml());
-        // FIXME do not rely upon JUCE's xml serialization here:
-        const String deviceStateString = deviceStateXml->createDocument();
-        settings.setProperty(Serialization::Core::audioDevice, deviceStateString);
-        tree.appendChild(settings);
-    }
+    tree.appendChild(orchestra);
 
+    const auto deviceState(this->serializeDeviceManager());
+    tree.appendChild(deviceState);
     return tree;
 }
 
 void AudioCore::deserialize(const ValueTree &tree)
 {
     Logger::writeToLog("AudioCore::deserialize");
+    using namespace Serialization;
 
-    // при десериализации пересоздаем мета-граф заново
-
+    // re-creates deviceManager's graph each time on de-serialization
     this->reset();
 
-    const auto root = tree.hasType(Serialization::Core::audioCore) ?
-    tree : tree.getChildWithName(Serialization::Core::audioCore);
+    const auto root = tree.hasType(Audio::audioCore) ?
+        tree : tree.getChildWithName(Audio::audioCore);
 
-    if (!root.isValid()) { return; }
+    if (!root.isValid())
+    {
+        this->autodetectDeviceSetup();
+        return;
+    }
 
-
-    const auto orchestra = root.getChildWithName(Serialization::Core::orchestra);
+    const auto orchestra = root.getChildWithName(Audio::orchestra);
     if (orchestra.isValid())
     {
         for (const auto &instrumentNode : orchestra)
         {
-            //Logger::writeToLog("--- instrument ---");
-            //Logger::writeToLog(instrumentNode->createDocument(""));
             Instrument *instrument = new Instrument(this->formatManager, "");
             this->addInstrumentToDevice(instrument);
             instrument->deserialize(instrumentNode);
@@ -288,21 +423,7 @@ void AudioCore::deserialize(const ValueTree &tree)
         }
     }
 
-
-    const auto audioSettings = root.getChildWithName(Serialization::Core::audioSettings);
-    const String deviceState = audioSettings.getProperty(Serialization::Core::audioDevice);
-    if (audioSettings.isValid())
-    {
-        Logger::writeToLog("--- setup ---");
-        Logger::writeToLog(deviceState);
-        Logger::writeToLog("--- setup ---");
-        AudioDeviceManager &device = this->getDevice();
-        const ScopedPointer<XmlElement> deviceStateXml(XmlDocument::parse(deviceState));
-        device.initialise(0, 2, audioSettings.getChild(0), true);
-        return;
-    }
-
-    this->autodetect();
+    this->deserializeDeviceManager(tree);
 }
 
 void AudioCore::reset()
