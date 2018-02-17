@@ -40,7 +40,7 @@ class CommandItemComponent;
 class InstrumentsPage  : public Component,
                          public ListBoxModel,
                          public ChangeListener,
-                         public ButtonListener
+                         public Button::Listener
 {
 public:
 

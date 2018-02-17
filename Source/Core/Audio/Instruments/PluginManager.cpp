@@ -372,7 +372,7 @@ void PluginManager::deserialize(const XmlElement &xml)
                                  &xml : xml.getChildByName(Serialization::Core::pluginManager);
 
     if (mainSlot == nullptr) { return; }
-
+    
     forEachXmlChildElement(*mainSlot, child)
     {
         PluginDescription pluginDescription;

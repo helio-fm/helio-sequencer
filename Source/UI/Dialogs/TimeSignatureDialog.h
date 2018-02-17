@@ -30,7 +30,7 @@ class TimeSignaturesSequence;
 #include "../Themes/SeparatorVertical.h"
 
 class TimeSignatureDialog  : public FadingDialog,
-                             public TextEditorListener,
+                             public TextEditor::Listener,
                              private Timer,
                              public Button::Listener
 {

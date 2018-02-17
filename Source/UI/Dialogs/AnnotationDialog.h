@@ -32,7 +32,7 @@ class AnnotationsSequence;
 #include "../Themes/SeparatorVertical.h"
 
 class AnnotationDialog  : public FadingDialog,
-                          public TextEditorListener,
+                          public TextEditor::Listener,
                           public ColourButtonListener,
                           private Timer,
                           public Button::Listener

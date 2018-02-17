@@ -25,7 +25,7 @@
 #include "HistoryComponent.h"
 
 class VersionControlEditorPhoneViewportContent  : public VersionControlEditor,
-                                                  public ButtonListener
+                                                  public Button::Listener
 {
 public:
 
