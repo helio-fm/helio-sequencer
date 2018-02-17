@@ -18,11 +18,11 @@
 #include "Common.h"
 #include "Config.h"
 #include "App.h"
-#include "DataEncoder.h"
-#include "FileUtils.h"
+#include "DocumentHelpers.h"
+#include "XmlSerializer.h"
 #include "SerializationKeys.h"
 
-String Config::getMachineId()
+String Config::getDeviceId()
 {
     const String systemStats =
         SystemStats::getLogonName() +
@@ -33,76 +33,45 @@ String Config::getMachineId()
     return MD5::fromUTF32(systemStats).toHexString();
 }
 
-bool Config::hasNewMachineId()
+void Config::set(const Identifier &key, const var &value)
 {
-    return App::Helio()->getConfig()->machineIdChanged();
+    App::Config().setProperty(key, value);
 }
 
-void Config::set(const Identifier &keyName, const var &value)
+String Config::get(const Identifier &key, const String &defaultReturnValue /*= String::empty*/)
 {
-    App::Helio()->getConfig()->setValue(keyName.toString(), value);
+    return App::Config().getProperty(key, defaultReturnValue);
 }
 
-void Config::set(const Identifier &keyName, const XmlElement *xml)
+bool Config::contains(const Identifier &key)
 {
-    App::Helio()->getConfig()->setValue(keyName.toString(), xml);
+    return App::Config().containsPropertyOrChild(key);
 }
 
-String Config::get(StringRef keyName, const String &defaultReturnValue /*= String::empty*/)
+void Config::save(const Identifier &key, const Serializable *serializer)
 {
-    return App::Helio()->getConfig()->getValue(keyName, defaultReturnValue);
+    App::Config().saveConfigFor(key, serializer);
 }
 
-bool Config::contains(StringRef keyName)
+void Config::load(const Identifier &key, Serializable *serializer)
 {
-    return App::Helio()->getConfig()->containsKey(keyName);
+    App::Config().loadConfigFor(key, serializer);
 }
 
-XmlElement *Config::getXml(StringRef keyName)
-{
-    return App::Helio()->getConfig()->getXmlValue(keyName);
-}
-
-void Config::save(const String &key, const Serializable *serializer)
-{
-    App::Helio()->getConfig()->saveConfig(key, serializer);
-}
-
-void Config::load(const String &key, Serializable *serializer)
-{
-    App::Helio()->getConfig()->loadConfig(key, serializer);
-}
-
-Config::Config(const int millisecondsBeforeSaving) :
+Config::Config(int timeoutToSaveMs) :
     fileLock("Config Lock"),
-    needsWriting(false),
-    saveTimeout(millisecondsBeforeSaving)
+    needsSaving(false),
+    saveTimeout(timeoutToSaveMs)
 {
-    // Deal with legacy settings file
-    auto legacySettingsFile(FileUtils::getConfigSlot("helio.settings"));
-    auto newSettingsFile(FileUtils::getConfigSlot("settings.helio"));
-
-    if (legacySettingsFile.existsAsFile())
-    {
-        legacySettingsFile.moveFileTo(newSettingsFile);
-    }
-
-    this->propertiesFile = newSettingsFile;
+    this->config = ValueTree(Serialization::Core::globalConfig);
+    this->propertiesFile = DocumentHelpers::getConfigSlot("settings.helio");
     this->reload();
 }
 
 Config::~Config()
 {
-    this->setValue(Serialization::Core::machineID, this->getMachineId());
+    this->setProperty(Serialization::Core::machineID, this->getDeviceId());
     this->saveIfNeeded();
-}
-
-bool Config::machineIdChanged()
-{
-    const String storedID = this->getValue(Serialization::Core::machineID);
-    const String currentID = this->getMachineId();
-    Logger::writeToLog("Config::machineIdChanged " + storedID + " : " + currentID);
-    return (storedID != currentID);
 }
 
 bool Config::saveIfNeeded()
@@ -114,37 +83,16 @@ bool Config::saveIfNeeded()
 
     Logger::writeToLog("Config::saveIfNeeded - " + this->propertiesFile.getFullPathName());
 
-    XmlElement doc(Serialization::Core::globalConfig);
-
-    for (int i = 0; i < getAllProperties().size(); ++i)
-    {
-        XmlElement *const e = doc.createNewChildElement(Serialization::Core::valueTag);
-        e.setProperty(Serialization::Core::nameAttribute, getAllProperties().getAllKeys() [i]);
-
-        // if the value seems to contain xml, store it as such..
-        if (XmlElement *const childElement = XmlDocument::parse(getAllProperties().getAllValues()[i]))
-        {
-            e.appendChild(childElement);
-        }
-        else
-        {
-            e.setProperty(Serialization::Core::valueAttribute,
-                            getAllProperties().getAllValues() [i]);
-        }
-    }
-
-
     InterProcessLock::ScopedLockType fLock(this->fileLock);
-
     if (!fLock.isLocked())
     {
         Logger::writeToLog("Config !fLock.isLocked()");
         return false;
     }
 
-    if (DataEncoder::saveObfuscated(this->propertiesFile, &doc))
+    if (DocumentHelpers::save<XmlSerializer>(this->propertiesFile, this->config))
     {
-        needsWriting = false;
+        needsSaving = false;
         return true;
     }
 
@@ -162,32 +110,16 @@ bool Config::reload()
 
     InterProcessLock::ScopedLockType fLock(this->fileLock);
 
-    ScopedPointer<XmlElement> doc(DataEncoder::loadObfuscated(this->propertiesFile));
+    const ValueTree doc(DocumentHelpers::load<XmlSerializer>(this->propertiesFile));
 
-    if (doc != nullptr)
+    if (doc.isValid() && doc.hasType(Serialization::Core::globalConfig))
     {
-        if (doc->hasTagName(Serialization::Core::globalConfig))
-        {
-            forEachValueTreeChildWithType(doc, e, Serialization::Core::valueTag)
-            {
-                const String name(e.getProperty(Serialization::Core::nameAttribute));
-
-                if (name.isNotEmpty())
-                {
-                    getAllProperties().set(name,
-                                           e.getChild(0) != nullptr
-                                           ? e.getChild(0)->createDocument(String::empty, true)
-                                           : e.getProperty(Serialization::Core::valueAttribute));
-                }
-            }
-
-            return true;
-        }
+        this->config = doc;
+        return true;
     }
 
     return false;
 }
-
 
 void Config::timerCallback()
 {
@@ -195,26 +127,42 @@ void Config::timerCallback()
     this->stopTimer();
 }
 
-void Config::saveConfig(const String &key, const Serializable *serializer)
+void Config::saveConfigFor(const Identifier &key, const Serializable *serializable)
 {
-    const auto value(serializer->serialize());
-    // TODO serialize somehow
-    this->setValue(key, serialized);
+    const ValueTree child(this->config.getChildWithName(key));
+    this->config.removeChild(child, nullptr);
+    this->config.appendChild(serializable->serialize());
+    this->onConfigChanged();
 }
 
-void Config::loadConfig(const String &key, Serializable *serializer)
+void Config::loadConfigFor(const Identifier &key, Serializable *serializable)
 {
-    ScopedPointer<XmlElement> xml(this->getXmlValue(key));
-
-    if (xml)
+    const auto tree(this->config.getChildWithName(key));
+    if (tree.isValid())
     {
-        serializer->deserialize(*xml);
+        serializable->deserialize(tree);
     }
 }
 
-void Config::propertyChanged()
+void Config::setProperty(const Identifier &key, const var &value)
 {
-    this->needsWriting = true;
+    this->config.setProperty(key, value, nullptr);
+    this->onConfigChanged();
+}
+
+String Config::getProperty(const Identifier &key, const String &fallback) const noexcept
+{
+    return this->config.getProperty(key, fallback);
+}
+
+bool Config::containsPropertyOrChild(const Identifier &key) const noexcept
+{
+    return this->config.hasProperty(key) || this->config.getChildWithName(key).isValid();
+}
+
+void Config::onConfigChanged()
+{
+    this->needsSaving = true;
 
     if (this->saveTimeout > 0)
     {

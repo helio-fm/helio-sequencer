@@ -19,8 +19,7 @@
 #include "Workspace.h"
 #include "Config.h"
 #include "SerializationKeys.h"
-#include "FileUtils.h"
-#include "DataEncoder.h"
+#include "DocumentHelpers.h"
 #include "AudioCore.h"
 #include "RootTreeItem.h"
 #include "PluginManager.h"
@@ -29,9 +28,7 @@
 #include "ProjectTreeItem.h"
 #include "RootTreeItem.h"
 
-Workspace::Workspace() :
-    DocumentOwner(*this, "Workspace", "helio"),
-    wasInitialized(false)
+Workspace::Workspace() : wasInitialized(false)
 {
     this->recentFilesList = new RecentFilesList();
     this->recentFilesList->addChangeListener(this);
@@ -67,12 +64,8 @@ void Workspace::init()
         
         if (! this->autoload())
         {
-            // если что-то пошло не так, создаем воркспейс по дефолту
             Logger::writeToLog("workspace autoload failed, creating an empty one");
-            this->createEmptyWorkspace();
-            // и тут же сохраняем
-            this->wasInitialized = true;
-            this->autosave();
+            this->failedDeserializationFallback();
         }
         else
         {
@@ -163,11 +156,11 @@ bool Workspace::onClickedLoadRecentFile(RecentFileDescription::Ptr fileDescripti
         
         if (project == nullptr)
         {
-            // вот здесь файла может не быть тупо по той причине, что путь записан как абсолютный,
-            // а в айос он будет постоянно меняться
-            // поэтому, если файла нет, надо проверить в текущей папке
+            // file may be missed here, because we store absolute path,
+            // but some platforms (like iOS) may change documents folder path on every app run
+            // so we need th check in a document folder again:
             
-            File localFile(this->getDocument()->getFile().getParentDirectory().getChildFile(absFile.getFileName()));
+            File localFile(DocumentHelpers::getDocumentSlot(absFile.getFileName()));
             project = this->treeRoot->openProject(localFile);
             return (project != nullptr);
         }
@@ -192,7 +185,7 @@ void Workspace::onClickedUnloadRecentFile(RecentFileDescription::Ptr fileDescrip
 
 void Workspace::changeListenerCallback(ChangeBroadcaster *source)
 {
-    DocumentOwner::sendChangeMessage();
+    Config::save(Serialization::Core::workspace, this);
 }
 
 //===----------------------------------------------------------------------===//
@@ -205,7 +198,7 @@ void Workspace::createEmptyProject()
 #if HELIO_DESKTOP
     const String fileName = newProjectName + ".hp";
     FileChooser fc(TRANS("dialog::workspace::createproject::caption"),
-                   FileUtils::getDocumentSlot(fileName), "*.hp", true);
+                   DocumentHelpers::getDocumentSlot(fileName), "*.hp", true);
     
     if (fc.browseForFileToSave(true))
     {
@@ -303,41 +296,25 @@ void Workspace::autosave()
         return;
     }
     
-    this->getDocument()->save();
-    Config::set(Serialization::Core::lastWorkspace, this->getDocument()->getFullPath());
-    //Config::set(Serialization::Core::lastPage, ...);
-    //Config::set(Serialization::Core::treeSize, ...);
-    
-    Logger::writeToLog("autosaved at " + this->getDocument()->getFullPath());
+    Config::save(Serialization::Core::workspace, this);
 }
 
 bool Workspace::autoload()
 {
-    const String lastSavedName = Config::get(Serialization::Core::lastWorkspace);
-    File lastSavedFile(lastSavedName);
-    
-    // пытаемся найти файл по относительному пути
-    if (! lastSavedFile.existsAsFile())
+    if (Config::contains(Serialization::Core::workspace))
     {
-        lastSavedFile =
-        FileUtils::getDocumentSlot(lastSavedFile.getFileName());
+        Config::load(Serialization::Core::workspace, this);
+        return true;
     }
-    
-    Logger::writeToLog("Workspace::autoload - " + lastSavedFile.getFullPathName());
-    
-    if (lastSavedFile.existsAsFile())
-    {
-        return this->getDocument()->load(lastSavedFile.getFullPathName());
-    }
-    
+
     return false;
 }
 
-void Workspace::createEmptyWorkspace()
+void Workspace::failedDeserializationFallback()
 {
-    // для того, чтоб не делать это несколько раз, делаем это здесь.
+    this->getAudioCore().autodetectDeviceSetup();
     this->getAudioCore().initDefaultInstrument();
-    
+
     TreeItem *settings = new SettingsTreeItem();
     this->treeRoot->addChildTreeItem(settings);
     
@@ -351,54 +328,30 @@ void Workspace::createEmptyWorkspace()
     project->setSelected(true, false);
     project->showPage();
     
-    //instruments->setSelected(true, false);
-    //instruments->showPage();
-    
-    this->sendChangeMessage(); // to be saved ok
+    this->wasInitialized = true;
+    this->autosave();
 }
 
-//===----------------------------------------------------------------------===//
-// DocumentOwner
-//===----------------------------------------------------------------------===//
-
-bool Workspace::onDocumentLoad(File &file)
+void Workspace::importProject(const String &filePattern)
 {
-    const ValueTree tree(DataEncoder::loadObfuscated(file));
-    
-    if (tree.isValid())
+    FileChooser fc(TRANS("dialog::document::import"),
+        File::getCurrentWorkingDirectory(), filePattern, true);
+
+    if (fc.browseForFileToOpen())
     {
-        this->deserialize(tree);
-        return true;
+        const File file(fc.getResult());
+        const String &extension = file.getFileExtension();
+        if (extension == ".hp")
+        {
+            this->treeRoot->openProject(file);
+            this->autosave();
+        }
+        else if (extension == ".mid" || extension == ".midi" || extension == ".smf")
+        {
+            this->treeRoot->importMidi(file);
+            this->autosave();
+        }
     }
-    
-    // если что-то пошло не так, создаем воркспейс по дефолту
-    this->createEmptyWorkspace();
-    return false;
-}
-
-bool Workspace::onDocumentSave(File &file)
-{
-    const auto document(this->serialize());
-    return DataEncoder::saveObfuscated(file, document);
-}
-
-void Workspace::onDocumentImport(File &file)
-{
-    const String &extension = file.getFileExtension();
-    
-    if (extension == ".mid" || extension == ".midi" || extension == ".smf")
-    {
-        this->treeRoot->importMidi(file);
-    }
-    else if (extension == ".hp")
-    {
-        this->treeRoot->openProject(file);
-    }
-}
-
-bool Workspace::onDocumentExport(File &file)
-{
-    return false;
 }
 
 //===----------------------------------------------------------------------===//
@@ -455,7 +408,7 @@ void Workspace::activateSubItemWithId(const String &id)
 ValueTree Workspace::serialize() const
 {
     ValueTree tree(Serialization::Core::workspace);
-    
+
     // TODO serialize window size and position
     
     tree.appendChild(this->audioCore->serialize());
@@ -478,10 +431,11 @@ void Workspace::deserialize(const ValueTree &tree)
     auto root = tree.hasType(Serialization::Core::workspace) ?
         tree : tree.getChildWithName(Serialization::Core::workspace);
     
-    if (root.isValid())
+    if (!root.isValid())
     {
-        // Since we are supposed to be the root element, let's attempt to deserialize anyway
-        root = tree.getChild(0);
+        // Always fallback to default workspace
+        this->failedDeserializationFallback();
+        return;
     }
     
     this->recentFilesList->deserialize(root);

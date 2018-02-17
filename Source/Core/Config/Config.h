@@ -19,37 +19,33 @@
 
 class Serializable;
 
-class Config :
-    protected PropertySet,
-    private Timer
+class Config final : private Timer
 {
 public:
 
-    explicit Config(const int millisecondsBeforeSaving = 3000);
+    explicit Config(int timeoutToSaveMs = 3000);
     ~Config() override;
 
-    static String getMachineId();
-    static bool hasNewMachineId();
+    static String getDeviceId();
 
-    static void set(const Identifier &keyName, const var &value);
-    static void set(const Identifier &keyName, const XmlElement *xml);
+    static void set(const Identifier &key, const var &value);
+    static String get(const Identifier &key, const String &fallback = {});
+    static bool contains(const Identifier &key);
 
-    static String get(StringRef keyName, const String &defaultReturnValue = String::empty);
-    static bool contains(StringRef keyName);
-    static XmlElement *getXml(StringRef keyName);
+    static void save(const Identifier &key, const Serializable *serializer);
+    static void load(const Identifier &key, Serializable *serializer);
 
-    static void save(const String &key, const Serializable *serializer);
-    static void load(const String &key, Serializable *serializer);
+private:
 
-protected:
-
-    void saveConfig(const String &key, const Serializable *serializer);
+    void onConfigChanged();
     bool saveIfNeeded();
-    void loadConfig(const String &key, Serializable *serializer);
     bool reload();
 
-    bool machineIdChanged();
-    void propertyChanged() override;
+    void saveConfigFor(const Identifier &key, const Serializable *serializer);
+    void loadConfigFor(const Identifier &key, Serializable *serializer);
+    void setProperty(const Identifier &key, const var &value);
+    String getProperty(const Identifier &key, const String &fallback) const noexcept;
+    bool containsPropertyOrChild(const Identifier &key) const noexcept;
 
 private:
 
@@ -58,7 +54,9 @@ private:
     InterProcessLock fileLock;
     File propertiesFile;
     
-    bool needsWriting;
+    ValueTree config;
+
+    bool needsSaving;
     int saveTimeout;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Config)

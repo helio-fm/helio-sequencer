@@ -58,6 +58,7 @@ public:
     static class MainLayout &Layout();
     static class MainWindow &Window();
     static class SessionManager &Backend();
+    static class Config &Config();
 
     static Point<double> getScreenInCm();
     static bool isRunningOnPhone();
@@ -99,9 +100,9 @@ public:
     // Accessors
     //===------------------------------------------------------------------===//
 
-    MainWindow *getWindow() const noexcept;
     class Workspace *getWorkspace() const noexcept;
-    Config *getConfig() const noexcept;
+    class Config *getConfig() const noexcept;
+    MainWindow *getWindow() const noexcept;
     InternalClipboard *getClipboard() const noexcept;
     SessionManager *getSessionManager() const noexcept;
     HelioTheme *getTheme() const noexcept;
@@ -110,7 +111,7 @@ private:
 
     HelioLogger logger;
     ScopedPointer<HelioTheme> theme;
-    ScopedPointer<Config> config;
+    ScopedPointer<class Config> config;
     ScopedPointer<InternalClipboard> clipboard;
     ScopedPointer<class MainWindow> window;
     ScopedPointer<SessionManager> sessionManager;

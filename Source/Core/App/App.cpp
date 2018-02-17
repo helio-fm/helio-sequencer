@@ -24,12 +24,13 @@
 
 #include "HelioTheme.h"
 #include "ThemeSettings.h"
-#include "DataEncoder.h"
 #include "PluginManager.h"
 #include "Config.h"
 #include "InternalClipboard.h"
 #include "FontSerializer.h"
-#include "FileUtils.h"
+
+#include "DocumentHelpers.h"
+#include "XmlSerializer.h"
 
 #include "MainLayout.h"
 #include "Document.h"
@@ -71,6 +72,11 @@ MainWindow &App::Window()
 SessionManager &App::Backend()
 {
     return *App::Helio()->getSessionManager();
+}
+
+class Config &App::Config()
+{
+    return *App::Helio()->getConfig();
 }
 
 Point<double> App::getScreenInCm()
@@ -263,13 +269,12 @@ void App::initialise(const String &commandLine)
     if (this->runMode == App::NORMAL)
     {
         Desktop::getInstance().setOrientationsEnabled(Desktop::rotatedClockwise + Desktop::rotatedAntiClockwise);
-        FileUtils::fixCurrentWorkingDirectory();
         
         Logger::setCurrentLogger(&this->logger);
         Logger::writeToLog("Helio Workstation");
         Logger::writeToLog("Ver. " + App::getAppReadableVersion());
         
-        this->config = new Config();
+        this->config = new class Config();
         //this->updater = new UpdateManager();
 
         this->theme = new HelioTheme();
@@ -323,7 +328,7 @@ void App::shutdown()
         this->config = nullptr;
         this->theme = nullptr;
 
-        const File tempFolder(FileUtils::getTemporaryFolder());
+        const File tempFolder(DocumentHelpers::getTemporaryFolder());
         if (tempFolder.exists())
         {
             tempFolder.deleteRecursively();
@@ -485,7 +490,7 @@ App::RunMode App::detectRunMode(const String &commandLine)
         {
             return App::FONT_SERIALIZE;
         }
-        if (FileUtils::getTempSlot(commandLine).existsAsFile())
+        if (DocumentHelpers::getTempSlot(commandLine).existsAsFile())
         {
             return App::PLUGIN_CHECK;
         }
@@ -500,7 +505,7 @@ void App::checkPlugin(const String &markerFile)
     Process::setDockIconVisible(false);
 #endif
 
-    const File tempFile(FileUtils::getTemporaryFolder() + File::getSeparatorString() + markerFile);
+    const File tempFile(DocumentHelpers::getTemporaryFolder() + File::getSeparatorString() + markerFile);
 
     try
     {
@@ -532,7 +537,7 @@ void App::checkPlugin(const String &markerFile)
                     // если мы дошли до сих пор, то все хорошо и плагин нас не обрушил - так и запишем.
                     if (typesFound.size() != 0)
                     {
-                        ValueTree typesNode(Serialization::Core::instrumentRoot);
+                        ValueTree typesNode(Serialization::Core::instrumentsList);
 
                         for (const auto description : typesFound)
                         {
@@ -540,7 +545,7 @@ void App::checkPlugin(const String &markerFile)
                             typesNode.appendChild(sd.serialize());
                         }
 
-                        DataEncoder::saveObfuscated(tempFile, typesNode);
+                        DocumentHelpers::save<XmlSerializer>(tempFile, typesNode);
                     }
                 }
             }

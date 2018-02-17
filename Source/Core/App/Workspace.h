@@ -26,8 +26,7 @@ class PluginManager;
 #include "RecentFilesList.h"
 #include "TreeNavigationHistory.h"
 
-class Workspace : public DocumentOwner,
-                  public RecentFilesList::Owner,
+class Workspace : public RecentFilesList::Owner,
                   private ChangeListener, // listens to RecentFilesList
                   private Serializable
 {
@@ -72,18 +71,8 @@ public:
 
     bool autoload();
     void autosave();
+    void importProject(const String &filePattern);
 
-protected:
-    
-    //===------------------------------------------------------------------===//
-    // DocumentOwner
-    //===------------------------------------------------------------------===//
-    
-    bool onDocumentLoad(File &file) override;
-    bool onDocumentSave(File &file) override;
-    void onDocumentImport(File &file) override;
-    bool onDocumentExport(File &file) override;
-    
 private:
     
     //===------------------------------------------------------------------===//
@@ -96,7 +85,7 @@ private:
     
 private:
     
-    void createEmptyWorkspace();
+    void failedDeserializationFallback();
     void changeListenerCallback(ChangeBroadcaster *source) override;
     
 private:
