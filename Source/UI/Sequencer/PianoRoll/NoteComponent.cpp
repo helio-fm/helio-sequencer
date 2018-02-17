@@ -358,7 +358,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         if (lengthChanged)
         {
             this->checkpointIfNeeded();
-            for (const auto s : selection.getGroupedSelections())
+            for (const auto &s : selection.getGroupedSelections())
             {
                 const auto sequenceSelection(s.second);
                 Array<Note> groupDragBefore, groupDragAfter;
@@ -386,7 +386,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         if (lengthChanged)
         {
             this->checkpointIfNeeded();
-            for (const auto s : selection.getGroupedSelections())
+            for (const auto &s : selection.getGroupedSelections())
             {
                 const auto sequenceSelection(s.second);
                 Array<Note> groupDragBefore, groupDragAfter;
@@ -414,7 +414,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         if (scaleFactorChanged)
         {
             this->checkpointIfNeeded();
-            for (const auto s : selection.getGroupedSelections())
+            for (const auto &s : selection.getGroupedSelections())
             {
                 const auto sequenceSelection(s.second);
                 Array<Note> groupDragBefore, groupDragAfter;
@@ -442,7 +442,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         if (scaleFactorChanged)
         {
             this->checkpointIfNeeded();
-            for (const auto s : selection.getGroupedSelections())
+            for (const auto &s : selection.getGroupedSelections())
             {
                 const auto sequenceSelection(s.second);
                 Array<Note> groupDragBefore, groupDragAfter;
@@ -493,7 +493,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                 this->stopSound();
             }
             
-            for (const auto s : selection.getGroupedSelections())
+            for (const auto &s : selection.getGroupedSelections())
             {
                 const auto sequenceSelection(s.second);
                 Array<Note> groupDragBefore, groupDragAfter;
@@ -513,7 +513,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     {
         this->checkpointIfNeeded();
         
-        for (const auto s : selection.getGroupedSelections())
+        for (const auto &s : selection.getGroupedSelections())
         {
             const auto sequenceSelection(s.second);
             Array<Note> groupTuneBefore, groupTuneAfter;

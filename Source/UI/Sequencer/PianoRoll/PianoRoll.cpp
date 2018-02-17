@@ -627,27 +627,27 @@ void PianoRoll::selectEventsInRange(float startBeat, float endBeat, bool shouldC
 
 void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, const Rectangle<int> &rectangle)
 {
-    bool shouldInvalidateSelectionCache = false;
+    this->selection.invalidateCache();
 
     for (const auto &e : this->eventComponents)
     {
         const auto component = e.second.get();
-        component->setSelected(this->selection.isSelected(component));
+        component->setSelected(false);
     }
 
+    for (const auto component : this->selection)
+    {
+        component->setSelected(true);
+    }
+    
     for (const auto &e : this->eventComponents)
     {
         const auto component = e.second.get();
         if (rectangle.intersects(component->getBounds()) && component->isActive())
         {
-            shouldInvalidateSelectionCache = true;
+            component->setSelected(true);
             itemsFound.addIfNotAlreadyThere(component);
         }
-    }
-
-    if (shouldInvalidateSelectionCache)
-    {
-        this->selection.invalidateCache();
     }
 }
 
@@ -662,7 +662,7 @@ XmlElement *PianoRoll::clipboardCopy() const
     float firstBeat = FLT_MAX;
     float lastBeat = -FLT_MAX;
 
-    for (const auto s : selection.getGroupedSelections())
+    for (const auto &s : selection.getGroupedSelections())
     {
         const auto sequenceSelection(s.second);
         const String trackId(s.first);

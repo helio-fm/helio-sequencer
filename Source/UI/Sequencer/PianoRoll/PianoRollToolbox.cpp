@@ -1012,7 +1012,7 @@ void PianoRollToolbox::moveToLayer(Lasso &selection, MidiSequence *layer, bool s
     PianoChangeGroupsPerLayer deferredRemovals;
     PianoChangeGroupProxy::Ptr insertionsForTargetLayer(new PianoChangeGroupProxy());
     
-    for (const auto s : selection.getGroupedSelections())
+    for (const auto &s : selection.getGroupedSelections())
     {
         const auto layerSelection(s.second);
         MidiSequence *midiLayer = layerSelection->getFirstAs<NoteComponent>()->getNote().getSequence();
@@ -1115,7 +1115,7 @@ bool PianoRollToolbox::arpeggiate(Lasso &selection,
     PianoChangeGroupsPerLayer deferredRemovals;
     PianoChangeGroupsPerLayer deferredInsertions;
 
-    for (const auto s : selection.getGroupedSelections())
+    for (const auto &s : selection.getGroupedSelections())
     {
         const auto layerSelection(s.second);
         PianoSequence *pianoLayer = getPianoLayer(layerSelection);
@@ -1418,7 +1418,7 @@ void PianoRollToolbox::changeVolumeLinear(Lasso &selection, float volumeDelta)
     if (selection.getNumSelected() == 0)
     { return; }
 
-    for (const auto s : selection.getGroupedSelections())
+    for (const auto &s : selection.getGroupedSelections())
     {
         const auto layerSelection(s.second);
         PianoSequence *pianoLayer = getPianoLayer(layerSelection);
@@ -1442,7 +1442,7 @@ void PianoRollToolbox::changeVolumeMultiplied(Lasso &selection, float volumeFact
     if (selection.getNumSelected() == 0)
     { return; }
 
-    for (const auto s : selection.getGroupedSelections())
+    for (const auto &s : selection.getGroupedSelections())
     {
         const auto layerSelection(s.second);
         PianoSequence *pianoLayer = getPianoLayer(layerSelection);
@@ -1485,7 +1485,7 @@ void PianoRollToolbox::changeVolumeSine(Lasso &selection, float volumeFactor)
     const float startBeat = PianoRollToolbox::findStartBeat(selection);
     const float endBeat = PianoRollToolbox::findEndBeat(selection);
     
-    for (const auto s : selection.getGroupedSelections())
+    for (const auto &s : selection.getGroupedSelections())
     {
         const auto layerSelection(s.second);
         PianoSequence *pianoLayer = getPianoLayer(layerSelection);
@@ -1521,7 +1521,7 @@ void PianoRollToolbox::deleteSelection(Lasso &selection)
     if (selection.getNumSelected() == 0)
     { return; }
 
-    for (const auto s : selection.getGroupedSelections())
+    for (const auto &s : selection.getGroupedSelections())
     {
         const auto layerSelection(s.second);
         PianoSequence *pianoLayer = getPianoLayer(layerSelection);
@@ -1550,7 +1550,7 @@ void PianoRollToolbox::shiftKeyRelative(Lasso &selection,
 
     bool didCheckpoint = false;
     
-    for (const auto s : selection.getGroupedSelections())
+    for (const auto &s : selection.getGroupedSelections())
     {
         const auto layerSelection(s.second);
         PianoSequence *pianoLayer = getPianoLayer(layerSelection);
@@ -1597,7 +1597,7 @@ void PianoRollToolbox::shiftBeatRelative(Lasso &selection, float deltaBeat, bool
 
     bool didCheckpoint = false;
 
-    for (const auto s : selection.getGroupedSelections())
+    for (const auto &s : selection.getGroupedSelections())
     {
         const auto layerSelection(s.second);
         PianoSequence *pianoLayer = getPianoLayer(layerSelection);
@@ -1639,7 +1639,7 @@ void PianoRollToolbox::inverseChord(Lasso &selection,
 
     bool didCheckpoint = false;
     
-    for (const auto s : selection.getGroupedSelections())
+    for (const auto &s : selection.getGroupedSelections())
     {
         const auto layerSelection(s.second);
         PianoSequence *pianoLayer = getPianoLayer(layerSelection);
