@@ -32,26 +32,19 @@ AutomationEvent::AutomationEvent() : MidiEvent(nullptr, MidiEvent::Auto, 0.f)
 }
 
 AutomationEvent::AutomationEvent(const AutomationEvent &other) :
-    MidiEvent(other.sequence, MidiEvent::Auto, other.beat),
+    MidiEvent(other),
     controllerValue(other.controllerValue),
-    curvature(other.curvature)
-{
-    this->id = other.getId();
-}
+    curvature(other.curvature) {}
 
 AutomationEvent::AutomationEvent(WeakReference<MidiSequence> owner, float beatVal, float cValue) :
     MidiEvent(owner, MidiEvent::Auto, beatVal),
     controllerValue(cValue),
     curvature(AUTOEVENT_DEFAULT_CURVATURE) {}
 
-AutomationEvent::AutomationEvent(WeakReference<MidiSequence> owner,
-    const AutomationEvent &parametersToCopy) :
-    MidiEvent(owner, MidiEvent::Auto, parametersToCopy.beat),
+AutomationEvent::AutomationEvent(WeakReference<MidiSequence> owner, const AutomationEvent &parametersToCopy) :
+    MidiEvent(owner, parametersToCopy),
     controllerValue(parametersToCopy.controllerValue),
-    curvature(parametersToCopy.curvature)
-{
-    this->id = parametersToCopy.getId();
-}
+    curvature(parametersToCopy.curvature) {}
 
 float linearTween(float delta, float factor)
 {
@@ -75,7 +68,7 @@ float exponentalInterpolation(float y0, float y1, float factor, float easing)
     const float delta = y1 - y0;
     
 //    const float e = (easing * 2.f) - 1.f;
-//===----------------------------------------------------------------------===//
+//
 //    if (e > 0)
 //    {
 //        const float easeIn = easeInExpo(delta, factor) * e;

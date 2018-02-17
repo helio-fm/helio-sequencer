@@ -452,7 +452,10 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
         {
             // Pass ownership to another key:
             this->eventComponents.erase(note);
-            // (always erase before as it may happen both events have the same hash code)
+            // Hitting this assert means that a track somehow contains events
+            // with duplicate id's. This should never, ever happen.
+            jassert(! this->eventComponents.contains(newNote));
+            // Always erase before updating, as it may happen both events have the same hash code:
             this->eventComponents[newNote] = UniquePointer<NoteComponent>(component);
             // Schedule to be repainted later:
             this->batchRepaintList.add(component);

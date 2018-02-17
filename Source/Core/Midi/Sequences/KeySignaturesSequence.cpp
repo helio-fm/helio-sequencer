@@ -83,6 +83,7 @@ void KeySignaturesSequence::silentImport(const MidiEvent &eventToImport)
 
     if (this->usedEventIds.contains(signature.getId()))
     {
+        jassertfalse;
         return;
     }
 
@@ -97,11 +98,6 @@ void KeySignaturesSequence::silentImport(const MidiEvent &eventToImport)
 
 MidiEvent *KeySignaturesSequence::insert(const KeySignatureEvent &eventParams, bool undoable)
 {
-    if (this->usedEventIds.contains(eventParams.getId()))
-    {
-        return nullptr;
-    }
-
     if (undoable)
     {
         this->getUndoStack()->
@@ -112,7 +108,6 @@ MidiEvent *KeySignaturesSequence::insert(const KeySignatureEvent &eventParams, b
     {
         const auto ownedSignature = new KeySignatureEvent(this, eventParams);
         this->midiEvents.addSorted(*ownedSignature, ownedSignature);
-        this->usedEventIds.insert(ownedSignature->getId());
         this->notifyEventAdded(*ownedSignature);
         this->updateBeatRange(true);
         return ownedSignature;
@@ -136,7 +131,6 @@ bool KeySignaturesSequence::remove(const KeySignatureEvent &signature, bool undo
         {
             MidiEvent *const removedEvent = this->midiEvents[index];
             this->notifyEventRemoved(*removedEvent);
-            this->usedEventIds.erase(removedEvent->getId());
             this->midiEvents.remove(index, true);
             this->updateBeatRange(true);
             this->notifyEventRemovedPostAction();
@@ -193,7 +187,6 @@ bool KeySignaturesSequence::insertGroup(Array<KeySignatureEvent> &group, bool un
             const KeySignatureEvent &eventParams = group.getUnchecked(i);
             const auto ownedEvent = new KeySignatureEvent(this, eventParams);
             this->midiEvents.addSorted(*ownedEvent, ownedEvent);
-            this->usedEventIds.insert(ownedEvent->getId());
             this->notifyEventAdded(*ownedEvent);
         }
         
@@ -221,7 +214,6 @@ bool KeySignaturesSequence::removeGroup(Array<KeySignatureEvent> &group, bool un
             {
                 const auto removedEvent = this->midiEvents[index];
                 this->notifyEventRemoved(*removedEvent);
-                this->usedEventIds.erase(removedEvent->getId());
                 this->midiEvents.remove(index, true);
             }
         }

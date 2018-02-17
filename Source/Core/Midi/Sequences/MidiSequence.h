@@ -134,8 +134,8 @@ protected:
     UndoStack *getUndoStack();
 
     OwnedArray<MidiEvent> midiEvents;
-    SparseHashSet<MidiEvent::Id, StringHash> usedEventIds;
-    
+    mutable SparseHashSet<MidiEvent::Id, StringHash> usedEventIds;
+
 private:
 
     mutable MidiMessageSequence cachedSequence;

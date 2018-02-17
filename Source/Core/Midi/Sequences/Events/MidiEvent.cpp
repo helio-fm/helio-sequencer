@@ -20,6 +20,18 @@
 #include "MidiSequence.h"
 #include "MidiTrack.h"
 
+MidiEvent::MidiEvent(const MidiEvent &other) :
+    sequence(other.sequence),
+    type(other.type),
+    beat(other.beat),
+    id(other.id) {}
+
+MidiEvent::MidiEvent(WeakReference<MidiSequence> owner, const MidiEvent &parameters) :
+    sequence(owner),
+    type(parameters.type),
+    beat(parameters.beat),
+    id(parameters.id) {}
+
 MidiEvent::MidiEvent(WeakReference<MidiSequence> owner, Type type, float beatVal) :
     sequence(owner),
     type(type),

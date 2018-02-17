@@ -26,29 +26,21 @@ AnnotationEvent::AnnotationEvent() : MidiEvent(nullptr, MidiEvent::Annotation, 0
 }
 
 AnnotationEvent::AnnotationEvent(const AnnotationEvent &other) :
-    MidiEvent(other.sequence, MidiEvent::Annotation, other.beat),
+    MidiEvent(other),
     description(other.description),
-    colour(other.colour)
-{
-    this->id = other.getId();
-}
+    colour(other.colour) {}
 
 AnnotationEvent::AnnotationEvent(WeakReference<MidiSequence> owner,
-                     float newBeat,
-                     String newDescription,
-                     const Colour &newColour) :
+    float newBeat, String newDescription, const Colour &newColour) :
     MidiEvent(owner, MidiEvent::Annotation, newBeat),
     description(std::move(newDescription)),
     colour(newColour) {}
 
 AnnotationEvent::AnnotationEvent(WeakReference<MidiSequence> owner,
     const AnnotationEvent &parametersToCopy) :
-    MidiEvent(owner, MidiEvent::Annotation, parametersToCopy.beat),
+    MidiEvent(owner, parametersToCopy),
     description(parametersToCopy.description),
-    colour(parametersToCopy.colour)
-{
-    this->id = parametersToCopy.getId();
-}
+    colour(parametersToCopy.colour) {}
 
 Array<MidiMessage> AnnotationEvent::toMidiMessages() const
 {

@@ -68,6 +68,7 @@ void AutomationSequence::silentImport(const MidiEvent &eventToImport)
 
     if (this->usedEventIds.contains(autoEvent.getId()))
     {
+        jassertfalse;
         return;
     }
 
@@ -82,11 +83,6 @@ void AutomationSequence::silentImport(const MidiEvent &eventToImport)
 
 MidiEvent *AutomationSequence::insert(const AutomationEvent &eventParams, bool undoable)
 {
-    if (this->usedEventIds.contains(eventParams.getId()))
-    {
-        return nullptr;
-    }
-
     if (undoable)
     {
         this->getUndoStack()->
@@ -97,7 +93,6 @@ MidiEvent *AutomationSequence::insert(const AutomationEvent &eventParams, bool u
     {
         const auto ownedEvent = new AutomationEvent(this, eventParams);
         this->midiEvents.addSorted(*ownedEvent, ownedEvent);
-        this->usedEventIds.insert(ownedEvent->getId());
         this->notifyEventAdded(*ownedEvent);
         this->updateBeatRange(true);
         return ownedEvent;
@@ -121,7 +116,6 @@ bool AutomationSequence::remove(const AutomationEvent &eventParams, bool undoabl
         {
             MidiEvent *const removedEvent = this->midiEvents[index];
             this->notifyEventRemoved(*removedEvent);
-            this->usedEventIds.erase(removedEvent->getId());
             this->midiEvents.remove(index, true);
             this->updateBeatRange(true);
             this->notifyEventRemovedPostAction();
@@ -178,7 +172,6 @@ bool AutomationSequence::insertGroup(Array<AutomationEvent> &group, bool undoabl
             const AutomationEvent &eventParams = group.getUnchecked(i);
             auto ownedEvent = new AutomationEvent(this, eventParams);
             this->midiEvents.addSorted(*ownedEvent, ownedEvent);
-            this->usedEventIds.insert(ownedEvent->getId());
             this->notifyEventAdded(*ownedEvent);
         }
         
@@ -206,7 +199,6 @@ bool AutomationSequence::removeGroup(Array<AutomationEvent> &group, bool undoabl
             {
                 const auto removedEvent = this->midiEvents[index];
                 this->notifyEventRemoved(*removedEvent);
-                this->usedEventIds.erase(removedEvent->getId());
                 this->midiEvents.remove(index, true);
             }
         }

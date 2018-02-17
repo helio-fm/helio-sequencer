@@ -29,12 +29,9 @@ KeySignatureEvent::KeySignatureEvent() :
 }
 
 KeySignatureEvent::KeySignatureEvent(const KeySignatureEvent &other) :
-    MidiEvent(other.sequence, MidiEvent::KeySignature, other.beat),
+    MidiEvent(other),
     rootKey(other.rootKey),
-    scale(other.scale)
-{
-    this->id = other.getId();
-}
+    scale(other.scale) {}
 
 KeySignatureEvent::KeySignatureEvent(WeakReference<MidiSequence> owner,
     float newBeat /*= 0.f*/,
@@ -46,12 +43,9 @@ KeySignatureEvent::KeySignatureEvent(WeakReference<MidiSequence> owner,
 
 KeySignatureEvent::KeySignatureEvent(WeakReference<MidiSequence> owner,
     const KeySignatureEvent &parametersToCopy) :
-    MidiEvent(owner, MidiEvent::KeySignature, parametersToCopy.beat),
+    MidiEvent(owner, parametersToCopy),
     rootKey(parametersToCopy.rootKey),
-    scale(parametersToCopy.scale)
-{
-    this->id = parametersToCopy.getId();
-}
+    scale(parametersToCopy.scale) {}
 
 String KeySignatureEvent::toString() const
 {

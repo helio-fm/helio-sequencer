@@ -147,6 +147,7 @@ void Pattern::silentImport(const Clip &clip)
 {
     if (this->usedClipIds.contains(clip.getId()))
     {
+        jassertfalse;
         return;
     }
 
@@ -158,11 +159,6 @@ void Pattern::silentImport(const Clip &clip)
 
 bool Pattern::insert(Clip clipParams, const bool undoable)
 {
-    if (this->usedClipIds.contains(clipParams.getId()))
-    {
-        return false;
-    }
-
     if (undoable)
     {
         this->getUndoStack()->
@@ -173,7 +169,6 @@ bool Pattern::insert(Clip clipParams, const bool undoable)
     {
         const auto ownedClip = new Clip(this, clipParams);
         this->clips.addSorted(*ownedClip, ownedClip);
-        this->usedClipIds.insert(ownedClip->getId());
         this->notifyClipAdded(*ownedClip);
         this->updateBeatRange(true);
     }
@@ -198,7 +193,6 @@ bool Pattern::remove(Clip clipParams, const bool undoable)
             Clip *const removedClip = this->clips[index];
             jassert(removedClip->isValid());
             this->notifyClipRemoved(*removedClip);
-            this->usedClipIds.erase(removedClip->getId());
             this->clips.remove(index, true);
             this->updateBeatRange(true);
             return true;
@@ -335,13 +329,15 @@ void Pattern::reset()
 String Pattern::createUniqueClipId() const noexcept
 {
     uint8 length = 2;
-    String eventId = ClipIdGenerator::generateId(length);
-    while (this->usedClipIds.contains(eventId))
+    String clipId = ClipIdGenerator::generateId(length);
+    while (this->usedClipIds.contains(clipId))
     {
         length++;
-        eventId = ClipIdGenerator::generateId(length);
+        clipId = ClipIdGenerator::generateId(length);
     }
-    return eventId;
+    
+    this->usedClipIds.insert({clipId});
+    return clipId;
 }
 
 //===----------------------------------------------------------------------===//
