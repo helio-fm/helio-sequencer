@@ -813,12 +813,12 @@ ValueTree PatternRoll::serialize() const
 {
     ValueTree tree(Serialization::Core::midiRoll);
 
-    tree.setProperty("barWidth", this->getBarWidth());
+    tree.setProperty("BarWidth", this->getBarWidth());
 
-    tree.setProperty("startBar", this->getBarByXPosition(this->getViewport().getViewPositionX()));
-    tree.setProperty("endBar", this->getBarByXPosition(this->getViewport().getViewPositionX() + this->getViewport().getViewWidth()));
+    tree.setProperty("StartBar", this->getBarByXPosition(this->getViewport().getViewPositionX()));
+    tree.setProperty("EndBar", this->getBarByXPosition(this->getViewport().getViewPositionX() + this->getViewport().getViewWidth()));
 
-    tree.setProperty("y", this->getViewport().getViewPositionY());
+    tree.setProperty("Y", this->getViewport().getViewPositionY());
 
     // m?
     //tree.setProperty("selection", this->getLassoSelection().serialize());
@@ -837,12 +837,12 @@ void PatternRoll::deserialize(const ValueTree &tree)
     if (!root.isValid())
     { return; }
 
-    this->setBarWidth(float(root.getProperty("barWidth", this->getBarWidth())));
+    this->setBarWidth(float(root.getProperty("BarWidth", this->getBarWidth())));
 
     // FIXME doesn't work right for now, as view range is sent after this
-    const float startBar = float(root.getProperty("startBar", 0.0));
+    const float startBar = float(root.getProperty("StartBar", 0.0));
     const int x = this->getXPositionByBar(startBar);
-    const int y = root.getProperty("y");
+    const int y = root.getProperty("Y");
     this->getViewport().setViewPosition(x, y);
 
     // restore selection?

@@ -17,6 +17,14 @@
 
 #pragma once
 
+struct IdentifierHash
+{
+    static int generateHash(const Identifier& key, int upperLimit) noexcept
+    {
+        return uint32(key.toString().hashCode()) % (uint32)upperLimit;
+    }
+};
+
 // A simple wrapper around colour map hashmap
 // Used for serialization and JUCE_LIVE_CONSTANTs macros
 class ColourScheme : public Serializable
@@ -24,11 +32,10 @@ class ColourScheme : public Serializable
 public:
 
     ColourScheme() {}
-    explicit ColourScheme(const String &scheme);
     ColourScheme(const ColourScheme &other);
     ~ColourScheme() override {}
 
-    typedef HashMap<Identifier, Colour> ColourMap;
+    typedef HashMap<Identifier, Colour, IdentifierHash> ColourMap;
 
     void randomize();
 

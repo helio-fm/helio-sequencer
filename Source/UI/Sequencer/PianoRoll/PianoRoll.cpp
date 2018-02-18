@@ -1342,13 +1342,13 @@ ValueTree PianoRoll::serialize() const
 {
     ValueTree tree(Serialization::Core::midiRoll);
     
-    tree.setProperty("barWidth", this->getBarWidth());
-    tree.setProperty("rowHeight", this->getRowHeight());
+    tree.setProperty("BarWidth", this->getBarWidth());
+    tree.setProperty("RowHeight", this->getRowHeight());
 
-    tree.setProperty("startBar", this->getBarByXPosition(this->getViewport().getViewPositionX()));
-    tree.setProperty("endBar", this->getBarByXPosition(this->getViewport().getViewPositionX() + this->getViewport().getViewWidth()));
+    tree.setProperty("StartBar", this->getBarByXPosition(this->getViewport().getViewPositionX()));
+    tree.setProperty("EndBar", this->getBarByXPosition(this->getViewport().getViewPositionX() + this->getViewport().getViewWidth()));
 
-    tree.setProperty("y", this->getViewport().getViewPositionY());
+    tree.setProperty("Y", this->getViewport().getViewPositionY());
 
     // m?
     //tree.setProperty("selection", this->getLassoSelection().serialize());
@@ -1364,24 +1364,23 @@ void PianoRoll::deserialize(const ValueTree &tree)
         tree : tree.getChildWithName(Serialization::Core::midiRoll);
 
     if (!root.isValid())
-    { return; }
+    {
+        return;
+    }
     
-    this->setBarWidth(float(root.getProperty("barWidth", this->getBarWidth())));
-    this->setRowHeight(root.getProperty("rowHeight", this->getRowHeight()));
+    this->setBarWidth(float(root.getProperty("BarWidth", this->getBarWidth())));
+    this->setRowHeight(root.getProperty("RowHeight", this->getRowHeight()));
 
     // FIXME doesn't work right for now, as view range is sent after this
-    const float startBar = float(root.getProperty("startBar", 0.0));
+    const float startBar = float(root.getProperty("StartBar", 0.0));
     const int x = this->getXPositionByBar(startBar);
-    const int y = root.getProperty("y");
+    const int y = root.getProperty("Y");
     this->getViewport().setViewPosition(x, y);
 
     // restore selection?
 }
 
-void PianoRoll::reset()
-{
-}
-
+void PianoRoll::reset() {}
 
 //===----------------------------------------------------------------------===//
 // Background pattern images cache

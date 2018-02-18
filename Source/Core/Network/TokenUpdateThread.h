@@ -17,10 +17,8 @@
 
 #pragma once
 
-#include "DataEncoder.h"
 #include "HelioApiRoutes.h"
 #include "HelioApiRequest.h"
-
 #include "Config.h"
 #include "SerializationKeys.h"
 
@@ -61,14 +59,16 @@ private:
     
     void run() override
     {
+        using namespace Serialization;
+
         // Construct payload object:
         DynamicObject::Ptr session(new DynamicObject());
-        session->setProperty(Serialization::Api::V1::bearer, this->oldToken);
-        session->setProperty(Serialization::Api::V1::deviceId, Config::getMachineId());
-        session->setProperty(Serialization::Api::V1::platformId, SystemStats::getOperatingSystemName());
+        session->setProperty(Api::V1::bearer, this->oldToken);
+        session->setProperty(Api::V1::deviceId, Config::getDeviceId());
+        session->setProperty(Api::V1::platformId, SystemStats::getOperatingSystemName());
 
         DynamicObject::Ptr payload(new DynamicObject());
-        payload->setProperty(Serialization::Api::V1::session, var(session));
+        payload->setProperty(Api::V1::session, var(session));
 
         const HelioApiRequest request(HelioFM::Api::V1::tokenUpdate);
         this->response = request.post(var(payload));
@@ -84,7 +84,7 @@ private:
             return;
         }
 
-        const bool hasToken = this->response.jsonBody.contains(Serialization::Api::V1::token);
+        const bool hasToken = this->response.jsonBody.contains(Api::V1::token);
         if (this->response.statusCode != 200 || !hasToken)
         {
             MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
@@ -99,7 +99,7 @@ private:
         MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
         {
             const auto self = static_cast<TokenUpdateThread *>(ptr);
-            const auto newToken = self->response.jsonBody[Serialization::Api::V1::token];
+            const auto newToken = self->response.jsonBody[Api::V1::token];
             self->listener->tokenUpdateOk(newToken);
             return nullptr;
         }, this);

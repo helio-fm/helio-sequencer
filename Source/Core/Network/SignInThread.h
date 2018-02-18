@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "DataEncoder.h"
 #include "HelioApiRoutes.h"
 #include "HelioApiRequest.h"
 #include "SerializationKeys.h"
@@ -63,15 +62,17 @@ private:
     
     void run() override
     {
+        using namespace Serialization;
+
         // Construct payload object:
         DynamicObject::Ptr session(new DynamicObject());
-        session->setProperty(Serialization::Api::V1::email, this->email);
-        session->setProperty(Serialization::Api::V1::password, this->password);
-        session->setProperty(Serialization::Api::V1::deviceId, Config::getMachineId());
-        session->setProperty(Serialization::Api::V1::platformId, SystemStats::getOperatingSystemName());
+        session->setProperty(Api::V1::email, this->email);
+        session->setProperty(Api::V1::password, this->password);
+        session->setProperty(Api::V1::deviceId, Config::getDeviceId());
+        session->setProperty(Api::V1::platformId, SystemStats::getOperatingSystemName());
 
         DynamicObject::Ptr payload(new DynamicObject());
-        payload->setProperty(Serialization::Api::V1::session, var(session));
+        payload->setProperty(Api::V1::session, var(session));
 
         // Clear password just not to keep it in the memory:
         this->password = {};
@@ -90,7 +91,7 @@ private:
             return;
         }
 
-        const bool hasToken = this->response.jsonBody.contains(Serialization::Api::V1::token);
+        const bool hasToken = this->response.jsonBody.contains(Api::V1::token);
         if (this->response.statusCode != 200 || !hasToken)
         {
             MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
@@ -105,7 +106,7 @@ private:
         MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
         {
             const auto self = static_cast<SignInThread *>(ptr);
-            const auto token = self->response.jsonBody[Serialization::Api::V1::token];
+            const auto token = self->response.jsonBody[Api::V1::token];
             self->listener->signInOk(self->email, token);
             return nullptr;
         }, this);

@@ -172,11 +172,11 @@ float Note::getVelocity() const noexcept
 ValueTree Note::serialize() const
 {
     ValueTree tree(Serialization::Core::note);
-    tree.setProperty("key", this->key);
-    tree.setProperty("beat", this->beat);
-    tree.setProperty("len", this->length);
-    tree.setProperty("vel", roundFloatToInt(this->velocity * VELOCITY_SAVE_ACCURACY));
-    tree.setProperty("id", this->id);
+    tree.setProperty("Key", this->key);
+    tree.setProperty("Beat", this->beat);
+    tree.setProperty("Len", this->length);
+    tree.setProperty("Vel", roundFloatToInt(this->velocity * VELOCITY_SAVE_ACCURACY));
+    tree.setProperty("Id", this->id);
     return tree;
 }
 
@@ -184,11 +184,11 @@ void Note::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const int xmlKey = tree.getProperty("key");
-    const float xmlBeat = float(tree.getProperty("beat"));
-    const float xmlLength = float(tree.getProperty("len"));
-    const float xmlVelocity = float(tree.getProperty("vel")) / VELOCITY_SAVE_ACCURACY;
-    const String& xmlId = tree.getProperty("id");
+    const int xmlKey = tree.getProperty("Key");
+    const float xmlBeat = float(tree.getProperty("Beat"));
+    const float xmlLength = float(tree.getProperty("Len"));
+    const float xmlVelocity = float(tree.getProperty("Vel")) / VELOCITY_SAVE_ACCURACY;
+    const String& xmlId = tree.getProperty("Id");
 
     this->key = xmlKey;
     this->beat = roundBeat(xmlBeat);

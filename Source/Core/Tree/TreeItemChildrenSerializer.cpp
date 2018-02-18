@@ -42,48 +42,23 @@ void TreeItemChildrenSerializer::serializeChildren(const TreeItem &parentItem, V
 
 void TreeItemChildrenSerializer::deserializeChildren(TreeItem &parentItem, const ValueTree &parent)
 {
-    forEachValueTreeChildWithType(parent, e, Serialization::Core::treeItem)
+    using namespace Serialization;
+
+    forEachValueTreeChildWithType(parent, e, Core::treeItem)
     {
-        const auto type = Identifier(e.getProperty(Serialization::Core::treeItemType));
+        const auto type = Identifier(e.getProperty(Core::treeItemType));
 
         TreeItem *child = nullptr;
 
-        if (type == Serialization::Core::project)
-        {
-            child = new ProjectTreeItem("");
-        }
-        else if (type == Serialization::Core::settings)
-        {
-            child = new SettingsTreeItem();
-        }
-        else if (type == Serialization::Core::layerGroup)
-        {
-            child = new TrackGroupTreeItem("");
-        }
-        else if (type == Serialization::Core::pianoLayer)
-        {
-            child = new PianoTrackTreeItem( "");
-        }
-        else if (type == Serialization::Core::autoLayer)
-        {
-            child = new AutomationTrackTreeItem("");
-        }
-        else if (type == Serialization::Core::instrumentRoot)
-        {
-            child = new InstrumentsRootTreeItem();
-        }
-        else if (type == Serialization::Core::instrument)
-        {
-            child = new InstrumentTreeItem();
-        }
-        else if (type == Serialization::Core::versionControl)
-        {
-            child = new VersionControlTreeItem();
-        }
-        else if (type == Serialization::Core::patternSet)
-        {
-            child = new PatternEditorTreeItem();
-        }
+        if (type == Core::project)              { child = new ProjectTreeItem(""); }
+        else if (type == Core::settings)        { child = new SettingsTreeItem(); }
+        else if (type == Core::layerGroup)      { child = new TrackGroupTreeItem(""); }
+        else if (type == Core::pianoLayer)      { child = new PianoTrackTreeItem(""); }
+        else if (type == Core::autoLayer)       { child = new AutomationTrackTreeItem(""); }
+        else if (type == Core::instrumentsList) { child = new InstrumentsRootTreeItem(); }
+        else if (type == Core::instrumentRoot)  { child = new InstrumentTreeItem(); }
+        else if (type == Core::versionControl)  { child = new VersionControlTreeItem(); }
+        else if (type == Core::patternSet)      { child = new PatternEditorTreeItem(); }
 
         if (child != nullptr)
         {

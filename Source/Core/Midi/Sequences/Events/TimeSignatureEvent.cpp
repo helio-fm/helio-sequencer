@@ -148,24 +148,23 @@ String TimeSignatureEvent::toString() const noexcept
 ValueTree TimeSignatureEvent::serialize() const
 {
     ValueTree tree(Serialization::Core::timeSignature);
-    tree.setProperty("numerator", this->numerator);
-    tree.setProperty("denominator", this->denominator);
-    tree.setProperty("beat", this->beat);
-    tree.setProperty("id", this->id);
+    tree.setProperty("Numerator", this->numerator);
+    tree.setProperty("Denominator", this->denominator);
+    tree.setProperty("Beat", this->beat);
+    tree.setProperty("Id", this->id);
     return tree;
 }
 
 void TimeSignatureEvent::deserialize(const ValueTree &tree)
 {
     this->reset();
-    this->numerator = tree.getProperty("numerator", TIME_SIGNATURE_DEFAULT_NUMERATOR);
-    this->denominator = tree.getProperty("denominator", TIME_SIGNATURE_DEFAULT_DENOMINATOR);
-    this->beat = float(tree.getProperty("beat"));
-    this->id = tree.getProperty("id");
+    this->numerator = tree.getProperty("Numerator", TIME_SIGNATURE_DEFAULT_NUMERATOR);
+    this->denominator = tree.getProperty("Denominator", TIME_SIGNATURE_DEFAULT_DENOMINATOR);
+    this->beat = float(tree.getProperty("Beat"));
+    this->id = tree.getProperty("Id");
 }
 
 void TimeSignatureEvent::reset() {}
-
 
 void TimeSignatureEvent::applyChanges(const TimeSignatureEvent &parameters)
 {

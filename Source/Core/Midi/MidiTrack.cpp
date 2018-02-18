@@ -33,45 +33,25 @@ int MidiTrack::compareElements(const MidiTrack *const first, const MidiTrack *co
 
 void MidiTrack::serializeTrackProperties(ValueTree &tree) const
 {
-    tree.setProperty(Serialization::Core::trackId,
-        this->getTrackId().toString());
-    tree.setProperty(Serialization::Core::trackColour,
-        this->getTrackColour().toString());
-    tree.setProperty(Serialization::Core::trackMuteState,
-        this->getTrackMuteStateAsString());
-    tree.setProperty(Serialization::Core::trackChannel,
-        this->getTrackChannel());
-    tree.setProperty(Serialization::Core::trackInstrumentId,
-        this->getTrackInstrumentId());
-    tree.setProperty(Serialization::Core::trackControllerNumber,
-        this->getTrackControllerNumber());
+    using namespace Serialization;
+    tree.setProperty(Core::trackId, this->getTrackId().toString());
+    tree.setProperty(Core::trackColour, this->getTrackColour().toString());
+    tree.setProperty(Core::trackMuteState, this->getTrackMuteStateAsString());
+    tree.setProperty(Core::trackChannel, this->getTrackChannel());
+    tree.setProperty(Core::trackInstrumentId, this->getTrackInstrumentId());
+    tree.setProperty(Core::trackControllerNumber, this->getTrackControllerNumber());
 }
 
 void MidiTrack::deserializeTrackProperties(const ValueTree &tree)
 {
-    const auto trackId =
-        Uuid(tree.getProperty(Serialization::Core::trackId,
-            this->getTrackId().toString()));
+    using namespace Serialization;
 
-    const auto colour =
-        tree.getProperty(Serialization::Core::trackColour,
-            this->getTrackColour().toString()).toString();
-
-    const auto muted =
-        MidiTrack::isTrackMuted(
-            tree.getProperty(Serialization::Core::trackMuteState));
-
-    const auto channel =
-        tree.getProperty(Serialization::Core::trackChannel,
-            this->getTrackChannel());
-
-    const auto instrumentId =
-        tree.getProperty(Serialization::Core::trackInstrumentId,
-            this->getTrackInstrumentId());
-
-    const auto controllerNumber =
-        tree.getProperty(Serialization::Core::trackControllerNumber,
-            this->getTrackControllerNumber());
+    const auto trackId = Uuid(tree.getProperty(Core::trackId, this->getTrackId().toString()));
+    const auto colour = tree.getProperty(Core::trackColour, this->getTrackColour().toString()).toString();
+    const auto muted = MidiTrack::isTrackMuted(tree.getProperty(Core::trackMuteState));
+    const auto channel = tree.getProperty(Core::trackChannel, this->getTrackChannel());
+    const auto instrumentId = tree.getProperty(Core::trackInstrumentId, this->getTrackInstrumentId());
+    const auto controllerNumber = tree.getProperty(Core::trackControllerNumber, this->getTrackControllerNumber());
 
     this->setTrackId(trackId);
 

@@ -17,10 +17,8 @@
 
 #pragma once
 
-#include "DataEncoder.h"
 #include "HelioApiRoutes.h"
 #include "HelioApiRequest.h"
-#include "SerializationKeys.h"
 
 class SignUpThread final : private Thread
 {
@@ -66,16 +64,18 @@ private:
     
     void run() override
     {
+        using namespace Serialization;
+
         // Construct payload object:
         DynamicObject::Ptr user(new DynamicObject());
-        user->setProperty(Serialization::Api::V1::name, this->name);
-        user->setProperty(Serialization::Api::V1::email, this->email);
-        user->setProperty(Serialization::Api::V1::login, this->login);
-        user->setProperty(Serialization::Api::V1::password, this->password);
-        user->setProperty(Serialization::Api::V1::passwordConfirmation, this->password);
+        user->setProperty(Api::V1::name, this->name);
+        user->setProperty(Api::V1::email, this->email);
+        user->setProperty(Api::V1::login, this->login);
+        user->setProperty(Api::V1::password, this->password);
+        user->setProperty(Api::V1::passwordConfirmation, this->password);
 
         DynamicObject::Ptr payload(new DynamicObject());
-        payload->setProperty(Serialization::Api::V1::user, var(user));
+        payload->setProperty(Api::V1::user, var(user));
 
         // Clear password just not to keep it in the memory:
         this->password = {};
@@ -94,7 +94,7 @@ private:
             return;
         }
 
-        const bool hasToken = this->response.jsonBody.contains(Serialization::Api::V1::token);
+        const bool hasToken = this->response.jsonBody.contains(Api::V1::token);
         if (this->response.statusCode != 200 || !hasToken)
         {
             MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
@@ -109,7 +109,7 @@ private:
         MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
         {
             const auto self = static_cast<SignUpThread *>(ptr);
-            const auto token = self->response.jsonBody[Serialization::Api::V1::token];
+            const auto token = self->response.jsonBody[Api::V1::token];
             self->listener->signUpOk(self->email, token);
             return nullptr;
         }, this);

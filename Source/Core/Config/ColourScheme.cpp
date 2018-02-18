@@ -20,11 +20,7 @@
 #include "SerializationKeys.h"
 #include <utility>
 
-ColourScheme::ColourScheme(const String &scheme)
-{
-    ScopedPointer<XmlElement> xml(XmlDocument::parse(scheme));
-    this->deserialize(*xml);
-}
+using namespace Serialization;
 
 ColourScheme::ColourScheme(const ColourScheme &other)
 {
@@ -92,91 +88,91 @@ String ColourScheme::getName() const
 
 Colour ColourScheme::getPrimaryGradientColourA() const
 {
-    const Colour c(this->colours[Serialization::UI::Colours::primaryGradientA]);
+    const Colour c(this->colours[UI::Colours::primaryGradientA]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getPrimaryGradientColourB() const
 {
-    const Colour c(this->colours[Serialization::UI::Colours::primaryGradientB]);
+    const Colour c(this->colours[UI::Colours::primaryGradientB]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getSecondaryGradientColourA() const
 {
-    const Colour c(this->colours[Serialization::UI::Colours::secondaryGradientA]);
+    const Colour c(this->colours[UI::Colours::secondaryGradientA]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getSecondaryGradientColourB() const
 {
-    const Colour c(this->colours[Serialization::UI::Colours::secondaryGradientB]);
+    const Colour c(this->colours[UI::Colours::secondaryGradientB]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getPanelFillColour() const
 {
-    const Colour c(this->colours[Serialization::UI::Colours::panelFill]);
+    const Colour c(this->colours[UI::Colours::panelFill]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getPanelBorderColour() const
 {
-    const Colour c(this->colours[Serialization::UI::Colours::panelBorder]);
+    const Colour c(this->colours[UI::Colours::panelBorder]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getLassoFillColour() const
 {
-    const Colour c(this->colours[Serialization::UI::Colours::lassoFill]);
+    const Colour c(this->colours[UI::Colours::lassoFill]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getLassoBorderColour() const
 {
-    const Colour c(this->colours[Serialization::UI::Colours::lassoBorder]);
+    const Colour c(this->colours[UI::Colours::lassoBorder]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getBlackKeyColour() const
 {
-    const Colour c(this->colours[Serialization::UI::Colours::blackKey]);
+    const Colour c(this->colours[UI::Colours::blackKey]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getWhiteKeyColour() const
 {
-    const Colour c(this->colours[Serialization::UI::Colours::whiteKey]);
+    const Colour c(this->colours[UI::Colours::whiteKey]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getRowColour() const
 {
-    const Colour c(this->colours[Serialization::UI::Colours::row]);
+    const Colour c(this->colours[UI::Colours::row]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getBarColour() const
 {
-    const Colour c(this->colours[Serialization::UI::Colours::bar]);
+    const Colour c(this->colours[UI::Colours::bar]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getTextColour() const
 {
-    const Colour c(this->colours[Serialization::UI::Colours::text]);
+    const Colour c(this->colours[UI::Colours::text]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getIconBaseColour() const
 {
-    const Colour c(this->colours[Serialization::UI::Colours::iconBase]);
+    const Colour c(this->colours[UI::Colours::iconBase]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
 Colour ColourScheme::getIconShadowColour() const
 {
-    const Colour c(this->colours[Serialization::UI::Colours::iconShadow]);
+    const Colour c(this->colours[UI::Colours::iconShadow]);
     return JUCE_LIVE_CONSTANT(c);
 }
 
@@ -188,30 +184,30 @@ Colour ColourScheme::getIconShadowColour() const
 void ColourScheme::syncWithLiveConstantEditor()
 {
     this->reset();
-    this->colours.set(Serialization::UI::Colours::primaryGradientA, this->getPrimaryGradientColourA());
-    this->colours.set(Serialization::UI::Colours::primaryGradientB, this->getPrimaryGradientColourB());
-    this->colours.set(Serialization::UI::Colours::secondaryGradientA, this->getSecondaryGradientColourA());
-    this->colours.set(Serialization::UI::Colours::secondaryGradientB, this->getSecondaryGradientColourB());
-    this->colours.set(Serialization::UI::Colours::panelFill, this->getPanelFillColour());
-    this->colours.set(Serialization::UI::Colours::lassoBorder, this->getLassoBorderColour());
-    this->colours.set(Serialization::UI::Colours::panelBorder, this->getPanelBorderColour());
-    this->colours.set(Serialization::UI::Colours::lassoFill, this->getLassoFillColour());
-    this->colours.set(Serialization::UI::Colours::blackKey, this->getBlackKeyColour());
-    this->colours.set(Serialization::UI::Colours::whiteKey, this->getWhiteKeyColour());
-    this->colours.set(Serialization::UI::Colours::row, this->getRowColour());
-    this->colours.set(Serialization::UI::Colours::bar, this->getBarColour());
-    this->colours.set(Serialization::UI::Colours::text, this->getTextColour());
-    this->colours.set(Serialization::UI::Colours::iconBase, this->getIconBaseColour());
-    this->colours.set(Serialization::UI::Colours::iconShadow, this->getIconShadowColour());
+    this->colours.set(UI::Colours::primaryGradientA, this->getPrimaryGradientColourA());
+    this->colours.set(UI::Colours::primaryGradientB, this->getPrimaryGradientColourB());
+    this->colours.set(UI::Colours::secondaryGradientA, this->getSecondaryGradientColourA());
+    this->colours.set(UI::Colours::secondaryGradientB, this->getSecondaryGradientColourB());
+    this->colours.set(UI::Colours::panelFill, this->getPanelFillColour());
+    this->colours.set(UI::Colours::lassoBorder, this->getLassoBorderColour());
+    this->colours.set(UI::Colours::panelBorder, this->getPanelBorderColour());
+    this->colours.set(UI::Colours::lassoFill, this->getLassoFillColour());
+    this->colours.set(UI::Colours::blackKey, this->getBlackKeyColour());
+    this->colours.set(UI::Colours::whiteKey, this->getWhiteKeyColour());
+    this->colours.set(UI::Colours::row, this->getRowColour());
+    this->colours.set(UI::Colours::bar, this->getBarColour());
+    this->colours.set(UI::Colours::text, this->getTextColour());
+    this->colours.set(UI::Colours::iconBase, this->getIconBaseColour());
+    this->colours.set(UI::Colours::iconShadow, this->getIconShadowColour());
 }
 
 ValueTree ColourScheme::serialize() const
 {
-    ValueTree tree(Serialization::UI::Colours::scheme);
-    tree.setProperty(Serialization::UI::Colours::name, this->name);
-    tree.setProperty(Serialization::UI::Colours::id, this->id);
+    ValueTree tree(UI::Colours::scheme);
+    tree.setProperty(UI::Colours::name, this->name);
+    tree.setProperty(UI::Colours::id, this->id);
 
-    ValueTree mapXml(Serialization::UI::Colours::colourMap);
+    ValueTree mapXml(UI::Colours::colourMap);
 
     ColourMap::Iterator i(this->colours);
     while (i.next())
@@ -226,17 +222,17 @@ ValueTree ColourScheme::serialize() const
 void ColourScheme::deserialize(const ValueTree &tree)
 {
     const auto root =
-        tree.hasType(Serialization::UI::Colours::scheme) ?
-        tree : tree.getChildWithName(Serialization::UI::Colours::scheme);
+        tree.hasType(UI::Colours::scheme) ?
+        tree : tree.getChildWithName(UI::Colours::scheme);
 
     if (!root.isValid()) { return; }
 
     this->reset();
 
-    this->name = root.getProperty(Serialization::UI::Colours::name);
-    this->id = root.getProperty(Serialization::UI::Colours::id);
+    this->name = root.getProperty(UI::Colours::name);
+    this->id = root.getProperty(UI::Colours::id);
 
-    const auto map = root.getChildWithName(Serialization::UI::Colours::colourMap);
+    const auto map = root.getChildWithName(UI::Colours::colourMap);
     for (int i = 0; i < map.getNumProperties(); ++i)
     {
         const auto propertyName = map.getPropertyName(i);
@@ -251,19 +247,19 @@ void ColourScheme::reset()
     this->name.clear();
     this->colours.clear();
     // todo set reasonable defaults?
-    this->colours.set(Serialization::UI::Colours::primaryGradientA, Colours::black);
-    this->colours.set(Serialization::UI::Colours::primaryGradientB, Colours::black);
-    this->colours.set(Serialization::UI::Colours::secondaryGradientA, Colours::black);
-    this->colours.set(Serialization::UI::Colours::secondaryGradientB, Colours::black);
-    this->colours.set(Serialization::UI::Colours::panelFill, Colours::black);
-    this->colours.set(Serialization::UI::Colours::lassoBorder, Colours::black);
-    this->colours.set(Serialization::UI::Colours::panelBorder, Colours::black);
-    this->colours.set(Serialization::UI::Colours::lassoFill, Colours::black);
-    this->colours.set(Serialization::UI::Colours::blackKey, Colours::black);
-    this->colours.set(Serialization::UI::Colours::whiteKey, Colours::black);
-    this->colours.set(Serialization::UI::Colours::row, Colours::black);
-    this->colours.set(Serialization::UI::Colours::bar, Colours::black);
-    this->colours.set(Serialization::UI::Colours::text, Colours::black);
-    this->colours.set(Serialization::UI::Colours::iconBase, Colours::black.withAlpha(0.25f));
-    this->colours.set(Serialization::UI::Colours::iconShadow, Colours::white.withAlpha(0.115f));
+    this->colours.set(UI::Colours::primaryGradientA, Colours::black);
+    this->colours.set(UI::Colours::primaryGradientB, Colours::black);
+    this->colours.set(UI::Colours::secondaryGradientA, Colours::black);
+    this->colours.set(UI::Colours::secondaryGradientB, Colours::black);
+    this->colours.set(UI::Colours::panelFill, Colours::black);
+    this->colours.set(UI::Colours::lassoBorder, Colours::black);
+    this->colours.set(UI::Colours::panelBorder, Colours::black);
+    this->colours.set(UI::Colours::lassoFill, Colours::black);
+    this->colours.set(UI::Colours::blackKey, Colours::black);
+    this->colours.set(UI::Colours::whiteKey, Colours::black);
+    this->colours.set(UI::Colours::row, Colours::black);
+    this->colours.set(UI::Colours::bar, Colours::black);
+    this->colours.set(UI::Colours::text, Colours::black);
+    this->colours.set(UI::Colours::iconBase, Colours::black.withAlpha(0.25f));
+    this->colours.set(UI::Colours::iconShadow, Colours::white.withAlpha(0.115f));
 }

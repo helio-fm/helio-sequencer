@@ -142,10 +142,10 @@ ValueTree RecentFilesList::serialize() const
     for (auto && localFile : this->localFiles)
     {
         ValueTree item(Serialization::Core::recentFileItem);
-        item.setProperty("title", localFile->title);
-        item.setProperty("path", localFile->path);
-        item.setProperty("id", localFile->projectId);
-        item.setProperty("time", String(localFile->lastModifiedTime));
+        item.setProperty("Title", localFile->title);
+        item.setProperty("Path", localFile->path);
+        item.setProperty("Id", localFile->projectId);
+        item.setProperty("Time", String(localFile->lastModifiedTime));
         tree.appendChild(item);
     }
 
