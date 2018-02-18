@@ -22,9 +22,10 @@
 #include "App.h"
 #include "SessionManager.h"
 #include "Config.h"
-#include "DataEncoder.h"
 #include "BinaryData.h"
-#include "FileUtils.h"
+#include "DocumentHelpers.h"
+#include "XmlSerializer.h"
+#include "JsonSerializer.h"
 
 struct PluralEquationWrapper: public DynamicObject
 {
@@ -57,17 +58,6 @@ struct PluralEquationWrapper: public DynamicObject
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluralEquationWrapper)
 };
-
-
-static String unescapeString(const String &s)
-{
-    return s.replace("\\\"", "\"")
-            .replace("\\\'", "\'")
-            .replace("\\t", "\t")
-            .replace("\\r", "\r")
-            .replace("\\n", "\n");
-}
-
 
 void TranslationManager::initialise(const String &commandLine)
 {
@@ -125,11 +115,7 @@ String TranslationManager::findPluralFor(const String &baseLiteral, int64 target
         StringPairArray targetPlurals = this->plurals[baseLiteral];
         const String pluralForm = this->equationResult;
         //Logger::writeToLog("(Execution time: " + String (elapsedMs, 2) + " milliseconds): " + pluralForm);
-        
-        for (int i = 0; i < targetPlurals.size(); ++i)
-        {
-            return targetPlurals[pluralForm].replace(Serialization::Locales::metaSymbol, String(targetNumber));
-        }
+        return targetPlurals[pluralForm].replace(Serialization::Locales::metaSymbol, String(targetNumber));
     }
 
     return baseLiteral.replace(Serialization::Locales::metaSymbol, String(targetNumber));
@@ -228,19 +214,21 @@ ValueTree TranslationManager::serialize() const
 
 void TranslationManager::deserialize(const ValueTree &tree)
 {
+    using namespace Serialization;
+
     this->reset();
     
-    const auto root = tree.hasType(Serialization::Locales::translations) ?
-        tree : tree.getChildWithName(Serialization::Locales::translations);
+    const auto root = tree.hasType(Locales::translations) ?
+        tree : tree.getChildWithName(Locales::translations);
     
     if (!root.isValid()) { return; }
     
     // First, fill up the available translations
-    forEachValueTreeChildWithType(root, locale, Serialization::Locales::locale)
+    forEachValueTreeChildWithType(root, locale, Locales::locale)
     {
-        const String localeId = locale.getProperty(Serialization::Locales::id).toLowerCase();
-        const String localeName = locale.getProperty(Serialization::Locales::name);
-        const String localeAuthor = locale.getProperty(Serialization::Locales::author);
+        const String localeId = locale.getProperty(Locales::id).toString().toLowerCase();
+        const String localeName = locale.getProperty(Locales::name);
+        const String localeAuthor = locale.getProperty(Locales::author);
         
         Locale newLocale;
         newLocale.localeName = localeName;
@@ -252,38 +240,38 @@ void TranslationManager::deserialize(const ValueTree &tree)
     // Now detect the right one and load
     const String selectedLocaleId = this->getSelectedLocaleId();
     
-    forEachValueTreeChildWithType(root, locale, Serialization::Locales::locale)
+    forEachValueTreeChildWithType(root, locale, Locales::locale)
     {
         const String localeId =
-        locale.getProperty(Serialization::Locales::id).toLowerCase();
+        locale.getProperty(Locales::id).toString().toLowerCase();
         
         if (localeId == selectedLocaleId)
         {
-            forEachValueTreeChildWithType(locale, pluralForms, Serialization::Locales::pluralForms)
+            forEachValueTreeChildWithType(locale, pluralForms, Locales::pluralForms)
             {
-                this->pluralEquation = pluralForms.getProperty(Serialization::Locales::equation);
+                this->pluralEquation = pluralForms.getProperty(Locales::equation);
             }
 
-            forEachValueTreeChildWithType(locale, pluralLiteral, Serialization::Locales::pluralLiteral)
+            forEachValueTreeChildWithType(locale, pluralLiteral, Locales::pluralLiteral)
             {
-                const String baseLiteral = pluralLiteral.getProperty(Serialization::Locales::name);
+                const String baseLiteral = pluralLiteral.getProperty(Locales::name);
 
                 StringPairArray formsAndTranslations;
                 
-                forEachValueTreeChildWithType(pluralLiteral, pluralTranslation, Serialization::Locales::translation)
+                forEachValueTreeChildWithType(pluralLiteral, pluralTranslation, Locales::translation)
                 {
-                    const String translatedLiteral = pluralTranslation.getProperty(Serialization::Locales::name);
-                    const String pluralForm = pluralTranslation.getProperty(Serialization::Locales::pluralForm);
+                    const String translatedLiteral = pluralTranslation.getProperty(Locales::name);
+                    const String pluralForm = pluralTranslation.getProperty(Locales::pluralForm);
                     formsAndTranslations.set(pluralForm, translatedLiteral);
                 }
                 
                 this->plurals.set(baseLiteral, formsAndTranslations);
             }
 
-            forEachValueTreeChildWithType(locale, literal, Serialization::Locales::literal)
+            forEachValueTreeChildWithType(locale, literal, Locales::literal)
             {
-                const String literalName = literal.getProperty(Serialization::Locales::name);
-                const String translatedLiteral = literal.getProperty(Serialization::Locales::translation);
+                const String literalName = literal.getProperty(Locales::name);
+                const String translatedLiteral = literal.getProperty(Locales::translation);
                 this->singulars.set(literalName, translatedLiteral);
             }
         }
@@ -311,25 +299,25 @@ String TranslationManager::getLocalizationFileContents() const
 
 void TranslationManager::loadFromXml(const String &xmlData)
 {
-    ScopedPointer<XmlElement> xml(XmlDocument::parse(xmlData));
-    
-    if (xml)
+    XmlSerializer serializer;
+    ValueTree state;
+    serializer.loadFromString(xmlData, state);
+    if (state.isValid())
     {
-        this->deserialize(*xml);
+        this->deserialize(state);
     }
 }
 
 void TranslationManager::reloadLocales()
 {
     const File downloadedTranslations(this->getDownloadedTranslationsFile());
-    
     if (downloadedTranslations.existsAsFile())
     {
-        ScopedPointer<XmlElement> xml(DataEncoder::loadObfuscated(downloadedTranslations));
-        if (xml)
+        const auto tree(DocumentHelpers::load<JsonSerializer>(downloadedTranslations));
+        if (tree.isValid())
         {
             Logger::writeToLog("Found downloaded translations file, loading..");
-            this->deserialize(*xml);
+            this->deserialize(tree);
             this->sendChangeMessage();
         }
     }
@@ -395,7 +383,7 @@ void TranslationManager::requestResourceOk(const ValueTree &resource)
     //    if (seemsToBeValid)
     //    {
     //        Logger::writeToLog("TranslationManager :: downloaded translations file seems to be valid");
-    //        DataEncoder::saveObfuscated(this->getDownloadedTranslationsFile(), xml);
+    //        DocumentReader::saveObfuscated(this->getDownloadedTranslationsFile(), xml);
 
     //        Logger::writeToLog("TranslationManager :: applying new translations");
     //        this->deserialize(*xml);
@@ -423,7 +411,7 @@ void TranslationManager::requestResourceConnectionFailed()
 File TranslationManager::getDownloadedTranslationsFile()
 {
     static String downloadedTranslationsFileName = "translations.helio";
-    return FileUtils::getConfigSlot(downloadedTranslationsFileName);
+    return DocumentHelpers::getConfigSlot(downloadedTranslationsFileName);
 }
 
 File TranslationManager::getDebugTranslationsFile()

@@ -91,9 +91,9 @@ ProjectTimeline::ProjectTimeline(ProjectTreeItem &parentProject,
     this->keySignaturesSequence = new KeySignaturesSequence(*this->keySignaturesTrack, *this);
 
     this->vcsDiffLogic = new VCS::ProjectTimelineDiffLogic(*this);
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectTimelineDeltas::annotationsAdded));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectTimelineDeltas::keySignaturesAdded));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectTimelineDeltas::timeSignaturesAdded));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), ProjectTimelineDeltas::annotationsAdded));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), ProjectTimelineDeltas::keySignaturesAdded));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), ProjectTimelineDeltas::timeSignaturesAdded));
 
     this->project.broadcastAddTrack(this->annotationsTrack);
     this->project.broadcastAddTrack(this->keySignaturesTrack);
@@ -276,10 +276,10 @@ ValueTree ProjectTimeline::serialize() const
     ValueTree tree(this->vcsDiffLogic->getType());
 
     this->serializeVCSUuid(tree);
-    tree.setProperty("name", this->name);
-    tree.setProperty("annotationsId", this->annotationsId.toString());
-    tree.setProperty("keySignaturesId", this->keySignaturesId.toString());
-    tree.setProperty("timeSignaturesId", this->timeSignaturesId.toString());
+    tree.setProperty("Name", this->name);
+    tree.setProperty("AnnotationsId", this->annotationsId.toString());
+    tree.setProperty("KeySignaturesId", this->keySignaturesId.toString());
+    tree.setProperty("TimeSignaturesId", this->timeSignaturesId.toString());
 
     tree.appendChild(this->annotationsSequence->serialize());
     tree.appendChild(this->keySignaturesSequence->serialize());
@@ -301,28 +301,19 @@ void ProjectTimeline::deserialize(const ValueTree &tree)
     }
 
     this->deserializeVCSUuid(root);
-    this->name = root.getProperty("name", this->name);
+    this->name = root.getProperty("Name", this->name);
 
     this->annotationsId =
-        Uuid(root.getProperty("annotationsId",
+        Uuid(root.getProperty("AnnotationsId",
             this->annotationsId.toString()));
 
     this->timeSignaturesId =
-        Uuid(root.getProperty("timeSignaturesId",
+        Uuid(root.getProperty("TimeSignaturesId",
             this->timeSignaturesId.toString()));
 
     this->keySignaturesId =
-        Uuid(root.getProperty("keySignaturesId",
+        Uuid(root.getProperty("KeySignaturesId",
             this->keySignaturesId.toString()));
-
-    // TODO
-    //for (const auto &e : root)
-    //{
-    //    if (e.hasType(Serialization::Core::annotations))
-    //    {
-
-    //    }
-    //}
 
     forEachValueTreeChildWithType(root, e, Serialization::Core::annotations)
     {

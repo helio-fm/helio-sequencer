@@ -24,7 +24,11 @@ namespace VCS
     class DeltaDescription final
     {
     public:
-        
+
+        DeltaDescription() :
+            intParameter(defaultNumChanges),
+            stringParameter() {}
+
         explicit DeltaDescription(const Identifier &text) :
             stringToTranslate(text.toString()),
             intParameter(defaultNumChanges),

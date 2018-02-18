@@ -22,6 +22,8 @@
 #include "Note.h"
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
+#include "DocumentHelpers.h"
+#include "XmlSerializer.h"
 
 Arpeggiator::Arpeggiator() :
     reversedMode(false),
@@ -70,15 +72,17 @@ float Arpeggiator::getScale() const
 
 String Arpeggiator::exportSequenceAsTrack() const
 {
-    ValueTree seq(Serialization::Core::track);
+    ValueTree sequence(Serialization::Core::track);
     
     for (int i = 0; i < this->sequence.size(); ++i)
     {
-        seq.appendChild(this->sequence.getUnchecked(i).serialize());
+        sequence.appendChild(this->sequence.getUnchecked(i).serialize());
     }
-    
-    // FIXME serialize somehow
-    return seq->createDocument("", false, false, "UTF-8", 1024);
+
+    String doc;
+    XmlSerializer serializer;
+    serializer.saveToString(doc, sequence);
+    return doc;
 }
 
 
@@ -93,30 +97,30 @@ Arpeggiator Arpeggiator::withName(const String &newName) const
     return arp;
 }
 
-//Arpeggiator Arpeggiator::withSequenceFromXml(const XmlElement &xml) const
-//{
-//    Arpeggiator arp(*this);
-//
-//    const auto root = xml.hasType(Serialization::Core::track) ?
-//        xml : xml.getChildWithName(Serialization::Core::track);
-//    
-//    if (!root.isValid()) { return arp; }
-//    
-//    Array<Note> xmlPattern;
-//    
-//    forEachValueTreeChildWithType(root, e, Serialization::Core::note)
-//    {
-//        xmlPattern.add(Note().withParameters(*e).copyWithNewId());
-//    }
-//    
-//    if (xmlPattern.size() == 0)
-//    {
-//        return arp;
-//    }
-//    
-//    arp.sequence = xmlPattern;
-//    return arp;
-//}
+Arpeggiator Arpeggiator::withSequenceFromString(const String &data) const
+{
+    Arpeggiator arp(*this);
+    const auto tree = DocumentHelpers::read<XmlSerializer>(data);
+    const auto root = tree.hasType(Serialization::Core::track) ?
+        tree : tree.getChildWithName(Serialization::Core::track);
+    
+    if (!root.isValid()) { return arp; }
+    
+    Array<Note> xmlPattern;
+    
+    forEachValueTreeChildWithType(root, e, Serialization::Core::note)
+    {
+        xmlPattern.add(Note().withParameters(e).copyWithNewId());
+    }
+    
+    if (xmlPattern.size() == 0)
+    {
+        return arp;
+    }
+    
+    arp.sequence = xmlPattern;
+    return arp;
+}
 
 Arpeggiator Arpeggiator::withSequence(const Array<Note> &arpSequence) const
 {
@@ -229,7 +233,6 @@ void Arpeggiator::deserialize(const ValueTree &tree)
         tree : tree.getChildWithName(Serialization::Arps::arpeggiator);
     
     if (!root.isValid()) { return; }
-
     
     const auto seq = root.getChildWithName(Serialization::Arps::sequence);
     

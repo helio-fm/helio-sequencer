@@ -196,7 +196,7 @@ void VCS::RevisionItem::deserialize(const ValueTree &tree)
 
     for (const auto &e : root)
     {
-        Delta *delta(new Delta(DeltaDescription(""), ""));
+        Delta *delta(new Delta(DeltaDescription(), ""));
         delta->deserialize(e);
         this->deltas.add(delta);
     }

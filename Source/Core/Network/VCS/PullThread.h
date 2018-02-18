@@ -30,7 +30,7 @@ namespace VCS
         PullThread(URL pushUrl,
                    String projectId,
                    MemoryBlock projectKey,
-                   ScopedPointer<XmlElement> pushContent);
+                   const ValueTree &pushContent);
 
         ValueTree createMergedStateData();
         

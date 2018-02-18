@@ -19,6 +19,7 @@
 #include "InternalClipboard.h"
 #include "SerializationKeys.h"
 #include "ClipboardOwner.h"
+#include "XmlSerializer.h"
 #include "App.h"
 
 // todo multiple clipboards?
@@ -42,8 +43,10 @@ String InternalClipboard::getCurrentContentAsString()
 {
     if (InternalClipboard::getCurrentContent().isValid())
     {
-        // FIXME serialize somehow
-        return InternalClipboard::getCurrentContent().createDocument("", false, false, "UTF-8", 1024);
+        String text;
+        static XmlSerializer serializer;
+        serializer.saveToString(text, InternalClipboard::getCurrentContent());
+        return text;
     }
     
     return {};

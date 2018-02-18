@@ -27,7 +27,6 @@
 #include "AutomationTrackTreeItem.h"
 #include "WorkspacePage.h"
 #include "MainLayout.h"
-#include "DataEncoder.h"
 #include "Icons.h"
 #include "MidiSequence.h"
 #include "AutomationEvent.h"
@@ -79,11 +78,10 @@ void RootTreeItem::recreatePage()
 void RootTreeItem::safeRename(const String &newName)
 {
     TreeItem::safeRename(newName);
-    App::Workspace().getDocument()->renameFile(this->getName());
     this->dispatchChangeTreeItemView();
 }
 
-void RootTreeItem::importMidi(File &file)
+void RootTreeItem::importMidi(const File &file)
 {
     MidiFile tempFile;
     ScopedPointer<InputStream> in(new FileInputStream(file));
@@ -121,7 +119,6 @@ void RootTreeItem::importMidi(File &file)
     // todo сохранить по умолчанию рядом - или куда?
     project->broadcastChangeProjectBeatRange();
     project->getDocument()->save();
-    App::Workspace().sendChangeMessage();
 }
 
 
@@ -149,7 +146,7 @@ void RootTreeItem::checkoutProject(const String &name, const String &id, const S
     newProject->addChildTreeItem(vcs);
     
     vcs->asyncPullAndCheckoutOrDeleteIfFailed();
-    App::Workspace().sendChangeMessage();
+    App::Workspace().autosave();
 }
 
 ProjectTreeItem *RootTreeItem::openProject(const File &file, int insertIndex /*= -1 */)
@@ -197,7 +194,7 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file, int insertIndex /*=
             }
         }
 
-        App::Workspace().sendChangeMessage();
+        App::Workspace().autosave();
         return project;
     }
 

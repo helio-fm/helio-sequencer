@@ -26,7 +26,6 @@
 #include "MainWindow.h"
 #include "TranslationManager.h"
 #include "TranslationSettingsItem.h"
-#include "DataEncoder.h"
 #include "HelioApiRoutes.h"
 
 #if HELIO_DESKTOP
@@ -112,7 +111,7 @@ void TranslationSettings::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == helpButton)
     {
         //[UserButtonCode_helpButton] -- add your button handler code here..
-        //Logger::writeToLog(DataEncoder::obfuscate(HELIO_TRANSLATIONS_HELP_URL));
+        //Logger::writeToLog(DocumentReader::obfuscate(HELIO_TRANSLATIONS_HELP_URL));
         URL updateUrl(HelioFM::translationsURL);
         updateUrl.launchInDefaultBrowser();
         //[/UserButtonCode_helpButton]

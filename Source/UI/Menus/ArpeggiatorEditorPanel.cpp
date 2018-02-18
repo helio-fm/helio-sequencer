@@ -113,13 +113,11 @@ ArpeggiatorEditorPanel::ArpeggiatorEditorPanel(ProjectTreeItem &parentProject, P
     this->reloadData();
 
     this->grabKeyboardFocus();
-    this->document.replaceAllContent(InternalClipboard::getCurrentContentAsString());
-
-    ScopedPointer<XmlElement> xml(XmlDocument::parse(this->document.getAllContent()));
-
-    if (xml != nullptr)
+    const String data(InternalClipboard::getCurrentContentAsString());
+    this->document.replaceAllContent(data);
+    if (data.isNotEmpty())
     {
-        this->currentArp = this->currentArp.withSequenceFromXml(*xml);
+        this->currentArp = this->currentArp.withSequenceFromString(data);
         this->applyArpToSelectedNotes(this->currentArp);
     }
     //[/UserPreSize]
@@ -239,10 +237,7 @@ void ArpeggiatorEditorPanel::buttonClicked (Button* buttonThatWasClicked)
     {
         //[UserButtonCode_addArpButton] -- add your button handler code here..
         this->updateCurrentArp();
-
-        ScopedPointer<XmlElement> xml(XmlDocument::parse(this->document.getAllContent()));
-        this->currentArp = this->currentArp.withSequenceFromXml(*xml);
-
+        this->currentArp = this->currentArp.withSequenceFromString(this->document.getAllContent());
         ArpeggiatorsManager::getInstance().addArp(this->currentArp);
         //[/UserButtonCode_addArpButton]
     }

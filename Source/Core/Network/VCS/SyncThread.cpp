@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "SyncThread.h"
 #include "Client.h"
-#include "DataEncoder.h"
 
 using namespace VCS;
 
@@ -32,12 +31,12 @@ bool VCS::syncProgressCallback(void *context, int bytesSent, int totalBytes)
 SyncThread::SyncThread(URL pushUrl,
                        String projectId,
                        MemoryBlock projectKey,
-                       ScopedPointer<XmlElement> pushContent) :
+                       const ValueTree &pushContent) :
     Thread("Sync Thread"),
     url(pushUrl),
     localId(std::move(projectId)),
     localKey(std::move(projectKey)),
-    localXml(std::move(pushContent)),
+    localState(pushContent),
     bytesSent(0),
     totalBytes(0) {}
 

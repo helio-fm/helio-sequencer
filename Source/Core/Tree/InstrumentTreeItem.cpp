@@ -34,7 +34,7 @@
 
 
 InstrumentTreeItem::InstrumentTreeItem(Instrument *targetInstrument) :
-    TreeItem({}, Serialization::Core::instrument),
+    TreeItem({}, Serialization::Core::instrumentRoot),
     instrument(targetInstrument),
     instrumentEditor(nullptr)
 {
@@ -153,7 +153,7 @@ TreeItem *InstrumentTreeItem::findAudioPluginEditorForNodeId(uint32 nodeId) cons
 
 var InstrumentTreeItem::getDragSourceDescription()
 {
-    return Serialization::Core::instrument.toString();
+    return Serialization::Core::instrumentRoot.toString();
 }
 
 bool InstrumentTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
@@ -224,7 +224,7 @@ ValueTree InstrumentTreeItem::serialize() const
     ValueTree tree(Serialization::Core::treeItem);
     tree.setProperty(Serialization::Core::treeItemType, this->type);
     tree.setProperty(Serialization::Core::treeItemName, this->name);
-    tree.setProperty("id", this->instrument->getIdAndHash());
+    tree.setProperty("Id", this->instrument->getIdAndHash());
     return tree;
 }
 
@@ -232,7 +232,7 @@ void InstrumentTreeItem::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const String id = tree.getProperty("id");
+    const String id = tree.getProperty("Id");
     this->instrument = this->audioCore->findInstrumentById(id);
 
     // если в аудиоядре инструмент исчез:

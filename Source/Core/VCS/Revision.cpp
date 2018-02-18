@@ -217,12 +217,12 @@ ValueTree Revision::serialize(ValueTree revision)
             if (const RevisionItem *revItem =
                 dynamic_cast<RevisionItem *>(property.getObject()))
             {
-                revision.appendChild(revItem->serialize());
+                tree.appendChild(revItem->serialize());
             }
         }
         else if (property.isString() || property.isInt64())
         {
-            revision.setProperty(id, property.toString());
+            tree.setProperty(id, property.toString());
         }
     }
 

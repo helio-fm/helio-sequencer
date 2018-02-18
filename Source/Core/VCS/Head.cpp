@@ -509,8 +509,8 @@ void Head::rebuildDiffNow()
 ValueTree VCS::Head::serialize() const
 {
     ValueTree tree(Serialization::VCS::head);
-    ValueTree stateXml(Serialization::VCS::headIndex);
-    ValueTree stateDataXml(Serialization::VCS::headIndexData);
+    ValueTree stateNode(Serialization::VCS::headIndex);
+    ValueTree stateDataNode(Serialization::VCS::headIndexData);
 
     {
         const ScopedReadLock lock(this->stateLock);
@@ -519,7 +519,7 @@ ValueTree VCS::Head::serialize() const
         {
             const RevisionItem::Ptr stateItem = static_cast<RevisionItem *>(this->state->getTrackedItem(i));
             const auto serializedItem = stateItem->serialize();
-            stateXml.appendChild(serializedItem);
+            stateNode.appendChild(serializedItem);
             
             // exports also deltas data
             for (int j = 0; j < stateItem->getNumDeltas(); ++j)
@@ -531,13 +531,13 @@ ValueTree VCS::Head::serialize() const
                 packItem.setProperty(Serialization::VCS::packItemDeltaId, stateItem->getDelta(j)->getUuid().toString());
                 packItem.appendChild(deltaData);
                 
-                stateDataXml.appendChild(packItem);
+                stateDataNode.appendChild(packItem);
             }
         }
     }
     
-    tree.appendChild(stateXml);
-    tree.appendChild(stateDataXml);
+    tree.appendChild(stateNode);
+    tree.appendChild(stateDataNode);
     return tree;
 }
 

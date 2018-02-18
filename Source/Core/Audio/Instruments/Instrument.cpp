@@ -356,9 +356,9 @@ void Instrument::reset()
 
 ValueTree Instrument::serialize() const
 {
-    ValueTree tree(Serialization::Core::instrument);
-    tree.setProperty(Serialization::Core::instrumentId, this->instrumentID.toString());
-    tree.setProperty(Serialization::Core::instrumentName, this->instrumentName);
+    ValueTree tree(Serialization::Audio::instrument);
+    tree.setProperty(Serialization::Audio::instrumentId, this->instrumentID.toString());
+    tree.setProperty(Serialization::Audio::instrumentName, this->instrumentName);
 
     const int numNodes = this->processorGraph->getNumNodes();
     for (int i = 0; i < numNodes; ++i)
@@ -368,11 +368,11 @@ ValueTree Instrument::serialize() const
 
     for (const auto &c : this->getConnections())
     {
-        ValueTree e(Serialization::Core::instrumentConnection);
-        e.setProperty("srcFilter", static_cast<int>(c.source.nodeID));
-        e.setProperty("srcChannel", c.source.channelIndex);
-        e.setProperty("dstFilter", static_cast<int>(c.destination.nodeID));
-        e.setProperty("dstChannel", c.destination.channelIndex);
+        ValueTree e(Serialization::Audio::instrumentConnection);
+        e.setProperty("SourceNode", static_cast<int>(c.source.nodeID));
+        e.setProperty("SourceChannel", c.source.channelIndex);
+        e.setProperty("DestinationNode", static_cast<int>(c.destination.nodeID));
+        e.setProperty("DestinationChannel", c.destination.channelIndex);
         tree.appendChild(e);
     }
 
@@ -383,14 +383,14 @@ void Instrument::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const auto root = tree.hasType(Serialization::Core::instrument) ?
-        tree : tree.getChildWithName(Serialization::Core::instrument);
+    const auto root = tree.hasType(Serialization::Audio::instrument) ?
+        tree : tree.getChildWithName(Serialization::Audio::instrument);
 
     if (!root.isValid())
     { return; }
 
-    this->instrumentID = root.getProperty(Serialization::Core::instrumentId, this->instrumentID.toString());
-    this->instrumentName = root.getProperty(Serialization::Core::instrumentName, this->instrumentName);
+    this->instrumentID = root.getProperty(Serialization::Audio::instrumentId, this->instrumentID.toString());
+    this->instrumentName = root.getProperty(Serialization::Audio::instrumentName, this->instrumentName);
 
     // Well this hack of an incredible ugliness
     // is here to handle loading of async-loaded AUv3 plugins
@@ -406,17 +406,19 @@ void Instrument::deserialize(const ValueTree &tree)
     
     Array<ConnectionDescription> connectionDescriptions;
     
-    forEachValueTreeChildWithType(root, e, Serialization::Core::instrumentConnection)
+    forEachValueTreeChildWithType(root, e, Serialization::Audio::instrumentConnection)
     {
+        const uint32 srcFilter = static_cast<int>(e.getProperty("SourceNode"));
+        const uint32 dstFilter = static_cast<int>(e.getProperty("DestinationNode"));
         connectionDescriptions.add({
-            static_cast<int>(e.getProperty("srcFilter")),
-            static_cast<int>(e.getProperty("dstFilter")),
+            srcFilter,
+            srcFilter,
             e.getProperty("srcChannel"),
             e.getProperty("dstChannel")
         });
     }
     
-    forEachValueTreeChildWithType(root, e, Serialization::Core::instrumentNode)
+    forEachValueTreeChildWithType(root, e, Serialization::Audio::instrumentNode)
     {
         this->deserializeNodeAsync(e,
             [this, connectionDescriptions](AudioProcessorGraph::Node::Ptr)
@@ -438,7 +440,7 @@ ValueTree Instrument::serializeNode(AudioProcessorGraph::Node::Ptr node) const
 {
     if (AudioPluginInstance *plugin = dynamic_cast<AudioPluginInstance *>(node->getProcessor()))
     {
-        ValueTree tree(Serialization::Core::instrumentNode);
+        ValueTree tree(Serialization::Audio::instrumentNode);
         tree.setProperty("uid", static_cast<int>(node->nodeID));
         tree.setProperty("x", node->properties["x"].toString());
         tree.setProperty("y", node->properties["y"].toString());
@@ -451,12 +453,9 @@ ValueTree Instrument::serializeNode(AudioProcessorGraph::Node::Ptr node) const
 
         tree.appendChild(pd.serialize());
 
-        ValueTree state(Serialization::Core::pluginState);
-
         MemoryBlock m;
         node->getProcessor()->getStateInformation(m);
-        state->addTextElement(m.toBase64Encoding());
-        tree.appendChild(state);
+        tree.setProperty(Serialization::Audio::pluginState, m.toBase64Encoding());
 
         return tree;
     }
@@ -475,10 +474,10 @@ void Instrument::deserializeNodeAsync(const ValueTree &tree,
     }
     
     MemoryBlock nodeStateBlock;
-    const auto state = tree.getChildWithName(Serialization::Core::pluginState);
-    if (state.isValid())
+    const String state = tree.getProperty(Serialization::Audio::pluginState);
+    if (state.isNotEmpty())
     {
-        nodeStateBlock.fromBase64Encoding(state->getAllSubText());
+        nodeStateBlock.fromBase64Encoding(state);
     }
     
     const int nodeUid = tree.getProperty("uid");
@@ -546,11 +545,11 @@ void Instrument::deserializeNode(const ValueTree &tree)
     const int nodeUid = tree.getProperty("uid");
     AudioProcessorGraph::Node::Ptr node(this->processorGraph->addNode(instance, nodeUid));
 
-    const auto state = tree.getChildWithName(Serialization::Core::pluginState);
-    if (state.isValid())
+    const String state = tree.getProperty(Serialization::Audio::pluginState);
+    if (state.isNotEmpty())
     {
         MemoryBlock m;
-        m.fromBase64Encoding(state->getAllSubText());
+        m.fromBase64Encoding(state);
         node->getProcessor()->setStateInformation(m.getData(), static_cast<int>( m.getSize()));
     }
 

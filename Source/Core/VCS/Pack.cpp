@@ -17,41 +17,21 @@
 
 #include "Common.h"
 #include "Pack.h"
-
-#include "FileUtils.h"
-#include "DataEncoder.h"
+#include "DocumentHelpers.h"
 #include "SerializationKeys.h"
 
 using namespace VCS;
 
-#define VCS_PACK_DEBUGGING 0
-
-//
-// пак - это такая штука, где хранятся все тяжеловесные данные,
-// которые можно достать по требованию, по id revisionItem + его дельты
-// и все это - в самом файле проекта
-//
-// при загрузке\десериализации - скидываем все содержимое пака во временный файл.
-// при добавлении данных - добавляем в память (+ метод flush(), который скидывает все на диск)
-// при сохранении\сериализации - сохраняем еще несохраненное и записываем данные файла
-//
-// минусы: надо следить, чтоб файл не исчез (блокируем его открытыми потоками на чтение и запись)
-// файл будет во временном каталоге
-//
-// в памяти держим только хэдер, где записано: пара id и смещения в файле.
-//
-
 Pack::Pack()
 {
-    this->packFile =
-        new File(FileUtils::getTempSlot("pack_" + this->uuid.toString() + ".vcs"));
+    this->packFile = DocumentHelpers::getTempSlot("pack_" + this->uuid.toString() + ".vcs");
 }
 
 Pack::~Pack()
 {
     this->packStream = nullptr;
     this->packWriteLocker = nullptr;
-    this->packFile->deleteFile();
+    this->packFile.deleteFile();
 }
 
 //===----------------------------------------------------------------------===//
@@ -63,7 +43,7 @@ bool Pack::containsDeltaDataFor(const Uuid &itemId,
 {
     if (this->packStream != nullptr)
     {
-        // данные могут быть на диске
+        // on-disk data
         for (auto header : this->headers)
         {
             if (header->itemId == itemId && header->deltaId == deltaId)
@@ -72,7 +52,7 @@ bool Pack::containsDeltaDataFor(const Uuid &itemId,
             }
         }
         
-        // а могут быть и в памяти
+        // new in-memory data
         for (auto block : this->unsavedData)
         {
             if (block->itemId == itemId && block->deltaId == deltaId)
@@ -91,46 +71,44 @@ ValueTree Pack::createDeltaDataFor(const Uuid &itemId, const Uuid &deltaId) cons
     
     if (this->packStream != nullptr)
     {
-        // данные могут быть на диске
+        // on-disk data
         for (auto header : this->headers)
         {
             if (header->itemId == itemId && header->deltaId == deltaId)
             {
-                return this->createXmlData(header);
+                return this->createSerializedData(header);
             }
         }
 
-        // а могут быть и в памяти
-        for (auto block : this->unsavedData)
+        // in-memory data
+        for (auto chunk : this->unsavedData)
         {
-            if (block->itemId == itemId && block->deltaId == deltaId)
+            if (chunk->itemId == itemId && chunk->deltaId == deltaId)
             {
-                return XmlDocument::parse(block->data.toString());
+                MemoryInputStream chunkDataStream(chunk->data, false);
+                return ValueTree::readFromStream(chunkDataStream);
             }
         }
     }
 
     jassertfalse;
-    return nullptr;
+    return {};
 }
 
-void Pack::setDeltaDataFor(const Uuid &itemId,
-                           const Uuid &deltaId,
-                           const ValueTree &data)
+void Pack::setDeltaDataFor(const Uuid &itemId, const Uuid &deltaId, const ValueTree &data)
 {
     const ScopedLock lock(this->packLocker);
 
-    auto block = new PackDataBlock();
-    block->itemId = itemId;
-    block->deltaId = deltaId;
+    auto chunk = new DeltaDataChunk();
+    chunk->itemId = itemId;
+    chunk->deltaId = deltaId;
 
-    MemoryOutputStream ms(block->data, false);
-    data.writeToStream(ms, "", true, false);
+    MemoryOutputStream ms(chunk->data, false);
+    data.writeToStream(ms);
     ms.flush();
 
-    this->unsavedData.add(block);
+    this->unsavedData.add(chunk);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -142,32 +120,29 @@ ValueTree VCS::Pack::serialize() const
 
     ValueTree tree(Serialization::VCS::pack);
 
-    // скидываем временный файл
+    // save on-disk data
     if (this->packStream != nullptr)
     {
         for (auto header : this->headers)
         {
-            XmlElement *deltaData = this->createXmlData(header);
-
+            const auto deltaData(this->createSerializedData(header));
             ValueTree packItem(Serialization::VCS::packItem);
             packItem.setProperty(Serialization::VCS::packItemRevId, header->itemId.toString());
             packItem.setProperty(Serialization::VCS::packItemDeltaId, header->deltaId.toString());
             packItem.appendChild(deltaData);
-
             tree.appendChild(packItem);
         }
     }
 
-    // и все новые данные
-    for (auto block : this->unsavedData)
+    // and in-memory data
+    for (auto chunk : this->unsavedData)
     {
-        XmlElement *deltaData = XmlDocument::parse(block->data.toString());
-
+        MemoryInputStream chunkDataStream(chunk->data, false);
+        const auto deltaData(ValueTree::readFromStream(chunkDataStream));
         ValueTree packItem(Serialization::VCS::packItem);
-        packItem.setProperty(Serialization::VCS::packItemRevId, block->itemId.toString());
-        packItem.setProperty(Serialization::VCS::packItemDeltaId, block->deltaId.toString());
+        packItem.setProperty(Serialization::VCS::packItemRevId, chunk->itemId.toString());
+        packItem.setProperty(Serialization::VCS::packItemDeltaId, chunk->deltaId.toString());
         packItem.appendChild(deltaData);
-
         tree.appendChild(packItem);
     }
 
@@ -187,24 +162,24 @@ void VCS::Pack::deserialize(const ValueTree &tree)
 
     forEachValueTreeChildWithType(root, e, Serialization::VCS::packItem)
     {
-        // грузим все в память
-        auto block = new PackDataBlock();
+        // first, load the data
+        auto block = new DeltaDataChunk();
         block->itemId = e.getProperty(Serialization::VCS::packItemRevId);
         block->deltaId = e.getProperty(Serialization::VCS::packItemDeltaId);
 
         MemoryOutputStream ms(block->data, false);
+        const auto firstChild(e.getChild(0));
 
-        if (XmlElement *firstChild = e.getChild(0))
+        if (firstChild.isValid())
         {
-            firstChild->writeToStream(ms, "", true, false);
+            firstChild.writeToStream(ms);
         }
 
         ms.flush();
-
         this->unsavedData.add(block);
     }
 
-    // и сливаем на диск
+    // then dump it on the disk
     this->flush();
 }
 
@@ -216,7 +191,7 @@ void Pack::reset()
     this->unsavedData.clear();
     this->packStream = nullptr;
     this->packWriteLocker = nullptr;
-    this->packFile->deleteFile();
+    this->packFile.deleteFile();
 }
 
 
@@ -228,15 +203,13 @@ void Pack::flush()
 {
     const ScopedLock lock(this->packStreamLock);
 
-    TemporaryFile tempFile(*this->packFile);
+    TemporaryFile tempFile(this->packFile);
     ScopedPointer<FileOutputStream> tempOutputStream(tempFile.getFile().createOutputStream());
 
     jassert(tempOutputStream->openedOk());
 
     this->packWriteLocker = nullptr;
 
-    // если нужно - скопируем существующий файл,
-    // и сразу закроем входной поток
     if (this->packStream != nullptr)
     {
         this->packStream->setPosition(0);
@@ -244,28 +217,17 @@ void Pack::flush()
         this->packStream = nullptr;
     }
 
-    // добавляем unsavedData
-    // достаточно обфусцировать их, дописать в конец файла
-    // и добавить в свой список PackDataHeader'ы с получившимися смещениями
+    // add unsaved data and set up headers
     for (auto block : this->unsavedData)
     {
-        
-#if VCS_PACK_DEBUGGING
-        const String &obfuscated = block->data.toString();
-#else
-        const String &obfuscated = DataEncoder::obfuscateString(block->data.toString());
-#endif
-
         const int64 position = tempOutputStream->getPosition();
-        const ssize_t numBytes = obfuscated.getNumBytesAsUTF8();
+        tempOutputStream->write(block->data.getData(), block->data.getSize());
 
-        tempOutputStream->write(obfuscated.toRawUTF8(), numBytes);
-
-        auto newHeader = new PackDataHeader();
+        auto newHeader = new DeltaDataHeader();
         newHeader->itemId = block->itemId;
         newHeader->deltaId = block->deltaId;
         newHeader->startPosition = position;
-        newHeader->numBytes = numBytes;
+        newHeader->numBytes = block->data.getSize();
 
         this->headers.add(newHeader);
     }
@@ -276,10 +238,10 @@ void Pack::flush()
 
     if (tempFile.overwriteTargetFileWithTemporary())
     {
-        this->packStream = this->packFile->createInputStream();
+        this->packStream = this->packFile.createInputStream();
         jassert(this->packStream->openedOk());
 
-        this->packWriteLocker = this->packFile->createOutputStream();
+        this->packWriteLocker = this->packFile.createOutputStream();
         jassert(this->packWriteLocker->openedOk());
     }
     else
@@ -288,18 +250,9 @@ void Pack::flush()
     }
 }
 
-XmlElement *Pack::createXmlData(const PackDataHeader *header) const
+ValueTree Pack::createSerializedData(const DeltaDataHeader *header) const
 {
     const ScopedLock lock(this->packStreamLock);
-    MemoryBlock mb;
     this->packStream->setPosition(header->startPosition);
-    this->packStream->readIntoMemoryBlock(mb, header->numBytes);
-
-#if VCS_PACK_DEBUGGING
-    const String &xmlData = mb.toString();
-#else
-    const String &xmlData = DataEncoder::deobfuscateString(mb.toString());
-#endif
-
-    return XmlDocument::parse(xmlData);
+    return ValueTree::readFromStream(*this->packStream);
 }

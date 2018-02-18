@@ -76,7 +76,7 @@ Diff *ProjectInfoDiffLogic::createDiff(const TrackedItem &initialState) const
                 DeltaDiff fullDelta = this->createPathDiff(stateDeltaData, myDeltaData);
                 diff->applyDelta(fullDelta.delta, fullDelta.deltaData);
             }
-            else if (myDelta->hasType(ProjectInfoDeltas::projectFullName))
+            else if (myDelta->hasType(ProjectInfoDeltas::projectTitle))
             {
                 DeltaDiff fullDelta = this->createFullNameDiff(stateDeltaData, myDeltaData);
                 diff->applyDelta(fullDelta.delta, fullDelta.deltaData);
@@ -130,7 +130,7 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
                     ValueTree diffDeltaData = this->mergePath(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta, diffDeltaData);
                 }
-                else if (targetDelta->hasType(ProjectInfoDeltas::projectFullName))
+                else if (targetDelta->hasType(ProjectInfoDeltas::projectTitle))
                 {
                     Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
                     ValueTree diffDeltaData = this->mergeFullName(stateDeltaData, targetDeltaData);
@@ -198,7 +198,7 @@ DeltaDiff ProjectInfoDiffLogic::createPathDiff(const ValueTree &state, const Val
 DeltaDiff ProjectInfoDiffLogic::createFullNameDiff(const ValueTree &state, const ValueTree &changes) const
 {
     DeltaDiff res;
-    res.delta = new Delta(DeltaDescription("title changed"), ProjectInfoDeltas::projectFullName);
+    res.delta = new Delta(DeltaDescription("title changed"), ProjectInfoDeltas::projectTitle);
     res.deltaData = changes.createCopy();
     return res;
 }

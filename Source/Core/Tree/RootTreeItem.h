@@ -45,7 +45,7 @@ public:
 
     void safeRename(const String &newName) override;
 
-    void importMidi(File &file);
+    void importMidi(const File &file);
 
     //===------------------------------------------------------------------===//
     // Children

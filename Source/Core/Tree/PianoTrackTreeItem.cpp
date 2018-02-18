@@ -45,12 +45,12 @@ PianoTrackTreeItem::PianoTrackTreeItem(const String &name) :
 
     this->vcsDiffLogic = new VCS::PianoTrackDiffLogic(*this);
 
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), MidiTrackDeltas::trackPath));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), MidiTrackDeltas::trackMute));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), MidiTrackDeltas::trackColour));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), MidiTrackDeltas::trackInstrument));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), PianoSequenceDeltas::notesAdded));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), PatternDeltas::clipsAdded));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), MidiTrackDeltas::trackPath));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), MidiTrackDeltas::trackMute));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), MidiTrackDeltas::trackColour));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), MidiTrackDeltas::trackInstrument));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), PianoSequenceDeltas::notesAdded));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), PatternDeltas::clipsAdded));
 }
 
 Image PianoTrackTreeItem::getIcon() const

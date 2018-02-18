@@ -34,13 +34,13 @@ AutomationTrackTreeItem::AutomationTrackTreeItem(const String &name) :
 
     this->vcsDiffLogic = new VCS::AutomationTrackDiffLogic(*this);
 
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), AutoSequenceDeltas::layerPath));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), AutoSequenceDeltas::layerMute));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), AutoSequenceDeltas::layerColour));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), AutoSequenceDeltas::layerInstrument));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), AutoSequenceDeltas::layerController));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), AutoSequenceDeltas::eventsAdded));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), PatternDeltas::clipsAdded));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), AutoSequenceDeltas::layerPath));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), AutoSequenceDeltas::layerMute));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), AutoSequenceDeltas::layerColour));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), AutoSequenceDeltas::layerInstrument));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), AutoSequenceDeltas::layerController));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), AutoSequenceDeltas::eventsAdded));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), PatternDeltas::clipsAdded));
     
 #if HELIO_MOBILE
     // для мобил выключаю автоматизации нафиг, неюзабельно будет совершенно

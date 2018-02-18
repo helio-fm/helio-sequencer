@@ -20,11 +20,9 @@
 #include "Arpeggiator.h"
 #include "SerializationKeys.h"
 #include "BinaryData.h"
-
+#include "XmlSerializer.h"
 #include "App.h"
 #include "Config.h"
-#include "DataEncoder.h"
-
 
 void ArpeggiatorsManager::initialise(const String &commandLine)
 {
@@ -33,7 +31,7 @@ void ArpeggiatorsManager::initialise(const String &commandLine)
     const int requestArpsDelayMs = 2000;
     
     this->startTimer(requestArpsDelayMs);
-    //Logger::writeToLog(DataEncoder::obfuscate("http://helioworkstation.com/vcs/arps.php"));
+    //Logger::writeToLog(DocumentReader::obfuscate("http://helioworkstation.com/vcs/arps.php"));
 }
 
 void ArpeggiatorsManager::shutdown()
@@ -53,7 +51,7 @@ bool ArpeggiatorsManager::replaceArpWithId(const String &id, const Arpeggiator &
         if (this->arps.getUnchecked(i).getId() == id)
         {
             this->arps.setUnchecked(i, arp);
-            this->saveConfigArps();
+            Config::save(Serialization::Arps::arpeggiators, this);
             this->sendChangeMessage();
             return true;
         }
@@ -67,7 +65,7 @@ void ArpeggiatorsManager::addArp(const Arpeggiator &arp)
     if (! this->replaceArpWithId(arp.getId(), arp))
     {
         this->arps.add(arp);
-        this->saveConfigArps();
+        Config::save(Serialization::Arps::arpeggiators, this);
         this->sendChangeMessage();
     }
 }
@@ -121,54 +119,34 @@ void ArpeggiatorsManager::reset()
 
 void ArpeggiatorsManager::reloadArps()
 {
-    const String configArps(this->getConfigArps());
     const File debugArps(this->getDebugArpsFile());
-    
     if (debugArps.existsAsFile())
     {
         Logger::writeToLog("Found debug arps file, loading..");
-        
-        //ScopedPointer<XmlElement> xml(DataEncoder::loadObfuscated(debugArps));
-        ScopedPointer<XmlElement> xml(XmlDocument::parse(debugArps.loadFileAsString()));
-
-        if (xml != nullptr)
+        XmlSerializer serializer;
+        ValueTree arpsState;
+        serializer.loadFromFile(debugArps, arpsState);
+        if (arpsState.isValid())
         {
-            this->deserialize(*xml);
+            this->deserialize(arpsState);
         }
     }
-    else if (configArps.isNotEmpty())
+    else if (Config::contains(Serialization::Arps::arpeggiators))
     {
-        Logger::writeToLog("Found config arps, loading..");
-        ScopedPointer<XmlElement> xml(XmlDocument::parse(configArps));
-
-        if (xml != nullptr)
-        {
-            this->deserialize(*xml);
-        }
+        Config::load(Serialization::Arps::arpeggiators, this);
     }
     else
     {
         // built-in arps
         const String defaultArps = String(CharPointer_UTF8(BinaryData::DefaultArps_xml));
-        ScopedPointer<XmlElement> xml(XmlDocument::parse(defaultArps));
-        
-        if (xml != nullptr)
+        XmlSerializer serializer;
+        ValueTree arpsState;
+        serializer.loadFromString(defaultArps, arpsState);
+        if (arpsState.isValid())
         {
-            this->deserialize(*xml);
+            this->deserialize(arpsState);
         }
     }
-}
-
-void ArpeggiatorsManager::saveConfigArps()
-{
-    ScopedPointer<XmlElement> xml(this->serialize());
-    const String xmlString(xml->createDocument("", false, true, "UTF-8", 512));
-    Config::set(Serialization::Arps::arpeggiators, xmlString);
-}
-
-String ArpeggiatorsManager::getConfigArps()
-{
-    return Config::get(Serialization::Arps::arpeggiators);
 }
 
 

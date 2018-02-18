@@ -20,11 +20,9 @@
 #include "Arpeggiator.h"
 #include "SerializationKeys.h"
 #include "BinaryData.h"
-
+#include "XmlSerializer.h"
 #include "App.h"
 #include "Config.h"
-#include "DataEncoder.h"
-
 
 void ColourSchemeManager::initialise(const String &commandLine)
 {
@@ -45,23 +43,19 @@ Array<ColourScheme> ColourSchemeManager::getSchemes() const
 
 ColourScheme ColourSchemeManager::getCurrentScheme() const
 {
-    const String schemeData =
-        Config::get(Serialization::UI::Colours::appliedScheme);
- 
-    if (schemeData.isEmpty())
+    if (Config::contains(Serialization::UI::Colours::appliedScheme))
     {
-        return this->schemes[0]; // Will return ColourScheme() if array is empty
+        ColourScheme cs;
+        Config::load(Serialization::UI::Colours::appliedScheme, &cs);
+        return cs;
     }
 
-    ColourScheme cs(schemeData);
-    return cs;
+    return this->schemes[0]; // Will return ColourScheme() if array is empty
 }
 
 void ColourSchemeManager::setCurrentScheme(const ColourScheme &scheme)
 {
-    ScopedPointer<XmlElement> xml(scheme.serialize());
-    const String xmlString(xml->createDocument("", false, true, "UTF-8", 512));
-    Config::set(Serialization::UI::Colours::appliedScheme, xmlString);
+    Config::save(Serialization::UI::Colours::appliedScheme, &scheme);
 }
 
 void ColourSchemeManager::pull()
@@ -120,41 +114,22 @@ void ColourSchemeManager::reset()
 
 void ColourSchemeManager::reloadSchemes()
 {
-    const String configSchemes(this->getConfigSchemes());
-
-    if (configSchemes.isNotEmpty())
+    if (Config::contains(Serialization::UI::Colours::schemes))
     {
-        Logger::writeToLog("Found config schemes, loading..");
-        ScopedPointer<XmlElement> xml(XmlDocument::parse(configSchemes));
-
-        if (xml != nullptr)
-        {
-            this->deserialize(*xml);
-        }
+        Config::load(Serialization::UI::Colours::schemes, this);
     }
     else
     {
         // built-in schemes
         const String defaultSchemes = String(CharPointer_UTF8(BinaryData::ColourSchemes_xml));
-        ScopedPointer<XmlElement> xml(XmlDocument::parse(defaultSchemes));
-
-        if (xml != nullptr)
+        XmlSerializer serializer;
+        ValueTree schemesState;
+        serializer.loadFromString(defaultSchemes, schemesState);
+        if (schemesState.isValid())
         {
-            this->deserialize(*xml);
+            this->deserialize(schemesState);
         }
     }
-}
-
-void ColourSchemeManager::saveConfigSchemes()
-{
-    ScopedPointer<XmlElement> xml(this->serialize());
-    const String xmlString(xml->createDocument("", false, true, "UTF-8", 512));
-    Config::set(Serialization::UI::Colours::schemes, xmlString);
-}
-
-String ColourSchemeManager::getConfigSchemes()
-{
-    return Config::get(Serialization::UI::Colours::schemes);
 }
 
 
@@ -177,7 +152,7 @@ void ColourSchemeManager::requestResourceOk(const ValueTree &resource)
 {
     Logger::writeToLog("ColourSchemeManager::requestResourceOk");
     //this->deserialize(resource);
-    this->saveConfigSchemes();
+    Config::save(Serialization::UI::Colours::schemes, this);
     this->sendChangeMessage();
 }
 

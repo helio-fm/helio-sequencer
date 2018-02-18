@@ -26,13 +26,14 @@
 #include "PatternEditorTreeItem.h"
 #include "MainLayout.h"
 #include "Document.h"
+#include "DocumentHelpers.h"
+#include "XmlSerializer.h"
+#include "BinarySerializer.h"
 #include "ProjectListener.h"
 #include "ProjectPageDefault.h"
 #include "ProjectPagePhone.h"
-
 #include "AudioCore.h"
 #include "PlayerThread.h"
-
 #include "SequencerLayout.h"
 #include "MidiEvent.h"
 #include "MidiSequence.h"
@@ -41,8 +42,6 @@
 #include "Icons.h"
 #include "ProjectInfo.h"
 #include "ProjectTimeline.h"
-#include "DataEncoder.h"
-
 #include "TrackedItem.h"
 #include "VersionControlTreeItem.h"
 #include "VersionControl.h"
@@ -54,6 +53,7 @@
 #include "ProjectCommandPanel.h"
 #include "UndoStack.h"
 
+#include "DocumentHelpers.h"
 #include "Workspace.h"
 #include "App.h"
 
@@ -62,14 +62,14 @@
 
 
 ProjectTreeItem::ProjectTreeItem(const String &name) :
-    DocumentOwner(App::Workspace(), name, "hp"),
+    DocumentOwner(name, "helio"),
     TreeItem(name, Serialization::Core::project)
 {
     this->initialize();
 }
 
 ProjectTreeItem::ProjectTreeItem(const File &existingFile) :
-    DocumentOwner(App::Workspace(), existingFile),
+    DocumentOwner(existingFile),
     TreeItem(existingFile.getFileNameWithoutExtension(), Serialization::Core::project)
 {
     this->initialize();
@@ -279,17 +279,12 @@ void ProjectTreeItem::recreatePage()
 
 void ProjectTreeItem::savePageState() const
 {
-    const auto editorStateNode = this->sequencerLayout->serialize();
-    Config::set(Serialization::UI::editorState, editorStateNode);
+    Config::save(Serialization::UI::editorState, this->sequencerLayout);
 }
 
 void ProjectTreeItem::loadPageState()
 {
-    const ScopedPointer<XmlElement> editorStateNode(Config::getXml(Serialization::UI::editorState));
-    if (editorStateNode != nullptr)
-    {
-        this->sequencerLayout->deserialize(*editorStateNode);
-    }
+    Config::load(Serialization::UI::editorState, this->sequencerLayout);
 }
 
 void ProjectTreeItem::showPatternEditor(TreeItem *source)
@@ -519,12 +514,11 @@ Point<float> ProjectTreeItem::getProjectRangeInBeats() const
 
 ValueTree ProjectTreeItem::serialize() const
 {
-    this->getDocument()->save(); // todo remove? will save on delete
+    this->getDocument()->save();
 
     ValueTree tree(Serialization::Core::treeItem);
     tree.setProperty(Serialization::Core::treeItemType, this->type);
-    tree.setProperty("fullPath", this->getDocument()->getFullPath());
-    tree.setProperty("relativePath", this->getDocument()->getRelativePath());
+    tree.setProperty("Path", this->getDocument()->getFullPath());
     return tree;
 }
 
@@ -532,20 +526,16 @@ void ProjectTreeItem::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const String &fullPath = tree.getProperty("fullPath");
-    const String &relativePath = tree.getProperty("relativePath");
+    const File fullPathFile = File(tree.getProperty("Path"));
+    const File relativePathFile = DocumentHelpers::getDocumentSlot(fullPathFile.getFileName());
     
-    File relativeFile =
-    File(App::Workspace().getDocument()->getFile().
-         getParentDirectory().getChildFile(relativePath));
-    
-    if (!File(fullPath).existsAsFile() && !relativeFile.existsAsFile())
+    if (!fullPathFile.existsAsFile() && !relativePathFile.existsAsFile())
     {
         delete this;
         return;
     }
     
-    this->getDocument()->load(fullPath, relativePath);
+    this->getDocument()->load(fullPathFile, relativePathFile);
 }
 
 void ProjectTreeItem::reset()
@@ -562,16 +552,16 @@ void ProjectTreeItem::reset()
 }
 
 
-juce::ValueTree ProjectTreeItem::save() const
+ValueTree ProjectTreeItem::save() const
 {
     ValueTree tree(Serialization::Core::project);
-    tree.setProperty("name", this->name);
+    tree.setProperty("Name", this->name);
 
     tree.appendChild(this->info->serialize());
     tree.appendChild(this->timeline->serialize());
     
     //tree.appendChild(this->player->serialize()); // todo instead of:
-    tree.setProperty("seek", this->transport->getSeekPosition());
+    tree.setProperty("Seek", this->transport->getSeekPosition());
     
     // UI state is now stored in config
     //tree.appendChild(this->sequencerLayout->serialize());
@@ -825,7 +815,8 @@ bool ProjectTreeItem::onDocumentLoad(File &file)
 {
     if (file.existsAsFile())
     {
-        const ValueTree tree(DataEncoder::loadObfuscated(file));
+        const ValueTree tree(DocumentHelpers::load(file));
+        //const ValueTree tree(DocumentReader::loadObfuscated(file));
 
         if (tree.isValid())
         {
@@ -852,7 +843,9 @@ void ProjectTreeItem::onDocumentDidLoad(File &file)
 bool ProjectTreeItem::onDocumentSave(File &file)
 {
     const auto projectNode(this->save());
-    return DataEncoder::saveObfuscated(file, xml);
+    // Debug:
+    DocumentHelpers::save<XmlSerializer>(file.withFileExtension("xml"), projectNode);
+    return DocumentHelpers::save<BinarySerializer>(file, projectNode);
 }
 
 void ProjectTreeItem::onDocumentImport(File &file)

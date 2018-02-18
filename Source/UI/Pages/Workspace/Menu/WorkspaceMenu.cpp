@@ -68,17 +68,14 @@ WorkspaceMenu::WorkspaceMenu(Workspace *parentWorkspace)
 
     this->listBox->setModel(this);
     this->setFocusContainer(false);
-    this->workspace->addChangeListener(this);
+    
+    // FIXME update on workspace's recent files list changes
     //[/Constructor]
 }
 
 WorkspaceMenu::~WorkspaceMenu()
 {
     //[Destructor_pre]
-    if (this->workspace)
-    {
-        this->workspace->removeChangeListener(this);
-    }
     //[/Destructor_pre]
 
     component = nullptr;
@@ -123,7 +120,7 @@ void WorkspaceMenu::handleCommandMessage (int commandId)
     }
     else if (commandId == CommandIDs::OpenProject)
     {
-        this->workspace->getDocument()->import("*.hp");
+        this->workspace->importProject("*.hp");
         this->listBox->updateContent();
         //this->getParentComponent()->exitModalState(0);
     }
@@ -155,12 +152,7 @@ void WorkspaceMenu::changeListenerCallback(ChangeBroadcaster *source)
 {
     SessionManager *authManager = App::Helio()->getSessionManager();
 
-    if (source == this->workspace)
-    {
-        //Logger::writeToLog("WorkspaceMenu::changeListenerCallback");
-        this->listBox->updateContent();
-    }
-    else if (source == authManager)
+    if (source == authManager)
     {
         authManager->removeChangeListener(this);
 

@@ -19,7 +19,6 @@
 #include "RemovalThread.h"
 #include "VersionControl.h"
 #include "Client.h"
-#include "DataEncoder.h"
 #include "App.h"
 #include "SessionManager.h"
 #include "Config.h"
@@ -30,9 +29,7 @@ using namespace VCS;
 RemovalThread::RemovalThread(URL pushUrl,
                              String projectId,
                              MemoryBlock projectKey) :
-    SyncThread(pushUrl, projectId, projectKey, nullptr)
-{
-}
+    SyncThread(pushUrl, projectId, projectKey, {}) {}
 
 void RemovalThread::run()
 {
@@ -47,18 +44,14 @@ void RemovalThread::run()
     this->setState(SyncThread::sync);
 
     URL removeUrl(this->url);
-    removeUrl = removeUrl.withParameter(Serialization::Network::remove, this->localId);
-    removeUrl = removeUrl.withParameter(Serialization::Network::clientCheck, saltedIdHash);
-    removeUrl = removeUrl.withParameter(Serialization::Network::key, keyHash);
-    
+
     const bool loggedIn = (App::Helio()->getSessionManager()->getAuthorizationState() == SessionManager::LoggedIn);
     
     if (loggedIn)
     {
-        const String deviceId(Config::getMachineId());
-        const String obfustatedKey = DataEncoder::obfuscateString(this->localKey.toBase64Encoding());
-        removeUrl = removeUrl.withParameter(Serialization::Network::realKey, obfustatedKey);
-        removeUrl = removeUrl.withParameter(Serialization::Network::deviceId, deviceId);
+        const String deviceId(Config::getDeviceId());
+        const String obfustatedKey = this->localKey.toBase64Encoding();
+
     }
     
     {
@@ -81,7 +74,7 @@ void RemovalThread::run()
         }
         
         const String rawResult = removalStream->readEntireStreamAsString().trim();
-        const String result = DataEncoder::deobfuscateString(rawResult);
+        const String result = rawResult;
         
         Logger::writeToLog("Delete, raw result: " + rawResult);
         Logger::writeToLog("Delete, result: " + result);

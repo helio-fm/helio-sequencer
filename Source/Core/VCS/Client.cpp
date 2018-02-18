@@ -21,9 +21,6 @@
 #include "PushThread.h"
 #include "PullThread.h"
 #include "RemovalThread.h"
-#include "DataEncoder.h"
-#include "FileUtils.h"
-
 #include "App.h"
 #include "ProgressTooltip.h"
 #include "FailTooltip.h"
@@ -42,20 +39,20 @@ Client::Client(VersionControl &versionControl) :
 
 bool Client::push()
 {
-    //Logger::writeToLog(DataEncoder::obfuscate(HELIO_CLOUD_URL));
+    //Logger::writeToLog(DocumentReader::obfuscate(HELIO_CLOUD_URL));
 
     if (this->isPushing()) { return false; }
     if (this->isPulling()) { return false; }
     if (this->isRemoving()) { return false; }
 
-    ScopedPointer<XmlElement> vcsXml(this->vcs.serialize());
+    const auto vcsNode(this->vcs.serialize());
 
     this->pushThread =
         new PushThread(URL(HelioFM::Api::V1::vcs),
                        this->vcs.getPublicId(),
                        this->vcs.getParentName(),
                        this->vcs.getKey(),
-                       vcsXml);
+                       vcsNode);
     
     this->pushThread->startThread(5);
 
@@ -74,13 +71,13 @@ bool Client::pull()
     if (this->isPulling()) { return false; }
     if (this->isRemoving()) { return false; }
 
-    ScopedPointer<XmlElement> vcsXml(this->vcs.serialize());
+    const auto vcsNode(this->vcs.serialize());
 
     this->pullThread =
         new PullThread(URL(HelioFM::Api::V1::vcs),
                        this->vcs.getPublicId(),
                        this->vcs.getKey(),
-                       vcsXml);
+                       vcsNode);
 
     this->pullThread->startThread(5);
 
@@ -294,8 +291,8 @@ void Client::changeListenerCallback(ChangeBroadcaster *source)
         }
         else if (this->lastPullState == SyncThread::allDone)
         {
-            ScopedPointer<XmlElement> mergedXml(this->pullThread->createMergedStateData());
-            this->vcs.deserialize(*mergedXml);
+            const auto mergedXml(this->pullThread->createMergedStateData());
+            this->vcs.deserialize(mergedXml);
             this->vcs.checkout(this->vcs.getHead().getHeadingRevision());
             this->deletePullThread();
             

@@ -19,7 +19,7 @@
 
 namespace VCS
 {
-    struct PackDataHeader
+    struct DeltaDataHeader final
     {
         Uuid itemId;
         Uuid deltaId;
@@ -27,14 +27,14 @@ namespace VCS
         ssize_t numBytes;
     };
 
-    struct PackDataBlock
+    struct DeltaDataChunk final
     {
         Uuid itemId;
         Uuid deltaId;
         MemoryBlock data;
     };
 
-    class Pack :
+    class Pack final :
         public Serializable,
         public ReferenceCountedObject
     {
@@ -66,16 +66,16 @@ namespace VCS
 
     protected:
 
-        XmlElement *createXmlData(const PackDataHeader *header) const;
+        ValueTree createSerializedData(const DeltaDataHeader *header) const;
 
     private:
 
         // todo locks?
 
-        OwnedArray<PackDataHeader> headers;
-        OwnedArray<PackDataBlock> unsavedData;
+        OwnedArray<DeltaDataHeader> headers;
+        OwnedArray<DeltaDataChunk> unsavedData;
 
-        ScopedPointer<File> packFile;
+        File packFile;
         CriticalSection packStreamLock;
 
         ScopedPointer<FileInputStream> packStream;

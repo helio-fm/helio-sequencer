@@ -19,7 +19,6 @@
 #include "PushThread.h"
 #include "VersionControl.h"
 #include "Client.h"
-#include "DataEncoder.h"
 #include "App.h"
 #include "SessionManager.h"
 #include "Config.h"
@@ -32,7 +31,7 @@ PushThread::PushThread(URL pushUrl,
                        String projectId,
                        String projectTitle,
                        MemoryBlock projectKey,
-                       ScopedPointer<XmlElement> pushContent) :
+                       const ValueTree &pushContent) :
     SyncThread(pushUrl, projectId, projectKey, pushContent),
     title(std::move(projectTitle)) {}
 
@@ -48,11 +47,9 @@ void PushThread::run()
 
     this->setState(SyncThread::fetchHistory);
 
-    ScopedPointer<XmlElement> remoteXml;
+    ValueTree remoteState;
 
     URL fetchUrl(this->url);
-    fetchUrl = fetchUrl.withParameter(Serialization::Network::fetch, this->localId);
-    fetchUrl = fetchUrl.withParameter(Serialization::Network::clientCheck, saltedIdHash);
 
     // TODO like this:
 
@@ -92,10 +89,10 @@ void PushThread::run()
         downloadStream->readIntoMemoryBlock(fetchData);
         //Logger::writeToLog(fetchData.toString());
 
-        remoteXml = DataEncoder::createDecryptedXml(fetchData, this->localKey);
+        remoteState = {}; // FIAME DocumentReader::createDecryptedXml(fetchData, this->localKey);
 
         const bool fileExists = (fetchData.getSize() != 0) && (statusCode != 404);
-        const bool fileCanBeDecrypted = (remoteXml != nullptr);
+        const bool fileCanBeDecrypted = remoteState.isValid();
         if (fileExists && !fileCanBeDecrypted)
         {
             Logger::writeToLog("Wrong key!");
@@ -114,13 +111,13 @@ void PushThread::run()
     this->setState(SyncThread::merge);
 
     VersionControl localVCS(nullptr);
-    localVCS.deserialize(*this->localXml);
+    localVCS.deserialize(this->localState);
 
     VersionControl remoteVCS(nullptr);
 
-    if (remoteXml != nullptr)
+    if (remoteState.isValid())
     {
-        remoteVCS.deserialize(*remoteXml);
+        remoteVCS.deserialize(remoteState);
     }
     else
     {
@@ -161,8 +158,8 @@ void PushThread::run()
     TemporaryFile tempFile("vcs");
 
     {
-        ScopedPointer<XmlElement> xmlToPush(remoteVCS.serialize());
-        MemoryBlock encryptedRemoteXml(DataEncoder::encryptXml(*xmlToPush, this->localKey));
+        const ValueTree stateToPush(remoteVCS.serialize());
+        MemoryBlock encryptedRemoteXml; // FIXME (DocumentReader::encryptXml(stateToPush, this->localKey));
         tempFile.getFile().replaceWithData(encryptedRemoteXml.getData(), encryptedRemoteXml.getSize());
     }
 
@@ -179,24 +176,15 @@ void PushThread::run()
     this->setState(SyncThread::sync);
 
     URL pushUrl(this->url);
-    pushUrl = pushUrl.withFileToUpload(Serialization::Network::file, tempFile.getFile(), "application/octet-stream");
-    pushUrl = pushUrl.withParameter(Serialization::Network::key, keyHash);
+    pushUrl = pushUrl.withFileToUpload("file", tempFile.getFile(), "application/octet-stream");
 
     const bool loggedIn = (App::Helio()->getSessionManager()->getAuthorizationState() == SessionManager::LoggedIn);
 
     if (loggedIn)
     {
-        const String deviceId(Config::getMachineId());
-        const String obfustatedKey = DataEncoder::obfuscateString(this->localKey.toBase64Encoding());
-        //Logger::writeToLog(">>" + obfustatedKey + "<<");
-        pushUrl = pushUrl.withParameter(Serialization::Network::realKey, obfustatedKey);
-        pushUrl = pushUrl.withParameter(Serialization::Network::title, this->title);
-        pushUrl = pushUrl.withParameter(Serialization::Network::deviceId, deviceId);
+        const String deviceId(Config::getDeviceId());
+        const String obfustatedKey = this->localKey.toBase64Encoding();
     }
-
-
-    pushUrl = pushUrl.withParameter(Serialization::Network::push, this->localId);
-    pushUrl = pushUrl.withParameter(Serialization::Network::clientCheck, saltedIdHash);
 
     {
         int statusCode = 0;
@@ -218,7 +206,7 @@ void PushThread::run()
         }
 
         const String rawResult = pushStream->readEntireStreamAsString().trim();
-        const String result = DataEncoder::deobfuscateString(rawResult);
+        const String result = rawResult;
 
         Logger::writeToLog("Upload, raw result: " + rawResult);
         Logger::writeToLog("Upload, result: " + result);

@@ -29,7 +29,7 @@ namespace VCS
                    String projectId,
                    String projectTitle,
                    MemoryBlock projectKey,
-                   ScopedPointer<XmlElement> pushContent);
+                   const ValueTree &pushContent);
         
         void run() override;
 

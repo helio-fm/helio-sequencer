@@ -244,12 +244,12 @@ void MainWindow::setOpenGLRendererEnabled(bool shouldBeEnabled)
     if (shouldBeEnabled && (kOpenGLContext == nullptr))
     {
         this->attachOpenGLContext();
-        Config::set(Serialization::Core::openGLState, Serialization::Core::enabledState);
+        Config::set(Serialization::Core::openGLState, Serialization::Core::enabledState.toString());
     }
     else if (!shouldBeEnabled && (kOpenGLContext != nullptr))
     {
         this->detachOpenGLContext();
-        Config::set(Serialization::Core::openGLState, Serialization::Core::disabledState);
+        Config::set(Serialization::Core::openGLState, Serialization::Core::disabledState.toString());
     }
 }
 

@@ -17,12 +17,8 @@
 
 #pragma once
 
-#include "DataEncoder.h"
 #include "HelioApiRoutes.h"
 #include "HelioApiRequest.h"
-
-#include "Config.h"
-#include "SerializationKeys.h"
 
 class RequestResourceThread final : private Thread
 {

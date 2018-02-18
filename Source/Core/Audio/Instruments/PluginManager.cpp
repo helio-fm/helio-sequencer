@@ -17,9 +17,9 @@
 
 #include "Common.h"
 #include "PluginManager.h"
-#include "DataEncoder.h"
 #include "AudioCore.h"
-#include "FileUtils.h"
+#include "DocumentHelpers.h"
+#include "XmlSerializer.h"
 #include "Config.h"
 #include "SerializationKeys.h"
 #include "BuiltInSynthFormat.h"
@@ -31,7 +31,7 @@ PluginManager::PluginManager() :
     usingExternalProcess(false)
 {
     this->startThread(0);
-    Config::load(Serialization::Core::pluginManager, this);
+    Config::load(Serialization::Audio::pluginManager, this);
 }
 
 PluginManager::~PluginManager()
@@ -188,7 +188,7 @@ void PluginManager::run()
                 if (this->usingExternalProcess)
                 {
                     const Uuid tempFileName;
-                    const File tempFile(FileUtils::getTempSlot(tempFileName.toString()));
+                    const File tempFile(DocumentHelpers::getTempSlot(tempFileName.toString()));
                     tempFile.replaceWithText(i);
                     
                     const String myself = File::getSpecialLocation(File::currentExecutableFile).getFullPathName();
@@ -207,16 +207,14 @@ void PluginManager::run()
                         {
                             try
                             {
-                                ScopedPointer<XmlElement> xml(DataEncoder::loadObfuscated(tempFile));
-                                
-                                // todo as Serialization::Core::smartPluginDescription
-                                if (xml)
+                                const auto tree(DocumentHelpers::load<XmlSerializer>(tempFile));
+                                if (tree.isValid())
                                 {
-                                    forEachXmlChildElementWithTagName(*xml, e, "PLUGIN")
+                                    forEachValueTreeChildWithType(tree, e, Serialization::Audio::plugin)
                                     {
                                         const ScopedWriteLock lock(this->pluginsListLock);
-                                        PluginDescription pluginDescription;
-                                        pluginDescription.loadFromXml(*e);
+                                        PluginSmartDescription pluginDescription;
+                                        pluginDescription.deserialize(e);
                                         this->pluginsList.addType(pluginDescription);
                                     }
                                     
@@ -261,7 +259,7 @@ void PluginManager::run()
                 }
             }
 
-            Config::save(Serialization::Core::pluginManager, this);
+            Config::save(Serialization::Audio::pluginManager, this);
         }
         catch (...) { }
 
@@ -348,7 +346,7 @@ void PluginManager::scanPossibleSubfolders(const StringArray &possibleSubfolders
 ValueTree PluginManager::serialize() const
 {
     const ScopedReadLock lock(this->pluginsListLock);
-    ValueTree tree(Serialization::Core::pluginManager);
+    ValueTree tree(Serialization::Audio::pluginManager);
 
     for (int i = 0; i < this->pluginsList.getNumTypes(); ++i)
     {
@@ -365,8 +363,8 @@ void PluginManager::deserialize(const ValueTree &tree)
 
     const ScopedWriteLock lock(this->pluginsListLock);
 
-    const auto root = tree.hasType(Serialization::Core::pluginManager) ?
-        tree : tree.getChildWithName(Serialization::Core::pluginManager);
+    const auto root = tree.hasType(Serialization::Audio::pluginManager) ?
+        tree : tree.getChildWithName(Serialization::Audio::pluginManager);
 
     if (!root.isValid()) { return; }
 

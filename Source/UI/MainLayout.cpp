@@ -34,6 +34,7 @@
 #include "NavigationSidebar.h"
 #include "ToolsSidebar.h"
 #include "ColourSchemeManager.h"
+#include "JsonSerializer.h"
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
 #include "Workspace.h"
@@ -366,8 +367,9 @@ bool MainLayout::keyPressed(const KeyPress &key)
 
             scheme.syncWithLiveConstantEditor();
             const auto schemeNode(scheme.serialize());
-            // FIXME serialize before:
-            const String schemeNodeString(schemeNode->createDocument(""));
+            String schemeNodeString;
+            JsonSerializer serializer;
+            serializer.saveToString(schemeNodeString, schemeNode);
             SystemClipboard::copyTextToClipboard(schemeNodeString);
             return true;
         }

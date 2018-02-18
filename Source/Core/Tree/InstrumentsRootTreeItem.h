@@ -28,7 +28,6 @@ class InstrumentsRootTreeItem : public TreeItem
 public:
 
     InstrumentsRootTreeItem();
-    ~InstrumentsRootTreeItem() override;
 
     String getName() const override;
     Colour getColour() const override;

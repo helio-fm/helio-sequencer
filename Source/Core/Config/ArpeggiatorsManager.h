@@ -55,16 +55,12 @@ private:
     
     Array<Arpeggiator> arps;
     
-    ArpeggiatorsManager() {}
     void timerCallback() override;
-    
     void reloadArps();
-
-    void saveConfigArps();
-    String getConfigArps();
-    
+        
 private:
 
+    ArpeggiatorsManager() {}
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ArpeggiatorsManager)
 
 };

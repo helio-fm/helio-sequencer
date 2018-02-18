@@ -503,7 +503,7 @@ void MidiTrackTreeItem::onItemParentChanged()
 
 bool MidiTrackTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
-    bool isInterested = (Serialization::Core::instrument.toString() == dragSourceDetails.description.toString());
+    bool isInterested = (Serialization::Core::instrumentRoot.toString() == dragSourceDetails.description.toString());
 
     if (isInterested)
     { this->setOpen(true); }

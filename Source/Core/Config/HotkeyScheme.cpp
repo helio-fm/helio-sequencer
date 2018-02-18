@@ -32,6 +32,8 @@ HotkeyScheme::HotkeyScheme(const HotkeyScheme &other)
     operator= (other);
 }
 
+HotkeyScheme::HotkeyScheme() {}
+
 bool HotkeyScheme::dispatchKeyPress(KeyPress keyPress,
     WeakReference<Component> keyPressReceiver,
     WeakReference<Component> messageReceiver)

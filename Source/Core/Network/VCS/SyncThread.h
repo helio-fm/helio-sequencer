@@ -30,7 +30,7 @@ namespace VCS
         SyncThread(URL pushUrl,
                    String projectId,
                    MemoryBlock projectKey,
-                   ScopedPointer<XmlElement> pushContent);
+                   const ValueTree &pushContent);
         
         enum State
         {
@@ -63,7 +63,7 @@ namespace VCS
 
         String localId;
         MemoryBlock localKey;
-        ScopedPointer<XmlElement> localXml;
+        ValueTree localState;
 
         Atomic<int> bytesSent;
         Atomic<int> totalBytes;

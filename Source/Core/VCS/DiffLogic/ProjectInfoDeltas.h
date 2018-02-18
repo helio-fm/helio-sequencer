@@ -19,8 +19,8 @@
 
 namespace ProjectInfoDeltas
 {
-    static const Identifier projectLicense = "ProjectLicense";
-    static const Identifier projectFullName = "ProjectFullName";
-    static const Identifier projectAuthor = "ProjectAuthor";
-    static const Identifier projectDescription = "ProjectDescription";
+    static const Identifier projectLicense = "License";
+    static const Identifier projectTitle = "Title";
+    static const Identifier projectAuthor = "Author";
+    static const Identifier projectDescription = "Description";
 } // namespace ProjectInfoDeltas

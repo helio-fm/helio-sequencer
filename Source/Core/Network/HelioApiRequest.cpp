@@ -55,7 +55,7 @@ static String getPostHeaders()
         << "\n"
         << "Platform-Id: " << SystemStats::getOperatingSystemName()
         << "\n"
-        << "Device-Id: " << Config::getMachineId();
+        << "Device-Id: " << Config::getDeviceId();
 
     return extraHeaders;
 }

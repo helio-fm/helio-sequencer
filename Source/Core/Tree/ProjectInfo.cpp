@@ -30,9 +30,9 @@ ProjectInfo::ProjectInfo(ProjectTreeItem &parent) : project(parent)
     this->author = SystemStats::getFullUserName();
     this->description = "";
 
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectInfoDeltas::projectLicense));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectInfoDeltas::projectFullName));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(""), ProjectInfoDeltas::projectAuthor));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), ProjectInfoDeltas::projectLicense));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), ProjectInfoDeltas::projectTitle));
+    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), ProjectInfoDeltas::projectAuthor));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription("initialized"), ProjectInfoDeltas::projectDescription));
 }
 
@@ -76,7 +76,7 @@ ValueTree ProjectInfo::serializeDeltaData(int deltaIndex) const
     {
         return this->serializeLicenseDelta();
     }
-    if (this->deltas[deltaIndex]->getType() == ProjectInfoDeltas::projectFullName)
+    if (this->deltas[deltaIndex]->getType() == ProjectInfoDeltas::projectTitle)
     {
         return this->serializeFullNameDelta();
     }
@@ -109,7 +109,7 @@ void ProjectInfo::resetStateTo(const TrackedItem &newState)
         {
             this->resetLicenseDelta(newDeltaData);
         }
-        else if (newDelta->hasType(ProjectInfoDeltas::projectFullName))
+        else if (newDelta->hasType(ProjectInfoDeltas::projectTitle))
         {
             this->resetFullNameDelta(newDeltaData);
         }
@@ -181,7 +181,7 @@ ValueTree ProjectInfo::serializeLicenseDelta() const
 
 ValueTree ProjectInfo::serializeFullNameDelta() const
 {
-    ValueTree tree(ProjectInfoDeltas::projectFullName);
+    ValueTree tree(ProjectInfoDeltas::projectTitle);
     tree.setProperty(Serialization::VCS::delta, this->getFullName());
     return tree;
 }
@@ -213,7 +213,7 @@ void ProjectInfo::resetLicenseDelta(const ValueTree &state)
 
 void ProjectInfo::resetFullNameDelta(const ValueTree &state)
 {
-    jassert(state.hasType(ProjectInfoDeltas::projectFullName));
+    jassert(state.hasType(ProjectInfoDeltas::projectTitle));
     const String &delta = state.getProperty(Serialization::VCS::delta);
 
     if (delta != this->getFullName())

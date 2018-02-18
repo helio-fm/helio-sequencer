@@ -19,7 +19,6 @@
 #include "PullThread.h"
 #include "VersionControl.h"
 #include "Client.h"
-#include "DataEncoder.h"
 #include "SerializationKeys.h"
 
 using namespace VCS;
@@ -27,7 +26,7 @@ using namespace VCS;
 PullThread::PullThread(URL pushUrl,
                        String projectId,
                        MemoryBlock projectKey,
-                       ScopedPointer<XmlElement> pushContent) :
+                       const ValueTree &pushContent) :
     SyncThread(pushUrl, projectId, projectKey, pushContent),
     mergedVCS(nullptr) {}
 
@@ -48,11 +47,9 @@ void PullThread::run()
 
     this->setState(SyncThread::fetchHistory);
 
-    ScopedPointer<XmlElement> remoteXml;
+    ValueTree remoteState;
 
     URL fetchUrl(this->url);
-    fetchUrl = fetchUrl.withParameter(Serialization::Network::fetch, this->localId);
-    fetchUrl = fetchUrl.withParameter(Serialization::Network::clientCheck, saltedIdHash);
 
     {
         int statusCode = 0;
@@ -77,11 +74,11 @@ void PullThread::run()
 
         MemoryBlock fetchData;
         downloadStream->readIntoMemoryBlock(fetchData);
-        remoteXml = DataEncoder::createDecryptedXml(fetchData, this->localKey);
+        remoteState = {}; // FIXME DocumentHelpers::createDecryptedXml(fetchData, this->localKey);
 
-        if (remoteXml == nullptr)
+        if (!remoteState.isValid())
         {
-            //const String obfustatedKey = DataEncoder::obfuscateString(this->localKey.toBase64Encoding());
+            //const String obfustatedKey = DocumentReader::obfuscateString(this->localKey.toBase64Encoding());
             //Logger::writeToLog("Possible, wrong key: " + obfustatedKey);
             this->setState(SyncThread::fetchHistoryError);
             return;
@@ -98,13 +95,13 @@ void PullThread::run()
     this->setState(SyncThread::merge);
 
     this->mergedVCS = new VersionControl(nullptr);
-    this->mergedVCS->deserialize(*this->localXml);
+    this->mergedVCS->deserialize(this->localState);
 
     VersionControl remoteVCS(nullptr);
 
-    if (remoteXml != nullptr)
+    if (remoteState.isValid())
     {
-        remoteVCS.deserialize(*remoteXml);
+        remoteVCS.deserialize(remoteState);
     }
 
     Logger::writeToLog("Local version: " + String(this->mergedVCS->getVersion()));

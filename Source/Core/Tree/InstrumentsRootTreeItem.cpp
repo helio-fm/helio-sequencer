@@ -32,19 +32,10 @@
 #include "Workspace.h"
 
 InstrumentsRootTreeItem::InstrumentsRootTreeItem() :
-    TreeItem("Instruments", Serialization::Core::instrumentRoot)
+    TreeItem("Instruments", Serialization::Core::instrumentsList)
 {
     this->recreatePage();
-
-//#if HELIO_MOBILE
-//    this->setVisible(false);
-//#endif
 }
-
-InstrumentsRootTreeItem::~InstrumentsRootTreeItem()
-{
-}
-
 
 Colour InstrumentsRootTreeItem::getColour() const
 {
@@ -88,7 +79,7 @@ ScopedPointer<Component> InstrumentsRootTreeItem::createItemMenu()
 
 bool InstrumentsRootTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
-    bool isInterested = (dragSourceDetails.description == Serialization::Core::instrument.toString());
+    bool isInterested = (dragSourceDetails.description == Serialization::Core::instrumentRoot.toString());
 
     isInterested |= (nullptr != dynamic_cast<PluginDescriptionWrapper *>(dragSourceDetails.description.getObject()));
 

@@ -48,7 +48,7 @@ namespace VCS
         //===--------------------------------------------------------------===//
 
         static ValueTree serialize(ValueTree revision);
-        static void deserialize(ValueTree revision, const const ValueTree &tree);
+        static void deserialize(ValueTree revision, const ValueTree &tree);
         static void reset(ValueTree revision);
 
     };

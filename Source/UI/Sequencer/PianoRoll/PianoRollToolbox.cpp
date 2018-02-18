@@ -1082,21 +1082,6 @@ void PianoRollToolbox::moveToLayer(Lasso &selection, MidiSequence *layer, bool s
     targetLayer->insertGroup(*insertionsForTargetLayer, true);
 }
 
-
-bool PianoRollToolbox::arpeggiateUsingClipboardAsPattern(Lasso &selection, bool shouldCheckpoint)
-{
-    XmlElement *xml = InternalClipboard::getCurrentContent();
-    Arpeggiator arp = Arpeggiator().withSequenceFromXml(*xml);
-    
-    if (arp.isEmpty())
-    {
-        return false;
-    }
-    
-    return PianoRollToolbox::arpeggiate(selection, arp, shouldCheckpoint);
-}
-
-
 bool PianoRollToolbox::arpeggiate(Lasso &selection,
                                  const Arpeggiator &arp,
                                  bool shouldCheckpoint)

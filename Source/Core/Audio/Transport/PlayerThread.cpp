@@ -22,8 +22,6 @@
 #include "Instrument.h"
 #include "MidiSequence.h"
 
-#include "DataEncoder.h"
-
 #define MINIMUM_STOP_CHECK_TIME_MS 1000
 
 PlayerThread::PlayerThread(Transport &transport) :
