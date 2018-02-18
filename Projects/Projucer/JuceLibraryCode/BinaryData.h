@@ -357,7 +357,7 @@ namespace BinaryData
     const int            DefaultArps_xmlSize = 6876;
 
     extern const char*   DefaultHotkeys_xml;
-    const int            DefaultHotkeys_xmlSize = 6877;
+    const int            DefaultHotkeys_xmlSize = 9601;
 
     extern const char*   DefaultScales_xml;
     const int            DefaultScales_xmlSize = 4741;

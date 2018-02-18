@@ -281,6 +281,50 @@ int CommandIDs::getIdForName(const String &command)
         return SelectSampleRate;
     case Hash("SelectBufferSize"):
         return SelectBufferSize;
+    case Hash("EditModeDefault"):
+        return EditModeDefault;
+    case Hash("EditModeDraw"):
+        return EditModeDraw;
+    case Hash("EditModePan"):
+        return EditModePan;
+    case Hash("EditModeWipeSpace"):
+        return EditModeWipeSpace;
+    case Hash("EditModeInsertSpace"):
+        return EditModeInsertSpace;
+    case Hash("EditModeSelect"):
+        return EditModeSelect;
+    case Hash("BeatShiftLeft"):
+        return BeatShiftLeft;
+    case Hash("BeatShiftRight"):
+        return BeatShiftRight;
+    case Hash("BarShiftLeft"):
+        return BarShiftLeft;
+    case Hash("BarShiftRight"):
+        return BarShiftRight;
+    case Hash("KeyShiftUp"):
+        return KeyShiftUp;
+    case Hash("KeyShiftDown"):
+        return KeyShiftDown;
+    case Hash("OctaveShiftUp"):
+        return OctaveShiftUp;
+    case Hash("OctaveShiftDown"):
+        return OctaveShiftDown;
+    case Hash("CleanupOverlaps"):
+        return CleanupOverlaps;
+    case Hash("InvertChordUp"):
+        return InvertChordUp;
+    case Hash("InvertChordDown"):
+        return InvertChordDown;
+    case Hash("ToggleQuickStash"):
+        return ToggleQuickStash;
+    case Hash("ShowArpeggiatiosPanel"):
+        return ShowArpeggiatiosPanel;
+    case Hash("ShowVolumePanel"):
+        return ShowVolumePanel;
+    case Hash("TweakVolumeRandom"):
+        return TweakVolumeRandom;
+    case Hash("TweakVolumeFadeOut"):
+        return TweakVolumeFadeOut;
     default:
         return 0;
     };

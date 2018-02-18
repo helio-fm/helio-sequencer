@@ -1631,7 +1631,7 @@ void PianoRollToolbox::shiftBeatRelative(Lasso &selection, float deltaBeat, bool
     }
 }
 
-void PianoRollToolbox::inverseChord(Lasso &selection, 
+void PianoRollToolbox::invertChord(Lasso &selection, 
     int deltaKey, bool shouldCheckpoint, Transport *transport)
 {
     if (selection.getNumSelected() == 0)

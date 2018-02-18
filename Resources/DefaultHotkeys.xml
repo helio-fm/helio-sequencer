@@ -82,7 +82,46 @@
         <KeyPress Receiver="PianoRoll" Command="ZoomIn" Key="Z" />
         <KeyPress Receiver="PianoRoll" Command="ZoomOut" Key="Shift + Z" />
 
-        <!-- Refactoring -->
+        <!-- Edit selection -->
+        <KeyPress Receiver="PianoRoll" Command="BeatShiftLeft" Key="Cursor Left" />
+        <KeyPress Receiver="PianoRoll" Command="BeatShiftRight" Key="Cursor Right" />
+        <KeyPress Receiver="PianoRoll" Command="BarShiftLeft" Key="Shift + Cursor Left" />
+        <KeyPress Receiver="PianoRoll" Command="BarShiftRight" Key="Shift + Cursor Right" />
+
+        <KeyPress Receiver="PianoRoll" Command="KeyShiftUp" Key="Cursor Up" />
+        <KeyPress Receiver="PianoRoll" Command="KeyShiftDown" Key="Cursor Down" />
+        <KeyPress Receiver="PianoRoll" Command="OctaveShiftUp" Key="Shift + Cursor Up" />
+        <KeyPress Receiver="PianoRoll" Command="OctaveShiftDown" Key="Shift + Cursor Down" />
+
+        <!-- Refactor selection -->
+        <KeyPress Receiver="PianoRoll" Command="CleanupOverlaps" Key="O" />
+
+        <KeyPress Receiver="PianoRoll" Command="InvertChordUp" Key="Alt + Cursor Up" />
+        <KeyPress Receiver="PianoRoll" Command="InvertChordUp" Key="Command + Cursor Up" />
+        <KeyPress Receiver="PianoRoll" Command="InvertChordUp" Key="Control + Cursor Up" />
+
+        <KeyPress Receiver="PianoRoll" Command="InvertChordDown" Key="Alt + Cursor Down" />
+        <KeyPress Receiver="PianoRoll" Command="InvertChordDown" Key="Command + Cursor Down" />
+        <KeyPress Receiver="PianoRoll" Command="InvertChordDown" Key="Control + Cursor Down" />
+
+        <KeyPress Receiver="PianoRoll" Command="TweakVolumeRandom" Key="Shift + 1" />
+        <KeyPress Receiver="PianoRoll" Command="TweakVolumeFadeOut" Key="Shift + 2" />
+
+        <!-- Edit modes -->
+        <KeyPress Receiver="PianoRoll" Command="EditModeDefault" Key="1" />
+        <KeyPress Receiver="PianoRoll" Command="EditModeDraw" Key="2" />
+        <KeyPress Receiver="PianoRoll" Command="EditModePan" Key="3" />
+        <KeyPress Receiver="PianoRoll" Command="EditModeWipeSpace" Key="4" />
+        <KeyPress Receiver="PianoRoll" Command="EditModeInsertSpace" Key="5" />
+        <KeyPress Receiver="PianoRoll" Command="EditModeSelect" Key="6" />
+
+        <!-- Version control -->
+        <KeyPress Receiver="PianoRoll" Command="ToggleQuickStash" Key="Shift + Tab" />
+
+        <!-- Panels -->
+        <KeyPress Receiver="PianoRoll" Command="ShowArpeggiatiosPanel" Key="A" />
+        <KeyPress Receiver="PianoRoll" Command="ShowVolumePanel" Key="V" />
+
         <!-- TODO -->
 
         <!-- ======================= -->
@@ -132,6 +171,12 @@
         <KeyPress Receiver="PatternRoll" Command="ZoomOut" Key="Shift + Z" />
 
         <KeyPress Receiver="PatternRoll" Command="RenameSelectedTrack" Key="F2" />
+
+        <!-- Edit selection -->
+        <KeyPress Receiver="PianoRoll" Command="BeatShiftLeft" Key="Cursor Left" />
+        <KeyPress Receiver="PianoRoll" Command="BeatShiftRight" Key="Cursor Right" />
+        <KeyPress Receiver="PianoRoll" Command="BarShiftLeft" Key="Shift + Cursor Left" />
+        <KeyPress Receiver="PianoRoll" Command="BarShiftRight" Key="Shift + Cursor Right" />
 
     </HotkeyScheme>
 </HotkeySchemes>

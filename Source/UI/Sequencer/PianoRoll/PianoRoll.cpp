@@ -1019,12 +1019,12 @@ void PianoRoll::handleCommandMessage(int commandId)
         this->header->setSoundProbeMode(false);
         if (this->isUsingSpaceDraggingMode())
         {
-            const Time lastMouseDownTime = Desktop::getInstance().getMainMouseSource().getLastMouseDownTime();
-            const bool noClicksWasDone = (lastMouseDownTime < this->timeEnteredDragMode);
-            const bool noDraggingWasDone = (this->draggedDistance < 5);
-            const bool notTooMuchTimeSpent = (Time::getCurrentTime() - this->timeEnteredDragMode).inMilliseconds() < 500;
-            if (noDraggingWasDone && noClicksWasDone && notTooMuchTimeSpent)
-            { this->project.getTransport().toggleStatStopPlayback(); }
+            const bool noDraggingWasDone = (this->draggedDistance < 3);
+            const bool notTooMuchTimeSpent = (Time::getCurrentTime() - this->timeEnteredDragMode).inMilliseconds() < 300;
+            if (noDraggingWasDone && notTooMuchTimeSpent)
+            {
+                this->project.getTransport().toggleStatStopPlayback();
+            }
             this->setSpaceDraggingMode(false);
         }
         break;
@@ -1053,106 +1053,89 @@ void PianoRoll::handleCommandMessage(int commandId)
         App::Workspace().getAudioCore().mute();
         App::Workspace().getAudioCore().unmute();
         break;
+    case CommandIDs::BeatShiftLeft:
+        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), -1.f / NUM_BEATS_IN_BAR);
+        break;
+    case CommandIDs::BeatShiftRight:
+        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), 1.f / NUM_BEATS_IN_BAR);
+        break;
+    case CommandIDs::BarShiftLeft:
+        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), -1.f);
+        break;
+    case CommandIDs::BarShiftRight:
+        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), 1.f);
+        break;
+    case CommandIDs::KeyShiftUp:
+        PianoRollToolbox::shiftKeyRelative(this->getLassoSelection(), 1, true, &this->getTransport());
+        break;
+    case CommandIDs::KeyShiftDown:
+        PianoRollToolbox::shiftKeyRelative(this->getLassoSelection(), -1, true, &this->getTransport());
+        break;
+    case CommandIDs::OctaveShiftUp:
+        PianoRollToolbox::shiftKeyRelative(this->getLassoSelection(), 12, true, &this->getTransport());
+        break;
+    case CommandIDs::OctaveShiftDown:
+        PianoRollToolbox::shiftKeyRelative(this->getLassoSelection(), -12, true, &this->getTransport());
+        break;
+    case CommandIDs::CleanupOverlaps:
+        HYBRID_ROLL_BULK_REPAINT_START
+        PianoRollToolbox::removeOverlaps(this->getLassoSelection());
+        HYBRID_ROLL_BULK_REPAINT_END
+        break;
+    case CommandIDs::InvertChordUp:
+        PianoRollToolbox::invertChord(this->getLassoSelection(), 12, true, &this->getTransport());
+        break;
+    case CommandIDs::InvertChordDown:
+        PianoRollToolbox::invertChord(this->getLassoSelection(), -12, true, &this->getTransport());
+        break;
+    case CommandIDs::EditModeDefault:
+        this->project.getEditMode().setMode(HybridRollEditMode::defaultMode);
+        break;
+    case CommandIDs::EditModeDraw:
+        this->project.getEditMode().setMode(HybridRollEditMode::drawMode);
+        break;
+    case CommandIDs::EditModePan:
+        this->project.getEditMode().setMode(HybridRollEditMode::dragMode);
+        break;
+    case CommandIDs::EditModeWipeSpace:
+        this->project.getEditMode().setMode(HybridRollEditMode::wipeSpaceMode);
+        break;
+    case CommandIDs::EditModeInsertSpace:
+        this->project.getEditMode().setMode(HybridRollEditMode::insertSpaceMode);
+        break;
+    case CommandIDs::EditModeSelect:
+        this->project.getEditMode().setMode(HybridRollEditMode::selectionMode);
+        break;
+    case CommandIDs::ToggleQuickStash:
+        if (VersionControlTreeItem *vcsTreeItem = this->project.findChildOfType<VersionControlTreeItem>())
+        {
+            vcsTreeItem->toggleQuickStash();
+        }
+        break;
+    case CommandIDs::ShowArpeggiatiosPanel:
+        // TODO
+        break;
+    case CommandIDs::ShowVolumePanel:
+        if (this->selection.getNumSelected() > 0)
+        {
+            HelioCallout::emit(new NotesTuningPanel(this->project, *this), this, true);
+        }
+        break;
+    case CommandIDs::TweakVolumeRandom:
+        HYBRID_ROLL_BULK_REPAINT_START
+        PianoRollToolbox::randomizeVolume(this->getLassoSelection(), 0.1f);
+        HYBRID_ROLL_BULK_REPAINT_END
+        break;
+    case CommandIDs::TweakVolumeFadeOut:
+        HYBRID_ROLL_BULK_REPAINT_START
+        PianoRollToolbox::fadeOutVolume(this->getLassoSelection(), 0.35f);
+        HYBRID_ROLL_BULK_REPAINT_END
+        break;
     default:
         break;
     }
 
     HybridRoll::handleCommandMessage(commandId);
-
-// TODO more:
-//    else if (key == KeyPress::createFromDescription("cursor left"))
-//        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), -0.25f);
-//    else if (key == KeyPress::createFromDescription("cursor right"))
-//        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), 0.25f);
-//    else if (key == KeyPress::createFromDescription("shift + cursor left"))
-//        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), -0.25f * NUM_BEATS_IN_BAR);
-//    else if (key == KeyPress::createFromDescription("shift + cursor right"))
-//        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), 0.25f * NUM_BEATS_IN_BAR);
-//    else if (key == KeyPress::createFromDescription("cursor up"))
-//        PianoRollToolbox::shiftKeyRelative(this->getLassoSelection(), 1, true, &this->getTransport());
-//    else if (key == KeyPress::createFromDescription("cursor down"))
-//        PianoRollToolbox::shiftKeyRelative(this->getLassoSelection(), -1, true, &this->getTransport());
-//    else if (key == KeyPress::createFromDescription("shift + cursor up"))
-//        PianoRollToolbox::shiftKeyRelative(this->getLassoSelection(), 12, true, &this->getTransport());
-//    else if (key == KeyPress::createFromDescription("shift + cursor down"))
-//        PianoRollToolbox::shiftKeyRelative(this->getLassoSelection(), -12, true, &this->getTransport());
-//    else if (key == KeyPress::createFromDescription("option + cursor up") ||
-//             key == KeyPress::createFromDescription("command + cursor up") ||
-//             key == KeyPress::createFromDescription("ctrl + cursor up") ||
-//             key == KeyPress::createFromDescription("alt + cursor up"))
-//        PianoRollToolbox::inverseChord(this->getLassoSelection(), 12, true, &this->getTransport());
-//    else if (key == KeyPress::createFromDescription("option + cursor down") ||
-//             key == KeyPress::createFromDescription("command + cursor down") ||
-//             key == KeyPress::createFromDescription("ctrl + cursor down") ||
-//             key == KeyPress::createFromDescription("alt + cursor down"))
-//        PianoRollToolbox::inverseChord(this->getLassoSelection(), -12, true, &this->getTransport());
-//    else if (key == KeyPress::createFromDescription("1"))
-//        this->project.getEditMode().setMode(HybridRollEditMode::defaultMode);
-//    else if (key == KeyPress::createFromDescription("2"))
-//        this->project.getEditMode().setMode(HybridRollEditMode::drawMode);
-//    else if (key == KeyPress::createFromDescription("3"))
-//        this->project.getEditMode().setMode(HybridRollEditMode::selectionMode);
-//    else if (key == KeyPress::createFromDescription("4"))
-//        this->project.getEditMode().setMode(HybridRollEditMode::dragMode);
-//    else if (key == KeyPress::createFromDescription("5"))
-//        this->project.getEditMode().setMode(HybridRollEditMode::wipeSpaceMode);
-//    else if (key == KeyPress::createFromDescription("6"))
-//        this->project.getEditMode().setMode(HybridRollEditMode::insertSpaceMode);
-//    else if (key == KeyPress::createFromDescription("command + s") ||
-//        key == KeyPress::createFromDescription("ctrl + s"))
-//        this->project.getDocument()->forceSave();
-//    else if (key == KeyPress::createFromDescription("shift + Tab"))
-//        if (VersionControlTreeItem *vcsTreeItem = this->project.findChildOfType<VersionControlTreeItem>())
-//            vcsTreeItem->toggleQuickStash();
-//    else if (key == KeyPress::createFromDescription("f"))
-//        if (this->selection.getNumSelected() > 0)
-//            HelioCallout::emit(new NotesTuningPanel(this->project, *this), this, true);
-//    else if (key == KeyPress::createFromDescription("v"))
-//        if (this->selection.getNumSelected() > 0)
-//            HelioCallout::emit(new NotesTuningPanel(this->project, *this), this, true);
-//    else if (key == KeyPress::createFromDescription("o"))
-//    {
-//        HYBRID_ROLL_BULK_REPAINT_START
-//        PianoRollToolbox::removeOverlaps(this->getLassoSelection());
-//        HYBRID_ROLL_BULK_REPAINT_END
-//        return true;
-//    }
-//    else if (key == KeyPress::createFromDescription("s"))
-//    {
-//        HYBRID_ROLL_BULK_REPAINT_START
-//        PianoRollToolbox::snapSelection(this->getLassoSelection(), 1);
-//        HYBRID_ROLL_BULK_REPAINT_END
-//        return true;
-//    }
-//    else if (key == KeyPress::createFromDescription("command + 1") ||
-//             key == KeyPress::createFromDescription("ctrl + 1"))
-//    {
-//        HYBRID_ROLL_BULK_REPAINT_START
-//        PianoRollToolbox::randomizeVolume(this->getLassoSelection(), 0.1f);
-//        HYBRID_ROLL_BULK_REPAINT_END
-//        return true;
-//    }
-//    else if (key == KeyPress::createFromDescription("command + 2") ||
-//             key == KeyPress::createFromDescription("ctrl + 2"))
-//    {
-//        HYBRID_ROLL_BULK_REPAINT_START
-//        PianoRollToolbox::fadeOutVolume(this->getLassoSelection(), 0.35f);
-//        HYBRID_ROLL_BULK_REPAINT_END
-//        return true;
-//    }
-////    else if (key == KeyPress::createFromDescription("option + shift + a"))
-////    {
-////        MIDI_ROLL_BULK_REPAINT_START
-////        PianoRollToolbox::arpeggiateUsingClipboardAsPattern(this->getLassoSelection());
-////        MIDI_ROLL_BULK_REPAINT_END
-////        return true;
-////    }
-////    else if (key == KeyPress::createFromDescription("a"))
-////        if (this->selection.getNumSelected() > 0)
-////            // TODO show arps menu
-//    else if (key == KeyPress::createFromDescription("shift + a"))
-//        if (this->selection.getNumSelected() > 0)
-//            HelioCallout::emit(new ArpeggiatorEditorPanel(this->project, *this), this, true);
 }
 
 void PianoRoll::resized()
