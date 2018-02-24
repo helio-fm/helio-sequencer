@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "LegacySerializer.h"
-#include "DocumentHelpers.h"
 
 static const std::string kBase64Chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -25,7 +24,8 @@ static const std::string kBase64Chars =
     "0123456789+/";
 
 static const char *kHelioHeaderV1String = "PR::";
-static const int kHelioHeaderV1 = static_cast<int>(ByteOrder::littleEndianInt(kHelioHeaderV1String));
+static const int kHelioHeaderV1 =
+    static_cast<int>(ByteOrder::littleEndianInt(kHelioHeaderV1String));
 
 static const std::string kXorKey =
     "2V:-5?Vl%ulG+4-PG0`#:;[DUnB.Qs::"
@@ -115,7 +115,7 @@ static inline std::string decodeBase64(const std::string &encoded_string)
         {
             for (i = 0; i < 4; i++)
             {
-                char_array_4[i] = kBase64Chars.find(char_array_4[i]);
+                char_array_4[i] = (unsigned char)kBase64Chars.find(char_array_4[i]);
             }
 
             char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
@@ -140,7 +140,7 @@ static inline std::string decodeBase64(const std::string &encoded_string)
 
         for (j = 0; j < 4; j++)
         {
-            char_array_4[j] = kBase64Chars.find(char_array_4[j]);
+            char_array_4[j] = (unsigned char)kBase64Chars.find(char_array_4[j]);
         }
 
         char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
@@ -213,67 +213,30 @@ static String deobfuscateString(const String &buffer)
 
 static bool saveObfuscated(const File &file, XmlElement *xml)
 {
-    // Writes as plain text for debugging purposes:
-    //#if defined _DEBUG
-    //    
-    //    const String xmlString(xml->createDocument("", false, true, "UTF-8", 512));
-    //    const String xmlEncoded = xmlString;
-    //    return file.replaceWithText(xmlEncoded);
-    //    
-    //#else
-
     const String xmlString(xml->createDocument("", false, true, "UTF-8", 512));
     const MemoryBlock &compressed = compress(xmlString);
     const MemoryBlock &xorBlock = doXor(compressed);
 
     MemoryInputStream obfuscatedStream(xorBlock, false);
-
     if (!file.existsAsFile())
     {
         Result creationResult = file.create();
-        //Logger::writeToLog("Creating: " + file.getFullPathName() + ", result: " + creationResult.getErrorMessage());
     }
 
-    DocumentHelpers::TempDocument tempFile(file);
-    ScopedPointer <OutputStream> out(tempFile.getFile().createOutputStream());
-
-    //Logger::writeToLog("Temp file: " + tempFile.getFile().getFullPathName());
-
+    ScopedPointer <OutputStream> out(file.createOutputStream());
     if (out != nullptr)
     {
         out->writeInt(kHelioHeaderV1);
         out->writeFromInputStream(obfuscatedStream, -1);
         out->flush();
-
-        if (tempFile.overwriteTargetFileWithTemporary())
-        {
-            return true;
-        }
-
-        Logger::writeToLog("DocumentReader::saveObfuscated failed overwriteTargetFileWithTemporary");
-    }
-    else
-    {
-        Logger::writeToLog("DocumentReader::saveObfuscated failed");
+        return true;
     }
 
     return false;
-
-    //#endif
 }
 
 static XmlElement *loadObfuscated(const File &file)
 {
-    //#if defined _DEBUG
-    //    
-    //    const String result = file.loadFileAsString();
-    //    const String decodedResult = result;
-    //    
-    //    XmlElement *xml = XmlDocument::parse(decodedResult);
-    //    return tree;
-    //    
-    //#else
-
     FileInputStream fileStream(file);
 
     if (fileStream.openedOk())
@@ -293,33 +256,36 @@ static XmlElement *loadObfuscated(const File &file)
     }
 
     return nullptr;
-
-    //#endif
 }
 
 Result LegacySerializer::saveToFile(File file, const ValueTree &tree) const
 {
-    const auto saved = file.replaceWithText(tree.toXmlString());
+    ScopedPointer<XmlElement> xml(tree.createXml());
+    const bool saved = saveObfuscated(file, xml);
     return saved ? Result::ok() : Result::fail({});
 }
 
 Result LegacySerializer::loadFromFile(const File &file, ValueTree &tree) const
 {
-    XmlDocument document(file);
-    ScopedPointer<XmlElement> xml(document.getDocumentElement());
-    tree = ValueTree::fromXml(*xml);
-    return Result::ok();
+    ScopedPointer<XmlElement> xml(loadObfuscated(file));
+    if (xml != nullptr)
+    {
+        tree = ValueTree::fromXml(*xml);
+        return Result::ok();
+    }
+
+    return Result::fail({});
 }
 
 Result LegacySerializer::saveToString(String &string, const ValueTree &tree) const
 {
-    string = tree.toXmlString();
+    string = obfuscateString(tree.toXmlString());
     return Result::ok();
 }
 
 Result LegacySerializer::loadFromString(const String &string, ValueTree &tree) const
 {
-    XmlDocument document(string);
+    XmlDocument document(deobfuscateString(string));
     ScopedPointer<XmlElement> xml(document.getDocumentElement());
     tree = ValueTree::fromXml(*xml);
     return Result::ok();

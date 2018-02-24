@@ -18,23 +18,39 @@
 #include "Common.h"
 #include "BinarySerializer.h"
 
+static const char *kHelioHeaderV2String = "Helio2::";
+static const int64 kHelioHeaderV2 =
+    static_cast<int64>(ByteOrder::littleEndianInt64(kHelioHeaderV2String));
+
 Result BinarySerializer::saveToFile(File file, const ValueTree &tree) const
 {
-    FileOutputStream os(file);
-    if (os.openedOk())
+    FileOutputStream fileStream(file);
+    if (fileStream.openedOk())
     {
-        os.setPosition(0);
-        os.truncate();
-        tree.writeToStream(os);
+        fileStream.setPosition(0);
+        fileStream.truncate();
+        fileStream.writeInt64(kHelioHeaderV2);
+        tree.writeToStream(fileStream);
         return Result::ok();
     }
 
-    return Result::fail("Failed to serialize");
+    return Result::fail("Failed to save");
 }
 
 Result BinarySerializer::loadFromFile(const File &file, ValueTree &tree) const
 {
-    return Result::fail("not implemented");
+    FileInputStream fileStream(file);
+    if (fileStream.openedOk())
+    {
+        const auto magicNumber = fileStream.readInt64();
+        if (magicNumber == kHelioHeaderV2)
+        {
+            tree = ValueTree::readFromStream(fileStream);
+            return Result::ok();
+        }
+    }
+
+    return Result::fail("Failed to load");
 }
 
 Result BinarySerializer::saveToString(String &string, const ValueTree &tree) const
@@ -44,7 +60,13 @@ Result BinarySerializer::saveToString(String &string, const ValueTree &tree) con
 
 Result BinarySerializer::loadFromString(const String &string, ValueTree &tree) const
 {
-    return Result::fail("not implemented");
+    if (string.isNotEmpty())
+    {
+        tree = ValueTree::readFromData(string.toUTF8(), string.getNumBytesAsUTF8());
+        return Result::ok();
+    }
+
+    return Result::fail("Failed to load");
 }
 
 bool BinarySerializer::supportsFileWithExtension(const String &extension) const

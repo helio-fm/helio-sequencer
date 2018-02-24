@@ -182,7 +182,7 @@ ValueTree DocumentHelpers::load(const File &file)
 
     //const String h = headerBlock.toString();
 
-    return DocumentHelpers::load<XmlSerializer>(file);
+    return DocumentHelpers::load<BinarySerializer>(file);
     //return result;
 }
 
