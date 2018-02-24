@@ -52,9 +52,9 @@ void TreeItemChildrenSerializer::deserializeChildren(TreeItem &parentItem, const
 
         if (type == Core::project)              { child = new ProjectTreeItem(""); }
         else if (type == Core::settings)        { child = new SettingsTreeItem(); }
-        else if (type == Core::layerGroup)      { child = new TrackGroupTreeItem(""); }
-        else if (type == Core::pianoLayer)      { child = new PianoTrackTreeItem(""); }
-        else if (type == Core::autoLayer)       { child = new AutomationTrackTreeItem(""); }
+        else if (type == Core::trackGroup)      { child = new TrackGroupTreeItem(""); }
+        else if (type == Core::pianoTrack)      { child = new PianoTrackTreeItem(""); }
+        else if (type == Core::automationTrack) { child = new AutomationTrackTreeItem(""); }
         else if (type == Core::instrumentsList) { child = new InstrumentsRootTreeItem(); }
         else if (type == Core::instrumentRoot)  { child = new InstrumentTreeItem(); }
         else if (type == Core::versionControl)  { child = new VersionControlTreeItem(); }

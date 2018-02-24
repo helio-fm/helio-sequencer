@@ -19,8 +19,10 @@
 
 namespace MidiTrackDeltas
 {
-    static const Identifier trackPath = "LayerPath";
-    static const Identifier trackMute = "LayerMute";
-    static const Identifier trackColour = "LayerColour";
-    static const Identifier trackInstrument = "LayerInstrument";
+    static const Identifier trackPath = "Path";
+    static const Identifier trackMute = "Mute";
+    static const Identifier trackSolo = "Solo";
+    static const Identifier trackColour = "Colour";
+    static const Identifier trackInstrument = "Instrument";
+    static const Identifier trackController = "Controller";
 } // namespace MidiTrackDeltas

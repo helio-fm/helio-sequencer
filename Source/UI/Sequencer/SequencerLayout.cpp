@@ -798,8 +798,9 @@ void SequencerLayout::handleCommandMessage(int commandId)
 
 ValueTree SequencerLayout::serialize() const
 {
-    ValueTree tree(Serialization::UI::editorState);
+    ValueTree tree(Serialization::UI::sequencer);
     tree.appendChild(this->pianoRoll->serialize());
+    tree.appendChild(this->patternRoll->serialize());
     return tree;
 }
 
@@ -807,13 +808,14 @@ void SequencerLayout::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const auto root = tree.hasType(Serialization::UI::editorState) ?
-        tree : tree.getChildWithName(Serialization::UI::editorState);
+    const auto root = tree.hasType(Serialization::UI::sequencer) ?
+        tree : tree.getChildWithName(Serialization::UI::sequencer);
 
     if (!root.isValid())
     { return; }
-
-    this->pianoRoll->deserialize(root.getChild(0));
+    
+    this->pianoRoll->deserialize(root);
+    this->patternRoll->deserialize(root);
 }
 
 void SequencerLayout::reset()

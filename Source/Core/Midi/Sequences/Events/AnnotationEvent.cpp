@@ -123,22 +123,23 @@ Colour AnnotationEvent::getColour() const noexcept
 
 ValueTree AnnotationEvent::serialize() const
 {
-    ValueTree tree(Serialization::Core::annotation);
-    tree.setProperty("Text", this->description);
-    tree.setProperty("Colour", this->colour.toString());
-    tree.setProperty("Beat", this->beat);
-    tree.setProperty("Id", this->id);
+    using namespace Serialization;
+    ValueTree tree(Midi::annotation);
+    tree.setProperty(Midi::text, this->description);
+    tree.setProperty(Midi::colour, this->colour.toString());
+    tree.setProperty(Midi::beat, this->beat);
+    tree.setProperty(Midi::id, this->id);
     return tree;
 }
 
 void AnnotationEvent::deserialize(const ValueTree &tree)
 {
     this->reset();
-
-    this->description = tree.getProperty("Text");
-    this->colour = Colour::fromString(tree.getProperty("Colour").toString());
-    this->beat = float(tree.getProperty("Beat"));
-    this->id = tree.getProperty("Id");
+    using namespace Serialization;
+    this->description = tree.getProperty(Midi::text);
+    this->colour = Colour::fromString(tree.getProperty(Midi::colour).toString());
+    this->beat = roundBeat(tree.getProperty(Midi::beat));
+    this->id = tree.getProperty(Midi::id);
 }
 
 void AnnotationEvent::reset() {}

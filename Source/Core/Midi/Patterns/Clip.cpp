@@ -100,16 +100,18 @@ Clip Clip::withDeltaBeat(float deltaPosition) const
 
 ValueTree Clip::serialize() const
 {
-    ValueTree tree(Serialization::Core::clip);
-    tree.setProperty("start", this->startBeat);
-    tree.setProperty("id", this->id);
+    using namespace Serialization;
+    ValueTree tree(Midi::clip);
+    tree.setProperty(Midi::beat, this->startBeat);
+    tree.setProperty(Midi::id, this->id);
     return tree;
 }
 
 void Clip::deserialize(const ValueTree &tree)
 {
-    this->startBeat = float(tree.getProperty("start", this->startBeat));
-    this->id = tree.getProperty("id", this->id);
+    using namespace Serialization;
+    this->startBeat = float(tree.getProperty(Midi::beat, this->startBeat));
+    this->id = tree.getProperty(Midi::id, this->id);
 }
 
 void Clip::reset()

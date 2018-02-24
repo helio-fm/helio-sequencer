@@ -58,7 +58,7 @@ PianoTrackDiffLogic::PianoTrackDiffLogic(TrackedItem &targetItem) :
 
 const juce::Identifier VCS::PianoTrackDiffLogic::getType() const
 {
-    return Serialization::Core::pianoLayer;
+    return Serialization::Core::pianoTrack;
 }
 
 // assuming this is used only on checkout and resetting changes
@@ -610,7 +610,7 @@ void deserializeLayerChanges(const ValueTree &state, const ValueTree &changes,
 {
     if (state.isValid())
     {
-        forEachValueTreeChildWithType(state, e, Serialization::Core::note)
+        forEachValueTreeChildWithType(state, e, Serialization::Midi::note)
         {
             auto note = new Note();
             note->deserialize(e);
@@ -620,7 +620,7 @@ void deserializeLayerChanges(const ValueTree &state, const ValueTree &changes,
 
     if (changes.isValid())
     {
-        forEachValueTreeChildWithType(changes, e, Serialization::Core::note)
+        forEachValueTreeChildWithType(changes, e, Serialization::Midi::note)
         {
             auto note = new Note();
             note->deserialize(e);

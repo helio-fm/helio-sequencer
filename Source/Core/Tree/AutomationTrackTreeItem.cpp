@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "AutomationTrackTreeItem.h"
 #include "AutomationSequence.h"
+#include "MidiTrackDeltas.h"
 #include "AutoSequenceDeltas.h"
 #include "TreeItemChildrenSerializer.h"
 #include "Icons.h"
@@ -27,20 +28,20 @@
 #include "PatternDeltas.h"
 
 AutomationTrackTreeItem::AutomationTrackTreeItem(const String &name) :
-    MidiTrackTreeItem(name, Serialization::Core::autoLayer)
+    MidiTrackTreeItem(name, Serialization::Core::automationTrack)
 {
     this->layer = new AutomationSequence(*this, *this);
     this->pattern = new Pattern(*this, *this);
 
     this->vcsDiffLogic = new VCS::AutomationTrackDiffLogic(*this);
 
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), AutoSequenceDeltas::layerPath));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), AutoSequenceDeltas::layerMute));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), AutoSequenceDeltas::layerColour));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), AutoSequenceDeltas::layerInstrument));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), AutoSequenceDeltas::layerController));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), AutoSequenceDeltas::eventsAdded));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), PatternDeltas::clipsAdded));
+    this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackPath));
+    this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackMute));
+    this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackColour));
+    this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackInstrument));
+    this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackController));
+    this->deltas.add(new VCS::Delta({}, AutoSequenceDeltas::eventsAdded));
+    this->deltas.add(new VCS::Delta({}, PatternDeltas::clipsAdded));
     
 #if HELIO_MOBILE
     // для мобил выключаю автоматизации нафиг, неюзабельно будет совершенно
@@ -101,31 +102,31 @@ VCS::Delta *AutomationTrackTreeItem::getDelta(int index) const
 
 ValueTree AutomationTrackTreeItem::serializeDeltaData(int deltaIndex) const
 {
-    if (this->deltas[deltaIndex]->getType() == AutoSequenceDeltas::layerPath)
+    if (this->deltas[deltaIndex]->hasType(MidiTrackDeltas::trackPath))
     {
         return this->serializePathDelta();
     }
-    if (this->deltas[deltaIndex]->getType() == AutoSequenceDeltas::layerMute)
+    if (this->deltas[deltaIndex]->hasType(MidiTrackDeltas::trackMute))
     {
         return this->serializeMuteDelta();
     }
-    else if (this->deltas[deltaIndex]->getType() == AutoSequenceDeltas::layerColour)
+    else if (this->deltas[deltaIndex]->hasType(MidiTrackDeltas::trackColour))
     {
         return this->serializeColourDelta();
     }
-    else if (this->deltas[deltaIndex]->getType() == AutoSequenceDeltas::layerInstrument)
+    else if (this->deltas[deltaIndex]->hasType(MidiTrackDeltas::trackInstrument))
     {
         return this->serializeInstrumentDelta();
     }
-    else if (this->deltas[deltaIndex]->getType() == AutoSequenceDeltas::layerController)
+    else if (this->deltas[deltaIndex]->hasType(MidiTrackDeltas::trackController))
     {
         return this->serializeControllerDelta();
     }
-    else if (this->deltas[deltaIndex]->getType() == AutoSequenceDeltas::eventsAdded)
+    else if (this->deltas[deltaIndex]->hasType(AutoSequenceDeltas::eventsAdded))
     {
         return this->serializeEventsDelta();
     }
-    else if (this->deltas[deltaIndex]->getType() == PatternDeltas::clipsAdded)
+    else if (this->deltas[deltaIndex]->hasType(PatternDeltas::clipsAdded))
     {
         return this->serializeClipsDelta();
     }
@@ -146,23 +147,23 @@ void AutomationTrackTreeItem::resetStateTo(const VCS::TrackedItem &newState)
         const VCS::Delta *newDelta = newState.getDelta(i);
         const auto newDeltaData(newState.serializeDeltaData(i));
         
-        if (newDelta->hasType(AutoSequenceDeltas::layerPath))
+        if (newDelta->hasType(MidiTrackDeltas::trackPath))
         {
             this->resetPathDelta(newDeltaData);
         }
-        else if (newDelta->hasType(AutoSequenceDeltas::layerMute))
+        else if (newDelta->hasType(MidiTrackDeltas::trackMute))
         {
             this->resetMuteDelta(newDeltaData);
         }
-        else if (newDelta->hasType(AutoSequenceDeltas::layerColour))
+        else if (newDelta->hasType(MidiTrackDeltas::trackColour))
         {
             this->resetColourDelta(newDeltaData);
         }
-        else if (newDelta->hasType(AutoSequenceDeltas::layerInstrument))
+        else if (newDelta->hasType(MidiTrackDeltas::trackInstrument))
         {
             this->resetInstrumentDelta(newDeltaData);
         }
-        else if (newDelta->hasType(AutoSequenceDeltas::layerController))
+        else if (newDelta->hasType(MidiTrackDeltas::trackController))
         {
             this->resetControllerDelta(newDeltaData);
         }
@@ -208,13 +209,12 @@ void AutomationTrackTreeItem::deserialize(const ValueTree &tree)
     this->deserializeVCSUuid(tree);
     this->deserializeTrackProperties(tree);
 
-    // он все равно должен быть один, но так короче
-    forEachValueTreeChildWithType(tree, e, Serialization::Core::automation)
+    forEachValueTreeChildWithType(tree, e, Serialization::Midi::automation)
     {
         this->layer->deserialize(e);
     }
 
-    forEachValueTreeChildWithType(tree, e, Serialization::Core::pattern)
+    forEachValueTreeChildWithType(tree, e, Serialization::Midi::pattern)
     {
         this->pattern->deserialize(e);
     }
@@ -228,39 +228,39 @@ void AutomationTrackTreeItem::deserialize(const ValueTree &tree)
 // Deltas
 //===----------------------------------------------------------------------===//
 
-// вот все это можно вынести в LayerTreeItem
+// TODO move this in MidiTrackTreeItem
 
 ValueTree AutomationTrackTreeItem::serializePathDelta() const
 {
-    ValueTree tree(AutoSequenceDeltas::layerPath);
+    ValueTree tree(MidiTrackDeltas::trackPath);
     tree.setProperty(Serialization::VCS::delta, this->getTrackName());
     return tree;
 }
 
 ValueTree AutomationTrackTreeItem::serializeMuteDelta() const
 {
-    ValueTree tree(AutoSequenceDeltas::layerMute);
+    ValueTree tree(MidiTrackDeltas::trackMute);
     tree.setProperty(Serialization::VCS::delta, this->getTrackMuteStateAsString());
     return tree;
 }
 
 ValueTree AutomationTrackTreeItem::serializeColourDelta() const
 {
-    ValueTree tree(AutoSequenceDeltas::layerColour);
+    ValueTree tree(MidiTrackDeltas::trackColour);
     tree.setProperty(Serialization::VCS::delta, this->getTrackColour().toString());
     return tree;
 }
 
 ValueTree AutomationTrackTreeItem::serializeInstrumentDelta() const
 {
-    ValueTree tree(AutoSequenceDeltas::layerInstrument);
+    ValueTree tree(MidiTrackDeltas::trackInstrument);
     tree.setProperty(Serialization::VCS::delta, this->getTrackInstrumentId());
     return tree;
 }
 
 ValueTree AutomationTrackTreeItem::serializeControllerDelta() const
 {
-    ValueTree tree(AutoSequenceDeltas::layerController);
+    ValueTree tree(MidiTrackDeltas::trackController);
     tree.setProperty(Serialization::VCS::delta, this->getTrackControllerNumber());
     return tree;
 }
@@ -281,14 +281,14 @@ ValueTree AutomationTrackTreeItem::serializeEventsDelta() const
 
 void AutomationTrackTreeItem::resetPathDelta(const ValueTree &state)
 {
-    jassert(state.hasType(AutoSequenceDeltas::layerPath));
+    jassert(state.hasType(MidiTrackDeltas::trackPath));
     const String &path(state.getProperty(Serialization::VCS::delta));
     this->setXPath(path);
 }
 
 void AutomationTrackTreeItem::resetMuteDelta(const ValueTree &state)
 {
-    jassert(state.hasType(AutoSequenceDeltas::layerMute));
+    jassert(state.hasType(MidiTrackDeltas::trackMute));
     const String &muteState(state.getProperty(Serialization::VCS::delta));
     const bool willMute = MidiTrack::isTrackMuted(muteState);
     
@@ -300,7 +300,7 @@ void AutomationTrackTreeItem::resetMuteDelta(const ValueTree &state)
 
 void AutomationTrackTreeItem::resetColourDelta(const ValueTree &state)
 {
-    jassert(state.hasType(AutoSequenceDeltas::layerColour));
+    jassert(state.hasType(MidiTrackDeltas::trackColour));
     const String &colourString(state.getProperty(Serialization::VCS::delta));
     const Colour &colour(Colour::fromString(colourString));
 
@@ -312,14 +312,14 @@ void AutomationTrackTreeItem::resetColourDelta(const ValueTree &state)
 
 void AutomationTrackTreeItem::resetInstrumentDelta(const ValueTree &state)
 {
-    jassert(state.hasType(AutoSequenceDeltas::layerInstrument));
+    jassert(state.hasType(MidiTrackDeltas::trackInstrument));
     const String &instrumentId(state.getProperty(Serialization::VCS::delta));
     this->setTrackInstrumentId(instrumentId, false);
 }
 
 void AutomationTrackTreeItem::resetControllerDelta(const ValueTree &state)
 {
-    jassert(state.hasType(AutoSequenceDeltas::layerController));
+    jassert(state.hasType(MidiTrackDeltas::trackController));
     const int ccNumber(state.getProperty(Serialization::VCS::delta));
     this->setTrackControllerNumber(ccNumber, false);
 }
@@ -331,7 +331,7 @@ void AutomationTrackTreeItem::resetEventsDelta(const ValueTree &state)
     this->reset();
     this->getSequence()->reset();
 
-    forEachValueTreeChildWithType(state, e, Serialization::Core::event)
+    forEachValueTreeChildWithType(state, e, Serialization::Midi::automationEvent)
     {
         this->getSequence()->silentImport(AutomationEvent(this->getSequence()).withParameters(e));
     }

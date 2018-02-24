@@ -196,9 +196,9 @@ void Workspace::createEmptyProject()
 {
     const String newProjectName = TRANS("defaults::newproject::name");
 #if HELIO_DESKTOP
-    const String fileName = newProjectName + ".hp";
+    const String fileName = newProjectName + ".helio";
     FileChooser fc(TRANS("dialog::workspace::createproject::caption"),
-                   DocumentHelpers::getDocumentSlot(fileName), "*.hp", true);
+                   DocumentHelpers::getDocumentSlot(fileName), "*.helio", true);
     
     if (fc.browseForFileToSave(true))
     {

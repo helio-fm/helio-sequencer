@@ -313,18 +313,17 @@ void TranslationManager::reloadLocales()
     const File downloadedTranslations(this->getDownloadedTranslationsFile());
     if (downloadedTranslations.existsAsFile())
     {
-        const auto tree(DocumentHelpers::load<JsonSerializer>(downloadedTranslations));
+        const auto tree(DocumentHelpers::load<XmlSerializer>(downloadedTranslations));
         if (tree.isValid())
         {
             Logger::writeToLog("Found downloaded translations file, loading..");
             this->deserialize(tree);
             this->sendChangeMessage();
+            return;
         }
     }
-    else
-    {
-        this->loadFromXml(this->getLocalizationFileContents());
-    }
+
+    this->loadFromXml(this->getLocalizationFileContents());
 }
 
 String TranslationManager::getSelectedLocaleId() const

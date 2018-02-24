@@ -22,6 +22,8 @@
 
 using namespace VCS;
 
+// TODO rename as DeltaCache?
+
 Pack::Pack()
 {
     this->packFile = DocumentHelpers::getTempSlot("pack_" + this->uuid.toString() + ".vcs");
@@ -46,7 +48,8 @@ bool Pack::containsDeltaDataFor(const Uuid &itemId,
         // on-disk data
         for (auto header : this->headers)
         {
-            if (header->itemId == itemId && header->deltaId == deltaId)
+            if (/*header->itemId == itemId &&*/
+                header->deltaId == deltaId)
             {
                 return true;
             }
@@ -55,7 +58,8 @@ bool Pack::containsDeltaDataFor(const Uuid &itemId,
         // new in-memory data
         for (auto block : this->unsavedData)
         {
-            if (block->itemId == itemId && block->deltaId == deltaId)
+            if (/*block->itemId == itemId &&*/
+                block->deltaId == deltaId)
             {
                 return true;
             }
@@ -74,7 +78,8 @@ ValueTree Pack::createDeltaDataFor(const Uuid &itemId, const Uuid &deltaId) cons
         // on-disk data
         for (auto header : this->headers)
         {
-            if (header->itemId == itemId && header->deltaId == deltaId)
+            if (/*header->itemId == itemId &&*/
+                header->deltaId == deltaId)
             {
                 return this->createSerializedData(header);
             }
@@ -83,7 +88,8 @@ ValueTree Pack::createDeltaDataFor(const Uuid &itemId, const Uuid &deltaId) cons
         // in-memory data
         for (auto chunk : this->unsavedData)
         {
-            if (chunk->itemId == itemId && chunk->deltaId == deltaId)
+            if (/*chunk->itemId == itemId &&*/
+                chunk->deltaId == deltaId)
             {
                 MemoryInputStream chunkDataStream(chunk->data, false);
                 return ValueTree::readFromStream(chunkDataStream);
@@ -100,7 +106,7 @@ void Pack::setDeltaDataFor(const Uuid &itemId, const Uuid &deltaId, const ValueT
     const ScopedLock lock(this->packLocker);
 
     auto chunk = new DeltaDataChunk();
-    chunk->itemId = itemId;
+    //chunk->itemId = itemId;
     chunk->deltaId = deltaId;
 
     MemoryOutputStream ms(chunk->data, false);
@@ -127,7 +133,7 @@ ValueTree VCS::Pack::serialize() const
         {
             const auto deltaData(this->createSerializedData(header));
             ValueTree packItem(Serialization::VCS::packItem);
-            packItem.setProperty(Serialization::VCS::packItemRevId, header->itemId.toString());
+            //packItem.setProperty(Serialization::VCS::packItemRevId, header->itemId.toString());
             packItem.setProperty(Serialization::VCS::packItemDeltaId, header->deltaId.toString());
             packItem.appendChild(deltaData);
             tree.appendChild(packItem);
@@ -140,7 +146,7 @@ ValueTree VCS::Pack::serialize() const
         MemoryInputStream chunkDataStream(chunk->data, false);
         const auto deltaData(ValueTree::readFromStream(chunkDataStream));
         ValueTree packItem(Serialization::VCS::packItem);
-        packItem.setProperty(Serialization::VCS::packItemRevId, chunk->itemId.toString());
+        //packItem.setProperty(Serialization::VCS::packItemRevId, chunk->itemId.toString());
         packItem.setProperty(Serialization::VCS::packItemDeltaId, chunk->deltaId.toString());
         packItem.appendChild(deltaData);
         tree.appendChild(packItem);
@@ -164,7 +170,7 @@ void VCS::Pack::deserialize(const ValueTree &tree)
     {
         // first, load the data
         auto block = new DeltaDataChunk();
-        block->itemId = e.getProperty(Serialization::VCS::packItemRevId);
+        //block->itemId = e.getProperty(Serialization::VCS::packItemRevId);
         block->deltaId = e.getProperty(Serialization::VCS::packItemDeltaId);
 
         MemoryOutputStream ms(block->data, false);
@@ -224,7 +230,7 @@ void Pack::flush()
         tempOutputStream->write(block->data.getData(), block->data.getSize());
 
         auto newHeader = new DeltaDataHeader();
-        newHeader->itemId = block->itemId;
+        //newHeader->itemId = block->itemId;
         newHeader->deltaId = block->deltaId;
         newHeader->startPosition = position;
         newHeader->numBytes = block->data.getSize();

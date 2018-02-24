@@ -21,7 +21,6 @@ namespace Serialization
 {
     namespace Core
     {
-        static const Identifier midiRoll = "MidiRoll";
         static const Identifier treeItem = "Node";
         static const Identifier treeItemType = "Type";
         static const Identifier treeItemName = "Name";
@@ -40,18 +39,11 @@ namespace Serialization
         static const Identifier projectTimeStamp = "ProjectTimeStamp";
         static const Identifier versionControl = "VersionControl";
         static const Identifier patternSet = "PatternSet";
-        static const Identifier layerGroup = "Group";
-        static const Identifier layer = "Layer";
-        static const Identifier pianoLayer = "PianoLayer";
-        static const Identifier autoLayer = "AutoLayer";
-        static const Identifier projectTimeline = "ProjectTimeline";
-
-        // Sequences
+        static const Identifier trackGroup = "Group";
         static const Identifier track = "Track";
-        static const Identifier automation = "Automation";
-        static const Identifier annotations = "Annotations";
-        static const Identifier timeSignatures = "TimeSignatures";
-        static const Identifier keySignatures = "KeySignatures";
+        static const Identifier pianoTrack = "PianoTrack";
+        static const Identifier automationTrack = "AutomationTrack";
+        static const Identifier projectTimeline = "ProjectTimeline";
 
         // Properties
         static const Identifier trackId = "TrackId";
@@ -62,16 +54,10 @@ namespace Serialization
         static const Identifier trackMuteState = "Mute";
         static const Identifier trackSoloState = "Solo";
 
-        // Events
-        static const Identifier note = "Note";
-        static const Identifier event = "Event";
-        static const Identifier annotation = "Annotation";
-        static const Identifier timeSignature = "TimeSignature";
-        static const Identifier keySignature = "KeySignature";
-
-        // Patterns
-        static const Identifier clip = "Clip";
-        static const Identifier pattern = "Pattern";
+        // Timeline
+        static const Identifier annotationsTrackId = "AnnotationsTrackId";
+        static const Identifier keySignaturesTrackId = "KeySignaturesTrackId";
+        static const Identifier timeSignaturesTrackId = "TimeSignaturesTrackId";
 
         // Scales
         static const Identifier scales = "Scales";
@@ -88,20 +74,69 @@ namespace Serialization
 
         static const Identifier recentFiles = "RecentFiles";
         static const Identifier recentFileItem = "File";
-        
+        static const Identifier filePath = "FilePath";
+
         static const Identifier clipboard = "HelioClipboard";
 
         static const Identifier lastUsedLogin = "LastUsedLogin";
         static const Identifier firstLaunchSetupDone = "FirstLaunchSetupDone";
     } // namespace Core
 
+    namespace Midi
+    {
+        // Sequences
+        static const Identifier track = "Track";
+        static const Identifier automation = "Automation";
+        static const Identifier annotations = "Annotations";
+        static const Identifier timeSignatures = "TimeSignatures";
+        static const Identifier keySignatures = "KeySignatures";
+
+        // Events
+        static const Identifier note = "Note";
+        static const Identifier automationEvent = "Event";
+        static const Identifier annotation = "Annotation";
+        static const Identifier timeSignature = "TimeSignature";
+        static const Identifier keySignature = "KeySignature";
+
+        // Patterns
+        static const Identifier clip = "Clip";
+        static const Identifier pattern = "Pattern";
+
+        // Properties
+        static const Identifier id = "Id";
+        static const Identifier key = "Key";
+        static const Identifier beat = "Beat";
+        static const Identifier length = "Len";
+        static const Identifier velocity = "Vel";
+
+        static const Identifier text = "Text";
+        static const Identifier colour = "Colour";
+
+        static const Identifier value = "Value";
+        static const Identifier curve = "Curve";
+
+        static const Identifier numerator = "Numerator";
+        static const Identifier denominator = "Denominator";
+    } // namespace Events
+
     namespace Audio
     {
         static const Identifier instrument = "Instrument";
-        static const Identifier instrumentId = "Uuid";
+        static const Identifier instrumentId = "Id";
         static const Identifier instrumentName = "Name";
-        static const Identifier instrumentNode = "Node";
-        static const Identifier instrumentConnection = "Connection";
+
+        static const Identifier node = "Node";
+        static const Identifier nodeId = "Id";
+        static const Identifier nodeHash = "Hash";
+        static const Identifier sourceNodeId = "SourceNodeId";
+        static const Identifier destinationNodeId = "DestinationNodeId";
+        static const Identifier sourceChannel = "SourceChannel";
+        static const Identifier destinationChannel = "DestinationChannel";
+        static const Identifier connection = "Connection";
+
+        static const Identifier transport = "Transport";
+        static const Identifier transportSeekPosition = "SeekPosition";
+
         static const Identifier audioPlugin = "PluginSettings";
 
         static const Identifier plugin = "Plugin";
@@ -114,7 +149,7 @@ namespace Serialization
         static const Identifier pluginVersion = "Version";
         static const Identifier pluginFile = "File";
         static const Identifier pluginFileModTime = "FileTime";
-        static const Identifier pluginUid = "Uid";
+        static const Identifier pluginId = "Id";
         static const Identifier pluginIsInstrument = "IsInstrument";
         static const Identifier pluginNumInputs = "NumInputs";
         static const Identifier pluginNumOutputs = "NumOutputs";
@@ -123,24 +158,37 @@ namespace Serialization
         static const Identifier midiInputName = "Name";
         static const Identifier defaultMidiOutput = "DefaultMidiOutput";
 
-        static const Identifier pluginManager = "PluginManager";
+        static const Identifier pluginManager = "Plugins";
         static const Identifier audioCore = "AudioCore";
         static const Identifier orchestra = "Orchestra";
 
         static const Identifier audioDevice = "AudioDevice";
-        static const Identifier audioDeviceType = "AudioDeviceType";
-        static const Identifier audioOutputDeviceName = "AudioOutputDeviceName";
-        static const Identifier audioInputDeviceName = "AudioInputDeviceName";
-        static const Identifier audioDeviceRate = "AudioDeviceRate";
-        static const Identifier audioDeviceBufferSize = "AudioDeviceBufferSize";
-        static const Identifier audioDeviceInputChannels = "AudioDeviceInputChannels";
-        static const Identifier audioDeviceOutputChannels = "AudioDeviceOutputChannels";
+        static const Identifier audioDeviceType = "DeviceType";
+        static const Identifier audioInputDeviceName = "InputDeviceName";
+        static const Identifier audioOutputDeviceName = "OutputDeviceName";
+        static const Identifier audioDeviceRate = "SampleRate";
+        static const Identifier audioDeviceBufferSize = "BufferSize";
+        static const Identifier audioDeviceInputChannels = "InputChannels";
+        static const Identifier audioDeviceOutputChannels = "OutputChannels";
     } // namespace Audio
 
     namespace UI
     {
         static const Identifier lastShownPageId = "LastShownPageId";
-        static const Identifier editorState = "EditorState";
+        static const Identifier sequencer = "Sequencer";
+
+        static const Identifier pianoRoll = "PianoRoll";
+        static const Identifier patternRoll = "PatternRoll";
+
+        static const Identifier startBar = "StartBar";
+        static const Identifier endBar = "EndBar";
+        static const Identifier barWidth = "BarWidth";
+        static const Identifier rowHeight = "RowHeight";
+        static const Identifier viewportPositionX = "ViewportX";
+        static const Identifier viewportPositionY = "ViewportY";
+
+        static const Identifier positionX = "PositionX";
+        static const Identifier positionY = "PositionY";
 
         namespace Hotkeys
         {
@@ -212,22 +260,22 @@ namespace Serialization
         static const Identifier quickStash = "QuickStash";
         static const Identifier quickStashId = "QuickStashId";
 
-        static const Identifier pack = "Pack";
+        static const Identifier pack = "DeltaPack";
         static const Identifier packItem = "Record";
         static const Identifier packItemRevId = "ItemId";
         static const Identifier packItemDeltaId = "DeltaId";
 
         static const Identifier revision = "Revision";
         static const Identifier head = "Head";
-        static const Identifier headIndex = "HeadIndex";
-        static const Identifier headIndexData = "HeadIndexData";
+        static const Identifier headIndex = "Snapshot";
+        static const Identifier headIndexData = "SnapshotData";
         static const Identifier headRevisionId = "HeadRevisionId";
         static const Identifier commitMessage = "Message";
         static const Identifier commitTimeStamp = "Date";
         static const Identifier commitVersion = "Version";
-        static const Identifier commitId = "Uuid";
+        static const Identifier commitId = "Id";
 
-        static const Identifier vcsItemId = "VCSUuid";
+        static const Identifier vcsItemId = "VcsId";
 
         static const Identifier revisionItem = "RevisionItem";
         static const Identifier revisionItemType = "Type";
@@ -235,7 +283,7 @@ namespace Serialization
         static const Identifier revisionItemDiffLogic = "DiffLogic";
 
         static const Identifier delta = "Delta";
-        static const Identifier deltaId = "Uuid";
+        static const Identifier deltaId = "Id";
         static const Identifier deltaName = "Name";
         static const Identifier deltaIntParam = "IntParam";
         static const Identifier deltaStringParam = "StringParam";

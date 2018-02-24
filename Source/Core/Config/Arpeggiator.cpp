@@ -72,7 +72,7 @@ float Arpeggiator::getScale() const
 
 String Arpeggiator::exportSequenceAsTrack() const
 {
-    ValueTree sequence(Serialization::Core::track);
+    ValueTree sequence(Serialization::Midi::track);
     
     for (int i = 0; i < this->sequence.size(); ++i)
     {
@@ -101,14 +101,14 @@ Arpeggiator Arpeggiator::withSequenceFromString(const String &data) const
 {
     Arpeggiator arp(*this);
     const auto tree = DocumentHelpers::read<XmlSerializer>(data);
-    const auto root = tree.hasType(Serialization::Core::track) ?
-        tree : tree.getChildWithName(Serialization::Core::track);
+    const auto root = tree.hasType(Serialization::Midi::track) ?
+        tree : tree.getChildWithName(Serialization::Midi::track);
     
     if (!root.isValid()) { return arp; }
     
     Array<Note> xmlPattern;
     
-    forEachValueTreeChildWithType(root, e, Serialization::Core::note)
+    forEachValueTreeChildWithType(root, e, Serialization::Midi::note)
     {
         xmlPattern.add(Note().withParameters(e).copyWithNewId());
     }
@@ -238,7 +238,7 @@ void Arpeggiator::deserialize(const ValueTree &tree)
     
     Array<Note> xmlPattern;
     
-    forEachValueTreeChildWithType(seq, e, Serialization::Core::note)
+    forEachValueTreeChildWithType(seq, e, Serialization::Midi::note)
     {
         xmlPattern.add(Note().withParameters(e).copyWithNewId());
     }

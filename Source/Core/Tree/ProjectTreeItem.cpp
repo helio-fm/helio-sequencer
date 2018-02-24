@@ -376,8 +376,8 @@ ScopedPointer<Component> ProjectTreeItem::createItemMenu()
 
 bool ProjectTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
-    return (dragSourceDetails.description == Serialization::Core::layer.toString()) ||
-           (dragSourceDetails.description == Serialization::Core::layerGroup.toString());
+    return (dragSourceDetails.description == Serialization::Core::track.toString()) ||
+           (dragSourceDetails.description == Serialization::Core::trackGroup.toString());
 }
 
 
@@ -509,7 +509,7 @@ ValueTree ProjectTreeItem::serialize() const
 
     ValueTree tree(Serialization::Core::treeItem);
     tree.setProperty(Serialization::Core::treeItemType, this->type);
-    tree.setProperty("Path", this->getDocument()->getFullPath());
+    tree.setProperty(Serialization::Core::filePath, this->getDocument()->getFullPath());
     return tree;
 }
 
@@ -517,7 +517,7 @@ void ProjectTreeItem::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const File fullPathFile = File(tree.getProperty("Path"));
+    const File fullPathFile = File(tree.getProperty(Serialization::Core::filePath));
     const File relativePathFile = DocumentHelpers::getDocumentSlot(fullPathFile.getFileName());
     
     if (!fullPathFile.existsAsFile() && !relativePathFile.existsAsFile())
@@ -918,14 +918,14 @@ VCS::TrackedItem *ProjectTreeItem::getTrackedItem(int index)
 
 VCS::TrackedItem *ProjectTreeItem::initTrackedItem(const Identifier &type, const Uuid &id)
 {
-    if (type == Serialization::Core::pianoLayer)
+    if (type == Serialization::Core::pianoTrack)
     {
         MidiTrackTreeItem *track = new PianoTrackTreeItem("empty");
         track->setVCSUuid(id);
         this->addChildTreeItem(track);
         return track;
     }
-    if (type == Serialization::Core::autoLayer)
+    if (type == Serialization::Core::automationTrack)
     {
         MidiTrackTreeItem *track = new AutomationTrackTreeItem("empty");
         track->setVCSUuid(id);

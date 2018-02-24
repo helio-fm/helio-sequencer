@@ -35,7 +35,7 @@
 #include "PianoTrackDiffLogic.h"
 
 PianoTrackTreeItem::PianoTrackTreeItem(const String &name) :
-    MidiTrackTreeItem(name, Serialization::Core::pianoLayer)
+    MidiTrackTreeItem(name, Serialization::Core::pianoTrack)
 {
     this->layer = new PianoSequence(*this, *this);
     this->pattern = new Pattern(*this, *this);
@@ -45,12 +45,12 @@ PianoTrackTreeItem::PianoTrackTreeItem(const String &name) :
 
     this->vcsDiffLogic = new VCS::PianoTrackDiffLogic(*this);
 
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), MidiTrackDeltas::trackPath));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), MidiTrackDeltas::trackMute));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), MidiTrackDeltas::trackColour));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), MidiTrackDeltas::trackInstrument));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), PianoSequenceDeltas::notesAdded));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), PatternDeltas::clipsAdded));
+    this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackPath));
+    this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackMute));
+    this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackColour));
+    this->deltas.add(new VCS::Delta({}, MidiTrackDeltas::trackInstrument));
+    this->deltas.add(new VCS::Delta({}, PianoSequenceDeltas::notesAdded));
+    this->deltas.add(new VCS::Delta({}, PatternDeltas::clipsAdded));
 }
 
 Image PianoTrackTreeItem::getIcon() const
@@ -222,13 +222,12 @@ void PianoTrackTreeItem::deserialize(const ValueTree &tree)
     this->deserializeVCSUuid(tree);
     this->deserializeTrackProperties(tree);
 
-    // он все равно должен быть один, но так короче
-    forEachValueTreeChildWithType(tree, e, Serialization::Core::track)
+    forEachValueTreeChildWithType(tree, e, Serialization::Midi::track)
     {
         this->layer->deserialize(e);
     }
 
-    forEachValueTreeChildWithType(tree, e, Serialization::Core::pattern)
+    forEachValueTreeChildWithType(tree, e, Serialization::Midi::pattern)
     {
         this->pattern->deserialize(e);
     }
@@ -330,7 +329,7 @@ void PianoTrackTreeItem::resetEventsDelta(const ValueTree &state)
     //this->reset(); // TODO test
     this->getSequence()->reset();
 
-    forEachValueTreeChildWithType(state, e, Serialization::Core::note)
+    forEachValueTreeChildWithType(state, e, Serialization::Midi::note)
     {
         this->getSequence()->silentImport(Note(this->getSequence()).withParameters(e));
     }

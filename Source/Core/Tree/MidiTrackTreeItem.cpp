@@ -126,7 +126,7 @@ void MidiTrackTreeItem::resetClipsDelta(const ValueTree &state)
     this->getPattern()->reset();
 
     Pattern *pattern = this->getPattern();
-    forEachValueTreeChildWithType(state, e, Serialization::Core::clip)
+    forEachValueTreeChildWithType(state, e, Serialization::Midi::clip)
     {
         Clip c(pattern);
         c.deserialize(e);
@@ -462,7 +462,7 @@ ProjectTreeItem *MidiTrackTreeItem::getProject() const
 
 var MidiTrackTreeItem::getDragSourceDescription()
 {
-    return Serialization::Core::layer.toString();
+    return Serialization::Core::track.toString();
 }
 
 void MidiTrackTreeItem::onItemParentChanged()

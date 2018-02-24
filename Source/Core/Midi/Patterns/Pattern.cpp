@@ -285,7 +285,7 @@ void Pattern::updateBeatRange(bool shouldNotifyIfChanged)
 
 ValueTree Pattern::serialize() const
 {
-    ValueTree tree(Serialization::Core::pattern);
+    ValueTree tree(Serialization::Midi::pattern);
 
     for (int i = 0; i < this->clips.size(); ++i)
     {
@@ -300,15 +300,15 @@ void Pattern::deserialize(const ValueTree &tree)
     this->reset();
 
     const auto root =
-        tree.hasType(Serialization::Core::pattern) ?
-        tree : tree.getChildWithName(Serialization::Core::pattern);
+        tree.hasType(Serialization::Midi::pattern) ?
+        tree : tree.getChildWithName(Serialization::Midi::pattern);
 
     if (!root.isValid())
     {
         return;
     }
 
-    forEachValueTreeChildWithType(root, e, Serialization::Core::clip)
+    forEachValueTreeChildWithType(root, e, Serialization::Midi::clip)
     {
         auto clip = new Clip(this);
         clip->deserialize(e);

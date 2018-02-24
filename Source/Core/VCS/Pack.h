@@ -21,7 +21,7 @@ namespace VCS
 {
     struct DeltaDataHeader final
     {
-        Uuid itemId;
+        //Uuid itemId;
         Uuid deltaId;
         int64 startPosition;
         ssize_t numBytes;
@@ -29,7 +29,7 @@ namespace VCS
 
     struct DeltaDataChunk final
     {
-        Uuid itemId;
+        //Uuid itemId;
         Uuid deltaId;
         MemoryBlock data;
     };

@@ -150,10 +150,11 @@ const Scale &KeySignatureEvent::getScale() const noexcept
 
 ValueTree KeySignatureEvent::serialize() const
 {
-    ValueTree tree(Serialization::Core::keySignature);
-    tree.setProperty("Key", this->rootKey);
-    tree.setProperty("Beat", this->beat);
-    tree.setProperty("Id", this->id);
+    using namespace Serialization;
+    ValueTree tree(Midi::keySignature);
+    tree.setProperty(Midi::key, this->rootKey);
+    tree.setProperty(Midi::beat, this->beat);
+    tree.setProperty(Midi::id, this->id);
     tree.appendChild(this->scale.serialize());
     return tree;
 }
@@ -161,9 +162,10 @@ ValueTree KeySignatureEvent::serialize() const
 void KeySignatureEvent::deserialize(const ValueTree &tree)
 {
     this->reset();
-    this->rootKey = tree.getProperty("Key", 0);
-    this->beat = tree.getProperty("Beat");
-    this->id = tree.getProperty("Id");
+    using namespace Serialization;
+    this->rootKey = tree.getProperty(Midi::key, 0);
+    this->beat = roundBeat(tree.getProperty(Midi::beat));
+    this->id = tree.getProperty(Midi::id);
 
     // Anyway there is only one child scale for now:
     forEachValueTreeChildWithType(tree, e, Serialization::Core::scale)

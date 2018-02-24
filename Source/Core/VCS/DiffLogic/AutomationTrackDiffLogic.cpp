@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "AutomationTrackDiffLogic.h"
 #include "AutomationTrackTreeItem.h"
+#include "MidiTrackDeltas.h"
 #include "AutoSequenceDeltas.h"
 #include "PatternDiffHelpers.h"
 #include "AutomationEvent.h"
@@ -55,9 +56,9 @@ static bool checkIfDeltaIsEventsType(const Delta *delta);
 AutomationTrackDiffLogic::AutomationTrackDiffLogic(TrackedItem &targetItem) :
     DiffLogic(targetItem) {}
 
-const juce::Identifier VCS::AutomationTrackDiffLogic::getType() const
+const Identifier VCS::AutomationTrackDiffLogic::getType() const
 {
-    return Serialization::Core::autoLayer;
+    return Serialization::Core::automationTrack;
 }
 
 // assuming this is used only on checkout and resetting changes
@@ -104,27 +105,27 @@ Diff *AutomationTrackDiffLogic::createDiff(const TrackedItem &initialState) cons
 
         if (!deltaFoundInState || (deltaFoundInState && dataHasChanged))
         {
-            if (myDelta->hasType(AutoSequenceDeltas::layerPath))
+            if (myDelta->hasType(MidiTrackDeltas::trackPath))
             {
                 DeltaDiff fullDelta = createPathDiff(stateDeltaData, myDeltaData);
                 diff->applyDelta(fullDelta.delta, fullDelta.deltaData);
             }
-            else if (myDelta->hasType(AutoSequenceDeltas::layerMute))
+            else if (myDelta->hasType(MidiTrackDeltas::trackMute))
             {
                 DeltaDiff fullDelta = createMuteDiff(stateDeltaData, myDeltaData);
                 diff->applyDelta(fullDelta.delta, fullDelta.deltaData);
             }
-            else if (myDelta->hasType(AutoSequenceDeltas::layerColour))
+            else if (myDelta->hasType(MidiTrackDeltas::trackColour))
             {
                 DeltaDiff fullDelta = createColourDiff(stateDeltaData, myDeltaData);
                 diff->applyDelta(fullDelta.delta, fullDelta.deltaData);
             }
-            else if (myDelta->hasType(AutoSequenceDeltas::layerInstrument))
+            else if (myDelta->hasType(MidiTrackDeltas::trackInstrument))
             {
                 DeltaDiff fullDelta = createInstrumentDiff(stateDeltaData, myDeltaData);
                 diff->applyDelta(fullDelta.delta, fullDelta.deltaData);
             }
-            else if (myDelta->hasType(AutoSequenceDeltas::layerController))
+            else if (myDelta->hasType(MidiTrackDeltas::trackController))
             {
                 DeltaDiff fullDelta = createControllerDiff(stateDeltaData, myDeltaData);
                 diff->applyDelta(fullDelta.delta, fullDelta.deltaData);
@@ -195,31 +196,31 @@ Diff *AutomationTrackDiffLogic::createMergedItem(const TrackedItem &initialState
             {
                 deltaFoundInChanges = true;
 
-                if (targetDelta->hasType(AutoSequenceDeltas::layerPath))
+                if (targetDelta->hasType(MidiTrackDeltas::trackPath))
                 {
                     Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
                     ValueTree diffDeltaData = mergePath(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta, diffDeltaData);
                 }
-                else if (targetDelta->hasType(AutoSequenceDeltas::layerMute))
+                else if (targetDelta->hasType(MidiTrackDeltas::trackMute))
                 {
                     Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
                     ValueTree diffDeltaData = mergeMute(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta, diffDeltaData);
                 }
-                else if (targetDelta->hasType(AutoSequenceDeltas::layerColour))
+                else if (targetDelta->hasType(MidiTrackDeltas::trackColour))
                 {
                     Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
                     ValueTree diffDeltaData = mergeColour(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta, diffDeltaData);
                 }
-                else if (targetDelta->hasType(AutoSequenceDeltas::layerInstrument))
+                else if (targetDelta->hasType(MidiTrackDeltas::trackInstrument))
                 {
                     Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
                     ValueTree diffDeltaData = mergeInstrument(stateDeltaData, targetDeltaData);
                     diff->applyDelta(diffDelta, diffDeltaData);
                 }
-                else if (targetDelta->hasType(AutoSequenceDeltas::layerController))
+                else if (targetDelta->hasType(MidiTrackDeltas::trackController))
                 {
                     Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
                     ValueTree diffDeltaData = mergeController(stateDeltaData, targetDeltaData);
@@ -488,8 +489,9 @@ DeltaDiff createPathDiff(const ValueTree &state, const ValueTree &changes)
 {
     DeltaDiff res;
     res.deltaData = changes.createCopy();
-    res.delta = new Delta(DeltaDescription("moved from {x}", state.getProperty(Serialization::VCS::delta).toString()),
-                          AutoSequenceDeltas::layerPath);
+    res.delta = new Delta(DeltaDescription("moved from {x}",
+        state.getProperty(Serialization::VCS::delta).toString()),
+        MidiTrackDeltas::trackPath);
     return res;
 }
 
@@ -498,14 +500,16 @@ DeltaDiff createMuteDiff(const ValueTree &state, const ValueTree &changes)
     const bool muted = MidiTrack::isTrackMuted(changes.getProperty(Serialization::VCS::delta));
     DeltaDiff res;
     res.deltaData = changes.createCopy();
-    res.delta = new Delta(muted ? DeltaDescription("muted") : DeltaDescription("unmuted"), AutoSequenceDeltas::layerMute);
+    res.delta = new Delta(muted ? DeltaDescription("muted") :
+        DeltaDescription("unmuted"),
+        MidiTrackDeltas::trackMute);
     return res;
 }
 
 DeltaDiff createColourDiff(const ValueTree &state, const ValueTree &changes)
 {
     DeltaDiff res;
-    res.delta = new Delta(DeltaDescription("color changed"), AutoSequenceDeltas::layerColour);
+    res.delta = new Delta(DeltaDescription("color changed"), MidiTrackDeltas::trackColour);
     res.deltaData = changes.createCopy();
     return res;
 }
@@ -513,7 +517,7 @@ DeltaDiff createColourDiff(const ValueTree &state, const ValueTree &changes)
 DeltaDiff createInstrumentDiff(const ValueTree &state, const ValueTree &changes)
 {
     DeltaDiff res;
-    res.delta = new Delta(DeltaDescription("instrument changed"), AutoSequenceDeltas::layerInstrument);
+    res.delta = new Delta(DeltaDescription("instrument changed"), MidiTrackDeltas::trackInstrument);
     res.deltaData = changes.createCopy();
     return res;
 }
@@ -521,7 +525,7 @@ DeltaDiff createInstrumentDiff(const ValueTree &state, const ValueTree &changes)
 DeltaDiff createControllerDiff(const ValueTree &state, const ValueTree &changes)
 {
     DeltaDiff res;
-    res.delta = new Delta(DeltaDescription("controller changed"), AutoSequenceDeltas::layerController);
+    res.delta = new Delta(DeltaDescription("controller changed"), MidiTrackDeltas::trackController);
     res.deltaData = changes.createCopy();
     return res;
 }
@@ -634,7 +638,7 @@ void deserializeChanges(const ValueTree &state, const ValueTree &changes,
 {
     if (state.isValid())
     {
-        forEachValueTreeChildWithType(state, e, Serialization::Core::event)
+        forEachValueTreeChildWithType(state, e, Serialization::Midi::automationEvent)
         {
             auto event = new AutomationEvent();
             event->deserialize(e);
@@ -644,7 +648,7 @@ void deserializeChanges(const ValueTree &state, const ValueTree &changes,
 
     if (changes.isValid())
     {
-        forEachValueTreeChildWithType(changes, e, Serialization::Core::event)
+        forEachValueTreeChildWithType(changes, e, Serialization::Midi::automationEvent)
         {
             auto event = new AutomationEvent();
             event->deserialize(e);

@@ -166,35 +166,30 @@ float Note::getVelocity() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-// 128 would be enough, but
-#define VELOCITY_SAVE_ACCURACY 1024.f
+#define VELOCITY_SAVE_ACCURACY 128.f
 
 ValueTree Note::serialize() const
 {
-    ValueTree tree(Serialization::Core::note);
-    tree.setProperty("Key", this->key);
-    tree.setProperty("Beat", this->beat);
-    tree.setProperty("Len", this->length);
-    tree.setProperty("Vel", roundFloatToInt(this->velocity * VELOCITY_SAVE_ACCURACY));
-    tree.setProperty("Id", this->id);
+    using namespace Serialization;
+    ValueTree tree(Midi::note);
+    tree.setProperty(Midi::id, this->id);
+    tree.setProperty(Midi::key, this->key);
+    tree.setProperty(Midi::beat, this->beat);
+    tree.setProperty(Midi::length, this->length);
+    tree.setProperty(Midi::velocity, roundFloatToInt(this->velocity * VELOCITY_SAVE_ACCURACY));
     return tree;
 }
 
 void Note::deserialize(const ValueTree &tree)
 {
     this->reset();
-
-    const int xmlKey = tree.getProperty("Key");
-    const float xmlBeat = float(tree.getProperty("Beat"));
-    const float xmlLength = float(tree.getProperty("Len"));
-    const float xmlVelocity = float(tree.getProperty("Vel")) / VELOCITY_SAVE_ACCURACY;
-    const String& xmlId = tree.getProperty("Id");
-
-    this->key = xmlKey;
-    this->beat = roundBeat(xmlBeat);
-    this->length = xmlLength;
-    this->velocity = jmax(jmin(xmlVelocity, 1.f), 0.f);
-    this->id = xmlId;
+    using namespace Serialization;
+    this->id = tree.getProperty(Midi::id);
+    this->key = tree.getProperty(Midi::key);;
+    this->beat = roundBeat(tree.getProperty(Midi::beat));
+    this->length = roundBeat(tree.getProperty(Midi::length));
+    const float vel = float(tree.getProperty(Midi::velocity)) / VELOCITY_SAVE_ACCURACY;
+    this->velocity = jmax(jmin(vel, 1.f), 0.f);
 }
 
 void Note::reset() {}

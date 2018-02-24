@@ -84,10 +84,10 @@ bool MidiTrack::isOnOffTrack() const noexcept
 
 String MidiTrack::getTrackMuteStateAsString() const
 {
-    return (this->isTrackMuted() ? "yes" : "no");
+    return (this->isTrackMuted() ? "Yes" : "No");
 }
 
 bool MidiTrack::isTrackMuted(const String &muteState)
 {
-    return (muteState == "yes");
+    return (muteState == "Yes");
 }

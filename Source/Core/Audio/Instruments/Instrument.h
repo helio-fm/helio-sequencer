@@ -131,9 +131,6 @@ private:
     AudioProcessorPlayer processorPlayer;
     ScopedPointer<AudioProcessorGraph> processorGraph;
 
-    AudioProcessorGraph::NodeID lastUID;
-    AudioProcessorGraph::NodeID getNextUID() noexcept;
-
     ValueTree serializeNode(AudioProcessorGraph::Node::Ptr node) const;
     void deserializeNode(const ValueTree &tree);
     void deserializeNodeAsync(const ValueTree &tree,

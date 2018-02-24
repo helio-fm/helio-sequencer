@@ -182,7 +182,8 @@ ValueTree DocumentHelpers::load(const File &file)
 
     //const String h = headerBlock.toString();
 
-    return result;
+    return DocumentHelpers::load<XmlSerializer>(file);
+    //return result;
 }
 
 static File createTempFileForSaving(const File &parentDirectory, String name, const String& suffix)

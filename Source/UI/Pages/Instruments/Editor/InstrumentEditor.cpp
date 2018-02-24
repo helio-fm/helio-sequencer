@@ -68,7 +68,7 @@ InstrumentEditorNode *InstrumentEditor::getComponentForNode(AudioProcessorGraph:
     for (int i = getNumChildComponents(); --i >= 0;)
     {
         if (InstrumentEditorNode *const fc = dynamic_cast <InstrumentEditorNode *>(getChildComponent(i))) {
-            if (fc->filterID == id)
+            if (fc->nodeId == id)
             { return fc; }
         }
     }

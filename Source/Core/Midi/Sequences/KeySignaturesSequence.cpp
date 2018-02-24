@@ -273,7 +273,7 @@ bool KeySignaturesSequence::changeGroup(Array<KeySignatureEvent> &groupBefore,
 
 ValueTree KeySignaturesSequence::serialize() const
 {
-    ValueTree tree(Serialization::Core::keySignatures);
+    ValueTree tree(Serialization::Midi::keySignatures);
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
@@ -289,8 +289,8 @@ void KeySignaturesSequence::deserialize(const ValueTree &tree)
     this->reset();
 
     const auto root =
-        tree.hasType(Serialization::Core::keySignatures) ?
-        tree : tree.getChildWithName(Serialization::Core::keySignatures);
+        tree.hasType(Serialization::Midi::keySignatures) ?
+        tree : tree.getChildWithName(Serialization::Midi::keySignatures);
 
     if (!root.isValid())
     {
@@ -300,7 +300,7 @@ void KeySignaturesSequence::deserialize(const ValueTree &tree)
     float lastBeat = 0;
     float firstBeat = 0;
 
-    forEachValueTreeChildWithType(root, e, Serialization::Core::keySignature)
+    forEachValueTreeChildWithType(root, e, Serialization::Midi::keySignature)
     {
         auto signature = new KeySignatureEvent(this);
         signature->deserialize(e);

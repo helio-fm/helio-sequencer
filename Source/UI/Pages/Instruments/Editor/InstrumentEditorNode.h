@@ -25,52 +25,43 @@ class InstrumentEditorNode : public Component
 {
 public:
 
-    InstrumentEditorNode(Instrument &graph, const uint32 filterID);
-
+    InstrumentEditorNode(Instrument &graph, AudioProcessorGraph::NodeID nodeId);
     ~InstrumentEditorNode() override;
-
 
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
     void mouseDown(const MouseEvent &e) override;
-
     void mouseDrag(const MouseEvent &e) override;
-
     void mouseUp(const MouseEvent &e) override;
-
     void paint(Graphics &g) override;
-
     void resized() override;
 
-
     void getPinPos(const int index, const bool isInput, float &x, float &y);
-
     void update();
 
-    const uint32 filterID;
+    const AudioProcessorGraph::NodeID nodeId;
 
-    int numInputs, numOutputs;
+    int numInputs;
+    int numOutputs;
 
 private:
 
     Instrument &instrument;
-    
-    int pinSize;
 
+    int pinSize;
     Point<int> originalPos;
 
     Font font;
 
-    int numIns, numOuts;
+    int numIns;
+    int numOuts;
 
     bool hitTest(int x, int y) override;
 
     InstrumentEditor *getGraphPanel() const noexcept;
-
     InstrumentEditorNode(const InstrumentEditorNode &);
-
     InstrumentEditorNode &operator= (const InstrumentEditorNode &);
 
 };

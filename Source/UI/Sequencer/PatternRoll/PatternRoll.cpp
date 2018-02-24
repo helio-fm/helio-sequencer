@@ -79,6 +79,7 @@ PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
 
     this->repaintBackgroundsCache();
     this->reloadRollContent();
+    this->setBarRange(0, 8);
 }
 
 void PatternRoll::deleteSelection()
@@ -658,7 +659,7 @@ void PatternRoll::clipboardPaste(const ValueTree &tree)
 
     this->deselectAll();
 
-    forEachValueTreeChildWithType(root, patternElement, Serialization::Core::pattern)
+    forEachValueTreeChildWithType(root, patternElement, Serialization::Midi::pattern)
     {
         Array<Clip> pastedClips;
         const String patternId = patternElement.getProperty(Serialization::Clipboard::patternId);
@@ -667,7 +668,7 @@ void PatternRoll::clipboardPaste(const ValueTree &tree)
         {
             Pattern *targetPattern = this->project.findPatternByTrackId(patternId);
             
-            forEachValueTreeChildWithType(patternElement, clipElement, Serialization::Core::clip)
+            forEachValueTreeChildWithType(patternElement, clipElement, Serialization::Midi::clip)
             {
                 Clip &&c = Clip(targetPattern).withParameters(clipElement).copyWithNewId();
                 pastedClips.add(c.withDeltaBeat(deltaBeat));
@@ -811,17 +812,22 @@ void PatternRoll::insertNewClipAt(const MouseEvent &e)
 
 ValueTree PatternRoll::serialize() const
 {
-    ValueTree tree(Serialization::Core::midiRoll);
+    using namespace Serialization;
+    ValueTree tree(UI::patternRoll);
 
-    tree.setProperty("BarWidth", this->getBarWidth());
+    tree.setProperty(UI::barWidth, roundf(this->getBarWidth()));
 
-    tree.setProperty("StartBar", this->getBarByXPosition(this->getViewport().getViewPositionX()));
-    tree.setProperty("EndBar", this->getBarByXPosition(this->getViewport().getViewPositionX() + this->getViewport().getViewWidth()));
+    tree.setProperty(UI::startBar,
+        roundf(this->getBarByXPosition(this->getViewport().getViewPositionX())));
 
-    tree.setProperty("Y", this->getViewport().getViewPositionY());
+    tree.setProperty(UI::endBar,
+        roundf(this->getBarByXPosition(this->getViewport().getViewPositionX() +
+            this->getViewport().getViewWidth())));
+
+    tree.setProperty(UI::viewportPositionY, this->getViewport().getViewPositionY());
 
     // m?
-    //tree.setProperty("selection", this->getLassoSelection().serialize());
+    //tree.setProperty(UI::selection, this->getLassoSelection().serialize());
 
     return tree;
 }
@@ -829,20 +835,21 @@ ValueTree PatternRoll::serialize() const
 void PatternRoll::deserialize(const ValueTree &tree)
 {
     this->reset();
+    using namespace Serialization;
 
     const auto root =
-        tree.hasType(Serialization::Core::midiRoll) ?
-        tree : tree.getChildWithName(Serialization::Core::midiRoll);
+        tree.hasType(UI::patternRoll) ?
+        tree : tree.getChildWithName(UI::patternRoll);
 
     if (!root.isValid())
     { return; }
 
-    this->setBarWidth(float(root.getProperty("BarWidth", this->getBarWidth())));
+    this->setBarWidth(float(root.getProperty(UI::barWidth, this->getBarWidth())));
 
     // FIXME doesn't work right for now, as view range is sent after this
-    const float startBar = float(root.getProperty("StartBar", 0.0));
+    const float startBar = float(root.getProperty(UI::startBar, 0.0));
     const int x = this->getXPositionByBar(startBar);
-    const int y = root.getProperty("Y");
+    const int y = root.getProperty(UI::viewportPositionY);
     this->getViewport().setViewPosition(x, y);
 
     // restore selection?

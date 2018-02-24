@@ -259,7 +259,7 @@ bool TimeSignaturesSequence::changeGroup(Array<TimeSignatureEvent> &groupBefore,
 
 ValueTree TimeSignaturesSequence::serialize() const
 {
-    ValueTree tree(Serialization::Core::timeSignatures);
+    ValueTree tree(Serialization::Midi::timeSignatures);
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
@@ -273,10 +273,11 @@ ValueTree TimeSignaturesSequence::serialize() const
 void TimeSignaturesSequence::deserialize(const ValueTree &tree)
 {
     this->reset();
+    using namespace Serialization;
 
     const auto root =
-        tree.hasType(Serialization::Core::timeSignatures) ?
-        tree : tree.getChildWithName(Serialization::Core::timeSignatures);
+        tree.hasType(Serialization::Midi::timeSignatures) ?
+        tree : tree.getChildWithName(Serialization::Midi::timeSignatures);
 
     if (!root.isValid())
     {
@@ -286,7 +287,7 @@ void TimeSignaturesSequence::deserialize(const ValueTree &tree)
     float lastBeat = 0;
     float firstBeat = 0;
 
-    forEachValueTreeChildWithType(root, e, Serialization::Core::timeSignature)
+    forEachValueTreeChildWithType(root, e, Serialization::Midi::timeSignature)
     {
         TimeSignatureEvent *signature = new TimeSignatureEvent(this);
         signature->deserialize(e);

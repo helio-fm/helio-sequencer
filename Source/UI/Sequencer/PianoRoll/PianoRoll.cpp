@@ -80,6 +80,7 @@ PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
     this->addChildComponent(this->helperHorizontal);
 
     this->reloadRollContent();
+    this->setBarRange(0, 8);
 }
 
 void PianoRoll::deleteSelection()
@@ -768,17 +769,17 @@ void PianoRoll::clipboardPaste(const ValueTree &tree)
 
     this->deselectAll();
 
-    forEachValueTreeChildWithType(root, layerElement, Serialization::Core::layer)
+    forEachValueTreeChildWithType(root, layerElement, Serialization::Core::track)
     {
         Array<Note> pastedNotes;
 
         const String layerId = layerElement.getProperty(Serialization::Clipboard::layerId);
         
-        // TODO: store layer type in copy-paste info
+        // TODO: store track type in copy-paste info
         // when pasting, use these priorities:
-        // 1. layer with the same id
-        // 2. layer with the same type and controller
-        // 3. active layer
+        // 1. track with the same id
+        // 2. track with the same type and controller
+        // 3. active track
         
         if (nullptr != this->project.findSequenceByTrackId<AutomationSequence>(layerId))
         {
@@ -790,7 +791,7 @@ void PianoRoll::clipboardPaste(const ValueTree &tree)
             {
                 Array<AutomationEvent> pastedEvents;
 
-                forEachValueTreeChildWithType(layerElement, autoElement, Serialization::Core::event)
+                forEachValueTreeChildWithType(layerElement, autoElement, Serialization::Midi::automationEvent)
                 {
                     const auto &ae = AutomationEvent(targetLayer).withParameters(autoElement).copyWithNewId();
                     pastedEvents.add(ae.withDeltaBeat(deltaBeat));
@@ -806,7 +807,7 @@ void PianoRoll::clipboardPaste(const ValueTree &tree)
             // no check for a tree item as there isn't any for ProjectTimeline
             Array<AnnotationEvent> pastedAnnotations;
             
-            forEachValueTreeChildWithType(layerElement, annotationElement, Serialization::Core::annotation)
+            forEachValueTreeChildWithType(layerElement, annotationElement, Serialization::Midi::annotation)
             {
                 const auto &ae = AnnotationEvent(targetLayer).withParameters(annotationElement).copyWithNewId();
                 pastedAnnotations.add(ae.withDeltaBeat(deltaBeat));
@@ -818,7 +819,7 @@ void PianoRoll::clipboardPaste(const ValueTree &tree)
         {
             PianoSequence *targetLayer = this->project.findSequenceByTrackId<PianoSequence>(layerId);
             PianoTrackTreeItem *targetLayerItem = this->project.findTrackById<PianoTrackTreeItem>(layerId);
-            // use primary layer, if target is not found or not selected
+            // use primary track, if target is not found or not selected
             const bool shouldUsePrimaryLayer = (targetLayerItem == nullptr) ? true : (!targetLayerItem->isSelected());
             
             if (shouldUsePrimaryLayer)
@@ -826,7 +827,7 @@ void PianoRoll::clipboardPaste(const ValueTree &tree)
                 targetLayer = static_cast<PianoSequence *>(this->primaryActiveLayer);
             }
             
-            forEachValueTreeChildWithType(layerElement, noteElement, Serialization::Core::note)
+            forEachValueTreeChildWithType(layerElement, noteElement, Serialization::Midi::note)
             {
                 const auto &n = Note(targetLayer).withParameters(noteElement).copyWithNewId();
                 pastedNotes.add(n.withDeltaBeat(deltaBeat));
@@ -1340,18 +1341,23 @@ void PianoRoll::updateChildrenPositions()
 
 ValueTree PianoRoll::serialize() const
 {
-    ValueTree tree(Serialization::Core::midiRoll);
+    using namespace Serialization;
+    ValueTree tree(UI::pianoRoll);
     
-    tree.setProperty("BarWidth", this->getBarWidth());
-    tree.setProperty("RowHeight", this->getRowHeight());
+    tree.setProperty(UI::barWidth, roundf(this->getBarWidth()));
+    tree.setProperty(UI::rowHeight, roundf(this->getRowHeight()));
 
-    tree.setProperty("StartBar", this->getBarByXPosition(this->getViewport().getViewPositionX()));
-    tree.setProperty("EndBar", this->getBarByXPosition(this->getViewport().getViewPositionX() + this->getViewport().getViewWidth()));
+    tree.setProperty(UI::startBar,
+        roundf(this->getBarByXPosition(this->getViewport().getViewPositionX())));
 
-    tree.setProperty("Y", this->getViewport().getViewPositionY());
+    tree.setProperty(UI::endBar,
+        roundf(this->getBarByXPosition(this->getViewport().getViewPositionX() +
+            this->getViewport().getViewWidth())));
+
+    tree.setProperty(UI::viewportPositionY, this->getViewport().getViewPositionY());
 
     // m?
-    //tree.setProperty("selection", this->getLassoSelection().serialize());
+    //tree.setProperty(UI::selection, this->getLassoSelection().serialize());
 
     return tree;
 }
@@ -1359,22 +1365,23 @@ ValueTree PianoRoll::serialize() const
 void PianoRoll::deserialize(const ValueTree &tree)
 {
     this->reset();
+    using namespace Serialization;
 
-    const auto root = tree.hasType(Serialization::Core::midiRoll) ?
-        tree : tree.getChildWithName(Serialization::Core::midiRoll);
+    const auto root = tree.hasType(UI::pianoRoll) ?
+        tree : tree.getChildWithName(UI::pianoRoll);
 
     if (!root.isValid())
     {
         return;
     }
     
-    this->setBarWidth(float(root.getProperty("BarWidth", this->getBarWidth())));
-    this->setRowHeight(root.getProperty("RowHeight", this->getRowHeight()));
+    this->setBarWidth(float(root.getProperty(UI::barWidth, this->getBarWidth())));
+    this->setRowHeight(root.getProperty(UI::rowHeight, this->getRowHeight()));
 
     // FIXME doesn't work right for now, as view range is sent after this
-    const float startBar = float(root.getProperty("StartBar", 0.0));
+    const float startBar = float(root.getProperty(UI::startBar, 0.0));
     const int x = this->getXPositionByBar(startBar);
-    const int y = root.getProperty("Y");
+    const int y = root.getProperty(UI::viewportPositionY);
     this->getViewport().setViewPosition(x, y);
 
     // restore selection?

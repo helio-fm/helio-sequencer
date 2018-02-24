@@ -334,7 +334,7 @@ float PianoSequence::getLastBeat() const noexcept
 
 ValueTree PianoSequence::serialize() const
 {
-    ValueTree tree(Serialization::Core::track);
+    ValueTree tree(Serialization::Midi::track);
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
@@ -350,15 +350,15 @@ void PianoSequence::deserialize(const ValueTree &tree)
     this->reset();
 
     const auto root =
-        tree.hasType(Serialization::Core::track) ?
-        tree : tree.getChildWithName(Serialization::Core::track);
+        tree.hasType(Serialization::Midi::track) ?
+        tree : tree.getChildWithName(Serialization::Midi::track);
 
     if (!root.isValid())
     {
         return;
     }
 
-    forEachValueTreeChildWithType(root, e, Serialization::Core::note)
+    forEachValueTreeChildWithType(root, e, Serialization::Midi::note)
     {
         auto note = new Note(this);
         note->deserialize(e);

@@ -19,11 +19,6 @@
 
 namespace AutoSequenceDeltas
 {
-    static const Identifier layerPath = "LayerPath";
-    static const Identifier layerMute = "LayerMute";
-    static const Identifier layerColour = "LayerColour";
-    static const Identifier layerInstrument = "LayerInstrument";
-    static const Identifier layerController = "LayerController";
     static const Identifier eventsAdded = "EventsAdded";
     static const Identifier eventsRemoved = "EventsRemoved";
     static const Identifier eventsChanged = "EventsChanged";

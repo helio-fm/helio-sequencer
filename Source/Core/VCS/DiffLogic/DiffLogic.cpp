@@ -47,11 +47,11 @@ DiffLogic *DiffLogic::createLogicCopy(TrackedItem &copyFrom, TrackedItem &target
 
 DiffLogic *DiffLogic::createLogicFor(TrackedItem &targetItem, const Identifier &type)
 {
-    if (type == Serialization::Core::pianoLayer)
+    if (type == Serialization::Core::pianoTrack)
     {
         return new PianoTrackDiffLogic(targetItem);
     }
-    if (type == Serialization::Core::autoLayer)
+    if (type == Serialization::Core::automationTrack)
     {
         return new AutomationTrackDiffLogic(targetItem);
     }

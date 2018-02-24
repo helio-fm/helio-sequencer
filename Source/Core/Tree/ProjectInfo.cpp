@@ -30,9 +30,9 @@ ProjectInfo::ProjectInfo(ProjectTreeItem &parent) : project(parent)
     this->author = SystemStats::getFullUserName();
     this->description = "";
 
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), ProjectInfoDeltas::projectLicense));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), ProjectInfoDeltas::projectTitle));
-    this->deltas.add(new VCS::Delta(VCS::DeltaDescription(), ProjectInfoDeltas::projectAuthor));
+    this->deltas.add(new VCS::Delta({}, ProjectInfoDeltas::projectLicense));
+    this->deltas.add(new VCS::Delta({}, ProjectInfoDeltas::projectTitle));
+    this->deltas.add(new VCS::Delta({}, ProjectInfoDeltas::projectAuthor));
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription("initialized"), ProjectInfoDeltas::projectDescription));
 }
 

@@ -28,7 +28,7 @@ void deserializePatternChanges(const ValueTree &state, const ValueTree &changes,
 {
     if (state.isValid())
     {
-        forEachValueTreeChildWithType(state, e, Serialization::Core::clip)
+        forEachValueTreeChildWithType(state, e, Serialization::Midi::clip)
         {
             Clip clip;
             clip.deserialize(e);
@@ -38,7 +38,7 @@ void deserializePatternChanges(const ValueTree &state, const ValueTree &changes,
 
     if (changes.isValid())
     {
-        forEachValueTreeChildWithType(changes, e, Serialization::Core::clip)
+        forEachValueTreeChildWithType(changes, e, Serialization::Midi::clip)
         {
             Clip clip;
             clip.deserialize(e);

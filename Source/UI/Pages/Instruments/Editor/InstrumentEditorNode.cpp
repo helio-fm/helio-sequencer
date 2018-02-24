@@ -38,9 +38,9 @@
 #   define PIN_SIZE (25)
 #endif
 
-InstrumentEditorNode::InstrumentEditorNode(Instrument &graph, const uint32 filterID) :
+InstrumentEditorNode::InstrumentEditorNode(Instrument &graph, AudioProcessorGraph::NodeID nodeId) :
     instrument(graph),
-    filterID(filterID),
+    nodeId(nodeId),
     numInputs(0),
     numOutputs(0),
     pinSize(PIN_SIZE),
@@ -66,21 +66,18 @@ void InstrumentEditorNode::mouseDown(const MouseEvent &e)
 
 void InstrumentEditorNode::mouseDrag(const MouseEvent &e)
 {
-    //if (!e.mods.isPopupMenu())
-    {
-        Point<int> pos(originalPos + Point<int>(e.getDistanceFromDragStartX(), e.getDistanceFromDragStartY()));
+    Point<int> pos(originalPos + Point<int>(e.getDistanceFromDragStartX(), e.getDistanceFromDragStartY()));
 
-        if (this->getParentComponent() != nullptr)
-        { pos = this->getParentComponent()->getLocalPoint(nullptr, pos); }
+    if (this->getParentComponent() != nullptr)
+    { pos = this->getParentComponent()->getLocalPoint(nullptr, pos); }
 
-        this->instrument.setNodePosition(this->filterID,
-            (pos.getX() + getWidth() / 2) / static_cast<double>(this->getParentWidth()),
-            (pos.getY() + getHeight() / 2) / static_cast<double>(this->getParentHeight()));
+    this->instrument.setNodePosition(this->nodeId,
+        (pos.getX() + getWidth() / 2) / static_cast<double>(this->getParentWidth()),
+        (pos.getY() + getHeight() / 2) / static_cast<double>(this->getParentHeight()));
 
-        this->getGraphPanel()->updateComponents();
+    this->getGraphPanel()->updateComponents();
         
-        this->setMouseCursor(MouseCursor::DraggingHandCursor);
-    }
+    this->setMouseCursor(MouseCursor::DraggingHandCursor);
 }
 
 void InstrumentEditorNode::mouseUp(const MouseEvent &e)
@@ -89,12 +86,12 @@ void InstrumentEditorNode::mouseUp(const MouseEvent &e)
 
     if (e.mouseWasClicked() && e.getDistanceFromDragStart() < 2)
     {
-        if (this->instrument.isNodeStandardInputOrOutput(this->filterID))
+        if (this->instrument.isNodeStandardInputOrOutput(this->nodeId))
         {
             return;
         }
 
-        if (const AudioProcessorGraph::Node::Ptr f = this->instrument.getNodeForId(this->filterID))
+        if (const AudioProcessorGraph::Node::Ptr f = this->instrument.getNodeForId(this->nodeId))
         {
 #if AUDIO_PLUGIN_RUNS_IN_SEPARATE_WINDOW
 
@@ -115,7 +112,7 @@ void InstrumentEditorNode::mouseUp(const MouseEvent &e)
                 {
                     instrumentTreeItem->updateChildrenEditors();
                     if (TreeItem *audioPluginTreeItem =
-                        instrumentTreeItem->findAudioPluginEditorForNodeId(this->filterID))
+                        instrumentTreeItem->findAudioPluginEditorForNodeId(this->nodeId))
                     {
                         audioPluginTreeItem->setSelected(true, true);
                         return;
@@ -208,7 +205,7 @@ void InstrumentEditorNode::getPinPos(const int index, const bool isInput, float 
 
 void InstrumentEditorNode::update()
 {
-    const AudioProcessorGraph::Node::Ptr f(this->instrument.getNodeForId(filterID));
+    const AudioProcessorGraph::Node::Ptr f(this->instrument.getNodeForId(nodeId));
 
     if (f == nullptr)
     {
@@ -243,7 +240,7 @@ void InstrumentEditorNode::update()
 
     {
         double x, y;
-        this->instrument.getNodePosition(filterID, x, y);
+        this->instrument.getNodePosition(nodeId, x, y);
         setCentreRelative(static_cast<float>( x), static_cast<float>( y));
     }
 
@@ -257,16 +254,16 @@ void InstrumentEditorNode::update()
         int i;
 
         for (i = 0; i < this->numIns; ++i)
-        { this->addAndMakeVisible(new InstrumentEditorPin(this->instrument, filterID, i, true)); }
+        { this->addAndMakeVisible(new InstrumentEditorPin(this->instrument, nodeId, i, true)); }
 
         if (f->getProcessor()->acceptsMidi())
-        { this->addAndMakeVisible(new InstrumentEditorPin(this->instrument, filterID, Instrument::midiChannelNumber, true)); }
+        { this->addAndMakeVisible(new InstrumentEditorPin(this->instrument, nodeId, Instrument::midiChannelNumber, true)); }
 
         for (i = 0; i < this->numOuts; ++i)
-        { this->addAndMakeVisible(new InstrumentEditorPin(this->instrument, filterID, i, false)); }
+        { this->addAndMakeVisible(new InstrumentEditorPin(this->instrument, nodeId, i, false)); }
 
         if (f->getProcessor()->producesMidi())
-        { this->addAndMakeVisible(new InstrumentEditorPin(this->instrument, filterID, Instrument::midiChannelNumber, false)); }
+        { this->addAndMakeVisible(new InstrumentEditorPin(this->instrument, nodeId, Instrument::midiChannelNumber, false)); }
 
         this->resized();
     }

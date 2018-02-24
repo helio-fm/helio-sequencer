@@ -1051,23 +1051,25 @@ Array<DeltaDiff> createKeySignaturesDiffs(const ValueTree &state, const ValueTre
 void deserializeChanges(const ValueTree &state, const ValueTree &changes,
     OwnedArray<MidiEvent> &stateEvents, OwnedArray<MidiEvent> &changesEvents)
 {
+    using namespace Serialization;
+
     if (state.isValid())
     {
-        forEachValueTreeChildWithType(state, e, Serialization::Core::annotation)
+        forEachValueTreeChildWithType(state, e, Midi::annotation)
         {
             AnnotationEvent *event = new AnnotationEvent();
             event->deserialize(e);
             stateEvents.addSorted(*event, event);
         }
 
-        forEachValueTreeChildWithType(state, e, Serialization::Core::timeSignature)
+        forEachValueTreeChildWithType(state, e, Midi::timeSignature)
         {
             TimeSignatureEvent *event = new TimeSignatureEvent();
             event->deserialize(e);
             stateEvents.addSorted(*event, event);
         }
 
-        forEachValueTreeChildWithType(state, e, Serialization::Core::keySignature)
+        forEachValueTreeChildWithType(state, e, Midi::keySignature)
         {
             KeySignatureEvent *event = new KeySignatureEvent();
             event->deserialize(e);
@@ -1077,21 +1079,21 @@ void deserializeChanges(const ValueTree &state, const ValueTree &changes,
 
     if (changes.isValid())
     {
-        forEachValueTreeChildWithType(changes, e, Serialization::Core::annotation)
+        forEachValueTreeChildWithType(changes, e, Midi::annotation)
         {
             AnnotationEvent *event = new AnnotationEvent();
             event->deserialize(e);
             changesEvents.addSorted(*event, event);
         }
         
-        forEachValueTreeChildWithType(changes, e, Serialization::Core::timeSignature)
+        forEachValueTreeChildWithType(changes, e, Midi::timeSignature)
         {
             TimeSignatureEvent *event = new TimeSignatureEvent();
             event->deserialize(e);
             changesEvents.addSorted(*event, event);
         }
 
-        forEachValueTreeChildWithType(changes, e, Serialization::Core::keySignature)
+        forEachValueTreeChildWithType(changes, e, Midi::keySignature)
         {
             KeySignatureEvent *event = new KeySignatureEvent();
             event->deserialize(e);

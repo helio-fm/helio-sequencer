@@ -214,7 +214,6 @@ void InstrumentTreeItem::updateChildrenEditors()
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
@@ -224,7 +223,7 @@ ValueTree InstrumentTreeItem::serialize() const
     ValueTree tree(Serialization::Core::treeItem);
     tree.setProperty(Serialization::Core::treeItemType, this->type);
     tree.setProperty(Serialization::Core::treeItemName, this->name);
-    tree.setProperty("Id", this->instrument->getIdAndHash());
+    tree.setProperty(Serialization::Audio::instrumentId, this->instrument->getIdAndHash());
     return tree;
 }
 
@@ -232,7 +231,7 @@ void InstrumentTreeItem::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const String id = tree.getProperty("Id");
+    const String id = tree.getProperty(Serialization::Audio::instrumentId);
     this->instrument = this->audioCore->findInstrumentById(id);
 
     // если в аудиоядре инструмент исчез:

@@ -253,12 +253,12 @@ int MidiTrackMuteAction::getSizeInUnits()
 
 String boolToString(bool val)
 {
-    return val ? "yes" : "no";
+    return val ? "Yes" : "No";
 }
 
 bool stringToBool(const String &val)
 {
-    return val == "yes";
+    return val == "Yes";
 }
 
 ValueTree MidiTrackMuteAction::serialize() const

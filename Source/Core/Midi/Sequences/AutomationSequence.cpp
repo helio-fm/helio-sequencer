@@ -258,7 +258,7 @@ bool AutomationSequence::changeGroup(const Array<AutomationEvent> groupBefore,
 
 ValueTree AutomationSequence::serialize() const
 {
-    ValueTree tree(Serialization::Core::automation);
+    ValueTree tree(Serialization::Midi::automation);
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
@@ -274,8 +274,8 @@ void AutomationSequence::deserialize(const ValueTree &tree)
     this->reset();
 
     const auto root =
-        tree.hasType(Serialization::Core::automation) ?
-        tree : tree.getChildWithName(Serialization::Core::automation);
+        tree.hasType(Serialization::Midi::automation) ?
+        tree : tree.getChildWithName(Serialization::Midi::automation);
 
     if (!root.isValid())
     { return; }
@@ -283,7 +283,7 @@ void AutomationSequence::deserialize(const ValueTree &tree)
     float firstBeat = 0;
     float lastBeat = 0;
 
-    forEachValueTreeChildWithType(root, e, Serialization::Core::event)
+    forEachValueTreeChildWithType(root, e, Serialization::Midi::automationEvent)
     {
         auto event = new AutomationEvent(this, 0, 0);
         event->deserialize(e);

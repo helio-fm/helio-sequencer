@@ -261,7 +261,7 @@ bool AnnotationsSequence::changeGroup(Array<AnnotationEvent> &groupBefore,
 
 ValueTree AnnotationsSequence::serialize() const
 {
-    ValueTree tree(Serialization::Core::annotations);
+    ValueTree tree(Serialization::Midi::annotations);
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
@@ -277,8 +277,8 @@ void AnnotationsSequence::deserialize(const ValueTree &tree)
     this->reset();
 
     const auto root =
-        tree.hasType(Serialization::Core::annotations) ?
-        tree : tree.getChildWithName(Serialization::Core::annotations);
+        tree.hasType(Serialization::Midi::annotations) ?
+        tree : tree.getChildWithName(Serialization::Midi::annotations);
 
     if (!root.isValid())
     {
@@ -288,7 +288,7 @@ void AnnotationsSequence::deserialize(const ValueTree &tree)
     float lastBeat = 0;
     float firstBeat = 0;
 
-    forEachValueTreeChildWithType(root, e, Serialization::Core::annotation)
+    forEachValueTreeChildWithType(root, e, Serialization::Midi::annotation)
     {
         AnnotationEvent *annotation = new AnnotationEvent(this);
         annotation->deserialize(e);
