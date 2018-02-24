@@ -90,7 +90,7 @@ namespace VCS
             description(deltaDescription),
             type(deltaType) {}
         
-        //static ScopedPointer<Delta> createCopy(Delta *deltaToCopy);
+        Delta *createCopy() const;
 
         // i.e. "added 45 notes" or "layer color changed"
         String getHumanReadableText() const;

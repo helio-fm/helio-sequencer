@@ -134,7 +134,7 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
                 
                 while (interpolatedEventTimeStamp < nextTime)
                 {
-                    const float lerpFactor = (interpolatedEventTimeStamp - startTime) / (nextTime - startTime);
+                    const float lerpFactor = float(interpolatedEventTimeStamp - startTime) / float(nextTime - startTime);
                     const float c = (this->controllerValue > nextEvent->controllerValue) ? this->curvature : (1.f - this->curvature);
                     
                     const float interpolatedControllerValue = exponentalInterpolation(this->controllerValue,

@@ -56,8 +56,6 @@ AnnotationCommandPanel::~AnnotationCommandPanel()
 
 void AnnotationCommandPanel::handleCommandMessage(int commandId)
 {
-    ProjectTimeline *annotations = this->project.getTimeline();
-    
     if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
     {
         if (commandId == CommandIDs::RenameAnnotation)

@@ -15,86 +15,25 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "LogoImage.h"
-
-//[MiscUserDefs]
 #include "BinaryData.h"
-//[/MiscUserDefs]
 
 LogoImage::LogoImage()
 {
-    drawable1 = Drawable::createFromImageData (BinaryData::Logo_png, BinaryData::Logo_pngSize);
-
-    //[UserPreSize]
-    //[/UserPreSize]
-
+    logo = Drawable::createFromImageData (BinaryData::Logo_png, BinaryData::Logo_pngSize);
     setSize (400, 400);
-
-    //[Constructor]
-    //[/Constructor]
 }
 
 LogoImage::~LogoImage()
 {
-    //[Destructor_pre]
-    //[/Destructor_pre]
-
-    drawable1 = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
+    logo = nullptr;
 }
 
 void LogoImage::paint (Graphics& g)
 {
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    {
-        int x = 0, y = 0, width = getWidth() - 0, height = getHeight() - 0;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (Colours::black);
-        jassert (drawable1 != 0);
-        if (drawable1 != 0)
-            drawable1->drawWithin (g, Rectangle<float> (x, y, width, height),
-                                   RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize, 1.000f);
-    }
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
+    g.setColour (Colours::black);
+    jassert (logo != 0);
+    logo->drawWithin(g, Rectangle<float>(0.f, 0.f, float(this->getWidth()), float(this->getHeight())),
+        RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize, 1.000f);
 }
-
-void LogoImage::resized()
-{
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
-}
-
-
-//[MiscUserCode]
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="LogoImage" template="../../../Template"
-                 componentName="" parentClasses="public Component" constructorParams=""
-                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
-                 overlayOpacity="0.330" fixedSize="1" initialWidth="400" initialHeight="400">
-  <BACKGROUND backgroundColour="0">
-    <IMAGE pos="0 0 0M 0M" resource="BinaryData::Logo_png" opacity="1" mode="2"/>
-  </BACKGROUND>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif

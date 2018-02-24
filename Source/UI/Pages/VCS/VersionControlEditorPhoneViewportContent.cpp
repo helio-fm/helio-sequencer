@@ -100,7 +100,6 @@ void VersionControlEditorPhoneViewportContent::buttonClicked (Button* buttonThat
     if (buttonThatWasClicked == slideRightButton)
     {
         //[UserButtonCode_slideRightButton] -- add your button handler code here..
-        Component *parent = this->getParentComponent();
         if (Viewport *viewport = dynamic_cast<Viewport *>(this->getParentComponent()->getParentComponent()))
         {
             viewport->setViewPosition(0, 0);
@@ -110,7 +109,6 @@ void VersionControlEditorPhoneViewportContent::buttonClicked (Button* buttonThat
     else if (buttonThatWasClicked == slideLeftButton)
     {
         //[UserButtonCode_slideLeftButton] -- add your button handler code here..
-        Component *parent = this->getParentComponent();
         if (Viewport *viewport = dynamic_cast<Viewport *>(this->getParentComponent()->getParentComponent()))
         {
             viewport->setViewPosition(-viewport->getWidth(), 0);

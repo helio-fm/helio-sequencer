@@ -263,8 +263,7 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
 
         if (! deltaFoundInChanges)
         {
-            auto stateDeltaCopy = new Delta(*stateDelta);
-            diff->applyDelta(stateDeltaCopy, stateDeltaData);
+            diff->applyDelta(stateDelta->createCopy(), stateDeltaData);
         }
     }
 

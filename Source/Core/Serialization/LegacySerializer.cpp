@@ -19,9 +19,7 @@
 #include "LegacySerializer.h"
 
 static const std::string kBase64Chars =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    "abcdefghijklmnopqrstuvwxyz"
-    "0123456789+/";
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 static const char *kHelioHeaderV1String = "PR::";
 static const int kHelioHeaderV1 =

@@ -58,7 +58,7 @@ public:
                     .getTransformToFit(allArea, this->getLocalBounds().toFloat());
 
             const float radius = 10;
-            const float indicatorRadian = float(360.f - this->indicatorDegree) * float(M_PI / 180.f);
+            const float indicatorRadian = float(360.f - this->indicatorDegree) * (MathConstants<float>::pi / 180.f);
             const Point<float> indicatorPosition(radius * cosf(indicatorRadian), radius * sinf(indicatorRadian));
 
             const float numSegments = float(group->getNumChildComponents());
@@ -70,7 +70,7 @@ public:
                 if (DrawableComposite *dc = dynamic_cast<DrawableComposite *>(child))
                 {
                     const float oneSegment = (360.f / numSegments);
-                    const float currentPartRadian = (i * oneSegment) * float(M_PI / 180.f);
+                    const float currentPartRadian = (i * oneSegment) * (MathConstants<float>::pi / 180.f);
                     const Point<float> currentPartPosition(radius * cosf(currentPartRadian), radius * sinf(currentPartRadian));
 
                     const float distance = currentPartPosition.getDistanceFrom(indicatorPosition);

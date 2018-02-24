@@ -36,9 +36,7 @@ public:
     //[UserMethods]
 
     void updateItemInfo(int rowNumber, bool isLastRow, VCS::RevisionItem::Ptr revisionItemInfo);
-
     void select() const;
-
     void deselect() const;
 
     VCS::RevisionItem::Ptr getRevisionItem()
@@ -61,25 +59,18 @@ private:
 
     //[UserVariables]
 
-//    virtual Component *createHighlighterComponent() override;
-
     mutable ComponentAnimator selectionAnimator;
 
     void invertSelection() const;
-
     bool isSelected() const;
 
     ListBox &list;
-
     int row;
 
     ScopedPointer<Component> selectionComponent;
 
-
     VCS::RevisionItem::Ptr revisionItem;
-
     VCS::Head &head;
-
 
     WeakReference<RevisionItemComponent>::Master masterReference;
 

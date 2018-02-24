@@ -25,7 +25,7 @@ class MidiSequence;
 class MidiTrack;
 class Note;
 
-class PianoRollToolbox
+class PianoRollToolbox final
 {
 public:
     

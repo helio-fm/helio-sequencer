@@ -34,18 +34,11 @@ RevisionItem::RevisionItem(Pack::Ptr packPtr, Type type, TrackedItem *targetToCo
 
         this->logic = DiffLogic::createLogicCopy(*targetToCopy, *this);
 
-        // окей, здесь тупо скачать себе дельты
-        // на вход нам передают готовый дифф
-        // пустой, если тип - "удалено"
-
-        // итак, все дельты диффа лучше всего держать в памяти или временном файле.
-        // в пак они помещаются после коммита.
-        // и, да, получится, что сериализация слоев вызывается из другого потока.
-
+        // just deep-copy all deltas:
         for (int i = 0; i < targetToCopy->getNumDeltas(); ++i)
         {
             const auto targetDelta = targetToCopy->getDelta(i);
-            this->deltas.add(new Delta(*targetDelta));
+            this->deltas.add(targetDelta->createCopy());
             this->deltasData.add(targetToCopy->serializeDeltaData(i));
         }
     }
@@ -126,9 +119,10 @@ Delta *RevisionItem::getDelta(int index) const
 
 ValueTree VCS::RevisionItem::serializeDeltaData(int deltaIndex) const
 {
-    // ситуация, когда мы представляем незакоммиченные изменения, и *все* сериализованные данные у нас есть
     if (deltaIndex < this->deltasData.size())
     {
+        // at this point revision item represents uncommitted changes
+        // and it already has all the data:
         return ValueTree(this->deltasData[deltaIndex]);
     }
 

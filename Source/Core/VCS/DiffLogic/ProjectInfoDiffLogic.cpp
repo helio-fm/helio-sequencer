@@ -160,7 +160,7 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
         // не нашли ни одного изменения? копируем оригинальную дельту.
         if (! deltaFoundInChanges)
         {
-            diff->applyDelta(new Delta(*stateDelta), stateDeltaData);
+            diff->applyDelta(stateDelta->createCopy(), stateDeltaData);
         }
     }
 

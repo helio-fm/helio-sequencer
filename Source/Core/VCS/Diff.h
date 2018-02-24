@@ -33,7 +33,7 @@ namespace VCS
         explicit Diff(TrackedItem &diffTarget);
 
         bool hasAnyChanges() const;
-        void applyDelta(DeltaDiff &deltaDiff);
+        void applyDelta(DeltaDiff deltaDiff);
         void applyDelta(Delta *newDelta, ValueTree data);
         void clear();
 

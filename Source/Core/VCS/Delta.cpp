@@ -24,6 +24,11 @@ static const String undefinedDelta = "undefined";
 
 int64 DeltaDescription::defaultNumChanges = -1;
 
+Delta *Delta::createCopy() const
+{
+    return new Delta(*this);
+}
+
 Delta::Delta(const Delta &other) :
     type(other.type),
     description(other.description),
@@ -49,17 +54,17 @@ Uuid Delta::getUuid() const
     return this->vcsUuid;
 }
 
-Identifier VCS::Delta::getType() const
+Identifier Delta::getType() const
 {
     return this->type;
 }
 
-bool VCS::Delta::hasType(const Identifier &id) const
+bool Delta::hasType(const Identifier &id) const
 {
     return (this->type == id);
 }
 
-ValueTree VCS::Delta::serialize() const
+ValueTree Delta::serialize() const
 {
     ValueTree tree(Serialization::VCS::delta);
     tree.setProperty(Serialization::VCS::deltaType, this->type.toString());
@@ -70,7 +75,7 @@ ValueTree VCS::Delta::serialize() const
     return tree;
 }
 
-void VCS::Delta::deserialize(const ValueTree &tree)
+void Delta::deserialize(const ValueTree &tree)
 {
     this->reset();
 

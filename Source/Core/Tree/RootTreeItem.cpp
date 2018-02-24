@@ -219,7 +219,7 @@ ProjectTreeItem *RootTreeItem::addDefaultProject(const File &projectLocation)
 
 ProjectTreeItem *RootTreeItem::createDefaultProjectChildren(ProjectTreeItem *newProject)
 {
-    VersionControlTreeItem *vcs = this->addVCS(newProject);
+    this->addVCS(newProject);
     newProject->addChildTreeItem(new PatternEditorTreeItem());
 
     this->addPianoTrack(newProject, "Arps")->setTrackColour(Colours::orangered, true);

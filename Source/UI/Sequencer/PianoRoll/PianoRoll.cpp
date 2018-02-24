@@ -1345,7 +1345,7 @@ ValueTree PianoRoll::serialize() const
     ValueTree tree(UI::pianoRoll);
     
     tree.setProperty(UI::barWidth, roundf(this->getBarWidth()));
-    tree.setProperty(UI::rowHeight, roundf(this->getRowHeight()));
+    tree.setProperty(UI::rowHeight, this->getRowHeight());
 
     tree.setProperty(UI::startBar,
         roundf(this->getBarByXPosition(this->getViewport().getViewPositionX())));
