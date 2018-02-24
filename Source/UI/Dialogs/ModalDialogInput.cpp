@@ -238,7 +238,11 @@ void ModalDialogInput::textEditorEscapeKeyPressed(TextEditor &)
 void ModalDialogInput::textEditorFocusLost(TextEditor &ed)
 {
     this->updateOkButtonState();
-    if (this->targetString.isNotEmpty())
+
+    const Component *focusedComponent = Component::getCurrentlyFocusedComponent();
+    if (this->targetString.isNotEmpty() &&
+        focusedComponent != this->okButton &&
+        focusedComponent != this->cancelButton)
     {
         this->okay();
     }
