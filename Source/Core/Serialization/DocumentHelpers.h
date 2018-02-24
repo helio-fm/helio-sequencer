@@ -79,7 +79,7 @@ public:
     {
     public:
 
-        explicit TempDocument(const File &target, int optionFlags = 0);
+        explicit TempDocument(const File &target);
         ~TempDocument();
 
         const File &getFile() const noexcept;

@@ -19,8 +19,7 @@
 #include "BinarySerializer.h"
 
 static const char *kHelioHeaderV2String = "Helio2::";
-static const int64 kHelioHeaderV2 =
-    static_cast<int64>(ByteOrder::littleEndianInt64(kHelioHeaderV2String));
+static const uint64 kHelioHeaderV2 = ByteOrder::littleEndianInt64(kHelioHeaderV2String);
 
 Result BinarySerializer::saveToFile(File file, const ValueTree &tree) const
 {
@@ -42,7 +41,7 @@ Result BinarySerializer::loadFromFile(const File &file, ValueTree &tree) const
     FileInputStream fileStream(file);
     if (fileStream.openedOk())
     {
-        const auto magicNumber = fileStream.readInt64();
+        const auto magicNumber = static_cast<uint64>(fileStream.readInt64());
         if (magicNumber == kHelioHeaderV2)
         {
             tree = ValueTree::readFromStream(fileStream);
@@ -71,11 +70,11 @@ Result BinarySerializer::loadFromString(const String &string, ValueTree &tree) c
 
 bool BinarySerializer::supportsFileWithExtension(const String &extension) const
 {
-    return extension.endsWithIgnoreCase("helio");
+    return extension.endsWithIgnoreCase("hp") ||
+        extension.endsWithIgnoreCase("helio");
 }
 
 bool BinarySerializer::supportsFileWithHeader(const String &header) const
 {
-    // TODO
-    return false;
+    return header.startsWith(kHelioHeaderV2String);
 }

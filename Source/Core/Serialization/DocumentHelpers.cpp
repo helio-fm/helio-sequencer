@@ -135,6 +135,50 @@ File DocumentHelpers::getTempSlot(const String &fileName)
     return getFirstSlot(tempPath, tempPath, fileName);
 }
 
+static const OwnedArray<Serializer> &getSerializers()
+{
+    static OwnedArray<Serializer> serializers;
+    if (serializers.isEmpty())
+    {
+        serializers.add(new XmlSerializer());
+        serializers.add(new JsonSerializer());
+        serializers.add(new BinarySerializer());
+        serializers.add(new LegacySerializer());
+    }
+
+    return serializers;
+}
+
+static const Array<Serializer *> getSerializersForExtension(const String &extension)
+{
+    Array<Serializer *> result;
+
+    for (const auto serializer : getSerializers())
+    {
+        if (serializer->supportsFileWithExtension(extension))
+        {
+            result.add(serializer);
+        }
+    }
+
+    return result;
+}
+
+static const Array<Serializer *> getSerializersForHeader(const String &header)
+{
+    Array<Serializer *> result;
+
+    for (const auto serializer : getSerializers())
+    {
+        if (serializer->supportsFileWithHeader(header))
+        {
+            result.add(serializer);
+        }
+    }
+
+    return result;
+}
+
 ValueTree DocumentHelpers::load(const File &file)
 {
     ValueTree result;
@@ -144,46 +188,41 @@ ValueTree DocumentHelpers::load(const File &file)
         return result;
     }
 
-    //const String extension(file.getFileExtension());
+    const String extension(file.getFileExtension());
+    const auto onesThatSupportExtension(getSerializersForExtension(extension));
 
-    //Array<Serializer> serializers;
-    //Array<Serializer> foundSerializers;
-    //Serializer *serializer = nullptr;
+    // if exactly one serializer reports to support target file extension, then use that one
+    if (onesThatSupportExtension.size() == 1)
+    {
+        ValueTree tree;
+        onesThatSupportExtension.getFirst()->loadFromFile(file, tree);
+        return tree;
+    }
 
-    //for (const auto &s : serializers)
-    //{
-    //    if (s.supportsFileWithExtension(extension))
-    //    {
-    //        foundSerializers.add(s);
-    //    }
-    //}
+    // if none of more that one of serializers support that extension, try to check file header
+    MemoryOutputStream header(8);
+    {
+        FileInputStream in(file);
+        if (in.openedOk())
+        {
+            for (int i = 0; i < 8; ++i)
+            {
+                auto c = in.readByte();
+                header.writeByte(c);
+            }
+        }
+    }
 
-    //if (foundSerializers.size() == 1)
-    //{
-    //    foundSerializers.getFirst().loadFromFile(file, result);
-    //    return result;
-    //}
+    const auto onesThatSupportHeader(getSerializersForHeader(header.toUTF8()));
+    if (!onesThatSupportHeader.isEmpty())
+    {
+        ValueTree tree;
+        onesThatSupportHeader.getFirst()->loadFromFile(file, tree);
+        return tree;
+    }
 
-    //// TODO
-    ////XmlSerializer xs;
-    ////xs.supportsFileWithExtension(extension);
-
-    //// first check an extension:
-    //// if exactly one serializer reports to support it, then use that one
-    //// if none of more that one of serializers support that extension,
-    //// read file header and ask 
-
-    //MemoryBlock headerBlock;
-
-    //{
-    //    FileInputStream in(file);
-    //    headerBlock = in.openedOk() ? in.readIntoMemoryBlock(headerBlock, 16) : MemoryBlock();
-    //}
-
-    //const String h = headerBlock.toString();
-
+    // Fallback to XML serialization
     return DocumentHelpers::load<BinarySerializer>(file);
-    //return result;
 }
 
 static File createTempFileForSaving(const File &parentDirectory, String name, const String& suffix)
@@ -191,10 +230,9 @@ static File createTempFileForSaving(const File &parentDirectory, String name, co
     return parentDirectory.getNonexistentChildFile(name, suffix, false);
 }
 
-DocumentHelpers::TempDocument::TempDocument(const File &target, int optionFlags /*= 0*/) :
+DocumentHelpers::TempDocument::TempDocument(const File &target) :
     temporaryFile(createTempFileForSaving(target.getParentDirectory(),
-        target.getFileNameWithoutExtension()
-        + "_temp_" + String::toHexString(Random::getSystemRandom().nextInt()),
+        target.getFileNameWithoutExtension() + "_temp_" + String::toHexString(Random::getSystemRandom().nextInt()),
         target.getFileExtension())),
     targetFile(target)
 {
@@ -225,13 +263,19 @@ bool DocumentHelpers::TempDocument::overwriteTargetFileWithTemporary() const
 
     if (temporaryFile.exists())
     {
-        for (int i = 5; --i >= 0;)
+        for (int i = 4; --i >= 0;)
         {
             if (temporaryFile.moveFileTo(targetFile))
             {
                 return true;
             }
-            // здесь был баг - иногда под виндой moveFileTo не срабатывает, не знаю, почему
+
+            Thread::sleep(100);
+        }
+
+        // здесь был баг - иногда под виндой moveFileTo не срабатывает, не знаю, почему
+        for (int i = 2; --i >= 0;)
+        {
             if (temporaryFile.copyFileTo(targetFile))
             {
                 return true;

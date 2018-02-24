@@ -53,7 +53,7 @@ Result XmlSerializer::loadFromString(const String &string, ValueTree &tree) cons
 
 bool XmlSerializer::supportsFileWithExtension(const String &extension) const
 {
-    return extension.endsWithIgnoreCase("xml");
+    return extension.endsWithIgnoreCase("xml") || extension.endsWithIgnoreCase("helio");
 }
 
 bool XmlSerializer::supportsFileWithHeader(const String &header) const

@@ -306,6 +306,17 @@ bool Workspace::autoload()
         Config::load(Serialization::Core::workspace, this);
         return true;
     }
+    else
+    {
+        // Try loading a legacy workspace file, if found one:
+        const auto legacyFile(DocumentHelpers::getDocumentSlot("Workspace.helio"));
+        if (legacyFile.existsAsFile())
+        {
+            const auto legacyState = DocumentHelpers::load(legacyFile);
+            this->deserialize(legacyState);
+            return true;
+        }
+    }
 
     return false;
 }
@@ -341,7 +352,7 @@ void Workspace::importProject(const String &filePattern)
     {
         const File file(fc.getResult());
         const String &extension = file.getFileExtension();
-        if (extension == ".hp")
+        if (extension == ".hp" || extension == ".helio")
         {
             this->treeRoot->openProject(file);
             this->autosave();
@@ -407,7 +418,8 @@ void Workspace::activateSubItemWithId(const String &id)
 
 ValueTree Workspace::serialize() const
 {
-    ValueTree tree(Serialization::Core::workspace);
+    using namespace Serialization;
+    ValueTree tree(Core::workspace);
 
     // TODO serialize window size and position
     
@@ -417,7 +429,7 @@ ValueTree Workspace::serialize() const
     tree.appendChild(this->recentFilesList->serialize());
     
     // TODO serialize tree openness state?
-    ValueTree treeStateNode(Serialization::Core::treeState);
+    ValueTree treeStateNode(Core::treeState);
     addAllActiveItemIds(this->treeRoot, treeStateNode);
     tree.appendChild(treeStateNode);
     
@@ -427,9 +439,10 @@ ValueTree Workspace::serialize() const
 void Workspace::deserialize(const ValueTree &tree)
 {
     this->reset();
+    using namespace Serialization;
     
-    auto root = tree.hasType(Serialization::Core::workspace) ?
-        tree : tree.getChildWithName(Serialization::Core::workspace);
+    auto root = tree.hasType(Core::workspace) ?
+        tree : tree.getChildWithName(Core::workspace);
     
     if (!root.isValid())
     {
@@ -444,12 +457,12 @@ void Workspace::deserialize(const ValueTree &tree)
     this->treeRoot->deserialize(root);
     
     bool foundActiveNode = false;
-    const auto treeStateNode = root.getChildWithName(Serialization::Core::treeState);
+    const auto treeStateNode = root.getChildWithName(Core::treeState);
     if (treeStateNode.isValid())
     {
-        forEachValueTreeChildWithType(treeStateNode, e, Serialization::Core::selectedTreeItem)
+        forEachValueTreeChildWithType(treeStateNode, e, Core::selectedTreeItem)
         {
-            const String id = e.getProperty(Serialization::Core::treeItemId);
+            const String id = e.getProperty(Core::treeItemId);
             foundActiveNode = (nullptr != selectActiveSubItemWithId(this->treeRoot, id));
         }
     }

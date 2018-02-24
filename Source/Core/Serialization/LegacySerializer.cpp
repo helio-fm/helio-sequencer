@@ -17,13 +17,23 @@
 
 #include "Common.h"
 #include "LegacySerializer.h"
+#include "SerializationKeys.h"
+#include "MidiTrackDeltas.h"
+#include "ProjectInfoDeltas.h"
+
+// This file now encapsulates all the ugliness
+// of a legacy serializer used in the first version of the app.
+
+// The only purpose of all this crap is keeping a kind of
+// backwards compatibility (it is only used to read old project files).
+
+// Please do not read this file.
 
 static const std::string kBase64Chars =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
 static const char *kHelioHeaderV1String = "PR::";
-static const int kHelioHeaderV1 =
-    static_cast<int>(ByteOrder::littleEndianInt(kHelioHeaderV1String));
+static const uint32 kHelioHeaderV1 = ByteOrder::littleEndianInt(kHelioHeaderV1String);
 
 static const std::string kXorKey =
     "2V:-5?Vl%ulG+4-PG0`#:;[DUnB.Qs::"
@@ -239,8 +249,7 @@ static XmlElement *loadObfuscated(const File &file)
 
     if (fileStream.openedOk())
     {
-        const int magicNumber = fileStream.readInt();
-        
+        const auto magicNumber = static_cast<uint32>(fileStream.readInt());
         if (magicNumber == kHelioHeaderV1)
         {
             SubregionStream subStream(&fileStream, 4, -1, false);
@@ -263,12 +272,101 @@ Result LegacySerializer::saveToFile(File file, const ValueTree &tree) const
     return saved ? Result::ok() : Result::fail({});
 }
 
+static String toCamelCase(const String &string)
+{
+    if (string.length() > 1)
+    {
+        return string.substring(0, 1).toUpperCase() +
+            string.substring(1);
+    }
+
+    return string;
+}
+
+static String transformXmlTag(const String &tagOrAttribute)
+{
+    using namespace Serialization;
+
+    static HashMap<String, Identifier> oldKeys;
+    if (oldKeys.size() == 0)
+    {
+        oldKeys.set("ProjectLicense", ProjectInfoDeltas::projectLicense);
+        oldKeys.set("ProjectFullName", ProjectInfoDeltas::projectTitle);
+        oldKeys.set("ProjectAuthor", ProjectInfoDeltas::projectAuthor);
+        oldKeys.set("ProjectDescription", ProjectInfoDeltas::projectDescription);
+        oldKeys.set("LayerPath", MidiTrackDeltas::trackPath);
+        oldKeys.set("LayerMute", MidiTrackDeltas::trackMute);
+        oldKeys.set("LayerColour", MidiTrackDeltas::trackColour);
+        oldKeys.set("LayerInstrument", MidiTrackDeltas::trackInstrument);
+        oldKeys.set("LayerController", MidiTrackDeltas::trackController);
+        oldKeys.set("DeviceId", Core::machineID);
+        oldKeys.set("HeadIndex", VCS::headIndex);
+        oldKeys.set("HeadIndexData", VCS::headIndexData);
+        oldKeys.set("annotationsId", Core::annotationsTrackId);
+        oldKeys.set("keySignaturesId", Core::keySignaturesTrackId);
+        oldKeys.set("timeSignaturesId", Core::timeSignaturesTrackId);
+        oldKeys.set("fullPath", Core::filePath);
+        oldKeys.set("Path", Core::filePath);
+        oldKeys.set("Uuid", Audio::instrumentId);
+        oldKeys.set("Uid", Audio::pluginId);
+        oldKeys.set("PluginManager", Audio::pluginManager);
+        oldKeys.set("Pack", VCS::pack);
+        oldKeys.set("VCSUuid", VCS::vcsItemId);
+        oldKeys.set("GlobalConfig", Core::globalConfig);
+        oldKeys.set("Layer", Core::track);
+        oldKeys.set("PianoLayer", Core::pianoTrack);
+        oldKeys.set("AutoLayer", Core::automationTrack);
+    }
+
+    if (oldKeys.contains(tagOrAttribute))
+    {
+        return oldKeys[tagOrAttribute].toString();
+    }
+
+    return tagOrAttribute;
+}
+
+static ValueTree valueTreeFromXml(const XmlElement &xml)
+{
+    if (!xml.isTextElement())
+    {
+        ValueTree v(toCamelCase(transformXmlTag(xml.getTagName())));
+
+        for (int i = 0; i < xml.getNumAttributes(); ++i)
+        {
+            const auto &attName = transformXmlTag(xml.getAttributeName(i));
+            const auto &attValue = transformXmlTag(xml.getAttributeValue(i));
+            if (attName.startsWith("base64:"))
+            {
+                MemoryBlock mb;
+                if (mb.fromBase64Encoding(attValue))
+                {
+                    v.setProperty(toCamelCase(attName.substring(7)), var(mb));
+                    continue;
+                }
+            }
+
+            v.setProperty(toCamelCase(attName), var(attValue));
+        }
+
+        forEachXmlChildElement(xml, e)
+        {
+            v.appendChild(valueTreeFromXml(*e), nullptr);
+        }
+
+        return v;
+    }
+
+    jassertfalse;
+    return {};
+}
+
 Result LegacySerializer::loadFromFile(const File &file, ValueTree &tree) const
 {
     ScopedPointer<XmlElement> xml(loadObfuscated(file));
-    if (xml != nullptr)
+    if (xml != nullptr && !xml->isTextElement())
     {
-        tree = ValueTree::fromXml(*xml);
+        tree = valueTreeFromXml(*xml);
         return Result::ok();
     }
 

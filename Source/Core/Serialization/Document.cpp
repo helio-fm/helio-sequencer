@@ -158,20 +158,16 @@ bool Document::load(const File &file, const File &relativeFile)
 
         if (!relativeFile.existsAsFile())
         {
-
 #if HELIO_DESKTOP
-
             FileChooser fc(TRANS("dialog::document::load"),
-                           File::getCurrentWorkingDirectory(), ("*." + this->extension), true);
+                File::getCurrentWorkingDirectory(), ("*." + this->extension), true);
 
             if (fc.browseForFileToOpen())
             {
                 File result(fc.getResult());
                 return this->internalLoad(result);
             }
-
 #endif
-
         }
         else
         {
@@ -265,11 +261,8 @@ bool Document::internalSave(File result)
         this->owner.onDocumentDidSave(result);
         return true;
     }
-    
-    
-        Logger::writeToLog("Document::internalSave failed :: " + result.getFullPathName());
-    
-    
+
+    Logger::writeToLog("Document::internalSave failed :: " + result.getFullPathName());
     return false;
 }
 
@@ -286,9 +279,6 @@ bool Document::internalLoad(File result)
         return true;
     }
     
-    
-        Logger::writeToLog("Document::internalLoad failed :: " + result.getFullPathName());
-    
-    
+    Logger::writeToLog("Document::internalLoad failed :: " + result.getFullPathName());
     return false;
 }

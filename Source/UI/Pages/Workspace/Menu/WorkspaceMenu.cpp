@@ -120,7 +120,7 @@ void WorkspaceMenu::handleCommandMessage (int commandId)
     }
     else if (commandId == CommandIDs::OpenProject)
     {
-        this->workspace->importProject("*.hp");
+        this->workspace->importProject("*.helio;*.hp");
         this->listBox->updateContent();
         //this->getParentComponent()->exitModalState(0);
     }
