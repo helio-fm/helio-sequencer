@@ -25,6 +25,8 @@ RevisionItem::RevisionItem(Pack::Ptr packPtr, Type type, TrackedItem *targetToCo
     vcsItemType(type),
     pack(packPtr)
 {
+    jassert(packPtr.get() != nullptr);
+
     if (targetToCopy != nullptr)
     {
         this->description = targetToCopy->getVCSName();
@@ -42,7 +44,8 @@ RevisionItem::RevisionItem(Pack::Ptr packPtr, Type type, TrackedItem *targetToCo
 
         for (int i = 0; i < targetToCopy->getNumDeltas(); ++i)
         {
-            this->deltas.add(new Delta(*targetToCopy->getDelta(i)));
+            const auto targetDelta = targetToCopy->getDelta(i);
+            this->deltas.add(new Delta(*targetDelta));
             this->deltasData.add(targetToCopy->serializeDeltaData(i));
         }
     }
@@ -129,11 +132,6 @@ ValueTree VCS::RevisionItem::serializeDeltaData(int deltaIndex) const
         return ValueTree(this->deltasData[deltaIndex]);
     }
 
-    // иначе мы представляем собой тупо запись в дереве истории,
-    // и все, что у нас есть - это уиды.
-    // надо как-то обратиться к паку
-    // и запросить эти данные по паре item id : delta id
-
     return this->pack->createDeltaDataFor(this->getUuid(), this->deltas[deltaIndex]->getUuid());
 }
 
@@ -186,9 +184,7 @@ void VCS::RevisionItem::deserialize(const ValueTree &tree)
     const int type = root.getProperty(Serialization::VCS::revisionItemType, Undefined);
     this->vcsItemType = static_cast<Type>(type);
 
-    const String logicType =
-        root.getProperty(Serialization::VCS::revisionItemDiffLogic,
-                                 "");
+    const String logicType = root.getProperty(Serialization::VCS::revisionItemDiffLogic);
 
     jassert(logicType != "");
 
@@ -196,9 +192,9 @@ void VCS::RevisionItem::deserialize(const ValueTree &tree)
 
     for (const auto &e : root)
     {
-        Delta *delta(new Delta(DeltaDescription(), ""));
+        ScopedPointer<Delta> delta(new Delta({}, {}));
         delta->deserialize(e);
-        this->deltas.add(delta);
+        this->deltas.add(delta.release());
     }
 }
 

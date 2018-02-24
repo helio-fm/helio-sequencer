@@ -33,7 +33,7 @@ bool Diff::hasAnyChanges() const
     return (this->getNumDeltas() > 0);
 }
 
-void Diff::applyDelta(DeltaDiff deltaDiff)
+void Diff::applyDelta(DeltaDiff &deltaDiff)
 {
     this->deltas.add(deltaDiff.delta.release());
     this->deltasData.add(deltaDiff.deltaData);

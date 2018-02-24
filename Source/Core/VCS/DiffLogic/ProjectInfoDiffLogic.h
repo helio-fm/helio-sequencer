@@ -37,17 +37,5 @@ namespace VCS
         Diff *createDiff(const TrackedItem &initialState) const override;
         Diff *createMergedItem(const TrackedItem &initialState) const override;
 
-    private:
-
-        ValueTree mergePath(const ValueTree &state, const ValueTree &changes) const;
-        ValueTree mergeFullName(const ValueTree &state, const ValueTree &changes) const;
-        ValueTree mergeAuthor(const ValueTree &state, const ValueTree &changes) const;
-        ValueTree mergeDescription(const ValueTree &state, const ValueTree &changes) const;
-
-        DeltaDiff createPathDiff(const ValueTree &state, const ValueTree &changes) const;
-        DeltaDiff createFullNameDiff(const ValueTree &state, const ValueTree &changes) const;
-        DeltaDiff createAuthorDiff(const ValueTree &state, const ValueTree &changes) const;
-        DeltaDiff createDescriptionDiff(const ValueTree &state, const ValueTree &changes) const;
-
     };
 } // namespace VCS

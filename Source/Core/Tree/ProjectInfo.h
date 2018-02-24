@@ -18,10 +18,10 @@
 #pragma once
 
 class ProjectTreeItem;
-class Delta;
 
 #include "ProjectInfoDiffLogic.h"
 #include "TrackedItem.h"
+#include "Delta.h"
 
 class ProjectInfo :
     public Serializable,

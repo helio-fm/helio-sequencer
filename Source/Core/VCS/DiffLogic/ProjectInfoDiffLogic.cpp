@@ -25,6 +25,16 @@
 
 using namespace VCS;
 
+static ValueTree mergePath(const ValueTree &state, const ValueTree &changes);
+static ValueTree mergeFullName(const ValueTree &state, const ValueTree &changes);
+static ValueTree mergeAuthor(const ValueTree &state, const ValueTree &changes);
+static ValueTree mergeDescription(const ValueTree &state, const ValueTree &changes);
+
+static DeltaDiff createPathDiff(const ValueTree &state, const ValueTree &changes);
+static DeltaDiff createFullNameDiff(const ValueTree &state, const ValueTree &changes);
+static DeltaDiff createAuthorDiff(const ValueTree &state, const ValueTree &changes);
+static DeltaDiff createDescriptionDiff(const ValueTree &state, const ValueTree &changes);
+
 ProjectInfoDiffLogic::ProjectInfoDiffLogic(TrackedItem &targetItem) :
     DiffLogic(targetItem) {}
 
@@ -73,23 +83,19 @@ Diff *ProjectInfoDiffLogic::createDiff(const TrackedItem &initialState) const
         {
             if (myDelta->hasType(ProjectInfoDeltas::projectLicense))
             {
-                DeltaDiff fullDelta = this->createPathDiff(stateDeltaData, myDeltaData);
-                diff->applyDelta(fullDelta.delta, fullDelta.deltaData);
+                diff->applyDelta(createPathDiff(stateDeltaData, myDeltaData));
             }
             else if (myDelta->hasType(ProjectInfoDeltas::projectTitle))
             {
-                DeltaDiff fullDelta = this->createFullNameDiff(stateDeltaData, myDeltaData);
-                diff->applyDelta(fullDelta.delta, fullDelta.deltaData);
+                diff->applyDelta(createFullNameDiff(stateDeltaData, myDeltaData));
             }
             else if (myDelta->hasType(ProjectInfoDeltas::projectAuthor))
             {
-                DeltaDiff fullDelta = this->createAuthorDiff(stateDeltaData, myDeltaData);
-                diff->applyDelta(fullDelta.delta, fullDelta.deltaData);
+                diff->applyDelta(createAuthorDiff(stateDeltaData, myDeltaData));
             }
             else if (myDelta->hasType(ProjectInfoDeltas::projectDescription))
             {
-                DeltaDiff fullDelta = this->createDescriptionDiff(stateDeltaData, myDeltaData);
-                diff->applyDelta(fullDelta.delta, fullDelta.deltaData);
+                diff->applyDelta(createDescriptionDiff(stateDeltaData, myDeltaData));
             }
         }
     }
@@ -126,27 +132,27 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
 
                 if (targetDelta->hasType(ProjectInfoDeltas::projectLicense))
                 {
-                    Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
-                    ValueTree diffDeltaData = this->mergePath(stateDeltaData, targetDeltaData);
-                    diff->applyDelta(diffDelta, diffDeltaData);
+                    ScopedPointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
+                    ValueTree diffDeltaData = mergePath(stateDeltaData, targetDeltaData);
+                    diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(ProjectInfoDeltas::projectTitle))
                 {
-                    Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
-                    ValueTree diffDeltaData = this->mergeFullName(stateDeltaData, targetDeltaData);
-                    diff->applyDelta(diffDelta, diffDeltaData);
+                    ScopedPointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
+                    ValueTree diffDeltaData = mergeFullName(stateDeltaData, targetDeltaData);
+                    diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(ProjectInfoDeltas::projectAuthor))
                 {
-                    Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
-                    ValueTree diffDeltaData = this->mergeAuthor(stateDeltaData, targetDeltaData);
-                    diff->applyDelta(diffDelta, diffDeltaData);
+                    ScopedPointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
+                    ValueTree diffDeltaData = mergeAuthor(stateDeltaData, targetDeltaData);
+                    diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(ProjectInfoDeltas::projectDescription))
                 {
-                    Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
-                    ValueTree diffDeltaData = this->mergeDescription(stateDeltaData, targetDeltaData);
-                    diff->applyDelta(diffDelta, diffDeltaData);
+                    ScopedPointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
+                    ValueTree diffDeltaData = mergeDescription(stateDeltaData, targetDeltaData);
+                    diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
             }
         }
@@ -154,8 +160,7 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
         // не нашли ни одного изменения? копируем оригинальную дельту.
         if (! deltaFoundInChanges)
         {
-            auto stateDeltaCopy = new Delta(*stateDelta);
-            diff->applyDelta(stateDeltaCopy, stateDeltaData);
+            diff->applyDelta(new Delta(*stateDelta), stateDeltaData);
         }
     }
 
@@ -167,27 +172,27 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
 // Diffs
 //===----------------------------------------------------------------------===//
 
-ValueTree ProjectInfoDiffLogic::mergePath(const ValueTree &state, const ValueTree &changes) const
+ValueTree mergePath(const ValueTree &state, const ValueTree &changes)
 {
     return changes.createCopy();
 }
 
-ValueTree ProjectInfoDiffLogic::mergeFullName(const ValueTree &state, const ValueTree &changes) const
+ValueTree mergeFullName(const ValueTree &state, const ValueTree &changes)
 {
     return changes.createCopy();
 }
 
-ValueTree ProjectInfoDiffLogic::mergeAuthor(const ValueTree &state, const ValueTree &changes) const
+ValueTree mergeAuthor(const ValueTree &state, const ValueTree &changes)
 {
     return changes.createCopy();
 }
 
-ValueTree ProjectInfoDiffLogic::mergeDescription(const ValueTree &state, const ValueTree &changes) const
+ValueTree mergeDescription(const ValueTree &state, const ValueTree &changes)
 {
     return changes.createCopy();
 }
 
-DeltaDiff ProjectInfoDiffLogic::createPathDiff(const ValueTree &state, const ValueTree &changes) const
+DeltaDiff createPathDiff(const ValueTree &state, const ValueTree &changes)
 {
     DeltaDiff res;
     res.delta = new Delta(DeltaDescription("license changed"), ProjectInfoDeltas::projectLicense);
@@ -195,7 +200,7 @@ DeltaDiff ProjectInfoDiffLogic::createPathDiff(const ValueTree &state, const Val
     return res;
 }
 
-DeltaDiff ProjectInfoDiffLogic::createFullNameDiff(const ValueTree &state, const ValueTree &changes) const
+DeltaDiff createFullNameDiff(const ValueTree &state, const ValueTree &changes)
 {
     DeltaDiff res;
     res.delta = new Delta(DeltaDescription("title changed"), ProjectInfoDeltas::projectTitle);
@@ -203,7 +208,7 @@ DeltaDiff ProjectInfoDiffLogic::createFullNameDiff(const ValueTree &state, const
     return res;
 }
 
-DeltaDiff ProjectInfoDiffLogic::createAuthorDiff(const ValueTree &state, const ValueTree &changes) const
+DeltaDiff createAuthorDiff(const ValueTree &state, const ValueTree &changes)
 {
     DeltaDiff res;
     res.delta = new Delta(DeltaDescription("author changed"), ProjectInfoDeltas::projectAuthor);
@@ -211,7 +216,7 @@ DeltaDiff ProjectInfoDiffLogic::createAuthorDiff(const ValueTree &state, const V
     return res;
 }
 
-DeltaDiff ProjectInfoDiffLogic::createDescriptionDiff(const ValueTree &state, const ValueTree &changes) const
+DeltaDiff createDescriptionDiff(const ValueTree &state, const ValueTree &changes)
 {
     DeltaDiff res;
     res.delta = new Delta(DeltaDescription("description changed"), ProjectInfoDeltas::projectDescription);

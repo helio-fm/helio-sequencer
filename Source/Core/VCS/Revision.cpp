@@ -44,6 +44,7 @@ static Pack::Ptr getPackPtr(ValueTree revision)
         return Pack::Ptr(pack);
     }
 
+    jassertfalse;
     return nullptr;
 }
 
@@ -200,8 +201,6 @@ void Revision::incrementVersion(ValueTree revision)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-// FIXME remove these, just pass revision itself?
-
 ValueTree Revision::serialize(ValueTree revision)
 {
     ValueTree tree(revision.getType());
@@ -244,7 +243,12 @@ void Revision::deserialize(ValueTree revision, const ValueTree &tree)
 
     if (!root.isValid()) { return; }
 
-    revision.copyPropertiesFrom(root, nullptr);
+    //revision.copyPropertiesFrom(root, nullptr); // never delete properties
+    for (int i = 0; i < root.getNumProperties(); ++i)
+    {
+        const auto propertyId(root.getPropertyName(i));
+        revision.setProperty(propertyId, root.getProperty(propertyId), nullptr);
+    }
 
     for (const auto &e : root)
     {

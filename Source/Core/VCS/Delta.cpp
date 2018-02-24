@@ -27,9 +27,7 @@ int64 DeltaDescription::defaultNumChanges = -1;
 Delta::Delta(const Delta &other) :
     type(other.type),
     description(other.description),
-    vcsUuid(other.vcsUuid)
-{
-}
+    vcsUuid(other.vcsUuid) {}
 
 String Delta::getHumanReadableText() const
 {

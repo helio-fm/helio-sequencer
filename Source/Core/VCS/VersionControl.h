@@ -81,7 +81,7 @@ public:
 
     VersionControlEditor *createEditor();
     VCS::Head &getHead() { return this->head; }
-    ValueTree getRoot() { return this->root; }
+    ValueTree getRoot() { return this->rootRevision; }
 
     void moveHead(const ValueTree revision);
     void checkout(const ValueTree revision);
@@ -125,7 +125,7 @@ protected:
     VCS::Head head;
 
     // the history tree itself
-    ValueTree root;
+    ValueTree rootRevision;
     ScopedPointer<VCS::Client> remote;
     WeakReference<VCS::TrackedItemsSource> parentItem;
 

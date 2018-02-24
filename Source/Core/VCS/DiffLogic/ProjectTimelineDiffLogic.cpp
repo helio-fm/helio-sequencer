@@ -258,8 +258,7 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
 
         if (! deltaFoundInChanges)
         {
-            auto stateDeltaCopy = new Delta(*stateDelta);
-            diff->applyDelta(stateDeltaCopy, stateDeltaData);
+            diff->applyDelta(new Delta(*stateDelta), stateDeltaData);
         }
     }
 

@@ -35,7 +35,7 @@ VersionControl::VersionControl(WeakReference<VCS::TrackedItemsSource> parent,
     pack(new Pack()),
     stashes(new StashesRepository(pack)),
     head(pack, parent),
-    root(Revision::create(pack, "root")),
+    rootRevision(Revision::create(pack, "root")),
     parentItem(parent),
     historyMergeVersion(1)
 {
@@ -59,13 +59,13 @@ VersionControl::VersionControl(WeakReference<VCS::TrackedItemsSource> parent,
         this->key.restoreFromBase64(existingKeyBase64);
     }
 
-    this->root = Revision::create(this->pack, TRANS("defaults::newproject::firstcommit"));
+    this->rootRevision = Revision::create(this->pack, TRANS("defaults::newproject::firstcommit"));
 
     this->remote = new Client(*this);
 
     MessageManagerLock lock;
     this->addChangeListener(&this->head);
-    this->head.moveTo(this->root);
+    this->head.moveTo(this->rootRevision);
 }
 
 VersionControl::~VersionControl()
@@ -84,8 +84,6 @@ VersionControlEditor *VersionControl::createEditor()
     {
         return new VersionControlEditorDefault(*this);
     }
-    
-    return nullptr;
 }
 
 
@@ -96,7 +94,7 @@ VersionControlEditor *VersionControl::createEditor()
 MD5 VersionControl::calculateHash() const
 {
     // StringArray и sort - чтоб не зависеть от порядка чайлдов.
-    StringArray ids(this->recursiveGetHashes(this->root));
+    StringArray ids(this->recursiveGetHashes(this->rootRevision));
     ids.sort(true);
     return MD5(ids.joinIntoString("").toUTF8());
 }
@@ -123,7 +121,7 @@ void VersionControl::mergeWith(VersionControl &remoteHistory)
     this->publicId = remoteHistory.getPublicId();
     this->historyMergeVersion = remoteHistory.getVersion();
 
-    ValueTree newHeadRevision(this->getRevisionById(this->root,
+    ValueTree newHeadRevision(this->getRevisionById(this->rootRevision,
         Revision::getUuid(remoteHistory.getHead().getHeadingRevision())));
 
     if (! Revision::isEmpty(newHeadRevision))
@@ -465,7 +463,7 @@ ValueTree VersionControl::serialize() const
     tree.setProperty(Serialization::VCS::headRevisionId, Revision::getUuid(this->head.getHeadingRevision()));
     
     tree.appendChild(this->key.serialize());
-    tree.appendChild(Revision::serialize(this->root));
+    tree.appendChild(Revision::serialize(this->rootRevision));
     tree.appendChild(this->stashes->serialize());
     tree.appendChild(this->pack->serialize());
     tree.appendChild(this->head.serialize());
@@ -491,7 +489,7 @@ void VersionControl::deserialize(const ValueTree &tree)
     Logger::writeToLog("Head ID is " + headId);
 
     this->key.deserialize(root);
-    Revision::deserialize(this->root, root);
+    Revision::deserialize(this->rootRevision, root);
     this->stashes->deserialize(root);
     this->pack->deserialize(root);
 
@@ -502,7 +500,7 @@ void VersionControl::deserialize(const ValueTree &tree)
         Logger::writeToLog("Loading index done in " + String(h2 - h1) + "ms");
     }
     
-    ValueTree headRevision(this->getRevisionById(this->root, headId));
+    ValueTree headRevision(this->getRevisionById(this->rootRevision, headId));
 
     // здесь мы раньше полностью десериализовали состояние хэда.
     // если дерево истории со временеи становится большим, moveTo со всеми мержами занимает кучу времени.
@@ -524,7 +522,7 @@ void VersionControl::deserialize(const ValueTree &tree)
 
 void VersionControl::reset()
 {
-    Revision::reset(this->root);
+    Revision::reset(this->rootRevision);
     this->head.reset();
     this->stashes->reset();
     this->pack->reset();

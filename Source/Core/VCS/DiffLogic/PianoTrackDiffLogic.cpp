@@ -98,44 +98,36 @@ Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const
         {
             if (myDelta->hasType(MidiTrackDeltas::trackPath))
             {
-                DeltaDiff fullDelta = createPathDiff(stateDeltaData, myDeltaData);
-                diff->applyDelta(fullDelta.delta, fullDelta.deltaData);
+                diff->applyDelta(createPathDiff(stateDeltaData, myDeltaData));
             }
             else if (myDelta->hasType(MidiTrackDeltas::trackMute))
             {
-                DeltaDiff fullDelta = createMuteDiff(stateDeltaData, myDeltaData);
-                diff->applyDelta(fullDelta.delta, fullDelta.deltaData);
+                diff->applyDelta(createMuteDiff(stateDeltaData, myDeltaData));
             }
             else if (myDelta->hasType(MidiTrackDeltas::trackColour))
             {
-                DeltaDiff fullDelta = createColourDiff(stateDeltaData, myDeltaData);
-                diff->applyDelta(fullDelta.delta, fullDelta.deltaData);
+                diff->applyDelta(createColourDiff(stateDeltaData, myDeltaData));
             }
             else if (myDelta->hasType(MidiTrackDeltas::trackInstrument))
             {
-                DeltaDiff fullDelta = createInstrumentDiff(stateDeltaData, myDeltaData);
-                diff->applyDelta(fullDelta.delta, fullDelta.deltaData);
+                diff->applyDelta(createInstrumentDiff(stateDeltaData, myDeltaData));
             }
             // дифф рассчитывает, что у состояния будет одна нотная дельта типа notesAdded
             // остальные тут не имеют смысла //else if (this->checkIfDeltaIsNotesType(myDelta))
             else if (myDelta->hasType(PianoSequenceDeltas::notesAdded))
             {
-                Array<DeltaDiff> fullDeltas = 
-                    createEventsDiffs(stateDeltaData, myDeltaData);
-
-                for (auto fullDelta : fullDeltas)
+                const auto fullDeltas =  createEventsDiffs(stateDeltaData, myDeltaData);
+                for (auto &fullDelta : fullDeltas)
                 {
-                    diff->applyDelta(fullDelta.delta, fullDelta.deltaData);
+                    diff->applyDelta(fullDelta);
                 }
             }
             else if (myDelta->hasType(PatternDeltas::clipsAdded))
             {
-                Array<DeltaDiff> fullDeltas = 
-                    PatternDiffHelpers::createClipsDiffs(stateDeltaData, myDeltaData);
-
-                for (auto fullDelta : fullDeltas)
+                const auto fullDeltas = PatternDiffHelpers::createClipsDiffs(stateDeltaData, myDeltaData);
+                for (auto &fullDelta : fullDeltas)
                 {
-                    diff->applyDelta(fullDelta.delta, fullDelta.deltaData);
+                    diff->applyDelta(fullDelta);
                 }
             }
         }
@@ -188,27 +180,27 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
 
                 if (targetDelta->hasType(MidiTrackDeltas::trackPath))
                 {
-                    Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
+                    ScopedPointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
                     ValueTree diffDeltaData = mergePath(stateDeltaData, targetDeltaData);
-                    diff->applyDelta(diffDelta, diffDeltaData);
+                    diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(MidiTrackDeltas::trackMute))
                 {
-                    Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
+                    ScopedPointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
                     ValueTree diffDeltaData = mergeMute(stateDeltaData, targetDeltaData);
-                    diff->applyDelta(diffDelta, diffDeltaData);
+                    diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(MidiTrackDeltas::trackColour))
                 {
-                    Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
+                    ScopedPointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
                     ValueTree diffDeltaData = mergeColour(stateDeltaData, targetDeltaData);
-                    diff->applyDelta(diffDelta, diffDeltaData);
+                    diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
                 else if (targetDelta->hasType(MidiTrackDeltas::trackInstrument))
                 {
-                    Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
+                    ScopedPointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
                     ValueTree diffDeltaData = mergeInstrument(stateDeltaData, targetDeltaData);
-                    diff->applyDelta(diffDelta, diffDeltaData);
+                    diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
             }
 
