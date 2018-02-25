@@ -21,6 +21,7 @@ namespace Serialization
 {
     namespace Core
     {
+        static const Identifier treeRoot = "Tree";
         static const Identifier treeItem = "Node";
         static const Identifier treeItemType = "Type";
         static const Identifier treeItemName = "Name";

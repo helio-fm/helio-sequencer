@@ -237,6 +237,8 @@ String MidiSequence::createUniqueEventId() const noexcept
         length++;
         eventId = EventIdGenerator::generateId(length);
     }
+    
+    this->usedEventIds.insert({eventId});
     return eventId;
 }
 

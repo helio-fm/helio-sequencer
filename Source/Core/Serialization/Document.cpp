@@ -251,6 +251,15 @@ int64 Document::calculateFileHashCode(const File &file) const
 
 bool Document::internalSave(File result)
 {
+    const String fullPath = result.getFullPathName();
+    const auto firstCharAfterLastSlash = fullPath.lastIndexOfChar(File::getSeparatorChar()) + 1;
+    const auto lastDot = fullPath.lastIndexOfChar('.');
+    const bool hasEmptyName = (lastDot == firstCharAfterLastSlash);
+    if (hasEmptyName)
+    {
+        return false;
+    }
+
     const bool savedOk = this->owner.onDocumentSave(result);
 
     if (savedOk)

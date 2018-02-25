@@ -68,6 +68,7 @@ void TimeSignaturesSequence::silentImport(const MidiEvent &eventToImport)
 
     if (this->usedEventIds.contains(signature.getId()))
     {
+        jassertfalse;
         return;
     }
 
@@ -82,11 +83,6 @@ void TimeSignaturesSequence::silentImport(const MidiEvent &eventToImport)
 
 MidiEvent *TimeSignaturesSequence::insert(const TimeSignatureEvent &eventParams, bool undoable)
 {
-    if (this->usedEventIds.contains(eventParams.getId()))
-    {
-        return nullptr;
-    }
-
     if (undoable)
     {
         this->getUndoStack()->
@@ -97,7 +93,6 @@ MidiEvent *TimeSignaturesSequence::insert(const TimeSignatureEvent &eventParams,
     {
         const auto ownedEvent = new TimeSignatureEvent(this, eventParams);
         this->midiEvents.addSorted(*ownedEvent, ownedEvent);
-        this->usedEventIds.insert(ownedEvent->getId());
         this->notifyEventAdded(*ownedEvent);
         this->updateBeatRange(true);
         return ownedEvent;
@@ -121,7 +116,6 @@ bool TimeSignaturesSequence::remove(const TimeSignatureEvent &signature, bool un
         {
             MidiEvent *const removedEvent = this->midiEvents[index];
             this->notifyEventRemoved(*removedEvent);
-            this->usedEventIds.erase(removedEvent->getId());
             this->midiEvents.remove(index, true);
             this->updateBeatRange(true);
             this->notifyEventRemovedPostAction();
@@ -178,7 +172,6 @@ bool TimeSignaturesSequence::insertGroup(Array<TimeSignatureEvent> &signatures, 
             const TimeSignatureEvent &eventParams = signatures.getUnchecked(i);
             const auto ownedEvent = new TimeSignatureEvent(this, eventParams);
             this->midiEvents.addSorted(*ownedEvent, ownedEvent);
-            this->usedEventIds.insert(ownedEvent->getId());
             this->notifyEventAdded(*ownedEvent);
         }
         
@@ -206,7 +199,6 @@ bool TimeSignaturesSequence::removeGroup(Array<TimeSignatureEvent> &signatures, 
             {
                 MidiEvent *const removedSignature = this->midiEvents[index];
                 this->notifyEventRemoved(*removedSignature);
-                this->usedEventIds.erase(removedSignature->getId());
                 this->midiEvents.remove(index, true);
             }
         }

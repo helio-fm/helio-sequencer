@@ -26,12 +26,9 @@ TimeSignatureEvent::TimeSignatureEvent() : MidiEvent(nullptr, MidiEvent::TimeSig
 }
 
 TimeSignatureEvent::TimeSignatureEvent(const TimeSignatureEvent &other) :
-    MidiEvent(other.sequence, MidiEvent::TimeSignature, other.beat),
+    MidiEvent(other),
     numerator(other.numerator),
-    denominator(other.denominator)
-{
-    this->id = other.getId();
-}
+    denominator(other.denominator) {}
 
 TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiSequence> owner,
     float newBeat, int newNumerator, int newDenominator) :
@@ -41,12 +38,9 @@ TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiSequence> owner,
 
 TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiSequence> owner,
     const TimeSignatureEvent &parametersToCopy) :
-    MidiEvent(owner, MidiEvent::TimeSignature, parametersToCopy.beat),
+    MidiEvent(owner, parametersToCopy),
     numerator(parametersToCopy.numerator),
-    denominator(parametersToCopy.denominator)
-{
-    this->id = parametersToCopy.getId();
-}
+    denominator(parametersToCopy.denominator) {}
 
 void TimeSignatureEvent::parseString(const String &data, int &numerator, int &denominator)
 {

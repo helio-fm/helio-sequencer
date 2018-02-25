@@ -240,10 +240,10 @@ private:
     ScopedPointer<NoteResizerLeft> noteResizerLeft;
     ScopedPointer<NoteResizerRight> noteResizerRight;
     
-    typedef SparseHashMap<Note, UniquePointer<NoteComponent>, MidiEventHash> EventComponentsMap;
+    typedef SparseHashMap<const Note, UniquePointer<NoteComponent>, MidiEventHash> EventComponentsMap;
     EventComponentsMap eventComponents;
 
-    typedef SparseHashMap<Clip, UniquePointer<EventComponentsMap>, ClipHash> ClipsMap;
+    typedef SparseHashMap<const Clip, UniquePointer<EventComponentsMap>, ClipHash> ClipsMap;
     ClipsMap clipsMap;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRoll)

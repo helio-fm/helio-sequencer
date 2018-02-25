@@ -26,7 +26,7 @@
 #include "../Themes/SeparatorVertical.h"
 
 class ModalDialogInput  : public FadingDialog,
-                          public TextEditorListener,
+                          public TextEditor::Listener,
                           private Timer,
                           public Button::Listener
 {

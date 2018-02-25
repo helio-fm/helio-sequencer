@@ -610,7 +610,7 @@ ValueTree PatternRoll::clipboardCopy() const
     float firstBeat = FLT_MAX;
     float lastBeat = -FLT_MAX;
 
-    for (const auto s : selection.getGroupedSelections())
+    for (const auto &s : selection.getGroupedSelections())
     {
         const auto patternSelection(s.second);
         const String patternId(s.first);

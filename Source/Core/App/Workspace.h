@@ -103,6 +103,11 @@ private:
     ScopedPointer<RootTreeItem> treeRoot;
     TreeNavigationHistory navigationHistory;
 
+    // A quick hack to have some kind of backwards compatibility.
+    // If a previous version of tree is found, it is loaded as is
+    // and then saved along with the new one.
+    ScopedPointer<XmlElement> previousVersionTree;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Workspace)
 
 };

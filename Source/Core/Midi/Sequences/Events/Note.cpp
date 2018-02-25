@@ -35,24 +35,16 @@ Note::Note(WeakReference<MidiSequence> owner,
     velocity(velocityVal) {}
 
 Note::Note(const Note &other) :
-    MidiEvent(other.sequence, MidiEvent::Note, other.beat),
+    MidiEvent(other),
     key(other.key),
     length(other.length),
-    velocity(other.velocity)
-{
-    this->id = other.getId();
-}
+    velocity(other.velocity) {}
 
 Note::Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy) :
-    MidiEvent(owner, MidiEvent::Note, parametersToCopy.beat),
+    MidiEvent(owner, parametersToCopy),
     key(parametersToCopy.key),
     length(parametersToCopy.length),
-    velocity(parametersToCopy.velocity)
-{
-    // This constructor assume you know what you're doing,
-    // and the id is unique within a target sequence
-    this->id = parametersToCopy.getId();
-}
+    velocity(parametersToCopy.velocity) {}
 
 Array<MidiMessage> Note::toMidiMessages() const
 {

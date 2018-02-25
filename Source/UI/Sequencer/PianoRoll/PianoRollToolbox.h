@@ -75,7 +75,7 @@ public:
     static void shiftBeatRelative(Lasso &selection, float deltaBeat,
     bool shouldCheckpoint = true);
     
-    static void inverseChord(Lasso &selection, int deltaKey,
+    static void invertChord(Lasso &selection, int deltaKey,
     bool shouldCheckpoint = true, Transport *transport = nullptr);
     
 };

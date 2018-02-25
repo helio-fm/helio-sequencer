@@ -34,7 +34,7 @@ class KeySignaturesSequence;
 #include "../Common/PlayButton.h"
 
 class KeySignatureDialog  : public FadingDialog,
-                            public TextEditorListener,
+                            public TextEditor::Listener,
                             public ScaleEditor::Listener,
                             public KeySelector::Listener,
                             private Timer,

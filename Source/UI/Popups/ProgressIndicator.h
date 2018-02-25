@@ -53,7 +53,7 @@ public:
         if (DrawableComposite *group =
                 dynamic_cast<DrawableComposite *>(this->indicatorShape->getChildComponent(0)->getChildComponent(0)))
         {
-            Rectangle<float> allArea(group->getContentArea().resolve(nullptr));
+            Rectangle<float> allArea(group->getContentArea());
             AffineTransform fitTransform = RectanglePlacement(RectanglePlacement::onlyReduceInSize)
                     .getTransformToFit(allArea, this->getLocalBounds().toFloat());
 
@@ -77,7 +77,7 @@ public:
                     const float partAlpha = jmax(0.1f, 1.f - (distance / (radius * 2)));
 
                     const Rectangle<float> drawableBounds(dc->getDrawableBounds());
-                    const Rectangle<float> subArea(dc->getContentArea().resolve(nullptr));
+                    const Rectangle<float> subArea(dc->getContentArea());
 
                     if (DrawablePath *dp = dynamic_cast<DrawablePath *>(dc->getChildComponent(0)))
                     {

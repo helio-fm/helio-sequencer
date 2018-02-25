@@ -367,7 +367,7 @@ void PluginManager::deserialize(const ValueTree &tree)
         tree : tree.getChildWithName(Serialization::Audio::pluginManager);
 
     if (!root.isValid()) { return; }
-
+    
     for (const auto &child : root)
     {
         PluginSmartDescription pluginDescription;

@@ -21,12 +21,15 @@
 #include "SerializationKeys.h"
 #include "DocumentHelpers.h"
 #include "AudioCore.h"
+#include "Instrument.h"
+#include "AudioMonitor.h"
 #include "RootTreeItem.h"
 #include "PluginManager.h"
 #include "SettingsTreeItem.h"
 #include "InstrumentsRootTreeItem.h"
 #include "ProjectTreeItem.h"
 #include "RootTreeItem.h"
+#include "WorkspacePage.h"
 
 Workspace::Workspace() : wasInitialized(false)
 {
@@ -422,11 +425,14 @@ ValueTree Workspace::serialize() const
     ValueTree tree(Core::workspace);
 
     // TODO serialize window size and position
-    
+
     tree.appendChild(this->audioCore->serialize());
     tree.appendChild(this->pluginManager->serialize());
-    tree.appendChild(this->treeRoot->serialize());
     tree.appendChild(this->recentFilesList->serialize());
+
+    ValueTree treeRootNode(Core::treeRoot);
+    treeRootNode.appendChild(this->treeRoot->serialize());
+    tree.appendChild(treeRootNode);
     
     // TODO serialize tree openness state?
     ValueTree treeStateNode(Core::treeState);
@@ -450,11 +456,14 @@ void Workspace::deserialize(const ValueTree &tree)
         this->failedDeserializationFallback();
         return;
     }
-    
+
     this->recentFilesList->deserialize(root);
     this->audioCore->deserialize(root);
     this->pluginManager->deserialize(root);
-    this->treeRoot->deserialize(root);
+
+    auto treeRootNodeLegacy = root.getChildWithName(Core::treeItem);
+    auto treeRootNode = root.getChildWithName(Core::treeRoot);
+    this->treeRoot->deserialize(treeRootNode.isValid() ? treeRootNode : treeRootNodeLegacy);
     
     bool foundActiveNode = false;
     const auto treeStateNode = root.getChildWithName(Core::treeState);
@@ -467,6 +476,15 @@ void Workspace::deserialize(const ValueTree &tree)
         }
     }
     
+    // If no instruments root item is found for whatever reason
+    // (i.e. malformed tree), make sure to add one:
+    if (nullptr == this->treeRoot->findChildOfType<InstrumentsRootTreeItem>())
+    { this->treeRoot->addChildTreeItem(new InstrumentsRootTreeItem(), 0); }
+    
+    // The same hack for settings root:
+    if (nullptr == this->treeRoot->findChildOfType<SettingsTreeItem>())
+    { this->treeRoot->addChildTreeItem(new SettingsTreeItem(), 0); }
+
     if (! foundActiveNode)
     {
         // Fallback to the main page

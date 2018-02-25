@@ -108,9 +108,7 @@ namespace CommandIDs
         TweakNotesVolume                = 0x200f,
 
         ShowAnnotations                 = 0x2010,
-
         ResetVolumeChanges              = 0x2011,
-
         ApplyOpenGLRenderer             = 0x2012,
 
         TransportStartPlayback          = 0x2013,
@@ -194,9 +192,34 @@ namespace CommandIDs
         SelectAudioDeviceType           = 0x3400,
         SelectAudioDevice               = 0x3500,
         SelectSampleRate                = 0x3600,
-        SelectBufferSize                = 0x3700,
+        SelectBufferSize                = 0x3700, // more ids reserved for sub-items
 
-        YourNextCommandId               = 0x4000
+        EditModeDefault                 = 0x4000,
+        EditModeDraw                    = 0x4001,
+        EditModePan                     = 0x4002,
+        EditModeWipeSpace               = 0x4003,
+        EditModeInsertSpace             = 0x4004,
+        EditModeSelect                  = 0x4005,
+        
+        BeatShiftLeft                   = 0x4050,
+        BeatShiftRight                  = 0x4051,
+        BarShiftLeft                    = 0x4052,
+        BarShiftRight                   = 0x4053,
+        KeyShiftUp                      = 0x4054,
+        KeyShiftDown                    = 0x4055,
+        OctaveShiftUp                   = 0x4056,
+        OctaveShiftDown                 = 0x4057,
+        CleanupOverlaps                 = 0x4058,
+        InvertChordUp                   = 0x4059,
+        InvertChordDown                 = 0x405a,
+        
+        ToggleQuickStash                = 0x405b,
+        ShowArpeggiatiosPanel           = 0x405c,
+        ShowVolumePanel                 = 0x405d,
+        TweakVolumeRandom               = 0x405e,
+        TweakVolumeFadeOut              = 0x405f,
+
+        YourNextCommandId               = 0x4060
     };
 
     int getIdForName(const String &command);

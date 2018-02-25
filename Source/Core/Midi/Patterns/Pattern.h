@@ -127,7 +127,7 @@ protected:
     UndoStack *getUndoStack();
 
     OwnedArray<Clip> clips;
-    SparseHashSet<Clip::Id, StringHash> usedClipIds;
+    mutable SparseHashSet<Clip::Id, StringHash> usedClipIds;
 
 private:
     

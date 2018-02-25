@@ -87,6 +87,7 @@ void PianoSequence::silentImport(const MidiEvent &eventToImport)
 
     if (this->usedEventIds.contains(note.getId()))
     {
+        jassertfalse;
         return;
     }
 
@@ -101,11 +102,6 @@ void PianoSequence::silentImport(const MidiEvent &eventToImport)
 
 MidiEvent *PianoSequence::insert(const Note &eventParams, const bool undoable)
 {
-    if (this->usedEventIds.contains(eventParams.getId()))
-    {
-        return nullptr;
-    }
-
     if (undoable)
     {
         this->getUndoStack()->
@@ -116,7 +112,6 @@ MidiEvent *PianoSequence::insert(const Note &eventParams, const bool undoable)
     {
         const auto ownedNote = new Note(this, eventParams);
         this->midiEvents.addSorted(*ownedNote, ownedNote);
-        this->usedEventIds.insert(ownedNote->getId());
         this->notifyEventAdded(*ownedNote);
         this->updateBeatRange(true);
         return ownedNote;
@@ -142,7 +137,6 @@ bool PianoSequence::remove(const Note &eventParams, const bool undoable)
             MidiEvent *const removedNote = this->midiEvents[index];
             jassert(removedNote->isValid());
             this->notifyEventRemoved(*removedNote);
-            this->usedEventIds.erase(removedNote->getId());
             this->midiEvents.remove(index, true);
             this->updateBeatRange(true);
             this->notifyEventRemovedPostAction();
@@ -200,7 +194,6 @@ bool PianoSequence::insertGroup(Array<Note> &group, bool undoable)
             const Note &eventParams = group.getUnchecked(i);
             const auto ownedNote = new Note(this, eventParams);
             this->midiEvents.addSorted(*ownedNote, ownedNote);
-            this->usedEventIds.insert(ownedNote->getId());
             this->notifyEventAdded(*ownedNote);
         }
 
@@ -229,7 +222,6 @@ bool PianoSequence::removeGroup(Array<Note> &group, bool undoable)
             {
                 const auto removedNote = this->midiEvents[index];
                 this->notifyEventRemoved(*removedNote);
-                this->usedEventIds.erase(removedNote->getId());
                 this->midiEvents.remove(index, true);
             }
         }

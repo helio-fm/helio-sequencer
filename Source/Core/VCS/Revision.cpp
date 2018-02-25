@@ -256,7 +256,7 @@ void Revision::deserialize(ValueTree revision, const ValueTree &tree)
         {
             ValueTree child(revision.createCopy());
             Revision::deserialize(child, e);
-            revision.addChild(child, 0);
+            revision.addChild(child, 0, nullptr);
         }
         else
         {
