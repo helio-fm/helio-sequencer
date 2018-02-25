@@ -160,15 +160,11 @@ void InstrumentsPage::buttonClicked (Button* buttonThatWasClicked)
             const PluginDescription pluginDescription(*this->pluginManager.getList().getType(selectedRow));
 
             Instrument *instrument =
-            App::Workspace().getAudioCore().
-            addInstrument(pluginDescription,
-                          pluginDescription.descriptiveName);
+                App::Workspace().getAudioCore().
+                addInstrument(pluginDescription,
+                              pluginDescription.descriptiveName);
 
-            InstrumentTreeItem *treeItem =
             this->instrumentsRoot.addInstrumentTreeItem(instrument);
-
-            jassert(treeItem);
-
             this->pluginsList->setSelectedRows(SparseSet<int>());
         }
         else

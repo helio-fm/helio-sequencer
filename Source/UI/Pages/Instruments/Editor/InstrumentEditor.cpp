@@ -159,7 +159,7 @@ void InstrumentEditor::updateComponents()
     }
     
     const auto &connections = instrument.getConnections();
-    for (int i = connections.size(); --i >= 0;)
+    for (auto i = connections.size(); --i >= 0;)
     {
         AudioProcessorGraph::Connection c = connections.at(i);
         if (getComponentForConnection(c) == nullptr)

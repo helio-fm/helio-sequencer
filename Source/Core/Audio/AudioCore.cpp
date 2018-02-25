@@ -310,10 +310,10 @@ void AudioCore::deserializeDeviceManager(const ValueTree &tree)
 
     String error;
     AudioDeviceManager::AudioDeviceSetup setup;
-    setup.inputDeviceName = tree.getProperty(Audio::audioInputDeviceName);
-    setup.outputDeviceName = tree.getProperty(Audio::audioOutputDeviceName);
+    setup.inputDeviceName = root.getProperty(Audio::audioInputDeviceName);
+    setup.outputDeviceName = root.getProperty(Audio::audioOutputDeviceName);
 
-    String currentDeviceType = tree.getProperty(Audio::audioDeviceType);
+    String currentDeviceType = root.getProperty(Audio::audioDeviceType);
     AudioIODeviceType *foundType = nullptr;
 
     for (const auto availableType : availableDeviceTypes)
@@ -332,22 +332,22 @@ void AudioCore::deserializeDeviceManager(const ValueTree &tree)
 
     this->deviceManager.setCurrentAudioDeviceType(currentDeviceType, true);
 
-    setup.bufferSize = tree.getProperty(Audio::audioDeviceBufferSize, setup.bufferSize);
-    setup.sampleRate = tree.getProperty(Audio::audioDeviceRate, setup.sampleRate);
+    setup.bufferSize = root.getProperty(Audio::audioDeviceBufferSize, setup.bufferSize);
+    setup.sampleRate = root.getProperty(Audio::audioDeviceRate, setup.sampleRate);
 
     const var defaultTwoChannels("11");
-    const String inputChannels = tree.getProperty(Audio::audioDeviceInputChannels, defaultTwoChannels);
-    const String outputChannels = tree.getProperty(Audio::audioDeviceOutputChannels, defaultTwoChannels);
+    const String inputChannels = root.getProperty(Audio::audioDeviceInputChannels, defaultTwoChannels);
+    const String outputChannels = root.getProperty(Audio::audioDeviceOutputChannels, defaultTwoChannels);
     setup.inputChannels.parseString(inputChannels, 2);
     setup.outputChannels.parseString(outputChannels, 2);
 
-    setup.useDefaultInputChannels = !tree.hasProperty(Audio::audioDeviceInputChannels);
-    setup.useDefaultOutputChannels = !tree.hasProperty(Audio::audioDeviceOutputChannels);
+    setup.useDefaultInputChannels = !root.hasProperty(Audio::audioDeviceInputChannels);
+    setup.useDefaultOutputChannels = !root.hasProperty(Audio::audioDeviceOutputChannels);
 
     error = this->deviceManager.setAudioDeviceSetup(setup, true);
 
     this->customMidiInputs.clearQuick();
-    forEachValueTreeChildWithType(tree, c, Audio::midiInput)
+    forEachValueTreeChildWithType(root, c, Audio::midiInput)
     {
         this->customMidiInputs.add(c.getProperty(Audio::midiInputName));
     }
@@ -364,7 +364,7 @@ void AudioCore::deserializeDeviceManager(const ValueTree &tree)
         error = this->deviceManager.initialise(0, 2, nullptr, false);
     }
 
-    this->deviceManager.setDefaultMidiOutput(tree.getProperty(Audio::defaultMidiOutput));
+    this->deviceManager.setDefaultMidiOutput(root.getProperty(Audio::defaultMidiOutput));
 }
 
 //===----------------------------------------------------------------------===//
@@ -411,6 +411,8 @@ void AudioCore::deserialize(const ValueTree &tree)
         return;
     }
 
+    this->deserializeDeviceManager(root);
+
     const auto orchestra = root.getChildWithName(Audio::orchestra);
     if (orchestra.isValid())
     {
@@ -422,8 +424,6 @@ void AudioCore::deserialize(const ValueTree &tree)
             this->instruments.add(instrument);
         }
     }
-
-    this->deserializeDeviceManager(tree);
 }
 
 void AudioCore::reset()

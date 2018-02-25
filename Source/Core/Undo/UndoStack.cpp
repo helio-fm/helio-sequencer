@@ -80,9 +80,9 @@ int UndoStack::ActionSet::getTotalSize() const
 ValueTree UndoStack::ActionSet::serialize() const
 {
     ValueTree tree(Serialization::Undo::transaction);
-        
-    tree.setProperty(Serialization::Undo::name, this->name);
-        
+
+    // tree.setProperty(Serialization::Undo::name, this->name);
+
     for (int i = 0; i < this->actions.size(); ++i)
     {
         tree.appendChild(this->actions.getUnchecked(i)->serialize());
@@ -94,9 +94,9 @@ ValueTree UndoStack::ActionSet::serialize() const
 void UndoStack::ActionSet::deserialize(const ValueTree &tree)
 {
     this->reset();
-        
-    this->name = tree.getProperty(Serialization::Undo::name);
-        
+
+    // this->name = tree.getProperty(Serialization::Undo::name);
+
     for (const auto &childAction : tree)
     {
         if (UndoAction *action = createUndoActionsByTagName(childAction.getType()))

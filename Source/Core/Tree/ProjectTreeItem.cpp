@@ -796,8 +796,6 @@ bool ProjectTreeItem::onDocumentLoad(File &file)
     if (file.existsAsFile())
     {
         const ValueTree tree(DocumentHelpers::load(file));
-        //const ValueTree tree(DocumentReader::loadObfuscated(file));
-
         if (tree.isValid())
         {
             this->load(tree);

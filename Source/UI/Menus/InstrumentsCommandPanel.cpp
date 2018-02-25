@@ -93,10 +93,7 @@ void InstrumentsCommandPanel::handleCommandMessage(int commandId)
                 addInstrument(pluginDescription,
                               pluginDescription.descriptiveName);
             
-            InstrumentTreeItem *treeItem =
-                this->instrumentsRoot.addInstrumentTreeItem(instrument);
-            
-            jassert(treeItem);
+            this->instrumentsRoot.addInstrumentTreeItem(instrument);
         }
     }
     

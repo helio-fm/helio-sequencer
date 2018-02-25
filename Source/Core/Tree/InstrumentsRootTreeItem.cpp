@@ -104,12 +104,8 @@ void InstrumentsRootTreeItem::itemDropped(const DragAndDropTarget::SourceDetails
             
             jassert(instrument);
 
-            InstrumentTreeItem *treeItem =
-                this->addInstrumentTreeItem(instrument, insertIndex);
-            
-            jassert(treeItem);
-
-            //Console::setStatus("loaded " + pluginDescription->descriptiveName);
+            this->addInstrumentTreeItem(instrument, insertIndex);
+            Logger::writeToLog("Loaded " + pluginDescription.descriptiveName);
         }
     }
 

@@ -52,5 +52,6 @@ bool JsonSerializer::supportsFileWithExtension(const String &extension) const
 
 bool JsonSerializer::supportsFileWithHeader(const String &header) const
 {
+    // Enough for all our cases:
     return header.startsWithChar('[') || header.startsWithChar('{');
 }

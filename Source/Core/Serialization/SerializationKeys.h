@@ -410,36 +410,36 @@ namespace Serialization
         static const Identifier noteInsertAction = "NoteInsertAction";
         static const Identifier noteRemoveAction = "NoteRemoveAction";
         static const Identifier noteChangeAction = "NoteChangeAction";
-        static const Identifier notesGroupInsertAction = "NotesGroupInsertAction";
-        static const Identifier notesGroupRemoveAction = "NotesGroupRemoveAction";
-        static const Identifier notesGroupChangeAction = "NotesGroupChangeAction";
+        static const Identifier notesGroupInsertAction = "NotesInsertAction";
+        static const Identifier notesGroupRemoveAction = "NotesRemoveAction";
+        static const Identifier notesGroupChangeAction = "NotesChangeAction";
         
-        static const Identifier annotationEventInsertAction = "AnnotationEventInsertAction";
-        static const Identifier annotationEventRemoveAction = "AnnotationEventRemoveAction";
-        static const Identifier annotationEventChangeAction = "AnnotationEventChangeAction";
-        static const Identifier annotationEventsGroupInsertAction = "AnnotationEventsGroupInsertAction";
-        static const Identifier annotationEventsGroupRemoveAction = "AnnotationEventsGroupRemoveAction";
-        static const Identifier annotationEventsGroupChangeAction = "AnnotationEventsGroupChangeAction";
+        static const Identifier annotationEventInsertAction = "AnnotationInsertAction";
+        static const Identifier annotationEventRemoveAction = "AnnotationRemoveAction";
+        static const Identifier annotationEventChangeAction = "AnnotationChangeAction";
+        static const Identifier annotationEventsGroupInsertAction = "AnnotationsInsertAction";
+        static const Identifier annotationEventsGroupRemoveAction = "AnnotationsRemoveAction";
+        static const Identifier annotationEventsGroupChangeAction = "AnnotationsChangeAction";
 
-        static const Identifier timeSignatureEventInsertAction = "TimeSignatureEventInsertAction";
-        static const Identifier timeSignatureEventRemoveAction = "TimeSignatureEventRemoveAction";
-        static const Identifier timeSignatureEventChangeAction = "TimeSignatureEventChangeAction";
-        static const Identifier timeSignatureEventsGroupInsertAction = "TimeSignatureEventsGroupInsertAction";
-        static const Identifier timeSignatureEventsGroupRemoveAction = "TimeSignatureEventsGroupRemoveAction";
-        static const Identifier timeSignatureEventsGroupChangeAction = "TimeSignatureEventsGroupChangeAction";
+        static const Identifier timeSignatureEventInsertAction = "TimeSignatureInsertAction";
+        static const Identifier timeSignatureEventRemoveAction = "TimeSignatureRemoveAction";
+        static const Identifier timeSignatureEventChangeAction = "TimeSignatureChangeAction";
+        static const Identifier timeSignatureEventsGroupInsertAction = "TimeSignaturesInsertAction";
+        static const Identifier timeSignatureEventsGroupRemoveAction = "TimeSignaturesRemoveAction";
+        static const Identifier timeSignatureEventsGroupChangeAction = "TimeSignaturesChangeAction";
 
-        static const Identifier keySignatureEventInsertAction = "KeySignatureEventInsertAction";
-        static const Identifier keySignatureEventRemoveAction = "KeySignatureEventRemoveAction";
-        static const Identifier keySignatureEventChangeAction = "KeySignatureEventChangeAction";
-        static const Identifier keySignatureEventsGroupInsertAction = "KeySignatureEventsGroupInsertAction";
-        static const Identifier keySignatureEventsGroupRemoveAction = "KeySignatureEventsGroupRemoveAction";
-        static const Identifier keySignatureEventsGroupChangeAction = "KeySignatureEventsGroupChangeAction";
+        static const Identifier keySignatureEventInsertAction = "KeySignatureInsertAction";
+        static const Identifier keySignatureEventRemoveAction = "KeySignatureRemoveAction";
+        static const Identifier keySignatureEventChangeAction = "KeySignatureChangeAction";
+        static const Identifier keySignatureEventsGroupInsertAction = "KeySignaturesInsertAction";
+        static const Identifier keySignatureEventsGroupRemoveAction = "KeySignaturesRemoveAction";
+        static const Identifier keySignatureEventsGroupChangeAction = "KeySignaturesChangeAction";
 
         static const Identifier automationEventInsertAction = "AutomationEventInsertAction";
         static const Identifier automationEventRemoveAction = "AutomationEventRemoveAction";
         static const Identifier automationEventChangeAction = "AutomationEventChangeAction";
-        static const Identifier automationEventsGroupInsertAction = "AutomationEventsGroupInsertAction";
-        static const Identifier automationEventsGroupRemoveAction = "AutomationEventsGroupRemoveAction";
-        static const Identifier automationEventsGroupChangeAction = "AutomationEventsGroupChangeAction";
+        static const Identifier automationEventsGroupInsertAction = "AutomationEventsInsertAction";
+        static const Identifier automationEventsGroupRemoveAction = "AutomationEventsRemoveAction";
+        static const Identifier automationEventsGroupChangeAction = "AutomationEventsChangeAction";
     } // namespace Undo
 }  // namespace Serialization

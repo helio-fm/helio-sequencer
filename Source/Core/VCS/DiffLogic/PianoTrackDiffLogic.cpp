@@ -56,7 +56,7 @@ static bool checkIfDeltaIsNotesType(const Delta *delta);
 PianoTrackDiffLogic::PianoTrackDiffLogic(TrackedItem &targetItem) :
     DiffLogic(targetItem) {}
 
-const juce::Identifier VCS::PianoTrackDiffLogic::getType() const
+const Identifier VCS::PianoTrackDiffLogic::getType() const
 {
     return Serialization::Core::pianoTrack;
 }
