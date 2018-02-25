@@ -164,7 +164,7 @@ void TranslationManager::loadLocaleWithId(const String &localeId)
     }
     
     this->setSelectedLocaleId(localeId);
-    this->reloadLocales();
+    //this->reloadLocales(); // Kinda overkill
 }
 
 String TranslationManager::getCurrentLocaleName() const
@@ -313,7 +313,7 @@ void TranslationManager::reloadLocales()
     const File downloadedTranslations(this->getDownloadedTranslationsFile());
     if (downloadedTranslations.existsAsFile())
     {
-        const auto tree(DocumentHelpers::load<XmlSerializer>(downloadedTranslations));
+        const auto tree(DocumentHelpers::load(downloadedTranslations));
         if (tree.isValid())
         {
             Logger::writeToLog("Found downloaded translations file, loading..");
