@@ -75,6 +75,11 @@ namespace Serialization
 
         static const Identifier recentFiles = "RecentFiles";
         static const Identifier recentFileItem = "File";
+        static const Identifier recentFileTitle = "Title";
+        static const Identifier recentFilePath = "Path";
+        static const Identifier recentFileProjectId = "Id";
+        static const Identifier recentFileTime = "Time";
+
         static const Identifier filePath = "FilePath";
 
         static const Identifier clipboard = "HelioClipboard";
@@ -253,6 +258,7 @@ namespace Serialization
     namespace VCS
     {
         static const Identifier vcsHistoryKey = "HistoryKey";
+        static const Identifier vcsHistoryKeyData = "Data";
         static const Identifier vcsHistoryId = "HistoryId";
         static const Identifier vcsHistoryVersion = "HistoryVersion";
         

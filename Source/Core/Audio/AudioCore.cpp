@@ -227,33 +227,33 @@ ValueTree AudioCore::serializeDeviceManager() const
     AudioDeviceManager::AudioDeviceSetup currentSetup;
     this->deviceManager.getAudioDeviceSetup(currentSetup);
 
-    tree.setProperty(Audio::audioDeviceType, this->deviceManager.getCurrentAudioDeviceType());
-    tree.setProperty(Audio::audioOutputDeviceName, currentSetup.outputDeviceName);
-    tree.setProperty(Audio::audioInputDeviceName, currentSetup.inputDeviceName);
+    tree.setProperty(Audio::audioDeviceType, this->deviceManager.getCurrentAudioDeviceType(), nullptr);
+    tree.setProperty(Audio::audioOutputDeviceName, currentSetup.outputDeviceName, nullptr);
+    tree.setProperty(Audio::audioInputDeviceName, currentSetup.inputDeviceName, nullptr);
 
     const auto currentAudioDevice = this->deviceManager.getCurrentAudioDevice();
     if (currentAudioDevice != nullptr)
     {
         tree.setProperty(Audio::audioDeviceRate,
-            currentAudioDevice->getCurrentSampleRate());
+            currentAudioDevice->getCurrentSampleRate(), nullptr);
 
         if (currentAudioDevice->getDefaultBufferSize() !=
             currentAudioDevice->getCurrentBufferSizeSamples())
         {
             tree.setProperty(Audio::audioDeviceBufferSize,
-                currentAudioDevice->getCurrentBufferSizeSamples());
+                currentAudioDevice->getCurrentBufferSizeSamples(), nullptr);
         }
 
         if (!currentSetup.useDefaultInputChannels)
         {
             tree.setProperty(Audio::audioDeviceInputChannels,
-                currentSetup.inputChannels.toString(2));
+                currentSetup.inputChannels.toString(2), nullptr);
         }
 
         if (!currentSetup.useDefaultOutputChannels)
         {
             tree.setProperty(Audio::audioDeviceOutputChannels,
-                currentSetup.outputChannels.toString(2));
+                currentSetup.outputChannels.toString(2), nullptr);
         }
     }
 
@@ -263,8 +263,8 @@ ValueTree AudioCore::serializeDeviceManager() const
         if (this->deviceManager.isMidiInputEnabled(midiInputName))
         {
             ValueTree midiInputNode(Audio::midiInput);
-            midiInputNode.setProperty(Audio::midiInputName, midiInputName);
-            tree.appendChild(midiInputNode);
+            midiInputNode.setProperty(Audio::midiInputName, midiInputName, nullptr);
+            tree.appendChild(midiInputNode, nullptr);
         }
     }
 
@@ -277,8 +277,8 @@ ValueTree AudioCore::serializeDeviceManager() const
             if (!availableMidiDevices.contains(midiInputName, true))
             {
                 ValueTree midiInputNode(Audio::midiInput);
-                midiInputNode.setProperty(Audio::midiInputName, midiInputName);
-                tree.appendChild(midiInputNode);
+                midiInputNode.setProperty(Audio::midiInputName, midiInputName, nullptr);
+                tree.appendChild(midiInputNode, nullptr);
             }
         }
     }
@@ -286,7 +286,7 @@ ValueTree AudioCore::serializeDeviceManager() const
     const String defaultMidiOutput(this->deviceManager.getDefaultMidiOutputName());
     if (defaultMidiOutput.isNotEmpty())
     {
-        tree.setProperty(Audio::defaultMidiOutput, defaultMidiOutput);
+        tree.setProperty(Audio::defaultMidiOutput, defaultMidiOutput, nullptr);
     }
 
     return tree;
@@ -384,13 +384,13 @@ ValueTree AudioCore::serialize() const
     for (int i = 0; i < this->instruments.size(); ++i)
     {
         Instrument *instrument = this->instruments.getUnchecked(i);
-        orchestra.appendChild(instrument->serialize());
+        orchestra.appendChild(instrument->serialize(), nullptr);
     }
 
-    tree.appendChild(orchestra);
+    tree.appendChild(orchestra, nullptr);
 
     const auto deviceState(this->serializeDeviceManager());
-    tree.appendChild(deviceState);
+    tree.appendChild(deviceState, nullptr);
     return tree;
 }
 

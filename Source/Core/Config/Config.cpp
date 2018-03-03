@@ -131,7 +131,7 @@ void Config::saveConfigFor(const Identifier &key, const Serializable *serializab
 {
     const ValueTree child(this->config.getChildWithName(key));
     this->config.removeChild(child, nullptr);
-    this->config.appendChild(serializable->serialize());
+    this->config.appendChild(serializable->serialize(), nullptr);
     this->onConfigChanged();
 }
 

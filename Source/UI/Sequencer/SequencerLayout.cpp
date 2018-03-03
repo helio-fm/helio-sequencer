@@ -799,8 +799,8 @@ void SequencerLayout::handleCommandMessage(int commandId)
 ValueTree SequencerLayout::serialize() const
 {
     ValueTree tree(Serialization::UI::sequencer);
-    tree.appendChild(this->pianoRoll->serialize());
-    tree.appendChild(this->patternRoll->serialize());
+    tree.appendChild(this->pianoRoll->serialize(), nullptr);
+    tree.appendChild(this->patternRoll->serialize(), nullptr);
     return tree;
 }
 

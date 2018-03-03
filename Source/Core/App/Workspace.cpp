@@ -379,8 +379,8 @@ static void addAllActiveItemIds(TreeViewItem *item, ValueTree &parent)
         if (treeItem->isMarkerVisible())
         {
             ValueTree child(Serialization::Core::selectedTreeItem);
-            child.setProperty(Serialization::Core::treeItemId, item->getItemIdentifierString());
-            parent.appendChild(child);
+            child.setProperty(Serialization::Core::treeItemId, item->getItemIdentifierString(), nullptr);
+            parent.appendChild(child, nullptr);
         }
         
         for (int i = 0; i < item->getNumSubItems(); ++i)
@@ -426,18 +426,18 @@ ValueTree Workspace::serialize() const
 
     // TODO serialize window size and position
 
-    tree.appendChild(this->audioCore->serialize());
-    tree.appendChild(this->pluginManager->serialize());
-    tree.appendChild(this->recentFilesList->serialize());
+    tree.appendChild(this->audioCore->serialize(), nullptr);
+    tree.appendChild(this->pluginManager->serialize(), nullptr);
+    tree.appendChild(this->recentFilesList->serialize(), nullptr);
 
     ValueTree treeRootNode(Core::treeRoot);
-    treeRootNode.appendChild(this->treeRoot->serialize());
-    tree.appendChild(treeRootNode);
+    treeRootNode.appendChild(this->treeRoot->serialize(), nullptr);
+    tree.appendChild(treeRootNode, nullptr);
     
     // TODO serialize tree openness state?
     ValueTree treeStateNode(Core::treeState);
     addAllActiveItemIds(this->treeRoot, treeStateNode);
-    tree.appendChild(treeStateNode);
+    tree.appendChild(treeStateNode, nullptr);
     
     return tree;
 }

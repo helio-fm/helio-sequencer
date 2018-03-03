@@ -152,7 +152,7 @@ bool HotkeyScheme::sendHotkeyCommand(Hotkey key,
 ValueTree HotkeyScheme::serialize() const
 {
     ValueTree tree(Serialization::UI::Hotkeys::scheme);
-    tree.setProperty(Serialization::UI::Hotkeys::schemeName, this->name);
+    tree.setProperty(Serialization::UI::Hotkeys::schemeName, this->name, nullptr);
     // Not implemented (cannot convert command id's to string messages back)
     return tree;
 }

@@ -275,17 +275,17 @@ ValueTree ProjectTimeline::serialize() const
     this->serializeVCSUuid(tree);
 
     tree.setProperty(Serialization::Core::annotationsTrackId,
-        this->annotationsTrackId.toString());
+        this->annotationsTrackId.toString(), nullptr);
 
     tree.setProperty(Serialization::Core::keySignaturesTrackId,
-        this->keySignaturesTrackId.toString());
+        this->keySignaturesTrackId.toString(), nullptr);
 
     tree.setProperty(Serialization::Core::timeSignaturesTrackId,
-        this->timeSignaturesTrackId.toString());
+        this->timeSignaturesTrackId.toString(), nullptr);
 
-    tree.appendChild(this->annotationsSequence->serialize());
-    tree.appendChild(this->keySignaturesSequence->serialize());
-    tree.appendChild(this->timeSignaturesSequence->serialize());
+    tree.appendChild(this->annotationsSequence->serialize(), nullptr);
+    tree.appendChild(this->keySignaturesSequence->serialize(), nullptr);
+    tree.appendChild(this->timeSignaturesSequence->serialize(), nullptr);
 
     return tree;
 }
@@ -349,7 +349,7 @@ ValueTree ProjectTimeline::serializeAnnotationsDelta() const
     for (int i = 0; i < this->annotationsSequence->size(); ++i)
     {
         const MidiEvent *event = this->annotationsSequence->getUnchecked(i);
-        tree.appendChild(event->serialize());
+        tree.appendChild(event->serialize(), nullptr);
     }
 
     return tree;
@@ -374,7 +374,7 @@ ValueTree ProjectTimeline::serializeTimeSignaturesDelta() const
     for (int i = 0; i < this->timeSignaturesSequence->size(); ++i)
     {
         const MidiEvent *event = this->timeSignaturesSequence->getUnchecked(i);
-        tree.appendChild(event->serialize());
+        tree.appendChild(event->serialize(), nullptr);
     }
     
     return tree;
@@ -399,7 +399,7 @@ ValueTree ProjectTimeline::serializeKeySignaturesDelta() const
     for (int i = 0; i < this->keySignaturesSequence->size(); ++i)
     {
         const MidiEvent *event = this->keySignaturesSequence->getUnchecked(i);
-        tree.appendChild(event->serialize());
+        tree.appendChild(event->serialize(), nullptr);
     }
 
     return tree;

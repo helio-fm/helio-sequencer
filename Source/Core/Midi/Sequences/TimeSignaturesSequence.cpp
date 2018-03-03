@@ -256,7 +256,7 @@ ValueTree TimeSignaturesSequence::serialize() const
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         const MidiEvent *event = this->midiEvents.getUnchecked(i);
-        tree.appendChild(event->serialize()); // faster than addChildElement
+        tree.appendChild(event->serialize(), nullptr); // faster than addChildElement
     }
 
     return tree;

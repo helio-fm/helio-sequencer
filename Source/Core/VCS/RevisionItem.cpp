@@ -150,13 +150,13 @@ ValueTree VCS::RevisionItem::serialize() const
 
     this->serializeVCSUuid(tree);
 
-    tree.setProperty(Serialization::VCS::revisionItemType, this->getType());
-    tree.setProperty(Serialization::VCS::revisionItemName, this->getVCSName());
-    tree.setProperty(Serialization::VCS::revisionItemDiffLogic, this->getDiffLogic()->getType().toString());
+    tree.setProperty(Serialization::VCS::revisionItemType, this->getType(), nullptr);
+    tree.setProperty(Serialization::VCS::revisionItemName, this->getVCSName(), nullptr);
+    tree.setProperty(Serialization::VCS::revisionItemDiffLogic, this->getDiffLogic()->getType().toString(), nullptr);
 
     for (auto delta : this->deltas)
     {
-        tree.appendChild(delta->serialize());
+        tree.appendChild(delta->serialize(), nullptr);
     }
 
     return tree;

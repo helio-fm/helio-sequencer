@@ -350,23 +350,23 @@ ValueTree Instrument::serialize() const
 {
     using namespace Serialization;
     ValueTree tree(Audio::instrument);
-    tree.setProperty(Audio::instrumentId, this->instrumentID.toString());
-    tree.setProperty(Audio::instrumentName, this->instrumentName);
+    tree.setProperty(Audio::instrumentId, this->instrumentID.toString(), nullptr);
+    tree.setProperty(Audio::instrumentName, this->instrumentName, nullptr);
 
     const int numNodes = this->processorGraph->getNumNodes();
     for (int i = 0; i < numNodes; ++i)
     {
-        tree.appendChild(this->serializeNode(this->processorGraph->getNode(i)));
+        tree.appendChild(this->serializeNode(this->processorGraph->getNode(i)), nullptr);
     }
 
     for (const auto &c : this->getConnections())
     {
         ValueTree e(Audio::connection);
-        e.setProperty(Audio::sourceNodeId, static_cast<int>(c.source.nodeID));
-        e.setProperty(Audio::sourceChannel, c.source.channelIndex);
-        e.setProperty(Audio::destinationNodeId, static_cast<int>(c.destination.nodeID));
-        e.setProperty(Audio::destinationChannel, c.destination.channelIndex);
-        tree.appendChild(e);
+        e.setProperty(Audio::sourceNodeId, static_cast<int>(c.source.nodeID), nullptr);
+        e.setProperty(Audio::sourceChannel, c.source.channelIndex, nullptr);
+        e.setProperty(Audio::destinationNodeId, static_cast<int>(c.destination.nodeID), nullptr);
+        e.setProperty(Audio::destinationChannel, c.destination.channelIndex, nullptr);
+        tree.appendChild(e, nullptr);
     }
 
     return tree;
@@ -436,19 +436,19 @@ ValueTree Instrument::serializeNode(AudioProcessorGraph::Node::Ptr node) const
     if (AudioPluginInstance *plugin = dynamic_cast<AudioPluginInstance *>(node->getProcessor()))
     {
         ValueTree tree(Audio::node);
-        tree.setProperty(Audio::nodeId, static_cast<int>(node->nodeID));
-        tree.setProperty(Audio::nodeHash, node->properties[Audio::nodeHash].toString());
-        tree.setProperty(UI::positionX, node->properties[UI::positionX].toString());
-        tree.setProperty(UI::positionY, node->properties[UI::positionY].toString());
+        tree.setProperty(Audio::nodeId, static_cast<int>(node->nodeID), nullptr);
+        tree.setProperty(Audio::nodeHash, node->properties[Audio::nodeHash].toString(), nullptr);
+        tree.setProperty(UI::positionX, node->properties[UI::positionX].toString(), nullptr);
+        tree.setProperty(UI::positionY, node->properties[UI::positionY].toString(), nullptr);
 
         PluginSmartDescription pd;
         plugin->fillInPluginDescription(pd);
 
-        tree.appendChild(pd.serialize());
+        tree.appendChild(pd.serialize(), nullptr);
 
         MemoryBlock m;
         node->getProcessor()->getStateInformation(m);
-        tree.setProperty(Serialization::Audio::pluginState, m.toBase64Encoding());
+        tree.setProperty(Serialization::Audio::pluginState, m.toBase64Encoding(), nullptr);
 
         return tree;
     }

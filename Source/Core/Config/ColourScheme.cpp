@@ -204,18 +204,18 @@ void ColourScheme::syncWithLiveConstantEditor()
 ValueTree ColourScheme::serialize() const
 {
     ValueTree tree(UI::Colours::scheme);
-    tree.setProperty(UI::Colours::name, this->name);
-    tree.setProperty(UI::Colours::id, this->id);
+    tree.setProperty(UI::Colours::name, this->name, nullptr);
+    tree.setProperty(UI::Colours::id, this->id, nullptr);
 
     ValueTree mapXml(UI::Colours::colourMap);
 
     ColourMap::Iterator i(this->colours);
     while (i.next())
     {
-        mapXml.setProperty(i.getKey(), i.getValue().toString());
+        mapXml.setProperty(i.getKey(), i.getValue().toString(), nullptr);
     }
 
-    tree.appendChild(mapXml);
+    tree.appendChild(mapXml, nullptr);
     return tree;
 }
 

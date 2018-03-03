@@ -76,7 +76,7 @@ ValueTree ColourSchemeManager::serialize() const
     
     for (int i = 0; i < this->schemes.size(); ++i)
     {
-        tree.appendChild(this->schemes.getUnchecked(i).serialize());
+        tree.appendChild(this->schemes.getUnchecked(i).serialize(), nullptr);
     }
     
     return tree;

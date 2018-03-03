@@ -117,10 +117,10 @@ ValueTree AnnotationEvent::serialize() const
 {
     using namespace Serialization;
     ValueTree tree(Midi::annotation);
-    tree.setProperty(Midi::text, this->description);
-    tree.setProperty(Midi::colour, this->colour.toString());
-    tree.setProperty(Midi::beat, this->beat);
-    tree.setProperty(Midi::id, this->id);
+    tree.setProperty(Midi::text, this->description, nullptr);
+    tree.setProperty(Midi::colour, this->colour.toString(), nullptr);
+    tree.setProperty(Midi::beat, this->beat, nullptr);
+    tree.setProperty(Midi::id, this->id, nullptr);
     return tree;
 }
 

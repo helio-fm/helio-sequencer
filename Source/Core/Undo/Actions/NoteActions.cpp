@@ -62,8 +62,8 @@ int NoteInsertAction::getSizeInUnits()
 ValueTree NoteInsertAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::noteInsertAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    tree.appendChild(this->note.serialize());
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->note.serialize(), nullptr);
     return tree;
 }
 
@@ -119,8 +119,8 @@ int NoteRemoveAction::getSizeInUnits()
 ValueTree NoteRemoveAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::noteRemoveAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    tree.appendChild(this->note.serialize());
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->note.serialize(), nullptr);
     return tree;
 }
 
@@ -205,15 +205,15 @@ UndoAction *NoteChangeAction::createCoalescedAction(UndoAction *nextAction)
 ValueTree NoteChangeAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::noteChangeAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     ValueTree noteBeforeChild(Serialization::Undo::noteBefore);
-    noteBeforeChild.appendChild(this->noteBefore.serialize());
-    tree.appendChild(noteBeforeChild);
+    noteBeforeChild.appendChild(this->noteBefore.serialize(), nullptr);
+    tree.appendChild(noteBeforeChild, nullptr);
 
     ValueTree noteAfterChild(Serialization::Undo::noteAfter);
-    noteAfterChild.appendChild(this->noteAfter.serialize());
-    tree.appendChild(noteAfterChild);
+    noteAfterChild.appendChild(this->noteAfter.serialize(), nullptr);
+    tree.appendChild(noteAfterChild, nullptr);
 
     return tree;
 }
@@ -278,11 +278,11 @@ int NotesGroupInsertAction::getSizeInUnits()
 ValueTree NotesGroupInsertAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::notesGroupInsertAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     for (int i = 0; i < this->notes.size(); ++i)
     {
-        tree.appendChild(this->notes.getUnchecked(i).serialize());
+        tree.appendChild(this->notes.getUnchecked(i).serialize(), nullptr);
     }
     
     return tree;
@@ -349,11 +349,11 @@ int NotesGroupRemoveAction::getSizeInUnits()
 ValueTree NotesGroupRemoveAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::notesGroupRemoveAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     for (int i = 0; i < this->notes.size(); ++i)
     {
-        tree.appendChild(this->notes.getUnchecked(i).serialize());
+        tree.appendChild(this->notes.getUnchecked(i).serialize(), nullptr);
     }
     
     return tree;
@@ -462,23 +462,23 @@ UndoAction *NotesGroupChangeAction::createCoalescedAction(UndoAction *nextAction
 ValueTree NotesGroupChangeAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::notesGroupChangeAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     ValueTree groupBeforeChild(Serialization::Undo::groupBefore);
     ValueTree groupAfterChild(Serialization::Undo::groupAfter);
     
     for (int i = 0; i < this->notesBefore.size(); ++i)
     {
-        groupBeforeChild.appendChild(this->notesBefore.getUnchecked(i).serialize());
+        groupBeforeChild.appendChild(this->notesBefore.getUnchecked(i).serialize(), nullptr);
     }
     
     for (int i = 0; i < this->notesAfter.size(); ++i)
     {
-        groupAfterChild.appendChild(this->notesAfter.getUnchecked(i).serialize());
+        groupAfterChild.appendChild(this->notesAfter.getUnchecked(i).serialize(), nullptr);
     }
     
-    tree.appendChild(groupBeforeChild);
-    tree.appendChild(groupAfterChild);
+    tree.appendChild(groupBeforeChild, nullptr);
+    tree.appendChild(groupAfterChild, nullptr);
     
     return tree;
 }

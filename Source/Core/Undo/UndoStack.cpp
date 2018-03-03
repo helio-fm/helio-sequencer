@@ -81,11 +81,11 @@ ValueTree UndoStack::ActionSet::serialize() const
 {
     ValueTree tree(Serialization::Undo::transaction);
 
-    // tree.setProperty(Serialization::Undo::name, this->name);
+    // tree.setProperty(Serialization::Undo::name, this->name, nullptr);
 
     for (int i = 0; i < this->actions.size(); ++i)
     {
-        tree.appendChild(this->actions.getUnchecked(i)->serialize());
+        tree.appendChild(this->actions.getUnchecked(i)->serialize(), nullptr);
     }
         
     return tree;
@@ -397,7 +397,7 @@ ValueTree UndoStack::serialize() const
     {
         if (ActionSet *action = this->transactions[currentIndex])
         {
-            tree.appendChild(action->serialize());
+            tree.appendChild(action->serialize(), nullptr);
         }
         
         --currentIndex;

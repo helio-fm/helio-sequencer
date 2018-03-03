@@ -519,7 +519,7 @@ ValueTree VCS::Head::serialize() const
         {
             const RevisionItem::Ptr stateItem = static_cast<RevisionItem *>(this->state->getTrackedItem(i));
             const auto serializedItem = stateItem->serialize();
-            stateNode.appendChild(serializedItem);
+            stateNode.appendChild(serializedItem, nullptr);
             
             // exports also deltas data
             for (int j = 0; j < stateItem->getNumDeltas(); ++j)
@@ -527,17 +527,17 @@ ValueTree VCS::Head::serialize() const
                 const auto deltaData = stateItem->serializeDeltaData(j);
                 
                 ValueTree packItem(Serialization::VCS::packItem);
-                packItem.setProperty(Serialization::VCS::packItemRevId, stateItem->getUuid().toString());
-                packItem.setProperty(Serialization::VCS::packItemDeltaId, stateItem->getDelta(j)->getUuid().toString());
-                packItem.appendChild(deltaData);
+                packItem.setProperty(Serialization::VCS::packItemRevId, stateItem->getUuid().toString(), nullptr);
+                packItem.setProperty(Serialization::VCS::packItemDeltaId, stateItem->getDelta(j)->getUuid().toString(), nullptr);
+                packItem.appendChild(deltaData, nullptr);
                 
-                stateDataNode.appendChild(packItem);
+                stateDataNode.appendChild(packItem, nullptr);
             }
         }
     }
     
-    tree.appendChild(stateNode);
-    tree.appendChild(stateDataNode);
+    tree.appendChild(stateNode, nullptr);
+    tree.appendChild(stateDataNode, nullptr);
     return tree;
 }
 

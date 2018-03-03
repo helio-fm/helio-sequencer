@@ -35,7 +35,7 @@ void TreeItemChildrenSerializer::serializeChildren(const TreeItem &parentItem, V
         if (TreeViewItem *sub = parentItem.getSubItem(i))
         {
             TreeItem *treeItem = static_cast<TreeItem *>(sub);
-            parent.appendChild(treeItem->serialize());
+            parent.appendChild(treeItem->serialize(), nullptr);
         }
     }
 }

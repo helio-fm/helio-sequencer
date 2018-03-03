@@ -283,7 +283,7 @@ ValueTree Pattern::serialize() const
 
     for (int i = 0; i < this->clips.size(); ++i)
     {
-        tree.appendChild(this->clips.getUnchecked(i)->serialize());
+        tree.appendChild(this->clips.getUnchecked(i)->serialize(), nullptr);
     }
 
     return tree;

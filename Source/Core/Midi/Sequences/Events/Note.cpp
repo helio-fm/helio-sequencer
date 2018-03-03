@@ -164,11 +164,11 @@ ValueTree Note::serialize() const
 {
     using namespace Serialization;
     ValueTree tree(Midi::note);
-    tree.setProperty(Midi::id, this->id);
-    tree.setProperty(Midi::key, this->key);
-    tree.setProperty(Midi::beat, this->beat);
-    tree.setProperty(Midi::length, this->length);
-    tree.setProperty(Midi::velocity, roundFloatToInt(this->velocity * VELOCITY_SAVE_ACCURACY));
+    tree.setProperty(Midi::id, this->id, nullptr);
+    tree.setProperty(Midi::key, this->key, nullptr);
+    tree.setProperty(Midi::beat, this->beat, nullptr);
+    tree.setProperty(Midi::length, this->length, nullptr);
+    tree.setProperty(Midi::velocity, roundFloatToInt(this->velocity * VELOCITY_SAVE_ACCURACY), nullptr);
     return tree;
 }
 

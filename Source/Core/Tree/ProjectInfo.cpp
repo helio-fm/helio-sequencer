@@ -134,10 +134,10 @@ ValueTree ProjectInfo::serialize() const
 
     this->serializeVCSUuid(tree);
 
-    tree.setProperty(Serialization::Core::projectTimeStamp, String(this->initTimestamp));
-    tree.setProperty(ProjectInfoDeltas::projectLicense, this->getLicense());
-    tree.setProperty(ProjectInfoDeltas::projectAuthor, this->getAuthor());
-    tree.setProperty(ProjectInfoDeltas::projectDescription, this->getDescription());
+    tree.setProperty(Serialization::Core::projectTimeStamp, String(this->initTimestamp), nullptr);
+    tree.setProperty(ProjectInfoDeltas::projectLicense, this->getLicense(), nullptr);
+    tree.setProperty(ProjectInfoDeltas::projectAuthor, this->getAuthor(), nullptr);
+    tree.setProperty(ProjectInfoDeltas::projectDescription, this->getDescription(), nullptr);
 
     return tree;
 }
@@ -175,28 +175,28 @@ void ProjectInfo::reset()
 ValueTree ProjectInfo::serializeLicenseDelta() const
 {
     ValueTree tree(ProjectInfoDeltas::projectLicense);
-    tree.setProperty(Serialization::VCS::delta, this->getLicense());
+    tree.setProperty(Serialization::VCS::delta, this->getLicense(), nullptr);
     return tree;
 }
 
 ValueTree ProjectInfo::serializeFullNameDelta() const
 {
     ValueTree tree(ProjectInfoDeltas::projectTitle);
-    tree.setProperty(Serialization::VCS::delta, this->getFullName());
+    tree.setProperty(Serialization::VCS::delta, this->getFullName(), nullptr);
     return tree;
 }
 
 ValueTree ProjectInfo::serializeAuthorDelta() const
 {
     ValueTree tree(ProjectInfoDeltas::projectAuthor);
-    tree.setProperty(Serialization::VCS::delta, this->getAuthor());
+    tree.setProperty(Serialization::VCS::delta, this->getAuthor(), nullptr);
     return tree;
 }
 
 ValueTree ProjectInfo::serializeDescriptionDelta() const
 {
     ValueTree tree(ProjectInfoDeltas::projectDescription);
-    tree.setProperty(Serialization::VCS::delta, this->getDescription());
+    tree.setProperty(Serialization::VCS::delta, this->getDescription(), nullptr);
     return tree;
 }
 

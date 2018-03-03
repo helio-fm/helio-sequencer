@@ -341,12 +341,12 @@ static ValueTree valueTreeFromXml(const XmlElement &xml)
                 MemoryBlock mb;
                 if (mb.fromBase64Encoding(attValue))
                 {
-                    v.setProperty(toCamelCase(attName.substring(7)), var(mb));
+                    v.setProperty(toCamelCase(attName.substring(7)), var(mb), nullptr);
                     continue;
                 }
             }
 
-            v.setProperty(toCamelCase(attName), var(attValue));
+            v.setProperty(toCamelCase(attName), var(attValue), nullptr);
         }
 
         forEachXmlChildElement(xml, e)

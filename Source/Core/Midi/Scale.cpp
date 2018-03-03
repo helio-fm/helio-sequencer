@@ -209,7 +209,7 @@ bool Scale::isEquivalentTo(const Scale &other) const
 ValueTree Scale::serialize() const
 {
     ValueTree tree(Serialization::Core::scale);
-    tree.setProperty(Serialization::Core::scaleName, this->name);
+    tree.setProperty(Serialization::Core::scaleName, this->name, nullptr);
 
     int prevKey = 0;
     String intervals;
@@ -223,7 +223,7 @@ ValueTree Scale::serialize() const
     }
 
     intervals += String(CHROMATIC_SCALE_SIZE - prevKey);
-    tree.setProperty(Serialization::Core::scaleIntervals, intervals);
+    tree.setProperty(Serialization::Core::scaleIntervals, intervals, nullptr);
 
     return tree;
 }

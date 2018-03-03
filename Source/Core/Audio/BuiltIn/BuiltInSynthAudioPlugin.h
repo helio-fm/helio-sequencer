@@ -93,7 +93,7 @@ public:
     // State
     //===------------------------------------------------------------------===//
 
-    void getStateInformation(juce::MemoryBlock &destData) override;
+    void getStateInformation(MemoryBlock &destData) override;
 
     void setStateInformation(const void *data, int sizeInBytes) override;
 

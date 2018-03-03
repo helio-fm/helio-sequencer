@@ -334,8 +334,8 @@ void TreeItem::reset()
 ValueTree TreeItem::serialize() const
 {
     ValueTree tree(Serialization::Core::treeItem);
-    tree.setProperty(Serialization::Core::treeItemType, this->type);
-    tree.setProperty(Serialization::Core::treeItemName, this->name);
+    tree.setProperty(Serialization::Core::treeItemType, this->type, nullptr);
+    tree.setProperty(Serialization::Core::treeItemName, this->name, nullptr);
     TreeItemChildrenSerializer::serializeChildren(*this, tree);
     return tree;
 }

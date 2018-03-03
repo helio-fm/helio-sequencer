@@ -216,18 +216,18 @@ ValueTree Revision::serialize(ValueTree revision)
             if (const RevisionItem *revItem =
                 dynamic_cast<RevisionItem *>(property.getObject()))
             {
-                tree.appendChild(revItem->serialize());
+                tree.appendChild(revItem->serialize(), nullptr);
             }
         }
         else if (property.isString() || property.isInt64())
         {
-            tree.setProperty(id, property.toString());
+            tree.setProperty(id, property.toString(), nullptr);
         }
     }
 
     for (int i = 0; i < revision.getNumChildren(); ++i)
     {
-        tree.appendChild(Revision::serialize(revision.getChild(i)));
+        tree.appendChild(Revision::serialize(revision.getChild(i)), nullptr);
     }
 
     return tree;

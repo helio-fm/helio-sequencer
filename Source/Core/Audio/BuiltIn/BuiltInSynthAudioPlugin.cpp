@@ -136,9 +136,7 @@ const String BuiltInSynthAudioPlugin::getParameterText(int parameterIndex)
     return "";
 }
 
-void BuiltInSynthAudioPlugin::setParameter(int parameterIndex, float newValue)
-{
-}
+void BuiltInSynthAudioPlugin::setParameter(int parameterIndex, float newValue) {}
 
 
 //===----------------------------------------------------------------------===//
@@ -155,28 +153,20 @@ int BuiltInSynthAudioPlugin::getCurrentProgram()
     return 0;
 }
 
-void BuiltInSynthAudioPlugin::setCurrentProgram(int index)
-{
-}
+void BuiltInSynthAudioPlugin::setCurrentProgram(int index) {}
 
 const String BuiltInSynthAudioPlugin::getProgramName(int index)
 {
     return "";
 }
 
-void BuiltInSynthAudioPlugin::changeProgramName(int index, const String &newName)
-{
-}
+void BuiltInSynthAudioPlugin::changeProgramName(int index, const String &newName) {}
 
 
 //===----------------------------------------------------------------------===//
 // State
 //===----------------------------------------------------------------------===//
 
-void BuiltInSynthAudioPlugin::getStateInformation(juce::MemoryBlock &destData)
-{
-}
+void BuiltInSynthAudioPlugin::getStateInformation(MemoryBlock &destData) {}
 
-void BuiltInSynthAudioPlugin::setStateInformation(const void *data, int sizeInBytes)
-{
-}
+void BuiltInSynthAudioPlugin::setStateInformation(const void *data, int sizeInBytes) {}

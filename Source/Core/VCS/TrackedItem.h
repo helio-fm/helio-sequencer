@@ -43,7 +43,7 @@ namespace VCS
 
         void serializeVCSUuid(ValueTree &tree) const
         {
-            tree.setProperty(Serialization::VCS::vcsItemId, this->getUuid().toString());
+            tree.setProperty(Serialization::VCS::vcsItemId, this->getUuid().toString(), nullptr);
         }
 
         void deserializeVCSUuid(const ValueTree &tree)

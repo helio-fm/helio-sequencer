@@ -61,8 +61,8 @@ int TimeSignatureEventInsertAction::getSizeInUnits()
 ValueTree TimeSignatureEventInsertAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::timeSignatureEventInsertAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    tree.appendChild(this->event.serialize());
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->event.serialize(), nullptr);
     return tree;
 }
 
@@ -118,8 +118,8 @@ int TimeSignatureEventRemoveAction::getSizeInUnits()
 ValueTree TimeSignatureEventRemoveAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::timeSignatureEventRemoveAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    tree.appendChild(this->event.serialize());
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->event.serialize(), nullptr);
     return tree;
 }
 
@@ -200,15 +200,15 @@ UndoAction *TimeSignatureEventChangeAction::createCoalescedAction(UndoAction *ne
 ValueTree TimeSignatureEventChangeAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::timeSignatureEventChangeAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     ValueTree timeSignatureBeforeChild(Serialization::Undo::timeSignatureBefore);
-    timeSignatureBeforeChild.appendChild(this->eventBefore.serialize());
-    tree.appendChild(timeSignatureBeforeChild);
+    timeSignatureBeforeChild.appendChild(this->eventBefore.serialize(), nullptr);
+    tree.appendChild(timeSignatureBeforeChild, nullptr);
     
     ValueTree timeSignatureAfterChild(Serialization::Undo::timeSignatureAfter);
-    timeSignatureAfterChild.appendChild(this->eventAfter.serialize());
-    tree.appendChild(timeSignatureAfterChild);
+    timeSignatureAfterChild.appendChild(this->eventAfter.serialize(), nullptr);
+    tree.appendChild(timeSignatureAfterChild, nullptr);
     
     return tree;
 }
@@ -273,11 +273,11 @@ int TimeSignatureEventsGroupInsertAction::getSizeInUnits()
 ValueTree TimeSignatureEventsGroupInsertAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::timeSignatureEventsGroupInsertAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     for (int i = 0; i < this->signatures.size(); ++i)
     {
-        tree.appendChild(this->signatures.getUnchecked(i).serialize());
+        tree.appendChild(this->signatures.getUnchecked(i).serialize(), nullptr);
     }
     
     return tree;
@@ -344,11 +344,11 @@ int TimeSignatureEventsGroupRemoveAction::getSizeInUnits()
 ValueTree TimeSignatureEventsGroupRemoveAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::timeSignatureEventsGroupRemoveAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     for (int i = 0; i < this->signatures.size(); ++i)
     {
-        tree.appendChild(this->signatures.getUnchecked(i).serialize());
+        tree.appendChild(this->signatures.getUnchecked(i).serialize(), nullptr);
     }
     
     return tree;
@@ -450,23 +450,23 @@ UndoAction *TimeSignatureEventsGroupChangeAction::createCoalescedAction(UndoActi
 ValueTree TimeSignatureEventsGroupChangeAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::timeSignatureEventsGroupChangeAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     ValueTree groupBeforeChild(Serialization::Undo::groupBefore);
     ValueTree groupAfterChild(Serialization::Undo::groupAfter);
     
     for (int i = 0; i < this->eventsBefore.size(); ++i)
     {
-        groupBeforeChild.appendChild(this->eventsBefore.getUnchecked(i).serialize());
+        groupBeforeChild.appendChild(this->eventsBefore.getUnchecked(i).serialize(), nullptr);
     }
     
     for (int i = 0; i < this->eventsAfter.size(); ++i)
     {
-        groupAfterChild.appendChild(this->eventsAfter.getUnchecked(i).serialize());
+        groupAfterChild.appendChild(this->eventsAfter.getUnchecked(i).serialize(), nullptr);
     }
     
-    tree.appendChild(groupBeforeChild);
-    tree.appendChild(groupAfterChild);
+    tree.appendChild(groupBeforeChild, nullptr);
+    tree.appendChild(groupAfterChild, nullptr);
     
     return tree;
 }

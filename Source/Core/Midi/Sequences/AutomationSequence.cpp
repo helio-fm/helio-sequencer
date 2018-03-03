@@ -255,7 +255,7 @@ ValueTree AutomationSequence::serialize() const
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         MidiEvent *event = this->midiEvents.getUnchecked(i);
-        tree.appendChild(event->serialize());
+        tree.appendChild(event->serialize(), nullptr);
     }
     
     return tree;

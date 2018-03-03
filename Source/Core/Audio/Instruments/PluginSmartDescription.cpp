@@ -28,23 +28,23 @@ PluginSmartDescription::PluginSmartDescription(const PluginDescription *other) :
 ValueTree PluginSmartDescription::serialize() const
 {
     ValueTree tree(Audio::plugin);
-    tree.setProperty(Audio::pluginName, this->name);
+    tree.setProperty(Audio::pluginName, this->name, nullptr);
 
     if (this->descriptiveName != this->name)
     {
-        tree.setProperty(Audio::pluginDescription, this->descriptiveName);
+        tree.setProperty(Audio::pluginDescription, this->descriptiveName, nullptr);
     }
 
-    tree.setProperty(Audio::pluginFormat, this->pluginFormatName);
-    tree.setProperty(Audio::pluginCategory, this->category);
-    tree.setProperty(Audio::pluginManufacturer, this->manufacturerName);
-    tree.setProperty(Audio::pluginVersion, this->version);
-    tree.setProperty(Audio::pluginFile, this->fileOrIdentifier);
-    tree.setProperty(Audio::pluginFileModTime, String::toHexString(this->lastFileModTime.toMilliseconds()));
-    tree.setProperty(Audio::pluginId, String::toHexString(this->uid));
-    tree.setProperty(Audio::pluginIsInstrument, this->isInstrument);
-    tree.setProperty(Audio::pluginNumInputs, this->numInputChannels);
-    tree.setProperty(Audio::pluginNumOutputs, this->numOutputChannels);
+    tree.setProperty(Audio::pluginFormat, this->pluginFormatName, nullptr);
+    tree.setProperty(Audio::pluginCategory, this->category, nullptr);
+    tree.setProperty(Audio::pluginManufacturer, this->manufacturerName, nullptr);
+    tree.setProperty(Audio::pluginVersion, this->version, nullptr);
+    tree.setProperty(Audio::pluginFile, this->fileOrIdentifier, nullptr);
+    tree.setProperty(Audio::pluginFileModTime, String::toHexString(this->lastFileModTime.toMilliseconds()), nullptr);
+    tree.setProperty(Audio::pluginId, String::toHexString(this->uid), nullptr);
+    tree.setProperty(Audio::pluginIsInstrument, this->isInstrument, nullptr);
+    tree.setProperty(Audio::pluginNumInputs, this->numInputChannels, nullptr);
+    tree.setProperty(Audio::pluginNumOutputs, this->numOutputChannels, nullptr);
 
     return tree;
 }

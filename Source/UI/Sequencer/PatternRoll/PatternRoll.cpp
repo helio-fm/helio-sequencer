@@ -617,23 +617,23 @@ ValueTree PatternRoll::clipboardCopy() const
 
         // create xml parent with layer id
         ValueTree patternIdParent(Serialization::Clipboard::pattern);
-        patternIdParent.setProperty(Serialization::Clipboard::patternId, patternId);
-        tree.appendChild(patternIdParent);
+        patternIdParent.setProperty(Serialization::Clipboard::patternId, patternId, nullptr);
+        tree.appendChild(patternIdParent, nullptr);
 
         for (int i = 0; i < patternSelection->size(); ++i)
         {
             if (const ClipComponent *clipComponent =
                 dynamic_cast<ClipComponent *>(patternSelection->getUnchecked(i)))
             {
-                patternIdParent.appendChild(clipComponent->getClip().serialize());
+                patternIdParent.appendChild(clipComponent->getClip().serialize(), nullptr);
                 firstBeat = jmin(firstBeat, clipComponent->getBeat());
                 lastBeat = jmax(lastBeat, clipComponent->getBeat());
             }
         }
     }
 
-    tree.setProperty(Serialization::Clipboard::firstBeat, firstBeat);
-    tree.setProperty(Serialization::Clipboard::lastBeat, lastBeat);
+    tree.setProperty(Serialization::Clipboard::firstBeat, firstBeat, nullptr);
+    tree.setProperty(Serialization::Clipboard::lastBeat, lastBeat, nullptr);
 
     return tree;
 }
@@ -815,19 +815,19 @@ ValueTree PatternRoll::serialize() const
     using namespace Serialization;
     ValueTree tree(UI::patternRoll);
 
-    tree.setProperty(UI::barWidth, roundf(this->getBarWidth()));
+    tree.setProperty(UI::barWidth, roundf(this->getBarWidth()), nullptr);
 
     tree.setProperty(UI::startBar,
-        roundf(this->getBarByXPosition(this->getViewport().getViewPositionX())));
+        roundf(this->getBarByXPosition(this->getViewport().getViewPositionX())), nullptr);
 
     tree.setProperty(UI::endBar,
         roundf(this->getBarByXPosition(this->getViewport().getViewPositionX() +
-            this->getViewport().getViewWidth())));
+            this->getViewport().getViewWidth())), nullptr);
 
-    tree.setProperty(UI::viewportPositionY, this->getViewport().getViewPositionY());
+    tree.setProperty(UI::viewportPositionY, this->getViewport().getViewPositionY(), nullptr);
 
     // m?
-    //tree.setProperty(UI::selection, this->getLassoSelection().serialize());
+    //tree.setProperty(UI::selection, this->getLassoSelection().serialize(), nullptr);
 
     return tree;
 }

@@ -508,8 +508,8 @@ ValueTree ProjectTreeItem::serialize() const
     this->getDocument()->save();
 
     ValueTree tree(Serialization::Core::treeItem);
-    tree.setProperty(Serialization::Core::treeItemType, this->type);
-    tree.setProperty(Serialization::Core::filePath, this->getDocument()->getFullPath());
+    tree.setProperty(Serialization::Core::treeItemType, this->type, nullptr);
+    tree.setProperty(Serialization::Core::filePath, this->getDocument()->getFullPath(), nullptr);
     return tree;
 }
 
@@ -546,13 +546,13 @@ ValueTree ProjectTreeItem::save() const
 {
     ValueTree tree(Serialization::Core::project);
 
-    tree.setProperty(Serialization::Core::treeItemName, this->name);
+    tree.setProperty(Serialization::Core::treeItemName, this->name, nullptr);
 
-    tree.appendChild(this->info->serialize());
-    tree.appendChild(this->timeline->serialize());
-    tree.appendChild(this->undoStack->serialize());
-    tree.appendChild(this->transport->serialize());
-    tree.appendChild(this->sequencerLayout->serialize());
+    tree.appendChild(this->info->serialize(), nullptr);
+    tree.appendChild(this->timeline->serialize(), nullptr);
+    tree.appendChild(this->undoStack->serialize(), nullptr);
+    tree.appendChild(this->transport->serialize(), nullptr);
+    tree.appendChild(this->sequencerLayout->serialize(), nullptr);
 
     TreeItemChildrenSerializer::serializeChildren(*this, tree);
 

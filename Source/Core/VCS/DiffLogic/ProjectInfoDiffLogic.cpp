@@ -42,7 +42,7 @@ ProjectInfoDiffLogic::ProjectInfoDiffLogic(TrackedItem &targetItem) :
 // DiffLogic
 //===----------------------------------------------------------------------===//
 
-const juce::Identifier VCS::ProjectInfoDiffLogic::getType() const
+const Identifier ProjectInfoDiffLogic::getType() const
 {
     return Serialization::Core::projectInfo;
 }

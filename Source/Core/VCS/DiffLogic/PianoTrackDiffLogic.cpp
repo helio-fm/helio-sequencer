@@ -636,7 +636,7 @@ ValueTree serializeLayer(Array<const MidiEvent *> changes, const Identifier &tag
     for (int i = 0; i < changes.size(); ++i)
     {
         const MidiEvent *event = changes.getUnchecked(i);
-        tree.appendChild(event->serialize());
+        tree.appendChild(event->serialize(), nullptr);
     }
 
     return tree;

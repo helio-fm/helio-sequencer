@@ -673,15 +673,15 @@ ValueTree PianoRoll::clipboardCopy() const
 
         // create xml parent with layer id
         ValueTree layerIdParent(Serialization::Clipboard::layer);
-        layerIdParent.setProperty(Serialization::Clipboard::layerId, trackId);
-        tree.appendChild(layerIdParent);
+        layerIdParent.setProperty(Serialization::Clipboard::layerId, trackId, nullptr);
+        tree.appendChild(layerIdParent, nullptr);
 
         for (int i = 0; i < sequenceSelection->size(); ++i)
         {
             if (const NoteComponent *noteComponent =
                 dynamic_cast<NoteComponent *>(sequenceSelection->getUnchecked(i)))
             {
-                layerIdParent.appendChild(noteComponent->getNote().serialize());
+                layerIdParent.appendChild(noteComponent->getNote().serialize(), nullptr);
 
                 if (firstBeat > noteComponent->getBeat())
                 {
@@ -706,8 +706,8 @@ ValueTree PianoRoll::clipboardCopy() const
         const auto timeline = this->project.getTimeline();
         const auto annotations = timeline->getAnnotations()->getSequence();
         ValueTree annotationLayerIdParent(Serialization::Clipboard::layer);
-        annotationLayerIdParent.setProperty(Serialization::Clipboard::layerId, annotations->getTrackId());
-        tree.appendChild(annotationLayerIdParent);
+        annotationLayerIdParent.setProperty(Serialization::Clipboard::layerId, annotations->getTrackId(), nullptr);
+        tree.appendChild(annotationLayerIdParent, nullptr);
 
         for (int i = 0; i < annotations->size(); ++i)
         {
@@ -717,7 +717,7 @@ ValueTree PianoRoll::clipboardCopy() const
                 if (const bool eventFitsInRange =
                     (event->getBeat() >= firstBeat) && (event->getBeat() < lastBeat))
                 {
-                    annotationLayerIdParent.appendChild(event->serialize());
+                    annotationLayerIdParent.appendChild(event->serialize(), nullptr);
                 }
             }
         }
@@ -728,8 +728,8 @@ ValueTree PianoRoll::clipboardCopy() const
         {
             MidiSequence *autoLayer = automation->getSequence();
             ValueTree autoLayerIdParent(Serialization::Clipboard::layer);
-            autoLayerIdParent.setProperty(Serialization::Clipboard::layerId, autoLayer->getTrackId());
-            tree.appendChild(autoLayerIdParent);
+            autoLayerIdParent.setProperty(Serialization::Clipboard::layerId, autoLayer->getTrackId(), nullptr);
+            tree.appendChild(autoLayerIdParent, nullptr);
             
             for (int j = 0; j < autoLayer->size(); ++j)
             {
@@ -739,15 +739,15 @@ ValueTree PianoRoll::clipboardCopy() const
                     if (const bool eventFitsInRange =
                         (event->getBeat() >= firstBeat) && (event->getBeat() < lastBeat))
                     {
-                        autoLayerIdParent.appendChild(event->serialize());
+                        autoLayerIdParent.appendChild(event->serialize(), nullptr);
                     }
                 }
             }
         }
     }
 
-    tree.setProperty(Serialization::Clipboard::firstBeat, firstBeat);
-    tree.setProperty(Serialization::Clipboard::lastBeat, lastBeat);
+    tree.setProperty(Serialization::Clipboard::firstBeat, firstBeat, nullptr);
+    tree.setProperty(Serialization::Clipboard::lastBeat, lastBeat, nullptr);
 
     return tree;
 }
@@ -1330,20 +1330,20 @@ ValueTree PianoRoll::serialize() const
     using namespace Serialization;
     ValueTree tree(UI::pianoRoll);
     
-    tree.setProperty(UI::barWidth, roundf(this->getBarWidth()));
-    tree.setProperty(UI::rowHeight, this->getRowHeight());
+    tree.setProperty(UI::barWidth, roundf(this->getBarWidth()), nullptr);
+    tree.setProperty(UI::rowHeight, this->getRowHeight(), nullptr);
 
     tree.setProperty(UI::startBar,
-        roundf(this->getBarByXPosition(this->getViewport().getViewPositionX())));
+        roundf(this->getBarByXPosition(this->getViewport().getViewPositionX())), nullptr);
 
     tree.setProperty(UI::endBar,
         roundf(this->getBarByXPosition(this->getViewport().getViewPositionX() +
-            this->getViewport().getViewWidth())));
+            this->getViewport().getViewWidth())), nullptr);
 
-    tree.setProperty(UI::viewportPositionY, this->getViewport().getViewPositionY());
+    tree.setProperty(UI::viewportPositionY, this->getViewport().getViewPositionY(), nullptr);
 
     // m?
-    //tree.setProperty(UI::selection, this->getLassoSelection().serialize());
+    //tree.setProperty(UI::selection, this->getLassoSelection().serialize(), nullptr);
 
     return tree;
 }

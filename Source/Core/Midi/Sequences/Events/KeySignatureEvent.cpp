@@ -146,10 +146,10 @@ ValueTree KeySignatureEvent::serialize() const
 {
     using namespace Serialization;
     ValueTree tree(Midi::keySignature);
-    tree.setProperty(Midi::key, this->rootKey);
-    tree.setProperty(Midi::beat, this->beat);
-    tree.setProperty(Midi::id, this->id);
-    tree.appendChild(this->scale.serialize());
+    tree.setProperty(Midi::key, this->rootKey, nullptr);
+    tree.setProperty(Midi::beat, this->beat, nullptr);
+    tree.setProperty(Midi::id, this->id, nullptr);
+    tree.appendChild(this->scale.serialize(), nullptr);
     return tree;
 }
 

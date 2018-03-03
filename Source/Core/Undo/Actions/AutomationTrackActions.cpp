@@ -72,9 +72,9 @@ int AutomationTrackInsertAction::getSizeInUnits()
 ValueTree AutomationTrackInsertAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::automationTrackInsertAction);
-    tree.setProperty(Serialization::Undo::xPath, this->trackName);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    tree.appendChild(this->trackState.createCopy());
+    tree.setProperty(Serialization::Undo::xPath, this->trackName, nullptr);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->trackState.createCopy(), nullptr);
     return tree;
 }
 
@@ -148,9 +148,9 @@ int AutomationTrackRemoveAction::getSizeInUnits()
 ValueTree AutomationTrackRemoveAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::automationTrackRemoveAction);
-    tree.setProperty(Serialization::Undo::xPath, this->trackName);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    tree.appendChild(this->serializedTreeItem.createCopy());
+    tree.setProperty(Serialization::Undo::xPath, this->trackName, nullptr);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->serializedTreeItem.createCopy(), nullptr);
     return tree;
 }
 

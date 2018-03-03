@@ -221,9 +221,9 @@ void InstrumentTreeItem::updateChildrenEditors()
 ValueTree InstrumentTreeItem::serialize() const
 {
     ValueTree tree(Serialization::Core::treeItem);
-    tree.setProperty(Serialization::Core::treeItemType, this->type);
-    tree.setProperty(Serialization::Core::treeItemName, this->name);
-    tree.setProperty(Serialization::Audio::instrumentId, this->instrument->getIdAndHash());
+    tree.setProperty(Serialization::Core::treeItemType, this->type, nullptr);
+    tree.setProperty(Serialization::Core::treeItemName, this->name, nullptr);
+    tree.setProperty(Serialization::Audio::instrumentId, this->instrument->getIdAndHash(), nullptr);
     return tree;
 }
 

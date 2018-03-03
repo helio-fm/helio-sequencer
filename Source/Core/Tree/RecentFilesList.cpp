@@ -136,17 +136,18 @@ int RecentFilesList::getNumItems() const
 
 ValueTree RecentFilesList::serialize() const
 {
+    using namespace Serialization;
     const ScopedReadLock lock(this->listLock);
-    ValueTree tree(Serialization::Core::recentFiles);
+    ValueTree tree(Core::recentFiles);
 
-    for (auto && localFile : this->localFiles)
+    for (const auto localFile : this->localFiles)
     {
-        ValueTree item(Serialization::Core::recentFileItem);
-        item.setProperty("Title", localFile->title);
-        item.setProperty("Path", localFile->path);
-        item.setProperty("Id", localFile->projectId);
-        item.setProperty("Time", String(localFile->lastModifiedTime));
-        tree.appendChild(item);
+        ValueTree item(Core::recentFileItem);
+        item.setProperty(Core::recentFileTitle, localFile->title, nullptr);
+        item.setProperty(Core::recentFilePath, localFile->path, nullptr);
+        item.setProperty(Core::recentFileProjectId, localFile->projectId, nullptr);
+        item.setProperty(Core::recentFileTime, String(localFile->lastModifiedTime), nullptr);
+        tree.appendChild(item, nullptr);
     }
 
     return tree;
@@ -155,22 +156,23 @@ ValueTree RecentFilesList::serialize() const
 void RecentFilesList::deserialize(const ValueTree &tree)
 {
     this->reset();
+    using namespace Serialization;
 
     const ScopedWriteLock lock(this->listLock);
 
-    const auto root = tree.hasType(Serialization::Core::recentFiles) ?
-        tree : tree.getChildWithName(Serialization::Core::recentFiles);
+    const auto root = tree.hasType(Core::recentFiles) ?
+        tree : tree.getChildWithName(Core::recentFiles);
 
     if (!root.isValid()) { return; }
 
-    forEachValueTreeChildWithType(root, child, Serialization::Core::recentFileItem)
+    forEachValueTreeChildWithType(root, child, Core::recentFileItem)
     {
-        const String title = child.getProperty("title", "");
-        const String path = child.getProperty("path", "");
-        const String id = child.getProperty("id", "");
-        const int64 time = child.getProperty("time");
+        const String title = child.getProperty(Core::recentFileTitle);
+        const String path = child.getProperty(Core::recentFilePath);
+        const String id = child.getProperty(Core::recentFileProjectId);
+        const int64 time = child.getProperty(Core::recentFileTime);
 
-        if (path != "")
+        if (path.isNotEmpty())
         {
             RecentFileDescription::Ptr fd = new RecentFileDescription();
             fd->title = title;

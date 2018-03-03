@@ -62,8 +62,8 @@ int PatternClipInsertAction::getSizeInUnits()
 ValueTree PatternClipInsertAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::patternClipInsertAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    tree.appendChild(this->clip.serialize());
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->clip.serialize(), nullptr);
     return tree;
 }
 
@@ -119,8 +119,8 @@ int PatternClipRemoveAction::getSizeInUnits()
 ValueTree PatternClipRemoveAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::patternClipRemoveAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    tree.appendChild(this->clip.serialize());
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->clip.serialize(), nullptr);
     return tree;
 }
 
@@ -206,15 +206,15 @@ UndoAction *PatternClipChangeAction::createCoalescedAction(UndoAction *nextActio
 ValueTree PatternClipChangeAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::patternClipChangeAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
 
     ValueTree instanceBeforeChild(Serialization::Undo::instanceBefore);
-    instanceBeforeChild.appendChild(this->clipBefore.serialize());
-    tree.appendChild(instanceBeforeChild);
+    instanceBeforeChild.appendChild(this->clipBefore.serialize(), nullptr);
+    tree.appendChild(instanceBeforeChild, nullptr);
 
     ValueTree instanceAfterChild(Serialization::Undo::instanceAfter);
-    instanceAfterChild.appendChild(this->clipAfter.serialize());
-    tree.appendChild(instanceAfterChild);
+    instanceAfterChild.appendChild(this->clipAfter.serialize(), nullptr);
+    tree.appendChild(instanceAfterChild, nullptr);
 
     return tree;
 }

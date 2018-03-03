@@ -133,10 +133,10 @@ ValueTree VCS::Pack::serialize() const
         {
             const auto deltaData(this->createSerializedData(header));
             ValueTree packItem(Serialization::VCS::packItem);
-            //packItem.setProperty(Serialization::VCS::packItemRevId, header->itemId.toString());
-            packItem.setProperty(Serialization::VCS::packItemDeltaId, header->deltaId.toString());
-            packItem.appendChild(deltaData);
-            tree.appendChild(packItem);
+            //packItem.setProperty(Serialization::VCS::packItemRevId, header->itemId.toString(), nullptr);
+            packItem.setProperty(Serialization::VCS::packItemDeltaId, header->deltaId.toString(), nullptr);
+            packItem.appendChild(deltaData, nullptr);
+            tree.appendChild(packItem, nullptr);
         }
     }
 
@@ -146,10 +146,10 @@ ValueTree VCS::Pack::serialize() const
         MemoryInputStream chunkDataStream(chunk->data, false);
         const auto deltaData(ValueTree::readFromStream(chunkDataStream));
         ValueTree packItem(Serialization::VCS::packItem);
-        //packItem.setProperty(Serialization::VCS::packItemRevId, chunk->itemId.toString());
-        packItem.setProperty(Serialization::VCS::packItemDeltaId, chunk->deltaId.toString());
-        packItem.appendChild(deltaData);
-        tree.appendChild(packItem);
+        //packItem.setProperty(Serialization::VCS::packItemRevId, chunk->itemId.toString(), nullptr);
+        packItem.setProperty(Serialization::VCS::packItemDeltaId, chunk->deltaId.toString(), nullptr);
+        packItem.appendChild(deltaData, nullptr);
+        tree.appendChild(packItem, nullptr);
     }
 
     return tree;

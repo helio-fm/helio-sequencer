@@ -351,7 +351,7 @@ ValueTree PluginManager::serialize() const
     for (int i = 0; i < this->pluginsList.getNumTypes(); ++i)
     {
         PluginSmartDescription pd(this->pluginsList.getType(i));
-        tree.appendChild(pd.serialize());
+        tree.appendChild(pd.serialize(), nullptr);
     }
 
     return tree;

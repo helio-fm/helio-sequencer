@@ -76,7 +76,7 @@ String Arpeggiator::exportSequenceAsTrack() const
     
     for (int i = 0; i < this->sequence.size(); ++i)
     {
-        sequence.appendChild(this->sequence.getUnchecked(i).serialize());
+        sequence.appendChild(this->sequence.getUnchecked(i).serialize(), nullptr);
     }
 
     String doc;
@@ -211,18 +211,18 @@ ValueTree Arpeggiator::serialize() const
     
     for (int i = 0; i < this->sequence.size(); ++i)
     {
-        seq.appendChild(this->sequence.getUnchecked(i).serialize());
+        seq.appendChild(this->sequence.getUnchecked(i).serialize(), nullptr);
     }
     
-    tree.appendChild(seq);
+    tree.appendChild(seq, nullptr);
     
-    tree.setProperty(Serialization::Arps::isReversed, this->reversedMode);
-    tree.setProperty(Serialization::Arps::relativeMapping, this->relativeMappingMode);
-    tree.setProperty(Serialization::Arps::limitsToChord, this->limitToChordMode);
-    tree.setProperty(Serialization::Arps::scale, this->scale);
+    tree.setProperty(Serialization::Arps::isReversed, this->reversedMode, nullptr);
+    tree.setProperty(Serialization::Arps::relativeMapping, this->relativeMappingMode, nullptr);
+    tree.setProperty(Serialization::Arps::limitsToChord, this->limitToChordMode, nullptr);
+    tree.setProperty(Serialization::Arps::scale, this->scale, nullptr);
 
-    tree.setProperty(Serialization::Arps::id, this->id.toString());
-    tree.setProperty(Serialization::Arps::name, this->name);
+    tree.setProperty(Serialization::Arps::id, this->id.toString(), nullptr);
+    tree.setProperty(Serialization::Arps::name, this->name, nullptr);
 
     return tree;
 }

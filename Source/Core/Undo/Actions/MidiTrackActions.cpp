@@ -64,9 +64,9 @@ int MidiTrackRenameAction::getSizeInUnits()
 ValueTree MidiTrackRenameAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::midiTrackRenameAction);
-    tree.setProperty(Serialization::Undo::xPathBefore, this->xPathBefore);
-    tree.setProperty(Serialization::Undo::xPathAfter, this->xPathAfter);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.setProperty(Serialization::Undo::xPathBefore, this->xPathBefore, nullptr);
+    tree.setProperty(Serialization::Undo::xPathAfter, this->xPathAfter, nullptr);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     return tree;
 }
 
@@ -130,9 +130,9 @@ int MidiTrackChangeColourAction::getSizeInUnits()
 ValueTree MidiTrackChangeColourAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::midiTrackChangeColourAction);
-    tree.setProperty(Serialization::Undo::colourBefore, this->colourBefore.toString());
-    tree.setProperty(Serialization::Undo::colourAfter, this->colourAfter.toString());
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.setProperty(Serialization::Undo::colourBefore, this->colourBefore.toString(), nullptr);
+    tree.setProperty(Serialization::Undo::colourAfter, this->colourAfter.toString(), nullptr);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     return tree;
 }
 
@@ -192,9 +192,9 @@ int MidiTrackChangeInstrumentAction::getSizeInUnits()
 ValueTree MidiTrackChangeInstrumentAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::midiTrackChangeInstrumentAction);
-    tree.setProperty(Serialization::Undo::instrumentIdBefore, this->instrumentIdBefore);
-    tree.setProperty(Serialization::Undo::instrumentIdAfter, this->instrumentIdAfter);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.setProperty(Serialization::Undo::instrumentIdBefore, this->instrumentIdBefore, nullptr);
+    tree.setProperty(Serialization::Undo::instrumentIdAfter, this->instrumentIdAfter, nullptr);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     return tree;
 }
 
@@ -264,9 +264,9 @@ bool stringToBool(const String &val)
 ValueTree MidiTrackMuteAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::midiTrackMuteAction);
-    tree.setProperty(Serialization::Undo::muteStateBefore, boolToString(this->muteStateBefore));
-    tree.setProperty(Serialization::Undo::muteStateAfter, boolToString(this->muteStateAfter));
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.setProperty(Serialization::Undo::muteStateBefore, boolToString(this->muteStateBefore), nullptr);
+    tree.setProperty(Serialization::Undo::muteStateAfter, boolToString(this->muteStateAfter), nullptr);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     return tree;
 }
 

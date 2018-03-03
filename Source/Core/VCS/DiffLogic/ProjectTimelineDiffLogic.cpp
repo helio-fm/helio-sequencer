@@ -60,7 +60,7 @@ static bool checkIfDeltaIsKeySignatureType(const Delta *delta);
 ProjectTimelineDiffLogic::ProjectTimelineDiffLogic(TrackedItem &targetItem) :
     DiffLogic(targetItem) {}
 
-const juce::Identifier VCS::ProjectTimelineDiffLogic::getType() const
+const Identifier ProjectTimelineDiffLogic::getType() const
 {
     return Serialization::Core::projectTimeline;
 }
@@ -395,7 +395,7 @@ Diff *ProjectTimelineDiffLogic::createMergedItem(const TrackedItem &initialState
 // Merge annotations
 //===----------------------------------------------------------------------===//
 
-juce::ValueTree mergeAnnotationsAdded(const ValueTree &state, const ValueTree &changes)
+ValueTree mergeAnnotationsAdded(const ValueTree &state, const ValueTree &changes)
 {
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
@@ -433,7 +433,7 @@ juce::ValueTree mergeAnnotationsAdded(const ValueTree &state, const ValueTree &c
     return serializeLayer(result, ProjectTimelineDeltas::annotationsAdded);
 }
 
-juce::ValueTree mergeAnnotationsRemoved(const ValueTree &state, const ValueTree &changes)
+ValueTree mergeAnnotationsRemoved(const ValueTree &state, const ValueTree &changes)
 {
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
@@ -468,7 +468,7 @@ juce::ValueTree mergeAnnotationsRemoved(const ValueTree &state, const ValueTree 
     return serializeLayer(result, ProjectTimelineDeltas::annotationsAdded);
 }
 
-juce::ValueTree mergeAnnotationsChanged(const ValueTree &state, const ValueTree &changes)
+ValueTree mergeAnnotationsChanged(const ValueTree &state, const ValueTree &changes)
 {
     OwnedArray<MidiEvent> stateEvents;
     OwnedArray<MidiEvent> changesEvents;
@@ -1117,7 +1117,7 @@ ValueTree serializeLayer(Array<const MidiEvent *> changes, const Identifier &tag
     for (int i = 0; i < changes.size(); ++i)
     {
         const MidiEvent *event = changes.getUnchecked(i);
-        tree.appendChild(event->serialize());
+        tree.appendChild(event->serialize(), nullptr);
     }
 
     return tree;

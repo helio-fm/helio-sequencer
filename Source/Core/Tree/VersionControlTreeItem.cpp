@@ -320,11 +320,11 @@ ScopedPointer<Component> VersionControlTreeItem::createItemMenu()
 ValueTree VersionControlTreeItem::serialize() const
 {
     ValueTree tree(Serialization::Core::treeItem);
-    tree.setProperty(Serialization::Core::treeItemType, this->type);
+    tree.setProperty(Serialization::Core::treeItemType, this->type, nullptr);
 
     if (this->vcs)
     {
-        tree.appendChild(this->vcs->serialize());
+        tree.appendChild(this->vcs->serialize(), nullptr);
     }
 
     TreeItemChildrenSerializer::serializeChildren(*this, tree);

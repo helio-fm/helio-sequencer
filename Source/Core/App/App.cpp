@@ -542,7 +542,7 @@ void App::checkPlugin(const String &markerFile)
                         for (const auto description : typesFound)
                         {
                             PluginSmartDescription sd(description);
-                            typesNode.appendChild(sd.serialize());
+                            typesNode.appendChild(sd.serialize(), nullptr);
                         }
 
                         DocumentHelpers::save<XmlSerializer>(tempFile, typesNode);

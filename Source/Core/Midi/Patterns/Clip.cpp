@@ -102,8 +102,8 @@ ValueTree Clip::serialize() const
 {
     using namespace Serialization;
     ValueTree tree(Midi::clip);
-    tree.setProperty(Midi::beat, this->startBeat);
-    tree.setProperty(Midi::id, this->id);
+    tree.setProperty(Midi::beat, this->startBeat, nullptr);
+    tree.setProperty(Midi::id, this->id, nullptr);
     return tree;
 }
 

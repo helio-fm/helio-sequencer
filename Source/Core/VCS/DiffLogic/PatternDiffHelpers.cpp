@@ -53,7 +53,7 @@ ValueTree serializePattern(Array<Clip> changes, const Identifier &tag)
 
     for (int i = 0; i < changes.size(); ++i)
     {
-        tree.appendChild(changes.getUnchecked(i).serialize());
+        tree.appendChild(changes.getUnchecked(i).serialize(), nullptr);
     }
 
     return tree;

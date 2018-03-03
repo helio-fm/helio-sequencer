@@ -81,7 +81,7 @@ ValueTree ArpeggiatorsManager::serialize() const
     
     for (int i = 0; i < this->arps.size(); ++i)
     {
-        tree.appendChild(this->arps.getUnchecked(i).serialize());
+        tree.appendChild(this->arps.getUnchecked(i).serialize(), nullptr);
     }
     
     return tree;

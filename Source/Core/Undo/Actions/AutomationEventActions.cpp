@@ -61,8 +61,8 @@ int AutomationEventInsertAction::getSizeInUnits()
 ValueTree AutomationEventInsertAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::automationEventInsertAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    tree.appendChild(this->event.serialize());
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->event.serialize(), nullptr);
     return tree;
 }
 
@@ -118,8 +118,8 @@ int AutomationEventRemoveAction::getSizeInUnits()
 ValueTree AutomationEventRemoveAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::automationEventRemoveAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
-    tree.appendChild(this->event.serialize());
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->event.serialize(), nullptr);
     return tree;
 }
 
@@ -200,15 +200,15 @@ UndoAction *AutomationEventChangeAction::createCoalescedAction(UndoAction *nextA
 ValueTree AutomationEventChangeAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::automationEventChangeAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     ValueTree eventBeforeChild(Serialization::Undo::eventBefore);
-    eventBeforeChild.appendChild(this->eventBefore.serialize());
-    tree.appendChild(eventBeforeChild);
+    eventBeforeChild.appendChild(this->eventBefore.serialize(), nullptr);
+    tree.appendChild(eventBeforeChild, nullptr);
     
     ValueTree eventAfterChild(Serialization::Undo::eventAfter);
-    eventAfterChild.appendChild(this->eventAfter.serialize());
-    tree.appendChild(eventAfterChild);
+    eventAfterChild.appendChild(this->eventAfter.serialize(), nullptr);
+    tree.appendChild(eventAfterChild, nullptr);
     
     return tree;
 }
@@ -273,11 +273,11 @@ int AutomationEventsGroupInsertAction::getSizeInUnits()
 ValueTree AutomationEventsGroupInsertAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::automationEventsGroupInsertAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     for (int i = 0; i < this->events.size(); ++i)
     {
-        tree.appendChild(this->events.getUnchecked(i).serialize());
+        tree.appendChild(this->events.getUnchecked(i).serialize(), nullptr);
     }
     
     return tree;
@@ -344,11 +344,11 @@ int AutomationEventsGroupRemoveAction::getSizeInUnits()
 ValueTree AutomationEventsGroupRemoveAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::automationEventsGroupRemoveAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     for (int i = 0; i < this->events.size(); ++i)
     {
-        tree.appendChild(this->events.getUnchecked(i).serialize());
+        tree.appendChild(this->events.getUnchecked(i).serialize(), nullptr);
     }
     
     return tree;
@@ -451,23 +451,23 @@ UndoAction *AutomationEventsGroupChangeAction::createCoalescedAction(UndoAction 
 ValueTree AutomationEventsGroupChangeAction::serialize() const
 {
     ValueTree tree(Serialization::Undo::automationEventsGroupChangeAction);
-    tree.setProperty(Serialization::Undo::trackId, this->trackId);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     ValueTree groupBeforeChild(Serialization::Undo::groupBefore);
     ValueTree groupAfterChild(Serialization::Undo::groupAfter);
     
     for (int i = 0; i < this->eventsBefore.size(); ++i)
     {
-        groupBeforeChild.appendChild(this->eventsBefore.getUnchecked(i).serialize());
+        groupBeforeChild.appendChild(this->eventsBefore.getUnchecked(i).serialize(), nullptr);
     }
     
     for (int i = 0; i < this->eventsAfter.size(); ++i)
     {
-        groupAfterChild.appendChild(this->eventsAfter.getUnchecked(i).serialize());
+        groupAfterChild.appendChild(this->eventsAfter.getUnchecked(i).serialize(), nullptr);
     }
     
-    tree.appendChild(groupBeforeChild);
-    tree.appendChild(groupAfterChild);
+    tree.appendChild(groupBeforeChild, nullptr);
+    tree.appendChild(groupAfterChild, nullptr);
     
     return tree;
 }

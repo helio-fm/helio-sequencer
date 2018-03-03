@@ -60,7 +60,7 @@ namespace VCS
         ValueTree serialize() const override
         {
             ValueTree tree(Serialization::VCS::vcsHistoryKey);
-            tree.setProperty("Data", this->key.toBase64Encoding());
+            tree.setProperty(Serialization::VCS::vcsHistoryKeyData, this->key.toBase64Encoding(), nullptr);
             return tree;
         }
 
@@ -73,7 +73,7 @@ namespace VCS
 
             if (!root.isValid()) { return; }
 
-            const String key64Data = root.getProperty("Data");
+            const String key64Data = root.getProperty(Serialization::VCS::vcsHistoryKeyData);
 
             this->key.fromBase64Encoding(key64Data);
         }

@@ -264,10 +264,10 @@ ValueTree AutomationEvent::serialize() const
 {
     using namespace Serialization;
     ValueTree tree(Midi::automation);
-    tree.setProperty(Midi::value, this->controllerValue);
-    tree.setProperty(Midi::curve, this->curvature);
-    tree.setProperty(Midi::beat, this->beat);
-    tree.setProperty(Midi::id, this->id);
+    tree.setProperty(Midi::value, this->controllerValue, nullptr);
+    tree.setProperty(Midi::curve, this->curvature, nullptr);
+    tree.setProperty(Midi::beat, this->beat, nullptr);
+    tree.setProperty(Midi::id, this->id, nullptr);
     return tree;
 }
 

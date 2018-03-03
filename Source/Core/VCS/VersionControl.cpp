@@ -99,7 +99,7 @@ MD5 VersionControl::calculateHash() const
     return MD5(ids.joinIntoString("").toUTF8());
 }
 
-juce::StringArray VersionControl::recursiveGetHashes(const ValueTree revision) const
+StringArray VersionControl::recursiveGetHashes(const ValueTree revision) const
 {
     StringArray sum;
 
@@ -188,7 +188,7 @@ void VersionControl::recursiveTreeMerge(ValueTree localRevision,
             ValueTree newLocalChild(Revision::create(this->pack));
             Revision::copyProperties(newLocalChild, remoteChild);
             Revision::flush(newLocalChild);
-            localRevision.appendChild(newLocalChild);
+            localRevision.appendChild(newLocalChild, nullptr);
             this->recursiveTreeMerge(newLocalChild, remoteChild);
         }
     }
@@ -345,7 +345,7 @@ bool VersionControl::commit(SparseSet<int> selectedItems, const String &message)
 
     if (!headingRevision.isValid()) { return false; }
 
-    headingRevision.appendChild(newRevision);
+    headingRevision.appendChild(newRevision, nullptr);
     this->head.moveTo(newRevision);
 
     Revision::flush(newRevision);
@@ -458,15 +458,15 @@ ValueTree VersionControl::serialize() const
 {
     ValueTree tree(Serialization::Core::versionControl);
 
-    tree.setProperty(Serialization::VCS::vcsHistoryVersion, String(this->historyMergeVersion));
-    tree.setProperty(Serialization::VCS::vcsHistoryId, this->publicId);
-    tree.setProperty(Serialization::VCS::headRevisionId, Revision::getUuid(this->head.getHeadingRevision()));
+    tree.setProperty(Serialization::VCS::vcsHistoryVersion, String(this->historyMergeVersion), nullptr);
+    tree.setProperty(Serialization::VCS::vcsHistoryId, this->publicId, nullptr);
+    tree.setProperty(Serialization::VCS::headRevisionId, Revision::getUuid(this->head.getHeadingRevision()), nullptr);
     
-    tree.appendChild(this->key.serialize());
-    tree.appendChild(Revision::serialize(this->rootRevision));
-    tree.appendChild(this->stashes->serialize());
-    tree.appendChild(this->pack->serialize());
-    tree.appendChild(this->head.serialize());
+    tree.appendChild(this->key.serialize(), nullptr);
+    tree.appendChild(Revision::serialize(this->rootRevision), nullptr);
+    tree.appendChild(this->stashes->serialize(), nullptr);
+    tree.appendChild(this->pack->serialize(), nullptr);
+    tree.appendChild(this->head.serialize(), nullptr);
     
     return tree;
 }

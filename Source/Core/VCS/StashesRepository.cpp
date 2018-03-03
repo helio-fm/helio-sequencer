@@ -58,7 +58,7 @@ ValueTree VCS::StashesRepository::getUserStashWithName(const String &stashName) 
 
 void VCS::StashesRepository::addStash(ValueTree newStash)
 {
-    this->userStashes.appendChild(newStash);
+    this->userStashes.appendChild(newStash, nullptr);
     Revision::flush(newStash);
     this->pack->flush();
 }
@@ -102,14 +102,14 @@ ValueTree VCS::StashesRepository::serialize() const
     ValueTree tree(Serialization::VCS::stashesRepository);
     
     ValueTree userStashesXml(Serialization::VCS::userStashes);
-    tree.appendChild(userStashesXml);
+    tree.appendChild(userStashesXml, nullptr);
     
-    userStashesXml.appendChild(Revision::serialize(this->userStashes));
+    userStashesXml.appendChild(Revision::serialize(this->userStashes), nullptr);
 
     ValueTree quickStashXml(Serialization::VCS::quickStash);
-    tree.appendChild(quickStashXml);
+    tree.appendChild(quickStashXml, nullptr);
 
-    quickStashXml.appendChild(Revision::serialize(this->quickStash));
+    quickStashXml.appendChild(Revision::serialize(this->quickStash), nullptr);
     
     return tree;
 }

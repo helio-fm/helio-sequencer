@@ -864,7 +864,7 @@ ValueTree Transport::serialize() const
 {
     using namespace Serialization;
     ValueTree tree(Audio::transport);
-    tree.setProperty(Audio::transportSeekPosition, this->getSeekPosition());
+    tree.setProperty(Audio::transportSeekPosition, this->getSeekPosition(), nullptr);
     return tree;
 }
 
