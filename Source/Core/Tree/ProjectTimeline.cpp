@@ -20,7 +20,6 @@
 #include "AnnotationsSequence.h"
 #include "TimeSignaturesSequence.h"
 #include "KeySignaturesSequence.h"
-#include "ProjectTimelineDeltas.h"
 #include "ProjectTreeItem.h"
 #include "Pattern.h"
 #include "Icons.h"
@@ -74,6 +73,8 @@ public:
 
     ProjectTimeline &timeline;
 };
+
+using namespace Serialization::VCS;
 
 ProjectTimeline::ProjectTimeline(ProjectTreeItem &parentProject, String trackName) :
     project(parentProject)

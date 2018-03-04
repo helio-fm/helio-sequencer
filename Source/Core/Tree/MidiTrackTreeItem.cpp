@@ -26,7 +26,6 @@
 #include "Icons.h"
 
 #include "Pattern.h"
-#include "PatternDeltas.h"
 #include "PianoSequence.h"
 #include "AutomationSequence.h"
 #include "PianoRoll.h"
@@ -107,7 +106,7 @@ String MidiTrackTreeItem::getVCSName() const
 
 ValueTree MidiTrackTreeItem::serializeClipsDelta() const
 {
-    ValueTree tree(PatternDeltas::clipsAdded);
+    ValueTree tree(Serialization::VCS::PatternDeltas::clipsAdded);
 
     for (int i = 0; i < this->getPattern()->size(); ++i)
     {
@@ -120,7 +119,7 @@ ValueTree MidiTrackTreeItem::serializeClipsDelta() const
 
 void MidiTrackTreeItem::resetClipsDelta(const ValueTree &state)
 {
-    jassert(state.hasType(PatternDeltas::clipsAdded));
+    jassert(state.hasType(Serialization::VCS::PatternDeltas::clipsAdded));
 
     //this->reset(); // TODO test
     this->getPattern()->reset();

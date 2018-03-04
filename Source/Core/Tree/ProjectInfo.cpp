@@ -17,9 +17,10 @@
 
 #include "Common.h"
 #include "ProjectInfo.h"
-#include "ProjectInfoDeltas.h"
 #include "ProjectTreeItem.h"
 #include "Delta.h"
+
+using namespace Serialization::VCS;
 
 ProjectInfo::ProjectInfo(ProjectTreeItem &parent) : project(parent)
 {
@@ -72,19 +73,19 @@ VCS::Delta *ProjectInfo::getDelta(int index) const
 
 ValueTree ProjectInfo::serializeDeltaData(int deltaIndex) const
 {
-    if (this->deltas[deltaIndex]->getType() == ProjectInfoDeltas::projectLicense)
+    if (this->deltas[deltaIndex]->hasType(ProjectInfoDeltas::projectLicense))
     {
         return this->serializeLicenseDelta();
     }
-    if (this->deltas[deltaIndex]->getType() == ProjectInfoDeltas::projectTitle)
+    if (this->deltas[deltaIndex]->hasType(ProjectInfoDeltas::projectTitle))
     {
         return this->serializeFullNameDelta();
     }
-    else if (this->deltas[deltaIndex]->getType() == ProjectInfoDeltas::projectAuthor)
+    else if (this->deltas[deltaIndex]->hasType(ProjectInfoDeltas::projectAuthor))
     {
         return this->serializeAuthorDelta();
     }
-    else if (this->deltas[deltaIndex]->getType() == ProjectInfoDeltas::projectDescription)
+    else if (this->deltas[deltaIndex]->hasType(ProjectInfoDeltas::projectDescription))
     {
         return this->serializeDescriptionDelta();
     }
@@ -203,43 +204,39 @@ ValueTree ProjectInfo::serializeDescriptionDelta() const
 void ProjectInfo::resetLicenseDelta(const ValueTree &state)
 {
     jassert(state.hasType(ProjectInfoDeltas::projectLicense));
-    const String &delta = state.getProperty(Serialization::VCS::delta);
-
-    if (delta != this->license)
+    const String &licenseDelta = state.getProperty(Serialization::VCS::delta);
+    if (licenseDelta != this->license)
     {
-        this->setLicense(delta);
+        this->setLicense(licenseDelta);
     }
 }
 
 void ProjectInfo::resetFullNameDelta(const ValueTree &state)
 {
     jassert(state.hasType(ProjectInfoDeltas::projectTitle));
-    const String &delta = state.getProperty(Serialization::VCS::delta);
-
-    if (delta != this->getFullName())
+    const String &nameDelta = state.getProperty(Serialization::VCS::delta);
+    if (nameDelta != this->getFullName())
     {
-        this->setFullName(delta);
+        this->setFullName(nameDelta);
     }
 }
 
 void ProjectInfo::resetAuthorDelta(const ValueTree &state)
 {
     jassert(state.hasType(ProjectInfoDeltas::projectAuthor));
-    const String &delta = state.getProperty(Serialization::VCS::delta);
-
-    if (delta != this->author)
+    const String &authorDelta = state.getProperty(Serialization::VCS::delta);
+    if (authorDelta != this->author)
     {
-        this->setAuthor(delta);
+        this->setAuthor(authorDelta);
     }
 }
 
 void ProjectInfo::resetDescriptionDelta(const ValueTree &state)
 {
     jassert(state.hasType(ProjectInfoDeltas::projectDescription));
-    const String &delta = state.getProperty(Serialization::VCS::delta);
-
-    if (delta != this->description)
+    const String &descriptionDelta = state.getProperty(Serialization::VCS::delta);
+    if (descriptionDelta != this->description)
     {
-        this->setDescription(delta);
+        this->setDescription(descriptionDelta);
     }
 }

@@ -18,7 +18,6 @@
 #pragma once
 
 #include "DocumentHelpers.h"
-#include "XmlSerializer.h"
 
 template<typename T>
 class ResourceCache final
@@ -44,7 +43,7 @@ public:
         const String resourceDocument =
             BinaryData::getNamedResource(resourceName, numBytes);
 
-        const ValueTree tree(DocumentHelpers::read<XmlSerializer>(resourceDocument));
+        const ValueTree tree(DocumentHelpers::load(resourceDocument));
         if (!tree.isValid())
         {
             return this->cache;

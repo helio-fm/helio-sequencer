@@ -138,7 +138,7 @@ void ArpeggiatorsManager::reloadArps()
     else
     {
         // built-in arps
-        const String defaultArps = String(CharPointer_UTF8(BinaryData::DefaultArps_xml));
+        const String defaultArps = String(CharPointer_UTF8(BinaryData::Arps_xml));
         XmlSerializer serializer;
         ValueTree arpsState;
         serializer.loadFromString(defaultArps, arpsState);

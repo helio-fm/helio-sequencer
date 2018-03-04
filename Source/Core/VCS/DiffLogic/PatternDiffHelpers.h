@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "PatternDeltas.h"
 #include "Pattern.h"
 #include "Delta.h"
 

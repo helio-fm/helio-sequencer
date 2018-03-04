@@ -19,11 +19,10 @@
 #include "ProjectInfoDiffLogic.h"
 #include "SerializationKeys.h"
 #include "Diff.h"
-
 #include "ProjectInfo.h"
-#include "ProjectInfoDeltas.h"
 
 using namespace VCS;
+using namespace Serialization::VCS;
 
 static ValueTree mergePath(const ValueTree &state, const ValueTree &changes);
 static ValueTree mergeFullName(const ValueTree &state, const ValueTree &changes);
@@ -70,7 +69,7 @@ Diff *ProjectInfoDiffLogic::createDiff(const TrackedItem &initialState) const
         {
             const Delta *stateDelta = initialState.getDelta(j);
 
-            if (myDelta->getType() == stateDelta->getType())
+            if (myDelta->hasType(stateDelta->getType()))
             {
                 deltaFoundInState = true;
                 stateDeltaData = initialState.serializeDeltaData(j);
@@ -123,10 +122,7 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
             const Delta *targetDelta = this->target.getDelta(j);
             const auto targetDeltaData(this->target.serializeDeltaData(j));
 
-            const bool typesMatchStrictly =
-                (stateDelta->getType() == targetDelta->getType());
-
-            if (typesMatchStrictly)
+            if (stateDelta->hasType(targetDelta->getType()))
             {
                 deltaFoundInChanges = true;
 

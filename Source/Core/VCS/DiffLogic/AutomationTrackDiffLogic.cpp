@@ -18,14 +18,13 @@
 #include "Common.h"
 #include "AutomationTrackDiffLogic.h"
 #include "AutomationTrackTreeItem.h"
-#include "MidiTrackDeltas.h"
-#include "AutoSequenceDeltas.h"
 #include "PatternDiffHelpers.h"
 #include "AutomationEvent.h"
 #include "AutomationSequence.h"
 #include "SerializationKeys.h"
 
 using namespace VCS;
+using namespace Serialization::VCS;
 
 static ValueTree mergePath(const ValueTree &state, const ValueTree &changes);
 static ValueTree mergeMute(const ValueTree &state, const ValueTree &changes);
@@ -670,9 +669,9 @@ ValueTree serializeLayer(Array<const MidiEvent *> changes, const Identifier &tag
     return tree;
 }
 
-bool checkIfDeltaIsEventsType(const Delta *delta)
+bool checkIfDeltaIsEventsType(const Delta *d)
 {
-    return (delta->hasType(AutoSequenceDeltas::eventsAdded) ||
-            delta->hasType(AutoSequenceDeltas::eventsChanged) ||
-            delta->hasType(AutoSequenceDeltas::eventsRemoved));
+    return (d->hasType(AutoSequenceDeltas::eventsAdded) ||
+            d->hasType(AutoSequenceDeltas::eventsChanged) ||
+            d->hasType(AutoSequenceDeltas::eventsRemoved));
 }

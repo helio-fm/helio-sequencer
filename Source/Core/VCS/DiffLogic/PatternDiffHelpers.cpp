@@ -22,6 +22,7 @@
 #include "SerializationKeys.h"
 
 using namespace VCS;
+using namespace Serialization::VCS;
 
 void deserializePatternChanges(const ValueTree &state, const ValueTree &changes,
     Array<Clip> &stateClips, Array<Clip> &changesClips)
@@ -68,11 +69,11 @@ DeltaDiff PatternDiffHelpers::serializePatternChanges(Array<Clip> changes,
     return changesFullDelta;
 }
 
-bool PatternDiffHelpers::checkIfDeltaIsPatternType(const Delta *delta)
+bool PatternDiffHelpers::checkIfDeltaIsPatternType(const Delta *d)
 {
-    return (delta->hasType(PatternDeltas::clipsAdded) ||
-        delta->hasType(PatternDeltas::clipsRemoved) ||
-        delta->hasType(PatternDeltas::clipsChanged));
+    return (d->hasType(PatternDeltas::clipsAdded) ||
+        d->hasType(PatternDeltas::clipsRemoved) ||
+        d->hasType(PatternDeltas::clipsChanged));
 }
 
 ValueTree PatternDiffHelpers::mergeClipsAdded(const ValueTree &state, const ValueTree &changes)

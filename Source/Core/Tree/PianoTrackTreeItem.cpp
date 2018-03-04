@@ -29,10 +29,9 @@
 #include "OrchestraPit.h"
 
 #include "Delta.h"
-#include "PatternDeltas.h"
-#include "PianoSequenceDeltas.h"
-#include "MidiTrackDeltas.h"
 #include "PianoTrackDiffLogic.h"
+
+using namespace Serialization::VCS;
 
 PianoTrackTreeItem::PianoTrackTreeItem(const String &name) :
     MidiTrackTreeItem(name, Serialization::Core::pianoTrack)
@@ -88,7 +87,7 @@ void PianoTrackTreeItem::selectAllPianoSiblings(PianoTrackTreeItem *layerItem)
 
 VCS::Delta *PianoTrackTreeItem::getDelta(int index) const
 {
-    if (this->deltas[index]->getType() == PianoSequenceDeltas::notesAdded)
+    if (this->deltas[index]->hasType(PianoSequenceDeltas::notesAdded))
     {
         const int numEvents = this->getSequence()->size();
 
@@ -101,7 +100,7 @@ VCS::Delta *PianoTrackTreeItem::getDelta(int index) const
             this->deltas[index]->setDescription(VCS::DeltaDescription("{x} notes", numEvents));
         }
     }
-    else if (this->deltas[index]->getType() == PatternDeltas::clipsAdded)
+    else if (this->deltas[index]->hasType(PatternDeltas::clipsAdded))
     {
         const int numClips = this->getPattern()->size();
 
@@ -120,27 +119,27 @@ VCS::Delta *PianoTrackTreeItem::getDelta(int index) const
 
 ValueTree PianoTrackTreeItem::serializeDeltaData(int deltaIndex) const
 {
-    if (this->deltas[deltaIndex]->getType() == MidiTrackDeltas::trackPath)
+    if (this->deltas[deltaIndex]->hasType(MidiTrackDeltas::trackPath))
     {
         return this->serializePathDelta();
     }
-    if (this->deltas[deltaIndex]->getType() == MidiTrackDeltas::trackMute)
+    if (this->deltas[deltaIndex]->hasType(MidiTrackDeltas::trackMute))
     {
         return this->serializeMuteDelta();
     }
-    else if (this->deltas[deltaIndex]->getType() == MidiTrackDeltas::trackColour)
+    else if (this->deltas[deltaIndex]->hasType(MidiTrackDeltas::trackColour))
     {
         return this->serializeColourDelta();
     }
-    else if (this->deltas[deltaIndex]->getType() == MidiTrackDeltas::trackInstrument)
+    else if (this->deltas[deltaIndex]->hasType(MidiTrackDeltas::trackInstrument))
     {
         return this->serializeInstrumentDelta();
     }
-    else if (this->deltas[deltaIndex]->getType() == PianoSequenceDeltas::notesAdded)
+    else if (this->deltas[deltaIndex]->hasType(PianoSequenceDeltas::notesAdded))
     {
         return this->serializeEventsDelta();
     }
-    else if (this->deltas[deltaIndex]->getType() == PatternDeltas::clipsAdded)
+    else if (this->deltas[deltaIndex]->hasType(PatternDeltas::clipsAdded))
     {
         return this->serializeClipsDelta();
     }

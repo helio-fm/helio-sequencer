@@ -244,13 +244,10 @@ void TranslationManager::deserialize(const ValueTree &tree)
     {
         const String localeId =
         locale.getProperty(Locales::id).toString().toLowerCase();
-        
+
         if (localeId == selectedLocaleId)
         {
-            forEachValueTreeChildWithType(locale, pluralForms, Locales::pluralForms)
-            {
-                this->pluralEquation = pluralForms.getProperty(Locales::equation);
-            }
+            this->pluralEquation = locale.getProperty(Locales::pluralEquation);
 
             forEachValueTreeChildWithType(locale, pluralLiteral, Locales::pluralLiteral)
             {
@@ -294,7 +291,7 @@ void TranslationManager::reset()
 
 String TranslationManager::getLocalizationFileContents() const
 {
-    return String(CharPointer_UTF8(BinaryData::DefaultTranslations_xml));
+    return String(CharPointer_UTF8(BinaryData::Translations_xml));
 }
 
 void TranslationManager::loadFromXml(const String &xmlData)

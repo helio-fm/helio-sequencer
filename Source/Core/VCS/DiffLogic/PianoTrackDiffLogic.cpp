@@ -18,14 +18,13 @@
 #include "Common.h"
 #include "PianoTrackDiffLogic.h"
 #include "PianoTrackTreeItem.h"
-#include "PianoSequenceDeltas.h"
-#include "MidiTrackDeltas.h"
 #include "PatternDiffHelpers.h"
 #include "Note.h"
 #include "PianoSequence.h"
 #include "SerializationKeys.h"
 
 using namespace VCS;
+using namespace Serialization::VCS;
 
 static ValueTree mergePath(const ValueTree &state, const ValueTree &changes);
 static ValueTree mergeMute(const ValueTree &state, const ValueTree &changes);
@@ -56,7 +55,7 @@ static bool checkIfDeltaIsNotesType(const Delta *delta);
 PianoTrackDiffLogic::PianoTrackDiffLogic(TrackedItem &targetItem) :
     DiffLogic(targetItem) {}
 
-const Identifier VCS::PianoTrackDiffLogic::getType() const
+const Identifier PianoTrackDiffLogic::getType() const
 {
     return Serialization::Core::pianoTrack;
 }
@@ -85,7 +84,7 @@ Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const
         {
             const Delta *stateDelta = initialState.getDelta(j);
 
-            if (myDelta->getType() == stateDelta->getType())
+            if (myDelta->hasType(stateDelta->getType()))
             {
                 deltaFoundInState = true;
                 stateDeltaData = initialState.serializeDeltaData(j);
@@ -171,10 +170,7 @@ Diff *PianoTrackDiffLogic::createMergedItem(const TrackedItem &initialState) con
             const Delta *targetDelta = this->target.getDelta(j);
             const auto targetDeltaData(this->target.serializeDeltaData(j));
 
-            const bool typesMatchStrictly =
-                (stateDelta->getType() == targetDelta->getType());
-
-            if (typesMatchStrictly)
+            if (stateDelta->hasType(targetDelta->getType()))
             {
                 deltaFoundInChanges = true;
 
@@ -454,8 +450,9 @@ DeltaDiff createPathDiff(const ValueTree &state, const ValueTree &changes)
 {
     DeltaDiff res;
     res.deltaData = changes.createCopy();
-    res.delta = new Delta(DeltaDescription("moved from {x}", state.getProperty(Serialization::VCS::delta).toString()),
-                          MidiTrackDeltas::trackPath);
+    res.delta = new Delta(DeltaDescription("moved from {x}",
+        state.getProperty(Serialization::VCS::delta).toString()),
+        MidiTrackDeltas::trackPath);
     return res;
 }
 
@@ -642,9 +639,9 @@ ValueTree serializeLayer(Array<const MidiEvent *> changes, const Identifier &tag
     return tree;
 }
 
-bool checkIfDeltaIsNotesType(const Delta *delta)
+bool checkIfDeltaIsNotesType(const Delta *d)
 {
-    return (delta->hasType(PianoSequenceDeltas::notesAdded) ||
-            delta->hasType(PianoSequenceDeltas::notesRemoved) ||
-            delta->hasType(PianoSequenceDeltas::notesChanged));
+    return (d->hasType(PianoSequenceDeltas::notesAdded) ||
+            d->hasType(PianoSequenceDeltas::notesRemoved) ||
+            d->hasType(PianoSequenceDeltas::notesChanged));
 }

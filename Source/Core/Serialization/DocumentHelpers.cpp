@@ -221,8 +221,26 @@ ValueTree DocumentHelpers::load(const File &file)
         return tree;
     }
 
-    // Fallback to XML serialization
+    // Default to binary serialization
     return DocumentHelpers::load<BinarySerializer>(file);
+}
+
+ValueTree DocumentHelpers::load(const String &string)
+{
+    ValueTree result;
+    const String header(string.substring(0, 8));
+
+    const auto onesThatSupportHeader(getSerializersForHeader(header));
+    if (!onesThatSupportHeader.isEmpty())
+    {
+        ValueTree tree;
+        onesThatSupportHeader.getFirst()->loadFromString(string, tree);
+        return tree;
+    }
+
+    // Default to XML serialization
+    return DocumentHelpers::load<XmlSerializer>(string);
+
 }
 
 static File createTempFileForSaving(const File &parentDirectory, String name, const String& suffix)

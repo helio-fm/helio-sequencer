@@ -67,7 +67,7 @@ bool Delta::hasType(const Identifier &id) const
 ValueTree Delta::serialize() const
 {
     ValueTree tree(Serialization::VCS::delta);
-    tree.setProperty(Serialization::VCS::deltaType, this->type.toString(), nullptr);
+    tree.setProperty(Serialization::VCS::deltaTypeId, this->type.toString(), nullptr);
     tree.setProperty(Serialization::VCS::deltaName, this->description.stringToTranslate, nullptr);
     tree.setProperty(Serialization::VCS::deltaStringParam, this->description.stringParameter, nullptr);
     tree.setProperty(Serialization::VCS::deltaIntParam, String(this->description.intParameter), nullptr);
@@ -85,7 +85,7 @@ void Delta::deserialize(const ValueTree &tree)
     if (!root.isValid()) { return; }
 
     this->vcsUuid = root.getProperty(Serialization::VCS::deltaId, this->vcsUuid.toString());
-    this->type = root.getProperty(Serialization::VCS::deltaType, undefinedDelta).toString();
+    this->type = root.getProperty(Serialization::VCS::deltaTypeId, undefinedDelta).toString();
 
     const String descriptionName = root.getProperty(Serialization::VCS::deltaName, String::empty);
     const String descriptionStringParam = root.getProperty(Serialization::VCS::deltaStringParam, String::empty);

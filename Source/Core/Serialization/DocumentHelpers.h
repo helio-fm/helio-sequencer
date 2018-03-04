@@ -38,6 +38,7 @@ public:
     // This tries to auto-detect a serializer type for a given file
     // by extension and return a valid value tree
     static ValueTree load(const File &file);
+    static ValueTree load(const String &string);
 
     template<typename T>
     static ValueTree load(const File &file)

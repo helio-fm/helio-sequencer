@@ -18,14 +18,13 @@
 #include "Common.h"
 #include "AutomationTrackTreeItem.h"
 #include "AutomationSequence.h"
-#include "MidiTrackDeltas.h"
-#include "AutoSequenceDeltas.h"
 #include "TreeItemChildrenSerializer.h"
 #include "Icons.h"
 #include "TreeItemComponentCompact.h"
 #include "TreeItemComponentDefault.h"
 #include "Pattern.h"
-#include "PatternDeltas.h"
+
+using namespace Serialization::VCS;
 
 AutomationTrackTreeItem::AutomationTrackTreeItem(const String &name) :
     MidiTrackTreeItem(name, Serialization::Core::automationTrack)
@@ -70,7 +69,7 @@ int AutomationTrackTreeItem::getNumDeltas() const
 
 VCS::Delta *AutomationTrackTreeItem::getDelta(int index) const
 {
-    if (this->deltas[index]->getType() == AutoSequenceDeltas::eventsAdded)
+    if (this->deltas[index]->hasType(AutoSequenceDeltas::eventsAdded))
     {
         const int numEvents = this->getSequence()->size();
 
@@ -83,7 +82,7 @@ VCS::Delta *AutomationTrackTreeItem::getDelta(int index) const
             this->deltas[index]->setDescription(VCS::DeltaDescription("{x} events", numEvents));
         }
     }
-    else if (this->deltas[index]->getType() == PatternDeltas::clipsAdded)
+    else if (this->deltas[index]->hasType(PatternDeltas::clipsAdded))
     {
         const int numClips = this->getPattern()->size();
 

@@ -18,8 +18,6 @@
 #include "Common.h"
 #include "LegacySerializer.h"
 #include "SerializationKeys.h"
-#include "MidiTrackDeltas.h"
-#include "ProjectInfoDeltas.h"
 
 // This file now encapsulates all the ugliness
 // of a legacy serializer used in the first version of the app.
@@ -272,11 +270,11 @@ Result LegacySerializer::saveToFile(File file, const ValueTree &tree) const
     return saved ? Result::ok() : Result::fail({});
 }
 
-static String toCamelCase(const String &string)
+static String toLowerCamelCase(const String &string)
 {
     if (string.length() > 1)
     {
-        return string.substring(0, 1).toUpperCase() +
+        return string.substring(0, 1).toLowerCase() +
             string.substring(1);
     }
 
@@ -286,6 +284,7 @@ static String toCamelCase(const String &string)
 static String transformXmlTag(const String &tagOrAttribute)
 {
     using namespace Serialization;
+    using namespace Serialization::VCS;
 
     static HashMap<String, Identifier> oldKeys;
     if (oldKeys.size() == 0)
@@ -330,7 +329,7 @@ static ValueTree valueTreeFromXml(const XmlElement &xml)
 {
     if (!xml.isTextElement())
     {
-        ValueTree v(toCamelCase(transformXmlTag(xml.getTagName())));
+        ValueTree v(toLowerCamelCase(transformXmlTag(xml.getTagName())));
 
         for (int i = 0; i < xml.getNumAttributes(); ++i)
         {
@@ -341,12 +340,12 @@ static ValueTree valueTreeFromXml(const XmlElement &xml)
                 MemoryBlock mb;
                 if (mb.fromBase64Encoding(attValue))
                 {
-                    v.setProperty(toCamelCase(attName.substring(7)), var(mb), nullptr);
+                    v.setProperty(toLowerCamelCase(attName.substring(7)), var(mb), nullptr);
                     continue;
                 }
             }
 
-            v.setProperty(toCamelCase(attName), var(attValue), nullptr);
+            v.setProperty(toLowerCamelCase(attName), var(attValue), nullptr);
         }
 
         forEachXmlChildElement(xml, e)

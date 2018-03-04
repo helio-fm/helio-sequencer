@@ -18,14 +18,13 @@
 #include "Common.h"
 #include "ProjectTimelineDiffLogic.h"
 #include "ProjectTimeline.h"
-#include "ProjectTimelineDeltas.h"
-
 #include "AnnotationsSequence.h"
 #include "TimeSignaturesSequence.h"
 #include "KeySignaturesSequence.h"
 #include "SerializationKeys.h"
 
 using namespace VCS;
+using namespace Serialization::VCS;
 
 // TODO refactor, lots of duplicated code
 
@@ -89,7 +88,7 @@ Diff *ProjectTimelineDiffLogic::createDiff(const TrackedItem &initialState) cons
         {
             const Delta *stateDelta = initialState.getDelta(j);
 
-            if (myDelta->getType() == stateDelta->getType())
+            if (myDelta->hasType(stateDelta->getType()))
             {
                 stateDeltaData = initialState.serializeDeltaData(j);
                 deltaFoundInState = (stateDeltaData.isValid());
@@ -1123,23 +1122,23 @@ ValueTree serializeLayer(Array<const MidiEvent *> changes, const Identifier &tag
     return tree;
 }
 
-bool checkIfDeltaIsAnnotationType(const Delta *delta)
+bool checkIfDeltaIsAnnotationType(const Delta *d)
 {
-    return (delta->hasType(ProjectTimelineDeltas::annotationsAdded) ||
-        delta->hasType(ProjectTimelineDeltas::annotationsChanged) ||
-        delta->hasType(ProjectTimelineDeltas::annotationsRemoved));
+    return (d->hasType(ProjectTimelineDeltas::annotationsAdded) ||
+        d->hasType(ProjectTimelineDeltas::annotationsChanged) ||
+        d->hasType(ProjectTimelineDeltas::annotationsRemoved));
 }
 
-bool checkIfDeltaIsTimeSignatureType(const Delta *delta)
+bool checkIfDeltaIsTimeSignatureType(const Delta *d)
 {
-    return (delta->hasType(ProjectTimelineDeltas::timeSignaturesAdded) ||
-        delta->hasType(ProjectTimelineDeltas::timeSignaturesChanged) ||
-        delta->hasType(ProjectTimelineDeltas::timeSignaturesRemoved));
+    return (d->hasType(ProjectTimelineDeltas::timeSignaturesAdded) ||
+        d->hasType(ProjectTimelineDeltas::timeSignaturesChanged) ||
+        d->hasType(ProjectTimelineDeltas::timeSignaturesRemoved));
 }
 
-bool checkIfDeltaIsKeySignatureType(const Delta *delta)
+bool checkIfDeltaIsKeySignatureType(const Delta *d)
 {
-    return (delta->hasType(ProjectTimelineDeltas::keySignaturesAdded) ||
-        delta->hasType(ProjectTimelineDeltas::keySignaturesRemoved) ||
-        delta->hasType(ProjectTimelineDeltas::keySignaturesChanged));
+    return (d->hasType(ProjectTimelineDeltas::keySignaturesAdded) ||
+        d->hasType(ProjectTimelineDeltas::keySignaturesRemoved) ||
+        d->hasType(ProjectTimelineDeltas::keySignaturesChanged));
 }

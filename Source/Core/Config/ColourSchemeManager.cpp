@@ -121,7 +121,7 @@ void ColourSchemeManager::reloadSchemes()
     else
     {
         // built-in schemes
-        const String defaultSchemes = String(CharPointer_UTF8(BinaryData::ColourSchemes_xml));
+        const String defaultSchemes = String(CharPointer_UTF8(BinaryData::Colours_xml));
         XmlSerializer serializer;
         ValueTree schemesState;
         serializer.loadFromString(defaultSchemes, schemesState);
