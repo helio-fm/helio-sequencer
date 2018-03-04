@@ -19,8 +19,7 @@
 #include "ColourSchemeManager.h"
 #include "Arpeggiator.h"
 #include "SerializationKeys.h"
-#include "BinaryData.h"
-#include "XmlSerializer.h"
+#include "DocumentHelpers.h"
 #include "App.h"
 #include "Config.h"
 
@@ -121,10 +120,8 @@ void ColourSchemeManager::reloadSchemes()
     else
     {
         // built-in schemes
-        const String defaultSchemes = String(CharPointer_UTF8(BinaryData::Colours_xml));
-        XmlSerializer serializer;
-        ValueTree schemesState;
-        serializer.loadFromString(defaultSchemes, schemesState);
+        const auto defaultSchemes = String(CharPointer_UTF8(BinaryData::Colours_json));
+        const auto schemesState = DocumentHelpers::load(defaultSchemes);
         if (schemesState.isValid())
         {
             this->deserialize(schemesState);

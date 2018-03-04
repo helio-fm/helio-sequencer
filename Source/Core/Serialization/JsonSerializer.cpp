@@ -18,16 +18,15 @@
 #include "Common.h"
 #include "JsonSerializer.h"
 
-// Slightly modified JSONParser from JUCE classes - but returns ValueTree instead of var.
+// Slightly modified JSONParser from JUCE classes,
+// but returns ValueTree instead of var, and supports comments like `//` and `/* */`.
 // Parses arrays and objects as nodes/children, and all others as properties.
-
-// TODO add support for `//` and `/* */` comments a in JSON string
 
 struct JsonParser
 {
     static Result parseObjectOrArray(String::CharPointerType t, ValueTree &result)
     {
-        skipCommantsAndWhitespaces(t);
+        skipCommentsAndWhitespaces(t);
 
         switch (t.getAndAdvance())
         {
@@ -104,15 +103,50 @@ struct JsonParser
         return Result::ok();
     }
 
-    static void skipCommantsAndWhitespaces(String::CharPointerType &t)
+    static void findNextNewline(String::CharPointerType &t)
     {
-        // TODO skip comments
+        juce_wchar c = 0;
+        do { c = t.getAndAdvance(); } while (c != '\n' && c != '\r');
+    }
+
+    static void findEndOfMultilineComment(String::CharPointerType &t)
+    {
+        juce_wchar c1 = 0;
+        juce_wchar c2 = 0;
+        do
+        { 
+            c1 = c2;
+            c2 = t.getAndAdvance();
+            if (c2 == 0) { return; }
+        } while (c1 != '*' || c2 != '/');
+    }
+
+    static void skipCommentsAndWhitespaces(String::CharPointerType &t)
+    {
         t = t.findEndOfWhitespace();
+        auto t2 = t;
+        switch (t2.getAndAdvance())
+        {
+        case '/':
+            const auto c = t2.getAndAdvance();
+            if (c == '/')
+            {
+                t = t2;
+                findNextNewline(t);
+                skipCommentsAndWhitespaces(t);
+            }
+            else if (c == '*')
+            {
+                t = t2;
+                findEndOfMultilineComment(t);
+                skipCommentsAndWhitespaces(t);
+            }
+        }
     }
 
     static Result parseAny(String::CharPointerType &t, ValueTree &result, const Identifier &nodeOrProperty)
     {
-        skipCommantsAndWhitespaces(t);
+        skipCommentsAndWhitespaces(t);
         auto t2 = t;
 
         switch (t2.getAndAdvance())
@@ -138,7 +172,7 @@ struct JsonParser
             return parseStringProperty('\'', t, nodeOrProperty, result);
 
         case '-':
-            skipCommantsAndWhitespaces(t2);
+            skipCommentsAndWhitespaces(t2);
             if (!CharacterFunctions::isDigit(*t2))
                 break;
 
@@ -245,7 +279,7 @@ private:
     {
         for (;;)
         {
-            skipCommantsAndWhitespaces(t);
+            skipCommentsAndWhitespaces(t);
 
             auto oldT = t;
             auto c = t.getAndAdvance();
@@ -261,7 +295,7 @@ private:
                 const Identifier nodeName(nodeNameVar);
                 if (nodeName.isValid())
                 {
-                    skipCommantsAndWhitespaces(t);
+                    skipCommentsAndWhitespaces(t);
                     oldT = t;
 
                     auto c2 = t.getAndAdvance();
@@ -271,7 +305,7 @@ private:
                     const auto r2 = parseAny(t, result, nodeName);
                     if (r2.failed()) { return r2; }
 
-                    skipCommantsAndWhitespaces(t);
+                    skipCommentsAndWhitespaces(t);
                     oldT = t;
 
                     auto nextChar = t.getAndAdvance();
@@ -290,7 +324,7 @@ private:
     {
         for (;;)
         {
-            skipCommantsAndWhitespaces(t);
+            skipCommentsAndWhitespaces(t);
 
             auto oldT = t;
             auto c = t.getAndAdvance();
@@ -303,7 +337,7 @@ private:
 
             if (r.failed()) { return r; }
 
-            skipCommantsAndWhitespaces(t);
+            skipCommentsAndWhitespaces(t);
             oldT = t;
 
             auto nextChar = t.getAndAdvance();

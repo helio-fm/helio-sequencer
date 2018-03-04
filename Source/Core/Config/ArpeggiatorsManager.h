@@ -34,9 +34,7 @@ public:
     
     void initialise(const String &commandLine);
     void shutdown();
-
-    static File getDebugArpsFile();
-    
+        
     Array<Arpeggiator> getArps() const;
     bool replaceArpWithId(const String &id, const Arpeggiator &arp);
     void addArp(const Arpeggiator &arp);

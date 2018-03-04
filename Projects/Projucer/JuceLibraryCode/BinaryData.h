@@ -347,23 +347,23 @@ namespace BinaryData
     extern const char*   zoomout_svg;
     const int            zoomout_svgSize = 928;
 
-    extern const char*   defaultPattern_png;
-    const int            defaultPattern_pngSize = 317;
+    extern const char*   Noise_png;
+    const int            Noise_pngSize = 317;
 
-    extern const char*   ColourSchemes_xml;
-    const int            ColourSchemes_xmlSize = 2608;
+    extern const char*   Arps_json;
+    const int            Arps_jsonSize = 15183;
 
-    extern const char*   DefaultArps_xml;
-    const int            DefaultArps_xmlSize = 6876;
+    extern const char*   Colours_json;
+    const int            Colours_jsonSize = 2827;
 
-    extern const char*   DefaultHotkeys_xml;
-    const int            DefaultHotkeys_xmlSize = 9601;
+    extern const char*   Hotkeys_json;
+    const int            Hotkeys_jsonSize = 9891;
 
-    extern const char*   DefaultScales_xml;
-    const int            DefaultScales_xmlSize = 4741;
+    extern const char*   Scales_json;
+    const int            Scales_jsonSize = 6758;
 
-    extern const char*   DefaultTranslations_xml;
-    const int            DefaultTranslations_xmlSize = 185385;
+    extern const char*   Translations_json;
+    const int            Translations_jsonSize = 286713;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

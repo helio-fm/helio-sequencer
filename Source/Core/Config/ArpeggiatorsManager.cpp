@@ -19,8 +19,7 @@
 #include "ArpeggiatorsManager.h"
 #include "Arpeggiator.h"
 #include "SerializationKeys.h"
-#include "BinaryData.h"
-#include "XmlSerializer.h"
+#include "DocumentHelpers.h"
 #include "App.h"
 #include "Config.h"
 
@@ -119,29 +118,15 @@ void ArpeggiatorsManager::reset()
 
 void ArpeggiatorsManager::reloadArps()
 {
-    const File debugArps(this->getDebugArpsFile());
-    if (debugArps.existsAsFile())
-    {
-        Logger::writeToLog("Found debug arps file, loading..");
-        XmlSerializer serializer;
-        ValueTree arpsState;
-        serializer.loadFromFile(debugArps, arpsState);
-        if (arpsState.isValid())
-        {
-            this->deserialize(arpsState);
-        }
-    }
-    else if (Config::contains(Serialization::Arps::arpeggiators))
+    if (Config::contains(Serialization::Arps::arpeggiators))
     {
         Config::load(Serialization::Arps::arpeggiators, this);
     }
     else
     {
         // built-in arps
-        const String defaultArps = String(CharPointer_UTF8(BinaryData::Arps_xml));
-        XmlSerializer serializer;
-        ValueTree arpsState;
-        serializer.loadFromString(defaultArps, arpsState);
+        const auto defaultArps = String(CharPointer_UTF8(BinaryData::Arps_json));
+        const auto arpsState = DocumentHelpers::load(defaultArps);
         if (arpsState.isValid())
         {
             this->deserialize(arpsState);
@@ -159,15 +144,3 @@ void ArpeggiatorsManager::timerCallback()
     this->stopTimer();
     // TODO update arps from the server
 }
-
-
-//===----------------------------------------------------------------------===//
-// Static
-//===----------------------------------------------------------------------===//
-
-File ArpeggiatorsManager::getDebugArpsFile()
-{
-    static String debugArpsFileName = "ArpsDebug.xml";
-    return File::getSpecialLocation(File::currentApplicationFile).getSiblingFile(debugArpsFileName);
-}
-

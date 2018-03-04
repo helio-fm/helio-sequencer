@@ -23,7 +23,7 @@
 Array<Scale> Scale::getDefaultScalesCache()
 {
     return ResourceCache<Scale>::getInstance().
-        get(Serialization::Core::scale, "DefaultScales_xml");
+        get(Serialization::Core::scale, "Scales_json");
 }
 
 enum Key

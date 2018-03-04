@@ -97,8 +97,6 @@ private:
     HashMap<String, StringPairArray> plurals;
 
     HashMap<String, Locale> availableTranslations;
-    String getLocalizationFileContents() const;
-    void loadFromXml(const String &xmlData);
     
     String getSelectedLocaleId() const;
     void setSelectedLocaleId(const String &localeId);

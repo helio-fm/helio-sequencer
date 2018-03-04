@@ -289,22 +289,6 @@ void TranslationManager::reset()
 // Private
 //===----------------------------------------------------------------------===//
 
-String TranslationManager::getLocalizationFileContents() const
-{
-    return String(CharPointer_UTF8(BinaryData::Translations_xml));
-}
-
-void TranslationManager::loadFromXml(const String &xmlData)
-{
-    XmlSerializer serializer;
-    ValueTree state;
-    serializer.loadFromString(xmlData, state);
-    if (state.isValid())
-    {
-        this->deserialize(state);
-    }
-}
-
 void TranslationManager::reloadLocales()
 {
     const File downloadedTranslations(this->getDownloadedTranslationsFile());
@@ -320,7 +304,13 @@ void TranslationManager::reloadLocales()
         }
     }
 
-    this->loadFromXml(this->getLocalizationFileContents());
+    const auto defaultTranslations = String(CharPointer_UTF8(BinaryData::Translations_json));
+    const auto state = DocumentHelpers::load(defaultTranslations);
+    if (state.isValid())
+    {
+        this->deserialize(state);
+    }
+
 }
 
 String TranslationManager::getSelectedLocaleId() const

@@ -140,21 +140,13 @@
         <FILE id="HojmRs" name="zoom-in.svg" compile="0" resource="1" file="../../Resources/Icons/zoom-in.svg"/>
         <FILE id="wS3gha" name="zoom-out.svg" compile="0" resource="1" file="../../Resources/Icons/zoom-out.svg"/>
       </GROUP>
-      <GROUP id="{14FB8A25-1178-E3EF-6B94-AEFBD0ED4866}" name="Themes">
-        <GROUP id="{26C997FB-F5F9-B400-1EA1-6E714196DE3C}" name="Backgrounds">
-          <FILE id="qBcdTl" name="defaultPattern.png" compile="0" resource="1"
-                file="../../Resources/Themes/Backgrounds/defaultPattern.png"/>
-        </GROUP>
-        <FILE id="qsddRM" name="ColourSchemes.xml" compile="0" resource="1"
-              file="../../Resources/Themes/ColourSchemes.xml"/>
-      </GROUP>
-      <FILE id="dq4Pbr" name="DefaultArps.xml" compile="0" resource="1" file="../../Resources/DefaultArps.xml"/>
-      <FILE id="Ix28fT" name="DefaultHotkeys.xml" compile="0" resource="1"
-            file="../../Resources/DefaultHotkeys.xml"/>
-      <FILE id="TgP2FQ" name="DefaultScales.xml" compile="0" resource="1"
-            file="../../Resources/DefaultScales.xml"/>
-      <FILE id="WrABxc" name="DefaultTranslations.xml" compile="0" resource="1"
-            file="../../Resources/DefaultTranslations.xml"/>
+      <FILE id="aMBPbX" name="Noise.png" compile="0" resource="1" file="../../Resources/Noise.png"/>
+      <FILE id="k031wg" name="Arps.json" compile="0" resource="1" file="../../Resources/Arps.json"/>
+      <FILE id="JML0CW" name="Colours.json" compile="0" resource="1" file="../../Resources/Colours.json"/>
+      <FILE id="Qw4lbf" name="Hotkeys.json" compile="0" resource="1" file="../../Resources/Hotkeys.json"/>
+      <FILE id="YgjNxN" name="Scales.json" compile="0" resource="1" file="../../Resources/Scales.json"/>
+      <FILE id="XeVaag" name="Translations.json" compile="0" resource="1"
+            file="../../Resources/Translations.json"/>
     </GROUP>
     <GROUP id="{D7C7CF10-6E05-4F4B-8239-EAE45F06DF85}" name="Source">
       <GROUP id="{F2A6D338-1D87-9C43-B3BB-5AFE01EEE084}" name="Core">
@@ -514,35 +506,24 @@
         </GROUP>
         <GROUP id="{93158781-1E3A-C291-199C-658344E36869}" name="VCS">
           <GROUP id="{7066A342-DF54-461D-76B4-F0789077D1ED}" name="DiffLogic">
-            <FILE id="SBYx0I" name="AutoSequenceDeltas.h" compile="0" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/AutoSequenceDeltas.h"/>
             <FILE id="cUPXik" name="AutomationTrackDiffLogic.cpp" compile="1" resource="0"
                   file="../../Source/Core/VCS/DiffLogic/AutomationTrackDiffLogic.cpp"/>
             <FILE id="sJ9yi6" name="AutomationTrackDiffLogic.h" compile="0" resource="0"
                   file="../../Source/Core/VCS/DiffLogic/AutomationTrackDiffLogic.h"/>
             <FILE id="tzU3Zw" name="DiffLogic.cpp" compile="1" resource="0" file="../../Source/Core/VCS/DiffLogic/DiffLogic.cpp"/>
             <FILE id="o2iVIn" name="DiffLogic.h" compile="0" resource="0" file="../../Source/Core/VCS/DiffLogic/DiffLogic.h"/>
-            <FILE id="vlvaNu" name="MidiTrackDeltas.h" compile="0" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/MidiTrackDeltas.h"/>
-            <FILE id="sUuTah" name="PatternDeltas.h" compile="0" resource="0" file="../../Source/Core/VCS/DiffLogic/PatternDeltas.h"/>
             <FILE id="IXQhWN" name="PatternDiffHelpers.cpp" compile="1" resource="0"
                   file="../../Source/Core/VCS/DiffLogic/PatternDiffHelpers.cpp"/>
             <FILE id="Ngf98g" name="PatternDiffHelpers.h" compile="0" resource="0"
                   file="../../Source/Core/VCS/DiffLogic/PatternDiffHelpers.h"/>
-            <FILE id="Lg4Vim" name="PianoSequenceDeltas.h" compile="0" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/PianoSequenceDeltas.h"/>
             <FILE id="AJDAjB" name="PianoTrackDiffLogic.cpp" compile="1" resource="0"
                   file="../../Source/Core/VCS/DiffLogic/PianoTrackDiffLogic.cpp"/>
             <FILE id="iQgRoL" name="PianoTrackDiffLogic.h" compile="0" resource="0"
                   file="../../Source/Core/VCS/DiffLogic/PianoTrackDiffLogic.h"/>
-            <FILE id="BQjXo4" name="ProjectInfoDeltas.h" compile="0" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/ProjectInfoDeltas.h"/>
             <FILE id="QkAb4q" name="ProjectInfoDiffLogic.cpp" compile="1" resource="0"
                   file="../../Source/Core/VCS/DiffLogic/ProjectInfoDiffLogic.cpp"/>
             <FILE id="pF9gKu" name="ProjectInfoDiffLogic.h" compile="0" resource="0"
                   file="../../Source/Core/VCS/DiffLogic/ProjectInfoDiffLogic.h"/>
-            <FILE id="sUxeti" name="ProjectTimelineDeltas.h" compile="0" resource="0"
-                  file="../../Source/Core/VCS/DiffLogic/ProjectTimelineDeltas.h"/>
             <FILE id="J9AS6t" name="ProjectTimelineDiffLogic.cpp" compile="1" resource="0"
                   file="../../Source/Core/VCS/DiffLogic/ProjectTimelineDiffLogic.cpp"/>
             <FILE id="hpqcsa" name="ProjectTimelineDiffLogic.h" compile="0" resource="0"
