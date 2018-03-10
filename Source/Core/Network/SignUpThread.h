@@ -37,7 +37,6 @@ public:
     private:
         virtual void signUpOk(const String &userEmail, const String &newToken) = 0;
         virtual void signUpFailed(const Array<String> &errors) = 0;
-        virtual void signUpConnectionFailed() = 0;
         friend class SignUpThread;
     };
     
@@ -83,19 +82,9 @@ private:
         const HelioApiRequest request(HelioFM::Api::V1::join);
         this->response = request.post(var(payload));
 
-        if (this->response.result.failed())
-        {
-            MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
-            {
-                const auto self = static_cast<SignUpThread *>(ptr);
-                self->listener->signUpConnectionFailed();
-                return nullptr;
-            }, this);
-            return;
-        }
-
-        const bool hasToken = this->response.jsonBody.contains(Api::V1::token);
-        if (this->response.statusCode != 200 || !hasToken)
+        const bool hasToken = this->response.body.hasProperty(Api::V1::token);
+        if (this->response.parseResult.failed() ||
+            this->response.statusCode != 200 || !hasToken)
         {
             MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
             {
@@ -109,7 +98,7 @@ private:
         MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
         {
             const auto self = static_cast<SignUpThread *>(ptr);
-            const auto token = self->response.jsonBody[Api::V1::token];
+            const auto token = self->response.body.getProperty(Api::V1::token);
             self->listener->signUpOk(self->email, token);
             return nullptr;
         }, this);

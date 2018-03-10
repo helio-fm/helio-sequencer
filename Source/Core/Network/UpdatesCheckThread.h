@@ -22,29 +22,70 @@
 #include "Config.h"
 #include "SerializationKeys.h"
 
+struct UpdateInfo final
+{
+    struct VersionInfo final
+    {
+        String getPlatformId() const noexcept 
+        { return this->info.getProperty(Serialization::Api::V1::platformId); }
+
+        String getVersion() const noexcept 
+        { return this->info.getProperty(Serialization::Api::V1::version); }
+
+        String getLink() const noexcept 
+        { return this->info.getProperty(Serialization::Api::V1::link); }
+
+        const ValueTree info;
+    };
+
+    struct ResourceInfo final
+    {
+        String getResourceName() const noexcept 
+        { return this->info.getProperty(Serialization::Api::V1::resourceName); }
+
+        String getResourceHash() const noexcept 
+        { return this->info.getProperty(Serialization::Api::V1::hash); }
+
+        const ValueTree info;
+    };
+
+    Array<VersionInfo> getReleases() const
+    {
+        Array<VersionInfo> result;
+        forEachValueTreeChildWithType(info, release, Serialization::Api::V1::versionInfo)
+        { result.add({release}); }
+        return result;
+    }
+
+    Array<ResourceInfo> getResources() const
+    {
+        Array<ResourceInfo> result;
+        forEachValueTreeChildWithType(info, release, Serialization::Api::V1::resourceInfo)
+        { result.add({release}); }
+        return result;
+    }
+
+    ValueTree info;
+};
+
 class UpdatesCheckThread final : private Thread
 {
 public:
 
     UpdatesCheckThread() : Thread("UpdatesCheck"), listener(nullptr) {}
+
     ~UpdatesCheckThread() override
     {
         this->stopThread(1000);
     }
-    
-    struct UpdateInfo final
-    {
-        // TODO
-    };
 
     class Listener
     {
     public:
         virtual ~Listener() {}
     private:
-        virtual void updatesCheckOk(const UpdateInfo &info) = 0;
+        virtual void updatesCheckOk(const UpdateInfo info) = 0;
         virtual void updatesCheckFailed(const Array<String> &errors) = 0;
-        virtual void updatesCheckConnectionFailed() = 0;
         friend class UpdatesCheckThread;
     };
     
@@ -66,18 +107,8 @@ private:
         const HelioApiRequest request(HelioFM::Api::V1::requestUpdatesInfo);
         this->response = request.get();
 
-        if (this->response.result.failed())
-        {
-            MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
-            {
-                const auto self = static_cast<UpdatesCheckThread *>(ptr);
-                self->listener->updatesCheckConnectionFailed();
-                return nullptr;
-            }, this);
-            return;
-        }
-
-        if (this->response.statusCode != 200)
+        if (this->response.parseResult.failed() ||
+            this->response.statusCode != 200 || !this->response.body.isValid())
         {
             MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
             {
@@ -88,6 +119,8 @@ private:
             return;
         }
         
+        this->updateInfo = {this->response.body};
+
         MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
         {
             const auto self = static_cast<UpdatesCheckThread *>(ptr);
@@ -95,7 +128,6 @@ private:
             return nullptr;
         }, this);
     }
-    
     
     UpdateInfo updateInfo;
     HelioApiRequest::Response response;

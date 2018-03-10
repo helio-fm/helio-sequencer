@@ -177,7 +177,7 @@ void Note::deserialize(const ValueTree &tree)
     this->reset();
     using namespace Serialization;
     this->id = tree.getProperty(Midi::id);
-    this->key = tree.getProperty(Midi::key);;
+    this->key = tree.getProperty(Midi::key);
     this->beat = float(tree.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
     this->length = float(tree.getProperty(Midi::length)) / TICKS_PER_BEAT;
     const auto vol = float(tree.getProperty(Midi::volume)) / VELOCITY_SAVE_ACCURACY;

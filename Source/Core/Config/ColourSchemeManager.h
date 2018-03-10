@@ -58,7 +58,6 @@ private:
 
     void requestResourceOk(const ValueTree &resource) override;
     void requestResourceFailed(const Array<String> &errors) override;
-    void requestResourceConnectionFailed() override;
 
 private:
 

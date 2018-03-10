@@ -86,22 +86,17 @@ private:
     
     void signInOk(const String &userEmail, const String &newToken) override;
     void signInFailed(const Array<String> &errors) override;
-    void signInConnectionFailed() override;
 
     void signUpOk(const String &userEmail, const String &newToken) override;
     void signUpFailed(const Array<String> &errors) override;
-    void signUpConnectionFailed() override;
 
     void tokenCheckOk() override;
     void tokenCheckFailed(const Array<String> &errors) override;
-    void tokenCheckConnectionFailed() override;
 
     void tokenUpdateOk(const String &newToken) override;
     void tokenUpdateFailed(const Array<String> &errors) override;
-    void tokenUpdateConnectionFailed() override;
 
     void requestProfileOk(const UserProfile::Ptr profile) override;
     void requestProfileFailed(const Array<String> &errors) override;
-    void requestProfileConnectionFailed() override;
 
 };

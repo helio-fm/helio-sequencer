@@ -385,11 +385,6 @@ void TranslationManager::requestResourceFailed(const Array<String> &errors)
     Logger::writeToLog("TranslationManager::requestResourceFailed " + errors.getFirst());
 }
 
-void TranslationManager::requestResourceConnectionFailed()
-{
-    Logger::writeToLog("TranslationManager::requestResourceConnectionFailed");
-}
-
 //===----------------------------------------------------------------------===//
 // Static
 //===----------------------------------------------------------------------===//

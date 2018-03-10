@@ -362,9 +362,15 @@ namespace Serialization
         static const Identifier sessionLastUpdateTime = "sessionLastUpdateTime";
         static const Identifier sessionLastToken = "sessionLastToken";
 
-        // JSON payload keys
+        // JSON keys
         namespace V1
         {
+            static const Identifier rootElementSuccess = "data";
+            static const Identifier rootElementErrors = "errors";
+
+            static const Identifier status = "status";
+            static const Identifier message = "message";
+
             static const Identifier user = "user";
             static const Identifier session = "session";
 
@@ -372,14 +378,20 @@ namespace Serialization
             static const Identifier email = "email";
             static const Identifier login = "login";
             static const Identifier password = "password";
-            static const Identifier passwordConfirmation = "password_confirmation";
+            static const Identifier passwordConfirmation = "passwordConfirmation";
 
             static const Identifier bearer = "bearer";
-            static const Identifier deviceId = "device_id";
-            static const Identifier platformId = "platform_id";
+            static const Identifier deviceId = "deviceId";
+            static const Identifier platformId = "platformId";
 
             static const Identifier token = "token";
-            static const Identifier errors = "errors";
+
+            static const Identifier versionInfo = "versionInfo";
+            static const Identifier version = "version";
+            static const Identifier link = "link";
+            static const Identifier resourceInfo = "resourceInfo";
+            static const Identifier resourceName = "resourceName";
+            static const Identifier hash = "hash";
         } // namespace V1
     } // namespace Api
     

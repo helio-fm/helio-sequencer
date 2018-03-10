@@ -105,12 +105,6 @@ void SessionManager::signInFailed(const Array<String> &errors)
     this->sendChangeMessage();
 }
 
-void SessionManager::signInConnectionFailed()
-{
-    this->authState = Unknown;
-    this->sendChangeMessage();
-}
-
 //===----------------------------------------------------------------------===//
 // SignUpThread::Listener
 //===----------------------------------------------------------------------===//
@@ -126,26 +120,16 @@ void SessionManager::signUpFailed(const Array<String> &errors)
     this->sendChangeMessage();
 }
 
-void SessionManager::signUpConnectionFailed()
-{
-    this->sendChangeMessage();
-}
-
 //===----------------------------------------------------------------------===//
 // TokenCheckThread::Listener
 //===----------------------------------------------------------------------===//
 
 void SessionManager::tokenCheckOk()
 {
-
+    // launch updates?
 }
 
 void SessionManager::tokenCheckFailed(const Array<String> &errors)
-{
-
-}
-
-void SessionManager::tokenCheckConnectionFailed()
 {
 
 }
@@ -164,14 +148,7 @@ void SessionManager::tokenUpdateOk(const String &newToken)
 
 void SessionManager::tokenUpdateFailed(const Array<String> &errors)
 {
-    Config::set(Serialization::Api::sessionLastToken, {});
-    this->userProfile = UserProfile::empty();
-    this->sendChangeMessage();
-}
-
-void SessionManager::tokenUpdateConnectionFailed()
-{
-    this->authState = Unknown;
+    //Config::set(Serialization::Api::sessionLastToken, {});
     this->userProfile = UserProfile::empty();
     this->sendChangeMessage();
 }
@@ -187,11 +164,6 @@ void SessionManager::requestProfileOk(const UserProfile::Ptr profile)
 }
 
 void SessionManager::requestProfileFailed(const Array<String> &errors)
-{
-
-}
-
-void SessionManager::requestProfileConnectionFailed()
 {
 
 }

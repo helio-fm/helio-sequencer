@@ -17,34 +17,34 @@
 
 #pragma once
 
-#include "JsonSerializer.h"
+#include "UpdatesCheckThread.h"
 
-class HelioApiRequest final
+class UpdatesManager final : private Timer,
+                             private UpdatesCheckThread::Listener
 {
 public:
 
-    typedef Function<void(int, int)> ProgressCallback;
+    UpdatesManager();
 
-    HelioApiRequest(String apiEndpoint, ProgressCallback progressCallback = nullptr);
 
-    struct Response final
-    {
-        Response();
-        int statusCode;
-        Result parseResult;
-        StringPairArray headers;
-        ValueTree body;
-        Array<String> errors; // optional detailed errors descriptions
-    };
-
-    Response post(const var payload) const;
-    Response get() const;
-
-    ProgressCallback progressCallback;
 
 private:
 
-    String apiEndpoint;
+    void timerCallback() override;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HelioApiRequest)
+    OwnedArray<Thread> requestThreads;
+
+private:
+
+    // will be called on the main thread:
+    void updatesCheckOk(const UpdateInfo info) override
+    {
+
+    }
+
+    void updatesCheckFailed(const Array<String> &errors) override
+    {
+
+    }
+
 };

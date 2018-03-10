@@ -38,7 +38,6 @@ public:
     private:
         virtual void tokenCheckOk() = 0;
         virtual void tokenCheckFailed(const Array<String> &errors) = 0;
-        virtual void tokenCheckConnectionFailed() = 0;
         friend class TokenCheckThread;
     };
     
@@ -60,18 +59,7 @@ private:
         const HelioApiRequest request(HelioFM::Api::V1::tokenCheck);
         this->response = request.get();
 
-        if (this->response.result.failed())
-        {
-            MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
-            {
-                const auto self = static_cast<TokenCheckThread *>(ptr);
-                self->listener->tokenCheckConnectionFailed();
-                return nullptr;
-            }, this);
-            return;
-        }
-
-        if (this->response.statusCode != 200)
+        if (this->response.parseResult.failed() || this->response.statusCode != 200)
         {
             MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
             {

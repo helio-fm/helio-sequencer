@@ -157,8 +157,3 @@ void ColourSchemeManager::requestResourceFailed(const Array<String> &errors)
 {
     Logger::writeToLog("ColourSchemeManager::requestResourceFailed: " + errors.getFirst());
 }
-
-void ColourSchemeManager::requestResourceConnectionFailed()
-{
-    Logger::writeToLog("ColourSchemeManager::requestResourceConnectionFailed");
-}

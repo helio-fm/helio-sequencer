@@ -15,36 +15,18 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#include "Common.h"
+#include "UpdatesManager.h"
 
-#include "JsonSerializer.h"
+// Try to update resources and versions info after:
+#define UPDATE_INFO_TIMEOUT_MS (1000 * 10)
 
-class HelioApiRequest final
+UpdatesManager::UpdatesManager()
 {
-public:
+    this->startTimer(UPDATE_INFO_TIMEOUT_MS);
+}
 
-    typedef Function<void(int, int)> ProgressCallback;
+void UpdatesManager::timerCallback()
+{
 
-    HelioApiRequest(String apiEndpoint, ProgressCallback progressCallback = nullptr);
-
-    struct Response final
-    {
-        Response();
-        int statusCode;
-        Result parseResult;
-        StringPairArray headers;
-        ValueTree body;
-        Array<String> errors; // optional detailed errors descriptions
-    };
-
-    Response post(const var payload) const;
-    Response get() const;
-
-    ProgressCallback progressCallback;
-
-private:
-
-    String apiEndpoint;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HelioApiRequest)
-};
+}

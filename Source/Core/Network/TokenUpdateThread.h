@@ -39,7 +39,6 @@ public:
     private:
         virtual void tokenUpdateOk(const String &newToken) = 0;
         virtual void tokenUpdateFailed(const Array<String> &errors) = 0;
-        virtual void tokenUpdateConnectionFailed() = 0;
         friend class TokenUpdateThread;
     };
     
@@ -73,19 +72,9 @@ private:
         const HelioApiRequest request(HelioFM::Api::V1::tokenUpdate);
         this->response = request.post(var(payload));
 
-        if (this->response.result.failed())
-        {
-            MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
-            {
-                const auto self = static_cast<TokenUpdateThread *>(ptr);
-                self->listener->tokenUpdateConnectionFailed();
-                return nullptr;
-            }, this);
-            return;
-        }
-
-        const bool hasToken = this->response.jsonBody.contains(Api::V1::token);
-        if (this->response.statusCode != 200 || !hasToken)
+        const bool hasToken = this->response.body.hasProperty(Api::V1::token);
+        if (this->response.parseResult.failed() ||
+            this->response.statusCode != 200 || !hasToken)
         {
             MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
             {
@@ -99,7 +88,7 @@ private:
         MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
         {
             const auto self = static_cast<TokenUpdateThread *>(ptr);
-            const auto newToken = self->response.jsonBody[Api::V1::token];
+            const auto newToken = self->response.body.getProperty(Api::V1::token);
             self->listener->tokenUpdateOk(newToken);
             return nullptr;
         }, this);

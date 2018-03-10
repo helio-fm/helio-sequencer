@@ -37,7 +37,6 @@ public:
     private:
         virtual void requestResourceOk(const ValueTree &resource) = 0;
         virtual void requestResourceFailed(const Array<String> &errors) = 0;
-        virtual void requestResourceConnectionFailed() = 0;
         friend class RequestResourceThread;
     };
     
@@ -61,18 +60,7 @@ private:
         const HelioApiRequest request(uri);
         this->response = request.get();
 
-        if (this->response.result.failed())
-        {
-            MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
-            {
-                const auto self = static_cast<RequestResourceThread *>(ptr);
-                self->listener->requestResourceConnectionFailed();
-                return nullptr;
-            }, this);
-            return;
-        }
-
-        if (this->response.statusCode != 200)
+        if (this->response.parseResult.failed() || this->response.statusCode != 200)
         {
             MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
             {

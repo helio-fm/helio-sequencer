@@ -37,19 +37,19 @@ static bool progressCallbackInternal(void *const context, int bytesSent, int tot
 
 HelioApiRequest::Response::Response() :
     statusCode(0),
-    result(Result::fail({})) {}
+    parseResult(Result::fail({})) {}
 
 HelioApiRequest::HelioApiRequest(String apiEndpoint, ProgressCallback progressCallback) :
     apiEndpoint(std::move(apiEndpoint)),
     progressCallback(progressCallback) {}
 
-static String getPostHeaders()
+static String getHeaders()
 {
     String extraHeaders;
     extraHeaders
         << "Content-Type: application/json"
         << "\n"
-        << "User-Agent: Helio " << App::getAppReadableVersion()
+        << "Client: Helio " << App::getAppReadableVersion()
         << "\n"
         << "Authorization: Bearer " << SessionManager::getApiToken()
         << "\n"
@@ -60,84 +60,94 @@ static String getPostHeaders()
     return extraHeaders;
 }
 
-static Array<String> parseVarAsArray(const var &json, const String &prefix = {})
+static void processResponse(HelioApiRequest::Response &response, InputStream *const stream)
 {
-    Array<String> result;
-    if (json.isArray())
-    {
-        for (int i = 0; i < json.size(); ++i)
-        {
-            const var &message(json[i]);
-            if (message.isString())
-            {
-                result.add(prefix + message);
-            }
-        }
-    }
-    return result;
-}
-
-HelioApiRequest::Response HelioApiRequest::post(const var payload) const
-{
-    const String jsonPayload = JSON::toString(payload);
-    const URL url = URL(HelioFM::baseURL + this->apiEndpoint)
-        .withPOSTData(MemoryBlock(jsonPayload.toRawUTF8(), jsonPayload.getNumBytesAsUTF8() + 1));
-
-    Response response;
-    ScopedPointer<InputStream> stream;
-    int i = 0;
-
-    do
-    {
-        Logger::writeToLog("Connecting to " + this->apiEndpoint);
-        stream = url.createInputStream(true,
-            progressCallbackInternal, (void *)(this),
-            getPostHeaders(), CONNECTION_TIMEOUT_MS,
-            &response.headers, &response.statusCode);
-    }
-    while (stream == nullptr && i++ < NUM_CONNECT_ATTEMPTS);
-
     if (stream == nullptr)
     {
-        return response;
+        return;
     }
 
     // Try to parse response as JSON object wrapping all properties
     const String responseBody = stream->readEntireStreamAsString();
     if (responseBody.isNotEmpty())
     {
-        var parsedJson;
-        response.result = JSON::parse(responseBody, parsedJson);
-        if (DynamicObject *responseObject = parsedJson.getDynamicObject())
-        {
-            response.jsonBody = responseObject->getProperties();
+        ValueTree parsedResponse;
+        static JsonSerializer serializer;
 
-            // Try to parse errors
-            if (response.statusCode < 200 && response.statusCode >= 300)
+        response.parseResult = serializer.loadFromString(responseBody, parsedResponse);
+        if (response.parseResult.failed() || !parsedResponse.isValid())
+        {
+            response.errors.add(TRANS("network error"));
+            return;
+        }
+
+        using namespace Serialization;
+
+        if (parsedResponse.hasType(Api::V1::rootElementSuccess) ||
+            parsedResponse.hasType(Api::V1::rootElementErrors))
+        {
+            response.body = parsedResponse;
+        }
+
+        // Try to parse errors
+        if (response.statusCode < 200 && response.statusCode >= 300)
+        {
+            for (int i = 0; i < parsedResponse.getNumProperties(); ++i)
             {
-                // Response may contain `errors` object or array with detailed descriptions
-                const var errorsJson = responseObject->getProperty(Serialization::Api::V1::errors);
-                if (DynamicObject *errorsObject = errorsJson.getDynamicObject())
+                const auto key = parsedResponse.getPropertyName(i);
+                const auto value = parsedResponse.getProperty(key).toString();
+                if (key == Api::V1::status || key == Api::V1::message)
                 {
-                    for (const auto &error : errorsObject->getProperties())
-                    {
-                        response.errors.addArray(parseVarAsArray(errorsJson, error.name + " "));
-                    }
+                    response.errors.add(value);
                 }
                 else
                 {
-                    response.errors.addArray(parseVarAsArray(errorsJson));
+                    response.errors.add(key.toString() + ": " + value);
                 }
             }
         }
     }
+}
 
+HelioApiRequest::Response HelioApiRequest::post(const var payload) const
+{
+    Response response;
+    ScopedPointer<InputStream> stream;
+    const auto jsonPayload = JSON::toString(payload);
+    const auto url = URL(HelioFM::baseURL + this->apiEndpoint)
+        .withPOSTData(MemoryBlock(jsonPayload.toRawUTF8(), jsonPayload.getNumBytesAsUTF8() + 1));
+
+    int i = 0;
+    do
+    {
+        Logger::writeToLog("Connecting to " + this->apiEndpoint);
+        stream = url.createInputStream(true,
+            progressCallbackInternal, (void *)(this),
+            getHeaders(), CONNECTION_TIMEOUT_MS,
+            &response.headers, &response.statusCode);
+    }
+    while (stream == nullptr && i++ < NUM_CONNECT_ATTEMPTS);
+
+    processResponse(response, stream);
     return response;
 }
 
 HelioApiRequest::Response HelioApiRequest::get() const
 {
-    // TODO
     Response response;
+    ScopedPointer<InputStream> stream;
+    const auto url = URL(HelioFM::baseURL + this->apiEndpoint);
+
+    int i = 0;
+    do
+    {
+        Logger::writeToLog("Connecting to " + this->apiEndpoint);
+        stream = url.createInputStream(false,
+            progressCallbackInternal, (void *)(this),
+            getHeaders(), CONNECTION_TIMEOUT_MS,
+            &response.headers, &response.statusCode);
+    } while (stream == nullptr && i++ < NUM_CONNECT_ATTEMPTS);
+
+    processResponse(response, stream);
     return response;
 }
