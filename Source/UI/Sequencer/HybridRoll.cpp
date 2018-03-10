@@ -107,7 +107,7 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject, Viewport &viewportRef,
     firstBar(FLT_MAX),
     lastBar(-FLT_MAX),
     projectFirstBeat(0.f),
-    projectLastBeat(DEFAULT_NUM_BARS * NUM_BEATS_IN_BAR),
+    projectLastBeat(DEFAULT_NUM_BARS * BEATS_PER_BAR),
     header(nullptr),
     playhead(nullptr),
     spaceDragMode(false),
@@ -422,8 +422,8 @@ void HybridRoll::panByOffset(const int offsetX, const int offsetY)
     if (needsToStretchRight)
     {
         this->project.broadcastChangeViewBeatRange(
-            this->firstBar * float(NUM_BEATS_IN_BAR),
-            (this->lastBar + numBarsToExpand) * float(NUM_BEATS_IN_BAR));
+            this->firstBar * float(BEATS_PER_BAR),
+            (this->lastBar + numBarsToExpand) * float(BEATS_PER_BAR));
         this->viewport.setViewPosition(offsetX, offsetY); // after setLastBar
         const float barCloseToTheRight = this->lastBar - numBarsToExpand;
         this->header->addAndMakeVisible(new HybridRollExpandMark(*this, barCloseToTheRight, int(numBarsToExpand)));
@@ -433,8 +433,8 @@ void HybridRoll::panByOffset(const int offsetX, const int offsetY)
         const float deltaW = float(this->barWidth * numBarsToExpand);
         this->clickAnchor.addXY(deltaW / SMOOTH_PAN_SPEED_MULTIPLIER, 0); // an ugly hack
         this->project.broadcastChangeViewBeatRange(
-            (this->firstBar - numBarsToExpand) * float(NUM_BEATS_IN_BAR),
-            this->lastBar * float(NUM_BEATS_IN_BAR));
+            (this->firstBar - numBarsToExpand) * float(BEATS_PER_BAR),
+            this->lastBar * float(BEATS_PER_BAR));
         this->viewport.setViewPosition(offsetX + int(deltaW), offsetY); // after setFirstBar
         this->header->addAndMakeVisible(new HybridRollExpandMark(*this, this->firstBar, int(numBarsToExpand)));
     }
@@ -590,7 +590,7 @@ int HybridRoll::getXPositionByBar(float targetBar) const
 
 int HybridRoll::getXPositionByBeat(float targetBeat) const
 {
-    return this->getXPositionByBar(targetBeat / float(NUM_BEATS_IN_BAR));
+    return this->getXPositionByBar(targetBeat / float(BEATS_PER_BAR));
 }
 
 float HybridRoll::getFloorBeatByXPosition(int x) const
@@ -612,7 +612,7 @@ float HybridRoll::getFloorBeatByXPosition(int x) const
         }
     }
 
-    const float beatNumber = roundBeat(targetX / this->barWidth * NUM_BEATS_IN_BAR + this->getFirstBeat());
+    const float beatNumber = roundBeat(targetX / this->barWidth * BEATS_PER_BAR + this->getFirstBeat());
     return jmin(jmax(beatNumber, this->getFirstBeat()), this->getLastBeat());
 }
 
@@ -636,7 +636,7 @@ float HybridRoll::getRoundBeatByXPosition(int x) const
         }
     }
 
-    const float beatNumber = roundBeat(targetX / this->barWidth * NUM_BEATS_IN_BAR + this->getFirstBeat());
+    const float beatNumber = roundBeat(targetX / this->barWidth * BEATS_PER_BAR + this->getFirstBeat());
     return jmin(jmax(beatNumber, this->getFirstBeat()), this->getLastBeat());
 }
 
@@ -705,18 +705,18 @@ void HybridRoll::computeVisibleBeatLines()
             denominator = signature->getDenominator();
             const float beatStep = 1.f / float(denominator);
             const float barStep = beatStep * float(numerator);
-            barIterator += fmodf(signature->getBeat() / NUM_BEATS_IN_BAR - float(this->firstBar), barStep) - barStep;
+            barIterator += fmodf(signature->getBeat() / BEATS_PER_BAR - float(this->firstBar), barStep) - barStep;
             firstEvent = false;
         }
 
-        if (signature->getBeat() >= (paintStartBar * NUM_BEATS_IN_BAR))
+        if (signature->getBeat() >= (paintStartBar * BEATS_PER_BAR))
         {
             break;
         }
 
         numerator = signature->getNumerator();
         denominator = signature->getDenominator();
-        barIterator = signature->getBeat() / NUM_BEATS_IN_BAR;
+        barIterator = signature->getBeat() / BEATS_PER_BAR;
     }
 
     // At this point we have barIterator pointing at the anchor,
@@ -767,7 +767,7 @@ void HybridRoll::computeVisibleBeatLines()
                 // Check for time signature change at this point
                 if (nextSignature != nullptr)
                 {
-                    const float tsBar = nextSignature->getBeat() / NUM_BEATS_IN_BAR;
+                    const float tsBar = nextSignature->getBeat() / BEATS_PER_BAR;
                     if (tsBar <= (barIterator + j + beatStep))
                     {
                         numerator = nextSignature->getNumerator();
@@ -944,8 +944,8 @@ void HybridRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
 
-    const float projectFirstBar = firstBeat / float(NUM_BEATS_IN_BAR);
-    const float projectLastBar = lastBeat / float(NUM_BEATS_IN_BAR);
+    const float projectFirstBar = firstBeat / float(BEATS_PER_BAR);
+    const float projectLastBar = lastBeat / float(BEATS_PER_BAR);
     const float rollFirstBar = jmin(this->firstBar, projectFirstBar);
     const float rollLastBar = jmax(this->lastBar, projectLastBar);
 
@@ -954,8 +954,8 @@ void HybridRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 
 void HybridRoll::onChangeViewBeatRange(float firstBeat, float lastBeat)
 {
-    const float viewFirstBar = firstBeat / float(NUM_BEATS_IN_BAR);
-    const float viewLastBar = lastBeat / float(NUM_BEATS_IN_BAR);
+    const float viewFirstBar = firstBeat / float(BEATS_PER_BAR);
+    const float viewLastBar = lastBeat / float(BEATS_PER_BAR);
     this->setBarRange(viewFirstBar, viewLastBar);
 }
 
@@ -1086,7 +1086,7 @@ void HybridRoll::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails
 {
     const float &inititalSpeed = this->smoothZoomController->getInitialZoomSpeed();
     const float forwardWheel = wheel.deltaY * (wheel.isReversed ? -inititalSpeed : inititalSpeed);
-    const float beatWidth = (this->barWidth / NUM_BEATS_IN_BAR);
+    const float beatWidth = (this->barWidth / BEATS_PER_BAR);
     const Point<float> mouseOffset = (event.position - this->viewport.getViewPosition().toFloat());
     if (event.mods.isAnyModifierKeyDown())
     {

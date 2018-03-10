@@ -91,12 +91,16 @@ inline float roundf(float x)
 
 #define MS_PER_BEAT 500.0
 
-#define NUM_BEATS_IN_BAR 4
+// Beat is essentially a quarter-note
+#define BEATS_PER_BAR 4
+
+// Defines a maximum available resolution
+#define TICKS_PER_BEAT 16
 
 // Rolls allow up to 16 divisions per beat, there's no need for better accuracy:
 inline float roundBeat(float beat)
 {
-    return roundf(beat * 16.f) / 16.f;
+    return roundf(beat * static_cast<float>(TICKS_PER_BEAT)) / static_cast<float>(TICKS_PER_BEAT);
 }
 
 #define forEachValueTreeChildWithType(parentElement, childName, requiredType) \

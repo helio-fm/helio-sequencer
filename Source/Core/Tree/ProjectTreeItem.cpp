@@ -463,7 +463,7 @@ Point<float> ProjectTreeItem::getProjectRangeInBeats() const
 {
     float lastBeat = -FLT_MAX;
     float firstBeat = FLT_MAX;
-    const float defaultNumBeats = DEFAULT_NUM_BARS * NUM_BEATS_IN_BAR;
+    const float defaultNumBeats = DEFAULT_NUM_BARS * BEATS_PER_BAR;
 
     Array<MidiTrack *> tracks;
     this->collectTracks(tracks);
@@ -587,7 +587,7 @@ void ProjectTreeItem::load(const ValueTree &tree)
     // a hack to add some margin to project beat range,
     // then to round beats to nearest bars
     // because rolls' view ranges are rounded to bars
-    const float r = float(NUM_BEATS_IN_BAR);
+    const float r = float(BEATS_PER_BAR);
     const float viewStartWithMargin = range.getX() - r;
     const float viewEndWithMargin = range.getY() + r;
     const float viewFirstBeat = floorf(viewStartWithMargin / r) * r;

@@ -189,14 +189,14 @@ public:
     float getRoundBeatByXPosition(int x) const;
     
     inline float getLastBar() const noexcept { return this->lastBar; }
-    inline float getLastBeat() const noexcept { return this->lastBar * float(NUM_BEATS_IN_BAR); }
+    inline float getLastBeat() const noexcept { return this->lastBar * float(BEATS_PER_BAR); }
     
     inline float getFirstBar() const noexcept { return this->firstBar; }
-    inline float getFirstBeat() const noexcept { return this->firstBar * float(NUM_BEATS_IN_BAR); }
+    inline float getFirstBeat() const noexcept { return this->firstBar * float(BEATS_PER_BAR); }
     
     void setBarRange(float first, float last);
     inline float getNumBars() const { return this->lastBar - this->firstBar; }
-    inline float getNumBeats() const { return this->getNumBars() * NUM_BEATS_IN_BAR; }
+    inline float getNumBeats() const { return this->getNumBars() * BEATS_PER_BAR; }
 
     virtual void setBarWidth(const float newBarWidth);
     float getBarWidth() const noexcept { return this->barWidth; }

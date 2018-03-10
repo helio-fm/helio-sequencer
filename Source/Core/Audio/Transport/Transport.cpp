@@ -139,7 +139,7 @@ Transport::Transport(OrchestraPit &orchestraPit) :
     loopStart(0.0),
     loopEnd(0.0),
     projectFirstBeat(0.f),
-    projectLastBeat(DEFAULT_NUM_BARS * NUM_BEATS_IN_BAR)
+    projectLastBeat(DEFAULT_NUM_BARS * BEATS_PER_BAR)
 {
     this->player = new PlayerThreadPool(*this);
     this->renderer = new RendererThread(*this);

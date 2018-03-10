@@ -109,11 +109,14 @@ namespace Serialization
         static const Identifier pattern = "pattern";
 
         // Properties
+
+        // Notes are the most common records in the savefile
+        // therefore their properties are so 
         static const Identifier id = "id";
         static const Identifier key = "key";
-        static const Identifier beat = "beat";
+        static const Identifier timestamp = "ts";
         static const Identifier length = "len";
-        static const Identifier velocity = "vel";
+        static const Identifier volume = "vol";
 
         static const Identifier text = "text";
         static const Identifier colour = "colour";
@@ -419,7 +422,7 @@ namespace Serialization
     namespace Undo
     {
         static const Identifier undoStack = "undoStack";
-        static const Identifier transaction = "trans";
+        static const Identifier transaction = "transaction";
 
         static const Identifier name = "name";
         static const Identifier xPath = "path";

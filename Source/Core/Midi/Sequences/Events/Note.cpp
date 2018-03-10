@@ -83,7 +83,7 @@ Note Note::withBeat(float newBeat) const
     return other;
 }
 
-Note Note::withKeyBeat(int newKey, float newBeat) const
+Note Note::withKeyBeat(Key newKey, float newBeat) const
 {
     Note other(*this);
     other.key = jmin(jmax(newKey, 0), 128);
@@ -98,7 +98,7 @@ Note Note::withDeltaBeat(float deltaPosition) const
     return other;
 }
 
-Note Note::withDeltaKey(int deltaKey) const
+Note Note::withDeltaKey(Key deltaKey) const
 {
     Note other(*this);
     other.key = jmin(jmax(other.key + deltaKey, 0), 128);
@@ -166,9 +166,9 @@ ValueTree Note::serialize() const
     ValueTree tree(Midi::note);
     tree.setProperty(Midi::id, this->id, nullptr);
     tree.setProperty(Midi::key, this->key, nullptr);
-    tree.setProperty(Midi::beat, this->beat, nullptr);
-    tree.setProperty(Midi::length, this->length, nullptr);
-    tree.setProperty(Midi::velocity, roundFloatToInt(this->velocity * VELOCITY_SAVE_ACCURACY), nullptr);
+    tree.setProperty(Midi::timestamp, roundFloatToInt(this->beat * TICKS_PER_BEAT), nullptr);
+    tree.setProperty(Midi::length, roundFloatToInt(this->length * TICKS_PER_BEAT), nullptr);
+    tree.setProperty(Midi::volume, roundFloatToInt(this->velocity * VELOCITY_SAVE_ACCURACY), nullptr);
     return tree;
 }
 
@@ -178,10 +178,10 @@ void Note::deserialize(const ValueTree &tree)
     using namespace Serialization;
     this->id = tree.getProperty(Midi::id);
     this->key = tree.getProperty(Midi::key);;
-    this->beat = roundBeat(tree.getProperty(Midi::beat));
-    this->length = roundBeat(tree.getProperty(Midi::length));
-    const float vel = float(tree.getProperty(Midi::velocity)) / VELOCITY_SAVE_ACCURACY;
-    this->velocity = jmax(jmin(vel, 1.f), 0.f);
+    this->beat = float(tree.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
+    this->length = float(tree.getProperty(Midi::length)) / TICKS_PER_BEAT;
+    const auto vol = float(tree.getProperty(Midi::volume)) / VELOCITY_SAVE_ACCURACY;
+    this->velocity = jmax(jmin(vol, 1.f), 0.f);
 }
 
 void Note::reset() {}

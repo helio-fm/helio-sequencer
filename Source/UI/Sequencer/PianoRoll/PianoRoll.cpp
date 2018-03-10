@@ -370,10 +370,10 @@ Rectangle<float> PianoRoll::getEventBounds(FloatBoundsComponent *mc) const
 
 Rectangle<float> PianoRoll::getEventBounds(int key, float beat, float length) const
 {
-    const double startOffsetBeat = this->firstBar * double(NUM_BEATS_IN_BAR);
-    const double x = this->barWidth * double(beat - startOffsetBeat) / double(NUM_BEATS_IN_BAR);
+    const double startOffsetBeat = this->firstBar * double(BEATS_PER_BAR);
+    const double x = this->barWidth * double(beat - startOffsetBeat) / double(BEATS_PER_BAR);
 
-    const float w = this->barWidth * length / float(NUM_BEATS_IN_BAR);
+    const float w = this->barWidth * length / float(BEATS_PER_BAR);
     const float yPosition = float(this->getYPositionByKey(key));
 
     return Rectangle<float> (float(x), yPosition + 1, w, float(this->rowHeight - 1));
@@ -423,7 +423,7 @@ void PianoRoll::hideHelpers()
 
 void PianoRoll::moveHelpers(const float deltaBeat, const int deltaKey)
 {
-    const float firstBeat = this->firstBar * float(NUM_BEATS_IN_BAR);
+    const float firstBeat = this->firstBar * float(BEATS_PER_BAR);
     const Rectangle<int> selectionBounds = this->selection.getSelectionBounds();
     const Rectangle<float> delta = this->getEventBounds(deltaKey - 1, deltaBeat + firstBeat, 1.f);
 
@@ -1054,10 +1054,10 @@ void PianoRoll::handleCommandMessage(int commandId)
         App::Workspace().getAudioCore().unmute();
         break;
     case CommandIDs::BeatShiftLeft:
-        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), -1.f / NUM_BEATS_IN_BAR);
+        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), -1.f / BEATS_PER_BAR);
         break;
     case CommandIDs::BeatShiftRight:
-        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), 1.f / NUM_BEATS_IN_BAR);
+        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), 1.f / BEATS_PER_BAR);
         break;
     case CommandIDs::BarShiftLeft:
         PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), -1.f);
@@ -1183,7 +1183,7 @@ void PianoRoll::paint(Graphics &g)
     for (int nextKeyIdx = 0; nextKeyIdx < sequences->size(); ++nextKeyIdx)
     {
         const auto key = static_cast<KeySignatureEvent *>(sequences->getUnchecked(nextKeyIdx));
-        const int barX = int(((key->getBeat() / float(NUM_BEATS_IN_BAR)) - this->firstBar)  * this->barWidth);
+        const int barX = int(((key->getBeat() / float(BEATS_PER_BAR)) - this->firstBar)  * this->barWidth);
         const int index = this->binarySearchForHighlightingScheme(key);
 
 #if DEBUG

@@ -143,10 +143,10 @@ ValueTree TimeSignatureEvent::serialize() const
 {
     using namespace Serialization;
     ValueTree tree(Midi::timeSignature);
+    tree.setProperty(Midi::id, this->id, nullptr);
     tree.setProperty(Midi::numerator, this->numerator, nullptr);
     tree.setProperty(Midi::denominator, this->denominator, nullptr);
-    tree.setProperty(Midi::beat, this->beat, nullptr);
-    tree.setProperty(Midi::id, this->id, nullptr);
+    tree.setProperty(Midi::timestamp, roundFloatToInt(this->beat * TICKS_PER_BEAT), nullptr);
     return tree;
 }
 
@@ -156,7 +156,7 @@ void TimeSignatureEvent::deserialize(const ValueTree &tree)
     using namespace Serialization;
     this->numerator = tree.getProperty(Midi::numerator, TIME_SIGNATURE_DEFAULT_NUMERATOR);
     this->denominator = tree.getProperty(Midi::denominator, TIME_SIGNATURE_DEFAULT_DENOMINATOR);
-    this->beat = roundBeat(tree.getProperty(Midi::beat));
+    this->beat = float(tree.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
     this->id = tree.getProperty(Midi::id);
 }
 

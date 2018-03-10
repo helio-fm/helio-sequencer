@@ -315,14 +315,14 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) c
     const MidiSequence *sequence = track->getSequence();
     jassert(sequence != nullptr);
 
-    const float viewStartOffsetBeat = float(this->firstBar * NUM_BEATS_IN_BAR);
+    const float viewStartOffsetBeat = float(this->firstBar * BEATS_PER_BAR);
     const int trackIndex = this->tracks.indexOfSorted(*track, track);
     const float sequenceLength = sequence->getLengthInBeats();
     const float sequenceStartBeat = sequence->getFirstBeat();
 
-    const float w = this->barWidth * sequenceLength / NUM_BEATS_IN_BAR;
+    const float w = this->barWidth * sequenceLength / BEATS_PER_BAR;
     const float x = this->barWidth *
-        (sequenceStartBeat + clipBeat - viewStartOffsetBeat) / NUM_BEATS_IN_BAR;
+        (sequenceStartBeat + clipBeat - viewStartOffsetBeat) / BEATS_PER_BAR;
 
     const float y = float(trackIndex * rowHeight());
     return Rectangle<float> (x, HYBRID_ROLL_HEADER_HEIGHT + y + PATTERN_ROLL_TRACK_HEADER_HEIGHT,

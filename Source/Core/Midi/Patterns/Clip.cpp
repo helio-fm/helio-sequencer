@@ -29,19 +29,19 @@ Clip::Clip()
 
 Clip::Clip(const Clip &other) :
     pattern(other.pattern),
-    startBeat(other.startBeat),
+    beat(other.beat),
     id(other.id) {}
 
 Clip::Clip(WeakReference<Pattern> owner, float beatVal) :
     pattern(owner),
-    startBeat(roundBeat(beatVal))
+    beat(roundBeat(beatVal))
 {
     id = this->createId();
 }
 
 Clip::Clip(WeakReference<Pattern> owner, const Clip &parametersToCopy) :
     pattern(owner),
-    startBeat(parametersToCopy.startBeat),
+    beat(parametersToCopy.beat),
     id(parametersToCopy.id) {}
 
 Pattern *Clip::getPattern() const noexcept
@@ -52,7 +52,7 @@ Pattern *Clip::getPattern() const noexcept
 
 float Clip::getStartBeat() const noexcept
 {
-    return this->startBeat;
+    return this->beat;
 }
 
 String Clip::getId() const noexcept
@@ -94,7 +94,7 @@ Clip Clip::withParameters(const ValueTree &tree) const
 Clip Clip::withDeltaBeat(float deltaPosition) const
 {
     Clip other(*this);
-    other.startBeat = roundBeat(other.startBeat + deltaPosition);
+    other.beat = roundBeat(other.beat + deltaPosition);
     return other;
 }
 
@@ -102,7 +102,7 @@ ValueTree Clip::serialize() const
 {
     using namespace Serialization;
     ValueTree tree(Midi::clip);
-    tree.setProperty(Midi::beat, this->startBeat, nullptr);
+    tree.setProperty(Midi::timestamp, roundFloatToInt(this->beat * TICKS_PER_BEAT), nullptr);
     tree.setProperty(Midi::id, this->id, nullptr);
     return tree;
 }
@@ -110,13 +110,13 @@ ValueTree Clip::serialize() const
 void Clip::deserialize(const ValueTree &tree)
 {
     using namespace Serialization;
-    this->startBeat = float(tree.getProperty(Midi::beat, this->startBeat));
+    this->beat = float(tree.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
     this->id = tree.getProperty(Midi::id, this->id);
 }
 
 void Clip::reset()
 {
-    this->startBeat = 0.f;
+    this->beat = 0.f;
 }
 
 int Clip::compareElements(const Clip &first, const Clip &second)
@@ -124,7 +124,7 @@ int Clip::compareElements(const Clip &first, const Clip &second)
     if (&first == &second) { return 0; }
     if (first.id == second.id) { return 0; }
 
-    const float diff = first.startBeat - second.startBeat;
+    const float diff = first.beat - second.beat;
     const int diffResult = (diff > 0.f) - (diff < 0.f);
     return diffResult;
 }
@@ -137,12 +137,12 @@ int Clip::compareElements(const Clip *const first, const Clip *const second)
 void Clip::applyChanges(const Clip &other)
 {
     jassert(this->id == other.id);
-    this->startBeat = other.startBeat;
+    this->beat = other.beat;
 }
 
 HashCode Clip::hashCode() const noexcept
 {
-    const HashCode code = static_cast<HashCode>(this->startBeat)
+    const HashCode code = static_cast<HashCode>(this->beat)
         + static_cast<HashCode>(this->getId().hashCode());
     return code;
 }

@@ -146,9 +146,9 @@ ValueTree KeySignatureEvent::serialize() const
 {
     using namespace Serialization;
     ValueTree tree(Midi::keySignature);
-    tree.setProperty(Midi::key, this->rootKey, nullptr);
-    tree.setProperty(Midi::beat, this->beat, nullptr);
     tree.setProperty(Midi::id, this->id, nullptr);
+    tree.setProperty(Midi::key, this->rootKey, nullptr);
+    tree.setProperty(Midi::timestamp, roundFloatToInt(this->beat * TICKS_PER_BEAT), nullptr);
     tree.appendChild(this->scale.serialize(), nullptr);
     return tree;
 }
@@ -158,7 +158,7 @@ void KeySignatureEvent::deserialize(const ValueTree &tree)
     this->reset();
     using namespace Serialization;
     this->rootKey = tree.getProperty(Midi::key, 0);
-    this->beat = roundBeat(tree.getProperty(Midi::beat));
+    this->beat = float(tree.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
     this->id = tree.getProperty(Midi::id);
 
     // Anyway there is only one child scale for now:

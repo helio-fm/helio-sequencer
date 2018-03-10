@@ -73,7 +73,7 @@ private:
 
     WeakReference<Pattern> pattern;
 
-    float startBeat;
+    float beat;
     String id;
 
     Id createId() const noexcept;

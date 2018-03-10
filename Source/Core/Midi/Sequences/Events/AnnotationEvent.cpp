@@ -117,10 +117,10 @@ ValueTree AnnotationEvent::serialize() const
 {
     using namespace Serialization;
     ValueTree tree(Midi::annotation);
+    tree.setProperty(Midi::id, this->id, nullptr);
     tree.setProperty(Midi::text, this->description, nullptr);
     tree.setProperty(Midi::colour, this->colour.toString(), nullptr);
-    tree.setProperty(Midi::beat, this->beat, nullptr);
-    tree.setProperty(Midi::id, this->id, nullptr);
+    tree.setProperty(Midi::timestamp, roundFloatToInt(this->beat * TICKS_PER_BEAT), nullptr);
     return tree;
 }
 
@@ -130,7 +130,7 @@ void AnnotationEvent::deserialize(const ValueTree &tree)
     using namespace Serialization;
     this->description = tree.getProperty(Midi::text);
     this->colour = Colour::fromString(tree.getProperty(Midi::colour).toString());
-    this->beat = roundBeat(tree.getProperty(Midi::beat));
+    this->beat = float(tree.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
     this->id = tree.getProperty(Midi::id);
 }
 

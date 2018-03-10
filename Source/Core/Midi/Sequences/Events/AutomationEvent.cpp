@@ -255,7 +255,6 @@ AutomationEvent AutomationEvent::pedalDownEvent(MidiSequence *owner, float beatV
     return AutomationEvent(owner, beatVal, pedalDownCV);
 }
 
-
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
@@ -264,10 +263,10 @@ ValueTree AutomationEvent::serialize() const
 {
     using namespace Serialization;
     ValueTree tree(Midi::automation);
+    tree.setProperty(Midi::id, this->id, nullptr);
     tree.setProperty(Midi::value, this->controllerValue, nullptr);
     tree.setProperty(Midi::curve, this->curvature, nullptr);
-    tree.setProperty(Midi::beat, this->beat, nullptr);
-    tree.setProperty(Midi::id, this->id, nullptr);
+    tree.setProperty(Midi::timestamp, roundFloatToInt(this->beat * TICKS_PER_BEAT), nullptr);
     return tree;
 }
 
@@ -277,7 +276,7 @@ void AutomationEvent::deserialize(const ValueTree &tree)
     using namespace Serialization;
     this->controllerValue = float(tree.getProperty(Midi::value));
     this->curvature = float(tree.getProperty(Midi::curve, AUTOEVENT_DEFAULT_CURVATURE));
-    this->beat = roundBeat(tree.getProperty(Midi::beat));
+    this->beat = float(tree.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
     this->id = tree.getProperty(Midi::id);
 }
 

@@ -39,9 +39,9 @@ public:
     
     Note copyWithNewId(WeakReference<MidiSequence> owner = nullptr) const;
     Note withBeat(float newBeat) const;
-    Note withKeyBeat(int newKey, float newBeat) const;
+    Note withKeyBeat(Key newKey, float newBeat) const;
     Note withDeltaBeat(float deltaPosition) const;
-    Note withDeltaKey(int deltaKey) const;
+    Note withDeltaKey(Key deltaKey) const;
     Note withLength(float newLength) const;
     Note withDeltaLength(float deltaLength) const;
     Note withVelocity(float newVelocity) const;

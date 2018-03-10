@@ -18,6 +18,7 @@
 #include "Common.h"
 #include "LegacySerializer.h"
 #include "SerializationKeys.h"
+#include "Note.h"
 
 // This file now encapsulates all the ugliness
 // of a legacy serializer used in the first version of the app.
@@ -281,6 +282,30 @@ static String toLowerCamelCase(const String &string)
     return string;
 }
 
+static void processDeprecations(String &key, String &value)
+{
+    using namespace Serialization;
+
+    if (key == "beat")
+    {
+        key = Midi::timestamp.toString();
+        value = String(int32(value.getFloatValue() * TICKS_PER_BEAT));
+    }
+    else if (key == "len")
+    {
+        key = Midi::length.toString();
+        value = String(int32(value.getFloatValue() * TICKS_PER_BEAT));
+    }
+    else if (key == "vel")
+    {
+        key = Midi::volume.toString();
+    }
+    else if (key == "Type")
+    {
+        value = toLowerCamelCase(value);
+    }
+}
+
 static String transformXmlTag(const String &tagOrAttribute)
 {
     using namespace Serialization;
@@ -315,6 +340,7 @@ static String transformXmlTag(const String &tagOrAttribute)
         oldKeys.set("Layer", Core::track);
         oldKeys.set("PianoLayer", Core::pianoTrack);
         oldKeys.set("AutoLayer", Core::automationTrack);
+        oldKeys.set("VersionControl", Core::versionControl);
     }
 
     if (oldKeys.contains(tagOrAttribute))
@@ -333,8 +359,11 @@ static ValueTree valueTreeFromXml(const XmlElement &xml)
 
         for (int i = 0; i < xml.getNumAttributes(); ++i)
         {
-            const auto &attName = transformXmlTag(xml.getAttributeName(i));
-            const auto &attValue = transformXmlTag(xml.getAttributeValue(i));
+            auto attName = transformXmlTag(xml.getAttributeName(i));
+            auto attValue = transformXmlTag(xml.getAttributeValue(i));
+
+            processDeprecations(attName, attValue);
+
             if (attName.startsWith("base64:"))
             {
                 MemoryBlock mb;
