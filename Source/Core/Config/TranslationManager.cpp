@@ -317,13 +317,13 @@ String TranslationManager::getSelectedLocaleId() const
 {
     const String lastFallbackLocale = "en";
     
-    if (Config::contains(Serialization::Locales::currentLocale))
+    if (Config::contains(Serialization::Config::currentLocale))
     {
-        return Config::get(Serialization::Locales::currentLocale, lastFallbackLocale);
+        return Config::get(Serialization::Config::currentLocale, lastFallbackLocale);
     }
     
     const String systemLocale =
-    SystemStats::getUserLanguage().toLowerCase().substring(0, 2);
+        SystemStats::getUserLanguage().toLowerCase().substring(0, 2);
     
     if (this->availableTranslations.contains(systemLocale))
     {

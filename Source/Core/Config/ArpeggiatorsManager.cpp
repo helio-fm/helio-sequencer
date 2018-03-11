@@ -50,7 +50,7 @@ bool ArpeggiatorsManager::replaceArpWithId(const String &id, const Arpeggiator &
         if (this->arps.getUnchecked(i).getId() == id)
         {
             this->arps.setUnchecked(i, arp);
-            Config::save(Serialization::Arps::arpeggiators, this);
+            // TODO sage Config::save(this);
             this->sendChangeMessage();
             return true;
         }
@@ -64,7 +64,7 @@ void ArpeggiatorsManager::addArp(const Arpeggiator &arp)
     if (! this->replaceArpWithId(arp.getId(), arp))
     {
         this->arps.add(arp);
-        Config::save(Serialization::Arps::arpeggiators, this);
+        // TODO sage Config::save(this);
         this->sendChangeMessage();
     }
 }
@@ -118,11 +118,13 @@ void ArpeggiatorsManager::reset()
 
 void ArpeggiatorsManager::reloadArps()
 {
-    if (Config::contains(Serialization::Arps::arpeggiators))
-    {
-        Config::load(Serialization::Arps::arpeggiators, this);
-    }
-    else
+    // FIXME!!! abstract out all resource managers
+    // and reuse all downloaded-configs and built-in-configs code
+    //if (Config::contains(Serialization::Arps::arpeggiators))
+    //{
+    //    Config::load(Serialization::Arps::arpeggiators, this);
+    //}
+    //else
     {
         // built-in arps
         const auto defaultArps = String(CharPointer_UTF8(BinaryData::Arps_json));

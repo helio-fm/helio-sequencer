@@ -17,24 +17,19 @@
 
 #include "Common.h"
 #include "RecentFilesList.h"
-
 #include "Config.h"
 #include "SerializationKeys.h"
-
 #include "App.h"
-#include "SessionManager.h"
 
 RecentFilesList::RecentFilesList()
 {
-    App::Helio()->getSessionManager()->addChangeListener(this);
-    //Config::load(Serialization::Core::recentFiles, this);
+    //App::Helio()->getSessionManager()->addChangeListener(this);
     // todo update list
 }
 
 RecentFilesList::~RecentFilesList()
 {
-    App::Helio()->getSessionManager()->removeChangeListener(this);
-    //Config::save(Serialization::Core::recentFiles, this);
+    //App::Helio()->getSessionManager()->removeChangeListener(this);
     this->masterReference.clear();
 }
 

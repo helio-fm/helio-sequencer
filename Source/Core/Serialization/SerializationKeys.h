@@ -65,7 +65,6 @@ namespace Serialization
         static const Identifier scale = "scale";
         static const Identifier scaleName = "name";
         static const Identifier scaleIntervals = "intervals";
-        static const Identifier lastUsedScale = "lastUsedScale";
 
         static const Identifier machineID = "deviceId";
         static const Identifier globalConfig = "config";
@@ -83,9 +82,6 @@ namespace Serialization
         static const Identifier filePath = "filePath";
 
         static const Identifier clipboard = "helioClipboard";
-
-        static const Identifier lastUsedLogin = "lastUsedLogin";
-        static const Identifier firstLaunchSetupDone = "firstLaunchSetupDone";
     } // namespace Core
 
     namespace Midi
@@ -167,7 +163,7 @@ namespace Serialization
         static const Identifier midiInputName = "name";
         static const Identifier defaultMidiOutput = "defaultMidiOutput";
 
-        static const Identifier pluginManager = "plugins";
+        static const Identifier pluginsList = "plugins";
         static const Identifier audioCore = "audioCore";
         static const Identifier orchestra = "orchestra";
 
@@ -181,9 +177,20 @@ namespace Serialization
         static const Identifier audioDeviceOutputChannels = "outputChannels";
     } // namespace Audio
 
+    namespace Config
+    {
+        static const Identifier activeWorkspace = "activeWorkspace";
+        static const Identifier activeColourScheme = "activeColourScheme";
+        static const Identifier currentLocale = "currentLocale";
+        static const Identifier lastShownPageId = "lastShownPageId";
+        static const Identifier lastUsedScale = "lastUsedScale";
+        static const Identifier lastScannedPlugins = "lastScannedPlugins";
+        static const Identifier lastUsedLogin = "lastUsedLogin";
+        static const Identifier lastUpdatesInfo = "lastUpdatesInfo";
+    } // namespace Config
+
     namespace UI
     {
-        static const Identifier lastShownPageId = "lastShownPageId";
         static const Identifier sequencer = "sequencer";
 
         static const Identifier pianoRoll = "pianoRoll";
@@ -215,8 +222,7 @@ namespace Serialization
         namespace Colours
         {
             static const Identifier schemes = "colourSchemes";
-            static const Identifier appliedScheme = "appliedScheme";
-            static const Identifier scheme = "scheme";
+            static const Identifier scheme = "colourScheme";
             static const Identifier colourMap = "colourMap";
             static const Identifier name = "name";
             static const Identifier id = "id";
@@ -401,7 +407,6 @@ namespace Serialization
 
         static const Identifier wrapperClassName = "pluralForm";
         static const Identifier wrapperMethodName = "detect";
-        static const Identifier currentLocale = "currentLocale";
         
         static const Identifier translations = "translations";
         static const Identifier locale = "locale";

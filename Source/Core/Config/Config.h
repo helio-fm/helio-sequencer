@@ -28,12 +28,14 @@ public:
 
     static String getDeviceId();
 
+    static bool contains(const Identifier &key);
     static void set(const Identifier &key, const var &value);
     static String get(const Identifier &key, const String &fallback = {});
-    static bool contains(const Identifier &key);
 
-    static void save(const Identifier &key, const Serializable *serializer);
-    static void load(const Identifier &key, Serializable *serializer);
+    static void save(const Serializable *serializer, const Identifier &key);
+    static void save(const Serializable &serializer, const Identifier &key);
+    static void load(Serializable *serializer, const Identifier &key);
+    static void load(Serializable &serializer, const Identifier &key);
 
 private:
 
@@ -43,8 +45,10 @@ private:
 
     void saveConfigFor(const Identifier &key, const Serializable *serializer);
     void loadConfigFor(const Identifier &key, Serializable *serializer);
+
     void setProperty(const Identifier &key, const var &value);
     String getProperty(const Identifier &key, const String &fallback) const noexcept;
+
     bool containsPropertyOrChild(const Identifier &key) const noexcept;
 
 private:

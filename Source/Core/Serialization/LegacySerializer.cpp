@@ -333,7 +333,7 @@ static String transformXmlTag(const String &tagOrAttribute)
         oldKeys.set("Path", Core::filePath);
         oldKeys.set("Uuid", Audio::instrumentId);
         oldKeys.set("Uid", Audio::pluginId);
-        oldKeys.set("PluginManager", Audio::pluginManager);
+        oldKeys.set("PluginManager", Audio::pluginsList);
         oldKeys.set("Pack", VCS::pack);
         oldKeys.set("VCSUuid", VCS::vcsItemId);
         oldKeys.set("GlobalConfig", Core::globalConfig);

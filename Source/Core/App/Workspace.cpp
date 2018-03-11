@@ -188,7 +188,7 @@ void Workspace::onClickedUnloadRecentFile(RecentFileDescription::Ptr fileDescrip
 
 void Workspace::changeListenerCallback(ChangeBroadcaster *source)
 {
-    Config::save(Serialization::Core::workspace, this);
+    Config::save(this, Serialization::Config::activeWorkspace);
 }
 
 //===----------------------------------------------------------------------===//
@@ -299,14 +299,14 @@ void Workspace::autosave()
         return;
     }
     
-    Config::save(Serialization::Core::workspace, this);
+    Config::save(this, Serialization::Config::activeWorkspace);
 }
 
 bool Workspace::autoload()
 {
-    if (Config::contains(Serialization::Core::workspace))
+    if (Config::contains(Serialization::Config::activeWorkspace))
     {
-        Config::load(Serialization::Core::workspace, this);
+        Config::load(this, Serialization::Config::activeWorkspace);
         return true;
     }
     else

@@ -48,14 +48,24 @@ bool Config::contains(const Identifier &key)
     return App::Config().containsPropertyOrChild(key);
 }
 
-void Config::save(const Identifier &key, const Serializable *serializer)
+void Config::save(const Serializable *serializer, const Identifier &key)
 {
     App::Config().saveConfigFor(key, serializer);
 }
 
-void Config::load(const Identifier &key, Serializable *serializer)
+void Config::save(const Serializable &serializer, const Identifier &key)
+{
+    App::Config().saveConfigFor(key, &serializer);
+}
+
+void Config::load(Serializable *serializer, const Identifier &key)
 {
     App::Config().loadConfigFor(key, serializer);
+}
+
+void Config::load(Serializable &serializer, const Identifier &key)
+{
+    App::Config().loadConfigFor(key, &serializer);
 }
 
 Config::Config(int timeoutToSaveMs) :
@@ -129,18 +139,22 @@ void Config::timerCallback()
 
 void Config::saveConfigFor(const Identifier &key, const Serializable *serializable)
 {
-    const ValueTree child(this->config.getChildWithName(key));
-    this->config.removeChild(child, nullptr);
-    this->config.appendChild(serializable->serialize(), nullptr);
+    const ValueTree existingChild(this->config.getChildWithName(key));
+    this->config.removeChild(existingChild, nullptr);
+
+    ValueTree root(key);
+    root.appendChild(serializable->serialize(), nullptr);
+
+    this->config.appendChild(root, nullptr);
     this->onConfigChanged();
 }
 
 void Config::loadConfigFor(const Identifier &key, Serializable *serializable)
 {
     const auto tree(this->config.getChildWithName(key));
-    if (tree.isValid())
+    if (tree.isValid() && tree.getChild(0).isValid())
     {
-        serializable->deserialize(tree);
+        serializable->deserialize(tree.getChild(0));
     }
 }
 

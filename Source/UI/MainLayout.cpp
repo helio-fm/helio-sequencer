@@ -98,7 +98,7 @@ void MainLayout::init()
 
 void MainLayout::forceRestoreLastOpenedPage()
 {
-    App::Workspace().activateSubItemWithId(Config::get(Serialization::UI::lastShownPageId));
+    App::Workspace().activateSubItemWithId(Config::get(Serialization::Config::lastShownPageId));
 }
 
 void MainLayout::toggleShowHideConsole()
@@ -205,7 +205,7 @@ void MainLayout::showPage(Component *page, TreeItem *source)
 
     this->currentContent->toFront(false);
     
-    Config::set(Serialization::UI::lastShownPageId, source->getItemIdentifierString());
+    Config::set(Serialization::Config::lastShownPageId, source->getItemIdentifierString());
 
     //const Component *focused = Component::getCurrentlyFocusedComponent();
     //Logger::outputDebugString(focused ? focused->getName() : "null");

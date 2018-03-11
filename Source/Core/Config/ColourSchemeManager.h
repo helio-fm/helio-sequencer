@@ -18,13 +18,10 @@
 #pragma once
 
 #include "ColourScheme.h"
-#include "RequestResourceThread.h"
 
 class ColourSchemeManager :
     public ChangeBroadcaster,
-    private Serializable,
-    private Timer,
-    private RequestResourceThread::Listener
+    private Serializable
 {
 public:
 
@@ -36,7 +33,9 @@ public:
 
     void initialise(const String &commandLine);
     void shutdown();
-    void pull();
+
+    void reloadSchemes();
+    void updateSchemes(const ValueTree &schemes);
 
     Array<ColourScheme> getSchemes() const;
     ColourScheme getCurrentScheme() const;
@@ -54,19 +53,9 @@ private:
     
 private:
 
-    ScopedPointer<RequestResourceThread> requestThread;
-
-    void requestResourceOk(const ValueTree &resource) override;
-    void requestResourceFailed(const Array<String> &errors) override;
-
-private:
-
     Array<ColourScheme> schemes;
 
     ColourSchemeManager() {}
-    void timerCallback() override;
-
-    void reloadSchemes();
 
     void saveConfigSchemes();
     String getConfigSchemes();

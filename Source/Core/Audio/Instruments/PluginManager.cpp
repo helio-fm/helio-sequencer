@@ -31,7 +31,7 @@ PluginManager::PluginManager() :
     usingExternalProcess(false)
 {
     this->startThread(0);
-    Config::load(Serialization::Audio::pluginManager, this);
+    Config::load(this, Serialization::Config::lastScannedPlugins);
 }
 
 PluginManager::~PluginManager()
@@ -259,7 +259,7 @@ void PluginManager::run()
                 }
             }
 
-            Config::save(Serialization::Audio::pluginManager, this);
+            Config::save(this, Serialization::Config::lastScannedPlugins);
         }
         catch (...) { }
 
@@ -346,7 +346,7 @@ void PluginManager::scanPossibleSubfolders(const StringArray &possibleSubfolders
 ValueTree PluginManager::serialize() const
 {
     const ScopedReadLock lock(this->pluginsListLock);
-    ValueTree tree(Serialization::Audio::pluginManager);
+    ValueTree tree(Serialization::Audio::pluginsList);
 
     for (int i = 0; i < this->pluginsList.getNumTypes(); ++i)
     {
@@ -363,8 +363,8 @@ void PluginManager::deserialize(const ValueTree &tree)
 
     const ScopedWriteLock lock(this->pluginsListLock);
 
-    const auto root = tree.hasType(Serialization::Audio::pluginManager) ?
-        tree : tree.getChildWithName(Serialization::Audio::pluginManager);
+    const auto root = tree.hasType(Serialization::Audio::pluginsList) ?
+        tree : tree.getChildWithName(Serialization::Audio::pluginsList);
 
     if (!root.isValid()) { return; }
     

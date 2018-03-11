@@ -26,8 +26,6 @@
 void ColourSchemeManager::initialise(const String &commandLine)
 {
     this->reloadSchemes();
-    const int requestDelayMs = 7000;
-    this->startTimer(requestDelayMs);
 }
 
 void ColourSchemeManager::shutdown()
@@ -42,10 +40,10 @@ Array<ColourScheme> ColourSchemeManager::getSchemes() const
 
 ColourScheme ColourSchemeManager::getCurrentScheme() const
 {
-    if (Config::contains(Serialization::UI::Colours::appliedScheme))
+    if (Config::contains(Serialization::Config::activeColourScheme))
     {
         ColourScheme cs;
-        Config::load(Serialization::UI::Colours::appliedScheme, &cs);
+        Config::load(cs, Serialization::Config::activeColourScheme);
         return cs;
     }
 
@@ -54,16 +52,8 @@ ColourScheme ColourSchemeManager::getCurrentScheme() const
 
 void ColourSchemeManager::setCurrentScheme(const ColourScheme &scheme)
 {
-    Config::save(Serialization::UI::Colours::appliedScheme, &scheme);
+    Config::save(scheme, Serialization::Config::activeColourScheme);
 }
-
-void ColourSchemeManager::pull()
-{
-    // TODO
-    this->requestThread = new RequestResourceThread();
-    this->requestThread->requestResource(this, "ColourScheme");
-}
-
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -113,11 +103,12 @@ void ColourSchemeManager::reset()
 
 void ColourSchemeManager::reloadSchemes()
 {
-    if (Config::contains(Serialization::UI::Colours::schemes))
-    {
-        Config::load(Serialization::UI::Colours::schemes, this);
-    }
-    else
+    // FIXME!!! create ResourceManager to load default, last loaded or users resource configs
+    //if (Config::contains(Serialization::UI::Colours::schemes))
+    //{
+    //    Config::load(Serialization::UI::Colours::schemes, this);
+    //}
+    //else
     {
         // built-in schemes
         const auto defaultSchemes = String(CharPointer_UTF8(BinaryData::Colours_json));
@@ -129,31 +120,9 @@ void ColourSchemeManager::reloadSchemes()
     }
 }
 
-
-//===----------------------------------------------------------------------===//
-// Timer
-//===----------------------------------------------------------------------===//
-
-void ColourSchemeManager::timerCallback()
+void ColourSchemeManager::updateSchemes(const ValueTree &schemes)
 {
-    this->stopTimer();
-    this->pull();
-}
-
-
-//===----------------------------------------------------------------------===//
-// RequestTranslationsThread::Listener
-//===----------------------------------------------------------------------===//
-
-void ColourSchemeManager::requestResourceOk(const ValueTree &resource)
-{
-    Logger::writeToLog("ColourSchemeManager::requestResourceOk");
-    //this->deserialize(resource);
-    Config::save(Serialization::UI::Colours::schemes, this);
+    this->deserialize(schemes);
+    // TODO save Config::save(this);
     this->sendChangeMessage();
-}
-
-void ColourSchemeManager::requestResourceFailed(const Array<String> &errors)
-{
-    Logger::writeToLog("ColourSchemeManager::requestResourceFailed: " + errors.getFirst());
 }
