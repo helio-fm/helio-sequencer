@@ -17,34 +17,41 @@
 
 #pragma once
 
-#include "JsonSerializer.h"
+#include "Serializable.h"
 
-class HelioApiRequest final
+class ApiModel : public Serializable
 {
 public:
 
-    typedef Function<void(int, int)> ProgressCallback;
+    ApiModel(const ValueTree &tree) : data(tree) {}
 
-    HelioApiRequest(String apiEndpoint, ProgressCallback progressCallback = nullptr);
-
-    struct Response final
+    template<typename T>
+    Array<T> getChildren(const Identifier &id) const
     {
-        Response();
-        int statusCode;
-        Result parseResult;
-        StringPairArray headers;
-        ValueTree body;
-        Array<String> errors; // optional detailed errors descriptions
-    };
+        Array<T> result;
+        forEachValueTreeChildWithType(this->data, release, id)
+        {
+            result.add({ release });
+        }
+        return result;
+    }
 
-    Response post(const var payload) const;
-    Response get() const;
+    ValueTree serialize() const override
+    {
+        return this->data;
+    }
 
-    ProgressCallback progressCallback;
+    void deserialize(const ValueTree &tree) override
+    {
+        this->data = tree;
+    }
 
-private:
+    void reset() override
+    {
+        this->data = {};
+    }
 
-    String apiEndpoint;
+protected:
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HelioApiRequest)
+    ValueTree data;
 };

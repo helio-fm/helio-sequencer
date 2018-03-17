@@ -20,7 +20,7 @@
 #include "VersionControl.h"
 #include "Client.h"
 #include "App.h"
-#include "SessionManager.h"
+#include "SessionService.h"
 #include "Config.h"
 #include "SerializationKeys.h"
 
@@ -45,7 +45,7 @@ void RemovalThread::run()
 
     URL removeUrl(this->url);
 
-    const bool loggedIn = (App::Helio()->getSessionManager()->getAuthorizationState() == SessionManager::LoggedIn);
+    const bool loggedIn = (App::Helio()->getSessionService()->getAuthorizationState() == SessionService::LoggedIn);
     
     if (loggedIn)
     {

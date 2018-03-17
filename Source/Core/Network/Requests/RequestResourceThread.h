@@ -35,20 +35,21 @@ public:
     public:
         virtual ~Listener() {}
     private:
-        virtual void requestResourceOk(const ValueTree &resource) = 0;
-        virtual void requestResourceFailed(const Array<String> &errors) = 0;
+        virtual void requestResourceOk(const Identifier &resourceId, const ValueTree &resource) = 0;
+        virtual void requestResourceFailed(const Identifier &resourceId, const Array<String> &errors) = 0;
         friend class RequestResourceThread;
     };
     
-    void requestResource(RequestResourceThread::Listener *listener, String resourceName)
+    void requestResource(RequestResourceThread::Listener *listener, const Identifier &resourceId, uint32 delayMs)
     {
         if (this->isThreadRunning())
         {
             return;
         }
 
+        this->delay = delayMs;
         this->listener = listener;
-        this->resourceName = resourceName;
+        this->resourceId = resourceId;
         this->startThread(3);
     }
     
@@ -56,35 +57,27 @@ private:
     
     void run() override
     {
-        const String uri = HelioFM::Api::V1::requestResource + "/" + this->resourceName.toLowerCase();
+        Time::waitForMillisecondCounter(Time::getMillisecondCounter() + this->delay);
+
+        const String uri = HelioFM::Api::V1::requestResource + "/" + this->resourceId;
         const HelioApiRequest request(uri);
         this->response = request.get();
 
-        if (this->response.parseResult.failed() || this->response.statusCode != 200)
+        if (!this->response.isValid() || !this->response.is2xx())
         {
-            MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
-            {
-                const auto self = static_cast<RequestResourceThread *>(ptr);
-                self->listener->requestResourceFailed(self->response.errors);
-                return nullptr;
-            }, this);
+            callRequestListener(RequestResourceThread, requestResourceFailed,
+                self->resourceId, self->response.getErrors());
             return;
         }
 
-        MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
-        {
-            const auto self = static_cast<RequestResourceThread *>(ptr);
-            // TODO get resource from the response
-            self->listener->requestResourceOk(self->resource);
-            return nullptr;
-        }, this);
+        callRequestListener(RequestResourceThread, requestResourceOk,
+            self->resourceId, self->response.getChild(self->resourceId));
     }
     
-    String resourceName;
-    ValueTree resource;
-
+    uint32 delay;
+    Identifier resourceId;
     HelioApiRequest::Response response;
     RequestResourceThread::Listener *listener;
     
-    friend class SessionManager;
+    friend class BackendService;
 };

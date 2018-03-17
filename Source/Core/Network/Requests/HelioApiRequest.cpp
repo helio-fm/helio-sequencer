@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "HelioApiRequest.h"
-#include "SessionManager.h"
+#include "SessionService.h"
 #include "App.h"
 
 // Let OS set the default timeout:
@@ -37,7 +37,47 @@ static bool progressCallbackInternal(void *const context, int bytesSent, int tot
 
 HelioApiRequest::Response::Response() :
     statusCode(0),
-    parseResult(Result::fail({})) {}
+    receipt(Result::fail({})) {}
+
+bool HelioApiRequest::Response::isValid() const noexcept
+{
+    return this->receipt.wasOk() && this->statusCode != 500;
+}
+
+bool HelioApiRequest::Response::is2xx() const noexcept
+{
+    return (this->statusCode / 100) == 2;
+}
+
+bool HelioApiRequest::Response::is200() const noexcept
+{
+    return this->statusCode == 200;
+}
+
+bool HelioApiRequest::Response::hasProperty(const Identifier &name) const noexcept
+{
+    return this->body.hasProperty(name);
+}
+
+var HelioApiRequest::Response::getProperty(const Identifier &name) const noexcept
+{
+    return this->body.getProperty(name);
+}
+
+ValueTree HelioApiRequest::Response::getChild(const Identifier &name) const noexcept
+{
+    return this->body.getChildWithName(name);
+}
+
+const Array<String> &HelioApiRequest::Response::getErrors() const noexcept
+{
+    return this->errors;
+}
+
+const ValueTree HelioApiRequest::Response::getBody() const noexcept
+{
+    return this->body;
+}
 
 HelioApiRequest::HelioApiRequest(String apiEndpoint, ProgressCallback progressCallback) :
     apiEndpoint(std::move(apiEndpoint)),
@@ -51,7 +91,7 @@ static String getHeaders()
         << "\n"
         << "Client: Helio " << App::getAppReadableVersion()
         << "\n"
-        << "Authorization: Bearer " << SessionManager::getApiToken()
+        << "Authorization: Bearer " << SessionService::getApiToken()
         << "\n"
         << "Platform-Id: " << SystemStats::getOperatingSystemName()
         << "\n"
@@ -60,7 +100,7 @@ static String getHeaders()
     return extraHeaders;
 }
 
-static void processResponse(HelioApiRequest::Response &response, InputStream *const stream)
+void HelioApiRequest::processResponse(HelioApiRequest::Response &response, InputStream *const stream) const
 {
     if (stream == nullptr)
     {
@@ -71,11 +111,14 @@ static void processResponse(HelioApiRequest::Response &response, InputStream *co
     const String responseBody = stream->readEntireStreamAsString();
     if (responseBody.isNotEmpty())
     {
+        Logger::writeToLog("Response: " + String(response.statusCode));
+        Logger::writeToLog(responseBody);
+
         ValueTree parsedResponse;
         static JsonSerializer serializer;
 
-        response.parseResult = serializer.loadFromString(responseBody, parsedResponse);
-        if (response.parseResult.failed() || !parsedResponse.isValid())
+        response.receipt = serializer.loadFromString(responseBody, parsedResponse);
+        if (response.receipt.failed() || !parsedResponse.isValid())
         {
             response.errors.add(TRANS("network error"));
             return;

@@ -82,26 +82,16 @@ private:
         const HelioApiRequest request(HelioFM::Api::V1::join);
         this->response = request.post(var(payload));
 
-        const bool hasToken = this->response.body.hasProperty(Api::V1::token);
-        if (this->response.parseResult.failed() ||
-            this->response.statusCode != 200 || !hasToken)
+        if (!this->response.isValid() ||
+            !this->response.is2xx() ||
+            !this->response.hasProperty(Api::V1::token))
         {
-            MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
-            {
-                const auto self = static_cast<SignUpThread *>(ptr);
-                self->listener->signUpFailed(self->response.errors);
-                return nullptr;
-            }, this);
+            callRequestListener(SignUpThread, signUpFailed, self->response.getErrors());
             return;
         }
 
-        MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
-        {
-            const auto self = static_cast<SignUpThread *>(ptr);
-            const auto token = self->response.body.getProperty(Api::V1::token);
-            self->listener->signUpOk(self->email, token);
-            return nullptr;
-        }, this);
+        callRequestListener(SignUpThread, signUpOk,
+            self->email, self->response.getProperty(Api::V1::token));
     }
     
     String email;
@@ -111,4 +101,6 @@ private:
     HelioApiRequest::Response response;
 
     SignUpThread::Listener *listener;
+
+    friend class BackendService;
 };

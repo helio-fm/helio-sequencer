@@ -17,26 +17,24 @@
 
 #pragma once
 
+#include "BackendService.h"
 #include "SignInThread.h"
 #include "SignUpThread.h"
-#include "TokenCheckThread.h"
 #include "TokenUpdateThread.h"
 #include "RequestResourceThread.h"
 #include "RequestUserProfileThread.h"
 #include "UpdatesCheckThread.h"
 
-class SessionManager final :
-    public ChangeBroadcaster,
-    private Timer,
+class SessionService final :
+    private BackendService,
     private SignInThread::Listener,
     private SignUpThread::Listener,
-    private TokenCheckThread::Listener,
     private TokenUpdateThread::Listener,
     private RequestUserProfileThread::Listener
 {
 public:
     
-    SessionManager();
+    SessionService();
 
     static String getApiToken();
 
@@ -53,33 +51,13 @@ public:
     void signIn(const String &login, const String &passwordHash);
     void signOut();
 
-    template<typename T>
-    T *getRequestThread()
-    {
-        for (const auto thread : this->requestThreads)
-        {
-            if (!thread->isThreadRunning())
-            {
-                if (T *target = dynamic_cast<T *>(thread))
-                {
-                    return target;
-                }
-            }
-        }
-
-        return static_cast<T *>(this->requestThreads.add(new T()));
-    }
-
 private:
 
     void timerCallback() override;
 
-    String currentLogin;
     SessionState authState;
-    UserProfile::Ptr userProfile;
-
-    OwnedArray<Thread> requestThreads;
-
+    UserProfile userProfile;
+    
 private:
     
     // will be called on the main thread:
@@ -90,13 +68,11 @@ private:
     void signUpOk(const String &userEmail, const String &newToken) override;
     void signUpFailed(const Array<String> &errors) override;
 
-    void tokenCheckOk() override;
-    void tokenCheckFailed(const Array<String> &errors) override;
+    void requestProfileOk(const UserProfile profile) override;
+    void requestProfileFailed(const Array<String> &errors) override;
 
     void tokenUpdateOk(const String &newToken) override;
     void tokenUpdateFailed(const Array<String> &errors) override;
-
-    void requestProfileOk(const UserProfile::Ptr profile) override;
-    void requestProfileFailed(const Array<String> &errors) override;
+    void tokenUpdateNoResponse() override;
 
 };

@@ -19,36 +19,38 @@
 
 #include "HelioApiRoutes.h"
 #include "HelioApiRequest.h"
+#include "Config.h"
 #include "SerializationKeys.h"
+#include "UserProfile.h"
 
-class TokenCheckThread final : private Thread
+class RequestUserProfileThread final : private Thread
 {
 public:
 
-    TokenCheckThread() : Thread("TokenCheck"), listener(nullptr) {}
-    ~TokenCheckThread() override
+    RequestUserProfileThread() : Thread("RequestUserProfile"), listener(nullptr) {}
+    ~RequestUserProfileThread() override
     {
         this->stopThread(1000);
     }
-    
+
     class Listener
     {
     public:
         virtual ~Listener() {}
     private:
-        virtual void tokenCheckOk() = 0;
-        virtual void tokenCheckFailed(const Array<String> &errors) = 0;
-        friend class TokenCheckThread;
+        virtual void requestProfileOk(const UserProfile profile) = 0;
+        virtual void requestProfileFailed(const Array<String> &errors) = 0;
+        friend class RequestUserProfileThread;
     };
     
-    void login(TokenCheckThread::Listener *listener)
+    void requestUserProfile(RequestUserProfileThread::Listener *authListener)
     {
         if (this->isThreadRunning())
         {
             return;
         }
 
-        this->listener = listener;
+        this->listener = authListener;
         this->startThread(3);
     }
     
@@ -56,30 +58,19 @@ private:
     
     void run() override
     {
-        const HelioApiRequest request(HelioFM::Api::V1::tokenCheck);
+        const HelioApiRequest request(HelioFM::Api::V1::requestUserProfile);
         this->response = request.get();
 
-        if (this->response.parseResult.failed() || this->response.statusCode != 200)
+        if (!this->response.isValid() || !this->response.is200())
         {
-            MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
-            {
-                const auto self = static_cast<TokenCheckThread *>(ptr);
-                self->listener->tokenCheckFailed(self->response.errors);
-                return nullptr;
-            }, this);
-            return;
+            callRequestListener(RequestUserProfileThread, requestProfileFailed, self->response.getErrors());
         }
 
-        MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
-        {
-            const auto self = static_cast<TokenCheckThread *>(ptr);
-            self->listener->tokenCheckOk();
-            return nullptr;
-        }, this);
+        callRequestListener(RequestUserProfileThread, requestProfileOk, { self->response.getBody() });
     }
-
-    HelioApiRequest::Response response;
-    TokenCheckThread::Listener *listener;
     
-    friend class SessionManager;
+    HelioApiRequest::Response response;
+    RequestUserProfileThread::Listener *listener;
+    
+    friend class BackendService;
 };

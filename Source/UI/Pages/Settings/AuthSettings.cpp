@@ -27,7 +27,7 @@
 
 #include "App.h"
 #include "MainWindow.h"
-#include "SessionManager.h"
+#include "SessionService.h"
 #include "ShapeComponent.h"
 #include "Config.h"
 #include "SerializationKeys.h"
@@ -63,7 +63,7 @@ AuthSettings::AuthSettings()
 
 
     //[UserPreSize]
-    const String lastLogin = Config::get(Serialization::Core::lastUsedLogin);
+    const String lastLogin = Config::get(Serialization::Config::lastUsedLogin);
 #if HELIO_DESKTOP
     const String defaultLogin = TRANS("dialog::auth::defaultlogin::desktop");
 #elif HELIO_MOBILE

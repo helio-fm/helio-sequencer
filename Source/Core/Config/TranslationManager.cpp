@@ -18,14 +18,13 @@
 #include "Common.h"
 #include "TranslationManager.h"
 #include "SerializationKeys.h"
-#include "RequestResourceThread.h"
 #include "App.h"
-#include "SessionManager.h"
 #include "Config.h"
 #include "BinaryData.h"
 #include "DocumentHelpers.h"
 #include "XmlSerializer.h"
 #include "JsonSerializer.h"
+#include "BinarySerializer.h"
 
 struct PluralEquationWrapper: public DynamicObject
 {
@@ -70,10 +69,6 @@ void TranslationManager::initialise(const String &commandLine)
     this->engine->registerNativeObject(Serialization::Locales::wrapperClassName, pluralEquationWrapper);
     
     this->reloadLocales();
-    
-    // Run update thread after 1 sec
-    const int requestTranslationsDelayMs = 1000;
-    this->startTimer(requestTranslationsDelayMs);
 }
 
 void TranslationManager::shutdown()
@@ -163,8 +158,12 @@ void TranslationManager::loadLocaleWithId(const String &localeId)
         return;
     }
     
-    this->setSelectedLocaleId(localeId);
-    //this->reloadLocales(); // Kinda overkill
+    if (this->availableTranslations.contains(localeId))
+    {
+        Config::set(Serialization::Config::currentLocale, localeId);
+        this->reloadLocales();
+        this->sendChangeMessage();
+    }
 }
 
 String TranslationManager::getCurrentLocaleName() const
@@ -237,7 +236,7 @@ void TranslationManager::deserialize(const ValueTree &tree)
         this->availableTranslations.set(localeId, newLocale);
     }
     
-    // Now detect the right one and load
+    // Detect the right translation and load
     const String selectedLocaleId = this->getSelectedLocaleId();
     
     forEachValueTreeChildWithType(root, locale, Locales::locale)
@@ -313,6 +312,21 @@ void TranslationManager::reloadLocales()
 
 }
 
+void TranslationManager::updateLocales(const ValueTree &locales)
+{
+    Logger::writeToLog("Updating downloaded translations file..");
+
+    XmlSerializer serializer; // debug
+    //BinarySerializer serializer;
+    serializer.saveToFile(this->getDownloadedTranslationsFile(), locales);
+
+    this->deserialize(locales);
+
+    // Don't send redundant change messages here,
+    // as translations are going to be updated at the very start of the app:
+    //this->sendChangeMessage();
+}
+
 String TranslationManager::getSelectedLocaleId() const
 {
     const String lastFallbackLocale = "en";
@@ -331,58 +345,6 @@ String TranslationManager::getSelectedLocaleId() const
     }
     
     return lastFallbackLocale;
-}
-
-void TranslationManager::setSelectedLocaleId(const String &localeId)
-{
-    if (this->availableTranslations.contains(localeId))
-    {
-        Config::set(Serialization::Locales::currentLocale, localeId);
-        this->sendChangeMessage();
-    }
-}
-
-
-//===----------------------------------------------------------------------===//
-// Timer
-//===----------------------------------------------------------------------===//
-
-void TranslationManager::timerCallback()
-{
-    this->stopTimer();
-    const auto requestTranslationsThread =
-        App::Backend().getRequestThread<RequestResourceThread>();
-    requestTranslationsThread->requestResource(this, "translations");
-}
-
-//===----------------------------------------------------------------------===//
-// RequestTranslationsThread::Listener
-//===----------------------------------------------------------------------===//
-
-void TranslationManager::requestResourceOk(const ValueTree &resource)
-{
-    Logger::writeToLog("TranslationManager::requestResourceOk");
-    //ScopedPointer<XmlElement> xml(XmlDocument::parse(translations));
-    //if (xml)
-    //{
-    //    const bool seemsToBeValid = xml->hasTagName(Serialization::Locales::translations);
-    //    if (seemsToBeValid)
-    //    {
-    //        Logger::writeToLog("TranslationManager :: downloaded translations file seems to be valid");
-    //        DocumentReader::saveObfuscated(this->getDownloadedTranslationsFile(), xml);
-
-    //        Logger::writeToLog("TranslationManager :: applying new translations");
-    //        this->deserialize(*xml);
-    //        // Don't send redunant change messages,
-    //        // as translations are going to be updated at the very start of the app:
-    //        //this->sendChangeMessage();
-    //    }
-    //}
-}
-
-void TranslationManager::requestResourceFailed(const Array<String> &errors)
-{
-    Logger::writeToLog("TranslationManager::requestResourceFailed " + errors.getFirst());
 }
 
 //===----------------------------------------------------------------------===//

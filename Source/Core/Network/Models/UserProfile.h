@@ -17,34 +17,28 @@
 
 #pragma once
 
-#include "UpdatesCheckThread.h"
+#include "ApiModel.h"
 
-class UpdatesManager final : private Timer,
-                             private UpdatesCheckThread::Listener
+class UserProfile final : public ApiModel
 {
 public:
 
-    UpdatesManager();
+    UserProfile(const ValueTree &tree) : ApiModel(tree) {}
 
+    //struct ProjectInfo final
+    //{
+    //    String getProjectName() const noexcept { return this->data.getProperty(Serialization::Api::V1::projectName); }
+    //    const ValueTree data;
+    //};
 
+    String getEmail() const noexcept
+    { return this->data.getProperty(Serialization::Api::V1::email); }
 
-private:
+    String getLogin() const noexcept
+    { return this->data.getProperty(Serialization::Api::V1::login); }
 
-    void timerCallback() override;
+    String getName() const noexcept
+    { return this->data.getProperty(Serialization::Api::V1::name); }
 
-    OwnedArray<Thread> requestThreads;
-
-private:
-
-    // will be called on the main thread:
-    void updatesCheckOk(const UpdateInfo info) override
-    {
-
-    }
-
-    void updatesCheckFailed(const Array<String> &errors) override
-    {
-
-    }
-
+    JUCE_LEAK_DETECTOR(UserProfile)
 };

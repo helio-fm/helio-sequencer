@@ -28,7 +28,7 @@
 #include "OpenProjectRow.h"
 #include "App.h"
 #include "MainLayout.h"
-#include "SessionManager.h"
+#include "SessionService.h"
 #include "AuthorizationDialog.h"
 #include "ProgressTooltip.h"
 #include "SuccessTooltip.h"
@@ -126,8 +126,8 @@ void WorkspaceMenu::handleCommandMessage (int commandId)
     }
     else if (commandId == CommandIDs::LoginLogout)
     {
-        SessionManager *authManager = App::Helio()->getSessionManager();
-        const bool isLoggedIn = (authManager->getAuthorizationState() == SessionManager::LoggedIn);
+        SessionService *authService = App::Helio()->getSessionService();
+        const bool isLoggedIn = (authService->getAuthorizationState() == SessionService::LoggedIn);
 
         if (!isLoggedIn)
         {
@@ -138,8 +138,14 @@ void WorkspaceMenu::handleCommandMessage (int commandId)
         else
         {
             App::Helio()->showModalComponent(new ProgressTooltip());
-            authManager->addChangeListener(this);
-            authManager->signOut();
+            //authService->addChangeListener(this);
+            authService->signOut();
+
+            // Should rather look like:
+            //const auto app = App::Helio();
+            //app->showModalComponent<ProgressTooltip>();
+            //authService->signOut(app->hideModalComponentCallback());
+
         }
     }
     //[/UserCode_handleCommandMessage]
@@ -150,38 +156,38 @@ void WorkspaceMenu::handleCommandMessage (int commandId)
 
 void WorkspaceMenu::changeListenerCallback(ChangeBroadcaster *source)
 {
-    SessionManager *authManager = App::Helio()->getSessionManager();
+    //SessionManager *authService = App::Helio()->getSessionService();
 
-    if (source == authManager)
-    {
-        authManager->removeChangeListener(this);
+    //if (source == authService)
+    //{
+    //    authService->removeChangeListener(this);
 
-        Component *progressIndicator = App::Layout().findChildWithID(ComponentIDs::progressTooltipId);
+    //    Component *progressIndicator = App::Layout().findChildWithID(ComponentIDs::progressTooltipId);
 
-        if (progressIndicator)
-        {
-            delete progressIndicator;
+    //    if (progressIndicator)
+    //    {
+    //        delete progressIndicator;
 
-            //if (authManager->getLastRequestState() == SessionManager::RequestSucceed)
-            //{
-            //    App::Helio()->showModalComponent(new SuccessTooltip());
-            //}
-            //else if (authManager->getLastRequestState() == SessionManager::RequestFailed)
-            //{
-            //    App::Helio()->showModalComponent(new FailTooltip());
-            //}
-            //if (authManager->getLastRequestState() == SessionManager::ConnectionFailed)
-            //{
-            //    App::Helio()->showModalComponent(new FailTooltip());
-            //}
+    //        //if (authService->getLastRequestState() == SessionManager::RequestSucceed)
+    //        //{
+    //        //    App::Helio()->showModalComponent(new SuccessTooltip());
+    //        //}
+    //        //else if (authService->getLastRequestState() == SessionManager::RequestFailed)
+    //        //{
+    //        //    App::Helio()->showModalComponent(new FailTooltip());
+    //        //}
+    //        //if (authService->getLastRequestState() == SessionManager::ConnectionFailed)
+    //        //{
+    //        //    App::Helio()->showModalComponent(new FailTooltip());
+    //        //}
 
-            // For workspace page:
-            this->listBox->updateContent();
+    //        // For workspace page:
+    //        this->listBox->updateContent();
 
-            // For popup:
-            //this->getParentComponent()->exitModalState(0);
-        }
-    }
+    //        // For popup:
+    //        //this->getParentComponent()->exitModalState(0);
+    //    }
+    //}
 }
 
 void WorkspaceMenu::loadFile(RecentFileDescription::Ptr fileDescription)

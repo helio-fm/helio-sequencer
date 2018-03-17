@@ -39,7 +39,8 @@ class Config;
 class ApiCore;
 class AudioCore;
 class InternalClipboard;
-class SessionManager;
+class SessionService;
+class UpdatesService;
 
 class App : public JUCEApplication,
             private AsyncUpdater,
@@ -57,7 +58,6 @@ public:
     static class Workspace &Workspace();
     static class MainLayout &Layout();
     static class MainWindow &Window();
-    static class SessionManager &Backend();
     static class Config &Config();
 
     static Point<double> getScreenInCm();
@@ -104,18 +104,19 @@ public:
     class Config *getConfig() const noexcept;
     MainWindow *getWindow() const noexcept;
     InternalClipboard *getClipboard() const noexcept;
-    SessionManager *getSessionManager() const noexcept;
+    SessionService *getSessionService() const noexcept;
     HelioTheme *getTheme() const noexcept;
 
 private:
 
     HelioLogger logger;
     ScopedPointer<HelioTheme> theme;
-    ScopedPointer<class Config> config;
     ScopedPointer<InternalClipboard> clipboard;
-    ScopedPointer<class MainWindow> window;
-    ScopedPointer<SessionManager> sessionManager;
+    ScopedPointer<class Config> config;
     ScopedPointer<class Workspace> workspace;
+    ScopedPointer<class MainWindow> window;
+    ScopedPointer<SessionService> sessionService;
+    ScopedPointer<UpdatesService> updatesService;
 
 private:
 

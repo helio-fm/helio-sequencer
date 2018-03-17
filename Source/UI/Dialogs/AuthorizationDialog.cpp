@@ -26,7 +26,7 @@
 #include "ComponentIDs.h"
 
 #include "App.h"
-#include "SessionManager.h"
+#include "SessionService.h"
 #include "ProgressTooltip.h"
 #include "SuccessTooltip.h"
 #include "FailTooltip.h"
@@ -126,7 +126,7 @@ AuthorizationDialog::AuthorizationDialog()
     addAndMakeVisible (separatorV = new SeparatorVertical());
 
     //[UserPreSize]
-    const String lastLogin = Config::get(Serialization::Core::lastUsedLogin);
+    const String lastLogin = Config::get(Serialization::Config::lastUsedLogin);
 #if HELIO_DESKTOP
     const String defaultLogin = TRANS("dialog::auth::defaultlogin::desktop");
 #elif HELIO_MOBILE
@@ -309,15 +309,19 @@ void AuthorizationDialog::editorShown(Label *targetLabel, TextEditor &editor)
 
 void AuthorizationDialog::login()
 {
-    Config::set(Serialization::Core::lastUsedLogin, this->emailEditor->getText());
+    Config::set(Serialization::Config::lastUsedLogin, this->emailEditor->getText());
 
-    App::Helio()->getSessionManager()->addChangeListener(this);
+    //App::Helio()->getSessionService()->addChangeListener(this);
     App::Helio()->showModalComponent(new ProgressTooltip());
+    // Should rather look like:
+    //const auto app = App::Helio();
+    //app->showModalComponent<ProgressTooltip>();
+    //app->getSessionService()->signIn(email, passwordHash, app->hideModalComponentCallback());
 
     const String passwordHash = SHA256(this->passwordEditor->getText().toUTF8()).toHexString();
     const String email = this->emailEditor->getText();
 
-    App::Helio()->getSessionManager()->signIn(email, passwordHash);
+    App::Helio()->getSessionService()->signIn(email, passwordHash);
 }
 
 bool AuthorizationDialog::validateTextFields() const
@@ -334,28 +338,28 @@ bool AuthorizationDialog::validateTextFields() const
 
 void AuthorizationDialog::changeListenerCallback(ChangeBroadcaster *source)
 {
-    SessionManager *authManager = App::Helio()->getSessionManager();
-    authManager->removeChangeListener(this);
+    //SessionManager *authManager = App::Helio()->getSessionService();
+    //authManager->removeChangeListener(this);
 
-    if (Component *progressIndicator =
-        App::Layout().findChildWithID(ComponentIDs::progressTooltipId))
-    {
-        delete progressIndicator;
+    //if (Component *progressIndicator =
+    //    App::Layout().findChildWithID(ComponentIDs::progressTooltipId))
+    //{
+    //    delete progressIndicator;
 
-        //if (authManager->getLastRequestState() == SessionManager::RequestSucceed)
-        //{
-        //    App::Helio()->showModalComponent(new SuccessTooltip());
-        //    delete this;
-        //}
-        //else if (authManager->getLastRequestState() == SessionManager::RequestFailed)
-        //{
-        //    App::Helio()->showModalComponent(new FailTooltip());
-        //}
-        //if (authManager->getLastRequestState() == SessionManager::ConnectionFailed)
-        //{
-        //    App::Helio()->showModalComponent(new FailTooltip());
-        //}
-    }
+    //    //if (authManager->getLastRequestState() == SessionManager::RequestSucceed)
+    //    //{
+    //    //    App::Helio()->showModalComponent(new SuccessTooltip());
+    //    //    delete this;
+    //    //}
+    //    //else if (authManager->getLastRequestState() == SessionManager::RequestFailed)
+    //    //{
+    //    //    App::Helio()->showModalComponent(new FailTooltip());
+    //    //}
+    //    //if (authManager->getLastRequestState() == SessionManager::ConnectionFailed)
+    //    //{
+    //    //    App::Helio()->showModalComponent(new FailTooltip());
+    //    //}
+    //}
 }
 
 

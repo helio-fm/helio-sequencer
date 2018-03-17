@@ -17,13 +17,9 @@
 
 #pragma once
 
-#include "RequestResourceThread.h"
-
 class TranslationManager :
     public ChangeBroadcaster,
-    private Serializable,
-    private Timer,
-    private RequestResourceThread::Listener
+    private Serializable
 {
 public:
 
@@ -58,6 +54,7 @@ public:
     String getCurrentLocaleId() const; // e.g. "ru"
     
     void reloadLocales();
+    void updateLocales(const ValueTree &locales);
 
     //===------------------------------------------------------------------===//
     // Helpers
@@ -77,15 +74,10 @@ private:
     void deserialize(const ValueTree &tree) override;
     void reset() override;
     
-    void requestResourceOk(const ValueTree &resource) override;
-    void requestResourceFailed(const Array<String> &errors) override;
-
 private:
     
     TranslationManager() {}
     
-    void timerCallback() override;
-
     SpinLock mappingsLock;
 
     ScopedPointer<JavascriptEngine> engine;
@@ -98,7 +90,6 @@ private:
     HashMap<String, Locale> availableTranslations;
     
     String getSelectedLocaleId() const;
-    void setSelectedLocaleId(const String &localeId);
     
     friend struct PluralEquationWrapper;
     

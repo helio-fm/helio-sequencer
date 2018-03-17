@@ -15,18 +15,28 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "Common.h"
-#include "UpdatesManager.h"
+#pragma once
 
-// Try to update resources and versions info after:
-#define UPDATE_INFO_TIMEOUT_MS (1000 * 10)
-
-UpdatesManager::UpdatesManager()
+class BackendService : protected Timer
 {
-    this->startTimer(UPDATE_INFO_TIMEOUT_MS);
-}
+protected:
 
-void UpdatesManager::timerCallback()
-{
+    OwnedArray<Thread> requestThreads;
 
-}
+    template<typename T>
+    T *getThreadFor()
+    {
+        for (const auto thread : this->requestThreads)
+        {
+            if (!thread->isThreadRunning())
+            {
+                if (T *target = dynamic_cast<T *>(thread))
+                {
+                    return target;
+                }
+            }
+        }
+
+        return static_cast<T *>(this->requestThreads.add(new T()));
+    }
+};

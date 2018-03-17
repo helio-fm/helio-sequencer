@@ -39,6 +39,7 @@ public:
     private:
         virtual void tokenUpdateOk(const String &newToken) = 0;
         virtual void tokenUpdateFailed(const Array<String> &errors) = 0;
+        virtual void tokenUpdateNoResponse() = 0;
         friend class TokenUpdateThread;
     };
     
@@ -58,45 +59,37 @@ private:
     
     void run() override
     {
-        using namespace Serialization;
-
         // Construct payload object:
         DynamicObject::Ptr session(new DynamicObject());
-        session->setProperty(Api::V1::bearer, this->oldToken);
-        session->setProperty(Api::V1::deviceId, Config::getDeviceId());
-        session->setProperty(Api::V1::platformId, SystemStats::getOperatingSystemName());
+        session->setProperty(Serialization::Api::V1::bearer, this->oldToken);
+        session->setProperty(Serialization::Api::V1::deviceId, Config::getDeviceId());
+        session->setProperty(Serialization::Api::V1::platformId, SystemStats::getOperatingSystemName());
 
         DynamicObject::Ptr payload(new DynamicObject());
-        payload->setProperty(Api::V1::session, var(session));
+        payload->setProperty(Serialization::Api::V1::session, var(session));
 
         const HelioApiRequest request(HelioFM::Api::V1::tokenUpdate);
         this->response = request.post(var(payload));
 
-        const bool hasToken = this->response.body.hasProperty(Api::V1::token);
-        if (this->response.parseResult.failed() ||
-            this->response.statusCode != 200 || !hasToken)
+        if (!this->response.isValid())
         {
-            MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
-            {
-                const auto self = static_cast<TokenUpdateThread *>(ptr);
-                self->listener->tokenUpdateFailed(self->response.errors);
-                return nullptr;
-            }, this);
+            callRequestListener(TokenUpdateThread, tokenUpdateNoResponse);
             return;
         }
 
-        MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
+        if (!this->response.is2xx() || !this->response.hasProperty(Serialization::Api::V1::token))
         {
-            const auto self = static_cast<TokenUpdateThread *>(ptr);
-            const auto newToken = self->response.body.getProperty(Api::V1::token);
-            self->listener->tokenUpdateOk(newToken);
-            return nullptr;
-        }, this);
+            callRequestListener(TokenUpdateThread, tokenUpdateFailed, self->response.getErrors());
+            return;
+        }
+
+        callRequestListener(TokenUpdateThread, tokenUpdateOk,
+            self->response.getProperty(Serialization::Api::V1::token));
     }
     
     String oldToken;
     HelioApiRequest::Response response;
     TokenUpdateThread::Listener *listener;
     
-    friend class SessionManager;
+    friend class BackendService;
 };

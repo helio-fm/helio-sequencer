@@ -354,13 +354,13 @@ namespace BinaryData
     const int            Arps_jsonSize = 15183;
 
     extern const char*   Colours_json;
-    const int            Colours_jsonSize = 2827;
+    const int            Colours_jsonSize = 2833;
 
     extern const char*   Hotkeys_json;
     const int            Hotkeys_jsonSize = 9891;
 
     extern const char*   Scales_json;
-    const int            Scales_jsonSize = 6758;
+    const int            Scales_jsonSize = 5008;
 
     extern const char*   Translations_json;
     const int            Translations_jsonSize = 286713;

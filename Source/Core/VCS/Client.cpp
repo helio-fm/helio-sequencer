@@ -25,6 +25,7 @@
 #include "ProgressTooltip.h"
 #include "FailTooltip.h"
 #include "SuccessTooltip.h"
+#include "HelioApiRoutes.h"
 
 using namespace VCS;
 

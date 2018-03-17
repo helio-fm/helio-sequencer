@@ -106,6 +106,14 @@ inline float roundBeat(float beat)
 #define forEachValueTreeChildWithType(parentElement, childName, requiredType) \
     for (const auto &childName : parentElement) if (childName.hasType(requiredType))
 
+#define callMessageThreadFrom(threadType, function) \
+    MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void* \
+        { \
+            const auto self = static_cast<threadType *>(ptr); \
+            function(self); \
+            return nullptr; \
+        }, this)
+
 //===----------------------------------------------------------------------===//
 // Internationalization
 //===----------------------------------------------------------------------===//

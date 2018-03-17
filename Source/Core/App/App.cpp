@@ -20,7 +20,8 @@
 #include "AudioCore.h"
 #include "TranslationManager.h"
 #include "ArpeggiatorsManager.h"
-#include "SessionManager.h"
+#include "SessionService.h"
+#include "UpdatesService.h"
 
 #include "HelioTheme.h"
 #include "ThemeSettings.h"
@@ -67,11 +68,6 @@ MainLayout &App::Layout()
 MainWindow &App::Window()
 {
     return *App::Helio()->getWindow();
-}
-
-SessionManager &App::Backend()
-{
-    return *App::Helio()->getSessionManager();
 }
 
 class Config &App::Config()
@@ -274,23 +270,26 @@ void App::initialise(const String &commandLine)
         Logger::writeToLog("Helio Workstation");
         Logger::writeToLog("Ver. " + App::getAppReadableVersion());
         
-        this->config = new class Config();
-        //this->updater = new UpdateManager();
-
         this->theme = new HelioTheme();
         this->theme->initResources();
         LookAndFeel::setDefaultLookAndFeel(this->theme);
 
-        this->sessionManager = new SessionManager();
         this->clipboard = new InternalClipboard();
-
+        this->config = new class Config();
+    
+        // TODO: 
+        // there should be a number of ResourceManagers
+        // for translations, arps, colour schemes, temperaments, scales, etc.
         TranslationManager::getInstance().initialise(commandLine);
         ArpeggiatorsManager::getInstance().initialise(commandLine);
         ColourSchemeManager::getInstance().initialise(commandLine);
 
         this->workspace = new class Workspace();
         this->window = new MainWindow();
-        
+
+        this->sessionService = new SessionService();
+        this->updatesService = new UpdatesService();
+
         TranslationManager::getInstance().addChangeListener(this);
         
         // Desktop versions will be initialised by InitScreen component.
@@ -320,12 +319,14 @@ void App::shutdown()
 
         Logger::writeToLog("App::shutdown");
 
+        this->updatesService = nullptr;
+        this->sessionService = nullptr;
+
         this->window = nullptr;
         this->workspace = nullptr;
 
-        this->clipboard = nullptr;
-        this->sessionManager = nullptr;
         this->config = nullptr;
+        this->clipboard = nullptr;
         this->theme = nullptr;
 
         const File tempFolder(DocumentHelpers::getTemporaryFolder());
@@ -452,9 +453,9 @@ InternalClipboard *App::getClipboard() const noexcept
     return this->clipboard;
 }
 
-SessionManager *App::getSessionManager() const noexcept
+SessionService *App::getSessionService() const noexcept
 {
-    return this->sessionManager;
+    return this->sessionService;
 }
 
 HelioTheme *App::getTheme() const noexcept

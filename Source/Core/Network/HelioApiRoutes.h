@@ -32,10 +32,10 @@ namespace HelioFM
             static const String login = "/api/v1/login";
             static const String tokenCheck = "/api/v1/session-status";
             static const String tokenUpdate = "/api/v1/relogin";
-            static const String requestResource = "/api/v1/clients/helio'";
-            static const String requestUpdatesInfo = "/api/v1/clients/helio/info";
-            static const String requestUserProfile = "/api/v1/profile";
-            static const String vcs = "/api/v1/vcs/:user/:project";
+            static const String requestResource = "/api/v1/client/helio";
+            static const String requestUpdatesInfo = "/api/v1/client/helio/info";
+            static const String requestUserProfile = "/api/v1/me";
+            static const String vcs = "/api/v1/vcs/:project";
         } // namespace V1
     } // namespace API
 }  // namespace HelioFM

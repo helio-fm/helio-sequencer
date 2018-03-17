@@ -367,6 +367,31 @@ namespace Serialization
         // Session
         static const Identifier sessionLastUpdateTime = "sessionLastUpdateTime";
         static const Identifier sessionLastToken = "sessionLastToken";
+        static const Identifier sessionUserProfile = "sessionUserProfile";
+
+        static const Identifier updatesInfo = "updatesInfo";
+
+        // Available types of dynamically fetched resources of configs
+        namespace Resources
+        {
+            static const Identifier translations = "translations";
+            static const Identifier hotkeys = "hotkeys";
+            static const Identifier arpeggiators = "arpeggiators";
+            static const Identifier scales = "scales";
+            static const Identifier colourSchemes = "colourSchemes";
+        }
+
+        namespace PlatformIds
+        {
+            static const Identifier windows32 = "windows32";
+            static const Identifier windows64 = "windows64";
+            static const Identifier linux32 = "linux32";
+            static const Identifier linux64 = "linux64";
+            static const Identifier mac = "mac";
+            static const Identifier ios = "ios";
+            static const Identifier android = "android";
+            static const Identifier unknown = "unknown";
+        }
 
         // JSON keys
         namespace V1

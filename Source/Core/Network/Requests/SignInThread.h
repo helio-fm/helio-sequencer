@@ -61,17 +61,15 @@ private:
     
     void run() override
     {
-        using namespace Serialization;
-
         // Construct payload object:
         DynamicObject::Ptr session(new DynamicObject());
-        session->setProperty(Api::V1::email, this->email);
-        session->setProperty(Api::V1::password, this->password);
-        session->setProperty(Api::V1::deviceId, Config::getDeviceId());
-        session->setProperty(Api::V1::platformId, SystemStats::getOperatingSystemName());
+        session->setProperty(Serialization::Api::V1::email, this->email);
+        session->setProperty(Serialization::Api::V1::password, this->password);
+        session->setProperty(Serialization::Api::V1::deviceId, Config::getDeviceId());
+        session->setProperty(Serialization::Api::V1::platformId, SystemStats::getOperatingSystemName());
 
         DynamicObject::Ptr payload(new DynamicObject());
-        payload->setProperty(Api::V1::session, var(session));
+        payload->setProperty(Serialization::Api::V1::session, var(session));
 
         // Clear password just not to keep it in the memory:
         this->password = {};
@@ -79,26 +77,16 @@ private:
         const HelioApiRequest request(HelioFM::Api::V1::login);
         this->response = request.post(var(payload));
 
-        const bool hasToken = this->response.body.hasProperty(Api::V1::token);
-        if (this->response.parseResult.failed() ||
-            this->response.statusCode != 200 || !hasToken)
+        if (!this->response.isValid() ||
+            !this->response.is2xx() ||
+            !this->response.hasProperty(Serialization::Api::V1::token))
         {
-            MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
-            {
-                const auto self = static_cast<SignInThread *>(ptr);
-                self->listener->signInFailed(self->response.errors);
-                return nullptr;
-            }, this);
+            callRequestListener(SignInThread, signInFailed, self->response.getErrors());
             return;
         }
 
-        MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void*
-        {
-            const auto self = static_cast<SignInThread *>(ptr);
-            const auto token = self->response.body.getProperty(Api::V1::token);
-            self->listener->signInOk(self->email, token);
-            return nullptr;
-        }, this);
+        callRequestListener(SignInThread, signInOk,
+            self->email, self->response.getProperty(Serialization::Api::V1::token));
     }
     
     String email;
@@ -107,5 +95,5 @@ private:
 
     SignInThread::Listener *listener;
 
-    friend class SessionManager;
+    friend class BackendService;
 };

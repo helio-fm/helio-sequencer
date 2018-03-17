@@ -24,7 +24,7 @@
 //[MiscUserDefs]
 
 #include "App.h"
-#include "SessionManager.h"
+#include "SessionService.h"
 #include "Icons.h"
 #include "IconComponent.h"
 #include "WorkspaceMenu.h"
@@ -138,8 +138,8 @@ void SignInRow::setSelected(bool shouldBeSelected)
 
 void SignInRow::updateContent()
 {
-    const SessionManager *authManager = App::Helio()->getSessionManager();
-    const bool isLoggedIn = (authManager->getAuthorizationState() == SessionManager::LoggedIn);
+    const SessionService *authManager = App::Helio()->getSessionService();
+    const bool isLoggedIn = (authManager->getAuthorizationState() == SessionService::LoggedIn);
     this->actionLabel->setText(isLoggedIn ? TRANS("menu::workspace::logout") : TRANS("menu::workspace::login"), dontSendNotification);
     this->descriptionLabel->setText(isLoggedIn ? authManager->getUserLoginOfCurrentSession() : TRANS("menu::workspace::login::hint"), dontSendNotification);
 }

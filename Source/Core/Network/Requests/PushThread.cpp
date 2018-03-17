@@ -20,7 +20,7 @@
 #include "VersionControl.h"
 #include "Client.h"
 #include "App.h"
-#include "SessionManager.h"
+#include "SessionService.h"
 #include "Config.h"
 #include "HelioApiRequest.h"
 #include "SerializationKeys.h"
@@ -178,7 +178,7 @@ void PushThread::run()
     URL pushUrl(this->url);
     pushUrl = pushUrl.withFileToUpload("file", tempFile.getFile(), "application/octet-stream");
 
-    const bool loggedIn = (App::Helio()->getSessionManager()->getAuthorizationState() == SessionManager::LoggedIn);
+    const bool loggedIn = (App::Helio()->getSessionService()->getAuthorizationState() == SessionService::LoggedIn);
 
     if (loggedIn)
     {
