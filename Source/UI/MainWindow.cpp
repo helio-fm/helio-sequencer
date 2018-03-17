@@ -25,7 +25,7 @@
 #include "HelioTheme.h"
 #include "BinaryData.h"
 #include "ThemeSettings.h"
-#include "ColourSchemeManager.h"
+#include "ColourSchemesManager.h"
 #include "App.h"
 
 class WorkspaceAndroidProxy : public Component
@@ -112,7 +112,7 @@ DocumentWindow("Helio",
     // HelioTheme have been set previously in App init procedure
     if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
     {
-        ht->initColours(ColourSchemeManager::getInstance().getCurrentScheme());
+        ht->initColours(ColourSchemesManager::getInstance().getCurrentScheme());
     }
 
     const String openGLState = Config::get(Serialization::Core::openGLState);

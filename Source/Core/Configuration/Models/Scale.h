@@ -27,9 +27,6 @@ public:
     Scale(const Scale &other);
     explicit Scale(const String &name);
 
-    // FIXME: a hard-coded list still sucks
-    static Array<Scale> getDefaultScalesCache();
-
     Scale withName(const String &name) const;
     Scale withKeys(const Array<int> &keys) const;
 

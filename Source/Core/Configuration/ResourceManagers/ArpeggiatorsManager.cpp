@@ -23,14 +23,12 @@
 #include "App.h"
 #include "Config.h"
 
+ArpeggiatorsManager::ArpeggiatorsManager() :
+    ResourceManager(Serialization::Resources::arpeggiators) {}
+
 void ArpeggiatorsManager::initialise(const String &commandLine)
 {
-    this->reset();
-    this->reloadArps();
-    const int requestArpsDelayMs = 2000;
-    
-    this->startTimer(requestArpsDelayMs);
-    //Logger::writeToLog(DocumentReader::obfuscate("http://helioworkstation.com/vcs/arps.php"));
+    this->reloadResources();
 }
 
 void ArpeggiatorsManager::shutdown()
@@ -109,40 +107,4 @@ void ArpeggiatorsManager::reset()
 {
     this->arps.clear();
     this->sendChangeMessage();
-}
-
-
-//===----------------------------------------------------------------------===//
-// Private
-//===----------------------------------------------------------------------===//
-
-void ArpeggiatorsManager::reloadArps()
-{
-    // FIXME!!! abstract out all resource managers
-    // and reuse all downloaded-configs and built-in-configs code
-    //if (Config::contains(Serialization::Arps::arpeggiators))
-    //{
-    //    Config::load(Serialization::Arps::arpeggiators, this);
-    //}
-    //else
-    {
-        // built-in arps
-        const auto defaultArps = String(CharPointer_UTF8(BinaryData::Arps_json));
-        const auto arpsState = DocumentHelpers::load(defaultArps);
-        if (arpsState.isValid())
-        {
-            this->deserialize(arpsState);
-        }
-    }
-}
-
-
-//===----------------------------------------------------------------------===//
-// Timer
-//===----------------------------------------------------------------------===//
-
-void ArpeggiatorsManager::timerCallback()
-{
-    this->stopTimer();
-    // TODO update arps from the server
 }

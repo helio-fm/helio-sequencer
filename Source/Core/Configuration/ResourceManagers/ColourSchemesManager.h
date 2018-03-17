@@ -18,24 +18,20 @@
 #pragma once
 
 #include "ColourScheme.h"
+#include "ResourceManager.h"
 
-class ColourSchemeManager :
-    public ChangeBroadcaster,
-    private Serializable
+class ColourSchemesManager : public ResourceManager
 {
 public:
 
-    static ColourSchemeManager &getInstance()
+    static ColourSchemesManager &getInstance()
     {
-        static ColourSchemeManager Instance;
+        static ColourSchemesManager Instance;
         return Instance;
     }
 
     void initialise(const String &commandLine);
     void shutdown();
-
-    void reloadSchemes();
-    void updateSchemes(const ValueTree &schemes);
 
     Array<ColourScheme> getSchemes() const;
     ColourScheme getCurrentScheme() const;
@@ -53,15 +49,12 @@ private:
     
 private:
 
+    ColourSchemesManager();
+
     Array<ColourScheme> schemes;
-
-    ColourSchemeManager() {}
-
-    void saveConfigSchemes();
-    String getConfigSchemes();
 
 private:
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ColourSchemeManager)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ColourSchemesManager)
 
 };

@@ -21,12 +21,6 @@
 #include "SerializationKeys.h"
 #include "ResourceCache.h"
 
-const HotkeyScheme HotkeyScheme::getDefaultScheme()
-{
-    return ResourceCache<HotkeyScheme>::getInstance().
-        get(Serialization::UI::Hotkeys::scheme, "Hotkeys_json").getFirst();
-}
-
 HotkeyScheme::HotkeyScheme(const HotkeyScheme &other)
 {
     operator= (other);

@@ -16,29 +16,33 @@
 */
 
 #include "Common.h"
-#include "ColourSchemeManager.h"
+#include "ColourSchemesManager.h"
 #include "Arpeggiator.h"
 #include "SerializationKeys.h"
 #include "DocumentHelpers.h"
 #include "App.h"
 #include "Config.h"
 
-void ColourSchemeManager::initialise(const String &commandLine)
+
+ColourSchemesManager::ColourSchemesManager() :
+    ResourceManager(Serialization::Resources::colourSchemes) {}
+
+void ColourSchemesManager::initialise(const String &commandLine)
 {
-    this->reloadSchemes();
+    this->reloadResources();
 }
 
-void ColourSchemeManager::shutdown()
+void ColourSchemesManager::shutdown()
 {
     this->reset();
 }
 
-Array<ColourScheme> ColourSchemeManager::getSchemes() const
+Array<ColourScheme> ColourSchemesManager::getSchemes() const
 {
     return this->schemes;
 }
 
-ColourScheme ColourSchemeManager::getCurrentScheme() const
+ColourScheme ColourSchemesManager::getCurrentScheme() const
 {
     if (Config::contains(Serialization::Config::activeColourScheme))
     {
@@ -50,7 +54,7 @@ ColourScheme ColourSchemeManager::getCurrentScheme() const
     return this->schemes[0]; // Will return ColourScheme() if array is empty
 }
 
-void ColourSchemeManager::setCurrentScheme(const ColourScheme &scheme)
+void ColourSchemesManager::setCurrentScheme(const ColourScheme &scheme)
 {
     Config::save(scheme, Serialization::Config::activeColourScheme);
 }
@@ -59,7 +63,7 @@ void ColourSchemeManager::setCurrentScheme(const ColourScheme &scheme)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree ColourSchemeManager::serialize() const
+ValueTree ColourSchemesManager::serialize() const
 {
     ValueTree tree(Serialization::UI::Colours::schemes);
     
@@ -71,7 +75,7 @@ ValueTree ColourSchemeManager::serialize() const
     return tree;
 }
 
-void ColourSchemeManager::deserialize(const ValueTree &tree)
+void ColourSchemesManager::deserialize(const ValueTree &tree)
 {
     this->reset();
     
@@ -90,39 +94,8 @@ void ColourSchemeManager::deserialize(const ValueTree &tree)
     this->sendChangeMessage();
 }
 
-void ColourSchemeManager::reset()
+void ColourSchemesManager::reset()
 {
     this->schemes.clear();
-    this->sendChangeMessage();
-}
-
-
-//===----------------------------------------------------------------------===//
-// Private
-//===----------------------------------------------------------------------===//
-
-void ColourSchemeManager::reloadSchemes()
-{
-    // FIXME!!! create ResourceManager to load default, last loaded or users resource configs
-    //if (Config::contains(Serialization::UI::Colours::schemes))
-    //{
-    //    Config::load(Serialization::UI::Colours::schemes, this);
-    //}
-    //else
-    {
-        // built-in schemes
-        const auto defaultSchemes = String(CharPointer_UTF8(BinaryData::Colours_json));
-        const auto schemesState = DocumentHelpers::load(defaultSchemes);
-        if (schemesState.isValid())
-        {
-            this->deserialize(schemesState);
-        }
-    }
-}
-
-void ColourSchemeManager::updateSchemes(const ValueTree &schemes)
-{
-    this->deserialize(schemes);
-    // TODO save Config::save(this);
     this->sendChangeMessage();
 }

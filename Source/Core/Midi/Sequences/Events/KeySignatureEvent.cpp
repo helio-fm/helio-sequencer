@@ -160,12 +160,7 @@ void KeySignatureEvent::deserialize(const ValueTree &tree)
     this->rootKey = tree.getProperty(Midi::key, 0);
     this->beat = float(tree.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
     this->id = tree.getProperty(Midi::id);
-
-    // Anyway there is only one child scale for now:
-    forEachValueTreeChildWithType(tree, e, Serialization::Core::scale)
-    {
-        this->scale.deserialize(e);
-    }
+    this->scale.deserialize(tree);
 }
 
 void KeySignatureEvent::reset()

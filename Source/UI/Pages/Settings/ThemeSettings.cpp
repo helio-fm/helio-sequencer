@@ -31,7 +31,7 @@
 #include "Workspace.h"
 #include "ThemeSettingsItem.h"
 #include "ColourScheme.h"
-#include "ColourSchemeManager.h"
+#include "ColourSchemesManager.h"
 
 #define THEME_SETTINGS_ROW_HEIGHT (46)
 //[/MiscUserDefs]
@@ -51,23 +51,23 @@ ThemeSettings::ThemeSettings()
     setSize (600, 192);
 
     //[Constructor]
-    this->currentScheme = ColourSchemeManager::getInstance().getCurrentScheme();
+    this->currentScheme = ColourSchemesManager::getInstance().getCurrentScheme();
 
-    const int numSchemes = ColourSchemeManager::getInstance().getSchemes().size();
+    const int numSchemes = ColourSchemesManager::getInstance().getSchemes().size();
     this->setSize(600, 4 + numSchemes * THEME_SETTINGS_ROW_HEIGHT);
 
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(true);
     this->setOpaque(true);
 
-    ColourSchemeManager::getInstance().addChangeListener(this);
+    ColourSchemesManager::getInstance().addChangeListener(this);
     //[/Constructor]
 }
 
 ThemeSettings::~ThemeSettings()
 {
     //[Destructor_pre]
-    ColourSchemeManager::getInstance().removeChangeListener(this);
+    ColourSchemesManager::getInstance().removeChangeListener(this);
     //[/Destructor_pre]
 
     themesList = nullptr;
@@ -115,7 +115,7 @@ void ThemeSettings::changeListenerCallback(ChangeBroadcaster *source)
 Component *ThemeSettings::refreshComponentForRow(int rowNumber, bool isRowSelected,
     Component *existingComponentToUpdate)
 {
-    const auto &schemes = ColourSchemeManager::getInstance().getSchemes();
+    const auto &schemes = ColourSchemesManager::getInstance().getSchemes();
 
     if (rowNumber >= schemes.size()) { return existingComponentToUpdate; }
 
@@ -141,7 +141,7 @@ Component *ThemeSettings::refreshComponentForRow(int rowNumber, bool isRowSelect
 
 int ThemeSettings::getNumRows()
 {
-    const auto &themes = ColourSchemeManager::getInstance().getSchemes();
+    const auto &themes = ColourSchemesManager::getInstance().getSchemes();
     return themes.size();
 }
 

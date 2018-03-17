@@ -33,7 +33,7 @@
 #include "InitScreen.h"
 #include "NavigationSidebar.h"
 #include "ToolsSidebar.h"
-#include "ColourSchemeManager.h"
+#include "ColourSchemesManager.h"
 #include "JsonSerializer.h"
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
@@ -360,7 +360,7 @@ bool MainLayout::keyPressed(const KeyPress &key)
     {
         if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
         {
-            auto scheme = ColourSchemeManager::getInstance().getCurrentScheme();
+            auto scheme = ColourSchemesManager::getInstance().getCurrentScheme();
             ht->updateBackgroundRenders(true);
             ht->initColours(scheme);
             this->repaint();

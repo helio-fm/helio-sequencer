@@ -60,12 +60,6 @@ namespace Serialization
         static const Identifier keySignaturesTrackId = "keySignaturesTrackId";
         static const Identifier timeSignaturesTrackId = "timeSignaturesTrackId";
 
-        // Scales
-        static const Identifier scales = "scales";
-        static const Identifier scale = "scale";
-        static const Identifier scaleName = "name";
-        static const Identifier scaleIntervals = "intervals";
-
         static const Identifier machineID = "deviceId";
         static const Identifier globalConfig = "config";
         static const Identifier openGLState = "openGL";
@@ -86,6 +80,12 @@ namespace Serialization
 
     namespace Midi
     {
+        // Scales
+        static const Identifier scales = "scales";
+        static const Identifier scale = "scale";
+        static const Identifier scaleName = "name";
+        static const Identifier scaleIntervals = "intervals";
+
         // Sequences
         static const Identifier track = "track";
         static const Identifier automation = "automation";
@@ -181,6 +181,7 @@ namespace Serialization
     {
         static const Identifier activeWorkspace = "activeWorkspace";
         static const Identifier activeColourScheme = "activeColourScheme";
+        static const Identifier activeHotkeyScheme = "activeHotkeyScheme";
         static const Identifier currentLocale = "currentLocale";
         static const Identifier lastShownPageId = "lastShownPageId";
         static const Identifier lastUsedScale = "lastUsedScale";
@@ -188,6 +189,16 @@ namespace Serialization
         static const Identifier lastUsedLogin = "lastUsedLogin";
         static const Identifier lastUpdatesInfo = "lastUpdatesInfo";
     } // namespace Config
+
+    // Available types of dynamically fetched resources of configs
+    namespace Resources
+    {
+        static const Identifier translations = "translations";
+        static const Identifier hotkeys = "hotkeys";
+        static const Identifier arpeggiators = "arpeggiators";
+        static const Identifier scales = "scales";
+        static const Identifier colourSchemes = "colourSchemes";
+    }
 
     namespace UI
     {
@@ -371,16 +382,6 @@ namespace Serialization
 
         static const Identifier updatesInfo = "updatesInfo";
 
-        // Available types of dynamically fetched resources of configs
-        namespace Resources
-        {
-            static const Identifier translations = "translations";
-            static const Identifier hotkeys = "hotkeys";
-            static const Identifier arpeggiators = "arpeggiators";
-            static const Identifier scales = "scales";
-            static const Identifier colourSchemes = "colourSchemes";
-        }
-
         namespace PlatformIds
         {
             static const Identifier windows32 = "windows32";
@@ -426,7 +427,7 @@ namespace Serialization
         } // namespace V1
     } // namespace Api
     
-    namespace Locales
+    namespace Translations
     {
         static const Identifier metaSymbol = "{x}";
 
@@ -438,13 +439,13 @@ namespace Serialization
         static const Identifier literal = "literal";
         static const Identifier author = "author";
         static const Identifier name = "name";
+        static const Identifier translation = "translation";
         static const Identifier id = "id";
 
         static const Identifier pluralEquation = "pluralEquation";
         static const Identifier pluralLiteral = "pluralLiteral";
         static const Identifier pluralForm = "pluralForm";
-        static const Identifier translation = "translation";
-    }  // namespace Locales
+    }  // namespace Translations
     
     namespace Arps
     {

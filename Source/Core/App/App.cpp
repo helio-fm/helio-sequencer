@@ -18,10 +18,15 @@
 #include "Common.h"
 #include "App.h"
 #include "AudioCore.h"
-#include "TranslationManager.h"
-#include "ArpeggiatorsManager.h"
 #include "SessionService.h"
 #include "UpdatesService.h"
+
+#include "TranslationsManager.h"
+#include "ArpeggiatorsManager.h"
+#include "ColourSchemesManager.h"
+#include "HotkeySchemesManager.h"
+#include "ArpeggiatorsManager.h"
+#include "ScalesManager.h"
 
 #include "HelioTheme.h"
 #include "ThemeSettings.h"
@@ -38,9 +43,6 @@
 #include "SerializationKeys.h"
 
 #include "Icons.h"
-#include "ColourSchemeManager.h"
-#include "ArpeggiatorsManager.h"
-#include "TranslationManager.h"
 #include "MainWindow.h"
 #include "Workspace.h"
 #include "RootTreeItem.h"
@@ -277,20 +279,22 @@ void App::initialise(const String &commandLine)
         this->clipboard = new InternalClipboard();
         this->config = new class Config();
     
-        // TODO: 
-        // there should be a number of ResourceManagers
-        // for translations, arps, colour schemes, temperaments, scales, etc.
-        TranslationManager::getInstance().initialise(commandLine);
+        // TODO: get rid of singletons somehow
+        TranslationsManager::getInstance().initialise(commandLine);
         ArpeggiatorsManager::getInstance().initialise(commandLine);
-        ColourSchemeManager::getInstance().initialise(commandLine);
+        ColourSchemesManager::getInstance().initialise(commandLine);
+        HotkeySchemesManager::getInstance().initialise(commandLine);
+        ArpeggiatorsManager::getInstance().initialise(commandLine);
+        ScalesManager::getInstance().initialise(commandLine);
 
         this->workspace = new class Workspace();
         this->window = new MainWindow();
 
+        // Prepare backend APIs communication services
         this->sessionService = new SessionService();
         this->updatesService = new UpdatesService();
 
-        TranslationManager::getInstance().addChangeListener(this);
+        TranslationsManager::getInstance().addChangeListener(this);
         
         // Desktop versions will be initialised by InitScreen component.
 #if HELIO_MOBILE
@@ -315,7 +319,7 @@ void App::shutdown()
 {
     if (this->runMode == App::NORMAL)
     {
-        TranslationManager::getInstance().removeChangeListener(this);
+        TranslationsManager::getInstance().removeChangeListener(this);
 
         Logger::writeToLog("App::shutdown");
 
@@ -338,9 +342,13 @@ void App::shutdown()
         // Clear cache to avoid leak check to fire.
         Icons::clearPrerenderedCache();
         Icons::clearBuiltInImages();
-        ColourSchemeManager::getInstance().shutdown();
+
+        ScalesManager::getInstance().shutdown();
         ArpeggiatorsManager::getInstance().shutdown();
-        TranslationManager::getInstance().shutdown();
+        HotkeySchemesManager::getInstance().shutdown();
+        ColourSchemesManager::getInstance().shutdown();
+        ArpeggiatorsManager::getInstance().shutdown();
+        TranslationsManager::getInstance().shutdown();
         
         Logger::setCurrentLogger(nullptr);
     }

@@ -17,32 +17,27 @@
 
 #pragma once
 
-class HotkeyScheme final : public Serializable
+#include "HotkeyScheme.h"
+#include "ResourceManager.h"
+
+class HotkeySchemesManager : public ResourceManager
 {
 public:
 
-    HotkeyScheme();
-    HotkeyScheme(const HotkeyScheme &other);
-
-    static const HotkeyScheme getDefaultScheme();
-
-    class Hotkey final
+    static HotkeySchemesManager &getInstance()
     {
-    public:
-        KeyPress keyPress;
-        String componentId;
-        int commandId;
-    };
+        static HotkeySchemesManager Instance;
+        return Instance;
+    }
 
-    bool dispatchKeyPress(KeyPress keyPress,
-        WeakReference<Component> keyPressReceiver,
-        WeakReference<Component> messageReceiverParent);
+    void initialise(const String &commandLine);
+    void shutdown();
 
-    bool dispatchKeyStateChange(bool isKeyDown,
-        WeakReference<Component> keyPressReceiver,
-        WeakReference<Component> messageReceiverParent);
+    const Array<HotkeyScheme> &getSchemes() const noexcept;
+    const HotkeyScheme &getCurrentScheme() const noexcept;
+    void setCurrentScheme(const HotkeyScheme &scheme);
 
-    HotkeyScheme &operator=(const HotkeyScheme &other);
+private:
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -51,20 +46,16 @@ public:
     ValueTree serialize() const override;
     void deserialize(const ValueTree &tree) override;
     void reset() override;
+    
+private:
+
+    HotkeySchemesManager();
+
+    Array<HotkeyScheme> schemes;
+    HotkeyScheme activeScheme;
 
 private:
 
-    String name;
-    Array<Hotkey> keyPresses;
-    Array<Hotkey> keyDowns;
-    Array<Hotkey> keyUps;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HotkeySchemesManager)
 
-    WeakReference<Component> lastReceiver;
-    HashMap<String, WeakReference<Component>> receiverChildren;
-
-    bool sendHotkeyCommand(Hotkey key,
-        WeakReference<Component> root,
-        WeakReference<Component> target);
-
-    JUCE_LEAK_DETECTOR(HotkeyScheme)
 };

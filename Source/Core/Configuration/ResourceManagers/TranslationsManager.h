@@ -17,27 +17,34 @@
 
 #pragma once
 
-#include "Arpeggiator.h"
+#include "Translation.h"
+#include "ResourceManager.h"
 
-class ArpeggiatorsManager :
-    public ChangeBroadcaster,
-    private Serializable,
-    private Timer
+class TranslationsManager final : public ResourceManager
 {
 public:
 
-    static ArpeggiatorsManager &getInstance()
+    static TranslationsManager &getInstance()
     {
-        static ArpeggiatorsManager Instance;
+        static TranslationsManager Instance;
         return Instance;
     }
-    
+
     void initialise(const String &commandLine);
     void shutdown();
-        
-    Array<Arpeggiator> getArps() const;
-    bool replaceArpWithId(const String &id, const Arpeggiator &arp);
-    void addArp(const Arpeggiator &arp);
+
+    const Array<Translation::Ptr> getAvailableLocales() const;
+    const Translation::Ptr getCurrentLocale() const noexcept;
+
+    void loadLocaleWithName(const String &localeName);
+
+    //===------------------------------------------------------------------===//
+    // Helpers
+    //===------------------------------------------------------------------===//
+    
+    String translate(const String &text);
+    String translate(const String &text, const String &resultIfNotFound);
+    String translate(const String &baseLiteral, int64 targetNumber);
     
 private:
     
@@ -50,15 +57,23 @@ private:
     void reset() override;
     
 private:
-    
-    Array<Arpeggiator> arps;
-    
-    void timerCallback() override;
-    void reloadArps();
         
+    TranslationsManager();
+
+    ScopedPointer<JavascriptEngine> engine;
+    String equationResult;
+
+    HashMap<String, Translation::Ptr> availableTranslations;
+
+    SpinLock currentTranslationLock;
+    Translation::Ptr currentTranslation;
+    
+    String getSelectedLocaleId() const;
+
+    friend struct PluralEquationWrapper;
+    
 private:
 
-    ArpeggiatorsManager() {}
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ArpeggiatorsManager)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TranslationsManager)
 
 };

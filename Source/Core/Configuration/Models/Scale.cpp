@@ -20,12 +20,6 @@
 #include "SerializationKeys.h"
 #include "ResourceCache.h"
 
-Array<Scale> Scale::getDefaultScalesCache()
-{
-    return ResourceCache<Scale>::getInstance().
-        get(Serialization::Core::scale, "Scales_json");
-}
-
 enum Key
 {
     I = 0,
@@ -203,8 +197,8 @@ bool Scale::isEquivalentTo(const Scale &other) const
 
 ValueTree Scale::serialize() const
 {
-    ValueTree tree(Serialization::Core::scale);
-    tree.setProperty(Serialization::Core::scaleName, this->name, nullptr);
+    ValueTree tree(Serialization::Midi::scale);
+    tree.setProperty(Serialization::Midi::scaleName, this->name, nullptr);
 
     int prevKey = 0;
     String intervals;
@@ -218,22 +212,22 @@ ValueTree Scale::serialize() const
     }
 
     intervals += String(CHROMATIC_SCALE_SIZE - prevKey);
-    tree.setProperty(Serialization::Core::scaleIntervals, intervals, nullptr);
+    tree.setProperty(Serialization::Midi::scaleIntervals, intervals, nullptr);
 
     return tree;
 }
 
 void Scale::deserialize(const ValueTree &tree)
 {
-    const auto root = tree.hasType(Serialization::Core::scale) ?
-        tree : tree.getChildWithName(Serialization::Core::scale);
+    const auto root = tree.hasType(Serialization::Midi::scale) ?
+        tree : tree.getChildWithName(Serialization::Midi::scale);
 
     if (!root.isValid()) { return; }
 
     this->reset();
 
-    this->name = root.getProperty(Serialization::Core::scaleName, this->name);
-    const String intervals = root.getProperty(Serialization::Core::scaleIntervals);
+    this->name = root.getProperty(Serialization::Midi::scaleName, this->name);
+    const String intervals = root.getProperty(Serialization::Midi::scaleIntervals);
     StringArray tokens;
     tokens.addTokens(intervals, true);
     int key = 0;

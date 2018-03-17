@@ -118,11 +118,11 @@ inline float roundBeat(float beat)
 // Internationalization
 //===----------------------------------------------------------------------===//
 
-#include "TranslationManager.h"
+#include "TranslationsManager.h"
 
 #if defined TRANS
 #   undef TRANS
 #endif
 
-#define TRANS(stringLiteral) TranslationManager::getInstance().translate(stringLiteral)
-#define TRANS_PLURAL(stringLiteral, intValue) TranslationManager::getInstance().translate(stringLiteral, intValue)
+#define TRANS(stringLiteral) TranslationsManager::getInstance().translate(stringLiteral)
+#define TRANS_PLURAL(stringLiteral, intValue) TranslationsManager::getInstance().translate(stringLiteral, intValue)

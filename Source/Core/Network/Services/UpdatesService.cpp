@@ -19,8 +19,11 @@
 #include "UpdatesService.h"
 #include "Config.h"
 
-#include "TranslationManager.h"
-#include "ColourSchemeManager.h"
+#include "TranslationsManager.h"
+#include "ColourSchemesManager.h"
+#include "HotkeySchemesManager.h"
+#include "ArpeggiatorsManager.h"
+#include "ScalesManager.h"
 
 // Try to update resources and versions info after:
 #define UPDATE_INFO_TIMEOUT_MS (1000 * 10)
@@ -129,25 +132,28 @@ void UpdatesService::requestResourceOk(const Identifier &resourceId, const Value
 {
     using namespace Serialization;
 
-    if (resourceId == Api::Resources::translations)
+    // TODO should loke more like:
+    //App::Helio().getResourcePoolFor(resourceId).onDownloadedLatestResource(resource);
+
+    if (resourceId == Resources::translations)
     {
-        TranslationManager::getInstance().updateLocales(resource);
+        TranslationsManager::getInstance().onDownloadedLatestResource(resource);
     }
-    else if (resourceId == Api::Resources::colourSchemes)
+    else if (resourceId == Resources::colourSchemes)
     {
-        ColourSchemeManager::getInstance().updateSchemes(resource);
+        ColourSchemesManager::getInstance().onDownloadedLatestResource(resource);
     }
-    else if (resourceId == Api::Resources::scales)
+    else if (resourceId == Resources::hotkeys)
     {
-        // TODO
+        HotkeySchemesManager::getInstance().onDownloadedLatestResource(resource);
     }
-    else if (resourceId == Api::Resources::hotkeys)
+    else if (resourceId == Resources::arpeggiators)
     {
-        // TODO
+        ArpeggiatorsManager::getInstance().onDownloadedLatestResource(resource);
     }
-    else if (resourceId == Api::Resources::arpeggiators)
+    else if (resourceId == Resources::scales)
     {
-        // TODO
+        ScalesManager::getInstance().onDownloadedLatestResource(resource);
     }
 }
 
