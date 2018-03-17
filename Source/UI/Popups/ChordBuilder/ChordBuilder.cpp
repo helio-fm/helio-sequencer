@@ -76,7 +76,7 @@ public:
         for (int i = 0; i < scales.size(); ++i)
         {
             cmds.add(CommandItem::withParams(String::empty,
-                CommandIDs::SelectScale + i, scales[i].getName())->withAlignment(CommandItem::Right));
+                CommandIDs::SelectScale + i, scales[i].getLocalizedName())->withAlignment(CommandItem::Right));
         }
         this->updateContent(cmds, CommandPanel::SlideLeft, false);
     }
@@ -164,10 +164,10 @@ ChordBuilder::ChordBuilder(PianoRoll *caller, MidiSequence *layer)
 
 
     //[UserPreSize]
-    if (Config::contains(Serialization::Core::lastUsedScale))
+    if (Config::contains(Serialization::Config::lastUsedScale))
     {
         Scale s;
-        Config::load(Serialization::Core::lastUsedScale, &s);
+        Config::load(s, Serialization::Config::lastUsedScale);
         if (s.isValid())
         {
             this->scale = s;
@@ -383,7 +383,7 @@ void ChordBuilder::applyScale(const Scale &scale)
     if (this->scale != scale)
     {
         this->scale = scale;
-        Config::save(Serialization::Core::lastUsedScale, &this->scale);
+        Config::save(this->scale, Serialization::Config::lastUsedScale);
         this->buildChord(this->scale.getTriad(this->function, true));
         SHOW_CHORD_TOOLTIP(rootKey, funName[this->function]);
     }

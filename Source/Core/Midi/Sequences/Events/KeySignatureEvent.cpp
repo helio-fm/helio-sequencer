@@ -51,7 +51,7 @@ String KeySignatureEvent::toString() const
 {
     const int index = this->rootKey % CHROMATIC_SCALE_SIZE;
     const String keyName = Scale::getKeyNames()[index];
-    return keyName + ", " + this->scale.getName();
+    return keyName + ", " + this->scale.getLocalizedName();
 }
 
 Array<MidiMessage> KeySignatureEvent::toMidiMessages() const

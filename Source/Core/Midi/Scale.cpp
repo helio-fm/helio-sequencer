@@ -112,11 +112,6 @@ bool Scale::isChromatic() const noexcept
     return this->keys == getChromaticKeys();
 }
 
-String Scale::getName() const noexcept
-{
-    return this->name;
-}
-
 String Scale::getLocalizedName() const
 {
     return TRANS(this->name);

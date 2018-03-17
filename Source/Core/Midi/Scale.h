@@ -58,7 +58,6 @@ public:
     bool isChromatic() const noexcept;
     bool isValid() const noexcept;
     int getSize() const noexcept;
-    String getName() const noexcept;
     String getLocalizedName() const;
 
     // Render target scale chords into chromatic scale (tonic = 0)
