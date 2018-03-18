@@ -281,7 +281,7 @@ void HeadlineItem::showMenu()
         HeadlineDropdown *hd = new HeadlineDropdown(this->item);
         hd->setTopLeftPosition(this->getPosition());
         hd->setAlpha(0.f);
-        App::Layout().showModalNonOwnedDialog(hd);
+        App::Layout().showModalComponentUnowned(hd);
     }
 }
 

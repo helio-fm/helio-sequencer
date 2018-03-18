@@ -22,6 +22,7 @@
 #include "PullThread.h"
 #include "RemovalThread.h"
 #include "App.h"
+#include "MainLayout.h"
 #include "ProgressTooltip.h"
 #include "FailTooltip.h"
 #include "SuccessTooltip.h"
@@ -123,35 +124,35 @@ void Client::changeListenerCallback(ChangeBroadcaster *source)
         if (this->lastPushState == SyncThread::connect)
         {
             const String tooltip(TRANS("vcs::push::contacting::progress"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
             
             this->progressBar = new ProgressTooltip();
-            App::Helio()->showModalComponent(this->progressBar);
+            App::Layout().showModalComponentUnowned(this->progressBar);
         }
         else if (this->lastPushState == SyncThread::connectError)
         {
             this->deletePushThread();
 
             const String tooltip(TRANS("vcs::push::contacting::error"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
 
             this->progressBar = nullptr;
-            App::Helio()->showModalComponent(new FailTooltip());
+            App::Layout().showModalComponentUnowned(new FailTooltip());
         }
         else if (this->lastPushState == SyncThread::fetchHistory)
         {
             const String tooltip(TRANS("vcs::push::fetching::progress"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
         }
         else if (this->lastPushState == SyncThread::fetchHistoryError)
         {
             this->deletePushThread();
 
             const String tooltip(TRANS("vcs::push::fetching::error"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
             
             this->progressBar = nullptr;
-            App::Helio()->showModalComponent(new FailTooltip());
+            App::Layout().showModalComponentUnowned(new FailTooltip());
         }
         else if (this->lastPushState == SyncThread::merge)
         {
@@ -164,55 +165,55 @@ void Client::changeListenerCallback(ChangeBroadcaster *source)
             this->deletePushThread();
 
             const String tooltip(TRANS("vcs::push::merging::uptodate"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
             
             this->progressBar = nullptr;
-            App::Helio()->showModalComponent(new SuccessTooltip());
+            App::Layout().showModalComponentUnowned(new SuccessTooltip());
         }
         else if (this->lastPushState == SyncThread::mergeError)
         {
             this->deletePushThread();
 
             const String tooltip(TRANS("vcs::push::merging::error"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
             
             this->progressBar = nullptr;
-            App::Helio()->showModalComponent(new FailTooltip());
+            App::Layout().showModalComponentUnowned(new FailTooltip());
         }
         else if (this->lastPushState == SyncThread::sync)
         {
             const String tooltip(TRANS("vcs::push::sync::progress"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
         }
         else if (this->lastPushState == SyncThread::unauthorizedError)
         {
             this->deletePushThread();
             
             const String tooltip(TRANS("vcs::push::sync::error::unauthorized"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
             
             this->progressBar = nullptr;
-            App::Helio()->showModalComponent(new FailTooltip());
+            App::Layout().showModalComponentUnowned(new FailTooltip());
         }
         else if (this->lastPushState == SyncThread::forbiddenError)
         {
             this->deletePushThread();
             
             const String tooltip(TRANS("vcs::push::sync::error::forbidden"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
             
             this->progressBar = nullptr;
-            App::Helio()->showModalComponent(new FailTooltip());
+            App::Layout().showModalComponentUnowned(new FailTooltip());
         }
         else if (this->lastPushState == SyncThread::syncError)
         {
             this->deletePushThread();
 
             const String tooltip(TRANS("vcs::push::sync::error"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
             
             this->progressBar = nullptr;
-            App::Helio()->showModalComponent(new FailTooltip());
+            App::Layout().showModalComponentUnowned(new FailTooltip());
         }
         else if (this->lastPushState == SyncThread::allDone)
         {
@@ -220,10 +221,10 @@ void Client::changeListenerCallback(ChangeBroadcaster *source)
             this->deletePushThread();
 
             const String tooltip(TRANS("vcs::push::done"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
 
             this->progressBar = nullptr;
-            App::Helio()->showModalComponent(new SuccessTooltip());
+            App::Layout().showModalComponentUnowned(new SuccessTooltip());
         }
     }
     
@@ -234,35 +235,35 @@ void Client::changeListenerCallback(ChangeBroadcaster *source)
         if (this->lastPullState == SyncThread::connect)
         {
             const String tooltip(TRANS("vcs::pull::contacting::progress"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
             
             this->progressBar = new ProgressTooltip();
-            App::Helio()->showModalComponent(this->progressBar);
+            App::Layout().showModalComponentUnowned(this->progressBar);
         }
         else if (this->lastPullState == SyncThread::connectError)
         {
             this->deletePullThread();
 
             const String tooltip(TRANS("vcs::pull::contacting::error"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
             
             this->progressBar = nullptr;
-            App::Helio()->showModalComponent(new FailTooltip());
+            App::Layout().showModalComponentUnowned(new FailTooltip());
         }
         else if (this->lastPullState == SyncThread::fetchHistory)
         {
             const String tooltip(TRANS("vcs::pull::fetching::progress"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
         }
         else if (this->lastPullState == SyncThread::fetchHistoryError)
         {
             this->deletePullThread();
 
             const String tooltip(TRANS("vcs::pull::fetching::error"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
             
             this->progressBar = nullptr;
-            App::Helio()->showModalComponent(new FailTooltip());
+            App::Layout().showModalComponentUnowned(new FailTooltip());
         }
         else if (this->lastPullState == SyncThread::merge)
         {
@@ -275,20 +276,20 @@ void Client::changeListenerCallback(ChangeBroadcaster *source)
             this->deletePullThread();
 
             const String tooltip(TRANS("vcs::pull::merging::uptodate"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
             
             this->progressBar = nullptr;
-            App::Helio()->showModalComponent(new SuccessTooltip());
+            App::Layout().showModalComponentUnowned(new SuccessTooltip());
         }
         else if (this->lastPullState == SyncThread::mergeError)
         {
             this->deletePullThread();
 
             const String tooltip(TRANS("vcs::pull::merging::error"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
             
             this->progressBar = nullptr;
-            App::Helio()->showModalComponent(new FailTooltip());
+            App::Layout().showModalComponentUnowned(new FailTooltip());
         }
         else if (this->lastPullState == SyncThread::allDone)
         {
@@ -298,10 +299,10 @@ void Client::changeListenerCallback(ChangeBroadcaster *source)
             this->deletePullThread();
             
             const String tooltip(TRANS("vcs::pull::done"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
             
             this->progressBar = nullptr;
-            App::Helio()->showModalComponent(new SuccessTooltip());
+            App::Layout().showModalComponentUnowned(new SuccessTooltip());
         }
     }
     
@@ -312,55 +313,55 @@ void Client::changeListenerCallback(ChangeBroadcaster *source)
         if (this->lastRemovalState == SyncThread::connect)
         {
             const String tooltip(TRANS("vcs::remove::contacting::progress"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
             
             this->progressBar = new ProgressTooltip();
-            App::Helio()->showModalComponent(this->progressBar);
+            App::Layout().showModalComponentUnowned(this->progressBar);
         }
         else if (this->lastRemovalState == SyncThread::connectError)
         {
             this->deleteRemovalThread();
             
             const String tooltip(TRANS("vcs::remove::contacting::error"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
             
             this->progressBar = nullptr;
-            App::Helio()->showModalComponent(new FailTooltip());
+            App::Layout().showModalComponentUnowned(new FailTooltip());
         }
         else if (this->lastRemovalState == SyncThread::sync)
         {
             const String tooltip(TRANS("Purging history.."));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
         }
         else if (this->lastRemovalState == SyncThread::syncError)
         {
             this->deleteRemovalThread();
             
             const String tooltip(TRANS("vcs::remove::sync::error"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
             
             this->progressBar = nullptr;
-            App::Helio()->showModalComponent(new FailTooltip());
+            App::Layout().showModalComponentUnowned(new FailTooltip());
         }
         else if (this->lastRemovalState == SyncThread::unauthorizedError)
         {
             this->deleteRemovalThread();
             
             const String tooltip(TRANS("vcs::remove::sync::error::unauthorized"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
             
             this->progressBar = nullptr;
-            App::Helio()->showModalComponent(new FailTooltip());
+            App::Layout().showModalComponentUnowned(new FailTooltip());
         }
         else if (this->lastRemovalState == SyncThread::forbiddenError)
         {
             this->deleteRemovalThread();
             
             const String tooltip(TRANS("vcs::remove::sync::error::forbidden"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
             
             this->progressBar = nullptr;
-            App::Helio()->showModalComponent(new FailTooltip());
+            App::Layout().showModalComponentUnowned(new FailTooltip());
         }
         else if (this->lastRemovalState == SyncThread::notFoundError)
         {
@@ -373,10 +374,10 @@ void Client::changeListenerCallback(ChangeBroadcaster *source)
             this->deleteRemovalThread();
             
             const String tooltip(TRANS("vcs::remove::done"));
-            App::Helio()->showTooltip(tooltip);
+            App::Layout().showTooltip(tooltip);
             
             this->progressBar = nullptr;
-            App::Helio()->showModalComponent(new SuccessTooltip());
+            App::Layout().showModalComponentUnowned(new SuccessTooltip());
         }
     }
 

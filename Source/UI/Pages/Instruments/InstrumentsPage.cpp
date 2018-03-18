@@ -158,18 +158,16 @@ void InstrumentsPage::buttonClicked (Button* buttonThatWasClicked)
         if (this->pluginManager.getList().getType(selectedRow) != nullptr)
         {
             const PluginDescription pluginDescription(*this->pluginManager.getList().getType(selectedRow));
-
-            Instrument *instrument =
-                App::Workspace().getAudioCore().
-                addInstrument(pluginDescription,
-                              pluginDescription.descriptiveName);
-
-            this->instrumentsRoot.addInstrumentTreeItem(instrument);
-            this->pluginsList->setSelectedRows(SparseSet<int>());
+            App::Workspace().getAudioCore().addInstrument(pluginDescription, pluginDescription.descriptiveName,
+                [this](Instrument *instrument)
+            {
+                this->instrumentsRoot.addInstrumentTreeItem(instrument);
+                this->pluginsList->setSelectedRows(SparseSet<int>());
+            });
         }
         else
         {
-            App::Helio()->showTooltip(TRANS("warnings::noinstrument"));
+            App::Layout().showTooltip(TRANS("warnings::noinstrument"));
         }
 
         //[/UserButtonCode_initButton]
@@ -188,7 +186,7 @@ void InstrumentsPage::buttonClicked (Button* buttonThatWasClicked)
         }
         else
         {
-            App::Helio()->showTooltip(TRANS("warnings::noinstrument"));
+            App::Layout().showTooltip(TRANS("warnings::noinstrument"));
         }
 
         //[/UserButtonCode_removeButton]
@@ -205,7 +203,7 @@ void InstrumentsPage::buttonClicked (Button* buttonThatWasClicked)
 
         if (fc.browseForDirectory())
         {
-            App::Helio()->showModalComponent(new ProgressTooltip());
+            App::Layout().showModalComponentUnowned(new ProgressTooltip());
             this->pluginManager.scanFolderAndAddResults(fc.getResult());
             this->pluginsList->updateContent();
         }
@@ -223,7 +221,7 @@ void InstrumentsPage::handleCommandMessage (int commandId)
     //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::ScanAllPlugins)
     {
-        App::Helio()->showModalComponent(new ProgressTooltip());
+        App::Layout().showModalComponentUnowned(new ProgressTooltip());
         this->pluginManager.runInitialScan();
         this->hideGreeting();
 

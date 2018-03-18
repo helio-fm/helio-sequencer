@@ -331,7 +331,7 @@ void AnnotationsTrackMap<T>::showContextMenuFor(T *nc)
     {
         Component *dialog =
             AnnotationDialog::createEditingDialog(*this, nc->getEvent());
-        App::Layout().showModalNonOwnedDialog(dialog);
+        App::Layout().showModalComponentUnowned(dialog);
     }
 }
 

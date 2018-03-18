@@ -137,7 +137,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
             
             if (hasTempoTrack)
             {
-                App::Helio()->showTooltip(TRANS("menu::project::addtempo::failed"));
+                App::Layout().showTooltip(TRANS("menu::project::addtempo::failed"));
             }
             else
             {
@@ -165,7 +165,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
                                  CommandIDs::AddMidiTrackConfirmed,
                                  CommandIDs::Cancel);
             
-            App::Layout().showModalNonOwnedDialog(inputDialog);
+            App::Layout().showModalComponentUnowned(inputDialog);
             return;
         }
             
@@ -264,7 +264,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
                                         CommandIDs::DeleteProjectConfirmed1,
                                         CommandIDs::Cancel);
             
-            App::Layout().showModalNonOwnedDialog(confirmationDialog);
+            App::Layout().showModalComponentUnowned(confirmationDialog);
             return;
         }
             
@@ -279,7 +279,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
                                  CommandIDs::DeleteProjectConfirmed2,
                                  CommandIDs::Cancel);
             
-            App::Layout().showModalNonOwnedDialog(inputDialog);
+            App::Layout().showModalComponentUnowned(inputDialog);
             return;
         }
 
@@ -367,10 +367,10 @@ void ProjectCommandPanel::proceedToRenderDialog(const String &extension)
     
     if (fc.browseForFileToSave(true))
     {
-        App::Helio()->showModalComponent(new RenderDialog(this->project, fc.getResult(), extension));
+        App::Layout().showModalComponentUnowned(new RenderDialog(this->project, fc.getResult(), extension));
     }
 #else
-    App::Helio()->showModalComponent(new RenderDialog(this->project, initialPath.getChildFile(safeRenderName), extension));
+    App::Layout().showModalComponentUnowned(new RenderDialog(this->project, initialPath.getChildFile(safeRenderName), extension));
 #endif
     
     this->getParentComponent()->exitModalState(0);

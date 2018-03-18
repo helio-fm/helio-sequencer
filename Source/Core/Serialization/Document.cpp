@@ -20,6 +20,7 @@
 #include "DocumentOwner.h"
 #include "DocumentHelpers.h"
 #include "App.h"
+#include "MainLayout.h"
 
 Document::Document(DocumentOwner &documentOwner,
                    const String &defaultName,
@@ -139,7 +140,7 @@ void Document::exportAs(const String &exportExtension,
         
         if (savedOk)
         {
-            App::Helio()->showTooltip("dialog::document::export::done", 3000);
+            App::Layout().showTooltip("dialog::document::export::done", 3000);
         }
     }
 

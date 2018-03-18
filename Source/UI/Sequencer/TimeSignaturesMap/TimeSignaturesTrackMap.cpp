@@ -362,7 +362,7 @@ void TimeSignaturesTrackMap<T>::showContextMenuFor(T *nc)
     {
         Component *dialog =
             TimeSignatureDialog::createEditingDialog(*this, nc->getEvent());
-        App::Layout().showModalNonOwnedDialog(dialog);
+        App::Layout().showModalComponentUnowned(dialog);
     }
 }
 

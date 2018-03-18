@@ -312,7 +312,7 @@ if (! App::isRunningOnPhone()) { \
     new ChordTooltip(ROOT_KEY,\
                      this->scale.getLocalizedName(),\
                      FUNCTION_NAME);\
-    App::Helio()->showTooltip(tip, this->getScreenBounds());\
+    App::Layout().showTooltip(tip, this->getScreenBounds());\
 }
 
 void ChordBuilder::onPopupButtonFirstAction(PopupButton *button)
@@ -324,7 +324,7 @@ void ChordBuilder::onPopupButtonFirstAction(PopupButton *button)
         const double retinaScale = Desktop::getInstance().getDisplays().getMainDisplay().scale;
         const bool draggedThePopup = (double(dragDistance) > retinaScale);
         if (draggedThePopup || dragPositionNotInitialized) {
-            App::Helio()->showTooltip(nullptr); // hide if any
+            App::Layout().showTooltip(nullptr); // hide if any
             this->buildNewNote(true);
         } else {
             //App::Helio()->showTooltip(createLabel(rootKey));
@@ -359,7 +359,7 @@ bool ChordBuilder::onPopupButtonDrag(PopupButton *button)
         if (keyHasChanged)
         {
             const String rootKey = keyName(this->targetKey);
-            App::Helio()->showTooltip(TRANS("popup::chord::rootkey") + ": " + rootKey);
+            App::Layout().showTooltip(TRANS("popup::chord::rootkey") + ": " + rootKey);
         }
 
         // prevents it to be clicked and hid

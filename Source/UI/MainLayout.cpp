@@ -238,7 +238,7 @@ void MainLayout::showTooltip(Component *newTooltip, Rectangle<int> callerScreenB
     this->tooltipContainer->showWithComponent(newTooltip, callerScreenBounds, timeOutMs);
 }
 
-void MainLayout::showModalNonOwnedDialog(Component *targetComponent)
+void MainLayout::showModalComponentUnowned(Component *targetComponent)
 {
     ScopedPointer<Component> ownedTarget(targetComponent);
 
@@ -254,7 +254,7 @@ void MainLayout::showModalNonOwnedDialog(Component *targetComponent)
     ownedTarget.release();
 }
 
-void MainLayout::showBlockingNonModalDialog(Component *targetComponent)
+void MainLayout::showBlockerUnowned(Component *targetComponent)
 {
     class Blocker : public Component
     {

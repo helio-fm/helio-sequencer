@@ -256,25 +256,25 @@ void VersionControlTreeItem::toggleQuickStash()
     {
         if (this->vcs->getHead().hasAnythingOnTheStage())
         {
-            App::Helio()->showTooltip("Cannot revert, stage is not empty!");
-            App::Helio()->showModalComponent(new FailTooltip());
+            App::Layout().showTooltip("Cannot revert, stage is not empty!");
+            App::Layout().showModalComponentUnowned(new FailTooltip());
             return;
         }
         
         this->vcs->applyQuickStash();
-        App::Helio()->showTooltip("Toggle changes: latest state");
+        App::Layout().showTooltip("Toggle changes: latest state");
     }
     else
     {
         if (! this->vcs->getHead().hasAnythingOnTheStage())
         {
-            App::Helio()->showTooltip("Cannot reset, stage is empty!");
-            App::Helio()->showModalComponent(new FailTooltip());
+            App::Layout().showTooltip("Cannot reset, stage is empty!");
+            App::Layout().showModalComponentUnowned(new FailTooltip());
             return;
         }
         
         this->vcs->quickStashAll();
-        App::Helio()->showTooltip("Toggle changes: original state");
+        App::Layout().showTooltip("Toggle changes: original state");
     }
 }
 

@@ -24,6 +24,7 @@
 //[MiscUserDefs]
 #include "App.h"
 #include "MainWindow.h"
+#include "MainLayout.h"
 #include "ModalDialogConfirmation.h"
 #include "CommandIDs.h"
 //[/MiscUserDefs]
@@ -112,7 +113,7 @@ void OpenGLSettings::buttonClicked (Button* buttonThatWasClicked)
                                         CommandIDs::ApplyOpenGLRenderer,
                                         CommandIDs::Cancel);
 
-            App::Helio()->showModalComponent(confirmationDialog);
+            App::Layout().showModalComponentUnowned(confirmationDialog);
         }
         //[/UserButtonCode_openGLRendererButton]
     }

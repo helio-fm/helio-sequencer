@@ -1107,7 +1107,7 @@ void HybridRoll::handleCommandMessage(int commandId)
             (this->project.getTimeline()->getAnnotations()->getSequence()))
         {
             Component *dialog = AnnotationDialog::createAddingDialog(*this, sequence, targetBeat);
-            App::Layout().showModalNonOwnedDialog(dialog);
+            App::Layout().showModalComponentUnowned(dialog);
         }
     }
     else if (commandId == CommandIDs::AddTimeSignature)
@@ -1117,7 +1117,7 @@ void HybridRoll::handleCommandMessage(int commandId)
             (this->project.getTimeline()->getTimeSignatures()->getSequence()))
         {
             Component *dialog = TimeSignatureDialog::createAddingDialog(*this, sequence, targetBeat);
-            App::Layout().showModalNonOwnedDialog(dialog);
+            App::Layout().showModalComponentUnowned(dialog);
         }
     }
     else if (commandId == CommandIDs::AddKeySignature)
@@ -1128,7 +1128,7 @@ void HybridRoll::handleCommandMessage(int commandId)
         {
             Component *dialog = KeySignatureDialog::createAddingDialog(*this,
                 this->getTransport(), sequence, targetBeat);
-            App::Layout().showModalNonOwnedDialog(dialog);
+            App::Layout().showModalComponentUnowned(dialog);
         }
     }
 }

@@ -72,12 +72,6 @@ public:
     
     static void dismissAllModalComponents();
 
-    void showTooltip(const String &text, int timeOutMs = 15000);
-    void showTooltip(Component *newTooltip, int timeOutMs = 15000);
-    void showTooltip(Component *newTooltip, Rectangle<int> callerScreenBounds, int timeOutMs = 15000);
-    void showModalComponent(Component *nonOwnedComponent);
-    void showBlocker(Component *nonOwnedComponent);
-
     void recreateLayout();
     
     //===------------------------------------------------------------------===//
@@ -89,6 +83,8 @@ public:
 
     const String getApplicationName() override;
     const String getApplicationVersion() override;
+
+    void unhandledException(const std::exception *e, const String &message, int) override;
 
     bool moreThanOneInstanceAllowed() override;
     void anotherInstanceStarted(const String &commandLine) override;

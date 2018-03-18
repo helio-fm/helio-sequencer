@@ -210,31 +210,6 @@ String App::getHumanReadableDate(const Time &date)
     return timeString.trimEnd();
 }
 
-void App::showTooltip(const String &text, int timeOutMs)
-{
-    this->getWindow()->getWorkspaceComponent()->showTooltip(text, timeOutMs);
-}
-
-void App::showTooltip(Component *newTooltip, int timeOutMs)
-{
-    this->getWindow()->getWorkspaceComponent()->showTooltip(newTooltip, timeOutMs);
-}
-
-void App::showTooltip(Component *newTooltip, Rectangle<int> callerScreenBounds, int timeOutMs)
-{
-    this->getWindow()->getWorkspaceComponent()->showTooltip(newTooltip, callerScreenBounds, timeOutMs);
-}
-
-void App::showModalComponent(Component *nonOwnedComponent)
-{
-    this->getWindow()->getWorkspaceComponent()->showModalNonOwnedDialog(nonOwnedComponent);
-}
-
-void App::showBlocker(Component *nonOwnedComponent)
-{
-    this->getWindow()->getWorkspaceComponent()->showBlockingNonModalDialog(nonOwnedComponent);
-}
-
 void App::recreateLayout()
 {
     this->getWindow()->dismissLayoutComponent();
@@ -390,6 +365,12 @@ void App::anotherInstanceStarted(const String &commandLine)
 
     //const Component *focused = Component::getCurrentlyFocusedComponent();
     //Logger::outputDebugString(focused ? focused->getName() : "");
+}
+
+void App::unhandledException(const std::exception *e, const String &file, int)
+{
+    Logger::writeToLog("! unhandledException: " + String(e->what()));
+    jassertfalse;
 }
 
 void App::systemRequestedQuit()
