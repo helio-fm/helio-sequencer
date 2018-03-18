@@ -68,7 +68,7 @@ WorkspaceMenu::WorkspaceMenu(Workspace *parentWorkspace)
 
     this->listBox->setModel(this);
     this->setFocusContainer(false);
-    
+
     // FIXME update on workspace's recent files list changes
     //[/Constructor]
 }
@@ -132,19 +132,14 @@ void WorkspaceMenu::handleCommandMessage (int commandId)
         {
             this->listBox->updateContent();
             //this->getParentComponent()->exitModalState(0);
-            App::Helio()->showModalComponent(new AuthorizationDialog());
+            App::Layout().showModalComponentUnowned(new AuthorizationDialog());
         }
         else
         {
-            SessionService *authService = App::Helio()->getSessionService();
-            App::Helio()->showModalComponent(new ProgressTooltip());
-            //authService->addChangeListener(this);
-            authService->signOut();
-
-            // Should rather look like:
-            //const auto app = App::Helio();
-            //app->showModalComponent<ProgressTooltip>();
-            //authService->signOut(app->hideModalComponentCallback());
+            //App::Layout().showModalComponentUnowned(new ProgressTooltip());
+            App::Helio()->getSessionService()->signOut();
+            this->listBox->updateContent();
+            this->getParentComponent()->exitModalState(0);
         }
     }
     //[/UserCode_handleCommandMessage]
@@ -152,42 +147,6 @@ void WorkspaceMenu::handleCommandMessage (int commandId)
 
 
 //[MiscUserCode]
-
-void WorkspaceMenu::changeListenerCallback(ChangeBroadcaster *source)
-{
-    //SessionManager *authService = App::Helio()->getSessionService();
-
-    //if (source == authService)
-    //{
-    //    authService->removeChangeListener(this);
-
-    //    Component *progressIndicator = App::Layout().findChildWithID(ComponentIDs::progressTooltipId);
-
-    //    if (progressIndicator)
-    //    {
-    //        delete progressIndicator;
-
-    //        //if (authService->getLastRequestState() == SessionManager::RequestSucceed)
-    //        //{
-    //        //    App::Helio()->showModalComponent(new SuccessTooltip());
-    //        //}
-    //        //else if (authService->getLastRequestState() == SessionManager::RequestFailed)
-    //        //{
-    //        //    App::Helio()->showModalComponent(new FailTooltip());
-    //        //}
-    //        //if (authService->getLastRequestState() == SessionManager::ConnectionFailed)
-    //        //{
-    //        //    App::Helio()->showModalComponent(new FailTooltip());
-    //        //}
-
-    //        // For workspace page:
-    //        this->listBox->updateContent();
-
-    //        // For popup:
-    //        //this->getParentComponent()->exitModalState(0);
-    //    }
-    //}
-}
 
 void WorkspaceMenu::loadFile(RecentFileDescription::Ptr fileDescription)
 {
@@ -361,7 +320,7 @@ void WorkspaceMenu::paintListBoxItem(int rowNumber, Graphics &g, int width, int 
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="WorkspaceMenu" template="../../../../Template"
-                 componentName="" parentClasses="public Component, public ListBoxModel, private ChangeListener"
+                 componentName="" parentClasses="public Component, public ListBoxModel"
                  constructorParams="Workspace *parentWorkspace" variableInitialisers="workspace(parentWorkspace)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="450" initialHeight="500">

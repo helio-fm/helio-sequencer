@@ -63,8 +63,19 @@ public:
     void showTooltip(const String &message, int timeOutMs = 15000);
     void showTooltip(Component *newTooltip, int timeOutMs = 15000);
     void showTooltip(Component *newTooltip, Rectangle<int> callerScreenBounds, int timeOutMs = 15000);
-    void showModalNonOwnedDialog(Component *targetComponent);
-    void showBlockingNonModalDialog(Component *targetComponent);
+    void showBlockerUnowned(Component *targetComponent);
+
+    void showModalComponentUnowned(Component *targetComponent);
+
+    template<typename T>
+    void dismissModalComponentOfType()
+    {
+        if (T *modalComponent = dynamic_cast<T *>(Component::getCurrentlyModalComponent()))
+        {
+            delete modalComponent;
+        }
+    }
+
     Rectangle<int> getPageBounds() const;
     
     //===------------------------------------------------------------------===//

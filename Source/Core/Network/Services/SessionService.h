@@ -36,28 +36,25 @@ public:
     
     SessionService();
 
+    typedef Function<void(bool, const Array<String> &)> AuthCallback;
+
     static String getApiToken();
+    static bool isLoggedIn();
 
-    enum SessionState
-    {
-        LoggedIn,
-        NotLoggedIn,
-        Unknown
-    };
-
-    SessionState getAuthorizationState() const;
-    String getUserLoginOfCurrentSession() const;
+    const UserProfile &getUserProfile() const noexcept;
     
-    void signIn(const String &login, const String &passwordHash);
+    void signIn(const String &login, const String &passwordHash, AuthCallback callback = nullptr);
     void signOut();
 
 private:
 
     void timerCallback() override;
 
-    SessionState authState;
     UserProfile userProfile;
     
+    AuthCallback loginCallback;
+    AuthCallback registrationCallback;
+
 private:
     
     // will be called on the main thread:

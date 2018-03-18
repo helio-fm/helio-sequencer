@@ -33,14 +33,12 @@ class Workspace;
 #include "../../../Themes/SeparatorHorizontalFadingReversed.h"
 #include "../../../Themes/SeparatorHorizontalFading.h"
 
-class WorkspaceMenu  : public Component,
-                       public ListBoxModel,
-                       private ChangeListener
+class WorkspaceMenu final : public Component,
+                            public ListBoxModel
 {
 public:
 
-    WorkspaceMenu (Workspace *parentWorkspace);
-
+    WorkspaceMenu(Workspace *parentWorkspace);
     ~WorkspaceMenu();
 
     //[UserMethods]
@@ -74,10 +72,7 @@ public:
 private:
 
     //[UserVariables]
-
     Workspace *workspace;
-    void changeListenerCallback(ChangeBroadcaster *source) override;
-
     //[/UserVariables]
 
     ScopedPointer<ShadowHorizontalFading> component;

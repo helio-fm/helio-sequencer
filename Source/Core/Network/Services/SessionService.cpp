@@ -32,7 +32,6 @@
 #define UPDATE_SESSION_TIMEOUT_MS (1000 * 5)
 
 SessionService::SessionService() :
-    authState(Unknown),
     userProfile({})
 {
     // The logic goes like this:
@@ -49,23 +48,32 @@ String SessionService::getApiToken()
     return Config::get(Serialization::Api::sessionLastToken, {});
 }
 
-SessionService::SessionState SessionService::getAuthorizationState() const
+bool SessionService::isLoggedIn()
 {
-    return this->authState;
+    return SessionService::getApiToken().isNotEmpty();
 }
 
-String SessionService::getUserLoginOfCurrentSession() const
+const UserProfile & SessionService::getUserProfile() const noexcept
 {
-    return this->userProfile.getLogin();
+    return this->userProfile;
 }
 
-void SessionService::signIn(const String &login, const String &passwordHash)
+void SessionService::signIn(const String &login, const String &passwordHash, AuthCallback callback)
 {
+    if (this->loginCallback != nullptr)
+    {
+        jassertfalse; // You should never hit this line
+        callback(false, { "Login is in progress" });
+        return;
+    }
+
+    this->loginCallback = callback;
     this->getThreadFor<SignInThread>()->signIn(this, login, passwordHash);
 }
 
 void SessionService::signOut()
 {
+    // TODO: need to erase token on server?
     Config::set(Serialization::Api::sessionLastUpdateTime, Time::getCurrentTime().toISO8601(true));
     Config::set(Serialization::Api::sessionLastToken, {});
     this->userProfile.reset();
@@ -114,13 +122,24 @@ void SessionService::requestProfileFailed(const Array<String> &errors)
 
 void SessionService::signInOk(const String &userEmail, const String &newToken)
 {
-    this->authState = LoggedIn;
-    // TODO ask for user profile?
+    if (this->loginCallback != nullptr)
+    {
+        this->loginCallback(true, {});
+        this->loginCallback = nullptr;
+    }
+
+    this->getThreadFor<RequestUserProfileThread>()->requestUserProfile(this);
 }
 
 void SessionService::signInFailed(const Array<String> &errors)
 {
-    this->authState = NotLoggedIn;
+    Logger::writeToLog("Login failed: " + errors.getFirst());
+
+    if (this->loginCallback != nullptr)
+    {
+        this->loginCallback(false, errors);
+        this->loginCallback = nullptr;
+    }
 }
 
 //===----------------------------------------------------------------------===//
@@ -129,11 +148,22 @@ void SessionService::signInFailed(const Array<String> &errors)
 
 void SessionService::signUpOk(const String &userEmail, const String &newToken)
 {
-    this->authState = NotLoggedIn;
+    if (this->registrationCallback != nullptr)
+    {
+        this->registrationCallback(true, {});
+        this->registrationCallback = nullptr;
+    }
 }
 
 void SessionService::signUpFailed(const Array<String> &errors)
 {
+    Logger::writeToLog("Registration failed: " + errors.getFirst());
+
+    if (this->registrationCallback != nullptr)
+    {
+        this->registrationCallback(false, errors);
+        this->registrationCallback = nullptr;
+    }
 }
 
 //===----------------------------------------------------------------------===//

@@ -29,15 +29,13 @@ class LabelWithPassword;
 #include "../Themes/SeparatorHorizontal.h"
 #include "../Themes/SeparatorVertical.h"
 
-class AuthorizationDialog  : public FadingDialog,
-                             private ChangeListener,
-                             public Button::Listener,
-                             public Label::Listener
+class AuthorizationDialog final : public FadingDialog,
+                                  public Button::Listener,
+                                  public Label::Listener
 {
 public:
 
-    AuthorizationDialog ();
-
+    AuthorizationDialog();
     ~AuthorizationDialog();
 
     //[UserMethods]
@@ -61,7 +59,6 @@ private:
 
     //[UserVariables]
     void editorShown(Label *targetLabel, TextEditor &editor) override;
-    void changeListenerCallback(ChangeBroadcaster* source) override;
     bool validateTextFields() const;
     //[/UserVariables]
 
