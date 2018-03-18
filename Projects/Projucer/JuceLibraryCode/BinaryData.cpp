@@ -11821,9 +11821,9 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) throw
         case 0xfebd99dd:  numBytes = 1080; return zoomin_svg;
         case 0x236bbec0:  numBytes = 928; return zoomout_svg;
         case 0xb3e40b64:  numBytes = 317; return Noise_png;
-        case 0xd60a0c33:  numBytes = 15183; return Arps_json;
-        case 0xbd697e20:  numBytes = 2833; return Colours_json;
-        case 0x295456c6:  numBytes = 9891; return Hotkeys_json;
+        case 0x9d3ca20d:  numBytes = 15183; return Arpeggiators_json;
+        case 0xaf771725:  numBytes = 2833; return ColourSchemes_json;
+        case 0x932a5b4b:  numBytes = 9891; return HotkeySchemes_json;
         case 0x67f906de:  numBytes = 5008; return Scales_json;
         case 0xe3299f05:  numBytes = 286713; return Translations_json;
         default: break;
@@ -11949,9 +11949,9 @@ const char* namedResourceList[] =
     "zoomin_svg",
     "zoomout_svg",
     "Noise_png",
-    "Arps_json",
-    "Colours_json",
-    "Hotkeys_json",
+    "Arpeggiators_json",
+    "ColourSchemes_json",
+    "HotkeySchemes_json",
     "Scales_json",
     "Translations_json"
 };

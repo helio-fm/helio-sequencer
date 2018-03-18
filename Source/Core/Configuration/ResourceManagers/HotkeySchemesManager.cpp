@@ -24,7 +24,7 @@
 #include "Config.h"
 
 HotkeySchemesManager::HotkeySchemesManager() :
-    ResourceManager(Serialization::Resources::hotkeys) {}
+    ResourceManager(Serialization::Resources::hotkeySchemes) {}
 
 void HotkeySchemesManager::initialise(const String &commandLine)
 {
@@ -99,5 +99,6 @@ void HotkeySchemesManager::deserialize(const ValueTree &tree)
 void HotkeySchemesManager::reset()
 {
     this->schemes.clear();
+    this->activeScheme.reset();
     this->sendChangeMessage();
 }

@@ -41,18 +41,24 @@ public:
 
     virtual String getBuiltInResource() const
     {
-        int numBytes;
+        int dataSize;
         const String n = this->resourceName.toString();
         const String assumedResourceName = n.substring(0, 1).toUpperCase() + n.substring(1) + "_json";
-        return BinaryData::getNamedResource(assumedResourceName.toUTF8(), numBytes);
+        if (const auto *data = BinaryData::getNamedResource(assumedResourceName.toUTF8(), dataSize))
+        {
+            return String::fromUTF8(data, dataSize);
+        }
+
+        jassertfalse;
+        return {};
     }
 
     virtual void onDownloadedLatestResource(const ValueTree &resource)
     {
         Logger::writeToLog("Updating downloaded resource file for " + this->resourceName.toString());
 
-        XmlSerializer serializer; // debug
-        //BinarySerializer serializer; // TODO use this
+        //XmlSerializer serializer; // debug
+        BinarySerializer serializer;
         serializer.saveToFile(this->getDownloadedResourceFile(), resource);
 
         this->deserialize(resource);

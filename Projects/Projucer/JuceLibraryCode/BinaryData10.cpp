@@ -1492,7 +1492,7 @@ static const unsigned char temp_binary_data_113[] =
 
 const char* Noise_png = (const char*) temp_binary_data_113;
 
-//================== Arps.json ==================
+//================== Arpeggiators.json ==================
 static const unsigned char temp_binary_data_114[] =
 "{\r\n"
 "  // Deprecated\r\n"
@@ -2122,9 +2122,9 @@ static const unsigned char temp_binary_data_114[] =
 "  }\r\n"
 "}";
 
-const char* Arps_json = (const char*) temp_binary_data_114;
+const char* Arpeggiators_json = (const char*) temp_binary_data_114;
 
-//================== Colours.json ==================
+//================== ColourSchemes.json ==================
 static const unsigned char temp_binary_data_115[] =
 "{\r\n"
 "  \"colourSchemes\": {\r\n"
@@ -2221,9 +2221,9 @@ static const unsigned char temp_binary_data_115[] =
 "  }\r\n"
 "}";
 
-const char* Colours_json = (const char*) temp_binary_data_115;
+const char* ColourSchemes_json = (const char*) temp_binary_data_115;
 
-//================== Hotkeys.json ==================
+//================== HotkeySchemes.json ==================
 static const unsigned char temp_binary_data_116[] =
 "{\r\n"
 "  \"hotkeySchemes\": {\r\n"
@@ -2405,7 +2405,7 @@ static const unsigned char temp_binary_data_116[] =
 "  }\r\n"
 "}";
 
-const char* Hotkeys_json = (const char*) temp_binary_data_116;
+const char* HotkeySchemes_json = (const char*) temp_binary_data_116;
 
 //================== Scales.json ==================
 static const unsigned char temp_binary_data_117[] =

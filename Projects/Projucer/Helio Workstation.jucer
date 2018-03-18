@@ -141,9 +141,12 @@
         <FILE id="wS3gha" name="zoom-out.svg" compile="0" resource="1" file="../../Resources/Icons/zoom-out.svg"/>
       </GROUP>
       <FILE id="aMBPbX" name="Noise.png" compile="0" resource="1" file="../../Resources/Noise.png"/>
-      <FILE id="k031wg" name="Arps.json" compile="0" resource="1" file="../../Resources/Arps.json"/>
-      <FILE id="JML0CW" name="Colours.json" compile="0" resource="1" file="../../Resources/Colours.json"/>
-      <FILE id="Qw4lbf" name="Hotkeys.json" compile="0" resource="1" file="../../Resources/Hotkeys.json"/>
+      <FILE id="so7ZdZ" name="Arpeggiators.json" compile="0" resource="1"
+            file="../../Resources/Arpeggiators.json"/>
+      <FILE id="XoWHFQ" name="ColourSchemes.json" compile="0" resource="1"
+            file="../../Resources/ColourSchemes.json"/>
+      <FILE id="MfFPAK" name="HotkeySchemes.json" compile="0" resource="1"
+            file="../../Resources/HotkeySchemes.json"/>
       <FILE id="YgjNxN" name="Scales.json" compile="0" resource="1" file="../../Resources/Scales.json"/>
       <FILE id="XeVaag" name="Translations.json" compile="0" resource="1"
             file="../../Resources/Translations.json"/>

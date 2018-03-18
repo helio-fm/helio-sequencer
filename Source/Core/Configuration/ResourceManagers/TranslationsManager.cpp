@@ -175,6 +175,8 @@ String TranslationsManager::translate(const String &baseLiteral, int64 targetNum
 // Serializable
 //===----------------------------------------------------------------------===//
 
+const static String fallbackLocale = "en";
+
 ValueTree TranslationsManager::serialize() const
 {
     ValueTree emptyXml(Serialization::Translations::translations);
@@ -199,16 +201,22 @@ void TranslationsManager::deserialize(const ValueTree &tree)
     {
         Translation::Ptr translation(new Translation());
         translation->deserialize(translationRoot);
-        this->availableTranslations.set(translation->name, translation);
+        this->availableTranslations.set(translation->id, translation);
         if (translation->id == selectedLocaleId)
         {
             this->currentTranslation = translation;
         }
     }
+
+    if (this->currentTranslation == nullptr)
+    {
+        this->currentTranslation = this->availableTranslations[fallbackLocale];
+    }
 }
 
 void TranslationsManager::reset()
 {
+    this->currentTranslation = nullptr;
     this->availableTranslations.clear();
     this->equationResult.clear();
 }
@@ -219,11 +227,10 @@ void TranslationsManager::reset()
 
 String TranslationsManager::getSelectedLocaleId() const
 {
-    const String lastFallbackLocale = "en";
-    
+   
     if (Config::contains(Serialization::Config::currentLocale))
     {
-        return Config::get(Serialization::Config::currentLocale, lastFallbackLocale);
+        return Config::get(Serialization::Config::currentLocale, fallbackLocale);
     }
     
     const String systemLocale =
@@ -234,5 +241,5 @@ String TranslationsManager::getSelectedLocaleId() const
         return systemLocale;
     }
     
-    return lastFallbackLocale;
+    return fallbackLocale;
 }
