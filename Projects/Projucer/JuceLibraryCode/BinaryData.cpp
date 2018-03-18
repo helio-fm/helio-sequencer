@@ -11697,8 +11697,7 @@ const char* A0v9_ogg = (const char*) temp_binary_data_2;
 namespace BinaryData
 {
 
-const char* getNamedResource (const char*, int&) throw();
-const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) throw()
+const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) noexcept
 {
     unsigned int hash = 0;
     if (resourceNameUTF8 != 0)
@@ -11830,7 +11829,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) throw
     }
 
     numBytes = 0;
-    return 0;
+    return nullptr;
 }
 
 const char* namedResourceList[] =
@@ -11955,5 +11954,139 @@ const char* namedResourceList[] =
     "Scales_json",
     "Translations_json"
 };
+
+const char* originalFilenames[] =
+{
+    "Icon.png",
+    "Logo.png",
+    "A0v9.ogg",
+    "A1v9.ogg",
+    "A2v9.ogg",
+    "A3v9.ogg",
+    "A4v9.ogg",
+    "A5v9.ogg",
+    "A6v9.ogg",
+    "A7v9.ogg",
+    "C1v9.ogg",
+    "C2v9.ogg",
+    "C3v9.ogg",
+    "C4v9.ogg",
+    "C5v9.ogg",
+    "C6v9.ogg",
+    "C7v9.ogg",
+    "C8v9.ogg",
+    "D#1v9.ogg",
+    "D#2v9.ogg",
+    "D#3v9.ogg",
+    "D#4v9.ogg",
+    "D#5v9.ogg",
+    "D#6v9.ogg",
+    "D#7v9.ogg",
+    "F#1v9.ogg",
+    "F#2v9.ogg",
+    "F#3v9.ogg",
+    "F#4v9.ogg",
+    "F#5v9.ogg",
+    "F#6v9.ogg",
+    "F#7v9.ogg",
+    "lato.fnt",
+    "angle-double-down.svg",
+    "angle-double-left.svg",
+    "angle-double-right.svg",
+    "angle-double-up.svg",
+    "angle-down.svg",
+    "angle-left.svg",
+    "angle-right.svg",
+    "angle-up.svg",
+    "arpeggiator.svg",
+    "arrow-back.svg",
+    "arrow-forward.svg",
+    "arrow-left2.svg",
+    "arrow-right2.svg",
+    "arrows.svg",
+    "beamed_note.svg",
+    "bezier.svg",
+    "brush.svg",
+    "check.svg",
+    "chevron-left2.svg",
+    "chevron-right2.svg",
+    "clef.svg",
+    "cloud-download.svg",
+    "cloud-upload.svg",
+    "cloud2.svg",
+    "clouds.svg",
+    "columns.svg",
+    "copy.svg",
+    "crop.svg",
+    "cup.svg",
+    "cursor2.svg",
+    "diskette.svg",
+    "download2.svg",
+    "drive.svg",
+    "eight_note.svg",
+    "ellipsis-h.svg",
+    "ellipsis-v.svg",
+    "folder-open.svg",
+    "folder.svg",
+    "folder2.svg",
+    "heptagram2.svg",
+    "history.svg",
+    "hourglass.svg",
+    "insert-space.svg",
+    "key.svg",
+    "knob.svg",
+    "logo2.svg",
+    "marquee.svg",
+    "menu.svg",
+    "minus2.svg",
+    "paste.svg",
+    "pause2.svg",
+    "pencil.svg",
+    "pencil4.svg",
+    "play2.svg",
+    "plus2.svg",
+    "poetry.svg",
+    "quote.svg",
+    "reroute.svg",
+    "roman1.svg",
+    "roman2.svg",
+    "roman3.svg",
+    "roman4.svg",
+    "roman5.svg",
+    "roman6.svg",
+    "roman7.svg",
+    "saxophone.svg",
+    "scissors.svg",
+    "settings2.svg",
+    "switch.svg",
+    "terminal.svg",
+    "times.svg",
+    "toggle-off.svg",
+    "toggle-on.svg",
+    "updown.svg",
+    "volume-off.svg",
+    "volume-up.svg",
+    "waveform.svg",
+    "wipe-space.svg",
+    "zoom-in.svg",
+    "zoom-out.svg",
+    "Noise.png",
+    "Arpeggiators.json",
+    "ColourSchemes.json",
+    "HotkeySchemes.json",
+    "Scales.json",
+    "Translations.json"
+};
+
+const char* getNamedResourceOriginalFilename (const char* resourceNameUTF8) noexcept
+{
+    for (unsigned int i = 0; i < (sizeof (namedResourceList) / sizeof (namedResourceList[0])); ++i)
+    {
+        if (namedResourceList[i] == resourceNameUTF8)
+            return originalFilenames[i];
+    }
+
+    return nullptr;
+}
 
 }

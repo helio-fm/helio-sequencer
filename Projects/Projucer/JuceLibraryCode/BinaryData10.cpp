@@ -6469,5 +6469,4 @@ static const unsigned char temp_binary_data_118[] =
 32,32,32,32,32,93,13,10,32,32,32,32,32,32,125,13,10,32,32,32,32,93,13,10,32,32,125,13,10,125,0,0 };
 
 const char* Translations_json = (const char*) temp_binary_data_118;
-
 }
