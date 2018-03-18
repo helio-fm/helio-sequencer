@@ -83,7 +83,7 @@ void PluginSmartDescription::reset()
 
 bool PluginSmartDescription::isValid() const
 {
-    return this->name.isNotEmpty();
+    return this->name.isNotEmpty() && this->pluginFormatName.isNotEmpty();
 }
 
 void PluginSmartDescription::verify()

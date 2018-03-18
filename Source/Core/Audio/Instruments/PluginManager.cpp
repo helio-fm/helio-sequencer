@@ -31,7 +31,6 @@ PluginManager::PluginManager() :
     usingExternalProcess(false)
 {
     this->startThread(0);
-    Config::load(this, Serialization::Config::lastScannedPlugins);
 }
 
 PluginManager::~PluginManager()
@@ -197,6 +196,7 @@ void PluginManager::run()
                     String commandLine(myself + " " + tempFileName.toString());
                     checkerProcess.start(commandLine);
                     
+                    // FIXME! (#60): skips some valid plugins sometimes
                     if (!checkerProcess.waitForProcessToFinish(3000))
                     {
                         checkerProcess.kill();
@@ -258,8 +258,6 @@ void PluginManager::run()
                     Thread::sleep(150);
                 }
             }
-
-            Config::save(this, Serialization::Config::lastScannedPlugins);
         }
         catch (...) { }
 
@@ -274,7 +272,6 @@ void PluginManager::run()
         WaitableEvent::wait();
     }
 }
-
 
 FileSearchPath PluginManager::getTypicalFolders()
 {
@@ -372,7 +369,10 @@ void PluginManager::deserialize(const ValueTree &tree)
     {
         PluginSmartDescription pluginDescription;
         pluginDescription.deserialize(child);
-        this->pluginsList.addType(pluginDescription);
+        if (pluginDescription.isValid())
+        {
+            this->pluginsList.addType(pluginDescription);
+        }
     }
 
     this->sendChangeMessage();

@@ -185,7 +185,6 @@ namespace Serialization
         static const Identifier currentLocale = "currentLocale";
         static const Identifier lastShownPageId = "lastShownPageId";
         static const Identifier lastUsedScale = "lastUsedScale";
-        static const Identifier lastScannedPlugins = "lastScannedPlugins";
         static const Identifier lastUsedLogin = "lastUsedLogin";
         static const Identifier lastUpdatesInfo = "lastUpdatesInfo";
     } // namespace Config
