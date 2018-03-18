@@ -42,9 +42,9 @@ class InternalClipboard;
 class SessionService;
 class UpdatesService;
 
-class App : public JUCEApplication,
-            private AsyncUpdater,
-            private ChangeListener // listens to TranslationManager
+class App final : public JUCEApplication,
+                  private AsyncUpdater,
+                  private ChangeListener // listens to TranslationManager
 
 {
 public:

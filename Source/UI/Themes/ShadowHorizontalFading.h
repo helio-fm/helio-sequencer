@@ -21,12 +21,11 @@
 //[/Headers]
 
 
-class ShadowHorizontalFading  : public Component
+class ShadowHorizontalFading final : public Component
 {
 public:
 
-    ShadowHorizontalFading ();
-
+    ShadowHorizontalFading();
     ~ShadowHorizontalFading();
 
     //[UserMethods]

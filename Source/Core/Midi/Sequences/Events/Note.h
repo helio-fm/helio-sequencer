@@ -21,31 +21,30 @@
 
 #define KEY_C5 60
 
-class Note : public MidiEvent
+class Note final : public MidiEvent
 {
 public:
 
     typedef int Key;
 
-    Note();
-    Note(const Note &other);
-    Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy);
-
+    Note() noexcept;
+    Note(const Note &other) noexcept;
+    Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy) noexcept;
     explicit Note(WeakReference<MidiSequence> owner,
          int keyVal = 0, float beatVal = 0.f,
-         float lengthVal = 1.f, float velocityVal = 1.f);
+         float lengthVal = 1.f, float velocityVal = 1.f) noexcept;
 
     Array<MidiMessage> toMidiMessages() const override;
     
-    Note copyWithNewId(WeakReference<MidiSequence> owner = nullptr) const;
-    Note withBeat(float newBeat) const;
-    Note withKeyBeat(Key newKey, float newBeat) const;
-    Note withDeltaBeat(float deltaPosition) const;
-    Note withDeltaKey(Key deltaKey) const;
-    Note withLength(float newLength) const;
-    Note withDeltaLength(float deltaLength) const;
-    Note withVelocity(float newVelocity) const;
-    Note withParameters(const ValueTree &parameters) const;
+    Note copyWithNewId(WeakReference<MidiSequence> owner = nullptr) const noexcept;
+    Note withBeat(float newBeat) const noexcept;
+    Note withKeyBeat(Key newKey, float newBeat) const noexcept;
+    Note withDeltaBeat(float deltaPosition) const noexcept;
+    Note withDeltaKey(Key deltaKey) const noexcept;
+    Note withLength(float newLength) const noexcept;
+    Note withDeltaLength(float deltaLength) const noexcept;
+    Note withVelocity(float newVelocity) const noexcept;
+    Note withParameters(const ValueTree &parameters) const noexcept;
 
     //===------------------------------------------------------------------===//
     // Accessors
@@ -59,19 +58,19 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
-    void reset() override;
+    ValueTree serialize() const noexcept override;
+    void deserialize(const ValueTree &tree) noexcept override;
+    void reset() noexcept override;
 
     //===------------------------------------------------------------------===//
     // Helpers
     //===------------------------------------------------------------------===//
     
-    void applyChanges(const Note &parameters);
+    void applyChanges(const Note &parameters) noexcept;
 
-    static int compareElements(const MidiEvent *const first, const MidiEvent *const second);
-    static int compareElements(const Note *const first, const Note *const second);
-    static int compareElements(const Note &first, const Note &second);
+    static int compareElements(const MidiEvent *const first, const MidiEvent *const second) noexcept;
+    static int compareElements(const Note *const first, const Note *const second) noexcept;
+    static int compareElements(const Note &first, const Note &second) noexcept;
 
 protected:
 

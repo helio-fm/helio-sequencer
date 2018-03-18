@@ -20,24 +20,24 @@
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
 
-TimeSignatureEvent::TimeSignatureEvent() : MidiEvent(nullptr, MidiEvent::TimeSignature, 0.f)
+TimeSignatureEvent::TimeSignatureEvent() noexcept : MidiEvent(nullptr, MidiEvent::TimeSignature, 0.f)
 {
     //jassertfalse;
 }
 
-TimeSignatureEvent::TimeSignatureEvent(const TimeSignatureEvent &other) :
+TimeSignatureEvent::TimeSignatureEvent(const TimeSignatureEvent &other) noexcept :
     MidiEvent(other),
     numerator(other.numerator),
     denominator(other.denominator) {}
 
 TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiSequence> owner,
-    float newBeat, int newNumerator, int newDenominator) :
+    float newBeat, int newNumerator, int newDenominator) noexcept :
     MidiEvent(owner, MidiEvent::TimeSignature, newBeat),
     numerator(newNumerator),
     denominator(newDenominator) {}
 
 TimeSignatureEvent::TimeSignatureEvent(WeakReference<MidiSequence> owner,
-    const TimeSignatureEvent &parametersToCopy) :
+    const TimeSignatureEvent &parametersToCopy) noexcept :
     MidiEvent(owner, parametersToCopy),
     numerator(parametersToCopy.numerator),
     denominator(parametersToCopy.denominator) {}
@@ -65,49 +65,47 @@ void TimeSignatureEvent::parseString(const String &data, int &numerator, int &de
 
 Array<MidiMessage> TimeSignatureEvent::toMidiMessages() const
 {
-    Array<MidiMessage> result;
     MidiMessage event(MidiMessage::timeSignatureMetaEvent(this->numerator, this->denominator));
     event.setTimeStamp(round(this->beat * MS_PER_BEAT));
-    result.add(event);
-    return result;
+    return { event };
 }
 
-TimeSignatureEvent TimeSignatureEvent::withDeltaBeat(float beatOffset) const
+TimeSignatureEvent TimeSignatureEvent::withDeltaBeat(float beatOffset) const noexcept
 {
     TimeSignatureEvent e(*this);
     e.beat = e.beat + beatOffset;
     return e;
 }
 
-TimeSignatureEvent TimeSignatureEvent::withBeat(float newBeat) const
+TimeSignatureEvent TimeSignatureEvent::withBeat(float newBeat) const noexcept
 {
     TimeSignatureEvent e(*this);
     e.beat = newBeat;
     return e;
 }
 
-TimeSignatureEvent TimeSignatureEvent::withNumerator(const int newNumerator) const
+TimeSignatureEvent TimeSignatureEvent::withNumerator(const int newNumerator) const noexcept
 {
     TimeSignatureEvent e(*this);
     e.numerator = newNumerator;
     return e;
 }
 
-TimeSignatureEvent TimeSignatureEvent::withDenominator(const int newDenominator) const
+TimeSignatureEvent TimeSignatureEvent::withDenominator(const int newDenominator) const noexcept
 {
     TimeSignatureEvent e(*this);
     e.denominator = newDenominator;
     return e;
 }
 
-TimeSignatureEvent TimeSignatureEvent::withParameters(const ValueTree &parameters) const
+TimeSignatureEvent TimeSignatureEvent::withParameters(const ValueTree &parameters) const noexcept
 {
     TimeSignatureEvent e(*this);
     e.deserialize(parameters);
     return e;
 }
 
-TimeSignatureEvent TimeSignatureEvent::copyWithNewId() const
+TimeSignatureEvent TimeSignatureEvent::copyWithNewId() const noexcept
 {
     TimeSignatureEvent e(*this);
     e.id = e.createId();
@@ -139,7 +137,7 @@ String TimeSignatureEvent::toString() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree TimeSignatureEvent::serialize() const
+ValueTree TimeSignatureEvent::serialize() const noexcept
 {
     using namespace Serialization;
     ValueTree tree(Midi::timeSignature);
@@ -150,7 +148,7 @@ ValueTree TimeSignatureEvent::serialize() const
     return tree;
 }
 
-void TimeSignatureEvent::deserialize(const ValueTree &tree)
+void TimeSignatureEvent::deserialize(const ValueTree &tree) noexcept
 {
     this->reset();
     using namespace Serialization;
@@ -160,9 +158,9 @@ void TimeSignatureEvent::deserialize(const ValueTree &tree)
     this->id = tree.getProperty(Midi::id);
 }
 
-void TimeSignatureEvent::reset() {}
+void TimeSignatureEvent::reset() noexcept {}
 
-void TimeSignatureEvent::applyChanges(const TimeSignatureEvent &parameters)
+void TimeSignatureEvent::applyChanges(const TimeSignatureEvent &parameters) noexcept
 {
     jassert(this->id == parameters.id);
     this->beat = parameters.beat;

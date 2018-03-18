@@ -132,7 +132,7 @@ void UpdatesService::requestResourceOk(const Identifier &resourceId, const Value
 {
     using namespace Serialization;
 
-    // TODO should loke more like:
+    // TODO should look more like:
     //App::Helio().getResourcePoolFor(resourceId).onDownloadedLatestResource(resource);
 
     if (resourceId == Resources::translations)
@@ -143,7 +143,7 @@ void UpdatesService::requestResourceOk(const Identifier &resourceId, const Value
     {
         ColourSchemesManager::getInstance().onDownloadedLatestResource(resource);
     }
-    else if (resourceId == Resources::hotkeys)
+    else if (resourceId == Resources::hotkeySchemes)
     {
         HotkeySchemesManager::getInstance().onDownloadedLatestResource(resource);
     }

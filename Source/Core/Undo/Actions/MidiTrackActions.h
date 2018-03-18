@@ -25,16 +25,15 @@ class MidiTrackSource;
 // Rename/Move
 //===----------------------------------------------------------------------===//
 
-class MidiTrackRenameAction : public UndoAction
+class MidiTrackRenameAction final : public UndoAction
 {
 public:
 
-    explicit MidiTrackRenameAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit MidiTrackRenameAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
     
     MidiTrackRenameAction(MidiTrackSource &source,
-                          String trackId,
-                          String newXPath);
+        String trackId, String newXPath) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -58,16 +57,15 @@ private:
 // Change Colour
 //===----------------------------------------------------------------------===//
 
-class MidiTrackChangeColourAction : public UndoAction
+class MidiTrackChangeColourAction final : public UndoAction
 {
 public:
 
-    explicit MidiTrackChangeColourAction(MidiTrackSource &source) :
+    explicit MidiTrackChangeColourAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
     MidiTrackChangeColourAction(MidiTrackSource &source,
-                                String trackId,
-                                const Colour &newColour);
+        String trackId, const Colour &newColour) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -92,16 +90,15 @@ private:
 // Change Instrument
 //===----------------------------------------------------------------------===//
 
-class MidiTrackChangeInstrumentAction : public UndoAction
+class MidiTrackChangeInstrumentAction final : public UndoAction
 {
 public:
 
-    explicit MidiTrackChangeInstrumentAction(MidiTrackSource &source) :
+    explicit MidiTrackChangeInstrumentAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
     MidiTrackChangeInstrumentAction(MidiTrackSource &source,
-                                    String trackId,
-                                    String newInstrumentId);
+        String trackId, String newInstrumentId) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -126,16 +123,15 @@ private:
 // Mute/Unmute
 //===----------------------------------------------------------------------===//
 
-class MidiTrackMuteAction : public UndoAction
+class MidiTrackMuteAction final : public UndoAction
 {
 public:
 
-    explicit MidiTrackMuteAction(MidiTrackSource &source) :
+    explicit MidiTrackMuteAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
     MidiTrackMuteAction(MidiTrackSource &source,
-                        String trackId,
-                        bool shouldBeMuted);
+        String trackId, bool shouldBeMuted) noexcept;
 
     bool perform() override;
     bool undo() override;

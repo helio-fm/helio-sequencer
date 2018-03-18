@@ -20,12 +20,12 @@
 #include "MidiSequence.h"
 #include "KeySignatureEvent.h"
 
-class KeySignaturesSequence : public MidiSequence
+class KeySignaturesSequence final : public MidiSequence
 {
 public:
 
     explicit KeySignaturesSequence(MidiTrack &track,
-        ProjectEventDispatcher &dispatcher);
+        ProjectEventDispatcher &dispatcher) noexcept;
 
     //===------------------------------------------------------------------===//
     // Import/export

@@ -28,16 +28,15 @@ class MidiTrackSource;
 // Insert
 //===----------------------------------------------------------------------===//
 
-class NoteInsertAction : public UndoAction
+class NoteInsertAction final : public UndoAction
 {
 public:
 
-    explicit NoteInsertAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit NoteInsertAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
     
     NoteInsertAction(MidiTrackSource &source,
-                     String trackId,
-                     const Note &target);
+        String trackId, const Note &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -60,16 +59,15 @@ private:
 // Remove
 //===----------------------------------------------------------------------===//
 
-class NoteRemoveAction : public UndoAction
+class NoteRemoveAction final : public UndoAction
 {
 public:
     
-    explicit NoteRemoveAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit NoteRemoveAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
     NoteRemoveAction(MidiTrackSource &source,
-                     String trackId,
-                     const Note &target);
+        String trackId, const Note &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -92,17 +90,15 @@ private:
 // Change
 //===----------------------------------------------------------------------===//
 
-class NoteChangeAction : public UndoAction
+class NoteChangeAction final : public UndoAction
 {
 public:
     
-    explicit NoteChangeAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit NoteChangeAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
-    NoteChangeAction(MidiTrackSource &source,
-                     String trackId,
-                     const Note &note,
-                     const Note &newParameters);
+    NoteChangeAction(MidiTrackSource &source, String trackId,
+        const Note &note, const Note &newParameters) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -129,16 +125,15 @@ private:
 // Insert Group
 //===----------------------------------------------------------------------===//
 
-class NotesGroupInsertAction : public UndoAction
+class NotesGroupInsertAction final : public UndoAction
 {
 public:
     
-    explicit NotesGroupInsertAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit NotesGroupInsertAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
     
     NotesGroupInsertAction(MidiTrackSource &source,
-                           String trackId,
-                           Array<Note> &target);
+        String trackId, Array<Note> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
@@ -162,16 +157,15 @@ private:
 // Remove Group
 //===----------------------------------------------------------------------===//
 
-class NotesGroupRemoveAction : public UndoAction
+class NotesGroupRemoveAction final : public UndoAction
 {
 public:
     
-    explicit NotesGroupRemoveAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit NotesGroupRemoveAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
     
     NotesGroupRemoveAction(MidiTrackSource &source,
-                           String trackId,
-                           Array<Note> &target);
+        String trackId, Array<Note> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
@@ -195,17 +189,15 @@ private:
 // Change Group
 //===----------------------------------------------------------------------===//
 
-class NotesGroupChangeAction : public UndoAction
+class NotesGroupChangeAction final : public UndoAction
 {
 public:
     
-    explicit NotesGroupChangeAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit NotesGroupChangeAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
-    NotesGroupChangeAction(MidiTrackSource &source,
-                           String trackId,
-                           Array<Note> &state1,
-                           Array<Note> &state2);
+    NotesGroupChangeAction(MidiTrackSource &source, String trackId,
+        Array<Note> &state1, Array<Note> &state2) noexcept;
 
     bool perform() override;
     bool undo() override;

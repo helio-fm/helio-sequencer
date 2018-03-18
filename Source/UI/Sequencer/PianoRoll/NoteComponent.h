@@ -22,7 +22,7 @@ class PianoRoll;
 #include "HybridRollEventComponent.h"
 #include "Note.h"
 
-class NoteComponent : public HybridRollEventComponent
+class NoteComponent final : public HybridRollEventComponent
 {
 public:
 
@@ -43,12 +43,12 @@ public:
     // Helpers
     //===------------------------------------------------------------------===//
 
-    int getKey() const;
-    float getLength() const;
-    float getVelocity() const;
+    int getKey() const noexcept;
+    float getLength() const noexcept;
+    float getVelocity() const noexcept;
 
-    const Note &getNote() const;
-    PianoRoll &getRoll() const;
+    const Note &getNote() const noexcept;
+    PianoRoll &getRoll() const noexcept;
 
     void updateColours() override;
 
@@ -122,7 +122,7 @@ protected:
     Note continueDragging(float deltaBeat, int deltaKey, bool sendMidiMessage);
     void endDragging(bool sendMidiMessage = true);
     
-    bool canResize() const;
+    bool canResize() const noexcept;
 
     State state;
 

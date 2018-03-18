@@ -26,14 +26,14 @@
 //===----------------------------------------------------------------------===//
 
 PianoTrackInsertAction::PianoTrackInsertAction(MidiTrackSource &source,
-    WeakReference<TreeItem> parentTreeItem) :
+    WeakReference<TreeItem> parentTreeItem) noexcept :
     UndoAction(source),
     parentTreeItem(parentTreeItem) {}
 
 PianoTrackInsertAction::PianoTrackInsertAction(MidiTrackSource &source,
     WeakReference<TreeItem> parentTreeItem,
     ValueTree targetSerializedState,
-    String targetXPath) :
+    String targetXPath) noexcept :
     UndoAction(source),
     parentTreeItem(parentTreeItem),
     trackState(targetSerializedState),
@@ -98,13 +98,13 @@ void PianoTrackInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 PianoTrackRemoveAction::PianoTrackRemoveAction(MidiTrackSource &source,
-    WeakReference<TreeItem> parentTreeItem) :
+    WeakReference<TreeItem> parentTreeItem) noexcept :
     UndoAction(source),
     parentTreeItem(parentTreeItem) {}
 
 PianoTrackRemoveAction::PianoTrackRemoveAction(MidiTrackSource &source,
     WeakReference<TreeItem> parentTreeItem,
-    String targetTrackId) :
+    String targetTrackId) noexcept :
     UndoAction(source),
     parentTreeItem(parentTreeItem),
     trackId(std::move(targetTrackId)),

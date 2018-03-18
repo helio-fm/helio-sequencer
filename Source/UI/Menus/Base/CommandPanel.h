@@ -29,13 +29,12 @@
 //[/Headers]
 
 
-class CommandPanel  : public Component,
-                      private ListBoxModel
+class CommandPanel : public Component,
+                     private ListBoxModel
 {
 public:
 
-    CommandPanel ();
-
+    CommandPanel();
     ~CommandPanel();
 
     //[UserMethods]

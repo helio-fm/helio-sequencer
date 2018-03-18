@@ -20,7 +20,7 @@
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
 
-Note::Note() : MidiEvent(nullptr, MidiEvent::Note, 0.f)
+Note::Note() noexcept : MidiEvent(nullptr, MidiEvent::Note, 0.f)
 {
     // needed for juce's Array to work
     //jassertfalse;
@@ -28,19 +28,19 @@ Note::Note() : MidiEvent(nullptr, MidiEvent::Note, 0.f)
 
 Note::Note(WeakReference<MidiSequence> owner,
     int keyVal, float beatVal,
-    float lengthVal, float velocityVal) :
+    float lengthVal, float velocityVal) noexcept :
     MidiEvent(owner, MidiEvent::Note, beatVal),
     key(keyVal),
     length(lengthVal),
     velocity(velocityVal) {}
 
-Note::Note(const Note &other) :
+Note::Note(const Note &other) noexcept :
     MidiEvent(other),
     key(other.key),
     length(other.length),
     velocity(other.velocity) {}
 
-Note::Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy) :
+Note::Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy) noexcept :
     MidiEvent(owner, parametersToCopy),
     key(parametersToCopy.key),
     length(parametersToCopy.length),
@@ -48,8 +48,6 @@ Note::Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy) :
 
 Array<MidiMessage> Note::toMidiMessages() const
 {
-    Array<MidiMessage> result;
-
     MidiMessage eventNoteOn(MidiMessage::noteOn(this->getChannel(), this->key, velocity));
     const double startTime = round(double(this->beat) * MS_PER_BEAT);
     eventNoteOn.setTimeStamp(startTime);
@@ -58,13 +56,10 @@ Array<MidiMessage> Note::toMidiMessages() const
     const double endTime = round(double(this->beat + this->length) * MS_PER_BEAT);
     eventNoteOff.setTimeStamp(endTime);
 
-    result.add(eventNoteOn);
-    result.add(eventNoteOff);
-
-    return result;
+    return { eventNoteOn, eventNoteOff };
 }
 
-Note Note::copyWithNewId(WeakReference<MidiSequence> owner) const
+Note Note::copyWithNewId(WeakReference<MidiSequence> owner) const noexcept
 {
     Note n(*this);
     if (owner != nullptr)
@@ -76,14 +71,14 @@ Note Note::copyWithNewId(WeakReference<MidiSequence> owner) const
     return n;
 }
 
-Note Note::withBeat(float newBeat) const
+Note Note::withBeat(float newBeat) const noexcept
 {
     Note other(*this);
     other.beat = roundBeat(newBeat);
     return other;
 }
 
-Note Note::withKeyBeat(Key newKey, float newBeat) const
+Note Note::withKeyBeat(Key newKey, float newBeat) const noexcept
 {
     Note other(*this);
     other.key = jmin(jmax(newKey, 0), 128);
@@ -91,14 +86,14 @@ Note Note::withKeyBeat(Key newKey, float newBeat) const
     return other;
 }
 
-Note Note::withDeltaBeat(float deltaPosition) const
+Note Note::withDeltaBeat(float deltaPosition) const noexcept
 {
     Note other(*this);
     other.beat = roundBeat(other.beat + deltaPosition);
     return other;
 }
 
-Note Note::withDeltaKey(Key deltaKey) const
+Note Note::withDeltaKey(Key deltaKey) const noexcept
 {
     Note other(*this);
     other.key = jmin(jmax(other.key + deltaKey, 0), 128);
@@ -107,28 +102,28 @@ Note Note::withDeltaKey(Key deltaKey) const
 
 #define MIN_LENGTH 0.5f
 
-Note Note::withLength(float newLength) const
+Note Note::withLength(float newLength) const noexcept
 {
     Note other(*this);
     other.length = jmax(MIN_LENGTH, roundBeat(newLength));
     return other;
 }
 
-Note Note::withDeltaLength(float deltaLength) const
+Note Note::withDeltaLength(float deltaLength) const noexcept
 {
     Note other(*this);
     other.length = jmax(MIN_LENGTH, roundBeat(other.length + deltaLength));
     return other;
 }
 
-Note Note::withVelocity(float newVelocity) const
+Note Note::withVelocity(float newVelocity) const noexcept
 {
     Note other(*this);
     other.velocity = jmin(jmax(newVelocity, 0.0f), 1.0f);
     return other;
 }
 
-Note Note::withParameters(const ValueTree &parameters) const
+Note Note::withParameters(const ValueTree &parameters) const noexcept
 {
     Note n(*this);
     n.deserialize(parameters);
@@ -160,7 +155,7 @@ float Note::getVelocity() const noexcept
 
 #define VELOCITY_SAVE_ACCURACY 1024.f
 
-ValueTree Note::serialize() const
+ValueTree Note::serialize() const noexcept
 {
     using namespace Serialization;
     ValueTree tree(Midi::note);
@@ -172,7 +167,7 @@ ValueTree Note::serialize() const
     return tree;
 }
 
-void Note::deserialize(const ValueTree &tree)
+void Note::deserialize(const ValueTree &tree) noexcept
 {
     this->reset();
     using namespace Serialization;
@@ -184,9 +179,9 @@ void Note::deserialize(const ValueTree &tree)
     this->velocity = jmax(jmin(vol, 1.f), 0.f);
 }
 
-void Note::reset() {}
+void Note::reset() noexcept {}
 
-void Note::applyChanges(const Note &other)
+void Note::applyChanges(const Note &other) noexcept
 {
     jassert(this->id == other.id);
     this->beat = roundBeat(other.beat);
@@ -195,7 +190,7 @@ void Note::applyChanges(const Note &other)
     this->velocity = other.velocity;
 }
 
-int Note::compareElements(const MidiEvent *const first, const MidiEvent *const second)
+int Note::compareElements(const MidiEvent *const first, const MidiEvent *const second) noexcept
 {
     if (first == second) { return 0; }
 
@@ -206,7 +201,7 @@ int Note::compareElements(const MidiEvent *const first, const MidiEvent *const s
     return first->getId().compare(second->getId());
 }
 
-int Note::compareElements(const Note *const first, const Note *const second)
+int Note::compareElements(const Note *const first, const Note *const second) noexcept
 {
     if (first == second) { return 0; }
 
@@ -221,7 +216,7 @@ int Note::compareElements(const Note *const first, const Note *const second)
     return first->getId().compare(second->getId());
 }
 
-int Note::compareElements(const Note &first, const Note &second)
+int Note::compareElements(const Note &first, const Note &second) noexcept
 {
     return Note::compareElements(&first, &second);
 }

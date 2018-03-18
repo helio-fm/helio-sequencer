@@ -21,12 +21,11 @@
 //[/Headers]
 
 
-class DialogPanel  : public Component
+class DialogPanel final : public Component
 {
 public:
 
-    DialogPanel ();
-
+    DialogPanel();
     ~DialogPanel();
 
     //[UserMethods]

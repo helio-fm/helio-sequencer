@@ -32,6 +32,7 @@
 #include "ChordTooltip.h"
 #include "Transport.h"
 #include "SerializationKeys.h"
+#include "ScalesManager.h"
 #include "CommandPanel.h"
 #include "BinaryData.h"
 #include "Icons.h"
@@ -150,7 +151,7 @@ ChordBuilder::ChordBuilder(PianoRoll *caller, MidiSequence *layer)
     : PopupMenuComponent(caller),
       roll(caller),
       sequence(layer),
-      defaultScales(Scale::getDefaultScalesCache()),
+      defaultScales(ScalesManager::getInstance().getScales()),
       hasMadeChanges(false),
       draggingStartPosition(0, 0),
       draggingEndPosition(0, 0),

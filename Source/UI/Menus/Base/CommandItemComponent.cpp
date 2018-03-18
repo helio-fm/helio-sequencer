@@ -560,11 +560,13 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="8de701891a585730" memberName="subLabel" virtualName=""
          explicitFocusOrder="0" pos="4Rr 0Cc 128 0M" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default sans-serif font"
-         fontsize="21" kerning="0" bold="0" italic="0" justification="34"/>
+         fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="34"/>
   <LABEL name="" id="14908053d7863001" memberName="textLabel" virtualName=""
          explicitFocusOrder="0" pos="48 0Cc 56M 0M" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default sans-serif font"
-         fontsize="21" kerning="0" bold="0" italic="0" justification="33"/>
+         fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="33"/>
   <GENERICCOMPONENT name="" id="1e71bff8af38b714" memberName="submenuMarker" virtualName=""
                     explicitFocusOrder="0" pos="4Rr 0Cc 24 16M" class="IconComponent"
                     params="Icons::right, 0.25f"/>

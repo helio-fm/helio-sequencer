@@ -39,7 +39,7 @@ struct EventIdGenerator
 };
 
 MidiSequence::MidiSequence(MidiTrack &parentTrack,
-    ProjectEventDispatcher &dispatcher) :
+    ProjectEventDispatcher &dispatcher) noexcept :
     track(parentTrack),
     eventDispatcher(dispatcher),
     lastStartBeat(0.f),
@@ -64,7 +64,7 @@ void MidiSequence::sort()
 // Undoing // TODO move this to project interface
 //===----------------------------------------------------------------------===//
 
-void MidiSequence::checkpoint()
+void MidiSequence::checkpoint() noexcept
 {
     this->getUndoStack()->beginNewTransaction(String::empty);
 }

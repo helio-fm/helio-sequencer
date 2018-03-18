@@ -20,7 +20,7 @@
 #include "PianoTrackDiffLogic.h"
 #include "MidiTrackTreeItem.h"
 
-class PianoTrackTreeItem : public MidiTrackTreeItem
+class PianoTrackTreeItem final : public MidiTrackTreeItem
 {
 public:
 

@@ -22,11 +22,11 @@
 
 class PianoRoll;
 
-class PianoSequence : public MidiSequence
+class PianoSequence final : public MidiSequence
 {
 public:
 
-    PianoSequence(MidiTrack &track, ProjectEventDispatcher &dispatcher);
+    PianoSequence(MidiTrack &track, ProjectEventDispatcher &dispatcher) noexcept;
 
     //===------------------------------------------------------------------===//
     // Import/export

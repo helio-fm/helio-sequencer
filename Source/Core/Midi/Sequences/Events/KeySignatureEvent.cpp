@@ -20,7 +20,7 @@
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
 
-KeySignatureEvent::KeySignatureEvent() :
+KeySignatureEvent::KeySignatureEvent() noexcept :
     MidiEvent(nullptr, MidiEvent::KeySignature, 0.f),
     rootKey(0),
     scale()
@@ -28,7 +28,7 @@ KeySignatureEvent::KeySignatureEvent() :
     //jassertfalse;
 }
 
-KeySignatureEvent::KeySignatureEvent(const KeySignatureEvent &other) :
+KeySignatureEvent::KeySignatureEvent(const KeySignatureEvent &other) noexcept :
     MidiEvent(other),
     rootKey(other.rootKey),
     scale(other.scale) {}
@@ -36,13 +36,13 @@ KeySignatureEvent::KeySignatureEvent(const KeySignatureEvent &other) :
 KeySignatureEvent::KeySignatureEvent(WeakReference<MidiSequence> owner,
     float newBeat /*= 0.f*/,
     Note::Key key /*= 60*/,
-    Scale scale /*= Scale()*/) :
+    Scale scale /*= Scale()*/) noexcept :
     MidiEvent(owner, MidiEvent::KeySignature, newBeat),
     rootKey(key),
     scale(scale) {}
 
 KeySignatureEvent::KeySignatureEvent(WeakReference<MidiSequence> owner,
-    const KeySignatureEvent &parametersToCopy) :
+    const KeySignatureEvent &parametersToCopy) noexcept :
     MidiEvent(owner, parametersToCopy),
     rootKey(parametersToCopy.rootKey),
     scale(parametersToCopy.scale) {}
@@ -65,7 +65,6 @@ Array<MidiMessage> KeySignatureEvent::toMidiMessages() const
     // and we have to guess if our scale is major or minor,
     // and then try to determine a number of flats or a number of sharps.
 
-    Array<MidiMessage> result;
     const bool isMinor = this->scale.seemsMinor();
 
     // Hard-coded number of flats and sharps for major and minor keys in a circle of fifths,
@@ -78,46 +77,45 @@ Array<MidiMessage> KeySignatureEvent::toMidiMessages() const
 
     MidiMessage event(MidiMessage::keySignatureMetaEvent(flatsOrSharps, isMinor));
     event.setTimeStamp(round(this->beat * MS_PER_BEAT));
-    result.add(event);
-    return result;
+    return { event };
 }
 
-KeySignatureEvent KeySignatureEvent::withDeltaBeat(float beatOffset) const
+KeySignatureEvent KeySignatureEvent::withDeltaBeat(float beatOffset) const noexcept
 {
     KeySignatureEvent e(*this);
     e.beat = e.beat + beatOffset;
     return e;
 }
 
-KeySignatureEvent KeySignatureEvent::withBeat(float newBeat) const
+KeySignatureEvent KeySignatureEvent::withBeat(float newBeat) const noexcept
 {
     KeySignatureEvent e(*this);
     e.beat = newBeat;
     return e;
 }
 
-KeySignatureEvent KeySignatureEvent::withRootKey(Note::Key key) const
+KeySignatureEvent KeySignatureEvent::withRootKey(Note::Key key) const noexcept
 {
     KeySignatureEvent e(*this);
     e.rootKey = key;
     return e;
 }
 
-KeySignatureEvent KeySignatureEvent::withScale(Scale scale) const
+KeySignatureEvent KeySignatureEvent::withScale(Scale scale) const noexcept
 {
     KeySignatureEvent e(*this);
     e.scale = scale;
     return e;
 }
 
-KeySignatureEvent KeySignatureEvent::withParameters(const ValueTree &parameters) const
+KeySignatureEvent KeySignatureEvent::withParameters(const ValueTree &parameters) const noexcept
 {
     KeySignatureEvent e(*this);
     e.deserialize(parameters);
     return e;
 }
 
-KeySignatureEvent KeySignatureEvent::copyWithNewId() const
+KeySignatureEvent KeySignatureEvent::copyWithNewId() const noexcept
 {
     KeySignatureEvent e(*this);
     e.id = e.createId();
@@ -142,7 +140,7 @@ const Scale &KeySignatureEvent::getScale() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree KeySignatureEvent::serialize() const
+ValueTree KeySignatureEvent::serialize() const noexcept
 {
     using namespace Serialization;
     ValueTree tree(Midi::keySignature);
@@ -153,7 +151,7 @@ ValueTree KeySignatureEvent::serialize() const
     return tree;
 }
 
-void KeySignatureEvent::deserialize(const ValueTree &tree)
+void KeySignatureEvent::deserialize(const ValueTree &tree) noexcept
 {
     this->reset();
     using namespace Serialization;
@@ -163,13 +161,13 @@ void KeySignatureEvent::deserialize(const ValueTree &tree)
     this->scale.deserialize(tree);
 }
 
-void KeySignatureEvent::reset()
+void KeySignatureEvent::reset() noexcept
 {
     this->rootKey = KEY_C5;
     this->scale = Scale();
 }
 
-void KeySignatureEvent::applyChanges(const KeySignatureEvent &parameters)
+void KeySignatureEvent::applyChanges(const KeySignatureEvent &parameters) noexcept
 {
     jassert(this->id == parameters.id);
     this->beat = parameters.beat;

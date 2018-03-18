@@ -21,12 +21,11 @@
 //[/Headers]
 
 
-class CommandItemComponentMarker  : public Component
+class CommandItemComponentMarker final : public Component
 {
 public:
 
-    CommandItemComponentMarker ();
-
+    CommandItemComponentMarker();
     ~CommandItemComponentMarker();
 
     //[UserMethods]

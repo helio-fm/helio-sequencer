@@ -23,29 +23,29 @@
 #define TIME_SIGNATURE_DEFAULT_NUMERATOR 4
 #define TIME_SIGNATURE_DEFAULT_DENOMINATOR 4
 
-class TimeSignatureEvent : public MidiEvent
+class TimeSignatureEvent final : public MidiEvent
 {
 public:
 
-    TimeSignatureEvent();
-    TimeSignatureEvent(const TimeSignatureEvent &other);
+    TimeSignatureEvent() noexcept;
+    TimeSignatureEvent(const TimeSignatureEvent &other) noexcept;
     TimeSignatureEvent(WeakReference<MidiSequence> owner,
-        const TimeSignatureEvent &parametersToCopy);
-
+        const TimeSignatureEvent &parametersToCopy) noexcept;
     explicit TimeSignatureEvent(WeakReference<MidiSequence> owner,
         float newBeat = 0.f,
         int newNumerator = TIME_SIGNATURE_DEFAULT_NUMERATOR,
-        int newDenominator = TIME_SIGNATURE_DEFAULT_DENOMINATOR);
+        int newDenominator = TIME_SIGNATURE_DEFAULT_DENOMINATOR) noexcept;
 
     static void parseString(const String &data, int &numerator, int &denominator);
     
     Array<MidiMessage> toMidiMessages() const override;
-    TimeSignatureEvent copyWithNewId() const;
-    TimeSignatureEvent withDeltaBeat(float beatOffset) const;
-    TimeSignatureEvent withBeat(float newBeat) const;
-    TimeSignatureEvent withNumerator(const int newNumerator) const;
-    TimeSignatureEvent withDenominator(const int newDenominator) const;
-    TimeSignatureEvent withParameters(const ValueTree &parameters) const;
+
+    TimeSignatureEvent copyWithNewId() const noexcept;
+    TimeSignatureEvent withDeltaBeat(float beatOffset) const noexcept;
+    TimeSignatureEvent withBeat(float newBeat) const noexcept;
+    TimeSignatureEvent withNumerator(const int newNumerator) const noexcept;
+    TimeSignatureEvent withDenominator(const int newDenominator) const noexcept;
+    TimeSignatureEvent withParameters(const ValueTree &parameters) const noexcept;
 
     //===------------------------------------------------------------------===//
     // Accessors
@@ -59,15 +59,15 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
-    void reset() override;
+    ValueTree serialize() const noexcept override;
+    void deserialize(const ValueTree &tree) noexcept override;
+    void reset() noexcept override;
 
     //===------------------------------------------------------------------===//
     // Helpers
     //===------------------------------------------------------------------===//
 
-    void applyChanges(const TimeSignatureEvent &parameters);
+    void applyChanges(const TimeSignatureEvent &parameters) noexcept;
 
 protected:
 

@@ -52,12 +52,12 @@ NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, bool ghostMod
     this->setFloatBounds(this->getRoll().getEventBounds(this));
 }
 
-const Note &NoteComponent::getNote() const
+const Note &NoteComponent::getNote() const noexcept
 {
     return static_cast<const Note &>(this->midiEvent);
 }
 
-PianoRoll &NoteComponent::getRoll() const
+PianoRoll &NoteComponent::getRoll() const noexcept
 {
     return static_cast<PianoRoll &>(this->roll);
 }
@@ -66,17 +66,17 @@ PianoRoll &NoteComponent::getRoll() const
 // Accessors
 //===----------------------------------------------------------------------===//
 
-int NoteComponent::getKey() const
+int NoteComponent::getKey() const noexcept
 {
     return static_cast<const Note &>(this->midiEvent).getKey();
 }
 
-float NoteComponent::getLength() const
+float NoteComponent::getLength() const noexcept
 {
     return static_cast<const Note &>(this->midiEvent).getLength();
 }
 
-float NoteComponent::getVelocity() const
+float NoteComponent::getVelocity() const noexcept
 {
     return static_cast<const Note &>(this->midiEvent).getVelocity();
 }
@@ -93,7 +93,7 @@ void NoteComponent::updateColours()
     this->colourVolume = Colours::black.withAlpha(0.4f);
 }
 
-bool NoteComponent::canResize() const
+bool NoteComponent::canResize() const noexcept
 {
      return (this->getWidth() >= (RESIZE_CORNER * 3));
 }

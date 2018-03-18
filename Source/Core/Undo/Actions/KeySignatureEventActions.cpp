@@ -26,7 +26,7 @@
 //===----------------------------------------------------------------------===//
 
 KeySignatureEventInsertAction::KeySignatureEventInsertAction(MidiTrackSource &source,
-    String targetTrackId, const KeySignatureEvent &event) :
+    String targetTrackId, const KeySignatureEvent &event) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId)),
     event(event) {}
@@ -83,7 +83,7 @@ void KeySignatureEventInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 KeySignatureEventRemoveAction::KeySignatureEventRemoveAction(MidiTrackSource &source,
-    String targetTrackId, const KeySignatureEvent &target) :
+    String targetTrackId, const KeySignatureEvent &target) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId)),
     event(target) {}
@@ -140,7 +140,8 @@ void KeySignatureEventRemoveAction::reset()
 //===----------------------------------------------------------------------===//
 
 KeySignatureEventChangeAction::KeySignatureEventChangeAction(MidiTrackSource &source,
-    String targetTrackId, const KeySignatureEvent &target, const KeySignatureEvent &newParameters) :
+    String targetTrackId, const KeySignatureEvent &target,
+    const KeySignatureEvent &newParameters) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId)),
     eventBefore(target),
@@ -236,7 +237,7 @@ void KeySignatureEventChangeAction::reset()
 //===----------------------------------------------------------------------===//
 
 KeySignatureEventsGroupInsertAction::KeySignatureEventsGroupInsertAction(MidiTrackSource &source,
-    String targetTrackId, Array<KeySignatureEvent> &target) :
+    String targetTrackId, Array<KeySignatureEvent> &target) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId))
 {
@@ -307,7 +308,7 @@ void KeySignatureEventsGroupInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 KeySignatureEventsGroupRemoveAction::KeySignatureEventsGroupRemoveAction(MidiTrackSource &source,
-    String targetTrackId, Array<KeySignatureEvent> &target) :
+    String targetTrackId, Array<KeySignatureEvent> &target) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId))
 {
@@ -378,7 +379,8 @@ void KeySignatureEventsGroupRemoveAction::reset()
 //===----------------------------------------------------------------------===//
 
 KeySignatureEventsGroupChangeAction::KeySignatureEventsGroupChangeAction(MidiTrackSource &source,
-    String targetTrackId, const Array<KeySignatureEvent> state1, const Array<KeySignatureEvent> state2) :
+    String targetTrackId, const Array<KeySignatureEvent> state1,
+    const Array<KeySignatureEvent> state2) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId))
 {

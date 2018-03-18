@@ -20,12 +20,12 @@
 #include "MidiSequence.h"
 #include "AutomationEvent.h"
 
-class AutomationSequence : public MidiSequence
+class AutomationSequence final : public MidiSequence
 {
 public:
 
     explicit AutomationSequence(MidiTrack &track,
-        ProjectEventDispatcher &dispatcher);
+        ProjectEventDispatcher &dispatcher) noexcept;
 
     //===------------------------------------------------------------------===//
     // Undoable track editing

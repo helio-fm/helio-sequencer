@@ -27,17 +27,17 @@ class MidiTrackSource;
 // Insert
 //===----------------------------------------------------------------------===//
 
-class AutomationTrackInsertAction : public UndoAction
+class AutomationTrackInsertAction final : public UndoAction
 {
 public:
 
     AutomationTrackInsertAction(MidiTrackSource &source,
-        WeakReference<TreeItem> parentTreeItem);
+        WeakReference<TreeItem> parentTreeItem) noexcept;
     
     AutomationTrackInsertAction(MidiTrackSource &source,
         WeakReference<TreeItem> parentTreeItem,
         ValueTree serializedState,
-        String xPath);
+        String xPath) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -64,16 +64,16 @@ private:
 // Remove
 //===----------------------------------------------------------------------===//
 
-class AutomationTrackRemoveAction : public UndoAction
+class AutomationTrackRemoveAction final : public UndoAction
 {
 public:
 
     AutomationTrackRemoveAction(MidiTrackSource &source,
-        WeakReference<TreeItem> parentTreeItem);
+        WeakReference<TreeItem> parentTreeItem) noexcept;
     
     AutomationTrackRemoveAction(MidiTrackSource &source,
         WeakReference<TreeItem> parentTreeItem,
-        String trackId);
+        String trackId) noexcept;
 
     bool perform() override;
     bool undo() override;

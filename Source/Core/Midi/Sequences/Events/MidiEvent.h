@@ -30,14 +30,14 @@ public:
     inline Type getType() const noexcept { return this->type; }
     inline bool isTypeOf(Type val) const noexcept { return this->type == val; }
 
-    MidiEvent(const MidiEvent &other);
+    MidiEvent(const MidiEvent &other) noexcept;
 
     // Used to create new events, generates new id that is unique within a track
-    MidiEvent(WeakReference<MidiSequence> owner, Type type, float beat);
+    MidiEvent(WeakReference<MidiSequence> owner, Type type, float beat) noexcept;
 
-    // Doesn't crete new id, only used in undo/redo actions to insert events
+    // Doesn't create new id, only used in undo/redo actions to insert events
     // with custom parameters (assumes the id is already valid and unique)
-    MidiEvent(WeakReference<MidiSequence> owner, const MidiEvent &parameters);
+    MidiEvent(WeakReference<MidiSequence> owner, const MidiEvent &parameters) noexcept;
 
     virtual Array<MidiMessage> toMidiMessages() const = 0;
 

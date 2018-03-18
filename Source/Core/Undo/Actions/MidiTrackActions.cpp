@@ -26,7 +26,7 @@
 //===----------------------------------------------------------------------===//
 
 MidiTrackRenameAction::MidiTrackRenameAction(MidiTrackSource &source,
-    String targetTrackId, String newXPath) :
+    String targetTrackId, String newXPath) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId)),
     xPathAfter(std::move(newXPath)) {}
@@ -89,8 +89,7 @@ void MidiTrackRenameAction::reset()
 //===----------------------------------------------------------------------===//
 
 MidiTrackChangeColourAction::MidiTrackChangeColourAction(MidiTrackSource &source,
-    String targetTrackId,
-    const Colour &newColour) :
+    String targetTrackId, const Colour &newColour) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId)),
     colourAfter(newColour)
@@ -153,8 +152,7 @@ void MidiTrackChangeColourAction::reset()
 //===----------------------------------------------------------------------===//
 
 MidiTrackChangeInstrumentAction::MidiTrackChangeInstrumentAction(MidiTrackSource &source,
-    String targetTrackId,
-    String newInstrumentId) :
+    String targetTrackId, String newInstrumentId) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId)),
     instrumentIdAfter(std::move(newInstrumentId)) {}
@@ -215,8 +213,7 @@ void MidiTrackChangeInstrumentAction::reset()
 //===----------------------------------------------------------------------===//
 
 MidiTrackMuteAction::MidiTrackMuteAction(MidiTrackSource &source,
-    String targetTrackId,
-    bool shouldBeMuted) :
+    String targetTrackId, bool shouldBeMuted) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId)),
     muteStateAfter(shouldBeMuted) {}

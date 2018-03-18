@@ -28,16 +28,15 @@ class MidiTrackSource;
 // Insert
 //===----------------------------------------------------------------------===//
 
-class AnnotationEventInsertAction : public UndoAction
+class AnnotationEventInsertAction final : public UndoAction
 {
 public:
     
     explicit AnnotationEventInsertAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+        UndoAction(source) {}
 
     AnnotationEventInsertAction(MidiTrackSource &source,
-                                String trackId,
-                                const AnnotationEvent &target);
+        String trackId, const AnnotationEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -55,21 +54,19 @@ private:
     JUCE_DECLARE_NON_COPYABLE(AnnotationEventInsertAction)
 };
 
-
 //===----------------------------------------------------------------------===//
 // Remove
 //===----------------------------------------------------------------------===//
 
-class AnnotationEventRemoveAction : public UndoAction
+class AnnotationEventRemoveAction final : public UndoAction
 {
 public:
     
     explicit AnnotationEventRemoveAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+        UndoAction(source) {}
 
     AnnotationEventRemoveAction(MidiTrackSource &source,
-                                String trackId,
-                                const AnnotationEvent &target);
+        String trackId, const AnnotationEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -87,22 +84,19 @@ private:
     JUCE_DECLARE_NON_COPYABLE(AnnotationEventRemoveAction)
 };
 
-
 //===----------------------------------------------------------------------===//
 // Change
 //===----------------------------------------------------------------------===//
 
-class AnnotationEventChangeAction : public UndoAction
+class AnnotationEventChangeAction final : public UndoAction
 {
 public:
     
     explicit AnnotationEventChangeAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+        UndoAction(source) {}
 
-    AnnotationEventChangeAction(MidiTrackSource &source,
-        String trackId,
-        const AnnotationEvent &target,
-        const AnnotationEvent &newParameters);
+    AnnotationEventChangeAction(MidiTrackSource &source, String trackId,
+        const AnnotationEvent &target, const AnnotationEvent &newParameters) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -124,21 +118,19 @@ private:
 
 };
 
-
 //===----------------------------------------------------------------------===//
 // Insert Group
 //===----------------------------------------------------------------------===//
 
-class AnnotationEventsGroupInsertAction : public UndoAction
+class AnnotationEventsGroupInsertAction final : public UndoAction
 {
 public:
     
     explicit AnnotationEventsGroupInsertAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+        UndoAction(source) {}
     
     AnnotationEventsGroupInsertAction(MidiTrackSource &source,
-                                      String trackId,
-                                      Array<AnnotationEvent> &target);
+        String trackId, Array<AnnotationEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
@@ -157,21 +149,19 @@ private:
     
 };
 
-
 //===----------------------------------------------------------------------===//
 // Remove Group
 //===----------------------------------------------------------------------===//
 
-class AnnotationEventsGroupRemoveAction : public UndoAction
+class AnnotationEventsGroupRemoveAction final : public UndoAction
 {
 public:
     
     explicit AnnotationEventsGroupRemoveAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+        UndoAction(source) {}
     
     AnnotationEventsGroupRemoveAction(MidiTrackSource &source,
-                                      String trackId,
-                                      Array<AnnotationEvent> &target);
+        String trackId, Array<AnnotationEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
@@ -190,22 +180,19 @@ private:
     
 };
 
-
 //===----------------------------------------------------------------------===//
 // Change Group
 //===----------------------------------------------------------------------===//
 
-class AnnotationEventsGroupChangeAction : public UndoAction
+class AnnotationEventsGroupChangeAction final : public UndoAction
 {
 public:
     
     explicit AnnotationEventsGroupChangeAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+        UndoAction(source) {}
 
-    AnnotationEventsGroupChangeAction(MidiTrackSource &source,
-                                      String trackId,
-                                      const Array<AnnotationEvent> state1,
-                                      const Array<AnnotationEvent> state2);
+    AnnotationEventsGroupChangeAction(MidiTrackSource &source, String trackId,
+        const Array<AnnotationEvent> state1, const Array<AnnotationEvent> state2) noexcept;
 
     bool perform() override;
     bool undo() override;

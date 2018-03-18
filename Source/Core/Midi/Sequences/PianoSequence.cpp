@@ -28,7 +28,7 @@
 #include <float.h>
 
 PianoSequence::PianoSequence(MidiTrack &track,
-    ProjectEventDispatcher &dispatcher) :
+    ProjectEventDispatcher &dispatcher) noexcept :
     MidiSequence(track, dispatcher) {}
 
 //===----------------------------------------------------------------------===//

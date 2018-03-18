@@ -24,7 +24,7 @@
 #include "UndoStack.h"
 
 AnnotationsSequence::AnnotationsSequence(MidiTrack &track, 
-    ProjectEventDispatcher &dispatcher) :
+    ProjectEventDispatcher &dispatcher) noexcept :
     MidiSequence(track, dispatcher) {}
 
 //===----------------------------------------------------------------------===//

@@ -34,6 +34,7 @@
 #include "NavigationSidebar.h"
 #include "ToolsSidebar.h"
 #include "ColourSchemesManager.h"
+#include "HotkeySchemesManager.h"
 #include "JsonSerializer.h"
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
@@ -54,7 +55,8 @@ MainLayout::MainLayout() :
     this->headline = new Headline();
     this->addAndMakeVisible(this->headline);
 
-    this->hotkeyScheme = HotkeyScheme::getDefaultScheme();
+    // TODO make it able for user to select a scheme in settings page
+    this->hotkeyScheme = HotkeySchemesManager::getInstance().getSchemes().getFirst();
 
     this->setMouseClickGrabsKeyboardFocus(true);
     this->setWantsKeyboardFocus(true);

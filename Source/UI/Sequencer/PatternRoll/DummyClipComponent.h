@@ -19,7 +19,7 @@
 
 #include "ClipComponent.h"
 
-class DummyClipComponent : public ClipComponent
+class DummyClipComponent final : public ClipComponent
 {
 public:
 

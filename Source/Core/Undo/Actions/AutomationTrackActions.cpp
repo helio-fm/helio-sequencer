@@ -26,13 +26,13 @@
 //===----------------------------------------------------------------------===//
 
 AutomationTrackInsertAction::AutomationTrackInsertAction(MidiTrackSource &source,
-    WeakReference<TreeItem> parentTreeItem) :
+    WeakReference<TreeItem> parentTreeItem) noexcept :
     UndoAction(source), parentTreeItem(parentTreeItem) {}
 
 AutomationTrackInsertAction::AutomationTrackInsertAction(MidiTrackSource &source,
     WeakReference<TreeItem> parentTreeItem,
     ValueTree targetSerializedState,
-    String targetXPath) :
+    String targetXPath) noexcept :
     UndoAction(source),
     parentTreeItem(parentTreeItem),
     trackState(targetSerializedState),
@@ -97,11 +97,11 @@ void AutomationTrackInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 AutomationTrackRemoveAction::AutomationTrackRemoveAction(MidiTrackSource &source,
-    WeakReference<TreeItem> parentTreeItem) :
+    WeakReference<TreeItem> parentTreeItem) noexcept :
     UndoAction(source), parentTreeItem(parentTreeItem) {}
 
 AutomationTrackRemoveAction::AutomationTrackRemoveAction(MidiTrackSource &source,
-    WeakReference<TreeItem> parentTreeItem, String targetLayerId) :
+    WeakReference<TreeItem> parentTreeItem, String targetLayerId) noexcept :
     UndoAction(source),
     parentTreeItem(parentTreeItem),
     trackId(std::move(targetLayerId)),

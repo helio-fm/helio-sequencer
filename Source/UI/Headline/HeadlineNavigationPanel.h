@@ -27,12 +27,11 @@ class HeadlineDropdown;
 //[/Headers]
 
 
-class HeadlineNavigationPanel  : public Component
+class HeadlineNavigationPanel final : public Component
 {
 public:
 
-    HeadlineNavigationPanel ();
-
+    HeadlineNavigationPanel();
     ~HeadlineNavigationPanel();
 
     //[UserMethods]

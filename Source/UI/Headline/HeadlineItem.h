@@ -26,14 +26,13 @@ class HeadlineDropdown;
 //[/Headers]
 
 
-class HeadlineItem  : public Component,
-                      private Timer,
-                      private ChangeListener
+class HeadlineItem final : public Component,
+                           private Timer,
+                           private ChangeListener
 {
 public:
 
-    HeadlineItem (WeakReference<TreeItem> treeItem, AsyncUpdater &parent);
-
+    HeadlineItem(WeakReference<TreeItem> treeItem, AsyncUpdater &parent);
     ~HeadlineItem();
 
     //[UserMethods]

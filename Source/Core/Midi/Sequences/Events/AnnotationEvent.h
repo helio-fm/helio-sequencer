@@ -19,28 +19,27 @@
 
 #include "MidiEvent.h"
 
-class AnnotationEvent : public MidiEvent
+class AnnotationEvent final : public MidiEvent
 {
 public:
 
-    AnnotationEvent();
-    AnnotationEvent(const AnnotationEvent &other);
+    AnnotationEvent() noexcept;
+    AnnotationEvent(const AnnotationEvent &other) noexcept;
     AnnotationEvent(WeakReference<MidiSequence> owner,
-        const AnnotationEvent &parametersToCopy);
-
+        const AnnotationEvent &parametersToCopy) noexcept;
     explicit AnnotationEvent(WeakReference<MidiSequence> owner,
         float newBeat = 0.f,
         String newDescription = "",
-        const Colour &newColour = Colours::white);
+        const Colour &newColour = Colours::white) noexcept;
     
     Array<MidiMessage> toMidiMessages() const override;
     
-    AnnotationEvent copyWithNewId() const;
-    AnnotationEvent withDeltaBeat(float beatOffset) const;
-    AnnotationEvent withBeat(float newBeat) const;
-    AnnotationEvent withDescription(const String &newDescription) const;
-    AnnotationEvent withColour(const Colour &newColour) const;
-    AnnotationEvent withParameters(const ValueTree &parameters) const;
+    AnnotationEvent copyWithNewId() const noexcept;
+    AnnotationEvent withDeltaBeat(float beatOffset) const noexcept;
+    AnnotationEvent withBeat(float newBeat) const noexcept;
+    AnnotationEvent withDescription(const String &newDescription) const noexcept;
+    AnnotationEvent withColour(const Colour &newColour) const noexcept;
+    AnnotationEvent withParameters(const ValueTree &parameters) const noexcept;
 
     //===------------------------------------------------------------------===//
     // Accessors
@@ -53,15 +52,15 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
-    void reset() override;
+    ValueTree serialize() const noexcept override;
+    void deserialize(const ValueTree &tree) noexcept override;
+    void reset() noexcept override;
 
     //===------------------------------------------------------------------===//
     // Helpers
     //===------------------------------------------------------------------===//
 
-    void applyChanges(const AnnotationEvent &parameters);
+    void applyChanges(const AnnotationEvent &parameters) noexcept;
 
 protected:
 

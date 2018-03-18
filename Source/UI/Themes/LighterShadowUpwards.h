@@ -21,12 +21,11 @@
 //[/Headers]
 
 
-class LighterShadowUpwards  : public Component
+class LighterShadowUpwards final : public Component
 {
 public:
 
-    LighterShadowUpwards ();
-
+    LighterShadowUpwards();
     ~LighterShadowUpwards();
 
     //[UserMethods]

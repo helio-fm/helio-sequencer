@@ -27,15 +27,15 @@ class MidiTrackSource;
 // Insert Clip
 //===----------------------------------------------------------------------===//
 
-class PatternClipInsertAction : public UndoAction
+class PatternClipInsertAction final : public UndoAction
 {
 public:
 
-    explicit PatternClipInsertAction(MidiTrackSource &source) :
+    explicit PatternClipInsertAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
     PatternClipInsertAction(MidiTrackSource &source,
-        String trackId, const Clip &target);
+        String trackId, const Clip &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -58,15 +58,15 @@ private:
 // Remove Instance
 //===----------------------------------------------------------------------===//
 
-class PatternClipRemoveAction : public UndoAction
+class PatternClipRemoveAction final : public UndoAction
 {
 public:
 
-    explicit PatternClipRemoveAction(MidiTrackSource &source) :
+    explicit PatternClipRemoveAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
     PatternClipRemoveAction(MidiTrackSource &source,
-        String trackId, const Clip &target);
+        String trackId, const Clip &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -89,17 +89,15 @@ private:
 // Change Instance
 //===----------------------------------------------------------------------===//
 
-class PatternClipChangeAction : public UndoAction
+class PatternClipChangeAction final : public UndoAction
 {
 public:
 
-    explicit PatternClipChangeAction(MidiTrackSource &source) :
+    explicit PatternClipChangeAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
-    PatternClipChangeAction(MidiTrackSource &source,
-        String trackId,
-        const Clip &target,
-        const Clip &newParameters);
+    PatternClipChangeAction(MidiTrackSource &source, String trackId,
+        const Clip &target, const Clip &newParameters) noexcept;
 
     bool perform() override;
     bool undo() override;

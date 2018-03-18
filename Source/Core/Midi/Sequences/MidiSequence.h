@@ -31,7 +31,7 @@ class MidiSequence : public Serializable
 public:
 
     explicit MidiSequence(MidiTrack &track,
-        ProjectEventDispatcher &eventDispatcher);
+        ProjectEventDispatcher &eventDispatcher) noexcept;
 
     ~MidiSequence() override;
     
@@ -39,7 +39,7 @@ public:
     // Undoing
     //===------------------------------------------------------------------===//
 
-    void checkpoint();
+    void checkpoint() noexcept;
     void undo();
     void redo();
     void clearUndoHistory();
@@ -75,7 +75,7 @@ public:
 
     void sort();
 
-    inline int size() const
+    inline int size() const noexcept
     { return this->midiEvents.size(); }
 
     inline MidiEvent **begin() const noexcept
@@ -84,11 +84,11 @@ public:
     inline MidiEvent **end() const noexcept
     { return this->midiEvents.end(); }
     
-    inline MidiEvent *getUnchecked(const int index) const
+    inline MidiEvent *getUnchecked(const int index) const noexcept
     { return this->midiEvents.getUnchecked(index); }
 
     // fixme fix comparators! problematic behaviour here
-    inline int indexOfSorted(const MidiEvent *const event) const
+    inline int indexOfSorted(const MidiEvent *const event) const noexcept
     {
         jassert(this->midiEvents[this->midiEvents.indexOfSorted(*event, event)] == event);
         return this->midiEvents.indexOfSorted(*event, event);

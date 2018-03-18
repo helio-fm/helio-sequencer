@@ -42,7 +42,15 @@ HeadlineItem::HeadlineItem(WeakReference<TreeItem> treeItem, AsyncUpdater &paren
     titleLabel->setJustificationType (Justification::centredLeft);
     titleLabel->setEditable (false, false, false);
 
+    titleLabel->setBounds (34, 5, 256, 21);
+
     addAndMakeVisible (icon = new IconComponent (Icons::workspace));
+
+    internalPath2.startNewSubPath (0.0f, 0.0f);
+    internalPath2.lineTo (40.0f, 0.0f);
+    internalPath2.lineTo (40.0f, 32.0f);
+    internalPath2.lineTo (0.0f, 32.0f);
+    internalPath2.closeSubPath();
 
 
     //[UserPreSize]
@@ -157,7 +165,6 @@ void HeadlineItem::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    titleLabel->setBounds (34, 5, 256, 21);
     icon->setBounds (8, (getHeight() / 2) - (32 / 2), 32, 32);
     internalPath1.clear();
     internalPath1.startNewSubPath (0.0f, 0.0f);
@@ -166,13 +173,6 @@ void HeadlineItem::resized()
     internalPath1.lineTo (static_cast<float> (getWidth() - 16), 32.0f);
     internalPath1.lineTo (0.0f, 32.0f);
     internalPath1.closeSubPath();
-
-    internalPath2.clear();
-    internalPath2.startNewSubPath (0.0f, 0.0f);
-    internalPath2.lineTo (40.0f, 0.0f);
-    internalPath2.lineTo (40.0f, 32.0f);
-    internalPath2.lineTo (0.0f, 32.0f);
-    internalPath2.closeSubPath();
 
     internalPath3.clear();
     internalPath3.startNewSubPath (static_cast<float> (getWidth() - 32), 0.0f);
@@ -315,8 +315,8 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="9a3c449859f61884" memberName="titleLabel" virtualName=""
          explicitFocusOrder="0" pos="34 5 256 21" labelText="Project"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="18" kerning="0" bold="0" italic="0"
-         justification="33"/>
+         fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="33"/>
   <GENERICCOMPONENT name="" id="f10feab7d241bacb" memberName="icon" virtualName=""
                     explicitFocusOrder="0" pos="8 0Cc 32 32" class="IconComponent"
                     params="Icons::workspace"/>

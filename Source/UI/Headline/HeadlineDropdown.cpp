@@ -44,6 +44,13 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<TreeItem> targetItem)
 
     addAndMakeVisible (content = new Component());
 
+    internalPath1.startNewSubPath (0.0f, 0.0f);
+    internalPath1.lineTo (40.0f, 0.0f);
+    internalPath1.lineTo (40.0f, 32.0f);
+    internalPath1.lineTo (0.0f, 32.0f);
+    internalPath1.lineTo (8.0f, 16.0f);
+    internalPath1.closeSubPath();
+
 
     //[UserPreSize]
     this->titleLabel->setInterceptsMouseClicks(false, false);
@@ -200,14 +207,6 @@ void HeadlineDropdown::resized()
     titleLabel->setBounds (34, 0, getWidth() - 44, 31);
     icon->setBounds (8, 16 - (32 / 2), 32, 32);
     content->setBounds (2, 33, getWidth() - 4, getHeight() - 34);
-    internalPath1.clear();
-    internalPath1.startNewSubPath (0.0f, 0.0f);
-    internalPath1.lineTo (40.0f, 0.0f);
-    internalPath1.lineTo (40.0f, 32.0f);
-    internalPath1.lineTo (0.0f, 32.0f);
-    internalPath1.lineTo (8.0f, 16.0f);
-    internalPath1.closeSubPath();
-
     internalPath2.clear();
     internalPath2.startNewSubPath (0.0f, 0.0f);
     internalPath2.lineTo (static_cast<float> (getWidth() - 16), 0.0f);
@@ -352,8 +351,8 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="9a3c449859f61884" memberName="titleLabel" virtualName=""
          explicitFocusOrder="0" pos="34 0 44M 31" labelText="Project"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="18" kerning="0" bold="0" italic="0"
-         justification="33"/>
+         fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="33"/>
   <GENERICCOMPONENT name="" id="f10feab7d241bacb" memberName="icon" virtualName=""
                     explicitFocusOrder="0" pos="8 16c 32 32" class="IconComponent"
                     params="Icons::workspace"/>

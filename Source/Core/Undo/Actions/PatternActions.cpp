@@ -27,7 +27,7 @@
 //===----------------------------------------------------------------------===//
 
 PatternClipInsertAction::PatternClipInsertAction(MidiTrackSource &source,
-    String trackId, const Clip &target) :
+    String trackId, const Clip &target) noexcept :
     UndoAction(source),
     trackId(std::move(trackId)),
     clip(target) {}
@@ -84,7 +84,7 @@ void PatternClipInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 PatternClipRemoveAction::PatternClipRemoveAction(MidiTrackSource &source,
-    String trackId, const Clip &target) :
+    String trackId, const Clip &target) noexcept :
     UndoAction(source),
     trackId(std::move(trackId)),
     clip(target) {}
@@ -141,9 +141,7 @@ void PatternClipRemoveAction::reset()
 //===----------------------------------------------------------------------===//
 
 PatternClipChangeAction::PatternClipChangeAction(MidiTrackSource &source,
-    String trackId,
-    const Clip &target,
-    const Clip &newParameters) :
+    String trackId, const Clip &target, const Clip &newParameters) noexcept :
     UndoAction(source),
     trackId(std::move(trackId)),
     clipBefore(target),

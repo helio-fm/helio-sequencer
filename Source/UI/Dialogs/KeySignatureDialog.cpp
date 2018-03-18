@@ -26,6 +26,7 @@
 #include "KeySignaturesSequence.h"
 #include "Transport.h"
 #include "SerializationKeys.h"
+#include "ScalesManager.h"
 
 static inline void copyColourIfSpecified(Label& l, TextEditor& ed, int colourID, int targetColourID)
 {
@@ -40,7 +41,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
       originalEvent(editedEvent),
       originalSequence(keySequence),
       ownerComponent(owner),
-      defaultScales(Scale::getDefaultScalesCache()),
+      defaultScales(ScalesManager::getInstance().getScales()),
       addsNewEvent(shouldAddNewEvent),
       hasMadeChanges(false),
       key(0)

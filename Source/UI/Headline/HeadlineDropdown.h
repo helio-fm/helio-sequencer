@@ -25,13 +25,12 @@ class IconComponent;
 //[/Headers]
 
 
-class HeadlineDropdown  : public Component,
-                          private Timer
+class HeadlineDropdown final : public Component,
+                               private Timer
 {
 public:
 
-    HeadlineDropdown (WeakReference<TreeItem> targetItem);
-
+    HeadlineDropdown(WeakReference<TreeItem> targetItem);
     ~HeadlineDropdown();
 
     //[UserMethods]

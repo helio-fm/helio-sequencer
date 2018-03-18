@@ -27,17 +27,17 @@ class MidiTrackSource;
 // Insert
 //===----------------------------------------------------------------------===//
 
-class PianoTrackInsertAction : public UndoAction
+class PianoTrackInsertAction final : public UndoAction
 {
 public:
 
     PianoTrackInsertAction(MidiTrackSource &source,
-        WeakReference<TreeItem> parentTreeItem);
+        WeakReference<TreeItem> parentTreeItem) noexcept;
 
     PianoTrackInsertAction(MidiTrackSource &source,
         WeakReference<TreeItem> parentTreeItem,
         ValueTree serializedState,
-        String xPath);
+        String xPath) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -63,16 +63,16 @@ private:
 // Remove
 //===----------------------------------------------------------------------===//
 
-class PianoTrackRemoveAction : public UndoAction
+class PianoTrackRemoveAction final : public UndoAction
 {
 public:
 
     PianoTrackRemoveAction(MidiTrackSource &source,
-        WeakReference<TreeItem> parentTreeItem);
+        WeakReference<TreeItem> parentTreeItem) noexcept;
     
     PianoTrackRemoveAction(MidiTrackSource &source,
         WeakReference<TreeItem> parentTreeItem,
-        String trackId);
+        String trackId) noexcept;
 
     bool perform() override;
     bool undo() override;

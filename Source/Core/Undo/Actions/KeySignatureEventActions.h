@@ -28,16 +28,15 @@ class MidiTrackSource;
 // Insert
 //===----------------------------------------------------------------------===//
 
-class KeySignatureEventInsertAction : public UndoAction
+class KeySignatureEventInsertAction final : public UndoAction
 {
 public:
     
-    explicit KeySignatureEventInsertAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit KeySignatureEventInsertAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
     KeySignatureEventInsertAction(MidiTrackSource &source,
-                                   String trackId,
-                                   const KeySignatureEvent &target);
+        String trackId, const KeySignatureEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -60,16 +59,15 @@ private:
 // Remove
 //===----------------------------------------------------------------------===//
 
-class KeySignatureEventRemoveAction : public UndoAction
+class KeySignatureEventRemoveAction final : public UndoAction
 {
 public:
     
-    explicit KeySignatureEventRemoveAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit KeySignatureEventRemoveAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
     KeySignatureEventRemoveAction(MidiTrackSource &source,
-                                   String trackId,
-                                   const KeySignatureEvent &target);
+        String trackId, const KeySignatureEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -92,17 +90,15 @@ private:
 // Change
 //===----------------------------------------------------------------------===//
 
-class KeySignatureEventChangeAction : public UndoAction
+class KeySignatureEventChangeAction final : public UndoAction
 {
 public:
     
-    explicit KeySignatureEventChangeAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit KeySignatureEventChangeAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
-    KeySignatureEventChangeAction(MidiTrackSource &source,
-                                   String trackId,
-                                   const KeySignatureEvent &target,
-                                   const KeySignatureEvent &newParameters);
+    KeySignatureEventChangeAction(MidiTrackSource &source, String trackId,
+        const KeySignatureEvent &target, const KeySignatureEvent &newParameters) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -129,16 +125,15 @@ private:
 // Insert Group
 //===----------------------------------------------------------------------===//
 
-class KeySignatureEventsGroupInsertAction : public UndoAction
+class KeySignatureEventsGroupInsertAction final : public UndoAction
 {
 public:
     
-    explicit KeySignatureEventsGroupInsertAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit KeySignatureEventsGroupInsertAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
     
     KeySignatureEventsGroupInsertAction(MidiTrackSource &source,
-                                         String trackId,
-                                         Array<KeySignatureEvent> &target);
+        String trackId, Array<KeySignatureEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
@@ -157,21 +152,19 @@ private:
     
 };
 
-
 //===----------------------------------------------------------------------===//
 // Remove Group
 //===----------------------------------------------------------------------===//
 
-class KeySignatureEventsGroupRemoveAction : public UndoAction
+class KeySignatureEventsGroupRemoveAction final : public UndoAction
 {
 public:
     
-    explicit KeySignatureEventsGroupRemoveAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit KeySignatureEventsGroupRemoveAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
     
     KeySignatureEventsGroupRemoveAction(MidiTrackSource &source,
-                                         String trackId,
-                                         Array<KeySignatureEvent> &target);
+        String trackId, Array<KeySignatureEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
@@ -195,17 +188,15 @@ private:
 // Change Group
 //===----------------------------------------------------------------------===//
 
-class KeySignatureEventsGroupChangeAction : public UndoAction
+class KeySignatureEventsGroupChangeAction final : public UndoAction
 {
 public:
     
-    explicit KeySignatureEventsGroupChangeAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit KeySignatureEventsGroupChangeAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
-    KeySignatureEventsGroupChangeAction(MidiTrackSource &source,
-                                         String trackId,
-                                         const Array<KeySignatureEvent> state1,
-                                         const Array<KeySignatureEvent> state2);
+    KeySignatureEventsGroupChangeAction(MidiTrackSource &source, String trackId,
+        const Array<KeySignatureEvent> state1, const Array<KeySignatureEvent> state2) noexcept;
 
     bool perform() override;
     bool undo() override;

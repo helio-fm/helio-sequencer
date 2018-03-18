@@ -26,13 +26,12 @@ class LogoFader;
 #include "../../Themes/LighterShadowDownwards.h"
 #include "../../Themes/PanelBackgroundB.h"
 
-class InitScreen  : public Component,
-                    private Timer
+class InitScreen final : public Component,
+                         private Timer
 {
 public:
 
-    InitScreen ();
-
+    InitScreen();
     ~InitScreen();
 
     //[UserMethods]

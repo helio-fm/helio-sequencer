@@ -24,7 +24,7 @@ class Pattern;
 // - all the properties
 // - sequence with events
 // - pattern with clips
-// MidiLayerTreeItem implements this
+// MidiTrackTreeItem implements this
 
 class MidiTrack
 {

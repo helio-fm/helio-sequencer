@@ -178,7 +178,7 @@ void PushThread::run()
     URL pushUrl(this->url);
     pushUrl = pushUrl.withFileToUpload("file", tempFile.getFile(), "application/octet-stream");
 
-    const bool loggedIn = (App::Helio()->getSessionService()->getAuthorizationState() == SessionService::LoggedIn);
+    const bool loggedIn = false; // (App::Helio()->getSessionService()->getAuthorizationState() == SessionService::LoggedIn);
 
     if (loggedIn)
     {

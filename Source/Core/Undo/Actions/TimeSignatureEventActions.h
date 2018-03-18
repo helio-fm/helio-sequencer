@@ -28,16 +28,15 @@ class MidiTrackSource;
 // Insert
 //===----------------------------------------------------------------------===//
 
-class TimeSignatureEventInsertAction : public UndoAction
+class TimeSignatureEventInsertAction final : public UndoAction
 {
 public:
     
-    explicit TimeSignatureEventInsertAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit TimeSignatureEventInsertAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
     TimeSignatureEventInsertAction(MidiTrackSource &source,
-                                   String trackId,
-                                   const TimeSignatureEvent &target);
+        String trackId, const TimeSignatureEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -60,16 +59,15 @@ private:
 // Remove
 //===----------------------------------------------------------------------===//
 
-class TimeSignatureEventRemoveAction : public UndoAction
+class TimeSignatureEventRemoveAction final : public UndoAction
 {
 public:
     
-    explicit TimeSignatureEventRemoveAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit TimeSignatureEventRemoveAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
     TimeSignatureEventRemoveAction(MidiTrackSource &source,
-                                   String trackId,
-                                   const TimeSignatureEvent &target);
+        String trackId, const TimeSignatureEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -92,17 +90,15 @@ private:
 // Change
 //===----------------------------------------------------------------------===//
 
-class TimeSignatureEventChangeAction : public UndoAction
+class TimeSignatureEventChangeAction final : public UndoAction
 {
 public:
     
-    explicit TimeSignatureEventChangeAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit TimeSignatureEventChangeAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
-    TimeSignatureEventChangeAction(MidiTrackSource &source,
-                                   String trackId,
-                                   const TimeSignatureEvent &target,
-                                   const TimeSignatureEvent &newParameters);
+    TimeSignatureEventChangeAction(MidiTrackSource &source, String trackId,
+        const TimeSignatureEvent &target, const TimeSignatureEvent &newParameters) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -129,16 +125,15 @@ private:
 // Insert Group
 //===----------------------------------------------------------------------===//
 
-class TimeSignatureEventsGroupInsertAction : public UndoAction
+class TimeSignatureEventsGroupInsertAction final : public UndoAction
 {
 public:
     
-    explicit TimeSignatureEventsGroupInsertAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit TimeSignatureEventsGroupInsertAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
     
     TimeSignatureEventsGroupInsertAction(MidiTrackSource &source,
-                                         String trackId,
-                                         Array<TimeSignatureEvent> &target);
+        String trackId, Array<TimeSignatureEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
@@ -162,16 +157,15 @@ private:
 // Remove Group
 //===----------------------------------------------------------------------===//
 
-class TimeSignatureEventsGroupRemoveAction : public UndoAction
+class TimeSignatureEventsGroupRemoveAction final : public UndoAction
 {
 public:
     
-    explicit TimeSignatureEventsGroupRemoveAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit TimeSignatureEventsGroupRemoveAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
     
     TimeSignatureEventsGroupRemoveAction(MidiTrackSource &source,
-                                         String trackId,
-                                         Array<TimeSignatureEvent> &target);
+        String trackId, Array<TimeSignatureEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
@@ -195,17 +189,15 @@ private:
 // Change Group
 //===----------------------------------------------------------------------===//
 
-class TimeSignatureEventsGroupChangeAction : public UndoAction
+class TimeSignatureEventsGroupChangeAction final : public UndoAction
 {
 public:
     
-    explicit TimeSignatureEventsGroupChangeAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit TimeSignatureEventsGroupChangeAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
-    TimeSignatureEventsGroupChangeAction(MidiTrackSource &source,
-                                         String trackId,
-                                         const Array<TimeSignatureEvent> state1,
-                                         const Array<TimeSignatureEvent> state2);
+    TimeSignatureEventsGroupChangeAction(MidiTrackSource &source, String trackId,
+        const Array<TimeSignatureEvent> state1, const Array<TimeSignatureEvent> state2)  noexcept;
 
     bool perform() override;
     bool undo() override;

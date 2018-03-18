@@ -25,7 +25,7 @@
 #include "UndoStack.h"
 
 AutomationSequence::AutomationSequence(MidiTrack &track,
-    ProjectEventDispatcher &dispatcher) :
+    ProjectEventDispatcher &dispatcher) noexcept :
     MidiSequence(track, dispatcher) {}
 
 //===----------------------------------------------------------------------===//

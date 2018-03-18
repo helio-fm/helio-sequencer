@@ -190,14 +190,14 @@ namespace Serialization
         static const Identifier lastUpdatesInfo = "lastUpdatesInfo";
     } // namespace Config
 
-    // Available types of dynamically fetched resources of configs
+    // Available types of dynamically fetched resources/configs
     namespace Resources
     {
-        static const Identifier translations = "translations";
-        static const Identifier hotkeys = "hotkeys";
-        static const Identifier arpeggiators = "arpeggiators";
         static const Identifier scales = "scales";
+        static const Identifier arpeggiators = "arpeggiators";
+        static const Identifier translations = "translations";
         static const Identifier colourSchemes = "colourSchemes";
+        static const Identifier hotkeySchemes = "hotkeySchemes";
     }
 
     namespace UI

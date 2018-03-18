@@ -126,8 +126,7 @@ void WorkspaceMenu::handleCommandMessage (int commandId)
     }
     else if (commandId == CommandIDs::LoginLogout)
     {
-        SessionService *authService = App::Helio()->getSessionService();
-        const bool isLoggedIn = (authService->getAuthorizationState() == SessionService::LoggedIn);
+        const bool isLoggedIn = SessionService::isLoggedIn();
 
         if (!isLoggedIn)
         {
@@ -137,6 +136,7 @@ void WorkspaceMenu::handleCommandMessage (int commandId)
         }
         else
         {
+            SessionService *authService = App::Helio()->getSessionService();
             App::Helio()->showModalComponent(new ProgressTooltip());
             //authService->addChangeListener(this);
             authService->signOut();
@@ -145,7 +145,6 @@ void WorkspaceMenu::handleCommandMessage (int commandId)
             //const auto app = App::Helio();
             //app->showModalComponent<ProgressTooltip>();
             //authService->signOut(app->hideModalComponentCallback());
-
         }
     }
     //[/UserCode_handleCommandMessage]

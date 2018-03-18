@@ -139,9 +139,9 @@ void SignInRow::setSelected(bool shouldBeSelected)
 void SignInRow::updateContent()
 {
     const SessionService *authManager = App::Helio()->getSessionService();
-    const bool isLoggedIn = (authManager->getAuthorizationState() == SessionService::LoggedIn);
+    const bool isLoggedIn = SessionService::isLoggedIn();
     this->actionLabel->setText(isLoggedIn ? TRANS("menu::workspace::logout") : TRANS("menu::workspace::login"), dontSendNotification);
-    this->descriptionLabel->setText(isLoggedIn ? authManager->getUserLoginOfCurrentSession() : TRANS("menu::workspace::login::hint"), dontSendNotification);
+    this->descriptionLabel->setText(isLoggedIn ? authManager->getUserProfile().getName() : TRANS("menu::workspace::login::hint"), dontSendNotification);
 }
 
 //[/MiscUserCode]

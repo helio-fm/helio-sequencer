@@ -20,73 +20,71 @@
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
 
-AnnotationEvent::AnnotationEvent() : MidiEvent(nullptr, MidiEvent::Annotation, 0.f)
+AnnotationEvent::AnnotationEvent() noexcept : MidiEvent(nullptr, MidiEvent::Annotation, 0.f)
 {
     //jassertfalse;
 }
 
-AnnotationEvent::AnnotationEvent(const AnnotationEvent &other) :
+AnnotationEvent::AnnotationEvent(const AnnotationEvent &other) noexcept :
     MidiEvent(other),
     description(other.description),
     colour(other.colour) {}
 
 AnnotationEvent::AnnotationEvent(WeakReference<MidiSequence> owner,
-    float newBeat, String newDescription, const Colour &newColour) :
+    float newBeat, String newDescription, const Colour &newColour) noexcept :
     MidiEvent(owner, MidiEvent::Annotation, newBeat),
     description(std::move(newDescription)),
     colour(newColour) {}
 
 AnnotationEvent::AnnotationEvent(WeakReference<MidiSequence> owner,
-    const AnnotationEvent &parametersToCopy) :
+    const AnnotationEvent &parametersToCopy) noexcept :
     MidiEvent(owner, parametersToCopy),
     description(parametersToCopy.description),
     colour(parametersToCopy.colour) {}
 
 Array<MidiMessage> AnnotationEvent::toMidiMessages() const
 {
-    Array<MidiMessage> result;
     MidiMessage event(MidiMessage::textMetaEvent(1, this->getDescription()));
     event.setTimeStamp(round(this->beat * MS_PER_BEAT));
-    result.add(event);
-    return result;
+    return { event };
 }
 
-AnnotationEvent AnnotationEvent::withDeltaBeat(float beatOffset) const
+AnnotationEvent AnnotationEvent::withDeltaBeat(float beatOffset) const noexcept
 {
     AnnotationEvent ae(*this);
     ae.beat = ae.beat + beatOffset;
     return ae;
 }
 
-AnnotationEvent AnnotationEvent::withBeat(float newBeat) const
+AnnotationEvent AnnotationEvent::withBeat(float newBeat) const noexcept
 {
     AnnotationEvent ae(*this);
     ae.beat = newBeat;
     return ae;
 }
 
-AnnotationEvent AnnotationEvent::withDescription(const String &newDescription) const
+AnnotationEvent AnnotationEvent::withDescription(const String &newDescription) const noexcept
 {
     AnnotationEvent ae(*this);
     ae.description = newDescription;
     return ae;
 }
 
-AnnotationEvent AnnotationEvent::withColour(const Colour &newColour) const
+AnnotationEvent AnnotationEvent::withColour(const Colour &newColour) const noexcept
 {
     AnnotationEvent ae(*this);
     ae.colour = newColour;
     return ae;
 }
 
-AnnotationEvent AnnotationEvent::withParameters(const ValueTree &parameters) const
+AnnotationEvent AnnotationEvent::withParameters(const ValueTree &parameters) const noexcept
 {
     AnnotationEvent ae(*this);
     ae.deserialize(parameters);
     return ae;
 }
 
-AnnotationEvent AnnotationEvent::copyWithNewId() const
+AnnotationEvent AnnotationEvent::copyWithNewId() const noexcept
 {
     AnnotationEvent ae(*this);
     ae.id = ae.createId();
@@ -113,7 +111,7 @@ Colour AnnotationEvent::getColour() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree AnnotationEvent::serialize() const
+ValueTree AnnotationEvent::serialize() const noexcept
 {
     using namespace Serialization;
     ValueTree tree(Midi::annotation);
@@ -124,7 +122,7 @@ ValueTree AnnotationEvent::serialize() const
     return tree;
 }
 
-void AnnotationEvent::deserialize(const ValueTree &tree)
+void AnnotationEvent::deserialize(const ValueTree &tree) noexcept
 {
     this->reset();
     using namespace Serialization;
@@ -134,9 +132,9 @@ void AnnotationEvent::deserialize(const ValueTree &tree)
     this->id = tree.getProperty(Midi::id);
 }
 
-void AnnotationEvent::reset() {}
+void AnnotationEvent::reset() noexcept {}
 
-void AnnotationEvent::applyChanges(const AnnotationEvent &other)
+void AnnotationEvent::applyChanges(const AnnotationEvent &other) noexcept
 {
     jassert(this->id == other.id);
     this->description = other.description;

@@ -45,7 +45,7 @@ void RemovalThread::run()
 
     URL removeUrl(this->url);
 
-    const bool loggedIn = (App::Helio()->getSessionService()->getAuthorizationState() == SessionService::LoggedIn);
+    const bool loggedIn = false; // (App::Helio()->getSessionService()->getAuthorizationState() == SessionService::LoggedIn);
     
     if (loggedIn)
     {

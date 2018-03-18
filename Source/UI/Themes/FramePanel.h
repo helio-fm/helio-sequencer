@@ -21,12 +21,11 @@
 //[/Headers]
 
 
-class FramePanel  : public Component
+class FramePanel final : public Component
 {
 public:
 
-    FramePanel ();
-
+    FramePanel();
     ~FramePanel();
 
     //[UserMethods]

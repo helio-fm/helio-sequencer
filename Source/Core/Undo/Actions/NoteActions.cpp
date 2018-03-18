@@ -27,7 +27,7 @@
 //===----------------------------------------------------------------------===//
 
 NoteInsertAction::NoteInsertAction(MidiTrackSource &source,
-    String targetTrackId, const Note &event) :
+    String targetTrackId, const Note &event) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId)),
     note(event) {}
@@ -84,7 +84,7 @@ void NoteInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 NoteRemoveAction::NoteRemoveAction(MidiTrackSource &source,
-    String targetTrackId, const Note &event) :
+    String targetTrackId, const Note &event) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId)),
     note(event) {}
@@ -141,7 +141,7 @@ void NoteRemoveAction::reset()
 //===----------------------------------------------------------------------===//
 
 NoteChangeAction::NoteChangeAction(MidiTrackSource &source,
-    String targetTrackId, const Note &note, const Note &newParameters) :
+    String targetTrackId, const Note &note, const Note &newParameters) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId)),
     noteBefore(note),
@@ -241,7 +241,7 @@ void NoteChangeAction::reset()
 //===----------------------------------------------------------------------===//
 
 NotesGroupInsertAction::NotesGroupInsertAction(MidiTrackSource &source,
-    String targetTrackId, Array<Note> &target) :
+    String targetTrackId, Array<Note> &target) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId))
 {
@@ -312,7 +312,7 @@ void NotesGroupInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 NotesGroupRemoveAction::NotesGroupRemoveAction(MidiTrackSource &source,
-    String targetTrackId, Array<Note> &target) :
+    String targetTrackId, Array<Note> &target) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId))
 {
@@ -383,7 +383,7 @@ void NotesGroupRemoveAction::reset()
 //===----------------------------------------------------------------------===//
 
 NotesGroupChangeAction::NotesGroupChangeAction(MidiTrackSource &source,
-    String targetTrackId, Array<Note> &state1, Array<Note> &state2) :
+    String targetTrackId, Array<Note> &state1, Array<Note> &state2) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId))
 {

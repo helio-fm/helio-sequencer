@@ -23,7 +23,7 @@
 #include "UndoStack.h"
 
 KeySignaturesSequence::KeySignaturesSequence(MidiTrack &track,
-    ProjectEventDispatcher &dispatcher) :
+    ProjectEventDispatcher &dispatcher) noexcept :
     MidiSequence(track, dispatcher) {}
 
 //===----------------------------------------------------------------------===//

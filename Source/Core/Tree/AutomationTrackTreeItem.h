@@ -20,7 +20,7 @@
 #include "AutomationTrackDiffLogic.h"
 #include "MidiTrackTreeItem.h"
 
-class AutomationTrackTreeItem : public MidiTrackTreeItem
+class AutomationTrackTreeItem final : public MidiTrackTreeItem
 {
 public:
 
