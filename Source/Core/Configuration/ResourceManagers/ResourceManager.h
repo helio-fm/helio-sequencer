@@ -63,8 +63,8 @@ public:
 
         this->deserialize(resource);
 
-        // TODO test if this change message is really needed here:
-        this->sendChangeMessage();
+        // Do not send update message here, since resource update should go silently
+        //this->sendChangeMessage();
     }
 
 protected:
