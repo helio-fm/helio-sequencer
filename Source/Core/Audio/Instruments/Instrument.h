@@ -37,8 +37,11 @@ public:
     // midi tracks use this to identify their instruments
     String getIdAndHash() const;
     
-    void initializeFrom(const PluginDescription &pluginDescription);
-    void addNodeToFreeSpace(const PluginDescription &pluginDescription);
+    typedef Function<void(Instrument *)> InitializationCallback;
+    typedef Function<void(AudioProcessorGraph::Node::Ptr)> AddNodeCallback;
+
+    void initializeFrom(const PluginDescription &pluginDescription, InitializationCallback initCallback);
+    void addNodeToFreeSpace(const PluginDescription &pluginDescription, InitializationCallback initCallback);
 
     // gets connected to the audio-core device
     AudioProcessorPlayer &getProcessorPlayer() noexcept
@@ -56,8 +59,7 @@ public:
     const AudioProcessorGraph::Node::Ptr getNodeForId(AudioProcessorGraph::NodeID uid) const noexcept;
 
     AudioProcessorGraph::Node::Ptr addNode(Instrument *instrument, double x, double y);
-    void addNodeAsync(const PluginDescription &desc, double x, double y,
-        Function<void (AudioProcessorGraph::Node::Ptr)> f);
+    void addNodeAsync(const PluginDescription &desc, double x, double y, AddNodeCallback f);
 
     void removeNode(AudioProcessorGraph::NodeID id);
     void disconnectNode(AudioProcessorGraph::NodeID id);
@@ -117,10 +119,8 @@ private:
     String getInstrumentID() const; // will differ between platforms
     String getInstrumentHash() const; // should be the same on all platforms
     
-    AudioProcessorGraph::Node::Ptr addDefaultNode(const PluginDescription &,
-        double x, double y);
-    void configureNode(AudioProcessorGraph::Node::Ptr, 
-        const PluginDescription &, double x, double y);
+    AudioProcessorGraph::Node::Ptr addDefaultNode(const PluginDescription &, double x, double y);
+    void configureNode(AudioProcessorGraph::Node::Ptr, const PluginDescription &, double x, double y);
 
     friend class Transport;
     friend class AudioCore;
@@ -133,8 +133,7 @@ private:
 
     ValueTree serializeNode(AudioProcessorGraph::Node::Ptr node) const;
     void deserializeNode(const ValueTree &tree);
-    void deserializeNodeAsync(const ValueTree &tree,
-        Function<void (AudioProcessorGraph::Node::Ptr)> f);
+    void deserializeNodeAsync(const ValueTree &tree, AddNodeCallback f);
 
 private:
 

@@ -17,9 +17,9 @@
 
 #pragma once
 
-class Instrument;
 class AudioMonitor;
 
+#include "Instrument.h"
 #include "OrchestraPit.h"
 
 class AudioCore :
@@ -41,8 +41,9 @@ public:
     // Instruments
     //===------------------------------------------------------------------===//
 
-    Instrument *addInstrument(const PluginDescription &pluginDescription, const String &name);
     void removeInstrument(Instrument *instrument);
+    void addInstrument(const PluginDescription &pluginDescription,
+        const String &name, Instrument::InitializationCallback callback);
 
     //===------------------------------------------------------------------===//
     // OrchestraPit

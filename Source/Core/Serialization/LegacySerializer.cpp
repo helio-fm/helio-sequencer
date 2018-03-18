@@ -22,9 +22,7 @@
 
 // This file now encapsulates all the ugliness
 // of a legacy serializer used in the first version of the app.
-
-// The only purpose of all this crap is keeping a kind of
-// backwards compatibility (it is only used to read old project files).
+// The purpose is being able to read old project files.
 
 // Please do not read this file.
 
@@ -341,6 +339,16 @@ static String transformXmlTag(const String &tagOrAttribute)
         oldKeys.set("PianoLayer", Core::pianoTrack);
         oldKeys.set("AutoLayer", Core::automationTrack);
         oldKeys.set("VersionControl", Core::versionControl);
+        oldKeys.set("SourceNode", Audio::sourceNodeId);
+        oldKeys.set("DestinationNode", Audio::destinationNodeId);
+        oldKeys.set("SourceChannel", Audio::sourceChannel);
+        oldKeys.set("DestinationChannel", Audio::destinationChannel);
+        oldKeys.set("srcFilter", Audio::sourceNodeId);
+        oldKeys.set("dstFilter", Audio::destinationNodeId);
+        oldKeys.set("srcChannel", Audio::sourceChannel);
+        oldKeys.set("dstChannel", Audio::destinationChannel);
+        oldKeys.set("uiLastX", UI::positionX);
+        oldKeys.set("uiLastY", UI::positionY);
     }
 
     if (oldKeys.contains(tagOrAttribute))
@@ -385,7 +393,7 @@ static ValueTree valueTreeFromXml(const XmlElement &xml)
         return v;
     }
 
-    jassertfalse;
+    //jassertfalse;
     return {};
 }
 

@@ -88,12 +88,11 @@ void InstrumentsCommandPanel::handleCommandMessage(int commandId)
         {
             const PluginDescription pluginDescription(*info.getType(i));
             
-            Instrument *instrument =
-                App::Workspace().getAudioCore().
-                addInstrument(pluginDescription,
-                              pluginDescription.descriptiveName);
-            
-            this->instrumentsRoot.addInstrumentTreeItem(instrument);
+            App::Workspace().getAudioCore().
+                addInstrument(pluginDescription, pluginDescription.descriptiveName, [this](Instrument *instrument)
+            {
+                this->instrumentsRoot.addInstrumentTreeItem(instrument);
+            });
         }
     }
     

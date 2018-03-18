@@ -91,51 +91,52 @@ String Instrument::getIdAndHash() const
 }
 
 
-void Instrument::initializeFrom(const PluginDescription &pluginDescription)
+void Instrument::initializeFrom(const PluginDescription &pluginDescription, InitializationCallback initCallback)
 {
     this->processorGraph->clear();
     this->initializeDefaultNodes();
     
     this->addNodeAsync(pluginDescription, 0.5f, 0.5f, 
-        [&](AudioProcessorGraph::Node::Ptr instrument)
+        [initCallback, this](AudioProcessorGraph::Node::Ptr instrument)
         {
             if (instrument == nullptr) { return; }
-                           
-            // ограничить 2мя?
+
             for (int i = 0; i < instrument->getProcessor()->getTotalNumInputChannels(); ++i)
             {
                 this->addConnection(this->audioIn->nodeID, i, instrument->nodeID, i);
             }
-                           
+
             if (instrument->getProcessor()->acceptsMidi())
             {
                 this->addConnection(this->midiIn->nodeID, Instrument::midiChannelNumber, instrument->nodeID, Instrument::midiChannelNumber);
             }
-                           
+
             for (int i = 0; i < instrument->getProcessor()->getTotalNumOutputChannels(); ++i)
             {
                 this->addConnection(instrument->nodeID, i, this->audioOut->nodeID, i);
             }
-                           
+
             if (instrument->getProcessor()->producesMidi())
             {
                 this->addConnection(instrument->nodeID, Instrument::midiChannelNumber, this->midiOut->nodeID, Instrument::midiChannelNumber);
             }
-                           
+
+            initCallback(this);
             this->sendChangeMessage();
         });
 }
 
-void Instrument::addNodeToFreeSpace(const PluginDescription &pluginDescription)
+void Instrument::addNodeToFreeSpace(const PluginDescription &pluginDescription, InitializationCallback initCallback)
 {
-    // TODO: calc free space
+    // TODO: find free space on a canvas
     float x = 0.5f;
     float y = 0.5f;
 
-    this->addNodeAsync(pluginDescription, x, y, [this](AudioProcessorGraph::Node::Ptr node)
+    this->addNodeAsync(pluginDescription, x, y, [initCallback, this](AudioProcessorGraph::Node::Ptr node)
     {
         if (node != nullptr)
         {
+            initCallback(this);
             this->sendChangeMessage();
         }
     });
@@ -162,11 +163,9 @@ const AudioProcessorGraph::Node::Ptr Instrument::getNodeForId(AudioProcessorGrap
 }
 
 void Instrument::addNodeAsync(const PluginDescription &desc,
-    double x, double y,
-    Function<void (AudioProcessorGraph::Node::Ptr)> f)
+    double x, double y, AddNodeCallback f)
 {
-    this->formatManager.
-    createPluginInstanceAsync(desc,
+    this->formatManager.createPluginInstanceAsync(desc,
         this->processorGraph->getSampleRate(),
         this->processorGraph->getBlockSize(),
         [this, desc, x, y, f](AudioPluginInstance *instance, const String &error)
@@ -304,11 +303,8 @@ bool Instrument::canConnect(AudioProcessorGraph::Connection connection) const no
     return this->processorGraph->canConnect(connection);
 }
 
-bool Instrument::addConnection(
-    AudioProcessorGraph::NodeID sourceID,
-    int sourceChannel,
-    AudioProcessorGraph::NodeID destinationID,
-    int destinationChannel)
+bool Instrument::addConnection(AudioProcessorGraph::NodeID sourceID, int sourceChannel,
+    AudioProcessorGraph::NodeID destinationID, int destinationChannel)
 {
     AudioProcessorGraph::NodeAndChannel source;
     source.nodeID = sourceID;
@@ -390,23 +386,23 @@ void Instrument::deserialize(const ValueTree &tree)
     // is here to handle loading of async-loaded AUv3 plugins
     
     // Fill up the connections info for further processing
-    struct ConnectionDescription
+    struct ConnectionDescription final
     {
-        uint32 srcFilter;
-        uint32 dstFilter;
-        int srcChannel;
-        int dstChannel;
+        const uint32 sourceNodeId;
+        const uint32 destinationNodeId;
+        const int sourceChannel;
+        const int destinationChannel;
     };
     
     Array<ConnectionDescription> connectionDescriptions;
     
     forEachValueTreeChildWithType(root, e, Audio::connection)
     {
-        const uint32 srcFilter = static_cast<int>(e.getProperty(Audio::sourceNodeId));
-        const uint32 dstFilter = static_cast<int>(e.getProperty(Audio::destinationNodeId));
+        const uint32 sourceNodeId = static_cast<int>(e.getProperty(Audio::sourceNodeId));
+        const uint32 destinationNodeId = static_cast<int>(e.getProperty(Audio::destinationNodeId));
         connectionDescriptions.add({
-            srcFilter,
-            srcFilter,
+            sourceNodeId,
+            destinationNodeId,
             e.getProperty(Audio::sourceChannel),
             e.getProperty(Audio::destinationChannel)
         });
@@ -420,8 +416,8 @@ void Instrument::deserialize(const ValueTree &tree)
                 // Try to create as many connections as possible
                 for (const auto &connectionInfo : connectionDescriptions)
                 {
-                    this->addConnection(connectionInfo.srcFilter, connectionInfo.srcChannel,
-                                        connectionInfo.dstFilter, connectionInfo.dstChannel);
+                    this->addConnection(connectionInfo.sourceNodeId, connectionInfo.sourceChannel,
+                                        connectionInfo.destinationNodeId, connectionInfo.destinationChannel);
                 }
                                          
                 this->processorGraph->removeIllegalConnections();
@@ -456,8 +452,7 @@ ValueTree Instrument::serializeNode(AudioProcessorGraph::Node::Ptr node) const
     return {};
 }
 
-void Instrument::deserializeNodeAsync(const ValueTree &tree,
-    Function<void (AudioProcessorGraph::Node::Ptr)> f)
+void Instrument::deserializeNodeAsync(const ValueTree &tree, AddNodeCallback f)
 {
     using namespace Serialization;
     PluginSmartDescription pd;

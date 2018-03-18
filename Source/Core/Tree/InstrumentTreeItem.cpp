@@ -174,9 +174,11 @@ void InstrumentTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dra
         if (PluginDescriptionWrapper *pd = dynamic_cast<PluginDescriptionWrapper *>(dragSourceDetails.description.getObject()))
         {
             const PluginDescription pluginDescription(pd->pluginDescription);
-            this->instrument->addNodeToFreeSpace(pluginDescription);
-            this->updateChildrenEditors();
-            //Console::setStatus("added " + pluginDescription->descriptiveName);
+            this->instrument->addNodeToFreeSpace(pluginDescription, [this](Instrument *instrument)
+            {
+                this->updateChildrenEditors();
+                Logger::writeToLog("Added " + instrument->getName());
+            });
         }
     }
 

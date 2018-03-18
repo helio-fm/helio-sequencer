@@ -100,18 +100,17 @@ AudioMonitor *AudioCore::getMonitor() const noexcept
 // Instruments
 //===----------------------------------------------------------------------===//
 
-Instrument *AudioCore::addInstrument(const PluginDescription &pluginDescription,
-                                     const String &name)
+void AudioCore::addInstrument(const PluginDescription &pluginDescription,
+    const String &name, Instrument::InitializationCallback callback)
 {
     auto instrument = new Instrument(formatManager, name);
     this->addInstrumentToDevice(instrument);
 
-    instrument->initializeFrom(pluginDescription);
+    instrument->initializeFrom(pluginDescription, callback);
+
+    // FIXME: might need to do it async as well
     this->instruments.add(instrument);
-
     this->broadcastInstrumentAdded(instrument);
-
-    return instrument;
 }
 
 void AudioCore::removeInstrument(Instrument *instrument)
@@ -182,7 +181,7 @@ void AudioCore::initDefaultInstrument()
     format.findAllTypesForFile(descriptions, BuiltInSynth::pianoId);
 
     PluginDescription desc(*descriptions[0]);
-    this->addInstrument(desc, "Default");
+    this->addInstrument(desc, "Default", [](Instrument *) {});
 }
 
 //===----------------------------------------------------------------------===//

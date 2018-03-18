@@ -96,16 +96,13 @@ void InstrumentsRootTreeItem::itemDropped(const DragAndDropTarget::SourceDetails
         if (PluginDescriptionWrapper *pd = dynamic_cast<PluginDescriptionWrapper *>(dragSourceDetails.description.getObject()))
         {
             PluginDescription pluginDescription(pd->pluginDescription);
-
-            Instrument *instrument =
-                App::Workspace().getAudioCore().
-                addInstrument(pluginDescription,
-                              pluginDescription.descriptiveName);
-            
-            jassert(instrument);
-
-            this->addInstrumentTreeItem(instrument, insertIndex);
-            Logger::writeToLog("Loaded " + pluginDescription.descriptiveName);
+            App::Workspace().getAudioCore().addInstrument(pluginDescription, pluginDescription.descriptiveName,
+                [this, insertIndex](Instrument *instrument)
+                {
+                    jassert(instrument);
+                    this->addInstrumentTreeItem(instrument, insertIndex);
+                    Logger::writeToLog("Loaded " + instrument->getName());
+                });
         }
     }
 
