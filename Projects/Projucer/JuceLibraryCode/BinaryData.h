@@ -347,31 +347,38 @@ namespace BinaryData
     extern const char*   zoomout_svg;
     const int            zoomout_svgSize = 928;
 
-    extern const char*   defaultPattern_png;
-    const int            defaultPattern_pngSize = 317;
+    extern const char*   Noise_png;
+    const int            Noise_pngSize = 317;
 
-    extern const char*   ColourSchemes_xml;
-    const int            ColourSchemes_xmlSize = 2608;
+    extern const char*   Arpeggiators_json;
+    const int            Arpeggiators_jsonSize = 15183;
 
-    extern const char*   DefaultArps_xml;
-    const int            DefaultArps_xmlSize = 6876;
+    extern const char*   ColourSchemes_json;
+    const int            ColourSchemes_jsonSize = 2833;
 
-    extern const char*   DefaultHotkeys_xml;
-    const int            DefaultHotkeys_xmlSize = 9601;
+    extern const char*   HotkeySchemes_json;
+    const int            HotkeySchemes_jsonSize = 9891;
 
-    extern const char*   DefaultScales_xml;
-    const int            DefaultScales_xmlSize = 4741;
+    extern const char*   Scales_json;
+    const int            Scales_jsonSize = 5008;
 
-    extern const char*   DefaultTranslations_xml;
-    const int            DefaultTranslations_xmlSize = 185385;
+    extern const char*   Translations_json;
+    const int            Translations_jsonSize = 286713;
+
+    // Number of elements in the namedResourceList and originalFileNames arrays.
+    const int namedResourceListSize = 119;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];
 
-    // Number of elements in the namedResourceList array.
-    const int namedResourceListSize = 119;
+    // Points to the start of a list of resource filenames.
+    extern const char* originalFilenames[];
 
     // If you provide the name of one of the binary resource variables above, this function will
     // return the corresponding data and its size (or a null pointer if the name isn't found).
-    const char* getNamedResource (const char* resourceNameUTF8, int& dataSizeInBytes) throw();
+    const char* getNamedResource (const char* resourceNameUTF8, int& dataSizeInBytes) noexcept;
+
+    // If you provide the name of one of the binary resource variables above, this function will
+    // return the corresponding original, non-mangled filename (or a null pointer if the name isn't found).
+    const char* getNamedResourceOriginalFilename (const char* resourceNameUTF8) noexcept;
 }

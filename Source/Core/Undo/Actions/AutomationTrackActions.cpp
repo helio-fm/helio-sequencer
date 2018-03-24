@@ -26,15 +26,16 @@
 //===----------------------------------------------------------------------===//
 
 AutomationTrackInsertAction::AutomationTrackInsertAction(MidiTrackSource &source,
-    WeakReference<TreeItem> parentTreeItem) :
+    WeakReference<TreeItem> parentTreeItem) noexcept :
     UndoAction(source), parentTreeItem(parentTreeItem) {}
 
 AutomationTrackInsertAction::AutomationTrackInsertAction(MidiTrackSource &source,
     WeakReference<TreeItem> parentTreeItem,
-    String targetSerializedState, String targetXPath) :
+    ValueTree targetSerializedState,
+    String targetXPath) noexcept :
     UndoAction(source),
     parentTreeItem(parentTreeItem),
-    serializedState(std::move(targetSerializedState)),
+    trackState(targetSerializedState),
     trackName(std::move(targetXPath)) {}
 
 bool AutomationTrackInsertAction::perform()
@@ -42,8 +43,7 @@ bool AutomationTrackInsertAction::perform()
     MidiTrackTreeItem *track = new AutomationTrackTreeItem("empty");
     this->parentTreeItem->addChildTreeItem(track);
     
-    ScopedPointer<XmlElement> layerState = XmlDocument::parse(this->serializedState);
-    track->deserialize(*layerState);
+    track->deserialize(this->trackState);
     
     this->trackId = track->getTrackId().toString();
     track->setTrackName(this->trackName, true);
@@ -69,27 +69,27 @@ int AutomationTrackInsertAction::getSizeInUnits()
     return this->trackName.length();
 }
 
-XmlElement *AutomationTrackInsertAction::serialize() const
+ValueTree AutomationTrackInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::automationTrackInsertAction);
-    xml->setAttribute(Serialization::Undo::xPath, this->trackName);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    xml->prependChildElement(XmlDocument::parse(this->serializedState));
-    return xml;
+    ValueTree tree(Serialization::Undo::automationTrackInsertAction);
+    tree.setProperty(Serialization::Undo::xPath, this->trackName, nullptr);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->trackState.createCopy(), nullptr);
+    return tree;
 }
 
-void AutomationTrackInsertAction::deserialize(const XmlElement &xml)
+void AutomationTrackInsertAction::deserialize(const ValueTree &tree)
 {
-    this->trackName = xml.getStringAttribute(Serialization::Undo::xPath);
-    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
-    this->serializedState = xml.getFirstChildElement()->createDocument("");
+    this->trackName = tree.getProperty(Serialization::Undo::xPath);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->trackState = tree.getChild(0).createCopy();
 }
 
 void AutomationTrackInsertAction::reset()
 {
     this->trackName.clear();
     this->trackId.clear();
-    this->serializedState.clear();
+    this->trackState = {};
 }
 
 //===----------------------------------------------------------------------===//
@@ -97,11 +97,11 @@ void AutomationTrackInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 AutomationTrackRemoveAction::AutomationTrackRemoveAction(MidiTrackSource &source,
-    WeakReference<TreeItem> parentTreeItem) :
+    WeakReference<TreeItem> parentTreeItem) noexcept :
     UndoAction(source), parentTreeItem(parentTreeItem) {}
 
 AutomationTrackRemoveAction::AutomationTrackRemoveAction(MidiTrackSource &source,
-    WeakReference<TreeItem> parentTreeItem, String targetLayerId) :
+    WeakReference<TreeItem> parentTreeItem, String targetLayerId) noexcept :
     UndoAction(source),
     parentTreeItem(parentTreeItem),
     trackId(std::move(targetLayerId)),
@@ -123,11 +123,11 @@ bool AutomationTrackRemoveAction::perform()
 
 bool AutomationTrackRemoveAction::undo()
 {
-    if (this->serializedTreeItem != nullptr)
+    if (this->serializedTreeItem.isValid())
     {
         MidiTrackTreeItem *track = new AutomationTrackTreeItem("empty");
         this->parentTreeItem->addChildTreeItem(track);
-        track->deserialize(*this->serializedTreeItem);
+        track->deserialize(this->serializedTreeItem);
         track->setTrackName(this->trackName, true);
         return true;
     }
@@ -137,7 +137,7 @@ bool AutomationTrackRemoveAction::undo()
 
 int AutomationTrackRemoveAction::getSizeInUnits()
 {
-    if (this->serializedTreeItem != nullptr)
+    if (this->serializedTreeItem.isValid())
     {
         return (this->numEvents * sizeof(MidiEvent));
     }
@@ -145,25 +145,25 @@ int AutomationTrackRemoveAction::getSizeInUnits()
     return 1;
 }
 
-XmlElement *AutomationTrackRemoveAction::serialize() const
+ValueTree AutomationTrackRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::automationTrackRemoveAction);
-    xml->setAttribute(Serialization::Undo::xPath, this->trackName);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    xml->prependChildElement(new XmlElement(*this->serializedTreeItem)); // deep copy
-    return xml;
+    ValueTree tree(Serialization::Undo::automationTrackRemoveAction);
+    tree.setProperty(Serialization::Undo::xPath, this->trackName, nullptr);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->serializedTreeItem.createCopy(), nullptr);
+    return tree;
 }
 
-void AutomationTrackRemoveAction::deserialize(const XmlElement &xml)
+void AutomationTrackRemoveAction::deserialize(const ValueTree &tree)
 {
-    this->trackName = xml.getStringAttribute(Serialization::Undo::xPath);
-    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
-    this->serializedTreeItem = new XmlElement(*xml.getFirstChildElement()); // deep copy
+    this->trackName = tree.getProperty(Serialization::Undo::xPath);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->serializedTreeItem = tree.getChild(0).createCopy();
 }
 
 void AutomationTrackRemoveAction::reset()
 {
     this->trackName.clear();
     this->trackId.clear();
-    this->serializedTreeItem->deleteAllChildElements();
+    this->serializedTreeItem = {};
 }

@@ -26,7 +26,6 @@
 #include "Icons.h"
 
 #include "Pattern.h"
-#include "PatternDeltas.h"
 #include "PianoSequence.h"
 #include "AutomationSequence.h"
 #include "PianoRoll.h"
@@ -37,7 +36,7 @@
 
 #include "LayerCommandPanel.h"
 
-MidiTrackTreeItem::MidiTrackTreeItem(const String &name, const String &type) :
+MidiTrackTreeItem::MidiTrackTreeItem(const String &name, const Identifier &type) :
     TreeItem(name, type),
     colour(Colours::white), // TODO random color from my set
     channel(1),
@@ -105,31 +104,31 @@ String MidiTrackTreeItem::getVCSName() const
     return this->getXPath();
 }
 
-XmlElement *MidiTrackTreeItem::serializeClipsDelta() const
+ValueTree MidiTrackTreeItem::serializeClipsDelta() const
 {
-    auto xml = new XmlElement(PatternDeltas::clipsAdded);
+    ValueTree tree(Serialization::VCS::PatternDeltas::clipsAdded);
 
     for (int i = 0; i < this->getPattern()->size(); ++i)
     {
         const auto clip = this->getPattern()->getUnchecked(i);
-        xml->addChildElement(clip->serialize());
+        tree.appendChild(clip->serialize(), nullptr);
     }
 
-    return xml;
+    return tree;
 }
 
-void MidiTrackTreeItem::resetClipsDelta(const XmlElement *state)
+void MidiTrackTreeItem::resetClipsDelta(const ValueTree &state)
 {
-    jassert(state->getTagName() == PatternDeltas::clipsAdded);
+    jassert(state.hasType(Serialization::VCS::PatternDeltas::clipsAdded));
 
     //this->reset(); // TODO test
     this->getPattern()->reset();
 
     Pattern *pattern = this->getPattern();
-    forEachXmlChildElementWithTagName(*state, e, Serialization::Core::clip)
+    forEachValueTreeChildWithType(state, e, Serialization::Midi::clip)
     {
         Clip c(pattern);
-        c.deserialize(*e);
+        c.deserialize(e);
         pattern->silentImport(c);
     }
 }
@@ -462,7 +461,7 @@ ProjectTreeItem *MidiTrackTreeItem::getProject() const
 
 var MidiTrackTreeItem::getDragSourceDescription()
 {
-    return Serialization::Core::layer;
+    return Serialization::Core::track.toString();
 }
 
 void MidiTrackTreeItem::onItemParentChanged()
@@ -503,7 +502,7 @@ void MidiTrackTreeItem::onItemParentChanged()
 
 bool MidiTrackTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
-    bool isInterested = (dragSourceDetails.description == Serialization::Core::instrument);
+    bool isInterested = (Serialization::Core::instrumentRoot.toString() == dragSourceDetails.description.toString());
 
     if (isInterested)
     { this->setOpen(true); }

@@ -352,7 +352,7 @@ void ToolsSidebar::handleCommandMessage (int commandId)
             }
             else
             {
-                App::Helio()->showTooltip(TRANS("warnings::emptyselection"));
+                App::Layout().showTooltip(TRANS("warnings::emptyselection"));
             }
         }
         break;

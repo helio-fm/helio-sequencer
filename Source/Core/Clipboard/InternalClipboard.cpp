@@ -19,9 +19,10 @@
 #include "InternalClipboard.h"
 #include "SerializationKeys.h"
 #include "ClipboardOwner.h"
+#include "XmlSerializer.h"
 #include "App.h"
 
-// todo multiple clipboards
+// todo multiple clipboards?
 
 void InternalClipboard::copy(const ClipboardOwner &owner, bool mirrorToSystemClipboard /*= false*/)
 {
@@ -33,30 +34,22 @@ void InternalClipboard::paste(ClipboardOwner &owner)
     App::Helio()->getClipboard()->pasteTo(owner);
 }
 
-XmlElement *InternalClipboard::getCurrentContent()
+ValueTree InternalClipboard::getCurrentContent()
 {
-    return App::Helio()->getClipboard()->clipboard.get();
+    return App::Helio()->getClipboard()->clipboard;
 }
 
 String InternalClipboard::getCurrentContentAsString()
 {
-    if (InternalClipboard::getCurrentContent())
+    if (InternalClipboard::getCurrentContent().isValid())
     {
-        return InternalClipboard::getCurrentContent()->createDocument("", false, false, "UTF-8", 1024);
+        String text;
+        static XmlSerializer serializer;
+        serializer.saveToString(text, InternalClipboard::getCurrentContent());
+        return text;
     }
     
-    return "";
-}
-
-
-InternalClipboard::InternalClipboard()
-{
-
-}
-
-InternalClipboard::~InternalClipboard()
-{
-
+    return {};
 }
 
 void InternalClipboard::copyFrom(const ClipboardOwner &owner, bool mirrorToSystemClipboard /*= false*/)
@@ -65,14 +58,14 @@ void InternalClipboard::copyFrom(const ClipboardOwner &owner, bool mirrorToSyste
 
     if (mirrorToSystemClipboard)
     {
-        SystemClipboard::copyTextToClipboard(this->clipboard->createDocument("", false, false, "UTF-8", 1024));
+        SystemClipboard::copyTextToClipboard(this->getCurrentContentAsString());
     }
 }
 
 void InternalClipboard::pasteTo(ClipboardOwner &owner)
 {
-    if (this->clipboard != nullptr)
+    if (this->clipboard.isValid())
     {
-        owner.clipboardPaste(*this->clipboard);
+        owner.clipboardPaste(this->clipboard);
     }
 }

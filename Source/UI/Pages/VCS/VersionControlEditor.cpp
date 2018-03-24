@@ -28,10 +28,6 @@ VersionControlEditor::VersionControlEditor(VersionControl &versionControl)
     this->setFocusContainer(true);
 }
 
-VersionControlEditor::~VersionControlEditor()
-{
-}
-
 void VersionControlEditor::broughtToFront()
 {
     this->updateState();

@@ -27,7 +27,6 @@
 #include "AutomationTrackTreeItem.h"
 #include "WorkspacePage.h"
 #include "MainLayout.h"
-#include "DataEncoder.h"
 #include "Icons.h"
 #include "MidiSequence.h"
 #include "AutomationEvent.h"
@@ -75,11 +74,10 @@ void RootTreeItem::recreatePage()
 void RootTreeItem::safeRename(const String &newName)
 {
     TreeItem::safeRename(newName);
-    App::Workspace().getDocument()->renameFile(this->getName());
     this->dispatchChangeTreeItemView();
 }
 
-void RootTreeItem::importMidi(File &file)
+void RootTreeItem::importMidi(const File &file)
 {
     MidiFile tempFile;
     ScopedPointer<InputStream> in(new FileInputStream(file));
@@ -117,7 +115,6 @@ void RootTreeItem::importMidi(File &file)
     // todo сохранить по умолчанию рядом - или куда?
     project->broadcastChangeProjectBeatRange();
     project->getDocument()->save();
-    App::Workspace().sendChangeMessage();
 }
 
 
@@ -145,7 +142,7 @@ void RootTreeItem::checkoutProject(const String &name, const String &id, const S
     newProject->addChildTreeItem(vcs);
     
     vcs->asyncPullAndCheckoutOrDeleteIfFailed();
-    App::Workspace().sendChangeMessage();
+    App::Workspace().autosave();
 }
 
 ProjectTreeItem *RootTreeItem::openProject(const File &file, int insertIndex /*= -1 */)
@@ -193,7 +190,7 @@ ProjectTreeItem *RootTreeItem::openProject(const File &file, int insertIndex /*=
             }
         }
 
-        App::Workspace().sendChangeMessage();
+        App::Workspace().autosave();
         return project;
     }
 
@@ -218,7 +215,7 @@ ProjectTreeItem *RootTreeItem::addDefaultProject(const File &projectLocation)
 
 ProjectTreeItem *RootTreeItem::createDefaultProjectChildren(ProjectTreeItem *newProject)
 {
-    VersionControlTreeItem *vcs = this->addVCS(newProject);
+    this->addVCS(newProject);
     newProject->addChildTreeItem(new PatternEditorTreeItem());
 
     this->addPianoTrack(newProject, "Arps")->setTrackColour(Colours::orangered, true);
@@ -294,15 +291,7 @@ ScopedPointer<Component> RootTreeItem::createItemMenu()
 
 bool RootTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
-    //if (TreeView *treeView = dynamic_cast<TreeView *>(dragSourceDetails.sourceComponent.get()))
-    //{
-    //    TreeItem *selected = TreeItem::getSelectedItem(treeView);
-
-    //if (TreeItem::isNodeInChildren(selected, this))
-    //{ return false; }
-
-    return (dragSourceDetails.description == Serialization::Core::project);
-    //}
+    return (dragSourceDetails.description == Serialization::Core::project.toString());
 }
 
 bool RootTreeItem::isInterestedInFileDrag(const StringArray &files)
@@ -324,13 +313,13 @@ void RootTreeItem::filesDropped(const StringArray &files, int insertIndex)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-void RootTreeItem::deserialize(const XmlElement &xml)
+void RootTreeItem::deserialize(const ValueTree &tree)
 {
-    const XmlElement *root = xml.hasTagName(Serialization::Core::treeItem) ?
-        &xml : xml.getChildByName(Serialization::Core::treeItem);
+    const auto root = tree.hasType(Serialization::Core::treeItem) ?
+        tree : tree.getChildWithName(Serialization::Core::treeItem);
 
-    if (root != nullptr)
+    if (root.isValid())
     {
-        TreeItem::deserialize(*root);
+        TreeItem::deserialize(root);
     }
 }

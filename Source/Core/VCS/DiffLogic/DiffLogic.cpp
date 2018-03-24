@@ -33,7 +33,7 @@ public:
     explicit DummyDiffLogic(TrackedItem &targetItem) :
         AutomationTrackDiffLogic(targetItem) {}
     
-    const String getType() const override
+    const Identifier getType() const override
     {
         return "DummyDiffLogic";
     }
@@ -41,17 +41,17 @@ public:
 
 DiffLogic *DiffLogic::createLogicCopy(TrackedItem &copyFrom, TrackedItem &targetItem)
 {
-    const String &type = copyFrom.getDiffLogic()->getType();
+    const Identifier &type = copyFrom.getDiffLogic()->getType();
     return DiffLogic::createLogicFor(targetItem, type);
 }
 
-DiffLogic *DiffLogic::createLogicFor(TrackedItem &targetItem, const String &type)
+DiffLogic *DiffLogic::createLogicFor(TrackedItem &targetItem, const Identifier &type)
 {
-    if (type == Serialization::Core::pianoLayer)
+    if (type == Serialization::Core::pianoTrack)
     {
         return new PianoTrackDiffLogic(targetItem);
     }
-    if (type == Serialization::Core::autoLayer)
+    if (type == Serialization::Core::automationTrack)
     {
         return new AutomationTrackDiffLogic(targetItem);
     }

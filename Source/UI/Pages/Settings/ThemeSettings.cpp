@@ -31,7 +31,7 @@
 #include "Workspace.h"
 #include "ThemeSettingsItem.h"
 #include "ColourScheme.h"
-#include "ColourSchemeManager.h"
+#include "ColourSchemesManager.h"
 
 #define THEME_SETTINGS_ROW_HEIGHT (46)
 //[/MiscUserDefs]
@@ -51,21 +51,23 @@ ThemeSettings::ThemeSettings()
     setSize (600, 192);
 
     //[Constructor]
-    const int numThemes = ColourSchemeManager::getInstance().getSchemes().size();
-    this->setSize(600, 4 + numThemes * THEME_SETTINGS_ROW_HEIGHT);
+    this->currentScheme = ColourSchemesManager::getInstance().getCurrentScheme();
+
+    const int numSchemes = ColourSchemesManager::getInstance().getSchemes().size();
+    this->setSize(600, 4 + numSchemes * THEME_SETTINGS_ROW_HEIGHT);
 
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(true);
     this->setOpaque(true);
 
-    ColourSchemeManager::getInstance().addChangeListener(this);
+    ColourSchemesManager::getInstance().addChangeListener(this);
     //[/Constructor]
 }
 
 ThemeSettings::~ThemeSettings()
 {
     //[Destructor_pre]
-    ColourSchemeManager::getInstance().removeChangeListener(this);
+    ColourSchemesManager::getInstance().removeChangeListener(this);
     //[/Destructor_pre]
 
     themesList = nullptr;
@@ -98,7 +100,7 @@ void ThemeSettings::resized()
 
 //===----------------------------------------------------------------------===//
 // ChangeListener
-//
+//===----------------------------------------------------------------------===//
 
 void ThemeSettings::changeListenerCallback(ChangeBroadcaster *source)
 {
@@ -106,48 +108,31 @@ void ThemeSettings::changeListenerCallback(ChangeBroadcaster *source)
     //this->scrollToSelectedLocale();
 }
 
-XmlElement *ThemeSettings::serialize() const
-{
-    return nullptr;
-}
-
-void ThemeSettings::deserialize(const XmlElement &xml)
-{
-
-}
-
-void ThemeSettings::reset()
-{
-
-}
-
-
 //===----------------------------------------------------------------------===//
 // ListBoxModel
-//
+//===----------------------------------------------------------------------===//
 
 Component *ThemeSettings::refreshComponentForRow(int rowNumber, bool isRowSelected,
     Component *existingComponentToUpdate)
 {
-    const auto currentTheme = ColourSchemeManager::getInstance().getCurrentScheme();
-    const auto &themes = ColourSchemeManager::getInstance().getSchemes();
+    const auto &schemes = ColourSchemesManager::getInstance().getSchemes();
 
-    if (rowNumber >= themes.size()) { return existingComponentToUpdate; }
+    if (rowNumber >= schemes.size()) { return existingComponentToUpdate; }
 
-    const bool isCurrentScheme = (currentTheme == themes[rowNumber]);
-    const bool isLastRow = (rowNumber == themes.size() - 1);
+    const bool isCurrentScheme = (this->currentScheme == schemes[rowNumber]);
+    const bool isLastRow = (rowNumber == schemes.size() - 1);
 
     if (existingComponentToUpdate != nullptr)
     {
         if (ThemeSettingsItem *row = dynamic_cast<ThemeSettingsItem *>(existingComponentToUpdate))
         {
-            row->updateDescription(isLastRow, isCurrentScheme, themes[rowNumber]);
+            row->updateDescription(isLastRow, isCurrentScheme, schemes[rowNumber]);
         }
     }
     else
     {
         auto row = new ThemeSettingsItem(*this->themesList);
-        row->updateDescription(isLastRow, isCurrentScheme, themes[rowNumber]);
+        row->updateDescription(isLastRow, isCurrentScheme, schemes[rowNumber]);
         return row;
     }
 
@@ -156,7 +141,7 @@ Component *ThemeSettings::refreshComponentForRow(int rowNumber, bool isRowSelect
 
 int ThemeSettings::getNumRows()
 {
-    const auto &themes = ColourSchemeManager::getInstance().getSchemes();
+    const auto &themes = ColourSchemesManager::getInstance().getSchemes();
     return themes.size();
 }
 

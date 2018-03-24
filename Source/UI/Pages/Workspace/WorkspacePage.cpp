@@ -36,7 +36,6 @@
 #include "WorkspaceMenu.h"
 #include "LogoFader.h"
 #include "App.h"
-#include "DataEncoder.h"
 #include "SettingsTreeItem.h"
 #include "Workspace.h"
 #include "IconComponent.h"

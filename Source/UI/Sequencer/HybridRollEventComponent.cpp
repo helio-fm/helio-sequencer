@@ -33,7 +33,7 @@ HybridRollEventComponent::HybridRollEventComponent(HybridRoll &editor, bool isGh
     this->setWantsKeyboardFocus(false);
 }
 
-bool HybridRollEventComponent::isActive() const
+bool HybridRollEventComponent::isActive() const noexcept
 {
     return this->activeState;
 }
@@ -108,7 +108,7 @@ void HybridRollEventComponent::setSelected(bool selected)
     }
 }
 
-bool HybridRollEventComponent::isSelected() const
+bool HybridRollEventComponent::isSelected() const noexcept
 {
     return this->selectedState;
 }
@@ -118,7 +118,7 @@ bool HybridRollEventComponent::isSelected() const
 // Helpers
 //===----------------------------------------------------------------------===//
 
-int HybridRollEventComponent::compareElements(HybridRollEventComponent *first, HybridRollEventComponent *second)
+int HybridRollEventComponent::compareElements(HybridRollEventComponent *first, HybridRollEventComponent *second) noexcept
 {
     if (first == second) { return 0; }
     const float diff = first->getBeat() - second->getBeat();

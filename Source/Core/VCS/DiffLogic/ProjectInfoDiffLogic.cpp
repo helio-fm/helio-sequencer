@@ -19,11 +19,20 @@
 #include "ProjectInfoDiffLogic.h"
 #include "SerializationKeys.h"
 #include "Diff.h"
-
 #include "ProjectInfo.h"
-#include "ProjectInfoDeltas.h"
 
 using namespace VCS;
+using namespace Serialization::VCS;
+
+static ValueTree mergePath(const ValueTree &state, const ValueTree &changes);
+static ValueTree mergeFullName(const ValueTree &state, const ValueTree &changes);
+static ValueTree mergeAuthor(const ValueTree &state, const ValueTree &changes);
+static ValueTree mergeDescription(const ValueTree &state, const ValueTree &changes);
+
+static DeltaDiff createPathDiff(const ValueTree &state, const ValueTree &changes);
+static DeltaDiff createFullNameDiff(const ValueTree &state, const ValueTree &changes);
+static DeltaDiff createAuthorDiff(const ValueTree &state, const ValueTree &changes);
+static DeltaDiff createDescriptionDiff(const ValueTree &state, const ValueTree &changes);
 
 ProjectInfoDiffLogic::ProjectInfoDiffLogic(TrackedItem &targetItem) :
     DiffLogic(targetItem) {}
@@ -32,7 +41,7 @@ ProjectInfoDiffLogic::ProjectInfoDiffLogic(TrackedItem &targetItem) :
 // DiffLogic
 //===----------------------------------------------------------------------===//
 
-const String ProjectInfoDiffLogic::getType() const
+const Identifier ProjectInfoDiffLogic::getType() const
 {
     return Serialization::Core::projectInfo;
 }
@@ -50,8 +59,8 @@ Diff *ProjectInfoDiffLogic::createDiff(const TrackedItem &initialState) const
     {
         const Delta *myDelta = this->target.getDelta(i);
 
-        ScopedPointer<XmlElement> myDeltaData(this->target.createDeltaDataFor(i));
-        ScopedPointer<XmlElement> stateDeltaData;
+        const auto myDeltaData(this->target.serializeDeltaData(i));
+        ValueTree stateDeltaData;
 
         bool deltaFoundInState = false;
         bool dataHasChanged = false;
@@ -60,36 +69,32 @@ Diff *ProjectInfoDiffLogic::createDiff(const TrackedItem &initialState) const
         {
             const Delta *stateDelta = initialState.getDelta(j);
 
-            if (myDelta->getType() == stateDelta->getType())
+            if (myDelta->hasType(stateDelta->getType()))
             {
                 deltaFoundInState = true;
-                stateDeltaData = initialState.createDeltaDataFor(j);
-                dataHasChanged = (! myDeltaData->isEquivalentTo(stateDeltaData, true));
+                stateDeltaData = initialState.serializeDeltaData(j);
+                dataHasChanged = (! myDeltaData.isEquivalentTo(stateDeltaData));
                 break;
             }
         }
 
         if (!deltaFoundInState || (deltaFoundInState && dataHasChanged))
         {
-            if (myDelta->getType() == ProjectInfoDeltas::projectLicense)
+            if (myDelta->hasType(ProjectInfoDeltas::projectLicense))
             {
-                NewSerializedDelta fullDelta = this->createPathDiff(stateDeltaData, myDeltaData);
-                diff->addOwnedDelta(fullDelta.delta, fullDelta.deltaData);
+                diff->applyDelta(createPathDiff(stateDeltaData, myDeltaData));
             }
-            else if (myDelta->getType() == ProjectInfoDeltas::projectFullName)
+            else if (myDelta->hasType(ProjectInfoDeltas::projectTitle))
             {
-                NewSerializedDelta fullDelta = this->createFullNameDiff(stateDeltaData, myDeltaData);
-                diff->addOwnedDelta(fullDelta.delta, fullDelta.deltaData);
+                diff->applyDelta(createFullNameDiff(stateDeltaData, myDeltaData));
             }
-            else if (myDelta->getType() == ProjectInfoDeltas::projectAuthor)
+            else if (myDelta->hasType(ProjectInfoDeltas::projectAuthor))
             {
-                NewSerializedDelta fullDelta = this->createAuthorDiff(stateDeltaData, myDeltaData);
-                diff->addOwnedDelta(fullDelta.delta, fullDelta.deltaData);
+                diff->applyDelta(createAuthorDiff(stateDeltaData, myDeltaData));
             }
-            else if (myDelta->getType() == ProjectInfoDeltas::projectDescription)
+            else if (myDelta->hasType(ProjectInfoDeltas::projectDescription))
             {
-                NewSerializedDelta fullDelta = this->createDescriptionDiff(stateDeltaData, myDeltaData);
-                diff->addOwnedDelta(fullDelta.delta, fullDelta.deltaData);
+                diff->applyDelta(createDescriptionDiff(stateDeltaData, myDeltaData));
             }
         }
     }
@@ -108,45 +113,42 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
     for (int i = 0; i < initialState.getNumDeltas(); ++i)
     {
         const Delta *stateDelta = initialState.getDelta(i);
-        ScopedPointer<XmlElement> stateDeltaData(initialState.createDeltaDataFor(i));
+        const auto stateDeltaData(initialState.serializeDeltaData(i));
 
         bool deltaFoundInChanges = false;
 
         for (int j = 0; j < this->target.getNumDeltas(); ++j)
         {
             const Delta *targetDelta = this->target.getDelta(j);
-            ScopedPointer<XmlElement> targetDeltaData(this->target.createDeltaDataFor(j));
+            const auto targetDeltaData(this->target.serializeDeltaData(j));
 
-            const bool typesMatchStrictly =
-                (stateDelta->getType() == targetDelta->getType());
-
-            if (typesMatchStrictly)
+            if (stateDelta->hasType(targetDelta->getType()))
             {
                 deltaFoundInChanges = true;
 
-                if (targetDelta->getType() == ProjectInfoDeltas::projectLicense)
+                if (targetDelta->hasType(ProjectInfoDeltas::projectLicense))
                 {
-                    Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
-                    XmlElement *diffDeltaData = this->mergePath(stateDeltaData, targetDeltaData);
-                    diff->addOwnedDelta(diffDelta, diffDeltaData);
+                    ScopedPointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
+                    ValueTree diffDeltaData = mergePath(stateDeltaData, targetDeltaData);
+                    diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
-                else if (targetDelta->getType() == ProjectInfoDeltas::projectFullName)
+                else if (targetDelta->hasType(ProjectInfoDeltas::projectTitle))
                 {
-                    Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
-                    XmlElement *diffDeltaData = this->mergeFullName(stateDeltaData, targetDeltaData);
-                    diff->addOwnedDelta(diffDelta, diffDeltaData);
+                    ScopedPointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
+                    ValueTree diffDeltaData = mergeFullName(stateDeltaData, targetDeltaData);
+                    diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
-                else if (targetDelta->getType() == ProjectInfoDeltas::projectAuthor)
+                else if (targetDelta->hasType(ProjectInfoDeltas::projectAuthor))
                 {
-                    Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
-                    XmlElement *diffDeltaData = this->mergeAuthor(stateDeltaData, targetDeltaData);
-                    diff->addOwnedDelta(diffDelta, diffDeltaData);
+                    ScopedPointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
+                    ValueTree diffDeltaData = mergeAuthor(stateDeltaData, targetDeltaData);
+                    diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
-                else if (targetDelta->getType() == ProjectInfoDeltas::projectDescription)
+                else if (targetDelta->hasType(ProjectInfoDeltas::projectDescription))
                 {
-                    Delta *diffDelta = new Delta(targetDelta->getDescription(), targetDelta->getType());
-                    XmlElement *diffDeltaData = this->mergeDescription(stateDeltaData, targetDeltaData);
-                    diff->addOwnedDelta(diffDelta, diffDeltaData);
+                    ScopedPointer<Delta> diffDelta(new Delta(targetDelta->getDescription(), targetDelta->getType()));
+                    ValueTree diffDeltaData = mergeDescription(stateDeltaData, targetDeltaData);
+                    diff->applyDelta(diffDelta.release(), diffDeltaData);
                 }
             }
         }
@@ -154,8 +156,7 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
         // не нашли ни одного изменения? копируем оригинальную дельту.
         if (! deltaFoundInChanges)
         {
-            auto stateDeltaCopy = new Delta(*stateDelta);
-            diff->addOwnedDelta(stateDeltaCopy, stateDeltaData.release());
+            diff->applyDelta(stateDelta->createCopy(), stateDeltaData);
         }
     }
 
@@ -167,54 +168,54 @@ Diff *ProjectInfoDiffLogic::createMergedItem(const TrackedItem &initialState) co
 // Diffs
 //===----------------------------------------------------------------------===//
 
-XmlElement *ProjectInfoDiffLogic::mergePath(const XmlElement *state, const XmlElement *changes) const
+ValueTree mergePath(const ValueTree &state, const ValueTree &changes)
 {
-    return new XmlElement(*changes);
+    return changes.createCopy();
 }
 
-XmlElement *ProjectInfoDiffLogic::mergeFullName(const XmlElement *state, const XmlElement *changes) const
+ValueTree mergeFullName(const ValueTree &state, const ValueTree &changes)
 {
-    return new XmlElement(*changes);
+    return changes.createCopy();
 }
 
-XmlElement *ProjectInfoDiffLogic::mergeAuthor(const XmlElement *state, const XmlElement *changes) const
+ValueTree mergeAuthor(const ValueTree &state, const ValueTree &changes)
 {
-    return new XmlElement(*changes);
+    return changes.createCopy();
 }
 
-XmlElement *ProjectInfoDiffLogic::mergeDescription(const XmlElement *state, const XmlElement *changes) const
+ValueTree mergeDescription(const ValueTree &state, const ValueTree &changes)
 {
-    return new XmlElement(*changes);
+    return changes.createCopy();
 }
 
-NewSerializedDelta ProjectInfoDiffLogic::createPathDiff(const XmlElement *state, const XmlElement *changes) const
+DeltaDiff createPathDiff(const ValueTree &state, const ValueTree &changes)
 {
-    NewSerializedDelta res;
+    DeltaDiff res;
     res.delta = new Delta(DeltaDescription("license changed"), ProjectInfoDeltas::projectLicense);
-    res.deltaData = new XmlElement(*changes);
+    res.deltaData = changes.createCopy();
     return res;
 }
 
-NewSerializedDelta ProjectInfoDiffLogic::createFullNameDiff(const XmlElement *state, const XmlElement *changes) const
+DeltaDiff createFullNameDiff(const ValueTree &state, const ValueTree &changes)
 {
-    NewSerializedDelta res;
-    res.delta = new Delta(DeltaDescription("title changed"), ProjectInfoDeltas::projectFullName);
-    res.deltaData = new XmlElement(*changes);
+    DeltaDiff res;
+    res.delta = new Delta(DeltaDescription("title changed"), ProjectInfoDeltas::projectTitle);
+    res.deltaData = changes.createCopy();
     return res;
 }
 
-NewSerializedDelta ProjectInfoDiffLogic::createAuthorDiff(const XmlElement *state, const XmlElement *changes) const
+DeltaDiff createAuthorDiff(const ValueTree &state, const ValueTree &changes)
 {
-    NewSerializedDelta res;
+    DeltaDiff res;
     res.delta = new Delta(DeltaDescription("author changed"), ProjectInfoDeltas::projectAuthor);
-    res.deltaData = new XmlElement(*changes);
+    res.deltaData = changes.createCopy();
     return res;
 }
 
-NewSerializedDelta ProjectInfoDiffLogic::createDescriptionDiff(const XmlElement *state, const XmlElement *changes) const
+DeltaDiff createDescriptionDiff(const ValueTree &state, const ValueTree &changes)
 {
-    NewSerializedDelta res;
+    DeltaDiff res;
     res.delta = new Delta(DeltaDescription("description changed"), ProjectInfoDeltas::projectDescription);
-    res.deltaData = new XmlElement(*changes);
+    res.deltaData = changes.createCopy();
     return res;
 }

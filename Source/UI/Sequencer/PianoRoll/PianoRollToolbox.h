@@ -25,7 +25,7 @@ class MidiSequence;
 class MidiTrack;
 class Note;
 
-class PianoRollToolbox
+class PianoRollToolbox final
 {
 public:
     
@@ -56,7 +56,6 @@ public:
     
     static void moveToLayer(Lasso &selection, MidiSequence *layer, bool shouldCheckpoint = true);
     
-    static bool arpeggiateUsingClipboardAsPattern(Lasso &selection, bool shouldCheckpoint = true);
     static bool arpeggiate(Lasso &selection, const Arpeggiator &arp, bool shouldCheckpoint = true);
 
     static void randomizeVolume(Lasso &selection, float factor = 0.5f, bool shouldCheckpoint = true);

@@ -27,24 +27,24 @@ class MidiTrackSource;
 // Insert
 //===----------------------------------------------------------------------===//
 
-class AutomationTrackInsertAction : public UndoAction
+class AutomationTrackInsertAction final : public UndoAction
 {
 public:
 
     AutomationTrackInsertAction(MidiTrackSource &source,
-        WeakReference<TreeItem> parentTreeItem);
+        WeakReference<TreeItem> parentTreeItem) noexcept;
     
     AutomationTrackInsertAction(MidiTrackSource &source,
         WeakReference<TreeItem> parentTreeItem,
-        String serializedState,
-        String xPath);
+        ValueTree serializedState,
+        String xPath) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
     
 private:
@@ -52,9 +52,9 @@ private:
     WeakReference<TreeItem> parentTreeItem;
 
     String trackId;
-    
     String trackName;
-    String serializedState;
+
+    ValueTree trackState;
     
     JUCE_DECLARE_NON_COPYABLE(AutomationTrackInsertAction)
 };
@@ -64,23 +64,23 @@ private:
 // Remove
 //===----------------------------------------------------------------------===//
 
-class AutomationTrackRemoveAction : public UndoAction
+class AutomationTrackRemoveAction final : public UndoAction
 {
 public:
 
     AutomationTrackRemoveAction(MidiTrackSource &source,
-        WeakReference<TreeItem> parentTreeItem);
+        WeakReference<TreeItem> parentTreeItem) noexcept;
     
     AutomationTrackRemoveAction(MidiTrackSource &source,
         WeakReference<TreeItem> parentTreeItem,
-        String trackId);
+        String trackId) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
 
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
     
 private:
@@ -90,7 +90,7 @@ private:
     String trackId;
     int numEvents;
     
-    ScopedPointer<XmlElement> serializedTreeItem;
+    ValueTree serializedTreeItem;
     String trackName;
     
     JUCE_DECLARE_NON_COPYABLE(AutomationTrackRemoveAction)

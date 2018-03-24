@@ -22,12 +22,11 @@
 
 #include "SeparatorHorizontalReversed.h"
 
-class ShadowUpwards  : public Component
+class ShadowUpwards final : public Component
 {
 public:
 
-    ShadowUpwards ();
-
+    ShadowUpwards();
     ~ShadowUpwards();
 
     //[UserMethods]

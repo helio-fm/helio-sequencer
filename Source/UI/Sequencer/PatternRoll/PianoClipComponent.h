@@ -21,7 +21,7 @@ class MidiTrack;
 
 #include "ClipComponent.h"
 
-class PianoClipComponent : public ClipComponent
+class PianoClipComponent final : public ClipComponent
 {
 public:
 

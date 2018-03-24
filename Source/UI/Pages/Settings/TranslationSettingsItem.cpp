@@ -99,7 +99,7 @@ void TranslationSettingsItem::setSelected(bool shouldBeSelected)
 {
     if (shouldBeSelected)
     {
-        TranslationManager::getInstance().loadLocaleWithName(this->localeLabel->getText());
+        TranslationsManager::getInstance().loadLocaleWithName(this->localeLabel->getText());
     }
 }
 

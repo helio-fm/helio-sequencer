@@ -24,12 +24,12 @@
 //[MiscUserDefs]
 #include "App.h"
 #include "MainWindow.h"
-#include "PluginManager.h"
+#include "PluginScanner.h"
 #include "InstrumentRow.h"
 
 //[/MiscUserDefs]
 
-PluginsList::PluginsList(PluginManager &parentManager)
+PluginsList::PluginsList(PluginScanner &parentManager)
     : pluginManager(parentManager)
 {
     addAndMakeVisible (pluginsList = new ListBox());
@@ -132,7 +132,7 @@ int PluginsList::getNumRows()
 
 void PluginsList::changeListenerCallback(ChangeBroadcaster *source)
 {
-    if (PluginManager *scanner = dynamic_cast<PluginManager *>(source))
+    if (PluginScanner *scanner = dynamic_cast<PluginScanner *>(source))
     {
         this->pluginsList->updateContent();
         this->pluginsList->setSelectedRows(SparseSet<int>());
@@ -148,7 +148,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="PluginsList" template="../../Template"
                  componentName="" parentClasses="public Component, public ListBoxModel, private ChangeListener"
-                 constructorParams="PluginManager &amp;parentManager" variableInitialisers="pluginManager(parentManager)"
+                 constructorParams="PluginScanner &amp;parentManager" variableInitialisers="pluginManager(parentManager)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="600" initialHeight="160">
   <BACKGROUND backgroundColour="4d4d4d"/>

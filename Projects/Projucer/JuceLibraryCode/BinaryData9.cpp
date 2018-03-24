@@ -13359,5 +13359,4 @@ static const unsigned char temp_binary_data_32[] =
 10,67,24,68,99,28,145,196,17,24,240,246,215,255,15,6,177,51,172,0,0 };
 
 const char* lato_fnt = (const char*) temp_binary_data_32;
-
 }

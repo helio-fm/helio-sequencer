@@ -24,7 +24,7 @@ class Pattern;
 // - all the properties
 // - sequence with events
 // - pattern with clips
-// MidiLayerTreeItem implements this
+// MidiTrackTreeItem implements this
 
 class MidiTrack
 {
@@ -74,8 +74,8 @@ public:
         return static_cast<HashCode>(this->getTrackId().toString().hashCode());
     }
 
-    void serializeTrackProperties(XmlElement &xml) const;
-    void deserializeTrackProperties(const XmlElement &xml);
+    void serializeTrackProperties(ValueTree &tree) const;
+    void deserializeTrackProperties(const ValueTree &tree);
 
     enum DefaultControllers
     {

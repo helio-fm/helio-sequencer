@@ -68,7 +68,7 @@ InstrumentEditorNode *InstrumentEditor::getComponentForNode(AudioProcessorGraph:
     for (int i = getNumChildComponents(); --i >= 0;)
     {
         if (InstrumentEditorNode *const fc = dynamic_cast <InstrumentEditorNode *>(getChildComponent(i))) {
-            if (fc->filterID == id)
+            if (fc->nodeId == id)
             { return fc; }
         }
     }
@@ -130,7 +130,7 @@ void InstrumentEditor::updateComponents()
         }
     }
     
-    for (int i = getNumChildComponents(); --i >= 0;)
+    for (int i = this->getNumChildComponents(); --i >= 0;)
     {
         InstrumentEditorConnector *const cc = dynamic_cast<InstrumentEditorConnector *>(getChildComponent(i));
         
@@ -159,7 +159,8 @@ void InstrumentEditor::updateComponents()
     }
     
     const auto &connections = instrument.getConnections();
-    for (int i = connections.size(); --i >= 0;)
+    const int numConnections = int(connections.size());
+    for (int i = numConnections; --i >= 0;)
     {
         AudioProcessorGraph::Connection c = connections.at(i);
         if (getComponentForConnection(c) == nullptr)

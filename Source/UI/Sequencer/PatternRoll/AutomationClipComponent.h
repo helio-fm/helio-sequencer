@@ -22,7 +22,7 @@ class MidiTrack;
 #include "ClipComponent.h"
 
 // TODO: this one should also act as a mini-editor for cc curves
-class AutomationClipComponent : public ClipComponent
+class AutomationClipComponent final : public ClipComponent
 {
 public:
 

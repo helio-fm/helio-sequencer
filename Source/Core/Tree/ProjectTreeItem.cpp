@@ -26,13 +26,14 @@
 #include "PatternEditorTreeItem.h"
 #include "MainLayout.h"
 #include "Document.h"
+#include "DocumentHelpers.h"
+#include "XmlSerializer.h"
+#include "BinarySerializer.h"
 #include "ProjectListener.h"
 #include "ProjectPageDefault.h"
 #include "ProjectPagePhone.h"
-
 #include "AudioCore.h"
 #include "PlayerThread.h"
-
 #include "SequencerLayout.h"
 #include "MidiEvent.h"
 #include "MidiSequence.h"
@@ -41,8 +42,6 @@
 #include "Icons.h"
 #include "ProjectInfo.h"
 #include "ProjectTimeline.h"
-#include "DataEncoder.h"
-
 #include "TrackedItem.h"
 #include "VersionControlTreeItem.h"
 #include "VersionControl.h"
@@ -54,6 +53,7 @@
 #include "ProjectCommandPanel.h"
 #include "UndoStack.h"
 
+#include "DocumentHelpers.h"
 #include "Workspace.h"
 #include "App.h"
 
@@ -62,14 +62,14 @@
 
 
 ProjectTreeItem::ProjectTreeItem(const String &name) :
-    DocumentOwner(App::Workspace(), name, "hp"),
+    DocumentOwner(name, "helio"),
     TreeItem(name, Serialization::Core::project)
 {
     this->initialize();
 }
 
 ProjectTreeItem::ProjectTreeItem(const File &existingFile) :
-    DocumentOwner(App::Workspace(), existingFile),
+    DocumentOwner(existingFile),
     TreeItem(existingFile.getFileNameWithoutExtension(), Serialization::Core::project)
 {
     this->initialize();
@@ -98,7 +98,6 @@ void ProjectTreeItem::initialize()
     
     this->recreatePage();
 }
-
 
 ProjectTreeItem::~ProjectTreeItem()
 {
@@ -163,7 +162,7 @@ String ProjectTreeItem::getId() const
         return vcsTreeItem->getId();
     }
 
-    return "";
+    return {};
 }
 
 String ProjectTreeItem::getStats() const
@@ -258,9 +257,10 @@ void ProjectTreeItem::safeRename(const String &newName)
 
 void ProjectTreeItem::recreatePage()
 {
+    ValueTree layoutState(Serialization::UI::sequencer);
     if (this->sequencerLayout || this->projectSettings)
     {
-        this->savePageState();
+        layoutState = this->sequencerLayout->serialize();
     }
     
     this->sequencerLayout = new SequencerLayout(*this);
@@ -275,22 +275,7 @@ void ProjectTreeItem::recreatePage()
     }
     
     this->broadcastChangeProjectBeatRange(); // let rolls update themselves
-    this->loadPageState();
-}
-
-void ProjectTreeItem::savePageState() const
-{
-    ScopedPointer<XmlElement> editorStateNode(this->sequencerLayout->serialize());
-    Config::set(Serialization::UI::editorState, editorStateNode);
-}
-
-void ProjectTreeItem::loadPageState()
-{
-    const ScopedPointer<XmlElement> editorStateNode(Config::getXml(Serialization::UI::editorState));
-    if (editorStateNode != nullptr)
-    {
-        this->sequencerLayout->deserialize(*editorStateNode);
-    }
+    this->sequencerLayout->deserialize(layoutState);
 }
 
 void ProjectTreeItem::showPatternEditor(TreeItem *source)
@@ -391,17 +376,8 @@ ScopedPointer<Component> ProjectTreeItem::createItemMenu()
 
 bool ProjectTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
-    //if (TreeView *treeView = dynamic_cast<TreeView *>(dragSourceDetails.sourceComponent.get()))
-    //{
-    //    TreeItem *selected = TreeItem::getSelectedItem(treeView);
-
-    //if (TreeItem::isNodeInChildren(selected, this))
-    //{ return false; }
-
-    return (dragSourceDetails.description == Serialization::Core::layer) ||
-           (dragSourceDetails.description == Serialization::Core::layerGroup);
-
-    //}
+    return (dragSourceDetails.description == Serialization::Core::track.toString()) ||
+           (dragSourceDetails.description == Serialization::Core::trackGroup.toString());
 }
 
 
@@ -487,7 +463,7 @@ Point<float> ProjectTreeItem::getProjectRangeInBeats() const
 {
     float lastBeat = -FLT_MAX;
     float firstBeat = FLT_MAX;
-    const float defaultNumBeats = DEFAULT_NUM_BARS * NUM_BEATS_IN_BAR;
+    const float defaultNumBeats = DEFAULT_NUM_BARS * BEATS_PER_BAR;
 
     Array<MidiTrack *> tracks;
     this->collectTracks(tracks);
@@ -527,35 +503,30 @@ Point<float> ProjectTreeItem::getProjectRangeInBeats() const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *ProjectTreeItem::serialize() const
+ValueTree ProjectTreeItem::serialize() const
 {
-    this->getDocument()->save(); // todo remove? will save on delete
+    this->getDocument()->save();
 
-    auto xml = new XmlElement(Serialization::Core::treeItem);
-    xml->setAttribute(Serialization::Core::treeItemType, this->type);
-    xml->setAttribute(Serialization::Core::fullPath, this->getDocument()->getFullPath());
-    xml->setAttribute(Serialization::Core::relativePath, this->getDocument()->getRelativePath());
-    return xml;
+    ValueTree tree(Serialization::Core::treeItem);
+    tree.setProperty(Serialization::Core::treeItemType, this->type, nullptr);
+    tree.setProperty(Serialization::Core::filePath, this->getDocument()->getFullPath(), nullptr);
+    return tree;
 }
 
-void ProjectTreeItem::deserialize(const XmlElement &xml)
+void ProjectTreeItem::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const String &fullPath = xml.getStringAttribute(Serialization::Core::fullPath);
-    const String &relativePath = xml.getStringAttribute(Serialization::Core::relativePath);
+    const File fullPathFile = File(tree.getProperty(Serialization::Core::filePath));
+    const File relativePathFile = DocumentHelpers::getDocumentSlot(fullPathFile.getFileName());
     
-    File relativeFile =
-    File(App::Workspace().getDocument()->getFile().
-         getParentDirectory().getChildFile(relativePath));
-    
-    if (!File(fullPath).existsAsFile() && !relativeFile.existsAsFile())
+    if (!fullPathFile.existsAsFile() && !relativePathFile.existsAsFile())
     {
         delete this;
         return;
     }
     
-    this->getDocument()->load(fullPath, relativePath);
+    this->getDocument()->load(fullPathFile, relativePathFile);
 }
 
 void ProjectTreeItem::reset()
@@ -571,44 +542,37 @@ void ProjectTreeItem::reset()
     //this->broadcastChangeProjectBeatRange();
 }
 
-
-XmlElement *ProjectTreeItem::save() const
+ValueTree ProjectTreeItem::save() const
 {
-    auto xml = new XmlElement(Serialization::Core::project);
-    xml->setAttribute("name", this->name);
+    ValueTree tree(Serialization::Core::project);
 
-    xml->addChildElement(this->info->serialize());
-    xml->addChildElement(this->timeline->serialize());
-    
-    //xml->addChildElement(this->player->serialize()); // todo instead of:
-    xml->setAttribute("seek", this->transport->getSeekPosition());
-    
-    // UI state is now stored in config
-    //xml->addChildElement(this->sequencerLayout->serialize());
+    tree.setProperty(Serialization::Core::treeItemName, this->name, nullptr);
 
-    xml->addChildElement(this->undoStack->serialize());
-    
-    TreeItemChildrenSerializer::serializeChildren(*this, *xml);
+    tree.appendChild(this->info->serialize(), nullptr);
+    tree.appendChild(this->timeline->serialize(), nullptr);
+    tree.appendChild(this->undoStack->serialize(), nullptr);
+    tree.appendChild(this->transport->serialize(), nullptr);
+    tree.appendChild(this->sequencerLayout->serialize(), nullptr);
 
-    this->savePageState();
+    TreeItemChildrenSerializer::serializeChildren(*this, tree);
 
-    return xml;
+    return tree;
 }
 
-void ProjectTreeItem::load(const XmlElement &xml)
+void ProjectTreeItem::load(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root = xml.hasTagName(Serialization::Core::project) ?
-        &xml : xml.getChildByName(Serialization::Core::project);
+    const auto root = tree.hasType(Serialization::Core::project) ?
+        tree : tree.getChildWithName(Serialization::Core::project);
 
-    if (root == nullptr) { return; }
+    if (!root.isValid()) { return; }
 
-    this->info->deserialize(*root);
-    this->timeline->deserialize(*root);
+    this->info->deserialize(root);
+    this->timeline->deserialize(root);
 
     // Proceed with basic properties and children
-    TreeItem::deserialize(*root);
+    TreeItem::deserialize(root);
 
     // Legacy support: if no pattern set manager found, create one
     if (nullptr == this->findChildOfType<PatternEditorTreeItem>())
@@ -623,22 +587,18 @@ void ProjectTreeItem::load(const XmlElement &xml)
     // a hack to add some margin to project beat range,
     // then to round beats to nearest bars
     // because rolls' view ranges are rounded to bars
-    const float r = float(NUM_BEATS_IN_BAR);
+    const float r = float(BEATS_PER_BAR);
     const float viewStartWithMargin = range.getX() - r;
     const float viewEndWithMargin = range.getY() + r;
     const float viewFirstBeat = floorf(viewStartWithMargin / r) * r;
     const float viewLastBeat = ceilf(viewEndWithMargin / r) * r;
     this->broadcastChangeViewBeatRange(viewFirstBeat, viewLastBeat);
 
-    //this->transport->deserialize(*root); // todo
+    this->undoStack->deserialize(root);
 
-    // UI state is now stored in config
-    //this->sequencerLayout->deserialize(*root);
-    
-    this->undoStack->deserialize(*root);
-    
-    const float seek = float(root->getDoubleAttribute("seek", 0.f));
-    this->transport->seekToPosition(seek);
+    // At least, when all tracks are ready:
+    this->transport->deserialize(root);
+    this->sequencerLayout->deserialize(root);
 }
 
 void ProjectTreeItem::importMidi(File &file)
@@ -835,11 +795,10 @@ bool ProjectTreeItem::onDocumentLoad(File &file)
 {
     if (file.existsAsFile())
     {
-        ScopedPointer<XmlElement> xml(DataEncoder::loadObfuscated(file));
-
-        if (xml)
+        const ValueTree tree(DocumentHelpers::load(file));
+        if (tree.isValid())
         {
-            this->load(*xml);
+            this->load(tree);
             return true;
         }
     }
@@ -861,8 +820,10 @@ void ProjectTreeItem::onDocumentDidLoad(File &file)
 
 bool ProjectTreeItem::onDocumentSave(File &file)
 {
-    ScopedPointer<XmlElement> xml(this->save());
-    return DataEncoder::saveObfuscated(file, xml);
+    const auto projectNode(this->save());
+    // Debug:
+    DocumentHelpers::save<XmlSerializer>(file.withFileExtension("xml"), projectNode);
+    return DocumentHelpers::save<BinarySerializer>(file, projectNode);
 }
 
 void ProjectTreeItem::onDocumentImport(File &file)
@@ -953,16 +914,16 @@ VCS::TrackedItem *ProjectTreeItem::getTrackedItem(int index)
     return const_cast<VCS::TrackedItem *>(this->vcsItems[index]);
 }
 
-VCS::TrackedItem *ProjectTreeItem::initTrackedItem(const String &type, const Uuid &id)
+VCS::TrackedItem *ProjectTreeItem::initTrackedItem(const Identifier &type, const Uuid &id)
 {
-    if (type == Serialization::Core::pianoLayer)
+    if (type == Serialization::Core::pianoTrack)
     {
         MidiTrackTreeItem *track = new PianoTrackTreeItem("empty");
         track->setVCSUuid(id);
         this->addChildTreeItem(track);
         return track;
     }
-    if (type == Serialization::Core::autoLayer)
+    if (type == Serialization::Core::automationTrack)
     {
         MidiTrackTreeItem *track = new AutomationTrackTreeItem("empty");
         track->setVCSUuid(id);

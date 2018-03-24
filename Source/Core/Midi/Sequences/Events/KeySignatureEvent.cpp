@@ -20,7 +20,7 @@
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
 
-KeySignatureEvent::KeySignatureEvent() :
+KeySignatureEvent::KeySignatureEvent() noexcept :
     MidiEvent(nullptr, MidiEvent::KeySignature, 0.f),
     rootKey(0),
     scale()
@@ -28,7 +28,7 @@ KeySignatureEvent::KeySignatureEvent() :
     //jassertfalse;
 }
 
-KeySignatureEvent::KeySignatureEvent(const KeySignatureEvent &other) :
+KeySignatureEvent::KeySignatureEvent(const KeySignatureEvent &other) noexcept :
     MidiEvent(other),
     rootKey(other.rootKey),
     scale(other.scale) {}
@@ -36,13 +36,13 @@ KeySignatureEvent::KeySignatureEvent(const KeySignatureEvent &other) :
 KeySignatureEvent::KeySignatureEvent(WeakReference<MidiSequence> owner,
     float newBeat /*= 0.f*/,
     Note::Key key /*= 60*/,
-    Scale scale /*= Scale()*/) :
+    Scale scale /*= Scale()*/) noexcept :
     MidiEvent(owner, MidiEvent::KeySignature, newBeat),
     rootKey(key),
     scale(scale) {}
 
 KeySignatureEvent::KeySignatureEvent(WeakReference<MidiSequence> owner,
-    const KeySignatureEvent &parametersToCopy) :
+    const KeySignatureEvent &parametersToCopy) noexcept :
     MidiEvent(owner, parametersToCopy),
     rootKey(parametersToCopy.rootKey),
     scale(parametersToCopy.scale) {}
@@ -51,7 +51,7 @@ String KeySignatureEvent::toString() const
 {
     const int index = this->rootKey % CHROMATIC_SCALE_SIZE;
     const String keyName = Scale::getKeyNames()[index];
-    return keyName + ", " + this->scale.getName();
+    return keyName + ", " + this->scale.getLocalizedName();
 }
 
 Array<MidiMessage> KeySignatureEvent::toMidiMessages() const
@@ -65,7 +65,6 @@ Array<MidiMessage> KeySignatureEvent::toMidiMessages() const
     // and we have to guess if our scale is major or minor,
     // and then try to determine a number of flats or a number of sharps.
 
-    Array<MidiMessage> result;
     const bool isMinor = this->scale.seemsMinor();
 
     // Hard-coded number of flats and sharps for major and minor keys in a circle of fifths,
@@ -78,46 +77,45 @@ Array<MidiMessage> KeySignatureEvent::toMidiMessages() const
 
     MidiMessage event(MidiMessage::keySignatureMetaEvent(flatsOrSharps, isMinor));
     event.setTimeStamp(round(this->beat * MS_PER_BEAT));
-    result.add(event);
-    return result;
+    return { event };
 }
 
-KeySignatureEvent KeySignatureEvent::withDeltaBeat(float beatOffset) const
+KeySignatureEvent KeySignatureEvent::withDeltaBeat(float beatOffset) const noexcept
 {
     KeySignatureEvent e(*this);
     e.beat = e.beat + beatOffset;
     return e;
 }
 
-KeySignatureEvent KeySignatureEvent::withBeat(float newBeat) const
+KeySignatureEvent KeySignatureEvent::withBeat(float newBeat) const noexcept
 {
     KeySignatureEvent e(*this);
     e.beat = newBeat;
     return e;
 }
 
-KeySignatureEvent KeySignatureEvent::withRootKey(Note::Key key) const
+KeySignatureEvent KeySignatureEvent::withRootKey(Note::Key key) const noexcept
 {
     KeySignatureEvent e(*this);
     e.rootKey = key;
     return e;
 }
 
-KeySignatureEvent KeySignatureEvent::withScale(Scale scale) const
+KeySignatureEvent KeySignatureEvent::withScale(Scale scale) const noexcept
 {
     KeySignatureEvent e(*this);
     e.scale = scale;
     return e;
 }
 
-KeySignatureEvent KeySignatureEvent::withParameters(const XmlElement &xml) const
+KeySignatureEvent KeySignatureEvent::withParameters(const ValueTree &parameters) const noexcept
 {
     KeySignatureEvent e(*this);
-    e.deserialize(xml);
+    e.deserialize(parameters);
     return e;
 }
 
-KeySignatureEvent KeySignatureEvent::copyWithNewId() const
+KeySignatureEvent KeySignatureEvent::copyWithNewId() const noexcept
 {
     KeySignatureEvent e(*this);
     e.id = e.createId();
@@ -142,37 +140,34 @@ const Scale &KeySignatureEvent::getScale() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *KeySignatureEvent::serialize() const
+ValueTree KeySignatureEvent::serialize() const noexcept
 {
-    auto xml = new XmlElement(Serialization::Core::keySignature);
-    xml->setAttribute("key", this->rootKey);
-    xml->setAttribute("beat", this->beat);
-    xml->setAttribute("id", this->id);
-    xml->addChildElement(this->scale.serialize());
-    return xml;
+    using namespace Serialization;
+    ValueTree tree(Midi::keySignature);
+    tree.setProperty(Midi::id, this->id, nullptr);
+    tree.setProperty(Midi::key, this->rootKey, nullptr);
+    tree.setProperty(Midi::timestamp, roundFloatToInt(this->beat * TICKS_PER_BEAT), nullptr);
+    tree.appendChild(this->scale.serialize(), nullptr);
+    return tree;
 }
 
-void KeySignatureEvent::deserialize(const XmlElement &xml)
+void KeySignatureEvent::deserialize(const ValueTree &tree) noexcept
 {
     this->reset();
-    this->rootKey = xml.getIntAttribute("key", 0);
-    this->beat = float(xml.getDoubleAttribute("beat"));
-    this->id = xml.getStringAttribute("id");
-
-    // Anyway there is only one child scale for now:
-    forEachXmlChildElementWithTagName(xml, e, Serialization::Core::scale)
-    {
-        this->scale.deserialize(*e);
-    }
+    using namespace Serialization;
+    this->rootKey = tree.getProperty(Midi::key, 0);
+    this->beat = float(tree.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
+    this->id = tree.getProperty(Midi::id);
+    this->scale.deserialize(tree);
 }
 
-void KeySignatureEvent::reset()
+void KeySignatureEvent::reset() noexcept
 {
     this->rootKey = KEY_C5;
     this->scale = Scale();
 }
 
-void KeySignatureEvent::applyChanges(const KeySignatureEvent &parameters)
+void KeySignatureEvent::applyChanges(const KeySignatureEvent &parameters) noexcept
 {
     jassert(this->id == parameters.id);
     this->beat = parameters.beat;

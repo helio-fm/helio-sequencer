@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "RendererThread.h"
 #include "Instrument.h"
-#include "Supervisor.h"
 #include "SerializationKeys.h"
 #include "App.h"
 #include "Workspace.h"
@@ -70,21 +69,18 @@ void RendererThread::startRecording(const File &file)
         
         if (file.getFileExtension().toLowerCase() == ".wav")
         {
-            Supervisor::track(Serialization::Activities::transportRenderWav);
             WavAudioFormat wavFormat;
             const ScopedLock sl(this->writerLock);
             this->writer = wavFormat.createWriterFor(fileStream, sampleRate, numChannels, 16, StringPairArray(), 0);
         }
         else if (file.getFileExtension().toLowerCase() == ".ogg")
         {
-            Supervisor::track(Serialization::Activities::transportRenderOgg);
             OggVorbisAudioFormat oggVorbisFormat;
             const ScopedLock sl(this->writerLock);
             this->writer = oggVorbisFormat.createWriterFor(fileStream, sampleRate, numChannels, 16, StringPairArray(), 0);
         }
         else if (file.getFileExtension().toLowerCase() == ".flac")
         {
-            Supervisor::track(Serialization::Activities::transportRenderFlac);
             FlacAudioFormat flacFormat;
             const ScopedLock sl(this->writerLock);
             this->writer = flacFormat.createWriterFor(fileStream, sampleRate, numChannels, 16, StringPairArray(), 0);
@@ -93,7 +89,6 @@ void RendererThread::startRecording(const File &file)
         if (writer != nullptr)
         {
             Logger::writeToLog(file.getFullPathName());
-            Supervisor::track(Serialization::Activities::transportStartRender);
             fileStream.release(); // (passes responsibility for deleting the stream to the writer object that is now using it)
             this->startThread(9);
         }
@@ -310,8 +305,6 @@ void RendererThread::run()
         const ScopedLock sl(this->writerLock);
         this->writer = nullptr;
     }
-    
-    Supervisor::track(Serialization::Activities::transportFinishRender);
     
     if (! this->threadShouldExit())
     {

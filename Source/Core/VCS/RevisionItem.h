@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "Serializable.h"
 #include "TrackedItem.h"
 #include "Pack.h"
 
@@ -40,48 +39,30 @@ namespace VCS
 
         RevisionItem(Pack::Ptr packPtr, Type type, TrackedItem *targetToCopy);
 
-        ~RevisionItem() override;
-
-
         void flushData(); // move deltas data to pack
-
         Pack::Ptr getPackPtr() const;
-
         RevisionItem::Type getType() const;
-
         String getTypeAsString() const;
-        
-        void importDataForDelta(const XmlElement *deltaDataToCopy, const String &deltaUuid);
+        void importDataForDelta(const ValueTree &deltaDataToCopy, const String &deltaUuid);
 
-
-        //===------------------------------------------------------------------===//
+        //===--------------------------------------------------------------===//
         // TrackedItem
-        //
+        //===--------------------------------------------------------------===//
 
         int getNumDeltas() const override;
-
         Delta *getDelta(int index) const override;
-
-        XmlElement *createDeltaDataFor(int index) const override;
-
+        ValueTree serializeDeltaData(int deltaIndex) const override;
         String getVCSName() const override;
-
         DiffLogic *getDiffLogic() const override;
-        
-        void resetStateTo(const TrackedItem &newState) override { } // never resetted
-
+        void resetStateTo(const TrackedItem &newState) override { } // never reset
     
-
-        //===------------------------------------------------------------------===//
+        //===--------------------------------------------------------------===//
         // Serializable
-        //
+        //===--------------------------------------------------------------===//
 
-        XmlElement *serialize() const override;
-
-        void deserialize(const XmlElement &xml) override;
-
+        ValueTree serialize() const override;
+        void deserialize(const ValueTree &tree) override;
         void reset() override;
-
 
         typedef ReferenceCountedObjectPtr<RevisionItem> Ptr;
 
@@ -90,17 +71,12 @@ namespace VCS
         Pack::Ptr pack;
 
         OwnedArray<Delta> deltas;
-
-        OwnedArray<XmlElement> deltasData;
-
+        Array<ValueTree> deltasData;
         ScopedPointer<DiffLogic> logic;
 
         Type vcsItemType;
-
         String description;
-
         String diffLogicType;
-
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RevisionItem);
 

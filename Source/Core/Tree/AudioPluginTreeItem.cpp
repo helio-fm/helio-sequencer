@@ -52,17 +52,12 @@ public:
     { }
 };
 
-
 AudioPluginTreeItem::AudioPluginTreeItem(uint32 pluginID, const String &name) :
-    TreeItem(name, Serialization::Core::audioPlugin),
+    TreeItem(name, Serialization::Audio::audioPlugin),
     audioPluginEditor(nullptr),
     filterID(pluginID)
 {
     this->setVisible(false);
-}
-
-AudioPluginTreeItem::~AudioPluginTreeItem()
-{
 }
 
 ScopedPointer<Component> AudioPluginTreeItem::createItemMenu()

@@ -26,22 +26,23 @@
 #define MIN_INTERPOLATED_CONTROLLER_DELTA (0.01f)
 #define INTERPOLATED_EVENTS_STEP_MS (350)
 
-AutomationEvent::AutomationEvent() : MidiEvent(nullptr, MidiEvent::Auto, 0.f)
+AutomationEvent::AutomationEvent() noexcept : MidiEvent(nullptr, MidiEvent::Auto, 0.f)
 {
     //jassertfalse;
 }
 
-AutomationEvent::AutomationEvent(const AutomationEvent &other) :
+AutomationEvent::AutomationEvent(const AutomationEvent &other) noexcept :
     MidiEvent(other),
     controllerValue(other.controllerValue),
     curvature(other.curvature) {}
 
-AutomationEvent::AutomationEvent(WeakReference<MidiSequence> owner, float beatVal, float cValue) :
+AutomationEvent::AutomationEvent(WeakReference<MidiSequence> owner, float beatVal, float cValue) noexcept :
     MidiEvent(owner, MidiEvent::Auto, beatVal),
     controllerValue(cValue),
     curvature(AUTOEVENT_DEFAULT_CURVATURE) {}
 
-AutomationEvent::AutomationEvent(WeakReference<MidiSequence> owner, const AutomationEvent &parametersToCopy) :
+AutomationEvent::AutomationEvent(WeakReference<MidiSequence> owner,
+    const AutomationEvent &parametersToCopy) noexcept :
     MidiEvent(owner, parametersToCopy),
     controllerValue(parametersToCopy.controllerValue),
     curvature(parametersToCopy.curvature) {}
@@ -127,7 +128,7 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
                 
                 while (interpolatedEventTimeStamp < nextTime)
                 {
-                    const float lerpFactor = (interpolatedEventTimeStamp - startTime) / (nextTime - startTime);
+                    const float lerpFactor = float(interpolatedEventTimeStamp - startTime) / float(nextTime - startTime);
                     const float c = (this->controllerValue > nextEvent->controllerValue) ? this->curvature : (1.f - this->curvature);
                     
                     const float interpolatedControllerValue = exponentalInterpolation(this->controllerValue,
@@ -163,35 +164,35 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
     return result;
 }
 
-AutomationEvent AutomationEvent::copyWithNewId() const
+AutomationEvent AutomationEvent::copyWithNewId() const noexcept
 {
     AutomationEvent ae(*this);
     ae.id = ae.createId();
     return ae;
 }
 
-AutomationEvent AutomationEvent::withBeat(float newBeat) const
+AutomationEvent AutomationEvent::withBeat(float newBeat) const noexcept
 {
     AutomationEvent ae(*this);
     ae.beat = roundBeat(newBeat);
     return ae;
 }
 
-AutomationEvent AutomationEvent::withDeltaBeat(float deltaBeat) const
+AutomationEvent AutomationEvent::withDeltaBeat(float deltaBeat) const noexcept
 {
     AutomationEvent ae(*this);
     ae.beat = roundBeat(this->beat + deltaBeat);
     return ae;
 }
 
-AutomationEvent AutomationEvent::withInvertedControllerValue() const
+AutomationEvent AutomationEvent::withInvertedControllerValue() const noexcept
 {
     AutomationEvent ae(*this);
     ae.controllerValue = (1.f - this->controllerValue);
     return ae;
 }
 
-AutomationEvent AutomationEvent::withParameters(float newBeat, float newControllerValue) const
+AutomationEvent AutomationEvent::withParameters(float newBeat, float newControllerValue) const noexcept
 {
     AutomationEvent ae(*this);
     ae.beat = newBeat;
@@ -199,20 +200,19 @@ AutomationEvent AutomationEvent::withParameters(float newBeat, float newControll
     return ae;
 }
 
-AutomationEvent AutomationEvent::withCurvature(float newCurvature) const
+AutomationEvent AutomationEvent::withCurvature(float newCurvature) const noexcept
 {
     AutomationEvent ae(*this);
     ae.curvature = jmin(1.f, jmax(0.f, newCurvature));
     return ae;
 }
 
-AutomationEvent AutomationEvent::withParameters(const XmlElement &xml) const
+AutomationEvent AutomationEvent::withParameters(const ValueTree &parameters) const noexcept
 {
     AutomationEvent ae(*this);
-    ae.deserialize(xml);
+    ae.deserialize(parameters);
     return ae;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Accessors
@@ -256,34 +256,34 @@ AutomationEvent AutomationEvent::pedalDownEvent(MidiSequence *owner, float beatV
     return AutomationEvent(owner, beatVal, pedalDownCV);
 }
 
-
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *AutomationEvent::serialize() const
+ValueTree AutomationEvent::serialize() const noexcept
 {
-    auto xml = new XmlElement(Serialization::Core::event);
-    xml->setAttribute("val", this->controllerValue);
-    xml->setAttribute("beat", this->beat);
-    xml->setAttribute("curve", this->curvature);
-    xml->setAttribute("id", this->id);
-    return xml;
+    using namespace Serialization;
+    ValueTree tree(Midi::automation);
+    tree.setProperty(Midi::id, this->id, nullptr);
+    tree.setProperty(Midi::value, this->controllerValue, nullptr);
+    tree.setProperty(Midi::curve, this->curvature, nullptr);
+    tree.setProperty(Midi::timestamp, roundFloatToInt(this->beat * TICKS_PER_BEAT), nullptr);
+    return tree;
 }
 
-void AutomationEvent::deserialize(const XmlElement &xml)
+void AutomationEvent::deserialize(const ValueTree &tree) noexcept
 {
     this->reset();
-
-    this->controllerValue = float(xml.getDoubleAttribute("val"));
-    this->curvature = float(xml.getDoubleAttribute("curve", AUTOEVENT_DEFAULT_CURVATURE));
-    this->beat = float(xml.getDoubleAttribute("beat"));
-    this->id = xml.getStringAttribute("id");
+    using namespace Serialization;
+    this->controllerValue = float(tree.getProperty(Midi::value));
+    this->curvature = float(tree.getProperty(Midi::curve, AUTOEVENT_DEFAULT_CURVATURE));
+    this->beat = float(tree.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
+    this->id = tree.getProperty(Midi::id);
 }
 
-void AutomationEvent::reset() {}
+void AutomationEvent::reset() noexcept {}
 
-void AutomationEvent::applyChanges(const AutomationEvent &parameters)
+void AutomationEvent::applyChanges(const AutomationEvent &parameters) noexcept
 {
     jassert(this->id == parameters.id);
     this->beat = parameters.beat;

@@ -35,9 +35,7 @@ namespace VCS
     public:
 
         explicit Client(VersionControl &versionControl);
-
-        ~Client() override;
-
+        
         bool push();
         bool pull();
         bool remove();

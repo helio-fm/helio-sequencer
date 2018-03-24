@@ -25,6 +25,15 @@
 #include "HelioTheme.h"
 #include "ComponentIDs.h"
 
+#include "App.h"
+#include "SessionService.h"
+#include "ProgressTooltip.h"
+#include "SuccessTooltip.h"
+#include "FailTooltip.h"
+#include "MainLayout.h"
+#include "Config.h"
+#include "SerializationKeys.h"
+
 class LabelWithPassword : public Label
 {
 public:
@@ -45,7 +54,7 @@ public:
         return this->passwordCharacter;
     }
 
-    void paint (Graphics& g) override
+    void paint (Graphics &g) override
     {
         HelioTheme &ht = static_cast<HelioTheme &>(getLookAndFeel());
         ht.drawLabel (g, *this, getPasswordCharacter());
@@ -77,15 +86,6 @@ private:
     juce_wchar passwordCharacter;
 
 };
-
-#include "App.h"
-#include "AuthorizationManager.h"
-#include "ProgressTooltip.h"
-#include "SuccessTooltip.h"
-#include "FailTooltip.h"
-#include "MainLayout.h"
-#include "Config.h"
-#include "SerializationKeys.h"
 //[/MiscUserDefs]
 
 AuthorizationDialog::AuthorizationDialog()
@@ -126,7 +126,7 @@ AuthorizationDialog::AuthorizationDialog()
     addAndMakeVisible (separatorV = new SeparatorVertical());
 
     //[UserPreSize]
-    const String lastLogin = Config::get(Serialization::Core::lastUsedLogin);
+    const String lastLogin = Config::get(Serialization::Config::lastUsedLogin);
 #if HELIO_DESKTOP
     const String defaultLogin = TRANS("dialog::auth::defaultlogin::desktop");
 #elif HELIO_MOBILE
@@ -309,15 +309,29 @@ void AuthorizationDialog::editorShown(Label *targetLabel, TextEditor &editor)
 
 void AuthorizationDialog::login()
 {
-    Config::set(Serialization::Core::lastUsedLogin, this->emailEditor->getText());
-
-    App::Helio()->getAuthManager()->addChangeListener(this);
-    App::Helio()->showModalComponent(new ProgressTooltip());
+    Config::set(Serialization::Config::lastUsedLogin, this->emailEditor->getText());
 
     const String passwordHash = SHA256(this->passwordEditor->getText().toUTF8()).toHexString();
     const String email = this->emailEditor->getText();
 
-    App::Helio()->getAuthManager()->login(email, passwordHash);
+    App::Layout().showModalComponentUnowned(new ProgressTooltip());
+    App::Helio()->getSessionService()->signIn(email, passwordHash, [this](bool success, const Array<String> &errors)
+    {
+        App::Layout().dismissModalComponentOfType<ProgressTooltip>();
+        if (success)
+        {
+            App::Layout().showModalComponentUnowned(new SuccessTooltip());
+            delete this;
+        }
+        else
+        {
+            App::Layout().showModalComponentUnowned(new FailTooltip());
+            if (!errors.isEmpty())
+            {
+                App::Layout().showTooltip(errors.getFirst());
+            }
+        }
+    });
 }
 
 bool AuthorizationDialog::validateTextFields() const
@@ -331,34 +345,6 @@ bool AuthorizationDialog::validateTextFields() const
 
     return hasValidEmail && hasValidPassword;
 }
-
-void AuthorizationDialog::changeListenerCallback(ChangeBroadcaster *source)
-{
-    AuthorizationManager *authManager = App::Helio()->getAuthManager();
-    authManager->removeChangeListener(this);
-
-    if (Component *progressIndicator =
-        App::Layout().findChildWithID(ComponentIDs::progressTooltipId))
-    {
-        delete progressIndicator;
-
-        if (authManager->getLastRequestState() == AuthorizationManager::RequestSucceed)
-        {
-            App::Helio()->showModalComponent(new SuccessTooltip());
-            delete this;
-        }
-        else if (authManager->getLastRequestState() == AuthorizationManager::RequestFailed)
-        {
-            App::Helio()->showModalComponent(new FailTooltip());
-        }
-        if (authManager->getLastRequestState() == AuthorizationManager::ConnectionFailed)
-        {
-            App::Helio()->showModalComponent(new FailTooltip());
-        }
-    }
-}
-
-
 //[/MiscUserCode]
 
 #if 0
@@ -366,10 +352,9 @@ void AuthorizationDialog::changeListenerCallback(ChangeBroadcaster *source)
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="AuthorizationDialog" template="../../Template"
-                 componentName="" parentClasses="public FadingDialog, private ChangeListener"
-                 constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="530"
-                 initialHeight="210">
+                 componentName="" parentClasses="public FadingDialog" constructorParams=""
+                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
+                 overlayOpacity="0.330" fixedSize="1" initialWidth="530" initialHeight="210">
   <METHODS>
     <METHOD name="parentHierarchyChanged()"/>
     <METHOD name="parentSizeChanged()"/>
@@ -377,7 +362,8 @@ BEGIN_JUCER_METADATA
     <METHOD name="inputAttemptWhenModal()"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10" fill="solid: 59000000" hasStroke="0"/>
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10.00000000000000000000" fill="solid: 59000000"
+               hasStroke="0"/>
   </BACKGROUND>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
@@ -388,18 +374,18 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="9c63b5388edfe183" memberName="emailEditor" virtualName=""
          explicitFocusOrder="0" pos="54.5Cc 32 369 40" posRelativeY="e96b77baef792d3a"
          labelText="..." editableSingleClick="1" editableDoubleClick="1"
-         focusDiscardsChanges="0" fontname="Default serif font" fontsize="37"
-         kerning="0" bold="0" italic="0" justification="33"/>
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="37.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="33"/>
   <LABEL name="" id="cf32360d33639f7f" memberName="emailLabel" virtualName=""
          explicitFocusOrder="0" pos="-193.5Cc 24 111 47" posRelativeY="e96b77baef792d3a"
          labelText="dialog::auth::email" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
-         kerning="0" bold="0" italic="0" justification="10"/>
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="10"/>
   <LABEL name="" id="c134a00c2bb2de66" memberName="passwordLabel" virtualName=""
          explicitFocusOrder="0" pos="-193.5Cc 84 111 51" posRelativeY="e96b77baef792d3a"
          labelText="dialog::auth::password" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
-         kerning="0" bold="0" italic="0" justification="10"/>
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="10"/>
   <TEXTBUTTON name="" id="27c5d30533a1f7a9" memberName="cancelButton" virtualName=""
               explicitFocusOrder="0" pos="4 4Rr 131 48" buttonText="dialog::auth::cancel"
               connectedEdges="6" needsCallback="1" radioGroupId="0"/>

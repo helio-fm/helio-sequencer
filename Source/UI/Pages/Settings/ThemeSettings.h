@@ -18,7 +18,7 @@
 #pragma once
 
 //[Headers]
-#include "Serializable.h"
+#include "ColourScheme.h"
 //[/Headers]
 
 
@@ -34,19 +34,9 @@ public:
 
     //[UserMethods]
 
-    //===----------------------------------------------------------------------===//
-    // Serializable
-    //
-
-    virtual XmlElement *serialize() const;
-
-    virtual void deserialize(const XmlElement &xml);
-
-    virtual void reset();
-
-    //===----------------------------------------------------------------------===//
+    //===------------------------------------------------------------------===//
     // ListBoxModel
-    //
+    //===------------------------------------------------------------------===//
 
     Component *refreshComponentForRow(int, bool, Component*) override;
 
@@ -68,11 +58,13 @@ private:
 
     //[UserVariables]
 
-    //===----------------------------------------------------------------------===//
+    //===------------------------------------------------------------------===//
     // ChangeListener
-    //
+    //===------------------------------------------------------------------===//
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
+
+    ColourScheme currentScheme;
 
     //[/UserVariables]
 

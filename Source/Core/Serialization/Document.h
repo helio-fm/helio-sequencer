@@ -25,93 +25,64 @@ class Document : public ChangeListener
 {
 public:
 
-    Document(DocumentOwner &parentWorkspace,
-             DocumentOwner &documentOwner,
+    Document(DocumentOwner &documentOwner,
              const String &defaultName,
              const String &defaultExtension);
 
-    Document(DocumentOwner &parentWorkspace,
-             DocumentOwner &documentOwner,
+    Document(DocumentOwner &documentOwner,
              const File &existingFile);
 
     ~Document() override;
 
     void changeListenerCallback(ChangeBroadcaster* source) override;
 
-
     File getFile() const;
-
     String getFullPath() const;
 
-    String getRelativePath() const;
-
-
     void renameFile(const String &newName);
-
 
     //===------------------------------------------------------------------===//
     // Save
     //===------------------------------------------------------------------===//
 
     void save();
-
     void forceSave();
-
     void saveAs();
-
     void exportAs(const String &exportExtension,
                   const String &defaultFilename = "");
 
     void updateHash();
-
-    bool hasUnsavedChanges() const
-    {
-        return this->hasChanges;
-    }
-
+    bool hasUnsavedChanges() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Load
     //===------------------------------------------------------------------===//
 
-    bool load(const String &filename = "", const String &alternateRelativeFile = "");
-
+    bool load(const File &file, const File &relativeFile = {});
     void import(const String &filePattern);
 
 
 protected:
 
     bool internalSave(File result);
-
     bool internalLoad(File result);
-
-    //void fileHasBeenRenamed(const File &newFile) { this->workingFile = newFile; }
-
     bool fileHasBeenModified() const;
 
-
     int64 calculateStreamHashCode(InputStream &in) const;
-
     int64 calculateFileHashCode(const File &file) const;
 
 protected:
 
-    DocumentOwner &workspace;
-
     DocumentOwner &owner;
 
     bool hasChanges;
-
     File workingFile;
-
     String extension;
-
     Time fileModificationTime;
-
-    int64 fileHashCode, fileSize;
+    int64 fileHashCode;
+    int64 fileSize;
 
 private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Document)
-
 };

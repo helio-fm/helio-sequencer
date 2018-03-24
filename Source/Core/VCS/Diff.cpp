@@ -28,20 +28,21 @@ Diff::Diff(TrackedItem &diffTarget)
     this->logic = DiffLogic::createLogicCopy(diffTarget, *this);
 }
 
-Diff::~Diff()
-{
-
-}
-
 bool Diff::hasAnyChanges() const
 {
     return (this->getNumDeltas() > 0);
 }
 
-void Diff::addOwnedDelta(Delta *newDelta, XmlElement *newDeltaData)
+void Diff::applyDelta(DeltaDiff deltaDiff)
+{
+    this->deltas.add(deltaDiff.delta.release());
+    this->deltasData.add(deltaDiff.deltaData);
+}
+
+void Diff::applyDelta(Delta *newDelta, ValueTree data)
 {
     this->deltas.add(newDelta);
-    this->deltasData.add(newDeltaData);
+    this->deltasData.add(data);
 }
 
 void Diff::clear()
@@ -49,7 +50,6 @@ void Diff::clear()
     this->deltas.clear();
     this->deltasData.clear();
 }
-
 
 //===----------------------------------------------------------------------===//
 // TrackedItem
@@ -65,10 +65,9 @@ Delta *Diff::getDelta(int index) const
     return this->deltas[index];
 }
 
-XmlElement *Diff::createDeltaDataFor(int index) const
+ValueTree VCS::Diff::serializeDeltaData(int deltaIndex) const
 {
-    const XmlElement *deltaData = this->deltasData[index];
-    return new XmlElement(*deltaData);
+    return this->deltasData[deltaIndex].createCopy(); // fixme is deep copy necessary or a reference is enough?
 }
 
 String Diff::getVCSName() const

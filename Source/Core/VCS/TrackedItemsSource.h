@@ -36,7 +36,7 @@ namespace VCS
         virtual int getNumTrackedItems() = 0;
         virtual TrackedItem *getTrackedItem(int index) = 0;
 
-        virtual TrackedItem *initTrackedItem(const String &type, const Uuid &id) { return nullptr; }
+        virtual TrackedItem *initTrackedItem(const Identifier &type, const Uuid &id) { return nullptr; }
         virtual bool deleteTrackedItem(TrackedItem *item) { return false; }
         virtual void clearAllTrackedItems()
         {

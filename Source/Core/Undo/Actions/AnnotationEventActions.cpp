@@ -21,13 +21,12 @@
 #include "MidiTrackSource.h"
 #include "SerializationKeys.h"
 
-
 //===----------------------------------------------------------------------===//
 // Insert
 //===----------------------------------------------------------------------===//
 
 AnnotationEventInsertAction::AnnotationEventInsertAction(MidiTrackSource &source,
-    String targetTrackId, const AnnotationEvent &event) :
+    String targetTrackId, const AnnotationEvent &event) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId)),
     event(event) {}
@@ -59,18 +58,18 @@ int AnnotationEventInsertAction::getSizeInUnits()
     return sizeof(AnnotationEvent);
 }
 
-XmlElement *AnnotationEventInsertAction::serialize() const
+ValueTree AnnotationEventInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::annotationEventInsertAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    xml->prependChildElement(this->event.serialize());
-    return xml;
+    ValueTree tree(Serialization::Undo::annotationEventInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->event.serialize(), nullptr);
+    return tree;
 }
 
-void AnnotationEventInsertAction::deserialize(const XmlElement &xml)
+void AnnotationEventInsertAction::deserialize(const ValueTree &tree)
 {
-    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
-    this->event.deserialize(*xml.getFirstChildElement());
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->event.deserialize(tree.getChild(0));
 }
 
 void AnnotationEventInsertAction::reset()
@@ -84,7 +83,7 @@ void AnnotationEventInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 AnnotationEventRemoveAction::AnnotationEventRemoveAction(MidiTrackSource &source,
-    String targetTrackId, const AnnotationEvent &target) :
+    String targetTrackId, const AnnotationEvent &target) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId)),
     event(target) {}
@@ -116,18 +115,18 @@ int AnnotationEventRemoveAction::getSizeInUnits()
     return sizeof(AnnotationEvent);
 }
 
-XmlElement *AnnotationEventRemoveAction::serialize() const
+ValueTree AnnotationEventRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::annotationEventRemoveAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    xml->prependChildElement(this->event.serialize());
-    return xml;
+    ValueTree tree(Serialization::Undo::annotationEventRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->event.serialize(), nullptr);
+    return tree;
 }
 
-void AnnotationEventRemoveAction::deserialize(const XmlElement &xml)
+void AnnotationEventRemoveAction::deserialize(const ValueTree &tree)
 {
-    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
-    this->event.deserialize(*xml.getFirstChildElement());
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->event.deserialize(tree.getChild(0));
 }
 
 void AnnotationEventRemoveAction::reset()
@@ -141,7 +140,8 @@ void AnnotationEventRemoveAction::reset()
 //===----------------------------------------------------------------------===//
 
 AnnotationEventChangeAction::AnnotationEventChangeAction(MidiTrackSource &source,
-    String targetTrackId, const AnnotationEvent &target, const AnnotationEvent &newParameters) :
+    String targetTrackId, const AnnotationEvent &target,
+    const AnnotationEvent &newParameters) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId)),
     eventBefore(target),
@@ -198,31 +198,31 @@ UndoAction *AnnotationEventChangeAction::createCoalescedAction(UndoAction *nextA
     return nullptr;
 }
 
-XmlElement *AnnotationEventChangeAction::serialize() const
+ValueTree AnnotationEventChangeAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::annotationEventChangeAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::annotationEventChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
-    auto annotationBeforeChild = new XmlElement(Serialization::Undo::annotationBefore);
-    annotationBeforeChild->prependChildElement(this->eventBefore.serialize());
-    xml->prependChildElement(annotationBeforeChild);
+    ValueTree annotationBeforeChild(Serialization::Undo::annotationBefore);
+    annotationBeforeChild.appendChild(this->eventBefore.serialize(), nullptr);
+    tree.appendChild(annotationBeforeChild, nullptr);
     
-    auto annotationAfterChild = new XmlElement(Serialization::Undo::annotationAfter);
-    annotationAfterChild->prependChildElement(this->eventAfter.serialize());
-    xml->prependChildElement(annotationAfterChild);
+    ValueTree annotationAfterChild(Serialization::Undo::annotationAfter);
+    annotationAfterChild.appendChild(this->eventAfter.serialize(), nullptr);
+    tree.appendChild(annotationAfterChild, nullptr);
     
-    return xml;
+    return tree;
 }
 
-void AnnotationEventChangeAction::deserialize(const XmlElement &xml)
+void AnnotationEventChangeAction::deserialize(const ValueTree &tree)
 {
-    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    XmlElement *annotationBeforeChild = xml.getChildByName(Serialization::Undo::annotationBefore);
-    XmlElement *annotationAfterChild = xml.getChildByName(Serialization::Undo::annotationAfter);
+    const auto annotationBeforeChild = tree.getChildWithName(Serialization::Undo::annotationBefore);
+    const auto annotationAfterChild = tree.getChildWithName(Serialization::Undo::annotationAfter);
     
-    this->eventBefore.deserialize(*annotationBeforeChild->getFirstChildElement());
-    this->eventAfter.deserialize(*annotationAfterChild->getFirstChildElement());
+    this->eventBefore.deserialize(annotationBeforeChild.getChild(0));
+    this->eventAfter.deserialize(annotationAfterChild.getChild(0));
 }
 
 void AnnotationEventChangeAction::reset()
@@ -237,7 +237,7 @@ void AnnotationEventChangeAction::reset()
 //===----------------------------------------------------------------------===//
 
 AnnotationEventsGroupInsertAction::AnnotationEventsGroupInsertAction(MidiTrackSource &source,
-    String targetTrackId, Array<AnnotationEvent> &target) :
+    String targetTrackId, Array<AnnotationEvent> &target) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId))
 {
@@ -271,28 +271,28 @@ int AnnotationEventsGroupInsertAction::getSizeInUnits()
     return (sizeof(AnnotationEvent) * this->annotations.size());
 }
 
-XmlElement *AnnotationEventsGroupInsertAction::serialize() const
+ValueTree AnnotationEventsGroupInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::annotationEventsGroupInsertAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::annotationEventsGroupInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     for (int i = 0; i < this->annotations.size(); ++i)
     {
-        xml->prependChildElement(this->annotations.getUnchecked(i).serialize());
+        tree.appendChild(this->annotations.getUnchecked(i).serialize(), nullptr);
     }
     
-    return xml;
+    return tree;
 }
 
-void AnnotationEventsGroupInsertAction::deserialize(const XmlElement &xml)
+void AnnotationEventsGroupInsertAction::deserialize(const ValueTree &tree)
 {
     this->reset();
-    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    forEachXmlChildElement(xml, noteXml)
+    for (const auto &params : tree)
     {
         AnnotationEvent ae;
-        ae.deserialize(*noteXml);
+        ae.deserialize(params);
         this->annotations.add(ae);
     }
 }
@@ -308,7 +308,7 @@ void AnnotationEventsGroupInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 AnnotationEventsGroupRemoveAction::AnnotationEventsGroupRemoveAction(MidiTrackSource &source,
-    String targetTrackId, Array<AnnotationEvent> &target) :
+    String targetTrackId, Array<AnnotationEvent> &target) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId))
 {
@@ -342,28 +342,28 @@ int AnnotationEventsGroupRemoveAction::getSizeInUnits()
     return (sizeof(AnnotationEvent) * this->annotations.size());
 }
 
-XmlElement *AnnotationEventsGroupRemoveAction::serialize() const
+ValueTree AnnotationEventsGroupRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::annotationEventsGroupRemoveAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::annotationEventsGroupRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     for (int i = 0; i < this->annotations.size(); ++i)
     {
-        xml->prependChildElement(this->annotations.getUnchecked(i).serialize());
+        tree.appendChild(this->annotations.getUnchecked(i).serialize(), nullptr);
     }
     
-    return xml;
+    return tree;
 }
 
-void AnnotationEventsGroupRemoveAction::deserialize(const XmlElement &xml)
+void AnnotationEventsGroupRemoveAction::deserialize(const ValueTree &tree)
 {
     this->reset();
-    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    forEachXmlChildElement(xml, noteXml)
+    for (const auto &params : tree)
     {
         AnnotationEvent ae;
-        ae.deserialize(*noteXml);
+        ae.deserialize(params);
         this->annotations.add(ae);
     }
 }
@@ -379,7 +379,8 @@ void AnnotationEventsGroupRemoveAction::reset()
 //===----------------------------------------------------------------------===//
 
 AnnotationEventsGroupChangeAction::AnnotationEventsGroupChangeAction(MidiTrackSource &source,
-    String targetTrackId, const Array<AnnotationEvent> state1, const Array<AnnotationEvent> state2) :
+    String targetTrackId, const Array<AnnotationEvent> state1,
+    const Array<AnnotationEvent> state2) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId))
 {
@@ -449,49 +450,49 @@ UndoAction *AnnotationEventsGroupChangeAction::createCoalescedAction(UndoAction 
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *AnnotationEventsGroupChangeAction::serialize() const
+ValueTree AnnotationEventsGroupChangeAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::annotationEventsGroupChangeAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::annotationEventsGroupChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
-    auto groupBeforeChild = new XmlElement(Serialization::Undo::groupBefore);
-    auto groupAfterChild = new XmlElement(Serialization::Undo::groupAfter);
+    ValueTree groupBeforeChild(Serialization::Undo::groupBefore);
+    ValueTree groupAfterChild(Serialization::Undo::groupAfter);
     
     for (int i = 0; i < this->eventsBefore.size(); ++i)
     {
-        groupBeforeChild->prependChildElement(this->eventsBefore.getUnchecked(i).serialize());
+        groupBeforeChild.appendChild(this->eventsBefore.getUnchecked(i).serialize(), nullptr);
     }
     
     for (int i = 0; i < this->eventsAfter.size(); ++i)
     {
-        groupAfterChild->prependChildElement(this->eventsAfter.getUnchecked(i).serialize());
+        groupAfterChild.appendChild(this->eventsAfter.getUnchecked(i).serialize(), nullptr);
     }
     
-    xml->prependChildElement(groupBeforeChild);
-    xml->prependChildElement(groupAfterChild);
+    tree.appendChild(groupBeforeChild, nullptr);
+    tree.appendChild(groupAfterChild, nullptr);
     
-    return xml;
+    return tree;
 }
 
-void AnnotationEventsGroupChangeAction::deserialize(const XmlElement &xml)
+void AnnotationEventsGroupChangeAction::deserialize(const ValueTree &tree)
 {
     this->reset();
-    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    XmlElement *groupBeforeChild = xml.getChildByName(Serialization::Undo::groupBefore);
-    XmlElement *groupAfterChild = xml.getChildByName(Serialization::Undo::groupAfter);
+    const auto groupBeforeChild = tree.getChildWithName(Serialization::Undo::groupBefore);
+    const auto groupAfterChild = tree.getChildWithName(Serialization::Undo::groupAfter);
     
-    forEachXmlChildElement(*groupBeforeChild, eventXml)
+    for (const auto &params : groupBeforeChild)
     {
         AnnotationEvent ae;
-        ae.deserialize(*eventXml);
+        ae.deserialize(params);
         this->eventsBefore.add(ae);
     }
     
-    forEachXmlChildElement(*groupAfterChild, eventXml)
+    for (const auto &params : groupAfterChild)
     {
         AnnotationEvent ae;
-        ae.deserialize(*eventXml);
+        ae.deserialize(params);
         this->eventsAfter.add(ae);
     }
 }

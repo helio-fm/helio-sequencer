@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "Serializable.h"
 #include "Clip.h"
 
 class ProjectEventDispatcher;
@@ -99,8 +98,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
     //===------------------------------------------------------------------===//

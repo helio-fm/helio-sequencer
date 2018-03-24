@@ -28,7 +28,9 @@ class RendererThread;
 #include "ProjectListener.h"
 #include "OrchestraListener.h"
 
-class Transport : public ProjectListener, private OrchestraListener
+class Transport final : public Serializable,
+                        public ProjectListener,
+                        private OrchestraListener
 {
 public:
 
@@ -113,6 +115,14 @@ public:
 
     void addTransportListener(TransportListener *listener);
     void removeTransportListener(TransportListener *listener);
+
+    //===------------------------------------------------------------------===//
+    // Serializable
+    //===------------------------------------------------------------------===//
+
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
+    void reset() override;
 
 protected:
 

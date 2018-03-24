@@ -27,7 +27,6 @@ class AudioPluginTreeItem : public TreeItem
 public:
 
     AudioPluginTreeItem(uint32 pluginID, const String &name);
-    ~AudioPluginTreeItem() override;
 
     Colour getColour() const override;
     Image getIcon() const override;

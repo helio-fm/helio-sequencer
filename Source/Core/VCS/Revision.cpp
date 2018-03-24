@@ -44,6 +44,7 @@ static Pack::Ptr getPackPtr(ValueTree revision)
         return Pack::Ptr(pack);
     }
 
+    jassertfalse;
     return nullptr;
 }
 
@@ -73,7 +74,7 @@ void Revision::copyProperties(ValueTree one, ValueTree another)
     for (int i = 0; i < another.getNumProperties(); ++i)
     {
         const Identifier id(another.getPropertyName(i));
-        if (id.toString() == Serialization::VCS::pack)
+        if (id == Serialization::VCS::pack)
         {
             continue;
         }
@@ -132,7 +133,7 @@ MD5 Revision::calculateHash(ValueTree revision)
         const Identifier id(revision.getPropertyName(i));
 
         // skip pack property
-        if (id.toString() == Serialization::VCS::pack)
+        if (id == Serialization::VCS::pack)
         {
             continue;
         }
@@ -200,10 +201,9 @@ void Revision::incrementVersion(ValueTree revision)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *Revision::serialize(ValueTree revision)
+ValueTree Revision::serialize(ValueTree revision)
 {
-    XmlElement *const xml =
-        new XmlElement(revision.getType().toString());
+    ValueTree tree(revision.getType());
 
     for (int i = 0; i < revision.getNumProperties(); ++i)
     {
@@ -216,53 +216,53 @@ XmlElement *Revision::serialize(ValueTree revision)
             if (const RevisionItem *revItem =
                 dynamic_cast<RevisionItem *>(property.getObject()))
             {
-                xml->prependChildElement(revItem->serialize());
+                tree.appendChild(revItem->serialize(), nullptr);
             }
         }
         else if (property.isString() || property.isInt64())
         {
-            xml->setAttribute(id.toString(), property.toString());
+            tree.setProperty(id, property.toString(), nullptr);
         }
     }
 
     for (int i = 0; i < revision.getNumChildren(); ++i)
     {
-        xml->prependChildElement(Revision::serialize(revision.getChild(i)));
+        tree.appendChild(Revision::serialize(revision.getChild(i)), nullptr);
     }
 
-    return xml;
+    return tree;
 }
 
-void Revision::deserialize(ValueTree revision, const XmlElement &xml)
+void Revision::deserialize(ValueTree revision, const ValueTree &tree)
 {
     Revision::reset(revision);
 
-    const XmlElement *root =
-        xml.hasTagName(revision.getType().toString()) ?
-        &xml : xml.getChildByName(revision.getType().toString());
+    const auto root =
+        tree.hasType(revision.getType()) ?
+        tree : tree.getChildWithName(revision.getType());
 
-    if (root == nullptr) { return; }
+    if (!root.isValid()) { return; }
 
-    for (int i = 0; i < root->getNumAttributes(); ++i)
+    //revision.copyPropertiesFrom(root, nullptr); // never delete properties
+    for (int i = 0; i < root.getNumProperties(); ++i)
     {
-        const String &name = root->getAttributeName(i);
-        const String &value = root->getAttributeValue(i);
-        revision.setProperty(Identifier(name), var(value), nullptr);
+        const auto propertyId(root.getPropertyName(i));
+        revision.setProperty(propertyId, root.getProperty(propertyId), nullptr);
     }
 
-    forEachXmlChildElement(*root, e)
+    for (const auto &e : root)
     {
-        if (e->getTagName() == revision.getType().toString())
+        if (e.hasType(revision.getType()))
         {
             ValueTree child(revision.createCopy());
-            Revision::deserialize(child, *e);
+            Revision::deserialize(child, e);
             revision.addChild(child, 0, nullptr);
         }
         else
         {
             RevisionItem::Ptr item(new RevisionItem(getPackPtr(revision),
                 RevisionItem::Undefined, nullptr));
-            item->deserialize(*e);
+            item->deserialize(e);
             revision.setProperty(item->getUuid().toString(), var(item), nullptr);
         }
     }

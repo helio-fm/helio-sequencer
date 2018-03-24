@@ -17,6 +17,8 @@
 
 #pragma once
 
+#include "DocumentHelpers.h"
+
 template<typename T>
 class ResourceCache final
 {
@@ -30,7 +32,7 @@ public:
         return Instance;
     }
 
-    Array<T> get(const String &tag, const char *const resourceName)
+    Array<T> get(const Identifier &tag, const char *const resourceName)
     {
         if (!this->cache.isEmpty())
         {
@@ -38,16 +40,19 @@ public:
         }
 
         int numBytes;
-        const String resourceXml =
+        const String resourceDocument =
             BinaryData::getNamedResource(resourceName, numBytes);
 
-        ScopedPointer<XmlElement> xml(XmlDocument::parse(resourceXml));
-        if (xml == nullptr) { return this->cache; }
+        const ValueTree tree(DocumentHelpers::load(resourceDocument));
+        if (!tree.isValid())
+        {
+            return this->cache;
+        }
 
-        forEachXmlChildElementWithTagName(*xml, resourceRoot, tag)
+        forEachValueTreeChildWithType(tree, resourceRoot, tag)
         {
             T t;
-            t.deserialize(*resourceRoot);
+            t.deserialize(resourceRoot);
             this->cache.add(t);
         }
 

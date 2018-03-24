@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "Serializable.h"
 #include "Revision.h"
 #include "Pack.h"
 
@@ -39,8 +38,6 @@ namespace VCS
         Head(const Head &other);
         explicit Head(Pack::Ptr packPtr,
              WeakReference<TrackedItemsSource> targetProject = nullptr);
-
-        ~Head() override;
 
         ValueTree getHeadingRevision() const;
         
@@ -71,8 +68,8 @@ namespace VCS
         // Serializable
         //===--------------------------------------------------------------===//
 
-        XmlElement *serialize() const override;
-        void deserialize(const XmlElement &xml) override;
+        ValueTree serialize() const override;
+        void deserialize(const ValueTree &tree) override;
         void reset() override;
         
         //===--------------------------------------------------------------===//

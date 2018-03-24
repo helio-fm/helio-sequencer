@@ -19,18 +19,18 @@
 #include "Common.h"
 //[/Headers]
 
-%%includeFilesCPP%%
+%%include_files_cpp%%
 //[MiscUserDefs]
 //[/MiscUserDefs]
 
-%%className%%::%%className%%(%%constructorParams%%)
+%%class_name%%::%%class_name%%(%%constructor_params%%)
 %%initialisers%%{
     %%constructor%%
     //[Constructor]
     //[/Constructor]
 }
 
-%%className%%::~%%className%%()
+%%class_name%%::~%%class_name%%()
 {
     //[Destructor_pre]
     //[/Destructor_pre]
@@ -40,7 +40,7 @@
     //[/Destructor]
 }
 
-%%methodDefinitions%%
+%%method_definitions%%
 //[MiscUserCode]
 //[/MiscUserCode]
 
@@ -53,4 +53,4 @@ END_JUCER_METADATA
 */
 #endif
 
-%%staticMemberDefinitions%%
+%%static_member_definitions%%

@@ -25,12 +25,11 @@ class HelioTheme;
 //[/Headers]
 
 
-class PanelBackgroundA  : public Component
+class PanelBackgroundA final : public Component
 {
 public:
 
-    PanelBackgroundA ();
-
+    PanelBackgroundA();
     ~PanelBackgroundA();
 
     //[UserMethods]

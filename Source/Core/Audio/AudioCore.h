@@ -17,10 +17,9 @@
 
 #pragma once
 
-class Instrument;
 class AudioMonitor;
 
-#include "Serializable.h"
+#include "Instrument.h"
 #include "OrchestraPit.h"
 
 class AudioCore :
@@ -42,8 +41,9 @@ public:
     // Instruments
     //===------------------------------------------------------------------===//
 
-    Instrument *addInstrument(const PluginDescription &pluginDescription, const String &name);
     void removeInstrument(Instrument *instrument);
+    void addInstrument(const PluginDescription &pluginDescription,
+        const String &name, Instrument::InitializationCallback callback);
 
     //===------------------------------------------------------------------===//
     // OrchestraPit
@@ -57,7 +57,8 @@ public:
     // Setup
     //===------------------------------------------------------------------===//
 
-    void autodetect();
+    void autodetectDeviceSetup();
+
     AudioDeviceManager &getDevice() noexcept;
     AudioPluginFormatManager &getFormatManager() noexcept;
     AudioMonitor *getMonitor() const noexcept;
@@ -66,8 +67,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
     //===------------------------------------------------------------------===//
@@ -118,12 +119,17 @@ private:
     void addInstrumentToDevice(Instrument *instrument);
     void removeInstrumentFromDevice(Instrument *instrument);
 
+    ValueTree serializeDeviceManager() const;
+    void deserializeDeviceManager(const ValueTree &tree);
+
     OwnedArray<Instrument> instruments;
     ScopedPointer<AudioMonitor> audioMonitor;
 
     AudioPluginFormatManager formatManager;
     AudioDeviceManager deviceManager;
-    
+
+    StringArray customMidiInputs;
+
     WeakReference<AudioCore>::Master masterReference;
     friend class WeakReference<AudioCore>;
 

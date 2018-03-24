@@ -20,12 +20,12 @@
 #include "MidiSequence.h"
 #include "AutomationEvent.h"
 
-class AutomationSequence : public MidiSequence
+class AutomationSequence final : public MidiSequence
 {
 public:
 
     explicit AutomationSequence(MidiTrack &track,
-        ProjectEventDispatcher &dispatcher);
+        ProjectEventDispatcher &dispatcher) noexcept;
 
     //===------------------------------------------------------------------===//
     // Undoable track editing
@@ -55,8 +55,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
     
 private:

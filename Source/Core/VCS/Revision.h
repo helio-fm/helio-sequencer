@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "Serializable.h"
 #include "RevisionItem.h"
 #include "Pack.h"
 
@@ -48,8 +47,8 @@ namespace VCS
         // Serializable
         //===--------------------------------------------------------------===//
 
-        static XmlElement *serialize(ValueTree revision);
-        static void deserialize(ValueTree revision, const XmlElement &xml);
+        static ValueTree serialize(ValueTree revision);
+        static void deserialize(ValueTree revision, const ValueTree &tree);
         static void reset(ValueTree revision);
 
     };

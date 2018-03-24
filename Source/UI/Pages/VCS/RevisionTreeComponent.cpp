@@ -145,9 +145,6 @@ RevisionComponent *RevisionTreeComponent::firstWalk(RevisionComponent *v, float 
 
         float midpoint = (v->children.getFirst()->x + v->children.getLast()->x) / 2.f;
 
-        RevisionComponent *ell = v->children.getFirst();
-        RevisionComponent *arr = v->children.getLast();
-
         RevisionComponent *w = v->getLeftBrother();
 
         if (w)
@@ -292,7 +289,7 @@ void RevisionTreeComponent::thirdWalk(RevisionComponent *v, float n)
     for (int i = 0; i < v->children.size(); ++i)
     {
         RevisionComponent *w = v->children[i];
-        this->thirdWalk(v, n);
+        this->thirdWalk(w, n);
     }
 }
 

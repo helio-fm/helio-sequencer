@@ -27,7 +27,7 @@
 #define GROUP_COMPACT_SEPARATOR 5
 
 TrackGroupTreeItem::TrackGroupTreeItem(const String &name) :
-    TreeItem(name, Serialization::Core::layerGroup)
+    TreeItem(name, Serialization::Core::trackGroup)
 {
 }
 
@@ -258,7 +258,7 @@ ScopedPointer<Component> TrackGroupTreeItem::createItemMenu()
 
 var TrackGroupTreeItem::getDragSourceDescription()
 {
-    return Serialization::Core::layerGroup;
+    return Serialization::Core::trackGroup.toString();
 }
 
 bool TrackGroupTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
@@ -270,8 +270,8 @@ bool TrackGroupTreeItem::isInterestedInDragSource(const DragAndDropTarget::Sourc
         if (TreeItem::isNodeInChildren(selected, this))
         { return false; }
 
-        return (dragSourceDetails.description == Serialization::Core::layer) ||
-               (dragSourceDetails.description == Serialization::Core::layerGroup);
+        return (dragSourceDetails.description == Serialization::Core::track.toString()) ||
+               (dragSourceDetails.description == Serialization::Core::trackGroup.toString());
     }
 
     return false;

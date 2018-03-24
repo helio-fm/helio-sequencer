@@ -28,7 +28,7 @@
 #include <float.h>
 
 PianoSequence::PianoSequence(MidiTrack &track,
-    ProjectEventDispatcher &dispatcher) :
+    ProjectEventDispatcher &dispatcher) noexcept :
     MidiSequence(track, dispatcher) {}
 
 //===----------------------------------------------------------------------===//
@@ -324,36 +324,36 @@ float PianoSequence::getLastBeat() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *PianoSequence::serialize() const
+ValueTree PianoSequence::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::track);
+    ValueTree tree(Serialization::Midi::track);
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         const MidiEvent *event = this->midiEvents.getUnchecked(i);
-        xml->prependChildElement(event->serialize()); // faster than addChildElement
+        tree.appendChild(event->serialize(), nullptr); // faster than addChildElement
     }
     
-    return xml;
+    return tree;
 }
 
-void PianoSequence::deserialize(const XmlElement &xml)
+void PianoSequence::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root = 
-        (xml.getTagName() == Serialization::Core::track) ?
-        &xml : xml.getChildByName(Serialization::Core::track);
+    const auto root =
+        tree.hasType(Serialization::Midi::track) ?
+        tree : tree.getChildWithName(Serialization::Midi::track);
 
-    if (root == nullptr)
+    if (!root.isValid())
     {
         return;
     }
 
-    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::note)
+    forEachValueTreeChildWithType(root, e, Serialization::Midi::note)
     {
         auto note = new Note(this);
-        note->deserialize(*e);
+        note->deserialize(e);
 
         this->midiEvents.add(note); // sorted later
         this->usedEventIds.insert(note->getId());

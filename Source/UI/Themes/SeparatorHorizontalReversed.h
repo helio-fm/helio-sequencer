@@ -21,12 +21,11 @@
 //[/Headers]
 
 
-class SeparatorHorizontalReversed  : public Component
+class SeparatorHorizontalReversed final : public Component
 {
 public:
 
-    SeparatorHorizontalReversed ();
-
+    SeparatorHorizontalReversed();
     ~SeparatorHorizontalReversed();
 
     //[UserMethods]

@@ -52,20 +52,20 @@ public:
     virtual ProjectTreeItem *getProject() const { return nullptr; }
 };
 
-class EmptyEventDispatcher : public ProjectEventDispatcher
+class EmptyEventDispatcher final : public ProjectEventDispatcher
 {
 public:
 
-    void dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) override {}
-    void dispatchAddEvent(const MidiEvent &event) override {}
-    void dispatchRemoveEvent(const MidiEvent &event) override {}
-    void dispatchPostRemoveEvent(MidiSequence *const layer) override {}
+    void dispatchChangeEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent) noexcept override {}
+    void dispatchAddEvent(const MidiEvent &event) noexcept override {}
+    void dispatchRemoveEvent(const MidiEvent &event) noexcept override {}
+    void dispatchPostRemoveEvent(MidiSequence *const layer) noexcept override {}
 
-    void dispatchAddClip(const Clip &clip) override {}
-    void dispatchChangeClip(const Clip &oldClip, const Clip &newClip) override {}
-    void dispatchRemoveClip(const Clip &clip) override {}
-    void dispatchPostRemoveClip(Pattern *const pattern) override {}
+    void dispatchAddClip(const Clip &clip) noexcept override {}
+    void dispatchChangeClip(const Clip &oldClip, const Clip &newClip) noexcept override {}
+    void dispatchRemoveClip(const Clip &clip) noexcept override {}
+    void dispatchPostRemoveClip(Pattern *const pattern) noexcept override {}
 
-    void dispatchChangeTrackProperties(MidiTrack *const track) override {}
-    void dispatchChangeProjectBeatRange() override {}
+    void dispatchChangeTrackProperties(MidiTrack *const track) noexcept override {}
+    void dispatchChangeProjectBeatRange() noexcept override {}
 };

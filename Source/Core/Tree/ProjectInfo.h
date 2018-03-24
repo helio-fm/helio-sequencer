@@ -18,11 +18,10 @@
 #pragma once
 
 class ProjectTreeItem;
-class Delta;
 
-#include "Serializable.h"
 #include "ProjectInfoDiffLogic.h"
 #include "TrackedItem.h"
+#include "Delta.h"
 
 class ProjectInfo :
     public Serializable,
@@ -31,9 +30,6 @@ class ProjectInfo :
 public:
 
     explicit ProjectInfo(ProjectTreeItem &parent);
-
-    ~ProjectInfo() override;
-
 
     int64 getStartTime() const;
 
@@ -49,59 +45,42 @@ public:
     String getDescription() const;
     void setDescription(String val);
 
-
     //===------------------------------------------------------------------===//
     // VCS::TrackedItem
     //===------------------------------------------------------------------===//
 
     String getVCSName() const override;
-
     int getNumDeltas() const override;
-
     VCS::Delta *getDelta(int index) const override;
-
-    XmlElement *createDeltaDataFor(int index) const override;
-
+    ValueTree serializeDeltaData(int deltaIndex) const override;
     VCS::DiffLogic *getDiffLogic() const override;
-
     void resetStateTo(const VCS::TrackedItem &newState) override;
-
 
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
-    XmlElement *serialize() const override;
-
-    void deserialize(const XmlElement &xml) override;
-
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
-
 
     //===------------------------------------------------------------------===//
     // Deltas
     //===------------------------------------------------------------------===//
 
-    XmlElement *serializeLicenseDelta() const;
+    ValueTree serializeLicenseDelta() const;
+    ValueTree serializeFullNameDelta() const;
+    ValueTree serializeAuthorDelta() const;
+    ValueTree serializeDescriptionDelta() const;
 
-    XmlElement *serializeFullNameDelta() const;
-
-    XmlElement *serializeAuthorDelta() const;
-
-    XmlElement *serializeDescriptionDelta() const;
-
-    void resetLicenseDelta(const XmlElement *state);
-
-    void resetFullNameDelta(const XmlElement *state);
-
-    void resetAuthorDelta(const XmlElement *state);
-
-    void resetDescriptionDelta(const XmlElement *state);
+    void resetLicenseDelta(const ValueTree &state);
+    void resetFullNameDelta(const ValueTree &state);
+    void resetAuthorDelta(const ValueTree &state);
+    void resetDescriptionDelta(const ValueTree &state);
 
 private:
 
     ScopedPointer<VCS::ProjectInfoDiffLogic> vcsDiffLogic;
-
     OwnedArray<VCS::Delta> deltas;
 
 private:
@@ -109,13 +88,9 @@ private:
     ProjectTreeItem &project;
 
     String author;
-
     String description;
-
     String license;
-
     int64 initTimestamp;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectInfo);
-
 };

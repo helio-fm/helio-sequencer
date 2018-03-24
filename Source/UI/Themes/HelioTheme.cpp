@@ -54,7 +54,7 @@
 #endif
 
 HelioTheme::HelioTheme() :
-    backgroundNoise(ImageCache::getFromMemory(BinaryData::defaultPattern_png, BinaryData::defaultPattern_pngSize)) {}
+    backgroundNoise(ImageCache::getFromMemory(BinaryData::Noise_png, BinaryData::Noise_pngSize)) {}
 
 void HelioTheme::drawNoise(Component *target, Graphics &g, float alphaMultiply /*= 1.f*/)
 {

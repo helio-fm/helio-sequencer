@@ -26,6 +26,7 @@
 #include "KeySignaturesSequence.h"
 #include "Transport.h"
 #include "SerializationKeys.h"
+#include "ScalesManager.h"
 
 static inline void copyColourIfSpecified(Label& l, TextEditor& ed, int colourID, int targetColourID)
 {
@@ -40,7 +41,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
       originalEvent(editedEvent),
       originalSequence(keySequence),
       ownerComponent(owner),
-      defaultScales(Scale::getDefaultScalesCache()),
+      defaultScales(ScalesManager::getInstance().getScales()),
       addsNewEvent(shouldAddNewEvent),
       hasMadeChanges(false),
       key(0)
@@ -98,7 +99,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
         this->scale = this->defaultScales[i];
         this->scaleEditor->setScale(this->scale);
         this->keySelector->setSelectedKey(this->key);
-        this->scaleNameEditor->setText(this->scale.getName());
+        this->scaleNameEditor->setText(this->scale.getLocalizedName());
         this->originalEvent = KeySignatureEvent(this->originalSequence, targetBeat, this->key, this->scale);
 
         this->originalSequence->checkpoint();
@@ -114,7 +115,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
         this->scale = this->originalEvent.getScale();
         this->scaleEditor->setScale(this->scale);
         this->keySelector->setSelectedKey(this->key);
-        this->scaleNameEditor->setText(this->scale.getName(), dontSendNotification);
+        this->scaleNameEditor->setText(this->scale.getLocalizedName(), dontSendNotification);
 
         this->messageLabel->setText(TRANS("dialog::keysignature::edit::caption"), dontSendNotification);
         this->okButton->setButtonText(TRANS("dialog::keysignature::edit::apply"));
@@ -136,7 +137,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
     for (int i = 0; i < this->defaultScales.size(); ++i)
     {
         const auto &s = this->defaultScales.getUnchecked(i);
-        menu.add(CommandItem::withParams(Icons::ellipsis, CommandIDs::SelectScale + i, s.getName()));
+        menu.add(CommandItem::withParams(Icons::ellipsis, CommandIDs::SelectScale + i, s.getLocalizedName()));
     }
     this->comboPrimer->initWith(this->scaleNameEditor.get(), menu);
 
@@ -326,7 +327,7 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
         {
             this->scale = this->defaultScales[scaleIndex];
             this->scaleEditor->setScale(this->scale);
-            this->scaleNameEditor->setText(this->scale.getName(), false);
+            this->scaleNameEditor->setText(this->scale.getLocalizedName(), false);
             const KeySignatureEvent newEvent = this->originalEvent.withRootKey(this->key).withScale(this->scale);
             this->sendEventChange(newEvent);
         }
@@ -452,7 +453,7 @@ void KeySignatureDialog::onScaleChanged(Scale scale)
             const auto &s = this->defaultScales.getUnchecked(i);
             if (s.isEquivalentTo(scale))
             {
-                this->scaleNameEditor->setText(s.getName());
+                this->scaleNameEditor->setText(s.getLocalizedName());
                 this->scaleEditor->setScale(s);
                 this->scale = s;
                 break;

@@ -21,12 +21,11 @@
 //[/Headers]
 
 
-class SeparatorVertical  : public Component
+class SeparatorVertical final : public Component
 {
 public:
 
-    SeparatorVertical ();
-
+    SeparatorVertical();
     ~SeparatorVertical();
 
     //[UserMethods]

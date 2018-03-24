@@ -25,7 +25,7 @@
 #include "HelioTheme.h"
 #include "BinaryData.h"
 #include "ThemeSettings.h"
-#include "ColourSchemeManager.h"
+#include "ColourSchemesManager.h"
 #include "App.h"
 
 class WorkspaceAndroidProxy : public Component
@@ -112,7 +112,7 @@ DocumentWindow("Helio",
     // HelioTheme have been set previously in App init procedure
     if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
     {
-        ht->initColours(ColourSchemeManager::getInstance().getCurrentScheme());
+        ht->initColours(ColourSchemesManager::getInstance().getCurrentScheme());
     }
 
     const String openGLState = Config::get(Serialization::Core::openGLState);
@@ -123,7 +123,7 @@ DocumentWindow("Helio",
     const bool shouldEnableOpenGLByDefault = false;
 #endif
 
-    if ((openGLState == Serialization::Core::enabledState) || shouldEnableOpenGLByDefault)
+    if ((openGLState == Serialization::Core::enabledState.toString()) || shouldEnableOpenGLByDefault)
     {
         this->setOpenGLRendererEnabled(true);
     }
@@ -244,12 +244,12 @@ void MainWindow::setOpenGLRendererEnabled(bool shouldBeEnabled)
     if (shouldBeEnabled && (kOpenGLContext == nullptr))
     {
         this->attachOpenGLContext();
-        Config::set(Serialization::Core::openGLState, Serialization::Core::enabledState);
+        Config::set(Serialization::Core::openGLState, Serialization::Core::enabledState.toString());
     }
     else if (!shouldBeEnabled && (kOpenGLContext != nullptr))
     {
         this->detachOpenGLContext();
-        Config::set(Serialization::Core::openGLState, Serialization::Core::disabledState);
+        Config::set(Serialization::Core::openGLState, Serialization::Core::disabledState.toString());
     }
 }
 

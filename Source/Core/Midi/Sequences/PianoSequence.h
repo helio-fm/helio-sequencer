@@ -22,11 +22,11 @@
 
 class PianoRoll;
 
-class PianoSequence : public MidiSequence
+class PianoSequence final : public MidiSequence
 {
 public:
 
-    PianoSequence(MidiTrack &track, ProjectEventDispatcher &dispatcher);
+    PianoSequence(MidiTrack &track, ProjectEventDispatcher &dispatcher) noexcept;
 
     //===------------------------------------------------------------------===//
     // Import/export
@@ -68,8 +68,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:

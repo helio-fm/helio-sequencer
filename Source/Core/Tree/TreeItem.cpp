@@ -31,9 +31,9 @@ String TreeItem::createSafeName(const String &name)
     return File::createLegalFileName(name).removeCharacters(TreeItem::xPathSeparator);
 }
 
-TreeItem::TreeItem(const String &name, const String &type) :
+TreeItem::TreeItem(const String &name, const Identifier &type) :
     name(TreeItem::createSafeName(name)),
-    type(type),
+    type(type.toString()),
     markerIsVisible(false),
     itemShouldBeVisible(true)
 {
@@ -331,29 +331,24 @@ void TreeItem::reset()
     this->deleteAllSubItems();
 }
 
-XmlElement *TreeItem::serialize() const
+ValueTree TreeItem::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::treeItem);
-    xml->setAttribute(Serialization::Core::treeItemType, this->type);
-    xml->setAttribute(Serialization::Core::treeItemName, this->name);
-    TreeItemChildrenSerializer::serializeChildren(*this, *xml);
-    return xml;
+    ValueTree tree(Serialization::Core::treeItem);
+    tree.setProperty(Serialization::Core::treeItemType, this->type, nullptr);
+    tree.setProperty(Serialization::Core::treeItemName, this->name, nullptr);
+    TreeItemChildrenSerializer::serializeChildren(*this, tree);
+    return tree;
 }
 
-void TreeItem::deserialize(const XmlElement &xml)
+void TreeItem::deserialize(const ValueTree &tree)
 {
     // Do not reset here, subclasses may rely
     // on this method in their deserialization
     //this->reset();
 
-    // Legacy support:
-    const String nameFallback =
-        xml.getStringAttribute(Serialization::Core::treeItemName.toLowerCase(), this->name);
+    this->name = tree.getProperty(Serialization::Core::treeItemName);
 
-    this->name =
-        xml.getStringAttribute(Serialization::Core::treeItemName, nameFallback);
-
-    TreeItemChildrenSerializer::deserializeChildren(*this, xml);
+    TreeItemChildrenSerializer::deserializeChildren(*this, tree);
 }
 
 

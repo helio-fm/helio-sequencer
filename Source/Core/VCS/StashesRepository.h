@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "Serializable.h"
 #include "Revision.h"
 #include "Pack.h"
 
@@ -46,8 +45,8 @@ namespace VCS
         // Serializable
         //===--------------------------------------------------------------===//
 
-        XmlElement *serialize() const override;
-        void deserialize(const XmlElement &xml) override;
+        ValueTree serialize() const override;
+        void deserialize(const ValueTree &tree) override;
         void reset() override;
 
         typedef ReferenceCountedObjectPtr<StashesRepository> Ptr;

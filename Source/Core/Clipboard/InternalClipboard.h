@@ -19,30 +19,23 @@
 
 class ClipboardOwner;
 
-class InternalClipboard
+class InternalClipboard final
 {
 public:
 
     static void copy(const ClipboardOwner &owner, bool mirrorToSystemClipboard = false);
-
     static void paste(ClipboardOwner &owner);
     
-    static XmlElement *getCurrentContent();
-
+    static ValueTree getCurrentContent();
     static String getCurrentContentAsString();
 
 public:
 
-    InternalClipboard();
-
-    virtual ~InternalClipboard();
-
     void copyFrom(const ClipboardOwner &owner, bool mirrorToSystemClipboard = false);
-    
     void pasteTo(ClipboardOwner &owner);
 
 private:
 
-    ScopedPointer<XmlElement> clipboard;
+    ValueTree clipboard;
 
 };

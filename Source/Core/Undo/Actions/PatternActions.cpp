@@ -27,7 +27,7 @@
 //===----------------------------------------------------------------------===//
 
 PatternClipInsertAction::PatternClipInsertAction(MidiTrackSource &source,
-    String trackId, const Clip &target) :
+    String trackId, const Clip &target) noexcept :
     UndoAction(source),
     trackId(std::move(trackId)),
     clip(target) {}
@@ -59,18 +59,18 @@ int PatternClipInsertAction::getSizeInUnits()
     return sizeof(Clip);
 }
 
-XmlElement *PatternClipInsertAction::serialize() const
+ValueTree PatternClipInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::patternClipInsertAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    xml->prependChildElement(this->clip.serialize());
-    return xml;
+    ValueTree tree(Serialization::Undo::patternClipInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->clip.serialize(), nullptr);
+    return tree;
 }
 
-void PatternClipInsertAction::deserialize(const XmlElement &xml)
+void PatternClipInsertAction::deserialize(const ValueTree &tree)
 {
-    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
-    this->clip.deserialize(*xml.getFirstChildElement());
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->clip.deserialize(tree.getChild(0));
 }
 
 void PatternClipInsertAction::reset()
@@ -84,7 +84,7 @@ void PatternClipInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 PatternClipRemoveAction::PatternClipRemoveAction(MidiTrackSource &source,
-    String trackId, const Clip &target) :
+    String trackId, const Clip &target) noexcept :
     UndoAction(source),
     trackId(std::move(trackId)),
     clip(target) {}
@@ -116,18 +116,18 @@ int PatternClipRemoveAction::getSizeInUnits()
     return sizeof(Clip);
 }
 
-XmlElement *PatternClipRemoveAction::serialize() const
+ValueTree PatternClipRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::patternClipRemoveAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    xml->prependChildElement(this->clip.serialize());
-    return xml;
+    ValueTree tree(Serialization::Undo::patternClipRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->clip.serialize(), nullptr);
+    return tree;
 }
 
-void PatternClipRemoveAction::deserialize(const XmlElement &xml)
+void PatternClipRemoveAction::deserialize(const ValueTree &tree)
 {
-    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
-    this->clip.deserialize(*xml.getFirstChildElement());
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->clip.deserialize(tree.getChild(0));
 }
 
 void PatternClipRemoveAction::reset()
@@ -141,9 +141,7 @@ void PatternClipRemoveAction::reset()
 //===----------------------------------------------------------------------===//
 
 PatternClipChangeAction::PatternClipChangeAction(MidiTrackSource &source,
-    String trackId,
-    const Clip &target,
-    const Clip &newParameters) :
+    String trackId, const Clip &target, const Clip &newParameters) noexcept :
     UndoAction(source),
     trackId(std::move(trackId)),
     clipBefore(target),
@@ -203,31 +201,31 @@ UndoAction *PatternClipChangeAction::createCoalescedAction(UndoAction *nextActio
     return nullptr;
 }
 
-XmlElement *PatternClipChangeAction::serialize() const
+ValueTree PatternClipChangeAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::patternClipChangeAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::patternClipChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
 
-    auto instanceBeforeChild = new XmlElement(Serialization::Undo::instanceBefore);
-    instanceBeforeChild->prependChildElement(this->clipBefore.serialize());
-    xml->prependChildElement(instanceBeforeChild);
+    ValueTree instanceBeforeChild(Serialization::Undo::instanceBefore);
+    instanceBeforeChild.appendChild(this->clipBefore.serialize(), nullptr);
+    tree.appendChild(instanceBeforeChild, nullptr);
 
-    auto instanceAfterChild = new XmlElement(Serialization::Undo::instanceAfter);
-    instanceAfterChild->prependChildElement(this->clipAfter.serialize());
-    xml->prependChildElement(instanceAfterChild);
+    ValueTree instanceAfterChild(Serialization::Undo::instanceAfter);
+    instanceAfterChild.appendChild(this->clipAfter.serialize(), nullptr);
+    tree.appendChild(instanceAfterChild, nullptr);
 
-    return xml;
+    return tree;
 }
 
-void PatternClipChangeAction::deserialize(const XmlElement &xml)
+void PatternClipChangeAction::deserialize(const ValueTree &tree)
 {
-    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
 
-    auto instanceBeforeChild = xml.getChildByName(Serialization::Undo::instanceBefore);
-    auto instanceAfterChild = xml.getChildByName(Serialization::Undo::instanceAfter);
+    auto instanceBeforeChild = tree.getChildWithName(Serialization::Undo::instanceBefore);
+    auto instanceAfterChild = tree.getChildWithName(Serialization::Undo::instanceAfter);
 
-    this->clipBefore.deserialize(*instanceBeforeChild->getFirstChildElement());
-    this->clipAfter.deserialize(*instanceAfterChild->getFirstChildElement());
+    this->clipBefore.deserialize(instanceBeforeChild.getChild(0));
+    this->clipAfter.deserialize(instanceAfterChild.getChild(0));
 }
 
 void PatternClipChangeAction::reset()

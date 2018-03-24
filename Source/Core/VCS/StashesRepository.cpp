@@ -58,7 +58,7 @@ ValueTree VCS::StashesRepository::getUserStashWithName(const String &stashName) 
 
 void VCS::StashesRepository::addStash(ValueTree newStash)
 {
-    this->userStashes.addChild(newStash, -1, nullptr);
+    this->userStashes.appendChild(newStash, nullptr);
     Revision::flush(newStash);
     this->pack->flush();
 }
@@ -82,7 +82,8 @@ bool StashesRepository::hasQuickStash() const
 void VCS::StashesRepository::storeQuickStash(ValueTree newStash)
 {
     Revision::copyDeltas(this->quickStash, newStash);
-    this->quickStash.setProperty(Serialization::VCS::commitMessage, Serialization::VCS::quickStashId, nullptr);
+    this->quickStash.setProperty(Serialization::VCS::commitMessage,
+        Serialization::VCS::quickStashId.toString(), nullptr);
     Revision::flush(this->quickStash);
     this->pack->flush();
 }
@@ -96,42 +97,40 @@ void StashesRepository::resetQuickStash()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *StashesRepository::serialize() const
+ValueTree VCS::StashesRepository::serialize() const
 {
-    auto xml = new XmlElement(Serialization::VCS::stashesRepository);
+    ValueTree tree(Serialization::VCS::stashesRepository);
     
-    auto userStashesXml = new XmlElement(Serialization::VCS::userStashes);
-    xml->addChildElement(userStashesXml);
+    ValueTree userStashesXml(Serialization::VCS::userStashes);
+    tree.appendChild(userStashesXml, nullptr);
     
-    userStashesXml->addChildElement(Revision::serialize(this->userStashes));
+    userStashesXml.appendChild(Revision::serialize(this->userStashes), nullptr);
 
-    auto quickStashXml = new XmlElement(Serialization::VCS::quickStash);
-    xml->addChildElement(quickStashXml);
+    ValueTree quickStashXml(Serialization::VCS::quickStash);
+    tree.appendChild(quickStashXml, nullptr);
 
-    quickStashXml->addChildElement(Revision::serialize(this->quickStash));
+    quickStashXml.appendChild(Revision::serialize(this->quickStash), nullptr);
     
-    return xml;
+    return tree;
 }
 
-void StashesRepository::deserialize(const XmlElement &xml)
+void VCS::StashesRepository::deserialize(const ValueTree &tree)
 {
     this->reset();
     
-    const XmlElement *root = xml.hasTagName(Serialization::VCS::stashesRepository) ?
-        &xml : xml.getChildByName(Serialization::VCS::stashesRepository);
+    const auto root = tree.hasType(Serialization::VCS::stashesRepository) ?
+        tree : tree.getChildWithName(Serialization::VCS::stashesRepository);
     
-    if (root == nullptr) { return; }
+    if (!root.isValid()) { return; }
 
-    XmlElement *userStashesXml = root->getChildByName(Serialization::VCS::userStashes);
-
-    if (userStashesXml != nullptr) {
-        Revision::deserialize(this->userStashes, *userStashesXml);
+    const auto userStashesParams = root.getChildWithName(Serialization::VCS::userStashes);
+    if (userStashesParams.isValid()) {
+        Revision::deserialize(this->userStashes, userStashesParams);
     }
     
-    XmlElement *quickStashXml = root->getChildByName(Serialization::VCS::quickStash);
-
-    if (quickStashXml != nullptr) {
-        Revision::deserialize(this->quickStash, *quickStashXml);
+    const auto quickStashParams = root.getChildWithName(Serialization::VCS::quickStash);
+    if (quickStashParams.isValid()) {
+        Revision::deserialize(this->quickStash, quickStashParams);
     }
 }
 

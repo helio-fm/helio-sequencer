@@ -25,7 +25,6 @@ class VersionControlEditor : public Component,
 public:
 
     VersionControlEditor(VersionControl &versionControl);
-    ~VersionControlEditor();
     
     virtual void updateState() = 0;
     

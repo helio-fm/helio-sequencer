@@ -136,7 +136,7 @@ void HistoryComponent::buttonClicked (Button* buttonThatWasClicked)
                                         CommandIDs::VersionControlForcePull,
                                         CommandIDs::Cancel);
 
-            App::Layout().showModalNonOwnedDialog(confirmationDialog);
+            App::Layout().showModalComponentUnowned(confirmationDialog);
         }
         else
         {

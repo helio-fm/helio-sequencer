@@ -22,7 +22,6 @@ class ProjectTreeItem;
 #include "MidiTrack.h"
 #include "ProjectTimelineDiffLogic.h"
 #include "ProjectEventDispatcher.h"
-#include "Serializable.h"
 
 class ProjectTimeline :
     public ProjectEventDispatcher,
@@ -45,7 +44,7 @@ public:
     String getVCSName() const override;
     int getNumDeltas() const override;
     VCS::Delta *getDelta(int index) const override;
-    XmlElement *createDeltaDataFor(int index) const override;
+    ValueTree serializeDeltaData(int deltaIndex) const override;
     VCS::DiffLogic *getDiffLogic() const override;
     void resetStateTo(const VCS::TrackedItem &newState) override;
     
@@ -75,22 +74,22 @@ public:
     //===------------------------------------------------------------------===//
 
     void reset() override;
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
 
 
     //===------------------------------------------------------------------===//
     // Deltas
     //===------------------------------------------------------------------===//
 
-    XmlElement *serializeAnnotationsDelta() const;
-    void resetAnnotationsDelta(const XmlElement *state);
+    ValueTree serializeAnnotationsDelta() const;
+    void resetAnnotationsDelta(const ValueTree &state);
 
-    XmlElement *serializeTimeSignaturesDelta() const;
-    void resetTimeSignaturesDelta(const XmlElement *state);
+    ValueTree serializeTimeSignaturesDelta() const;
+    void resetTimeSignaturesDelta(const ValueTree &state);
     
-    XmlElement *serializeKeySignaturesDelta() const;
-    void resetKeySignaturesDelta(const XmlElement *state);
+    ValueTree serializeKeySignaturesDelta() const;
+    void resetKeySignaturesDelta(const ValueTree &state);
 
 private:
 
@@ -100,11 +99,9 @@ private:
     
     ProjectTreeItem &project;
     
-    String name;
-    
-    Uuid annotationsId;
-    Uuid timeSignaturesId;
-    Uuid keySignaturesId;
+    Uuid annotationsTrackId;
+    Uuid timeSignaturesTrackId;
+    Uuid keySignaturesTrackId;
 
     ScopedPointer<MidiTrack> annotationsTrack;
     ScopedPointer<MidiTrack> timeSignaturesTrack;

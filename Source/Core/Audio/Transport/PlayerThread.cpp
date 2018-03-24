@@ -22,8 +22,6 @@
 #include "Instrument.h"
 #include "MidiSequence.h"
 
-#include "DataEncoder.h"
-
 #define MINIMUM_STOP_CHECK_TIME_MS 1000
 
 PlayerThread::PlayerThread(Transport &transport) :
@@ -118,7 +116,7 @@ void PlayerThread::run()
         }
         
         // Wait until all plugins process the messages in their queues
-        Time::waitForMillisecondCounter(Time::getMillisecondCounter() + 50);
+        Thread::sleep(50);
     };
     
     auto sendTempoChangeToEverybody = [&uniqueInstruments](const MidiMessage &tempoEvent)

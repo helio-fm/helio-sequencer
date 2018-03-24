@@ -17,8 +17,6 @@
 
 #pragma once
 
-#include "Serializable.h"
-
 class Pattern;
 
 // Just an instance of a midi sequence on a certain position.
@@ -43,15 +41,15 @@ public:
     bool isValid() const noexcept;
 
     Clip copyWithNewId(Pattern *newOwner = nullptr) const;
-    Clip withParameters(const XmlElement &xml) const;
+    Clip withParameters(const ValueTree &tree) const;
     Clip withDeltaBeat(float deltaPosition) const;
 
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
     //===------------------------------------------------------------------===//
@@ -75,7 +73,7 @@ private:
 
     WeakReference<Pattern> pattern;
 
-    float startBeat;
+    float beat;
     String id;
 
     Id createId() const noexcept;

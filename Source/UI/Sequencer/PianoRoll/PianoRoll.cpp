@@ -80,6 +80,7 @@ PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
     this->addChildComponent(this->helperHorizontal);
 
     this->reloadRollContent();
+    this->setBarRange(0, 8);
 }
 
 void PianoRoll::deleteSelection()
@@ -369,10 +370,10 @@ Rectangle<float> PianoRoll::getEventBounds(FloatBoundsComponent *mc) const
 
 Rectangle<float> PianoRoll::getEventBounds(int key, float beat, float length) const
 {
-    const double startOffsetBeat = this->firstBar * double(NUM_BEATS_IN_BAR);
-    const double x = this->barWidth * double(beat - startOffsetBeat) / double(NUM_BEATS_IN_BAR);
+    const double startOffsetBeat = this->firstBar * double(BEATS_PER_BAR);
+    const double x = this->barWidth * double(beat - startOffsetBeat) / double(BEATS_PER_BAR);
 
-    const float w = this->barWidth * length / float(NUM_BEATS_IN_BAR);
+    const float w = this->barWidth * length / float(BEATS_PER_BAR);
     const float yPosition = float(this->getYPositionByKey(key));
 
     return Rectangle<float> (float(x), yPosition + 1, w, float(this->rowHeight - 1));
@@ -422,7 +423,7 @@ void PianoRoll::hideHelpers()
 
 void PianoRoll::moveHelpers(const float deltaBeat, const int deltaKey)
 {
-    const float firstBeat = this->firstBar * float(NUM_BEATS_IN_BAR);
+    const float firstBeat = this->firstBar * float(BEATS_PER_BAR);
     const Rectangle<int> selectionBounds = this->selection.getSelectionBounds();
     const Rectangle<float> delta = this->getEventBounds(deltaKey - 1, deltaBeat + firstBeat, 1.f);
 
@@ -658,9 +659,9 @@ void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, c
 // ClipboardOwner
 //===----------------------------------------------------------------------===//
 
-XmlElement *PianoRoll::clipboardCopy() const
+ValueTree PianoRoll::clipboardCopy() const
 {
-    auto xml = new XmlElement(Serialization::Clipboard::clipboard);
+    ValueTree tree(Serialization::Clipboard::clipboard);
     
     float firstBeat = FLT_MAX;
     float lastBeat = -FLT_MAX;
@@ -671,16 +672,16 @@ XmlElement *PianoRoll::clipboardCopy() const
         const String trackId(s.first);
 
         // create xml parent with layer id
-        auto layerIdParent = new XmlElement(Serialization::Clipboard::layer);
-        layerIdParent->setAttribute(Serialization::Clipboard::layerId, trackId);
-        xml->addChildElement(layerIdParent);
+        ValueTree layerIdParent(Serialization::Clipboard::layer);
+        layerIdParent.setProperty(Serialization::Clipboard::layerId, trackId, nullptr);
+        tree.appendChild(layerIdParent, nullptr);
 
         for (int i = 0; i < sequenceSelection->size(); ++i)
         {
             if (const NoteComponent *noteComponent =
                 dynamic_cast<NoteComponent *>(sequenceSelection->getUnchecked(i)))
             {
-                layerIdParent->addChildElement(noteComponent->getNote().serialize());
+                layerIdParent.appendChild(noteComponent->getNote().serialize(), nullptr);
 
                 if (firstBeat > noteComponent->getBeat())
                 {
@@ -704,9 +705,9 @@ XmlElement *PianoRoll::clipboardCopy() const
         // todo copy from
         const auto timeline = this->project.getTimeline();
         const auto annotations = timeline->getAnnotations()->getSequence();
-        auto annotationLayerIdParent = new XmlElement(Serialization::Clipboard::layer);
-        annotationLayerIdParent->setAttribute(Serialization::Clipboard::layerId, annotations->getTrackId());
-        xml->addChildElement(annotationLayerIdParent);
+        ValueTree annotationLayerIdParent(Serialization::Clipboard::layer);
+        annotationLayerIdParent.setProperty(Serialization::Clipboard::layerId, annotations->getTrackId(), nullptr);
+        tree.appendChild(annotationLayerIdParent, nullptr);
 
         for (int i = 0; i < annotations->size(); ++i)
         {
@@ -716,7 +717,7 @@ XmlElement *PianoRoll::clipboardCopy() const
                 if (const bool eventFitsInRange =
                     (event->getBeat() >= firstBeat) && (event->getBeat() < lastBeat))
                 {
-                    annotationLayerIdParent->addChildElement(event->serialize());
+                    annotationLayerIdParent.appendChild(event->serialize(), nullptr);
                 }
             }
         }
@@ -726,9 +727,9 @@ XmlElement *PianoRoll::clipboardCopy() const
         for (auto automation : automations)
         {
             MidiSequence *autoLayer = automation->getSequence();
-            auto autoLayerIdParent = new XmlElement(Serialization::Clipboard::layer);
-            autoLayerIdParent->setAttribute(Serialization::Clipboard::layerId, autoLayer->getTrackId());
-            xml->addChildElement(autoLayerIdParent);
+            ValueTree autoLayerIdParent(Serialization::Clipboard::layer);
+            autoLayerIdParent.setProperty(Serialization::Clipboard::layerId, autoLayer->getTrackId(), nullptr);
+            tree.appendChild(autoLayerIdParent, nullptr);
             
             for (int j = 0; j < autoLayer->size(); ++j)
             {
@@ -738,50 +739,50 @@ XmlElement *PianoRoll::clipboardCopy() const
                     if (const bool eventFitsInRange =
                         (event->getBeat() >= firstBeat) && (event->getBeat() < lastBeat))
                     {
-                        autoLayerIdParent->addChildElement(event->serialize());
+                        autoLayerIdParent.appendChild(event->serialize(), nullptr);
                     }
                 }
             }
         }
     }
 
-    xml->setAttribute(Serialization::Clipboard::firstBeat, firstBeat);
-    xml->setAttribute(Serialization::Clipboard::lastBeat, lastBeat);
+    tree.setProperty(Serialization::Clipboard::firstBeat, firstBeat, nullptr);
+    tree.setProperty(Serialization::Clipboard::lastBeat, lastBeat, nullptr);
 
-    return xml;
+    return tree;
 }
 
-void PianoRoll::clipboardPaste(const XmlElement &xml)
+void PianoRoll::clipboardPaste(const ValueTree &tree)
 {
-    const XmlElement *mainSlot = (xml.getTagName() == Serialization::Clipboard::clipboard) ?
-                                 &xml : xml.getChildByName(Serialization::Clipboard::clipboard);
+    const auto root = tree.hasType(Serialization::Clipboard::clipboard) ?
+        tree : tree.getChildWithName(Serialization::Clipboard::clipboard);
 
-    if (mainSlot == nullptr) { return; }
+    if (!root.isValid()) { return; }
 
     bool didCheckpoint = false;
 
     const float indicatorRoughBeat = this->getBeatByTransportPosition(this->project.getTransport().getSeekPosition());
     const float indicatorBeat = roundf(indicatorRoughBeat * 1000.f) / 1000.f;
 
-    const double firstBeat = mainSlot->getDoubleAttribute(Serialization::Clipboard::firstBeat);
-    const double lastBeat = mainSlot->getDoubleAttribute(Serialization::Clipboard::lastBeat);
+    const double firstBeat = root.getProperty(Serialization::Clipboard::firstBeat);
+    const double lastBeat = root.getProperty(Serialization::Clipboard::lastBeat);
     const bool indicatorIsWithinSelection = (indicatorBeat >= firstBeat) && (indicatorBeat < lastBeat);
     const float startBeatAligned = roundf(float(firstBeat));
     const float deltaBeat = (indicatorBeat - startBeatAligned);
 
     this->deselectAll();
 
-    forEachXmlChildElementWithTagName(*mainSlot, layerElement, Serialization::Core::layer)
+    forEachValueTreeChildWithType(root, layerElement, Serialization::Core::track)
     {
         Array<Note> pastedNotes;
 
-        const String layerId = layerElement->getStringAttribute(Serialization::Clipboard::layerId);
+        const String layerId = layerElement.getProperty(Serialization::Clipboard::layerId);
         
-        // TODO: store layer type in copy-paste info
+        // TODO: store track type in copy-paste info
         // when pasting, use these priorities:
-        // 1. layer with the same id
-        // 2. layer with the same type and controller
-        // 3. active layer
+        // 1. track with the same id
+        // 2. track with the same type and controller
+        // 3. active track
         
         if (nullptr != this->project.findSequenceByTrackId<AutomationSequence>(layerId))
         {
@@ -792,10 +793,10 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
             if (correspondingTreeItemExists)
             {
                 Array<AutomationEvent> pastedEvents;
-                
-                forEachXmlChildElementWithTagName(*layerElement, autoElement, Serialization::Core::event)
+
+                forEachValueTreeChildWithType(layerElement, autoElement, Serialization::Midi::automationEvent)
                 {
-                    AutomationEvent &&ae = AutomationEvent(targetLayer).withParameters(*autoElement).copyWithNewId();
+                    const auto &ae = AutomationEvent(targetLayer).withParameters(autoElement).copyWithNewId();
                     pastedEvents.add(ae.withDeltaBeat(deltaBeat));
                 }
                 
@@ -809,9 +810,9 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
             // no check for a tree item as there isn't any for ProjectTimeline
             Array<AnnotationEvent> pastedAnnotations;
             
-            forEachXmlChildElementWithTagName(*layerElement, annotationElement, Serialization::Core::annotation)
+            forEachValueTreeChildWithType(layerElement, annotationElement, Serialization::Midi::annotation)
             {
-                AnnotationEvent &&ae = AnnotationEvent(targetLayer).withParameters(*annotationElement).copyWithNewId();
+                const auto &ae = AnnotationEvent(targetLayer).withParameters(annotationElement).copyWithNewId();
                 pastedAnnotations.add(ae.withDeltaBeat(deltaBeat));
             }
             
@@ -821,7 +822,7 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
         {
             PianoSequence *targetLayer = this->project.findSequenceByTrackId<PianoSequence>(layerId);
             PianoTrackTreeItem *targetLayerItem = this->project.findTrackById<PianoTrackTreeItem>(layerId);
-            // use primary layer, if target is not found or not selected
+            // use primary track, if target is not found or not selected
             const bool shouldUsePrimaryLayer = (targetLayerItem == nullptr) ? true : (!targetLayerItem->isSelected());
             
             if (shouldUsePrimaryLayer)
@@ -829,9 +830,9 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
                 targetLayer = static_cast<PianoSequence *>(this->primaryActiveLayer);
             }
             
-            forEachXmlChildElementWithTagName(*layerElement, noteElement, Serialization::Core::note)
+            forEachValueTreeChildWithType(layerElement, noteElement, Serialization::Midi::note)
             {
-                Note &&n = Note(targetLayer).withParameters(*noteElement).copyWithNewId();
+                const auto &n = Note(targetLayer).withParameters(noteElement).copyWithNewId();
                 pastedNotes.add(n.withDeltaBeat(deltaBeat));
             }
             
@@ -854,7 +855,6 @@ void PianoRoll::clipboardPaste(const XmlElement &xml)
                 targetLayer->insertGroup(pastedNotes, true);
             }
         }
-
     }
 
     return;
@@ -1054,10 +1054,10 @@ void PianoRoll::handleCommandMessage(int commandId)
         App::Workspace().getAudioCore().unmute();
         break;
     case CommandIDs::BeatShiftLeft:
-        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), -1.f / NUM_BEATS_IN_BAR);
+        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), -1.f / BEATS_PER_BAR);
         break;
     case CommandIDs::BeatShiftRight:
-        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), 1.f / NUM_BEATS_IN_BAR);
+        PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), 1.f / BEATS_PER_BAR);
         break;
     case CommandIDs::BarShiftLeft:
         PianoRollToolbox::shiftBeatRelative(this->getLassoSelection(), -1.f);
@@ -1183,7 +1183,7 @@ void PianoRoll::paint(Graphics &g)
     for (int nextKeyIdx = 0; nextKeyIdx < sequences->size(); ++nextKeyIdx)
     {
         const auto key = static_cast<KeySignatureEvent *>(sequences->getUnchecked(nextKeyIdx));
-        const int barX = int(((key->getBeat() / float(NUM_BEATS_IN_BAR)) - this->firstBar)  * this->barWidth);
+        const int barX = int(((key->getBeat() / float(BEATS_PER_BAR)) - this->firstBar)  * this->barWidth);
         const int index = this->binarySearchForHighlightingScheme(key);
 
 #if DEBUG
@@ -1325,50 +1325,55 @@ void PianoRoll::updateChildrenPositions()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *PianoRoll::serialize() const
+ValueTree PianoRoll::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::midiRoll);
+    using namespace Serialization;
+    ValueTree tree(UI::pianoRoll);
     
-    xml->setAttribute("barWidth", this->getBarWidth());
-    xml->setAttribute("rowHeight", this->getRowHeight());
+    tree.setProperty(UI::barWidth, roundf(this->getBarWidth()), nullptr);
+    tree.setProperty(UI::rowHeight, this->getRowHeight(), nullptr);
 
-    xml->setAttribute("startBar", this->getBarByXPosition(this->getViewport().getViewPositionX()));
-    xml->setAttribute("endBar", this->getBarByXPosition(this->getViewport().getViewPositionX() + this->getViewport().getViewWidth()));
+    tree.setProperty(UI::startBar,
+        roundf(this->getBarByXPosition(this->getViewport().getViewPositionX())), nullptr);
 
-    xml->setAttribute("y", this->getViewport().getViewPositionY());
+    tree.setProperty(UI::endBar,
+        roundf(this->getBarByXPosition(this->getViewport().getViewPositionX() +
+            this->getViewport().getViewWidth())), nullptr);
+
+    tree.setProperty(UI::viewportPositionY, this->getViewport().getViewPositionY(), nullptr);
 
     // m?
-    //xml->setAttribute("selection", this->getLassoSelection().serialize());
+    //tree.setProperty(UI::selection, this->getLassoSelection().serialize(), nullptr);
 
-    return xml;
+    return tree;
 }
 
-void PianoRoll::deserialize(const XmlElement &xml)
+void PianoRoll::deserialize(const ValueTree &tree)
 {
     this->reset();
+    using namespace Serialization;
 
-    const XmlElement *root = (xml.getTagName() == Serialization::Core::midiRoll) ?
-                             &xml : xml.getChildByName(Serialization::Core::midiRoll);
+    const auto root = tree.hasType(UI::pianoRoll) ?
+        tree : tree.getChildWithName(UI::pianoRoll);
 
-    if (root == nullptr)
-    { return; }
+    if (!root.isValid())
+    {
+        return;
+    }
     
-    this->setBarWidth(float(root->getDoubleAttribute("barWidth", this->getBarWidth())));
-    this->setRowHeight(root->getIntAttribute("rowHeight", this->getRowHeight()));
+    this->setBarWidth(float(root.getProperty(UI::barWidth, this->getBarWidth())));
+    this->setRowHeight(root.getProperty(UI::rowHeight, this->getRowHeight()));
 
     // FIXME doesn't work right for now, as view range is sent after this
-    const float startBar = float(root->getDoubleAttribute("startBar", 0.0));
+    const float startBar = float(root.getProperty(UI::startBar, 0.0));
     const int x = this->getXPositionByBar(startBar);
-    const int y = root->getIntAttribute("y");
+    const int y = root.getProperty(UI::viewportPositionY);
     this->getViewport().setViewPosition(x, y);
 
     // restore selection?
 }
 
-void PianoRoll::reset()
-{
-}
-
+void PianoRoll::reset() {}
 
 //===----------------------------------------------------------------------===//
 // Background pattern images cache

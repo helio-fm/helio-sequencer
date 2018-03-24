@@ -25,7 +25,7 @@
 #include "UndoStack.h"
 
 AutomationSequence::AutomationSequence(MidiTrack &track,
-    ProjectEventDispatcher &dispatcher) :
+    ProjectEventDispatcher &dispatcher) noexcept :
     MidiSequence(track, dispatcher) {}
 
 //===----------------------------------------------------------------------===//
@@ -248,37 +248,37 @@ bool AutomationSequence::changeGroup(const Array<AutomationEvent> groupBefore,
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *AutomationSequence::serialize() const
+ValueTree AutomationSequence::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::automation);
+    ValueTree tree(Serialization::Midi::automation);
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         MidiEvent *event = this->midiEvents.getUnchecked(i);
-        xml->addChildElement(event->serialize());
+        tree.appendChild(event->serialize(), nullptr);
     }
     
-    return xml;
+    return tree;
 }
 
-void AutomationSequence::deserialize(const XmlElement &xml)
+void AutomationSequence::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root = 
-        (xml.getTagName() == Serialization::Core::automation) ?
-        &xml : xml.getChildByName(Serialization::Core::automation);
+    const auto root =
+        tree.hasType(Serialization::Midi::automation) ?
+        tree : tree.getChildWithName(Serialization::Midi::automation);
 
-    if (root == nullptr)
+    if (!root.isValid())
     { return; }
 
     float firstBeat = 0;
     float lastBeat = 0;
 
-    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::event)
+    forEachValueTreeChildWithType(root, e, Serialization::Midi::automationEvent)
     {
         auto event = new AutomationEvent(this, 0, 0);
-        event->deserialize(*e);
+        event->deserialize(e);
         
         this->midiEvents.add(event); // sorted later
         

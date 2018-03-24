@@ -17,91 +17,72 @@
 
 #pragma once
 
-#include "Serializable.h"
-
 namespace VCS
 {
-    struct PackDataHeader
+    struct DeltaDataHeader final
     {
-        Uuid itemId;
+        //Uuid itemId;
         Uuid deltaId;
         int64 startPosition;
         ssize_t numBytes;
     };
 
-    struct PackDataBlock
+    struct DeltaDataChunk final
     {
-        Uuid itemId;
+        //Uuid itemId;
         Uuid deltaId;
         MemoryBlock data;
     };
 
-    class Pack :
+    class Pack final :
         public Serializable,
         public ReferenceCountedObject
     {
     public:
 
         Pack();
-
         ~Pack() override;
 
         void flush(); // пусть vcs вызывает после коммита всех изменений
 
-
-        //===------------------------------------------------------------------===//
+        //===--------------------------------------------------------------===//
         // DeltaDataSource
-        //
-        
-        bool containsDeltaDataFor(const Uuid &itemId,
-                                  const Uuid &deltaId) const;
-        
-        XmlElement *createDeltaDataFor(const Uuid &itemId,
-                                       const Uuid &deltaId) const;
+        //===--------------------------------------------------------------===//
 
-
+        bool containsDeltaDataFor(const Uuid &itemId, const Uuid &deltaId) const;
+        ValueTree createDeltaDataFor(const Uuid &itemId, const Uuid &deltaId) const;
         void setDeltaDataFor(const Uuid &itemId,
-                                     const Uuid &deltaId,
-                                     const XmlElement &data);
+            const Uuid &deltaId, const ValueTree &data);
 
-
-        //===------------------------------------------------------------------===//
+        //===--------------------------------------------------------------===//
         // Serializable
-        //
+        //===--------------------------------------------------------------===//
 
-        XmlElement *serialize() const override;
-
-        void deserialize(const XmlElement &xml) override;
-
+        ValueTree serialize() const override;
+        void deserialize(const ValueTree &tree) override;
         void reset() override;
-
 
         typedef ReferenceCountedObjectPtr<Pack> Ptr;
 
     protected:
 
-        XmlElement *createXmlData(const PackDataHeader *header) const;
+        ValueTree createSerializedData(const DeltaDataHeader *header) const;
 
     private:
 
         // todo locks?
 
-        OwnedArray<PackDataHeader> headers;
+        OwnedArray<DeltaDataHeader> headers;
+        OwnedArray<DeltaDataChunk> unsavedData;
 
-        OwnedArray<PackDataBlock> unsavedData;
-
-        ScopedPointer<File> packFile;
-
+        File packFile;
         CriticalSection packStreamLock;
 
         ScopedPointer<FileInputStream> packStream;
-
         ScopedPointer<FileOutputStream> packWriteLocker;
         
         CriticalSection packLocker;
-
         Uuid uuid;
-
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Pack);
 

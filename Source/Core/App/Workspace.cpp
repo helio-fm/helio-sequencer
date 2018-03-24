@@ -19,22 +19,19 @@
 #include "Workspace.h"
 #include "Config.h"
 #include "SerializationKeys.h"
-#include "FileUtils.h"
-#include "DataEncoder.h"
+#include "DocumentHelpers.h"
 #include "AudioCore.h"
 #include "Instrument.h"
 #include "AudioMonitor.h"
 #include "RootTreeItem.h"
-#include "PluginManager.h"
+#include "PluginScanner.h"
 #include "SettingsTreeItem.h"
 #include "InstrumentsRootTreeItem.h"
 #include "ProjectTreeItem.h"
 #include "RootTreeItem.h"
 #include "WorkspacePage.h"
 
-Workspace::Workspace() :
-    DocumentOwner(*this, "Workspace", "helio"),
-    wasInitialized(false)
+Workspace::Workspace() : wasInitialized(false)
 {
     this->recentFilesList = new RecentFilesList();
     this->recentFilesList->addChangeListener(this);
@@ -51,7 +48,6 @@ Workspace::~Workspace()
         delete this->getLoadedProjects().getFirst();
     }
 
-    this->previousVersionTree = nullptr;
     this->treeRoot = nullptr;
     
     this->recentFilesList->removeChangeListener(this);
@@ -66,17 +62,13 @@ void Workspace::init()
     if (! this->wasInitialized)
     {
         this->audioCore = new AudioCore();
-        this->pluginManager = new PluginManager();
+        this->pluginManager = new PluginScanner();
         this->treeRoot = new RootTreeItem("Workspace One");
         
         if (! this->autoload())
         {
-            // если что-то пошло не так, создаем воркспейс по дефолту
             Logger::writeToLog("workspace autoload failed, creating an empty one");
-            this->createEmptyWorkspace();
-            // и тут же сохраняем
-            this->wasInitialized = true;
-            this->autosave();
+            this->failedDeserializationFallback();
         }
         else
         {
@@ -136,7 +128,7 @@ AudioCore &Workspace::getAudioCore()
     return *this->audioCore;
 }
 
-PluginManager &Workspace::getPluginManager()
+PluginScanner &Workspace::getPluginManager()
 {
     jassert(this->audioCore);
     jassert(this->pluginManager);
@@ -167,11 +159,11 @@ bool Workspace::onClickedLoadRecentFile(RecentFileDescription::Ptr fileDescripti
         
         if (project == nullptr)
         {
-            // вот здесь файла может не быть тупо по той причине, что путь записан как абсолютный,
-            // а в айос он будет постоянно меняться
-            // поэтому, если файла нет, надо проверить в текущей папке
+            // file may be missed here, because we store absolute path,
+            // but some platforms (like iOS) may change documents folder path on every app run
+            // so we need th check in a document folder again:
             
-            File localFile(this->getDocument()->getFile().getParentDirectory().getChildFile(absFile.getFileName()));
+            File localFile(DocumentHelpers::getDocumentSlot(absFile.getFileName()));
             project = this->treeRoot->openProject(localFile);
             return (project != nullptr);
         }
@@ -196,7 +188,7 @@ void Workspace::onClickedUnloadRecentFile(RecentFileDescription::Ptr fileDescrip
 
 void Workspace::changeListenerCallback(ChangeBroadcaster *source)
 {
-    DocumentOwner::sendChangeMessage();
+    Config::save(this, Serialization::Config::activeWorkspace);
 }
 
 //===----------------------------------------------------------------------===//
@@ -207,9 +199,9 @@ void Workspace::createEmptyProject()
 {
     const String newProjectName = TRANS("defaults::newproject::name");
 #if HELIO_DESKTOP
-    const String fileName = newProjectName + ".hp";
+    const String fileName = newProjectName + ".helio";
     FileChooser fc(TRANS("dialog::workspace::createproject::caption"),
-                   FileUtils::getDocumentSlot(fileName), "*.hp", true);
+                   DocumentHelpers::getDocumentSlot(fileName), "*.helio", true);
     
     if (fc.browseForFileToSave(true))
     {
@@ -307,41 +299,36 @@ void Workspace::autosave()
         return;
     }
     
-    this->getDocument()->save();
-    Config::set(Serialization::Core::lastWorkspace, this->getDocument()->getFullPath());
-    //Config::set(Serialization::Core::lastPage, ...);
-    //Config::set(Serialization::Core::treeSize, ...);
-    
-    Logger::writeToLog("autosaved at " + this->getDocument()->getFullPath());
+    Config::save(this, Serialization::Config::activeWorkspace);
 }
 
 bool Workspace::autoload()
 {
-    const String lastSavedName = Config::get(Serialization::Core::lastWorkspace);
-    File lastSavedFile(lastSavedName);
-    
-    // пытаемся найти файл по относительному пути
-    if (! lastSavedFile.existsAsFile())
+    if (Config::contains(Serialization::Config::activeWorkspace))
     {
-        lastSavedFile =
-        FileUtils::getDocumentSlot(lastSavedFile.getFileName());
+        Config::load(this, Serialization::Config::activeWorkspace);
+        return true;
     }
-    
-    Logger::writeToLog("Workspace::autoload - " + lastSavedFile.getFullPathName());
-    
-    if (lastSavedFile.existsAsFile())
+    else
     {
-        return this->getDocument()->load(lastSavedFile.getFullPathName());
+        // Try loading a legacy workspace file, if found one:
+        const auto legacyFile(DocumentHelpers::getDocumentSlot("Workspace.helio"));
+        if (legacyFile.existsAsFile())
+        {
+            const auto legacyState = DocumentHelpers::load(legacyFile);
+            this->deserialize(legacyState);
+            return true;
+        }
     }
-    
+
     return false;
 }
 
-void Workspace::createEmptyWorkspace()
+void Workspace::failedDeserializationFallback()
 {
-    // для того, чтоб не делать это несколько раз, делаем это здесь.
+    this->getAudioCore().autodetectDeviceSetup();
     this->getAudioCore().initDefaultInstrument();
-    
+
     TreeItem *settings = new SettingsTreeItem();
     this->treeRoot->addChildTreeItem(settings);
     
@@ -355,68 +342,45 @@ void Workspace::createEmptyWorkspace()
     project->setSelected(true, false);
     project->showPage();
     
-    //instruments->setSelected(true, false);
-    //instruments->showPage();
-    
-    this->sendChangeMessage(); // to be saved ok
+    this->wasInitialized = true;
+    this->autosave();
 }
 
-//===----------------------------------------------------------------------===//
-// DocumentOwner
-//===----------------------------------------------------------------------===//
-
-bool Workspace::onDocumentLoad(File &file)
+void Workspace::importProject(const String &filePattern)
 {
-    ScopedPointer<XmlElement> xml(DataEncoder::loadObfuscated(file));
-    
-    if (xml)
+    FileChooser fc(TRANS("dialog::document::import"),
+        File::getCurrentWorkingDirectory(), filePattern, true);
+
+    if (fc.browseForFileToOpen())
     {
-        this->deserialize(*xml);
-        return true;
+        const File file(fc.getResult());
+        const String &extension = file.getFileExtension();
+        if (extension == ".hp" || extension == ".helio")
+        {
+            this->treeRoot->openProject(file);
+            this->autosave();
+        }
+        else if (extension == ".mid" || extension == ".midi" || extension == ".smf")
+        {
+            this->treeRoot->importMidi(file);
+            this->autosave();
+        }
     }
-    
-    // fallback to default workspace if loading fails
-    this->createEmptyWorkspace();
-    return false;
-}
-
-bool Workspace::onDocumentSave(File &file)
-{
-    ScopedPointer<XmlElement> xml(this->serialize());
-    return DataEncoder::saveObfuscated(file, xml);
-}
-
-void Workspace::onDocumentImport(File &file)
-{
-    const String &extension = file.getFileExtension();
-    
-    if (extension == ".mid" || extension == ".midi" || extension == ".smf")
-    {
-        this->treeRoot->importMidi(file);
-    }
-    else if (extension == ".hp")
-    {
-        this->treeRoot->openProject(file);
-    }
-}
-
-bool Workspace::onDocumentExport(File &file)
-{
-    return false;
 }
 
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
 
-static void addAllActiveItemIds(TreeViewItem *item, XmlElement &parent)
+static void addAllActiveItemIds(TreeViewItem *item, ValueTree &parent)
 {
     if (TreeItem *treeItem = dynamic_cast<TreeItem *>(item))
     {
         if (treeItem->isMarkerVisible())
         {
-            parent.createNewChildElement(Serialization::Core::selectedTreeItem)->
-                setAttribute(Serialization::Core::treeItemId, item->getItemIdentifierString());
+            ValueTree child(Serialization::Core::selectedTreeItem);
+            child.setProperty(Serialization::Core::treeItemId, item->getItemIdentifierString(), nullptr);
+            parent.appendChild(child, nullptr);
         }
         
         for (int i = 0; i < item->getNumSubItems(); ++i)
@@ -455,74 +419,59 @@ void Workspace::activateSubItemWithId(const String &id)
     selectActiveSubItemWithId(this->treeRoot, id);
 }
 
-XmlElement *Workspace::serialize() const
+ValueTree Workspace::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::workspace);
-    
+    using namespace Serialization;
+    ValueTree tree(Core::workspace);
+
     // TODO serialize window size and position
 
-    auto treeRootXml = new XmlElement(Serialization::Core::treeRoot);
-    treeRootXml->setAttribute(Serialization::Core::treeItemVersion, "2.0");
-    treeRootXml->addChildElement(this->treeRoot->serialize());
-    xml->addChildElement(treeRootXml);
+    tree.appendChild(this->audioCore->serialize(), nullptr);
+    tree.appendChild(this->pluginManager->serialize(), nullptr);
+    tree.appendChild(this->recentFilesList->serialize(), nullptr);
 
-    // Saves legacy tree along with the most recent one
-    if (this->previousVersionTree != nullptr)
-    {
-        const auto legacyCopy = new XmlElement(*this->previousVersionTree);
-        xml->addChildElement(legacyCopy);
-    }
-
-    xml->addChildElement(this->audioCore->serialize());
-    xml->addChildElement(this->pluginManager->serialize());
-    xml->addChildElement(this->recentFilesList->serialize());
+    ValueTree treeRootNode(Core::treeRoot);
+    treeRootNode.appendChild(this->treeRoot->serialize(), nullptr);
+    tree.appendChild(treeRootNode, nullptr);
     
     // TODO serialize tree openness state?
-    auto treeStateNode = new XmlElement(Serialization::Core::treeState);
-    addAllActiveItemIds(this->treeRoot, *treeStateNode);
-    xml->addChildElement(treeStateNode);
+    ValueTree treeStateNode(Core::treeState);
+    addAllActiveItemIds(this->treeRoot, treeStateNode);
+    tree.appendChild(treeStateNode, nullptr);
     
-    return xml;
+    return tree;
 }
 
-void Workspace::deserialize(const XmlElement &xml)
+void Workspace::deserialize(const ValueTree &tree)
 {
     this->reset();
+    using namespace Serialization;
     
-    const XmlElement *root = xml.hasTagName(Serialization::Core::workspace) ?
-        &xml : xml.getChildByName(Serialization::Core::workspace);
+    auto root = tree.hasType(Core::workspace) ?
+        tree : tree.getChildWithName(Core::workspace);
     
-    if (root == nullptr)
+    if (!root.isValid())
     {
-        // Since we are supposed to be the root element, let's attempt to deserialize anyway
-        root = xml.getFirstChildElement();
+        // Always fallback to default workspace
+        this->failedDeserializationFallback();
+        return;
     }
 
-    // Creates a deep copy of legacy tree to be saved later as-is:
-    if (const auto legacyTree = root->getChildByName(Serialization::Core::treeItem))
-    {
-        this->previousVersionTree = new XmlElement(*legacyTree);
-    }
+    this->recentFilesList->deserialize(root);
+    this->audioCore->deserialize(root);
+    this->pluginManager->deserialize(root);
 
-    // Try to load legacy tree unless found a new one:
-    const XmlElement *treeRoot = this->previousVersionTree;
-    if (const auto newTreeRoot = root->getChildByName(Serialization::Core::treeRoot))
-    {
-        treeRoot = newTreeRoot;
-    }
-
-    this->recentFilesList->deserialize(*root);
-    this->audioCore->deserialize(*root);
-    this->pluginManager->deserialize(*root);
-    
-    this->treeRoot->deserialize(*treeRoot);
+    auto treeRootNodeLegacy = root.getChildWithName(Core::treeItem);
+    auto treeRootNode = root.getChildWithName(Core::treeRoot);
+    this->treeRoot->deserialize(treeRootNode.isValid() ? treeRootNode : treeRootNodeLegacy);
     
     bool foundActiveNode = false;
-    if (XmlElement *treeStateNode = root->getChildByName(Serialization::Core::treeState))
+    const auto treeStateNode = root.getChildWithName(Core::treeState);
+    if (treeStateNode.isValid())
     {
-        forEachXmlChildElementWithTagName(*treeStateNode, e, Serialization::Core::selectedTreeItem)
+        forEachValueTreeChildWithType(treeStateNode, e, Core::selectedTreeItem)
         {
-            const String id = e->getStringAttribute(Serialization::Core::treeItemId);
+            const String id = e.getProperty(Core::treeItemId);
             foundActiveNode = (nullptr != selectActiveSubItemWithId(this->treeRoot, id));
         }
     }

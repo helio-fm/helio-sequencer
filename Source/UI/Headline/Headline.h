@@ -28,13 +28,12 @@ class HeadlineItem;
 #include "../Themes/SeparatorHorizontalReversed.h"
 #include "HeadlineNavigationPanel.h"
 
-class Headline  : public Component,
-                  public AsyncUpdater
+class Headline final : public Component,
+                       public AsyncUpdater
 {
 public:
 
-    Headline ();
-
+    Headline();
     ~Headline();
 
     //[UserMethods]

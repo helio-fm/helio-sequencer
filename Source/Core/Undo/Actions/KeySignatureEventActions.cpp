@@ -26,7 +26,7 @@
 //===----------------------------------------------------------------------===//
 
 KeySignatureEventInsertAction::KeySignatureEventInsertAction(MidiTrackSource &source,
-    String targetTrackId, const KeySignatureEvent &event) :
+    String targetTrackId, const KeySignatureEvent &event) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId)),
     event(event) {}
@@ -58,18 +58,18 @@ int KeySignatureEventInsertAction::getSizeInUnits()
     return sizeof(KeySignatureEvent);
 }
 
-XmlElement *KeySignatureEventInsertAction::serialize() const
+ValueTree KeySignatureEventInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::keySignatureEventInsertAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    xml->prependChildElement(this->event.serialize());
-    return xml;
+    ValueTree tree(Serialization::Undo::keySignatureEventInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->event.serialize(), nullptr);
+    return tree;
 }
 
-void KeySignatureEventInsertAction::deserialize(const XmlElement &xml)
+void KeySignatureEventInsertAction::deserialize(const ValueTree &tree)
 {
-    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
-    this->event.deserialize(*xml.getFirstChildElement());
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->event.deserialize(tree.getChild(0));
 }
 
 void KeySignatureEventInsertAction::reset()
@@ -83,7 +83,7 @@ void KeySignatureEventInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 KeySignatureEventRemoveAction::KeySignatureEventRemoveAction(MidiTrackSource &source,
-    String targetTrackId, const KeySignatureEvent &target) :
+    String targetTrackId, const KeySignatureEvent &target) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId)),
     event(target) {}
@@ -115,18 +115,18 @@ int KeySignatureEventRemoveAction::getSizeInUnits()
     return sizeof(KeySignatureEvent);
 }
 
-XmlElement *KeySignatureEventRemoveAction::serialize() const
+ValueTree KeySignatureEventRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::keySignatureEventRemoveAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
-    xml->prependChildElement(this->event.serialize());
-    return xml;
+    ValueTree tree(Serialization::Undo::keySignatureEventRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+    tree.appendChild(this->event.serialize(), nullptr);
+    return tree;
 }
 
-void KeySignatureEventRemoveAction::deserialize(const XmlElement &xml)
+void KeySignatureEventRemoveAction::deserialize(const ValueTree &tree)
 {
-    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
-    this->event.deserialize(*xml.getFirstChildElement());
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+    this->event.deserialize(tree.getChild(0));
 }
 
 void KeySignatureEventRemoveAction::reset()
@@ -140,7 +140,8 @@ void KeySignatureEventRemoveAction::reset()
 //===----------------------------------------------------------------------===//
 
 KeySignatureEventChangeAction::KeySignatureEventChangeAction(MidiTrackSource &source,
-    String targetTrackId, const KeySignatureEvent &target, const KeySignatureEvent &newParameters) :
+    String targetTrackId, const KeySignatureEvent &target,
+    const KeySignatureEvent &newParameters) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId)),
     eventBefore(target),
@@ -197,31 +198,31 @@ UndoAction *KeySignatureEventChangeAction::createCoalescedAction(UndoAction *nex
     return nullptr;
 }
 
-XmlElement *KeySignatureEventChangeAction::serialize() const
+ValueTree KeySignatureEventChangeAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::keySignatureEventChangeAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::keySignatureEventChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
-    auto KeySignatureBeforeChild = new XmlElement(Serialization::Undo::keySignatureBefore);
-    KeySignatureBeforeChild->prependChildElement(this->eventBefore.serialize());
-    xml->prependChildElement(KeySignatureBeforeChild);
+    ValueTree keySignatureBeforeChild(Serialization::Undo::keySignatureBefore);
+    keySignatureBeforeChild.appendChild(this->eventBefore.serialize(), nullptr);
+    tree.appendChild(keySignatureBeforeChild, nullptr);
     
-    auto KeySignatureAfterChild = new XmlElement(Serialization::Undo::keySignatureAfter);
-    KeySignatureAfterChild->prependChildElement(this->eventAfter.serialize());
-    xml->prependChildElement(KeySignatureAfterChild);
+    ValueTree keySignatureAfterChild(Serialization::Undo::keySignatureAfter);
+    keySignatureAfterChild.appendChild(this->eventAfter.serialize(), nullptr);
+    tree.appendChild(keySignatureAfterChild, nullptr);
     
-    return xml;
+    return tree;
 }
 
-void KeySignatureEventChangeAction::deserialize(const XmlElement &xml)
+void KeySignatureEventChangeAction::deserialize(const ValueTree &tree)
 {
-    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    XmlElement *KeySignatureBeforeChild = xml.getChildByName(Serialization::Undo::keySignatureBefore);
-    XmlElement *KeySignatureAfterChild = xml.getChildByName(Serialization::Undo::keySignatureAfter);
+    const auto keySignatureBeforeChild = tree.getChildWithName(Serialization::Undo::keySignatureBefore);
+    const auto keySignatureAfterChild = tree.getChildWithName(Serialization::Undo::keySignatureAfter);
     
-    this->eventBefore.deserialize(*KeySignatureBeforeChild->getFirstChildElement());
-    this->eventAfter.deserialize(*KeySignatureAfterChild->getFirstChildElement());
+    this->eventBefore.deserialize(keySignatureBeforeChild.getChild(0));
+    this->eventAfter.deserialize(keySignatureAfterChild.getChild(0));
 }
 
 void KeySignatureEventChangeAction::reset()
@@ -236,7 +237,7 @@ void KeySignatureEventChangeAction::reset()
 //===----------------------------------------------------------------------===//
 
 KeySignatureEventsGroupInsertAction::KeySignatureEventsGroupInsertAction(MidiTrackSource &source,
-    String targetTrackId, Array<KeySignatureEvent> &target) :
+    String targetTrackId, Array<KeySignatureEvent> &target) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId))
 {
@@ -270,28 +271,28 @@ int KeySignatureEventsGroupInsertAction::getSizeInUnits()
     return (sizeof(KeySignatureEvent) * this->signatures.size());
 }
 
-XmlElement *KeySignatureEventsGroupInsertAction::serialize() const
+ValueTree KeySignatureEventsGroupInsertAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::keySignatureEventsGroupInsertAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::keySignatureEventsGroupInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     for (int i = 0; i < this->signatures.size(); ++i)
     {
-        xml->prependChildElement(this->signatures.getUnchecked(i).serialize());
+        tree.appendChild(this->signatures.getUnchecked(i).serialize(), nullptr);
     }
     
-    return xml;
+    return tree;
 }
 
-void KeySignatureEventsGroupInsertAction::deserialize(const XmlElement &xml)
+void KeySignatureEventsGroupInsertAction::deserialize(const ValueTree &tree)
 {
     this->reset();
-    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    forEachXmlChildElement(xml, noteXml)
+    for (const auto &params : tree)
     {
         KeySignatureEvent ae;
-        ae.deserialize(*noteXml);
+        ae.deserialize(params);
         this->signatures.add(ae);
     }
 }
@@ -307,7 +308,7 @@ void KeySignatureEventsGroupInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 KeySignatureEventsGroupRemoveAction::KeySignatureEventsGroupRemoveAction(MidiTrackSource &source,
-    String targetTrackId, Array<KeySignatureEvent> &target) :
+    String targetTrackId, Array<KeySignatureEvent> &target) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId))
 {
@@ -341,28 +342,28 @@ int KeySignatureEventsGroupRemoveAction::getSizeInUnits()
     return (sizeof(KeySignatureEvent) * this->signatures.size());
 }
 
-XmlElement *KeySignatureEventsGroupRemoveAction::serialize() const
+ValueTree KeySignatureEventsGroupRemoveAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::keySignatureEventsGroupRemoveAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::keySignatureEventsGroupRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
     for (int i = 0; i < this->signatures.size(); ++i)
     {
-        xml->prependChildElement(this->signatures.getUnchecked(i).serialize());
+        tree.appendChild(this->signatures.getUnchecked(i).serialize(), nullptr);
     }
     
-    return xml;
+    return tree;
 }
 
-void KeySignatureEventsGroupRemoveAction::deserialize(const XmlElement &xml)
+void KeySignatureEventsGroupRemoveAction::deserialize(const ValueTree &tree)
 {
     this->reset();
-    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    forEachXmlChildElement(xml, noteXml)
+    for (const auto &params : tree)
     {
         KeySignatureEvent ae;
-        ae.deserialize(*noteXml);
+        ae.deserialize(params);
         this->signatures.add(ae);
     }
 }
@@ -378,7 +379,8 @@ void KeySignatureEventsGroupRemoveAction::reset()
 //===----------------------------------------------------------------------===//
 
 KeySignatureEventsGroupChangeAction::KeySignatureEventsGroupChangeAction(MidiTrackSource &source,
-    String targetTrackId, const Array<KeySignatureEvent> state1, const Array<KeySignatureEvent> state2) :
+    String targetTrackId, const Array<KeySignatureEvent> state1,
+    const Array<KeySignatureEvent> state2) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId))
 {
@@ -447,49 +449,49 @@ UndoAction *KeySignatureEventsGroupChangeAction::createCoalescedAction(UndoActio
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *KeySignatureEventsGroupChangeAction::serialize() const
+ValueTree KeySignatureEventsGroupChangeAction::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Undo::keySignatureEventsGroupChangeAction);
-    xml->setAttribute(Serialization::Undo::trackId, this->trackId);
+    ValueTree tree(Serialization::Undo::keySignatureEventsGroupChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     
-    auto groupBeforeChild = new XmlElement(Serialization::Undo::groupBefore);
-    auto groupAfterChild = new XmlElement(Serialization::Undo::groupAfter);
+    ValueTree groupBeforeChild(Serialization::Undo::groupBefore);
+    ValueTree groupAfterChild(Serialization::Undo::groupAfter);
     
     for (int i = 0; i < this->eventsBefore.size(); ++i)
     {
-        groupBeforeChild->prependChildElement(this->eventsBefore.getUnchecked(i).serialize());
+        groupBeforeChild.appendChild(this->eventsBefore.getUnchecked(i).serialize(), nullptr);
     }
     
     for (int i = 0; i < this->eventsAfter.size(); ++i)
     {
-        groupAfterChild->prependChildElement(this->eventsAfter.getUnchecked(i).serialize());
+        groupAfterChild.appendChild(this->eventsAfter.getUnchecked(i).serialize(), nullptr);
     }
     
-    xml->prependChildElement(groupBeforeChild);
-    xml->prependChildElement(groupAfterChild);
+    tree.appendChild(groupBeforeChild, nullptr);
+    tree.appendChild(groupAfterChild, nullptr);
     
-    return xml;
+    return tree;
 }
 
-void KeySignatureEventsGroupChangeAction::deserialize(const XmlElement &xml)
+void KeySignatureEventsGroupChangeAction::deserialize(const ValueTree &tree)
 {
     this->reset();
-    this->trackId = xml.getStringAttribute(Serialization::Undo::trackId);
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
     
-    XmlElement *groupBeforeChild = xml.getChildByName(Serialization::Undo::groupBefore);
-    XmlElement *groupAfterChild = xml.getChildByName(Serialization::Undo::groupAfter);
+    const auto groupBeforeChild = tree.getChildWithName(Serialization::Undo::groupBefore);
+    const auto groupAfterChild = tree.getChildWithName(Serialization::Undo::groupAfter);
     
-    forEachXmlChildElement(*groupBeforeChild, eventXml)
+    for (const auto &params : groupBeforeChild)
     {
         KeySignatureEvent ae;
-        ae.deserialize(*eventXml);
+        ae.deserialize(params);
         this->eventsBefore.add(ae);
     }
     
-    forEachXmlChildElement(*groupAfterChild, eventXml)
+    for (const auto &params : groupAfterChild)
     {
         KeySignatureEvent ae;
-        ae.deserialize(*eventXml);
+        ae.deserialize(params);
         this->eventsAfter.add(ae);
     }
 }

@@ -24,7 +24,7 @@
 #include "UndoStack.h"
 
 TimeSignaturesSequence::TimeSignaturesSequence(MidiTrack &track,
-    ProjectEventDispatcher &dispatcher) :
+    ProjectEventDispatcher &dispatcher) noexcept :
     MidiSequence(track, dispatcher) {}
 
 //===----------------------------------------------------------------------===//
@@ -249,28 +249,29 @@ bool TimeSignaturesSequence::changeGroup(Array<TimeSignatureEvent> &groupBefore,
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *TimeSignaturesSequence::serialize() const
+ValueTree TimeSignaturesSequence::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::timeSignatures);
+    ValueTree tree(Serialization::Midi::timeSignatures);
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         const MidiEvent *event = this->midiEvents.getUnchecked(i);
-        xml->prependChildElement(event->serialize()); // faster than addChildElement
+        tree.appendChild(event->serialize(), nullptr); // faster than addChildElement
     }
 
-    return xml;
+    return tree;
 }
 
-void TimeSignaturesSequence::deserialize(const XmlElement &xml)
+void TimeSignaturesSequence::deserialize(const ValueTree &tree)
 {
     this->reset();
+    using namespace Serialization;
 
-    const XmlElement *root =
-        (xml.getTagName() == Serialization::Core::timeSignatures) ?
-        &xml : xml.getChildByName(Serialization::Core::timeSignatures);
+    const auto root =
+        tree.hasType(Serialization::Midi::timeSignatures) ?
+        tree : tree.getChildWithName(Serialization::Midi::timeSignatures);
 
-    if (root == nullptr)
+    if (!root.isValid())
     {
         return;
     }
@@ -278,10 +279,10 @@ void TimeSignaturesSequence::deserialize(const XmlElement &xml)
     float lastBeat = 0;
     float firstBeat = 0;
 
-    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::timeSignature)
+    forEachValueTreeChildWithType(root, e, Serialization::Midi::timeSignature)
     {
         TimeSignatureEvent *signature = new TimeSignatureEvent(this);
-        signature->deserialize(*e);
+        signature->deserialize(e);
         
         this->midiEvents.add(signature); // sorted later
 

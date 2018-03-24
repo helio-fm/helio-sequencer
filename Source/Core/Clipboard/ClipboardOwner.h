@@ -22,9 +22,7 @@ class ClipboardOwner
 public:
 
     virtual ~ClipboardOwner() {}
-
-    virtual XmlElement *clipboardCopy() const = 0;
-
-    virtual void clipboardPaste(const XmlElement &xml) = 0;
+    virtual ValueTree clipboardCopy() const = 0;
+    virtual void clipboardPaste(const ValueTree &tree) = 0;
 
 };

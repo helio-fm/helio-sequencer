@@ -43,7 +43,7 @@ public:
 
     void safeRename(const String &newName) override;
 
-    void importMidi(File &file);
+    void importMidi(const File &file);
 
     //===------------------------------------------------------------------===//
     // Children
@@ -82,7 +82,7 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    void deserialize(const XmlElement &xml) override;
+    void deserialize(const ValueTree &tree) override;
 
 private:
 

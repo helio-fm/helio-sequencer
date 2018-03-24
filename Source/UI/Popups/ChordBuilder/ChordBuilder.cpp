@@ -31,8 +31,8 @@
 #include "Config.h"
 #include "ChordTooltip.h"
 #include "Transport.h"
-#include "Supervisor.h"
 #include "SerializationKeys.h"
+#include "ScalesManager.h"
 #include "CommandPanel.h"
 #include "BinaryData.h"
 #include "Icons.h"
@@ -77,7 +77,7 @@ public:
         for (int i = 0; i < scales.size(); ++i)
         {
             cmds.add(CommandItem::withParams(String::empty,
-                CommandIDs::SelectScale + i, scales[i].getName())->withAlignment(CommandItem::Right));
+                CommandIDs::SelectScale + i, scales[i].getLocalizedName())->withAlignment(CommandItem::Right));
         }
         this->updateContent(cmds, CommandPanel::SlideLeft, false);
     }
@@ -151,7 +151,7 @@ ChordBuilder::ChordBuilder(PianoRoll *caller, MidiSequence *layer)
     : PopupMenuComponent(caller),
       roll(caller),
       sequence(layer),
-      defaultScales(Scale::getDefaultScalesCache()),
+      defaultScales(ScalesManager::getInstance().getScales()),
       hasMadeChanges(false),
       draggingStartPosition(0, 0),
       draggingEndPosition(0, 0),
@@ -165,10 +165,10 @@ ChordBuilder::ChordBuilder(PianoRoll *caller, MidiSequence *layer)
 
 
     //[UserPreSize]
-    if (Config::contains(Serialization::Core::lastUsedScale))
+    if (Config::contains(Serialization::Config::lastUsedScale))
     {
         Scale s;
-        Config::load(Serialization::Core::lastUsedScale, &s);
+        Config::load(s, Serialization::Config::lastUsedScale);
         if (s.isValid())
         {
             this->scale = s;
@@ -312,7 +312,7 @@ if (! App::isRunningOnPhone()) { \
     new ChordTooltip(ROOT_KEY,\
                      this->scale.getLocalizedName(),\
                      FUNCTION_NAME);\
-    App::Helio()->showTooltip(tip, this->getScreenBounds());\
+    App::Layout().showTooltip(tip, this->getScreenBounds());\
 }
 
 void ChordBuilder::onPopupButtonFirstAction(PopupButton *button)
@@ -324,7 +324,7 @@ void ChordBuilder::onPopupButtonFirstAction(PopupButton *button)
         const double retinaScale = Desktop::getInstance().getDisplays().getMainDisplay().scale;
         const bool draggedThePopup = (double(dragDistance) > retinaScale);
         if (draggedThePopup || dragPositionNotInitialized) {
-            App::Helio()->showTooltip(nullptr); // hide if any
+            App::Layout().showTooltip(nullptr); // hide if any
             this->buildNewNote(true);
         } else {
             //App::Helio()->showTooltip(createLabel(rootKey));
@@ -359,7 +359,7 @@ bool ChordBuilder::onPopupButtonDrag(PopupButton *button)
         if (keyHasChanged)
         {
             const String rootKey = keyName(this->targetKey);
-            App::Helio()->showTooltip(TRANS("popup::chord::rootkey") + ": " + rootKey);
+            App::Layout().showTooltip(TRANS("popup::chord::rootkey") + ": " + rootKey);
         }
 
         // prevents it to be clicked and hid
@@ -384,7 +384,7 @@ void ChordBuilder::applyScale(const Scale &scale)
     if (this->scale != scale)
     {
         this->scale = scale;
-        Config::save(Serialization::Core::lastUsedScale, &this->scale);
+        Config::save(this->scale, Serialization::Config::lastUsedScale);
         this->buildChord(this->scale.getTriad(this->function, true));
         SHOW_CHORD_TOOLTIP(rootKey, funName[this->function]);
     }

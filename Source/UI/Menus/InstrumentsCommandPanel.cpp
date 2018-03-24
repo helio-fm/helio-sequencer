@@ -24,7 +24,7 @@
 #include "MainLayout.h"
 #include "AudioCore.h"
 #include "Document.h"
-#include "PluginManager.h"
+#include "PluginScanner.h"
 #include "Workspace.h"
 #include "App.h"
 
@@ -88,15 +88,11 @@ void InstrumentsCommandPanel::handleCommandMessage(int commandId)
         {
             const PluginDescription pluginDescription(*info.getType(i));
             
-            Instrument *instrument =
-                App::Workspace().getAudioCore().
-                addInstrument(pluginDescription,
-                              pluginDescription.descriptiveName);
-            
-            InstrumentTreeItem *treeItem =
+            App::Workspace().getAudioCore().
+                addInstrument(pluginDescription, pluginDescription.descriptiveName, [this](Instrument *instrument)
+            {
                 this->instrumentsRoot.addInstrumentTreeItem(instrument);
-            
-            jassert(treeItem);
+            });
         }
     }
     

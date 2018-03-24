@@ -20,15 +20,13 @@
 class AudioCore;
 class ProjectTreeItem;
 class RootTreeItem;
-class PluginManager;
+class PluginScanner;
 
-#include "Serializable.h"
 #include "DocumentOwner.h"
 #include "RecentFilesList.h"
 #include "TreeNavigationHistory.h"
 
-class Workspace : public DocumentOwner,
-                  public RecentFilesList::Owner,
+class Workspace : public RecentFilesList::Owner,
                   private ChangeListener, // listens to RecentFilesList
                   private Serializable
 {
@@ -46,7 +44,7 @@ public:
     void navigateForwardIfPossible();
 
     AudioCore &getAudioCore();
-    PluginManager &getPluginManager();
+    PluginScanner &getPluginManager();
     RootTreeItem *getTreeRoot() const;
     void activateSubItemWithId(const String &id);
 
@@ -73,31 +71,21 @@ public:
 
     bool autoload();
     void autosave();
+    void importProject(const String &filePattern);
 
-protected:
-    
-    //===------------------------------------------------------------------===//
-    // DocumentOwner
-    //===------------------------------------------------------------------===//
-    
-    bool onDocumentLoad(File &file) override;
-    bool onDocumentSave(File &file) override;
-    void onDocumentImport(File &file) override;
-    bool onDocumentExport(File &file) override;
-    
 private:
     
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
     
 private:
     
-    void createEmptyWorkspace();
+    void failedDeserializationFallback();
     void changeListenerCallback(ChangeBroadcaster *source) override;
     
 private:
@@ -110,7 +98,7 @@ private:
     ProjectTreeItem *currentProject;
     
     ScopedPointer<AudioCore> audioCore;
-    ScopedPointer<PluginManager> pluginManager;
+    ScopedPointer<PluginScanner> pluginManager;
     
     ScopedPointer<RootTreeItem> treeRoot;
     TreeNavigationHistory navigationHistory;

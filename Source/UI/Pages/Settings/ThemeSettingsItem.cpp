@@ -33,7 +33,7 @@
 
 #include "SettingsListItemHighlighter.h"
 #include "SettingsListItemSelection.h"
-#include "ColourSchemeManager.h"
+#include "ColourSchemesManager.h"
 #include "ColourIDs.h"
 
 class ThemeSettingsItemHighlighter : public Component
@@ -297,7 +297,7 @@ void ThemeSettingsItem::applyTheme(const ColourScheme &colours)
 {
     if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
     {
-        ColourSchemeManager::getInstance().setCurrentScheme(this->colours);
+        ColourSchemesManager::getInstance().setCurrentScheme(this->colours);
         ht->initColours(colours);
         ht->updateBackgroundRenders(true);
         if (this->getTopLevelComponent() != nullptr)

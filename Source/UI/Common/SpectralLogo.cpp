@@ -65,7 +65,7 @@ void SpectralLogo::run()
 
 void SpectralLogo::handleAsyncUpdate()
 {
-    this->pulse = fmodf(this->pulse + M_PI / 18.f, M_2PI);
+    this->pulse = fmodf(this->pulse + MathConstants<float>::pi / 18.f, MathConstants<float>::twoPi);
     this->repaint();
 }
 
@@ -115,8 +115,8 @@ void SpectralLogo::paint(Graphics &g)
 
         for (int i = 0; i < this->bandCount; ++i)
         {
-            const float waveOffset = -(M_PI_2);
-            const float wavePosition = ((M_2PI * NUM_WAVES) / float(this->bandCount)) * i;
+            const float waveOffset = - MathConstants<float>::halfPi;
+            const float wavePosition = float(i) * (MathConstants<float>::twoPi * float(NUM_WAVES) / float(this->bandCount));
             const float multiplier = 0.5f + sinf(waveOffset + wavePosition) / 2.f;
 
             // Controls rays sharpness:
@@ -131,7 +131,7 @@ void SpectralLogo::paint(Graphics &g)
                 (r.nextFloat() * this->getRandomnessRange()) -
                 (pulseMultiplier * pulseMultiplier * this->getRandomnessRange() * (0.5f - heptagramShape) * 0.5f);
             
-            const float radians = (M_2PI / float(this->bandCount)) * i;
+            const float radians = float(i) * (MathConstants<float>::twoPi / float(this->bandCount));
             g.fillPath(this->bands[i]->buildPath(v, cx, cy, bandSize, radians, NUM_SEGMENTS_TO_SKIP, timeNow));
         }
 

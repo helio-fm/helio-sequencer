@@ -28,6 +28,7 @@
 #include "Workspace.h"
 #include "AudioCore.h"
 #include "HybridRoll.h"
+#include "SerializationKeys.h"
 
 class PlayerThreadPool final
 {
@@ -35,7 +36,7 @@ public:
 
     PlayerThreadPool(Transport &transport, int poolSize = 5) :
         transport(transport),
-        poolSize(poolSize)
+        minPoolSize(poolSize)
     {
         for (int i = 0; i < poolSize; ++i)
         {
@@ -88,7 +89,7 @@ private:
     {
         this->cleanup();
 
-        for (auto player : this->players)
+        for (const auto player : this->players)
         {
             if (!player->isThreadRunning())
             {
@@ -97,9 +98,7 @@ private:
         }
 
         Logger::writeToLog("Warning: all playback threads are busy, adding one");
-        auto player = new PlayerThread(transport);
-        this->players.add(player);
-        return player;
+        return this->players.add(new PlayerThread(transport));
     }
 
     void cleanup()
@@ -107,7 +106,7 @@ private:
         // Since all new players are added last,
         // first ones are most likely to be stopped,
         // so simply try to cleanup from the beginning until we meet a busy one:
-        while (this->players.size() > this->poolSize)
+        while (this->players.size() > this->minPoolSize)
         {
             if (this->players.getFirst() == this->currentPlayer ||
                 this->players.getFirst()->isThreadRunning())
@@ -121,7 +120,7 @@ private:
     }
 
     Transport &transport;
-    int poolSize;
+    int minPoolSize;
 
     OwnedArray<PlayerThread> players;
     PlayerThread *currentPlayer;
@@ -140,7 +139,7 @@ Transport::Transport(OrchestraPit &orchestraPit) :
     loopStart(0.0),
     loopEnd(0.0),
     projectFirstBeat(0.f),
-    projectLastBeat(DEFAULT_NUM_BARS * NUM_BEATS_IN_BAR)
+    projectLastBeat(DEFAULT_NUM_BARS * BEATS_PER_BAR)
 {
     this->player = new PlayerThreadPool(*this);
     this->renderer = new RendererThread(*this);
@@ -536,7 +535,8 @@ void Transport::instrumentRemovedPostAction()
 
 void Transport::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    // todo stop playback only if the event is in future and getControllerNumber == 0 (not an automation)
+    // todo stop playback only if the event is in future
+    // and getControllerNumber == 0 (not an automation)
     
     if (this->isPlaying())
     {
@@ -554,7 +554,8 @@ void Transport::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
 
 void Transport::onAddMidiEvent(const MidiEvent &event)
 {
-    // todo stop playback only if the event is in future and getControllerNumber == 0 (not an automation)
+    // todo stop playback only if the event is in future
+    // and getControllerNumber == 0 (not an automation)
     this->stopPlayback();
     
     // a hack
@@ -831,8 +832,8 @@ void Transport::removeTransportListener(TransportListener *listener)
 void Transport::broadcastSeek(const double newPosition,
     const double currentTimeMs, const double totalTimeMs)
 {
-    // todo remember last seek position
-    this->transportListeners.call(&TransportListener::onSeek, newPosition, currentTimeMs, totalTimeMs);
+    this->transportListeners.call(&TransportListener::onSeek,
+        newPosition, currentTimeMs, totalTimeMs);
 }
 
 void Transport::broadcastTempoChanged(const double newTempo)
@@ -854,3 +855,27 @@ void Transport::broadcastStop()
 {
     this->transportListeners.call(&TransportListener::onStop);
 }
+
+//===----------------------------------------------------------------------===//
+// Serializable
+//===----------------------------------------------------------------------===//
+
+ValueTree Transport::serialize() const
+{
+    using namespace Serialization;
+    ValueTree tree(Audio::transport);
+    tree.setProperty(Audio::transportSeekPosition, this->getSeekPosition(), nullptr);
+    return tree;
+}
+
+void Transport::deserialize(const ValueTree &tree)
+{
+    this->reset();
+    using namespace Serialization;
+    const auto root = tree.hasType(Audio::transport) ?
+        tree : tree.getChildWithName(Audio::transport);
+    const float seek = root.getProperty(Audio::transportSeekPosition, 0.f);
+    this->seekToPosition(seek);
+}
+
+void Transport::reset() {}

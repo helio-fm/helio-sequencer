@@ -20,7 +20,7 @@
 #include "AutomationTrackDiffLogic.h"
 #include "MidiTrackTreeItem.h"
 
-class AutomationTrackTreeItem : public MidiTrackTreeItem
+class AutomationTrackTreeItem final : public MidiTrackTreeItem
 {
 public:
 
@@ -35,7 +35,7 @@ public:
 
     int getNumDeltas() const override;
     VCS::Delta *getDelta(int index) const override;
-    XmlElement *createDeltaDataFor(int index) const override;
+    ValueTree serializeDeltaData(int deltaIndex) const override;
     VCS::DiffLogic *getDiffLogic() const override;
     void resetStateTo(const VCS::TrackedItem &newState) override;
 
@@ -43,26 +43,26 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
 
     //===------------------------------------------------------------------===//
     // Deltas
     //===------------------------------------------------------------------===//
 
-    XmlElement *serializePathDelta() const;
-    XmlElement *serializeMuteDelta() const;
-    XmlElement *serializeColourDelta() const;
-    XmlElement *serializeInstrumentDelta() const;
-    XmlElement *serializeControllerDelta() const;
-    XmlElement *serializeEventsDelta() const;
+    ValueTree serializePathDelta() const;
+    ValueTree serializeMuteDelta() const;
+    ValueTree serializeColourDelta() const;
+    ValueTree serializeInstrumentDelta() const;
+    ValueTree serializeControllerDelta() const;
+    ValueTree serializeEventsDelta() const;
 
-    void resetPathDelta(const XmlElement *state);
-    void resetMuteDelta(const XmlElement *state);
-    void resetColourDelta(const XmlElement *state);
-    void resetInstrumentDelta(const XmlElement *state);
-    void resetControllerDelta(const XmlElement *state);
-    void resetEventsDelta(const XmlElement *state);
+    void resetPathDelta(const ValueTree &state);
+    void resetMuteDelta(const ValueTree &state);
+    void resetColourDelta(const ValueTree &state);
+    void resetInstrumentDelta(const ValueTree &state);
+    void resetControllerDelta(const ValueTree &state);
+    void resetEventsDelta(const ValueTree &state);
 
 private:
 

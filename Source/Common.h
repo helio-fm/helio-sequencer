@@ -38,6 +38,7 @@
 #endif
 
 #include "JuceHeader.h"
+#include "Serializable.h"
 
 //===----------------------------------------------------------------------===//
 // SparsePP
@@ -72,23 +73,14 @@ struct StringHash
 template <class T>
 using UniquePointer = std::unique_ptr<T>;
 
+template <class T>
+using Function = std::function<T>;
+
 #if _MSC_VER
 inline float roundf(float x)
 {
     return (x >= 0.0f) ? floorf(x + 0.5f) : ceilf(x - 0.5f);
 }
-#endif
-
-#if !defined M_PI
-#   define M_PI 3.14159265358979323846
-#endif
-
-#if !defined M_PI_2
-#   define M_PI_2 1.57079632679489661923
-#endif
-
-#if !defined M_2PI
-#   define M_2PI 6.283185307179586476
 #endif
 
 #if JUCE_ANDROID || JUCE_IOS
@@ -99,23 +91,38 @@ inline float roundf(float x)
 
 #define MS_PER_BEAT 500.0
 
-#define NUM_BEATS_IN_BAR 4
+// Beat is essentially a quarter-note
+#define BEATS_PER_BAR 4
+
+// Defines a maximum available resolution
+#define TICKS_PER_BEAT 16
 
 // Rolls allow up to 16 divisions per beat, there's no need for better accuracy:
 inline float roundBeat(float beat)
 {
-    return roundf(beat * 16.f) / 16.f;
+    return roundf(beat * static_cast<float>(TICKS_PER_BEAT)) / static_cast<float>(TICKS_PER_BEAT);
 }
+
+#define forEachValueTreeChildWithType(parentElement, childName, requiredType) \
+    for (const auto &childName : parentElement) if (childName.hasType(requiredType))
+
+#define callMessageThreadFrom(threadType, function) \
+    MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void* \
+        { \
+            const auto self = static_cast<threadType *>(ptr); \
+            function(self); \
+            return nullptr; \
+        }, this)
 
 //===----------------------------------------------------------------------===//
 // Internationalization
 //===----------------------------------------------------------------------===//
 
-#include "TranslationManager.h"
+#include "TranslationsManager.h"
 
 #if defined TRANS
 #   undef TRANS
 #endif
 
-#define TRANS(stringLiteral) TranslationManager::getInstance().translate(stringLiteral)
-#define TRANS_PLURAL(stringLiteral, intValue) TranslationManager::getInstance().translate(stringLiteral, intValue)
+#define TRANS(stringLiteral) TranslationsManager::getInstance().translate(stringLiteral)
+#define TRANS_PLURAL(stringLiteral, intValue) TranslationsManager::getInstance().translate(stringLiteral, intValue)

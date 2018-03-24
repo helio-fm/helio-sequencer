@@ -21,12 +21,11 @@
 //[/Headers]
 
 
-class ShadowLeftwards  : public Component
+class ShadowLeftwards final : public Component
 {
 public:
 
-    ShadowLeftwards ();
-
+    ShadowLeftwards();
     ~ShadowLeftwards();
 
     //[UserMethods]

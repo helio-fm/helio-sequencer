@@ -52,12 +52,12 @@ NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, bool ghostMod
     this->setFloatBounds(this->getRoll().getEventBounds(this));
 }
 
-const Note &NoteComponent::getNote() const
+const Note &NoteComponent::getNote() const noexcept
 {
     return static_cast<const Note &>(this->midiEvent);
 }
 
-PianoRoll &NoteComponent::getRoll() const
+PianoRoll &NoteComponent::getRoll() const noexcept
 {
     return static_cast<PianoRoll &>(this->roll);
 }
@@ -66,17 +66,17 @@ PianoRoll &NoteComponent::getRoll() const
 // Accessors
 //===----------------------------------------------------------------------===//
 
-int NoteComponent::getKey() const
+int NoteComponent::getKey() const noexcept
 {
     return static_cast<const Note &>(this->midiEvent).getKey();
 }
 
-float NoteComponent::getLength() const
+float NoteComponent::getLength() const noexcept
 {
     return static_cast<const Note &>(this->midiEvent).getLength();
 }
 
-float NoteComponent::getVelocity() const
+float NoteComponent::getVelocity() const noexcept
 {
     return static_cast<const Note &>(this->midiEvent).getVelocity();
 }
@@ -93,7 +93,7 @@ void NoteComponent::updateColours()
     this->colourVolume = Colours::black.withAlpha(0.4f);
 }
 
-bool NoteComponent::canResize() const
+bool NoteComponent::canResize() const noexcept
 {
      return (this->getWidth() >= (RESIZE_CORNER * 3));
 }
@@ -666,11 +666,11 @@ void NoteComponent::paint(Graphics &g)
 
 // Really fast approximation, we don't need accuracy here:
 // (using Bhaskara I's sine approximation, ~5% error)
-#define SQR_PI_5_F 49.3480220f
-#define MP_PI_F 3.1415926f
-static inline float fastSine(float x)
+static constexpr float piSqr5 = static_cast<float>(49.3480220f);
+static constexpr float fastSine(float x)
 {
-    return (16.f * x * (MP_PI_F - x)) / (SQR_PI_5_F - 4.f * x * (MP_PI_F - x));
+    return (16.f * x * (MathConstants<float>::pi - x)) /
+        (piSqr5 - 4.f * x * (MathConstants<float>::pi - x));
 }
 
 void NoteComponent::paintNewLook(Graphics &g)
@@ -697,7 +697,7 @@ void NoteComponent::paintNewLook(Graphics &g)
         g.setColour(this->colour);
         for (float y = y1 + 1.f; y <= y2 - 1.f; y += 1.f)
         {
-            const float yMap = (y - y1) / yh * MP_PI_F;
+            const float yMap = (y - y1) / yh * MathConstants<float>::pi;
             const float bevel = bevelCoeff * (1.f - (fastSine(yMap) - fastSine(yMap) / 2.5f));
             g.drawHorizontalLine(int(y), x1 + bevel, x1 + bevel + 1.f);
             g.drawHorizontalLine(int(y), x2 - bevel - 1.f, x2 - bevel);
@@ -714,7 +714,7 @@ void NoteComponent::paintNewLook(Graphics &g)
     g.setColour(this->colour);
     for (float y = y1 + 1.f; y <= y2 - 1.f; y += 1.f)
     {
-        const float yMap = (y - y1) / yh * 3.1415926f;
+        const float yMap = (y - y1) / yh * MathConstants<float>::pi;
         const float bevel = bevelCoeff * (1.f - (sin(yMap) - sin(yMap) / 2.5f));
         g.drawHorizontalLine(int(y), x1 + bevel, x2 - bevel);
     }

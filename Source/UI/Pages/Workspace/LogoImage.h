@@ -17,31 +17,18 @@
 
 #pragma once
 
-//[Headers]
-//[/Headers]
-
-
-class LogoImage  : public Component
+class LogoImage final : public Component
 {
 public:
 
     LogoImage ();
-
     ~LogoImage();
 
-    //[UserMethods]
-    //[/UserMethods]
-
     void paint (Graphics& g) override;
-    void resized() override;
-
 
 private:
 
-    //[UserVariables]
-    //[/UserVariables]
-
-    ScopedPointer<Drawable> drawable1;
+    ScopedPointer<Drawable> logo;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LogoImage)
 };

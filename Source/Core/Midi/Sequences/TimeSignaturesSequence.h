@@ -20,12 +20,12 @@
 #include "MidiSequence.h"
 #include "TimeSignatureEvent.h"
 
-class TimeSignaturesSequence : public MidiSequence
+class TimeSignaturesSequence final : public MidiSequence
 {
 public:
 
     explicit TimeSignaturesSequence(MidiTrack &track,
-        ProjectEventDispatcher &dispatcher);
+        ProjectEventDispatcher &dispatcher) noexcept;
 
     //===------------------------------------------------------------------===//
     // Import/export
@@ -55,8 +55,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:

@@ -17,8 +17,6 @@
 
 #pragma once
 
-#include "Serializable.h"
-
 // 128 * 32bit = 4096-bit key
 // or 8 * 64-byte blocks
 #define KEY_SIZE 128
@@ -55,27 +53,27 @@ namespace VCS
         }
 
 
-        //===------------------------------------------------------------------===//
+        //===--------------------------------------------------------------===//
         // Serializable
-        //
+        //===--------------------------------------------------------------===//
 
-        XmlElement *serialize() const override
+        ValueTree serialize() const override
         {
-            auto xml = new XmlElement(Serialization::VCS::vcsHistoryKey);
-            xml->setAttribute("Data", this->key.toBase64Encoding());
-            return xml;
+            ValueTree tree(Serialization::VCS::vcsHistoryKey);
+            tree.setProperty(Serialization::VCS::vcsHistoryKeyData, this->key.toBase64Encoding(), nullptr);
+            return tree;
         }
 
-        void deserialize(const XmlElement &xml) override
+        void deserialize(const ValueTree &tree) override
         {
             this->reset();
 
-            const XmlElement *mainSlot = xml.hasTagName(Serialization::VCS::vcsHistoryKey) ?
-                                         &xml : xml.getChildByName(Serialization::VCS::vcsHistoryKey);
+            const auto root = tree.hasType(Serialization::VCS::vcsHistoryKey) ?
+                tree : tree.getChildWithName(Serialization::VCS::vcsHistoryKey);
 
-            if (mainSlot == nullptr) { return; }
+            if (!root.isValid()) { return; }
 
-            const String key64Data(mainSlot->getStringAttribute("Data"));
+            const String key64Data = root.getProperty(Serialization::VCS::vcsHistoryKeyData);
 
             this->key.fromBase64Encoding(key64Data);
         }

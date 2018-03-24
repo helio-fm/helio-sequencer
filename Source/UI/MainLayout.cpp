@@ -30,83 +30,16 @@
 #include "GenericTooltip.h"
 #include "TransientTreeItems.h"
 #include "MidiTrackTreeItem.h"
-#include "Supervisor.h"
 #include "InitScreen.h"
 #include "NavigationSidebar.h"
 #include "ToolsSidebar.h"
-#include "ColourSchemeManager.h"
+#include "ColourSchemesManager.h"
+#include "HotkeySchemesManager.h"
+#include "JsonSerializer.h"
 #include "ComponentIDs.h"
 #include "CommandIDs.h"
 #include "Workspace.h"
 #include "App.h"
-
-namespace KeyboardFocusDebugger
-{
-    // This will sort a set of components, so that they are ordered in terms of
-    // left-to-right and then top-to-bottom.
-    struct ScreenPositionComparator
-    {
-        static int compareElements(const Component* const first, const Component* const second)
-        {
-            const int explicitOrder1 = getOrder(first);
-            const int explicitOrder2 = getOrder(second);
-
-            if (explicitOrder1 != explicitOrder2)
-                return explicitOrder1 - explicitOrder2;
-
-            const int yDiff = first->getY() - second->getY();
-
-            return yDiff == 0 ? first->getX() - second->getX()
-                : yDiff;
-        }
-
-        static int getOrder(const Component* const c)
-        {
-            const int order = c->getExplicitFocusOrder();
-            return order > 0 ? order : (std::numeric_limits<int>::max() / 2);
-        }
-    };
-
-    static void findAllFocusableComponents(Component* const parent, Array <Component*>& comps)
-    {
-        if (parent->getNumChildComponents() > 0)
-        {
-            Array <Component*> localComps;
-            ScreenPositionComparator comparator;
-
-            for (int i = parent->getNumChildComponents(); --i >= 0;)
-            {
-                Component* const c = parent->getChildComponent(i);
-
-                if (c->isVisible() && c->isEnabled())
-                    localComps.addSorted(comparator, c);
-            }
-
-            for (int i = 0; i < localComps.size(); ++i)
-            {
-                Component* const c = localComps.getUnchecked(i);
-
-                if (c->getWantsKeyboardFocus())
-                    comps.add(c);
-
-                if (!c->isFocusContainer())
-                    findAllFocusableComponents(c, comps);
-            }
-        }
-    }
-
-    static Component* findFocusContainer(Component* c)
-    {
-        c = c->getParentComponent();
-
-        if (c != nullptr)
-            while (c->getParentComponent() != nullptr && !c->isFocusContainer())
-                c = c->getParentComponent();
-
-        return c;
-    }
-}
-
 
 MainLayout::MainLayout() :
     currentContent(nullptr)
@@ -122,7 +55,8 @@ MainLayout::MainLayout() :
     this->headline = new Headline();
     this->addAndMakeVisible(this->headline);
 
-    this->hotkeyScheme = HotkeyScheme::getDefaultScheme();
+    // TODO make it able for user to select a scheme in settings page
+    this->hotkeyScheme = HotkeySchemesManager::getInstance().getSchemes().getFirst();
 
     this->setMouseClickGrabsKeyboardFocus(true);
     this->setWantsKeyboardFocus(true);
@@ -166,7 +100,7 @@ void MainLayout::init()
 
 void MainLayout::forceRestoreLastOpenedPage()
 {
-    App::Workspace().activateSubItemWithId(Config::get(Serialization::UI::lastShownPageId));
+    App::Workspace().activateSubItemWithId(Config::get(Serialization::Config::lastShownPageId));
 }
 
 void MainLayout::toggleShowHideConsole()
@@ -273,7 +207,7 @@ void MainLayout::showPage(Component *page, TreeItem *source)
 
     this->currentContent->toFront(false);
     
-    Config::set(Serialization::UI::lastShownPageId, source->getItemIdentifierString());
+    Config::set(Serialization::Config::lastShownPageId, source->getItemIdentifierString());
 
     //const Component *focused = Component::getCurrentlyFocusedComponent();
     //Logger::outputDebugString(focused ? focused->getName() : "null");
@@ -304,7 +238,7 @@ void MainLayout::showTooltip(Component *newTooltip, Rectangle<int> callerScreenB
     this->tooltipContainer->showWithComponent(newTooltip, callerScreenBounds, timeOutMs);
 }
 
-void MainLayout::showModalNonOwnedDialog(Component *targetComponent)
+void MainLayout::showModalComponentUnowned(Component *targetComponent)
 {
     ScopedPointer<Component> ownedTarget(targetComponent);
 
@@ -320,7 +254,7 @@ void MainLayout::showModalNonOwnedDialog(Component *targetComponent)
     ownedTarget.release();
 }
 
-void MainLayout::showBlockingNonModalDialog(Component *targetComponent)
+void MainLayout::showBlockerUnowned(Component *targetComponent)
 {
     class Blocker : public Component
     {
@@ -428,15 +362,17 @@ bool MainLayout::keyPressed(const KeyPress &key)
     {
         if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
         {
-            auto scheme = ColourSchemeManager::getInstance().getCurrentScheme();
+            auto scheme = ColourSchemesManager::getInstance().getCurrentScheme();
             ht->updateBackgroundRenders(true);
             ht->initColours(scheme);
             this->repaint();
 
             scheme.syncWithLiveConstantEditor();
-            const ScopedPointer<XmlElement> xml(scheme.serialize());
-            const String xmlString(xml->createDocument("", true, false, "UTF-8", 512));
-            SystemClipboard::copyTextToClipboard(xmlString);
+            const auto schemeNode(scheme.serialize());
+            String schemeNodeString;
+            JsonSerializer serializer;
+            serializer.saveToString(schemeNodeString, schemeNode);
+            SystemClipboard::copyTextToClipboard(schemeNodeString);
             return true;
         }
     }

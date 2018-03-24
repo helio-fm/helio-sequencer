@@ -21,29 +21,28 @@
 #include "Scale.h"
 #include "Note.h"
 
-class KeySignatureEvent : public MidiEvent
+class KeySignatureEvent final : public MidiEvent
 {
 public:
 
-    KeySignatureEvent();
-    KeySignatureEvent(const KeySignatureEvent &other);
+    KeySignatureEvent() noexcept;
+    KeySignatureEvent(const KeySignatureEvent &other) noexcept;
     KeySignatureEvent(WeakReference<MidiSequence> owner,
-        const KeySignatureEvent &parametersToCopy);
-
+        const KeySignatureEvent &parametersToCopy) noexcept;
     explicit KeySignatureEvent(WeakReference<MidiSequence> owner,
         float newBeat = 0.f,
         Note::Key key = 0,
-        Scale scale = Scale());
+        Scale scale = Scale()) noexcept;
 
     String toString() const;
     Array<MidiMessage> toMidiMessages() const override;
     
-    KeySignatureEvent copyWithNewId() const;
-    KeySignatureEvent withDeltaBeat(float beatOffset) const;
-    KeySignatureEvent withBeat(float newBeat) const;
-    KeySignatureEvent withRootKey(Note::Key key) const;
-    KeySignatureEvent withScale(Scale scale) const;
-    KeySignatureEvent withParameters(const XmlElement &xml) const;
+    KeySignatureEvent copyWithNewId() const noexcept;
+    KeySignatureEvent withDeltaBeat(float beatOffset) const noexcept;
+    KeySignatureEvent withBeat(float newBeat) const noexcept;
+    KeySignatureEvent withRootKey(Note::Key key) const noexcept;
+    KeySignatureEvent withScale(Scale scale) const noexcept;
+    KeySignatureEvent withParameters(const ValueTree &parameters) const noexcept;
 
     //===------------------------------------------------------------------===//
     // Accessors
@@ -56,15 +55,15 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
-    void reset() override;
+    ValueTree serialize() const noexcept override;
+    void deserialize(const ValueTree &tree) noexcept override;
+    void reset() noexcept override;
 
     //===------------------------------------------------------------------===//
     // Helpers
     //===------------------------------------------------------------------===//
 
-    void applyChanges(const KeySignatureEvent &parameters);
+    void applyChanges(const KeySignatureEvent &parameters) noexcept;
 
 protected:
 

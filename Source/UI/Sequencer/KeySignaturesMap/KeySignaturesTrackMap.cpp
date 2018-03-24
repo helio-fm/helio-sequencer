@@ -329,7 +329,7 @@ void KeySignaturesTrackMap<T>::showContextMenuFor(T *nc)
     {
         Component *dialog =
             KeySignatureDialog::createEditingDialog(*this, this->project.getTransport(), nc->getEvent());
-        App::Layout().showModalNonOwnedDialog(dialog);
+        App::Layout().showModalComponentUnowned(dialog);
     }
 }
 

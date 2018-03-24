@@ -17,8 +17,6 @@
 
 #pragma once
 
-#include "Serializable.h"
-
 #if HELIO_DESKTOP
 #   define TREE_ICON_HEIGHT (16)
 #   define TREE_LARGE_ICON_HEIGHT (24)
@@ -38,7 +36,7 @@ class TreeItem :
 {
 public:
 
-    TreeItem(const String &name, const String &type);
+    TreeItem(const String &name, const Identifier &type);
     ~TreeItem() override;
     
     static const String xPathSeparator;
@@ -227,8 +225,8 @@ public:
     //===------------------------------------------------------------------===//
 
     void reset() override;
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
 
 protected:
 

@@ -175,7 +175,7 @@ void StageComponent::buttonClicked (Button* buttonThatWasClicked)
                              CommandIDs::VersionControlCommit,
                              CommandIDs::Cancel);
 
-        App::Layout().showModalNonOwnedDialog(inputDialog);
+        App::Layout().showModalComponentUnowned(inputDialog);
 
         //[/UserButtonCode_commitButton]
     }
@@ -197,7 +197,7 @@ void StageComponent::buttonClicked (Button* buttonThatWasClicked)
                                     CommandIDs::VersionControlReset,
                                     CommandIDs::Cancel);
 
-        App::Layout().showModalNonOwnedDialog(confirmationDialog);
+        App::Layout().showModalComponentUnowned(confirmationDialog);
 
         //[/UserButtonCode_resetButton]
     }
@@ -374,8 +374,8 @@ void StageComponent::toggleButtonAction()
     }
     else if (case4)
     {
-        App::Helio()->showTooltip(TRANS("vcs::warning::cannotrevert"));
-        App::Helio()->showModalComponent(new FailTooltip());
+        App::Layout().showTooltip(TRANS("vcs::warning::cannotrevert"));
+        App::Layout().showModalComponentUnowned(new FailTooltip());
     }
 }
 

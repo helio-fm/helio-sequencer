@@ -25,7 +25,6 @@
 #include "DocumentOwner.h"
 #include "App.h"
 #include "MainLayout.h"
-#include "AuthorizationManager.h"
 #include "ProjectTreeItem.h"
 #include "PlayerThread.h"
 #include "ProgressIndicator.h"
@@ -301,7 +300,7 @@ void RenderDialog::startOrAbortRender()
     {
         transport.stopRender();
         this->stopTrackingProgress();
-        App::Helio()->showModalComponent(new FailTooltip());
+        App::Layout().showModalComponentUnowned(new FailTooltip());
     }
 }
 
@@ -335,7 +334,7 @@ void RenderDialog::timerCallback()
     else
     {
         this->stopTrackingProgress();
-        App::Helio()->showModalComponent(new SuccessTooltip());
+        App::Layout().showModalComponentUnowned(new SuccessTooltip());
         transport.stopRender();
     }
 }

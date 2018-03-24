@@ -24,7 +24,7 @@
 #include "MainLayout.h"
 #include "AudioCore.h"
 #include "Icons.h"
-#include "PluginManager.h"
+#include "PluginScanner.h"
 #include "InstrumentsPage.h"
 #include "InstrumentsCommandPanel.h"
 #include "SerializationKeys.h"
@@ -32,19 +32,10 @@
 #include "Workspace.h"
 
 InstrumentsRootTreeItem::InstrumentsRootTreeItem() :
-    TreeItem("Instruments", Serialization::Core::instrumentRoot)
+    TreeItem("Instruments", Serialization::Core::instrumentsList)
 {
     this->recreatePage();
-
-//#if HELIO_MOBILE
-//    this->setVisible(false);
-//#endif
 }
-
-InstrumentsRootTreeItem::~InstrumentsRootTreeItem()
-{
-}
-
 
 Colour InstrumentsRootTreeItem::getColour() const
 {
@@ -88,14 +79,7 @@ ScopedPointer<Component> InstrumentsRootTreeItem::createItemMenu()
 
 bool InstrumentsRootTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
-    //if (TreeView *treeView = dynamic_cast<TreeView *>(dragSourceDetails.sourceComponent.get()))
-    //{
-    //    TreeItem *selected = TreeItem::getSelectedItem(treeView);
-
-    //if (TreeItem::isNodeInChildren(selected, this))
-    //{ return false; }
-
-    bool isInterested = (dragSourceDetails.description == Serialization::Core::instrument);
+    bool isInterested = (dragSourceDetails.description == Serialization::Core::instrumentRoot.toString());
 
     isInterested |= (nullptr != dynamic_cast<PluginDescriptionWrapper *>(dragSourceDetails.description.getObject()));
 
@@ -103,8 +87,6 @@ bool InstrumentsRootTreeItem::isInterestedInDragSource(const DragAndDropTarget::
     { this->setOpen(true); }
 
     return isInterested;
-
-    //}
 }
 
 void InstrumentsRootTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
@@ -114,20 +96,13 @@ void InstrumentsRootTreeItem::itemDropped(const DragAndDropTarget::SourceDetails
         if (PluginDescriptionWrapper *pd = dynamic_cast<PluginDescriptionWrapper *>(dragSourceDetails.description.getObject()))
         {
             PluginDescription pluginDescription(pd->pluginDescription);
-
-            Instrument *instrument =
-                App::Workspace().getAudioCore().
-                addInstrument(pluginDescription,
-                              pluginDescription.descriptiveName);
-            
-            jassert(instrument);
-
-            InstrumentTreeItem *treeItem =
-                this->addInstrumentTreeItem(instrument, insertIndex);
-            
-            jassert(treeItem);
-
-            //Console::setStatus("loaded " + pluginDescription->descriptiveName);
+            App::Workspace().getAudioCore().addInstrument(pluginDescription, pluginDescription.descriptiveName,
+                [this, insertIndex](Instrument *instrument)
+                {
+                    jassert(instrument);
+                    this->addInstrumentTreeItem(instrument, insertIndex);
+                    Logger::writeToLog("Loaded " + instrument->getName());
+                });
         }
     }
 

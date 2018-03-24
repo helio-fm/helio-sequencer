@@ -18,6 +18,7 @@
 #pragma once
 
 #include "App.h"
+#include "MainLayout.h"
 #include "CommandIDs.h"
 
 class PopupMenuComponent : public Component
@@ -30,7 +31,7 @@ public:
 
     void dismissAsCancelled()
     {
-        App::Helio()->showTooltip(nullptr); // hide any tooltip
+        App::Layout().showTooltip(nullptr); // hide any tooltip
         
         if (this->targetComponent)
         {
@@ -43,7 +44,7 @@ public:
 
     void dismissAsDone()
     {
-        App::Helio()->showTooltip(nullptr); // hide any tooltip
+        App::Layout().showTooltip(nullptr); // hide any tooltip
 
         if (this->targetComponent)
         {

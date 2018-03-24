@@ -20,12 +20,12 @@
 #include "MidiSequence.h"
 #include "AnnotationEvent.h"
 
-class AnnotationsSequence : public MidiSequence
+class AnnotationsSequence final : public MidiSequence
 {
 public:
 
     explicit AnnotationsSequence(MidiTrack &track,
-        ProjectEventDispatcher &dispatcher);
+        ProjectEventDispatcher &dispatcher) noexcept;
 
     //===------------------------------------------------------------------===//
     // Import/export
@@ -55,8 +55,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:

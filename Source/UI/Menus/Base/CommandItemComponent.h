@@ -22,7 +22,7 @@
 
 class IconComponent;
 
-struct CommandItem : public ReferenceCountedObject
+struct CommandItem final : public ReferenceCountedObject
 {
     enum Alignment
     {
@@ -64,13 +64,12 @@ struct CommandItem : public ReferenceCountedObject
 //[/Headers]
 
 
-class CommandItemComponent  : public DraggingListBoxComponent,
-                              private Timer
+class CommandItemComponent final : public DraggingListBoxComponent,
+                                   private Timer
 {
 public:
 
-    CommandItemComponent (Component *parentCommandReceiver, Viewport *parentViewport, const CommandItem::Ptr desc);
-
+    CommandItemComponent(Component *parentCommandReceiver, Viewport *parentViewport, const CommandItem::Ptr desc);
     ~CommandItemComponent();
 
     //[UserMethods]

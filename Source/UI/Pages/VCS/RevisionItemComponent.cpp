@@ -129,12 +129,6 @@ void RevisionItemComponent::paint (Graphics& g)
     DraggingListBoxComponent::paint(g);
     //[/UserPrePaint]
 
-    {
-        int x = getWidth() - 8 - 64, y = (getHeight() / 2) - (64 / 2), width = 64, height = 64;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-    }
-
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
 }
@@ -287,9 +281,7 @@ BEGIN_JUCER_METADATA
                  variableInitialisers="DraggingListBoxComponent(parentListBox.getViewport()),&#10;list(parentListBox),&#10;head(owner),&#10;row(0)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="500" initialHeight="70">
-  <BACKGROUND backgroundColour="0">
-    <IMAGE pos="8Rr 0Cc 64 64" resource="" opacity="1" mode="1"/>
-  </BACKGROUND>
+  <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="c261305e2de1ebf2" memberName="itemLabel" virtualName=""
          explicitFocusOrder="0" pos="5 3 10M 24" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"

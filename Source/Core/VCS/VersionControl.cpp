@@ -24,7 +24,6 @@
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
 #include "Client.h"
-#include "Supervisor.h"
 #include "SerializationKeys.h"
 
 using namespace VCS;
@@ -36,7 +35,7 @@ VersionControl::VersionControl(WeakReference<VCS::TrackedItemsSource> parent,
     pack(new Pack()),
     stashes(new StashesRepository(pack)),
     head(pack, parent),
-    root(Revision::create(pack, "root")),
+    rootRevision(Revision::create(pack, "root")),
     parentItem(parent),
     historyMergeVersion(1)
 {
@@ -60,13 +59,13 @@ VersionControl::VersionControl(WeakReference<VCS::TrackedItemsSource> parent,
         this->key.restoreFromBase64(existingKeyBase64);
     }
 
-    this->root = Revision::create(this->pack, TRANS("defaults::newproject::firstcommit"));
+    this->rootRevision = Revision::create(this->pack, TRANS("defaults::newproject::firstcommit"));
 
     this->remote = new Client(*this);
 
     MessageManagerLock lock;
     this->addChangeListener(&this->head);
-    this->head.moveTo(this->root);
+    this->head.moveTo(this->rootRevision);
 }
 
 VersionControl::~VersionControl()
@@ -85,8 +84,6 @@ VersionControlEditor *VersionControl::createEditor()
     {
         return new VersionControlEditorDefault(*this);
     }
-    
-    return nullptr;
 }
 
 
@@ -97,12 +94,12 @@ VersionControlEditor *VersionControl::createEditor()
 MD5 VersionControl::calculateHash() const
 {
     // StringArray и sort - чтоб не зависеть от порядка чайлдов.
-    StringArray ids(this->recursiveGetHashes(this->root));
+    StringArray ids(this->recursiveGetHashes(this->rootRevision));
     ids.sort(true);
     return MD5(ids.joinIntoString("").toUTF8());
 }
 
-juce::StringArray VersionControl::recursiveGetHashes(const ValueTree revision) const
+StringArray VersionControl::recursiveGetHashes(const ValueTree revision) const
 {
     StringArray sum;
 
@@ -124,7 +121,7 @@ void VersionControl::mergeWith(VersionControl &remoteHistory)
     this->publicId = remoteHistory.getPublicId();
     this->historyMergeVersion = remoteHistory.getVersion();
 
-    ValueTree newHeadRevision(this->getRevisionById(this->root,
+    ValueTree newHeadRevision(this->getRevisionById(this->rootRevision,
         Revision::getUuid(remoteHistory.getHead().getHeadingRevision())));
 
     if (! Revision::isEmpty(newHeadRevision))
@@ -191,7 +188,7 @@ void VersionControl::recursiveTreeMerge(ValueTree localRevision,
             ValueTree newLocalChild(Revision::create(this->pack));
             Revision::copyProperties(newLocalChild, remoteChild);
             Revision::flush(newLocalChild);
-            localRevision.addChild(newLocalChild, -1, nullptr);
+            localRevision.appendChild(newLocalChild, nullptr);
             this->recursiveTreeMerge(newLocalChild, remoteChild);
         }
     }
@@ -254,7 +251,6 @@ void VersionControl::checkout(const ValueTree revision)
     {
         this->head.moveTo(revision);
         this->head.checkout();
-        Supervisor::track(Serialization::Activities::vcsCheckoutRevision);
         this->sendChangeMessage();
     }
 }
@@ -267,7 +263,6 @@ void VersionControl::cherryPick(const ValueTree revision, const Array<Uuid> uuid
         this->head.moveTo(revision);
         this->head.cherryPick(uuids);
         this->head.moveTo(headRevision);
-        Supervisor::track(Serialization::Activities::vcsCheckoutItems);
         this->sendChangeMessage();
     }
 }
@@ -305,8 +300,6 @@ bool VersionControl::resetChanges(SparseSet<int> selectedItems)
     }
 
     this->head.resetChanges(changesToReset);
-    Supervisor::track(Serialization::Activities::vcsReset);
-
     return true;
 }
 
@@ -326,8 +319,6 @@ bool VersionControl::resetAllChanges()
     }
     
     this->head.resetChanges(changesToReset);
-    Supervisor::track(Serialization::Activities::vcsReset);
-    
     return true;
 }
 
@@ -354,15 +345,13 @@ bool VersionControl::commit(SparseSet<int> selectedItems, const String &message)
 
     if (!headingRevision.isValid()) { return false; }
 
-    headingRevision.addChild(newRevision, -1, nullptr);
+    headingRevision.appendChild(newRevision, nullptr);
     this->head.moveTo(newRevision);
 
     Revision::flush(newRevision);
     this->pack->flush();
 
-    Supervisor::track(Serialization::Activities::vcsCommit);
     this->sendChangeMessage();
-
     return true;
 }
 
@@ -398,9 +387,7 @@ bool VersionControl::stash(SparseSet<int> selectedItems,
         this->resetChanges(selectedItems);
     }
     
-    Supervisor::track(Serialization::Activities::vcsStash);
     this->sendChangeMessage();
-    
     return true;
 }
 
@@ -418,7 +405,6 @@ bool VersionControl::applyStash(const ValueTree stash, bool shouldKeepStash)
             this->stashes->removeStash(stash);
         }
         
-        Supervisor::track(Serialization::Activities::vcsApplyStash);
         this->sendChangeMessage();
         return true;
     }
@@ -445,9 +431,7 @@ bool VersionControl::quickStashAll()
     this->stashes->storeQuickStash(allChanges);
     this->resetAllChanges();
 
-    Supervisor::track(Serialization::Activities::vcsStash);
     this->sendChangeMessage();
-    
     return true;
 }
 
@@ -461,7 +445,6 @@ bool VersionControl::applyQuickStash()
     tempHead.cherryPickAll();
     this->stashes->resetQuickStash();
     
-    Supervisor::track(Serialization::Activities::vcsApplyStash);
     this->sendChangeMessage();
     return true;
 }
@@ -471,53 +454,53 @@ bool VersionControl::applyQuickStash()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *VersionControl::serialize() const
+ValueTree VersionControl::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::versionControl);
+    ValueTree tree(Serialization::Core::versionControl);
 
-    xml->setAttribute(Serialization::VCS::vcsHistoryVersion, String(this->historyMergeVersion));
-    xml->setAttribute(Serialization::VCS::vcsHistoryId, this->publicId);
-    xml->setAttribute(Serialization::VCS::headRevisionId, Revision::getUuid(this->head.getHeadingRevision()));
+    tree.setProperty(Serialization::VCS::vcsHistoryVersion, String(this->historyMergeVersion), nullptr);
+    tree.setProperty(Serialization::VCS::vcsHistoryId, this->publicId, nullptr);
+    tree.setProperty(Serialization::VCS::headRevisionId, Revision::getUuid(this->head.getHeadingRevision()), nullptr);
     
-    xml->addChildElement(this->key.serialize());
-    xml->addChildElement(Revision::serialize(this->root));
-    xml->addChildElement(this->stashes->serialize());
-    xml->addChildElement(this->pack->serialize());
-    xml->addChildElement(this->head.serialize());
+    tree.appendChild(this->key.serialize(), nullptr);
+    tree.appendChild(Revision::serialize(this->rootRevision), nullptr);
+    tree.appendChild(this->stashes->serialize(), nullptr);
+    tree.appendChild(this->pack->serialize(), nullptr);
+    tree.appendChild(this->head.serialize(), nullptr);
     
-    return xml;
+    return tree;
 }
 
-void VersionControl::deserialize(const XmlElement &xml)
+void VersionControl::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *mainSlot = xml.hasTagName(Serialization::Core::versionControl) ?
-                                 &xml : xml.getChildByName(Serialization::Core::versionControl);
+    const auto root = tree.hasType(Serialization::Core::versionControl) ?
+        tree : tree.getChildWithName(Serialization::Core::versionControl);
 
-    if (mainSlot == nullptr) { return; }
+    if (!root.isValid()) { return; }
 
-    const String timeStamp = mainSlot->getStringAttribute(Serialization::VCS::vcsHistoryVersion);
+    const String timeStamp = root.getProperty(Serialization::VCS::vcsHistoryVersion);
     this->historyMergeVersion = timeStamp.getLargeIntValue();
 
-    this->publicId = mainSlot->getStringAttribute(Serialization::VCS::vcsHistoryId, this->publicId);
+    this->publicId = root.getProperty(Serialization::VCS::vcsHistoryId, this->publicId);
 
-    const String headId = mainSlot->getStringAttribute(Serialization::VCS::headRevisionId);
+    const String headId = root.getProperty(Serialization::VCS::headRevisionId);
     Logger::writeToLog("Head ID is " + headId);
 
-    this->key.deserialize(*mainSlot);
-    Revision::deserialize(this->root, *mainSlot);
-    this->stashes->deserialize(*mainSlot);
-    this->pack->deserialize(*mainSlot);
+    this->key.deserialize(root);
+    Revision::deserialize(this->rootRevision, root);
+    this->stashes->deserialize(root);
+    this->pack->deserialize(root);
 
     {
         const double h1 = Time::getMillisecondCounterHiRes();
-        this->head.deserialize(*mainSlot);
+        this->head.deserialize(root);
         const double h2 = Time::getMillisecondCounterHiRes();
         Logger::writeToLog("Loading index done in " + String(h2 - h1) + "ms");
     }
     
-    ValueTree headRevision(this->getRevisionById(this->root, headId));
+    ValueTree headRevision(this->getRevisionById(this->rootRevision, headId));
 
     // здесь мы раньше полностью десериализовали состояние хэда.
     // если дерево истории со временеи становится большим, moveTo со всеми мержами занимает кучу времени.
@@ -539,7 +522,7 @@ void VersionControl::deserialize(const XmlElement &xml)
 
 void VersionControl::reset()
 {
-    Revision::reset(this->root);
+    Revision::reset(this->rootRevision);
     this->head.reset();
     this->stashes->reset();
     this->pack->reset();

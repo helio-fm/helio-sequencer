@@ -21,12 +21,11 @@
 //[/Headers]
 
 
-class LightShadowLeftwards  : public Component
+class LightShadowLeftwards final : public Component
 {
 public:
 
-    LightShadowLeftwards ();
-
+    LightShadowLeftwards();
     ~LightShadowLeftwards();
 
     //[UserMethods]

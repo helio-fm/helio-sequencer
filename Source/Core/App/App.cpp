@@ -18,41 +18,35 @@
 #include "Common.h"
 #include "App.h"
 #include "AudioCore.h"
-#include "UpdateManager.h"
-#include "TranslationManager.h"
+#include "SessionService.h"
+#include "UpdatesService.h"
+
+#include "TranslationsManager.h"
 #include "ArpeggiatorsManager.h"
-#include "AuthorizationManager.h"
+#include "ColourSchemesManager.h"
+#include "HotkeySchemesManager.h"
+#include "ArpeggiatorsManager.h"
+#include "ScalesManager.h"
 
 #include "HelioTheme.h"
 #include "ThemeSettings.h"
-#include "DataEncoder.h"
-#include "PluginManager.h"
+#include "PluginScanner.h"
 #include "Config.h"
-#include "Supervisor.h"
 #include "InternalClipboard.h"
 #include "FontSerializer.h"
-#include "FileUtils.h"
+
+#include "DocumentHelpers.h"
+#include "XmlSerializer.h"
 
 #include "MainLayout.h"
 #include "Document.h"
 #include "SerializationKeys.h"
 
 #include "Icons.h"
-#include "ColourSchemeManager.h"
-#include "ArpeggiatorsManager.h"
-#include "TranslationManager.h"
 #include "MainWindow.h"
 #include "Workspace.h"
 #include "RootTreeItem.h"
-
-App::App()
-{
-}
-
-App::~App()
-{
-}
-
+#include "SerializablePluginDescription.h"
 
 //===----------------------------------------------------------------------===//
 // Static
@@ -76,6 +70,11 @@ MainLayout &App::Layout()
 MainWindow &App::Window()
 {
     return *App::Helio()->getWindow();
+}
+
+class Config &App::Config()
+{
+    return *App::Helio()->getConfig();
 }
 
 Point<double> App::getScreenInCm()
@@ -114,20 +113,23 @@ bool App::isRunningOnDesktop()
 
 String App::getAppReadableVersion()
 {
-    String v;
+    static String v;
     
-    if (String(APP_VERSION_REVISION).getIntValue() > 0)
+    if (v.isEmpty())
     {
-        v << APP_VERSION_MAJOR << "." << APP_VERSION_MINOR << "." << APP_VERSION_REVISION;
-    }
-    else
-    {
-        v << APP_VERSION_MAJOR << "." << APP_VERSION_MINOR;
-    }
+        if (String(APP_VERSION_REVISION).getIntValue() > 0)
+        {
+            v << APP_VERSION_MAJOR << "." << APP_VERSION_MINOR << "." << APP_VERSION_REVISION;
+        }
+        else
+        {
+            v << APP_VERSION_MAJOR << "." << APP_VERSION_MINOR;
+        }
 
-    if (String(APP_VERSION_NAME).isNotEmpty())
-    {
-        v << " (" << APP_VERSION_NAME << ")";
+        if (String(APP_VERSION_NAME).isNotEmpty())
+        {
+            v << " (" << APP_VERSION_NAME << ")";
+        }
     }
 
     return v;
@@ -208,31 +210,6 @@ String App::getHumanReadableDate(const Time &date)
     return timeString.trimEnd();
 }
 
-void App::showTooltip(const String &text, int timeOutMs)
-{
-    this->getWindow()->getWorkspaceComponent()->showTooltip(text, timeOutMs);
-}
-
-void App::showTooltip(Component *newTooltip, int timeOutMs)
-{
-    this->getWindow()->getWorkspaceComponent()->showTooltip(newTooltip, timeOutMs);
-}
-
-void App::showTooltip(Component *newTooltip, Rectangle<int> callerScreenBounds, int timeOutMs)
-{
-    this->getWindow()->getWorkspaceComponent()->showTooltip(newTooltip, callerScreenBounds, timeOutMs);
-}
-
-void App::showModalComponent(Component *nonOwnedComponent)
-{
-    this->getWindow()->getWorkspaceComponent()->showModalNonOwnedDialog(nonOwnedComponent);
-}
-
-void App::showBlocker(Component *nonOwnedComponent)
-{
-    this->getWindow()->getWorkspaceComponent()->showBlockingNonModalDialog(nonOwnedComponent);
-}
-
 void App::recreateLayout()
 {
     this->getWindow()->dismissLayoutComponent();
@@ -258,49 +235,43 @@ void App::dismissAllModalComponents()
 // JUCEApplication
 //===----------------------------------------------------------------------===//
 
-static void handleCrash(void *)
-{
-    App::Helio()->getSupervisor()->trackCrash();
-}
-
 void App::initialise(const String &commandLine)
 {
-    this->runMode = detectRunMode(commandLine);
+    this->runMode = this->detectRunMode(commandLine);
 
     if (this->runMode == App::NORMAL)
     {
-        SystemStats::setApplicationCrashHandler(handleCrash);
-        
         Desktop::getInstance().setOrientationsEnabled(Desktop::rotatedClockwise + Desktop::rotatedAntiClockwise);
-        FileUtils::fixCurrentWorkingDirectory();
         
         Logger::setCurrentLogger(&this->logger);
         Logger::writeToLog("Helio Workstation");
         Logger::writeToLog("Ver. " + App::getAppReadableVersion());
         
-        Logger::writeToLog(this->collectSomeSystemInfo());
-        
-        this->config = new Config();
-        this->supervisor = new Supervisor();
-        this->updater = new UpdateManager();
-
         this->theme = new HelioTheme();
         this->theme->initResources();
         LookAndFeel::setDefaultLookAndFeel(this->theme);
 
-        this->authorizationManager = new AuthorizationManager();
         this->clipboard = new InternalClipboard();
-
-        TranslationManager::getInstance().initialise(commandLine);
+        this->config = new class Config();
+    
+        // TODO: get rid of singletons somehow
+        TranslationsManager::getInstance().initialise(commandLine);
         ArpeggiatorsManager::getInstance().initialise(commandLine);
-        ColourSchemeManager::getInstance().initialise(commandLine);
+        ColourSchemesManager::getInstance().initialise(commandLine);
+        HotkeySchemesManager::getInstance().initialise(commandLine);
+        ArpeggiatorsManager::getInstance().initialise(commandLine);
+        ScalesManager::getInstance().initialise(commandLine);
 
         this->workspace = new class Workspace();
         this->window = new MainWindow();
+
+        // Prepare backend APIs communication services
+        this->sessionService = new SessionService();
+        this->updatesService = new UpdatesService();
+
+        TranslationsManager::getInstance().addChangeListener(this);
         
-        TranslationManager::getInstance().addChangeListener(this);
-        
-        // Desktop versions will be initializaed by InitScreen component.
+        // Desktop versions will be initialised by InitScreen component.
 #if HELIO_MOBILE
         App::Workspace().init();
         App::Layout().init();
@@ -323,20 +294,21 @@ void App::shutdown()
 {
     if (this->runMode == App::NORMAL)
     {
-        TranslationManager::getInstance().removeChangeListener(this);
+        TranslationsManager::getInstance().removeChangeListener(this);
 
         Logger::writeToLog("App::shutdown");
+
+        this->updatesService = nullptr;
+        this->sessionService = nullptr;
 
         this->window = nullptr;
         this->workspace = nullptr;
 
-        this->clipboard = nullptr;
-        this->authorizationManager = nullptr;
-        this->supervisor = nullptr;
         this->config = nullptr;
+        this->clipboard = nullptr;
         this->theme = nullptr;
 
-        const File tempFolder(FileUtils::getTemporaryFolder());
+        const File tempFolder(DocumentHelpers::getTemporaryFolder());
         if (tempFolder.exists())
         {
             tempFolder.deleteRecursively();
@@ -345,24 +317,25 @@ void App::shutdown()
         // Clear cache to avoid leak check to fire.
         Icons::clearPrerenderedCache();
         Icons::clearBuiltInImages();
-        ColourSchemeManager::getInstance().shutdown();
+
+        ScalesManager::getInstance().shutdown();
         ArpeggiatorsManager::getInstance().shutdown();
-        TranslationManager::getInstance().shutdown();
+        HotkeySchemesManager::getInstance().shutdown();
+        ColourSchemesManager::getInstance().shutdown();
+        ArpeggiatorsManager::getInstance().shutdown();
+        TranslationsManager::getInstance().shutdown();
         
         Logger::setCurrentLogger(nullptr);
-    }
-    else if (this->runMode == App::PLUGIN_CHECK)
-    {
-
-    }
-    else if (this->runMode == App::FONT_SERIALIZE)
-    {
-
     }
 }
 
 const String App::getApplicationName()
 {
+    if (this->runMode == App::PLUGIN_CHECK)
+    {
+        return "Helio Plugin Check";
+    }
+
     return "Helio";
 }
 
@@ -373,22 +346,24 @@ const String App::getApplicationVersion()
 
 bool App::moreThanOneInstanceAllowed()
 {
-    return true; // без вариантов, мы должны как-то плагины проверять
-    //return false; // debug
+    return true; // to be able to check plugins
 }
 
 void App::anotherInstanceStarted(const String &commandLine)
 {
     // This will get called if the user launches another copy of the app
-    // todo read commandline && exec
     
     //this->getWindow()->toFront(true);
-
-    Logger::outputDebugString("App::anotherInstanceStarted");
-    Logger::outputDebugString(commandLine);
+    Logger::outputDebugString("Another instance started: " + commandLine);
 
     //const Component *focused = Component::getCurrentlyFocusedComponent();
     //Logger::outputDebugString(focused ? focused->getName() : "");
+}
+
+void App::unhandledException(const std::exception *e, const String &file, int)
+{
+    Logger::writeToLog("! unhandledException: " + String(e->what()));
+    jassertfalse;
 }
 
 void App::systemRequestedQuit()
@@ -436,12 +411,6 @@ void App::resumed()
 #endif
 }
 
-void App::unhandledException(const std::exception *e, const String &sourceFilename, int lineNumber)
-{
-    this->getSupervisor()->trackException(e, sourceFilename, lineNumber);
-}
-
-
 //===----------------------------------------------------------------------===//
 // Accessors
 //===----------------------------------------------------------------------===//
@@ -466,19 +435,9 @@ InternalClipboard *App::getClipboard() const noexcept
     return this->clipboard;
 }
 
-Supervisor *App::getSupervisor() const noexcept
+SessionService *App::getSessionService() const noexcept
 {
-    return this->supervisor;
-}
-
-AuthorizationManager *App::getAuthManager() const noexcept
-{
-    return this->authorizationManager;
-}
-
-UpdateManager *App::getUpdateManager() const noexcept
-{
-    return this->updater;
+    return this->sessionService;
 }
 
 HelioTheme *App::getTheme() const noexcept
@@ -490,33 +449,6 @@ HelioTheme *App::getTheme() const noexcept
 //===----------------------------------------------------------------------===//
 // Private
 //===----------------------------------------------------------------------===//
-
-String App::collectSomeSystemInfo()
-{
-    String systemInfo;
-    const Desktop::Displays::Display &dis = Desktop::getInstance().getDisplays().getMainDisplay();
-    const Rectangle<int> rect(dis.totalArea);
-    const double scale(dis.scale);
-    const auto cmScreenSize = App::getScreenInCm();
-
-    systemInfo
-            << "Resolution: " << rect.getWidth() << ":" << rect.getHeight() << newLine
-            << "Display scale: " << scale << newLine
-            << "Screen area: " << String(cmScreenSize.x) << " x " << String(cmScreenSize.y) << " cm."
-            
-            << "User logon name: "  << SystemStats::getLogonName() << newLine
-            << "Full user name: "   << SystemStats::getFullUserName() << newLine
-            << "Host name: "        << SystemStats::getComputerName() << newLine
-
-            << "Current working directory: "         << File::getCurrentWorkingDirectory().getFullPathName() << newLine
-            << "User documents directory: "          << File::getSpecialLocation(File::userDocumentsDirectory).getFullPathName() << newLine
-            << "User application data directory: "   << File::getSpecialLocation(File::userApplicationDataDirectory).getFullPathName() << newLine
-            << "Common application data directory: " << File::getSpecialLocation(File::commonApplicationDataDirectory).getFullPathName() << newLine
-            << "Temp directory: "                    << File::getSpecialLocation(File::tempDirectory).getFullPathName() << newLine
-            << newLine;
-
-    return systemInfo;
-}
 
 String App::getMacAddressList()
 {
@@ -541,7 +473,7 @@ App::RunMode App::detectRunMode(const String &commandLine)
         {
             return App::FONT_SERIALIZE;
         }
-        if (FileUtils::getTempSlot(commandLine).existsAsFile())
+        if (DocumentHelpers::getTempSlot(commandLine).existsAsFile())
         {
             return App::PLUGIN_CHECK;
         }
@@ -556,49 +488,41 @@ void App::checkPlugin(const String &markerFile)
     Process::setDockIconVisible(false);
 #endif
 
-    const File tempFile(FileUtils::getTemporaryFolder() + File::getSeparatorString() + markerFile);
+    const File tempFile(DocumentHelpers::getTempSlot(markerFile));
 
     try
     {
-        if (tempFile.existsAsFile())
+        if (tempFile.existsAsFile() && tempFile.getSize() < 32768)
         {
-            if (tempFile.getSize() < 32768)
+            const String pluginPath = tempFile.loadFileAsString();
+
+            // delete the file immediately so that host will know if we crashed
+            tempFile.deleteFile();
+
+            KnownPluginList pluginList;
+            OwnedArray<PluginDescription> typesFound;
+
+            AudioPluginFormatManager formatManager;
+            AudioCore::initAudioFormats(formatManager);
+
+            for (int i = 0; i < formatManager.getNumFormats(); ++i)
             {
-                const String pluginPath = tempFile.loadFileAsString();
+                const auto format = formatManager.getFormat(i);
+                pluginList.scanAndAddFile(pluginPath, false, typesFound, *format);
+            }
 
-                // сразу удаляем файл, если плагин накосячит, хост об этом узнает
-                tempFile.deleteFile();
+            // let host know if we haven't crashed at the moment
+            if (typesFound.size() != 0)
+            {
+                ValueTree typesNode(Serialization::Core::instrumentsList);
 
-                const File pluginFile(pluginPath);
-
-                //if (pluginFile.existsAsFile()) // может быть и id
+                for (const auto description : typesFound)
                 {
-                    KnownPluginList scanner;
-                    OwnedArray<PluginDescription> typesFound;
-
-                    AudioPluginFormatManager formatManager;
-                    AudioCore::initAudioFormats(formatManager);
-
-                    for (int i = 0; i < formatManager.getNumFormats(); ++i)
-                    {
-                        AudioPluginFormat *format = formatManager.getFormat(i);
-                        scanner.scanAndAddFile(pluginPath, false, typesFound, *format);
-                    }
-
-                    // если мы дошли до сих пор, то все хорошо и плагин нас не обрушил
-                    // так и запишем.
-                    if (typesFound.size() != 0)
-                    {
-                        ScopedPointer<XmlElement> typesXml(new XmlElement(Serialization::Core::instrumentRoot));
-
-                        for (auto i : typesFound)
-                        {
-                            typesXml->addChildElement(i->createXml());
-                        }
-
-                        DataEncoder::saveObfuscated(tempFile, typesXml);
-                    }
+                    SerializablePluginDescription sd(description);
+                    typesNode.appendChild(sd.serialize(), nullptr);
                 }
+
+                DocumentHelpers::save<XmlSerializer>(tempFile, typesNode);
             }
         }
     }

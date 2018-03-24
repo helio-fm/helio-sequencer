@@ -256,25 +256,25 @@ void VersionControlTreeItem::toggleQuickStash()
     {
         if (this->vcs->getHead().hasAnythingOnTheStage())
         {
-            App::Helio()->showTooltip("Cannot revert, stage is not empty!");
-            App::Helio()->showModalComponent(new FailTooltip());
+            App::Layout().showTooltip("Cannot revert, stage is not empty!");
+            App::Layout().showModalComponentUnowned(new FailTooltip());
             return;
         }
         
         this->vcs->applyQuickStash();
-        App::Helio()->showTooltip("Toggle changes: latest state");
+        App::Layout().showTooltip("Toggle changes: latest state");
     }
     else
     {
         if (! this->vcs->getHead().hasAnythingOnTheStage())
         {
-            App::Helio()->showTooltip("Cannot reset, stage is empty!");
-            App::Helio()->showModalComponent(new FailTooltip());
+            App::Layout().showTooltip("Cannot reset, stage is empty!");
+            App::Layout().showModalComponentUnowned(new FailTooltip());
             return;
         }
         
         this->vcs->quickStashAll();
-        App::Helio()->showTooltip("Toggle changes: original state");
+        App::Layout().showTooltip("Toggle changes: original state");
     }
 }
 
@@ -317,34 +317,34 @@ ScopedPointer<Component> VersionControlTreeItem::createItemMenu()
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *VersionControlTreeItem::serialize() const
+ValueTree VersionControlTreeItem::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::treeItem);
-    xml->setAttribute(Serialization::Core::treeItemType, this->type);
+    ValueTree tree(Serialization::Core::treeItem);
+    tree.setProperty(Serialization::Core::treeItemType, this->type, nullptr);
 
     if (this->vcs)
     {
-        xml->addChildElement(this->vcs->serialize());
+        tree.appendChild(this->vcs->serialize(), nullptr);
     }
 
-    TreeItemChildrenSerializer::serializeChildren(*this, *xml);
-    return xml;
+    TreeItemChildrenSerializer::serializeChildren(*this, tree);
+    return tree;
 }
 
-void VersionControlTreeItem::deserialize(const XmlElement &xml)
+void VersionControlTreeItem::deserialize(const ValueTree &tree)
 {
     this->reset();
 
     if (this->vcs)
     {
-        forEachXmlChildElementWithTagName(xml, e, Serialization::Core::versionControl)
+        forEachValueTreeChildWithType(tree, e, Serialization::Core::versionControl)
         {
-            this->vcs->deserialize(*e);
+            this->vcs->deserialize(e);
         }
     }
 
     // Proceed with basic properties and children
-    TreeItem::deserialize(xml);
+    TreeItem::deserialize(tree);
 }
 
 void VersionControlTreeItem::reset()

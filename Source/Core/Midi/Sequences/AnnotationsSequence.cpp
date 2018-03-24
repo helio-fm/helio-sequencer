@@ -24,7 +24,7 @@
 #include "UndoStack.h"
 
 AnnotationsSequence::AnnotationsSequence(MidiTrack &track, 
-    ProjectEventDispatcher &dispatcher) :
+    ProjectEventDispatcher &dispatcher) noexcept :
     MidiSequence(track, dispatcher) {}
 
 //===----------------------------------------------------------------------===//
@@ -251,28 +251,28 @@ bool AnnotationsSequence::changeGroup(Array<AnnotationEvent> &groupBefore,
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *AnnotationsSequence::serialize() const
+ValueTree AnnotationsSequence::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::annotations);
+    ValueTree tree(Serialization::Midi::annotations);
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         const MidiEvent *event = this->midiEvents.getUnchecked(i);
-        xml->prependChildElement(event->serialize());
+        tree.appendChild(event->serialize(), nullptr);
     }
 
-    return xml;
+    return tree;
 }
 
-void AnnotationsSequence::deserialize(const XmlElement &xml)
+void AnnotationsSequence::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root =
-        (xml.getTagName() == Serialization::Core::annotations) ?
-        &xml : xml.getChildByName(Serialization::Core::annotations);
+    const auto root =
+        tree.hasType(Serialization::Midi::annotations) ?
+        tree : tree.getChildWithName(Serialization::Midi::annotations);
 
-    if (root == nullptr)
+    if (!root.isValid())
     {
         return;
     }
@@ -280,10 +280,10 @@ void AnnotationsSequence::deserialize(const XmlElement &xml)
     float lastBeat = 0;
     float firstBeat = 0;
 
-    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::annotation)
+    forEachValueTreeChildWithType(root, e, Serialization::Midi::annotation)
     {
         AnnotationEvent *annotation = new AnnotationEvent(this);
-        annotation->deserialize(*e);
+        annotation->deserialize(e);
         
         this->midiEvents.add(annotation); // sorted later
 

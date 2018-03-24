@@ -28,7 +28,6 @@
 #include "HelioTheme.h"
 #include "MainLayout.h"
 #include "Workspace.h"
-#include "DataEncoder.h"
 #include "CommandIDs.h"
 #include "App.h"
 //[/MiscUserDefs]

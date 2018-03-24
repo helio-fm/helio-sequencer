@@ -23,28 +23,26 @@ class MidiTrackSource;
 #include "AutomationEvent.h"
 #include "UndoAction.h"
 
-
 //===----------------------------------------------------------------------===//
 // Insert
 //===----------------------------------------------------------------------===//
 
-class AutomationEventInsertAction : public UndoAction
+class AutomationEventInsertAction final : public UndoAction
 {
 public:
     
-    explicit AutomationEventInsertAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit AutomationEventInsertAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
     AutomationEventInsertAction(MidiTrackSource &source,
-                                String trackId,
-                                const AutomationEvent &target);
+        String trackId, const AutomationEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:
@@ -55,28 +53,26 @@ private:
     JUCE_DECLARE_NON_COPYABLE(AutomationEventInsertAction)
 };
 
-
 //===----------------------------------------------------------------------===//
 // Remove
 //===----------------------------------------------------------------------===//
 
-class AutomationEventRemoveAction : public UndoAction
+class AutomationEventRemoveAction final : public UndoAction
 {
 public:
     
-    explicit AutomationEventRemoveAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit AutomationEventRemoveAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
     AutomationEventRemoveAction(MidiTrackSource &source,
-                                String trackId,
-                                const AutomationEvent &target);
+        String trackId, const AutomationEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:
@@ -87,30 +83,27 @@ private:
     JUCE_DECLARE_NON_COPYABLE(AutomationEventRemoveAction)
 };
 
-
 //===----------------------------------------------------------------------===//
 // Change
 //===----------------------------------------------------------------------===//
 
-class AutomationEventChangeAction : public UndoAction
+class AutomationEventChangeAction final : public UndoAction
 {
 public:
     
-    explicit AutomationEventChangeAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit AutomationEventChangeAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
-    AutomationEventChangeAction(MidiTrackSource &source,
-                                String trackId,
-                                const AutomationEvent &target,
-                                const AutomationEvent &newParameters);
+    AutomationEventChangeAction(MidiTrackSource &source, String trackId,
+        const AutomationEvent &target, const AutomationEvent &newParameters) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     UndoAction *createCoalescedAction(UndoAction *nextAction) override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:
@@ -124,28 +117,26 @@ private:
 
 };
 
-
 //===----------------------------------------------------------------------===//
 // Insert Group
 //===----------------------------------------------------------------------===//
 
-class AutomationEventsGroupInsertAction : public UndoAction
+class AutomationEventsGroupInsertAction final : public UndoAction
 {
 public:
     
-    explicit AutomationEventsGroupInsertAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit AutomationEventsGroupInsertAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
     
     AutomationEventsGroupInsertAction(MidiTrackSource &source,
-                                      String trackId,
-                                      Array<AutomationEvent> &target);
+        String trackId, Array<AutomationEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
     
 private:
@@ -157,28 +148,26 @@ private:
     
 };
 
-
 //===----------------------------------------------------------------------===//
 // Remove Group
 //===----------------------------------------------------------------------===//
 
-class AutomationEventsGroupRemoveAction : public UndoAction
+class AutomationEventsGroupRemoveAction final : public UndoAction
 {
 public:
     
-    explicit AutomationEventsGroupRemoveAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit AutomationEventsGroupRemoveAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
     
     AutomationEventsGroupRemoveAction(MidiTrackSource &source,
-                                      String trackId,
-                                      Array<AutomationEvent> &target);
+        String trackId, Array<AutomationEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
     
 private:
@@ -190,30 +179,27 @@ private:
     
 };
 
-
 //===----------------------------------------------------------------------===//
 // Change Group
 //===----------------------------------------------------------------------===//
 
-class AutomationEventsGroupChangeAction : public UndoAction
+class AutomationEventsGroupChangeAction final : public UndoAction
 {
 public:
     
-    explicit AutomationEventsGroupChangeAction(MidiTrackSource &source) :
-    UndoAction(source) {}
+    explicit AutomationEventsGroupChangeAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
 
-    AutomationEventsGroupChangeAction(MidiTrackSource &source,
-                                      String trackId,
-                                      const Array<AutomationEvent> state1,
-                                      const Array<AutomationEvent> state2);
+    AutomationEventsGroupChangeAction(MidiTrackSource &source, String trackId,
+        const Array<AutomationEvent> state1, const Array<AutomationEvent> state2) noexcept;
 
     bool perform() override;
     bool undo() override;
     int getSizeInUnits() override;
     UndoAction *createCoalescedAction(UndoAction *nextAction) override;
     
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:

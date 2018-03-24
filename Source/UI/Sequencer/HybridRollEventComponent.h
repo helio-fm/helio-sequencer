@@ -32,7 +32,7 @@ public:
 
     HybridRollEventComponent(HybridRoll &editor, bool ghostMode = false);
 
-    bool isActive() const;
+    bool isActive() const noexcept;
     void setActive(bool val, bool force = false);
     void setGhostMode();
 
@@ -45,14 +45,14 @@ public:
     //===------------------------------------------------------------------===//
 
     void mouseDown(const MouseEvent &e) override;
-    static int compareElements(HybridRollEventComponent *first, HybridRollEventComponent *second);
+    static int compareElements(HybridRollEventComponent *first, HybridRollEventComponent *second) noexcept;
 
     //===------------------------------------------------------------------===//
     // SelectableComponent
     //===------------------------------------------------------------------===//
 
     void setSelected(bool selected) override;
-    bool isSelected() const override;
+    bool isSelected() const noexcept override;
 
 protected:
 

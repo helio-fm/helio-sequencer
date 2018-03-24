@@ -32,22 +32,10 @@ namespace VCS
         // DiffLogic
         //===--------------------------------------------------------------===//
 
-        const String getType() const override;
+        const Identifier getType() const override;
         void resetStateTo(const TrackedItem &newState) override;
         Diff *createDiff(const TrackedItem &initialState) const override;
         Diff *createMergedItem(const TrackedItem &initialState) const override;
-
-    private:
-
-        XmlElement *mergePath(const XmlElement *state, const XmlElement *changes) const;
-        XmlElement *mergeFullName(const XmlElement *state, const XmlElement *changes) const;
-        XmlElement *mergeAuthor(const XmlElement *state, const XmlElement *changes) const;
-        XmlElement *mergeDescription(const XmlElement *state, const XmlElement *changes) const;
-
-        NewSerializedDelta createPathDiff(const XmlElement *state, const XmlElement *changes) const;
-        NewSerializedDelta createFullNameDiff(const XmlElement *state, const XmlElement *changes) const;
-        NewSerializedDelta createAuthorDiff(const XmlElement *state, const XmlElement *changes) const;
-        NewSerializedDelta createDescriptionDiff(const XmlElement *state, const XmlElement *changes) const;
 
     };
 } // namespace VCS

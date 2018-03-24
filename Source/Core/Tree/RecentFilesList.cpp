@@ -17,24 +17,19 @@
 
 #include "Common.h"
 #include "RecentFilesList.h"
-
 #include "Config.h"
 #include "SerializationKeys.h"
-
 #include "App.h"
-#include "AuthorizationManager.h"
 
 RecentFilesList::RecentFilesList()
 {
-    App::Helio()->getAuthManager()->addChangeListener(this);
-    //Config::load(Serialization::Core::recentFiles, this);
+    //App::Helio()->getSessionManager()->addChangeListener(this);
     // todo update list
 }
 
 RecentFilesList::~RecentFilesList()
 {
-    App::Helio()->getAuthManager()->removeChangeListener(this);
-    //Config::save(Serialization::Core::recentFiles, this);
+    //App::Helio()->getSessionManager()->removeChangeListener(this);
     this->masterReference.clear();
 }
 
@@ -134,43 +129,45 @@ int RecentFilesList::getNumItems() const
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *RecentFilesList::serialize() const
+ValueTree RecentFilesList::serialize() const
 {
+    using namespace Serialization;
     const ScopedReadLock lock(this->listLock);
-    auto xml = new XmlElement(Serialization::Core::recentFiles);
+    ValueTree tree(Core::recentFiles);
 
-    for (auto && localFile : this->localFiles)
+    for (const auto localFile : this->localFiles)
     {
-        auto item = new XmlElement(Serialization::Core::recentFileItem);
-        item->setAttribute("title", localFile->title);
-        item->setAttribute("path", localFile->path);
-        item->setAttribute("id", localFile->projectId);
-        item->setAttribute("time", String(localFile->lastModifiedTime));
-        xml->addChildElement(item);
+        ValueTree item(Core::recentFileItem);
+        item.setProperty(Core::recentFileTitle, localFile->title, nullptr);
+        item.setProperty(Core::recentFilePath, localFile->path, nullptr);
+        item.setProperty(Core::recentFileProjectId, localFile->projectId, nullptr);
+        item.setProperty(Core::recentFileTime, String(localFile->lastModifiedTime), nullptr);
+        tree.appendChild(item, nullptr);
     }
 
-    return xml;
+    return tree;
 }
 
-void RecentFilesList::deserialize(const XmlElement &xml)
+void RecentFilesList::deserialize(const ValueTree &tree)
 {
     this->reset();
+    using namespace Serialization;
 
     const ScopedWriteLock lock(this->listLock);
 
-    const XmlElement *root = xml.hasTagName(Serialization::Core::recentFiles) ?
-                             &xml : xml.getChildByName(Serialization::Core::recentFiles);
+    const auto root = tree.hasType(Core::recentFiles) ?
+        tree : tree.getChildWithName(Core::recentFiles);
 
-    if (root == nullptr) { return; }
+    if (!root.isValid()) { return; }
 
-    forEachXmlChildElementWithTagName(*root, child, Serialization::Core::recentFileItem)
+    forEachValueTreeChildWithType(root, child, Core::recentFileItem)
     {
-        const String title = child->getStringAttribute("title", "");
-        const String path = child->getStringAttribute("path", "");
-        const int64 time = child->getStringAttribute("time", "").getLargeIntValue();
-        const String id = child->getStringAttribute("id", "");
+        const String title = child.getProperty(Core::recentFileTitle);
+        const String path = child.getProperty(Core::recentFilePath);
+        const String id = child.getProperty(Core::recentFileProjectId);
+        const int64 time = child.getProperty(Core::recentFileTime);
 
-        if (path != "")
+        if (path.isNotEmpty())
         {
             RecentFileDescription::Ptr fd = new RecentFileDescription();
             fd->title = title;
@@ -199,13 +196,6 @@ void RecentFilesList::reset()
 
 void RecentFilesList::forceUpdate()
 {
-    this->remoteFiles = App::Helio()->getAuthManager()->getListOfRemoteProjects();
-    
-//    for (int i = 0; i < this->remoteFiles.size(); ++i)
-//    {
-//        Logger::writeToLog("Received remote file: " + this->remoteFiles[i].projectTitle);
-//    }
-    
     this->sendChangeMessage();
 }
 
@@ -217,15 +207,15 @@ void RecentFilesList::changeListenerCallback(ChangeBroadcaster *source)
 ReferenceCountedArray<RecentFileDescription> RecentFilesList::createCoalescedList() const
 {
     ReferenceCountedArray<RecentFileDescription> resultList;
-    
+    ReferenceCountedArray<RecentFileDescription> remoteFiles; // TODO
+
     // adds remote files
-    for (auto && remoteFile : this->remoteFiles)
+    for (auto && remoteFile : remoteFiles)
     {
         RecentFileDescription::Ptr description = new RecentFileDescription();
-        description->projectId = remoteFile.projectId;
-        description->projectKey = remoteFile.projectKey;
-        description->title = remoteFile.projectTitle;
-        description->lastModifiedTime = remoteFile.lastModifiedTime;
+        description->projectId = remoteFile->projectId;
+        description->title = remoteFile->title;
+        description->lastModifiedTime = remoteFile->lastModifiedTime;
         description->path = "";
         description->isLoaded = false;
         
@@ -234,7 +224,7 @@ ReferenceCountedArray<RecentFileDescription> RecentFilesList::createCoalescedLis
         
         for (auto && localFile : this->localFiles)
         {
-            if (localFile->projectId == remoteFile.projectId)
+            if (localFile->projectId == remoteFile->projectId)
             {
                 localVersion = localFile;
                 description->lastModifiedTime = localVersion->lastModifiedTime;
@@ -257,9 +247,9 @@ ReferenceCountedArray<RecentFileDescription> RecentFilesList::createCoalescedLis
     {
         bool alreadyAdded = false;
         
-        for (auto && remoteFile : this->remoteFiles)
+        for (auto && remoteFile : remoteFiles)
         {
-            if (localFile->projectId == remoteFile.projectId)
+            if (localFile->projectId == remoteFile->projectId)
             {
                 alreadyAdded = true;
                 break;

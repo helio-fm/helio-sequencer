@@ -33,7 +33,6 @@ class MidiEditorSplitContainer;
 class Origami;
 class Headline;
 
-#include "Serializable.h"
 
 class SequencerLayout :
     public Component,
@@ -73,8 +72,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
 private:

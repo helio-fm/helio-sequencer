@@ -284,66 +284,6 @@ static PianoSequence *getPianoLayer(SelectionProxyArray::Ptr selection)
     return pianoLayer;
 }
 
-
-static AutomationEvent *eventAtPosition(float beatPosition, AutomationSequence *layer)
-{
-    for (int i = 0; i < layer->size(); ++i)
-    {
-        AutomationEvent *event = static_cast<AutomationEvent *>(layer->getUnchecked(i));
-        
-        if (event->getBeat() == beatPosition)
-        {
-            return event;
-        }
-    }
-    
-    return nullptr;
-}
-
-static bool isPedalDownAtPosition(float beatPosition, AutomationSequence *pedalLayer)
-{
-    bool lastEventPedalDown = DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE;
-    float lastEventBeat = -FLT_MAX;
-    
-    for (int i = 0; i < pedalLayer->size(); ++i)
-    {
-        AutomationEvent *event = static_cast<AutomationEvent *>(pedalLayer->getUnchecked(i));
-        
-        if (beatPosition >= lastEventBeat &&
-            beatPosition < event->getBeat())
-        {
-            return lastEventPedalDown;
-        }
-
-        lastEventPedalDown = event->isPedalDownEvent();
-        lastEventBeat = event->getBeat();
-    }
-    
-    return lastEventPedalDown;
-}
-
-static bool isPedalUpAtPosition(float beatPosition, AutomationSequence *pedalLayer)
-{
-    bool lastEventPedalUp = ! DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE;
-    float lastEventBeat = -FLT_MAX;
-    
-    for (int i = 0; i < pedalLayer->size(); ++i)
-    {
-        AutomationEvent *event = static_cast<AutomationEvent *>(pedalLayer->getUnchecked(i));
-        
-        if (beatPosition >= lastEventBeat &&
-            beatPosition < event->getBeat())
-        {
-            return lastEventPedalUp;
-        }
-        
-        lastEventPedalUp = event->isPedalUpEvent();
-        lastEventBeat = event->getBeat();
-    }
-    
-    return lastEventPedalUp;
-}
-
 float PianoRollToolbox::findStartBeat(const Lasso &selection)
 {
     if (selection.getNumSelected() == 0)
@@ -1082,21 +1022,6 @@ void PianoRollToolbox::moveToLayer(Lasso &selection, MidiSequence *layer, bool s
     targetLayer->insertGroup(*insertionsForTargetLayer, true);
 }
 
-
-bool PianoRollToolbox::arpeggiateUsingClipboardAsPattern(Lasso &selection, bool shouldCheckpoint)
-{
-    XmlElement *xml = InternalClipboard::getCurrentContent();
-    Arpeggiator arp = Arpeggiator().withSequenceFromXml(*xml);
-    
-    if (arp.isEmpty())
-    {
-        return false;
-    }
-    
-    return PianoRollToolbox::arpeggiate(selection, arp, shouldCheckpoint);
-}
-
-
 bool PianoRollToolbox::arpeggiate(Lasso &selection,
                                  const Arpeggiator &arp,
                                  bool shouldCheckpoint)
@@ -1496,7 +1421,7 @@ void PianoRollToolbox::changeVolumeSine(Lasso &selection, float volumeFactor)
         for (int i = 0; i < layerSelection->size(); ++i)
         {
             NoteComponent *nc = static_cast<NoteComponent *>(layerSelection->getUnchecked(i));
-            const float phase = ((nc->getBeat() - startBeat) / (endBeat - startBeat)) * M_PI * 2.f * numSines;
+            const float phase = ((nc->getBeat() - startBeat) / (endBeat - startBeat)) * MathConstants<float>::pi * 2.f * numSines;
             groupBefore.add(nc->getNote());
             groupAfter.add(nc->continueTuningSine(volumeFactor, midline, phase));
         }

@@ -18,7 +18,7 @@
 #pragma once
 
 //[Headers]
-class PluginManager;
+class PluginScanner;
 //[/Headers]
 
 
@@ -28,7 +28,7 @@ class PluginsList  : public Component,
 {
 public:
 
-    PluginsList (PluginManager &parentManager);
+    PluginsList (PluginScanner &parentManager);
 
     ~PluginsList();
 
@@ -64,7 +64,7 @@ private:
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
 
-    PluginManager &pluginManager;
+    PluginScanner &pluginManager;
 
     //[/UserVariables]
 

@@ -17,7 +17,6 @@
 
 #pragma once
 
-#include "PatternDeltas.h"
 #include "Pattern.h"
 #include "Delta.h"
 
@@ -27,16 +26,16 @@ namespace VCS
     {
     public:
 
-        static NewSerializedDelta serializePatternChanges(Array<Clip> changes,
+        static DeltaDiff serializePatternChanges(Array<Clip> changes,
             const String &description, int64 numChanges,
-            const String &deltaType);
+            const Identifier &deltaType);
 
         static bool checkIfDeltaIsPatternType(const Delta *delta);
 
-        static XmlElement *mergeClipsAdded(const XmlElement *state, const XmlElement *changes);
-        static XmlElement *mergeClipsRemoved(const XmlElement *state, const XmlElement *changes);
-        static XmlElement *mergeClipsChanged(const XmlElement *state, const XmlElement *changes);
+        static ValueTree mergeClipsAdded(const ValueTree &state, const ValueTree &changes);
+        static ValueTree mergeClipsRemoved(const ValueTree &state, const ValueTree &changes);
+        static ValueTree mergeClipsChanged(const ValueTree &state, const ValueTree &changes);
 
-        static Array<NewSerializedDelta> createClipsDiffs(const XmlElement *state, const XmlElement *changes);
+        static Array<DeltaDiff> createClipsDiffs(const ValueTree &state, const ValueTree &changes);
     };
 } // namespace VCS

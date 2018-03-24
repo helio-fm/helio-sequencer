@@ -61,7 +61,7 @@ void TimeSignatureCommandPanel::handleCommandMessage(int commandId)
                                  CommandIDs::ChangeTimeSignatureConfirmed,
                                  CommandIDs::Cancel);
             
-            App::Layout().showModalNonOwnedDialog(inputDialog);
+            App::Layout().showModalComponentUnowned(inputDialog);
             return;
         }
         if (commandId == CommandIDs::ChangeTimeSignatureConfirmed)

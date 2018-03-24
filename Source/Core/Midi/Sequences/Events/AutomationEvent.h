@@ -21,28 +21,27 @@
 
 #define DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE (false)
 
-class AutomationEvent : public MidiEvent
+class AutomationEvent final : public MidiEvent
 {
 public:
 
-    AutomationEvent();
-    AutomationEvent(const AutomationEvent &other);
+    AutomationEvent() noexcept;
+    AutomationEvent(const AutomationEvent &other) noexcept;
     AutomationEvent(WeakReference<MidiSequence> owner,
-        const AutomationEvent &parametersToCopy);
-
+        const AutomationEvent &parametersToCopy) noexcept;
     explicit AutomationEvent(WeakReference<MidiSequence> owner,
         float beatVal = 0.f,
-        float controllerValue = 0.f);
+        float controllerValue = 0.f) noexcept;
 
     Array<MidiMessage> toMidiMessages() const override;
     
-    AutomationEvent copyWithNewId() const;
-    AutomationEvent withBeat(float newBeat) const;
-    AutomationEvent withDeltaBeat(float deltaBeat) const;
-    AutomationEvent withInvertedControllerValue() const;
-    AutomationEvent withParameters(float newBeat, float newControllerValue) const;
-    AutomationEvent withCurvature(float newCurvature) const;
-    AutomationEvent withParameters(const XmlElement &xml) const;
+    AutomationEvent copyWithNewId() const noexcept;
+    AutomationEvent withBeat(float newBeat) const noexcept;
+    AutomationEvent withDeltaBeat(float deltaBeat) const noexcept;
+    AutomationEvent withInvertedControllerValue() const noexcept;
+    AutomationEvent withParameters(float newBeat, float newControllerValue) const noexcept;
+    AutomationEvent withCurvature(float newCurvature) const noexcept;
+    AutomationEvent withParameters(const ValueTree &parameters) const noexcept;
     
     //===------------------------------------------------------------------===//
     // Accessors
@@ -65,15 +64,15 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
-    void reset() override;
+    ValueTree serialize() const noexcept override;
+    void deserialize(const ValueTree &tree) noexcept override;
+    void reset() noexcept override;
 
     //===------------------------------------------------------------------===//
     // Helpers
     //===------------------------------------------------------------------===//
 
-    void applyChanges(const AutomationEvent &parameters);
+    void applyChanges(const AutomationEvent &parameters) noexcept;
 
 protected:
 

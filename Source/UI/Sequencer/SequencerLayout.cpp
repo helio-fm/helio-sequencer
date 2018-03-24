@@ -796,28 +796,26 @@ void SequencerLayout::handleCommandMessage(int commandId)
 // UI State Serialization
 //===----------------------------------------------------------------------===//
 
-XmlElement *SequencerLayout::serialize() const
+ValueTree SequencerLayout::serialize() const
 {
-    // задел на будущее, типа
-    auto xml = new XmlElement(Serialization::Core::editor);
-    xml->addChildElement(this->pianoRoll->serialize());
-    return xml;
+    ValueTree tree(Serialization::UI::sequencer);
+    tree.appendChild(this->pianoRoll->serialize(), nullptr);
+    tree.appendChild(this->patternRoll->serialize(), nullptr);
+    return tree;
 }
 
-void SequencerLayout::deserialize(const XmlElement &xml)
+void SequencerLayout::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root = (xml.getTagName() == Serialization::Core::editor) ?
-                             &xml : xml.getChildByName(Serialization::Core::editor);
+    const auto root = tree.hasType(Serialization::UI::sequencer) ?
+        tree : tree.getChildWithName(Serialization::UI::sequencer);
 
-    if (root == nullptr)
+    if (!root.isValid())
     { return; }
-
-    if (XmlElement *firstChild = root->getFirstChildElement())
-    {
-        this->pianoRoll->deserialize(*firstChild);
-    }
+    
+    this->pianoRoll->deserialize(root);
+    this->patternRoll->deserialize(root);
 }
 
 void SequencerLayout::reset()

@@ -11,12 +11,6 @@
     <Filter Include="Helio\Resources\Icons">
       <UniqueIdentifier>{408F7FE0-B4E5-2CBD-2A2E-970F3A7C6943}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helio\Resources\Themes\Backgrounds">
-      <UniqueIdentifier>{28660758-D591-C2A8-18CE-A1A607CC985F}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Resources\Themes">
-      <UniqueIdentifier>{35D6AA40-A27F-D6DF-11CD-9E261633CE74}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Helio\Resources">
       <UniqueIdentifier>{362F8081-11C1-8EEC-992C-BAF083C649FB}</UniqueIdentifier>
     </Filter>
@@ -41,6 +35,15 @@
     <Filter Include="Helio\Source\Core\Clipboard">
       <UniqueIdentifier>{1BD0FAF3-9BFE-3BBF-CA8E-7F1A3EC70DFD}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Helio\Source\Core\Configuration\Models">
+      <UniqueIdentifier>{D684245E-ABFD-6D34-BB32-4F4ED0A06A0F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\Core\Configuration\ResourceManagers">
+      <UniqueIdentifier>{5DC6C3D5-AEDB-9823-0E89-AE69BCE74636}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\Core\Configuration">
+      <UniqueIdentifier>{F530793D-2149-3E27-AAAD-D8A31335FC1C}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Helio\Source\Core\Midi\Patterns">
       <UniqueIdentifier>{E57020CF-CB11-064B-25F9-27049F1CCEC0}</UniqueIdentifier>
     </Filter>
@@ -53,20 +56,20 @@
     <Filter Include="Helio\Source\Core\Midi">
       <UniqueIdentifier>{04AF0CE0-9776-A241-9983-A0708270FCB9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Helio\Source\Core\Network\Models">
+      <UniqueIdentifier>{5AB25954-19CC-1D30-DD06-635E70E6961F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\Core\Network\Requests">
+      <UniqueIdentifier>{02F47EC1-D998-9C16-4256-2B02F2CAB6F5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Helio\Source\Core\Network\Services">
+      <UniqueIdentifier>{36110DF0-87FD-A166-CD76-F88F21606925}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Helio\Source\Core\Network">
       <UniqueIdentifier>{6506945C-5148-CBEC-ABD1-970A46A0A028}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Source\Core\Serialization">
       <UniqueIdentifier>{D69D548A-6A26-222A-71ED-D2EB05619228}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\Core\Supervisor">
-      <UniqueIdentifier>{B9CEA92D-2992-8E65-43CD-2DBF692692FA}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\Core\Tools">
-      <UniqueIdentifier>{8253E6CF-CBB8-949D-47F3-CB6BAF3A53D8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\Core\Translation">
-      <UniqueIdentifier>{3E795494-6EC7-3C01-E27C-07D83D58F7E1}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Source\Core\Tree">
       <UniqueIdentifier>{2C5565F0-23BF-CF32-E533-28FA03C62CAD}</UniqueIdentifier>
@@ -79,9 +82,6 @@
     </Filter>
     <Filter Include="Helio\Source\Core\VCS\DiffLogic">
       <UniqueIdentifier>{E4A3AC4B-3EC1-8FC7-FA24-364BF574F5B0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Helio\Source\Core\VCS\Network">
-      <UniqueIdentifier>{78CA9CB3-A28E-E7E7-42F7-F5F2B0276983}</UniqueIdentifier>
     </Filter>
     <Filter Include="Helio\Source\Core\VCS">
       <UniqueIdentifier>{53FAEC2A-FCDD-67B3-CD1A-D0134248E356}</UniqueIdentifier>
@@ -559,9 +559,6 @@
     <ClCompile Include="..\..\Source\Core\App\App.cpp">
       <Filter>Helio\Source\Core\App</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\App\Config.cpp">
-      <Filter>Helio\Source\Core\App</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Core\App\Workspace.cpp">
       <Filter>Helio\Source\Core\App</Filter>
     </ClCompile>
@@ -583,10 +580,10 @@
     <ClCompile Include="..\..\Source\Core\Audio\Instruments\OrchestraPit.cpp">
       <Filter>Helio\Source\Core\Audio\Instruments</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Audio\Instruments\PluginManager.cpp">
+    <ClCompile Include="..\..\Source\Core\Audio\Instruments\PluginScanner.cpp">
       <Filter>Helio\Source\Core\Audio\Instruments</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Audio\Instruments\PluginSmartDescription.cpp">
+    <ClCompile Include="..\..\Source\Core\Audio\Instruments\SerializablePluginDescription.cpp">
       <Filter>Helio\Source\Core\Audio\Instruments</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Audio\Monitoring\AudioMonitor.cpp">
@@ -612,6 +609,39 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Clipboard\InternalClipboard.cpp">
       <Filter>Helio\Source\Core\Clipboard</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\Models\Arpeggiator.cpp">
+      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\Models\ColourScheme.cpp">
+      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\Models\HotkeyScheme.cpp">
+      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\Models\Scale.cpp">
+      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\Models\Translation.cpp">
+      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ArpeggiatorsManager.cpp">
+      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ColourSchemesManager.cpp">
+      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\HotkeySchemesManager.cpp">
+      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ScalesManager.cpp">
+      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\TranslationsManager.cpp">
+      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\Config.cpp">
+      <Filter>Helio\Source\Core\Configuration</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Midi\Patterns\Clip.cpp">
       <Filter>Helio\Source\Core\Midi\Patterns</Filter>
@@ -658,68 +688,47 @@
     <ClCompile Include="..\..\Source\Core\Midi\MidiTrack.cpp">
       <Filter>Helio\Source\Core\Midi</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Midi\Scale.cpp">
-      <Filter>Helio\Source\Core\Midi</Filter>
+    <ClCompile Include="..\..\Source\Core\Network\Requests\HelioApiRequest.cpp">
+      <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Network\AuthorizationManager.cpp">
-      <Filter>Helio\Source\Core\Network</Filter>
+    <ClCompile Include="..\..\Source\Core\Network\Requests\PullThread.cpp">
+      <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Network\LoginThread.cpp">
-      <Filter>Helio\Source\Core\Network</Filter>
+    <ClCompile Include="..\..\Source\Core\Network\Requests\PushThread.cpp">
+      <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Network\LogoutThread.cpp">
-      <Filter>Helio\Source\Core\Network</Filter>
+    <ClCompile Include="..\..\Source\Core\Network\Requests\RemovalThread.cpp">
+      <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Network\RequestArpeggiatorsThread.cpp">
-      <Filter>Helio\Source\Core\Network</Filter>
+    <ClCompile Include="..\..\Source\Core\Network\Requests\SyncThread.cpp">
+      <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Network\RequestColourSchemesThread.cpp">
-      <Filter>Helio\Source\Core\Network</Filter>
+    <ClCompile Include="..\..\Source\Core\Network\Services\SessionService.cpp">
+      <Filter>Helio\Source\Core\Network\Services</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Network\RequestProjectsListThread.cpp">
-      <Filter>Helio\Source\Core\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Network\RequestTranslationsThread.cpp">
-      <Filter>Helio\Source\Core\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Network\UpdateManager.cpp">
-      <Filter>Helio\Source\Core\Network</Filter>
+    <ClCompile Include="..\..\Source\Core\Network\Services\UpdatesService.cpp">
+      <Filter>Helio\Source\Core\Network\Services</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Serialization\Autosaver.cpp">
-      <Filter>Helio\Source\Core\Serialization</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Serialization\DataEncoder.cpp">
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Serialization\Document.cpp">
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Serialization\FileUtils.cpp">
+    <ClCompile Include="..\..\Source\Core\Serialization\DocumentHelpers.cpp">
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Supervisor\Session.cpp">
-      <Filter>Helio\Source\Core\Supervisor</Filter>
+    <ClCompile Include="..\..\Source\Core\Serialization\BinarySerializer.cpp">
+      <Filter>Helio\Source\Core\Serialization</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Supervisor\SessionManager.cpp">
-      <Filter>Helio\Source\Core\Supervisor</Filter>
+    <ClCompile Include="..\..\Source\Core\Serialization\JsonSerializer.cpp">
+      <Filter>Helio\Source\Core\Serialization</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Supervisor\Supervisor.cpp">
-      <Filter>Helio\Source\Core\Supervisor</Filter>
+    <ClCompile Include="..\..\Source\Core\Serialization\LegacySerializer.cpp">
+      <Filter>Helio\Source\Core\Serialization</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Tools\Arpeggiator.cpp">
-      <Filter>Helio\Source\Core\Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Tools\ArpeggiatorsManager.cpp">
-      <Filter>Helio\Source\Core\Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Tools\ColourScheme.cpp">
-      <Filter>Helio\Source\Core\Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Tools\ColourSchemeManager.cpp">
-      <Filter>Helio\Source\Core\Tools</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Translation\TranslationManager.cpp">
-      <Filter>Helio\Source\Core\Translation</Filter>
+    <ClCompile Include="..\..\Source\Core\Serialization\XmlSerializer.cpp">
+      <Filter>Helio\Source\Core\Serialization</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Tree\RecentFilesList.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
@@ -825,18 +834,6 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDiffLogic.cpp">
       <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Core\VCS\Network\PullThread.cpp">
-      <Filter>Helio\Source\Core\VCS\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Core\VCS\Network\PushThread.cpp">
-      <Filter>Helio\Source\Core\VCS\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Core\VCS\Network\RemovalThread.cpp">
-      <Filter>Helio\Source\Core\VCS\Network</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Core\VCS\Network\SyncThread.cpp">
-      <Filter>Helio\Source\Core\VCS\Network</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\VCS\Client.cpp">
       <Filter>Helio\Source\Core\VCS</Filter>
@@ -970,9 +967,6 @@
     <ClCompile Include="..\..\Source\UI\Headline\HeadlineNavigationPanel.cpp">
       <Filter>Helio\Source\UI\Headline</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Input\HotkeyScheme.cpp">
-      <Filter>Helio\Source\UI\Input</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Input\MultiTouchController.cpp">
       <Filter>Helio\Source\UI\Input</Filter>
     </ClCompile>
@@ -1060,7 +1054,7 @@
     <ClCompile Include="..\..\Source\UI\Pages\Settings\AudioSettings.cpp">
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\AuthorizationSettings.cpp">
+    <ClCompile Include="..\..\Source\UI\Pages\Settings\AuthSettings.cpp">
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\ComponentsList.cpp">
@@ -1495,10 +1489,10 @@
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\mpe\juce_MPESynthesiserVoice.cpp">
       <Filter>JUCE Modules\juce_audio_basics\mpe</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\mpe\juce_MPEValue.cpp">
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\mpe\juce_MPEUtils.cpp">
       <Filter>JUCE Modules\juce_audio_basics\mpe</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\mpe\juce_MPEZone.cpp">
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\mpe\juce_MPEValue.cpp">
       <Filter>JUCE Modules\juce_audio_basics\mpe</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\mpe\juce_MPEZoneLayout.cpp">
@@ -1791,6 +1785,9 @@
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\format_types\juce_VSTPluginFormat.cpp">
       <Filter>JUCE Modules\juce_audio_processors\format_types</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\processors\juce_AudioPluginInstance.cpp">
+      <Filter>JUCE Modules\juce_audio_processors\processors</Filter>
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\JUCE\modules\juce_audio_processors\processors\juce_AudioProcessor.cpp">
       <Filter>JUCE Modules\juce_audio_processors\processors</Filter>
@@ -3279,9 +3276,6 @@
     <ClInclude Include="..\..\Source\Core\App\App.h">
       <Filter>Helio\Source\Core\App</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\App\Config.h">
-      <Filter>Helio\Source\Core\App</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Core\App\HelioLogger.h">
       <Filter>Helio\Source\Core\App</Filter>
     </ClInclude>
@@ -3309,10 +3303,10 @@
     <ClInclude Include="..\..\Source\Core\Audio\Instruments\OrchestraPit.h">
       <Filter>Helio\Source\Core\Audio\Instruments</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Audio\Instruments\PluginManager.h">
+    <ClInclude Include="..\..\Source\Core\Audio\Instruments\PluginScanner.h">
       <Filter>Helio\Source\Core\Audio\Instruments</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Audio\Instruments\PluginSmartDescription.h">
+    <ClInclude Include="..\..\Source\Core\Audio\Instruments\SerializablePluginDescription.h">
       <Filter>Helio\Source\Core\Audio\Instruments</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Audio\Monitoring\AudioMonitor.h">
@@ -3347,6 +3341,42 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Clipboard\InternalClipboard.h">
       <Filter>Helio\Source\Core\Clipboard</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\Models\Arpeggiator.h">
+      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\Models\ColourScheme.h">
+      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\Models\HotkeyScheme.h">
+      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\Models\Scale.h">
+      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\Models\Translation.h">
+      <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ResourceManager.h">
+      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ArpeggiatorsManager.h">
+      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ColourSchemesManager.h">
+      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\HotkeySchemesManager.h">
+      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\ScalesManager.h">
+      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\ResourceManagers\TranslationsManager.h">
+      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Configuration\Config.h">
+      <Filter>Helio\Source\Core\Configuration</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Midi\Patterns\Clip.h">
       <Filter>Helio\Source\Core\Midi\Patterns</Filter>
@@ -3393,49 +3423,76 @@
     <ClInclude Include="..\..\Source\Core\Midi\MidiTrack.h">
       <Filter>Helio\Source\Core\Midi</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Midi\Scale.h">
-      <Filter>Helio\Source\Core\Midi</Filter>
+    <ClInclude Include="..\..\Source\Core\Network\Models\ApiModel.h">
+      <Filter>Helio\Source\Core\Network\Models</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\AuthorizationManager.h">
-      <Filter>Helio\Source\Core\Network</Filter>
+    <ClInclude Include="..\..\Source\Core\Network\Models\UpdatesInfo.h">
+      <Filter>Helio\Source\Core\Network\Models</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\HelioServerDefines.h">
-      <Filter>Helio\Source\Core\Network</Filter>
+    <ClInclude Include="..\..\Source\Core\Network\Models\UserProfile.h">
+      <Filter>Helio\Source\Core\Network\Models</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\LoginThread.h">
-      <Filter>Helio\Source\Core\Network</Filter>
+    <ClInclude Include="..\..\Source\Core\Network\Requests\HelioApiRequest.h">
+      <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\LogoutThread.h">
-      <Filter>Helio\Source\Core\Network</Filter>
+    <ClInclude Include="..\..\Source\Core\Network\Requests\PullThread.h">
+      <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\RequestArpeggiatorsThread.h">
-      <Filter>Helio\Source\Core\Network</Filter>
+    <ClInclude Include="..\..\Source\Core\Network\Requests\PushThread.h">
+      <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\RequestColourSchemesThread.h">
-      <Filter>Helio\Source\Core\Network</Filter>
+    <ClInclude Include="..\..\Source\Core\Network\Requests\RemovalThread.h">
+      <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\RequestProjectsListThread.h">
-      <Filter>Helio\Source\Core\Network</Filter>
+    <ClInclude Include="..\..\Source\Core\Network\Requests\SyncMessage.h">
+      <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\RequestTranslationsThread.h">
-      <Filter>Helio\Source\Core\Network</Filter>
+    <ClInclude Include="..\..\Source\Core\Network\Requests\SyncThread.h">
+      <Filter>Helio\Source\Core\Network\Requests</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Network\UpdateManager.h">
+    <ClInclude Include="..\..\Source\Core\Network\Requests\RequestResourceThread.h">
+      <Filter>Helio\Source\Core\Network\Requests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Network\Requests\RequestUserProfileThread.h">
+      <Filter>Helio\Source\Core\Network\Requests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Network\Requests\SignInThread.h">
+      <Filter>Helio\Source\Core\Network\Requests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Network\Requests\SignUpThread.h">
+      <Filter>Helio\Source\Core\Network\Requests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Network\Requests\TokenCheckThread.h">
+      <Filter>Helio\Source\Core\Network\Requests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Network\Requests\TokenUpdateThread.h">
+      <Filter>Helio\Source\Core\Network\Requests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Network\Requests\UpdatesCheckThread.h">
+      <Filter>Helio\Source\Core\Network\Requests</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Network\Services\BackendService.h">
+      <Filter>Helio\Source\Core\Network\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Network\Services\SessionService.h">
+      <Filter>Helio\Source\Core\Network\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Network\Services\UpdatesService.h">
+      <Filter>Helio\Source\Core\Network\Services</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\Network\HelioApiRoutes.h">
       <Filter>Helio\Source\Core\Network</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Serialization\Autosaver.h">
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Serialization\DataEncoder.h">
-      <Filter>Helio\Source\Core\Serialization</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Serialization\Document.h">
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Serialization\DocumentOwner.h">
+    <ClInclude Include="..\..\Source\Core\Serialization\DocumentHelpers.h">
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Serialization\FileUtils.h">
+    <ClInclude Include="..\..\Source\Core\Serialization\DocumentOwner.h">
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Serialization\ResourceCache.h">
@@ -3447,32 +3504,20 @@
     <ClInclude Include="..\..\Source\Core\Serialization\SerializationKeys.h">
       <Filter>Helio\Source\Core\Serialization</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Supervisor\Session.h">
-      <Filter>Helio\Source\Core\Supervisor</Filter>
+    <ClInclude Include="..\..\Source\Core\Serialization\Serializer.h">
+      <Filter>Helio\Source\Core\Serialization</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Supervisor\SessionManager.h">
-      <Filter>Helio\Source\Core\Supervisor</Filter>
+    <ClInclude Include="..\..\Source\Core\Serialization\BinarySerializer.h">
+      <Filter>Helio\Source\Core\Serialization</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Supervisor\Supervisor.h">
-      <Filter>Helio\Source\Core\Supervisor</Filter>
+    <ClInclude Include="..\..\Source\Core\Serialization\JsonSerializer.h">
+      <Filter>Helio\Source\Core\Serialization</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Tools\Arpeggiator.h">
-      <Filter>Helio\Source\Core\Tools</Filter>
+    <ClInclude Include="..\..\Source\Core\Serialization\LegacySerializer.h">
+      <Filter>Helio\Source\Core\Serialization</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Tools\ArpeggiatorsManager.h">
-      <Filter>Helio\Source\Core\Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Tools\ColourScheme.h">
-      <Filter>Helio\Source\Core\Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Tools\ColourSchemeManager.h">
-      <Filter>Helio\Source\Core\Tools</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Translation\TranslationKeys.h">
-      <Filter>Helio\Source\Core\Translation</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Translation\TranslationManager.h">
-      <Filter>Helio\Source\Core\Translation</Filter>
+    <ClInclude Include="..\..\Source\Core\Serialization\XmlSerializer.h">
+      <Filter>Helio\Source\Core\Serialization</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Tree\RecentFilesList.h">
       <Filter>Helio\Source\Core\Tree</Filter>
@@ -3576,56 +3621,23 @@
     <ClInclude Include="..\..\Source\Core\Undo\UndoStack.h">
       <Filter>Helio\Source\Core\Undo</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\AutoSequenceDeltas.h">
-      <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\AutomationTrackDiffLogic.h">
       <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\DiffLogic.h">
       <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\MidiTrackDeltas.h">
-      <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\PatternDeltas.h">
-      <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\PatternDiffHelpers.h">
-      <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\PianoSequenceDeltas.h">
       <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\PianoTrackDiffLogic.h">
       <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\ProjectInfoDeltas.h">
-      <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\ProjectInfoDiffLogic.h">
-      <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDeltas.h">
       <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDiffLogic.h">
       <Filter>Helio\Source\Core\VCS\DiffLogic</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\VCS\Network\PullThread.h">
-      <Filter>Helio\Source\Core\VCS\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\VCS\Network\PushThread.h">
-      <Filter>Helio\Source\Core\VCS\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\VCS\Network\RemovalThread.h">
-      <Filter>Helio\Source\Core\VCS\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\VCS\Network\SyncMessage.h">
-      <Filter>Helio\Source\Core\VCS\Network</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\VCS\Network\SyncThread.h">
-      <Filter>Helio\Source\Core\VCS\Network</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\VCS\Client.h">
       <Filter>Helio\Source\Core\VCS</Filter>
@@ -3798,9 +3810,6 @@
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineNavigationPanel.h">
       <Filter>Helio\Source\UI\Headline</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Input\HotkeyScheme.h">
-      <Filter>Helio\Source\UI\Input</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Input\LongHoldController.h">
       <Filter>Helio\Source\UI\Input</Filter>
     </ClInclude>
@@ -3915,7 +3924,7 @@
     <ClInclude Include="..\..\Source\UI\Pages\Settings\AudioSettings.h">
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\AuthorizationSettings.h">
+    <ClInclude Include="..\..\Source\UI\Pages\Settings\AuthSettings.h">
       <Filter>Helio\Source\UI\Pages\Settings</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\ColourChangeButton.h">
@@ -4395,10 +4404,10 @@
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\mpe\juce_MPESynthesiserVoice.h">
       <Filter>JUCE Modules\juce_audio_basics\mpe</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\mpe\juce_MPEValue.h">
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\mpe\juce_MPEUtils.h">
       <Filter>JUCE Modules\juce_audio_basics\mpe</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\mpe\juce_MPEZone.h">
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\mpe\juce_MPEValue.h">
       <Filter>JUCE Modules\juce_audio_basics\mpe</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_audio_basics\mpe\juce_MPEZoneLayout.h">
@@ -5335,6 +5344,9 @@
       <Filter>JUCE Modules\juce_data_structures\values</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\values\juce_ValueTreeSynchroniser.h">
+      <Filter>JUCE Modules\juce_data_structures\values</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\values\juce_ValueWithDefault.h">
       <Filter>JUCE Modules\juce_data_structures\values</Filter>
     </ClInclude>
     <ClInclude Include="..\..\ThirdParty\JUCE\modules\juce_data_structures\juce_data_structures.h">
@@ -6524,22 +6536,22 @@
     <None Include="..\..\Resources\Icons\zoom-out.svg">
       <Filter>Helio\Resources\Icons</Filter>
     </None>
-    <None Include="..\..\Resources\Themes\Backgrounds\defaultPattern.png">
-      <Filter>Helio\Resources\Themes\Backgrounds</Filter>
-    </None>
-    <None Include="..\..\Resources\Themes\ColourSchemes.xml">
-      <Filter>Helio\Resources\Themes</Filter>
-    </None>
-    <None Include="..\..\Resources\DefaultArps.xml">
+    <None Include="..\..\Resources\Noise.png">
       <Filter>Helio\Resources</Filter>
     </None>
-    <None Include="..\..\Resources\DefaultHotkeys.xml">
+    <None Include="..\..\Resources\Arpeggiators.json">
       <Filter>Helio\Resources</Filter>
     </None>
-    <None Include="..\..\Resources\DefaultScales.xml">
+    <None Include="..\..\Resources\ColourSchemes.json">
       <Filter>Helio\Resources</Filter>
     </None>
-    <None Include="..\..\Resources\DefaultTranslations.xml">
+    <None Include="..\..\Resources\HotkeySchemes.json">
+      <Filter>Helio\Resources</Filter>
+    </None>
+    <None Include="..\..\Resources\Scales.json">
+      <Filter>Helio\Resources</Filter>
+    </None>
+    <None Include="..\..\Resources\Translations.json">
       <Filter>Helio\Resources</Filter>
     </None>
     <None Include="..\..\ThirdParty\JUCE\modules\juce_audio_formats\codecs\flac\Flac Licence.txt">

@@ -23,7 +23,7 @@
 #include "UndoStack.h"
 
 KeySignaturesSequence::KeySignaturesSequence(MidiTrack &track,
-    ProjectEventDispatcher &dispatcher) :
+    ProjectEventDispatcher &dispatcher) noexcept :
     MidiSequence(track, dispatcher) {}
 
 //===----------------------------------------------------------------------===//
@@ -263,28 +263,28 @@ bool KeySignaturesSequence::changeGroup(Array<KeySignatureEvent> &groupBefore,
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *KeySignaturesSequence::serialize() const
+ValueTree KeySignaturesSequence::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::keySignatures);
+    ValueTree tree(Serialization::Midi::keySignatures);
 
     for (int i = 0; i < this->midiEvents.size(); ++i)
     {
         const MidiEvent *event = this->midiEvents.getUnchecked(i);
-        xml->prependChildElement(event->serialize());
+        tree.appendChild(event->serialize(), nullptr);
     }
 
-    return xml;
+    return tree;
 }
 
-void KeySignaturesSequence::deserialize(const XmlElement &xml)
+void KeySignaturesSequence::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root =
-        (xml.getTagName() == Serialization::Core::keySignatures) ?
-        &xml : xml.getChildByName(Serialization::Core::keySignatures);
+    const auto root =
+        tree.hasType(Serialization::Midi::keySignatures) ?
+        tree : tree.getChildWithName(Serialization::Midi::keySignatures);
 
-    if (root == nullptr)
+    if (!root.isValid())
     {
         return;
     }
@@ -292,10 +292,10 @@ void KeySignaturesSequence::deserialize(const XmlElement &xml)
     float lastBeat = 0;
     float firstBeat = 0;
 
-    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::keySignature)
+    forEachValueTreeChildWithType(root, e, Serialization::Midi::keySignature)
     {
         auto signature = new KeySignatureEvent(this);
-        signature->deserialize(*e);
+        signature->deserialize(e);
         
         this->midiEvents.add(signature); // sorted later
 

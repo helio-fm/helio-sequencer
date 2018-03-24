@@ -25,7 +25,7 @@
 #include "AnnotationEvent.h"
 #include "MidiTrack.h"
 
-class TrackMapNoteComponent : public Component
+class TrackMapNoteComponent final : public Component
 {
 public:
 

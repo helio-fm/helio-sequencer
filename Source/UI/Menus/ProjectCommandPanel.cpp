@@ -137,11 +137,11 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
             
             if (hasTempoTrack)
             {
-                App::Helio()->showTooltip(TRANS("menu::project::addtempo::failed"));
+                App::Layout().showTooltip(TRANS("menu::project::addtempo::failed"));
             }
             else
             {
-                const String autoLayerParams =
+                const auto autoLayerParams =
                     this->createAutoLayerTempate(TRANS("defaults::tempotrack::name"),
                         MidiTrack::tempoController);
                 
@@ -165,7 +165,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
                                  CommandIDs::AddMidiTrackConfirmed,
                                  CommandIDs::Cancel);
             
-            App::Layout().showModalNonOwnedDialog(inputDialog);
+            App::Layout().showModalComponentUnowned(inputDialog);
             return;
         }
             
@@ -264,7 +264,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
                                         CommandIDs::DeleteProjectConfirmed1,
                                         CommandIDs::Cancel);
             
-            App::Layout().showModalNonOwnedDialog(confirmationDialog);
+            App::Layout().showModalComponentUnowned(confirmationDialog);
             return;
         }
             
@@ -279,7 +279,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
                                  CommandIDs::DeleteProjectConfirmed2,
                                  CommandIDs::Cancel);
             
-            App::Layout().showModalNonOwnedDialog(inputDialog);
+            App::Layout().showModalComponentUnowned(inputDialog);
             return;
         }
 
@@ -344,7 +344,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
         const int controllerNumber = (commandId - CommandIDs::AddCustomController);
         const String instrumentId = this->lastSelectedInstrument ? this->lastSelectedInstrument->getIdAndHash() : "";
         const String layerName = TreeItem::createSafeName(MidiMessage::getControllerName(controllerNumber));
-        const String autoLayerParams = this->createAutoLayerTempate(layerName, controllerNumber, instrumentId);
+        const auto autoLayerParams = this->createAutoLayerTempate(layerName, controllerNumber, instrumentId);
         
         this->project.getUndoStack()->beginNewTransaction();
         this->project.getUndoStack()->perform(new AutomationTrackInsertAction(this->project,
@@ -367,23 +367,22 @@ void ProjectCommandPanel::proceedToRenderDialog(const String &extension)
     
     if (fc.browseForFileToSave(true))
     {
-        App::Helio()->showModalComponent(new RenderDialog(this->project, fc.getResult(), extension));
+        App::Layout().showModalComponentUnowned(new RenderDialog(this->project, fc.getResult(), extension));
     }
 #else
-    App::Helio()->showModalComponent(new RenderDialog(this->project, initialPath.getChildFile(safeRenderName), extension));
+    App::Layout().showModalComponentUnowned(new RenderDialog(this->project, initialPath.getChildFile(safeRenderName), extension));
 #endif
     
     this->getParentComponent()->exitModalState(0);
 }
 
-String ProjectCommandPanel::createPianoLayerTempate(const String &name) const
+ValueTree ProjectCommandPanel::createPianoLayerTempate(const String &name) const
 {
     ScopedPointer<MidiTrackTreeItem> newItem = new PianoTrackTreeItem(name);
-    ScopedPointer<XmlElement> parameters = newItem->serialize();
-    return parameters->createDocument("", false, false, "UTF-8", 1024);
+    return newItem->serialize();
 }
 
-String ProjectCommandPanel::createAutoLayerTempate(const String &name, int controllerNumber, const String &instrumentId) const
+ValueTree ProjectCommandPanel::createAutoLayerTempate(const String &name, int controllerNumber, const String &instrumentId) const
 {
     ScopedPointer<MidiTrackTreeItem> newItem = new AutomationTrackTreeItem(name);
     auto itemLayer = static_cast<AutomationSequence *>(newItem->getSequence());
@@ -397,8 +396,7 @@ String ProjectCommandPanel::createAutoLayerTempate(const String &name, int contr
     const float firstBeat = this->project.getProjectRangeInBeats().getX();
     itemLayer->insert(AutomationEvent(itemLayer, firstBeat, defaultCV), false);
     
-    ScopedPointer<XmlElement> parameters = newItem->serialize();
-    return parameters->createDocument("", false, false, "UTF-8", 1024);
+    return newItem->serialize();
 }
 
 void ProjectCommandPanel::initMainMenu(AnimationType animationType)

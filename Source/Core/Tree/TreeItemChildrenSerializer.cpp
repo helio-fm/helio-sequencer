@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "TreeItemChildrenSerializer.h"
-#include "Serializable.h"
 #include "TreeItem.h"
 #include "ProjectTreeItem.h"
 #include "TrackGroupTreeItem.h"
@@ -29,72 +28,42 @@
 #include "PatternEditorTreeItem.h"
 #include "SettingsTreeItem.h"
 
-void TreeItemChildrenSerializer::serializeChildren(const TreeItem &parentItem, XmlElement &parentXml)
+void TreeItemChildrenSerializer::serializeChildren(const TreeItem &parentItem, ValueTree &parent)
 {
     for (int i = 0; i < parentItem.getNumSubItems(); ++i)
     {
         if (TreeViewItem *sub = parentItem.getSubItem(i))
         {
             TreeItem *treeItem = static_cast<TreeItem *>(sub);
-            parentXml.addChildElement(treeItem->serialize());
+            parent.appendChild(treeItem->serialize(), nullptr);
         }
     }
 }
 
-void TreeItemChildrenSerializer::deserializeChildren(TreeItem &parentItem, const XmlElement &parentXml)
+void TreeItemChildrenSerializer::deserializeChildren(TreeItem &parentItem, const ValueTree &parent)
 {
-    forEachXmlChildElementWithTagName(parentXml, e, Serialization::Core::treeItem)
-    {
-        // Legacy support:
-        const String typeFallback = 
-            e->getStringAttribute(Serialization::Core::treeItemType.toLowerCase());
+    using namespace Serialization;
 
-        const String type =
-            e->getStringAttribute(Serialization::Core::treeItemType, typeFallback);
+    forEachValueTreeChildWithType(parent, e, Core::treeItem)
+    {
+        const auto type = Identifier(e.getProperty(Core::treeItemType));
 
         TreeItem *child = nullptr;
 
-        if (type == Serialization::Core::project)
-        {
-            child = new ProjectTreeItem("");
-        }
-        else if (type == Serialization::Core::settings)
-        {
-            child = new SettingsTreeItem();
-        }
-        else if (type == Serialization::Core::layerGroup)
-        {
-            child = new TrackGroupTreeItem("");
-        }
-        else if (type == Serialization::Core::pianoLayer)
-        {
-            child = new PianoTrackTreeItem("");
-        }
-        else if (type == Serialization::Core::autoLayer)
-        {
-            child = new AutomationTrackTreeItem("");
-        }
-        else if (type == Serialization::Core::instrumentRoot)
-        {
-            child = new InstrumentsRootTreeItem();
-        }
-        else if (type == Serialization::Core::instrument)
-        {
-            child = new InstrumentTreeItem();
-        }
-        else if (type == Serialization::Core::versionControl)
-        {
-            child = new VersionControlTreeItem();
-        }
-        else if (type == Serialization::Core::patternSet)
-        {
-            child = new PatternEditorTreeItem();
-        }
+        if (type == Core::project)              { child = new ProjectTreeItem(""); }
+        else if (type == Core::settings)        { child = new SettingsTreeItem(); }
+        else if (type == Core::trackGroup)      { child = new TrackGroupTreeItem(""); }
+        else if (type == Core::pianoTrack)      { child = new PianoTrackTreeItem(""); }
+        else if (type == Core::automationTrack) { child = new AutomationTrackTreeItem(""); }
+        else if (type == Core::instrumentsList) { child = new InstrumentsRootTreeItem(); }
+        else if (type == Core::instrumentRoot)  { child = new InstrumentTreeItem(); }
+        else if (type == Core::versionControl)  { child = new VersionControlTreeItem(); }
+        else if (type == Core::patternSet)      { child = new PatternEditorTreeItem(); }
 
         if (child != nullptr)
         {
             parentItem.addChildTreeItem(child);
-            child->deserialize(*e);
+            child->deserialize(e);
         }
     }
 }

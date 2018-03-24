@@ -24,10 +24,9 @@
 //[MiscUserDefs]
 #include "App.h"
 #include "MainWindow.h"
-#include "TranslationManager.h"
+#include "TranslationsManager.h"
 #include "TranslationSettingsItem.h"
-#include "HelioServerDefines.h"
-#include "DataEncoder.h"
+#include "HelioApiRoutes.h"
 
 #if HELIO_DESKTOP
 #   define TRANSLATION_SETTINGS_ROW_HEIGHT (32)
@@ -56,7 +55,7 @@ TranslationSettings::TranslationSettings()
     setSize (600, 265);
 
     //[Constructor]
-    const Array<TranslationManager::Locale> locales(TranslationManager::getInstance().getAvailableLocales());
+    const auto locales(TranslationsManager::getInstance().getAvailableLocales());
     this->setSize(600, 40 + locales.size() * TRANSLATION_SETTINGS_ROW_HEIGHT);
 
     this->setFocusContainer(false);
@@ -65,14 +64,14 @@ TranslationSettings::TranslationSettings()
 
     this->scrollToSelectedLocale();
 
-    TranslationManager::getInstance().addChangeListener(this);
+    TranslationsManager::getInstance().addChangeListener(this);
     //[/Constructor]
 }
 
 TranslationSettings::~TranslationSettings()
 {
     //[Destructor_pre]
-    TranslationManager::getInstance().removeChangeListener(this);
+    TranslationsManager::getInstance().removeChangeListener(this);
     //[/Destructor_pre]
 
     translationsList = nullptr;
@@ -112,8 +111,8 @@ void TranslationSettings::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == helpButton)
     {
         //[UserButtonCode_helpButton] -- add your button handler code here..
-        //Logger::writeToLog(DataEncoder::obfuscate(HELIO_TRANSLATIONS_HELP_URL));
-        URL updateUrl(HELIO_TRANSLATIONS_HELP_URL);
+        //Logger::writeToLog(DocumentReader::obfuscate(HELIO_TRANSLATIONS_HELP_URL));
+        URL updateUrl(HelioFM::translationsURL);
         updateUrl.launchInDefaultBrowser();
         //[/UserButtonCode_helpButton]
     }
@@ -128,12 +127,12 @@ void TranslationSettings::buttonClicked (Button* buttonThatWasClicked)
 void TranslationSettings::scrollToSelectedLocale()
 {
     int selectedRow = 0;
-    const Array<TranslationManager::Locale> locales(TranslationManager::getInstance().getAvailableLocales());
-    const String currentLocale(TranslationManager::getInstance().getCurrentLocaleName());
+    const auto locales(TranslationsManager::getInstance().getAvailableLocales());
+    const auto currentLocale(TranslationsManager::getInstance().getCurrentLocale());
 
     for (int i = 0; i < locales.size(); ++i)
     {
-        if (const bool isCurrentLocale = (locales[i].localeName == currentLocale))
+        if (const bool isCurrentLocale = (locales[i]->getName() == currentLocale->getName()))
         {
             selectedRow = i;
             break;
@@ -162,21 +161,21 @@ void TranslationSettings::changeListenerCallback(ChangeBroadcaster *source)
 Component *TranslationSettings::refreshComponentForRow(int rowNumber, bool isRowSelected,
                                                     Component *existingComponentToUpdate)
 {
-    const Array<TranslationManager::Locale> locales(TranslationManager::getInstance().getAvailableLocales());
-    const String currentLocale(TranslationManager::getInstance().getCurrentLocaleName());
+    const auto locales(TranslationsManager::getInstance().getAvailableLocales());
+    const auto currentLocale(TranslationsManager::getInstance().getCurrentLocale());
 
     if (rowNumber >= locales.size()) { return existingComponentToUpdate; }
 
-    const bool isCurrentLocale = (locales[rowNumber].localeName == currentLocale);
+    const bool isCurrentLocale = (locales[rowNumber]->getName() == currentLocale->getName());
     const bool isLastRow = (rowNumber == locales.size() - 1);
-    const String localeDescription = locales[rowNumber].localeId.toLowerCase(); // locales[rowNumber].localeAuthor
+    const String localeDescription(locales[rowNumber]->getId());
 
     if (existingComponentToUpdate != nullptr)
     {
         if (TranslationSettingsItem *row = dynamic_cast<TranslationSettingsItem *>(existingComponentToUpdate))
         {
             row->updateDescription(isLastRow, isCurrentLocale,
-                                   locales[rowNumber].localeName,
+                                   locales[rowNumber]->getName(),
                                    localeDescription);
         }
     }
@@ -184,7 +183,7 @@ Component *TranslationSettings::refreshComponentForRow(int rowNumber, bool isRow
     {
         auto row = new TranslationSettingsItem(*this->translationsList);
         row->updateDescription(isLastRow, isCurrentLocale,
-                               locales[rowNumber].localeName,
+                               locales[rowNumber]->getName(),
                                localeDescription);
         return row;
     }
@@ -194,7 +193,7 @@ Component *TranslationSettings::refreshComponentForRow(int rowNumber, bool isRow
 
 int TranslationSettings::getNumRows()
 {
-    const int numRows = TranslationManager::getInstance().getAvailableLocales().size();
+    const int numRows = TranslationsManager::getInstance().getAvailableLocales().size();
     return numRows;
 }
 

@@ -24,12 +24,12 @@ class VersionControlEditor;
 #include "TrackedItemsSource.h"
 #include "SafeTreeItemPointer.h"
 
-#include "Serializable.h"
 #include "ProjectListener.h"
 
 #include "Delta.h"
 #include "Revision.h"
 #include "Head.h"
+#include "HeadState.h"
 #include "Pack.h"
 #include "Client.h"
 #include "StashesRepository.h"
@@ -81,7 +81,7 @@ public:
 
     VersionControlEditor *createEditor();
     VCS::Head &getHead() { return this->head; }
-    ValueTree getRoot() { return this->root; }
+    ValueTree getRoot() { return this->rootRevision; }
 
     void moveHead(const ValueTree revision);
     void checkout(const ValueTree revision);
@@ -104,8 +104,8 @@ public:
     // Serializable
     //===------------------------------------------------------------------===//
 
-    XmlElement *serialize() const override;
-    void deserialize(const XmlElement &xml) override;
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
     void reset() override;
 
     //===------------------------------------------------------------------===//
@@ -125,7 +125,7 @@ protected:
     VCS::Head head;
 
     // the history tree itself
-    ValueTree root;
+    ValueTree rootRevision;
     ScopedPointer<VCS::Client> remote;
     WeakReference<VCS::TrackedItemsSource> parentItem;
 

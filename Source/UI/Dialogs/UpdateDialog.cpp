@@ -25,13 +25,12 @@
 #include "DocumentOwner.h"
 #include "App.h"
 #include "MainLayout.h"
-#include "AuthorizationManager.h"
+#include "SessionService.h"
 #include "ProjectTreeItem.h"
 #include "PlayerThread.h"
 #include "ProgressIndicator.h"
 #include "SuccessTooltip.h"
 #include "FailTooltip.h"
-#include "UpdateManager.h"
 //[/MiscUserDefs]
 
 UpdateDialog::UpdateDialog()
@@ -86,25 +85,25 @@ UpdateDialog::UpdateDialog()
     addAndMakeVisible (separatorH = new SeparatorHorizontal());
 
     //[UserPreSize]
-    UpdateManager *updater = App::Helio()->getUpdateManager();
-    this->installedVersionLabel->setText(App::getAppReadableVersion(), dontSendNotification);
-    this->availableVersionLabel->setText(updater->getLatestVersion(), dontSendNotification);
+    //UpdateManager *updater = App::Helio()->getUpdateManager();
+    //this->installedVersionLabel->setText(App::getAppReadableVersion(), dontSendNotification);
+    //this->availableVersionLabel->setText(updater->getLatestVersion(), dontSendNotification);
 
-    if (updater->hasMajorUpdate())
-    {
-        this->titleLabel->setText(TRANS("dialog::update::major"), dontSendNotification);
-        this->cancelButton->setVisible(false);
-        this->updateButton->setVisible(false);
-        this->forceUpdateButton->setVisible(true);
-    }
-    else
-    {
-        this->cancelButton->setVisible(true);
-        this->updateButton->setVisible(true);
-        this->forceUpdateButton->setVisible(false);
-    }
+    //if (updater->hasMajorUpdate())
+    //{
+    //    this->titleLabel->setText(TRANS("dialog::update::major"), dontSendNotification);
+    //    this->cancelButton->setVisible(false);
+    //    this->updateButton->setVisible(false);
+    //    this->forceUpdateButton->setVisible(true);
+    //}
+    //else
+    //{
+    //    this->cancelButton->setVisible(true);
+    //    this->updateButton->setVisible(true);
+    //    this->forceUpdateButton->setVisible(false);
+    //}
 
-  this->separatorH->setAlphaMultiplier(2.5f);
+    this->separatorH->setAlphaMultiplier(2.5f);
     //[/UserPreSize]
 
     setSize (500, 190);
@@ -180,9 +179,9 @@ void UpdateDialog::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == updateButton)
     {
         //[UserButtonCode_updateButton] -- add your button handler code here..
-        UpdateManager *updater = App::Helio()->getUpdateManager();
-        URL updateUrl(updater->getUpdateUrl());
-        updateUrl.launchInDefaultBrowser();
+        //UpdateManager *updater = App::Helio()->getUpdateManager();
+        //URL updateUrl(updater->getUpdateUrl());
+        //updateUrl.launchInDefaultBrowser();
         delete this;
         //[/UserButtonCode_updateButton]
     }
@@ -195,9 +194,9 @@ void UpdateDialog::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == forceUpdateButton)
     {
         //[UserButtonCode_forceUpdateButton] -- add your button handler code here..
-        UpdateManager *updater = App::Helio()->getUpdateManager();
-        URL updateUrl(updater->getUpdateUrl());
-        updateUrl.launchInDefaultBrowser();
+        //UpdateManager *updater = App::Helio()->getUpdateManager();
+        //URL updateUrl(updater->getUpdateUrl());
+        //updateUrl.launchInDefaultBrowser();
         //[/UserButtonCode_forceUpdateButton]
     }
 

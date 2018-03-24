@@ -21,12 +21,11 @@
 //[/Headers]
 
 
-class SeparatorHorizontalFadingReversed  : public Component
+class SeparatorHorizontalFadingReversed final : public Component
 {
 public:
 
-    SeparatorHorizontalFadingReversed ();
-
+    SeparatorHorizontalFadingReversed();
     ~SeparatorHorizontalFadingReversed();
 
     //[UserMethods]

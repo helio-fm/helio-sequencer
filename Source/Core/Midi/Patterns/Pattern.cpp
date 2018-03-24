@@ -277,35 +277,35 @@ void Pattern::updateBeatRange(bool shouldNotifyIfChanged)
 // Serializable
 //===----------------------------------------------------------------------===//
 
-XmlElement *Pattern::serialize() const
+ValueTree Pattern::serialize() const
 {
-    auto xml = new XmlElement(Serialization::Core::pattern);
+    ValueTree tree(Serialization::Midi::pattern);
 
     for (int i = 0; i < this->clips.size(); ++i)
     {
-        xml->prependChildElement(this->clips.getUnchecked(i)->serialize());
+        tree.appendChild(this->clips.getUnchecked(i)->serialize(), nullptr);
     }
 
-    return xml;
+    return tree;
 }
 
-void Pattern::deserialize(const XmlElement &xml)
+void Pattern::deserialize(const ValueTree &tree)
 {
     this->reset();
 
-    const XmlElement *root =
-        (xml.getTagName() == Serialization::Core::pattern) ?
-        &xml : xml.getChildByName(Serialization::Core::pattern);
+    const auto root =
+        tree.hasType(Serialization::Midi::pattern) ?
+        tree : tree.getChildWithName(Serialization::Midi::pattern);
 
-    if (root == nullptr)
+    if (!root.isValid())
     {
         return;
     }
 
-    forEachXmlChildElementWithTagName(*root, e, Serialization::Core::clip)
+    forEachValueTreeChildWithType(root, e, Serialization::Midi::clip)
     {
         auto clip = new Clip(this);
-        clip->deserialize(*e);
+        clip->deserialize(e);
         this->clips.add(clip); // sorted later
         this->usedClipIds.insert(clip->getId());
     }
