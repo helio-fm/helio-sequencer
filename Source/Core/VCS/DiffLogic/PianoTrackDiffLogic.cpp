@@ -115,19 +115,11 @@ Diff *PianoTrackDiffLogic::createDiff(const TrackedItem &initialState) const
             // остальные тут не имеют смысла //else if (this->checkIfDeltaIsNotesType(myDelta))
             else if (myDelta->hasType(PianoSequenceDeltas::notesAdded))
             {
-                const auto fullDeltas =  createEventsDiffs(stateDeltaData, myDeltaData);
-                for (auto &fullDelta : fullDeltas)
-                {
-                    diff->applyDelta(fullDelta);
-                }
+                diff->applyDeltas(createEventsDiffs(stateDeltaData, myDeltaData));
             }
             else if (myDelta->hasType(PatternDeltas::clipsAdded))
             {
-                const auto fullDeltas = PatternDiffHelpers::createClipsDiffs(stateDeltaData, myDeltaData);
-                for (auto &fullDelta : fullDeltas)
-                {
-                    diff->applyDelta(fullDelta);
-                }
+                diff->applyDeltas(PatternDiffHelpers::createClipsDiffs(stateDeltaData, myDeltaData));
             }
         }
     }

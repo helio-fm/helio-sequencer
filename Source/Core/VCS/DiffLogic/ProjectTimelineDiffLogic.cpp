@@ -101,27 +101,15 @@ Diff *ProjectTimelineDiffLogic::createDiff(const TrackedItem &initialState) cons
         {
             if (myDelta->hasType(ProjectTimelineDeltas::annotationsAdded))
             {
-                const auto fullDeltas = createAnnotationsDiffs(stateDeltaData, myDeltaData);
-                for (auto &fullDelta : fullDeltas)
-                {
-                    diff->applyDelta(fullDelta);
-                }
+                diff->applyDeltas(createAnnotationsDiffs(stateDeltaData, myDeltaData));
             }
             else if (myDelta->hasType(ProjectTimelineDeltas::timeSignaturesAdded))
             {
-                const auto fullDeltas = createTimeSignaturesDiffs(stateDeltaData, myDeltaData);
-                for (auto &fullDelta : fullDeltas)
-                {
-                    diff->applyDelta(fullDelta);
-                }
+                diff->applyDeltas(createTimeSignaturesDiffs(stateDeltaData, myDeltaData));
             }
             else if (myDelta->hasType(ProjectTimelineDeltas::keySignaturesAdded))
             {
-                const auto fullDeltas = createKeySignaturesDiffs(stateDeltaData, myDeltaData);
-                for (auto &fullDelta : fullDeltas)
-                {
-                    diff->applyDelta(fullDelta);
-                }
+                diff->applyDeltas(createKeySignaturesDiffs(stateDeltaData, myDeltaData));
             }
         }
     }

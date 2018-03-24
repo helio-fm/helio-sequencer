@@ -126,19 +126,11 @@ Diff *AutomationTrackDiffLogic::createDiff(const TrackedItem &initialState) cons
             }
             else if (myDelta->hasType(AutoSequenceDeltas::eventsAdded))
             {
-                const auto fullDeltas = createEventsDiffs(stateDeltaData, myDeltaData);
-                for (auto &fullDelta : fullDeltas)
-                {
-                    diff->applyDelta(fullDelta);
-                }
+                diff->applyDeltas(createEventsDiffs(stateDeltaData, myDeltaData));
             }
             else if (myDelta->hasType(PatternDeltas::clipsAdded))
             {
-                const auto fullDeltas = PatternDiffHelpers::createClipsDiffs(stateDeltaData, myDeltaData);
-                for (auto &fullDelta : fullDeltas)
-                {
-                    diff->applyDelta(fullDelta);
-                }
+                diff->applyDeltas(PatternDiffHelpers::createClipsDiffs(stateDeltaData, myDeltaData));
             }
         }
     }

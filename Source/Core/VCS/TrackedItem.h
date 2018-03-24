@@ -19,11 +19,10 @@
 
 #include "Delta.h"
 #include "SerializationKeys.h"
+#include "DiffLogic.h"
 
 namespace VCS
 {
-    class DiffLogic;
-
     class TrackedItem
     {
     public:

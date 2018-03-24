@@ -21,13 +21,12 @@ class VersionControl;
 
 #include "SyncThread.h"
 #include "SyncMessage.h"
+#include "PushThread.h"
+#include "PullThread.h"
+#include "RemovalThread.h"
 
 namespace VCS
 {
-    class PushThread;
-    class PullThread;
-    class RemovalThread;
-
     class Client :
         public ChangeBroadcaster, // на него подписываются PushComponent и PullComponent
         private ChangeListener // слушает PushThread и PullThread
