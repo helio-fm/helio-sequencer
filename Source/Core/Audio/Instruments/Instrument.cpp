@@ -19,7 +19,7 @@
 #include "Instrument.h"
 #include "PluginWindow.h"
 #include "InternalPluginFormat.h"
-#include "PluginSmartDescription.h"
+#include "SerializablePluginDescription.h"
 #include "SerializationKeys.h"
 
 const int Instrument::midiChannelNumber = 0x1000;
@@ -437,7 +437,7 @@ ValueTree Instrument::serializeNode(AudioProcessorGraph::Node::Ptr node) const
         tree.setProperty(UI::positionX, node->properties[UI::positionX].toString(), nullptr);
         tree.setProperty(UI::positionY, node->properties[UI::positionY].toString(), nullptr);
 
-        PluginSmartDescription pd;
+        SerializablePluginDescription pd;
         plugin->fillInPluginDescription(pd);
 
         tree.appendChild(pd.serialize(), nullptr);
@@ -455,7 +455,7 @@ ValueTree Instrument::serializeNode(AudioProcessorGraph::Node::Ptr node) const
 void Instrument::deserializeNodeAsync(const ValueTree &tree, AddNodeCallback f)
 {
     using namespace Serialization;
-    PluginSmartDescription pd;
+    SerializablePluginDescription pd;
     for (const auto &e : tree)
     {
         pd.deserialize(e);
@@ -508,7 +508,7 @@ void Instrument::deserializeNodeAsync(const ValueTree &tree, AddNodeCallback f)
 void Instrument::deserializeNode(const ValueTree &tree)
 {
     using namespace Serialization;
-    PluginSmartDescription pd;
+    SerializablePluginDescription pd;
     for (const auto &e : tree)
     {
         pd.deserialize(e);

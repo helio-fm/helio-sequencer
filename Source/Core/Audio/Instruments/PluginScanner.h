@@ -17,33 +17,23 @@
 
 #pragma once
 
-class PluginManager :
+class PluginScanner :
     public Serializable,
     public Thread,
-    public WaitableEvent, // засыпает после поиска
-    public ChangeBroadcaster // оповещает о том, что найден новый плагин
+    public WaitableEvent,
+    public ChangeBroadcaster
 {
 public:
 
-    PluginManager();
-
-    ~PluginManager() override;
-
+    PluginScanner();
+    ~PluginScanner() override;
     
     bool isWorking() const;
-
     void removeListItem(int index);
-
-    const KnownPluginList &getList();
-
-    void sortList(KnownPluginList::SortMethod sortMethod, bool forward);
-
-    StringArray getFilesToScan() const;
+    const KnownPluginList &getList() const;
 
     void runInitialScan();
-
     void scanFolderAndAddResults(const File &dir);
-
 
     //===------------------------------------------------------------------===//
     // Thread
@@ -51,40 +41,29 @@ public:
 
     void run() override;
 
-
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
 
     ValueTree serialize() const override;
-
     void deserialize(const ValueTree &tree) override;
-
     void reset() override;
 
 private:
 
     ReadWriteLock pluginsListLock;
-
     KnownPluginList pluginsList;
 
-
     ReadWriteLock filesListLock;
-
     StringArray filesToScan;
-
     
     ReadWriteLock workingFlagLock;
     
     bool working;
     
-    bool usingExternalProcess;
-
-    
+    StringArray getFilesToScan() const;
     FileSearchPath getTypicalFolders();
-
     void scanPossibleSubfolders(const StringArray &possibleSubfolders,
                                 const File &currentSystemFolder,
                                 FileSearchPath &foldersOut);
-
 };

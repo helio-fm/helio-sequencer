@@ -24,7 +24,7 @@
 #include "MainLayout.h"
 #include "AudioCore.h"
 #include "Icons.h"
-#include "PluginManager.h"
+#include "PluginScanner.h"
 #include "InstrumentsPage.h"
 #include "InstrumentsCommandPanel.h"
 #include "SerializationKeys.h"

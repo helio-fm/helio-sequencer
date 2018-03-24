@@ -16,81 +16,74 @@
 */
 
 #include "Common.h"
-#include "PluginManager.h"
+#include "PluginScanner.h"
 #include "AudioCore.h"
 #include "DocumentHelpers.h"
 #include "XmlSerializer.h"
 #include "Config.h"
 #include "SerializationKeys.h"
 #include "BuiltInSynthFormat.h"
-#include "PluginSmartDescription.h"
+#include "SerializablePluginDescription.h"
 
-PluginManager::PluginManager() :
+#if HELIO_DESKTOP
+#   define SAFE_SCAN 1
+#else
+#   define SAFE_SCAN 0
+#endif
+
+PluginScanner::PluginScanner() :
     Thread("Plugin Scanner Thread"),
-    working(false),
-    usingExternalProcess(false)
+    working(false)
 {
     this->startThread(0);
 }
 
-PluginManager::~PluginManager()
+PluginScanner::~PluginScanner()
 {
     this->signalThreadShouldExit();
     this->signal();
     this->waitForThreadToExit(500);
 }
 
-void PluginManager::removeListItem(int index)
+void PluginScanner::removeListItem(int index)
 {
     const ScopedWriteLock lock(this->pluginsListLock);
     return this->pluginsList.removeType(index);
 }
 
-const KnownPluginList &PluginManager::getList()
+const KnownPluginList &PluginScanner::getList() const
 {
     const ScopedReadLock lock(this->pluginsListLock);
     return this->pluginsList;
 }
 
-void PluginManager::sortList(KnownPluginList::SortMethod sortMethod, bool forward)
-{
-    const ScopedReadLock lock(this->pluginsListLock);
-    this->pluginsList.sort(sortMethod, forward);
-}
-
-StringArray PluginManager::getFilesToScan() const
+StringArray PluginScanner::getFilesToScan() const
 {
     const ScopedReadLock lock(this->filesListLock);
     return this->filesToScan;
 }
 
-bool PluginManager::isWorking() const
+bool PluginScanner::isWorking() const
 {
     const ScopedReadLock lock(this->workingFlagLock);
     return this->working;
 }
 
-void PluginManager::runInitialScan()
+void PluginScanner::runInitialScan()
 {
     if (this->isWorking())
     {
-        Logger::writeToLog("PluginManager scan thread is already running!");
+        Logger::writeToLog("PluginScanner scan thread is already running!");
         return;
     }
-    
-#if HELIO_DESKTOP
-    this->usingExternalProcess = true;
-#endif
     
     FileSearchPath pathToScan = this->getTypicalFolders();
 
     {
         const ScopedWriteLock filesLock(this->filesListLock);
-        //this->filesToScan.addIfNotAlreadyThere(BuiltInSynth::sineId); // add built-in synths
         this->filesToScan.addIfNotAlreadyThere(BuiltInSynth::pianoId); // add built-in synths
 
-        // проверить на валидность все имеющиеся плагины
-        for (auto & it : this->getList())
+        for (const auto &it : this->getList())
         {
             this->filesToScan.addIfNotAlreadyThere(it->fileOrIdentifier);
         }
@@ -121,16 +114,14 @@ void PluginManager::runInitialScan()
     this->signal();
 }
 
-void PluginManager::scanFolderAndAddResults(const File &dir)
+void PluginScanner::scanFolderAndAddResults(const File &dir)
 {
     if (this->isWorking())
     {
-        Logger::writeToLog("PluginManager scan thread is already running!");
+        Logger::writeToLog("PluginScanner scan thread is already running!");
         return;
     }
-    
-    this->usingExternalProcess = false;
-    
+        
     FileSearchPath pathToScan = dir.getFullPathName();
 
     Array<File> subPaths;
@@ -163,7 +154,7 @@ void PluginManager::scanFolderAndAddResults(const File &dir)
 // Thread
 //===----------------------------------------------------------------------===//
 
-void PluginManager::run()
+void PluginScanner::run()
 {
     WaitableEvent::wait();
     
@@ -178,85 +169,87 @@ void PluginManager::run()
         }
         
         StringArray uncheckedList = this->getFilesToScan();
+        const auto myPath(File::getSpecialLocation(File::currentExecutableFile).getFullPathName());
 
         try
         {
-            for (const auto & i : uncheckedList)
+            for (const auto &pluginPath : uncheckedList)
             {
-                Logger::writeToLog(i);
-                if (this->usingExternalProcess)
+#if SAFE_SCAN
+                Logger::writeToLog("Safe scanning: " + pluginPath);
+
+                const Uuid tempFileName;
+                const File tempFile(DocumentHelpers::getTempSlot(tempFileName.toString()));
+                tempFile.appendText(pluginPath, false, false);
+                    
+                Thread::sleep(50);
+
+                ChildProcess checkerProcess;
+                const String commandLine(myPath + " " + tempFileName.toString());
+                checkerProcess.start(commandLine);
+                    
+                // FIXME! (#60): skips some valid plugins sometimes
+                if (!checkerProcess.waitForProcessToFinish(5000))
                 {
-                    const Uuid tempFileName;
-                    const File tempFile(DocumentHelpers::getTempSlot(tempFileName.toString()));
-                    tempFile.replaceWithText(i);
-                    
-                    const String myself = File::getSpecialLocation(File::currentExecutableFile).getFullPathName();
-                    
-                    ChildProcess checkerProcess;
-                    String commandLine(myself + " " + tempFileName.toString());
-                    checkerProcess.start(commandLine);
-                    
-                    // FIXME! (#60): skips some valid plugins sometimes
-                    if (!checkerProcess.waitForProcessToFinish(3000))
-                    {
-                        checkerProcess.kill();
-                    }
-                    else
-                    {
-                        if (tempFile.existsAsFile())
-                        {
-                            try
-                            {
-                                const auto tree(DocumentHelpers::load<XmlSerializer>(tempFile));
-                                if (tree.isValid())
-                                {
-                                    forEachValueTreeChildWithType(tree, e, Serialization::Audio::plugin)
-                                    {
-                                        const ScopedWriteLock lock(this->pluginsListLock);
-                                        PluginSmartDescription pluginDescription;
-                                        pluginDescription.deserialize(e);
-                                        this->pluginsList.addType(pluginDescription);
-                                    }
-                                    
-                                    this->sendChangeMessage();
-                                }
-                            }
-                            catch (...)
-                            { }
-                        }
-                    }
-                    
-                    tempFile.deleteFile();
+                    checkerProcess.kill();
                 }
                 else
                 {
-                    const String pluginPath(i);
-                    KnownPluginList knownPluginList;
-                    OwnedArray<PluginDescription> typesFound;
-                    
-                    try
+                    Thread::sleep(50);
+
+                    if (tempFile.existsAsFile())
                     {
-                        for (int j = 0; j < formatManager.getNumFormats(); ++j)
+                        try
                         {
-                            AudioPluginFormat *format = formatManager.getFormat(j);
-                            knownPluginList.scanAndAddFile(pluginPath, false, typesFound, *format);
+                            const auto tree(DocumentHelpers::load<XmlSerializer>(tempFile));
+                            if (tree.isValid())
+                            {
+                                forEachValueTreeChildWithType(tree, e, Serialization::Audio::plugin)
+                                {
+                                    const ScopedWriteLock lock(this->pluginsListLock);
+                                    SerializablePluginDescription pluginDescription;
+                                    pluginDescription.deserialize(e);
+                                    this->pluginsList.addType(pluginDescription);
+                                }
+                                    
+                                this->sendChangeMessage();
+                            }
                         }
+                        catch (...)
+                        { }
                     }
-                    catch (...) {}
-                    
-                    // at this point we are still alive and plugin haven't crashed the app
-                    if (typesFound.size() != 0)
-                    {
-                        for (auto type : typesFound)
-                        {
-                            const ScopedWriteLock lock(this->pluginsListLock);
-                            this->pluginsList.addType(*type);
-                        }
-                    }
-                    
-                    this->sendChangeMessage();
-                    Thread::sleep(150);
                 }
+
+                tempFile.deleteFile();
+#else
+                Logger::writeToLog("Unsafe scanning: " + pluginPath);
+
+                KnownPluginList knownPluginList;
+                OwnedArray<PluginDescription> typesFound;
+                    
+                try
+                {
+                    for (int j = 0; j < formatManager.getNumFormats(); ++j)
+                    {
+                        AudioPluginFormat *format = formatManager.getFormat(j);
+                        knownPluginList.scanAndAddFile(pluginPath, false, typesFound, *format);
+                    }
+                }
+                catch (...) {}
+                    
+                // at this point we are still alive and plugin haven't crashed the app
+                if (typesFound.size() != 0)
+                {
+                    for (auto type : typesFound)
+                    {
+                        const ScopedWriteLock lock(this->pluginsListLock);
+                        this->pluginsList.addType(*type);
+                    }
+                }
+                    
+                this->sendChangeMessage();
+                Thread::sleep(150);
+#endif
             }
         }
         catch (...) { }
@@ -273,7 +266,7 @@ void PluginManager::run()
     }
 }
 
-FileSearchPath PluginManager::getTypicalFolders()
+FileSearchPath PluginScanner::getTypicalFolders()
 {
     FileSearchPath folders;
 
@@ -321,7 +314,7 @@ FileSearchPath PluginManager::getTypicalFolders()
     return folders;
 }
 
-void PluginManager::scanPossibleSubfolders(const StringArray &possibleSubfolders,
+void PluginScanner::scanPossibleSubfolders(const StringArray &possibleSubfolders,
         const File &currentSystemFolder, FileSearchPath &foldersOut)
 {
     for (const auto & possibleSubfolder : possibleSubfolders)
@@ -340,21 +333,21 @@ void PluginManager::scanPossibleSubfolders(const StringArray &possibleSubfolders
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree PluginManager::serialize() const
+ValueTree PluginScanner::serialize() const
 {
     const ScopedReadLock lock(this->pluginsListLock);
     ValueTree tree(Serialization::Audio::pluginsList);
 
     for (int i = 0; i < this->pluginsList.getNumTypes(); ++i)
     {
-        PluginSmartDescription pd(this->pluginsList.getType(i));
+        SerializablePluginDescription pd(this->pluginsList.getType(i));
         tree.appendChild(pd.serialize(), nullptr);
     }
 
     return tree;
 }
 
-void PluginManager::deserialize(const ValueTree &tree)
+void PluginScanner::deserialize(const ValueTree &tree)
 {
     this->reset();
 
@@ -367,7 +360,7 @@ void PluginManager::deserialize(const ValueTree &tree)
     
     for (const auto &child : root)
     {
-        PluginSmartDescription pluginDescription;
+        SerializablePluginDescription pluginDescription;
         pluginDescription.deserialize(child);
         if (pluginDescription.isValid())
         {
@@ -378,7 +371,7 @@ void PluginManager::deserialize(const ValueTree &tree)
     this->sendChangeMessage();
 }
 
-void PluginManager::reset()
+void PluginScanner::reset()
 {
     const ScopedWriteLock lock(this->pluginsListLock);
     this->pluginsList.clear();

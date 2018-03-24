@@ -25,7 +25,7 @@ struct PluginDescriptionWrapper : ReferenceCountedObject
     typedef ReferenceCountedObjectPtr<PluginDescriptionWrapper> Ptr;
 };
 
-class PluginManager;
+class PluginScanner;
 class InstrumentsRootTreeItem;
 class CommandItemComponent;
 
@@ -44,7 +44,7 @@ class InstrumentsPage  : public Component,
 {
 public:
 
-    InstrumentsPage (PluginManager &scanner, InstrumentsRootTreeItem &instrumentsTreeItem);
+    InstrumentsPage (PluginScanner &scanner, InstrumentsRootTreeItem &instrumentsTreeItem);
 
     ~InstrumentsPage();
 
@@ -88,7 +88,7 @@ private:
     void showGreeting();
     void hideGreeting();
 
-    PluginManager &pluginManager;
+    PluginScanner &pluginManager;
 
     InstrumentsRootTreeItem &instrumentsRoot;
 

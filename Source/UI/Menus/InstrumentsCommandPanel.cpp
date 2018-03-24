@@ -24,7 +24,7 @@
 #include "MainLayout.h"
 #include "AudioCore.h"
 #include "Document.h"
-#include "PluginManager.h"
+#include "PluginScanner.h"
 #include "Workspace.h"
 #include "App.h"
 

@@ -17,22 +17,20 @@
 
 #pragma once
 
-class PluginSmartDescription final : public PluginDescription, public Serializable
+class SerializablePluginDescription final : public PluginDescription, public Serializable
 {
 public:
 
-    PluginSmartDescription();
-    explicit PluginSmartDescription(const PluginDescription *other);
+    SerializablePluginDescription();
+    explicit SerializablePluginDescription(const PluginDescription *other);
+
     ValueTree serialize() const override;
     void deserialize(const ValueTree &tree) override;
     void reset() override;
 
     bool isValid() const;
 
-protected:
+private:
 
-    void verify();
-
-    JUCE_LEAK_DETECTOR(PluginSmartDescription)
-
+    JUCE_LEAK_DETECTOR(SerializablePluginDescription)
 };

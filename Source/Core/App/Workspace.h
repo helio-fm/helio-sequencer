@@ -20,7 +20,7 @@
 class AudioCore;
 class ProjectTreeItem;
 class RootTreeItem;
-class PluginManager;
+class PluginScanner;
 
 #include "DocumentOwner.h"
 #include "RecentFilesList.h"
@@ -44,7 +44,7 @@ public:
     void navigateForwardIfPossible();
 
     AudioCore &getAudioCore();
-    PluginManager &getPluginManager();
+    PluginScanner &getPluginManager();
     RootTreeItem *getTreeRoot() const;
     void activateSubItemWithId(const String &id);
 
@@ -98,7 +98,7 @@ private:
     ProjectTreeItem *currentProject;
     
     ScopedPointer<AudioCore> audioCore;
-    ScopedPointer<PluginManager> pluginManager;
+    ScopedPointer<PluginScanner> pluginManager;
     
     ScopedPointer<RootTreeItem> treeRoot;
     TreeNavigationHistory navigationHistory;

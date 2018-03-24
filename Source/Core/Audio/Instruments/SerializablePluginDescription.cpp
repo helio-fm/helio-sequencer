@@ -16,16 +16,16 @@
 */
 
 #include "Common.h"
-#include "PluginSmartDescription.h"
+#include "SerializablePluginDescription.h"
 #include "SerializationKeys.h"
 
 using namespace Serialization;
 
-PluginSmartDescription::PluginSmartDescription() {}
-PluginSmartDescription::PluginSmartDescription(const PluginDescription *other) :
+SerializablePluginDescription::SerializablePluginDescription() {}
+SerializablePluginDescription::SerializablePluginDescription(const PluginDescription *other) :
     PluginDescription(*other) {}
 
-ValueTree PluginSmartDescription::serialize() const
+ValueTree SerializablePluginDescription::serialize() const
 {
     ValueTree tree(Audio::plugin);
     tree.setProperty(Audio::pluginName, this->name, nullptr);
@@ -49,7 +49,7 @@ ValueTree PluginSmartDescription::serialize() const
     return tree;
 }
 
-void PluginSmartDescription::deserialize(const ValueTree &tree)
+void SerializablePluginDescription::deserialize(const ValueTree &tree)
 {
     this->reset();
 
@@ -70,44 +70,16 @@ void PluginSmartDescription::deserialize(const ValueTree &tree)
         this->isInstrument = root.getProperty(Audio::pluginIsInstrument, false);
         this->numInputChannels = root.getProperty(Audio::pluginNumInputs);
         this->numOutputChannels = root.getProperty(Audio::pluginNumOutputs);
-
-        this->verify();
     }
 }
 
-void PluginSmartDescription::reset()
+void SerializablePluginDescription::reset()
 {
     this->name = {};
     this->uid = {};
 }
 
-bool PluginSmartDescription::isValid() const
+bool SerializablePluginDescription::isValid() const
 {
     return this->name.isNotEmpty() && this->pluginFormatName.isNotEmpty();
-}
-
-void PluginSmartDescription::verify()
-{
-    //if (this->fileOrIdentifier == "")
-    //{
-    //    return;
-    //}
-
-    //File my_path(this->fileOrIdentifier);
-
-    //if (!my_path.exists()) {
-
-    //    boost::filesystem::path filename = my_path.filename();
-
-    //    foreach (const boost::filesystem::path &path,
-    //        this->owner_.getPluginManager()->getPaths())
-    //    {
-    //        const boost::filesystem::path path_and_filename = path / filename;
-    //        if (boost::filesystem::exists(path_and_filename)) {
-    //            DBG("Updating plugin location for: " + path_and_filename.string());
-    //            this->fileOrIdentifier = path_and_filename.string().c_str();
-    //            break;
-    //        }
-    //    }
-    //}
 }

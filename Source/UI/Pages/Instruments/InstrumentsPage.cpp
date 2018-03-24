@@ -23,7 +23,7 @@
 
 //[MiscUserDefs]
 #include "InstrumentRow.h"
-#include "PluginManager.h"
+#include "PluginScanner.h"
 #include "InstrumentsRootTreeItem.h"
 #include "MainLayout.h"
 #include "AudioCore.h"
@@ -37,7 +37,7 @@
 #include "ComponentIDs.h"
 //[/MiscUserDefs]
 
-InstrumentsPage::InstrumentsPage(PluginManager &scanner, InstrumentsRootTreeItem &instrumentsTreeItem)
+InstrumentsPage::InstrumentsPage(PluginScanner &scanner, InstrumentsRootTreeItem &instrumentsTreeItem)
     : pluginManager(scanner),
       instrumentsRoot(instrumentsTreeItem)
 {
@@ -334,7 +334,7 @@ void InstrumentsPage::paintListBoxItem(int rowNumber, Graphics &g, int width,
 
 void InstrumentsPage::changeListenerCallback(ChangeBroadcaster *source)
 {
-    if (PluginManager *scanner = dynamic_cast<PluginManager *>(source))
+    if (PluginScanner *scanner = dynamic_cast<PluginScanner *>(source))
     {
         this->pluginsList->updateContent();
         this->pluginsList->setSelectedRows(SparseSet<int>());

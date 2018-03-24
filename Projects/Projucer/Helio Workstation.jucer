@@ -187,13 +187,13 @@
             <FILE id="j7eL7h" name="OrchestraPit.cpp" compile="1" resource="0"
                   file="../../Source/Core/Audio/Instruments/OrchestraPit.cpp"/>
             <FILE id="CgBNOf" name="OrchestraPit.h" compile="0" resource="0" file="../../Source/Core/Audio/Instruments/OrchestraPit.h"/>
-            <FILE id="FiXuKP" name="PluginManager.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Audio/Instruments/PluginManager.cpp"/>
-            <FILE id="JXsede" name="PluginManager.h" compile="0" resource="0" file="../../Source/Core/Audio/Instruments/PluginManager.h"/>
-            <FILE id="FMNewS" name="PluginSmartDescription.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Audio/Instruments/PluginSmartDescription.cpp"/>
-            <FILE id="Q3gpXQ" name="PluginSmartDescription.h" compile="0" resource="0"
-                  file="../../Source/Core/Audio/Instruments/PluginSmartDescription.h"/>
+            <FILE id="PvhYVT" name="PluginScanner.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Audio/Instruments/PluginScanner.cpp"/>
+            <FILE id="FdqFgf" name="PluginScanner.h" compile="0" resource="0" file="../../Source/Core/Audio/Instruments/PluginScanner.h"/>
+            <FILE id="iS1t5i" name="SerializablePluginDescription.cpp" compile="1"
+                  resource="0" file="../../Source/Core/Audio/Instruments/SerializablePluginDescription.cpp"/>
+            <FILE id="zDycjx" name="SerializablePluginDescription.h" compile="0"
+                  resource="0" file="../../Source/Core/Audio/Instruments/SerializablePluginDescription.h"/>
           </GROUP>
           <GROUP id="{12A2D307-9044-784C-B9D3-96DB293D0DD6}" name="Monitoring">
             <FILE id="Yt69la" name="AudioMonitor.cpp" compile="1" resource="0"

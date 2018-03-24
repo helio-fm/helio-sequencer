@@ -30,7 +30,7 @@
 
 #include "HelioTheme.h"
 #include "ThemeSettings.h"
-#include "PluginManager.h"
+#include "PluginScanner.h"
 #include "Config.h"
 #include "InternalClipboard.h"
 #include "FontSerializer.h"
@@ -46,7 +46,7 @@
 #include "MainWindow.h"
 #include "Workspace.h"
 #include "RootTreeItem.h"
-#include "PluginSmartDescription.h"
+#include "SerializablePluginDescription.h"
 
 //===----------------------------------------------------------------------===//
 // Static
@@ -237,7 +237,7 @@ void App::dismissAllModalComponents()
 
 void App::initialise(const String &commandLine)
 {
-    this->runMode = detectRunMode(commandLine);
+    this->runMode = this->detectRunMode(commandLine);
 
     if (this->runMode == App::NORMAL)
     {
@@ -327,18 +327,15 @@ void App::shutdown()
         
         Logger::setCurrentLogger(nullptr);
     }
-    else if (this->runMode == App::PLUGIN_CHECK)
-    {
-
-    }
-    else if (this->runMode == App::FONT_SERIALIZE)
-    {
-
-    }
 }
 
 const String App::getApplicationName()
 {
+    if (this->runMode == App::PLUGIN_CHECK)
+    {
+        return "Helio Plugin Check";
+    }
+
     return "Helio";
 }
 
@@ -349,19 +346,15 @@ const String App::getApplicationVersion()
 
 bool App::moreThanOneInstanceAllowed()
 {
-    return true; // без вариантов, мы должны как-то плагины проверять
-    //return false; // debug
+    return true; // to be able to check plugins
 }
 
 void App::anotherInstanceStarted(const String &commandLine)
 {
     // This will get called if the user launches another copy of the app
-    // todo read command line && exec
     
     //this->getWindow()->toFront(true);
-
-    Logger::outputDebugString("App::anotherInstanceStarted");
-    Logger::outputDebugString(commandLine);
+    Logger::outputDebugString("Another instance started: " + commandLine);
 
     //const Component *focused = Component::getCurrentlyFocusedComponent();
     //Logger::outputDebugString(focused ? focused->getName() : "");
@@ -495,49 +488,41 @@ void App::checkPlugin(const String &markerFile)
     Process::setDockIconVisible(false);
 #endif
 
-    const File tempFile(DocumentHelpers::getTemporaryFolder() + File::getSeparatorString() + markerFile);
+    const File tempFile(DocumentHelpers::getTempSlot(markerFile));
 
     try
     {
-        if (tempFile.existsAsFile())
+        if (tempFile.existsAsFile() && tempFile.getSize() < 32768)
         {
-            if (tempFile.getSize() < 32768)
+            const String pluginPath = tempFile.loadFileAsString();
+
+            // delete the file immediately so that host will know if we crashed
+            tempFile.deleteFile();
+
+            KnownPluginList pluginList;
+            OwnedArray<PluginDescription> typesFound;
+
+            AudioPluginFormatManager formatManager;
+            AudioCore::initAudioFormats(formatManager);
+
+            for (int i = 0; i < formatManager.getNumFormats(); ++i)
             {
-                const String pluginPath = tempFile.loadFileAsString();
+                const auto format = formatManager.getFormat(i);
+                pluginList.scanAndAddFile(pluginPath, false, typesFound, *format);
+            }
 
-                // сразу удаляем файл, если плагин накосячит, хост об этом узнает
-                tempFile.deleteFile();
+            // let host know if we haven't crashed at the moment
+            if (typesFound.size() != 0)
+            {
+                ValueTree typesNode(Serialization::Core::instrumentsList);
 
-                const File pluginFile(pluginPath);
-
-                //if (pluginFile.existsAsFile()) // может быть и id
+                for (const auto description : typesFound)
                 {
-                    KnownPluginList scanner;
-                    OwnedArray<PluginDescription> typesFound;
-
-                    AudioPluginFormatManager formatManager;
-                    AudioCore::initAudioFormats(formatManager);
-
-                    for (int i = 0; i < formatManager.getNumFormats(); ++i)
-                    {
-                        AudioPluginFormat *format = formatManager.getFormat(i);
-                        scanner.scanAndAddFile(pluginPath, false, typesFound, *format);
-                    }
-
-                    // если мы дошли до сих пор, то все хорошо и плагин нас не обрушил - так и запишем.
-                    if (typesFound.size() != 0)
-                    {
-                        ValueTree typesNode(Serialization::Core::instrumentsList);
-
-                        for (const auto description : typesFound)
-                        {
-                            PluginSmartDescription sd(description);
-                            typesNode.appendChild(sd.serialize(), nullptr);
-                        }
-
-                        DocumentHelpers::save<XmlSerializer>(tempFile, typesNode);
-                    }
+                    SerializablePluginDescription sd(description);
+                    typesNode.appendChild(sd.serialize(), nullptr);
                 }
+
+                DocumentHelpers::save<XmlSerializer>(tempFile, typesNode);
             }
         }
     }

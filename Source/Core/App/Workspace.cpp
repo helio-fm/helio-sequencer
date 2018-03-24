@@ -24,7 +24,7 @@
 #include "Instrument.h"
 #include "AudioMonitor.h"
 #include "RootTreeItem.h"
-#include "PluginManager.h"
+#include "PluginScanner.h"
 #include "SettingsTreeItem.h"
 #include "InstrumentsRootTreeItem.h"
 #include "ProjectTreeItem.h"
@@ -62,7 +62,7 @@ void Workspace::init()
     if (! this->wasInitialized)
     {
         this->audioCore = new AudioCore();
-        this->pluginManager = new PluginManager();
+        this->pluginManager = new PluginScanner();
         this->treeRoot = new RootTreeItem("Workspace One");
         
         if (! this->autoload())
@@ -128,7 +128,7 @@ AudioCore &Workspace::getAudioCore()
     return *this->audioCore;
 }
 
-PluginManager &Workspace::getPluginManager()
+PluginScanner &Workspace::getPluginManager()
 {
     jassert(this->audioCore);
     jassert(this->pluginManager);

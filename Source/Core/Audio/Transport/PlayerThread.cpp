@@ -116,7 +116,7 @@ void PlayerThread::run()
         }
         
         // Wait until all plugins process the messages in their queues
-        Time::waitForMillisecondCounter(Time::getMillisecondCounter() + 50);
+        Thread::sleep(50);
     };
     
     auto sendTempoChangeToEverybody = [&uniqueInstruments](const MidiMessage &tempoEvent)
