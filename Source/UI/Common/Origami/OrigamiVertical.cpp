@@ -157,7 +157,7 @@ void OrigamiVertical::resized()
         {
             Component *component = page->component;
             const float proportionalWidth = float(component->getWidth()) / (allPagesWidth - commonFixedWidth);
-            int newWidth = roundFloatToInt(float(this->getWidth() - commonFixedWidth) * proportionalWidth);
+            int newWidth = roundToInt(float(this->getWidth() - commonFixedWidth) * proportionalWidth);
             if (page->constrainer != nullptr)
             {
                 newWidth = jmax(newWidth, page->constrainer->getMinimumWidth());

@@ -161,9 +161,9 @@ ValueTree Note::serialize() const noexcept
     ValueTree tree(Midi::note);
     tree.setProperty(Midi::id, this->id, nullptr);
     tree.setProperty(Midi::key, this->key, nullptr);
-    tree.setProperty(Midi::timestamp, roundFloatToInt(this->beat * TICKS_PER_BEAT), nullptr);
-    tree.setProperty(Midi::length, roundFloatToInt(this->length * TICKS_PER_BEAT), nullptr);
-    tree.setProperty(Midi::volume, roundFloatToInt(this->velocity * VELOCITY_SAVE_ACCURACY), nullptr);
+    tree.setProperty(Midi::timestamp, roundToInt(this->beat * TICKS_PER_BEAT), nullptr);
+    tree.setProperty(Midi::length, roundToInt(this->length * TICKS_PER_BEAT), nullptr);
+    tree.setProperty(Midi::volume, roundToInt(this->velocity * VELOCITY_SAVE_ACCURACY), nullptr);
     return tree;
 }
 

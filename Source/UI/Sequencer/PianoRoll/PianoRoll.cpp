@@ -427,8 +427,8 @@ void PianoRoll::moveHelpers(const float deltaBeat, const int deltaKey)
     const Rectangle<int> selectionBounds = this->selection.getSelectionBounds();
     const Rectangle<float> delta = this->getEventBounds(deltaKey - 1, deltaBeat + firstBeat, 1.f);
 
-    const int deltaX = roundFloatToInt(delta.getTopLeft().getX());
-    const int deltaY = roundFloatToInt(delta.getTopLeft().getY() - this->getHeight() - 1);
+    const int deltaX = roundToInt(delta.getTopLeft().getX());
+    const int deltaY = roundToInt(delta.getTopLeft().getY() - this->getHeight() - 1);
     const Rectangle<int> selectionTranslated = selectionBounds.translated(deltaX, deltaY);
 
     const int vX = this->viewport.getViewPositionX();

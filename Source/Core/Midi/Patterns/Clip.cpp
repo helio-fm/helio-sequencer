@@ -102,7 +102,7 @@ ValueTree Clip::serialize() const
 {
     using namespace Serialization;
     ValueTree tree(Midi::clip);
-    tree.setProperty(Midi::timestamp, roundFloatToInt(this->beat * TICKS_PER_BEAT), nullptr);
+    tree.setProperty(Midi::timestamp, roundToInt(this->beat * TICKS_PER_BEAT), nullptr);
     tree.setProperty(Midi::id, this->id, nullptr);
     return tree;
 }

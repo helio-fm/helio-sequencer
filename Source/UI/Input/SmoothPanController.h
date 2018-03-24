@@ -92,8 +92,8 @@ private:
 
         this->origin += (diff * SMOOTH_PAN_REDUX_FACTOR);
 
-        this->listener.panByOffset(roundFloatToInt(this->origin.getX()),
-                                   roundFloatToInt(this->origin.getY()));
+        this->listener.panByOffset(roundToInt(this->origin.getX()),
+                                   roundToInt(this->origin.getY()));
 
         if (diff.getDistanceFromOrigin() < SMOOTH_PAN_STOP_FACTOR)
         {
