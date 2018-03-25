@@ -63,35 +63,33 @@ private:
     
     void run() override
     {
-        using namespace Serialization;
+        namespace ApiKeys = Serialization::Api::V1;
+        namespace ApiRoutes = Routes::HelioFM::Api::V1;
 
         // Construct payload object:
-        DynamicObject::Ptr user(new DynamicObject());
-        user->setProperty(Api::V1::name, this->name);
-        user->setProperty(Api::V1::email, this->email);
-        user->setProperty(Api::V1::login, this->login);
-        user->setProperty(Api::V1::password, this->password);
-        user->setProperty(Api::V1::passwordConfirmation, this->password);
-
-        DynamicObject::Ptr payload(new DynamicObject());
-        payload->setProperty(Api::V1::user, var(user));
+        ValueTree user(ApiKeys::user);
+        user.setProperty(ApiKeys::name, this->name, nullptr);
+        user.setProperty(ApiKeys::email, this->email, nullptr);
+        user.setProperty(ApiKeys::login, this->login, nullptr);
+        user.setProperty(ApiKeys::password, this->password, nullptr);
+        user.setProperty(ApiKeys::passwordConfirmation, this->password, nullptr);
 
         // Clear password just not to keep it in the memory:
         this->password = {};
 
-        const HelioApiRequest request(HelioFM::Api::V1::join);
-        this->response = request.post(var(payload));
+        const HelioApiRequest request(ApiRoutes::join);
+        this->response = request.post(user);
 
         if (!this->response.isValid() ||
             !this->response.is2xx() ||
-            !this->response.hasProperty(Api::V1::token))
+            !this->response.hasProperty(ApiKeys::token))
         {
             callRequestListener(SignUpThread, signUpFailed, self->response.getErrors());
             return;
         }
 
         callRequestListener(SignUpThread, signUpOk,
-            self->email, self->response.getProperty(Api::V1::token));
+            self->email, self->response.getProperty(ApiKeys::token));
     }
     
     String email;

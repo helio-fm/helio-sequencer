@@ -69,7 +69,7 @@ public:
         friend class HelioApiRequest;
     };
 
-    Response post(const var payload) const;
+    Response post(const ValueTree &payload) const;
     Response get() const;
 
     ProgressCallback progressCallback;
@@ -77,6 +77,7 @@ public:
 private:
 
     String apiEndpoint;
+    JsonSerializer serializer;
 
     void processResponse(Response &response, InputStream *const stream) const;
 

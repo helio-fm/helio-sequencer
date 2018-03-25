@@ -47,7 +47,7 @@ bool Client::push()
     const auto vcsNode(this->vcs.serialize());
 
     this->pushThread =
-        new PushThread(URL(HelioFM::Api::V1::vcs),
+        new PushThread(URL(Routes::HelioFM::Api::V1::vcs),
                        this->vcs.getPublicId(),
                        this->vcs.getParentName(),
                        this->vcs.getKey(),
@@ -73,7 +73,7 @@ bool Client::pull()
     const auto vcsNode(this->vcs.serialize());
 
     this->pullThread =
-        new PullThread(URL(HelioFM::Api::V1::vcs),
+        new PullThread(URL(Routes::HelioFM::Api::V1::vcs),
                        this->vcs.getPublicId(),
                        this->vcs.getKey(),
                        vcsNode);
@@ -96,7 +96,7 @@ bool Client::remove()
     if (this->isRemoving()) { return false; }
     
     this->removalThread =
-        new RemovalThread(URL(HelioFM::Api::V1::vcs),
+        new RemovalThread(URL(Routes::HelioFM::Api::V1::vcs),
                           this->vcs.getPublicId(),
                           this->vcs.getKey());
     
