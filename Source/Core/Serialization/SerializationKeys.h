@@ -263,7 +263,57 @@ namespace Serialization
         } // namespace Colours
         
     } // namespace UI
-    
+
+    namespace Translations
+    {
+        static const Identifier metaSymbol = "{x}";
+
+        static const Identifier wrapperClassName = "pluralForm";
+        static const Identifier wrapperMethodName = "detect";
+
+        static const Identifier translations = "translations";
+        static const Identifier locale = "locale";
+        static const Identifier literal = "literal";
+        static const Identifier author = "author";
+        static const Identifier name = "name";
+        static const Identifier translation = "translation";
+        static const Identifier id = "id";
+
+        static const Identifier pluralEquation = "pluralEquation";
+        static const Identifier pluralLiteral = "pluralLiteral";
+        static const Identifier pluralForm = "pluralForm";
+    }  // namespace Translations
+
+    namespace Arps
+    {
+        static const Identifier arpeggiator = "arpeggiator";
+        static const Identifier arpeggiators = "arpeggiators";
+
+        static const Identifier id = "id";
+        static const Identifier name = "name";
+        static const Identifier sequence = "sequence";
+        static const Identifier isReversed = "isReversed";
+        static const Identifier relativeMapping = "relativeMapping";
+        static const Identifier limitsToChord = "limitsToChord";
+
+        static const Identifier type = "type";
+
+        namespace Type
+        {
+            static const Identifier simpleTriadic = "simple";
+            static const Identifier diatonic = "diatonic";
+            static const Identifier pentatonic = "pentatonic"; // TODO more mappers for more scales
+        } // namespace Type
+        namespace Key
+        {
+            static const Identifier key = "key";
+            static const Identifier period = "period";
+            static const Identifier beat = "beat";
+            static const Identifier length = "length";
+            static const Identifier velocity = "velocity";
+        } // namespace Key
+    } // namespace Arps
+
     namespace Clipboard
     {
         static const Identifier clipboard = "clipboard";
@@ -426,42 +476,7 @@ namespace Serialization
             static const Identifier hash = "hash";
         } // namespace V1
     } // namespace Api
-    
-    namespace Translations
-    {
-        static const Identifier metaSymbol = "{x}";
-
-        static const Identifier wrapperClassName = "pluralForm";
-        static const Identifier wrapperMethodName = "detect";
         
-        static const Identifier translations = "translations";
-        static const Identifier locale = "locale";
-        static const Identifier literal = "literal";
-        static const Identifier author = "author";
-        static const Identifier name = "name";
-        static const Identifier translation = "translation";
-        static const Identifier id = "id";
-
-        static const Identifier pluralEquation = "pluralEquation";
-        static const Identifier pluralLiteral = "pluralLiteral";
-        static const Identifier pluralForm = "pluralForm";
-    }  // namespace Translations
-    
-    namespace Arps
-    {
-        static const Identifier arpeggiator = "arpeggiator";
-        static const Identifier arpeggiators = "arpeggiators";
-        
-        static const Identifier sequence = "sequence";
-        static const Identifier isReversed = "isReversed";
-        static const Identifier relativeMapping = "relativeMapping";
-        static const Identifier limitsToChord = "limitsToChord";
-        static const Identifier scale = "scale";
-
-        static const Identifier id = "id";
-        static const Identifier name = "name";
-    }  // namespace Arps
-    
     namespace Undo
     {
         static const Identifier undoStack = "undoStack";

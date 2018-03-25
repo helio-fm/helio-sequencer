@@ -25,6 +25,175 @@
 #include "DocumentHelpers.h"
 #include "XmlSerializer.h"
 
+// A scenario from user's point:
+// 1. User creates a sequence of notes strictly within a certain scale,
+// 2. User selects `create arpeggiator from sequence`
+// 3. App checks that the entire sequence is within single scale and adds arp model
+// 4. User select a number of chords and clicks `arpeggiate`
+// 5. User selects arpeggiator fro arp panel (TODO where is arp panel?)
+// 
+
+// This one assumes it has a diatonic scale, and target chord has up to 4 notes.
+// There are no restrictions though on a target chord's scale or where chord's keys are.
+// Arp keys are mapped like this:
+// Arp key                  Chord's note
+// 1                        1st chord note (the lowest)
+// 2                        1st note + 1 (in a chord's scale)
+// 3                        2nd note
+// 4                        2nd note + 1
+// 5                        3rd note
+// 6                        3rd note + 1
+// 7                        4th note, if any (wrap back to 1st, if only 3 notes)
+// 8                        1st note + period
+// etc, so basically it tries to treat target chord as a triadic chord (but any other might do as well).
+
+class DiatonicArpMapper final : public Arp::Mapper
+{
+    Note::Key mapArpKeyIntoChordSpace(Arp::Key arpKey, const Array<Note> &chord,
+        const Scale &chordScale, Note::Key chordRoot) const override
+    {
+        const auto periodOffset = arpKey.period * chordScale.getBasePeriod();
+        switch (arpKey.key)
+        {
+        case 0: return periodOffset + this->getChordKey(chord, 0);
+        case 1: return periodOffset + this->getChordKeyPlus(chord, chordScale, chordRoot, 0, 1);
+        case 2: return periodOffset + this->getChordKey(chord, 1);
+        case 3: return periodOffset + this->getChordKeyPlus(chord, chordScale, chordRoot, 1, 1);
+        case 4: return periodOffset + this->getChordKey(chord, 2);
+        case 5: return periodOffset + this->getChordKeyPlus(chord, chordScale, chordRoot, 2, 1);
+        case 6: return periodOffset + this->getChordKey(chord, 3);
+        default: return periodOffset + chordRoot;
+        }
+    }
+};
+
+// Similar as above:
+
+class PentatonicArpMapper final : public Arp::Mapper
+{
+    Note::Key mapArpKeyIntoChordSpace(Arp::Key arpKey, const Array<Note> &chord,
+        const Scale &chordScale, Note::Key chordRoot) const override
+    {
+        const auto periodOffset = arpKey.period * chordScale.getBasePeriod();
+        switch (arpKey.key)
+        {
+        case 0: return periodOffset + this->getChordKey(chord, 0);
+        case 1: return periodOffset + this->getChordKeyPlus(chord, chordScale, chordRoot, 0, 1);
+        case 2: return periodOffset + this->getChordKey(chord, 1);
+        case 3: return periodOffset + this->getChordKey(chord, 2);
+        case 4: return periodOffset + this->getChordKeyPlus(chord, chordScale, chordRoot, 2, 1);
+        default: return periodOffset + chordRoot;
+        }
+    }
+};
+
+class SimpleTriadicArpMapper final : public Arp::Mapper
+{
+    Note::Key mapArpKeyIntoChordSpace(Arp::Key arpKey, const Array<Note> &chord,
+        const Scale &chordScale, Note::Key chordRoot) const override
+    {
+        const int periodOffset = arpKey.period * chordScale.getBasePeriod();
+        return periodOffset + this->getChordKey(chord, arpKey.key);
+    }
+};
+
+class FallbackArpMapper final : public Arp::Mapper
+{
+    Note::Key mapArpKeyIntoChordSpace(Arp::Key arpKey, const Array<Note> &chord,
+        const Scale &chordScale, Note::Key chordRoot) const override
+    {
+        jassertfalse; // Should never hit this point
+        return chordRoot;
+    }
+};
+
+static ScopedPointer<Arp::Mapper> createMapperOfType(const Identifier &id)
+{
+    using namespace Serialization::Arps;
+    if (id == Type::simpleTriadic)      { return new SimpleTriadicArpMapper(); }
+    else if (id == Type::pentatonic)    { return new PentatonicArpMapper(); }
+    else if (id == Type::diatonic)      { return new DiatonicArpMapper(); }
+    
+    return new FallbackArpMapper();
+}
+
+Arp::Arp(const String &name, const Scale &scale, const Array<Note> &sequence, Note::Key rootKey)
+{
+    auto sequenceStartBeat = FLT_MAX;
+    for (const auto &note : sequence)
+    {
+        sequenceStartBeat = jmin(sequenceStartBeat, note.getBeat());
+    }
+
+    for (const auto &note : sequence)
+    {
+        const auto relativeChromaticKey = note.getKey() - rootKey;
+
+        // Scale key will be limited to a single period
+        const auto scaleKey = scale.getScaleKey(relativeChromaticKey);
+        const auto period = relativeChromaticKey % scale.getBasePeriod();
+        const auto beat = note.getBeat() - sequenceStartBeat;
+
+        // Ignore all non-scale keys (will be -1 if chromatic key is not in a target scale)
+        if (scaleKey >= 0)
+        {
+            this->keys.add({ scaleKey, period, note.getVelocity(), beat, note.getLength() });
+        }
+    }
+
+    // Try do deduct mapper type, depending on arp's scale size
+    // (TODO add more mappers and scales in future)
+    using namespace Serialization::Arps;
+
+    switch (scale.getSize())
+    {
+    case 5:
+        this->type = Type::pentatonic;
+        break;
+    case 7:
+        this->type = Type::diatonic;
+        break;
+    default:
+        this->type = Type::simpleTriadic;
+        break;
+    }
+
+    this->mapper = createMapperOfType(this->type);
+    jassert(this->mapper);
+}
+
+//===----------------------------------------------------------------------===//
+// Serializable
+//===----------------------------------------------------------------------===//
+
+ValueTree Arp::serialize() const
+{
+    ValueTree tree(Serialization::Arps::arpeggiator);
+
+    tree.setProperty(Serialization::Arps::id, this->id.toString(), nullptr);
+    tree.setProperty(Serialization::Arps::name, this->name, nullptr);
+
+    ValueTree seq(Serialization::Arps::sequence);
+    for (int i = 0; i < this->keys.size(); ++i)
+    {
+        // seq.appendChild(this->keys.getUnchecked(i).serialize(), nullptr);
+    }
+
+    tree.appendChild(seq, nullptr);
+
+    return tree;
+}
+
+void Arp::deserialize(const ValueTree &tree)
+{
+
+}
+
+void Arp::reset()
+{
+
+}
+
 Arpeggiator::Arpeggiator() :
     reversedMode(false),
     relativeMappingMode(true),
@@ -168,10 +337,10 @@ Array<Arpeggiator::Key> Arpeggiator::createArpKeys() const
     
     // todo change! get root note in sequence
     Array<Note> sortedArp(this->sequence);
-    const Note &&n0 = sortedArp[0];
-    sortedArp.sort(n0);
+    const auto &sorter = sortedArp.getFirst();
+    sortedArp.sort(sorter);
     
-    const int arpRootKey = sortedArp[0].getKey();
+    const int arpRootKey = sortedArp.getFirst().getKey();
     const float arpStartBeat = PianoRollToolbox::findStartBeat(sortedArp);
     const float arpEndBeat = PianoRollToolbox::findEndBeat(sortedArp);
     
@@ -219,7 +388,7 @@ ValueTree Arpeggiator::serialize() const
     tree.setProperty(Serialization::Arps::isReversed, this->reversedMode, nullptr);
     tree.setProperty(Serialization::Arps::relativeMapping, this->relativeMappingMode, nullptr);
     tree.setProperty(Serialization::Arps::limitsToChord, this->limitToChordMode, nullptr);
-    tree.setProperty(Serialization::Arps::scale, this->scale, nullptr);
+    //tree.setProperty(Serialization::Arps::scale, this->scale, nullptr);
 
     tree.setProperty(Serialization::Arps::id, this->id.toString(), nullptr);
     tree.setProperty(Serialization::Arps::name, this->name, nullptr);
@@ -248,7 +417,7 @@ void Arpeggiator::deserialize(const ValueTree &tree)
     this->reversedMode = tree.getProperty(Serialization::Arps::isReversed, false);
     this->relativeMappingMode = tree.getProperty(Serialization::Arps::relativeMapping, true);
     this->limitToChordMode = tree.getProperty(Serialization::Arps::limitsToChord, false);
-    this->scale = float(tree.getProperty(Serialization::Arps::scale, 1.f));
+    //this->scale = float(tree.getProperty(Serialization::Arps::scale, 1.f));
     
     this->id = tree.getProperty(Serialization::Arps::id, this->getId());
     this->name = tree.getProperty(Serialization::Arps::name, this->getName());
