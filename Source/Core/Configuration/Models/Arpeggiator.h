@@ -33,16 +33,17 @@
 // like using an arpeggiated chord as a new arpeggiator, and so on.
 // See DiatonicArpMapper implementation for the most common mapping example.
 
-class Arp final : public Serializable
+class Arpeggiator final : public Serializable
 {
 public:
 
-    Arp(const String &name, 
+    Arpeggiator() = default;
+    Arpeggiator(const String &name, 
         const Scale &scale,
         const Array<Note> &sequence,
         Note::Key rootKey);
 
-    Uuid getId() const noexcept { return this->id; }
+    String getId() const { return this->id.toString(); }
     String getName() const noexcept { return this->name; };
     bool isValid() const noexcept { return !this->keys.isEmpty(); }
 
@@ -75,7 +76,7 @@ public:
         Mapper() = default;
         virtual ~Mapper() = default;
 
-        virtual Note::Key mapArpKeyIntoChordSpace(Arp::Key arpKey, const Array<Note> &chord,
+        virtual Note::Key mapArpKeyIntoChordSpace(Arpeggiator::Key arpKey, const Array<Note> &chord,
             const Scale &chordScale, Note::Key chordRoot) const = 0;
 
     protected:
@@ -100,74 +101,8 @@ protected:
     Uuid id;
     String name;
     Identifier type;
-    Array<Arp::Key> keys;
-    ScopedPointer<Arp::Mapper> mapper;
+    Array<Arpeggiator::Key> keys;
+    ScopedPointer<Arpeggiator::Mapper> mapper;
 
-    JUCE_LEAK_DETECTOR(Arp)
-};
-
-
-
-class Arpeggiator final : public Serializable
-{
-public:
-    
-    Arpeggiator();
-
-    String getId() const;
-    String getName() const;
-    String exportSequenceAsTrack() const;
-    
-    bool isReversed() const;
-    bool hasRelativeMapping() const;
-    bool limitsToChord() const;
-    bool isEmpty() const;
-    float getScale() const;
-    
-    Arpeggiator withName(const String &newName) const;
-    Arpeggiator withSequence(const Array<Note> &arpSequence) const;
-    Arpeggiator withSequenceFromString(const String &data) const;
-    Arpeggiator reversed(bool shouldBeReversed) const;
-    Arpeggiator mappedRelative(bool shouldBeMappedRelative) const;
-    Arpeggiator limitedToChord(bool shouldLimitToChord) const;
-    Arpeggiator withScale(float newScale) const;
-    
-    struct Key
-    {
-        int octaveShift;
-        int keyIndex;
-        float velocity;
-        // for chord-length mapping
-        float absStart;
-        float absLength;
-        // for arp-length mapping
-        float beatStart;
-        float beatLength;
-        float sequenceLength;
-    };
-    
-    Array<Key> createArpKeys() const;
-    
-    
-    //===------------------------------------------------------------------===//
-    // Serializable
-    //===------------------------------------------------------------------===//
-    
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
-    void reset() override;
-    
-private:
-    
-    Array<Note> sequence;
-    bool reversedMode;
-    bool relativeMappingMode;
-    bool limitToChordMode;
-    float scale;
-    
-    String name;
-    Uuid id;
-    
     JUCE_LEAK_DETECTOR(Arpeggiator)
-    
 };

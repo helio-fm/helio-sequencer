@@ -1031,7 +1031,7 @@ bool PianoRollToolbox::arpeggiate(Lasso &selection,
         return false;
     }
 
-    if (arp.isEmpty())
+    if (!arp.isValid())
     {
         return false;
     }
@@ -1133,81 +1133,44 @@ bool PianoRollToolbox::arpeggiate(Lasso &selection,
             const PianoChangeGroup &&chord = chords.getUnchecked(i);
             const float chordStart = PianoRollToolbox::findStartBeat(chord);
             const float chordEnd = PianoRollToolbox::findEndBeat(chord);
-            //const float chordLength = chordEnd - chordStart;
-            
-            if (arp.hasRelativeMapping())
+
+            // Arp sequence as is
+            while (1)
             {
-                // Arp sequence as is
-                while (1)
+                const int maxKeyIndex = chord.size() - 1;
+                int keyIndex = jmin(arpKeys[patternEventIndex].keyIndex, maxKeyIndex);
+
+                if (arp.isReversed())
+                { keyIndex = maxKeyIndex - keyIndex; }
+
+                const float newBeat = selectionStartBeat + patternBeatOffset + arpKeys[patternEventIndex].beatStart;
+                const float newLength = arpKeys[patternEventIndex].beatLength;
+                const float newVelocity = (chord[keyIndex].getVelocity() + arpKeys[patternEventIndex].velocity) / 2.f;
+
+                if (newBeat >= chordEnd)
                 {
-                    const int maxKeyIndex = chord.size() - 1;
-                    int keyIndex = jmin(arpKeys[patternEventIndex].keyIndex, maxKeyIndex);
-                    
-                    if (arp.isReversed())
-                    { keyIndex = maxKeyIndex - keyIndex; }
-                    
-                    const float newBeat = selectionStartBeat + patternBeatOffset + arpKeys[patternEventIndex].beatStart;
-                    const float newLength = arpKeys[patternEventIndex].beatLength;
-                    const float newVelocity = (chord[keyIndex].getVelocity() + arpKeys[patternEventIndex].velocity) / 2.f;
-                    
-                    if (newBeat >= chordEnd)
-                    {
-                        if (arp.limitsToChord())
-                        {
-                            patternEventIndex = 0;
-                            patternBeatOffset = chordEnd - selectionStartBeat;
-                        }
-                        
-                        break;
-                    }
-                    
-                    result->add(chord[keyIndex].
-                                withDeltaKey(arpKeys[patternEventIndex].octaveShift).
-                                withBeat(newBeat).
-                                withLength(newLength).
-                                withVelocity(newVelocity).
-                                copyWithNewId());
-                    
-                    patternEventIndex += 1;
-                    
-                    if (patternEventIndex >= arpKeys.size())
+                    if (arp.limitsToChord())
                     {
                         patternEventIndex = 0;
-                        patternBeatOffset += arpKeys[patternEventIndex].sequenceLength;
+                        patternBeatOffset = chordEnd - selectionStartBeat;
                     }
+                        
+                    break;
                 }
-            }
-            else
-            {
-                // Map sequence to every chord's length (todo - or first chird's length?)
-                for (auto && arpKey : arpKeys)
+
+                result->add(chord[keyIndex].
+                            withDeltaKey(arpKeys[patternEventIndex].octaveShift).
+                            withBeat(newBeat).
+                            withLength(newLength).
+                            withVelocity(newVelocity).
+                            copyWithNewId());
+
+                patternEventIndex += 1;
+
+                if (patternEventIndex >= arpKeys.size())
                 {
-                    // arp supports up to 12 notes in a single chord or progression to be arped
-                    const int maxKeyIndex = chord.size() - 1;
-                    int keyIndex = jmin(arpKey.keyIndex, maxKeyIndex);
-                    
-                    if (arp.isReversed())
-                    { keyIndex = maxKeyIndex - keyIndex; }
-                    
-                    //const float newBeat = chordStart + chordLength * arpKeys[j].absStart;
-                    //const float newLength = chordLength * arpKeys[j].absLength;
-                    
-                    // todo fix pauses with long chords
-                    const float newBeat = chordStart + firstChordLength * arpKey.absStart;
-                    const float newLength = firstChordLength * arpKey.absLength;
-                    const float newVelocity = (chord[keyIndex].getVelocity() + arpKey.velocity) / 2.f;
-                    
-                    if (newBeat >= chordEnd)
-                    {
-                        break;
-                    }
-                    
-                    result->add(chord[keyIndex].
-                                withDeltaKey(arpKey.octaveShift).
-                                withBeat(newBeat).
-                                withLength(newLength).
-                                withVelocity(newVelocity).
-                                copyWithNewId());
+                    patternEventIndex = 0;
+                    patternBeatOffset += arpKeys[patternEventIndex].sequenceLength;
                 }
             }
         }

@@ -771,10 +771,6 @@
                 file="../../Source/UI/Menus/AnnotationCommandPanel.cpp"/>
           <FILE id="mA4zKi" name="AnnotationCommandPanel.h" compile="0" resource="0"
                 file="../../Source/UI/Menus/AnnotationCommandPanel.h"/>
-          <FILE id="cRkBp5" name="ArpeggiatorEditorPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/Menus/ArpeggiatorEditorPanel.cpp"/>
-          <FILE id="ezMMEU" name="ArpeggiatorEditorPanel.h" compile="0" resource="0"
-                file="../../Source/UI/Menus/ArpeggiatorEditorPanel.h"/>
           <FILE id="qiHiZv" name="InstrumentCommandPanel.cpp" compile="1" resource="0"
                 file="../../Source/UI/Menus/InstrumentCommandPanel.cpp"/>
           <FILE id="GfB3bQ" name="InstrumentCommandPanel.h" compile="0" resource="0"

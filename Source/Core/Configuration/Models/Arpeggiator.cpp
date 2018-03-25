@@ -35,8 +35,8 @@
 
 // This one assumes it has a diatonic scale, and target chord has up to 4 notes.
 // There are no restrictions though on a target chord's scale or where chord's keys are.
-// Arp keys are mapped like this:
-// Arp key                  Chord's note
+// Arpeggiator keys are mapped like this:
+// Arpeggiator key                  Chord's note
 // 1                        1st chord note (the lowest)
 // 2                        1st note + 1 (in a chord's scale)
 // 3                        2nd note
@@ -47,9 +47,9 @@
 // 8                        1st note + period
 // etc, so basically it tries to treat target chord as a triadic chord (but any other might do as well).
 
-class DiatonicArpMapper final : public Arp::Mapper
+class DiatonicArpMapper final : public Arpeggiator::Mapper
 {
-    Note::Key mapArpKeyIntoChordSpace(Arp::Key arpKey, const Array<Note> &chord,
+    Note::Key mapArpKeyIntoChordSpace(Arpeggiator::Key arpKey, const Array<Note> &chord,
         const Scale &chordScale, Note::Key chordRoot) const override
     {
         const auto periodOffset = arpKey.period * chordScale.getBasePeriod();
@@ -69,9 +69,9 @@ class DiatonicArpMapper final : public Arp::Mapper
 
 // Similar as above:
 
-class PentatonicArpMapper final : public Arp::Mapper
+class PentatonicArpMapper final : public Arpeggiator::Mapper
 {
-    Note::Key mapArpKeyIntoChordSpace(Arp::Key arpKey, const Array<Note> &chord,
+    Note::Key mapArpKeyIntoChordSpace(Arpeggiator::Key arpKey, const Array<Note> &chord,
         const Scale &chordScale, Note::Key chordRoot) const override
     {
         const auto periodOffset = arpKey.period * chordScale.getBasePeriod();
@@ -87,9 +87,9 @@ class PentatonicArpMapper final : public Arp::Mapper
     }
 };
 
-class SimpleTriadicArpMapper final : public Arp::Mapper
+class SimpleTriadicArpMapper final : public Arpeggiator::Mapper
 {
-    Note::Key mapArpKeyIntoChordSpace(Arp::Key arpKey, const Array<Note> &chord,
+    Note::Key mapArpKeyIntoChordSpace(Arpeggiator::Key arpKey, const Array<Note> &chord,
         const Scale &chordScale, Note::Key chordRoot) const override
     {
         const int periodOffset = arpKey.period * chordScale.getBasePeriod();
@@ -97,9 +97,9 @@ class SimpleTriadicArpMapper final : public Arp::Mapper
     }
 };
 
-class FallbackArpMapper final : public Arp::Mapper
+class FallbackArpMapper final : public Arpeggiator::Mapper
 {
-    Note::Key mapArpKeyIntoChordSpace(Arp::Key arpKey, const Array<Note> &chord,
+    Note::Key mapArpKeyIntoChordSpace(Arpeggiator::Key arpKey, const Array<Note> &chord,
         const Scale &chordScale, Note::Key chordRoot) const override
     {
         jassertfalse; // Should never hit this point
@@ -107,7 +107,7 @@ class FallbackArpMapper final : public Arp::Mapper
     }
 };
 
-static ScopedPointer<Arp::Mapper> createMapperOfType(const Identifier &id)
+static ScopedPointer<Arpeggiator::Mapper> createMapperOfType(const Identifier &id)
 {
     using namespace Serialization::Arps;
     if (id == Type::simpleTriadic)      { return new SimpleTriadicArpMapper(); }
@@ -117,7 +117,7 @@ static ScopedPointer<Arp::Mapper> createMapperOfType(const Identifier &id)
     return new FallbackArpMapper();
 }
 
-Arp::Arp(const String &name, const Scale &scale, const Array<Note> &sequence, Note::Key rootKey)
+Arpeggiator::Arpeggiator(const String &name, const Scale &scale, const Array<Note> &sequence, Note::Key rootKey)
 {
     auto sequenceStartBeat = FLT_MAX;
     for (const auto &note : sequence)
@@ -166,7 +166,7 @@ Arp::Arp(const String &name, const Scale &scale, const Array<Note> &sequence, No
 // Serializable
 //===----------------------------------------------------------------------===//
 
-ValueTree Arp::serialize() const
+ValueTree Arpeggiator::serialize() const
 {
     ValueTree tree(Serialization::Arps::arpeggiator);
 
@@ -184,250 +184,12 @@ ValueTree Arp::serialize() const
     return tree;
 }
 
-void Arp::deserialize(const ValueTree &tree)
-{
-
-}
-
-void Arp::reset()
-{
-
-}
-
-Arpeggiator::Arpeggiator() :
-    reversedMode(false),
-    relativeMappingMode(true),
-    limitToChordMode(false),
-    scale(1.f) {}
-
-//===----------------------------------------------------------------------===//
-// Accessors
-//===----------------------------------------------------------------------===//
-
-String Arpeggiator::getId() const
-{
-    return this->id.toString();
-}
-
-String Arpeggiator::getName() const
-{
-    return this->name;
-}
-
-bool Arpeggiator::isReversed() const
-{
-    return this->reversedMode;
-}
-
-bool Arpeggiator::hasRelativeMapping() const
-{
-    return this->relativeMappingMode;
-}
-
-bool Arpeggiator::limitsToChord() const
-{
-    return this->limitToChordMode;
-}
-
-bool Arpeggiator::isEmpty() const
-{
-    return (this->sequence.size() == 0);
-}
-
-float Arpeggiator::getScale() const
-{
-    return this->scale;
-}
-
-String Arpeggiator::exportSequenceAsTrack() const
-{
-    ValueTree sequence(Serialization::Midi::track);
-    
-    for (int i = 0; i < this->sequence.size(); ++i)
-    {
-        sequence.appendChild(this->sequence.getUnchecked(i).serialize(), nullptr);
-    }
-
-    String doc;
-    XmlSerializer serializer;
-    serializer.saveToString(doc, sequence);
-    return doc;
-}
-
-
-//===----------------------------------------------------------------------===//
-// Chains
-//===----------------------------------------------------------------------===//
-
-Arpeggiator Arpeggiator::withName(const String &newName) const
-{
-    Arpeggiator arp(*this);
-    arp.name = newName;
-    return arp;
-}
-
-Arpeggiator Arpeggiator::withSequenceFromString(const String &data) const
-{
-    Arpeggiator arp(*this);
-    const auto tree = DocumentHelpers::read<XmlSerializer>(data);
-    const auto root = tree.hasType(Serialization::Midi::track) ?
-        tree : tree.getChildWithName(Serialization::Midi::track);
-    
-    if (!root.isValid()) { return arp; }
-    
-    Array<Note> xmlPattern;
-    
-    forEachValueTreeChildWithType(root, e, Serialization::Midi::note)
-    {
-        xmlPattern.add(Note().withParameters(e).copyWithNewId());
-    }
-    
-    if (xmlPattern.size() == 0)
-    {
-        return arp;
-    }
-    
-    arp.sequence = xmlPattern;
-    return arp;
-}
-
-Arpeggiator Arpeggiator::withSequence(const Array<Note> &arpSequence) const
-{
-    Arpeggiator arp(*this);
-    arp.sequence = arpSequence;
-    return arp;
-}
-
-Arpeggiator Arpeggiator::reversed(bool shouldBeReversed) const
-{
-    Arpeggiator arp(*this);
-    arp.reversedMode = shouldBeReversed;
-    return arp;
-}
-
-Arpeggiator Arpeggiator::mappedRelative(bool shouldBeMappedRelative) const
-{
-    Arpeggiator arp(*this);
-    arp.relativeMappingMode = shouldBeMappedRelative;
-    return arp;
-}
-
-Arpeggiator Arpeggiator::limitedToChord(bool shouldLimitToChord) const
-{
-    Arpeggiator arp(*this);
-    arp.limitToChordMode = shouldLimitToChord;
-    return arp;
-}
-
-Arpeggiator Arpeggiator::withScale(float newScale) const
-{
-    Arpeggiator arp(*this);
-    arp.scale = newScale;
-    return arp;
-}
-
-
-//===----------------------------------------------------------------------===//
-// Sequence parsing
-//===----------------------------------------------------------------------===//
-
-Array<Arpeggiator::Key> Arpeggiator::createArpKeys() const
-{
-    Array<Arpeggiator::Key> arpKeys;
-    
-    // todo change! get root note in sequence
-    Array<Note> sortedArp(this->sequence);
-    const auto &sorter = sortedArp.getFirst();
-    sortedArp.sort(sorter);
-    
-    const int arpRootKey = sortedArp.getFirst().getKey();
-    const float arpStartBeat = PianoRollToolbox::findStartBeat(sortedArp);
-    const float arpEndBeat = PianoRollToolbox::findEndBeat(sortedArp);
-    
-    for (int i = 0; i < sortedArp.size(); ++i)
-    {
-        const Note n(sortedArp.getUnchecked(i));
-        const bool keyIsBelow = (n.getKey() < arpRootKey);
-        
-        Arpeggiator::Key ak;
-        const int upperOctavesShift = int(floorf(float(n.getKey() - arpRootKey) / 12.f) * 12);
-        const int lowerOctavesShift = int(ceilf(float(arpRootKey - n.getKey()) / 12.f) * -12);
-        
-        ak.octaveShift = keyIsBelow ? lowerOctavesShift : upperOctavesShift;
-        ak.keyIndex = ((n.getKey() - ak.octaveShift) - arpRootKey) % 12;
-        ak.absStart = this->scale * (n.getBeat() - arpStartBeat) / (arpEndBeat - arpStartBeat);
-        ak.absLength = this->scale * n.getLength() / (arpEndBeat - arpStartBeat);
-        ak.beatStart = this->scale * (n.getBeat() - arpStartBeat);
-        ak.beatLength = this->scale * n.getLength();
-        ak.sequenceLength = this->scale * (arpEndBeat - arpStartBeat);
-        ak.velocity = n.getVelocity();
-        
-        arpKeys.add(ak);
-    }
-    
-    return arpKeys;
-}
-
-
-//===----------------------------------------------------------------------===//
-// Serializable
-//===----------------------------------------------------------------------===//
-
-ValueTree Arpeggiator::serialize() const
-{
-    ValueTree tree(Serialization::Arps::arpeggiator);
-    ValueTree seq(Serialization::Arps::sequence);
-    
-    for (int i = 0; i < this->sequence.size(); ++i)
-    {
-        seq.appendChild(this->sequence.getUnchecked(i).serialize(), nullptr);
-    }
-    
-    tree.appendChild(seq, nullptr);
-    
-    tree.setProperty(Serialization::Arps::isReversed, this->reversedMode, nullptr);
-    tree.setProperty(Serialization::Arps::relativeMapping, this->relativeMappingMode, nullptr);
-    tree.setProperty(Serialization::Arps::limitsToChord, this->limitToChordMode, nullptr);
-    //tree.setProperty(Serialization::Arps::scale, this->scale, nullptr);
-
-    tree.setProperty(Serialization::Arps::id, this->id.toString(), nullptr);
-    tree.setProperty(Serialization::Arps::name, this->name, nullptr);
-
-    return tree;
-}
-
 void Arpeggiator::deserialize(const ValueTree &tree)
 {
-    const auto root = tree.hasType(Serialization::Arps::arpeggiator) ?
-        tree : tree.getChildWithName(Serialization::Arps::arpeggiator);
-    
-    if (!root.isValid()) { return; }
-    
-    const auto seq = root.getChildWithName(Serialization::Arps::sequence);
-    
-    Array<Note> xmlPattern;
-    
-    forEachValueTreeChildWithType(seq, e, Serialization::Midi::note)
-    {
-        xmlPattern.add(Note().withParameters(e).copyWithNewId());
-    }
-    
-    this->sequence = xmlPattern;
 
-    this->reversedMode = tree.getProperty(Serialization::Arps::isReversed, false);
-    this->relativeMappingMode = tree.getProperty(Serialization::Arps::relativeMapping, true);
-    this->limitToChordMode = tree.getProperty(Serialization::Arps::limitsToChord, false);
-    //this->scale = float(tree.getProperty(Serialization::Arps::scale, 1.f));
-    
-    this->id = tree.getProperty(Serialization::Arps::id, this->getId());
-    this->name = tree.getProperty(Serialization::Arps::name, this->getName());
 }
 
 void Arpeggiator::reset()
 {
-    this->sequence.clear();
-    this->scale = 1.f;
-    this->reversedMode = false;
-    this->relativeMappingMode = true;
-    this->limitToChordMode = false;
+
 }
