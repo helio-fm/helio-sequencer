@@ -49,7 +49,7 @@ KeySignatureEvent::KeySignatureEvent(WeakReference<MidiSequence> owner,
 
 String KeySignatureEvent::toString() const
 {
-    const int index = this->rootKey % CHROMATIC_SCALE_SIZE;
+    const int index = this->rootKey % this->scale.getBasePeriod();
     const String keyName = Scale::getKeyNames()[index];
     return keyName + ", " + this->scale.getLocalizedName();
 }

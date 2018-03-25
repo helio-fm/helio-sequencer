@@ -84,6 +84,7 @@ namespace Serialization
         static const Identifier scales = "scales";
         static const Identifier scale = "scale";
         static const Identifier scaleName = "name";
+        static const Identifier scalePeriod = "period";
         static const Identifier scaleIntervals = "intervals";
 
         // Sequences

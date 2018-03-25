@@ -31,18 +31,17 @@ enum Key
     VII = 6
 };
 
-Scale::Scale() {}
-Scale::Scale(const String &name) : name(name) {}
-Scale::Scale(const Scale &other) : name(other.name), keys(other.keys) {}
+Scale::Scale(const String &name) noexcept : name(name) {}
+Scale::Scale(const Scale &other) noexcept : name(other.name), keys(other.keys) {}
 
-Scale Scale::withName(const String &name) const
+Scale Scale::withName(const String &name) const noexcept
 {
     Scale s(*this);
     s.name = name;
     return s;
 }
 
-Scale Scale::withKeys(const Array<int> &keys) const
+Scale Scale::withKeys(const Array<int> &keys) const noexcept
 {
     Scale s(*this);
     s.keys = keys;
@@ -114,59 +113,84 @@ String Scale::getLocalizedName() const
 Array<int> Scale::getPowerChord(Function fun, bool oneOctave) const
 {
     return {
-        this->getKey(Key::I + fun, oneOctave),
-        this->getKey(Key::V + fun, oneOctave) };
+        this->getChromaticKey(Key::I + fun, oneOctave),
+        this->getChromaticKey(Key::V + fun, oneOctave) };
 }
 
 Array<int> Scale::getTriad(Function fun, bool oneOctave) const
 {
     return {
-        this->getKey(Key::I + fun, oneOctave),
-        this->getKey(Key::III + fun, oneOctave),
-        this->getKey(Key::V + fun, oneOctave) };
+        this->getChromaticKey(Key::I + fun, oneOctave),
+        this->getChromaticKey(Key::III + fun, oneOctave),
+        this->getChromaticKey(Key::V + fun, oneOctave) };
 }
 
 Array<int> Scale::getSeventhChord(Function fun, bool oneOctave) const
 {
     return {
-        this->getKey(Key::I + fun, oneOctave),
-        this->getKey(Key::III + fun, oneOctave),
-        this->getKey(Key::V + fun, oneOctave),
-        this->getKey(Key::VII + fun, oneOctave) };
+        this->getChromaticKey(Key::I + fun, oneOctave),
+        this->getChromaticKey(Key::III + fun, oneOctave),
+        this->getChromaticKey(Key::V + fun, oneOctave),
+        this->getChromaticKey(Key::VII + fun, oneOctave) };
 }
 
 Array<int> Scale::getUpScale() const
 {
     Array<int> res(this->keys);
-    res.add(CHROMATIC_SCALE_SIZE);
+    res.add(this->getBasePeriod());
     return res;
 }
 
 Array<int> Scale::getDownScale() const
 {
     Array<int> res;
-    res.add(CHROMATIC_SCALE_SIZE);
+    res.add(this->getBasePeriod());
     for (int i = this->keys.size(); i --> 0; )
     { res.add(this->keys[i]); }
     return res;
 }
 
-bool Scale::seemsMinor() const
+bool Scale::seemsMinor() const noexcept
 {
-    return this->getKey(Key::III) == 3;
+    return this->getChromaticKey(Key::III) == 3;
 }
 
-bool Scale::hasKey(int key) const
+// Wraps a chromatic key (may be negative)
+static int wrapKey(int key, int const lowerKey, int const upperKey)
 {
-    return this->keys.contains(key);
+    const int keyRange = upperKey - lowerKey + 1;
+
+    if (key < lowerKey)
+    {
+        key += keyRange * ((lowerKey - key) / keyRange + 1);
+    }
+
+    return lowerKey + (key - lowerKey) % keyRange;
 }
 
-int Scale::getKey(int key, bool shouldRestrictToOneOctave /*= false*/) const
+bool Scale::hasKey(int chormaticKey) const
+{
+    const auto wrappedKey = wrapKey(chormaticKey, 0, this->getBasePeriod());
+    return this->keys.contains(wrappedKey);
+}
+
+int Scale::getScaleKey(int chormaticKey) const
+{
+    const auto wrappedKey = wrapKey(chormaticKey, 0, this->getBasePeriod());
+    return this->keys.indexOf(wrappedKey);
+}
+
+int Scale::getChromaticKey(int key, bool shouldRestrictToOneOctave /*= false*/) const noexcept
 {
     jassert(key >= 0);
     const int idx = this->keys[key % this->getSize()];
     return shouldRestrictToOneOctave ? idx :
-        idx + (CHROMATIC_SCALE_SIZE * (key / this->getSize()));
+        idx + (this->getBasePeriod() * (key / this->getSize()));
+}
+
+int Scale::getBasePeriod() const noexcept
+{
+    return this->basePeriod;
 }
 
 Scale &Scale::operator=(const Scale &other)
@@ -199,6 +223,7 @@ ValueTree Scale::serialize() const
 {
     ValueTree tree(Serialization::Midi::scale);
     tree.setProperty(Serialization::Midi::scaleName, this->name, nullptr);
+    tree.setProperty(Serialization::Midi::scalePeriod, this->basePeriod, nullptr);
 
     int prevKey = 0;
     String intervals;
@@ -211,7 +236,7 @@ ValueTree Scale::serialize() const
         }
     }
 
-    intervals += String(CHROMATIC_SCALE_SIZE - prevKey);
+    intervals += String(this->getBasePeriod() - prevKey);
     tree.setProperty(Serialization::Midi::scaleIntervals, intervals, nullptr);
 
     return tree;
@@ -227,6 +252,8 @@ void Scale::deserialize(const ValueTree &tree)
     this->reset();
 
     this->name = root.getProperty(Serialization::Midi::scaleName, this->name);
+    this->basePeriod = root.getProperty(Serialization::Midi::scalePeriod, CHROMATIC_SCALE_SIZE);
+
     const String intervals = root.getProperty(Serialization::Midi::scaleIntervals);
     StringArray tokens;
     tokens.addTokens(intervals, true);

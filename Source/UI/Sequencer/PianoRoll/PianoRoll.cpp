@@ -1469,7 +1469,7 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
     float currentHeight = float(height);
     float previousHeight = 0;
     float pos_y = patternImage.getHeight() - currentHeight;
-    const int lastOctaveReminder = 8 + CHROMATIC_SCALE_SIZE - root;
+    const int lastOctaveReminder = 8 + scale.getBasePeriod() - root;
 
     g.setColour(whiteKeyBright);
     g.fillRect(patternImage.getBounds());
