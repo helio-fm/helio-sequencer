@@ -54,7 +54,11 @@ Result BinarySerializer::loadFromFile(const File &file, ValueTree &tree) const
 
 Result BinarySerializer::saveToString(String &string, const ValueTree &tree) const
 {
-    return Result::fail("not implemented");
+    MemoryOutputStream memStream;
+    memStream.writeInt64(kHelioHeaderV2);
+    tree.writeToStream(memStream);
+    string = memStream.toUTF8();
+    return Result::ok();
 }
 
 Result BinarySerializer::loadFromString(const String &string, ValueTree &tree) const
