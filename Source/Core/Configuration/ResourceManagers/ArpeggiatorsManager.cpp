@@ -26,48 +26,6 @@
 ArpeggiatorsManager::ArpeggiatorsManager() :
     ResourceManager(Serialization::Resources::arpeggiators) {}
 
-void ArpeggiatorsManager::initialise(const String &commandLine)
-{
-    this->reloadResources();
-}
-
-void ArpeggiatorsManager::shutdown()
-{
-    this->reset();
-}
-
-Array<Arpeggiator> ArpeggiatorsManager::getArps() const
-{
-    return this->arps;
-}
-
-bool ArpeggiatorsManager::replaceArpWithId(const String &id, const Arpeggiator &arp)
-{
-    for (int i = 0; i < this->arps.size(); ++i)
-    {
-        if (this->arps.getUnchecked(i).getId() == id)
-        {
-            this->arps.setUnchecked(i, arp);
-            // TODO sage Config::save(this);
-            this->sendChangeMessage();
-            return true;
-        }
-    }
-    
-    return false;
-}
-
-void ArpeggiatorsManager::addArp(const Arpeggiator &arp)
-{
-    if (! this->replaceArpWithId(arp.getId(), arp))
-    {
-        this->arps.add(arp);
-        // TODO sage Config::save(this);
-        this->sendChangeMessage();
-    }
-}
-
-
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
@@ -75,10 +33,11 @@ void ArpeggiatorsManager::addArp(const Arpeggiator &arp)
 ValueTree ArpeggiatorsManager::serialize() const
 {
     ValueTree tree(Serialization::Arps::arpeggiators);
-    
-    for (int i = 0; i < this->arps.size(); ++i)
+
+    Resources::Iterator i(this->resources);
+    while (i.next())
     {
-        tree.appendChild(this->arps.getUnchecked(i).serialize(), nullptr);
+        tree.appendChild(i.getValue()->serialize(), nullptr);
     }
     
     return tree;
@@ -86,8 +45,6 @@ ValueTree ArpeggiatorsManager::serialize() const
 
 void ArpeggiatorsManager::deserialize(const ValueTree &tree)
 {
-    this->reset();
-    
     const auto root = tree.hasType(Serialization::Arps::arpeggiators) ?
         tree : tree.getChildWithName(Serialization::Arps::arpeggiators);
     
@@ -95,16 +52,8 @@ void ArpeggiatorsManager::deserialize(const ValueTree &tree)
     
     forEachValueTreeChildWithType(root, arpNode, Serialization::Arps::arpeggiator)
     {
-        Arpeggiator arp;
-        arp.deserialize(arpNode);
-        this->arps.add(arp);
+        Arpeggiator::Ptr arp(new Arpeggiator());
+        arp->deserialize(arpNode);
+        this->resources.set(arp->getResourceId(), arp);
     }
-    
-    this->sendChangeMessage();
-}
-
-void ArpeggiatorsManager::reset()
-{
-    this->arps.clear();
-    this->sendChangeMessage();
 }

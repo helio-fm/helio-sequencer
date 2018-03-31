@@ -61,7 +61,7 @@ struct PluralEquationWrapper: public DynamicObject
 TranslationsManager::TranslationsManager() :
     ResourceManager(Serialization::Resources::translations) {}
 
-void TranslationsManager::initialise(const String &commandLine)
+void TranslationsManager::initialise()
 {
     this->engine = new JavascriptEngine();
     this->engine->maximumExecutionTime = RelativeTime::milliseconds(200);
@@ -82,20 +82,6 @@ void TranslationsManager::shutdown()
 // Translations
 //===----------------------------------------------------------------------===//
 
-const Array<Translation::Ptr> TranslationsManager::getAvailableLocales() const
-{
-    const Translation comparator;
-    Array<Translation::Ptr> result;
-    HashMap<String, Translation::Ptr>::Iterator i(this->availableTranslations);
-    
-    while (i.next())
-    {
-        result.addSorted(comparator, i.getValue());
-    }
-    
-    return result;
-}
-
 const Translation::Ptr TranslationsManager::getCurrentLocale() const noexcept
 {
     return this->currentTranslation;
@@ -109,13 +95,13 @@ void TranslationsManager::loadLocaleWithName(const String &localeName)
         return;
     }
 
-    HashMap<String, Translation::Ptr>::Iterator i(this->availableTranslations);
-    
+    Resources::Iterator i(this->resources);
     while (i.next())
     {
-        if (i.getValue()->name == localeName)
+        const auto translation = static_cast<Translation::Ptr>(i.getValue());
+        if (translation->name == localeName)
         {
-            this->currentTranslation = i.getValue();
+            this->currentTranslation = translation;
             const auto localeId = i.getKey();
             Config::set(Serialization::Config::currentLocale, localeId);
             this->sendChangeMessage();
@@ -186,7 +172,6 @@ ValueTree TranslationsManager::serialize() const
 
 void TranslationsManager::deserialize(const ValueTree &tree)
 {
-    this->reset();
     using namespace Serialization;
 
     const auto root = tree.hasType(Translations::translations) ?
@@ -201,7 +186,7 @@ void TranslationsManager::deserialize(const ValueTree &tree)
     {
         Translation::Ptr translation(new Translation());
         translation->deserialize(translationRoot);
-        this->availableTranslations.set(translation->id, translation);
+        this->resources.set(translation->getResourceId(), translation);
         if (translation->id == selectedLocaleId)
         {
             this->currentTranslation = translation;
@@ -210,14 +195,16 @@ void TranslationsManager::deserialize(const ValueTree &tree)
 
     if (this->currentTranslation == nullptr)
     {
-        this->currentTranslation = this->availableTranslations[fallbackLocale];
+        this->currentTranslation = this->resources[fallbackLocale];
     }
+
+    jassert(this->currentTranslation != nullptr);
 }
 
 void TranslationsManager::reset()
 {
+    ResourceManager::reset();
     this->currentTranslation = nullptr;
-    this->availableTranslations.clear();
     this->equationResult.clear();
 }
 
@@ -236,7 +223,7 @@ String TranslationsManager::getSelectedLocaleId() const
     const String systemLocale =
         SystemStats::getUserLanguage().toLowerCase().substring(0, 2);
     
-    if (this->availableTranslations.contains(systemLocale))
+    if (this->resources.contains(systemLocale))
     {
         return systemLocale;
     }

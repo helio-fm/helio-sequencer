@@ -64,7 +64,7 @@ void ScaleEditor::onRadioButtonClicked(RadioButton *clickedButton)
         }
     }
 
-    this->scale = this->scale.withKeys(keys);
+    this->scale = this->scale->withKeys(keys);
     this->updateButtons();
 
     if (ScaleEditor::Listener *parentListener =
@@ -74,9 +74,9 @@ void ScaleEditor::onRadioButtonClicked(RadioButton *clickedButton)
     }
 }
 
-void ScaleEditor::setScale(const Scale &scale)
+void ScaleEditor::setScale(const Scale::Ptr scale)
 {
-    if (!this->scale.isEquivalentTo(scale))
+    if (!this->scale->isEquivalentTo(scale))
     {
         this->scale = scale;
         this->updateButtons();
@@ -91,7 +91,7 @@ void ScaleEditor::updateButtons()
 {
     for (int i = 0; i < this->buttons.size(); ++i)
     {
-        if (this->scale.hasKey(i))
+        if (this->scale->hasKey(i))
         {
             buttons.getUnchecked(i)->select();
         }

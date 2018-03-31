@@ -83,7 +83,7 @@ CommandPanel::Items createLayersPanel(const Array<PianoTrackTreeItem *> &layers)
 CommandPanel::Items createArpsPanel(int selectedArp)
 {
     CommandPanel::Items cmds;
-    const Array<Arpeggiator> arps = ArpeggiatorsManager::getInstance().getArps();
+    const auto arps = ArpeggiatorsManager::getInstance().getArps();
     cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
 
     for (int i = 0; i < arps.size(); ++i)
@@ -92,16 +92,11 @@ CommandPanel::Items createArpsPanel(int selectedArp)
 
         cmds.add(CommandItem::withParams(Icons::group,
             (CommandIDs::ApplyArpeggiator + i),
-            arps.getUnchecked(i).getName())->toggled(isSelectedArp));
+            arps.getUnchecked(i)->getName())->toggled(isSelectedArp));
     }
 
     return cmds;
 }
-
-
-
-
-
 
 
 

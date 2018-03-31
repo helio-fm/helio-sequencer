@@ -360,19 +360,38 @@ private:
 
 struct JsonFormatter final
 {
-    static void write(OutputStream &out, const ValueTree &tree,
-        int indentLevel, bool allOnOneLine, int maximumDecimalPlaces)
+    static void write(OutputStream &out, const ValueTree &tree, const StringArray &headerComments,
+        int indentLevel, bool oneLine, int maximumDecimalPlaces)
     {
         out << '{';
-        if (!allOnOneLine) { out << newLine; }
+        if (!oneLine) { out << newLine; }
 
-        if (!allOnOneLine) { writeSpaces(out, indentLevel + indentSize); }
+        if (headerComments.size() > 0)
+        {
+            if (!oneLine) { writeSpaces(out, indentLevel + indentSize); }
+            out << '/*';
+            if (!oneLine) { out << newLine; }
+
+            for (const auto &comment : headerComments)
+            {
+                if (!oneLine) { writeSpaces(out, indentLevel + indentSize); }
+                if (!oneLine) { out << " *"; }
+                out << ' ' << comment;
+                if (!oneLine) { out << newLine; }
+            }
+
+            if (!oneLine) { writeSpaces(out, indentLevel + indentSize); }
+            out << ' */';
+            if (!oneLine) { out << newLine; }
+        }
+
+        if (!oneLine) { writeSpaces(out, indentLevel + indentSize); }
         out << '"';
         writeString(out, tree.getType());
         out << "\": ";
-        writeObject(out, tree, indentLevel + indentSize, allOnOneLine, maximumDecimalPlaces);
+        writeObject(out, tree, indentLevel + indentSize, oneLine, maximumDecimalPlaces);
 
-        if (!allOnOneLine) { out << newLine; }
+        if (!oneLine) { out << newLine; }
         out << '}';
     }
 
@@ -580,6 +599,11 @@ static const Identifier fakeRoot = "fakeRoot";
 JsonSerializer::JsonSerializer(bool allOnOneLine) noexcept :
     allOnOneLine(allOnOneLine) {}
 
+void JsonSerializer::setHeaderComments(StringArray comments) noexcept
+{
+    this->headerComments = comments;
+}
+
 Result JsonSerializer::saveToFile(File file, const ValueTree &tree) const
 {
     FileOutputStream fileStream(file);
@@ -588,7 +612,7 @@ Result JsonSerializer::saveToFile(File file, const ValueTree &tree) const
         fileStream.setPosition(0);
         fileStream.truncate();
 
-        JsonFormatter::write(fileStream, tree, 0, this->allOnOneLine, 6);
+        JsonFormatter::write(fileStream, tree, this->headerComments, 0, this->allOnOneLine, 6);
         return Result::ok();
     }
 
@@ -612,7 +636,7 @@ Result JsonSerializer::loadFromFile(const File &file, ValueTree &tree) const
 Result JsonSerializer::saveToString(String &string, const ValueTree &tree) const
 {
     MemoryOutputStream mo(1024);
-    JsonFormatter::write(mo, tree, 0, this->allOnOneLine, 6);
+    JsonFormatter::write(mo, tree, this->headerComments, 0, this->allOnOneLine, 6);
     string = mo.toUTF8();
     return Result::ok();
 }

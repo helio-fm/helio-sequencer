@@ -39,7 +39,7 @@ public:
     void setSelected(bool shouldBeSelected) override;
 
     void updateDescription(bool isLastRowInList,
-        bool isCurrentTheme, const ColourScheme &colours);
+        bool isCurrentTheme, const ColourScheme::Ptr colours);
 
     //[/UserMethods]
 
@@ -50,9 +50,9 @@ public:
 private:
 
     //[UserVariables]
-    void applyTheme(const ColourScheme &theme);
+    void applyTheme(const ColourScheme::Ptr theme);
 
-    ColourScheme colours;
+    ColourScheme::Ptr colours;
     ScopedPointer<HelioTheme> theme;
 
     ListBox &listBox;

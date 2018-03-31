@@ -244,8 +244,7 @@ void App::initialise(const String &commandLine)
         Desktop::getInstance().setOrientationsEnabled(Desktop::rotatedClockwise + Desktop::rotatedAntiClockwise);
         
         Logger::setCurrentLogger(&this->logger);
-        Logger::writeToLog("Helio Workstation");
-        Logger::writeToLog("Ver. " + App::getAppReadableVersion());
+        Logger::writeToLog("Helio v" + App::getAppReadableVersion());
         
         this->theme = new HelioTheme();
         this->theme->initResources();
@@ -254,13 +253,19 @@ void App::initialise(const String &commandLine)
         this->clipboard = new InternalClipboard();
         this->config = new class Config();
     
-        // TODO: get rid of singletons somehow
-        TranslationsManager::getInstance().initialise(commandLine);
-        ArpeggiatorsManager::getInstance().initialise(commandLine);
-        ColourSchemesManager::getInstance().initialise(commandLine);
-        HotkeySchemesManager::getInstance().initialise(commandLine);
-        ArpeggiatorsManager::getInstance().initialise(commandLine);
-        ScalesManager::getInstance().initialise(commandLine);
+        // TODO: get rid of singletons someday
+        using namespace Serialization;
+        this->resourceManagers.set(Resources::translations, &TranslationsManager::getInstance());
+        this->resourceManagers.set(Resources::arpeggiators, &ArpeggiatorsManager::getInstance());
+        this->resourceManagers.set(Resources::colourSchemes, &ColourSchemesManager::getInstance());
+        this->resourceManagers.set(Resources::hotkeySchemes, &HotkeySchemesManager::getInstance());
+        this->resourceManagers.set(Resources::scales, &ScalesManager::getInstance());
+
+        ResourceManagers::Iterator i(this->resourceManagers);
+        while (i.next())
+        {
+            i.getValue()->initialise();
+        }
 
         this->workspace = new class Workspace();
         this->window = new MainWindow();
@@ -318,12 +323,13 @@ void App::shutdown()
         Icons::clearPrerenderedCache();
         Icons::clearBuiltInImages();
 
-        ScalesManager::getInstance().shutdown();
-        ArpeggiatorsManager::getInstance().shutdown();
-        HotkeySchemesManager::getInstance().shutdown();
-        ColourSchemesManager::getInstance().shutdown();
-        ArpeggiatorsManager::getInstance().shutdown();
-        TranslationsManager::getInstance().shutdown();
+        ResourceManagers::Iterator i(this->resourceManagers);
+        while (i.next())
+        {
+            i.getValue()->shutdown();
+        }
+
+        this->resourceManagers.clear();
         
         Logger::setCurrentLogger(nullptr);
     }
@@ -542,6 +548,12 @@ void App::changeListenerCallback(ChangeBroadcaster *source)
 {
     Logger::writeToLog("Reloading translations");
     this->recreateLayout();
+}
+
+ResourceManager &App::getResourceManagerFor(const Identifier &id) const
+{
+    jassert(this->resourceManagers.contains(id));
+    return *this->resourceManagers[id];
 }
 
 START_JUCE_APPLICATION(App)

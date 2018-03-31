@@ -23,24 +23,8 @@
 #include "App.h"
 #include "Config.h"
 
-
 ScalesManager::ScalesManager() :
     ResourceManager(Serialization::Resources::scales) {}
-
-void ScalesManager::initialise(const String &commandLine)
-{
-    this->reloadResources();
-}
-
-void ScalesManager::shutdown()
-{
-    this->reset();
-}
-
-const Array<Scale> &ScalesManager::getScales() const
-{
-    return this->scales;
-}
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -50,9 +34,10 @@ ValueTree ScalesManager::serialize() const
 {
     ValueTree tree(Serialization::Midi::scales);
     
-    for (int i = 0; i < this->scales.size(); ++i)
+    Resources::Iterator i(this->resources);
+    while (i.next())
     {
-        tree.appendChild(this->scales.getUnchecked(i).serialize(), nullptr);
+        tree.appendChild(i.getValue()->serialize(), nullptr);
     }
     
     return tree;
@@ -60,25 +45,17 @@ ValueTree ScalesManager::serialize() const
 
 void ScalesManager::deserialize(const ValueTree &tree)
 {
-    this->reset();
-    
     const auto root = tree.hasType(Serialization::Midi::scales) ?
         tree : tree.getChildWithName(Serialization::Midi::scales);
     
     if (!root.isValid()) { return; }
     
-    forEachValueTreeChildWithType(root, schemeNode, Serialization::Midi::scale)
+    forEachValueTreeChildWithType(root, scaleNode, Serialization::Midi::scale)
     {
-        Scale s;
-        s.deserialize(schemeNode);
-        this->scales.add(s);
+        Scale::Ptr scale(new Scale());
+        scale->deserialize(scaleNode);
+        this->resources.set(scale->getResourceId(), scale);
     }
-    
-    this->sendChangeMessage();
-}
 
-void ScalesManager::reset()
-{
-    this->scales.clear();
-    this->sendChangeMessage();
+    // Logger::writeToLog("Number of scales available: " + String(this->resources.size()));
 }

@@ -153,8 +153,6 @@ float Note::getVelocity() const noexcept
 // Serializable
 //===----------------------------------------------------------------------===//
 
-#define VELOCITY_SAVE_ACCURACY 1024.f
-
 ValueTree Note::serialize() const noexcept
 {
     using namespace Serialization;

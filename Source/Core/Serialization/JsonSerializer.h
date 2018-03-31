@@ -25,6 +25,8 @@ public:
 
     explicit JsonSerializer(bool allOnOneLine = false) noexcept;
 
+    void setHeaderComments(StringArray comments) noexcept;
+
     Result saveToFile(File file, const ValueTree &tree) const override;
     Result loadFromFile(const File &file, ValueTree &tree) const override;
 
@@ -37,5 +39,6 @@ public:
 private:
 
     bool allOnOneLine;
+    StringArray headerComments;
 
 };

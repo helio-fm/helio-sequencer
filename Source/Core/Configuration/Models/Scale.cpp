@@ -31,20 +31,26 @@ enum Key
     VII = 6
 };
 
-Scale::Scale(const String &name) noexcept : name(name) {}
-Scale::Scale(const Scale &other) noexcept : name(other.name), keys(other.keys) {}
+Scale::Scale() noexcept :
+    basePeriod(CHROMATIC_SCALE_SIZE) {}
 
-Scale Scale::withName(const String &name) const noexcept
+Scale::Scale(const String &name) noexcept :
+    name(name), basePeriod(CHROMATIC_SCALE_SIZE) {}
+
+Scale::Scale(const Scale &other) noexcept :
+    name(other.name), basePeriod(CHROMATIC_SCALE_SIZE), keys(other.keys) {}
+
+Scale::Ptr Scale::withName(const String &name) const noexcept
 {
-    Scale s(*this);
-    s.name = name;
+    Scale::Ptr s(new Scale(*this));
+    s->name = name;
     return s;
 }
 
-Scale Scale::withKeys(const Array<int> &keys) const noexcept
+Scale::Ptr Scale::withKeys(const Array<int> &keys) const noexcept
 {
-    Scale s(*this);
-    s.keys = keys;
+    Scale::Ptr s(new Scale(*this));
+    s->keys = keys;
     return s;
 }
 
@@ -55,34 +61,33 @@ Scale Scale::withKeys(const Array<int> &keys) const noexcept
 inline static Array<int> getChromaticKeys()
 { return { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }; }
 
-Scale Scale::getChromaticScale()
+Scale::Ptr Scale::getChromaticScale()
 {
-    Scale s;
-    s.keys = getChromaticKeys();
-    s.name = TRANS("Chromatic");
+    Scale::Ptr s(new Scale());
+    s->keys = getChromaticKeys();
+    s->name = TRANS("Chromatic");
     return s;
 }
 
 inline static Array<int> getNaturalMiniorKeys()
 { return { 0, 2, 3, 5, 7, 8, 10 }; }
 
-Scale Scale::getNaturalMiniorScale()
+Scale::Ptr Scale::getNaturalMiniorScale()
 {
-    Scale s;
-    s.keys = getNaturalMiniorKeys();
-    s.name = TRANS("Aeolian");
+    Scale::Ptr s(new Scale());
+    s->keys = getNaturalMiniorKeys();
+    s->name = TRANS("Aeolian");
     return s;
 }
 
 inline static Array<int> getNaturalMajorKeys()
 { return { 0, 2, 4, 5, 7, 9, 11 }; }
 
-
-Scale Scale::getNaturalMajorScale()
+Scale::Ptr Scale::getNaturalMajorScale()
 {
-    Scale s;
-    s.keys = getNaturalMajorKeys();
-    s.name = TRANS("Ionian");
+    Scale::Ptr s(new Scale());
+    s->keys = getNaturalMajorKeys();
+    s->name = TRANS("Ionian");
     return s;
 }
 
@@ -210,9 +215,19 @@ bool operator!=(const Scale &l, const Scale &r)
     return !operator== (l, r);
 }
 
-bool Scale::isEquivalentTo(const Scale &other) const
+bool Scale::isEquivalentTo(const Scale::Ptr other) const
 {
-    return this->keys == other.keys;
+    return this->keys == other->keys;
+}
+
+//===----------------------------------------------------------------------===//
+// BaseResource
+//===----------------------------------------------------------------------===//
+
+String Scale::getResourceId() const
+{
+    // Assumed to be unique:
+    return this->name;
 }
 
 //===----------------------------------------------------------------------===//

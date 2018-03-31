@@ -29,14 +29,12 @@ public:
         static ArpeggiatorsManager Instance;
         return Instance;
     }
-    
-    void initialise(const String &commandLine);
-    void shutdown();
-        
-    Array<Arpeggiator> getArps() const;
-    bool replaceArpWithId(const String &id, const Arpeggiator &arp);
-    void addArp(const Arpeggiator &arp);
-    
+
+    inline const Array<Arpeggiator::Ptr> getArps() const
+    {
+        return this->getResources<Arpeggiator::Ptr>();
+    }
+
 private:
     
     //===------------------------------------------------------------------===//
@@ -45,12 +43,7 @@ private:
     
     ValueTree serialize() const override;
     void deserialize(const ValueTree &tree) override;
-    void reset() override;
     
-private:
-    
-    Array<Arpeggiator> arps;
-        
 private:
 
     ArpeggiatorsManager();

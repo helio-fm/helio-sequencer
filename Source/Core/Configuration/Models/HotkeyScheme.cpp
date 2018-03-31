@@ -215,3 +215,17 @@ HotkeyScheme &HotkeyScheme::operator=(const HotkeyScheme &other)
     this->keyUps.addArray(other.keyUps);
     return *this;
 }
+
+//===----------------------------------------------------------------------===//
+// BaseResource
+//===----------------------------------------------------------------------===//
+
+String HotkeyScheme::getResourceId() const
+{
+    return this->name;
+}
+
+bool operator==(const HotkeyScheme &l, const HotkeyScheme &r)
+{
+    return &l == &r || l.name == r.name;
+}

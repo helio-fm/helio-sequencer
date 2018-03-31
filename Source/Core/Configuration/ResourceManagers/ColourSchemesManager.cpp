@@ -23,38 +23,29 @@
 #include "App.h"
 #include "Config.h"
 
-
 ColourSchemesManager::ColourSchemesManager() :
     ResourceManager(Serialization::Resources::colourSchemes) {}
 
-void ColourSchemesManager::initialise(const String &commandLine)
-{
-    this->reloadResources();
-}
-
-void ColourSchemesManager::shutdown()
-{
-    this->reset();
-}
-
-Array<ColourScheme> ColourSchemesManager::getSchemes() const
-{
-    return this->schemes;
-}
-
-ColourScheme ColourSchemesManager::getCurrentScheme() const
+ColourScheme::Ptr ColourSchemesManager::getCurrentScheme() const
 {
     if (Config::contains(Serialization::Config::activeColourScheme))
     {
-        ColourScheme cs;
+        ColourScheme::Ptr cs(new ColourScheme());
         Config::load(cs, Serialization::Config::activeColourScheme);
         return cs;
     }
 
-    return this->schemes[0]; // Will return ColourScheme() if array is empty
+    if (this->resources.size() > 0)
+    {
+        Resources::Iterator i(this->resources);
+        i.next();
+        return i.getValue();
+    }
+
+    return new ColourScheme();
 }
 
-void ColourSchemesManager::setCurrentScheme(const ColourScheme &scheme)
+void ColourSchemesManager::setCurrentScheme(const ColourScheme::Ptr scheme)
 {
     Config::save(scheme, Serialization::Config::activeColourScheme);
 }
@@ -67,9 +58,10 @@ ValueTree ColourSchemesManager::serialize() const
 {
     ValueTree tree(Serialization::UI::Colours::schemes);
     
-    for (int i = 0; i < this->schemes.size(); ++i)
+    Resources::Iterator i(this->resources);
+    while (i.next())
     {
-        tree.appendChild(this->schemes.getUnchecked(i).serialize(), nullptr);
+        tree.appendChild(i.getValue()->serialize(), nullptr);
     }
     
     return tree;
@@ -77,8 +69,6 @@ ValueTree ColourSchemesManager::serialize() const
 
 void ColourSchemesManager::deserialize(const ValueTree &tree)
 {
-    this->reset();
-    
     const auto root = tree.hasType(Serialization::UI::Colours::schemes) ?
         tree : tree.getChildWithName(Serialization::UI::Colours::schemes);
     
@@ -86,16 +76,8 @@ void ColourSchemesManager::deserialize(const ValueTree &tree)
     
     forEachValueTreeChildWithType(root, schemeNode, Serialization::UI::Colours::scheme)
     {
-        ColourScheme cs;
-        cs.deserialize(schemeNode);
-        this->schemes.add(cs);
+        ColourScheme::Ptr scheme(new ColourScheme());
+        scheme->deserialize(schemeNode);
+        this->resources.set(scheme->getResourceId(), scheme);
     }
-    
-    this->sendChangeMessage();
-}
-
-void ColourSchemesManager::reset()
-{
-    this->schemes.clear();
-    this->sendChangeMessage();
 }

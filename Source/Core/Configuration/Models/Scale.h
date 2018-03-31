@@ -17,18 +17,23 @@
 
 #pragma once
 
+#include "BaseResource.h"
+
 #define CHROMATIC_SCALE_SIZE 12
 
-class Scale final : public Serializable
+class Scale final : public BaseResource
 {
 public:
 
-    Scale() = default;
+    Scale() noexcept;
     Scale(const Scale &other) noexcept;
     explicit Scale(const String &name) noexcept;
 
-    Scale withName(const String &name) const noexcept;
-    Scale withKeys(const Array<int> &keys) const noexcept;
+    String getResourceId() const override;
+    typedef ReferenceCountedObjectPtr<Scale> Ptr;
+
+    Scale::Ptr withName(const String &name) const noexcept;
+    Scale::Ptr withKeys(const Array<int> &keys) const noexcept;
 
     inline static StringArray getKeyNames(bool sharps = true)
     {
@@ -87,9 +92,9 @@ public:
     // Hard-coded defaults
     //===------------------------------------------------------------------===//
 
-    static Scale getChromaticScale();
-    static Scale getNaturalMiniorScale();
-    static Scale getNaturalMajorScale();
+    static Scale::Ptr getChromaticScale();
+    static Scale::Ptr getNaturalMiniorScale();
+    static Scale::Ptr getNaturalMajorScale();
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -110,7 +115,7 @@ public:
     // Used to compare scales in version control
     // (there may be lots of synonyms for the same sets of notes,
     // e.g. Phrygian is called Zokuso in Japan and Ousak in Greece)
-    bool isEquivalentTo(const Scale &other) const;
+    bool isEquivalentTo(const Scale::Ptr other) const;
 
     int hashCode() const noexcept;
 

@@ -64,7 +64,7 @@ private:
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
 
-    ColourScheme currentScheme;
+    ColourScheme::Ptr currentScheme;
 
     //[/UserVariables]
 

@@ -30,12 +30,13 @@ public:
         return Instance;
     }
 
-    void initialise(const String &commandLine);
-    void shutdown();
+    inline const Array<HotkeyScheme::Ptr> getSchemes() const noexcept
+    {
+        return this->getResources<HotkeyScheme::Ptr>();
+    }
 
-    const Array<HotkeyScheme> &getSchemes() const noexcept;
-    const HotkeyScheme &getCurrentScheme() const noexcept;
-    void setCurrentScheme(const HotkeyScheme &scheme);
+    const HotkeyScheme::Ptr getCurrentScheme() const noexcept;
+    void setCurrentScheme(const HotkeyScheme::Ptr scheme);
 
 private:
 
@@ -46,16 +47,13 @@ private:
     ValueTree serialize() const override;
     void deserialize(const ValueTree &tree) override;
     void reset() override;
+
+private:
+
+    HotkeyScheme::Ptr activeScheme;
+    HotkeyScheme::Ptr findActiveScheme() const;
     
-private:
-
     HotkeySchemesManager();
-
-    Array<HotkeyScheme> schemes;
-    HotkeyScheme activeScheme;
-
-private:
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HotkeySchemesManager)
 
 };

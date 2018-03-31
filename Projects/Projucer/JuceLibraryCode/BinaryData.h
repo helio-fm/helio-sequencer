@@ -354,7 +354,7 @@ namespace BinaryData
     const int            Arpeggiators_jsonSize = 15183;
 
     extern const char*   ColourSchemes_json;
-    const int            ColourSchemes_jsonSize = 2833;
+    const int            ColourSchemes_jsonSize = 2753;
 
     extern const char*   HotkeySchemes_json;
     const int            HotkeySchemes_jsonSize = 9891;

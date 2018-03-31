@@ -30,10 +30,14 @@ public:
         return Instance;
     }
 
-    void initialise(const String &commandLine);
-    void shutdown();
+    void initialise() override;
+    void shutdown() override;
 
-    const Array<Translation::Ptr> getAvailableLocales() const;
+    inline const Array<Translation::Ptr> getAvailableLocales() const
+    {
+        return this->getResources<Translation::Ptr>();
+    }
+
     const Translation::Ptr getCurrentLocale() const noexcept;
 
     void loadLocaleWithName(const String &localeName);
@@ -55,15 +59,13 @@ private:
     ValueTree serialize() const override;
     void deserialize(const ValueTree &tree) override;
     void reset() override;
-    
+
 private:
         
     TranslationsManager();
 
     ScopedPointer<JavascriptEngine> engine;
     String equationResult;
-
-    HashMap<String, Translation::Ptr> availableTranslations;
 
     SpinLock currentTranslationLock;
     Translation::Ptr currentTranslation;

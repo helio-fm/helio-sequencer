@@ -30,7 +30,6 @@ ColourScheme::ColourScheme(const ColourScheme &other)
 
 ColourScheme &ColourScheme::operator=(const ColourScheme &other)
 {
-    this->id = other.id;
     this->name = other.name;
     this->colours.clear();
 
@@ -49,7 +48,9 @@ bool operator==(const ColourScheme &lhs, const ColourScheme &rhs)
     while (i.next())
     {
         if (rhs.colours[i.getKey()] != i.getValue())
+        {
             return false;
+        }
     }
 
     return lhs.name == rhs.name;
@@ -76,12 +77,7 @@ void ColourScheme::randomize()
     this->colours.swapWith(newMap);
 }
 
-String ColourScheme::getId() const
-{
-    return this->id;
-}
-
-String ColourScheme::getName() const
+String ColourScheme::getName() const noexcept
 {
     return this->name;
 }
@@ -205,7 +201,6 @@ ValueTree ColourScheme::serialize() const
 {
     ValueTree tree(UI::Colours::scheme);
     tree.setProperty(UI::Colours::name, this->name, nullptr);
-    tree.setProperty(UI::Colours::id, this->id, nullptr);
 
     ValueTree mapXml(UI::Colours::colourMap);
 
@@ -230,7 +225,6 @@ void ColourScheme::deserialize(const ValueTree &tree)
     this->reset();
 
     this->name = root.getProperty(UI::Colours::name);
-    this->id = root.getProperty(UI::Colours::id);
 
     const auto map = root.getChildWithName(UI::Colours::colourMap);
     for (int i = 0; i < map.getNumProperties(); ++i)
@@ -243,7 +237,6 @@ void ColourScheme::deserialize(const ValueTree &tree)
 
 void ColourScheme::reset()
 {
-    this->id.clear();
     this->name.clear();
     this->colours.clear();
     // todo set reasonable defaults?
@@ -262,4 +255,9 @@ void ColourScheme::reset()
     this->colours.set(UI::Colours::text, Colours::black);
     this->colours.set(UI::Colours::iconBase, Colours::black.withAlpha(0.25f));
     this->colours.set(UI::Colours::iconShadow, Colours::white.withAlpha(0.115f));
+}
+
+String ColourScheme::getResourceId() const
+{
+    return this->name;
 }

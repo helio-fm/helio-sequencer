@@ -18,7 +18,7 @@
 #pragma once
 
 class HelioCallout;
-class ColourScheme;
+#include "ColourScheme.h"
 
 #define SHORT_FADE_TIME(component) (static_cast<HelioTheme &>((component)->getLookAndFeel()).getShortAnimationLength());
 #define LONG_FADE_TIME(component) (static_cast<HelioTheme &>((component)->getLookAndFeel()).getLongAnimationLength());
@@ -30,7 +30,7 @@ public:
     HelioTheme();
 
     void initResources();
-    void initColours(const ::ColourScheme &colours);
+    void initColours(const ::ColourScheme::Ptr colours);
     void updateBackgroundRenders(bool force = false);
 
     Typeface::Ptr getTextTypeface() const

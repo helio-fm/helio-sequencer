@@ -56,7 +56,7 @@ MainLayout::MainLayout() :
     this->addAndMakeVisible(this->headline);
 
     // TODO make it able for user to select a scheme in settings page
-    this->hotkeyScheme = HotkeySchemesManager::getInstance().getSchemes().getFirst();
+    this->hotkeyScheme = HotkeySchemesManager::getInstance().getCurrentScheme();
 
     this->setMouseClickGrabsKeyboardFocus(true);
     this->setWantsKeyboardFocus(true);
@@ -78,6 +78,7 @@ MainLayout::MainLayout() :
 MainLayout::~MainLayout()
 {
     this->removeAllChildren();
+    this->hotkeyScheme = nullptr;
     this->headline = nullptr;
 }
 
@@ -350,7 +351,7 @@ bool MainLayout::keyPressed(const KeyPress &key)
         return false;
     }
 
-    if (this->hotkeyScheme.dispatchKeyPress(key,
+    if (this->hotkeyScheme->dispatchKeyPress(key,
         this, this->currentContent.getComponent()))
     {
         return true;
@@ -367,8 +368,8 @@ bool MainLayout::keyPressed(const KeyPress &key)
             ht->initColours(scheme);
             this->repaint();
 
-            scheme.syncWithLiveConstantEditor();
-            const auto schemeNode(scheme.serialize());
+            scheme->syncWithLiveConstantEditor();
+            const auto schemeNode(scheme->serialize());
             String schemeNodeString;
             JsonSerializer serializer;
             serializer.saveToString(schemeNodeString, schemeNode);
@@ -389,7 +390,7 @@ bool MainLayout::keyStateChanged(bool isKeyDown)
         return false;
     }
 
-    return this->hotkeyScheme.dispatchKeyStateChange(isKeyDown,
+    return this->hotkeyScheme->dispatchKeyStateChange(isKeyDown,
         this, this->currentContent.getComponent());
 }
 

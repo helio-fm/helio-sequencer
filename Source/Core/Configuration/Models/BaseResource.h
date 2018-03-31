@@ -17,36 +17,17 @@
 
 #pragma once
 
-#include "Scale.h"
-#include "ResourceManager.h"
-
-class ScalesManager : public ResourceManager
+class BaseResource : public Serializable, public ReferenceCountedObject
 {
 public:
 
-    static ScalesManager &getInstance()
+    virtual String getResourceId() const = 0;
+
+    typedef ReferenceCountedObjectPtr<BaseResource> Ptr;
+
+    static int compareElements(const BaseResource::Ptr first, const BaseResource::Ptr second)
     {
-        static ScalesManager Instance;
-        return Instance;
+        return first->getResourceId().compare(second->getResourceId());
     }
-
-    inline const Array<Scale::Ptr> getScales() const
-    {
-        return this->getResources<Scale::Ptr>();
-    }
-
-private:
-
-    //===------------------------------------------------------------------===//
-    // Serializable
-    //===------------------------------------------------------------------===//
-
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
-
-private:
-
-    ScalesManager();
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScalesManager)
 
 };

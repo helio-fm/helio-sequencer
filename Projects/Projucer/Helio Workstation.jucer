@@ -236,6 +236,7 @@
         </GROUP>
         <GROUP id="{1946EFF7-7A51-1F1A-DC7A-0335933B794B}" name="Configuration">
           <GROUP id="{0B276517-219A-0DAC-BA17-9F8ADBADD834}" name="Models">
+            <FILE id="RINluc" name="BaseResource.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/BaseResource.h"/>
             <FILE id="PPLAJz" name="Arpeggiator.cpp" compile="1" resource="0" file="../../Source/Core/Configuration/Models/Arpeggiator.cpp"/>
             <FILE id="Q2i1s3" name="Arpeggiator.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/Arpeggiator.h"/>
             <FILE id="d87zUP" name="ColourScheme.cpp" compile="1" resource="0"
@@ -250,6 +251,8 @@
             <FILE id="UNzZAk" name="Translation.h" compile="0" resource="0" file="../../Source/Core/Configuration/Models/Translation.h"/>
           </GROUP>
           <GROUP id="{EE94B8AA-34C3-554B-1F98-C48B06FE046C}" name="ResourceManagers">
+            <FILE id="vWQoHw" name="ResourceManager.cpp" compile="1" resource="0"
+                  file="../../Source/Core/Configuration/ResourceManagers/ResourceManager.cpp"/>
             <FILE id="Vf1qj3" name="ResourceManager.h" compile="0" resource="0"
                   file="../../Source/Core/Configuration/ResourceManagers/ResourceManager.h"/>
             <FILE id="LpyGk0" name="ArpeggiatorsManager.cpp" compile="1" resource="0"

@@ -39,7 +39,7 @@ protected:
 #if JUCE_DEBUG
         const ScopedWriteLock lock(this->logLock);
         this->log += message;
-        this->log += "\n";
+        this->log += newLine;
         Logger::outputDebugString(message);
         this->sendChangeMessage();
 #endif

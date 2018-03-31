@@ -102,6 +102,7 @@ public:
     InternalClipboard *getClipboard() const noexcept;
     SessionService *getSessionService() const noexcept;
     HelioTheme *getTheme() const noexcept;
+    ResourceManager &getResourceManagerFor(const Identifier &id) const;
 
 private:
 
@@ -113,6 +114,9 @@ private:
     ScopedPointer<class MainWindow> window;
     ScopedPointer<SessionService> sessionService;
     ScopedPointer<UpdatesService> updatesService;
+
+    typedef HashMap<Identifier, ResourceManager *, IdentifierHash> ResourceManagers;
+    ResourceManagers resourceManagers;
 
 private:
 

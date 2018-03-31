@@ -47,7 +47,6 @@
 #include "InternalClipboard.h"
 #include "HelioCallout.h"
 #include "NotesTuningPanel.h"
-#include "ArpeggiatorEditorPanel.h"
 #include "PianoRollToolbox.h"
 #include "Config.h"
 #include "SerializationKeys.h"
@@ -468,7 +467,7 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
         const KeySignatureEvent &oldKey = static_cast<const KeySignatureEvent &>(oldEvent);
         const KeySignatureEvent &newKey = static_cast<const KeySignatureEvent &>(newEvent);
         if (oldKey.getRootKey() != newKey.getRootKey() ||
-            !oldKey.getScale().isEquivalentTo(newKey.getScale()))
+            !oldKey.getScale()->isEquivalentTo(newKey.getScale()))
         {
             this->removeBackgroundCacheFor(oldKey);
             this->updateBackgroundCacheFor(newKey);
@@ -1446,7 +1445,7 @@ Array<Image> PianoRoll::renderBackgroundCacheFor(const HighlightingScheme *const
 }
 
 Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
-    const Scale &scale, int root, int height)
+    const Scale::Ptr scale, int root, int height)
 {
     if (height < PIANOROLL_MIN_ROW_HEIGHT)
     {
@@ -1469,7 +1468,7 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
     float currentHeight = float(height);
     float previousHeight = 0;
     float pos_y = patternImage.getHeight() - currentHeight;
-    const int lastOctaveReminder = 8 + scale.getBasePeriod() - root;
+    const int lastOctaveReminder = 8 + scale->getBasePeriod() - root;
 
     g.setColour(whiteKeyBright);
     g.fillRect(patternImage.getBounds());
@@ -1493,7 +1492,7 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
             g.setColour(c.brighter(0.025f));
             g.drawHorizontalLine(int(pos_y + 1), 0.f, float(patternImage.getWidth()));
         }
-        else if (scale.hasKey(noteNumber))
+        else if (scale->hasKey(noteNumber))
         {
             g.setColour(whiteKeyBright.brighter(0.025f));
             g.drawHorizontalLine(int(pos_y + 1), 0.f, float(patternImage.getWidth()));
@@ -1517,11 +1516,8 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
     return patternImage;
 }
 
-PianoRoll::HighlightingScheme::HighlightingScheme(int rootKey, const Scale &scale) :
-    rootKey(rootKey),
-    scale(scale)
-{
-}
+PianoRoll::HighlightingScheme::HighlightingScheme(int rootKey, const Scale::Ptr scale) :
+    rootKey(rootKey), scale(scale) {}
 
 int PianoRoll::binarySearchForHighlightingScheme(const KeySignatureEvent *const target) const noexcept
 {

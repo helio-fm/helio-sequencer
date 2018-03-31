@@ -104,7 +104,7 @@ private:
 
     ScopedPointer<TooltipContainer> tooltipContainer;
     
-    HotkeyScheme hotkeyScheme;
+    HotkeyScheme::Ptr hotkeyScheme;
     
 private:
 

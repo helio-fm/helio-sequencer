@@ -20,16 +20,6 @@
 #include "SerializationKeys.h"
 #include "ResourceCache.h"
 
-int Translation::compareElements(const Translation &first, const Translation &second)
-{
-    return first.name.compare(second.name);
-}
-
-int Translation::compareElements(const Translation::Ptr first, const Translation::Ptr second)
-{
-    return first->name.compare(second->name);
-}
-
 String Translation::getName() const noexcept
 {
     return this->name;
@@ -93,4 +83,13 @@ void Translation::reset()
 {
     this->singulars.clear();
     this->plurals.clear();
+}
+
+//===----------------------------------------------------------------------===//
+// BaseResource
+//===----------------------------------------------------------------------===//
+
+String Translation::getResourceId() const
+{
+    return this->id; // i.e. "en", "ru" - should be unique
 }

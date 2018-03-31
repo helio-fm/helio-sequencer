@@ -50,7 +50,7 @@ public:
     bool onPopupButtonDrag(PopupButton *button) override;
     void onPopupButtonEndDragging(PopupButton *button) override;
 
-    void applyScale(const Scale &scale);
+    void applyScale(const Scale::Ptr scale);
     void applyFunction(Scale::Function function);
 
     //[/UserMethods]
@@ -70,7 +70,7 @@ private:
     PianoRoll *roll;
     MidiSequence *sequence;
 
-    const Array<Scale> defaultScales;
+    const Array<Scale::Ptr> defaultScales;
 
     int targetKey;
     float targetBeat;
@@ -79,7 +79,7 @@ private:
     Point<int> draggingEndPosition;
     bool detectKeyAndBeat(); // returns true if key changes
 
-    Scale scale;
+    Scale::Ptr scale;
     Scale::Function function;
 
     bool hasMadeChanges;

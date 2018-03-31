@@ -19,6 +19,7 @@
 
 #include "Note.h"
 #include "Scale.h"
+#include "BaseResource.h"
 
 // Arpeggiators are created by user simply as a sequences within a scale.
 // Depending on arp type, it has a mapping from that sequence's space into target chord space,
@@ -33,19 +34,30 @@
 // like using an arpeggiated chord as a new arpeggiator, and so on.
 // See DiatonicArpMapper implementation for the most common mapping example.
 
-class Arpeggiator final : public Serializable
+
+class Arpeggiator final : public BaseResource
 {
 public:
 
-    Arpeggiator() = default;
+    Arpeggiator() {}
     Arpeggiator(const String &name, 
         const Scale &scale,
         const Array<Note> &sequence,
         Note::Key rootKey);
 
-    String getId() const { return this->id.toString(); }
+    typedef ReferenceCountedObjectPtr<Arpeggiator> Ptr;
+
     String getName() const noexcept { return this->name; };
     bool isValid() const noexcept { return !this->keys.isEmpty(); }
+
+    Arpeggiator &operator=(const Arpeggiator &other);
+    friend bool operator==(const Arpeggiator &l, const Arpeggiator &r);
+
+    //===------------------------------------------------------------------===//
+    // BaseResource
+    //===------------------------------------------------------------------===//
+
+    String getResourceId() const override;
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -55,18 +67,30 @@ public:
     void deserialize(const ValueTree &tree) override;
     void reset() override;
     
-    struct Key final
+    //===------------------------------------------------------------------===//
+    // Internal
+    //===------------------------------------------------------------------===//
+
+    struct Key final : public Serializable
     {
+        Key() = default;
+        Key(int key, int period, float beat, float length, float velocity) :
+            key(key), period(period), beat(beat), length(length), velocity(velocity) {}
+
         // Key, relative to the root note, and translated into scale, may be negative
-        const int key;
+        int key;
         // Octave number, relative to root key, may be negative
         // We cannot keep this info in a key, as target chord's scale might have different period
-        const int period;
+        int period;
         // Velocity and length parameters is the same as for note
-        const float velocity;
-        const float length;
+        float velocity;
+        float length;
         // Beat is relative to sequence start (i.e. first one == 0)
-        const float beat;
+        float beat;
+
+        ValueTree serialize() const override;
+        void deserialize(const ValueTree &tree) override;
+        void reset() override;
     };
 
     class Mapper
@@ -98,7 +122,6 @@ public:
 
 protected:
 
-    Uuid id;
     String name;
     Identifier type;
     Array<Arpeggiator::Key> keys;

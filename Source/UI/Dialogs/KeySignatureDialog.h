@@ -69,7 +69,7 @@ private:
     //[UserVariables]
 
     void onKeyChanged(int key) override;
-    void onScaleChanged(Scale scale) override;
+    void onScaleChanged(const Scale::Ptr scale) override;
 
     void textEditorTextChanged(TextEditor&) override;
     void textEditorReturnKeyPressed(TextEditor&) override;
@@ -83,7 +83,7 @@ private:
     KeySignaturesSequence *originalSequence;
     Component &ownerComponent;
 
-    const Array<Scale> defaultScales;
+    const Array<Scale::Ptr> defaultScales;
 
     inline void cancelAndDisappear();
     inline void disappear();
@@ -96,7 +96,7 @@ private:
     bool cancelChangesIfAny();
 
     int key;
-    Scale scale;
+    Scale::Ptr scale;
 
     //[/UserVariables]
 

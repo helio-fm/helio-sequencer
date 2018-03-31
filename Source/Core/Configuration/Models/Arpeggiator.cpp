@@ -110,11 +110,30 @@ class FallbackArpMapper final : public Arpeggiator::Mapper
 static ScopedPointer<Arpeggiator::Mapper> createMapperOfType(const Identifier &id)
 {
     using namespace Serialization::Arps;
-    if (id == Type::simpleTriadic)      { return new SimpleTriadicArpMapper(); }
-    else if (id == Type::pentatonic)    { return new PentatonicArpMapper(); }
-    else if (id == Type::diatonic)      { return new DiatonicArpMapper(); }
+    if (id == Types::simpleTriadic)      { return new SimpleTriadicArpMapper(); }
+    else if (id == Types::pentatonic)    { return new PentatonicArpMapper(); }
+    else if (id == Types::diatonic)      { return new DiatonicArpMapper(); }
     
     return new FallbackArpMapper();
+}
+
+Arpeggiator &Arpeggiator::operator=(const Arpeggiator &other)
+{
+    if (this == &other)
+    {
+        return *this;
+    }
+
+    this->name = other.name;
+    this->type = other.type;
+    this->keys = other.keys;
+    this->mapper = createMapperOfType(this->type);
+    return *this;
+}
+
+bool operator==(const Arpeggiator &l, const Arpeggiator &r)
+{
+    return &l == &r || l.name == r.name;
 }
 
 Arpeggiator::Arpeggiator(const String &name, const Scale &scale, const Array<Note> &sequence, Note::Key rootKey)
@@ -148,18 +167,28 @@ Arpeggiator::Arpeggiator(const String &name, const Scale &scale, const Array<Not
     switch (scale.getSize())
     {
     case 5:
-        this->type = Type::pentatonic;
+        this->type = Types::pentatonic;
         break;
     case 7:
-        this->type = Type::diatonic;
+        this->type = Types::diatonic;
         break;
     default:
-        this->type = Type::simpleTriadic;
+        this->type = Types::simpleTriadic;
         break;
     }
 
     this->mapper = createMapperOfType(this->type);
     jassert(this->mapper);
+}
+
+//===----------------------------------------------------------------------===//
+// BaseResource
+//===----------------------------------------------------------------------===//
+
+String Arpeggiator::getResourceId() const
+{
+    // Assumed to be unique:
+    return this->name;
 }
 
 //===----------------------------------------------------------------------===//
@@ -170,13 +199,12 @@ ValueTree Arpeggiator::serialize() const
 {
     ValueTree tree(Serialization::Arps::arpeggiator);
 
-    tree.setProperty(Serialization::Arps::id, this->id.toString(), nullptr);
     tree.setProperty(Serialization::Arps::name, this->name, nullptr);
 
     ValueTree seq(Serialization::Arps::sequence);
     for (int i = 0; i < this->keys.size(); ++i)
     {
-        // seq.appendChild(this->keys.getUnchecked(i).serialize(), nullptr);
+        seq.appendChild(this->keys.getUnchecked(i).serialize(), nullptr);
     }
 
     tree.appendChild(seq, nullptr);
@@ -186,10 +214,35 @@ ValueTree Arpeggiator::serialize() const
 
 void Arpeggiator::deserialize(const ValueTree &tree)
 {
-
+    // TODO
 }
 
 void Arpeggiator::reset()
 {
-
+    this->name.clear();
+    this->keys.clearQuick();
 }
+
+ValueTree Arpeggiator::Key::serialize() const
+{
+    using namespace Serialization;
+    ValueTree tree(Arps::key);
+    tree.setProperty(Arps::Keys::key, this->key, nullptr);
+    tree.setProperty(Arps::Keys::period, this->period, nullptr);
+    tree.setProperty(Arps::Keys::timestamp, roundToInt(this->beat * TICKS_PER_BEAT), nullptr);
+    tree.setProperty(Arps::Keys::length, roundToInt(this->length * TICKS_PER_BEAT), nullptr);
+    tree.setProperty(Arps::Keys::volume, roundToInt(this->velocity * VELOCITY_SAVE_ACCURACY), nullptr);
+    return tree;
+}
+
+void Arpeggiator::Key::deserialize(const ValueTree &tree)
+{
+    using namespace Serialization;
+    this->key = tree.getProperty(Arps::Keys::key);
+    this->beat = float(tree.getProperty(Arps::Keys::timestamp)) / TICKS_PER_BEAT;
+    this->length = float(tree.getProperty(Arps::Keys::length)) / TICKS_PER_BEAT;
+    const auto vol = float(tree.getProperty(Arps::Keys::volume)) / VELOCITY_SAVE_ACCURACY;
+    this->velocity = jmax(jmin(vol, 1.f), 0.f);
+}
+
+void Arpeggiator::Key::reset() {}

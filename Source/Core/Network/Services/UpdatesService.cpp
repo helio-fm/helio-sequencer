@@ -17,13 +17,9 @@
 
 #include "Common.h"
 #include "UpdatesService.h"
+#include "App.h"
 #include "Config.h"
-
-#include "TranslationsManager.h"
-#include "ColourSchemesManager.h"
-#include "HotkeySchemesManager.h"
-#include "ArpeggiatorsManager.h"
-#include "ScalesManager.h"
+#include "ResourceManager.h"
 
 // Try to update resources and versions info after:
 #define UPDATE_INFO_TIMEOUT_MS (1000 * 10)
@@ -130,31 +126,7 @@ void UpdatesService::updatesCheckFailed(const Array<String> &errors)
 
 void UpdatesService::requestResourceOk(const Identifier &resourceId, const ValueTree &resource)
 {
-    using namespace Serialization;
-
-    // TODO should look more like:
-    //App::Helio().getResourcePoolFor(resourceId).onDownloadedLatestResource(resource);
-
-    if (resourceId == Resources::translations)
-    {
-        TranslationsManager::getInstance().onDownloadedLatestResource(resource);
-    }
-    else if (resourceId == Resources::colourSchemes)
-    {
-        ColourSchemesManager::getInstance().onDownloadedLatestResource(resource);
-    }
-    else if (resourceId == Resources::hotkeySchemes)
-    {
-        HotkeySchemesManager::getInstance().onDownloadedLatestResource(resource);
-    }
-    else if (resourceId == Resources::arpeggiators)
-    {
-        ArpeggiatorsManager::getInstance().onDownloadedLatestResource(resource);
-    }
-    else if (resourceId == Resources::scales)
-    {
-        ScalesManager::getInstance().onDownloadedLatestResource(resource);
-    }
+    App::Helio()->getResourceManagerFor(resourceId).updateBaseResource(resource);
 }
 
 void UpdatesService::requestResourceFailed(const Identifier &resourceId, const Array<String> &errors)

@@ -3,7 +3,6 @@
     "colourScheme": [
       {
         "name": "Black Book",
-        "id": "1",
         "colourMap": {
           "text": "ffffffff",
           "primaryGradientA": "ff25252e",
@@ -25,7 +24,6 @@
       },
       {
         "name": "Helio Theme",
-        "id": "0",
         "colourMap": {
           "text": "ffffffff",
           "primaryGradientA": "ff373c6e",
@@ -47,7 +45,6 @@
       },
       {
         "name": "Grayscale",
-        "id": "3",
         "colourMap": {
           "text": "ffffffff",
           "primaryGradientA": "ff464555",
@@ -69,7 +66,6 @@
       },
       {
         "name": "Midnight Tracking",
-        "id": "2",
         "colourMap": {
           "text": "ffffffff",
           "primaryGradientA": "ff473a7e",
