@@ -16,8 +16,12 @@
 */
 
 #include "Common.h"
-#include "MainLayout.h"
 #include "PianoRoll.h"
+#include "App.h"
+#include "Workspace.h"
+#include "MainWindow.h"
+#include "MainLayout.h"
+#include "AudioCore.h"
 #include "HybridRollHeader.h"
 #include "Pattern.h"
 #include "MidiSequence.h"
@@ -30,10 +34,6 @@
 #include "ProjectTreeItem.h"
 #include "ProjectTimeline.h"
 #include "Note.h"
-#include "App.h"
-#include "Workspace.h"
-#include "MainWindow.h"
-#include "AudioCore.h"
 #include "NoteComponent.h"
 #include "HelperRectangle.h"
 #include "SmoothZoomController.h"
@@ -42,16 +42,17 @@
 #include "ChordBuilder.h"
 #include "HybridLassoComponent.h"
 #include "HybridRollEditMode.h"
-#include "SerializationKeys.h"
-#include "Icons.h"
 #include "InternalClipboard.h"
 #include "HelioCallout.h"
 #include "NotesTuningPanel.h"
 #include "PianoRollToolbox.h"
-#include "Config.h"
 #include "SerializationKeys.h"
 #include "ComponentIDs.h"
 #include "ColourIDs.h"
+#include "Config.h"
+#include "Icons.h"
+#include "ArpeggiatorsManager.h"
+#include "Arpeggiator.h"
 
 #define ROWS_OF_TWO_OCTAVES 24
 #define DEFAULT_NOTE_LENGTH 0.25f
@@ -1111,8 +1112,25 @@ void PianoRoll::handleCommandMessage(int commandId)
             vcsTreeItem->toggleQuickStash();
         }
         break;
-    case CommandIDs::ShowArpeggiatiosPanel:
+    case CommandIDs::CreateArpeggiatorFromSelection:
+        {
+            // TODO
+            //const Arpeggiator::Ptr arp(new Arpeggiator("Test", scale, sequence, root);
+            //ArpeggiatorsManager::getInstance().updateUserResource(arp);
+        }
+        break;
+    case CommandIDs::ShowArpeggiatorsPanel:
         // TODO
+        //if (const auto arp = ArpeggiatorsManager::getInstance().getResourceById<Arpeggiator::Ptr>("Test"))
+        //{
+        //    const auto &selection = this->getLassoSelection();
+        //    if (selection.getNumSelected() > 1)
+        //    {
+        //        const auto sequences = this->project.getTimeline()->getKeySignatures()->getSequence();
+        //        const auto key = sequences->getFirstEvent<KeySignatureEvent>(selection.getFirstAs<Note>()->getBeat());
+        //        PianoRollToolbox::arpeggiate(this->getLassoSelection(), key.getScale(), key.getRootKey(), arp);
+        //    }
+        //}
         break;
     case CommandIDs::ShowVolumePanel:
         if (this->selection.getNumSelected() > 0)

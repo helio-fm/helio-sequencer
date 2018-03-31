@@ -18,12 +18,14 @@
 #pragma once
 
 class Transport;
-class Arpeggiator;
 class ProjectTreeItem;
 class Lasso;
 class MidiSequence;
 class MidiTrack;
-class Note;
+
+#include "Note.h"
+#include "Scale.h"
+#include "Arpeggiator.h"
 
 class PianoRollToolbox final
 {
@@ -56,7 +58,9 @@ public:
     
     static void moveToLayer(Lasso &selection, MidiSequence *layer, bool shouldCheckpoint = true);
     
-    static bool arpeggiate(Lasso &selection, const Arpeggiator &arp, bool shouldCheckpoint = true);
+    static bool arpeggiate(Lasso &selection,
+        const Scale::Ptr chordScale, Note::Key chordRoot, const Arpeggiator::Ptr arp,
+        bool reversed = false, bool limitToChord = false, bool shouldCheckpoint = true);
 
     static void randomizeVolume(Lasso &selection, float factor = 0.5f, bool shouldCheckpoint = true);
     static void fadeOutVolume(Lasso &selection, float factor = 0.5f, bool shouldCheckpoint = true);

@@ -351,13 +351,13 @@ namespace BinaryData
     const int            Noise_pngSize = 317;
 
     extern const char*   Arpeggiators_json;
-    const int            Arpeggiators_jsonSize = 15183;
+    const int            Arpeggiators_jsonSize = 70;
 
     extern const char*   ColourSchemes_json;
     const int            ColourSchemes_jsonSize = 2753;
 
     extern const char*   HotkeySchemes_json;
-    const int            HotkeySchemes_jsonSize = 9891;
+    const int            HotkeySchemes_jsonSize = 10021;
 
     extern const char*   Scales_json;
     const int            Scales_jsonSize = 6056;

@@ -34,12 +34,11 @@
 // like using an arpeggiated chord as a new arpeggiator, and so on.
 // See DiatonicArpMapper implementation for the most common mapping example.
 
-
 class Arpeggiator final : public BaseResource
 {
 public:
 
-    Arpeggiator() {}
+    Arpeggiator() = default;
     Arpeggiator(const String &name, 
         const Scale &scale,
         const Array<Note> &sequence,
@@ -50,22 +49,15 @@ public:
     String getName() const noexcept { return this->name; };
     bool isValid() const noexcept { return !this->keys.isEmpty(); }
 
+    float getSequenceLength() const;
+
+    int getNumKeys() const noexcept;
+    float getBeatFor(int arpKeyIndex) const noexcept;
+    Note mapArpKeyIntoChordSpace(int arpKeyIndex, float startBeat,
+        const Array<Note> &chord, const Scale::Ptr chordScale, Note::Key chordRoot) const;
+
     Arpeggiator &operator=(const Arpeggiator &other);
     friend bool operator==(const Arpeggiator &l, const Arpeggiator &r);
-
-    //===------------------------------------------------------------------===//
-    // BaseResource
-    //===------------------------------------------------------------------===//
-
-    String getResourceId() const override;
-
-    //===------------------------------------------------------------------===//
-    // Serializable
-    //===------------------------------------------------------------------===//
-
-    ValueTree serialize() const override;
-    void deserialize(const ValueTree &tree) override;
-    void reset() override;
     
     //===------------------------------------------------------------------===//
     // Internal
@@ -74,12 +66,12 @@ public:
     struct Key final : public Serializable
     {
         Key() = default;
-        Key(int key, int period, float beat, float length, float velocity) :
+        Key(int key, int period, float beat, float length, float velocity) noexcept :
             key(key), period(period), beat(beat), length(length), velocity(velocity) {}
 
         // Key, relative to the root note, and translated into scale, may be negative
         int key;
-        // Octave number, relative to root key, may be negative
+        // Number of periods to offset, relative to root key, may be negative
         // We cannot keep this info in a key, as target chord's scale might have different period
         int period;
         // Velocity and length parameters is the same as for note
@@ -101,7 +93,7 @@ public:
         virtual ~Mapper() = default;
 
         virtual Note::Key mapArpKeyIntoChordSpace(Arpeggiator::Key arpKey, const Array<Note> &chord,
-            const Scale &chordScale, Note::Key chordRoot) const = 0;
+            const Scale::Ptr chordScale, Note::Key chordRoot) const = 0;
 
     protected:
 
@@ -111,14 +103,28 @@ public:
             return chord.getUnchecked(safeIndex).getKey();
         }
 
-        Note::Key getChordKeyPlus(const Array<Note> &chord, const Scale &chordScale,
+        Note::Key getChordKeyPlus(const Array<Note> &chord, const Scale::Ptr chordScale,
             Note::Key chordRoot, int index, int scaleOffset) const
         {
             const int relativeChordKey = this->getChordKey(chord, index) - chordRoot;
-            const int nextScaleKey = chordScale.getScaleKey(relativeChordKey) + scaleOffset;
-            return chordScale.getChromaticKey(nextScaleKey) + chordRoot;
+            const int nextScaleKey = chordScale->getScaleKey(relativeChordKey) + scaleOffset;
+            return chordScale->getChromaticKey(nextScaleKey) + chordRoot;
         }
     };
+
+    //===------------------------------------------------------------------===//
+    // Serializable
+    //===------------------------------------------------------------------===//
+
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
+    void reset() override;
+
+    //===------------------------------------------------------------------===//
+    // BaseResource
+    //===------------------------------------------------------------------===//
+
+    String getResourceId() const override;
 
 protected:
 

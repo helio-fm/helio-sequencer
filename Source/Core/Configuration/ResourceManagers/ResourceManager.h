@@ -51,6 +51,12 @@ public:
         return result;
     }
 
+    template<typename T>
+    const T getResourceById(const String &resourceId) const
+    {
+        return static_cast<T>(this->resources[resourceId]);
+    }
+
     void updateBaseResource(const ValueTree &resource);
     void updateUserResource(const BaseResource::Ptr resource);
 

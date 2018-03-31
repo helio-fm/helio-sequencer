@@ -50,9 +50,9 @@
 class DiatonicArpMapper final : public Arpeggiator::Mapper
 {
     Note::Key mapArpKeyIntoChordSpace(Arpeggiator::Key arpKey, const Array<Note> &chord,
-        const Scale &chordScale, Note::Key chordRoot) const override
+        const Scale::Ptr chordScale, Note::Key chordRoot) const override
     {
-        const auto periodOffset = arpKey.period * chordScale.getBasePeriod();
+        const auto periodOffset = arpKey.period * chordScale->getBasePeriod();
         switch (arpKey.key)
         {
         case 0: return periodOffset + this->getChordKey(chord, 0);
@@ -72,9 +72,9 @@ class DiatonicArpMapper final : public Arpeggiator::Mapper
 class PentatonicArpMapper final : public Arpeggiator::Mapper
 {
     Note::Key mapArpKeyIntoChordSpace(Arpeggiator::Key arpKey, const Array<Note> &chord,
-        const Scale &chordScale, Note::Key chordRoot) const override
+        const Scale::Ptr chordScale, Note::Key chordRoot) const override
     {
-        const auto periodOffset = arpKey.period * chordScale.getBasePeriod();
+        const auto periodOffset = arpKey.period * chordScale->getBasePeriod();
         switch (arpKey.key)
         {
         case 0: return periodOffset + this->getChordKey(chord, 0);
@@ -90,9 +90,9 @@ class PentatonicArpMapper final : public Arpeggiator::Mapper
 class SimpleTriadicArpMapper final : public Arpeggiator::Mapper
 {
     Note::Key mapArpKeyIntoChordSpace(Arpeggiator::Key arpKey, const Array<Note> &chord,
-        const Scale &chordScale, Note::Key chordRoot) const override
+        const Scale::Ptr chordScale, Note::Key chordRoot) const override
     {
-        const int periodOffset = arpKey.period * chordScale.getBasePeriod();
+        const int periodOffset = arpKey.period * chordScale->getBasePeriod();
         return periodOffset + this->getChordKey(chord, arpKey.key);
     }
 };
@@ -100,7 +100,7 @@ class SimpleTriadicArpMapper final : public Arpeggiator::Mapper
 class FallbackArpMapper final : public Arpeggiator::Mapper
 {
     Note::Key mapArpKeyIntoChordSpace(Arpeggiator::Key arpKey, const Array<Note> &chord,
-        const Scale &chordScale, Note::Key chordRoot) const override
+        const Scale::Ptr chordScale, Note::Key chordRoot) const override
     {
         jassertfalse; // Should never hit this point
         return chordRoot;
@@ -181,6 +181,47 @@ Arpeggiator::Arpeggiator(const String &name, const Scale &scale, const Array<Not
     jassert(this->mapper);
 }
 
+float Arpeggiator::getSequenceLength() const
+{
+    float length = 0.f;
+    for (const auto &key : this->keys)
+    {
+        length = jmax(length, key.beat + key.length);
+    }
+    return length;
+}
+
+int Arpeggiator::getNumKeys() const noexcept
+{
+    return this->keys.size();
+}
+
+float Arpeggiator::getBeatFor(int arpKeyIndex) const noexcept
+{
+    jassert(this->keys.size() > 0);
+    const int safeKeyIndex = arpKeyIndex % this->getNumKeys();
+    return this->keys.getUnchecked(safeKeyIndex).beat;
+}
+
+Note Arpeggiator::mapArpKeyIntoChordSpace(int arpKeyIndex, float startBeat,
+    const Array<Note> &chord, const Scale::Ptr chordScale, Note::Key chordRoot) const
+{
+    jassert(chord.size() > 0);
+    jassert(this->keys.size() > 0);
+
+    const int safeKeyIndex = arpKeyIndex % this->getNumKeys();
+    const auto arpKey = this->keys.getUnchecked(safeKeyIndex);
+    const auto newNoteKey =
+        this->mapper->mapArpKeyIntoChordSpace(arpKey,
+            chord, chordScale, chordRoot);
+
+    return chord.getFirst().
+        withKeyBeat(newNoteKey, startBeat + arpKey.beat).
+        withLength(arpKey.length).
+        withVelocity(arpKey.velocity). // TODO some randomness?
+        copyWithNewId();
+}
+
 //===----------------------------------------------------------------------===//
 // BaseResource
 //===----------------------------------------------------------------------===//
@@ -197,11 +238,13 @@ String Arpeggiator::getResourceId() const
 
 ValueTree Arpeggiator::serialize() const
 {
-    ValueTree tree(Serialization::Arps::arpeggiator);
+    using namespace Serialization;
+    ValueTree tree(Arps::arpeggiator);
 
-    tree.setProperty(Serialization::Arps::name, this->name, nullptr);
+    tree.setProperty(Arps::name, this->name, nullptr);
+    tree.setProperty(Arps::type, this->type.toString(), nullptr);
 
-    ValueTree seq(Serialization::Arps::sequence);
+    ValueTree seq(Arps::sequence);
     for (int i = 0; i < this->keys.size(); ++i)
     {
         seq.appendChild(this->keys.getUnchecked(i).serialize(), nullptr);
@@ -214,7 +257,25 @@ ValueTree Arpeggiator::serialize() const
 
 void Arpeggiator::deserialize(const ValueTree &tree)
 {
-    // TODO
+    using namespace Serialization;
+
+    const auto root = tree.hasType(Arps::arpeggiator) ?
+        tree : tree.getChildWithName(Arps::arpeggiator);
+
+    if (!root.isValid()) { return; }
+
+    this->reset();
+
+    this->name = root.getProperty(Arps::name);
+    this->type = root.getProperty(Arps::type).toString();
+    this->mapper = createMapperOfType(this->type);
+
+    forEachValueTreeChildWithType(root, keyNode, Arps::key)
+    {
+        Arpeggiator::Key key;
+        key.deserialize(keyNode);
+        this->keys.add(key);
+    }
 }
 
 void Arpeggiator::reset()

@@ -317,14 +317,16 @@ int CommandIDs::getIdForName(const String &command)
         return InvertChordDown;
     case Hash("ToggleQuickStash"):
         return ToggleQuickStash;
-    case Hash("ShowArpeggiatiosPanel"):
-        return ShowArpeggiatiosPanel;
+    case Hash("ShowArpeggiatorsPanel"):
+        return ShowArpeggiatorsPanel;
     case Hash("ShowVolumePanel"):
         return ShowVolumePanel;
     case Hash("TweakVolumeRandom"):
         return TweakVolumeRandom;
     case Hash("TweakVolumeFadeOut"):
         return TweakVolumeFadeOut;
+    case Hash("CreateArpeggiatorFromSelection"):
+        return CreateArpeggiatorFromSelection;
     default:
         return 0;
     };

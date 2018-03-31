@@ -214,10 +214,12 @@ namespace CommandIDs
         InvertChordDown                 = 0x405a,
         
         ToggleQuickStash                = 0x405b,
-        ShowArpeggiatiosPanel           = 0x405c,
+        ShowArpeggiatorsPanel           = 0x405c,
         ShowVolumePanel                 = 0x405d,
         TweakVolumeRandom               = 0x405e,
         TweakVolumeFadeOut              = 0x405f,
+
+        CreateArpeggiatorFromSelection  = 0x4060,
 
         YourNextCommandId               = 0x4060
     };

@@ -1023,15 +1023,15 @@ void PianoRollToolbox::moveToLayer(Lasso &selection, MidiSequence *layer, bool s
 }
 
 bool PianoRollToolbox::arpeggiate(Lasso &selection,
-                                 const Arpeggiator &arp,
-                                 bool shouldCheckpoint)
+    const Scale::Ptr chordScale, Note::Key chordRoot, const Arpeggiator::Ptr arp,
+    bool reversed, bool limitToChord, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     {
         return false;
     }
 
-    if (!arp.isValid())
+    if (!arp->isValid())
     {
         return false;
     }
@@ -1108,74 +1108,58 @@ bool PianoRollToolbox::arpeggiate(Lasso &selection,
             prevBeat = sortedSelection->getUnchecked(i).getBeat();
         }
         
-        // 3. parse arp
-        Array<Arpeggiator::Key> arpKeys(arp.createArpKeys());
-        
-        // 4. arpeggiate every chord
+        // 3. arpeggiate every chord
         PianoChangeGroupProxy::Ptr result(new PianoChangeGroupProxy());
         
-        float patternBeatOffset = 0.f;
-        int patternEventIndex = 0;
+        int arpKeyIndex = 0;
+        float arpBeatOffset = 0.f;
+        const float arpSequenceLength = arp->getSequenceLength();
         
         if (chords.size() == 0)
         {
             return false;
         }
         
-        // needed for chord-mapped arp
-        const PianoChangeGroup &&firstChord = chords.getUnchecked(0);
-        const float firstChordStart = PianoRollToolbox::findStartBeat(firstChord);
-        const float firstChordEnd = PianoRollToolbox::findEndBeat(firstChord);
-        const float firstChordLength = firstChordEnd - firstChordStart;
-        
         for (int i = 0; i < chords.size(); ++i)
         {
-            const PianoChangeGroup &&chord = chords.getUnchecked(i);
-            const float chordStart = PianoRollToolbox::findStartBeat(chord);
+            const auto &chord = chords.getUnchecked(i);
             const float chordEnd = PianoRollToolbox::findEndBeat(chord);
+
+            if (reversed)
+            {
+                // TODO sort chord keys in reverse order
+            }
 
             // Arp sequence as is
             while (1)
             {
-                const int maxKeyIndex = chord.size() - 1;
-                int keyIndex = jmin(arpKeys[patternEventIndex].keyIndex, maxKeyIndex);
-
-                if (arp.isReversed())
-                { keyIndex = maxKeyIndex - keyIndex; }
-
-                const float newBeat = selectionStartBeat + patternBeatOffset + arpKeys[patternEventIndex].beatStart;
-                const float newLength = arpKeys[patternEventIndex].beatLength;
-                const float newVelocity = (chord[keyIndex].getVelocity() + arpKeys[patternEventIndex].velocity) / 2.f;
-
-                if (newBeat >= chordEnd)
+                const float beatOffset = selectionStartBeat + arpBeatOffset;
+                const float nextNoteBeat = beatOffset + arp->getBeatFor(arpKeyIndex);
+                if (nextNoteBeat >= chordEnd)
                 {
-                    if (arp.limitsToChord())
+                    if (limitToChord)
                     {
-                        patternEventIndex = 0;
-                        patternBeatOffset = chordEnd - selectionStartBeat;
+                        // Every next chord is arpeggiated from the start of arp sequence
+                        arpKeyIndex = 0;
+                        arpBeatOffset = chordEnd - selectionStartBeat;
                     }
                         
                     break;
                 }
 
-                result->add(chord[keyIndex].
-                            withDeltaKey(arpKeys[patternEventIndex].octaveShift).
-                            withBeat(newBeat).
-                            withLength(newLength).
-                            withVelocity(newVelocity).
-                            copyWithNewId());
+                result->add(arp->mapArpKeyIntoChordSpace(arpKeyIndex,
+                    beatOffset, chord, chordScale, chordRoot));
 
-                patternEventIndex += 1;
-
-                if (patternEventIndex >= arpKeys.size())
+                arpKeyIndex++;
+                if (arpKeyIndex >= arp->getNumKeys())
                 {
-                    patternEventIndex = 0;
-                    patternBeatOffset += arpKeys[patternEventIndex].sequenceLength;
+                    arpKeyIndex = 0;
+                    arpBeatOffset += arpSequenceLength;
                 }
             }
         }
         
-        // 5. remove selection and add result
+        // 4. remove selection and add result
         if (! didCheckpoint)
         {
             if (shouldCheckpoint)
@@ -1189,7 +1173,7 @@ bool PianoRollToolbox::arpeggiate(Lasso &selection,
         deferredInsertions.set(pianoLayer->getTrackId(), result);
     }
     
-    // events removal
+    // events removals
     PianoChangeGroupsPerLayer::Iterator deferredRemovalIterator(deferredRemovals);
     while (deferredRemovalIterator.next())
     {
@@ -1208,7 +1192,7 @@ bool PianoRollToolbox::arpeggiate(Lasso &selection,
         PianoSequence *pianoLayer = static_cast<PianoSequence *>(midiLayer);
         pianoLayer->insertGroup(*groupToInsert, true);
     }
-    
+ 
     return true;
 }
 
