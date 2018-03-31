@@ -105,15 +105,23 @@ void OpenGLSettings::buttonClicked (Button* buttonThatWasClicked)
         {
             this->openGLRendererButton->setToggleState(false, dontSendNotification);
 
-            Component *confirmationDialog =
-            new ModalDialogConfirmation(*this,
-                                        TRANS("dialog::opengl::caption"),
-                                        TRANS("dialog::opengl::proceed"),
-                                        TRANS("dialog::opengl::cancel"),
-                                        CommandIDs::ApplyOpenGLRenderer,
-                                        CommandIDs::Cancel);
+            ScopedPointer<ModalDialogConfirmation> dialog =
+                new ModalDialogConfirmation(TRANS("dialog::opengl::caption"),
+                    TRANS("dialog::opengl::proceed"),
+                    TRANS("dialog::opengl::cancel"));
 
-            App::Layout().showModalComponentUnowned(confirmationDialog);
+            dialog->onOk = [this]()
+            {
+                App::Helio()->getWindow()->setOpenGLRendererEnabled(true);
+                this->updateButtons();
+            };
+
+            dialog->onCancel = [this]()
+            {
+                this->updateButtons();
+            };
+
+            App::Layout().showModalComponentUnowned(dialog.release());
         }
         //[/UserButtonCode_openGLRendererButton]
     }
@@ -142,15 +150,6 @@ void OpenGLSettings::visibilityChanged()
 void OpenGLSettings::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
-    if (commandId == CommandIDs::ApplyOpenGLRenderer)
-    {
-        App::Helio()->getWindow()->setOpenGLRendererEnabled(true);
-        this->updateButtons();
-    }
-    else if (commandId == CommandIDs::Cancel)
-    {
-        this->updateButtons();
-    }
     //[/UserCode_handleCommandMessage]
 }
 

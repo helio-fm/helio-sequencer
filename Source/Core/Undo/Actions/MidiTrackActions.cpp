@@ -92,9 +92,7 @@ MidiTrackChangeColourAction::MidiTrackChangeColourAction(MidiTrackSource &source
     String targetTrackId, const Colour &newColour) noexcept :
     UndoAction(source),
     trackId(std::move(targetTrackId)),
-    colourAfter(newColour)
-{
-}
+    colourAfter(newColour) {}
 
 bool MidiTrackChangeColourAction::perform()
 {

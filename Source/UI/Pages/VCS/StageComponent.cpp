@@ -159,24 +159,30 @@ void StageComponent::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == commitButton)
     {
         //[UserButtonCode_commitButton] -- add your button handler code here..
-
         if (this->changesList->getSelectedRows().isEmpty())
         {
             App::Layout().showTooltip(TRANS("vcs::warning::cannotcommit"), 3000);
             return;
         }
 
-        Component *inputDialog =
-        new ModalDialogInput(*this,
-                             this->commitMessage,
-                             TRANS("dialog::vcs::commit::caption"),
-                             TRANS("dialog::vcs::commit::proceed"),
-                             TRANS("dialog::vcs::commit::cancel"),
-                             CommandIDs::VersionControlCommit,
-                             CommandIDs::Cancel);
+        ScopedPointer<ModalDialogInput> dialog =
+            new ModalDialogInput(this->lastCommitMessage,
+                TRANS("dialog::vcs::commit::caption"),
+                TRANS("dialog::vcs::commit::proceed"),
+                TRANS("dialog::vcs::commit::cancel"));
 
-        App::Layout().showModalComponentUnowned(inputDialog);
+        dialog->onOk = [this](const String &input)
+        {
+            this->lastCommitMessage = {};
+            this->vcs.commit(this->changesList->getSelectedRows(), input);
+        };
+        
+        dialog->onCancel = [this](const String &input)
+        {
+            this->lastCommitMessage = input;
+        };
 
+        App::Layout().showModalComponentUnowned(dialog.release());
         //[/UserButtonCode_commitButton]
     }
     else if (buttonThatWasClicked == resetButton)
@@ -189,15 +195,17 @@ void StageComponent::buttonClicked (Button* buttonThatWasClicked)
             return;
         }
 
-        Component *confirmationDialog =
-        new ModalDialogConfirmation(*this,
-                                    TRANS("dialog::vcs::reset::caption"),
-                                    TRANS("dialog::vcs::reset::proceed"),
-                                    TRANS("dialog::vcs::reset::cancel"),
-                                    CommandIDs::VersionControlReset,
-                                    CommandIDs::Cancel);
+        ScopedPointer<ModalDialogConfirmation> dialog =
+            new ModalDialogConfirmation(TRANS("dialog::vcs::reset::caption"),
+                TRANS("dialog::vcs::reset::proceed"),
+                TRANS("dialog::vcs::reset::cancel"));
 
-        App::Layout().showModalComponentUnowned(confirmationDialog);
+        dialog->onOk = [this]()
+        {
+            this->vcs.resetChanges(this->changesList->getSelectedRows());
+        };
+
+        App::Layout().showModalComponentUnowned(dialog.release());
 
         //[/UserButtonCode_resetButton]
     }
@@ -209,19 +217,6 @@ void StageComponent::buttonClicked (Button* buttonThatWasClicked)
 void StageComponent::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
-    if (commandId == CommandIDs::VersionControlReset)
-    {
-        this->vcs.resetChanges(this->changesList->getSelectedRows());
-    }
-    else if (commandId == CommandIDs::VersionControlAmend)
-    {
-        // not implemented
-        //this->vcs.amend(this->changesList->getSelectedRows(), this->commitMessage);
-    }
-    else if (commandId == CommandIDs::VersionControlCommit)
-    {
-        this->vcs.commit(this->changesList->getSelectedRows(), this->commitMessage);
-    }
     //[/UserCode_handleCommandMessage]
 }
 

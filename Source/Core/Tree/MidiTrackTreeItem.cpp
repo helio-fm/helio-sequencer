@@ -57,7 +57,7 @@ MidiTrackTreeItem::~MidiTrackTreeItem()
     if (this->lastFoundParent != nullptr)
     {
         // Important: first notify
-        this->lastFoundParent->hideEditor(this->layer, this);
+        this->lastFoundParent->hideEditor(this->sequence, this);
         this->lastFoundParent->broadcastRemoveTrack(this);
         // Then disconnect from the tree
         this->removeItemFromParent();
@@ -74,7 +74,7 @@ void MidiTrackTreeItem::showPage()
 {
     if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
     {
-        parentProject->showLinearEditor(this->layer, this);
+        parentProject->showLinearEditor(this->sequence, this);
     }
 }
 
@@ -92,7 +92,7 @@ void MidiTrackTreeItem::safeRename(const String &newName)
 
 void MidiTrackTreeItem::importMidi(const MidiMessageSequence &sequence)
 {
-    this->layer->importMidi(sequence);
+    this->sequence->importMidi(sequence);
 }
 
 //===----------------------------------------------------------------------===//
@@ -243,7 +243,7 @@ void MidiTrackTreeItem::setTrackMuted(bool shouldBeMuted, bool sendNotifications
 
 MidiSequence *MidiTrackTreeItem::getSequence() const noexcept
 {
-    return this->layer;
+    return this->sequence;
 }
 
 Pattern *MidiTrackTreeItem::getPattern() const noexcept
@@ -393,7 +393,7 @@ void MidiTrackTreeItem::dispatchRemoveEvent(const MidiEvent &event)
 
 void MidiTrackTreeItem::dispatchPostRemoveEvent(MidiSequence *const layer)
 {
-    jassert(layer == this->layer);
+    jassert(layer == this->sequence);
     if (this->lastFoundParent != nullptr)
     {
         this->lastFoundParent->broadcastPostRemoveEvent(layer);

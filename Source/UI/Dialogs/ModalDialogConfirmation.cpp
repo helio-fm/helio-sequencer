@@ -25,10 +25,7 @@
 #include "CommandIDs.h"
 //[/MiscUserDefs]
 
-ModalDialogConfirmation::ModalDialogConfirmation(Component &owner, const String &message, const String &okText, const String &cancelText, int okCode, int cancelCode)
-    : ownerComponent(owner),
-      okCommand(okCode),
-      cancelCommand(cancelCode)
+ModalDialogConfirmation::ModalDialogConfirmation(const String &message, const String &okText, const String &cancelText)
 {
     addAndMakeVisible (background = new DialogPanel());
     addAndMakeVisible (messageLabel = new Label (String(),
@@ -195,6 +192,30 @@ void ModalDialogConfirmation::inputAttemptWhenModal()
 
 
 //[MiscUserCode]
+void ModalDialogConfirmation::cancel()
+{
+    if (this->onCancel != nullptr)
+    {
+        this->onCancel();
+    }
+
+    this->disappear();
+}
+
+void ModalDialogConfirmation::okay()
+{
+    if (this->onOk != nullptr)
+    {
+        this->onOk();
+    }
+
+    this->disappear();
+}
+
+void ModalDialogConfirmation::disappear()
+{
+    delete this;
+}
 //[/MiscUserCode]
 
 #if 0
@@ -203,10 +224,9 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="ModalDialogConfirmation"
                  template="../../Template" componentName="" parentClasses="public FadingDialog"
-                 constructorParams="Component &amp;owner, const String &amp;message, const String &amp;okText, const String &amp;cancelText, int okCode, int cancelCode"
-                 variableInitialisers="ownerComponent(owner),&#10;okCommand(okCode),&#10;cancelCommand(cancelCode)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="410" initialHeight="180">
+                 constructorParams="const String &amp;message, const String &amp;okText, const String &amp;cancelText"
+                 variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
+                 overlayOpacity="0.330" fixedSize="1" initialWidth="410" initialHeight="180">
   <METHODS>
     <METHOD name="parentSizeChanged()"/>
     <METHOD name="parentHierarchyChanged()"/>
@@ -215,7 +235,8 @@ BEGIN_JUCER_METADATA
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10" fill="solid: 59000000" hasStroke="0"/>
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10.00000000000000000000" fill="solid: 59000000"
+               hasStroke="0"/>
   </BACKGROUND>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
@@ -223,8 +244,8 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="cf32360d33639f7f" memberName="messageLabel" virtualName=""
          explicitFocusOrder="0" pos="0Cc 12 32M 96" posRelativeY="e96b77baef792d3a"
          labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
-         kerning="0" bold="0" italic="0" justification="36"/>
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="cancelButton" virtualName=""
               explicitFocusOrder="0" pos="4 4Rr 200 48" buttonText="..." connectedEdges="6"
               needsCallback="1" radioGroupId="0"/>

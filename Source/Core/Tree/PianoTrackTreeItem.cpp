@@ -36,7 +36,7 @@ using namespace Serialization::VCS;
 PianoTrackTreeItem::PianoTrackTreeItem(const String &name) :
     MidiTrackTreeItem(name, Serialization::Core::pianoTrack)
 {
-    this->layer = new PianoSequence(*this, *this);
+    this->sequence = new PianoSequence(*this, *this);
     this->pattern = new Pattern(*this, *this);
 
     // this will be set by transport
@@ -93,7 +93,7 @@ VCS::Delta *PianoTrackTreeItem::getDelta(int index) const
 
         if (numEvents == 0)
         {
-            this->deltas[index]->setDescription(VCS::DeltaDescription("empty layer"));
+            this->deltas[index]->setDescription(VCS::DeltaDescription("empty sequence"));
         }
         else
         {
@@ -206,7 +206,7 @@ ValueTree PianoTrackTreeItem::serialize() const
 
     this->serializeTrackProperties(tree);
 
-    tree.appendChild(this->layer->serialize(), nullptr);
+    tree.appendChild(this->sequence->serialize(), nullptr);
     tree.appendChild(this->pattern->serialize(), nullptr);
 
     TreeItemChildrenSerializer::serializeChildren(*this, tree);
@@ -223,7 +223,7 @@ void PianoTrackTreeItem::deserialize(const ValueTree &tree)
 
     forEachValueTreeChildWithType(tree, e, Serialization::Midi::track)
     {
-        this->layer->deserialize(e);
+        this->sequence->deserialize(e);
     }
 
     forEachValueTreeChildWithType(tree, e, Serialization::Midi::pattern)

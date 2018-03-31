@@ -244,6 +244,22 @@ bool TimeSignaturesSequence::changeGroup(Array<TimeSignatureEvent> &groupBefore,
     return true;
 }
 
+//===----------------------------------------------------------------------===//
+// Callbacks
+//===----------------------------------------------------------------------===//
+
+Function<void(const String &text)> TimeSignaturesSequence::getEventChangeCallback(const TimeSignatureEvent &event)
+{
+    return[this, event](const String &text)
+    {
+        int numerator;
+        int denominator;
+        TimeSignatureEvent::parseString(text, numerator, denominator);
+        this->checkpoint();
+        this->change(event, event.withNumerator(numerator).withDenominator(denominator), true);
+
+    };
+}
 
 //===----------------------------------------------------------------------===//
 // Serializable

@@ -29,7 +29,7 @@ using namespace Serialization::VCS;
 AutomationTrackTreeItem::AutomationTrackTreeItem(const String &name) :
     MidiTrackTreeItem(name, Serialization::Core::automationTrack)
 {
-    this->layer = new AutomationSequence(*this, *this);
+    this->sequence = new AutomationSequence(*this, *this);
     this->pattern = new Pattern(*this, *this);
 
     this->vcsDiffLogic = new VCS::AutomationTrackDiffLogic(*this);
@@ -75,7 +75,7 @@ VCS::Delta *AutomationTrackTreeItem::getDelta(int index) const
 
         if (numEvents == 0)
         {
-            this->deltas[index]->setDescription(VCS::DeltaDescription("empty layer"));
+            this->deltas[index]->setDescription(VCS::DeltaDescription("empty sequence"));
         }
         else
         {
@@ -193,7 +193,7 @@ ValueTree AutomationTrackTreeItem::serialize() const
 
     this->serializeTrackProperties(tree);
 
-    tree.appendChild(this->layer->serialize(), nullptr);
+    tree.appendChild(this->sequence->serialize(), nullptr);
     tree.appendChild(this->pattern->serialize(), nullptr);
 
     TreeItemChildrenSerializer::serializeChildren(*this, tree);
@@ -210,7 +210,7 @@ void AutomationTrackTreeItem::deserialize(const ValueTree &tree)
 
     forEachValueTreeChildWithType(tree, e, Serialization::Midi::automation)
     {
-        this->layer->deserialize(e);
+        this->sequence->deserialize(e);
     }
 
     forEachValueTreeChildWithType(tree, e, Serialization::Midi::pattern)

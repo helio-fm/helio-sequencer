@@ -42,13 +42,12 @@ PianoTrackInsertAction::PianoTrackInsertAction(MidiTrackSource &source,
 bool PianoTrackInsertAction::perform()
 {
     MidiTrackTreeItem *track = new PianoTrackTreeItem("empty");
-    this->parentTreeItem->addChildTreeItem(track);
-    
     track->deserialize(this->trackState);
+
+    this->parentTreeItem->addChildTreeItem(track);
 
     this->trackId = track->getTrackId().toString();
     track->setTrackName(this->trackName, true);
-
     return true;
 }
 
@@ -129,8 +128,8 @@ bool PianoTrackRemoveAction::undo()
     if (this->serializedTreeItem.isValid())
     {
         MidiTrackTreeItem *track = new PianoTrackTreeItem("empty");
-        this->parentTreeItem->addChildTreeItem(track);
         track->deserialize(this->serializedTreeItem);
+        this->parentTreeItem->addChildTreeItem(track);
         track->setTrackName(this->trackName, true);
         return true;
     }

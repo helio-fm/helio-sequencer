@@ -120,7 +120,7 @@ protected:
 
     ProjectTreeItem *lastFoundParent;
 
-    ScopedPointer<MidiSequence> layer;
+    ScopedPointer<MidiSequence> sequence;
 
     ScopedPointer<Pattern> pattern;
     

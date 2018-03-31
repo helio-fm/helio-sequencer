@@ -248,6 +248,19 @@ bool AnnotationsSequence::changeGroup(Array<AnnotationEvent> &groupBefore,
 }
 
 //===----------------------------------------------------------------------===//
+// Callbacks
+//===----------------------------------------------------------------------===//
+
+Function<void(const String &text)> AnnotationsSequence::getEventRenameCallback(const AnnotationEvent &event)
+{
+    return [this, event](const String &text)
+    {
+        this->checkpoint();
+        this->change(event, event.withDescription(text), true);
+    };
+}
+
+//===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
 

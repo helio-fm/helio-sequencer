@@ -30,16 +30,11 @@ public:
     TimeSignatureCommandPanel(ProjectTreeItem &parentProject, 
         const TimeSignatureEvent &targetEvent);
     
-    ~TimeSignatureCommandPanel() override;
-    
     void handleCommandMessage(int commandId) override;
     
 private:
     
     const TimeSignatureEvent &event;
-    
     ProjectTreeItem &project;
-    
-    String inputString;
     
 };

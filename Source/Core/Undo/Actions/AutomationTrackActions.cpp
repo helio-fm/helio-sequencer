@@ -41,10 +41,9 @@ AutomationTrackInsertAction::AutomationTrackInsertAction(MidiTrackSource &source
 bool AutomationTrackInsertAction::perform()
 {
     MidiTrackTreeItem *track = new AutomationTrackTreeItem("empty");
-    this->parentTreeItem->addChildTreeItem(track);
-    
     track->deserialize(this->trackState);
-    
+    this->parentTreeItem->addChildTreeItem(track);
+
     this->trackId = track->getTrackId().toString();
     track->setTrackName(this->trackName, true);
     
@@ -126,8 +125,8 @@ bool AutomationTrackRemoveAction::undo()
     if (this->serializedTreeItem.isValid())
     {
         MidiTrackTreeItem *track = new AutomationTrackTreeItem("empty");
-        this->parentTreeItem->addChildTreeItem(track);
         track->deserialize(this->serializedTreeItem);
+        this->parentTreeItem->addChildTreeItem(track);
         track->setTrackName(this->trackName, true);
         return true;
     }
