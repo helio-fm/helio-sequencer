@@ -65,7 +65,7 @@ MidiTrackTreeItem::~MidiTrackTreeItem()
     }
 }
 
-Colour MidiTrackTreeItem::getColour() const
+Colour MidiTrackTreeItem::getColour() const noexcept
 {
     return this->getTrackColour().interpolatedWith(Colours::white, 0.4f);
 }
@@ -523,12 +523,16 @@ void MidiTrackTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &drag
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // Menu
 //===----------------------------------------------------------------------===//
 
-ScopedPointer<Component> MidiTrackTreeItem::createItemMenu()
+bool MidiTrackTreeItem::hasMenu() const noexcept
+{
+    return true;
+}
+
+ScopedPointer<Component> MidiTrackTreeItem::createMenu()
 {
     return new LayerCommandPanel(*this);
 }

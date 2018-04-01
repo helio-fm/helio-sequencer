@@ -266,11 +266,10 @@ void CommandPanel::updateContent(Items commands,
             }
         }
 
-        const int newWidth = estimatedWidth + int(COMMAND_PANEL_BUTTON_HEIGHT * 2.5f);
+        const int newWidth = estimatedWidth + int(COMMAND_PANEL_BUTTON_HEIGHT * 2.1f);
         this->setSize(jmax(newWidth, this->getWidth()), jmin(newHeight, maxHeight));
     }
 }
-
 
 //===----------------------------------------------------------------------===//
 // ListBoxModel
@@ -279,13 +278,6 @@ void CommandPanel::updateContent(Items commands,
 int CommandPanel::getNumRows()
 {
     return this->commandDescriptions.size();
-}
-
-void CommandPanel::paintListBoxItem(int rowNumber,
-                                    Graphics &g,
-                                    int width, int height,
-                                    bool rowIsSelected)
-{
 }
 
 Component *CommandPanel::refreshComponentForRow(int rowNumber, bool isRowSelected,
@@ -315,13 +307,6 @@ Component *CommandPanel::refreshComponentForRow(int rowNumber, bool isRowSelecte
 
     return existingComponentToUpdate;
 }
-
-void CommandPanel::listWasScrolled()
-{
-
-}
-
-
 //[/MiscUserCode]
 
 #if 0

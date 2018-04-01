@@ -26,14 +26,14 @@ class MidiTrackTreeItem;
 class ScriptTreeItem;
 class WorkspacePage;
 
-class RootTreeItem : public TreeItem
+class RootTreeItem final : public TreeItem
 {
 public:
 
     explicit RootTreeItem(const String &name);
 
-    Colour getColour() const override;
-    Image getIcon() const override;
+    Colour getColour() const noexcept override;
+    Image getIcon() const noexcept override;
 
     bool mightContainSubItems() override
     { return false; } // hide open/close button
@@ -76,7 +76,8 @@ public:
     // Menu
     //===------------------------------------------------------------------===//
 
-    ScopedPointer<Component> createItemMenu() override;
+    bool hasMenu() const noexcept override;
+    ScopedPointer<Component> createMenu() override;
 
     //===------------------------------------------------------------------===//
     // Serializable

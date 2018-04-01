@@ -22,19 +22,19 @@
 class ProjectTreeItem;
 class MidiTrackTreeItem;
 
-class TrackGroupTreeItem : public TreeItem
+class TrackGroupTreeItem final : public TreeItem
 {
 public:
 
     explicit TrackGroupTreeItem(const String &name);
-    ~TrackGroupTreeItem() override;
 
     static void removeAllEmptyGroupsInProject(ProjectTreeItem *project); // sanitize the tree
     
     void sortByNameAmongSiblings();
 
-    Colour getColour() const override;
-    Image getIcon() const override;
+    Colour getColour() const noexcept override;
+    Image getIcon() const noexcept override;
+
     void showPage() override;
     void safeRename(const String &newName) override;
 
@@ -49,6 +49,7 @@ public:
     // Menu
     //===------------------------------------------------------------------===//
 
-    ScopedPointer<Component> createItemMenu() override;
+    bool hasMenu() const noexcept override;
+    ScopedPointer<Component> createMenu() override;
 
 };

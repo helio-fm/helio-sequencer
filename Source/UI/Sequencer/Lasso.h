@@ -49,11 +49,16 @@ public:
 
     Lasso() : SelectedItemSet() {}
     
-    explicit Lasso(const ItemArray &items) : SelectedItemSet (items)
+    explicit Lasso(const ItemArray &items) : SelectedItemSet(items)
     {
         this->invalidateCache();
     }
-    
+
+    explicit Lasso(const SelectedItemSet &other) : SelectedItemSet(other)
+    {
+        this->invalidateCache();
+    }
+
     void itemSelected(SelectableComponent *item) override
     {
         this->invalidateCache();

@@ -17,23 +17,29 @@
 
 #pragma once
 
-class HeadlineDataSource
+class HeadlineItemDataSource : public virtual ChangeBroadcaster
 {
 public:
 
-    HeadlineDataSource() = default;
-    virtual ~HeadlineDataSource()
+    HeadlineItemDataSource() = default;
+    ~HeadlineItemDataSource() override
     {
         this->masterReference.clear();
     }
 
+    virtual bool hasMenu() const = 0;
     virtual ScopedPointer<Component> createMenu() = 0;
-    virtual bool hasMenu() = 0;
+
+    virtual Image getIcon() const = 0;
+    virtual String getName() const = 0;
+
+    virtual bool canBeSelectedAsMenuItem() const = 0;
+    virtual void onSelectedAsMenuItem() = 0;
 
 protected:
 
-    WeakReference<HeadlineDataSource>::Master masterReference;
-    friend class WeakReference<HeadlineDataSource>;
+    WeakReference<HeadlineItemDataSource>::Master masterReference;
+    friend class WeakReference<HeadlineItemDataSource>;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeadlineDataSource)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeadlineItemDataSource)
 };

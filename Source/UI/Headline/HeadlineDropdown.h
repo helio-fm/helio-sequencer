@@ -22,6 +22,7 @@
 #include "TreeItem.h"
 
 class IconComponent;
+class HeadlineItemDataSource;
 //[/Headers]
 
 
@@ -30,7 +31,7 @@ class HeadlineDropdown final : public Component,
 {
 public:
 
-    HeadlineDropdown(WeakReference<TreeItem> targetItem);
+    HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetItem);
     ~HeadlineDropdown();
 
     //[UserMethods]
@@ -49,7 +50,7 @@ private:
 
     //[UserVariables]
 
-    WeakReference<TreeItem> item;
+    WeakReference<HeadlineItemDataSource> item;
 
     void timerCallback() override;
     void syncWidthWithContent();

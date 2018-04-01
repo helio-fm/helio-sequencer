@@ -125,7 +125,7 @@ void TreeItemComponentDefault::resized()
 
 void TreeItemComponentDefault::paintIcon(Graphics &g)
 {
-    Image icon(this->item.getIcon());
+    const Image icon(this->item.getIcon());
     const int cx = int(this->getHeight() / 2) + 2;
     const int cy = int(this->getHeight() / 2);
     Icons::drawImageRetinaAware(icon, g, cx, cy);

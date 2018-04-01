@@ -31,6 +31,7 @@ class MidiSequence;
 class NoteComponent;
 class PianoRollReboundThread;
 class PianoRollCellHighlighter;
+class SelectedNotesMenuManager;
 class HelperRectangle;
 class Scale;
 
@@ -189,7 +190,7 @@ private:
     class HighlightingScheme final
     {
     public:
-        HighlightingScheme(int rootKey, const Scale::Ptr scale);
+        HighlightingScheme(int rootKey, const Scale::Ptr scale) noexcept;
         
         template<typename T1, typename T2>
         static int compareElements(const T1 *const l, const T2 *const r)
@@ -207,7 +208,7 @@ private:
         const Scale::Ptr getScale() const noexcept { return this->scale; }
         const int getRootKey() const noexcept { return this->rootKey; }
         const Image getUnchecked(int i) const noexcept { return this->rows.getUnchecked(i); }
-        void setRows(Array<Image> val) { this->rows = val; }
+        void setRows(Array<Image> val) noexcept { this->rows = val; }
 
     private:
         Scale::Ptr scale;
@@ -239,6 +240,8 @@ private:
 
     ScopedPointer<NoteResizerLeft> noteResizerLeft;
     ScopedPointer<NoteResizerRight> noteResizerRight;
+
+    ScopedPointer<SelectedNotesMenuManager> selectedNotesMenuManager;
     
     typedef SparseHashMap<const Note, UniquePointer<NoteComponent>, MidiEventHash> EventComponentsMap;
     EventComponentsMap eventComponents;

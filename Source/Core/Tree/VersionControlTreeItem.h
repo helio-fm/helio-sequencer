@@ -23,7 +23,7 @@ class VersionControl;
 class VersionControlEditor;
 class ProjectTreeItem;
 
-class VersionControlTreeItem :
+class VersionControlTreeItem final :
     public TreeItem,
     public ChangeListener // listens to VCS::Remote when it is done pulling
 {
@@ -32,9 +32,10 @@ public:
     VersionControlTreeItem(String id = {}, String key = {});
     ~VersionControlTreeItem() override;
 
-    String getName() const override;
-    Colour getColour() const override;
-    Image getIcon() const override;
+    String getName() const noexcept override;
+    Colour getColour() const noexcept override;
+    Image getIcon() const noexcept override;
+
     void showPage() override;
     void recreatePage() override;
     
@@ -48,7 +49,6 @@ public:
     bool deletePermanentlyFromRemoteRepo();
     void toggleQuickStash();
     
-    
     //===------------------------------------------------------------------===//
     // Dragging
     //===------------------------------------------------------------------===//
@@ -58,13 +58,12 @@ public:
     bool isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails) override
     { return false; }
 
-
     //===------------------------------------------------------------------===//
     // Menu
     //===------------------------------------------------------------------===//
 
-    ScopedPointer<Component> createItemMenu() override;
-
+    bool hasMenu() const noexcept override;
+    ScopedPointer<Component> createMenu() override;
 
     //===------------------------------------------------------------------===//
     // Serializable

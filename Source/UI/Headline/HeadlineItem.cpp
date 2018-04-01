@@ -32,7 +32,7 @@
 #include "App.h"
 //[/MiscUserDefs]
 
-HeadlineItem::HeadlineItem(WeakReference<TreeItem> treeItem, AsyncUpdater &parent)
+HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> treeItem, AsyncUpdater &parent)
     : item(treeItem),
       parentHeadline(parent)
 {
@@ -138,13 +138,13 @@ void HeadlineItem::mouseDown (const MouseEvent& e)
     if (this->item != nullptr)
     {
         this->stopTimer();
-        if (this->item->isSelected())
+        if (this->item->canBeSelectedAsMenuItem())
         {
-            this->showMenu();
+            this->item->onSelectedAsMenuItem();
         }
         else
         {
-            this->item->setSelected(true, true);
+            this->showMenuIfAny();
         }
     }
     //[/UserCode_mouseDown]
@@ -160,7 +160,7 @@ void HeadlineItem::mouseUp (const MouseEvent& e)
 
 //[MiscUserCode]
 
-WeakReference<TreeItem> HeadlineItem::getTreeItem() const noexcept
+WeakReference<HeadlineItemDataSource> HeadlineItem::getDataSource() const noexcept
 {
     return this->item;
 }
@@ -186,13 +186,12 @@ void HeadlineItem::changeListenerCallback(ChangeBroadcaster* source)
 void HeadlineItem::timerCallback()
 {
     this->stopTimer();
-    this->showMenu();
+    this->showMenuIfAny();
 }
 
-void HeadlineItem::showMenu()
+void HeadlineItem::showMenuIfAny()
 {
-    // FIXME If has menu:
-    if (this->item != nullptr)
+    if (this->item != nullptr && this->item->hasMenu())
     {
         HeadlineDropdown *hd = new HeadlineDropdown(this->item);
         hd->setTopLeftPosition(this->getPosition());
@@ -209,7 +208,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="HeadlineItem" template="../../Template"
                  componentName="" parentClasses="public Component, private Timer, private ChangeListener"
-                 constructorParams="WeakReference&lt;TreeItem&gt; treeItem, AsyncUpdater &amp;parent"
+                 constructorParams="WeakReference&lt;HeadlineItemDataSource&gt; treeItem, AsyncUpdater &amp;parent"
                  variableInitialisers="item(treeItem),&#10;parentHeadline(parent)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="256" initialHeight="32">

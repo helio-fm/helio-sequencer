@@ -48,7 +48,7 @@ AutomationTrackTreeItem::AutomationTrackTreeItem(const String &name) :
 #endif
 }
 
-Image AutomationTrackTreeItem::getIcon() const
+Image AutomationTrackTreeItem::getIcon() const noexcept
 {
     return Icons::findByName(Icons::automation, TREE_ICON_HEIGHT);
 }

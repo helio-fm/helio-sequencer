@@ -42,7 +42,7 @@ public:
 
     String getXPath() const noexcept;
     void setXPath(const String &path);
-    Colour getColour() const override;
+    Colour getColour() const noexcept override;
 
     void showPage() override;
     void safeRename(const String &newName) override;
@@ -114,14 +114,14 @@ public:
     // Menu
     //===------------------------------------------------------------------===//
 
-    ScopedPointer<Component> createItemMenu() override;
+    bool hasMenu() const noexcept override;
+    ScopedPointer<Component> createMenu() override;
 
 protected:
 
     ProjectTreeItem *lastFoundParent;
 
     ScopedPointer<MidiSequence> sequence;
-
     ScopedPointer<Pattern> pattern;
     
 protected:
@@ -136,6 +136,6 @@ protected:
     int controllerNumber;
 
     bool mute;
-    bool solo;
+    bool solo; // Not implemented
 
 };

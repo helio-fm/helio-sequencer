@@ -24,15 +24,17 @@
 //[MiscUserDefs]
 #include "IconComponent.h"
 #include "PanelBackgroundB.h"
-#include "HeadlineDropdown.h"
+#include "HeadlineItemDataSource.h"
 #include "CommandPanel.h"
 #include "RootTreeItem.h"
 #include "MainLayout.h"
 #include "ColourIDs.h"
 #include "App.h"
+
+#include "TreeItem.h"
 //[/MiscUserDefs]
 
-HeadlineDropdown::HeadlineDropdown(WeakReference<TreeItem> targetItem)
+HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetItem)
     : item(targetItem)
 {
     addAndMakeVisible (titleLabel = new Label (String(),
@@ -72,12 +74,12 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<TreeItem> targetItem)
 
         // Create tree panel for the root, and generic menu for the rest
         // (FIXME in the future, tree should not be exposed)
-        if (dynamic_cast<RootTreeItem *>(this->item.get()))
+        if (RootTreeItem *rootItem = dynamic_cast<RootTreeItem *>(this->item.get()))
         {
             ScopedPointer<TreeView> treeView(new TreeView());
             treeView->setFocusContainer(false);
             treeView->setWantsKeyboardFocus(false);
-            treeView->setRootItem(this->item);
+            treeView->setRootItem(rootItem);
             treeView->getRootItem()->setOpen(true);
             treeView->setRootItemVisible(true);
             treeView->setDefaultOpenness(true);
@@ -94,7 +96,7 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<TreeItem> targetItem)
             this->addAndMakeVisible(this->content);
             this->syncWidthWithContent();
         }
-        else if (ScopedPointer<Component> menu = this->item->createItemMenu())
+        else if (ScopedPointer<Component> menu = this->item->createMenu())
         {
             this->content = menu.release();
             this->addAndMakeVisible(this->content);
@@ -247,7 +249,7 @@ void HeadlineDropdown::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
     if (this->item != nullptr) {
-        this->item->setSelected(true, true);
+        this->item->onSelectedAsMenuItem();
     }
     //[/UserCode_mouseDown]
 }
@@ -328,7 +330,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="HeadlineDropdown" template="../../Template"
                  componentName="" parentClasses="public Component, private Timer"
-                 constructorParams="WeakReference&lt;TreeItem&gt; targetItem"
+                 constructorParams="WeakReference&lt;HeadlineItemDataSource&gt; targetItem"
                  variableInitialisers="item(targetItem)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="150"
                  initialHeight="34">

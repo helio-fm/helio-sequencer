@@ -17,6 +17,7 @@
 
 #pragma once
 
+class HeadlineItemDataSource;
 class TransientTreeItem;
 class TooltipContainer;
 class TreeItem;
@@ -31,7 +32,7 @@ class Headline;
 #   define HAS_FADING_PAGECHANGE 0
 #endif
 
-class MainLayout : public Component
+class MainLayout final : public Component
 {
 public:
 
@@ -40,44 +41,34 @@ public:
 
     void show();
     void forceRestoreLastOpenedPage();
-    void toggleShowHideConsole();
 
+    Rectangle<int> getPageBounds() const;
     static constexpr int getScrollerHeight()
     {
         return (40 + 32);
     }
     
     //===------------------------------------------------------------------===//
-    // Pages
+    // Pages and headline
     //===------------------------------------------------------------------===//
 
-    void showTransientItem(ScopedPointer<TransientTreeItem> newItem, TreeItem *parent);
     void showPage(Component *page, TreeItem *source = nullptr);
     bool isShowingPage(Component *page) const noexcept;
+
+    void showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource);
+    void hideSelectionMenu();
 
     //===------------------------------------------------------------------===//
     // UI
     //===------------------------------------------------------------------===//
 
-    void setStatus(const String &text);
+    // FIXME: these ones assume that modal component will delete itself eventually
+    // which sucks, please rework into some better ownership model:
     void showTooltip(const String &message, int timeOutMs = 15000);
     void showTooltip(Component *newTooltip, int timeOutMs = 15000);
     void showTooltip(Component *newTooltip, Rectangle<int> callerScreenBounds, int timeOutMs = 15000);
-    void showBlockerUnowned(Component *targetComponent);
-
     void showModalComponentUnowned(Component *targetComponent);
 
-    template<typename T>
-    void dismissModalComponentOfType()
-    {
-        if (T *modalComponent = dynamic_cast<T *>(Component::getCurrentlyModalComponent()))
-        {
-            delete modalComponent;
-        }
-    }
-
-    Rectangle<int> getPageBounds() const;
-    
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//

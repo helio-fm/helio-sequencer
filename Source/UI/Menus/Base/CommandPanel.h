@@ -72,22 +72,17 @@ private:
     AnimationType lastAnimationType;
     Items commandDescriptions;
 
-
     //===------------------------------------------------------------------===//
     // ListBoxModel
     //===------------------------------------------------------------------===//
 
     int getNumRows() override;
 
-    void paintListBoxItem(int rowNumber,
-                                  Graphics &g,
-                                  int width, int height,
-                                  bool rowIsSelected) override;
+    void paintListBoxItem(int rowNumber, Graphics &g,
+        int width, int height, bool rowIsSelected) noexcept override {}
 
     Component *refreshComponentForRow(int rowNumber, bool isRowSelected,
-                                              Component *existingComponentToUpdate) override;
-
-    void listWasScrolled() override;
+        Component *existingComponentToUpdate) override;
 
     //[/UserVariables]
 

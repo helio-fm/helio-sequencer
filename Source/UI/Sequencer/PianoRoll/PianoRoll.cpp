@@ -53,10 +53,49 @@
 #include "Icons.h"
 #include "ArpeggiatorsManager.h"
 #include "Arpeggiator.h"
+#include "HeadlineItemDataSource.h"
 
 #define ROWS_OF_TWO_OCTAVES 24
 #define DEFAULT_NOTE_LENGTH 0.25f
 #define DEFAULT_NOTE_VELOCITY 0.25f
+
+class SelectedNotesMenuManager final : public ChangeListener
+{
+public:
+
+    class MenuSource : public HeadlineItemDataSource
+    {
+        bool hasMenu() const noexcept override { return false; }
+        ScopedPointer<Component> createMenu() override { return nullptr; }
+
+        Image getIcon() const override { return Icons::findByName(Icons::selectionTool, TREE_ICON_HEIGHT); }
+        String getName() const override { return TRANS("tree::selection::notes"); }
+
+        bool canBeSelectedAsMenuItem() const override { return false; }
+        void onSelectedAsMenuItem() override {}
+    };
+
+    SelectedNotesMenuManager() : menu(new MenuSource()) {}
+
+    void changeListenerCallback(ChangeBroadcaster *source) override
+    {
+        Lasso *lasso = static_cast<Lasso *>(source);
+
+        if (lasso->getNumSelected() > 1)
+        {
+            App::Layout().showSelectionMenu(this->menu.get());
+        }
+        else
+        {
+            App::Layout().hideSelectionMenu();
+        }
+    }
+
+private:
+
+    ScopedPointer<HeadlineItemDataSource> menu;
+
+};
 
 PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
                      Viewport &viewportRef,
@@ -72,6 +111,9 @@ PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
 {
     this->defaultHighlighting = new HighlightingScheme(0, Scale::getNaturalMajorScale());
     this->defaultHighlighting->setRows(this->renderBackgroundCacheFor(this->defaultHighlighting));
+
+    this->selectedNotesMenuManager = new SelectedNotesMenuManager();
+    this->getLassoSelection().addChangeListener(this->selectedNotesMenuManager);
 
     this->setComponentID(ComponentIDs::pianoRollId);
     this->setRowHeight(PIANOROLL_MIN_ROW_HEIGHT + 5);
@@ -653,6 +695,8 @@ void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, c
             itemsFound.addIfNotAlreadyThere(component);
         }
     }
+
+    //PianoTrackTreeItem *targetLayerItem = this->project.findTrackById<PianoTrackTreeItem>(trackId);
 }
 
 //===----------------------------------------------------------------------===//
@@ -1535,7 +1579,7 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
     return patternImage;
 }
 
-PianoRoll::HighlightingScheme::HighlightingScheme(int rootKey, const Scale::Ptr scale) :
+PianoRoll::HighlightingScheme::HighlightingScheme(int rootKey, const Scale::Ptr scale) noexcept :
     rootKey(rootKey), scale(scale) {}
 
 int PianoRoll::binarySearchForHighlightingScheme(const KeySignatureEvent *const target) const noexcept

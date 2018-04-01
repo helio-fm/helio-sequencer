@@ -48,7 +48,7 @@ class Pattern;
 #include "MidiSequence.h"
 #include "MidiTrackSource.h"
 
-class ProjectTreeItem :
+class ProjectTreeItem final :
     public TreeItem,
     public DocumentOwner,
     public MidiTrackSource,
@@ -75,8 +75,8 @@ public:
     void importMidi(File &file);
     void exportMidi(File &file) const;
 
-    Colour getColour() const override;
-    Image getIcon() const override;
+    Colour getColour() const noexcept override;
+    Image getIcon() const noexcept override;
 
     void showPage() override;
     void recreatePage() override;
@@ -95,7 +95,8 @@ public:
     // Menu
     //===------------------------------------------------------------------===//
 
-    ScopedPointer<Component> createItemMenu() override;
+    bool hasMenu() const noexcept override;
+    ScopedPointer<Component> createMenu() override;
 
     //===------------------------------------------------------------------===//
     // Dragging

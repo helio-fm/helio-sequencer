@@ -52,11 +52,10 @@ PianoTrackTreeItem::PianoTrackTreeItem(const String &name) :
     this->deltas.add(new VCS::Delta({}, PatternDeltas::clipsAdded));
 }
 
-Image PianoTrackTreeItem::getIcon() const
+Image PianoTrackTreeItem::getIcon() const noexcept
 {
     return Icons::findByName(Icons::layer, TREE_ICON_HEIGHT);
 }
-
 
 int PianoTrackTreeItem::getNumDeltas() const
 {
@@ -325,13 +324,9 @@ void PianoTrackTreeItem::resetEventsDelta(const ValueTree &state)
 {
     jassert(state.hasType(PianoSequenceDeltas::notesAdded));
 
-    //this->reset(); // TODO test
     this->getSequence()->reset();
-
     forEachValueTreeChildWithType(state, e, Serialization::Midi::note)
     {
         this->getSequence()->silentImport(Note(this->getSequence()).withParameters(e));
     }
 }
-
-// TODO manage clip deltas

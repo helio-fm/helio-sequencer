@@ -208,12 +208,12 @@ HybridRoll *ProjectTreeItem::getLastFocusedRoll() const
     return this->sequencerLayout->getRoll();
 }
 
-Colour ProjectTreeItem::getColour() const
+Colour ProjectTreeItem::getColour() const noexcept
 {
     return Colour(0xffa489ff);
 }
 
-Image ProjectTreeItem::getIcon() const
+Image ProjectTreeItem::getIcon() const noexcept
 {
     return Icons::findByName(Icons::project, TREE_LARGE_ICON_HEIGHT);
 }
@@ -364,11 +364,15 @@ void ProjectTreeItem::activateLayer(MidiSequence* sequence, bool selectOthers, b
 // Menu
 //===----------------------------------------------------------------------===//
 
-ScopedPointer<Component> ProjectTreeItem::createItemMenu()
+bool ProjectTreeItem::hasMenu() const noexcept
+{
+    return true;
+}
+
+ScopedPointer<Component> ProjectTreeItem::createMenu()
 {
     return new ProjectCommandPanel(*this, CommandPanel::SlideRight);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Dragging
@@ -379,7 +383,6 @@ bool ProjectTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDe
     return (dragSourceDetails.description == Serialization::Core::track.toString()) ||
            (dragSourceDetails.description == Serialization::Core::trackGroup.toString());
 }
-
 
 //===----------------------------------------------------------------------===//
 // Undos

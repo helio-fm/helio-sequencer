@@ -28,7 +28,6 @@
 #include "MainWindow.h"
 #include "RootTreeItem.h"
 #include "GenericTooltip.h"
-#include "TransientTreeItems.h"
 #include "MidiTrackTreeItem.h"
 #include "InitScreen.h"
 #include "NavigationSidebar.h"
@@ -104,11 +103,6 @@ void MainLayout::forceRestoreLastOpenedPage()
     App::Workspace().activateSubItemWithId(Config::get(Serialization::Config::lastShownPageId));
 }
 
-void MainLayout::toggleShowHideConsole()
-{
-    // TODO
-}
-
 //===----------------------------------------------------------------------===//
 // Pages
 //===----------------------------------------------------------------------===//
@@ -124,28 +118,6 @@ void hideMarkersRecursive(TreeItem *startFrom)
             hideMarkersRecursive(childOfType);
         }
     }
-}
-
-void MainLayout::showTransientItem(
-    ScopedPointer<TransientTreeItem> newItem, TreeItem *parent)
-{
-    jassert(parent != nullptr);
-    const auto treeRoot = App::Workspace().getTreeRoot();
-    hideMarkersRecursive(treeRoot);
-
-    // Cleanup: delete all existing transient items
-    OwnedArray<TreeItem> transients;
-    transients.addArray(treeRoot->findChildrenOfType<TransientTreeItem>());
-    transients.clear(true);
-
-    // Attach new item to the tree
-    TreeItem *item = newItem.release();
-    parent->addChildTreeItem(item);
-    item->setSelected(true, true, dontSendNotification);
-    item->setMarkerVisible(true);
-    // TODO
-    //App::Workspace().getNavigationHistory().addItemIfNeeded
-    this->headline->syncWithTree(App::Workspace().getNavigationHistory(), item);
 }
 
 bool MainLayout::isShowingPage(Component *page) const noexcept
@@ -214,15 +186,19 @@ void MainLayout::showPage(Component *page, TreeItem *source)
     //Logger::outputDebugString(focused ? focused->getName() : "null");
 }
 
+void MainLayout::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource)
+{
+    this->headline->showSelectionMenu(menuSource);
+}
+
+void MainLayout::hideSelectionMenu()
+{
+    this->headline->hideSelectionMenu();
+}
 
 //===----------------------------------------------------------------------===//
 // UI
 //===----------------------------------------------------------------------===//
-
-void MainLayout::setStatus(const String &text)
-{
-
-}
 
 void MainLayout::showTooltip(const String &message, int timeOutMs)
 {
@@ -242,7 +218,6 @@ void MainLayout::showTooltip(Component *newTooltip, Rectangle<int> callerScreenB
 void MainLayout::showModalComponentUnowned(Component *targetComponent)
 {
     ScopedPointer<Component> ownedTarget(targetComponent);
-
     this->addChildComponent(ownedTarget);
 
     const int fadeInTime = 200;
@@ -253,57 +228,6 @@ void MainLayout::showModalComponentUnowned(Component *targetComponent)
     ownedTarget->toFront(false);
     ownedTarget->enterModalState(true, nullptr, true);
     ownedTarget.release();
-}
-
-void MainLayout::showBlockerUnowned(Component *targetComponent)
-{
-    class Blocker : public Component
-    {
-    public:
-        
-        Blocker()
-        { 
-            this->setInterceptsMouseClicks(true, true);
-            this->setMouseClickGrabsKeyboardFocus(false);
-            this->setPaintingIsUnclipped(true);
-        }
-        
-        void paint(Graphics &g) override
-        {
-            g.setColour(Colours::white.withAlpha(0.05f));
-            g.fillRect(this->getLocalBounds());
-        }
-        
-        void parentHierarchyChanged() override
-        { this->rebound(); }
-        
-        void parentSizeChanged() override
-        { this->rebound(); }
-        
-    private:
-        
-        void rebound()
-        {
-            if (! this->getParentComponent())
-            {
-                delete this;
-                return;
-            }
-
-            this->setBounds(this->getParentComponent()->getLocalBounds());
-        }
-    };
-    
-    auto blocker = new Blocker();
-    this->addChildComponent(blocker);
-    this->addChildComponent(targetComponent);
-    
-    const int fadeInTime = 250;
-    Desktop::getInstance().getAnimator().animateComponent(blocker, blocker->getBounds(), 1.f, fadeInTime, false, 0.0, 0.0);
-    Desktop::getInstance().getAnimator().animateComponent(targetComponent, targetComponent->getBounds(), 1.f, fadeInTime, false, 0.0, 0.0);
-    
-    targetComponent->setAlwaysOnTop(true);
-    targetComponent->toFront(false);
 }
 
 // a hack!
@@ -410,7 +334,7 @@ void MainLayout::handleCommandMessage(int commandId)
         App::Workspace().navigateForwardIfPossible();
         break;
     case CommandIDs::ToggleShowHideConsole:
-        this->toggleShowHideConsole();
+        //this->toggleShowHideConsole();
         break;
     default:
         break;

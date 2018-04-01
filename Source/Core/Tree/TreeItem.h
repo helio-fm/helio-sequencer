@@ -29,10 +29,12 @@
 #   define TREE_FONT_SIZE (20)
 #endif
 
+#include "HeadlineItemDataSource.h"
+
 class TreeItem :
     public Serializable,
     public TreeViewItem,
-    public virtual ChangeBroadcaster // a way to notify any custom views (like headline) to update
+    public HeadlineItemDataSource
 {
 public:
 
@@ -59,10 +61,9 @@ public:
     void dispatchChangeTreeItemView();
 
     // Some of the main properties for the views:
-    virtual String getName() const;
-    virtual Colour getColour() const;
-    virtual Font getFont() const;
-    virtual Image getIcon() const = 0;
+    virtual Colour getColour() const noexcept;
+    virtual Font getFont() const noexcept;
+    String getName() const noexcept override;
 
     bool isMarkerVisible() const noexcept;
     void setMarkerVisible(bool shouldBeVisible) noexcept;
@@ -201,17 +202,7 @@ public:
     void paintItem(Graphics &g, int width, int height) override;
     void paintOpenCloseButton(Graphics &, const Rectangle<float> &area,
         Colour backgroundColour, bool isMouseOver) override;
-    void paintHorizontalConnectingLine(Graphics &, const Line<float> &line) override;
-    void paintVerticalConnectingLine(Graphics &, const Line<float> &line) override;
     int getItemHeight() const override;
-
-
-    //===------------------------------------------------------------------===//
-    // Menu
-    //===------------------------------------------------------------------===//
-
-    virtual ScopedPointer<Component> createItemMenu() = 0;
-    void itemSelectionChanged(bool isNowSelected) override;
 
     //===------------------------------------------------------------------===//
     // Cleanup
@@ -229,6 +220,8 @@ public:
     void deserialize(const ValueTree &tree) override;
 
 protected:
+
+    void itemSelectionChanged(bool isNowSelected) override;
 
     void setVisible(bool shouldBeVisible) noexcept;
 
@@ -300,6 +293,20 @@ protected:
     void deleteAllSubItems();
 
     static void openOrCloseAllSubGroups(TreeViewItem &item, bool shouldOpen);
+
+    //===------------------------------------------------------------------===//
+    // HeadlineItemDataSource
+    //===------------------------------------------------------------------===//
+
+    bool canBeSelectedAsMenuItem() const noexcept override
+    {
+        return !this->isSelected();
+    }
+
+    void onSelectedAsMenuItem() override
+    {
+        return this->setSelected(true, true);
+    }
 
 private:
 

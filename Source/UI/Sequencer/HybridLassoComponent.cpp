@@ -21,9 +21,7 @@
 #include "HelioTheme.h"
 
 HybridLassoComponent::HybridLassoComponent() :
-    source(nullptr)
-{
-}
+    source(nullptr) {}
 
 void HybridLassoComponent::beginLasso(const MouseEvent &e, LassoSource<SelectableComponent *> *const lassoSource)
 {

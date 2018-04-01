@@ -29,7 +29,6 @@ public:
         LassoSource<SelectableComponent *> *const lassoSource);
 
     virtual void dragLasso(const MouseEvent &e);
-
     virtual void endLasso();
     
     virtual bool isDragging() const;

@@ -57,12 +57,12 @@ VersionControlTreeItem::~VersionControlTreeItem()
     this->shutdownVCS();
 }
 
-Colour VersionControlTreeItem::getColour() const
+Colour VersionControlTreeItem::getColour() const noexcept
 {
     return Colour(0xff818dff);
 }
 
-Image VersionControlTreeItem::getIcon() const
+Image VersionControlTreeItem::getIcon() const noexcept
 {
     return Icons::findByName(Icons::vcs, TREE_ICON_HEIGHT);
 }
@@ -102,7 +102,7 @@ String VersionControlTreeItem::getId() const
     return "";
 }
 
-String VersionControlTreeItem::getName() const
+String VersionControlTreeItem::getName() const noexcept
 {
     return TRANS("tree::vcs");
 }
@@ -278,7 +278,6 @@ void VersionControlTreeItem::toggleQuickStash()
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // Dragging
 //===----------------------------------------------------------------------===//
@@ -292,14 +291,18 @@ void VersionControlTreeItem::onItemParentChanged()
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // Popup
 //===----------------------------------------------------------------------===//
 
-ScopedPointer<Component> VersionControlTreeItem::createItemMenu()
+bool VersionControlTreeItem::hasMenu() const noexcept
 {
-    if (this->vcs)
+    return this->vcs != nullptr;
+}
+
+ScopedPointer<Component> VersionControlTreeItem::createMenu()
+{
+    if (this->vcs != nullptr)
     {
         ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>();
         
@@ -311,7 +314,6 @@ ScopedPointer<Component> VersionControlTreeItem::createItemMenu()
     
     return nullptr;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Serializable

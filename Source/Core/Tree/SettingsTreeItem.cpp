@@ -40,21 +40,17 @@ SettingsTreeItem::SettingsTreeItem() :
     //this->setVisible(false);
 }
 
-SettingsTreeItem::~SettingsTreeItem()
-{
-}
-
-Colour SettingsTreeItem::getColour() const
+Colour SettingsTreeItem::getColour() const noexcept
 {
     return Colour(0xffffbe92).interpolatedWith(Colour(0xffff80f3), 0.5f);
 }
 
-Image SettingsTreeItem::getIcon() const
+Image SettingsTreeItem::getIcon() const noexcept
 {
     return Icons::findByName(Icons::settings, TREE_LARGE_ICON_HEIGHT);
 }
 
-String SettingsTreeItem::getName() const
+String SettingsTreeItem::getName() const noexcept
 {
     return TRANS("tree::settings");
 }
@@ -112,7 +108,12 @@ void SettingsTreeItem::recreatePage()
     this->settingsPage = new SettingsPage(this->settingsList);
 }
 
-ScopedPointer<Component> SettingsTreeItem::createItemMenu()
+bool SettingsTreeItem::hasMenu() const noexcept
+{
+    return false;
+}
+
+ScopedPointer<Component> SettingsTreeItem::createMenu()
 {
     return nullptr;
 }
