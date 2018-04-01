@@ -90,9 +90,33 @@ void Headline::handleAsyncUpdate()
 {
     //Logger::writeToLog("Headline::handleAsyncUpdate");
     int posX = HEADLINE_ITEMS_OVERLAP + HEADLINE_ROOT_X;
+    TreeItem *previousItem = nullptr;
+
+    const bool hasSelectionItem = this->selectionItem != nullptr &&
+        !this->selectionItem->getDataSource().wasObjectDeleted();
+
     for (int i = 0; i < this->chain.size(); ++i)
     {
         HeadlineItem *child = this->chain.getUnchecked(i);
+
+        TreeItem *treeItem = static_cast<TreeItem *>(child->getDataSource().get());
+        if (treeItem == nullptr || (previousItem != nullptr && treeItem->getParentItem() != previousItem))
+        {
+            // An item inserted or removed, need to re-sync the whole chain:
+            TreeItem *lastItem = static_cast<TreeItem *>(this->chain.getLast()->getDataSource().get());
+            jassert(lastItem != nullptr);
+            posX = this->rebuildChain(lastItem);
+            if (hasSelectionItem)
+            {
+                this->animator.cancelAnimation(this->selectionItem, false);
+                this->selectionItem->setTopLeftPosition(HEADLINE_ROOT_X, this->selectionItem->getY());
+            }
+
+            break;
+        }
+
+        previousItem = static_cast<TreeItem *>(treeItem);
+
         const auto boundsBefore = child->getBounds();
         child->updateContent();
         const auto boundsAfter = child->getBounds().withX(posX - HEADLINE_ITEMS_OVERLAP);
@@ -104,6 +128,15 @@ void Headline::handleAsyncUpdate()
         }
 
         posX += boundsAfter.getWidth() - HEADLINE_ITEMS_OVERLAP;
+    }
+
+    if (hasSelectionItem)
+    {
+        const auto finalPos = this->selectionItem->getBounds().withX(posX - HEADLINE_ITEMS_OVERLAP);
+        this->animator.cancelAnimation(this->selectionItem, false);
+        this->animator.animateComponent(this->selectionItem, finalPos, 1.f, 200, false, 1.f, 0.f);
+        this->selectionItem->toBack();
+        this->bg->toBack();
     }
 }
 
@@ -127,12 +160,20 @@ Array<TreeItem *> createSortedBranchArray(WeakReference<TreeItem> leaf)
     return result;
 }
 
-void Headline::syncWithTree(TreeNavigationHistory &navHistory, WeakReference<TreeItem> root)
+void Headline::syncWithTree(TreeNavigationHistory &navHistory, WeakReference<TreeItem> leaf)
+{
+    // Removes selection menu item, if any
+    this->hideSelectionMenu();
+    this->rebuildChain(leaf);
+    this->navPanel->updateState(navHistory.canGoBackward(), navHistory.canGoForward());
+}
+
+int Headline::rebuildChain(WeakReference<TreeItem> leaf)
 {
     const float startingAlpha = this->getAlphaForAnimation();
 
     //Logger::writeToLog("Headline::syncWithTree");
-    Array<TreeItem *> branch = createSortedBranchArray(root);
+    Array<TreeItem *> branch = createSortedBranchArray(leaf);
 
     // Finds the first inconsistency point in the chain
     int firstInvalidUnitIndex = 0;
@@ -148,9 +189,6 @@ void Headline::syncWithTree(TreeNavigationHistory &navHistory, WeakReference<Tre
         fadePositionX += (this->chain[firstInvalidUnitIndex]->getWidth() - HEADLINE_ITEMS_OVERLAP);
     }
 
-    // Removes selection menu item, if any
-    this->hideSelectionMenu();
-
     // Removes the rest of the chain
     for (int i = firstInvalidUnitIndex; i < this->chain.size();)
     {
@@ -162,7 +200,8 @@ void Headline::syncWithTree(TreeNavigationHistory &navHistory, WeakReference<Tre
     }
 
     // Adds the new elements
-    for (int i = firstInvalidUnitIndex, lastPosX = fadePositionX; i < branch.size(); i++)
+    int lastPosX = fadePositionX;
+    for (int i = firstInvalidUnitIndex; i < branch.size(); i++)
     {
         const auto child = new HeadlineItem(branch[i], *this);
         child->updateContent();
@@ -176,10 +215,10 @@ void Headline::syncWithTree(TreeNavigationHistory &navHistory, WeakReference<Tre
         this->animator.animateComponent(child, finalPos, 1.f, 300, false, 1.f, 0.f);
     }
 
-    this->navPanel->updateState(navHistory.canGoBackward(), navHistory.canGoForward());
-
     this->bg->toBack();
     this->navPanel->toFront(false);
+
+    return lastPosX;
 }
 
 void Headline::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource)
@@ -189,7 +228,6 @@ void Headline::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSourc
         return;
     }
 
-    // TODO
     // 1 - if exists and up to date, return
     const bool upToDate = (this->selectionItem != nullptr &&
         !this->selectionItem->getDataSource().wasObjectDeleted() &&
@@ -204,7 +242,7 @@ void Headline::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSourc
     this->hideSelectionMenu();
 
     // 3 show an optional selection menu
-    const auto x = this->chain.getLast()->getRight() - HEADLINE_ITEMS_OVERLAP;
+    const auto x = this->getChainWidth() + HEADLINE_ROOT_X;
     this->selectionItem = new HeadlineItem(menuSource, *this);
     this->selectionItem->updateContent();
     this->addAndMakeVisible(this->selectionItem);
@@ -235,6 +273,16 @@ void Headline::hideSelectionMenu()
 float Headline::getAlphaForAnimation() const noexcept
 {
     return MainWindow::isOpenGLRendererEnabled() ? 0.f : 1.f;
+}
+
+int Headline::getChainWidth() const noexcept
+{
+    int w = 0;
+    for (const auto &child : this->chain)
+    {
+        w += child->getWidth() - HEADLINE_ITEMS_OVERLAP;
+    }
+    return w;
 }
 
 //[/MiscUserCode]

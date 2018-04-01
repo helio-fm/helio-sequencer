@@ -178,7 +178,7 @@ void HeadlineItem::updateContent()
     }
 }
 
-void HeadlineItem::changeListenerCallback(ChangeBroadcaster* source)
+void HeadlineItem::changeListenerCallback(ChangeBroadcaster *source)
 {
     this->parentHeadline.triggerAsyncUpdate();
 }

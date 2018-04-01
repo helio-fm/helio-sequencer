@@ -39,7 +39,7 @@ public:
     ~Headline();
 
     //[UserMethods]
-    void syncWithTree(TreeNavigationHistory &history, WeakReference<TreeItem> root);
+    void syncWithTree(TreeNavigationHistory &history, WeakReference<TreeItem> leaf);
     void showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource);
     void hideSelectionMenu();
     //[/UserMethods]
@@ -54,6 +54,8 @@ private:
 
     // A way to receive a single coalesced update from multiple signaling sub-items:
     void handleAsyncUpdate() override;
+    int rebuildChain(WeakReference<TreeItem> leaf);
+    int getChainWidth() const noexcept;
 
     ComponentAnimator animator;
 
