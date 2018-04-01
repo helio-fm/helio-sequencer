@@ -54,48 +54,11 @@
 #include "ArpeggiatorsManager.h"
 #include "Arpeggiator.h"
 #include "HeadlineItemDataSource.h"
+#include "LassoListeners.h"
 
 #define ROWS_OF_TWO_OCTAVES 24
 #define DEFAULT_NOTE_LENGTH 0.25f
 #define DEFAULT_NOTE_VELOCITY 0.25f
-
-class SelectedNotesMenuManager final : public ChangeListener
-{
-public:
-
-    class MenuSource : public HeadlineItemDataSource
-    {
-        bool hasMenu() const noexcept override { return false; }
-        ScopedPointer<Component> createMenu() override { return nullptr; }
-
-        Image getIcon() const override { return Icons::findByName(Icons::selectionTool, TREE_ICON_HEIGHT); }
-        String getName() const override { return TRANS("tree::selection::notes"); }
-
-        bool canBeSelectedAsMenuItem() const override { return false; }
-        void onSelectedAsMenuItem() override {}
-    };
-
-    SelectedNotesMenuManager() : menu(new MenuSource()) {}
-
-    void changeListenerCallback(ChangeBroadcaster *source) override
-    {
-        Lasso *lasso = static_cast<Lasso *>(source);
-
-        if (lasso->getNumSelected() > 1)
-        {
-            App::Layout().showSelectionMenu(this->menu.get());
-        }
-        else
-        {
-            App::Layout().hideSelectionMenu();
-        }
-    }
-
-private:
-
-    ScopedPointer<HeadlineItemDataSource> menu;
-
-};
 
 PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
                      Viewport &viewportRef,
@@ -112,8 +75,7 @@ PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
     this->defaultHighlighting = new HighlightingScheme(0, Scale::getNaturalMajorScale());
     this->defaultHighlighting->setRows(this->renderBackgroundCacheFor(this->defaultHighlighting));
 
-    this->selectedNotesMenuManager = new SelectedNotesMenuManager();
-    this->getLassoSelection().addChangeListener(this->selectedNotesMenuManager);
+    this->selectedNotesMenuManager = new PianoRollSelectionMenuManager(&this->selection);
 
     this->setComponentID(ComponentIDs::pianoRollId);
     this->setRowHeight(PIANOROLL_MIN_ROW_HEIGHT + 5);
@@ -273,7 +235,6 @@ void PianoRoll::setRowHeight(const int newRowHeight)
     this->setSize(this->getWidth(),
         HYBRID_ROLL_HEADER_HEIGHT + this->numRows * this->rowHeight);
 }
-
 
 //===----------------------------------------------------------------------===//
 // HybridRoll
@@ -440,7 +401,6 @@ int PianoRoll::getYPositionByKey(int targetKey) const
     return (this->getHeight() - this->rowHeight) -
         (targetKey * this->rowHeight);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Drag helpers

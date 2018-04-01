@@ -50,8 +50,9 @@ public:
 
     typedef ReferenceCountedArray<CommandItem> Items;
 
-    void updateContent(Items commands,
-        AnimationType animationType = SlideDown, bool adjustsWidth = true);
+    void updateContent(const Items &commands,
+        AnimationType animationType = SlideDown,
+        bool adjustsWidth = true);
 
     static StringPairArray getColoursList();
 

@@ -31,7 +31,7 @@ public:
 
     explicit ProjectInfo(ProjectTreeItem &parent);
 
-    int64 getStartTime() const;
+    int64 getStartTimestamp() const;
 
     String getLicense() const;
     void setLicense(String val);
@@ -91,6 +91,11 @@ private:
     String description;
     String license;
     int64 initTimestamp;
+
+    // TODO! ability to set up middle c
+    // and temperament in general
+    // int32 getMiddleC() const noexcept;
+    // Temperament temperament;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ProjectInfo);
 };

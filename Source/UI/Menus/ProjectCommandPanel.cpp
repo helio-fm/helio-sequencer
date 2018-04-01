@@ -152,10 +152,10 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
         case CommandIDs::AddMidiTrack:
         {
             ScopedPointer<ModalDialogInput> inputDialog =
-                new ModalDialogInput(TRANS("defaults::newlayer::name"),
-                    TRANS("dialog::addlayer::caption"),
-                    TRANS("dialog::addlayer::proceed"),
-                    TRANS("dialog::addlayer::cancel"));
+                new ModalDialogInput(TRANS("defaults::newtrack::name"),
+                    TRANS("dialog::addtrack::caption"),
+                    TRANS("dialog::addtrack::proceed"),
+                    TRANS("dialog::addtrack::cancel"));
             
             auto &project = this->project;
             const auto trackTemplate = this->createPianoTrackTempate("");

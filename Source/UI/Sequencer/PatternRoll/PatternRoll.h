@@ -27,8 +27,7 @@
 
 class ClipComponent;
 class MidiTrackHeader;
-class PianoRollReboundThread;
-class PianoRollCellHighlighter;
+class PatternRollSelectionMenuManager;
 
 #include "HelioTheme.h"
 #include "HybridRoll.h"
@@ -161,6 +160,8 @@ private:
     OwnedArray<ClipComponent> ghostClips;
 
     ScopedPointer<MidiTrackHeader> insertTrackHelper;
+
+    ScopedPointer<PatternRollSelectionMenuManager> selectedClipsMenuManager;
 
     typedef SparseHashMap<const MidiTrack *, UniquePointer<MidiTrackHeader>, MidiTrackHash> TrackHeadersMap;
     TrackHeadersMap trackHeaders;

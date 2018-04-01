@@ -47,6 +47,7 @@
 #include "DummyClipComponent.h"
 #include "ComponentIDs.h"
 #include "ColourIDs.h"
+#include "LassoListeners.h"
 
 #define DEFAULT_CLIP_LENGTH 1.0f
 
@@ -70,6 +71,7 @@ PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
     HybridRoll(parentProject, viewportRef, clippingDetector, false, false, true)
 {
     // TODO: pattern roll doesn't need neither annotations track map nor key signatures track map
+    this->selectedClipsMenuManager = new PatternRollSelectionMenuManager(&this->selection);
 
     this->setComponentID(ComponentIDs::patternRollId);
 

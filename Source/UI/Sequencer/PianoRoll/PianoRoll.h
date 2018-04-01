@@ -29,9 +29,8 @@
 
 class MidiSequence;
 class NoteComponent;
-class PianoRollReboundThread;
 class PianoRollCellHighlighter;
-class SelectedNotesMenuManager;
+class PianoRollSelectionMenuManager;
 class HelperRectangle;
 class Scale;
 
@@ -241,7 +240,7 @@ private:
     ScopedPointer<NoteResizerLeft> noteResizerLeft;
     ScopedPointer<NoteResizerRight> noteResizerRight;
 
-    ScopedPointer<SelectedNotesMenuManager> selectedNotesMenuManager;
+    ScopedPointer<PianoRollSelectionMenuManager> selectedNotesMenuManager;
     
     typedef SparseHashMap<const Note, UniquePointer<NoteComponent>, MidiEventHash> EventComponentsMap;
     EventComponentsMap eventComponents;

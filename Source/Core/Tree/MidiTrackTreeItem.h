@@ -117,6 +117,14 @@ public:
     bool hasMenu() const noexcept override;
     ScopedPointer<Component> createMenu() override;
 
+    //===------------------------------------------------------------------===//
+    // Callbacks
+    //===------------------------------------------------------------------===//
+
+    Function<void(const String &text)> getRenameCallback();
+    Function<void(const String &colour)> getChangeColourCallback();
+    Function<void(const String &instrumentId)> getChangeInstrumentCallback();
+
 protected:
 
     ProjectTreeItem *lastFoundParent;

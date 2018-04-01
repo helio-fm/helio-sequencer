@@ -91,30 +91,28 @@ int CommandIDs::getIdForName(const String &command)
         return ScanPluginsFolder;
     case Hash("CreateInstrument"):
         return CreateInstrument;
-    case Hash("DeleteLayer"):
-        return DeleteLayer;
-    case Hash("MuteLayer"):
-        return MuteLayer;
-    case Hash("UnmuteLayer"):
-        return UnmuteLayer;
-    case Hash("RenameLayer"):
-        return RenameLayer;
-    case Hash("RenameLayerConfirmed"):
-        return RenameLayerConfirmed;
-    case Hash("SelectLayerColour"):
-        return SelectLayerColour;
-    case Hash("SelectLayerInstrument"):
-        return SelectLayerInstrument;
+    case Hash("DeleteTrack"):
+        return DeleteTrack;
+    case Hash("MuteTrack"):
+        return MuteTrack;
+    case Hash("UnmuteTrack"):
+        return UnmuteTrack;
+    case Hash("RenameTrack"):
+        return RenameTrack;
+    case Hash("SelectTrackColour"):
+        return SelectTrackColour;
+    case Hash("SelectTrackInstrument"):
+        return SelectTrackInstrument;
     case Hash("SelectAllEvents"):
         return SelectAllEvents;
-    case Hash("DuplicateLayerTo"):
-        return DuplicateLayerTo;
-    case Hash("SetLayerColour"):
-        return SetLayerColour;
-    case Hash("SetLayerInstrument"):
-        return SetLayerInstrument;
-    case Hash("MoveLayerToProject"):
-        return MoveLayerToProject;
+    case Hash("DuplicateTrackTo"):
+        return DuplicateTrackTo;
+    case Hash("SetTrackColour"):
+        return SetTrackColour;
+    case Hash("SetTrackInstrument"):
+        return SetTrackInstrument;
+    case Hash("MoveTrackToProject"):
+        return MoveTrackToProject;
     case Hash("DeleteEvents"):
         return DeleteEvents;
     case Hash("CopyEvents"):
@@ -123,8 +121,6 @@ int CommandIDs::getIdForName(const String &command)
         return CutEvents;
     case Hash("PasteEvents"):
         return PasteEvents;
-    case Hash("MoveEventsToLayer"):
-        return MoveEventsToLayer;
     case Hash("CursorTool"):
         return CursorTool;
     case Hash("DrawTool"):
@@ -149,12 +145,12 @@ int CommandIDs::getIdForName(const String &command)
         return Undo;
     case Hash("Redo"):
         return Redo;
-    case Hash("DeleteNotes"):
-        return DeleteNotes;
-    case Hash("DuplicateNotes"):
-        return DuplicateNotes;
-    case Hash("ArpNotes"):
-        return ArpNotes;
+    case Hash("RefactorNotes"):
+        return RefactorNotes;
+    case Hash("BatchTweakNotes"):
+        return BatchTweakNotes;
+    case Hash("ArpeggiateNotes"):
+        return ArpeggiateNotes;
     case Hash("TweakNotesVolume"):
         return TweakNotesVolume;
     case Hash("ShowAnnotations"):

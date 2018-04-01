@@ -162,7 +162,7 @@ StringPairArray CommandPanel::getColoursList()
 #define FADE_ALPHA 0.5f
 #define TOPLEVEL_HEIGHT_MARGINS 170
 
-void CommandPanel::updateContent(Items commands,
+void CommandPanel::updateContent(const Items &commands,
     AnimationType animationType, bool adjustsWidth)
 {
     this->lastAnimationType = animationType;

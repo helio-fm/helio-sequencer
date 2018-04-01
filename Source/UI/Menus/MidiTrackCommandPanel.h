@@ -21,14 +21,12 @@ class MidiTrackTreeItem;
 
 #include "CommandPanel.h"
 
-class LayerCommandPanel : public CommandPanel
+class MidiTrackCommandPanel : public CommandPanel
 {
 public:
     
-    explicit LayerCommandPanel(MidiTrackTreeItem &parentLayer);
-    
-    ~LayerCommandPanel() override;
-    
+    explicit MidiTrackCommandPanel(MidiTrackTreeItem &parentLayer);
+        
     void handleCommandMessage(int commandId) override;
     
 private:
@@ -39,6 +37,6 @@ private:
     void initInstrumentSelection();
     void exit();
 
-    MidiTrackTreeItem &layerItem;
+    MidiTrackTreeItem &trackItem;
     
 };

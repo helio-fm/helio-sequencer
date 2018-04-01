@@ -268,7 +268,7 @@ void ProjectPagePhone::updateContent()
     const String &author = this->project.getProjectInfo()->getAuthor();
     const String &description = this->project.getProjectInfo()->getDescription();
     const String &license = this->project.getProjectInfo()->getLicense();
-    const String &startTime = App::getSqlFormattedTime(Time(this->project.getProjectInfo()->getStartTime()));
+    const String &startTime = App::getSqlFormattedTime(Time(this->project.getProjectInfo()->getStartTimestamp()));
 
 #if HELIO_DESKTOP
     const String &clickToEdit = TRANS("page::project::default::value::desktop");

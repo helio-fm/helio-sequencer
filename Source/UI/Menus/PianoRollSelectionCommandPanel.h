@@ -17,8 +17,7 @@
 
 #pragma once
 
-class PianoRoll;
-class ProjectTreeItem;
+class Lasso;
 
 #include "CommandPanel.h"
 
@@ -26,23 +25,13 @@ class PianoRollSelectionCommandPanel : public CommandPanel
 {
 public:
     
-    PianoRollSelectionCommandPanel(PianoRoll &targetRoll,
-        ProjectTreeItem &parentProject);
-    
-    ~PianoRollSelectionCommandPanel() override;
-    
-    //===------------------------------------------------------------------===//
-    // Component
-    //===------------------------------------------------------------------===//
-    
+    PianoRollSelectionCommandPanel(WeakReference<Lasso> lasso);
     void handleCommandMessage(int commandId) override;
     
 private:
 
-    void dismiss();
-    void initLayersPanel(bool shouldAddBackButton);
+    void dismiss() const;
+    WeakReference<Lasso> lasso;
 
-    PianoRoll &roll;
-    ProjectTreeItem &project;
-    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRollSelectionCommandPanel)
 };
