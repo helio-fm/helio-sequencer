@@ -17,7 +17,6 @@
 
 #pragma once
 
-class Console;
 class MainLayout;
 
 #if JUCE_WINDOWS || JUCE_LINUX
@@ -26,7 +25,7 @@ class MainLayout;
 #   define HELIO_HAS_CUSTOM_TITLEBAR 0
 #endif
 
-class MainWindow :
+class MainWindow final :
     public DocumentWindow,
     public FileDragAndDropTarget,
     public DragAndDropContainer
@@ -42,10 +41,6 @@ public:
     
     void closeButtonPressed() override;
 
-    void dismissLayoutComponent();
-    void createLayoutComponent();
-    MainLayout *getWorkspaceComponent() const;
-
     void setOpenGLRendererEnabled(bool shouldBeEnabled);
     static bool isOpenGLRendererEnabled() noexcept;
 
@@ -58,7 +53,6 @@ public:
     //===------------------------------------------------------------------===//
 
     bool isInterestedInFileDrag(const StringArray &files) override { return true; }
-
     void filesDropped(const StringArray &filenames, int mouseX, int mouseY) override {}
 
 private:
@@ -69,13 +63,13 @@ private:
 
     void attachOpenGLContext();
     void detachOpenGLContext();
-    friend class App;
 
-    ScopedPointer<Component> taskbarIcon;
-
-    ScopedPointer<Button> commandButtons[3];
+    void dismissLayoutComponent();
+    void createLayoutComponent();
 
     ScopedPointer<MainLayout> layout;
+
+    friend class App;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MainWindow)
 };

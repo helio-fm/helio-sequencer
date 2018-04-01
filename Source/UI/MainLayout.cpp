@@ -64,7 +64,12 @@ MainLayout::MainLayout() :
 
     if (const bool quickStartMode = App::Workspace().isInitialized())
     {
-        this->init();
+        if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
+        {
+            ht->updateBackgroundRenders();
+        }
+
+        this->show();
     }
     else
     {
@@ -82,13 +87,8 @@ MainLayout::~MainLayout()
     this->headline = nullptr;
 }
 
-void MainLayout::init()
+void MainLayout::show()
 {
-    if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
-    {
-        ht->updateBackgroundRenders();
-    }
-    
     this->setVisible(true);
 
     if (this->initScreen != nullptr)

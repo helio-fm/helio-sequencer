@@ -27,7 +27,7 @@ class Transport;
 #include "HybridRollListener.h"
 #include "ComponentFader.h"
 
-class TrackScroller :
+class TrackScroller final :
     public Component,
     public HybridRollListener,
     private AsyncUpdater,
@@ -71,7 +71,6 @@ public:
     //===------------------------------------------------------------------===//
     
     void resized() override;
-    void paint(Graphics &g) override;
     void paintOverChildren(Graphics &g) override;
     void mouseDrag(const MouseEvent &event) override;
     void mouseUp(const MouseEvent &event) override;

@@ -162,8 +162,6 @@ void RevisionTooltipComponent::inputAttemptWhenModal()
 void RevisionTooltipComponent::hide()
 {
     this->getParentComponent()->exitModalState(0); // calloutbox?
-    //Desktop::getInstance().getAnimator().fadeOut(this, 200);
-    //delete this;
 }
 
 

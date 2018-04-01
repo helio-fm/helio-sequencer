@@ -126,7 +126,7 @@ void UpdatesService::updatesCheckFailed(const Array<String> &errors)
 
 void UpdatesService::requestResourceOk(const Identifier &resourceId, const ValueTree &resource)
 {
-    App::Helio()->getResourceManagerFor(resourceId).updateBaseResource(resource);
+    App::Helio().getResourceManagerFor(resourceId).updateBaseResource(resource);
 }
 
 void UpdatesService::requestResourceFailed(const Identifier &resourceId, const Array<String> &errors)

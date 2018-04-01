@@ -37,6 +37,7 @@ HeadlineNavigationPanel::HeadlineNavigationPanel()
 
     addAndMakeVisible (navigateNext = new IconButton (Icons::findByName(Icons::right, 20), CommandIDs::ShowNextPage));
 
+    addAndMakeVisible (component = new HeadlineItemArrow());
 
     //[UserPreSize]
     this->setInterceptsMouseClicks(false, true);
@@ -56,6 +57,7 @@ HeadlineNavigationPanel::~HeadlineNavigationPanel()
 
     navigatePrevious = nullptr;
     navigateNext = nullptr;
+    component = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -65,46 +67,6 @@ void HeadlineNavigationPanel::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
-
-    {
-        float x = 0, y = 0;
-        Colour fillColour = Colour (0x0dffffff);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        fillColour = this->findColour(ColourIDs::BackgroundB::fill).brighter(0.03f);
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillPath (internalPath1, AffineTransform::translation(x, y));
-    }
-
-    {
-        float x = 0, y = 0;
-        Colour strokeColour1 = Colour (0x77000000), strokeColour2 = Colour (0x00000000);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (strokeColour1,
-                                       static_cast<float> (getWidth() - 9) - 0.0f + x,
-                                       16.0f - 0.0f + y,
-                                       strokeColour2,
-                                       static_cast<float> (getWidth() - 16) - 0.0f + x,
-                                       2.0f - 0.0f + y,
-                                       true));
-        g.strokePath (internalPath2, PathStrokeType (1.000f), AffineTransform::translation(x, y));
-    }
-
-    {
-        float x = 0, y = 0;
-        Colour strokeColour1 = Colour (0x55ffffff), strokeColour2 = Colour (0x00ffffff);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (strokeColour1,
-                                       static_cast<float> (getWidth() - 10) - 0.0f + x,
-                                       16.0f - 0.0f + y,
-                                       strokeColour2,
-                                       static_cast<float> (getWidth() - 17) - 0.0f + x,
-                                       5.0f - 0.0f + y,
-                                       true));
-        g.strokePath (internalPath3, PathStrokeType (0.500f), AffineTransform::translation(x, y));
-    }
 
     //[UserPaint] Add your own custom painting code here..
     //[/UserPaint]
@@ -117,30 +79,7 @@ void HeadlineNavigationPanel::resized()
 
     navigatePrevious->setBounds (2, (getHeight() / 2) + -1 - (32 / 2), 25, 32);
     navigateNext->setBounds (25, (getHeight() / 2) + -1 - (32 / 2), 25, 32);
-    internalPath1.clear();
-    internalPath1.startNewSubPath (0.0f, 0.0f);
-    internalPath1.lineTo (static_cast<float> (getWidth() - 16), 0.0f);
-    internalPath1.lineTo (static_cast<float> (getWidth() - 9), 16.0f);
-    internalPath1.lineTo (static_cast<float> (getWidth() - 16), 32.0f);
-    internalPath1.lineTo (0.0f, 32.0f);
-    internalPath1.closeSubPath();
-
-    internalPath2.clear();
-    internalPath2.startNewSubPath (static_cast<float> (getWidth() - 32), 0.0f);
-    internalPath2.lineTo (static_cast<float> (getWidth() - 16), 0.0f);
-    internalPath2.lineTo (static_cast<float> (getWidth() - 9), 16.0f);
-    internalPath2.lineTo (static_cast<float> (getWidth() - 16), 32.0f);
-    internalPath2.lineTo (static_cast<float> (getWidth() - 32), 32.0f);
-    internalPath2.closeSubPath();
-
-    internalPath3.clear();
-    internalPath3.startNewSubPath (static_cast<float> (getWidth() - 32), 0.0f);
-    internalPath3.lineTo (static_cast<float> (getWidth() - 17), 0.0f);
-    internalPath3.lineTo (static_cast<float> (getWidth() - 10), 16.0f);
-    internalPath3.lineTo (static_cast<float> (getWidth() - 17), 32.0f);
-    internalPath3.lineTo (static_cast<float> (getWidth() - 32), 32.0f);
-    internalPath3.closeSubPath();
-
+    component->setBounds (getWidth() - 16, 0, 16, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -185,19 +124,16 @@ BEGIN_JUCER_METADATA
   <METHODS>
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
-  <BACKGROUND backgroundColour="0">
-    <PATH pos="0 0 100 100" fill="solid: dffffff" hasStroke="0" nonZeroWinding="1">s 0 0 l 16R 0 l 9R 16 l 16R 32 l 0 32 x</PATH>
-    <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="1" stroke="1, mitered, butt"
-          strokeColour=" radial: 9R 16, 16R 2, 0=77000000, 1=0" nonZeroWinding="1">s 32R 0 l 16R 0 l 9R 16 l 16R 32 l 32R 32 x</PATH>
-    <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="1" stroke="0.5, mitered, butt"
-          strokeColour=" radial: 10R 16, 17R 5, 0=55ffffff, 1=ffffff" nonZeroWinding="1">s 32R 0 l 17R 0 l 10R 16 l 17R 32 l 32R 32 x</PATH>
-  </BACKGROUND>
+  <BACKGROUND backgroundColour="0"/>
   <GENERICCOMPONENT name="" id="88e1e92c7548ba42" memberName="navigatePrevious" virtualName=""
                     explicitFocusOrder="0" pos="2 -1Cc 25 32" class="IconButton"
                     params="Icons::findByName(Icons::left, 20), CommandIDs::ShowPreviousPage"/>
   <GENERICCOMPONENT name="" id="900658e63c264259" memberName="navigateNext" virtualName=""
                     explicitFocusOrder="0" pos="25 -1Cc 25 32" class="IconButton"
                     params="Icons::findByName(Icons::right, 20), CommandIDs::ShowNextPage"/>
+  <JUCERCOMP name="" id="6845054f3705e31" memberName="component" virtualName=""
+             explicitFocusOrder="0" pos="0Rr 0 16 0M" sourceFile="HeadlineItemArrow.cpp"
+             constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

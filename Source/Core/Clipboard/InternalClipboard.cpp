@@ -26,17 +26,17 @@
 
 void InternalClipboard::copy(const ClipboardOwner &owner, bool mirrorToSystemClipboard /*= false*/)
 {
-    App::Helio()->getClipboard()->copyFrom(owner, mirrorToSystemClipboard);
+    App::Helio().getClipboard()->copyFrom(owner, mirrorToSystemClipboard);
 }
 
 void InternalClipboard::paste(ClipboardOwner &owner)
 {
-    App::Helio()->getClipboard()->pasteTo(owner);
+    App::Helio().getClipboard()->pasteTo(owner);
 }
 
 ValueTree InternalClipboard::getCurrentContent()
 {
-    return App::Helio()->getClipboard()->clipboard;
+    return App::Helio().getClipboard()->clipboard;
 }
 
 String InternalClipboard::getCurrentContentAsString()

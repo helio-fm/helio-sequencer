@@ -18,41 +18,31 @@
 #pragma once
 
 //[Headers]
-#include "HighlightedComponent.h"
-#include "IconButton.h"
-#include "TreeItem.h"
-
-class IconComponent;
-class HeadlineDropdown;
 //[/Headers]
 
-#include "HeadlineItemArrow.h"
 
-class HeadlineNavigationPanel final : public Component
+class HeadlineItemArrow final : public Component
 {
 public:
 
-    HeadlineNavigationPanel();
-    ~HeadlineNavigationPanel();
+    HeadlineItemArrow();
+    ~HeadlineItemArrow();
 
     //[UserMethods]
-    void updateState(bool canGoPrevious, bool canGoNext);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void handleCommandMessage (int commandId) override;
 
 
 private:
 
     //[UserVariables]
-    ScopedPointer<HeadlineDropdown> dropdown;
     //[/UserVariables]
 
-    ScopedPointer<IconButton> navigatePrevious;
-    ScopedPointer<IconButton> navigateNext;
-    ScopedPointer<HeadlineItemArrow> component;
+    Path internalPath1;
+    Path internalPath2;
+    Path internalPath3;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeadlineNavigationPanel)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeadlineItemArrow)
 };

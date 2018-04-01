@@ -241,9 +241,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
                 {
                     if (NoteComponent *note = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
                     {
-                        if (selection.shouldDisplayGhostNotes())
-                        { note->getRoll().showGhostNoteFor(note); }
-                        
+                        if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
                         note->startGroupScalingRight(groupStartBeat);
                     }
                 }
@@ -254,9 +252,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
                 {
                     if (NoteComponent *note = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
                     {
-                        if (selection.shouldDisplayGhostNotes())
-                        { note->getRoll().showGhostNoteFor(note); }
-                        
+                        if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
                         note->startResizingRight(shouldSendMidi);
                     }
                 }
@@ -272,9 +268,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
                 {
                     if (NoteComponent *note = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
                     {
-                        if (selection.shouldDisplayGhostNotes())
-                        { note->getRoll().showGhostNoteFor(note); }
-                        
+                        if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
                         note->startGroupScalingLeft(groupEndBeat);
                     }
                 }
@@ -285,9 +279,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
                 {
                     if (NoteComponent *note = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
                     {
-                        if (selection.shouldDisplayGhostNotes())
-                        { note->getRoll().showGhostNoteFor(note); }
-                        
+                        if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
                         note->startResizingLeft(shouldSendMidi);
                     }
                 }
@@ -301,9 +293,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
             {
                 if (NoteComponent *note = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
                 {
-                    if (selection.shouldDisplayGhostNotes())
-                    { note->getRoll().showGhostNoteFor(note); }
-
+                    if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
                     note->startDragging(shouldSendMidi);
                 }
             }
@@ -757,11 +747,11 @@ void NoteComponent::paintLegacyLook(Graphics &g)
 // Helpers
 //===----------------------------------------------------------------------===//
 
-bool NoteComponent::belongsToAnySequence(Array<MidiSequence *> layers) const
+bool NoteComponent::belongsToAnySequence(const Array<MidiSequence *> &sequences) const
 {
-    for (int i = 0; i < layers.size(); ++i)
+    for (int i = 0; i < sequences.size(); ++i)
     {
-        if (this->getNote().getSequence() == layers.getUnchecked(i))
+        if (this->getNote().getSequence() == sequences.getUnchecked(i))
         {
             return true;
         }

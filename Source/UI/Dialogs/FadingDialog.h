@@ -22,7 +22,6 @@ class FadingDialog : public Component
 public:
     
     FadingDialog();
-    
     ~FadingDialog() override;
 
     void parentHierarchyChanged() override;
@@ -30,10 +29,9 @@ public:
 protected:
     
     void fadeOut();
-
     virtual void rebound();
 
-    SafePointer<Component> backgroundWhite;
+    SafePointer<Component> background;
     
 private:
     

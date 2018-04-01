@@ -410,6 +410,11 @@ protected:
     Array<float> visibleBeats;
     Array<float> visibleSnaps;
 
+    const Colour barLineColour;
+    const Colour barLineBevelColour;
+    const Colour beatLineColour;
+    const Colour snapLineColour;
+
     void computeVisibleBeatLines();
 
 protected:

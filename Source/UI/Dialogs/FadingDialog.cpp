@@ -20,6 +20,7 @@
 #include "DialogBackground.h"
 #include "CommandIDs.h"
 #include "MainLayout.h"
+#include "MainWindow.h"
 #include "App.h"
 
 #define DIALOG_HAS_BACKGROUND 1
@@ -35,10 +36,9 @@ FadingDialog::FadingDialog()
 FadingDialog::~FadingDialog()
 {
 #if DIALOG_HAS_BACKGROUND
-    if (this->backgroundWhite != nullptr)
+    if (this->background != nullptr)
     {
-        //Logger::writeToLog("DialogBacking::signalToDisappear");
-        this->backgroundWhite->postCommandMessage(CommandIDs::HideDialog);
+        this->background->postCommandMessage(CommandIDs::HideDialog);
     }
 #endif
 }
@@ -46,23 +46,26 @@ FadingDialog::~FadingDialog()
 void FadingDialog::parentHierarchyChanged()
 {
 #if DIALOG_HAS_BACKGROUND
-    if (this->backgroundWhite == nullptr)
+    if (this->background == nullptr)
     {
-        //Logger::writeToLog("new DialogBacking");
-        this->backgroundWhite = new DialogBackground();
-        App::Layout().addAndMakeVisible(this->backgroundWhite);
+        this->background = new DialogBackground();
+        App::Layout().addAndMakeVisible(this->background);
     }
 #endif
-    
-    //Desktop::getInstance().getAnimator().animateComponent(this, this->getBounds(), 1.f, 150, false, 0.0, 0.0);
 }
 
 void FadingDialog::fadeOut()
 {
-    //Logger::writeToLog("FadingDialog::fadeOut");
-    const int reduceBy = 20;
     const int fadeoutTime = 200;
-    Desktop::getInstance().getAnimator().animateComponent(this, this->getBounds().reduced(reduceBy), 0.f, fadeoutTime, true, 0.0, 0.0);
+    auto &animator = Desktop::getInstance().getAnimator();
+    if (MainWindow::isOpenGLRendererEnabled())
+    {
+        animator.animateComponent(this, this->getBounds().reduced(20), 0.f, fadeoutTime, true, 0.0, 0.0);
+    }
+    else
+    {
+        animator.animateComponent(this, this->getBounds(), 0.f, fadeoutTime, true, 0.0, 0.0);
+    }
 }
 
 void FadingDialog::rebound()

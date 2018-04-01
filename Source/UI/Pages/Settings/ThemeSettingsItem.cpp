@@ -305,7 +305,7 @@ void ThemeSettingsItem::applyTheme(const ColourScheme::Ptr colours)
             this->getTopLevelComponent()->resized();
             this->getTopLevelComponent()->repaint();
         }
-        App::Helio()->recreateLayout();
+        App::Helio().recreateLayout();
     }
 }
 

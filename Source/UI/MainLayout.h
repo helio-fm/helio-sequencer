@@ -38,7 +38,7 @@ public:
     MainLayout();
     ~MainLayout() override;
 
-    void init();
+    void show();
     void forceRestoreLastOpenedPage();
     void toggleShowHideConsole();
 

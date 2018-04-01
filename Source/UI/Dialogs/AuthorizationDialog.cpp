@@ -315,9 +315,14 @@ void AuthorizationDialog::login()
     const String email = this->emailEditor->getText();
 
     App::Layout().showModalComponentUnowned(new ProgressTooltip());
-    App::Helio()->getSessionService()->signIn(email, passwordHash, [this](bool success, const Array<String> &errors)
+    App::Helio().getSessionService()->signIn(email, passwordHash, [this](bool success, const Array<String> &errors)
     {
-        App::Layout().dismissModalComponentOfType<ProgressTooltip>();
+        if (ProgressTooltip *modalComponent =
+            dynamic_cast<ProgressTooltip *>(Component::getCurrentlyModalComponent()))
+        {
+            delete modalComponent;
+        }
+
         if (success)
         {
             App::Layout().showModalComponentUnowned(new SuccessTooltip());

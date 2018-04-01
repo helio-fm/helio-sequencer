@@ -84,7 +84,7 @@ protected:
     Note anchor;
     Note groupScalingAnchor;
 
-    bool belongsToAnySequence(Array<MidiSequence *> sequences) const;
+    bool belongsToAnySequence(const Array<MidiSequence *> &sequences) const;
     void activateCorrespondingTrack(bool selectOthers, bool deselectOthers);
 
     void setNoCheckpointNeededForNextAction();

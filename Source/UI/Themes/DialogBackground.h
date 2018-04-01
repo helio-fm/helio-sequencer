@@ -19,14 +19,14 @@
 
 #include "CommandIDs.h"
 
-class DialogBackground : public Component, private Timer
+class DialogBackground final : public Component, private Timer
 {
 public:
     
-    DialogBackground() : appearMode(true)
+    DialogBackground() : appearMode(true), alpha(0.f)
     {
-        this->setAlpha(0.f);
         this->startTimerHz(60);
+        this->setPaintingIsUnclipped(true);
     }
     
     void handleCommandMessage(int commandId) override
@@ -45,7 +45,7 @@ public:
     { this->setSize(this->getParentWidth(), this->getParentHeight()); }
 
     void paint(Graphics &g) override
-    { g.fillAll(Colours::black.withAlpha(0.1f)); }
+    { g.fillAll(Colours::black.withAlpha(this->alpha)); }
 
 private:
 
@@ -53,23 +53,26 @@ private:
     {
         if (this->appearMode)
         {
-            this->setAlpha(this->getAlpha() + 0.2f);
-    
-            if (this->getAlpha() == 1.f)
+            this->alpha += 0.025f;
+            this->repaint();
+
+            if (this->alpha >= 0.15f)
             {
                 this->stopTimer();
             }
         }
-    else
-    {
-        this->setAlpha(this->getAlpha() - 0.2f);
-    
-        if (this->getAlpha() == 0.f)
+        else
         {
-            delete this;
+            this->alpha -= 0.025f;
+            this->repaint();
+
+            if (this->alpha <= 0.025f)
+            {
+                delete this;
+            }
         }
-    }
     }
 
     bool appearMode;
+    float alpha;
 };

@@ -53,12 +53,11 @@ public:
     // Static
     //===------------------------------------------------------------------===//
 
-    static App *Helio();
-
-    static class Workspace &Workspace();
-    static class MainLayout &Layout();
-    static class MainWindow &Window();
-    static class Config &Config();
+    static class App &Helio() noexcept;
+    static class Workspace &Workspace() noexcept;
+    static class MainLayout &Layout() noexcept;
+    static class MainWindow &Window() noexcept;
+    static class Config &Config() noexcept;
 
     static Point<double> getScreenInCm();
     static bool isRunningOnPhone();
@@ -96,9 +95,6 @@ public:
     // Accessors
     //===------------------------------------------------------------------===//
 
-    class Workspace *getWorkspace() const noexcept;
-    class Config *getConfig() const noexcept;
-    MainWindow *getWindow() const noexcept;
     InternalClipboard *getClipboard() const noexcept;
     SessionService *getSessionService() const noexcept;
     HelioTheme *getTheme() const noexcept;

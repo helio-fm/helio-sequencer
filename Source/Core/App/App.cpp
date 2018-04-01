@@ -52,29 +52,29 @@
 // Static
 //===----------------------------------------------------------------------===//
 
-App *App::Helio()
+class App &App::Helio() noexcept
 {
-    return dynamic_cast<App *>(App::getInstance());
+    return *static_cast<App *>(JUCEApplicationBase::getInstance());
 }
 
-Workspace &App::Workspace()
+class Workspace &App::Workspace() noexcept
 {
-    return *App::Helio()->getWorkspace();
+    return *static_cast<App *>(JUCEApplicationBase::getInstance())->workspace;
 }
 
-MainLayout &App::Layout()
+class MainLayout &App::Layout() noexcept
 {
-    return *App::Helio()->getWindow()->getWorkspaceComponent();
+    return *static_cast<App *>(JUCEApplicationBase::getInstance())->window->layout;
 }
 
-MainWindow &App::Window()
+class MainWindow &App::Window() noexcept
 {
-    return *App::Helio()->getWindow();
+    return *static_cast<App *>(JUCEApplicationBase::getInstance())->window;
 }
 
-class Config &App::Config()
+class Config &App::Config() noexcept
 {
-    return *App::Helio()->getConfig();
+    return *static_cast<App *>(JUCEApplicationBase::getInstance())->config;
 }
 
 Point<double> App::getScreenInCm()
@@ -212,12 +212,12 @@ String App::getHumanReadableDate(const Time &date)
 
 void App::recreateLayout()
 {
-    this->getWindow()->dismissLayoutComponent();
-    if (TreeItem *root = this->getWorkspace()->getTreeRoot())
+    this->window->dismissLayoutComponent();
+    if (TreeItem *root = this->workspace->getTreeRoot())
     {
         root->recreateSubtreePages();
     }
-    this->getWindow()->createLayoutComponent();
+    this->window->createLayoutComponent();
 }
 
 void App::dismissAllModalComponents()
@@ -376,10 +376,10 @@ void App::systemRequestedQuit()
 {
     Logger::writeToLog("App::systemRequestedQuit");
 
-    if (this->getWorkspace() != nullptr)
+    if (this->workspace != nullptr)
     {
-        this->getWorkspace()->stopPlaybackForAllProjects();
-        this->getWorkspace()->autosave();
+        this->workspace->stopPlaybackForAllProjects();
+        this->workspace->autosave();
     }
 
     App::dismissAllModalComponents();
@@ -391,11 +391,11 @@ void App::suspended()
 {
     Logger::writeToLog("App::suspended");
 
-    if (this->getWorkspace() != nullptr)
+    if (this->workspace != nullptr)
     {
-        this->getWorkspace()->stopPlaybackForAllProjects();
-        this->getWorkspace()->getAudioCore().mute();
-        this->getWorkspace()->autosave();
+        this->workspace->stopPlaybackForAllProjects();
+        this->workspace->getAudioCore().mute();
+        this->workspace->autosave();
     }
     
 #if JUCE_ANDROID
@@ -407,9 +407,9 @@ void App::resumed()
 {
     Logger::writeToLog("App::resumed");
 
-    if (this->getWorkspace() != nullptr)
+    if (this->workspace != nullptr)
     {
-        this->getWorkspace()->getAudioCore().unmute();
+        this->workspace->getAudioCore().unmute();
     }
 
 #if JUCE_ANDROID
@@ -420,21 +420,6 @@ void App::resumed()
 //===----------------------------------------------------------------------===//
 // Accessors
 //===----------------------------------------------------------------------===//
-
-MainWindow *App::getWindow() const noexcept
-{
-    return this->window;
-}
-
-Workspace *App::getWorkspace() const noexcept
-{
-    return this->workspace;
-}
-
-Config *App::getConfig() const noexcept
-{
-    return this->config;
-}
 
 InternalClipboard *App::getClipboard() const noexcept
 {
@@ -450,7 +435,6 @@ HelioTheme *App::getTheme() const noexcept
 {
     return this->theme;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Private

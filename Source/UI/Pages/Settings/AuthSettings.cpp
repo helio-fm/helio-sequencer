@@ -144,34 +144,6 @@ void AuthSettings::visibilityChanged()
 
 
 //[MiscUserCode]
-
-//void AuthSettings::changeListenerCallback(ChangeBroadcaster *source)
-//{
-//    AuthorizationManager *authManager = App::Helio()->getAuthManager();
-//    authManager->removeChangeListener(this);
-//
-//    Component *progressIndicator = App::Helio()->getWorkspace()->findChildWithID(ProgressTooltip::componentId);
-//
-//    if (progressIndicator)
-//    {
-//        delete progressIndicator;
-//
-//        if (authManager->getLastRequestState() == AuthorizationManager::RequestSucceed)
-//        {
-//            App::Helio()->showModalComponent(new SuccessTooltip());
-//            delete this;
-//        }
-//        else if (authManager->getLastRequestState() == AuthorizationManager::RequestFailed)
-//        {
-//            App::Helio()->showModalComponent(new FailTooltip());
-//        }
-//        if (authManager->getLastRequestState() == AuthorizationManager::ConnectionFailed)
-//        {
-//            App::Helio()->showModalComponent(new FailTooltip());
-//        }
-//    }
-//}
-
 //[/MiscUserCode]
 
 #if 0

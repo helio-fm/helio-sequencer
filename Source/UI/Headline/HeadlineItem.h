@@ -25,6 +25,7 @@ class IconComponent;
 class HeadlineDropdown;
 //[/Headers]
 
+#include "HeadlineItemArrow.h"
 
 class HeadlineItem final : public Component,
                            private Timer,
@@ -60,14 +61,13 @@ private:
     ScopedPointer<HeadlineDropdown> dropdown;
     AsyncUpdater &parentHeadline;
 
+    Colour bgColour;
+
     //[/UserVariables]
 
     ScopedPointer<Label> titleLabel;
     ScopedPointer<IconComponent> icon;
-    Path internalPath1;
-    Path internalPath2;
-    Path internalPath3;
-    Path internalPath4;
+    ScopedPointer<HeadlineItemArrow> component;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeadlineItem)
 };

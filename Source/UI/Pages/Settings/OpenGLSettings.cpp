@@ -112,7 +112,7 @@ void OpenGLSettings::buttonClicked (Button* buttonThatWasClicked)
 
             dialog->onOk = [this]()
             {
-                App::Helio()->getWindow()->setOpenGLRendererEnabled(true);
+                App::Window().setOpenGLRendererEnabled(true);
                 this->updateButtons();
             };
 
@@ -128,7 +128,7 @@ void OpenGLSettings::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == defaultRendererButton)
     {
         //[UserButtonCode_defaultRendererButton] -- add your button handler code here..
-        App::Helio()->getWindow()->setOpenGLRendererEnabled(false);
+        App::Window().setOpenGLRendererEnabled(false);
         this->updateButtons();
         //[/UserButtonCode_defaultRendererButton]
     }

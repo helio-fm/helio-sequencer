@@ -17,34 +17,23 @@
 
 #pragma once
 
-//[Headers]
-class HelioTheme;
-#define PANEL_C_HAS_PRERENDERED_BACKGROUND 1
-//[/Headers]
-
-
-class PanelBackgroundC final : public Component
+class HeadlineDataSource
 {
 public:
 
-    PanelBackgroundC();
-    ~PanelBackgroundC();
+    HeadlineDataSource() = default;
+    virtual ~HeadlineDataSource()
+    {
+        this->masterReference.clear();
+    }
 
-    //[UserMethods]
-    static void updateRender(HelioTheme &theme);
-    //[/UserMethods]
+    virtual ScopedPointer<Component> createMenu() = 0;
+    virtual bool hasMenu() = 0;
 
-    void paint (Graphics& g) override;
-    void resized() override;
+protected:
 
+    WeakReference<HeadlineDataSource>::Master masterReference;
+    friend class WeakReference<HeadlineDataSource>;
 
-private:
-
-    //[UserVariables]
-    FillType fillType;
-    Image bgCache;
-    //[/UserVariables]
-
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PanelBackgroundC)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeadlineDataSource)
 };

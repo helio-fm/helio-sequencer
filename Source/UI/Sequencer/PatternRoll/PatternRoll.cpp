@@ -48,7 +48,6 @@
 #include "ComponentIDs.h"
 #include "ColourIDs.h"
 
-#define ROWS_OF_TWO_OCTAVES 24
 #define DEFAULT_CLIP_LENGTH 1.0f
 
 inline static constexpr int rowHeight()
@@ -326,7 +325,7 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) c
 
     const float y = float(trackIndex * rowHeight());
     return Rectangle<float> (x, HYBRID_ROLL_HEADER_HEIGHT + y + PATTERN_ROLL_TRACK_HEADER_HEIGHT,
-        w, float(PATTERN_ROLL_CLIP_HEIGHT));
+        w, float(PATTERN_ROLL_CLIP_HEIGHT - 1));
 }
 
 float PatternRoll::getBeatByComponentPosition(float x) const
@@ -863,13 +862,34 @@ void PatternRoll::reset() {}
 
 Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height) const
 {
-    Image patternImage(Image::RGB, 128, height * ROWS_OF_TWO_OCTAVES, false);
+    const int width = 128;
+    const int shadowHeight = 16;
+    Image patternImage(Image::RGB, width, height, false);
     Graphics g(patternImage);
 
-    const Colour whiteKey = theme.findColour(ColourIDs::Roll::whiteKey);
-
-    g.setColour(whiteKey);
+    const Colour fillColour = theme.findColour(ColourIDs::Roll::blackKey).brighter(0.035f);
+    g.setColour(fillColour);
     g.fillRect(patternImage.getBounds());
+
+    {
+        float x = 0, y = PATTERN_ROLL_TRACK_HEADER_HEIGHT;
+        g.setGradientFill(ColourGradient(Colour(0x0c000000),
+            x, y,
+            Colours::transparentBlack,
+            x, float(shadowHeight + y),
+            false));
+        g.fillRect(int(x), int(y), width, shadowHeight);
+    }
+
+    {
+        float x = 0, y = PATTERN_ROLL_TRACK_HEADER_HEIGHT;
+        g.setGradientFill(ColourGradient(Colour(0x0c000000),
+            x, y,
+            Colours::transparentBlack,
+            x, float((shadowHeight / 2) + y),
+            false));
+        g.fillRect(int(x), int(y), width, shadowHeight);
+    }
 
     HelioTheme::drawNoise(theme, g, 1.75f);
 

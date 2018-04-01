@@ -26,9 +26,9 @@ class PluginScanner;
 #include "RecentFilesList.h"
 #include "TreeNavigationHistory.h"
 
-class Workspace : public RecentFilesList::Owner,
-                  private ChangeListener, // listens to RecentFilesList
-                  private Serializable
+class Workspace final : public RecentFilesList::Owner,
+                        private ChangeListener, // listens to RecentFilesList
+                        private Serializable
 {
 public:
     

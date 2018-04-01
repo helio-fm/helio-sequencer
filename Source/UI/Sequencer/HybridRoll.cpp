@@ -116,7 +116,11 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject, Viewport &viewportRef,
     timeEnteredDragMode(0),
     lastTransportPosition(0.0),
     playheadOffset(0.0),
-    shouldFollowPlayhead(false)
+    shouldFollowPlayhead(false),
+    barLineColour(this->findColour(ColourIDs::Roll::barLine)),
+    barLineBevelColour(this->findColour(ColourIDs::Roll::barLineBevel)),
+    beatLineColour(this->findColour(ColourIDs::Roll::beatLine)),
+    snapLineColour(this->findColour(ColourIDs::Roll::snapLine))
 {
     this->setOpaque(true);
     this->setPaintingIsUnclipped(true);
@@ -1141,36 +1145,31 @@ void HybridRoll::resized()
 
 void HybridRoll::paint(Graphics &g)
 {
-    const Colour barLine = findColour(ColourIDs::Roll::barLine);
-    const Colour barLineBevel = findColour(ColourIDs::Roll::barLineBevel);
-    const Colour beatLine = findColour(ColourIDs::Roll::beatLine);
-    const Colour snapLine = findColour(ColourIDs::Roll::snapLine);
-    
     this->computeVisibleBeatLines();
 
     const float paintStartY = float(this->viewport.getViewPositionY());
     const float paintEndY = paintStartY + this->viewport.getViewHeight();
 
-    g.setColour(barLine);
-    for (const auto f : this->visibleBars)
+    g.setColour(this->barLineColour);
+    for (const auto &f : this->visibleBars)
     {
         g.drawVerticalLine(int(floorf(f)), paintStartY, paintEndY);
     }
 
-    g.setColour(barLineBevel);
-    for (const auto f : this->visibleBars)
+    g.setColour(this->barLineBevelColour);
+    for (const auto &f : this->visibleBars)
     {
         g.drawVerticalLine(int(floorf(f)) + 1, paintStartY, paintEndY);
     }
 
-    g.setColour(beatLine);
-    for (const auto f : this->visibleBeats)
+    g.setColour(this->beatLineColour);
+    for (const auto &f : this->visibleBeats)
     {
         g.drawVerticalLine(int(floorf(f)), paintStartY, paintEndY);
     }
     
-    g.setColour(snapLine);
-    for (const auto f : this->visibleSnaps)
+    g.setColour(this->snapLineColour);
+    for (const auto &f : this->visibleSnaps)
     {
         g.drawVerticalLine(int(floorf(f)), paintStartY, paintEndY);
     }
