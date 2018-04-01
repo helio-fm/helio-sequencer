@@ -168,12 +168,11 @@ void CommandPanel::updateContent(const Items &commands,
     this->lastAnimationType = animationType;
     this->shouldResizeToFitContent = adjustsWidth;
 
-    const bool receivedNewCommands = commands != this->commandDescriptions;
-    this->commandDescriptions = commands;
-
     // If has new commands, fade out old list and create a new one
+    const bool receivedNewCommands = commands != this->commandDescriptions;
     if (receivedNewCommands)
     {
+        this->commandDescriptions = commands;
         if (animationType == Fading)
         {
             this->animator.fadeOut(this->listBox, ANIM_TIME_MS);
