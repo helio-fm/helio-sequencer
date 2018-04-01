@@ -37,8 +37,8 @@
 using namespace Serialization;
 
 UndoStack::ActionSet::ActionSet(ProjectTreeItem &parentProject, String transactionName) :
-project(parentProject),
-name(std::move(transactionName)) {}
+    project(parentProject),
+    name(std::move(transactionName)) {}
     
 bool UndoStack::ActionSet::perform() const
 {
@@ -69,8 +69,8 @@ bool UndoStack::ActionSet::undo() const
 int UndoStack::ActionSet::getTotalSize() const
 {
     int total = 0;
-        
-    for (int i = actions.size(); --i >= 0;) {
+    for (int i = actions.size(); --i >= 0;)
+    {
         total += actions.getUnchecked(i)->getSizeInUnits();
     }
         
@@ -80,8 +80,6 @@ int UndoStack::ActionSet::getTotalSize() const
 ValueTree UndoStack::ActionSet::serialize() const
 {
     ValueTree tree(Serialization::Undo::transaction);
-
-    // tree.setProperty(Serialization::Undo::name, this->name, nullptr);
 
     for (int i = 0; i < this->actions.size(); ++i)
     {
@@ -94,8 +92,6 @@ ValueTree UndoStack::ActionSet::serialize() const
 void UndoStack::ActionSet::deserialize(const ValueTree &tree)
 {
     this->reset();
-
-    // this->name = tree.getProperty(Serialization::Undo::name);
 
     for (const auto &childAction : tree)
     {
@@ -161,8 +157,8 @@ UndoAction *UndoStack::ActionSet::createUndoActionsByTagName(const Identifier &t
 }
 
 UndoStack::UndoStack (ProjectTreeItem &parentProject,
-    const int maxNumberOfUnitsToKeep,
-    const int minimumTransactions) :
+    int maxNumberOfUnitsToKeep,
+    int minimumTransactions) :
     project(parentProject),
     totalUnitsStored(0),
     nextIndex(0),
@@ -173,10 +169,10 @@ UndoStack::UndoStack (ProjectTreeItem &parentProject,
 
 void UndoStack::clearUndoHistory()
 {
-    transactions.clear();
-    totalUnitsStored = 0;
-    nextIndex = 0;
-    sendChangeMessage();
+    this->transactions.clear();
+    this->totalUnitsStored = 0;
+    this->nextIndex = 0;
+    this->sendChangeMessage();
 }
 
 bool UndoStack::perform (UndoAction* const newAction, const String& actionName)
@@ -206,7 +202,7 @@ bool UndoStack::perform (UndoAction *const newAction)
             // or undo() methods, or else these actions will be discarded!
             return false;
         }
-        
+
         if (action->perform())
         {
             ActionSet *actionSet = getCurrentSet();
@@ -397,7 +393,7 @@ ValueTree UndoStack::serialize() const
     {
         if (ActionSet *action = this->transactions[currentIndex])
         {
-            tree.appendChild(action->serialize(), nullptr);
+            tree.addChild(action->serialize(), 0, nullptr);
         }
         
         --currentIndex;
@@ -419,7 +415,7 @@ void UndoStack::deserialize(const ValueTree &tree)
     
     for (const auto &childTransaction : root)
     {
-        auto actionSet = new ActionSet(this->project, String::empty);
+        auto actionSet = new ActionSet(this->project, {});
         actionSet->deserialize(childTransaction);
         this->transactions.insert(this->nextIndex, actionSet);
         ++this->nextIndex;

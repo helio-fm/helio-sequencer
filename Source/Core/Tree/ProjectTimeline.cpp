@@ -309,13 +309,13 @@ void ProjectTimeline::deserialize(const ValueTree &tree)
         Uuid(root.getProperty(Serialization::Core::annotationsTrackId,
             this->annotationsTrackId.toString()));
 
-    this->timeSignaturesTrackId =
-        Uuid(root.getProperty(Serialization::Core::keySignaturesTrackId,
-            this->timeSignaturesTrackId.toString()));
-
     this->keySignaturesTrackId =
-        Uuid(root.getProperty(Serialization::Core::timeSignaturesTrackId,
+        Uuid(root.getProperty(Serialization::Core::keySignaturesTrackId,
             this->keySignaturesTrackId.toString()));
+
+    this->timeSignaturesTrackId =
+        Uuid(root.getProperty(Serialization::Core::timeSignaturesTrackId,
+            this->timeSignaturesTrackId.toString()));
 
     forEachValueTreeChildWithType(root, e, Serialization::Midi::annotations)
     {
