@@ -26,10 +26,7 @@ namespace VCS
     public:
 
         TrackedItemsSource() {}
-        virtual ~TrackedItemsSource()
-        {
-            this->masterReference.clear();
-        }
+        virtual ~TrackedItemsSource() = 0;
 
         virtual String getVCSName() const = 0;
 
@@ -58,11 +55,7 @@ namespace VCS
 
     private:
 
-        WeakReference<TrackedItemsSource>::Master masterReference;
-
-        friend class WeakReference<TrackedItemsSource>;
-
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackedItemsSource);
-
+        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TrackedItemsSource)
+        JUCE_DECLARE_WEAK_REFERENCEABLE(TrackedItemsSource)
     };
 } // namespace VCS

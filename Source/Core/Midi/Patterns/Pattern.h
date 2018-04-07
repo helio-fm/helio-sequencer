@@ -31,8 +31,6 @@ public:
 
     explicit Pattern(MidiTrack &track,
         ProjectEventDispatcher &eventDispatcher);
-
-    ~Pattern() override;
     
     //===------------------------------------------------------------------===//
     // Accessors
@@ -136,13 +134,11 @@ private:
 
 private:
     
-    WeakReference<Pattern>::Master masterReference;
-    friend class WeakReference<Pattern>;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Pattern);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Pattern)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(Pattern)
 };
 
-class PatternHashFunction
+class PatternHashFunction final
 {
 public:
 

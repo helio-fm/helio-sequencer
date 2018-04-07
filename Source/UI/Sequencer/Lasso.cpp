@@ -22,11 +22,6 @@ Lasso::Lasso() : SelectedItemSet() {}
 Lasso::Lasso(const ItemArray &items) : SelectedItemSet(items) {}
 Lasso::Lasso(const SelectedItemSet &other) : SelectedItemSet(other) {}
 
-Lasso::~Lasso()
-{
-    this->masterReference.clear();
-}
-
 void Lasso::itemSelected(SelectableComponent *item)
 {
     this->invalidateCache();

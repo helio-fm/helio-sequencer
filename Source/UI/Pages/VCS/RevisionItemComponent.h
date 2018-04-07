@@ -72,9 +72,7 @@ private:
     VCS::RevisionItem::Ptr revisionItem;
     VCS::Head &head;
 
-    WeakReference<RevisionItemComponent>::Master masterReference;
-
-    friend class WeakReference<RevisionItemComponent>;
+    JUCE_DECLARE_WEAK_REFERENCEABLE(RevisionItemComponent)
 
     //[/UserVariables]
 

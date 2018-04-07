@@ -23,14 +23,12 @@ class TreeNavigationHistoryLock final
 {
 public:
     TreeNavigationHistoryLock() {}
-    ~TreeNavigationHistoryLock();
 private:
-    WeakReference<TreeNavigationHistoryLock>::Master masterReference;
-    friend class WeakReference<TreeNavigationHistoryLock>;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TreeNavigationHistoryLock)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(TreeNavigationHistoryLock)
 };
 
-class TreeNavigationHistory : public ChangeBroadcaster
+class TreeNavigationHistory final : public ChangeBroadcaster
 {
 public:
     

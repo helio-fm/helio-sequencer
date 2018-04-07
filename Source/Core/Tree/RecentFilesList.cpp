@@ -29,15 +29,13 @@ RecentFilesList::RecentFilesList()
 
 RecentFilesList::~RecentFilesList()
 {
+    // TODO
     //App::Helio()->getSessionManager()->removeChangeListener(this);
-    this->masterReference.clear();
 }
 
 void RecentFilesList::onProjectStateChanged(const String &title, const String &path,
                                             const String &id, bool isLoaded)
 {
-//    Logger::writeToLog("RecentFilesList::onProjectStateChanged: " + title);
-    
     const int index = id.isEmpty() ? this->findIndexByPath(path) : this->findIndexById(id);
 
     if (! File(path).existsAsFile())

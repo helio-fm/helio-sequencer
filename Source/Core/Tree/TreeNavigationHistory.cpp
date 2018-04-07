@@ -18,16 +18,9 @@
 #include "Common.h"
 #include "TreeNavigationHistory.h"
 
-TreeNavigationHistoryLock::~TreeNavigationHistoryLock()
-{
-    this->masterReference.clear();
-}
-
 TreeNavigationHistory::TreeNavigationHistory() :
     historyLock(nullptr),
-    currentPageIndex(0)
-{
-}
+    currentPageIndex(0) {}
 
 ScopedPointer<TreeNavigationHistoryLock> TreeNavigationHistory::lock()
 {

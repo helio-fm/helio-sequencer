@@ -26,42 +26,42 @@
 #define AUDIO_MONITOR_OVERSATURATION_THRESHOLD      0.5f
 #define AUDIO_MONITOR_OVERSATURATION_RATE           4.f
 
-class ClippingWarningAsyncCallback : public AsyncUpdater
+class ClippingWarningAsyncCallback final  : public AsyncUpdater
 {
 public:
     
     explicit ClippingWarningAsyncCallback(AudioMonitor &parentSpectrumCallback) :
-    AudioMonitor(parentSpectrumCallback) {}
+        audioMonitor(parentSpectrumCallback) {}
     
     void handleAsyncUpdate() override
     {
-        this->AudioMonitor.getListeners().
-        call(&AudioMonitor::ClippingListener::onClippingWarning);
+        this->audioMonitor.getListeners().
+            call(&AudioMonitor::ClippingListener::onClippingWarning);
     }
 
 private:
     
-    AudioMonitor &AudioMonitor;
+    AudioMonitor &audioMonitor;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ClippingWarningAsyncCallback)
 };
 
-class OversaturationWarningAsyncCallback : public AsyncUpdater
+class OversaturationWarningAsyncCallback final : public AsyncUpdater
 {
 public:
     
     explicit OversaturationWarningAsyncCallback(AudioMonitor &parentSpectrumCallback) :
-    AudioMonitor(parentSpectrumCallback) {}
+        audioMonitor(parentSpectrumCallback) {}
     
     void handleAsyncUpdate() override
     {
-        this->AudioMonitor.getListeners().
-        call(&AudioMonitor::ClippingListener::onOversaturationWarning);
+        this->audioMonitor.getListeners().
+            call(&AudioMonitor::ClippingListener::onOversaturationWarning);
     }
     
 private:
     
-    AudioMonitor &AudioMonitor;
+    AudioMonitor &audioMonitor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OversaturationWarningAsyncCallback)
 };
@@ -74,11 +74,6 @@ AudioMonitor::AudioMonitor() :
     zeromem(this->spectrum, sizeof(float) * AUDIO_MONITOR_MAX_CHANNELS * AUDIO_MONITOR_MAX_SPECTRUMSIZE);
     this->asyncClippingWarning = new ClippingWarningAsyncCallback(*this);
     this->asyncOversaturationWarning = new OversaturationWarningAsyncCallback(*this);
-}
-
-AudioMonitor::~AudioMonitor()
-{
-    this->masterReference.clear();
 }
 
 //===----------------------------------------------------------------------===//
@@ -96,8 +91,7 @@ void AudioMonitor::audioDeviceIOCallback(const float **inputChannelData,
                                          int numOutputChannels,
                                          int numSamples)
 {
-    const int numChannels =
-    jmin(AUDIO_MONITOR_MAX_CHANNELS, numOutputChannels);
+    const int numChannels = jmin(AUDIO_MONITOR_MAX_CHANNELS, numOutputChannels);
     
     for (int channel = 0; channel < numChannels; ++channel)
     {
@@ -143,9 +137,7 @@ void AudioMonitor::audioDeviceIOCallback(const float **inputChannelData,
     }
 }
 
-void AudioMonitor::audioDeviceStopped()
-{
-}
+void AudioMonitor::audioDeviceStopped() {}
 
 //===----------------------------------------------------------------------===//
 // Spectrum data

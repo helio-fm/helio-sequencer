@@ -32,8 +32,6 @@ public:
 
     explicit MidiSequence(MidiTrack &track,
         ProjectEventDispatcher &eventDispatcher) noexcept;
-
-    ~MidiSequence() override;
     
     //===------------------------------------------------------------------===//
     // Undoing
@@ -141,9 +139,7 @@ private:
     mutable bool cacheIsOutdated;
 
 private:
-    
-    WeakReference<MidiSequence>::Master masterReference;
-    friend class WeakReference<MidiSequence>;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiSequence);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiSequence)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(MidiSequence)
 };

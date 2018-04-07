@@ -288,6 +288,7 @@ protected:
     String type;
 
     bool markerIsVisible;
+    bool itemShouldBeVisible;
 
     void removeItemFromParent();
     void deleteAllSubItems();
@@ -310,11 +311,6 @@ protected:
 
 private:
 
-    bool itemShouldBeVisible;
-
-    WeakReference<TreeItem>::Master masterReference;
-    friend class WeakReference<TreeItem>;
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TreeItem)
-
+    JUCE_DECLARE_WEAK_REFERENCEABLE(TreeItem)
 };

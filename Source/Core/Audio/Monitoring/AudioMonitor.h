@@ -22,13 +22,12 @@
 #define AUDIO_MONITOR_MAX_CHANNELS      2
 #define AUDIO_MONITOR_MAX_SPECTRUMSIZE  512
 
-class AudioMonitor : public AudioIODeviceCallback
+class AudioMonitor final : public AudioIODeviceCallback
 {
 public:
     
     AudioMonitor();
-    ~AudioMonitor() override;
-    
+
     //===------------------------------------------------------------------===//
     // AudioIODeviceCallback
     //===------------------------------------------------------------------===//
@@ -86,8 +85,6 @@ private:
     ScopedPointer<AsyncUpdater> asyncClippingWarning;
     ScopedPointer<AsyncUpdater> asyncOversaturationWarning;
 
-    WeakReference<AudioMonitor>::Master masterReference;
-    friend class WeakReference<AudioMonitor>;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioMonitor);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioMonitor)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(AudioMonitor)
 };

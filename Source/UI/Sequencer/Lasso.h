@@ -40,7 +40,7 @@ public:
         return static_cast<T *>(this->getUnchecked(index));
     }
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SelectionProxyArray);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SelectionProxyArray)
 };
 
 class Lasso final : public SelectedItemSet<SelectableComponent *>
@@ -50,7 +50,6 @@ public:
     Lasso();
     explicit Lasso(const ItemArray &items);
     explicit Lasso(const SelectedItemSet &other);
-    ~Lasso() override;
 
     void itemSelected(SelectableComponent *item) override;
     void itemDeselected(SelectableComponent *item) override;
@@ -83,8 +82,6 @@ private:
     mutable GroupedSelections selectionsCache;
     void rebuildCache() const;
 
-    WeakReference<Lasso>::Master masterReference;
-    friend class WeakReference<Lasso>;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Lasso);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Lasso)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(Lasso)
 };

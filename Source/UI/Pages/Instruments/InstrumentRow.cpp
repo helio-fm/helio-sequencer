@@ -26,11 +26,6 @@ InstrumentRow::InstrumentRow(PluginDescription description) :
     this->setInterceptsMouseClicks(false, false);
 }
 
-InstrumentRow::~InstrumentRow()
-{
-
-}
-
 void InstrumentRow::refreshPluginDescription(PluginDescription val)
 {
     this->pluginDescription = val;

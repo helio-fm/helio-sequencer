@@ -137,10 +137,6 @@ private:
 
 private:
 
-    WeakReference<Instrument>::Master masterReference;
-
-    friend class WeakReference<Instrument>;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Instrument);
-
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Instrument)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(Instrument)
 };

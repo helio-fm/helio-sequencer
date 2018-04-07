@@ -22,10 +22,6 @@ class HeadlineItemDataSource : public virtual ChangeBroadcaster
 public:
 
     HeadlineItemDataSource() = default;
-    ~HeadlineItemDataSource() override
-    {
-        this->masterReference.clear();
-    }
 
     virtual bool hasMenu() const = 0;
     virtual ScopedPointer<Component> createMenu() = 0;
@@ -38,8 +34,6 @@ public:
 
 protected:
 
-    WeakReference<HeadlineItemDataSource>::Master masterReference;
-    friend class WeakReference<HeadlineItemDataSource>;
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeadlineItemDataSource)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(HeadlineItemDataSource)
 };

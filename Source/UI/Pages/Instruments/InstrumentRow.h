@@ -23,19 +23,14 @@
 #    define PLUGINSLIST_ROW_HEIGHT (90)
 #endif
 
-class InstrumentRow : public Component
+class InstrumentRow final : public Component
 {
 public:
 
     explicit InstrumentRow(PluginDescription description);
 
-    ~InstrumentRow() override;
-
-
     void refreshPluginDescription(PluginDescription val);
-
     void setSelected(bool val);
-
 
     //===------------------------------------------------------------------===//
     // Component
@@ -43,16 +38,11 @@ public:
 
     void paint(Graphics &g) override;
 
-
 private:
 
     PluginDescription pluginDescription;
-
     bool isSelected;
 
-
-    WeakReference<InstrumentRow>::Master masterReference;
-
-    friend class WeakReference<InstrumentRow>;
-
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InstrumentRow)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(InstrumentRow)
 };

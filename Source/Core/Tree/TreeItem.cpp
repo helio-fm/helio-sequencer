@@ -37,13 +37,7 @@ TreeItem::TreeItem(const String &name, const Identifier &type) :
     markerIsVisible(false),
     itemShouldBeVisible(true)
 {
-
-//#if HELIO_DESKTOP
     this->setLinesDrawnForSubItems(false);
-//#elif HELIO_MOBILE
-//    this->setLinesDrawnForSubItems(true);
-//#endif
-
     this->setDrawsInLeftMargin(true);
 }
 
@@ -52,7 +46,6 @@ TreeItem::~TreeItem()
     this->removeAllChangeListeners();
     this->deleteAllSubItems();
     this->removeItemFromParent();
-    this->masterReference.clear();
 }
 
 void TreeItem::setMarkerVisible(bool shouldBeVisible) noexcept

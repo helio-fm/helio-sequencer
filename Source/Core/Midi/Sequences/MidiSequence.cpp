@@ -47,11 +47,6 @@ MidiSequence::MidiSequence(MidiTrack &parentTrack,
     cachedSequence(),
     cacheIsOutdated(false) {}
 
-MidiSequence::~MidiSequence()
-{
-    this->masterReference.clear();
-}
-
 void MidiSequence::sort()
 {
     if (this->midiEvents.size() > 0)
