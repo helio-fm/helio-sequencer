@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "Arpeggiator.h"
 #include "SerializationKeys.h"
-#include "PianoRollToolbox.h"
 #include "Note.h"
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
@@ -32,7 +31,6 @@
 // 4. User select a number of chords and clicks `arpeggiate`
 // 5. User selects arpeggiator fro arp panel (TODO where is arp panel?)
 // 
-
 // This one assumes it has a diatonic scale, and target chord has up to 4 notes.
 // There are no restrictions though on a target chord's scale or where chord's keys are.
 // Arpeggiator keys are mapped like this:

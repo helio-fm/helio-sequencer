@@ -22,12 +22,13 @@ class ProjectTreeItem;
 class Lasso;
 class MidiSequence;
 class MidiTrack;
+class Clipboard;
 
 #include "Note.h"
 #include "Scale.h"
 #include "Arpeggiator.h"
 
-class PianoRollToolbox final
+class SequencerOperations final
 {
 public:
     
@@ -36,21 +37,14 @@ public:
     static float findStartBeat(const Array<Note> &selection);
     static float findEndBeat(const Array<Note> &selection);
     
-    static void wipeSpace(Array<MidiTrack *> tracks,
-                          float startBeat,
-                          float endBeat,
-                          bool shouldKeepCroppedNotes = true,
-                          bool shouldCheckpoint = true);
+    static void wipeSpace(Array<MidiTrack *> tracks, float startBeat, float endBeat,
+        bool shouldKeepCroppedNotes = true,  bool shouldCheckpoint = true);
     
     static void shiftEventsToTheLeft(Array<MidiTrack *> tracks,
-                                     float targetBeat,
-                                     float beatOffset,
-                                     bool shouldCheckpoint = true);
+        float targetBeat,  float beatOffset, bool shouldCheckpoint = true);
     
     static void shiftEventsToTheRight(Array<MidiTrack *> tracks,
-                                      float targetBeat,
-                                      float beatOffset,
-                                      bool shouldCheckpoint = true);
+        float targetBeat, float beatOffset, bool shouldCheckpoint = true);
     
     static void snapSelection(Lasso &selection, float snapsPerBeat, bool shouldCheckpoint = true);
     static void removeOverlaps(Lasso &selection, bool shouldCheckpoint = true);
@@ -71,15 +65,18 @@ public:
     static void changeVolumeSine(Lasso &selection, float volumeFactor);
     static void endTuning(Lasso &selection);
     
-    static void deleteSelection(Lasso &selection);
-    
+    static void copyToClipboard(Clipboard &clipboard, const Lasso &selection);
+    static void pasteFromClipboard(Clipboard &clipboard, ProjectTreeItem &project,
+        WeakReference<MidiTrack> selectedTrack, float targetBeatPosition);
+    static void deleteSelection(const Lasso &selection);
+
     static void shiftKeyRelative(Lasso &selection, int deltaKey,
-    bool shouldCheckpoint = true, Transport *transport = nullptr);
+        bool shouldCheckpoint = true, Transport *transport = nullptr);
 
     static void shiftBeatRelative(Lasso &selection, float deltaBeat,
-    bool shouldCheckpoint = true);
+        bool shouldCheckpoint = true);
     
     static void invertChord(Lasso &selection, int deltaKey,
-    bool shouldCheckpoint = true, Transport *transport = nullptr);
+        bool shouldCheckpoint = true, Transport *transport = nullptr);
     
 };

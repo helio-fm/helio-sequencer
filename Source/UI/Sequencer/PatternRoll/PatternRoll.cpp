@@ -30,14 +30,13 @@
 #include "MultiTouchController.h"
 #include "HelioTheme.h"
 #include "ChordBuilder.h"
-#include "HybridLassoComponent.h"
+#include "SelectionComponent.h"
 #include "HybridRollEditMode.h"
 #include "SerializationKeys.h"
 #include "Icons.h"
-#include "InternalClipboard.h"
 #include "HelioCallout.h"
 #include "NotesTuningPanel.h"
-#include "PianoRollToolbox.h"
+#include "SequencerOperations.h"
 #include "Config.h"
 #include "SerializationKeys.h"
 #include "PianoSequence.h"
@@ -599,109 +598,6 @@ float PatternRoll::getZoomFactorY() const
     const float &viewHeight = float(this->viewport.getViewHeight());
     return (viewHeight / float(this->getHeight()));
 }
-
-//===----------------------------------------------------------------------===//
-// ClipboardOwner
-//===----------------------------------------------------------------------===//
-
-ValueTree PatternRoll::clipboardCopy() const
-{
-    ValueTree tree(Serialization::Clipboard::clipboard);
-
-    float firstBeat = FLT_MAX;
-    float lastBeat = -FLT_MAX;
-
-    for (const auto &s : selection.getGroupedSelections())
-    {
-        const auto patternSelection(s.second);
-        const String patternId(s.first);
-
-        // create xml parent with layer id
-        ValueTree patternIdParent(Serialization::Clipboard::pattern);
-        patternIdParent.setProperty(Serialization::Clipboard::patternId, patternId, nullptr);
-        tree.appendChild(patternIdParent, nullptr);
-
-        for (int i = 0; i < patternSelection->size(); ++i)
-        {
-            if (const ClipComponent *clipComponent =
-                dynamic_cast<ClipComponent *>(patternSelection->getUnchecked(i)))
-            {
-                patternIdParent.appendChild(clipComponent->getClip().serialize(), nullptr);
-                firstBeat = jmin(firstBeat, clipComponent->getBeat());
-                lastBeat = jmax(lastBeat, clipComponent->getBeat());
-            }
-        }
-    }
-
-    tree.setProperty(Serialization::Clipboard::firstBeat, firstBeat, nullptr);
-    tree.setProperty(Serialization::Clipboard::lastBeat, lastBeat, nullptr);
-
-    return tree;
-}
-
-void PatternRoll::clipboardPaste(const ValueTree &tree)
-{
-    const auto root =
-        tree.hasType(Serialization::Clipboard::clipboard) ?
-        tree : tree.getChildWithName(Serialization::Clipboard::clipboard);
-
-    if (!root.isValid()) { return; }
-
-    bool didCheckpoint = false;
-
-    const float indicatorRoughBeat = this->getBeatByTransportPosition(this->project.getTransport().getSeekPosition());
-    const float indicatorBeat = roundf(indicatorRoughBeat * 1000.f) / 1000.f;
-
-    const double firstBeat = root.getProperty(Serialization::Clipboard::firstBeat);
-    const double lastBeat = root.getProperty(Serialization::Clipboard::lastBeat);
-    const bool indicatorIsWithinSelection = (indicatorBeat >= firstBeat) && (indicatorBeat < lastBeat);
-    const float startBeatAligned = roundf(float(firstBeat));
-    const float deltaBeat = (indicatorBeat - startBeatAligned);
-
-    this->deselectAll();
-
-    forEachValueTreeChildWithType(root, patternElement, Serialization::Midi::pattern)
-    {
-        Array<Clip> pastedClips;
-        const String patternId = patternElement.getProperty(Serialization::Clipboard::patternId);
-        
-        if (nullptr != this->project.findPatternByTrackId(patternId))
-        {
-            Pattern *targetPattern = this->project.findPatternByTrackId(patternId);
-            
-            forEachValueTreeChildWithType(patternElement, clipElement, Serialization::Midi::clip)
-            {
-                Clip &&c = Clip(targetPattern).withParameters(clipElement).copyWithNewId();
-                pastedClips.add(c.withDeltaBeat(deltaBeat));
-            }
-            
-            if (pastedClips.size() > 0)
-            {
-                if (! didCheckpoint)
-                {
-                    targetPattern->checkpoint();
-                    didCheckpoint = true;
-                    
-                    // also insert space if needed
-                    const bool isShiftPressed = Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown();
-                    if (isShiftPressed)
-                    {
-                        const float changeDelta = float(lastBeat - firstBeat);
-                        PianoRollToolbox::shiftEventsToTheRight(this->project.getTracks(), indicatorBeat, changeDelta, false);
-                    }
-                }
-                
-                for (Clip &c : pastedClips)
-                {
-                    targetPattern->insert(c, true);
-                }
-            }
-        }
-    }
-
-    return;
-}
-
 
 //===----------------------------------------------------------------------===//
 // Component

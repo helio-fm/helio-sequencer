@@ -24,7 +24,7 @@
 #include "Origami.h"
 #include "SoundProbeIndicator.h"
 #include "TimeDistanceIndicator.h"
-#include "HybridLassoComponent.h"
+#include "SelectionComponent.h"
 #include "HeaderSelectionIndicator.h"
 #include "HelioCallout.h"
 #include "TimelineCommandPanel.h"
@@ -202,7 +202,7 @@ void HybridRollHeader::mouseDown(const MouseEvent &e)
                                 1,
                                 false);
             
-            this->roll.getLasso()->beginLasso(e2, &this->roll);
+            this->roll.getSelectionComponent()->beginLasso(e2, &this->roll);
             
             this->selectionIndicator = new HeaderSelectionIndicator();
             this->addAndMakeVisible(this->selectionIndicator);
@@ -268,7 +268,7 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
     }
     else
     {
-        if (this->roll.getLasso()->isDragging())
+        if (this->roll.getSelectionComponent()->isDragging())
         {
             const MouseEvent parentEvent = e.getEventRelativeTo(&this->roll);
             
@@ -280,7 +280,7 @@ void HybridRollHeader::mouseDrag(const MouseEvent &e)
             const MouseEvent parentGlobalSelection = parentEvent.withNewPosition(Point<int>(parentEvent.x, this->roll.getHeight()));
 #endif
             
-            this->roll.getLasso()->dragLasso(parentGlobalSelection);
+            this->roll.getSelectionComponent()->dragLasso(parentGlobalSelection);
             
             if (this->selectionIndicator != nullptr)
             {
@@ -322,9 +322,9 @@ void HybridRollHeader::mouseUp(const MouseEvent &e)
         return;
     }
     
-    if (this->roll.getLasso()->isDragging())
+    if (this->roll.getSelectionComponent()->isDragging())
     {
-        this->roll.getLasso()->endLasso();
+        this->roll.getSelectionComponent()->endLasso();
     }
     else
     {

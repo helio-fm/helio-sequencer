@@ -223,7 +223,7 @@ void TrackGroupTreeItem::showPage()
     {
         if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
         {
-            parentProject->showLinearEditor(subTracks.getFirst()->getSequence(), this);
+            parentProject->showLinearEditor(subTracks.getFirst(), this);
         }
     }
 }

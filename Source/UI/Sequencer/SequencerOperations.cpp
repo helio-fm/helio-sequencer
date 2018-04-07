@@ -16,18 +16,21 @@
 */
 
 #include "Common.h"
-#include "PianoRollToolbox.h"
+#include "SequencerOperations.h"
 #include "ProjectTreeItem.h"
+#include "Clipboard.h"
 #include "Lasso.h"
 #include "Note.h"
 #include "AnnotationEvent.h"
 #include "AutomationEvent.h"
 #include "NoteComponent.h"
+#include "ClipComponent.h"
 #include "AutomationSequence.h"
 #include "PianoSequence.h"
 #include "AnnotationsSequence.h"
 #include "MidiTrack.h"
-#include "InternalClipboard.h"
+#include "Pattern.h"
+#include "SerializationKeys.h"
 #include "Arpeggiator.h"
 #include "Transport.h"
 #include <float.h>
@@ -277,14 +280,14 @@ bool applyAutoInsertions(const AutoChangeGroup &group, bool &didCheckpoint, bool
 { return applyInsertions<AutomationEvent, AutomationSequence, AutoChangeGroup, AutoChangeGroupsPerLayer>(group, didCheckpoint, shouldCheckpoint); }
 
 
-static PianoSequence *getPianoLayer(SelectionProxyArray::Ptr selection)
+static PianoSequence *getPianoSequence(SelectionProxyArray::Ptr selection)
 {
     const auto &firstEvent = selection->getFirstAs<NoteComponent>()->getNote();
     PianoSequence *pianoLayer = static_cast<PianoSequence *>(firstEvent.getSequence());
     return pianoLayer;
 }
 
-float PianoRollToolbox::findStartBeat(const Lasso &selection)
+float SequencerOperations::findStartBeat(const Lasso &selection)
 {
     if (selection.getNumSelected() == 0)
     { return 0.f; }
@@ -300,7 +303,7 @@ float PianoRollToolbox::findStartBeat(const Lasso &selection)
     return startBeat;
 }
 
-float PianoRollToolbox::findEndBeat(const Lasso &selection)
+float SequencerOperations::findEndBeat(const Lasso &selection)
 {
     if (selection.getNumSelected() == 0)
     { return 0.f; }
@@ -317,7 +320,7 @@ float PianoRollToolbox::findEndBeat(const Lasso &selection)
     return endBeat;
 }
 
-float PianoRollToolbox::findStartBeat(const Array<Note> &selection)
+float SequencerOperations::findStartBeat(const Array<Note> &selection)
 {
     if (selection.size() == 0)
     { return 0.f; }
@@ -336,7 +339,7 @@ float PianoRollToolbox::findStartBeat(const Array<Note> &selection)
     return startBeat;
 }
 
-float PianoRollToolbox::findEndBeat(const Array<Note> &selection)
+float SequencerOperations::findEndBeat(const Array<Note> &selection)
 {
     if (selection.size() == 0)
     { return 0.f; }
@@ -366,7 +369,7 @@ static float snappedBeat(float beat, float snapsPerBeat)
 
 
 
-void PianoRollToolbox::wipeSpace(Array<MidiTrack *> tracks,
+void SequencerOperations::wipeSpace(Array<MidiTrack *> tracks,
                                 float startBeat, float endBeat,
                                 bool shouldKeepCroppedNotes /*= true*/, bool shouldCheckpoint /*= true*/)
 {
@@ -463,7 +466,7 @@ void PianoRollToolbox::wipeSpace(Array<MidiTrack *> tracks,
     }
 }
 
-void PianoRollToolbox::shiftEventsToTheLeft(Array<MidiTrack *> tracks, float targetBeat, float beatOffset, bool shouldCheckpoint /*= true*/)
+void SequencerOperations::shiftEventsToTheLeft(Array<MidiTrack *> tracks, float targetBeat, float beatOffset, bool shouldCheckpoint /*= true*/)
 {
     bool didCheckpoint = false;
     
@@ -529,7 +532,7 @@ void PianoRollToolbox::shiftEventsToTheLeft(Array<MidiTrack *> tracks, float tar
     applyAutoChanges(autoGroupBefore, autoGroupAfter, didCheckpoint, shouldCheckpoint);
 }
 
-void PianoRollToolbox::shiftEventsToTheRight(Array<MidiTrack *> tracks, float targetBeat, float beatOffset, bool shouldCheckpoint /*= true*/)
+void SequencerOperations::shiftEventsToTheRight(Array<MidiTrack *> tracks, float targetBeat, float beatOffset, bool shouldCheckpoint /*= true*/)
 {
     bool didCheckpoint = false;
     
@@ -596,7 +599,7 @@ void PianoRollToolbox::shiftEventsToTheRight(Array<MidiTrack *> tracks, float ta
 }
 
 
-void PianoRollToolbox::snapSelection(Lasso &selection, float snapsPerBeat, bool shouldCheckpoint)
+void SequencerOperations::snapSelection(Lasso &selection, float snapsPerBeat, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     {
@@ -630,7 +633,7 @@ void PianoRollToolbox::snapSelection(Lasso &selection, float snapsPerBeat, bool 
 }
 
 
-void PianoRollToolbox::removeOverlaps(Lasso &selection, bool shouldCheckpoint)
+void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     {
@@ -885,7 +888,7 @@ void PianoRollToolbox::removeOverlaps(Lasso &selection, bool shouldCheckpoint)
     applyPianoRemovals(removalGroup, didCheckpoint, shouldCheckpoint);
 }
 
-void PianoRollToolbox::removeDuplicates(Lasso &selection, bool shouldCheckpoint)
+void SequencerOperations::removeDuplicates(Lasso &selection, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     { return; }
@@ -938,7 +941,7 @@ void PianoRollToolbox::removeDuplicates(Lasso &selection, bool shouldCheckpoint)
 }
 
 
-void PianoRollToolbox::moveToLayer(Lasso &selection, MidiSequence *layer, bool shouldCheckpoint)
+void SequencerOperations::moveToLayer(Lasso &selection, MidiSequence *layer, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     {
@@ -1022,7 +1025,7 @@ void PianoRollToolbox::moveToLayer(Lasso &selection, MidiSequence *layer, bool s
     targetLayer->insertGroup(*insertionsForTargetLayer, true);
 }
 
-bool PianoRollToolbox::arpeggiate(Lasso &selection,
+bool SequencerOperations::arpeggiate(Lasso &selection,
     const Scale::Ptr chordScale, Note::Key chordRoot, const Arpeggiator::Ptr arp,
     bool reversed, bool limitToChord, bool shouldCheckpoint)
 {
@@ -1043,7 +1046,7 @@ bool PianoRollToolbox::arpeggiate(Lasso &selection,
     for (const auto &s : selection.getGroupedSelections())
     {
         const auto layerSelection(s.second);
-        PianoSequence *pianoLayer = getPianoLayer(layerSelection);
+        PianoSequence *pianoLayer = getPianoSequence(layerSelection);
         
         jassert(pianoLayer);
 
@@ -1056,7 +1059,7 @@ bool PianoRollToolbox::arpeggiate(Lasso &selection,
             sortedSelection->addSorted(nc->getNote(), nc->getNote());
         }
         
-        const float selectionStartBeat = PianoRollToolbox::findStartBeat(*sortedSelection);
+        const float selectionStartBeat = SequencerOperations::findStartBeat(*sortedSelection);
         
         
         // 2. split chords (and sequences)
@@ -1123,7 +1126,7 @@ bool PianoRollToolbox::arpeggiate(Lasso &selection,
         for (int i = 0; i < chords.size(); ++i)
         {
             const auto &chord = chords.getUnchecked(i);
-            const float chordEnd = PianoRollToolbox::findEndBeat(chord);
+            const float chordEnd = SequencerOperations::findEndBeat(chord);
 
             if (reversed)
             {
@@ -1196,7 +1199,7 @@ bool PianoRollToolbox::arpeggiate(Lasso &selection,
     return true;
 }
 
-void PianoRollToolbox::randomizeVolume(Lasso &selection, float factor, bool shouldCheckpoint)
+void SequencerOperations::randomizeVolume(Lasso &selection, float factor, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     {
@@ -1225,7 +1228,7 @@ void PianoRollToolbox::randomizeVolume(Lasso &selection, float factor, bool shou
     applyPianoChanges(groupBefore, groupAfter, didCheckpoint, shouldCheckpoint);
 }
 
-void PianoRollToolbox::fadeOutVolume(Lasso &selection, float factor, bool shouldCheckpoint)
+void SequencerOperations::fadeOutVolume(Lasso &selection, float factor, bool shouldCheckpoint)
 {
     // Smooth fade out like
     // 1 - ((x / sqrt(x)) * factor)
@@ -1273,7 +1276,7 @@ void PianoRollToolbox::fadeOutVolume(Lasso &selection, float factor, bool should
     applyPianoChanges(groupBefore, groupAfter, didCheckpoint, shouldCheckpoint);
 }
 
-void PianoRollToolbox::startTuning(Lasso &selection)
+void SequencerOperations::startTuning(Lasso &selection)
 {
     if (selection.getNumSelected() == 0)
     { return; }
@@ -1285,7 +1288,7 @@ void PianoRollToolbox::startTuning(Lasso &selection)
     }
 }
 
-void PianoRollToolbox::changeVolumeLinear(Lasso &selection, float volumeDelta)
+void SequencerOperations::changeVolumeLinear(Lasso &selection, float volumeDelta)
 {
     if (selection.getNumSelected() == 0)
     { return; }
@@ -1293,7 +1296,7 @@ void PianoRollToolbox::changeVolumeLinear(Lasso &selection, float volumeDelta)
     for (const auto &s : selection.getGroupedSelections())
     {
         const auto layerSelection(s.second);
-        PianoSequence *pianoLayer = getPianoLayer(layerSelection);
+        PianoSequence *pianoLayer = getPianoSequence(layerSelection);
         jassert(pianoLayer);
 
         PianoChangeGroup groupBefore, groupAfter;
@@ -1309,7 +1312,7 @@ void PianoRollToolbox::changeVolumeLinear(Lasso &selection, float volumeDelta)
     }
 }
 
-void PianoRollToolbox::changeVolumeMultiplied(Lasso &selection, float volumeFactor)
+void SequencerOperations::changeVolumeMultiplied(Lasso &selection, float volumeFactor)
 {
     if (selection.getNumSelected() == 0)
     { return; }
@@ -1317,7 +1320,7 @@ void PianoRollToolbox::changeVolumeMultiplied(Lasso &selection, float volumeFact
     for (const auto &s : selection.getGroupedSelections())
     {
         const auto layerSelection(s.second);
-        PianoSequence *pianoLayer = getPianoLayer(layerSelection);
+        PianoSequence *pianoLayer = getPianoSequence(layerSelection);
         jassert(pianoLayer);
 
         PianoChangeGroup groupBefore, groupAfter;
@@ -1340,7 +1343,7 @@ void PianoRollToolbox::changeVolumeMultiplied(Lasso &selection, float volumeFact
     }
 }
 
-void PianoRollToolbox::changeVolumeSine(Lasso &selection, float volumeFactor)
+void SequencerOperations::changeVolumeSine(Lasso &selection, float volumeFactor)
 {
     if (selection.getNumSelected() == 0)
     { return; }
@@ -1354,13 +1357,13 @@ void PianoRollToolbox::changeVolumeSine(Lasso &selection, float volumeFactor)
     }
     midline = midline / float(selection.getNumSelected());
     
-    const float startBeat = PianoRollToolbox::findStartBeat(selection);
-    const float endBeat = PianoRollToolbox::findEndBeat(selection);
+    const float startBeat = SequencerOperations::findStartBeat(selection);
+    const float endBeat = SequencerOperations::findEndBeat(selection);
     
     for (const auto &s : selection.getGroupedSelections())
     {
         const auto layerSelection(s.second);
-        PianoSequence *pianoLayer = getPianoLayer(layerSelection);
+        PianoSequence *pianoLayer = getPianoSequence(layerSelection);
         jassert(pianoLayer);
         
         PianoChangeGroup groupBefore, groupAfter;
@@ -1377,7 +1380,7 @@ void PianoRollToolbox::changeVolumeSine(Lasso &selection, float volumeFactor)
     }
 }
 
-void PianoRollToolbox::endTuning(Lasso &selection)
+void SequencerOperations::endTuning(Lasso &selection)
 {
     jassert(selection.getNumSelected() > 0);
     
@@ -1388,33 +1391,221 @@ void PianoRollToolbox::endTuning(Lasso &selection)
     }
 }
 
-void PianoRollToolbox::deleteSelection(Lasso &selection)
+void SequencerOperations::copyToClipboard(Clipboard &clipboard, const Lasso &selection)
 {
     if (selection.getNumSelected() == 0)
-    { return; }
+    {
+        return;
+    }
+
+    ValueTree tree(Serialization::Clipboard::clipboard);
+
+    float firstBeat = FLT_MAX;
 
     for (const auto &s : selection.getGroupedSelections())
     {
-        const auto layerSelection(s.second);
-        PianoSequence *pianoLayer = getPianoLayer(layerSelection);
-        jassert(pianoLayer);
-        
-        PianoChangeGroup notesToDelete;
-        
-        for (int i = 0; i < layerSelection->size(); ++i)
+        const String trackId(s.first);
+        const auto trackSelection(s.second);
+
+        ValueTree trackRoot(Serialization::Clipboard::track);
+        //trackRoot.setProperty(Serialization::Clipboard::trackId, trackId, nullptr);
+        //trackRoot.setProperty(Serialization::Clipboard::trackType, todo, nullptr);
+        //trackRoot.setProperty(Serialization::Clipboard::trackMetaInfo, todo, nullptr);
+
+        // Just copy all events, no matter what type they are
+        for (int i = 0; i < trackSelection->size(); ++i)
         {
-            NoteComponent *nc = static_cast<NoteComponent *>(layerSelection->getUnchecked(i));
-            notesToDelete.add(nc->getNote());
+            if (const NoteComponent *noteComponent =
+                dynamic_cast<NoteComponent *>(trackSelection->getUnchecked(i)))
+            {
+                trackRoot.appendChild(noteComponent->getNote().serialize(), nullptr);
+                firstBeat = jmin(firstBeat, noteComponent->getBeat());
+            }
+            else if (const ClipComponent *clipComponent =
+                dynamic_cast<ClipComponent *>(trackSelection->getUnchecked(i)))
+            {
+                trackRoot.appendChild(clipComponent->getClip().serialize(), nullptr);
+                firstBeat = jmin(firstBeat, clipComponent->getBeat());
+            }
         }
-        
-        for (auto && n : notesToDelete)
+
+        tree.appendChild(trackRoot, nullptr);
+    }
+
+    tree.setProperty(Serialization::Clipboard::firstBeat, firstBeat, nullptr);
+    clipboard.copy(tree, false);
+}
+
+void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectTreeItem &project,
+    WeakReference<MidiTrack> selectedTrack, float targetBeatPosition)
+{
+    if (selectedTrack == nullptr) { return; }
+
+    const auto root = clipboard.getData().hasType(Serialization::Clipboard::clipboard) ?
+        clipboard.getData() : clipboard.getData().getChildWithName(Serialization::Clipboard::clipboard);
+
+    if (!root.isValid()) { return; }
+
+    bool didCheckpoint = false;
+
+    const float targetBeat = roundf(targetBeatPosition * 1000.f) / 1000.f;
+    const float firstBeat = root.getProperty(Serialization::Clipboard::firstBeat);
+    const float deltaBeat = (targetBeat - roundBeat(firstBeat));
+
+    forEachValueTreeChildWithType(root, layerElement, Serialization::Core::track)
+    {
+        const String trackId = layerElement.getProperty(Serialization::Clipboard::trackId);
+
+        // TODO:
+        // Store track type meta-info (say, controller id) in copy-paste info. On paste,
+        // 1. search for track with the same id
+        // 2. search for track with the same type and controller
+        // 3. take active track
+
+        // Try to paste as many types of events as possible:
+
+        // TODO the same for key signatures and time signatures?
+        if (auto *annotationsSequence = dynamic_cast<AnnotationsSequence *>(selectedTrack->getSequence()))
         {
-            pianoLayer->remove(n, true);
+            Array<AnnotationEvent> pastedAnnotations;
+            forEachValueTreeChildWithType(layerElement, annotationElement, Serialization::Midi::annotation)
+            {
+                const auto &ae = AnnotationEvent(annotationsSequence).withParameters(annotationElement).copyWithNewId();
+                pastedAnnotations.add(ae.withDeltaBeat(deltaBeat));
+            }
+
+            if (pastedAnnotations.size() > 0)
+            {
+                if (!didCheckpoint)
+                {
+                    annotationsSequence->checkpoint();
+                    didCheckpoint = true;
+                }
+
+                annotationsSequence->insertGroup(pastedAnnotations, true);
+            }
+        }
+        else if (auto *automationSequence = dynamic_cast<AutomationSequence *>(selectedTrack->getSequence()))
+        {
+            Array<AutomationEvent> pastedEvents;
+            forEachValueTreeChildWithType(layerElement, autoElement, Serialization::Midi::automationEvent)
+            {
+                const auto &ae = AutomationEvent(automationSequence).withParameters(autoElement).copyWithNewId();
+                pastedEvents.add(ae.withDeltaBeat(deltaBeat));
+            }
+
+            if (pastedEvents.size() > 0)
+            {
+                if (!didCheckpoint)
+                {
+                    automationSequence->checkpoint();
+                    didCheckpoint = true;
+                }
+
+                automationSequence->insertGroup(pastedEvents, true);
+            }
+        }
+        else if (auto *pianoSequence = dynamic_cast<PianoSequence *>(selectedTrack->getSequence()))
+        {
+            Array<Note> pastedNotes;
+            forEachValueTreeChildWithType(layerElement, noteElement, Serialization::Midi::note)
+            {
+                const auto &n = Note(pianoSequence).withParameters(noteElement).copyWithNewId();
+                pastedNotes.add(n.withDeltaBeat(deltaBeat));
+            }
+
+            if (pastedNotes.size() > 0)
+            {
+                if (!didCheckpoint)
+                {
+                    pianoSequence->checkpoint();
+                    didCheckpoint = true;
+                }
+
+                pianoSequence->insertGroup(pastedNotes, true);
+            }
+        }
+
+        forEachValueTreeChildWithType(root, patternElement, Serialization::Midi::pattern)
+        {
+            Array<Clip> pastedClips;
+            if (auto *targetPattern = selectedTrack->getPattern())
+            {
+                forEachValueTreeChildWithType(patternElement, clipElement, Serialization::Midi::clip)
+                {
+                    Clip &&c = Clip(targetPattern).withParameters(clipElement).copyWithNewId();
+                    pastedClips.add(c.withDeltaBeat(deltaBeat));
+                }
+        
+                if (pastedClips.size() > 0)
+                {
+                    if (!didCheckpoint)
+                    {
+                        targetPattern->checkpoint();
+                        didCheckpoint = true;
+                    }
+        
+                    for (Clip &c : pastedClips)
+                    {
+                        targetPattern->insert(c, true);
+                    }
+                }
+            }
         }
     }
 }
 
-void PianoRollToolbox::shiftKeyRelative(Lasso &selection,
+void SequencerOperations::deleteSelection(const Lasso &selection)
+{
+    if (selection.getNumSelected() == 0)
+    {
+        return;
+    }
+
+    OwnedArray<PianoChangeGroup> selectionsByTrack;
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const Note &note = selection.getItemAs<NoteComponent>(i)->getNote();
+        const MidiSequence *ownerSequence = note.getSequence();
+        Array<Note> *arrayToAddTo = nullptr;
+
+        for (int j = 0; j < selectionsByTrack.size(); ++j)
+        {
+            if (selectionsByTrack.getUnchecked(j)->size() > 0)
+            {
+                if (selectionsByTrack.getUnchecked(j)->getUnchecked(0).getSequence() == ownerSequence)
+                {
+                    arrayToAddTo = selectionsByTrack.getUnchecked(j);
+                }
+            }
+        }
+
+        if (arrayToAddTo == nullptr)
+        {
+            arrayToAddTo = new Array<Note>();
+            selectionsByTrack.add(arrayToAddTo);
+        }
+
+        arrayToAddTo->add(note);
+    }
+
+    bool didCheckpoint = false;
+
+    for (int i = 0; i < selectionsByTrack.size(); ++i)
+    {
+        auto sequence = static_cast<PianoSequence *>(selectionsByTrack.getUnchecked(i)->getUnchecked(0).getSequence());
+
+        if (!didCheckpoint)
+        {
+            didCheckpoint = true;
+            sequence->checkpoint();
+        }
+
+        sequence->removeGroup(*selectionsByTrack.getUnchecked(i), true);
+    }
+}
+
+void SequencerOperations::shiftKeyRelative(Lasso &selection,
     int deltaKey, bool shouldCheckpoint, Transport *transport)
 {
     if (selection.getNumSelected() == 0)
@@ -1425,7 +1616,7 @@ void PianoRollToolbox::shiftKeyRelative(Lasso &selection,
     for (const auto &s : selection.getGroupedSelections())
     {
         const auto layerSelection(s.second);
-        PianoSequence *pianoLayer = getPianoLayer(layerSelection);
+        PianoSequence *pianoLayer = getPianoSequence(layerSelection);
         jassert(pianoLayer);
 
         const int numSelected = layerSelection->size();
@@ -1462,7 +1653,7 @@ void PianoRollToolbox::shiftKeyRelative(Lasso &selection,
     }
 }
 
-void PianoRollToolbox::shiftBeatRelative(Lasso &selection, float deltaBeat, bool shouldCheckpoint)
+void SequencerOperations::shiftBeatRelative(Lasso &selection, float deltaBeat, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     { return; }
@@ -1472,7 +1663,7 @@ void PianoRollToolbox::shiftBeatRelative(Lasso &selection, float deltaBeat, bool
     for (const auto &s : selection.getGroupedSelections())
     {
         const auto layerSelection(s.second);
-        PianoSequence *pianoLayer = getPianoLayer(layerSelection);
+        PianoSequence *pianoLayer = getPianoSequence(layerSelection);
         jassert(pianoLayer);
 
         const int numSelected = layerSelection->size();
@@ -1503,7 +1694,7 @@ void PianoRollToolbox::shiftBeatRelative(Lasso &selection, float deltaBeat, bool
     }
 }
 
-void PianoRollToolbox::invertChord(Lasso &selection, 
+void SequencerOperations::invertChord(Lasso &selection, 
     int deltaKey, bool shouldCheckpoint, Transport *transport)
 {
     if (selection.getNumSelected() == 0)
@@ -1514,7 +1705,7 @@ void PianoRollToolbox::invertChord(Lasso &selection,
     for (const auto &s : selection.getGroupedSelections())
     {
         const auto layerSelection(s.second);
-        PianoSequence *pianoLayer = getPianoLayer(layerSelection);
+        PianoSequence *pianoLayer = getPianoSequence(layerSelection);
         jassert(pianoLayer);
 
         const int numSelected = layerSelection->size();

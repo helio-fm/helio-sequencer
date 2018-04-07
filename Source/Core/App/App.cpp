@@ -32,7 +32,6 @@
 #include "ThemeSettings.h"
 #include "PluginScanner.h"
 #include "Config.h"
-#include "InternalClipboard.h"
 #include "FontSerializer.h"
 
 #include "DocumentHelpers.h"
@@ -75,6 +74,11 @@ class MainWindow &App::Window() noexcept
 class Config &App::Config() noexcept
 {
     return *static_cast<App *>(JUCEApplicationBase::getInstance())->config;
+}
+
+class Clipboard &App::Clipboard() noexcept
+{
+    return static_cast<App *>(JUCEApplicationBase::getInstance())->clipboard;
 }
 
 Point<double> App::getScreenInCm()
@@ -250,7 +254,6 @@ void App::initialise(const String &commandLine)
         this->theme->initResources();
         LookAndFeel::setDefaultLookAndFeel(this->theme);
 
-        this->clipboard = new InternalClipboard();
         this->config = new class Config();
     
         // TODO: get rid of singletons someday
@@ -310,7 +313,6 @@ void App::shutdown()
         this->workspace = nullptr;
 
         this->config = nullptr;
-        this->clipboard = nullptr;
         this->theme = nullptr;
 
         const File tempFolder(DocumentHelpers::getTemporaryFolder());
@@ -420,11 +422,6 @@ void App::resumed()
 //===----------------------------------------------------------------------===//
 // Accessors
 //===----------------------------------------------------------------------===//
-
-InternalClipboard *App::getClipboard() const noexcept
-{
-    return this->clipboard;
-}
 
 SessionService *App::getSessionService() const noexcept
 {

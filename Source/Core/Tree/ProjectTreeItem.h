@@ -83,10 +83,10 @@ public:
 
     void safeRename(const String &newName) override;
 
-    void showPatternEditor(TreeItem *source);
-    void showLinearEditor(MidiSequence *activeLayer, TreeItem *source);
-    void hideEditor(MidiSequence *activeLayer, TreeItem *source);
-    WeakReference<TreeItem> getLastShownTrack() const;
+    void showPatternEditor(WeakReference<TreeItem> source);
+    void showLinearEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeItem> source);
+    void hideEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeItem> source);
+    WeakReference<TreeItem> getLastShownTrack() const noexcept;
 
     void updateActiveGroupEditors();
     void activateLayer(MidiSequence* layer, bool selectOthers, bool deselectOthers);
@@ -109,11 +109,11 @@ public:
     // Undos
     //===------------------------------------------------------------------===//
 
-    UndoStack *getUndoStack() const noexcept;
     void checkpoint();
     void undo();
     void redo();
     void clearUndoHistory();
+    UndoStack *getUndoStack() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Accessors

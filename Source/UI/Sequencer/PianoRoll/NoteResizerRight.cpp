@@ -25,7 +25,7 @@
 #include "HybridRoll.h"
 #include "PianoRoll.h"
 #include "PianoSequence.h"
-#include "PianoRollToolbox.h"
+#include "SequencerOperations.h"
 #include "NoteComponent.h"
 #include <float.h>
 //[/MiscUserDefs]
@@ -117,7 +117,7 @@ void NoteResizerRight::mouseDown (const MouseEvent& e)
     this->dragger.startDraggingComponent(this, e);
 
     const Lasso &selection = this->roll.getLassoSelection();
-    const float groupStartBeat = PianoRollToolbox::findStartBeat(selection);
+    const float groupStartBeat = SequencerOperations::findStartBeat(selection);
 
     this->noteComponent = this->findRightMostEvent(selection);
 
@@ -216,7 +216,7 @@ void NoteResizerRight::updateBounds(NoteComponent *anchorComponent)
     const Lasso &selection = this->roll.getLassoSelection();
     const float groupEndBeat = (anchorComponent != nullptr) ?
                                 (anchorComponent->getBeat() + anchorComponent->getLength()) :
-                                PianoRollToolbox::findEndBeat(selection);
+                                SequencerOperations::findEndBeat(selection);
 
     const int xAnchor = this->roll.getXPositionByBeat(groupEndBeat);
     const int yAnchor = this->roll.getViewport().getViewPositionY() + HYBRID_ROLL_HEADER_HEIGHT;

@@ -48,20 +48,15 @@ public:
     PianoRoll(ProjectTreeItem &parentProject,
               Viewport &viewportRef,
               WeakReference<AudioMonitor> clippingDetector);
-
-    void deleteSelection();
     
-    int getNumActiveLayers() const noexcept;
-    MidiSequence *getActiveMidiLayer(int index) const noexcept;
-    MidiSequence *getPrimaryActiveMidiLayer() const noexcept;
-    void setActiveMidiLayers(Array<MidiSequence *> tracks,
-        MidiSequence *primaryLayer);
+    void setSelectedTracks(Array<WeakReference<MidiTrack>> tracks,
+        WeakReference<MidiTrack> activeTrack);
 
     void setRowHeight(const int newRowHeight);
-    inline int getRowHeight() const
+    inline int getRowHeight() const noexcept
     { return this->rowHeight; }
 
-    inline int getNumRows() const
+    inline int getNumRows() const noexcept
     { return this->numRows; }
 
     //===------------------------------------------------------------------===//
@@ -128,13 +123,6 @@ public:
         const Rectangle<int> &rectangle) override;
 
     //===------------------------------------------------------------------===//
-    // ClipboardOwner
-    //===------------------------------------------------------------------===//
-
-    ValueTree clipboardCopy() const override;
-    void clipboardPaste(const ValueTree &tree) override;
-
-    //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
@@ -162,8 +150,7 @@ public:
     
 private:
 
-    Array<MidiSequence *> activeLayers;
-    MidiSequence *primaryActiveLayer;
+    Array<WeakReference<MidiTrack>> selectedTracks;
 
 private:
 

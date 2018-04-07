@@ -43,16 +43,13 @@ public:
     void forceRestoreLastOpenedPage();
 
     Rectangle<int> getPageBounds() const;
-    static constexpr int getScrollerHeight()
-    {
-        return (40 + 32);
-    }
+    static constexpr int getScrollerHeight() { return (40 + 32); }
     
     //===------------------------------------------------------------------===//
     // Pages and headline
     //===------------------------------------------------------------------===//
 
-    void showPage(Component *page, TreeItem *source = nullptr);
+    void showPage(Component *page, TreeItem *source);
     bool isShowingPage(Component *page) const noexcept;
 
     void showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource);

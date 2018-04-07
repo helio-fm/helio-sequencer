@@ -28,7 +28,6 @@
 #include "Icons.h"
 #include "HybridRoll.h"
 #include "MidiSequence.h"
-#include "InternalClipboard.h"
 #include "CommandItemComponent.h"
 #include "App.h"
 #include "MainWindow.h"

@@ -247,7 +247,7 @@ void Headline::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSourc
     this->selectionItem->setAlpha(this->getAlphaForAnimation());
     this->selectionItem->toBack();
     const auto finalPos = this->selectionItem->getBounds().withX(x);
-    this->animator.animateComponent(this->selectionItem, finalPos, 1.f, 200, false, 1.f, 0.f);
+    this->animator.animateComponent(this->selectionItem, finalPos, 1.f, 150, false, 1.f, 0.f);
 
     this->bg->toBack();
 }
@@ -261,7 +261,7 @@ void Headline::hideSelectionMenu()
         //const auto finalPos = this->selectionItem->getBounds().translated(-w, 0);
         const auto finalPos = this->selectionItem->getBounds().withX(HEADLINE_ROOT_X);
         this->animator.cancelAnimation(this->selectionItem, false);
-        this->animator.animateComponent(this->selectionItem, finalPos, this->getAlphaForAnimation(), 200, true, 0.f, 1.f);
+        this->animator.animateComponent(this->selectionItem, finalPos, this->getAlphaForAnimation(), 150, true, 0.f, 1.f);
         this->selectionItem = nullptr;
     }
 }

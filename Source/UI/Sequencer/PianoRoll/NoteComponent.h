@@ -18,11 +18,12 @@
 #pragma once
 
 class PianoRoll;
+class MidiTrack;
 
-#include "HybridRollEventComponent.h"
+#include "MidiEventComponent.h"
 #include "Note.h"
 
-class NoteComponent final : public HybridRollEventComponent
+class NoteComponent final : public MidiEventComponent
 {
 public:
 
@@ -53,7 +54,7 @@ public:
     void updateColours() override;
 
     //===------------------------------------------------------------------===//
-    // HybridRollEventComponent
+    // MidiEventComponent
     //===------------------------------------------------------------------===//
 
     void setSelected(bool selected) override;
@@ -84,7 +85,7 @@ protected:
     Note anchor;
     Note groupScalingAnchor;
 
-    bool belongsToAnySequence(const Array<MidiSequence *> &sequences) const;
+    bool belongsToAnyTrack(const Array<WeakReference<MidiTrack>> &tracks) const;
     void activateCorrespondingTrack(bool selectOthers, bool deselectOthers);
 
     void setNoCheckpointNeededForNextAction();
@@ -132,7 +133,7 @@ protected:
     Colour colourVolume;
 
     friend class PianoRoll;
-    friend class PianoRollToolbox;
+    friend class SequencerOperations;
     friend class NoteResizerLeft;
     friend class NoteResizerRight;
     

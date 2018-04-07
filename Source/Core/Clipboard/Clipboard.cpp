@@ -24,35 +24,35 @@
 
 // todo multiple clipboards?
 
-void InternalClipboard::copy(const ClipboardOwner &owner, bool mirrorToSystemClipboard /*= false*/)
+void Clipboard::copy(const ClipboardOwner &owner, bool mirrorToSystemClipboard /*= false*/)
 {
     App::Helio().getClipboard()->copyFrom(owner, mirrorToSystemClipboard);
 }
 
-void InternalClipboard::paste(ClipboardOwner &owner)
+void Clipboard::paste(ClipboardOwner &owner)
 {
     App::Helio().getClipboard()->pasteTo(owner);
 }
 
-ValueTree InternalClipboard::getCurrentContent()
+ValueTree Clipboard::getCurrentContent()
 {
     return App::Helio().getClipboard()->clipboard;
 }
 
-String InternalClipboard::getCurrentContentAsString()
+String Clipboard::getCurrentContentAsString()
 {
-    if (InternalClipboard::getCurrentContent().isValid())
+    if (Clipboard::getCurrentContent().isValid())
     {
         String text;
         static XmlSerializer serializer;
-        serializer.saveToString(text, InternalClipboard::getCurrentContent());
+        serializer.saveToString(text, Clipboard::getCurrentContent());
         return text;
     }
     
     return {};
 }
 
-void InternalClipboard::copyFrom(const ClipboardOwner &owner, bool mirrorToSystemClipboard /*= false*/)
+void Clipboard::copyFrom(const ClipboardOwner &owner, bool mirrorToSystemClipboard /*= false*/)
 {
     this->clipboard = owner.clipboardCopy();
 
@@ -62,7 +62,7 @@ void InternalClipboard::copyFrom(const ClipboardOwner &owner, bool mirrorToSyste
     }
 }
 
-void InternalClipboard::pasteTo(ClipboardOwner &owner)
+void Clipboard::pasteTo(ClipboardOwner &owner)
 {
     if (this->clipboard.isValid())
     {

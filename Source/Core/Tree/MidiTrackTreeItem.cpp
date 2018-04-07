@@ -60,7 +60,7 @@ MidiTrackTreeItem::~MidiTrackTreeItem()
     if (this->lastFoundParent != nullptr)
     {
         // Important: first notify
-        this->lastFoundParent->hideEditor(this->sequence, this);
+        this->lastFoundParent->hideEditor(this, this);
         this->lastFoundParent->broadcastRemoveTrack(this);
         // Then disconnect from the tree
         this->removeItemFromParent();
@@ -77,7 +77,7 @@ void MidiTrackTreeItem::showPage()
 {
     if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
     {
-        parentProject->showLinearEditor(this->sequence, this);
+        parentProject->showLinearEditor(this, this);
     }
 }
 

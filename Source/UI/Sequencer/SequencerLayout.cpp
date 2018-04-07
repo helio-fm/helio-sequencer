@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "SequencerLayout.h"
-#include "MidiSequence.h"
 #include "AutomationSequence.h"
 #include "PianoRoll.h"
 #include "PatternRoll.h"
@@ -613,14 +612,14 @@ void SequencerLayout::showPatternEditor()
     }
 }
 
-void SequencerLayout::showLinearEditor(Array<MidiSequence *> tracks, MidiSequence *primaryTrack)
+void SequencerLayout::showLinearEditor(Array<WeakReference<MidiTrack>> tracks, WeakReference<MidiTrack> primaryTrack)
 {
     if (this->rollContainer->isPatternMode())
     {
         this->rollContainer->startRollSwitchAnimation();
     }
 
-    this->pianoRoll->setActiveMidiLayers(tracks, primaryTrack);
+    this->pianoRoll->setSelectedTracks(tracks, primaryTrack);
 }
 
 void SequencerLayout::hideAutomationEditor(AutomationSequence *sequence)

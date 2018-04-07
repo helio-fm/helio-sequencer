@@ -26,7 +26,7 @@ namespace VCS
     public:
 
         TrackedItemsSource() {}
-        virtual ~TrackedItemsSource() = 0;
+        virtual ~TrackedItemsSource() {};
 
         virtual String getVCSName() const = 0;
 

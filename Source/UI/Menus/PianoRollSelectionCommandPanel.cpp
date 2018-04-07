@@ -18,8 +18,10 @@
 #include "Common.h"
 #include "PianoRollSelectionCommandPanel.h"
 #include "ArpeggiatorsManager.h"
+#include "SequencerOperations.h"
 #include "CommandIDs.h"
 #include "Icons.h"
+#include "App.h"
 
 static CommandPanel::Items createDefaultPanel()
 {
@@ -107,9 +109,31 @@ PianoRollSelectionCommandPanel::PianoRollSelectionCommandPanel(WeakReference<Las
 
 void PianoRollSelectionCommandPanel::handleCommandMessage(int commandId)
 {
+    jassert(this->lasso != nullptr);
+    const Lasso &selectionReference = *this->lasso;
+
     if (commandId == CommandIDs::Back)
     {
         this->updateContent(createDefaultPanel(), CommandPanel::SlideRight);
+        return;
+    }
+    else if (commandId == CommandIDs::CopyEvents)
+    {
+        SequencerOperations::copyToClipboard(App::Clipboard(), selectionReference);
+        this->dismiss();
+        return;
+    }
+    else if (commandId == CommandIDs::CutEvents)
+    {
+        SequencerOperations::copyToClipboard(App::Clipboard(), selectionReference);
+        SequencerOperations::deleteSelection(*this->lasso);
+        this->dismiss();
+        return;
+    }
+    else if (commandId == CommandIDs::DeleteEvents)
+    {
+        SequencerOperations::deleteSelection(selectionReference);
+        this->dismiss();
         return;
     }
     else if (commandId == CommandIDs::ArpeggiateNotes)

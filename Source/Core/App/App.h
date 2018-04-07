@@ -17,7 +17,8 @@
 
 #pragma once
 
-#include "HelioLogger.h"
+#include "Logger.h"
+#include "Clipboard.h"
 
 #if HELIO_DESKTOP
 #   define APP_VERSION_MAJOR "1"
@@ -38,7 +39,6 @@ class HelioTheme;
 class Config;
 class ApiCore;
 class AudioCore;
-class InternalClipboard;
 class SessionService;
 class UpdatesService;
 
@@ -58,6 +58,7 @@ public:
     static class MainLayout &Layout() noexcept;
     static class MainWindow &Window() noexcept;
     static class Config &Config() noexcept;
+    static class Clipboard &Clipboard() noexcept;
 
     static Point<double> getScreenInCm();
     static bool isRunningOnPhone();
@@ -95,21 +96,21 @@ public:
     // Accessors
     //===------------------------------------------------------------------===//
 
-    InternalClipboard *getClipboard() const noexcept;
     SessionService *getSessionService() const noexcept;
     HelioTheme *getTheme() const noexcept;
     ResourceManager &getResourceManagerFor(const Identifier &id) const;
 
 private:
 
-    HelioLogger logger;
-    ScopedPointer<HelioTheme> theme;
-    ScopedPointer<InternalClipboard> clipboard;
+    class DebugLogger logger;
+    class Clipboard clipboard;
+
+    ScopedPointer<class HelioTheme> theme;
     ScopedPointer<class Config> config;
     ScopedPointer<class Workspace> workspace;
     ScopedPointer<class MainWindow> window;
-    ScopedPointer<SessionService> sessionService;
-    ScopedPointer<UpdatesService> updatesService;
+    ScopedPointer<class SessionService> sessionService;
+    ScopedPointer<class UpdatesService> updatesService;
 
     typedef HashMap<Identifier, ResourceManager *, IdentifierHash> ResourceManagers;
     ResourceManagers resourceManagers;

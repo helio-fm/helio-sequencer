@@ -318,12 +318,11 @@ namespace Serialization
     namespace Clipboard
     {
         static const Identifier clipboard = "clipboard";
-        static const Identifier layer = "layer";
-        static const Identifier layerId = "layerId";
-        static const Identifier pattern = "pattern";
-        static const Identifier patternId = "patternId";
+        static const Identifier track = "track";
+        static const Identifier trackId = "trackId";
+        static const Identifier trackType = "trackType";
+        static const Identifier trackMetaInfo = "trackMetaInfo";
         static const Identifier firstBeat = "firstBeat";
-        static const Identifier lastBeat = "lastBeat";
     } // namespace Clipboard
 
     namespace VCS

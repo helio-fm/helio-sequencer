@@ -22,7 +22,7 @@
 #include "LogComponent.h"
 
 //[MiscUserDefs]
-#include "HelioLogger.h"
+#include "Logger.h"
 //[/MiscUserDefs]
 
 LogComponent::LogComponent()
@@ -46,7 +46,7 @@ LogComponent::LogComponent()
     setSize (600, 220);
 
     //[Constructor]
-    if (HelioLogger *hl = dynamic_cast<HelioLogger *>(Logger::getCurrentLogger()))
+    if (DebugLogger *hl = dynamic_cast<DebugLogger *>(Logger::getCurrentLogger()))
     {
         hl->addChangeListener(this);
     }
@@ -56,7 +56,7 @@ LogComponent::LogComponent()
 LogComponent::~LogComponent()
 {
     //[Destructor_pre]
-    if (HelioLogger *hl = dynamic_cast<HelioLogger *>(Logger::getCurrentLogger()))
+    if (DebugLogger *hl = dynamic_cast<DebugLogger *>(Logger::getCurrentLogger()))
     {
         hl->removeChangeListener(this);
     }
@@ -117,7 +117,7 @@ void LogComponent::changeListenerCallback(ChangeBroadcaster *source)
 
 void LogComponent::syncWithLog()
 {
-    if (HelioLogger *hl = dynamic_cast<HelioLogger *>(Logger::getCurrentLogger()))
+    if (DebugLogger *hl = dynamic_cast<DebugLogger *>(Logger::getCurrentLogger()))
     {
         this->logText->setText(hl->getText());
         this->logText->moveCaretToEnd();

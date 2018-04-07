@@ -36,8 +36,8 @@
 #include "PlayerThread.h"
 #include "SequencerLayout.h"
 #include "MidiEvent.h"
-#include "MidiSequence.h"
-#include "PianoSequence.h"
+#include "MidiTrack.h"
+#include "PianoTrackTreeItem.h"
 #include "AutomationSequence.h"
 #include "Icons.h"
 #include "ProjectInfo.h"
@@ -278,47 +278,36 @@ void ProjectTreeItem::recreatePage()
     this->sequencerLayout->deserialize(layoutState);
 }
 
-void ProjectTreeItem::showPatternEditor(TreeItem *source)
+void ProjectTreeItem::showPatternEditor(WeakReference<TreeItem> source)
 {
+    jassert(source != nullptr);
     this->sequencerLayout->showPatternEditor();
     App::Layout().showPage(this->sequencerLayout, source);
 }
 
-void ProjectTreeItem::showLinearEditor(MidiSequence *activeSequence, TreeItem *source)
+void ProjectTreeItem::showLinearEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeItem> source)
 {
-    if (PianoSequence *pianoLayer = dynamic_cast<PianoSequence *>(activeSequence))
+    jassert(source != nullptr);
+    jassert(activeTrack != nullptr);
+
+    if (PianoTrackTreeItem *pianoTrack = dynamic_cast<PianoTrackTreeItem *>(activeTrack.get()))
     {
-        // todo collect selected pianotreeitems
-        Array<PianoTrackTreeItem *> pianoTreeItems = this->findChildrenOfType<PianoTrackTreeItem>(true);
-        Array<MidiSequence *> pianoSequences;
-
-        for (int i = 0; i < pianoTreeItems.size(); ++i)
-        {
-            pianoSequences.add(pianoTreeItems.getUnchecked(i)->getSequence());
-        }
-        
-        this->sequencerLayout->showLinearEditor(pianoSequences, activeSequence);
+        Array<WeakReference<MidiTrack>> activeTracks;
+        activeTracks.addArray(this->findChildrenOfType<PianoTrackTreeItem>(true));
+        this->sequencerLayout->showLinearEditor(activeTracks, activeTrack);
         this->lastShownTrack = source;
-
         App::Layout().showPage(this->sequencerLayout, source);
     }
-    else if (AutomationSequence *autoLayer = dynamic_cast<AutomationSequence *>(activeSequence))
-    {
-        const bool editorWasShown = this->sequencerLayout->toggleShowAutomationEditor(autoLayer);
-        // TODO I really need a full-featured automation editor here >_<
-    }
 }
 
-void ProjectTreeItem::hideEditor(MidiSequence *activeLayer, TreeItem *source)
+void ProjectTreeItem::hideEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeItem> source)
 {
-    if (AutomationSequence *autoLayer = dynamic_cast<AutomationSequence *>(activeLayer))
-    {
-        this->sequencerLayout->hideAutomationEditor(autoLayer);
-        // TODO I really need a full-featured automation editor here >_<
-    }
+    jassert(source != nullptr);
+    jassert(activeTrack != nullptr);
+    // TODO hide all automation editors if any
 }
 
-WeakReference<TreeItem> ProjectTreeItem::getLastShownTrack() const
+WeakReference<TreeItem> ProjectTreeItem::getLastShownTrack() const noexcept
 {
     return this->lastShownTrack;
 }
@@ -395,7 +384,7 @@ UndoStack *ProjectTreeItem::getUndoStack() const noexcept
 
 void ProjectTreeItem::checkpoint()
 {
-    this->getUndoStack()->beginNewTransaction(String::empty);
+    this->getUndoStack()->beginNewTransaction({});
 }
 
 void ProjectTreeItem::undo()

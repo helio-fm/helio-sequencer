@@ -61,7 +61,7 @@ void MidiSequence::sort()
 
 void MidiSequence::checkpoint() noexcept
 {
-    this->getUndoStack()->beginNewTransaction(String::empty);
+    this->getUndoStack()->beginNewTransaction({});
 }
 
 void MidiSequence::undo()

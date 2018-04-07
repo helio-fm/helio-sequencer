@@ -24,9 +24,9 @@
 
 #include "HybridRollExpandMark.h"
 #include "MidiEvent.h"
-#include "HybridRollEventComponent.h"
+#include "MidiEventComponent.h"
 #include "MidiSequence.h"
-#include "HybridLassoComponent.h"
+#include "SelectionComponent.h"
 #include "ProjectTreeItem.h"
 #include "TriggersTrackMap.h"
 
@@ -37,7 +37,6 @@
 #include "InsertSpaceHelper.h"
 #include "TimelineWarningMarker.h"
 
-#include "InternalClipboard.h"
 #include "SerializationKeys.h"
 
 #include "LongTapController.h"
@@ -57,7 +56,7 @@
 #include "AnnotationsSequence.h"
 #include "KeySignaturesSequence.h"
 #include "TimeSignaturesSequence.h"
-#include "PianoRollToolbox.h"
+#include "SequencerOperations.h"
 #include "HybridRollListener.h"
 #include "VersionControlTreeItem.h"
 
@@ -117,6 +116,7 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject, Viewport &viewportRef,
     lastTransportPosition(0.0),
     playheadOffset(0.0),
     shouldFollowPlayhead(false),
+    activeTrack(nullptr),
     barLineColour(this->findColour(ColourIDs::Roll::barLine)),
     barLineBevelColour(this->findColour(ColourIDs::Roll::barLineBevel)),
     beatLineColour(this->findColour(ColourIDs::Roll::beatLine)),
@@ -153,7 +153,7 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject, Viewport &viewportRef,
 
     this->playhead = new Playhead(*this, this->project.getTransport(), this);
 
-    this->lassoComponent = new HybridLassoComponent();
+    this->lassoComponent = new SelectionComponent();
     this->lassoComponent->setWantsKeyboardFocus(false);
     this->lassoComponent->setFocusContainer(false);
 
@@ -316,9 +316,14 @@ void HybridRoll::removeOwnedMap(Component *existingTrackMap)
 // Modes
 //===----------------------------------------------------------------------===//
 
-HybridRollEditMode HybridRoll::getEditMode() const
+HybridRollEditMode HybridRoll::getEditMode() const noexcept
 {
     return this->project.getEditMode();
+}
+
+WeakReference<MidiTrack> HybridRoll::getActiveTrack() const noexcept
+{
+    return this->activeTrack;
 }
 
 bool HybridRoll::isInSelectionMode() const
@@ -900,7 +905,7 @@ void HybridRoll::deselectAll()
     this->selection.deselectAll();
 }
 
-HybridLassoComponent *HybridRoll::getLasso() const
+SelectionComponent *HybridRoll::getSelectionComponent() const noexcept
 {
     return this->lassoComponent;
 }
@@ -1598,19 +1603,19 @@ void HybridRoll::endWipingSpaceIfNeeded()
             const bool isAnyModifierKeyDown =
                 Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isAnyModifierKeyDown();
 
-            PianoRollToolbox::wipeSpace(isAnyModifierKeyDown ? 
+            SequencerOperations::wipeSpace(isAnyModifierKeyDown ? 
                 this->project.getSelectedTracks() : this->project.getTracks(), leftBeat, rightBeat);
 
             if (! isAnyModifierKeyDown)
             {
                 if (this->wipeSpaceHelper->isInverted())
                 {
-                    PianoRollToolbox::shiftEventsToTheLeft(this->project.getTracks(),
+                    SequencerOperations::shiftEventsToTheLeft(this->project.getTracks(),
                         leftBeat, (rightBeat - leftBeat), false);
                 }
                 else
                 {
-                    PianoRollToolbox::shiftEventsToTheRight(this->project.getTracks(), 
+                    SequencerOperations::shiftEventsToTheRight(this->project.getTracks(), 
                         leftBeat, -(rightBeat - leftBeat), false);
                 }
             }
@@ -1676,12 +1681,12 @@ void HybridRoll::continueInsertingSpace(const MouseEvent &e)
 
             if (isInverted)
             {
-                PianoRollToolbox::shiftEventsToTheLeft(this->project.getTracks(),
+                SequencerOperations::shiftEventsToTheLeft(this->project.getTracks(),
                     rightBeat, changeDelta, shouldCheckpoint);
             }
             else
             {
-                PianoRollToolbox::shiftEventsToTheRight(this->project.getTracks(),
+                SequencerOperations::shiftEventsToTheRight(this->project.getTracks(),
                     leftBeat, changeDelta, shouldCheckpoint);
             }
 

@@ -107,8 +107,9 @@ void MainLayout::forceRestoreLastOpenedPage()
 // Pages
 //===----------------------------------------------------------------------===//
 
-void hideMarkersRecursive(TreeItem *startFrom)
+void hideMarkersRecursive(WeakReference<TreeItem> startFrom)
 {
+    jassert(startFrom != nullptr);
     startFrom->setMarkerVisible(false);
 
     for (int i = 0; i < startFrom->getNumSubItems(); ++i)
@@ -122,11 +123,14 @@ void hideMarkersRecursive(TreeItem *startFrom)
 
 bool MainLayout::isShowingPage(Component *page) const noexcept
 {
+    jassert(page != nullptr);
     return (this->currentContent == page);
 }
 
 void MainLayout::showPage(Component *page, TreeItem *source)
 {
+    jassert(page != nullptr);
+
     App::dismissAllModalComponents();
     
 #if HAS_FADING_PAGECHANGE
@@ -143,7 +147,8 @@ void MainLayout::showPage(Component *page, TreeItem *source)
 
     if (this->currentContent != nullptr)
     {
-        // баг здесь. currentContent может быть композитным компонентом типа оригами, в котором уже уничтожен ключевой кусок
+        // FIXME: currentContent might be a composite layout,
+        // which is not destroyed yet, but has one of it's components destroyed
 #if HAS_FADING_PAGECHANGE
         //this->currentContent->toFront(false);
         //this->pageFader.animateComponent(this->currentContent, this->currentContent->getBounds(), 0.f, 200, true, 0.0, 0.0);
