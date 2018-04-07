@@ -32,7 +32,7 @@
 #include "PatternRoll.h"
 
 #include "HelioCallout.h"
-#include "HybridLassoComponent.h"
+#include "SelectionComponent.h"
 #include "PanelBackgroundA.h"
 #include "PanelBackgroundB.h"
 #include "PanelBackgroundC.h"
@@ -149,27 +149,27 @@ void HelioTheme::drawLasso(Graphics &g, Component &lassoComp)
     const float dashLength = 7.f;
 #endif
     
-    Rectangle<float> r(1.0f, 1.0f,
-                       float(lassoComp.getLocalBounds().getWidth()) - 2.0f,
-                       float(lassoComp.getLocalBounds().getHeight()) - 2.0f);
+    const Rectangle<float> r(0.5f, 0.5f,
+        float(lassoComp.getLocalBounds().getWidth()) - 1.0f,
+        float(lassoComp.getLocalBounds().getHeight()) - 1.0f);
     
-    g.setColour(lassoComp.findColour(0x1000440 /*lassoFillColourId*/));
+    g.setColour(lassoComp.findColour(ColourIDs::SelectionComponent::fill));
     g.fillRoundedRectangle(lassoComp.getLocalBounds().toFloat(), cornersRound);
     
-    g.setColour(lassoComp.findColour(0x1000441 /*lassoOutlineColourId*/));
+    g.setColour(lassoComp.findColour(ColourIDs::SelectionComponent::outline));
     
     Path path;
     path.addQuadrilateral(r.getBottomRight().getX(), r.getBottomRight().getY(),
-                          r.getTopRight().getX(), r.getTopRight().getY(),
-                          r.getTopLeft().getX(), r.getTopLeft().getY(),
-                          r.getBottomLeft().getX(), r.getBottomLeft().getY()
-                          );
+        r.getTopRight().getX(), r.getTopRight().getY(),
+        r.getTopLeft().getX(), r.getTopLeft().getY(),
+        r.getBottomLeft().getX(), r.getBottomLeft().getY());
     
     path = path.createPathWithRoundedCorners(cornersRound);
     
     Array<float> dashes;
     dashes.add(dashLength);
     dashes.add(dashLength);
+
     PathStrokeType(dashWidth).createDashedStroke(path, path, dashes.getRawDataPointer(), dashes.size());
     g.strokePath(path, PathStrokeType(dashWidth));
 }
@@ -807,9 +807,9 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(TreeView::dragAndDropIndicatorColourId, Colours::black.withAlpha(0.15f));
 
     // Lasso
-    this->setColour(LassoComponent<void *>::lassoFillColourId, s->getLassoFillColour().withAlpha(0.15f));
-    this->setColour(LassoComponent<void *>::lassoOutlineColourId, s->getLassoBorderColour().withAlpha(0.4f));
-
+    this->setColour(ColourIDs::SelectionComponent::fill, s->getLassoFillColour().withAlpha(0.15f));
+    this->setColour(ColourIDs::SelectionComponent::outline, s->getLassoBorderColour().withAlpha(0.4f));
+   
     // Helio colours:
 
     // A hack for icon base colors

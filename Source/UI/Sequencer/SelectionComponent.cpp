@@ -17,15 +17,14 @@
 
 #include "Common.h"
 #include "Lasso.h"
-#include "HybridLassoComponent.h"
+#include "SelectionComponent.h"
 #include "HelioTheme.h"
 
-HybridLassoComponent::HybridLassoComponent() :
+SelectionComponent::SelectionComponent() :
     source(nullptr) {}
 
-void HybridLassoComponent::beginLasso(const MouseEvent &e, LassoSource<SelectableComponent *> *const lassoSource)
+void SelectionComponent::beginLasso(const MouseEvent &e, LassoSource<SelectableComponent *> *const lassoSource)
 {
-    jassert(source == nullptr);
     jassert(lassoSource != nullptr);
     jassert(getParentComponent() != nullptr);
 
@@ -39,7 +38,7 @@ void HybridLassoComponent::beginLasso(const MouseEvent &e, LassoSource<Selectabl
     }
 }
 
-void HybridLassoComponent::dragLasso(const MouseEvent &e)
+void SelectionComponent::dragLasso(const MouseEvent &e)
 {
     if (source != nullptr)
     {
@@ -67,7 +66,7 @@ void HybridLassoComponent::dragLasso(const MouseEvent &e)
     }
 }
 
-void HybridLassoComponent::endLasso()
+void SelectionComponent::endLasso()
 {
     if (source != nullptr)
     {
@@ -77,12 +76,12 @@ void HybridLassoComponent::endLasso()
     }
 }
 
-bool HybridLassoComponent::isDragging() const
+bool SelectionComponent::isDragging() const
 {
     return (this->source != nullptr);
 }
 
-void HybridLassoComponent::paint(Graphics &g)
+void SelectionComponent::paint(Graphics &g)
 {
     this->getLookAndFeel().drawLasso(g, *this);
     jassert(isMouseButtonDownAnywhere());

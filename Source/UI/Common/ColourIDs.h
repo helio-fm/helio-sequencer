@@ -105,4 +105,10 @@ namespace ColourIDs
         static const int borderLineDark         = 0x2001200;
         static const int borderLineLight        = 0x2001201;
     }
+
+    namespace SelectionComponent
+    {
+        static const int fill                   = 0x2001300;
+        static const int outline                = 0x2001301;
+    }
 } // namespace ColourIDs

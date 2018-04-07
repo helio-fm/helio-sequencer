@@ -21,6 +21,8 @@
 class KeySignatureEvent;
 
 #include "KeySignaturesTrackMap.h"
+
+// TODO inherit from MidiRollComponent
 //[/Headers]
 
 

@@ -134,7 +134,7 @@ void Headline::handleAsyncUpdate()
     {
         const auto finalPos = this->selectionItem->getBounds().withX(posX - HEADLINE_ITEMS_OVERLAP);
         this->animator.cancelAnimation(this->selectionItem, false);
-        this->animator.animateComponent(this->selectionItem, finalPos, 1.f, 200, false, 1.f, 0.f);
+        this->animator.animateComponent(this->selectionItem, finalPos, 1.f, 250, false, 1.f, 0.f);
         this->selectionItem->toBack();
         this->bg->toBack();
     }
@@ -228,7 +228,6 @@ void Headline::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSourc
         return;
     }
 
-    // 1 - if exists and up to date, return
     const bool upToDate = (this->selectionItem != nullptr &&
         !this->selectionItem->getDataSource().wasObjectDeleted() &&
         this->selectionItem->getDataSource() == menuSource);
@@ -238,10 +237,8 @@ void Headline::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSourc
         return;
     }
 
-    // 2 hide existing outdated menu
     this->hideSelectionMenu();
 
-    // 3 show an optional selection menu
     const auto x = this->getChainWidth() + HEADLINE_ROOT_X;
     this->selectionItem = new HeadlineItem(menuSource, *this);
     this->selectionItem->updateContent();
@@ -252,7 +249,6 @@ void Headline::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSourc
     const auto finalPos = this->selectionItem->getBounds().withX(x);
     this->animator.animateComponent(this->selectionItem, finalPos, 1.f, 200, false, 1.f, 0.f);
 
-    // 4 update correct order
     this->bg->toBack();
 }
 

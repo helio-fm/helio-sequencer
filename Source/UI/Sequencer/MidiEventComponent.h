@@ -24,13 +24,13 @@ class HybridRoll;
 #include "FloatBoundsComponent.h"
 #include "SelectableComponent.h"
 
-class HybridRollEventComponent :
+class MidiEventComponent :
     public FloatBoundsComponent, 
     public SelectableComponent
 {
 public:
 
-    HybridRollEventComponent(HybridRoll &editor, bool ghostMode = false);
+    MidiEventComponent(HybridRoll &editor, bool ghostMode = false);
 
     bool isActive() const noexcept;
     void setActive(bool val, bool force = false);
@@ -45,7 +45,7 @@ public:
     //===------------------------------------------------------------------===//
 
     void mouseDown(const MouseEvent &e) override;
-    static int compareElements(HybridRollEventComponent *first, HybridRollEventComponent *second) noexcept;
+    static int compareElements(MidiEventComponent *c1, MidiEventComponent *c2) noexcept;
 
     //===------------------------------------------------------------------===//
     // SelectableComponent
@@ -69,5 +69,5 @@ protected:
     // если его не учитывать, то ноты двигаются неестественно
     Point<int> clickOffset;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HybridRollEventComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiEventComponent)
 };

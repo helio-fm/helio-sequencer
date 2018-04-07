@@ -54,7 +54,7 @@ void Lasso::invalidateCache()
     this->selectionsCache.clear();
 }
 
-const Lasso::Lasso::GroupedSelections & Lasso::getGroupedSelections() const
+const Lasso::Lasso::GroupedSelections &Lasso::getGroupedSelections() const
 {
     if (this->selectionsCache.size() == 0)
     {

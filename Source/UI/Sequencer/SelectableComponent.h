@@ -17,38 +17,14 @@
 
 #pragma once
 
-class HelioLogger : public Logger,
-                    public ChangeBroadcaster
+class SelectableComponent : public virtual Component
 {
 public:
 
-    String getText()
-    {
-#if JUCE_DEBUG
-        const ScopedReadLock lock(this->logLock);
-        return this->log;
-#else
-        return String::empty;
-#endif
-    }
+    virtual ~SelectableComponent() {};
 
-protected:
-
-    void logMessage(const String &message) override
-    {
-#if JUCE_DEBUG
-        const ScopedWriteLock lock(this->logLock);
-        this->log += message;
-        this->log += newLine;
-        Logger::outputDebugString(message);
-        this->sendChangeMessage();
-#endif
-    }
-
-private:
-
-    ReadWriteLock logLock;
-
-    String log;
+    virtual void setSelected(bool selected) = 0;
+    virtual bool isSelected() const = 0;
+    virtual String getSelectionGroupId() const = 0;
 
 };

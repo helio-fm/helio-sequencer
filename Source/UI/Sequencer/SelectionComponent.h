@@ -19,11 +19,11 @@
 
 #include "SelectableComponent.h"
 
-class HybridLassoComponent : public Component
+class SelectionComponent final : public Component
 {
 public:
 
-    HybridLassoComponent();
+    SelectionComponent();
 
     virtual void beginLasso(const MouseEvent &e,
         LassoSource<SelectableComponent *> *const lassoSource);
@@ -45,5 +45,5 @@ private:
 
     Point<int> dragStartPos;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HybridLassoComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SelectionComponent)
 };

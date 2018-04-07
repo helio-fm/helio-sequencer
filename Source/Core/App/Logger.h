@@ -17,14 +17,40 @@
 
 #pragma once
 
-class SelectableComponent : public virtual Component
+class DebugLogger : public Logger,
+                    public ChangeBroadcaster
 {
 public:
 
-    virtual void setSelected(bool selected) = 0;
+    DebugLogger() = default;
 
-    virtual bool isSelected() const = 0;
+    String getText() const
+    {
+#if JUCE_DEBUG
+        const ScopedReadLock lock(this->logLock);
+        return this->log;
+#else
+        return {};
+#endif
+    }
 
-    virtual String getSelectionGroupId() const = 0;
+protected:
 
+    void logMessage(const String &message) override
+    {
+#if JUCE_DEBUG
+        const ScopedWriteLock lock(this->logLock);
+        this->log += message;
+        this->log += newLine;
+        Logger::outputDebugString(message);
+        this->sendChangeMessage();
+#endif
+    }
+
+private:
+
+    ReadWriteLock logLock;
+    String log;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DebugLogger)
 };
