@@ -156,22 +156,20 @@ float MidiSequence::getLengthInBeats() const noexcept
     return this->getLastBeat() - this->getFirstBeat();
 }
 
-
 MidiTrack *MidiSequence::getTrack() const noexcept
 {
     return &this->track;
 }
 
-ProjectTreeItem *MidiSequence::getProject()
+ProjectTreeItem *MidiSequence::getProject() const noexcept
 {
     return this->eventDispatcher.getProject();
 }
 
-UndoStack *MidiSequence::getUndoStack()
+UndoStack *MidiSequence::getUndoStack() const noexcept
 {
     return this->eventDispatcher.getProject()->getUndoStack();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Events change listener

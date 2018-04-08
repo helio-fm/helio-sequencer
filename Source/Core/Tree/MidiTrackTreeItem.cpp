@@ -452,11 +452,10 @@ void MidiTrackTreeItem::dispatchPostRemoveClip(Pattern *const pattern)
     }
 }
 
-ProjectTreeItem *MidiTrackTreeItem::getProject() const
+ProjectTreeItem *MidiTrackTreeItem::getProject() const noexcept
 {
     return this->lastFoundParent;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Dragging

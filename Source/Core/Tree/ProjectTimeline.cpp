@@ -252,11 +252,10 @@ void ProjectTimeline::dispatchChangeClip(const Clip &oldClip, const Clip &newCli
 void ProjectTimeline::dispatchRemoveClip(const Clip &clip) {}
 void ProjectTimeline::dispatchPostRemoveClip(Pattern *const pattern) {}
 
-ProjectTreeItem *ProjectTimeline::getProject() const
+ProjectTreeItem *ProjectTimeline::getProject() const noexcept
 {
     return &this->project;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Serializable

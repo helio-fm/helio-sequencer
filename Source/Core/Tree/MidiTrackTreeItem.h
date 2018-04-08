@@ -99,7 +99,7 @@ public:
     void dispatchChangeTrackProperties(MidiTrack *const track) override;
     void dispatchChangeProjectBeatRange() override;
 
-    ProjectTreeItem *getProject() const override;
+    ProjectTreeItem *getProject() const noexcept override;
 
     //===------------------------------------------------------------------===//
     // Dragging
