@@ -369,7 +369,7 @@ struct JsonFormatter final
         if (headerComments.size() > 0)
         {
             if (!oneLine) { writeSpaces(out, indentLevel + indentSize); }
-            out << '/*';
+            out << "/*";
             if (!oneLine) { out << newLine; }
 
             for (const auto &comment : headerComments)
@@ -381,7 +381,7 @@ struct JsonFormatter final
             }
 
             if (!oneLine) { writeSpaces(out, indentLevel + indentSize); }
-            out << ' */';
+            out << " */";
             if (!oneLine) { out << newLine; }
         }
 
@@ -484,6 +484,10 @@ struct JsonFormatter final
         else if (v.isBool())
         {
             out << (static_cast<bool> (v) ? "true" : "false");
+        }
+        else if (v.isInt() || v.isInt64())
+        {
+            out << v.toString();
         }
         else if (v.isDouble())
         {
