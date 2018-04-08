@@ -19,7 +19,7 @@
 
 #include "MidiEvent.h"
 
-#define KEY_C5 60
+#define MIDDLE_C 60
 
 class Note final : public MidiEvent
 {

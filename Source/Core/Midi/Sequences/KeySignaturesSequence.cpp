@@ -60,7 +60,7 @@ void KeySignaturesSequence::importMidi(const MidiMessageSequence &sequence)
                 const double startTimestamp = message.getTimeStamp() / MIDI_IMPORT_SCALE;
                 const KeySignatureEvent signature(this,
                     isMajor ? Scale::getNaturalMajorScale() : Scale::getNaturalMiniorScale(),
-                    float(startTimestamp), KEY_C5 + rootKey);
+                    float(startTimestamp), MIDDLE_C + rootKey);
                 this->silentImport(signature);
             }
         }

@@ -277,7 +277,7 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
         MidiMessageSequence s;
         for (int i = 0; i < scaleKeys.size(); ++i)
         {
-            const int key = KEY_C5 + this->key + scaleKeys.getUnchecked(i);
+            const int key = MIDDLE_C + this->key + scaleKeys.getUnchecked(i);
 
             MidiMessage eventNoteOn(MidiMessage::noteOn(1, key, 1.f));
             const double startTime = double(i) * MS_PER_BEAT;
@@ -297,7 +297,7 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
         const auto triadKeys = scale->getTriad(Scale::Tonic, false);
         for (int i = 0; i < triadKeys.size(); ++i)
         {
-            const int key = KEY_C5 + this->key + triadKeys.getUnchecked(i);
+            const int key = MIDDLE_C + this->key + triadKeys.getUnchecked(i);
 
             MidiMessage eventNoteOn(MidiMessage::noteOn(1, key, 1.f));
             const double startTime = double(i) * MS_PER_BEAT;
