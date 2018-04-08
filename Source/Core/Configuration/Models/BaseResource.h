@@ -22,6 +22,7 @@ class BaseResource : public Serializable, public ReferenceCountedObject
 public:
 
     virtual String getResourceId() const = 0;
+    virtual Identifier getResourceIdProperty() const = 0;
 
     typedef ReferenceCountedObjectPtr<BaseResource> Ptr;
 

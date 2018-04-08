@@ -57,6 +57,11 @@ public:
         return static_cast<T>(this->resources[resourceId]);
     }
 
+    const int size() const noexcept
+    {
+        return this->resources.size();
+    }
+
     void updateBaseResource(const ValueTree &resource);
     void updateUserResource(const BaseResource::Ptr resource);
 
@@ -65,32 +70,30 @@ protected:
     void reset() override;
 
     void reloadResources();
-
-    // Loads base and user's config.
-    // Assumes that sub-classes won't reset on deserialization.
-    virtual void loadBaseResource(const ValueTree &tree);
-    virtual void loadUserResource(const ValueTree &tree);
-
+    
     virtual File getDownloadedResourceFile() const;
     virtual File getUsersResourceFile() const;
     virtual String getBuiltInResourceString() const;
 
     typedef HashMap<String, BaseResource::Ptr> Resources;
     Resources resources;
-
+    
 private: 
-
-    void saveUpdatedUserResource(const ValueTree &resource);
 
     const Identifier resourceName;
 
     struct BaseResourceComparator final : public BaseResource
     {
         String getResourceId() const override { return {}; }
+        Identifier getResourceIdProperty() const override { return {}; }
         ValueTree serialize() const override { return {}; }
         void deserialize(const ValueTree &tree) override {}
         void reset() override {}
     };
+
+    // Just keep user's data so that we are able to append
+    // more to it and re-save back:
+    ValueTree userResources;
 
     BaseResourceComparator comparator;
 

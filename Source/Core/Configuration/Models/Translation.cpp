@@ -52,6 +52,7 @@ void Translation::deserialize(const ValueTree &tree)
     if (!root.isValid()) { return; }
 
     this->id = root.getProperty(Translations::id).toString().toLowerCase();
+
     this->name = root.getProperty(Translations::name);
     this->author = root.getProperty(Translations::author);
     this->pluralEquation = root.getProperty(Translations::pluralEquation);
@@ -92,4 +93,9 @@ void Translation::reset()
 String Translation::getResourceId() const
 {
     return this->id; // i.e. "en", "ru" - should be unique
+}
+
+Identifier Translation::getResourceIdProperty() const
+{
+    return Serialization::Translations::id;
 }

@@ -49,24 +49,29 @@ void ResourceManager::updateBaseResource(const ValueTree &resource)
 void ResourceManager::updateUserResource(const BaseResource::Ptr resource)
 {
     this->resources.set(resource->getResourceId(), resource);
-    this->saveUpdatedUserResource(resource->serialize()); // TODO sync with server?
-    this->sendChangeMessage();
-}
 
-void ResourceManager::saveUpdatedUserResource(const ValueTree &resource)
-{
+    const ValueTree existingChild =
+        this->userResources.getChildWithProperty(resource->getResourceIdProperty(),
+            resource->getResourceId());
+
+    if (existingChild.isValid())
+    {
+        this->userResources.removeChild(existingChild, nullptr);
+    }
+
+    this->userResources.appendChild(resource->serialize(), nullptr);
+
+    // TODO sync with server?
     Logger::writeToLog("Updating user's resource file for " + this->resourceName.toString());
 
     //XmlSerializer serializer; // debug
     //BinarySerializer serializer;
     JsonSerializer serializer(false); // debug
     serializer.setHeaderComments({ "User-defined " + this->resourceName.toString(), "Feel free to edit manually" });
-    serializer.saveToFile(this->getUsersResourceFile(), resource);
+    serializer.saveToFile(this->getUsersResourceFile(), this->userResources);
 
-    this->loadUserResource(resource);
-
-    // Do not send update message here, since resource update should go silently
-    //this->sendChangeMessage();
+    // Should we really send update message here?
+    this->sendChangeMessage();
 }
 
 File ResourceManager::getDownloadedResourceFile() const
@@ -99,6 +104,10 @@ void ResourceManager::reloadResources()
 {
     bool shouldBroadcastChange = false;
 
+    // Reset and store an empty tree to append user objects to
+    this->reset();
+    this->userResources = this->serialize();
+
     // First, get base config (downloaded, or built-in)
     const File downloadedResource(this->getDownloadedResourceFile());
     if (downloadedResource.existsAsFile())
@@ -107,7 +116,7 @@ void ResourceManager::reloadResources()
         if (tree.isValid())
         {
             Logger::writeToLog("Found downloaded resource file for " + this->resourceName.toString());
-            this->loadBaseResource(tree);
+            this->deserialize(tree);
             shouldBroadcastChange = true;
         }
     }
@@ -118,20 +127,22 @@ void ResourceManager::reloadResources()
         if (tree.isValid())
         {
             Logger::writeToLog("Loading built-in resource for " + this->resourceName.toString());
-            this->loadBaseResource(tree);
+            this->deserialize(tree);
             shouldBroadcastChange = true;
         }
     }
 
     // Try to override base config with user's settings
     const File usersResource(this->getUsersResourceFile());
+
     if (usersResource.existsAsFile())
     {
         const auto tree(DocumentHelpers::load(usersResource));
         if (tree.isValid())
         {
             Logger::writeToLog("Found users resource file for " + this->resourceName.toString());
-            this->loadUserResource(tree);
+            this->deserialize(tree);
+            this->userResources = tree;
             shouldBroadcastChange = true;
         }
     }
@@ -140,17 +151,6 @@ void ResourceManager::reloadResources()
     {
         this->sendChangeMessage();
     }
-}
-
-void ResourceManager::loadBaseResource(const ValueTree &tree)
-{
-    this->reset();
-    this->deserialize(tree);
-}
-
-void ResourceManager::loadUserResource(const ValueTree &tree)
-{
-    this->deserialize(tree);
 }
 
 void ResourceManager::reset()

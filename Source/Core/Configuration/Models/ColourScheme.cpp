@@ -261,3 +261,8 @@ String ColourScheme::getResourceId() const
 {
     return this->name;
 }
+
+Identifier ColourScheme::getResourceIdProperty() const
+{
+    return UI::Colours::name;
+}
