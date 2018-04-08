@@ -28,6 +28,7 @@
 #include "AutomationSequence.h"
 #include "PianoSequence.h"
 #include "AnnotationsSequence.h"
+#include "KeySignaturesSequence.h"
 #include "MidiTrack.h"
 #include "Pattern.h"
 #include "SerializationKeys.h"
@@ -339,6 +340,12 @@ float SequencerOperations::findStartBeat(const Array<Note> &selection)
     return startBeat;
 }
 
+float SequencerOperations::findStartBeat(const WeakReference<Lasso> selection)
+{
+    if (selection != nullptr) { return findStartBeat(*selection); }
+    return 0.f;
+}
+
 float SequencerOperations::findEndBeat(const Array<Note> &selection)
 {
     if (selection.size() == 0)
@@ -360,6 +367,12 @@ float SequencerOperations::findEndBeat(const Array<Note> &selection)
     }
     
     return endBeat;
+}
+
+float SequencerOperations::findEndBeat(const WeakReference<Lasso> selection)
+{
+    if (selection != nullptr) { return findEndBeat(*selection); }
+    return 0.f;
 }
 
 static float snappedBeat(float beat, float snapsPerBeat)
@@ -1794,4 +1807,54 @@ void SequencerOperations::invertChord(Lasso &selection,
             }
         }
     }
+}
+
+// Tries to detect if there's a one key signature that affects the whole sequence.
+// If there's none, of if there's more than one, returns false.
+bool SequencerOperations::findHarmonicContext(const Lasso &selection,
+    WeakReference<MidiTrack> keysTrack, Scale::Ptr &outScale, Note::Key &outRootKey)
+{
+    const auto startBeat = SequencerOperations::findStartBeat(selection);
+    const auto endBeat = SequencerOperations::findEndBeat(selection);
+
+    if (const auto keySignatures = dynamic_cast<KeySignaturesSequence *>(keysTrack->getSequence()))
+    {
+        if (keySignatures->size() == 0)
+        {
+            return false;
+        }
+
+        const KeySignatureEvent *context = nullptr;
+
+        for (int i = 0; i < keySignatures->size(); ++i)
+        {
+            const auto event = keySignatures->getUnchecked(i);
+            if (context == nullptr || event->getBeat() <= startBeat)
+            {
+                // Take the first one no matter where it resides;
+                // If event is still before the sequence start, update the context anyway:
+                context = static_cast<KeySignatureEvent *>(event);
+            }
+            else if (event->getBeat() > startBeat && event->getBeat() < endBeat)
+            {
+                // Harmonic context is already here and changes within a sequence:
+                return false;
+            }
+            else if (event->getBeat() >= endBeat)
+            {
+                // No need to look further
+                break;
+            }
+        }
+
+        if (context != nullptr)
+        {
+            // We've found the only context that doesn't change within a sequence:
+            outScale = context->getScale();
+            outRootKey = context->getRootKey();
+            return true;
+        }
+    }
+
+    return false;
 }

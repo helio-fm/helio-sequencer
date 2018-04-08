@@ -34,6 +34,8 @@ public:
     
     static float findStartBeat(const Lasso &selection);
     static float findEndBeat(const Lasso &selection);
+    static float findStartBeat(const WeakReference<Lasso> selection);
+    static float findEndBeat(const WeakReference<Lasso> selection);
     static float findStartBeat(const Array<Note> &selection);
     static float findEndBeat(const Array<Note> &selection);
     
@@ -79,4 +81,7 @@ public:
     static void invertChord(Lasso &selection, int deltaKey,
         bool shouldCheckpoint = true, Transport *transport = nullptr);
     
+    static bool findHarmonicContext(const Lasso &selection,
+        WeakReference<MidiTrack> keySignatures,
+        Scale::Ptr &outScale, Note::Key &outRootKey);
 };

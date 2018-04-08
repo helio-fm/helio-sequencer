@@ -165,7 +165,7 @@ void KeySignatureEvent::deserialize(const ValueTree &tree) noexcept
 
 void KeySignatureEvent::reset() noexcept
 {
-    this->rootKey = KEY_C5;
+    this->rootKey = MIDDLE_C;
 
     if (this->scale != nullptr)
     {

@@ -24,13 +24,6 @@
 #include "DocumentHelpers.h"
 #include "XmlSerializer.h"
 
-// A scenario from user's point:
-// 1. User creates a sequence of notes strictly within a certain scale,
-// 2. User selects `create arpeggiator from sequence`
-// 3. App checks that the entire sequence is within single scale and adds arp model
-// 4. User select a number of chords and clicks `arpeggiate`
-// 5. User selects arpeggiator fro arp panel (TODO where is arp panel?)
-// 
 // This one assumes it has a diatonic scale, and target chord has up to 4 notes.
 // There are no restrictions though on a target chord's scale or where chord's keys are.
 // Arpeggiator keys are mapped like this:
@@ -134,35 +127,45 @@ bool operator==(const Arpeggiator &l, const Arpeggiator &r)
     return &l == &r || l.name == r.name;
 }
 
-Arpeggiator::Arpeggiator(const String &name, const Scale &scale, const Array<Note> &sequence, Note::Key rootKey)
+Arpeggiator::Arpeggiator(const String &name, const Scale::Ptr scale,
+    const Array<Note> &sequence, Note::Key rootKey)
 {
+    auto sequenceLowestKey = INT_MAX;
     auto sequenceStartBeat = FLT_MAX;
     for (const auto &note : sequence)
     {
         sequenceStartBeat = jmin(sequenceStartBeat, note.getBeat());
+        sequenceLowestKey = jmin(sequenceLowestKey, note.getKey());
     }
 
+    const auto middleCOffset = MIDDLE_C % scale->getBasePeriod();
+    const auto sequenceBasePeriod = (sequenceLowestKey - middleCOffset - rootKey) / scale->getBasePeriod();
+    const auto absRootKey = (sequenceBasePeriod * scale->getBasePeriod()) + middleCOffset + rootKey;
+
+    static Key sorter;
     for (const auto &note : sequence)
     {
-        const auto relativeChromaticKey = note.getKey() - rootKey;
+        const auto relativeChromaticKey = note.getKey() - absRootKey;
 
         // Scale key will be limited to a single period
-        const auto scaleKey = scale.getScaleKey(relativeChromaticKey);
-        const auto period = relativeChromaticKey % scale.getBasePeriod();
+        const auto scaleKey = scale->getScaleKey(relativeChromaticKey);
+        const auto period = relativeChromaticKey / scale->getBasePeriod();
         const auto beat = note.getBeat() - sequenceStartBeat;
 
         // Ignore all non-scale keys (will be -1 if chromatic key is not in a target scale)
         if (scaleKey >= 0)
         {
-            this->keys.add({ scaleKey, period, note.getVelocity(), beat, note.getLength() });
+            this->keys.addSorted(sorter, Key(scaleKey, period, beat, note.getLength(), note.getVelocity()));
         }
     }
+
+    this->name = name;
 
     // Try do deduct mapper type, depending on arp's scale size
     // (TODO add more mappers and scales in future)
     using namespace Serialization::Arps;
 
-    switch (scale.getSize())
+    switch (scale->getSize())
     {
     case 5:
         this->type = Types::pentatonic;
@@ -230,6 +233,11 @@ String Arpeggiator::getResourceId() const
     return this->name;
 }
 
+Identifier Arpeggiator::getResourceIdProperty() const
+{
+    return Serialization::Arps::name;
+}
+
 //===----------------------------------------------------------------------===//
 // Serializable
 //===----------------------------------------------------------------------===//
@@ -272,7 +280,7 @@ void Arpeggiator::deserialize(const ValueTree &tree)
     {
         Arpeggiator::Key key;
         key.deserialize(keyNode);
-        this->keys.add(key);
+        this->keys.addSorted(key, key);
     }
 }
 
@@ -305,3 +313,14 @@ void Arpeggiator::Key::deserialize(const ValueTree &tree)
 }
 
 void Arpeggiator::Key::reset() {}
+
+int Arpeggiator::Key::compareElements(const Key &first, const Key &second) noexcept
+{
+    const float beatDiff = first.beat - second.beat;
+    const int beatResult = (beatDiff > 0.f) - (beatDiff < 0.f);
+    if (beatResult != 0) { return beatResult; }
+
+    const int keyDiff = first.key - second.key;
+    const int keyResult = (keyDiff > 0) - (keyDiff < 0);
+    return keyResult;
+}

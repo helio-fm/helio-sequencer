@@ -73,7 +73,7 @@ PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
     this->defaultHighlighting = new HighlightingScheme(0, Scale::getNaturalMajorScale());
     this->defaultHighlighting->setRows(this->renderBackgroundCacheFor(this->defaultHighlighting));
 
-    this->selectedNotesMenuManager = new PianoRollSelectionMenuManager(&this->selection);
+    this->selectedNotesMenuManager = new PianoRollSelectionMenuManager(&this->selection, this->project);
 
     this->setComponentID(ComponentIDs::pianoRollId);
     this->setRowHeight(PIANOROLL_MIN_ROW_HEIGHT + 5);

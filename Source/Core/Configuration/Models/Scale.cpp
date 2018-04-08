@@ -163,11 +163,11 @@ bool Scale::seemsMinor() const noexcept
 // Wraps a chromatic key (may be negative)
 static int wrapKey(int key, int const lowerKey, int const upperKey)
 {
-    const int keyRange = upperKey - lowerKey + 1;
+    const int keyRange = upperKey - lowerKey;
 
     if (key < lowerKey)
     {
-        key += keyRange * ((lowerKey - key) / keyRange + 1);
+        key += keyRange * ((lowerKey - key) / keyRange);
     }
 
     return lowerKey + (key - lowerKey) % keyRange;

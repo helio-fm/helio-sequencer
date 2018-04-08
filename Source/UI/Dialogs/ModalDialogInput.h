@@ -47,6 +47,7 @@ public:
         static ScopedPointer<ModalDialogInput> changeTimeSignature(const String &name);
         static ScopedPointer<ModalDialogInput> renameTrack(const String &name);
         static ScopedPointer<ModalDialogInput> newTrack();
+        static ScopedPointer<ModalDialogInput> newArpeggiator();
         static ScopedPointer<ModalDialogInput> deleteProjectConfirmation();
         static ScopedPointer<ModalDialogInput> commit(const String &name);
     };

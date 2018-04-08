@@ -17,11 +17,24 @@
 
 #include "Common.h"
 #include "PianoRollSelectionCommandPanel.h"
-#include "ArpeggiatorsManager.h"
+
+#include "Lasso.h"
 #include "SequencerOperations.h"
+
+#include "ArpeggiatorsManager.h"
+#include "Arpeggiator.h"
+#include "NoteComponent.h"
+
+#include "ProjectTreeItem.h"
+#include "ProjectTimeline.h"
+#include "MidiTrack.h"
+
 #include "CommandIDs.h"
 #include "Icons.h"
+
 #include "App.h"
+#include "MainLayout.h"
+#include "ModalDialogInput.h"
 
 static CommandPanel::Items createDefaultPanel()
 {
@@ -82,27 +95,30 @@ static CommandPanel::Items createBatchTweakPanel()
     return cmds;
 }
 
-static CommandPanel::Items createArpsPanel(int selectedArp)
+static CommandPanel::Items createArpsPanel()
 {
     CommandPanel::Items cmds;
-    const auto arps = ArpeggiatorsManager::getInstance().getArps();
+
     cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back,
         TRANS("menu::back"))->withTimer());
 
+    cmds.add(CommandItem::withParams(Icons::group,
+        CommandIDs::CreateArpeggiatorFromSelection, TRANS("menu::arpeggiators::create")));
+
+    const auto arps = ArpeggiatorsManager::getInstance().getArps();
     for (int i = 0; i < arps.size(); ++i)
     {
-        const bool isSelectedArp = (i == selectedArp);
-
         cmds.add(CommandItem::withParams(Icons::group,
             (CommandIDs::ApplyArpeggiator + i),
-            arps.getUnchecked(i)->getName())->toggled(isSelectedArp));
+            arps.getUnchecked(i)->getName()));
     }
 
     return cmds;
 }
 
-PianoRollSelectionCommandPanel::PianoRollSelectionCommandPanel(WeakReference<Lasso> lasso) :
-    lasso(lasso)
+PianoRollSelectionCommandPanel::PianoRollSelectionCommandPanel(WeakReference<Lasso> lasso, const ProjectTreeItem &project) :
+    lasso(lasso),
+    project(project)
 {
     this->updateContent(createDefaultPanel(), CommandPanel::SlideRight);
 }
@@ -126,7 +142,7 @@ void PianoRollSelectionCommandPanel::handleCommandMessage(int commandId)
     else if (commandId == CommandIDs::CutEvents)
     {
         SequencerOperations::copyToClipboard(App::Clipboard(), selectionReference);
-        SequencerOperations::deleteSelection(*this->lasso);
+        SequencerOperations::deleteSelection(selectionReference);
         this->dismiss();
         return;
     }
@@ -136,9 +152,53 @@ void PianoRollSelectionCommandPanel::handleCommandMessage(int commandId)
         this->dismiss();
         return;
     }
+    else if (commandId == CommandIDs::CreateArpeggiatorFromSelection)
+    {
+        // A scenario from user's point:
+        // 1. User creates a sequence of notes strictly within a certain scale,
+        // 2. User selects `create arpeggiator from sequence`
+        // 3. App checks that the entire sequence is within single scale and adds arp model
+        // 4. User select a number of chords and clicks `arpeggiate`
+
+        if (this->lasso->getNumSelected() < 2)
+        {
+            // TODO show error
+            this->dismiss();
+            return;
+        }
+
+        const auto keySignatures = this->project.getTimeline()->getKeySignatures();
+
+        Note::Key rootKey = -1;
+        Scale::Ptr scale = nullptr;
+        if (!SequencerOperations::findHarmonicContext(*this->lasso, keySignatures, scale, rootKey))
+        {
+            // TODO error
+            this->dismiss();
+            return;
+        }
+
+        Array<Note> selectedNotes;
+        for (int i = 0; i < this->lasso->getNumSelected(); ++i)
+        {
+            const auto nc = static_cast<NoteComponent *>(this->lasso->getSelectedItem(i));
+            selectedNotes.add(nc->getNote());
+        }
+
+        auto newArpDialog = ModalDialogInput::Presets::newArpeggiator();
+        newArpDialog->onOk = [scale, rootKey, selectedNotes](const String &name)
+        {
+            Arpeggiator::Ptr arp(new Arpeggiator(name, scale, selectedNotes, rootKey));
+            App::Helio().getResourceManagerFor(Serialization::Resources::arpeggiators).updateUserResource(arp);
+        };
+
+        App::Layout().showModalComponentUnowned(newArpDialog.release());
+        this->dismiss();
+        return;
+    }
     else if (commandId == CommandIDs::ArpeggiateNotes)
     {
-        this->updateContent(createArpsPanel(0), CommandPanel::SlideLeft);
+        this->updateContent(createArpsPanel(), CommandPanel::SlideLeft);
         return;
     }
     else if (commandId == CommandIDs::RefactorNotes)
@@ -151,6 +211,35 @@ void PianoRollSelectionCommandPanel::handleCommandMessage(int commandId)
         this->updateContent(createBatchTweakPanel(), CommandPanel::SlideLeft);
         return;
     }
+
+    const int numArps = ArpeggiatorsManager::getInstance().size();
+    if (commandId >= CommandIDs::ApplyArpeggiator &&
+        commandId < (CommandIDs::ApplyArpeggiator + numArps))
+    {
+        if (this->lasso->getNumSelected() < 2)
+        {
+            // TODO show error
+            this->dismiss();
+            return;
+        }
+
+        Note::Key rootKey = -1;
+        Scale::Ptr scale = nullptr;
+
+        const auto keySignatures = this->project.getTimeline()->getKeySignatures();
+        if (!SequencerOperations::findHarmonicContext(*this->lasso, keySignatures, scale, rootKey))
+        {
+            // TODO error
+            this->dismiss();
+            return;
+        }
+
+        const int arpIndex = commandId - CommandIDs::ApplyArpeggiator;
+        const auto arps = ArpeggiatorsManager::getInstance().getArps();
+        SequencerOperations::arpeggiate(*this->lasso, scale, rootKey, arps[arpIndex], false, false, true);
+        this->dismiss();
+        return;
+    }   
 }
 
 void PianoRollSelectionCommandPanel::dismiss() const

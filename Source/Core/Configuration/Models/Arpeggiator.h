@@ -40,7 +40,7 @@ public:
 
     Arpeggiator() = default;
     Arpeggiator(const String &name, 
-        const Scale &scale,
+        const Scale::Ptr scale,
         const Array<Note> &sequence,
         Note::Key rootKey);
 
@@ -83,6 +83,8 @@ public:
         ValueTree serialize() const override;
         void deserialize(const ValueTree &tree) override;
         void reset() override;
+
+        static int compareElements(const Key &first, const Key &second) noexcept;
     };
 
     class Mapper
@@ -125,6 +127,7 @@ public:
     //===------------------------------------------------------------------===//
 
     String getResourceId() const override;
+    Identifier getResourceIdProperty() const override;
 
 protected:
 

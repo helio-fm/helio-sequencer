@@ -73,8 +73,8 @@ int CommandIDs::getIdForName(const String &command)
         return AddKeySignatureConfirmed;
     case Hash("JumpToAnnotation"):
         return JumpToAnnotation;
-    case Hash("ResetArpeggiatorChanges"):
-        return ResetArpeggiatorChanges;
+    case Hash("CreateArpeggiatorFromSelection"):
+        return CreateArpeggiatorFromSelection;
     case Hash("ApplyArpeggiator"):
         return ApplyArpeggiator;
     case Hash("InitWorkspace"):
@@ -321,8 +321,6 @@ int CommandIDs::getIdForName(const String &command)
         return TweakVolumeRandom;
     case Hash("TweakVolumeFadeOut"):
         return TweakVolumeFadeOut;
-    case Hash("CreateArpeggiatorFromSelection"):
-        return CreateArpeggiatorFromSelection;
     default:
         return 0;
     };

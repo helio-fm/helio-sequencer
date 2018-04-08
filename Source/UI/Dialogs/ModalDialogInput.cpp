@@ -355,6 +355,14 @@ ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::commit(const String &
             TRANS("dialog::vcs::commit::cancel")));
 }
 
+ScopedPointer<ModalDialogInput> ModalDialogInput::Presets::newArpeggiator()
+{
+    return ScopedPointer<ModalDialogInput>(
+        new ModalDialogInput({},
+            TRANS("dialog::addarp::caption"),
+            TRANS("dialog::addarp::proceed"),
+            TRANS("dialog::addarp::cancel")));
+}
 //[/MiscUserCode]
 
 #if 0

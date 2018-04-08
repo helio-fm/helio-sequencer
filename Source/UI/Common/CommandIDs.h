@@ -50,8 +50,8 @@ namespace CommandIDs
         AddKeySignatureConfirmed        = 0x0106,
         JumpToAnnotation                = 0x0107, // more ids reserved for annotations
 
-        // ArpeggiatorEditorPanel
-        ResetArpeggiatorChanges         = 0x0200,
+        // Arpeggiators
+        CreateArpeggiatorFromSelection  = 0x0200,
         ApplyArpeggiator                = 0x0201, // more ids reserved for arps
 
         InitWorkspace                   = 0x0500,
@@ -215,8 +215,6 @@ namespace CommandIDs
         ShowVolumePanel                 = 0x405d,
         TweakVolumeRandom               = 0x405e,
         TweakVolumeFadeOut              = 0x405f,
-
-        CreateArpeggiatorFromSelection  = 0x4060,
 
         YourNextCommandId               = 0x4060
     };
