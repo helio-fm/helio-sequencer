@@ -165,11 +165,7 @@ void StageComponent::buttonClicked (Button* buttonThatWasClicked)
             return;
         }
 
-        ScopedPointer<ModalDialogInput> dialog =
-            new ModalDialogInput(this->lastCommitMessage,
-                TRANS("dialog::vcs::commit::caption"),
-                TRANS("dialog::vcs::commit::proceed"),
-                TRANS("dialog::vcs::commit::cancel"));
+        auto dialog = ModalDialogInput::Presets::commit(this->lastCommitMessage);
 
         dialog->onOk = [this](const String &input)
         {
@@ -195,10 +191,7 @@ void StageComponent::buttonClicked (Button* buttonThatWasClicked)
             return;
         }
 
-        ScopedPointer<ModalDialogConfirmation> dialog =
-            new ModalDialogConfirmation(TRANS("dialog::vcs::reset::caption"),
-                TRANS("dialog::vcs::reset::proceed"),
-                TRANS("dialog::vcs::reset::cancel"));
+        auto dialog = ModalDialogConfirmation::Presets::resetChanges();
 
         dialog->onOk = [this]()
         {

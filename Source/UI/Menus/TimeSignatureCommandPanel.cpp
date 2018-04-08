@@ -46,15 +46,9 @@ void TimeSignatureCommandPanel::handleCommandMessage(int commandId)
     {
         if (commandId == CommandIDs::ChangeTimeSignature)
         {
-            ScopedPointer<ModalDialogInput> inputDialog =
-                new ModalDialogInput(this->event.toString(),
-                    TRANS("dialog::timesignature::change::caption"),
-                    TRANS("dialog::timesignature::change::proceed"),
-                    TRANS("dialog::timesignature::change::cancel"));
-            
             auto sequence = static_cast<TimeSignaturesSequence *>(this->event.getSequence());
+            auto inputDialog = ModalDialogInput::Presets::changeTimeSignature(this->event.toString());
             inputDialog->onOk = sequence->getEventChangeCallback(this->event);
-
             App::Layout().showModalComponentUnowned(inputDialog.release());
         }
         else if (commandId == CommandIDs::DeleteTimeSignature)

@@ -38,6 +38,14 @@ public:
     //[UserMethods]
     SimpleDialogCallback onOk;
     SimpleDialogCallback onCancel;
+
+    struct Presets final
+    {
+        static ScopedPointer<ModalDialogConfirmation> deleteProject();
+        static ScopedPointer<ModalDialogConfirmation> forcePull();
+        static ScopedPointer<ModalDialogConfirmation> resetChanges();
+        static ScopedPointer<ModalDialogConfirmation> confirmOpenGL();
+    };
     //[/UserMethods]
 
     void paint (Graphics& g) override;

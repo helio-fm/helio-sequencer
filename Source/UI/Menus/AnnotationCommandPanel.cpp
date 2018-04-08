@@ -57,15 +57,9 @@ void AnnotationCommandPanel::handleCommandMessage(int commandId)
     {
         if (commandId == CommandIDs::RenameAnnotation)
         {
-            ScopedPointer<ModalDialogInput> inputDialog =
-                new ModalDialogInput(this->annotation.getDescription(),
-                    TRANS("dialog::annotation::rename::caption"),
-                    TRANS("dialog::annotation::rename::proceed"),
-                    TRANS("dialog::annotation::rename::cancel"));
-            
             auto sequence = static_cast<AnnotationsSequence *>(this->annotation.getSequence());
+            auto inputDialog = ModalDialogInput::Presets::renameAnnotation(this->annotation.getDescription());
             inputDialog->onOk = sequence->getEventRenameCallback(this->annotation);
-
             App::Layout().showModalComponentUnowned(inputDialog.release());
         }
         else if (commandId == CommandIDs::DeleteAnnotation)

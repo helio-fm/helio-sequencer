@@ -40,6 +40,16 @@ public:
     //[UserMethods]
     InputDialogCallback onOk;
     InputDialogCallback onCancel;
+
+    struct Presets final
+    {
+        static ScopedPointer<ModalDialogInput> renameAnnotation(const String &name);
+        static ScopedPointer<ModalDialogInput> changeTimeSignature(const String &name);
+        static ScopedPointer<ModalDialogInput> renameTrack(const String &name);
+        static ScopedPointer<ModalDialogInput> newTrack();
+        static ScopedPointer<ModalDialogInput> deleteProjectConfirmation();
+        static ScopedPointer<ModalDialogInput> commit(const String &name);
+    };
     //[/UserMethods]
 
     void paint (Graphics& g) override;

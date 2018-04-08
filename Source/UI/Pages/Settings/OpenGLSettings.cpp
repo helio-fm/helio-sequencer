@@ -105,10 +105,7 @@ void OpenGLSettings::buttonClicked (Button* buttonThatWasClicked)
         {
             this->openGLRendererButton->setToggleState(false, dontSendNotification);
 
-            ScopedPointer<ModalDialogConfirmation> dialog =
-                new ModalDialogConfirmation(TRANS("dialog::opengl::caption"),
-                    TRANS("dialog::opengl::proceed"),
-                    TRANS("dialog::opengl::cancel"));
+            auto dialog = ModalDialogConfirmation::Presets::confirmOpenGL();
 
             dialog->onOk = [this]()
             {

@@ -151,15 +151,9 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
             
         case CommandIDs::AddMidiTrack:
         {
-            ScopedPointer<ModalDialogInput> inputDialog =
-                new ModalDialogInput(TRANS("defaults::newtrack::name"),
-                    TRANS("dialog::addtrack::caption"),
-                    TRANS("dialog::addtrack::proceed"),
-                    TRANS("dialog::addtrack::cancel"));
-            
             auto &project = this->project;
             const auto trackTemplate = this->createPianoTrackTempate("");
-
+            auto inputDialog = ModalDialogInput::Presets::newTrack();
             inputDialog->onOk = [&project, trackTemplate](const String &input)
             {
                 project.setOpen(true);
@@ -245,20 +239,11 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
 
         case CommandIDs::DeleteProject:
         {
-            ScopedPointer<ModalDialogConfirmation> confirmationDialog =
-                new ModalDialogConfirmation(TRANS("dialog::deleteproject::caption"),
-                    TRANS("dialog::deleteproject::proceed"),
-                    TRANS("dialog::deleteproject::cancel"));
-            
+            auto confirmationDialog = ModalDialogConfirmation::Presets::deleteProject();
             auto &project = this->project;
             confirmationDialog->onOk = [&project]()
             {
-                ScopedPointer<ModalDialogInput> inputDialog =
-                    new ModalDialogInput("",
-                        TRANS("dialog::deleteproject::confirm::caption"),
-                        TRANS("dialog::deleteproject::confirm::proceed"),
-                        TRANS("dialog::deleteproject::confirm::cancel"));
-
+                auto inputDialog = ModalDialogInput::Presets::deleteProjectConfirmation();
                 inputDialog->onOk = [&project](const String &text)
                 {
                     if (text == project.getName())

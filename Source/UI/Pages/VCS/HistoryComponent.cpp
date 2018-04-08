@@ -126,11 +126,7 @@ void HistoryComponent::buttonClicked (Button* buttonThatWasClicked)
         // а то, есть ли изменения айтемов, которые уже присутствуют в индексе
         if (this->vcs.getHead().hasTrackedItemsOnTheStage())
         {
-            ScopedPointer<ModalDialogConfirmation> confirmationDialog =
-                new ModalDialogConfirmation(TRANS("vcs::history::forcepull::confirmation"),
-                    TRANS("vcs::history::forcepull::proceed"),
-                    TRANS("vcs::history::forcepull::cancel"));
-
+            auto confirmationDialog = ModalDialogConfirmation::Presets::forcePull();
             confirmationDialog->onOk = [this]()
             {
                 this->vcs.getRemote()->pull();

@@ -96,14 +96,8 @@ void MidiTrackCommandPanel::handleCommandMessage(int commandId)
 
         case CommandIDs::RenameTrack:
         {
-            ScopedPointer<ModalDialogInput> inputDialog =
-                new ModalDialogInput(this->trackItem.getXPath(),
-                    TRANS("dialog::renametrack::caption"),
-                    TRANS("dialog::renametrack::proceed"),
-                    TRANS("dialog::renametrack::cancel"));
-            
+            auto inputDialog = ModalDialogInput::Presets::renameTrack(this->trackItem.getXPath());
             inputDialog->onOk = this->trackItem.getRenameCallback();
-
             App::Layout().showModalComponentUnowned(inputDialog.release());
             this->exit();
             break;
