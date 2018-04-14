@@ -32,9 +32,6 @@
     <Filter Include="Helio\Source\Core\Audio">
       <UniqueIdentifier>{1B53250D-BAEB-EBCF-9F96-574619987D42}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Helio\Source\Core\Clipboard">
-      <UniqueIdentifier>{1BD0FAF3-9BFE-3BBF-CA8E-7F1A3EC70DFD}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Helio\Source\Core\Configuration\Models">
       <UniqueIdentifier>{D684245E-ABFD-6D34-BB32-4F4ED0A06A0F}</UniqueIdentifier>
     </Filter>
@@ -607,9 +604,6 @@
     <ClCompile Include="..\..\Source\Core\Audio\AudioCore.cpp">
       <Filter>Helio\Source\Core\Audio</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Clipboard\InternalClipboard.cpp">
-      <Filter>Helio\Source\Core\Clipboard</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\Models\Arpeggiator.cpp">
       <Filter>Helio\Source\Core\Configuration\Models</Filter>
     </ClCompile>
@@ -624,6 +618,9 @@
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\Models\Translation.cpp">
       <Filter>Helio\Source\Core\Configuration\Models</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ResourceManager.cpp">
+      <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Configuration\ResourceManagers\ArpeggiatorsManager.cpp">
       <Filter>Helio\Source\Core\Configuration\ResourceManagers</Filter>
@@ -770,9 +767,6 @@
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Tree\TrackGroupTreeItem.cpp">
-      <Filter>Helio\Source\Core\Tree</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Source\Core\Tree\TransientTreeItems.cpp">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\Core\Tree\TreeItem.cpp">
@@ -964,6 +958,9 @@
     <ClCompile Include="..\..\Source\UI\Headline\HeadlineItem.cpp">
       <Filter>Helio\Source\UI\Headline</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Headline\HeadlineItemArrow.cpp">
+      <Filter>Helio\Source\UI\Headline</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Headline\HeadlineNavigationPanel.cpp">
       <Filter>Helio\Source\UI\Headline</Filter>
     </ClCompile>
@@ -982,16 +979,13 @@
     <ClCompile Include="..\..\Source\UI\Menus\AnnotationCommandPanel.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\ArpeggiatorEditorPanel.cpp">
-      <Filter>Helio\Source\UI\Menus</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Menus\InstrumentCommandPanel.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Menus\InstrumentsCommandPanel.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Menus\LayerCommandPanel.cpp">
+    <ClCompile Include="..\..\Source\UI\Menus\MidiTrackCommandPanel.cpp">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Menus\NotesTuningPanel.cpp">
@@ -1279,9 +1273,6 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\PianoRoll.cpp">
       <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\PianoRollToolbox.cpp">
-      <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\TimeSignaturesMap\TimeSignatureLargeComponent.cpp">
       <Filter>Helio\Source\UI\Sequencer\TimeSignaturesMap</Filter>
     </ClCompile>
@@ -1309,19 +1300,28 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\TriggersMap\TriggersTrackMap.cpp">
       <Filter>Helio\Source\UI\Sequencer\TriggersMap</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\HybridLassoComponent.cpp">
-      <Filter>Helio\Source\UI\Sequencer</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\HybridRoll.cpp">
       <Filter>Helio\Source\UI\Sequencer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\HybridRollEditMode.cpp">
       <Filter>Helio\Source\UI\Sequencer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Source\UI\Sequencer\HybridRollEventComponent.cpp">
+    <ClCompile Include="..\..\Source\UI\Sequencer\Lasso.cpp">
+      <Filter>Helio\Source\UI\Sequencer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\LassoListeners.cpp">
+      <Filter>Helio\Source\UI\Sequencer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\MidiEventComponent.cpp">
+      <Filter>Helio\Source\UI\Sequencer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\SelectionComponent.cpp">
       <Filter>Helio\Source\UI\Sequencer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sequencer\SequencerLayout.cpp">
+      <Filter>Helio\Source\UI\Sequencer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Source\UI\Sequencer\SequencerOperations.cpp">
       <Filter>Helio\Source\UI\Sequencer</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Source\UI\Sidebars\NavigationSidebar.cpp">
@@ -3276,7 +3276,10 @@
     <ClInclude Include="..\..\Source\Core\App\App.h">
       <Filter>Helio\Source\Core\App</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\App\HelioLogger.h">
+    <ClInclude Include="..\..\Source\Core\App\Logger.h">
+      <Filter>Helio\Source\Core\App</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\Core\App\Clipboard.h">
       <Filter>Helio\Source\Core\App</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\App\Workspace.h">
@@ -3336,11 +3339,8 @@
     <ClInclude Include="..\..\Source\Core\Audio\AudioCore.h">
       <Filter>Helio\Source\Core\Audio</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Clipboard\ClipboardOwner.h">
-      <Filter>Helio\Source\Core\Clipboard</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Clipboard\InternalClipboard.h">
-      <Filter>Helio\Source\Core\Clipboard</Filter>
+    <ClInclude Include="..\..\Source\Core\Configuration\Models\BaseResource.h">
+      <Filter>Helio\Source\Core\Configuration\Models</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\Core\Configuration\Models\Arpeggiator.h">
       <Filter>Helio\Source\Core\Configuration\Models</Filter>
@@ -3573,9 +3573,6 @@
     <ClInclude Include="..\..\Source\Core\Tree\TrackGroupTreeItem.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\Core\Tree\TransientTreeItems.h">
-      <Filter>Helio\Source\Core\Tree</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\Core\Tree\TreeItem.h">
       <Filter>Helio\Source\Core\Tree</Filter>
     </ClInclude>
@@ -3759,9 +3756,6 @@
     <ClInclude Include="..\..\Source\UI\Common\ScaleEditor.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Common\SelectableComponent.h">
-      <Filter>Helio\Source\UI\Common</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Common\ShapeComponent.h">
       <Filter>Helio\Source\UI\Common</Filter>
     </ClInclude>
@@ -3805,6 +3799,12 @@
       <Filter>Helio\Source\UI\Headline</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineItem.h">
+      <Filter>Helio\Source\UI\Headline</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Headline\HeadlineItemArrow.h">
+      <Filter>Helio\Source\UI\Headline</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Headline\HeadlineItemDataSource.h">
       <Filter>Helio\Source\UI\Headline</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Headline\HeadlineNavigationPanel.h">
@@ -3852,16 +3852,13 @@
     <ClInclude Include="..\..\Source\UI\Menus\AnnotationCommandPanel.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\ArpeggiatorEditorPanel.h">
-      <Filter>Helio\Source\UI\Menus</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Menus\InstrumentCommandPanel.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Menus\InstrumentsCommandPanel.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Menus\LayerCommandPanel.h">
+    <ClInclude Include="..\..\Source\UI\Menus\MidiTrackCommandPanel.h">
       <Filter>Helio\Source\UI\Menus</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Menus\NotesTuningPanel.h">
@@ -4170,9 +4167,6 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\PianoRoll.h">
       <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\PianoRollToolbox.h">
-      <Filter>Helio\Source\UI\Sequencer\PianoRoll</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\TimeSignaturesMap\TimeSignatureLargeComponent.h">
       <Filter>Helio\Source\UI\Sequencer\TimeSignaturesMap</Filter>
     </ClInclude>
@@ -4200,16 +4194,10 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\TriggersMap\TriggersTrackMap.h">
       <Filter>Helio\Source\UI\Sequencer\TriggersMap</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\HybridLassoComponent.h">
-      <Filter>Helio\Source\UI\Sequencer</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\HybridRoll.h">
       <Filter>Helio\Source\UI\Sequencer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\HybridRollEditMode.h">
-      <Filter>Helio\Source\UI\Sequencer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Source\UI\Sequencer\HybridRollEventComponent.h">
       <Filter>Helio\Source\UI\Sequencer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\HybridRollListener.h">
@@ -4218,7 +4206,22 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\Lasso.h">
       <Filter>Helio\Source\UI\Sequencer</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\LassoListeners.h">
+      <Filter>Helio\Source\UI\Sequencer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\MidiEventComponent.h">
+      <Filter>Helio\Source\UI\Sequencer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\SelectableComponent.h">
+      <Filter>Helio\Source\UI\Sequencer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\SelectionComponent.h">
+      <Filter>Helio\Source\UI\Sequencer</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sequencer\SequencerLayout.h">
+      <Filter>Helio\Source\UI\Sequencer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\UI\Sequencer\SequencerOperations.h">
       <Filter>Helio\Source\UI\Sequencer</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\UI\Sidebars\NavigationSidebar.h">
