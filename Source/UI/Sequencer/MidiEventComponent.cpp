@@ -16,12 +16,12 @@
 */
 
 #include "Common.h"
-#include "HybridRollEventComponent.h"
+#include "MidiEventComponent.h"
 #include "MidiSequence.h"
 #include "MidiEvent.h"
 #include "HybridRoll.h"
 
-HybridRollEventComponent::HybridRollEventComponent(HybridRoll &editor, bool isGhost) :
+MidiEventComponent::MidiEventComponent(HybridRoll &editor, bool isGhost) :
     roll(editor),
     dragger(),
     selectedState(false),
@@ -33,12 +33,12 @@ HybridRollEventComponent::HybridRollEventComponent(HybridRoll &editor, bool isGh
     this->setWantsKeyboardFocus(false);
 }
 
-bool HybridRollEventComponent::isActive() const noexcept
+bool MidiEventComponent::isActive() const noexcept
 {
     return this->activeState;
 }
 
-void HybridRollEventComponent::setActive(bool val, bool force)
+void MidiEventComponent::setActive(bool val, bool force)
 {
     if (!force && this->activeState == val)
     {
@@ -57,7 +57,7 @@ void HybridRollEventComponent::setActive(bool val, bool force)
     }
 }
 
-void HybridRollEventComponent::setGhostMode()
+void MidiEventComponent::setGhostMode()
 {
     this->ghostMode = true;
     this->updateColours();
@@ -68,7 +68,7 @@ void HybridRollEventComponent::setGhostMode()
 // Component
 //===----------------------------------------------------------------------===//
 
-void HybridRollEventComponent::mouseDown(const MouseEvent &e)
+void MidiEventComponent::mouseDown(const MouseEvent &e)
 {
     this->clickOffset.setXY(e.x, e.y);
 
@@ -98,7 +98,7 @@ void HybridRollEventComponent::mouseDown(const MouseEvent &e)
 // SelectableComponent
 //===----------------------------------------------------------------------===//
 
-void HybridRollEventComponent::setSelected(bool selected)
+void MidiEventComponent::setSelected(bool selected)
 {
     if (this->selectedState != selected)
     {
@@ -108,7 +108,7 @@ void HybridRollEventComponent::setSelected(bool selected)
     }
 }
 
-bool HybridRollEventComponent::isSelected() const noexcept
+bool MidiEventComponent::isSelected() const noexcept
 {
     return this->selectedState;
 }
@@ -118,7 +118,7 @@ bool HybridRollEventComponent::isSelected() const noexcept
 // Helpers
 //===----------------------------------------------------------------------===//
 
-int HybridRollEventComponent::compareElements(HybridRollEventComponent *first, HybridRollEventComponent *second) noexcept
+int MidiEventComponent::compareElements(MidiEventComponent *first, MidiEventComponent *second) noexcept
 {
     if (first == second) { return 0; }
     const float diff = first->getBeat() - second->getBeat();

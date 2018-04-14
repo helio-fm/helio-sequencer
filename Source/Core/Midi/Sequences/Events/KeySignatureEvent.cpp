@@ -34,9 +34,9 @@ KeySignatureEvent::KeySignatureEvent(const KeySignatureEvent &other) noexcept :
     scale(other.scale) {}
 
 KeySignatureEvent::KeySignatureEvent(WeakReference<MidiSequence> owner,
+    Scale::Ptr scale,
     float newBeat /*= 0.f*/,
-    Note::Key key /*= 60*/,
-    Scale scale /*= Scale()*/) noexcept :
+    Note::Key key /*= 60*/) noexcept :
     MidiEvent(owner, MidiEvent::KeySignature, newBeat),
     rootKey(key),
     scale(scale) {}
@@ -49,9 +49,9 @@ KeySignatureEvent::KeySignatureEvent(WeakReference<MidiSequence> owner,
 
 String KeySignatureEvent::toString() const
 {
-    const int index = this->rootKey % CHROMATIC_SCALE_SIZE;
+    const int index = this->rootKey % this->scale->getBasePeriod();
     const String keyName = Scale::getKeyNames()[index];
-    return keyName + ", " + this->scale.getLocalizedName();
+    return keyName + ", " + this->scale->getLocalizedName();
 }
 
 Array<MidiMessage> KeySignatureEvent::toMidiMessages() const
@@ -65,7 +65,7 @@ Array<MidiMessage> KeySignatureEvent::toMidiMessages() const
     // and we have to guess if our scale is major or minor,
     // and then try to determine a number of flats or a number of sharps.
 
-    const bool isMinor = this->scale.seemsMinor();
+    const bool isMinor = this->scale->seemsMinor();
 
     // Hard-coded number of flats and sharps for major and minor keys in a circle of fifths,
     // where negative numbers represent flats and positive numbers represent sharps,
@@ -101,7 +101,7 @@ KeySignatureEvent KeySignatureEvent::withRootKey(Note::Key key) const noexcept
     return e;
 }
 
-KeySignatureEvent KeySignatureEvent::withScale(Scale scale) const noexcept
+KeySignatureEvent KeySignatureEvent::withScale(Scale::Ptr scale) const noexcept
 {
     KeySignatureEvent e(*this);
     e.scale = scale;
@@ -131,7 +131,7 @@ Note::Key KeySignatureEvent::getRootKey() const noexcept
     return this->rootKey;
 }
 
-const Scale &KeySignatureEvent::getScale() const noexcept
+const Scale::Ptr KeySignatureEvent::getScale() const noexcept
 {
     return this->scale;
 }
@@ -147,7 +147,7 @@ ValueTree KeySignatureEvent::serialize() const noexcept
     tree.setProperty(Midi::id, this->id, nullptr);
     tree.setProperty(Midi::key, this->rootKey, nullptr);
     tree.setProperty(Midi::timestamp, roundToInt(this->beat * TICKS_PER_BEAT), nullptr);
-    tree.appendChild(this->scale.serialize(), nullptr);
+    tree.appendChild(this->scale->serialize(), nullptr);
     return tree;
 }
 
@@ -158,13 +158,19 @@ void KeySignatureEvent::deserialize(const ValueTree &tree) noexcept
     this->rootKey = tree.getProperty(Midi::key, 0);
     this->beat = float(tree.getProperty(Midi::timestamp)) / TICKS_PER_BEAT;
     this->id = tree.getProperty(Midi::id);
-    this->scale.deserialize(tree);
+
+    this->scale = new Scale();
+    this->scale->deserialize(tree);
 }
 
 void KeySignatureEvent::reset() noexcept
 {
-    this->rootKey = KEY_C5;
-    this->scale = Scale();
+    this->rootKey = MIDDLE_C;
+
+    if (this->scale != nullptr)
+    {
+        this->scale->reset();
+    }
 }
 
 void KeySignatureEvent::applyChanges(const KeySignatureEvent &parameters) noexcept

@@ -30,16 +30,15 @@ class CommandItemComponent;
 #include "../Themes/SeparatorHorizontalFading.h"
 #include "../Themes/SeparatorHorizontal.h"
 
-class RenderDialog  : public FadingDialog,
-                      private Timer,
-                      public Button::Listener,
-                      public Label::Listener,
-                      public Slider::Listener
+class RenderDialog final : public FadingDialog,
+                           private Timer,
+                           public Button::Listener,
+                           public Label::Listener,
+                           public Slider::Listener
 {
 public:
 
-    RenderDialog (ProjectTreeItem &parentProject, const File &renderTo, const String &formatExtension);
-
+    RenderDialog(ProjectTreeItem &parentProject, const File &renderTo, const String &formatExtension);
     ~RenderDialog();
 
     //[UserMethods]

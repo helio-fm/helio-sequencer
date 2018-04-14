@@ -60,17 +60,22 @@ AudioPluginTreeItem::AudioPluginTreeItem(uint32 pluginID, const String &name) :
     this->setVisible(false);
 }
 
-ScopedPointer<Component> AudioPluginTreeItem::createItemMenu()
+bool AudioPluginTreeItem::hasMenu() const noexcept
+{
+    return false;
+}
+
+ScopedPointer<Component> AudioPluginTreeItem::createMenu()
 {
     return nullptr;
 }
 
-Colour AudioPluginTreeItem::getColour() const
+Colour AudioPluginTreeItem::getColour() const noexcept
 {
     return Colour(0xffd151ff);
 }
 
-Image AudioPluginTreeItem::getIcon() const
+Image AudioPluginTreeItem::getIcon() const noexcept
 {
     return Icons::findByName(Icons::instrumentSettings, TREE_ICON_HEIGHT);
 }
@@ -142,7 +147,6 @@ void AudioPluginTreeItem::showPage()
 
     App::Layout().showPage(this->audioPluginEditor, this);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Dragging

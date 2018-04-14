@@ -29,15 +29,10 @@ public:
     
     ProjectCommandPanel(ProjectTreeItem &parentProject, AnimationType animationType);
     
-    ~ProjectCommandPanel() override;
-    
     void handleCommandMessage(int commandId) override;
     
 private:
-    
-    String layerNameString;
-    String projectNameRemovalConfirmation;
-    
+
     ProjectTreeItem &project;
     
     WeakReference<Instrument> lastSelectedInstrument;
@@ -52,7 +47,7 @@ private:
 
     bool haveSetBatchCheckpoint;
     
-    ValueTree createPianoLayerTempate(const String &name) const;
+    ValueTree createPianoTrackTempate(const String &name) const;
     ValueTree createAutoLayerTempate(const String &name, int controllerNumber, const String &instrumentId = "") const;
     
     void proceedToRenderDialog(const String &extension);

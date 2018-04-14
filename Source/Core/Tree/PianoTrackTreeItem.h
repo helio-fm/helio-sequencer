@@ -26,7 +26,7 @@ public:
 
     explicit PianoTrackTreeItem(const String &name);
 
-    Image getIcon() const override;
+    Image getIcon() const noexcept override;
 
     static void selectAllPianoSiblings(PianoTrackTreeItem *layerItem);
 

@@ -81,7 +81,7 @@ private:
 
     ReadWriteLock diffLock;
     ValueTree lastDiff;
-    String commitMessage;
+    String lastCommitMessage;
 
     ComponentFader fader;
     void startProgressAnimation();

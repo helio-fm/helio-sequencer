@@ -37,13 +37,7 @@ TreeItem::TreeItem(const String &name, const Identifier &type) :
     markerIsVisible(false),
     itemShouldBeVisible(true)
 {
-
-//#if HELIO_DESKTOP
     this->setLinesDrawnForSubItems(false);
-//#elif HELIO_MOBILE
-//    this->setLinesDrawnForSubItems(true);
-//#endif
-
     this->setDrawsInLeftMargin(true);
 }
 
@@ -52,7 +46,6 @@ TreeItem::~TreeItem()
     this->removeAllChangeListeners();
     this->deleteAllSubItems();
     this->removeItemFromParent();
-    this->masterReference.clear();
 }
 
 void TreeItem::setMarkerVisible(bool shouldBeVisible) noexcept
@@ -128,7 +121,6 @@ bool TreeItem::haveAllChildrenSelectedWithDeepSearch() const
     return true;
 }
 
-
 //===----------------------------------------------------------------------===//
 // Rename
 //===----------------------------------------------------------------------===//
@@ -138,11 +130,10 @@ void TreeItem::safeRename(const String &newName)
     this->name = TreeItem::createSafeName(newName);
 }
 
-String TreeItem::getName() const
+String TreeItem::getName() const noexcept 
 {
     return this->name;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Menu
@@ -279,25 +270,11 @@ void TreeItem::paintItem(Graphics &g, int width, int height)
 void TreeItem::paintOpenCloseButton(Graphics &g, const Rectangle<float> &area,
                                     Colour backgroundColour, bool isMouseOver)
 {
-    //if (this->getNumSubItems() == 0) { return; }
-
-//#if HELIO_MOBILE
-//    return;
-//#endif
-
     Path p;
     p.addTriangle(0.0f, 0.0f, 1.0f, this->isOpen() ? 0.0f : 0.5f, this->isOpen() ? 0.5f : 0.0f, 1.0f);
 
     g.setColour(backgroundColour.contrasting().withAlpha(isMouseOver ? 0.7f : 0.4f));
     g.fillPath(p, p.getTransformToScaleToFit(area.reduced(1, area.getHeight() / 8), true));
-}
-
-void TreeItem::paintHorizontalConnectingLine(Graphics &g, const Line<float> &line)
-{
-}
-
-void TreeItem::paintVerticalConnectingLine(Graphics &g, const Line<float> &line)
-{
 }
 
 int TreeItem::getItemHeight() const
@@ -310,12 +287,12 @@ int TreeItem::getItemHeight() const
     return TREE_ITEM_HEIGHT;
 }
 
-Font TreeItem::getFont() const
+Font TreeItem::getFont() const noexcept
 {
     return Font(Font::getDefaultSansSerifFontName(), TREE_FONT_SIZE, Font::plain); //this->getItemHeight() * TREE_FONT_HEIGHT_PROPORTION, Font::plain);
 }
 
-Colour TreeItem::getColour() const
+Colour TreeItem::getColour() const noexcept
 {
     return Colour(100, 150, 200);
     //return this->colour; // todo

@@ -58,13 +58,13 @@ InstrumentTreeItem::~InstrumentTreeItem()
     this->removeInstrumentEditor();
 }
 
-Colour InstrumentTreeItem::getColour() const
+Colour InstrumentTreeItem::getColour() const noexcept
 {
     return Colour(0xffff80f3).interpolatedWith(Colour(0xffa489ff), 0.5f);
     //return Colour(0xffd151ff);
 }
 
-Image InstrumentTreeItem::getIcon() const
+Image InstrumentTreeItem::getIcon() const noexcept
 {
     return Icons::findByName(Icons::instrumentGraph, TREE_ICON_HEIGHT);
 }
@@ -185,12 +185,16 @@ void InstrumentTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dra
     TreeItem::itemDropped(dragSourceDetails, insertIndex);
 }
 
-
 //===----------------------------------------------------------------------===//
 // Menu
 //===----------------------------------------------------------------------===//
 
-ScopedPointer<Component> InstrumentTreeItem::createItemMenu()
+bool InstrumentTreeItem::hasMenu() const noexcept
+{
+    return true;
+}
+
+ScopedPointer<Component> InstrumentTreeItem::createMenu()
 {
     return new InstrumentCommandPanel(*this);
 }

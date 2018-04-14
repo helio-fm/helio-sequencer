@@ -86,22 +86,8 @@ void PanelBackgroundC::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-    // TODO remove clipping and opaque everywhere possible
-    // this->setPaintingIsUnclipped(true);
-    // this->setOpaque(true);
-
-    // TrackMapNoteComponent::paint 
-
-    auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
-    if (theme.getBgCache3().isValid())
-    {
-        g.setTiledImageFill(theme.getBgCache3(), 0, 0, 1.f);
-        g.fillRect(this->getLocalBounds());
-    }
-    else
-    {
-        drawPanel(g, static_cast<HelioTheme &>(this->getLookAndFeel()));
-    }
+    g.setFillType(this->fillType);
+    g.fillRect(this->getLocalBounds());
 
     //[/UserPaint]
 }
@@ -109,6 +95,9 @@ void PanelBackgroundC::paint (Graphics& g)
 void PanelBackgroundC::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
+    auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
+    this->bgCache = theme.getBgCache3();
+    this->fillType = FillType(this->bgCache, {});
     //[/UserPreResize]
 
     //[UserResized] Add your own custom resize handling here..

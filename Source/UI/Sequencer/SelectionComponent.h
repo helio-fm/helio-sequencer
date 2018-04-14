@@ -17,28 +17,33 @@
 
 #pragma once
 
-class MidiTrackTreeItem;
+#include "SelectableComponent.h"
 
-#include "CommandPanel.h"
-
-class LayerCommandPanel : public CommandPanel
+class SelectionComponent final : public Component
 {
 public:
-    
-    explicit LayerCommandPanel(MidiTrackTreeItem &parentLayer);
-    
-    ~LayerCommandPanel() override;
-    
-    void handleCommandMessage(int commandId) override;
-    
-private:
-    
-    void initDefaultCommands();
-    void initColorSelection();
-    void initProjectSelection();
-    void initInstrumentSelection();
-    void exit();
 
-    MidiTrackTreeItem &layerItem;
+    SelectionComponent();
+
+    virtual void beginLasso(const MouseEvent &e,
+        LassoSource<SelectableComponent *> *const lassoSource);
+
+    virtual void dragLasso(const MouseEvent &e);
+    virtual void endLasso();
     
+    virtual bool isDragging() const;
+
+    void paint(Graphics &g) override;
+
+    bool hitTest(int, int) override { return false; }
+
+private:
+
+    Array<SelectableComponent *> originalSelection;
+
+    LassoSource<SelectableComponent *> *source;
+
+    Point<int> dragStartPos;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SelectionComponent)
 };

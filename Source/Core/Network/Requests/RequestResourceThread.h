@@ -57,9 +57,11 @@ private:
     
     void run() override
     {
+        namespace ApiRoutes = Routes::HelioFM::Api::V1;
+
         Time::waitForMillisecondCounter(Time::getMillisecondCounter() + this->delay);
 
-        const String uri = HelioFM::Api::V1::requestResource + "/" + this->resourceId;
+        const String uri = ApiRoutes::requestResource + "/" + this->resourceId;
         const HelioApiRequest request(uri);
         this->response = request.get();
 

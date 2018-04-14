@@ -36,7 +36,7 @@ using namespace Serialization::VCS;
 PianoTrackTreeItem::PianoTrackTreeItem(const String &name) :
     MidiTrackTreeItem(name, Serialization::Core::pianoTrack)
 {
-    this->layer = new PianoSequence(*this, *this);
+    this->sequence = new PianoSequence(*this, *this);
     this->pattern = new Pattern(*this, *this);
 
     // this will be set by transport
@@ -52,11 +52,10 @@ PianoTrackTreeItem::PianoTrackTreeItem(const String &name) :
     this->deltas.add(new VCS::Delta({}, PatternDeltas::clipsAdded));
 }
 
-Image PianoTrackTreeItem::getIcon() const
+Image PianoTrackTreeItem::getIcon() const noexcept
 {
     return Icons::findByName(Icons::layer, TREE_ICON_HEIGHT);
 }
-
 
 int PianoTrackTreeItem::getNumDeltas() const
 {
@@ -93,7 +92,7 @@ VCS::Delta *PianoTrackTreeItem::getDelta(int index) const
 
         if (numEvents == 0)
         {
-            this->deltas[index]->setDescription(VCS::DeltaDescription("empty layer"));
+            this->deltas[index]->setDescription(VCS::DeltaDescription("empty sequence"));
         }
         else
         {
@@ -206,7 +205,7 @@ ValueTree PianoTrackTreeItem::serialize() const
 
     this->serializeTrackProperties(tree);
 
-    tree.appendChild(this->layer->serialize(), nullptr);
+    tree.appendChild(this->sequence->serialize(), nullptr);
     tree.appendChild(this->pattern->serialize(), nullptr);
 
     TreeItemChildrenSerializer::serializeChildren(*this, tree);
@@ -223,7 +222,7 @@ void PianoTrackTreeItem::deserialize(const ValueTree &tree)
 
     forEachValueTreeChildWithType(tree, e, Serialization::Midi::track)
     {
-        this->layer->deserialize(e);
+        this->sequence->deserialize(e);
     }
 
     forEachValueTreeChildWithType(tree, e, Serialization::Midi::pattern)
@@ -325,13 +324,9 @@ void PianoTrackTreeItem::resetEventsDelta(const ValueTree &state)
 {
     jassert(state.hasType(PianoSequenceDeltas::notesAdded));
 
-    //this->reset(); // TODO test
     this->getSequence()->reset();
-
     forEachValueTreeChildWithType(state, e, Serialization::Midi::note)
     {
         this->getSequence()->silentImport(Note(this->getSequence()).withParameters(e));
     }
 }
-
-// TODO manage clip deltas

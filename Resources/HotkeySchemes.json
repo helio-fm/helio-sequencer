@@ -112,8 +112,11 @@
         { "receiver": "PianoRoll", "command": "ToggleQuickStash", "key": "Shift + Tab" },
 
         // Panels
-        { "receiver": "PianoRoll", "command": "ShowArpeggiatiosPanel", "key": "A" },
         { "receiver": "PianoRoll", "command": "ShowVolumePanel", "key": "V" },
+        { "receiver": "PianoRoll", "command": "ShowArpeggiatorsPanel", "key": "A" },
+
+        // Arpeggiators
+        { "receiver": "PianoRoll", "command": "CreateArpeggiatorFromSelection", "key": "Shift + A" },
 
         // ------------------------------------
         // Pattern roll's specific

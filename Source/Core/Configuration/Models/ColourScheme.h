@@ -17,24 +17,18 @@
 
 #pragma once
 
-struct IdentifierHash
-{
-    static int generateHash(const Identifier& key, int upperLimit) noexcept
-    {
-        return uint32(key.toString().hashCode()) % (uint32)upperLimit;
-    }
-};
+#include "BaseResource.h"
 
 // A simple wrapper around colour map hashmap
 // Used for serialization and JUCE_LIVE_CONSTANTs macros
-class ColourScheme : public Serializable
+class ColourScheme : public BaseResource
 {
 public:
 
-    ColourScheme() {}
+    ColourScheme() noexcept {}
     ColourScheme(const ColourScheme &other);
-    ~ColourScheme() override {}
 
+    typedef ReferenceCountedObjectPtr<ColourScheme> Ptr;
     typedef HashMap<Identifier, Colour, IdentifierHash> ColourMap;
 
     void randomize();
@@ -42,8 +36,7 @@ public:
     ColourScheme &operator=(const ColourScheme &other);
     friend bool operator==(const ColourScheme &lhs, const ColourScheme &rhs);
 
-    String getId() const;
-    String getName() const;
+    String getName() const noexcept;
 
     // Primary background gradient
     Colour getPrimaryGradientColourA() const;
@@ -74,23 +67,27 @@ public:
     Colour getIconBaseColour() const;
     Colour getIconShadowColour() const;
 
-    //===------------------------------------------------------------------===//
-    // Serialization
-    //===------------------------------------------------------------------===//
-
     void syncWithLiveConstantEditor();
+
+    //===------------------------------------------------------------------===//
+    // Serializable
+    //===------------------------------------------------------------------===//
 
     ValueTree serialize() const override;
     void deserialize(const ValueTree &tree) override;
     void reset() override;
 
+    //===------------------------------------------------------------------===//
+    // BaseResource
+    //===------------------------------------------------------------------===//
+
+    String getResourceId() const override;
+    Identifier getResourceIdProperty() const override;
+
 private:
 
     ColourMap colours;
-
     String name;
-
-    String id;
 
     JUCE_LEAK_DETECTOR(ColourScheme);
 

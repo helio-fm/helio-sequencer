@@ -18,7 +18,7 @@
 #pragma once
 
 class MidiSequence;
-class HybridLassoComponent;
+class SelectionComponent;
 class ProjectTreeItem;
 class LongTapController;
 class SmartDragController;
@@ -42,8 +42,7 @@ class TimelineWarningMarker;
 #include "KeySignatureLargeComponent.h"
 #include "Playhead.h"
 #include "TransportListener.h"
-#include "HybridRollEventComponent.h"
-#include "ClipboardOwner.h"
+#include "MidiEventComponent.h"
 #include "LongTapListener.h"
 #include "SmoothPanListener.h"
 #include "SmoothZoomListener.h"
@@ -72,7 +71,6 @@ class HybridRoll :
     public SmoothZoomListener,
     public MultiTouchListener,
     public ProjectListener,
-    public ClipboardOwner,
     public LassoSource<SelectableComponent *>,
     protected ChangeListener, // listens to HybridRollEditMode,
     protected TransportListener,
@@ -94,7 +92,8 @@ public:
     Viewport &getViewport() const noexcept;
     Transport &getTransport() const noexcept;
     ProjectTreeItem &getProject() const noexcept;
-    HybridRollEditMode getEditMode() const;
+    HybridRollEditMode getEditMode() const noexcept;
+    WeakReference<MidiTrack> getActiveTrack() const noexcept;
 
     virtual void selectAll() = 0;
     virtual Rectangle<float> getEventBounds(FloatBoundsComponent *nc) const = 0;
@@ -229,7 +228,7 @@ public:
     void deselectEvent(SelectableComponent *event);
     void deselectAll();
     
-    HybridLassoComponent *getLasso() const;
+    SelectionComponent *getSelectionComponent() const noexcept;
     
     //===------------------------------------------------------------------===//
     // ProjectListener
@@ -402,13 +401,18 @@ protected:
     ScopedPointer<Component> topShadow;
     ScopedPointer<Component> bottomShadow;
 
-    ScopedPointer<HybridLassoComponent> lassoComponent;
+    ScopedPointer<SelectionComponent> lassoComponent;
     
 protected:
     
     Array<float> visibleBars;
     Array<float> visibleBeats;
     Array<float> visibleSnaps;
+
+    const Colour barLineColour;
+    const Colour barLineBevelColour;
+    const Colour beatLineColour;
+    const Colour snapLineColour;
 
     void computeVisibleBeatLines();
 
@@ -420,6 +424,8 @@ protected:
     ScopedPointer<SmoothZoomController> smoothZoomController;
 
     Array<SafePointer<FloatBoundsComponent>> batchRepaintList;
+
+    WeakReference<MidiTrack> activeTrack;
 
 protected:
     

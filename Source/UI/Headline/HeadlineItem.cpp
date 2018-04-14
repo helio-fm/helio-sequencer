@@ -32,7 +32,7 @@
 #include "App.h"
 //[/MiscUserDefs]
 
-HeadlineItem::HeadlineItem(WeakReference<TreeItem> treeItem, AsyncUpdater &parent)
+HeadlineItem::HeadlineItem(WeakReference<HeadlineItemDataSource> treeItem, AsyncUpdater &parent)
     : item(treeItem),
       parentHeadline(parent)
 {
@@ -42,16 +42,11 @@ HeadlineItem::HeadlineItem(WeakReference<TreeItem> treeItem, AsyncUpdater &paren
     titleLabel->setJustificationType (Justification::centredLeft);
     titleLabel->setEditable (false, false, false);
 
-    titleLabel->setBounds (34, 5, 256, 21);
+    titleLabel->setBounds (33, 5, 256, 21);
 
     addAndMakeVisible (icon = new IconComponent (Icons::workspace));
 
-    internalPath2.startNewSubPath (0.0f, 0.0f);
-    internalPath2.lineTo (40.0f, 0.0f);
-    internalPath2.lineTo (40.0f, 32.0f);
-    internalPath2.lineTo (0.0f, 32.0f);
-    internalPath2.closeSubPath();
-
+    addAndMakeVisible (component = new HeadlineItemArrow());
 
     //[UserPreSize]
     this->titleLabel->setInterceptsMouseClicks(false, false);
@@ -63,6 +58,7 @@ HeadlineItem::HeadlineItem(WeakReference<TreeItem> treeItem, AsyncUpdater &paren
     this->titleLabel->setBufferedToImage(true);
     this->titleLabel->setCachedComponentImage(new CachedLabelImage(*this->titleLabel));
 
+    this->bgColour = this->findColour(ColourIDs::BackgroundB::fill);
     //[/UserPreSize]
 
     setSize (256, 32);
@@ -86,6 +82,7 @@ HeadlineItem::~HeadlineItem()
 
     titleLabel = nullptr;
     icon = nullptr;
+    component = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -96,67 +93,9 @@ void HeadlineItem::paint (Graphics& g)
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
 
-    {
-        float x = 0, y = 0;
-        Colour fillColour = Colour (0x0cffffff);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        fillColour = this->findColour(ColourIDs::BackgroundB::fill).brighter(0.025f);
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillPath (internalPath1, AffineTransform::translation(x, y));
-    }
-
-    {
-        float x = 0, y = 0;
-        Colour fillColour1 = Colour (0x22000000), fillColour2 = Colour (0x00000000);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-
-        // A hack - don't draw a shadow for the first item in chain
-        if (this->getPosition().getX() <= 0)
-        { fillColour1 = Colours::transparentBlack; }
-
-        //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (fillColour1,
-                                       0.0f - 0.0f + x,
-                                       16.0f - 0.0f + y,
-                                       fillColour2,
-                                       16.0f - 0.0f + x,
-                                       16.0f - 0.0f + y,
-                                       true));
-        g.fillPath (internalPath2, AffineTransform::translation(x, y));
-    }
-
-    {
-        float x = 0, y = 0;
-        Colour strokeColour1 = Colour (0x77000000), strokeColour2 = Colour (0x00000000);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (strokeColour1,
-                                       static_cast<float> (getWidth() - 9) - 0.0f + x,
-                                       16.0f - 0.0f + y,
-                                       strokeColour2,
-                                       static_cast<float> (getWidth() - 16) - 0.0f + x,
-                                       2.0f - 0.0f + y,
-                                       true));
-        g.strokePath (internalPath3, PathStrokeType (1.000f), AffineTransform::translation(x, y));
-    }
-
-    {
-        float x = 0, y = 0;
-        Colour strokeColour1 = Colour (0x55ffffff), strokeColour2 = Colour (0x00ffffff);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setGradientFill (ColourGradient (strokeColour1,
-                                       static_cast<float> (getWidth() - 10) - 0.0f + x,
-                                       16.0f - 0.0f + y,
-                                       strokeColour2,
-                                       static_cast<float> (getWidth() - 17) - 0.0f + x,
-                                       5.0f - 0.0f + y,
-                                       true));
-        g.strokePath (internalPath4, PathStrokeType (0.500f), AffineTransform::translation(x, y));
-    }
-
     //[UserPaint] Add your own custom painting code here..
+    g.setColour(this->bgColour);
+    g.fillRect(0, 0, getWidth() - 11, getHeight());
     //[/UserPaint]
 }
 
@@ -165,31 +104,8 @@ void HeadlineItem::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    icon->setBounds (8, (getHeight() / 2) - (32 / 2), 32, 32);
-    internalPath1.clear();
-    internalPath1.startNewSubPath (0.0f, 0.0f);
-    internalPath1.lineTo (static_cast<float> (getWidth() - 16), 0.0f);
-    internalPath1.lineTo (static_cast<float> (getWidth() - 9), 16.0f);
-    internalPath1.lineTo (static_cast<float> (getWidth() - 16), 32.0f);
-    internalPath1.lineTo (0.0f, 32.0f);
-    internalPath1.closeSubPath();
-
-    internalPath3.clear();
-    internalPath3.startNewSubPath (static_cast<float> (getWidth() - 32), 0.0f);
-    internalPath3.lineTo (static_cast<float> (getWidth() - 16), 0.0f);
-    internalPath3.lineTo (static_cast<float> (getWidth() - 9), 16.0f);
-    internalPath3.lineTo (static_cast<float> (getWidth() - 16), 32.0f);
-    internalPath3.lineTo (static_cast<float> (getWidth() - 32), 32.0f);
-    internalPath3.closeSubPath();
-
-    internalPath4.clear();
-    internalPath4.startNewSubPath (static_cast<float> (getWidth() - 32), 0.0f);
-    internalPath4.lineTo (static_cast<float> (getWidth() - 17), 0.0f);
-    internalPath4.lineTo (static_cast<float> (getWidth() - 10), 16.0f);
-    internalPath4.lineTo (static_cast<float> (getWidth() - 17), 32.0f);
-    internalPath4.lineTo (static_cast<float> (getWidth() - 32), 32.0f);
-    internalPath4.closeSubPath();
-
+    icon->setBounds (7, (getHeight() / 2) - (32 / 2), 32, 32);
+    component->setBounds (getWidth() - 16, 0, 16, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -222,13 +138,13 @@ void HeadlineItem::mouseDown (const MouseEvent& e)
     if (this->item != nullptr)
     {
         this->stopTimer();
-        if (this->item->isSelected())
+        if (this->item->canBeSelectedAsMenuItem())
         {
-            this->showMenu();
+            this->item->onSelectedAsMenuItem();
         }
         else
         {
-            this->item->setSelected(true, true);
+            this->showMenuIfAny();
         }
     }
     //[/UserCode_mouseDown]
@@ -244,7 +160,7 @@ void HeadlineItem::mouseUp (const MouseEvent& e)
 
 //[MiscUserCode]
 
-WeakReference<TreeItem> HeadlineItem::getTreeItem() const noexcept
+WeakReference<HeadlineItemDataSource> HeadlineItem::getDataSource() const noexcept
 {
     return this->item;
 }
@@ -262,7 +178,7 @@ void HeadlineItem::updateContent()
     }
 }
 
-void HeadlineItem::changeListenerCallback(ChangeBroadcaster* source)
+void HeadlineItem::changeListenerCallback(ChangeBroadcaster *source)
 {
     this->parentHeadline.triggerAsyncUpdate();
 }
@@ -270,13 +186,12 @@ void HeadlineItem::changeListenerCallback(ChangeBroadcaster* source)
 void HeadlineItem::timerCallback()
 {
     this->stopTimer();
-    this->showMenu();
+    this->showMenuIfAny();
 }
 
-void HeadlineItem::showMenu()
+void HeadlineItem::showMenuIfAny()
 {
-    // FIXME If has menu:
-    if (this->item != nullptr)
+    if (this->item != nullptr && this->item->hasMenu())
     {
         HeadlineDropdown *hd = new HeadlineDropdown(this->item);
         hd->setTopLeftPosition(this->getPosition());
@@ -293,7 +208,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="HeadlineItem" template="../../Template"
                  componentName="" parentClasses="public Component, private Timer, private ChangeListener"
-                 constructorParams="WeakReference&lt;TreeItem&gt; treeItem, AsyncUpdater &amp;parent"
+                 constructorParams="WeakReference&lt;HeadlineItemDataSource&gt; treeItem, AsyncUpdater &amp;parent"
                  variableInitialisers="item(treeItem),&#10;parentHeadline(parent)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="256" initialHeight="32">
@@ -303,23 +218,18 @@ BEGIN_JUCER_METADATA
     <METHOD name="mouseExit (const MouseEvent&amp; e)"/>
     <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
   </METHODS>
-  <BACKGROUND backgroundColour="0">
-    <PATH pos="0 0 100 100" fill="solid: cffffff" hasStroke="0" nonZeroWinding="1">s 0 0 l 16R 0 l 9R 16 l 16R 32 l 0 32 x</PATH>
-    <PATH pos="0 0 100 100" fill=" radial: 0 16, 16 16, 0=22000000, 1=0"
-          hasStroke="0" nonZeroWinding="1">s 0 0 l 40 0 l 40 32 l 0 32 x</PATH>
-    <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="1" stroke="1, mitered, butt"
-          strokeColour=" radial: 9R 16, 16R 2, 0=77000000, 1=0" nonZeroWinding="1">s 32R 0 l 16R 0 l 9R 16 l 16R 32 l 32R 32 x</PATH>
-    <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="1" stroke="0.5, mitered, butt"
-          strokeColour=" radial: 10R 16, 17R 5, 0=55ffffff, 1=ffffff" nonZeroWinding="1">s 32R 0 l 17R 0 l 10R 16 l 17R 32 l 32R 32 x</PATH>
-  </BACKGROUND>
+  <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="9a3c449859f61884" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="34 5 256 21" labelText="Project"
+         explicitFocusOrder="0" pos="33 5 256 21" labelText="Project"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>
   <GENERICCOMPONENT name="" id="f10feab7d241bacb" memberName="icon" virtualName=""
-                    explicitFocusOrder="0" pos="8 0Cc 32 32" class="IconComponent"
+                    explicitFocusOrder="0" pos="7 0Cc 32 32" class="IconComponent"
                     params="Icons::workspace"/>
+  <JUCERCOMP name="" id="6845054f3705e31" memberName="component" virtualName=""
+             explicitFocusOrder="0" pos="0Rr 0 16 0M" sourceFile="HeadlineItemArrow.cpp"
+             constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

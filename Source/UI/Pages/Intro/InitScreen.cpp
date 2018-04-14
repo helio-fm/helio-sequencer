@@ -45,6 +45,12 @@ InitScreen::InitScreen()
     setSize (600, 400);
 
     //[Constructor]
+    
+    // Debug png logos generator
+    //const auto fader = new LogoFader(false);
+    //this->addAndMakeVisible(fader);
+    //fader->setBounds(0, 0, 400, 400);
+
     this->setOpaque(true);
     this->rebound();
     this->toFront(false);
@@ -109,6 +115,8 @@ void InitScreen::parentSizeChanged()
     if (this->isVisible())
     {
         this->rebound();
+        // Debug png logos generator
+        //this->startTimer(5000);
         this->startTimer(10);
     }
     //[/UserCode_parentSizeChanged]
@@ -119,8 +127,13 @@ void InitScreen::handleCommandMessage (int commandId)
     //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::InitWorkspace)
     {
+        if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
+        {
+            ht->updateBackgroundRenders();
+        }
+
         App::Workspace().init();
-        App::Layout().init();
+        App::Layout().show();
     }
     //[/UserCode_handleCommandMessage]
 }

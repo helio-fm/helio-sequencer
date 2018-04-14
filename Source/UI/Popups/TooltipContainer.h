@@ -33,9 +33,9 @@ public:
     //[UserMethods]
 
     // set -1 timeout if it should not hide
-    void showWithComponent(Component *newTargetComponent, int timeOutMs = -1);
+    void showWithComponent(ScopedPointer<Component> newTargetComponent, int timeOutMs = -1);
 
-    void showWithComponent(Component *newTargetComponent,
+    void showWithComponent(ScopedPointer<Component> newTargetComponent,
                            Rectangle<int> callerScreenBounds, int timeOutMs = -1);
 
     void hide();
@@ -53,17 +53,13 @@ private:
     //[UserVariables]
 
     int hideTimeout;
-
     int timeCounter;
-
     bool alignedToBottom;
-
     int clicksCountOnStart;
 
     ComponentAnimator animator;
 
     void timerCallback() override;
-
     void updatePosition();
 
     //[/UserVariables]

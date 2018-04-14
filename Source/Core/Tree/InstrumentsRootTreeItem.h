@@ -23,15 +23,15 @@ class InstrumentTreeItem;
 
 #include "TreeItem.h"
 
-class InstrumentsRootTreeItem : public TreeItem
+class InstrumentsRootTreeItem final : public TreeItem
 {
 public:
 
     InstrumentsRootTreeItem();
 
-    String getName() const override;
-    Colour getColour() const override;
-    Image getIcon() const override;
+    String getName() const noexcept override;
+    Colour getColour() const noexcept override;
+    Image getIcon() const noexcept override;
 
     void showPage() override;
     void recreatePage() override;
@@ -48,7 +48,8 @@ public:
     // Menu
     //===------------------------------------------------------------------===//
 
-    ScopedPointer<Component> createItemMenu() override;
+    bool hasMenu() const noexcept override;
+    ScopedPointer<Component> createMenu() override;
 
 private:
     

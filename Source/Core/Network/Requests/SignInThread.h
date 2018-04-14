@@ -61,32 +61,32 @@ private:
     
     void run() override
     {
-        // Construct payload object:
-        DynamicObject::Ptr session(new DynamicObject());
-        session->setProperty(Serialization::Api::V1::email, this->email);
-        session->setProperty(Serialization::Api::V1::password, this->password);
-        session->setProperty(Serialization::Api::V1::deviceId, Config::getDeviceId());
-        session->setProperty(Serialization::Api::V1::platformId, SystemStats::getOperatingSystemName());
+        namespace ApiKeys = Serialization::Api::V1;
+        namespace ApiRoutes = Routes::HelioFM::Api::V1;
 
-        DynamicObject::Ptr payload(new DynamicObject());
-        payload->setProperty(Serialization::Api::V1::session, var(session));
+        // Construct payload object:
+        ValueTree session(ApiKeys::session);
+        session.setProperty(ApiKeys::email, this->email, nullptr);
+        session.setProperty(ApiKeys::password, this->password, nullptr);
+        session.setProperty(ApiKeys::deviceId, Config::getDeviceId(), nullptr);
+        session.setProperty(ApiKeys::platformId, SystemStats::getOperatingSystemName(), nullptr);
 
         // Clear password just not to keep it in the memory:
         this->password = {};
 
-        const HelioApiRequest request(HelioFM::Api::V1::login);
-        this->response = request.post(var(payload));
+        const HelioApiRequest request(ApiRoutes::login);
+        this->response = request.post(session);
 
         if (!this->response.isValid() ||
             !this->response.is2xx() ||
-            !this->response.hasProperty(Serialization::Api::V1::token))
+            !this->response.hasProperty(ApiKeys::token))
         {
             callRequestListener(SignInThread, signInFailed, self->response.getErrors());
             return;
         }
 
         callRequestListener(SignInThread, signInOk,
-            self->email, self->response.getProperty(Serialization::Api::V1::token));
+            self->email, self->response.getProperty(ApiKeys::token));
     }
     
     String email;

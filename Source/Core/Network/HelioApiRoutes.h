@@ -17,25 +17,28 @@
 
 #pragma once
 
-namespace HelioFM
+namespace Routes
 {
-    // This is a testing back-end, which is supposed
-    // to be moved to https://helio.fm, once it is ready:
-    static const String baseURL = "https://musehackers.com";
-    static const String translationsURL = baseURL + "/translations";
-
-    namespace Api
+    namespace HelioFM
     {
-        namespace V1
+        // This is a testing back-end, which is supposed
+        // to be moved to https://helio.fm, once it is ready:
+        static const String baseURL = "https://musehackers.com";
+        static const String translationsURL = baseURL + "/translations";
+
+        namespace Api
         {
-            static const String join = "/api/v1/join";
-            static const String login = "/api/v1/login";
-            static const String tokenCheck = "/api/v1/session-status";
-            static const String tokenUpdate = "/api/v1/relogin";
-            static const String requestResource = "/api/v1/client/helio";
-            static const String requestUpdatesInfo = "/api/v1/client/helio/info";
-            static const String requestUserProfile = "/api/v1/me";
-            static const String vcs = "/api/v1/vcs/:project";
-        } // namespace V1
-    } // namespace API
-}  // namespace HelioFM
+            namespace V1
+            {
+                static const String join = "/api/v1/join";
+                static const String login = "/api/v1/login";
+                static const String tokenCheck = "/api/v1/session-status";
+                static const String tokenUpdate = "/api/v1/relogin";
+                static const String requestResource = "/api/v1/client/helio";
+                static const String requestUpdatesInfo = "/api/v1/client/helio/info";
+                static const String requestUserProfile = "/api/v1/me";
+                static const String vcs = "/api/v1/vcs/:project";
+            } // namespace V1
+        } // namespace API
+    } // namespace HelioFM
+} // namespace Routes

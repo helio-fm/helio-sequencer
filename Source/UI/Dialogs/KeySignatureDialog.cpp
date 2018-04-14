@@ -99,8 +99,8 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
         this->scale = this->defaultScales[i];
         this->scaleEditor->setScale(this->scale);
         this->keySelector->setSelectedKey(this->key);
-        this->scaleNameEditor->setText(this->scale.getLocalizedName());
-        this->originalEvent = KeySignatureEvent(this->originalSequence, targetBeat, this->key, this->scale);
+        this->scaleNameEditor->setText(this->scale->getLocalizedName());
+        this->originalEvent = KeySignatureEvent(this->originalSequence, this->scale, targetBeat, this->key);
 
         this->originalSequence->checkpoint();
         this->originalSequence->insert(this->originalEvent, true);
@@ -115,7 +115,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
         this->scale = this->originalEvent.getScale();
         this->scaleEditor->setScale(this->scale);
         this->keySelector->setSelectedKey(this->key);
-        this->scaleNameEditor->setText(this->scale.getLocalizedName(), dontSendNotification);
+        this->scaleNameEditor->setText(this->scale->getLocalizedName(), dontSendNotification);
 
         this->messageLabel->setText(TRANS("dialog::keysignature::edit::caption"), dontSendNotification);
         this->okButton->setButtonText(TRANS("dialog::keysignature::edit::apply"));
@@ -137,7 +137,7 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
     for (int i = 0; i < this->defaultScales.size(); ++i)
     {
         const auto &s = this->defaultScales.getUnchecked(i);
-        menu.add(CommandItem::withParams(Icons::ellipsis, CommandIDs::SelectScale + i, s.getLocalizedName()));
+        menu.add(CommandItem::withParams(Icons::ellipsis, CommandIDs::SelectScale + i, s->getLocalizedName()));
     }
     this->comboPrimer->initWith(this->scaleNameEditor.get(), menu);
 
@@ -271,13 +271,13 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
     else if (commandId == CommandIDs::TransportStartPlayback)
     {
         // Play scale forward (and backward?)
-        auto scaleKeys = this->scale.getUpScale();
-        scaleKeys.addArray(this->scale.getDownScale());
+        auto scaleKeys = this->scale->getUpScale();
+        scaleKeys.addArray(this->scale->getDownScale());
 
         MidiMessageSequence s;
         for (int i = 0; i < scaleKeys.size(); ++i)
         {
-            const int key = KEY_C5 + this->key + scaleKeys.getUnchecked(i);
+            const int key = MIDDLE_C + this->key + scaleKeys.getUnchecked(i);
 
             MidiMessage eventNoteOn(MidiMessage::noteOn(1, key, 1.f));
             const double startTime = double(i) * MS_PER_BEAT;
@@ -294,10 +294,10 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
         double timeOffset = double(scaleKeys.size() + 1.0) * MS_PER_BEAT;
 
         // Then play triad chord
-        const auto triadKeys = scale.getTriad(Scale::Tonic, false);
+        const auto triadKeys = scale->getTriad(Scale::Tonic, false);
         for (int i = 0; i < triadKeys.size(); ++i)
         {
-            const int key = KEY_C5 + this->key + triadKeys.getUnchecked(i);
+            const int key = MIDDLE_C + this->key + triadKeys.getUnchecked(i);
 
             MidiMessage eventNoteOn(MidiMessage::noteOn(1, key, 1.f));
             const double startTime = double(i) * MS_PER_BEAT;
@@ -327,7 +327,7 @@ void KeySignatureDialog::handleCommandMessage (int commandId)
         {
             this->scale = this->defaultScales[scaleIndex];
             this->scaleEditor->setScale(this->scale);
-            this->scaleNameEditor->setText(this->scale.getLocalizedName(), false);
+            this->scaleNameEditor->setText(this->scale->getLocalizedName(), false);
             const KeySignatureEvent newEvent = this->originalEvent.withRootKey(this->key).withScale(this->scale);
             this->sendEventChange(newEvent);
         }
@@ -441,9 +441,9 @@ void KeySignatureDialog::onKeyChanged(int key)
     }
 }
 
-void KeySignatureDialog::onScaleChanged(Scale scale)
+void KeySignatureDialog::onScaleChanged(const Scale::Ptr scale)
 {
-    if (!this->scale.isEquivalentTo(scale))
+    if (!this->scale->isEquivalentTo(scale))
     {
         this->scale = scale;
 
@@ -451,9 +451,9 @@ void KeySignatureDialog::onScaleChanged(Scale scale)
         for (int i = 0; i < this->defaultScales.size(); ++i)
         {
             const auto &s = this->defaultScales.getUnchecked(i);
-            if (s.isEquivalentTo(scale))
+            if (s->isEquivalentTo(scale))
             {
-                this->scaleNameEditor->setText(s.getLocalizedName());
+                this->scaleNameEditor->setText(s->getLocalizedName());
                 this->scaleEditor->setScale(s);
                 this->scale = s;
                 break;
@@ -471,7 +471,7 @@ void KeySignatureDialog::onScaleChanged(Scale scale)
 void KeySignatureDialog::textEditorTextChanged(TextEditor &ed)
 {
     this->updateOkButtonState();
-    this->scale = this->scale.withName(this->scaleNameEditor->getText());
+    this->scale = this->scale->withName(this->scaleNameEditor->getText());
     this->scaleEditor->setScale(this->scale);
     const KeySignatureEvent newEvent = this->originalEvent.withRootKey(this->key).withScale(scale);
     this->sendEventChange(newEvent);

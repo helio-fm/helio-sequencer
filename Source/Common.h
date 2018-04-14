@@ -66,6 +66,19 @@ struct StringHash
     }
 };
 
+struct IdentifierHash
+{
+    inline HashCode operator()(const juce::Identifier &key) const noexcept
+    {
+        return static_cast<HashCode>(key.toString().hashCode()) % HASH_CODE_MAX;
+    }
+
+    static int generateHash(const Identifier& key, int upperLimit) noexcept
+    {
+        return uint32(key.toString().hashCode()) % (uint32)upperLimit;
+    }
+};
+
 //===----------------------------------------------------------------------===//
 // Various helpers
 //===----------------------------------------------------------------------===//
@@ -97,14 +110,16 @@ inline float roundf(float x)
 // Defines a maximum available resolution
 #define TICKS_PER_BEAT 16
 
+#define VELOCITY_SAVE_ACCURACY 1024.f
+
 // Rolls allow up to 16 divisions per beat, there's no need for better accuracy:
 inline float roundBeat(float beat)
 {
     return roundf(beat * static_cast<float>(TICKS_PER_BEAT)) / static_cast<float>(TICKS_PER_BEAT);
 }
 
-#define forEachValueTreeChildWithType(parentElement, childName, requiredType) \
-    for (const auto &childName : parentElement) if (childName.hasType(requiredType))
+#define forEachValueTreeChildWithType(parentElement, child, requiredType) \
+    for (const auto &child : parentElement) if (child.hasType(requiredType))
 
 #define callMessageThreadFrom(threadType, function) \
     MessageManager::getInstance()->callFunctionOnMessageThread([](void *ptr) -> void* \

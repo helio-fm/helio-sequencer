@@ -17,14 +17,32 @@
 
 #pragma once
 
-class SelectableComponent : public virtual Component
+//[Headers]
+//[/Headers]
+
+
+class HeadlineItemArrow final : public Component
 {
 public:
 
-    virtual void setSelected(bool selected) = 0;
+    HeadlineItemArrow();
+    ~HeadlineItemArrow();
 
-    virtual bool isSelected() const = 0;
+    //[UserMethods]
+    //[/UserMethods]
 
-    virtual String getSelectionGroupId() const = 0;
+    void paint (Graphics& g) override;
+    void resized() override;
 
+
+private:
+
+    //[UserVariables]
+    //[/UserVariables]
+
+    Path internalPath1;
+    Path internalPath2;
+    Path internalPath3;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeadlineItemArrow)
 };

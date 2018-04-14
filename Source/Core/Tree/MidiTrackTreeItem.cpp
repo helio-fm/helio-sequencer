@@ -34,7 +34,10 @@
 #include "InstrumentTreeItem.h"
 #include "Instrument.h"
 
-#include "LayerCommandPanel.h"
+#include "MidiTrackCommandPanel.h"
+
+#include "UndoStack.h"
+#include "MidiTrackActions.h"
 
 MidiTrackTreeItem::MidiTrackTreeItem(const String &name, const Identifier &type) :
     TreeItem(name, type),
@@ -57,7 +60,7 @@ MidiTrackTreeItem::~MidiTrackTreeItem()
     if (this->lastFoundParent != nullptr)
     {
         // Important: first notify
-        this->lastFoundParent->hideEditor(this->layer, this);
+        this->lastFoundParent->hideEditor(this, this);
         this->lastFoundParent->broadcastRemoveTrack(this);
         // Then disconnect from the tree
         this->removeItemFromParent();
@@ -65,7 +68,7 @@ MidiTrackTreeItem::~MidiTrackTreeItem()
     }
 }
 
-Colour MidiTrackTreeItem::getColour() const
+Colour MidiTrackTreeItem::getColour() const noexcept
 {
     return this->getTrackColour().interpolatedWith(Colours::white, 0.4f);
 }
@@ -74,7 +77,7 @@ void MidiTrackTreeItem::showPage()
 {
     if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
     {
-        parentProject->showLinearEditor(this->layer, this);
+        parentProject->showLinearEditor(this, this);
     }
 }
 
@@ -92,7 +95,7 @@ void MidiTrackTreeItem::safeRename(const String &newName)
 
 void MidiTrackTreeItem::importMidi(const MidiMessageSequence &sequence)
 {
-    this->layer->importMidi(sequence);
+    this->sequence->importMidi(sequence);
 }
 
 //===----------------------------------------------------------------------===//
@@ -243,7 +246,7 @@ void MidiTrackTreeItem::setTrackMuted(bool shouldBeMuted, bool sendNotifications
 
 MidiSequence *MidiTrackTreeItem::getSequence() const noexcept
 {
-    return this->layer;
+    return this->sequence;
 }
 
 Pattern *MidiTrackTreeItem::getPattern() const noexcept
@@ -393,7 +396,7 @@ void MidiTrackTreeItem::dispatchRemoveEvent(const MidiEvent &event)
 
 void MidiTrackTreeItem::dispatchPostRemoveEvent(MidiSequence *const layer)
 {
-    jassert(layer == this->layer);
+    jassert(layer == this->sequence);
     if (this->lastFoundParent != nullptr)
     {
         this->lastFoundParent->broadcastPostRemoveEvent(layer);
@@ -449,11 +452,10 @@ void MidiTrackTreeItem::dispatchPostRemoveClip(Pattern *const pattern)
     }
 }
 
-ProjectTreeItem *MidiTrackTreeItem::getProject() const
+ProjectTreeItem *MidiTrackTreeItem::getProject() const noexcept
 {
     return this->lastFoundParent;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Dragging
@@ -523,12 +525,63 @@ void MidiTrackTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &drag
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // Menu
 //===----------------------------------------------------------------------===//
 
-ScopedPointer<Component> MidiTrackTreeItem::createItemMenu()
+bool MidiTrackTreeItem::hasMenu() const noexcept
 {
-    return new LayerCommandPanel(*this);
+    return true;
+}
+
+ScopedPointer<Component> MidiTrackTreeItem::createMenu()
+{
+    return new MidiTrackCommandPanel(*this);
+}
+
+//===----------------------------------------------------------------------===//
+// Callbacks
+//===----------------------------------------------------------------------===//
+
+Function<void(const String &text)> MidiTrackTreeItem::getRenameCallback()
+{
+    return[this](const String &text)
+    {
+        if (text != this->getXPath())
+        {
+            auto project = this->getProject();
+            const auto trackId = this->getTrackId().toString();
+            project->getUndoStack()->beginNewTransaction();
+            project->getUndoStack()->perform(new MidiTrackRenameAction(*project, trackId, text));
+        }
+    };
+}
+
+Function<void(const String &text)> MidiTrackTreeItem::getChangeColourCallback()
+{
+    return[this](const String &text)
+    {
+        const Colour colour(Colour::fromString(text));
+        if (colour != this->getColour())
+        {
+            auto project = this->getProject();
+            const auto trackId = this->getTrackId().toString();
+            project->getUndoStack()->beginNewTransaction();
+            project->getUndoStack()->perform(new MidiTrackChangeColourAction(*project, trackId, colour));
+        }
+    };
+}
+
+Function<void(const String &instrumentId)> MidiTrackTreeItem::getChangeInstrumentCallback()
+{
+    return[this](const String &instrumentId)
+    {
+        if (instrumentId != this->getTrackInstrumentId())
+        {
+            auto project = this->getProject();
+            const auto trackId = this->getTrackId().toString();
+            project->getUndoStack()->beginNewTransaction();
+            project->getUndoStack()->perform(new MidiTrackChangeInstrumentAction(*project, trackId, instrumentId));
+        }
+    };
 }

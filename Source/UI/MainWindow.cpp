@@ -75,9 +75,7 @@ private:
 
 
 MainWindow::MainWindow() :
-DocumentWindow("Helio",
-               Colours::black,
-               DocumentWindow::allButtons)
+    DocumentWindow("Helio", Colours::black, DocumentWindow::allButtons)
 {
     this->setWantsKeyboardFocus(false);
 
@@ -109,7 +107,7 @@ DocumentWindow("Helio",
     Desktop::getInstance().setKioskModeComponent(this);
 #endif
 
-    // HelioTheme have been set previously in App init procedure
+    // HelioTheme has been set up previously in App init procedure
     if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
     {
         ht->initColours(ColourSchemesManager::getInstance().getCurrentScheme());
@@ -136,7 +134,6 @@ DocumentWindow("Helio",
     Desktop::getInstance().setKioskModeComponent(this);
 #endif
 }
-
 
 MainWindow::~MainWindow()
 {
@@ -196,15 +193,9 @@ bool MainWindow::isRunningOnDesktop()
 
 }
 
-
 void MainWindow::closeButtonPressed()
 {
     JUCEApplication::getInstance()->systemRequestedQuit();
-}
-
-MainLayout *MainWindow::getWorkspaceComponent() const
-{
-    return this->layout;
 }
 
 void MainWindow::dismissLayoutComponent()

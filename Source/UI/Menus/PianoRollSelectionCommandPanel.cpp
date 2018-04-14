@@ -17,170 +17,235 @@
 
 #include "Common.h"
 #include "PianoRollSelectionCommandPanel.h"
-#include "ArpeggiatorsManager.h"
-#include "ProjectTreeItem.h"
-#include "PianoRollToolbox.h"
-#include "PianoTrackTreeItem.h"
-#include "PianoRoll.h"
-#include "NoteComponent.h"
-#include "Icons.h"
-#include "TriggersTrackMap.h"
-#include "MainLayout.h"
-#include "AudioCore.h"
-#include "Instrument.h"
-#include "MidiSequence.h"
-#include "InternalClipboard.h"
-#include "App.h"
-#include "CommandIDs.h"
 
-CommandPanel::Items createDefaultPanel()
+#include "Lasso.h"
+#include "SequencerOperations.h"
+
+#include "ArpeggiatorsManager.h"
+#include "Arpeggiator.h"
+#include "NoteComponent.h"
+
+#include "ProjectTreeItem.h"
+#include "ProjectTimeline.h"
+#include "MidiTrack.h"
+
+#include "CommandIDs.h"
+#include "Icons.h"
+
+#include "App.h"
+#include "MainLayout.h"
+#include "ModalDialogInput.h"
+
+static CommandPanel::Items createDefaultPanel()
 {
     CommandPanel::Items cmds;
-    cmds.add(CommandItem::withParams(Icons::copy, CommandIDs::CopyEvents, TRANS("menu::selection::piano::copy")));
-    cmds.add(CommandItem::withParams(Icons::cut, CommandIDs::CutEvents, TRANS("menu::selection::piano::cut")));
-    // todo cut with shifted time
+
+    cmds.add(CommandItem::withParams(Icons::group, CommandIDs::ArpeggiateNotes,
+        TRANS("menu::selection::notes::arpeggiate"))->withSubmenu()->withTimer());
+
+    cmds.add(CommandItem::withParams(Icons::group, CommandIDs::RefactorNotes,
+        TRANS("menu::selection::notes::refactor"))->withSubmenu()->withTimer());
+
+    cmds.add(CommandItem::withParams(Icons::group, CommandIDs::BatchTweakNotes,
+        TRANS("menu::selection::notes::batch"))->withSubmenu()->withTimer());
+
+    cmds.add(CommandItem::withParams(Icons::copy, CommandIDs::CopyEvents,
+        TRANS("menu::selection::notes::copy")));
+
+    cmds.add(CommandItem::withParams(Icons::cut, CommandIDs::CutEvents,
+        TRANS("menu::selection::notes::cut")));
+
+    cmds.add(CommandItem::withParams(Icons::trash, CommandIDs::DeleteEvents,
+        TRANS("menu::selection::notes::delete")));
+
+    return cmds;
+}
+
+static CommandPanel::Items createRefactoringPanel()
+{
+    CommandPanel::Items cmds;
+    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back,
+        TRANS("menu::back"))->withTimer());
+
+    // TODO
+    // Cleanup
+    // Invert up
+    // Invert down
+    // Period up
+    // Period down
+    // Double time
+    // Half time
+
     //cmds.add(CommandItem::withParams(Icons::cut, CommandIDs::CutEvents, TRANS("menu::selection::piano::cut")));
     //cmds.add(CommandItem::withParams(Icons::trash, CommandIDs::RefactorRemoveOverlaps, TRANS("menu::selection::piano::cleanup")));
 
-    // Refactor ->
-    // Move To ->
-    // Arpeggiate ->
-    // Split ->
-
-    cmds.add(CommandItem::withParams(Icons::trash, CommandIDs::DeleteEvents, TRANS("menu::selection::piano::delete")));
     return cmds;
 }
 
-CommandPanel::Items createRefactoringPanel()
+static CommandPanel::Items createBatchTweakPanel()
 {
     CommandPanel::Items cmds;
+    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back,
+        TRANS("menu::back"))->withTimer());
+
     // TODO
-    // Cleanup (remove overlaps)
-    // Invert up
-    // Invert down
-    // Octave up
-    // Octave down
-    // Double time
-    // Half time
-    return cmds;
-}
-
-CommandPanel::Items createLayersPanel(const Array<PianoTrackTreeItem *> &layers)
-{
-    CommandPanel::Items cmds;
-    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
-
-    for (int i = 0; i < layers.size(); ++i)
-    {
-        const String name(layers.getUnchecked(i)->getXPath());
-        const Colour colour(layers.getUnchecked(i)->getColour());
-        cmds.add(CommandItem::withParams(Icons::layer, CommandIDs::MoveEventsToLayer + i, name)->colouredWith(colour));
-    }
+    // Volume randomize
+    // Volume slow down
 
     return cmds;
 }
 
-CommandPanel::Items createArpsPanel(int selectedArp)
+static CommandPanel::Items createArpsPanel()
 {
     CommandPanel::Items cmds;
-    const Array<Arpeggiator> arps = ArpeggiatorsManager::getInstance().getArps();
-    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
 
+    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back,
+        TRANS("menu::back"))->withTimer());
+
+    cmds.add(CommandItem::withParams(Icons::group,
+        CommandIDs::CreateArpeggiatorFromSelection, TRANS("menu::arpeggiators::create")));
+
+    const auto arps = ArpeggiatorsManager::getInstance().getArps();
     for (int i = 0; i < arps.size(); ++i)
     {
-        const bool isSelectedArp = (i == selectedArp);
-
         cmds.add(CommandItem::withParams(Icons::group,
             (CommandIDs::ApplyArpeggiator + i),
-            arps.getUnchecked(i).getName())->toggled(isSelectedArp));
+            arps.getUnchecked(i)->getName()));
     }
 
     return cmds;
 }
 
-
-
-
-
-
-
-
-PianoRollSelectionCommandPanel::PianoRollSelectionCommandPanel(
-    PianoRoll &targetRoll,
-    ProjectTreeItem &parentProject) :
-    roll(targetRoll),
-    project(parentProject)
+PianoRollSelectionCommandPanel::PianoRollSelectionCommandPanel(WeakReference<Lasso> lasso, const ProjectTreeItem &project) :
+    lasso(lasso),
+    project(project)
 {
-    this->initLayersPanel(false);
-}
-
-PianoRollSelectionCommandPanel::~PianoRollSelectionCommandPanel()
-{
+    this->updateContent(createDefaultPanel(), CommandPanel::SlideRight);
 }
 
 void PianoRollSelectionCommandPanel::handleCommandMessage(int commandId)
 {
-    const Array<PianoTrackTreeItem *> &layerItems =
-        this->project.findChildrenOfType<PianoTrackTreeItem>();
-    
-    if (commandId >= CommandIDs::MoveEventsToLayer &&
-        commandId <= (CommandIDs::MoveEventsToLayer + layerItems.size()))
+    jassert(this->lasso != nullptr);
+    const Lasso &selectionReference = *this->lasso;
+
+    if (commandId == CommandIDs::Back)
     {
-        const int layerIndex = commandId - CommandIDs::MoveEventsToLayer;
-        
-        const Lasso::GroupedSelections &selections = this->roll.getLassoSelection().getGroupedSelections();
-        const int numSelected = this->roll.getLassoSelection().getNumSelected();
-
-        if (NoteComponent *note = dynamic_cast<NoteComponent *>(this->roll.getLassoSelection().getSelectedItem(0)))
-        {
-            const MidiSequence *layerOfFirstSelected = (numSelected > 0) ? (note->getNote().getSequence()) : nullptr;
-            const bool hasMultiLayerSelection = (selections.size() > 1);
-            const bool alreadyBelongsTo = hasMultiLayerSelection ? false : (layerItems[layerIndex]->getSequence() == layerOfFirstSelected);
-
-            if (!alreadyBelongsTo)
-            {
-                //Logger::writeToLog("Moving notes to " + layerItems[layerIndex]->getXPath());
-                PianoRollToolbox::moveToLayer(this->roll.getLassoSelection(), layerItems[layerIndex]->getSequence());
-                layerItems[layerIndex]->setSelected(false, false, sendNotification);
-                layerItems[layerIndex]->setSelected(true, true, sendNotification);
-                this->dismiss();
-            }
-        }
-
+        this->updateContent(createDefaultPanel(), CommandPanel::SlideRight);
         return;
     }
+    else if (commandId == CommandIDs::CopyEvents)
+    {
+        SequencerOperations::copyToClipboard(App::Clipboard(), selectionReference);
+        this->dismiss();
+        return;
+    }
+    else if (commandId == CommandIDs::CutEvents)
+    {
+        SequencerOperations::copyToClipboard(App::Clipboard(), selectionReference);
+        SequencerOperations::deleteSelection(selectionReference);
+        this->dismiss();
+        return;
+    }
+    else if (commandId == CommandIDs::DeleteEvents)
+    {
+        SequencerOperations::deleteSelection(selectionReference);
+        this->dismiss();
+        return;
+    }
+    else if (commandId == CommandIDs::CreateArpeggiatorFromSelection)
+    {
+        // A scenario from user's point:
+        // 1. User creates a sequence of notes strictly within a certain scale,
+        // 2. User selects `create arpeggiator from sequence`
+        // 3. App checks that the entire sequence is within single scale and adds arp model
+        // 4. User select a number of chords and clicks `arpeggiate`
+
+        if (this->lasso->getNumSelected() < 2)
+        {
+            // TODO show error
+            this->dismiss();
+            return;
+        }
+
+        const auto keySignatures = this->project.getTimeline()->getKeySignatures();
+
+        Note::Key rootKey = -1;
+        Scale::Ptr scale = nullptr;
+        if (!SequencerOperations::findHarmonicContext(*this->lasso, keySignatures, scale, rootKey))
+        {
+            // TODO error
+            this->dismiss();
+            return;
+        }
+
+        Array<Note> selectedNotes;
+        for (int i = 0; i < this->lasso->getNumSelected(); ++i)
+        {
+            const auto nc = static_cast<NoteComponent *>(this->lasso->getSelectedItem(i));
+            selectedNotes.add(nc->getNote());
+        }
+
+        auto newArpDialog = ModalDialogInput::Presets::newArpeggiator();
+        newArpDialog->onOk = [scale, rootKey, selectedNotes](const String &name)
+        {
+            Arpeggiator::Ptr arp(new Arpeggiator(name, scale, selectedNotes, rootKey));
+            App::Helio().getResourceManagerFor(Serialization::Resources::arpeggiators).updateUserResource(arp);
+        };
+
+        App::Layout().showModalComponentUnowned(newArpDialog.release());
+        this->dismiss();
+        return;
+    }
+    else if (commandId == CommandIDs::ArpeggiateNotes)
+    {
+        this->updateContent(createArpsPanel(), CommandPanel::SlideLeft);
+        return;
+    }
+    else if (commandId == CommandIDs::RefactorNotes)
+    {
+        this->updateContent(createRefactoringPanel(), CommandPanel::SlideLeft);
+        return;
+    }
+    else if (commandId == CommandIDs::BatchTweakNotes)
+    {
+        this->updateContent(createBatchTweakPanel(), CommandPanel::SlideLeft);
+        return;
+    }
+
+    const int numArps = ArpeggiatorsManager::getInstance().size();
+    if (commandId >= CommandIDs::ApplyArpeggiator &&
+        commandId < (CommandIDs::ApplyArpeggiator + numArps))
+    {
+        if (this->lasso->getNumSelected() < 2)
+        {
+            // TODO show error
+            this->dismiss();
+            return;
+        }
+
+        Note::Key rootKey = -1;
+        Scale::Ptr scale = nullptr;
+
+        const auto keySignatures = this->project.getTimeline()->getKeySignatures();
+        if (!SequencerOperations::findHarmonicContext(*this->lasso, keySignatures, scale, rootKey))
+        {
+            // TODO error
+            this->dismiss();
+            return;
+        }
+
+        const int arpIndex = commandId - CommandIDs::ApplyArpeggiator;
+        const auto arps = ArpeggiatorsManager::getInstance().getArps();
+        SequencerOperations::arpeggiate(*this->lasso, scale, rootKey, arps[arpIndex], false, false, true);
+        this->dismiss();
+        return;
+    }   
 }
 
-void PianoRollSelectionCommandPanel::initLayersPanel(bool shouldAddBackButton)
+void PianoRollSelectionCommandPanel::dismiss() const
 {
-    CommandPanel::Items cmds;
-    
-    if (shouldAddBackButton)
+    if (Component *parent = this->getParentComponent())
     {
-        cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
+        parent->exitModalState(0);
     }
-    
-    const Array<PianoTrackTreeItem *> &layers =
-        this->project.findChildrenOfType<PianoTrackTreeItem>();
-    
-    for (int i = 0; i < layers.size(); ++i)
-    {
-        const Lasso::GroupedSelections &selections = this->roll.getLassoSelection().getGroupedSelections();
-        const int numSelected = this->roll.getLassoSelection().getNumSelected();
-        const auto &event = this->roll.getLassoSelection().getFirstAs<NoteComponent>()->getNote();
-        const MidiSequence *layerOfFirstSelected = (numSelected > 0) ? (event.getSequence()) : nullptr;
-        const bool hasMultiLayerSelection = (selections.size() > 1);
-        const bool belongsTo = hasMultiLayerSelection ? false : (layers.getUnchecked(i)->getSequence() == layerOfFirstSelected);
-        
-        const String name(layers.getUnchecked(i)->getXPath());
-        const Colour colour(layers.getUnchecked(i)->getColour());
-        cmds.add(CommandItem::withParams(belongsTo ? Icons::apply : Icons::layer, CommandIDs::MoveEventsToLayer + i, name)->colouredWith(colour));
-    }
-    
-    this->updateContent(cmds, CommandPanel::SlideLeft);
-}
-
-void PianoRollSelectionCommandPanel::dismiss()
-{
-    this->getParentComponent()->exitModalState(0);
 }

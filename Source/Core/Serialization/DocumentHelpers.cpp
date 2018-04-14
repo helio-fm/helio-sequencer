@@ -45,14 +45,17 @@ static File getFirstSlot(String location1, String location2, const String &fileN
     const String helioSubfolder = "Helio";
     File file1(File(location1).getChildFile(helioSubfolder));
     File file2(File(location2).getChildFile(helioSubfolder));
+    bool slotExists = false;
 
     // 1й вариант: какой-то из слотов существует - выбираем его.
     if (file1.getChildFile(fileName).existsAsFile())
     {
+        slotExists = true;
         result = file1.getChildFile(fileName);
     }
     else if (file2.getChildFile(fileName).existsAsFile())
     {
+        slotExists = true;
         result = file2.getChildFile(fileName);
     }
     else
@@ -87,10 +90,12 @@ static File getFirstSlot(String location1, String location2, const String &fileN
     // 1й вариант: какой-то из слотов существует - выбираем его.
     if (slot1.existsAsFile())
     {
+        slotExists = true;
         result = slot1;
     }
     else if (slot2.existsAsFile())
     {
+        slotExists = true;
         result = slot2;
     }
     else
@@ -111,7 +116,11 @@ static File getFirstSlot(String location1, String location2, const String &fileN
 
 #endif
 
-    Logger::writeToLog(fileName + " initialized at: " + result.getFullPathName());
+    if (slotExists)
+    {
+        Logger::writeToLog("Using document at " + result.getFullPathName());
+    }
+
     return result;
 }
 

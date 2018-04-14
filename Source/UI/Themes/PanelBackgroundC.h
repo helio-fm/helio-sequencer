@@ -41,6 +41,8 @@ public:
 private:
 
     //[UserVariables]
+    FillType fillType;
+    Image bgCache;
     //[/UserVariables]
 
 

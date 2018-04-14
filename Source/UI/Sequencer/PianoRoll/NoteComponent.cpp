@@ -21,9 +21,10 @@
 #include "PianoRoll.h"
 #include "ProjectTreeItem.h"
 #include "MidiSequence.h"
+#include "MidiTrack.h"
 #include "Note.h"
-#include "HybridLassoComponent.h"
-#include "PianoRollToolbox.h"
+#include "SelectionComponent.h"
+#include "SequencerOperations.h"
 #include "Transport.h"
 #include "App.h"
 #include "MainWindow.h"
@@ -31,7 +32,7 @@
 #define RESIZE_CORNER 10
 #define MAX_DRAG_POLYPHONY 8
 
-static PianoSequence *getPianoLayer(SelectionProxyArray::Ptr selection)
+static PianoSequence *getPianoSequence(SelectionProxyArray::Ptr selection)
 {
     const auto &firstEvent = selection->getFirstAs<NoteComponent>()->getNote();
     PianoSequence *pianoLayer = static_cast<PianoSequence *>(firstEvent.getSequence());
@@ -39,7 +40,7 @@ static PianoSequence *getPianoLayer(SelectionProxyArray::Ptr selection)
 }
 
 NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, bool ghostMode)
-    : HybridRollEventComponent(editor, ghostMode),
+    : MidiEventComponent(editor, ghostMode),
       midiEvent(event),
       state(None),
       anchor(event),
@@ -118,12 +119,12 @@ void NoteComponent::setQuickSelectLayerMode(bool value)
 }
 
 //===----------------------------------------------------------------------===//
-// HybridRollEventComponent
+// MidiEventComponent
 //===----------------------------------------------------------------------===//
 
 void NoteComponent::setSelected(bool selected)
 {
-    HybridRollEventComponent::setSelected(selected);
+    MidiEventComponent::setSelected(selected);
 }
 
 float NoteComponent::getBeat() const
@@ -213,7 +214,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
         return;
     }
 
-    HybridRollEventComponent::mouseDown(e);
+    MidiEventComponent::mouseDown(e);
 
     const Lasso &selection = this->roll.getLassoSelection();
 
@@ -235,15 +236,13 @@ void NoteComponent::mouseDown(const MouseEvent &e)
         {
             if (e.mods.isShiftDown())
             {
-                const float groupStartBeat = PianoRollToolbox::findStartBeat(selection);
+                const float groupStartBeat = SequencerOperations::findStartBeat(selection);
                 
                 for (int i = 0; i < selection.getNumSelected(); i++)
                 {
                     if (NoteComponent *note = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
                     {
-                        if (selection.shouldDisplayGhostNotes())
-                        { note->getRoll().showGhostNoteFor(note); }
-                        
+                        if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
                         note->startGroupScalingRight(groupStartBeat);
                     }
                 }
@@ -254,9 +253,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
                 {
                     if (NoteComponent *note = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
                     {
-                        if (selection.shouldDisplayGhostNotes())
-                        { note->getRoll().showGhostNoteFor(note); }
-                        
+                        if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
                         note->startResizingRight(shouldSendMidi);
                     }
                 }
@@ -266,15 +263,13 @@ void NoteComponent::mouseDown(const MouseEvent &e)
         {
             if (e.mods.isShiftDown())
             {
-                const float groupEndBeat = PianoRollToolbox::findEndBeat(selection);
+                const float groupEndBeat = SequencerOperations::findEndBeat(selection);
                 
                 for (int i = 0; i < selection.getNumSelected(); i++)
                 {
                     if (NoteComponent *note = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
                     {
-                        if (selection.shouldDisplayGhostNotes())
-                        { note->getRoll().showGhostNoteFor(note); }
-                        
+                        if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
                         note->startGroupScalingLeft(groupEndBeat);
                     }
                 }
@@ -285,9 +280,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
                 {
                     if (NoteComponent *note = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
                     {
-                        if (selection.shouldDisplayGhostNotes())
-                        { note->getRoll().showGhostNoteFor(note); }
-                        
+                        if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
                         note->startResizingLeft(shouldSendMidi);
                     }
                 }
@@ -301,9 +294,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
             {
                 if (NoteComponent *note = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
                 {
-                    if (selection.shouldDisplayGhostNotes())
-                    { note->getRoll().showGhostNoteFor(note); }
-
+                    if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
                     note->startDragging(shouldSendMidi);
                 }
             }
@@ -370,7 +361,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                     groupDragAfter.add(nc->continueResizingRight(deltaLength));
                 }
                 
-                getPianoLayer(sequenceSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                getPianoSequence(sequenceSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
             }
         }
         else
@@ -398,7 +389,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                     groupDragAfter.add(nc->continueResizingLeft(deltaLength));
                 }
                 
-                getPianoLayer(sequenceSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                getPianoSequence(sequenceSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
             }
         }
         else
@@ -426,7 +417,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                     groupDragAfter.add(nc->continueGroupScalingRight(groupScaleFactor));
                 }
                 
-                getPianoLayer(sequenceSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                getPianoSequence(sequenceSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
             }
         }
         else
@@ -454,7 +445,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                     groupDragAfter.add(nc->continueGroupScalingLeft(groupScaleFactor));
                 }
                 
-                getPianoLayer(sequenceSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                getPianoSequence(sequenceSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
             }
         }
         else
@@ -505,7 +496,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                     groupDragAfter.add(nc->continueDragging(deltaBeat, deltaKey, shouldSendMidi));
                 }
                 
-                getPianoLayer(sequenceSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                getPianoSequence(sequenceSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
             }
         }
     }
@@ -530,7 +521,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                 //this->roll.triggerBatchRepaintFor(nc);
             }
             
-            getPianoLayer(sequenceSelection)->changeGroup(groupTuneBefore, groupTuneAfter, true);
+            getPianoSequence(sequenceSelection)->changeGroup(groupTuneBefore, groupTuneAfter, true);
         }
     }
 }
@@ -757,11 +748,11 @@ void NoteComponent::paintLegacyLook(Graphics &g)
 // Helpers
 //===----------------------------------------------------------------------===//
 
-bool NoteComponent::belongsToAnySequence(Array<MidiSequence *> layers) const
+bool NoteComponent::belongsToAnyTrack(const Array<WeakReference<MidiTrack>> &tracks) const
 {
-    for (int i = 0; i < layers.size(); ++i)
+    for (int i = 0; i < tracks.size(); ++i)
     {
-        if (this->getNote().getSequence() == layers.getUnchecked(i))
+        if (this->getNote().getSequence() == tracks.getUnchecked(i)->getSequence())
         {
             return true;
         }

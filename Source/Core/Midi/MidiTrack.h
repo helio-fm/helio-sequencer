@@ -30,7 +30,8 @@ class MidiTrack
 {
 public:
 
-    virtual ~MidiTrack() {}
+    MidiTrack() = default;
+    virtual ~MidiTrack() {};
 
     //===------------------------------------------------------------------===//
     // Properties
@@ -94,6 +95,10 @@ protected:
 
     virtual void setTrackId(const Uuid &val) = 0;
 
+private:
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiTrack)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(MidiTrack)
 };
 
 struct MidiTrackHash

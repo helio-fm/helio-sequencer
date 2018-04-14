@@ -60,7 +60,7 @@ void TreeItemComponentCompact::resized()
 
 void TreeItemComponentCompact::paintIcon(Graphics &g)
 {
-    Image icon(this->item.getIcon());
+    const Image icon(this->item.getIcon());
 
     g.setColour(this->getItemColour().withAlpha(0.6f));
     const float yMarginDrawed = 3.f;

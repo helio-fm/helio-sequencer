@@ -17,25 +17,14 @@
 
 #pragma once
 
-class ClipboardOwner;
-
-class InternalClipboard final
+class SelectableComponent : public virtual Component
 {
 public:
 
-    static void copy(const ClipboardOwner &owner, bool mirrorToSystemClipboard = false);
-    static void paste(ClipboardOwner &owner);
-    
-    static ValueTree getCurrentContent();
-    static String getCurrentContentAsString();
+    virtual ~SelectableComponent() {};
 
-public:
-
-    void copyFrom(const ClipboardOwner &owner, bool mirrorToSystemClipboard = false);
-    void pasteTo(ClipboardOwner &owner);
-
-private:
-
-    ValueTree clipboard;
+    virtual void setSelected(bool selected) = 0;
+    virtual bool isSelected() const = 0;
+    virtual String getSelectionGroupId() const = 0;
 
 };

@@ -36,7 +36,6 @@ Instrument::Instrument(AudioPluginFormatManager &formatManager, String name) :
 
 Instrument::~Instrument()
 {
-    this->masterReference.clear();
     this->processorPlayer.setProcessor(nullptr);
     
     PluginWindow::closeAllCurrentlyOpenWindows();

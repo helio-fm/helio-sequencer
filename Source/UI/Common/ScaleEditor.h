@@ -31,17 +31,17 @@ public:
     struct Listener
     {
         virtual ~Listener() {}
-        virtual void onScaleChanged(Scale scale) = 0;
+        virtual void onScaleChanged(const Scale::Ptr scale) = 0;
     };
 
     void onRadioButtonClicked(RadioButton *button) override;
-    void setScale(const Scale &scale);
+    void setScale(const Scale::Ptr scale);
 
     void resized() override;
 
 private:
 
-    Scale scale;
+    Scale::Ptr scale;
     OwnedArray<RadioButton> buttons;
 
     void updateButtons();

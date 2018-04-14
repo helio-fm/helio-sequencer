@@ -22,9 +22,9 @@ class HybridRoll;
 class PatternRoll;
 
 #include "Clip.h"
-#include "HybridRollEventComponent.h"
+#include "MidiEventComponent.h"
 
-class ClipComponent : public HybridRollEventComponent
+class ClipComponent : public MidiEventComponent
 {
 public:
 
@@ -46,7 +46,7 @@ public:
     void updateColours() override;
 
     //===------------------------------------------------------------------===//
-    // HybridRollEventComponent
+    // MidiEventComponent
     //===------------------------------------------------------------------===//
 
     void setSelected(bool selected) override;

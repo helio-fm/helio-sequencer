@@ -18,6 +18,7 @@
 #pragma once
 
 //[Headers]
+#include "HeadlineItemDataSource.h"
 #include "HighlightedComponent.h"
 #include "TreeItem.h"
 
@@ -25,6 +26,7 @@ class IconComponent;
 class HeadlineDropdown;
 //[/Headers]
 
+#include "HeadlineItemArrow.h"
 
 class HeadlineItem final : public Component,
                            private Timer,
@@ -32,11 +34,11 @@ class HeadlineItem final : public Component,
 {
 public:
 
-    HeadlineItem(WeakReference<TreeItem> treeItem, AsyncUpdater &parent);
+    HeadlineItem(WeakReference<HeadlineItemDataSource> treeItem, AsyncUpdater &parent);
     ~HeadlineItem();
 
     //[UserMethods]
-    WeakReference<TreeItem> getTreeItem() const noexcept;
+    WeakReference<HeadlineItemDataSource> getDataSource() const noexcept;
     void updateContent();
     //[/UserMethods]
 
@@ -54,20 +56,19 @@ private:
 
     void changeListenerCallback(ChangeBroadcaster* source) override;
     void timerCallback() override;
-    void showMenu();
+    void showMenuIfAny();
 
-    WeakReference<TreeItem> item;
+    WeakReference<HeadlineItemDataSource> item;
     ScopedPointer<HeadlineDropdown> dropdown;
     AsyncUpdater &parentHeadline;
+
+    Colour bgColour;
 
     //[/UserVariables]
 
     ScopedPointer<Label> titleLabel;
     ScopedPointer<IconComponent> icon;
-    Path internalPath1;
-    Path internalPath2;
-    Path internalPath3;
-    Path internalPath4;
+    ScopedPointer<HeadlineItemArrow> component;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeadlineItem)
 };

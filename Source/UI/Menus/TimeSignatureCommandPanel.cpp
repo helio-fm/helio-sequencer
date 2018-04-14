@@ -40,51 +40,22 @@ TimeSignatureCommandPanel::TimeSignatureCommandPanel(ProjectTreeItem &parentProj
     this->updateContent(cmds, SlideDown);
 }
 
-TimeSignatureCommandPanel::~TimeSignatureCommandPanel()
-{
-}
-
 void TimeSignatureCommandPanel::handleCommandMessage(int commandId)
 {
     if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
     {
         if (commandId == CommandIDs::ChangeTimeSignature)
         {
-            this->inputString = this->event.toString();
-            
-            Component *inputDialog =
-            new ModalDialogInput(*this,
-                                 this->inputString,
-                                 TRANS("dialog::timesignature::change::caption"),
-                                 TRANS("dialog::timesignature::change::proceed"),
-                                 TRANS("dialog::timesignature::change::cancel"),
-                                 CommandIDs::ChangeTimeSignatureConfirmed,
-                                 CommandIDs::Cancel);
-            
-            App::Layout().showModalComponentUnowned(inputDialog);
-            return;
-        }
-        if (commandId == CommandIDs::ChangeTimeSignatureConfirmed)
-        {
-            int numerator;
-            int denominator;
-            TimeSignatureEvent::parseString(this->inputString, numerator, denominator);
-            Array<TimeSignatureEvent> groupBefore, groupAfter;
-            groupBefore.add(this->event);
-            groupAfter.add(this->event.withNumerator(numerator).withDenominator(denominator));
-            TimeSignaturesSequence *autoLayer = static_cast<TimeSignaturesSequence *>(this->event.getSequence());
-            autoLayer->checkpoint();
-            autoLayer->changeGroup(groupBefore, groupAfter, true);
+            auto sequence = static_cast<TimeSignaturesSequence *>(this->event.getSequence());
+            auto inputDialog = ModalDialogInput::Presets::changeTimeSignature(this->event.toString());
+            inputDialog->onOk = sequence->getEventChangeCallback(this->event);
+            App::Layout().showModalComponentUnowned(inputDialog.release());
         }
         else if (commandId == CommandIDs::DeleteTimeSignature)
         {
             TimeSignaturesSequence *autoLayer = static_cast<TimeSignaturesSequence *>(this->event.getSequence());
             autoLayer->checkpoint();
             autoLayer->remove(this->event, true);
-        }
-        else if (commandId == CommandIDs::Cancel)
-        {
-            return;
         }
 
         if (Component *parent = this->getParentComponent())

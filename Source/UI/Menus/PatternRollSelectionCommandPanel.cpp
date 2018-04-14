@@ -17,101 +17,45 @@
 
 #include "Common.h"
 #include "PatternRollSelectionCommandPanel.h"
-#include "ProjectTreeItem.h"
-#include "PianoRollToolbox.h"
-#include "PianoTrackTreeItem.h"
-#include "PatternRoll.h"
-#include "NoteComponent.h"
-#include "Icons.h"
-#include "TriggersTrackMap.h"
-#include "MainLayout.h"
-#include "AudioCore.h"
-#include "Instrument.h"
-#include "MidiSequence.h"
-#include "InternalClipboard.h"
 #include "App.h"
+#include "Lasso.h"
 #include "CommandIDs.h"
+#include "Icons.h"
 
-//===----------------------------------------------------------------------===//
-// Move-to-layer command panel
-//
-
-PatternRollSelectionCommandPanel::PatternRollSelectionCommandPanel(
-    PatternRoll &targetRoll,
-    ProjectTreeItem &parentProject) :
-    roll(targetRoll),
-    project(parentProject)
+static CommandPanel::Items createDefaultPanel()
 {
-    this->initLayersPanel(false);
+    CommandPanel::Items cmds;
+
+    cmds.add(CommandItem::withParams(Icons::copy, CommandIDs::CopyEvents,
+        TRANS("menu::selection::clips::copy")));
+
+    cmds.add(CommandItem::withParams(Icons::cut, CommandIDs::CutEvents,
+        TRANS("menu::selection::clips::cut")));
+
+    cmds.add(CommandItem::withParams(Icons::trash, CommandIDs::DeleteEvents,
+        TRANS("menu::selection::clips::delete")));
+
+    return cmds;
 }
 
-PatternRollSelectionCommandPanel::~PatternRollSelectionCommandPanel()
+PatternRollSelectionCommandPanel::PatternRollSelectionCommandPanel(WeakReference<Lasso> lasso) :
+    lasso(lasso)
 {
+    this->updateContent(createDefaultPanel(), CommandPanel::SlideLeft);
 }
 
 void PatternRollSelectionCommandPanel::handleCommandMessage(int commandId)
 {
-    const Array<PianoTrackTreeItem *> &layerItems =
-        this->project.findChildrenOfType<PianoTrackTreeItem>();
-    
-    if (commandId >= CommandIDs::MoveEventsToLayer &&
-        commandId <= (CommandIDs::MoveEventsToLayer + layerItems.size()))
+    if (commandId == CommandIDs::CopyEvents)
     {
-        const int layerIndex = commandId - CommandIDs::MoveEventsToLayer;
-        
-        const Lasso::GroupedSelections &selections = this->roll.getLassoSelection().getGroupedSelections();
-        const int numSelected = this->roll.getLassoSelection().getNumSelected();
-
-        if (NoteComponent *note = dynamic_cast<NoteComponent *>(this->roll.getLassoSelection().getSelectedItem(0)))
-        {
-            const MidiSequence *layerOfFirstSelected = (numSelected > 0) ? (note->getNote().getSequence()) : nullptr;
-            const bool hasMultiLayerSelection = (selections.size() > 1);
-            const bool alreadyBelongsTo = hasMultiLayerSelection ? false : (layerItems[layerIndex]->getSequence() == layerOfFirstSelected);
-
-            if (!alreadyBelongsTo)
-            {
-                //Logger::writeToLog("Moving notes to " + layerItems[layerIndex]->getXPath());
-                PianoRollToolbox::moveToLayer(this->roll.getLassoSelection(), layerItems[layerIndex]->getSequence());
-                layerItems[layerIndex]->setSelected(false, false, sendNotification);
-                layerItems[layerIndex]->setSelected(true, true, sendNotification);
-                this->dismiss();
-            }
-        }
-
         return;
     }
 }
 
-void PatternRollSelectionCommandPanel::initLayersPanel(bool shouldAddBackButton)
+void PatternRollSelectionCommandPanel::dismiss() const
 {
-    CommandPanel::Items cmds;
-    
-    if (shouldAddBackButton)
+    if (Component *parent = this->getParentComponent())
     {
-        cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
+        parent->exitModalState(0);
     }
-    
-    const Array<PianoTrackTreeItem *> &layers =
-        this->project.findChildrenOfType<PianoTrackTreeItem>();
-    
-    for (int i = 0; i < layers.size(); ++i)
-    {
-        const Lasso::GroupedSelections &selections = this->roll.getLassoSelection().getGroupedSelections();
-        const int numSelected = this->roll.getLassoSelection().getNumSelected();
-        const auto &event = this->roll.getLassoSelection().getFirstAs<NoteComponent>()->getNote();
-        const MidiSequence *layerOfFirstSelected = (numSelected > 0) ? (event.getSequence()) : nullptr;
-        const bool hasMultiLayerSelection = (selections.size() > 1);
-        const bool belongsTo = hasMultiLayerSelection ? false : (layers.getUnchecked(i)->getSequence() == layerOfFirstSelected);
-        
-        const String name(layers.getUnchecked(i)->getXPath());
-        const Colour colour(layers.getUnchecked(i)->getColour());
-        cmds.add(CommandItem::withParams(belongsTo ? Icons::apply : Icons::layer, CommandIDs::MoveEventsToLayer + i, name)->colouredWith(colour));
-    }
-    
-    this->updateContent(cmds, CommandPanel::SlideLeft);
-}
-
-void PatternRollSelectionCommandPanel::dismiss()
-{
-    this->getParentComponent()->exitModalState(0);
 }

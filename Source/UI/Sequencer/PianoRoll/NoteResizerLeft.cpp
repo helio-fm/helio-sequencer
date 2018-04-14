@@ -26,7 +26,7 @@
 #include "PianoRoll.h"
 #include "PianoSequence.h"
 #include "NoteComponent.h"
-#include "PianoRollToolbox.h"
+#include "SequencerOperations.h"
 #include <float.h>
 //[/MiscUserDefs]
 
@@ -119,7 +119,7 @@ void NoteResizerLeft::mouseDown (const MouseEvent& e)
     this->dragger.startDraggingComponent(this, e);
 
     const Lasso &selection = this->roll.getLassoSelection();
-    const float groupEndBeat = PianoRollToolbox::findEndBeat(selection);
+    const float groupEndBeat = SequencerOperations::findEndBeat(selection);
 
     this->noteComponent = this->findLeftMostEvent(selection);
 
@@ -191,12 +191,12 @@ void NoteResizerLeft::mouseUp (const MouseEvent& e)
 
 NoteComponent *NoteResizerLeft::findLeftMostEvent(const Lasso &selection)
 {
-    HybridRollEventComponent *mc = nullptr;
+    MidiEventComponent *mc = nullptr;
     float leftMostBeat = FLT_MAX;
 
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
-        HybridRollEventComponent *const e = selection.getItemAs<HybridRollEventComponent>(i);
+        MidiEventComponent *const e = selection.getItemAs<MidiEventComponent>(i);
 
         if (leftMostBeat > e->getBeat())
         {
@@ -213,7 +213,7 @@ void NoteResizerLeft::updateBounds(NoteComponent *anchorComponent)
     const Lasso &selection = this->roll.getLassoSelection();
     const float groupStartBeat = (anchorComponent != nullptr) ?
                                   anchorComponent->getBeat() :
-                                  PianoRollToolbox::findStartBeat(selection);
+                                  SequencerOperations::findStartBeat(selection);
 
     const int xAnchor = this->roll.getXPositionByBeat(groupStartBeat);
     const int yAnchor = this->roll.getViewport().getViewPositionY() + HYBRID_ROLL_HEADER_HEIGHT;

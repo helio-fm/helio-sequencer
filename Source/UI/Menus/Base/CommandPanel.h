@@ -50,8 +50,9 @@ public:
 
     typedef ReferenceCountedArray<CommandItem> Items;
 
-    void updateContent(Items commands,
-        AnimationType animationType = SlideDown, bool adjustsWidth = true);
+    void updateContent(const Items &commands,
+        AnimationType animationType = SlideDown,
+        bool adjustsWidth = true);
 
     static StringPairArray getColoursList();
 
@@ -72,22 +73,17 @@ private:
     AnimationType lastAnimationType;
     Items commandDescriptions;
 
-
     //===------------------------------------------------------------------===//
     // ListBoxModel
     //===------------------------------------------------------------------===//
 
     int getNumRows() override;
 
-    void paintListBoxItem(int rowNumber,
-                                  Graphics &g,
-                                  int width, int height,
-                                  bool rowIsSelected) override;
+    void paintListBoxItem(int rowNumber, Graphics &g,
+        int width, int height, bool rowIsSelected) noexcept override {}
 
     Component *refreshComponentForRow(int rowNumber, bool isRowSelected,
-                                              Component *existingComponentToUpdate) override;
-
-    void listWasScrolled() override;
+        Component *existingComponentToUpdate) override;
 
     //[/UserVariables]
 

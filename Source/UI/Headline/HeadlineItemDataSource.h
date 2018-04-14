@@ -17,12 +17,23 @@
 
 #pragma once
 
-class ClipboardOwner
+class HeadlineItemDataSource : public virtual ChangeBroadcaster
 {
 public:
 
-    virtual ~ClipboardOwner() {}
-    virtual ValueTree clipboardCopy() const = 0;
-    virtual void clipboardPaste(const ValueTree &tree) = 0;
+    HeadlineItemDataSource() = default;
 
+    virtual bool hasMenu() const = 0;
+    virtual ScopedPointer<Component> createMenu() = 0;
+
+    virtual Image getIcon() const = 0;
+    virtual String getName() const = 0;
+
+    virtual bool canBeSelectedAsMenuItem() const = 0;
+    virtual void onSelectedAsMenuItem() = 0;
+
+protected:
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HeadlineItemDataSource)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(HeadlineItemDataSource)
 };

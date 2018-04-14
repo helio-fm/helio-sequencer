@@ -17,102 +17,84 @@
 
 #pragma once
 
+#include "BaseResource.h"
 #include "DocumentHelpers.h"
 #include "BinarySerializer.h"
+#include "JsonSerializer.h"
 #include "XmlSerializer.h"
+
+// A thing to note: all subclasses should make their
+// deserialization method able to append overridden changes.
+// And they should not reset in a while - base reloadResources() will manage proper resetting.
+
+// TODO: monitor user's file changes!
 
 class ResourceManager : public Serializable, public ChangeBroadcaster
 {
 public:
 
-    ResourceManager(const Identifier &resourceName) : resourceName(resourceName) {}
+    ResourceManager(const Identifier &resourceName);
 
-    virtual File getDownloadedResourceFile() const
-    {
-        static String assumedFileName = this->resourceName + ".helio";
-        return DocumentHelpers::getConfigSlot(assumedFileName);
-    }
+    virtual void initialise();
+    virtual void shutdown();
 
-    virtual File getUsersResourceFile() const
+    template<typename T>
+    const Array<T> getResources() const
     {
-        static String assumedFileName = this->resourceName + ".json";
-        return DocumentHelpers::getDocumentSlot(assumedFileName);
-    }
-
-    virtual String getBuiltInResource() const
-    {
-        int dataSize;
-        const String n = this->resourceName.toString();
-        const String assumedResourceName = n.substring(0, 1).toUpperCase() + n.substring(1) + "_json";
-        if (const auto *data = BinaryData::getNamedResource(assumedResourceName.toUTF8(), dataSize))
+        Array<T> result;
+        Resources::Iterator i(this->resources);
+        while (i.next())
         {
-            return String::fromUTF8(data, dataSize);
+            result.addSorted(this->comparator, static_cast<T>(i.getValue()));
         }
 
-        jassertfalse;
-        return {};
+        return result;
     }
 
-    virtual void onDownloadedLatestResource(const ValueTree &resource)
+    template<typename T>
+    const T getResourceById(const String &resourceId) const
     {
-        Logger::writeToLog("Updating downloaded resource file for " + this->resourceName.toString());
-
-        //XmlSerializer serializer; // debug
-        BinarySerializer serializer;
-        serializer.saveToFile(this->getDownloadedResourceFile(), resource);
-
-        this->deserialize(resource);
-
-        // Do not send update message here, since resource update should go silently
-        //this->sendChangeMessage();
+        return static_cast<T>(this->resources[resourceId]);
     }
+
+    const int size() const noexcept
+    {
+        return this->resources.size();
+    }
+
+    void updateBaseResource(const ValueTree &resource);
+    void updateUserResource(const BaseResource::Ptr resource);
 
 protected:
 
-    // Each resource pool (like scales, hotkeys, etc)
-    // is loaded in this priority:
-    // 1 - user-defined config
-    // 2 - if the latter is not found, latest downloaded config
-    // 3 - if no downloaded config found, use built-in one
-    void reloadResources()
-    {
-        const File usersResource(this->getUsersResourceFile());
-        if (usersResource.existsAsFile())
-        {
-            const auto tree(DocumentHelpers::load(usersResource));
-            if (tree.isValid())
-            {
-                Logger::writeToLog("Found users resource file for " + this->resourceName.toString());
-                this->deserialize(tree);
-                this->sendChangeMessage();
-                return;
-            }
-        }
+    void reset() override;
 
-        const File downloadedResource(this->getUsersResourceFile());
-        if (downloadedResource.existsAsFile())
-        {
-            const auto tree(DocumentHelpers::load(downloadedResource));
-            if (tree.isValid())
-            {
-                Logger::writeToLog("Found downloaded resource file for " + this->resourceName.toString());
-                this->deserialize(tree);
-                this->sendChangeMessage();
-                return;
-            }
-        }
+    void reloadResources();
+    
+    virtual File getDownloadedResourceFile() const;
+    virtual File getUsersResourceFile() const;
+    virtual String getBuiltInResourceString() const;
 
-        const String builtInResource(this->getBuiltInResource());
-        const auto tree(DocumentHelpers::load(builtInResource));
-        if (tree.isValid())
-        {
-            Logger::writeToLog("Loading built-in resource for " + this->resourceName.toString());
-            this->deserialize(tree);
-        }
-    }
-
+    typedef HashMap<String, BaseResource::Ptr> Resources;
+    Resources resources;
+    
 private: 
 
     const Identifier resourceName;
+
+    struct BaseResourceComparator final : public BaseResource
+    {
+        String getResourceId() const override { return {}; }
+        Identifier getResourceIdProperty() const override { return {}; }
+        ValueTree serialize() const override { return {}; }
+        void deserialize(const ValueTree &tree) override {}
+        void reset() override {}
+    };
+
+    // Just keep user's data so that we are able to append
+    // more to it and re-save back:
+    ValueTree userResources;
+
+    BaseResourceComparator comparator;
 
 };

@@ -27,12 +27,16 @@
 #define GROUP_COMPACT_SEPARATOR 5
 
 TrackGroupTreeItem::TrackGroupTreeItem(const String &name) :
-    TreeItem(name, Serialization::Core::trackGroup)
+    TreeItem(name, Serialization::Core::trackGroup) {}
+
+Colour TrackGroupTreeItem::getColour() const noexcept
 {
+    return Colour(255, 210, 255);
 }
 
-TrackGroupTreeItem::~TrackGroupTreeItem()
+Image TrackGroupTreeItem::getIcon() const noexcept
 {
+    return Icons::findByName(Icons::group, TREE_ICON_HEIGHT);
 }
 
 void TrackGroupTreeItem::removeAllEmptyGroupsInProject(ProjectTreeItem *project)
@@ -219,19 +223,9 @@ void TrackGroupTreeItem::showPage()
     {
         if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
         {
-            parentProject->showLinearEditor(subTracks.getFirst()->getSequence(), this);
+            parentProject->showLinearEditor(subTracks.getFirst(), this);
         }
     }
-}
-
-Colour TrackGroupTreeItem::getColour() const
-{
-    return Colour(255, 210, 255);
-}
-
-Image TrackGroupTreeItem::getIcon() const
-{
-    return Icons::findByName(Icons::group, TREE_ICON_HEIGHT);
 }
 
 void TrackGroupTreeItem::safeRename(const String &newName)
@@ -241,16 +235,19 @@ void TrackGroupTreeItem::safeRename(const String &newName)
     this->dispatchChangeTreeItemView();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Menu
 //===----------------------------------------------------------------------===//
 
-ScopedPointer<Component> TrackGroupTreeItem::createItemMenu()
+bool TrackGroupTreeItem::hasMenu() const noexcept
+{
+    return false;
+}
+
+ScopedPointer<Component> TrackGroupTreeItem::createMenu()
 {
     return nullptr;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Dragging

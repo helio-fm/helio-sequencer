@@ -37,7 +37,7 @@ ProjectInfo::ProjectInfo(ProjectTreeItem &parent) : project(parent)
     this->deltas.add(new VCS::Delta(VCS::DeltaDescription("initialized"), ProjectInfoDeltas::projectDescription));
 }
 
-int64 ProjectInfo::getStartTime() const         { return this->initTimestamp; }
+int64 ProjectInfo::getStartTimestamp() const         { return this->initTimestamp; }
 
 String ProjectInfo::getLicense() const          { return this->license; }
 void ProjectInfo::setLicense(String val)        { this->license = val; this->project.broadcastChangeProjectInfo(this); }

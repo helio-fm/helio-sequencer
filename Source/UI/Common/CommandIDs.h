@@ -50,8 +50,8 @@ namespace CommandIDs
         AddKeySignatureConfirmed        = 0x0106,
         JumpToAnnotation                = 0x0107, // more ids reserved for annotations
 
-        // ArpeggiatorEditorPanel
-        ResetArpeggiatorChanges         = 0x0200,
+        // Arpeggiators
+        CreateArpeggiatorFromSelection  = 0x0200,
         ApplyArpeggiator                = 0x0201, // more ids reserved for arps
 
         InitWorkspace                   = 0x0500,
@@ -64,28 +64,25 @@ namespace CommandIDs
         ScanPluginsFolder               = 0x0505,
         CreateInstrument                = 0x0506, // more ids reserved for instruments
 
-        // LayerCommandPanel
-        DeleteLayer                     = 0x1000,
-        MuteLayer                       = 0x1001,
-        UnmuteLayer                     = 0x1002,
-        RenameLayer                     = 0x1003,
-        RenameLayerConfirmed            = 0x1004,
-        SelectLayerColour               = 0x1005,
-        SelectLayerInstrument           = 0x1006,
+        // MidiTrackCommandPanel
+        DeleteTrack                     = 0x1000,
+        MuteTrack                       = 0x1001,
+        UnmuteTrack                     = 0x1002,
+        RenameTrack                     = 0x1003,
+        SelectTrackColour               = 0x1005,
+        SelectTrackInstrument           = 0x1006,
         SelectAllEvents                 = 0x1007,
-        DuplicateLayerTo                = 0x1008,
+        DuplicateTrackTo                = 0x1008,
 
-        SetLayerColour                  = 0x1009, // more ids reserved for layers
-        SetLayerInstrument              = 0x1100, // more ids reserved for instruments
-        MoveLayerToProject              = 0x1500, // more ids reserved for projects
+        SetTrackColour                  = 0x1009, // more ids reserved for colours
+        SetTrackInstrument              = 0x1100, // more ids reserved for instruments
+        MoveTrackToProject              = 0x1500, // more ids reserved for projects
 
         // MidiRollCommandPanel
         DeleteEvents                    = 0x1601,
         CopyEvents                      = 0x1602,
         CutEvents                       = 0x1603,
         PasteEvents                     = 0x1604,
-
-        MoveEventsToLayer               = 0x1605, // more ids reserved for layers
 
         CursorTool                      = 0x2000,
         DrawTool                        = 0x2001,
@@ -102,9 +99,9 @@ namespace CommandIDs
         Undo                            = 0x200a,
         Redo                            = 0x200b,
 
-        DeleteNotes                     = 0x200c,
-        DuplicateNotes                  = 0x200d,
-        ArpNotes                        = 0x200e,
+        ArpeggiateNotes                 = 0x200e,
+        RefactorNotes                   = 0x200c,
+        BatchTweakNotes                 = 0x200d,
         TweakNotesVolume                = 0x200f,
 
         ShowAnnotations                 = 0x2010,
@@ -214,7 +211,7 @@ namespace CommandIDs
         InvertChordDown                 = 0x405a,
         
         ToggleQuickStash                = 0x405b,
-        ShowArpeggiatiosPanel           = 0x405c,
+        ShowArpeggiatorsPanel           = 0x405c,
         ShowVolumePanel                 = 0x405d,
         TweakVolumeRandom               = 0x405e,
         TweakVolumeFadeOut              = 0x405f,

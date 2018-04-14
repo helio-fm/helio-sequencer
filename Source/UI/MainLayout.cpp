@@ -28,7 +28,6 @@
 #include "MainWindow.h"
 #include "RootTreeItem.h"
 #include "GenericTooltip.h"
-#include "TransientTreeItems.h"
 #include "MidiTrackTreeItem.h"
 #include "InitScreen.h"
 #include "NavigationSidebar.h"
@@ -56,7 +55,7 @@ MainLayout::MainLayout() :
     this->addAndMakeVisible(this->headline);
 
     // TODO make it able for user to select a scheme in settings page
-    this->hotkeyScheme = HotkeySchemesManager::getInstance().getSchemes().getFirst();
+    this->hotkeyScheme = HotkeySchemesManager::getInstance().getCurrentScheme();
 
     this->setMouseClickGrabsKeyboardFocus(true);
     this->setWantsKeyboardFocus(true);
@@ -64,7 +63,12 @@ MainLayout::MainLayout() :
 
     if (const bool quickStartMode = App::Workspace().isInitialized())
     {
-        this->init();
+        if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
+        {
+            ht->updateBackgroundRenders();
+        }
+
+        this->show();
     }
     else
     {
@@ -78,16 +82,12 @@ MainLayout::MainLayout() :
 MainLayout::~MainLayout()
 {
     this->removeAllChildren();
+    this->hotkeyScheme = nullptr;
     this->headline = nullptr;
 }
 
-void MainLayout::init()
+void MainLayout::show()
 {
-    if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
-    {
-        ht->updateBackgroundRenders();
-    }
-    
     this->setVisible(true);
 
     if (this->initScreen != nullptr)
@@ -103,17 +103,13 @@ void MainLayout::forceRestoreLastOpenedPage()
     App::Workspace().activateSubItemWithId(Config::get(Serialization::Config::lastShownPageId));
 }
 
-void MainLayout::toggleShowHideConsole()
-{
-    // TODO
-}
-
 //===----------------------------------------------------------------------===//
 // Pages
 //===----------------------------------------------------------------------===//
 
-void hideMarkersRecursive(TreeItem *startFrom)
+void hideMarkersRecursive(WeakReference<TreeItem> startFrom)
 {
+    jassert(startFrom != nullptr);
     startFrom->setMarkerVisible(false);
 
     for (int i = 0; i < startFrom->getNumSubItems(); ++i)
@@ -125,35 +121,16 @@ void hideMarkersRecursive(TreeItem *startFrom)
     }
 }
 
-void MainLayout::showTransientItem(
-    ScopedPointer<TransientTreeItem> newItem, TreeItem *parent)
-{
-    jassert(parent != nullptr);
-    const auto treeRoot = App::Workspace().getTreeRoot();
-    hideMarkersRecursive(treeRoot);
-
-    // Cleanup: delete all existing transient items
-    OwnedArray<TreeItem> transients;
-    transients.addArray(treeRoot->findChildrenOfType<TransientTreeItem>());
-    transients.clear(true);
-
-    // Attach new item to the tree
-    TreeItem *item = newItem.release();
-    parent->addChildTreeItem(item);
-    item->setSelected(true, true, dontSendNotification);
-    item->setMarkerVisible(true);
-    // TODO
-    //App::Workspace().getNavigationHistory().addItemIfNeeded
-    this->headline->syncWithTree(App::Workspace().getNavigationHistory(), item);
-}
-
 bool MainLayout::isShowingPage(Component *page) const noexcept
 {
+    jassert(page != nullptr);
     return (this->currentContent == page);
 }
 
 void MainLayout::showPage(Component *page, TreeItem *source)
 {
+    jassert(page != nullptr);
+
     App::dismissAllModalComponents();
     
 #if HAS_FADING_PAGECHANGE
@@ -170,7 +147,8 @@ void MainLayout::showPage(Component *page, TreeItem *source)
 
     if (this->currentContent != nullptr)
     {
-        // баг здесь. currentContent может быть композитным компонентом типа оригами, в котором уже уничтожен ключевой кусок
+        // FIXME: currentContent might be a composite layout,
+        // which is not destroyed yet, but has one of it's components destroyed
 #if HAS_FADING_PAGECHANGE
         //this->currentContent->toFront(false);
         //this->pageFader.animateComponent(this->currentContent, this->currentContent->getBounds(), 0.f, 200, true, 0.0, 0.0);
@@ -213,15 +191,19 @@ void MainLayout::showPage(Component *page, TreeItem *source)
     //Logger::outputDebugString(focused ? focused->getName() : "null");
 }
 
+void MainLayout::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource)
+{
+    this->headline->showSelectionMenu(menuSource);
+}
+
+void MainLayout::hideSelectionMenu()
+{
+    this->headline->hideSelectionMenu();
+}
 
 //===----------------------------------------------------------------------===//
 // UI
 //===----------------------------------------------------------------------===//
-
-void MainLayout::setStatus(const String &text)
-{
-
-}
 
 void MainLayout::showTooltip(const String &message, int timeOutMs)
 {
@@ -241,7 +223,6 @@ void MainLayout::showTooltip(Component *newTooltip, Rectangle<int> callerScreenB
 void MainLayout::showModalComponentUnowned(Component *targetComponent)
 {
     ScopedPointer<Component> ownedTarget(targetComponent);
-
     this->addChildComponent(ownedTarget);
 
     const int fadeInTime = 200;
@@ -252,57 +233,6 @@ void MainLayout::showModalComponentUnowned(Component *targetComponent)
     ownedTarget->toFront(false);
     ownedTarget->enterModalState(true, nullptr, true);
     ownedTarget.release();
-}
-
-void MainLayout::showBlockerUnowned(Component *targetComponent)
-{
-    class Blocker : public Component
-    {
-    public:
-        
-        Blocker()
-        { 
-            this->setInterceptsMouseClicks(true, true);
-            this->setMouseClickGrabsKeyboardFocus(false);
-            this->setPaintingIsUnclipped(true);
-        }
-        
-        void paint(Graphics &g) override
-        {
-            g.setColour(Colours::white.withAlpha(0.05f));
-            g.fillRect(this->getLocalBounds());
-        }
-        
-        void parentHierarchyChanged() override
-        { this->rebound(); }
-        
-        void parentSizeChanged() override
-        { this->rebound(); }
-        
-    private:
-        
-        void rebound()
-        {
-            if (! this->getParentComponent())
-            {
-                delete this;
-                return;
-            }
-
-            this->setBounds(this->getParentComponent()->getLocalBounds());
-        }
-    };
-    
-    auto blocker = new Blocker();
-    this->addChildComponent(blocker);
-    this->addChildComponent(targetComponent);
-    
-    const int fadeInTime = 250;
-    Desktop::getInstance().getAnimator().animateComponent(blocker, blocker->getBounds(), 1.f, fadeInTime, false, 0.0, 0.0);
-    Desktop::getInstance().getAnimator().animateComponent(targetComponent, targetComponent->getBounds(), 1.f, fadeInTime, false, 0.0, 0.0);
-    
-    targetComponent->setAlwaysOnTop(true);
-    targetComponent->toFront(false);
 }
 
 // a hack!
@@ -350,7 +280,7 @@ bool MainLayout::keyPressed(const KeyPress &key)
         return false;
     }
 
-    if (this->hotkeyScheme.dispatchKeyPress(key,
+    if (this->hotkeyScheme->dispatchKeyPress(key,
         this, this->currentContent.getComponent()))
     {
         return true;
@@ -367,8 +297,8 @@ bool MainLayout::keyPressed(const KeyPress &key)
             ht->initColours(scheme);
             this->repaint();
 
-            scheme.syncWithLiveConstantEditor();
-            const auto schemeNode(scheme.serialize());
+            scheme->syncWithLiveConstantEditor();
+            const auto schemeNode(scheme->serialize());
             String schemeNodeString;
             JsonSerializer serializer;
             serializer.saveToString(schemeNodeString, schemeNode);
@@ -389,7 +319,7 @@ bool MainLayout::keyStateChanged(bool isKeyDown)
         return false;
     }
 
-    return this->hotkeyScheme.dispatchKeyStateChange(isKeyDown,
+    return this->hotkeyScheme->dispatchKeyStateChange(isKeyDown,
         this, this->currentContent.getComponent());
 }
 
@@ -409,7 +339,7 @@ void MainLayout::handleCommandMessage(int commandId)
         App::Workspace().navigateForwardIfPossible();
         break;
     case CommandIDs::ToggleShowHideConsole:
-        this->toggleShowHideConsole();
+        //this->toggleShowHideConsole();
         break;
     default:
         break;

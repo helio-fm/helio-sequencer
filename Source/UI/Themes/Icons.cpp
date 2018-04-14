@@ -297,7 +297,6 @@ static Image renderVector(const String &name, int maxSize,
     
     if (name != Icons::workspace) // a hack -_-
     {
-
 #if HELIO_DESKTOP
         GlowEffect glow;
         glow.setGlowProperties(1.25, iconShadeColour);
@@ -306,13 +305,7 @@ static Image renderVector(const String &name, int maxSize,
         
         drawableSVG->drawWithin(g, area.toFloat(), RectanglePlacement::centred, 1.0f);
     }
-    
-    //g.fillAll(Colours::red.withAlpha(0.1f));
-    
-    //Path iconPath(extractPathFromDrawable(drawableSVG));
-    //g.setColour(Colours::black.withAlpha(0.3f));
-    //g.strokePath(iconPath, PathStrokeType(0.5f), iconPath.getTransformToScaleToFit(area.toFloat(), true));
-    
+
     return resultImage;
 }
 
@@ -349,7 +342,8 @@ const int kRoundFactor = 8;
 
 Image Icons::findByName(const String &name, int maxSize)
 {
-    const Desktop::Displays::Display &dis = Desktop::getInstance().getDisplays().getMainDisplay();
+    const Desktop::Displays::Display &dis =
+        Desktop::getInstance().getDisplays().getMainDisplay();
 
 #if JUCE_ANDROID
     const int retinaFactor = 2;
@@ -365,17 +359,18 @@ Image Icons::findByName(const String &name, int maxSize)
         return prerenderedVectors[nameKey];
     }
     
-    const Colour iconBaseColour(App::Helio()->getTheme()->findColour(ColourIDs::Icons::fill));
-    const Colour iconShadeColour(App::Helio()->getTheme()->findColour(ColourIDs::Icons::shadow));
-    Image prerenderedImage = renderVector(name, fixedSize, iconBaseColour, iconShadeColour);
+    const Colour iconBaseColour(App::Helio().getTheme()->findColour(ColourIDs::Icons::fill));
+    const Colour iconShadeColour(App::Helio().getTheme()->findColour(ColourIDs::Icons::shadow));
+    const Image prerenderedImage(renderVector(name, fixedSize, iconBaseColour, iconShadeColour));
     prerenderedVectors.set(nameKey, prerenderedImage);
 
     return prerenderedImage;
 }
 
-Image Icons::findByName(const String &name, int maxSize, LookAndFeel &lf)
+Image Icons::renderForTheme(const LookAndFeel &lf, const String &name, int maxSize)
 {
-    const Desktop::Displays::Display &dis = Desktop::getInstance().getDisplays().getMainDisplay();
+    const Desktop::Displays::Display &dis =
+        Desktop::getInstance().getDisplays().getMainDisplay();
 
 #if JUCE_ANDROID
     const int retinaFactor = 2;
@@ -384,17 +379,16 @@ Image Icons::findByName(const String &name, int maxSize, LookAndFeel &lf)
 #endif
 
     const int fixedSize = int(floorf(float(maxSize) / float(kRoundFactor))) * kRoundFactor * retinaFactor;
-
     const Colour iconBaseColour(lf.findColour(ColourIDs::Icons::fill));
     const Colour iconShadeColour(lf.findColour(ColourIDs::Icons::shadow));
-    Image prerenderedImage = renderVector(name, fixedSize, iconBaseColour, iconShadeColour);
+    const Image prerenderedImage(renderVector(name, fixedSize, iconBaseColour, iconShadeColour));
     return prerenderedImage;
 }
 
 void Icons::drawImageRetinaAware(const Image &image, Graphics &g, int cx, int cy)
 {
-//#if JUCE_IOS || JUCE_MAC
-    const Desktop::Displays::Display &dis = Desktop::getInstance().getDisplays().getMainDisplay();
+    const Desktop::Displays::Display &dis =
+        Desktop::getInstance().getDisplays().getMainDisplay();
 
 #if JUCE_ANDROID
     const int scale = 2;
@@ -407,8 +401,6 @@ void Icons::drawImageRetinaAware(const Image &image, Graphics &g, int cx, int cy
 
     if (scale > 1)
     {
-        //Logger::writeToLog(String(x) + ":" + String(y));
-
         const int w2 = w / scale;
         const int h2 = h / scale;
         
@@ -424,7 +416,4 @@ void Icons::drawImageRetinaAware(const Image &image, Graphics &g, int cx, int cy
     {
         g.drawImageAt(image, cx - int(w / 2), cy - int(h / 2));
     }
-//#else
-//        g.drawImageAt(image, cx - int(w / 2), cy - int(h / 2));
-//#endif
 }

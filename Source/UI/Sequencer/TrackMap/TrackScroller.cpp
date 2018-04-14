@@ -235,10 +235,6 @@ void TrackScroller::resized()
     this->background->setBounds(0, 0, this->getWidth(), this->getHeight());
 }
 
-void TrackScroller::paint(Graphics &g)
-{
-}
-
 void TrackScroller::paintOverChildren(Graphics& g)
 {
     g.setColour(this->findColour(ColourIDs::TrackScroller::borderLineDark));

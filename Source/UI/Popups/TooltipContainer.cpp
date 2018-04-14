@@ -120,7 +120,7 @@ void TooltipContainer::timerCallback()
     }
 }
 
-void TooltipContainer::showWithComponent(Component *newTargetComponent, int timeOutMs)
+void TooltipContainer::showWithComponent(ScopedPointer<Component> newTargetComponent, int timeOutMs)
 {
     const Point<int> clickOrigin =
     Desktop::getInstance().getMainMouseSource().getLastMouseDownPosition().toInt();
@@ -130,7 +130,7 @@ void TooltipContainer::showWithComponent(Component *newTargetComponent, int time
                             timeOutMs);
 }
 
-void TooltipContainer::showWithComponent(Component *newTargetComponent,
+void TooltipContainer::showWithComponent(ScopedPointer<Component> newTargetComponent,
                                          Rectangle<int> callerScreenBounds,
                                          int timeOutMs)
 {
@@ -170,7 +170,6 @@ void TooltipContainer::showWithComponent(Component *newTargetComponent,
     this->resized();
     this->toFront(false);
 }
-
 
 void TooltipContainer::hide()
 {

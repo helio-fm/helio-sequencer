@@ -23,6 +23,10 @@ class JsonSerializer final : public Serializer
 {
 public:
 
+    explicit JsonSerializer(bool allOnOneLine = false) noexcept;
+
+    void setHeaderComments(StringArray comments) noexcept;
+
     Result saveToFile(File file, const ValueTree &tree) const override;
     Result loadFromFile(const File &file, ValueTree &tree) const override;
 
@@ -31,5 +35,10 @@ public:
 
     bool supportsFileWithExtension(const String &extension) const override;
     bool supportsFileWithHeader(const String &header) const override;
+
+private:
+
+    bool allOnOneLine;
+    StringArray headerComments;
 
 };

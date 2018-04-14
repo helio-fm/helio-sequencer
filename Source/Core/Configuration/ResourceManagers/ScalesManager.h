@@ -30,10 +30,10 @@ public:
         return Instance;
     }
 
-    void initialise(const String &commandLine);
-    void shutdown();
-
-    const Array<Scale> &getScales() const;
+    inline const Array<Scale::Ptr> getScales() const
+    {
+        return this->getResources<Scale::Ptr>();
+    }
 
 private:
 
@@ -43,14 +43,10 @@ private:
 
     ValueTree serialize() const override;
     void deserialize(const ValueTree &tree) override;
-    void reset() override;
-    
+
 private:
 
     ScalesManager();
-
-    Array<Scale> scales;
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScalesManager)
 
 };

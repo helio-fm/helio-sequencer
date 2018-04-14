@@ -48,14 +48,9 @@
 
 ProjectCommandPanel::ProjectCommandPanel(ProjectTreeItem &parentProject, AnimationType animationType) :
     project(parentProject),
-    haveSetBatchCheckpoint(false),
-    layerNameString(TRANS("defaults::newlayer::name"))
+    haveSetBatchCheckpoint(false)
 {
     this->initMainMenu(animationType);
-}
-
-ProjectCommandPanel::~ProjectCommandPanel()
-{
 }
 
 void ProjectCommandPanel::handleCommandMessage(int commandId)
@@ -156,33 +151,21 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
             
         case CommandIDs::AddMidiTrack:
         {
-            Component *inputDialog =
-            new ModalDialogInput(*this,
-                                 this->layerNameString,
-                                 TRANS("dialog::addlayer::caption"),
-                                 TRANS("dialog::addlayer::proceed"),
-                                 TRANS("dialog::addlayer::cancel"),
-                                 CommandIDs::AddMidiTrackConfirmed,
-                                 CommandIDs::Cancel);
-            
-            App::Layout().showModalComponentUnowned(inputDialog);
-            return;
-        }
-            
-        case CommandIDs::AddMidiTrackConfirmed:
-        {
-            this->project.setOpen(true);
-            
-            this->project.getUndoStack()->beginNewTransaction();
-            this->project.getUndoStack()->perform(new PianoTrackInsertAction(this->project,
-                &this->project, this->createPianoLayerTempate(""), this->layerNameString));
-            
+            auto &project = this->project;
+            const auto trackTemplate = this->createPianoTrackTempate("");
+            auto inputDialog = ModalDialogInput::Presets::newTrack();
+            inputDialog->onOk = [&project, trackTemplate](const String &input)
+            {
+                project.setOpen(true);
+                project.getUndoStack()->beginNewTransaction();
+                project.getUndoStack()->perform(new PianoTrackInsertAction(project,
+                    &project, trackTemplate, input));
+            };
+
+            App::Layout().showModalComponentUnowned(inputDialog.release());
             this->dismiss();
             return;
         }
-            
-        case CommandIDs::Cancel:
-            return;
             
         case CommandIDs::RefactorTransposeUp:
         {
@@ -230,7 +213,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
             
         case CommandIDs::ImportMidi:
             this->project.getDocument()->import("*.mid;*.midi");
-            this->getParentComponent()->exitModalState(0);
+            this->dismiss();
             return;
 
         case CommandIDs::ExportMidi:
@@ -245,56 +228,39 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
 #else
             this->project.getDocument()->exportAs("*.mid;*.midi", this->project.getName() + ".mid");
 #endif
-            this->getParentComponent()->exitModalState(0);
+            this->dismiss();
             return;
         }
 
         case CommandIDs::UnloadProject:
             App::Workspace().unloadProjectById(this->project.getId());
-            this->getParentComponent()->exitModalState(0);
+            this->dismiss();
             return;
 
         case CommandIDs::DeleteProject:
         {
-            Component *confirmationDialog =
-            new ModalDialogConfirmation(*this,
-                                        TRANS("dialog::deleteproject::caption"),
-                                        TRANS("dialog::deleteproject::proceed"),
-                                        TRANS("dialog::deleteproject::cancel"),
-                                        CommandIDs::DeleteProjectConfirmed1,
-                                        CommandIDs::Cancel);
-            
-            App::Layout().showModalComponentUnowned(confirmationDialog);
-            return;
-        }
-            
-        case CommandIDs::DeleteProjectConfirmed1:
-        {
-            Component *inputDialog =
-            new ModalDialogInput(*this,
-                                 this->projectNameRemovalConfirmation,
-                                 TRANS("dialog::deleteproject::confirm::caption"),
-                                 TRANS("dialog::deleteproject::confirm::proceed"),
-                                 TRANS("dialog::deleteproject::confirm::cancel"),
-                                 CommandIDs::DeleteProjectConfirmed2,
-                                 CommandIDs::Cancel);
-            
-            App::Layout().showModalComponentUnowned(inputDialog);
-            return;
-        }
-
-        case CommandIDs::DeleteProjectConfirmed2:
-        {
-            if (this->projectNameRemovalConfirmation == this->project.getName())
+            auto confirmationDialog = ModalDialogConfirmation::Presets::deleteProject();
+            auto &project = this->project;
+            confirmationDialog->onOk = [&project]()
             {
-                this->project.deletePermanently();
-            }
-            else
-            {
-                App::Layout().showTooltip(TRANS("menu::project::delete::cancelled"));
-            }
+                auto inputDialog = ModalDialogInput::Presets::deleteProjectConfirmation();
+                inputDialog->onOk = [&project](const String &text)
+                {
+                    if (text == project.getName())
+                    {
+                        project.deletePermanently();
+                    }
+                    else
+                    {
+                        App::Layout().showTooltip(TRANS("menu::project::delete::cancelled"));
+                    }
+                };
 
-            this->getParentComponent()->exitModalState(0);
+                App::Layout().showModalComponentUnowned(inputDialog.release());
+            };
+
+            App::Layout().showModalComponentUnowned(confirmationDialog.release());
+            this->dismiss();
             return;
         }
     }
@@ -373,10 +339,10 @@ void ProjectCommandPanel::proceedToRenderDialog(const String &extension)
     App::Layout().showModalComponentUnowned(new RenderDialog(this->project, initialPath.getChildFile(safeRenderName), extension));
 #endif
     
-    this->getParentComponent()->exitModalState(0);
+    this->dismiss();
 }
 
-ValueTree ProjectCommandPanel::createPianoLayerTempate(const String &name) const
+ValueTree ProjectCommandPanel::createPianoTrackTempate(const String &name) const
 {
     ScopedPointer<MidiTrackTreeItem> newItem = new PianoTrackTreeItem(name);
     return newItem->serialize();

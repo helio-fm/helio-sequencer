@@ -60,7 +60,6 @@ AudioCore::~AudioCore()
     //DocumentReader::saveObfuscated(File("111.txt"), test);
 
     this->deviceManager.closeAudioDevice();
-    this->masterReference.clear();
 }
 
 void AudioCore::mute()

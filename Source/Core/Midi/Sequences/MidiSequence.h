@@ -32,8 +32,6 @@ public:
 
     explicit MidiSequence(MidiTrack &track,
         ProjectEventDispatcher &eventDispatcher) noexcept;
-
-    ~MidiSequence() override;
     
     //===------------------------------------------------------------------===//
     // Undoing
@@ -78,10 +76,12 @@ public:
     inline int size() const noexcept
     { return this->midiEvents.size(); }
 
-    inline MidiEvent **begin() const noexcept
+    template<typename T>
+    inline T **begin() const noexcept
     { return this->midiEvents.begin(); }
     
-    inline MidiEvent **end() const noexcept
+    template<typename T>
+    inline T **end() const noexcept
     { return this->midiEvents.end(); }
     
     inline MidiEvent *getUnchecked(const int index) const noexcept
@@ -129,8 +129,8 @@ protected:
     float lastEndBeat;
     float lastStartBeat;
     
-    ProjectTreeItem *getProject();
-    UndoStack *getUndoStack();
+    ProjectTreeItem *getProject() const noexcept;
+    UndoStack *getUndoStack() const noexcept;
 
     OwnedArray<MidiEvent> midiEvents;
     mutable SparseHashSet<MidiEvent::Id, StringHash> usedEventIds;
@@ -141,9 +141,7 @@ private:
     mutable bool cacheIsOutdated;
 
 private:
-    
-    WeakReference<MidiSequence>::Master masterReference;
-    friend class WeakReference<MidiSequence>;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiSequence);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MidiSequence)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(MidiSequence)
 };

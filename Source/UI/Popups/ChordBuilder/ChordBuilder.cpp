@@ -71,13 +71,13 @@ class ScalesCommandPanel : public CommandPanel
 {
 public:
 
-    ScalesCommandPanel(const Array<Scale> &scales) : scales(scales)
+    ScalesCommandPanel(const Array<Scale::Ptr> scales) : scales(scales)
     {
         CommandPanel::Items cmds;
         for (int i = 0; i < scales.size(); ++i)
         {
             cmds.add(CommandItem::withParams(String::empty,
-                CommandIDs::SelectScale + i, scales[i].getLocalizedName())->withAlignment(CommandItem::Right));
+                CommandIDs::SelectScale + i, scales[i]->getLocalizedName())->withAlignment(CommandItem::Right));
         }
         this->updateContent(cmds, CommandPanel::SlideLeft, false);
     }
@@ -97,7 +97,7 @@ public:
 
 private:
 
-    const Array<Scale> scales;
+    const Array<Scale::Ptr> scales;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScalesCommandPanel)
 };
@@ -167,13 +167,15 @@ ChordBuilder::ChordBuilder(PianoRoll *caller, MidiSequence *layer)
     //[UserPreSize]
     if (Config::contains(Serialization::Config::lastUsedScale))
     {
-        Scale s;
+        Scale::Ptr s(new Scale());
         Config::load(s, Serialization::Config::lastUsedScale);
-        if (s.isValid())
+        if (s->isValid())
         {
             this->scale = s;
         }
     }
+
+    jassert(this->scale != nullptr);
     //[/UserPreSize]
 
     setSize (500, 500);
@@ -310,7 +312,7 @@ inline String keyName(int key)
 if (! App::isRunningOnPhone()) { \
     Component *tip =\
     new ChordTooltip(ROOT_KEY,\
-                     this->scale.getLocalizedName(),\
+                     this->scale->getLocalizedName(),\
                      FUNCTION_NAME);\
     App::Layout().showTooltip(tip, this->getScreenBounds());\
 }
@@ -377,7 +379,7 @@ void ChordBuilder::onPopupButtonEndDragging(PopupButton *button)
     }
 }
 
-void ChordBuilder::applyScale(const Scale &scale)
+void ChordBuilder::applyScale(const Scale::Ptr scale)
 {
     const auto funName = localizedFunctionNames();
     const String rootKey = keyName(this->targetKey);
@@ -385,13 +387,13 @@ void ChordBuilder::applyScale(const Scale &scale)
     {
         this->scale = scale;
         Config::save(this->scale, Serialization::Config::lastUsedScale);
-        this->buildChord(this->scale.getTriad(this->function, true));
+        this->buildChord(this->scale->getTriad(this->function, true));
         SHOW_CHORD_TOOLTIP(rootKey, funName[this->function]);
     }
     else
     {
         // Alternate mode on second click
-        this->buildChord(this->scale.getSeventhChord(this->function, false));
+        this->buildChord(this->scale->getSeventhChord(this->function, false));
         SHOW_CHORD_TOOLTIP(rootKey, funName[this->function]);
     }
 }
@@ -403,13 +405,13 @@ void ChordBuilder::applyFunction(Scale::Function function)
     if (this->function != function)
     {
         this->function = function;
-        this->buildChord(this->scale.getTriad(this->function, true));
+        this->buildChord(this->scale->getTriad(this->function, true));
         SHOW_CHORD_TOOLTIP(rootKey, funName[this->function]);
     }
     else
     {
         // Alternate mode on second click
-        this->buildChord(this->scale.getSeventhChord(this->function, false));
+        this->buildChord(this->scale->getSeventhChord(this->function, false));
         SHOW_CHORD_TOOLTIP(rootKey, funName[this->function]);
     }
 }

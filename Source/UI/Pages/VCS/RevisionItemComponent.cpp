@@ -26,7 +26,7 @@
 #include "Icons.h"
 #include "HelioTheme.h"
 
-class RevisionItemHighlighter : public Component
+class RevisionItemHighlighter final : public Component
 {
 public:
 
@@ -46,7 +46,7 @@ public:
     }
 };
 
-class RevisionItemSelectionComponent : public Component
+class RevisionItemSelectionComponent final : public Component
 {
 public:
 

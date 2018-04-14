@@ -27,8 +27,7 @@
 
 class ClipComponent;
 class MidiTrackHeader;
-class PianoRollReboundThread;
-class PianoRollCellHighlighter;
+class PatternRollSelectionMenuManager;
 
 #include "HelioTheme.h"
 #include "HybridRoll.h"
@@ -104,13 +103,6 @@ public:
     float getZoomFactorY() const override;
 
     //===------------------------------------------------------------------===//
-    // ClipboardOwner
-    //===------------------------------------------------------------------===//
-
-    ValueTree clipboardCopy() const override;
-    void clipboardPaste(const ValueTree &tree) override;
-
-    //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
@@ -161,6 +153,8 @@ private:
     OwnedArray<ClipComponent> ghostClips;
 
     ScopedPointer<MidiTrackHeader> insertTrackHelper;
+
+    ScopedPointer<PatternRollSelectionMenuManager> selectedClipsMenuManager;
 
     typedef SparseHashMap<const MidiTrack *, UniquePointer<MidiTrackHeader>, MidiTrackHash> TrackHeadersMap;
     TrackHeadersMap trackHeaders;

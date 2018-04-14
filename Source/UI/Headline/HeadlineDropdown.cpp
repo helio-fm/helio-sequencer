@@ -24,14 +24,17 @@
 //[MiscUserDefs]
 #include "IconComponent.h"
 #include "PanelBackgroundB.h"
-#include "HeadlineDropdown.h"
+#include "HeadlineItemDataSource.h"
 #include "CommandPanel.h"
-#include "ColourIDs.h"
+#include "RootTreeItem.h"
 #include "MainLayout.h"
+#include "ColourIDs.h"
 #include "App.h"
+
+#include "TreeItem.h"
 //[/MiscUserDefs]
 
-HeadlineDropdown::HeadlineDropdown(WeakReference<TreeItem> targetItem)
+HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetItem)
     : item(targetItem)
 {
     addAndMakeVisible (titleLabel = new Label (String(),
@@ -69,14 +72,14 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<TreeItem> targetItem)
             .getStringWidth(this->titleLabel->getText());
         this->setSize(textWidth + 64, this->getHeight());
 
-        // Create tree panel for the root,
-        // and generic menu for the rest:
-        if (this->item->getParentItem() == nullptr)
+        // Create tree panel for the root, and generic menu for the rest
+        // (FIXME in the future, tree should not be exposed)
+        if (RootTreeItem *rootItem = dynamic_cast<RootTreeItem *>(this->item.get()))
         {
             ScopedPointer<TreeView> treeView(new TreeView());
             treeView->setFocusContainer(false);
             treeView->setWantsKeyboardFocus(false);
-            treeView->setRootItem(this->item);
+            treeView->setRootItem(rootItem);
             treeView->getRootItem()->setOpen(true);
             treeView->setRootItemVisible(true);
             treeView->setDefaultOpenness(true);
@@ -87,14 +90,13 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<TreeItem> targetItem)
             const auto treeContentBounds =
                 treeView->getViewport()->getViewedComponent()->getLocalBounds();
             const auto w = treeContentBounds.getWidth();
-            const auto h = jmin(treeContentBounds.getHeight(),
-                App::Layout().getHeight() - 180);
+            const auto h = jmin(treeContentBounds.getHeight(), App::Layout().getHeight() - 180);
             treeView->setSize(w, h);
             this->content = treeView.release();
             this->addAndMakeVisible(this->content);
             this->syncWidthWithContent();
         }
-        else if (ScopedPointer<Component> menu = this->item->createItemMenu())
+        else if (ScopedPointer<Component> menu = this->item->createMenu())
         {
             this->content = menu.release();
             this->addAndMakeVisible(this->content);
@@ -204,8 +206,8 @@ void HeadlineDropdown::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    titleLabel->setBounds (34, 0, getWidth() - 44, 31);
-    icon->setBounds (8, 16 - (32 / 2), 32, 32);
+    titleLabel->setBounds (33, 0, getWidth() - 44, 31);
+    icon->setBounds (7, 16 - (32 / 2), 32, 32);
     content->setBounds (2, 33, getWidth() - 4, getHeight() - 34);
     internalPath2.clear();
     internalPath2.startNewSubPath (0.0f, 0.0f);
@@ -247,7 +249,7 @@ void HeadlineDropdown::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
     if (this->item != nullptr) {
-        this->item->setSelected(true, true);
+        this->item->onSelectedAsMenuItem();
     }
     //[/UserCode_mouseDown]
 }
@@ -328,7 +330,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="HeadlineDropdown" template="../../Template"
                  componentName="" parentClasses="public Component, private Timer"
-                 constructorParams="WeakReference&lt;TreeItem&gt; targetItem"
+                 constructorParams="WeakReference&lt;HeadlineItemDataSource&gt; targetItem"
                  variableInitialisers="item(targetItem)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="150"
                  initialHeight="34">
@@ -349,12 +351,12 @@ BEGIN_JUCER_METADATA
           strokeColour=" radial: 3R 32, 17R 5, 0=27ffffff, 1=bffffff" nonZeroWinding="1">s -24R 0 l 17R 0 l 10R 16 l 3R 32 l -24R 32 x</PATH>
   </BACKGROUND>
   <LABEL name="" id="9a3c449859f61884" memberName="titleLabel" virtualName=""
-         explicitFocusOrder="0" pos="34 0 44M 31" labelText="Project"
+         explicitFocusOrder="0" pos="33 0 44M 31" labelText="Project"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>
   <GENERICCOMPONENT name="" id="f10feab7d241bacb" memberName="icon" virtualName=""
-                    explicitFocusOrder="0" pos="8 16c 32 32" class="IconComponent"
+                    explicitFocusOrder="0" pos="7 16c 32 32" class="IconComponent"
                     params="Icons::workspace"/>
   <GENERICCOMPONENT name="" id="b986fd50e3b5b1c5" memberName="content" virtualName=""
                     explicitFocusOrder="0" pos="2 33 4M 34M" class="Component" params=""/>

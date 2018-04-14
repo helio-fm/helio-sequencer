@@ -37,17 +37,17 @@ InstrumentsRootTreeItem::InstrumentsRootTreeItem() :
     this->recreatePage();
 }
 
-Colour InstrumentsRootTreeItem::getColour() const
+Colour InstrumentsRootTreeItem::getColour() const noexcept
 {
     return Colour(0xffff80f3);
 }
 
-Image InstrumentsRootTreeItem::getIcon() const
+Image InstrumentsRootTreeItem::getIcon() const noexcept
 {
     return Icons::findByName(Icons::saxophone, TREE_LARGE_ICON_HEIGHT);
 }
 
-String InstrumentsRootTreeItem::getName() const
+String InstrumentsRootTreeItem::getName() const noexcept
 {
     return TRANS("tree::instruments");
 }
@@ -67,11 +67,15 @@ void InstrumentsRootTreeItem::recreatePage()
 // Menu
 //===----------------------------------------------------------------------===//
 
-ScopedPointer<Component> InstrumentsRootTreeItem::createItemMenu()
+bool InstrumentsRootTreeItem::hasMenu() const noexcept
+{
+    return true;
+}
+
+ScopedPointer<Component> InstrumentsRootTreeItem::createMenu()
 {
     return new InstrumentsCommandPanel(*this);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Dragging

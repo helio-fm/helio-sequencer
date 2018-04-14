@@ -42,7 +42,7 @@ public:
 
     String getXPath() const noexcept;
     void setXPath(const String &path);
-    Colour getColour() const override;
+    Colour getColour() const noexcept override;
 
     void showPage() override;
     void safeRename(const String &newName) override;
@@ -99,7 +99,7 @@ public:
     void dispatchChangeTrackProperties(MidiTrack *const track) override;
     void dispatchChangeProjectBeatRange() override;
 
-    ProjectTreeItem *getProject() const override;
+    ProjectTreeItem *getProject() const noexcept override;
 
     //===------------------------------------------------------------------===//
     // Dragging
@@ -114,14 +114,22 @@ public:
     // Menu
     //===------------------------------------------------------------------===//
 
-    ScopedPointer<Component> createItemMenu() override;
+    bool hasMenu() const noexcept override;
+    ScopedPointer<Component> createMenu() override;
+
+    //===------------------------------------------------------------------===//
+    // Callbacks
+    //===------------------------------------------------------------------===//
+
+    Function<void(const String &text)> getRenameCallback();
+    Function<void(const String &colour)> getChangeColourCallback();
+    Function<void(const String &instrumentId)> getChangeInstrumentCallback();
 
 protected:
 
     ProjectTreeItem *lastFoundParent;
 
-    ScopedPointer<MidiSequence> layer;
-
+    ScopedPointer<MidiSequence> sequence;
     ScopedPointer<Pattern> pattern;
     
 protected:
@@ -136,6 +144,6 @@ protected:
     int controllerNumber;
 
     bool mute;
-    bool solo;
+    bool solo; // Not implemented
 
 };

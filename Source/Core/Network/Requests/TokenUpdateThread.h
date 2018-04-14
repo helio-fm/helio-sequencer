@@ -59,17 +59,17 @@ private:
     
     void run() override
     {
+        namespace ApiKeys = Serialization::Api::V1;
+        namespace ApiRoutes = Routes::HelioFM::Api::V1;
+
         // Construct payload object:
-        DynamicObject::Ptr session(new DynamicObject());
-        session->setProperty(Serialization::Api::V1::bearer, this->oldToken);
-        session->setProperty(Serialization::Api::V1::deviceId, Config::getDeviceId());
-        session->setProperty(Serialization::Api::V1::platformId, SystemStats::getOperatingSystemName());
+        ValueTree session(ApiKeys::session);
+        session.setProperty(ApiKeys::bearer, this->oldToken, nullptr);
+        session.setProperty(ApiKeys::deviceId, Config::getDeviceId(), nullptr);
+        session.setProperty(ApiKeys::platformId, SystemStats::getOperatingSystemName(), nullptr);
 
-        DynamicObject::Ptr payload(new DynamicObject());
-        payload->setProperty(Serialization::Api::V1::session, var(session));
-
-        const HelioApiRequest request(HelioFM::Api::V1::tokenUpdate);
-        this->response = request.post(var(payload));
+        const HelioApiRequest request(ApiRoutes::tokenUpdate);
+        this->response = request.post(session);
 
         if (!this->response.isValid())
         {
@@ -77,14 +77,14 @@ private:
             return;
         }
 
-        if (!this->response.is2xx() || !this->response.hasProperty(Serialization::Api::V1::token))
+        if (!this->response.is2xx() || !this->response.hasProperty(ApiKeys::token))
         {
             callRequestListener(TokenUpdateThread, tokenUpdateFailed, self->response.getErrors());
             return;
         }
 
         callRequestListener(TokenUpdateThread, tokenUpdateOk,
-            self->response.getProperty(Serialization::Api::V1::token));
+            self->response.getProperty(ApiKeys::token));
     }
     
     String oldToken;

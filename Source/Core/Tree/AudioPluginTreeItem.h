@@ -22,17 +22,19 @@ class AudioPluginEditor;
 
 #include "TreeItem.h"
 
-class AudioPluginTreeItem : public TreeItem
+class AudioPluginTreeItem final : public TreeItem
 {
 public:
 
     AudioPluginTreeItem(uint32 pluginID, const String &name);
 
-    Colour getColour() const override;
-    Image getIcon() const override;
+    Colour getColour() const noexcept override;
+    Image getIcon() const noexcept override;
     uint32 getNodeId() const noexcept;
 
-    ScopedPointer<Component> createItemMenu() override;
+    bool hasMenu() const noexcept override;
+    ScopedPointer<Component> createMenu() override;
+
     void showPage() override;
 
     //===------------------------------------------------------------------===//

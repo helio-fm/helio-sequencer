@@ -48,7 +48,7 @@ class Pattern;
 #include "MidiSequence.h"
 #include "MidiTrackSource.h"
 
-class ProjectTreeItem :
+class ProjectTreeItem final :
     public TreeItem,
     public DocumentOwner,
     public MidiTrackSource,
@@ -75,18 +75,18 @@ public:
     void importMidi(File &file);
     void exportMidi(File &file) const;
 
-    Colour getColour() const override;
-    Image getIcon() const override;
+    Colour getColour() const noexcept override;
+    Image getIcon() const noexcept override;
 
     void showPage() override;
     void recreatePage() override;
 
     void safeRename(const String &newName) override;
 
-    void showPatternEditor(TreeItem *source);
-    void showLinearEditor(MidiSequence *activeLayer, TreeItem *source);
-    void hideEditor(MidiSequence *activeLayer, TreeItem *source);
-    WeakReference<TreeItem> getLastShownTrack() const;
+    void showPatternEditor(WeakReference<TreeItem> source);
+    void showLinearEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeItem> source);
+    void hideEditor(WeakReference<MidiTrack> activeTrack, WeakReference<TreeItem> source);
+    WeakReference<TreeItem> getLastShownTrack() const noexcept;
 
     void updateActiveGroupEditors();
     void activateLayer(MidiSequence* layer, bool selectOthers, bool deselectOthers);
@@ -95,7 +95,8 @@ public:
     // Menu
     //===------------------------------------------------------------------===//
 
-    ScopedPointer<Component> createItemMenu() override;
+    bool hasMenu() const noexcept override;
+    ScopedPointer<Component> createMenu() override;
 
     //===------------------------------------------------------------------===//
     // Dragging
@@ -108,11 +109,11 @@ public:
     // Undos
     //===------------------------------------------------------------------===//
 
-    UndoStack *getUndoStack() const noexcept;
     void checkpoint();
     void undo();
     void redo();
     void clearUndoHistory();
+    UndoStack *getUndoStack() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Accessors

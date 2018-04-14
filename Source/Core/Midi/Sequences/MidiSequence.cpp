@@ -47,11 +47,6 @@ MidiSequence::MidiSequence(MidiTrack &parentTrack,
     cachedSequence(),
     cacheIsOutdated(false) {}
 
-MidiSequence::~MidiSequence()
-{
-    this->masterReference.clear();
-}
-
 void MidiSequence::sort()
 {
     if (this->midiEvents.size() > 0)
@@ -66,7 +61,7 @@ void MidiSequence::sort()
 
 void MidiSequence::checkpoint() noexcept
 {
-    this->getUndoStack()->beginNewTransaction(String::empty);
+    this->getUndoStack()->beginNewTransaction({});
 }
 
 void MidiSequence::undo()
@@ -161,22 +156,20 @@ float MidiSequence::getLengthInBeats() const noexcept
     return this->getLastBeat() - this->getFirstBeat();
 }
 
-
 MidiTrack *MidiSequence::getTrack() const noexcept
 {
     return &this->track;
 }
 
-ProjectTreeItem *MidiSequence::getProject()
+ProjectTreeItem *MidiSequence::getProject() const noexcept
 {
     return this->eventDispatcher.getProject();
 }
 
-UndoStack *MidiSequence::getUndoStack()
+UndoStack *MidiSequence::getUndoStack() const noexcept
 {
     return this->eventDispatcher.getProject()->getUndoStack();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Events change listener

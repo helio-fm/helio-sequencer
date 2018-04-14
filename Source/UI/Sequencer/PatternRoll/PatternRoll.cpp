@@ -30,14 +30,13 @@
 #include "MultiTouchController.h"
 #include "HelioTheme.h"
 #include "ChordBuilder.h"
-#include "HybridLassoComponent.h"
+#include "SelectionComponent.h"
 #include "HybridRollEditMode.h"
 #include "SerializationKeys.h"
 #include "Icons.h"
-#include "InternalClipboard.h"
 #include "HelioCallout.h"
 #include "NotesTuningPanel.h"
-#include "PianoRollToolbox.h"
+#include "SequencerOperations.h"
 #include "Config.h"
 #include "SerializationKeys.h"
 #include "PianoSequence.h"
@@ -47,8 +46,8 @@
 #include "DummyClipComponent.h"
 #include "ComponentIDs.h"
 #include "ColourIDs.h"
+#include "LassoListeners.h"
 
-#define ROWS_OF_TWO_OCTAVES 24
 #define DEFAULT_CLIP_LENGTH 1.0f
 
 inline static constexpr int rowHeight()
@@ -71,6 +70,7 @@ PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
     HybridRoll(parentProject, viewportRef, clippingDetector, false, false, true)
 {
     // TODO: pattern roll doesn't need neither annotations track map nor key signatures track map
+    this->selectedClipsMenuManager = new PatternRollSelectionMenuManager(&this->selection);
 
     this->setComponentID(ComponentIDs::patternRollId);
 
@@ -326,7 +326,7 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) c
 
     const float y = float(trackIndex * rowHeight());
     return Rectangle<float> (x, HYBRID_ROLL_HEADER_HEIGHT + y + PATTERN_ROLL_TRACK_HEADER_HEIGHT,
-        w, float(PATTERN_ROLL_CLIP_HEIGHT));
+        w, float(PATTERN_ROLL_CLIP_HEIGHT - 1));
 }
 
 float PatternRoll::getBeatByComponentPosition(float x) const
@@ -600,109 +600,6 @@ float PatternRoll::getZoomFactorY() const
 }
 
 //===----------------------------------------------------------------------===//
-// ClipboardOwner
-//===----------------------------------------------------------------------===//
-
-ValueTree PatternRoll::clipboardCopy() const
-{
-    ValueTree tree(Serialization::Clipboard::clipboard);
-
-    float firstBeat = FLT_MAX;
-    float lastBeat = -FLT_MAX;
-
-    for (const auto &s : selection.getGroupedSelections())
-    {
-        const auto patternSelection(s.second);
-        const String patternId(s.first);
-
-        // create xml parent with layer id
-        ValueTree patternIdParent(Serialization::Clipboard::pattern);
-        patternIdParent.setProperty(Serialization::Clipboard::patternId, patternId, nullptr);
-        tree.appendChild(patternIdParent, nullptr);
-
-        for (int i = 0; i < patternSelection->size(); ++i)
-        {
-            if (const ClipComponent *clipComponent =
-                dynamic_cast<ClipComponent *>(patternSelection->getUnchecked(i)))
-            {
-                patternIdParent.appendChild(clipComponent->getClip().serialize(), nullptr);
-                firstBeat = jmin(firstBeat, clipComponent->getBeat());
-                lastBeat = jmax(lastBeat, clipComponent->getBeat());
-            }
-        }
-    }
-
-    tree.setProperty(Serialization::Clipboard::firstBeat, firstBeat, nullptr);
-    tree.setProperty(Serialization::Clipboard::lastBeat, lastBeat, nullptr);
-
-    return tree;
-}
-
-void PatternRoll::clipboardPaste(const ValueTree &tree)
-{
-    const auto root =
-        tree.hasType(Serialization::Clipboard::clipboard) ?
-        tree : tree.getChildWithName(Serialization::Clipboard::clipboard);
-
-    if (!root.isValid()) { return; }
-
-    bool didCheckpoint = false;
-
-    const float indicatorRoughBeat = this->getBeatByTransportPosition(this->project.getTransport().getSeekPosition());
-    const float indicatorBeat = roundf(indicatorRoughBeat * 1000.f) / 1000.f;
-
-    const double firstBeat = root.getProperty(Serialization::Clipboard::firstBeat);
-    const double lastBeat = root.getProperty(Serialization::Clipboard::lastBeat);
-    const bool indicatorIsWithinSelection = (indicatorBeat >= firstBeat) && (indicatorBeat < lastBeat);
-    const float startBeatAligned = roundf(float(firstBeat));
-    const float deltaBeat = (indicatorBeat - startBeatAligned);
-
-    this->deselectAll();
-
-    forEachValueTreeChildWithType(root, patternElement, Serialization::Midi::pattern)
-    {
-        Array<Clip> pastedClips;
-        const String patternId = patternElement.getProperty(Serialization::Clipboard::patternId);
-        
-        if (nullptr != this->project.findPatternByTrackId(patternId))
-        {
-            Pattern *targetPattern = this->project.findPatternByTrackId(patternId);
-            
-            forEachValueTreeChildWithType(patternElement, clipElement, Serialization::Midi::clip)
-            {
-                Clip &&c = Clip(targetPattern).withParameters(clipElement).copyWithNewId();
-                pastedClips.add(c.withDeltaBeat(deltaBeat));
-            }
-            
-            if (pastedClips.size() > 0)
-            {
-                if (! didCheckpoint)
-                {
-                    targetPattern->checkpoint();
-                    didCheckpoint = true;
-                    
-                    // also insert space if needed
-                    const bool isShiftPressed = Desktop::getInstance().getMainMouseSource().getCurrentModifiers().isShiftDown();
-                    if (isShiftPressed)
-                    {
-                        const float changeDelta = float(lastBeat - firstBeat);
-                        PianoRollToolbox::shiftEventsToTheRight(this->project.getTracks(), indicatorBeat, changeDelta, false);
-                    }
-                }
-                
-                for (Clip &c : pastedClips)
-                {
-                    targetPattern->insert(c, true);
-                }
-            }
-        }
-    }
-
-    return;
-}
-
-
-//===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
 
@@ -863,13 +760,34 @@ void PatternRoll::reset() {}
 
 Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height) const
 {
-    Image patternImage(Image::RGB, 128, height * ROWS_OF_TWO_OCTAVES, false);
+    const int width = 128;
+    const int shadowHeight = 16;
+    Image patternImage(Image::RGB, width, height, false);
     Graphics g(patternImage);
 
-    const Colour whiteKey = theme.findColour(ColourIDs::Roll::whiteKey);
-
-    g.setColour(whiteKey);
+    const Colour fillColour = theme.findColour(ColourIDs::Roll::blackKey).brighter(0.035f);
+    g.setColour(fillColour);
     g.fillRect(patternImage.getBounds());
+
+    {
+        float x = 0, y = PATTERN_ROLL_TRACK_HEADER_HEIGHT;
+        g.setGradientFill(ColourGradient(Colour(0x0c000000),
+            x, y,
+            Colours::transparentBlack,
+            x, float(shadowHeight + y),
+            false));
+        g.fillRect(int(x), int(y), width, shadowHeight);
+    }
+
+    {
+        float x = 0, y = PATTERN_ROLL_TRACK_HEADER_HEIGHT;
+        g.setGradientFill(ColourGradient(Colour(0x0c000000),
+            x, y,
+            Colours::transparentBlack,
+            x, float((shadowHeight / 2) + y),
+            false));
+        g.fillRect(int(x), int(y), width, shadowHeight);
+    }
 
     HelioTheme::drawNoise(theme, g, 1.75f);
 

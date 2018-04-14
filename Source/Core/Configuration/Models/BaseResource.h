@@ -17,34 +17,18 @@
 
 #pragma once
 
-#include "SelectableComponent.h"
-
-class HybridLassoComponent : public Component
+class BaseResource : public Serializable, public ReferenceCountedObject
 {
 public:
 
-    HybridLassoComponent();
+    virtual String getResourceId() const = 0;
+    virtual Identifier getResourceIdProperty() const = 0;
 
-    virtual void beginLasso(const MouseEvent &e,
-        LassoSource<SelectableComponent *> *const lassoSource);
+    typedef ReferenceCountedObjectPtr<BaseResource> Ptr;
 
-    virtual void dragLasso(const MouseEvent &e);
+    static int compareElements(const BaseResource::Ptr first, const BaseResource::Ptr second)
+    {
+        return first->getResourceId().compare(second->getResourceId());
+    }
 
-    virtual void endLasso();
-    
-    virtual bool isDragging() const;
-
-    void paint(Graphics &g) override;
-
-    bool hitTest(int, int) override { return false; }
-
-private:
-
-    Array<SelectableComponent *> originalSelection;
-
-    LassoSource<SelectableComponent *> *source;
-
-    Point<int> dragStartPos;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HybridLassoComponent)
 };

@@ -80,6 +80,8 @@ RenderDialog::RenderDialog(ProjectTreeItem &parentProject, const File &renderTo,
     pathEditor->setEditable (false, false, false);
 
     addAndMakeVisible (component3 = new SeparatorHorizontalFading());
+    component3->setBounds (32, 121, 456, 8);
+
     addAndMakeVisible (separatorH = new SeparatorHorizontal());
 
     //[UserPreSize]
@@ -162,7 +164,6 @@ void RenderDialog::resized()
     indicator->setBounds ((getWidth() / 2) + -212 - (32 / 2), 139 + 12 / 2 + -2 - (32 / 2), 32, 32);
     browseButton->setBounds (getWidth() - 448 - 48, 59, 48, 48);
     pathEditor->setBounds ((getWidth() / 2) + 25 - (406 / 2), 4 + 48, 406, 24);
-    component3->setBounds (32, 121, 456, 8);
     separatorH->setBounds (4, getHeight() - 52 - 2, getWidth() - 8, 2);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
@@ -380,7 +381,8 @@ BEGIN_JUCER_METADATA
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0">
-    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10" fill="solid: 59000000" hasStroke="0"/>
+    <ROUNDRECT pos="0 0 0M 0M" cornerSize="10.00000000000000000000" fill="solid: 59000000"
+               hasStroke="0"/>
   </BACKGROUND>
   <JUCERCOMP name="" id="e96b77baef792d3a" memberName="background" virtualName=""
              explicitFocusOrder="0" pos="0Cc 4 8M 8M" posRelativeH="ac3897c4f32c4354"
@@ -391,20 +393,22 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="9c63b5388edfe183" memberName="filenameEditor" virtualName=""
          explicitFocusOrder="0" pos="25Cc 71 406 32" posRelativeY="e96b77baef792d3a"
          labelText="..." editableSingleClick="1" editableDoubleClick="1"
-         focusDiscardsChanges="0" fontname="Default serif font" fontsize="28"
-         kerning="0" bold="0" italic="0" justification="9"/>
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="28.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="9"/>
   <LABEL name="" id="cf32360d33639f7f" memberName="filenameLabel" virtualName=""
          explicitFocusOrder="0" pos="29Cc 16 414 22" posRelativeY="e96b77baef792d3a"
          labelText="dialog::render::caption" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
-         kerning="0" bold="0" italic="0" justification="33"/>
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="33"/>
   <TEXTBUTTON name="" id="ccad5f07d4986699" memberName="cancelButton" virtualName=""
               explicitFocusOrder="0" pos="0 -74Rr 255 48" buttonText="dialog::render::close"
               connectedEdges="6" needsCallback="1" radioGroupId="0"/>
   <SLIDER name="" id="53d73eae72d7741b" memberName="slider" virtualName=""
-          explicitFocusOrder="0" pos="24Cc 139 392 12" min="0" max="1000"
-          int="0" style="LinearBar" textBoxPos="NoTextBox" textBoxEditable="0"
-          textBoxWidth="80" textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          explicitFocusOrder="0" pos="24Cc 139 392 12" min="0.00000000000000000000"
+          max="1000.00000000000000000000" int="0.00000000000000000000"
+          style="LinearBar" textBoxPos="NoTextBox" textBoxEditable="0"
+          textBoxWidth="80" textBoxHeight="20" skewFactor="1.00000000000000000000"
+          needsCallback="1"/>
   <GENERICCOMPONENT name="" id="92641fd94a728225" memberName="indicator" virtualName=""
                     explicitFocusOrder="0" pos="-212Cc -2Cc 32 32" posRelativeY="53d73eae72d7741b"
                     class="ProgressIndicator" params=""/>
@@ -414,8 +418,8 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="2310f57af9b4eefb" memberName="pathEditor" virtualName=""
          explicitFocusOrder="0" pos="25Cc 48 406 24" posRelativeY="e96b77baef792d3a"
          labelText="..." editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default serif font" fontsize="16"
-         kerning="0" bold="0" italic="0" justification="33"/>
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="16.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="33"/>
   <JUCERCOMP name="" id="ab3833b58a212645" memberName="component3" virtualName=""
              explicitFocusOrder="0" pos="32 121 456 8" sourceFile="../Themes/SeparatorHorizontalFading.cpp"
              constructorParams=""/>

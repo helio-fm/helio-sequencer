@@ -19,22 +19,33 @@
 
 //[Headers]
 #include "FadingDialog.h"
+
+typedef Function<void()> SimpleDialogCallback;
 //[/Headers]
 
 #include "../Themes/DialogPanel.h"
 #include "../Themes/SeparatorHorizontal.h"
 #include "../Themes/SeparatorVertical.h"
 
-class ModalDialogConfirmation  : public FadingDialog,
-                                 public Button::Listener
+class ModalDialogConfirmation final : public FadingDialog,
+                                      public Button::Listener
 {
 public:
 
-    ModalDialogConfirmation (Component &owner, const String &message, const String &okText, const String &cancelText, int okCode, int cancelCode);
-
+    ModalDialogConfirmation(const String &message, const String &okText, const String &cancelText);
     ~ModalDialogConfirmation();
 
     //[UserMethods]
+    SimpleDialogCallback onOk;
+    SimpleDialogCallback onCancel;
+
+    struct Presets final
+    {
+        static ScopedPointer<ModalDialogConfirmation> deleteProject();
+        static ScopedPointer<ModalDialogConfirmation> forcePull();
+        static ScopedPointer<ModalDialogConfirmation> resetChanges();
+        static ScopedPointer<ModalDialogConfirmation> confirmOpenGL();
+    };
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -50,27 +61,9 @@ public:
 private:
 
     //[UserVariables]
-
-    Component &ownerComponent;
-
-    int okCommand;
-    int cancelCommand;
-
-    void cancel()
-    {
-        this->ownerComponent.postCommandMessage(this->cancelCommand);
-        this->disappear();
-    }
-
-    void okay()
-    {
-        this->ownerComponent.postCommandMessage(this->okCommand);
-        this->disappear();
-    }
-
-    void disappear()
-    { delete this; }
-
+    void cancel();
+    void okay();
+    void disappear();
     //[/UserVariables]
 
     ScopedPointer<DialogPanel> background;

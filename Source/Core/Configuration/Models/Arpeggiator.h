@@ -18,65 +18,112 @@
 #pragma once
 
 #include "Note.h"
+#include "Scale.h"
+#include "BaseResource.h"
 
-class Arpeggiator final : public Serializable
+// Arpeggiators are created by user simply as a sequences within a scale.
+// Depending on arp type, it has a mapping from that sequence's space into target chord space,
+// so that the chord transformation becomes as straightforward as
+// iterating through arp's sequence and inserting a transformed note for each arp's key.
+
+// This effectively allows to use any melody/sequence as an arpeggiator
+// (the only assumption is that it has no non-scale keys within, which will be ignored),
+// with no restrictions on a target chord's scale.
+
+// Which opens huge possibilities for experimentation,
+// like using an arpeggiated chord as a new arpeggiator, and so on.
+// See DiatonicArpMapper implementation for the most common mapping example.
+
+class Arpeggiator final : public BaseResource
 {
 public:
-    
-    Arpeggiator();
 
-    String getId() const;
-    String getName() const;
-    String exportSequenceAsTrack() const;
+    Arpeggiator() = default;
+    Arpeggiator(const String &name, 
+        const Scale::Ptr scale,
+        const Array<Note> &sequence,
+        Note::Key rootKey);
+
+    typedef ReferenceCountedObjectPtr<Arpeggiator> Ptr;
+
+    String getName() const noexcept { return this->name; };
+    bool isValid() const noexcept { return !this->keys.isEmpty(); }
+
+    float getSequenceLength() const;
+
+    int getNumKeys() const noexcept;
+    float getBeatFor(int arpKeyIndex) const noexcept;
+    Note mapArpKeyIntoChordSpace(int arpKeyIndex, float startBeat,
+        const Array<Note> &chord, const Scale::Ptr chordScale, Note::Key chordRoot) const;
+
+    Arpeggiator &operator=(const Arpeggiator &other);
+    friend bool operator==(const Arpeggiator &l, const Arpeggiator &r);
     
-    bool isReversed() const;
-    bool hasRelativeMapping() const;
-    bool limitsToChord() const;
-    bool isEmpty() const;
-    float getScale() const;
-    
-    Arpeggiator withName(const String &newName) const;
-    Arpeggiator withSequence(const Array<Note> &arpSequence) const;
-    Arpeggiator withSequenceFromString(const String &data) const;
-    Arpeggiator reversed(bool shouldBeReversed) const;
-    Arpeggiator mappedRelative(bool shouldBeMappedRelative) const;
-    Arpeggiator limitedToChord(bool shouldLimitToChord) const;
-    Arpeggiator withScale(float newScale) const;
-    
-    struct Key
+    //===------------------------------------------------------------------===//
+    // Internal
+    //===------------------------------------------------------------------===//
+
+    struct Key final : public Serializable
     {
-        int octaveShift;
-        int keyIndex;
-        float absStart;
-        float absLength;
-        float beatStart;
-        float beatLength;
+        Key() = default;
+        Key(int key, int period, float beat, float length, float velocity) noexcept :
+            key(key), period(period), beat(beat), length(length), velocity(velocity) {}
+
+        // Key, relative to the root note, and translated into scale, may be negative
+        int key;
+        // Number of periods to offset, relative to root key, may be negative
+        // We cannot keep this info in a key, as target chord's scale might have different period
+        int period;
+        // Velocity and length parameters is the same as for note
         float velocity;
-        float sequenceLength;
+        float length;
+        // Beat is relative to sequence start (i.e. first one == 0)
+        float beat;
+
+        ValueTree serialize() const override;
+        void deserialize(const ValueTree &tree) override;
+        void reset() override;
+
+        static int compareElements(const Key &first, const Key &second) noexcept;
     };
-    
-    Array<Key> createArpKeys() const;
-    
-    
+
+    class Mapper
+    {
+    public:
+
+        Mapper() = default;
+        virtual ~Mapper() = default;
+
+        virtual Note::Key mapArpKeyIntoChordSpace(Arpeggiator::Key arpKey, const Array<Note> &chord,
+            const Scale::Ptr chordScale, Note::Key chordRoot) const = 0;
+
+    protected:
+
+        Note::Key getChordKey(const Array<Note> &chord, int chordKeyIndex,
+            const Scale::Ptr chordScale, Note::Key chordRoot, int scaleOffset) const;
+    };
+
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
-    
+
     ValueTree serialize() const override;
     void deserialize(const ValueTree &tree) override;
     void reset() override;
-    
-private:
-    
-    Array<Note> sequence;
-    bool reversedMode;
-    bool relativeMappingMode;
-    bool limitToChordMode;
-    float scale;
-    
+
+    //===------------------------------------------------------------------===//
+    // BaseResource
+    //===------------------------------------------------------------------===//
+
+    String getResourceId() const override;
+    Identifier getResourceIdProperty() const override;
+
+protected:
+
     String name;
-    Uuid id;
-    
+    Identifier type;
+    Array<Arpeggiator::Key> keys;
+    ScopedPointer<Arpeggiator::Mapper> mapper;
+
     JUCE_LEAK_DETECTOR(Arpeggiator)
-    
 };

@@ -102,7 +102,9 @@ private:
     ReferenceCountedArray<RecentFileDescription> localFiles;
 
     ReferenceCountedArray<RecentFileDescription> createCoalescedList() const;
-    
-    WeakReference<RecentFilesList>::Master masterReference;
-    friend class WeakReference<RecentFilesList>;
+
+private:
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RecentFilesList)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(RecentFilesList)
 };

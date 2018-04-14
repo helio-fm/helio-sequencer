@@ -157,18 +157,18 @@ void ThemeSettingsItem::paint (Graphics& g)
             i++;
         }
 
-        g.setColour(this->colours.getPrimaryGradientColourA());
+        g.setColour(this->colours->getPrimaryGradientColourA());
         g.fillRect(41.f, paintStartY, 207.f, paintEndY);
 
         // Outer glow
-        g.setColour (this->colours.getPrimaryGradientColourA().brighter(0.2f));
+        g.setColour (this->colours->getPrimaryGradientColourA().brighter(0.2f));
         g.drawVerticalLine(41, lineStartY, lineEndY);
         g.drawVerticalLine(this->getWidth() - 1, lineStartY, lineEndY);
         g.drawHorizontalLine(int(lineStartY) - 1, 42.f, float(this->getWidth()) - 1.f);
         g.drawHorizontalLine(int(lineEndY), 42.f, float(this->getWidth()) - 1.f);
 
         // Inner shadow
-        g.setColour(this->colours.getPrimaryGradientColourA().darker(0.05f));
+        g.setColour(this->colours->getPrimaryGradientColourA().darker(0.05f));
         g.drawVerticalLine(42, lineStartY, lineEndY);
         g.drawVerticalLine(this->getWidth() - 2, lineStartY, lineEndY);
         g.drawHorizontalLine(int(lineStartY), 42, float(this->getWidth()) - 1.f);
@@ -200,8 +200,8 @@ void ThemeSettingsItem::paint (Graphics& g)
         g.drawVerticalLine(247, lineStartY, lineEndY);
 
         g.setColour(Colours::black);
-        Image image1(Icons::findByName(Icons::layer, 20, *this->theme));
-        Image image2(Icons::findByName(Icons::right, 20, *this->theme));
+        Image image1(Icons::renderForTheme(*this->theme, Icons::layer, 20));
+        Image image2(Icons::renderForTheme(*this->theme, Icons::right, 20));
         Icons::drawImageRetinaAware(image1, g, 48 + 10, (this->getHeight() / 2) - 1);
         Icons::drawImageRetinaAware(image2, g, 220 + 10, (this->getHeight() / 2) - 1);
     }
@@ -293,11 +293,11 @@ void ThemeSettingsItem::resized()
 
 
 //[MiscUserCode]
-void ThemeSettingsItem::applyTheme(const ColourScheme &colours)
+void ThemeSettingsItem::applyTheme(const ColourScheme::Ptr colours)
 {
     if (HelioTheme *ht = dynamic_cast<HelioTheme *>(&this->getLookAndFeel()))
     {
-        ColourSchemesManager::getInstance().setCurrentScheme(this->colours);
+        ColourSchemesManager::getInstance().setCurrentScheme(colours);
         ht->initColours(colours);
         ht->updateBackgroundRenders(true);
         if (this->getTopLevelComponent() != nullptr)
@@ -305,7 +305,7 @@ void ThemeSettingsItem::applyTheme(const ColourScheme &colours)
             this->getTopLevelComponent()->resized();
             this->getTopLevelComponent()->repaint();
         }
-        App::Helio()->recreateLayout();
+        App::Helio().recreateLayout();
     }
 }
 
@@ -318,7 +318,7 @@ void ThemeSettingsItem::setSelected(bool shouldBeSelected)
 }
 
 void ThemeSettingsItem::updateDescription(bool isLastRowInList,
-    bool isCurrentTheme, const ColourScheme &colours)
+    bool isCurrentTheme, const ColourScheme::Ptr colours)
 {
     if (isCurrentTheme)
     {
@@ -329,7 +329,8 @@ void ThemeSettingsItem::updateDescription(bool isLastRowInList,
         this->selectionAnimator.fadeOut(this->selectionComponent, 50);
     }
 
-    if (this->colours == colours)
+    if (this->colours != nullptr &&
+        this->colours->getResourceId() == colours->getResourceId())
     {
         return;
     }
@@ -338,7 +339,7 @@ void ThemeSettingsItem::updateDescription(bool isLastRowInList,
     this->theme = new HelioTheme();
     this->theme->initColours(colours);
 
-    this->schemeNameLabel->setText("\"" + colours.getName() + "\"", dontSendNotification);
+    this->schemeNameLabel->setText("\"" + colours->getName() + "\"", dontSendNotification);
     this->schemeNameLabel->setColour(Label::textColourId, this->theme->findColour(Label::textColourId));
 
     this->rollImage = PianoRoll::renderRowsPattern(*this->theme, Scale::getNaturalMajorScale(), 0, 7);

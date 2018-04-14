@@ -958,7 +958,7 @@ Array<DeltaDiff> createKeySignaturesDiffs(const ValueTree &state, const ValueTre
                 const bool eventHasChanged =
                     (stateEvent->getBeat() != changesEvent->getBeat() ||
                         stateEvent->getRootKey() != changesEvent->getRootKey() ||
-                        ! stateEvent->getScale().isEquivalentTo(changesEvent->getScale()));
+                        ! stateEvent->getScale()->isEquivalentTo(changesEvent->getScale()));
 
                 if (eventHasChanged)
                 {

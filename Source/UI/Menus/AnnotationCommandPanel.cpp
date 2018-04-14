@@ -27,6 +27,7 @@
 #include "PianoTrackTreeItem.h"
 #include "ProjectTimeline.h"
 #include "MidiSequence.h"
+#include "CommandIDs.h"
 #include "App.h"
 
 AnnotationCommandPanel::AnnotationCommandPanel(ProjectTreeItem &parentProject, const AnnotationEvent &targetAnnotation) :
@@ -50,42 +51,16 @@ AnnotationCommandPanel::AnnotationCommandPanel(ProjectTreeItem &parentProject, c
     this->updateContent(cmds, SlideDown);
 }
 
-AnnotationCommandPanel::~AnnotationCommandPanel()
-{
-}
-
 void AnnotationCommandPanel::handleCommandMessage(int commandId)
 {
     if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
     {
         if (commandId == CommandIDs::RenameAnnotation)
         {
-            this->renameString = this->annotation.getDescription();
-            
-            Component *inputDialog =
-            new ModalDialogInput(*this,
-                                 this->renameString,
-                                 TRANS("dialog::annotation::rename::caption"),
-                                 TRANS("dialog::annotation::rename::proceed"),
-                                 TRANS("dialog::annotation::rename::cancel"),
-                                 CommandIDs::RenameAnnotationConfirmed,
-                                 CommandIDs::Cancel);
-            
-            App::Layout().showModalComponentUnowned(inputDialog);
-            return;
-        }
-        if (commandId == CommandIDs::RenameAnnotationConfirmed)
-        {
-            Array<AnnotationEvent> groupDragBefore, groupDragAfter;
-            groupDragBefore.add(this->annotation);
-            groupDragAfter.add(this->annotation.withDescription(this->renameString));
-            AnnotationsSequence *autoLayer = static_cast<AnnotationsSequence *>(this->annotation.getSequence());
-            autoLayer->checkpoint();
-            autoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
-        }
-        else if (commandId == CommandIDs::Cancel)
-        {
-            return;
+            auto sequence = static_cast<AnnotationsSequence *>(this->annotation.getSequence());
+            auto inputDialog = ModalDialogInput::Presets::renameAnnotation(this->annotation.getDescription());
+            inputDialog->onOk = sequence->getEventRenameCallback(this->annotation);
+            App::Layout().showModalComponentUnowned(inputDialog.release());
         }
         else if (commandId == CommandIDs::DeleteAnnotation)
         {
@@ -113,7 +88,10 @@ void AnnotationCommandPanel::handleCommandMessage(int commandId)
             autoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
         }
 
-        this->getParentComponent()->exitModalState(0);
+        if (Component *parent = this->getParentComponent())
+        {
+            parent->exitModalState(0);
+        }
     }
     else
     {

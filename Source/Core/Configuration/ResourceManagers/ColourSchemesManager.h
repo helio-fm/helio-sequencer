@@ -30,12 +30,13 @@ public:
         return Instance;
     }
 
-    void initialise(const String &commandLine);
-    void shutdown();
+    inline const Array<ColourScheme::Ptr> getSchemes() const
+    {
+        return this->getResources<ColourScheme::Ptr>();
+    }
 
-    Array<ColourScheme> getSchemes() const;
-    ColourScheme getCurrentScheme() const;
-    void setCurrentScheme(const ColourScheme &scheme);
+    ColourScheme::Ptr getCurrentScheme() const;
+    void setCurrentScheme(const ColourScheme::Ptr scheme);
 
 private:
 
@@ -45,16 +46,10 @@ private:
 
     ValueTree serialize() const override;
     void deserialize(const ValueTree &tree) override;
-    void reset() override;
-    
+
 private:
 
     ColourSchemesManager();
-
-    Array<ColourScheme> schemes;
-
-private:
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ColourSchemesManager)
 
 };

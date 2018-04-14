@@ -130,9 +130,6 @@ private:
 
     StringArray customMidiInputs;
 
-    WeakReference<AudioCore>::Master masterReference;
-    friend class WeakReference<AudioCore>;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioCore);
-
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AudioCore)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(AudioCore)
 };

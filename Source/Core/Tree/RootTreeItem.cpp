@@ -39,19 +39,18 @@
 #include "App.h"
 #include "Workspace.h"
 
-
 RootTreeItem::RootTreeItem(const String &name) :
     TreeItem(name, Serialization::Core::root)
 {
     this->setVisible(false);
 }
 
-Colour RootTreeItem::getColour() const
+Colour RootTreeItem::getColour() const noexcept
 {
     return Colour(0xffffbe92);
 }
 
-Image RootTreeItem::getIcon() const
+Image RootTreeItem::getIcon() const noexcept
 {
     return Icons::findByName(Icons::workspace, TREE_ICON_HEIGHT);
 }
@@ -274,16 +273,19 @@ MidiTrackTreeItem *RootTreeItem::addAutoLayer(TreeItem *parent, const String &na
     return item;
 }
 
-
 //===----------------------------------------------------------------------===//
 // Menu
 //===----------------------------------------------------------------------===//
 
-ScopedPointer<Component> RootTreeItem::createItemMenu()
+bool RootTreeItem::hasMenu() const noexcept
+{
+    return true;
+}
+
+ScopedPointer<Component> RootTreeItem::createMenu()
 {
     return new WorkspaceMenu(&App::Workspace());
 }
-
 
 //===----------------------------------------------------------------------===//
 // Dragging

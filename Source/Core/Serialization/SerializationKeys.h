@@ -84,6 +84,7 @@ namespace Serialization
         static const Identifier scales = "scales";
         static const Identifier scale = "scale";
         static const Identifier scaleName = "name";
+        static const Identifier scalePeriod = "period";
         static const Identifier scaleIntervals = "intervals";
 
         // Sequences
@@ -235,7 +236,6 @@ namespace Serialization
             static const Identifier scheme = "colourScheme";
             static const Identifier colourMap = "colourMap";
             static const Identifier name = "name";
-            static const Identifier id = "id";
 
             static const Identifier primaryGradientA = "primaryGradientA";
             static const Identifier primaryGradientB = "primaryGradientB";
@@ -262,16 +262,67 @@ namespace Serialization
         } // namespace Colours
         
     } // namespace UI
-    
+
+    namespace Translations
+    {
+        static const Identifier metaSymbol = "{x}";
+
+        static const Identifier wrapperClassName = "pluralForm";
+        static const Identifier wrapperMethodName = "detect";
+
+        static const Identifier translations = "translations";
+        static const Identifier locale = "locale";
+        static const Identifier literal = "literal";
+        static const Identifier author = "author";
+        static const Identifier name = "name";
+        static const Identifier translation = "translation";
+        static const Identifier id = "id";
+
+        static const Identifier pluralEquation = "pluralEquation";
+        static const Identifier pluralLiteral = "pluralLiteral";
+        static const Identifier pluralForm = "pluralForm";
+    }  // namespace Translations
+
+    namespace Arps
+    {
+        static const Identifier arpeggiator = "arpeggiator";
+        static const Identifier arpeggiators = "arpeggiators";
+
+        static const Identifier name = "name";
+        static const Identifier sequence = "sequence";
+        static const Identifier isReversed = "isReversed";
+        static const Identifier relativeMapping = "relativeMapping";
+        static const Identifier limitsToChord = "limitsToChord";
+
+        static const Identifier type = "type";
+
+        namespace Types
+        {
+            static const Identifier simpleTriadic = "simple";
+            static const Identifier diatonic = "diatonic";
+            static const Identifier pentatonic = "pentatonic"; // TODO more mappers for more scales
+        } // namespace Type
+
+        static const Identifier key = "key";
+
+        namespace Keys
+        {
+            static const Identifier key = "key";
+            static const Identifier period = "period";
+            static const Identifier timestamp = "ts";
+            static const Identifier length = "len";
+            static const Identifier volume = "vol";
+        } // namespace Key
+    } // namespace Arps
+
     namespace Clipboard
     {
         static const Identifier clipboard = "clipboard";
-        static const Identifier layer = "layer";
-        static const Identifier layerId = "layerId";
-        static const Identifier pattern = "pattern";
-        static const Identifier patternId = "patternId";
+        static const Identifier track = "track";
+        static const Identifier trackId = "trackId";
+        static const Identifier trackType = "trackType";
+        static const Identifier trackMetaInfo = "trackMetaInfo";
         static const Identifier firstBeat = "firstBeat";
-        static const Identifier lastBeat = "lastBeat";
     } // namespace Clipboard
 
     namespace VCS
@@ -425,42 +476,7 @@ namespace Serialization
             static const Identifier hash = "hash";
         } // namespace V1
     } // namespace Api
-    
-    namespace Translations
-    {
-        static const Identifier metaSymbol = "{x}";
-
-        static const Identifier wrapperClassName = "pluralForm";
-        static const Identifier wrapperMethodName = "detect";
         
-        static const Identifier translations = "translations";
-        static const Identifier locale = "locale";
-        static const Identifier literal = "literal";
-        static const Identifier author = "author";
-        static const Identifier name = "name";
-        static const Identifier translation = "translation";
-        static const Identifier id = "id";
-
-        static const Identifier pluralEquation = "pluralEquation";
-        static const Identifier pluralLiteral = "pluralLiteral";
-        static const Identifier pluralForm = "pluralForm";
-    }  // namespace Translations
-    
-    namespace Arps
-    {
-        static const Identifier arpeggiator = "arpeggiator";
-        static const Identifier arpeggiators = "arpeggiators";
-        
-        static const Identifier sequence = "sequence";
-        static const Identifier isReversed = "isReversed";
-        static const Identifier relativeMapping = "relativeMapping";
-        static const Identifier limitsToChord = "limitsToChord";
-        static const Identifier scale = "scale";
-
-        static const Identifier id = "id";
-        static const Identifier name = "name";
-    }  // namespace Arps
-    
     namespace Undo
     {
         static const Identifier undoStack = "undoStack";

@@ -42,6 +42,8 @@ ThemeSettings::ThemeSettings()
 
 
     //[UserPreSize]
+    this->currentScheme = ColourSchemesManager::getInstance().getCurrentScheme();
+
     this->themesList->setModel(this);
     this->themesList->setRowHeight(THEME_SETTINGS_ROW_HEIGHT);
     this->themesList->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
@@ -51,8 +53,6 @@ ThemeSettings::ThemeSettings()
     setSize (600, 192);
 
     //[Constructor]
-    this->currentScheme = ColourSchemesManager::getInstance().getCurrentScheme();
-
     const int numSchemes = ColourSchemesManager::getInstance().getSchemes().size();
     this->setSize(600, 4 + numSchemes * THEME_SETTINGS_ROW_HEIGHT);
 
@@ -119,7 +119,7 @@ Component *ThemeSettings::refreshComponentForRow(int rowNumber, bool isRowSelect
 
     if (rowNumber >= schemes.size()) { return existingComponentToUpdate; }
 
-    const bool isCurrentScheme = (this->currentScheme == schemes[rowNumber]);
+    const bool isCurrentScheme = (this->currentScheme->getResourceId() == schemes[rowNumber]->getResourceId());
     const bool isLastRow = (rowNumber == schemes.size() - 1);
 
     if (existingComponentToUpdate != nullptr)

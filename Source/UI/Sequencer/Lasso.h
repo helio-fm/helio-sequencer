@@ -20,11 +20,11 @@
 #include "SelectableComponent.h"
 #include "MidiSequence.h"
 
-class SelectionProxyArray : public Array<SelectableComponent *>, public ReferenceCountedObject
+class SelectionProxyArray final : public Array<SelectableComponent *>, public ReferenceCountedObject
 {
 public:
 
-    SelectionProxyArray() {}
+    SelectionProxyArray() = default;
 
     typedef ReferenceCountedObjectPtr<SelectionProxyArray> Ptr;
 
@@ -40,63 +40,28 @@ public:
         return static_cast<T *>(this->getUnchecked(index));
     }
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SelectionProxyArray);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SelectionProxyArray)
 };
 
-class Lasso : public SelectedItemSet<SelectableComponent *>
+class Lasso final : public SelectedItemSet<SelectableComponent *>
 {
 public:
 
-    Lasso() : SelectedItemSet() {}
-    
-    explicit Lasso(const ItemArray &items) : SelectedItemSet (items)
-    {
-        this->invalidateCache();
-    }
-    
-    void itemSelected(SelectableComponent *item) override
-    {
-        this->invalidateCache();
-        item->setSelected(true);
-    }
+    Lasso();
+    explicit Lasso(const ItemArray &items);
+    explicit Lasso(const SelectedItemSet &other);
 
-    void itemDeselected(SelectableComponent *item) override
-    {
-        this->invalidateCache();
-        item->setSelected(false);
-    }
+    void itemSelected(SelectableComponent *item) override;
+    void itemDeselected(SelectableComponent *item) override;
 
-    void needsToCalculateSelectionBounds()
-    {
-        this->bounds = Rectangle<int>();
-
-        for (int i = 0; i < this->getNumSelected(); ++i)
-        {
-            this->bounds = this->bounds.getUnion(this->getSelectedItem(i)->getBounds());
-        }
-    }
-
-    Rectangle<int> getSelectionBounds() const
-    {
-        return this->bounds;
-    }
+    void needsToCalculateSelectionBounds() noexcept;
+    Rectangle<int> getSelectionBounds() const noexcept;
     
     typedef SparseHashMap<String, SelectionProxyArray::Ptr, StringHash> GroupedSelections;
 
-    void invalidateCache()
-    {
-        this->selectionsCache.clear();
-    }
-
-    const GroupedSelections &getGroupedSelections() const
-    {
-        if (this->selectionsCache.size() == 0)
-        {
-            this->rebuildCache();
-        }
-        
-        return this->selectionsCache;
-    }
+    void invalidateCache();
+    const GroupedSelections &getGroupedSelections() const;
+    bool shouldDisplayGhostNotes() const noexcept;
 
     template<typename T>
     T *getFirstAs() const
@@ -110,37 +75,13 @@ public:
         return static_cast<T *>(this->getSelectedItem(index));
     }
 
-    bool shouldDisplayGhostNotes() const
-    {
-        return (this->getNumSelected() <= 32); // just a sane limit
-    }
-
 private:
 
     Rectangle<int> bounds;
     
     mutable GroupedSelections selectionsCache;
+    void rebuildCache() const;
 
-    void rebuildCache() const
-    {
-        for (int i = 0; i < this->getNumSelected(); ++i)
-        {
-            SelectableComponent *item = this->getSelectedItem(i);
-            const String &groupId(item->getSelectionGroupId());
-            
-            SelectionProxyArray::Ptr targetArray;
-            
-            if (this->selectionsCache.contains(groupId))
-            {
-                targetArray = this->selectionsCache[groupId];
-            }
-            else
-            {
-                targetArray = new SelectionProxyArray();
-            }
-            
-            targetArray->add(item);
-            this->selectionsCache[groupId] = targetArray;
-        }
-    }
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Lasso)
+    JUCE_DECLARE_WEAK_REFERENCEABLE(Lasso)
 };

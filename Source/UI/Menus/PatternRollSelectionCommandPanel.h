@@ -17,36 +17,21 @@
 
 #pragma once
 
-class PatternRoll;
-class ProjectTreeItem;
+class Lasso;
 
 #include "CommandPanel.h"
-
-//===----------------------------------------------------------------------===//
-// PatternRoll selection command panel
-//===----------------------------------------------------------------------===//
 
 class PatternRollSelectionCommandPanel : public CommandPanel
 {
 public:
     
-    PatternRollSelectionCommandPanel(PatternRoll &targetRoll,
-        ProjectTreeItem &parentProject);
-    
-    ~PatternRollSelectionCommandPanel() override;
-    
-    //===------------------------------------------------------------------===//
-    // Component
-    //===------------------------------------------------------------------===//
-    
+    PatternRollSelectionCommandPanel(WeakReference<Lasso> lasso);
     void handleCommandMessage(int commandId) override;
     
 private:
 
-    void dismiss();
-    void initLayersPanel(bool shouldAddBackButton);
+    void dismiss() const;
+    WeakReference<Lasso> lasso;
 
-    PatternRoll &roll;
-    ProjectTreeItem &project;
-    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRollSelectionCommandPanel);
 };

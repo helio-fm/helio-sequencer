@@ -22,6 +22,8 @@
 #include "TreeNavigationHistory.h"
 
 class HeadlineItem;
+class HeadlineItemDataSource;
+
 //[/Headers]
 
 #include "../Themes/PanelBackgroundB.h"
@@ -37,9 +39,9 @@ public:
     ~Headline();
 
     //[UserMethods]
-
-    void syncWithTree(TreeNavigationHistory &history, WeakReference<TreeItem> root);
-
+    void syncWithTree(TreeNavigationHistory &history, WeakReference<TreeItem> leaf);
+    void showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource);
+    void hideSelectionMenu();
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -52,9 +54,19 @@ private:
 
     // A way to receive a single coalesced update from multiple signaling sub-items:
     void handleAsyncUpdate() override;
+    int rebuildChain(WeakReference<TreeItem> leaf);
+    int getChainWidth() const noexcept;
 
     ComponentAnimator animator;
+
+    // A number of items associated with tree hierarchy
     OwnedArray<HeadlineItem> chain;
+
+    // A special item for `current selection` menu
+    // (if present, is always shown at the tail of chain)
+    ScopedPointer<HeadlineItem> selectionItem;
+
+    float getAlphaForAnimation() const noexcept;
 
     //[/UserVariables]
 

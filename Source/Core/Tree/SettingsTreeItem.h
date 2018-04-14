@@ -21,21 +21,22 @@ class ComponentsList;
 
 #include "TreeItem.h"
 
-class SettingsTreeItem : public TreeItem
+class SettingsTreeItem final : public TreeItem
 {
 public:
 
     SettingsTreeItem();
-    ~SettingsTreeItem() override;
     
-    String getName() const override;
-    Colour getColour() const override;
-    Image getIcon() const override;
+    String getName() const noexcept override;
+    Colour getColour() const noexcept override;
+    Image getIcon() const noexcept override;
 
     void showPage() override;
     void recreatePage() override;
-    ScopedPointer<Component> createItemMenu() override;
-    
+
+    bool hasMenu() const noexcept override;
+    ScopedPointer<Component> createMenu() override;
+
     //===------------------------------------------------------------------===//
     // Dragging
     //===------------------------------------------------------------------===//

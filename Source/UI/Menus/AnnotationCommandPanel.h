@@ -21,7 +21,6 @@ class ProjectTreeItem;
 class AnnotationEvent;
 
 #include "CommandPanel.h"
-#include "CommandIDs.h"
 
 class AnnotationCommandPanel : public CommandPanel
 {
@@ -29,16 +28,11 @@ public:
     
     AnnotationCommandPanel(ProjectTreeItem &parentProject, const AnnotationEvent &targetAnnotation);
     
-    ~AnnotationCommandPanel() override;
-    
     void handleCommandMessage(int commandId) override;
     
 private:
     
     const AnnotationEvent &annotation;
-    
     ProjectTreeItem &project;
-    
-    String renameString;
     
 };

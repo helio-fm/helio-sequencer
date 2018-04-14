@@ -24,7 +24,7 @@
 #include "Pattern.h"
 
 ClipComponent::ClipComponent(HybridRoll &editor, const Clip &clip) :
-    HybridRollEventComponent(editor),
+    MidiEventComponent(editor),
     clip(clip)
 {
     jassert(clip.isValid());
@@ -60,13 +60,13 @@ void ClipComponent::updateColours()
 }
 
 //===----------------------------------------------------------------------===//
-// HybridRollEventComponent
+// MidiEventComponent
 //===----------------------------------------------------------------------===//
 
 void ClipComponent::setSelected(bool selected)
 {
     //this->roll.wantVolumeSliderFor(this, selected);
-    HybridRollEventComponent::setSelected(selected);
+    MidiEventComponent::setSelected(selected);
 }
 
 float ClipComponent::getBeat() const

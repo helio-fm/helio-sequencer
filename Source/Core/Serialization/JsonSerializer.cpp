@@ -18,11 +18,15 @@
 #include "Common.h"
 #include "JsonSerializer.h"
 
+//===----------------------------------------------------------------------===//
+// Json parser
+//===----------------------------------------------------------------------===//
+
 // Slightly modified JSONParser from JUCE classes,
 // but returns ValueTree instead of var, and supports comments like `//` and `/* */`.
 // Parses arrays and objects as nodes/children, and all others as properties.
 
-struct JsonParser
+struct JsonParser final
 {
     static Result parseObjectOrArray(String::CharPointerType t, ValueTree &result)
     {
@@ -350,15 +354,279 @@ private:
     }
 };
 
+//===----------------------------------------------------------------------===//
+// Json formatter
+//===----------------------------------------------------------------------===//
+
+struct JsonFormatter final
+{
+    static void write(OutputStream &out, const ValueTree &tree, const StringArray &headerComments,
+        int indentLevel, bool oneLine, int maximumDecimalPlaces)
+    {
+        out << '{';
+        if (!oneLine) { out << newLine; }
+
+        if (headerComments.size() > 0)
+        {
+            if (!oneLine) { writeSpaces(out, indentLevel + indentSize); }
+            out << "/*";
+            if (!oneLine) { out << newLine; }
+
+            for (const auto &comment : headerComments)
+            {
+                if (!oneLine) { writeSpaces(out, indentLevel + indentSize); }
+                if (!oneLine) { out << " *"; }
+                out << ' ' << comment;
+                if (!oneLine) { out << newLine; }
+            }
+
+            if (!oneLine) { writeSpaces(out, indentLevel + indentSize); }
+            out << " */";
+            if (!oneLine) { out << newLine; }
+        }
+
+        if (!oneLine) { writeSpaces(out, indentLevel + indentSize); }
+        out << '"';
+        writeString(out, tree.getType());
+        out << "\": ";
+        writeObject(out, tree, indentLevel + indentSize, oneLine, maximumDecimalPlaces);
+
+        if (!oneLine) { out << newLine; }
+        out << '}';
+    }
+
+    static void writeObject(OutputStream &out, const ValueTree &tree,
+        int indentLevel, bool allOnOneLine, int maximumDecimalPlaces)
+    {
+        out << '{';
+        if (!allOnOneLine) { out << newLine; }
+
+        const int numProperties = tree.getNumProperties();
+        const int numChildren = tree.getNumChildren();
+        for (int i = 0; i < numProperties; ++i)
+        {
+            const auto propertyName(tree.getPropertyName(i));
+
+            if (!allOnOneLine) { writeSpaces(out, indentLevel + indentSize); }
+            out << '"';
+            writeString(out, propertyName);
+            out << "\": ";
+            writeProperty(out, tree.getProperty(propertyName), maximumDecimalPlaces);
+
+            const bool shouldHaveComma = i < numProperties - 1 || numChildren > 0;
+            if (shouldHaveComma)
+            {
+                if (allOnOneLine) { out << ", "; } else { out << ',' << newLine; }
+            }
+            else if (!allOnOneLine)
+            {
+                out << newLine;
+            }
+        }
+
+        typedef HashMap<Identifier, Array<ValueTree>, IdentifierHash> GroupedChildren;
+        GroupedChildren children;
+        for (const auto child : tree)
+        {
+            children.getReference(child.getType()).add(child);
+        }
+
+        for (GroupedChildren::Iterator i(children); i.next();)
+        {
+            const auto childrenType(i.getKey());
+            const auto childGroupOfSameType(i.getValue());
+
+            if (!allOnOneLine) { writeSpaces(out, indentLevel + indentSize); }
+            out << '"';
+            writeString(out, childrenType);
+            out << "\": ";
+
+            if (childGroupOfSameType.size() == 1)
+            {
+                writeObject(out, childGroupOfSameType.getFirst(), indentLevel + indentSize, allOnOneLine, maximumDecimalPlaces);
+            }
+            else
+            {
+                writeArray(out, childGroupOfSameType, indentLevel + indentSize, allOnOneLine, maximumDecimalPlaces);
+            }
+
+            GroupedChildren::Iterator endCheck(i);
+            if (endCheck.next())
+            {
+                if (allOnOneLine) { out << ", "; } else { out << ',' << newLine; }
+            }
+            else if (!allOnOneLine)
+            {
+                out << newLine;
+            }
+        }
+
+        if (!allOnOneLine) { writeSpaces(out, indentLevel); }
+        out << '}';
+    }
+
+    static void writeProperty(OutputStream& out, const var &v, int maximumDecimalPlaces = 6)
+    {
+        if (v.isString())
+        {
+            out << '"';
+            writeString(out, v.toString().getCharPointer());
+            out << '"';
+        }
+        else if (v.isVoid())
+        {
+            out << "null";
+        }
+        else if (v.isUndefined())
+        {
+            out << "undefined";
+        }
+        else if (v.isBool())
+        {
+            out << (static_cast<bool> (v) ? "true" : "false");
+        }
+        else if (v.isInt() || v.isInt64())
+        {
+            out << v.toString();
+        }
+        else if (v.isDouble())
+        {
+            out << String(static_cast<double> (v), maximumDecimalPlaces);
+        }
+        else
+        {
+            // Should never hit this point anyway
+            jassertfalse;
+            out << v.toString();
+        }
+    }
+
+    static void writeEscapedChar(OutputStream &out, const unsigned short value)
+    {
+        out << "\\u" << String::toHexString((int)value).paddedLeft('0', 4);
+    }
+
+    static void writeString(OutputStream &out, String::CharPointerType t)
+    {
+        for (;;)
+        {
+            auto c = t.getAndAdvance();
+
+            switch (c)
+            {
+            case 0:  return;
+
+            case '\"':  out << "\\\""; break;
+            case '\\':  out << "\\\\"; break;
+            case '\a':  out << "\\a";  break;
+            case '\b':  out << "\\b";  break;
+            case '\f':  out << "\\f";  break;
+            case '\t':  out << "\\t";  break;
+            case '\r':  out << "\\r";  break;
+            case '\n':  out << "\\n";  break;
+
+            default:
+                if (c >= 32 && c < 127)
+                {
+                    out << (char)c;
+                }
+                else
+                {
+                    if (CharPointer_UTF16::getBytesRequiredFor(c) > 2)
+                    {
+                        CharPointer_UTF16::CharType chars[2];
+                        CharPointer_UTF16 utf16(chars);
+                        utf16.write(c);
+
+                        for (int i = 0; i < 2; ++i)
+                        {
+                            writeEscapedChar(out, (unsigned short)chars[i]);
+                        }
+                    }
+                    else
+                    {
+                        writeEscapedChar(out, (unsigned short)c);
+                    }
+                }
+
+                break;
+            }
+        }
+    }
+
+    static void writeSpaces(OutputStream &out, int numSpaces)
+    {
+        out.writeRepeatedByte(' ', (size_t)numSpaces);
+    }
+
+    static void writeArray(OutputStream &out, const Array<ValueTree> &array,
+        int indentLevel, bool allOnOneLine, int maximumDecimalPlaces)
+    {
+        out << '[';
+
+        if (!array.isEmpty())
+        {
+            if (!allOnOneLine) { out << newLine; }
+
+            for (int i = 0; i < array.size(); ++i)
+            {
+                if (!allOnOneLine) { writeSpaces(out, indentLevel + indentSize); }
+
+                writeObject(out, array.getReference(i),
+                    indentLevel + indentSize, allOnOneLine, maximumDecimalPlaces);
+
+                if (i < array.size() - 1)
+                {
+                    if (allOnOneLine) { out << ", "; } else { out << ',' << newLine; }
+                }
+                else if (!allOnOneLine)
+                {
+                    out << newLine;
+                }
+            }
+
+            if (!allOnOneLine) { writeSpaces(out, indentLevel); }
+        }
+
+        out << ']';
+    }
+
+    enum { indentSize = 2 };
+};
+
+//===----------------------------------------------------------------------===//
+// Json serializer
+//===----------------------------------------------------------------------===//
+
+static const Identifier fakeRoot = "fakeRoot";
+
+JsonSerializer::JsonSerializer(bool allOnOneLine) noexcept :
+    allOnOneLine(allOnOneLine) {}
+
+void JsonSerializer::setHeaderComments(StringArray comments) noexcept
+{
+    this->headerComments = comments;
+}
+
 Result JsonSerializer::saveToFile(File file, const ValueTree &tree) const
 {
-    return Result::fail("Not implemented");
+    FileOutputStream fileStream(file);
+    if (fileStream.openedOk())
+    {
+        fileStream.setPosition(0);
+        fileStream.truncate();
+
+        JsonFormatter::write(fileStream, tree, this->headerComments, 0, this->allOnOneLine, 6);
+        return Result::ok();
+    }
+
+    return Result::fail("Failed to save");
 }
 
 Result JsonSerializer::loadFromFile(const File &file, ValueTree &tree) const
 {
     const String text(file.loadFileAsString());
-    ValueTree root("FakeRoot");
+    ValueTree root(fakeRoot);
     const auto result = JsonParser::parseObjectOrArray(text.getCharPointer(), root);
     if (result.wasOk())
     {
@@ -371,12 +639,15 @@ Result JsonSerializer::loadFromFile(const File &file, ValueTree &tree) const
 
 Result JsonSerializer::saveToString(String &string, const ValueTree &tree) const
 {
-    return Result::fail("Not implemented");
+    MemoryOutputStream mo(1024);
+    JsonFormatter::write(mo, tree, this->headerComments, 0, this->allOnOneLine, 6);
+    string = mo.toUTF8();
+    return Result::ok();
 }
 
 Result JsonSerializer::loadFromString(const String &string, ValueTree &tree) const
 {
-    ValueTree root("FakeRoot");
+    ValueTree root(fakeRoot);
     const auto result = JsonParser::parseObjectOrArray(string.getCharPointer(), root);
     if (result.wasOk())
     {

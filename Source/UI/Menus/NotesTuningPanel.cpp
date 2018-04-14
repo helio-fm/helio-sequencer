@@ -24,7 +24,8 @@
 //[MiscUserDefs]
 #include "PianoRoll.h"
 #include "Lasso.h"
-#include "PianoRollToolbox.h"
+#include "SequencerOperations.h"
+#include "MidiTrack.h"
 #include "MidiSequence.h"
 #include "NoteComponent.h"
 #include "ProjectTreeItem.h"
@@ -75,14 +76,14 @@ private:
             return;
         }
 
-        const float startBeat = PianoRollToolbox::findStartBeat(this->selection);
-        const float endBeat = PianoRollToolbox::findEndBeat(this->selection);
+        const float startBeat = SequencerOperations::findStartBeat(this->selection);
+        const float endBeat = SequencerOperations::findEndBeat(this->selection);
 
-        Array<HybridRollEventComponent *> sortedSelection;
+        Array<MidiEventComponent *> sortedSelection;
 
         for (int i = 0; i < this->selection.getNumSelected(); ++i)
         {
-            HybridRollEventComponent *mc = static_cast<HybridRollEventComponent *>(this->selection.getSelectedItem(i));
+            MidiEventComponent *mc = static_cast<MidiEventComponent *>(this->selection.getSelectedItem(i));
             sortedSelection.addSorted(*mc, mc);
         }
 
@@ -168,17 +169,23 @@ NotesTuningPanel::NotesTuningPanel(ProjectTreeItem &parentProject, PianoRoll &ta
     linearLabel->setJustificationType (Justification::centred);
     linearLabel->setEditable (false, false, false);
 
+    linearLabel->setBounds (18, 0, 56, 24);
+
     addAndMakeVisible (multiLabel = new Label (String(),
                                                TRANS("*")));
     multiLabel->setFont (Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     multiLabel->setJustificationType (Justification::centred);
     multiLabel->setEditable (false, false, false);
 
+    multiLabel->setBounds (98, 5, 56, 24);
+
     addAndMakeVisible (sineLabel = new Label (String(),
                                               TRANS("~")));
     sineLabel->setFont (Font (21.00f, Font::plain).withTypefaceStyle ("Regular"));
     sineLabel->setJustificationType (Justification::centred);
     sineLabel->setEditable (false, false, false);
+
+    sineLabel->setBounds (178, 0, 56, 24);
 
 
     //[UserPreSize]
@@ -265,9 +272,6 @@ void NotesTuningPanel::resized()
     shadowDown->setBounds (0, 180, getWidth() - 0, 24);
     sliderSineButton->setBounds (206 - (64 / 2), 56 - (64 / 2), 64, 64);
     sineSlider->setBounds (206 - (64 / 2), 56 - (64 / 2), 64, 64);
-    linearLabel->setBounds (18, 0, 56, 24);
-    multiLabel->setBounds (98, 5, 56, 24);
-    sineLabel->setBounds (178, 0, 56, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -310,7 +314,7 @@ void NotesTuningPanel::handleCommandMessage (int commandId)
     {
         if (this->hasMadeChanges)
         {
-            this->roll.getPrimaryActiveMidiLayer()->undo();
+            this->project.undo();
             this->syncSliders();
             this->sendChangeMessage();
             this->hasMadeChanges = false;
@@ -318,8 +322,8 @@ void NotesTuningPanel::handleCommandMessage (int commandId)
     }
     else if (commandId == CommandIDs::TransportStartPlayback)
     {
-        const float startBeat = PianoRollToolbox::findStartBeat(this->roll.getLassoSelection());
-        const float endBeat = PianoRollToolbox::findEndBeat(this->roll.getLassoSelection());
+        const float startBeat = SequencerOperations::findStartBeat(this->roll.getLassoSelection());
+        const float endBeat = SequencerOperations::findEndBeat(this->roll.getLassoSelection());
 
         const double loopStart = this->roll.getTransportPositionByBeat(startBeat);
         const double loopEnd = this->roll.getTransportPositionByBeat(endBeat);
@@ -371,20 +375,20 @@ void NotesTuningPanel::syncVolumeLinear(Slider *volumeSlider)
 {
     if (! this->hasMadeChanges)
     {
-        this->roll.getPrimaryActiveMidiLayer()->checkpoint();
+        this->project.checkpoint();
         this->hasMadeChanges = true;
     }
 
     const float volumeDelta = this->volumeAnchorLinear - float(volumeSlider->getValue());
     Lasso &selection = this->roll.getLassoSelection();
-    PianoRollToolbox::changeVolumeLinear(selection, volumeDelta);
+    SequencerOperations::changeVolumeLinear(selection, volumeDelta);
 }
 
 void NotesTuningPanel::syncVolumeMultiplied(Slider *volumeSlider)
 {
     if (! this->hasMadeChanges)
     {
-        this->roll.getPrimaryActiveMidiLayer()->checkpoint();
+        this->project.checkpoint();
         this->hasMadeChanges = true;
     }
 
@@ -395,14 +399,14 @@ void NotesTuningPanel::syncVolumeMultiplied(Slider *volumeSlider)
     const float volumeFactor = (volume < anchor) ? ((volume / anchor) - 1.f) : ((volume - anchor) / (1.f - anchor));
 
     Lasso &selection = this->roll.getLassoSelection();
-    PianoRollToolbox::changeVolumeMultiplied(selection, volumeFactor);
+    SequencerOperations::changeVolumeMultiplied(selection, volumeFactor);
 }
 
 void NotesTuningPanel::syncVolumeSine(Slider *volumeSlider)
 {
     if (! this->hasMadeChanges)
     {
-        this->roll.getPrimaryActiveMidiLayer()->checkpoint();
+        this->project.checkpoint();
         this->hasMadeChanges = true;
     }
 
@@ -413,7 +417,7 @@ void NotesTuningPanel::syncVolumeSine(Slider *volumeSlider)
     const float volumeFactor = (volume < anchor) ? ((volume / anchor) - 1.f) : ((volume - anchor) / (1.f - anchor));
 
     Lasso &selection = this->roll.getLassoSelection();
-    PianoRollToolbox::changeVolumeSine(selection, volumeFactor);
+    SequencerOperations::changeVolumeSine(selection, volumeFactor);
 }
 
 void NotesTuningPanel::syncSliders()
@@ -456,33 +460,24 @@ float NotesTuningPanel::flattenValue(float value) const
 void NotesTuningPanel::startTuning()
 {
     Lasso &selection = this->roll.getLassoSelection();
-    PianoRollToolbox::startTuning(selection);
+    SequencerOperations::startTuning(selection);
 }
 
 void NotesTuningPanel::endTuning()
 {
     Lasso &selection = this->roll.getLassoSelection();
-    PianoRollToolbox::endTuning(selection);
+    SequencerOperations::endTuning(selection);
 }
-
 
 //===----------------------------------------------------------------------===//
 // TransportListener
-//
+//===----------------------------------------------------------------------===//
 
+void NotesTuningPanel::onTempoChanged(double newTempo) {}
+void NotesTuningPanel::onTotalTimeChanged(double timeMs) {}
 void NotesTuningPanel::onSeek(double absolutePosition,
                               double currentTimeMs,
-                              double totalTimeMs)
-{
-}
-
-void NotesTuningPanel::onTempoChanged(double newTempo)
-{
-}
-
-void NotesTuningPanel::onTotalTimeChanged(double timeMs)
-{
-}
+                              double totalTimeMs) {}
 
 void NotesTuningPanel::onPlay()
 {
@@ -521,15 +516,16 @@ BEGIN_JUCER_METADATA
              virtualName="" explicitFocusOrder="0" pos="126c 56c 64 64" sourceFile="../Popups/PopupButton.cpp"
              constructorParams="false"/>
   <SLIDER name="" id="645d4540b1ee1178" memberName="volumeSliderMulti"
-          virtualName="" explicitFocusOrder="0" pos="126c 56c 64 64" min="0"
-          max="10" int="0" style="RotaryHorizontalDrag" textBoxPos="NoTextBox"
-          textBoxEditable="0" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
-          needsCallback="1"/>
+          virtualName="" explicitFocusOrder="0" pos="126c 56c 64 64" min="0.00000000000000000000"
+          max="10.00000000000000000000" int="0.00000000000000000000" style="RotaryHorizontalDrag"
+          textBoxPos="NoTextBox" textBoxEditable="0" textBoxWidth="80"
+          textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <SLIDER name="" id="612822c144ea1163" memberName="volumeSliderLinear"
           virtualName="" explicitFocusOrder="0" pos="46c 56c 64 64" posRelativeX="901299ec4e766469"
-          posRelativeY="901299ec4e766469" min="0" max="10" int="0" style="RotaryHorizontalDrag"
+          posRelativeY="901299ec4e766469" min="0.00000000000000000000"
+          max="10.00000000000000000000" int="0.00000000000000000000" style="RotaryHorizontalDrag"
           textBoxPos="NoTextBox" textBoxEditable="0" textBoxWidth="80"
-          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <GENERICCOMPONENT name="" id="808594cf08a73350" memberName="tuningDiagram" virtualName=""
                     explicitFocusOrder="0" pos="0 96 0M 88" class="NotesTuningDiagram"
                     params="this, this-&gt;roll.getLassoSelection()"/>
@@ -550,21 +546,25 @@ BEGIN_JUCER_METADATA
              constructorParams="false"/>
   <SLIDER name="" id="bdc5e7b689607511" memberName="sineSlider" virtualName=""
           explicitFocusOrder="0" pos="206c 56c 64 64" posRelativeX="901299ec4e766469"
-          posRelativeY="901299ec4e766469" min="0" max="10" int="0" style="RotaryHorizontalDrag"
+          posRelativeY="901299ec4e766469" min="0.00000000000000000000"
+          max="10.00000000000000000000" int="0.00000000000000000000" style="RotaryHorizontalDrag"
           textBoxPos="NoTextBox" textBoxEditable="0" textBoxWidth="80"
-          textBoxHeight="20" skewFactor="1" needsCallback="1"/>
+          textBoxHeight="20" skewFactor="1.00000000000000000000" needsCallback="1"/>
   <LABEL name="" id="2ef200f2e484c3e7" memberName="linearLabel" virtualName=""
          explicitFocusOrder="0" pos="18 0 56 24" labelText="+" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="21" kerning="0" bold="0" italic="0" justification="36"/>
+         fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="36"/>
   <LABEL name="" id="434928c32f07c6b9" memberName="multiLabel" virtualName=""
          explicitFocusOrder="0" pos="98 5 56 24" labelText="*" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="21" kerning="0" bold="0" italic="0" justification="36"/>
+         fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="36"/>
   <LABEL name="" id="6fcffdd210c02711" memberName="sineLabel" virtualName=""
          explicitFocusOrder="0" pos="178 0 56 24" labelText="~" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="21" kerning="0" bold="0" italic="0" justification="36"/>
+         fontsize="21.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="36"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

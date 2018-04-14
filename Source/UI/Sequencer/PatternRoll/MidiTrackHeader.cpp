@@ -120,10 +120,10 @@ void MidiTrackHeader::paint (Graphics& g)
     //g.drawVerticalLine(this->getWidth() - x - 1, y1, y2);
     //g.drawVerticalLine(this->getWidth() - x - 2, y1, y2);
 
-    g.setColour(this->borderDarkColour);
+    g.setColour(this->borderLightColour);
     g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
 
-    g.setColour(this->borderLightColour);
+    //g.setColour(this->borderDarkColour);
     g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth()));
     //[/UserPaint]
 }

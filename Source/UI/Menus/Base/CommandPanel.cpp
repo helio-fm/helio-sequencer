@@ -28,7 +28,6 @@
 #include "Icons.h"
 #include "HybridRoll.h"
 #include "MidiSequence.h"
-#include "InternalClipboard.h"
 #include "CommandItemComponent.h"
 #include "App.h"
 #include "MainWindow.h"
@@ -162,18 +161,17 @@ StringPairArray CommandPanel::getColoursList()
 #define FADE_ALPHA 0.5f
 #define TOPLEVEL_HEIGHT_MARGINS 170
 
-void CommandPanel::updateContent(Items commands,
+void CommandPanel::updateContent(const Items &commands,
     AnimationType animationType, bool adjustsWidth)
 {
     this->lastAnimationType = animationType;
     this->shouldResizeToFitContent = adjustsWidth;
 
-    const bool receivedNewCommands = commands != this->commandDescriptions;
-    this->commandDescriptions = commands;
-
     // If has new commands, fade out old list and create a new one
+    const bool receivedNewCommands = commands != this->commandDescriptions;
     if (receivedNewCommands)
     {
+        this->commandDescriptions = commands;
         if (animationType == Fading)
         {
             this->animator.fadeOut(this->listBox, ANIM_TIME_MS);
@@ -266,11 +264,10 @@ void CommandPanel::updateContent(Items commands,
             }
         }
 
-        const int newWidth = estimatedWidth + int(COMMAND_PANEL_BUTTON_HEIGHT * 2.5f);
+        const int newWidth = estimatedWidth + int(COMMAND_PANEL_BUTTON_HEIGHT * 2.1f);
         this->setSize(jmax(newWidth, this->getWidth()), jmin(newHeight, maxHeight));
     }
 }
-
 
 //===----------------------------------------------------------------------===//
 // ListBoxModel
@@ -279,13 +276,6 @@ void CommandPanel::updateContent(Items commands,
 int CommandPanel::getNumRows()
 {
     return this->commandDescriptions.size();
-}
-
-void CommandPanel::paintListBoxItem(int rowNumber,
-                                    Graphics &g,
-                                    int width, int height,
-                                    bool rowIsSelected)
-{
 }
 
 Component *CommandPanel::refreshComponentForRow(int rowNumber, bool isRowSelected,
@@ -315,13 +305,6 @@ Component *CommandPanel::refreshComponentForRow(int rowNumber, bool isRowSelecte
 
     return existingComponentToUpdate;
 }
-
-void CommandPanel::listWasScrolled()
-{
-
-}
-
-
 //[/MiscUserCode]
 
 #if 0

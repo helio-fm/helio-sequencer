@@ -114,20 +114,14 @@ private:
     //[UserVariables]
 
     VersionControl &vcs;
-
     const ValueTree revision;
 
     bool selected;
-
     bool isHeadRevision;
-
 
     DropShadowEffect shadow;
 
-
-    WeakReference<RevisionComponent>::Master masterReference;
-
-    friend class WeakReference<RevisionComponent>;
+    JUCE_DECLARE_WEAK_REFERENCEABLE(RevisionComponent)
 
 private:
 

@@ -47,8 +47,7 @@ public:
     ValueTree serializeDeltaData(int deltaIndex) const override;
     VCS::DiffLogic *getDiffLogic() const override;
     void resetStateTo(const VCS::TrackedItem &newState) override;
-    
-    
+        
     //===------------------------------------------------------------------===//
     // ProjectEventDispatcher
     //===------------------------------------------------------------------===//
@@ -66,9 +65,8 @@ public:
     void dispatchChangeTrackProperties(MidiTrack *const track) override;
     void dispatchChangeProjectBeatRange() override;
 
-    ProjectTreeItem *getProject() const override;
-    
-    
+    ProjectTreeItem *getProject() const noexcept override;
+        
     //===------------------------------------------------------------------===//
     // Serializable
     //===------------------------------------------------------------------===//
@@ -76,8 +74,7 @@ public:
     void reset() override;
     ValueTree serialize() const override;
     void deserialize(const ValueTree &tree) override;
-
-
+    
     //===------------------------------------------------------------------===//
     // Deltas
     //===------------------------------------------------------------------===//

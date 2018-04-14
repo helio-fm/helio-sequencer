@@ -21,7 +21,7 @@ class PianoRoll;
 class PatternRoll;
 class HybridRoll;
 class RollsSwitchingProxy;
-class MidiSequence;
+class MidiTrack;
 class AutomationSequence;
 class TrackScroller;
 class ProjectTreeItem;
@@ -45,7 +45,7 @@ public:
     ~SequencerLayout() override;
 
     void showPatternEditor();
-    void showLinearEditor(Array<MidiSequence *> tracks, MidiSequence *primaryTrack);
+    void showLinearEditor(Array<WeakReference<MidiTrack>> tracks, WeakReference<MidiTrack> primaryTrack);
 
     // returns true if editor was shown, else returns false
     bool toggleShowAutomationEditor(AutomationSequence *targetLayer);

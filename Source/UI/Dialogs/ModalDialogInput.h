@@ -19,30 +19,38 @@
 
 //[Headers]
 #include "FadingDialog.h"
+
+typedef Function<void(const String &result)> InputDialogCallback;
 //[/Headers]
 
 #include "../Themes/DialogPanel.h"
 #include "../Themes/SeparatorHorizontal.h"
 #include "../Themes/SeparatorVertical.h"
 
-class ModalDialogInput  : public FadingDialog,
-                          public TextEditor::Listener,
-                          private Timer,
-                          public Button::Listener
+class ModalDialogInput final : public FadingDialog,
+                               public TextEditor::Listener,
+                               private Timer,
+                               public Button::Listener
 {
 public:
 
-    ModalDialogInput (Component &owner, String &result, const String &message, const String &okText, const String &cancelText, int okCode, int cancelCode);
-
+    ModalDialogInput(const String &default, const String &message, const String &okText, const String &cancelText);
     ~ModalDialogInput();
 
     //[UserMethods]
+    InputDialogCallback onOk;
+    InputDialogCallback onCancel;
 
-    void textEditorTextChanged(TextEditor &editor) override;
-    void textEditorReturnKeyPressed(TextEditor&) override;
-    void textEditorEscapeKeyPressed(TextEditor&) override;
-    void textEditorFocusLost(TextEditor&) override;
-
+    struct Presets final
+    {
+        static ScopedPointer<ModalDialogInput> renameAnnotation(const String &name);
+        static ScopedPointer<ModalDialogInput> changeTimeSignature(const String &name);
+        static ScopedPointer<ModalDialogInput> renameTrack(const String &name);
+        static ScopedPointer<ModalDialogInput> newTrack();
+        static ScopedPointer<ModalDialogInput> newArpeggiator();
+        static ScopedPointer<ModalDialogInput> deleteProjectConfirmation();
+        static ScopedPointer<ModalDialogInput> commit(const String &name);
+    };
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -58,34 +66,19 @@ public:
 private:
 
     //[UserVariables]
+    String input;
 
-    String &targetString;
-    Component &ownerComponent;
+    void cancel();
+    void okay();
 
-    int okCommand;
-    int cancelCommand;
-
-    void cancel()
-    {
-        this->ownerComponent.postCommandMessage(this->cancelCommand);
-        this->disappear();
-    }
-
-    void okay()
-    {
-        if (textEditor->getText().isEmpty()) { return; }
-
-        this->ownerComponent.postCommandMessage(this->okCommand);
-        this->disappear();
-    }
-
-    void disappear()
-    { delete this; }
-
+    void disappear();
     void updateOkButtonState();
-
     void timerCallback() override;
 
+    void textEditorTextChanged(TextEditor &editor) override;
+    void textEditorReturnKeyPressed(TextEditor&) override;
+    void textEditorEscapeKeyPressed(TextEditor&) override;
+    void textEditorFocusLost(TextEditor&) override;
     //[/UserVariables]
 
     ScopedPointer<DialogPanel> background;

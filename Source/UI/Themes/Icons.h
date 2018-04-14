@@ -120,7 +120,8 @@ public:
     static void clearPrerenderedCache();
     
     static Image findByName(const String &name, int maxSize);
-    static Image findByName(const String &name, int maxSize, LookAndFeel &lf);
+
+    static Image renderForTheme(const LookAndFeel &lf, const String &name, int maxSize);
 
     static Path getPathByName(const String &name);
     static ScopedPointer<Drawable> getDrawableByName(const String &name);

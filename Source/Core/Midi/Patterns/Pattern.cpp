@@ -24,7 +24,7 @@
 #include "SerializationKeys.h"
 #include "MidiTrack.h"
 
-struct ClipIdGenerator
+struct ClipIdGenerator final
 {
     static String generateId(uint8 length = 2)
     {
@@ -49,11 +49,6 @@ Pattern::Pattern(MidiTrack &parentTrack,
 {
     // Add default single instance (we need to have at least one clip on a pattern):
     this->clips.add(new Clip(this));
-}
-
-Pattern::~Pattern()
-{
-    this->masterReference.clear();
 }
 
 //===----------------------------------------------------------------------===//

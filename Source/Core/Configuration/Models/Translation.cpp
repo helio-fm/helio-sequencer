@@ -20,16 +20,6 @@
 #include "SerializationKeys.h"
 #include "ResourceCache.h"
 
-int Translation::compareElements(const Translation &first, const Translation &second)
-{
-    return first.name.compare(second.name);
-}
-
-int Translation::compareElements(const Translation::Ptr first, const Translation::Ptr second)
-{
-    return first->name.compare(second->name);
-}
-
 String Translation::getName() const noexcept
 {
     return this->name;
@@ -62,6 +52,7 @@ void Translation::deserialize(const ValueTree &tree)
     if (!root.isValid()) { return; }
 
     this->id = root.getProperty(Translations::id).toString().toLowerCase();
+
     this->name = root.getProperty(Translations::name);
     this->author = root.getProperty(Translations::author);
     this->pluralEquation = root.getProperty(Translations::pluralEquation);
@@ -93,4 +84,18 @@ void Translation::reset()
 {
     this->singulars.clear();
     this->plurals.clear();
+}
+
+//===----------------------------------------------------------------------===//
+// BaseResource
+//===----------------------------------------------------------------------===//
+
+String Translation::getResourceId() const
+{
+    return this->id; // i.e. "en", "ru" - should be unique
+}
+
+Identifier Translation::getResourceIdProperty() const
+{
+    return Serialization::Translations::id;
 }

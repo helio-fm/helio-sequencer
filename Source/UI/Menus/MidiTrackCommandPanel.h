@@ -17,38 +17,26 @@
 
 #pragma once
 
-class HelioLogger : public Logger,
-                    public ChangeBroadcaster
+class MidiTrackTreeItem;
+
+#include "CommandPanel.h"
+
+class MidiTrackCommandPanel : public CommandPanel
 {
 public:
-
-    String getText()
-    {
-#if JUCE_DEBUG
-        const ScopedReadLock lock(this->logLock);
-        return this->log;
-#else
-        return String::empty;
-#endif
-    }
-
-protected:
-
-    void logMessage(const String &message) override
-    {
-#if JUCE_DEBUG
-        const ScopedWriteLock lock(this->logLock);
-        this->log += message;
-        this->log += "\n";
-        Logger::outputDebugString(message);
-        this->sendChangeMessage();
-#endif
-    }
-
+    
+    explicit MidiTrackCommandPanel(MidiTrackTreeItem &parentLayer);
+        
+    void handleCommandMessage(int commandId) override;
+    
 private:
+    
+    void initDefaultCommands();
+    void initColorSelection();
+    void initProjectSelection();
+    void initInstrumentSelection();
+    void exit();
 
-    ReadWriteLock logLock;
-
-    String log;
-
+    MidiTrackTreeItem &trackItem;
+    
 };

@@ -26,20 +26,14 @@
 #include "SerializationKeys.h"
 
 PatternEditorTreeItem::PatternEditorTreeItem() :
-    TreeItem("Patterns", Serialization::Core::patternSet)
-{
-}
+    TreeItem("Patterns", Serialization::Core::patternSet) {}
 
-PatternEditorTreeItem::~PatternEditorTreeItem()
-{
-}
-
-Colour PatternEditorTreeItem::getColour() const
+Colour PatternEditorTreeItem::getColour() const noexcept
 {
     return Colour(0xff818dff);
 }
 
-Image PatternEditorTreeItem::getIcon() const
+Image PatternEditorTreeItem::getIcon() const noexcept
 {
     return Icons::findByName(Icons::stack, TREE_ICON_HEIGHT);
 }
@@ -53,11 +47,9 @@ void PatternEditorTreeItem::showPage()
     }
 }
 
-void PatternEditorTreeItem::recreatePage()
-{
-}
+void PatternEditorTreeItem::recreatePage() {}
 
-String PatternEditorTreeItem::getName() const
+String PatternEditorTreeItem::getName() const noexcept
 {
     return TRANS("tree::patterns");
 }
@@ -65,15 +57,19 @@ String PatternEditorTreeItem::getName() const
 String PatternEditorTreeItem::getStatsString() const
 {
     // TODO
-    return String::empty;
+    return {};
 }
-
 
 //===----------------------------------------------------------------------===//
 // Popup
 //===----------------------------------------------------------------------===//
 
-ScopedPointer<Component> PatternEditorTreeItem::createItemMenu()
+bool PatternEditorTreeItem::hasMenu() const noexcept
+{
+    return false;
+}
+
+ScopedPointer<Component> PatternEditorTreeItem::createMenu()
 {
     //TODO
 

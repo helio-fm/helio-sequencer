@@ -126,17 +126,13 @@ void HistoryComponent::buttonClicked (Button* buttonThatWasClicked)
         // а то, есть ли изменения айтемов, которые уже присутствуют в индексе
         if (this->vcs.getHead().hasTrackedItemsOnTheStage())
         {
-            //this->workspace.showTooltip(TRANS("vcs::history::forcepull::warning"), 3000);
+            auto confirmationDialog = ModalDialogConfirmation::Presets::forcePull();
+            confirmationDialog->onOk = [this]()
+            {
+                this->vcs.getRemote()->pull();
+            };
 
-            Component *confirmationDialog =
-            new ModalDialogConfirmation(*this,
-                                        TRANS("vcs::history::forcepull::confirmation"),
-                                        TRANS("vcs::history::forcepull::proceed"),
-                                        TRANS("vcs::history::forcepull::cancel"),
-                                        CommandIDs::VersionControlForcePull,
-                                        CommandIDs::Cancel);
-
-            App::Layout().showModalComponentUnowned(confirmationDialog);
+            App::Layout().showModalComponentUnowned(confirmationDialog.release());
         }
         else
         {
@@ -152,10 +148,6 @@ void HistoryComponent::buttonClicked (Button* buttonThatWasClicked)
 void HistoryComponent::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
-    if (commandId == CommandIDs::VersionControlForcePull)
-    {
-        this->vcs.getRemote()->pull();
-    }
     //[/UserCode_handleCommandMessage]
 }
 

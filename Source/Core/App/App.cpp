@@ -32,7 +32,6 @@
 #include "ThemeSettings.h"
 #include "PluginScanner.h"
 #include "Config.h"
-#include "InternalClipboard.h"
 #include "FontSerializer.h"
 
 #include "DocumentHelpers.h"
@@ -52,29 +51,34 @@
 // Static
 //===----------------------------------------------------------------------===//
 
-App *App::Helio()
+class App &App::Helio() noexcept
 {
-    return dynamic_cast<App *>(App::getInstance());
+    return *static_cast<App *>(JUCEApplicationBase::getInstance());
 }
 
-Workspace &App::Workspace()
+class Workspace &App::Workspace() noexcept
 {
-    return *App::Helio()->getWorkspace();
+    return *static_cast<App *>(JUCEApplicationBase::getInstance())->workspace;
 }
 
-MainLayout &App::Layout()
+class MainLayout &App::Layout() noexcept
 {
-    return *App::Helio()->getWindow()->getWorkspaceComponent();
+    return *static_cast<App *>(JUCEApplicationBase::getInstance())->window->layout;
 }
 
-MainWindow &App::Window()
+class MainWindow &App::Window() noexcept
 {
-    return *App::Helio()->getWindow();
+    return *static_cast<App *>(JUCEApplicationBase::getInstance())->window;
 }
 
-class Config &App::Config()
+class Config &App::Config() noexcept
 {
-    return *App::Helio()->getConfig();
+    return *static_cast<App *>(JUCEApplicationBase::getInstance())->config;
+}
+
+class Clipboard &App::Clipboard() noexcept
+{
+    return static_cast<App *>(JUCEApplicationBase::getInstance())->clipboard;
 }
 
 Point<double> App::getScreenInCm()
@@ -212,12 +216,12 @@ String App::getHumanReadableDate(const Time &date)
 
 void App::recreateLayout()
 {
-    this->getWindow()->dismissLayoutComponent();
-    if (TreeItem *root = this->getWorkspace()->getTreeRoot())
+    this->window->dismissLayoutComponent();
+    if (TreeItem *root = this->workspace->getTreeRoot())
     {
         root->recreateSubtreePages();
     }
-    this->getWindow()->createLayoutComponent();
+    this->window->createLayoutComponent();
 }
 
 void App::dismissAllModalComponents()
@@ -244,23 +248,27 @@ void App::initialise(const String &commandLine)
         Desktop::getInstance().setOrientationsEnabled(Desktop::rotatedClockwise + Desktop::rotatedAntiClockwise);
         
         Logger::setCurrentLogger(&this->logger);
-        Logger::writeToLog("Helio Workstation");
-        Logger::writeToLog("Ver. " + App::getAppReadableVersion());
+        Logger::writeToLog("Helio v" + App::getAppReadableVersion());
         
         this->theme = new HelioTheme();
         this->theme->initResources();
         LookAndFeel::setDefaultLookAndFeel(this->theme);
 
-        this->clipboard = new InternalClipboard();
         this->config = new class Config();
     
-        // TODO: get rid of singletons somehow
-        TranslationsManager::getInstance().initialise(commandLine);
-        ArpeggiatorsManager::getInstance().initialise(commandLine);
-        ColourSchemesManager::getInstance().initialise(commandLine);
-        HotkeySchemesManager::getInstance().initialise(commandLine);
-        ArpeggiatorsManager::getInstance().initialise(commandLine);
-        ScalesManager::getInstance().initialise(commandLine);
+        // TODO: get rid of singletons someday
+        using namespace Serialization;
+        this->resourceManagers.set(Resources::translations, &TranslationsManager::getInstance());
+        this->resourceManagers.set(Resources::arpeggiators, &ArpeggiatorsManager::getInstance());
+        this->resourceManagers.set(Resources::colourSchemes, &ColourSchemesManager::getInstance());
+        this->resourceManagers.set(Resources::hotkeySchemes, &HotkeySchemesManager::getInstance());
+        this->resourceManagers.set(Resources::scales, &ScalesManager::getInstance());
+
+        ResourceManagers::Iterator i(this->resourceManagers);
+        while (i.next())
+        {
+            i.getValue()->initialise();
+        }
 
         this->workspace = new class Workspace();
         this->window = new MainWindow();
@@ -305,7 +313,6 @@ void App::shutdown()
         this->workspace = nullptr;
 
         this->config = nullptr;
-        this->clipboard = nullptr;
         this->theme = nullptr;
 
         const File tempFolder(DocumentHelpers::getTemporaryFolder());
@@ -318,12 +325,13 @@ void App::shutdown()
         Icons::clearPrerenderedCache();
         Icons::clearBuiltInImages();
 
-        ScalesManager::getInstance().shutdown();
-        ArpeggiatorsManager::getInstance().shutdown();
-        HotkeySchemesManager::getInstance().shutdown();
-        ColourSchemesManager::getInstance().shutdown();
-        ArpeggiatorsManager::getInstance().shutdown();
-        TranslationsManager::getInstance().shutdown();
+        ResourceManagers::Iterator i(this->resourceManagers);
+        while (i.next())
+        {
+            i.getValue()->shutdown();
+        }
+
+        this->resourceManagers.clear();
         
         Logger::setCurrentLogger(nullptr);
     }
@@ -370,10 +378,10 @@ void App::systemRequestedQuit()
 {
     Logger::writeToLog("App::systemRequestedQuit");
 
-    if (this->getWorkspace() != nullptr)
+    if (this->workspace != nullptr)
     {
-        this->getWorkspace()->stopPlaybackForAllProjects();
-        this->getWorkspace()->autosave();
+        this->workspace->stopPlaybackForAllProjects();
+        this->workspace->autosave();
     }
 
     App::dismissAllModalComponents();
@@ -385,11 +393,11 @@ void App::suspended()
 {
     Logger::writeToLog("App::suspended");
 
-    if (this->getWorkspace() != nullptr)
+    if (this->workspace != nullptr)
     {
-        this->getWorkspace()->stopPlaybackForAllProjects();
-        this->getWorkspace()->getAudioCore().mute();
-        this->getWorkspace()->autosave();
+        this->workspace->stopPlaybackForAllProjects();
+        this->workspace->getAudioCore().mute();
+        this->workspace->autosave();
     }
     
 #if JUCE_ANDROID
@@ -401,9 +409,9 @@ void App::resumed()
 {
     Logger::writeToLog("App::resumed");
 
-    if (this->getWorkspace() != nullptr)
+    if (this->workspace != nullptr)
     {
-        this->getWorkspace()->getAudioCore().unmute();
+        this->workspace->getAudioCore().unmute();
     }
 
 #if JUCE_ANDROID
@@ -415,26 +423,6 @@ void App::resumed()
 // Accessors
 //===----------------------------------------------------------------------===//
 
-MainWindow *App::getWindow() const noexcept
-{
-    return this->window;
-}
-
-Workspace *App::getWorkspace() const noexcept
-{
-    return this->workspace;
-}
-
-Config *App::getConfig() const noexcept
-{
-    return this->config;
-}
-
-InternalClipboard *App::getClipboard() const noexcept
-{
-    return this->clipboard;
-}
-
 SessionService *App::getSessionService() const noexcept
 {
     return this->sessionService;
@@ -444,7 +432,6 @@ HelioTheme *App::getTheme() const noexcept
 {
     return this->theme;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Private
@@ -542,6 +529,12 @@ void App::changeListenerCallback(ChangeBroadcaster *source)
 {
     Logger::writeToLog("Reloading translations");
     this->recreateLayout();
+}
+
+ResourceManager &App::getResourceManagerFor(const Identifier &id) const
+{
+    jassert(this->resourceManagers.contains(id));
+    return *this->resourceManagers[id];
 }
 
 START_JUCE_APPLICATION(App)

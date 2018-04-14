@@ -34,15 +34,14 @@ class CommandItemComponent;
 #include "../Themes/ShadowDownwards.h"
 #include "../Popups/PopupButton.h"
 
-class NotesTuningPanel  : public Component,
-                          public ChangeBroadcaster,
-                          private TransportListener,
-                          public Slider::Listener
+class NotesTuningPanel final : public Component,
+                               public ChangeBroadcaster,
+                               private TransportListener,
+                               public Slider::Listener
 {
 public:
 
-    NotesTuningPanel (ProjectTreeItem &parentProject, PianoRoll &targetRoll);
-
+    NotesTuningPanel(ProjectTreeItem &parentProject, PianoRoll &targetRoll);
     ~NotesTuningPanel();
 
     //[UserMethods]

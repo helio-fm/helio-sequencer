@@ -336,7 +336,7 @@ void ProjectPageDefault::updateContent()
     const String &author = this->project.getProjectInfo()->getAuthor();
     const String &description = this->project.getProjectInfo()->getDescription();
     const String &license = this->project.getProjectInfo()->getLicense();
-    const String &startTime = App::getSqlFormattedTime(Time(this->project.getProjectInfo()->getStartTime()));
+    const String &startTime = App::getSqlFormattedTime(Time(this->project.getProjectInfo()->getStartTimestamp()));
 
 #if HELIO_DESKTOP
     const String &clickToEdit = TRANS("page::project::default::value::desktop");
@@ -377,7 +377,7 @@ static String getTimeString(const RelativeTime &time)
 }
 
 void ProjectPageDefault::onSeek(double absolutePosition,
-                         double currentTimeMs, double totalTimeMs)
+    double currentTimeMs, double totalTimeMs)
 {
     const RelativeTime totalTime(totalTimeMs / 1000.0);
     this->lengthText->setText(getTimeString(totalTime), dontSendNotification);

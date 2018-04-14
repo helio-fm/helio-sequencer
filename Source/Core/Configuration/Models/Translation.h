@@ -17,9 +17,13 @@
 
 #pragma once
 
-class Translation final : public Serializable, public ReferenceCountedObject
+#include "BaseResource.h"
+
+class Translation final : public BaseResource
 {
 public:
+
+    typedef ReferenceCountedObjectPtr<Translation> Ptr;
 
     String getId() const noexcept;
     String getName() const noexcept;
@@ -32,10 +36,12 @@ public:
     void deserialize(const ValueTree &tree) override;
     void reset() override;
 
-    typedef ReferenceCountedObjectPtr<Translation> Ptr;
+    //===------------------------------------------------------------------===//
+    // BaseResource
+    //===------------------------------------------------------------------===//
 
-    static int compareElements(const Translation &first, const Translation &second);
-    static int compareElements(const Translation::Ptr first, const Translation::Ptr second);
+    String getResourceId() const override;
+    Identifier getResourceIdProperty() const override;
 
 private:
 

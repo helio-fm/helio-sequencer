@@ -17,12 +17,16 @@
 
 #pragma once
 
-class HotkeyScheme final : public Serializable
+#include "BaseResource.h"
+
+class HotkeyScheme final : public BaseResource
 {
 public:
 
     HotkeyScheme();
     HotkeyScheme(const HotkeyScheme &other);
+
+    typedef ReferenceCountedObjectPtr<HotkeyScheme> Ptr;
 
     class Hotkey final
     {
@@ -41,6 +45,7 @@ public:
         WeakReference<Component> messageReceiverParent);
 
     HotkeyScheme &operator=(const HotkeyScheme &other);
+    friend bool operator==(const HotkeyScheme &lhs, const HotkeyScheme &rhs);
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -49,6 +54,13 @@ public:
     ValueTree serialize() const override;
     void deserialize(const ValueTree &tree) override;
     void reset() override;
+
+    //===------------------------------------------------------------------===//
+    // BaseResource
+    //===------------------------------------------------------------------===//
+
+    String getResourceId() const override;
+    Identifier getResourceIdProperty() const override;
 
 private:
 

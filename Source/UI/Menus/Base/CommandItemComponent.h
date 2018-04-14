@@ -78,12 +78,12 @@ public:
 
     void update(const CommandItem::Ptr description);
 
-    String getIconName() const
+    String getIconName() const noexcept
     {
         return this->description->iconName;
     }
 
-    Font getFont() const
+    Font getFont() const noexcept
     {
         return this->textLabel->getFont();
     }

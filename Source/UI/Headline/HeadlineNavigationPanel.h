@@ -26,6 +26,7 @@ class IconComponent;
 class HeadlineDropdown;
 //[/Headers]
 
+#include "HeadlineItemArrow.h"
 
 class HeadlineNavigationPanel final : public Component
 {
@@ -51,9 +52,7 @@ private:
 
     ScopedPointer<IconButton> navigatePrevious;
     ScopedPointer<IconButton> navigateNext;
-    Path internalPath1;
-    Path internalPath2;
-    Path internalPath3;
+    ScopedPointer<HeadlineItemArrow> component;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeadlineNavigationPanel)
 };

@@ -81,20 +81,21 @@ const ValueTree HelioApiRequest::Response::getBody() const noexcept
 
 HelioApiRequest::HelioApiRequest(String apiEndpoint, ProgressCallback progressCallback) :
     apiEndpoint(std::move(apiEndpoint)),
-    progressCallback(progressCallback) {}
+    progressCallback(progressCallback),
+    serializer(true) {}
 
 static String getHeaders()
 {
     String extraHeaders;
     extraHeaders
         << "Content-Type: application/json"
-        << "\n"
+        << newLine
         << "Client: Helio " << App::getAppReadableVersion()
-        << "\n"
+        << newLine
         << "Authorization: Bearer " << SessionService::getApiToken()
-        << "\n"
+        << newLine
         << "Platform-Id: " << SystemStats::getOperatingSystemName()
-        << "\n"
+        << newLine
         << "Device-Id: " << Config::getDeviceId();
 
     return extraHeaders;
@@ -112,12 +113,15 @@ void HelioApiRequest::processResponse(HelioApiRequest::Response &response, Input
     if (responseBody.isNotEmpty())
     {
         Logger::writeToLog("Response: " + String(response.statusCode));
-        Logger::writeToLog(responseBody);
+
+        if (responseBody.length() < 512)
+        {
+            Logger::writeToLog(responseBody);
+        }
 
         ValueTree parsedResponse;
-        static JsonSerializer serializer;
 
-        response.receipt = serializer.loadFromString(responseBody, parsedResponse);
+        response.receipt = this->serializer.loadFromString(responseBody, parsedResponse);
         if (response.receipt.failed() || !parsedResponse.isValid())
         {
             response.errors.add(TRANS("network error"));
@@ -152,12 +156,18 @@ void HelioApiRequest::processResponse(HelioApiRequest::Response &response, Input
     }
 }
 
-HelioApiRequest::Response HelioApiRequest::post(const var payload) const
+HelioApiRequest::Response HelioApiRequest::post(const ValueTree &payload) const
 {
     Response response;
     ScopedPointer<InputStream> stream;
-    const auto jsonPayload = JSON::toString(payload);
-    const auto url = URL(HelioFM::baseURL + this->apiEndpoint)
+
+    String jsonPayload;
+    if (this->serializer.saveToString(jsonPayload, payload).failed())
+    {
+        return response;
+    }
+
+    const auto url = URL(Routes::HelioFM::baseURL + this->apiEndpoint)
         .withPOSTData(MemoryBlock(jsonPayload.toRawUTF8(), jsonPayload.getNumBytesAsUTF8() + 1));
 
     int i = 0;
@@ -179,7 +189,7 @@ HelioApiRequest::Response HelioApiRequest::get() const
 {
     Response response;
     ScopedPointer<InputStream> stream;
-    const auto url = URL(HelioFM::baseURL + this->apiEndpoint);
+    const auto url = URL(Routes::HelioFM::baseURL + this->apiEndpoint);
 
     int i = 0;
     do

@@ -132,7 +132,7 @@ void TreeItemComponent::setSelected(bool shouldBeSelected)
 
 void TreeItemComponent::emitCallout()
 {
-    ScopedPointer<Component> menu = this->item.createItemMenu();
+    ScopedPointer<Component> menu = this->item.createMenu();
     if (menu != nullptr)
     {
         //this->item.setSelected(false, false, dontSendNotification);

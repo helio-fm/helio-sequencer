@@ -17,18 +17,24 @@
 
 #pragma once
 
+#include "BaseResource.h"
+
 #define CHROMATIC_SCALE_SIZE 12
 
-class Scale final : public Serializable
+class Scale final : public BaseResource
 {
 public:
 
-    Scale();
-    Scale(const Scale &other);
-    explicit Scale(const String &name);
+    Scale() noexcept;
+    Scale(const Scale &other) noexcept;
+    explicit Scale(const String &name) noexcept;
 
-    Scale withName(const String &name) const;
-    Scale withKeys(const Array<int> &keys) const;
+    String getResourceId() const override;
+    Identifier getResourceIdProperty() const override;
+    typedef ReferenceCountedObjectPtr<Scale> Ptr;
+
+    Scale::Ptr withName(const String &name) const noexcept;
+    Scale::Ptr withKeys(const Array<int> &keys) const noexcept;
 
     inline static StringArray getKeyNames(bool sharps = true)
     {
@@ -38,7 +44,8 @@ public:
     }
 
     // These names only make sense in diatonic scales:
-    enum Function {
+    enum Function
+    {
         Tonic = 0,
         Supertonic = 1,
         Mediant = 2,
@@ -66,18 +73,29 @@ public:
     Array<int> getDownScale() const;
 
     // Flat third considered "minor"-ish (like Aeolian, Phrygian, Locrian etc.)
-    bool seemsMinor() const;
+    bool seemsMinor() const noexcept;
 
-    // True if specified chromatic key is in the scale
-    bool hasKey(int key) const;
+    // Chromatic key will be wrapped from 0 to scale's period size
+    // True if specified chromatic key is within the scale
+    bool hasKey(int chormaticKey) const;
+
+    // Chromatic key will be wrapped from 0 to scale's period size
+    // Returns -1 if chromatic key is not found within the scale
+    int getScaleKey(int chormaticKey) const;
+
+    // Key (input and returned) starts from 0
+    int getChromaticKey(int key, bool shouldRestrictToOneOctave = false) const noexcept;
+
+    // Base octave size - like chromatic octave for diatonic scales (hard-coded to 12, FIXME in future)
+    int getBasePeriod() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Hard-coded defaults
     //===------------------------------------------------------------------===//
 
-    static Scale getChromaticScale();
-    static Scale getNaturalMiniorScale();
-    static Scale getNaturalMajorScale();
+    static Scale::Ptr getChromaticScale();
+    static Scale::Ptr getNaturalMiniorScale();
+    static Scale::Ptr getNaturalMajorScale();
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -98,14 +116,11 @@ public:
     // Used to compare scales in version control
     // (there may be lots of synonyms for the same sets of notes,
     // e.g. Phrygian is called Zokuso in Japan and Ousak in Greece)
-    bool isEquivalentTo(const Scale &other) const;
+    bool isEquivalentTo(const Scale::Ptr other) const;
 
     int hashCode() const noexcept;
 
 private:
-
-    // Key (input and returned) starts from 0
-    int getKey(int key, bool shouldRestrictToOneOctave = false) const;
 
     String name;
 
@@ -113,6 +128,8 @@ private:
     // accessed by index in target scale,
     // e.g. for Ionian: keys[0] = 0, keys[1] = 2, keys[2] = 4, etc
     Array<int> keys;
+
+    int basePeriod;
 
     JUCE_LEAK_DETECTOR(Scale)
 };

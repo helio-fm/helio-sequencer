@@ -22,7 +22,7 @@ const int FFT_COSTABSIZE = (1 << FFT_COSTABBITS);
 const int FFT_TABLERANGE = (FFT_COSTABSIZE * 4);
 const int FFT_TABLEMASK  = (FFT_TABLERANGE - 1);
 
-class SpectrumFFT
+class SpectrumFFT final
 {
 public:
     

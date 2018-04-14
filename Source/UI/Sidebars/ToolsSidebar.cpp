@@ -30,14 +30,13 @@
 #include "HybridRoll.h"
 #include "PianoRoll.h"
 #include "MidiSequence.h"
-#include "InternalClipboard.h"
 #include "CommandItemComponent.h"
 #include "ProjectTimeline.h"
 #include "HelioCallout.h"
 #include "TimelineCommandPanel.h"
 #include "AnnotationCommandPanel.h"
 #include "TimeSignatureCommandPanel.h"
-#include "PianoRollToolbox.h"
+#include "SequencerOperations.h"
 #include "NotesTuningPanel.h"
 #include "TriggersTrackMap.h"
 #include "App.h"
@@ -268,24 +267,25 @@ void ToolsSidebar::handleCommandMessage (int commandId)
     case CommandIDs::DeleteEvents:
         if (PianoRoll *roll = dynamic_cast<PianoRoll *>(this->project.getLastFocusedRoll()))
         {
-            roll->deleteSelection();
+            SequencerOperations::deleteSelection(roll->getLassoSelection());
         }
         break;
 
     case CommandIDs::CopyEvents:
         if (HybridRoll *roll = this->project.getLastFocusedRoll())
         {
-            InternalClipboard::copy(*roll);
+            SequencerOperations::copyToClipboard(App::Clipboard(), roll->getLassoSelection());
         }
         break;
 
     case CommandIDs::PasteEvents:
         if (HybridRoll *roll = this->project.getLastFocusedRoll())
         {
-            InternalClipboard::paste(*roll);
+            roll->deselectAll();
+            const float playheadBeat = roll->getBeatByTransportPosition(this->project.getTransport().getSeekPosition());
+            SequencerOperations::pasteFromClipboard(App::Clipboard(), this->project, roll->getActiveTrack(), playheadBeat);
         }
         break;
-
 
     case CommandIDs::CursorTool:
         this->project.getEditMode().setMode(HybridRollEditMode::defaultMode);
@@ -319,7 +319,6 @@ void ToolsSidebar::handleCommandMessage (int commandId)
         this->project.getEditMode().setMode(HybridRollEditMode::scissorsMode);
         break;
 
-
     case CommandIDs::ZoomIn:
         if (HybridRoll *roll = this->project.getLastFocusedRoll())
         {
@@ -333,7 +332,6 @@ void ToolsSidebar::handleCommandMessage (int commandId)
             roll->zoomOutImpulse();
         }
         break;
-
 
     case CommandIDs::Undo:
         this->project.undo();

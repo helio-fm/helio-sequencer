@@ -39,7 +39,7 @@ public:
     void initMenu(CommandPanel::Items menu);
     void initText(TextEditor *editor);
 
-    class Trigger : public IconButton
+    class Trigger final : public IconButton
     {
     public:
         Trigger(WeakReference<Component> listener = nullptr);
@@ -48,7 +48,7 @@ public:
         void updateBounds();
     };
 
-    class Primer : public Component
+    class Primer final : public Component
     {
     public:
         Primer();

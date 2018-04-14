@@ -21,7 +21,7 @@
 #include "MidiTrack.h"
 #include "SerializationKeys.h"
 
-Clip::Clip()
+Clip::Clip() : pattern(nullptr)
 {
     // needed for juce's Array to work
     //jassertfalse;

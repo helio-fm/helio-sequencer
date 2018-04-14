@@ -137,7 +137,7 @@ void WorkspaceMenu::handleCommandMessage (int commandId)
         else
         {
             //App::Layout().showModalComponentUnowned(new ProgressTooltip());
-            App::Helio()->getSessionService()->signOut();
+            App::Helio().getSessionService()->signOut();
             this->listBox->updateContent();
             this->getParentComponent()->exitModalState(0);
         }

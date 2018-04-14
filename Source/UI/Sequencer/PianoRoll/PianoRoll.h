@@ -29,8 +29,8 @@
 
 class MidiSequence;
 class NoteComponent;
-class PianoRollReboundThread;
 class PianoRollCellHighlighter;
+class PianoRollSelectionMenuManager;
 class HelperRectangle;
 class Scale;
 
@@ -48,20 +48,15 @@ public:
     PianoRoll(ProjectTreeItem &parentProject,
               Viewport &viewportRef,
               WeakReference<AudioMonitor> clippingDetector);
-
-    void deleteSelection();
     
-    int getNumActiveLayers() const noexcept;
-    MidiSequence *getActiveMidiLayer(int index) const noexcept;
-    MidiSequence *getPrimaryActiveMidiLayer() const noexcept;
-    void setActiveMidiLayers(Array<MidiSequence *> tracks,
-        MidiSequence *primaryLayer);
+    void setSelectedTracks(Array<WeakReference<MidiTrack>> tracks,
+        WeakReference<MidiTrack> activeTrack);
 
     void setRowHeight(const int newRowHeight);
-    inline int getRowHeight() const
+    inline int getRowHeight() const noexcept
     { return this->rowHeight; }
 
-    inline int getNumRows() const
+    inline int getNumRows() const noexcept
     { return this->numRows; }
 
     //===------------------------------------------------------------------===//
@@ -128,13 +123,6 @@ public:
         const Rectangle<int> &rectangle) override;
 
     //===------------------------------------------------------------------===//
-    // ClipboardOwner
-    //===------------------------------------------------------------------===//
-
-    ValueTree clipboardCopy() const override;
-    void clipboardPaste(const ValueTree &tree) override;
-
-    //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
 
@@ -162,8 +150,7 @@ public:
     
 private:
 
-    Array<MidiSequence *> activeLayers;
-    MidiSequence *primaryActiveLayer;
+    Array<WeakReference<MidiTrack>> selectedTracks;
 
 private:
 
@@ -189,7 +176,7 @@ private:
     class HighlightingScheme final
     {
     public:
-        HighlightingScheme(int rootKey, const Scale &scale);
+        HighlightingScheme(int rootKey, const Scale::Ptr scale) noexcept;
         
         template<typename T1, typename T2>
         static int compareElements(const T1 *const l, const T2 *const r)
@@ -198,19 +185,19 @@ private:
             const int keyResult = (keyDiff > 0) - (keyDiff < 0);
             if (keyResult != 0) { return keyDiff; }
 
-            if (l->getScale().isEquivalentTo(r->getScale())) { return 0; }
+            if (l->getScale()->isEquivalentTo(r->getScale())) { return 0; }
 
-            const int scaleDiff = l->getScale().hashCode() - r->getScale().hashCode();
+            const int scaleDiff = l->getScale()->hashCode() - r->getScale()->hashCode();
             return (scaleDiff > 0) - (scaleDiff < 0);
         }
 
-        const Scale &getScale() const noexcept { return this->scale; }
+        const Scale::Ptr getScale() const noexcept { return this->scale; }
         const int getRootKey() const noexcept { return this->rootKey; }
         const Image getUnchecked(int i) const noexcept { return this->rows.getUnchecked(i); }
-        void setRows(Array<Image> val) { this->rows = val; }
+        void setRows(Array<Image> val) noexcept { this->rows = val; }
 
     private:
-        Scale scale;
+        Scale::Ptr scale;
         int rootKey;
         Array<Image> rows;
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HighlightingScheme);
@@ -219,7 +206,7 @@ private:
     void updateBackgroundCacheFor(const KeySignatureEvent &key);
     void removeBackgroundCacheFor(const KeySignatureEvent &key);
     Array<Image> renderBackgroundCacheFor(const HighlightingScheme *const scheme) const;
-    static Image renderRowsPattern(const HelioTheme &, const Scale &, int root, int height);
+    static Image renderRowsPattern(const HelioTheme &, const Scale::Ptr, int root, int height);
     OwnedArray<HighlightingScheme> backgroundsCache;
     ScopedPointer<HighlightingScheme> defaultHighlighting;
     int binarySearchForHighlightingScheme(const KeySignatureEvent *const e) const noexcept;
@@ -239,6 +226,8 @@ private:
 
     ScopedPointer<NoteResizerLeft> noteResizerLeft;
     ScopedPointer<NoteResizerRight> noteResizerRight;
+
+    ScopedPointer<PianoRollSelectionMenuManager> selectedNotesMenuManager;
     
     typedef SparseHashMap<const Note, UniquePointer<NoteComponent>, MidiEventHash> EventComponentsMap;
     EventComponentsMap eventComponents;

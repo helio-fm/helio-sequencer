@@ -30,9 +30,9 @@ public:
     KeySignatureEvent(WeakReference<MidiSequence> owner,
         const KeySignatureEvent &parametersToCopy) noexcept;
     explicit KeySignatureEvent(WeakReference<MidiSequence> owner,
+        Scale::Ptr scale = nullptr,
         float newBeat = 0.f,
-        Note::Key key = 0,
-        Scale scale = Scale()) noexcept;
+        Note::Key key = 0) noexcept;
 
     String toString() const;
     Array<MidiMessage> toMidiMessages() const override;
@@ -41,7 +41,7 @@ public:
     KeySignatureEvent withDeltaBeat(float beatOffset) const noexcept;
     KeySignatureEvent withBeat(float newBeat) const noexcept;
     KeySignatureEvent withRootKey(Note::Key key) const noexcept;
-    KeySignatureEvent withScale(Scale scale) const noexcept;
+    KeySignatureEvent withScale(Scale::Ptr scale) const noexcept;
     KeySignatureEvent withParameters(const ValueTree &parameters) const noexcept;
 
     //===------------------------------------------------------------------===//
@@ -49,7 +49,7 @@ public:
     //===------------------------------------------------------------------===//
 
     Note::Key getRootKey() const noexcept;
-    const Scale &getScale() const noexcept;
+    const Scale::Ptr getScale() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Serializable
@@ -68,7 +68,7 @@ public:
 protected:
 
     Note::Key rootKey;
-    Scale scale;
+    Scale::Ptr scale;
 
 private:
 
