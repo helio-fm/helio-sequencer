@@ -24,6 +24,27 @@
 #include "DocumentHelpers.h"
 #include "XmlSerializer.h"
 
+//===----------------------------------------------------------------------===//
+// Mapper common
+//===----------------------------------------------------------------------===//
+
+Note::Key Arpeggiator::Mapper::getChordKey(const Array<Note> &chord, int chordKeyIndex,
+    const Scale::Ptr chordScale, Note::Key chordRoot, int scaleOffset) const
+{
+    const int safeIndex = chordKeyIndex % chord.size();
+    const int chordKey = chord.getUnchecked(safeIndex).getKey();
+    const int chordKeyNoRootOffset = chordKey - chordRoot;
+    jassert(chordKeyNoRootOffset >= 0);
+    const int targetScaleKey = chordScale->getScaleKey(chordKeyNoRootOffset) + scaleOffset;
+    return (targetScaleKey >= 0) ?
+        chordScale->getChromaticKey(targetScaleKey) + chordRoot :
+        chordKey; // a non-scale key is found in the chord, so just fallback to that key
+}
+
+//===----------------------------------------------------------------------===//
+// Diatonic mapper
+//===----------------------------------------------------------------------===//
+
 // This one assumes it has a diatonic scale, and target chord has up to 4 notes.
 // There are no restrictions though on a target chord's scale or where chord's keys are.
 // Arpeggiator keys are mapped like this:
@@ -41,71 +62,94 @@
 class DiatonicArpMapper final : public Arpeggiator::Mapper
 {
     Note::Key mapArpKeyIntoChordSpace(Arpeggiator::Key arpKey, const Array<Note> &chord,
-        const Scale::Ptr chordScale, Note::Key chordRoot) const override
+        const Scale::Ptr chordScale, Note::Key absChordRoot) const override
     {
         const auto periodOffset = arpKey.period * chordScale->getBasePeriod();
         switch (arpKey.key)
         {
-        case 0: return periodOffset + this->getChordKey(chord, 0);
-        case 1: return periodOffset + this->getChordKeyPlus(chord, chordScale, chordRoot, 0, 1);
-        case 2: return periodOffset + this->getChordKey(chord, 1);
-        case 3: return periodOffset + this->getChordKeyPlus(chord, chordScale, chordRoot, 1, 1);
-        case 4: return periodOffset + this->getChordKey(chord, 2);
-        case 5: return periodOffset + this->getChordKeyPlus(chord, chordScale, chordRoot, 2, 1);
-        case 6: return periodOffset + this->getChordKey(chord, 3);
-        default: return periodOffset + chordRoot;
+        case 0: return periodOffset + this->getChordKey(chord, 0, chordScale, absChordRoot, 0);
+        case 1: return periodOffset + this->getChordKey(chord, 0, chordScale, absChordRoot, 1);
+        case 2: return periodOffset + this->getChordKey(chord, 1, chordScale, absChordRoot, 0);
+        case 3: return periodOffset + this->getChordKey(chord, 1, chordScale, absChordRoot, 1);
+        case 4: return periodOffset + this->getChordKey(chord, 2, chordScale, absChordRoot, 0);
+        case 5: return periodOffset + this->getChordKey(chord, 2, chordScale, absChordRoot, 1);
+        case 6: return
+            (chord.size() <= 3) ?
+            periodOffset + this->getChordKey(chord, 2, chordScale, absChordRoot, 2) :
+            periodOffset + this->getChordKey(chord, 3, chordScale, absChordRoot, 0);
+        default: return periodOffset + absChordRoot;
         }
     }
 };
 
-// Similar as above:
+//===----------------------------------------------------------------------===//
+// Pentatonic mapper, similar as above
+//===----------------------------------------------------------------------===//
 
 class PentatonicArpMapper final : public Arpeggiator::Mapper
 {
     Note::Key mapArpKeyIntoChordSpace(Arpeggiator::Key arpKey, const Array<Note> &chord,
-        const Scale::Ptr chordScale, Note::Key chordRoot) const override
+        const Scale::Ptr chordScale, Note::Key absChordRoot) const override
     {
         const auto periodOffset = arpKey.period * chordScale->getBasePeriod();
         switch (arpKey.key)
         {
-        case 0: return periodOffset + this->getChordKey(chord, 0);
-        case 1: return periodOffset + this->getChordKeyPlus(chord, chordScale, chordRoot, 0, 1);
-        case 2: return periodOffset + this->getChordKey(chord, 1);
-        case 3: return periodOffset + this->getChordKey(chord, 2);
-        case 4: return periodOffset + this->getChordKeyPlus(chord, chordScale, chordRoot, 2, 1);
-        default: return periodOffset + chordRoot;
+        case 0: return periodOffset + this->getChordKey(chord, 0, chordScale, absChordRoot, 0);
+        case 1: return periodOffset + this->getChordKey(chord, 0, chordScale, absChordRoot, 1);
+        case 2: return periodOffset + this->getChordKey(chord, 1, chordScale, absChordRoot, 0);
+        case 3: return periodOffset + this->getChordKey(chord, 2, chordScale, absChordRoot, 0);
+        case 4: return periodOffset + this->getChordKey(chord, 2, chordScale, absChordRoot, 1);
+        default: return periodOffset + absChordRoot;
         }
     }
 };
 
+//===----------------------------------------------------------------------===//
+// Simple mappers
+//===----------------------------------------------------------------------===//
+
 class SimpleTriadicArpMapper final : public Arpeggiator::Mapper
 {
     Note::Key mapArpKeyIntoChordSpace(Arpeggiator::Key arpKey, const Array<Note> &chord,
-        const Scale::Ptr chordScale, Note::Key chordRoot) const override
+        const Scale::Ptr chordScale, Note::Key absChordRoot) const override
     {
         const int periodOffset = arpKey.period * chordScale->getBasePeriod();
-        return periodOffset + this->getChordKey(chord, arpKey.key);
+        return periodOffset + this->getChordKey(chord, arpKey.key, chordScale, absChordRoot, 0);
     }
 };
 
 class FallbackArpMapper final : public Arpeggiator::Mapper
 {
     Note::Key mapArpKeyIntoChordSpace(Arpeggiator::Key arpKey, const Array<Note> &chord,
-        const Scale::Ptr chordScale, Note::Key chordRoot) const override
+        const Scale::Ptr chordScale, Note::Key absChordRoot) const override
     {
         jassertfalse; // Should never hit this point
-        return chordRoot;
+        return absChordRoot;
     }
 };
+
+//===----------------------------------------------------------------------===//
+// Arpeggiator
+//===----------------------------------------------------------------------===//
 
 static ScopedPointer<Arpeggiator::Mapper> createMapperOfType(const Identifier &id)
 {
     using namespace Serialization::Arps;
-    if (id == Types::simpleTriadic)      { return new SimpleTriadicArpMapper(); }
-    else if (id == Types::pentatonic)    { return new PentatonicArpMapper(); }
-    else if (id == Types::diatonic)      { return new DiatonicArpMapper(); }
+
+    if (id == Types::simpleTriadic)      
+    {
+        return { new SimpleTriadicArpMapper() };
+    }
+    else if (id == Types::pentatonic)
+    {
+        return { new PentatonicArpMapper() };
+    }
+    else if (id == Types::diatonic)
+    {
+        return { new DiatonicArpMapper() };
+    }
     
-    return new FallbackArpMapper();
+    return { new FallbackArpMapper() };
 }
 
 Arpeggiator &Arpeggiator::operator=(const Arpeggiator &other)
@@ -127,20 +171,27 @@ bool operator==(const Arpeggiator &l, const Arpeggiator &r)
     return &l == &r || l.name == r.name;
 }
 
+static int findAbsRootKey(const Scale::Ptr scale, Note::Key relativeRoot, Note::Key keyToFindPeriodFor)
+{
+    const auto middleCOffset = MIDDLE_C % scale->getBasePeriod();
+    const auto sequenceBasePeriod = (keyToFindPeriodFor - middleCOffset - relativeRoot) / scale->getBasePeriod();
+    const auto absRootKey = (sequenceBasePeriod * scale->getBasePeriod()) + middleCOffset + relativeRoot;
+    return absRootKey;
+}
+
 Arpeggiator::Arpeggiator(const String &name, const Scale::Ptr scale,
     const Array<Note> &sequence, Note::Key rootKey)
 {
-    auto sequenceLowestKey = INT_MAX;
+    auto sequenceMeanKey = 0;
     auto sequenceStartBeat = FLT_MAX;
     for (const auto &note : sequence)
     {
         sequenceStartBeat = jmin(sequenceStartBeat, note.getBeat());
-        sequenceLowestKey = jmin(sequenceLowestKey, note.getKey());
+        sequenceMeanKey += note.getKey();
     }
 
-    const auto middleCOffset = MIDDLE_C % scale->getBasePeriod();
-    const auto sequenceBasePeriod = (sequenceLowestKey - middleCOffset - rootKey) / scale->getBasePeriod();
-    const auto absRootKey = (sequenceBasePeriod * scale->getBasePeriod()) + middleCOffset + rootKey;
+    sequenceMeanKey /= sequence.size();
+    const auto absRootKey = findAbsRootKey(scale, rootKey, sequenceMeanKey);
 
     static Key sorter;
     for (const auto &note : sequence)
@@ -149,7 +200,10 @@ Arpeggiator::Arpeggiator(const String &name, const Scale::Ptr scale,
 
         // Scale key will be limited to a single period
         const auto scaleKey = scale->getScaleKey(relativeChromaticKey);
-        const auto period = relativeChromaticKey / scale->getBasePeriod();
+        const auto period = (relativeChromaticKey < 0) ?
+            relativeChromaticKey / scale->getBasePeriod() - 1 :
+            relativeChromaticKey / scale->getBasePeriod();
+
         const auto beat = note.getBeat() - sequenceStartBeat;
 
         // Ignore all non-scale keys (will be -1 if chromatic key is not in a target scale)
@@ -212,9 +266,11 @@ Note Arpeggiator::mapArpKeyIntoChordSpace(int arpKeyIndex, float startBeat,
 
     const int safeKeyIndex = arpKeyIndex % this->getNumKeys();
     const auto arpKey = this->keys.getUnchecked(safeKeyIndex);
+    const auto absChordRoot = findAbsRootKey(chordScale, chordRoot, chord.getUnchecked(0).getKey());
+
     const auto newNoteKey =
         this->mapper->mapArpKeyIntoChordSpace(arpKey,
-            chord, chordScale, chordRoot);
+            chord, chordScale, absChordRoot);
 
     return chord.getFirst().
         withKeyBeat(newNoteKey, startBeat + arpKey.beat).
@@ -276,7 +332,8 @@ void Arpeggiator::deserialize(const ValueTree &tree)
     this->type = root.getProperty(Arps::type).toString();
     this->mapper = createMapperOfType(this->type);
 
-    forEachValueTreeChildWithType(root, keyNode, Arps::key)
+    const auto sequence = root.getChildWithName(Arps::sequence);
+    forEachValueTreeChildWithType(sequence, keyNode, Arps::key)
     {
         Arpeggiator::Key key;
         key.deserialize(keyNode);
@@ -306,6 +363,7 @@ void Arpeggiator::Key::deserialize(const ValueTree &tree)
 {
     using namespace Serialization;
     this->key = tree.getProperty(Arps::Keys::key);
+    this->period = tree.getProperty(Arps::Keys::period);
     this->beat = float(tree.getProperty(Arps::Keys::timestamp)) / TICKS_PER_BEAT;
     this->length = float(tree.getProperty(Arps::Keys::length)) / TICKS_PER_BEAT;
     const auto vol = float(tree.getProperty(Arps::Keys::volume)) / VELOCITY_SAVE_ACCURACY;

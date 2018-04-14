@@ -164,13 +164,12 @@ bool Scale::seemsMinor() const noexcept
 static int wrapKey(int key, int const lowerKey, int const upperKey)
 {
     const int keyRange = upperKey - lowerKey;
+    const int safeKey =
+        (key < lowerKey) ?
+        key + keyRange * ((lowerKey - key) / keyRange + 1) :
+        key;
 
-    if (key < lowerKey)
-    {
-        key += keyRange * ((lowerKey - key) / keyRange);
-    }
-
-    return lowerKey + (key - lowerKey) % keyRange;
+    return lowerKey + (safeKey - lowerKey) % keyRange;
 }
 
 bool Scale::hasKey(int chormaticKey) const

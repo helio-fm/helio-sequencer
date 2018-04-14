@@ -99,19 +99,8 @@ public:
 
     protected:
 
-        Note::Key getChordKey(const Array<Note> &chord, int index) const
-        {
-            const auto safeIndex = index % chord.size();
-            return chord.getUnchecked(safeIndex).getKey();
-        }
-
-        Note::Key getChordKeyPlus(const Array<Note> &chord, const Scale::Ptr chordScale,
-            Note::Key chordRoot, int index, int scaleOffset) const
-        {
-            const int relativeChordKey = this->getChordKey(chord, index) - chordRoot;
-            const int nextScaleKey = chordScale->getScaleKey(relativeChordKey) + scaleOffset;
-            return chordScale->getChromaticKey(nextScaleKey) + chordRoot;
-        }
+        Note::Key getChordKey(const Array<Note> &chord, int chordKeyIndex,
+            const Scale::Ptr chordScale, Note::Key chordRoot, int scaleOffset) const;
     };
 
     //===------------------------------------------------------------------===//
