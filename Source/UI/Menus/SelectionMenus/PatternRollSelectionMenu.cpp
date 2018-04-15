@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "PatternRollSelectionCommandPanel.h"
+#include "PatternRollSelectionMenu.h"
 #include "App.h"
 #include "Lasso.h"
 #include "CommandIDs.h"
@@ -38,13 +38,13 @@ static CommandPanel::Items createDefaultPanel()
     return cmds;
 }
 
-PatternRollSelectionCommandPanel::PatternRollSelectionCommandPanel(WeakReference<Lasso> lasso) :
+PatternRollSelectionMenu::PatternRollSelectionMenu(WeakReference<Lasso> lasso) :
     lasso(lasso)
 {
     this->updateContent(createDefaultPanel(), CommandPanel::SlideLeft);
 }
 
-void PatternRollSelectionCommandPanel::handleCommandMessage(int commandId)
+void PatternRollSelectionMenu::handleCommandMessage(int commandId)
 {
     if (commandId == CommandIDs::CopyEvents)
     {
@@ -52,7 +52,7 @@ void PatternRollSelectionCommandPanel::handleCommandMessage(int commandId)
     }
 }
 
-void PatternRollSelectionCommandPanel::dismiss() const
+void PatternRollSelectionMenu::dismiss() const
 {
     if (Component *parent = this->getParentComponent())
     {

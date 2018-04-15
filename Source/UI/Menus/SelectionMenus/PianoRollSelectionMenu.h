@@ -22,11 +22,11 @@ class ProjectTreeItem;
 
 #include "CommandPanel.h"
 
-class PianoRollSelectionCommandPanel : public CommandPanel
+class PianoRollSelectionMenu : public CommandPanel
 {
 public:
     
-    PianoRollSelectionCommandPanel(WeakReference<Lasso> lasso, const ProjectTreeItem &project);
+    PianoRollSelectionMenu(WeakReference<Lasso> lasso, const ProjectTreeItem &project);
     void handleCommandMessage(int commandId) override;
     
 private:
@@ -36,5 +36,5 @@ private:
     WeakReference<Lasso> lasso;
     const ProjectTreeItem &project;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRollSelectionCommandPanel)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRollSelectionMenu)
 };

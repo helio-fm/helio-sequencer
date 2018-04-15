@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "PianoRollSelectionCommandPanel.h"
+#include "PianoRollSelectionMenu.h"
 
 #include "Lasso.h"
 #include "SequencerOperations.h"
@@ -116,14 +116,14 @@ static CommandPanel::Items createArpsPanel()
     return cmds;
 }
 
-PianoRollSelectionCommandPanel::PianoRollSelectionCommandPanel(WeakReference<Lasso> lasso, const ProjectTreeItem &project) :
+PianoRollSelectionMenu::PianoRollSelectionMenu(WeakReference<Lasso> lasso, const ProjectTreeItem &project) :
     lasso(lasso),
     project(project)
 {
     this->updateContent(createDefaultPanel(), CommandPanel::SlideRight);
 }
 
-void PianoRollSelectionCommandPanel::handleCommandMessage(int commandId)
+void PianoRollSelectionMenu::handleCommandMessage(int commandId)
 {
     jassert(this->lasso != nullptr);
     const Lasso &selectionReference = *this->lasso;
@@ -242,7 +242,7 @@ void PianoRollSelectionCommandPanel::handleCommandMessage(int commandId)
     }   
 }
 
-void PianoRollSelectionCommandPanel::dismiss() const
+void PianoRollSelectionMenu::dismiss() const
 {
     if (Component *parent = this->getParentComponent())
     {

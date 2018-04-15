@@ -21,11 +21,11 @@ class Lasso;
 
 #include "CommandPanel.h"
 
-class PatternRollSelectionCommandPanel : public CommandPanel
+class PatternRollSelectionMenu : public CommandPanel
 {
 public:
     
-    PatternRollSelectionCommandPanel(WeakReference<Lasso> lasso);
+    PatternRollSelectionMenu(WeakReference<Lasso> lasso);
     void handleCommandMessage(int commandId) override;
     
 private:
@@ -33,5 +33,5 @@ private:
     void dismiss() const;
     WeakReference<Lasso> lasso;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRollSelectionCommandPanel);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRollSelectionMenu);
 };

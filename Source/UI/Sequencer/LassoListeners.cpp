@@ -22,8 +22,8 @@
 #include "Icons.h"
 #include "Lasso.h"
 #include "TreeItem.h"
-#include "PianoRollSelectionCommandPanel.h"
-#include "PatternRollSelectionCommandPanel.h"
+#include "PianoRollSelectionMenu.h"
+#include "PatternRollSelectionMenu.h"
 
 //===----------------------------------------------------------------------===//
 // Base class
@@ -80,7 +80,7 @@ public:
 
     ScopedPointer<Component> createMenu() override
     {
-        return new PianoRollSelectionCommandPanel(this->lasso, this->project);
+        return new PianoRollSelectionMenu(this->lasso, this->project);
     }
 
     Image getIcon() const override
@@ -126,7 +126,7 @@ public:
 
     ScopedPointer<Component> createMenu() override
     {
-        return new PatternRollSelectionCommandPanel(this->lasso);
+        return new PatternRollSelectionMenu(this->lasso);
     }
 
     Image getIcon() const override
