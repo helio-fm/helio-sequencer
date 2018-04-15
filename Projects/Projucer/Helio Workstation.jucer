@@ -772,6 +772,14 @@
                   file="../../Source/UI/Menus/SelectionMenus/PianoRollSelectionMenu.cpp"/>
             <FILE id="sBLseL" name="PianoRollSelectionMenu.h" compile="0" resource="0"
                   file="../../Source/UI/Menus/SelectionMenus/PianoRollSelectionMenu.h"/>
+            <FILE id="tXBZ7k" name="VCSHistorySelectionMenu.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Menus/SelectionMenus/VCSHistorySelectionMenu.cpp"/>
+            <FILE id="Z2g2k6" name="VCSStageSelectionMenu.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Menus/SelectionMenus/VCSStageSelectionMenu.cpp"/>
+            <FILE id="C8ECuc" name="VCSHistorySelectionMenu.h" compile="0" resource="0"
+                  file="../../Source/UI/Menus/SelectionMenus/VCSHistorySelectionMenu.h"/>
+            <FILE id="ZauTdB" name="VCSStageSelectionMenu.h" compile="0" resource="0"
+                  file="../../Source/UI/Menus/SelectionMenus/VCSStageSelectionMenu.h"/>
           </GROUP>
           <FILE id="wgLDqw" name="AnnotationCommandPanel.cpp" compile="1" resource="0"
                 file="../../Source/UI/Menus/AnnotationCommandPanel.cpp"/>
