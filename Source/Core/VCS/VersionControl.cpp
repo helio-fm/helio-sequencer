@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "App.h"
 #include "VersionControl.h"
-#include "VersionControlEditorPhone.h"
 #include "VersionControlEditorDefault.h"
 #include "TrackedItem.h"
 #include "MidiSequence.h"
@@ -27,7 +26,6 @@
 #include "SerializationKeys.h"
 
 using namespace VCS;
-
 
 VersionControl::VersionControl(WeakReference<VCS::TrackedItemsSource> parent,
                                const String &existingId,
@@ -76,14 +74,12 @@ VersionControl::~VersionControl()
 
 VersionControlEditor *VersionControl::createEditor()
 {
-    if (App::isRunningOnPhone())
-    {
-        return new VersionControlEditorPhone(*this);
-    }
-    else
-    {
-        return new VersionControlEditorDefault(*this);
-    }
+    //if (App::isRunningOnPhone())
+    //{
+    //    return new VersionControlEditorPhone(*this);
+    //}
+
+    return new VersionControlEditorDefault(*this);
 }
 
 

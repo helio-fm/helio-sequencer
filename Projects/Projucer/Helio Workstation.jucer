@@ -964,14 +964,6 @@
                   resource="0" file="../../Source/UI/Pages/VCS/VersionControlEditorDefault.cpp"/>
             <FILE id="tjJByt" name="VersionControlEditorDefault.h" compile="0"
                   resource="0" file="../../Source/UI/Pages/VCS/VersionControlEditorDefault.h"/>
-            <FILE id="EhwzRT" name="VersionControlEditorPhone.cpp" compile="1"
-                  resource="0" file="../../Source/UI/Pages/VCS/VersionControlEditorPhone.cpp"/>
-            <FILE id="m1mtAq" name="VersionControlEditorPhone.h" compile="0" resource="0"
-                  file="../../Source/UI/Pages/VCS/VersionControlEditorPhone.h"/>
-            <FILE id="WtPCVf" name="VersionControlEditorPhoneViewportContent.cpp"
-                  compile="1" resource="0" file="../../Source/UI/Pages/VCS/VersionControlEditorPhoneViewportContent.cpp"/>
-            <FILE id="akBI92" name="VersionControlEditorPhoneViewportContent.h"
-                  compile="0" resource="0" file="../../Source/UI/Pages/VCS/VersionControlEditorPhoneViewportContent.h"/>
           </GROUP>
           <GROUP id="{32159434-9874-6B08-9036-448BF1932A94}" name="Workspace">
             <GROUP id="{95E5F2DA-E6EB-7B2B-D706-085B3DCBBCC7}" name="Menu">
