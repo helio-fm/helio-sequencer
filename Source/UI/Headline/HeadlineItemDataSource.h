@@ -30,7 +30,7 @@ public:
     virtual String getName() const = 0;
 
     virtual bool canBeSelectedAsMenuItem() const = 0;
-    virtual void onSelectedAsMenuItem() = 0;
+    virtual void onSelectedAsMenuItem() {}
 
 protected:
 

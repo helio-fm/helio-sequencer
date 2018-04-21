@@ -35,7 +35,7 @@ static CommandPanel::Items createDefaultPanel()
     return cmds;
 }
 
-VersionControlHistorySelectionMenu::VersionControlHistorySelectionMenu(ValueTree &revision, VersionControl &vcs) :
+VersionControlHistorySelectionMenu::VersionControlHistorySelectionMenu(ValueTree revision, VersionControl &vcs) :
     revision(revision),
     vcs(vcs)
 {

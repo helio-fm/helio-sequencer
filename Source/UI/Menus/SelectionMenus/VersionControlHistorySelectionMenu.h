@@ -25,7 +25,7 @@ class VersionControlHistorySelectionMenu final : public CommandPanel
 {
 public:
     
-    VersionControlHistorySelectionMenu(ValueTree &revision, VersionControl &vcs);
+    VersionControlHistorySelectionMenu(ValueTree revision, VersionControl &vcs);
     void handleCommandMessage(int commandId) override;
     
 private:

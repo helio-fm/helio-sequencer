@@ -17,6 +17,7 @@
 
 #include "Common.h"
 #include "ViewportFitProxyComponent.h"
+#include "CommandIDs.h"
 
 #define DRAG_SPEED 1
 #define PADDING 30
@@ -85,7 +86,6 @@ void ViewportFitProxyComponent::centerTargetToViewport()
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
@@ -105,6 +105,7 @@ void ViewportFitProxyComponent::mouseMove(const MouseEvent &e)
 void ViewportFitProxyComponent::mouseDown(const MouseEvent &event)
 {
     this->viewportDragStart = this->viewport.getViewPosition();
+    this->target->postCommandMessage(CommandIDs::StartDragViewport);
 }
 
 void ViewportFitProxyComponent::mouseDrag(const MouseEvent &event)
@@ -115,14 +116,17 @@ void ViewportFitProxyComponent::mouseDrag(const MouseEvent &event)
                                event.getDistanceFromDragStartY() * DRAG_SPEED);
 
     this->viewport.setViewPosition(this->viewportDragStart - dragDelta);
+}
 
+void ViewportFitProxyComponent::mouseUp(const MouseEvent &event)
+{
+    target->postCommandMessage(CommandIDs::EndDragViewport);
 }
 
 void ViewportFitProxyComponent::parentSizeChanged()
 {
     this->centerTargetToViewport();
 }
-
 
 //===----------------------------------------------------------------------===//
 // Private

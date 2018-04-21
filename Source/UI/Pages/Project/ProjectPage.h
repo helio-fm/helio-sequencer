@@ -22,9 +22,9 @@ class ProjectTreeItem;
 
 #include "TransportListener.h"
 
-class ProjectPage final : public Component,
-                          protected TransportListener,
-                          protected ChangeListener
+class ProjectPage : public Component,
+                    protected TransportListener,
+                    protected ChangeListener
 {
 public:
 

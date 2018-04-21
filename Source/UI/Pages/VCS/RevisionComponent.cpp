@@ -49,7 +49,7 @@ RevisionComponent::RevisionComponent(VersionControl &owner, const ValueTree revi
       change(0.f),
       number(0),
       parent(nullptr),
-      thread(nullptr),
+      wired(nullptr),
       leftmostSibling(nullptr)
 {
     addAndMakeVisible (revisionDescription = new Label (String(),
@@ -157,13 +157,13 @@ void RevisionComponent::paint (Graphics& g)
 
     if (this->isHeadRevision)
     {
-        g.setColour(Colours::white.withAlpha(0.3f));
-        g.drawRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth()), static_cast<float> (getHeight()), 9.000f, 1.0f);
+        g.setColour(Colours::white.withAlpha(0.15f));
+        g.drawRoundedRectangle(0.0f, 0.0f, static_cast<float> (getWidth()), static_cast<float> (getHeight()), 9.000f, 1.0f);
     }
 
     if (this->selected)
     {
-        g.setColour(Colours::white.withAlpha(0.15f));
+        g.setColour(Colours::white.withAlpha(0.3f));
         g.drawRoundedRectangle (0.0f, 0.0f, static_cast<float> (getWidth()), static_cast<float> (getHeight()), 9.000f, 1.0f);
     }
 
@@ -194,7 +194,6 @@ void RevisionComponent::mouseDown (const MouseEvent& e)
     if (RevisionTreeComponent *revTree = dynamic_cast<RevisionTreeComponent *>(this->getParentComponent()))
     {
         revTree->selectComponent(this, true);
-        revTree->showTooltipFor(this, e.getMouseDownPosition(), this->revision);
     }
     //[/UserCode_mouseDown]
 }
@@ -211,6 +210,49 @@ void RevisionComponent::setSelected(bool selected)
 bool RevisionComponent::isSelected() const
 {
     return this->selected;
+}
+
+RevisionComponent *RevisionComponent::getLeftmostSibling() const
+{
+    if (!this->leftmostSibling && this->parent)
+    {
+        if (this != this->parent->children.getFirst())
+        {
+            this->leftmostSibling = this->parent->children.getFirst();
+        }
+    }
+
+    return this->leftmostSibling;
+}
+
+RevisionComponent *RevisionComponent::getLeftBrother() const
+{
+    RevisionComponent *n = nullptr;
+
+    if (this->parent)
+    {
+        for (auto i : this->parent->children)
+        {
+            if (i == this) { return n; }
+            n = i;
+        }
+    }
+
+    return n;
+}
+
+RevisionComponent *RevisionComponent::right() const
+{
+    if (this->wired) { return this->wired; }
+    if (this->children.size() > 0) { return this->children.getLast(); }
+    return nullptr;
+}
+
+RevisionComponent *RevisionComponent::left() const
+{
+    if (this->wired) { return this->wired; }
+    if (this->children.size() > 0) { return this->children.getFirst(); }
+    return nullptr;
 }
 
 //[/MiscUserCode]

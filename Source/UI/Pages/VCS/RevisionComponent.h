@@ -41,62 +41,22 @@ public:
     float change;
     int number;
 
+    const ValueTree revision;
+
     RevisionComponent *parent;
     RevisionComponent *ancestor;
-    RevisionComponent *thread;
+    RevisionComponent *wired;
 
     Array<RevisionComponent *> children;
 
-    RevisionComponent *getLeftmostSibling() const
-    {
-        if (!this->leftmostSibling && this->parent)
-        {
-            if (this != this->parent->children.getFirst())
-            {
-                this->leftmostSibling = this->parent->children.getFirst();
-            }
-        }
-
-        return this->leftmostSibling;
-    }
-
-    RevisionComponent *getLeftBrother() const
-    {
-        RevisionComponent *n = nullptr;
-
-        if (this->parent)
-        {
-            for (auto i : this->parent->children)
-            {
-                if (i == this) { return n; }
-                n = i;
-            }
-        }
-
-        return n;
-    }
-
-    RevisionComponent *right() const
-    {
-        if (this->thread) { return this->thread; }
-        if (this->children.size() > 0) { return this->children.getLast(); }
-        return nullptr;
-    }
-
-    RevisionComponent *left() const
-    {
-        if (this->thread) { return this->thread; }
-        if (this->children.size() > 0) { return this->children.getFirst(); }
-        return nullptr;
-    }
+    RevisionComponent *getLeftmostSibling() const;
+    RevisionComponent *getLeftBrother() const;
+    RevisionComponent *right() const;
+    RevisionComponent *left() const;
 
     mutable RevisionComponent *leftmostSibling; //  todo private
 
-
-
-
     void setSelected(bool selected);
-
     bool isSelected() const;
 
     bool isHead() const { return this->isHeadRevision; }
@@ -114,7 +74,6 @@ private:
     //[UserVariables]
 
     VersionControl &vcs;
-    const ValueTree revision;
 
     bool selected;
     bool isHeadRevision;

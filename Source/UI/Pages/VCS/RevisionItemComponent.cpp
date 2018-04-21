@@ -149,45 +149,6 @@ void RevisionItemComponent::resized()
 
 //[MiscUserCode]
 
-
-//void RevisionItemComponent::mouseDown (const MouseEvent& e)
-//{
-//    //[UserCode_mouseDown] -- Add your code here...
-//    this->invertSelection();
-//    //[/UserCode_mouseDown]
-//}
-//
-//void RevisionItemComponent::mouseDrag (const MouseEvent& e)
-//{
-//    //[UserCode_mouseDrag] -- Add your code here...
-//    if (e.mods.isAnyMouseButtonDown())
-//    {
-//        Component *c = Desktop::getInstance().findComponentAt(e.getScreenPosition());
-//
-//        if (c == e.originalComponent) { return; }
-//
-//        if (RevisionItemComponent *itemComponent = dynamic_cast<RevisionItemComponent *>(c))
-//        {
-//            //Logger::writeToLog(itemComponent->getRevisionItem()->getVCSName());
-//
-//            if (this->isSelected())
-//            {
-//                itemComponent->select();
-//            }
-//            else
-//            {
-//                itemComponent->deselect();
-//            }
-//        }
-//    }
-//    //[/UserCode_mouseDrag]
-//}
-
-//Component *RevisionItemComponent::createHighlighterComponent()
-//{
-//    return new RevisionItemHighlighter();
-//}
-
 void RevisionItemComponent::updateItemInfo(int rowNumber, bool isLastRow, VCS::RevisionItem::Ptr revisionItemInfo)
 {
     this->row = rowNumber;
@@ -246,6 +207,11 @@ void RevisionItemComponent::select() const
 void RevisionItemComponent::deselect() const
 {
     if (this->isSelected()) { this->invertSelection(); }
+}
+
+void RevisionItemComponent::setSelected(bool shouldBeSelected)
+{
+    this->invertSelection();
 }
 
 void RevisionItemComponent::invertSelection() const

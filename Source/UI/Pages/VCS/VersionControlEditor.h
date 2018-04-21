@@ -27,7 +27,10 @@ public:
     VersionControlEditor(VersionControl &versionControl);
     
     virtual void updateState() = 0;
-    
+
+    virtual void onStageSelectionChanged() = 0;
+    virtual void onHistorySelectionChanged() = 0;
+
     void changeListenerCallback(ChangeBroadcaster *source) override;
     void broughtToFront() override;
     

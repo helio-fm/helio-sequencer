@@ -80,7 +80,7 @@ public:
 
     ScopedPointer<Component> createMenu() override
     {
-        return new PianoRollSelectionMenu(this->lasso, this->project);
+        return { new PianoRollSelectionMenu(this->lasso, this->project) };
     }
 
     Image getIcon() const override
@@ -90,7 +90,7 @@ public:
 
     String getName() const override
     {
-        return TRANS("tree::selection::notes");
+        return TRANS("menu::selection::notes");
     }
 
     bool canBeSelectedAsMenuItem() const override { return false; }
@@ -126,7 +126,7 @@ public:
 
     ScopedPointer<Component> createMenu() override
     {
-        return new PatternRollSelectionMenu(this->lasso);
+        return { new PatternRollSelectionMenu(this->lasso) };
     }
 
     Image getIcon() const override
@@ -136,7 +136,7 @@ public:
 
     String getName() const override
     {
-        return TRANS("tree::selection::notes");
+        return TRANS("menu::selection::notes");
     }
 
     bool canBeSelectedAsMenuItem() const override { return false; }

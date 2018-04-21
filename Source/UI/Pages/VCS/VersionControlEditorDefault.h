@@ -21,22 +21,23 @@
 #include "VersionControlEditor.h"
 //[/Headers]
 
-#include "../Themes/PanelBackgroundB.h"
+#include "../../Themes/PanelBackgroundB.h"
 #include "StageComponent.h"
 #include "HistoryComponent.h"
-#include "../Themes/LightShadowRightwards.h"
+#include "../../Themes/LightShadowRightwards.h"
 
-class VersionControlEditorDefault  : public VersionControlEditor
+class VersionControlEditorDefault final : public VersionControlEditor
 {
 public:
 
-    VersionControlEditorDefault (VersionControl &versionControl);
-
+    VersionControlEditorDefault(VersionControl &versionControl);
     ~VersionControlEditorDefault();
 
     //[UserMethods]
 
     void updateState() override;
+    void onStageSelectionChanged() override;
+    void onHistorySelectionChanged() override;
 
     //[/UserMethods]
 

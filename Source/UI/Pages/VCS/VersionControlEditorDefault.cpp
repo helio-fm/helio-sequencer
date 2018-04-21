@@ -74,9 +74,9 @@ void VersionControlEditorDefault::resized()
     //[/UserPreResize]
 
     background->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
-    stageComponent->setBounds (15, 15, proportionOfWidth (0.5006f) - 15, getHeight() - 25);
-    historyComponent->setBounds (0 + proportionOfWidth (0.5006f) - -15, 15, proportionOfWidth (0.5006f) - 30, getHeight() - 25);
-    anchor->setBounds (0, 0, proportionOfWidth (0.5006f), 8);
+    stageComponent->setBounds (15, 10, proportionOfWidth (0.5020f) - 15, getHeight() - 20);
+    historyComponent->setBounds (0 + proportionOfWidth (0.5020f) - -15, 10, proportionOfWidth (0.5020f) - 30, getHeight() - 20);
+    anchor->setBounds (0, 0, proportionOfWidth (0.5020f), 8);
     shadow->setBounds (0, 0, 5, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
@@ -92,6 +92,16 @@ void VersionControlEditorDefault::updateState()
     this->historyComponent->rebuildRevisionTree();
 }
 
+void VersionControlEditorDefault::onStageSelectionChanged()
+{
+    this->historyComponent->clearSelection();
+}
+
+void VersionControlEditorDefault::onHistorySelectionChanged()
+{
+    this->stageComponent->clearSelection();
+}
+
 //[/MiscUserCode]
 
 #if 0
@@ -99,26 +109,25 @@ void VersionControlEditorDefault::updateState()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="VersionControlEditorDefault"
-                 template="../../Template" componentName="" parentClasses="public VersionControlEditor"
+                 template="../../../Template" componentName="" parentClasses="public VersionControlEditor"
                  constructorParams="VersionControl &amp;versionControl" variableInitialisers="VersionControlEditor(versionControl)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="0" initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="9ce6aa2b193dc2e7" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../Themes/PanelBackgroundB.cpp"
+             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../../Themes/PanelBackgroundB.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="2c6b2bd8a55487b1" memberName="stageComponent" virtualName=""
-             explicitFocusOrder="0" pos="15 15 15M 25M" posRelativeW="4ac6bf71d1e1d84f"
+             explicitFocusOrder="0" pos="15 10 15M 20M" posRelativeW="4ac6bf71d1e1d84f"
              sourceFile="StageComponent.cpp" constructorParams="versionControl"/>
   <JUCERCOMP name="" id="6b8c3baafe7f22f1" memberName="historyComponent" virtualName=""
-             explicitFocusOrder="0" pos="-15R 15 30M 25M" posRelativeX="4ac6bf71d1e1d84f"
+             explicitFocusOrder="0" pos="-15R 10 30M 20M" posRelativeX="4ac6bf71d1e1d84f"
              posRelativeW="4ac6bf71d1e1d84f" sourceFile="HistoryComponent.cpp"
              constructorParams="versionControl"/>
   <GENERICCOMPONENT name="" id="4ac6bf71d1e1d84f" memberName="anchor" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 50.103% 8" class="Component"
-                    params=""/>
+                    explicitFocusOrder="0" pos="0 0 50.2% 8" class="Component" params=""/>
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="0 0 5 0M" sourceFile="../Themes/LightShadowRightwards.cpp"
+             explicitFocusOrder="0" pos="0 0 5 0M" sourceFile="../../Themes/LightShadowRightwards.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

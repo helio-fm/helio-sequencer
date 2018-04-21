@@ -19,51 +19,55 @@
 
 //[Headers]
 class VersionControl;
-class PushComponent;
-class PullComponent;
+class RevisionTreeComponent;
 
+#include "HeadlineItemDataSource.h"
 #include "Client.h"
 //[/Headers]
 
 #include "../../Themes/FramePanel.h"
-#include "../../Themes/LightShadowDownwards.h"
 
-class HistoryComponent  : public Component,
-                          public Button::Listener
+class HistoryComponent final : public Component,
+                               public HeadlineItemDataSource
 {
 public:
 
-    HistoryComponent (VersionControl &owner);
-
+    HistoryComponent(VersionControl &owner);
     ~HistoryComponent();
 
     //[UserMethods]
+
+    void clearSelection();
     void rebuildRevisionTree();
+    void onRevisionSelectionChanged();
+
+    //===------------------------------------------------------------------===//
+    // HeadlineItemDataSource
+    //===------------------------------------------------------------------===//
+
+    bool hasMenu() const noexcept override;
+    ScopedPointer<Component> createMenu() override;
+    Image getIcon() const override;
+    String getName() const override;
+    bool canBeSelectedAsMenuItem() const override;
+
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked (Button* buttonThatWasClicked) override;
     void handleCommandMessage (int commandId) override;
 
 
 private:
 
     //[UserVariables]
-
     VersionControl &vcs;
-
-    SafePointer<PushComponent> pushComponent;
-    SafePointer<PullComponent> pullComponent;
-
+    SafePointer<RevisionTreeComponent> revisionTree;
     //[/UserVariables]
 
     ScopedPointer<FramePanel> panel;
     ScopedPointer<Viewport> revisionViewport;
-    ScopedPointer<TextButton> pushButton;
-    ScopedPointer<TextButton> pullButton;
     ScopedPointer<Label> revisionTreeLabel;
-    ScopedPointer<LightShadowDownwards> shadow;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HistoryComponent)
 };

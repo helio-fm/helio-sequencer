@@ -24,13 +24,38 @@
 //[MiscUserDefs]
 #include "App.h"
 #include "VersionControl.h"
+#include "VersionControlEditor.h"
 #include "RevisionTreeComponent.h"
 #include "ViewportFitProxyComponent.h"
 #include "HelioCallout.h"
+#include "Revision.h"
 #include "CommandIDs.h"
+#include "Icons.h"
 
 #include "MainLayout.h"
 #include "ModalDialogConfirmation.h"
+#include "VersionControlHistorySelectionMenu.h"
+#include "RevisionTooltipComponent.h"
+
+// just emitting a modal ui box.
+//this->vcs.getRemote()->push();
+
+// проверит не просто наличие каких-либо изменений,
+// а то, есть ли изменения айтемов, которые уже присутствуют в индексе
+//if (this->vcs.getHead().hasTrackedItemsOnTheStage())
+//{
+//    auto confirmationDialog = ModalDialogConfirmation::Presets::forcePull();
+//    confirmationDialog->onOk = [this]()
+//    {
+//        this->vcs.getRemote()->pull();
+//    };
+//    App::Layout().showModalComponentUnowned(confirmationDialog.release());
+//}
+//else
+//{
+//    this->vcs.getRemote()->pull();
+//}
+
 //[/MiscUserDefs]
 
 HistoryComponent::HistoryComponent(VersionControl &owner)
@@ -39,23 +64,12 @@ HistoryComponent::HistoryComponent(VersionControl &owner)
     addAndMakeVisible (panel = new FramePanel());
     addAndMakeVisible (revisionViewport = new Viewport());
 
-    addAndMakeVisible (pushButton = new TextButton ("push"));
-    pushButton->setButtonText (String());
-    pushButton->setConnectedEdges (Button::ConnectedOnTop);
-    pushButton->addListener (this);
-
-    addAndMakeVisible (pullButton = new TextButton ("pull"));
-    pullButton->setButtonText (String());
-    pullButton->setConnectedEdges (Button::ConnectedOnTop);
-    pullButton->addListener (this);
-
     addAndMakeVisible (revisionTreeLabel = new Label (String(),
                                                       TRANS("vcs::history::caption")));
     revisionTreeLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
-    revisionTreeLabel->setJustificationType (Justification::centredLeft);
+    revisionTreeLabel->setJustificationType (Justification::centred);
     revisionTreeLabel->setEditable (false, false, false);
 
-    addAndMakeVisible (shadow = new LightShadowDownwards());
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -73,10 +87,7 @@ HistoryComponent::~HistoryComponent()
 
     panel = nullptr;
     revisionViewport = nullptr;
-    pushButton = nullptr;
-    pullButton = nullptr;
     revisionTreeLabel = nullptr;
-    shadow = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -96,53 +107,11 @@ void HistoryComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    panel->setBounds (0, 35, getWidth() - 0, getHeight() - 85);
-    revisionViewport->setBounds (1, 36, getWidth() - 2, getHeight() - 87);
-    pushButton->setBounds (getWidth() - 8 - 96, 35 + (getHeight() - 85), 96, 48);
-    pullButton->setBounds (0 + 8, 35 + (getHeight() - 85), 96, 48);
-    revisionTreeLabel->setBounds (0, 14 - (32 / 2), 406, 32);
-    shadow->setBounds (0 + 8, 35 + (getHeight() - 85), (getWidth() - 0) - 16, 16);
+    panel->setBounds (0, 35, getWidth() - 0, getHeight() - 35);
+    revisionViewport->setBounds (1, 36, getWidth() - 2, getHeight() - 37);
+    revisionTreeLabel->setBounds (0, 0, getWidth() - 0, 26);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
-}
-
-void HistoryComponent::buttonClicked (Button* buttonThatWasClicked)
-{
-    //[UserbuttonClicked_Pre]
-    //[/UserbuttonClicked_Pre]
-
-    if (buttonThatWasClicked == pushButton)
-    {
-        //[UserButtonCode_pushButton] -- add your button handler code here..
-        // just emitting a modal ui box.
-        this->vcs.getRemote()->push();
-        //[/UserButtonCode_pushButton]
-    }
-    else if (buttonThatWasClicked == pullButton)
-    {
-        //[UserButtonCode_pullButton] -- add your button handler code here..
-
-        // проверит не просто наличие каких-либо изменений,
-        // а то, есть ли изменения айтемов, которые уже присутствуют в индексе
-        if (this->vcs.getHead().hasTrackedItemsOnTheStage())
-        {
-            auto confirmationDialog = ModalDialogConfirmation::Presets::forcePull();
-            confirmationDialog->onOk = [this]()
-            {
-                this->vcs.getRemote()->pull();
-            };
-
-            App::Layout().showModalComponentUnowned(confirmationDialog.release());
-        }
-        else
-        {
-            this->vcs.getRemote()->pull();
-        }
-        //[/UserButtonCode_pullButton]
-    }
-
-    //[UserbuttonClicked_Post]
-    //[/UserbuttonClicked_Post]
 }
 
 void HistoryComponent::handleCommandMessage (int commandId)
@@ -153,12 +122,83 @@ void HistoryComponent::handleCommandMessage (int commandId)
 
 
 //[MiscUserCode]
+
+void HistoryComponent::clearSelection()
+{
+    if (this->revisionTree != nullptr)
+    {
+        this->revisionTree->deselectAll(false);
+    }
+}
+
 void HistoryComponent::rebuildRevisionTree()
 {
-    Component *revTree = new RevisionTreeComponent(this->vcs);
-    auto alignerProxy = new ViewportFitProxyComponent(*this->revisionViewport, revTree, true); // deletes revTree
+    this->revisionTree = new RevisionTreeComponent(this->vcs);
+    auto alignerProxy = new ViewportFitProxyComponent(*this->revisionViewport, this->revisionTree, true); // deletes revTree
     this->revisionViewport->setViewedComponent(alignerProxy, true); // deletes alignerProxy
     alignerProxy->centerTargetToViewport();
+}
+
+void HistoryComponent::onRevisionSelectionChanged()
+{
+    if (this->revisionTree != nullptr &&
+        this->revisionTree->getSelectedRevision().isValid())
+    {
+        // Hide existing because selection caption will be always different:
+        App::Layout().hideSelectionMenu();
+        App::Layout().showSelectionMenu(this);
+    }
+    else
+    {
+        App::Layout().hideSelectionMenu();
+    }
+
+    if (auto *parent = dynamic_cast<VersionControlEditor *>(this->getParentComponent()))
+    {
+        parent->onHistorySelectionChanged();
+    }
+}
+
+//===----------------------------------------------------------------------===//
+// HeadlineItemDataSource
+//===----------------------------------------------------------------------===//
+
+bool HistoryComponent::hasMenu() const noexcept
+{
+    return true;
+}
+
+ScopedPointer<Component> HistoryComponent::createMenu()
+{
+    if (this->revisionTree != nullptr)
+    {
+        return { new RevisionTooltipComponent(this->vcs, this->revisionTree->getSelectedRevision()) };
+        //return { new VersionControlHistorySelectionMenu(this->revisionTree->getSelectedRevision(), this->vcs) };
+    }
+
+    jassertfalse;
+    return nullptr;
+}
+
+Image HistoryComponent::getIcon() const
+{
+    return Icons::findByName(Icons::selectionTool, HEADLINE_ICON_SIZE);
+}
+
+String HistoryComponent::getName() const
+{
+    if (this->revisionTree != nullptr &&
+        this->revisionTree->getSelectedRevision().isValid())
+    {
+        return VCS::Revision::getMessage(this->revisionTree->getSelectedRevision());
+    }
+
+    return TRANS("menu::selection::vcs::history");
+}
+
+bool HistoryComponent::canBeSelectedAsMenuItem() const
+{
+    return false;
 }
 
 //[/MiscUserCode]
@@ -168,36 +208,24 @@ void HistoryComponent::rebuildRevisionTree()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="HistoryComponent" template="../../../Template"
-                 componentName="" parentClasses="public Component" constructorParams="VersionControl &amp;owner"
-                 variableInitialisers="vcs(owner)" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="0" initialWidth="600"
-                 initialHeight="400">
+                 componentName="" parentClasses="public Component, public HeadlineItemDataSource"
+                 constructorParams="VersionControl &amp;owner" variableInitialisers="vcs(owner)"
+                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
+                 fixedSize="0" initialWidth="600" initialHeight="400">
   <METHODS>
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="ffffff"/>
   <JUCERCOMP name="" id="fa0c0fc3d6eee313" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="0 35 0M 85M" sourceFile="../../Themes/FramePanel.cpp"
+             explicitFocusOrder="0" pos="0 35 0M 35M" sourceFile="../../Themes/FramePanel.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="34a64657988c0f04" memberName="revisionViewport" virtualName=""
-                    explicitFocusOrder="0" pos="1 36 2M 87M" class="Viewport" params=""/>
-  <TEXTBUTTON name="push" id="7855caa7c65c5c11" memberName="pushButton" virtualName=""
-              explicitFocusOrder="0" pos="8Rr 0R 96 48" posRelativeY="fa0c0fc3d6eee313"
-              buttonText="" connectedEdges="4" needsCallback="1" radioGroupId="0"/>
-  <TEXTBUTTON name="pull" id="31cda20020ea520c" memberName="pullButton" virtualName=""
-              explicitFocusOrder="0" pos="8 0R 96 48" posRelativeX="fa0c0fc3d6eee313"
-              posRelativeY="fa0c0fc3d6eee313" posRelativeW="fe1cf713999527d3"
-              posRelativeH="fe1cf713999527d3" buttonText="" connectedEdges="4"
-              needsCallback="1" radioGroupId="0"/>
+                    explicitFocusOrder="0" pos="1 36 2M 37M" class="Viewport" params=""/>
   <LABEL name="" id="158da5e6e58ab3ae" memberName="revisionTreeLabel"
-         virtualName="" explicitFocusOrder="0" pos="0 14c 406 32" labelText="vcs::history::caption"
+         virtualName="" explicitFocusOrder="0" pos="0 0 0M 26" labelText="vcs::history::caption"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default serif font" fontsize="21" kerning="0" bold="0"
-         italic="0" justification="33"/>
-  <JUCERCOMP name="" id="34270fb50cf926d8" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="8 0R 16M 16" posRelativeX="fa0c0fc3d6eee313"
-             posRelativeY="fa0c0fc3d6eee313" posRelativeW="fa0c0fc3d6eee313"
-             sourceFile="../../Themes/LightShadowDownwards.cpp" constructorParams=""/>
+         fontname="Default serif font" fontsize="21.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA
