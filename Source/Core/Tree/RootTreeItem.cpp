@@ -52,7 +52,7 @@ Colour RootTreeItem::getColour() const noexcept
 
 Image RootTreeItem::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::workspace, TREE_ICON_HEIGHT);
+    return Icons::findByName(Icons::workspace, HEADLINE_ICON_SIZE);
 }
 
 void RootTreeItem::showPage()

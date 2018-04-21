@@ -17,6 +17,12 @@
 
 #pragma once
 
+#if HELIO_DESKTOP
+#   define HEADLINE_ICON_SIZE (16)
+#elif HELIO_MOBILE
+#   define HEADLINE_ICON_SIZE (24)
+#endif
+
 class HeadlineItemDataSource : public virtual ChangeBroadcaster
 {
 public:

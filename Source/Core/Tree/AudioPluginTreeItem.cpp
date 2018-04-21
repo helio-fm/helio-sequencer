@@ -77,7 +77,7 @@ Colour AudioPluginTreeItem::getColour() const noexcept
 
 Image AudioPluginTreeItem::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::instrumentSettings, TREE_ICON_HEIGHT);
+    return Icons::findByName(Icons::instrumentSettings, HEADLINE_ICON_SIZE);
 }
 
 uint32 AudioPluginTreeItem::getNodeId() const noexcept

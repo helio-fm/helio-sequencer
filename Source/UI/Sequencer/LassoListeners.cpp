@@ -21,7 +21,6 @@
 #include "MainLayout.h"
 #include "Icons.h"
 #include "Lasso.h"
-#include "TreeItem.h"
 #include "PianoRollSelectionMenu.h"
 #include "PatternRollSelectionMenu.h"
 
@@ -85,7 +84,7 @@ public:
 
     Image getIcon() const override
     {
-        return Icons::findByName(Icons::selectionTool, TREE_ICON_HEIGHT);
+        return Icons::findByName(Icons::selectionTool, HEADLINE_ICON_SIZE);
     }
 
     String getName() const override
@@ -131,7 +130,7 @@ public:
 
     Image getIcon() const override
     {
-        return Icons::findByName(Icons::selectionTool, TREE_ICON_HEIGHT);
+        return Icons::findByName(Icons::selectionTool, HEADLINE_ICON_SIZE);
     }
 
     String getName() const override

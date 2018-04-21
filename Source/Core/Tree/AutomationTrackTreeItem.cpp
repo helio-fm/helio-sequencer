@@ -50,7 +50,7 @@ AutomationTrackTreeItem::AutomationTrackTreeItem(const String &name) :
 
 Image AutomationTrackTreeItem::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::automation, TREE_ICON_HEIGHT);
+    return Icons::findByName(Icons::automation, HEADLINE_ICON_SIZE);
 }
 
 void AutomationTrackTreeItem::paintItem(Graphics &g, int width, int height)

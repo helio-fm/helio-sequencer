@@ -18,12 +18,10 @@
 #pragma once
 
 #if HELIO_DESKTOP
-#   define TREE_ICON_HEIGHT (16)
 #   define TREE_LARGE_ICON_HEIGHT (24)
 #   define TREE_ITEM_HEIGHT (32)
 #   define TREE_FONT_SIZE (18)
 #elif HELIO_MOBILE
-#   define TREE_ICON_HEIGHT (24)
 #   define TREE_LARGE_ICON_HEIGHT (32)
 #   define TREE_ITEM_HEIGHT (42)
 #   define TREE_FONT_SIZE (20)
