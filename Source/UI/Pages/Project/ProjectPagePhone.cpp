@@ -26,7 +26,7 @@
 #include "ProjectTreeItem.h"
 #include "ProjectInfo.h"
 #include "HelioTheme.h"
-#include "ProjectCommandPanel.h"
+#include "ProjectMenu.h"
 #include "App.h"
 //[/MiscUserDefs]
 

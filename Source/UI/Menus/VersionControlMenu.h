@@ -17,24 +17,25 @@
 
 #pragma once
 
+class StageComponent;
+class VersionControl;
 class ProjectTreeItem;
-class TimeSignatureEvent;
 
 #include "CommandPanel.h"
-#include "CommandIDs.h"
 
-class TimeSignatureCommandPanel : public CommandPanel
+class VersionControlMenu final : public CommandPanel
 {
 public:
-    
-    TimeSignatureCommandPanel(ProjectTreeItem &parentProject, 
-        const TimeSignatureEvent &targetEvent);
-    
+
+    VersionControlMenu(ProjectTreeItem &project, VersionControl &vcs);
     void handleCommandMessage(int commandId) override;
-    
+
 private:
-    
-    const TimeSignatureEvent &event;
+
+    void dismiss() const;
+
+    VersionControl &vcs;
     ProjectTreeItem &project;
-    
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VersionControlMenu)
 };

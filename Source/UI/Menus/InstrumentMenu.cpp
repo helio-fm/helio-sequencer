@@ -16,14 +16,14 @@
 */
 
 #include "Common.h"
-#include "InstrumentCommandPanel.h"
+#include "InstrumentMenu.h"
 #include "InstrumentTreeItem.h"
 #include "Icons.h"
 #include "CommandIDs.h"
 #include "App.h"
 #include "MainLayout.h"
 
-InstrumentCommandPanel::InstrumentCommandPanel(InstrumentTreeItem &parentInstrument) :
+InstrumentMenu::InstrumentMenu(InstrumentTreeItem &parentInstrument) :
     instrument(parentInstrument)
 {
     CommandPanel::Items cmds;
@@ -33,11 +33,7 @@ InstrumentCommandPanel::InstrumentCommandPanel(InstrumentTreeItem &parentInstrum
     this->updateContent(cmds);
 }
 
-InstrumentCommandPanel::~InstrumentCommandPanel()
-{
-}
-
-void InstrumentCommandPanel::handleCommandMessage(int commandId)
+void InstrumentMenu::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {

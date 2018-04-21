@@ -24,7 +24,7 @@
 
 #include "Instrument.h"
 #include "InstrumentEditor.h"
-#include "InstrumentCommandPanel.h"
+#include "InstrumentMenu.h"
 #include "InstrumentsPage.h"
 #include "AudioPluginTreeItem.h"
 
@@ -196,7 +196,7 @@ bool InstrumentTreeItem::hasMenu() const noexcept
 
 ScopedPointer<Component> InstrumentTreeItem::createMenu()
 {
-    return new InstrumentCommandPanel(*this);
+    return new InstrumentMenu(*this);
 }
 
 void InstrumentTreeItem::updateChildrenEditors()

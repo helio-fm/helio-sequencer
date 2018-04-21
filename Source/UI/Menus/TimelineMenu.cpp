@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "TimelineCommandPanel.h"
+#include "TimelineMenu.h"
 #include "ProjectTreeItem.h"
 #include "MainLayout.h"
 #include "Icons.h"
@@ -27,6 +27,7 @@
 #include "ProjectTimeline.h"
 #include "MidiSequence.h"
 #include "ModalDialogInput.h"
+#include "CommandIDs.h"
 #include "App.h"
 
 template<typename T>
@@ -51,7 +52,7 @@ const T *findSelectedEventOfType(MidiSequence *const sequence, HybridRoll *const
     return selectedEvent;
 }
 
-TimelineCommandPanel::TimelineCommandPanel(ProjectTreeItem &parentProject) :
+TimelineMenu::TimelineMenu(ProjectTreeItem &parentProject) :
     project(parentProject)
 {
     const AnnotationEvent *selectedAnnotation = nullptr;
@@ -121,11 +122,7 @@ TimelineCommandPanel::TimelineCommandPanel(ProjectTreeItem &parentProject) :
     this->updateContent(cmds, SlideDown);
 }
 
-TimelineCommandPanel::~TimelineCommandPanel()
-{
-}
-
-void TimelineCommandPanel::handleCommandMessage(int commandId)
+void TimelineMenu::handleCommandMessage(int commandId)
 {
     if (commandId == CommandIDs::AddAnnotation ||
         commandId == CommandIDs::AddKeySignature ||

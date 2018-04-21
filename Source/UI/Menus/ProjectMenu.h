@@ -23,11 +23,11 @@ class MidiTrackTreeItem;
 
 #include "CommandPanel.h"
 
-class ProjectCommandPanel : public CommandPanel
+class ProjectMenu : public CommandPanel
 {
 public:
     
-    ProjectCommandPanel(ProjectTreeItem &parentProject, AnimationType animationType);
+    ProjectMenu(ProjectTreeItem &parentProject, AnimationType animationType);
     
     void handleCommandMessage(int commandId) override;
     

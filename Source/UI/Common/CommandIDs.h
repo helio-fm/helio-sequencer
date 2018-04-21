@@ -120,12 +120,6 @@ namespace CommandIDs
         DeselectRootItemPanel           = 0x2019,
         UpdateRootItemPanel             = 0x201a,
 
-        // Version control
-        VersionControlForcePull         = 0x201b,
-        VersionControlReset             = 0x201c,
-        VersionControlAmend             = 0x201d,
-        VersionControlCommit            = 0x201e,
-
         // WorkspaceMenu
         LoginLogout                     = 0x2020,
         OpenProject                     = 0x2021,
@@ -210,13 +204,25 @@ namespace CommandIDs
         InvertChordUp                   = 0x4059,
         InvertChordDown                 = 0x405a,
         
-        ToggleQuickStash                = 0x405b,
-        ShowArpeggiatorsPanel           = 0x405c,
-        ShowVolumePanel                 = 0x405d,
-        TweakVolumeRandom               = 0x405e,
-        TweakVolumeFadeOut              = 0x405f,
+        ShowArpeggiatorsPanel           = 0x405b,
+        ShowVolumePanel                 = 0x405c,
+        TweakVolumeRandom               = 0x405d,
+        TweakVolumeFadeOut              = 0x405e,
 
-        YourNextCommandId               = 0x4060
+        // Version control
+        VersionControlToggleQuickStash  = 0x4060,
+        VersionControlPush              = 0x4061,
+        VersionControlPull              = 0x4062,
+        VersionControlForcePull         = 0x4063,
+        VersionControlResetAll          = 0x4064,
+        VersionControlCommitAll         = 0x4065,
+        VersionControlSelectAll         = 0x4066,
+        VersionControlSelectNone        = 0x4067,
+        VersionControlResetSelected     = 0x4068,
+        VersionControlCommitSelected    = 0x4069,
+        VersionControlCheckout          = 0x406a,
+
+        YourNextCommandId               = 0x4100
     };
 
     int getIdForName(const String &command);

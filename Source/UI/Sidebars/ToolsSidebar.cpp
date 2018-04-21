@@ -33,9 +33,9 @@
 #include "CommandItemComponent.h"
 #include "ProjectTimeline.h"
 #include "HelioCallout.h"
-#include "TimelineCommandPanel.h"
-#include "AnnotationCommandPanel.h"
-#include "TimeSignatureCommandPanel.h"
+#include "TimelineMenu.h"
+#include "AnnotationMenu.h"
+#include "TimeSignatureMenu.h"
 #include "SequencerOperations.h"
 #include "NotesTuningPanel.h"
 #include "TriggersTrackMap.h"
@@ -235,15 +235,15 @@ void ToolsSidebar::handleCommandMessage (int commandId)
 
         if (selectedAnnotation != nullptr && TOOLS_SIDEBAR_SHOWS_ANNOTATION_DETAILS)
         {
-            this->emitAnnotationsCallout(new AnnotationCommandPanel(this->project, *selectedAnnotation));
+            this->emitAnnotationsCallout(new AnnotationMenu(this->project, *selectedAnnotation));
         }
         else if (selectedTimeSignature != nullptr && TOOLS_SIDEBAR_SHOWS_ANNOTATION_DETAILS)
         {
-            this->emitAnnotationsCallout(new TimeSignatureCommandPanel(this->project, *selectedTimeSignature));
+            this->emitAnnotationsCallout(new TimeSignatureMenu(this->project, *selectedTimeSignature));
         }
         else
         {
-            this->emitAnnotationsCallout(new TimelineCommandPanel(this->project));
+            this->emitAnnotationsCallout(new TimelineMenu(this->project));
         }
     }
     break;

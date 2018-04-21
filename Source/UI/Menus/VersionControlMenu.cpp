@@ -16,8 +16,13 @@
 */
 
 #include "Common.h"
-#include "VCSHistorySelectionMenu.h"
+#include "VersionControlMenu.h"
+
+#include "StageComponent.h"
 #include "VersionControl.h"
+#include "ProjectTreeItem.h"
+
+#include "CommandPanel.h"
 #include "CommandIDs.h"
 #include "Icons.h"
 
@@ -25,24 +30,41 @@ static CommandPanel::Items createDefaultPanel()
 {
     CommandPanel::Items cmds;
 
-    cmds.add(CommandItem::withParams(Icons::copy, CommandIDs::CopyEvents,
-        TRANS("menu::selection::history::checkout")));
-
     // TODO
+    // if default stash is full and no changes present: "toggle on"
+    // if default stash is empty and there are changes on stage: "toggle on"
+    // else, disabled? or shows error messages?
+
+    cmds.add(CommandItem::withParams(Icons::toggleOn, CommandIDs::VersionControlToggleQuickStash,
+        TRANS("menu::vcs::togglechanges")));
+
+    cmds.add(CommandItem::withParams(Icons::commit, CommandIDs::VersionControlCommitAll,
+        TRANS("menu::vcs::commitall")));
+
+    cmds.add(CommandItem::withParams(Icons::reset, CommandIDs::VersionControlResetAll,
+        TRANS("menu::vcs::resetall")));
+
+    cmds.add(CommandItem::withParams(Icons::pull, CommandIDs::VersionControlPull,
+        TRANS("menu::vcs::pull")));
+
+    cmds.add(CommandItem::withParams(Icons::push, CommandIDs::VersionControlPush,
+        TRANS("menu::vcs::push")));
+
+    // TODO when stashes are ready
     //cmds.add(CommandItem::withParams(Icons::copy, CommandIDs::CopyEvents,
-    //    TRANS("menu::selection::history::merge")));
+    //    TRANS("menu::vcs::pop"))->withSubmenu()->withTimer());
 
     return cmds;
 }
 
-VCSHistorySelectionMenu::VCSHistorySelectionMenu(ValueTree &revision, VersionControl &vcs) :
-    revision(revision),
-    vcs(vcs)
+VersionControlMenu::VersionControlMenu(ProjectTreeItem &parentProject, VersionControl &versionControl)
+    : vcs(versionControl),
+      project(parentProject)
 {
     this->updateContent(createDefaultPanel(), CommandPanel::SlideRight);
 }
 
-void VCSHistorySelectionMenu::handleCommandMessage(int commandId)
+void VersionControlMenu::handleCommandMessage(int commandId)
 {
     if (commandId == CommandIDs::Back)
     {
@@ -56,7 +78,7 @@ void VCSHistorySelectionMenu::handleCommandMessage(int commandId)
     }
 }
 
-void VCSHistorySelectionMenu::dismiss() const
+void VersionControlMenu::dismiss() const
 {
     if (Component *parent = this->getParentComponent())
     {

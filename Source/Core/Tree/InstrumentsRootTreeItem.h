@@ -54,7 +54,7 @@ public:
 private:
     
     friend class InstrumentsPage;
-    friend class InstrumentsCommandPanel;
+    friend class InstrumentsMenu;
     
     InstrumentTreeItem *addInstrumentTreeItem(Instrument *instrument, int insertIndex = -1);
     ScopedPointer<InstrumentsPage> instrumentsPage;

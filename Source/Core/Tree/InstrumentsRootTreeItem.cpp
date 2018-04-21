@@ -26,7 +26,7 @@
 #include "Icons.h"
 #include "PluginScanner.h"
 #include "InstrumentsPage.h"
-#include "InstrumentsCommandPanel.h"
+#include "InstrumentsMenu.h"
 #include "SerializationKeys.h"
 #include "App.h"
 #include "Workspace.h"
@@ -74,7 +74,7 @@ bool InstrumentsRootTreeItem::hasMenu() const noexcept
 
 ScopedPointer<Component> InstrumentsRootTreeItem::createMenu()
 {
-    return new InstrumentsCommandPanel(*this);
+    return new InstrumentsMenu(*this);
 }
 
 //===----------------------------------------------------------------------===//

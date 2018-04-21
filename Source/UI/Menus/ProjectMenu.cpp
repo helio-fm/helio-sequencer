@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "ProjectCommandPanel.h"
+#include "ProjectMenu.h"
 #include "ProjectTreeItem.h"
 #include "Icons.h"
 #include "App.h"
@@ -45,15 +45,14 @@
 
 #define NUM_CONTROLLERS_TO_SHOW 80
 
-
-ProjectCommandPanel::ProjectCommandPanel(ProjectTreeItem &parentProject, AnimationType animationType) :
+ProjectMenu::ProjectMenu(ProjectTreeItem &parentProject, AnimationType animationType) :
     project(parentProject),
     haveSetBatchCheckpoint(false)
 {
     this->initMainMenu(animationType);
 }
 
-void ProjectCommandPanel::handleCommandMessage(int commandId)
+void ProjectMenu::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {
@@ -321,7 +320,7 @@ void ProjectCommandPanel::handleCommandMessage(int commandId)
     }
 }
 
-void ProjectCommandPanel::proceedToRenderDialog(const String &extension)
+void ProjectMenu::proceedToRenderDialog(const String &extension)
 {
     const File initialPath = File::getSpecialLocation(File::userMusicDirectory);
     const String renderFileName = this->project.getName() + "." + extension.toLowerCase();
@@ -342,13 +341,13 @@ void ProjectCommandPanel::proceedToRenderDialog(const String &extension)
     this->dismiss();
 }
 
-ValueTree ProjectCommandPanel::createPianoTrackTempate(const String &name) const
+ValueTree ProjectMenu::createPianoTrackTempate(const String &name) const
 {
     ScopedPointer<MidiTrackTreeItem> newItem = new PianoTrackTreeItem(name);
     return newItem->serialize();
 }
 
-ValueTree ProjectCommandPanel::createAutoLayerTempate(const String &name, int controllerNumber, const String &instrumentId) const
+ValueTree ProjectMenu::createAutoLayerTempate(const String &name, int controllerNumber, const String &instrumentId) const
 {
     ScopedPointer<MidiTrackTreeItem> newItem = new AutomationTrackTreeItem(name);
     auto itemLayer = static_cast<AutomationSequence *>(newItem->getSequence());
@@ -365,7 +364,7 @@ ValueTree ProjectCommandPanel::createAutoLayerTempate(const String &name, int co
     return newItem->serialize();
 }
 
-void ProjectCommandPanel::initMainMenu(AnimationType animationType)
+void ProjectMenu::initMainMenu(AnimationType animationType)
 {
     CommandPanel::Items cmds;
 
@@ -394,7 +393,7 @@ void ProjectCommandPanel::initMainMenu(AnimationType animationType)
     this->updateContent(cmds, animationType);
 }
 
-void ProjectCommandPanel::initNewSubItemsMenu(AnimationType animationType)
+void ProjectMenu::initNewSubItemsMenu(AnimationType animationType)
 {
     CommandPanel::Items cmds;
     cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
@@ -414,7 +413,7 @@ void ProjectCommandPanel::initNewSubItemsMenu(AnimationType animationType)
     this->updateContent(cmds, animationType);
 }
 
-void ProjectCommandPanel::initSubItemTypeSelectionMenu()
+void ProjectMenu::initSubItemTypeSelectionMenu()
 {
     CommandPanel::Items cmds;
     cmds.add(CommandItem::withParams(Icons::left, CommandIDs::AddItemsMenuBack, TRANS("menu::back"))->withTimer());
@@ -432,7 +431,7 @@ void ProjectCommandPanel::initSubItemTypeSelectionMenu()
     this->updateContent(cmds, CommandPanel::SlideLeft);
 }
 
-void ProjectCommandPanel::initRenderMenu()
+void ProjectMenu::initRenderMenu()
 {
     CommandPanel::Items cmds;
     cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
@@ -443,7 +442,7 @@ void ProjectCommandPanel::initRenderMenu()
     this->updateContent(cmds, CommandPanel::SlideLeft);
 }
 
-void ProjectCommandPanel::initBatchMenu(AnimationType animationType)
+void ProjectMenu::initBatchMenu(AnimationType animationType)
 {
     CommandPanel::Items cmds;
     cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
@@ -461,7 +460,7 @@ void ProjectCommandPanel::initBatchMenu(AnimationType animationType)
     this->updateContent(cmds, animationType);
 }
 
-void ProjectCommandPanel::initInstrumentSelection()
+void ProjectMenu::initInstrumentSelection()
 {
     CommandPanel::Items cmds;
     cmds.add(CommandItem::withParams(Icons::left, CommandIDs::ProjectBatchMenuBack, TRANS("menu::back"))->withTimer());
@@ -475,7 +474,7 @@ void ProjectCommandPanel::initInstrumentSelection()
     this->updateContent(cmds, CommandPanel::SlideLeft);
 }
 
-void ProjectCommandPanel::dismiss()
+void ProjectMenu::dismiss()
 {
     if (Component *parent = this->getParentComponent())
     {

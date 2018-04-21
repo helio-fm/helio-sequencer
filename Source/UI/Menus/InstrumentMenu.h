@@ -17,22 +17,20 @@
 
 #pragma once
 
-class ProjectTreeItem;
-class AnnotationEvent;
+class InstrumentTreeItem;
 
 #include "CommandPanel.h"
 
-class AnnotationCommandPanel : public CommandPanel
+class InstrumentMenu final : public CommandPanel
 {
 public:
     
-    AnnotationCommandPanel(ProjectTreeItem &parentProject, const AnnotationEvent &targetAnnotation);
+    explicit InstrumentMenu(InstrumentTreeItem &parentInstrument);
     
     void handleCommandMessage(int commandId) override;
     
 private:
     
-    const AnnotationEvent &annotation;
-    ProjectTreeItem &project;
+    InstrumentTreeItem &instrument;
     
 };

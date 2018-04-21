@@ -25,8 +25,8 @@
 #include "PlayerThread.h"
 #include "HybridRoll.h"
 #include "HelioCallout.h"
-#include "AnnotationCommandPanel.h"
-#include "TimeSignatureCommandPanel.h"
+#include "AnnotationMenu.h"
+#include "TimeSignatureMenu.h"
 #include "TrackStartIndicator.h"
 #include "TrackEndIndicator.h"
 

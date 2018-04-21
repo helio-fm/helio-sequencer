@@ -17,22 +17,23 @@
 
 #pragma once
 
-class InstrumentsRootTreeItem;
+class ProjectTreeItem;
+class TimeSignatureEvent;
 
 #include "CommandPanel.h"
 
-class InstrumentsCommandPanel : public CommandPanel
+class TimeSignatureMenu final : public CommandPanel
 {
 public:
     
-    explicit InstrumentsCommandPanel(InstrumentsRootTreeItem &parentOrchestra);
-    
-    ~InstrumentsCommandPanel() override;
+    TimeSignatureMenu(ProjectTreeItem &parentProject, 
+        const TimeSignatureEvent &targetEvent);
     
     void handleCommandMessage(int commandId) override;
     
 private:
     
-    InstrumentsRootTreeItem &instrumentsRoot;
+    const TimeSignatureEvent &event;
+    ProjectTreeItem &project;
     
 };

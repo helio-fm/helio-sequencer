@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "AnnotationCommandPanel.h"
+#include "AnnotationMenu.h"
 #include "ProjectTreeItem.h"
 #include "MainLayout.h"
 #include "ModalDialogInput.h"
@@ -30,7 +30,7 @@
 #include "CommandIDs.h"
 #include "App.h"
 
-AnnotationCommandPanel::AnnotationCommandPanel(ProjectTreeItem &parentProject, const AnnotationEvent &targetAnnotation) :
+AnnotationMenu::AnnotationMenu(ProjectTreeItem &parentProject, const AnnotationEvent &targetAnnotation) :
     project(parentProject),
     annotation(targetAnnotation)
 {
@@ -51,7 +51,7 @@ AnnotationCommandPanel::AnnotationCommandPanel(ProjectTreeItem &parentProject, c
     this->updateContent(cmds, SlideDown);
 }
 
-void AnnotationCommandPanel::handleCommandMessage(int commandId)
+void AnnotationMenu::handleCommandMessage(int commandId)
 {
     if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
     {

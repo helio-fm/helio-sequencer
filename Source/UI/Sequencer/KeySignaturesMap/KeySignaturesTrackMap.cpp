@@ -25,9 +25,7 @@
 #include "PlayerThread.h"
 #include "HybridRoll.h"
 #include "HelioCallout.h"
-#include "AnnotationCommandPanel.h"
-//#include "KeySignatureCommandPanel.h"
-
+#include "AnnotationMenu.h"
 #include "KeySignatureDialog.h"
 #include "App.h"
 #include "MainLayout.h"

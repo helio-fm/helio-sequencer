@@ -772,27 +772,27 @@
                   file="../../Source/UI/Menus/SelectionMenus/PianoRollSelectionMenu.cpp"/>
             <FILE id="sBLseL" name="PianoRollSelectionMenu.h" compile="0" resource="0"
                   file="../../Source/UI/Menus/SelectionMenus/PianoRollSelectionMenu.h"/>
-            <FILE id="tXBZ7k" name="VCSHistorySelectionMenu.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Menus/SelectionMenus/VCSHistorySelectionMenu.cpp"/>
-            <FILE id="Z2g2k6" name="VCSStageSelectionMenu.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Menus/SelectionMenus/VCSStageSelectionMenu.cpp"/>
-            <FILE id="C8ECuc" name="VCSHistorySelectionMenu.h" compile="0" resource="0"
-                  file="../../Source/UI/Menus/SelectionMenus/VCSHistorySelectionMenu.h"/>
-            <FILE id="ZauTdB" name="VCSStageSelectionMenu.h" compile="0" resource="0"
-                  file="../../Source/UI/Menus/SelectionMenus/VCSStageSelectionMenu.h"/>
+            <FILE id="tXBZ7k" name="VersionControlHistorySelectionMenu.cpp" compile="1"
+                  resource="0" file="../../Source/UI/Menus/SelectionMenus/VersionControlHistorySelectionMenu.cpp"/>
+            <FILE id="Z2g2k6" name="VersionControlStageSelectionMenu.cpp" compile="1"
+                  resource="0" file="../../Source/UI/Menus/SelectionMenus/VersionControlStageSelectionMenu.cpp"/>
+            <FILE id="C8ECuc" name="VersionControlHistorySelectionMenu.h" compile="0"
+                  resource="0" file="../../Source/UI/Menus/SelectionMenus/VersionControlHistorySelectionMenu.h"/>
+            <FILE id="ZauTdB" name="VersionControlStageSelectionMenu.h" compile="0"
+                  resource="0" file="../../Source/UI/Menus/SelectionMenus/VersionControlStageSelectionMenu.h"/>
           </GROUP>
-          <FILE id="wgLDqw" name="AnnotationCommandPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/Menus/AnnotationCommandPanel.cpp"/>
-          <FILE id="mA4zKi" name="AnnotationCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/Menus/AnnotationCommandPanel.h"/>
-          <FILE id="qiHiZv" name="InstrumentCommandPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/Menus/InstrumentCommandPanel.cpp"/>
-          <FILE id="GfB3bQ" name="InstrumentCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/Menus/InstrumentCommandPanel.h"/>
-          <FILE id="rvRFpY" name="InstrumentsCommandPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/Menus/InstrumentsCommandPanel.cpp"/>
-          <FILE id="r4xx9F" name="InstrumentsCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/Menus/InstrumentsCommandPanel.h"/>
+          <FILE id="wgLDqw" name="AnnotationMenu.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/AnnotationMenu.cpp"/>
+          <FILE id="mA4zKi" name="AnnotationMenu.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/AnnotationMenu.h"/>
+          <FILE id="qiHiZv" name="InstrumentMenu.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/InstrumentMenu.cpp"/>
+          <FILE id="GfB3bQ" name="InstrumentMenu.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/InstrumentMenu.h"/>
+          <FILE id="rvRFpY" name="InstrumentsMenu.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/InstrumentsMenu.cpp"/>
+          <FILE id="r4xx9F" name="InstrumentsMenu.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/InstrumentsMenu.h"/>
           <FILE id="BQ6pCM" name="MidiTrackCommandPanel.cpp" compile="1" resource="0"
                 file="../../Source/UI/Menus/MidiTrackCommandPanel.cpp"/>
           <FILE id="PkWGHl" name="MidiTrackCommandPanel.h" compile="0" resource="0"
@@ -805,22 +805,19 @@
                 resource="0" file="../../Source/UI/Menus/PatternEditorCommandPanel.cpp"/>
           <FILE id="gsKtVK" name="PatternEditorCommandPanel.h" compile="0" resource="0"
                 file="../../Source/UI/Menus/PatternEditorCommandPanel.h"/>
-          <FILE id="eFoCKQ" name="ProjectCommandPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/Menus/ProjectCommandPanel.cpp"/>
-          <FILE id="qz1Ccf" name="ProjectCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/Menus/ProjectCommandPanel.h"/>
-          <FILE id="IWRyID" name="TimelineCommandPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/Menus/TimelineCommandPanel.cpp"/>
-          <FILE id="YO5QtE" name="TimelineCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/Menus/TimelineCommandPanel.h"/>
-          <FILE id="KXvBh9" name="TimeSignatureCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/Menus/TimeSignatureCommandPanel.h"/>
-          <FILE id="jbN3Fi" name="TimeSignatureCommandPanel.cpp" compile="1"
-                resource="0" file="../../Source/UI/Menus/TimeSignatureCommandPanel.cpp"/>
-          <FILE id="W0z55J" name="VCSCommandPanel.cpp" compile="1" resource="0"
-                file="../../Source/UI/Menus/VCSCommandPanel.cpp"/>
-          <FILE id="qrKFgt" name="VCSCommandPanel.h" compile="0" resource="0"
-                file="../../Source/UI/Menus/VCSCommandPanel.h"/>
+          <FILE id="eFoCKQ" name="ProjectMenu.cpp" compile="1" resource="0" file="../../Source/UI/Menus/ProjectMenu.cpp"/>
+          <FILE id="qz1Ccf" name="ProjectMenu.h" compile="0" resource="0" file="../../Source/UI/Menus/ProjectMenu.h"/>
+          <FILE id="IWRyID" name="TimelineMenu.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/TimelineMenu.cpp"/>
+          <FILE id="YO5QtE" name="TimelineMenu.h" compile="0" resource="0" file="../../Source/UI/Menus/TimelineMenu.h"/>
+          <FILE id="KXvBh9" name="TimeSignatureMenu.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/TimeSignatureMenu.h"/>
+          <FILE id="jbN3Fi" name="TimeSignatureMenu.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/TimeSignatureMenu.cpp"/>
+          <FILE id="W0z55J" name="VersionControlMenu.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/VersionControlMenu.cpp"/>
+          <FILE id="qrKFgt" name="VersionControlMenu.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/VersionControlMenu.h"/>
         </GROUP>
         <GROUP id="{B9AEC376-3BE9-2D8B-8315-5C9D02A78A83}" name="Pages">
           <GROUP id="{244063AE-D7BB-2E7F-F88C-F6B87D3750F0}" name="Instruments">

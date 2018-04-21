@@ -109,7 +109,7 @@
         { "receiver": "PianoRoll", "command": "EditModeSelect", "key": "6" },
 
         // Version control
-        { "receiver": "PianoRoll", "command": "ToggleQuickStash", "key": "Shift + Tab" },
+        { "receiver": "PianoRoll", "command": "VersionControlToggleQuickStash", "key": "Shift + Tab" },
 
         // Panels
         { "receiver": "PianoRoll", "command": "ShowVolumePanel", "key": "V" },
@@ -161,6 +161,9 @@
         // Selection
         { "receiver": "PatternRoll", "command": "SelectAllClips", "key": "Command + A" },
         { "receiver": "PatternRoll", "command": "SelectAllClips", "key": "Control + A" },
+
+        // Version control
+        { "receiver": "PatternRoll", "command": "VersionControlToggleQuickStash", "key": "Shift + Tab" },
 
         // Edit selection
         { "receiver": "PatternRoll", "command": "RenameSelectedTrack", "key": "F2" },

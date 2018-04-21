@@ -31,7 +31,7 @@
 #include "SuccessTooltip.h"
 #include "Icons.h"
 #include "Client.h"
-#include "VCSCommandPanel.h"
+#include "VersionControlMenu.h"
 #include "VersionControlEditor.h"
 #include "HybridRoll.h"
 #include "App.h"
@@ -308,7 +308,7 @@ ScopedPointer<Component> VersionControlTreeItem::createMenu()
         
         if (parentProject)
         {
-            return new VCSCommandPanel(*parentProject, *this->vcs);
+            return new VersionControlMenu(*parentProject, *this->vcs);
         }
     }
     

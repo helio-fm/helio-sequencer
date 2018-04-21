@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "TimeSignatureCommandPanel.h"
+#include "TimeSignatureMenu.h"
 #include "ProjectTreeItem.h"
 #include "MainLayout.h"
 #include "ModalDialogInput.h"
@@ -27,9 +27,10 @@
 #include "PianoTrackTreeItem.h"
 #include "ProjectTimeline.h"
 #include "MidiSequence.h"
+#include "CommandIDs.h"
 #include "App.h"
 
-TimeSignatureCommandPanel::TimeSignatureCommandPanel(ProjectTreeItem &parentProject, 
+TimeSignatureMenu::TimeSignatureMenu(ProjectTreeItem &parentProject, 
     const TimeSignatureEvent &targetEvent) :
     project(parentProject),
     event(targetEvent)
@@ -40,7 +41,7 @@ TimeSignatureCommandPanel::TimeSignatureCommandPanel(ProjectTreeItem &parentProj
     this->updateContent(cmds, SlideDown);
 }
 
-void TimeSignatureCommandPanel::handleCommandMessage(int commandId)
+void TimeSignatureMenu::handleCommandMessage(int commandId)
 {
     if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
     {

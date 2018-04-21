@@ -17,23 +17,20 @@
 
 #pragma once
 
-class VersionControl;
+class InstrumentsRootTreeItem;
 
 #include "CommandPanel.h"
 
-class VCSStageSelectionMenu : public CommandPanel
+class InstrumentsMenu final : public CommandPanel
 {
 public:
     
-    VCSStageSelectionMenu(const SparseSet<int> &selectedChanges, VersionControl &vcs);
+    explicit InstrumentsMenu(InstrumentsRootTreeItem &parentOrchestra);
+        
     void handleCommandMessage(int commandId) override;
     
 private:
-
-    void dismiss() const;
-
-    SparseSet<int> selectedChanges;
-    VersionControl &vcs;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VCSStageSelectionMenu)
+    
+    InstrumentsRootTreeItem &instrumentsRoot;
+    
 };

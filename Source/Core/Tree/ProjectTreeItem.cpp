@@ -50,7 +50,7 @@
 #include "Autosaver.h"
 
 #include "HelioTheme.h"
-#include "ProjectCommandPanel.h"
+#include "ProjectMenu.h"
 #include "UndoStack.h"
 
 #include "DocumentHelpers.h"
@@ -360,7 +360,7 @@ bool ProjectTreeItem::hasMenu() const noexcept
 
 ScopedPointer<Component> ProjectTreeItem::createMenu()
 {
-    return new ProjectCommandPanel(*this, CommandPanel::SlideRight);
+    return new ProjectMenu(*this, CommandPanel::SlideRight);
 }
 
 //===----------------------------------------------------------------------===//

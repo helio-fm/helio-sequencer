@@ -21,307 +21,172 @@
 // Implements compile-time FNV1a hash:
 constexpr uint32 fnv1a_32_val = 0x811c9dc5;
 constexpr uint64 fnv1a_32_prime = 0x1000193;
-inline constexpr uint32 Hash(const char *const str, const uint32 value = fnv1a_32_val) noexcept {
-    return (str[0] == '\0') ? value : Hash(&str[1], uint32(value ^ uint32(str[0])) * fnv1a_32_prime);
+inline constexpr uint32 CompileTimeHash(const char *const str, const uint32 value = fnv1a_32_val) noexcept
+{
+    return (str[0] == '\0') ? value : CompileTimeHash(&str[1], uint32(value ^ uint32(str[0])) * fnv1a_32_prime);
 }
+
+#define CASE_FOR(x) \
+    case CompileTimeHash(#x): \
+    return x; \
 
 int CommandIDs::getIdForName(const String &command)
 {
-    switch (Hash(command.toRawUTF8()))
+    switch (CompileTimeHash(command.toRawUTF8()))
     {
-    case Hash("Back"):
-        return Back;
-    case Hash("Cancel"):
-        return Cancel;
-    case Hash("Browse"):
-        return Browse;
-    case Hash("IconButtonPressed"):
-        return IconButtonPressed;
-    case Hash("MenuButtonPressed"):
-        return MenuButtonPressed;
-    case Hash("RootTreeItemPressed"):
-        return RootTreeItemPressed;
-    case Hash("HideDialog"):
-        return HideDialog;
-    case Hash("HideCallout"):
-        return HideCallout;
-    case Hash("ChangeTimeSignature"):
-        return ChangeTimeSignature;
-    case Hash("ChangeTimeSignatureConfirmed"):
-        return ChangeTimeSignatureConfirmed;
-    case Hash("DeleteTimeSignature"):
-        return DeleteTimeSignature;
-    case Hash("RenameAnnotation"):
-        return RenameAnnotation;
-    case Hash("RenameAnnotationConfirmed"):
-        return RenameAnnotationConfirmed;
-    case Hash("SetAnnotationColour"):
-        return SetAnnotationColour;
-    case Hash("DeleteAnnotation"):
-        return DeleteAnnotation;
-    case Hash("AddAnnotation"):
-        return AddAnnotation;
-    case Hash("AddAnnotationConfirmed"):
-        return AddAnnotationConfirmed;
-    case Hash("AddTimeSignature"):
-        return AddTimeSignature;
-    case Hash("AddTimeSignatureConfirmed"):
-        return AddTimeSignatureConfirmed;
-    case Hash("AddKeySignature"):
-        return AddKeySignature;
-    case Hash("AddKeySignatureConfirmed"):
-        return AddKeySignatureConfirmed;
-    case Hash("JumpToAnnotation"):
-        return JumpToAnnotation;
-    case Hash("CreateArpeggiatorFromSelection"):
-        return CreateArpeggiatorFromSelection;
-    case Hash("ApplyArpeggiator"):
-        return ApplyArpeggiator;
-    case Hash("InitWorkspace"):
-        return InitWorkspace;
-    case Hash("RenameInstrument"):
-        return RenameInstrument;
-    case Hash("UpdateInstrument"):
-        return UpdateInstrument;
-    case Hash("DeleteInstrument"):
-        return DeleteInstrument;
-    case Hash("ScanAllPlugins"):
-        return ScanAllPlugins;
-    case Hash("ScanPluginsFolder"):
-        return ScanPluginsFolder;
-    case Hash("CreateInstrument"):
-        return CreateInstrument;
-    case Hash("DeleteTrack"):
-        return DeleteTrack;
-    case Hash("MuteTrack"):
-        return MuteTrack;
-    case Hash("UnmuteTrack"):
-        return UnmuteTrack;
-    case Hash("RenameTrack"):
-        return RenameTrack;
-    case Hash("SelectTrackColour"):
-        return SelectTrackColour;
-    case Hash("SelectTrackInstrument"):
-        return SelectTrackInstrument;
-    case Hash("SelectAllEvents"):
-        return SelectAllEvents;
-    case Hash("DuplicateTrackTo"):
-        return DuplicateTrackTo;
-    case Hash("SetTrackColour"):
-        return SetTrackColour;
-    case Hash("SetTrackInstrument"):
-        return SetTrackInstrument;
-    case Hash("MoveTrackToProject"):
-        return MoveTrackToProject;
-    case Hash("DeleteEvents"):
-        return DeleteEvents;
-    case Hash("CopyEvents"):
-        return CopyEvents;
-    case Hash("CutEvents"):
-        return CutEvents;
-    case Hash("PasteEvents"):
-        return PasteEvents;
-    case Hash("CursorTool"):
-        return CursorTool;
-    case Hash("DrawTool"):
-        return DrawTool;
-    case Hash("SelectionTool"):
-        return SelectionTool;
-    case Hash("ZoomTool"):
-        return ZoomTool;
-    case Hash("DragTool"):
-        return DragTool;
-    case Hash("InsertSpaceTool"):
-        return InsertSpaceTool;
-    case Hash("WipeSpaceTool"):
-        return WipeSpaceTool;
-    case Hash("ScissorsTool"):
-        return ScissorsTool;
-    case Hash("ZoomIn"):
-        return ZoomIn;
-    case Hash("ZoomOut"):
-        return ZoomOut;
-    case Hash("Undo"):
-        return Undo;
-    case Hash("Redo"):
-        return Redo;
-    case Hash("RefactorNotes"):
-        return RefactorNotes;
-    case Hash("BatchTweakNotes"):
-        return BatchTweakNotes;
-    case Hash("ArpeggiateNotes"):
-        return ArpeggiateNotes;
-    case Hash("TweakNotesVolume"):
-        return TweakNotesVolume;
-    case Hash("ShowAnnotations"):
-        return ShowAnnotations;
-    case Hash("ResetVolumeChanges"):
-        return ResetVolumeChanges;
-    case Hash("ApplyOpenGLRenderer"):
-        return ApplyOpenGLRenderer;
-    case Hash("TransportStartPlayback"):
-        return TransportStartPlayback;
-    case Hash("TransportPausePlayback"):
-        return TransportPausePlayback;
-    case Hash("PopupMenuDismiss"):
-        return PopupMenuDismiss;
-    case Hash("PopupMenuDismissedAsDone"):
-        return PopupMenuDismissedAsDone;
-    case Hash("PopupMenuDismissedAsCancel"):
-        return PopupMenuDismissedAsCancel;
-    case Hash("SelectRootItemPanel"):
-        return SelectRootItemPanel;
-    case Hash("DeselectRootItemPanel"):
-        return DeselectRootItemPanel;
-    case Hash("UpdateRootItemPanel"):
-        return UpdateRootItemPanel;
-    case Hash("VersionControlForcePull"):
-        return VersionControlForcePull;
-    case Hash("VersionControlReset"):
-        return VersionControlReset;
-    case Hash("VersionControlAmend"):
-        return VersionControlAmend;
-    case Hash("VersionControlCommit"):
-        return VersionControlCommit;
-    case Hash("LoginLogout"):
-        return LoginLogout;
-    case Hash("OpenProject"):
-        return OpenProject;
-    case Hash("CreateNewProject"):
-        return CreateNewProject;
-    case Hash("RenderToFLAC"):
-        return RenderToFLAC;
-    case Hash("RenderToOGG"):
-        return RenderToOGG;
-    case Hash("RenderToWAV"):
-        return RenderToWAV;
-    case Hash("AddItemsMenu"):
-        return AddItemsMenu;
-    case Hash("AddItemsMenuBack"):
-        return AddItemsMenuBack;
-    case Hash("AddMidiTrack"):
-        return AddMidiTrack;
-    case Hash("AddMidiTrackConfirmed"):
-        return AddMidiTrackConfirmed;
-    case Hash("AddAutomationTrack"):
-        return AddAutomationTrack;
-    case Hash("ImportMidi"):
-        return ImportMidi;
-    case Hash("ExportMidi"):
-        return ExportMidi;
-    case Hash("UnloadProject"):
-        return UnloadProject;
-    case Hash("DeleteProject"):
-        return DeleteProject;
-    case Hash("DeleteProjectConfirmed1"):
-        return DeleteProjectConfirmed1;
-    case Hash("DeleteProjectConfirmed2"):
-        return DeleteProjectConfirmed2;
-    case Hash("RefactorTransposeUp"):
-        return RefactorTransposeUp;
-    case Hash("RefactorTransposeDown"):
-        return RefactorTransposeDown;
-    case Hash("RefactorRemoveOverlaps"):
-        return RefactorRemoveOverlaps;
-    case Hash("ProjectPatternEditor"):
-        return ProjectPatternEditor;
-    case Hash("ProjectLinearEditor"):
-        return ProjectLinearEditor;
-    case Hash("ProjectVersionsEditor"):
-        return ProjectVersionsEditor;
-    case Hash("ProjectMainMenu"):
-        return ProjectMainMenu;
-    case Hash("ProjectRenderMenu"):
-        return ProjectRenderMenu;
-    case Hash("ProjectBatchMenu"):
-        return ProjectBatchMenu;
-    case Hash("ProjectBatchMenuBack"):
-        return ProjectBatchMenuBack;
-    case Hash("ProjectInstrumentsMenu"):
-        return ProjectInstrumentsMenu;
-    case Hash("AddTempoController"):
-        return AddTempoController;
-    case Hash("AddCustomController"):
-        return AddCustomController;
-    case Hash("BatchChangeInstrument"):
-        return BatchChangeInstrument;
-    case Hash("BatchSetInstrument"):
-        return BatchSetInstrument;
-    case Hash("DismissModalDialogAsync"):
-        return DismissModalDialogAsync;
-    case Hash("SelectFunction"):
-        return SelectFunction;
-    case Hash("SelectScale"):
-        return SelectScale;
-    case Hash("SelectTimeSignature"):
-        return SelectTimeSignature;
-    case Hash("SwitchBetweenRolls"):
-        return SwitchBetweenRolls;
-    case Hash("ShowPreviousPage"):
-        return ShowPreviousPage;
-    case Hash("ShowNextPage"):
-        return ShowNextPage;
-    case Hash("ToggleShowHideConsole"):
-        return ToggleShowHideConsole;
-    case Hash("ToggleShowHideCombo"):
-        return ToggleShowHideCombo;
-    case Hash("StartDragViewport"):
-        return StartDragViewport;
-    case Hash("EndDragViewport"):
-        return EndDragViewport;
-    case Hash("SelectAudioDeviceType"):
-        return SelectAudioDeviceType;
-    case Hash("SelectAudioDevice"):
-        return SelectAudioDevice;
-    case Hash("SelectSampleRate"):
-        return SelectSampleRate;
-    case Hash("SelectBufferSize"):
-        return SelectBufferSize;
-    case Hash("EditModeDefault"):
-        return EditModeDefault;
-    case Hash("EditModeDraw"):
-        return EditModeDraw;
-    case Hash("EditModePan"):
-        return EditModePan;
-    case Hash("EditModeWipeSpace"):
-        return EditModeWipeSpace;
-    case Hash("EditModeInsertSpace"):
-        return EditModeInsertSpace;
-    case Hash("EditModeSelect"):
-        return EditModeSelect;
-    case Hash("BeatShiftLeft"):
-        return BeatShiftLeft;
-    case Hash("BeatShiftRight"):
-        return BeatShiftRight;
-    case Hash("BarShiftLeft"):
-        return BarShiftLeft;
-    case Hash("BarShiftRight"):
-        return BarShiftRight;
-    case Hash("KeyShiftUp"):
-        return KeyShiftUp;
-    case Hash("KeyShiftDown"):
-        return KeyShiftDown;
-    case Hash("OctaveShiftUp"):
-        return OctaveShiftUp;
-    case Hash("OctaveShiftDown"):
-        return OctaveShiftDown;
-    case Hash("CleanupOverlaps"):
-        return CleanupOverlaps;
-    case Hash("InvertChordUp"):
-        return InvertChordUp;
-    case Hash("InvertChordDown"):
-        return InvertChordDown;
-    case Hash("ToggleQuickStash"):
-        return ToggleQuickStash;
-    case Hash("ShowArpeggiatorsPanel"):
-        return ShowArpeggiatorsPanel;
-    case Hash("ShowVolumePanel"):
-        return ShowVolumePanel;
-    case Hash("TweakVolumeRandom"):
-        return TweakVolumeRandom;
-    case Hash("TweakVolumeFadeOut"):
-        return TweakVolumeFadeOut;
-    default:
-        return 0;
+        CASE_FOR(Back)
+        CASE_FOR(Cancel)
+        CASE_FOR(Browse)
+        CASE_FOR(IconButtonPressed)
+        CASE_FOR(MenuButtonPressed)
+        CASE_FOR(RootTreeItemPressed)
+        CASE_FOR(HideDialog)
+        CASE_FOR(HideCallout)
+        CASE_FOR(ChangeTimeSignature)
+        CASE_FOR(ChangeTimeSignatureConfirmed)
+        CASE_FOR(DeleteTimeSignature)
+        CASE_FOR(RenameAnnotation)
+        CASE_FOR(RenameAnnotationConfirmed)
+        CASE_FOR(SetAnnotationColour)
+        CASE_FOR(DeleteAnnotation)
+        CASE_FOR(AddAnnotation)
+        CASE_FOR(AddAnnotationConfirmed)
+        CASE_FOR(AddTimeSignature)
+        CASE_FOR(AddTimeSignatureConfirmed)
+        CASE_FOR(AddKeySignature)
+        CASE_FOR(AddKeySignatureConfirmed)
+        CASE_FOR(JumpToAnnotation)
+        CASE_FOR(CreateArpeggiatorFromSelection)
+        CASE_FOR(ApplyArpeggiator)
+        CASE_FOR(InitWorkspace)
+        CASE_FOR(RenameInstrument)
+        CASE_FOR(UpdateInstrument)
+        CASE_FOR(DeleteInstrument)
+        CASE_FOR(ScanAllPlugins)
+        CASE_FOR(ScanPluginsFolder)
+        CASE_FOR(CreateInstrument)
+        CASE_FOR(DeleteTrack)
+        CASE_FOR(MuteTrack)
+        CASE_FOR(UnmuteTrack)
+        CASE_FOR(RenameTrack)
+        CASE_FOR(SelectTrackColour)
+        CASE_FOR(SelectTrackInstrument)
+        CASE_FOR(SelectAllEvents)
+        CASE_FOR(DuplicateTrackTo)
+        CASE_FOR(SetTrackColour)
+        CASE_FOR(SetTrackInstrument)
+        CASE_FOR(MoveTrackToProject)
+        CASE_FOR(DeleteEvents)
+        CASE_FOR(CopyEvents)
+        CASE_FOR(CutEvents)
+        CASE_FOR(PasteEvents)
+        CASE_FOR(CursorTool)
+        CASE_FOR(DrawTool)
+        CASE_FOR(SelectionTool)
+        CASE_FOR(ZoomTool)
+        CASE_FOR(DragTool)
+        CASE_FOR(InsertSpaceTool)
+        CASE_FOR(WipeSpaceTool)
+        CASE_FOR(ScissorsTool)
+        CASE_FOR(ZoomIn)
+        CASE_FOR(ZoomOut)
+        CASE_FOR(Undo)
+        CASE_FOR(Redo)
+        CASE_FOR(RefactorNotes)
+        CASE_FOR(BatchTweakNotes)
+        CASE_FOR(ArpeggiateNotes)
+        CASE_FOR(TweakNotesVolume)
+        CASE_FOR(ShowAnnotations)
+        CASE_FOR(ResetVolumeChanges)
+        CASE_FOR(ApplyOpenGLRenderer)
+        CASE_FOR(TransportStartPlayback)
+        CASE_FOR(TransportPausePlayback)
+        CASE_FOR(PopupMenuDismiss)
+        CASE_FOR(PopupMenuDismissedAsDone)
+        CASE_FOR(PopupMenuDismissedAsCancel)
+        CASE_FOR(SelectRootItemPanel)
+        CASE_FOR(DeselectRootItemPanel)
+        CASE_FOR(UpdateRootItemPanel)
+        CASE_FOR(LoginLogout)
+        CASE_FOR(OpenProject)
+        CASE_FOR(CreateNewProject)
+        CASE_FOR(RenderToFLAC)
+        CASE_FOR(RenderToOGG)
+        CASE_FOR(RenderToWAV)
+        CASE_FOR(AddItemsMenu)
+        CASE_FOR(AddItemsMenuBack)
+        CASE_FOR(AddMidiTrack)
+        CASE_FOR(AddMidiTrackConfirmed)
+        CASE_FOR(AddAutomationTrack)
+        CASE_FOR(ImportMidi)
+        CASE_FOR(ExportMidi)
+        CASE_FOR(UnloadProject)
+        CASE_FOR(DeleteProject)
+        CASE_FOR(DeleteProjectConfirmed1)
+        CASE_FOR(DeleteProjectConfirmed2)
+        CASE_FOR(RefactorTransposeUp)
+        CASE_FOR(RefactorTransposeDown)
+        CASE_FOR(RefactorRemoveOverlaps)
+        CASE_FOR(ProjectPatternEditor)
+        CASE_FOR(ProjectLinearEditor)
+        CASE_FOR(ProjectVersionsEditor)
+        CASE_FOR(ProjectMainMenu)
+        CASE_FOR(ProjectRenderMenu)
+        CASE_FOR(ProjectBatchMenu)
+        CASE_FOR(ProjectBatchMenuBack)
+        CASE_FOR(ProjectInstrumentsMenu)
+        CASE_FOR(AddTempoController)
+        CASE_FOR(AddCustomController)
+        CASE_FOR(BatchChangeInstrument)
+        CASE_FOR(BatchSetInstrument)
+        CASE_FOR(DismissModalDialogAsync)
+        CASE_FOR(SelectFunction)
+        CASE_FOR(SelectScale)
+        CASE_FOR(SelectTimeSignature)
+        CASE_FOR(SwitchBetweenRolls)
+        CASE_FOR(ShowPreviousPage)
+        CASE_FOR(ShowNextPage)
+        CASE_FOR(ToggleShowHideConsole)
+        CASE_FOR(ToggleShowHideCombo)
+        CASE_FOR(StartDragViewport)
+        CASE_FOR(EndDragViewport)
+        CASE_FOR(SelectAudioDeviceType)
+        CASE_FOR(SelectAudioDevice)
+        CASE_FOR(SelectSampleRate)
+        CASE_FOR(SelectBufferSize)
+        CASE_FOR(EditModeDefault)
+        CASE_FOR(EditModeDraw)
+        CASE_FOR(EditModePan)
+        CASE_FOR(EditModeWipeSpace)
+        CASE_FOR(EditModeInsertSpace)
+        CASE_FOR(EditModeSelect)
+        CASE_FOR(BeatShiftLeft)
+        CASE_FOR(BeatShiftRight)
+        CASE_FOR(BarShiftLeft)
+        CASE_FOR(BarShiftRight)
+        CASE_FOR(KeyShiftUp)
+        CASE_FOR(KeyShiftDown)
+        CASE_FOR(OctaveShiftUp)
+        CASE_FOR(OctaveShiftDown)
+        CASE_FOR(CleanupOverlaps)
+        CASE_FOR(InvertChordUp)
+        CASE_FOR(InvertChordDown)
+        CASE_FOR(ShowArpeggiatorsPanel)
+        CASE_FOR(ShowVolumePanel)
+        CASE_FOR(TweakVolumeRandom)
+        CASE_FOR(TweakVolumeFadeOut)
+        CASE_FOR(VersionControlToggleQuickStash)
+        CASE_FOR(VersionControlPush)
+        CASE_FOR(VersionControlPull)
+        CASE_FOR(VersionControlForcePull)
+        CASE_FOR(VersionControlResetAll)
+        CASE_FOR(VersionControlCommitAll)
+        CASE_FOR(VersionControlSelectAll)
+        CASE_FOR(VersionControlSelectNone)
+        CASE_FOR(VersionControlResetSelected)
+        CASE_FOR(VersionControlCommitSelected)
+        CASE_FOR(VersionControlCheckout)
+        default:
+            return 0;
     };
 }

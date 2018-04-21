@@ -27,7 +27,7 @@
 #include "SelectionComponent.h"
 #include "HeaderSelectionIndicator.h"
 #include "HelioCallout.h"
-#include "TimelineCommandPanel.h"
+#include "TimelineMenu.h"
 #include "CommandIDs.h"
 #include "ColourIDs.h"
 
@@ -340,7 +340,7 @@ void HybridRollHeader::mouseUp(const MouseEvent &e)
         
         if (e.mods.isRightButtonDown())
         {
-            HelioCallout::emit(new TimelineCommandPanel(this->roll.getProject()), this, true);
+            HelioCallout::emit(new TimelineMenu(this->roll.getProject()), this, true);
             //this->transport.startPlayback();
         }
     }
@@ -384,7 +384,7 @@ void HybridRollHeader::mouseExit(const MouseEvent &e)
 void HybridRollHeader::mouseDoubleClick(const MouseEvent &e)
 {
     // this->roll.postCommandMessage(CommandIDs::AddAnnotation);
-    // HelioCallout::emit(new TimelineCommandPanel(this->roll.getProject()), this, true);
+    // HelioCallout::emit(new TimelineMenu(this->roll.getProject()), this, true);
 
 #if HYBRID_ROLL_HEADER_ALIGNS_TO_BEATS
     const float roundBeat = this->roll.getRoundBeatByXPosition(e.x); // skipped e.getEventRelativeTo(*this->roll);

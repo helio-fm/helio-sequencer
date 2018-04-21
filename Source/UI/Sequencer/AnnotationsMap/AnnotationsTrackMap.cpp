@@ -25,7 +25,7 @@
 #include "PlayerThread.h"
 #include "HybridRoll.h"
 #include "HelioCallout.h"
-#include "AnnotationCommandPanel.h"
+#include "AnnotationMenu.h"
 
 #include "AnnotationDialog.h"
 #include "App.h"

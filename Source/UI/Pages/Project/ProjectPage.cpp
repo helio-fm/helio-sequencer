@@ -26,7 +26,7 @@
 #include "HelioCallout.h"
 #include "MenuButton.h"
 #include "App.h"
-#include "ProjectCommandPanel.h"
+#include "ProjectMenu.h"
 
 ProjectPage::ProjectPage(ProjectTreeItem &parentProject)
     : project(parentProject)

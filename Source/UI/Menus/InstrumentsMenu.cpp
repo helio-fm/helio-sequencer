@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "InstrumentsCommandPanel.h"
+#include "InstrumentsMenu.h"
 #include "InstrumentsRootTreeItem.h"
 #include "Icons.h"
 #include "CommandIDs.h"
@@ -28,7 +28,7 @@
 #include "Workspace.h"
 #include "App.h"
 
-InstrumentsCommandPanel::InstrumentsCommandPanel(InstrumentsRootTreeItem &parentOrchestra) :
+InstrumentsMenu::InstrumentsMenu(InstrumentsRootTreeItem &parentOrchestra) :
     instrumentsRoot(parentOrchestra)
 {
     CommandPanel::Items cmds;
@@ -53,11 +53,7 @@ InstrumentsCommandPanel::InstrumentsCommandPanel(InstrumentsRootTreeItem &parent
     this->updateContent(cmds);
 }
 
-InstrumentsCommandPanel::~InstrumentsCommandPanel()
-{
-}
-
-void InstrumentsCommandPanel::handleCommandMessage(int commandId)
+void InstrumentsMenu::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {

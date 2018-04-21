@@ -20,15 +20,12 @@
 class ProjectTreeItem;
 
 #include "CommandPanel.h"
-#include "CommandIDs.h"
 
-class TimelineCommandPanel : public CommandPanel
+class TimelineMenu final : public CommandPanel
 {
 public:
     
-    explicit TimelineCommandPanel(ProjectTreeItem &parentProject);
-    
-    ~TimelineCommandPanel() override;
+    explicit TimelineMenu(ProjectTreeItem &parentProject);
     
     void handleCommandMessage(int commandId) override;
     

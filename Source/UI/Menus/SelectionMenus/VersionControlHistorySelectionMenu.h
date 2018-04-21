@@ -21,11 +21,11 @@ class VersionControl;
 
 #include "CommandPanel.h"
 
-class VCSHistorySelectionMenu : public CommandPanel
+class VersionControlHistorySelectionMenu final : public CommandPanel
 {
 public:
     
-    VCSHistorySelectionMenu(ValueTree &revision, VersionControl &vcs);
+    VersionControlHistorySelectionMenu(ValueTree &revision, VersionControl &vcs);
     void handleCommandMessage(int commandId) override;
     
 private:
@@ -35,5 +35,5 @@ private:
     ValueTree revision;
     VersionControl &vcs;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VCSHistorySelectionMenu)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VersionControlHistorySelectionMenu)
 };

@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "VCSStageSelectionMenu.h"
+#include "VersionControlStageSelectionMenu.h"
 #include "VersionControl.h"
 #include "CommandIDs.h"
 #include "Icons.h"
@@ -31,24 +31,27 @@ static CommandPanel::Items createDefaultPanel()
     cmds.add(CommandItem::withParams(Icons::cut, CommandIDs::CutEvents,
         TRANS("menu::selection::stage::commit")));
 
-    // TODO
+    // TODO add named stashes in addition to the default one
     //cmds.add(CommandItem::withParams(Icons::trash, CommandIDs::DeleteEvents,
     //    TRANS("menu::selection::stage::stash")));
 
     cmds.add(CommandItem::withParams(Icons::trash, CommandIDs::DeleteEvents,
         TRANS("menu::selection::stage::selectall")));
 
+    cmds.add(CommandItem::withParams(Icons::trash, CommandIDs::DeleteEvents,
+        TRANS("menu::selection::stage::selectnone")));
+
     return cmds;
 }
 
-VCSStageSelectionMenu::VCSStageSelectionMenu(const SparseSet<int> &selectedChanges, VersionControl &vcs) :
+VersionControlStageSelectionMenu::VersionControlStageSelectionMenu(const SparseSet<int> &selectedChanges, VersionControl &vcs) :
     selectedChanges(selectedChanges),
     vcs(vcs)
 {
     this->updateContent(createDefaultPanel(), CommandPanel::SlideRight);
 }
 
-void VCSStageSelectionMenu::handleCommandMessage(int commandId)
+void VersionControlStageSelectionMenu::handleCommandMessage(int commandId)
 {
     if (commandId == CommandIDs::Back)
     {
@@ -62,7 +65,7 @@ void VCSStageSelectionMenu::handleCommandMessage(int commandId)
     }
 }
 
-void VCSStageSelectionMenu::dismiss() const
+void VersionControlStageSelectionMenu::dismiss() const
 {
     if (Component *parent = this->getParentComponent())
     {

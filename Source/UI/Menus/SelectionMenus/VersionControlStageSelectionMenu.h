@@ -17,45 +17,23 @@
 
 #pragma once
 
-//[Headers]
-class StageComponent;
 class VersionControl;
-class ProjectTreeItem;
-//[/Headers]
 
-#include "../Themes/PanelBackgroundC.h"
-#include "../Pages/VCS/StageComponent.h"
+#include "CommandPanel.h"
 
-class VCSCommandPanel  : public Component,
-                         private ChangeListener
+class VersionControlStageSelectionMenu final : public CommandPanel
 {
 public:
-
-    VCSCommandPanel (ProjectTreeItem &parentProject, VersionControl &versionControl);
-
-    ~VCSCommandPanel();
-
-    //[UserMethods]
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
-    void resized() override;
-
-
+    
+    VersionControlStageSelectionMenu(const SparseSet<int> &selectedChanges, VersionControl &vcs);
+    void handleCommandMessage(int commandId) override;
+    
 private:
 
-    //[UserVariables]
+    void dismiss() const;
 
+    SparseSet<int> selectedChanges;
     VersionControl &vcs;
 
-    ProjectTreeItem &project;
-
-    void changeListenerCallback(ChangeBroadcaster *source) override;
-
-    //[/UserVariables]
-
-    ScopedPointer<PanelBackgroundC> bg;
-    ScopedPointer<StageComponent> stage;
-
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VCSCommandPanel)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VersionControlStageSelectionMenu)
 };
