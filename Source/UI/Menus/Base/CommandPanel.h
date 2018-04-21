@@ -17,7 +17,6 @@
 
 #pragma once
 
-//[Headers]
 #include "CommandItemComponent.h"
 
 #if HELIO_DESKTOP
@@ -26,18 +25,12 @@
 #   define COMMAND_PANEL_BUTTON_HEIGHT (40)
 #endif
 
-//[/Headers]
-
-
-class CommandPanel : public Component,
-                     private ListBoxModel
+class CommandPanel : public Component, private ListBoxModel
 {
 public:
 
     CommandPanel();
-    ~CommandPanel();
 
-    //[UserMethods]
     enum AnimationType
     {
         None            = 0x000,
@@ -55,17 +48,11 @@ public:
         bool adjustsWidth = true);
 
     static StringPairArray getColoursList();
-
-    //[/UserMethods]
-
-    void paint (Graphics& g) override;
+    
     void resized() override;
     void handleCommandMessage (int commandId) override;
 
-
 private:
-
-    //[UserVariables]
 
     ComponentAnimator animator;
 
@@ -78,14 +65,10 @@ private:
     //===------------------------------------------------------------------===//
 
     int getNumRows() override;
-
     void paintListBoxItem(int rowNumber, Graphics &g,
         int width, int height, bool rowIsSelected) noexcept override {}
-
     Component *refreshComponentForRow(int rowNumber, bool isRowSelected,
         Component *existingComponentToUpdate) override;
-
-    //[/UserVariables]
 
     ScopedPointer<ListBox> listBox;
 

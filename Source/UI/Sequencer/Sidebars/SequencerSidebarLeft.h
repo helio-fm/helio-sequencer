@@ -24,7 +24,6 @@ class SpectrogramAudioMonitorComponent;
 class ModeIndicatorComponent;
 class AudioMonitor;
 
-#define NAVIGATION_SIDEBAR_WIDTH (50)
 #include "ModeIndicatorComponent.h"
 //[/Headers]
 
@@ -34,13 +33,13 @@ class AudioMonitor;
 #include "../Themes/LighterShadowDownwards.h"
 #include "../Themes/SeparatorHorizontal.h"
 
-class NavigationSidebar  : public ModeIndicatorOwnerComponent
+class SequencerSidebarLeft  : public ModeIndicatorOwnerComponent
 {
 public:
 
-    NavigationSidebar ();
+    SequencerSidebarLeft ();
 
-    ~NavigationSidebar();
+    ~SequencerSidebarLeft();
 
     //[UserMethods]
     void setAudioMonitor(AudioMonitor *audioMonitor);
@@ -74,5 +73,5 @@ private:
     ScopedPointer<ModeIndicatorTrigger> modeIndicatorSelector;
     ScopedPointer<ModeIndicatorComponent> modeIndicator;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NavigationSidebar)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SequencerSidebarLeft)
 };

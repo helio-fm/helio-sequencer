@@ -30,7 +30,6 @@ class TrackMap;
 class Transport;
 class ProjectInfo;
 class ProjectTimeline;
-class ToolsSidebar;
 class UndoStack;
 class RecentFilesList;
 class Pattern;

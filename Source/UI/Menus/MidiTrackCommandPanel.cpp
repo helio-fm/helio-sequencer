@@ -37,7 +37,6 @@
 #include "PianoTrackActions.h"
 #include "AutomationTrackActions.h"
 #include "UndoStack.h"
-#include "NavigationSidebar.h"
 #include "Workspace.h"
 #include "App.h"
 

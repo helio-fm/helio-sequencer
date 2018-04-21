@@ -30,8 +30,7 @@
 #include "GenericTooltip.h"
 #include "MidiTrackTreeItem.h"
 #include "InitScreen.h"
-#include "NavigationSidebar.h"
-#include "ToolsSidebar.h"
+#include "SequencerLayout.h"
 #include "ColourSchemesManager.h"
 #include "HotkeySchemesManager.h"
 #include "JsonSerializer.h"
@@ -239,8 +238,8 @@ void MainLayout::showModalComponentUnowned(Component *targetComponent)
 Rectangle<int> MainLayout::getPageBounds() const
 {
     Rectangle<int> r(this->getLocalBounds());
-    r.removeFromLeft(NAVIGATION_SIDEBAR_WIDTH);
-    r.removeFromRight(TOOLS_SIDEBAR_WIDTH);
+    r.removeFromLeft(SEQUENCER_SIDEBAR_WIDTH);
+    r.removeFromRight(SEQUENCER_SIDEBAR_WIDTH);
     return r;
 }
 

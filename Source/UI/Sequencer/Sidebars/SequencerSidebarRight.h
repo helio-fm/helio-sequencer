@@ -22,9 +22,6 @@ class ProjectTreeItem;
 
 #include "TransportListener.h"
 #include "CommandPanel.h"
-
-#define TOOLS_SIDEBAR_WIDTH (50)
-#define TOOLS_SIDEBAR_ROW_HEIGHT (38)
 //[/Headers]
 
 #include "../Themes/PanelBackgroundC.h"
@@ -34,7 +31,7 @@ class ProjectTreeItem;
 #include "../Common/PlayButton.h"
 #include "../Themes/LighterShadowDownwards.h"
 
-class ToolsSidebar  : public Component,
+class SequencerSidebarRight  : public Component,
                       protected TransportListener,
                       protected AsyncUpdater,
                       protected ListBoxModel,
@@ -43,9 +40,9 @@ class ToolsSidebar  : public Component,
 {
 public:
 
-    ToolsSidebar (ProjectTreeItem &parent);
+    SequencerSidebarRight (ProjectTreeItem &parent);
 
-    ~ToolsSidebar();
+    ~SequencerSidebarRight();
 
     //[UserMethods]
     void paintOverChildren(Graphics& g) override;
@@ -66,7 +63,7 @@ private:
     //[UserVariables]
 
     //===------------------------------------------------------------------===//
-    // ToolsSidebar
+    // SequencerSidebarRight
     //===------------------------------------------------------------------===//
 
     ProjectTreeItem &project;
@@ -87,10 +84,8 @@ private:
     //===------------------------------------------------------------------===//
 
     int getNumRows() override;
-    Component *refreshComponentForRow(int rowNumber, bool isRowSelected,
-        Component *existingComponentToUpdate) override;
-    void paintListBoxItem(int rowNumber, Graphics &g,
-        int width, int height, bool rowIsSelected) override;
+    Component *refreshComponentForRow(int, bool,  Component *) override;
+    void paintListBoxItem(int, Graphics &, int, int, bool) override {}
 
     //===------------------------------------------------------------------===//
     // ChangeListener
@@ -134,5 +129,5 @@ private:
     ScopedPointer<LighterShadowDownwards> headShadow;
     ScopedPointer<CommandItemComponent> annotationsButton;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ToolsSidebar)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SequencerSidebarRight)
 };

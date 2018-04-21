@@ -19,10 +19,10 @@
 
 class AudioMonitor;
 
-#include "NavigationSidebar.h"
+#include "SequencerLayout.h"
 
 // Set this depending on component width (or sidebar width):
-#define WAVEFORM_METER_BUFFER_SIZE (NAVIGATION_SIDEBAR_WIDTH / 2)
+#define WAVEFORM_METER_BUFFER_SIZE (SEQUENCER_SIDEBAR_WIDTH / 2)
 
 class WaveformAudioMonitorComponent :
     public Component, private Thread, private AsyncUpdater

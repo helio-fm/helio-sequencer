@@ -25,14 +25,16 @@ class MidiTrack;
 class AutomationSequence;
 class TrackScroller;
 class ProjectTreeItem;
-class ToolsSidebar;
-class NavigationSidebar;
+class SequencerSidebarRight;
+class SequencerSidebarLeft;
 class AutomationTrackMap;
 class AutomationTrackMapProxy;
 class MidiEditorSplitContainer;
 class Origami;
 class Headline;
 
+#define SEQUENCER_SIDEBAR_WIDTH (50)
+#define SEQUENCER_SIDEBAR_ROW_HEIGHT (38)
 
 class SequencerLayout :
     public Component,
@@ -88,8 +90,8 @@ private:
     ScopedPointer<PatternRoll> patternRoll;
     ScopedPointer<RollsSwitchingProxy> rollContainer; // лейаут для вьюпорта с роллом и минимап-скроллера внизу
 
-    ScopedPointer<NavigationSidebar> rollNavSidebar;
-    ScopedPointer<ToolsSidebar> rollToolsSidebar; // тублар справа от роллов
+    ScopedPointer<SequencerSidebarLeft> rollNavSidebar;
+    ScopedPointer<SequencerSidebarRight> rollToolsSidebar; // тублар справа от роллов
 
     typedef HashMap<String, AutomationTrackMapProxy *> AutomationEditorsHashMap;
     AutomationEditorsHashMap automationEditorsLinks; // связки id слоев и редакторов автоматизации

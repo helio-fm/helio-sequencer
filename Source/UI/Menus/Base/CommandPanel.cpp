@@ -15,13 +15,9 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "CommandPanel.h"
 
-//[MiscUserDefs]
 #include "MainLayout.h"
 #include "ProjectTreeItem.h"
 #include "PlayerThread.h"
@@ -31,59 +27,29 @@
 #include "CommandItemComponent.h"
 #include "App.h"
 #include "MainWindow.h"
-//[/MiscUserDefs]
 
 CommandPanel::CommandPanel()
 {
-    addAndMakeVisible (listBox = new ListBox());
-
-
-    //[UserPreSize]
-    this->lastAnimationType = AnimationType::None;
-    this->listBox->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
-    //[/UserPreSize]
-
-    setSize (150, 150);
-
-    //[Constructor]
     this->setInterceptsMouseClicks(false, true);
     this->setMouseClickGrabsKeyboardFocus(false);
+    this->addAndMakeVisible(this->listBox = new ListBox());
+
+    this->lastAnimationType = AnimationType::None;
+    this->listBox->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
+
+    this->setSize (150, 100);
 
     for (int i = 0; i < this->getNumChildComponents(); ++i)
     {
         Component *c = this->getChildComponent(i);
         c->setMouseClickGrabsKeyboardFocus(false);
     }
-    //[/Constructor]
-}
-
-CommandPanel::~CommandPanel()
-{
-    //[Destructor_pre]
-    //[/Destructor_pre]
-
-    listBox = nullptr;
-
-    //[Destructor]
-    //[/Destructor]
-}
-
-void CommandPanel::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
-    //[UserPaint] Add your own custom painting code here..
-    //[/UserPaint]
 }
 
 void CommandPanel::resized()
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
+    this->listBox->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
 
-    listBox->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
-    //[UserResized] Add your own custom resize handling here..
     // Parent component may reposition and rebound menu at any time,
     // need to update content bounds animation:
     if (this->commandDescriptions.size() != 0)
@@ -91,23 +57,17 @@ void CommandPanel::resized()
         this->updateContent(this->commandDescriptions,
             this->lastAnimationType, this->shouldResizeToFitContent);
     }
-    //[/UserResized]
 }
 
 void CommandPanel::handleCommandMessage (int commandId)
 {
-    //[UserCode_handleCommandMessage] -- Add your code here...
     if (this->getParentComponent() != nullptr)
     {
         // The default behavior is to pass command up the hierarchy,
         // but subclasses may override handleCommandMessage to process the command instead.
         this->getParentComponent()->postCommandMessage(commandId);
     }
-    //[/UserCode_handleCommandMessage]
 }
-
-
-//[MiscUserCode]
 
 class ColourSorter
 {
@@ -126,8 +86,6 @@ public:
         }
     }
 };
-
-
 
 // Hardcoded for now
 StringPairArray CommandPanel::getColoursList()
@@ -155,7 +113,6 @@ StringPairArray CommandPanel::getColoursList()
     c.set(TRANS("colours::orangered"),      Colours::orangered.toString());
     return c;
 }
-
 
 #define ANIM_TIME_MS 200
 #define FADE_ALPHA 0.5f
@@ -305,25 +262,3 @@ Component *CommandPanel::refreshComponentForRow(int rowNumber, bool isRowSelecte
 
     return existingComponentToUpdate;
 }
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="CommandPanel" template="../../../Template"
-                 componentName="" parentClasses="public Component, private ListBoxModel"
-                 constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
-                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="150"
-                 initialHeight="150">
-  <METHODS>
-    <METHOD name="handleCommandMessage (int commandId)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0"/>
-  <GENERICCOMPONENT name="" id="381fa571a3dfc5cd" memberName="listBox" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 0M 0M" class="ListBox" params=""/>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif

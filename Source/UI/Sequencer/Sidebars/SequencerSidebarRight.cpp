@@ -19,11 +19,10 @@
 #include "Common.h"
 //[/Headers]
 
-#include "ToolsSidebar.h"
+#include "SequencerSidebarRight.h"
 
 //[MiscUserDefs]
 #include "Transport.h"
-#include "ToolsSidebar.h"
 #include "ProjectTreeItem.h"
 #include "PlayerThread.h"
 #include "Icons.h"
@@ -41,6 +40,7 @@
 #include "TriggersTrackMap.h"
 #include "App.h"
 #include "MainLayout.h"
+#include "SequencerLayout.h"
 #include "Workspace.h"
 #include "CachedLabelImage.h"
 #include "CommandIDs.h"
@@ -54,7 +54,7 @@
 
 //[/MiscUserDefs]
 
-ToolsSidebar::ToolsSidebar(ProjectTreeItem &parent)
+SequencerSidebarRight::SequencerSidebarRight(ProjectTreeItem &parent)
     : project(parent),
       lastSeekTime(0.0),
       lastTotalTime(0.0),
@@ -94,7 +94,7 @@ ToolsSidebar::ToolsSidebar(ProjectTreeItem &parent)
     this->listBox->setModel(this);
     this->listBox->setMultipleSelectionEnabled(false);
     this->listBox->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
-    this->listBox->setRowHeight(TOOLS_SIDEBAR_ROW_HEIGHT);
+    this->listBox->setRowHeight(SEQUENCER_SIDEBAR_ROW_HEIGHT);
 
     // This one doesn't change too frequently:
     //this->totalTime->setBufferedToImage(true);
@@ -109,8 +109,6 @@ ToolsSidebar::ToolsSidebar(ProjectTreeItem &parent)
     setSize (64, 640);
 
     //[Constructor]
-    this->setSize(TOOLS_SIDEBAR_WIDTH, 320);
-
     for (int i = 0; i < this->getNumChildComponents(); ++i)
     {
         Component *c = this->getChildComponent(i);
@@ -119,14 +117,14 @@ ToolsSidebar::ToolsSidebar(ProjectTreeItem &parent)
         c->setMouseClickGrabsKeyboardFocus(false);
     }
 
-    this->setSize(TOOLS_SIDEBAR_WIDTH, 640);
+    this->setSize(SEQUENCER_SIDEBAR_WIDTH, 640);
 
     this->project.getTransport().addTransportListener(this);
     this->project.getEditMode().addChangeListener(this);
     //[/Constructor]
 }
 
-ToolsSidebar::~ToolsSidebar()
+SequencerSidebarRight::~SequencerSidebarRight()
 {
     //[Destructor_pre]
     this->project.getEditMode().removeChangeListener(this);
@@ -148,7 +146,7 @@ ToolsSidebar::~ToolsSidebar()
     //[/Destructor]
 }
 
-void ToolsSidebar::paint (Graphics& g)
+void SequencerSidebarRight::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
@@ -157,7 +155,7 @@ void ToolsSidebar::paint (Graphics& g)
     //[/UserPaint]
 }
 
-void ToolsSidebar::resized()
+void SequencerSidebarRight::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
@@ -180,7 +178,7 @@ void ToolsSidebar::resized()
     //[/UserResized]
 }
 
-void ToolsSidebar::handleCommandMessage (int commandId)
+void SequencerSidebarRight::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
     switch (commandId)
@@ -361,14 +359,14 @@ void ToolsSidebar::handleCommandMessage (int commandId)
     //[/UserCode_handleCommandMessage]
 }
 
-void ToolsSidebar::childrenChanged()
+void SequencerSidebarRight::childrenChanged()
 {
     //[UserCode_childrenChanged] -- Add your code here...
     //this->updateButtonsImages();
     //[/UserCode_childrenChanged]
 }
 
-void ToolsSidebar::mouseMove (const MouseEvent& e)
+void SequencerSidebarRight::mouseMove (const MouseEvent& e)
 {
     //[UserCode_mouseMove] -- Add your code here...
     //[/UserCode_mouseMove]
@@ -376,13 +374,13 @@ void ToolsSidebar::mouseMove (const MouseEvent& e)
 
 
 //[MiscUserCode]
-void ToolsSidebar::paintOverChildren(Graphics& g)
+void SequencerSidebarRight::paintOverChildren(Graphics& g)
 {
     g.setColour(this->findColour(ColourIDs::Common::borderLineLight));
     g.drawVerticalLine(0, 0.f, float(this->getHeight()));
 }
 
-void ToolsSidebar::recreateCommandDescriptions()
+void SequencerSidebarRight::recreateCommandDescriptions()
 {
     this->commandDescriptions.clear();
 
@@ -422,7 +420,7 @@ void ToolsSidebar::recreateCommandDescriptions()
 // ListBoxModel
 //===----------------------------------------------------------------------===//
 
-Component *ToolsSidebar::refreshComponentForRow(int rowNumber,
+Component *SequencerSidebarRight::refreshComponentForRow(int rowNumber,
     bool isRowSelected, Component *existingComponentToUpdate)
 {
     if (rowNumber >= this->commandDescriptions.size())
@@ -452,21 +450,16 @@ Component *ToolsSidebar::refreshComponentForRow(int rowNumber,
     return existingComponentToUpdate;
 }
 
-int ToolsSidebar::getNumRows()
+int SequencerSidebarRight::getNumRows()
 {
     return this->commandDescriptions.size();
-}
-
-void ToolsSidebar::paintListBoxItem(int rowNumber,
-    Graphics &g, int width, int height, bool rowIsSelected)
-{
 }
 
 //===----------------------------------------------------------------------===//
 // AsyncUpdater
 //===----------------------------------------------------------------------===//
 
-void ToolsSidebar::handleAsyncUpdate()
+void SequencerSidebarRight::handleAsyncUpdate()
 {
     if (this->isTimerRunning())
     {
@@ -486,7 +479,7 @@ void ToolsSidebar::handleAsyncUpdate()
 // TransportListener
 //===----------------------------------------------------------------------===//
 
-void ToolsSidebar::onSeek(double absolutePosition,
+void SequencerSidebarRight::onSeek(double absolutePosition,
     double currentTimeMs, double totalTimeMs)
 {
     this->lastSeekTime = currentTimeMs; // todo locks?
@@ -494,18 +487,18 @@ void ToolsSidebar::onSeek(double absolutePosition,
     this->triggerAsyncUpdate();
 }
 
-void ToolsSidebar::onTempoChanged(double newTempo)
+void SequencerSidebarRight::onTempoChanged(double newTempo)
 {
 
 }
 
-void ToolsSidebar::onTotalTimeChanged(double timeMs)
+void SequencerSidebarRight::onTotalTimeChanged(double timeMs)
 {
     this->lastTotalTime = timeMs;
     this->totalTime->setText(Transport::getTimeString(this->lastTotalTime), dontSendNotification);
 }
 
-void ToolsSidebar::onPlay()
+void SequencerSidebarRight::onPlay()
 {
     this->timerStartSystemTime = Time::getMillisecondCounter();
     this->timerStartSeekTime = this->lastSeekTime;
@@ -513,7 +506,7 @@ void ToolsSidebar::onPlay()
     this->playButton->setPlaying(true);
 }
 
-void ToolsSidebar::onStop()
+void SequencerSidebarRight::onStop()
 {
     this->stopTimer();
     this->playButton->setPlaying(false);
@@ -523,7 +516,7 @@ void ToolsSidebar::onStop()
 // ChangeListener
 //===----------------------------------------------------------------------===//
 
-void ToolsSidebar::changeListenerCallback(ChangeBroadcaster *source)
+void SequencerSidebarRight::changeListenerCallback(ChangeBroadcaster *source)
 {
     this->updateModeButtons();
 }
@@ -532,22 +525,22 @@ void ToolsSidebar::changeListenerCallback(ChangeBroadcaster *source)
 // Timer
 //===----------------------------------------------------------------------===//
 
-void ToolsSidebar::timerCallback()
+void SequencerSidebarRight::timerCallback()
 {
     this->triggerAsyncUpdate();
 }
 
 //===----------------------------------------------------------------------===//
-// ToolsSidebar
+// SequencerSidebarRight
 //===----------------------------------------------------------------------===//
 
-void ToolsSidebar::updateModeButtons()
+void SequencerSidebarRight::updateModeButtons()
 {
     this->recreateCommandDescriptions();
     this->listBox->updateContent();
 }
 
-void ToolsSidebar::emitAnnotationsCallout(Component *newAnnotationsMenu)
+void SequencerSidebarRight::emitAnnotationsCallout(Component *newAnnotationsMenu)
 {
     HelioCallout::emit(newAnnotationsMenu, this->annotationsButton);
 }
@@ -558,7 +551,7 @@ void ToolsSidebar::emitAnnotationsCallout(Component *newAnnotationsMenu)
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="ToolsSidebar" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="SequencerSidebarRight" template="../../Template"
                  componentName="" parentClasses="public Component, protected TransportListener, protected AsyncUpdater, protected ListBoxModel, protected ChangeListener, protected Timer"
                  constructorParams="ProjectTreeItem &amp;parent" variableInitialisers="project(parent),&#10;lastSeekTime(0.0),&#10;lastTotalTime(0.0),&#10;timerStartSeekTime(0.0),&#10;timerStartSystemTime(0.0)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
@@ -615,5 +608,5 @@ static const unsigned char resource_ToolsSidebar_gray1x1_png[] = { 137,80,78,71,
 154,156,24,0,0,0,7,116,73,77,69,7,222,4,19,5,8,9,228,2,121,9,0,0,0,29,105,84,88,116,67,111,109,109,101,110,116,0,0,0,0,0,67,114,101,97,116,101,100,32,119,105,116,104,32,71,73,77,80,100,46,101,7,0,0,0,
 12,73,68,65,84,8,215,99,136,138,138,2,0,2,32,1,15,53,60,95,243,0,0,0,0,73,69,78,68,174,66,96,130,0,0};
 
-const char* ToolsSidebar::gray1x1_png = (const char*) resource_ToolsSidebar_gray1x1_png;
-const int ToolsSidebar::gray1x1_pngSize = 150;
+const char* SequencerSidebarRight::gray1x1_png = (const char*) resource_ToolsSidebar_gray1x1_png;
+const int SequencerSidebarRight::gray1x1_pngSize = 150;

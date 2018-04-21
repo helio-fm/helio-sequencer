@@ -19,7 +19,7 @@
 #include "Common.h"
 //[/Headers]
 
-#include "NavigationSidebar.h"
+#include "SequencerSidebarLeft.h"
 
 //[MiscUserDefs]
 
@@ -43,7 +43,7 @@ static inline constexpr int getAudioMonitorHeight()
 
 //[/MiscUserDefs]
 
-NavigationSidebar::NavigationSidebar()
+SequencerSidebarLeft::SequencerSidebarLeft()
 {
     addAndMakeVisible (background = new PanelBackgroundC());
     addAndMakeVisible (shadow = new LighterShadowUpwards());
@@ -77,7 +77,7 @@ NavigationSidebar::NavigationSidebar()
     //[/Constructor]
 }
 
-NavigationSidebar::~NavigationSidebar()
+SequencerSidebarLeft::~SequencerSidebarLeft()
 {
     //[Destructor_pre]
     this->spectrogramMonitor = nullptr;
@@ -99,7 +99,7 @@ NavigationSidebar::~NavigationSidebar()
     //[/Destructor]
 }
 
-void NavigationSidebar::paint (Graphics& g)
+void SequencerSidebarLeft::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
@@ -108,7 +108,7 @@ void NavigationSidebar::paint (Graphics& g)
     //[/UserPaint]
 }
 
-void NavigationSidebar::resized()
+void SequencerSidebarLeft::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     this->genericMonitor->setSize(this->getWidth(), getAudioMonitorHeight());
@@ -133,20 +133,20 @@ void NavigationSidebar::resized()
 
 
 //[MiscUserCode]
-void NavigationSidebar::paintOverChildren(Graphics& g)
+void SequencerSidebarLeft::paintOverChildren(Graphics& g)
 {
     g.setColour(this->findColour(ColourIDs::Common::borderLineLight));
     g.drawVerticalLine(this->getWidth() - 1, 0.f, float(this->getHeight()));
 }
 
-void NavigationSidebar::setAudioMonitor(AudioMonitor *audioMonitor)
+void SequencerSidebarLeft::setAudioMonitor(AudioMonitor *audioMonitor)
 {
     this->spectrogramMonitor->setTargetAnalyzer(audioMonitor);
     this->waveformMonitor->setTargetAnalyzer(audioMonitor);
     this->genericMonitor->setTargetAnalyzer(audioMonitor);
 }
 
-void NavigationSidebar::handleChangeMode()
+void SequencerSidebarLeft::handleChangeMode()
 {
     switch (this->modeIndicator->scrollToNextMode())
     {
@@ -165,7 +165,7 @@ void NavigationSidebar::handleChangeMode()
     }
 }
 
-void NavigationSidebar::switchMonitorsAnimated(Component *oldOne, Component *newOne)
+void SequencerSidebarLeft::switchMonitorsAnimated(Component *oldOne, Component *newOne)
 {
     const int w = this->getWidth();
     const int y = this->getHeight() - getAudioMonitorHeight();
@@ -224,5 +224,5 @@ static const unsigned char resource_NavigationSidebar_gray1x1_png[] = { 137,80,7
 1,0,154,156,24,0,0,0,7,116,73,77,69,7,222,4,19,5,8,9,228,2,121,9,0,0,0,29,105,84,88,116,67,111,109,109,101,110,116,0,0,0,0,0,67,114,101,97,116,101,100,32,119,105,116,104,32,71,73,77,80,100,46,101,7,0,
 0,0,12,73,68,65,84,8,215,99,136,138,138,2,0,2,32,1,15,53,60,95,243,0,0,0,0,73,69,78,68,174,66,96,130,0,0};
 
-const char* NavigationSidebar::gray1x1_png = (const char*) resource_NavigationSidebar_gray1x1_png;
-const int NavigationSidebar::gray1x1_pngSize = 150;
+const char* SequencerSidebarLeft::gray1x1_png = (const char*) resource_NavigationSidebar_gray1x1_png;
+const int SequencerSidebarLeft::gray1x1_pngSize = 150;
