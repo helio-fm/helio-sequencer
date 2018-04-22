@@ -46,9 +46,9 @@ inline int iconHeightByComponentHeight(int h)
 //===----------------------------------------------------------------------===//
 
 MenuItem::MenuItem() :
-    commandId(0), isToggled(false),
+    commandId(0), isToggled(false), isDisabled(false),
     hasSubmenu(false), hasTimer(false),
-    alignment(Alignment::Left) {}
+    alignment(Alignment::Left), callback(nullptr) {}
 
 MenuItem::Ptr MenuItem::empty()
 {
@@ -79,6 +79,11 @@ MenuItem::Ptr MenuItem::item(Image image, int returnedId, const String &text /*=
     description->hasSubmenu = false;
     description->hasTimer = false;
     return description;
+}
+
+MenuItem::Ptr MenuItem::item(const String &targetIcon, const String &text)
+{
+    return MenuItem::item(targetIcon, 0, text);
 }
 
 MenuItem::Ptr MenuItem::withAlignment(Alignment alignment)
@@ -121,6 +126,20 @@ MenuItem::Ptr MenuItem::colouredWith(const Colour &colour)
 {
     MenuItem::Ptr description(this);
     description->colour = colour;
+    return description;
+}
+
+MenuItem::Ptr MenuItem::disabledIf(bool condition)
+{
+    MenuItem::Ptr description(this);
+    description->isDisabled = condition;
+    return description;
+}
+
+MenuItem::Ptr MenuItem::withAction(const Callback &lambda)
+{
+    MenuItem::Ptr description(this);
+    description->callback = lambda;
     return description;
 }
 
@@ -371,16 +390,19 @@ void MenuItemComponent::mouseDown (const MouseEvent& e)
     }
     else
     {
-        this->clickMarker = new CommandDragHighlighter();
-        this->addChildComponent(this->clickMarker);
-        this->clickMarker->setBounds(this->getLocalBounds());
-        this->clickMarker->toBack();
+        if (!this->description->isDisabled)
+        {
+            this->clickMarker = new CommandDragHighlighter();
+            this->addChildComponent(this->clickMarker);
+            this->clickMarker->setBounds(this->getLocalBounds());
+            this->clickMarker->toBack();
 
 #if HAS_OPENGL_BUG
-        this->clickMarker->setVisible(true);
+            this->clickMarker->setVisible(true);
 #else
-        this->animator.animateComponent(this->clickMarker, this->getLocalBounds(), 1.f, 150, true, 0.0, 0.0);
+            this->animator.animateComponent(this->clickMarker, this->getLocalBounds(), 1.f, 150, true, 0.0, 0.0);
 #endif
+        }
 
         if (this->listCanBeScrolled())
         {
@@ -442,8 +464,6 @@ void MenuItemComponent::setSelected(bool shouldBeSelected)
     {
         if (!this->hasText())
         {
-            //ScopedPointer<Component> highlighter(this->createHighlighterComponent());
-
 #if ! HAS_OPENGL_BUG
             // possible glDeleteTexture bug here?
             ScopedPointer<CommandItemSelector> highlighter(new CommandItemSelector());
@@ -454,7 +474,7 @@ void MenuItemComponent::setSelected(bool shouldBeSelected)
 #endif
         }
 
-        this->parent->postCommandMessage(this->description->commandId);
+        this->doAction();
     }
 }
 
@@ -478,13 +498,17 @@ void MenuItemComponent::update(const MenuItem::Ptr desc)
         this->toggleMarker = nullptr;
     }
 
+    // FIXME! get rid of hard-coded colours
     if (desc->colour.getAlpha() > 0)
     {
-        this->textLabel->setColour(Label::textColourId, desc->colour.interpolatedWith(Colour(0xbaffffff), 0.5));
+        this->textLabel->setColour(Label::textColourId,
+            desc->colour.interpolatedWith(Colour(0xbaffffff), 0.5)
+                .withMultipliedAlpha(desc->isDisabled ? 0.5f : 1.f));
     }
     else if (desc->colour.getAlpha() == 0)
     {
-        this->textLabel->setColour(Label::textColourId, Colour(0xbaffffff));
+        this->textLabel->setColour(Label::textColourId,
+            Colour(0xbaffffff).withMultipliedAlpha(desc->isDisabled ? 0.5f : 1.f));
     }
 
     this->textLabel->setJustificationType(desc->alignment == MenuItem::Left ?
@@ -511,25 +535,54 @@ void MenuItemComponent::update(const MenuItem::Ptr desc)
 
 Component *MenuItemComponent::createHighlighterComponent()
 {
-    MenuItem::Ptr desc2 = MenuItem::empty();
-    desc2->image = this->description->image;
-    desc2->iconName = this->description->iconName;
-    desc2->commandText = this->description->commandText;
-    desc2->subText = this->description->subText;
-    desc2->hasSubmenu = this->description->hasSubmenu;
-    desc2->colour = this->description->colour;
-    desc2->alignment = this->description->alignment;
-    desc2->hasTimer = false;
-    return new MenuItemComponent(this->parent, nullptr, desc2);
+    if (!this->description->isDisabled)
+    {
+        MenuItem::Ptr desc2 = MenuItem::empty();
+        desc2->image = this->description->image;
+        desc2->iconName = this->description->iconName;
+        desc2->commandText = this->description->commandText;
+        desc2->subText = this->description->subText;
+        desc2->hasSubmenu = this->description->hasSubmenu;
+        desc2->colour = this->description->colour;
+        desc2->alignment = this->description->alignment;
+        desc2->hasTimer = false;
+        return new MenuItemComponent(this->parent, nullptr, desc2);
+    }
 
-    //return new CommandDragHighlighter();
+    return nullptr;
 }
 
 void MenuItemComponent::timerCallback()
 {
     this->stopTimer();
     jassert(this->description->hasTimer);
-    this->parent->postCommandMessage(this->description->commandId);
+    this->doAction();
+}
+
+void MenuItemComponent::doAction()
+{
+    if (this->description->isDisabled)
+    {
+        return;
+    }
+
+    const BailOutChecker checker(this);
+
+    if (this->description->callback != nullptr)
+    {
+        this->description->callback();
+    }
+
+    if (checker.shouldBailOut())
+    {
+        return;
+    }
+
+    if (this->parent != nullptr &&
+        this->description->commandId > 0)
+    {
+        this->parent->postCommandMessage(this->description->commandId);
+    }
 }
 
 //[/MiscUserCode]

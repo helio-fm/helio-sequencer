@@ -21,54 +21,31 @@
 #include "CommandIDs.h"
 #include "Icons.h"
 
-static MenuPanel::Menu createDefaultPanel()
+VersionControlStageSelectionMenu::VersionControlStageSelectionMenu(const SparseSet<int> &selectedChanges, VersionControl &vcs) :
+    selectedChanges(selectedChanges),
+    vcs(vcs)
 {
     MenuPanel::Menu cmds;
 
-    cmds.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents,
-        TRANS("menu::selection::stage::reset")));
+    cmds.add(MenuItem::item(Icons::commit, TRANS("menu::selection::stage::commit"))->withAction([this]()
+    {
+        this->dismiss();
+    }));
 
-    cmds.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents,
-        TRANS("menu::selection::stage::commit")));
+    cmds.add(MenuItem::item(Icons::reset, TRANS("menu::selection::stage::reset"))->withAction([this]()
+    {
+        this->dismiss();
+    }));
 
     // TODO add named stashes in addition to the default one
     //cmds.add(MenuItem::item(Icons::trash, CommandIDs::DeleteEvents,
     //    TRANS("menu::selection::stage::stash")));
 
-    cmds.add(MenuItem::item(Icons::trash, CommandIDs::DeleteEvents,
-        TRANS("menu::selection::stage::selectall")));
+    //cmds.add(MenuItem::item(Icons::selection, CommandIDs::DeleteEvents,
+    //    TRANS("menu::selection::stage::selectall")));
 
-    cmds.add(MenuItem::item(Icons::trash, CommandIDs::DeleteEvents,
+    cmds.add(MenuItem::item(Icons::empty, CommandIDs::VersionControlSelectNone,
         TRANS("menu::selection::stage::selectnone")));
 
-    return cmds;
-}
-
-VersionControlStageSelectionMenu::VersionControlStageSelectionMenu(const SparseSet<int> &selectedChanges, VersionControl &vcs) :
-    selectedChanges(selectedChanges),
-    vcs(vcs)
-{
-    this->updateContent(createDefaultPanel(), MenuPanel::SlideRight);
-}
-
-void VersionControlStageSelectionMenu::handleCommandMessage(int commandId)
-{
-    if (commandId == CommandIDs::Back)
-    {
-        this->updateContent(createDefaultPanel(), MenuPanel::SlideRight);
-        return;
-    }
-    else if (commandId == CommandIDs::CopyEvents)
-    {
-        this->dismiss();
-        return;
-    }
-}
-
-void VersionControlStageSelectionMenu::dismiss() const
-{
-    if (Component *parent = this->getParentComponent())
-    {
-        parent->exitModalState(0);
-    }
+    this->updateContent(cmds, MenuPanel::SlideRight);
 }

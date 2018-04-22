@@ -30,6 +30,9 @@ struct MenuItem final : public ReferenceCountedObject
         Right
     };
 
+    typedef Function<void()> Callback;
+    typedef ReferenceCountedObjectPtr<MenuItem> Ptr;
+
     Image image;
     String iconName;
     String commandText;
@@ -38,29 +41,26 @@ struct MenuItem final : public ReferenceCountedObject
     Alignment alignment;
     int commandId;
     bool isToggled;
+    bool isDisabled;
     bool hasSubmenu;
     bool hasTimer;
-
-    typedef ReferenceCountedObjectPtr<MenuItem> Ptr;
+    Callback callback;
 
     MenuItem();
+    MenuItem::Ptr withAction(const Callback &lambda);
     MenuItem::Ptr withAlignment(Alignment alignment);
     MenuItem::Ptr withSubmenu();
     MenuItem::Ptr withTimer();
     MenuItem::Ptr toggled(bool shouldBeToggled);
     MenuItem::Ptr withSubLabel(const String &text);
     MenuItem::Ptr colouredWith(const Colour &colour);
+    MenuItem::Ptr disabledIf(bool condition);
 
     static MenuItem::Ptr empty();
-
-    static MenuItem::Ptr item(const String &targetIcon,
-        int returnedId, const String &text = {});
-
-    static MenuItem::Ptr item(Image image,
-        int returnedId, const String &text = {});
-
+    static MenuItem::Ptr item(const String &icon, const String &text);
+    static MenuItem::Ptr item(const String &icon, int commandId, const String &text = {});
+    static MenuItem::Ptr item(Image image, int commandId, const String &text = {});
 };
-
 //[/Headers]
 
 
@@ -104,7 +104,6 @@ private:
     //[UserVariables]
 
     Image icon;
-
     MenuItem::Ptr description;
 
     SafePointer<Component> parent;
@@ -118,17 +117,18 @@ private:
     ComponentAnimator animator;
 
     Component *createHighlighterComponent() override;
-
     void timerCallback() override;
-
-    inline bool hasText() const
+    inline bool hasText() const noexcept
     {
-        return this->description->commandText.isNotEmpty() || this->description->subText.isNotEmpty();
+        return this->description->commandText.isNotEmpty() ||
+            this->description->subText.isNotEmpty();
     }
 
     // workaround странного поведения juce
     // возможна ситуация, когда mousedown'а не было, а mouseup срабатывает
     bool mouseDownWasTriggered;
+
+    void doAction();
 
     //[/UserVariables]
 
