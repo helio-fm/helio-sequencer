@@ -348,7 +348,8 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
             }
             else
             {
-                App::Layout().showTooltip(TRANS("warnings::emptyselection"));
+                // TODO ! move this menu item into selection menu and get rid of useless warning
+                //App::Layout().showTooltip(TRANS("warnings::emptyselection"));
             }
         }
         break;

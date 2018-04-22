@@ -763,6 +763,14 @@
             <FILE id="J8Wiet" name="MenuPanel.h" compile="0" resource="0" file="../../Source/UI/Menus/Base/MenuPanel.h"/>
           </GROUP>
           <GROUP id="{D0B9D042-7C34-0330-0194-78485E4C89D4}" name="SelectionMenus">
+            <FILE id="AN9M3v" name="AudioPluginSelectionMenu.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Menus/SelectionMenus/AudioPluginSelectionMenu.cpp"/>
+            <FILE id="ERqNxI" name="AudioPluginSelectionMenu.h" compile="0" resource="0"
+                  file="../../Source/UI/Menus/SelectionMenus/AudioPluginSelectionMenu.h"/>
+            <FILE id="gS64f6" name="InstrumentNodeSelectionMenu.cpp" compile="1"
+                  resource="0" file="../../Source/UI/Menus/SelectionMenus/InstrumentNodeSelectionMenu.cpp"/>
+            <FILE id="OcvJ5S" name="InstrumentNodeSelectionMenu.h" compile="0"
+                  resource="0" file="../../Source/UI/Menus/SelectionMenus/InstrumentNodeSelectionMenu.h"/>
             <FILE id="P4AT8Y" name="PatternRollSelectionMenu.cpp" compile="1" resource="0"
                   file="../../Source/UI/Menus/SelectionMenus/PatternRollSelectionMenu.cpp"/>
             <FILE id="mwbtT6" name="PatternRollSelectionMenu.h" compile="0" resource="0"
