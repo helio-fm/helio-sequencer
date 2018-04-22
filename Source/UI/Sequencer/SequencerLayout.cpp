@@ -48,15 +48,15 @@
 #include "ColourIDs.h"
 
 // force compile template
-#include "AnnotationsMap/AnnotationsTrackMap.cpp"
+#include "AnnotationsTrackMap.cpp"
 template class AnnotationsTrackMap<AnnotationSmallComponent>;
 
 // force compile template
-#include "TimeSignaturesMap/TimeSignaturesTrackMap.cpp"
+#include "TimeSignaturesTrackMap.cpp"
 template class TimeSignaturesTrackMap<TimeSignatureSmallComponent>;
 
 // force compile template
-#include "KeySignaturesMap/KeySignaturesTrackMap.cpp"
+#include "KeySignaturesTrackMap.cpp"
 template class KeySignaturesTrackMap<KeySignatureSmallComponent>;
 
 #define MAX_NUM_SPLITSCREEN_EDITORS 2

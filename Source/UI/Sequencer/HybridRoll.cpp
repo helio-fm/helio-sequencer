@@ -79,15 +79,15 @@
 #endif
 
 // force compile template
-#include "AnnotationsMap/AnnotationsTrackMap.cpp"
+#include "AnnotationsTrackMap.cpp"
 template class AnnotationsTrackMap<AnnotationLargeComponent>;
 
 // force compile template
-#include "TimeSignaturesMap/TimeSignaturesTrackMap.cpp"
+#include "TimeSignaturesTrackMap.cpp"
 template class TimeSignaturesTrackMap<TimeSignatureLargeComponent>;
 
 // force compile template
-#include "KeySignaturesMap/KeySignaturesTrackMap.cpp"
+#include "KeySignaturesTrackMap.cpp"
 template class KeySignaturesTrackMap<KeySignatureLargeComponent>;
 
 
