@@ -196,7 +196,7 @@ bool InstrumentTreeItem::hasMenu() const noexcept
 
 ScopedPointer<Component> InstrumentTreeItem::createMenu()
 {
-    return new InstrumentMenu(*this);
+    return new InstrumentMenu(*this, App::Workspace().getPluginManager());
 }
 
 void InstrumentTreeItem::updateChildrenEditors()
@@ -218,6 +218,21 @@ void InstrumentTreeItem::updateChildrenEditors()
             node->getProcessor()->getName());
         this->addChildTreeItem(ap);
     }
+}
+
+//===----------------------------------------------------------------------===//
+// Callbacks
+//===----------------------------------------------------------------------===//
+
+Function<void(const String &text)> InstrumentTreeItem::getRenameCallback()
+{
+    return [this](const String &text)
+    {
+        if (text != this->getName())
+        {
+            this->safeRename(text);
+        }
+    };
 }
 
 //===----------------------------------------------------------------------===//

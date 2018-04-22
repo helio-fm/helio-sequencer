@@ -17,6 +17,7 @@
 
 #pragma once
 
+class PluginScanner;
 class InstrumentTreeItem;
 
 #include "MenuPanel.h"
@@ -25,12 +26,14 @@ class InstrumentMenu final : public MenuPanel
 {
 public:
     
-    explicit InstrumentMenu(InstrumentTreeItem &parentInstrument);
-
-    void handleCommandMessage(int commandId) override;
+    InstrumentMenu(InstrumentTreeItem &parentInstrument, PluginScanner &scanner);
     
 private:
     
-    InstrumentTreeItem &instrument;
+    InstrumentTreeItem &instrumentNode;
+    PluginScanner &pluginScanner;
     
+    MenuPanel::Menu createDefaultMenu();
+    MenuPanel::Menu createEffectsMenu();
+
 };

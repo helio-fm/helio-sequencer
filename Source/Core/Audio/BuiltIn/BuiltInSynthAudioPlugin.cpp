@@ -103,12 +103,11 @@ bool BuiltInSynthAudioPlugin::producesMidi() const
 AudioProcessorEditor *BuiltInSynthAudioPlugin::createEditor()
 {
     return nullptr;
-    //return new BuiltInSynthAudioPluginEditor(this);
 }
 
 bool BuiltInSynthAudioPlugin::hasEditor() const
 {
-    return true;
+    return false;
 }
 
 

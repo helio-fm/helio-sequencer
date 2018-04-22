@@ -18,39 +18,87 @@
 #include "Common.h"
 #include "InstrumentMenu.h"
 #include "InstrumentTreeItem.h"
-#include "Icons.h"
-#include "CommandIDs.h"
-#include "App.h"
-#include "MainLayout.h"
+#include "Instrument.h"
 #include "ModalDialogInput.h"
+#include "PluginScanner.h"
+#include "MainLayout.h"
+#include "CommandIDs.h"
+#include "Icons.h"
+#include "App.h"
 
-InstrumentMenu::InstrumentMenu(InstrumentTreeItem &parentInstrument) :
-    instrument(parentInstrument)
+InstrumentMenu::InstrumentMenu(InstrumentTreeItem &instrumentNode, PluginScanner &scanner) :
+    instrumentNode(instrumentNode),
+    pluginScanner(scanner)
 {
-    MenuPanel::Menu cmds;
-    //cmds.add(MenuItem::item(Icons::reset, CommandIDs::UpdateInstrument, TRANS("menu::instrument::update")));
-    cmds.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameInstrument, TRANS("menu::instrument::rename")));
-    cmds.add(MenuItem::item(Icons::trash, CommandIDs::DeleteInstrument, TRANS("menu::instrument::delete")));
-    this->updateContent(cmds);
+    this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
 }
 
-void InstrumentMenu::handleCommandMessage(int commandId)
+MenuPanel::Menu InstrumentMenu::createDefaultMenu()
 {
-    switch (commandId)
+    MenuPanel::Menu menu;
+
+    // TODO:
+    //menu.add(MenuItem::item(Icons::reset, TRANS("menu::instrument::update")));
+    //menu.add(MenuItem::item(Icons::?current, TRANS("menu::instrument::seticon")));
+    //menu.add(MenuItem::item(Icons::colour, TRANS("menu::instrument::setcolour")));
+
+    menu.add(MenuItem::item(Icons::ellipsis, TRANS("menu::instrument::rename"))->withAction([this]()
     {
-        case CommandIDs::UpdateInstrument:
-            this->instrument.updateChildrenEditors();
-            break;
+        auto dialog = ModalDialogInput::Presets::renameInstrument(this->instrumentNode.getName());
+        dialog->onOk = this->instrumentNode.getRenameCallback();
+        App::Layout().showModalComponentUnowned(dialog.release());
+        this->dismiss();
+    }));
 
-        case CommandIDs::RenameInstrument:
-            // todo dialog box!
-            //auto dialog = ModalDialogInput::Presets::renameInstrument()
-            break;
+    menu.add(MenuItem::item(Icons::trash, TRANS("menu::instrument::delete"))->withAction([this]()
+    {
+        TreeItem::deleteItem(&this->instrumentNode);
+        this->dismiss();
+    }));
 
-        case CommandIDs::DeleteInstrument:
-            TreeItem::deleteItem(&this->instrument);
+    bool hasEffects = false;
+    for (const auto description : this->pluginScanner.getList())
+    {
+        if (!description->isInstrument)
+        {
+            hasEffects = true;
             break;
+        }
     }
 
-    this->getParentComponent()->exitModalState(0);
+    menu.add(MenuItem::item(Icons::instrumentGraph, TRANS("menu::instrument::addeffect"))->
+        withSubmenu()->withTimer()->disabledIf(!hasEffects)->withAction([this]()
+    {
+        this->updateContent(this->createEffectsMenu(), MenuPanel::SlideLeft);
+    }));
+
+    return menu;
+}
+
+MenuPanel::Menu InstrumentMenu::createEffectsMenu()
+{
+    MenuPanel::Menu menu;
+
+    menu.add(MenuItem::item(Icons::left, TRANS("menu::back"))->withTimer()->withAction([this]()
+    {
+        this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
+    }));
+
+    for (const auto description : this->pluginScanner.getList())
+    {
+        if (!description->isInstrument)
+        {
+            menu.add(MenuItem::item(Icons::instrumentGraph,
+                description->descriptiveName)->withAction([this, description]()
+            {
+                this->instrumentNode.getInstrument()->addNodeToFreeSpace(*description, [this](Instrument *instrument)
+                {
+                    this->instrumentNode.updateChildrenEditors();
+                });
+                this->dismiss();
+            }));
+        }
+    }
+
+    return menu;
 }

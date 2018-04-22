@@ -70,6 +70,12 @@ public:
     ValueTree serialize() const override;
     void deserialize(const ValueTree &tree) override;
 
+    //===------------------------------------------------------------------===//
+    // Callbacks
+    //===------------------------------------------------------------------===//
+
+    Function<void(const String &text)> getRenameCallback();
+
 private:
 
     void initInstrumentEditor();
