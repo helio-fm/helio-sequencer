@@ -21,15 +21,15 @@
 #include "CommandIDs.h"
 #include "Icons.h"
 
-static CommandPanel::Items createDefaultPanel()
+static MenuPanel::Menu createDefaultPanel()
 {
-    CommandPanel::Items cmds;
+    MenuPanel::Menu cmds;
 
-    cmds.add(CommandItem::withParams(Icons::copy, CommandIDs::CopyEvents,
+    cmds.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents,
         TRANS("menu::selection::history::checkout")));
 
     // TODO
-    //cmds.add(CommandItem::withParams(Icons::copy, CommandIDs::CopyEvents,
+    //cmds.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents,
     //    TRANS("menu::selection::history::merge")));
 
     return cmds;
@@ -40,14 +40,14 @@ VersionControlHistorySelectionMenu::VersionControlHistorySelectionMenu(ValueTree
     vcs(vcs)
 {
     // TODO replace with RevisionComponent
-    this->updateContent(createDefaultPanel(), CommandPanel::SlideRight);
+    this->updateContent(createDefaultPanel(), MenuPanel::SlideRight);
 }
 
 void VersionControlHistorySelectionMenu::handleCommandMessage(int commandId)
 {
     if (commandId == CommandIDs::Back)
     {
-        this->updateContent(createDefaultPanel(), CommandPanel::SlideRight);
+        this->updateContent(createDefaultPanel(), MenuPanel::SlideRight);
         return;
     }
     else if (commandId == CommandIDs::CopyEvents)

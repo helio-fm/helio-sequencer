@@ -31,23 +31,23 @@
 InstrumentsMenu::InstrumentsMenu(InstrumentsRootTreeItem &parentOrchestra) :
     instrumentsRoot(parentOrchestra)
 {
-    CommandPanel::Items cmds;
+    MenuPanel::Menu cmds;
 
     const bool pluginsAreCurrentlyScanning = App::Workspace().getPluginManager().isWorking();
 
     if (!pluginsAreCurrentlyScanning)
     {
-        cmds.add(CommandItem::withParams(Icons::reset, CommandIDs::ScanAllPlugins, TRANS("menu::instruments::reload")));
+        cmds.add(MenuItem::item(Icons::reset, CommandIDs::ScanAllPlugins, TRANS("menu::instruments::reload")));
     }
     
-    cmds.add(CommandItem::withParams(Icons::open, CommandIDs::ScanPluginsFolder, TRANS("menu::instruments::scanfolder")));
+    cmds.add(MenuItem::item(Icons::open, CommandIDs::ScanPluginsFolder, TRANS("menu::instruments::scanfolder")));
     
     const KnownPluginList &info = App::Workspace().getPluginManager().getList();
     
     for (int i = 0; i < info.getNumTypes(); ++i)
     {
         const PluginDescription *pd = info.getType(i);
-        cmds.add(CommandItem::withParams(Icons::create, CommandIDs::CreateInstrument + i, TRANS("menu::instruments::add") + " " + pd->descriptiveName));
+        cmds.add(MenuItem::item(Icons::create, CommandIDs::CreateInstrument + i, TRANS("menu::instruments::add") + " " + pd->descriptiveName));
     }
     
     this->updateContent(cmds);

@@ -20,9 +20,9 @@
 class ProjectTreeItem;
 class AnnotationEvent;
 
-#include "CommandPanel.h"
+#include "MenuPanel.h"
 
-class AnnotationMenu final : public CommandPanel
+class AnnotationMenu final : public MenuPanel
 {
 public:
     

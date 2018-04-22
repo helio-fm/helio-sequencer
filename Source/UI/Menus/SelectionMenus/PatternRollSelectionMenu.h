@@ -19,9 +19,9 @@
 
 class Lasso;
 
-#include "CommandPanel.h"
+#include "MenuPanel.h"
 
-class PatternRollSelectionMenu : public CommandPanel
+class PatternRollSelectionMenu : public MenuPanel
 {
 public:
     

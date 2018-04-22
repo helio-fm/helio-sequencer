@@ -27,7 +27,7 @@ struct PluginDescriptionWrapper : ReferenceCountedObject
 
 class PluginScanner;
 class InstrumentsRootTreeItem;
-class CommandItemComponent;
+class MenuItemComponent;
 
 //[/Headers]
 
@@ -103,7 +103,7 @@ private:
     ScopedPointer<TextButton> removeButton;
     ScopedPointer<TextButton> scanButton;
     ScopedPointer<LightShadowDownwards> shadow;
-    ScopedPointer<CommandItemComponent> initialScanButton;
+    ScopedPointer<MenuItemComponent> initialScanButton;
     ScopedPointer<SeparatorHorizontalFading> separator1;
     ScopedPointer<SeparatorHorizontalFading> separator2;
 

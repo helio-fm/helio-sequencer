@@ -23,7 +23,7 @@
 class PianoRoll;
 class ProjectTreeItem;
 class NotesTuningDiagram;
-class CommandItemComponent;
+class MenuItemComponent;
 //[/Headers]
 
 #include "../Themes/PanelBackgroundC.h"
@@ -100,7 +100,7 @@ private:
     ScopedPointer<Slider> volumeSliderLinear;
     ScopedPointer<NotesTuningDiagram> tuningDiagram;
     ScopedPointer<FramePanel> panel;
-    ScopedPointer<CommandItemComponent> resetButton;
+    ScopedPointer<MenuItemComponent> resetButton;
     ScopedPointer<PlayButton> playButton;
     ScopedPointer<ShadowDownwards> shadowDown;
     ScopedPointer<PopupButton> sliderSineButton;

@@ -17,7 +17,7 @@
 
 #include "Common.h"
 #include "KeySelector.h"
-#include "CommandPanel.h"
+#include "MenuPanel.h"
 #include "Scale.h"
 
 KeySelector::KeySelector()

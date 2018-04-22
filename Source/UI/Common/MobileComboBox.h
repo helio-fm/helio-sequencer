@@ -19,7 +19,7 @@
 
 //[Headers]
 #include "IconButton.h"
-#include "CommandPanel.h"
+#include "MenuPanel.h"
 //[/Headers]
 
 #include "../Themes/PanelBackgroundC.h"
@@ -36,7 +36,7 @@ public:
 
     //[UserMethods]
 
-    void initMenu(CommandPanel::Items menu);
+    void initMenu(MenuPanel::Menu menu);
     void initText(TextEditor *editor);
 
     class Trigger final : public IconButton
@@ -54,8 +54,8 @@ public:
         Primer();
         ~Primer() override;
         void handleCommandMessage(int commandId) override;
-        void initWith(WeakReference<Component> textEditor, CommandPanel::Items menu);
-        void updateMenu(CommandPanel::Items menu);
+        void initWith(WeakReference<Component> textEditor, MenuPanel::Menu menu);
+        void updateMenu(MenuPanel::Menu menu);
         void cleanup();
     private:
         ComponentAnimator animator;
@@ -81,7 +81,7 @@ private:
     //[/UserVariables]
 
     ScopedPointer<PanelBackgroundC> background;
-    ScopedPointer<CommandPanel> menu;
+    ScopedPointer<MenuPanel> menu;
     ScopedPointer<MobileComboBox::Trigger> triggerButtton;
     ScopedPointer<LighterShadowDownwards> shadow;
     ScopedPointer<SeparatorHorizontalReversed> separator;

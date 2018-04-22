@@ -21,12 +21,12 @@
 //[/Headers]
 
 
-class CommandItemComponentMarker final : public Component
+class MenuItemComponentMarker final : public Component
 {
 public:
 
-    CommandItemComponentMarker();
-    ~CommandItemComponentMarker();
+    MenuItemComponentMarker();
+    ~MenuItemComponentMarker();
 
     //[UserMethods]
     //[/UserMethods]
@@ -47,5 +47,5 @@ private:
     //[/UserVariables]
 
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CommandItemComponentMarker)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MenuItemComponentMarker)
 };

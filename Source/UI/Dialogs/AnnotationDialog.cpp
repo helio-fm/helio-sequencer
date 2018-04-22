@@ -151,10 +151,10 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
 
     const auto dynamics = getDynamics();
     const auto colours = getColours();
-    CommandPanel::Items menu;
+    MenuPanel::Menu menu;
     for (int i = 0; i < getDynamics().size(); ++i)
     {
-        const auto cmd = CommandItem::withParams(Icons::annotation,
+        const auto cmd = MenuItem::item(Icons::annotation,
             CommandIDs::JumpToAnnotation + i, dynamics[i])->
             colouredWith(colours[i]);
         menu.add(cmd);

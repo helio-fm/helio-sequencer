@@ -21,9 +21,9 @@ class StageComponent;
 class VersionControl;
 class ProjectTreeItem;
 
-#include "CommandPanel.h"
+#include "MenuPanel.h"
 
-class VersionControlMenu final : public CommandPanel
+class VersionControlMenu final : public MenuPanel
 {
 public:
 

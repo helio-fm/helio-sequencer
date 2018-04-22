@@ -20,9 +20,9 @@
 class Lasso;
 class ProjectTreeItem;
 
-#include "CommandPanel.h"
+#include "MenuPanel.h"
 
-class PianoRollSelectionMenu : public CommandPanel
+class PianoRollSelectionMenu : public MenuPanel
 {
 public:
     

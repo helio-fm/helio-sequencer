@@ -360,7 +360,7 @@ bool ProjectTreeItem::hasMenu() const noexcept
 
 ScopedPointer<Component> ProjectTreeItem::createMenu()
 {
-    return new ProjectMenu(*this, CommandPanel::SlideRight);
+    return new ProjectMenu(*this, MenuPanel::SlideRight);
 }
 
 //===----------------------------------------------------------------------===//

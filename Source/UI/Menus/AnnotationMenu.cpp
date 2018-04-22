@@ -34,20 +34,20 @@ AnnotationMenu::AnnotationMenu(ProjectTreeItem &parentProject, const AnnotationE
     project(parentProject),
     annotation(targetAnnotation)
 {
-    CommandPanel::Items cmds;
-    cmds.add(CommandItem::withParams(Icons::ellipsis, CommandIDs::RenameAnnotation, TRANS("menu::annotation::rename")));
+    MenuPanel::Menu cmds;
+    cmds.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameAnnotation, TRANS("menu::annotation::rename")));
     
-    const StringPairArray colours(CommandPanel::getColoursList());
+    const StringPairArray colours(MenuPanel::getColoursList());
     
     for (int i = 0; i < colours.getAllKeys().size(); ++i)
     {
         const String name(colours.getAllKeys()[i]);
         const Colour colour(Colour::fromString(colours[name]));
         const bool isSelected = (colour == this->annotation.getColour());
-        cmds.add(CommandItem::withParams(isSelected ? Icons::apply : Icons::colour, CommandIDs::SetAnnotationColour + i, name)->colouredWith(colour));
+        cmds.add(MenuItem::item(isSelected ? Icons::apply : Icons::colour, CommandIDs::SetAnnotationColour + i, name)->colouredWith(colour));
     }
     
-    cmds.add(CommandItem::withParams(Icons::close, CommandIDs::DeleteAnnotation, TRANS("menu::annotation::delete")));
+    cmds.add(MenuItem::item(Icons::close, CommandIDs::DeleteAnnotation, TRANS("menu::annotation::delete")));
     this->updateContent(cmds, SlideDown);
 }
 
@@ -70,7 +70,7 @@ void AnnotationMenu::handleCommandMessage(int commandId)
         }
         else
         {
-            const StringPairArray colours(CommandPanel::getColoursList());
+            const StringPairArray colours(MenuPanel::getColoursList());
             const int colourIndex = (commandId - CommandIDs::SetAnnotationColour);
             const String name(colours.getAllKeys()[colourIndex]);
             const Colour colour(Colour::fromString(colours[name]));

@@ -89,7 +89,7 @@ AudioSettings::AudioSettings(AudioCore &core)
     this->sampleRateEditor->setInterceptsMouseClicks(false, true);
     this->bufferSizeEditor->setInterceptsMouseClicks(false, true);
 
-    CommandPanel::Items emptyMenu;
+    MenuPanel::Menu emptyMenu;
     this->deviceTypeComboPrimer->initWith(this->deviceTypeEditor.get(), emptyMenu);
     this->deviceComboPrimer->initWith(this->deviceEditor.get(), emptyMenu);
     this->sampleRateComboPrimer->initWith(this->sampleRateEditor.get(), emptyMenu);
@@ -265,12 +265,12 @@ void AudioSettings::syncDeviceTypesList(AudioDeviceManager &deviceManager)
     const String &currentTypeName = deviceManager.getCurrentAudioDeviceType();
     const OwnedArray<AudioIODeviceType> &types = deviceManager.getAvailableDeviceTypes();
 
-    CommandPanel::Items menu;
+    MenuPanel::Menu menu;
     for (int i = 0; i < types.size(); ++i)
     {
         const String &typeName = types[i]->getTypeName();
         const bool isSelected = typeName == currentTypeName;
-        menu.add(CommandItem::withParams(isSelected ? Icons::apply : Icons::empty,
+        menu.add(MenuItem::item(isSelected ? Icons::apply : Icons::empty,
             CommandIDs::SelectAudioDeviceType + i, typeName));
 
         if (isSelected)
@@ -290,14 +290,14 @@ void AudioSettings::syncDevicesList(AudioDeviceManager &deviceManager)
 
     if (currentDevice == nullptr || currentType == nullptr) { return; }
 
-    CommandPanel::Items menu;
+    MenuPanel::Menu menu;
     const StringArray &devices = currentType->getDeviceNames();
 
     for (int i = 0; i < devices.size(); ++i)
     {
         const String &deviceName = devices[i];
         const bool isSelected = deviceName == currentDevice->getName();
-        menu.add(CommandItem::withParams(isSelected ? Icons::apply : Icons::empty,
+        menu.add(MenuItem::item(isSelected ? Icons::apply : Icons::empty,
             CommandIDs::SelectAudioDevice + i, deviceName));
 
         if (isSelected)
@@ -316,14 +316,14 @@ void AudioSettings::syncSampleRatesList(AudioDeviceManager &deviceManager)
 
     if (currentDevice == nullptr) { return; }
 
-    CommandPanel::Items menu;
+    MenuPanel::Menu menu;
     const Array<double> rates(currentDevice->getAvailableSampleRates());
 
     for (int i = 0; i < rates.size(); ++i)
     {
         const double &sampleRate = rates[i];
         const bool isSelected = sampleRate == currentDevice->getCurrentSampleRate();
-        menu.add(CommandItem::withParams(isSelected ? Icons::apply : Icons::empty,
+        menu.add(MenuItem::item(isSelected ? Icons::apply : Icons::empty,
             CommandIDs::SelectSampleRate + i, String(sampleRate)));
 
         if (isSelected)
@@ -342,7 +342,7 @@ void AudioSettings::syncBufferSizesList(AudioDeviceManager &deviceManager)
 
     if (currentDevice == nullptr) { return; }
 
-    CommandPanel::Items menu;
+    MenuPanel::Menu menu;
     const Array<int> bufferSizes(currentDevice->getAvailableBufferSizes());
     const int currentBufferSize = currentDevice->getCurrentBufferSizeSamples();
 
@@ -350,7 +350,7 @@ void AudioSettings::syncBufferSizesList(AudioDeviceManager &deviceManager)
     {
         const int &bufferSize = bufferSizes[i];
         const bool isSelected = bufferSize == currentBufferSize;
-        menu.add(CommandItem::withParams(isSelected ? Icons::apply : Icons::empty,
+        menu.add(MenuItem::item(isSelected ? Icons::apply : Icons::empty,
             CommandIDs::SelectBufferSize + i, String(bufferSize)));
 
         if (isSelected)

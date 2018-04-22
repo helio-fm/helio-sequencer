@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "CommandPanel.h"
+#include "MenuPanel.h"
 
 #include "MainLayout.h"
 #include "ProjectTreeItem.h"
@@ -24,11 +24,11 @@
 #include "Icons.h"
 #include "HybridRoll.h"
 #include "MidiSequence.h"
-#include "CommandItemComponent.h"
+#include "MenuItemComponent.h"
 #include "App.h"
 #include "MainWindow.h"
 
-CommandPanel::CommandPanel()
+MenuPanel::MenuPanel()
 {
     this->setInterceptsMouseClicks(false, true);
     this->setMouseClickGrabsKeyboardFocus(false);
@@ -46,7 +46,7 @@ CommandPanel::CommandPanel()
     }
 }
 
-void CommandPanel::resized()
+void MenuPanel::resized()
 {
     this->listBox->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
 
@@ -59,7 +59,7 @@ void CommandPanel::resized()
     }
 }
 
-void CommandPanel::handleCommandMessage (int commandId)
+void MenuPanel::handleCommandMessage (int commandId)
 {
     if (this->getParentComponent() != nullptr)
     {
@@ -88,7 +88,7 @@ public:
 };
 
 // Hardcoded for now
-StringPairArray CommandPanel::getColoursList()
+StringPairArray MenuPanel::getColoursList()
 {
     StringPairArray c;
     //c.set(TRANS("colours::none"),           Colours::transparentWhite.toString());
@@ -118,7 +118,7 @@ StringPairArray CommandPanel::getColoursList()
 #define FADE_ALPHA 0.5f
 #define TOPLEVEL_HEIGHT_MARGINS 170
 
-void CommandPanel::updateContent(const Items &commands,
+void MenuPanel::updateContent(const Menu &commands,
     AnimationType animationType, bool adjustsWidth)
 {
     this->lastAnimationType = animationType;
@@ -202,7 +202,7 @@ void CommandPanel::updateContent(const Items &commands,
 
     if (this->shouldResizeToFitContent && receivedNewCommands)
     {
-        ScopedPointer<CommandItemComponent> tempItem(new CommandItemComponent(nullptr, nullptr, CommandItem::empty()));
+        ScopedPointer<MenuItemComponent> tempItem(new MenuItemComponent(nullptr, nullptr, MenuItem::empty()));
         Font stringFont(tempItem->getFont());
 
         const int newHeight = jmax(this->getHeight(), commands.size() * COMMAND_PANEL_BUTTON_HEIGHT);
@@ -230,12 +230,12 @@ void CommandPanel::updateContent(const Items &commands,
 // ListBoxModel
 //===----------------------------------------------------------------------===//
 
-int CommandPanel::getNumRows()
+int MenuPanel::getNumRows()
 {
     return this->commandDescriptions.size();
 }
 
-Component *CommandPanel::refreshComponentForRow(int rowNumber, bool isRowSelected,
+Component *MenuPanel::refreshComponentForRow(int rowNumber, bool isRowSelected,
                                                 Component *existingComponentToUpdate)
 {
     if (rowNumber >= this->commandDescriptions.size())
@@ -243,11 +243,11 @@ Component *CommandPanel::refreshComponentForRow(int rowNumber, bool isRowSelecte
         return existingComponentToUpdate;
     }
 
-    const CommandItem::Ptr itemDescription = this->commandDescriptions[rowNumber];
+    const MenuItem::Ptr itemDescription = this->commandDescriptions[rowNumber];
 
     if (existingComponentToUpdate != nullptr)
     {
-        if (CommandItemComponent *row = dynamic_cast<CommandItemComponent *>(existingComponentToUpdate))
+        if (MenuItemComponent *row = dynamic_cast<MenuItemComponent *>(existingComponentToUpdate))
         {
             row->setSelected(isRowSelected);
             row->update(itemDescription);
@@ -255,7 +255,7 @@ Component *CommandPanel::refreshComponentForRow(int rowNumber, bool isRowSelecte
     }
     else
     {
-        CommandItemComponent *row = new CommandItemComponent(this, this->listBox->getViewport(), itemDescription);
+        MenuItemComponent *row = new MenuItemComponent(this, this->listBox->getViewport(), itemDescription);
         row->setSelected(isRowSelected);
         return row;
     }

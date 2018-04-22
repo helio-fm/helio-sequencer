@@ -133,11 +133,11 @@ KeySignatureDialog::KeySignatureDialog(Component &owner, Transport &transport, K
     this->setAlwaysOnTop(true);
     this->updateOkButtonState();
 
-    CommandPanel::Items menu;
+    MenuPanel::Menu menu;
     for (int i = 0; i < this->defaultScales.size(); ++i)
     {
         const auto &s = this->defaultScales.getUnchecked(i);
-        menu.add(CommandItem::withParams(Icons::ellipsis, CommandIDs::SelectScale + i, s->getLocalizedName()));
+        menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::SelectScale + i, s->getLocalizedName()));
     }
     this->comboPrimer->initWith(this->scaleNameEditor.get(), menu);
 

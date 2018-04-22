@@ -127,11 +127,11 @@ TimeSignatureDialog::TimeSignatureDialog(Component &owner, TimeSignaturesSequenc
     this->setAlwaysOnTop(true);
     this->updateOkButtonState();
 
-    CommandPanel::Items menu;
+    MenuPanel::Menu menu;
     for (int i = 0; i < this->defailtMeters.size(); ++i)
     {
         const auto &s = meterNames[i];
-        menu.add(CommandItem::withParams(Icons::empty, CommandIDs::SelectTimeSignature + i, s));
+        menu.add(MenuItem::item(Icons::empty, CommandIDs::SelectTimeSignature + i, s));
     }
     this->comboPrimer->initWith(this->textEditor.get(), menu);
 

@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "MidiTrackCommandPanel.h"
+#include "MidiTrackMenu.h"
 #include "MidiTrackTreeItem.h"
 #include "PianoTrackTreeItem.h"
 #include "Icons.h"
@@ -40,13 +40,13 @@
 #include "Workspace.h"
 #include "App.h"
 
-MidiTrackCommandPanel::MidiTrackCommandPanel(MidiTrackTreeItem &parentLayer) :
+MidiTrackMenu::MidiTrackMenu(MidiTrackTreeItem &parentLayer) :
     trackItem(parentLayer)
 {
     this->initDefaultCommands();
 }
 
-void MidiTrackCommandPanel::handleCommandMessage(int commandId)
+void MidiTrackMenu::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {
@@ -143,7 +143,7 @@ void MidiTrackCommandPanel::handleCommandMessage(int commandId)
         }
     }
     
-    const StringPairArray colours(CommandPanel::getColoursList());
+    const StringPairArray colours(MenuPanel::getColoursList());
     
     if (commandId >= CommandIDs::SetTrackColour &&
         commandId <= (CommandIDs::SetTrackColour + colours.size()))
@@ -157,21 +157,21 @@ void MidiTrackCommandPanel::handleCommandMessage(int commandId)
     }
 }
 
-void MidiTrackCommandPanel::initDefaultCommands()
+void MidiTrackMenu::initDefaultCommands()
 {
-    CommandPanel::Items cmds;
-    cmds.add(CommandItem::withParams(Icons::paste, CommandIDs::SelectAllEvents, TRANS("menu::track::selectall")));
-    cmds.add(CommandItem::withParams(Icons::colour, CommandIDs::SelectTrackColour, TRANS("menu::track::change::colour"))->withSubmenu());
+    MenuPanel::Menu cmds;
+    cmds.add(MenuItem::item(Icons::paste, CommandIDs::SelectAllEvents, TRANS("menu::track::selectall")));
+    cmds.add(MenuItem::item(Icons::colour, CommandIDs::SelectTrackColour, TRANS("menu::track::change::colour"))->withSubmenu());
     
     const Array<Instrument *> &info = App::Workspace().getAudioCore().getInstruments();
     const int numInstruments = info.size();
 
     if (numInstruments > 1)
     {
-        cmds.add(CommandItem::withParams(Icons::saxophone, CommandIDs::SelectTrackInstrument, TRANS("menu::track::change::instrument"))->withSubmenu());
+        cmds.add(MenuItem::item(Icons::saxophone, CommandIDs::SelectTrackInstrument, TRANS("menu::track::change::instrument"))->withSubmenu());
     }
     
-    cmds.add(CommandItem::withParams(Icons::ellipsis, CommandIDs::RenameTrack, TRANS("menu::track::rename")));
+    cmds.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack, TRANS("menu::track::rename")));
     
     //MainLayout &workspace = this->trackItem.getWorkspace();
     //Array<ProjectTreeItem *> projects = workspace.getLoadedProjects();
@@ -179,7 +179,7 @@ void MidiTrackCommandPanel::initDefaultCommands()
     
     //if (numProjects > 1)
     //{
-    //    cmds.add(CommandItem::withParams(Icons::copy, DuplicateTo, TRANS("menu::track::copytoproject"))->withSubmenu());
+    //    cmds.add(MenuItem::item(Icons::copy, DuplicateTo, TRANS("menu::track::copytoproject"))->withSubmenu());
     //}
 
     const bool canBeMuted = (dynamic_cast<PianoTrackTreeItem *>(&this->trackItem) != nullptr);
@@ -190,40 +190,40 @@ void MidiTrackCommandPanel::initDefaultCommands()
         
         if (muted)
         {
-            cmds.add(CommandItem::withParams(Icons::volumeUp, CommandIDs::UnmuteTrack, TRANS("menu::track::unmute")));
+            cmds.add(MenuItem::item(Icons::volumeUp, CommandIDs::UnmuteTrack, TRANS("menu::track::unmute")));
         }
         else
         {
-            cmds.add(CommandItem::withParams(Icons::volumeOff, CommandIDs::MuteTrack, TRANS("menu::track::mute")));
+            cmds.add(MenuItem::item(Icons::volumeOff, CommandIDs::MuteTrack, TRANS("menu::track::mute")));
         }
     }
     
-    cmds.add(CommandItem::withParams(Icons::trash, CommandIDs::DeleteTrack, TRANS("menu::track::delete")));
-    this->updateContent(cmds, CommandPanel::SlideRight);
+    cmds.add(MenuItem::item(Icons::trash, CommandIDs::DeleteTrack, TRANS("menu::track::delete")));
+    this->updateContent(cmds, MenuPanel::SlideRight);
 }
 
-void MidiTrackCommandPanel::initColorSelection()
+void MidiTrackMenu::initColorSelection()
 {
-    CommandPanel::Items cmds;
-    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
+    MenuPanel::Menu cmds;
+    cmds.add(MenuItem::item(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
     
-    const StringPairArray colours(CommandPanel::getColoursList());
+    const StringPairArray colours(MenuPanel::getColoursList());
     
     for (int i = 0; i < colours.getAllKeys().size(); ++i)
     {
         const String name(colours.getAllKeys()[i]);
         const Colour colour(Colour::fromString(colours[name]));
         const bool isSelected = (colour == this->trackItem.getTrackColour());
-        cmds.add(CommandItem::withParams(isSelected ? Icons::apply : Icons::colour, CommandIDs::SetTrackColour + i, name)->colouredWith(colour));
+        cmds.add(MenuItem::item(isSelected ? Icons::apply : Icons::colour, CommandIDs::SetTrackColour + i, name)->colouredWith(colour));
     }
 
-    this->updateContent(cmds, CommandPanel::SlideLeft);
+    this->updateContent(cmds, MenuPanel::SlideLeft);
 }
 
-void MidiTrackCommandPanel::initInstrumentSelection()
+void MidiTrackMenu::initInstrumentSelection()
 {
-    CommandPanel::Items cmds;
-    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
+    MenuPanel::Menu cmds;
+    cmds.add(MenuItem::item(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
     
     const Array<Instrument *> &info = App::Workspace().getAudioCore().getInstruments();
     const Instrument *selectedInstrument = App::Workspace().getAudioCore().findInstrumentById(this->trackItem.getTrackInstrumentId());
@@ -232,16 +232,16 @@ void MidiTrackCommandPanel::initInstrumentSelection()
     for (int i = 0; i < info.size(); ++i)
     {
         const bool isTicked = (info[i] == selectedInstrument);
-        cmds.add(CommandItem::withParams(isTicked ? Icons::apply : Icons::saxophone, CommandIDs::SetTrackInstrument + i, info[i]->getName()));
+        cmds.add(MenuItem::item(isTicked ? Icons::apply : Icons::saxophone, CommandIDs::SetTrackInstrument + i, info[i]->getName()));
     }
     
-    this->updateContent(cmds, CommandPanel::SlideLeft);
+    this->updateContent(cmds, MenuPanel::SlideLeft);
 }
 
-void MidiTrackCommandPanel::initProjectSelection()
+void MidiTrackMenu::initProjectSelection()
 {
-    CommandPanel::Items cmds;
-    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
+    MenuPanel::Menu cmds;
+    cmds.add(MenuItem::item(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
 
     const ProjectTreeItem *currentProject = this->trackItem.getProject();
     Array<ProjectTreeItem *> projects = App::Workspace().getLoadedProjects();
@@ -249,14 +249,14 @@ void MidiTrackCommandPanel::initProjectSelection()
     for (int i = 0; i < projects.size(); ++i)
     {
         const bool isTicked = (projects[i] == currentProject);
-        cmds.add(CommandItem::withParams(isTicked ? Icons::apply :
+        cmds.add(MenuItem::item(isTicked ? Icons::apply :
             Icons::project, CommandIDs::MoveTrackToProject + i, projects[i]->getName()));
     }
     
-    this->updateContent(cmds, CommandPanel::SlideLeft);
+    this->updateContent(cmds, MenuPanel::SlideLeft);
 }
 
-void MidiTrackCommandPanel::exit()
+void MidiTrackMenu::exit()
 {
     this->getParentComponent()->exitModalState(0);
 }

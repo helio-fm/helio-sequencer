@@ -22,17 +22,17 @@
 #include "CommandIDs.h"
 #include "Icons.h"
 
-static CommandPanel::Items createDefaultPanel()
+static MenuPanel::Menu createDefaultPanel()
 {
-    CommandPanel::Items cmds;
+    MenuPanel::Menu cmds;
 
-    cmds.add(CommandItem::withParams(Icons::copy, CommandIDs::CopyEvents,
+    cmds.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents,
         TRANS("menu::selection::clips::copy")));
 
-    cmds.add(CommandItem::withParams(Icons::cut, CommandIDs::CutEvents,
+    cmds.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents,
         TRANS("menu::selection::clips::cut")));
 
-    cmds.add(CommandItem::withParams(Icons::trash, CommandIDs::DeleteEvents,
+    cmds.add(MenuItem::item(Icons::trash, CommandIDs::DeleteEvents,
         TRANS("menu::selection::clips::delete")));
 
     return cmds;
@@ -41,7 +41,7 @@ static CommandPanel::Items createDefaultPanel()
 PatternRollSelectionMenu::PatternRollSelectionMenu(WeakReference<Lasso> lasso) :
     lasso(lasso)
 {
-    this->updateContent(createDefaultPanel(), CommandPanel::SlideLeft);
+    this->updateContent(createDefaultPanel(), MenuPanel::SlideLeft);
 }
 
 void PatternRollSelectionMenu::handleCommandMessage(int commandId)

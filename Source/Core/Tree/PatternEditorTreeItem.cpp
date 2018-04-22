@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "PatternEditorTreeItem.h"
-#include "PatternEditorCommandPanel.h"
 #include "TreeItemChildrenSerializer.h"
 #include "Icons.h"
 #include "App.h"

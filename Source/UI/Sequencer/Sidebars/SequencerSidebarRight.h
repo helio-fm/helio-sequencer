@@ -21,7 +21,7 @@
 class ProjectTreeItem;
 
 #include "TransportListener.h"
-#include "CommandPanel.h"
+#include "MenuPanel.h"
 //[/Headers]
 
 #include "../Themes/PanelBackgroundC.h"
@@ -73,7 +73,7 @@ private:
     double timerStartSeekTime;
     double timerStartSystemTime;
 
-    CommandPanel::Items commandDescriptions;
+    MenuPanel::Menu commandDescriptions;
 
     void updateModeButtons();
     void emitAnnotationsCallout(Component *newAnnotationsMenu);
@@ -127,7 +127,7 @@ private:
     ScopedPointer<Label> currentTime;
     ScopedPointer<PlayButton> playButton;
     ScopedPointer<LighterShadowDownwards> headShadow;
-    ScopedPointer<CommandItemComponent> annotationsButton;
+    ScopedPointer<MenuItemComponent> annotationsButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SequencerSidebarRight)
 };

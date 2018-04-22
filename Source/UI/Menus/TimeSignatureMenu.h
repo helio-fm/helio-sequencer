@@ -20,9 +20,9 @@
 class ProjectTreeItem;
 class TimeSignatureEvent;
 
-#include "CommandPanel.h"
+#include "MenuPanel.h"
 
-class TimeSignatureMenu final : public CommandPanel
+class TimeSignatureMenu final : public MenuPanel
 {
 public:
     

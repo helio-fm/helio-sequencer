@@ -17,7 +17,7 @@
 
 #pragma once
 
-#include "CommandItemComponent.h"
+#include "MenuItemComponent.h"
 
 #if HELIO_DESKTOP
 #   define COMMAND_PANEL_BUTTON_HEIGHT (32)
@@ -25,11 +25,11 @@
 #   define COMMAND_PANEL_BUTTON_HEIGHT (40)
 #endif
 
-class CommandPanel : public Component, private ListBoxModel
+class MenuPanel : public Component, private ListBoxModel
 {
 public:
 
-    CommandPanel();
+    MenuPanel();
 
     enum AnimationType
     {
@@ -41,9 +41,9 @@ public:
         SlideDown       = 0x050,
     };
 
-    typedef ReferenceCountedArray<CommandItem> Items;
+    typedef ReferenceCountedArray<MenuItem> Menu;
 
-    void updateContent(const Items &commands,
+    void updateContent(const Menu &commands,
         AnimationType animationType = SlideDown,
         bool adjustsWidth = true);
 
@@ -58,7 +58,7 @@ private:
 
     bool shouldResizeToFitContent;
     AnimationType lastAnimationType;
-    Items commandDescriptions;
+    Menu commandDescriptions;
 
     //===------------------------------------------------------------------===//
     // ListBoxModel
@@ -72,5 +72,5 @@ private:
 
     ScopedPointer<ListBox> listBox;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CommandPanel)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MenuPanel)
 };

@@ -22,7 +22,7 @@
 #include "MobileComboBox.h"
 
 //[MiscUserDefs]
-#include "CommandPanel.h"
+#include "MenuPanel.h"
 
 //[/MiscUserDefs]
 
@@ -30,7 +30,7 @@ MobileComboBox::MobileComboBox(WeakReference<Component> editor)
     : editor(editor)
 {
     addAndMakeVisible (background = new PanelBackgroundC());
-    addAndMakeVisible (menu = new CommandPanel());
+    addAndMakeVisible (menu = new MenuPanel());
 
     addAndMakeVisible (triggerButtton = new MobileComboBox::Trigger());
 
@@ -132,7 +132,7 @@ void MobileComboBox::handleCommandMessage (int commandId)
 
 
 //[MiscUserCode]
-void MobileComboBox::initMenu(CommandPanel::Items menu)
+void MobileComboBox::initMenu(MenuPanel::Menu menu)
 {
     this->menu->updateContent(menu);
 }
@@ -153,7 +153,7 @@ MobileComboBox::Primer::~Primer()
     this->cleanup();
 }
 
-void MobileComboBox::Primer::initWith(WeakReference<Component> editor, CommandPanel::Items menu)
+void MobileComboBox::Primer::initWith(WeakReference<Component> editor, MenuPanel::Menu menu)
 {
     this->toFront(false);
     this->textEditor = editor;
@@ -166,7 +166,7 @@ void MobileComboBox::Primer::initWith(WeakReference<Component> editor, CommandPa
     }
 }
 
-void MobileComboBox::Primer::updateMenu(CommandPanel::Items menu)
+void MobileComboBox::Primer::updateMenu(MenuPanel::Menu menu)
 {
     this->combo->initMenu(menu);
 }

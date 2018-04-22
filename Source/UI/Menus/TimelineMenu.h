@@ -19,9 +19,9 @@
 
 class ProjectTreeItem;
 
-#include "CommandPanel.h"
+#include "MenuPanel.h"
 
-class TimelineMenu final : public CommandPanel
+class TimelineMenu final : public MenuPanel
 {
 public:
     

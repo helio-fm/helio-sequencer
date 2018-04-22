@@ -322,7 +322,7 @@ void ProjectPageDefault::handleCommandMessage (int commandId)
     //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::MenuButtonPressed)
     {
-        CommandPanel *panel = new ProjectMenu(this->project, CommandPanel::SlideUp);
+        MenuPanel *panel = new ProjectMenu(this->project, MenuPanel::SlideUp);
         HelioCallout::emit(panel, this->menuButton);
     }
     //[/UserCode_handleCommandMessage]

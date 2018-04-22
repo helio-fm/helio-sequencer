@@ -22,7 +22,7 @@
 
 class IconComponent;
 
-struct CommandItem final : public ReferenceCountedObject
+struct MenuItem final : public ReferenceCountedObject
 {
     enum Alignment
     {
@@ -41,22 +41,22 @@ struct CommandItem final : public ReferenceCountedObject
     bool hasSubmenu;
     bool hasTimer;
 
-    typedef ReferenceCountedObjectPtr<CommandItem> Ptr;
+    typedef ReferenceCountedObjectPtr<MenuItem> Ptr;
 
-    CommandItem();
-    CommandItem::Ptr withAlignment(Alignment alignment);
-    CommandItem::Ptr withSubmenu();
-    CommandItem::Ptr withTimer();
-    CommandItem::Ptr toggled(bool shouldBeToggled);
-    CommandItem::Ptr withSubLabel(const String &text);
-    CommandItem::Ptr colouredWith(const Colour &colour);
+    MenuItem();
+    MenuItem::Ptr withAlignment(Alignment alignment);
+    MenuItem::Ptr withSubmenu();
+    MenuItem::Ptr withTimer();
+    MenuItem::Ptr toggled(bool shouldBeToggled);
+    MenuItem::Ptr withSubLabel(const String &text);
+    MenuItem::Ptr colouredWith(const Colour &colour);
 
-    static CommandItem::Ptr empty();
+    static MenuItem::Ptr empty();
 
-    static CommandItem::Ptr withParams(const String &targetIcon,
+    static MenuItem::Ptr item(const String &targetIcon,
         int returnedId, const String &text = {});
 
-    static CommandItem::Ptr withParams(Image image,
+    static MenuItem::Ptr item(Image image,
         int returnedId, const String &text = {});
 
 };
@@ -64,19 +64,19 @@ struct CommandItem final : public ReferenceCountedObject
 //[/Headers]
 
 
-class CommandItemComponent final : public DraggingListBoxComponent,
-                                   private Timer
+class MenuItemComponent final : public DraggingListBoxComponent,
+                                private Timer
 {
 public:
 
-    CommandItemComponent(Component *parentCommandReceiver, Viewport *parentViewport, const CommandItem::Ptr desc);
-    ~CommandItemComponent();
+    MenuItemComponent(Component *parentCommandReceiver, Viewport *parentViewport, const MenuItem::Ptr desc);
+    ~MenuItemComponent();
 
     //[UserMethods]
 
     void setSelected(bool shouldBeSelected) override;
 
-    void update(const CommandItem::Ptr description);
+    void update(const MenuItem::Ptr description);
 
     String getIconName() const noexcept
     {
@@ -105,7 +105,7 @@ private:
 
     Image icon;
 
-    CommandItem::Ptr description;
+    MenuItem::Ptr description;
 
     SafePointer<Component> parent;
 
@@ -136,5 +136,5 @@ private:
     ScopedPointer<Label> textLabel;
     ScopedPointer<IconComponent> submenuMarker;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (CommandItemComponent)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MenuItemComponent)
 };

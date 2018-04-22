@@ -28,7 +28,7 @@
 #include "MainLayout.h"
 #include "AudioCore.h"
 #include "App.h"
-#include "CommandItemComponent.h"
+#include "MenuItemComponent.h"
 #include "Icons.h"
 #include "ProgressTooltip.h"
 #include "CommandIDs.h"
@@ -61,7 +61,7 @@ InstrumentsPage::InstrumentsPage(PluginScanner &scanner, InstrumentsRootTreeItem
     scanButton->addListener (this);
 
     addAndMakeVisible (shadow = new LightShadowDownwards());
-    addAndMakeVisible (initialScanButton = new CommandItemComponent (this, nullptr, CommandItem::withParams(Icons::saxophone, CommandIDs::ScanAllPlugins, TRANS("instruments::initialscan"))));
+    addAndMakeVisible (initialScanButton = new MenuItemComponent (this, nullptr, MenuItem::item(Icons::saxophone, CommandIDs::ScanAllPlugins, TRANS("instruments::initialscan"))));
 
     addAndMakeVisible (separator1 = new SeparatorHorizontalFading());
     addAndMakeVisible (separator2 = new SeparatorHorizontalFading());
@@ -224,7 +224,6 @@ void InstrumentsPage::handleCommandMessage (int commandId)
         App::Layout().showModalComponentUnowned(new ProgressTooltip());
         this->pluginManager.runInitialScan();
         this->hideGreeting();
-
     }
     //[/UserCode_handleCommandMessage]
 }
@@ -392,8 +391,8 @@ BEGIN_JUCER_METADATA
              posRelativeY="d37f5d299f347b6c" posRelativeW="d37f5d299f347b6c"
              sourceFile="../Themes/LightShadowDownwards.cpp" constructorParams=""/>
   <GENERICCOMPONENT name="" id="62a5bd7c1a3ec2" memberName="initialScanButton" virtualName=""
-                    explicitFocusOrder="0" pos="0Cc 0Cc 310 64" class="CommandItemComponent"
-                    params="this, nullptr, CommandItem::withParams(Icons::saxophone, CommandIDs::ScanAllPlugins, TRANS(&quot;instruments::initialscan&quot;))"/>
+                    explicitFocusOrder="0" pos="0Cc 0Cc 310 64" class="MenuItemComponent"
+                    params="this, nullptr, MenuItem::item(Icons::saxophone, CommandIDs::ScanAllPlugins, TRANS(&quot;instruments::initialscan&quot;))"/>
   <JUCERCOMP name="" id="8817b1b124163b2f" memberName="separator1" virtualName=""
              explicitFocusOrder="0" pos="0Cc -16 300 3" posRelativeX="62a5bd7c1a3ec2"
              posRelativeY="62a5bd7c1a3ec2" sourceFile="../Themes/SeparatorHorizontalFading.cpp"

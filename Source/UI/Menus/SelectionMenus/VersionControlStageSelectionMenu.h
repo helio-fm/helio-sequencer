@@ -19,9 +19,9 @@
 
 class VersionControl;
 
-#include "CommandPanel.h"
+#include "MenuPanel.h"
 
-class VersionControlStageSelectionMenu final : public CommandPanel
+class VersionControlStageSelectionMenu final : public MenuPanel
 {
 public:
     

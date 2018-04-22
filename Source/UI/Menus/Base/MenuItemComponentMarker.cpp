@@ -19,12 +19,12 @@
 #include "Common.h"
 //[/Headers]
 
-#include "CommandItemComponentMarker.h"
+#include "MenuItemComponentMarker.h"
 
 //[MiscUserDefs]
 //[/MiscUserDefs]
 
-CommandItemComponentMarker::CommandItemComponentMarker()
+MenuItemComponentMarker::MenuItemComponentMarker()
 {
 
     //[UserPreSize]
@@ -36,7 +36,7 @@ CommandItemComponentMarker::CommandItemComponentMarker()
     //[/Constructor]
 }
 
-CommandItemComponentMarker::~CommandItemComponentMarker()
+MenuItemComponentMarker::~MenuItemComponentMarker()
 {
     //[Destructor_pre]
     //[/Destructor_pre]
@@ -46,7 +46,7 @@ CommandItemComponentMarker::~CommandItemComponentMarker()
     //[/Destructor]
 }
 
-void CommandItemComponentMarker::paint (Graphics& g)
+void MenuItemComponentMarker::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
@@ -64,7 +64,7 @@ void CommandItemComponentMarker::paint (Graphics& g)
     //[/UserPaint]
 }
 
-void CommandItemComponentMarker::resized()
+void MenuItemComponentMarker::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
@@ -73,7 +73,7 @@ void CommandItemComponentMarker::resized()
     //[/UserResized]
 }
 
-void CommandItemComponentMarker::parentHierarchyChanged()
+void MenuItemComponentMarker::parentHierarchyChanged()
 {
     //[UserCode_parentHierarchyChanged] -- Add your code here...
     this->rebound();
@@ -82,7 +82,7 @@ void CommandItemComponentMarker::parentHierarchyChanged()
     //[/UserCode_parentHierarchyChanged]
 }
 
-void CommandItemComponentMarker::parentSizeChanged()
+void MenuItemComponentMarker::parentSizeChanged()
 {
     //[UserCode_parentSizeChanged] -- Add your code here...
     this->rebound();
@@ -97,7 +97,7 @@ void CommandItemComponentMarker::parentSizeChanged()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="CommandItemComponentMarker"
+<JUCER_COMPONENT documentType="Component" className="MenuItemComponentMarker"
                  template="../../../Template" componentName="" parentClasses="public Component"
                  constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="64"

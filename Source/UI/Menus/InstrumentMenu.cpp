@@ -22,14 +22,15 @@
 #include "CommandIDs.h"
 #include "App.h"
 #include "MainLayout.h"
+#include "ModalDialogInput.h"
 
 InstrumentMenu::InstrumentMenu(InstrumentTreeItem &parentInstrument) :
     instrument(parentInstrument)
 {
-    CommandPanel::Items cmds;
-    //cmds.add(CommandItem::withParams(Icons::reset, CommandIDs::UpdateInstrument, TRANS("menu::instrument::update")));
-    //cmds.add(CommandItem::withParams(Icons::ellipsis, CommandIDs::RenameInstrument, TRANS("menu::instrument::rename")));
-    cmds.add(CommandItem::withParams(Icons::trash, CommandIDs::DeleteInstrument, TRANS("menu::instrument::delete")));
+    MenuPanel::Menu cmds;
+    //cmds.add(MenuItem::item(Icons::reset, CommandIDs::UpdateInstrument, TRANS("menu::instrument::update")));
+    cmds.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameInstrument, TRANS("menu::instrument::rename")));
+    cmds.add(MenuItem::item(Icons::trash, CommandIDs::DeleteInstrument, TRANS("menu::instrument::delete")));
     this->updateContent(cmds);
 }
 
@@ -43,6 +44,7 @@ void InstrumentMenu::handleCommandMessage(int commandId)
 
         case CommandIDs::RenameInstrument:
             // todo dialog box!
+            //auto dialog = ModalDialogInput::Presets::renameInstrument()
             break;
 
         case CommandIDs::DeleteInstrument:

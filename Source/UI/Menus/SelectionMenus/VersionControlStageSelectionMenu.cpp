@@ -21,24 +21,24 @@
 #include "CommandIDs.h"
 #include "Icons.h"
 
-static CommandPanel::Items createDefaultPanel()
+static MenuPanel::Menu createDefaultPanel()
 {
-    CommandPanel::Items cmds;
+    MenuPanel::Menu cmds;
 
-    cmds.add(CommandItem::withParams(Icons::copy, CommandIDs::CopyEvents,
+    cmds.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents,
         TRANS("menu::selection::stage::reset")));
 
-    cmds.add(CommandItem::withParams(Icons::cut, CommandIDs::CutEvents,
+    cmds.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents,
         TRANS("menu::selection::stage::commit")));
 
     // TODO add named stashes in addition to the default one
-    //cmds.add(CommandItem::withParams(Icons::trash, CommandIDs::DeleteEvents,
+    //cmds.add(MenuItem::item(Icons::trash, CommandIDs::DeleteEvents,
     //    TRANS("menu::selection::stage::stash")));
 
-    cmds.add(CommandItem::withParams(Icons::trash, CommandIDs::DeleteEvents,
+    cmds.add(MenuItem::item(Icons::trash, CommandIDs::DeleteEvents,
         TRANS("menu::selection::stage::selectall")));
 
-    cmds.add(CommandItem::withParams(Icons::trash, CommandIDs::DeleteEvents,
+    cmds.add(MenuItem::item(Icons::trash, CommandIDs::DeleteEvents,
         TRANS("menu::selection::stage::selectnone")));
 
     return cmds;
@@ -48,14 +48,14 @@ VersionControlStageSelectionMenu::VersionControlStageSelectionMenu(const SparseS
     selectedChanges(selectedChanges),
     vcs(vcs)
 {
-    this->updateContent(createDefaultPanel(), CommandPanel::SlideRight);
+    this->updateContent(createDefaultPanel(), MenuPanel::SlideRight);
 }
 
 void VersionControlStageSelectionMenu::handleCommandMessage(int commandId)
 {
     if (commandId == CommandIDs::Back)
     {
-        this->updateContent(createDefaultPanel(), CommandPanel::SlideRight);
+        this->updateContent(createDefaultPanel(), MenuPanel::SlideRight);
         return;
     }
     else if (commandId == CommandIDs::CopyEvents)

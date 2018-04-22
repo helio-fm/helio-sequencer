@@ -36,35 +36,35 @@
 #include "MainLayout.h"
 #include "ModalDialogInput.h"
 
-static CommandPanel::Items createDefaultPanel()
+static MenuPanel::Menu createDefaultPanel()
 {
-    CommandPanel::Items cmds;
+    MenuPanel::Menu cmds;
 
-    cmds.add(CommandItem::withParams(Icons::group, CommandIDs::ArpeggiateNotes,
+    cmds.add(MenuItem::item(Icons::group, CommandIDs::ArpeggiateNotes,
         TRANS("menu::selection::notes::arpeggiate"))->withSubmenu()->withTimer());
 
-    cmds.add(CommandItem::withParams(Icons::group, CommandIDs::RefactorNotes,
+    cmds.add(MenuItem::item(Icons::group, CommandIDs::RefactorNotes,
         TRANS("menu::selection::notes::refactor"))->withSubmenu()->withTimer());
 
-    cmds.add(CommandItem::withParams(Icons::group, CommandIDs::BatchTweakNotes,
+    cmds.add(MenuItem::item(Icons::group, CommandIDs::BatchTweakNotes,
         TRANS("menu::selection::notes::batch"))->withSubmenu()->withTimer());
 
-    cmds.add(CommandItem::withParams(Icons::copy, CommandIDs::CopyEvents,
+    cmds.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents,
         TRANS("menu::selection::notes::copy")));
 
-    cmds.add(CommandItem::withParams(Icons::cut, CommandIDs::CutEvents,
+    cmds.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents,
         TRANS("menu::selection::notes::cut")));
 
-    cmds.add(CommandItem::withParams(Icons::trash, CommandIDs::DeleteEvents,
+    cmds.add(MenuItem::item(Icons::trash, CommandIDs::DeleteEvents,
         TRANS("menu::selection::notes::delete")));
 
     return cmds;
 }
 
-static CommandPanel::Items createRefactoringPanel()
+static MenuPanel::Menu createRefactoringPanel()
 {
-    CommandPanel::Items cmds;
-    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back,
+    MenuPanel::Menu cmds;
+    cmds.add(MenuItem::item(Icons::left, CommandIDs::Back,
         TRANS("menu::back"))->withTimer());
 
     // TODO
@@ -76,16 +76,16 @@ static CommandPanel::Items createRefactoringPanel()
     // Double time
     // Half time
 
-    //cmds.add(CommandItem::withParams(Icons::cut, CommandIDs::CutEvents, TRANS("menu::selection::piano::cut")));
-    //cmds.add(CommandItem::withParams(Icons::trash, CommandIDs::RefactorRemoveOverlaps, TRANS("menu::selection::piano::cleanup")));
+    //cmds.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents, TRANS("menu::selection::piano::cut")));
+    //cmds.add(MenuItem::item(Icons::trash, CommandIDs::RefactorRemoveOverlaps, TRANS("menu::selection::piano::cleanup")));
 
     return cmds;
 }
 
-static CommandPanel::Items createBatchTweakPanel()
+static MenuPanel::Menu createBatchTweakPanel()
 {
-    CommandPanel::Items cmds;
-    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back,
+    MenuPanel::Menu cmds;
+    cmds.add(MenuItem::item(Icons::left, CommandIDs::Back,
         TRANS("menu::back"))->withTimer());
 
     // TODO
@@ -95,20 +95,20 @@ static CommandPanel::Items createBatchTweakPanel()
     return cmds;
 }
 
-static CommandPanel::Items createArpsPanel()
+static MenuPanel::Menu createArpsPanel()
 {
-    CommandPanel::Items cmds;
+    MenuPanel::Menu cmds;
 
-    cmds.add(CommandItem::withParams(Icons::left, CommandIDs::Back,
+    cmds.add(MenuItem::item(Icons::left, CommandIDs::Back,
         TRANS("menu::back"))->withTimer());
 
-    cmds.add(CommandItem::withParams(Icons::group,
+    cmds.add(MenuItem::item(Icons::group,
         CommandIDs::CreateArpeggiatorFromSelection, TRANS("menu::arpeggiators::create")));
 
     const auto arps = ArpeggiatorsManager::getInstance().getArps();
     for (int i = 0; i < arps.size(); ++i)
     {
-        cmds.add(CommandItem::withParams(Icons::group,
+        cmds.add(MenuItem::item(Icons::group,
             (CommandIDs::ApplyArpeggiator + i),
             arps.getUnchecked(i)->getName()));
     }
@@ -120,7 +120,7 @@ PianoRollSelectionMenu::PianoRollSelectionMenu(WeakReference<Lasso> lasso, const
     lasso(lasso),
     project(project)
 {
-    this->updateContent(createDefaultPanel(), CommandPanel::SlideRight);
+    this->updateContent(createDefaultPanel(), MenuPanel::SlideRight);
 }
 
 void PianoRollSelectionMenu::handleCommandMessage(int commandId)
@@ -130,7 +130,7 @@ void PianoRollSelectionMenu::handleCommandMessage(int commandId)
 
     if (commandId == CommandIDs::Back)
     {
-        this->updateContent(createDefaultPanel(), CommandPanel::SlideRight);
+        this->updateContent(createDefaultPanel(), MenuPanel::SlideRight);
         return;
     }
     else if (commandId == CommandIDs::CopyEvents)
@@ -198,17 +198,17 @@ void PianoRollSelectionMenu::handleCommandMessage(int commandId)
     }
     else if (commandId == CommandIDs::ArpeggiateNotes)
     {
-        this->updateContent(createArpsPanel(), CommandPanel::SlideLeft);
+        this->updateContent(createArpsPanel(), MenuPanel::SlideLeft);
         return;
     }
     else if (commandId == CommandIDs::RefactorNotes)
     {
-        this->updateContent(createRefactoringPanel(), CommandPanel::SlideLeft);
+        this->updateContent(createRefactoringPanel(), MenuPanel::SlideLeft);
         return;
     }
     else if (commandId == CommandIDs::BatchTweakNotes)
     {
-        this->updateContent(createBatchTweakPanel(), CommandPanel::SlideLeft);
+        this->updateContent(createBatchTweakPanel(), MenuPanel::SlideLeft);
         return;
     }
 

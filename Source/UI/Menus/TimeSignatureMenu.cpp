@@ -35,9 +35,9 @@ TimeSignatureMenu::TimeSignatureMenu(ProjectTreeItem &parentProject,
     project(parentProject),
     event(targetEvent)
 {
-    CommandPanel::Items cmds;
-    cmds.add(CommandItem::withParams(Icons::ellipsis, CommandIDs::ChangeTimeSignature, TRANS("menu::timesignature::change")));
-    cmds.add(CommandItem::withParams(Icons::close, CommandIDs::DeleteTimeSignature, TRANS("menu::timesignature::delete")));
+    MenuPanel::Menu cmds;
+    cmds.add(MenuItem::item(Icons::ellipsis, CommandIDs::ChangeTimeSignature, TRANS("menu::timesignature::change")));
+    cmds.add(MenuItem::item(Icons::close, CommandIDs::DeleteTimeSignature, TRANS("menu::timesignature::delete")));
     this->updateContent(cmds, SlideDown);
 }
 

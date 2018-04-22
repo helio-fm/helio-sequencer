@@ -73,21 +73,21 @@ TimelineMenu::TimelineMenu(ProjectTreeItem &parentProject) :
         selectedTimeSignature = findSelectedEventOfType<TimeSignatureEvent>(timeSignaturesSequence, roll, seekPosition, seekThreshold);
     }
     
-    ReferenceCountedArray<CommandItem> cmds;
+    ReferenceCountedArray<MenuItem> cmds;
     
     if (selectedAnnotation == nullptr)
     {
-        cmds.add(CommandItem::withParams(Icons::plus, CommandIDs::AddAnnotation, TRANS("menu::annotation::add")));
+        cmds.add(MenuItem::item(Icons::plus, CommandIDs::AddAnnotation, TRANS("menu::annotation::add")));
     }
 
     if (selectedKeySignature == nullptr)
     {
-        cmds.add(CommandItem::withParams(Icons::plus, CommandIDs::AddKeySignature, TRANS("menu::keysignature::add")));
+        cmds.add(MenuItem::item(Icons::plus, CommandIDs::AddKeySignature, TRANS("menu::keysignature::add")));
     }
 
     if (selectedTimeSignature == nullptr)
     {
-        cmds.add(CommandItem::withParams(Icons::plus, CommandIDs::AddTimeSignature, TRANS("menu::timesignature::add")));
+        cmds.add(MenuItem::item(Icons::plus, CommandIDs::AddTimeSignature, TRANS("menu::timesignature::add")));
     }
 
     if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
@@ -106,7 +106,7 @@ TimelineMenu::TimelineMenu(ProjectTreeItem &parentProject) :
                 const double seekPos = roll->getTransportPositionByBeat(annotation->getBeat());
                 this->project.getTransport().calcTimeAndTempoAt(seekPos, outTimeMs, outTempo);
                 
-                cmds.add(CommandItem::withParams(Icons::annotation,
+                cmds.add(MenuItem::item(Icons::annotation,
                                                  commandIndex,
                                                  annotation->getDescription())->
                          withSubLabel(Transport::getTimeString(outTimeMs))->

@@ -29,7 +29,7 @@
 #include "HybridRoll.h"
 #include "PianoRoll.h"
 #include "MidiSequence.h"
-#include "CommandItemComponent.h"
+#include "MenuItemComponent.h"
 #include "ProjectTimeline.h"
 #include "HelioCallout.h"
 #include "TimelineMenu.h"
@@ -81,7 +81,7 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectTreeItem &parent)
 
     addAndMakeVisible (playButton = new PlayButton());
     addAndMakeVisible (headShadow = new LighterShadowDownwards());
-    addAndMakeVisible (annotationsButton = new CommandItemComponent (this, nullptr, CommandItem::withParams(Icons::menu, CommandIDs::ShowAnnotations)));
+    addAndMakeVisible (annotationsButton = new MenuItemComponent (this, nullptr, MenuItem::item(Icons::menu, CommandIDs::ShowAnnotations)));
 
 
     //[UserPreSize]
@@ -393,27 +393,27 @@ void SequencerSidebarRight::recreateCommandDescriptions()
     const bool insertSpaceMode = this->project.getEditMode().isMode(HybridRollEditMode::insertSpaceMode);
     const bool scissorsMode = this->project.getEditMode().isMode(HybridRollEditMode::scissorsMode);
 
-    this->commandDescriptions.add(CommandItem::withParams(Icons::cursorTool, CommandIDs::CursorTool)->toggled(defaultMode));
-    this->commandDescriptions.add(CommandItem::withParams(Icons::drawTool, CommandIDs::DrawTool)->toggled(drawMode));
-    this->commandDescriptions.add(CommandItem::withParams(Icons::selectionTool, CommandIDs::SelectionTool)->toggled(selectionMode));
-    //this->commandDescriptions.add(CommandItem::withParams(Icons::zoomTool, CommandIDs::ZoomTool)->toggled(zoomMode));
-    this->commandDescriptions.add(CommandItem::withParams(Icons::dragTool, CommandIDs::DragTool)->toggled(dragMode));
-    this->commandDescriptions.add(CommandItem::withParams(Icons::wipeScapeTool, CommandIDs::WipeSpaceTool)->toggled(wipeSpaceMode));
-    this->commandDescriptions.add(CommandItem::withParams(Icons::insertSpaceTool, CommandIDs::InsertSpaceTool)->toggled(insertSpaceMode));
+    this->commandDescriptions.add(MenuItem::item(Icons::cursorTool, CommandIDs::CursorTool)->toggled(defaultMode));
+    this->commandDescriptions.add(MenuItem::item(Icons::drawTool, CommandIDs::DrawTool)->toggled(drawMode));
+    this->commandDescriptions.add(MenuItem::item(Icons::selectionTool, CommandIDs::SelectionTool)->toggled(selectionMode));
+    //this->commandDescriptions.add(MenuItem::item(Icons::zoomTool, CommandIDs::ZoomTool)->toggled(zoomMode));
+    this->commandDescriptions.add(MenuItem::item(Icons::dragTool, CommandIDs::DragTool)->toggled(dragMode));
+    this->commandDescriptions.add(MenuItem::item(Icons::wipeScapeTool, CommandIDs::WipeSpaceTool)->toggled(wipeSpaceMode));
+    this->commandDescriptions.add(MenuItem::item(Icons::insertSpaceTool, CommandIDs::InsertSpaceTool)->toggled(insertSpaceMode));
 
-    //this->commandDescriptions.add(CommandItem::withParams(Icons::zoomIn, CommandIDs::ZoomIn));
-    //this->commandDescriptions.add(CommandItem::withParams(Icons::zoomOut, CommandIDs::ZoomOut));
-    this->commandDescriptions.add(CommandItem::withParams(Icons::undo, CommandIDs::Undo));
-    this->commandDescriptions.add(CommandItem::withParams(Icons::redo, CommandIDs::Redo));
+    //this->commandDescriptions.add(MenuItem::item(Icons::zoomIn, CommandIDs::ZoomIn));
+    //this->commandDescriptions.add(MenuItem::item(Icons::zoomOut, CommandIDs::ZoomOut));
+    this->commandDescriptions.add(MenuItem::item(Icons::undo, CommandIDs::Undo));
+    this->commandDescriptions.add(MenuItem::item(Icons::redo, CommandIDs::Redo));
 
-    //this->commandDescriptions.add(CommandItem::withParams(Icons::volumeUp, CommandIDs::TweakNotesVolume));
-    //this->commandDescriptions.add(CommandItem::withParams(Icons::switcher, CommandIDs::MoveEventsToLayer));
-    //this->commandDescriptions.add(CommandItem::withParams(Icons::ellipsis, CommandIDs::RefactorNotes));
-    //this->commandDescriptions.add(CommandItem::withParams(Icons::arpeggiator, CommandIDs::ArpNotes));
+    //this->commandDescriptions.add(MenuItem::item(Icons::volumeUp, CommandIDs::TweakNotesVolume));
+    //this->commandDescriptions.add(MenuItem::item(Icons::switcher, CommandIDs::MoveEventsToLayer));
+    //this->commandDescriptions.add(MenuItem::item(Icons::ellipsis, CommandIDs::RefactorNotes));
+    //this->commandDescriptions.add(MenuItem::item(Icons::arpeggiator, CommandIDs::ArpNotes));
 
-    //this->commandDescriptions.add(CommandItem::withParams(Icons::copy, CommandIDs::CopyEvents));
-    //this->commandDescriptions.add(CommandItem::withParams(Icons::paste, CommandIDs::PasteEvents));
-    //this->commandDescriptions.add(CommandItem::withParams(Icons::trash, CommandIDs::DeleteEvents));
+    //this->commandDescriptions.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents));
+    //this->commandDescriptions.add(MenuItem::item(Icons::paste, CommandIDs::PasteEvents));
+    //this->commandDescriptions.add(MenuItem::item(Icons::trash, CommandIDs::DeleteEvents));
 }
 
 //===----------------------------------------------------------------------===//
@@ -428,12 +428,12 @@ Component *SequencerSidebarRight::refreshComponentForRow(int rowNumber,
         return existingComponentToUpdate;
     }
 
-    const CommandItem::Ptr itemDescription = this->commandDescriptions[rowNumber];
+    const MenuItem::Ptr itemDescription = this->commandDescriptions[rowNumber];
 
     if (existingComponentToUpdate != nullptr)
     {
-        if (CommandItemComponent *row =
-            dynamic_cast<CommandItemComponent *>(existingComponentToUpdate))
+        if (MenuItemComponent *row =
+            dynamic_cast<MenuItemComponent *>(existingComponentToUpdate))
         {
             row->setSelected(isRowSelected);
             row->update(itemDescription);
@@ -441,8 +441,8 @@ Component *SequencerSidebarRight::refreshComponentForRow(int rowNumber,
     }
     else
     {
-        CommandItemComponent *row =
-            new CommandItemComponent(this, this->listBox->getViewport(), itemDescription);
+        MenuItemComponent *row =
+            new MenuItemComponent(this, this->listBox->getViewport(), itemDescription);
         row->setSelected(isRowSelected);
         return row;
     }
@@ -592,8 +592,8 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0 40 0M 6" sourceFile="../Themes/LighterShadowDownwards.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="34c972d7b22acf17" memberName="annotationsButton"
-                    virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 39" class="CommandItemComponent"
-                    params="this, nullptr, CommandItem::withParams(Icons::menu, CommandIDs::ShowAnnotations)"/>
+                    virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 39" class="MenuItemComponent"
+                    params="this, nullptr, MenuItem::item(Icons::menu, CommandIDs::ShowAnnotations)"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

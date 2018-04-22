@@ -19,13 +19,13 @@
 
 class MidiTrackTreeItem;
 
-#include "CommandPanel.h"
+#include "MenuPanel.h"
 
-class MidiTrackCommandPanel : public CommandPanel
+class MidiTrackMenu : public MenuPanel
 {
 public:
     
-    explicit MidiTrackCommandPanel(MidiTrackTreeItem &parentLayer);
+    explicit MidiTrackMenu(MidiTrackTreeItem &parentLayer);
         
     void handleCommandMessage(int commandId) override;
     

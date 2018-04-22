@@ -22,36 +22,36 @@
 #include "VersionControl.h"
 #include "ProjectTreeItem.h"
 
-#include "CommandPanel.h"
+#include "MenuPanel.h"
 #include "CommandIDs.h"
 #include "Icons.h"
 
-static CommandPanel::Items createDefaultPanel()
+static MenuPanel::Menu createDefaultPanel()
 {
-    CommandPanel::Items cmds;
+    MenuPanel::Menu cmds;
 
     // TODO
     // if default stash is full and no changes present: "toggle on"
     // if default stash is empty and there are changes on stage: "toggle on"
     // else, disabled? or shows error messages?
 
-    cmds.add(CommandItem::withParams(Icons::toggleOn, CommandIDs::VersionControlToggleQuickStash,
+    cmds.add(MenuItem::item(Icons::toggleOn, CommandIDs::VersionControlToggleQuickStash,
         TRANS("menu::vcs::togglechanges")));
 
-    cmds.add(CommandItem::withParams(Icons::commit, CommandIDs::VersionControlCommitAll,
+    cmds.add(MenuItem::item(Icons::commit, CommandIDs::VersionControlCommitAll,
         TRANS("menu::vcs::commitall")));
 
-    cmds.add(CommandItem::withParams(Icons::reset, CommandIDs::VersionControlResetAll,
+    cmds.add(MenuItem::item(Icons::reset, CommandIDs::VersionControlResetAll,
         TRANS("menu::vcs::resetall")));
 
-    cmds.add(CommandItem::withParams(Icons::pull, CommandIDs::VersionControlPull,
+    cmds.add(MenuItem::item(Icons::pull, CommandIDs::VersionControlPull,
         TRANS("menu::vcs::pull")));
 
-    cmds.add(CommandItem::withParams(Icons::push, CommandIDs::VersionControlPush,
+    cmds.add(MenuItem::item(Icons::push, CommandIDs::VersionControlPush,
         TRANS("menu::vcs::push")));
 
     // TODO when stashes are ready
-    //cmds.add(CommandItem::withParams(Icons::copy, CommandIDs::CopyEvents,
+    //cmds.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents,
     //    TRANS("menu::vcs::pop"))->withSubmenu()->withTimer());
 
     return cmds;
@@ -61,14 +61,14 @@ VersionControlMenu::VersionControlMenu(ProjectTreeItem &parentProject, VersionCo
     : vcs(versionControl),
       project(parentProject)
 {
-    this->updateContent(createDefaultPanel(), CommandPanel::SlideRight);
+    this->updateContent(createDefaultPanel(), MenuPanel::SlideRight);
 }
 
 void VersionControlMenu::handleCommandMessage(int commandId)
 {
     if (commandId == CommandIDs::Back)
     {
-        this->updateContent(createDefaultPanel(), CommandPanel::SlideRight);
+        this->updateContent(createDefaultPanel(), MenuPanel::SlideRight);
         return;
     }
     else if (commandId == CommandIDs::CopyEvents)

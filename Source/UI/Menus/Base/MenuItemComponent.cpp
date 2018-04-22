@@ -19,12 +19,12 @@
 #include "Common.h"
 //[/Headers]
 
-#include "CommandItemComponent.h"
+#include "MenuItemComponent.h"
 
 //[MiscUserDefs]
 
-#include "CommandItemComponentMarker.h"
-#include "CommandPanel.h"
+#include "MenuItemComponentMarker.h"
+#include "MenuPanel.h"
 #include "HelioTheme.h"
 #include "Icons.h"
 #include "IconComponent.h"
@@ -42,26 +42,24 @@ inline int iconHeightByComponentHeight(int h)
 }
 
 //===----------------------------------------------------------------------===//
-// CommandItem
+// MenuItem
 //===----------------------------------------------------------------------===//
 
-CommandItem::CommandItem() :
+MenuItem::MenuItem() :
     commandId(0), isToggled(false),
     hasSubmenu(false), hasTimer(false),
-    alignment(Alignment::Left)
-{
-}
+    alignment(Alignment::Left) {}
 
-CommandItem::Ptr CommandItem::empty()
+MenuItem::Ptr MenuItem::empty()
 {
-    CommandItem::Ptr description(new CommandItem());
+    MenuItem::Ptr description(new MenuItem());
     description->colour = Colours::transparentBlack;
     return description;
 }
 
-CommandItem::Ptr CommandItem::withParams(const String &targetIcon, int returnedId, const String &text /*= ""*/)
+MenuItem::Ptr MenuItem::item(const String &targetIcon, int returnedId, const String &text /*= ""*/)
 {
-    CommandItem::Ptr description(new CommandItem());
+    MenuItem::Ptr description(new MenuItem());
     description->iconName = targetIcon;
     description->commandText = text;
     description->commandId = returnedId;
@@ -71,9 +69,9 @@ CommandItem::Ptr CommandItem::withParams(const String &targetIcon, int returnedI
     return description;
 }
 
-CommandItem::Ptr CommandItem::withParams(Image image, int returnedId, const String &text /*= ""*/)
+MenuItem::Ptr MenuItem::item(Image image, int returnedId, const String &text /*= ""*/)
 {
-    CommandItem::Ptr description(new CommandItem());
+    MenuItem::Ptr description(new MenuItem());
     description->image = image;
     description->commandText = text;
     description->commandId = returnedId;
@@ -83,45 +81,45 @@ CommandItem::Ptr CommandItem::withParams(Image image, int returnedId, const Stri
     return description;
 }
 
-CommandItem::Ptr CommandItem::withAlignment(Alignment alignment)
+MenuItem::Ptr MenuItem::withAlignment(Alignment alignment)
 {
-    CommandItem::Ptr description(this);
+    MenuItem::Ptr description(this);
     description->alignment = alignment;
     return description;
 }
 
-CommandItem::Ptr CommandItem::withSubmenu()
+MenuItem::Ptr MenuItem::withSubmenu()
 {
-    CommandItem::Ptr description(this);
+    MenuItem::Ptr description(this);
     description->hasSubmenu = true;
     description->hasTimer = true; // a hack
     return description;
 }
 
-CommandItem::Ptr CommandItem::withTimer()
+MenuItem::Ptr MenuItem::withTimer()
 {
-    CommandItem::Ptr description(this);
+    MenuItem::Ptr description(this);
     description->hasTimer = true;
     return description;
 }
 
-CommandItem::Ptr CommandItem::toggled(bool shouldBeToggled)
+MenuItem::Ptr MenuItem::toggled(bool shouldBeToggled)
 {
-    CommandItem::Ptr description(this);
+    MenuItem::Ptr description(this);
     description->isToggled = shouldBeToggled;
     return description;
 }
 
-CommandItem::Ptr CommandItem::withSubLabel(const String &text)
+MenuItem::Ptr MenuItem::withSubLabel(const String &text)
 {
-    CommandItem::Ptr description(this);
+    MenuItem::Ptr description(this);
     description->subText = text;
     return description;
 }
 
-CommandItem::Ptr CommandItem::colouredWith(const Colour &colour)
+MenuItem::Ptr MenuItem::colouredWith(const Colour &colour)
 {
-    CommandItem::Ptr description(this);
+    MenuItem::Ptr description(this);
     description->colour = colour;
     return description;
 }
@@ -191,10 +189,10 @@ public:
 
 //[/MiscUserDefs]
 
-CommandItemComponent::CommandItemComponent(Component *parentCommandReceiver, Viewport *parentViewport, const CommandItem::Ptr desc)
+MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver, Viewport *parentViewport, const MenuItem::Ptr desc)
     : DraggingListBoxComponent(parentViewport),
       parent(parentCommandReceiver),
-      description(CommandItem::empty()),
+      description(MenuItem::empty()),
       mouseDownWasTriggered(false)
 {
     addAndMakeVisible (subLabel = new Label (String(),
@@ -229,7 +227,7 @@ CommandItemComponent::CommandItemComponent(Component *parentCommandReceiver, Vie
     //[/Constructor]
 }
 
-CommandItemComponent::~CommandItemComponent()
+MenuItemComponent::~MenuItemComponent()
 {
     //[Destructor_pre]
     //this->selectionComponent = nullptr;
@@ -243,7 +241,7 @@ CommandItemComponent::~CommandItemComponent()
     //[/Destructor]
 }
 
-void CommandItemComponent::paint (Graphics& g)
+void MenuItemComponent::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
 
@@ -291,7 +289,7 @@ void CommandItemComponent::paint (Graphics& g)
     //[/UserPaint]
 }
 
-void CommandItemComponent::resized()
+void MenuItemComponent::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
@@ -329,7 +327,7 @@ void CommandItemComponent::resized()
     //[/UserResized]
 }
 
-void CommandItemComponent::mouseMove (const MouseEvent& e)
+void MenuItemComponent::mouseMove (const MouseEvent& e)
 {
     //[UserCode_mouseMove] -- Add your code here...
     if (this->description->hasTimer &&
@@ -348,7 +346,7 @@ void CommandItemComponent::mouseMove (const MouseEvent& e)
     //[/UserCode_mouseMove]
 }
 
-void CommandItemComponent::mouseEnter (const MouseEvent& e)
+void MenuItemComponent::mouseEnter (const MouseEvent& e)
 {
     //[UserCode_mouseEnter] -- Add your code here...
     this->lastMouseScreenPosition = e.getScreenPosition();
@@ -356,7 +354,7 @@ void CommandItemComponent::mouseEnter (const MouseEvent& e)
     //[/UserCode_mouseEnter]
 }
 
-void CommandItemComponent::mouseExit (const MouseEvent& e)
+void MenuItemComponent::mouseExit (const MouseEvent& e)
 {
     //[UserCode_mouseExit] -- Add your code here...
     DraggingListBoxComponent::mouseExit(e);
@@ -364,7 +362,7 @@ void CommandItemComponent::mouseExit (const MouseEvent& e)
     //[/UserCode_mouseExit]
 }
 
-void CommandItemComponent::mouseDown (const MouseEvent& e)
+void MenuItemComponent::mouseDown (const MouseEvent& e)
 {
     //[UserCode_mouseDown] -- Add your code here...
     if (!this->hasText())
@@ -394,7 +392,7 @@ void CommandItemComponent::mouseDown (const MouseEvent& e)
     //[/UserCode_mouseDown]
 }
 
-void CommandItemComponent::mouseUp (const MouseEvent& e)
+void MenuItemComponent::mouseUp (const MouseEvent& e)
 {
     //[UserCode_mouseUp] -- Add your code here...
     if (! this->mouseDownWasTriggered)
@@ -438,7 +436,7 @@ void CommandItemComponent::mouseUp (const MouseEvent& e)
 
 //[MiscUserCode]
 
-void CommandItemComponent::setSelected(bool shouldBeSelected)
+void MenuItemComponent::setSelected(bool shouldBeSelected)
 {
     if (shouldBeSelected && (this->parent != nullptr))
     {
@@ -460,7 +458,7 @@ void CommandItemComponent::setSelected(bool shouldBeSelected)
     }
 }
 
-void CommandItemComponent::update(const CommandItem::Ptr desc)
+void MenuItemComponent::update(const MenuItem::Ptr desc)
 {
     if (this->description->commandText != desc->commandText)
     {
@@ -471,7 +469,7 @@ void CommandItemComponent::update(const CommandItem::Ptr desc)
     if (desc->isToggled && !this->description->isToggled)
     {
         //Logger::writeToLog(this->description->iconName + " is on");
-        this->toggleMarker = new CommandItemComponentMarker();
+        this->toggleMarker = new MenuItemComponentMarker();
         this->addAndMakeVisible(this->toggleMarker);
     }
     else if (!desc->isToggled && (this->toggleMarker != nullptr))
@@ -489,7 +487,7 @@ void CommandItemComponent::update(const CommandItem::Ptr desc)
         this->textLabel->setColour(Label::textColourId, Colour(0xbaffffff));
     }
 
-    this->textLabel->setJustificationType(desc->alignment == CommandItem::Left ?
+    this->textLabel->setJustificationType(desc->alignment == MenuItem::Left ?
         Justification::centredLeft : Justification::centredRight);
 
     this->submenuMarker->setVisible(desc->hasSubmenu);
@@ -511,9 +509,9 @@ void CommandItemComponent::update(const CommandItem::Ptr desc)
     this->resized();
 }
 
-Component *CommandItemComponent::createHighlighterComponent()
+Component *MenuItemComponent::createHighlighterComponent()
 {
-    CommandItem::Ptr desc2 = CommandItem::empty();
+    MenuItem::Ptr desc2 = MenuItem::empty();
     desc2->image = this->description->image;
     desc2->iconName = this->description->iconName;
     desc2->commandText = this->description->commandText;
@@ -522,12 +520,12 @@ Component *CommandItemComponent::createHighlighterComponent()
     desc2->colour = this->description->colour;
     desc2->alignment = this->description->alignment;
     desc2->hasTimer = false;
-    return new CommandItemComponent(this->parent, nullptr, desc2);
+    return new MenuItemComponent(this->parent, nullptr, desc2);
 
     //return new CommandDragHighlighter();
 }
 
-void CommandItemComponent::timerCallback()
+void MenuItemComponent::timerCallback()
 {
     this->stopTimer();
     jassert(this->description->hasTimer);
@@ -540,10 +538,10 @@ void CommandItemComponent::timerCallback()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="CommandItemComponent" template="../../../Template"
+<JUCER_COMPONENT documentType="Component" className="MenuItemComponent" template="../../../Template"
                  componentName="" parentClasses="public DraggingListBoxComponent, private Timer"
-                 constructorParams="Component *parentCommandReceiver, Viewport *parentViewport, const CommandItem::Ptr desc"
-                 variableInitialisers="DraggingListBoxComponent(parentViewport),&#10;parent(parentCommandReceiver),&#10;description(CommandItem::empty()),&#10;mouseDownWasTriggered(false)"
+                 constructorParams="Component *parentCommandReceiver, Viewport *parentViewport, const MenuItem::Ptr desc"
+                 variableInitialisers="DraggingListBoxComponent(parentViewport),&#10;parent(parentCommandReceiver),&#10;description(MenuItem::empty()),&#10;mouseDownWasTriggered(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="512" initialHeight="40">
   <METHODS>

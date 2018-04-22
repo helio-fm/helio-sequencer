@@ -34,7 +34,7 @@
 #include "InstrumentTreeItem.h"
 #include "Instrument.h"
 
-#include "MidiTrackCommandPanel.h"
+#include "MidiTrackMenu.h"
 
 #include "UndoStack.h"
 #include "MidiTrackActions.h"
@@ -536,7 +536,7 @@ bool MidiTrackTreeItem::hasMenu() const noexcept
 
 ScopedPointer<Component> MidiTrackTreeItem::createMenu()
 {
-    return new MidiTrackCommandPanel(*this);
+    return new MidiTrackMenu(*this);
 }
 
 //===----------------------------------------------------------------------===//

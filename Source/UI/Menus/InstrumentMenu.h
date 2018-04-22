@@ -19,14 +19,14 @@
 
 class InstrumentTreeItem;
 
-#include "CommandPanel.h"
+#include "MenuPanel.h"
 
-class InstrumentMenu final : public CommandPanel
+class InstrumentMenu final : public MenuPanel
 {
 public:
     
     explicit InstrumentMenu(InstrumentTreeItem &parentInstrument);
-    
+
     void handleCommandMessage(int commandId) override;
     
 private:

@@ -21,9 +21,9 @@ class Instrument;
 class ProjectTreeItem;
 class MidiTrackTreeItem;
 
-#include "CommandPanel.h"
+#include "MenuPanel.h"
 
-class ProjectMenu : public CommandPanel
+class ProjectMenu : public MenuPanel
 {
 public:
     

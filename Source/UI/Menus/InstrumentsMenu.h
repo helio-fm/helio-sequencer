@@ -19,9 +19,9 @@
 
 class InstrumentsRootTreeItem;
 
-#include "CommandPanel.h"
+#include "MenuPanel.h"
 
-class InstrumentsMenu final : public CommandPanel
+class InstrumentsMenu final : public MenuPanel
 {
 public:
     

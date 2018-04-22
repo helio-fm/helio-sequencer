@@ -25,7 +25,7 @@
 #include "IconComponent.h"
 #include "PanelBackgroundB.h"
 #include "HeadlineItemDataSource.h"
-#include "CommandPanel.h"
+#include "MenuPanel.h"
 #include "RootTreeItem.h"
 #include "MainLayout.h"
 #include "ColourIDs.h"

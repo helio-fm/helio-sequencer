@@ -23,7 +23,7 @@
 class DocumentOwner;
 class ProjectTreeItem;
 class ProgressIndicator;
-class CommandItemComponent;
+class MenuItemComponent;
 //[/Headers]
 
 #include "../Themes/DialogPanel.h"
@@ -85,7 +85,7 @@ private:
     ScopedPointer<TextButton> cancelButton;
     ScopedPointer<Slider> slider;
     ScopedPointer<ProgressIndicator> indicator;
-    ScopedPointer<CommandItemComponent> browseButton;
+    ScopedPointer<MenuItemComponent> browseButton;
     ScopedPointer<Label> pathEditor;
     ScopedPointer<SeparatorHorizontalFading> component3;
     ScopedPointer<SeparatorHorizontal> separatorH;
