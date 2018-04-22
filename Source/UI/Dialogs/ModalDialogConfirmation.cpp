@@ -223,38 +223,34 @@ void ModalDialogConfirmation::disappear()
 
 ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::deleteProject()
 {
-    return ScopedPointer<ModalDialogConfirmation>(
-        new ModalDialogConfirmation(
-            TRANS("dialog::deleteproject::caption"),
-            TRANS("dialog::deleteproject::proceed"),
-            TRANS("dialog::deleteproject::cancel")));
+    return { new ModalDialogConfirmation(
+        TRANS("dialog::deleteproject::caption"),
+        TRANS("dialog::deleteproject::proceed"),
+        TRANS("dialog::deleteproject::cancel")) };
 }
 
 ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::forcePull()
 {
-    return ScopedPointer<ModalDialogConfirmation>(
-        new ModalDialogConfirmation(
-            TRANS("vcs::history::forcepull::confirmation"),
-            TRANS("vcs::history::forcepull::proceed"),
-            TRANS("vcs::history::forcepull::cancel")));
+    return { new ModalDialogConfirmation(
+        TRANS("vcs::history::forcepull::confirmation"),
+        TRANS("vcs::history::forcepull::proceed"),
+        TRANS("vcs::history::forcepull::cancel")) };
 }
 
 ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::resetChanges()
 {
-    return ScopedPointer<ModalDialogConfirmation>(
-        new ModalDialogConfirmation(
-            TRANS("dialog::vcs::reset::caption"),
-            TRANS("dialog::vcs::reset::proceed"),
-            TRANS("dialog::vcs::reset::cancel")));
+    return { new ModalDialogConfirmation(
+        TRANS("dialog::vcs::reset::caption"),
+        TRANS("dialog::vcs::reset::proceed"),
+        TRANS("dialog::vcs::reset::cancel")) };
 }
 
 ScopedPointer<ModalDialogConfirmation> ModalDialogConfirmation::Presets::confirmOpenGL()
 {
-    return ScopedPointer<ModalDialogConfirmation>(
-        new ModalDialogConfirmation(
-            TRANS("dialog::opengl::caption"),
-            TRANS("dialog::opengl::proceed"),
-            TRANS("dialog::opengl::cancel")));
+    return { new ModalDialogConfirmation(
+        TRANS("dialog::opengl::caption"),
+        TRANS("dialog::opengl::proceed"),
+        TRANS("dialog::opengl::cancel")) };
 }
 
 //[/MiscUserCode]
