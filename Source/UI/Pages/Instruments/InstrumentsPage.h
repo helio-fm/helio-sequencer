@@ -29,43 +29,41 @@ class PluginScanner;
 class InstrumentsRootTreeItem;
 class MenuItemComponent;
 
+#if HELIO_DESKTOP
+#    define PLUGINSLIST_ROW_HEIGHT (65)
+#elif HELIO_MOBILE
+#    define PLUGINSLIST_ROW_HEIGHT (90)
+#endif
+
 //[/Headers]
 
-#include "../Themes/PanelBackgroundB.h"
-#include "../Themes/FramePanel.h"
-#include "../Themes/LightShadowDownwards.h"
-#include "../Themes/SeparatorHorizontalFading.h"
-#include "../Themes/SeparatorHorizontalFading.h"
+#include "../../Themes/PanelBackgroundB.h"
+#include "../../Themes/FramePanel.h"
+#include "../../Themes/SeparatorHorizontalFading.h"
+#include "../../Themes/SeparatorHorizontalFading.h"
 
-class InstrumentsPage  : public Component,
-                         public ListBoxModel,
-                         public ChangeListener,
-                         public Button::Listener
+class InstrumentsPage final : public Component,
+                              public TableListBoxModel,
+                              public ChangeListener
 {
 public:
 
-    InstrumentsPage (PluginScanner &scanner, InstrumentsRootTreeItem &instrumentsTreeItem);
-
+    InstrumentsPage(PluginScanner &scanner, InstrumentsRootTreeItem &instrumentsTreeItem);
     ~InstrumentsPage();
 
     //[UserMethods]
 
     //===------------------------------------------------------------------===//
-    // ListBoxModel
+    // TableListBoxModel
     //===------------------------------------------------------------------===//
 
-    Component *refreshComponentForRow(int rowNumber, bool isRowSelected,
-            Component *existingComponentToUpdate) override;
-
-    String getTooltipForRow(int row) override;
-
-    var getDragSourceDescription(const SparseSet<int> &currentlySelectedRows) override;
-
     int getNumRows() override;
-
-    void paintListBoxItem(int rowNumber, Graphics &g,
-                                  int width, int height, bool rowIsSelected) override;
-
+    var getDragSourceDescription(const SparseSet<int> &currentlySelectedRows) override;
+    void paintRowBackground(Graphics &, int, int, int, bool) override;
+    void paintCell(Graphics &, int, int, int, int, bool) override;
+    void sortOrderChanged(int newSortColumnId, bool isForwards) override;
+    int getColumnAutoSizeWidth(int columnId) override;
+    String getCellTooltip(int rowNumber, int columnId) override;
 
     //===------------------------------------------------------------------===//
     // ChangeListener
@@ -77,7 +75,6 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
-    void buttonClicked (Button* buttonThatWasClicked) override;
     void handleCommandMessage (int commandId) override;
 
 
@@ -88,7 +85,7 @@ private:
     void showGreeting();
     void hideGreeting();
 
-    PluginScanner &pluginManager;
+    PluginScanner &pluginScanner;
 
     InstrumentsRootTreeItem &instrumentsRoot;
 
@@ -98,11 +95,7 @@ private:
 
     ScopedPointer<PanelBackgroundB> background;
     ScopedPointer<FramePanel> panel;
-    ScopedPointer<ListBox> pluginsList;
-    ScopedPointer<TextButton> initButton;
-    ScopedPointer<TextButton> removeButton;
-    ScopedPointer<TextButton> scanButton;
-    ScopedPointer<LightShadowDownwards> shadow;
+    ScopedPointer<TableListBox> pluginsList;
     ScopedPointer<MenuItemComponent> initialScanButton;
     ScopedPointer<SeparatorHorizontalFading> separator1;
     ScopedPointer<SeparatorHorizontalFading> separator2;

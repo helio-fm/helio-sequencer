@@ -837,9 +837,6 @@
               <FILE id="NK73De" name="InstrumentEditorPin.h" compile="0" resource="0"
                     file="../../Source/UI/Pages/Instruments/Editor/InstrumentEditorPin.h"/>
             </GROUP>
-            <FILE id="PWcCpe" name="InstrumentRow.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Pages/Instruments/InstrumentRow.cpp"/>
-            <FILE id="PmVWGZ" name="InstrumentRow.h" compile="0" resource="0" file="../../Source/UI/Pages/Instruments/InstrumentRow.h"/>
             <FILE id="yfCrjr" name="InstrumentsPage.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Instruments/InstrumentsPage.cpp"/>
             <FILE id="kI9KlF" name="InstrumentsPage.h" compile="0" resource="0"
@@ -889,8 +886,6 @@
                   file="../../Source/UI/Pages/Settings/OpenGLSettings.cpp"/>
             <FILE id="mP9NCr" name="OpenGLSettings.h" compile="0" resource="0"
                   file="../../Source/UI/Pages/Settings/OpenGLSettings.h"/>
-            <FILE id="V19u6p" name="PluginsList.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Settings/PluginsList.cpp"/>
-            <FILE id="hWf7Bh" name="PluginsList.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/PluginsList.h"/>
             <FILE id="Lq3FxT" name="SettingsListItemHighlighter.cpp" compile="1"
                   resource="0" file="../../Source/UI/Pages/Settings/SettingsListItemHighlighter.cpp"/>
             <FILE id="weL74E" name="SettingsListItemHighlighter.h" compile="0"

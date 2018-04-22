@@ -51,7 +51,13 @@ void PluginScanner::removeListItem(int index)
     return this->pluginsList.removeType(index);
 }
 
-const KnownPluginList &PluginScanner::getList() const
+void PluginScanner::sortList(KnownPluginList::SortMethod fieldToSortBy, bool forwards)
+{
+    const ScopedWriteLock lock(this->pluginsListLock);
+    this->pluginsList.sort(fieldToSortBy, forwards);
+}
+
+const KnownPluginList &PluginScanner::getList() const noexcept
 {
     const ScopedReadLock lock(this->pluginsListLock);
     return this->pluginsList;

@@ -22,7 +22,6 @@
 #include "InstrumentsPage.h"
 
 //[MiscUserDefs]
-#include "InstrumentRow.h"
 #include "PluginScanner.h"
 #include "InstrumentsRootTreeItem.h"
 #include "MainLayout.h"
@@ -35,32 +34,27 @@
 #include "App.h"
 #include "Workspace.h"
 #include "ComponentIDs.h"
+
+#define CATEGORY_COLUMN_WIDTH (100)
+#define FORMAT_COLUMN_WIDTH (75)
+
+enum ColumnIds
+{
+    vendorAndName = 1, // TableListBox needs any number apart from 0
+    category = 2,
+    format = 3
+};
+
 //[/MiscUserDefs]
 
 InstrumentsPage::InstrumentsPage(PluginScanner &scanner, InstrumentsRootTreeItem &instrumentsTreeItem)
-    : pluginManager(scanner),
+    : pluginScanner(scanner),
       instrumentsRoot(instrumentsTreeItem)
 {
     addAndMakeVisible (background = new PanelBackgroundB());
     addAndMakeVisible (panel = new FramePanel());
-    addAndMakeVisible (pluginsList = new ListBox ("Instruments", this));
+    addAndMakeVisible (pluginsList = new TableListBox ("Instruments", this));
 
-    addAndMakeVisible (initButton = new TextButton ("saxophone"));
-    initButton->setButtonText (TRANS("instruments::init"));
-    initButton->setConnectedEdges (Button::ConnectedOnRight | Button::ConnectedOnTop);
-    initButton->addListener (this);
-
-    addAndMakeVisible (removeButton = new TextButton ("minus"));
-    removeButton->setButtonText (TRANS("instruments::remove"));
-    removeButton->setConnectedEdges (Button::ConnectedOnLeft | Button::ConnectedOnTop);
-    removeButton->addListener (this);
-
-    addAndMakeVisible (scanButton = new TextButton ("open"));
-    scanButton->setButtonText (TRANS("instruments::search"));
-    scanButton->setConnectedEdges (Button::ConnectedOnTop);
-    scanButton->addListener (this);
-
-    addAndMakeVisible (shadow = new LightShadowDownwards());
     addAndMakeVisible (initialScanButton = new MenuItemComponent (this, nullptr, MenuItem::item(Icons::saxophone, CommandIDs::ScanAllPlugins, TRANS("instruments::initialscan"))));
 
     addAndMakeVisible (separator1 = new SeparatorHorizontalFading());
@@ -69,7 +63,7 @@ InstrumentsPage::InstrumentsPage(PluginScanner &scanner, InstrumentsRootTreeItem
     //[UserPreSize]
     this->initialScanButton->setMouseCursor(MouseCursor::PointingHandCursor);
 
-    if (this->pluginManager.getList().getNumTypes() == 0)
+    if (this->pluginScanner.getList().getNumTypes() == 0)
     {
         this->showGreeting();
     }
@@ -86,7 +80,24 @@ InstrumentsPage::InstrumentsPage(PluginScanner &scanner, InstrumentsRootTreeItem
     this->pluginsList->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
     this->pluginsList->setRowHeight(PLUGINSLIST_ROW_HEIGHT);
 
-    this->pluginManager.addChangeListener(this);
+    const auto columnFlags =
+        TableHeaderComponent::visible |
+        TableHeaderComponent::appearsOnColumnMenu |
+        TableHeaderComponent::sortable;
+
+    this->pluginsList->getHeader().addColumn({}, //TRANS("page::instruments::category")
+        category, 50, 50, -1, columnFlags);
+
+    this->pluginsList->getHeader().addColumn({}, //TRANS("page::instruments::vendorandname")
+        vendorAndName, 50, 50, -1, columnFlags);
+
+    this->pluginsList->getHeader().addColumn({}, // TRANS("page::instruments::format")
+        format, 50, 50, -1, columnFlags);
+
+    this->pluginsList->getHeader().setSortColumnId(vendorAndName, true);
+    this->pluginsList->setMultipleSelectionEnabled(false);
+
+    this->pluginScanner.addChangeListener(this);
 
     this->setWantsKeyboardFocus(true);
     this->setFocusContainer(true);
@@ -97,17 +108,13 @@ InstrumentsPage::InstrumentsPage(PluginScanner &scanner, InstrumentsRootTreeItem
 InstrumentsPage::~InstrumentsPage()
 {
     //[Destructor_pre]
-    this->pluginManager.removeChangeListener(this);
+    this->pluginScanner.removeChangeListener(this);
 
     //[/Destructor_pre]
 
     background = nullptr;
     panel = nullptr;
     pluginsList = nullptr;
-    initButton = nullptr;
-    removeButton = nullptr;
-    scanButton = nullptr;
-    shadow = nullptr;
     initialScanButton = nullptr;
     separator1 = nullptr;
     separator2 = nullptr;
@@ -131,89 +138,14 @@ void InstrumentsPage::resized()
     //[/UserPreResize]
 
     background->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
-    panel->setBounds (20, 20, getWidth() - 40, getHeight() - 90);
-    pluginsList->setBounds (25, 24, getWidth() - 50, getHeight() - 99);
-    initButton->setBounds (20 + 5, 20 + (getHeight() - 90), 155, 51);
-    removeButton->setBounds ((20 + 5) + 155 - -5, 20 + (getHeight() - 90), 155, 51);
-    scanButton->setBounds (20 + (getWidth() - 40) - 5 - 155, 20 + (getHeight() - 90), 155, 51);
-    shadow->setBounds (20 + 6, 20 + (getHeight() - 90), (getWidth() - 40) - 12, 16);
+    panel->setBounds (20, 20, getWidth() - 40, getHeight() - 40);
+    pluginsList->setBounds (25, 25, getWidth() - 50, getHeight() - 50);
     initialScanButton->setBounds ((getWidth() / 2) - (310 / 2), (getHeight() / 2) - (64 / 2), 310, 64);
     separator1->setBounds (((getWidth() / 2) - (310 / 2)) + 310 / 2 - (300 / 2), ((getHeight() / 2) - (64 / 2)) + -16, 300, 3);
     separator2->setBounds (((getWidth() / 2) - (310 / 2)) + 310 / 2 - (300 / 2), ((getHeight() / 2) - (64 / 2)) + 64 - -16, 300, 3);
     //[UserResized] Add your own custom resize handling here..
+    this->pluginsList->autoSizeAllColumns();
     //[/UserResized]
-}
-
-void InstrumentsPage::buttonClicked (Button* buttonThatWasClicked)
-{
-    //[UserbuttonClicked_Pre]
-    //[/UserbuttonClicked_Pre]
-
-    if (buttonThatWasClicked == initButton)
-    {
-        //[UserButtonCode_initButton] -- add your button handler code here..
-
-        const int selectedRow = this->pluginsList->getSelectedRow();
-
-        if (this->pluginManager.getList().getType(selectedRow) != nullptr)
-        {
-            const PluginDescription pluginDescription(*this->pluginManager.getList().getType(selectedRow));
-            App::Workspace().getAudioCore().addInstrument(pluginDescription, pluginDescription.descriptiveName,
-                [this](Instrument *instrument)
-            {
-                this->instrumentsRoot.addInstrumentTreeItem(instrument);
-                this->pluginsList->setSelectedRows(SparseSet<int>());
-            });
-        }
-        else
-        {
-            App::Layout().showTooltip(TRANS("warnings::noinstrument"));
-        }
-
-        //[/UserButtonCode_initButton]
-    }
-    else if (buttonThatWasClicked == removeButton)
-    {
-        //[UserButtonCode_removeButton] -- add your button handler code here..
-
-        const int selectedRow = this->pluginsList->getSelectedRow();
-        PluginDescription *pluginDescription = this->pluginManager.getList().getType(selectedRow);
-
-        if (pluginDescription != nullptr)
-        {
-            this->pluginManager.removeListItem(selectedRow);
-            this->pluginsList->updateContent();
-        }
-        else
-        {
-            App::Layout().showTooltip(TRANS("warnings::noinstrument"));
-        }
-
-        //[/UserButtonCode_removeButton]
-    }
-    else if (buttonThatWasClicked == scanButton)
-    {
-        //[UserButtonCode_scanButton] -- add your button handler code here..
-
-        //this->instrumentsRoot.getPluginManager().runInitialScan();
-
-#if HELIO_DESKTOP
-        FileChooser fc(TRANS("dialog::scanfolder::caption"),
-                       File::getCurrentWorkingDirectory(), ("*.*"), true);
-
-        if (fc.browseForDirectory())
-        {
-            App::Layout().showModalComponentUnowned(new ProgressTooltip());
-            this->pluginManager.scanFolderAndAddResults(fc.getResult());
-            this->pluginsList->updateContent();
-        }
-#endif
-
-        //[/UserButtonCode_scanButton]
-    }
-
-    //[UserbuttonClicked_Post]
-    //[/UserbuttonClicked_Post]
 }
 
 void InstrumentsPage::handleCommandMessage (int commandId)
@@ -222,7 +154,7 @@ void InstrumentsPage::handleCommandMessage (int commandId)
     if (commandId == CommandIDs::ScanAllPlugins)
     {
         App::Layout().showModalComponentUnowned(new ProgressTooltip());
-        this->pluginManager.runInitialScan();
+        this->pluginScanner.runInitialScan();
         this->hideGreeting();
     }
     //[/UserCode_handleCommandMessage]
@@ -231,14 +163,60 @@ void InstrumentsPage::handleCommandMessage (int commandId)
 
 //[MiscUserCode]
 
+/*
+
+    if (buttonThatWasClicked == initButton)
+    {
+        //[UserButtonCode_initButton] -- add your button handler code here..
+        const int selectedRow = this->pluginsList->getSelectedRow();
+        if (this->pluginScanner.getList().getType(selectedRow) != nullptr)
+        {
+            const PluginDescription pluginDescription(*this->pluginScanner.getList().getType(selectedRow));
+            App::Workspace().getAudioCore().addInstrument(pluginDescription, pluginDescription.descriptiveName,
+                [this](Instrument *instrument)
+            {
+                this->instrumentsRoot.addInstrumentTreeItem(instrument);
+                this->pluginsList->setSelectedRows(SparseSet<int>());
+            });
+        }
+        //[/UserButtonCode_initButton]
+    }
+    else if (buttonThatWasClicked == removeButton)
+    {
+        //[UserButtonCode_removeButton] -- add your button handler code here..
+        const int selectedRow = this->pluginsList->getSelectedRow();
+        PluginDescription *pluginDescription = this->pluginScanner.getList().getType(selectedRow);
+
+        if (pluginDescription != nullptr)
+        {
+            this->pluginScanner.removeListItem(selectedRow);
+            this->pluginsList->updateContent();
+        }
+        //[/UserButtonCode_removeButton]
+    }
+    else if (buttonThatWasClicked == scanButton)
+    {
+        //[UserButtonCode_scanButton] -- add your button handler code here..
+#if HELIO_DESKTOP
+        FileChooser fc(TRANS("dialog::scanfolder::caption"),
+                       File::getCurrentWorkingDirectory(), ("*.*"), true);
+
+        if (fc.browseForDirectory())
+        {
+            App::Layout().showModalComponentUnowned(new ProgressTooltip());
+            this->pluginScanner.scanFolderAndAddResults(fc.getResult());
+            this->pluginsList->updateContent();
+        }
+#endif
+        //[/UserButtonCode_scanButton]
+    }
+
+*/
+
 void InstrumentsPage::showGreeting()
 {
     this->pluginsList->setVisible(false);
     this->panel->setVisible(false);
-    this->shadow->setVisible(false);
-    this->scanButton->setVisible(false);
-    this->initButton->setVisible(false);
-    this->removeButton->setVisible(false);
 
     this->initialScanButton->setVisible(true);
     this->separator1->setVisible(true);
@@ -249,62 +227,20 @@ void InstrumentsPage::hideGreeting()
 {
     this->pluginsList->setVisible(true);
     this->panel->setVisible(true);
-    this->shadow->setVisible(true);
-    this->scanButton->setVisible(true);
-    this->initButton->setVisible(true);
-    this->removeButton->setVisible(true);
 
     this->initialScanButton->setVisible(false);
     this->separator1->setVisible(false);
     this->separator2->setVisible(false);
 }
 
-
 //===----------------------------------------------------------------------===//
-// ListBoxModel
+// TableListBoxModel
 //===----------------------------------------------------------------------===//
-
-Component *InstrumentsPage::refreshComponentForRow(int rowNumber, bool isRowSelected,
-        Component *existingComponentToUpdate)
-{
-    PluginDescription *pd =
-        this->pluginManager.getList().getType(rowNumber);
-
-    if (!pd) { return existingComponentToUpdate; }
-
-    if (existingComponentToUpdate != nullptr)
-    {
-        if (InstrumentRow *row = dynamic_cast<InstrumentRow *>(existingComponentToUpdate))
-        {
-            row->setSelected(isRowSelected);
-            row->refreshPluginDescription(*pd);
-        }
-    }
-    else
-    {
-        InstrumentRow *row = new InstrumentRow(*pd);
-        row->setSelected(isRowSelected);
-        return row;
-    }
-
-    return existingComponentToUpdate;
-}
-
-String InstrumentsPage::getTooltipForRow(int row)
-{
-    PluginDescription *pd =
-        pluginManager.getList().getType(row);
-
-    if (!pd) { return ""; }
-
-    return pd->fileOrIdentifier;
-}
-
 
 var InstrumentsPage::getDragSourceDescription(const SparseSet<int> &currentlySelectedRows)
 {
     PluginDescription *pd =
-        this->pluginManager.getList().getType(currentlySelectedRows[0]);
+        this->pluginScanner.getList().getType(currentlySelectedRows[0]);
 
     if (!pd) { return var::null; }
 
@@ -315,17 +251,104 @@ var InstrumentsPage::getDragSourceDescription(const SparseSet<int> &currentlySel
     return pluginVar;
 }
 
+void InstrumentsPage::paintRowBackground(Graphics &g, int rowNumber, int, int, bool rowIsSelected)
+{
+    if (rowIsSelected)
+    {
+        g.fillAll(Colours::white.withAlpha(0.75f));
+    }
+    else if (rowNumber % 2)
+    {
+        g.fillAll(Colours::black.withAlpha(0.05f));
+    }
+}
+
+void InstrumentsPage::paintCell(Graphics& g, int rowNumber, int columnId,
+    int w, int h, bool rowIsSelected)
+{
+    g.setFont(Font(Font::getDefaultSansSerifFontName(), h * 0.27f, Font::plain));
+    const auto pd = this->pluginScanner.getList().getType(rowNumber);
+    const int margin = h / 12;
+
+    switch (columnId)
+    {
+    case ColumnIds::vendorAndName:
+    {
+        const String inputChannelsString = TRANS_PLURAL("{x} input channels", pd->numInputChannels);
+        const String outputChannelsString = TRANS_PLURAL("{x} output channels", pd->numOutputChannels);
+
+        g.setColour(Colours::white);
+        g.drawText(pd->descriptiveName, margin, margin, w, h, Justification::topLeft, false);
+
+        g.setColour(Colours::white.withAlpha(0.7f));
+        g.drawText(pd->manufacturerName, margin, 0, w, h, Justification::centredLeft, false);
+
+        g.setColour(Colours::white.withAlpha(0.5f));
+        g.drawText(pd->version + ", " + inputChannelsString + ", " + outputChannelsString,
+            margin, -margin, w, h, Justification::bottomLeft, false);
+
+        break;
+    }
+    case ColumnIds::category:
+    {
+        g.setColour(Colours::white.withAlpha(0.5f));
+        g.drawText(pd->category, 0, margin, w - int(margin * 1.5f), h, Justification::topRight, false);
+        break;
+    }
+    case ColumnIds::format:
+    {
+        g.setColour(Colours::white.withAlpha(0.7f));
+        g.drawText(pd->pluginFormatName, margin, margin, w, h, Justification::topLeft, false);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void InstrumentsPage::sortOrderChanged(int newSortColumnId, bool isForwards)
+{
+    switch (newSortColumnId)
+    {
+    case ColumnIds::vendorAndName:
+        this->pluginScanner.sortList(KnownPluginList::SortMethod::sortByManufacturer, isForwards);
+    case ColumnIds::category:
+        this->pluginScanner.sortList(KnownPluginList::SortMethod::sortByCategory, isForwards);
+    case ColumnIds::format:
+        this->pluginScanner.sortList(KnownPluginList::SortMethod::sortByFormat, isForwards);
+    default:
+        break;
+    }
+
+    this->pluginsList->updateContent();
+}
+
 int InstrumentsPage::getNumRows()
 {
-    const int numTypes = this->pluginManager.getList().getNumTypes();
-    return numTypes;
+    return this->pluginScanner.getList().getNumTypes();
 }
 
-void InstrumentsPage::paintListBoxItem(int rowNumber, Graphics &g, int width,
-                                       int height, bool rowIsSelected)
+int InstrumentsPage::getColumnAutoSizeWidth(int columnId)
 {
+    switch (columnId)
+    {
+    case ColumnIds::vendorAndName:
+        return this->pluginsList->getVisibleContentWidth() - CATEGORY_COLUMN_WIDTH - FORMAT_COLUMN_WIDTH;
+    case ColumnIds::category:
+        return CATEGORY_COLUMN_WIDTH;
+    case ColumnIds::format:
+        return FORMAT_COLUMN_WIDTH;
+    default:
+        return 0;
+    }
 }
 
+String InstrumentsPage::getCellTooltip(int rowNumber, int columnId)
+{
+    auto description = pluginScanner.getList().getType(rowNumber);
+    if (description == nullptr) { return {}; }
+    return description->fileOrIdentifier;
+}
 
 //===----------------------------------------------------------------------===//
 // ChangeListener
@@ -338,7 +361,7 @@ void InstrumentsPage::changeListenerCallback(ChangeBroadcaster *source)
         this->pluginsList->updateContent();
         this->pluginsList->setSelectedRows(SparseSet<int>());
 
-        if (! this->pluginManager.isWorking())
+        if (! this->pluginScanner.isWorking())
         {
             if (Component *progressIndicator =
                 App::Layout().findChildWithID(ComponentIDs::progressTooltipId))
@@ -356,10 +379,10 @@ void InstrumentsPage::changeListenerCallback(ChangeBroadcaster *source)
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="InstrumentsPage" template="../../Template"
-                 componentName="" parentClasses="public Component, public ListBoxModel, public ChangeListener"
-                 constructorParams="PluginManager &amp;scanner, InstrumentsRootTreeItem &amp;instrumentsTreeItem"
-                 variableInitialisers="pluginManager(scanner),&#10;instrumentsRoot(instrumentsTreeItem)"
+<JUCER_COMPONENT documentType="Component" className="InstrumentsPage" template="../../../Template"
+                 componentName="" parentClasses="public Component, public TableListBoxModel, public ChangeListener"
+                 constructorParams="PluginScanner &amp;scanner, InstrumentsRootTreeItem &amp;instrumentsTreeItem"
+                 variableInitialisers="pluginScanner(scanner),&#10;instrumentsRoot(instrumentsTreeItem)"
                  snapPixels="4" snapActive="1" snapShown="0" overlayOpacity="0.330"
                  fixedSize="0" initialWidth="600" initialHeight="400">
   <METHODS>
@@ -367,39 +390,24 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="9957575039af6ddc" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../Themes/PanelBackgroundB.cpp"
+             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../../Themes/PanelBackgroundB.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="d37f5d299f347b6c" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="20 20 40M 90M" sourceFile="../Themes/FramePanel.cpp"
+             explicitFocusOrder="0" pos="20 20 40M 40M" sourceFile="../../Themes/FramePanel.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="1b089ba42e39d447" memberName="pluginsList" virtualName=""
-                    explicitFocusOrder="0" pos="25 24 50M 99M" class="ListBox" params="&quot;Instruments&quot;, this"/>
-  <TEXTBUTTON name="saxophone" id="2ee7fcb67a7b0eaa" memberName="initButton"
-              virtualName="" explicitFocusOrder="0" pos="5 0R 155 51" posRelativeX="d37f5d299f347b6c"
-              posRelativeY="d37f5d299f347b6c" buttonText="instruments::init"
-              connectedEdges="6" needsCallback="1" radioGroupId="0"/>
-  <TEXTBUTTON name="minus" id="ea7d7d2896f28adb" memberName="removeButton"
-              virtualName="" explicitFocusOrder="0" pos="-5R 0R 155 51" posRelativeX="2ee7fcb67a7b0eaa"
-              posRelativeY="d37f5d299f347b6c" buttonText="instruments::remove"
-              connectedEdges="5" needsCallback="1" radioGroupId="0"/>
-  <TEXTBUTTON name="open" id="308078ca18c39bc7" memberName="scanButton" virtualName=""
-              explicitFocusOrder="0" pos="5Rr 0R 155 51" posRelativeX="d37f5d299f347b6c"
-              posRelativeY="d37f5d299f347b6c" buttonText="instruments::search"
-              connectedEdges="4" needsCallback="1" radioGroupId="0"/>
-  <JUCERCOMP name="" id="e80d8080a2f39d47" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="6 0R 12M 16" posRelativeX="d37f5d299f347b6c"
-             posRelativeY="d37f5d299f347b6c" posRelativeW="d37f5d299f347b6c"
-             sourceFile="../Themes/LightShadowDownwards.cpp" constructorParams=""/>
+                    explicitFocusOrder="0" pos="25 25 50M 50M" class="TableListBox"
+                    params="&quot;Instruments&quot;, this"/>
   <GENERICCOMPONENT name="" id="62a5bd7c1a3ec2" memberName="initialScanButton" virtualName=""
                     explicitFocusOrder="0" pos="0Cc 0Cc 310 64" class="MenuItemComponent"
                     params="this, nullptr, MenuItem::item(Icons::saxophone, CommandIDs::ScanAllPlugins, TRANS(&quot;instruments::initialscan&quot;))"/>
   <JUCERCOMP name="" id="8817b1b124163b2f" memberName="separator1" virtualName=""
              explicitFocusOrder="0" pos="0Cc -16 300 3" posRelativeX="62a5bd7c1a3ec2"
-             posRelativeY="62a5bd7c1a3ec2" sourceFile="../Themes/SeparatorHorizontalFading.cpp"
+             posRelativeY="62a5bd7c1a3ec2" sourceFile="../../Themes/SeparatorHorizontalFading.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="af3fdc94cce3ad8c" memberName="separator2" virtualName=""
              explicitFocusOrder="0" pos="0Cc -16R 300 3" posRelativeX="62a5bd7c1a3ec2"
-             posRelativeY="62a5bd7c1a3ec2" sourceFile="../Themes/SeparatorHorizontalFading.cpp"
+             posRelativeY="62a5bd7c1a3ec2" sourceFile="../../Themes/SeparatorHorizontalFading.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 
