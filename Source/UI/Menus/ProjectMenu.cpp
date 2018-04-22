@@ -473,11 +473,3 @@ void ProjectMenu::initInstrumentSelection()
     
     this->updateContent(cmds, MenuPanel::SlideLeft);
 }
-
-void ProjectMenu::dismiss()
-{
-    if (Component *parent = this->getParentComponent())
-    {
-        parent->exitModalState(0);
-    }
-}

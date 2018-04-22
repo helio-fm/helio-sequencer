@@ -59,10 +59,7 @@ void TimeSignatureMenu::handleCommandMessage(int commandId)
             autoLayer->remove(this->event, true);
         }
 
-        if (Component *parent = this->getParentComponent())
-        {
-            parent->exitModalState(0);
-        }
+        this->dismiss();
     }
     else
     {

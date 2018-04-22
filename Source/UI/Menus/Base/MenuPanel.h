@@ -52,6 +52,16 @@ public:
     void resized() override;
     void handleCommandMessage (int commandId) override;
 
+protected:
+
+    virtual void dismiss() const
+    {
+        if (auto parent = this->getParentComponent())
+        {
+            parent->exitModalState(0);
+        }
+    }
+
 private:
 
     ComponentAnimator animator;

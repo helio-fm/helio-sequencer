@@ -56,11 +56,3 @@ void VersionControlHistorySelectionMenu::handleCommandMessage(int commandId)
         return;
     }
 }
-
-void VersionControlHistorySelectionMenu::dismiss() const
-{
-    if (Component *parent = this->getParentComponent())
-    {
-        parent->exitModalState(0);
-    }
-}

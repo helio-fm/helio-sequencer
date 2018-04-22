@@ -26,14 +26,10 @@ class VersionControlStageSelectionMenu final : public MenuPanel
 public:
     
     VersionControlStageSelectionMenu(const SparseSet<int> &selectedChanges, VersionControl &vcs);
-    void handleCommandMessage(int commandId) override;
     
 private:
-
-    void dismiss() const;
 
     SparseSet<int> selectedChanges;
     VersionControl &vcs;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VersionControlStageSelectionMenu)
 };

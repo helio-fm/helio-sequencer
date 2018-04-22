@@ -241,11 +241,3 @@ void PianoRollSelectionMenu::handleCommandMessage(int commandId)
         return;
     }   
 }
-
-void PianoRollSelectionMenu::dismiss() const
-{
-    if (Component *parent = this->getParentComponent())
-    {
-        parent->exitModalState(0);
-    }
-}

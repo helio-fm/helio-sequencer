@@ -30,10 +30,7 @@ public:
     
 private:
 
-    void dismiss() const;
-
     ValueTree revision;
     VersionControl &vcs;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VersionControlHistorySelectionMenu)
 };

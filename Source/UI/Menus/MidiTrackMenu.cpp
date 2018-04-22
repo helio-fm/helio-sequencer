@@ -56,7 +56,7 @@ void MidiTrackMenu::handleCommandMessage(int commandId)
             if (HybridRoll *roll = dynamic_cast<HybridRoll *>(project->getLastFocusedRoll()))
             {
                 roll->selectAll();
-                this->exit();
+                this->dismiss();
             }
         }
             break;
@@ -71,7 +71,7 @@ void MidiTrackMenu::handleCommandMessage(int commandId)
             const String &layerId = this->trackItem.getSequence()->getTrackId();
             project->getUndoStack()->beginNewTransaction();
             project->getUndoStack()->perform(new MidiTrackMuteAction(*project, layerId, true));
-            this->exit();
+            this->dismiss();
         }
             break;
             
@@ -81,7 +81,7 @@ void MidiTrackMenu::handleCommandMessage(int commandId)
             const String &layerId = this->trackItem.getSequence()->getTrackId();
             project->getUndoStack()->beginNewTransaction();
             project->getUndoStack()->perform(new MidiTrackMuteAction(*project, layerId, false));
-            this->exit();
+            this->dismiss();
         }
             break;
 
@@ -98,7 +98,7 @@ void MidiTrackMenu::handleCommandMessage(int commandId)
             auto inputDialog = ModalDialogInput::Presets::renameTrack(this->trackItem.getXPath());
             inputDialog->onOk = this->trackItem.getRenameCallback();
             App::Layout().showModalComponentUnowned(inputDialog.release());
-            this->exit();
+            this->dismiss();
             break;
         }
 
@@ -118,7 +118,7 @@ void MidiTrackMenu::handleCommandMessage(int commandId)
                 project->getUndoStack()->perform(new AutomationTrackRemoveAction(*project, project, layerId));
             }
             
-            this->getParentComponent()->exitModalState(0);
+            this->dismiss();
             return;
         }
             
@@ -255,9 +255,3 @@ void MidiTrackMenu::initProjectSelection()
     
     this->updateContent(cmds, MenuPanel::SlideLeft);
 }
-
-void MidiTrackMenu::exit()
-{
-    this->getParentComponent()->exitModalState(0);
-}
-

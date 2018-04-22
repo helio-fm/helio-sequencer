@@ -131,15 +131,12 @@ void TimelineMenu::handleCommandMessage(int commandId)
         if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
         {
             roll->postCommandMessage(commandId);
-            this->getParentComponent()->exitModalState(0);
+            this->dismiss();
         }
     }
     else if (commandId == CommandIDs::Cancel)
     {
-        if (Component *parent = this->getParentComponent())
-        {
-            parent->exitModalState(0);
-        }
+        this->dismiss();
     }
     else
     {
@@ -158,6 +155,6 @@ void TimelineMenu::handleCommandMessage(int commandId)
             }
         }
 
-        this->getParentComponent()->exitModalState(0);
+        this->dismiss();
     }
 }

@@ -52,10 +52,3 @@ void PatternRollSelectionMenu::handleCommandMessage(int commandId)
     }
 }
 
-void PatternRollSelectionMenu::dismiss() const
-{
-    if (Component *parent = this->getParentComponent())
-    {
-        parent->exitModalState(0);
-    }
-}

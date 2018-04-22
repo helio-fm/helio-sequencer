@@ -30,8 +30,6 @@ public:
     
 private:
 
-    void dismiss() const;
     WeakReference<Lasso> lasso;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRollSelectionMenu);
 };

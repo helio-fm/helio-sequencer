@@ -116,13 +116,11 @@ void WorkspaceMenu::handleCommandMessage (int commandId)
     {
         this->workspace->createEmptyProject();
         this->listBox->updateContent();
-        //this->getParentComponent()->exitModalState(0);
     }
     else if (commandId == CommandIDs::OpenProject)
     {
         this->workspace->importProject("*.helio;*.hp");
         this->listBox->updateContent();
-        //this->getParentComponent()->exitModalState(0);
     }
     else if (commandId == CommandIDs::LoginLogout)
     {
@@ -131,15 +129,12 @@ void WorkspaceMenu::handleCommandMessage (int commandId)
         if (!isLoggedIn)
         {
             this->listBox->updateContent();
-            //this->getParentComponent()->exitModalState(0);
             App::Layout().showModalComponentUnowned(new AuthorizationDialog());
         }
         else
         {
-            //App::Layout().showModalComponentUnowned(new ProgressTooltip());
             App::Helio().getSessionService()->signOut();
             this->listBox->updateContent();
-            this->getParentComponent()->exitModalState(0);
         }
     }
     //[/UserCode_handleCommandMessage]
@@ -162,15 +157,12 @@ void WorkspaceMenu::loadFile(RecentFileDescription::Ptr fileDescription)
 #else
     this->listBox->scrollToEnsureRowIsOnscreen(2);
 #endif
-
-    //this->getParentComponent()->exitModalState(0);
 }
 
 void WorkspaceMenu::unloadFile(RecentFileDescription::Ptr fileDescription)
 {
     this->workspace->onClickedUnloadRecentFile(fileDescription);
     this->listBox->updateContent();
-    //this->getParentComponent()->exitModalState(0);
 }
 
 
@@ -261,8 +253,6 @@ Component *WorkspaceMenu::refreshComponentForRow(int rowNumber, bool isRowSelect
 
     if (item == nullptr) { return existingComponentToUpdate; }
 
-    //Logger::writeToLog(String(fileIndex) + " - " + item->title);
-
     if (existingComponentToUpdate != nullptr)
     {
         if (RecentProjectRow *row = dynamic_cast<RecentProjectRow *>(existingComponentToUpdate))
@@ -305,7 +295,6 @@ int WorkspaceMenu::getNumRows()
     const int openProjectRow = 0;
 #endif
 
-    //Logger::writeToLog(String(this->workspace->getRecentFilesList().getNumItems()));
     return this->workspace->getRecentFilesList().getNumItems() + signInRow + openProjectRow + createProjectRow;
 }
 

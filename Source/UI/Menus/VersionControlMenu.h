@@ -32,10 +32,7 @@ public:
 
 private:
 
-    void dismiss() const;
-
     VersionControl &vcs;
     ProjectTreeItem &project;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (VersionControlMenu)
 };

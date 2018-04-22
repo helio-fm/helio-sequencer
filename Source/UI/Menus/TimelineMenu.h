@@ -26,7 +26,6 @@ class TimelineMenu final : public MenuPanel
 public:
     
     explicit TimelineMenu(ProjectTreeItem &parentProject);
-    
     void handleCommandMessage(int commandId) override;
     
 private:

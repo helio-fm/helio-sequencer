@@ -545,7 +545,7 @@ ScopedPointer<Component> MidiTrackTreeItem::createMenu()
 
 Function<void(const String &text)> MidiTrackTreeItem::getRenameCallback()
 {
-    return[this](const String &text)
+    return [this](const String &text)
     {
         if (text != this->getXPath())
         {
@@ -559,7 +559,7 @@ Function<void(const String &text)> MidiTrackTreeItem::getRenameCallback()
 
 Function<void(const String &text)> MidiTrackTreeItem::getChangeColourCallback()
 {
-    return[this](const String &text)
+    return [this](const String &text)
     {
         const Colour colour(Colour::fromString(text));
         if (colour != this->getColour())
@@ -574,7 +574,7 @@ Function<void(const String &text)> MidiTrackTreeItem::getChangeColourCallback()
 
 Function<void(const String &instrumentId)> MidiTrackTreeItem::getChangeInstrumentCallback()
 {
-    return[this](const String &instrumentId)
+    return [this](const String &instrumentId)
     {
         if (instrumentId != this->getTrackInstrumentId())
         {

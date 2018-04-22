@@ -44,23 +44,16 @@ public:
     //[UserMethods]
 
     void loadFile(RecentFileDescription::Ptr fileDescription);
-
     void unloadFile(RecentFileDescription::Ptr fileDescription);
-
 
     //===------------------------------------------------------------------===//
     // ListBoxModel
     //===------------------------------------------------------------------===//
 
-    Component *refreshComponentForRow(int rowNumber, bool isRowSelected,
-        Component *existingComponentToUpdate) override;
-
+    Component *refreshComponentForRow(int, bool, Component *) override;
     void listBoxItemClicked(int row, const MouseEvent &e) override;
-
     int getNumRows() override;
-
-    void paintListBoxItem(int rowNumber, Graphics &g,
-        int width, int height, bool rowIsSelected) override;
+    void paintListBoxItem(int, Graphics &, int, int, bool) override;
 
     //[/UserMethods]
 

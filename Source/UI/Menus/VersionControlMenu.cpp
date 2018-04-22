@@ -51,7 +51,7 @@ static MenuPanel::Menu createDefaultPanel()
         TRANS("menu::vcs::push")));
 
     // TODO when stashes are ready
-    //cmds.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents,
+    //cmds.add(MenuItem::item(Icons::pop, CommandIDs::VersionControlPopStash,
     //    TRANS("menu::vcs::pop"))->withSubmenu()->withTimer());
 
     return cmds;
@@ -78,10 +78,3 @@ void VersionControlMenu::handleCommandMessage(int commandId)
     }
 }
 
-void VersionControlMenu::dismiss() const
-{
-    if (Component *parent = this->getParentComponent())
-    {
-        parent->exitModalState(0);
-    }
-}

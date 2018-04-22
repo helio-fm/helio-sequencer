@@ -31,10 +31,7 @@ public:
     
 private:
 
-    void dismiss() const;
-
     WeakReference<Lasso> lasso;
     const ProjectTreeItem &project;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRollSelectionMenu)
 };

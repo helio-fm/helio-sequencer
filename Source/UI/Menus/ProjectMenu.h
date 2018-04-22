@@ -23,18 +23,16 @@ class MidiTrackTreeItem;
 
 #include "MenuPanel.h"
 
-class ProjectMenu : public MenuPanel
+class ProjectMenu final : public MenuPanel
 {
 public:
     
-    ProjectMenu(ProjectTreeItem &parentProject, AnimationType animationType);
-    
+    ProjectMenu(ProjectTreeItem &parentProject, AnimationType animationType);    
     void handleCommandMessage(int commandId) override;
     
 private:
 
     ProjectTreeItem &project;
-    
     WeakReference<Instrument> lastSelectedInstrument;
 
     void initMainMenu(AnimationType animationType);
@@ -51,6 +49,5 @@ private:
     ValueTree createAutoLayerTempate(const String &name, int controllerNumber, const String &instrumentId = "") const;
     
     void proceedToRenderDialog(const String &extension);
-    void dismiss();
 
 };

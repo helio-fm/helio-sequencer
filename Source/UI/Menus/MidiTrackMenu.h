@@ -26,7 +26,6 @@ class MidiTrackMenu : public MenuPanel
 public:
     
     explicit MidiTrackMenu(MidiTrackTreeItem &parentLayer);
-        
     void handleCommandMessage(int commandId) override;
     
 private:
@@ -35,7 +34,6 @@ private:
     void initColorSelection();
     void initProjectSelection();
     void initInstrumentSelection();
-    void exit();
 
     MidiTrackTreeItem &trackItem;
     

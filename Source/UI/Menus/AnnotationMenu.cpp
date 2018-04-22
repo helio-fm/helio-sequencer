@@ -88,10 +88,7 @@ void AnnotationMenu::handleCommandMessage(int commandId)
             autoLayer->changeGroup(groupDragBefore, groupDragAfter, true);
         }
 
-        if (Component *parent = this->getParentComponent())
-        {
-            parent->exitModalState(0);
-        }
+        this->dismiss();
     }
     else
     {
