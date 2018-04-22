@@ -17,20 +17,19 @@
 
 #pragma once
 
-class InstrumentsRootTreeItem;
+class OrchestraPitTreeItem;
 
 #include "MenuPanel.h"
 
-class InstrumentsMenu final : public MenuPanel
+class OrchestraPitMenu final : public MenuPanel
 {
 public:
     
-    explicit InstrumentsMenu(InstrumentsRootTreeItem &parentOrchestra);
-        
+    explicit OrchestraPitMenu(OrchestraPitTreeItem &parentOrchestra);
     void handleCommandMessage(int commandId) override;
     
 private:
     
-    InstrumentsRootTreeItem &instrumentsRoot;
+    OrchestraPitTreeItem &instrumentsRoot;
     
 };

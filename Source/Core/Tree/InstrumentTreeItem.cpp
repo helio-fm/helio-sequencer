@@ -25,7 +25,7 @@
 #include "Instrument.h"
 #include "InstrumentEditor.h"
 #include "InstrumentMenu.h"
-#include "InstrumentsPage.h"
+#include "OrchestraPit.h"
 #include "AudioPluginTreeItem.h"
 
 #include "App.h"
@@ -159,7 +159,7 @@ var InstrumentTreeItem::getDragSourceDescription()
 bool InstrumentTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
     const bool isInterested =
-        (nullptr != dynamic_cast<PluginDescriptionWrapper *>(dragSourceDetails.description.getObject()));
+        (nullptr != dynamic_cast<PluginDescriptionDragnDropWrapper *>(dragSourceDetails.description.getObject()));
 
     if (isInterested)
     { this->setOpen(true); }
@@ -171,7 +171,7 @@ void InstrumentTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dra
 {
     if (ListBox *list = dynamic_cast<ListBox *>(dragSourceDetails.sourceComponent.get()))
     {
-        if (PluginDescriptionWrapper *pd = dynamic_cast<PluginDescriptionWrapper *>(dragSourceDetails.description.getObject()))
+        if (auto pd = dynamic_cast<PluginDescriptionDragnDropWrapper *>(dragSourceDetails.description.getObject()))
         {
             const PluginDescription pluginDescription(pd->pluginDescription);
             this->instrument->addNodeToFreeSpace(pluginDescription, [this](Instrument *instrument)

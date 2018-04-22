@@ -420,10 +420,6 @@
                 file="../../Source/Core/Tree/AutomationTrackTreeItem.cpp"/>
           <FILE id="K82RYP" name="AutomationTrackTreeItem.h" compile="0" resource="0"
                 file="../../Source/Core/Tree/AutomationTrackTreeItem.h"/>
-          <FILE id="Eu2SWn" name="InstrumentsRootTreeItem.cpp" compile="1" resource="0"
-                file="../../Source/Core/Tree/InstrumentsRootTreeItem.cpp"/>
-          <FILE id="d9gThN" name="InstrumentsRootTreeItem.h" compile="0" resource="0"
-                file="../../Source/Core/Tree/InstrumentsRootTreeItem.h"/>
           <FILE id="qbLi9m" name="InstrumentTreeItem.cpp" compile="1" resource="0"
                 file="../../Source/Core/Tree/InstrumentTreeItem.cpp"/>
           <FILE id="HYta5A" name="InstrumentTreeItem.h" compile="0" resource="0"
@@ -434,6 +430,10 @@
                 file="../../Source/Core/Tree/MidiTrackTreeItem.h"/>
           <FILE id="wvDyFy" name="MidiTrackSource.h" compile="0" resource="0"
                 file="../../Source/Core/Tree/MidiTrackSource.h"/>
+          <FILE id="Gfzq58" name="OrchestraPitTreeItem.cpp" compile="1" resource="0"
+                file="../../Source/Core/Tree/OrchestraPitTreeItem.cpp"/>
+          <FILE id="mOhFF1" name="OrchestraPitTreeItem.h" compile="0" resource="0"
+                file="../../Source/Core/Tree/OrchestraPitTreeItem.h"/>
           <FILE id="UWSr5u" name="PatternEditorTreeItem.cpp" compile="1" resource="0"
                 file="../../Source/Core/Tree/PatternEditorTreeItem.cpp"/>
           <FILE id="ALNCy6" name="PatternEditorTreeItem.h" compile="0" resource="0"
@@ -788,10 +788,6 @@
                 file="../../Source/UI/Menus/InstrumentMenu.cpp"/>
           <FILE id="GfB3bQ" name="InstrumentMenu.h" compile="0" resource="0"
                 file="../../Source/UI/Menus/InstrumentMenu.h"/>
-          <FILE id="rvRFpY" name="InstrumentsMenu.cpp" compile="1" resource="0"
-                file="../../Source/UI/Menus/InstrumentsMenu.cpp"/>
-          <FILE id="r4xx9F" name="InstrumentsMenu.h" compile="0" resource="0"
-                file="../../Source/UI/Menus/InstrumentsMenu.h"/>
           <FILE id="cM8qY1" name="MidiTrackMenu.cpp" compile="1" resource="0"
                 file="../../Source/UI/Menus/MidiTrackMenu.cpp"/>
           <FILE id="UXHKHD" name="MidiTrackMenu.h" compile="0" resource="0" file="../../Source/UI/Menus/MidiTrackMenu.h"/>
@@ -799,6 +795,10 @@
                 file="../../Source/UI/Menus/NotesTuningPanel.cpp"/>
           <FILE id="ywKB7T" name="NotesTuningPanel.h" compile="0" resource="0"
                 file="../../Source/UI/Menus/NotesTuningPanel.h"/>
+          <FILE id="B2uckf" name="OrchestraPitMenu.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/OrchestraPitMenu.cpp"/>
+          <FILE id="ya6dc4" name="OrchestraPitMenu.h" compile="0" resource="0"
+                file="../../Source/UI/Menus/OrchestraPitMenu.h"/>
           <FILE id="eFoCKQ" name="ProjectMenu.cpp" compile="1" resource="0" file="../../Source/UI/Menus/ProjectMenu.cpp"/>
           <FILE id="qz1Ccf" name="ProjectMenu.h" compile="0" resource="0" file="../../Source/UI/Menus/ProjectMenu.h"/>
           <FILE id="IWRyID" name="TimelineMenu.cpp" compile="1" resource="0"
@@ -837,10 +837,10 @@
               <FILE id="NK73De" name="InstrumentEditorPin.h" compile="0" resource="0"
                     file="../../Source/UI/Pages/Instruments/Editor/InstrumentEditorPin.h"/>
             </GROUP>
-            <FILE id="yfCrjr" name="InstrumentsPage.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Pages/Instruments/InstrumentsPage.cpp"/>
-            <FILE id="kI9KlF" name="InstrumentsPage.h" compile="0" resource="0"
-                  file="../../Source/UI/Pages/Instruments/InstrumentsPage.h"/>
+            <FILE id="yfCrjr" name="OrchestraPitPage.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Instruments/OrchestraPitPage.cpp"/>
+            <FILE id="kI9KlF" name="OrchestraPitPage.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Instruments/OrchestraPitPage.h"/>
           </GROUP>
           <GROUP id="{01355104-112B-DA3C-0607-D8B2FD252FBB}" name="Intro">
             <FILE id="VYCvr8" name="InitScreen.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Intro/InitScreen.cpp"/>

@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "InstrumentsRootTreeItem.h"
+#include "OrchestraPitTreeItem.h"
 
 #include "TreeItemChildrenSerializer.h"
 #include "InstrumentTreeItem.h"
@@ -25,67 +25,66 @@
 #include "AudioCore.h"
 #include "Icons.h"
 #include "PluginScanner.h"
-#include "InstrumentsPage.h"
-#include "InstrumentsMenu.h"
+#include "OrchestraPitPage.h"
+#include "OrchestraPitMenu.h"
 #include "SerializationKeys.h"
 #include "App.h"
 #include "Workspace.h"
 
-InstrumentsRootTreeItem::InstrumentsRootTreeItem() :
+OrchestraPitTreeItem::OrchestraPitTreeItem() :
     TreeItem("Instruments", Serialization::Core::instrumentsList)
 {
     this->recreatePage();
 }
 
-Colour InstrumentsRootTreeItem::getColour() const noexcept
+Colour OrchestraPitTreeItem::getColour() const noexcept
 {
     return Colour(0xffff80f3);
 }
 
-Image InstrumentsRootTreeItem::getIcon() const noexcept
+Image OrchestraPitTreeItem::getIcon() const noexcept
 {
     return Icons::findByName(Icons::saxophone, TREE_LARGE_ICON_HEIGHT);
 }
 
-String InstrumentsRootTreeItem::getName() const noexcept
+String OrchestraPitTreeItem::getName() const noexcept
 {
     return TRANS("tree::instruments");
 }
 
-void InstrumentsRootTreeItem::showPage()
+void OrchestraPitTreeItem::showPage()
 {
     App::Layout().showPage(this->instrumentsPage, this);
 }
 
-void InstrumentsRootTreeItem::recreatePage()
+void OrchestraPitTreeItem::recreatePage()
 {
-    this->instrumentsPage = new InstrumentsPage(App::Workspace().getPluginManager(), *this);
+    this->instrumentsPage =
+        new OrchestraPitPage(App::Workspace().getPluginManager(), *this);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Menu
 //===----------------------------------------------------------------------===//
 
-bool InstrumentsRootTreeItem::hasMenu() const noexcept
+bool OrchestraPitTreeItem::hasMenu() const noexcept
 {
     return true;
 }
 
-ScopedPointer<Component> InstrumentsRootTreeItem::createMenu()
+ScopedPointer<Component> OrchestraPitTreeItem::createMenu()
 {
-    return new InstrumentsMenu(*this);
+    return new OrchestraPitMenu(*this);
 }
 
 //===----------------------------------------------------------------------===//
 // Dragging
 //===----------------------------------------------------------------------===//
 
-bool InstrumentsRootTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
+bool OrchestraPitTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
     bool isInterested = (dragSourceDetails.description == Serialization::Core::instrumentRoot.toString());
-
-    isInterested |= (nullptr != dynamic_cast<PluginDescriptionWrapper *>(dragSourceDetails.description.getObject()));
+    isInterested |= (nullptr != dynamic_cast<PluginDescriptionDragnDropWrapper *>(dragSourceDetails.description.getObject()));
 
     if (isInterested)
     { this->setOpen(true); }
@@ -93,11 +92,11 @@ bool InstrumentsRootTreeItem::isInterestedInDragSource(const DragAndDropTarget::
     return isInterested;
 }
 
-void InstrumentsRootTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
+void OrchestraPitTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dragSourceDetails, int insertIndex)
 {
-    if (ListBox *list = dynamic_cast<ListBox *>(dragSourceDetails.sourceComponent.get()))
+    if (auto list = dynamic_cast<ListBox *>(dragSourceDetails.sourceComponent.get()))
     {
-        if (PluginDescriptionWrapper *pd = dynamic_cast<PluginDescriptionWrapper *>(dragSourceDetails.description.getObject()))
+        if (auto pd = dynamic_cast<PluginDescriptionDragnDropWrapper *>(dragSourceDetails.description.getObject()))
         {
             PluginDescription pluginDescription(pd->pluginDescription);
             App::Workspace().getAudioCore().addInstrument(pluginDescription, pluginDescription.descriptiveName,
@@ -117,7 +116,7 @@ void InstrumentsRootTreeItem::itemDropped(const DragAndDropTarget::SourceDetails
 // Private
 //===----------------------------------------------------------------------===//
 
-InstrumentTreeItem *InstrumentsRootTreeItem::addInstrumentTreeItem(Instrument *instrument, int insertIndex)
+InstrumentTreeItem *OrchestraPitTreeItem::addInstrumentTreeItem(Instrument *instrument, int insertIndex)
 {
     this->setOpen(true);
     auto newInstrument = new InstrumentTreeItem(instrument);

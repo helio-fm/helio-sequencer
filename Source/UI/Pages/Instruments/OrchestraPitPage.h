@@ -19,20 +19,16 @@
 
 //[Headers]
 
-struct PluginDescriptionWrapper : ReferenceCountedObject
-{
-    PluginDescription pluginDescription;
-    typedef ReferenceCountedObjectPtr<PluginDescriptionWrapper> Ptr;
-};
-
 class PluginScanner;
-class InstrumentsRootTreeItem;
+class OrchestraPitTreeItem;
 class MenuItemComponent;
 
 #if HELIO_DESKTOP
-#    define PLUGINSLIST_ROW_HEIGHT (65)
+#   define PLUGINSLIST_ROW_HEIGHT (64)
+#   define PLUGINSLIST_HEADER_HEIGHT (34)
 #elif HELIO_MOBILE
-#    define PLUGINSLIST_ROW_HEIGHT (90)
+#   define PLUGINSLIST_ROW_HEIGHT (90)
+#   define PLUGINSLIST_HEADER_HEIGHT (40)
 #endif
 
 //[/Headers]
@@ -42,14 +38,14 @@ class MenuItemComponent;
 #include "../../Themes/SeparatorHorizontalFading.h"
 #include "../../Themes/SeparatorHorizontalFading.h"
 
-class InstrumentsPage final : public Component,
-                              public TableListBoxModel,
-                              public ChangeListener
+class OrchestraPitPage final : public Component,
+                               public TableListBoxModel,
+                               public ChangeListener
 {
 public:
 
-    InstrumentsPage(PluginScanner &scanner, InstrumentsRootTreeItem &instrumentsTreeItem);
-    ~InstrumentsPage();
+    OrchestraPitPage(PluginScanner &scanner, OrchestraPitTreeItem &instrumentsTreeItem);
+    ~OrchestraPitPage();
 
     //[UserMethods]
 
@@ -87,7 +83,7 @@ private:
 
     PluginScanner &pluginScanner;
 
-    InstrumentsRootTreeItem &instrumentsRoot;
+    OrchestraPitTreeItem &instrumentsRoot;
 
     KnownPluginList knownPlugins;
 
@@ -100,5 +96,5 @@ private:
     ScopedPointer<SeparatorHorizontalFading> separator1;
     ScopedPointer<SeparatorHorizontalFading> separator2;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (InstrumentsPage)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OrchestraPitPage)
 };

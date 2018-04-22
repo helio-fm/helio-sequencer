@@ -19,10 +19,6 @@
 #include "OrchestraPit.h"
 #include "Instrument.h"
 
-OrchestraPit::OrchestraPit()
-{
-}
-
 OrchestraPit::~OrchestraPit()
 {
     this->removeAllOrchestraListeners();

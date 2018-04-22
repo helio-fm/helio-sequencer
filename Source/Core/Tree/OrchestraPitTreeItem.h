@@ -18,16 +18,15 @@
 #pragma once
 
 class Instrument;
-class InstrumentsPage;
 class InstrumentTreeItem;
 
 #include "TreeItem.h"
 
-class InstrumentsRootTreeItem final : public TreeItem
+class OrchestraPitTreeItem final : public TreeItem
 {
 public:
 
-    InstrumentsRootTreeItem();
+    OrchestraPitTreeItem();
 
     String getName() const noexcept override;
     Colour getColour() const noexcept override;
@@ -53,10 +52,10 @@ public:
 
 private:
     
-    friend class InstrumentsPage;
-    friend class InstrumentsMenu;
+    friend class OrchestraPitPage;
+    friend class OrchestraPitMenu;
     
     InstrumentTreeItem *addInstrumentTreeItem(Instrument *instrument, int insertIndex = -1);
-    ScopedPointer<InstrumentsPage> instrumentsPage;
+    ScopedPointer<OrchestraPitPage> instrumentsPage;
 
 };

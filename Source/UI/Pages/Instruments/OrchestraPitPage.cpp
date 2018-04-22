@@ -19,11 +19,11 @@
 #include "Common.h"
 //[/Headers]
 
-#include "InstrumentsPage.h"
+#include "OrchestraPitPage.h"
 
 //[MiscUserDefs]
 #include "PluginScanner.h"
-#include "InstrumentsRootTreeItem.h"
+#include "OrchestraPitTreeItem.h"
 #include "MainLayout.h"
 #include "AudioCore.h"
 #include "App.h"
@@ -47,7 +47,7 @@ enum ColumnIds
 
 //[/MiscUserDefs]
 
-InstrumentsPage::InstrumentsPage(PluginScanner &scanner, InstrumentsRootTreeItem &instrumentsTreeItem)
+OrchestraPitPage::OrchestraPitPage(PluginScanner &scanner, OrchestraPitTreeItem &instrumentsTreeItem)
     : pluginScanner(scanner),
       instrumentsRoot(instrumentsTreeItem)
 {
@@ -79,19 +79,20 @@ InstrumentsPage::InstrumentsPage(PluginScanner &scanner, InstrumentsRootTreeItem
 
     this->pluginsList->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
     this->pluginsList->setRowHeight(PLUGINSLIST_ROW_HEIGHT);
+    this->pluginsList->setHeaderHeight(PLUGINSLIST_HEADER_HEIGHT);
 
     const auto columnFlags =
         TableHeaderComponent::visible |
         TableHeaderComponent::appearsOnColumnMenu |
         TableHeaderComponent::sortable;
 
-    this->pluginsList->getHeader().addColumn({}, //TRANS("page::instruments::category")
+    this->pluginsList->getHeader().addColumn(TRANS("page::instruments::category"),
         category, 50, 50, -1, columnFlags);
 
-    this->pluginsList->getHeader().addColumn({}, //TRANS("page::instruments::vendorandname")
+    this->pluginsList->getHeader().addColumn(TRANS("page::instruments::vendorandname"),
         vendorAndName, 50, 50, -1, columnFlags);
 
-    this->pluginsList->getHeader().addColumn({}, // TRANS("page::instruments::format")
+    this->pluginsList->getHeader().addColumn(TRANS("page::instruments::format"),
         format, 50, 50, -1, columnFlags);
 
     this->pluginsList->getHeader().setSortColumnId(vendorAndName, true);
@@ -105,7 +106,7 @@ InstrumentsPage::InstrumentsPage(PluginScanner &scanner, InstrumentsRootTreeItem
     //[/Constructor]
 }
 
-InstrumentsPage::~InstrumentsPage()
+OrchestraPitPage::~OrchestraPitPage()
 {
     //[Destructor_pre]
     this->pluginScanner.removeChangeListener(this);
@@ -123,7 +124,7 @@ InstrumentsPage::~InstrumentsPage()
     //[/Destructor]
 }
 
-void InstrumentsPage::paint (Graphics& g)
+void OrchestraPitPage::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
@@ -132,7 +133,7 @@ void InstrumentsPage::paint (Graphics& g)
     //[/UserPaint]
 }
 
-void InstrumentsPage::resized()
+void OrchestraPitPage::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
@@ -148,7 +149,7 @@ void InstrumentsPage::resized()
     //[/UserResized]
 }
 
-void InstrumentsPage::handleCommandMessage (int commandId)
+void OrchestraPitPage::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::ScanAllPlugins)
@@ -213,7 +214,7 @@ void InstrumentsPage::handleCommandMessage (int commandId)
 
 */
 
-void InstrumentsPage::showGreeting()
+void OrchestraPitPage::showGreeting()
 {
     this->pluginsList->setVisible(false);
     this->panel->setVisible(false);
@@ -223,7 +224,7 @@ void InstrumentsPage::showGreeting()
     this->separator2->setVisible(true);
 }
 
-void InstrumentsPage::hideGreeting()
+void OrchestraPitPage::hideGreeting()
 {
     this->pluginsList->setVisible(true);
     this->panel->setVisible(true);
@@ -237,25 +238,23 @@ void InstrumentsPage::hideGreeting()
 // TableListBoxModel
 //===----------------------------------------------------------------------===//
 
-var InstrumentsPage::getDragSourceDescription(const SparseSet<int> &currentlySelectedRows)
+var OrchestraPitPage::getDragSourceDescription(const SparseSet<int> &currentlySelectedRows)
 {
-    PluginDescription *pd =
-        this->pluginScanner.getList().getType(currentlySelectedRows[0]);
+    auto pd = this->pluginScanner.getList().getType(currentlySelectedRows[0]);
+    if (pd == nullptr) { return var::null; }
 
-    if (!pd) { return var::null; }
-
-    PluginDescriptionWrapper::Ptr pluginWrapper = new PluginDescriptionWrapper();
+    PluginDescriptionDragnDropWrapper::Ptr pluginWrapper = new PluginDescriptionDragnDropWrapper();
     pluginWrapper->pluginDescription = PluginDescription(*pd);
     var pluginVar(pluginWrapper);
 
     return pluginVar;
 }
 
-void InstrumentsPage::paintRowBackground(Graphics &g, int rowNumber, int, int, bool rowIsSelected)
+void OrchestraPitPage::paintRowBackground(Graphics &g, int rowNumber, int, int, bool rowIsSelected)
 {
     if (rowIsSelected)
     {
-        g.fillAll(Colours::white.withAlpha(0.75f));
+        g.fillAll(Colours::white.withAlpha(0.075f));
     }
     else if (rowNumber % 2)
     {
@@ -263,7 +262,7 @@ void InstrumentsPage::paintRowBackground(Graphics &g, int rowNumber, int, int, b
     }
 }
 
-void InstrumentsPage::paintCell(Graphics& g, int rowNumber, int columnId,
+void OrchestraPitPage::paintCell(Graphics& g, int rowNumber, int columnId,
     int w, int h, bool rowIsSelected)
 {
     g.setFont(Font(Font::getDefaultSansSerifFontName(), h * 0.27f, Font::plain));
@@ -306,7 +305,7 @@ void InstrumentsPage::paintCell(Graphics& g, int rowNumber, int columnId,
     }
 }
 
-void InstrumentsPage::sortOrderChanged(int newSortColumnId, bool isForwards)
+void OrchestraPitPage::sortOrderChanged(int newSortColumnId, bool isForwards)
 {
     switch (newSortColumnId)
     {
@@ -323,12 +322,12 @@ void InstrumentsPage::sortOrderChanged(int newSortColumnId, bool isForwards)
     this->pluginsList->updateContent();
 }
 
-int InstrumentsPage::getNumRows()
+int OrchestraPitPage::getNumRows()
 {
     return this->pluginScanner.getList().getNumTypes();
 }
 
-int InstrumentsPage::getColumnAutoSizeWidth(int columnId)
+int OrchestraPitPage::getColumnAutoSizeWidth(int columnId)
 {
     switch (columnId)
     {
@@ -343,7 +342,7 @@ int InstrumentsPage::getColumnAutoSizeWidth(int columnId)
     }
 }
 
-String InstrumentsPage::getCellTooltip(int rowNumber, int columnId)
+String OrchestraPitPage::getCellTooltip(int rowNumber, int columnId)
 {
     auto description = pluginScanner.getList().getType(rowNumber);
     if (description == nullptr) { return {}; }
@@ -354,7 +353,7 @@ String InstrumentsPage::getCellTooltip(int rowNumber, int columnId)
 // ChangeListener
 //===----------------------------------------------------------------------===//
 
-void InstrumentsPage::changeListenerCallback(ChangeBroadcaster *source)
+void OrchestraPitPage::changeListenerCallback(ChangeBroadcaster *source)
 {
     if (PluginScanner *scanner = dynamic_cast<PluginScanner *>(source))
     {
@@ -379,9 +378,9 @@ void InstrumentsPage::changeListenerCallback(ChangeBroadcaster *source)
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="InstrumentsPage" template="../../../Template"
+<JUCER_COMPONENT documentType="Component" className="OrchestraPitPage" template="../../../Template"
                  componentName="" parentClasses="public Component, public TableListBoxModel, public ChangeListener"
-                 constructorParams="PluginScanner &amp;scanner, InstrumentsRootTreeItem &amp;instrumentsTreeItem"
+                 constructorParams="PluginScanner &amp;scanner, OrchestraPitTreeItem &amp;instrumentsTreeItem"
                  variableInitialisers="pluginScanner(scanner),&#10;instrumentsRoot(instrumentsTreeItem)"
                  snapPixels="4" snapActive="1" snapShown="0" overlayOpacity="0.330"
                  fixedSize="0" initialWidth="600" initialHeight="400">

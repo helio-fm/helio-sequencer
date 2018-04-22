@@ -26,7 +26,7 @@
 #include "RootTreeItem.h"
 #include "PluginScanner.h"
 #include "SettingsTreeItem.h"
-#include "InstrumentsRootTreeItem.h"
+#include "OrchestraPitTreeItem.h"
 #include "ProjectTreeItem.h"
 #include "RootTreeItem.h"
 #include "WorkspacePage.h"
@@ -335,7 +335,7 @@ void Workspace::failedDeserializationFallback()
     //TreeItem *scripts = new ScriptsRootTreeItem(*this);
     //this->treeRoot->addChildTreeItem(scripts);
     
-    TreeItem *instruments = new InstrumentsRootTreeItem();
+    TreeItem *instruments = new OrchestraPitTreeItem();
     this->treeRoot->addChildTreeItem(instruments);
     
     ProjectTreeItem *project = this->treeRoot->addDefaultProject(TRANS("defaults::newproject::name"));
@@ -478,8 +478,8 @@ void Workspace::deserialize(const ValueTree &tree)
     
     // If no instruments root item is found for whatever reason
     // (i.e. malformed tree), make sure to add one:
-    if (nullptr == this->treeRoot->findChildOfType<InstrumentsRootTreeItem>())
-    { this->treeRoot->addChildTreeItem(new InstrumentsRootTreeItem(), 0); }
+    if (nullptr == this->treeRoot->findChildOfType<OrchestraPitTreeItem>())
+    { this->treeRoot->addChildTreeItem(new OrchestraPitTreeItem(), 0); }
     
     // The same hack for settings root:
     if (nullptr == this->treeRoot->findChildOfType<SettingsTreeItem>())

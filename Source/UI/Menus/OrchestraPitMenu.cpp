@@ -16,8 +16,8 @@
 */
 
 #include "Common.h"
-#include "InstrumentsMenu.h"
-#include "InstrumentsRootTreeItem.h"
+#include "OrchestraPitMenu.h"
+#include "OrchestraPitTreeItem.h"
 #include "Icons.h"
 #include "CommandIDs.h"
 #include "App.h"
@@ -28,7 +28,7 @@
 #include "Workspace.h"
 #include "App.h"
 
-InstrumentsMenu::InstrumentsMenu(InstrumentsRootTreeItem &parentOrchestra) :
+OrchestraPitMenu::OrchestraPitMenu(OrchestraPitTreeItem &parentOrchestra) :
     instrumentsRoot(parentOrchestra)
 {
     MenuPanel::Menu cmds;
@@ -50,10 +50,10 @@ InstrumentsMenu::InstrumentsMenu(InstrumentsRootTreeItem &parentOrchestra) :
         cmds.add(MenuItem::item(Icons::create, CommandIDs::CreateInstrument + i, TRANS("menu::instruments::add") + " " + pd->descriptiveName));
     }
     
-    this->updateContent(cmds);
+    this->updateContent(cmds, MenuPanel::SlideRight);
 }
 
-void InstrumentsMenu::handleCommandMessage(int commandId)
+void OrchestraPitMenu::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {
@@ -92,5 +92,5 @@ void InstrumentsMenu::handleCommandMessage(int commandId)
         }
     }
     
-    this->getParentComponent()->exitModalState(0);
+    this->dismiss();
 }
