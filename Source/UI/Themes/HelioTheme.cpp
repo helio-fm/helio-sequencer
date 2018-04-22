@@ -354,6 +354,57 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
 }
 
 //===----------------------------------------------------------------------===//
+// Tables
+//===----------------------------------------------------------------------===//
+
+void HelioTheme::drawTableHeaderBackground(Graphics &g, TableHeaderComponent &header)
+{
+    Rectangle<int> r(header.getLocalBounds());
+    auto outlineColour = header.findColour(TableHeaderComponent::outlineColourId);
+
+    g.setColour(outlineColour);
+    g.fillRect(r.removeFromBottom(1));
+
+    g.setColour(header.findColour(TableHeaderComponent::backgroundColourId));
+    g.fillRect(r);
+
+    g.setColour(outlineColour);
+
+    for (int i = header.getNumColumns(true); --i >= 0;)
+    {
+        g.fillRect(header.getColumnPosition(i).removeFromRight(1));
+    }
+}
+
+void HelioTheme::drawTableHeaderColumn(Graphics &g, TableHeaderComponent &header, const String &columnName,
+    int columnId, int width, int height, bool isMouseOver, bool isMouseDown, int columnFlags)
+{
+    auto highlightColour = header.findColour(TableHeaderComponent::highlightColourId);
+
+    if (isMouseDown)
+        g.fillAll(highlightColour);
+    else if (isMouseOver)
+        g.fillAll(highlightColour.withMultipliedAlpha(0.625f));
+
+    Rectangle<int> area(width, height);
+    area.reduce(4, 0);
+
+    g.setColour(header.findColour(TableHeaderComponent::textColourId));
+    if ((columnFlags & (TableHeaderComponent::sortedForwards | TableHeaderComponent::sortedBackwards)) != 0)
+    {
+        Path sortArrow;
+        sortArrow.addTriangle(0.0f, 0.0f,
+            0.5f, (columnFlags & TableHeaderComponent::sortedForwards) != 0 ? -0.9f : 0.9f,
+            1.0f, 0.0f);
+
+        g.fillPath(sortArrow, sortArrow.getTransformToScaleToFit(area.removeFromRight(height / 2).reduced(2).toFloat(), true));
+    }
+
+    g.setFont(Font(height * 0.5f, Font::bold));
+    g.drawFittedText(columnName, area, Justification::centredLeft, 1);
+}
+
+//===----------------------------------------------------------------------===//
 // Scrollbars
 //===----------------------------------------------------------------------===//
 
@@ -798,6 +849,12 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(TextEditor::backgroundColourId, s->getPrimaryGradientColourA().darker(0.05f));
     this->setColour(TextEditor::highlightColourId, Colours::black.withAlpha(0.25f));
     this->setColour(CaretComponent::caretColourId, Colours::white.withAlpha(0.35f));
+
+    // TableListBox
+    this->setColour(TableHeaderComponent::outlineColourId, s->getPanelBorderColour().withAlpha(0.1f));
+    this->setColour(TableHeaderComponent::backgroundColourId, s->getPrimaryGradientColourA().darker(0.05f));
+    this->setColour(TableHeaderComponent::highlightColourId, s->getPrimaryGradientColourA().brighter(0.04f));
+    this->setColour(TableHeaderComponent::textColourId, s->getTextColour().withMultipliedAlpha(0.75f));
 
     // Tree stuff
     this->setColour(TreeView::linesColourId, Colours::white.withAlpha(0.1f));
