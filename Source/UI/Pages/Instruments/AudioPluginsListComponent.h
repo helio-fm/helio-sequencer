@@ -48,6 +48,7 @@ public:
 
     //[UserMethods]
 
+    void clearSelection();
     void updateListContent();
     void showScanButtonIf(bool hasNoPlugins);
 
@@ -78,6 +79,7 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
+    void parentHierarchyChanged() override;
 
 
 private:

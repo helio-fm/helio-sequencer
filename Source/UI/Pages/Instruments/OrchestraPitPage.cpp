@@ -166,6 +166,7 @@ void OrchestraPitPage::changeListenerCallback(ChangeBroadcaster *source)
     {
         this->pluginsList->showScanButtonIf(scanner->getList().getNumTypes() == 0);
         this->pluginsList->updateListContent();
+        this->instrumentsList->updateListContent();
 
         if (!scanner->isWorking())
         {
@@ -176,6 +177,16 @@ void OrchestraPitPage::changeListenerCallback(ChangeBroadcaster *source)
             }
         }
     }
+}
+
+void OrchestraPitPage::onStageSelectionChanged()
+{
+    this->pluginsList->clearSelection();
+}
+
+void OrchestraPitPage::onPluginsSelectionChanged()
+{
+    this->instrumentsList->clearSelection();
 }
 
 //[/MiscUserCode]

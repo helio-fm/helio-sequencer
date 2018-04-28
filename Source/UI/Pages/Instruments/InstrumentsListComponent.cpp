@@ -23,8 +23,12 @@
 
 //[MiscUserDefs]
 #include "OrchestraPitTreeItem.h"
-#include "PluginScanner.h"
+#include "OrchestraPitPage.h"
+#include "InstrumentMenu.h"
+#include "Instrument.h"
+#include "MainLayout.h"
 #include "Icons.h"
+#include "App.h"
 //[/MiscUserDefs]
 
 InstrumentsListComponent::InstrumentsListComponent(PluginScanner &pluginScanner, OrchestraPitTreeItem &instrumentsRoot)
@@ -42,6 +46,8 @@ InstrumentsListComponent::InstrumentsListComponent(PluginScanner &pluginScanner,
 
 
     //[UserPreSize]
+    this->instrumentsList->setMultipleSelectionEnabled(false);
+    this->instrumentsList->setRowHeight(INSTRUMENTSLIST_ROW_HEIGHT);
     //[/UserPreSize]
 
     setSize (600, 400);
@@ -84,8 +90,31 @@ void InstrumentsListComponent::resized()
     //[/UserResized]
 }
 
+void InstrumentsListComponent::parentHierarchyChanged()
+{
+    //[UserCode_parentHierarchyChanged] -- Add your code here...
+    if (this->getParentComponent() != nullptr)
+    {
+        this->updateListContent();
+    }
+    //[/UserCode_parentHierarchyChanged]
+}
+
 
 //[MiscUserCode]
+
+void InstrumentsListComponent::clearSelection()
+{
+    this->instrumentsList->setSelectedRows({}, dontSendNotification);
+}
+
+void InstrumentsListComponent::updateListContent()
+{
+    this->clearSelection();
+    this->instrumentIcon = Icons::findByName(Icons::instrument, int(INSTRUMENTSLIST_ROW_HEIGHT * 0.75f));
+    this->instruments = this->instrumentsRoot.findChildrenRefsOfType<InstrumentTreeItem>();
+    this->instrumentsList->updateContent();
+}
 
 //===----------------------------------------------------------------------===//
 // ListBoxModel
@@ -93,46 +122,103 @@ void InstrumentsListComponent::resized()
 
 int InstrumentsListComponent::getNumRows()
 {
-    // this->instrumentsRoot.findChildrenOfType<InstrumentTreeItem>()
-    return 0; // TODO
+    return this->instruments.size();
 }
 
-Component *InstrumentsListComponent::refreshComponentForRow(int rowNumber,
-    bool isRowSelected, Component *existingComponent)
+void InstrumentsListComponent::paintListBoxItem(int rowNumber, Graphics &g, int w, int h, bool rowIsSelected)
 {
-    return existingComponent; // TODO
+    const auto instrumentNode = this->instruments[rowNumber];
+    if (instrumentNode == nullptr) { return; }
+
+    const auto instrument = instrumentNode->getInstrument();
+
+    if (rowIsSelected)
+    {
+        g.fillAll(Colours::white.withAlpha(0.075f));
+    }
+    else if (rowNumber % 2)
+    {
+        g.fillAll(Colours::black.withAlpha(0.05f));
+    }
+
+    g.setFont(Font(Font::getDefaultSansSerifFontName(), h * 0.4f, Font::plain));
+    const int margin = h / 12;
+
+    g.setColour(Colours::white);
+    g.drawText(instrument->getName(), (margin * 2) + this->instrumentIcon.getWidth(), margin,
+        w, h - (margin * 2), Justification::centredLeft, false);
+
+    const auto placement = RectanglePlacement::yMid | RectanglePlacement::xLeft | RectanglePlacement::doNotResize;
+    g.drawImageWithin(this->instrumentIcon, margin, 0, w, h, placement);
 }
 
-void InstrumentsListComponent::listBoxItemClicked(int rowNumber, const MouseEvent &e)
-{
-    // Desktop:
-    // On click - shows menu,
-    // On double click - shows instrument page
+// Desktop:
+// On click - shows menu, if there's anything selected
+// On double click - shows instrument page
+// Mobile:
+// On click - shows instrument page
 
-    // Mobile:
-    // On click - shows instrument page
+// Using selectedRowsChanged instead of listBoxItemClicked
+// to handle only newly selected rows
+void InstrumentsListComponent::selectedRowsChanged(int lastRowSelected)
+{
+#if HELIO_DESKTOP
+    if (this->instrumentsList->getNumSelectedRows() > 0)
+    {
+        // Hide existing because selection will be always different:
+        App::Layout().hideSelectionMenu();
+        App::Layout().showSelectionMenu(this);
+    }
+    else
+    {
+        App::Layout().hideSelectionMenu();
+    }
+
+    if (auto *parent = dynamic_cast<OrchestraPitPage *>(this->getParentComponent()))
+    {
+        parent->onStageSelectionChanged();
+    }
+
+#elif HELIO_MOBILE
+#endif
+}
+
+void InstrumentsListComponent::listBoxItemDoubleClicked(int rowNumber, const MouseEvent &e)
+{
+    const auto instrumentNode = this->instruments[rowNumber];
+    if (instrumentNode == nullptr) { return; }
+
+#if HELIO_DESKTOP
+    // TODO
+#endif
 }
 
 //===----------------------------------------------------------------------===//
 // HeadlineItemDataSource
 //===----------------------------------------------------------------------===//
 
-bool InstrumentsListComponent::hasMenu() const noexcept { return false; }
+bool InstrumentsListComponent::hasMenu() const noexcept { return true; }
 bool InstrumentsListComponent::canBeSelectedAsMenuItem() const { return false; }
 
 ScopedPointer<Component> InstrumentsListComponent::createMenu()
 {
-    return nullptr; // { new InstrumentMenu(this->changesList->getSelectedRows(), this->vcs) };
+    const auto selectedRow = this->instrumentsList->getSelectedRow();
+    const auto instrument = this->instruments[selectedRow];
+    jassert(instrument);
+    return { new InstrumentMenu(*instrument, this->pluginScanner) };
 }
 
 Image InstrumentsListComponent::getIcon() const
 {
-    return Icons::findByName(Icons::selection, HEADLINE_ICON_SIZE);
+    return Icons::findByName(Icons::instrument, HEADLINE_ICON_SIZE);
 }
 
 String InstrumentsListComponent::getName() const
 {
-    return TRANS("menu::selection::instrument");
+    const auto selectedRow = this->instrumentsList->getSelectedRow();
+    const auto instrument = this->instruments[selectedRow];
+    jassert(instrument);
+    return instrument->getName();
 }
 
 //[/MiscUserCode]
@@ -147,6 +233,9 @@ BEGIN_JUCER_METADATA
                  variableInitialisers="pluginScanner(pluginScanner),&#10;instrumentsRoot(instrumentsRoot)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="0" initialWidth="600" initialHeight="400">
+  <METHODS>
+    <METHOD name="parentHierarchyChanged()"/>
+  </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="d37f5d299f347b6c" memberName="panel" virtualName=""
              explicitFocusOrder="0" pos="0 35 0M 35M" sourceFile="../../Themes/FramePanel.cpp"

@@ -39,6 +39,9 @@ public:
     ~OrchestraPitPage();
 
     //[UserMethods]
+    void onStageSelectionChanged();
+    void onPluginsSelectionChanged();
+
     void changeListenerCallback(ChangeBroadcaster *source) override;
     //[/UserMethods]
 

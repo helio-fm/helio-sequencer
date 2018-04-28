@@ -22,6 +22,13 @@ class PluginScanner;
 class OrchestraPitTreeItem;
 
 #include "HeadlineItemDataSource.h"
+#include "InstrumentTreeItem.h"
+
+#if HELIO_DESKTOP
+#   define INSTRUMENTSLIST_ROW_HEIGHT (48)
+#elif HELIO_MOBILE
+#   define INSTRUMENTSLIST_ROW_HEIGHT (72)
+#endif
 //[/Headers]
 
 #include "../../Themes/FramePanel.h"
@@ -37,6 +44,7 @@ public:
 
     //[UserMethods]
 
+    void clearSelection();
     void updateListContent();
 
     //===------------------------------------------------------------------===//
@@ -44,9 +52,9 @@ public:
     //===------------------------------------------------------------------===//
 
     int getNumRows() override;
-    Component *refreshComponentForRow(int, bool, Component*) override;
-    void paintListBoxItem(int rowNumber, Graphics &g, int width, int height, bool rowIsSelected) override {}
-    void listBoxItemClicked(int rowNumber, const MouseEvent &e) override;
+    void paintListBoxItem(int rowNumber, Graphics &g, int w, int h, bool rowIsSelected) override;
+    void selectedRowsChanged(int lastRowSelected) override;
+    void listBoxItemDoubleClicked(int row, const MouseEvent&) override;
 
     //===------------------------------------------------------------------===//
     // HeadlineItemDataSource
@@ -62,6 +70,7 @@ public:
 
     void paint (Graphics& g) override;
     void resized() override;
+    void parentHierarchyChanged() override;
 
 
 private:
@@ -69,6 +78,9 @@ private:
     //[UserVariables]
     PluginScanner &pluginScanner;
     OrchestraPitTreeItem &instrumentsRoot;
+
+    Array<WeakReference<InstrumentTreeItem>> instruments;
+    Image instrumentIcon;
     //[/UserVariables]
 
     ScopedPointer<FramePanel> panel;

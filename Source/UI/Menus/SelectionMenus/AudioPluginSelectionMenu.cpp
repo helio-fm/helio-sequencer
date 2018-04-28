@@ -28,7 +28,7 @@ static MenuPanel::Menu createDefaultMenu()
     // Create new instrument
     // Add to instrument >
     // Remove from list
-    //cmds.add(MenuItem::item(Icons::copy, TRANS("menu::selection::stage::reset")));
+    cmds.add(MenuItem::item(Icons::copy, TRANS("menu::selection::stage::reset")));
 
     return cmds;
 }

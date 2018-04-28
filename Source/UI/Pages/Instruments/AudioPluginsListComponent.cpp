@@ -25,8 +25,12 @@
 
 #include "MenuItemComponent.h"
 #include "OrchestraPit.h"
+#include "OrchestraPitPage.h"
 #include "OrchestraPitTreeItem.h"
+#include "AudioPluginSelectionMenu.h"
 #include "PluginScanner.h"
+#include "MainLayout.h"
+#include "App.h"
 #include "CommandIDs.h"
 #include "Icons.h"
 
@@ -69,9 +73,9 @@ AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanne
 
     //[Constructor]
 
-    this->pluginsList->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
     this->pluginsList->setRowHeight(PLUGINSLIST_ROW_HEIGHT);
     this->pluginsList->setHeaderHeight(PLUGINSLIST_HEADER_HEIGHT);
+    this->pluginsList->getViewport()->setScrollBarsShown(true, false);
 
     const auto columnFlags =
         TableHeaderComponent::visible |
@@ -136,6 +140,16 @@ void AudioPluginsListComponent::resized()
     //[/UserResized]
 }
 
+void AudioPluginsListComponent::parentHierarchyChanged()
+{
+    //[UserCode_parentHierarchyChanged] -- Add your code here...
+    if (this->getParentComponent() != nullptr)
+    {
+        this->updateListContent();
+    }
+    //[/UserCode_parentHierarchyChanged]
+}
+
 
 //[MiscUserCode]
 
@@ -147,10 +161,15 @@ void AudioPluginsListComponent::showScanButtonIf(bool hasNoPlugins)
     this->separator2->setVisible(hasNoPlugins);
 }
 
+void AudioPluginsListComponent::clearSelection()
+{
+    this->pluginsList->setSelectedRows({}, dontSendNotification);
+}
+
 void AudioPluginsListComponent::updateListContent()
 {
+    this->clearSelection();
     this->pluginsList->updateContent();
-    this->pluginsList->setSelectedRows({});
 }
 
 //===----------------------------------------------------------------------===//
@@ -271,30 +290,46 @@ String AudioPluginsListComponent::getCellTooltip(int rowNumber, int columnId)
 
 void AudioPluginsListComponent::selectedRowsChanged(int lastRowSelected)
 {
-    // TODO!
-    // show of hide menu
+    if (this->pluginsList->getNumSelectedRows() > 0)
+    {
+        // Hide existing because selection will be always different:
+        App::Layout().hideSelectionMenu();
+        App::Layout().showSelectionMenu(this);
+    }
+    else
+    {
+        App::Layout().hideSelectionMenu();
+    }
+
+    if (auto *parent = dynamic_cast<OrchestraPitPage *>(this->getParentComponent()))
+    {
+        parent->onPluginsSelectionChanged();
+    }
 }
 
 //===----------------------------------------------------------------------===//
 // HeadlineItemDataSource
 //===----------------------------------------------------------------------===//
 
-bool AudioPluginsListComponent::hasMenu() const noexcept { return false; }
+bool AudioPluginsListComponent::hasMenu() const noexcept { return true; }
 bool AudioPluginsListComponent::canBeSelectedAsMenuItem() const { return false; }
 
 ScopedPointer<Component> AudioPluginsListComponent::createMenu()
 {
-    return nullptr; // { new InstrumentMenu(this->changesList->getSelectedRows(), this->vcs) };
+    return { new AudioPluginSelectionMenu() };
 }
 
 Image AudioPluginsListComponent::getIcon() const
 {
-    return Icons::findByName(Icons::selection, HEADLINE_ICON_SIZE);
+    return Icons::findByName(Icons::audioPlugin, HEADLINE_ICON_SIZE);
 }
 
 String AudioPluginsListComponent::getName() const
 {
-    return TRANS("menu::selection::audioplugin");
+    const auto selectedRow = this->pluginsList->getSelectedRow();
+    auto description = pluginScanner.getList().getType(selectedRow);
+    jassert(description);
+    return description->descriptiveName;
 }
 
 //[/MiscUserCode]
@@ -309,6 +344,9 @@ BEGIN_JUCER_METADATA
                  variableInitialisers="pluginScanner(pluginScanner),&#10;instrumentsRoot(instrumentsRoot)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="0" initialWidth="600" initialHeight="400">
+  <METHODS>
+    <METHOD name="parentHierarchyChanged()"/>
+  </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="d37f5d299f347b6c" memberName="panel" virtualName=""
              explicitFocusOrder="0" pos="0 35 0M 35M" sourceFile="../../Themes/FramePanel.cpp"
