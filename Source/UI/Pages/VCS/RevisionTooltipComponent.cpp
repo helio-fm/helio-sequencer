@@ -73,8 +73,8 @@ RevisionTooltipComponent::RevisionTooltipComponent(VersionControl &owner, const 
     }
 
     this->changesList->setMultipleSelectionEnabled(true);
-    this->changesList->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
     this->changesList->setRowHeight(REVISION_TOOLTIP_ROW_HEIGHT);
+    this->changesList->getViewport()->setScrollBarsShown(true, false);
 
     //[/UserPreSize]
 

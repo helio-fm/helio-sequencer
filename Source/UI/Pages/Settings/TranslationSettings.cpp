@@ -48,7 +48,6 @@ TranslationSettings::TranslationSettings()
     //[UserPreSize]
     this->translationsList->setModel(this);
     this->translationsList->setRowHeight(TRANSLATION_SETTINGS_ROW_HEIGHT);
-    this->translationsList->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
     this->translationsList->getViewport()->setScrollBarsShown(true, false);
     //[/UserPreSize]
 

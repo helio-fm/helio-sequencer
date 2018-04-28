@@ -850,8 +850,10 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(CaretComponent::caretColourId, Colours::white.withAlpha(0.35f));
 
     // TableListBox
+    this->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
+    this->setColour(TableHeaderComponent::backgroundColourId, Colours::transparentBlack);
+
     this->setColour(TableHeaderComponent::outlineColourId, s->getPanelBorderColour().withAlpha(0.1f));
-    this->setColour(TableHeaderComponent::backgroundColourId, s->getPrimaryGradientColourA().darker(0.05f));
     this->setColour(TableHeaderComponent::highlightColourId, s->getPrimaryGradientColourA().brighter(0.04f));
     this->setColour(TableHeaderComponent::textColourId, s->getTextColour().withMultipliedAlpha(0.75f));
 

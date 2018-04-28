@@ -62,7 +62,6 @@ WorkspaceMenu::WorkspaceMenu(Workspace *parentWorkspace)
     setSize (450, 500);
 
     //[Constructor]
-    this->listBox->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
     this->listBox->setRowHeight(DEFAULT_RECENT_FILES_ROW_HEIGHT);
     this->listBox->getViewport()->setScrollBarsShown(false, false);
 

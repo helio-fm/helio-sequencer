@@ -68,9 +68,8 @@ StageComponent::StageComponent(VersionControl &versionControl)
     this->indicator->setAlpha(0.5f);
 
     this->changesList->getViewport()->setScrollBarThickness(2);
+    this->changesList->getViewport()->setScrollBarsShown(true, false);
     this->changesList->setMultipleSelectionEnabled(true);
-    //this->changesList->setColour(ListBox::backgroundColourId, Colours::palevioletred.withAlpha(0.05f));
-    this->changesList->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
     this->changesList->setRowHeight(VCS_STAGE_ROW_HEIGHT);
     //[/UserPreSize]
 

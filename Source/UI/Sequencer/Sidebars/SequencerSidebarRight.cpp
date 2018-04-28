@@ -93,7 +93,6 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectTreeItem &parent)
 
     this->listBox->setModel(this);
     this->listBox->setMultipleSelectionEnabled(false);
-    this->listBox->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
     this->listBox->setRowHeight(SEQUENCER_SIDEBAR_ROW_HEIGHT);
 
     // This one doesn't change too frequently:

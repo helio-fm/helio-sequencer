@@ -46,7 +46,6 @@ ThemeSettings::ThemeSettings()
 
     this->themesList->setModel(this);
     this->themesList->setRowHeight(THEME_SETTINGS_ROW_HEIGHT);
-    this->themesList->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
     this->themesList->getViewport()->setScrollBarsShown(true, false);
     //[/UserPreSize]
 

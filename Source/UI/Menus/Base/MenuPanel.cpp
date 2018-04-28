@@ -35,7 +35,6 @@ MenuPanel::MenuPanel()
     this->addAndMakeVisible(this->listBox = new ListBox());
 
     this->lastAnimationType = AnimationType::None;
-    this->listBox->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
 
     this->setSize (150, 100);
 
@@ -159,7 +158,6 @@ void MenuPanel::updateContent(const Menu &commands,
         this->listBox = new ListBox();
         this->listBox->setModel(this);
         this->listBox->setMultipleSelectionEnabled(false);
-        this->listBox->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
         this->listBox->setRowHeight(COMMAND_PANEL_BUTTON_HEIGHT);
         this->listBox->updateContent();
         this->addAndMakeVisible(this->listBox);
