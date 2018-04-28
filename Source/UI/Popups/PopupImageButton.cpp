@@ -22,10 +22,9 @@
 #include "PopupImageButton.h"
 
 //[MiscUserDefs]
-#include "Icons.h"
 //[/MiscUserDefs]
 
-PopupImageButton::PopupImageButton(const String &targetImageName, bool shouldShowConfirmImage)
+PopupImageButton::PopupImageButton(Icons::Id iconId, bool shouldShowConfirmImage)
     : PopupButton(shouldShowConfirmImage)
 {
 
@@ -35,7 +34,7 @@ PopupImageButton::PopupImageButton(const String &targetImageName, bool shouldSho
     setSize (48, 48);
 
     //[Constructor]
-    this->shape = Icons::getPathByName(targetImageName);
+    this->shape = Icons::getPathByName(iconId);
     //[/Constructor]
 }
 
@@ -113,7 +112,7 @@ void PopupImageButton::resized()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="PopupImageButton" template="../../Template"
-                 componentName="" parentClasses="public PopupButton" constructorParams="const String &amp;targetImageName, bool shouldShowConfirmImage"
+                 componentName="" parentClasses="public PopupButton" constructorParams="Icons::Id iconId, bool shouldShowConfirmImage"
                  variableInitialisers="PopupButton(shouldShowConfirmImage)" snapPixels="8"
                  snapActive="0" snapShown="1" overlayOpacity="0.330" fixedSize="1"
                  initialWidth="48" initialHeight="48">

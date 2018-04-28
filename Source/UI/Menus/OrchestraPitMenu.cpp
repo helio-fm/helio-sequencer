@@ -40,7 +40,7 @@ OrchestraPitMenu::OrchestraPitMenu(OrchestraPitTreeItem &parentOrchestra) :
         cmds.add(MenuItem::item(Icons::reset, CommandIDs::ScanAllPlugins, TRANS("menu::instruments::reload")));
     }
     
-    cmds.add(MenuItem::item(Icons::open, CommandIDs::ScanPluginsFolder, TRANS("menu::instruments::scanfolder")));
+    cmds.add(MenuItem::item(Icons::browse, CommandIDs::ScanPluginsFolder, TRANS("menu::instruments::scanfolder")));
     
     const KnownPluginList &info = App::Workspace().getPluginManager().getList();
     

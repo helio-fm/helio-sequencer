@@ -38,13 +38,13 @@ VersionControlStageSelectionMenu::VersionControlStageSelectionMenu(const SparseS
     }));
 
     // TODO add named stashes in addition to the default one
-    //cmds.add(MenuItem::item(Icons::trash, CommandIDs::DeleteEvents,
+    //cmds.add(MenuItem::item(Icons::stash, CommandIDs::DeleteEvents,
     //    TRANS("menu::selection::stage::stash")));
 
-    //cmds.add(MenuItem::item(Icons::selection, CommandIDs::DeleteEvents,
-    //    TRANS("menu::selection::stage::selectall")));
+    cmds.add(MenuItem::item(Icons::selectAll, CommandIDs::VersionControlSelectAll,
+        TRANS("menu::selection::stage::selectall")));
 
-    cmds.add(MenuItem::item(Icons::empty, CommandIDs::VersionControlSelectNone,
+    cmds.add(MenuItem::item(Icons::selectNone, CommandIDs::VersionControlSelectNone,
         TRANS("menu::selection::stage::selectnone")));
 
     this->updateContent(cmds, MenuPanel::SlideRight);

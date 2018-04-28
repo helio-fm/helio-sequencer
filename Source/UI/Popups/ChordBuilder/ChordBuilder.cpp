@@ -76,7 +76,7 @@ public:
         MenuPanel::Menu cmds;
         for (int i = 0; i < scales.size(); ++i)
         {
-            cmds.add(MenuItem::item(String::empty,
+            cmds.add(MenuItem::item(Icons::empty,
                 CommandIDs::SelectScale + i, scales[i]->getLocalizedName())->withAlignment(MenuItem::Right));
         }
         this->updateContent(cmds, MenuPanel::SlideLeft, false);
@@ -110,19 +110,19 @@ public:
     {
         const auto funName = localizedFunctionNames();
         MenuPanel::Menu cmds;
-        cmds.add(MenuItem::item(String::empty,
+        cmds.add(MenuItem::item(Icons::empty,
             CommandIDs::SelectFunction + 6, "VII - " + funName[6]));
-        cmds.add(MenuItem::item(String::empty,
+        cmds.add(MenuItem::item(Icons::empty,
             CommandIDs::SelectFunction + 5, "VI - " + funName[5]));
-        cmds.add(MenuItem::item(String::empty,
+        cmds.add(MenuItem::item(Icons::empty,
             CommandIDs::SelectFunction + 4, "V - " + funName[4]));
-        cmds.add(MenuItem::item(String::empty,
+        cmds.add(MenuItem::item(Icons::empty,
             CommandIDs::SelectFunction + 3, "IV - " + funName[3]));
-        cmds.add(MenuItem::item(String::empty,
+        cmds.add(MenuItem::item(Icons::empty,
             CommandIDs::SelectFunction + 2, "III - " + funName[2]));
-        cmds.add(MenuItem::item(String::empty,
+        cmds.add(MenuItem::item(Icons::empty,
             CommandIDs::SelectFunction + 1, "II - " + funName[1]));
-        cmds.add(MenuItem::item(String::empty,
+        cmds.add(MenuItem::item(Icons::empty,
             CommandIDs::SelectFunction, "I - " + funName[0]));
         this->updateContent(cmds, MenuPanel::SlideRight, false);
     }

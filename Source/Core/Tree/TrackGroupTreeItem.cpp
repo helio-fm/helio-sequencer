@@ -36,7 +36,7 @@ Colour TrackGroupTreeItem::getColour() const noexcept
 
 Image TrackGroupTreeItem::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::group, HEADLINE_ICON_SIZE);
+    return Icons::findByName(Icons::trackGroup, HEADLINE_ICON_SIZE);
 }
 
 void TrackGroupTreeItem::removeAllEmptyGroupsInProject(ProjectTreeItem *project)

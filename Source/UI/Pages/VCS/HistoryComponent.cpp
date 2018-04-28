@@ -182,7 +182,7 @@ ScopedPointer<Component> HistoryComponent::createMenu()
 
 Image HistoryComponent::getIcon() const
 {
-    return Icons::findByName(Icons::selectionTool, HEADLINE_ICON_SIZE);
+    return Icons::findByName(Icons::revision, HEADLINE_ICON_SIZE);
 }
 
 String HistoryComponent::getName() const

@@ -71,7 +71,7 @@ RenderDialog::RenderDialog(ProjectTreeItem &parentProject, const File &renderTo,
 
     addAndMakeVisible (indicator = new ProgressIndicator());
 
-    addAndMakeVisible (browseButton = new MenuItemComponent (this, nullptr, MenuItem::item(Icons::open, CommandIDs::Browse)));
+    addAndMakeVisible (browseButton = new MenuItemComponent (this, nullptr, MenuItem::item(Icons::browse, CommandIDs::Browse)));
 
     addAndMakeVisible (pathEditor = new Label (String(),
                                                TRANS("...")));
@@ -414,7 +414,7 @@ BEGIN_JUCER_METADATA
                     class="ProgressIndicator" params=""/>
   <GENERICCOMPONENT name="" id="62a5bd7c1a3ec2" memberName="browseButton" virtualName=""
                     explicitFocusOrder="0" pos="448Rr 59 48 48" class="MenuItemComponent"
-                    params="this, nullptr, MenuItem::item(Icons::open, CommandIDs::Browse)"/>
+                    params="this, nullptr, MenuItem::item(Icons::browse, CommandIDs::Browse)"/>
   <LABEL name="" id="2310f57af9b4eefb" memberName="pathEditor" virtualName=""
          explicitFocusOrder="0" pos="25Cc 48 406 24" posRelativeY="e96b77baef792d3a"
          labelText="..." editableSingleClick="0" editableDoubleClick="0"

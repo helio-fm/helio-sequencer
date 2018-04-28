@@ -40,23 +40,20 @@ static MenuPanel::Menu createDefaultPanel()
 {
     MenuPanel::Menu cmds;
 
-    cmds.add(MenuItem::item(Icons::group, CommandIDs::ArpeggiateNotes,
-        TRANS("menu::selection::notes::arpeggiate"))->withSubmenu()->withTimer());
-
-    cmds.add(MenuItem::item(Icons::group, CommandIDs::RefactorNotes,
-        TRANS("menu::selection::notes::refactor"))->withSubmenu()->withTimer());
-
-    cmds.add(MenuItem::item(Icons::group, CommandIDs::BatchTweakNotes,
-        TRANS("menu::selection::notes::batch"))->withSubmenu()->withTimer());
-
     cmds.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents,
         TRANS("menu::selection::notes::copy")));
 
     cmds.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents,
         TRANS("menu::selection::notes::cut")));
 
-    cmds.add(MenuItem::item(Icons::trash, CommandIDs::DeleteEvents,
+    cmds.add(MenuItem::item(Icons::remove, CommandIDs::DeleteEvents,
         TRANS("menu::selection::notes::delete")));
+
+    cmds.add(MenuItem::item(Icons::refactor, CommandIDs::RefactorNotes,
+        TRANS("menu::selection::notes::refactor"))->withSubmenu()->withTimer());
+
+    cmds.add(MenuItem::item(Icons::arpeggiate, CommandIDs::ArpeggiateNotes,
+        TRANS("menu::selection::notes::arpeggiate"))->withSubmenu()->withTimer());
 
     return cmds;
 }
@@ -64,7 +61,7 @@ static MenuPanel::Menu createDefaultPanel()
 static MenuPanel::Menu createRefactoringPanel()
 {
     MenuPanel::Menu cmds;
-    cmds.add(MenuItem::item(Icons::left, CommandIDs::Back,
+    cmds.add(MenuItem::item(Icons::back, CommandIDs::Back,
         TRANS("menu::back"))->withTimer());
 
     // TODO
@@ -85,7 +82,7 @@ static MenuPanel::Menu createRefactoringPanel()
 static MenuPanel::Menu createBatchTweakPanel()
 {
     MenuPanel::Menu cmds;
-    cmds.add(MenuItem::item(Icons::left, CommandIDs::Back,
+    cmds.add(MenuItem::item(Icons::back, CommandIDs::Back,
         TRANS("menu::back"))->withTimer());
 
     // TODO
@@ -99,16 +96,16 @@ static MenuPanel::Menu createArpsPanel()
 {
     MenuPanel::Menu cmds;
 
-    cmds.add(MenuItem::item(Icons::left, CommandIDs::Back,
+    cmds.add(MenuItem::item(Icons::back, CommandIDs::Back,
         TRANS("menu::back"))->withTimer());
 
-    cmds.add(MenuItem::item(Icons::group,
+    cmds.add(MenuItem::item(Icons::arpeggiate,
         CommandIDs::CreateArpeggiatorFromSelection, TRANS("menu::arpeggiators::create")));
 
     const auto arps = ArpeggiatorsManager::getInstance().getArps();
     for (int i = 0; i < arps.size(); ++i)
     {
-        cmds.add(MenuItem::item(Icons::group,
+        cmds.add(MenuItem::item(Icons::arpeggiate,
             (CommandIDs::ApplyArpeggiator + i),
             arps.getUnchecked(i)->getName()));
     }

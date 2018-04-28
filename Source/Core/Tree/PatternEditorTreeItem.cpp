@@ -34,7 +34,7 @@ Colour PatternEditorTreeItem::getColour() const noexcept
 
 Image PatternEditorTreeItem::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::stack, HEADLINE_ICON_SIZE);
+    return Icons::findByName(Icons::patterns, HEADLINE_ICON_SIZE);
 }
 
 void PatternEditorTreeItem::showPage()

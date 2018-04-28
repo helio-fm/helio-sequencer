@@ -46,7 +46,7 @@ OpenProjectRow::OpenProjectRow(Component &parentComponent, ListBox &parentListBo
     : DraggingListBoxComponent(parentListBox.getViewport()),
       parent(parentComponent)
 {
-    addAndMakeVisible (newProjectImage = new IconComponent (Icons::open));
+    addAndMakeVisible (newProjectImage = new IconComponent (Icons::browse));
 
     addAndMakeVisible (openProjectLabel = new Label (String(),
                                                      TRANS("menu::workspace::project::open")));
@@ -120,7 +120,7 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="ffffff"/>
   <GENERICCOMPONENT name="" id="79f90a69d0b95011" memberName="newProjectImage" virtualName=""
                     explicitFocusOrder="0" pos="32c 8Cc 24 24" class="IconComponent"
-                    params="Icons::open"/>
+                    params="Icons::browse"/>
   <LABEL name="" id="8ebb161d0a976635" memberName="openProjectLabel" virtualName=""
          explicitFocusOrder="0" pos="54 23 261 24" labelText="menu::workspace::project::open"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"

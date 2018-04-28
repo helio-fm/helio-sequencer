@@ -48,97 +48,82 @@
         <FILE id="lGxgzu" name="lato.fnt" compile="0" resource="1" file="../../Resources/Fonts/lato.fnt"/>
       </GROUP>
       <GROUP id="{0B700B6F-60B4-647B-6D0F-7AD115ECD127}" name="Icons">
-        <FILE id="fIcycT" name="angle-double-down.svg" compile="0" resource="1"
-              file="../../Resources/Icons/angle-double-down.svg"/>
-        <FILE id="RIC6hz" name="angle-double-left.svg" compile="0" resource="1"
-              file="../../Resources/Icons/angle-double-left.svg"/>
-        <FILE id="vy7RT1" name="angle-double-right.svg" compile="0" resource="1"
-              file="../../Resources/Icons/angle-double-right.svg"/>
-        <FILE id="DnPJkJ" name="angle-double-up.svg" compile="0" resource="1"
-              file="../../Resources/Icons/angle-double-up.svg"/>
-        <FILE id="sLvoDn" name="angle-down.svg" compile="0" resource="1" file="../../Resources/Icons/angle-down.svg"/>
-        <FILE id="n0SE3n" name="angle-left.svg" compile="0" resource="1" file="../../Resources/Icons/angle-left.svg"/>
-        <FILE id="Mm42yC" name="angle-right.svg" compile="0" resource="1" file="../../Resources/Icons/angle-right.svg"/>
-        <FILE id="Q2BmA8" name="angle-up.svg" compile="0" resource="1" file="../../Resources/Icons/angle-up.svg"/>
-        <FILE id="rxBqpo" name="arpeggiator.svg" compile="0" resource="1" file="../../Resources/Icons/arpeggiator.svg"/>
-        <FILE id="lOgveK" name="arrow-back.svg" compile="0" resource="1" file="../../Resources/Icons/arrow-back.svg"/>
-        <FILE id="h6xMon" name="arrow-forward.svg" compile="0" resource="1"
-              file="../../Resources/Icons/arrow-forward.svg"/>
-        <FILE id="Se9SF9" name="arrow-left2.svg" compile="0" resource="1" file="../../Resources/Icons/arrow-left2.svg"/>
-        <FILE id="JHcfqw" name="arrow-right2.svg" compile="0" resource="1"
-              file="../../Resources/Icons/arrow-right2.svg"/>
-        <FILE id="ypi7ve" name="arrows.svg" compile="0" resource="1" file="../../Resources/Icons/arrows.svg"/>
-        <FILE id="uLdpLT" name="beamed_note.svg" compile="0" resource="1" file="../../Resources/Icons/beamed_note.svg"/>
-        <FILE id="iSWPrW" name="bezier.svg" compile="0" resource="1" file="../../Resources/Icons/bezier.svg"/>
-        <FILE id="tAKRaJ" name="brush.svg" compile="0" resource="1" file="../../Resources/Icons/brush.svg"/>
-        <FILE id="hiyBAc" name="check.svg" compile="0" resource="1" file="../../Resources/Icons/check.svg"/>
-        <FILE id="x7FC86" name="chevron-left2.svg" compile="0" resource="1"
-              file="../../Resources/Icons/chevron-left2.svg"/>
-        <FILE id="uL9Apm" name="chevron-right2.svg" compile="0" resource="1"
-              file="../../Resources/Icons/chevron-right2.svg"/>
-        <FILE id="sxCVAs" name="clef.svg" compile="0" resource="1" file="../../Resources/Icons/clef.svg"/>
-        <FILE id="NGXxdv" name="cloud-download.svg" compile="0" resource="1"
-              file="../../Resources/Icons/cloud-download.svg"/>
-        <FILE id="Ridw8t" name="cloud-upload.svg" compile="0" resource="1"
-              file="../../Resources/Icons/cloud-upload.svg"/>
-        <FILE id="SJhOBr" name="cloud2.svg" compile="0" resource="1" file="../../Resources/Icons/cloud2.svg"/>
-        <FILE id="yq4zRt" name="clouds.svg" compile="0" resource="1" file="../../Resources/Icons/clouds.svg"/>
-        <FILE id="dxiiyR" name="columns.svg" compile="0" resource="1" file="../../Resources/Icons/columns.svg"/>
-        <FILE id="cKAjt2" name="copy.svg" compile="0" resource="1" file="../../Resources/Icons/copy.svg"/>
-        <FILE id="hL0IGR" name="crop.svg" compile="0" resource="1" file="../../Resources/Icons/crop.svg"/>
-        <FILE id="jB0Anm" name="cup.svg" compile="0" resource="1" file="../../Resources/Icons/cup.svg"/>
-        <FILE id="aPjSA1" name="cursor2.svg" compile="0" resource="1" file="../../Resources/Icons/cursor2.svg"/>
-        <FILE id="Ppqoha" name="diskette.svg" compile="0" resource="1" file="../../Resources/Icons/diskette.svg"/>
-        <FILE id="Xs6UgH" name="download2.svg" compile="0" resource="1" file="../../Resources/Icons/download2.svg"/>
-        <FILE id="grXAEY" name="drive.svg" compile="0" resource="1" file="../../Resources/Icons/drive.svg"/>
-        <FILE id="GpHZYi" name="eight_note.svg" compile="0" resource="1" file="../../Resources/Icons/eight_note.svg"/>
-        <FILE id="d2CR7u" name="ellipsis-h.svg" compile="0" resource="1" file="../../Resources/Icons/ellipsis-h.svg"/>
-        <FILE id="KfNdqN" name="ellipsis-v.svg" compile="0" resource="1" file="../../Resources/Icons/ellipsis-v.svg"/>
-        <FILE id="AGqfTG" name="folder-open.svg" compile="0" resource="1" file="../../Resources/Icons/folder-open.svg"/>
-        <FILE id="dNNduX" name="folder.svg" compile="0" resource="1" file="../../Resources/Icons/folder.svg"/>
-        <FILE id="w7Lu21" name="folder2.svg" compile="0" resource="1" file="../../Resources/Icons/folder2.svg"/>
-        <FILE id="ckcQyW" name="heptagram2.svg" compile="0" resource="1" file="../../Resources/Icons/heptagram2.svg"/>
-        <FILE id="YGs5zi" name="history.svg" compile="0" resource="1" file="../../Resources/Icons/history.svg"/>
-        <FILE id="XqGm3J" name="hourglass.svg" compile="0" resource="1" file="../../Resources/Icons/hourglass.svg"/>
-        <FILE id="OZw71r" name="insert-space.svg" compile="0" resource="1"
-              file="../../Resources/Icons/insert-space.svg"/>
-        <FILE id="t1B1p1" name="key.svg" compile="0" resource="1" file="../../Resources/Icons/key.svg"/>
-        <FILE id="UJ2N8D" name="knob.svg" compile="0" resource="1" file="../../Resources/Icons/knob.svg"/>
-        <FILE id="brEXrx" name="logo2.svg" compile="0" resource="1" file="../../Resources/Icons/logo2.svg"/>
-        <FILE id="Ze3FO6" name="marquee.svg" compile="0" resource="1" file="../../Resources/Icons/marquee.svg"/>
-        <FILE id="dLHGqL" name="menu.svg" compile="0" resource="1" file="../../Resources/Icons/menu.svg"/>
-        <FILE id="crfKTP" name="minus2.svg" compile="0" resource="1" file="../../Resources/Icons/minus2.svg"/>
-        <FILE id="hdUOBB" name="paste.svg" compile="0" resource="1" file="../../Resources/Icons/paste.svg"/>
-        <FILE id="aHHS0X" name="pause2.svg" compile="0" resource="1" file="../../Resources/Icons/pause2.svg"/>
-        <FILE id="t1iNp7" name="pencil.svg" compile="0" resource="1" file="../../Resources/Icons/pencil.svg"/>
-        <FILE id="y1xm97" name="pencil4.svg" compile="0" resource="1" file="../../Resources/Icons/pencil4.svg"/>
-        <FILE id="CrmBka" name="play2.svg" compile="0" resource="1" file="../../Resources/Icons/play2.svg"/>
-        <FILE id="biT4pl" name="plus2.svg" compile="0" resource="1" file="../../Resources/Icons/plus2.svg"/>
-        <FILE id="fFYvPf" name="poetry.svg" compile="0" resource="1" file="../../Resources/Icons/poetry.svg"/>
-        <FILE id="NLRnqu" name="quote.svg" compile="0" resource="1" file="../../Resources/Icons/quote.svg"/>
-        <FILE id="gB95DU" name="reroute.svg" compile="0" resource="1" file="../../Resources/Icons/reroute.svg"/>
-        <FILE id="piRSFU" name="roman1.svg" compile="0" resource="1" file="../../Resources/Icons/roman1.svg"/>
-        <FILE id="qJeyuc" name="roman2.svg" compile="0" resource="1" file="../../Resources/Icons/roman2.svg"/>
-        <FILE id="lhEs1x" name="roman3.svg" compile="0" resource="1" file="../../Resources/Icons/roman3.svg"/>
-        <FILE id="lNNtbL" name="roman4.svg" compile="0" resource="1" file="../../Resources/Icons/roman4.svg"/>
-        <FILE id="nQavMP" name="roman5.svg" compile="0" resource="1" file="../../Resources/Icons/roman5.svg"/>
-        <FILE id="lqaeUD" name="roman6.svg" compile="0" resource="1" file="../../Resources/Icons/roman6.svg"/>
-        <FILE id="sH3ZgL" name="roman7.svg" compile="0" resource="1" file="../../Resources/Icons/roman7.svg"/>
-        <FILE id="SzTryG" name="saxophone.svg" compile="0" resource="1" file="../../Resources/Icons/saxophone.svg"/>
-        <FILE id="Oyau1Z" name="scissors.svg" compile="0" resource="1" file="../../Resources/Icons/scissors.svg"/>
-        <FILE id="q9ePiF" name="settings2.svg" compile="0" resource="1" file="../../Resources/Icons/settings2.svg"/>
-        <FILE id="BWZLRC" name="switch.svg" compile="0" resource="1" file="../../Resources/Icons/switch.svg"/>
-        <FILE id="VzpSmd" name="terminal.svg" compile="0" resource="1" file="../../Resources/Icons/terminal.svg"/>
-        <FILE id="q51lyh" name="times.svg" compile="0" resource="1" file="../../Resources/Icons/times.svg"/>
-        <FILE id="BMI81O" name="toggle-off.svg" compile="0" resource="1" file="../../Resources/Icons/toggle-off.svg"/>
-        <FILE id="eIBbuk" name="toggle-on.svg" compile="0" resource="1" file="../../Resources/Icons/toggle-on.svg"/>
-        <FILE id="gUVRXr" name="updown.svg" compile="0" resource="1" file="../../Resources/Icons/updown.svg"/>
-        <FILE id="Fczo7i" name="volume-off.svg" compile="0" resource="1" file="../../Resources/Icons/volume-off.svg"/>
-        <FILE id="tyVO4R" name="volume-up.svg" compile="0" resource="1" file="../../Resources/Icons/volume-up.svg"/>
-        <FILE id="LSI35j" name="waveform.svg" compile="0" resource="1" file="../../Resources/Icons/waveform.svg"/>
-        <FILE id="jLbIUj" name="wipe-space.svg" compile="0" resource="1" file="../../Resources/Icons/wipe-space.svg"/>
-        <FILE id="HojmRs" name="zoom-in.svg" compile="0" resource="1" file="../../Resources/Icons/zoom-in.svg"/>
-        <FILE id="wS3gha" name="zoom-out.svg" compile="0" resource="1" file="../../Resources/Icons/zoom-out.svg"/>
+        <FILE id="rmCDvP" name="annotation.svg" compile="0" resource="1" file="../../Resources/Icons/annotation.svg"/>
+        <FILE id="VFzDxu" name="apply.svg" compile="0" resource="1" file="../../Resources/Icons/apply.svg"/>
+        <FILE id="nj6MT7" name="arpeggiate.svg" compile="0" resource="1" file="../../Resources/Icons/arpeggiate.svg"/>
+        <FILE id="nmLByL" name="audioPlugin.svg" compile="0" resource="1" file="../../Resources/Icons/audioPlugin.svg"/>
+        <FILE id="YwkMou" name="automationTrack.svg" compile="0" resource="1"
+              file="../../Resources/Icons/automationTrack.svg"/>
+        <FILE id="pQYljb" name="back.svg" compile="0" resource="1" file="../../Resources/Icons/back.svg"/>
+        <FILE id="Z7oHFa" name="browse.svg" compile="0" resource="1" file="../../Resources/Icons/browse.svg"/>
+        <FILE id="Id1ypQ" name="close.svg" compile="0" resource="1" file="../../Resources/Icons/close.svg"/>
+        <FILE id="QzpxYC" name="colour.svg" compile="0" resource="1" file="../../Resources/Icons/colour.svg"/>
+        <FILE id="ja4Raa" name="commit.svg" compile="0" resource="1" file="../../Resources/Icons/commit.svg"/>
+        <FILE id="ZZhM5X" name="copy.svg" compile="0" resource="1" file="../../Resources/Icons/copy.svg"/>
+        <FILE id="XRkUwL" name="create.svg" compile="0" resource="1" file="../../Resources/Icons/create.svg"/>
+        <FILE id="FGsAM4" name="cropTool.svg" compile="0" resource="1" file="../../Resources/Icons/cropTool.svg"/>
+        <FILE id="eeLgJV" name="cursorTool.svg" compile="0" resource="1" file="../../Resources/Icons/cursorTool.svg"/>
+        <FILE id="kqVbqH" name="cut.svg" compile="0" resource="1" file="../../Resources/Icons/cut.svg"/>
+        <FILE id="qQqffF" name="down.svg" compile="0" resource="1" file="../../Resources/Icons/down.svg"/>
+        <FILE id="TZOeiP" name="dragTool.svg" compile="0" resource="1" file="../../Resources/Icons/dragTool.svg"/>
+        <FILE id="S0dKhu" name="drawTool.svg" compile="0" resource="1" file="../../Resources/Icons/drawTool.svg"/>
+        <FILE id="pt25MQ" name="ellipsis.svg" compile="0" resource="1" file="../../Resources/Icons/ellipsis.svg"/>
+        <FILE id="PjELEM" name="expand.svg" compile="0" resource="1" file="../../Resources/Icons/expand.svg"/>
+        <FILE id="XzECGs" name="fail.svg" compile="0" resource="1" file="../../Resources/Icons/fail.svg"/>
+        <FILE id="mgkKBL" name="forward.svg" compile="0" resource="1" file="../../Resources/Icons/forward.svg"/>
+        <FILE id="Zn4gep" name="insertSpaceTool.svg" compile="0" resource="1"
+              file="../../Resources/Icons/insertSpaceTool.svg"/>
+        <FILE id="bpruBj" name="instrument.svg" compile="0" resource="1" file="../../Resources/Icons/instrument.svg"/>
+        <FILE id="lF6noc" name="instrumentNode.svg" compile="0" resource="1"
+              file="../../Resources/Icons/instrumentNode.svg"/>
+        <FILE id="vkA7la" name="local.svg" compile="0" resource="1" file="../../Resources/Icons/local.svg"/>
+        <FILE id="femQww" name="login.svg" compile="0" resource="1" file="../../Resources/Icons/login.svg"/>
+        <FILE id="wJUWRt" name="menu.svg" compile="0" resource="1" file="../../Resources/Icons/menu.svg"/>
+        <FILE id="GtzvG7" name="mute.svg" compile="0" resource="1" file="../../Resources/Icons/mute.svg"/>
+        <FILE id="TWchuX" name="orchestraPit.svg" compile="0" resource="1"
+              file="../../Resources/Icons/orchestraPit.svg"/>
+        <FILE id="VDY34K" name="paste.svg" compile="0" resource="1" file="../../Resources/Icons/paste.svg"/>
+        <FILE id="kykHC8" name="patterns.svg" compile="0" resource="1" file="../../Resources/Icons/patterns.svg"/>
+        <FILE id="cC5z70" name="pause.svg" compile="0" resource="1" file="../../Resources/Icons/pause.svg"/>
+        <FILE id="UiCw3T" name="pianoTrack.svg" compile="0" resource="1" file="../../Resources/Icons/pianoTrack.svg"/>
+        <FILE id="eJL3nF" name="play.svg" compile="0" resource="1" file="../../Resources/Icons/play.svg"/>
+        <FILE id="rwdDqH" name="progressIndicator.svg" compile="0" resource="1"
+              file="../../Resources/Icons/progressIndicator.svg"/>
+        <FILE id="BTqAe2" name="project.svg" compile="0" resource="1" file="../../Resources/Icons/project.svg"/>
+        <FILE id="xx8PZK" name="pull.svg" compile="0" resource="1" file="../../Resources/Icons/pull.svg"/>
+        <FILE id="epmE4m" name="push.svg" compile="0" resource="1" file="../../Resources/Icons/push.svg"/>
+        <FILE id="dLcDjT" name="redo.svg" compile="0" resource="1" file="../../Resources/Icons/redo.svg"/>
+        <FILE id="jh8DJ1" name="refactor.svg" compile="0" resource="1" file="../../Resources/Icons/refactor.svg"/>
+        <FILE id="eyUVjN" name="remote.svg" compile="0" resource="1" file="../../Resources/Icons/remote.svg"/>
+        <FILE id="tKC9iQ" name="remove.svg" compile="0" resource="1" file="../../Resources/Icons/remove.svg"/>
+        <FILE id="Kv4MaK" name="render.svg" compile="0" resource="1" file="../../Resources/Icons/render.svg"/>
+        <FILE id="kAPtlo" name="reset.svg" compile="0" resource="1" file="../../Resources/Icons/reset.svg"/>
+        <FILE id="FgLHwk" name="revision.svg" compile="0" resource="1" file="../../Resources/Icons/revision.svg"/>
+        <FILE id="b1fUSl" name="selectionTool.svg" compile="0" resource="1"
+              file="../../Resources/Icons/selectionTool.svg"/>
+        <FILE id="brZyaK" name="selection.svg" compile="0" resource="1" file="../../Resources/Icons/selection.svg"/>
+        <FILE id="M4yCpT" name="selectAll.svg" compile="0" resource="1" file="../../Resources/Icons/selectAll.svg"/>
+        <FILE id="GM5TrL" name="selectNone.svg" compile="0" resource="1" file="../../Resources/Icons/selectNone.svg"/>
+        <FILE id="D6EOW7" name="settings.svg" compile="0" resource="1" file="../../Resources/Icons/settings.svg"/>
+        <FILE id="M4E2VZ" name="stretchLeft.svg" compile="0" resource="1" file="../../Resources/Icons/stretchLeft.svg"/>
+        <FILE id="BGvTna" name="stretchRight.svg" compile="0" resource="1"
+              file="../../Resources/Icons/stretchRight.svg"/>
+        <FILE id="WGyFGT" name="submenu.svg" compile="0" resource="1" file="../../Resources/Icons/submenu.svg"/>
+        <FILE id="iXez1E" name="success.svg" compile="0" resource="1" file="../../Resources/Icons/success.svg"/>
+        <FILE id="Qc9pV4" name="toggleOff.svg" compile="0" resource="1" file="../../Resources/Icons/toggleOff.svg"/>
+        <FILE id="PwfEJV" name="toggleOn.svg" compile="0" resource="1" file="../../Resources/Icons/toggleOn.svg"/>
+        <FILE id="BBNAVx" name="trackGroup.svg" compile="0" resource="1" file="../../Resources/Icons/trackGroup.svg"/>
+        <FILE id="jMjNbd" name="undo.svg" compile="0" resource="1" file="../../Resources/Icons/undo.svg"/>
+        <FILE id="uvrBo1" name="unmute.svg" compile="0" resource="1" file="../../Resources/Icons/unmute.svg"/>
+        <FILE id="b3kVn6" name="up.svg" compile="0" resource="1" file="../../Resources/Icons/up.svg"/>
+        <FILE id="gFGVNu" name="versionControl.svg" compile="0" resource="1"
+              file="../../Resources/Icons/versionControl.svg"/>
+        <FILE id="CYlwe1" name="wipeSpaceTool.svg" compile="0" resource="1"
+              file="../../Resources/Icons/wipeSpaceTool.svg"/>
+        <FILE id="reSgr3" name="workspace.svg" compile="0" resource="1" file="../../Resources/Icons/workspace.svg"/>
+        <FILE id="jm0Ajr" name="zoomIn.svg" compile="0" resource="1" file="../../Resources/Icons/zoomIn.svg"/>
+        <FILE id="aCHoff" name="zoomOut.svg" compile="0" resource="1" file="../../Resources/Icons/zoomOut.svg"/>
+        <FILE id="KPqaBe" name="zoomTool.svg" compile="0" resource="1" file="../../Resources/Icons/zoomTool.svg"/>
       </GROUP>
       <FILE id="aMBPbX" name="Noise.png" compile="0" resource="1" file="../../Resources/Noise.png"/>
       <FILE id="so7ZdZ" name="Arpeggiators.json" compile="0" resource="1"

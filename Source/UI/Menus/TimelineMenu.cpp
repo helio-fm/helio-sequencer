@@ -77,17 +77,17 @@ TimelineMenu::TimelineMenu(ProjectTreeItem &parentProject) :
     
     if (selectedAnnotation == nullptr)
     {
-        cmds.add(MenuItem::item(Icons::plus, CommandIDs::AddAnnotation, TRANS("menu::annotation::add")));
+        cmds.add(MenuItem::item(Icons::create, CommandIDs::AddAnnotation, TRANS("menu::annotation::add")));
     }
 
     if (selectedKeySignature == nullptr)
     {
-        cmds.add(MenuItem::item(Icons::plus, CommandIDs::AddKeySignature, TRANS("menu::keysignature::add")));
+        cmds.add(MenuItem::item(Icons::create, CommandIDs::AddKeySignature, TRANS("menu::keysignature::add")));
     }
 
     if (selectedTimeSignature == nullptr)
     {
-        cmds.add(MenuItem::item(Icons::plus, CommandIDs::AddTimeSignature, TRANS("menu::timesignature::add")));
+        cmds.add(MenuItem::item(Icons::create, CommandIDs::AddTimeSignature, TRANS("menu::timesignature::add")));
     }
 
     if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))

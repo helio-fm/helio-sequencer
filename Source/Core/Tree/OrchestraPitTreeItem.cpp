@@ -44,7 +44,7 @@ Colour OrchestraPitTreeItem::getColour() const noexcept
 
 Image OrchestraPitTreeItem::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::saxophone, TREE_LARGE_ICON_HEIGHT);
+    return Icons::findByName(Icons::orchestraPit, TREE_LARGE_ICON_HEIGHT);
 }
 
 String OrchestraPitTreeItem::getName() const noexcept

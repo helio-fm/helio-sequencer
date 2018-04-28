@@ -46,7 +46,7 @@ inline int iconHeightByComponentHeight(int h)
 //===----------------------------------------------------------------------===//
 
 MenuItem::MenuItem() :
-    commandId(0), isToggled(false), isDisabled(false),
+    commandId(0), iconId(0), isToggled(false), isDisabled(false),
     hasSubmenu(false), hasTimer(false),
     alignment(Alignment::Left), callback(nullptr) {}
 
@@ -57,10 +57,10 @@ MenuItem::Ptr MenuItem::empty()
     return description;
 }
 
-MenuItem::Ptr MenuItem::item(const String &targetIcon, int returnedId, const String &text /*= ""*/)
+MenuItem::Ptr MenuItem::item(Icons::Id iconId, int returnedId, const String &text /*= ""*/)
 {
     MenuItem::Ptr description(new MenuItem());
-    description->iconName = targetIcon;
+    description->iconId = iconId;
     description->commandText = text;
     description->commandId = returnedId;
     description->isToggled = false;
@@ -81,9 +81,9 @@ MenuItem::Ptr MenuItem::item(Image image, int returnedId, const String &text /*=
     return description;
 }
 
-MenuItem::Ptr MenuItem::item(const String &targetIcon, const String &text)
+MenuItem::Ptr MenuItem::item(Icons::Id iconId, const String &text)
 {
-    return MenuItem::item(targetIcon, 0, text);
+    return MenuItem::item(iconId, 0, text);
 }
 
 MenuItem::Ptr MenuItem::withAlignment(Alignment alignment)
@@ -226,7 +226,7 @@ MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver, Viewport 
     textLabel->setJustificationType (Justification::centredLeft);
     textLabel->setEditable (false, false, false);
 
-    addAndMakeVisible (submenuMarker = new IconComponent (Icons::right, 0.25f));
+    addAndMakeVisible (submenuMarker = new IconComponent (Icons::submenu, 0.25f));
 
 
     //[UserPreSize]
@@ -324,7 +324,7 @@ void MenuItemComponent::resized()
     }
     else
     {
-        this->icon = Icons::findByName(this->description->iconName,
+        this->icon = Icons::findByName(this->description->iconId,
             iconHeightByComponentHeight(this->getHeight()));
     }
 
@@ -539,7 +539,7 @@ Component *MenuItemComponent::createHighlighterComponent()
     {
         MenuItem::Ptr desc2 = MenuItem::empty();
         desc2->image = this->description->image;
-        desc2->iconName = this->description->iconName;
+        desc2->iconId = this->description->iconId;
         desc2->commandText = this->description->commandText;
         desc2->subText = this->description->subText;
         desc2->hasSubmenu = this->description->hasSubmenu;
@@ -620,7 +620,7 @@ BEGIN_JUCER_METADATA
          bold="0" italic="0" justification="33"/>
   <GENERICCOMPONENT name="" id="1e71bff8af38b714" memberName="submenuMarker" virtualName=""
                     explicitFocusOrder="0" pos="4Rr 0Cc 24 16M" class="IconComponent"
-                    params="Icons::right, 0.25f"/>
+                    params="Icons::submenu, 0.25f"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

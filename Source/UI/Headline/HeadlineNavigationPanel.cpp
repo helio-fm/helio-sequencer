@@ -33,9 +33,9 @@
 
 HeadlineNavigationPanel::HeadlineNavigationPanel()
 {
-    addAndMakeVisible (navigatePrevious = new IconButton (Icons::findByName(Icons::left, 20), CommandIDs::ShowPreviousPage));
+    addAndMakeVisible (navigatePrevious = new IconButton (Icons::findByName(Icons::back, 20), CommandIDs::ShowPreviousPage));
 
-    addAndMakeVisible (navigateNext = new IconButton (Icons::findByName(Icons::right, 20), CommandIDs::ShowNextPage));
+    addAndMakeVisible (navigateNext = new IconButton (Icons::findByName(Icons::forward, 20), CommandIDs::ShowNextPage));
 
     addAndMakeVisible (component = new HeadlineItemArrow());
 
@@ -127,10 +127,10 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="0"/>
   <GENERICCOMPONENT name="" id="88e1e92c7548ba42" memberName="navigatePrevious" virtualName=""
                     explicitFocusOrder="0" pos="2 -1Cc 25 32" class="IconButton"
-                    params="Icons::findByName(Icons::left, 20), CommandIDs::ShowPreviousPage"/>
+                    params="Icons::findByName(Icons::back, 20), CommandIDs::ShowPreviousPage"/>
   <GENERICCOMPONENT name="" id="900658e63c264259" memberName="navigateNext" virtualName=""
                     explicitFocusOrder="0" pos="25 -1Cc 25 32" class="IconButton"
-                    params="Icons::findByName(Icons::right, 20), CommandIDs::ShowNextPage"/>
+                    params="Icons::findByName(Icons::forward, 20), CommandIDs::ShowNextPage"/>
   <JUCERCOMP name="" id="6845054f3705e31" memberName="component" virtualName=""
              explicitFocusOrder="0" pos="0Rr 0 16 0M" sourceFile="HeadlineItemArrow.cpp"
              constructorParams=""/>

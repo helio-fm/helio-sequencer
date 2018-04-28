@@ -18,6 +18,7 @@
 #pragma once
 
 //[Headers]
+#include "Icons.h"
 #include "DraggingListBoxComponent.h"
 
 class IconComponent;
@@ -34,7 +35,7 @@ struct MenuItem final : public ReferenceCountedObject
     typedef ReferenceCountedObjectPtr<MenuItem> Ptr;
 
     Image image;
-    String iconName;
+    Icons::Id iconId;
     String commandText;
     String subText;
     Colour colour;
@@ -57,8 +58,8 @@ struct MenuItem final : public ReferenceCountedObject
     MenuItem::Ptr disabledIf(bool condition);
 
     static MenuItem::Ptr empty();
-    static MenuItem::Ptr item(const String &icon, const String &text);
-    static MenuItem::Ptr item(const String &icon, int commandId, const String &text = {});
+    static MenuItem::Ptr item(Icons::Id iconId, const String &text);
+    static MenuItem::Ptr item(Icons::Id iconId, int commandId, const String &text = {});
     static MenuItem::Ptr item(Image image, int commandId, const String &text = {});
 };
 //[/Headers]
@@ -75,13 +76,7 @@ public:
     //[UserMethods]
 
     void setSelected(bool shouldBeSelected) override;
-
     void update(const MenuItem::Ptr description);
-
-    String getIconName() const noexcept
-    {
-        return this->description->iconName;
-    }
 
     Font getFont() const noexcept
     {

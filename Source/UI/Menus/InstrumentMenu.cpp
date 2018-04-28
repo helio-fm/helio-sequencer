@@ -50,7 +50,7 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
         this->dismiss();
     }));
 
-    menu.add(MenuItem::item(Icons::trash, TRANS("menu::instrument::delete"))->withAction([this]()
+    menu.add(MenuItem::item(Icons::remove, TRANS("menu::instrument::delete"))->withAction([this]()
     {
         TreeItem::deleteItem(&this->instrumentNode);
         this->dismiss();
@@ -66,7 +66,7 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
         }
     }
 
-    menu.add(MenuItem::item(Icons::instrumentGraph, TRANS("menu::instrument::addeffect"))->
+    menu.add(MenuItem::item(Icons::audioPlugin, TRANS("menu::instrument::addeffect"))->
         withSubmenu()->withTimer()->disabledIf(!hasEffects)->withAction([this]()
     {
         this->updateContent(this->createEffectsMenu(), MenuPanel::SlideLeft);
@@ -79,7 +79,7 @@ MenuPanel::Menu InstrumentMenu::createEffectsMenu()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::left, TRANS("menu::back"))->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::back, TRANS("menu::back"))->withTimer()->withAction([this]()
     {
         this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
     }));
@@ -88,7 +88,7 @@ MenuPanel::Menu InstrumentMenu::createEffectsMenu()
     {
         if (!description->isInstrument)
         {
-            menu.add(MenuItem::item(Icons::instrumentGraph,
+            menu.add(MenuItem::item(Icons::audioPlugin,
                 description->descriptiveName)->withAction([this, description]()
             {
                 this->instrumentNode.getInstrument()->addNodeToFreeSpace(*description, [this](Instrument *instrument)

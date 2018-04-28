@@ -114,7 +114,7 @@ void StageComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    horizontalCenter->setBounds (0, 0, proportionOfWidth (0.5080f), 8);
+    horizontalCenter->setBounds (0, 0, proportionOfWidth (0.5067f), 8);
     titleLabel->setBounds (0, 0, getWidth() - 0, 26);
     indicator->setBounds ((getWidth() / 2) - (32 / 2), (getHeight() / 2) - (32 / 2), 32, 32);
     panel->setBounds (0, 35, getWidth() - 0, getHeight() - 35);
@@ -389,10 +389,8 @@ void StageComponent::stopProgressAnimation()
 // HeadlineItemDataSource
 //===----------------------------------------------------------------------===//
 
-bool StageComponent::hasMenu() const noexcept
-{
-    return true;
-}
+bool StageComponent::hasMenu() const noexcept { return true; }
+bool StageComponent::canBeSelectedAsMenuItem() const { return false; }
 
 ScopedPointer<Component> StageComponent::createMenu()
 {
@@ -401,17 +399,12 @@ ScopedPointer<Component> StageComponent::createMenu()
 
 Image StageComponent::getIcon() const
 {
-    return Icons::findByName(Icons::selectionTool, HEADLINE_ICON_SIZE);
+    return Icons::findByName(Icons::selection, HEADLINE_ICON_SIZE);
 }
 
 String StageComponent::getName() const
 {
     return TRANS("menu::selection::vcs::stage");
-}
-
-bool StageComponent::canBeSelectedAsMenuItem() const
-{
-    return false;
 }
 
 //[/MiscUserCode]
@@ -430,7 +423,7 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="ffffff"/>
   <GENERICCOMPONENT name="" id="4ac6bf71d1e1d84f" memberName="horizontalCenter" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 50.8% 8" class="Component" params=""/>
+                    explicitFocusOrder="0" pos="0 0 50.71% 8" class="Component" params=""/>
   <LABEL name="" id="660583b19bbfaa6b" memberName="titleLabel" virtualName=""
          explicitFocusOrder="0" pos="0 0 0M 26" labelText="vcs::stage::caption"
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"

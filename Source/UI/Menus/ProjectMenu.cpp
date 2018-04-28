@@ -368,46 +368,46 @@ void ProjectMenu::initMainMenu(AnimationType animationType)
 {
     MenuPanel::Menu cmds;
 
-    cmds.add(MenuItem::item(Icons::group, CommandIDs::ProjectLinearEditor, TRANS("menu::project::editor::linear")));
-    cmds.add(MenuItem::item(Icons::stack, CommandIDs::ProjectPatternEditor, TRANS("menu::project::editor::pattern")));
-    cmds.add(MenuItem::item(Icons::vcs, CommandIDs::ProjectVersionsEditor, TRANS("menu::project::editor::vcs")));
+    cmds.add(MenuItem::item(Icons::trackGroup, CommandIDs::ProjectLinearEditor, TRANS("menu::project::editor::linear")));
+    cmds.add(MenuItem::item(Icons::patterns, CommandIDs::ProjectPatternEditor, TRANS("menu::project::editor::pattern")));
+    cmds.add(MenuItem::item(Icons::versionControl, CommandIDs::ProjectVersionsEditor, TRANS("menu::project::editor::vcs")));
 
     // TODO separators
-    cmds.add(MenuItem::item(Icons::plus, CommandIDs::AddItemsMenu, TRANS("menu::project::additems"))->withSubmenu());
-    //cmds.add(MenuItem::item(Icons::plus, CommandIDs::AddMidiTrack, TRANS("menu::project::addlayer")));
+    cmds.add(MenuItem::item(Icons::create, CommandIDs::AddItemsMenu, TRANS("menu::project::additems"))->withSubmenu());
+    //cmds.add(MenuItem::item(Icons::create, CommandIDs::AddMidiTrack, TRANS("menu::project::addlayer")));
 
 #if HELIO_DESKTOP
-    //cmds.add(MenuItem::item(Icons::automation, CommandIDs::AddAutomationTrack, TRANS("menu::project::addautomation"))->withSubmenu());
-    //cmds.add(MenuItem::item(Icons::open, CommandIDs::ImportMidi, TRANS("menu::project::import::midi")));
+    //cmds.add(MenuItem::item(Icons::automationTrack, CommandIDs::AddAutomationTrack, TRANS("menu::project::addautomation"))->withSubmenu());
+    //cmds.add(MenuItem::item(Icons::browse, CommandIDs::ImportMidi, TRANS("menu::project::import::midi")));
     cmds.add(MenuItem::item(Icons::render, CommandIDs::ProjectRenderMenu, TRANS("menu::project::render"))->withSubmenu());
 #endif
 
-    cmds.add(MenuItem::item(Icons::ellipsis, CommandIDs::ProjectBatchMenu, TRANS("menu::project::refactor"))->withSubmenu());
+    cmds.add(MenuItem::item(Icons::refactor, CommandIDs::ProjectBatchMenu, TRANS("menu::project::refactor"))->withSubmenu());
     
 #if JUCE_IOS
     cmds.add(MenuItem::item(Icons::commit, CommandIDs::ExportMidi, TRANS("menu::project::render::midi")));
 #endif
     
     cmds.add(MenuItem::item(Icons::close, CommandIDs::UnloadProject, TRANS("menu::project::unload")));
-    cmds.add(MenuItem::item(Icons::trash, CommandIDs::DeleteProject, TRANS("menu::project::delete")));
+    cmds.add(MenuItem::item(Icons::remove, CommandIDs::DeleteProject, TRANS("menu::project::delete")));
     this->updateContent(cmds, animationType);
 }
 
 void ProjectMenu::initNewSubItemsMenu(AnimationType animationType)
 {
     MenuPanel::Menu cmds;
-    cmds.add(MenuItem::item(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
-    cmds.add(MenuItem::item(Icons::layer, CommandIDs::AddMidiTrack, TRANS("menu::project::addlayer")));
+    cmds.add(MenuItem::item(Icons::back, CommandIDs::Back, TRANS("menu::back"))->withTimer());
+    cmds.add(MenuItem::item(Icons::pianoTrack, CommandIDs::AddMidiTrack, TRANS("menu::project::addlayer")));
 #if HELIO_DESKTOP
-    cmds.add(MenuItem::item(Icons::open, CommandIDs::ImportMidi, TRANS("menu::project::import::midi")));
+    cmds.add(MenuItem::item(Icons::browse, CommandIDs::ImportMidi, TRANS("menu::project::import::midi")));
 #endif
-    cmds.add(MenuItem::item(Icons::automation, CommandIDs::AddTempoController, TRANS("menu::project::addtempo")));
+    cmds.add(MenuItem::item(Icons::automationTrack, CommandIDs::AddTempoController, TRANS("menu::project::addtempo")));
 
     const Array<Instrument *> &instruments = App::Workspace().getAudioCore().getInstruments();
     
     for (int i = 0; i < instruments.size(); ++i)
     {
-        cmds.add(MenuItem::item(Icons::saxophone, CommandIDs::ProjectInstrumentsMenu + i, instruments[i]->getName())->withSubmenu());
+        cmds.add(MenuItem::item(Icons::instrument, CommandIDs::ProjectInstrumentsMenu + i, instruments[i]->getName())->withSubmenu());
     }
 
     this->updateContent(cmds, animationType);
@@ -416,7 +416,7 @@ void ProjectMenu::initNewSubItemsMenu(AnimationType animationType)
 void ProjectMenu::initSubItemTypeSelectionMenu()
 {
     MenuPanel::Menu cmds;
-    cmds.add(MenuItem::item(Icons::left, CommandIDs::AddItemsMenuBack, TRANS("menu::back"))->withTimer());
+    cmds.add(MenuItem::item(Icons::back, CommandIDs::AddItemsMenuBack, TRANS("menu::back"))->withTimer());
     
     for (int i = 0; i < NUM_CONTROLLERS_TO_SHOW; ++i)
     {
@@ -424,7 +424,7 @@ void ProjectMenu::initSubItemTypeSelectionMenu()
         
         if (controllerName.isNotEmpty())
         {
-            cmds.add(MenuItem::item(Icons::automation, CommandIDs::AddCustomController + i, String(i) + ": " + TRANS(controllerName)));
+            cmds.add(MenuItem::item(Icons::automationTrack, CommandIDs::AddCustomController + i, String(i) + ": " + TRANS(controllerName)));
         }
     }
     
@@ -434,7 +434,7 @@ void ProjectMenu::initSubItemTypeSelectionMenu()
 void ProjectMenu::initRenderMenu()
 {
     MenuPanel::Menu cmds;
-    cmds.add(MenuItem::item(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
+    cmds.add(MenuItem::item(Icons::back, CommandIDs::Back, TRANS("menu::back"))->withTimer());
     cmds.add(MenuItem::item(Icons::render, CommandIDs::RenderToWAV, TRANS("menu::project::render::wav")));
     cmds.add(MenuItem::item(Icons::render, CommandIDs::RenderToOGG, TRANS("menu::project::render::ogg")));
     cmds.add(MenuItem::item(Icons::render, CommandIDs::RenderToFLAC, TRANS("menu::project::render::flac")));
@@ -445,7 +445,7 @@ void ProjectMenu::initRenderMenu()
 void ProjectMenu::initBatchMenu(AnimationType animationType)
 {
     MenuPanel::Menu cmds;
-    cmds.add(MenuItem::item(Icons::left, CommandIDs::Back, TRANS("menu::back"))->withTimer());
+    cmds.add(MenuItem::item(Icons::back, CommandIDs::Back, TRANS("menu::back"))->withTimer());
     cmds.add(MenuItem::item(Icons::up, CommandIDs::RefactorTransposeUp, TRANS("menu::project::refactor::halftoneup")));
     cmds.add(MenuItem::item(Icons::down, CommandIDs::RefactorTransposeDown, TRANS("menu::project::refactor::halftonedown")));
     //cmds.add(MenuItem::item(Icons::group, CommandIDs::RefactorRemoveOverlaps, TRANS("menu::project::refactor::cleanup")));
@@ -454,7 +454,7 @@ void ProjectMenu::initBatchMenu(AnimationType animationType)
     const Array<Instrument *> &instruments = App::Workspace().getAudioCore().getInstruments();
     if (instruments.size() > 1 && layers.size() > 0)
     {
-        cmds.add(MenuItem::item(Icons::saxophone, CommandIDs::BatchChangeInstrument, TRANS("menu::project::change::instrument"))->withSubmenu());
+        cmds.add(MenuItem::item(Icons::instrument, CommandIDs::BatchChangeInstrument, TRANS("menu::project::change::instrument"))->withSubmenu());
     }
 
     this->updateContent(cmds, animationType);
@@ -463,12 +463,12 @@ void ProjectMenu::initBatchMenu(AnimationType animationType)
 void ProjectMenu::initInstrumentSelection()
 {
     MenuPanel::Menu cmds;
-    cmds.add(MenuItem::item(Icons::left, CommandIDs::ProjectBatchMenuBack, TRANS("menu::back"))->withTimer());
+    cmds.add(MenuItem::item(Icons::back, CommandIDs::ProjectBatchMenuBack, TRANS("menu::back"))->withTimer());
     const Array<Instrument *> &info = App::Workspace().getAudioCore().getInstruments();
     
     for (int i = 0; i < info.size(); ++i)
     {
-        cmds.add(MenuItem::item(Icons::saxophone, CommandIDs::BatchSetInstrument + i, info[i]->getName()));
+        cmds.add(MenuItem::item(Icons::instrument, CommandIDs::BatchSetInstrument + i, info[i]->getName()));
     }
     
     this->updateContent(cmds, MenuPanel::SlideLeft);

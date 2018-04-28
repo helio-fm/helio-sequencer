@@ -64,7 +64,7 @@ Colour VersionControlTreeItem::getColour() const noexcept
 
 Image VersionControlTreeItem::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::vcs, HEADLINE_ICON_SIZE);
+    return Icons::findByName(Icons::versionControl, HEADLINE_ICON_SIZE);
 }
 
 void VersionControlTreeItem::showPage()

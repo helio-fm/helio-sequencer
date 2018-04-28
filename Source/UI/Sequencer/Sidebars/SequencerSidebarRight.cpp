@@ -399,7 +399,7 @@ void SequencerSidebarRight::recreateCommandDescriptions()
     this->commandDescriptions.add(MenuItem::item(Icons::selectionTool, CommandIDs::SelectionTool)->toggled(selectionMode));
     //this->commandDescriptions.add(MenuItem::item(Icons::zoomTool, CommandIDs::ZoomTool)->toggled(zoomMode));
     this->commandDescriptions.add(MenuItem::item(Icons::dragTool, CommandIDs::DragTool)->toggled(dragMode));
-    this->commandDescriptions.add(MenuItem::item(Icons::wipeScapeTool, CommandIDs::WipeSpaceTool)->toggled(wipeSpaceMode));
+    this->commandDescriptions.add(MenuItem::item(Icons::wipeSpaceTool, CommandIDs::WipeSpaceTool)->toggled(wipeSpaceMode));
     this->commandDescriptions.add(MenuItem::item(Icons::insertSpaceTool, CommandIDs::InsertSpaceTool)->toggled(insertSpaceMode));
 
     //this->commandDescriptions.add(MenuItem::item(Icons::zoomIn, CommandIDs::ZoomIn));

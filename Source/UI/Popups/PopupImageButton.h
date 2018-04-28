@@ -18,6 +18,7 @@
 #pragma once
 
 //[Headers]
+#include "Icons.h"
 #include "PopupButton.h"
 //[/Headers]
 
@@ -26,7 +27,7 @@ class PopupImageButton  : public PopupButton
 {
 public:
 
-    PopupImageButton (const String &targetImageName, bool shouldShowConfirmImage);
+    PopupImageButton (Icons::Id iconId, bool shouldShowConfirmImage);
 
     ~PopupImageButton();
 
@@ -40,9 +41,7 @@ public:
 private:
 
     //[UserVariables]
-
     Path shape;
-
     //[/UserVariables]
 
 

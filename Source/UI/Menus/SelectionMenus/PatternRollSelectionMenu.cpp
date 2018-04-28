@@ -32,7 +32,7 @@ static MenuPanel::Menu createDefaultPanel()
     cmds.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents,
         TRANS("menu::selection::clips::cut")));
 
-    cmds.add(MenuItem::item(Icons::trash, CommandIDs::DeleteEvents,
+    cmds.add(MenuItem::item(Icons::remove, CommandIDs::DeleteEvents,
         TRANS("menu::selection::clips::delete")));
 
     return cmds;

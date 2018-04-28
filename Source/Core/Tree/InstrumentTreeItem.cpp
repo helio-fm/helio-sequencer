@@ -66,7 +66,7 @@ Colour InstrumentTreeItem::getColour() const noexcept
 
 Image InstrumentTreeItem::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::instrumentGraph, HEADLINE_ICON_SIZE);
+    return Icons::findByName(Icons::instrument, HEADLINE_ICON_SIZE);
 }
 
 void InstrumentTreeItem::showPage()

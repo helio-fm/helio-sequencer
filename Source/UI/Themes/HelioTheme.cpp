@@ -278,20 +278,19 @@ void HelioTheme::drawButtonText(Graphics &g, TextButton &button,
     g.setFont(font);
     g.setColour(button.findColour(TextButton::buttonColourId).contrasting().withMultipliedAlpha(button.isEnabled() ? 0.85f : 0.5f));
 
-    Image img(Icons::findByName(button.getName(), int(button.getHeight() / 1.5f)));
-
-    const int cX = button.getButtonText().isEmpty() ? (button.getWidth() / 2) : (button.getWidth() / 4);
-    const int cY = (button.getHeight() / 2);
-    Icons::drawImageRetinaAware(img, g, cX, cY);
-
-    const bool hasImg = (img.getWidth() > 2);
+    //Image img(Icons::findByName(button.getName(), int(button.getHeight() / 1.5f)));
+    //const int cX = button.getButtonText().isEmpty() ? (button.getWidth() / 2) : (button.getWidth() / 4);
+    //const int cY = (button.getHeight() / 2);
+    //Icons::drawImageRetinaAware(img, g, cX, cY);
+    //const bool hasImg = (img.getWidth() > 2);
 
     const int yIndent = jmin(4, button.proportionOfHeight(0.3f));
     const int yHeight = (button.getHeight() - (yIndent * 2));
     const int cornerSize = jmin(button.getHeight(), button.getWidth()) / 2;
 
     const int fontHeight = roundToInt(font.getHeight() * 0.5f);
-    const int leftIndent  = hasImg ? button.getWidth() / 3 : fontHeight;
+    //const int leftIndent  = hasImg ? button.getWidth() / 3 : fontHeight;
+    const int leftIndent = fontHeight;
     const int rightIndent = jmin(fontHeight, 2 + cornerSize / (button.isConnectedOnRight() ? 4 : 2));
 
     g.setColour(button.findColour(TextButton::textColourOnId).withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f));
@@ -808,7 +807,7 @@ void HelioTheme::initResources()
     MemoryInputStream is(BinaryData::lato_fnt, BinaryData::lato_fntSize, false);
     this->textTypefaceCache = (new CustomTypeface(is));
 
-    Icons::setupBuiltInImages();
+    Icons::initBuiltInImages();
 }
 
 void HelioTheme::initColours(const ::ColourScheme::Ptr s)
