@@ -49,8 +49,8 @@ InstrumentEditorNode::InstrumentEditorNode(Instrument &graph, AudioProcessorGrap
     numOuts(0)
 {
     this->setWantsKeyboardFocus(false);
+    this->setPaintingIsUnclipped(true);
     this->setMouseCursor(MouseCursor::PointingHandCursor);
-    this->setSize(250, 100);
 }
 
 InstrumentEditorNode::~InstrumentEditorNode()
@@ -69,14 +69,15 @@ void InstrumentEditorNode::mouseDrag(const MouseEvent &e)
     Point<int> pos(originalPos + Point<int>(e.getDistanceFromDragStartX(), e.getDistanceFromDragStartY()));
 
     if (this->getParentComponent() != nullptr)
-    { pos = this->getParentComponent()->getLocalPoint(nullptr, pos); }
+    {
+        pos = this->getParentComponent()->getLocalPoint(nullptr, pos);
+    }
 
     this->instrument.setNodePosition(this->nodeId,
         (pos.getX() + getWidth() / 2) / static_cast<double>(this->getParentWidth()),
         (pos.getY() + getHeight() / 2) / static_cast<double>(this->getParentHeight()));
 
     this->getGraphPanel()->updateComponents();
-        
     this->setMouseCursor(MouseCursor::DraggingHandCursor);
 }
 
@@ -144,16 +145,15 @@ bool InstrumentEditorNode::hitTest(int x, int y)
 void InstrumentEditorNode::paint(Graphics &g)
 {
     g.setGradientFill(ColourGradient(Colour(0x59ffffff),
-                                     0.0f, static_cast<float>(getHeight()),
-                                     Colour(0x30ffffff),
-                                     static_cast<float>(getWidth()), 0.0f,
-                                     true));
+        0.0f, static_cast<float>(getHeight()),
+        Colour(0x30ffffff),
+        static_cast<float>(getWidth()), 0.0f,
+        true));
 
     g.fillEllipse(1.0f, 1.0f, static_cast<float>(getWidth() - 2), static_cast<float>(getHeight() - 2));
 
     g.setColour(Colour(0x5d000000));
     g.drawEllipse(1.0f, 1.0f, static_cast<float>(getWidth() - 2), static_cast<float>(getHeight() - 2), 0.500f);
-
 
     g.setColour(Colours::black.withAlpha(0.75f));
     g.setFont(font);
@@ -231,8 +231,6 @@ void InstrumentEditorNode::update()
 
     const int textWidth = font.getStringWidth(translatedName);
     w = jmax(w, 16 + jmin(textWidth, 300));
-
-    //if (textWidth > 300) { h = 100; }
 
     this->setSize(w, w);
 

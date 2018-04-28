@@ -23,50 +23,23 @@ class PluginScanner;
 class OrchestraPitTreeItem;
 class MenuItemComponent;
 
-#if HELIO_DESKTOP
-#   define PLUGINSLIST_ROW_HEIGHT (64)
-#   define PLUGINSLIST_HEADER_HEIGHT (34)
-#elif HELIO_MOBILE
-#   define PLUGINSLIST_ROW_HEIGHT (90)
-#   define PLUGINSLIST_HEADER_HEIGHT (40)
-#endif
-
+#include "HeadlineItemDataSource.h"
 //[/Headers]
 
 #include "../../Themes/PanelBackgroundB.h"
-#include "../../Themes/FramePanel.h"
-#include "../../Themes/SeparatorHorizontalFading.h"
-#include "../../Themes/SeparatorHorizontalFading.h"
+#include "AudioPluginsListComponent.h"
+#include "InstrumentsListComponent.h"
 
 class OrchestraPitPage final : public Component,
-                               public TableListBoxModel,
                                public ChangeListener
 {
 public:
 
-    OrchestraPitPage(PluginScanner &scanner, OrchestraPitTreeItem &instrumentsTreeItem);
+    OrchestraPitPage(PluginScanner &pluginScanner, OrchestraPitTreeItem &instrumentsRoot);
     ~OrchestraPitPage();
 
     //[UserMethods]
-
-    //===------------------------------------------------------------------===//
-    // TableListBoxModel
-    //===------------------------------------------------------------------===//
-
-    int getNumRows() override;
-    var getDragSourceDescription(const SparseSet<int> &currentlySelectedRows) override;
-    void paintRowBackground(Graphics &, int, int, int, bool) override;
-    void paintCell(Graphics &, int, int, int, int, bool) override;
-    void sortOrderChanged(int newSortColumnId, bool isForwards) override;
-    int getColumnAutoSizeWidth(int columnId) override;
-    String getCellTooltip(int rowNumber, int columnId) override;
-
-    //===------------------------------------------------------------------===//
-    // ChangeListener
-    //===------------------------------------------------------------------===//
-
     void changeListenerCallback(ChangeBroadcaster *source) override;
-
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -77,24 +50,14 @@ public:
 private:
 
     //[UserVariables]
-
-    void showGreeting();
-    void hideGreeting();
-
     PluginScanner &pluginScanner;
-
     OrchestraPitTreeItem &instrumentsRoot;
-
-    KnownPluginList knownPlugins;
-
     //[/UserVariables]
 
     ScopedPointer<PanelBackgroundB> background;
-    ScopedPointer<FramePanel> panel;
-    ScopedPointer<TableListBox> pluginsList;
-    ScopedPointer<MenuItemComponent> initialScanButton;
-    ScopedPointer<SeparatorHorizontalFading> separator1;
-    ScopedPointer<SeparatorHorizontalFading> separator2;
+    ScopedPointer<AudioPluginsListComponent> pluginsList;
+    ScopedPointer<Component> anchor;
+    ScopedPointer<InstrumentsListComponent> instrumentsList;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OrchestraPitPage)
 };

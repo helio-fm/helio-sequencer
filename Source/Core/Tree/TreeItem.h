@@ -135,7 +135,15 @@ public:
     Array<T *> findChildrenOfType(bool pickOnlySelectedOnes = false) const
     {
         Array<T *> children;
-        TreeItem::collectChildrenOfType<T>(this, children, pickOnlySelectedOnes);
+        TreeItem::collectChildrenOfType<T, Array<T *>>(this, children, pickOnlySelectedOnes);
+        return children;
+    }
+
+    template<typename T>
+    Array<WeakReference<T>> findChildrenRefsOfType(bool pickOnlySelectedOnes = false) const
+    {
+        Array<WeakReference<T>> children;
+        TreeItem::collectChildrenOfType<T, Array<WeakReference<T>>>(this, children, pickOnlySelectedOnes);
         return children;
     }
 
@@ -223,8 +231,8 @@ protected:
 
     void setVisible(bool shouldBeVisible) noexcept;
 
-    template<typename T>
-    static void collectChildrenOfType(const TreeItem *rootNode, Array<T *> &resultArray, bool pickOnlySelectedOnes)
+    template<typename T, typename ArrayType>
+    static void collectChildrenOfType(const TreeItem *rootNode, ArrayType &resultArray, bool pickOnlySelectedOnes)
     {
         for (int i = 0; i < rootNode->getNumSubItems(); ++i)
         {
@@ -232,8 +240,7 @@ protected:
 
             if (T *targetTreeItem = dynamic_cast<T *>(child))
             {
-                if (!pickOnlySelectedOnes ||
-                    (pickOnlySelectedOnes && child->isSelected()))
+                if (!pickOnlySelectedOnes || (pickOnlySelectedOnes && child->isSelected()))
                 {
                     resultArray.add(targetTreeItem);
                 }
@@ -241,7 +248,7 @@ protected:
 
             if (child->getNumSubItems() > 0)
             {
-                TreeItem::collectChildrenOfType<T>(child, resultArray, pickOnlySelectedOnes);
+                TreeItem::collectChildrenOfType<T, ArrayType>(child, resultArray, pickOnlySelectedOnes);
             }
         }
     }

@@ -85,4 +85,5 @@ private:
     WeakReference<Instrument> instrument;
     WeakReference<AudioCore> audioCore;
 
+    JUCE_DECLARE_WEAK_REFERENCEABLE(InstrumentTreeItem)
 };

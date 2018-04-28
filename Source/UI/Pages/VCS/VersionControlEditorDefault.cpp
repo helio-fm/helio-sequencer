@@ -74,9 +74,9 @@ void VersionControlEditorDefault::resized()
     //[/UserPreResize]
 
     background->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
-    stageComponent->setBounds (15, 10, proportionOfWidth (0.5020f) - 15, getHeight() - 20);
-    historyComponent->setBounds (0 + proportionOfWidth (0.5020f) - -15, 10, proportionOfWidth (0.5020f) - 30, getHeight() - 20);
-    anchor->setBounds (0, 0, proportionOfWidth (0.5020f), 8);
+    stageComponent->setBounds (15, 10, proportionOfWidth (0.5006f) - 15, getHeight() - 20);
+    historyComponent->setBounds (0 + proportionOfWidth (0.5006f) - -15, 10, proportionOfWidth (0.5006f) - 30, getHeight() - 20);
+    anchor->setBounds (0, 0, proportionOfWidth (0.5006f), 8);
     shadow->setBounds (0, 0, 5, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
@@ -125,7 +125,8 @@ BEGIN_JUCER_METADATA
              posRelativeW="4ac6bf71d1e1d84f" sourceFile="HistoryComponent.cpp"
              constructorParams="versionControl"/>
   <GENERICCOMPONENT name="" id="4ac6bf71d1e1d84f" memberName="anchor" virtualName=""
-                    explicitFocusOrder="0" pos="0 0 50.2% 8" class="Component" params=""/>
+                    explicitFocusOrder="0" pos="0 0 50.065% 8" class="Component"
+                    params=""/>
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
              explicitFocusOrder="0" pos="0 0 5 0M" sourceFile="../../Themes/LightShadowRightwards.cpp"
              constructorParams=""/>

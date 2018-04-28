@@ -830,6 +830,14 @@
               <FILE id="NK73De" name="InstrumentEditorPin.h" compile="0" resource="0"
                     file="../../Source/UI/Pages/Instruments/Editor/InstrumentEditorPin.h"/>
             </GROUP>
+            <FILE id="cSjeY5" name="AudioPluginsListComponent.cpp" compile="1"
+                  resource="0" file="../../Source/UI/Pages/Instruments/AudioPluginsListComponent.cpp"/>
+            <FILE id="xKILUY" name="AudioPluginsListComponent.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Instruments/AudioPluginsListComponent.h"/>
+            <FILE id="sSbIbZ" name="InstrumentsListComponent.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Instruments/InstrumentsListComponent.cpp"/>
+            <FILE id="DBDxQ4" name="InstrumentsListComponent.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Instruments/InstrumentsListComponent.h"/>
             <FILE id="yfCrjr" name="OrchestraPitPage.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Instruments/OrchestraPitPage.cpp"/>
             <FILE id="kI9KlF" name="OrchestraPitPage.h" compile="0" resource="0"

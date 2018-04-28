@@ -1,0 +1,339 @@
+/*
+    This file is part of Helio Workstation.
+
+    Helio is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Helio is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Helio. If not, see <http://www.gnu.org/licenses/>.
+*/
+
+//[Headers]
+#include "Common.h"
+//[/Headers]
+
+#include "AudioPluginsListComponent.h"
+
+//[MiscUserDefs]
+
+#include "MenuItemComponent.h"
+#include "OrchestraPit.h"
+#include "OrchestraPitTreeItem.h"
+#include "PluginScanner.h"
+#include "CommandIDs.h"
+#include "Icons.h"
+
+#define CATEGORY_COLUMN_WIDTH (100)
+#define FORMAT_COLUMN_WIDTH (75)
+
+enum ColumnIds
+{
+    vendorAndName = 1, // TableListBox needs any number apart from 0
+    category = 2,
+    format = 3
+};
+
+//[/MiscUserDefs]
+
+AudioPluginsListComponent::AudioPluginsListComponent(PluginScanner &pluginScanner, OrchestraPitTreeItem &instrumentsRoot)
+    : pluginScanner(pluginScanner),
+      instrumentsRoot(instrumentsRoot)
+{
+    addAndMakeVisible (panel = new FramePanel());
+    addAndMakeVisible (pluginsList = new TableListBox ("Instruments", this));
+
+    addAndMakeVisible (initialScanButton = new MenuItemComponent (this, nullptr, MenuItem::item(Icons::instrument, CommandIDs::ScanAllPlugins, TRANS("instruments::initialscan"))));
+
+    addAndMakeVisible (separator1 = new SeparatorHorizontalFading());
+    addAndMakeVisible (separator2 = new SeparatorHorizontalFading());
+    addAndMakeVisible (titleLabel = new Label (String(),
+                                               TRANS("page::orchestra::plugins")));
+    titleLabel->setFont (Font (Font::getDefaultSerifFontName(), 21.00f, Font::plain).withTypefaceStyle ("Regular"));
+    titleLabel->setJustificationType (Justification::centred);
+    titleLabel->setEditable (false, false, false);
+
+
+    //[UserPreSize]
+    this->initialScanButton->setMouseCursor(MouseCursor::PointingHandCursor);
+    this->showScanButtonIf(this->pluginScanner.getList().getNumTypes() == 0);
+    //[/UserPreSize]
+
+    setSize (600, 400);
+
+    //[Constructor]
+
+    this->pluginsList->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
+    this->pluginsList->setRowHeight(PLUGINSLIST_ROW_HEIGHT);
+    this->pluginsList->setHeaderHeight(PLUGINSLIST_HEADER_HEIGHT);
+
+    const auto columnFlags =
+        TableHeaderComponent::visible |
+        TableHeaderComponent::appearsOnColumnMenu |
+        TableHeaderComponent::sortable;
+
+    this->pluginsList->getHeader().addColumn(TRANS("page::orchestra::category"),
+        category, 50, 50, -1, columnFlags);
+
+    this->pluginsList->getHeader().addColumn(TRANS("page::orchestra::vendorandname"),
+        vendorAndName, 50, 50, -1, columnFlags);
+
+    this->pluginsList->getHeader().addColumn(TRANS("page::orchestra::format"),
+        format, 50, 50, -1, columnFlags);
+
+    this->pluginsList->getHeader().setSortColumnId(vendorAndName, true);
+    this->pluginsList->setMultipleSelectionEnabled(false);
+
+    this->setWantsKeyboardFocus(true);
+    this->setFocusContainer(true);
+    //[/Constructor]
+}
+
+AudioPluginsListComponent::~AudioPluginsListComponent()
+{
+    //[Destructor_pre]
+    //[/Destructor_pre]
+
+    panel = nullptr;
+    pluginsList = nullptr;
+    initialScanButton = nullptr;
+    separator1 = nullptr;
+    separator2 = nullptr;
+    titleLabel = nullptr;
+
+    //[Destructor]
+    //[/Destructor]
+}
+
+void AudioPluginsListComponent::paint (Graphics& g)
+{
+    //[UserPrePaint] Add your own custom painting code here..
+    //[/UserPrePaint]
+
+    //[UserPaint] Add your own custom painting code here..
+    //[/UserPaint]
+}
+
+void AudioPluginsListComponent::resized()
+{
+    //[UserPreResize] Add your own custom resize code here..
+    //[/UserPreResize]
+
+    panel->setBounds (0, 35, getWidth() - 0, getHeight() - 35);
+    pluginsList->setBounds (1, 36, getWidth() - 2, getHeight() - 37);
+    initialScanButton->setBounds ((getWidth() / 2) - (310 / 2), (getHeight() / 2) - (64 / 2), 310, 64);
+    separator1->setBounds (((getWidth() / 2) - (310 / 2)) + 310 / 2 - (300 / 2), ((getHeight() / 2) - (64 / 2)) + -18, 300, 3);
+    separator2->setBounds (((getWidth() / 2) - (310 / 2)) + 310 / 2 - (300 / 2), ((getHeight() / 2) - (64 / 2)) + 64 - -14, 300, 3);
+    titleLabel->setBounds (0, 0, getWidth() - 0, 26);
+    //[UserResized] Add your own custom resize handling here..
+    this->pluginsList->autoSizeAllColumns();
+    //[/UserResized]
+}
+
+
+//[MiscUserCode]
+
+void AudioPluginsListComponent::showScanButtonIf(bool hasNoPlugins)
+{
+    this->pluginsList->setVisible(!hasNoPlugins);
+    this->initialScanButton->setVisible(hasNoPlugins);
+    this->separator1->setVisible(hasNoPlugins);
+    this->separator2->setVisible(hasNoPlugins);
+}
+
+void AudioPluginsListComponent::updateListContent()
+{
+    this->pluginsList->updateContent();
+    this->pluginsList->setSelectedRows({});
+}
+
+//===----------------------------------------------------------------------===//
+// TableListBoxModel
+//===----------------------------------------------------------------------===//
+
+var AudioPluginsListComponent::getDragSourceDescription(const SparseSet<int> &currentlySelectedRows)
+{
+    auto pd = this->pluginScanner.getList().getType(currentlySelectedRows[0]);
+    if (pd == nullptr) { return var::null; }
+
+    PluginDescriptionDragnDropWrapper::Ptr pluginWrapper = new PluginDescriptionDragnDropWrapper();
+    pluginWrapper->pluginDescription = PluginDescription(*pd);
+    var pluginVar(pluginWrapper);
+
+    return pluginVar;
+}
+
+void AudioPluginsListComponent::paintRowBackground(Graphics &g, int rowNumber, int, int, bool rowIsSelected)
+{
+    if (rowIsSelected)
+    {
+        g.fillAll(Colours::white.withAlpha(0.075f));
+    }
+    else if (rowNumber % 2)
+    {
+        g.fillAll(Colours::black.withAlpha(0.05f));
+    }
+}
+
+void AudioPluginsListComponent::paintCell(Graphics &g,
+    int rowNumber, int columnId,
+    int w, int h, bool rowIsSelected)
+{
+    g.setFont(Font(Font::getDefaultSansSerifFontName(), h * 0.27f, Font::plain));
+    const auto pd = this->pluginScanner.getList().getType(rowNumber);
+    const int margin = h / 12;
+
+    switch (columnId)
+    {
+    case ColumnIds::vendorAndName:
+    {
+        const String inputChannelsString = TRANS_PLURAL("{x} input channels", pd->numInputChannels);
+        const String outputChannelsString = TRANS_PLURAL("{x} output channels", pd->numOutputChannels);
+
+        g.setColour(Colours::white);
+        g.drawText(pd->descriptiveName, margin, margin, w, h, Justification::topLeft, false);
+
+        g.setColour(Colours::white.withAlpha(0.7f));
+        g.drawText(pd->manufacturerName, margin, 0, w, h, Justification::centredLeft, false);
+
+        g.setColour(Colours::white.withAlpha(0.5f));
+        g.drawText(pd->version + ", " + inputChannelsString + ", " + outputChannelsString,
+            margin, -margin, w, h, Justification::bottomLeft, false);
+
+        break;
+    }
+    case ColumnIds::category:
+    {
+        g.setColour(Colours::white.withAlpha(0.5f));
+        g.drawText(pd->category, 0, margin, w - int(margin * 1.5f), h, Justification::topRight, false);
+        break;
+    }
+    case ColumnIds::format:
+    {
+        g.setColour(Colours::white.withAlpha(0.7f));
+        g.drawText(pd->pluginFormatName, margin, margin, w, h, Justification::topLeft, false);
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+void AudioPluginsListComponent::sortOrderChanged(int newSortColumnId, bool isForwards)
+{
+    switch (newSortColumnId)
+    {
+    case ColumnIds::vendorAndName:
+        this->pluginScanner.sortList(KnownPluginList::SortMethod::sortByManufacturer, isForwards);
+    case ColumnIds::category:
+        this->pluginScanner.sortList(KnownPluginList::SortMethod::sortByCategory, isForwards);
+    case ColumnIds::format:
+        this->pluginScanner.sortList(KnownPluginList::SortMethod::sortByFormat, isForwards);
+    default:
+        break;
+    }
+
+    this->pluginsList->updateContent();
+}
+
+int AudioPluginsListComponent::getNumRows()
+{
+    return this->pluginScanner.getList().getNumTypes();
+}
+
+int AudioPluginsListComponent::getColumnAutoSizeWidth(int columnId)
+{
+    switch (columnId)
+    {
+    case ColumnIds::vendorAndName:
+        return this->pluginsList->getVisibleContentWidth() - CATEGORY_COLUMN_WIDTH - FORMAT_COLUMN_WIDTH;
+    case ColumnIds::category:
+        return CATEGORY_COLUMN_WIDTH;
+    case ColumnIds::format:
+        return FORMAT_COLUMN_WIDTH;
+    default:
+        return 0;
+    }
+}
+
+String AudioPluginsListComponent::getCellTooltip(int rowNumber, int columnId)
+{
+    auto description = pluginScanner.getList().getType(rowNumber);
+    if (description == nullptr) { return {}; }
+    return description->fileOrIdentifier;
+}
+
+void AudioPluginsListComponent::selectedRowsChanged(int lastRowSelected)
+{
+    // TODO!
+    // show of hide menu
+}
+
+//===----------------------------------------------------------------------===//
+// HeadlineItemDataSource
+//===----------------------------------------------------------------------===//
+
+bool AudioPluginsListComponent::hasMenu() const noexcept { return false; }
+bool AudioPluginsListComponent::canBeSelectedAsMenuItem() const { return false; }
+
+ScopedPointer<Component> AudioPluginsListComponent::createMenu()
+{
+    return nullptr; // { new InstrumentMenu(this->changesList->getSelectedRows(), this->vcs) };
+}
+
+Image AudioPluginsListComponent::getIcon() const
+{
+    return Icons::findByName(Icons::selection, HEADLINE_ICON_SIZE);
+}
+
+String AudioPluginsListComponent::getName() const
+{
+    return TRANS("menu::selection::audioplugin");
+}
+
+//[/MiscUserCode]
+
+#if 0
+/*
+BEGIN_JUCER_METADATA
+
+<JUCER_COMPONENT documentType="Component" className="AudioPluginsListComponent"
+                 template="../../../Template" componentName="" parentClasses="public Component, public TableListBoxModel, public HeadlineItemDataSource"
+                 constructorParams="PluginScanner &amp;pluginScanner, OrchestraPitTreeItem &amp;instrumentsRoot"
+                 variableInitialisers="pluginScanner(pluginScanner),&#10;instrumentsRoot(instrumentsRoot)"
+                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
+                 fixedSize="0" initialWidth="600" initialHeight="400">
+  <BACKGROUND backgroundColour="0"/>
+  <JUCERCOMP name="" id="d37f5d299f347b6c" memberName="panel" virtualName=""
+             explicitFocusOrder="0" pos="0 35 0M 35M" sourceFile="../../Themes/FramePanel.cpp"
+             constructorParams=""/>
+  <GENERICCOMPONENT name="" id="1b089ba42e39d447" memberName="pluginsList" virtualName=""
+                    explicitFocusOrder="0" pos="1 36 2M 37M" class="TableListBox"
+                    params="&quot;Instruments&quot;, this"/>
+  <GENERICCOMPONENT name="" id="62a5bd7c1a3ec2" memberName="initialScanButton" virtualName=""
+                    explicitFocusOrder="0" pos="0Cc 0Cc 310 64" class="MenuItemComponent"
+                    params="this, nullptr, MenuItem::item(Icons::instrument, CommandIDs::ScanAllPlugins, TRANS(&quot;instruments::initialscan&quot;))"/>
+  <JUCERCOMP name="" id="8817b1b124163b2f" memberName="separator1" virtualName=""
+             explicitFocusOrder="0" pos="0Cc -18 300 3" posRelativeX="62a5bd7c1a3ec2"
+             posRelativeY="62a5bd7c1a3ec2" sourceFile="../../Themes/SeparatorHorizontalFading.cpp"
+             constructorParams=""/>
+  <JUCERCOMP name="" id="af3fdc94cce3ad8c" memberName="separator2" virtualName=""
+             explicitFocusOrder="0" pos="0Cc -14R 300 3" posRelativeX="62a5bd7c1a3ec2"
+             posRelativeY="62a5bd7c1a3ec2" sourceFile="../../Themes/SeparatorHorizontalFading.cpp"
+             constructorParams=""/>
+  <LABEL name="" id="660583b19bbfaa6b" memberName="titleLabel" virtualName=""
+         explicitFocusOrder="0" pos="0 0 0M 26" labelText="page::orchestra::plugins"
+         editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
+         fontname="Default serif font" fontsize="21.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
+</JUCER_COMPONENT>
+
+END_JUCER_METADATA
+*/
+#endif
