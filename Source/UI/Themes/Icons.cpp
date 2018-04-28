@@ -84,6 +84,7 @@ void Icons::initBuiltInImages()
     setIconForKey(colour);
     setIconForKey(revision);
 
+    setIconForKey(list);
     setIconForKey(ellipsis);
     setIconForKey(progressIndicator);
 

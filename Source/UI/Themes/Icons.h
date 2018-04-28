@@ -52,6 +52,7 @@ struct Icons final
         colour,
         revision,
 
+        list,
         ellipsis,
         progressIndicator,
 
