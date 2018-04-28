@@ -32,6 +32,7 @@ public:
 
     explicit RootTreeItem(const String &name);
 
+    String getName() const noexcept override;
     Colour getColour() const noexcept override;
     Image getIcon() const noexcept override;
 

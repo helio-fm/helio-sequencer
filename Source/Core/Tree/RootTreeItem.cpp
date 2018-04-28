@@ -45,6 +45,12 @@ RootTreeItem::RootTreeItem(const String &name) :
     this->setVisible(false);
 }
 
+String RootTreeItem::getName() const noexcept
+{
+    // TODO: if user is logged in, show his name rather than default value?
+    return TRANS("tree::root");
+}
+
 Colour RootTreeItem::getColour() const noexcept
 {
     return Colour(0xffffbe92);

@@ -63,7 +63,7 @@ void Workspace::init()
     {
         this->audioCore = new AudioCore();
         this->pluginManager = new PluginScanner();
-        this->treeRoot = new RootTreeItem("Workspace One");
+        this->treeRoot = new RootTreeItem("Workspace");
         
         if (! this->autoload())
         {
