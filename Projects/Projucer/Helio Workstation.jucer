@@ -324,16 +324,6 @@
                   file="../../Source/Core/Network/Requests/HelioApiRequest.cpp"/>
             <FILE id="Zri11i" name="HelioApiRequest.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/HelioApiRequest.h"/>
-            <FILE id="wrrn6p" name="PullThread.cpp" compile="1" resource="0" file="../../Source/Core/Network/Requests/PullThread.cpp"/>
-            <FILE id="MzuH2f" name="PullThread.h" compile="0" resource="0" file="../../Source/Core/Network/Requests/PullThread.h"/>
-            <FILE id="BWoGuo" name="PushThread.cpp" compile="1" resource="0" file="../../Source/Core/Network/Requests/PushThread.cpp"/>
-            <FILE id="Wy66uh" name="PushThread.h" compile="0" resource="0" file="../../Source/Core/Network/Requests/PushThread.h"/>
-            <FILE id="lFJAgP" name="RemovalThread.cpp" compile="1" resource="0"
-                  file="../../Source/Core/Network/Requests/RemovalThread.cpp"/>
-            <FILE id="WZaeYX" name="RemovalThread.h" compile="0" resource="0" file="../../Source/Core/Network/Requests/RemovalThread.h"/>
-            <FILE id="TPf8Nb" name="SyncMessage.h" compile="0" resource="0" file="../../Source/Core/Network/Requests/SyncMessage.h"/>
-            <FILE id="q0lv2L" name="SyncThread.cpp" compile="1" resource="0" file="../../Source/Core/Network/Requests/SyncThread.cpp"/>
-            <FILE id="M63j0b" name="SyncThread.h" compile="0" resource="0" file="../../Source/Core/Network/Requests/SyncThread.h"/>
             <FILE id="tezH4X" name="RequestResourceThread.h" compile="0" resource="0"
                   file="../../Source/Core/Network/Requests/RequestResourceThread.h"/>
             <FILE id="VT4WH4" name="RequestUserProfileThread.h" compile="0" resource="0"
