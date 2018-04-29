@@ -80,6 +80,10 @@ void Icons::initBuiltInImages()
     setIconForKey(annotation);
     setIconForKey(colour);
     setIconForKey(revision);
+    setIconForKey(routing);
+
+    setIconForKey(piano);
+    setIconForKey(microphone);
 
     setIconForKey(list);
     setIconForKey(ellipsis);

@@ -42,13 +42,12 @@ OrchestraPitMenu::OrchestraPitMenu(OrchestraPitTreeItem &parentOrchestra) :
     
     cmds.add(MenuItem::item(Icons::browse, CommandIDs::ScanPluginsFolder, TRANS("menu::instruments::scanfolder")));
     
-    const KnownPluginList &info = App::Workspace().getPluginManager().getList();
-    
-    for (int i = 0; i < info.getNumTypes(); ++i)
-    {
-        const PluginDescription *pd = info.getType(i);
-        cmds.add(MenuItem::item(Icons::create, CommandIDs::CreateInstrument + i, TRANS("menu::instruments::add") + " " + pd->descriptiveName));
-    }
+    //const auto &info = App::Workspace().getPluginManager().getList();
+    //for (int i = 0; i < info.getNumTypes(); ++i)
+    //{
+    //    const PluginDescription *pd = info.getType(i);
+    //    cmds.add(MenuItem::item(Icons::create, CommandIDs::CreateInstrument + i, TRANS("menu::instruments::add") + " " + pd->descriptiveName));
+    //}
     
     this->updateContent(cmds, MenuPanel::SlideRight);
 }

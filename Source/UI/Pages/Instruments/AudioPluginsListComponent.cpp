@@ -316,7 +316,10 @@ bool AudioPluginsListComponent::canBeSelectedAsMenuItem() const { return false; 
 
 ScopedPointer<Component> AudioPluginsListComponent::createMenu()
 {
-    return { new AudioPluginSelectionMenu() };
+    const auto selectedRow = this->pluginsList->getSelectedRow();
+    const auto description = pluginScanner.getList().getType(selectedRow);
+    jassert(description);
+    return { new AudioPluginSelectionMenu(*description, this->instrumentsRoot) };
 }
 
 Image AudioPluginsListComponent::getIcon() const

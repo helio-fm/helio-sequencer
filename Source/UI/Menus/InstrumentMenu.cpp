@@ -49,18 +49,8 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
     //menu.add(MenuItem::item(Icons::?current, TRANS("menu::instrument::seticon")));
     //menu.add(MenuItem::item(Icons::colour, TRANS("menu::instrument::setcolour")));
 
-    bool hasEffects = false;
-    for (const auto description : this->pluginScanner.getList())
-    {
-        if (!description->isInstrument)
-        {
-            hasEffects = true;
-            break;
-        }
-    }
-
     menu.add(MenuItem::item(Icons::audioPlugin, TRANS("menu::instrument::addeffect"))->
-        withSubmenu()->withTimer()->disabledIf(!hasEffects)->withAction([this]()
+        withSubmenu()->withTimer()->disabledIf(!this->pluginScanner.hasEffects())->withAction([this]()
     {
         this->updateContent(this->createEffectsMenu(), MenuPanel::SlideLeft);
     }));

@@ -353,7 +353,7 @@ void MenuItemComponent::mouseMove (const MouseEvent& e)
         e.getScreenPosition().getDistanceSquaredFrom(this->lastMouseScreenPosition) > 0 &&
         !this->isTimerRunning())
     {
-        this->startTimer(550);
+        this->startTimer(650);
     }
 
     DraggingListBoxComponent::mouseMove(e);

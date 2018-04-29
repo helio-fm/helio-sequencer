@@ -33,31 +33,32 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createDefaultMenu()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::copy, TRANS("menu::selection::route::reset")));
-
-    menu.add(MenuItem::item(Icons::cut, TRANS("menu::selection::route::getaudio"))->
+    menu.add(MenuItem::item(Icons::routing, TRANS("menu::selection::route::getaudio"))->
         withSubmenu()->withTimer()->withAction([this]()
     {
         this->updateContent(this->createAudioSourcesMenu(), MenuPanel::SlideLeft);
     }));
 
-    menu.add(MenuItem::item(Icons::cut, TRANS("menu::selection::route::sendaudio"))->
+    menu.add(MenuItem::item(Icons::routing, TRANS("menu::selection::route::sendaudio"))->
         withSubmenu()->withTimer()->withAction([this]()
     {
         this->updateContent(this->createAudioDestinationsMenu(), MenuPanel::SlideLeft);
     }));
 
-    menu.add(MenuItem::item(Icons::cut, TRANS("menu::selection::route::getmidi"))->
+    menu.add(MenuItem::item(Icons::routing,
+        TRANS("menu::selection::route::getmidi"))->
         withSubmenu()->withTimer()->withAction([this]()
     {
         this->updateContent(this->createMidiSourcesMenu(), MenuPanel::SlideLeft);
     }));
 
-    menu.add(MenuItem::item(Icons::cut, TRANS("menu::selection::route::sendmidi"))->
+    menu.add(MenuItem::item(Icons::routing, TRANS("menu::selection::route::sendmidi"))->
         withSubmenu()->withTimer()->withAction([this]()
     {
         this->updateContent(this->createMidiDestinationsMenu(), MenuPanel::SlideLeft);
     }));
+
+    menu.add(MenuItem::item(Icons::remove, TRANS("menu::selection::route::remove")));
 
     return menu;
 }

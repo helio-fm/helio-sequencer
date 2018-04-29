@@ -51,6 +51,10 @@ struct Icons final
         annotation,
         colour,
         revision,
+        routing,
+
+        piano,
+        microphone,
 
         list,
         ellipsis,

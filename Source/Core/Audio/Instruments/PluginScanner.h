@@ -31,6 +31,9 @@ public:
     bool isWorking() const;
     void removeListItem(int index);
 
+    bool hasEffects() const;
+    bool hasInstruments() const;
+
     void sortList(KnownPluginList::SortMethod method, bool forwards);
     const KnownPluginList &getList() const noexcept;
 

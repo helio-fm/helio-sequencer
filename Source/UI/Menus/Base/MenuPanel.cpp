@@ -28,15 +28,15 @@
 #include "App.h"
 #include "MainWindow.h"
 
-MenuPanel::MenuPanel()
+MenuPanel::MenuPanel() :
+    lastAnimationType(AnimationType::None),
+    shouldResizeToFitContent(false)
 {
     this->setInterceptsMouseClicks(false, true);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->addAndMakeVisible(this->listBox = new ListBox());
 
-    this->lastAnimationType = AnimationType::None;
-
-    this->setSize (150, 100);
+    this->setSize (150, 10);
 
     for (int i = 0; i < this->getNumChildComponents(); ++i)
     {

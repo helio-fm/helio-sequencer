@@ -36,7 +36,7 @@ static MenuPanel::Menu createDefaultPanel()
     // else, disabled? or shows error messages?
 
     cmds.add(MenuItem::item(Icons::toggleOn, CommandIDs::VersionControlToggleQuickStash,
-        TRANS("menu::vcs::togglechanges")));
+        TRANS("menu::vcs::changes::hide"))); // menu::vcs::changes::show
 
     cmds.add(MenuItem::item(Icons::commit, CommandIDs::VersionControlCommitAll,
         TRANS("menu::vcs::commitall")));
@@ -44,11 +44,11 @@ static MenuPanel::Menu createDefaultPanel()
     cmds.add(MenuItem::item(Icons::reset, CommandIDs::VersionControlResetAll,
         TRANS("menu::vcs::resetall")));
 
-    cmds.add(MenuItem::item(Icons::pull, CommandIDs::VersionControlPull,
-        TRANS("menu::vcs::pull")));
-
     cmds.add(MenuItem::item(Icons::push, CommandIDs::VersionControlPush,
-        TRANS("menu::vcs::push")));
+        TRANS("menu::vcs::push"))->disabledIf(true)); // TODO push-pull
+
+    cmds.add(MenuItem::item(Icons::pull, CommandIDs::VersionControlPull,
+        TRANS("menu::vcs::pull"))->disabledIf(true)); // TODO push-pull
 
     // TODO when stashes are ready
     //cmds.add(MenuItem::item(Icons::pop, CommandIDs::VersionControlPopStash,

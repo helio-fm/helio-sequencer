@@ -99,7 +99,7 @@ static MenuPanel::Menu createArpsPanel()
     cmds.add(MenuItem::item(Icons::back, CommandIDs::Back,
         TRANS("menu::back"))->withTimer());
 
-    cmds.add(MenuItem::item(Icons::arpeggiate,
+    cmds.add(MenuItem::item(Icons::create,
         CommandIDs::CreateArpeggiatorFromSelection, TRANS("menu::arpeggiators::create")));
 
     const auto arps = ArpeggiatorsManager::getInstance().getArps();

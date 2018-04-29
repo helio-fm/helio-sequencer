@@ -17,14 +17,24 @@
 
 #pragma once
 
+class PluginScanner;
+class OrchestraPitTreeItem;
+
 #include "MenuPanel.h"
 
 class AudioPluginSelectionMenu final : public MenuPanel
 {
 public:
     
-    AudioPluginSelectionMenu();
+    AudioPluginSelectionMenu(const PluginDescription pluginDescription,
+        OrchestraPitTreeItem &orchestraNode);
 
-    void handleCommandMessage(int commandId) override;
+private:
+
+    const PluginDescription pluginDescription;
+    OrchestraPitTreeItem &orchestraNode;
+
+    MenuPanel::Menu createDefaultMenu();
+    MenuPanel::Menu createInstrumentsMenu();
 
 };

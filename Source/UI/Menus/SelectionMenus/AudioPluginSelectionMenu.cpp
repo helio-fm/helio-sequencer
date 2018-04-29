@@ -17,39 +17,74 @@
 
 #include "Common.h"
 #include "AudioPluginSelectionMenu.h"
+#include "OrchestraPitTreeItem.h"
+#include "InstrumentTreeItem.h"
+#include "PluginScanner.h"
+#include "Workspace.h"
+#include "AudioCore.h"
+#include "Instrument.h"
 #include "CommandIDs.h"
 #include "Icons.h"
+#include "App.h"
 
-static MenuPanel::Menu createDefaultMenu()
+AudioPluginSelectionMenu::AudioPluginSelectionMenu(const PluginDescription pd,
+    OrchestraPitTreeItem &orchestraNode) :
+    pluginDescription(pd),
+    orchestraNode(orchestraNode)
 {
-    MenuPanel::Menu cmds;
-
-    // TODO
-    // Create new instrument
-    // Add to instrument >
-    // Remove from list
-    cmds.add(MenuItem::item(Icons::create, TRANS("menu::selection::plugin::init")));
-    cmds.add(MenuItem::item(Icons::audioPlugin, TRANS("menu::selection::plugin::plug"))->withSubmenu()->withTimer());
-    cmds.add(MenuItem::item(Icons::remove, TRANS("menu::selection::plugin::remove")));
-
-    return cmds;
+    this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
 }
 
-AudioPluginSelectionMenu::AudioPluginSelectionMenu()
+MenuPanel::Menu AudioPluginSelectionMenu::createDefaultMenu()
 {
-    this->updateContent(createDefaultMenu(), MenuPanel::SlideRight);
-}
+    MenuPanel::Menu menu;
 
-void AudioPluginSelectionMenu::handleCommandMessage(int commandId)
-{
-    if (commandId == CommandIDs::Back)
+    menu.add(MenuItem::item(Icons::create, TRANS("menu::selection::plugin::init"))->withAction([this]()
     {
-        this->updateContent(createDefaultMenu(), MenuPanel::SlideRight);
-        return;
-    }
-    else if (commandId == CommandIDs::CopyEvents)
+        App::Workspace().getAudioCore().addInstrument(this->pluginDescription,
+            this->pluginDescription.descriptiveName,
+            [this](Instrument *instrument)
+        {
+            this->orchestraNode.addInstrumentTreeItem(instrument);
+            this->dismiss();
+        });
+    }));
+
+    const auto instruments = this->orchestraNode.findChildrenOfType<InstrumentTreeItem>();
+    menu.add(MenuItem::item(Icons::audioPlugin, TRANS("menu::selection::plugin::plug"))->
+        withSubmenu()->withTimer()->disabledIf(instruments.isEmpty())->withAction([this]()
     {
+        this->updateContent(this->createInstrumentsMenu(), MenuPanel::SlideLeft);
+    }));
+
+    menu.add(MenuItem::item(Icons::remove, TRANS("menu::selection::plugin::remove"))->withAction([this]()
+    {
+        // TODO
         this->dismiss();
-        return;
+    }));
+
+    return menu;
+}
+
+MenuPanel::Menu AudioPluginSelectionMenu::createInstrumentsMenu()
+{
+    MenuPanel::Menu menu;
+
+    menu.add(MenuItem::item(Icons::back, TRANS("menu::back"))->withTimer()->withAction([this]()
+    {
+        this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
+    }));
+
+    const auto instruments = this->orchestraNode.findChildrenOfType<InstrumentTreeItem>();
+
+    for (const auto instrument : instruments)
+    {
+        menu.add(MenuItem::item(Icons::instrument, instrument->getName())->withAction([this, instrument]()
+        {
+            // TODO
+            this->dismiss();
+        }));
     }
+
+    return menu;
 }

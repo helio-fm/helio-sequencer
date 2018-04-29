@@ -27,25 +27,25 @@ VersionControlStageSelectionMenu::VersionControlStageSelectionMenu(const SparseS
 {
     MenuPanel::Menu cmds;
 
-    cmds.add(MenuItem::item(Icons::commit, TRANS("menu::selection::stage::commit"))->withAction([this]()
+    cmds.add(MenuItem::item(Icons::commit, TRANS("menu::selection::vcs::commit"))->withAction([this]()
     {
         this->dismiss();
     }));
 
-    cmds.add(MenuItem::item(Icons::reset, TRANS("menu::selection::stage::reset"))->withAction([this]()
+    cmds.add(MenuItem::item(Icons::reset, TRANS("menu::selection::vcs::reset"))->withAction([this]()
     {
         this->dismiss();
     }));
 
     // TODO add named stashes in addition to the default one
     //cmds.add(MenuItem::item(Icons::stash, CommandIDs::DeleteEvents,
-    //    TRANS("menu::selection::stage::stash")));
+    //    TRANS("menu::selection::vcs::stash")));
 
     cmds.add(MenuItem::item(Icons::selectAll, CommandIDs::VersionControlSelectAll,
-        TRANS("menu::selection::stage::selectall")));
+        TRANS("menu::selection::vcs::selectall")));
 
     cmds.add(MenuItem::item(Icons::selectNone, CommandIDs::VersionControlSelectNone,
-        TRANS("menu::selection::stage::selectnone")));
+        TRANS("menu::selection::vcs::selectnone")));
 
     this->updateContent(cmds, MenuPanel::SlideRight);
 }

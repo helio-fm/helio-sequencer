@@ -54,6 +54,7 @@ private:
     
     friend class OrchestraPitPage;
     friend class OrchestraPitMenu;
+    friend class AudioPluginSelectionMenu;
     
     InstrumentTreeItem *addInstrumentTreeItem(Instrument *instrument, int insertIndex = -1);
     ScopedPointer<OrchestraPitPage> instrumentsPage;

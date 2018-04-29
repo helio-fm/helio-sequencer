@@ -51,6 +51,33 @@ void PluginScanner::removeListItem(int index)
     return this->pluginsList.removeType(index);
 }
 
+
+bool PluginScanner::hasEffects() const
+{
+    for (const auto description : this->getList())
+    {
+        if (! description->isInstrument)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool PluginScanner::hasInstruments() const
+{
+    for (const auto description : this->getList())
+    {
+        if (description->isInstrument)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void PluginScanner::sortList(KnownPluginList::SortMethod fieldToSortBy, bool forwards)
 {
     const ScopedWriteLock lock(this->pluginsListLock);

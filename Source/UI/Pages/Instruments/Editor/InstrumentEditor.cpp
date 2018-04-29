@@ -87,7 +87,7 @@ InstrumentEditorNode *InstrumentEditor::getComponentForNode(AudioProcessorGraph:
     }
     
     return nullptr;
-}
+} 
 
 InstrumentEditorConnector *InstrumentEditor::getComponentForConnection(AudioProcessorGraph::Connection conn) const
 {
@@ -143,6 +143,8 @@ void InstrumentEditor::selectNode(AudioProcessorGraph::NodeID id)
 
 void InstrumentEditor::updateComponents()
 {
+    this->selectNode(0);
+
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
         if (auto fc = dynamic_cast<InstrumentEditorNode *>(getChildComponent(i)))

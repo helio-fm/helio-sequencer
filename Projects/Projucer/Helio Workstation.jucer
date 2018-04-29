@@ -81,11 +81,13 @@
         <FILE id="femQww" name="login.svg" compile="0" resource="1" file="../../Resources/Icons/login.svg"/>
         <FILE id="wJUWRt" name="menu.svg" compile="0" resource="1" file="../../Resources/Icons/menu.svg"/>
         <FILE id="GtzvG7" name="mute.svg" compile="0" resource="1" file="../../Resources/Icons/mute.svg"/>
+        <FILE id="oF6DEi" name="microphone.svg" compile="0" resource="1" file="../../Resources/Icons/microphone.svg"/>
         <FILE id="TWchuX" name="orchestraPit.svg" compile="0" resource="1"
               file="../../Resources/Icons/orchestraPit.svg"/>
         <FILE id="VDY34K" name="paste.svg" compile="0" resource="1" file="../../Resources/Icons/paste.svg"/>
         <FILE id="kykHC8" name="patterns.svg" compile="0" resource="1" file="../../Resources/Icons/patterns.svg"/>
         <FILE id="cC5z70" name="pause.svg" compile="0" resource="1" file="../../Resources/Icons/pause.svg"/>
+        <FILE id="Ocp36i" name="piano.svg" compile="0" resource="1" file="../../Resources/Icons/piano.svg"/>
         <FILE id="UiCw3T" name="pianoTrack.svg" compile="0" resource="1" file="../../Resources/Icons/pianoTrack.svg"/>
         <FILE id="eJL3nF" name="play.svg" compile="0" resource="1" file="../../Resources/Icons/play.svg"/>
         <FILE id="rwdDqH" name="progressIndicator.svg" compile="0" resource="1"
@@ -100,6 +102,7 @@
         <FILE id="Kv4MaK" name="render.svg" compile="0" resource="1" file="../../Resources/Icons/render.svg"/>
         <FILE id="kAPtlo" name="reset.svg" compile="0" resource="1" file="../../Resources/Icons/reset.svg"/>
         <FILE id="FgLHwk" name="revision.svg" compile="0" resource="1" file="../../Resources/Icons/revision.svg"/>
+        <FILE id="fref2V" name="routing.svg" compile="0" resource="1" file="../../Resources/Icons/routing.svg"/>
         <FILE id="b1fUSl" name="selectionTool.svg" compile="0" resource="1"
               file="../../Resources/Icons/selectionTool.svg"/>
         <FILE id="brZyaK" name="selection.svg" compile="0" resource="1" file="../../Resources/Icons/selection.svg"/>
