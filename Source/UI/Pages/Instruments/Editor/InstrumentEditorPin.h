@@ -42,7 +42,7 @@ public:
 private:
 
     Instrument &graph;
-    InstrumentEditor *getGraphPanel() const noexcept;
+    InstrumentEditor *getParentEditor() const noexcept;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InstrumentEditorPin)
 };

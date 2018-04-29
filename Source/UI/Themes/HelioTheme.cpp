@@ -862,12 +862,12 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(TreeView::selectedItemBackgroundColourId, Colours::transparentBlack);
     this->setColour(TreeView::backgroundColourId, Colours::transparentBlack);
     this->setColour(TreeView::dragAndDropIndicatorColourId, Colours::black.withAlpha(0.15f));
+   
+    // Helio colours:
 
     // Lasso
     this->setColour(ColourIDs::SelectionComponent::fill, s->getLassoFillColour().withAlpha(0.15f));
     this->setColour(ColourIDs::SelectionComponent::outline, s->getLassoBorderColour().withAlpha(0.4f));
-   
-    // Helio colours:
 
     // A hack for icon base colors
     this->setColour(ColourIDs::Icons::fill, s->getIconBaseColour());
@@ -886,10 +886,14 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::TrackScroller::borderLineLight, Colours::white.withAlpha(0.025f));
 
     // InstrumentEditor
-    this->setColour(ColourIDs::Instrument::midiIn, Colour(0x3f000000));
-    this->setColour(ColourIDs::Instrument::midiOut, Colour(0x3f000000));
-    this->setColour(ColourIDs::Instrument::audioIn, Colour(0x25ffffff));
-    this->setColour(ColourIDs::Instrument::audioOut, Colour(0x25ffffff));
+    this->setColour(ColourIDs::Instrument::midiIn, Colours::white.withAlpha(0.1f));
+    this->setColour(ColourIDs::Instrument::midiOut, Colours::white.withAlpha(0.1f));
+    this->setColour(ColourIDs::Instrument::audioIn, Colours::white.withAlpha(0.15f));
+    this->setColour(ColourIDs::Instrument::audioOut, Colours::white.withAlpha(0.15f));
+    this->setColour(ColourIDs::Instrument::midiConnector, Colours::black.withAlpha(0.35f));
+    this->setColour(ColourIDs::Instrument::audioConnector, Colours::white.withAlpha(0.25f));
+    this->setColour(ColourIDs::Instrument::shadowPin, Colours::black.withAlpha(0.1f));
+    this->setColour(ColourIDs::Instrument::shadowConnector, Colours::black.withAlpha(0.2f));
 
     // Borders
     this->setColour(ColourIDs::Common::borderLineLight, Colours::white.withAlpha(0.06f));

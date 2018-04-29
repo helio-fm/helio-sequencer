@@ -31,7 +31,7 @@
 #if HELIO_DESKTOP
 #   define AUDIO_PLUGIN_RUNS_IN_SEPARATE_WINDOW 1
 #   define CHANNELS_NUMBER_LIMIT 12
-#   define PIN_SIZE (16)
+#   define PIN_SIZE (18)
 #elif HELIO_MOBILE
 #   define AUDIO_PLUGIN_RUNS_IN_SEPARATE_WINDOW 0
 #   define CHANNELS_NUMBER_LIMIT 6
@@ -41,12 +41,11 @@
 InstrumentEditorNode::InstrumentEditorNode(Instrument &graph, AudioProcessorGraph::NodeID nodeId) :
     instrument(graph),
     nodeId(nodeId),
-    numInputs(0),
-    numOutputs(0),
     pinSize(PIN_SIZE),
+    isSelected(false),
     font(Font(Font::getDefaultSansSerifFontName(), 21.f, Font::plain)),
-    numIns(0),
-    numOuts(0)
+    numInputs(0),
+    numOutputs(0)
 {
     this->setWantsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
@@ -77,7 +76,7 @@ void InstrumentEditorNode::mouseDrag(const MouseEvent &e)
         (pos.getX() + getWidth() / 2) / static_cast<double>(this->getParentWidth()),
         (pos.getY() + getHeight() / 2) / static_cast<double>(this->getParentHeight()));
 
-    this->getGraphPanel()->updateComponents();
+    this->getParentEditor()->updateComponents();
     this->setMouseCursor(MouseCursor::DraggingHandCursor);
 }
 
@@ -85,48 +84,49 @@ void InstrumentEditorNode::mouseUp(const MouseEvent &e)
 {
     this->setMouseCursor(MouseCursor::PointingHandCursor);
 
-    if (e.mouseWasClicked() && e.getDistanceFromDragStart() < 2)
+    if (e.mouseWasClicked())
     {
-        if (this->instrument.isNodeStandardInputOrOutput(this->nodeId))
-        {
-            return;
-        }
+        this->getParentEditor()->selectNode(this->nodeId);
+        return;
 
-        if (const AudioProcessorGraph::Node::Ptr f = this->instrument.getNodeForId(this->nodeId))
-        {
-#if AUDIO_PLUGIN_RUNS_IN_SEPARATE_WINDOW
+        // TODO
 
-            if (PluginWindow *const w = PluginWindow::getWindowFor(f, false, false))
-            {
-                w->toFront(true);
-            }
-
-#else
-
-            const auto instrumentTreeItems =
-                App::Workspace().getTreeRoot()->
-                findChildrenOfType<InstrumentTreeItem>();
-
-            for (const auto instrumentTreeItem : instrumentTreeItems)
-            {
-                if (instrumentTreeItem->getInstrument() == &this->instrument)
-                {
-                    instrumentTreeItem->updateChildrenEditors();
-                    if (TreeItem *audioPluginTreeItem =
-                        instrumentTreeItem->findAudioPluginEditorForNodeId(this->nodeId))
-                    {
-                        audioPluginTreeItem->setSelected(true, true);
-                        return;
-                    }
-                }
-            }
-
-#endif
-        }
+//        if (this->instrument.isNodeStandardInputOrOutput(this->nodeId))
+//        {
+//            return;
+//        }
+//
+//        if (const AudioProcessorGraph::Node::Ptr f = this->instrument.getNodeForId(this->nodeId))
+//        {
+//#if AUDIO_PLUGIN_RUNS_IN_SEPARATE_WINDOW
+//            if (PluginWindow *const w = PluginWindow::getWindowFor(f, false, false))
+//            {
+//                w->toFront(true);
+//            }
+//#else
+//            const auto instrumentTreeItems =
+//                App::Workspace().getTreeRoot()->
+//                findChildrenOfType<InstrumentTreeItem>();
+//
+//            for (const auto instrumentTreeItem : instrumentTreeItems)
+//            {
+//                if (instrumentTreeItem->getInstrument() == &this->instrument)
+//                {
+//                    instrumentTreeItem->updateChildrenEditors();
+//                    if (TreeItem *audioPluginTreeItem =
+//                        instrumentTreeItem->findAudioPluginEditorForNodeId(this->nodeId))
+//                    {
+//                        audioPluginTreeItem->setSelected(true, true);
+//                        return;
+//                    }
+//                }
+//            }
+//#endif
+//        }
     }
-    else if (!e.mouseWasClicked())
+    else
     {
-        this->getGraphPanel()->updateComponents();
+        this->getParentEditor()->updateComponents();
     }
 }
 
@@ -144,19 +144,24 @@ bool InstrumentEditorNode::hitTest(int x, int y)
 
 void InstrumentEditorNode::paint(Graphics &g)
 {
-    g.setGradientFill(ColourGradient(Colour(0x59ffffff),
-        0.0f, static_cast<float>(getHeight()),
-        Colour(0x30ffffff),
-        static_cast<float>(getWidth()), 0.0f,
-        true));
+    const auto w = float(this->getWidth());
+    const auto h = float(this->getHeight());
 
-    g.fillEllipse(1.0f, 1.0f, static_cast<float>(getWidth() - 2), static_cast<float>(getHeight() - 2));
+    g.setGradientFill(ColourGradient(Colour(0x59ffffff), 0.0f, h,
+        Colour(0x30ffffff), w, 0.0f, true));
+
+    g.fillEllipse(1.0f, 1.0f, w - 2.f, h - 2.f);
 
     g.setColour(Colour(0x5d000000));
-    g.drawEllipse(1.0f, 1.0f, static_cast<float>(getWidth() - 2), static_cast<float>(getHeight() - 2), 0.500f);
+    g.drawEllipse(1.0f, 1.0f, w - 2.f, h - 2.f, 0.5f);
 
+    if (this->isSelected)
+    {
+        g.drawEllipse(5.0f, 5.0f, w - 10.f, h - 10.f, 1.5f);
+    }
+
+    g.setFont(this->font);
     g.setColour(Colours::black.withAlpha(0.75f));
-    g.setFont(font);
     g.drawFittedText(this->getName(), getLocalBounds().reduced(this->pinSize * 2, this->pinSize), Justification::centred, 3, 1.f);
 }
 
@@ -168,15 +173,15 @@ void InstrumentEditorNode::resized()
 
     for (int i = 0; i < this->getNumChildComponents(); ++i)
     {
-        if (InstrumentEditorPin *const pin = dynamic_cast <InstrumentEditorPin *>(getChildComponent(i)))
+        if (auto pin = dynamic_cast<InstrumentEditorPin *>(this->getChildComponent(i)))
         {
-            const int total = pin->isInput ? this->numIns : this->numOuts;
+            const int total = pin->isInput ? this->numInputs : this->numOutputs;
             const int index = (pin->index == Instrument::midiChannelNumber) ? (total - 1) : pin->index;
             const int pinSize2 = (this->pinSize / 2);
 
             const float dAngle = pin->isInput ?
-                                  270.f - ((180.f / (total + 1.f)) * (1 + index)) :
-                                  ((180.f / (total + 1.f)) * (1 + index)) - 90.f;
+                270.f - ((180.f / (total + 1.f)) * (1 + index)) :
+                ((180.f / (total + 1.f)) * (1 + index)) - 90.f;
 
             const float rAngle = (dAngle / 180.f) * float_Pi;
             const float dx = cos(rAngle) * r;
@@ -191,7 +196,7 @@ void InstrumentEditorNode::getPinPos(const int index, const bool isInput, float 
 {
     for (int i = 0; i < this->getNumChildComponents(); ++i)
     {
-        if (InstrumentEditorPin *const pc = dynamic_cast <InstrumentEditorPin *>(getChildComponent(i)))
+        if (auto pc = dynamic_cast<InstrumentEditorPin *>(this->getChildComponent(i)))
         {
             if (pc->index == index && isInput == pc->isInput)
             {
@@ -201,6 +206,12 @@ void InstrumentEditorNode::getPinPos(const int index, const bool isInput, float 
             }
         }
     }
+}
+
+void InstrumentEditorNode::setSelected(bool selected)
+{
+    this->isSelected = selected;
+    this->repaint();
 }
 
 void InstrumentEditorNode::update()
@@ -213,51 +224,48 @@ void InstrumentEditorNode::update()
         return;
     }
 
-    this->numIns = jmin(f->getProcessor()->getTotalNumInputChannels(), CHANNELS_NUMBER_LIMIT);
+    const int newNumInputs =
+        jmin(f->getProcessor()->getTotalNumInputChannels(), CHANNELS_NUMBER_LIMIT) +
+        (f->getProcessor()->acceptsMidi() ? 1 : 0);
 
-    if (f->getProcessor()->acceptsMidi())
-    { ++this->numIns; }
-
-    this->numOuts = jmin(f->getProcessor()->getTotalNumOutputChannels(), CHANNELS_NUMBER_LIMIT);
-
-    if (f->getProcessor()->producesMidi())
-    { ++this->numOuts; }
+    const int newNumOutputs =
+        jmin(f->getProcessor()->getTotalNumOutputChannels(), CHANNELS_NUMBER_LIMIT) +
+        (f->getProcessor()->producesMidi() ? 1 : 0);
 
     int w = 190;
-    //int h = jmax(80, (jmax(this->numIns, this->numOuts) + 1) * 20);
+    //int h = jmax(80, (jmax(this->numInputs, this->numOutputs) + 1) * 20);
 
     // a hack needed for "Audio Input", "Audio Output" etc nodes:
     const String translatedName = TRANS(f->getProcessor()->getName());
 
-    const int textWidth = font.getStringWidth(translatedName);
+    const int textWidth = this->font.getStringWidth(translatedName);
     w = jmax(w, 16 + jmin(textWidth, 300));
 
     this->setSize(w, w);
-
     this->setName(translatedName);
 
     {
         double x, y;
         this->instrument.getNodePosition(nodeId, x, y);
-        setCentreRelative(static_cast<float>( x), static_cast<float>( y));
+        this->setCentreRelative(static_cast<float>( x), static_cast<float>( y));
     }
 
-    if (this->numIns != numInputs || this->numOuts != numOutputs)
+    if (this->numInputs != newNumInputs || this->numOutputs != newNumOutputs)
     {
-        numInputs = this->numIns;
-        numOutputs = this->numOuts;
+        this->numInputs = newNumInputs;
+        this->numOutputs = newNumOutputs;
 
         this->deleteAllChildren();
 
         int i;
 
-        for (i = 0; i < this->numIns; ++i)
+        for (i = 0; i < this->numInputs; ++i)
         { this->addAndMakeVisible(new InstrumentEditorPin(this->instrument, nodeId, i, true)); }
 
         if (f->getProcessor()->acceptsMidi())
         { this->addAndMakeVisible(new InstrumentEditorPin(this->instrument, nodeId, Instrument::midiChannelNumber, true)); }
 
-        for (i = 0; i < this->numOuts; ++i)
+        for (i = 0; i < this->numOutputs; ++i)
         { this->addAndMakeVisible(new InstrumentEditorPin(this->instrument, nodeId, i, false)); }
 
         if (f->getProcessor()->producesMidi())
@@ -267,7 +275,7 @@ void InstrumentEditorNode::update()
     }
 }
 
-InstrumentEditor *InstrumentEditorNode::getGraphPanel() const noexcept
+InstrumentEditor *InstrumentEditorNode::getParentEditor() const noexcept
 {
     return this->findParentComponentOfClass<InstrumentEditor>();
 }

@@ -25,13 +25,18 @@
 #include "InstrumentEditorPin.h"
 #include "InstrumentEditorNode.h"
 #include "InstrumentEditorConnector.h"
+#include "InstrumentNodeSelectionMenu.h"
 
 #include "AudioCore.h"
+#include "Icons.h"
+#include "MainLayout.h"
+#include "App.h"
 
 InstrumentEditor::InstrumentEditor(Instrument &instrumentRef,
-                                   WeakReference<AudioCore> audioCoreRef) :
-instrument(instrumentRef),
-audioCore(std::move(audioCoreRef))
+    WeakReference<AudioCore> audioCoreRef) :
+    instrument(instrumentRef),
+    audioCore(audioCoreRef),
+    selectedNode(0)
 {
     this->background = new PanelBackgroundC();
     this->addAndMakeVisible(this->background);
@@ -57,56 +62,7 @@ InstrumentEditor::~InstrumentEditor()
 
 void InstrumentEditor::mouseDown(const MouseEvent &e)
 {
-    if (e.mods.isPopupMenu())
-    {
-        PopupMenu m;
-    }
-}
-
-InstrumentEditorNode *InstrumentEditor::getComponentForNode(AudioProcessorGraph::NodeID id) const
-{
-    for (int i = getNumChildComponents(); --i >= 0;)
-    {
-        if (InstrumentEditorNode *const fc = dynamic_cast <InstrumentEditorNode *>(getChildComponent(i))) {
-            if (fc->nodeId == id)
-            { return fc; }
-        }
-    }
-    
-    return nullptr;
-}
-
-InstrumentEditorConnector *InstrumentEditor::getComponentForConnection(AudioProcessorGraph::Connection conn) const
-{
-    for (int i = getNumChildComponents(); --i >= 0;)
-    {
-        if (InstrumentEditorConnector *const c =
-            dynamic_cast <InstrumentEditorConnector *>(getChildComponent(i)))
-        {
-            if (c->connection == conn)
-            {
-                return c;
-            }
-        }
-    }
-    
-    return nullptr;
-}
-
-InstrumentEditorPin *InstrumentEditor::findPinAt(const int x, const int y) const
-{
-    for (int i = getNumChildComponents(); --i >= 0;)
-    {
-        if (InstrumentEditorNode *fc = dynamic_cast<InstrumentEditorNode *>(getChildComponent(i)))
-        {
-            if (InstrumentEditorPin *pin = dynamic_cast<InstrumentEditorPin *>(fc->getComponentAt(x - fc->getX(), y - fc->getY())))
-            {
-                return pin;
-            }
-        }
-    }
-    
-    return nullptr;
+    this->selectNode(0);
 }
 
 void InstrumentEditor::resized()
@@ -120,11 +76,76 @@ void InstrumentEditor::changeListenerCallback(ChangeBroadcaster *)
     this->updateComponents();
 }
 
+InstrumentEditorNode *InstrumentEditor::getComponentForNode(AudioProcessorGraph::NodeID id) const
+{
+    for (int i = this->getNumChildComponents(); --i >= 0;)
+    {
+        if (auto fc = dynamic_cast<InstrumentEditorNode *>(this->getChildComponent(i))) {
+            if (fc->nodeId == id)
+            { return fc; }
+        }
+    }
+    
+    return nullptr;
+}
+
+InstrumentEditorConnector *InstrumentEditor::getComponentForConnection(AudioProcessorGraph::Connection conn) const
+{
+    for (int i = this->getNumChildComponents(); --i >= 0;)
+    {
+        if (auto c = dynamic_cast<InstrumentEditorConnector *>(this->getChildComponent(i)))
+        {
+            if (c->connection == conn)
+            {
+                return c;
+            }
+        }
+    }
+    
+    return nullptr;
+}
+
+InstrumentEditorPin *InstrumentEditor::findPinAt(const int x, const int y) const
+{
+    for (int i = this->getNumChildComponents(); --i >= 0;)
+    {
+        if (auto fc = dynamic_cast<InstrumentEditorNode *>(this->getChildComponent(i)))
+        {
+            if (auto pin = dynamic_cast<InstrumentEditorPin *>(fc->getComponentAt(x - fc->getX(), y - fc->getY())))
+            {
+                return pin;
+            }
+        }
+    }
+    
+    return nullptr;
+}
+
+void InstrumentEditor::selectNode(AudioProcessorGraph::NodeID id)
+{
+    this->selectedNode = (this->selectedNode == id) ? 0 : id;
+
+    for (int i = this->getNumChildComponents(); --i >= 0;)
+    {
+        if (auto node = dynamic_cast<InstrumentEditorNode *>(this->getChildComponent(i)))
+        {
+            node->setSelected(node->nodeId == this->selectedNode);
+        }
+    }
+
+    App::Layout().hideSelectionMenu();
+
+    if (this->selectedNode != 0)
+    {
+        App::Layout().showSelectionMenu(this);
+    }
+}
+
 void InstrumentEditor::updateComponents()
 {
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
-        if (InstrumentEditorNode *const fc = dynamic_cast<InstrumentEditorNode *>(getChildComponent(i)))
+        if (auto fc = dynamic_cast<InstrumentEditorNode *>(getChildComponent(i)))
         {
             fc->update();
         }
@@ -132,9 +153,8 @@ void InstrumentEditor::updateComponents()
     
     for (int i = this->getNumChildComponents(); --i >= 0;)
     {
-        InstrumentEditorConnector *const cc = dynamic_cast<InstrumentEditorConnector *>(getChildComponent(i));
-        
-        if (cc != nullptr && cc != draggingConnector)
+        auto cc = dynamic_cast<InstrumentEditorConnector *>(getChildComponent(i));
+        if (cc != nullptr && cc != this->draggingConnector)
         {
             if (! instrument.isConnected(cc->connection))
             {
@@ -153,7 +173,7 @@ void InstrumentEditor::updateComponents()
         if (this->getComponentForNode(f->nodeID) == nullptr)
         {
             auto const comp = new InstrumentEditorNode(instrument, f->nodeID);
-            addAndMakeVisible(comp);
+            this->addAndMakeVisible(comp);
             comp->update();
         }
     }
@@ -163,25 +183,30 @@ void InstrumentEditor::updateComponents()
     for (int i = numConnections; --i >= 0;)
     {
         AudioProcessorGraph::Connection c = connections.at(i);
-        if (getComponentForConnection(c) == nullptr)
+        if (this->getComponentForConnection(c) == nullptr)
         {
             auto const comp = new InstrumentEditorConnector(instrument);
-            addAndMakeVisible(comp);
+            this->addAndMakeVisible(comp);
             comp->setInput(c.source);
             comp->setOutput(c.destination);
         }
     }
 }
 
+//===----------------------------------------------------------------------===//
+// Dragging
+//===----------------------------------------------------------------------===//
+
 void InstrumentEditor::beginConnectorDrag(
     AudioProcessorGraph::NodeID sourceID, int sourceChannel,
     AudioProcessorGraph::NodeID destinationID, int destinationChannel,
     const MouseEvent &e)
 {
-    draggingConnector = dynamic_cast <InstrumentEditorConnector *>(e.originalComponent);
-    
-    if (draggingConnector == nullptr)
-    { draggingConnector = new InstrumentEditorConnector(instrument); }
+    this->draggingConnector = dynamic_cast<InstrumentEditorConnector *>(e.originalComponent);
+    if (this->draggingConnector == nullptr)
+    {
+        this->draggingConnector = new InstrumentEditorConnector(instrument);
+    }
     
     AudioProcessorGraph::NodeAndChannel source;
     source.nodeID = sourceID;
@@ -191,29 +216,28 @@ void InstrumentEditor::beginConnectorDrag(
     destination.nodeID = destinationID;
     destination.channelIndex = destinationChannel;
 
-    draggingConnector->setInput(source);
-    draggingConnector->setOutput(destination);
+    this->draggingConnector->setInput(source);
+    this->draggingConnector->setOutput(destination);
     
-    addAndMakeVisible(draggingConnector);
-    draggingConnector->toFront(false);
+    this->addAndMakeVisible(this->draggingConnector);
+    this->draggingConnector->toFront(false);
     
-    dragConnector(e);
+    this->dragConnector(e);
 }
 
 void InstrumentEditor::dragConnector(const MouseEvent &e)
 {
     const MouseEvent e2(e.getEventRelativeTo(this));
-    
-    if (draggingConnector != nullptr)
+    if (this->draggingConnector != nullptr)
     {
-        draggingConnector->setTooltip(String::empty);
+        this->draggingConnector->setTooltip({});
         
         int x = e2.x;
         int y = e2.y;
         
-        if (InstrumentEditorPin *const pin = findPinAt(x, y))
+        if (auto pin = this->findPinAt(x, y))
         {
-            auto c = draggingConnector->connection;
+            auto c = this->draggingConnector->connection;
             
             if (c.source.nodeID == 0 && ! pin->isInput)
             {
@@ -231,35 +255,40 @@ void InstrumentEditor::dragConnector(const MouseEvent &e)
                 x = pin->getParentComponent()->getX() + pin->getX() + pin->getWidth() / 2;
                 y = pin->getParentComponent()->getY() + pin->getY() + pin->getHeight() / 2;
                 
-                draggingConnector->setTooltip(pin->getTooltip());
+                this->draggingConnector->setTooltip(pin->getTooltip());
             }
         }
         
-        if (draggingConnector->connection.source.nodeID == 0)
-        { draggingConnector->dragStart(x, y); }
+        if (this->draggingConnector->connection.source.nodeID == 0)
+        {
+            this->draggingConnector->dragStart(x, y);
+        }
         else
-        { draggingConnector->dragEnd(x, y); }
+        {
+            this->draggingConnector->dragEnd(x, y);
+        }
     }
 }
 
 void InstrumentEditor::endDraggingConnector(const MouseEvent &e)
 {
-    if (draggingConnector == nullptr)
+    if (this->draggingConnector == nullptr)
     { return; }
     
-    draggingConnector->setTooltip(String::empty);
+    this->draggingConnector->setTooltip({});
     
     const MouseEvent e2(e.getEventRelativeTo(this));
     
-    const auto c = draggingConnector->connection;
+    const auto c = this->draggingConnector->connection;
     auto srcNode = c.source.nodeID;
     auto srcChannel = c.source.channelIndex;
     auto dstNode = c.destination.nodeID;
     auto dstChannel = c.destination.channelIndex;
     
-    draggingConnector = nullptr;
+    this->fader.fadeOut(draggingConnector, 250);
+    this->draggingConnector = nullptr;
     
-    if (InstrumentEditorPin *const pin = findPinAt(e2.x, e2.y))
+    if (auto pin = findPinAt(e2.x, e2.y))
     {
         if (srcNode == 0)
         {
@@ -280,4 +309,35 @@ void InstrumentEditor::endDraggingConnector(const MouseEvent &e)
         
         instrument.addConnection(srcNode, srcChannel, dstNode, dstChannel);
     }
+}
+
+//===----------------------------------------------------------------------===//
+// HeadlineItemDataSource
+//===----------------------------------------------------------------------===//
+
+bool InstrumentEditor::hasMenu() const noexcept { return true; }
+bool InstrumentEditor::canBeSelectedAsMenuItem() const { return false; }
+
+ScopedPointer<Component> InstrumentEditor::createMenu()
+{
+    return new InstrumentNodeSelectionMenu(this->instrument,
+        this->instrument.getNodeForId(this->selectedNode));
+}
+
+Image InstrumentEditor::getIcon() const
+{
+    return Icons::findByName(Icons::audioPlugin, HEADLINE_ICON_SIZE);
+}
+
+String InstrumentEditor::getName() const
+{
+    const auto node = this->instrument.getNodeForId(this->selectedNode);
+    jassert(node);
+
+    if (auto plugin = dynamic_cast<AudioPluginInstance *>(node->getProcessor()))
+    {
+        return plugin->getName();
+    }
+
+    return {};
 }

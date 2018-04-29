@@ -55,7 +55,6 @@ private:
     Path linePath, hitPath;
     bool dragging;
 
-    DropShadowEffect shadow;
     InstrumentEditor *getGraphPanel() const noexcept;
 
     void getDistancesFromEnds(int x, int y, double &distanceFromStart, double &distanceFromEnd) const;

@@ -39,29 +39,25 @@ public:
     void resized() override;
 
     void getPinPos(const int index, const bool isInput, float &x, float &y);
+    void setSelected(bool selected);
     void update();
 
     const AudioProcessorGraph::NodeID nodeId;
-
-    int numInputs;
-    int numOutputs;
 
 private:
 
     Instrument &instrument;
 
+    Font font;
     int pinSize;
+    int isSelected;
     Point<int> originalPos;
 
-    Font font;
-
-    int numIns;
-    int numOuts;
+    int numInputs;
+    int numOutputs;
 
     bool hitTest(int x, int y) override;
 
-    InstrumentEditor *getGraphPanel() const noexcept;
+    InstrumentEditor *getParentEditor() const noexcept;
     InstrumentEditorNode(const InstrumentEditorNode &);
-    InstrumentEditorNode &operator= (const InstrumentEditorNode &);
-
 };

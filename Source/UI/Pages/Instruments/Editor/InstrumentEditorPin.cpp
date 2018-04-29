@@ -28,61 +28,46 @@ InstrumentEditorPin::InstrumentEditorPin(Instrument &graph,
     isInput(isInput),
     graph(graph)
 {
-    setSize(16, 16);
+    this->setSize(18, 18);
+    this->setWantsKeyboardFocus(false);
 }
 
 void InstrumentEditorPin::paint(Graphics &g)
 {
-    const float w = static_cast<float>( getWidth());
-    const float h = static_cast<float>( getHeight());
+    using namespace ColourIDs::Instrument;
+
+    const float w = float(this->getWidth());
+    const float h = float(this->getHeight());
     const bool isMidiChannel = (this->index == Instrument::midiChannelNumber);
 
-    if (this->isInput)
-    {
-        if (isMidiChannel)
-        { g.setColour(this->findColour(ColourIDs::Instrument::midiIn)); }
-        else
-        { g.setColour(this->findColour(ColourIDs::Instrument::audioIn)); }
+    g.setColour(this->findColour(shadowPin));
+    g.drawEllipse(3.f, 4.f, w - 6.f, h - 6.f, 4.f);
 
-        g.drawEllipse(w * 0.1f, h * 0.1f, w * 0.8f, h * 0.8f, 4.000f);
-    }
-    else
-    {
-        Colour pinFill;
+    const int colourId = isMidiChannel ?
+        (this->isInput ? midiIn : midiOut) :
+        (this->isInput ? audioIn : audioOut);
 
-        if (isMidiChannel)
-        { pinFill = (this->findColour(ColourIDs::Instrument::midiOut)); }
-        else
-        { pinFill = (this->findColour(ColourIDs::Instrument::audioOut)); }
-
-        g.setColour(pinFill);
-        g.fillEllipse(0, 0, w, h);
-
-        g.setColour(pinFill.withAlpha(0.15f));
-        g.fillEllipse(4, 4, w - 8, h - 8);
-    }
+    g.setColour(this->findColour(colourId));
+    g.drawEllipse(3.f, 3.f, w - 6.f, h - 6.f, 4.f);
 }
 
 void InstrumentEditorPin::mouseDown(const MouseEvent &e)
 {
-    getGraphPanel()->beginConnectorDrag(isInput ? 0 : nodeID,
-                                        index,
-                                        isInput ? nodeID : 0,
-                                        index,
-                                        e);
+    this->getParentEditor()->beginConnectorDrag(isInput ? 0 : nodeID, index,
+        isInput ? nodeID : 0, index, e);
 }
 
 void InstrumentEditorPin::mouseDrag(const MouseEvent &e)
 {
-    getGraphPanel()->dragConnector(e);
+    this->getParentEditor()->dragConnector(e);
 }
 
 void InstrumentEditorPin::mouseUp(const MouseEvent &e)
 {
-    getGraphPanel()->endDraggingConnector(e);
+    this->getParentEditor()->endDraggingConnector(e);
 }
 
-InstrumentEditor *InstrumentEditorPin::getGraphPanel() const noexcept
+InstrumentEditor *InstrumentEditorPin::getParentEditor() const noexcept
 {
     return findParentComponentOfClass<InstrumentEditor>();
 }
