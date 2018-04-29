@@ -28,6 +28,7 @@
 #include "HelioTheme.h"
 #include "Icons.h"
 #include "IconComponent.h"
+#include "MainLayout.h"
 #include "App.h"
 
 #define ICON_MARGIN 8
@@ -47,7 +48,7 @@ inline int iconHeightByComponentHeight(int h)
 
 MenuItem::MenuItem() :
     commandId(0), iconId(0), isToggled(false), isDisabled(false),
-    hasSubmenu(false), hasTimer(false),
+    shouldCloseMenu(false), hasSubmenu(false), hasTimer(false),
     alignment(Alignment::Left), callback(nullptr) {}
 
 MenuItem::Ptr MenuItem::empty()
@@ -64,6 +65,8 @@ MenuItem::Ptr MenuItem::item(Icons::Id iconId, int returnedId, const String &tex
     description->commandText = text;
     description->commandId = returnedId;
     description->isToggled = false;
+    description->isDisabled = false;
+    description->shouldCloseMenu = false;
     description->hasSubmenu = false;
     description->hasTimer = false;
     return description;
@@ -76,6 +79,8 @@ MenuItem::Ptr MenuItem::item(Image image, int returnedId, const String &text /*=
     description->commandText = text;
     description->commandId = returnedId;
     description->isToggled = false;
+    description->isDisabled = false;
+    description->shouldCloseMenu = false;
     description->hasSubmenu = false;
     description->hasTimer = false;
     return description;
@@ -140,6 +145,14 @@ MenuItem::Ptr MenuItem::withAction(const Callback &lambda)
 {
     MenuItem::Ptr description(this);
     description->callback = lambda;
+    return description;
+}
+
+MenuItem::Ptr MenuItem::closesMenu()
+{
+    MenuItem::Ptr description(this);
+    jassert(description->callback == nullptr);
+    description->shouldCloseMenu = true;
     return description;
 }
 
@@ -578,10 +591,20 @@ void MenuItemComponent::doAction()
         return;
     }
 
-    if (this->parent != nullptr &&
-        this->description->commandId > 0)
+    if (this->description->commandId > 0)
     {
-        this->parent->postCommandMessage(this->description->commandId);
+        if (this->parent != nullptr)
+        {
+            this->parent->postCommandMessage(this->description->commandId);
+        }
+
+        App::Layout().broadcastCommandMessage(this->description->commandId);
+    }
+
+    auto panel = dynamic_cast<MenuPanel *>(this->parent.getComponent());
+    if (this->description->shouldCloseMenu && panel != nullptr)
+    {
+        panel->dismiss();
     }
 }
 

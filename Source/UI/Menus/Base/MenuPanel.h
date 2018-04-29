@@ -54,6 +54,8 @@ public:
 
 protected:
 
+    friend class MenuItemComponent;
+
     virtual void dismiss() const
     {
         if (auto parent = this->getParentComponent())

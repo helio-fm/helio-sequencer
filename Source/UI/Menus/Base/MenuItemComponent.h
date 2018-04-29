@@ -43,12 +43,12 @@ struct MenuItem final : public ReferenceCountedObject
     int commandId;
     bool isToggled;
     bool isDisabled;
+    bool shouldCloseMenu;
     bool hasSubmenu;
     bool hasTimer;
     Callback callback;
 
     MenuItem();
-    MenuItem::Ptr withAction(const Callback &lambda);
     MenuItem::Ptr withAlignment(Alignment alignment);
     MenuItem::Ptr withSubmenu();
     MenuItem::Ptr withTimer();
@@ -56,6 +56,18 @@ struct MenuItem final : public ReferenceCountedObject
     MenuItem::Ptr withSubLabel(const String &text);
     MenuItem::Ptr colouredWith(const Colour &colour);
     MenuItem::Ptr disabledIf(bool condition);
+    MenuItem::Ptr closesMenu();
+
+    // Lambdas are handy way of processing menu action,
+    // however, they should only be used for menu items that don't have hotkey shortcuts:
+    // for example, `back` button , or dynamic lists (like a list of colours or instruments).
+
+    // All other menu items should use command ids,
+    // which are passed to the component the same way that hotkeys pass their command id's.
+
+    // TODO: it should be straightforward to display hotkey description (if there's any)
+    // on a menu item (as a grayed-out label, or as a tooltip on mouse-over, or something).
+    MenuItem::Ptr withAction(const Callback &lambda);
 
     static MenuItem::Ptr empty();
     static MenuItem::Ptr item(Icons::Id iconId, const String &text);

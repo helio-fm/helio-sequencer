@@ -344,3 +344,21 @@ void MainLayout::handleCommandMessage(int commandId)
         break;
     }
 }
+
+static void broadcastMessage(Component *root, int commandId)
+{
+    if (root->getComponentID().isNotEmpty())
+    {
+        root->postCommandMessage(commandId);
+    }
+
+    for (const auto child : root->getChildren())
+    {
+        broadcastMessage(child, commandId);
+    }
+}
+
+void MainLayout::broadcastCommandMessage(int commandId) const
+{
+    broadcastMessage(this->currentContent.getComponent(), commandId);
+}
