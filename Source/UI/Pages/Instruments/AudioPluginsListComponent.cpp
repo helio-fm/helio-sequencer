@@ -168,8 +168,8 @@ void AudioPluginsListComponent::clearSelection()
 
 void AudioPluginsListComponent::updateListContent()
 {
-    this->clearSelection();
     this->pluginsList->updateContent();
+    this->clearSelection();
 }
 
 //===----------------------------------------------------------------------===//

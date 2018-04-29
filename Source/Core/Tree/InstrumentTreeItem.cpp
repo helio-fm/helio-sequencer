@@ -26,6 +26,7 @@
 #include "InstrumentEditor.h"
 #include "InstrumentMenu.h"
 #include "OrchestraPit.h"
+#include "OrchestraPitTreeItem.h"
 #include "AudioPluginTreeItem.h"
 
 #include "App.h"
@@ -91,6 +92,7 @@ void InstrumentTreeItem::safeRename(const String &newName)
     TreeItem::safeRename(newName);
     this->instrument->setName(newName);
     this->dispatchChangeTreeItemView();
+    this->notifyOrchestraChanged();
 }
 
 
@@ -284,5 +286,13 @@ void InstrumentTreeItem::removeInstrumentEditor()
     if (this->instrumentEditor != nullptr)
     {
         this->instrumentEditor = nullptr;
+    }
+}
+
+void InstrumentTreeItem::notifyOrchestraChanged()
+{
+    if (auto orchestra = dynamic_cast<OrchestraPitTreeItem *>(this->getParentItem()))
+    {
+        orchestra->sendChangeMessage();
     }
 }

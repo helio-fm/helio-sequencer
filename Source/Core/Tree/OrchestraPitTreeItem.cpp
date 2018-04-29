@@ -121,5 +121,6 @@ InstrumentTreeItem *OrchestraPitTreeItem::addInstrumentTreeItem(Instrument *inst
     this->setOpen(true);
     auto newInstrument = new InstrumentTreeItem(instrument);
     this->addChildTreeItem(newInstrument, insertIndex);
+    this->sendChangeMessage();
     return newInstrument;
 }

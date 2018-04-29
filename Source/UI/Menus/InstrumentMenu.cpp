@@ -37,11 +37,6 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
 {
     MenuPanel::Menu menu;
 
-    // TODO:
-    //menu.add(MenuItem::item(Icons::reset, TRANS("menu::instrument::update")));
-    //menu.add(MenuItem::item(Icons::?current, TRANS("menu::instrument::seticon")));
-    //menu.add(MenuItem::item(Icons::colour, TRANS("menu::instrument::setcolour")));
-
     menu.add(MenuItem::item(Icons::ellipsis, TRANS("menu::instrument::rename"))->withAction([this]()
     {
         auto dialog = ModalDialogInput::Presets::renameInstrument(this->instrumentNode.getName());
@@ -50,11 +45,9 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
         this->dismiss();
     }));
 
-    menu.add(MenuItem::item(Icons::remove, TRANS("menu::instrument::delete"))->withAction([this]()
-    {
-        TreeItem::deleteItem(&this->instrumentNode);
-        this->dismiss();
-    }));
+    // TODO:
+    //menu.add(MenuItem::item(Icons::?current, TRANS("menu::instrument::seticon")));
+    //menu.add(MenuItem::item(Icons::colour, TRANS("menu::instrument::setcolour")));
 
     bool hasEffects = false;
     for (const auto description : this->pluginScanner.getList())
@@ -70,6 +63,12 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
         withSubmenu()->withTimer()->disabledIf(!hasEffects)->withAction([this]()
     {
         this->updateContent(this->createEffectsMenu(), MenuPanel::SlideLeft);
+    }));
+
+    menu.add(MenuItem::item(Icons::remove, TRANS("menu::instrument::delete"))->withAction([this]()
+    {
+        TreeItem::deleteItem(&this->instrumentNode);
+        this->dismiss();
     }));
 
     return menu;

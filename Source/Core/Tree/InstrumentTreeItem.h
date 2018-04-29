@@ -80,6 +80,7 @@ private:
 
     void initInstrumentEditor();
     void removeInstrumentEditor();
+    void notifyOrchestraChanged();
 
     ScopedPointer<InstrumentEditor> instrumentEditor;
     WeakReference<Instrument> instrument;

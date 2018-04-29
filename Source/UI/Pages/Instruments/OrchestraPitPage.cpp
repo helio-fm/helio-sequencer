@@ -53,12 +53,14 @@ OrchestraPitPage::OrchestraPitPage(PluginScanner &pluginScanner, OrchestraPitTre
 
     //[Constructor]
     this->pluginScanner.addChangeListener(this);
+    this->instrumentsRoot.addChangeListener(this);
     //[/Constructor]
 }
 
 OrchestraPitPage::~OrchestraPitPage()
 {
     //[Destructor_pre]
+    this->instrumentsRoot.removeChangeListener(this);
     this->pluginScanner.removeChangeListener(this);
     //[/Destructor_pre]
 
@@ -162,19 +164,18 @@ void OrchestraPitPage::handleCommandMessage (int commandId)
 
 void OrchestraPitPage::changeListenerCallback(ChangeBroadcaster *source)
 {
-    if (auto scanner = dynamic_cast<PluginScanner *>(source))
-    {
-        this->pluginsList->showScanButtonIf(scanner->getList().getNumTypes() == 0);
-        this->pluginsList->updateListContent();
-        this->instrumentsList->updateListContent();
+    this->pluginsList->showScanButtonIf(this->pluginScanner.getList().getNumTypes() == 0);
+    this->pluginsList->updateListContent();
+    this->instrumentsList->updateListContent();
 
-        if (!scanner->isWorking())
+    App::Layout().hideSelectionMenu();
+
+    if (!this->pluginScanner.isWorking())
+    {
+        if (auto spinner = App::Layout().findChildWithID(ComponentIDs::progressTooltipId))
         {
-            if (auto spinner = App::Layout().findChildWithID(ComponentIDs::progressTooltipId))
-            {
-                // Nasty hack -_-
-                delete spinner;
-            }
+            // Nasty hack -_-
+            delete spinner;
         }
     }
 }

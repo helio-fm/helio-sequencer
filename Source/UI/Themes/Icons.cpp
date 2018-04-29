@@ -39,12 +39,9 @@ struct BuiltInImageData final
 
     BuiltInImageData(const String &name)
     {
-        const String assumesFileName = toLowerCamelCase(name) + "_svg";
-        this->data = BinaryData::getNamedResource(assumesFileName.toRawUTF8(), this->numBytes);
+        const String assumedFileName = toLowerCamelCase(name) + "_svg";
+        this->data = BinaryData::getNamedResource(assumedFileName.toRawUTF8(), this->numBytes);
     }
-
-    BuiltInImageData(const void *_data, const size_t _numBytes) :
-        data(_data), numBytes(_numBytes) {}
     
     BuiltInImageData &operator= (const BuiltInImageData &other)
     {

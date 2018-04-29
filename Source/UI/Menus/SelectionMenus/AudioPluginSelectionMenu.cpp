@@ -28,7 +28,9 @@ static MenuPanel::Menu createDefaultMenu()
     // Create new instrument
     // Add to instrument >
     // Remove from list
-    cmds.add(MenuItem::item(Icons::copy, TRANS("menu::selection::stage::reset")));
+    cmds.add(MenuItem::item(Icons::create, TRANS("menu::selection::plugin::init")));
+    cmds.add(MenuItem::item(Icons::audioPlugin, TRANS("menu::selection::plugin::plug"))->withSubmenu()->withTimer());
+    cmds.add(MenuItem::item(Icons::remove, TRANS("menu::selection::plugin::remove")));
 
     return cmds;
 }

@@ -110,10 +110,10 @@ void InstrumentsListComponent::clearSelection()
 
 void InstrumentsListComponent::updateListContent()
 {
-    this->clearSelection();
     this->instrumentIcon = Icons::findByName(Icons::instrument, int(INSTRUMENTSLIST_ROW_HEIGHT * 0.75f));
     this->instruments = this->instrumentsRoot.findChildrenRefsOfType<InstrumentTreeItem>();
     this->instrumentsList->updateContent();
+    this->clearSelection();
 }
 
 //===----------------------------------------------------------------------===//
@@ -178,18 +178,19 @@ void InstrumentsListComponent::selectedRowsChanged(int lastRowSelected)
     {
         parent->onStageSelectionChanged();
     }
-
 #elif HELIO_MOBILE
+    auto instrumentNode = this->instruments[lastRowSelected];
+    if (instrumentNode == nullptr) { return; }
+    instrumentNode->setSelected(true, true);
 #endif
 }
 
 void InstrumentsListComponent::listBoxItemDoubleClicked(int rowNumber, const MouseEvent &e)
 {
-    const auto instrumentNode = this->instruments[rowNumber];
-    if (instrumentNode == nullptr) { return; }
-
 #if HELIO_DESKTOP
-    // TODO
+    auto instrumentNode = this->instruments[rowNumber];
+    if (instrumentNode == nullptr) { return; }
+    instrumentNode->setSelected(true, true);
 #endif
 }
 
