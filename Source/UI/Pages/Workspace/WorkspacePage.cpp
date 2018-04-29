@@ -63,8 +63,8 @@ WorkspacePage::WorkspacePage(MainLayout &workspaceRef)
 
     //[Constructor]
     this->setOpaque(true);
-    this->setWantsKeyboardFocus(true);
-    this->setFocusContainer(true);
+    this->setWantsKeyboardFocus(false);
+    this->setFocusContainer(false);
     //[/Constructor]
 }
 

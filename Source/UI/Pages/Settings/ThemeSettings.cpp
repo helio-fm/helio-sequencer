@@ -56,7 +56,7 @@ ThemeSettings::ThemeSettings()
     this->setSize(600, 4 + numSchemes * THEME_SETTINGS_ROW_HEIGHT);
 
     this->setFocusContainer(false);
-    this->setWantsKeyboardFocus(true);
+    this->setWantsKeyboardFocus(false);
     this->setOpaque(true);
 
     ColourSchemesManager::getInstance().addChangeListener(this);
