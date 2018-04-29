@@ -146,7 +146,8 @@ void RootTreeItem::checkoutProject(const String &name, const String &id, const S
     auto vcs = new VersionControlTreeItem(id, key);
     newProject->addChildTreeItem(vcs);
     
-    vcs->asyncPullAndCheckoutOrDeleteIfFailed();
+    // TODO
+    //vcs->checkout();
     App::Workspace().autosave();
 }
 

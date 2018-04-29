@@ -133,9 +133,10 @@ ProjectTreeItem::~ProjectTreeItem()
 
 void ProjectTreeItem::deletePermanently()
 {
-    if (VersionControlTreeItem *vcsTreeItem = this->findChildOfType<VersionControlTreeItem>())
+    if (auto vcsTreeItem = this->findChildOfType<VersionControlTreeItem>())
     {
-        vcsTreeItem->deletePermanentlyFromRemoteRepo();
+        // TODO
+        //vcsTreeItem->deletePermanentlyFromRemoteRepo();
     }
     else
     {
@@ -150,7 +151,6 @@ void ProjectTreeItem::deletePermanently()
         }
     }
 }
-
 
 String ProjectTreeItem::getId() const
 {

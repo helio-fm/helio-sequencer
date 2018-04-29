@@ -31,7 +31,6 @@ class VersionControlEditor;
 #include "Head.h"
 #include "HeadState.h"
 #include "Pack.h"
-#include "Client.h"
 #include "StashesRepository.h"
 
 #include "Key.h"
@@ -53,9 +52,6 @@ public:
     //===------------------------------------------------------------------===//
     // Push-pull stuff
     //===------------------------------------------------------------------===//
-
-    VCS::Client *getRemote()
-    { return this->remote; }
 
     inline String getParentName() const
     { return this->parentItem->getVCSName(); }
@@ -126,7 +122,6 @@ protected:
 
     // the history tree itself
     ValueTree rootRevision;
-    ScopedPointer<VCS::Client> remote;
     WeakReference<VCS::TrackedItemsSource> parentItem;
 
 protected:

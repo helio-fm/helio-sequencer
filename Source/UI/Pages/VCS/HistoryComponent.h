@@ -22,7 +22,6 @@ class VersionControl;
 class RevisionTreeComponent;
 
 #include "HeadlineItemDataSource.h"
-#include "Client.h"
 //[/Headers]
 
 #include "../../Themes/FramePanel.h"

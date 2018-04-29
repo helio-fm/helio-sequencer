@@ -526,8 +526,6 @@
             <FILE id="hpqcsa" name="ProjectTimelineDiffLogic.h" compile="0" resource="0"
                   file="../../Source/Core/VCS/DiffLogic/ProjectTimelineDiffLogic.h"/>
           </GROUP>
-          <FILE id="M1iDXs" name="Client.cpp" compile="1" resource="0" file="../../Source/Core/VCS/Client.cpp"/>
-          <FILE id="mWoMre" name="Client.h" compile="0" resource="0" file="../../Source/Core/VCS/Client.h"/>
           <FILE id="OK4b33" name="Delta.cpp" compile="1" resource="0" file="../../Source/Core/VCS/Delta.cpp"/>
           <FILE id="WeoCnA" name="Delta.h" compile="0" resource="0" file="../../Source/Core/VCS/Delta.h"/>
           <FILE id="GqCCIT" name="Diff.cpp" compile="1" resource="0" file="../../Source/Core/VCS/Diff.cpp"/>
