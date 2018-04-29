@@ -69,8 +69,9 @@ public:
     
     static void copyToClipboard(Clipboard &clipboard, const Lasso &selection);
     static void pasteFromClipboard(Clipboard &clipboard, ProjectTreeItem &project,
-        WeakReference<MidiTrack> selectedTrack, float targetBeatPosition);
-    static void deleteSelection(const Lasso &selection);
+        WeakReference<MidiTrack> selectedTrack, float targetBeatPosition, bool shouldCheckpoint = true);
+
+    static void deleteSelection(const Lasso &selection, bool shouldCheckpoint = true);
 
     static void shiftKeyRelative(Lasso &selection, int deltaKey,
         bool shouldCheckpoint = true, Transport *transport = nullptr);

@@ -97,8 +97,7 @@ void splitAutoGroupByLayers(const AutoChangeGroup &group, AutoChangeGroupsPerLay
 template< typename TEvent, typename TLayer, typename TGroup, typename TGroups >
 bool applyChanges(const TGroup &groupBefore,
                   const TGroup &groupAfter,
-                  bool &didCheckpoint,
-                  bool shouldCheckpoint)
+                  bool &didCheckpoint)
 {
     bool madeAnyChanges = false;
     
@@ -120,11 +119,8 @@ bool applyChanges(const TGroup &groupBefore,
         
         if (! didCheckpoint)
         {
-            if (shouldCheckpoint)
-            {
-                targetLayer->checkpoint();
-                didCheckpoint = true;
-            }
+            targetLayer->checkpoint();
+            didCheckpoint = true;
         }
         
         targetLayer->changeGroup(*currentGroupBefore, *currentGroupAfter, true);
@@ -137,8 +133,7 @@ bool applyChanges(const TGroup &groupBefore,
 // returns true if madeAnyChanges
 template< typename TEvent, typename TLayer, typename TGroup, typename TGroups >
 bool applyRemovals(const TGroup &groupToRemove,
-                   bool &didCheckpoint,
-                   bool shouldCheckpoint)
+                   bool &didCheckpoint)
 {
     bool madeAnyChanges = false;
     
@@ -158,11 +153,8 @@ bool applyRemovals(const TGroup &groupToRemove,
         
         if (! didCheckpoint)
         {
-            if (shouldCheckpoint)
-            {
-                targetLayer->checkpoint();
-                didCheckpoint = true;
-            }
+            targetLayer->checkpoint();
+            didCheckpoint = true;
         }
         
         targetLayer->removeGroup(*currentRemovalGroup, true);
@@ -175,8 +167,7 @@ bool applyRemovals(const TGroup &groupToRemove,
 // returns true if madeAnyChanges
 template< typename TEvent, typename TLayer, typename TGroup, typename TGroups >
 bool applyInsertions(const TGroup &groupToInsert,
-                     bool &didCheckpoint,
-                     bool shouldCheckpoint)
+                     bool &didCheckpoint)
 {
     bool madeAnyChanges = false;
     
@@ -196,11 +187,8 @@ bool applyInsertions(const TGroup &groupToInsert,
         
         if (! didCheckpoint)
         {
-            if (shouldCheckpoint)
-            {
-                targetLayer->checkpoint();
-                didCheckpoint = true;
-            }
+            targetLayer->checkpoint();
+            didCheckpoint = true;
         }
         
         targetLayer->insertGroup(*currentInsertionGroup, true);
@@ -211,24 +199,24 @@ bool applyInsertions(const TGroup &groupToInsert,
 }
 
 
-bool applyPianoChanges(const PianoChangeGroup &groupBefore, const PianoChangeGroup &groupAfter, bool &didCheckpoint, bool shouldCheckpoint)
-{ return applyChanges<Note, PianoSequence, PianoChangeGroup, PianoChangeGroupsPerLayer>(groupBefore, groupAfter, didCheckpoint, shouldCheckpoint); }
+bool applyPianoChanges(const PianoChangeGroup &groupBefore, const PianoChangeGroup &groupAfter, bool &didCheckpoint)
+{ return applyChanges<Note, PianoSequence, PianoChangeGroup, PianoChangeGroupsPerLayer>(groupBefore, groupAfter, didCheckpoint); }
 
-bool applyAnnotationChanges(const AnnotationChangeGroup &groupBefore, const AnnotationChangeGroup &groupAfter, bool &didCheckpoint, bool shouldCheckpoint)
-{ return applyChanges<AnnotationEvent, AnnotationsSequence, AnnotationChangeGroup, AnnotationChangeGroupsPerLayer>(groupBefore, groupAfter, didCheckpoint, shouldCheckpoint); }
+bool applyAnnotationChanges(const AnnotationChangeGroup &groupBefore, const AnnotationChangeGroup &groupAfter, bool &didCheckpoint)
+{ return applyChanges<AnnotationEvent, AnnotationsSequence, AnnotationChangeGroup, AnnotationChangeGroupsPerLayer>(groupBefore, groupAfter, didCheckpoint); }
 
-bool applyAutoChanges(const AutoChangeGroup &groupBefore, const AutoChangeGroup &groupAfter, bool &didCheckpoint, bool shouldCheckpoint)
-{ return applyChanges<AutomationEvent, AutomationSequence, AutoChangeGroup, AutoChangeGroupsPerLayer>(groupBefore, groupAfter, didCheckpoint, shouldCheckpoint); }
+bool applyAutoChanges(const AutoChangeGroup &groupBefore, const AutoChangeGroup &groupAfter, bool &didCheckpoint)
+{ return applyChanges<AutomationEvent, AutomationSequence, AutoChangeGroup, AutoChangeGroupsPerLayer>(groupBefore, groupAfter, didCheckpoint); }
 
 
-bool applyPianoRemovals(const PianoChangeGroup &group, bool &didCheckpoint, bool shouldCheckpoint)
-{ return applyRemovals<Note, PianoSequence, PianoChangeGroup, PianoChangeGroupsPerLayer>(group, didCheckpoint, shouldCheckpoint); }
+bool applyPianoRemovals(const PianoChangeGroup &group, bool &didCheckpoint)
+{ return applyRemovals<Note, PianoSequence, PianoChangeGroup, PianoChangeGroupsPerLayer>(group, didCheckpoint); }
 
-bool applyAnnotationRemovals(const AnnotationChangeGroup &group, bool &didCheckpoint, bool shouldCheckpoint)
-{ return applyRemovals<AnnotationEvent, AnnotationsSequence, AnnotationChangeGroup, AnnotationChangeGroupsPerLayer>(group, didCheckpoint, shouldCheckpoint); }
+bool applyAnnotationRemovals(const AnnotationChangeGroup &group, bool &didCheckpoint)
+{ return applyRemovals<AnnotationEvent, AnnotationsSequence, AnnotationChangeGroup, AnnotationChangeGroupsPerLayer>(group, didCheckpoint); }
 
 // особенный случай - я хочу, чтоб хотя бы одно авто-событие на слое оставалось
-bool applyAutoRemovals(const AutoChangeGroup &group, bool &didCheckpoint, bool shouldCheckpoint)
+bool applyAutoRemovals(const AutoChangeGroup &group, bool &didCheckpoint)
 {
     bool madeAnyChanges = false;
     
@@ -253,11 +241,8 @@ bool applyAutoRemovals(const AutoChangeGroup &group, bool &didCheckpoint, bool s
         
         if (! didCheckpoint)
         {
-            if (shouldCheckpoint)
-            {
-                targetLayer->checkpoint();
-                didCheckpoint = true;
-            }
+            targetLayer->checkpoint();
+            didCheckpoint = true;
         }
         
         targetLayer->removeGroup(*currentRemovalGroup, true);
@@ -267,18 +252,18 @@ bool applyAutoRemovals(const AutoChangeGroup &group, bool &didCheckpoint, bool s
     return madeAnyChanges;
 }
 
-//bool applyAutoRemovals(const AutoChangeGroup &group, bool &didCheckpoint, bool shouldCheckpoint)
-//{ applyRemovals<AutomationEvent, AutomationSequence, AutoChangeGroup, AutoChangeGroupsPerLayer>(group, didCheckpoint, shouldCheckpoint); }
+//bool applyAutoRemovals(const AutoChangeGroup &group, bool &didCheckpoint)
+//{ applyRemovals<AutomationEvent, AutomationSequence, AutoChangeGroup, AutoChangeGroupsPerLayer>(group, didCheckpoint); }
 
 
-bool applyPianoInsertions(const PianoChangeGroup &group, bool &didCheckpoint, bool shouldCheckpoint)
-{ return applyInsertions<Note, PianoSequence, PianoChangeGroup, PianoChangeGroupsPerLayer>(group, didCheckpoint, shouldCheckpoint); }
+bool applyPianoInsertions(const PianoChangeGroup &group, bool &didCheckpoint)
+{ return applyInsertions<Note, PianoSequence, PianoChangeGroup, PianoChangeGroupsPerLayer>(group, didCheckpoint); }
 
-bool applyAnnotationInsertions(const AnnotationChangeGroup &group, bool &didCheckpoint, bool shouldCheckpoint)
-{ return applyInsertions<AnnotationEvent, AnnotationsSequence, AnnotationChangeGroup, AnnotationChangeGroupsPerLayer>(group, didCheckpoint, shouldCheckpoint); }
+bool applyAnnotationInsertions(const AnnotationChangeGroup &group, bool &didCheckpoint)
+{ return applyInsertions<AnnotationEvent, AnnotationsSequence, AnnotationChangeGroup, AnnotationChangeGroupsPerLayer>(group, didCheckpoint); }
 
-bool applyAutoInsertions(const AutoChangeGroup &group, bool &didCheckpoint, bool shouldCheckpoint)
-{ return applyInsertions<AutomationEvent, AutomationSequence, AutoChangeGroup, AutoChangeGroupsPerLayer>(group, didCheckpoint, shouldCheckpoint); }
+bool applyAutoInsertions(const AutoChangeGroup &group, bool &didCheckpoint)
+{ return applyInsertions<AutomationEvent, AutomationSequence, AutoChangeGroup, AutoChangeGroupsPerLayer>(group, didCheckpoint); }
 
 
 static PianoSequence *getPianoSequence(SelectionProxyArray::Ptr selection)
@@ -391,7 +376,7 @@ void SequencerOperations::wipeSpace(Array<MidiTrack *> tracks,
     // отложенно удалить все из массива 1
     // и добавить все из массива 2
 
-    bool didCheckpoint = false;
+    bool didCheckpoint = !shouldCheckpoint;
     
     PianoChangeGroup pianoRemoveGroup;
     PianoChangeGroup pianoInsertGroup;
@@ -469,19 +454,19 @@ void SequencerOperations::wipeSpace(Array<MidiTrack *> tracks,
         }
     }
     
-    applyPianoRemovals(pianoRemoveGroup, didCheckpoint, shouldCheckpoint);
-    applyAnnotationRemovals(annotationsRemoveGroup, didCheckpoint, shouldCheckpoint);
-    applyAutoRemovals(autoRemoveGroup, didCheckpoint, shouldCheckpoint);
+    applyPianoRemovals(pianoRemoveGroup, didCheckpoint);
+    applyAnnotationRemovals(annotationsRemoveGroup, didCheckpoint);
+    applyAutoRemovals(autoRemoveGroup, didCheckpoint);
 
     if (shouldKeepCroppedNotes)
     {
-        applyPianoInsertions(pianoInsertGroup, didCheckpoint, shouldCheckpoint);
+        applyPianoInsertions(pianoInsertGroup, didCheckpoint);
     }
 }
 
 void SequencerOperations::shiftEventsToTheLeft(Array<MidiTrack *> tracks, float targetBeat, float beatOffset, bool shouldCheckpoint /*= true*/)
 {
-    bool didCheckpoint = false;
+    bool didCheckpoint = !shouldCheckpoint;
     
     PianoChangeGroup pianoGroupBefore;
     PianoChangeGroup pianoGroupAfter;
@@ -540,14 +525,14 @@ void SequencerOperations::shiftEventsToTheLeft(Array<MidiTrack *> tracks, float 
         }
     }
     
-    applyPianoChanges(pianoGroupBefore, pianoGroupAfter, didCheckpoint, shouldCheckpoint);
-    applyAnnotationChanges(annotationsGroupBefore, annotationsGroupAfter, didCheckpoint, shouldCheckpoint);
-    applyAutoChanges(autoGroupBefore, autoGroupAfter, didCheckpoint, shouldCheckpoint);
+    applyPianoChanges(pianoGroupBefore, pianoGroupAfter, didCheckpoint);
+    applyAnnotationChanges(annotationsGroupBefore, annotationsGroupAfter, didCheckpoint);
+    applyAutoChanges(autoGroupBefore, autoGroupAfter, didCheckpoint);
 }
 
 void SequencerOperations::shiftEventsToTheRight(Array<MidiTrack *> tracks, float targetBeat, float beatOffset, bool shouldCheckpoint /*= true*/)
 {
-    bool didCheckpoint = false;
+    bool didCheckpoint = !shouldCheckpoint;
     
     PianoChangeGroup groupBefore;
     PianoChangeGroup groupAfter;
@@ -606,9 +591,9 @@ void SequencerOperations::shiftEventsToTheRight(Array<MidiTrack *> tracks, float
         }
     }
     
-    applyPianoChanges(groupBefore, groupAfter, didCheckpoint, shouldCheckpoint);
-    applyAnnotationChanges(annotationsGroupBefore, annotationsGroupAfter, didCheckpoint, shouldCheckpoint);
-    applyAutoChanges(autoGroupBefore, autoGroupAfter, didCheckpoint, shouldCheckpoint);
+    applyPianoChanges(groupBefore, groupAfter, didCheckpoint);
+    applyAnnotationChanges(annotationsGroupBefore, annotationsGroupAfter, didCheckpoint);
+    applyAutoChanges(autoGroupBefore, autoGroupAfter, didCheckpoint);
 }
 
 
@@ -619,7 +604,7 @@ void SequencerOperations::snapSelection(Lasso &selection, float snapsPerBeat, bo
         return;
     }
     
-    bool didCheckpoint = false;
+    bool didCheckpoint = !shouldCheckpoint;
     
     PianoChangeGroup groupBefore, groupAfter;
     
@@ -642,7 +627,7 @@ void SequencerOperations::snapSelection(Lasso &selection, float snapsPerBeat, bo
         }
     }
     
-    applyPianoChanges(groupBefore, groupAfter, didCheckpoint, shouldCheckpoint);
+    applyPianoChanges(groupBefore, groupAfter, didCheckpoint);
 }
 
 
@@ -653,7 +638,7 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
         return;
     }
     
-    bool didCheckpoint = false;
+    bool didCheckpoint = !shouldCheckpoint;
     
     // 0 snap to 0.001 beat
     PianoChangeGroup group0Before, group0After;
@@ -679,7 +664,7 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
         }
     }
     
-    applyPianoChanges(group0Before, group0After, didCheckpoint, shouldCheckpoint);
+    applyPianoChanges(group0Before, group0After, didCheckpoint);
     
     
     // 1 convert this
@@ -733,7 +718,7 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
             }
         }
         
-        step1HasChanges = applyPianoChanges(group1Before, group1After, didCheckpoint, shouldCheckpoint);
+        step1HasChanges = applyPianoChanges(group1Before, group1After, didCheckpoint);
     }
     while (step1HasChanges);
     
@@ -788,7 +773,7 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
             }
         }
         
-        step2HasChanges = applyPianoChanges(group2Before, group2After, didCheckpoint, shouldCheckpoint);
+        step2HasChanges = applyPianoChanges(group2Before, group2After, didCheckpoint);
     }
     while (step2HasChanges);
     
@@ -844,7 +829,7 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
             }
         }
         
-        step3HasChanges = applyPianoChanges(group3Before, group3After, didCheckpoint, shouldCheckpoint);
+        step3HasChanges = applyPianoChanges(group3Before, group3After, didCheckpoint);
     }
     while (step3HasChanges);
     
@@ -898,7 +883,7 @@ void SequencerOperations::removeOverlaps(Lasso &selection, bool shouldCheckpoint
         removalGroup.add(deferredRemovalIterator.getValue());
     }
 
-    applyPianoRemovals(removalGroup, didCheckpoint, shouldCheckpoint);
+    applyPianoRemovals(removalGroup, didCheckpoint);
 }
 
 void SequencerOperations::removeDuplicates(Lasso &selection, bool shouldCheckpoint)
@@ -909,7 +894,7 @@ void SequencerOperations::removeDuplicates(Lasso &selection, bool shouldCheckpoi
     HashMap<MidiEvent::Id, Note> deferredRemoval;
     HashMap<MidiEvent::Id, Note> unremovableNotes;
     
-    bool didCheckpoint = false;
+    bool didCheckpoint = !shouldCheckpoint;
 
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
@@ -950,7 +935,7 @@ void SequencerOperations::removeDuplicates(Lasso &selection, bool shouldCheckpoi
         removalGroup.add(deferredRemovalIterator.getValue());
     }
     
-    applyPianoRemovals(removalGroup, didCheckpoint, shouldCheckpoint);
+    applyPianoRemovals(removalGroup, didCheckpoint);
 }
 
 
@@ -964,7 +949,7 @@ void SequencerOperations::moveToLayer(Lasso &selection, MidiSequence *layer, boo
     PianoSequence *targetLayer = dynamic_cast<PianoSequence *>(layer);
     jassert(targetLayer != nullptr);
 
-    bool didCheckpoint = false;
+    bool didCheckpoint = !shouldCheckpoint;
     PianoChangeGroupsPerLayer deferredRemovals;
     PianoChangeGroupProxy::Ptr insertionsForTargetLayer(new PianoChangeGroupProxy());
     
@@ -1011,7 +996,7 @@ void SequencerOperations::moveToLayer(Lasso &selection, MidiSequence *layer, boo
                         insertionsForTargetLayer->add(n1);
                     }
                     
-                    if (!didCheckpoint && shouldCheckpoint)
+                    if (!didCheckpoint)
                     {
                         didCheckpoint = true;
                         sourcePianoLayer->checkpoint();
@@ -1052,7 +1037,7 @@ bool SequencerOperations::arpeggiate(Lasso &selection,
         return false;
     }
     
-    bool didCheckpoint = false;
+    bool didCheckpoint = !shouldCheckpoint;
     PianoChangeGroupsPerLayer deferredRemovals;
     PianoChangeGroupsPerLayer deferredInsertions;
 
@@ -1178,11 +1163,8 @@ bool SequencerOperations::arpeggiate(Lasso &selection,
         // 4. remove selection and add result
         if (! didCheckpoint)
         {
-            if (shouldCheckpoint)
-            {
-                pianoLayer->checkpoint();
-                didCheckpoint = true;
-            }
+            pianoLayer->checkpoint();
+            didCheckpoint = true;
         }
         
         deferredRemovals.set(pianoLayer->getTrackId(), sortedSelection);
@@ -1219,7 +1201,7 @@ void SequencerOperations::randomizeVolume(Lasso &selection, float factor, bool s
         return;
     }
     
-    bool didCheckpoint = false;
+    bool didCheckpoint = !shouldCheckpoint;
     Random random(Time::currentTimeMillis());
 
     PianoChangeGroup groupBefore, groupAfter;
@@ -1238,7 +1220,7 @@ void SequencerOperations::randomizeVolume(Lasso &selection, float factor, bool s
         }
     }
     
-    applyPianoChanges(groupBefore, groupAfter, didCheckpoint, shouldCheckpoint);
+    applyPianoChanges(groupBefore, groupAfter, didCheckpoint);
 }
 
 void SequencerOperations::fadeOutVolume(Lasso &selection, float factor, bool shouldCheckpoint)
@@ -1253,7 +1235,7 @@ void SequencerOperations::fadeOutVolume(Lasso &selection, float factor, bool sho
     
     float minBeat = FLT_MAX;
     float maxBeat = -FLT_MAX;
-    bool didCheckpoint = false;
+    bool didCheckpoint = !shouldCheckpoint;
     PianoChangeGroup groupBefore, groupAfter;
     
     for (int i = 0; i < selection.getNumSelected(); ++i)
@@ -1286,7 +1268,7 @@ void SequencerOperations::fadeOutVolume(Lasso &selection, float factor, bool sho
         }
     }
     
-    applyPianoChanges(groupBefore, groupAfter, didCheckpoint, shouldCheckpoint);
+    applyPianoChanges(groupBefore, groupAfter, didCheckpoint);
 }
 
 void SequencerOperations::startTuning(Lasso &selection)
@@ -1450,7 +1432,7 @@ void SequencerOperations::copyToClipboard(Clipboard &clipboard, const Lasso &sel
 }
 
 void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectTreeItem &project,
-    WeakReference<MidiTrack> selectedTrack, float targetBeatPosition)
+    WeakReference<MidiTrack> selectedTrack, float targetBeatPosition, bool shouldCheckpoint)
 {
     if (selectedTrack == nullptr) { return; }
 
@@ -1459,7 +1441,7 @@ void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectTreeIt
 
     if (!root.isValid()) { return; }
 
-    bool didCheckpoint = false;
+    bool didCheckpoint = !shouldCheckpoint;
 
     const float targetBeat = roundf(targetBeatPosition * 1000.f) / 1000.f;
     const float firstBeat = root.getProperty(Serialization::Clipboard::firstBeat);
@@ -1568,7 +1550,7 @@ void SequencerOperations::pasteFromClipboard(Clipboard &clipboard, ProjectTreeIt
     }
 }
 
-void SequencerOperations::deleteSelection(const Lasso &selection)
+void SequencerOperations::deleteSelection(const Lasso &selection, bool shouldCheckpoint)
 {
     if (selection.getNumSelected() == 0)
     {
@@ -1602,7 +1584,7 @@ void SequencerOperations::deleteSelection(const Lasso &selection)
         arrayToAddTo->add(note);
     }
 
-    bool didCheckpoint = false;
+    bool didCheckpoint = !shouldCheckpoint;
 
     for (int i = 0; i < selectionsByTrack.size(); ++i)
     {
@@ -1624,7 +1606,7 @@ void SequencerOperations::shiftKeyRelative(Lasso &selection,
     if (selection.getNumSelected() == 0)
     { return; }
 
-    bool didCheckpoint = false;
+    bool didCheckpoint = !shouldCheckpoint;
     
     for (const auto &s : selection.getGroupedSelections())
     {
@@ -1654,11 +1636,8 @@ void SequencerOperations::shiftKeyRelative(Lasso &selection,
         {
             if (! didCheckpoint)
             {
-                if (shouldCheckpoint)
-                {
-                    pianoLayer->checkpoint();
-                    didCheckpoint = true;
-                }
+                pianoLayer->checkpoint();
+                didCheckpoint = true;
             }
         }
         
@@ -1671,7 +1650,7 @@ void SequencerOperations::shiftBeatRelative(Lasso &selection, float deltaBeat, b
     if (selection.getNumSelected() == 0)
     { return; }
 
-    bool didCheckpoint = false;
+    bool didCheckpoint = !shouldCheckpoint;
 
     for (const auto &s : selection.getGroupedSelections())
     {
@@ -1695,11 +1674,8 @@ void SequencerOperations::shiftBeatRelative(Lasso &selection, float deltaBeat, b
         {
             if (! didCheckpoint)
             {
-                if (shouldCheckpoint)
-                {
-                    pianoLayer->checkpoint();
-                    didCheckpoint = true;
-                }
+                pianoLayer->checkpoint();
+                didCheckpoint = true;
             }
         }
         
@@ -1713,7 +1689,7 @@ void SequencerOperations::invertChord(Lasso &selection,
     if (selection.getNumSelected() == 0)
     { return; }
 
-    bool didCheckpoint = false;
+    bool didCheckpoint = !shouldCheckpoint;
     
     for (const auto &s : selection.getGroupedSelections())
     {
@@ -1786,11 +1762,8 @@ void SequencerOperations::invertChord(Lasso &selection,
         {
             if (! didCheckpoint)
             {
-                if (shouldCheckpoint)
-                {
-                    pianoLayer->checkpoint();
-                    didCheckpoint = true;
-                }
+                pianoLayer->checkpoint();
+                didCheckpoint = true;
             }
         }
         
