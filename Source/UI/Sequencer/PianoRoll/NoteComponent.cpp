@@ -475,8 +475,26 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         
         if (eventChanged)
         {
+            const bool firstChangeIsToCome = !this->firstChangeDone;
+
             this->checkpointIfNeeded();
             
+            // Drag-and-copy logic:
+            if (firstChangeIsToCome && e.mods.isAnyModifierKeyDown())
+            {
+                // We duplicate the notes only at the very moment when they are about to be moved into the new position,
+                // to make sure that simple shift-clicks on a selection won't confuse a user with lots of silently created notes.
+
+                // Another trick is that user just continues to drag the originally selected notes,
+                // while the duplicated ones stay in their places, not vice versa, which simplifies the logic pretty much
+                // (though that behaviour may appear counterintuitive later, if we ever create a merge-tool with a diff viewer).
+
+                SequencerOperations::duplicateSelection(this->getRoll().getLassoSelection(), false);
+
+                // Ghost note markers become useless from now on, as there are duplicates in their places already:
+                this->getRoll().hideAllGhostNotes();
+            }
+
             this->getRoll().moveHelpers(deltaBeat, deltaKey);
             
             if (shouldSendMidi)

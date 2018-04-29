@@ -415,7 +415,6 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
         this->addAndMakeVisible(component);
 
         this->fader.fadeIn(component, 150);
-        this->selectEvent(component, false); // selectEvent(component, true)
 
         const bool isActive = component->belongsToAnyTrack(this->selectedTracks);
         component->setActive(isActive);

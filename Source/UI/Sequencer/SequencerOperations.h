@@ -72,6 +72,7 @@ public:
         WeakReference<MidiTrack> selectedTrack, float targetBeatPosition, bool shouldCheckpoint = true);
 
     static void deleteSelection(const Lasso &selection, bool shouldCheckpoint = true);
+    static void duplicateSelection(const Lasso &selection, bool shouldCheckpoint = true);
 
     static void shiftKeyRelative(Lasso &selection, int deltaKey,
         bool shouldCheckpoint = true, Transport *transport = nullptr);

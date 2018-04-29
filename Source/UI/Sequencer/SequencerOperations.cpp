@@ -1831,3 +1831,53 @@ bool SequencerOperations::findHarmonicContext(const Lasso &selection,
 
     return false;
 }
+
+void SequencerOperations::duplicateSelection(const Lasso &selection, bool shouldCheckpoint)
+{
+    if (selection.getNumSelected() == 0)
+    {
+        return;
+    }
+
+    OwnedArray<PianoChangeGroup> selectionsByTrack;
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const Note &note = selection.getItemAs<NoteComponent>(i)->getNote();
+        const MidiSequence *ownerSequence = note.getSequence();
+        Array<Note> *arrayToAddTo = nullptr;
+
+        for (int j = 0; j < selectionsByTrack.size(); ++j)
+        {
+            if (selectionsByTrack.getUnchecked(j)->size() > 0)
+            {
+                if (selectionsByTrack.getUnchecked(j)->getUnchecked(0).getSequence() == ownerSequence)
+                {
+                    arrayToAddTo = selectionsByTrack.getUnchecked(j);
+                }
+            }
+        }
+
+        if (arrayToAddTo == nullptr)
+        {
+            arrayToAddTo = new Array<Note>();
+            selectionsByTrack.add(arrayToAddTo);
+        }
+
+        arrayToAddTo->add(note.copyWithNewId());
+    }
+
+    bool didCheckpoint = !shouldCheckpoint;
+
+    for (int i = 0; i < selectionsByTrack.size(); ++i)
+    {
+        auto sequence = static_cast<PianoSequence *>(selectionsByTrack.getUnchecked(i)->getUnchecked(0).getSequence());
+
+        if (!didCheckpoint)
+        {
+            didCheckpoint = true;
+            sequence->checkpoint();
+        }
+
+        sequence->insertGroup(*selectionsByTrack.getUnchecked(i), true);
+    }
+}
