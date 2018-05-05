@@ -1,5 +1,5 @@
 ## ![Vive la culture libre](Resources/Screenshot.png)
-[Helio Workstation](https://helioworkstation.com) is free and open-source music sequencer, designed to be used on all major platforms.
+[Helio Workstation](https://helio.fm) is free and open-source music sequencer, designed to be used on all major platforms.
 
 ### Why another sequencer?
 
@@ -26,8 +26,8 @@ It aims to be a modern music creation software, featuring linear-based sequencer
 
 ### Links
 
- * Homepage with all latest builds: [https://helioworkstation.com](https://helioworkstation.com/).
- * Project page at [KVR database](http://www.kvraudio.com/product/helio-workstation-by-peter-rudenko).
+ * [Homepage](https://helio.fm/) with all latest builds.
+ * Project page at [KVR database](https://www.kvraudio.com/product/helio-workstation-by-peter-rudenko).
  * Some [screencasts on Youtube](https://www.youtube.com/channel/UCO3K8iCd1k2FTqSocoE-WXw/).
  * [Discussion](https://news.ycombinator.com/item?id=14212054) at HN.
 
@@ -37,7 +37,7 @@ Helio is a work in progress and still there are many essential features missing,
 
 Your ideas are also welcome: friendly and lightweight UI is the main development priority in this project, and if you have a vision on how to improve user experience in music composing, feel free to share it.
 
-You could also [make a new translation](http://helioworkstation.com/translations/) for your native language or proofread any of existing translations, including English, German, French, Italian, Spanish and Russian.
+You could also [make a new translation](https://helio.fm/translations) for your native language or proofread any of existing translations, including English, German, French, Italian, Spanish and Russian.
 
 ### License and credits
 

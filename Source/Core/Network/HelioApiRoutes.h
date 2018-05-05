@@ -21,9 +21,7 @@ namespace Routes
 {
     namespace HelioFM
     {
-        // This is a testing back-end, which is supposed
-        // to be moved to https://helio.fm, once it is ready:
-        static const String baseURL = "https://musehackers.com";
+        static const String baseURL = "https://helio.fm";
         static const String translationsURL = baseURL + "/translations";
 
         namespace Api
