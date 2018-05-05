@@ -16,7 +16,6 @@
 */
 
 #include "Common.h"
-#include <float.h>
 
 #include "PlayerThread.h"
 #include "Instrument.h"

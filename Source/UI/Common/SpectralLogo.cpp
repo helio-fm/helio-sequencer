@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "SpectralLogo.h"
-#include <math.h>
 
 #define MAXDB (+4.0f)
 #define MINDB (-70.0f)

@@ -20,6 +20,7 @@
 #include "AutomationSequence.h"
 #include "PianoRoll.h"
 #include "PatternRoll.h"
+#include "LassoListeners.h"
 #include "ProjectTreeItem.h"
 #include "PianoTrackTreeItem.h"
 #include "PatternEditorTreeItem.h"

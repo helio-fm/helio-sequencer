@@ -34,8 +34,6 @@
 #include "SerializationKeys.h"
 #include "Arpeggiator.h"
 #include "Transport.h"
-#include <float.h>
-#include <math.h>
 
 // все эти адские костыли нужны только затем, чтоб операции выполнялись послойно
 //===----------------------------------------------------------------------===//

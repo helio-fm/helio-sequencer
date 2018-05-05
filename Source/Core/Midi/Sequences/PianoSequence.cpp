@@ -25,8 +25,6 @@
 #include "ProjectTreeItem.h"
 #include "UndoStack.h"
 
-#include <float.h>
-
 PianoSequence::PianoSequence(MidiTrack &track,
     ProjectEventDispatcher &dispatcher) noexcept :
     MidiSequence(track, dispatcher) {}

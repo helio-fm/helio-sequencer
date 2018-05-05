@@ -34,7 +34,7 @@ class ModalDialogInput final : public FadingDialog,
 {
 public:
 
-    ModalDialogInput(const String &default, const String &message, const String &okText, const String &cancelText);
+    ModalDialogInput(const String &text, const String &message, const String &okText, const String &cancelText);
     ~ModalDialogInput();
 
     //[UserMethods]

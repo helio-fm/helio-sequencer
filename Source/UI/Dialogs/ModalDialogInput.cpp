@@ -31,8 +31,8 @@
 #endif
 //[/MiscUserDefs]
 
-ModalDialogInput::ModalDialogInput(const String &default, const String &message, const String &okText, const String &cancelText)
-    : input(default)
+ModalDialogInput::ModalDialogInput(const String &text, const String &message, const String &okText, const String &cancelText)
+    : input(text)
 {
     addAndMakeVisible (background = new DialogPanel());
     addAndMakeVisible (messageLabel = new Label (String(),
@@ -371,8 +371,8 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="ModalDialogInput" template="../../Template"
                  componentName="" parentClasses="public FadingDialog, public TextEditor::Listener, private Timer"
-                 constructorParams="const String &amp;default, const String &amp;message, const String &amp;okText, const String &amp;cancelText"
-                 variableInitialisers="input(default)" snapPixels="8" snapActive="1"
+                 constructorParams="const String &amp;text, const String &amp;message, const String &amp;okText, const String &amp;cancelText"
+                 variableInitialisers="input(text)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="450"
                  initialHeight="165">
   <METHODS>

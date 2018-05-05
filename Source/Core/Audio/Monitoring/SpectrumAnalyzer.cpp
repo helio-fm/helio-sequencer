@@ -29,7 +29,6 @@
 #define FFT_LOG2   0.693147180559945309417f
 
 #if JUCE_WIN32
-#include <math.h>
 
 #define FFT_SIN   (float)sin
 #define FFT_SINH  (float)sinh
@@ -46,7 +45,6 @@
 #define FFT_FMOD  (float)fmod
 
 #else
-#include <math.h>
 
 #define FFT_SIN   sinf
 #define FFT_SINH  sinhf

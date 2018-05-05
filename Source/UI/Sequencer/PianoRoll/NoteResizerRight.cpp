@@ -27,7 +27,6 @@
 #include "PianoSequence.h"
 #include "SequencerOperations.h"
 #include "NoteComponent.h"
-#include <float.h>
 //[/MiscUserDefs]
 
 NoteResizerRight::NoteResizerRight(HybridRoll &parentRoll)

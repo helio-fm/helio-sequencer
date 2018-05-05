@@ -18,7 +18,6 @@
 #pragma once
 
 #include "Instrument.h"
-#include <float.h>
 
 class MidiSequence;
 

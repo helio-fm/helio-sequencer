@@ -28,8 +28,6 @@
 
 #include "ProjectTreeItem.h"
 #include "PianoTrackMap.h"
-#include <float.h>
-
 
 TrackScroller::TrackScroller(Transport &transportRef, HybridRoll *targetRoll) :
     transport(transportRef),
