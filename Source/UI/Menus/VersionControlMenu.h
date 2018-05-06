@@ -27,12 +27,6 @@ class VersionControlMenu final : public MenuPanel
 {
 public:
 
-    VersionControlMenu(ProjectTreeItem &project, VersionControl &vcs);
-    void handleCommandMessage(int commandId) override;
-
-private:
-
-    VersionControl &vcs;
-    ProjectTreeItem &project;
+    VersionControlMenu(VersionControl &vcs);
 
 };

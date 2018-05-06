@@ -17,35 +17,33 @@
 
 #include "Common.h"
 #include "VersionControlStageSelectionMenu.h"
-#include "VersionControl.h"
 #include "CommandIDs.h"
 #include "Icons.h"
 
-VersionControlStageSelectionMenu::VersionControlStageSelectionMenu(const SparseSet<int> &selectedChanges, VersionControl &vcs) :
-    selectedChanges(selectedChanges),
-    vcs(vcs)
+VersionControlStageSelectionMenu::VersionControlStageSelectionMenu()
 {
     MenuPanel::Menu cmds;
 
-    cmds.add(MenuItem::item(Icons::commit, TRANS("menu::selection::vcs::commit"))->withAction([this]()
-    {
-        this->dismiss();
-    }));
+    cmds.add(MenuItem::item(Icons::commit,
+        CommandIDs::VersionControlCommitSelected,
+        TRANS("menu::selection::vcs::commit"))->closesMenu());
 
-    cmds.add(MenuItem::item(Icons::reset, TRANS("menu::selection::vcs::reset"))->withAction([this]()
-    {
-        this->dismiss();
-    }));
+    cmds.add(MenuItem::item(Icons::reset,
+        CommandIDs::VersionControlResetSelected,
+        TRANS("menu::selection::vcs::reset"))->closesMenu());
 
     // TODO add named stashes in addition to the default one
-    //cmds.add(MenuItem::item(Icons::stash, CommandIDs::DeleteEvents,
-    //    TRANS("menu::selection::vcs::stash")));
+    //cmds.add(MenuItem::item(Icons::stash,
+    //    CommandIDs::VersionControlStashSelected,
+    //    TRANS("menu::selection::vcs::stash"))->closesMenu());
 
-    cmds.add(MenuItem::item(Icons::selectAll, CommandIDs::VersionControlSelectAll,
+    cmds.add(MenuItem::item(Icons::selectAll,
+        CommandIDs::VersionControlSelectAll,
         TRANS("menu::selection::vcs::selectall")));
 
-    cmds.add(MenuItem::item(Icons::selectNone, CommandIDs::VersionControlSelectNone,
-        TRANS("menu::selection::vcs::selectnone")));
+    cmds.add(MenuItem::item(Icons::selectNone,
+        CommandIDs::VersionControlSelectNone,
+        TRANS("menu::selection::vcs::selectnone"))->closesMenu());
 
     this->updateContent(cmds, MenuPanel::SlideRight);
 }

@@ -94,8 +94,9 @@ private:
     void updateList();
     void clearList();
 
-    void updateToggleButton();
-    void toggleButtonAction();
+    void toggleQuickStash();
+    void commitSelected();
+    void resetSelected();
 
     //[/UserVariables]
 

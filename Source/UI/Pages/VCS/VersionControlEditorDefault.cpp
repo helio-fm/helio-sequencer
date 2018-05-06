@@ -23,6 +23,8 @@
 
 //[MiscUserDefs]
 #include "VersionControl.h"
+#include "MainLayout.h"
+#include "App.h"
 //[/MiscUserDefs]
 
 VersionControlEditorDefault::VersionControlEditorDefault(VersionControl &versionControl)
@@ -88,6 +90,9 @@ void VersionControlEditorDefault::resized()
 void VersionControlEditorDefault::updateState()
 {
     // VCS or project has changed
+    App::Layout().hideSelectionMenu();
+    this->stageComponent->clearSelection();
+    this->historyComponent->clearSelection();
     this->vcs.getHead().rebuildDiffNow();
     this->historyComponent->rebuildRevisionTree();
 }

@@ -20,61 +20,44 @@
 
 #include "StageComponent.h"
 #include "VersionControl.h"
-#include "ProjectTreeItem.h"
 
 #include "MenuPanel.h"
 #include "CommandIDs.h"
 #include "Icons.h"
 
-static MenuPanel::Menu createDefaultPanel()
+VersionControlMenu::VersionControlMenu(VersionControl &vcs)
 {
-    MenuPanel::Menu cmds;
+    MenuPanel::Menu menu;
 
-    // TODO
-    // if default stash is full and no changes present: "toggle on"
-    // if default stash is empty and there are changes on stage: "toggle on"
-    // else, disabled? or shows error messages?
+    const bool noStashNoChanges = !vcs.hasQuickStash() && !vcs.getHead().hasAnythingOnTheStage();
+    const Icons::Id stashIcon = vcs.hasQuickStash() ? Icons::toggleOff : Icons::toggleOn;
+    const String stashMessage = vcs.hasQuickStash() ?
+        TRANS("menu::vcs::changes::show") : TRANS("menu::vcs::changes::hide");
 
-    cmds.add(MenuItem::item(Icons::toggleOn, CommandIDs::VersionControlToggleQuickStash,
-        TRANS("menu::vcs::changes::hide"))); // menu::vcs::changes::show
+    menu.add(MenuItem::item(stashIcon,
+        CommandIDs::VersionControlToggleQuickStash,
+        stashMessage)->disabledIf(noStashNoChanges)->closesMenu());
 
-    cmds.add(MenuItem::item(Icons::commit, CommandIDs::VersionControlCommitAll,
-        TRANS("menu::vcs::commitall")));
+    menu.add(MenuItem::item(Icons::commit,
+        CommandIDs::VersionControlCommitAll,
+        TRANS("menu::vcs::commitall"))->closesMenu());
 
-    cmds.add(MenuItem::item(Icons::reset, CommandIDs::VersionControlResetAll,
-        TRANS("menu::vcs::resetall")));
+    menu.add(MenuItem::item(Icons::reset,
+        CommandIDs::VersionControlResetAll,
+        TRANS("menu::vcs::resetall"))->closesMenu());
 
-    cmds.add(MenuItem::item(Icons::push, CommandIDs::VersionControlPush,
-        TRANS("menu::vcs::push"))->disabledIf(true)); // TODO push-pull
+    // TODO push-pull
+    menu.add(MenuItem::item(Icons::push,
+        CommandIDs::VersionControlPush,
+        TRANS("menu::vcs::push"))->disabledIf(true)->closesMenu());
 
-    cmds.add(MenuItem::item(Icons::pull, CommandIDs::VersionControlPull,
-        TRANS("menu::vcs::pull"))->disabledIf(true)); // TODO push-pull
+    menu.add(MenuItem::item(Icons::pull,
+        CommandIDs::VersionControlPull,
+        TRANS("menu::vcs::pull"))->disabledIf(true)->closesMenu());
 
     // TODO when stashes are ready
-    //cmds.add(MenuItem::item(Icons::pop, CommandIDs::VersionControlPopStash,
-    //    TRANS("menu::vcs::pop"))->withSubmenu()->withTimer());
+    //menu.add(MenuItem::item(Icons::pop, CommandIDs::VersionControlPopStash,
+    //    TRANS("menu::vcs::pop"))->withSubmenu());
 
-    return cmds;
+    this->updateContent(menu, MenuPanel::SlideRight);
 }
-
-VersionControlMenu::VersionControlMenu(ProjectTreeItem &parentProject, VersionControl &versionControl)
-    : vcs(versionControl),
-      project(parentProject)
-{
-    this->updateContent(createDefaultPanel(), MenuPanel::SlideRight);
-}
-
-void VersionControlMenu::handleCommandMessage(int commandId)
-{
-    if (commandId == CommandIDs::Back)
-    {
-        this->updateContent(createDefaultPanel(), MenuPanel::SlideRight);
-        return;
-    }
-    else if (commandId == CommandIDs::CopyEvents)
-    {
-        this->dismiss();
-        return;
-    }
-}
-

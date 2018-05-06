@@ -35,6 +35,16 @@
         { "receiver": "SequencerLayout", "command": "SwitchBetweenRolls", "key": "Tab" },
 
         // ------------------------------------
+        // Version control page
+
+        { "receiver": "VersionControlStage", "command": "VersionControlToggleQuickStash", "key": "Tab" },
+        { "receiver": "VersionControlStage", "command": "VersionControlSelectAll", "key": "Control + A" },
+        { "receiver": "VersionControlStage", "command": "VersionControlSelectNone", "key": "Escape" },
+        { "receiver": "VersionControlStage", "command": "VersionControlCommitSelected", "key": "Control + S" },
+        { "receiver": "VersionControlStage", "command": "VersionControlResetSelected", "key": "Backspace" },
+        { "receiver": "VersionControlStage", "command": "VersionControlResetSelected", "key": "Delete" },
+
+        // ------------------------------------
         // Piano roll's specific
 
         // Undo/redo:

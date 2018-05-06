@@ -214,12 +214,7 @@ ScopedPointer<Component> VersionControlTreeItem::createMenu()
 {
     if (this->vcs != nullptr)
     {
-        ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>();
-        
-        if (parentProject)
-        {
-            return new VersionControlMenu(*parentProject, *this->vcs);
-        }
+        return new VersionControlMenu(*this->vcs);
     }
     
     return nullptr;

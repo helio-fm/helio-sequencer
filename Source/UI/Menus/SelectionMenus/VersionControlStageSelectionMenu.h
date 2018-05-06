@@ -25,11 +25,6 @@ class VersionControlStageSelectionMenu final : public MenuPanel
 {
 public:
     
-    VersionControlStageSelectionMenu(const SparseSet<int> &selectedChanges, VersionControl &vcs);
-    
-private:
-
-    SparseSet<int> selectedChanges;
-    VersionControl &vcs;
+    VersionControlStageSelectionMenu();
 
 };

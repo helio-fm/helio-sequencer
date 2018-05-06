@@ -33,6 +33,7 @@
 #include "RevisionItemComponent.h"
 #include "Head.h"
 
+#include "ComponentIDs.h"
 #include "CommandIDs.h"
 #include "App.h"
 #include "FailTooltip.h"
@@ -64,6 +65,8 @@ StageComponent::StageComponent(VersionControl &versionControl)
 
 
     //[UserPreSize]
+    this->setComponentID(ComponentIDs::versionControlStage);
+
     this->indicator->setVisible(false);
     this->indicator->setAlpha(0.5f);
 
@@ -77,7 +80,6 @@ StageComponent::StageComponent(VersionControl &versionControl)
 
     //[Constructor]
     this->updateList();
-    this->updateToggleButton();
 
     this->vcs.getHead().addChangeListener(this);
     //[/Constructor]
@@ -125,6 +127,34 @@ void StageComponent::resized()
 void StageComponent::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
+    switch (commandId)
+    {
+    case CommandIDs::VersionControlSelectAll:
+        this->selectAll(sendNotification);
+        break;
+    case CommandIDs::VersionControlSelectNone:
+        this->changesList->setSelectedRows({}, sendNotification);
+        break;
+    case CommandIDs::VersionControlToggleQuickStash:
+        this->toggleQuickStash();
+        break;
+    case CommandIDs::VersionControlCommitSelected:
+        this->commitSelected();
+        break;
+    case CommandIDs::VersionControlResetSelected:
+        this->resetSelected();
+        break;
+    case CommandIDs::VersionControlCommitAll:
+        this->selectAll(sendNotification);
+        this->commitSelected();
+        break;
+    case CommandIDs::VersionControlResetAll:
+        this->selectAll(sendNotification);
+        this->resetSelected();
+        break;
+    default:
+        break;
+    }
     //[/UserCode_handleCommandMessage]
 }
 
@@ -160,7 +190,6 @@ void StageComponent::changeListenerCallback(ChangeBroadcaster *source)
         {
             this->stopProgressAnimation();
             this->updateList();
-            this->updateToggleButton();
         }
     }
 }
@@ -228,129 +257,9 @@ int StageComponent::getNumRows()
     return numProps;
 }
 
-/*
-    if (buttonThatWasClicked == toggleChangesButton)
-    {
-        //[UserButtonCode_toggleChangesButton] -- add your button handler code here..
-        this->toggleButtonAction();
-        //[/UserButtonCode_toggleChangesButton]
-    }
-    else if (buttonThatWasClicked == commitButton)
-    {
-        //[UserButtonCode_commitButton] -- add your button handler code here..
-        if (this->changesList->getSelectedRows().isEmpty())
-        {
-            App::Layout().showTooltip(TRANS("vcs::warning::cannotcommit"), 3000);
-            return;
-        }
-
-        auto dialog = ModalDialogInput::Presets::commit(this->lastCommitMessage);
-
-        dialog->onOk = [this](const String &input)
-        {
-            this->lastCommitMessage = {};
-            this->vcs.commit(this->changesList->getSelectedRows(), input);
-        };
-
-        dialog->onCancel = [this](const String &input)
-        {
-            this->lastCommitMessage = input;
-        };
-
-        App::Layout().showModalComponentUnowned(dialog.release());
-        //[/UserButtonCode_commitButton]
-    }
-    else if (buttonThatWasClicked == resetButton)
-    {
-        //[UserButtonCode_resetButton] -- add your button handler code here..
-
-        if (this->changesList->getSelectedRows().isEmpty())
-        {
-            App::Layout().showTooltip(TRANS("vcs::warning::cannotreset"), 3000);
-            return;
-        }
-
-        auto dialog = ModalDialogConfirmation::Presets::resetChanges();
-
-        dialog->onOk = [this]()
-        {
-            this->vcs.resetChanges(this->changesList->getSelectedRows());
-        };
-
-        App::Layout().showModalComponentUnowned(dialog.release());
-
-        //[/UserButtonCode_resetButton]
-    }
-*/
-
-
 //===----------------------------------------------------------------------===//
 // Private
 //===----------------------------------------------------------------------===//
-
-void StageComponent::updateToggleButton()
-{
-    // 4 use cases:
-    // 1 - has no quick stash, and has changes - clearly can toggle off, display toggle on button
-    // 2 - has quick stash, and no changes - clearly can toggle on, display toggle off button
-    // 3 - has no quick stash, and has no changes - don't display toggle button
-    // 4 - has quick stash, but also has changes - ? display toggle off button, show alert on press ?
-
-    const bool case1 = !this->vcs.hasQuickStash() && this->vcs.getHead().hasAnythingOnTheStage();
-    const bool case2 = this->vcs.hasQuickStash() && !this->vcs.getHead().hasAnythingOnTheStage();
-    const bool case3 = !this->vcs.hasQuickStash() && !this->vcs.getHead().hasAnythingOnTheStage();
-    const bool case4 = this->vcs.hasQuickStash() && this->vcs.getHead().hasAnythingOnTheStage();
-
-    //if (case1)
-    //{
-    //    this->toggleChangesButton->setEnabled(true);
-    //    //this->fader.fadeIn(this->toggleChangesButton, 100);
-    //    this->toggleChangesButton->setName("toggleOn");
-    //    this->toggleChangesButton->repaint();
-    //}
-    //else if (case2)
-    //{
-    //    this->toggleChangesButton->setEnabled(true);
-    //    //this->fader.fadeIn(this->toggleChangesButton, 100);
-    //    this->toggleChangesButton->setName("toggleOff");
-    //    this->toggleChangesButton->repaint();
-    //}
-    //else if (case3)
-    //{
-    //    this->toggleChangesButton->setEnabled(false);
-    //    //this->fader.fadeOut(this->toggleChangesButton, 100);
-    //}
-    //else if (case4)
-    //{
-    //    this->toggleChangesButton->setEnabled(true);
-    //    //this->fader.fadeIn(this->toggleChangesButton, 100);
-    //    this->toggleChangesButton->setName("toggleOff");
-    //    this->toggleChangesButton->repaint();
-    //}
-}
-
-void StageComponent::toggleButtonAction()
-{
-    const bool case1 = !this->vcs.hasQuickStash() && this->vcs.getHead().hasAnythingOnTheStage();
-    const bool case2 = this->vcs.hasQuickStash() && !this->vcs.getHead().hasAnythingOnTheStage();
-    const bool case3 = !this->vcs.hasQuickStash() && !this->vcs.getHead().hasAnythingOnTheStage();
-    const bool case4 = this->vcs.hasQuickStash() && this->vcs.getHead().hasAnythingOnTheStage();
-
-    if (case1)
-    {
-        this->vcs.quickStashAll();
-    }
-    else if (case2)
-    {
-        this->vcs.applyQuickStash();
-        //this->vcs.getHead().rebuildDiffSynchronously();
-    }
-    else if (case4)
-    {
-        App::Layout().showTooltip(TRANS("vcs::warning::cannotrevert"));
-        App::Layout().showModalComponentUnowned(new FailTooltip());
-    }
-}
 
 void StageComponent::updateList()
 {
@@ -393,7 +302,7 @@ bool StageComponent::canBeSelectedAsMenuItem() const { return false; }
 
 ScopedPointer<Component> StageComponent::createMenu()
 {
-    return { new VersionControlStageSelectionMenu(this->changesList->getSelectedRows(), this->vcs) };
+    return { new VersionControlStageSelectionMenu() };
 }
 
 Image StageComponent::getIcon() const
@@ -404,6 +313,81 @@ Image StageComponent::getIcon() const
 String StageComponent::getName() const
 {
     return TRANS("menu::selection::vcs::stage");
+}
+
+//===----------------------------------------------------------------------===//
+// Helpers
+//===----------------------------------------------------------------------===//
+
+void StageComponent::toggleQuickStash()
+{
+    // 4 use cases:
+    // 1 - has no quick stash, and has changes - clearly can toggle off, display toggle on button
+    // 2 - has quick stash, and no changes - clearly can toggle on, display toggle off button
+    // 3 - has no quick stash, and has no changes - don't display toggle button
+    // 4 - has quick stash, but also has changes - ? display toggle off button, show alert on press ?
+
+    const bool case1 = !this->vcs.hasQuickStash() && this->vcs.getHead().hasAnythingOnTheStage();
+    const bool case2 = this->vcs.hasQuickStash() && !this->vcs.getHead().hasAnythingOnTheStage();
+    const bool case3 = !this->vcs.hasQuickStash() && !this->vcs.getHead().hasAnythingOnTheStage();
+    const bool case4 = this->vcs.hasQuickStash() && this->vcs.getHead().hasAnythingOnTheStage();
+
+    if (case1)
+    {
+        this->vcs.quickStashAll();
+    }
+    else if (case2)
+    {
+        this->vcs.applyQuickStash();
+        //this->vcs.getHead().rebuildDiffSynchronously();
+    }
+    else if (case4)
+    {
+        App::Layout().showTooltip(TRANS("vcs::warning::cannotrevert"));
+        App::Layout().showModalComponentUnowned(new FailTooltip());
+    }
+}
+
+void StageComponent::commitSelected()
+{
+    if (this->changesList->getSelectedRows().isEmpty())
+    {
+        App::Layout().showTooltip(TRANS("vcs::warning::cannotcommit"), 3000);
+        return;
+    }
+
+    auto dialog = ModalDialogInput::Presets::commit(this->lastCommitMessage);
+
+    dialog->onOk = [this](const String &input)
+    {
+        this->lastCommitMessage = {};
+        this->vcs.commit(this->changesList->getSelectedRows(), input);
+    };
+
+    dialog->onCancel = [this](const String &input)
+    {
+        this->lastCommitMessage = input;
+    };
+
+    App::Layout().showModalComponentUnowned(dialog.release());
+}
+
+void StageComponent::resetSelected()
+{
+    if (this->changesList->getSelectedRows().isEmpty())
+    {
+        App::Layout().showTooltip(TRANS("vcs::warning::cannotreset"), 3000);
+        return;
+    }
+
+    auto dialog = ModalDialogConfirmation::Presets::resetChanges();
+
+    dialog->onOk = [this]()
+    {
+        this->vcs.resetChanges(this->changesList->getSelectedRows());
+    };
+
+    App::Layout().showModalComponentUnowned(dialog.release());
 }
 
 //[/MiscUserCode]

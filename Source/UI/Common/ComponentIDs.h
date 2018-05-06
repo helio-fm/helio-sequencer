@@ -27,4 +27,5 @@ namespace ComponentIDs
     static const String patternRollId = "PatternRoll";
     static const String mainLayoutId = "MainLayout";
     static const String sequencerLayoutId = "SequencerLayout";
+    static const String versionControlStage = "VersionControlStage";
 } // namespace ComponentIDs

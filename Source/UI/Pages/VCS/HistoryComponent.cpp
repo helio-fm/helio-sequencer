@@ -37,25 +37,6 @@
 #include "VersionControlHistorySelectionMenu.h"
 #include "RevisionTooltipComponent.h"
 
-// just emitting a modal ui box.
-//this->vcs.getRemote()->push();
-
-// проверит не просто наличие каких-либо изменений,
-// а то, есть ли изменения айтемов, которые уже присутствуют в индексе
-//if (this->vcs.getHead().hasTrackedItemsOnTheStage())
-//{
-//    auto confirmationDialog = ModalDialogConfirmation::Presets::forcePull();
-//    confirmationDialog->onOk = [this]()
-//    {
-//        this->vcs.getRemote()->pull();
-//    };
-//    App::Layout().showModalComponentUnowned(confirmationDialog.release());
-//}
-//else
-//{
-//    this->vcs.getRemote()->pull();
-//}
-
 //[/MiscUserDefs]
 
 HistoryComponent::HistoryComponent(VersionControl &owner)
@@ -117,6 +98,27 @@ void HistoryComponent::resized()
 void HistoryComponent::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
+
+    // TODO switch
+
+    // Push: just emitting a modal ui box.
+    //this->vcs.getRemote()->push();
+
+    // Pull:
+    //if (this->vcs.getHead().hasTrackedItemsOnTheStage())
+    //{
+    //    auto confirmationDialog = ModalDialogConfirmation::Presets::forcePull();
+    //    confirmationDialog->onOk = [this]()
+    //    {
+    //        this->vcs.getRemote()->pull();
+    //    };
+    //    App::Layout().showModalComponentUnowned(confirmationDialog.release());
+    //}
+    //else
+    //{
+    //    this->vcs.getRemote()->pull();
+    //}
+
     //[/UserCode_handleCommandMessage]
 }
 

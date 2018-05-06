@@ -23,7 +23,7 @@ class HotkeyScheme final : public BaseResource
 {
 public:
 
-    HotkeyScheme();
+    HotkeyScheme() = default;
     HotkeyScheme(const HotkeyScheme &other);
 
     typedef ReferenceCountedObjectPtr<HotkeyScheme> Ptr;
