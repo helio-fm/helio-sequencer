@@ -22,18 +22,15 @@
 #include "Revision.h"
 //[/Headers]
 
-#include "../../Themes/PanelBackgroundC.h"
-#include "../../Themes/FramePanel.h"
-#include "../../Themes/ShadowDownwards.h"
+#include "../../Themes/SeparatorHorizontal.h"
 
-class RevisionTooltipComponent  : public Component,
-                                  public ListBoxModel,
-                                  public Button::Listener
+class RevisionTooltipComponent final : public Component,
+                                       public ListBoxModel,
+                                       public Button::Listener
 {
 public:
 
-    RevisionTooltipComponent (VersionControl &owner, const ValueTree revision);
-
+    RevisionTooltipComponent(VersionControl &owner, const ValueTree revision);
     ~RevisionTooltipComponent();
 
     //[UserMethods]
@@ -76,11 +73,9 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<PanelBackgroundC> background;
-    ScopedPointer<FramePanel> panel;
     ScopedPointer<ListBox> changesList;
     ScopedPointer<TextButton> checkoutRevisionButton;
-    ScopedPointer<ShadowDownwards> shadow;
+    ScopedPointer<SeparatorHorizontal> separator;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RevisionTooltipComponent)
 };

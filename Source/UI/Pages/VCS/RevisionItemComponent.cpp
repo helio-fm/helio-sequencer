@@ -99,6 +99,10 @@ RevisionItemComponent::RevisionItemComponent(ListBox &parentListBox, VCS::Head &
     //[UserPreSize]
     this->selectionComponent = new RevisionItemSelectionComponent();
     this->addChildComponent(this->selectionComponent);
+
+    // Gray out details a bit:
+    this->deltasLabel->setColour(Label::textColourId,
+        this->findColour(Label::textColourId).withMultipliedAlpha(0.75f));
     //[/UserPreSize]
 
     setSize (500, 70);

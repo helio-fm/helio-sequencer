@@ -41,25 +41,16 @@ RevisionTooltipComponent::RevisionTooltipComponent(VersionControl &owner, const 
       revision(revision),
       revisionItemsOnly("temporaryPropertyList")
 {
-    addAndMakeVisible (background = new PanelBackgroundC());
-    addAndMakeVisible (panel = new FramePanel());
     addAndMakeVisible (changesList = new ListBox ("", this));
 
     addAndMakeVisible (checkoutRevisionButton = new TextButton (String()));
     checkoutRevisionButton->setButtonText (TRANS("vcs::history::checkout"));
-    checkoutRevisionButton->setConnectedEdges (Button::ConnectedOnTop);
+    checkoutRevisionButton->setConnectedEdges (Button::ConnectedOnTop | Button::ConnectedOnBottom);
     checkoutRevisionButton->addListener (this);
 
-    addAndMakeVisible (shadow = new ShadowDownwards());
+    addAndMakeVisible (separator = new SeparatorHorizontal());
 
     //[UserPreSize]
-
-    //this->revisionDescription->setText(this->revision.getProperty(Serialization::VCS::commitMessage), dontSendNotification);
-    //this->revisionId->setText(this->revision.getProperty(Serialization::VCS::commitId), dontSendNotification);
-
-    //this->revisionId->setInterceptsMouseClicks(false, false);
-    //this->revisionDescription->setInterceptsMouseClicks(false, false);
-
 
     for (int i = 0; i < this->revision.getNumProperties(); ++i)
     {
@@ -78,16 +69,16 @@ RevisionTooltipComponent::RevisionTooltipComponent(VersionControl &owner, const 
 
     //[/UserPreSize]
 
-    setSize (320, 240);
+    setSize (320, 220);
 
     //[Constructor]
-    const int topBottomMargins = 86;
+    const int topBottomMargins = 60;
     const int maxHeight = int(REVISION_TOOLTIP_ROW_HEIGHT * REVISION_TOOLTIP_ROWS_ONSCREEN);
 
-    //const int numItems = this->getNumRows();
-    //const int listHeight = (numItems * REVISION_TOOLTIP_ROW_HEIGHT);
-    //const int newHeight = jmin(maxHeight, listHeight) + topBottomMargins;
-    const int newHeight = maxHeight + topBottomMargins;
+    const int numItems = this->getNumRows();
+    const int listHeight = (numItems * REVISION_TOOLTIP_ROW_HEIGHT);
+    const int newHeight = jmin(maxHeight, listHeight) + topBottomMargins;
+    //const int newHeight = maxHeight + topBottomMargins;
 
     this->setSize(this->getWidth(), newHeight);
     this->changesList->updateContent();
@@ -99,11 +90,9 @@ RevisionTooltipComponent::~RevisionTooltipComponent()
     //[Destructor_pre]
     //[/Destructor_pre]
 
-    background = nullptr;
-    panel = nullptr;
     changesList = nullptr;
     checkoutRevisionButton = nullptr;
-    shadow = nullptr;
+    separator = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -123,11 +112,9 @@ void RevisionTooltipComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    background->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
-    panel->setBounds (0, 0, getWidth() - 0, getHeight() - 60);
     changesList->setBounds (0, 0, getWidth() - 0, getHeight() - 60);
-    checkoutRevisionButton->setBounds (0 + 5, 0 + (getHeight() - 60), getWidth() - 10, 55);
-    shadow->setBounds (0 + 5, 0 + (getHeight() - 60) - 3, getWidth() - 10, 26);
+    checkoutRevisionButton->setBounds (0, 0 + (getHeight() - 60), getWidth() - 0, 60);
+    separator->setBounds (0, 0 + (getHeight() - 60) - 1, getWidth() - 0, 4);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -233,26 +220,20 @@ BEGIN_JUCER_METADATA
                  constructorParams="VersionControl &amp;owner, const ValueTree revision"
                  variableInitialisers="vcs(owner),&#10;revision(revision),&#10;revisionItemsOnly(&quot;temporaryPropertyList&quot;)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="320" initialHeight="240">
+                 fixedSize="1" initialWidth="320" initialHeight="220">
   <METHODS>
     <METHOD name="inputAttemptWhenModal()"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
-  <JUCERCOMP name="" id="e29f8df9016fa10d" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../../Themes/PanelBackgroundC.cpp"
-             constructorParams=""/>
-  <JUCERCOMP name="" id="c5736d336280caba" memberName="panel" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 60M" sourceFile="../../Themes/FramePanel.cpp"
-             constructorParams=""/>
   <GENERICCOMPONENT name="" id="d017e5395434bb4f" memberName="changesList" virtualName=""
                     explicitFocusOrder="0" pos="0 0 0M 60M" class="ListBox" params="&quot;&quot;, this"/>
   <TEXTBUTTON name="" id="d22a0ea951756643" memberName="checkoutRevisionButton"
-              virtualName="" explicitFocusOrder="0" pos="5 0R 10M 55" posRelativeX="c5736d336280caba"
-              posRelativeY="c5736d336280caba" buttonText="vcs::history::checkout"
-              connectedEdges="4" needsCallback="1" radioGroupId="0"/>
-  <JUCERCOMP name="" id="34270fb50cf926d8" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="5 3R 10M 26" posRelativeX="c5736d336280caba"
-             posRelativeY="c5736d336280caba" sourceFile="../../Themes/ShadowDownwards.cpp"
+              virtualName="" explicitFocusOrder="0" pos="0 0R 0M 60" posRelativeX="c5736d336280caba"
+              posRelativeY="d017e5395434bb4f" buttonText="vcs::history::checkout"
+              connectedEdges="12" needsCallback="1" radioGroupId="0"/>
+  <JUCERCOMP name="" id="a5ee6384bbe01d79" memberName="separator" virtualName=""
+             explicitFocusOrder="0" pos="0 1R 0M 4" posRelativeX="c5736d336280caba"
+             posRelativeY="d017e5395434bb4f" sourceFile="../../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 
