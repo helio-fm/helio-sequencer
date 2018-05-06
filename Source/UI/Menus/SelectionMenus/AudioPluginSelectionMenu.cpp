@@ -52,7 +52,7 @@ MenuPanel::Menu AudioPluginSelectionMenu::createDefaultMenu()
 
     const auto instruments = this->orchestraNode.findChildrenOfType<InstrumentTreeItem>();
     menu.add(MenuItem::item(Icons::audioPlugin, TRANS("menu::selection::plugin::plug"))->
-        withSubmenu()->withTimer()->disabledIf(instruments.isEmpty())->withAction([this]()
+        withSubmenu()->disabledIf(instruments.isEmpty())->withAction([this]()
     {
         this->updateContent(this->createInstrumentsMenu(), MenuPanel::SlideLeft);
     }));
@@ -76,12 +76,16 @@ MenuPanel::Menu AudioPluginSelectionMenu::createInstrumentsMenu()
     }));
 
     const auto instruments = this->orchestraNode.findChildrenOfType<InstrumentTreeItem>();
-
-    for (const auto instrument : instruments)
+    for (const auto instrumentNode : instruments)
     {
-        menu.add(MenuItem::item(Icons::instrument, instrument->getName())->withAction([this, instrument]()
+        menu.add(MenuItem::item(Icons::instrument, instrumentNode->getName())->withAction([this, instrumentNode]()
         {
-            // TODO
+            instrumentNode->getInstrument()->addNodeToFreeSpace(this->pluginDescription,
+                [this, instrumentNode](Instrument *instrument)
+                {
+                    instrumentNode->updateChildrenEditors();
+                });
+
             this->dismiss();
         }));
     }

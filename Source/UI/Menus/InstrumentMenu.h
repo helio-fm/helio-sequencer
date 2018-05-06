@@ -35,5 +35,6 @@ private:
     
     MenuPanel::Menu createDefaultMenu();
     MenuPanel::Menu createEffectsMenu();
+    MenuPanel::Menu createInstrumentsMenu();
 
 };

@@ -33,32 +33,49 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createDefaultMenu()
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::routing, TRANS("menu::selection::route::getaudio"))->
-        withSubmenu()->withTimer()->withAction([this]()
-    {
-        this->updateContent(this->createAudioSourcesMenu(), MenuPanel::SlideLeft);
-    }));
+    const bool acceptsMidi = this->node->getProcessor()->acceptsMidi();
+    const bool producesMidi = this->node->getProcessor()->producesMidi();
+    const bool acceptsAudio = this->node->getProcessor()->getTotalNumInputChannels() > 0;
+    const bool producesAudio = this->node->getProcessor()->getTotalNumOutputChannels() > 0;
+    const bool hasConnections = this->instrument.hasConnectionsFor(this->node);
 
-    menu.add(MenuItem::item(Icons::routing, TRANS("menu::selection::route::sendaudio"))->
-        withSubmenu()->withTimer()->withAction([this]()
-    {
-        this->updateContent(this->createAudioDestinationsMenu(), MenuPanel::SlideLeft);
-    }));
-
-    menu.add(MenuItem::item(Icons::routing,
-        TRANS("menu::selection::route::getmidi"))->
-        withSubmenu()->withTimer()->withAction([this]()
+    menu.add(MenuItem::item(Icons::routing, TRANS("menu::selection::route::getmidi"))->
+        withSubmenu()->disabledIf(!acceptsMidi)->withAction([this]()
     {
         this->updateContent(this->createMidiSourcesMenu(), MenuPanel::SlideLeft);
     }));
 
+    menu.add(MenuItem::item(Icons::routing, TRANS("menu::selection::route::getaudio"))->
+        withSubmenu()->disabledIf(!acceptsAudio)->withAction([this]()
+    {
+        this->updateContent(this->createAudioSourcesMenu(), MenuPanel::SlideLeft);
+    }));
+
     menu.add(MenuItem::item(Icons::routing, TRANS("menu::selection::route::sendmidi"))->
-        withSubmenu()->withTimer()->withAction([this]()
+        withSubmenu()->disabledIf(!producesMidi)->withAction([this]()
     {
         this->updateContent(this->createMidiDestinationsMenu(), MenuPanel::SlideLeft);
     }));
 
-    menu.add(MenuItem::item(Icons::remove, TRANS("menu::selection::route::remove")));
+    menu.add(MenuItem::item(Icons::routing, TRANS("menu::selection::route::sendaudio"))->
+        withSubmenu()->disabledIf(!producesAudio)->withAction([this]()
+    {
+        this->updateContent(this->createAudioDestinationsMenu(), MenuPanel::SlideLeft);
+    }));
+
+    menu.add(MenuItem::item(Icons::close, TRANS("menu::selection::route::disconnect"))->
+        disabledIf(!hasConnections)->withAction([this]()
+    {
+        this->instrument.removeAllConnectionsForNode(this->node);
+        this->dismiss();
+    }));
+
+    menu.add(MenuItem::item(Icons::remove, TRANS("menu::selection::route::remove"))->
+        disabledIf(this->instrument.isNodeStandardIOProcessor(this->node->nodeID))->withAction([this]()
+    {
+        this->instrument.removeNode(this->node->nodeID);
+        this->dismiss();
+    }));
 
     return menu;
 }
@@ -72,7 +89,17 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createAudioSourcesMenu()
         this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
     }));
 
-    // TODO
+    for (const auto &n : this->instrument.findAudioProducers())
+    {
+        const bool hasConnection = this->instrument.hasAudioConnection(n , this->node);
+        menu.add(MenuItem::item(hasConnection ? Icons::apply : Icons::audioPlugin, n->getProcessor()->getName())->
+            disabledIf(hasConnection || n == this->node)->withAction([this, n]()
+        {
+            this->instrument.addConnection(n->nodeID, 0, this->node->nodeID, 0);
+            this->instrument.addConnection(n->nodeID, 1, this->node->nodeID, 1);
+            this->dismiss();
+        }));
+    }
 
     return menu;
 }
@@ -86,7 +113,17 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createAudioDestinationsMenu()
         this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
     }));
 
-    // TODO
+    for (const auto &n : this->instrument.findAudioAcceptors())
+    {
+        const bool hasConnection = this->instrument.hasAudioConnection(this->node, n);
+        menu.add(MenuItem::item(hasConnection ? Icons::apply : Icons::audioPlugin, n->getProcessor()->getName())->
+            disabledIf(hasConnection || n == this->node)->withAction([this, n]()
+        {
+            this->instrument.addConnection(this->node->nodeID, 0, n->nodeID, 0);
+            this->instrument.addConnection(this->node->nodeID, 1, n->nodeID, 1);
+            this->dismiss();
+        }));
+    }
 
     return menu;
 }
@@ -99,7 +136,17 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createMidiSourcesMenu()
         this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
     }));
 
-    // TODO
+    for (const auto &n : this->instrument.findMidiProducers())
+    {
+        const bool hasConnection = this->instrument.hasMidiConnection(n, this->node);
+        menu.add(MenuItem::item(hasConnection ? Icons::apply : Icons::audioPlugin, n->getProcessor()->getName())->
+            disabledIf(hasConnection || n == this->node)->withAction([this, n]()
+        {
+            this->instrument.addConnection(n->nodeID,
+                Instrument::midiChannelNumber, this->node->nodeID, Instrument::midiChannelNumber);
+            this->dismiss();
+        }));
+    }
 
     return menu;
 }
@@ -113,7 +160,17 @@ MenuPanel::Menu InstrumentNodeSelectionMenu::createMidiDestinationsMenu()
         this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
     }));
 
-    // TODO
+    for (const auto &n : this->instrument.findMidiAcceptors())
+    {
+        const bool hasConnection = this->instrument.hasMidiConnection(this->node, n);
+        menu.add(MenuItem::item(hasConnection ? Icons::apply : Icons::audioPlugin, n->getProcessor()->getName())->
+            disabledIf(hasConnection || n == this->node)->withAction([this, n]()
+        {
+            this->instrument.addConnection(this->node->nodeID,
+                Instrument::midiChannelNumber, n->nodeID, Instrument::midiChannelNumber);
+            this->dismiss();
+        }));
+    }
 
     return menu;
 }

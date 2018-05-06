@@ -37,6 +37,15 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
 {
     MenuPanel::Menu menu;
 
+    if (!instrumentNode.isSelected())
+    {
+        menu.add(MenuItem::item(Icons::routing, TRANS("menu::instrument::showeditor"))->withAction([this]()
+        {
+            instrumentNode.setSelected(true, true);
+            this->dismiss();
+        }));
+    }
+
     menu.add(MenuItem::item(Icons::ellipsis, TRANS("menu::instrument::rename"))->withAction([this]()
     {
         auto dialog = ModalDialogInput::Presets::renameInstrument(this->instrumentNode.getName());
@@ -46,11 +55,17 @@ MenuPanel::Menu InstrumentMenu::createDefaultMenu()
     }));
 
     // TODO:
-    //menu.add(MenuItem::item(Icons::?current, TRANS("menu::instrument::seticon")));
+    //menu.add(MenuItem::item(Icons::icon, TRANS("menu::instrument::seticon")));
     //menu.add(MenuItem::item(Icons::colour, TRANS("menu::instrument::setcolour")));
 
+    menu.add(MenuItem::item(Icons::instrument, TRANS("menu::instrument::addinstrument"))->
+        withSubmenu()->disabledIf(!this->pluginScanner.hasInstruments())->withAction([this]()
+    {
+        this->updateContent(this->createInstrumentsMenu(), MenuPanel::SlideLeft);
+    }));
+
     menu.add(MenuItem::item(Icons::audioPlugin, TRANS("menu::instrument::addeffect"))->
-        withSubmenu()->withTimer()->disabledIf(!this->pluginScanner.hasEffects())->withAction([this]()
+        withSubmenu()->disabledIf(!this->pluginScanner.hasEffects())->withAction([this]()
     {
         this->updateContent(this->createEffectsMenu(), MenuPanel::SlideLeft);
     }));
@@ -83,6 +98,36 @@ MenuPanel::Menu InstrumentMenu::createEffectsMenu()
                 this->instrumentNode.getInstrument()->addNodeToFreeSpace(*description, [this](Instrument *instrument)
                 {
                     this->instrumentNode.updateChildrenEditors();
+                    this->instrumentNode.setSelected(true, true);
+                });
+                this->dismiss();
+            }));
+        }
+    }
+
+    return menu;
+}
+
+MenuPanel::Menu InstrumentMenu::createInstrumentsMenu()
+{
+    MenuPanel::Menu menu;
+
+    menu.add(MenuItem::item(Icons::back, TRANS("menu::back"))->withTimer()->withAction([this]()
+    {
+        this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
+    }));
+
+    for (const auto description : this->pluginScanner.getList())
+    {
+        if (description->isInstrument)
+        {
+            menu.add(MenuItem::item(Icons::audioPlugin,
+                description->descriptiveName)->withAction([this, description]()
+            {
+                this->instrumentNode.getInstrument()->addNodeToFreeSpace(*description, [this](Instrument *instrument)
+                {
+                    this->instrumentNode.updateChildrenEditors();
+                    this->instrumentNode.setSelected(true, true);
                 });
                 this->dismiss();
             }));

@@ -28,7 +28,7 @@ class Instrument :
 {
 public:
 
-    Instrument(AudioPluginFormatManager &formatManager, String name);
+    Instrument(AudioPluginFormatManager &formatManager, const String &name);
     ~Instrument() override;
 
     String getName() const;
@@ -63,25 +63,29 @@ public:
 
     void removeNode(AudioProcessorGraph::NodeID id);
     void disconnectNode(AudioProcessorGraph::NodeID id);
+
+    void removeAllConnectionsForNode(AudioProcessorGraph::Node::Ptr node);
     void removeIllegalConnections();
 
     void setNodePosition(AudioProcessorGraph::NodeID id, double x, double y);
     void getNodePosition(AudioProcessorGraph::NodeID id, double &x, double &y) const;
 
-    //===------------------------------------------------------------------===//
-    // Default nodes' id's
-    //===------------------------------------------------------------------===//
+    bool isNodeStandardIOProcessor(AudioProcessorGraph::NodeID nodeId) const;
+    bool isNodeStandardIOProcessor(AudioProcessorGraph::Node::Ptr node) const;
 
-    AudioProcessorGraph::NodeID getMidiInId() const;
-    AudioProcessorGraph::NodeID getMidiOutId() const;
-    AudioProcessorGraph::NodeID getAudioInId() const;
-    AudioProcessorGraph::NodeID getAudioOutId() const;
-
-    bool isNodeStandardInputOrOutput(AudioProcessorGraph::NodeID nodeId) const;
+    // Standard IO nodes included:
+    Array<AudioProcessorGraph::Node::Ptr> findMidiAcceptors() const;
+    Array<AudioProcessorGraph::Node::Ptr> findMidiProducers() const;
+    Array<AudioProcessorGraph::Node::Ptr> findAudioAcceptors() const;
+    Array<AudioProcessorGraph::Node::Ptr> findAudioProducers() const;
 
     //===------------------------------------------------------------------===//
     // Connections
     //===------------------------------------------------------------------===//
+
+    bool hasMidiConnection(AudioProcessorGraph::Node::Ptr src, AudioProcessorGraph::Node::Ptr dest) const noexcept;
+    bool hasAudioConnection(AudioProcessorGraph::Node::Ptr src, AudioProcessorGraph::Node::Ptr dest) const noexcept;
+    bool hasConnectionsFor(AudioProcessorGraph::Node::Ptr node) const noexcept;
 
     std::vector<AudioProcessorGraph::Connection> getConnections() const noexcept;
     bool isConnected(AudioProcessorGraph::Connection connection) const noexcept;
@@ -101,15 +105,8 @@ public:
 
     /* The special channel index used to refer to a filter's midi channel.*/
     static const int midiChannelNumber;
-
-    void initializeDefaultNodes();
-
+    
 protected:
-
-    AudioProcessorGraph::Node::Ptr midiIn;
-    AudioProcessorGraph::Node::Ptr midiOut;
-    AudioProcessorGraph::Node::Ptr audioIn;
-    AudioProcessorGraph::Node::Ptr audioOut;
 
     Uuid instrumentID;
     String instrumentName;
@@ -119,7 +116,7 @@ private:
     String getInstrumentID() const; // will differ between platforms
     String getInstrumentHash() const; // should be the same on all platforms
     
-    AudioProcessorGraph::Node::Ptr addDefaultNode(const PluginDescription &, double x, double y);
+    AudioProcessorGraph::Node::Ptr addNode(const PluginDescription &, double x, double y);
     void configureNode(AudioProcessorGraph::Node::Ptr, const PluginDescription &, double x, double y);
 
     friend class Transport;

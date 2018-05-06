@@ -23,7 +23,7 @@ class BuiltInSynthAudioPlugin : public AudioPluginInstance
 {
 public:
 
-    BuiltInSynthAudioPlugin();
+    BuiltInSynthAudioPlugin() = default;
 
     //===------------------------------------------------------------------===//
     // AudioPluginInstance
@@ -31,76 +31,55 @@ public:
 
     void fillInPluginDescription(PluginDescription &description) const override;
 
-
     //===------------------------------------------------------------------===//
     // AudioProcessor
     //===------------------------------------------------------------------===//
 
     void processBlock(AudioSampleBuffer &buffer, MidiBuffer &midiMessages) override;
-
     void prepareToPlay(double sampleRate, int estimatedSamplesPerBlock) override;
-
     void releaseResources() override;
-
     double getTailLengthSeconds() const override;
-
     bool acceptsMidi() const override;
-
     bool producesMidi() const override;
-
 
     //===------------------------------------------------------------------===//
     // Editor
     //===------------------------------------------------------------------===//
 
     AudioProcessorEditor *createEditor() override;
-
     bool hasEditor() const override;
-
 
     //===------------------------------------------------------------------===//
     // Parameters
     //===------------------------------------------------------------------===//
 
     int getNumParameters() override;
-
     const String getParameterName(int parameterIndex) override;
-
     const String getParameterText(int parameterIndex) override;
 
-
     float getParameter(int parameterIndex) override;
-
     void setParameter(int parameterIndex, float newValue) override;
-
 
     //===------------------------------------------------------------------===//
     // Programs
     //===------------------------------------------------------------------===//
 
     int getNumPrograms() override;
-
     int getCurrentProgram() override;
-
     void setCurrentProgram(int index) override;
-
     const String getProgramName(int index) override;
-
     void changeProgramName(int index, const String &newName) override;
-
 
     //===------------------------------------------------------------------===//
     // State
     //===------------------------------------------------------------------===//
 
     void getStateInformation(MemoryBlock &destData) override;
-
     void setStateInformation(const void *data, int sizeInBytes) override;
 
 protected:
 
     virtual void initVoices() = 0;
-
     virtual void initSampler() = 0;
 
     Synthesiser synth;
