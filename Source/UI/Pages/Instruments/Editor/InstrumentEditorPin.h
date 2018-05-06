@@ -17,7 +17,6 @@
 
 #pragma once
 
-class Instrument;
 class InstrumentEditor;
 
 class InstrumentEditorPin :
@@ -26,8 +25,7 @@ class InstrumentEditorPin :
 {
 public:
 
-    InstrumentEditorPin(Instrument &graph,
-        AudioProcessorGraph::NodeID nodeID,
+    InstrumentEditorPin(AudioProcessorGraph::NodeID nodeID,
         int index, bool isInput);
 
     void paint(Graphics &g) override;
@@ -41,8 +39,7 @@ public:
 
 private:
 
-    Instrument &graph;
-    InstrumentEditor *getGraphPanel() const noexcept;
+    InstrumentEditor *getParentEditor() const noexcept;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InstrumentEditorPin)
 };

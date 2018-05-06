@@ -17,7 +17,6 @@
 
 #include "Common.h"
 #include "PatternEditorTreeItem.h"
-#include "PatternEditorCommandPanel.h"
 #include "TreeItemChildrenSerializer.h"
 #include "Icons.h"
 #include "App.h"
@@ -35,7 +34,7 @@ Colour PatternEditorTreeItem::getColour() const noexcept
 
 Image PatternEditorTreeItem::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::stack, TREE_ICON_HEIGHT);
+    return Icons::findByName(Icons::patterns, HEADLINE_ICON_SIZE);
 }
 
 void PatternEditorTreeItem::showPage()

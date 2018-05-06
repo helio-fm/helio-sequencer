@@ -24,8 +24,8 @@ VersionControlEditor::VersionControlEditor(VersionControl &versionControl)
     : vcs(versionControl)
 {
     this->setOpaque(true);
-    this->setWantsKeyboardFocus(true);
-    this->setFocusContainer(true);
+    this->setWantsKeyboardFocus(false);
+    this->setFocusContainer(false);
 }
 
 void VersionControlEditor::broughtToFront()

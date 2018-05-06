@@ -22,16 +22,15 @@
 #include "InstrumentEditorNode.h"
 #include "ColourIDs.h"
 
-InstrumentEditorConnector::InstrumentEditorConnector(Instrument &graph) :
+InstrumentEditorConnector::InstrumentEditorConnector(WeakReference<Instrument> instrument) :
     connection({0, 0}, {0, 0}),
-    instrument(graph),
+    instrument(instrument),
     lastInputX(0),
     lastInputY(0),
     lastOutputX(0),
     lastOutputY(0)
 {
-    shadow.setShadowProperties(DropShadow(Colours::black.withAlpha(0.5f), 1, Point<int> (0, 1)));
-    this->setComponentEffect(&shadow);
+    this->setPaintingIsUnclipped(true);
     this->setAlwaysOnTop(true);
 }
 
@@ -86,10 +85,10 @@ void InstrumentEditorConnector::resizeToFit()
     float x1, y1, x2, y2;
     this->getPoints(x1, y1, x2, y2);
 
-    const Rectangle<int> newBounds(static_cast<int>( jmin(x1, x2)) - 4,
-                                   static_cast<int>( jmin(y1, y2)) - 4,
-                                   static_cast<int>( fabsf(x1 - x2)) + 8,
-                                   static_cast<int>( fabsf(y1 - y2)) + 8);
+    const Rectangle<int> newBounds(static_cast<int>(jmin(x1, x2)) - 4,
+                                   static_cast<int>(jmin(y1, y2)) - 4,
+                                   static_cast<int>(fabsf(x1 - x2)) + 8,
+                                   static_cast<int>(fabsf(y1 - y2)) + 8);
 
     if (newBounds != this->getBounds())
     { this->setBounds(newBounds); }
@@ -122,16 +121,18 @@ void InstrumentEditorConnector::getPoints(float &x1, float &y1, float &x2, float
 
 void InstrumentEditorConnector::paint(Graphics &g)
 {
-    if (this->connection.source.channelIndex == Instrument::midiChannelNumber ||
-        this->connection.destination.channelIndex == Instrument::midiChannelNumber)
-    {
-        g.setColour(this->findColour(ColourIDs::Instrument::midiIn));
-    }
-    else
-    {
-        g.setColour(this->findColour(ColourIDs::Instrument::audioIn));
-    }
+    g.setColour(this->findColour(ColourIDs::Instrument::shadowConnector));
+    g.fillPath(linePath, AffineTransform::translation(0, 1));
+    
+    const bool isMidiConnector =
+        (this->connection.source.channelIndex == Instrument::midiChannelNumber ||
+        this->connection.destination.channelIndex == Instrument::midiChannelNumber);
 
+    const Colour lineColour = isMidiConnector ?
+        this->findColour(ColourIDs::Instrument::midiConnector) :
+        this->findColour(ColourIDs::Instrument::audioConnector);
+
+    g.setColour(lineColour);
     g.fillPath(linePath);
 }
 
@@ -159,7 +160,7 @@ void InstrumentEditorConnector::mouseDrag(const MouseEvent &e)
     if ((!this->dragging) && ! e.mouseWasClicked())
     {
         this->dragging = true;
-        this->instrument.removeConnection(this->connection);
+        this->instrument->removeConnection(this->connection);
 
         double distanceFromStart = 0.0, distanceFromEnd = 0.0;
         this->getDistancesFromEnds(e.x, e.y, distanceFromStart, distanceFromEnd);

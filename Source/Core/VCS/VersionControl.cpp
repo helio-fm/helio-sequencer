@@ -18,16 +18,13 @@
 #include "Common.h"
 #include "App.h"
 #include "VersionControl.h"
-#include "VersionControlEditorPhone.h"
 #include "VersionControlEditorDefault.h"
 #include "TrackedItem.h"
 #include "MidiSequence.h"
 #include "SerializationKeys.h"
-#include "Client.h"
 #include "SerializationKeys.h"
 
 using namespace VCS;
-
 
 VersionControl::VersionControl(WeakReference<VCS::TrackedItemsSource> parent,
                                const String &existingId,
@@ -61,8 +58,6 @@ VersionControl::VersionControl(WeakReference<VCS::TrackedItemsSource> parent,
 
     this->rootRevision = Revision::create(this->pack, TRANS("defaults::newproject::firstcommit"));
 
-    this->remote = new Client(*this);
-
     MessageManagerLock lock;
     this->addChangeListener(&this->head);
     this->head.moveTo(this->rootRevision);
@@ -76,14 +71,12 @@ VersionControl::~VersionControl()
 
 VersionControlEditor *VersionControl::createEditor()
 {
-    if (App::isRunningOnPhone())
-    {
-        return new VersionControlEditorPhone(*this);
-    }
-    else
-    {
-        return new VersionControlEditorDefault(*this);
-    }
+    //if (App::isRunningOnPhone())
+    //{
+    //    return new VersionControlEditorPhone(*this);
+    //}
+
+    return new VersionControlEditorDefault(*this);
 }
 
 

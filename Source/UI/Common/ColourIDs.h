@@ -76,6 +76,10 @@ namespace ColourIDs
         static const int midiOut                = 0x2000601;
         static const int audioIn                = 0x2000602;
         static const int audioOut               = 0x2000603;
+        static const int midiConnector          = 0x2000604;
+        static const int audioConnector         = 0x2000605;
+        static const int shadowPin              = 0x2000606;
+        static const int shadowConnector        = 0x2000607;
     }
 
     namespace Panel

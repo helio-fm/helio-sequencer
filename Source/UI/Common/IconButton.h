@@ -25,10 +25,10 @@ class IconButton : public IconComponent, public HighlightedComponent
 {
 public:
     
-    explicit IconButton(const String &iconName,
+    explicit IconButton(Icons::Id iconId,
         int commandId = CommandIDs::IconButtonPressed,
         WeakReference<Component> listener = nullptr) :
-        IconComponent(iconName),
+        IconComponent(iconId),
         commandId(commandId),
         listener(listener)
     {
@@ -82,7 +82,7 @@ private:
     Component *createHighlighterComponent() override
     {
         return this->image.isNull() ?
-            new IconButton(this->iconName) :
+            new IconButton(this->iconId) :
             new IconButton(this->image);
     }
     

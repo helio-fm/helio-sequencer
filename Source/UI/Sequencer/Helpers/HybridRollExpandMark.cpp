@@ -31,7 +31,7 @@ HybridRollExpandMark::HybridRollExpandMark(HybridRoll &parentRoll, float targetB
       numBars(numBarsToTake),
       alpha(1.f)
 {
-    addAndMakeVisible (plusImage = new IconComponent (Icons::plus));
+    addAndMakeVisible (plusImage = new IconComponent (Icons::expand));
 
 
     //[UserPreSize]
@@ -135,7 +135,7 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="fffffff"/>
   <GENERICCOMPONENT name="" id="79f90a69d0b95011" memberName="plusImage" virtualName=""
                     explicitFocusOrder="0" pos="0Cc 0Cc 16 16" class="IconComponent"
-                    params="Icons::plus"/>
+                    params="Icons::expand"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

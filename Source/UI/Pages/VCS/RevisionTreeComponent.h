@@ -19,22 +19,26 @@
 
 class VersionControl;
 class RevisionComponent;
-class VersionControlEditor;
+class HistoryComponent;
 
 #include "Revision.h"
 
-class RevisionTreeComponent : public Component
+class RevisionTreeComponent final : public Component
 {
 public:
 
     explicit RevisionTreeComponent(VersionControl &owner);
     ~RevisionTreeComponent() override;
 
-    void deselectAll();
-    void selectComponent(RevisionComponent *revComponent, bool deselectOthers);
+    void deselectAll(bool sendNotification = true);
+    void selectComponent(RevisionComponent *revComponent, bool deselectOthers, bool sendNotification = true);
 
-    void showTooltipFor(RevisionComponent *revComponent,
-        Point<int> clickPoint, const ValueTree revision);
+    //void showTooltipFor(RevisionComponent *revComponent,
+    //    Point<int> clickPoint, const ValueTree revision);
+
+    ValueTree getSelectedRevision() const noexcept;
+
+    void handleCommandMessage(int commandId) override;
 
 private:
 
@@ -49,26 +53,23 @@ private:
         RevisionComponent *default_ancestor, float distance);
 
     void moveSubtree(RevisionComponent *wl, RevisionComponent *wr, float shift);
-
     void executeShifts(RevisionComponent *v);
 
     RevisionComponent *ancestor(RevisionComponent *vil,
         RevisionComponent *v, RevisionComponent *default_ancestor);
 
-    float secondWalk(RevisionComponent *v, float &min,
-        float m = 0.f, float depth = 0.f);
-
+    float secondWalk(RevisionComponent *v, float &min, float m = 0.f, float depth = 0.f);
     void thirdWalk(RevisionComponent *v, float n);
-
     void postWalk(RevisionComponent *v);
 
     float treeDepth;
 
 private:
 
-    VersionControlEditor *findParentEditor() const;
+    HistoryComponent *findParentEditor() const;
 
     VersionControl &vcs;
+    ValueTree selectedRevision;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RevisionTreeComponent)
 

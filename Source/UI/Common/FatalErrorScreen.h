@@ -21,7 +21,6 @@
 class MainLayout;
 class ProgressIndicator;
 class IntroSettingsWrapper;
-class PluginsList;
 //[/Headers]
 
 #include "../Themes/PanelBackgroundA.h"

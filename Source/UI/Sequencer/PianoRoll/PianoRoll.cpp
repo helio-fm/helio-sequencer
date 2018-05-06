@@ -833,8 +833,9 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::EditModeSelect:
         this->project.getEditMode().setMode(HybridRollEditMode::selectionMode);
         break;
-    case CommandIDs::ToggleQuickStash:
-        if (VersionControlTreeItem *vcsTreeItem = this->project.findChildOfType<VersionControlTreeItem>())
+    case CommandIDs::VersionControlToggleQuickStash:
+        if (VersionControlTreeItem *vcsTreeItem =
+            this->project.findChildOfType<VersionControlTreeItem>())
         {
             vcsTreeItem->toggleQuickStash();
         }

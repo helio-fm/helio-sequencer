@@ -50,7 +50,7 @@
 #include "Autosaver.h"
 
 #include "HelioTheme.h"
-#include "ProjectCommandPanel.h"
+#include "ProjectMenu.h"
 #include "UndoStack.h"
 
 #include "DocumentHelpers.h"
@@ -133,9 +133,10 @@ ProjectTreeItem::~ProjectTreeItem()
 
 void ProjectTreeItem::deletePermanently()
 {
-    if (VersionControlTreeItem *vcsTreeItem = this->findChildOfType<VersionControlTreeItem>())
+    if (auto vcsTreeItem = this->findChildOfType<VersionControlTreeItem>())
     {
-        vcsTreeItem->deletePermanentlyFromRemoteRepo();
+        // TODO
+        //vcsTreeItem->deletePermanentlyFromRemoteRepo();
     }
     else
     {
@@ -150,7 +151,6 @@ void ProjectTreeItem::deletePermanently()
         }
     }
 }
-
 
 String ProjectTreeItem::getId() const
 {
@@ -360,7 +360,7 @@ bool ProjectTreeItem::hasMenu() const noexcept
 
 ScopedPointer<Component> ProjectTreeItem::createMenu()
 {
-    return new ProjectCommandPanel(*this, CommandPanel::SlideRight);
+    return new ProjectMenu(*this, MenuPanel::SlideRight);
 }
 
 //===----------------------------------------------------------------------===//

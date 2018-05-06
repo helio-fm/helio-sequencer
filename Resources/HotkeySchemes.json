@@ -35,6 +35,16 @@
         { "receiver": "SequencerLayout", "command": "SwitchBetweenRolls", "key": "Tab" },
 
         // ------------------------------------
+        // Version control page
+
+        { "receiver": "VersionControlStage", "command": "VersionControlToggleQuickStash", "key": "Tab" },
+        { "receiver": "VersionControlStage", "command": "VersionControlSelectAll", "key": "Control + A" },
+        { "receiver": "VersionControlStage", "command": "VersionControlSelectNone", "key": "Escape" },
+        { "receiver": "VersionControlStage", "command": "VersionControlCommitSelected", "key": "Control + S" },
+        { "receiver": "VersionControlStage", "command": "VersionControlResetSelected", "key": "Backspace" },
+        { "receiver": "VersionControlStage", "command": "VersionControlResetSelected", "key": "Delete" },
+
+        // ------------------------------------
         // Piano roll's specific
 
         // Undo/redo:
@@ -109,7 +119,7 @@
         { "receiver": "PianoRoll", "command": "EditModeSelect", "key": "6" },
 
         // Version control
-        { "receiver": "PianoRoll", "command": "ToggleQuickStash", "key": "Shift + Tab" },
+        { "receiver": "PianoRoll", "command": "VersionControlToggleQuickStash", "key": "Shift + Tab" },
 
         // Panels
         { "receiver": "PianoRoll", "command": "ShowVolumePanel", "key": "V" },
@@ -161,6 +171,9 @@
         // Selection
         { "receiver": "PatternRoll", "command": "SelectAllClips", "key": "Command + A" },
         { "receiver": "PatternRoll", "command": "SelectAllClips", "key": "Control + A" },
+
+        // Version control
+        { "receiver": "PatternRoll", "command": "VersionControlToggleQuickStash", "key": "Shift + Tab" },
 
         // Edit selection
         { "receiver": "PatternRoll", "command": "RenameSelectedTrack", "key": "F2" },

@@ -31,7 +31,7 @@
 #include "ProjectTreeItem.h"
 #include "Transport.h"
 #include "CommandIDs.h"
-#include "CommandItemComponent.h"
+#include "MenuItemComponent.h"
 
 class NotesTuningDiagram : public Component, private ChangeListener
 {
@@ -152,7 +152,7 @@ NotesTuningPanel::NotesTuningPanel(ProjectTreeItem &parentProject, PianoRoll &ta
     addAndMakeVisible (tuningDiagram = new NotesTuningDiagram (this, this->roll.getLassoSelection()));
 
     addAndMakeVisible (panel = new FramePanel());
-    addAndMakeVisible (resetButton = new CommandItemComponent (this, nullptr, CommandItem::withParams(Icons::reset, CommandIDs::ResetVolumeChanges)));
+    addAndMakeVisible (resetButton = new MenuItemComponent (this, nullptr, MenuItem::item(Icons::reset, CommandIDs::ResetVolumeChanges)));
 
     addAndMakeVisible (playButton = new PlayButton());
     addAndMakeVisible (shadowDown = new ShadowDownwards());
@@ -533,8 +533,8 @@ BEGIN_JUCER_METADATA
              explicitFocusOrder="0" pos="0 96 0M 88" sourceFile="../Themes/FramePanel.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="34c972d7b22acf17" memberName="resetButton" virtualName=""
-                    explicitFocusOrder="0" pos="85c 213c 58 58" class="CommandItemComponent"
-                    params="this, nullptr, CommandItem::withParams(Icons::reset, CommandIDs::ResetVolumeChanges)"/>
+                    explicitFocusOrder="0" pos="85c 213c 58 58" class="MenuItemComponent"
+                    params="this, nullptr, MenuItem::item(Icons::reset, CommandIDs::ResetVolumeChanges)"/>
   <JUCERCOMP name="" id="bb2e14336f795a57" memberName="playButton" virtualName=""
              explicitFocusOrder="0" pos="160c 214c 64 64" sourceFile="../Common/PlayButton.cpp"
              constructorParams=""/>

@@ -21,9 +21,8 @@
 #include "MainLayout.h"
 #include "Icons.h"
 #include "Lasso.h"
-#include "TreeItem.h"
-#include "PianoRollSelectionCommandPanel.h"
-#include "PatternRollSelectionCommandPanel.h"
+#include "PianoRollSelectionMenu.h"
+#include "PatternRollSelectionMenu.h"
 
 //===----------------------------------------------------------------------===//
 // Base class
@@ -80,17 +79,17 @@ public:
 
     ScopedPointer<Component> createMenu() override
     {
-        return new PianoRollSelectionCommandPanel(this->lasso, this->project);
+        return { new PianoRollSelectionMenu(this->lasso, this->project) };
     }
 
     Image getIcon() const override
     {
-        return Icons::findByName(Icons::selectionTool, TREE_ICON_HEIGHT);
+        return Icons::findByName(Icons::selection, HEADLINE_ICON_SIZE);
     }
 
     String getName() const override
     {
-        return TRANS("tree::selection::notes");
+        return TRANS("menu::selection::notes");
     }
 
     bool canBeSelectedAsMenuItem() const override { return false; }
@@ -126,17 +125,17 @@ public:
 
     ScopedPointer<Component> createMenu() override
     {
-        return new PatternRollSelectionCommandPanel(this->lasso);
+        return { new PatternRollSelectionMenu(this->lasso) };
     }
 
     Image getIcon() const override
     {
-        return Icons::findByName(Icons::selectionTool, TREE_ICON_HEIGHT);
+        return Icons::findByName(Icons::selection, HEADLINE_ICON_SIZE);
     }
 
     String getName() const override
     {
-        return TRANS("tree::selection::notes");
+        return TRANS("menu::selection::notes");
     }
 
     bool canBeSelectedAsMenuItem() const override { return false; }

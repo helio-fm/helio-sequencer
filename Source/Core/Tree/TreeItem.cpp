@@ -170,6 +170,11 @@ bool TreeItem::deleteItem(TreeItem *itemToDelete)
 
         delete itemToDelete;
 
+        if (parent != nullptr)
+        {
+            parent->sendChangeMessage();
+        }
+
         if (switchTo != nullptr)
         {
             switchTo->setSelected(true, true);

@@ -33,7 +33,7 @@
 #include "Transport.h"
 #include "SerializationKeys.h"
 #include "ScalesManager.h"
-#include "CommandPanel.h"
+#include "MenuPanel.h"
 #include "BinaryData.h"
 #include "Icons.h"
 
@@ -67,19 +67,19 @@ static Array<String> localizedFunctionNames()
     };
 }
 
-class ScalesCommandPanel : public CommandPanel
+class ScalesCommandPanel : public MenuPanel
 {
 public:
 
     ScalesCommandPanel(const Array<Scale::Ptr> scales) : scales(scales)
     {
-        CommandPanel::Items cmds;
+        MenuPanel::Menu cmds;
         for (int i = 0; i < scales.size(); ++i)
         {
-            cmds.add(CommandItem::withParams(String::empty,
-                CommandIDs::SelectScale + i, scales[i]->getLocalizedName())->withAlignment(CommandItem::Right));
+            cmds.add(MenuItem::item(Icons::empty,
+                CommandIDs::SelectScale + i, scales[i]->getLocalizedName())->withAlignment(MenuItem::Right));
         }
-        this->updateContent(cmds, CommandPanel::SlideLeft, false);
+        this->updateContent(cmds, MenuPanel::SlideLeft, false);
     }
 
     void handleCommandMessage(int commandId) override
@@ -102,29 +102,29 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScalesCommandPanel)
 };
 
-class FunctionsCommandPanel : public CommandPanel
+class FunctionsCommandPanel : public MenuPanel
 {
 public:
 
     FunctionsCommandPanel()
     {
         const auto funName = localizedFunctionNames();
-        CommandPanel::Items cmds;
-        cmds.add(CommandItem::withParams(String::empty,
+        MenuPanel::Menu cmds;
+        cmds.add(MenuItem::item(Icons::empty,
             CommandIDs::SelectFunction + 6, "VII - " + funName[6]));
-        cmds.add(CommandItem::withParams(String::empty,
+        cmds.add(MenuItem::item(Icons::empty,
             CommandIDs::SelectFunction + 5, "VI - " + funName[5]));
-        cmds.add(CommandItem::withParams(String::empty,
+        cmds.add(MenuItem::item(Icons::empty,
             CommandIDs::SelectFunction + 4, "V - " + funName[4]));
-        cmds.add(CommandItem::withParams(String::empty,
+        cmds.add(MenuItem::item(Icons::empty,
             CommandIDs::SelectFunction + 3, "IV - " + funName[3]));
-        cmds.add(CommandItem::withParams(String::empty,
+        cmds.add(MenuItem::item(Icons::empty,
             CommandIDs::SelectFunction + 2, "III - " + funName[2]));
-        cmds.add(CommandItem::withParams(String::empty,
+        cmds.add(MenuItem::item(Icons::empty,
             CommandIDs::SelectFunction + 1, "II - " + funName[1]));
-        cmds.add(CommandItem::withParams(String::empty,
+        cmds.add(MenuItem::item(Icons::empty,
             CommandIDs::SelectFunction, "I - " + funName[0]));
-        this->updateContent(cmds, CommandPanel::SlideRight, false);
+        this->updateContent(cmds, MenuPanel::SlideRight, false);
     }
 
     void handleCommandMessage(int commandId) override

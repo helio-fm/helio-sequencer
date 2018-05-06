@@ -55,6 +55,9 @@ public:
     void showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource);
     void hideSelectionMenu();
 
+    // Posts command id recursively to all components that have non-empty command id
+    void broadcastCommandMessage(int commandId) const;
+
     //===------------------------------------------------------------------===//
     // UI
     //===------------------------------------------------------------------===//

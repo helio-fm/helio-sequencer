@@ -19,11 +19,6 @@
 #include "BuiltInSynthAudioPlugin.h"
 #include "BuiltInSynthFormat.h"
 
-BuiltInSynthAudioPlugin::BuiltInSynthAudioPlugin()
-{
-}
-
-
 //===----------------------------------------------------------------------===//
 // AudioPluginInstance
 //===----------------------------------------------------------------------===//
@@ -42,7 +37,6 @@ void BuiltInSynthAudioPlugin::fillInPluginDescription(PluginDescription &descrip
     description.numInputChannels = this->getTotalNumInputChannels();
     description.numOutputChannels = this->getTotalNumOutputChannels();
 }
-
 
 //===----------------------------------------------------------------------===//
 // AudioProcessor
@@ -103,12 +97,11 @@ bool BuiltInSynthAudioPlugin::producesMidi() const
 AudioProcessorEditor *BuiltInSynthAudioPlugin::createEditor()
 {
     return nullptr;
-    //return new BuiltInSynthAudioPluginEditor(this);
 }
 
 bool BuiltInSynthAudioPlugin::hasEditor() const
 {
-    return true;
+    return false;
 }
 
 

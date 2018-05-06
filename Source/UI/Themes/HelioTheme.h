@@ -87,30 +87,29 @@ public:
     void drawButtonBackground(Graphics &g, Button &button,
         const Colour &backgroundColour,
         bool isMouseOverButton, bool isButtonDown) override;
-    
+
+    //===------------------------------------------------------------------===//
+    // Tables
+    //===------------------------------------------------------------------===//
+
+    void drawTableHeaderBackground(Graphics&, TableHeaderComponent&) override;
+    void drawTableHeaderColumn(Graphics&, TableHeaderComponent&,
+        const String &columnName, int columnId, int width, int height,
+        bool isMouseOver, bool isMouseDown, int columnFlags) override;
+
     //===------------------------------------------------------------------===//
     // Scrollbars
     //===------------------------------------------------------------------===//
 
     int getDefaultScrollbarWidth() override;
     bool areScrollbarButtonsVisible() override { return false; }
-    void drawScrollbarButton(Graphics &g,
-                                     ScrollBar &bar,
-                                     int width, int height,
-                                     int buttonDirection,
-                                     bool isScrollbarVertical,
-                                     bool isMouseOverButton,
-                                     bool isButtonDown) override { }
-    void drawScrollbar(Graphics &g,
-                               ScrollBar &bar,
-                               int x, int y,
-                               int width, int height,
-                               bool isScrollbarVertical,
-                               int thumbStartPosition,
-                               int thumbSize,
-                               bool isMouseOver,
-                               bool isMouseDown) override;
-
+    void drawScrollbarButton(Graphics &g, ScrollBar &bar,
+        int width, int height, int buttonDirection,
+        bool isScrollbarVertical, bool isMouseOverButton, bool isButtonDown) override {}
+    void drawScrollbar(Graphics &g, ScrollBar &bar,
+        int x, int y, int width, int height,
+        bool isScrollbarVertical, int thumbStartPosition, int thumbSize,
+        bool isMouseOver, bool isMouseDown) override;
 
     //===------------------------------------------------------------------===//
     // Menus
@@ -121,10 +120,10 @@ public:
     void drawPopupMenuItem(Graphics&, const Rectangle<int>& area,
                            bool isSeparator, bool isActive, bool isHighlighted,
                            bool isTicked, bool hasSubMenu,
-                           const String& text,
-                           const String& shortcutKeyText,
-                           const Drawable* icon,
-                           const Colour* textColour) override;
+                           const String &text,
+                           const String &shortcutKeyText,
+                           const Drawable *icon,
+                           const Colour *textColour) override;
     
     //===------------------------------------------------------------------===//
     // Window

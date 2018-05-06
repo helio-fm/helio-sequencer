@@ -45,6 +45,12 @@ RootTreeItem::RootTreeItem(const String &name) :
     this->setVisible(false);
 }
 
+String RootTreeItem::getName() const noexcept
+{
+    // TODO: if user is logged in, show his name rather than default value?
+    return TRANS("tree::root");
+}
+
 Colour RootTreeItem::getColour() const noexcept
 {
     return Colour(0xffffbe92);
@@ -52,7 +58,7 @@ Colour RootTreeItem::getColour() const noexcept
 
 Image RootTreeItem::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::workspace, TREE_ICON_HEIGHT);
+    return Icons::findByName(Icons::workspace, HEADLINE_ICON_SIZE);
 }
 
 void RootTreeItem::showPage()
@@ -140,7 +146,8 @@ void RootTreeItem::checkoutProject(const String &name, const String &id, const S
     auto vcs = new VersionControlTreeItem(id, key);
     newProject->addChildTreeItem(vcs);
     
-    vcs->asyncPullAndCheckoutOrDeleteIfFailed();
+    // TODO
+    //vcs->checkout();
     App::Workspace().autosave();
 }
 

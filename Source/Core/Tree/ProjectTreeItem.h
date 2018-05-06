@@ -17,9 +17,6 @@
 
 #pragma once
 
-//#define PROJECT_HAS_MAP_RENDERER 1
-#define PROJECT_HAS_MAP_RENDERER 0
-
 class Autosaver;
 class Document;
 class Project;
@@ -27,14 +24,12 @@ class ProjectListener;
 class SequencerLayout;
 class HybridRoll;
 class MidiEvent;
-class TrackMapRenderer;
 class ProjectPage;
 class Origami;
 class TrackMap;
 class Transport;
 class ProjectInfo;
 class ProjectTimeline;
-class ToolsSidebar;
 class UndoStack;
 class RecentFilesList;
 class Pattern;
@@ -206,12 +201,6 @@ private:
     ScopedPointer<Autosaver> autosaver;
     ScopedPointer<Transport> transport;
     WeakReference<RecentFilesList> recentFilesList;
-
-#if PROJECT_HAS_MAP_RENDERER
-    ScopedPointer<TrackMapRenderer> renderer;
-
-    ScopedPointer<Component> trackMap;
-#endif
 
     ScopedPointer<SequencerLayout> sequencerLayout;
     HybridRollEditMode rollEditMode;

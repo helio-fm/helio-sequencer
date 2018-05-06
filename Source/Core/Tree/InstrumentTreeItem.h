@@ -70,13 +70,21 @@ public:
     ValueTree serialize() const override;
     void deserialize(const ValueTree &tree) override;
 
+    //===------------------------------------------------------------------===//
+    // Callbacks
+    //===------------------------------------------------------------------===//
+
+    Function<void(const String &text)> getRenameCallback();
+
 private:
 
     void initInstrumentEditor();
     void removeInstrumentEditor();
+    void notifyOrchestraChanged();
 
     ScopedPointer<InstrumentEditor> instrumentEditor;
     WeakReference<Instrument> instrument;
     WeakReference<AudioCore> audioCore;
 
+    JUCE_DECLARE_WEAK_REFERENCEABLE(InstrumentTreeItem)
 };

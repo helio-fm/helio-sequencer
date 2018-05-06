@@ -18,14 +18,13 @@
 #include "Common.h"
 #include "HelioTheme.h"
 #include "MainWindow.h"
-#include "NavigationSidebar.h"
+#include "SequencerSidebarLeft.h"
 #include "BinaryData.h"
 #include "Icons.h"
 #include "ColourIDs.h"
 
 #include "MainWindow.h"
 #include "HybridRoll.h"
-#include "NavigationSidebar.h"
 #include "InstrumentEditor.h"
 #include "HelperRectangle.h"
 #include "PianoRoll.h"
@@ -279,20 +278,19 @@ void HelioTheme::drawButtonText(Graphics &g, TextButton &button,
     g.setFont(font);
     g.setColour(button.findColour(TextButton::buttonColourId).contrasting().withMultipliedAlpha(button.isEnabled() ? 0.85f : 0.5f));
 
-    Image img(Icons::findByName(button.getName(), int(button.getHeight() / 1.5f)));
-
-    const int cX = button.getButtonText().isEmpty() ? (button.getWidth() / 2) : (button.getWidth() / 4);
-    const int cY = (button.getHeight() / 2);
-    Icons::drawImageRetinaAware(img, g, cX, cY);
-
-    const bool hasImg = (img.getWidth() > 2);
+    //Image img(Icons::findByName(button.getName(), int(button.getHeight() / 1.5f)));
+    //const int cX = button.getButtonText().isEmpty() ? (button.getWidth() / 2) : (button.getWidth() / 4);
+    //const int cY = (button.getHeight() / 2);
+    //Icons::drawImageRetinaAware(img, g, cX, cY);
+    //const bool hasImg = (img.getWidth() > 2);
 
     const int yIndent = jmin(4, button.proportionOfHeight(0.3f));
     const int yHeight = (button.getHeight() - (yIndent * 2));
     const int cornerSize = jmin(button.getHeight(), button.getWidth()) / 2;
 
     const int fontHeight = roundToInt(font.getHeight() * 0.5f);
-    const int leftIndent  = hasImg ? button.getWidth() / 3 : fontHeight;
+    //const int leftIndent  = hasImg ? button.getWidth() / 3 : fontHeight;
+    const int leftIndent = fontHeight;
     const int rightIndent = jmin(fontHeight, 2 + cornerSize / (button.isConnectedOnRight() ? 4 : 2));
 
     g.setColour(button.findColour(TextButton::textColourOnId).withMultipliedAlpha(button.isEnabled() ? 1.0f : 0.5f));
@@ -352,6 +350,57 @@ void HelioTheme::drawButtonBackground(Graphics &g, Button &button,
         g.strokePath(outline, PathStrokeType(1.0f),
                      AffineTransform::translation(0.0f, 1.0f).scaled(1.0f, (height + 2.0f) / height));
     }
+}
+
+//===----------------------------------------------------------------------===//
+// Tables
+//===----------------------------------------------------------------------===//
+
+void HelioTheme::drawTableHeaderBackground(Graphics &g, TableHeaderComponent &header)
+{
+    Rectangle<int> r(header.getLocalBounds());
+    auto outlineColour = header.findColour(TableHeaderComponent::outlineColourId);
+
+    g.setColour(outlineColour);
+    g.fillRect(r.removeFromBottom(1));
+
+    g.setColour(header.findColour(TableHeaderComponent::backgroundColourId));
+    g.fillRect(r);
+
+    g.setColour(outlineColour);
+
+    for (int i = header.getNumColumns(true); --i >= 0;)
+    {
+        g.fillRect(header.getColumnPosition(i).removeFromRight(1));
+    }
+}
+
+void HelioTheme::drawTableHeaderColumn(Graphics &g, TableHeaderComponent &header, const String &columnName,
+    int columnId, int width, int height, bool isMouseOver, bool isMouseDown, int columnFlags)
+{
+    auto highlightColour = header.findColour(TableHeaderComponent::highlightColourId);
+
+    if (isMouseDown)
+        g.fillAll(highlightColour);
+    else if (isMouseOver)
+        g.fillAll(highlightColour.withMultipliedAlpha(0.625f));
+
+    Rectangle<int> area(width, height);
+    area.reduce(4, 0);
+
+    g.setColour(header.findColour(TableHeaderComponent::textColourId));
+    if ((columnFlags & (TableHeaderComponent::sortedForwards | TableHeaderComponent::sortedBackwards)) != 0)
+    {
+        Path sortArrow;
+        sortArrow.addTriangle(0.0f, 0.0f,
+            0.5f, (columnFlags & TableHeaderComponent::sortedForwards) != 0 ? -0.9f : 0.9f,
+            1.0f, 0.0f);
+
+        g.fillPath(sortArrow, sortArrow.getTransformToScaleToFit(area.removeFromRight(height / 2).reduced(2).toFloat(), true));
+    }
+
+    g.setFont(Font(height * 0.5f, Font::bold));
+    g.drawFittedText(columnName, area, Justification::centredLeft, 1);
 }
 
 //===----------------------------------------------------------------------===//
@@ -758,7 +807,7 @@ void HelioTheme::initResources()
     MemoryInputStream is(BinaryData::lato_fnt, BinaryData::lato_fntSize, false);
     this->textTypefaceCache = (new CustomTypeface(is));
 
-    Icons::setupBuiltInImages();
+    Icons::initBuiltInImages();
 }
 
 void HelioTheme::initColours(const ::ColourScheme::Ptr s)
@@ -800,17 +849,25 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(TextEditor::highlightColourId, Colours::black.withAlpha(0.25f));
     this->setColour(CaretComponent::caretColourId, Colours::white.withAlpha(0.35f));
 
+    // TableListBox
+    this->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
+    this->setColour(TableHeaderComponent::backgroundColourId, Colours::transparentBlack);
+
+    this->setColour(TableHeaderComponent::outlineColourId, s->getPanelBorderColour().withAlpha(0.1f));
+    this->setColour(TableHeaderComponent::highlightColourId, s->getPrimaryGradientColourA().brighter(0.04f));
+    this->setColour(TableHeaderComponent::textColourId, s->getTextColour().withMultipliedAlpha(0.75f));
+
     // Tree stuff
     this->setColour(TreeView::linesColourId, Colours::white.withAlpha(0.1f));
     this->setColour(TreeView::selectedItemBackgroundColourId, Colours::transparentBlack);
     this->setColour(TreeView::backgroundColourId, Colours::transparentBlack);
     this->setColour(TreeView::dragAndDropIndicatorColourId, Colours::black.withAlpha(0.15f));
+   
+    // Helio colours:
 
     // Lasso
     this->setColour(ColourIDs::SelectionComponent::fill, s->getLassoFillColour().withAlpha(0.15f));
     this->setColour(ColourIDs::SelectionComponent::outline, s->getLassoBorderColour().withAlpha(0.4f));
-   
-    // Helio colours:
 
     // A hack for icon base colors
     this->setColour(ColourIDs::Icons::fill, s->getIconBaseColour());
@@ -829,10 +886,14 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::TrackScroller::borderLineLight, Colours::white.withAlpha(0.025f));
 
     // InstrumentEditor
-    this->setColour(ColourIDs::Instrument::midiIn, Colour(0x3f000000));
-    this->setColour(ColourIDs::Instrument::midiOut, Colour(0x3f000000));
-    this->setColour(ColourIDs::Instrument::audioIn, Colour(0x25ffffff));
-    this->setColour(ColourIDs::Instrument::audioOut, Colour(0x25ffffff));
+    this->setColour(ColourIDs::Instrument::midiIn, Colours::white.withAlpha(0.1f));
+    this->setColour(ColourIDs::Instrument::midiOut, Colours::white.withAlpha(0.1f));
+    this->setColour(ColourIDs::Instrument::audioIn, Colours::white.withAlpha(0.15f));
+    this->setColour(ColourIDs::Instrument::audioOut, Colours::white.withAlpha(0.15f));
+    this->setColour(ColourIDs::Instrument::midiConnector, Colours::black.withAlpha(0.35f));
+    this->setColour(ColourIDs::Instrument::audioConnector, Colours::white.withAlpha(0.25f));
+    this->setColour(ColourIDs::Instrument::shadowPin, Colours::black.withAlpha(0.1f));
+    this->setColour(ColourIDs::Instrument::shadowConnector, Colours::black.withAlpha(0.2f));
 
     // Borders
     this->setColour(ColourIDs::Common::borderLineLight, Colours::white.withAlpha(0.06f));

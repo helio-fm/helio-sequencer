@@ -17,16 +17,15 @@
 
 #include "Common.h"
 #include "RevisionTreeComponent.h"
-
+#include "CommandIDs.h"
 #include "HelioCallout.h"
 #include "VersionControl.h"
-#include "VersionControlEditor.h"
+#include "HistoryComponent.h"
 #include "RevisionComponent.h"
 #include "RevisionConnectorComponent.h"
 #include "RevisionTooltipComponent.h"
 
 #define CONNECTOR_HEIGHT 30
-
 
 RevisionTreeComponent::RevisionTreeComponent(VersionControl &owner) :
     vcs(owner),
@@ -51,8 +50,7 @@ RevisionTreeComponent::~RevisionTreeComponent()
     this->deleteAllChildren();
 }
 
-
-void RevisionTreeComponent::deselectAll()
+void RevisionTreeComponent::deselectAll(bool sendNotification)
 {
     for (int i = 0; i < this->getNumChildComponents(); ++i)
     {
@@ -63,33 +61,69 @@ void RevisionTreeComponent::deselectAll()
             revChild->setSelected(false);
         }
     }
+
+    this->selectedRevision = {};
+
+    auto *editor = this->findParentEditor();
+    if (editor != nullptr && sendNotification)
+    {
+        editor->onRevisionSelectionChanged();
+    }
 }
 
-void RevisionTreeComponent::selectComponent(RevisionComponent *revComponent, bool deselectOthers)
+void RevisionTreeComponent::selectComponent(RevisionComponent *revComponent, bool deselectOthers, bool sendNotification)
 {
+    // If already selected, deselect (may remove that later):
+    if (this->selectedRevision == revComponent->revision)
+    {
+        this->deselectAll(true);
+        return;
+    }
+
     if (deselectOthers)
     {
-        this->deselectAll();
+        this->deselectAll(false);
     }
 
     revComponent->setSelected(true);
+    this->selectedRevision = revComponent->revision;
+
+    auto *editor = this->findParentEditor();
+    if (editor != nullptr && sendNotification)
+    {
+        editor->onRevisionSelectionChanged();
+    }
 }
 
-void RevisionTreeComponent::showTooltipFor(RevisionComponent *revComponent, Point<int> clickPoint, const ValueTree revision)
+void RevisionTreeComponent::handleCommandMessage(int commandId)
 {
-    if (Component *editor = this->findParentEditor())
+    if (commandId == CommandIDs::StartDragViewport ||
+        commandId == CommandIDs::EndDragViewport)
     {
-        // todo create different tooltips for the head
-        if (revComponent->isHead()) {}
-
-        RevisionTooltipComponent *tooltip = new RevisionTooltipComponent(this->vcs, revision);
-        HelioCallout::emit(tooltip, revComponent);
+        this->deselectAll(true);
     }
+}
+
+//void RevisionTreeComponent::showTooltipFor(RevisionComponent *revComponent, Point<int> clickPoint, const ValueTree revision)
+//{
+//    if (Component *editor = this->findParentEditor())
+//    {
+//        // todo create different tooltips for the head
+//        if (revComponent->isHead()) {}
+//
+//        RevisionTooltipComponent *tooltip = new RevisionTooltipComponent(this->vcs, revision);
+//        HelioCallout::emit(tooltip, revComponent);
+//    }
+//}
+
+ValueTree RevisionTreeComponent::getSelectedRevision() const noexcept
+{
+    return this->selectedRevision;
 }
 
 
 //===----------------------------------------------------------------------===//
-// Buchheim tree layout funcs
+// Buchheim tree layout functions
 //===----------------------------------------------------------------------===//
 
 RevisionComponent *RevisionTreeComponent::initComponents(int depth,
@@ -207,14 +241,14 @@ RevisionComponent *RevisionTreeComponent::apportion(RevisionComponent *v, Revisi
 
         if (vil->right() && !vor->right())
         {
-            vor->thread = vil->right();
+            vor->wired = vil->right();
             vor->mod += sil - sor;
         }
         else
         {
             if (vir->left() && !vol->left())
             {
-                vol->thread = vir->left();
+                vol->wired = vir->left();
                 vol->mod += sir - sol;
             }
 
@@ -317,15 +351,13 @@ void RevisionTreeComponent::postWalk(RevisionComponent *v)
     }
 }
 
-
-
-VersionControlEditor *RevisionTreeComponent::findParentEditor() const
+HistoryComponent *RevisionTreeComponent::findParentEditor() const
 {
     Component *parent = this->getParentComponent();
 
     while (parent != nullptr)
     {
-        if (VersionControlEditor *editor = dynamic_cast<VersionControlEditor *>(parent))
+        if (auto *editor = dynamic_cast<HistoryComponent *>(parent))
         {
             return editor;
         }

@@ -51,7 +51,40 @@ void PluginScanner::removeListItem(int index)
     return this->pluginsList.removeType(index);
 }
 
-const KnownPluginList &PluginScanner::getList() const
+
+bool PluginScanner::hasEffects() const
+{
+    for (const auto description : this->getList())
+    {
+        if (! description->isInstrument)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool PluginScanner::hasInstruments() const
+{
+    for (const auto description : this->getList())
+    {
+        if (description->isInstrument)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void PluginScanner::sortList(KnownPluginList::SortMethod fieldToSortBy, bool forwards)
+{
+    const ScopedWriteLock lock(this->pluginsListLock);
+    this->pluginsList.sort(fieldToSortBy, forwards);
+}
+
+const KnownPluginList &PluginScanner::getList() const noexcept
 {
     const ScopedReadLock lock(this->pluginsListLock);
     return this->pluginsList;

@@ -18,6 +18,8 @@
 #pragma once
 
 #include "Instrument.h"
+#include "HeadlineItemDataSource.h"
+#include "ComponentFader.h"
 
 class InstrumentEditorNode;
 class InstrumentEditorConnector;
@@ -26,15 +28,15 @@ class AudioCore;
 
 class InstrumentEditor :
     public Component,
-    public ChangeListener
+    public ChangeListener,
+    public HeadlineItemDataSource
 {
 public:
 
-    InstrumentEditor(Instrument &instrument,
-                     WeakReference<AudioCore> audioCoreRef);
-
+    InstrumentEditor(WeakReference<Instrument> instrument, WeakReference<AudioCore> audioCoreRef);
     ~InstrumentEditor() override;
 
+    void selectNode(AudioProcessorGraph::NodeID id);
     void updateComponents();
 
     InstrumentEditorNode *getComponentForNode(AudioProcessorGraph::NodeID id) const;
@@ -48,8 +50,23 @@ public:
     void changeListenerCallback(ChangeBroadcaster *) override;
 
     //===------------------------------------------------------------------===//
+    // HeadlineItemDataSource
+    //===------------------------------------------------------------------===//
+
+    bool hasMenu() const noexcept override;
+    ScopedPointer<Component> createMenu() override;
+    Image getIcon() const override;
+    String getName() const override;
+    bool canBeSelectedAsMenuItem() const override;
+
+private:
+
+    //===------------------------------------------------------------------===//
     // Dragging
     //===------------------------------------------------------------------===//
+
+    friend class InstrumentEditorPin;
+    friend class InstrumentEditorConnector;
 
     void beginConnectorDrag(AudioProcessorGraph::NodeID sourceID, int sourceChannel,
         AudioProcessorGraph::NodeID destinationID, int destinationChannel,
@@ -57,12 +74,13 @@ public:
     void dragConnector(const MouseEvent &e);
     void endDraggingConnector(const MouseEvent &e);
 
-private:
-
-    Instrument &instrument;
+    ComponentFader fader;
+    WeakReference<Instrument> instrument;
     ScopedPointer<Component> background;
     ScopedPointer<InstrumentEditorConnector> draggingConnector;
     WeakReference<AudioCore> audioCore;
-    
+
+    AudioProcessorGraph::NodeID selectedNode;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(InstrumentEditor)
 };

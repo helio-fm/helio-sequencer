@@ -54,7 +54,7 @@ PianoTrackTreeItem::PianoTrackTreeItem(const String &name) :
 
 Image PianoTrackTreeItem::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::layer, TREE_ICON_HEIGHT);
+    return Icons::findByName(Icons::pianoTrack, HEADLINE_ICON_SIZE);
 }
 
 int PianoTrackTreeItem::getNumDeltas() const

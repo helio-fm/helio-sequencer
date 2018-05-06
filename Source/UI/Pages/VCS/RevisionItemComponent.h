@@ -44,10 +44,7 @@ public:
         return this->revisionItem;
     }
 
-    void setSelected(bool shouldBeSelected) override
-    {
-        this->invertSelection();
-    }
+    void setSelected(bool shouldBeSelected) override;
 
     //[/UserMethods]
 

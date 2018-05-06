@@ -11739,92 +11739,83 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) noexc
         case 0x5cceb683:  numBytes = 84567; return F6v9_ogg;
         case 0x91b4f1c4:  numBytes = 66400; return F7v9_ogg;
         case 0xaa76769d:  numBytes = 620041; return lato_fnt;
-        case 0x81f117ab:  numBytes = 880; return angledoubledown_svg;
-        case 0x934e5890:  numBytes = 885; return angledoubleleft_svg;
-        case 0x1126e7dd:  numBytes = 883; return angledoubleright_svg;
-        case 0x7fb8a624:  numBytes = 887; return angledoubleup_svg;
-        case 0x790ee71a:  numBytes = 601; return angledown_svg;
-        case 0x8a6c27ff:  numBytes = 603; return angleleft_svg;
-        case 0xfdc3064e:  numBytes = 602; return angleright_svg;
-        case 0x89918553:  numBytes = 604; return angleup_svg;
-        case 0x1d7444de:  numBytes = 274; return arpeggiator_svg;
-        case 0x70b08215:  numBytes = 623; return arrowback_svg;
-        case 0x71b17241:  numBytes = 628; return arrowforward_svg;
-        case 0xbb1bd747:  numBytes = 356; return arrowleft2_svg;
-        case 0x0e5c7104:  numBytes = 356; return arrowright2_svg;
-        case 0x99f9262f:  numBytes = 963; return arrows_svg;
-        case 0xb75b5528:  numBytes = 1487; return beamed_note_svg;
-        case 0xe9a7a504:  numBytes = 1836; return bezier_svg;
-        case 0xfbd557df:  numBytes = 783; return brush_svg;
-        case 0x17c70ead:  numBytes = 564; return check_svg;
-        case 0x22961555:  numBytes = 602; return chevronleft2_svg;
-        case 0x9629f4b6:  numBytes = 602; return chevronright2_svg;
-        case 0x2f591b6f:  numBytes = 2388; return clef_svg;
-        case 0xf90968e2:  numBytes = 730; return clouddownload_svg;
-        case 0x1349731b:  numBytes = 648; return cloudupload_svg;
-        case 0xeab33fc2:  numBytes = 635; return cloud2_svg;
-        case 0xee473783:  numBytes = 1889; return clouds_svg;
-        case 0xcf4f4f02:  numBytes = 621; return columns_svg;
-        case 0xe1dcda9a:  numBytes = 2230; return copy_svg;
-        case 0x7e5be035:  numBytes = 326; return crop_svg;
-        case 0x430720e3:  numBytes = 647; return cup_svg;
-        case 0x9fec1741:  numBytes = 559; return cursor2_svg;
-        case 0x88a209a2:  numBytes = 1306; return diskette_svg;
-        case 0xff62d14f:  numBytes = 754; return download2_svg;
-        case 0xae87b22f:  numBytes = 804; return drive_svg;
-        case 0x9a902647:  numBytes = 1690; return eight_note_svg;
-        case 0x5fe7f3dc:  numBytes = 783; return ellipsish_svg;
-        case 0x60ad3cea:  numBytes = 771; return ellipsisv_svg;
-        case 0x1ad9ad5d:  numBytes = 674; return folderopen_svg;
-        case 0xceaa2313:  numBytes = 1451; return folder_svg;
-        case 0x0416fd29:  numBytes = 433; return folder2_svg;
-        case 0xf2f18820:  numBytes = 3690; return heptagram2_svg;
-        case 0x15006839:  numBytes = 713; return history_svg;
-        case 0x60fe41bd:  numBytes = 1759; return hourglass_svg;
-        case 0xdc862912:  numBytes = 1130; return insertspace_svg;
-        case 0xcf6a4484:  numBytes = 2282; return key_svg;
-        case 0xe907111b:  numBytes = 2275; return knob_svg;
-        case 0xa07a920c:  numBytes = 25191; return logo2_svg;
-        case 0xb560f4c7:  numBytes = 1777; return marquee_svg;
-        case 0xdc083b84:  numBytes = 500; return menu_svg;
-        case 0x6a7be267:  numBytes = 474; return minus2_svg;
-        case 0xc95d8ab8:  numBytes = 3435; return paste_svg;
-        case 0xfaaca8a1:  numBytes = 583; return pause2_svg;
-        case 0x30372c32:  numBytes = 551; return pencil_svg;
-        case 0xd44746ec:  numBytes = 374; return pencil4_svg;
-        case 0x8d93da23:  numBytes = 503; return play2_svg;
-        case 0xa553677d:  numBytes = 639; return plus2_svg;
-        case 0xe755acda:  numBytes = 1160; return poetry_svg;
-        case 0xa7a08e21:  numBytes = 485; return quote_svg;
-        case 0xb8d48e9b:  numBytes = 1940; return reroute_svg;
-        case 0x17119179:  numBytes = 693; return roman1_svg;
-        case 0x171fa8fa:  numBytes = 1001; return roman2_svg;
-        case 0x172dc07b:  numBytes = 1298; return roman3_svg;
-        case 0x173bd7fc:  numBytes = 1204; return roman4_svg;
-        case 0x1749ef7d:  numBytes = 794; return roman5_svg;
-        case 0x175806fe:  numBytes = 1190; return roman6_svg;
-        case 0x17661e7f:  numBytes = 1606; return roman7_svg;
-        case 0x88e72fee:  numBytes = 3192; return saxophone_svg;
-        case 0x39207a3c:  numBytes = 2215; return scissors_svg;
-        case 0xd979e694:  numBytes = 3563; return settings2_svg;
-        case 0xeb51ead9:  numBytes = 326; return switch_svg;
-        case 0x267ee221:  numBytes = 772; return terminal_svg;
-        case 0x033fe1eb:  numBytes = 707; return times_svg;
-        case 0xc757e9c0:  numBytes = 844; return toggleoff_svg;
-        case 0x7236e058:  numBytes = 656; return toggleon_svg;
-        case 0xd89634e2:  numBytes = 407; return updown_svg;
-        case 0x7d1e133a:  numBytes = 1487; return volumeoff_svg;
-        case 0xd501e25a:  numBytes = 2504; return volumeup_svg;
-        case 0x33568262:  numBytes = 3111; return waveform_svg;
-        case 0x52f69b44:  numBytes = 1148; return wipespace_svg;
-        case 0xfebd99dd:  numBytes = 1080; return zoomin_svg;
-        case 0x236bbec0:  numBytes = 928; return zoomout_svg;
+        case 0x5625a954:  numBytes = 360; return annotation_svg;
+        case 0x844d0a13:  numBytes = 340; return apply_svg;
+        case 0x4ab08df4:  numBytes = 345; return arpeggiate_svg;
+        case 0x887aafce:  numBytes = 584; return audioPlugin_svg;
+        case 0x5bd41619:  numBytes = 1482; return automationTrack_svg;
+        case 0x7e70270c:  numBytes = 464; return back_svg;
+        case 0xf6383f2f:  numBytes = 394; return browse_svg;
+        case 0xe3430f9d:  numBytes = 569; return close_svg;
+        case 0x52ffe571:  numBytes = 645; return colour_svg;
+        case 0x3cb6a35c:  numBytes = 939; return commit_svg;
+        case 0xe1dcda9a:  numBytes = 1881; return copy_svg;
+        case 0x51a1b0a1:  numBytes = 501; return create_svg;
+        case 0xda9259ed:  numBytes = 287; return cropTool_svg;
+        case 0x660f8cb3:  numBytes = 537; return cursorTool_svg;
+        case 0x433f7ee7:  numBytes = 798; return cut_svg;
+        case 0x5514f147:  numBytes = 463; return down_svg;
+        case 0x4fd7e891:  numBytes = 924; return dragTool_svg;
+        case 0x941ed8a1:  numBytes = 1148; return drawTool_svg;
+        case 0xa83d7df6:  numBytes = 645; return ellipsis_svg;
+        case 0x2030ef3f:  numBytes = 458; return expand_svg;
+        case 0x284005c3:  numBytes = 526; return fail_svg;
+        case 0x628f95ea:  numBytes = 421; return forward_svg;
+        case 0x46221c2a:  numBytes = 981; return insertSpaceTool_svg;
+        case 0x74a8060c:  numBytes = 2919; return instrument_svg;
+        case 0x5daabbae:  numBytes = 743; return instrumentNode_svg;
+        case 0x503a1f43:  numBytes = 692; return list_svg;
+        case 0xb82f1f90:  numBytes = 623; return local_svg;
+        case 0x998b008e:  numBytes = 1708; return login_svg;
+        case 0xdc083b84:  numBytes = 478; return menu_svg;
+        case 0x33c78b3e:  numBytes = 1481; return mute_svg;
+        case 0xf53ee1cf:  numBytes = 467; return microphone_svg;
+        case 0x51884f53:  numBytes = 2838; return orchestraPit_svg;
+        case 0xc95d8ab8:  numBytes = 3086; return paste_svg;
+        case 0xf53d4b08:  numBytes = 192; return patterns_svg;
+        case 0x3175289b:  numBytes = 359; return pause_svg;
+        case 0x46869e6e:  numBytes = 441; return piano_svg;
+        case 0x1829c627:  numBytes = 1336; return pianoTrack_svg;
+        case 0x7000bed9:  numBytes = 279; return play_svg;
+        case 0xc7132b07:  numBytes = 3318; return progressIndicator_svg;
+        case 0xc800043e:  numBytes = 2039; return project_svg;
+        case 0x5e26f16a:  numBytes = 506; return pull_svg;
+        case 0x69e07fbf:  numBytes = 424; return push_svg;
+        case 0xd20918a3:  numBytes = 404; return redo_svg;
+        case 0x96cbd1e7:  numBytes = 1218; return refactor_svg;
+        case 0x3e1652eb:  numBytes = 411; return remote_svg;
+        case 0x41800429:  numBytes = 423; return remove_svg;
+        case 0x4731743b:  numBytes = 2997; return render_svg;
+        case 0x78a5cb74:  numBytes = 489; return reset_svg;
+        case 0xb57c4000:  numBytes = 525; return revision_svg;
+        case 0x82fa7b6b:  numBytes = 743; return routing_svg;
+        case 0x756354e9:  numBytes = 1639; return selectionTool_svg;
+        case 0x3df9b931:  numBytes = 1983; return selection_svg;
+        case 0xf4c5be2a:  numBytes = 2282; return selectAll_svg;
+        case 0x8cc91df9:  numBytes = 2405; return selectNone_svg;
+        case 0x1fdee048:  numBytes = 3459; return settings_svg;
+        case 0x8ba0a851:  numBytes = 464; return stretchLeft_svg;
+        case 0x231e903c:  numBytes = 464; return stretchRight_svg;
+        case 0x2687b9c4:  numBytes = 464; return submenu_svg;
+        case 0xb46c7428:  numBytes = 426; return success_svg;
+        case 0x2a9081a0:  numBytes = 805; return toggleOff_svg;
+        case 0x3b9bcc78:  numBytes = 617; return toggleOn_svg;
+        case 0x475dff99:  numBytes = 1128; return trackGroup_svg;
+        case 0xe5c4b489:  numBytes = 485; return undo_svg;
+        case 0x8ebff0d7:  numBytes = 2482; return unmute_svg;
+        case 0xcdfe36c0:  numBytes = 466; return up_svg;
+        case 0x9916f08a:  numBytes = 1378; return versionControl_svg;
+        case 0x4dca255c:  numBytes = 1093; return wipeSpaceTool_svg;
+        case 0x64a287ba:  numBytes = 25191; return workspace_svg;
+        case 0xc82285fd:  numBytes = 942; return zoomIn_svg;
+        case 0x86a456a0:  numBytes = 790; return zoomOut_svg;
+        case 0x100cd030:  numBytes = 942; return zoomTool_svg;
         case 0xb3e40b64:  numBytes = 317; return Noise_png;
-        case 0x9d3ca20d:  numBytes = 70; return Arpeggiators_json;
-        case 0xaf771725:  numBytes = 2753; return ColourSchemes_json;
-        case 0x932a5b4b:  numBytes = 10021; return HotkeySchemes_json;
-        case 0x67f906de:  numBytes = 6056; return Scales_json;
-        case 0xe3299f05:  numBytes = 286713; return Translations_json;
+        case 0x9d3ca20d:  numBytes = 64; return Arpeggiators_json;
+        case 0xaf771725:  numBytes = 2664; return ColourSchemes_json;
+        case 0x932a5b4b:  numBytes = 10713; return HotkeySchemes_json;
+        case 0x67f906de:  numBytes = 5976; return Scales_json;
+        case 0xe3299f05:  numBytes = 282663; return Translations_json;
         default: break;
     }
 
@@ -11867,86 +11858,77 @@ const char* namedResourceList[] =
     "F6v9_ogg",
     "F7v9_ogg",
     "lato_fnt",
-    "angledoubledown_svg",
-    "angledoubleleft_svg",
-    "angledoubleright_svg",
-    "angledoubleup_svg",
-    "angledown_svg",
-    "angleleft_svg",
-    "angleright_svg",
-    "angleup_svg",
-    "arpeggiator_svg",
-    "arrowback_svg",
-    "arrowforward_svg",
-    "arrowleft2_svg",
-    "arrowright2_svg",
-    "arrows_svg",
-    "beamed_note_svg",
-    "bezier_svg",
-    "brush_svg",
-    "check_svg",
-    "chevronleft2_svg",
-    "chevronright2_svg",
-    "clef_svg",
-    "clouddownload_svg",
-    "cloudupload_svg",
-    "cloud2_svg",
-    "clouds_svg",
-    "columns_svg",
+    "annotation_svg",
+    "apply_svg",
+    "arpeggiate_svg",
+    "audioPlugin_svg",
+    "automationTrack_svg",
+    "back_svg",
+    "browse_svg",
+    "close_svg",
+    "colour_svg",
+    "commit_svg",
     "copy_svg",
-    "crop_svg",
-    "cup_svg",
-    "cursor2_svg",
-    "diskette_svg",
-    "download2_svg",
-    "drive_svg",
-    "eight_note_svg",
-    "ellipsish_svg",
-    "ellipsisv_svg",
-    "folderopen_svg",
-    "folder_svg",
-    "folder2_svg",
-    "heptagram2_svg",
-    "history_svg",
-    "hourglass_svg",
-    "insertspace_svg",
-    "key_svg",
-    "knob_svg",
-    "logo2_svg",
-    "marquee_svg",
+    "create_svg",
+    "cropTool_svg",
+    "cursorTool_svg",
+    "cut_svg",
+    "down_svg",
+    "dragTool_svg",
+    "drawTool_svg",
+    "ellipsis_svg",
+    "expand_svg",
+    "fail_svg",
+    "forward_svg",
+    "insertSpaceTool_svg",
+    "instrument_svg",
+    "instrumentNode_svg",
+    "list_svg",
+    "local_svg",
+    "login_svg",
     "menu_svg",
-    "minus2_svg",
+    "mute_svg",
+    "microphone_svg",
+    "orchestraPit_svg",
     "paste_svg",
-    "pause2_svg",
-    "pencil_svg",
-    "pencil4_svg",
-    "play2_svg",
-    "plus2_svg",
-    "poetry_svg",
-    "quote_svg",
-    "reroute_svg",
-    "roman1_svg",
-    "roman2_svg",
-    "roman3_svg",
-    "roman4_svg",
-    "roman5_svg",
-    "roman6_svg",
-    "roman7_svg",
-    "saxophone_svg",
-    "scissors_svg",
-    "settings2_svg",
-    "switch_svg",
-    "terminal_svg",
-    "times_svg",
-    "toggleoff_svg",
-    "toggleon_svg",
-    "updown_svg",
-    "volumeoff_svg",
-    "volumeup_svg",
-    "waveform_svg",
-    "wipespace_svg",
-    "zoomin_svg",
-    "zoomout_svg",
+    "patterns_svg",
+    "pause_svg",
+    "piano_svg",
+    "pianoTrack_svg",
+    "play_svg",
+    "progressIndicator_svg",
+    "project_svg",
+    "pull_svg",
+    "push_svg",
+    "redo_svg",
+    "refactor_svg",
+    "remote_svg",
+    "remove_svg",
+    "render_svg",
+    "reset_svg",
+    "revision_svg",
+    "routing_svg",
+    "selectionTool_svg",
+    "selection_svg",
+    "selectAll_svg",
+    "selectNone_svg",
+    "settings_svg",
+    "stretchLeft_svg",
+    "stretchRight_svg",
+    "submenu_svg",
+    "success_svg",
+    "toggleOff_svg",
+    "toggleOn_svg",
+    "trackGroup_svg",
+    "undo_svg",
+    "unmute_svg",
+    "up_svg",
+    "versionControl_svg",
+    "wipeSpaceTool_svg",
+    "workspace_svg",
+    "zoomIn_svg",
+    "zoomOut_svg",
+    "zoomTool_svg",
     "Noise_png",
     "Arpeggiators_json",
     "ColourSchemes_json",
@@ -11990,86 +11972,77 @@ const char* originalFilenames[] =
     "F#6v9.ogg",
     "F#7v9.ogg",
     "lato.fnt",
-    "angle-double-down.svg",
-    "angle-double-left.svg",
-    "angle-double-right.svg",
-    "angle-double-up.svg",
-    "angle-down.svg",
-    "angle-left.svg",
-    "angle-right.svg",
-    "angle-up.svg",
-    "arpeggiator.svg",
-    "arrow-back.svg",
-    "arrow-forward.svg",
-    "arrow-left2.svg",
-    "arrow-right2.svg",
-    "arrows.svg",
-    "beamed_note.svg",
-    "bezier.svg",
-    "brush.svg",
-    "check.svg",
-    "chevron-left2.svg",
-    "chevron-right2.svg",
-    "clef.svg",
-    "cloud-download.svg",
-    "cloud-upload.svg",
-    "cloud2.svg",
-    "clouds.svg",
-    "columns.svg",
+    "annotation.svg",
+    "apply.svg",
+    "arpeggiate.svg",
+    "audioPlugin.svg",
+    "automationTrack.svg",
+    "back.svg",
+    "browse.svg",
+    "close.svg",
+    "colour.svg",
+    "commit.svg",
     "copy.svg",
-    "crop.svg",
-    "cup.svg",
-    "cursor2.svg",
-    "diskette.svg",
-    "download2.svg",
-    "drive.svg",
-    "eight_note.svg",
-    "ellipsis-h.svg",
-    "ellipsis-v.svg",
-    "folder-open.svg",
-    "folder.svg",
-    "folder2.svg",
-    "heptagram2.svg",
-    "history.svg",
-    "hourglass.svg",
-    "insert-space.svg",
-    "key.svg",
-    "knob.svg",
-    "logo2.svg",
-    "marquee.svg",
+    "create.svg",
+    "cropTool.svg",
+    "cursorTool.svg",
+    "cut.svg",
+    "down.svg",
+    "dragTool.svg",
+    "drawTool.svg",
+    "ellipsis.svg",
+    "expand.svg",
+    "fail.svg",
+    "forward.svg",
+    "insertSpaceTool.svg",
+    "instrument.svg",
+    "instrumentNode.svg",
+    "list.svg",
+    "local.svg",
+    "login.svg",
     "menu.svg",
-    "minus2.svg",
+    "mute.svg",
+    "microphone.svg",
+    "orchestraPit.svg",
     "paste.svg",
-    "pause2.svg",
-    "pencil.svg",
-    "pencil4.svg",
-    "play2.svg",
-    "plus2.svg",
-    "poetry.svg",
-    "quote.svg",
-    "reroute.svg",
-    "roman1.svg",
-    "roman2.svg",
-    "roman3.svg",
-    "roman4.svg",
-    "roman5.svg",
-    "roman6.svg",
-    "roman7.svg",
-    "saxophone.svg",
-    "scissors.svg",
-    "settings2.svg",
-    "switch.svg",
-    "terminal.svg",
-    "times.svg",
-    "toggle-off.svg",
-    "toggle-on.svg",
-    "updown.svg",
-    "volume-off.svg",
-    "volume-up.svg",
-    "waveform.svg",
-    "wipe-space.svg",
-    "zoom-in.svg",
-    "zoom-out.svg",
+    "patterns.svg",
+    "pause.svg",
+    "piano.svg",
+    "pianoTrack.svg",
+    "play.svg",
+    "progressIndicator.svg",
+    "project.svg",
+    "pull.svg",
+    "push.svg",
+    "redo.svg",
+    "refactor.svg",
+    "remote.svg",
+    "remove.svg",
+    "render.svg",
+    "reset.svg",
+    "revision.svg",
+    "routing.svg",
+    "selectionTool.svg",
+    "selection.svg",
+    "selectAll.svg",
+    "selectNone.svg",
+    "settings.svg",
+    "stretchLeft.svg",
+    "stretchRight.svg",
+    "submenu.svg",
+    "success.svg",
+    "toggleOff.svg",
+    "toggleOn.svg",
+    "trackGroup.svg",
+    "undo.svg",
+    "unmute.svg",
+    "up.svg",
+    "versionControl.svg",
+    "wipeSpaceTool.svg",
+    "workspace.svg",
+    "zoomIn.svg",
+    "zoomOut.svg",
+    "zoomTool.svg",
     "Noise.png",
     "Arpeggiators.json",
     "ColourSchemes.json",

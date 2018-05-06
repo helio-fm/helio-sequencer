@@ -46,7 +46,6 @@ ThemeSettings::ThemeSettings()
 
     this->themesList->setModel(this);
     this->themesList->setRowHeight(THEME_SETTINGS_ROW_HEIGHT);
-    this->themesList->setColour(ListBox::backgroundColourId, Colours::transparentBlack);
     this->themesList->getViewport()->setScrollBarsShown(true, false);
     //[/UserPreSize]
 
@@ -57,7 +56,7 @@ ThemeSettings::ThemeSettings()
     this->setSize(600, 4 + numSchemes * THEME_SETTINGS_ROW_HEIGHT);
 
     this->setFocusContainer(false);
-    this->setWantsKeyboardFocus(true);
+    this->setWantsKeyboardFocus(false);
     this->setOpaque(true);
 
     ColourSchemesManager::getInstance().addChangeListener(this);

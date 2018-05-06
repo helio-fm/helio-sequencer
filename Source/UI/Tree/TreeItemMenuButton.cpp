@@ -39,7 +39,7 @@
 TreeItemMenuButton::TreeItemMenuButton()
     : HighlightedComponent()
 {
-    addAndMakeVisible (menuIcon = new IconComponent (Icons::right));
+    addAndMakeVisible (menuIcon = new IconComponent (Icons::submenu));
 
 
     //[UserPreSize]
@@ -119,7 +119,7 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="0"/>
   <GENERICCOMPONENT name="" id="f10feab7d241bacb" memberName="menuIcon" virtualName=""
                     explicitFocusOrder="0" pos="5 5 10M 10M" class="IconComponent"
-                    params="Icons::right"/>
+                    params="Icons::submenu"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

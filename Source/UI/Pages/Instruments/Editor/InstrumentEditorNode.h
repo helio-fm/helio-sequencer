@@ -17,15 +17,16 @@
 
 #pragma once
 
-class Instrument;
 class InstrumentEditor;
 class PluginWindow;
+
+#include "Instrument.h"
 
 class InstrumentEditorNode : public Component
 {
 public:
 
-    InstrumentEditorNode(Instrument &graph, AudioProcessorGraph::NodeID nodeId);
+    InstrumentEditorNode(WeakReference<Instrument> instrument, AudioProcessorGraph::NodeID nodeId);
     ~InstrumentEditorNode() override;
 
     //===------------------------------------------------------------------===//
@@ -39,29 +40,25 @@ public:
     void resized() override;
 
     void getPinPos(const int index, const bool isInput, float &x, float &y);
+    void setSelected(bool selected);
     void update();
 
     const AudioProcessorGraph::NodeID nodeId;
 
+private:
+
+    WeakReference<Instrument> instrument;
+
+    Font font;
+    int pinSize;
+    int isSelected;
+    Point<int> originalPos;
+
     int numInputs;
     int numOutputs;
 
-private:
-
-    Instrument &instrument;
-
-    int pinSize;
-    Point<int> originalPos;
-
-    Font font;
-
-    int numIns;
-    int numOuts;
-
     bool hitTest(int x, int y) override;
 
-    InstrumentEditor *getGraphPanel() const noexcept;
+    InstrumentEditor *getParentEditor() const noexcept;
     InstrumentEditorNode(const InstrumentEditorNode &);
-    InstrumentEditorNode &operator= (const InstrumentEditorNode &);
-
 };

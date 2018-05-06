@@ -94,9 +94,12 @@ protected:
             if (this->highlighter == nullptr)
             {
                 this->highlighter = this->createHighlighterComponent();
+
+                if (this->highlighter == nullptr) { return; }
+
                 this->highlighter->setInterceptsMouseClicks(false, false);
             }
-            
+
             this->highlighter->setAlpha(0.f);
             this->highlighter->setBounds(this->getLocalBounds());
             this->addChildComponent(this->highlighter);

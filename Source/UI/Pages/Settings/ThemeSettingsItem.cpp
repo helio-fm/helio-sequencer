@@ -200,8 +200,8 @@ void ThemeSettingsItem::paint (Graphics& g)
         g.drawVerticalLine(247, lineStartY, lineEndY);
 
         g.setColour(Colours::black);
-        Image image1(Icons::renderForTheme(*this->theme, Icons::layer, 20));
-        Image image2(Icons::renderForTheme(*this->theme, Icons::right, 20));
+        Image image1(Icons::renderForTheme(*this->theme, Icons::pianoTrack, 20));
+        Image image2(Icons::renderForTheme(*this->theme, Icons::submenu, 20));
         Icons::drawImageRetinaAware(image1, g, 48 + 10, (this->getHeight() / 2) - 1);
         Icons::drawImageRetinaAware(image2, g, 220 + 10, (this->getHeight() / 2) - 1);
     }

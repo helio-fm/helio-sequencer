@@ -22,7 +22,7 @@
 #include "TrackGroupTreeItem.h"
 #include "PianoTrackTreeItem.h"
 #include "AutomationTrackTreeItem.h"
-#include "InstrumentsRootTreeItem.h"
+#include "OrchestraPitTreeItem.h"
 #include "InstrumentTreeItem.h"
 #include "VersionControlTreeItem.h"
 #include "PatternEditorTreeItem.h"
@@ -55,7 +55,7 @@ void TreeItemChildrenSerializer::deserializeChildren(TreeItem &parentItem, const
         else if (type == Core::trackGroup)      { child = new TrackGroupTreeItem(""); }
         else if (type == Core::pianoTrack)      { child = new PianoTrackTreeItem(""); }
         else if (type == Core::automationTrack) { child = new AutomationTrackTreeItem(""); }
-        else if (type == Core::instrumentsList) { child = new InstrumentsRootTreeItem(); }
+        else if (type == Core::instrumentsList) { child = new OrchestraPitTreeItem(); }
         else if (type == Core::instrumentRoot)  { child = new InstrumentTreeItem(); }
         else if (type == Core::versionControl)  { child = new VersionControlTreeItem(); }
         else if (type == Core::patternSet)      { child = new PatternEditorTreeItem(); }

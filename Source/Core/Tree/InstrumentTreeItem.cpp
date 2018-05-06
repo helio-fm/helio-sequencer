@@ -24,8 +24,9 @@
 
 #include "Instrument.h"
 #include "InstrumentEditor.h"
-#include "InstrumentCommandPanel.h"
-#include "InstrumentsPage.h"
+#include "InstrumentMenu.h"
+#include "OrchestraPit.h"
+#include "OrchestraPitTreeItem.h"
 #include "AudioPluginTreeItem.h"
 
 #include "App.h"
@@ -49,13 +50,14 @@ InstrumentTreeItem::InstrumentTreeItem(Instrument *targetInstrument) :
 
 InstrumentTreeItem::~InstrumentTreeItem()
 {
-    if (! this->instrument.wasObjectDeleted())
+    // cleanup UI before unplugging an instrument
+    this->deleteAllSubItems();
+    this->removeInstrumentEditor();
+
+    if (!this->instrument.wasObjectDeleted())
     {
         this->audioCore->removeInstrument(this->instrument);
     }
-
-    this->deleteAllSubItems(); // перед отключением инструмента уберем все редакторы
-    this->removeInstrumentEditor();
 }
 
 Colour InstrumentTreeItem::getColour() const noexcept
@@ -66,7 +68,7 @@ Colour InstrumentTreeItem::getColour() const noexcept
 
 Image InstrumentTreeItem::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::instrumentGraph, TREE_ICON_HEIGHT);
+    return Icons::findByName(Icons::instrument, HEADLINE_ICON_SIZE);
 }
 
 void InstrumentTreeItem::showPage()
@@ -91,6 +93,7 @@ void InstrumentTreeItem::safeRename(const String &newName)
     TreeItem::safeRename(newName);
     this->instrument->setName(newName);
     this->dispatchChangeTreeItemView();
+    this->notifyOrchestraChanged();
 }
 
 
@@ -159,7 +162,7 @@ var InstrumentTreeItem::getDragSourceDescription()
 bool InstrumentTreeItem::isInterestedInDragSource(const DragAndDropTarget::SourceDetails &dragSourceDetails)
 {
     const bool isInterested =
-        (nullptr != dynamic_cast<PluginDescriptionWrapper *>(dragSourceDetails.description.getObject()));
+        (nullptr != dynamic_cast<PluginDescriptionDragnDropWrapper *>(dragSourceDetails.description.getObject()));
 
     if (isInterested)
     { this->setOpen(true); }
@@ -171,7 +174,7 @@ void InstrumentTreeItem::itemDropped(const DragAndDropTarget::SourceDetails &dra
 {
     if (ListBox *list = dynamic_cast<ListBox *>(dragSourceDetails.sourceComponent.get()))
     {
-        if (PluginDescriptionWrapper *pd = dynamic_cast<PluginDescriptionWrapper *>(dragSourceDetails.description.getObject()))
+        if (auto pd = dynamic_cast<PluginDescriptionDragnDropWrapper *>(dragSourceDetails.description.getObject()))
         {
             const PluginDescription pluginDescription(pd->pluginDescription);
             this->instrument->addNodeToFreeSpace(pluginDescription, [this](Instrument *instrument)
@@ -196,7 +199,7 @@ bool InstrumentTreeItem::hasMenu() const noexcept
 
 ScopedPointer<Component> InstrumentTreeItem::createMenu()
 {
-    return new InstrumentCommandPanel(*this);
+    return new InstrumentMenu(*this, App::Workspace().getPluginManager());
 }
 
 void InstrumentTreeItem::updateChildrenEditors()
@@ -218,6 +221,21 @@ void InstrumentTreeItem::updateChildrenEditors()
             node->getProcessor()->getName());
         this->addChildTreeItem(ap);
     }
+}
+
+//===----------------------------------------------------------------------===//
+// Callbacks
+//===----------------------------------------------------------------------===//
+
+Function<void(const String &text)> InstrumentTreeItem::getRenameCallback()
+{
+    return [this](const String &text)
+    {
+        if (text != this->getName())
+        {
+            this->safeRename(text);
+        }
+    };
 }
 
 //===----------------------------------------------------------------------===//
@@ -259,7 +277,7 @@ void InstrumentTreeItem::initInstrumentEditor()
 {
     if (this->instrumentEditor == nullptr)
     {
-        this->instrumentEditor = new InstrumentEditor(*this->instrument, this->audioCore);
+        this->instrumentEditor = new InstrumentEditor(this->instrument, this->audioCore);
         this->instrumentEditor->updateComponents();
     }
 }
@@ -269,5 +287,13 @@ void InstrumentTreeItem::removeInstrumentEditor()
     if (this->instrumentEditor != nullptr)
     {
         this->instrumentEditor = nullptr;
+    }
+}
+
+void InstrumentTreeItem::notifyOrchestraChanged()
+{
+    if (auto orchestra = dynamic_cast<OrchestraPitTreeItem *>(this->getParentItem()))
+    {
+        orchestra->sendChangeMessage();
     }
 }

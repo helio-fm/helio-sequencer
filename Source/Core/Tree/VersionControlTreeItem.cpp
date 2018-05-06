@@ -30,8 +30,7 @@
 #include "FailTooltip.h"
 #include "SuccessTooltip.h"
 #include "Icons.h"
-#include "Client.h"
-#include "VCSCommandPanel.h"
+#include "VersionControlMenu.h"
 #include "VersionControlEditor.h"
 #include "HybridRoll.h"
 #include "App.h"
@@ -40,8 +39,7 @@
 // todo:
 // MergeTreeItem
 
-VersionControlTreeItem::VersionControlTreeItem(String withExistingId,
-                                               String withExistingKey) :
+VersionControlTreeItem::VersionControlTreeItem(String withExistingId, String withExistingKey) :
     TreeItem("Versions", Serialization::Core::versionControl),
     vcs(nullptr),
     existingId(std::move(withExistingId)),
@@ -64,7 +62,7 @@ Colour VersionControlTreeItem::getColour() const noexcept
 
 Image VersionControlTreeItem::getIcon() const noexcept
 {
-    return Icons::findByName(Icons::vcs, TREE_ICON_HEIGHT);
+    return Icons::findByName(Icons::versionControl, HEADLINE_ICON_SIZE);
 }
 
 void VersionControlTreeItem::showPage()
@@ -157,94 +155,6 @@ void VersionControlTreeItem::commitProjectInfo()
     }
 }
 
-void VersionControlTreeItem::asyncPullAndCheckoutOrDeleteIfFailed()
-{
-    if (this->vcs)
-    {
-        if (this->vcs->getRemote()->pull())
-        {
-            MessageManagerLock lock;
-            this->vcs->getRemote()->addChangeListener(this);
-        }
-    }
-}
-
-void VersionControlTreeItem::changeListenerCallback(ChangeBroadcaster *source)
-{
-    if (this->vcs)
-    {
-        if (this->vcs->getRemote()->isRemovalDone())
-        {
-            {
-                MessageManagerLock lock;
-                this->vcs->getRemote()->removeChangeListener(this);
-            }
-            
-            if (this->vcs->getRemote()->removalFinishedWithSuccess())
-            {
-                if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
-                {
-                    File localProjectFile(parentProject->getDocument()->getFullPath());
-                    App::Workspace().unloadProjectById(parentProject->getId());
-                    localProjectFile.deleteFile();
-                    App::Workspace().getRecentFilesList().cleanup();
-                }
-            }
-        }
-        else if (this->vcs->getRemote()->isPullDone())
-        {
-            {
-                MessageManagerLock lock;
-                this->vcs->getRemote()->removeChangeListener(this);
-            }
-            
-            if (this->vcs->getRemote()->pullFinishedWithFail())
-            {
-                if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
-                {
-                    delete parentProject;
-                }
-            }
-            else if (this->vcs->getRemote()->pullFinishedWithSuccess())
-            {
-                if (ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>())
-                {
-                    if (HybridRoll *roll = parentProject->getLastFocusedRoll())
-                    {
-                        parentProject->getTransport().seekToPosition(-0.00001);
-                        roll->scrollToSeekPosition();
-                    }
-                    
-                    parentProject->getDocument()->save();
-                    parentProject->broadcastChangeProjectBeatRange();
-                    
-                    // notify recent files list
-                    App::Workspace().getRecentFilesList().
-                    onProjectStateChanged(parentProject->getName(),
-                                          parentProject->getDocument()->getFullPath(),
-                                          parentProject->getId(),
-                                          true);
-                }
-            }
-        }
-    }
-}
-
-bool VersionControlTreeItem::deletePermanentlyFromRemoteRepo()
-{
-    if (this->vcs)
-    {
-        if (this->vcs->getRemote()->remove())
-        {
-            MessageManagerLock lock;
-            this->vcs->getRemote()->addChangeListener(this);
-            return true;
-        }
-    }
-    
-    return false;
-}
-
 void VersionControlTreeItem::toggleQuickStash()
 {
     if (! this->vcs)
@@ -304,12 +214,7 @@ ScopedPointer<Component> VersionControlTreeItem::createMenu()
 {
     if (this->vcs != nullptr)
     {
-        ProjectTreeItem *parentProject = this->findParentOfType<ProjectTreeItem>();
-        
-        if (parentProject)
-        {
-            return new VCSCommandPanel(*parentProject, *this->vcs);
-        }
+        return new VersionControlMenu(*this->vcs);
     }
     
     return nullptr;

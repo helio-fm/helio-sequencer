@@ -32,8 +32,8 @@
 #include "AnnotationSmallComponent.h"
 #include "TimeSignatureSmallComponent.h"
 #include "KeySignatureSmallComponent.h"
-#include "ToolsSidebar.h"
-#include "NavigationSidebar.h"
+#include "SequencerSidebarRight.h"
+#include "SequencerSidebarLeft.h"
 #include "OrigamiHorizontal.h"
 #include "OrigamiVertical.h"
 #include "NoteComponent.h"
@@ -49,15 +49,15 @@
 #include "ColourIDs.h"
 
 // force compile template
-#include "AnnotationsMap/AnnotationsTrackMap.cpp"
+#include "AnnotationsTrackMap.cpp"
 template class AnnotationsTrackMap<AnnotationSmallComponent>;
 
 // force compile template
-#include "TimeSignaturesMap/TimeSignaturesTrackMap.cpp"
+#include "TimeSignaturesTrackMap.cpp"
 template class TimeSignaturesTrackMap<TimeSignatureSmallComponent>;
 
 // force compile template
-#include "KeySignaturesMap/KeySignaturesTrackMap.cpp"
+#include "KeySignaturesTrackMap.cpp"
 template class KeySignaturesTrackMap<KeySignatureSmallComponent>;
 
 #define MAX_NUM_SPLITSCREEN_EDITORS 2
@@ -548,9 +548,9 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
         this->scroller);
     
     // создаем тулбар и компонуем его с контейнером
-    this->rollToolsSidebar = new ToolsSidebar(this->project);
-    this->rollNavSidebar = new NavigationSidebar();
-    this->rollNavSidebar->setSize(NAVIGATION_SIDEBAR_WIDTH, this->getParentHeight());
+    this->rollToolsSidebar = new SequencerSidebarRight(this->project);
+    this->rollNavSidebar = new SequencerSidebarLeft();
+    this->rollNavSidebar->setSize(SEQUENCER_SIDEBAR_WIDTH, this->getParentHeight());
     // Hopefully this doesn't crash, since sequencer layout is only created by a loaded project:
     this->rollNavSidebar->setAudioMonitor(App::Workspace().getAudioCore().getMonitor());
 

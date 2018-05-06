@@ -19,11 +19,11 @@
 
 #include "Icons.h"
 
-class ShapeComponent : public Component
+class ShapeComponent final : public Component
 {
 public:
     
-    explicit ShapeComponent(const String &name, float alpha = 1.f) : shape(Icons::getDrawableByName(name))
+    explicit ShapeComponent(Icons::Id iconId, float alpha = 1.f) : shape(Icons::getDrawableByName(iconId))
     {
         this->setInterceptsMouseClicks(false, false);
         this->setAlpha(alpha);

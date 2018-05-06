@@ -30,7 +30,12 @@ public:
     
     bool isWorking() const;
     void removeListItem(int index);
-    const KnownPluginList &getList() const;
+
+    bool hasEffects() const;
+    bool hasInstruments() const;
+
+    void sortList(KnownPluginList::SortMethod method, bool forwards);
+    const KnownPluginList &getList() const noexcept;
 
     void runInitialScan();
     void scanFolderAndAddResults(const File &dir);

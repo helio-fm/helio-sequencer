@@ -18,7 +18,6 @@
 #include "Common.h"
 #include "TreeItemComponent.h"
 #include "TreeItem.h"
-#include "NavigationSidebar.h"
 #include "PanelBackgroundC.h"
 #include "ProjectTreeItem.h"
 #include "PianoTrackTreeItem.h"

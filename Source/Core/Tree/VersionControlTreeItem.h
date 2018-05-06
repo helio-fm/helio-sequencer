@@ -23,9 +23,7 @@ class VersionControl;
 class VersionControlEditor;
 class ProjectTreeItem;
 
-class VersionControlTreeItem final :
-    public TreeItem,
-    public ChangeListener // listens to VCS::Remote when it is done pulling
+class VersionControlTreeItem final : public TreeItem
 {
 public:
 
@@ -43,10 +41,6 @@ public:
     String getStatsString() const;
     
     void commitProjectInfo();
-    void asyncPullAndCheckoutOrDeleteIfFailed();
-    void changeListenerCallback(ChangeBroadcaster* source) override;
-
-    bool deletePermanentlyFromRemoteRepo();
     void toggleQuickStash();
     
     //===------------------------------------------------------------------===//

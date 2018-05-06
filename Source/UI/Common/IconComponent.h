@@ -23,8 +23,8 @@ class IconComponent : virtual public Component
 {
 public:
     
-    explicit IconComponent(String name, float alpha = 1.f) :
-        iconName(std::move(name))
+    explicit IconComponent(Icons::Id iconId, float alpha = 1.f) :
+        iconId(iconId)
     {
         this->setPaintingIsUnclipped(true);
         this->setInterceptsMouseClicks(false, false);
@@ -39,9 +39,9 @@ public:
         this->setInterceptsMouseClicks(false, false);
     }
 
-    void setIconName(String name)
+    void setIconName(Icons::Id iconId)
     {
-        this->iconName = name;
+        this->iconId = iconId;
         this->repaint();
     }
 
@@ -60,7 +60,7 @@ public:
     {
         if (this->image.isNull())
         {
-            Image i(Icons::findByName(this->iconName, this->getHeight()));
+            Image i(Icons::findByName(this->iconId, this->getHeight()));
             Icons::drawImageRetinaAware(i, g, this->getWidth() / 2, this->getHeight() / 2);
         }
         else
@@ -71,7 +71,7 @@ public:
     
 protected:
     
-    String iconName;
+    Icons::Id iconId;
     Image image;
     
 };
