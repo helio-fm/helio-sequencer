@@ -109,7 +109,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\ThirdParty\VST_SDK\VST3_SDK;..\Projucer\JuceLibraryCode;..\..\ThirdParty\JUCE\modules;../../ThirdParty/ASIO/common;../../ThirdParty/JUCE/modules/juce_audio_basics;../../ThirdParty/JUCE/modules/juce_audio_devices;../../ThirdParty/JUCE/modules/juce_audio_formats;../../ThirdParty/JUCE/modules/juce_audio_processors;../../ThirdParty/JUCE/modules/juce_audio_utils;../../ThirdParty/JUCE/modules/juce_audio_utils/players;../../ThirdParty/JUCE/modules/juce_core;../../ThirdParty/JUCE/modules/juce_cryptography;../../ThirdParty/JUCE/modules/juce_data_structures;../../ThirdParty/JUCE/modules/juce_events;../../ThirdParty/JUCE/modules/juce_graphics;../../ThirdParty/JUCE/modules/juce_gui_basics;../../ThirdParty/JUCE/modules/juce_gui_extra;../../ThirdParty/JUCE/modules/juce_opengl;../../ThirdParty/JUCE/modules/juce_osc;../../Source/;../../Source/Core/;../../Source/Core/App;../../Source/Core/Audio;../../Source/Core/Audio/BuiltIn;../../Source/Core/Audio/Instruments;../../Source/Core/Audio/Monitoring;../../Source/Core/Audio/Transport;../../Source/Core/Audio/Waveform;../../Source/Core/Midi;../../Source/Core/Midi/Patterns;../../Source/Core/Midi/Sequences;../../Source/Core/Midi/Sequences/Events;../../Source/Core/Network;../../Source/Core/Network/Requests;../../Source/Core/Network/Models;../../Source/Core/Network/Services;../../Source/Core/Serialization;../../Source/Core/Supervisor;../../Source/Core/Configuration;../../Source/Core/Configuration/Models;../../Source/Core/Configuration/ResourceManagers;../../Source/Core/Tree;../../Source/Core/Tutorial;../../Source/Core/Undo;../../Source/Core/Undo/Actions;../../Source/Core/VCS;../../Source/Core/VCS/DiffLogic;../../Source/UI/;../../Source/UI/CodeEditor;../../Source/UI/Menus;../../Source/UI/Menus/Base;../../Source/UI/Common;../../Source/UI/Common/AudioMonitors;../../Source/UI/Common/Origami;../../Source/UI/Console;../../Source/UI/Dialogs;../../Source/UI/Headline;../../Source/UI/Input;../../Source/UI/Pages/Instruments;../../Source/UI/Pages/Instruments/Editor;../../Source/UI/Pages/Intro;../../Source/UI/Sequencer;../../Source/UI/Sequencer/AnnotationsMap;../../Source/UI/Sequencer/AutomationMap;../../Source/UI/Sequencer/Header;../../Source/UI/Sequencer/Helpers;../../Source/UI/Sequencer/PatternRoll;../../Source/UI/Sequencer/PianoRoll;../../Source/UI/Sequencer/TimeSignaturesMap;../../Source/UI/Sequencer/KeySignaturesMap;../../Source/UI/Sequencer/TrackMap;../../Source/UI/Sequencer/TriggersMap;../../Source/UI/Sequencer/WaveformMap;../../Source/UI/Popups;../../Source/UI/Popups/ChordBuilder;../../Source/UI/Pages/Project;../../Source/UI/Sidebars;../../Source/UI/Pages/Settings;../../Source/UI/Themes;../../Source/UI/Tree;../../Source/UI/Pages/VCS;../../Source/UI/Pages/Workspace;../../Source/UI/Pages/Workspace/Menu;../../Source/UI/Pages/Workspace/Scroller;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ThirdParty\VST_SDK\VST3_SDK;..\Projucer\JuceLibraryCode;..\..\ThirdParty\JUCE\modules;../../ThirdParty/ASIO/common;../../ThirdParty/JUCE/modules/juce_audio_basics;../../ThirdParty/JUCE/modules/juce_audio_devices;../../ThirdParty/JUCE/modules/juce_audio_formats;../../ThirdParty/JUCE/modules/juce_audio_processors;../../ThirdParty/JUCE/modules/juce_audio_utils;../../ThirdParty/JUCE/modules/juce_audio_utils/players;../../ThirdParty/JUCE/modules/juce_core;../../ThirdParty/JUCE/modules/juce_cryptography;../../ThirdParty/JUCE/modules/juce_data_structures;../../ThirdParty/JUCE/modules/juce_events;../../ThirdParty/JUCE/modules/juce_graphics;../../ThirdParty/JUCE/modules/juce_gui_basics;../../ThirdParty/JUCE/modules/juce_gui_extra;../../ThirdParty/JUCE/modules/juce_opengl;../../ThirdParty/JUCE/modules/juce_osc;../../Source/;../../Source/Core/;../../Source/Core/App;../../Source/Core/Audio;../../Source/Core/Audio/BuiltIn;../../Source/Core/Audio/Instruments;../../Source/Core/Audio/Monitoring;../../Source/Core/Audio/Transport;../../Source/Core/Audio/Waveform;../../Source/Core/Midi;../../Source/Core/Midi/Patterns;../../Source/Core/Midi/Sequences;../../Source/Core/Midi/Sequences/Events;../../Source/Core/Network;../../Source/Core/Network/Requests;../../Source/Core/Network/Models;../../Source/Core/Network/Services;../../Source/Core/Serialization;../../Source/Core/Supervisor;../../Source/Core/Configuration;../../Source/Core/Configuration/Models;../../Source/Core/Configuration/ResourceManagers;../../Source/Core/Tree;../../Source/Core/Tutorial;../../Source/Core/Undo;../../Source/Core/Undo/Actions;../../Source/Core/VCS;../../Source/Core/VCS/DiffLogic;../../Source/UI/;../../Source/UI/CodeEditor;../../Source/UI/Menus;../../Source/UI/Menus/Base;../../Source/UI/Menus/SelectionMenus;../../Source/UI/Common;../../Source/UI/Common/AudioMonitors;../../Source/UI/Common/Origami;../../Source/UI/Console;../../Source/UI/Dialogs;../../Source/UI/Headline;../../Source/UI/Input;../../Source/UI/Pages/Instruments;../../Source/UI/Pages/Instruments/Editor;../../Source/UI/Pages/Intro;../../Source/UI/Sequencer;../../Source/UI/Sequencer/TrackMaps/AnnotationsMap;../../Source/UI/Sequencer/TrackMaps/AutomationMap;../../Source/UI/Sequencer/Header;../../Source/UI/Sequencer/Helpers;../../Source/UI/Sequencer/PatternRoll;../../Source/UI/Sequencer/PianoRoll;../../Source/UI/Sequencer/TrackMaps/TimeSignaturesMap;../../Source/UI/Sequencer/TrackMaps/KeySignaturesMap;../../Source/UI/Sequencer/TrackMaps/PianoTrackMap;../../Source/UI/Sequencer/TrackMaps/TriggersMap;../../Source/UI/Popups;../../Source/UI/Popups/ChordBuilder;../../Source/UI/Pages/Project;../../Source/UI/Sequencer/Sidebars;../../Source/UI/Pages/Settings;../../Source/UI/Themes;../../Source/UI/Tree;../../Source/UI/Pages/VCS;../../Source/UI/Pages/Workspace;../../Source/UI/Pages/Workspace/Menu;../../Source/UI/Pages/Workspace/Scroller;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCE_DONT_DECLARE_PROJECTINFO=1;JUCER_VS2015_B56B066D=1;JUCE_APP_VERSION=1.7.6;JUCE_APP_VERSION_HEX=0x10706;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -155,7 +155,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..\..\ThirdParty\VST_SDK\VST3_SDK;..\Projucer\JuceLibraryCode;..\..\ThirdParty\JUCE\modules;../../ThirdParty/ASIO/common;../../ThirdParty/JUCE/modules/juce_audio_basics;../../ThirdParty/JUCE/modules/juce_audio_devices;../../ThirdParty/JUCE/modules/juce_audio_formats;../../ThirdParty/JUCE/modules/juce_audio_processors;../../ThirdParty/JUCE/modules/juce_audio_utils;../../ThirdParty/JUCE/modules/juce_audio_utils/players;../../ThirdParty/JUCE/modules/juce_core;../../ThirdParty/JUCE/modules/juce_cryptography;../../ThirdParty/JUCE/modules/juce_data_structures;../../ThirdParty/JUCE/modules/juce_events;../../ThirdParty/JUCE/modules/juce_graphics;../../ThirdParty/JUCE/modules/juce_gui_basics;../../ThirdParty/JUCE/modules/juce_gui_extra;../../ThirdParty/JUCE/modules/juce_opengl;../../ThirdParty/JUCE/modules/juce_osc;../../Source/;../../Source/Core/;../../Source/Core/App;../../Source/Core/Audio;../../Source/Core/Audio/BuiltIn;../../Source/Core/Audio/Instruments;../../Source/Core/Audio/Monitoring;../../Source/Core/Audio/Transport;../../Source/Core/Audio/Waveform;../../Source/Core/Midi;../../Source/Core/Midi/Patterns;../../Source/Core/Midi/Sequences;../../Source/Core/Midi/Sequences/Events;../../Source/Core/Network;../../Source/Core/Network/Requests;../../Source/Core/Network/Models;../../Source/Core/Network/Services;../../Source/Core/Serialization;../../Source/Core/Supervisor;../../Source/Core/Configuration;../../Source/Core/Configuration/Models;../../Source/Core/Configuration/ResourceManagers;../../Source/Core/Tree;../../Source/Core/Tutorial;../../Source/Core/Undo;../../Source/Core/Undo/Actions;../../Source/Core/VCS;../../Source/Core/VCS/DiffLogic;../../Source/UI/;../../Source/UI/CodeEditor;../../Source/UI/Menus;../../Source/UI/Menus/Base;../../Source/UI/Common;../../Source/UI/Common/AudioMonitors;../../Source/UI/Common/Origami;../../Source/UI/Console;../../Source/UI/Dialogs;../../Source/UI/Headline;../../Source/UI/Input;../../Source/UI/Pages/Instruments;../../Source/UI/Pages/Instruments/Editor;../../Source/UI/Pages/Intro;../../Source/UI/Sequencer;../../Source/UI/Sequencer/AnnotationsMap;../../Source/UI/Sequencer/AutomationMap;../../Source/UI/Sequencer/Header;../../Source/UI/Sequencer/Helpers;../../Source/UI/Sequencer/PatternRoll;../../Source/UI/Sequencer/PianoRoll;../../Source/UI/Sequencer/TimeSignaturesMap;../../Source/UI/Sequencer/KeySignaturesMap;../../Source/UI/Sequencer/TrackMap;../../Source/UI/Sequencer/TriggersMap;../../Source/UI/Sequencer/WaveformMap;../../Source/UI/Popups;../../Source/UI/Popups/ChordBuilder;../../Source/UI/Pages/Project;../../Source/UI/Sidebars;../../Source/UI/Pages/Settings;../../Source/UI/Themes;../../Source/UI/Tree;../../Source/UI/Pages/VCS;../../Source/UI/Pages/Workspace;../../Source/UI/Pages/Workspace/Menu;../../Source/UI/Pages/Workspace/Scroller;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ThirdParty\VST_SDK\VST3_SDK;..\Projucer\JuceLibraryCode;..\..\ThirdParty\JUCE\modules;../../ThirdParty/ASIO/common;../../ThirdParty/JUCE/modules/juce_audio_basics;../../ThirdParty/JUCE/modules/juce_audio_devices;../../ThirdParty/JUCE/modules/juce_audio_formats;../../ThirdParty/JUCE/modules/juce_audio_processors;../../ThirdParty/JUCE/modules/juce_audio_utils;../../ThirdParty/JUCE/modules/juce_audio_utils/players;../../ThirdParty/JUCE/modules/juce_core;../../ThirdParty/JUCE/modules/juce_cryptography;../../ThirdParty/JUCE/modules/juce_data_structures;../../ThirdParty/JUCE/modules/juce_events;../../ThirdParty/JUCE/modules/juce_graphics;../../ThirdParty/JUCE/modules/juce_gui_basics;../../ThirdParty/JUCE/modules/juce_gui_extra;../../ThirdParty/JUCE/modules/juce_opengl;../../ThirdParty/JUCE/modules/juce_osc;../../Source/;../../Source/Core/;../../Source/Core/App;../../Source/Core/Audio;../../Source/Core/Audio/BuiltIn;../../Source/Core/Audio/Instruments;../../Source/Core/Audio/Monitoring;../../Source/Core/Audio/Transport;../../Source/Core/Audio/Waveform;../../Source/Core/Midi;../../Source/Core/Midi/Patterns;../../Source/Core/Midi/Sequences;../../Source/Core/Midi/Sequences/Events;../../Source/Core/Network;../../Source/Core/Network/Requests;../../Source/Core/Network/Models;../../Source/Core/Network/Services;../../Source/Core/Serialization;../../Source/Core/Supervisor;../../Source/Core/Configuration;../../Source/Core/Configuration/Models;../../Source/Core/Configuration/ResourceManagers;../../Source/Core/Tree;../../Source/Core/Tutorial;../../Source/Core/Undo;../../Source/Core/Undo/Actions;../../Source/Core/VCS;../../Source/Core/VCS/DiffLogic;../../Source/UI/;../../Source/UI/CodeEditor;../../Source/UI/Menus;../../Source/UI/Menus/Base;../../Source/UI/Menus/SelectionMenus;../../Source/UI/Common;../../Source/UI/Common/AudioMonitors;../../Source/UI/Common/Origami;../../Source/UI/Console;../../Source/UI/Dialogs;../../Source/UI/Headline;../../Source/UI/Input;../../Source/UI/Pages/Instruments;../../Source/UI/Pages/Instruments/Editor;../../Source/UI/Pages/Intro;../../Source/UI/Sequencer;../../Source/UI/Sequencer/TrackMaps/AnnotationsMap;../../Source/UI/Sequencer/TrackMaps/AutomationMap;../../Source/UI/Sequencer/Header;../../Source/UI/Sequencer/Helpers;../../Source/UI/Sequencer/PatternRoll;../../Source/UI/Sequencer/PianoRoll;../../Source/UI/Sequencer/TrackMaps/TimeSignaturesMap;../../Source/UI/Sequencer/TrackMaps/KeySignaturesMap;../../Source/UI/Sequencer/TrackMaps/PianoTrackMap;../../Source/UI/Sequencer/TrackMaps/TriggersMap;../../Source/UI/Popups;../../Source/UI/Popups/ChordBuilder;../../Source/UI/Pages/Project;../../Source/UI/Sequencer/Sidebars;../../Source/UI/Pages/Settings;../../Source/UI/Themes;../../Source/UI/Tree;../../Source/UI/Pages/VCS;../../Source/UI/Pages/Workspace;../../Source/UI/Pages/Workspace/Menu;../../Source/UI/Pages/Workspace/Scroller;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;DEBUG;_DEBUG;JUCE_DONT_DECLARE_PROJECTINFO=1;JUCER_VS2015_B56B066D=1;JUCE_APP_VERSION=1.7.6;JUCE_APP_VERSION_HEX=0x10706;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -199,7 +199,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\..\ThirdParty\VST_SDK\VST3_SDK;..\Projucer\JuceLibraryCode;..\..\ThirdParty\JUCE\modules;../../ThirdParty/ASIO/common;../../ThirdParty/JUCE/modules/juce_audio_basics;../../ThirdParty/JUCE/modules/juce_audio_devices;../../ThirdParty/JUCE/modules/juce_audio_formats;../../ThirdParty/JUCE/modules/juce_audio_processors;../../ThirdParty/JUCE/modules/juce_audio_utils;../../ThirdParty/JUCE/modules/juce_audio_utils/players;../../ThirdParty/JUCE/modules/juce_core;../../ThirdParty/JUCE/modules/juce_cryptography;../../ThirdParty/JUCE/modules/juce_data_structures;../../ThirdParty/JUCE/modules/juce_events;../../ThirdParty/JUCE/modules/juce_graphics;../../ThirdParty/JUCE/modules/juce_gui_basics;../../ThirdParty/JUCE/modules/juce_gui_extra;../../ThirdParty/JUCE/modules/juce_opengl;../../ThirdParty/JUCE/modules/juce_osc;../../Source/;../../Source/Core/;../../Source/Core/App;../../Source/Core/Audio;../../Source/Core/Audio/BuiltIn;../../Source/Core/Audio/Instruments;../../Source/Core/Audio/Monitoring;../../Source/Core/Audio/Transport;../../Source/Core/Audio/Waveform;../../Source/Core/Midi;../../Source/Core/Midi/Patterns;../../Source/Core/Midi/Sequences;../../Source/Core/Midi/Sequences/Events;../../Source/Core/Network;../../Source/Core/Network/Requests;../../Source/Core/Network/Models;../../Source/Core/Network/Services;../../Source/Core/Serialization;../../Source/Core/Supervisor;../../Source/Core/Configuration;../../Source/Core/Configuration/Models;../../Source/Core/Configuration/ResourceManagers;../../Source/Core/Tree;../../Source/Core/Tutorial;../../Source/Core/Undo;../../Source/Core/Undo/Actions;../../Source/Core/VCS;../../Source/Core/VCS/DiffLogic;../../Source/UI/;../../Source/UI/CodeEditor;../../Source/UI/Menus;../../Source/UI/Menus/Base;../../Source/UI/Common;../../Source/UI/Common/AudioMonitors;../../Source/UI/Common/Origami;../../Source/UI/Console;../../Source/UI/Dialogs;../../Source/UI/Headline;../../Source/UI/Input;../../Source/UI/Pages/Instruments;../../Source/UI/Pages/Instruments/Editor;../../Source/UI/Pages/Intro;../../Source/UI/Sequencer;../../Source/UI/Sequencer/AnnotationsMap;../../Source/UI/Sequencer/AutomationMap;../../Source/UI/Sequencer/Header;../../Source/UI/Sequencer/Helpers;../../Source/UI/Sequencer/PatternRoll;../../Source/UI/Sequencer/PianoRoll;../../Source/UI/Sequencer/TimeSignaturesMap;../../Source/UI/Sequencer/KeySignaturesMap;../../Source/UI/Sequencer/TrackMap;../../Source/UI/Sequencer/TriggersMap;../../Source/UI/Sequencer/WaveformMap;../../Source/UI/Popups;../../Source/UI/Popups/ChordBuilder;../../Source/UI/Pages/Project;../../Source/UI/Sidebars;../../Source/UI/Pages/Settings;../../Source/UI/Themes;../../Source/UI/Tree;../../Source/UI/Pages/VCS;../../Source/UI/Pages/Workspace;../../Source/UI/Pages/Workspace/Menu;../../Source/UI/Pages/Workspace/Scroller;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ThirdParty\VST_SDK\VST3_SDK;..\Projucer\JuceLibraryCode;..\..\ThirdParty\JUCE\modules;../../ThirdParty/ASIO/common;../../ThirdParty/JUCE/modules/juce_audio_basics;../../ThirdParty/JUCE/modules/juce_audio_devices;../../ThirdParty/JUCE/modules/juce_audio_formats;../../ThirdParty/JUCE/modules/juce_audio_processors;../../ThirdParty/JUCE/modules/juce_audio_utils;../../ThirdParty/JUCE/modules/juce_audio_utils/players;../../ThirdParty/JUCE/modules/juce_core;../../ThirdParty/JUCE/modules/juce_cryptography;../../ThirdParty/JUCE/modules/juce_data_structures;../../ThirdParty/JUCE/modules/juce_events;../../ThirdParty/JUCE/modules/juce_graphics;../../ThirdParty/JUCE/modules/juce_gui_basics;../../ThirdParty/JUCE/modules/juce_gui_extra;../../ThirdParty/JUCE/modules/juce_opengl;../../ThirdParty/JUCE/modules/juce_osc;../../Source/;../../Source/Core/;../../Source/Core/App;../../Source/Core/Audio;../../Source/Core/Audio/BuiltIn;../../Source/Core/Audio/Instruments;../../Source/Core/Audio/Monitoring;../../Source/Core/Audio/Transport;../../Source/Core/Audio/Waveform;../../Source/Core/Midi;../../Source/Core/Midi/Patterns;../../Source/Core/Midi/Sequences;../../Source/Core/Midi/Sequences/Events;../../Source/Core/Network;../../Source/Core/Network/Requests;../../Source/Core/Network/Models;../../Source/Core/Network/Services;../../Source/Core/Serialization;../../Source/Core/Supervisor;../../Source/Core/Configuration;../../Source/Core/Configuration/Models;../../Source/Core/Configuration/ResourceManagers;../../Source/Core/Tree;../../Source/Core/Tutorial;../../Source/Core/Undo;../../Source/Core/Undo/Actions;../../Source/Core/VCS;../../Source/Core/VCS/DiffLogic;../../Source/UI/;../../Source/UI/CodeEditor;../../Source/UI/Menus;../../Source/UI/Menus/Base;../../Source/UI/Menus/SelectionMenus;../../Source/UI/Common;../../Source/UI/Common/AudioMonitors;../../Source/UI/Common/Origami;../../Source/UI/Console;../../Source/UI/Dialogs;../../Source/UI/Headline;../../Source/UI/Input;../../Source/UI/Pages/Instruments;../../Source/UI/Pages/Instruments/Editor;../../Source/UI/Pages/Intro;../../Source/UI/Sequencer;../../Source/UI/Sequencer/TrackMaps/AnnotationsMap;../../Source/UI/Sequencer/TrackMaps/AutomationMap;../../Source/UI/Sequencer/Header;../../Source/UI/Sequencer/Helpers;../../Source/UI/Sequencer/PatternRoll;../../Source/UI/Sequencer/PianoRoll;../../Source/UI/Sequencer/TrackMaps/TimeSignaturesMap;../../Source/UI/Sequencer/TrackMaps/KeySignaturesMap;../../Source/UI/Sequencer/TrackMaps/PianoTrackMap;../../Source/UI/Sequencer/TrackMaps/TriggersMap;../../Source/UI/Popups;../../Source/UI/Popups/ChordBuilder;../../Source/UI/Pages/Project;../../Source/UI/Sequencer/Sidebars;../../Source/UI/Pages/Settings;../../Source/UI/Themes;../../Source/UI/Tree;../../Source/UI/Pages/VCS;../../Source/UI/Pages/Workspace;../../Source/UI/Pages/Workspace/Menu;../../Source/UI/Pages/Workspace/Scroller;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCE_DONT_DECLARE_PROJECTINFO=1;JUCER_VS2015_B56B066D=1;JUCE_APP_VERSION=1.7.6;JUCE_APP_VERSION_HEX=0x10706;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -246,7 +246,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Full</Optimization>
-      <AdditionalIncludeDirectories>..\..\ThirdParty\VST_SDK\VST3_SDK;..\Projucer\JuceLibraryCode;..\..\ThirdParty\JUCE\modules;../../ThirdParty/ASIO/common;../../ThirdParty/JUCE/modules/juce_audio_basics;../../ThirdParty/JUCE/modules/juce_audio_devices;../../ThirdParty/JUCE/modules/juce_audio_formats;../../ThirdParty/JUCE/modules/juce_audio_processors;../../ThirdParty/JUCE/modules/juce_audio_utils;../../ThirdParty/JUCE/modules/juce_audio_utils/players;../../ThirdParty/JUCE/modules/juce_core;../../ThirdParty/JUCE/modules/juce_cryptography;../../ThirdParty/JUCE/modules/juce_data_structures;../../ThirdParty/JUCE/modules/juce_events;../../ThirdParty/JUCE/modules/juce_graphics;../../ThirdParty/JUCE/modules/juce_gui_basics;../../ThirdParty/JUCE/modules/juce_gui_extra;../../ThirdParty/JUCE/modules/juce_opengl;../../ThirdParty/JUCE/modules/juce_osc;../../Source/;../../Source/Core/;../../Source/Core/App;../../Source/Core/Audio;../../Source/Core/Audio/BuiltIn;../../Source/Core/Audio/Instruments;../../Source/Core/Audio/Monitoring;../../Source/Core/Audio/Transport;../../Source/Core/Audio/Waveform;../../Source/Core/Midi;../../Source/Core/Midi/Patterns;../../Source/Core/Midi/Sequences;../../Source/Core/Midi/Sequences/Events;../../Source/Core/Network;../../Source/Core/Network/Requests;../../Source/Core/Network/Models;../../Source/Core/Network/Services;../../Source/Core/Serialization;../../Source/Core/Supervisor;../../Source/Core/Configuration;../../Source/Core/Configuration/Models;../../Source/Core/Configuration/ResourceManagers;../../Source/Core/Tree;../../Source/Core/Tutorial;../../Source/Core/Undo;../../Source/Core/Undo/Actions;../../Source/Core/VCS;../../Source/Core/VCS/DiffLogic;../../Source/UI/;../../Source/UI/CodeEditor;../../Source/UI/Menus;../../Source/UI/Menus/Base;../../Source/UI/Common;../../Source/UI/Common/AudioMonitors;../../Source/UI/Common/Origami;../../Source/UI/Console;../../Source/UI/Dialogs;../../Source/UI/Headline;../../Source/UI/Input;../../Source/UI/Pages/Instruments;../../Source/UI/Pages/Instruments/Editor;../../Source/UI/Pages/Intro;../../Source/UI/Sequencer;../../Source/UI/Sequencer/AnnotationsMap;../../Source/UI/Sequencer/AutomationMap;../../Source/UI/Sequencer/Header;../../Source/UI/Sequencer/Helpers;../../Source/UI/Sequencer/PatternRoll;../../Source/UI/Sequencer/PianoRoll;../../Source/UI/Sequencer/TimeSignaturesMap;../../Source/UI/Sequencer/KeySignaturesMap;../../Source/UI/Sequencer/TrackMap;../../Source/UI/Sequencer/TriggersMap;../../Source/UI/Sequencer/WaveformMap;../../Source/UI/Popups;../../Source/UI/Popups/ChordBuilder;../../Source/UI/Pages/Project;../../Source/UI/Sidebars;../../Source/UI/Pages/Settings;../../Source/UI/Themes;../../Source/UI/Tree;../../Source/UI/Pages/VCS;../../Source/UI/Pages/Workspace;../../Source/UI/Pages/Workspace/Menu;../../Source/UI/Pages/Workspace/Scroller;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\ThirdParty\VST_SDK\VST3_SDK;..\Projucer\JuceLibraryCode;..\..\ThirdParty\JUCE\modules;../../ThirdParty/ASIO/common;../../ThirdParty/JUCE/modules/juce_audio_basics;../../ThirdParty/JUCE/modules/juce_audio_devices;../../ThirdParty/JUCE/modules/juce_audio_formats;../../ThirdParty/JUCE/modules/juce_audio_processors;../../ThirdParty/JUCE/modules/juce_audio_utils;../../ThirdParty/JUCE/modules/juce_audio_utils/players;../../ThirdParty/JUCE/modules/juce_core;../../ThirdParty/JUCE/modules/juce_cryptography;../../ThirdParty/JUCE/modules/juce_data_structures;../../ThirdParty/JUCE/modules/juce_events;../../ThirdParty/JUCE/modules/juce_graphics;../../ThirdParty/JUCE/modules/juce_gui_basics;../../ThirdParty/JUCE/modules/juce_gui_extra;../../ThirdParty/JUCE/modules/juce_opengl;../../ThirdParty/JUCE/modules/juce_osc;../../Source/;../../Source/Core/;../../Source/Core/App;../../Source/Core/Audio;../../Source/Core/Audio/BuiltIn;../../Source/Core/Audio/Instruments;../../Source/Core/Audio/Monitoring;../../Source/Core/Audio/Transport;../../Source/Core/Audio/Waveform;../../Source/Core/Midi;../../Source/Core/Midi/Patterns;../../Source/Core/Midi/Sequences;../../Source/Core/Midi/Sequences/Events;../../Source/Core/Network;../../Source/Core/Network/Requests;../../Source/Core/Network/Models;../../Source/Core/Network/Services;../../Source/Core/Serialization;../../Source/Core/Supervisor;../../Source/Core/Configuration;../../Source/Core/Configuration/Models;../../Source/Core/Configuration/ResourceManagers;../../Source/Core/Tree;../../Source/Core/Tutorial;../../Source/Core/Undo;../../Source/Core/Undo/Actions;../../Source/Core/VCS;../../Source/Core/VCS/DiffLogic;../../Source/UI/;../../Source/UI/CodeEditor;../../Source/UI/Menus;../../Source/UI/Menus/Base;../../Source/UI/Menus/SelectionMenus;../../Source/UI/Common;../../Source/UI/Common/AudioMonitors;../../Source/UI/Common/Origami;../../Source/UI/Console;../../Source/UI/Dialogs;../../Source/UI/Headline;../../Source/UI/Input;../../Source/UI/Pages/Instruments;../../Source/UI/Pages/Instruments/Editor;../../Source/UI/Pages/Intro;../../Source/UI/Sequencer;../../Source/UI/Sequencer/TrackMaps/AnnotationsMap;../../Source/UI/Sequencer/TrackMaps/AutomationMap;../../Source/UI/Sequencer/Header;../../Source/UI/Sequencer/Helpers;../../Source/UI/Sequencer/PatternRoll;../../Source/UI/Sequencer/PianoRoll;../../Source/UI/Sequencer/TrackMaps/TimeSignaturesMap;../../Source/UI/Sequencer/TrackMaps/KeySignaturesMap;../../Source/UI/Sequencer/TrackMaps/PianoTrackMap;../../Source/UI/Sequencer/TrackMaps/TriggersMap;../../Source/UI/Popups;../../Source/UI/Popups/ChordBuilder;../../Source/UI/Pages/Project;../../Source/UI/Sequencer/Sidebars;../../Source/UI/Pages/Settings;../../Source/UI/Themes;../../Source/UI/Tree;../../Source/UI/Pages/VCS;../../Source/UI/Pages/Workspace;../../Source/UI/Pages/Workspace/Menu;../../Source/UI/Pages/Workspace/Scroller;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_WINDOWS;NDEBUG;JUCE_DONT_DECLARE_PROJECTINFO=1;JUCER_VS2015_B56B066D=1;JUCE_APP_VERSION=1.7.6;JUCE_APP_VERSION_HEX=0x10706;JucePlugin_Build_VST=0;JucePlugin_Build_VST3=0;JucePlugin_Build_AU=0;JucePlugin_Build_AUv3=0;JucePlugin_Build_RTAS=0;JucePlugin_Build_AAX=0;JucePlugin_Build_Standalone=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -327,10 +327,6 @@
     <ClCompile Include="..\..\Source\Core\Midi\Sequences\TimeSignaturesSequence.cpp"/>
     <ClCompile Include="..\..\Source\Core\Midi\MidiTrack.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\Requests\HelioApiRequest.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Network\Requests\PullThread.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Network\Requests\PushThread.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Network\Requests\RemovalThread.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Network\Requests\SyncThread.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\Services\SessionService.cpp"/>
     <ClCompile Include="..\..\Source\Core\Network\Services\UpdatesService.cpp"/>
     <ClCompile Include="..\..\Source\Core\Serialization\Autosaver.cpp"/>
@@ -343,9 +339,9 @@
     <ClCompile Include="..\..\Source\Core\Tree\RecentFilesList.cpp"/>
     <ClCompile Include="..\..\Source\Core\Tree\AudioPluginTreeItem.cpp"/>
     <ClCompile Include="..\..\Source\Core\Tree\AutomationTrackTreeItem.cpp"/>
-    <ClCompile Include="..\..\Source\Core\Tree\InstrumentsRootTreeItem.cpp"/>
     <ClCompile Include="..\..\Source\Core\Tree\InstrumentTreeItem.cpp"/>
     <ClCompile Include="..\..\Source\Core\Tree\MidiTrackTreeItem.cpp"/>
+    <ClCompile Include="..\..\Source\Core\Tree\OrchestraPitTreeItem.cpp"/>
     <ClCompile Include="..\..\Source\Core\Tree\PatternEditorTreeItem.cpp"/>
     <ClCompile Include="..\..\Source\Core\Tree\PianoTrackTreeItem.cpp"/>
     <ClCompile Include="..\..\Source\Core\Tree\ProjectInfo.cpp"/>
@@ -374,7 +370,6 @@
     <ClCompile Include="..\..\Source\Core\VCS\DiffLogic\PianoTrackDiffLogic.cpp"/>
     <ClCompile Include="..\..\Source\Core\VCS\DiffLogic\ProjectInfoDiffLogic.cpp"/>
     <ClCompile Include="..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDiffLogic.cpp"/>
-    <ClCompile Include="..\..\Source\Core\VCS\Client.cpp"/>
     <ClCompile Include="..\..\Source\Core\VCS\Delta.cpp"/>
     <ClCompile Include="..\..\Source\Core\VCS\Diff.cpp"/>
     <ClCompile Include="..\..\Source\Core\VCS\Head.cpp"/>
@@ -420,28 +415,32 @@
     <ClCompile Include="..\..\Source\UI\Headline\HeadlineItemArrow.cpp"/>
     <ClCompile Include="..\..\Source\UI\Headline\HeadlineNavigationPanel.cpp"/>
     <ClCompile Include="..\..\Source\UI\Input\MultiTouchController.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Menus\Base\CommandItemComponent.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Menus\Base\CommandItemComponentMarker.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Menus\Base\CommandPanel.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Menus\AnnotationCommandPanel.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Menus\InstrumentCommandPanel.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Menus\InstrumentsCommandPanel.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Menus\MidiTrackCommandPanel.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Menus\Base\MenuItemComponent.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Menus\Base\MenuItemComponentMarker.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Menus\Base\MenuPanel.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Menus\SelectionMenus\AudioPluginSelectionMenu.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Menus\SelectionMenus\InstrumentNodeSelectionMenu.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Menus\SelectionMenus\PatternRollSelectionMenu.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Menus\SelectionMenus\PianoRollSelectionMenu.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Menus\SelectionMenus\VersionControlHistorySelectionMenu.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Menus\SelectionMenus\VersionControlStageSelectionMenu.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Menus\AnnotationMenu.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Menus\InstrumentMenu.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Menus\MidiTrackMenu.cpp"/>
     <ClCompile Include="..\..\Source\UI\Menus\NotesTuningPanel.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Menus\PatternEditorCommandPanel.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Menus\PatternRollSelectionCommandPanel.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Menus\PianoRollSelectionCommandPanel.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Menus\ProjectCommandPanel.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Menus\TimelineCommandPanel.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Menus\TimeSignatureCommandPanel.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Menus\VCSCommandPanel.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Menus\OrchestraPitMenu.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Menus\ProjectMenu.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Menus\TimelineMenu.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Menus\TimeSignatureMenu.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Menus\VersionControlMenu.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\AudioPluginEditorPage.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditor.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorConnector.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorNode.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorPin.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Pages\Instruments\InstrumentRow.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Pages\Instruments\InstrumentsPage.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Pages\Instruments\AudioPluginsListComponent.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Pages\Instruments\InstrumentsListComponent.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Pages\Instruments\OrchestraPitPage.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Intro\InitScreen.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Project\ProjectPage.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Project\ProjectPageDefault.cpp"/>
@@ -453,7 +452,6 @@
     <ClCompile Include="..\..\Source\UI\Pages\Settings\LabeledSettingsWrapper.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\LogComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\OpenGLSettings.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Pages\Settings\PluginsList.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsListItemHighlighter.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsListItemSelection.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Settings\SettingsPage.cpp"/>
@@ -470,8 +468,6 @@
     <ClCompile Include="..\..\Source\UI\Pages\VCS\StageComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditorDefault.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditorPhone.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Pages\VCS\VersionControlEditorPhoneViewportContent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Workspace\Menu\CreateProjectRow.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Workspace\Menu\OpenProjectRow.cpp"/>
     <ClCompile Include="..\..\Source\UI\Pages\Workspace\Menu\RecentProjectRow.cpp"/>
@@ -490,13 +486,6 @@
     <ClCompile Include="..\..\Source\UI\Popups\ProgressTooltip.cpp"/>
     <ClCompile Include="..\..\Source\UI\Popups\SuccessTooltip.cpp"/>
     <ClCompile Include="..\..\Source\UI\Popups\TooltipContainer.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\AnnotationsMap\AnnotationLargeComponent.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\AnnotationsMap\AnnotationSmallComponent.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\AnnotationsMap\AnnotationsTrackMap.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationCurveHelper.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationEventComponent.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationEventsConnector.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationTrackMap.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\Header\HeaderSelectionIndicator.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\Header\HybridRollHeader.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\Header\Playhead.cpp"/>
@@ -509,9 +498,6 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\InsertSpaceHelper.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\TimelineWarningMarker.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\Helpers\WipeSpaceHelper.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\KeySignaturesMap\KeySignatureLargeComponent.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\KeySignaturesMap\KeySignatureSmallComponent.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\KeySignaturesMap\KeySignaturesTrackMap.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\AutomationClipComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\PatternRoll\DummyClipComponent.cpp"/>
@@ -522,15 +508,27 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\NoteResizerLeft.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\NoteResizerRight.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\PianoRoll\PianoRoll.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\TimeSignaturesMap\TimeSignatureLargeComponent.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\TimeSignaturesMap\TimeSignatureSmallComponent.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\TimeSignaturesMap\TimeSignaturesTrackMap.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMap\PianoTrackMap.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMap\TrackScroller.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMap\TrackScrollerScreen.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\TriggersMap\TriggerEventComponent.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\TriggersMap\TriggerEventConnector.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sequencer\TriggersMap\TriggersTrackMap.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Sidebars\SequencerSidebarLeft.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\Sidebars\SequencerSidebarRight.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMaps\AnnotationsMap\AnnotationLargeComponent.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMaps\AnnotationsMap\AnnotationSmallComponent.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMaps\AnnotationsMap\AnnotationsTrackMap.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMaps\AutomationMap\AutomationCurveHelper.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMaps\AutomationMap\AutomationEventComponent.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMaps\AutomationMap\AutomationEventsConnector.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMaps\AutomationMap\AutomationTrackMap.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMaps\KeySignaturesMap\KeySignatureLargeComponent.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMaps\KeySignaturesMap\KeySignatureSmallComponent.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMaps\KeySignaturesMap\KeySignaturesTrackMap.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMaps\PianoTrackMap\PianoTrackMap.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMaps\PianoTrackMap\TrackScroller.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMaps\PianoTrackMap\TrackScrollerScreen.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMaps\TimeSignaturesMap\TimeSignatureLargeComponent.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMaps\TimeSignaturesMap\TimeSignatureSmallComponent.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMaps\TimeSignaturesMap\TimeSignaturesTrackMap.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMaps\TriggersMap\TriggerEventComponent.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMaps\TriggersMap\TriggerEventConnector.cpp"/>
+    <ClCompile Include="..\..\Source\UI\Sequencer\TrackMaps\TriggersMap\TriggersTrackMap.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\HybridRoll.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\HybridRollEditMode.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\Lasso.cpp"/>
@@ -539,8 +537,6 @@
     <ClCompile Include="..\..\Source\UI\Sequencer\SelectionComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\SequencerLayout.cpp"/>
     <ClCompile Include="..\..\Source\UI\Sequencer\SequencerOperations.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sidebars\NavigationSidebar.cpp"/>
-    <ClCompile Include="..\..\Source\UI\Sidebars\ToolsSidebar.cpp"/>
     <ClCompile Include="..\..\Source\UI\Themes\ComponentFader.cpp"/>
     <ClCompile Include="..\..\Source\UI\Themes\FontSerializer.cpp"/>
     <ClCompile Include="..\..\Source\UI\Themes\HelioTheme.cpp"/>
@@ -2353,11 +2349,6 @@
     <ClInclude Include="..\..\Source\Core\Network\Models\UpdatesInfo.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Models\UserProfile.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\HelioApiRequest.h"/>
-    <ClInclude Include="..\..\Source\Core\Network\Requests\PullThread.h"/>
-    <ClInclude Include="..\..\Source\Core\Network\Requests\PushThread.h"/>
-    <ClInclude Include="..\..\Source\Core\Network\Requests\RemovalThread.h"/>
-    <ClInclude Include="..\..\Source\Core\Network\Requests\SyncMessage.h"/>
-    <ClInclude Include="..\..\Source\Core\Network\Requests\SyncThread.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\RequestResourceThread.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\RequestUserProfileThread.h"/>
     <ClInclude Include="..\..\Source\Core\Network\Requests\SignInThread.h"/>
@@ -2384,10 +2375,10 @@
     <ClInclude Include="..\..\Source\Core\Tree\RecentFilesList.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\AudioPluginTreeItem.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\AutomationTrackTreeItem.h"/>
-    <ClInclude Include="..\..\Source\Core\Tree\InstrumentsRootTreeItem.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\InstrumentTreeItem.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\MidiTrackTreeItem.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\MidiTrackSource.h"/>
+    <ClInclude Include="..\..\Source\Core\Tree\OrchestraPitTreeItem.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\PatternEditorTreeItem.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\PianoTrackTreeItem.h"/>
     <ClInclude Include="..\..\Source\Core\Tree\ProjectInfo.h"/>
@@ -2420,7 +2411,6 @@
     <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\PianoTrackDiffLogic.h"/>
     <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\ProjectInfoDiffLogic.h"/>
     <ClInclude Include="..\..\Source\Core\VCS\DiffLogic\ProjectTimelineDiffLogic.h"/>
-    <ClInclude Include="..\..\Source\Core\VCS\Client.h"/>
     <ClInclude Include="..\..\Source\Core\VCS\Delta.h"/>
     <ClInclude Include="..\..\Source\Core\VCS\Diff.h"/>
     <ClInclude Include="..\..\Source\Core\VCS\Head.h"/>
@@ -2488,28 +2478,32 @@
     <ClInclude Include="..\..\Source\UI\Input\SmoothPanListener.h"/>
     <ClInclude Include="..\..\Source\UI\Input\SmoothZoomController.h"/>
     <ClInclude Include="..\..\Source\UI\Input\SmoothZoomListener.h"/>
-    <ClInclude Include="..\..\Source\UI\Menus\Base\CommandItemComponent.h"/>
-    <ClInclude Include="..\..\Source\UI\Menus\Base\CommandItemComponentMarker.h"/>
-    <ClInclude Include="..\..\Source\UI\Menus\Base\CommandPanel.h"/>
-    <ClInclude Include="..\..\Source\UI\Menus\AnnotationCommandPanel.h"/>
-    <ClInclude Include="..\..\Source\UI\Menus\InstrumentCommandPanel.h"/>
-    <ClInclude Include="..\..\Source\UI\Menus\InstrumentsCommandPanel.h"/>
-    <ClInclude Include="..\..\Source\UI\Menus\MidiTrackCommandPanel.h"/>
+    <ClInclude Include="..\..\Source\UI\Menus\Base\MenuItemComponent.h"/>
+    <ClInclude Include="..\..\Source\UI\Menus\Base\MenuItemComponentMarker.h"/>
+    <ClInclude Include="..\..\Source\UI\Menus\Base\MenuPanel.h"/>
+    <ClInclude Include="..\..\Source\UI\Menus\SelectionMenus\AudioPluginSelectionMenu.h"/>
+    <ClInclude Include="..\..\Source\UI\Menus\SelectionMenus\InstrumentNodeSelectionMenu.h"/>
+    <ClInclude Include="..\..\Source\UI\Menus\SelectionMenus\PatternRollSelectionMenu.h"/>
+    <ClInclude Include="..\..\Source\UI\Menus\SelectionMenus\PianoRollSelectionMenu.h"/>
+    <ClInclude Include="..\..\Source\UI\Menus\SelectionMenus\VersionControlHistorySelectionMenu.h"/>
+    <ClInclude Include="..\..\Source\UI\Menus\SelectionMenus\VersionControlStageSelectionMenu.h"/>
+    <ClInclude Include="..\..\Source\UI\Menus\AnnotationMenu.h"/>
+    <ClInclude Include="..\..\Source\UI\Menus\InstrumentMenu.h"/>
+    <ClInclude Include="..\..\Source\UI\Menus\MidiTrackMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Menus\NotesTuningPanel.h"/>
-    <ClInclude Include="..\..\Source\UI\Menus\PatternEditorCommandPanel.h"/>
-    <ClInclude Include="..\..\Source\UI\Menus\PatternRollSelectionCommandPanel.h"/>
-    <ClInclude Include="..\..\Source\UI\Menus\PianoRollSelectionCommandPanel.h"/>
-    <ClInclude Include="..\..\Source\UI\Menus\ProjectCommandPanel.h"/>
-    <ClInclude Include="..\..\Source\UI\Menus\TimelineCommandPanel.h"/>
-    <ClInclude Include="..\..\Source\UI\Menus\TimeSignatureCommandPanel.h"/>
-    <ClInclude Include="..\..\Source\UI\Menus\VCSCommandPanel.h"/>
+    <ClInclude Include="..\..\Source\UI\Menus\OrchestraPitMenu.h"/>
+    <ClInclude Include="..\..\Source\UI\Menus\ProjectMenu.h"/>
+    <ClInclude Include="..\..\Source\UI\Menus\TimelineMenu.h"/>
+    <ClInclude Include="..\..\Source\UI\Menus\TimeSignatureMenu.h"/>
+    <ClInclude Include="..\..\Source\UI\Menus\VersionControlMenu.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\AudioPluginEditorPage.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditor.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorConnector.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorNode.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Instruments\Editor\InstrumentEditorPin.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\Instruments\InstrumentRow.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\Instruments\InstrumentsPage.h"/>
+    <ClInclude Include="..\..\Source\UI\Pages\Instruments\AudioPluginsListComponent.h"/>
+    <ClInclude Include="..\..\Source\UI\Pages\Instruments\InstrumentsListComponent.h"/>
+    <ClInclude Include="..\..\Source\UI\Pages\Instruments\OrchestraPitPage.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Intro\InitScreen.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Project\ProjectPage.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Project\ProjectPageDefault.h"/>
@@ -2522,7 +2516,6 @@
     <ClInclude Include="..\..\Source\UI\Pages\Settings\LabeledSettingsWrapper.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\LogComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\OpenGLSettings.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\Settings\PluginsList.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsListItemHighlighter.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsListItemSelection.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Settings\SettingsPage.h"/>
@@ -2539,8 +2532,6 @@
     <ClInclude Include="..\..\Source\UI\Pages\VCS\StageComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditor.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditorDefault.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditorPhone.h"/>
-    <ClInclude Include="..\..\Source\UI\Pages\VCS\VersionControlEditorPhoneViewportContent.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Workspace\Menu\CreateProjectRow.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Workspace\Menu\OpenProjectRow.h"/>
     <ClInclude Include="..\..\Source\UI\Pages\Workspace\Menu\RecentProjectRow.h"/>
@@ -2565,13 +2556,6 @@
     <ClInclude Include="..\..\Source\UI\Popups\ProgressTooltip.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\SuccessTooltip.h"/>
     <ClInclude Include="..\..\Source\UI\Popups\TooltipContainer.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\AnnotationsMap\AnnotationLargeComponent.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\AnnotationsMap\AnnotationSmallComponent.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\AnnotationsMap\AnnotationsTrackMap.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationCurveHelper.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationEventComponent.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationEventsConnector.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\AutomationMap\AutomationTrackMap.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\HeaderSelectionIndicator.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\HybridRollHeader.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Header\Playhead.h"/>
@@ -2584,9 +2568,6 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\InsertSpaceHelper.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\TimelineWarningMarker.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\Helpers\WipeSpaceHelper.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\KeySignaturesMap\KeySignatureLargeComponent.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\KeySignaturesMap\KeySignatureSmallComponent.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\KeySignaturesMap\KeySignaturesTrackMap.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\ClipComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\AutomationClipComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PatternRoll\DummyClipComponent.h"/>
@@ -2597,15 +2578,27 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NoteResizerLeft.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\NoteResizerRight.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\PianoRoll\PianoRoll.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\TimeSignaturesMap\TimeSignatureLargeComponent.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\TimeSignaturesMap\TimeSignatureSmallComponent.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\TimeSignaturesMap\TimeSignaturesTrackMap.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMap\PianoTrackMap.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMap\TrackScroller.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMap\TrackScrollerScreen.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\TriggersMap\TriggerEventComponent.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\TriggersMap\TriggerEventConnector.h"/>
-    <ClInclude Include="..\..\Source\UI\Sequencer\TriggersMap\TriggersTrackMap.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Sidebars\SequencerSidebarLeft.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\Sidebars\SequencerSidebarRight.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMaps\AnnotationsMap\AnnotationLargeComponent.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMaps\AnnotationsMap\AnnotationSmallComponent.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMaps\AnnotationsMap\AnnotationsTrackMap.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMaps\AutomationMap\AutomationCurveHelper.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMaps\AutomationMap\AutomationEventComponent.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMaps\AutomationMap\AutomationEventsConnector.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMaps\AutomationMap\AutomationTrackMap.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMaps\KeySignaturesMap\KeySignatureLargeComponent.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMaps\KeySignaturesMap\KeySignatureSmallComponent.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMaps\KeySignaturesMap\KeySignaturesTrackMap.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMaps\PianoTrackMap\PianoTrackMap.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMaps\PianoTrackMap\TrackScroller.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMaps\PianoTrackMap\TrackScrollerScreen.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMaps\TimeSignaturesMap\TimeSignatureLargeComponent.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMaps\TimeSignaturesMap\TimeSignatureSmallComponent.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMaps\TimeSignaturesMap\TimeSignaturesTrackMap.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMaps\TriggersMap\TriggerEventComponent.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMaps\TriggersMap\TriggerEventConnector.h"/>
+    <ClInclude Include="..\..\Source\UI\Sequencer\TrackMaps\TriggersMap\TriggersTrackMap.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\HybridRoll.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\HybridRollEditMode.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\HybridRollListener.h"/>
@@ -2616,8 +2609,6 @@
     <ClInclude Include="..\..\Source\UI\Sequencer\SelectionComponent.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\SequencerLayout.h"/>
     <ClInclude Include="..\..\Source\UI\Sequencer\SequencerOperations.h"/>
-    <ClInclude Include="..\..\Source\UI\Sidebars\NavigationSidebar.h"/>
-    <ClInclude Include="..\..\Source\UI\Sidebars\ToolsSidebar.h"/>
     <ClInclude Include="..\..\Source\UI\Themes\ComponentFader.h"/>
     <ClInclude Include="..\..\Source\UI\Themes\DialogBackground.h"/>
     <ClInclude Include="..\..\Source\UI\Themes\FontSerializer.h"/>
@@ -3309,86 +3300,77 @@
     <None Include="..\..\Resources\PianoSamples\F#6v9.ogg"/>
     <None Include="..\..\Resources\PianoSamples\F#7v9.ogg"/>
     <None Include="..\..\Resources\Fonts\lato.fnt"/>
-    <None Include="..\..\Resources\Icons\angle-double-down.svg"/>
-    <None Include="..\..\Resources\Icons\angle-double-left.svg"/>
-    <None Include="..\..\Resources\Icons\angle-double-right.svg"/>
-    <None Include="..\..\Resources\Icons\angle-double-up.svg"/>
-    <None Include="..\..\Resources\Icons\angle-down.svg"/>
-    <None Include="..\..\Resources\Icons\angle-left.svg"/>
-    <None Include="..\..\Resources\Icons\angle-right.svg"/>
-    <None Include="..\..\Resources\Icons\angle-up.svg"/>
-    <None Include="..\..\Resources\Icons\arpeggiator.svg"/>
-    <None Include="..\..\Resources\Icons\arrow-back.svg"/>
-    <None Include="..\..\Resources\Icons\arrow-forward.svg"/>
-    <None Include="..\..\Resources\Icons\arrow-left2.svg"/>
-    <None Include="..\..\Resources\Icons\arrow-right2.svg"/>
-    <None Include="..\..\Resources\Icons\arrows.svg"/>
-    <None Include="..\..\Resources\Icons\beamed_note.svg"/>
-    <None Include="..\..\Resources\Icons\bezier.svg"/>
-    <None Include="..\..\Resources\Icons\brush.svg"/>
-    <None Include="..\..\Resources\Icons\check.svg"/>
-    <None Include="..\..\Resources\Icons\chevron-left2.svg"/>
-    <None Include="..\..\Resources\Icons\chevron-right2.svg"/>
-    <None Include="..\..\Resources\Icons\clef.svg"/>
-    <None Include="..\..\Resources\Icons\cloud-download.svg"/>
-    <None Include="..\..\Resources\Icons\cloud-upload.svg"/>
-    <None Include="..\..\Resources\Icons\cloud2.svg"/>
-    <None Include="..\..\Resources\Icons\clouds.svg"/>
-    <None Include="..\..\Resources\Icons\columns.svg"/>
+    <None Include="..\..\Resources\Icons\annotation.svg"/>
+    <None Include="..\..\Resources\Icons\apply.svg"/>
+    <None Include="..\..\Resources\Icons\arpeggiate.svg"/>
+    <None Include="..\..\Resources\Icons\audioPlugin.svg"/>
+    <None Include="..\..\Resources\Icons\automationTrack.svg"/>
+    <None Include="..\..\Resources\Icons\back.svg"/>
+    <None Include="..\..\Resources\Icons\browse.svg"/>
+    <None Include="..\..\Resources\Icons\close.svg"/>
+    <None Include="..\..\Resources\Icons\colour.svg"/>
+    <None Include="..\..\Resources\Icons\commit.svg"/>
     <None Include="..\..\Resources\Icons\copy.svg"/>
-    <None Include="..\..\Resources\Icons\crop.svg"/>
-    <None Include="..\..\Resources\Icons\cup.svg"/>
-    <None Include="..\..\Resources\Icons\cursor2.svg"/>
-    <None Include="..\..\Resources\Icons\diskette.svg"/>
-    <None Include="..\..\Resources\Icons\download2.svg"/>
-    <None Include="..\..\Resources\Icons\drive.svg"/>
-    <None Include="..\..\Resources\Icons\eight_note.svg"/>
-    <None Include="..\..\Resources\Icons\ellipsis-h.svg"/>
-    <None Include="..\..\Resources\Icons\ellipsis-v.svg"/>
-    <None Include="..\..\Resources\Icons\folder-open.svg"/>
-    <None Include="..\..\Resources\Icons\folder.svg"/>
-    <None Include="..\..\Resources\Icons\folder2.svg"/>
-    <None Include="..\..\Resources\Icons\heptagram2.svg"/>
-    <None Include="..\..\Resources\Icons\history.svg"/>
-    <None Include="..\..\Resources\Icons\hourglass.svg"/>
-    <None Include="..\..\Resources\Icons\insert-space.svg"/>
-    <None Include="..\..\Resources\Icons\key.svg"/>
-    <None Include="..\..\Resources\Icons\knob.svg"/>
-    <None Include="..\..\Resources\Icons\logo2.svg"/>
-    <None Include="..\..\Resources\Icons\marquee.svg"/>
+    <None Include="..\..\Resources\Icons\create.svg"/>
+    <None Include="..\..\Resources\Icons\cropTool.svg"/>
+    <None Include="..\..\Resources\Icons\cursorTool.svg"/>
+    <None Include="..\..\Resources\Icons\cut.svg"/>
+    <None Include="..\..\Resources\Icons\down.svg"/>
+    <None Include="..\..\Resources\Icons\dragTool.svg"/>
+    <None Include="..\..\Resources\Icons\drawTool.svg"/>
+    <None Include="..\..\Resources\Icons\ellipsis.svg"/>
+    <None Include="..\..\Resources\Icons\expand.svg"/>
+    <None Include="..\..\Resources\Icons\fail.svg"/>
+    <None Include="..\..\Resources\Icons\forward.svg"/>
+    <None Include="..\..\Resources\Icons\insertSpaceTool.svg"/>
+    <None Include="..\..\Resources\Icons\instrument.svg"/>
+    <None Include="..\..\Resources\Icons\instrumentNode.svg"/>
+    <None Include="..\..\Resources\Icons\list.svg"/>
+    <None Include="..\..\Resources\Icons\local.svg"/>
+    <None Include="..\..\Resources\Icons\login.svg"/>
     <None Include="..\..\Resources\Icons\menu.svg"/>
-    <None Include="..\..\Resources\Icons\minus2.svg"/>
+    <None Include="..\..\Resources\Icons\mute.svg"/>
+    <None Include="..\..\Resources\Icons\microphone.svg"/>
+    <None Include="..\..\Resources\Icons\orchestraPit.svg"/>
     <None Include="..\..\Resources\Icons\paste.svg"/>
-    <None Include="..\..\Resources\Icons\pause2.svg"/>
-    <None Include="..\..\Resources\Icons\pencil.svg"/>
-    <None Include="..\..\Resources\Icons\pencil4.svg"/>
-    <None Include="..\..\Resources\Icons\play2.svg"/>
-    <None Include="..\..\Resources\Icons\plus2.svg"/>
-    <None Include="..\..\Resources\Icons\poetry.svg"/>
-    <None Include="..\..\Resources\Icons\quote.svg"/>
-    <None Include="..\..\Resources\Icons\reroute.svg"/>
-    <None Include="..\..\Resources\Icons\roman1.svg"/>
-    <None Include="..\..\Resources\Icons\roman2.svg"/>
-    <None Include="..\..\Resources\Icons\roman3.svg"/>
-    <None Include="..\..\Resources\Icons\roman4.svg"/>
-    <None Include="..\..\Resources\Icons\roman5.svg"/>
-    <None Include="..\..\Resources\Icons\roman6.svg"/>
-    <None Include="..\..\Resources\Icons\roman7.svg"/>
-    <None Include="..\..\Resources\Icons\saxophone.svg"/>
-    <None Include="..\..\Resources\Icons\scissors.svg"/>
-    <None Include="..\..\Resources\Icons\settings2.svg"/>
-    <None Include="..\..\Resources\Icons\switch.svg"/>
-    <None Include="..\..\Resources\Icons\terminal.svg"/>
-    <None Include="..\..\Resources\Icons\times.svg"/>
-    <None Include="..\..\Resources\Icons\toggle-off.svg"/>
-    <None Include="..\..\Resources\Icons\toggle-on.svg"/>
-    <None Include="..\..\Resources\Icons\updown.svg"/>
-    <None Include="..\..\Resources\Icons\volume-off.svg"/>
-    <None Include="..\..\Resources\Icons\volume-up.svg"/>
-    <None Include="..\..\Resources\Icons\waveform.svg"/>
-    <None Include="..\..\Resources\Icons\wipe-space.svg"/>
-    <None Include="..\..\Resources\Icons\zoom-in.svg"/>
-    <None Include="..\..\Resources\Icons\zoom-out.svg"/>
+    <None Include="..\..\Resources\Icons\patterns.svg"/>
+    <None Include="..\..\Resources\Icons\pause.svg"/>
+    <None Include="..\..\Resources\Icons\piano.svg"/>
+    <None Include="..\..\Resources\Icons\pianoTrack.svg"/>
+    <None Include="..\..\Resources\Icons\play.svg"/>
+    <None Include="..\..\Resources\Icons\progressIndicator.svg"/>
+    <None Include="..\..\Resources\Icons\project.svg"/>
+    <None Include="..\..\Resources\Icons\pull.svg"/>
+    <None Include="..\..\Resources\Icons\push.svg"/>
+    <None Include="..\..\Resources\Icons\redo.svg"/>
+    <None Include="..\..\Resources\Icons\refactor.svg"/>
+    <None Include="..\..\Resources\Icons\remote.svg"/>
+    <None Include="..\..\Resources\Icons\remove.svg"/>
+    <None Include="..\..\Resources\Icons\render.svg"/>
+    <None Include="..\..\Resources\Icons\reset.svg"/>
+    <None Include="..\..\Resources\Icons\revision.svg"/>
+    <None Include="..\..\Resources\Icons\routing.svg"/>
+    <None Include="..\..\Resources\Icons\selectionTool.svg"/>
+    <None Include="..\..\Resources\Icons\selection.svg"/>
+    <None Include="..\..\Resources\Icons\selectAll.svg"/>
+    <None Include="..\..\Resources\Icons\selectNone.svg"/>
+    <None Include="..\..\Resources\Icons\settings.svg"/>
+    <None Include="..\..\Resources\Icons\stretchLeft.svg"/>
+    <None Include="..\..\Resources\Icons\stretchRight.svg"/>
+    <None Include="..\..\Resources\Icons\submenu.svg"/>
+    <None Include="..\..\Resources\Icons\success.svg"/>
+    <None Include="..\..\Resources\Icons\toggleOff.svg"/>
+    <None Include="..\..\Resources\Icons\toggleOn.svg"/>
+    <None Include="..\..\Resources\Icons\trackGroup.svg"/>
+    <None Include="..\..\Resources\Icons\undo.svg"/>
+    <None Include="..\..\Resources\Icons\unmute.svg"/>
+    <None Include="..\..\Resources\Icons\up.svg"/>
+    <None Include="..\..\Resources\Icons\versionControl.svg"/>
+    <None Include="..\..\Resources\Icons\wipeSpaceTool.svg"/>
+    <None Include="..\..\Resources\Icons\workspace.svg"/>
+    <None Include="..\..\Resources\Icons\zoomIn.svg"/>
+    <None Include="..\..\Resources\Icons\zoomOut.svg"/>
+    <None Include="..\..\Resources\Icons\zoomTool.svg"/>
     <None Include="..\..\Resources\Noise.png"/>
     <None Include="..\..\Resources\Arpeggiators.json"/>
     <None Include="..\..\Resources\ColourSchemes.json"/>
