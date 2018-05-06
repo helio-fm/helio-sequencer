@@ -101,7 +101,7 @@ namespace CommandIDs
 
         ArpeggiateNotes                 = 0x200e,
         RefactorNotes                   = 0x200c,
-        BatchTweakNotes                 = 0x200d,
+        SplitNotes                      = 0x200d,
         TweakNotesVolume                = 0x200f,
 
         ShowAnnotations                 = 0x2010,

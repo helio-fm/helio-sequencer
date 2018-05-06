@@ -50,17 +50,6 @@ void MidiTrackMenu::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {
-        case CommandIDs::SelectAllEvents:
-        {
-            ProjectTreeItem *project = this->trackItem.getProject();
-            if (HybridRoll *roll = dynamic_cast<HybridRoll *>(project->getLastFocusedRoll()))
-            {
-                roll->selectAll();
-                this->dismiss();
-            }
-        }
-            break;
-
         case CommandIDs::SelectTrackColour:
             this->initColorSelection();
         break;
@@ -160,7 +149,7 @@ void MidiTrackMenu::handleCommandMessage(int commandId)
 void MidiTrackMenu::initDefaultCommands()
 {
     MenuPanel::Menu cmds;
-    cmds.add(MenuItem::item(Icons::selectAll, CommandIDs::SelectAllEvents, TRANS("menu::track::selectall")));
+    cmds.add(MenuItem::item(Icons::selectAll, CommandIDs::SelectAllEvents, TRANS("menu::track::selectall"))->closesMenu());
     cmds.add(MenuItem::item(Icons::colour, CommandIDs::SelectTrackColour, TRANS("menu::track::change::colour"))->withSubmenu());
     
     const Array<Instrument *> &info = App::Workspace().getAudioCore().getInstruments();

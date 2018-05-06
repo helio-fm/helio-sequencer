@@ -34,4 +34,9 @@ private:
     WeakReference<Lasso> lasso;
     const ProjectTreeItem &project;
 
+    MenuPanel::Menu createDefaultPanel();
+    MenuPanel::Menu createRefactoringPanel();
+    MenuPanel::Menu createTimeDivisionsPanel();
+    MenuPanel::Menu createArpsPanel();
+
 };
