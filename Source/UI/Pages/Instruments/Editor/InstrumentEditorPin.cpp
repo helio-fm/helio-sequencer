@@ -17,16 +17,13 @@
 
 #include "Common.h"
 #include "InstrumentEditorPin.h"
-#include "Instrument.h"
 #include "InstrumentEditor.h"
 #include "ColourIDs.h"
 
-InstrumentEditorPin::InstrumentEditorPin(Instrument &graph,
-    AudioProcessorGraph::NodeID nodeID, int index, bool isInput) :
+InstrumentEditorPin::InstrumentEditorPin(AudioProcessorGraph::NodeID nodeID, int index, bool isInput) :
     nodeID(nodeID),
     index(index),
-    isInput(isInput),
-    graph(graph)
+    isInput(isInput)
 {
     this->setSize(18, 18);
     this->setWantsKeyboardFocus(false);

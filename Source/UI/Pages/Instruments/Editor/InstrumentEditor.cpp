@@ -32,28 +32,29 @@
 #include "MainLayout.h"
 #include "App.h"
 
-InstrumentEditor::InstrumentEditor(Instrument &instrumentRef,
+InstrumentEditor::InstrumentEditor(WeakReference<Instrument> instrument,
     WeakReference<AudioCore> audioCoreRef) :
-    instrument(instrumentRef),
+    instrument(instrument),
     audioCore(audioCoreRef),
     selectedNode(0)
 {
     this->background = new PanelBackgroundC();
     this->addAndMakeVisible(this->background);
     
-    this->instrument.addChangeListener(this);
+    this->instrument->addChangeListener(this);
     this->audioCore->getDevice().addChangeListener(this);
     
     this->setOpaque(true);
     
-    this->setWantsKeyboardFocus(true);
-    this->setFocusContainer(true);
+    this->setWantsKeyboardFocus(false);
+    this->setFocusContainer(false);
 }
 
 InstrumentEditor::~InstrumentEditor()
 {
     this->audioCore->getDevice().removeChangeListener(this);
-    this->instrument.removeChangeListener(this);
+
+    this->instrument->removeChangeListener(this);
     
     this->draggingConnector = nullptr;
     this->background = nullptr;
@@ -158,7 +159,7 @@ void InstrumentEditor::updateComponents()
         auto cc = dynamic_cast<InstrumentEditorConnector *>(getChildComponent(i));
         if (cc != nullptr && cc != this->draggingConnector)
         {
-            if (! instrument.isConnected(cc->connection))
+            if (! instrument->isConnected(cc->connection))
             {
                 delete cc;
             }
@@ -169,9 +170,9 @@ void InstrumentEditor::updateComponents()
         }
     }
     
-    for (int i = instrument.getNumNodes(); --i >= 0;)
+    for (int i = instrument->getNumNodes(); --i >= 0;)
     {
-        const AudioProcessorGraph::Node::Ptr f(instrument.getNode(i));
+        const AudioProcessorGraph::Node::Ptr f(instrument->getNode(i));
         if (this->getComponentForNode(f->nodeID) == nullptr)
         {
             auto const comp = new InstrumentEditorNode(instrument, f->nodeID);
@@ -180,7 +181,7 @@ void InstrumentEditor::updateComponents()
         }
     }
     
-    const auto &connections = instrument.getConnections();
+    const auto &connections = instrument->getConnections();
     const int numConnections = int(connections.size());
     for (int i = numConnections; --i >= 0;)
     {
@@ -252,7 +253,7 @@ void InstrumentEditor::dragConnector(const MouseEvent &e)
                 c.destination.channelIndex = pin->index;
             }
             
-            if (instrument.canConnect(c))
+            if (instrument->canConnect(c))
             {
                 x = pin->getParentComponent()->getX() + pin->getX() + pin->getWidth() / 2;
                 y = pin->getParentComponent()->getY() + pin->getY() + pin->getHeight() / 2;
@@ -309,7 +310,7 @@ void InstrumentEditor::endDraggingConnector(const MouseEvent &e)
             dstChannel = pin->index;
         }
         
-        instrument.addConnection(srcNode, srcChannel, dstNode, dstChannel);
+        instrument->addConnection(srcNode, srcChannel, dstNode, dstChannel);
     }
 }
 
@@ -322,8 +323,8 @@ bool InstrumentEditor::canBeSelectedAsMenuItem() const { return false; }
 
 ScopedPointer<Component> InstrumentEditor::createMenu()
 {
-    return new InstrumentNodeSelectionMenu(this->instrument,
-        this->instrument.getNodeForId(this->selectedNode));
+    return new InstrumentNodeSelectionMenu(*this->instrument,
+        this->instrument->getNodeForId(this->selectedNode));
 }
 
 Image InstrumentEditor::getIcon() const
@@ -333,7 +334,7 @@ Image InstrumentEditor::getIcon() const
 
 String InstrumentEditor::getName() const
 {
-    const auto node = this->instrument.getNodeForId(this->selectedNode);
+    const auto node = this->instrument->getNodeForId(this->selectedNode);
     jassert(node);
 
     if (auto plugin = dynamic_cast<AudioPluginInstance *>(node->getProcessor()))

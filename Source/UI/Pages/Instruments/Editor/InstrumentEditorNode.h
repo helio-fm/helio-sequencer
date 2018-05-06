@@ -17,15 +17,16 @@
 
 #pragma once
 
-class Instrument;
 class InstrumentEditor;
 class PluginWindow;
+
+#include "Instrument.h"
 
 class InstrumentEditorNode : public Component
 {
 public:
 
-    InstrumentEditorNode(Instrument &graph, AudioProcessorGraph::NodeID nodeId);
+    InstrumentEditorNode(WeakReference<Instrument> instrument, AudioProcessorGraph::NodeID nodeId);
     ~InstrumentEditorNode() override;
 
     //===------------------------------------------------------------------===//
@@ -46,7 +47,7 @@ public:
 
 private:
 
-    Instrument &instrument;
+    WeakReference<Instrument> instrument;
 
     Font font;
     int pinSize;

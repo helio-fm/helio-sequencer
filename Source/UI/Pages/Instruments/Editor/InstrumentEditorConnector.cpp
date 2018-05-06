@@ -22,9 +22,9 @@
 #include "InstrumentEditorNode.h"
 #include "ColourIDs.h"
 
-InstrumentEditorConnector::InstrumentEditorConnector(Instrument &graph) :
+InstrumentEditorConnector::InstrumentEditorConnector(WeakReference<Instrument> instrument) :
     connection({0, 0}, {0, 0}),
-    instrument(graph),
+    instrument(instrument),
     lastInputX(0),
     lastInputY(0),
     lastOutputX(0),
@@ -160,7 +160,7 @@ void InstrumentEditorConnector::mouseDrag(const MouseEvent &e)
     if ((!this->dragging) && ! e.mouseWasClicked())
     {
         this->dragging = true;
-        this->instrument.removeConnection(this->connection);
+        this->instrument->removeConnection(this->connection);
 
         double distanceFromStart = 0.0, distanceFromEnd = 0.0;
         this->getDistancesFromEnds(e.x, e.y, distanceFromStart, distanceFromEnd);

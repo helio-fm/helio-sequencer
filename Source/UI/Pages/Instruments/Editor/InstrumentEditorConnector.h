@@ -17,8 +17,9 @@
 
 #pragma once
 
-class Instrument;
 class InstrumentEditor;
+
+#include "Instrument.h"
 
 class InstrumentEditorConnector :
     public Component,
@@ -26,7 +27,7 @@ class InstrumentEditorConnector :
 {
 public:
 
-    explicit InstrumentEditorConnector(Instrument &graph);
+    explicit InstrumentEditorConnector(WeakReference<Instrument> instrument);
 
     void setInput(const AudioProcessorGraph::NodeAndChannel node);
     void setOutput(const AudioProcessorGraph::NodeAndChannel node);
@@ -49,7 +50,7 @@ public:
 
 private:
 
-    Instrument &instrument;
+    WeakReference<Instrument> instrument;
 
     float lastInputX, lastInputY, lastOutputX, lastOutputY;
     Path linePath, hitPath;

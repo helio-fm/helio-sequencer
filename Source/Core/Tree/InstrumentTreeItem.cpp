@@ -50,13 +50,14 @@ InstrumentTreeItem::InstrumentTreeItem(Instrument *targetInstrument) :
 
 InstrumentTreeItem::~InstrumentTreeItem()
 {
-    if (! this->instrument.wasObjectDeleted())
+    // cleanup UI before unplugging an instrument
+    this->deleteAllSubItems();
+    this->removeInstrumentEditor();
+
+    if (!this->instrument.wasObjectDeleted())
     {
         this->audioCore->removeInstrument(this->instrument);
     }
-
-    this->deleteAllSubItems(); // перед отключением инструмента уберем все редакторы
-    this->removeInstrumentEditor();
 }
 
 Colour InstrumentTreeItem::getColour() const noexcept
@@ -276,7 +277,7 @@ void InstrumentTreeItem::initInstrumentEditor()
 {
     if (this->instrumentEditor == nullptr)
     {
-        this->instrumentEditor = new InstrumentEditor(*this->instrument, this->audioCore);
+        this->instrumentEditor = new InstrumentEditor(this->instrument, this->audioCore);
         this->instrumentEditor->updateComponents();
     }
 }

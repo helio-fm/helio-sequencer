@@ -38,8 +38,9 @@
 #   define PIN_SIZE (25)
 #endif
 
-InstrumentEditorNode::InstrumentEditorNode(Instrument &graph, AudioProcessorGraph::NodeID nodeId) :
-    instrument(graph),
+InstrumentEditorNode::InstrumentEditorNode(WeakReference<Instrument> instrument,
+    AudioProcessorGraph::NodeID nodeId) :
+    instrument(instrument),
     nodeId(nodeId),
     pinSize(PIN_SIZE),
     isSelected(false),
@@ -72,7 +73,7 @@ void InstrumentEditorNode::mouseDrag(const MouseEvent &e)
         pos = this->getParentComponent()->getLocalPoint(nullptr, pos);
     }
 
-    this->instrument.setNodePosition(this->nodeId,
+    this->instrument->setNodePosition(this->nodeId,
         (pos.getX() + getWidth() / 2) / static_cast<double>(this->getParentWidth()),
         (pos.getY() + getHeight() / 2) / static_cast<double>(this->getParentHeight()));
 
@@ -86,43 +87,45 @@ void InstrumentEditorNode::mouseUp(const MouseEvent &e)
 
     if (e.mouseWasClicked())
     {
-        this->getParentEditor()->selectNode(this->nodeId);
-        return;
+        if (this->instrument->isNodeStandardIOProcessor(this->nodeId))
+        {
+            this->getParentEditor()->selectNode(this->nodeId);
+            return;
+        }
 
-        // TODO
+        this->getParentEditor()->selectNode(0);
 
-//        if (this->instrument.isNodeStandardInputOrOutput(this->nodeId))
-//        {
-//            return;
-//        }
-//
-//        if (const AudioProcessorGraph::Node::Ptr f = this->instrument.getNodeForId(this->nodeId))
-//        {
-//#if AUDIO_PLUGIN_RUNS_IN_SEPARATE_WINDOW
-//            if (PluginWindow *const w = PluginWindow::getWindowFor(f, false, false))
-//            {
-//                w->toFront(true);
-//            }
-//#else
-//            const auto instrumentTreeItems =
-//                App::Workspace().getTreeRoot()->
-//                findChildrenOfType<InstrumentTreeItem>();
-//
-//            for (const auto instrumentTreeItem : instrumentTreeItems)
-//            {
-//                if (instrumentTreeItem->getInstrument() == &this->instrument)
-//                {
-//                    instrumentTreeItem->updateChildrenEditors();
-//                    if (TreeItem *audioPluginTreeItem =
-//                        instrumentTreeItem->findAudioPluginEditorForNodeId(this->nodeId))
-//                    {
-//                        audioPluginTreeItem->setSelected(true, true);
-//                        return;
-//                    }
-//                }
-//            }
-//#endif
-//        }
+        if (const AudioProcessorGraph::Node::Ptr f = this->instrument->getNodeForId(this->nodeId))
+        {
+#if AUDIO_PLUGIN_RUNS_IN_SEPARATE_WINDOW
+            if (PluginWindow *const w = PluginWindow::getWindowFor(f, false, false))
+            {
+                w->toFront(true);
+            }
+            else
+            {
+                this->getParentEditor()->selectNode(this->nodeId);
+            }
+#else
+            const auto instrumentTreeItems =
+                App::Workspace().getTreeRoot()->
+                findChildrenOfType<InstrumentTreeItem>();
+
+            for (const auto instrumentTreeItem : instrumentTreeItems)
+            {
+                if (instrumentTreeItem->getInstrument() == &this->instrument)
+                {
+                    instrumentTreeItem->updateChildrenEditors();
+                    if (TreeItem *audioPluginTreeItem =
+                        instrumentTreeItem->findAudioPluginEditorForNodeId(this->nodeId))
+                    {
+                        audioPluginTreeItem->setSelected(true, true);
+                        return;
+                    }
+                }
+            }
+#endif
+        }
     }
     else
     {
@@ -216,7 +219,7 @@ void InstrumentEditorNode::setSelected(bool selected)
 
 void InstrumentEditorNode::update()
 {
-    const AudioProcessorGraph::Node::Ptr f(this->instrument.getNodeForId(nodeId));
+    const AudioProcessorGraph::Node::Ptr f(this->instrument->getNodeForId(nodeId));
 
     if (f == nullptr)
     {
@@ -246,7 +249,7 @@ void InstrumentEditorNode::update()
 
     {
         double x, y;
-        this->instrument.getNodePosition(nodeId, x, y);
+        this->instrument->getNodePosition(nodeId, x, y);
         this->setCentreRelative(static_cast<float>( x), static_cast<float>( y));
     }
 
@@ -260,16 +263,16 @@ void InstrumentEditorNode::update()
         int i;
 
         for (i = 0; i < this->numInputs; ++i)
-        { this->addAndMakeVisible(new InstrumentEditorPin(this->instrument, nodeId, i, true)); }
+        { this->addAndMakeVisible(new InstrumentEditorPin(nodeId, i, true)); }
 
         if (f->getProcessor()->acceptsMidi())
-        { this->addAndMakeVisible(new InstrumentEditorPin(this->instrument, nodeId, Instrument::midiChannelNumber, true)); }
+        { this->addAndMakeVisible(new InstrumentEditorPin(nodeId, Instrument::midiChannelNumber, true)); }
 
         for (i = 0; i < this->numOutputs; ++i)
-        { this->addAndMakeVisible(new InstrumentEditorPin(this->instrument, nodeId, i, false)); }
+        { this->addAndMakeVisible(new InstrumentEditorPin(nodeId, i, false)); }
 
         if (f->getProcessor()->producesMidi())
-        { this->addAndMakeVisible(new InstrumentEditorPin(this->instrument, nodeId, Instrument::midiChannelNumber, false)); }
+        { this->addAndMakeVisible(new InstrumentEditorPin(nodeId, Instrument::midiChannelNumber, false)); }
 
         this->resized();
     }

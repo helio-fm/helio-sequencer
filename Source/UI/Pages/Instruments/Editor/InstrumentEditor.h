@@ -33,7 +33,7 @@ class InstrumentEditor :
 {
 public:
 
-    InstrumentEditor(Instrument &instrument, WeakReference<AudioCore> audioCoreRef);
+    InstrumentEditor(WeakReference<Instrument> instrument, WeakReference<AudioCore> audioCoreRef);
     ~InstrumentEditor() override;
 
     void selectNode(AudioProcessorGraph::NodeID id);
@@ -75,7 +75,7 @@ private:
     void endDraggingConnector(const MouseEvent &e);
 
     ComponentFader fader;
-    Instrument &instrument;
+    WeakReference<Instrument> instrument;
     ScopedPointer<Component> background;
     ScopedPointer<InstrumentEditorConnector> draggingConnector;
     WeakReference<AudioCore> audioCore;
