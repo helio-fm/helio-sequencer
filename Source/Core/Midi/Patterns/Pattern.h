@@ -62,6 +62,10 @@ public:
     bool remove(Clip clip, const bool undoable);
     bool change(Clip clip, Clip newClip, const bool undoable);
 
+    bool insertGroup(Array<Clip> &clips, bool undoable);
+    bool removeGroup(Array<Clip> &clips, bool undoable);
+    bool changeGroup(Array<Clip> &clipsBefore, Array<Clip> &clipsAfter, bool undoable);
+
     //===------------------------------------------------------------------===//
     // Array wrapper
     //===------------------------------------------------------------------===//

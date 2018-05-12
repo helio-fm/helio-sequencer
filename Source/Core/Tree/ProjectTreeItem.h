@@ -225,9 +225,8 @@ private:
 
     ScopedPointer<UndoStack> undoStack;
 
-    bool isLayersHashOutdated;
-    SparseHashMap<String, WeakReference<MidiSequence>, StringHash> sequencesHash;
-
-    void rebuildSequencesHashIfNeeded();
+    bool isTracksHashOutdated;
+    void rebuildTracksHashIfNeeded();
+    SparseHashMap<String, WeakReference<MidiTrack>, StringHash> tracksHash;
 
 };

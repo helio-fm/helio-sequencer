@@ -50,7 +50,7 @@ Pattern *Clip::getPattern() const noexcept
     return this->pattern;
 }
 
-float Clip::getStartBeat() const noexcept
+float Clip::getBeat() const noexcept
 {
     return this->beat;
 }
@@ -89,6 +89,13 @@ Clip Clip::withParameters(const ValueTree &tree) const
     Clip c(*this);
     c.deserialize(tree);
     return c;
+}
+
+Clip Clip::withBeat(float absPosition) const
+{
+    Clip other(*this);
+    other.beat = roundBeat(absPosition);
+    return other;
 }
 
 Clip Clip::withDeltaBeat(float deltaPosition) const

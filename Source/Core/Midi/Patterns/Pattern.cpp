@@ -77,7 +77,7 @@ float Pattern::getFirstBeat() const noexcept
         return FLT_MAX;
     }
 
-    return this->clips.getFirst()->getStartBeat();
+    return this->clips.getFirst()->getBeat();
 }
 
 float Pattern::getLastBeat() const noexcept
@@ -87,7 +87,7 @@ float Pattern::getLastBeat() const noexcept
         return -FLT_MAX;
     }
 
-    return this->clips.getLast()->getStartBeat();
+    return this->clips.getLast()->getBeat();
 }
 
 void Pattern::sort()
@@ -157,7 +157,7 @@ bool Pattern::insert(Clip clipParams, const bool undoable)
     if (undoable)
     {
         this->getUndoStack()->
-            perform(new PatternClipInsertAction(*this->getProject(),
+            perform(new ClipInsertAction(*this->getProject(),
                 this->getTrackId(), clipParams));
     }
     else
@@ -176,7 +176,7 @@ bool Pattern::remove(Clip clipParams, const bool undoable)
     if (undoable)
     {
         this->getUndoStack()->
-            perform(new PatternClipRemoveAction(*this->getProject(),
+            perform(new ClipRemoveAction(*this->getProject(),
                 this->getTrackId(), clipParams));
     }
     else
@@ -204,7 +204,7 @@ bool Pattern::change(Clip oldParams, Clip newParams, const bool undoable)
     if (undoable)
     {
         this->getUndoStack()->
-            perform(new PatternClipChangeAction(*this->getProject(),
+            perform(new ClipChangeAction(*this->getProject(),
                 this->getTrackId(), oldParams, newParams));
     }
     else
@@ -222,6 +222,94 @@ bool Pattern::change(Clip oldParams, Clip newParams, const bool undoable)
         }
 
         return false;
+    }
+
+    return true;
+}
+
+bool Pattern::insertGroup(Array<Clip> &group, bool undoable)
+{
+    if (undoable)
+    {
+        this->getUndoStack()->
+            perform(new ClipsGroupInsertAction(*this->getProject(),
+                this->getTrackId(), group));
+    }
+    else
+    {
+        for (int i = 0; i < group.size(); ++i)
+        {
+            const Clip &eventParams = group.getUnchecked(i);
+            const auto ownedClip = new Clip(this, eventParams);
+            this->clips.addSorted(*ownedClip, ownedClip);
+            this->notifyClipAdded(*ownedClip);
+        }
+
+        this->updateBeatRange(true);
+    }
+
+    return true;
+}
+
+bool Pattern::removeGroup(Array<Clip> &group, bool undoable)
+{
+    if (undoable)
+    {
+        this->getUndoStack()->
+            perform(new ClipsGroupRemoveAction(*this->getProject(),
+                this->getTrackId(), group));
+    }
+    else
+    {
+        for (int i = 0; i < group.size(); ++i)
+        {
+            const Clip &clip = group.getUnchecked(i);
+            const int index = this->clips.indexOfSorted(clip, &clip);
+            jassert(index >= 0);
+            if (index >= 0)
+            {
+                const auto removedClip = this->clips[index];
+                this->notifyClipRemoved(*removedClip);
+                this->clips.remove(index, true);
+            }
+        }
+
+        this->updateBeatRange(true);
+        this->notifyClipRemovedPostAction();
+    }
+
+    return true;
+}
+
+bool Pattern::changeGroup(Array<Clip> &groupBefore, Array<Clip> &groupAfter, bool undoable)
+{
+    jassert(groupBefore.size() == groupAfter.size());
+
+    if (undoable)
+    {
+        this->getUndoStack()->
+            perform(new ClipsGroupChangeAction(*this->getProject(),
+                this->getTrackId(), groupBefore, groupAfter));
+    }
+    else
+    {
+        for (int i = 0; i < groupBefore.size(); ++i)
+        {
+            const Clip &oldParams = groupBefore.getUnchecked(i);
+            const Clip &newParams = groupAfter.getUnchecked(i);
+            const int index = this->clips.indexOfSorted(oldParams, &oldParams);
+            jassert(index >= 0);
+            if (index >= 0)
+            {
+                const auto changedClip = static_cast<Clip *>(this->clips[index]);
+                changedClip->applyChanges(newParams);
+                this->clips.remove(index, false);
+                this->clips.addSorted(*changedClip, changedClip);
+                this->notifyClipChanged(oldParams, *changedClip);
+            }
+        }
+
+        this->updateBeatRange(true);
     }
 
     return true;
