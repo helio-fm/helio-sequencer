@@ -264,6 +264,11 @@ void ClipComponent::checkpointIfNeeded()
     }
 }
 
+void ClipComponent::setNoCheckpointNeededForNextAction()
+{
+    this->firstChangeDone = true;
+}
+
 //===----------------------------------------------------------------------===//
 // Dragging
 //===----------------------------------------------------------------------===//
@@ -273,6 +278,11 @@ void ClipComponent::startDragging()
     this->firstChangeDone = false;
     this->state = Dragging;
     this->anchor = this->getClip();
+}
+
+bool ClipComponent::isDragging() const noexcept
+{
+    return this->state == Dragging;
 }
 
 bool ClipComponent::getDraggingDelta(const MouseEvent &e, float &deltaBeat)

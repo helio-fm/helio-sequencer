@@ -161,11 +161,8 @@ private:
     void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
 
     void insertNewNoteAt(const MouseEvent &e);
-    bool dismissDraggingNoteIfNeeded();
 
-    bool mouseDownWasTriggered; // juce mouseUp weirdness workaround
-
-    NoteComponent *draggingNote;
+    NoteComponent *newNoteDragging;
     bool addNewNoteMode;
     
     int numRows;

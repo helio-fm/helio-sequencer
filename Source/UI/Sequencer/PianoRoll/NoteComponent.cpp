@@ -630,16 +630,6 @@ void NoteComponent::mouseUp(const MouseEvent &e)
 
         this->setMouseCursor(MouseCursor::NormalCursor);
     }
-
-    // TODO: show selection menu on right click?
-//    if (e.getDistanceFromDragStart() < 5 &&
-//        e.mods.isRightButtonDown())
-//    {
-//        if (selection.getNumSelected() > 0)
-//        {
-//            this->getRoll().showSelectionPopup(e.getEventRelativeTo(&this->getRoll()));
-//        }
-//    }
 }
 
 void NoteComponent::mouseDoubleClick(const MouseEvent &e)
@@ -849,11 +839,6 @@ void NoteComponent::endDragging(bool sendMidiMessage)
 //===----------------------------------------------------------------------===//
 // Resizing Right
 //===----------------------------------------------------------------------===//
-
-void NoteComponent::setNoCheckpointNeededForNextAction()
-{
-    this->firstChangeDone = true;
-}
 
 bool NoteComponent::isResizing() const
 {
@@ -1088,19 +1073,23 @@ void NoteComponent::endTuning()
     this->roll.triggerBatchRepaintFor(this);
 }
 
+//===----------------------------------------------------------------------===//
+// Shorthands
+//===----------------------------------------------------------------------===//
 
 void NoteComponent::checkpointIfNeeded()
 {
-    if (! this->firstChangeDone)
+    if (!this->firstChangeDone)
     {
         this->midiEvent.getSequence()->checkpoint();
         this->firstChangeDone = true;
     }
 }
 
-//===----------------------------------------------------------------------===//
-// Shorthands
-//===----------------------------------------------------------------------===//
+void NoteComponent::setNoCheckpointNeededForNextAction()
+{
+    this->firstChangeDone = true;
+}
 
 void NoteComponent::stopSound()
 {

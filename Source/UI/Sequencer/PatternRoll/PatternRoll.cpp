@@ -341,14 +341,20 @@ float PatternRoll::getBeatForClipByXPosition(const Clip &clip, float x) const
     return this->getRoundBeatByXPosition(int(x)) - sequenceStartBeat; /* - 0.5f ? */
 }
 
-float PatternRoll::getBeatByMousePosition(int x) const
+float PatternRoll::getBeatByMousePosition(const Pattern *pattern, int x) const
 {
-    return this->getFloorBeatByXPosition(x);
+    const MidiTrack *track = pattern->getTrack();
+    const MidiSequence *sequence = track->getSequence();
+    const float sequenceStartBeat = sequence->getFirstBeat();
+    return this->getFloorBeatByXPosition(x) - sequenceStartBeat;
 }
 
 Pattern *PatternRoll::getPatternByMousePosition(int y) const
 {
-    const int patternIndex = jlimit(0, this->getNumRows() - 1, int(y / rowHeight()));
+    const int patternIndex = jlimit(0,
+        this->getNumRows() - 1,
+        (y - HYBRID_ROLL_HEADER_HEIGHT) / rowHeight());
+
     return this->tracks.getUnchecked(patternIndex)->getPattern();
 }
 
@@ -360,7 +366,7 @@ void PatternRoll::onAddMidiEvent(const MidiEvent &event)
 {
     // the question is:
     // is pattern roll supposed to monitor single event changes?
-    // or it just reloads the whole sequence on show?0
+    // or it just reloads the whole sequence on show?
     //this->reloadRollContent();
 }
 
@@ -487,14 +493,19 @@ void PatternRoll::onAddClip(const Clip &clip)
     {
         this->clipComponents[clip] = UniquePointer<ClipComponent>(clipComponent);
         this->addAndMakeVisible(clipComponent);
+        clipComponent->toFront(false);
+
+        this->fader.fadeIn(clipComponent, 150);
 
         this->batchRepaintList.add(clipComponent);
         this->triggerAsyncUpdate();
 
-        clipComponent->toFront(false);
-
-        this->fader.fadeIn(clipComponent, 150);
-        this->selectEvent(clipComponent, false);
+        if (this->addNewClipMode)
+        {
+            this->newClipDragging = clipComponent;
+            this->addNewClipMode = false;
+            this->selectEvent(this->newClipDragging, true); // clear previous selection
+        }
     }
 }
 
@@ -632,10 +643,26 @@ void PatternRoll::mouseDown(const MouseEvent &e)
 
 void PatternRoll::mouseDrag(const MouseEvent &e)
 {
-    // can show menus
     if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
     {
         return;
+    }
+
+    if (this->newClipDragging)
+    {
+        if (this->newClipDragging->isDragging())
+        {
+            this->newClipDragging->mouseDrag(e.getEventRelativeTo(this->newClipDragging));
+        }
+        else
+        {
+            this->newClipDragging->startDragging();
+            // a hack here. clip is technically created in two actions:
+            // adding one and resizing it afterwards, so two checkpoints would happen
+            // which we don't want, as adding a note should appear to user as a single transaction
+            this->newClipDragging->setNoCheckpointNeededForNextAction();
+            this->setMouseCursor(MouseCursor(MouseCursor::DraggingHandCursor));
+        }
     }
 
     HybridRoll::mouseDrag(e);
@@ -648,8 +675,13 @@ void PatternRoll::mouseUp(const MouseEvent &e)
         return;
     }
     
-    // Due to weird modal component behavior,
-    // a component can receive mouseUp event without receiving a mouseDown event before.
+    // Dismiss newClipDragging, if needed
+    if (this->newClipDragging != nullptr)
+    {
+        this->newClipDragging->endDragging();
+        this->setMouseCursor(this->project.getEditMode().getCursor());
+        this->newClipDragging = nullptr;
+    }
 
     if (! this->isUsingSpaceDraggingMode())
     {
@@ -705,8 +737,9 @@ void PatternRoll::parentSizeChanged()
 
 void PatternRoll::insertNewClipAt(const MouseEvent &e)
 {
-    float draggingBeat = this->getBeatByMousePosition(e.x);
     const auto pattern = this->getPatternByMousePosition(e.y);
+    const float draggingBeat = this->getBeatByMousePosition(pattern, e.x);
+    this->addNewClipMode = true;
     this->addClip(pattern, draggingBeat);
 }
 

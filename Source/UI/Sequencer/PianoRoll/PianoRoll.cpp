@@ -65,9 +65,8 @@ PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
     HybridRoll(parentProject, viewportRef, clippingDetector),
     numRows(128),
     rowHeight(PIANOROLL_MIN_ROW_HEIGHT),
-    draggingNote(nullptr),
+    newNoteDragging(nullptr),
     addNewNoteMode(false),
-    mouseDownWasTriggered(false),
     defaultHighlighting() // default pattern (black and white keys)
 {
     this->defaultHighlighting = new HighlightingScheme(0, Scale::getNaturalMajorScale());
@@ -424,9 +423,9 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
 
         if (this->addNewNoteMode)
         {
-            this->draggingNote = component;
+            this->newNoteDragging = component;
             this->addNewNoteMode = false;
-            this->selectEvent(this->draggingNote, true); // clear prev selection
+            this->selectEvent(this->newNoteDragging, true); // clear prev selection
         }
     }
     else if (event.isTypeOf(MidiEvent::KeySignature))
@@ -607,8 +606,6 @@ void PianoRoll::mouseDown(const MouseEvent &e)
     }
 
     HybridRoll::mouseDown(e);
-
-    this->mouseDownWasTriggered = true;
 }
 
 void PianoRoll::mouseDoubleClick(const MouseEvent &e)
@@ -631,21 +628,19 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
         return;
     }
 
-    if (this->draggingNote)
+    if (this->newNoteDragging)
     {
-        if (this->draggingNote->isResizing())
+        if (this->newNoteDragging->isResizing())
         {
-            this->draggingNote->mouseDrag(e.getEventRelativeTo(this->draggingNote));
+            this->newNoteDragging->mouseDrag(e.getEventRelativeTo(this->newNoteDragging));
         }
         else
         {
-            //if (PianoSequence *activeSequence = dynamic_cast<PianoSequence *>(this->activeLayer))
-            //{
-            //    activeSequence->checkpoint();
-            //}
-
-            this->draggingNote->startResizingRight(true);
-            this->draggingNote->setNoCheckpointNeededForNextAction(); // a hack
+            this->newNoteDragging->startResizingRight(true);
+            // a hack here. note is technically created in two actions:
+            // adding one and resizing it afterwards, so two checkpoints would happen
+            // which we don't want, as adding a note should appear to user as a single transaction
+            this->newNoteDragging->setNoCheckpointNeededForNextAction();
             this->setMouseCursor(MouseCursor(MouseCursor::LeftRightResizeCursor));
         }
     }
@@ -660,15 +655,14 @@ void PianoRoll::mouseUp(const MouseEvent &e)
         return;
     }
     
-    // Due to weird modal component behavior,
-    // a component can receive mouseUp event without receiving a mouseDown event before.
-    
-//    if (! this->mouseDownWasTriggered)
-//    {
-//        return;
-//    }
+    // Dismiss newNoteDragging, if needed
+    if (this->newNoteDragging != nullptr)
+    {
 
-    const bool justEndedDraggingNewNote = this->dismissDraggingNoteIfNeeded();
+        this->newNoteDragging->endResizingRight();
+        this->setMouseCursor(this->project.getEditMode().getCursor());
+        this->newNoteDragging = nullptr;
+    }
 
     if (! this->isUsingSpaceDraggingMode())
     {
@@ -677,23 +671,6 @@ void PianoRoll::mouseUp(const MouseEvent &e)
         // process lasso selection logic
         HybridRoll::mouseUp(e);
     }
-
-    this->mouseDownWasTriggered = false;
-}
-
-bool PianoRoll::dismissDraggingNoteIfNeeded()
-{
-    // todo dismissDraggingNoteIfNeeded on edit mode change?
-    if (this->draggingNote != nullptr)
-    {
-
-        this->draggingNote->endResizingRight();
-        this->setMouseCursor(this->project.getEditMode().getCursor());
-        this->draggingNote = nullptr;
-        return true;
-    }
-
-    return false;
 }
 
 //===----------------------------------------------------------------------===//

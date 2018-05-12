@@ -32,12 +32,13 @@ public:
     enum State
     {
         None,
-        ResizingRight,
-        ResizingLeft,
-        GroupScalingRight,
+        Initializing,       // changes length & key
+        Dragging,           // changes beat & key
+        ResizingRight,      // changes length
+        ResizingLeft,       // changes beat & length
+        GroupScalingRight,  
         GroupScalingLeft,
-        Tuning,
-        Dragging
+        Tuning
     };
     
     //===------------------------------------------------------------------===//
@@ -88,7 +89,6 @@ protected:
     bool belongsToAnyTrack(const Array<WeakReference<MidiTrack>> &tracks) const;
     void activateCorrespondingTrack(bool selectOthers, bool deselectOthers);
 
-    void setNoCheckpointNeededForNextAction();
     bool isResizing() const;
     
     void startResizingRight(bool sendMidiMessage);
@@ -139,6 +139,7 @@ protected:
     
     bool firstChangeDone;
     void checkpointIfNeeded();
+    void setNoCheckpointNeededForNextAction();
 
     bool shouldGoQuickSelectLayerMode(const ModifierKeys &modifiers) const;
     void setQuickSelectLayerMode(bool value);

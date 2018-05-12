@@ -62,7 +62,7 @@ public:
     Rectangle<float> getEventBounds(FloatBoundsComponent *mc) const override;
     Rectangle<float> getEventBounds(const Clip &clip, float beat) const;
     float getBeatForClipByXPosition(const Clip &clip, float x) const;
-    float getBeatByMousePosition(int x) const;
+    float getBeatByMousePosition(const Pattern *pattern, int x) const;
     Pattern *getPatternByMousePosition(int y) const;
 
     //===------------------------------------------------------------------===//

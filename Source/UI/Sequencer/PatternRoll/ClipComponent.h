@@ -73,12 +73,16 @@ protected:
     Clip anchor;
 
     void startDragging();
+    bool isDragging() const noexcept;
     bool getDraggingDelta(const MouseEvent &e, float &deltaBeat);
     Clip continueDragging(float deltaBeat);
     void endDragging();
 
+    friend class PatternRoll;
+
     bool firstChangeDone;
     void checkpointIfNeeded();
+    void setNoCheckpointNeededForNextAction();
 
     State state;
 
