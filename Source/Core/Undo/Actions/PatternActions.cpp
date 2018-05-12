@@ -26,16 +26,15 @@
 // Insert Clip
 //===----------------------------------------------------------------------===//
 
-PatternClipInsertAction::PatternClipInsertAction(MidiTrackSource &source,
+ClipInsertAction::ClipInsertAction(MidiTrackSource &source,
     String trackId, const Clip &target) noexcept :
     UndoAction(source),
     trackId(std::move(trackId)),
     clip(target) {}
 
-bool PatternClipInsertAction::perform()
+bool ClipInsertAction::perform()
 {
-    if (Pattern *pattern = 
-        this->source.findPatternByTrackId(this->trackId))
+    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->insert(this->clip, false);
     }
@@ -43,10 +42,9 @@ bool PatternClipInsertAction::perform()
     return false;
 }
 
-bool PatternClipInsertAction::undo()
+bool ClipInsertAction::undo()
 {
-    if (Pattern *pattern =
-        this->source.findPatternByTrackId(this->trackId))
+    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->remove(this->clip, false);
     }
@@ -54,26 +52,26 @@ bool PatternClipInsertAction::undo()
     return false;
 }
 
-int PatternClipInsertAction::getSizeInUnits()
+int ClipInsertAction::getSizeInUnits()
 {
     return sizeof(Clip);
 }
 
-ValueTree PatternClipInsertAction::serialize() const
+ValueTree ClipInsertAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::patternClipInsertAction);
+    ValueTree tree(Serialization::Undo::clipInsertAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     tree.appendChild(this->clip.serialize(), nullptr);
     return tree;
 }
 
-void PatternClipInsertAction::deserialize(const ValueTree &tree)
+void ClipInsertAction::deserialize(const ValueTree &tree)
 {
     this->trackId = tree.getProperty(Serialization::Undo::trackId);
     this->clip.deserialize(tree.getChild(0));
 }
 
-void PatternClipInsertAction::reset()
+void ClipInsertAction::reset()
 {
     this->clip.reset();
     this->trackId.clear();
@@ -83,16 +81,15 @@ void PatternClipInsertAction::reset()
 // Remove Instance
 //===----------------------------------------------------------------------===//
 
-PatternClipRemoveAction::PatternClipRemoveAction(MidiTrackSource &source,
+ClipRemoveAction::ClipRemoveAction(MidiTrackSource &source,
     String trackId, const Clip &target) noexcept :
     UndoAction(source),
     trackId(std::move(trackId)),
     clip(target) {}
 
-bool PatternClipRemoveAction::perform()
+bool ClipRemoveAction::perform()
 {
-    if (Pattern *pattern =
-        this->source.findPatternByTrackId(this->trackId))
+    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->remove(this->clip, false);
     }
@@ -100,10 +97,9 @@ bool PatternClipRemoveAction::perform()
     return false;
 }
 
-bool PatternClipRemoveAction::undo()
+bool ClipRemoveAction::undo()
 {
-    if (Pattern *pattern =
-        this->source.findPatternByTrackId(this->trackId))
+    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->insert(this->clip, false);
     }
@@ -111,26 +107,26 @@ bool PatternClipRemoveAction::undo()
     return false;
 }
 
-int PatternClipRemoveAction::getSizeInUnits()
+int ClipRemoveAction::getSizeInUnits()
 {
     return sizeof(Clip);
 }
 
-ValueTree PatternClipRemoveAction::serialize() const
+ValueTree ClipRemoveAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::patternClipRemoveAction);
+    ValueTree tree(Serialization::Undo::clipRemoveAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
     tree.appendChild(this->clip.serialize(), nullptr);
     return tree;
 }
 
-void PatternClipRemoveAction::deserialize(const ValueTree &tree)
+void ClipRemoveAction::deserialize(const ValueTree &tree)
 {
     this->trackId = tree.getProperty(Serialization::Undo::trackId);
     this->clip.deserialize(tree.getChild(0));
 }
 
-void PatternClipRemoveAction::reset()
+void ClipRemoveAction::reset()
 {
     this->clip.reset();
     this->trackId.clear();
@@ -140,7 +136,7 @@ void PatternClipRemoveAction::reset()
 // Change Instance
 //===----------------------------------------------------------------------===//
 
-PatternClipChangeAction::PatternClipChangeAction(MidiTrackSource &source,
+ClipChangeAction::ClipChangeAction(MidiTrackSource &source,
     String trackId, const Clip &target, const Clip &newParameters) noexcept :
     UndoAction(source),
     trackId(std::move(trackId)),
@@ -150,10 +146,9 @@ PatternClipChangeAction::PatternClipChangeAction(MidiTrackSource &source,
     jassert(target.getId() == newParameters.getId());
 }
 
-bool PatternClipChangeAction::perform()
+bool ClipChangeAction::perform()
 {
-    if (Pattern *pattern =
-        this->source.findPatternByTrackId(this->trackId))
+    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->change(this->clipBefore, this->clipAfter, false);
     }
@@ -161,10 +156,9 @@ bool PatternClipChangeAction::perform()
     return false;
 }
 
-bool PatternClipChangeAction::undo()
+bool ClipChangeAction::undo()
 {
-    if (Pattern *pattern =
-        this->source.findPatternByTrackId(this->trackId))
+    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
     {
         return pattern->change(this->clipAfter, this->clipBefore, false);
     }
@@ -172,18 +166,17 @@ bool PatternClipChangeAction::undo()
     return false;
 }
 
-int PatternClipChangeAction::getSizeInUnits()
+int ClipChangeAction::getSizeInUnits()
 {
     return sizeof(Clip) * 2;
 }
 
-UndoAction *PatternClipChangeAction::createCoalescedAction(UndoAction *nextAction)
+UndoAction *ClipChangeAction::createCoalescedAction(UndoAction *nextAction)
 {
-    if (Pattern *pattern = 
-        this->source.findPatternByTrackId(this->trackId))
+    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
     {
-        if (PatternClipChangeAction *nextChanger =
-            dynamic_cast<PatternClipChangeAction *>(nextAction))
+        if (ClipChangeAction *nextChanger =
+            dynamic_cast<ClipChangeAction *>(nextAction))
         {
             const bool idsAreEqual =
                 (this->clipBefore.getId() == nextChanger->clipAfter.getId() &&
@@ -191,7 +184,7 @@ UndoAction *PatternClipChangeAction::createCoalescedAction(UndoAction *nextActio
 
             if (idsAreEqual)
             {
-                return new PatternClipChangeAction(this->source,
+                return new ClipChangeAction(this->source,
                     this->trackId, this->clipBefore, nextChanger->clipAfter);
             }
         }
@@ -201,9 +194,9 @@ UndoAction *PatternClipChangeAction::createCoalescedAction(UndoAction *nextActio
     return nullptr;
 }
 
-ValueTree PatternClipChangeAction::serialize() const
+ValueTree ClipChangeAction::serialize() const
 {
-    ValueTree tree(Serialization::Undo::patternClipChangeAction);
+    ValueTree tree(Serialization::Undo::clipChangeAction);
     tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
 
     ValueTree instanceBeforeChild(Serialization::Undo::instanceBefore);
@@ -217,7 +210,7 @@ ValueTree PatternClipChangeAction::serialize() const
     return tree;
 }
 
-void PatternClipChangeAction::deserialize(const ValueTree &tree)
+void ClipChangeAction::deserialize(const ValueTree &tree)
 {
     this->trackId = tree.getProperty(Serialization::Undo::trackId);
 
@@ -228,9 +221,275 @@ void PatternClipChangeAction::deserialize(const ValueTree &tree)
     this->clipAfter.deserialize(instanceAfterChild.getChild(0));
 }
 
-void PatternClipChangeAction::reset()
+void ClipChangeAction::reset()
 {
     this->clipBefore.reset();
     this->clipAfter.reset();
+    this->trackId.clear();
+}
+
+//===----------------------------------------------------------------------===//
+// Insert Group
+//===----------------------------------------------------------------------===//
+
+ClipsGroupInsertAction::ClipsGroupInsertAction(MidiTrackSource &source,
+    String targetTrackId, Array<Clip> &target) noexcept :
+    UndoAction(source),
+    trackId(std::move(targetTrackId))
+{
+    this->clips.swapWith(target);
+}
+
+bool ClipsGroupInsertAction::perform()
+{
+    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
+    {
+        return pattern->insertGroup(this->clips, false);
+    }
+
+    return false;
+}
+
+bool ClipsGroupInsertAction::undo()
+{
+    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
+    {
+        return pattern->removeGroup(this->clips, false);
+    }
+
+    return false;
+}
+
+int ClipsGroupInsertAction::getSizeInUnits()
+{
+    return (sizeof(Clip) * this->clips.size());
+}
+
+ValueTree ClipsGroupInsertAction::serialize() const
+{
+    ValueTree tree(Serialization::Undo::clipsGroupInsertAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+
+    for (int i = 0; i < this->clips.size(); ++i)
+    {
+        tree.appendChild(this->clips.getUnchecked(i).serialize(), nullptr);
+    }
+
+    return tree;
+}
+
+void ClipsGroupInsertAction::deserialize(const ValueTree &tree)
+{
+    this->reset();
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+
+    for (const auto &props : tree)
+    {
+        Clip n;
+        n.deserialize(props);
+        this->clips.add(n);
+    }
+}
+
+void ClipsGroupInsertAction::reset()
+{
+    this->clips.clear();
+    this->trackId.clear();
+}
+
+//===----------------------------------------------------------------------===//
+// Remove Group
+//===----------------------------------------------------------------------===//
+
+ClipsGroupRemoveAction::ClipsGroupRemoveAction(MidiTrackSource &source,
+    String targetTrackId, Array<Clip> &target) noexcept :
+    UndoAction(source),
+    trackId(std::move(targetTrackId))
+{
+    this->clips.swapWith(target);
+}
+
+bool ClipsGroupRemoveAction::perform()
+{
+    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
+    {
+        return pattern->removeGroup(this->clips, false);
+    }
+
+    return false;
+}
+
+bool ClipsGroupRemoveAction::undo()
+{
+    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
+    {
+        return pattern->insertGroup(this->clips, false);
+    }
+
+    return false;
+}
+
+int ClipsGroupRemoveAction::getSizeInUnits()
+{
+    return (sizeof(Clip) * this->clips.size());
+}
+
+ValueTree ClipsGroupRemoveAction::serialize() const
+{
+    ValueTree tree(Serialization::Undo::clipsGroupRemoveAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+
+    for (int i = 0; i < this->clips.size(); ++i)
+    {
+        tree.appendChild(this->clips.getUnchecked(i).serialize(), nullptr);
+    }
+
+    return tree;
+}
+
+void ClipsGroupRemoveAction::deserialize(const ValueTree &tree)
+{
+    this->reset();
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+
+    for (const auto &props : tree)
+    {
+        Clip n;
+        n.deserialize(props);
+        this->clips.add(n);
+    }
+}
+
+void ClipsGroupRemoveAction::reset()
+{
+    this->clips.clear();
+    this->trackId.clear();
+}
+
+//===----------------------------------------------------------------------===//
+// Change Group
+//===----------------------------------------------------------------------===//
+
+ClipsGroupChangeAction::ClipsGroupChangeAction(MidiTrackSource &source,
+    String targetTrackId, Array<Clip> &state1, Array<Clip> &state2) noexcept :
+    UndoAction(source),
+    trackId(std::move(targetTrackId))
+{
+    this->clipsBefore.swapWith(state1);
+    this->clipsAfter.swapWith(state2);
+}
+
+bool ClipsGroupChangeAction::perform()
+{
+    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
+    {
+        return pattern->changeGroup(this->clipsBefore, this->clipsAfter, false);
+    }
+
+    return false;
+}
+
+bool ClipsGroupChangeAction::undo()
+{
+    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
+    {
+        return pattern->changeGroup(this->clipsAfter, this->clipsBefore, false);
+    }
+
+    return false;
+}
+
+int ClipsGroupChangeAction::getSizeInUnits()
+{
+    return (sizeof(Clip) * this->clipsBefore.size()) +
+        (sizeof(Clip) * this->clipsAfter.size());
+}
+
+UndoAction *ClipsGroupChangeAction::createCoalescedAction(UndoAction *nextAction)
+{
+    if (Pattern *pattern = this->source.findPatternByTrackId(this->trackId))
+    {
+        if (auto nextChanger = dynamic_cast<ClipsGroupChangeAction *>(nextAction))
+        {
+            if (nextChanger->trackId != this->trackId)
+            {
+                return nullptr;
+            }
+
+            if (this->clipsBefore.size() != nextChanger->clipsAfter.size())
+            {
+                return nullptr;
+            }
+
+            for (int i = 0; i < this->clipsBefore.size(); ++i)
+            {
+                if (this->clipsBefore.getUnchecked(i).getId() !=
+                    nextChanger->clipsAfter.getUnchecked(i).getId())
+                {
+                    return nullptr;
+                }
+            }
+
+            return new ClipsGroupChangeAction(this->source,
+                this->trackId, this->clipsBefore, nextChanger->clipsAfter);
+        }
+    }
+
+    (void)nextAction;
+    return nullptr;
+}
+
+ValueTree ClipsGroupChangeAction::serialize() const
+{
+    ValueTree tree(Serialization::Undo::clipsGroupChangeAction);
+    tree.setProperty(Serialization::Undo::trackId, this->trackId, nullptr);
+
+    ValueTree groupBeforeChild(Serialization::Undo::groupBefore);
+    ValueTree groupAfterChild(Serialization::Undo::groupAfter);
+
+    for (int i = 0; i < this->clipsBefore.size(); ++i)
+    {
+        groupBeforeChild.appendChild(this->clipsBefore.getUnchecked(i).serialize(), nullptr);
+    }
+
+    for (int i = 0; i < this->clipsAfter.size(); ++i)
+    {
+        groupAfterChild.appendChild(this->clipsAfter.getUnchecked(i).serialize(), nullptr);
+    }
+
+    tree.appendChild(groupBeforeChild, nullptr);
+    tree.appendChild(groupAfterChild, nullptr);
+
+    return tree;
+}
+
+void ClipsGroupChangeAction::deserialize(const ValueTree &tree)
+{
+    this->reset();
+
+    this->trackId = tree.getProperty(Serialization::Undo::trackId);
+
+    const auto groupBeforeChild = tree.getChildWithName(Serialization::Undo::groupBefore);
+    const auto groupAfterChild = tree.getChildWithName(Serialization::Undo::groupAfter);
+
+    for (const auto &props : groupBeforeChild)
+    {
+        Clip n;
+        n.deserialize(props);
+        this->clipsBefore.add(n);
+    }
+
+    for (const auto &props : groupAfterChild)
+    {
+        Clip n;
+        n.deserialize(props);
+        this->clipsAfter.add(n);
+    }
+}
+
+void ClipsGroupChangeAction::reset()
+{
+    this->clipsBefore.clear();
+    this->clipsAfter.clear();
     this->trackId.clear();
 }

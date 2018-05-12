@@ -523,9 +523,12 @@ namespace Serialization
         static const Identifier midiTrackChangeInstrumentAction = "midiTrackChangeInstrument";
         static const Identifier midiTrackMuteAction = "midiTrackMute";
         
-        static const Identifier patternClipInsertAction = "patternClipInsert";
-        static const Identifier patternClipRemoveAction = "patternClipRemove";
-        static const Identifier patternClipChangeAction = "patternClipChange";
+        static const Identifier clipInsertAction = "patternClipInsert";
+        static const Identifier clipRemoveAction = "patternClipRemove";
+        static const Identifier clipChangeAction = "patternClipChange";
+        static const Identifier clipsGroupInsertAction = "patternClipsInsert";
+        static const Identifier clipsGroupRemoveAction = "patternClipsRemove";
+        static const Identifier clipsGroupChangeAction = "patternClipsChange";
 
         static const Identifier noteInsertAction = "noteInsert";
         static const Identifier noteRemoveAction = "noteRemove";

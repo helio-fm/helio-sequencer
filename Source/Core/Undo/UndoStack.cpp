@@ -118,9 +118,12 @@ UndoAction *UndoStack::ActionSet::createUndoActionsByTagName(const Identifier &t
     else if (tagName == Undo::midiTrackChangeColourAction)           { return new MidiTrackChangeColourAction(this->project); }
     else if (tagName == Undo::midiTrackChangeInstrumentAction)       { return new MidiTrackChangeInstrumentAction(this->project); }
     else if (tagName == Undo::midiTrackMuteAction)                   { return new MidiTrackMuteAction(this->project); }
-    else if (tagName == Undo::patternClipInsertAction)               { return new PatternClipInsertAction(this->project); }
-    else if (tagName == Undo::patternClipRemoveAction)               { return new PatternClipRemoveAction(this->project); }
-    else if (tagName == Undo::patternClipChangeAction)               { return new PatternClipChangeAction(this->project); }
+    else if (tagName == Undo::clipInsertAction)                      { return new ClipInsertAction(this->project); }
+    else if (tagName == Undo::clipRemoveAction)                      { return new ClipRemoveAction(this->project); }
+    else if (tagName == Undo::clipChangeAction)                      { return new ClipChangeAction(this->project); }
+    else if (tagName == Undo::clipsGroupInsertAction)                { return new ClipsGroupInsertAction(this->project); }
+    else if (tagName == Undo::clipsGroupRemoveAction)                { return new ClipsGroupRemoveAction(this->project); }
+    else if (tagName == Undo::clipsGroupChangeAction)                { return new ClipsGroupChangeAction(this->project); }
     else if (tagName == Undo::noteInsertAction)                      { return new NoteInsertAction(this->project); }
     else if (tagName == Undo::noteRemoveAction)                      { return new NoteRemoveAction(this->project); }
     else if (tagName == Undo::noteChangeAction)                      { return new NoteChangeAction(this->project); }
@@ -151,12 +154,12 @@ UndoAction *UndoStack::ActionSet::createUndoActionsByTagName(const Identifier &t
     else if (tagName == Undo::automationEventsGroupInsertAction)     { return new AutomationEventsGroupInsertAction(this->project); }
     else if (tagName == Undo::automationEventsGroupRemoveAction)     { return new AutomationEventsGroupRemoveAction(this->project); }
     else if (tagName == Undo::automationEventsGroupChangeAction)     { return new AutomationEventsGroupChangeAction(this->project); }
-        
+
     // Here we could meet deprecated legacy actions
     return nullptr;
 }
 
-UndoStack::UndoStack (ProjectTreeItem &parentProject,
+UndoStack::UndoStack(ProjectTreeItem &parentProject,
     int maxNumberOfUnitsToKeep,
     int minimumTransactions) :
     project(parentProject),
@@ -175,13 +178,13 @@ void UndoStack::clearUndoHistory()
     this->sendChangeMessage();
 }
 
-bool UndoStack::perform (UndoAction* const newAction, const String& actionName)
+bool UndoStack::perform (UndoAction *const newAction, const String &actionName)
 {
-    if (perform (newAction))
+    if (this->perform(newAction))
     {
         if (actionName.isNotEmpty())
         {
-            setCurrentTransactionName (actionName);
+            this->setCurrentTransactionName(actionName);
         }
         
         return true;
@@ -196,7 +199,7 @@ bool UndoStack::perform (UndoAction *const newAction)
     {
         ScopedPointer<UndoAction> action (newAction);
         
-        if (reentrancyCheck)
+        if (this->reentrancyCheck)
         {
             jassertfalse;  // don't call perform() recursively from the UndoAction::perform()
             // or undo() methods, or else these actions will be discarded!
@@ -216,7 +219,7 @@ bool UndoStack::perform (UndoAction *const newAction)
                         if (UndoAction *const coalescedAction = lastAction->createCoalescedAction(action))
                         {
                             action = coalescedAction;
-                            totalUnitsStored -= lastAction->getSizeInUnits();
+                            this->totalUnitsStored -= lastAction->getSizeInUnits();
                             actionSet->actions.remove(i);
                             break;
                         }
@@ -230,13 +233,13 @@ bool UndoStack::perform (UndoAction *const newAction)
                 ++nextIndex;
             }
             
-            totalUnitsStored += action->getSizeInUnits();
-            actionSet->actions.add (action.release());
-            newTransaction = false;
+            this->totalUnitsStored += action->getSizeInUnits();
+            actionSet->actions.add(action.release());
+            this->newTransaction = false;
             //Logger::writeToLog("size " + String(actionSet->actions.size()));
             
-            clearFutureTransactions();
-            sendChangeMessage();
+            this->clearFutureTransactions();
+            this->sendChangeMessage();
             return true;
         }
     }
@@ -279,33 +282,39 @@ void UndoStack::beginNewTransaction(const String &actionName) noexcept
 
 void UndoStack::setCurrentTransactionName(const String &newName) noexcept
 {
-    if (this->newTransaction) {
+    if (this->newTransaction)
+    {
         this->newTransactionName = newName;
-    } else if (ActionSet *action = getCurrentSet()) {
+    }
+    else if (ActionSet *action = this->getCurrentSet())
+    {
         action->name = newName;
     }
 }
 
-UndoStack::ActionSet *UndoStack::getCurrentSet() const noexcept     { return transactions [nextIndex - 1]; }
-UndoStack::ActionSet *UndoStack::getNextSet() const noexcept        { return transactions [nextIndex]; }
+UndoStack::ActionSet *UndoStack::getCurrentSet() const noexcept     { return this->transactions [nextIndex - 1]; }
+UndoStack::ActionSet *UndoStack::getNextSet() const noexcept        { return this->transactions [nextIndex]; }
 
-bool UndoStack::canUndo() const noexcept   { return getCurrentSet() != nullptr; }
-bool UndoStack::canRedo() const noexcept   { return getNextSet()    != nullptr; }
+bool UndoStack::canUndo() const noexcept   { return this->getCurrentSet() != nullptr; }
+bool UndoStack::canRedo() const noexcept   { return this->getNextSet()    != nullptr; }
 
 bool UndoStack::undo()
 {
-    if (const ActionSet* const s = getCurrentSet())
+    if (const auto s = getCurrentSet())
     {
-        const ScopedValueSetter<bool> setter (reentrancyCheck, true);
+        const ScopedValueSetter<bool> setter(this->reentrancyCheck, true);
         
-        if (s->undo()) {
+        if (s->undo())
+        {
             --nextIndex;
-        } else {
-            clearUndoHistory();
+        }
+        else
+        {
+            this->clearUndoHistory();
         }
         
-        beginNewTransaction();
-        sendChangeMessage();
+        this->beginNewTransaction();
+        this->sendChangeMessage();
         return true;
     }
     
@@ -316,16 +325,19 @@ bool UndoStack::redo()
 {
     if (const ActionSet* const s = getNextSet())
     {
-        const ScopedValueSetter<bool> setter (reentrancyCheck, true);
+        const ScopedValueSetter<bool> setter(this->reentrancyCheck, true);
         
-        if (s->perform()) {
+        if (s->perform())
+        {
             ++nextIndex;
-        } else {
-            clearUndoHistory();
+        }
+        else
+        {
+            this->clearUndoHistory();
         }
         
-        beginNewTransaction();
-        sendChangeMessage();
+        this->beginNewTransaction();
+        this->sendChangeMessage();
         return true;
     }
     
@@ -334,7 +346,8 @@ bool UndoStack::redo()
 
 String UndoStack::getUndoDescription() const
 {
-    if (const ActionSet* const s = getCurrentSet()) {
+    if (const auto s = this->getCurrentSet())
+    {
         return s->name;
     }
     
@@ -343,7 +356,8 @@ String UndoStack::getUndoDescription() const
 
 String UndoStack::getRedoDescription() const
 {
-    if (const ActionSet* const s = getNextSet()) {
+    if (const auto s = this->getNextSet())
+    {
         return s->name;
     }
     
@@ -352,15 +366,18 @@ String UndoStack::getRedoDescription() const
 
 bool UndoStack::undoCurrentTransactionOnly()
 {
-    return newTransaction ? false : undo();
+    return this->newTransaction ? false : this->undo();
 }
 
-void UndoStack::getActionsInCurrentTransaction (Array<const UndoAction*>& actionsFound) const
+void UndoStack::getActionsInCurrentTransaction (Array<const UndoAction *> &actionsFound) const
 {
-    if (! newTransaction) {
-        if (const ActionSet* const s = getCurrentSet()) {
-            for (int i = 0; i < s->actions.size(); ++i) {
-                actionsFound.add (s->actions.getUnchecked(i));
+    if (!this->newTransaction)
+    {
+        if (const auto s = this->getCurrentSet())
+        {
+            for (int i = 0; i < s->actions.size(); ++i)
+            {
+                actionsFound.add(s->actions.getUnchecked(i));
             }
         }
     }
@@ -368,8 +385,8 @@ void UndoStack::getActionsInCurrentTransaction (Array<const UndoAction*>& action
 
 int UndoStack::getNumActionsInCurrentTransaction() const
 {
-    if (! newTransaction) {
-        if (const ActionSet* const s = getCurrentSet()) {
+    if (!this->newTransaction) {
+        if (const auto s = this->getCurrentSet()) {
             return s->actions.size();
         }
     }
