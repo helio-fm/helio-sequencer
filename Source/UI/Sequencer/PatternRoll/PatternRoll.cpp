@@ -67,7 +67,9 @@ inline static constexpr int rowHeight()
 PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
     Viewport &viewportRef,
     WeakReference<AudioMonitor> clippingDetector) :
-    HybridRoll(parentProject, viewportRef, clippingDetector, false, false, true)
+    HybridRoll(parentProject, viewportRef, clippingDetector, false, false, true),
+    newClipDragging(nullptr),
+    addNewClipMode(false)
 {
     // TODO: pattern roll doesn't need neither annotations track map nor key signatures track map
     this->selectedClipsMenuManager = new PatternRollSelectionMenuManager(&this->selection);
@@ -304,8 +306,8 @@ void PatternRoll::addClip(Pattern *pattern, float beat)
 Rectangle<float> PatternRoll::getEventBounds(FloatBoundsComponent *mc) const
 {
     jassert(dynamic_cast<ClipComponent *>(mc));
-    ClipComponent *nc = static_cast<ClipComponent *>(mc);
-    return this->getEventBounds(nc->getClip(), nc->getBeat());
+    ClipComponent *cc = static_cast<ClipComponent *>(mc);
+    return this->getEventBounds(cc->getClip(), cc->getBeat());
 }
 
 Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) const
@@ -315,23 +317,28 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) c
     const MidiSequence *sequence = track->getSequence();
     jassert(sequence != nullptr);
 
-    const float viewStartOffsetBeat = float(this->firstBar * BEATS_PER_BAR);
     const int trackIndex = this->tracks.indexOfSorted(*track, track);
+    const float viewStartOffsetBeat = float(this->firstBar * BEATS_PER_BAR);
     const float sequenceLength = sequence->getLengthInBeats();
     const float sequenceStartBeat = sequence->getFirstBeat();
 
     const float w = this->barWidth * sequenceLength / BEATS_PER_BAR;
-    const float x = this->barWidth *
-        (sequenceStartBeat + clipBeat - viewStartOffsetBeat) / BEATS_PER_BAR;
-
+    const float x = this->barWidth * (sequenceStartBeat + clipBeat - viewStartOffsetBeat) / BEATS_PER_BAR;
     const float y = float(trackIndex * rowHeight());
-    return Rectangle<float> (x, HYBRID_ROLL_HEADER_HEIGHT + y + PATTERN_ROLL_TRACK_HEADER_HEIGHT,
+
+    return Rectangle<float>(x,
+        HYBRID_ROLL_HEADER_HEIGHT + y + PATTERN_ROLL_TRACK_HEADER_HEIGHT,
         w, float(PATTERN_ROLL_CLIP_HEIGHT - 1));
 }
 
-float PatternRoll::getBeatByComponentPosition(float x) const
+float PatternRoll::getBeatForClipByXPosition(const Clip &clip, float x) const
 {
-    return this->getRoundBeatByXPosition(int(x)); /* - 0.5f ? */
+    // One trick here is that displayed clip position depends on a sequence's first beat as well:
+    const Pattern *pattern = clip.getPattern();
+    const MidiTrack *track = pattern->getTrack();
+    const MidiSequence *sequence = track->getSequence();
+    const float sequenceStartBeat = sequence->getFirstBeat();
+    return this->getRoundBeatByXPosition(int(x)) - sequenceStartBeat; /* - 0.5f ? */
 }
 
 float PatternRoll::getBeatByMousePosition(int x) const

@@ -61,7 +61,7 @@ public:
     void addClip(Pattern *pattern, float beat);
     Rectangle<float> getEventBounds(FloatBoundsComponent *mc) const override;
     Rectangle<float> getEventBounds(const Clip &clip, float beat) const;
-    float getBeatByComponentPosition(float x) const;
+    float getBeatForClipByXPosition(const Clip &clip, float x) const;
     float getBeatByMousePosition(int x) const;
     Pattern *getPatternByMousePosition(int y) const;
 
@@ -146,6 +146,11 @@ public:
     class FocusToRegionAnimator;
     ScopedPointer<Timer> focusToRegionAnimator;
     
+private:
+
+    ClipComponent *newClipDragging;
+    bool addNewClipMode;
+
 private:
     
     Array<MidiTrack *> tracks;

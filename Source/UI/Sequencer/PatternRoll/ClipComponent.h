@@ -58,8 +58,10 @@ public:
     // Component
     //===------------------------------------------------------------------===//
 
-    void mouseDown(const MouseEvent &e) override;
     void mouseDoubleClick(const MouseEvent &e) override;
+    void mouseDown(const MouseEvent &e) override;
+    void mouseDrag(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
     void paint(Graphics& g) override;
 
     static int compareElements(ClipComponent *first, ClipComponent *second);
@@ -67,6 +69,18 @@ public:
 protected:
 
     const Clip &clip;
+
+    Clip anchor;
+
+    void startDragging();
+    bool getDraggingDelta(const MouseEvent &e, float &deltaBeat);
+    Clip continueDragging(float deltaBeat);
+    void endDragging();
+
+    bool firstChangeDone;
+    void checkpointIfNeeded();
+
+    State state;
 
     Colour headColour;
     Colour headColourLighter;
