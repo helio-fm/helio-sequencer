@@ -48,6 +48,7 @@ private:
 
     //[UserVariables]
     ScopedPointer<HeadlineDropdown> dropdown;
+    Colour bgColour;
     //[/UserVariables]
 
     ScopedPointer<IconButton> navigatePrevious;

@@ -137,6 +137,7 @@ void Headline::handleAsyncUpdate()
         this->animator.animateComponent(this->selectionItem, finalPos, 1.f, 250, false, 1.f, 0.f);
         this->selectionItem->toBack();
         this->bg->toBack();
+        this->navPanel->toFront(false);
     }
 }
 
@@ -250,6 +251,7 @@ void Headline::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSourc
     this->animator.animateComponent(this->selectionItem, finalPos, 1.f, 150, false, 1.f, 0.f);
 
     this->bg->toBack();
+    this->navPanel->toFront(false);
 }
 
 void Headline::hideSelectionMenu()
