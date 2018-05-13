@@ -31,6 +31,8 @@
 #include "PianoTrackTreeItem.h"
 #include "AutomationTrackTreeItem.h"
 #include "VersionControlTreeItem.h"
+#include "MidiTrackTreeItem.h"
+#include "ModalDialogInput.h"
 #include "ProjectTreeItem.h"
 #include "ProjectTimeline.h"
 #include "Note.h"
@@ -682,8 +684,13 @@ void PianoRoll::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {
-    case CommandIDs::SelectAllEvents:
-        this->selectAll();
+    case CommandIDs::RenameTrack:
+        if (auto trackNode = dynamic_cast<MidiTrackTreeItem *>(this->project.findPrimaryActiveItem()))
+        {
+            auto inputDialog = ModalDialogInput::Presets::renameTrack(trackNode->getXPath());
+            inputDialog->onOk = trackNode->getRenameCallback();
+            App::Layout().showModalComponentUnowned(inputDialog.release());
+        }
         break;
     case CommandIDs::ZoomIn:
         this->zoomInImpulse();
@@ -707,55 +714,6 @@ void PianoRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::DeleteEvents:
         SequencerOperations::deleteSelection(this->getLassoSelection());
-        break;
-    case CommandIDs::Undo:
-        this->project.undo();
-        break;
-    case CommandIDs::Redo:
-        this->project.redo();
-        break;
-    case CommandIDs::StartDragViewport:
-        this->header->setSoundProbeMode(true);
-        //if (!this->project.getEditMode().isMode(HybridRollEditMode::dragMode))
-        { this->setSpaceDraggingMode(true); }
-        break;
-    case CommandIDs::EndDragViewport:
-        this->header->setSoundProbeMode(false);
-        if (this->isUsingSpaceDraggingMode())
-        {
-            const bool noDraggingWasDone = (this->draggedDistance < 3);
-            const bool notTooMuchTimeSpent = (Time::getCurrentTime() - this->timeEnteredDragMode).inMilliseconds() < 300;
-            if (noDraggingWasDone && notTooMuchTimeSpent)
-            {
-                this->project.getTransport().toggleStatStopPlayback();
-            }
-            this->setSpaceDraggingMode(false);
-        }
-        break;
-    case CommandIDs::TransportStartPlayback:
-        if (this->project.getTransport().isPlaying())
-        {
-            this->startFollowingPlayhead();
-        }
-        else
-        {
-            this->project.getTransport().startPlayback();
-            this->startFollowingPlayhead();
-        }
-        break;
-    case CommandIDs::TransportPausePlayback:
-        if (this->project.getTransport().isPlaying())
-        {
-            this->project.getTransport().stopPlayback();
-        }
-        else
-        {
-            this->resetAllClippingIndicators();
-            this->resetAllOversaturationIndicators();
-        }
-
-        App::Workspace().getAudioCore().mute();
-        App::Workspace().getAudioCore().unmute();
         break;
     case CommandIDs::BeatShiftLeft:
         SequencerOperations::shiftBeatRelative(this->getLassoSelection(), -1.f / BEATS_PER_BAR);
@@ -809,13 +767,6 @@ void PianoRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::EditModeSelect:
         this->project.getEditMode().setMode(HybridRollEditMode::selectionMode);
-        break;
-    case CommandIDs::VersionControlToggleQuickStash:
-        if (VersionControlTreeItem *vcsTreeItem =
-            this->project.findChildOfType<VersionControlTreeItem>())
-        {
-            vcsTreeItem->toggleQuickStash();
-        }
         break;
     case CommandIDs::CreateArpeggiatorFromSelection:
         {

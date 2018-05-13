@@ -1109,36 +1109,96 @@ void HybridRoll::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails
 
 void HybridRoll::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::AddAnnotation)
+    switch (commandId)
     {
-        const float targetBeat = this->getPositionForNewTimelineEvent();
+    case CommandIDs::Undo:
+        this->project.undo();
+        break;
+    case CommandIDs::Redo:
+        this->project.redo();
+        break;
+    case CommandIDs::SelectAllEvents:
+        this->selectAll();
+        break;
+    case CommandIDs::StartDragViewport:
+        this->header->setSoundProbeMode(true);
+        //if (!this->project.getEditMode().isMode(HybridRollEditMode::dragMode))
+        { this->setSpaceDraggingMode(true); }
+        break;
+    case CommandIDs::EndDragViewport:
+        this->header->setSoundProbeMode(false);
+        if (this->isUsingSpaceDraggingMode())
+        {
+            const bool noDraggingWasDone = (this->draggedDistance < 3);
+            const bool notTooMuchTimeSpent = (Time::getCurrentTime() - this->timeEnteredDragMode).inMilliseconds() < 300;
+            if (noDraggingWasDone && notTooMuchTimeSpent)
+            {
+                this->project.getTransport().toggleStatStopPlayback();
+            }
+            this->setSpaceDraggingMode(false);
+        }
+        break;
+    case CommandIDs::TransportStartPlayback:
+        if (this->project.getTransport().isPlaying())
+        {
+            this->startFollowingPlayhead();
+        }
+        else
+        {
+            this->project.getTransport().startPlayback();
+            this->startFollowingPlayhead();
+        }
+        break;
+    case CommandIDs::TransportPausePlayback:
+        if (this->project.getTransport().isPlaying())
+        {
+            this->project.getTransport().stopPlayback();
+        }
+        else
+        {
+            this->resetAllClippingIndicators();
+            this->resetAllOversaturationIndicators();
+        }
+
+        App::Workspace().getAudioCore().mute();
+        App::Workspace().getAudioCore().unmute();
+        break;
+    case CommandIDs::VersionControlToggleQuickStash:
+        if (auto vcs = this->project.findChildOfType<VersionControlTreeItem>())
+        {
+            vcs->toggleQuickStash();
+        }
+        break;
+    case CommandIDs::AddAnnotation:
         if (AnnotationsSequence *sequence = dynamic_cast<AnnotationsSequence *>
             (this->project.getTimeline()->getAnnotations()->getSequence()))
         {
+            const float targetBeat = this->getPositionForNewTimelineEvent();
             Component *dialog = AnnotationDialog::createAddingDialog(*this, sequence, targetBeat);
             App::Layout().showModalComponentUnowned(dialog);
         }
-    }
-    else if (commandId == CommandIDs::AddTimeSignature)
-    {
-        const float targetBeat = this->getPositionForNewTimelineEvent();
+        break;
+    case CommandIDs::AddTimeSignature:
         if (TimeSignaturesSequence *sequence = dynamic_cast<TimeSignaturesSequence *>
             (this->project.getTimeline()->getTimeSignatures()->getSequence()))
         {
+            const float targetBeat = this->getPositionForNewTimelineEvent();
             Component *dialog = TimeSignatureDialog::createAddingDialog(*this, sequence, targetBeat);
             App::Layout().showModalComponentUnowned(dialog);
         }
-    }
-    else if (commandId == CommandIDs::AddKeySignature)
-    {
-        const float targetBeat = this->getPositionForNewTimelineEvent();
+        break;
+    case CommandIDs::AddKeySignature:
         if (KeySignaturesSequence *sequence = dynamic_cast<KeySignaturesSequence *>
             (this->project.getTimeline()->getKeySignatures()->getSequence()))
         {
+            const float targetBeat = this->getPositionForNewTimelineEvent();
             Component *dialog = KeySignatureDialog::createAddingDialog(*this,
                 this->getTransport(), sequence, targetBeat);
             App::Layout().showModalComponentUnowned(dialog);
         }
+        break;
+    default:
+        break;
     }
 }
 

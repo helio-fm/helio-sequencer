@@ -89,7 +89,7 @@
         { "receiver": "PianoRoll", "command": "SelectAllEvents", "key": "Control + A" },
 
         // Edit selection
-        { "receiver": "PatternRoll", "command": "RenameSelectedTrack", "key": "F2" },
+        { "receiver": "PianoRoll", "command": "RenameTrack", "key": "F2" },
         { "receiver": "PianoRoll", "command": "BeatShiftLeft", "key": "Cursor Left" },
         { "receiver": "PianoRoll", "command": "BeatShiftRight", "key": "Cursor Right" },
         { "receiver": "PianoRoll", "command": "BarShiftLeft", "key": "Shift + Cursor Left" },
@@ -176,7 +176,7 @@
         { "receiver": "PatternRoll", "command": "VersionControlToggleQuickStash", "key": "Shift + Tab" },
 
         // Edit selection
-        { "receiver": "PatternRoll", "command": "RenameSelectedTrack", "key": "F2" },
+        { "receiver": "PatternRoll", "command": "RenameTrack", "key": "F2" },
         { "receiver": "PatternRoll", "command": "BeatShiftLeft", "key": "Cursor Left" },
         { "receiver": "PatternRoll", "command": "BeatShiftRight", "key": "Cursor Right" },
         { "receiver": "PatternRoll", "command": "BarShiftLeft", "key": "Shift + Cursor Left" },
