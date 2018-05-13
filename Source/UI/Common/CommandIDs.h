@@ -84,6 +84,11 @@ namespace CommandIDs
         CutEvents                       = 0x1603,
         PasteEvents                     = 0x1604,
 
+        DeleteClips                     = 0x1611,
+        CopyClips                       = 0x1612,
+        CutClips                        = 0x1613,
+        PasteClips                      = 0x1614,
+
         CursorTool                      = 0x2000,
         DrawTool                        = 0x2001,
         SelectionTool                   = 0x2002,

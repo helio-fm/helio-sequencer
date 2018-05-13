@@ -1879,3 +1879,63 @@ void SequencerOperations::duplicateSelection(const Lasso &selection, bool should
         sequence->insertGroup(*selectionsByTrack.getUnchecked(i), true);
     }
 }
+
+// Pattern operations
+
+void PatternOperations::deleteSelection(const Lasso &selection, bool shouldCheckpoint /*= true*/)
+{
+    if (selection.getNumSelected() == 0)
+    {
+        return;
+    }
+
+    OwnedArray<Array<Clip>> selections;
+
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const Clip clip = selection.getItemAs<ClipComponent>(i)->getClip();
+        Pattern *ownerPattern = clip.getPattern();
+        Array<Clip> *arrayToAddTo = nullptr;
+
+        for (int j = 0; j < selections.size(); ++j)
+        {
+            if (selections.getUnchecked(j)->size() > 0)
+            {
+                if (selections.getUnchecked(j)->getUnchecked(0).getPattern() == ownerPattern)
+                {
+                    arrayToAddTo = selections.getUnchecked(j);
+                }
+            }
+        }
+
+        if (arrayToAddTo == nullptr)
+        {
+            arrayToAddTo = new Array<Clip>();
+            selections.add(arrayToAddTo);
+        }
+
+        arrayToAddTo->add(clip);
+    }
+
+    bool didCheckpoint = !shouldCheckpoint;
+
+    for (int i = 0; i < selections.size(); ++i)
+    {
+        Pattern *pattern = (selections.getUnchecked(i)->getUnchecked(0).getPattern());
+
+        if (!didCheckpoint)
+        {
+            didCheckpoint = true;
+            pattern->checkpoint();
+        }
+
+        for (Clip &c : *selections.getUnchecked(i))
+        {
+            // At least one clip should always remain:
+            if (pattern->size() > 1)
+            {
+                pattern->remove(c, true);
+            }
+        }
+    }
+}

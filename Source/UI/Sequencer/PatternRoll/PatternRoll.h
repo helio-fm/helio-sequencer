@@ -43,9 +43,10 @@ public:
         Viewport &viewportRef,
         WeakReference<AudioMonitor> clippingDetector);
 
-    void deleteSelection();
     void selectAll() override;
     int getNumRows() const noexcept;
+
+    void zoomViewToClip(const Clip &clip) const;
 
     //===------------------------------------------------------------------===//
     // Ghost notes

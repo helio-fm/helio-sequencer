@@ -133,10 +133,10 @@ protected:
     Colour colourVolume;
 
     friend class PianoRoll;
-    friend class SequencerOperations;
     friend class NoteResizerLeft;
     friend class NoteResizerRight;
-    
+    friend struct SequencerOperations;
+
     bool firstChangeDone;
     void checkpointIfNeeded();
     void setNoCheckpointNeededForNextAction();

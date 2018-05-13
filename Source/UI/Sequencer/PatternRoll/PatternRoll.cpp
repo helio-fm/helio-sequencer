@@ -16,13 +16,17 @@
 */
 
 #include "Common.h"
-#include "MainLayout.h"
 #include "PatternRoll.h"
+#include "MainLayout.h"
+#include "Workspace.h"
+#include "AudioCore.h"
 #include "HybridRollHeader.h"
 #include "MidiTrackHeader.h"
 #include "Pattern.h"
 #include "PianoTrackTreeItem.h"
 #include "AutomationTrackTreeItem.h"
+#include "VersionControlTreeItem.h"
+#include "PatternEditorTreeItem.h"
 #include "ProjectTreeItem.h"
 #include "ProjectTimeline.h"
 #include "ClipComponent.h"
@@ -33,20 +37,22 @@
 #include "SelectionComponent.h"
 #include "HybridRollEditMode.h"
 #include "SerializationKeys.h"
-#include "Icons.h"
-#include "HelioCallout.h"
+#include "ModalDialogInput.h"
 #include "NotesTuningPanel.h"
 #include "SequencerOperations.h"
-#include "Config.h"
 #include "SerializationKeys.h"
 #include "PianoSequence.h"
 #include "PianoClipComponent.h"
 #include "AutomationSequence.h"
 #include "AutomationClipComponent.h"
 #include "DummyClipComponent.h"
+#include "LassoListeners.h"
+
 #include "ComponentIDs.h"
 #include "ColourIDs.h"
-#include "LassoListeners.h"
+#include "Config.h"
+#include "Icons.h"
+#include "App.h"
 
 #define DEFAULT_CLIP_LENGTH 1.0f
 
@@ -84,66 +90,20 @@ PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
     this->setBarRange(0, 8);
 }
 
-void PatternRoll::deleteSelection()
+void PatternRoll::selectAll()
 {
-    if (this->selection.getNumSelected() == 0)
+    for (const auto &e : this->clipComponents)
     {
-        return;
-    }
-    
-    // Avoids crash
-    this->hideAllGhostClips();
-
-    OwnedArray<Array<Clip>> selections;
-
-    for (int i = 0; i < this->selection.getNumSelected(); ++i)
-    {
-        const Clip clip = this->selection.getItemAs<ClipComponent>(i)->getClip();
-        Pattern *ownerPattern = clip.getPattern();
-        Array<Clip> *arrayToAddTo = nullptr;
-
-        for (int j = 0; j < selections.size(); ++j)
-        {
-            if (selections.getUnchecked(j)->size() > 0)
-            {
-                if (selections.getUnchecked(j)->getUnchecked(0).getPattern() == ownerPattern)
-                {
-                    arrayToAddTo = selections.getUnchecked(j);
-                }
-            }
-        }
-
-        if (arrayToAddTo == nullptr)
-        {
-            arrayToAddTo = new Array<Clip>();
-            selections.add(arrayToAddTo);
-        }
-
-        arrayToAddTo->add(clip);
-    }
-
-    bool didCheckpoint = false;
-
-    for (int i = 0; i < selections.size(); ++i)
-    {
-        Pattern *pattern = (selections.getUnchecked(i)->getUnchecked(0).getPattern());
-
-        if (! didCheckpoint)
-        {
-            didCheckpoint = true;
-            pattern->checkpoint();
-        }
-
-        for (Clip &c : *selections.getUnchecked(i))
-        {
-            pattern->remove(c, true);
-        }
+        this->selection.addToSelection(e.second.get());
     }
 }
 
-void PatternRoll::selectAll()
+void PatternRoll::zoomViewToClip(const Clip &clip) const
 {
     // TODO
+    //const Pattern *pattern = clip.getPattern();
+    //const MidiTrack *track = pattern->getTrack();
+    //const MidiSequence *sequence = track->getSequence();
 }
 
 void PatternRoll::reloadRollContent()
@@ -451,6 +411,9 @@ void PatternRoll::onChangeTrackProperties(MidiTrack *const track)
 
 void PatternRoll::onRemoveTrack(MidiTrack *const track)
 {
+    this->selection.deselectAll();
+    this->hideAllGhostClips();
+
     this->tracks.removeAllInstancesOf(track);
 
     if (MidiTrackHeader *deletedHeader = this->trackHeaders[track].get())
@@ -525,6 +488,8 @@ void PatternRoll::onRemoveClip(const Clip &clip)
 {
     if (const auto deletedComponent = this->clipComponents[clip].get())
     {
+        this->hideAllGhostClips();
+
         this->fader.fadeOut(deletedComponent, 150);
         this->selection.deselect(deletedComponent);
         this->clipComponents.erase(clip);
@@ -696,10 +661,42 @@ void PatternRoll::mouseUp(const MouseEvent &e)
 // Keyboard shortcuts
 //===----------------------------------------------------------------------===//
 
-// Handle all hot-key commands here:
 void PatternRoll::handleCommandMessage(int commandId)
 {
-    // TODO switch
+    // TODO pattern roll-specific commands switch
+    switch (commandId)
+    {
+    case CommandIDs::RenameTrack:
+        if (auto patternNode = dynamic_cast<PatternEditorTreeItem *>(this->project.findPrimaryActiveItem()))
+        {
+            // TODO check if all items in selection belong to one track
+            // and if they do, find according tree node and rename it
+            //this->selection.getFirstAs()
+
+            //auto inputDialog = ModalDialogInput::Presets::renameTrack(patternNode->getXPath());
+            //inputDialog->onOk = trackNode->getRenameCallback();
+            //App::Layout().showModalComponentUnowned(inputDialog.release());
+        }
+        break;
+    case CommandIDs::DeleteClips:
+        PatternOperations::deleteSelection(this->getLassoSelection());
+        break;
+    //case CommandIDs::BeatShiftLeft:
+    //    PatternOperations::shiftBeatRelative(this->getLassoSelection(), -1.f / BEATS_PER_BAR);
+    //    break;
+    //case CommandIDs::BeatShiftRight:
+    //    PatternOperations::shiftBeatRelative(this->getLassoSelection(), 1.f / BEATS_PER_BAR);
+    //    break;
+    //case CommandIDs::BarShiftLeft:
+    //    PatternOperations::shiftBeatRelative(this->getLassoSelection(), -1.f);
+    //    break;
+    //case CommandIDs::BarShiftRight:
+    //    PatternOperations::shiftBeatRelative(this->getLassoSelection(), 1.f);
+    //    break;
+    default:
+        break;
+    }
+
     HybridRoll::handleCommandMessage(commandId);
 }
 
