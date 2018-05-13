@@ -58,12 +58,11 @@ TimelineMenu::TimelineMenu(ProjectTreeItem &parentProject) :
     const AnnotationEvent *selectedAnnotation = nullptr;
     const KeySignatureEvent *selectedKeySignature = nullptr;
     const TimeSignatureEvent *selectedTimeSignature = nullptr;
-
     const ProjectTimeline *timeline = this->project.getTimeline();
-    const double seekPosition = this->project.getTransport().getSeekPosition();
-    
+
     if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
     {
+        const double seekPosition = this->project.getTransport().getSeekPosition();
         const double seekThreshold = (1.0 / double(roll->getNumBeats())) / 10.0;
         const auto annotationsSequence = timeline->getAnnotations()->getSequence();
         const auto keySignaturesSequence = timeline->getKeySignatures()->getSequence();
@@ -77,17 +76,17 @@ TimelineMenu::TimelineMenu(ProjectTreeItem &parentProject) :
     
     if (selectedAnnotation == nullptr)
     {
-        cmds.add(MenuItem::item(Icons::create, CommandIDs::AddAnnotation, TRANS("menu::annotation::add")));
+        cmds.add(MenuItem::item(Icons::create, CommandIDs::AddAnnotation, TRANS("menu::annotation::add"))->closesMenu());
     }
 
     if (selectedKeySignature == nullptr)
     {
-        cmds.add(MenuItem::item(Icons::create, CommandIDs::AddKeySignature, TRANS("menu::keysignature::add")));
+        cmds.add(MenuItem::item(Icons::create, CommandIDs::AddKeySignature, TRANS("menu::keysignature::add"))->closesMenu());
     }
 
     if (selectedTimeSignature == nullptr)
     {
-        cmds.add(MenuItem::item(Icons::create, CommandIDs::AddTimeSignature, TRANS("menu::timesignature::add")));
+        cmds.add(MenuItem::item(Icons::create, CommandIDs::AddTimeSignature, TRANS("menu::timesignature::add"))->closesMenu());
     }
 
     if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
@@ -99,18 +98,29 @@ TimelineMenu::TimelineMenu(ProjectTreeItem &parentProject) :
             if (AnnotationEvent *annotation =
                 dynamic_cast<AnnotationEvent *>(annotationsSequence->getUnchecked(i)))
             {
-                const int commandIndex = (CommandIDs::JumpToAnnotation + i);
-                
                 double outTimeMs = 0.0;
                 double outTempo = 0.0;
                 const double seekPos = roll->getTransportPositionByBeat(annotation->getBeat());
                 this->project.getTransport().calcTimeAndTempoAt(seekPos, outTimeMs, outTempo);
                 
-                cmds.add(MenuItem::item(Icons::annotation,
-                                                 commandIndex,
-                                                 annotation->getDescription())->
-                         withSubLabel(Transport::getTimeString(outTimeMs))->
-                         colouredWith(annotation->getColour()));
+                cmds.add(MenuItem::item(Icons::annotation, annotation->getDescription())->
+                    withSubLabel(Transport::getTimeString(outTimeMs))->
+                    colouredWith(annotation->getColour())->withAction([this, i]()
+                {
+                    const auto timeline = this->project.getTimeline();
+                    const auto annotations = timeline->getAnnotations()->getSequence();
+                    if (auto roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
+                    {
+                        if (auto annotation = dynamic_cast<AnnotationEvent *>(annotations->getUnchecked(i)))
+                        {
+                            const double seekPosition = roll->getTransportPositionByBeat(annotation->getBeat());
+                            this->project.getTransport().seekToPosition(seekPosition);
+                            roll->scrollToSeekPosition();
+                        }
+                    }
+
+                    this->dismiss();
+                }));
             }
         }
     }
@@ -120,41 +130,4 @@ TimelineMenu::TimelineMenu(ProjectTreeItem &parentProject) :
     }
     
     this->updateContent(cmds, SlideDown);
-}
-
-void TimelineMenu::handleCommandMessage(int commandId)
-{
-    if (commandId == CommandIDs::AddAnnotation ||
-        commandId == CommandIDs::AddKeySignature ||
-        commandId == CommandIDs::AddTimeSignature)
-    {
-        if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
-        {
-            roll->postCommandMessage(commandId);
-            this->dismiss();
-        }
-    }
-    else if (commandId == CommandIDs::Cancel)
-    {
-        this->dismiss();
-    }
-    else
-    {
-        ProjectTimeline *timeline = this->project.getTimeline();
-        const int annotationIndex = (commandId - CommandIDs::JumpToAnnotation);
-        
-        if (HybridRoll *roll =
-            dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
-        {
-            if (AnnotationEvent *annotation =
-                dynamic_cast<AnnotationEvent *>(timeline->getAnnotations()->getSequence()->getUnchecked(annotationIndex)))
-            {
-                const double seekPosition = roll->getTransportPositionByBeat(annotation->getBeat());
-                this->project.getTransport().seekToPosition(seekPosition);
-                roll->scrollToSeekPosition();
-            }
-        }
-
-        this->dismiss();
-    }
 }

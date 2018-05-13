@@ -82,15 +82,6 @@ void MidiTrackMenu::handleCommandMessage(int commandId)
             this->initProjectSelection();
             break;
 
-        case CommandIDs::RenameTrack:
-        {
-            auto inputDialog = ModalDialogInput::Presets::renameTrack(this->trackItem.getXPath());
-            inputDialog->onOk = this->trackItem.getRenameCallback();
-            App::Layout().showModalComponentUnowned(inputDialog.release());
-            this->dismiss();
-            break;
-        }
-
         case CommandIDs::DeleteTrack:
         {
             ProjectTreeItem *project = this->trackItem.getProject();
@@ -160,7 +151,8 @@ void MidiTrackMenu::initDefaultCommands()
         cmds.add(MenuItem::item(Icons::instrument, CommandIDs::SelectTrackInstrument, TRANS("menu::track::change::instrument"))->withSubmenu());
     }
     
-    cmds.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack, TRANS("menu::track::rename")));
+    cmds.add(MenuItem::item(Icons::ellipsis, CommandIDs::RenameTrack,
+        TRANS("menu::track::rename"))->closesMenu());
     
     //MainLayout &workspace = this->trackItem.getWorkspace();
     //Array<ProjectTreeItem *> projects = workspace.getLoadedProjects();

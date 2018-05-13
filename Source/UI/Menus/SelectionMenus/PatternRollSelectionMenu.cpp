@@ -41,7 +41,7 @@ static MenuPanel::Menu createDefaultPanel()
 PatternRollSelectionMenu::PatternRollSelectionMenu(WeakReference<Lasso> lasso) :
     lasso(lasso)
 {
-    this->updateContent(createDefaultPanel(), MenuPanel::SlideLeft);
+    this->updateContent(createDefaultPanel(), MenuPanel::SlideRight);
 }
 
 void PatternRollSelectionMenu::handleCommandMessage(int commandId)
