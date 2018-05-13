@@ -204,8 +204,6 @@ void HelioTheme::drawLabel(Graphics &g, Label &label, juce_wchar passwordCharact
 {
     if (! label.isBeingEdited())
     {
-        //Logger::writeToLog("drawLabel: " + label.getText());
-
         const Font font(this->getLabelFont(label));
         const String textToDraw = (passwordCharacter != 0) ?
             String::repeatedString(String::charToString(passwordCharacter), label.getText().length()) :
@@ -774,38 +772,30 @@ void HelioTheme::positionDocumentWindowButtons(DocumentWindow &,
 
 void HelioTheme::initResources()
 {
-//    // Search for Lato if present,
-//    // Or fallback to default sans serif font
-//    
-//    Logger::writeToLog("Fonts search started");
-//    Array <Font> systemFonts;
-//    Font::findFonts(systemFonts);
-//    
-//    for (auto && systemFont : systemFonts)
-//    {
-//        if (systemFont.getTypeface()->getName().toLowerCase().startsWith("lato"))
-//        {
-//            Logger::writeToLog("Found " + systemFont.getTypeface()->getName());
-//            Font font(systemFont);
-//            this->textTypefaceCache = Typeface::createSystemTypefaceFor(font);
-//        }
-//    }
-//    
-//    if (this->textTypefaceCache == nullptr)
-//    {
-//        // Verdana on win32, Bitstream Vera Sans or something on Linux,
-//        // Lucida Grande on mac, Helvetica on iOS
-//        Logger::writeToLog("Falling back to system sans serif");
-//        this->textTypefaceCache =
-//        Font::getDefaultTypefaceForFont(Font(Font::getDefaultSansSerifFontName(), 0, 0));
-//        Logger::writeToLog("Done");
-//    }
-    
-//    MemoryInputStream is(BinaryData::comfortaa_font, BinaryData::comfortaa_fontSize, false);
-//    this->textTypefaceCache = (new CustomTypeface(is));
+    // Search for Noto if present,
+    // Or fallback to default sans serif font
 
-    MemoryInputStream is(BinaryData::lato_fnt, BinaryData::lato_fntSize, false);
-    this->textTypefaceCache = (new CustomTypeface(is));
+    Logger::writeToLog("Fonts search started");
+    Array<Font> systemFonts;
+    Font::findFonts(systemFonts);
+    
+    for (const auto &systemFont : systemFonts)
+    {
+        if (systemFont.getTypeface()->getName().startsWithIgnoreCase("Noto Sans"))
+        {
+            Logger::writeToLog("Found " + systemFont.getTypeface()->getName());
+            this->textTypefaceCache = Typeface::createSystemTypefaceFor({ systemFont });
+        }
+    }
+    
+    if (this->textTypefaceCache == nullptr)
+    {
+        // Verdana on win32, Bitstream Vera Sans or something on Linux,
+        // Lucida Grande on mac, Helvetica on iOS
+        Logger::writeToLog("Falling back to system sans serif");
+        this->textTypefaceCache = Font::getDefaultTypefaceForFont({ Font::getDefaultSansSerifFontName(), 0, 0 });
+        Logger::writeToLog("Done with fonts");
+    }
 
     Icons::initBuiltInImages();
 }
