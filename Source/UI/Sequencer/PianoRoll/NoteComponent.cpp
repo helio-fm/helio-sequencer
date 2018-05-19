@@ -510,7 +510,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                 {
                     groupBefore.add(nc->getNote());
                     groupAfter.add(nc->continueTuning(e));
-                    //this->getRoll().setDefaultVolume(groupAfter.getLast().getVelocity());
+                    this->getRoll().setDefaultNoteVolume(groupAfter.getLast().getVelocity());
                 }
             }
             

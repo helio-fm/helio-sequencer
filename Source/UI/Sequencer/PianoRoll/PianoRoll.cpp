@@ -59,7 +59,6 @@
 
 #define ROWS_OF_TWO_OCTAVES 24
 #define DEFAULT_NOTE_LENGTH 0.25f
-#define DEFAULT_NOTE_VELOCITY 0.25f
 
 #define forEachEventOfGivenTrack(map, child, track) \
     for (const auto &_c : map) \
@@ -83,6 +82,7 @@ PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
     rowHeight(PIANOROLL_MIN_ROW_HEIGHT),
     newNoteDragging(nullptr),
     addNewNoteMode(false),
+    newNoteVolume(0.25f),
     defaultHighlighting() // default pattern (black and white keys)
 {
     this->defaultHighlighting = new HighlightingScheme(0, Scale::getNaturalMajorScale());
@@ -179,7 +179,12 @@ void PianoRoll::setSelectedTracks(Array<WeakReference<MidiTrack>> tracks,
     this->repaint(this->viewport.getViewArea());
 }
 
-void PianoRoll::setRowHeight(const int newRowHeight)
+void PianoRoll::setDefaultNoteVolume(float volume) noexcept
+{
+    this->newNoteVolume = volume;
+}
+
+void PianoRoll::setRowHeight(int newRowHeight)
 {
     if (newRowHeight == this->rowHeight || newRowHeight <= 1) { return; }
 
@@ -1016,13 +1021,8 @@ void PianoRoll::insertNewNoteAt(const MouseEvent &e)
     float draggingColumn = 0.f;
     this->getRowsColsByMousePosition(e.x, e.y, draggingRow, draggingColumn);
     this->addNewNoteMode = true;
-    // TODO adjust default velocity in runtime,
-    // e.g. use the last added note's velocity
-    this->addNote(draggingRow, draggingColumn, 
-        DEFAULT_NOTE_LENGTH, DEFAULT_NOTE_VELOCITY);
-    //this->activeLayer->sendMidiMessage(MidiMessage::noteOn(this->activeLayer->getChannel(), draggingRow, 0.5f));
+    this->addNote(draggingRow, draggingColumn, DEFAULT_NOTE_LENGTH, this->newNoteVolume);
 }
-
 
 //===----------------------------------------------------------------------===//
 // HybridRoll's legacy

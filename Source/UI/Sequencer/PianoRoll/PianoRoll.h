@@ -52,7 +52,9 @@ public:
     void setSelectedTracks(Array<WeakReference<MidiTrack>> tracks,
         WeakReference<MidiTrack> activeTrack);
 
-    void setRowHeight(const int newRowHeight);
+    void setDefaultNoteVolume(float volume) noexcept;
+
+    void setRowHeight(int newRowHeight);
     inline int getRowHeight() const noexcept
     { return this->rowHeight; }
 
@@ -169,7 +171,8 @@ private:
 
     NoteComponent *newNoteDragging;
     bool addNewNoteMode;
-    
+    float newNoteVolume;
+
     int numRows;
     int rowHeight;
 
