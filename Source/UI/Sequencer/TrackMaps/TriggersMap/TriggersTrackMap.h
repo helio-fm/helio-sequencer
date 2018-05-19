@@ -59,7 +59,7 @@ public:
     void onAddMidiEvent(const MidiEvent &event) override;
     void onRemoveMidiEvent(const MidiEvent &event) override;
     
-    // TODO!!!
+    // TODO! As a part of `automation editors` story
     void onAddClip(const Clip &clip) override {}
     void onChangeClip(const Clip &oldClip, const Clip &newClip) override {}
     void onRemoveClip(const Clip &clip) override {}

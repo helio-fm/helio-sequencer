@@ -64,7 +64,7 @@ private:
 
     void applyNoteBounds(TrackMapNoteComponent *nc);
     void reloadTrackMap();
-    void addTrack(MidiTrack *const track);
+    void loadTrack(const MidiTrack *const track);
 
     float projectFirstBeat;
     float projectLastBeat;
@@ -79,7 +79,7 @@ private:
     
     typedef SparseHashMap<Note, UniquePointer<TrackMapNoteComponent>, MidiEventHash> SequenceMap;
     typedef SparseHashMap<const Clip, UniquePointer<SequenceMap>, ClipHash> PatternMap;
-    PatternMap clipsMap;
+    PatternMap patternMap;
 
     JUCE_LEAK_DETECTOR(PianoTrackMap)
 };
