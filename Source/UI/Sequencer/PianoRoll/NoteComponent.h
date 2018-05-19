@@ -22,12 +22,14 @@ class MidiTrack;
 
 #include "MidiEventComponent.h"
 #include "Note.h"
+#include "Clip.h"
 
 class NoteComponent final : public MidiEventComponent
 {
 public:
 
-    NoteComponent(PianoRoll &gridRef, const Note &eventRef, bool ghostMode = false);
+    NoteComponent(PianoRoll &gridRef, const Note &note,
+        const Clip &clip, bool ghostMode = false);
 
     enum State
     {
@@ -45,11 +47,12 @@ public:
     // Helpers
     //===------------------------------------------------------------------===//
 
-    int getKey() const noexcept;
-    float getLength() const noexcept;
-    float getVelocity() const noexcept;
+    inline int getKey() const noexcept { return this->note.getKey(); }
+    inline float getLength() const noexcept { return this->note.getLength(); }
+    inline float getVelocity() const noexcept { return this->note.getVelocity(); }
+    inline const Note &getNote() const noexcept { return this->note; }
+    inline const Clip &getClip() const noexcept { return this->clip; }
 
-    const Note &getNote() const noexcept;
     PianoRoll &getRoll() const noexcept;
 
     void updateColours() override;
@@ -78,7 +81,8 @@ public:
 
 protected:
 
-    const MidiEvent &midiEvent;
+    const Note &note;
+    const Clip &clip;
 
     inline void paintNewLook(Graphics &g);
     inline void paintLegacyLook(Graphics &g);
@@ -93,34 +97,34 @@ protected:
     
     void startResizingRight(bool sendMidiMessage);
     bool getResizingRightDelta(const MouseEvent &e, float &deltaLength) const;
-    Note continueResizingRight(float deltaLength);
+    Note continueResizingRight(float deltaLength) const noexcept;
     void endResizingRight();
     
     void startResizingLeft(bool sendMidiMessage);
     bool getResizingLeftDelta(const MouseEvent &e, float &deltaLength) const;
-    Note continueResizingLeft(float deltaLength);
+    Note continueResizingLeft(float deltaLength) const noexcept;
     void endResizingLeft();
     
     void startTuning();
-    Note continueTuning(const MouseEvent &e);
-    Note continueTuningLinear(float delta);
-    Note continueTuningMultiplied(float factor);
-    Note continueTuningSine(float factor, float midline, float phase);
+    Note continueTuning(const MouseEvent &e) const noexcept;
+    Note continueTuningLinear(float delta) const noexcept;
+    Note continueTuningMultiplied(float factor) const noexcept;
+    Note continueTuningSine(float factor, float midline, float phase) const noexcept;
     void endTuning();
     
     void startGroupScalingRight(float groupStartBeat);
     bool getGroupScaleRightFactor(const MouseEvent &e, float &absScaleFactor) const;
-    Note continueGroupScalingRight(float absScaleFactor);
+    Note continueGroupScalingRight(float absScaleFactor) const noexcept;
     void endGroupScalingRight();
     
     void startGroupScalingLeft(float groupEndBeat);
     bool getGroupScaleLeftFactor(const MouseEvent &e, float &absScaleFactor) const;
-    Note continueGroupScalingLeft(float absScaleFactor);
+    Note continueGroupScalingLeft(float absScaleFactor) const noexcept;
     void endGroupScalingLeft();
     
     void startDragging(bool sendMidiMessage);
     bool getDraggingDelta(const MouseEvent &e, float &deltaBeat, int &deltaKey);
-    Note continueDragging(float deltaBeat, int deltaKey, bool sendMidiMessage);
+    Note continueDragging(float deltaBeat, int deltaKey, bool sendMidiMessage) const noexcept;
     void endDragging(bool sendMidiMessage = true);
     
     bool canResize() const noexcept;
@@ -145,7 +149,7 @@ protected:
     void setQuickSelectLayerMode(bool value);
 
     void stopSound();
-    void sendMidiMessage(const MidiMessage &message);
+    void sendMidiMessage(const MidiMessage &message) const;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(NoteComponent)
     

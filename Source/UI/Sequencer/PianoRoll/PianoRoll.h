@@ -159,7 +159,8 @@ private:
 private:
 
     void reloadRollContent();
-    
+    void loadTrack(const MidiTrack *const track);
+
     void updateChildrenBounds() override;
     void updateChildrenPositions() override;
     void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
@@ -230,11 +231,9 @@ private:
 
     ScopedPointer<PianoRollSelectionMenuManager> selectedNotesMenuManager;
     
-    typedef SparseHashMap<const Note, UniquePointer<NoteComponent>, MidiEventHash> EventComponentsMap;
-    EventComponentsMap eventComponents;
-
-    typedef SparseHashMap<const Clip, UniquePointer<EventComponentsMap>, ClipHash> ClipsMap;
-    ClipsMap clipsMap;
+    typedef SparseHashMap<const Note, UniquePointer<NoteComponent>, MidiEventHash> SequenceMap;
+    typedef SparseHashMap<const Clip, UniquePointer<SequenceMap>, ClipHash> PatternMap;
+    PatternMap patternMap;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRoll)
 };

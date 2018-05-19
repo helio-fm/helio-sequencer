@@ -59,8 +59,10 @@ public:
     
     typedef SparseHashMap<String, SelectionProxyArray::Ptr, StringHash> GroupedSelections;
 
-    void invalidateCache();
+    // Gets all selected events, split by track
+    // So that is easier to perform undo/redo actions
     const GroupedSelections &getGroupedSelections() const;
+    void invalidateCache();
     bool shouldDisplayGhostNotes() const noexcept;
 
     template<typename T>
