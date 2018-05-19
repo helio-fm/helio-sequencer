@@ -754,7 +754,7 @@ Array<DeltaDiff> createAnnotationsDiffs(const ValueTree &state, const ValueTree 
 
                 const bool eventHasChanged =
                     (stateEvent->getBeat() != changesEvent->getBeat() ||
-                     stateEvent->getColour() != changesEvent->getColour() ||
+                     stateEvent->getTrackColour() != changesEvent->getTrackColour() ||
                      stateEvent->getDescription() != changesEvent->getDescription());
 
                 if (eventHasChanged)

@@ -48,11 +48,11 @@ Note::Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy) noex
 
 Array<MidiMessage> Note::toMidiMessages() const
 {
-    MidiMessage eventNoteOn(MidiMessage::noteOn(this->getChannel(), this->key, velocity));
+    MidiMessage eventNoteOn(MidiMessage::noteOn(this->getTrackChannel(), this->key, velocity));
     const double startTime = round(double(this->beat) * MS_PER_BEAT);
     eventNoteOn.setTimeStamp(startTime);
 
-    MidiMessage eventNoteOff(MidiMessage::noteOff(this->getChannel(), this->key));
+    MidiMessage eventNoteOff(MidiMessage::noteOff(this->getTrackChannel(), this->key));
     const double endTime = round(double(this->beat + this->length) * MS_PER_BEAT);
     eventNoteOff.setTimeStamp(endTime);
 

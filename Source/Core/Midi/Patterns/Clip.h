@@ -36,9 +36,11 @@ public:
 
     Pattern *getPattern() const noexcept;
     float getBeat() const noexcept;
-    Colour getColour() const noexcept;
     String getId() const noexcept;
     bool isValid() const noexcept;
+
+    Colour getTrackColour() const noexcept;
+    int getTrackControllerNumber() const noexcept;
 
     Clip copyWithNewId(Pattern *newOwner = nullptr) const;
     Clip withParameters(const ValueTree &tree) const;

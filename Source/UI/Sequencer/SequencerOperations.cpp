@@ -1626,7 +1626,7 @@ void SequencerOperations::shiftKeyRelative(Lasso &selection,
             if (transport != nullptr && numSelected < 8)
             {
                 transport->sendMidiMessage(pianoLayer->getTrackId(),
-                    MidiMessage::noteOn(newNote.getChannel(), newNote.getKey(), newNote.getVelocity()));
+                    MidiMessage::noteOn(newNote.getTrackChannel(), newNote.getKey(), newNote.getVelocity()));
             }
         }
         

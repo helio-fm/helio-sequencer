@@ -43,7 +43,7 @@ AnnotationMenu::AnnotationMenu(ProjectTreeItem &parentProject, const AnnotationE
     {
         const String name(colours.getAllKeys()[i]);
         const Colour colour(Colour::fromString(colours[name]));
-        const bool isSelected = (colour == this->annotation.getColour());
+        const bool isSelected = (colour == this->annotation.getTrackColour());
         cmds.add(MenuItem::item(isSelected ? Icons::apply : Icons::colour, CommandIDs::SetAnnotationColour + i, name)->colouredWith(colour));
     }
     
@@ -75,7 +75,7 @@ void AnnotationMenu::handleCommandMessage(int commandId)
             const String name(colours.getAllKeys()[colourIndex]);
             const Colour colour(Colour::fromString(colours[name]));
             
-            if (colour == this->annotation.getColour())
+            if (colour == this->annotation.getTrackColour())
             {
                 return;
             }

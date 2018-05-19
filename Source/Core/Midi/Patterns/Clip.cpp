@@ -65,10 +65,16 @@ bool Clip::isValid() const noexcept
     return this->pattern != nullptr && this->id.isNotEmpty();
 }
 
-Colour Clip::getColour() const noexcept
+Colour Clip::getTrackColour() const noexcept
 {
     jassert(this->pattern);
     return this->pattern->getTrack()->getTrackColour();
+}
+
+int Clip::getTrackControllerNumber() const noexcept
+{
+    jassert(this->pattern);
+    return this->pattern->getTrack()->getTrackControllerNumber();
 }
 
 Clip Clip::copyWithNewId(Pattern *newOwner) const

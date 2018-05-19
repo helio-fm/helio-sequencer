@@ -101,7 +101,7 @@ String AnnotationEvent::getDescription() const noexcept
     return this->description;
 }
 
-Colour AnnotationEvent::getColour() const noexcept
+Colour AnnotationEvent::getTrackColour() const noexcept
 {
     return this->colour;
 }

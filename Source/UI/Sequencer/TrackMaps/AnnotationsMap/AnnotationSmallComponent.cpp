@@ -70,7 +70,7 @@ void AnnotationSmallComponent::paint (Graphics& g)
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..
-    g.setColour(this->event.getColour().interpolatedWith(Colours::white, 0.55f).withAlpha(0.2f));
+    g.setColour(this->event.getTrackColour().interpolatedWith(Colours::white, 0.55f).withAlpha(0.2f));
     g.drawHorizontalLine(this->getHeight() - 4, 0.f, float(this->getWidth() - 4));
     //[/UserPaint]
 }
@@ -119,9 +119,9 @@ float AnnotationSmallComponent::getBeat() const
 void AnnotationSmallComponent::updateContent()
 {
     if (this->annotationLabel->getText() != this->event.getDescription() ||
-        this->lastColour != this->event.getColour())
+        this->lastColour != this->event.getTrackColour())
     {
-        this->lastColour = this->event.getColour();
+        this->lastColour = this->event.getTrackColour();
         this->annotationLabel->setText(this->event.getDescription(), dontSendNotification);
         this->annotationLabel->setColour(Label::textColourId, this->lastColour.interpolatedWith(Colours::white, 0.55f));
         this->textWidth = float(this->annotationLabel->getFont().getStringWidth(this->event.getDescription()));

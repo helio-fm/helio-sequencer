@@ -105,7 +105,7 @@ TimelineMenu::TimelineMenu(ProjectTreeItem &parentProject) :
                 
                 cmds.add(MenuItem::item(Icons::annotation, annotation->getDescription())->
                     withSubLabel(Transport::getTimeString(outTimeMs))->
-                    colouredWith(annotation->getColour())->withAction([this, i]()
+                    colouredWith(annotation->getTrackColour())->withAction([this, i]()
                 {
                     const auto timeline = this->project.getTimeline();
                     const auto annotations = timeline->getAnnotations()->getSequence();

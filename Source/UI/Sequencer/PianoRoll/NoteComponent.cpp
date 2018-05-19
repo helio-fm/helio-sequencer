@@ -85,7 +85,7 @@ float NoteComponent::getVelocity() const noexcept
 void NoteComponent::updateColours()
 {
     this->colour = Colours::white
-        .interpolatedWith(this->getNote().getColour(), 0.5f)
+        .interpolatedWith(this->getNote().getTrackColour(), 0.5f)
         .withAlpha(this->ghostMode ? 0.2f : 0.95f)
         .darker(this->selectedState ? 0.5f : 0.f);
 

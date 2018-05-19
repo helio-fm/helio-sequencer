@@ -103,8 +103,8 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
         }
         else
         {
-            cc = MidiMessage::controllerEvent(this->getChannel(),
-                                              this->getControllerNumber(),
+            cc = MidiMessage::controllerEvent(this->getTrackChannel(),
+                                              this->getTrackControllerNumber(),
                                               int(this->controllerValue * 127));
         
         }
@@ -148,8 +148,8 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
                     }
                     else
                     {
-                        MidiMessage ci(MidiMessage::controllerEvent(this->getChannel(),
-                                                                    this->getControllerNumber(),
+                        MidiMessage ci(MidiMessage::controllerEvent(this->getTrackChannel(),
+                                                                    this->getTrackControllerNumber(),
                                                                     int(this->controllerValue * 127)));
                         ci.setTimeStamp(interpolatedEventTimeStamp);
                         result.add(ci);

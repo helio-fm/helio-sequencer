@@ -51,19 +51,19 @@ MidiSequence *MidiEvent::getSequence() const noexcept
     return this->sequence;
 }
 
-int MidiEvent::getControllerNumber() const noexcept
+int MidiEvent::getTrackControllerNumber() const noexcept
 {
     jassert(this->sequence);
     return this->sequence->getTrack()->getTrackControllerNumber();
 }
 
-int MidiEvent::getChannel() const noexcept
+int MidiEvent::getTrackChannel() const noexcept
 {
     jassert(this->sequence);
     return this->sequence->getTrack()->getTrackChannel();
 }
 
-Colour MidiEvent::getColour() const noexcept
+Colour MidiEvent::getTrackColour() const noexcept
 {
     jassert(this->sequence);
     return this->sequence->getTrack()->getTrackColour();

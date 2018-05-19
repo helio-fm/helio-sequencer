@@ -48,10 +48,10 @@ public:
     bool isValid() const noexcept;
 
     MidiSequence *getSequence() const noexcept;
-    Colour getColour() const noexcept;
 
-    int getControllerNumber() const noexcept;
-    int getChannel() const noexcept;
+    int getTrackControllerNumber() const noexcept;
+    int getTrackChannel() const noexcept;
+    Colour getTrackColour() const noexcept;
 
     Id getId() const noexcept;
     float getBeat() const noexcept;

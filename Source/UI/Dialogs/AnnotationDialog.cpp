@@ -130,7 +130,7 @@ AnnotationDialog::AnnotationDialog(Component &owner, AnnotationsSequence *sequen
         this->removeEventButton->setButtonText(TRANS("dialog::annotation::edit::delete"));
     }
 
-    this->colourSwatches->setSelectedColour(this->originalEvent.getColour());
+    this->colourSwatches->setSelectedColour(this->originalEvent.getTrackColour());
 
     this->textEditor->addListener(this);
     this->textEditor->setFont(Font(Font::getDefaultSansSerifFontName(), 21.f, Font::plain));

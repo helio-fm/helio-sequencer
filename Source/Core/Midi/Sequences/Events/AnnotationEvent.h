@@ -46,7 +46,7 @@ public:
     //===------------------------------------------------------------------===//
 
     String getDescription() const noexcept;
-    Colour getColour() const noexcept;
+    Colour getTrackColour() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Serializable

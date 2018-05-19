@@ -58,7 +58,7 @@ void ClipComponent::updateColours()
 {
     jassert(clip.isValid());
     this->headColour = Colours::white
-        .interpolatedWith(this->getClip().getColour(), 0.55f)
+        .interpolatedWith(this->getClip().getTrackColour(), 0.55f)
         .withAlpha(this->ghostMode ? 0.2f : 0.95f)
         .brighter(this->selectedState ? 0.25f : 0.f);
 
