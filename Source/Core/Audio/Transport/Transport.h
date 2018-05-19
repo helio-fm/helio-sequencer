@@ -101,6 +101,11 @@ public:
     void onRemoveMidiEvent(const MidiEvent &event) override;
     void onPostRemoveMidiEvent(MidiSequence *const layer) override;
 
+    void onAddClip(const Clip &clip) override;
+    void onChangeClip(const Clip &oldClip, const Clip &newClip) override;
+    void onRemoveClip(const Clip &clip) override;
+    void onPostRemoveClip(Pattern *const pattern) override;
+
     void onAddTrack(MidiTrack *const track) override;
     void onRemoveTrack(MidiTrack *const track) override;
     void onChangeTrackProperties(MidiTrack *const track) override;

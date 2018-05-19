@@ -464,6 +464,21 @@ void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
+void PianoRoll::onAddClip(const Clip &clip)
+{
+    // TODO
+}
+
+void PianoRoll::onChangeClip(const Clip &oldClip, const Clip &newClip)
+{
+    // TODO
+}
+
+void PianoRoll::onRemoveClip(const Clip &clip)
+{
+    // TODO
+}
+
 void PianoRoll::onChangeTrackProperties(MidiTrack *const track)
 {
     if (auto sequence = dynamic_cast<const PianoSequence *>(track->getSequence()))

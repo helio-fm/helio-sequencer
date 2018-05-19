@@ -24,6 +24,8 @@
 #include "MidiSequence.h"
 #include "MidiEvent.h"
 #include "MidiTrack.h"
+#include "Clip.h"
+#include "Pattern.h"
 #include "App.h"
 #include "Workspace.h"
 #include "AudioCore.h"
@@ -528,63 +530,62 @@ void Transport::instrumentRemovedPostAction()
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
+// FIXME: need to do something more reasonable than this workaround:
+#define updateLengthAndTimeIfNeeded(track) \
+    if (track->getTrackControllerNumber() == MidiTrack::tempoController) \
+    { \
+        this->seekToPosition(this->getSeekPosition()); \
+    }
+
 void Transport::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     // todo stop playback only if the event is in future
-    // and getControllerNumber == 0 (not an automation)
-    
-    if (this->isPlaying())
-    {
-        this->stopPlayback();
-    }
-    
-    // a hack
-    if (newEvent.getControllerNumber() == MidiTrack::tempoController)
-    {
-        this->seekToPosition(this->getSeekPosition());
-    }
-    
+    // and getTrackControllerNumber == 0 (not an automation)
+    this->stopPlayback();
+    updateLengthAndTimeIfNeeded((&newEvent));
     this->sequencesAreOutdated = true;
 }
 
 void Transport::onAddMidiEvent(const MidiEvent &event)
 {
     // todo stop playback only if the event is in future
-    // and getControllerNumber == 0 (not an automation)
+    // and getTrackControllerNumber == 0 (not an automation)
     this->stopPlayback();
-    
-    // a hack
-    if (event.getControllerNumber() == MidiTrack::tempoController)
-    {
-        this->seekToPosition(this->getSeekPosition());
-    }
-    
+    updateLengthAndTimeIfNeeded((&event));
     this->sequencesAreOutdated = true;
 }
 
-void Transport::onRemoveMidiEvent(const MidiEvent &event)
+void Transport::onRemoveMidiEvent(const MidiEvent &event) {}
+void Transport::onPostRemoveMidiEvent(MidiSequence *const sequence)
 {
-    // todo stop playback only if the event is in future and getControllerNumber == 0 (not an automation)
     this->stopPlayback();
-    
+    updateLengthAndTimeIfNeeded(sequence->getTrack());
     this->sequencesAreOutdated = true;
 }
 
-void Transport::onPostRemoveMidiEvent(MidiSequence *const layer)
+void Transport::onAddClip(const Clip &clip)
 {
     this->stopPlayback();
-    
-    // a hack to re-calculate length and current time
-    if (layer->getTrack()->getTrackControllerNumber() == MidiTrack::tempoController)
-    {
-        this->seekToPosition(this->getSeekPosition());
-    }
-    
+    updateLengthAndTimeIfNeeded((&clip));
+    this->sequencesAreOutdated = true;
+}
+
+void Transport::onChangeClip(const Clip &oldClip, const Clip &newClip)
+{
+    this->stopPlayback();
+    updateLengthAndTimeIfNeeded((&newClip));
+    this->sequencesAreOutdated = true;
+}
+
+void Transport::onRemoveClip(const Clip &clip) {}
+void Transport::onPostRemoveClip(Pattern *const pattern)
+{
+    this->stopPlayback();
+    updateLengthAndTimeIfNeeded(pattern->getTrack());
     this->sequencesAreOutdated = true;
 }
 
