@@ -28,4 +28,5 @@ namespace ComponentIDs
     static const String mainLayoutId = "MainLayout";
     static const String sequencerLayoutId = "SequencerLayout";
     static const String versionControlStage = "VersionControlStage";
+    static const String orchestraPit = "OrchestraPit";
 } // namespace ComponentIDs

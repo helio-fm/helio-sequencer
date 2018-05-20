@@ -56,10 +56,6 @@ void OrchestraPitMenu::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {
-        case CommandIDs::ScanAllPlugins:
-            App::Workspace().getPluginManager().runInitialScan();
-            break;
-
         case CommandIDs::ScanPluginsFolder:
             
 #if HELIO_DESKTOP

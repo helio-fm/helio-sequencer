@@ -205,7 +205,13 @@ void AudioPluginsListComponent::paintCell(Graphics &g,
     int w, int h, bool rowIsSelected)
 {
     g.setFont(Font(Font::getDefaultSansSerifFontName(), h * 0.27f, Font::plain));
-    const auto pd = this->pluginScanner.getList().getType(rowNumber);
+    const auto *pd = this->pluginScanner.getList().getType(rowNumber);
+    if (pd == nullptr)
+    {
+        // Plugin scanner must be re-building a list now
+        return;
+    }
+
     const int margin = h / 12;
 
     switch (columnId)
