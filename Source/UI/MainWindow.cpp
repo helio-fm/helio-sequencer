@@ -38,10 +38,6 @@ public:
     {
         Rectangle<int> screenArea = Desktop::getInstance().getDisplays().getMainDisplay().userArea;
 
-        //const double dpi = Desktop::getInstance().getDisplays().getMainDisplay().dpi;
-        //const double cmWidth = (screenArea.getWidth() / dpi) * 2.54;
-        //const double cmHeight = (screenArea.getHeight() / dpi) * 2.54;
-
         const float realWidth = float(screenArea.getWidth()) / float(this->scale);
         const float realHeight = float(screenArea.getHeight()) / float(this->scale);
 
@@ -52,6 +48,7 @@ public:
         newTransform = newTransform.scale(realScaleWidth, realScaleheight);
         this->workspace->setTransform(newTransform);
 
+        this->setPaintingIsUnclipped(true);
         this->addAndMakeVisible(this->workspace);
     }
 
@@ -66,13 +63,8 @@ public:
 private:
 
     SafePointer<MainLayout> workspace;
-
     int scale;
-
 };
-
-
-
 
 MainWindow::MainWindow() :
     DocumentWindow("Helio", Colours::black, DocumentWindow::allButtons)
@@ -127,7 +119,6 @@ MainWindow::MainWindow() :
     }
 
     this->createLayoutComponent();
-
     this->setVisible(true);
 
 #if JUCE_IOS
@@ -190,7 +181,6 @@ bool MainWindow::isRunningOnDesktop()
 #elif HELIO_DESKTOP
     return false;
 #endif
-
 }
 
 void MainWindow::closeButtonPressed()

@@ -26,12 +26,6 @@ class Headline;
 #include "ComponentFader.h"
 #include "HotkeyScheme.h"
 
-#if HELIO_DESKTOP
-#   define HAS_FADING_PAGECHANGE 1
-#elif HELIO_MOBILE
-#   define HAS_FADING_PAGECHANGE 0
-#endif
-
 class MainLayout final : public Component
 {
 public:
@@ -83,10 +77,6 @@ public:
 private:
 
     ComponentFader fader;
-    
-#if HAS_FADING_PAGECHANGE
-    ComponentAnimator pageFader;
-#endif
     
     ScopedPointer<Component> initScreen;
     SafePointer<Component> currentContent;
