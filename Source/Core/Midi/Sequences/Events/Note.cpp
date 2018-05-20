@@ -34,12 +34,6 @@ Note::Note(WeakReference<MidiSequence> owner,
     length(lengthVal),
     velocity(velocityVal) {}
 
-Note::Note(const Note &other) noexcept :
-    MidiEvent(other),
-    key(other.key),
-    length(other.length),
-    velocity(other.velocity) {}
-
 Note::Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy) noexcept :
     MidiEvent(owner, parametersToCopy),
     key(parametersToCopy.key),

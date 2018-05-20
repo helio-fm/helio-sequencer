@@ -28,7 +28,13 @@ public:
     using Key = int;
 
     Note() noexcept;
-    Note(const Note &other) noexcept;
+
+    Note(const Note &other) noexcept = default;
+    Note &operator= (const Note &other) = default;
+
+    Note(Note &&other) noexcept = default;
+    Note &operator= (Note &&other) noexcept = default;
+
     Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy) noexcept;
     explicit Note(WeakReference<MidiSequence> owner,
          int keyVal = 0, float beatVal = 0.f,
@@ -81,5 +87,4 @@ protected:
 private:
 
     JUCE_LEAK_DETECTOR(Note);
-
 };
