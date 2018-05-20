@@ -1414,13 +1414,16 @@ void HybridRoll::handleAsyncUpdate()
     {
         HYBRID_ROLL_BULK_REPAINT_START
 
+        //Logger::writeToLog(this->getComponentID() + " is repainting batch of " + String(this->batchRepaintList.size()));
+
         for (int i = 0; i < this->batchRepaintList.size(); ++i)
         {
-            if (FloatBoundsComponent *mc = this->batchRepaintList.getUnchecked(i))
+            // There are still many cases when a scheduled component is deleted at this time:
+            if (FloatBoundsComponent *component = this->batchRepaintList.getUnchecked(i))
             {
-                const Rectangle<float> nb(this->getEventBounds(mc));
-                mc->setFloatBounds(nb);
-                mc->repaint();
+                const Rectangle<float> nb(this->getEventBounds(component));
+                component->setFloatBounds(nb);
+                component->repaint();
             }
         }
 

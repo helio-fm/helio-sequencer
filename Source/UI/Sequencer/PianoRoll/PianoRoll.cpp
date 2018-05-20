@@ -320,13 +320,17 @@ void PianoRoll::addNote(int key, float beat, float length, float velocity)
 
 Rectangle<float> PianoRoll::getEventBounds(FloatBoundsComponent *mc) const
 {
-    //jassert(dynamic_cast<NoteComponent *>(mc));
-    NoteComponent *nc = static_cast<NoteComponent *>(mc);
+    jassert(dynamic_cast<NoteComponent *>(mc));
+    const auto *nc = static_cast<NoteComponent *>(mc);
     return this->getEventBounds(nc->getKey(), nc->getBeat(), nc->getLength());
 }
 
 Rectangle<float> PianoRoll::getEventBounds(int key, float beat, float length) const
 {
+    jassert(key >= -128 && key <= 128);
+    //jassert(length > 0.f);
+    //Logger::writeToLog("getEventBounds " + String(key) + ", " + String(beat));
+
     const double startOffsetBeat = this->firstBar * double(BEATS_PER_BAR);
     const double x = this->barWidth * double(beat - startOffsetBeat) / double(BEATS_PER_BAR);
 
@@ -517,7 +521,7 @@ void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
 void PianoRoll::onAddClip(const Clip &clip)
 {
     const SequenceMap *referenceMap = nullptr;
-    const auto track = clip.getPattern()->getTrack();
+    const auto *track = clip.getPattern()->getTrack();
 
     forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
     {
@@ -537,7 +541,8 @@ void PianoRoll::onAddClip(const Clip &clip)
 
     for (const auto &e : *referenceMap)
     {
-        const auto &note = e.first;
+        // reference the same note as neighbor components:
+        const auto &note = e.second.get()->getNote();
         auto component = new NoteComponent(*this, note, clip);
         (*sequenceMap)[note] = UniquePointer<NoteComponent>(component);
         this->addAndMakeVisible(component);
@@ -553,7 +558,7 @@ void PianoRoll::onAddClip(const Clip &clip)
 
 void PianoRoll::onChangeClip(const Clip &clip, const Clip &newClip)
 {
-    if (const auto sequenceMap = this->patternMap[clip].release())
+    if (auto *sequenceMap = this->patternMap[clip].release())
     {
         // Set new key for existing sequence map
         this->patternMap.erase(clip);
@@ -574,7 +579,7 @@ void PianoRoll::onRemoveClip(const Clip &clip)
 {
     HYBRID_ROLL_BULK_REPAINT_START
 
-    if (const auto deletedSequenceMap = this->patternMap[clip].get())
+    if (const auto *deletedSequenceMap = this->patternMap[clip].get())
     {
         this->patternMap.erase(clip);
     }
@@ -1256,7 +1261,7 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
 
     float currentHeight = float(height);
     float previousHeight = 0;
-    float pos_y = patternImage.getHeight() - currentHeight;
+    float posY = patternImage.getHeight() - currentHeight;
 
     const int middleCOffset = scale->getBasePeriod() - (MIDDLE_C % scale->getBasePeriod());
     const int lastOctaveReminder = (128 % scale->getBasePeriod()) - root + middleCOffset;
@@ -1266,7 +1271,7 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
 
     // draw rows
     for (int i = lastOctaveReminder;
-        (i < ROWS_OF_TWO_OCTAVES + lastOctaveReminder) && ((pos_y + previousHeight) >= 0.0f);
+        (i < ROWS_OF_TWO_OCTAVES + lastOctaveReminder) && ((posY + previousHeight) >= 0.0f);
         i++)
     {
         const int noteNumber = (i % 12);
@@ -1279,27 +1284,27 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
         {
             const Colour c = octaveIsOdd ? rootKeyBright : rootKey;
             g.setColour(c);
-            g.fillRect(0, int(pos_y + 1), patternImage.getWidth(), int(previousHeight - 1));
+            g.fillRect(0, int(posY + 1), patternImage.getWidth(), int(previousHeight - 1));
             g.setColour(c.brighter(0.025f));
-            g.drawHorizontalLine(int(pos_y + 1), 0.f, float(patternImage.getWidth()));
+            g.drawHorizontalLine(int(posY + 1), 0.f, float(patternImage.getWidth()));
         }
         else if (scale->hasKey(noteNumber))
         {
             g.setColour(whiteKeyBright.brighter(0.025f));
-            g.drawHorizontalLine(int(pos_y + 1), 0.f, float(patternImage.getWidth()));
+            g.drawHorizontalLine(int(posY + 1), 0.f, float(patternImage.getWidth()));
         }
         else
         {
             g.setColour(octaveIsOdd ? blackKeyBright : blackKey);
-            g.fillRect(0, int(pos_y + 1), patternImage.getWidth(), int(previousHeight - 1));
+            g.fillRect(0, int(posY + 1), patternImage.getWidth(), int(previousHeight - 1));
         }
 
         // fill divider line
         g.setColour(rowLine);
-        g.drawHorizontalLine(int(pos_y), 0.f, float(patternImage.getWidth()));
+        g.drawHorizontalLine(int(posY), 0.f, float(patternImage.getWidth()));
 
         currentHeight = float(height);
-        pos_y -= currentHeight;
+        posY -= currentHeight;
     }
 
     HelioTheme::drawNoise(theme, g, 2.f);

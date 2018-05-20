@@ -47,6 +47,8 @@ public:
     inline float getBeat() const noexcept        { return this->note.getBeat() + this->clip.getBeat(); }
     inline float getLength() const noexcept      { return this->note.getLength(); }
     inline float getVelocity() const noexcept    { return this->note.getVelocity(); }
+    inline const Note &getNote() const noexcept  { return this->note; }
+
     inline void updateColour()
     {
         this->colour = this->note.getTrackColour().
@@ -138,7 +140,7 @@ void PianoTrackMap::onChangeMidiEvent(const MidiEvent &e1, const MidiEvent &e2)
     {
         const Note &note = static_cast<const Note &>(e1);
         const Note &newNote = static_cast<const Note &>(e2);
-        const auto track = newNote.getSequence()->getTrack();
+        const auto *track = newNote.getSequence()->getTrack();
 
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
@@ -158,7 +160,7 @@ void PianoTrackMap::onAddMidiEvent(const MidiEvent &event)
     if (event.isTypeOf(MidiEvent::Note))
     {
         const Note &note = static_cast<const Note &>(event);
-        const auto track = note.getSequence()->getTrack();
+        const auto *track = note.getSequence()->getTrack();
 
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
@@ -176,7 +178,7 @@ void PianoTrackMap::onRemoveMidiEvent(const MidiEvent &event)
     if (event.isTypeOf(MidiEvent::Note))
     {
         const Note &note = static_cast<const Note &>(event);
-        const auto track = note.getSequence()->getTrack();
+        const auto *track = note.getSequence()->getTrack();
 
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
@@ -192,7 +194,7 @@ void PianoTrackMap::onRemoveMidiEvent(const MidiEvent &event)
 void PianoTrackMap::onAddClip(const Clip &clip)
 {
     const SequenceMap *referenceMap = nullptr;
-    const auto track = clip.getPattern()->getTrack();
+    const auto *track = clip.getPattern()->getTrack();
 
     forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
     {
@@ -213,7 +215,7 @@ void PianoTrackMap::onAddClip(const Clip &clip)
     this->setVisible(false);
     for (const auto &e : *referenceMap)
     {
-        const auto &note = e.first;
+        const auto &note = e.second.get()->getNote();
         const auto noteComponent = new TrackMapNoteComponent(*this, note, clip);
         (*sequenceMap)[note] = UniquePointer<TrackMapNoteComponent>(noteComponent);
         this->addAndMakeVisible(noteComponent);
@@ -224,7 +226,7 @@ void PianoTrackMap::onAddClip(const Clip &clip)
 
 void PianoTrackMap::onChangeClip(const Clip &clip, const Clip &newClip)
 {
-    if (const auto sequenceMap = this->patternMap[clip].release())
+    if (auto *sequenceMap = this->patternMap[clip].release())
     {
         // Set new key for existing sequence map
         this->patternMap.erase(clip);
@@ -243,7 +245,7 @@ void PianoTrackMap::onChangeClip(const Clip &clip, const Clip &newClip)
 void PianoTrackMap::onRemoveClip(const Clip &clip)
 {
     this->setVisible(false);
-    if (const auto deletedSequenceMap = this->patternMap[clip].get())
+    if (const auto *deletedSequenceMap = this->patternMap[clip].get())
     {
         this->patternMap.erase(clip);
     }
