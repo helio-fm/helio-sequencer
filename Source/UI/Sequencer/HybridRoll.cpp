@@ -116,7 +116,6 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject, Viewport &viewportRef,
     lastTransportPosition(0.0),
     playheadOffset(0.0),
     shouldFollowPlayhead(false),
-    activeTrack(nullptr),
     barLineColour(this->findColour(ColourIDs::Roll::barLine)),
     barLineBevelColour(this->findColour(ColourIDs::Roll::barLineBevel)),
     beatLineColour(this->findColour(ColourIDs::Roll::beatLine)),
@@ -319,11 +318,6 @@ void HybridRoll::removeOwnedMap(Component *existingTrackMap)
 HybridRollEditMode HybridRoll::getEditMode() const noexcept
 {
     return this->project.getEditMode();
-}
-
-WeakReference<MidiTrack> HybridRoll::getActiveTrack() const noexcept
-{
-    return this->activeTrack;
 }
 
 bool HybridRoll::isInSelectionMode() const

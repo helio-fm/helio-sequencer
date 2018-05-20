@@ -613,14 +613,20 @@ void SequencerLayout::showPatternEditor()
     }
 }
 
-void SequencerLayout::showLinearEditor(Array<WeakReference<MidiTrack>> tracks, WeakReference<MidiTrack> primaryTrack)
+void SequencerLayout::showLinearEditor(WeakReference<MidiTrack> track)
 {
     if (this->rollContainer->isPatternMode())
     {
         this->rollContainer->startRollSwitchAnimation();
     }
 
-    this->pianoRoll->setSelectedTracks(tracks, primaryTrack);
+    this->pianoRoll->setActiveSegment(track,
+        *track->getPattern()->getClips().getFirst());
+}
+
+void SequencerLayout::switchActiveSegment(WeakReference<MidiTrack> track, const Clip &clip)
+{
+    this->pianoRoll->setActiveSegment(track, clip);
 }
 
 void SequencerLayout::hideAutomationEditor(AutomationSequence *sequence)

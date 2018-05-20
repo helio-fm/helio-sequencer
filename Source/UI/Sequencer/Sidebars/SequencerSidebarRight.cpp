@@ -276,7 +276,8 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
         break;
 
     case CommandIDs::PasteEvents:
-        if (HybridRoll *roll = this->project.getLastFocusedRoll())
+        // FIXME: paste to any roll
+        if (PianoRoll *roll = dynamic_cast<PianoRoll *>(this->project.getLastFocusedRoll()))
         {
             roll->deselectAll();
             const float playheadBeat = roll->getBeatByTransportPosition(this->project.getTransport().getSeekPosition());

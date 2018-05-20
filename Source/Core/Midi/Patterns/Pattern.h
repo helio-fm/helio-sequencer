@@ -81,11 +81,12 @@ public:
     inline Clip** end() const noexcept
     { return this->clips.end(); }
     
-    inline Clip *getUnchecked(const int index) const
+    inline Clip *getUnchecked(const int index) const noexcept
     { return this->clips.getUnchecked(index); }
     
-    inline OwnedArray<Clip> &getClips() noexcept;
-    
+    inline OwnedArray<Clip> &getClips() noexcept
+    { return this->clips; }
+
     //===------------------------------------------------------------------===//
     // Events change listener
     //===------------------------------------------------------------------===//

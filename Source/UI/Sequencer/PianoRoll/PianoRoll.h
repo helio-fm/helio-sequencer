@@ -49,8 +49,8 @@ public:
               Viewport &viewportRef,
               WeakReference<AudioMonitor> clippingDetector);
     
-    void setSelectedTracks(Array<WeakReference<MidiTrack>> tracks,
-        WeakReference<MidiTrack> activeTrack);
+    void setActiveSegment(WeakReference<MidiTrack> activeTrack, const Clip &activeClip);
+    WeakReference<MidiTrack> getActiveTrack() const noexcept;
 
     void setDefaultNoteVolume(float volume) noexcept;
 
@@ -156,7 +156,15 @@ public:
     
 private:
 
-    Array<WeakReference<MidiTrack>> selectedTracks;
+    // Piano roll restricts editing to a single clip of one track at time.
+    // I've cut the feature to edit multiple tracks at once,
+    // mainly because it makes headline menu unclear (like that is the current track).
+    // I never implemented the ability to edit multiple clips at once:
+    // so far, all the code that works with selection, assumes that selected notes are unique,
+    // and there are no multiple instances of the same note within different clips selected.
+
+    WeakReference<MidiTrack> activeTrack;
+    Clip activeClip;
 
 private:
 

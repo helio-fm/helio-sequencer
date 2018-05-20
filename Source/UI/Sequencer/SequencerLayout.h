@@ -32,6 +32,7 @@ class AutomationTrackMapProxy;
 class MidiEditorSplitContainer;
 class Origami;
 class Headline;
+class Clip;
 
 #define SEQUENCER_SIDEBAR_WIDTH (50)
 #define SEQUENCER_SIDEBAR_ROW_HEIGHT (38)
@@ -47,7 +48,8 @@ public:
     ~SequencerLayout() override;
 
     void showPatternEditor();
-    void showLinearEditor(Array<WeakReference<MidiTrack>> tracks, WeakReference<MidiTrack> primaryTrack);
+    void showLinearEditor(WeakReference<MidiTrack> activeTrack);
+    void switchActiveSegment(WeakReference<MidiTrack> activeTrack, const Clip &clip);
 
     // returns true if editor was shown, else returns false
     bool toggleShowAutomationEditor(AutomationSequence *targetLayer);

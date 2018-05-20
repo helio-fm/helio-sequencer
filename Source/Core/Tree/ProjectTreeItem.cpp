@@ -290,11 +290,9 @@ void ProjectTreeItem::showLinearEditor(WeakReference<MidiTrack> activeTrack, Wea
     jassert(source != nullptr);
     jassert(activeTrack != nullptr);
 
-    if (PianoTrackTreeItem *pianoTrack = dynamic_cast<PianoTrackTreeItem *>(activeTrack.get()))
+    if (const auto *pianoTrack = dynamic_cast<PianoTrackTreeItem *>(activeTrack.get()))
     {
-        Array<WeakReference<MidiTrack>> activeTracks;
-        activeTracks.addArray(this->findChildrenOfType<PianoTrackTreeItem>(true));
-        this->sequencerLayout->showLinearEditor(activeTracks, activeTrack);
+        this->sequencerLayout->showLinearEditor(activeTrack);
         this->lastShownTrack = source;
         App::Layout().showPage(this->sequencerLayout, source);
     }
@@ -328,24 +326,16 @@ void ProjectTreeItem::updateActiveGroupEditors()
     }
 }
 
-void ProjectTreeItem::activateLayer(MidiSequence* sequence, bool selectOthers, bool deselectOthers)
+void ProjectTreeItem::switchActiveSegment(MidiTrack *track, const Clip &clip)
 {
-    if (selectOthers)
+    if (auto *item = dynamic_cast<PianoTrackTreeItem *>(track))
     {
-        if (PianoTrackTreeItem *item =
-            this->findTrackById<PianoTrackTreeItem>(sequence->getTrackId()))
-        {
-            PianoTrackTreeItem::selectAllPianoSiblings(item);
-        }
-    }
-    else
-    {
-        if (PianoTrackTreeItem *item =
-            this->findTrackById<PianoTrackTreeItem>(sequence->getTrackId()))
-        {
-            item->setSelected(false, false);
-            item->setSelected(true, deselectOthers);
-        }
+        // FIXME: as we have to switch to target tree item,
+        // it will activate its 1st clip on showPage
+        item->setSelected(true, true);
+        // and then we have to update the scope to correct clip,
+        // so that roll's scope is updated twice :(
+        this->sequencerLayout->switchActiveSegment(track, clip);
     }
 }
 

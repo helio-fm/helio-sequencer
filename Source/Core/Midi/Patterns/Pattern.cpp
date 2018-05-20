@@ -133,11 +133,6 @@ void Pattern::clearUndoHistory()
 // Clip Actions
 //===----------------------------------------------------------------------===//
 
-OwnedArray<Clip> &Pattern::getClips() noexcept
-{
-    return this->clips;
-}
-
 void Pattern::silentImport(const Clip &clip)
 {
     if (this->usedClipIds.contains(clip.getId()))

@@ -93,7 +93,6 @@ public:
     Transport &getTransport() const noexcept;
     ProjectTreeItem &getProject() const noexcept;
     HybridRollEditMode getEditMode() const noexcept;
-    WeakReference<MidiTrack> getActiveTrack() const noexcept;
 
     virtual void selectAll() = 0;
     virtual Rectangle<float> getEventBounds(FloatBoundsComponent *nc) const = 0;
@@ -424,8 +423,6 @@ protected:
     ScopedPointer<SmoothZoomController> smoothZoomController;
 
     Array<SafePointer<FloatBoundsComponent>> batchRepaintList;
-
-    WeakReference<MidiTrack> activeTrack;
 
 protected:
     

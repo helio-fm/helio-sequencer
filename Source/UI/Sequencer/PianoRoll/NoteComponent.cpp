@@ -176,9 +176,7 @@ void NoteComponent::mouseDown(const MouseEvent &e)
 {
     if (this->shouldGoQuickSelectLayerMode(e.mods))
     {
-        const bool selectAll = false; // e.mods.isRightButtonDown();
-        const bool soloMode = !e.mods.isShiftDown();
-        this->activateCorrespondingTrack(selectAll, soloMode);
+        this->switchActiveSegmentToSelected();
         return;
     }
     
@@ -444,7 +442,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
 #endif
         lastDeltaKey = deltaKey;
         
-        this->setFloatBounds(this->getRoll().getEventBounds(this));  // avoids glitches
+        this->setFloatBounds(this->getRoll().getEventBounds(this)); // avoids glitches
         
         if (eventChanged)
         {
@@ -466,6 +464,12 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
 
                 // Ghost note markers become useless from now on, as there are duplicates in their places already:
                 this->getRoll().hideAllGhostNotes();
+
+                // Finally, bring selection back to front
+                forEachSelectedNote(selection, noteComponent)
+                {
+                    noteComponent->toFront(false);
+                }
             }
 
             this->getRoll().moveHelpers(deltaBeat, deltaKey);
@@ -606,9 +610,8 @@ void NoteComponent::mouseUp(const MouseEvent &e)
 
 void NoteComponent::mouseDoubleClick(const MouseEvent &e)
 {
-    // Double right click - activate this layer and others
-    const bool selectAll = e.mods.isRightButtonDown();
-    this->activateCorrespondingTrack(selectAll, true);
+    // Not this action is free
+    // TODO something useful
 }
 
 //===----------------------------------------------------------------------===//
@@ -689,17 +692,19 @@ void NoteComponent::paintNewLook(Graphics &g)
         g.drawHorizontalLine(int(y), x1 + bevel, x2 - bevel);
     }
     
-//#ifdef DEBUG
-//    g.setColour(Colours::black);
-//    g.drawText(String(this->getBeat()), this->getLocalBounds().translated(5, 0), Justification::centredLeft, false);
-//#else
+#ifdef DEBUG
+    g.setColour(Colours::black);
+    g.drawText(this->note.getId() + " " + this->clip.getId(),
+        this->getLocalBounds().translated(5, 0),
+        Justification::centredLeft, false);
+#else
     const float sx = x1 + 2.f;
     const float sw = (w - 2.f) * this->getVelocity();
     g.setColour(this->colourVolume);
     g.drawHorizontalLine(this->getHeight() - 2, sx, sw);
     g.drawHorizontalLine(this->getHeight() - 3, sx, sw);
     g.drawHorizontalLine(this->getHeight() - 4, sx, sw);
-//#endif
+#endif
 }
 
 void NoteComponent::paintLegacyLook(Graphics &g)
@@ -727,23 +732,15 @@ void NoteComponent::paintLegacyLook(Graphics &g)
 // Helpers
 //===----------------------------------------------------------------------===//
 
-bool NoteComponent::belongsToAnyTrack(const Array<WeakReference<MidiTrack>> &tracks) const
+bool NoteComponent::belongsTo(const WeakReference<MidiTrack> &track, const Clip &clip) const noexcept
 {
-    for (int i = 0; i < tracks.size(); ++i)
-    {
-        if (this->getNote().getSequence() == tracks.getUnchecked(i)->getSequence())
-        {
-            return true;
-        }
-    }
-
-    return false;
+    return this->clip == clip && this->note.getSequence()->getTrack() == track;
 }
 
-void NoteComponent::activateCorrespondingTrack(bool selectAll, bool soloSelection)
+void NoteComponent::switchActiveSegmentToSelected() const
 {
-    MidiSequence *layer = this->getNote().getSequence();
-    this->roll.getProject().activateLayer(layer, selectAll, soloSelection);
+    auto *track = this->getNote().getSequence()->getTrack();
+    this->roll.getProject().switchActiveSegment(track, this->getClip());
 }
 
 //===----------------------------------------------------------------------===//

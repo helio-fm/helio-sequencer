@@ -33,6 +33,8 @@ class ProjectTimeline;
 class UndoStack;
 class RecentFilesList;
 class Pattern;
+class MidiTrack;
+class Clip;
 
 #include "TreeItem.h"
 #include "DocumentOwner.h"
@@ -84,7 +86,7 @@ public:
     WeakReference<TreeItem> getLastShownTrack() const noexcept;
 
     void updateActiveGroupEditors();
-    void activateLayer(MidiSequence* layer, bool selectOthers, bool deselectOthers);
+    void switchActiveSegment(MidiTrack *track, const Clip &clip);
 
     //===------------------------------------------------------------------===//
     // Menu

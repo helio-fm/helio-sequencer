@@ -90,8 +90,8 @@ protected:
     Note anchor;
     Note groupScalingAnchor;
 
-    bool belongsToAnyTrack(const Array<WeakReference<MidiTrack>> &tracks) const;
-    void activateCorrespondingTrack(bool selectOthers, bool deselectOthers);
+    bool belongsTo(const WeakReference<MidiTrack> &track, const Clip &clip) const noexcept;
+    void switchActiveSegmentToSelected() const;
 
     bool isResizing() const;
     

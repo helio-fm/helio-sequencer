@@ -75,9 +75,11 @@
 
 
 PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
-                     Viewport &viewportRef,
-                     WeakReference<AudioMonitor> clippingDetector) :
+    Viewport &viewportRef,
+    WeakReference<AudioMonitor> clippingDetector) :
     HybridRoll(parentProject, viewportRef, clippingDetector),
+    activeTrack(nullptr),
+    activeClip({}),
     numRows(128),
     rowHeight(PIANOROLL_MIN_ROW_HEIGHT),
     newNoteDragging(nullptr),
@@ -152,7 +154,7 @@ void PianoRoll::loadTrack(const MidiTrack *const track)
                 const Note *note = static_cast<const Note *>(event);
                 auto nc = new NoteComponent(*this, *note, *clip);
                 (*sequenceMap)[*note] = UniquePointer<NoteComponent>(nc);
-                const bool isActive = nc->belongsToAnyTrack(this->selectedTracks);
+                const bool isActive = nc->belongsTo(this->activeTrack, this->activeClip);
                 nc->setActive(isActive, true);
                 this->addAndMakeVisible(nc);
                 nc->setFloatBounds(this->getEventBounds(nc));
@@ -161,22 +163,26 @@ void PianoRoll::loadTrack(const MidiTrack *const track)
     }
 }
 
-void PianoRoll::setSelectedTracks(Array<WeakReference<MidiTrack>> tracks,
-    WeakReference<MidiTrack> activeTrack)
+void PianoRoll::setActiveSegment(WeakReference<MidiTrack> activeTrack, const Clip &activeClip)
 {
     this->selection.deselectAll();
+
+    this->activeTrack = activeTrack;
+    this->activeClip = activeClip;
 
     forEachEventComponent(this->patternMap, e)
     {
         const auto noteComponent = e.second.get();
-        const bool shouldBeActive = noteComponent->belongsToAnyTrack(tracks);
-        noteComponent->setActive(shouldBeActive);
+        const bool isActive = noteComponent->belongsTo(this->activeTrack, this->activeClip);
+        noteComponent->setActive(isActive, true);
     }
 
-    this->selectedTracks = tracks;
-    this->activeTrack = activeTrack;
-    
     this->repaint(this->viewport.getViewArea());
+}
+
+WeakReference<MidiTrack> PianoRoll::getActiveTrack() const noexcept
+{
+    return this->activeTrack;
 }
 
 void PianoRoll::setDefaultNoteVolume(float volume) noexcept
@@ -202,7 +208,7 @@ void PianoRoll::selectAll()
     forEachEventComponent(this->patternMap, e)
     {
         const auto childComponent = e.second.get();
-        if (childComponent->belongsToAnyTrack(this->selectedTracks))
+        if (childComponent->belongsTo(this->activeTrack, activeClip))
         {
             this->selection.addToSelection(childComponent);
         }
@@ -462,7 +468,7 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
 
             this->fader.fadeIn(component, 150);
 
-            const bool isActive = component->belongsToAnyTrack(this->selectedTracks);
+            const bool isActive = component->belongsTo(this->activeTrack, this->activeClip);
             component->setActive(isActive);
 
             this->batchRepaintList.add(component);
@@ -547,7 +553,7 @@ void PianoRoll::onAddClip(const Clip &clip)
         (*sequenceMap)[note] = UniquePointer<NoteComponent>(component);
         this->addAndMakeVisible(component);
 
-        const bool isActive = component->belongsToAnyTrack(this->selectedTracks);
+        const bool isActive = component->belongsTo(this->activeTrack, this->activeClip);
         component->setActive(isActive);
 
         this->batchRepaintList.add(component);
