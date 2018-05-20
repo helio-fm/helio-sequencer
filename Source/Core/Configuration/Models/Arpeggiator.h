@@ -44,7 +44,7 @@ public:
         const Array<Note> &sequence,
         Note::Key rootKey);
 
-    typedef ReferenceCountedObjectPtr<Arpeggiator> Ptr;
+    using Ptr = ReferenceCountedObjectPtr<Arpeggiator>;
 
     String getName() const noexcept { return this->name; };
     bool isValid() const noexcept { return !this->keys.isEmpty(); }

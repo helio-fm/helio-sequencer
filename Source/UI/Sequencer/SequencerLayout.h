@@ -93,7 +93,7 @@ private:
     ScopedPointer<SequencerSidebarLeft> rollNavSidebar;
     ScopedPointer<SequencerSidebarRight> rollToolsSidebar; // тублар справа от роллов
 
-    typedef HashMap<String, AutomationTrackMapProxy *> AutomationEditorsHashMap;
+    using AutomationEditorsHashMap = HashMap<String, AutomationTrackMapProxy *>;
     AutomationEditorsHashMap automationEditorsLinks; // связки id слоев и редакторов автоматизации
     OwnedArray<AutomationTrackMapProxy> automationEditors; // сами редакторы автоматизации
 

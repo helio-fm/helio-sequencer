@@ -31,8 +31,8 @@ struct MenuItem final : public ReferenceCountedObject
         Right
     };
 
-    typedef Function<void()> Callback;
-    typedef ReferenceCountedObjectPtr<MenuItem> Ptr;
+    using Callback = Function<void()>;
+    using Ptr = ReferenceCountedObjectPtr<MenuItem>;
 
     Image image;
     Icons::Id iconId;

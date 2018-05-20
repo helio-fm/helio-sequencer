@@ -37,8 +37,8 @@ public:
     // midi tracks use this to identify their instruments
     String getIdAndHash() const;
     
-    typedef Function<void(Instrument *)> InitializationCallback;
-    typedef Function<void(AudioProcessorGraph::Node::Ptr)> AddNodeCallback;
+    using InitializationCallback = Function<void(Instrument *)>;
+    using AddNodeCallback = Function<void(AudioProcessorGraph::Node::Ptr)>;
 
     void initializeFrom(const PluginDescription &pluginDescription, InitializationCallback initCallback);
     void addNodeToFreeSpace(const PluginDescription &pluginDescription, InitializationCallback initCallback);

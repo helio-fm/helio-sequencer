@@ -49,7 +49,7 @@ namespace VCS
         void deserialize(const ValueTree &tree) override;
         void reset() override;
 
-        typedef ReferenceCountedObjectPtr<StashesRepository> Ptr;
+        using Ptr = ReferenceCountedObjectPtr<StashesRepository>;
 
     private:
 

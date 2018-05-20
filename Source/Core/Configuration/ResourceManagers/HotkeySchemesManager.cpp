@@ -37,11 +37,11 @@ HotkeyScheme::Ptr HotkeySchemesManager::findActiveScheme() const
     {
         Resources::Iterator i(this->resources);
         i.next();
-        return i.getValue();
+        return  { static_cast<HotkeyScheme *>(i.getValue().get()) };
     }
 
     jassertfalse;
-    return new HotkeyScheme();
+    return { new HotkeyScheme() };
 }
 
 const HotkeyScheme::Ptr HotkeySchemesManager::getCurrentScheme() const noexcept

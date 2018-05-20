@@ -112,7 +112,7 @@ private:
     ScopedPointer<class SessionService> sessionService;
     ScopedPointer<class UpdatesService> updatesService;
 
-    typedef HashMap<Identifier, ResourceManager *, IdentifierHash> ResourceManagers;
+    using ResourceManagers = HashMap<Identifier, ResourceManager *, IdentifierHash>;
     ResourceManagers resourceManagers;
 
 private:

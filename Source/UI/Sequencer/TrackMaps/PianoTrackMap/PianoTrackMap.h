@@ -77,8 +77,8 @@ private:
     HybridRoll &roll;
     ProjectTreeItem &project;
     
-    typedef SparseHashMap<Note, UniquePointer<TrackMapNoteComponent>, MidiEventHash> SequenceMap;
-    typedef SparseHashMap<const Clip, UniquePointer<SequenceMap>, ClipHash> PatternMap;
+    using SequenceMap = SparseHashMap<Note, UniquePointer<TrackMapNoteComponent>, MidiEventHash>;
+    using PatternMap = SparseHashMap<const Clip, UniquePointer<SequenceMap>, ClipHash>;
     PatternMap patternMap;
 
     JUCE_LEAK_DETECTOR(PianoTrackMap)

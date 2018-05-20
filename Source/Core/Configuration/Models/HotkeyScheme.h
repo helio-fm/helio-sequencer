@@ -26,7 +26,7 @@ public:
     HotkeyScheme() = default;
     HotkeyScheme(const HotkeyScheme &other);
 
-    typedef ReferenceCountedObjectPtr<HotkeyScheme> Ptr;
+    using Ptr = ReferenceCountedObjectPtr<HotkeyScheme>;
 
     class Hotkey final
     {

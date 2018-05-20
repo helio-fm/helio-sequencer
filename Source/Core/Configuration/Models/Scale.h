@@ -31,7 +31,7 @@ public:
 
     String getResourceId() const override;
     Identifier getResourceIdProperty() const override;
-    typedef ReferenceCountedObjectPtr<Scale> Ptr;
+    using Ptr = ReferenceCountedObjectPtr<Scale>;
 
     Scale::Ptr withName(const String &name) const noexcept;
     Scale::Ptr withKeys(const Array<int> &keys) const noexcept;

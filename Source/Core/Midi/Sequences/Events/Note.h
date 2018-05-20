@@ -25,7 +25,7 @@ class Note final : public MidiEvent
 {
 public:
 
-    typedef int Key;
+    using Key = int;
 
     Note() noexcept;
     Note(const Note &other) noexcept;

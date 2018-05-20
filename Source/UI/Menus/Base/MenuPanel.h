@@ -41,7 +41,7 @@ public:
         SlideDown       = 0x050,
     };
 
-    typedef ReferenceCountedArray<MenuItem> Menu;
+    using Menu = ReferenceCountedArray<MenuItem>;
 
     void updateContent(const Menu &commands,
         AnimationType animationType = SlideDown,

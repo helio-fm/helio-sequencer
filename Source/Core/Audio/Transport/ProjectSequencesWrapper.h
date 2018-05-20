@@ -28,7 +28,7 @@ struct SequenceWrapper : public ReferenceCountedObject
     MidiMessageCollector *listener;
     Instrument *instrument;
     const MidiSequence *layer;
-    typedef ReferenceCountedObjectPtr<SequenceWrapper> Ptr;
+    using Ptr = ReferenceCountedObjectPtr<SequenceWrapper>;
 };
 
 struct MessageWrapper : public ReferenceCountedObject
@@ -36,7 +36,7 @@ struct MessageWrapper : public ReferenceCountedObject
     MidiMessage message;
     MidiMessageCollector *listener;
     Instrument *instrument;
-    typedef ReferenceCountedObjectPtr<MessageWrapper> Ptr;
+    using Ptr = ReferenceCountedObjectPtr<MessageWrapper>;
 };
 
 // TODO: add modifiers like random delays and so forth

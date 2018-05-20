@@ -32,7 +32,7 @@ public:
 
     inline const Array<Arpeggiator::Ptr> getArps() const
     {
-        return this->getResources<Arpeggiator::Ptr>();
+        return this->getResources<Arpeggiator>();
     }
 
 private:

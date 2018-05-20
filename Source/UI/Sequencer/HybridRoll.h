@@ -389,13 +389,13 @@ protected:
     ScopedPointer<HybridRollHeader> header;
     ScopedPointer<Playhead> playhead;
     
-    typedef AnnotationsTrackMap<AnnotationLargeComponent> AnnotationsLargeMap;
+    using AnnotationsLargeMap = AnnotationsTrackMap<AnnotationLargeComponent>;
     ScopedPointer<AnnotationsLargeMap> annotationsTrack;
 
-    typedef TimeSignaturesTrackMap<TimeSignatureLargeComponent> TimeSignaturesLargeMap;
+    using TimeSignaturesLargeMap = TimeSignaturesTrackMap<TimeSignatureLargeComponent>;
     ScopedPointer<TimeSignaturesLargeMap> timeSignaturesTrack;
 
-    typedef KeySignaturesTrackMap<KeySignatureLargeComponent> KeySignaturesLargeMap;
+    using KeySignaturesLargeMap = KeySignaturesTrackMap<KeySignatureLargeComponent>;
     ScopedPointer<KeySignaturesLargeMap> keySignaturesTrack;
 
     ScopedPointer<Component> topShadow;

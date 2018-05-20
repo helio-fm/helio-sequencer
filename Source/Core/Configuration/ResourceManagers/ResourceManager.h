@@ -39,13 +39,20 @@ public:
     virtual void shutdown();
 
     template<typename T>
-    const Array<T> getResources() const
+    const Array<typename T::Ptr> getResources(bool sorted = true) const
     {
-        Array<T> result;
+        Array<T::Ptr> result;
         Resources::Iterator i(this->resources);
         while (i.next())
         {
-            result.addSorted(this->comparator, static_cast<T>(i.getValue()));
+            if (sorted)
+            {
+                result.addSorted(this->comparator, T::Ptr(static_cast<T *>(i.getValue().get())));
+            }
+            else
+            {
+                result.add(T::Ptr(static_cast<T *>(i.getValue().get())));
+            }
         }
 
         return result;
@@ -70,12 +77,12 @@ protected:
     void reset() override;
 
     void reloadResources();
-    
+
     virtual File getDownloadedResourceFile() const;
     virtual File getUsersResourceFile() const;
     virtual String getBuiltInResourceString() const;
 
-    typedef HashMap<String, BaseResource::Ptr> Resources;
+    using Resources = HashMap<String, BaseResource::Ptr>;
     Resources resources;
     
 private: 

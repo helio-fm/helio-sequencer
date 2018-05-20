@@ -162,10 +162,10 @@ private:
 
     ScopedPointer<PatternRollSelectionMenuManager> selectedClipsMenuManager;
 
-    typedef SparseHashMap<const MidiTrack *, UniquePointer<MidiTrackHeader>, MidiTrackHash> TrackHeadersMap;
+    using TrackHeadersMap = SparseHashMap<const MidiTrack *, UniquePointer<MidiTrackHeader>, MidiTrackHash>;
     TrackHeadersMap trackHeaders;
 
-    typedef SparseHashMap<Clip, UniquePointer<ClipComponent>, ClipHash> ClipComponentsMap;
+    using ClipComponentsMap = SparseHashMap<Clip, UniquePointer<ClipComponent>, ClipHash>;
     ClipComponentsMap clipComponents;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRoll)

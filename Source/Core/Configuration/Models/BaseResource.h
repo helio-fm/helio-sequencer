@@ -24,7 +24,7 @@ public:
     virtual String getResourceId() const = 0;
     virtual Identifier getResourceIdProperty() const = 0;
 
-    typedef ReferenceCountedObjectPtr<BaseResource> Ptr;
+    using Ptr = ReferenceCountedObjectPtr<BaseResource>;
 
     static int compareElements(const BaseResource::Ptr first, const BaseResource::Ptr second)
     {

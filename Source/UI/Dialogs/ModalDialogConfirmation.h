@@ -20,7 +20,7 @@
 //[Headers]
 #include "FadingDialog.h"
 
-typedef Function<void()> SimpleDialogCallback;
+using SimpleDialogCallback = Function<void()>;
 //[/Headers]
 
 #include "../Themes/DialogPanel.h"

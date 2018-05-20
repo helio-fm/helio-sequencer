@@ -32,7 +32,7 @@ public:
 
     inline const Array<HotkeyScheme::Ptr> getSchemes() const noexcept
     {
-        return this->getResources<HotkeyScheme::Ptr>();
+        return this->getResources<HotkeyScheme>();
     }
 
     const HotkeyScheme::Ptr getCurrentScheme() const noexcept;

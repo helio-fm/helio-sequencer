@@ -32,7 +32,7 @@ public:
 
     inline const Array<Scale::Ptr> getScales() const
     {
-        return this->getResources<Scale::Ptr>();
+        return this->getResources<Scale>(false);
     }
 
 private:

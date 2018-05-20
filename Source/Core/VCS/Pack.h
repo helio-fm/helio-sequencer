@@ -62,7 +62,7 @@ namespace VCS
         void deserialize(const ValueTree &tree) override;
         void reset() override;
 
-        typedef ReferenceCountedObjectPtr<Pack> Ptr;
+        using Ptr = ReferenceCountedObjectPtr<Pack>;
 
     protected:
 

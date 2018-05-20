@@ -39,10 +39,10 @@ ColourScheme::Ptr ColourSchemesManager::getCurrentScheme() const
     {
         Resources::Iterator i(this->resources);
         i.next();
-        return i.getValue();
+        return { static_cast<ColourScheme *>(i.getValue().get()) };
     }
 
-    return new ColourScheme();
+    return { new ColourScheme() };
 }
 
 void ColourSchemesManager::setCurrentScheme(const ColourScheme::Ptr scheme)

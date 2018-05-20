@@ -32,7 +32,7 @@ public:
 
     inline const Array<ColourScheme::Ptr> getSchemes() const
     {
-        return this->getResources<ColourScheme::Ptr>();
+        return this->getResources<ColourScheme>();
     }
 
     ColourScheme::Ptr getCurrentScheme() const;

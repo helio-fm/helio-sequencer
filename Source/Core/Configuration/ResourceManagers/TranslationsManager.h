@@ -35,7 +35,7 @@ public:
 
     inline const Array<Translation::Ptr> getAvailableLocales() const
     {
-        return this->getResources<Translation::Ptr>();
+        return this->getResources<Translation>();
     }
 
     const Translation::Ptr getCurrentLocale() const noexcept;

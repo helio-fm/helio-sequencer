@@ -22,7 +22,7 @@
 struct PluginDescriptionDragnDropWrapper final : ReferenceCountedObject
 {
     PluginDescription pluginDescription;
-    typedef ReferenceCountedObjectPtr<PluginDescriptionDragnDropWrapper> Ptr;
+    using Ptr = ReferenceCountedObjectPtr<PluginDescriptionDragnDropWrapper>;
 };
 
 class OrchestraPit

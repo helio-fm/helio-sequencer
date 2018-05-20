@@ -64,7 +64,7 @@ namespace VCS
         void deserialize(const ValueTree &tree) override;
         void reset() override;
 
-        typedef ReferenceCountedObjectPtr<RevisionItem> Ptr;
+        using Ptr = ReferenceCountedObjectPtr<RevisionItem>;
 
     private:
 

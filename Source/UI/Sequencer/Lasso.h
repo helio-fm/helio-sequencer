@@ -26,7 +26,7 @@ public:
 
     SelectionProxyArray() = default;
 
-    typedef ReferenceCountedObjectPtr<SelectionProxyArray> Ptr;
+    using Ptr = ReferenceCountedObjectPtr<SelectionProxyArray>;
 
     template<typename T>
     T *getFirstAs() const
@@ -57,7 +57,7 @@ public:
     void needsToCalculateSelectionBounds() noexcept;
     Rectangle<int> getSelectionBounds() const noexcept;
     
-    typedef SparseHashMap<String, SelectionProxyArray::Ptr, StringHash> GroupedSelections;
+    using GroupedSelections = SparseHashMap<String, SelectionProxyArray::Ptr, StringHash>;
 
     // Gets all selected events, split by track
     // So that is easier to perform undo/redo actions

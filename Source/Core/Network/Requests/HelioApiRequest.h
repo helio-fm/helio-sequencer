@@ -32,7 +32,7 @@ class HelioApiRequest final
 {
 public:
 
-    typedef Function<void(int, int)> ProgressCallback;
+    using ProgressCallback = Function<void(int, int)>;
 
     HelioApiRequest(String apiEndpoint, ProgressCallback progressCallback = nullptr);
 

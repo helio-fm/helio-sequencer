@@ -23,7 +23,7 @@ class Translation final : public BaseResource
 {
 public:
 
-    typedef ReferenceCountedObjectPtr<Translation> Ptr;
+    using Ptr = ReferenceCountedObjectPtr<Translation>;
 
     String getId() const noexcept;
     String getName() const noexcept;

@@ -424,7 +424,7 @@ struct JsonFormatter final
             }
         }
 
-        typedef HashMap<Identifier, Array<ValueTree>, IdentifierHash> GroupedChildren;
+        using GroupedChildren = HashMap<Identifier, Array<ValueTree>, IdentifierHash>;
         GroupedChildren children;
         for (const auto child : tree)
         {
