@@ -67,7 +67,9 @@ namespace VCS
             
             if (this->stringParameter.isNotEmpty())
             {
-                return TRANS(this->stringToTranslate).replace(Serialization::Translations::metaSymbol, this->stringParameter);
+                return TRANS(this->stringToTranslate)
+                    .replace(Serialization::Translations::metaSymbol,
+                        this->stringParameter);
             }
             
             return TRANS(this->stringToTranslate);

@@ -98,7 +98,7 @@ void TranslationsManager::loadLocaleWithName(const String &localeName)
     Resources::Iterator i(this->resources);
     while (i.next())
     {
-        const auto translation = static_cast<Translation::Ptr>(i.getValue());
+        const Translation::Ptr translation = static_cast<Translation *>(i.getValue().get());
         if (translation->name == localeName)
         {
             this->currentTranslation = translation;
@@ -117,13 +117,19 @@ void TranslationsManager::loadLocaleWithName(const String &localeName)
 String TranslationsManager::translate(const String &text)
 {
     const SpinLock::ScopedLockType sl(this->currentTranslationLock);
-    return this->currentTranslation->singulars.getValue(text, text);
-}
 
-String TranslationsManager::translate(const String &text, const String &resultIfNotFound)
-{
-    const SpinLock::ScopedLockType sl(this->currentTranslationLock);
-    return this->currentTranslation->singulars.getValue(text, resultIfNotFound);
+    if (this->currentTranslation->singulars.containsKey(text))
+    {
+        return this->currentTranslation->singulars.getValue(text, text);
+    }
+
+    const auto &plurals = this->currentTranslation->plurals[text];
+    if (plurals.size() > 0)
+    {
+        return plurals.getAllValues()[0];
+    }
+
+    return this->fallbackTranslation->singulars.getValue(text, text);
 }
 
 String TranslationsManager::translate(const String &baseLiteral, int64 targetNumber)
@@ -161,7 +167,7 @@ String TranslationsManager::translate(const String &baseLiteral, int64 targetNum
 // Serializable
 //===----------------------------------------------------------------------===//
 
-const static String fallbackLocale = "en";
+const static String fallbackTranslationId = "en";
 
 ValueTree TranslationsManager::serialize() const
 {
@@ -191,11 +197,15 @@ void TranslationsManager::deserialize(const ValueTree &tree)
         {
             this->currentTranslation = translation;
         }
+        else if (translation->id == fallbackTranslationId)
+        {
+            this->fallbackTranslation = translation;
+        }
     }
 
     if (this->currentTranslation == nullptr)
     {
-        this->currentTranslation = this->resources[fallbackLocale];
+        this->currentTranslation = this->fallbackTranslation;
     }
 
     jassert(this->currentTranslation != nullptr);
@@ -205,6 +215,7 @@ void TranslationsManager::reset()
 {
     ResourceManager::reset();
     this->currentTranslation = nullptr;
+    this->fallbackTranslation = nullptr;
     this->equationResult.clear();
 }
 
@@ -217,7 +228,7 @@ String TranslationsManager::getSelectedLocaleId() const
    
     if (Config::contains(Serialization::Config::currentLocale))
     {
-        return Config::get(Serialization::Config::currentLocale, fallbackLocale);
+        return Config::get(Serialization::Config::currentLocale, fallbackTranslationId);
     }
     
     const String systemLocale =
@@ -228,5 +239,5 @@ String TranslationsManager::getSelectedLocaleId() const
         return systemLocale;
     }
     
-    return fallbackLocale;
+    return fallbackTranslationId;
 }
