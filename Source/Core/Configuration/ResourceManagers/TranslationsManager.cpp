@@ -193,11 +193,13 @@ void TranslationsManager::deserialize(const ValueTree &tree)
         Translation::Ptr translation(new Translation());
         translation->deserialize(translationRoot);
         this->resources.set(translation->getResourceId(), translation);
+        
         if (translation->id == selectedLocaleId)
         {
             this->currentTranslation = translation;
         }
-        else if (translation->id == fallbackTranslationId)
+        
+        if (translation->id == fallbackTranslationId)
         {
             this->fallbackTranslation = translation;
         }
@@ -209,6 +211,7 @@ void TranslationsManager::deserialize(const ValueTree &tree)
     }
 
     jassert(this->currentTranslation != nullptr);
+    jassert(this->fallbackTranslation != nullptr);
 }
 
 void TranslationsManager::reset()
