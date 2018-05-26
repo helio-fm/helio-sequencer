@@ -215,6 +215,10 @@ bool PianoSequence::removeGroup(Array<Note> &group, bool undoable)
         {
             const Note &note = group.getUnchecked(i);
             const int index = this->midiEvents.indexOfSorted(note, &note);
+            // Hitting this assertion almost likely means that target note array
+            // contains more than one instance of the same note, but from different clips.
+            // All the code here and in SequencerOperations class assumes this never happens,
+            // so make sure PianoRoll restricts editing scope to a single clip instance.
             jassert(index >= 0);
             if (index >= 0)
             {
