@@ -19,47 +19,45 @@
 #include "ProjectTreeItem.h"
 
 #include "TreeItemChildrenSerializer.h"
-#include "RootTreeItem.h"
 #include "TrackGroupTreeItem.h"
 #include "PianoTrackTreeItem.h"
 #include "AutomationTrackTreeItem.h"
 #include "PatternEditorTreeItem.h"
-#include "MainLayout.h"
+#include "VersionControlTreeItem.h"
+#include "VersionControl.h"
+
+#include "Autosaver.h"
 #include "Document.h"
 #include "DocumentHelpers.h"
 #include "XmlSerializer.h"
 #include "BinarySerializer.h"
+
+#include "AudioCore.h"
+#include "PlayerThread.h"
+#include "Pattern.h"
+#include "MidiTrack.h"
+#include "MidiEvent.h"
+#include "TrackedItem.h"
+#include "RecentFilesList.h"
+#include "HybridRoll.h"
+#include "UndoStack.h"
+
+#include "ProjectInfo.h"
+#include "ProjectTimeline.h"
 #include "ProjectListener.h"
 #include "ProjectPageDefault.h"
 #include "ProjectPagePhone.h"
-#include "AudioCore.h"
-#include "PlayerThread.h"
-#include "SequencerLayout.h"
-#include "MidiEvent.h"
-#include "MidiTrack.h"
-#include "PianoTrackTreeItem.h"
-#include "AutomationSequence.h"
-#include "Icons.h"
-#include "ProjectInfo.h"
-#include "ProjectTimeline.h"
-#include "TrackedItem.h"
-#include "VersionControlTreeItem.h"
-#include "VersionControl.h"
-#include "RecentFilesList.h"
-#include "HybridRoll.h"
-#include "Autosaver.h"
+#include "ProjectMenu.h"
 
 #include "HelioTheme.h"
-#include "ProjectMenu.h"
-#include "UndoStack.h"
-
-#include "DocumentHelpers.h"
+#include "SequencerLayout.h"
+#include "MainLayout.h"
 #include "Workspace.h"
 #include "App.h"
 
-#include "Config.h"
 #include "SerializationKeys.h"
-
+#include "Config.h"
+#include "Icons.h"
 
 ProjectTreeItem::ProjectTreeItem(const String &name) :
     DocumentOwner(name, "helio"),
@@ -445,22 +443,22 @@ Point<float> ProjectTreeItem::getProjectRangeInBeats() const
 {
     float lastBeat = -FLT_MAX;
     float firstBeat = FLT_MAX;
-    const float defaultNumBeats = DEFAULT_NUM_BARS * BEATS_PER_BAR;
 
-    Array<MidiTrack *> tracks;
-    this->collectTracks(tracks);
+    this->rebuildTracksHashIfNeeded();
 
-    for (auto track : tracks)
+    for (const auto &i : this->tracksHash)
     {
-        const float layerFirstBeat = track->getSequence()->getFirstBeat();
-        const float layerLastBeat = track->getSequence()->getLastBeat();
-        //Logger::writeToLog(">  " + String(layerFirstBeat) + " : " + String(layerLastBeat));
-        firstBeat = jmin(firstBeat, layerFirstBeat);
-        lastBeat = jmax(lastBeat, layerLastBeat);
-
-        // TODO also take into account patterns!!!!!!!
+        const auto *track = i.second.get();
+        const float sequenceFirstBeat = track->getSequence()->getFirstBeat();
+        const float sequenceLastBeat = track->getSequence()->getLastBeat();
+        const float patternFirstBeat = track->getPattern() ? track->getPattern()->getFirstBeat() : 0.f;
+        const float patternLastBeat = track->getPattern() ? track->getPattern()->getLastBeat() : 0.f;
+        firstBeat = jmin(firstBeat, sequenceFirstBeat + patternFirstBeat);
+        lastBeat = jmax(lastBeat, sequenceLastBeat + patternLastBeat);
     }
     
+    const float defaultNumBeats = DEFAULT_NUM_BARS * BEATS_PER_BAR;
+
     if (firstBeat == FLT_MAX)
     {
         firstBeat = 0;
@@ -475,11 +473,8 @@ Point<float> ProjectTreeItem::getProjectRangeInBeats() const
         lastBeat = firstBeat + defaultNumBeats;
     }
 
-    //Logger::writeToLog(">> " + String(firstBeat) + " : " + String(lastBeat));
-
-    return Point<float>(firstBeat, lastBeat);
+    return { firstBeat, lastBeat };
 }
-
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -736,8 +731,6 @@ void ProjectTreeItem::broadcastChangeProjectInfo(const ProjectInfo *info)
 
 Point<float> ProjectTreeItem::broadcastChangeProjectBeatRange()
 {
-    // FIXME: bottleneck warning (will call collectTracks every time an event changes):
-    // TODO cache current track list
     const Point<float> &beatRange = this->getProjectRangeInBeats();
 
     const float &firstBeat = beatRange.getX();
@@ -964,7 +957,7 @@ void ProjectTreeItem::changeListenerCallback(ChangeBroadcaster *source)
     }
 }
 
-void ProjectTreeItem::rebuildTracksHashIfNeeded()
+void ProjectTreeItem::rebuildTracksHashIfNeeded() const
 {
     if (this->isTracksHashOutdated)
     {
