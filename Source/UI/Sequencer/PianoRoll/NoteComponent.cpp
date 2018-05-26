@@ -297,10 +297,22 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         float deltaLength = 0.f;
         const bool eventChanged = this->getInitializingDelta(e, deltaLength, deltaKey);
 
+#if HELIO_MOBILE
+        const bool shouldSendMidi = false;
+#elif HELIO_DESKTOP
+        const bool shouldSendMidi = (lastDeltaKey != deltaKey) && (selection.getNumSelected() < MAX_DRAG_POLYPHONY);
+#endif
+        lastDeltaKey = deltaKey;
+
         if (eventChanged)
         {
             this->checkpointIfNeeded();
-            this->stopSound();
+
+            if (shouldSendMidi)
+            {
+                this->stopSound();
+            }
+
             for (const auto &s : selection.getGroupedSelections())
             {
                 const auto trackSelection(s.second);
@@ -310,7 +322,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
                 {
                     const auto *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
                     groupBefore.add(nc->getNote());
-                    groupAfter.add(nc->continueInitializing(deltaLength, deltaKey));
+                    groupAfter.add(nc->continueInitializing(deltaLength, deltaKey, shouldSendMidi));
                 }
 
                 getPianoSequence(trackSelection)->changeGroup(groupBefore, groupAfter, true);
@@ -856,13 +868,15 @@ bool NoteComponent::getInitializingDelta(const MouseEvent &e, float &deltaLength
     return (keyChanged || lengthChanged);
 }
 
-Note NoteComponent::continueInitializing(float deltaLength, int deltaKey) const noexcept
+Note NoteComponent::continueInitializing(float deltaLength, int deltaKey, bool sendMidi) const noexcept
 {
     const int newKey = this->anchor.getKey() + deltaKey;
     const float newLength = this->anchor.getLength() + deltaLength;
 
-    // always send midi in this mode:
-    this->sendMidiMessage(MidiMessage::noteOn(1, newKey, this->getVelocity()));
+    if (sendMidi)
+    {
+        this->sendMidiMessage(MidiMessage::noteOn(1, newKey, this->getVelocity()));
+    }
 
     return this->getNote().withKeyLength(newKey, newLength);
 }

@@ -96,7 +96,7 @@ protected:
     bool isInitializing() const;
     void startInitializing();
     bool getInitializingDelta(const MouseEvent &e, float &deltaLength, int &deltaKey) const;
-    Note continueInitializing(float deltaLength, int deltaKey) const noexcept;
+    Note continueInitializing(float deltaLength, int deltaKey, bool sendMidi) const noexcept;
     void endInitializing();
 
     void startResizingRight(bool sendMidiMessage);
