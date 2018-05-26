@@ -177,7 +177,21 @@ void PianoRoll::setActiveSegment(WeakReference<MidiTrack> activeTrack, const Cli
         noteComponent->setActive(isActive, true);
     }
 
+    this->updateActiveRangeIndicator();
     this->repaint(this->viewport.getViewArea());
+}
+
+void PianoRoll::updateActiveRangeIndicator() const
+{
+    if (this->activeTrack != nullptr)
+    {
+        const float firstBeat = this->activeTrack->getSequence()->getFirstBeat();
+        const float lastBeat = this->activeTrack->getSequence()->getLastBeat();
+        const float clipBeat = this->activeClip.getBeat();
+
+        this->header->updateSubrangeIndicator(this->activeTrack->getTrackColour(),
+            firstBeat + clipBeat, lastBeat + clipBeat);
+    }
 }
 
 WeakReference<MidiTrack> PianoRoll::getActiveTrack() const noexcept
@@ -576,6 +590,11 @@ void PianoRoll::onChangeClip(const Clip &clip, const Clip &newClip)
             this->batchRepaintList.add(e.second.get());
         }
 
+        if (newClip == this->activeClip)
+        {
+            this->updateActiveRangeIndicator();
+        }
+
         // Schedule batch repaint
         this->triggerAsyncUpdate();
     }
@@ -603,6 +622,7 @@ void PianoRoll::onChangeTrackProperties(MidiTrack *const track)
             component->updateColours();
         }
 
+        this->updateActiveRangeIndicator(); // colour might have changed
         this->repaint();
     }
 }
@@ -665,6 +685,12 @@ void PianoRoll::onRemoveTrack(MidiTrack *const track)
 void PianoRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
     this->reloadRollContent();
+}
+
+void PianoRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
+{
+    this->updateActiveRangeIndicator();
+    HybridRoll::onChangeProjectBeatRange(firstBeat, lastBeat);
 }
 
 //===----------------------------------------------------------------------===//

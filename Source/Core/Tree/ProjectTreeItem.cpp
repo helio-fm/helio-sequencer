@@ -93,7 +93,7 @@ void ProjectTreeItem::initialize()
     this->vcsItems.add(this->timeline);
 
     this->transport->seekToPosition(0.0);
-    
+
     this->recreatePage();
 }
 
@@ -115,7 +115,7 @@ ProjectTreeItem::~ProjectTreeItem()
                               false);
     }
 
-    this->projectSettings = nullptr;
+    this->projectPage = nullptr;
 
     this->removeAllListeners();
     this->sequencerLayout = nullptr;
@@ -218,8 +218,8 @@ Image ProjectTreeItem::getIcon() const noexcept
 
 void ProjectTreeItem::showPage()
 {
-    this->projectSettings->updateContent();
-    App::Layout().showPage(this->projectSettings, this);
+    this->projectPage->updateContent();
+    App::Layout().showPage(this->projectPage, this);
 }
 
 void ProjectTreeItem::safeRename(const String &newName)
@@ -256,7 +256,7 @@ void ProjectTreeItem::safeRename(const String &newName)
 void ProjectTreeItem::recreatePage()
 {
     ValueTree layoutState(Serialization::UI::sequencer);
-    if (this->sequencerLayout || this->projectSettings)
+    if (this->sequencerLayout || this->projectPage)
     {
         layoutState = this->sequencerLayout->serialize();
     }
@@ -265,14 +265,14 @@ void ProjectTreeItem::recreatePage()
     
     if (App::isRunningOnPhone())
     {
-        this->projectSettings = new ProjectPagePhone(*this);
+        this->projectPage = new ProjectPagePhone(*this);
     }
     else
     {
-        this->projectSettings = new ProjectPageDefault(*this);
+        this->projectPage = new ProjectPageDefault(*this);
     }
     
-    this->broadcastChangeProjectBeatRange(); // let rolls update themselves
+    //this->broadcastChangeProjectBeatRange(); // let rolls update themselves
     this->sequencerLayout->deserialize(layoutState);
 }
 
@@ -736,11 +736,12 @@ Point<float> ProjectTreeItem::broadcastChangeProjectBeatRange()
     const float &firstBeat = beatRange.getX();
     const float &lastBeat = beatRange.getY();
     
-    // грязный хак %(
-    // changeListeners.call итерирует список от конца к началу
-    // и транспорт обновляет позицию индикатора позже, чем роллы
-    // и, если ролл ресайзится, индикатор дергается
-    // пусть лучше транспорт обновит индикатор 2 раза, но гарантированно перед остальными
+    // FIXME
+    // changeListeners.call iterates listeners list in it's order
+    // so that transport updates playhead position later then others,
+    // so that resizing roll will make playhead glitch;
+    // for now - just force transport to update its playhead position before all others
+    // (doing the same work twice though)
     this->transport->onChangeProjectBeatRange(firstBeat, lastBeat);
     
     this->changeListeners.call(&ProjectListener::onChangeProjectBeatRange, firstBeat, lastBeat);

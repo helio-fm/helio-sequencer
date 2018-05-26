@@ -1021,6 +1021,10 @@
         </GROUP>
         <GROUP id="{9ABD7DD8-D3C8-EE5D-AD5E-6E6E6D1D3F8B}" name="Sequencer">
           <GROUP id="{FFB3A4BD-F358-7D17-AC4A-525D35F9E965}" name="Header">
+            <FILE id="z5FePy" name="ClipRangeIndicator.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/Header/ClipRangeIndicator.cpp"/>
+            <FILE id="kbi6Nd" name="ClipRangeIndicator.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/Header/ClipRangeIndicator.h"/>
             <FILE id="C2HVvH" name="HeaderSelectionIndicator.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/Header/HeaderSelectionIndicator.cpp"/>
             <FILE id="vFfeN2" name="HeaderSelectionIndicator.h" compile="0" resource="0"

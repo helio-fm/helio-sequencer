@@ -207,7 +207,7 @@ private:
     ScopedPointer<SequencerLayout> sequencerLayout;
     HybridRollEditMode rollEditMode;
     ListenerList<ProjectListener> changeListeners;
-    ScopedPointer<ProjectPage> projectSettings;
+    ScopedPointer<ProjectPage> projectPage;
     ReadWriteLock tracksListLock;
     ScopedPointer<ProjectInfo> info;
     ScopedPointer<ProjectTimeline> timeline;

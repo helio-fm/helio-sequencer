@@ -116,7 +116,9 @@ public:
     void onAddTrack(MidiTrack *const track) override;
     void onRemoveTrack(MidiTrack *const track) override;
     void onChangeTrackProperties(MidiTrack *const track) override;
+
     void onReloadProjectContent(const Array<MidiTrack *> &tracks) override;
+    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
 
     //===------------------------------------------------------------------===//
     // LassoSource
@@ -165,6 +167,8 @@ private:
 
     WeakReference<MidiTrack> activeTrack;
     Clip activeClip;
+
+    void updateActiveRangeIndicator() const;
 
 private:
 

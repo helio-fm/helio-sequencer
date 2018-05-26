@@ -20,52 +20,35 @@
 //[Headers]
 //[/Headers]
 
-#include "../../Themes/ShadowLeftwards.h"
 
-class TrackStartIndicator final : public Component
+class ClipRangeIndicator final : public Component
 {
 public:
 
-    TrackStartIndicator();
-    ~TrackStartIndicator();
+    ClipRangeIndicator();
+    ~ClipRangeIndicator();
 
     //[UserMethods]
+    float getFirstBeat() const noexcept { return this->firstBeat; }
+    float getLastBeat() const noexcept { return this->lastBeat; }
 
-    double getAnchor() const
-    {
-        return this->absPosition;
-    }
-
-    inline void setAnchoredAt(double absX)
-    {
-        this->absPosition = absX;
-        this->updateBounds();
-    }
-
+    // Returns true if range is updated and component should be repositioned
+    bool updateWith(const Colour &colour, float firstBeat, float lastBeat);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void parentHierarchyChanged() override;
-    void parentSizeChanged() override;
 
 
 private:
 
     //[UserVariables]
-
-    double absPosition;
-
-    void updateBounds()
-    {
-        this->setBounds(0, 0,
-            int(double(this->getParentWidth()) * this->absPosition + 1.0),
-            this->getParentHeight());
-    }
-
+    Colour paintColour;
+    Colour trackColour;
+    float firstBeat;
+    float lastBeat;
     //[/UserVariables]
 
-    ScopedPointer<ShadowLeftwards> shadow;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TrackStartIndicator)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ClipRangeIndicator)
 };
