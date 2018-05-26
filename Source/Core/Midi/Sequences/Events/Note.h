@@ -45,6 +45,7 @@ public:
     Note copyWithNewId(WeakReference<MidiSequence> owner = nullptr) const noexcept;
     Note withBeat(float newBeat) const noexcept;
     Note withKeyBeat(Key newKey, float newBeat) const noexcept;
+    Note withKeyLength(Key newKey, float newLength) const noexcept;
     Note withDeltaBeat(float deltaPosition) const noexcept;
     Note withDeltaKey(Key deltaKey) const noexcept;
     Note withLength(float newLength) const noexcept;

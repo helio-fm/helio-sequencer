@@ -1523,6 +1523,11 @@ bool HybridRoll::isViewportDragEvent(const MouseEvent &e) const
 
 bool HybridRoll::isAddEvent(const MouseEvent &e) const
 {
+    if (e.mods.isRightButtonDown())
+    {
+        return false;
+    }
+
     if (this->project.getEditMode().forbidsAddingEvents())
     {
         return false;
@@ -1533,7 +1538,7 @@ bool HybridRoll::isAddEvent(const MouseEvent &e) const
         return true;
     }
 
-    return false; // (e.mods.isMiddleButtonDown());
+    return false;
 }
 
 bool HybridRoll::isLassoEvent(const MouseEvent &e) const

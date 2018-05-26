@@ -62,9 +62,9 @@ public:
     //===------------------------------------------------------------------===//
 
     void setSelected(bool selected) override;
-    String getSelectionGroupId() const override;
-    float getBeat() const override;
-    String getId() const override;
+    const String &getSelectionGroupId() const noexcept override;
+    const String &getId() const noexcept override { return this->note.getId(); }
+    float getBeat() const noexcept override { return this->note.getBeat(); }
 
     //===------------------------------------------------------------------===//
     // Component
@@ -93,8 +93,12 @@ protected:
     bool belongsTo(const WeakReference<MidiTrack> &track, const Clip &clip) const noexcept;
     void switchActiveSegmentToSelected() const;
 
-    bool isResizing() const;
-    
+    bool isInitializing() const;
+    void startInitializing();
+    bool getInitializingDelta(const MouseEvent &e, float &deltaLength, int &deltaKey) const;
+    Note continueInitializing(float deltaLength, int deltaKey) const noexcept;
+    void endInitializing();
+
     void startResizingRight(bool sendMidiMessage);
     bool getResizingRightDelta(const MouseEvent &e, float &deltaLength) const;
     Note continueResizingRight(float deltaLength) const noexcept;
@@ -143,7 +147,6 @@ protected:
 
     bool firstChangeDone;
     void checkpointIfNeeded();
-    void setNoCheckpointNeededForNextAction();
 
     bool shouldGoQuickSelectLayerMode(const ModifierKeys &modifiers) const;
     void setQuickSelectLayerMode(bool value);

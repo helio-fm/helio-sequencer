@@ -108,19 +108,9 @@ void NoteComponent::setSelected(bool selected)
     MidiEventComponent::setSelected(selected);
 }
 
-float NoteComponent::getBeat() const
-{
-    return this->note.getBeat() + this->clip.getBeat();
-}
-
-String NoteComponent::getSelectionGroupId() const
+const String &NoteComponent::getSelectionGroupId() const noexcept
 {
     return this->note.getSequence()->getTrackId();
-}
-
-String NoteComponent::getId() const
-{
-    return this->note.getId();
 }
 
 //===----------------------------------------------------------------------===//
@@ -301,7 +291,37 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     
     const auto &selection = this->roll.getLassoSelection();
 
-    if (this->state == ResizingRight)
+    if (this->state == Initializing)
+    {
+        int deltaKey = 0;
+        float deltaLength = 0.f;
+        const bool eventChanged = this->getInitializingDelta(e, deltaLength, deltaKey);
+
+        if (eventChanged)
+        {
+            this->checkpointIfNeeded();
+            this->stopSound();
+            for (const auto &s : selection.getGroupedSelections())
+            {
+                const auto trackSelection(s.second);
+                Array<Note> groupBefore, groupAfter;
+
+                for (int i = 0; i < trackSelection->size(); ++i)
+                {
+                    const auto *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
+                    groupBefore.add(nc->getNote());
+                    groupAfter.add(nc->continueInitializing(deltaLength, deltaKey));
+                }
+
+                getPianoSequence(trackSelection)->changeGroup(groupBefore, groupAfter, true);
+            }
+        }
+        else
+        {
+            this->setFloatBounds(this->getRoll().getEventBounds(this)); // avoids glitches
+        }
+    }
+    else if (this->state == ResizingRight)
     {
         float deltaLength = 0.f;
         const bool lengthChanged = this->getResizingRightDelta(e, deltaLength);
@@ -533,7 +553,15 @@ void NoteComponent::mouseUp(const MouseEvent &e)
     
     const Lasso &selection = this->roll.getLassoSelection();
 
-    if (this->state == ResizingRight)
+    if (this->state == Initializing)
+    {
+        for (int i = 0; i < selection.getNumSelected(); i++)
+        {
+            auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+            nc->endInitializing();
+        }
+    }
+    else if (this->state == ResizingRight)
     {
         for (int i = 0; i < selection.getNumSelected(); i++)
         {
@@ -747,13 +775,13 @@ bool NoteComponent::getDraggingDelta(const MouseEvent &e, float &deltaBeat, int 
     float newBeat = -1;
 
     // TODO: test this->clickOffset.getX() % (min snap length)
-    this->getRoll().getRowsColsByComponentPosition(this->getX() + this->floatLocalBounds.getX() + 1 /*+ this->clickOffset.getX()*/,
-            this->getY() + (this->getHeight() / 2) + this->floatLocalBounds.getY() + this->clickOffset.getY(),
-            newKey,
-            newBeat);
+    this->getRoll().getRowsColsByComponentPosition(
+        this->getX() + this->floatLocalBounds.getX() + 1 /*+ this->clickOffset.getX()*/,
+        this->getY() + (this->getHeight() / 2) + this->floatLocalBounds.getY() + this->clickOffset.getY(),
+        newKey, newBeat);
 
     deltaKey = (newKey - this->anchor.getKey());
-    deltaBeat = (newBeat - this->anchor.getBeat() - this->clip.getBeat());
+    deltaBeat = (newBeat - this->anchor.getBeat());
 
     const bool keyChanged = (this->getKey() != newKey);
     const bool beatChanged = (this->getBeat() != newBeat);
@@ -763,8 +791,8 @@ bool NoteComponent::getDraggingDelta(const MouseEvent &e, float &deltaBeat, int 
 
 Note NoteComponent::continueDragging(float deltaBeat, int deltaKey, bool sendMidiMessage) const noexcept
 {
-    const int &newKey = this->anchor.getKey() + deltaKey;
-    const float &newBeat = this->anchor.getBeat() + deltaBeat;
+    const int newKey = this->anchor.getKey() + deltaKey;
+    const float newBeat = this->anchor.getBeat() + deltaBeat;
 
     if (sendMidiMessage)
     {
@@ -785,13 +813,69 @@ void NoteComponent::endDragging(bool sendMidiMessage)
 }
 
 //===----------------------------------------------------------------------===//
-// Resizing Right
+// Creating note mode
 //===----------------------------------------------------------------------===//
 
-bool NoteComponent::isResizing() const
+bool NoteComponent::isInitializing() const
 {
-    return (this->state == ResizingRight) || (this->state == ResizingLeft);
+    return this->state == Initializing;
 }
+
+void NoteComponent::startInitializing()
+{
+    // warning: note is supposed to be created by roll in two actions,
+    // adding one and resizing it afterwards, so two checkpoints would happen
+    // if we set this->firstChangeDone = false here, which we don't want
+    // (adding a note should appear to user as a single transaction).
+    this->firstChangeDone = true;
+    // ^ thus, set no checkpoint is needed
+
+    this->state = Initializing;
+    this->anchor = this->getNote();
+
+    // always send midi in this mode:
+    this->sendMidiMessage(MidiMessage::noteOn(1, this->getKey(), this->getVelocity()));
+}
+
+bool NoteComponent::getInitializingDelta(const MouseEvent &e, float &deltaLength, int &deltaKey) const
+{
+    int newKey = -1;
+    float newBeat = -1;
+
+    this->getRoll().getRowsColsByComponentPosition(
+        this->getX() + this->floatLocalBounds.getX() + e.x,
+        this->getY() + this->floatLocalBounds.getY() + e.y,
+        newKey, newBeat);
+
+    const float newLength = newBeat - this->getBeat();
+    deltaLength = newLength - this->anchor.getLength();
+    deltaKey = newKey - this->anchor.getKey();
+
+    const bool keyChanged = (this->getKey() != newKey);
+    const bool lengthChanged = (this->getLength() != newLength);
+    return (keyChanged || lengthChanged);
+}
+
+Note NoteComponent::continueInitializing(float deltaLength, int deltaKey) const noexcept
+{
+    const int newKey = this->anchor.getKey() + deltaKey;
+    const float newLength = this->anchor.getLength() + deltaLength;
+
+    // always send midi in this mode:
+    this->sendMidiMessage(MidiMessage::noteOn(1, newKey, this->getVelocity()));
+
+    return this->getNote().withKeyLength(newKey, newLength);
+}
+
+void NoteComponent::endInitializing()
+{
+    this->stopSound();
+    this->state = None;
+}
+
+//===----------------------------------------------------------------------===//
+// Resizing Right
+//===----------------------------------------------------------------------===//
 
 void NoteComponent::startResizingRight(bool sendMidiMessage)
 {
@@ -810,12 +894,12 @@ bool NoteComponent::getResizingRightDelta(const MouseEvent &e, float &deltaLengt
     int newNote = -1;
     float newBeat = -1;
 
-    this->getRoll().getRowsColsByComponentPosition(getX() + this->floatLocalBounds.getX() + e.x,
-                                                   getY() + this->floatLocalBounds.getY() + e.y,
-                                                   newNote,
-                                                   newBeat);
+    this->getRoll().getRowsColsByComponentPosition(
+        this->getX() + this->floatLocalBounds.getX() + e.x,
+        this->getY() + this->floatLocalBounds.getY() + e.y,
+        newNote, newBeat);
 
-    const float newLength = (newBeat - this->getBeat());
+    const float newLength = newBeat - this->getBeat();
     deltaLength = newLength - this->anchor.getLength();
 
     const bool lengthChanged = (this->getLength() != newLength);
@@ -855,10 +939,10 @@ bool NoteComponent::getResizingLeftDelta(const MouseEvent &e, float &deltaLength
     int newNote = -1;
     float newBeat = -1;
     
-    this->getRoll().getRowsColsByComponentPosition(getX() + this->floatLocalBounds.getX() + e.x,
-                                                   getY() + this->floatLocalBounds.getY() + e.y,
-                                                   newNote,
-                                                   newBeat);
+    this->getRoll().getRowsColsByComponentPosition(
+        this->getX() + this->floatLocalBounds.getX() + e.x,
+        this->getY() + this->floatLocalBounds.getY() + e.y,
+        newNote, newBeat);
     
     deltaLength = this->anchor.getBeat() - newBeat;
     const bool lengthChanged = (this->getBeat() != newBeat);
@@ -896,14 +980,15 @@ bool NoteComponent::getGroupScaleRightFactor(const MouseEvent &e, float &absScal
     int newNote = -1;
     float newBeat = -1;
     
-    this->getRoll().getRowsColsByComponentPosition(getX() + this->floatLocalBounds.getX() + e.x,
-                                                   getY() + this->floatLocalBounds.getY() + e.y,
-                                                   newNote,
-                                                   newBeat);
+    this->getRoll().getRowsColsByComponentPosition(
+        this->getX() + this->floatLocalBounds.getX() + e.x,
+        this->getY() + this->floatLocalBounds.getY() + e.y,
+        newNote, newBeat);
     
     const float minGroupLength = 1.f;
-    const float myEndBeat = (this->getBeat() + this->getLength());
-    const float newGroupLength = jmax(minGroupLength, (newBeat - this->groupScalingAnchor.getBeat()));
+    const float myEndBeat = this->getBeat() + this->getLength();
+    const float newGroupLength = jmax(minGroupLength, newBeat - this->groupScalingAnchor.getBeat());
+
     absScaleFactor = newGroupLength / this->groupScalingAnchor.getLength();
     
     const bool endBeatChanged = (newBeat != myEndBeat);
@@ -932,7 +1017,7 @@ void NoteComponent::startGroupScalingLeft(float groupEndBeat)
     this->firstChangeDone = false;
     this->state = GroupScalingLeft;
     this->anchor = this->getNote();
-    const float newLength = (groupEndBeat - this->getBeat());
+    const float newLength = groupEndBeat - this->getBeat();
     this->groupScalingAnchor = this->getNote().withLength(newLength);
 }
 
@@ -941,13 +1026,14 @@ bool NoteComponent::getGroupScaleLeftFactor(const MouseEvent &e, float &absScale
     int newNote = -1;
     float newBeat = -1;
     
-    this->getRoll().getRowsColsByComponentPosition(this->getX() + this->floatLocalBounds.getX() + e.x,
-                                                   this->getY() + this->floatLocalBounds.getY() + e.y,
-                                                   newNote,
-                                                   newBeat);
+    this->getRoll().getRowsColsByComponentPosition(
+        this->getX() + this->floatLocalBounds.getX() + e.x,
+        this->getY() + this->floatLocalBounds.getY() + e.y,
+        newNote, newBeat);
     
     const float minGroupLength = 1.f;
     const float groupAnchorEndBeat = this->groupScalingAnchor.getBeat() + this->groupScalingAnchor.getLength();
+
     const float newGroupLength = jmax(minGroupLength, (groupAnchorEndBeat - newBeat));
     absScaleFactor = newGroupLength / this->groupScalingAnchor.getLength();
     
@@ -1032,11 +1118,6 @@ void NoteComponent::checkpointIfNeeded()
         this->note.getSequence()->checkpoint();
         this->firstChangeDone = true;
     }
-}
-
-void NoteComponent::setNoCheckpointNeededForNextAction()
-{
-    this->firstChangeDone = true;
 }
 
 void NoteComponent::stopSound()

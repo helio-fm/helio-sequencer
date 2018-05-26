@@ -51,6 +51,7 @@ public:
     
     void setActiveSegment(WeakReference<MidiTrack> activeTrack, const Clip &activeClip);
     WeakReference<MidiTrack> getActiveTrack() const noexcept;
+    const Clip &getActiveClip() const noexcept;
 
     void setDefaultNoteVolume(float volume) noexcept;
 
@@ -89,10 +90,13 @@ public:
     void addNote(int key, float beat, float length, float velocity);
     Rectangle<float> getEventBounds(FloatBoundsComponent *mc) const override;
     Rectangle<float> getEventBounds(int key, float beat, float length) const;
+
+    int getYPositionByKey(int targetKey) const;
+
+    // Note that beat is returned relative to active clip's beat offset:
     void getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber) const;
     void getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber) const;
-    int getYPositionByKey(int targetKey) const;
-    
+
     //===------------------------------------------------------------------===//
     // Drag helpers
     //===------------------------------------------------------------------===//

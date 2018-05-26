@@ -194,10 +194,8 @@ void PianoRoll::updateActiveRangeIndicator() const
     }
 }
 
-WeakReference<MidiTrack> PianoRoll::getActiveTrack() const noexcept
-{
-    return this->activeTrack;
-}
+WeakReference<MidiTrack> PianoRoll::getActiveTrack() const noexcept { return this->activeTrack; }
+const Clip &PianoRoll::getActiveClip() const noexcept { return this->activeClip; }
 
 void PianoRoll::setDefaultNoteVolume(float volume) noexcept
 {
@@ -342,7 +340,7 @@ Rectangle<float> PianoRoll::getEventBounds(FloatBoundsComponent *mc) const
 {
     jassert(dynamic_cast<NoteComponent *>(mc));
     const auto *nc = static_cast<NoteComponent *>(mc);
-    return this->getEventBounds(nc->getKey(), nc->getBeat(), nc->getLength());
+    return this->getEventBounds(nc->getKey(), nc->getBeat() + nc->getClip().getBeat(), nc->getLength());
 }
 
 Rectangle<float> PianoRoll::getEventBounds(int key, float beat, float length) const
@@ -362,14 +360,14 @@ Rectangle<float> PianoRoll::getEventBounds(int key, float beat, float length) co
 
 void PianoRoll::getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber) const
 {
-    beatNumber = this->getRoundBeatByXPosition(int(x)); /* - 0.5f ? */
+    beatNumber = this->getRoundBeatByXPosition(int(x)) - this->activeClip.getBeat(); /* - 0.5f ? */
     noteNumber = roundToInt((this->getHeight() - y) / this->rowHeight);
     noteNumber = jmin(jmax(noteNumber, 0), numRows - 1);
 }
 
 void PianoRoll::getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber) const
 {
-    beatNumber = this->getFloorBeatByXPosition(x);
+    beatNumber = this->getFloorBeatByXPosition(x) - this->activeClip.getBeat();
     noteNumber = roundToInt((this->getHeight() - y) / this->rowHeight);
     noteNumber = jmin(jmax(noteNumber, 0), numRows - 1);
 }
@@ -488,7 +486,7 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
             this->batchRepaintList.add(component);
             this->triggerAsyncUpdate(); // instead of updateBounds
 
-            if (this->addNewNoteMode)
+            if (this->addNewNoteMode && isActive)
             {
                 this->newNoteDragging = component;
                 this->addNewNoteMode = false;
@@ -788,17 +786,13 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
 
     if (this->newNoteDragging)
     {
-        if (this->newNoteDragging->isResizing())
+        if (this->newNoteDragging->isInitializing())
         {
             this->newNoteDragging->mouseDrag(e.getEventRelativeTo(this->newNoteDragging));
         }
         else
         {
-            this->newNoteDragging->startResizingRight(true);
-            // a hack here. note is technically created in two actions:
-            // adding one and resizing it afterwards, so two checkpoints would happen
-            // which we don't want, as adding a note should appear to user as a single transaction
-            this->newNoteDragging->setNoCheckpointNeededForNextAction();
+            this->newNoteDragging->startInitializing();
             this->setMouseCursor(MouseCursor(MouseCursor::LeftRightResizeCursor));
         }
     }
@@ -817,7 +811,7 @@ void PianoRoll::mouseUp(const MouseEvent &e)
     if (this->newNoteDragging != nullptr)
     {
 
-        this->newNoteDragging->endResizingRight();
+        this->newNoteDragging->endInitializing();
         this->setMouseCursor(this->project.getEditMode().getCursor());
         this->newNoteDragging = nullptr;
     }

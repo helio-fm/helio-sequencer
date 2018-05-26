@@ -65,6 +65,8 @@ Note Note::copyWithNewId(WeakReference<MidiSequence> owner) const noexcept
     return n;
 }
 
+#define MIN_LENGTH 0.5f
+
 Note Note::withBeat(float newBeat) const noexcept
 {
     Note other(*this);
@@ -77,6 +79,14 @@ Note Note::withKeyBeat(Key newKey, float newBeat) const noexcept
     Note other(*this);
     other.key = jmin(jmax(newKey, 0), 128);
     other.beat = roundBeat(newBeat);
+    return other;
+}
+
+Note Note::withKeyLength(Key newKey, float newLength) const noexcept
+{
+    Note other(*this);
+    other.key = jmin(jmax(newKey, 0), 128);
+    other.length = jmax(MIN_LENGTH, roundBeat(newLength));
     return other;
 }
 
@@ -93,8 +103,6 @@ Note Note::withDeltaKey(Key deltaKey) const noexcept
     other.key = jmin(jmax(other.key + deltaKey, 0), 128);
     return other;
 }
-
-#define MIN_LENGTH 0.5f
 
 Note Note::withLength(float newLength) const noexcept
 {
