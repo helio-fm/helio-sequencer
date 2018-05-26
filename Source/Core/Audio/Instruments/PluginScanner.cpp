@@ -78,6 +78,21 @@ bool PluginScanner::hasInstruments() const
     return false;
 }
 
+
+void PluginScanner::removeItem(const PluginDescription &description)
+{
+    const ScopedWriteLock lock(this->pluginsListLock);
+    for (int i = 0; i < this->pluginsList.getNumTypes(); ++i)
+    {
+        if (this->pluginsList.getType(i)->isDuplicateOf(description))
+        {
+            this->pluginsList.removeType(i);
+            this->sendChangeMessage();
+            return;
+        }
+    }
+}
+
 void PluginScanner::sortList(KnownPluginList::SortMethod fieldToSortBy, bool forwards)
 {
     const ScopedWriteLock lock(this->pluginsListLock);

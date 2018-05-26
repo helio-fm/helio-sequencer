@@ -325,7 +325,7 @@ ScopedPointer<Component> AudioPluginsListComponent::createMenu()
     const auto selectedRow = this->pluginsList->getSelectedRow();
     const auto description = pluginScanner.getList().getType(selectedRow);
     jassert(description);
-    return { new AudioPluginSelectionMenu(*description, this->instrumentsRoot) };
+    return { new AudioPluginSelectionMenu(*description, this->instrumentsRoot, this->pluginScanner) };
 }
 
 Image AudioPluginsListComponent::getIcon() const

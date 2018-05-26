@@ -34,6 +34,8 @@ public:
     bool hasEffects() const;
     bool hasInstruments() const;
 
+    void removeItem(const PluginDescription &description);
+
     void sortList(KnownPluginList::SortMethod method, bool forwards);
     const KnownPluginList &getList() const noexcept;
 

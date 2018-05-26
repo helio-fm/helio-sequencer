@@ -28,9 +28,10 @@
 #include "App.h"
 
 AudioPluginSelectionMenu::AudioPluginSelectionMenu(const PluginDescription pd,
-    OrchestraPitTreeItem &orchestraNode) :
+    OrchestraPitTreeItem &orchestraNode, PluginScanner &scanner) :
     pluginDescription(pd),
-    orchestraNode(orchestraNode)
+    orchestraNode(orchestraNode),
+    pluginScanner(scanner)
 {
     this->updateContent(this->createDefaultMenu(), MenuPanel::SlideRight);
 }
@@ -59,7 +60,7 @@ MenuPanel::Menu AudioPluginSelectionMenu::createDefaultMenu()
 
     menu.add(MenuItem::item(Icons::remove, TRANS("menu::selection::plugin::remove"))->withAction([this]()
     {
-        // TODO
+        this->pluginScanner.removeItem(this->pluginDescription);
         this->dismiss();
     }));
 
