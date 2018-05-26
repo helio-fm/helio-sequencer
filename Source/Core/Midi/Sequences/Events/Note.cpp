@@ -190,9 +190,9 @@ int Note::compareElements(const Note *const first, const Note *const second) noe
     const int beatResult = (beatDiff > 0.f) - (beatDiff < 0.f);
     if (beatResult != 0) { return beatResult; }
 
-    const float lenDiff = (first->beat + first->length) - (second->beat + second->length);
-    const int lenResult = (lenDiff > 0.f) - (lenDiff < 0.f);
-    if (lenResult != 0) { return lenResult; }
+    //const float lenDiff = (first->beat + first->length) - (second->beat + second->length);
+    //const int lenResult = (lenDiff > 0.f) - (lenDiff < 0.f);
+    //if (lenResult != 0) { return lenResult; }
 
     const int keyDiff = first->key - second->key;
     const int keyResult = (keyDiff > 0) - (keyDiff < 0);

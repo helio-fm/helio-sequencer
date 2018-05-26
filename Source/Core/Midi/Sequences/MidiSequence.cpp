@@ -143,11 +143,6 @@ float MidiSequence::getLastBeat() const noexcept
         return -FLT_MAX;
     }
     
-    // FIXME:
-    // sometimes the last event is not the one that lasts longer
-    // (as event *must* be sorted by start beat, not by end beat),
-    // so here we might have to compare a number of last events
-    // to see where the sequence really ends
     return this->midiEvents.getLast()->getBeat();
 }
 
