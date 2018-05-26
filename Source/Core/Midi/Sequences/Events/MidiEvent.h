@@ -79,16 +79,7 @@ public:
             (l.sequence != nullptr && l.sequence == r.sequence && l.id == r.id));
     }
 
-    static int compareElements(const MidiEvent *const first, const MidiEvent *const second)
-    {
-        if (first == second) { return 0; }
-        
-        const float diff = first->getBeat() - second->getBeat();
-        const int diffResult = (diff > 0.f) - (diff < 0.f);
-        if (diffResult != 0) { return diffResult; }
-        
-        return first->getId().compare(second->getId());
-    }
+    static int compareElements(const MidiEvent *const first, const MidiEvent *const second) noexcept;
 
 protected:
 

@@ -19,6 +19,7 @@
 #include "MidiEvent.h"
 #include "MidiSequence.h"
 #include "MidiTrack.h"
+#include "Note.h"
 
 MidiEvent::MidiEvent(WeakReference<MidiSequence> owner, const MidiEvent &parameters) noexcept :
     sequence(owner),
@@ -71,6 +72,28 @@ MidiEvent::Id MidiEvent::getId() const noexcept
 float MidiEvent::getBeat() const noexcept
 {
     return this->beat;
+}
+
+int MidiEvent::compareElements(const MidiEvent *const first, const MidiEvent *const second) noexcept
+{
+    if (first == second) { return 0; }
+
+    // This is yet another ugly hack:
+    // Sequences always sort their lists as a list of MidiEvent's
+    // but I really need to take into account note lengths,
+    // since the last event in the list is used to compute overall sequence length
+    // (and there might be 2 notes at the same beat, but with different lengths)
+    if (first->isTypeOf(MidiEvent::Note))
+    {
+        return ::Note::compareElements(static_cast<const ::Note *>(first), static_cast<const ::Note *>(second));
+    }
+
+    // All other events should do fine with this:
+    const float diff = first->getBeat() - second->getBeat();
+    const int diffResult = (diff > 0.f) - (diff < 0.f);
+    if (diffResult != 0) { return diffResult; }
+
+    return first->getId().compare(second->getId());
 }
 
 MidiEvent::Id MidiEvent::createId() const noexcept

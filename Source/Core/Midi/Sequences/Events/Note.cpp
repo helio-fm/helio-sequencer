@@ -182,33 +182,21 @@ void Note::applyChanges(const Note &other) noexcept
     this->velocity = other.velocity;
 }
 
-int Note::compareElements(const MidiEvent *const first, const MidiEvent *const second) noexcept
-{
-    if (first == second) { return 0; }
-
-    const float diff = first->getBeat() - second->getBeat();
-    const int diffResult = (diff > 0.f) - (diff < 0.f);
-    if (diffResult != 0) { return diffResult; }
-
-    return first->getId().compare(second->getId());
-}
-
 int Note::compareElements(const Note *const first, const Note *const second) noexcept
 {
     if (first == second) { return 0; }
 
-    const float beatDiff = first->getBeat() - second->getBeat();
+    const float beatDiff = first->beat - second->beat;
     const int beatResult = (beatDiff > 0.f) - (beatDiff < 0.f);
     if (beatResult != 0) { return beatResult; }
 
-    const int keyDiff = first->getKey() - second->getKey();
+    const float lenDiff = (first->beat + first->length) - (second->beat + second->length);
+    const int lenResult = (lenDiff > 0.f) - (lenDiff < 0.f);
+    if (lenResult != 0) { return lenResult; }
+
+    const int keyDiff = first->key - second->key;
     const int keyResult = (keyDiff > 0) - (keyDiff < 0);
     if (keyResult != 0) { return keyResult; }
 
     return first->getId().compare(second->getId());
-}
-
-int Note::compareElements(const Note &first, const Note &second) noexcept
-{
-    return Note::compareElements(&first, &second);
 }
