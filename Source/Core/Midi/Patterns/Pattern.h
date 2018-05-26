@@ -110,7 +110,7 @@ public:
     //===------------------------------------------------------------------===//
 
     String createUniqueClipId() const noexcept;
-    String getTrackId() const noexcept;
+    const String &getTrackId() const noexcept;
 
     friend inline bool operator==(const Pattern &lhs, const Pattern &rhs)
     {

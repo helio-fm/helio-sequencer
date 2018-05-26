@@ -37,7 +37,7 @@ public:
     AutomationTrackInsertAction(MidiTrackSource &source,
         WeakReference<TreeItem> parentTreeItem,
         ValueTree serializedState,
-        String xPath) noexcept;
+        const String &xPath) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -73,7 +73,7 @@ public:
     
     AutomationTrackRemoveAction(MidiTrackSource &source,
         WeakReference<TreeItem> parentTreeItem,
-        String trackId) noexcept;
+        const String &trackId) noexcept;
 
     bool perform() override;
     bool undo() override;

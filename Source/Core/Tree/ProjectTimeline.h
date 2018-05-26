@@ -96,9 +96,9 @@ private:
     
     ProjectTreeItem &project;
     
-    Uuid annotationsTrackId;
-    Uuid timeSignaturesTrackId;
-    Uuid keySignaturesTrackId;
+    String annotationsTrackId;
+    String timeSignaturesTrackId;
+    String keySignaturesTrackId;
 
     ScopedPointer<MidiTrack> annotationsTrack;
     ScopedPointer<MidiTrack> timeSignaturesTrack;

@@ -21,7 +21,7 @@ class GenericTooltip : public Component
 {
 public:
 
-    explicit GenericTooltip(String tooltip) : message(std::move(tooltip))
+    explicit GenericTooltip(const String &tooltip) : message(tooltip)
     {
         this->setFocusContainer(false);
         this->setWantsKeyboardFocus(false);

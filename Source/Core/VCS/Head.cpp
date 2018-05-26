@@ -44,7 +44,7 @@ Head::Head(const Head &other) :
 
 Head::Head(Pack::Ptr packPtr, WeakReference<TrackedItemsSource> targetProject) :
     Thread("Diff Thread"),
-    targetVcsItemsSource(std::move(targetProject)),
+    targetVcsItemsSource(targetProject),
     pack(packPtr),
     diffOutdated(false),
     rebuildingDiffMode(false),

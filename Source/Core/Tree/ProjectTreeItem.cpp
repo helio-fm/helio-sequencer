@@ -964,13 +964,13 @@ void ProjectTreeItem::rebuildTracksHashIfNeeded() const
     {
         this->tracksHash.clear();
 
-        this->tracksHash[this->timeline->getAnnotations()->getTrackId().toString()] =
+        this->tracksHash[this->timeline->getAnnotations()->getTrackId()] =
             this->timeline->getAnnotations();
 
-        this->tracksHash[this->timeline->getKeySignatures()->getTrackId().toString()] =
+        this->tracksHash[this->timeline->getKeySignatures()->getTrackId()] =
             this->timeline->getKeySignatures();
 
-        this->tracksHash[this->timeline->getTimeSignatures()->getTrackId().toString()] =
+        this->tracksHash[this->timeline->getTimeSignatures()->getTrackId()] =
             this->timeline->getTimeSignatures();
         
         const Array<MidiTrack *> children = this->findChildrenOfType<MidiTrack>();
@@ -978,7 +978,7 @@ void ProjectTreeItem::rebuildTracksHashIfNeeded() const
         for (int i = 0; i < children.size(); ++i)
         {
             MidiTrack *const track = children.getUnchecked(i);
-            this->tracksHash[track->getTrackId().toString()] = track;
+            this->tracksHash[track->getTrackId()] = track;
         }
         
         this->isTracksHashOutdated = false;

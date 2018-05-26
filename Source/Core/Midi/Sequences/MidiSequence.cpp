@@ -239,9 +239,9 @@ String MidiSequence::createUniqueEventId() const noexcept
 // Helpers
 //===----------------------------------------------------------------------===//
 
-String MidiSequence::getTrackId() const noexcept
+const String &MidiSequence::getTrackId() const noexcept
 {
-    return this->track.getTrackId().toString();
+    return this->track.getTrackId();
 }
 
 int MidiSequence::getChannel() const noexcept

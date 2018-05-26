@@ -55,7 +55,7 @@ float Clip::getBeat() const noexcept
     return this->beat;
 }
 
-String Clip::getId() const noexcept
+const String &Clip::getId() const noexcept
 {
     return this->id;
 }

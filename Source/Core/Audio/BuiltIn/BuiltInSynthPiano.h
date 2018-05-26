@@ -23,10 +23,10 @@ struct GrandSample
 {
     GrandSample() = default;
 
-    GrandSample(String keyName,
+    GrandSample(const String &keyName,
         int lowKey, int highKey, int rootKey,
         const void *sourceData, size_t sourceDataSize) :
-        name(std::move(keyName)),
+        name(keyName),
         midiNoteForNormalPitch(rootKey)
     {
         for (int i = lowKey; i <= highKey; ++i)

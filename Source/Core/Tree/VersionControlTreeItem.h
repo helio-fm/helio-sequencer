@@ -27,7 +27,7 @@ class VersionControlTreeItem final : public TreeItem
 {
 public:
 
-    VersionControlTreeItem(String id = {}, String key = {});
+    VersionControlTreeItem(const String &existingId = {}, const String &existingKey = {});
     ~VersionControlTreeItem() override;
 
     String getName() const noexcept override;

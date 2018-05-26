@@ -33,7 +33,7 @@ public:
     AnnotationsTrack(ProjectTimeline &owner) :
         timeline(owner) {}
 
-    Uuid getTrackId() const noexcept override
+    const String &getTrackId() const noexcept override
     { return this->timeline.annotationsTrackId; }
 
     MidiSequence *getSequence() const noexcept override
@@ -49,7 +49,7 @@ public:
     TimeSignaturesTrack(ProjectTimeline &owner) :
         timeline(owner) {}
 
-    Uuid getTrackId() const noexcept override
+    const String &getTrackId() const noexcept override
     { return this->timeline.timeSignaturesTrackId; }
 
     MidiSequence *getSequence() const noexcept override
@@ -65,7 +65,7 @@ public:
     KeySignaturesTrack(ProjectTimeline &owner) :
         timeline(owner) {}
 
-    Uuid getTrackId() const noexcept override
+    const String &getTrackId() const noexcept override
     { return this->timeline.keySignaturesTrackId; }
 
     MidiSequence *getSequence() const noexcept override
@@ -77,7 +77,10 @@ public:
 using namespace Serialization::VCS;
 
 ProjectTimeline::ProjectTimeline(ProjectTreeItem &parentProject, String trackName) :
-    project(parentProject)
+    project(parentProject),
+    annotationsTrackId(Uuid().toString()),
+    timeSignaturesTrackId(Uuid().toString()),
+    keySignaturesTrackId(Uuid().toString())
 {
     this->annotationsTrack = new AnnotationsTrack(*this);
     this->annotationsSequence = new AnnotationsSequence(*this->annotationsTrack, *this);
@@ -275,13 +278,13 @@ ValueTree ProjectTimeline::serialize() const
     this->serializeVCSUuid(tree);
 
     tree.setProperty(Serialization::Core::annotationsTrackId,
-        this->annotationsTrackId.toString(), nullptr);
+        this->annotationsTrackId, nullptr);
 
     tree.setProperty(Serialization::Core::keySignaturesTrackId,
-        this->keySignaturesTrackId.toString(), nullptr);
+        this->keySignaturesTrackId, nullptr);
 
     tree.setProperty(Serialization::Core::timeSignaturesTrackId,
-        this->timeSignaturesTrackId.toString(), nullptr);
+        this->timeSignaturesTrackId, nullptr);
 
     tree.appendChild(this->annotationsSequence->serialize(), nullptr);
     tree.appendChild(this->keySignaturesSequence->serialize(), nullptr);
@@ -305,16 +308,16 @@ void ProjectTimeline::deserialize(const ValueTree &tree)
     this->deserializeVCSUuid(root);
 
     this->annotationsTrackId =
-        Uuid(root.getProperty(Serialization::Core::annotationsTrackId,
-            this->annotationsTrackId.toString()));
+        root.getProperty(Serialization::Core::annotationsTrackId,
+            this->annotationsTrackId);
 
     this->keySignaturesTrackId =
-        Uuid(root.getProperty(Serialization::Core::keySignaturesTrackId,
-            this->keySignaturesTrackId.toString()));
+        root.getProperty(Serialization::Core::keySignaturesTrackId,
+            this->keySignaturesTrackId);
 
     this->timeSignaturesTrackId =
-        Uuid(root.getProperty(Serialization::Core::timeSignaturesTrackId,
-            this->timeSignaturesTrackId.toString()));
+        root.getProperty(Serialization::Core::timeSignaturesTrackId,
+            this->timeSignaturesTrackId);
 
     forEachValueTreeChildWithType(root, e, Serialization::Midi::annotations)
     {

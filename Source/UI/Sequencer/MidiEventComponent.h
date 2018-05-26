@@ -36,8 +36,8 @@ public:
     void setActive(bool val, bool force = false);
     void setGhostMode();
 
-    virtual float getBeat() const = 0;
-    virtual String getId() const = 0;
+    virtual float getBeat() const noexcept = 0;
+    virtual const String &getId() const noexcept = 0;
     virtual void updateColours() = 0;
 
     //===------------------------------------------------------------------===//

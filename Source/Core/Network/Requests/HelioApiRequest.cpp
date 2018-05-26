@@ -79,8 +79,8 @@ const ValueTree HelioApiRequest::Response::getBody() const noexcept
     return this->body;
 }
 
-HelioApiRequest::HelioApiRequest(String apiEndpoint, ProgressCallback progressCallback) :
-    apiEndpoint(std::move(apiEndpoint)),
+HelioApiRequest::HelioApiRequest(const String &apiEndpoint, ProgressCallback progressCallback) :
+    apiEndpoint(apiEndpoint),
     progressCallback(progressCallback),
     serializer(true) {}
 

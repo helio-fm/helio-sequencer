@@ -96,7 +96,7 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject, Viewport &viewportRef,
     bool hasAnnotationsTrack,
     bool hasKeySignaturesTrack,
     bool hasTimeSignaturesTrack) :
-    clippingDetector(std::move(audioMonitor)),
+    clippingDetector(audioMonitor),
     project(parentProject),
     viewport(viewportRef),
     viewportAnchor(0, 0),

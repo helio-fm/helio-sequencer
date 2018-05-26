@@ -26,9 +26,9 @@
 //===----------------------------------------------------------------------===//
 
 TimeSignatureEventInsertAction::TimeSignatureEventInsertAction(MidiTrackSource &source,
-    String targetTrackId, const TimeSignatureEvent &event) noexcept :
+    const String &trackId, const TimeSignatureEvent &event) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId)),
+    trackId(trackId),
     event(event) {}
 
 bool TimeSignatureEventInsertAction::perform()
@@ -83,9 +83,9 @@ void TimeSignatureEventInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 TimeSignatureEventRemoveAction::TimeSignatureEventRemoveAction(MidiTrackSource &source,
-    String targetTrackId, const TimeSignatureEvent &target) noexcept :
+    const String &trackId, const TimeSignatureEvent &target) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId)),
+    trackId(trackId),
     event(target) {}
 
 bool TimeSignatureEventRemoveAction::perform()
@@ -140,10 +140,10 @@ void TimeSignatureEventRemoveAction::reset()
 //===----------------------------------------------------------------------===//
 
 TimeSignatureEventChangeAction::TimeSignatureEventChangeAction(MidiTrackSource &source,
-    String targetTrackId, const TimeSignatureEvent &target,
+    const String &trackId, const TimeSignatureEvent &target,
     const TimeSignatureEvent &newParameters) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId)),
+    trackId(trackId),
     eventBefore(target),
     eventAfter(newParameters) {}
 
@@ -237,9 +237,9 @@ void TimeSignatureEventChangeAction::reset()
 //===----------------------------------------------------------------------===//
 
 TimeSignatureEventsGroupInsertAction::TimeSignatureEventsGroupInsertAction(MidiTrackSource &source,
-    String targetTrackId, Array<TimeSignatureEvent> &target) noexcept :
+    const String &trackId, Array<TimeSignatureEvent> &target) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId))
+    trackId(trackId)
 {
     this->signatures.swapWith(target);
 }
@@ -308,9 +308,9 @@ void TimeSignatureEventsGroupInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 TimeSignatureEventsGroupRemoveAction::TimeSignatureEventsGroupRemoveAction(MidiTrackSource &source,
-    String targetTrackId, Array<TimeSignatureEvent> &target) noexcept :
+    const String &trackId, Array<TimeSignatureEvent> &target) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId))
+    trackId(trackId)
 {
     this->signatures.swapWith(target);
 }
@@ -379,10 +379,10 @@ void TimeSignatureEventsGroupRemoveAction::reset()
 //===----------------------------------------------------------------------===//
 
 TimeSignatureEventsGroupChangeAction::TimeSignatureEventsGroupChangeAction(MidiTrackSource &source,
-    String targetTrackId, const Array<TimeSignatureEvent> state1,
+    const String &trackId, const Array<TimeSignatureEvent> state1,
     const Array<TimeSignatureEvent> state2) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId))
+    trackId(trackId)
 {
     this->eventsBefore.addArray(state1);
     this->eventsAfter.addArray(state2);

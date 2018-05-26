@@ -61,7 +61,7 @@ private:
     
     struct ActionSet final : public Serializable
     {
-        ActionSet(ProjectTreeItem &parentProject, String transactionName);
+        ActionSet(ProjectTreeItem &project, const String &transactionName);
 
         bool perform() const;
         bool undo() const;

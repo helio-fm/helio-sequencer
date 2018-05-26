@@ -61,7 +61,7 @@ public:
     // MidiTrack
     //===------------------------------------------------------------------===//
 
-    Uuid getTrackId() const noexcept override;
+    const String &getTrackId() const noexcept override;
     int getTrackChannel() const noexcept override;
 
     String getTrackName() const noexcept override;
@@ -134,8 +134,8 @@ protected:
     
 protected:
 
-    Uuid id;
-    void setTrackId(const Uuid &val) override;
+    void setTrackId(const String &val) override;
+    String id;
 
     Colour colour;
     int channel;

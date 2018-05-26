@@ -36,9 +36,9 @@
 
 using namespace Serialization;
 
-UndoStack::ActionSet::ActionSet(ProjectTreeItem &parentProject, String transactionName) :
-    project(parentProject),
-    name(std::move(transactionName)) {}
+UndoStack::ActionSet::ActionSet(ProjectTreeItem &project, const String &transactionName) :
+    project(project),
+    name(transactionName) {}
     
 bool UndoStack::ActionSet::perform() const
 {

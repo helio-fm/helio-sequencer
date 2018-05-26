@@ -57,7 +57,7 @@ public:
     int getTrackChannel() const noexcept;
     Colour getTrackColour() const noexcept;
 
-    Id getId() const noexcept;
+    const Id &getId() const noexcept;
     float getBeat() const noexcept;
     
     inline HashCode hashCode() const noexcept

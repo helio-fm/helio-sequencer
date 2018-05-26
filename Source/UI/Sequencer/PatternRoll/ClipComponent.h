@@ -50,9 +50,9 @@ public:
     //===------------------------------------------------------------------===//
 
     void setSelected(bool selected) override;
-    String getSelectionGroupId() const override;
-    float getBeat() const override;
-    String getId() const override;
+    const String &getSelectionGroupId() const noexcept override;
+    float getBeat() const noexcept override;
+    const String &getId() const noexcept override;
 
     //===------------------------------------------------------------------===//
     // Component

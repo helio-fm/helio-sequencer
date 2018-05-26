@@ -33,7 +33,7 @@ public:
         UndoAction(source) {}
     
     MidiTrackRenameAction(MidiTrackSource &source,
-        String trackId, String newXPath) noexcept;
+        const String &trackId, const String &xPath) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -65,7 +65,7 @@ public:
         UndoAction(source) {}
 
     MidiTrackChangeColourAction(MidiTrackSource &source,
-        String trackId, const Colour &newColour) noexcept;
+        const String &trackId, const Colour &newColour) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -85,7 +85,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE(MidiTrackChangeColourAction)
 };
 
-
 //===----------------------------------------------------------------------===//
 // Change Instrument
 //===----------------------------------------------------------------------===//
@@ -98,7 +97,7 @@ public:
         UndoAction(source) {}
 
     MidiTrackChangeInstrumentAction(MidiTrackSource &source,
-        String trackId, String newInstrumentId) noexcept;
+        const String &trackId, const String &instrumentId) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -118,7 +117,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE(MidiTrackChangeInstrumentAction)
 };
 
-
 //===----------------------------------------------------------------------===//
 // Mute/Unmute
 //===----------------------------------------------------------------------===//
@@ -131,7 +129,7 @@ public:
         UndoAction(source) {}
 
     MidiTrackMuteAction(MidiTrackSource &source,
-        String trackId, bool shouldBeMuted) noexcept;
+        const String &trackId, bool shouldBeMuted) noexcept;
 
     bool perform() override;
     bool undo() override;

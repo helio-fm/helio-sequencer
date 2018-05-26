@@ -449,16 +449,15 @@ void Transport::allNotesAndControllersOff() const
         
         for (int l = 0; l < this->tracksCache.size(); ++l)
         {
-            const String &layerId =
-                this->tracksCache.getUnchecked(l)->getTrackId().toString();
+            const String &trackId = this->tracksCache.getUnchecked(l)->getTrackId();
             
             MidiMessageCollector *collector =
-                &this->linksCache[layerId]->getProcessorPlayer().getMidiMessageCollector();
+                &this->linksCache[trackId]->getProcessorPlayer().getMidiMessageCollector();
             
             if (! duplicateCollectors.contains(collector))
             {
-                this->sendMidiMessage(layerId, notesOff);
-                this->sendMidiMessage(layerId, controllersOff);
+                this->sendMidiMessage(trackId, notesOff);
+                this->sendMidiMessage(trackId, controllersOff);
                 duplicateCollectors.add(collector);
             }
         }
@@ -478,17 +477,16 @@ void Transport::allNotesControllersAndSoundOff() const
         
         for (int l = 0; l < this->tracksCache.size(); ++l)
         {
-            const String &layerId =
-                this->tracksCache.getUnchecked(l)->getTrackId().toString();
+            const String &trackId = this->tracksCache.getUnchecked(l)->getTrackId();
             
             MidiMessageCollector *collector =
-               &this->linksCache[layerId]->getProcessorPlayer().getMidiMessageCollector();
+               &this->linksCache[trackId]->getProcessorPlayer().getMidiMessageCollector();
             
             if (! duplicateCollectors.contains(collector))
             {
-                this->sendMidiMessage(layerId, notesOff);
-                this->sendMidiMessage(layerId, controllersOff);
-                this->sendMidiMessage(layerId, soundOff);
+                this->sendMidiMessage(trackId, notesOff);
+                this->sendMidiMessage(trackId, controllersOff);
+                this->sendMidiMessage(trackId, soundOff);
                 duplicateCollectors.add(collector);
             }
         }
@@ -592,7 +590,7 @@ void Transport::onPostRemoveClip(Pattern *const pattern)
 void Transport::onChangeTrackProperties(MidiTrack *const track)
 {
     // Stop playback only when instrument changes:
-    const auto trackId = track->getTrackId().toString();
+    const auto &trackId = track->getTrackId();
     if (!linksCache.contains(trackId) ||
         this->linksCache[trackId]->getInstrumentID() != track->getTrackInstrumentId())
     {
@@ -786,7 +784,7 @@ void Transport::updateLinkForTrack(const MidiTrack *track)
         if (track->getTrackInstrumentId().contains(instrument->getInstrumentID()))
         {
             // corresponding node already exists, lets add
-            this->linksCache.set(track->getTrackId().toString(), instrument);
+            this->linksCache.set(track->getTrackId(), instrument);
             return;
         }
     }
@@ -798,21 +796,20 @@ void Transport::updateLinkForTrack(const MidiTrack *track)
         
         if (track->getTrackInstrumentId().contains(instrument->getInstrumentHash()))
         {
-            this->linksCache.set(track->getTrackId().toString(), instrument);
+            this->linksCache.set(track->getTrackId(), instrument);
             return;
         }
     }
     
     // set default instrument, if none found
-    this->linksCache.set(track->getTrackId().toString(),
+    this->linksCache.set(track->getTrackId(),
         this->orchestra.getInstruments().getFirst());
 }
 
 void Transport::removeLinkForTrack(const MidiTrack *track)
 {
-    this->linksCache.remove(track->getTrackId().toString());
+    this->linksCache.remove(track->getTrackId());
 }
-
 
 //===----------------------------------------------------------------------===//
 // Transport Listeners

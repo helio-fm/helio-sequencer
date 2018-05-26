@@ -26,7 +26,7 @@
 
 WaveformAudioMonitorComponent::WaveformAudioMonitorComponent(WeakReference<AudioMonitor> targetAnalyzer) :
     Thread("Volume Component"),
-    audioMonitor(std::move(targetAnalyzer)),
+    audioMonitor(targetAnalyzer),
     skewTime(0)
 {
     this->setInterceptsMouseClicks(false, false);

@@ -38,7 +38,7 @@ static const float kSpectrumFrequencies[] =
 
 SpectrogramAudioMonitorComponent::SpectrogramAudioMonitorComponent(WeakReference<AudioMonitor> targetAnalyzer) :
     Thread("Volume Component"),
-    audioMonitor(std::move(targetAnalyzer)),
+    audioMonitor(targetAnalyzer),
     head(0),
     skewTime(0)
 {

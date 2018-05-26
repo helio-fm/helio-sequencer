@@ -75,21 +75,20 @@ void ClipComponent::updateColours()
 
 void ClipComponent::setSelected(bool selected)
 {
-    //this->roll.wantVolumeSliderFor(this, selected);
     MidiEventComponent::setSelected(selected);
 }
 
-float ClipComponent::getBeat() const
+float ClipComponent::getBeat() const noexcept
 {
     return this->clip.getBeat();
 }
 
-String ClipComponent::getSelectionGroupId() const
+const String &ClipComponent::getSelectionGroupId() const noexcept
 {
     return this->clip.getPattern()->getTrackId();
 }
 
-String ClipComponent::getId() const
+const String &ClipComponent::getId() const noexcept
 {
     return this->clip.getId();
 }

@@ -23,7 +23,6 @@ class MidiTrackSource;
 #include "TimeSignatureEvent.h"
 #include "UndoAction.h"
 
-
 //===----------------------------------------------------------------------===//
 // Insert
 //===----------------------------------------------------------------------===//
@@ -36,7 +35,7 @@ public:
         UndoAction(source) {}
 
     TimeSignatureEventInsertAction(MidiTrackSource &source,
-        String trackId, const TimeSignatureEvent &target) noexcept;
+        const String &trackId, const TimeSignatureEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -54,7 +53,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE(TimeSignatureEventInsertAction)
 };
 
-
 //===----------------------------------------------------------------------===//
 // Remove
 //===----------------------------------------------------------------------===//
@@ -67,7 +65,7 @@ public:
         UndoAction(source) {}
 
     TimeSignatureEventRemoveAction(MidiTrackSource &source,
-        String trackId, const TimeSignatureEvent &target) noexcept;
+        const String &trackId, const TimeSignatureEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -85,7 +83,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE(TimeSignatureEventRemoveAction)
 };
 
-
 //===----------------------------------------------------------------------===//
 // Change
 //===----------------------------------------------------------------------===//
@@ -97,7 +94,7 @@ public:
     explicit TimeSignatureEventChangeAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
-    TimeSignatureEventChangeAction(MidiTrackSource &source, String trackId,
+    TimeSignatureEventChangeAction(MidiTrackSource &source, const String &trackId,
         const TimeSignatureEvent &target, const TimeSignatureEvent &newParameters) noexcept;
 
     bool perform() override;
@@ -117,9 +114,7 @@ private:
     TimeSignatureEvent eventAfter;
 
     JUCE_DECLARE_NON_COPYABLE(TimeSignatureEventChangeAction)
-
 };
-
 
 //===----------------------------------------------------------------------===//
 // Insert Group
@@ -133,7 +128,7 @@ public:
         UndoAction(source) {}
     
     TimeSignatureEventsGroupInsertAction(MidiTrackSource &source,
-        String trackId, Array<TimeSignatureEvent> &target) noexcept;
+        const String &trackId, Array<TimeSignatureEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
@@ -149,9 +144,7 @@ private:
     Array<TimeSignatureEvent> signatures;
     
     JUCE_DECLARE_NON_COPYABLE(TimeSignatureEventsGroupInsertAction)
-    
 };
-
 
 //===----------------------------------------------------------------------===//
 // Remove Group
@@ -165,7 +158,7 @@ public:
         UndoAction(source) {}
     
     TimeSignatureEventsGroupRemoveAction(MidiTrackSource &source,
-        String trackId, Array<TimeSignatureEvent> &target) noexcept;
+        const String &trackId, Array<TimeSignatureEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
@@ -181,9 +174,7 @@ private:
     Array<TimeSignatureEvent> signatures;
     
     JUCE_DECLARE_NON_COPYABLE(TimeSignatureEventsGroupRemoveAction)
-    
 };
-
 
 //===----------------------------------------------------------------------===//
 // Change Group
@@ -196,7 +187,7 @@ public:
     explicit TimeSignatureEventsGroupChangeAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
-    TimeSignatureEventsGroupChangeAction(MidiTrackSource &source, String trackId,
+    TimeSignatureEventsGroupChangeAction(MidiTrackSource &source, const String &trackId,
         const Array<TimeSignatureEvent> state1, const Array<TimeSignatureEvent> state2)  noexcept;
 
     bool perform() override;
@@ -216,6 +207,4 @@ private:
     Array<TimeSignatureEvent> eventsAfter;
 
     JUCE_DECLARE_NON_COPYABLE(TimeSignatureEventsGroupChangeAction)
-
 };
-

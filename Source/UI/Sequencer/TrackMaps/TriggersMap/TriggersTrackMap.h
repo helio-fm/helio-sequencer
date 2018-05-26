@@ -28,7 +28,7 @@ class TriggerEventConnector;
 
 
 //===----------------------------------------------------------------------===//
-// Automation editor that treats layer as on/off toggle events
+// Automation editor that treats sequence as on/off toggle events
 //===----------------------------------------------------------------------===//
 
 class TriggersTrackMap : public AutomationTrackMapCommon
@@ -101,7 +101,7 @@ private:
     HybridRoll &roll;
     ProjectTreeItem &project;
 
-    WeakReference<MidiSequence> layer;
+    WeakReference<MidiSequence> sequence;
 
     ScopedPointer<TriggerEventConnector> leadingConnector;
 

@@ -110,7 +110,7 @@ public:
     //===------------------------------------------------------------------===//
 
     String createUniqueEventId() const noexcept;
-    String getTrackId() const noexcept;
+    const String &getTrackId() const noexcept;
     int getChannel() const noexcept;
 
     friend inline bool operator==(const MidiSequence &lhs, const MidiSequence &rhs)

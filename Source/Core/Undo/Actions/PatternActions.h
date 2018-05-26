@@ -34,7 +34,7 @@ public:
         UndoAction(source) {}
 
     ClipInsertAction(MidiTrackSource &source,
-        String trackId, const Clip &target) noexcept;
+        const String &trackId, const Clip &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -64,7 +64,7 @@ public:
         UndoAction(source) {}
 
     ClipRemoveAction(MidiTrackSource &source,
-        String trackId, const Clip &target) noexcept;
+        const String &trackId, const Clip &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -93,7 +93,7 @@ public:
     explicit ClipChangeAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
-    ClipChangeAction(MidiTrackSource &source, String trackId,
+    ClipChangeAction(MidiTrackSource &source, const String &trackId,
         const Clip &target, const Clip &newParameters) noexcept;
 
     bool perform() override;
@@ -127,7 +127,7 @@ public:
         UndoAction(source) {}
 
     ClipsGroupInsertAction(MidiTrackSource &source,
-        String trackId, Array<Clip> &target) noexcept;
+        const String &trackId, Array<Clip> &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -157,7 +157,7 @@ public:
         UndoAction(source) {}
 
     ClipsGroupRemoveAction(MidiTrackSource &source,
-        String trackId, Array<Clip> &target) noexcept;
+        const String &trackId, Array<Clip> &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -186,7 +186,7 @@ public:
     explicit ClipsGroupChangeAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
-    ClipsGroupChangeAction(MidiTrackSource &source, String trackId,
+    ClipsGroupChangeAction(MidiTrackSource &source, const String &trackId,
         Array<Clip> &state1, Array<Clip> &state2) noexcept;
 
     bool perform() override;

@@ -28,10 +28,10 @@
 
 #define DEFAULT_TRACKMAP_HEIGHT 16
 
-TriggersTrackMap::TriggersTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll, WeakReference<MidiSequence> targetLayer) :
+TriggersTrackMap::TriggersTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll, WeakReference<MidiSequence> sequence) :
     project(parentProject),
     roll(parentRoll),
-    layer(std::move(targetLayer)),
+    sequence(sequence),
     projectFirstBeat(0.f),
     projectLastBeat(16.f),
     rollFirstBeat(0.f),
@@ -140,7 +140,7 @@ void TriggersTrackMap::insertNewEventAt(const MouseEvent &e, bool shouldAddTrigg
     const float draggingBeat = this->getBeatByXPosition(int(e.x + w / 2));
     
     if (AutomationSequence *activeAutoLayer =
-        dynamic_cast<AutomationSequence *>(this->layer.get()))
+        dynamic_cast<AutomationSequence *>(this->sequence.get()))
     {
         const AutomationEvent *firstEvent = static_cast<AutomationEvent *>(activeAutoLayer->getUnchecked(0));
         float prevEventCV = firstEvent->getControllerValue();
@@ -230,7 +230,7 @@ float TriggersTrackMap::getBeatByXPosition(int x) const
 
 void TriggersTrackMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    if (newEvent.getSequence() == this->layer)
+    if (newEvent.getSequence() == this->sequence)
     {
         const AutomationEvent &autoEvent = static_cast<const AutomationEvent &>(oldEvent);
         const AutomationEvent &newAutoEvent = static_cast<const AutomationEvent &>(newEvent);
@@ -285,7 +285,7 @@ void TriggersTrackMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEv
 
 void TriggersTrackMap::onAddMidiEvent(const MidiEvent &event)
 {
-    if (event.getSequence() == this->layer)
+    if (event.getSequence() == this->sequence)
     {
         const AutomationEvent &autoEvent = static_cast<const AutomationEvent &>(event);
         
@@ -320,7 +320,7 @@ void TriggersTrackMap::onAddMidiEvent(const MidiEvent &event)
 
 void TriggersTrackMap::onRemoveMidiEvent(const MidiEvent &event)
 {
-    if (event.getSequence() == this->layer)
+    if (event.getSequence() == this->sequence)
     {
         const AutomationEvent &autoEvent = static_cast<const AutomationEvent &>(event);
         
@@ -353,7 +353,7 @@ void TriggersTrackMap::onRemoveMidiEvent(const MidiEvent &event)
 
 void TriggersTrackMap::onChangeTrackProperties(MidiTrack *const track)
 {
-    if (this->layer != nullptr && track->getSequence() == this->layer)
+    if (this->sequence != nullptr && track->getSequence() == this->sequence)
     {
         this->repaint();
     }
@@ -367,7 +367,7 @@ void TriggersTrackMap::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 void TriggersTrackMap::onAddTrack(MidiTrack *const track)
 {
     // TODO remove?
-    if (this->layer != nullptr && track->getSequence() == this->layer)
+    if (this->sequence != nullptr && track->getSequence() == this->sequence)
     {
         this->reloadTrack();
     }
@@ -375,7 +375,7 @@ void TriggersTrackMap::onAddTrack(MidiTrack *const track)
 
 void TriggersTrackMap::onRemoveTrack(MidiTrack *const track)
 {
-    if (this->layer != nullptr && track->getSequence() == this->layer)
+    if (this->sequence != nullptr && track->getSequence() == this->sequence)
     {
         this->reloadTrack();
     }
@@ -427,9 +427,9 @@ void TriggersTrackMap::reloadTrack()
     
     this->setVisible(false);
     
-    for (int j = 0; j < this->layer->size(); ++j)
+    for (int j = 0; j < this->sequence->size(); ++j)
     {
-        MidiEvent *event = this->layer->getUnchecked(j);
+        MidiEvent *event = this->sequence->getUnchecked(j);
         
         if (AutomationEvent *autoEvent = dynamic_cast<AutomationEvent *>(event))
         {

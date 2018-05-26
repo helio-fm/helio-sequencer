@@ -36,7 +36,7 @@ public:
 
     Pattern *getPattern() const noexcept;
     float getBeat() const noexcept;
-    String getId() const noexcept;
+    const String &getId() const noexcept;
     bool isValid() const noexcept;
 
     Colour getTrackColour() const noexcept;

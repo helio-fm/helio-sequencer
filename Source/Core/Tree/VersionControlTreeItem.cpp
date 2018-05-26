@@ -39,11 +39,11 @@
 // todo:
 // MergeTreeItem
 
-VersionControlTreeItem::VersionControlTreeItem(String withExistingId, String withExistingKey) :
+VersionControlTreeItem::VersionControlTreeItem(const String &withExistingId, const String &withExistingKey) :
     TreeItem("Versions", Serialization::Core::versionControl),
     vcs(nullptr),
-    existingId(std::move(withExistingId)),
-    existingKey(std::move(withExistingKey))
+    existingId(withExistingId),
+    existingKey(withExistingKey)
 {
     this->initVCS();
     this->initEditor();

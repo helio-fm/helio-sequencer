@@ -63,7 +63,7 @@ Colour MidiEvent::getTrackColour() const noexcept
     return this->sequence->getTrack()->getTrackColour();
 }
 
-MidiEvent::Id MidiEvent::getId() const noexcept
+const MidiEvent::Id &MidiEvent::getId() const noexcept
 {
     return this->id;
 }

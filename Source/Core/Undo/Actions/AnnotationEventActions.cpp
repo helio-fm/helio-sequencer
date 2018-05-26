@@ -26,9 +26,9 @@
 //===----------------------------------------------------------------------===//
 
 AnnotationEventInsertAction::AnnotationEventInsertAction(MidiTrackSource &source,
-    String targetTrackId, const AnnotationEvent &event) noexcept :
+    const String &trackId, const AnnotationEvent &event) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId)),
+    trackId(trackId),
     event(event) {}
 
 bool AnnotationEventInsertAction::perform()
@@ -83,9 +83,9 @@ void AnnotationEventInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 AnnotationEventRemoveAction::AnnotationEventRemoveAction(MidiTrackSource &source,
-    String targetTrackId, const AnnotationEvent &target) noexcept :
+    const String &trackId, const AnnotationEvent &target) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId)),
+    trackId(trackId),
     event(target) {}
 
 bool AnnotationEventRemoveAction::perform()
@@ -140,10 +140,10 @@ void AnnotationEventRemoveAction::reset()
 //===----------------------------------------------------------------------===//
 
 AnnotationEventChangeAction::AnnotationEventChangeAction(MidiTrackSource &source,
-    String targetTrackId, const AnnotationEvent &target,
+    const String &trackId, const AnnotationEvent &target,
     const AnnotationEvent &newParameters) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId)),
+    trackId(trackId),
     eventBefore(target),
     eventAfter(newParameters) {}
 
@@ -237,9 +237,9 @@ void AnnotationEventChangeAction::reset()
 //===----------------------------------------------------------------------===//
 
 AnnotationEventsGroupInsertAction::AnnotationEventsGroupInsertAction(MidiTrackSource &source,
-    String targetTrackId, Array<AnnotationEvent> &target) noexcept :
+    const String &trackId, Array<AnnotationEvent> &target) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId))
+    trackId(trackId)
 {
     this->annotations.swapWith(target);
 }
@@ -308,9 +308,9 @@ void AnnotationEventsGroupInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 AnnotationEventsGroupRemoveAction::AnnotationEventsGroupRemoveAction(MidiTrackSource &source,
-    String targetTrackId, Array<AnnotationEvent> &target) noexcept :
+    const String &trackId, Array<AnnotationEvent> &target) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId))
+    trackId(trackId)
 {
     this->annotations.swapWith(target);
 }
@@ -379,10 +379,10 @@ void AnnotationEventsGroupRemoveAction::reset()
 //===----------------------------------------------------------------------===//
 
 AnnotationEventsGroupChangeAction::AnnotationEventsGroupChangeAction(MidiTrackSource &source,
-    String targetTrackId, const Array<AnnotationEvent> state1,
+    const String &trackId, const Array<AnnotationEvent> state1,
     const Array<AnnotationEvent> state2) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId))
+    trackId(trackId)
 {
     this->eventsBefore.addArray(state1);
     this->eventsAfter.addArray(state2);

@@ -37,7 +37,7 @@ public:
     // Properties
     //===------------------------------------------------------------------===//
 
-    virtual Uuid getTrackId() const noexcept = 0;
+    virtual const String &getTrackId() const noexcept = 0;
     virtual int getTrackChannel() const noexcept = 0;
 
     // sendNotifications argument here is only meant to be true,
@@ -72,7 +72,7 @@ public:
 
     inline HashCode hashCode() const noexcept
     {
-        return static_cast<HashCode>(this->getTrackId().toString().hashCode());
+        return static_cast<HashCode>(this->getTrackId().hashCode());
     }
 
     void serializeTrackProperties(ValueTree &tree) const;
@@ -93,7 +93,7 @@ public:
 
 protected:
 
-    virtual void setTrackId(const Uuid &val) = 0;
+    virtual void setTrackId(const String &val) = 0;
 
 private:
 
@@ -115,17 +115,17 @@ public:
 
     EmptyMidiTrack() {}
 
-    Uuid getTrackId() const noexcept override { return {}; }
-    void setTrackId(const Uuid &val) override {};
+    void setTrackId(const String &val) override {};
+    const String &getTrackId() const noexcept override { return this->trackId; }
     int getTrackChannel() const noexcept override { return 0; }
 
-    String getTrackName() const noexcept override { return String::empty; }
+    String getTrackName() const noexcept override { return {}; }
     void setTrackName(const String &val, bool sendNotifications) override {}
 
     Colour getTrackColour() const noexcept override { return Colours::white; }
     void setTrackColour(const Colour &val, bool sendNotifications) override {};
 
-    String getTrackInstrumentId() const noexcept override { return String::empty; }
+    String getTrackInstrumentId() const noexcept override { return {}; }
     void setTrackInstrumentId(const String &val, bool sendNotifications) override {};
 
     int getTrackControllerNumber() const noexcept override { return 0; }
@@ -136,6 +136,8 @@ public:
 
     MidiSequence *getSequence() const noexcept override { return nullptr; }
     Pattern *getPattern() const noexcept override { return nullptr; }
+
+    String trackId;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EmptyMidiTrack)
 };

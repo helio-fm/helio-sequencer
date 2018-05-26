@@ -27,9 +27,9 @@
 //===----------------------------------------------------------------------===//
 
 ClipInsertAction::ClipInsertAction(MidiTrackSource &source,
-    String trackId, const Clip &target) noexcept :
+    const String &trackId, const Clip &target) noexcept :
     UndoAction(source),
-    trackId(std::move(trackId)),
+    trackId(trackId),
     clip(target) {}
 
 bool ClipInsertAction::perform()
@@ -82,9 +82,9 @@ void ClipInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 ClipRemoveAction::ClipRemoveAction(MidiTrackSource &source,
-    String trackId, const Clip &target) noexcept :
+    const String &trackId, const Clip &target) noexcept :
     UndoAction(source),
-    trackId(std::move(trackId)),
+    trackId(trackId),
     clip(target) {}
 
 bool ClipRemoveAction::perform()
@@ -137,9 +137,9 @@ void ClipRemoveAction::reset()
 //===----------------------------------------------------------------------===//
 
 ClipChangeAction::ClipChangeAction(MidiTrackSource &source,
-    String trackId, const Clip &target, const Clip &newParameters) noexcept :
+    const String &trackId, const Clip &target, const Clip &newParameters) noexcept :
     UndoAction(source),
-    trackId(std::move(trackId)),
+    trackId(trackId),
     clipBefore(target),
     clipAfter(newParameters)
 {
@@ -233,9 +233,9 @@ void ClipChangeAction::reset()
 //===----------------------------------------------------------------------===//
 
 ClipsGroupInsertAction::ClipsGroupInsertAction(MidiTrackSource &source,
-    String targetTrackId, Array<Clip> &target) noexcept :
+    const String &trackId, Array<Clip> &target) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId))
+    trackId(trackId)
 {
     this->clips.swapWith(target);
 }
@@ -302,9 +302,9 @@ void ClipsGroupInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 ClipsGroupRemoveAction::ClipsGroupRemoveAction(MidiTrackSource &source,
-    String targetTrackId, Array<Clip> &target) noexcept :
+    const String &trackId, Array<Clip> &target) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId))
+    trackId(trackId)
 {
     this->clips.swapWith(target);
 }
@@ -371,9 +371,9 @@ void ClipsGroupRemoveAction::reset()
 //===----------------------------------------------------------------------===//
 
 ClipsGroupChangeAction::ClipsGroupChangeAction(MidiTrackSource &source,
-    String targetTrackId, Array<Clip> &state1, Array<Clip> &state2) noexcept :
+    const String &trackId, Array<Clip> &state1, Array<Clip> &state2) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId))
+    trackId(trackId)
 {
     this->clipsBefore.swapWith(state1);
     this->clipsAfter.swapWith(state2);

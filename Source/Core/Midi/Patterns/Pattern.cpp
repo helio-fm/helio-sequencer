@@ -422,9 +422,9 @@ String Pattern::createUniqueClipId() const noexcept
 // Helpers
 //===----------------------------------------------------------------------===//
 
-String Pattern::getTrackId() const noexcept
+const String &Pattern::getTrackId() const noexcept
 {
-    return this->track.getTrackId().toString();
+    return this->track.getTrackId();
 }
 
 int Pattern::hashCode() const noexcept

@@ -93,7 +93,6 @@ void MidiEventComponent::mouseDown(const MouseEvent &e)
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // SelectableComponent
 //===----------------------------------------------------------------------===//
@@ -112,7 +111,6 @@ bool MidiEventComponent::isSelected() const noexcept
 {
     return this->selectedState;
 }
-
 
 //===----------------------------------------------------------------------===//
 // Helpers
