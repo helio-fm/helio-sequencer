@@ -96,7 +96,7 @@ void AnnotationLargeComponent::paint (Graphics& g)
     //[UserPaint] Add your own custom painting code here..
 #endif
 
-    g.setColour(this->event.getColour().interpolatedWith(Colours::white, 0.5f).withAlpha(0.5f));
+    g.setColour(this->event.getTrackColour().interpolatedWith(Colours::white, 0.5f).withAlpha(0.5f));
     g.drawHorizontalLine(2, 0.5f, float(this->getWidth()));
     g.drawHorizontalLine(3, 0.5f, float(this->getWidth()));
     //g.drawHorizontalLine(4, 0.5f, float(this->getWidth()));
@@ -104,7 +104,7 @@ void AnnotationLargeComponent::paint (Graphics& g)
     if (this->event.getDescription().isNotEmpty())
     {
         const Font labelFont(16.00f, Font::plain);
-        g.setColour(this->event.getColour().interpolatedWith(Colours::white, 0.55f).withAlpha(0.9f));
+        g.setColour(this->event.getTrackColour().interpolatedWith(Colours::white, 0.55f).withAlpha(0.9f));
 
         GlyphArrangement arr;
         arr.addFittedText(labelFont,

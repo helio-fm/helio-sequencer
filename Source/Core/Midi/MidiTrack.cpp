@@ -34,7 +34,7 @@ int MidiTrack::compareElements(const MidiTrack *const first, const MidiTrack *co
 void MidiTrack::serializeTrackProperties(ValueTree &tree) const
 {
     using namespace Serialization;
-    tree.setProperty(Core::trackId, this->getTrackId().toString(), nullptr);
+    tree.setProperty(Core::trackId, this->getTrackId(), nullptr);
     tree.setProperty(Core::trackColour, this->getTrackColour().toString(), nullptr);
     tree.setProperty(Core::trackMuteState, this->getTrackMuteStateAsString(), nullptr);
     tree.setProperty(Core::trackChannel, this->getTrackChannel(), nullptr);
@@ -46,7 +46,7 @@ void MidiTrack::deserializeTrackProperties(const ValueTree &tree)
 {
     using namespace Serialization;
 
-    const auto trackId = Uuid(tree.getProperty(Core::trackId, this->getTrackId().toString()));
+    const auto trackId = tree.getProperty(Core::trackId, this->getTrackId());
     const auto colour = tree.getProperty(Core::trackColour, this->getTrackColour().toString()).toString();
     const auto muted = MidiTrack::isTrackMuted(tree.getProperty(Core::trackMuteState));
     const auto channel = tree.getProperty(Core::trackChannel, this->getTrackChannel());

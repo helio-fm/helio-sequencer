@@ -22,20 +22,19 @@ class MidiTrackSource;
 #include "UndoAction.h"
 #include "Pattern.h"
 
-
 //===----------------------------------------------------------------------===//
 // Insert Clip
 //===----------------------------------------------------------------------===//
 
-class PatternClipInsertAction final : public UndoAction
+class ClipInsertAction final : public UndoAction
 {
 public:
 
-    explicit PatternClipInsertAction(MidiTrackSource &source) noexcept :
+    explicit ClipInsertAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
-    PatternClipInsertAction(MidiTrackSource &source,
-        String trackId, const Clip &target) noexcept;
+    ClipInsertAction(MidiTrackSource &source,
+        const String &trackId, const Clip &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -50,23 +49,22 @@ private:
     String trackId;
     Clip clip;
 
-    JUCE_DECLARE_NON_COPYABLE(PatternClipInsertAction)
+    JUCE_DECLARE_NON_COPYABLE(ClipInsertAction)
 };
-
 
 //===----------------------------------------------------------------------===//
 // Remove Instance
 //===----------------------------------------------------------------------===//
 
-class PatternClipRemoveAction final : public UndoAction
+class ClipRemoveAction final : public UndoAction
 {
 public:
 
-    explicit PatternClipRemoveAction(MidiTrackSource &source) noexcept :
+    explicit ClipRemoveAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
-    PatternClipRemoveAction(MidiTrackSource &source,
-        String trackId, const Clip &target) noexcept;
+    ClipRemoveAction(MidiTrackSource &source,
+        const String &trackId, const Clip &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -81,22 +79,21 @@ private:
     String trackId;
     Clip clip;
 
-    JUCE_DECLARE_NON_COPYABLE(PatternClipRemoveAction)
+    JUCE_DECLARE_NON_COPYABLE(ClipRemoveAction)
 };
-
 
 //===----------------------------------------------------------------------===//
 // Change Instance
 //===----------------------------------------------------------------------===//
 
-class PatternClipChangeAction final : public UndoAction
+class ClipChangeAction final : public UndoAction
 {
 public:
 
-    explicit PatternClipChangeAction(MidiTrackSource &source) noexcept :
+    explicit ClipChangeAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
-    PatternClipChangeAction(MidiTrackSource &source, String trackId,
+    ClipChangeAction(MidiTrackSource &source, const String &trackId,
         const Clip &target, const Clip &newParameters) noexcept;
 
     bool perform() override;
@@ -115,5 +112,98 @@ private:
     Clip clipBefore;
     Clip clipAfter;
 
-    JUCE_DECLARE_NON_COPYABLE(PatternClipChangeAction)
+    JUCE_DECLARE_NON_COPYABLE(ClipChangeAction)
+};
+
+//===----------------------------------------------------------------------===//
+// Insert Group
+//===----------------------------------------------------------------------===//
+
+class ClipsGroupInsertAction final : public UndoAction
+{
+public:
+
+    explicit ClipsGroupInsertAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
+
+    ClipsGroupInsertAction(MidiTrackSource &source,
+        const String &trackId, Array<Clip> &target) noexcept;
+
+    bool perform() override;
+    bool undo() override;
+    int getSizeInUnits() override;
+
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
+    void reset() override;
+
+private:
+
+    String trackId;
+    Array<Clip> clips;
+
+    JUCE_DECLARE_NON_COPYABLE(ClipsGroupInsertAction)
+};
+
+//===----------------------------------------------------------------------===//
+// Remove Group
+//===----------------------------------------------------------------------===//
+
+class ClipsGroupRemoveAction final : public UndoAction
+{
+public:
+
+    explicit ClipsGroupRemoveAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
+
+    ClipsGroupRemoveAction(MidiTrackSource &source,
+        const String &trackId, Array<Clip> &target) noexcept;
+
+    bool perform() override;
+    bool undo() override;
+    int getSizeInUnits() override;
+
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
+    void reset() override;
+
+private:
+
+    String trackId;
+    Array<Clip> clips;
+
+    JUCE_DECLARE_NON_COPYABLE(ClipsGroupRemoveAction)
+};
+
+//===----------------------------------------------------------------------===//
+// Change Group
+//===----------------------------------------------------------------------===//
+
+class ClipsGroupChangeAction final : public UndoAction
+{
+public:
+
+    explicit ClipsGroupChangeAction(MidiTrackSource &source) noexcept :
+        UndoAction(source) {}
+
+    ClipsGroupChangeAction(MidiTrackSource &source, const String &trackId,
+        Array<Clip> &state1, Array<Clip> &state2) noexcept;
+
+    bool perform() override;
+    bool undo() override;
+    int getSizeInUnits() override;
+    UndoAction *createCoalescedAction(UndoAction *nextAction) override;
+
+    ValueTree serialize() const override;
+    void deserialize(const ValueTree &tree) override;
+    void reset() override;
+
+private:
+
+    String trackId;
+
+    Array<Clip> clipsBefore;
+    Array<Clip> clipsAfter;
+
+    JUCE_DECLARE_NON_COPYABLE(ClipsGroupChangeAction)
 };

@@ -40,10 +40,10 @@
 #define DEFAULT_TRACKMAP_HEIGHT 128
 
 AutomationTrackMap::AutomationTrackMap(ProjectTreeItem &parentProject,
-    HybridRoll &parentRoll, WeakReference<MidiSequence> targetSequence) :
+    HybridRoll &parentRoll, WeakReference<MidiSequence> sequence) :
     project(parentProject),
     roll(parentRoll),
-    sequence(std::move(targetSequence)),
+    sequence(sequence),
     projectFirstBeat(0.f),
     projectLastBeat(16.f),
     rollFirstBeat(0.f),

@@ -26,7 +26,7 @@ public:
     HotkeyScheme() = default;
     HotkeyScheme(const HotkeyScheme &other);
 
-    typedef ReferenceCountedObjectPtr<HotkeyScheme> Ptr;
+    using Ptr = ReferenceCountedObjectPtr<HotkeyScheme>;
 
     class Hotkey final
     {
@@ -68,6 +68,7 @@ private:
     Array<Hotkey> keyPresses;
     Array<Hotkey> keyDowns;
     Array<Hotkey> keyUps;
+    Array<KeyPress> holdKeys;
 
     WeakReference<Component> lastReceiver;
     HashMap<String, WeakReference<Component>> receiverChildren;

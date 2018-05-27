@@ -44,9 +44,6 @@
         <FILE id="ptkotb" name="F#6v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/F#6v9.ogg"/>
         <FILE id="U2cRzq" name="F#7v9.ogg" compile="0" resource="1" file="../../Resources/PianoSamples/F#7v9.ogg"/>
       </GROUP>
-      <GROUP id="{4C273977-B090-3F23-250C-510E8D92F7A0}" name="Fonts">
-        <FILE id="lGxgzu" name="lato.fnt" compile="0" resource="1" file="../../Resources/Fonts/lato.fnt"/>
-      </GROUP>
       <GROUP id="{0B700B6F-60B4-647B-6D0F-7AD115ECD127}" name="Icons">
         <FILE id="rmCDvP" name="annotation.svg" compile="0" resource="1" file="../../Resources/Icons/annotation.svg"/>
         <FILE id="VFzDxu" name="apply.svg" compile="0" resource="1" file="../../Resources/Icons/apply.svg"/>
@@ -1024,6 +1021,10 @@
         </GROUP>
         <GROUP id="{9ABD7DD8-D3C8-EE5D-AD5E-6E6E6D1D3F8B}" name="Sequencer">
           <GROUP id="{FFB3A4BD-F358-7D17-AC4A-525D35F9E965}" name="Header">
+            <FILE id="z5FePy" name="ClipRangeIndicator.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Sequencer/Header/ClipRangeIndicator.cpp"/>
+            <FILE id="kbi6Nd" name="ClipRangeIndicator.h" compile="0" resource="0"
+                  file="../../Source/UI/Sequencer/Header/ClipRangeIndicator.h"/>
             <FILE id="C2HVvH" name="HeaderSelectionIndicator.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/Header/HeaderSelectionIndicator.cpp"/>
             <FILE id="vFfeN2" name="HeaderSelectionIndicator.h" compile="0" resource="0"

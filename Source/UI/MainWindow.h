@@ -46,8 +46,7 @@ public:
 
     // the command manager object used to dispatch command events
     ApplicationCommandManager commandManager;
-
-
+    
     //===------------------------------------------------------------------===//
     // Drag'n'drop
     //===------------------------------------------------------------------===//

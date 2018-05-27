@@ -40,6 +40,7 @@
 #include "JuceHeader.h"
 #include "Serializable.h"
 
+#include <limits.h>
 #include <float.h>
 #include <math.h>
 
@@ -55,7 +56,7 @@ using SparseHashMap = spp::sparse_hash_map<Key, T, HashFcn, EqualKey>;
 template <class Value, class HashFcn = spp::spp_hash<Value>, class EqualKey = std::equal_to<Value>>
 using SparseHashSet = spp::sparse_hash_set<Value, HashFcn, EqualKey>;
 
-typedef size_t HashCode;
+using HashCode = size_t;
 
 #if !defined HASH_CODE_MAX
 #   define HASH_CODE_MAX SIZE_MAX

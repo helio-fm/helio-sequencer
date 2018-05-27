@@ -94,24 +94,19 @@ MidiMessageSequence MidiSequence::exportMidi() const
 {
     if (this->track.isTrackMuted())
     {
-        return MidiMessageSequence();
+        return {};
     }
-    
+
     if (this->cacheIsOutdated)
     {
         this->cachedSequence.clear();
 
-        for (auto event : this->midiEvents)
+        for (const auto *event : this->midiEvents)
         {
-            const auto &track = event->toMidiMessages();
-
-            for (auto &message : track)
+            for (auto &message : event->toMidiMessages())
             {
                 this->cachedSequence.addEvent(message);
             }
-
-            // need to call it here?
-            //this->cachedSequence.updateMatchedPairs();
         }
 
         this->cachedSequence.updateMatchedPairs();
@@ -239,9 +234,9 @@ String MidiSequence::createUniqueEventId() const noexcept
 // Helpers
 //===----------------------------------------------------------------------===//
 
-String MidiSequence::getTrackId() const noexcept
+const String &MidiSequence::getTrackId() const noexcept
 {
-    return this->track.getTrackId().toString();
+    return this->track.getTrackId();
 }
 
 int MidiSequence::getChannel() const noexcept

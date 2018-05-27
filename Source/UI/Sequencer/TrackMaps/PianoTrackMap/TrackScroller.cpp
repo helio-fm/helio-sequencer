@@ -26,6 +26,7 @@
 #include "ColourIDs.h"
 #include "App.h"
 
+#include "HelioTheme.h"
 #include "ProjectTreeItem.h"
 #include "PianoTrackMap.h"
 
@@ -34,12 +35,10 @@ TrackScroller::TrackScroller(Transport &transportRef, HybridRoll *targetRoll) :
     roll(targetRoll),
     mapShouldGetStretched(true)
 {
-    this->background = new PanelBackgroundC();
-    this->addAndMakeVisible(this->background);
-
+    this->setPaintingIsUnclipped(true);
     this->setOpaque(true);
 
-    this->indicator = new Playhead(*this->roll, this->transport);
+    this->playhead = new Playhead(*this->roll, this->transport);
     
     this->helperRectangle = new HorizontalDragHelper(*this);
     this->addAndMakeVisible(this->helperRectangle);
@@ -52,9 +51,7 @@ TrackScroller::TrackScroller(Transport &transportRef, HybridRoll *targetRoll) :
 
 TrackScroller::~TrackScroller()
 {
-    this->background = nullptr;
-    this->disconnectIndicator();
-//    this->trackImage->removeChildComponent(this->indicator);
+    this->disconnectPlayhead();
 }
 
 void TrackScroller::addOwnedMap(Component *newTrackMap, bool shouldBringToFront)
@@ -62,11 +59,11 @@ void TrackScroller::addOwnedMap(Component *newTrackMap, bool shouldBringToFront)
     this->trackMaps.add(newTrackMap);
     this->addAndMakeVisible(newTrackMap);
     
-    // всегда прикреплен к 1й карте
+    // playhead is always tied to the first map:
     if (this->trackMaps.size() == 1)
     {
-        this->disconnectIndicator();
-        newTrackMap->addAndMakeVisible(this->indicator);
+        this->disconnectPlayhead();
+        newTrackMap->addAndMakeVisible(this->playhead);
     }
     
     // fade-in if not the first child
@@ -105,14 +102,13 @@ void TrackScroller::removeOwnedMap(Component *existingTrackMap)
     }
 }
 
-void TrackScroller::disconnectIndicator()
+void TrackScroller::disconnectPlayhead()
 {
-    if (this->indicator->getParentComponent())
+    if (this->playhead->getParentComponent())
     {
-        this->indicator->getParentComponent()->removeChildComponent(this->indicator);
+        this->playhead->getParentComponent()->removeChildComponent(this->playhead);
     }
 }
-
 
 //===----------------------------------------------------------------------===//
 // TrackScroller
@@ -136,7 +132,7 @@ void TrackScroller::xyMoveByUser()
         const float &mh = float(this->getHeight()) - screenRangeBounds.getHeight();
         const float &propY = screenRangeBounds.getTopLeft().getY() / mh;
 
-        // fixes for headerheight delta
+        // fixes for header height delta
         const float &hh = float(HYBRID_ROLL_HEADER_HEIGHT);
         const float &rollHeight = float(this->roll->getHeight());
         const float &propY2 = roundf(((rollHeight - hh) * propY) - hh) / rollHeight;
@@ -213,7 +209,6 @@ void TrackScroller::toggleStretchingMapAlaSublime()
     this->resized();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
@@ -229,15 +224,17 @@ void TrackScroller::resized()
     {
         this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
     }
-    
-    this->background->setBounds(0, 0, this->getWidth(), this->getHeight());
 }
 
-void TrackScroller::paintOverChildren(Graphics& g)
+void TrackScroller::paint(Graphics &g)
 {
+    auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
+    g.setFillType(FillType(theme.getBgCache3(), {}));
+    g.fillRect(this->getLocalBounds());
+
     g.setColour(this->findColour(ColourIDs::TrackScroller::borderLineDark));
     g.drawHorizontalLine(0, 0.f, float(this->getWidth()));
-    
+
     g.setColour(this->findColour(ColourIDs::TrackScroller::borderLineLight));
     g.drawHorizontalLine(1, 0.f, float(this->getWidth()));
 }
@@ -303,7 +300,6 @@ void TrackScroller::switchToRoll(HybridRoll *targetRoll)
 // Timer
 //===----------------------------------------------------------------------===//
 
-
 static Rectangle<float> lerpRectangle(const Rectangle<float> &r1,
     const Rectangle<float> &r2, float factor)
 {
@@ -322,7 +318,7 @@ static Rectangle<float> lerpRectangle(const Rectangle<float> &r1,
     const float lx2 = x2 + dx2 * factor;
     const float ly2 = y2 + dy2 * factor;
 
-    return Rectangle<float>(lx1, ly1, lx2 - lx1, ly2 - ly1);
+    return { lx1, ly1, lx2 - lx1, ly2 - ly1 };
 }
 
 static float getRectangleDistance(const Rectangle<float> &r1,
@@ -340,7 +336,7 @@ void TrackScroller::timerCallback()
     const auto mbLerp = lerpRectangle(this->oldMapBounds, mb, 0.2f);
     const auto ib = this->getIndicatorBounds();
     const auto ibLerp = lerpRectangle(this->oldAreaBounds, ib, 0.2f);
-    const bool shouldStop = (getRectangleDistance(this->oldAreaBounds, ib) < 0.5f);
+    const bool shouldStop = getRectangleDistance(this->oldAreaBounds, ib) < 0.5f;
     const auto targetAreaBounds = shouldStop ? ib : ibLerp;
     const auto targetMapBounds = shouldStop ? mb : mbLerp;
 
@@ -362,7 +358,6 @@ void TrackScroller::timerCallback()
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // AsyncUpdater
 //===----------------------------------------------------------------------===//
@@ -379,9 +374,8 @@ void TrackScroller::handleAsyncUpdate()
         this->trackMaps.getUnchecked(i)->setBounds(this->getMapBounds());
     }
     
-    this->indicator->parentSizeChanged(); // a hack: also update indicator position
+    this->playhead->parentSizeChanged(); // a hack: also update playhead position
 }
-
 
 //===----------------------------------------------------------------------===//
 // Private
@@ -415,15 +409,15 @@ Rectangle<float> TrackScroller::getIndicatorBounds() const
         {
             const float rX = ((trackWidth * viewX) / rollWidth);
             const float rW = (trackWidth * this->roll->getZoomFactorX());
-            return Rectangle<float>(rX, rY, rW, rH);
+            return { rX, rY, rW, rH };
         }
 
         const float rX = ((trackInvisibleArea * viewX) / jmax(rollInvisibleArea, viewWidth));
         const float rW = INDICATOR_FIXED_WIDTH;
-        return Rectangle<float>(rX, rY, rW, rH);
+        return { rX, rY, rW, rH };
     }
 
-    return Rectangle<float>(0.f, 0.f, 0.f, 0.f);
+    return { 0.f, 0.f, 0.f, 0.f };
 }
 
 Rectangle<int> TrackScroller::getMapBounds() const
@@ -440,15 +434,15 @@ Rectangle<int> TrackScroller::getMapBounds() const
 
         if (mapWidth <= trackWidth || !this->mapShouldGetStretched)
         {
-            return Rectangle<int>(0, 0, int(trackWidth), this->getHeight());
+            return { 0, 0, int(trackWidth), this->getHeight() };
         }
 
         const float rX = ((trackInvisibleArea * viewX) / jmax(rollInvisibleArea, viewWidth));
         const float dX = (viewX * mapWidth) / rollWidth;
-        return Rectangle<int>(int(rX - dX), 0, int(mapWidth), this->getHeight());
+        return { int(rX - dX), 0, int(mapWidth), this->getHeight() };
     }
 
-    return Rectangle<int>(0, 0, 0, 0);
+    return { 0, 0, 0, 0 };
 }
 
 void TrackScroller::HorizontalDragHelper::MoveConstrainer::

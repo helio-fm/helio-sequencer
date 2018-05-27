@@ -108,7 +108,6 @@ void HybridRollExpandMark::timerCallback()
 
     if (this->alpha <= 0)
     {
-        this->getParentComponent()->removeChildComponent(this);
         delete this;
     }
     else

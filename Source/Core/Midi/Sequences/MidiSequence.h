@@ -87,7 +87,6 @@ public:
     inline MidiEvent *getUnchecked(const int index) const noexcept
     { return this->midiEvents.getUnchecked(index); }
 
-    // fixme fix comparators! problematic behaviour here
     inline int indexOfSorted(const MidiEvent *const event) const noexcept
     {
         jassert(this->midiEvents[this->midiEvents.indexOfSorted(*event, event)] == event);
@@ -111,7 +110,7 @@ public:
     //===------------------------------------------------------------------===//
 
     String createUniqueEventId() const noexcept;
-    String getTrackId() const noexcept;
+    const String &getTrackId() const noexcept;
     int getChannel() const noexcept;
 
     friend inline bool operator==(const MidiSequence &lhs, const MidiSequence &rhs)

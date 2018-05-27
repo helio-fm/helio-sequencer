@@ -30,7 +30,11 @@ public:
     inline Type getType() const noexcept { return this->type; }
     inline bool isTypeOf(Type val) const noexcept { return this->type == val; }
 
-    MidiEvent(const MidiEvent &other) noexcept;
+    MidiEvent(const MidiEvent &other) noexcept = default;
+    MidiEvent &operator= (const MidiEvent &other) = default;
+
+    MidiEvent(MidiEvent &&other) noexcept = default;
+    MidiEvent &operator= (MidiEvent &&other) noexcept = default;
 
     // Used to create new events, generates new id that is unique within a track
     MidiEvent(WeakReference<MidiSequence> owner, Type type, float beat) noexcept;
@@ -48,12 +52,12 @@ public:
     bool isValid() const noexcept;
 
     MidiSequence *getSequence() const noexcept;
-    Colour getColour() const noexcept;
 
-    int getControllerNumber() const noexcept;
-    int getChannel() const noexcept;
+    int getTrackControllerNumber() const noexcept;
+    int getTrackChannel() const noexcept;
+    Colour getTrackColour() const noexcept;
 
-    Id getId() const noexcept;
+    const Id &getId() const noexcept;
     float getBeat() const noexcept;
     
     inline HashCode hashCode() const noexcept
@@ -75,16 +79,7 @@ public:
             (l.sequence != nullptr && l.sequence == r.sequence && l.id == r.id));
     }
 
-    static int compareElements(const MidiEvent *const first, const MidiEvent *const second)
-    {
-        if (first == second) { return 0; }
-        
-        const float diff = first->getBeat() - second->getBeat();
-        const int diffResult = (diff > 0.f) - (diff < 0.f);
-        if (diffResult != 0) { return diffResult; }
-        
-        return first->getId().compare(second->getId());
-    }
+    static int compareElements(const MidiEvent *const first, const MidiEvent *const second) noexcept;
 
 protected:
 

@@ -65,6 +65,11 @@ public:
     void onAddMidiEvent(const MidiEvent &event) override;
     void onRemoveMidiEvent(const MidiEvent &event) override;
 
+    // TODO! As a part of `automation editors` story
+    void onAddClip(const Clip &clip) override {}
+    void onChangeClip(const Clip &oldClip, const Clip &newClip) override {}
+    void onRemoveClip(const Clip &clip) override {}
+
     void onAddTrack(MidiTrack *const track) override;
     void onRemoveTrack(MidiTrack *const track) override;
     void onChangeTrackProperties(MidiTrack *const track) override;

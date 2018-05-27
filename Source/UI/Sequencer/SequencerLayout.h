@@ -32,6 +32,7 @@ class AutomationTrackMapProxy;
 class MidiEditorSplitContainer;
 class Origami;
 class Headline;
+class Clip;
 
 #define SEQUENCER_SIDEBAR_WIDTH (50)
 #define SEQUENCER_SIDEBAR_ROW_HEIGHT (38)
@@ -47,7 +48,9 @@ public:
     ~SequencerLayout() override;
 
     void showPatternEditor();
-    void showLinearEditor(Array<WeakReference<MidiTrack>> tracks, WeakReference<MidiTrack> primaryTrack);
+    void showLinearEditor(WeakReference<MidiTrack> activeTrack);
+    void setEditableScope(WeakReference<MidiTrack> activeTrack,
+        const Clip &clip, bool zoomToArea);
 
     // returns true if editor was shown, else returns false
     bool toggleShowAutomationEditor(AutomationSequence *targetLayer);
@@ -93,7 +96,7 @@ private:
     ScopedPointer<SequencerSidebarLeft> rollNavSidebar;
     ScopedPointer<SequencerSidebarRight> rollToolsSidebar; // тублар справа от роллов
 
-    typedef HashMap<String, AutomationTrackMapProxy *> AutomationEditorsHashMap;
+    using AutomationEditorsHashMap = HashMap<String, AutomationTrackMapProxy *>;
     AutomationEditorsHashMap automationEditorsLinks; // связки id слоев и редакторов автоматизации
     OwnedArray<AutomationTrackMapProxy> automationEditors; // сами редакторы автоматизации
 

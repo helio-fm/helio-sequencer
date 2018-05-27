@@ -28,8 +28,8 @@ public:
     ColourScheme() noexcept {}
     ColourScheme(const ColourScheme &other);
 
-    typedef ReferenceCountedObjectPtr<ColourScheme> Ptr;
-    typedef HashMap<Identifier, Colour, IdentifierHash> ColourMap;
+    using Ptr = ReferenceCountedObjectPtr<ColourScheme>;
+    using ColourMap = HashMap<Identifier, Colour, IdentifierHash>;
 
     void randomize();
 

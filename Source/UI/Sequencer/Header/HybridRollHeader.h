@@ -22,6 +22,7 @@ class Transport;
 class SoundProbeIndicator;
 class TimeDistanceIndicator;
 class HeaderSelectionIndicator;
+class ClipRangeIndicator;
 
 class HybridRollHeader : public Component
 {
@@ -30,6 +31,7 @@ public:
     HybridRollHeader(Transport &transport, HybridRoll &roll, Viewport &viewport);
     
     void setSoundProbeMode(bool shouldProbeOnClick);
+    void updateSubrangeIndicator(const Colour &colour, float firstBeat, float lastBeat);
 
     //===------------------------------------------------------------------===//
     // Component
@@ -43,6 +45,7 @@ public:
     void mouseExit(const MouseEvent &e) override;
     void mouseDoubleClick(const MouseEvent &e) override;
     void paint(Graphics &g) override;
+    void resized() override;
 
 protected:
     
@@ -60,6 +63,7 @@ protected:
     Colour bevelLightColour;
     Colour bevelDarkColour;
 
+    ScopedPointer<ClipRangeIndicator> clipRangeIndicator;
     ScopedPointer<SoundProbeIndicator> playingIndicator;
     ScopedPointer<SoundProbeIndicator> pointingIndicator;
     ScopedPointer<TimeDistanceIndicator> timeDistanceIndicator;
@@ -69,5 +73,6 @@ protected:
     double getUnalignedAnchorForEvent(const MouseEvent &e) const;
     double getAlignedAnchorForEvent(const MouseEvent &e) const;
     void updateTimeDistanceIndicator();
+    void updateClipRangeIndicator();
 
 };

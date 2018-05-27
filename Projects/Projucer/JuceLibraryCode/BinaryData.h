@@ -104,9 +104,6 @@ namespace BinaryData
     extern const char*   F7v9_ogg;
     const int            F7v9_oggSize = 66400;
 
-    extern const char*   lato_fnt;
-    const int            lato_fntSize = 620041;
-
     extern const char*   annotation_svg;
     const int            annotation_svgSize = 360;
 
@@ -330,16 +327,16 @@ namespace BinaryData
     const int            ColourSchemes_jsonSize = 2664;
 
     extern const char*   HotkeySchemes_json;
-    const int            HotkeySchemes_jsonSize = 10713;
+    const int            HotkeySchemes_jsonSize = 10867;
 
     extern const char*   Scales_json;
-    const int            Scales_jsonSize = 5976;
+    const int            Scales_jsonSize = 3513;
 
     extern const char*   Translations_json;
     const int            Translations_jsonSize = 282663;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 110;
+    const int namedResourceListSize = 109;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

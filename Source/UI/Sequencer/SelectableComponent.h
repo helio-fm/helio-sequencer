@@ -24,7 +24,7 @@ public:
     virtual ~SelectableComponent() {};
 
     virtual void setSelected(bool selected) = 0;
-    virtual bool isSelected() const = 0;
-    virtual String getSelectionGroupId() const = 0;
+    virtual bool isSelected() const noexcept = 0;
+    virtual const String &getSelectionGroupId() const noexcept = 0;
 
 };

@@ -16,13 +16,17 @@
 */
 
 #include "Common.h"
-#include "MainLayout.h"
 #include "PatternRoll.h"
+#include "MainLayout.h"
+#include "Workspace.h"
+#include "AudioCore.h"
 #include "HybridRollHeader.h"
 #include "MidiTrackHeader.h"
 #include "Pattern.h"
 #include "PianoTrackTreeItem.h"
 #include "AutomationTrackTreeItem.h"
+#include "VersionControlTreeItem.h"
+#include "PatternEditorTreeItem.h"
 #include "ProjectTreeItem.h"
 #include "ProjectTimeline.h"
 #include "ClipComponent.h"
@@ -33,20 +37,22 @@
 #include "SelectionComponent.h"
 #include "HybridRollEditMode.h"
 #include "SerializationKeys.h"
-#include "Icons.h"
-#include "HelioCallout.h"
+#include "ModalDialogInput.h"
 #include "NotesTuningPanel.h"
 #include "SequencerOperations.h"
-#include "Config.h"
 #include "SerializationKeys.h"
 #include "PianoSequence.h"
 #include "PianoClipComponent.h"
 #include "AutomationSequence.h"
 #include "AutomationClipComponent.h"
 #include "DummyClipComponent.h"
+#include "LassoListeners.h"
+
 #include "ComponentIDs.h"
 #include "ColourIDs.h"
-#include "LassoListeners.h"
+#include "Config.h"
+#include "Icons.h"
+#include "App.h"
 
 #define DEFAULT_CLIP_LENGTH 1.0f
 
@@ -67,7 +73,9 @@ inline static constexpr int rowHeight()
 PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
     Viewport &viewportRef,
     WeakReference<AudioMonitor> clippingDetector) :
-    HybridRoll(parentProject, viewportRef, clippingDetector, false, false, true)
+    HybridRoll(parentProject, viewportRef, clippingDetector, false, false, true),
+    newClipDragging(nullptr),
+    addNewClipMode(false)
 {
     // TODO: pattern roll doesn't need neither annotations track map nor key signatures track map
     this->selectedClipsMenuManager = new PatternRollSelectionMenuManager(&this->selection);
@@ -82,66 +90,20 @@ PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
     this->setBarRange(0, 8);
 }
 
-void PatternRoll::deleteSelection()
+void PatternRoll::selectAll()
 {
-    if (this->selection.getNumSelected() == 0)
+    for (const auto &e : this->clipComponents)
     {
-        return;
-    }
-    
-    // Avoids crash
-    this->hideAllGhostClips();
-
-    OwnedArray<Array<Clip>> selections;
-
-    for (int i = 0; i < this->selection.getNumSelected(); ++i)
-    {
-        const Clip clip = this->selection.getItemAs<ClipComponent>(i)->getClip();
-        Pattern *ownerPattern = clip.getPattern();
-        Array<Clip> *arrayToAddTo = nullptr;
-
-        for (int j = 0; j < selections.size(); ++j)
-        {
-            if (selections.getUnchecked(j)->size() > 0)
-            {
-                if (selections.getUnchecked(j)->getUnchecked(0).getPattern() == ownerPattern)
-                {
-                    arrayToAddTo = selections.getUnchecked(j);
-                }
-            }
-        }
-
-        if (arrayToAddTo == nullptr)
-        {
-            arrayToAddTo = new Array<Clip>();
-            selections.add(arrayToAddTo);
-        }
-
-        arrayToAddTo->add(clip);
-    }
-
-    bool didCheckpoint = false;
-
-    for (int i = 0; i < selections.size(); ++i)
-    {
-        Pattern *pattern = (selections.getUnchecked(i)->getUnchecked(0).getPattern());
-
-        if (! didCheckpoint)
-        {
-            didCheckpoint = true;
-            pattern->checkpoint();
-        }
-
-        for (Clip &c : *selections.getUnchecked(i))
-        {
-            pattern->remove(c, true);
-        }
+        this->selection.addToSelection(e.second.get());
     }
 }
 
-void PatternRoll::selectAll()
+void PatternRoll::zoomViewToClip(const Clip &clip) const
 {
     // TODO
+    //const Pattern *pattern = clip.getPattern();
+    //const MidiTrack *track = pattern->getTrack();
+    //const MidiSequence *sequence = track->getSequence();
 }
 
 void PatternRoll::reloadRollContent()
@@ -304,8 +266,8 @@ void PatternRoll::addClip(Pattern *pattern, float beat)
 Rectangle<float> PatternRoll::getEventBounds(FloatBoundsComponent *mc) const
 {
     jassert(dynamic_cast<ClipComponent *>(mc));
-    ClipComponent *nc = static_cast<ClipComponent *>(mc);
-    return this->getEventBounds(nc->getClip(), nc->getBeat());
+    ClipComponent *cc = static_cast<ClipComponent *>(mc);
+    return this->getEventBounds(cc->getClip(), cc->getBeat());
 }
 
 Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) const
@@ -315,33 +277,46 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) c
     const MidiSequence *sequence = track->getSequence();
     jassert(sequence != nullptr);
 
-    const float viewStartOffsetBeat = float(this->firstBar * BEATS_PER_BAR);
     const int trackIndex = this->tracks.indexOfSorted(*track, track);
-    const float sequenceLength = sequence->getLengthInBeats();
-    const float sequenceStartBeat = sequence->getFirstBeat();
+    const float viewStartOffsetBeat = float(this->firstBar * BEATS_PER_BAR);
+    const float sequenceOffset = sequence->size() > 0 ? sequence->getFirstBeat() : 0.f;
+
+    // In case there are no events, still display a clip of some default length:
+    const float sequenceLength = jmax(sequence->getLengthInBeats(), float(BEATS_PER_BAR));
 
     const float w = this->barWidth * sequenceLength / BEATS_PER_BAR;
-    const float x = this->barWidth *
-        (sequenceStartBeat + clipBeat - viewStartOffsetBeat) / BEATS_PER_BAR;
-
+    const float x = this->barWidth * (sequenceOffset + clipBeat - viewStartOffsetBeat) / BEATS_PER_BAR;
     const float y = float(trackIndex * rowHeight());
-    return Rectangle<float> (x, HYBRID_ROLL_HEADER_HEIGHT + y + PATTERN_ROLL_TRACK_HEADER_HEIGHT,
+
+    return Rectangle<float>(x,
+        HYBRID_ROLL_HEADER_HEIGHT + y + PATTERN_ROLL_TRACK_HEADER_HEIGHT,
         w, float(PATTERN_ROLL_CLIP_HEIGHT - 1));
 }
 
-float PatternRoll::getBeatByComponentPosition(float x) const
+float PatternRoll::getBeatForClipByXPosition(const Clip &clip, float x) const
 {
-    return this->getRoundBeatByXPosition(int(x)); /* - 0.5f ? */
+    // One trick here is that displayed clip position depends on a sequence's first beat as well:
+    const Pattern *pattern = clip.getPattern();
+    const MidiTrack *track = pattern->getTrack();
+    const MidiSequence *sequence = track->getSequence();
+    const float sequenceOffset = sequence->size() > 0 ? sequence->getFirstBeat() : 0.f;
+    return this->getRoundBeatByXPosition(int(x)) - sequenceOffset; /* - 0.5f ? */
 }
 
-float PatternRoll::getBeatByMousePosition(int x) const
+float PatternRoll::getBeatByMousePosition(const Pattern *pattern, int x) const
 {
-    return this->getFloorBeatByXPosition(x);
+    const MidiTrack *track = pattern->getTrack();
+    const MidiSequence *sequence = track->getSequence();
+    const float sequenceOffset = sequence->size() > 0 ? sequence->getFirstBeat() : 0.f;
+    return this->getFloorBeatByXPosition(x) - sequenceOffset;
 }
 
 Pattern *PatternRoll::getPatternByMousePosition(int y) const
 {
-    const int patternIndex = jlimit(0, this->getNumRows() - 1, int(y / rowHeight()));
+    const int patternIndex = jlimit(0,
+        this->getNumRows() - 1,
+        (y - HYBRID_ROLL_HEADER_HEIGHT) / rowHeight());
+
     return this->tracks.getUnchecked(patternIndex)->getPattern();
 }
 
@@ -353,7 +328,7 @@ void PatternRoll::onAddMidiEvent(const MidiEvent &event)
 {
     // the question is:
     // is pattern roll supposed to monitor single event changes?
-    // or it just reloads the whole sequence on show?0
+    // or it just reloads the whole sequence on show?
     //this->reloadRollContent();
 }
 
@@ -438,6 +413,9 @@ void PatternRoll::onChangeTrackProperties(MidiTrack *const track)
 
 void PatternRoll::onRemoveTrack(MidiTrack *const track)
 {
+    this->selection.deselectAll();
+    this->hideAllGhostClips();
+
     this->tracks.removeAllInstancesOf(track);
 
     if (MidiTrackHeader *deletedHeader = this->trackHeaders[track].get())
@@ -480,14 +458,19 @@ void PatternRoll::onAddClip(const Clip &clip)
     {
         this->clipComponents[clip] = UniquePointer<ClipComponent>(clipComponent);
         this->addAndMakeVisible(clipComponent);
+        clipComponent->toFront(false);
+
+        this->fader.fadeIn(clipComponent, 150);
 
         this->batchRepaintList.add(clipComponent);
         this->triggerAsyncUpdate();
 
-        clipComponent->toFront(false);
-
-        this->fader.fadeIn(clipComponent, 150);
-        this->selectEvent(clipComponent, false);
+        if (this->addNewClipMode)
+        {
+            this->newClipDragging = clipComponent;
+            this->addNewClipMode = false;
+            this->selectEvent(this->newClipDragging, true); // clear previous selection
+        }
     }
 }
 
@@ -507,6 +490,8 @@ void PatternRoll::onRemoveClip(const Clip &clip)
 {
     if (const auto deletedComponent = this->clipComponents[clip].get())
     {
+        this->hideAllGhostClips();
+
         this->fader.fadeOut(deletedComponent, 150);
         this->selection.deselect(deletedComponent);
         this->clipComponents.erase(clip);
@@ -625,10 +610,26 @@ void PatternRoll::mouseDown(const MouseEvent &e)
 
 void PatternRoll::mouseDrag(const MouseEvent &e)
 {
-    // can show menus
     if (this->multiTouchController->hasMultitouch() || (e.source.getIndex() > 0))
     {
         return;
+    }
+
+    if (this->newClipDragging)
+    {
+        if (this->newClipDragging->isDragging())
+        {
+            this->newClipDragging->mouseDrag(e.getEventRelativeTo(this->newClipDragging));
+        }
+        else
+        {
+            this->newClipDragging->startDragging();
+            // a hack here. clip is technically created in two actions:
+            // adding one and resizing it afterwards, so two checkpoints would happen
+            // which we don't want, as adding a note should appear to user as a single transaction
+            this->newClipDragging->setNoCheckpointNeededForNextAction();
+            this->setMouseCursor(MouseCursor(MouseCursor::DraggingHandCursor));
+        }
     }
 
     HybridRoll::mouseDrag(e);
@@ -641,8 +642,13 @@ void PatternRoll::mouseUp(const MouseEvent &e)
         return;
     }
     
-    // Due to weird modal component behavior,
-    // a component can receive mouseUp event without receiving a mouseDown event before.
+    // Dismiss newClipDragging, if needed
+    if (this->newClipDragging != nullptr)
+    {
+        this->newClipDragging->endDragging();
+        this->setMouseCursor(this->project.getEditMode().getCursor());
+        this->newClipDragging = nullptr;
+    }
 
     if (! this->isUsingSpaceDraggingMode())
     {
@@ -657,10 +663,49 @@ void PatternRoll::mouseUp(const MouseEvent &e)
 // Keyboard shortcuts
 //===----------------------------------------------------------------------===//
 
-// Handle all hot-key commands here:
 void PatternRoll::handleCommandMessage(int commandId)
 {
-    // TODO switch
+    // TODO pattern roll-specific commands switch
+    switch (commandId)
+    {
+    case CommandIDs::RenameTrack:
+        if (auto *patternNode = dynamic_cast<PatternEditorTreeItem *>(this->project.findPrimaryActiveItem()))
+        {
+            // TODO check if all items in selection belong to one track
+            // and if they do, find according tree node and rename it
+            //this->selection.getFirstAs()
+
+            //auto inputDialog = ModalDialogInput::Presets::renameTrack(patternNode->getXPath());
+            //inputDialog->onOk = trackNode->getRenameCallback();
+            //App::Layout().showModalComponentUnowned(inputDialog.release());
+        }
+        break;
+    case CommandIDs::DeleteClips:
+        PatternOperations::deleteSelection(this->getLassoSelection());
+        break;
+    case CommandIDs::EditClip:
+        if (this->selection.getNumSelected() > 0)
+        {
+            const auto &clip = this->selection.getFirstAs<ClipComponent>()->getClip();
+            this->project.setEditableScope(clip.getPattern()->getTrack(), clip, true);
+        }
+        break;
+    //case CommandIDs::BeatShiftLeft:
+    //    PatternOperations::shiftBeatRelative(this->getLassoSelection(), -1.f / BEATS_PER_BAR);
+    //    break;
+    //case CommandIDs::BeatShiftRight:
+    //    PatternOperations::shiftBeatRelative(this->getLassoSelection(), 1.f / BEATS_PER_BAR);
+    //    break;
+    //case CommandIDs::BarShiftLeft:
+    //    PatternOperations::shiftBeatRelative(this->getLassoSelection(), -1.f);
+    //    break;
+    //case CommandIDs::BarShiftRight:
+    //    PatternOperations::shiftBeatRelative(this->getLassoSelection(), 1.f);
+    //    break;
+    default:
+        break;
+    }
+
     HybridRoll::handleCommandMessage(commandId);
 }
 
@@ -698,8 +743,9 @@ void PatternRoll::parentSizeChanged()
 
 void PatternRoll::insertNewClipAt(const MouseEvent &e)
 {
-    float draggingBeat = this->getBeatByMousePosition(e.x);
-    const auto pattern = this->getPatternByMousePosition(e.y);
+    auto *pattern = this->getPatternByMousePosition(e.y);
+    const float draggingBeat = this->getBeatByMousePosition(pattern, e.x);
+    this->addNewClipMode = true;
     this->addClip(pattern, draggingBeat);
 }
 

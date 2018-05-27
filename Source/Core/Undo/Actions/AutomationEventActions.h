@@ -35,7 +35,7 @@ public:
         UndoAction(source) {}
 
     AutomationEventInsertAction(MidiTrackSource &source,
-        String trackId, const AutomationEvent &target) noexcept;
+        const String &trackId, const AutomationEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -65,7 +65,7 @@ public:
         UndoAction(source) {}
 
     AutomationEventRemoveAction(MidiTrackSource &source,
-        String trackId, const AutomationEvent &target) noexcept;
+        const String &trackId, const AutomationEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -94,7 +94,7 @@ public:
     explicit AutomationEventChangeAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
-    AutomationEventChangeAction(MidiTrackSource &source, String trackId,
+    AutomationEventChangeAction(MidiTrackSource &source, const String &trackId,
         const AutomationEvent &target, const AutomationEvent &newParameters) noexcept;
 
     bool perform() override;
@@ -129,7 +129,7 @@ public:
         UndoAction(source) {}
     
     AutomationEventsGroupInsertAction(MidiTrackSource &source,
-        String trackId, Array<AutomationEvent> &target) noexcept;
+        const String &trackId, Array<AutomationEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
@@ -160,7 +160,7 @@ public:
         UndoAction(source) {}
     
     AutomationEventsGroupRemoveAction(MidiTrackSource &source,
-        String trackId, Array<AutomationEvent> &target) noexcept;
+        const String &trackId, Array<AutomationEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
@@ -190,7 +190,7 @@ public:
     explicit AutomationEventsGroupChangeAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
-    AutomationEventsGroupChangeAction(MidiTrackSource &source, String trackId,
+    AutomationEventsGroupChangeAction(MidiTrackSource &source, const String &trackId,
         const Array<AutomationEvent> state1, const Array<AutomationEvent> state2) noexcept;
 
     bool perform() override;

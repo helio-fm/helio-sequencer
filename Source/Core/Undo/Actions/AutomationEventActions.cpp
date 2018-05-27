@@ -26,9 +26,9 @@
 //===----------------------------------------------------------------------===//
 
 AutomationEventInsertAction::AutomationEventInsertAction(MidiTrackSource &source,
-    String targetTrackId, const AutomationEvent &event) noexcept :
+    const String &trackId, const AutomationEvent &event) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId)),
+    trackId(trackId),
     event(event) {}
 
 bool AutomationEventInsertAction::perform()
@@ -83,9 +83,9 @@ void AutomationEventInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 AutomationEventRemoveAction::AutomationEventRemoveAction(MidiTrackSource &source,
-    String targetTrackId, const AutomationEvent &target) noexcept :
+    const String &trackId, const AutomationEvent &target) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId)),
+    trackId(trackId),
     event(target) {}
 
 bool AutomationEventRemoveAction::perform()
@@ -140,10 +140,10 @@ void AutomationEventRemoveAction::reset()
 //===----------------------------------------------------------------------===//
 
 AutomationEventChangeAction::AutomationEventChangeAction(MidiTrackSource &source,
-    String targetTrackId, const AutomationEvent &target,
+    const String &trackId, const AutomationEvent &target,
     const AutomationEvent &newParameters) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId)),
+    trackId(trackId),
     eventBefore(target),
     eventAfter(newParameters) {}
 
@@ -237,9 +237,9 @@ void AutomationEventChangeAction::reset()
 //===----------------------------------------------------------------------===//
 
 AutomationEventsGroupInsertAction::AutomationEventsGroupInsertAction(MidiTrackSource &source,
-    String targetLayerId, Array<AutomationEvent> &target) noexcept :
+    const String &trackId, Array<AutomationEvent> &target) noexcept :
     UndoAction(source),
-    trackId(std::move(targetLayerId))
+    trackId(trackId)
 {
     this->events.swapWith(target);
 }
@@ -308,9 +308,9 @@ void AutomationEventsGroupInsertAction::reset()
 //===----------------------------------------------------------------------===//
 
 AutomationEventsGroupRemoveAction::AutomationEventsGroupRemoveAction(MidiTrackSource &source,
-    String targetTrackId, Array<AutomationEvent> &target) noexcept :
+    const String &trackId, Array<AutomationEvent> &target) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId))
+    trackId(trackId)
 {
     this->events.swapWith(target);
 }
@@ -379,10 +379,10 @@ void AutomationEventsGroupRemoveAction::reset()
 //===----------------------------------------------------------------------===//
 
 AutomationEventsGroupChangeAction::AutomationEventsGroupChangeAction(MidiTrackSource &source,
-    String targetTrackId, const Array<AutomationEvent> state1,
+    const String &trackId, const Array<AutomationEvent> state1,
     const Array<AutomationEvent> state2) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId))
+    trackId(trackId)
 {
     this->eventsBefore.addArray(state1);
     this->eventsAfter.addArray(state2);

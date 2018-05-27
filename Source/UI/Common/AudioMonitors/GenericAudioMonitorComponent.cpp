@@ -39,7 +39,7 @@ static const float kSpectrumFrequencies[] =
 
 GenericAudioMonitorComponent::GenericAudioMonitorComponent(WeakReference<AudioMonitor> monitor)
     : Thread("Spectrum Component"),
-      audioMonitor(std::move(monitor)),
+      audioMonitor(monitor),
       skewTime(0)
 {
     // (true, false) will enable switching rendering modes on click

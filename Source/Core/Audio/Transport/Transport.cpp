@@ -24,6 +24,8 @@
 #include "MidiSequence.h"
 #include "MidiEvent.h"
 #include "MidiTrack.h"
+#include "Clip.h"
+#include "Pattern.h"
 #include "App.h"
 #include "Workspace.h"
 #include "AudioCore.h"
@@ -251,13 +253,11 @@ void Transport::probeSoundAt(double absTrackPosition, const MidiSequence *limitT
     const double targetFlatTime = round(this->getTotalTime() * absTrackPosition);
     const auto sequencesToProbe(this->sequences.getAllFor(limitToLayer));
     
-    for (auto && i : sequencesToProbe)
+    for (const auto &seq : sequencesToProbe)
     {
-        SequenceWrapper::Ptr seq(i);
-
-        for (int j = 0; j < seq->sequence.getNumEvents(); ++j)
+        for (int j = 0; j < seq->midiMessages.getNumEvents(); ++j)
         {
-            MidiMessageSequence::MidiEventHolder *noteOnHolder = seq->sequence.getEventPointer(j);
+            MidiMessageSequence::MidiEventHolder *noteOnHolder = seq->midiMessages.getEventPointer(j);
             
             if (MidiMessageSequence::MidiEventHolder *noteOffHolder = noteOnHolder->noteOffObject)
             {
@@ -289,8 +289,8 @@ void Transport::probeSequence(const MidiMessageSequence &sequence)
     // using the last instrument (TODO something more clever in the future)
     Instrument *targetInstrument = this->orchestra.getInstruments().getLast();
     auto wrapper = new SequenceWrapper();
-    wrapper->layer = nullptr;
-    wrapper->sequence = fixedSequence;
+    wrapper->track = nullptr;
+    wrapper->midiMessages = fixedSequence;
     wrapper->currentIndex = 0;
     wrapper->instrument = targetInstrument;
     wrapper->listener = &targetInstrument->getProcessorPlayer().getMidiMessageCollector();
@@ -447,16 +447,15 @@ void Transport::allNotesAndControllersOff() const
         
         for (int l = 0; l < this->tracksCache.size(); ++l)
         {
-            const String &layerId =
-                this->tracksCache.getUnchecked(l)->getTrackId().toString();
+            const String &trackId = this->tracksCache.getUnchecked(l)->getTrackId();
             
             MidiMessageCollector *collector =
-                &this->linksCache[layerId]->getProcessorPlayer().getMidiMessageCollector();
+                &this->linksCache[trackId]->getProcessorPlayer().getMidiMessageCollector();
             
             if (! duplicateCollectors.contains(collector))
             {
-                this->sendMidiMessage(layerId, notesOff);
-                this->sendMidiMessage(layerId, controllersOff);
+                this->sendMidiMessage(trackId, notesOff);
+                this->sendMidiMessage(trackId, controllersOff);
                 duplicateCollectors.add(collector);
             }
         }
@@ -476,17 +475,16 @@ void Transport::allNotesControllersAndSoundOff() const
         
         for (int l = 0; l < this->tracksCache.size(); ++l)
         {
-            const String &layerId =
-                this->tracksCache.getUnchecked(l)->getTrackId().toString();
+            const String &trackId = this->tracksCache.getUnchecked(l)->getTrackId();
             
             MidiMessageCollector *collector =
-               &this->linksCache[layerId]->getProcessorPlayer().getMidiMessageCollector();
+               &this->linksCache[trackId]->getProcessorPlayer().getMidiMessageCollector();
             
             if (! duplicateCollectors.contains(collector))
             {
-                this->sendMidiMessage(layerId, notesOff);
-                this->sendMidiMessage(layerId, controllersOff);
-                this->sendMidiMessage(layerId, soundOff);
+                this->sendMidiMessage(trackId, notesOff);
+                this->sendMidiMessage(trackId, controllersOff);
+                this->sendMidiMessage(trackId, soundOff);
                 duplicateCollectors.add(collector);
             }
         }
@@ -528,70 +526,69 @@ void Transport::instrumentRemovedPostAction()
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
+// FIXME: need to do something more reasonable than this workaround:
+#define updateLengthAndTimeIfNeeded(track) \
+    if (track->getTrackControllerNumber() == MidiTrack::tempoController) \
+    { \
+        this->seekToPosition(this->getSeekPosition()); \
+    }
+
 void Transport::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     // todo stop playback only if the event is in future
-    // and getControllerNumber == 0 (not an automation)
-    
-    if (this->isPlaying())
-    {
-        this->stopPlayback();
-    }
-    
-    // a hack
-    if (newEvent.getControllerNumber() == MidiTrack::tempoController)
-    {
-        this->seekToPosition(this->getSeekPosition());
-    }
-    
+    // and getTrackControllerNumber == 0 (not an automation)
+    this->stopPlayback();
+    updateLengthAndTimeIfNeeded((&newEvent));
     this->sequencesAreOutdated = true;
 }
 
 void Transport::onAddMidiEvent(const MidiEvent &event)
 {
     // todo stop playback only if the event is in future
-    // and getControllerNumber == 0 (not an automation)
+    // and getTrackControllerNumber == 0 (not an automation)
     this->stopPlayback();
-    
-    // a hack
-    if (event.getControllerNumber() == MidiTrack::tempoController)
-    {
-        this->seekToPosition(this->getSeekPosition());
-    }
-    
+    updateLengthAndTimeIfNeeded((&event));
     this->sequencesAreOutdated = true;
 }
 
-void Transport::onRemoveMidiEvent(const MidiEvent &event)
+void Transport::onRemoveMidiEvent(const MidiEvent &event) {}
+void Transport::onPostRemoveMidiEvent(MidiSequence *const sequence)
 {
-    // todo stop playback only if the event is in future and getControllerNumber == 0 (not an automation)
     this->stopPlayback();
-    
+    updateLengthAndTimeIfNeeded(sequence->getTrack());
     this->sequencesAreOutdated = true;
 }
 
-void Transport::onPostRemoveMidiEvent(MidiSequence *const layer)
+void Transport::onAddClip(const Clip &clip)
 {
     this->stopPlayback();
-    
-    // a hack to re-calculate length and current time
-    if (layer->getTrack()->getTrackControllerNumber() == MidiTrack::tempoController)
-    {
-        this->seekToPosition(this->getSeekPosition());
-    }
-    
+    updateLengthAndTimeIfNeeded((&clip));
+    this->sequencesAreOutdated = true;
+}
+
+void Transport::onChangeClip(const Clip &oldClip, const Clip &newClip)
+{
+    this->stopPlayback();
+    updateLengthAndTimeIfNeeded((&newClip));
+    this->sequencesAreOutdated = true;
+}
+
+void Transport::onRemoveClip(const Clip &clip) {}
+void Transport::onPostRemoveClip(Pattern *const pattern)
+{
+    this->stopPlayback();
+    updateLengthAndTimeIfNeeded(pattern->getTrack());
     this->sequencesAreOutdated = true;
 }
 
 void Transport::onChangeTrackProperties(MidiTrack *const track)
 {
     // Stop playback only when instrument changes:
-    const auto trackId = track->getTrackId().toString();
+    const auto &trackId = track->getTrackId();
     if (!linksCache.contains(trackId) ||
         this->linksCache[trackId]->getInstrumentID() != track->getTrackInstrumentId())
     {
@@ -746,19 +743,34 @@ void Transport::rebuildSequencesIfNeeded()
         
         for (int i = 0; i < this->tracksCache.size(); ++i)
         {
-            const auto layer = this->tracksCache.getUnchecked(i)->getSequence();
-            MidiMessageSequence sequence(layer->exportMidi());
-            sequence.addTimeToMessages(-this->trackStartMs.get());
-            
-            if (sequence.getNumEvents() > 0)
+            const auto *track = this->tracksCache.getUnchecked(i);
+            MidiMessageSequence midiMessages;
+
+            if (track->getPattern() != nullptr)
             {
-                Instrument *targetInstrument = this->linksCache[layer->getTrackId()];
+                for (const auto *clip : track->getPattern()->getClips())
+                {
+                    const double clipOffset = round(double(clip->getBeat()) * MS_PER_BEAT);
+                    midiMessages.addSequence(track->getSequence()->exportMidi(),
+                        clipOffset - this->trackStartMs.get());
+                }
+            }
+            else
+            {
+                midiMessages.addSequence(track->getSequence()->exportMidi(),
+                    -this->trackStartMs.get());
+            }
+
+            if (midiMessages.getNumEvents() > 0)
+            {
+                Instrument *instrument = this->linksCache[track->getTrackId()];
+                jassert(instrument != nullptr);
                 auto wrapper = new SequenceWrapper();
-                wrapper->layer = layer;
-                wrapper->sequence = sequence;
+                wrapper->track = track->getSequence();
+                wrapper->midiMessages = midiMessages;
                 wrapper->currentIndex = 0;
-                wrapper->instrument = targetInstrument;
-                wrapper->listener = &targetInstrument->getProcessorPlayer().getMidiMessageCollector();
+                wrapper->instrument = instrument;
+                wrapper->listener = &instrument->getProcessorPlayer().getMidiMessageCollector();
                 this->sequences.addWrapper(wrapper);
             }
         }
@@ -785,7 +797,7 @@ void Transport::updateLinkForTrack(const MidiTrack *track)
         if (track->getTrackInstrumentId().contains(instrument->getInstrumentID()))
         {
             // corresponding node already exists, lets add
-            this->linksCache.set(track->getTrackId().toString(), instrument);
+            this->linksCache.set(track->getTrackId(), instrument);
             return;
         }
     }
@@ -797,21 +809,20 @@ void Transport::updateLinkForTrack(const MidiTrack *track)
         
         if (track->getTrackInstrumentId().contains(instrument->getInstrumentHash()))
         {
-            this->linksCache.set(track->getTrackId().toString(), instrument);
+            this->linksCache.set(track->getTrackId(), instrument);
             return;
         }
     }
     
     // set default instrument, if none found
-    this->linksCache.set(track->getTrackId().toString(),
+    this->linksCache.set(track->getTrackId(),
         this->orchestra.getInstruments().getFirst());
 }
 
 void Transport::removeLinkForTrack(const MidiTrack *track)
 {
-    this->linksCache.remove(track->getTrackId().toString());
+    this->linksCache.remove(track->getTrackId());
 }
-
 
 //===----------------------------------------------------------------------===//
 // Transport Listeners

@@ -32,11 +32,11 @@ AutomationTrackInsertAction::AutomationTrackInsertAction(MidiTrackSource &source
 AutomationTrackInsertAction::AutomationTrackInsertAction(MidiTrackSource &source,
     WeakReference<TreeItem> parentTreeItem,
     ValueTree targetSerializedState,
-    String targetXPath) noexcept :
+    const String &xPath) noexcept :
     UndoAction(source),
     parentTreeItem(parentTreeItem),
     trackState(targetSerializedState),
-    trackName(std::move(targetXPath)) {}
+    trackName(xPath) {}
 
 bool AutomationTrackInsertAction::perform()
 {
@@ -44,7 +44,7 @@ bool AutomationTrackInsertAction::perform()
     track->deserialize(this->trackState);
     this->parentTreeItem->addChildTreeItem(track);
 
-    this->trackId = track->getTrackId().toString();
+    this->trackId = track->getTrackId();
     track->setTrackName(this->trackName, true);
     
     return true;
@@ -100,10 +100,10 @@ AutomationTrackRemoveAction::AutomationTrackRemoveAction(MidiTrackSource &source
     UndoAction(source), parentTreeItem(parentTreeItem) {}
 
 AutomationTrackRemoveAction::AutomationTrackRemoveAction(MidiTrackSource &source,
-    WeakReference<TreeItem> parentTreeItem, String targetLayerId) noexcept :
+    WeakReference<TreeItem> parentTreeItem, const String &trackId) noexcept :
     UndoAction(source),
     parentTreeItem(parentTreeItem),
-    trackId(std::move(targetLayerId)),
+    trackId(trackId),
     numEvents(0) {}
 
 bool AutomationTrackRemoveAction::perform()

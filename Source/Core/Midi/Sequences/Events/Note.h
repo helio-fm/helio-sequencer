@@ -25,10 +25,16 @@ class Note final : public MidiEvent
 {
 public:
 
-    typedef int Key;
+    using Key = int;
 
     Note() noexcept;
-    Note(const Note &other) noexcept;
+
+    Note(const Note &other) noexcept = default;
+    Note &operator= (const Note &other) = default;
+
+    Note(Note &&other) noexcept = default;
+    Note &operator= (Note &&other) noexcept = default;
+
     Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy) noexcept;
     explicit Note(WeakReference<MidiSequence> owner,
          int keyVal = 0, float beatVal = 0.f,
@@ -39,6 +45,7 @@ public:
     Note copyWithNewId(WeakReference<MidiSequence> owner = nullptr) const noexcept;
     Note withBeat(float newBeat) const noexcept;
     Note withKeyBeat(Key newKey, float newBeat) const noexcept;
+    Note withKeyLength(Key newKey, float newLength) const noexcept;
     Note withDeltaBeat(float deltaPosition) const noexcept;
     Note withDeltaKey(Key deltaKey) const noexcept;
     Note withLength(float newLength) const noexcept;
@@ -68,9 +75,17 @@ public:
     
     void applyChanges(const Note &parameters) noexcept;
 
-    static int compareElements(const MidiEvent *const first, const MidiEvent *const second) noexcept;
+    static inline int compareElements(const MidiEvent *const first, const MidiEvent *const second) noexcept
+    {
+        return MidiEvent::compareElements(first, second);
+    }
+
+    static inline int compareElements(const Note &first, const Note &second) noexcept
+    {
+        return Note::compareElements(&first, &second);
+    }
+
     static int compareElements(const Note *const first, const Note *const second) noexcept;
-    static int compareElements(const Note &first, const Note &second) noexcept;
 
 protected:
 
@@ -81,5 +96,4 @@ protected:
 private:
 
     JUCE_LEAK_DETECTOR(Note);
-
 };

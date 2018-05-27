@@ -49,10 +49,15 @@ public:
               Viewport &viewportRef,
               WeakReference<AudioMonitor> clippingDetector);
     
-    void setSelectedTracks(Array<WeakReference<MidiTrack>> tracks,
-        WeakReference<MidiTrack> activeTrack);
+    void setEditableScope(WeakReference<MidiTrack> activeTrack,
+        const Clip &activeClip, bool zoomToArea);
 
-    void setRowHeight(const int newRowHeight);
+    WeakReference<MidiTrack> getActiveTrack() const noexcept;
+    const Clip &getActiveClip() const noexcept;
+
+    void setDefaultNoteVolume(float volume) noexcept;
+
+    void setRowHeight(int newRowHeight);
     inline int getRowHeight() const noexcept
     { return this->rowHeight; }
 
@@ -80,6 +85,8 @@ public:
     void zoomAbsolute(const Point<float> &zoom) override;
     float getZoomFactorY() const override;
 
+    void zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat);
+
     //===------------------------------------------------------------------===//
     // Note management
     //===------------------------------------------------------------------===//
@@ -87,10 +94,13 @@ public:
     void addNote(int key, float beat, float length, float velocity);
     Rectangle<float> getEventBounds(FloatBoundsComponent *mc) const override;
     Rectangle<float> getEventBounds(int key, float beat, float length) const;
+
+    int getYPositionByKey(int targetKey) const;
+
+    // Note that beat is returned relative to active clip's beat offset:
     void getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber) const;
     void getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber) const;
-    int getYPositionByKey(int targetKey) const;
-    
+
     //===------------------------------------------------------------------===//
     // Drag helpers
     //===------------------------------------------------------------------===//
@@ -107,10 +117,16 @@ public:
     void onAddMidiEvent(const MidiEvent &event) override;
     void onRemoveMidiEvent(const MidiEvent &event) override;
 
+    void onAddClip(const Clip &clip) override;
+    void onChangeClip(const Clip &oldClip, const Clip &newClip) override;
+    void onRemoveClip(const Clip &clip) override;
+
     void onAddTrack(MidiTrack *const track) override;
     void onRemoveTrack(MidiTrack *const track) override;
     void onChangeTrackProperties(MidiTrack *const track) override;
+
     void onReloadProjectContent(const Array<MidiTrack *> &tracks) override;
+    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
 
     //===------------------------------------------------------------------===//
     // LassoSource
@@ -150,24 +166,33 @@ public:
     
 private:
 
-    Array<WeakReference<MidiTrack>> selectedTracks;
+    // Piano roll restricts editing to a single clip of one track at time.
+    // I've cut the feature to edit multiple tracks at once,
+    // mainly because it makes headline menu unclear (like that is the current track).
+    // I never implemented the ability to edit multiple clips at once:
+    // so far, all the code that works with selection, assumes that selected notes are unique,
+    // and there are no multiple instances of the same note within different clips selected.
+
+    WeakReference<MidiTrack> activeTrack;
+    Clip activeClip;
+
+    void updateActiveRangeIndicator() const;
 
 private:
 
     void reloadRollContent();
-    
+    void loadTrack(const MidiTrack *const track);
+
     void updateChildrenBounds() override;
     void updateChildrenPositions() override;
     void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
 
     void insertNewNoteAt(const MouseEvent &e);
-    bool dismissDraggingNoteIfNeeded();
 
-    bool mouseDownWasTriggered; // juce mouseUp weirdness workaround
-
-    NoteComponent *draggingNote;
+    NoteComponent *newNoteDragging;
     bool addNewNoteMode;
-    
+    float newNoteVolume;
+
     int numRows;
     int rowHeight;
 
@@ -229,11 +254,9 @@ private:
 
     ScopedPointer<PianoRollSelectionMenuManager> selectedNotesMenuManager;
     
-    typedef SparseHashMap<const Note, UniquePointer<NoteComponent>, MidiEventHash> EventComponentsMap;
-    EventComponentsMap eventComponents;
-
-    typedef SparseHashMap<const Clip, UniquePointer<EventComponentsMap>, ClipHash> ClipsMap;
-    ClipsMap clipsMap;
+    using SequenceMap = SparseHashMap<const Note, UniquePointer<NoteComponent>, MidiEventHash>;
+    using PatternMap = SparseHashMap<const Clip, UniquePointer<SequenceMap>, ClipHash>;
+    PatternMap patternMap;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoRoll)
 };

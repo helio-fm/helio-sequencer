@@ -36,7 +36,7 @@ public:
         UndoAction(source) {}
 
     AnnotationEventInsertAction(MidiTrackSource &source,
-        String trackId, const AnnotationEvent &target) noexcept;
+        const String &trackId, const AnnotationEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -66,7 +66,7 @@ public:
         UndoAction(source) {}
 
     AnnotationEventRemoveAction(MidiTrackSource &source,
-        String trackId, const AnnotationEvent &target) noexcept;
+        const String &trackId, const AnnotationEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -95,7 +95,7 @@ public:
     explicit AnnotationEventChangeAction(MidiTrackSource &source) :
         UndoAction(source) {}
 
-    AnnotationEventChangeAction(MidiTrackSource &source, String trackId,
+    AnnotationEventChangeAction(MidiTrackSource &source, const String &trackId,
         const AnnotationEvent &target, const AnnotationEvent &newParameters) noexcept;
 
     bool perform() override;
@@ -130,7 +130,7 @@ public:
         UndoAction(source) {}
     
     AnnotationEventsGroupInsertAction(MidiTrackSource &source,
-        String trackId, Array<AnnotationEvent> &target) noexcept;
+        const String &trackId, Array<AnnotationEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
@@ -161,7 +161,7 @@ public:
         UndoAction(source) {}
     
     AnnotationEventsGroupRemoveAction(MidiTrackSource &source,
-        String trackId, Array<AnnotationEvent> &target) noexcept;
+        const String &trackId, Array<AnnotationEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
@@ -191,7 +191,7 @@ public:
     explicit AnnotationEventsGroupChangeAction(MidiTrackSource &source) :
         UndoAction(source) {}
 
-    AnnotationEventsGroupChangeAction(MidiTrackSource &source, String trackId,
+    AnnotationEventsGroupChangeAction(MidiTrackSource &source, const String &trackId,
         const Array<AnnotationEvent> state1, const Array<AnnotationEvent> state2) noexcept;
 
     bool perform() override;

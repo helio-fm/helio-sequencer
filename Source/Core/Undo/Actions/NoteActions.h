@@ -23,7 +23,6 @@ class MidiTrackSource;
 #include "Note.h"
 #include "UndoAction.h"
 
-
 //===----------------------------------------------------------------------===//
 // Insert
 //===----------------------------------------------------------------------===//
@@ -36,7 +35,7 @@ public:
         UndoAction(source) {}
     
     NoteInsertAction(MidiTrackSource &source,
-        String trackId, const Note &target) noexcept;
+        const String &trackId, const Note &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -54,7 +53,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE(NoteInsertAction)
 };
 
-
 //===----------------------------------------------------------------------===//
 // Remove
 //===----------------------------------------------------------------------===//
@@ -67,7 +65,7 @@ public:
         UndoAction(source) {}
 
     NoteRemoveAction(MidiTrackSource &source,
-        String trackId, const Note &target) noexcept;
+        const String &trackId, const Note &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -85,7 +83,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE(NoteRemoveAction)
 };
 
-
 //===----------------------------------------------------------------------===//
 // Change
 //===----------------------------------------------------------------------===//
@@ -97,7 +94,7 @@ public:
     explicit NoteChangeAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
-    NoteChangeAction(MidiTrackSource &source, String trackId,
+    NoteChangeAction(MidiTrackSource &source, const String &trackId,
         const Note &note, const Note &newParameters) noexcept;
 
     bool perform() override;
@@ -117,9 +114,7 @@ private:
     Note noteAfter;
 
     JUCE_DECLARE_NON_COPYABLE(NoteChangeAction)
-
 };
-
 
 //===----------------------------------------------------------------------===//
 // Insert Group
@@ -133,7 +128,7 @@ public:
         UndoAction(source) {}
     
     NotesGroupInsertAction(MidiTrackSource &source,
-        String trackId, Array<Note> &target) noexcept;
+        const String &trackId, Array<Note> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
@@ -149,9 +144,7 @@ private:
     Array<Note> notes;
     
     JUCE_DECLARE_NON_COPYABLE(NotesGroupInsertAction)
-    
 };
-
 
 //===----------------------------------------------------------------------===//
 // Remove Group
@@ -165,7 +158,7 @@ public:
         UndoAction(source) {}
     
     NotesGroupRemoveAction(MidiTrackSource &source,
-        String trackId, Array<Note> &target) noexcept;
+        const String &trackId, Array<Note> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
@@ -181,9 +174,7 @@ private:
     Array<Note> notes;
     
     JUCE_DECLARE_NON_COPYABLE(NotesGroupRemoveAction)
-    
 };
-
 
 //===----------------------------------------------------------------------===//
 // Change Group
@@ -196,7 +187,7 @@ public:
     explicit NotesGroupChangeAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
-    NotesGroupChangeAction(MidiTrackSource &source, String trackId,
+    NotesGroupChangeAction(MidiTrackSource &source, const String &trackId,
         Array<Note> &state1, Array<Note> &state2) noexcept;
 
     bool perform() override;
@@ -216,5 +207,4 @@ private:
     Array<Note> notesAfter;
 
     JUCE_DECLARE_NON_COPYABLE(NotesGroupChangeAction)
-
 };

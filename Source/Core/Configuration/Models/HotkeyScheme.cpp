@@ -52,26 +52,25 @@ bool HotkeyScheme::dispatchKeyStateChange(bool isKeyDown,
 
     if (isKeyDown)
     {
-        // TODO hold an array of pressed keys and check
-
         for (const auto key : this->keyDowns)
         {
             if (key.keyPress.isCurrentlyDown() &&
                 this->sendHotkeyCommand(key, keyPressReceiver, messageReceiver))
             {
+                this->holdKeys.addIfNotAlreadyThere(key.keyPress);
                 return true;
             }
         }
     }
     else
     {
-        // TODO hold an array of pressed keys and check
-
         for (const auto key : this->keyUps)
         {
-            if (!key.keyPress.isCurrentlyDown() &&
+            if (!key.keyPress.isCurrentlyDown() && 
+                this->holdKeys.contains(key.keyPress) &&
                 this->sendHotkeyCommand(key, keyPressReceiver, messageReceiver))
             {
+                this->holdKeys.removeAllInstancesOf(key.keyPress);
                 return true;
             }
         }
@@ -126,7 +125,7 @@ bool HotkeyScheme::sendHotkeyCommand(Hotkey key,
 
     if (receiver != nullptr)
     {
-        if (receiver->isEnabled() && receiver->isVisible())
+        if (receiver->isEnabled() && receiver->isShowing())
         {
             receiver->postCommandMessage(key.commandId);
             return true;
@@ -198,6 +197,7 @@ void HotkeyScheme::reset()
     this->keyDowns.clearQuick();
     this->keyUps.clearQuick();
     this->receiverChildren.clear();
+    this->holdKeys.clearQuick();
     this->lastReceiver = nullptr;
 }
 

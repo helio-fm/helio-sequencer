@@ -22,33 +22,23 @@
 #include "CommandIDs.h"
 #include "Icons.h"
 
-static MenuPanel::Menu createDefaultPanel()
-{
-    MenuPanel::Menu cmds;
-
-    cmds.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents,
-        TRANS("menu::selection::clips::copy")));
-
-    cmds.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents,
-        TRANS("menu::selection::clips::cut")));
-
-    cmds.add(MenuItem::item(Icons::remove, CommandIDs::DeleteEvents,
-        TRANS("menu::selection::clips::delete")));
-
-    return cmds;
-}
-
 PatternRollSelectionMenu::PatternRollSelectionMenu(WeakReference<Lasso> lasso) :
     lasso(lasso)
 {
-    this->updateContent(createDefaultPanel(), MenuPanel::SlideLeft);
-}
+    MenuPanel::Menu menu;
 
-void PatternRollSelectionMenu::handleCommandMessage(int commandId)
-{
-    if (commandId == CommandIDs::CopyEvents)
-    {
-        return;
-    }
-}
+    menu.add(MenuItem::item(Icons::zoomIn, CommandIDs::EditClip,
+        TRANS("menu::selection::clips::edit"))->
+        disabledIf(lasso->getNumSelected() == 0)->closesMenu());
 
+    menu.add(MenuItem::item(Icons::copy, CommandIDs::CopyClips,
+        TRANS("menu::selection::clips::copy"))->closesMenu());
+
+    menu.add(MenuItem::item(Icons::cut, CommandIDs::CutClips,
+        TRANS("menu::selection::clips::cut"))->closesMenu());
+
+    menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteClips,
+        TRANS("menu::selection::clips::delete"))->closesMenu());
+
+    this->updateContent(menu, MenuPanel::SlideRight);
+}

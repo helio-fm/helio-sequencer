@@ -26,20 +26,16 @@
 #include "HelioTheme.h"
 #include "CachedLabelImage.h"
 #include "ColourIDs.h"
+
+#include "MidiTrackTreeItem.h"
+#include "ModalDialogInput.h"
+#include "MainLayout.h"
+#include "App.h"
 //[/MiscUserDefs]
 
-MidiTrackHeader::MidiTrackHeader(const MidiTrack *track)
+MidiTrackHeader::MidiTrackHeader(MidiTrack *track)
     : track(track)
 {
-    addAndMakeVisible (trackNameEditor = new TextEditor (String()));
-    trackNameEditor->setMultiLine (false);
-    trackNameEditor->setReturnKeyStartsNewLine (false);
-    trackNameEditor->setReadOnly (false);
-    trackNameEditor->setScrollbarsShown (false);
-    trackNameEditor->setCaretVisible (true);
-    trackNameEditor->setPopupMenuEnabled (true);
-    trackNameEditor->setText (TRANS("..."));
-
     addAndMakeVisible (trackNameLabel = new Label (String(),
                                                    String()));
     trackNameLabel->setFont (Font (18.00f, Font::plain).withTypefaceStyle ("Regular"));
@@ -58,29 +54,22 @@ MidiTrackHeader::MidiTrackHeader(const MidiTrack *track)
     //[UserPreSize]
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, true);
+    this->setWantsKeyboardFocus(false);
+    this->setMouseClickGrabsKeyboardFocus(false);
+    this->setOpaque(true);
 
     this->trackNameLabel->setBufferedToImage(true);
     this->trackNameLabel->setCachedComponentImage(new CachedLabelImage(*this->trackNameLabel));
-    //this->trackNameLabel->setInterceptsMouseClicks(false, false);
+    this->trackNameLabel->setInterceptsMouseClicks(false, false);
 
-    this->trackNameLabel->setFocusContainer(false);
-    this->trackNameLabel->setWantsKeyboardFocus(false);
-
+    this->setNameButton->setMouseCursor(MouseCursor::PointingHandCursor);
+    this->setNameButton->setMouseClickGrabsKeyboardFocus(false);
+    this->setNameButton->setWantsKeyboardFocus(false);
     //[/UserPreSize]
 
     setSize (400, 32);
 
     //[Constructor]
-    this->trackNameEditor->setFont(this->trackNameLabel->getFont());
-
-    // Prevent grabbing a focus by track name editor:
-    //g.setColour(this->findColour(TextEditor::backgroundColourId));
-    //g.setColour(this->findColour(TextEditor::outlineColourId));
-
-    this->trackNameEditor->addListener(this);
-    this->trackNameEditor->setFocusContainer(true);
-    this->trackNameEditor->setVisible(false);
-
     this->updateContent();
     //[/Constructor]
 }
@@ -88,10 +77,8 @@ MidiTrackHeader::MidiTrackHeader(const MidiTrack *track)
 MidiTrackHeader::~MidiTrackHeader()
 {
     //[Destructor_pre]
-    this->trackNameEditor->removeListener(this);
     //[/Destructor_pre]
 
-    trackNameEditor = nullptr;
     trackNameLabel = nullptr;
     setNameButton = nullptr;
 
@@ -112,7 +99,7 @@ void MidiTrackHeader::paint (Graphics& g)
 
     const int x = 1; // JUCE_LIVE_CONSTANT(1);
     const float y1 = 2.f; // JUCE_LIVE_CONSTANT(2.f);
-    const float y2 = 29.f; // JUCE_LIVE_CONSTANT(29.f);
+    const float y2 = float(this->getHeight()) - y1 * 1.5f;
 
     g.drawVerticalLine(x, y1, y2);
     g.drawVerticalLine(x + 1, y1, y2);
@@ -131,12 +118,13 @@ void MidiTrackHeader::paint (Graphics& g)
 void MidiTrackHeader::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
+#if 0
     //[/UserPreResize]
 
-    trackNameEditor->setBounds (5, 0, getWidth() - 6, getHeight() - 0);
-    trackNameLabel->setBounds (5, 5, 256, 20);
+    trackNameLabel->setBounds (5, 5, 256, getHeight() - 12);
     setNameButton->setBounds (8, 0, 256, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
+#endif
     //[/UserResized]
 }
 
@@ -148,9 +136,12 @@ void MidiTrackHeader::buttonClicked (Button* buttonThatWasClicked)
     if (buttonThatWasClicked == setNameButton)
     {
         //[UserButtonCode_setNameButton] -- add your button handler code here..
-        this->trackNameLabel->setVisible(false);
-        this->trackNameEditor->setVisible(true);
-        this->trackNameEditor->grabKeyboardFocus();
+        if (auto *trackNode = dynamic_cast<MidiTrackTreeItem *>(this->track))
+        {
+            auto inputDialog = ModalDialogInput::Presets::renameTrack(trackNode->getXPath());
+            inputDialog->onOk = trackNode->getRenameCallback();
+            App::Layout().showModalComponentUnowned(inputDialog.release());
+        }
         //[/UserButtonCode_setNameButton]
     }
 
@@ -160,24 +151,6 @@ void MidiTrackHeader::buttonClicked (Button* buttonThatWasClicked)
 
 
 //[MiscUserCode]
-void MidiTrackHeader::textEditorReturnKeyPressed(TextEditor&)
-{
-    this->trackNameEditor->setVisible(false);
-    this->trackNameLabel->setVisible(true);
-}
-
-void MidiTrackHeader::textEditorEscapeKeyPressed(TextEditor&)
-{
-    this->trackNameEditor->setVisible(false);
-    this->trackNameLabel->setVisible(true);
-}
-
-void MidiTrackHeader::textEditorFocusLost(TextEditor&)
-{
-    this->trackNameEditor->setVisible(false);
-    this->trackNameLabel->setVisible(true);
-}
-
 void MidiTrackHeader::updateContent()
 {
     const Colour defaultColour(Colours::black);
@@ -202,11 +175,11 @@ void MidiTrackHeader::updateContent()
     this->trackNameLabel->setColour(Label::textColourId, newLabelColour);
     this->trackNameLabel->setText(this->track ? this->track->getTrackName() : addTrackLabel, dontSendNotification);
 
-    this->trackNameEditor->setColour(TextEditor::textColourId, newLabelColour);
-    this->trackNameEditor->setText(this->track ? this->track->getTrackName() : "", false);
+    this->textWidth = this->trackNameLabel->getFont().getStringWidth(this->trackNameLabel->getText());
 
-    this->textWidth = jmin(this->trackNameLabel->getWidth(),
-        this->trackNameLabel->getFont().getStringWidth(this->trackNameLabel->getText()));
+    this->trackNameLabel->setBounds(5, 4, jmax(this->textWidth, 256), this->getHeight() - 12);
+    this->setNameButton->setBounds(8, 0, this->textWidth + 2, this->getHeight());
+    this->setNameButton->toFront(false);
 }
 
 const MidiTrack *MidiTrackHeader::getTrack() const noexcept
@@ -220,24 +193,22 @@ const MidiTrack *MidiTrackHeader::getTrack() const noexcept
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="MidiTrackHeader" template="../../../Template"
-                 componentName="" parentClasses="public Component, public TextEditor::Listener"
-                 constructorParams="const MidiTrack *track" variableInitialisers="track(track)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="400" initialHeight="32">
+                 componentName="" parentClasses="public Component" constructorParams="MidiTrack *track"
+                 variableInitialisers="track(track)" snapPixels="8" snapActive="1"
+                 snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="400"
+                 initialHeight="32">
   <BACKGROUND backgroundColour="0"/>
-  <TEXTEDITOR name="" id="fb4a58b4245a4b25" memberName="trackNameEditor" virtualName=""
-              explicitFocusOrder="0" pos="5 0 6M 0M" initialText="..." multiline="0"
-              retKeyStartsLine="0" readonly="0" scrollbars="0" caret="1" popupmenu="1"/>
   <LABEL name="" id="d3d4f85f2ceefa1c" memberName="trackNameLabel" virtualName=""
-         explicitFocusOrder="0" pos="5 5 256 20" edBkgCol="0" labelText=""
+         explicitFocusOrder="0" pos="5 5 256 12M" edBkgCol="0" labelText=""
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="18" kerning="0" bold="0" italic="0"
-         justification="33"/>
+         fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="33"/>
   <IMAGEBUTTON name="" id="15bec82dddd3c004" memberName="setNameButton" virtualName=""
                explicitFocusOrder="0" pos="8 0 256 0M" buttonText="" connectedEdges="0"
                needsCallback="1" radioGroupId="0" keepProportions="0" resourceNormal=""
-               opacityNormal="1" colourNormal="0" resourceOver="" opacityOver="1"
-               colourOver="0" resourceDown="" opacityDown="1" colourDown="0"/>
+               opacityNormal="1.00000000000000000000" colourNormal="0" resourceOver=""
+               opacityOver="1.00000000000000000000" colourOver="0" resourceDown=""
+               opacityDown="1.00000000000000000000" colourDown="0"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

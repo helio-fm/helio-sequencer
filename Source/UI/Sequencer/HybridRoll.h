@@ -93,7 +93,6 @@ public:
     Transport &getTransport() const noexcept;
     ProjectTreeItem &getProject() const noexcept;
     HybridRollEditMode getEditMode() const noexcept;
-    WeakReference<MidiTrack> getActiveTrack() const noexcept;
 
     virtual void selectAll() = 0;
     virtual Rectangle<float> getEventBounds(FloatBoundsComponent *nc) const = 0;
@@ -166,9 +165,10 @@ public:
     float getZoomFactorX() const override;
     float getZoomFactorY() const override;
 
-    void startSmoothZoom(const Point<float> &origin, const Point<float> &factor);
     void zoomInImpulse();
     void zoomOutImpulse();
+    void zoomToArea(float minBeat, float maxBeat);
+    void startSmoothZoom(const Point<float> &origin, const Point<float> &factor);
 
     //===------------------------------------------------------------------===//
     // Misc
@@ -389,13 +389,13 @@ protected:
     ScopedPointer<HybridRollHeader> header;
     ScopedPointer<Playhead> playhead;
     
-    typedef AnnotationsTrackMap<AnnotationLargeComponent> AnnotationsLargeMap;
+    using AnnotationsLargeMap = AnnotationsTrackMap<AnnotationLargeComponent>;
     ScopedPointer<AnnotationsLargeMap> annotationsTrack;
 
-    typedef TimeSignaturesTrackMap<TimeSignatureLargeComponent> TimeSignaturesLargeMap;
+    using TimeSignaturesLargeMap = TimeSignaturesTrackMap<TimeSignatureLargeComponent>;
     ScopedPointer<TimeSignaturesLargeMap> timeSignaturesTrack;
 
-    typedef KeySignaturesTrackMap<KeySignatureLargeComponent> KeySignaturesLargeMap;
+    using KeySignaturesLargeMap = KeySignaturesTrackMap<KeySignatureLargeComponent>;
     ScopedPointer<KeySignaturesLargeMap> keySignaturesTrack;
 
     ScopedPointer<Component> topShadow;
@@ -424,8 +424,6 @@ protected:
     ScopedPointer<SmoothZoomController> smoothZoomController;
 
     Array<SafePointer<FloatBoundsComponent>> batchRepaintList;
-
-    WeakReference<MidiTrack> activeTrack;
 
 protected:
     

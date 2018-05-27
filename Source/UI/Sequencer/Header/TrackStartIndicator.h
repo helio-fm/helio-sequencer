@@ -22,12 +22,11 @@
 
 #include "../../Themes/ShadowLeftwards.h"
 
-class TrackStartIndicator  : public Component
+class TrackStartIndicator final : public Component
 {
 public:
 
-    TrackStartIndicator ();
-
+    TrackStartIndicator();
     ~TrackStartIndicator();
 
     //[UserMethods]

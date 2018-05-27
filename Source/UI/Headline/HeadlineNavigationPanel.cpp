@@ -40,6 +40,7 @@ HeadlineNavigationPanel::HeadlineNavigationPanel()
     addAndMakeVisible (component = new HeadlineItemArrow());
 
     //[UserPreSize]
+    this->bgColour = this->findColour(ColourIDs::BackgroundB::fill);
     this->setInterceptsMouseClicks(false, true);
     this->setPaintingIsUnclipped(true);
     //[/UserPreSize]
@@ -66,6 +67,8 @@ HeadlineNavigationPanel::~HeadlineNavigationPanel()
 void HeadlineNavigationPanel::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
+    g.setColour(this->bgColour);
+    g.fillRect(0.f, 0.f, float(this->getWidth() - 2), float(this->getHeight() - 2));
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..

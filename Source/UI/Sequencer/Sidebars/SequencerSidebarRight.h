@@ -24,24 +24,23 @@ class ProjectTreeItem;
 #include "MenuPanel.h"
 //[/Headers]
 
-#include "../Themes/PanelBackgroundC.h"
-#include "../Themes/SeparatorHorizontalReversed.h"
-#include "../Themes/LighterShadowUpwards.h"
-#include "../Themes/SeparatorHorizontal.h"
-#include "../Common/PlayButton.h"
-#include "../Themes/LighterShadowDownwards.h"
+#include "../../Themes/PanelBackgroundC.h"
+#include "../../Themes/SeparatorHorizontalReversed.h"
+#include "../../Themes/LighterShadowUpwards.h"
+#include "../../Themes/SeparatorHorizontal.h"
+#include "../../Common/PlayButton.h"
+#include "../../Themes/LighterShadowDownwards.h"
 
-class SequencerSidebarRight  : public Component,
-                      protected TransportListener,
-                      protected AsyncUpdater,
-                      protected ListBoxModel,
-                      protected ChangeListener,
-                      protected Timer
+class SequencerSidebarRight final : public Component,
+                                    protected TransportListener,
+                                    protected AsyncUpdater,
+                                    protected ListBoxModel,
+                                    protected ChangeListener,
+                                    protected Timer
 {
 public:
 
-    SequencerSidebarRight (ProjectTreeItem &parent);
-
+    SequencerSidebarRight(ProjectTreeItem &parent);
     ~SequencerSidebarRight();
 
     //[UserMethods]
@@ -51,8 +50,6 @@ public:
     void paint (Graphics& g) override;
     void resized() override;
     void handleCommandMessage (int commandId) override;
-    void childrenChanged() override;
-    void mouseMove (const MouseEvent& e) override;
 
     // Binary resources:
     static const char* gray1x1_png;
@@ -68,10 +65,10 @@ private:
 
     ProjectTreeItem &project;
 
-    double lastSeekTime;
-    double lastTotalTime;
-    double timerStartSeekTime;
-    double timerStartSystemTime;
+    Atomic<double> lastSeekTime;
+    Atomic<double> lastTotalTime;
+    Atomic<double> timerStartSeekTime;
+    Atomic<double> timerStartSystemTime;
 
     MenuPanel::Menu commandDescriptions;
 

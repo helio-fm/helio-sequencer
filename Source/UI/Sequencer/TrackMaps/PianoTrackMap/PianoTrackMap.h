@@ -17,6 +17,7 @@
 
 #pragma once
 
+#include "Clip.h"
 #include "Note.h"
 #include "ProjectListener.h"
 
@@ -43,9 +44,13 @@ public:
     // ProjectListener
     //===------------------------------------------------------------------===//
 
-    void onChangeMidiEvent(const MidiEvent &e1, const MidiEvent &e2) override;
     void onAddMidiEvent(const MidiEvent &event) override;
+    void onChangeMidiEvent(const MidiEvent &e1, const MidiEvent &e2) override;
     void onRemoveMidiEvent(const MidiEvent &event) override;
+
+    void onAddClip(const Clip &clip) override;
+    void onChangeClip(const Clip &oldClip, const Clip &newClip) override;
+    void onRemoveClip(const Clip &clip) override;
 
     void onAddTrack(MidiTrack *const track) override;
     void onRemoveTrack(MidiTrack *const track) override;
@@ -59,6 +64,7 @@ private:
 
     void applyNoteBounds(TrackMapNoteComponent *nc);
     void reloadTrackMap();
+    void loadTrack(const MidiTrack *const track);
 
     float projectFirstBeat;
     float projectLastBeat;
@@ -71,7 +77,9 @@ private:
     HybridRoll &roll;
     ProjectTreeItem &project;
     
-    SparseHashMap<Note, UniquePointer<TrackMapNoteComponent>, MidiEventHash> componentsMap;
-    
+    using SequenceMap = SparseHashMap<Note, UniquePointer<TrackMapNoteComponent>, MidiEventHash>;
+    using PatternMap = SparseHashMap<const Clip, UniquePointer<SequenceMap>, ClipHash>;
+    PatternMap patternMap;
+
     JUCE_LEAK_DETECTOR(PianoTrackMap)
 };

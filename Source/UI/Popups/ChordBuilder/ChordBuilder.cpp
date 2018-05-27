@@ -436,7 +436,7 @@ void ChordBuilder::buildChord(Array<int> keys)
             const int key = jmin(128, jmax(0, this->targetKey + offset));
             Note note(pianoLayer, key, this->targetBeat, NEWCHORD_POPUP_DEFAULT_NOTE_LENGTH, kDefaultChordVelocity);
             pianoLayer->insert(note, true);
-            this->sendMidiMessage(MidiMessage::noteOn(note.getChannel(), key, kDefaultChordVelocity));
+            this->sendMidiMessage(MidiMessage::noteOn(note.getTrackChannel(), key, kDefaultChordVelocity));
         }
 
         this->hasMadeChanges = true;
@@ -463,7 +463,7 @@ void ChordBuilder::buildNewNote(bool shouldSendMidiMessage)
 
         if (shouldSendMidiMessage)
         {
-            this->sendMidiMessage(MidiMessage::noteOn(note1.getChannel(), key, kDefaultChordVelocity));
+            this->sendMidiMessage(MidiMessage::noteOn(note1.getTrackChannel(), key, kDefaultChordVelocity));
         }
 
         this->hasMadeChanges = true;

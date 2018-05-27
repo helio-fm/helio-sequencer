@@ -36,7 +36,7 @@ public:
     
     SessionService();
 
-    typedef Function<void(bool, const Array<String> &)> AuthCallback;
+    using AuthCallback = Function<void(bool, const Array<String> &)>;
 
     static String getApiToken();
     static bool isLoggedIn();

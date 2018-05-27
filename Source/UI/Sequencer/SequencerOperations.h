@@ -28,10 +28,8 @@ class Clipboard;
 #include "Scale.h"
 #include "Arpeggiator.h"
 
-class SequencerOperations final
+struct SequencerOperations final
 {
-public:
-    
     static float findStartBeat(const Lasso &selection);
     static float findEndBeat(const Lasso &selection);
     static float findStartBeat(const WeakReference<Lasso> selection);
@@ -86,4 +84,9 @@ public:
     static bool findHarmonicContext(const Lasso &selection,
         WeakReference<MidiTrack> keySignatures,
         Scale::Ptr &outScale, Note::Key &outRootKey);
+};
+
+struct PatternOperations final
+{
+    static void deleteSelection(const Lasso &selection, bool shouldCheckpoint = true);
 };

@@ -71,7 +71,7 @@ public:
     //===------------------------------------------------------------------===//
     
     void resized() override;
-    void paintOverChildren(Graphics &g) override;
+    void paint(Graphics &g) override;
     void mouseDrag(const MouseEvent &event) override;
     void mouseUp(const MouseEvent &event) override;
     void mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel) override;
@@ -159,13 +159,12 @@ private:
     Rectangle<float> oldAreaBounds;
     Rectangle<float> oldMapBounds;
 
-    ScopedPointer<Component> background;
     ScopedPointer<TrackScrollerScreen> screenRange;
-    ScopedPointer<Playhead> indicator;
+    ScopedPointer<Playhead> playhead;
     
     OwnedArray<Component> trackMaps;
 
-    void disconnectIndicator();
+    void disconnectPlayhead();
     Rectangle<float> getIndicatorBounds() const;
     Rectangle<int> getMapBounds() const;
     

@@ -41,6 +41,7 @@
 
 MidiTrackTreeItem::MidiTrackTreeItem(const String &name, const Identifier &type) :
     TreeItem(name, type),
+    id(Uuid().toString()),
     colour(Colours::white), // TODO random color from my set
     channel(1),
     instrumentId(String::empty),
@@ -140,12 +141,12 @@ void MidiTrackTreeItem::resetClipsDelta(const ValueTree &state)
 // MidiTrack
 //===----------------------------------------------------------------------===//
 
-Uuid MidiTrackTreeItem::getTrackId() const noexcept
+const String &MidiTrackTreeItem::getTrackId() const noexcept
 {
     return this->id;
 }
 
-void MidiTrackTreeItem::setTrackId(const Uuid &val)
+void MidiTrackTreeItem::setTrackId(const String &val)
 {
     this->id = val;
 }
@@ -550,7 +551,7 @@ Function<void(const String &text)> MidiTrackTreeItem::getRenameCallback()
         if (text != this->getXPath())
         {
             auto project = this->getProject();
-            const auto trackId = this->getTrackId().toString();
+            const auto &trackId = this->getTrackId();
             project->getUndoStack()->beginNewTransaction();
             project->getUndoStack()->perform(new MidiTrackRenameAction(*project, trackId, text));
         }
@@ -565,7 +566,7 @@ Function<void(const String &text)> MidiTrackTreeItem::getChangeColourCallback()
         if (colour != this->getColour())
         {
             auto project = this->getProject();
-            const auto trackId = this->getTrackId().toString();
+            const auto &trackId = this->getTrackId();
             project->getUndoStack()->beginNewTransaction();
             project->getUndoStack()->perform(new MidiTrackChangeColourAction(*project, trackId, colour));
         }
@@ -579,9 +580,8 @@ Function<void(const String &instrumentId)> MidiTrackTreeItem::getChangeInstrumen
         if (instrumentId != this->getTrackInstrumentId())
         {
             auto project = this->getProject();
-            const auto trackId = this->getTrackId().toString();
             project->getUndoStack()->beginNewTransaction();
-            project->getUndoStack()->perform(new MidiTrackChangeInstrumentAction(*project, trackId, instrumentId));
+            project->getUndoStack()->perform(new MidiTrackChangeInstrumentAction(*project, this->getTrackId(), instrumentId));
         }
     };
 }

@@ -21,6 +21,7 @@
 #include "SoundProbeIndicator.h"
 #include "TimeDistanceIndicator.h"
 #include "HeaderSelectionIndicator.h"
+#include "ClipRangeIndicator.h"
 
 #include "HybridRollExpandMark.h"
 #include "MidiEvent.h"
@@ -96,7 +97,7 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject, Viewport &viewportRef,
     bool hasAnnotationsTrack,
     bool hasKeySignaturesTrack,
     bool hasTimeSignaturesTrack) :
-    clippingDetector(std::move(audioMonitor)),
+    clippingDetector(audioMonitor),
     project(parentProject),
     viewport(viewportRef),
     viewportAnchor(0, 0),
@@ -116,7 +117,6 @@ HybridRoll::HybridRoll(ProjectTreeItem &parentProject, Viewport &viewportRef,
     lastTransportPosition(0.0),
     playheadOffset(0.0),
     shouldFollowPlayhead(false),
-    activeTrack(nullptr),
     barLineColour(this->findColour(ColourIDs::Roll::barLine)),
     barLineBevelColour(this->findColour(ColourIDs::Roll::barLineBevel)),
     beatLineColour(this->findColour(ColourIDs::Roll::beatLine)),
@@ -321,11 +321,6 @@ HybridRollEditMode HybridRoll::getEditMode() const noexcept
     return this->project.getEditMode();
 }
 
-WeakReference<MidiTrack> HybridRoll::getActiveTrack() const noexcept
-{
-    return this->activeTrack;
-}
-
 bool HybridRoll::isInSelectionMode() const
 {
     return (this->project.getEditMode().isMode(HybridRollEditMode::selectionMode));
@@ -478,21 +473,38 @@ void HybridRoll::startSmoothZoom(const Point<float> &origin, const Point<float> 
 
 void HybridRoll::zoomInImpulse()
 {
-    const Point<float> origin = this->getViewport().getLocalBounds().getCentre().toFloat();
+    const auto origin = this->getViewport().getLocalBounds().getCentre();
     const Point<float> factor(0.15f, 0.05f);
-    this->startSmoothZoom(origin, factor);
+    this->startSmoothZoom(origin.toFloat(), factor);
 }
 
 void HybridRoll::zoomOutImpulse()
 {
-    const Point<float> origin = this->getViewport().getLocalBounds().getCentre().toFloat();
+    const auto origin = this->getViewport().getLocalBounds().getCentre();
     const Point<float> factor(-0.15f, -0.05f);
-    this->startSmoothZoom(origin, factor);
+    this->startSmoothZoom(origin.toFloat(), factor);
+}
+
+void HybridRoll::zoomToArea(float minBeat, float maxBeat)
+{
+    jassert(maxBeat > minBeat);
+    jassert(minBeat >= this->getFirstBeat());
+    jassert(maxBeat <= this->getLastBeat());
+
+    const float margin = 4.f;
+    const float widthToFit = float(this->viewport.getViewWidth());
+    const float numBarsToFit = (maxBeat - minBeat + margin) / BEATS_PER_BAR;
+    this->setBarWidth(widthToFit / numBarsToFit);
+
+    const int minBeatX = this->getXPositionByBeat(minBeat - (margin / 2.f));
+    this->viewport.setViewPosition(minBeatX, this->viewport.getViewPositionY());
+
+    this->playheadOffset = this->findPlayheadOffsetFromViewCentre();
 }
 
 void HybridRoll::zoomAbsolute(const Point<float> &zoom)
 {
-//    this->stopFollowingPlayhead();
+    //this->stopFollowingPlayhead();
 
     const float &newWidth = this->getNumBars() * HYBRID_ROLL_MAX_BAR_WIDTH * zoom.getX();
     const float &barsOnNewScreen = float(newWidth / HYBRID_ROLL_MAX_BAR_WIDTH);
@@ -914,10 +926,10 @@ SelectionComponent *HybridRoll::getSelectionComponent() const noexcept
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-void HybridRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void HybridRoll::onChangeMidiEvent(const MidiEvent &event, const MidiEvent &newEvent)
 {
     // Time signatures have changed, need to repaint
-    if (dynamic_cast<const TimeSignatureEvent *>(&oldEvent))
+    if (event.isTypeOf(MidiEvent::TimeSignature))
     {
         this->updateChildrenBounds();
         this->repaint();
@@ -926,7 +938,7 @@ void HybridRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &n
 
 void HybridRoll::onAddMidiEvent(const MidiEvent &event)
 {
-    if (dynamic_cast<const TimeSignatureEvent *>(&event))
+    if (event.isTypeOf(MidiEvent::TimeSignature))
     {
         this->updateChildrenBounds();
         this->repaint();
@@ -935,7 +947,7 @@ void HybridRoll::onAddMidiEvent(const MidiEvent &event)
 
 void HybridRoll::onRemoveMidiEvent(const MidiEvent &event)
 {
-    if (dynamic_cast<const TimeSignatureEvent *>(&event))
+    if (event.isTypeOf(MidiEvent::TimeSignature))
     {
         this->updateChildrenBounds();
         this->repaint();
@@ -1109,36 +1121,102 @@ void HybridRoll::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails
 
 void HybridRoll::handleCommandMessage(int commandId)
 {
-    if (commandId == CommandIDs::AddAnnotation)
+    switch (commandId)
     {
-        const float targetBeat = this->getPositionForNewTimelineEvent();
+    case CommandIDs::Undo:
+        this->project.undo();
+        break;
+    case CommandIDs::Redo:
+        this->project.redo();
+        break;
+    case CommandIDs::ZoomIn:
+        this->zoomInImpulse();
+        break;
+    case CommandIDs::ZoomOut:
+        this->zoomOutImpulse();
+        break;
+    case CommandIDs::SelectAllEvents:
+        this->selectAll();
+        break;
+    case CommandIDs::StartDragViewport:
+        this->header->setSoundProbeMode(true);
+        //if (!this->project.getEditMode().isMode(HybridRollEditMode::dragMode))
+        { this->setSpaceDraggingMode(true); }
+        break;
+    case CommandIDs::EndDragViewport:
+        this->header->setSoundProbeMode(false);
+        if (this->isUsingSpaceDraggingMode())
+        {
+            const bool noDraggingWasDone = (this->draggedDistance < 3);
+            const bool notTooMuchTimeSpent = (Time::getCurrentTime() - this->timeEnteredDragMode).inMilliseconds() < 300;
+            if (noDraggingWasDone && notTooMuchTimeSpent)
+            {
+                this->project.getTransport().toggleStatStopPlayback();
+            }
+            this->setSpaceDraggingMode(false);
+        }
+        break;
+    case CommandIDs::TransportStartPlayback:
+        if (this->project.getTransport().isPlaying())
+        {
+            this->startFollowingPlayhead();
+        }
+        else
+        {
+            this->project.getTransport().startPlayback();
+            this->startFollowingPlayhead();
+        }
+        break;
+    case CommandIDs::TransportPausePlayback:
+        if (this->project.getTransport().isPlaying())
+        {
+            this->project.getTransport().stopPlayback();
+        }
+        else
+        {
+            this->resetAllClippingIndicators();
+            this->resetAllOversaturationIndicators();
+        }
+
+        App::Workspace().getAudioCore().mute();
+        App::Workspace().getAudioCore().unmute();
+        break;
+    case CommandIDs::VersionControlToggleQuickStash:
+        if (auto vcs = this->project.findChildOfType<VersionControlTreeItem>())
+        {
+            vcs->toggleQuickStash();
+        }
+        break;
+    case CommandIDs::AddAnnotation:
         if (AnnotationsSequence *sequence = dynamic_cast<AnnotationsSequence *>
             (this->project.getTimeline()->getAnnotations()->getSequence()))
         {
+            const float targetBeat = this->getPositionForNewTimelineEvent();
             Component *dialog = AnnotationDialog::createAddingDialog(*this, sequence, targetBeat);
             App::Layout().showModalComponentUnowned(dialog);
         }
-    }
-    else if (commandId == CommandIDs::AddTimeSignature)
-    {
-        const float targetBeat = this->getPositionForNewTimelineEvent();
+        break;
+    case CommandIDs::AddTimeSignature:
         if (TimeSignaturesSequence *sequence = dynamic_cast<TimeSignaturesSequence *>
             (this->project.getTimeline()->getTimeSignatures()->getSequence()))
         {
+            const float targetBeat = this->getPositionForNewTimelineEvent();
             Component *dialog = TimeSignatureDialog::createAddingDialog(*this, sequence, targetBeat);
             App::Layout().showModalComponentUnowned(dialog);
         }
-    }
-    else if (commandId == CommandIDs::AddKeySignature)
-    {
-        const float targetBeat = this->getPositionForNewTimelineEvent();
+        break;
+    case CommandIDs::AddKeySignature:
         if (KeySignaturesSequence *sequence = dynamic_cast<KeySignaturesSequence *>
             (this->project.getTimeline()->getKeySignatures()->getSequence()))
         {
+            const float targetBeat = this->getPositionForNewTimelineEvent();
             Component *dialog = KeySignatureDialog::createAddingDialog(*this,
                 this->getTransport(), sequence, targetBeat);
             App::Layout().showModalComponentUnowned(dialog);
         }
+        break;
+    default:
+        break;
     }
 }
 
@@ -1354,13 +1432,16 @@ void HybridRoll::handleAsyncUpdate()
     {
         HYBRID_ROLL_BULK_REPAINT_START
 
+        //Logger::writeToLog(this->getComponentID() + " is repainting batch of " + String(this->batchRepaintList.size()));
+
         for (int i = 0; i < this->batchRepaintList.size(); ++i)
         {
-            if (FloatBoundsComponent *mc = this->batchRepaintList.getUnchecked(i))
+            // There are still many cases when a scheduled component is deleted at this time:
+            if (FloatBoundsComponent *component = this->batchRepaintList.getUnchecked(i))
             {
-                const Rectangle<float> nb(this->getEventBounds(mc));
-                mc->setFloatBounds(nb);
-                mc->repaint();
+                const Rectangle<float> nb(this->getEventBounds(component));
+                component->setFloatBounds(nb);
+                component->repaint();
             }
         }
 
@@ -1466,6 +1547,11 @@ bool HybridRoll::isViewportDragEvent(const MouseEvent &e) const
 
 bool HybridRoll::isAddEvent(const MouseEvent &e) const
 {
+    if (e.mods.isRightButtonDown())
+    {
+        return false;
+    }
+
     if (this->project.getEditMode().forbidsAddingEvents())
     {
         return false;
@@ -1476,7 +1562,7 @@ bool HybridRoll::isAddEvent(const MouseEvent &e) const
         return true;
     }
 
-    return false; // (e.mods.isMiddleButtonDown());
+    return false;
 }
 
 bool HybridRoll::isLassoEvent(const MouseEvent &e) const

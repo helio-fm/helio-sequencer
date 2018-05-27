@@ -47,6 +47,7 @@ OrchestraPitPage::OrchestraPitPage(PluginScanner &pluginScanner, OrchestraPitTre
     addAndMakeVisible (instrumentsList = new InstrumentsListComponent (pluginScanner, instrumentsRoot));
 
     //[UserPreSize]
+    this->setComponentID(ComponentIDs::orchestraPit);
     //[/UserPreSize]
 
     setSize (600, 400);

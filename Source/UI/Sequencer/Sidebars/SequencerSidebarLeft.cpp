@@ -183,26 +183,26 @@ void SequencerSidebarLeft::switchMonitorsAnimated(Component *oldOne, Component *
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="NavigationSidebar" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="NavigationSidebar" template="../../../Template"
                  componentName="" parentClasses="public ModeIndicatorOwnerComponent"
                  constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="0" initialWidth="72"
                  initialHeight="640">
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="19597a6a5daad55d" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../Themes/PanelBackgroundC.cpp"
+             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../../Themes/PanelBackgroundC.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="0 71Rr 0M 6" sourceFile="../Themes/LighterShadowUpwards.cpp"
+             explicitFocusOrder="0" pos="0 71Rr 0M 6" sourceFile="../../Themes/LighterShadowUpwards.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="28ce45d9e84b729c" memberName="headLine" virtualName=""
-             explicitFocusOrder="0" pos="0 39 0M 2" sourceFile="../Themes/SeparatorHorizontalReversed.cpp"
+             explicitFocusOrder="0" pos="0 39 0M 2" sourceFile="../../Themes/SeparatorHorizontalReversed.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="1d398dc12e2047bd" memberName="headShadow" virtualName=""
-             explicitFocusOrder="0" pos="0 40 0M 6" sourceFile="../Themes/LighterShadowDownwards.cpp"
+             explicitFocusOrder="0" pos="0 40 0M 6" sourceFile="../../Themes/LighterShadowDownwards.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="22d481533ce3ecd3" memberName="separator" virtualName=""
-             explicitFocusOrder="0" pos="0 70Rr 0M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
+             explicitFocusOrder="0" pos="0 70Rr 0M 2" sourceFile="../../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="9e1622013601218a" memberName="modeIndicatorSelector"
                     virtualName="" explicitFocusOrder="0" pos="0 0Rr 0M 70" class="ModeIndicatorTrigger"

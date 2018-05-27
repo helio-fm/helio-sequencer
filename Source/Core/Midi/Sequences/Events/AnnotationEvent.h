@@ -29,7 +29,7 @@ public:
         const AnnotationEvent &parametersToCopy) noexcept;
     explicit AnnotationEvent(WeakReference<MidiSequence> owner,
         float newBeat = 0.f,
-        String newDescription = "",
+        const String &description = "",
         const Colour &newColour = Colours::white) noexcept;
     
     Array<MidiMessage> toMidiMessages() const override;
@@ -46,7 +46,7 @@ public:
     //===------------------------------------------------------------------===//
 
     String getDescription() const noexcept;
-    Colour getColour() const noexcept;
+    Colour getTrackColour() const noexcept;
 
     //===------------------------------------------------------------------===//
     // Serializable

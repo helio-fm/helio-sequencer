@@ -34,12 +34,6 @@ Note::Note(WeakReference<MidiSequence> owner,
     length(lengthVal),
     velocity(velocityVal) {}
 
-Note::Note(const Note &other) noexcept :
-    MidiEvent(other),
-    key(other.key),
-    length(other.length),
-    velocity(other.velocity) {}
-
 Note::Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy) noexcept :
     MidiEvent(owner, parametersToCopy),
     key(parametersToCopy.key),
@@ -48,11 +42,11 @@ Note::Note(WeakReference<MidiSequence> owner, const Note &parametersToCopy) noex
 
 Array<MidiMessage> Note::toMidiMessages() const
 {
-    MidiMessage eventNoteOn(MidiMessage::noteOn(this->getChannel(), this->key, velocity));
+    MidiMessage eventNoteOn(MidiMessage::noteOn(this->getTrackChannel(), this->key, velocity));
     const double startTime = round(double(this->beat) * MS_PER_BEAT);
     eventNoteOn.setTimeStamp(startTime);
 
-    MidiMessage eventNoteOff(MidiMessage::noteOff(this->getChannel(), this->key));
+    MidiMessage eventNoteOff(MidiMessage::noteOff(this->getTrackChannel(), this->key));
     const double endTime = round(double(this->beat + this->length) * MS_PER_BEAT);
     eventNoteOff.setTimeStamp(endTime);
 
@@ -71,6 +65,8 @@ Note Note::copyWithNewId(WeakReference<MidiSequence> owner) const noexcept
     return n;
 }
 
+#define MIN_LENGTH 0.5f
+
 Note Note::withBeat(float newBeat) const noexcept
 {
     Note other(*this);
@@ -83,6 +79,14 @@ Note Note::withKeyBeat(Key newKey, float newBeat) const noexcept
     Note other(*this);
     other.key = jmin(jmax(newKey, 0), 128);
     other.beat = roundBeat(newBeat);
+    return other;
+}
+
+Note Note::withKeyLength(Key newKey, float newLength) const noexcept
+{
+    Note other(*this);
+    other.key = jmin(jmax(newKey, 0), 128);
+    other.length = jmax(MIN_LENGTH, roundBeat(newLength));
     return other;
 }
 
@@ -99,8 +103,6 @@ Note Note::withDeltaKey(Key deltaKey) const noexcept
     other.key = jmin(jmax(other.key + deltaKey, 0), 128);
     return other;
 }
-
-#define MIN_LENGTH 0.5f
 
 Note Note::withLength(float newLength) const noexcept
 {
@@ -188,33 +190,21 @@ void Note::applyChanges(const Note &other) noexcept
     this->velocity = other.velocity;
 }
 
-int Note::compareElements(const MidiEvent *const first, const MidiEvent *const second) noexcept
-{
-    if (first == second) { return 0; }
-
-    const float diff = first->getBeat() - second->getBeat();
-    const int diffResult = (diff > 0.f) - (diff < 0.f);
-    if (diffResult != 0) { return diffResult; }
-
-    return first->getId().compare(second->getId());
-}
-
 int Note::compareElements(const Note *const first, const Note *const second) noexcept
 {
     if (first == second) { return 0; }
 
-    const float beatDiff = first->getBeat() - second->getBeat();
+    const float beatDiff = first->beat - second->beat;
     const int beatResult = (beatDiff > 0.f) - (beatDiff < 0.f);
     if (beatResult != 0) { return beatResult; }
 
-    const int keyDiff = first->getKey() - second->getKey();
+    //const float lenDiff = (first->beat + first->length) - (second->beat + second->length);
+    //const int lenResult = (lenDiff > 0.f) - (lenDiff < 0.f);
+    //if (lenResult != 0) { return lenResult; }
+
+    const int keyDiff = first->key - second->key;
     const int keyResult = (keyDiff > 0) - (keyDiff < 0);
     if (keyResult != 0) { return keyResult; }
 
     return first->getId().compare(second->getId());
-}
-
-int Note::compareElements(const Note &first, const Note &second) noexcept
-{
-    return Note::compareElements(&first, &second);
 }

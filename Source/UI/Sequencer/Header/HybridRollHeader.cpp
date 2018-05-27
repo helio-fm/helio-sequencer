@@ -22,10 +22,11 @@
 #include "Transport.h"
 #include "AnnotationsTrackMap.h"
 #include "Origami.h"
+#include "SelectionComponent.h"
 #include "SoundProbeIndicator.h"
 #include "TimeDistanceIndicator.h"
-#include "SelectionComponent.h"
 #include "HeaderSelectionIndicator.h"
+#include "ClipRangeIndicator.h"
 #include "HelioCallout.h"
 #include "TimelineMenu.h"
 #include "CommandIDs.h"
@@ -55,6 +56,7 @@ HybridRollHeader::HybridRollHeader(Transport &transportRef, HybridRoll &rollRef,
     this->bevelLightColour = this->findColour(ColourIDs::Common::borderLineLight).withMultipliedAlpha(0.35f);
     this->bevelDarkColour = this->findColour(ColourIDs::Common::borderLineDark);
 
+    this->setMouseClickGrabsKeyboardFocus(false);
     this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);
     this->setSize(this->getParentWidth(), HYBRID_ROLL_HEADER_HEIGHT);
@@ -78,6 +80,20 @@ void HybridRollHeader::setSoundProbeMode(bool shouldPlayOnClick)
         this->pointingIndicator = nullptr;
         this->timeDistanceIndicator = nullptr;
         this->setMouseCursor(MouseCursor::NormalCursor);
+    }
+}
+
+void HybridRollHeader::updateSubrangeIndicator(const Colour &colour, float firstBeat, float lastBeat)
+{
+    if (this->clipRangeIndicator == nullptr)
+    {
+        this->clipRangeIndicator = new ClipRangeIndicator();
+        this->addAndMakeVisible(this->clipRangeIndicator);
+    }
+
+    if (this->clipRangeIndicator->updateWith(colour, firstBeat, lastBeat))
+    {
+        this->updateClipRangeIndicator();
     }
 }
 
@@ -130,7 +146,7 @@ void HybridRollHeader::updateTimeDistanceIndicator()
     double outTimeMs2 = 0.0;
     double outTempo2 = 0.0;
     
-    // todo dont rebuild sequences here
+    // todo don't rebuild sequences here
     this->transport.calcTimeAndTempoAt(seek1, outTimeMs1, outTempo1);
     this->transport.calcTimeAndTempoAt(seek2, outTimeMs2, outTempo2);
     
@@ -139,6 +155,13 @@ void HybridRollHeader::updateTimeDistanceIndicator()
     this->timeDistanceIndicator->getTimeLabel()->setText(timeDeltaText, dontSendNotification);
 }
 
+void HybridRollHeader::updateClipRangeIndicator()
+{
+    jassert(this->clipRangeIndicator != nullptr);
+    const int x1 = this->roll.getXPositionByBeat(this->clipRangeIndicator->getFirstBeat());
+    const int x2 = this->roll.getXPositionByBeat(this->clipRangeIndicator->getLastBeat());
+    this->clipRangeIndicator->setBounds(x1, 0, x2 - x1, 1);
+}
 
 //===----------------------------------------------------------------------===//
 // Component
@@ -435,4 +458,12 @@ void HybridRollHeader::paint(Graphics &g)
 
     g.setColour(this->bevelDarkColour);
     g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth()));
+}
+
+void HybridRollHeader::resized()
+{
+    if (this->clipRangeIndicator != nullptr)
+    {
+        this->updateClipRangeIndicator();
+    }
 }

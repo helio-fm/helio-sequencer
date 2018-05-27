@@ -283,9 +283,8 @@ void ProjectMenu::handleCommandMessage(int commandId)
                 
                 for (auto track : tracks)
                 {
-                    const String trackId = track->getTrackId().toString();
                     const String instrumentId = instruments[instrumentIndex]->getIdAndHash();
-                    this->project.getUndoStack()->perform(new MidiTrackChangeInstrumentAction(this->project, trackId, instrumentId));
+                    this->project.getUndoStack()->perform(new MidiTrackChangeInstrumentAction(this->project, track->getTrackId(), instrumentId));
                 }
             }
             

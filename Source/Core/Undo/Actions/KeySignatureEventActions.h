@@ -23,7 +23,6 @@ class MidiTrackSource;
 #include "KeySignatureEvent.h"
 #include "UndoAction.h"
 
-
 //===----------------------------------------------------------------------===//
 // Insert
 //===----------------------------------------------------------------------===//
@@ -36,7 +35,7 @@ public:
         UndoAction(source) {}
 
     KeySignatureEventInsertAction(MidiTrackSource &source,
-        String trackId, const KeySignatureEvent &target) noexcept;
+        const String &trackId, const KeySignatureEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -54,7 +53,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE(KeySignatureEventInsertAction)
 };
 
-
 //===----------------------------------------------------------------------===//
 // Remove
 //===----------------------------------------------------------------------===//
@@ -67,7 +65,7 @@ public:
         UndoAction(source) {}
 
     KeySignatureEventRemoveAction(MidiTrackSource &source,
-        String trackId, const KeySignatureEvent &target) noexcept;
+        const String &trackId, const KeySignatureEvent &target) noexcept;
 
     bool perform() override;
     bool undo() override;
@@ -85,7 +83,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE(KeySignatureEventRemoveAction)
 };
 
-
 //===----------------------------------------------------------------------===//
 // Change
 //===----------------------------------------------------------------------===//
@@ -97,7 +94,7 @@ public:
     explicit KeySignatureEventChangeAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
-    KeySignatureEventChangeAction(MidiTrackSource &source, String trackId,
+    KeySignatureEventChangeAction(MidiTrackSource &source, const String &trackId,
         const KeySignatureEvent &target, const KeySignatureEvent &newParameters) noexcept;
 
     bool perform() override;
@@ -117,9 +114,7 @@ private:
     KeySignatureEvent eventAfter;
 
     JUCE_DECLARE_NON_COPYABLE(KeySignatureEventChangeAction)
-
 };
-
 
 //===----------------------------------------------------------------------===//
 // Insert Group
@@ -133,7 +128,7 @@ public:
         UndoAction(source) {}
     
     KeySignatureEventsGroupInsertAction(MidiTrackSource &source,
-        String trackId, Array<KeySignatureEvent> &target) noexcept;
+        const String &trackId, Array<KeySignatureEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
@@ -149,7 +144,6 @@ private:
     Array<KeySignatureEvent> signatures;
     
     JUCE_DECLARE_NON_COPYABLE(KeySignatureEventsGroupInsertAction)
-    
 };
 
 //===----------------------------------------------------------------------===//
@@ -164,7 +158,7 @@ public:
         UndoAction(source) {}
     
     KeySignatureEventsGroupRemoveAction(MidiTrackSource &source,
-        String trackId, Array<KeySignatureEvent> &target) noexcept;
+        const String &trackId, Array<KeySignatureEvent> &target) noexcept;
     
     bool perform() override;
     bool undo() override;
@@ -180,9 +174,7 @@ private:
     Array<KeySignatureEvent> signatures;
     
     JUCE_DECLARE_NON_COPYABLE(KeySignatureEventsGroupRemoveAction)
-    
 };
-
 
 //===----------------------------------------------------------------------===//
 // Change Group
@@ -195,7 +187,7 @@ public:
     explicit KeySignatureEventsGroupChangeAction(MidiTrackSource &source) noexcept :
         UndoAction(source) {}
 
-    KeySignatureEventsGroupChangeAction(MidiTrackSource &source, String trackId,
+    KeySignatureEventsGroupChangeAction(MidiTrackSource &source, const String &trackId,
         const Array<KeySignatureEvent> state1, const Array<KeySignatureEvent> state2) noexcept;
 
     bool perform() override;
@@ -215,6 +207,5 @@ private:
     Array<KeySignatureEvent> eventsAfter;
 
     JUCE_DECLARE_NON_COPYABLE(KeySignatureEventsGroupChangeAction)
-
 };
 

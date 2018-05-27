@@ -34,15 +34,15 @@ namespace VCS
             intParameter(defaultNumChanges),
             stringParameter() {}
 
-        DeltaDescription(String text, int64 numChanges) :
-            stringToTranslate(std::move(text)),
+        DeltaDescription(const String &text, int64 numChanges) :
+            stringToTranslate(text),
             intParameter(numChanges),
             stringParameter() {}
         
-        DeltaDescription(String text, String parameter) :
-            stringToTranslate(std::move(text)),
+        DeltaDescription(const String &text, const String &parameter) :
+            stringToTranslate(text),
             intParameter(defaultNumChanges),
-            stringParameter(std::move(parameter)) {}
+            stringParameter(parameter) {}
         
         DeltaDescription(const DeltaDescription &other) :
             stringToTranslate(other.stringToTranslate),
@@ -53,10 +53,10 @@ namespace VCS
         
         static int64 defaultNumChanges;
         
-        DeltaDescription(String text, int64 numChanges, String parameter) :
-            stringToTranslate(std::move(text)),
+        DeltaDescription(const String &text, int64 numChanges, const String &parameter) :
+            stringToTranslate(text),
             intParameter(numChanges),
-            stringParameter(std::move(parameter)) {}
+            stringParameter(parameter) {}
 
         String getFullText() const
         {
@@ -67,7 +67,9 @@ namespace VCS
             
             if (this->stringParameter.isNotEmpty())
             {
-                return TRANS(this->stringToTranslate).replace(Serialization::Translations::metaSymbol, this->stringParameter);
+                return TRANS(this->stringToTranslate)
+                    .replace(Serialization::Translations::metaSymbol,
+                        this->stringParameter);
             }
             
             return TRANS(this->stringToTranslate);

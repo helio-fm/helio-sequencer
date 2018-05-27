@@ -35,13 +35,16 @@ public:
     explicit Clip(WeakReference<Pattern> owner, float beatVal = 0.f);
 
     Pattern *getPattern() const noexcept;
-    float getStartBeat() const noexcept;
-    Colour getColour() const noexcept;
-    String getId() const noexcept;
+    float getBeat() const noexcept;
+    const String &getId() const noexcept;
     bool isValid() const noexcept;
+
+    Colour getTrackColour() const noexcept;
+    int getTrackControllerNumber() const noexcept;
 
     Clip copyWithNewId(Pattern *newOwner = nullptr) const;
     Clip withParameters(const ValueTree &tree) const;
+    Clip withBeat(float absPosition) const;
     Clip withDeltaBeat(float deltaPosition) const;
 
     //===------------------------------------------------------------------===//

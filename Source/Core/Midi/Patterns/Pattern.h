@@ -58,9 +58,13 @@ public:
     // Always call notifyLayerChanged() when you're done using it.
     void silentImport(const Clip &clipToImport);
 
-    bool insert(Clip clip, const bool undoable);
-    bool remove(Clip clip, const bool undoable);
-    bool change(Clip clip, Clip newClip, const bool undoable);
+    bool insert(Clip clip, bool undoable);
+    bool remove(Clip clip, bool undoable);
+    bool change(Clip clip, Clip newClip, bool undoable);
+
+    bool insertGroup(Array<Clip> &clips, bool undoable);
+    bool removeGroup(Array<Clip> &clips, bool undoable);
+    bool changeGroup(Array<Clip> &clipsBefore, Array<Clip> &clipsAfter, bool undoable);
 
     //===------------------------------------------------------------------===//
     // Array wrapper
@@ -68,20 +72,15 @@ public:
 
     void sort();
 
-    inline int size() const
+    inline int size() const noexcept
     { return this->clips.size(); }
-
-    inline Clip** begin() const noexcept
-    { return this->clips.begin(); }
     
-    inline Clip** end() const noexcept
-    { return this->clips.end(); }
-    
-    inline Clip *getUnchecked(const int index) const
+    inline Clip *getUnchecked(const int index) const noexcept
     { return this->clips.getUnchecked(index); }
     
-    inline OwnedArray<Clip> &getClips() noexcept;
-    
+    inline const OwnedArray<Clip> &getClips() const noexcept
+    { return this->clips; }
+
     //===------------------------------------------------------------------===//
     // Events change listener
     //===------------------------------------------------------------------===//
@@ -105,7 +104,7 @@ public:
     //===------------------------------------------------------------------===//
 
     String createUniqueClipId() const noexcept;
-    String getTrackId() const noexcept;
+    const String &getTrackId() const noexcept;
 
     friend inline bool operator==(const Pattern &lhs, const Pattern &rhs)
     {

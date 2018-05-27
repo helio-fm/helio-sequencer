@@ -33,6 +33,8 @@ class ProjectTimeline;
 class UndoStack;
 class RecentFilesList;
 class Pattern;
+class MidiTrack;
+class Clip;
 
 #include "TreeItem.h"
 #include "DocumentOwner.h"
@@ -84,7 +86,7 @@ public:
     WeakReference<TreeItem> getLastShownTrack() const noexcept;
 
     void updateActiveGroupEditors();
-    void activateLayer(MidiSequence* layer, bool selectOthers, bool deselectOthers);
+    void setEditableScope(MidiTrack *track, const Clip &clip, bool zoomToArea = false);
 
     //===------------------------------------------------------------------===//
     // Menu
@@ -205,7 +207,7 @@ private:
     ScopedPointer<SequencerLayout> sequencerLayout;
     HybridRollEditMode rollEditMode;
     ListenerList<ProjectListener> changeListeners;
-    ScopedPointer<ProjectPage> projectSettings;
+    ScopedPointer<ProjectPage> projectPage;
     ReadWriteLock tracksListLock;
     ScopedPointer<ProjectInfo> info;
     ScopedPointer<ProjectTimeline> timeline;
@@ -225,9 +227,8 @@ private:
 
     ScopedPointer<UndoStack> undoStack;
 
-    bool isLayersHashOutdated;
-    SparseHashMap<String, WeakReference<MidiSequence>, StringHash> sequencesHash;
-
-    void rebuildSequencesHashIfNeeded();
+    mutable bool isTracksHashOutdated;
+    mutable SparseHashMap<String, WeakReference<MidiTrack>, StringHash> tracksHash;
+    void rebuildTracksHashIfNeeded() const;
 
 };

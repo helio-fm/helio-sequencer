@@ -31,9 +31,9 @@ AnnotationEvent::AnnotationEvent(const AnnotationEvent &other) noexcept :
     colour(other.colour) {}
 
 AnnotationEvent::AnnotationEvent(WeakReference<MidiSequence> owner,
-    float newBeat, String newDescription, const Colour &newColour) noexcept :
+    float newBeat, const String &description, const Colour &newColour) noexcept :
     MidiEvent(owner, MidiEvent::Annotation, newBeat),
-    description(std::move(newDescription)),
+    description(description),
     colour(newColour) {}
 
 AnnotationEvent::AnnotationEvent(WeakReference<MidiSequence> owner,
@@ -101,7 +101,7 @@ String AnnotationEvent::getDescription() const noexcept
     return this->description;
 }
 
-Colour AnnotationEvent::getColour() const noexcept
+Colour AnnotationEvent::getTrackColour() const noexcept
 {
     return this->colour;
 }

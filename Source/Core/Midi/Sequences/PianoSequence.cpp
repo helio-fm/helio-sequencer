@@ -215,6 +215,10 @@ bool PianoSequence::removeGroup(Array<Note> &group, bool undoable)
         {
             const Note &note = group.getUnchecked(i);
             const int index = this->midiEvents.indexOfSorted(note, &note);
+            // Hitting this assertion almost likely means that target note array
+            // contains more than one instance of the same note, but from different clips.
+            // All the code here and in SequencerOperations class assumes this never happens,
+            // so make sure PianoRoll restricts editing scope to a single clip instance.
             jassert(index >= 0);
             if (index >= 0)
             {
@@ -305,17 +309,25 @@ void PianoSequence::transposeAll(int keyDelta, bool shouldCheckpoint)
 
 float PianoSequence::getLastBeat() const noexcept
 {
-    // FIXME:
-    // the last beat is now simply taken from the last event
-    // but it may be the case where previous events are longer that the last
-
+    float lastBeat = -FLT_MAX;
     if (this->midiEvents.size() == 0)
     {
-        return -FLT_MAX;
+        return lastBeat;
     }
 
-    const Note &note = static_cast<const Note &>(*this->midiEvents.getLast());
-    return note.getBeat() + note.getLength();
+    // FIXME:
+    // sometimes the last event is not the one that lasts longer
+    // (as events *must* be sorted by start beat, not by end beat),
+    // so here we have to iterate through a number of last events
+    // to guess where the sequence really ends: 
+    const int checkStart = jmax(0, this->midiEvents.size() - 5);
+    for (int i = checkStart; i < this->midiEvents.size(); ++i)
+    {
+        const auto *n = static_cast<const Note *>(this->midiEvents.getUnchecked(i));
+        lastBeat = jmax(lastBeat, n->getBeat() + n->getLength());
+    }
+
+    return lastBeat;
 }
 
 //===----------------------------------------------------------------------===//

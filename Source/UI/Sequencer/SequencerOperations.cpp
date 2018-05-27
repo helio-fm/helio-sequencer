@@ -38,27 +38,27 @@
 // все эти адские костыли нужны только затем, чтоб операции выполнялись послойно
 //===----------------------------------------------------------------------===//
 
-typedef Array<Note> PianoChangeGroup;
-typedef Array<AnnotationEvent> AnnotationChangeGroup;
-typedef Array<AutomationEvent> AutoChangeGroup;
+using PianoChangeGroup = Array<Note>;
+using AnnotationChangeGroup = Array<AnnotationEvent>;
+using AutoChangeGroup = Array<AutomationEvent>;
 
 template <typename T>
 class ChangeGroupProxy : public T, public ReferenceCountedObject
 {
 public:
     ChangeGroupProxy() {}
-    typedef ReferenceCountedObjectPtr<ChangeGroupProxy> Ptr;
+    using Ptr = ReferenceCountedObjectPtr<ChangeGroupProxy>;
 };
 
-typedef ChangeGroupProxy<PianoChangeGroup> PianoChangeGroupProxy;
-typedef ChangeGroupProxy<AnnotationChangeGroup> AnnotationChangeGroupProxy;
-typedef ChangeGroupProxy<AutoChangeGroup> AutoChangeGroupProxy;
+using PianoChangeGroupProxy = ChangeGroupProxy<PianoChangeGroup>;
+using AnnotationChangeGroupProxy = ChangeGroupProxy<AnnotationChangeGroup>;
+using AutoChangeGroupProxy = ChangeGroupProxy<AutoChangeGroup>;
 
-typedef HashMap< String, PianoChangeGroupProxy::Ptr > PianoChangeGroupsPerLayer;
-typedef HashMap< String, AnnotationChangeGroupProxy::Ptr > AnnotationChangeGroupsPerLayer;
-typedef HashMap< String, AutoChangeGroupProxy::Ptr > AutoChangeGroupsPerLayer;
+using PianoChangeGroupsPerLayer = HashMap<String, PianoChangeGroupProxy::Ptr>;
+using AnnotationChangeGroupsPerLayer = HashMap<String, AnnotationChangeGroupProxy::Ptr>;
+using AutoChangeGroupsPerLayer = HashMap<String, AutoChangeGroupProxy::Ptr>;
 
-template< typename TEvent, typename TGroup, typename TGroups >
+template<typename TEvent, typename TGroup, typename TGroups>
 void splitChangeGroupByLayers(const TGroup &group, TGroups &outGroups)
 {
     for (int i = 0; i < group.size(); ++i)
@@ -92,7 +92,7 @@ void splitAutoGroupByLayers(const AutoChangeGroup &group, AutoChangeGroupsPerLay
 { splitChangeGroupByLayers<AutomationEvent, AutoChangeGroup, AutoChangeGroupsPerLayer>(group, outGroups); }
 
 // returns true if madeAnyChanges
-template< typename TEvent, typename TLayer, typename TGroup, typename TGroups >
+template<typename TEvent, typename TLayer, typename TGroup, typename TGroups>
 bool applyChanges(const TGroup &groupBefore,
                   const TGroup &groupAfter,
                   bool &didCheckpoint)
@@ -129,7 +129,7 @@ bool applyChanges(const TGroup &groupBefore,
 }
 
 // returns true if madeAnyChanges
-template< typename TEvent, typename TLayer, typename TGroup, typename TGroups >
+template<typename TEvent, typename TLayer, typename TGroup, typename TGroups>
 bool applyRemovals(const TGroup &groupToRemove,
                    bool &didCheckpoint)
 {
@@ -163,7 +163,7 @@ bool applyRemovals(const TGroup &groupToRemove,
 }
 
 // returns true if madeAnyChanges
-template< typename TEvent, typename TLayer, typename TGroup, typename TGroups >
+template<typename TEvent, typename TLayer, typename TGroup, typename TGroups>
 bool applyInsertions(const TGroup &groupToInsert,
                      bool &didCheckpoint)
 {
@@ -1626,7 +1626,7 @@ void SequencerOperations::shiftKeyRelative(Lasso &selection,
             if (transport != nullptr && numSelected < 8)
             {
                 transport->sendMidiMessage(pianoLayer->getTrackId(),
-                    MidiMessage::noteOn(newNote.getChannel(), newNote.getKey(), newNote.getVelocity()));
+                    MidiMessage::noteOn(newNote.getTrackChannel(), newNote.getKey(), newNote.getVelocity()));
             }
         }
         
@@ -1855,6 +1855,8 @@ void SequencerOperations::duplicateSelection(const Lasso &selection, bool should
             }
         }
 
+        // TODO! fix duplicate notes for different clips
+
         if (arrayToAddTo == nullptr)
         {
             arrayToAddTo = new Array<Note>();
@@ -1877,5 +1879,65 @@ void SequencerOperations::duplicateSelection(const Lasso &selection, bool should
         }
 
         sequence->insertGroup(*selectionsByTrack.getUnchecked(i), true);
+    }
+}
+
+// Pattern operations
+
+void PatternOperations::deleteSelection(const Lasso &selection, bool shouldCheckpoint /*= true*/)
+{
+    if (selection.getNumSelected() == 0)
+    {
+        return;
+    }
+
+    OwnedArray<Array<Clip>> selections;
+
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const Clip clip = selection.getItemAs<ClipComponent>(i)->getClip();
+        Pattern *ownerPattern = clip.getPattern();
+        Array<Clip> *arrayToAddTo = nullptr;
+
+        for (int j = 0; j < selections.size(); ++j)
+        {
+            if (selections.getUnchecked(j)->size() > 0)
+            {
+                if (selections.getUnchecked(j)->getUnchecked(0).getPattern() == ownerPattern)
+                {
+                    arrayToAddTo = selections.getUnchecked(j);
+                }
+            }
+        }
+
+        if (arrayToAddTo == nullptr)
+        {
+            arrayToAddTo = new Array<Clip>();
+            selections.add(arrayToAddTo);
+        }
+
+        arrayToAddTo->add(clip);
+    }
+
+    bool didCheckpoint = !shouldCheckpoint;
+
+    for (int i = 0; i < selections.size(); ++i)
+    {
+        Pattern *pattern = (selections.getUnchecked(i)->getUnchecked(0).getPattern());
+
+        if (!didCheckpoint)
+        {
+            didCheckpoint = true;
+            pattern->checkpoint();
+        }
+
+        for (Clip &c : *selections.getUnchecked(i))
+        {
+            // At least one clip should always remain:
+            if (pattern->size() > 1)
+            {
+                pattern->remove(c, true);
+            }
+        }
     }
 }

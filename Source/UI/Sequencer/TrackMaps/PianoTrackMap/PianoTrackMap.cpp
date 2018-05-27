@@ -18,7 +18,9 @@
 #include "Common.h"
 #include "PianoTrackMap.h"
 #include "ProjectTreeItem.h"
+#include "MidiTrack.h"
 #include "MidiSequence.h"
+#include "Pattern.h"
 #include "PianoSequence.h"
 #include "PlayerThread.h"
 #include "HybridRoll.h"
@@ -29,8 +31,9 @@ class TrackMapNoteComponent final : public Component
 {
 public:
 
-    TrackMapNoteComponent(PianoTrackMap &parent, const Note &event) :
-        note(event),
+    TrackMapNoteComponent(PianoTrackMap &parent, const Note &note, const Clip &clip) :
+        note(note),
+        clip(clip),
         map(parent),
         dx(0.f),
         dw(0.f)
@@ -41,12 +44,14 @@ public:
     }
 
     inline int getKey() const noexcept           { return this->note.getKey(); }
-    inline float getBeat() const noexcept        { return this->note.getBeat(); }
+    inline float getBeat() const noexcept        { return this->note.getBeat() + this->clip.getBeat(); }
     inline float getLength() const noexcept      { return this->note.getLength(); }
     inline float getVelocity() const noexcept    { return this->note.getVelocity(); }
+    inline const Note &getNote() const noexcept  { return this->note; }
+
     inline void updateColour()
     {
-        this->colour = this->note.getColour().
+        this->colour = this->note.getTrackColour().
             interpolatedWith(Colours::white, .35f).
             withAlpha(.55f);
     }
@@ -67,6 +72,8 @@ public:
 private:
 
     const Note &note;
+    const Clip &clip;
+
     PianoTrackMap &map;
     
     Colour colour;
@@ -106,9 +113,14 @@ void PianoTrackMap::resized()
     
     this->setVisible(false);
 
-    for (const auto &e : this->componentsMap)
+    for (const auto &c : this->patternMap)
     {
-        this->applyNoteBounds(e.second.get());
+        const auto sequenceMap = c.second.get();
+        for (const auto &e : *sequenceMap)
+        {
+            jassert(e.second.get());
+            this->applyNoteBounds(e.second.get());
+        }
     }
 
     this->setVisible(true);
@@ -118,17 +130,27 @@ void PianoTrackMap::resized()
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-void PianoTrackMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+#define forEachSequenceMapOfGivenTrack(map, child, track) \
+    for (const auto &child : map) \
+        if (child.first.getPattern()->getTrack() == track)
+
+void PianoTrackMap::onChangeMidiEvent(const MidiEvent &e1, const MidiEvent &e2)
 {
-    if (oldEvent.isTypeOf(MidiEvent::Note))
+    if (e1.isTypeOf(MidiEvent::Note))
     {
-        const Note &note = static_cast<const Note &>(oldEvent);
-        const Note &newNote = static_cast<const Note &>(newEvent);
-        if (const auto component = this->componentsMap[note].release())
+        const Note &note = static_cast<const Note &>(e1);
+        const Note &newNote = static_cast<const Note &>(e2);
+        const auto *track = newNote.getSequence()->getTrack();
+
+        forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
-            this->componentsMap.erase(note);
-            this->componentsMap[newNote] = UniquePointer<TrackMapNoteComponent>(component);
-            this->applyNoteBounds(component);
+            auto &sequenceMap = *c.second.get();
+            if (const auto component = sequenceMap[note].release())
+            {
+                sequenceMap.erase(note);
+                sequenceMap[newNote] = UniquePointer<TrackMapNoteComponent>(component);
+                this->applyNoteBounds(component);
+            }
         }
     }
 }
@@ -138,13 +160,16 @@ void PianoTrackMap::onAddMidiEvent(const MidiEvent &event)
     if (event.isTypeOf(MidiEvent::Note))
     {
         const Note &note = static_cast<const Note &>(event);
+        const auto *track = note.getSequence()->getTrack();
 
-        auto component = new TrackMapNoteComponent(*this, note);
-        this->componentsMap[note] = UniquePointer<TrackMapNoteComponent>(component);
-
-        this->addAndMakeVisible(component);
-        this->applyNoteBounds(component);
-        component->toFront(false);
+        forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
+        {
+            auto &componentsMap = *c.second.get();
+            auto component = new TrackMapNoteComponent(*this, note, c.first);
+            componentsMap[note] = UniquePointer<TrackMapNoteComponent>(component);
+            this->addAndMakeVisible(component);
+            this->applyNoteBounds(component);
+        }
     }
 }
 
@@ -153,11 +178,78 @@ void PianoTrackMap::onRemoveMidiEvent(const MidiEvent &event)
     if (event.isTypeOf(MidiEvent::Note))
     {
         const Note &note = static_cast<const Note &>(event);
-        if (const auto deletedComponent = this->componentsMap[note].get())
+        const auto *track = note.getSequence()->getTrack();
+
+        forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
-            this->componentsMap.erase(note);
+            auto &sequenceMap = *c.second.get();
+            if (const auto *deletedComponent = sequenceMap[note].get())
+            {
+                sequenceMap.erase(note);
+            }
         }
     }
+}
+
+void PianoTrackMap::onAddClip(const Clip &clip)
+{
+    const SequenceMap *referenceMap = nullptr;
+    const auto *track = clip.getPattern()->getTrack();
+
+    forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
+    {
+        // Found a sequence map for the same track
+        referenceMap = c.second.get();
+        break;
+    }
+
+    if (referenceMap == nullptr)
+    {
+        jassertfalse;
+        return;
+    }
+
+    auto sequenceMap = new SequenceMap();
+    this->patternMap[clip] = UniquePointer<SequenceMap>(sequenceMap);
+
+    this->setVisible(false);
+    for (const auto &e : *referenceMap)
+    {
+        const auto &note = e.second.get()->getNote();
+        const auto noteComponent = new TrackMapNoteComponent(*this, note, clip);
+        (*sequenceMap)[note] = UniquePointer<TrackMapNoteComponent>(noteComponent);
+        this->addAndMakeVisible(noteComponent);
+        this->applyNoteBounds(noteComponent);
+    }
+    this->setVisible(true);
+}
+
+void PianoTrackMap::onChangeClip(const Clip &clip, const Clip &newClip)
+{
+    if (auto *sequenceMap = this->patternMap[clip].release())
+    {
+        // Set new key for existing sequence map
+        this->patternMap.erase(clip);
+        this->patternMap[newClip] = UniquePointer<SequenceMap>(sequenceMap);
+
+        // And update all components within it, as their beats should change
+        this->setVisible(false);
+        for (const auto &e : *sequenceMap)
+        {
+            this->applyNoteBounds(e.second.get());
+        }
+        this->setVisible(true);
+    }
+}
+
+void PianoTrackMap::onRemoveClip(const Clip &clip)
+{
+    this->setVisible(false);
+    if (const auto *deletedSequenceMap = this->patternMap[clip].get())
+    {
+        this->patternMap.erase(clip);
+    }
+    this->setVisible(true);
 }
 
 void PianoTrackMap::onChangeTrackProperties(MidiTrack *const track)
@@ -166,9 +258,13 @@ void PianoTrackMap::onChangeTrackProperties(MidiTrack *const track)
 
     this->setVisible(false);
 
-    for (const auto &e : this->componentsMap)
+    for (const auto &c : this->patternMap)
     {
-        e.second->updateColour();
+        const auto &componentsMap = *c.second.get();
+        for (const auto &e : componentsMap)
+        {
+            e.second->updateColour();
+        }
     }
 
     this->setVisible(true);
@@ -184,10 +280,9 @@ void PianoTrackMap::onAddTrack(MidiTrack *const track)
 {
     if (!dynamic_cast<const PianoSequence *>(track->getSequence())) { return; }
 
-    if (track->getSequence()->size() > 0)
-    {
-        this->reloadTrackMap();
-    }
+    this->setVisible(false);
+    this->loadTrack(track);
+    this->setVisible(true);
 }
 
 void PianoTrackMap::onRemoveTrack(MidiTrack *const track)
@@ -196,10 +291,16 @@ void PianoTrackMap::onRemoveTrack(MidiTrack *const track)
 
     for (int i = 0; i < track->getSequence()->size(); ++i)
     {
-        const Note &note = static_cast<const Note &>(*track->getSequence()->getUnchecked(i));
-        if (const auto deletedComponent = this->componentsMap[note].get())
+        const auto *event = track->getSequence()->getUnchecked(i);
+        const Note &note = static_cast<const Note &>(*event);
+
+        for (const auto &c : this->patternMap)
         {
-            this->componentsMap.erase(note);
+            auto &componentsMap = *c.second.get();
+            if (const auto *deletedComponent = componentsMap[note].get())
+            {
+                componentsMap.erase(note);
+            }
         }
     }
 }
@@ -231,28 +332,46 @@ void PianoTrackMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
 
 void PianoTrackMap::reloadTrackMap()
 {
-    this->componentsMap.clear();
+    this->patternMap.clear();
 
     this->setVisible(false);
 
     const auto &tracks = this->project.getTracks();
-    for (auto track : tracks)
+    for (const auto *track : tracks)
     {
+        this->loadTrack(track);
+    }
+
+    this->setVisible(true);
+}
+
+void PianoTrackMap::loadTrack(const MidiTrack *const track)
+{
+    if (track->getPattern() == nullptr)
+    {
+        return;
+    }
+
+    for (int i = 0; i < track->getPattern()->size(); ++i)
+    {
+        const Clip *clip = track->getPattern()->getUnchecked(i);
+
+        auto sequenceMap = new SequenceMap();
+        this->patternMap[*clip] = UniquePointer<SequenceMap>(sequenceMap);
+
         for (int j = 0; j < track->getSequence()->size(); ++j)
         {
-            MidiEvent *event = track->getSequence()->getUnchecked(j);
-
-            if (Note *note = dynamic_cast<Note *>(event))
+            const MidiEvent *event = track->getSequence()->getUnchecked(j);
+            if (event->isTypeOf(MidiEvent::Note))
             {
-                auto noteComponent = new TrackMapNoteComponent(*this, *note);
-                this->componentsMap[*note] = UniquePointer<TrackMapNoteComponent>(noteComponent);
+                const Note *note = static_cast<const Note *>(event);
+                const auto noteComponent = new TrackMapNoteComponent(*this, *note, *clip);
+                (*sequenceMap)[*note] = UniquePointer<TrackMapNoteComponent>(noteComponent);
                 this->addAndMakeVisible(noteComponent);
+                this->applyNoteBounds(noteComponent);
             }
         }
     }
-
-    this->resized();
-    this->setVisible(true);
 }
 
 void PianoTrackMap::applyNoteBounds(TrackMapNoteComponent *nc)

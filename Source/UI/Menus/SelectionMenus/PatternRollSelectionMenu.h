@@ -21,12 +21,11 @@ class Lasso;
 
 #include "MenuPanel.h"
 
-class PatternRollSelectionMenu : public MenuPanel
+class PatternRollSelectionMenu final : public MenuPanel
 {
 public:
     
     PatternRollSelectionMenu(WeakReference<Lasso> lasso);
-    void handleCommandMessage(int commandId) override;
     
 private:
 

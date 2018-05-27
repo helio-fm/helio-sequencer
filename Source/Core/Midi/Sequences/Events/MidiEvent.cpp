@@ -20,12 +20,6 @@
 #include "MidiSequence.h"
 #include "MidiTrack.h"
 
-MidiEvent::MidiEvent(const MidiEvent &other) noexcept :
-    sequence(other.sequence),
-    type(other.type),
-    beat(other.beat),
-    id(other.id) {}
-
 MidiEvent::MidiEvent(WeakReference<MidiSequence> owner, const MidiEvent &parameters) noexcept :
     sequence(owner),
     type(parameters.type),
@@ -51,25 +45,25 @@ MidiSequence *MidiEvent::getSequence() const noexcept
     return this->sequence;
 }
 
-int MidiEvent::getControllerNumber() const noexcept
+int MidiEvent::getTrackControllerNumber() const noexcept
 {
     jassert(this->sequence);
     return this->sequence->getTrack()->getTrackControllerNumber();
 }
 
-int MidiEvent::getChannel() const noexcept
+int MidiEvent::getTrackChannel() const noexcept
 {
     jassert(this->sequence);
     return this->sequence->getTrack()->getTrackChannel();
 }
 
-Colour MidiEvent::getColour() const noexcept
+Colour MidiEvent::getTrackColour() const noexcept
 {
     jassert(this->sequence);
     return this->sequence->getTrack()->getTrackColour();
 }
 
-MidiEvent::Id MidiEvent::getId() const noexcept
+const MidiEvent::Id &MidiEvent::getId() const noexcept
 {
     return this->id;
 }
@@ -77,6 +71,17 @@ MidiEvent::Id MidiEvent::getId() const noexcept
 float MidiEvent::getBeat() const noexcept
 {
     return this->beat;
+}
+
+int MidiEvent::compareElements(const MidiEvent *const first, const MidiEvent *const second) noexcept
+{
+    if (first == second) { return 0; }
+
+    const float diff = first->getBeat() - second->getBeat();
+    const int diffResult = (diff > 0.f) - (diff < 0.f);
+    if (diffResult != 0) { return diffResult; }
+
+    return first->getId().compare(second->getId());
 }
 
 MidiEvent::Id MidiEvent::createId() const noexcept

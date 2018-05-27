@@ -17,12 +17,12 @@
 
 #pragma once
 
-#if JUCE_IOS
-#   define PATTERN_ROLL_CLIP_HEIGHT 64
-#   define PATTERN_ROLL_TRACK_HEADER_HEIGHT 32
-#else
-#   define PATTERN_ROLL_CLIP_HEIGHT 64
-#   define PATTERN_ROLL_TRACK_HEADER_HEIGHT 32
+#if HELIO_DESKTOP
+#   define PATTERN_ROLL_CLIP_HEIGHT 72
+#   define PATTERN_ROLL_TRACK_HEADER_HEIGHT 30
+#elif HELIO_MOBILE
+#   define PATTERN_ROLL_CLIP_HEIGHT 72
+#   define PATTERN_ROLL_TRACK_HEADER_HEIGHT 30
 #endif
 
 class ClipComponent;
@@ -43,9 +43,10 @@ public:
         Viewport &viewportRef,
         WeakReference<AudioMonitor> clippingDetector);
 
-    void deleteSelection();
     void selectAll() override;
     int getNumRows() const noexcept;
+
+    void zoomViewToClip(const Clip &clip) const;
 
     //===------------------------------------------------------------------===//
     // Ghost notes
@@ -61,8 +62,8 @@ public:
     void addClip(Pattern *pattern, float beat);
     Rectangle<float> getEventBounds(FloatBoundsComponent *mc) const override;
     Rectangle<float> getEventBounds(const Clip &clip, float beat) const;
-    float getBeatByComponentPosition(float x) const;
-    float getBeatByMousePosition(int x) const;
+    float getBeatForClipByXPosition(const Clip &clip, float x) const;
+    float getBeatByMousePosition(const Pattern *pattern, int x) const;
     Pattern *getPatternByMousePosition(int y) const;
 
     //===------------------------------------------------------------------===//
@@ -147,6 +148,11 @@ public:
     ScopedPointer<Timer> focusToRegionAnimator;
     
 private:
+
+    ClipComponent *newClipDragging;
+    bool addNewClipMode;
+
+private:
     
     Array<MidiTrack *> tracks;
 
@@ -156,10 +162,10 @@ private:
 
     ScopedPointer<PatternRollSelectionMenuManager> selectedClipsMenuManager;
 
-    typedef SparseHashMap<const MidiTrack *, UniquePointer<MidiTrackHeader>, MidiTrackHash> TrackHeadersMap;
+    using TrackHeadersMap = SparseHashMap<const MidiTrack *, UniquePointer<MidiTrackHeader>, MidiTrackHash>;
     TrackHeadersMap trackHeaders;
 
-    typedef SparseHashMap<Clip, UniquePointer<ClipComponent>, ClipHash> ClipComponentsMap;
+    using ClipComponentsMap = SparseHashMap<Clip, UniquePointer<ClipComponent>, ClipHash>;
     ClipComponentsMap clipComponents;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PatternRoll)

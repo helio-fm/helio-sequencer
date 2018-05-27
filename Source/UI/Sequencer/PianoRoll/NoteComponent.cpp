@@ -35,27 +35,24 @@
 static PianoSequence *getPianoSequence(SelectionProxyArray::Ptr selection)
 {
     const auto &firstEvent = selection->getFirstAs<NoteComponent>()->getNote();
-    PianoSequence *pianoLayer = static_cast<PianoSequence *>(firstEvent.getSequence());
-    return pianoLayer;
+    return static_cast<PianoSequence *>(firstEvent.getSequence());;
 }
 
-NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, bool ghostMode)
-    : MidiEventComponent(editor, ghostMode),
-      midiEvent(event),
-      state(None),
-      anchor(event),
-      groupScalingAnchor(event),
-      firstChangeDone(false)
+NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, const Clip &clip, bool ghostMode) :
+    MidiEventComponent(editor, ghostMode),
+    note(event),
+    clip(clip),
+    state(None),
+    anchor(event),
+    groupScalingAnchor(event),
+    firstChangeDone(false)
 {
     this->updateColours();
     this->toFront(false);
     this->setPaintingIsUnclipped(true);
+    this->setWantsKeyboardFocus(false);
+    this->setMouseClickGrabsKeyboardFocus(false);
     this->setFloatBounds(this->getRoll().getEventBounds(this));
-}
-
-const Note &NoteComponent::getNote() const noexcept
-{
-    return static_cast<const Note &>(this->midiEvent);
 }
 
 PianoRoll &NoteComponent::getRoll() const noexcept
@@ -67,25 +64,10 @@ PianoRoll &NoteComponent::getRoll() const noexcept
 // Accessors
 //===----------------------------------------------------------------------===//
 
-int NoteComponent::getKey() const noexcept
-{
-    return static_cast<const Note &>(this->midiEvent).getKey();
-}
-
-float NoteComponent::getLength() const noexcept
-{
-    return static_cast<const Note &>(this->midiEvent).getLength();
-}
-
-float NoteComponent::getVelocity() const noexcept
-{
-    return static_cast<const Note &>(this->midiEvent).getVelocity();
-}
-
 void NoteComponent::updateColours()
 {
     this->colour = Colours::white
-        .interpolatedWith(this->getNote().getColour(), 0.5f)
+        .interpolatedWith(this->getNote().getTrackColour(), 0.5f)
         .withAlpha(this->ghostMode ? 0.2f : 0.95f)
         .darker(this->selectedState ? 0.5f : 0.f);
 
@@ -127,19 +109,9 @@ void NoteComponent::setSelected(bool selected)
     MidiEventComponent::setSelected(selected);
 }
 
-float NoteComponent::getBeat() const
+const String &NoteComponent::getSelectionGroupId() const noexcept
 {
-    return this->midiEvent.getBeat();
-}
-
-String NoteComponent::getSelectionGroupId() const
-{
-    return this->midiEvent.getSequence()->getTrackId();
-}
-
-String NoteComponent::getId() const
-{
-    return this->midiEvent.getId();
+    return this->note.getSequence()->getTrackId();
 }
 
 //===----------------------------------------------------------------------===//
@@ -187,13 +159,15 @@ void NoteComponent::mouseMove(const MouseEvent &e)
     }
 }
 
+#define forEachSelectedNote(lasso, child) \
+    for (int _i = 0; _i < lasso.getNumSelected(); _i++) \
+        if (auto *child = dynamic_cast<NoteComponent *>(lasso.getSelectedItem(_i)))
+
 void NoteComponent::mouseDown(const MouseEvent &e)
 {
     if (this->shouldGoQuickSelectLayerMode(e.mods))
     {
-        const bool selectAll = false; // e.mods.isRightButtonDown();
-        const bool soloMode = !e.mods.isShiftDown();
-        this->activateCorrespondingTrack(selectAll, soloMode);
+        this->switchActiveSegmentToSelected();
         return;
     }
     
@@ -237,25 +211,18 @@ void NoteComponent::mouseDown(const MouseEvent &e)
             if (e.mods.isShiftDown())
             {
                 const float groupStartBeat = SequencerOperations::findStartBeat(selection);
-                
-                for (int i = 0; i < selection.getNumSelected(); i++)
+                forEachSelectedNote(selection, note)
                 {
-                    if (NoteComponent *note = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
-                    {
-                        if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
-                        note->startGroupScalingRight(groupStartBeat);
-                    }
+                    if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
+                    note->startGroupScalingRight(groupStartBeat);
                 }
             }
             else
             {
-                for (int i = 0; i < selection.getNumSelected(); i++)
+                forEachSelectedNote(selection, note)
                 {
-                    if (NoteComponent *note = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
-                    {
-                        if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
-                        note->startResizingRight(shouldSendMidi);
-                    }
+                    if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
+                    note->startResizingRight(shouldSendMidi);
                 }
             }
         }
@@ -264,39 +231,28 @@ void NoteComponent::mouseDown(const MouseEvent &e)
             if (e.mods.isShiftDown())
             {
                 const float groupEndBeat = SequencerOperations::findEndBeat(selection);
-                
-                for (int i = 0; i < selection.getNumSelected(); i++)
+                forEachSelectedNote(selection, note)
                 {
-                    if (NoteComponent *note = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
-                    {
-                        if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
-                        note->startGroupScalingLeft(groupEndBeat);
-                    }
+                    if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
+                    note->startGroupScalingLeft(groupEndBeat);
                 }
             }
             else
             {
-                for (int i = 0; i < selection.getNumSelected(); i++)
+                forEachSelectedNote(selection, note)
                 {
-                    if (NoteComponent *note = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
-                    {
-                        if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
-                        note->startResizingLeft(shouldSendMidi);
-                    }
+                    if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
+                    note->startResizingLeft(shouldSendMidi);
                 }
             }
         }
         else
         {
             this->dragger.startDraggingComponent(this, e);
-            
-            for (int i = 0; i < selection.getNumSelected(); i++)
+            forEachSelectedNote(selection, note)
             {
-                if (NoteComponent *note = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
-                {
-                    if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
-                    note->startDragging(shouldSendMidi);
-                }
+                if (selection.shouldDisplayGhostNotes()) { note->getRoll().showGhostNoteFor(note); }
+                note->startDragging(shouldSendMidi);
             }
         }
 
@@ -304,16 +260,11 @@ void NoteComponent::mouseDown(const MouseEvent &e)
     }
     else if (e.mods.isMiddleButtonDown())
     {
-        this->midiEvent.getSequence()->checkpoint();
-
+        this->note.getSequence()->checkpoint();
         this->setMouseCursor(MouseCursor::UpDownResizeCursor);
-
-        for (int i = 0; i < selection.getNumSelected(); i++)
+        forEachSelectedNote(selection, note)
         {
-            if (NoteComponent *note = dynamic_cast<NoteComponent *>(selection.getSelectedItem(i)))
-            {
-                note->startTuning();
-            }
+            note->startTuning();
         }
     }
 }
@@ -341,7 +292,49 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
     
     const auto &selection = this->roll.getLassoSelection();
 
-    if (this->state == ResizingRight)
+    if (this->state == Initializing)
+    {
+        int deltaKey = 0;
+        float deltaLength = 0.f;
+        const bool eventChanged = this->getInitializingDelta(e, deltaLength, deltaKey);
+
+#if HELIO_MOBILE
+        const bool shouldSendMidi = false;
+#elif HELIO_DESKTOP
+        const bool shouldSendMidi = (lastDeltaKey != deltaKey) && (selection.getNumSelected() < MAX_DRAG_POLYPHONY);
+#endif
+        lastDeltaKey = deltaKey;
+
+        if (eventChanged)
+        {
+            this->checkpointIfNeeded();
+
+            if (shouldSendMidi)
+            {
+                this->stopSound();
+            }
+
+            for (const auto &s : selection.getGroupedSelections())
+            {
+                const auto trackSelection(s.second);
+                Array<Note> groupBefore, groupAfter;
+
+                for (int i = 0; i < trackSelection->size(); ++i)
+                {
+                    const auto *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
+                    groupBefore.add(nc->getNote());
+                    groupAfter.add(nc->continueInitializing(deltaLength, deltaKey, shouldSendMidi));
+                }
+
+                getPianoSequence(trackSelection)->changeGroup(groupBefore, groupAfter, true);
+            }
+        }
+        else
+        {
+            this->setFloatBounds(this->getRoll().getEventBounds(this)); // avoids glitches
+        }
+    }
+    else if (this->state == ResizingRight)
     {
         float deltaLength = 0.f;
         const bool lengthChanged = this->getResizingRightDelta(e, deltaLength);
@@ -351,22 +344,22 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             this->checkpointIfNeeded();
             for (const auto &s : selection.getGroupedSelections())
             {
-                const auto sequenceSelection(s.second);
-                Array<Note> groupDragBefore, groupDragAfter;
+                const auto trackSelection(s.second);
+                Array<Note> groupBefore, groupAfter;
                 
-                for (int i = 0; i < sequenceSelection->size(); ++i)
+                for (int i = 0; i < trackSelection->size(); ++i)
                 {
-                    NoteComponent *nc = static_cast<NoteComponent *>(sequenceSelection->getUnchecked(i));
-                    groupDragBefore.add(nc->getNote());
-                    groupDragAfter.add(nc->continueResizingRight(deltaLength));
+                    const auto *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
+                    groupBefore.add(nc->getNote());
+                    groupAfter.add(nc->continueResizingRight(deltaLength));
                 }
                 
-                getPianoSequence(sequenceSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                getPianoSequence(trackSelection)->changeGroup(groupBefore, groupAfter, true);
             }
         }
         else
         {
-            this->setFloatBounds(this->getRoll().getEventBounds(this)); // возвращаем на место
+            this->setFloatBounds(this->getRoll().getEventBounds(this)); // avoids glitches
         }
     }
     else if (this->state == ResizingLeft)
@@ -379,22 +372,22 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             this->checkpointIfNeeded();
             for (const auto &s : selection.getGroupedSelections())
             {
-                const auto sequenceSelection(s.second);
-                Array<Note> groupDragBefore, groupDragAfter;
+                const auto trackSelection(s.second);
+                Array<Note> groupBefore, groupAfter;
                 
-                for (int i = 0; i < sequenceSelection->size(); ++i)
+                for (int i = 0; i < trackSelection->size(); ++i)
                 {
-                    NoteComponent *nc = static_cast<NoteComponent *>(sequenceSelection->getUnchecked(i));
-                    groupDragBefore.add(nc->getNote());
-                    groupDragAfter.add(nc->continueResizingLeft(deltaLength));
+                    const auto *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
+                    groupBefore.add(nc->getNote());
+                    groupAfter.add(nc->continueResizingLeft(deltaLength));
                 }
                 
-                getPianoSequence(sequenceSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                getPianoSequence(trackSelection)->changeGroup(groupBefore, groupAfter, true);
             }
         }
         else
         {
-            this->setFloatBounds(this->getRoll().getEventBounds(this)); // возвращаем на место
+            this->setFloatBounds(this->getRoll().getEventBounds(this)); // avoids glitches
         }
     }
     else if (this->state == GroupScalingRight)
@@ -407,22 +400,22 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             this->checkpointIfNeeded();
             for (const auto &s : selection.getGroupedSelections())
             {
-                const auto sequenceSelection(s.second);
-                Array<Note> groupDragBefore, groupDragAfter;
+                const auto trackSelection(s.second);
+                Array<Note> groupBefore, groupAfter;
                 
-                for (int i = 0; i < sequenceSelection->size(); ++i)
+                for (int i = 0; i < trackSelection->size(); ++i)
                 {
-                    NoteComponent *nc = static_cast<NoteComponent *>(sequenceSelection->getUnchecked(i));
-                    groupDragBefore.add(nc->getNote());
-                    groupDragAfter.add(nc->continueGroupScalingRight(groupScaleFactor));
+                    const auto *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
+                    groupBefore.add(nc->getNote());
+                    groupAfter.add(nc->continueGroupScalingRight(groupScaleFactor));
                 }
                 
-                getPianoSequence(sequenceSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                getPianoSequence(trackSelection)->changeGroup(groupBefore, groupAfter, true);
             }
         }
         else
         {
-            this->setFloatBounds(this->getRoll().getEventBounds(this)); // возвращаем на место
+            this->setFloatBounds(this->getRoll().getEventBounds(this)); // avoids glitches
         }
     }
     else if (this->state == GroupScalingLeft)
@@ -435,29 +428,28 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             this->checkpointIfNeeded();
             for (const auto &s : selection.getGroupedSelections())
             {
-                const auto sequenceSelection(s.second);
-                Array<Note> groupDragBefore, groupDragAfter;
+                const auto trackSelection(s.second);
+                Array<Note> groupBefore, groupAfter;
                 
-                for (int i = 0; i < sequenceSelection->size(); ++i)
+                for (int i = 0; i < trackSelection->size(); ++i)
                 {
-                    NoteComponent *nc = static_cast<NoteComponent *>(sequenceSelection->getUnchecked(i));
-                    groupDragBefore.add(nc->getNote());
-                    groupDragAfter.add(nc->continueGroupScalingLeft(groupScaleFactor));
+                    const auto *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
+                    groupBefore.add(nc->getNote());
+                    groupAfter.add(nc->continueGroupScalingLeft(groupScaleFactor));
                 }
                 
-                getPianoSequence(sequenceSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                getPianoSequence(trackSelection)->changeGroup(groupBefore, groupAfter, true);
             }
         }
         else
         {
-            this->setFloatBounds(this->getRoll().getEventBounds(this)); // возвращаем на место
+            this->setFloatBounds(this->getRoll().getEventBounds(this)); // avoids glitches
         }
     }
     else if (this->state == Dragging)
     {
         this->getRoll().showHelpers();
 
-        // двигаем саму ноту и смотрим новую позицию
         int deltaKey = 0;
         float deltaBeat = 0.f;
         const bool eventChanged = this->getDraggingDelta(e, deltaBeat, deltaKey);
@@ -469,9 +461,7 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
 #endif
         lastDeltaKey = deltaKey;
         
-        // возвращаем на место активную ноту
-        // это здесь, чтоб не было лага между сдвинутой нотой и асинхронным обновлением ролла
-        this->setFloatBounds(this->getRoll().getEventBounds(this));
+        this->setFloatBounds(this->getRoll().getEventBounds(this)); // avoids glitches
         
         if (eventChanged)
         {
@@ -493,6 +483,12 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
 
                 // Ghost note markers become useless from now on, as there are duplicates in their places already:
                 this->getRoll().hideAllGhostNotes();
+
+                // Finally, bring selection back to front
+                forEachSelectedNote(selection, noteComponent)
+                {
+                    noteComponent->toFront(false);
+                }
             }
 
             this->getRoll().moveHelpers(deltaBeat, deltaKey);
@@ -504,17 +500,17 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
             
             for (const auto &s : selection.getGroupedSelections())
             {
-                const auto sequenceSelection(s.second);
-                Array<Note> groupDragBefore, groupDragAfter;
+                const auto trackSelection(s.second);
+                Array<Note> groupBefore, groupAfter;
                 
-                for (int i = 0; i < sequenceSelection->size(); ++i)
+                for (int i = 0; i < trackSelection->size(); ++i)
                 {
-                    NoteComponent *nc = static_cast<NoteComponent *>(sequenceSelection->getUnchecked(i));
-                    groupDragBefore.add(nc->getNote());
-                    groupDragAfter.add(nc->continueDragging(deltaBeat, deltaKey, shouldSendMidi));
+                    const auto *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
+                    groupBefore.add(nc->getNote());
+                    groupAfter.add(nc->continueDragging(deltaBeat, deltaKey, shouldSendMidi));
                 }
                 
-                getPianoSequence(sequenceSelection)->changeGroup(groupDragBefore, groupDragAfter, true);
+                getPianoSequence(trackSelection)->changeGroup(groupBefore, groupAfter, true);
             }
         }
     }
@@ -524,22 +520,18 @@ void NoteComponent::mouseDrag(const MouseEvent &e)
         
         for (const auto &s : selection.getGroupedSelections())
         {
-            const auto sequenceSelection(s.second);
-            Array<Note> groupTuneBefore, groupTuneAfter;
+            const auto trackSelection(s.second);
+            Array<Note> groupBefore, groupAfter;
             
-            for (int i = 0; i < sequenceSelection->size(); ++i)
+            for (int i = 0; i < trackSelection->size(); ++i)
             {
-                NoteComponent *nc = static_cast<NoteComponent *>(sequenceSelection->getUnchecked(i));
-                groupTuneBefore.add(nc->getNote());
-                
-                Note tuned(nc->continueTuning(e));
-                groupTuneAfter.add(tuned);
-                
-                //this->getRoll().setDefaultNoteVelocity(tuned.getVelocity());
-                //this->roll.triggerBatchRepaintFor(nc);
+                const auto *nc = static_cast<NoteComponent *>(trackSelection->getUnchecked(i));
+                groupBefore.add(nc->getNote());
+                groupAfter.add(nc->continueTuning(e));
+                this->getRoll().setDefaultNoteVolume(groupAfter.getLast().getVelocity());
             }
             
-            getPianoSequence(sequenceSelection)->changeGroup(groupTuneBefore, groupTuneAfter, true);
+            getPianoSequence(trackSelection)->changeGroup(groupBefore, groupAfter, true);
         }
     }
 }
@@ -571,17 +563,22 @@ void NoteComponent::mouseUp(const MouseEvent &e)
 #elif HELIO_DESKTOP
     const bool shouldSendMidi = true;
 #endif
-
     
-    Lasso &selection = this->roll.getLassoSelection();
+    const Lasso &selection = this->roll.getLassoSelection();
 
-    if (this->state == ResizingRight)
+    if (this->state == Initializing)
     {
-        //this->updateBounds(this->getRoll().getEventBounds(this)); // анти-лаг (?)
-
         for (int i = 0; i < selection.getNumSelected(); i++)
         {
-            NoteComponent *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+            auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+            nc->endInitializing();
+        }
+    }
+    else if (this->state == ResizingRight)
+    {
+        for (int i = 0; i < selection.getNumSelected(); i++)
+        {
+            auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
             nc->endResizingRight();
         }
     }
@@ -589,7 +586,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
     {
         for (int i = 0; i < selection.getNumSelected(); i++)
         {
-            NoteComponent *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+            auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
             nc->endResizingLeft();
         }
     }
@@ -597,7 +594,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
     {
         for (int i = 0; i < selection.getNumSelected(); i++)
         {
-            NoteComponent *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+            auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
             nc->endGroupScalingRight();
         }
     }
@@ -605,7 +602,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
     {
         for (int i = 0; i < selection.getNumSelected(); i++)
         {
-            NoteComponent *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+            auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
             nc->endGroupScalingLeft();
         }
     }
@@ -616,7 +613,7 @@ void NoteComponent::mouseUp(const MouseEvent &e)
         
         for (int i = 0; i < selection.getNumSelected(); i++)
         {
-            NoteComponent *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+            auto *nc = static_cast<NoteComponent *>(selection.getSelectedItem(i));
             nc->endDragging(shouldSendMidi);
         }
     }
@@ -624,29 +621,18 @@ void NoteComponent::mouseUp(const MouseEvent &e)
     {
         for (int i = 0; i < selection.getNumSelected(); i++)
         {
-            NoteComponent *note = static_cast<NoteComponent *>(selection.getSelectedItem(i));
+            auto *note = static_cast<NoteComponent *>(selection.getSelectedItem(i));
             note->endTuning();
         }
 
         this->setMouseCursor(MouseCursor::NormalCursor);
     }
-
-    // TODO: show selection menu on right click?
-//    if (e.getDistanceFromDragStart() < 5 &&
-//        e.mods.isRightButtonDown())
-//    {
-//        if (selection.getNumSelected() > 0)
-//        {
-//            this->getRoll().showSelectionPopup(e.getEventRelativeTo(&this->getRoll()));
-//        }
-//    }
 }
 
 void NoteComponent::mouseDoubleClick(const MouseEvent &e)
 {
-    // Double right click - activate this layer and others
-    const bool selectAll = e.mods.isRightButtonDown();
-    this->activateCorrespondingTrack(selectAll, true);
+    // Not this action is free
+    // TODO something useful
 }
 
 //===----------------------------------------------------------------------===//
@@ -692,8 +678,7 @@ void NoteComponent::paintNewLook(Graphics &g)
     const float y2 = y1 + h - 1;
     const float yh = (y2 - y1);
     
-    // Для маленьких нот надо убрать коэффициент скругления в 0
-    // Для нот больше 6 пикселей - коэффициент = 1
+    // Bevel depends on a note size (so that small notes don't disappear):
     const float bevelCoeff = 1.f - jmax(0.f, (6.f - w) / 6.f);
     
     if (! this->activeState)
@@ -730,7 +715,9 @@ void NoteComponent::paintNewLook(Graphics &g)
     
 //#ifdef DEBUG
 //    g.setColour(Colours::black);
-//    g.drawText(String(this->getBeat()), this->getLocalBounds().translated(5, 0), Justification::centredLeft, false);
+//    g.drawText(this->note.getId() + " " + this->clip.getId(),
+//        this->getLocalBounds().translated(5, 0),
+//        Justification::centredLeft, false);
 //#else
     const float sx = x1 + 2.f;
     const float sw = (w - 2.f) * this->getVelocity();
@@ -766,23 +753,15 @@ void NoteComponent::paintLegacyLook(Graphics &g)
 // Helpers
 //===----------------------------------------------------------------------===//
 
-bool NoteComponent::belongsToAnyTrack(const Array<WeakReference<MidiTrack>> &tracks) const
+bool NoteComponent::belongsTo(const WeakReference<MidiTrack> &track, const Clip &clip) const noexcept
 {
-    for (int i = 0; i < tracks.size(); ++i)
-    {
-        if (this->getNote().getSequence() == tracks.getUnchecked(i)->getSequence())
-        {
-            return true;
-        }
-    }
-
-    return false;
+    return this->clip == clip && this->note.getSequence()->getTrack() == track;
 }
 
-void NoteComponent::activateCorrespondingTrack(bool selectAll, bool soloSelection)
+void NoteComponent::switchActiveSegmentToSelected() const
 {
-    MidiSequence *layer = this->getNote().getSequence();
-    this->roll.getProject().activateLayer(layer, selectAll, soloSelection);
+    auto *track = this->getNote().getSequence()->getTrack();
+    this->roll.getProject().setEditableScope(track, this->getClip());
 }
 
 //===----------------------------------------------------------------------===//
@@ -808,11 +787,11 @@ bool NoteComponent::getDraggingDelta(const MouseEvent &e, float &deltaBeat, int 
     int newKey = -1;
     float newBeat = -1;
 
-    // по идее, там надо прибавлять this->clickOffset.getX() % (длина минимального деления)
-    this->getRoll().getRowsColsByComponentPosition(this->getX() + this->floatLocalBounds.getX() + 1 /*+ this->clickOffset.getX()*/,
-            this->getY() + (this->getHeight() / 2) + this->floatLocalBounds.getY() + this->clickOffset.getY(),
-            newKey,
-            newBeat);
+    // TODO: test this->clickOffset.getX() % (min snap length)
+    this->getRoll().getRowsColsByComponentPosition(
+        this->getX() + this->floatLocalBounds.getX() + 1 /*+ this->clickOffset.getX()*/,
+        this->getY() + (this->getHeight() / 2) + this->floatLocalBounds.getY() + this->clickOffset.getY(),
+        newKey, newBeat);
 
     deltaKey = (newKey - this->anchor.getKey());
     deltaBeat = (newBeat - this->anchor.getBeat());
@@ -823,10 +802,10 @@ bool NoteComponent::getDraggingDelta(const MouseEvent &e, float &deltaBeat, int 
     return (keyChanged || beatChanged);
 }
 
-Note NoteComponent::continueDragging(float deltaBeat, int deltaKey, bool sendMidiMessage)
+Note NoteComponent::continueDragging(float deltaBeat, int deltaKey, bool sendMidiMessage) const noexcept
 {
-    const int &newKey = this->anchor.getKey() + deltaKey;
-    const float &newBeat = this->anchor.getBeat() + deltaBeat;
+    const int newKey = this->anchor.getKey() + deltaKey;
+    const float newBeat = this->anchor.getBeat() + deltaBeat;
 
     if (sendMidiMessage)
     {
@@ -847,18 +826,71 @@ void NoteComponent::endDragging(bool sendMidiMessage)
 }
 
 //===----------------------------------------------------------------------===//
-// Resizing Right
+// Creating note mode
 //===----------------------------------------------------------------------===//
 
-void NoteComponent::setNoCheckpointNeededForNextAction()
+bool NoteComponent::isInitializing() const
 {
-    this->firstChangeDone = true;
+    return this->state == Initializing;
 }
 
-bool NoteComponent::isResizing() const
+void NoteComponent::startInitializing()
 {
-    return (this->state == ResizingRight) || (this->state == ResizingLeft);
+    // warning: note is supposed to be created by roll in two actions,
+    // adding one and resizing it afterwards, so two checkpoints would happen
+    // if we set this->firstChangeDone = false here, which we don't want
+    // (adding a note should appear to user as a single transaction).
+    this->firstChangeDone = true;
+    // ^ thus, set no checkpoint is needed
+
+    this->state = Initializing;
+    this->anchor = this->getNote();
+
+    // always send midi in this mode:
+    this->sendMidiMessage(MidiMessage::noteOn(1, this->getKey(), this->getVelocity()));
 }
+
+bool NoteComponent::getInitializingDelta(const MouseEvent &e, float &deltaLength, int &deltaKey) const
+{
+    int newKey = -1;
+    float newBeat = -1;
+
+    this->getRoll().getRowsColsByComponentPosition(
+        this->getX() + this->floatLocalBounds.getX() + e.x,
+        this->getY() + this->floatLocalBounds.getY() + e.y,
+        newKey, newBeat);
+
+    const float newLength = newBeat - this->getBeat();
+    deltaLength = newLength - this->anchor.getLength();
+    deltaKey = newKey - this->anchor.getKey();
+
+    const bool keyChanged = (this->getKey() != newKey);
+    const bool lengthChanged = (this->getLength() != newLength);
+    return (keyChanged || lengthChanged);
+}
+
+Note NoteComponent::continueInitializing(float deltaLength, int deltaKey, bool sendMidi) const noexcept
+{
+    const int newKey = this->anchor.getKey() + deltaKey;
+    const float newLength = this->anchor.getLength() + deltaLength;
+
+    if (sendMidi)
+    {
+        this->sendMidiMessage(MidiMessage::noteOn(1, newKey, this->getVelocity()));
+    }
+
+    return this->getNote().withKeyLength(newKey, newLength);
+}
+
+void NoteComponent::endInitializing()
+{
+    this->stopSound();
+    this->state = None;
+}
+
+//===----------------------------------------------------------------------===//
+// Resizing Right
+//===----------------------------------------------------------------------===//
 
 void NoteComponent::startResizingRight(bool sendMidiMessage)
 {
@@ -877,19 +909,19 @@ bool NoteComponent::getResizingRightDelta(const MouseEvent &e, float &deltaLengt
     int newNote = -1;
     float newBeat = -1;
 
-    this->getRoll().getRowsColsByComponentPosition(getX() + this->floatLocalBounds.getX() + e.x,
-                                                   getY() + this->floatLocalBounds.getY() + e.y,
-                                                   newNote,
-                                                   newBeat);
+    this->getRoll().getRowsColsByComponentPosition(
+        this->getX() + this->floatLocalBounds.getX() + e.x,
+        this->getY() + this->floatLocalBounds.getY() + e.y,
+        newNote, newBeat);
 
-    const float newLength = (newBeat - this->getBeat());
+    const float newLength = newBeat - this->getBeat();
     deltaLength = newLength - this->anchor.getLength();
 
     const bool lengthChanged = (this->getLength() != newLength);
     return lengthChanged;
 }
 
-Note NoteComponent::continueResizingRight(float deltaLength)
+Note NoteComponent::continueResizingRight(float deltaLength) const noexcept
 {
     const float newLength = this->anchor.getLength() + deltaLength;
     return this->getNote().withLength(newLength);
@@ -922,17 +954,17 @@ bool NoteComponent::getResizingLeftDelta(const MouseEvent &e, float &deltaLength
     int newNote = -1;
     float newBeat = -1;
     
-    this->getRoll().getRowsColsByComponentPosition(getX() + this->floatLocalBounds.getX() + e.x,
-                                                   getY() + this->floatLocalBounds.getY() + e.y,
-                                                   newNote,
-                                                   newBeat);
+    this->getRoll().getRowsColsByComponentPosition(
+        this->getX() + this->floatLocalBounds.getX() + e.x,
+        this->getY() + this->floatLocalBounds.getY() + e.y,
+        newNote, newBeat);
     
     deltaLength = this->anchor.getBeat() - newBeat;
     const bool lengthChanged = (this->getBeat() != newBeat);
     return lengthChanged;
 }
 
-Note NoteComponent::continueResizingLeft(float deltaLength)
+Note NoteComponent::continueResizingLeft(float deltaLength) const noexcept
 {
     const float newLength = this->anchor.getLength() + deltaLength;
     const float newBeat = this->anchor.getBeat() - deltaLength;
@@ -963,21 +995,22 @@ bool NoteComponent::getGroupScaleRightFactor(const MouseEvent &e, float &absScal
     int newNote = -1;
     float newBeat = -1;
     
-    this->getRoll().getRowsColsByComponentPosition(getX() + this->floatLocalBounds.getX() + e.x,
-                                                   getY() + this->floatLocalBounds.getY() + e.y,
-                                                   newNote,
-                                                   newBeat);
+    this->getRoll().getRowsColsByComponentPosition(
+        this->getX() + this->floatLocalBounds.getX() + e.x,
+        this->getY() + this->floatLocalBounds.getY() + e.y,
+        newNote, newBeat);
     
     const float minGroupLength = 1.f;
-    const float myEndBeat = (this->getBeat() + this->getLength());
-    const float newGroupLength = jmax(minGroupLength, (newBeat - this->groupScalingAnchor.getBeat()));
+    const float myEndBeat = this->getBeat() + this->getLength();
+    const float newGroupLength = jmax(minGroupLength, newBeat - this->groupScalingAnchor.getBeat());
+
     absScaleFactor = newGroupLength / this->groupScalingAnchor.getLength();
     
     const bool endBeatChanged = (newBeat != myEndBeat);
     return endBeatChanged;
 }
 
-Note NoteComponent::continueGroupScalingRight(float absScaleFactor)
+Note NoteComponent::continueGroupScalingRight(float absScaleFactor) const noexcept
 {
     const float anchorBeatDelta = this->anchor.getBeat() - this->groupScalingAnchor.getBeat();
     const float newLength = this->anchor.getLength() * absScaleFactor;
@@ -999,7 +1032,7 @@ void NoteComponent::startGroupScalingLeft(float groupEndBeat)
     this->firstChangeDone = false;
     this->state = GroupScalingLeft;
     this->anchor = this->getNote();
-    const float newLength = (groupEndBeat - this->getBeat());
+    const float newLength = groupEndBeat - this->getBeat();
     this->groupScalingAnchor = this->getNote().withLength(newLength);
 }
 
@@ -1008,13 +1041,14 @@ bool NoteComponent::getGroupScaleLeftFactor(const MouseEvent &e, float &absScale
     int newNote = -1;
     float newBeat = -1;
     
-    this->getRoll().getRowsColsByComponentPosition(this->getX() + this->floatLocalBounds.getX() + e.x,
-                                                   this->getY() + this->floatLocalBounds.getY() + e.y,
-                                                   newNote,
-                                                   newBeat);
+    this->getRoll().getRowsColsByComponentPosition(
+        this->getX() + this->floatLocalBounds.getX() + e.x,
+        this->getY() + this->floatLocalBounds.getY() + e.y,
+        newNote, newBeat);
     
     const float minGroupLength = 1.f;
     const float groupAnchorEndBeat = this->groupScalingAnchor.getBeat() + this->groupScalingAnchor.getLength();
+
     const float newGroupLength = jmax(minGroupLength, (groupAnchorEndBeat - newBeat));
     absScaleFactor = newGroupLength / this->groupScalingAnchor.getLength();
     
@@ -1022,7 +1056,7 @@ bool NoteComponent::getGroupScaleLeftFactor(const MouseEvent &e, float &absScale
     return endBeatChanged;
 }
 
-Note NoteComponent::continueGroupScalingLeft(float absScaleFactor)
+Note NoteComponent::continueGroupScalingLeft(float absScaleFactor) const noexcept
 {
     const float groupAnchorEndBeat = this->groupScalingAnchor.getBeat() + this->groupScalingAnchor.getLength();
     const float anchorBeatDelta = groupAnchorEndBeat - this->anchor.getBeat();
@@ -1047,13 +1081,13 @@ void NoteComponent::startTuning()
     this->anchor = this->getNote();
 }
 
-Note NoteComponent::continueTuningLinear(float delta)
+Note NoteComponent::continueTuningLinear(float delta) const noexcept
 {
     const float newVelocity = (this->anchor.getVelocity() - delta);
     return this->getNote().withVelocity(newVelocity);
 }
 
-Note NoteComponent::continueTuningMultiplied(float factor)
+Note NoteComponent::continueTuningMultiplied(float factor) const noexcept
 {
     // -1 .. 0   ->   0 .. anchor
     // 0 .. 1    ->   anchor .. 1
@@ -1063,7 +1097,7 @@ Note NoteComponent::continueTuningMultiplied(float factor)
     return this->getNote().withVelocity(newVelocity);
 }
 
-Note NoteComponent::continueTuningSine(float factor, float midline, float phase)
+Note NoteComponent::continueTuningSine(float factor, float midline, float phase) const noexcept
 {
     // -1 .. 0   ->   0 .. anchor
     // 0 .. 1    ->   anchor .. 1
@@ -1077,7 +1111,7 @@ Note NoteComponent::continueTuningSine(float factor, float midline, float phase)
     return this->getNote().withVelocity(newVelocity);
 }
 
-Note NoteComponent::continueTuning(const MouseEvent &e)
+Note NoteComponent::continueTuning(const MouseEvent &e) const noexcept
 {
     return this->continueTuningLinear(e.getDistanceFromDragStartY() / 250.0f);
 }
@@ -1088,27 +1122,26 @@ void NoteComponent::endTuning()
     this->roll.triggerBatchRepaintFor(this);
 }
 
-
-void NoteComponent::checkpointIfNeeded()
-{
-    if (! this->firstChangeDone)
-    {
-        this->midiEvent.getSequence()->checkpoint();
-        this->firstChangeDone = true;
-    }
-}
-
 //===----------------------------------------------------------------------===//
 // Shorthands
 //===----------------------------------------------------------------------===//
+
+void NoteComponent::checkpointIfNeeded()
+{
+    if (!this->firstChangeDone)
+    {
+        this->note.getSequence()->checkpoint();
+        this->firstChangeDone = true;
+    }
+}
 
 void NoteComponent::stopSound()
 {
     this->getRoll().getTransport().allNotesControllersAndSoundOff();
 }
 
-void NoteComponent::sendMidiMessage(const MidiMessage &message)
+void NoteComponent::sendMidiMessage(const MidiMessage &message) const
 {
-    const String layerId = this->getNote().getSequence()->getTrackId();
-    this->getRoll().getTransport().sendMidiMessage(layerId, message);
+    const auto &trackId = this->getNote().getSequence()->getTrackId();
+    this->getRoll().getTransport().sendMidiMessage(trackId, message);
 }

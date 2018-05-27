@@ -31,6 +31,8 @@
 #include "PianoTrackTreeItem.h"
 #include "AutomationTrackTreeItem.h"
 #include "VersionControlTreeItem.h"
+#include "MidiTrackTreeItem.h"
+#include "ModalDialogInput.h"
 #include "ProjectTreeItem.h"
 #include "ProjectTimeline.h"
 #include "Note.h"
@@ -57,17 +59,32 @@
 
 #define ROWS_OF_TWO_OCTAVES 24
 #define DEFAULT_NOTE_LENGTH 0.25f
-#define DEFAULT_NOTE_VELOCITY 0.25f
+
+#define forEachEventOfGivenTrack(map, child, track) \
+    for (const auto &_c : map) \
+        if (_c.first.getPattern()->getTrack() == track) \
+            for (const auto &child : (*_c.second.get()))
+
+#define forEachSequenceMapOfGivenTrack(map, child, track) \
+    for (const auto &child : map) \
+        if (child.first.getPattern()->getTrack() == track)
+
+#define forEachEventComponent(map, child) \
+    for (const auto &_c : this->patternMap) \
+        for (const auto &child : (*_c.second.get()))
+
 
 PianoRoll::PianoRoll(ProjectTreeItem &parentProject,
-                     Viewport &viewportRef,
-                     WeakReference<AudioMonitor> clippingDetector) :
+    Viewport &viewportRef,
+    WeakReference<AudioMonitor> clippingDetector) :
     HybridRoll(parentProject, viewportRef, clippingDetector),
+    activeTrack(nullptr),
+    activeClip(),
     numRows(128),
     rowHeight(PIANOROLL_MIN_ROW_HEIGHT),
-    draggingNote(nullptr),
+    newNoteDragging(nullptr),
     addNewNoteMode(false),
-    mouseDownWasTriggered(false),
+    newNoteVolume(0.25f),
     defaultHighlighting() // default pattern (black and white keys)
 {
     this->defaultHighlighting = new HighlightingScheme(0, Scale::getNaturalMajorScale());
@@ -89,74 +106,134 @@ void PianoRoll::reloadRollContent()
 {
     this->selection.deselectAll();
     this->backgroundsCache.clear();
+    this->patternMap.clear();
 
-    this->eventComponents.clear();
+    HYBRID_ROLL_BULK_REPAINT_START
 
     const auto &tracks = this->project.getTracks();
-    for (auto track : tracks)
+    for (const auto *track : tracks)
     {
-        //for (int p = 0; p < track->getPattern()->size(); ++p)
-        //{
-        //    Clip clip = track->getPattern()->getUnchecked(p);
-        //    UniquePointer<EventComponentsMap> clipMap(new EventComponentsMap());
+        this->loadTrack(track);
 
-            for (int s = 0; s < track->getSequence()->size(); ++s)
+        // Re-render backgrounds for all key signatures:
+        for (int j = 0; j < track->getSequence()->size(); ++j)
+        {
+            const MidiEvent *event = track->getSequence()->getUnchecked(j);
+            if (event->isTypeOf(MidiEvent::KeySignature))
             {
-                MidiEvent *event = track->getSequence()->getUnchecked(s);
-                if (event->isTypeOf(MidiEvent::Note))
-                {
-                    Note *note = static_cast<Note *>(event);
-                    auto noteComponent = new NoteComponent(*this, *note);
-
-                    this->eventComponents[*note] = UniquePointer<NoteComponent>(noteComponent);
-                    //(*clipMap)[*note] = noteComponent;
-
-                    const bool belongsToActiveTrack = noteComponent->belongsToAnyTrack(this->selectedTracks);
-                    noteComponent->setActive(belongsToActiveTrack, true);
-
-                    this->addAndMakeVisible(noteComponent);
-                }
-                else if (event->isTypeOf(MidiEvent::KeySignature))
-                {
-                    const auto &key = static_cast<const KeySignatureEvent &>(*event);
-                    this->updateBackgroundCacheFor(key);
-                }
+                const auto &key = static_cast<const KeySignatureEvent &>(*event);
+                this->updateBackgroundCacheFor(key);
             }
-
-        //    this->componentsMaps.add(clipMap.release());
-        //    this->clipsMap[clip] = this->componentsMaps.getLast();
-        //}
+        }
     }
 
-    this->resized();
     this->repaint(this->viewport.getViewArea());
+
+    HYBRID_ROLL_BULK_REPAINT_END
 }
 
-void PianoRoll::setSelectedTracks(Array<WeakReference<MidiTrack>> tracks,
-    WeakReference<MidiTrack> activeTrack)
+void PianoRoll::loadTrack(const MidiTrack *const track)
+{
+    if (track->getPattern() == nullptr)
+    {
+        return;
+    }
+
+    for (int i = 0; i < track->getPattern()->size(); ++i)
+    {
+        const Clip *clip = track->getPattern()->getUnchecked(i);
+
+        auto sequenceMap = new SequenceMap();
+        this->patternMap[*clip] = UniquePointer<SequenceMap>(sequenceMap);
+
+        for (int j = 0; j < track->getSequence()->size(); ++j)
+        {
+            const MidiEvent *event = track->getSequence()->getUnchecked(j);
+            if (event->isTypeOf(MidiEvent::Note))
+            {
+                const Note *note = static_cast<const Note *>(event);
+                auto nc = new NoteComponent(*this, *note, *clip);
+                (*sequenceMap)[*note] = UniquePointer<NoteComponent>(nc);
+                const bool isActive = nc->belongsTo(this->activeTrack, this->activeClip);
+                nc->setActive(isActive, true);
+                this->addAndMakeVisible(nc);
+                nc->setFloatBounds(this->getEventBounds(nc));
+            }
+        }
+    }
+}
+
+void PianoRoll::setEditableScope(WeakReference<MidiTrack> activeTrack, 
+    const Clip &activeClip, bool shouldZoomToArea)
 {
     this->selection.deselectAll();
 
-    for (const auto &e : this->eventComponents)
+    this->activeTrack = activeTrack;
+    this->activeClip = activeClip;
+
+    int focusMinKey = INT_MAX;
+    int focusMaxKey = 0;
+    float focusMinBeat = FLT_MAX;
+    float focusMaxBeat = -FLT_MAX;
+
+    forEachEventComponent(this->patternMap, e)
     {
-        const auto noteComponent = e.second.get();
-        const bool shouldBeActive = noteComponent->belongsToAnyTrack(tracks);
-        noteComponent->setActive(shouldBeActive);
+        const auto nc = e.second.get();
+        const bool isActive = nc->belongsTo(this->activeTrack, this->activeClip);
+        nc->setActive(isActive, true);
+
+        if (shouldZoomToArea && isActive)
+        {
+            focusMinKey = jmin(focusMinKey, nc->getKey());
+            focusMaxKey = jmax(focusMaxKey, nc->getKey());
+            focusMinBeat = jmin(focusMinBeat, nc->getBeat());
+            focusMaxBeat = jmax(focusMaxBeat, nc->getBeat() + nc->getLength());
+        }
     }
 
-    this->selectedTracks = tracks;
-    this->activeTrack = activeTrack;
-    
-    this->repaint(this->viewport.getViewArea());
+    this->updateActiveRangeIndicator();
+
+    if (shouldZoomToArea)
+    {
+        this->zoomToArea(focusMinKey, focusMaxKey,
+            focusMinBeat + this->activeClip.getBeat(),
+            focusMaxBeat + this->activeClip.getBeat());
+
+        // TODO test usability:
+        //this->zoomOutImpulse();
+    }
+    else
+    {
+        this->repaint(this->viewport.getViewArea());
+    }
 }
 
-void PianoRoll::setRowHeight(const int newRowHeight)
+void PianoRoll::updateActiveRangeIndicator() const
 {
-    if (newRowHeight == this->rowHeight || newRowHeight <= 1) { return; }
+    if (this->activeTrack != nullptr)
+    {
+        const float firstBeat = this->activeTrack->getSequence()->getFirstBeat();
+        const float lastBeat = this->activeTrack->getSequence()->getLastBeat();
+        const float clipBeat = this->activeClip.getBeat();
 
-    this->rowHeight = newRowHeight;
-    this->setSize(this->getWidth(),
-        HYBRID_ROLL_HEADER_HEIGHT + this->numRows * this->rowHeight);
+        this->header->updateSubrangeIndicator(this->activeTrack->getTrackColour(),
+            firstBeat + clipBeat, lastBeat + clipBeat);
+    }
+}
+
+WeakReference<MidiTrack> PianoRoll::getActiveTrack() const noexcept { return this->activeTrack; }
+const Clip &PianoRoll::getActiveClip() const noexcept { return this->activeClip; }
+
+void PianoRoll::setDefaultNoteVolume(float volume) noexcept
+{
+    this->newNoteVolume = volume;
+}
+
+void PianoRoll::setRowHeight(int newRowHeight)
+{
+    if (newRowHeight == this->rowHeight) { return; }
+    this->rowHeight = jlimit(PIANOROLL_MIN_ROW_HEIGHT, PIANOROLL_MAX_ROW_HEIGHT, newRowHeight);
+    this->setSize(this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT + this->numRows * this->rowHeight);
 }
 
 //===----------------------------------------------------------------------===//
@@ -165,10 +242,10 @@ void PianoRoll::setRowHeight(const int newRowHeight)
 
 void PianoRoll::selectAll()
 {
-    for (const auto &e : this->eventComponents)
+    forEachEventComponent(this->patternMap, e)
     {
         const auto childComponent = e.second.get();
-        if (childComponent->belongsToAnyTrack(this->selectedTracks))
+        if (childComponent->belongsTo(this->activeTrack, activeClip))
         {
             this->selection.addToSelection(childComponent);
         }
@@ -177,7 +254,7 @@ void PianoRoll::selectAll()
 
 void PianoRoll::setChildrenInteraction(bool interceptsMouse, MouseCursor cursor)
 {
-    for (const auto &e : this->eventComponents)
+    forEachEventComponent(this->patternMap, e)
     {
         const auto childComponent = e.second.get();
         childComponent->setInterceptsMouseClicks(interceptsMouse, interceptsMouse);
@@ -189,9 +266,9 @@ void PianoRoll::setChildrenInteraction(bool interceptsMouse, MouseCursor cursor)
 // Ghost notes
 //===----------------------------------------------------------------------===//
 
-void PianoRoll::showGhostNoteFor(NoteComponent *targetNoteComponent)
+void PianoRoll::showGhostNoteFor(NoteComponent *target)
 {
-    auto component = new NoteComponent(*this, targetNoteComponent->getNote());
+    auto component = new NoteComponent(*this, target->getNote(), target->getClip());
     component->setEnabled(false);
 
     //component->setAlpha(0.2f); // setAlpha makes everything slower
@@ -272,6 +349,22 @@ float PianoRoll::getZoomFactorY() const
     return (viewHeight / float(this->getHeight()));
 }
 
+void PianoRoll::zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat)
+{
+    jassert(minKey >= 0);
+    jassert(maxKey > minKey);
+
+    const int margin = 2;
+    const float numKeysToFit = float(maxKey - minKey + margin);
+    const float heightToFit = float(this->viewport.getViewHeight());
+    this->setRowHeight(int(heightToFit / numKeysToFit));
+
+    const int maxKeyY = this->getRowHeight() * (128 - maxKey - margin);
+    this->viewport.setViewPosition(this->viewport.getViewPositionY() - HYBRID_ROLL_HEADER_HEIGHT, maxKeyY);
+
+    HybridRoll::zoomToArea(minBeat, maxBeat);
+}
+
 //===----------------------------------------------------------------------===//
 // Note management
 //===----------------------------------------------------------------------===//
@@ -286,13 +379,17 @@ void PianoRoll::addNote(int key, float beat, float length, float velocity)
 
 Rectangle<float> PianoRoll::getEventBounds(FloatBoundsComponent *mc) const
 {
-    //jassert(dynamic_cast<NoteComponent *>(mc));
-    NoteComponent *nc = static_cast<NoteComponent *>(mc);
-    return this->getEventBounds(nc->getKey(), nc->getBeat(), nc->getLength());
+    jassert(dynamic_cast<NoteComponent *>(mc));
+    const auto *nc = static_cast<NoteComponent *>(mc);
+    return this->getEventBounds(nc->getKey(), nc->getBeat() + nc->getClip().getBeat(), nc->getLength());
 }
 
 Rectangle<float> PianoRoll::getEventBounds(int key, float beat, float length) const
 {
+    jassert(key >= -128 && key <= 128);
+    //jassert(length > 0.f);
+    //Logger::writeToLog("getEventBounds " + String(key) + ", " + String(beat));
+
     const double startOffsetBeat = this->firstBar * double(BEATS_PER_BAR);
     const double x = this->barWidth * double(beat - startOffsetBeat) / double(BEATS_PER_BAR);
 
@@ -304,14 +401,14 @@ Rectangle<float> PianoRoll::getEventBounds(int key, float beat, float length) co
 
 void PianoRoll::getRowsColsByComponentPosition(float x, float y, int &noteNumber, float &beatNumber) const
 {
-    beatNumber = this->getRoundBeatByXPosition(int(x)); /* - 0.5f ? */
+    beatNumber = this->getRoundBeatByXPosition(int(x)) - this->activeClip.getBeat(); /* - 0.5f ? */
     noteNumber = roundToInt((this->getHeight() - y) / this->rowHeight);
     noteNumber = jmin(jmax(noteNumber, 0), numRows - 1);
 }
 
 void PianoRoll::getRowsColsByMousePosition(int x, int y, int &noteNumber, float &beatNumber) const
 {
-    beatNumber = this->getFloorBeatByXPosition(x);
+    beatNumber = this->getFloorBeatByXPosition(x) - this->activeClip.getBeat();
     noteNumber = roundToInt((this->getHeight() - y) / this->rowHeight);
     noteNumber = jmin(jmax(noteNumber, 0), numRows - 1);
 }
@@ -361,31 +458,34 @@ void PianoRoll::moveHelpers(const float deltaBeat, const int deltaKey)
     this->helperHorizontal->setBounds(selectionTranslated.withLeft(vX).withWidth(vW));
 }
 
-
 //===----------------------------------------------------------------------===//
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
 void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
-    HybridRoll::onChangeMidiEvent(oldEvent, newEvent);
-    
     if (oldEvent.isTypeOf(MidiEvent::Note))
     {
         const Note &note = static_cast<const Note &>(oldEvent);
         const Note &newNote = static_cast<const Note &>(newEvent);
-        if (const auto component = this->eventComponents[note].release())
+        const auto track = newEvent.getSequence()->getTrack();
+
+        forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
-            // Pass ownership to another key:
-            this->eventComponents.erase(note);
-            // Hitting this assert means that a track somehow contains events
-            // with duplicate id's. This should never, ever happen.
-            jassert(! this->eventComponents.contains(newNote));
-            // Always erase before updating, as it may happen both events have the same hash code:
-            this->eventComponents[newNote] = UniquePointer<NoteComponent>(component);
-            // Schedule to be repainted later:
-            this->batchRepaintList.add(component);
-            this->triggerAsyncUpdate();
+            auto &sequenceMap = *c.second.get();
+            if (const auto component = sequenceMap[note].release())
+            {
+                // Pass ownership to another key:
+                sequenceMap.erase(note);
+                // Hitting this assert means that a track somehow contains events
+                // with duplicate id's. This should never, ever happen.
+                jassert(!sequenceMap.contains(newNote));
+                // Always erase before updating, as it may happen both events have the same hash code:
+                sequenceMap[newNote] = UniquePointer<NoteComponent>(component);
+                // Schedule to be repainted later:
+                this->batchRepaintList.add(component);
+                this->triggerAsyncUpdate();
+            }
         }
     }
     else if (oldEvent.isTypeOf(MidiEvent::KeySignature))
@@ -400,33 +500,39 @@ void PianoRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &ne
         }
         this->repaint();
     }
+
+    HybridRoll::onChangeMidiEvent(oldEvent, newEvent);
 }
 
 void PianoRoll::onAddMidiEvent(const MidiEvent &event)
 {
-    HybridRoll::onAddMidiEvent(event);
-    
     if (event.isTypeOf(MidiEvent::Note))
     {
         const Note &note = static_cast<const Note &>(event);
+        const auto track = note.getSequence()->getTrack();
 
-        auto component = new NoteComponent(*this, note);
-        this->eventComponents[note] = UniquePointer<NoteComponent>(component);
-        this->addAndMakeVisible(component);
-
-        this->fader.fadeIn(component, 150);
-
-        const bool isActive = component->belongsToAnyTrack(this->selectedTracks);
-        component->setActive(isActive);
-
-        this->batchRepaintList.add(component);
-        this->triggerAsyncUpdate(); // instead of updateBounds
-
-        if (this->addNewNoteMode)
+        forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
-            this->draggingNote = component;
-            this->addNewNoteMode = false;
-            this->selectEvent(this->draggingNote, true); // clear prev selection
+            auto &sequenceMap = *c.second.get();
+
+            auto component = new NoteComponent(*this, note, c.first);
+            sequenceMap[note] = UniquePointer<NoteComponent>(component);
+            this->addAndMakeVisible(component);
+
+            this->fader.fadeIn(component, 150);
+
+            const bool isActive = component->belongsTo(this->activeTrack, this->activeClip);
+            component->setActive(isActive);
+
+            this->batchRepaintList.add(component);
+            this->triggerAsyncUpdate(); // instead of updateBounds
+
+            if (this->addNewNoteMode && isActive)
+            {
+                this->newNoteDragging = component;
+                this->addNewNoteMode = false;
+                this->selectEvent(this->newNoteDragging, true); // clear prev selection
+            }
         }
     }
     else if (event.isTypeOf(MidiEvent::KeySignature))
@@ -436,23 +542,29 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
         this->updateBackgroundCacheFor(key);
         this->repaint();
     }
+
+    HybridRoll::onAddMidiEvent(event);
 }
 
 void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
 {
-    HybridRoll::onRemoveMidiEvent(event);
-
     if (event.isTypeOf(MidiEvent::Note))
     {
         this->hideHelpers();
         this->hideAllGhostNotes(); // Avoids crash
 
         const Note &note = static_cast<const Note &>(event);
-        if (NoteComponent *deletedComponent = this->eventComponents[note].get())
+        const auto track = note.getSequence()->getTrack();
+
+        forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
-            this->fader.fadeOut(deletedComponent, 150);
-            this->selection.deselect(deletedComponent);
-            this->eventComponents.erase(note);
+            auto &sequenceMap = *c.second.get();
+            if (NoteComponent *deletedComponent = sequenceMap[note].get())
+            {
+                this->fader.fadeOut(deletedComponent, 150);
+                this->selection.deselect(deletedComponent);
+                sequenceMap.erase(note);
+            }
         }
     }
     else if (event.isTypeOf(MidiEvent::KeySignature))
@@ -461,45 +573,119 @@ void PianoRoll::onRemoveMidiEvent(const MidiEvent &event)
         this->removeBackgroundCacheFor(key);
         this->repaint();
     }
+
+    HybridRoll::onRemoveMidiEvent(event);
+}
+
+void PianoRoll::onAddClip(const Clip &clip)
+{
+    const SequenceMap *referenceMap = nullptr;
+    const auto *track = clip.getPattern()->getTrack();
+
+    forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
+    {
+        // Found a sequence map for the same track
+        referenceMap = c.second.get();
+        break;
+    }
+
+    if (referenceMap == nullptr)
+    {
+        jassertfalse;
+        return;
+    }
+
+    auto sequenceMap = new SequenceMap();
+    this->patternMap[clip] = UniquePointer<SequenceMap>(sequenceMap);
+
+    for (const auto &e : *referenceMap)
+    {
+        // reference the same note as neighbor components:
+        const auto &note = e.second.get()->getNote();
+        auto component = new NoteComponent(*this, note, clip);
+        (*sequenceMap)[note] = UniquePointer<NoteComponent>(component);
+        this->addAndMakeVisible(component);
+
+        const bool isActive = component->belongsTo(this->activeTrack, this->activeClip);
+        component->setActive(isActive);
+
+        this->batchRepaintList.add(component);
+    }
+
+    this->triggerAsyncUpdate();
+}
+
+void PianoRoll::onChangeClip(const Clip &clip, const Clip &newClip)
+{
+    if (auto *sequenceMap = this->patternMap[clip].release())
+    {
+        // Set new key for existing sequence map
+        this->patternMap.erase(clip);
+        this->patternMap[newClip] = UniquePointer<SequenceMap>(sequenceMap);
+
+        // And update all components within it, as their beats should change
+        for (const auto &e : *sequenceMap)
+        {
+            this->batchRepaintList.add(e.second.get());
+        }
+
+        if (newClip == this->activeClip)
+        {
+            this->updateActiveRangeIndicator();
+        }
+
+        // Schedule batch repaint
+        this->triggerAsyncUpdate();
+    }
+}
+
+void PianoRoll::onRemoveClip(const Clip &clip)
+{
+    HYBRID_ROLL_BULK_REPAINT_START
+
+    if (const auto *deletedSequenceMap = this->patternMap[clip].get())
+    {
+        this->patternMap.erase(clip);
+    }
+
+    HYBRID_ROLL_BULK_REPAINT_END
 }
 
 void PianoRoll::onChangeTrackProperties(MidiTrack *const track)
 {
-    if (auto sequence = dynamic_cast<const PianoSequence *>(track->getSequence()))
+    if (dynamic_cast<const PianoSequence *>(track->getSequence()))
     {
-        // TODO only repaint notes of a changed track?
-        for (const auto &e : this->eventComponents)
+        forEachEventOfGivenTrack(this->patternMap, e, track)
         {
             const auto component = e.second.get();
             component->updateColours();
         }
 
+        this->updateActiveRangeIndicator(); // colour might have changed
         this->repaint();
     }
 }
 
 void PianoRoll::onAddTrack(MidiTrack *const track)
 {
+    HYBRID_ROLL_BULK_REPAINT_START
+
+    this->loadTrack(track);
+
     for (int j = 0; j < track->getSequence()->size(); ++j)
     {
         const MidiEvent *const event = track->getSequence()->getUnchecked(j);
-        if (event->isTypeOf(MidiEvent::Note))
-        {
-            const auto note = static_cast<const Note *const>(event);
-            auto noteComponent = new NoteComponent(*this, *note);
-            this->eventComponents[*note] = UniquePointer<NoteComponent>(noteComponent);
-
-            const bool belongsToActiveTrack = noteComponent->belongsToAnyTrack(this->selectedTracks);
-            noteComponent->setActive(belongsToActiveTrack, true);
-
-            this->addAndMakeVisible(noteComponent);
-        }
-        else if (event->isTypeOf(MidiEvent::KeySignature))
+        if (event->isTypeOf(MidiEvent::KeySignature))
         {
             const KeySignatureEvent &key = static_cast<const KeySignatureEvent &>(*event);
             this->updateBackgroundCacheFor(key);
         }
     }
+
+    // In case key signatures added:
+    this->repaint(this->viewport.getViewArea());
+
+    HYBRID_ROLL_BULK_REPAINT_END
 }
 
 void PianoRoll::onRemoveTrack(MidiTrack *const track)
@@ -511,15 +697,19 @@ void PianoRoll::onRemoveTrack(MidiTrack *const track)
 
     for (int i = 0; i < track->getSequence()->size(); ++i)
     {
-        const auto event = track->getSequence()->getUnchecked(i);
+        const auto *event = track->getSequence()->getUnchecked(i);
         if (event->isTypeOf(MidiEvent::Note))
         {
             const Note &note = static_cast<const Note &>(*event);
-            if (NoteComponent *deletedComponent = this->eventComponents[note].get())
+            for (const auto &c : this->patternMap)
             {
-                this->fader.fadeOut(deletedComponent, 150);
-                this->selection.deselect(deletedComponent);
-                this->eventComponents.erase(note);
+                auto &sequenceMap = *c.second.get();
+                if (auto *deletedComponent = sequenceMap[note].get())
+                {
+                    this->fader.fadeOut(deletedComponent, 150);
+                    this->selection.deselect(deletedComponent);
+                    sequenceMap.erase(note);
+                }
             }
         }
         else if (event->isTypeOf(MidiEvent::KeySignature))
@@ -536,6 +726,12 @@ void PianoRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks)
     this->reloadRollContent();
 }
 
+void PianoRoll::onChangeProjectBeatRange(float firstBeat, float lastBeat)
+{
+    this->updateActiveRangeIndicator();
+    HybridRoll::onChangeProjectBeatRange(firstBeat, lastBeat);
+}
+
 //===----------------------------------------------------------------------===//
 // LassoSource
 //===----------------------------------------------------------------------===//
@@ -547,7 +743,7 @@ void PianoRoll::selectEventsInRange(float startBeat, float endBeat, bool shouldC
         this->selection.deselectAll();
     }
 
-    for (const auto &e : this->eventComponents)
+    forEachEventComponent(this->patternMap, e)
     {
         const auto component = e.second.get();
         if (component->isActive() &&
@@ -563,7 +759,7 @@ void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, c
 {
     this->selection.invalidateCache();
 
-    for (const auto &e : this->eventComponents)
+    forEachEventComponent(this->patternMap, e)
     {
         const auto component = e.second.get();
         component->setSelected(false);
@@ -574,7 +770,7 @@ void PianoRoll::findLassoItemsInArea(Array<SelectableComponent *> &itemsFound, c
         component->setSelected(true);
     }
     
-    for (const auto &e : this->eventComponents)
+    forEachEventComponent(this->patternMap, e)
     {
         const auto component = e.second.get();
         if (rectangle.intersects(component->getBounds()) && component->isActive())
@@ -607,8 +803,6 @@ void PianoRoll::mouseDown(const MouseEvent &e)
     }
 
     HybridRoll::mouseDown(e);
-
-    this->mouseDownWasTriggered = true;
 }
 
 void PianoRoll::mouseDoubleClick(const MouseEvent &e)
@@ -631,21 +825,15 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
         return;
     }
 
-    if (this->draggingNote)
+    if (this->newNoteDragging)
     {
-        if (this->draggingNote->isResizing())
+        if (this->newNoteDragging->isInitializing())
         {
-            this->draggingNote->mouseDrag(e.getEventRelativeTo(this->draggingNote));
+            this->newNoteDragging->mouseDrag(e.getEventRelativeTo(this->newNoteDragging));
         }
         else
         {
-            //if (PianoSequence *activeSequence = dynamic_cast<PianoSequence *>(this->activeLayer))
-            //{
-            //    activeSequence->checkpoint();
-            //}
-
-            this->draggingNote->startResizingRight(true);
-            this->draggingNote->setNoCheckpointNeededForNextAction(); // a hack
+            this->newNoteDragging->startInitializing();
             this->setMouseCursor(MouseCursor(MouseCursor::LeftRightResizeCursor));
         }
     }
@@ -660,15 +848,14 @@ void PianoRoll::mouseUp(const MouseEvent &e)
         return;
     }
     
-    // Due to weird modal component behavior,
-    // a component can receive mouseUp event without receiving a mouseDown event before.
-    
-//    if (! this->mouseDownWasTriggered)
-//    {
-//        return;
-//    }
+    // Dismiss newNoteDragging, if needed
+    if (this->newNoteDragging != nullptr)
+    {
 
-    const bool justEndedDraggingNewNote = this->dismissDraggingNoteIfNeeded();
+        this->newNoteDragging->endInitializing();
+        this->setMouseCursor(this->project.getEditMode().getCursor());
+        this->newNoteDragging = nullptr;
+    }
 
     if (! this->isUsingSpaceDraggingMode())
     {
@@ -677,23 +864,6 @@ void PianoRoll::mouseUp(const MouseEvent &e)
         // process lasso selection logic
         HybridRoll::mouseUp(e);
     }
-
-    this->mouseDownWasTriggered = false;
-}
-
-bool PianoRoll::dismissDraggingNoteIfNeeded()
-{
-    // todo dismissDraggingNoteIfNeeded on edit mode change?
-    if (this->draggingNote != nullptr)
-    {
-
-        this->draggingNote->endResizingRight();
-        this->setMouseCursor(this->project.getEditMode().getCursor());
-        this->draggingNote = nullptr;
-        return true;
-    }
-
-    return false;
 }
 
 //===----------------------------------------------------------------------===//
@@ -705,14 +875,13 @@ void PianoRoll::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {
-    case CommandIDs::SelectAllEvents:
-        this->selectAll();
-        break;
-    case CommandIDs::ZoomIn:
-        this->zoomInImpulse();
-        break;
-    case CommandIDs::ZoomOut:
-        this->zoomOutImpulse();
+    case CommandIDs::RenameTrack:
+        if (auto trackNode = dynamic_cast<MidiTrackTreeItem *>(this->project.findPrimaryActiveItem()))
+        {
+            auto inputDialog = ModalDialogInput::Presets::renameTrack(trackNode->getXPath());
+            inputDialog->onOk = trackNode->getRenameCallback();
+            App::Layout().showModalComponentUnowned(inputDialog.release());
+        }
         break;
     case CommandIDs::CopyEvents:
         SequencerOperations::copyToClipboard(App::Clipboard(), this->getLassoSelection());
@@ -730,55 +899,6 @@ void PianoRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::DeleteEvents:
         SequencerOperations::deleteSelection(this->getLassoSelection());
-        break;
-    case CommandIDs::Undo:
-        this->project.undo();
-        break;
-    case CommandIDs::Redo:
-        this->project.redo();
-        break;
-    case CommandIDs::StartDragViewport:
-        this->header->setSoundProbeMode(true);
-        //if (!this->project.getEditMode().isMode(HybridRollEditMode::dragMode))
-        { this->setSpaceDraggingMode(true); }
-        break;
-    case CommandIDs::EndDragViewport:
-        this->header->setSoundProbeMode(false);
-        if (this->isUsingSpaceDraggingMode())
-        {
-            const bool noDraggingWasDone = (this->draggedDistance < 3);
-            const bool notTooMuchTimeSpent = (Time::getCurrentTime() - this->timeEnteredDragMode).inMilliseconds() < 300;
-            if (noDraggingWasDone && notTooMuchTimeSpent)
-            {
-                this->project.getTransport().toggleStatStopPlayback();
-            }
-            this->setSpaceDraggingMode(false);
-        }
-        break;
-    case CommandIDs::TransportStartPlayback:
-        if (this->project.getTransport().isPlaying())
-        {
-            this->startFollowingPlayhead();
-        }
-        else
-        {
-            this->project.getTransport().startPlayback();
-            this->startFollowingPlayhead();
-        }
-        break;
-    case CommandIDs::TransportPausePlayback:
-        if (this->project.getTransport().isPlaying())
-        {
-            this->project.getTransport().stopPlayback();
-        }
-        else
-        {
-            this->resetAllClippingIndicators();
-            this->resetAllOversaturationIndicators();
-        }
-
-        App::Workspace().getAudioCore().mute();
-        App::Workspace().getAudioCore().unmute();
         break;
     case CommandIDs::BeatShiftLeft:
         SequencerOperations::shiftBeatRelative(this->getLassoSelection(), -1.f / BEATS_PER_BAR);
@@ -833,13 +953,6 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::EditModeSelect:
         this->project.getEditMode().setMode(HybridRollEditMode::selectionMode);
         break;
-    case CommandIDs::VersionControlToggleQuickStash:
-        if (VersionControlTreeItem *vcsTreeItem =
-            this->project.findChildOfType<VersionControlTreeItem>())
-        {
-            vcsTreeItem->toggleQuickStash();
-        }
-        break;
     case CommandIDs::CreateArpeggiatorFromSelection:
         {
             // TODO
@@ -892,7 +1005,7 @@ void PianoRoll::resized()
 
     HYBRID_ROLL_BULK_REPAINT_START
 
-    for (const auto &e : this->eventComponents)
+    forEachEventComponent(this->patternMap, e)
     {
         const auto component = e.second.get();
         component->setFloatBounds(this->getEventBounds(component));
@@ -974,13 +1087,8 @@ void PianoRoll::insertNewNoteAt(const MouseEvent &e)
     float draggingColumn = 0.f;
     this->getRowsColsByMousePosition(e.x, e.y, draggingRow, draggingColumn);
     this->addNewNoteMode = true;
-    // TODO adjust default velocity in runtime,
-    // e.g. use the last added note's velocity
-    this->addNote(draggingRow, draggingColumn, 
-        DEFAULT_NOTE_LENGTH, DEFAULT_NOTE_VELOCITY);
-    //this->activeLayer->sendMidiMessage(MidiMessage::noteOn(this->activeLayer->getChannel(), draggingRow, 0.5f));
+    this->addNote(draggingRow, draggingColumn, DEFAULT_NOTE_LENGTH, this->newNoteVolume);
 }
-
 
 //===----------------------------------------------------------------------===//
 // HybridRoll's legacy
@@ -1214,7 +1322,7 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
 
     float currentHeight = float(height);
     float previousHeight = 0;
-    float pos_y = patternImage.getHeight() - currentHeight;
+    float posY = patternImage.getHeight() - currentHeight;
 
     const int middleCOffset = scale->getBasePeriod() - (MIDDLE_C % scale->getBasePeriod());
     const int lastOctaveReminder = (128 % scale->getBasePeriod()) - root + middleCOffset;
@@ -1224,7 +1332,7 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
 
     // draw rows
     for (int i = lastOctaveReminder;
-        (i < ROWS_OF_TWO_OCTAVES + lastOctaveReminder) && ((pos_y + previousHeight) >= 0.0f);
+        (i < ROWS_OF_TWO_OCTAVES + lastOctaveReminder) && ((posY + previousHeight) >= 0.0f);
         i++)
     {
         const int noteNumber = (i % 12);
@@ -1237,27 +1345,27 @@ Image PianoRoll::renderRowsPattern(const HelioTheme &theme,
         {
             const Colour c = octaveIsOdd ? rootKeyBright : rootKey;
             g.setColour(c);
-            g.fillRect(0, int(pos_y + 1), patternImage.getWidth(), int(previousHeight - 1));
+            g.fillRect(0, int(posY + 1), patternImage.getWidth(), int(previousHeight - 1));
             g.setColour(c.brighter(0.025f));
-            g.drawHorizontalLine(int(pos_y + 1), 0.f, float(patternImage.getWidth()));
+            g.drawHorizontalLine(int(posY + 1), 0.f, float(patternImage.getWidth()));
         }
         else if (scale->hasKey(noteNumber))
         {
             g.setColour(whiteKeyBright.brighter(0.025f));
-            g.drawHorizontalLine(int(pos_y + 1), 0.f, float(patternImage.getWidth()));
+            g.drawHorizontalLine(int(posY + 1), 0.f, float(patternImage.getWidth()));
         }
         else
         {
             g.setColour(octaveIsOdd ? blackKeyBright : blackKey);
-            g.fillRect(0, int(pos_y + 1), patternImage.getWidth(), int(previousHeight - 1));
+            g.fillRect(0, int(posY + 1), patternImage.getWidth(), int(previousHeight - 1));
         }
 
         // fill divider line
         g.setColour(rowLine);
-        g.drawHorizontalLine(int(pos_y), 0.f, float(patternImage.getWidth()));
+        g.drawHorizontalLine(int(posY), 0.f, float(patternImage.getWidth()));
 
         currentHeight = float(height);
-        pos_y -= currentHeight;
+        posY -= currentHeight;
     }
 
     HelioTheme::drawNoise(theme, g, 2.f);

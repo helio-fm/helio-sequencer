@@ -77,7 +77,7 @@ float Pattern::getFirstBeat() const noexcept
         return FLT_MAX;
     }
 
-    return this->clips.getFirst()->getStartBeat();
+    return this->clips.getFirst()->getBeat();
 }
 
 float Pattern::getLastBeat() const noexcept
@@ -87,7 +87,7 @@ float Pattern::getLastBeat() const noexcept
         return -FLT_MAX;
     }
 
-    return this->clips.getLast()->getStartBeat();
+    return this->clips.getLast()->getBeat();
 }
 
 void Pattern::sort()
@@ -104,7 +104,7 @@ void Pattern::sort()
 
 void Pattern::checkpoint()
 {
-    this->getUndoStack()->beginNewTransaction(String::empty);
+    this->getUndoStack()->beginNewTransaction({});
 }
 
 void Pattern::undo()
@@ -133,11 +133,6 @@ void Pattern::clearUndoHistory()
 // Clip Actions
 //===----------------------------------------------------------------------===//
 
-OwnedArray<Clip> &Pattern::getClips() noexcept
-{
-    return this->clips;
-}
-
 void Pattern::silentImport(const Clip &clip)
 {
     if (this->usedClipIds.contains(clip.getId()))
@@ -146,23 +141,23 @@ void Pattern::silentImport(const Clip &clip)
         return;
     }
 
-    const auto storedClip = new Clip(this, clip);
+    auto *storedClip = new Clip(this, clip);
     this->clips.addSorted(*storedClip, storedClip);
     this->usedClipIds.insert(storedClip->getId());
     this->updateBeatRange(false);
 }
 
-bool Pattern::insert(Clip clipParams, const bool undoable)
+bool Pattern::insert(Clip clipParams, bool undoable)
 {
     if (undoable)
     {
         this->getUndoStack()->
-            perform(new PatternClipInsertAction(*this->getProject(),
+            perform(new ClipInsertAction(*this->getProject(),
                 this->getTrackId(), clipParams));
     }
     else
     {
-        const auto ownedClip = new Clip(this, clipParams);
+        auto *ownedClip = new Clip(this, clipParams);
         this->clips.addSorted(*ownedClip, ownedClip);
         this->notifyClipAdded(*ownedClip);
         this->updateBeatRange(true);
@@ -171,12 +166,12 @@ bool Pattern::insert(Clip clipParams, const bool undoable)
     return true;
 }
 
-bool Pattern::remove(Clip clipParams, const bool undoable)
+bool Pattern::remove(Clip clipParams, bool undoable)
 {
     if (undoable)
     {
         this->getUndoStack()->
-            perform(new PatternClipRemoveAction(*this->getProject(),
+            perform(new ClipRemoveAction(*this->getProject(),
                 this->getTrackId(), clipParams));
     }
     else
@@ -185,7 +180,7 @@ bool Pattern::remove(Clip clipParams, const bool undoable)
         jassert(index >= 0);
         if (index >= 0)
         {
-            Clip *const removedClip = this->clips[index];
+            const auto *removedClip = this->clips[index];
             jassert(removedClip->isValid());
             this->notifyClipRemoved(*removedClip);
             this->clips.remove(index, true);
@@ -199,12 +194,12 @@ bool Pattern::remove(Clip clipParams, const bool undoable)
     return true;
 }
 
-bool Pattern::change(Clip oldParams, Clip newParams, const bool undoable)
+bool Pattern::change(Clip oldParams, Clip newParams, bool undoable)
 {
     if (undoable)
     {
         this->getUndoStack()->
-            perform(new PatternClipChangeAction(*this->getProject(),
+            perform(new ClipChangeAction(*this->getProject(),
                 this->getTrackId(), oldParams, newParams));
     }
     else
@@ -222,6 +217,94 @@ bool Pattern::change(Clip oldParams, Clip newParams, const bool undoable)
         }
 
         return false;
+    }
+
+    return true;
+}
+
+bool Pattern::insertGroup(Array<Clip> &group, bool undoable)
+{
+    if (undoable)
+    {
+        this->getUndoStack()->
+            perform(new ClipsGroupInsertAction(*this->getProject(),
+                this->getTrackId(), group));
+    }
+    else
+    {
+        for (int i = 0; i < group.size(); ++i)
+        {
+            const Clip &eventParams = group.getUnchecked(i);
+            const auto ownedClip = new Clip(this, eventParams);
+            this->clips.addSorted(*ownedClip, ownedClip);
+            this->notifyClipAdded(*ownedClip);
+        }
+
+        this->updateBeatRange(true);
+    }
+
+    return true;
+}
+
+bool Pattern::removeGroup(Array<Clip> &group, bool undoable)
+{
+    if (undoable)
+    {
+        this->getUndoStack()->
+            perform(new ClipsGroupRemoveAction(*this->getProject(),
+                this->getTrackId(), group));
+    }
+    else
+    {
+        for (int i = 0; i < group.size(); ++i)
+        {
+            const Clip &clip = group.getUnchecked(i);
+            const int index = this->clips.indexOfSorted(clip, &clip);
+            jassert(index >= 0);
+            if (index >= 0)
+            {
+                const auto removedClip = this->clips[index];
+                this->notifyClipRemoved(*removedClip);
+                this->clips.remove(index, true);
+            }
+        }
+
+        this->updateBeatRange(true);
+        this->notifyClipRemovedPostAction();
+    }
+
+    return true;
+}
+
+bool Pattern::changeGroup(Array<Clip> &groupBefore, Array<Clip> &groupAfter, bool undoable)
+{
+    jassert(groupBefore.size() == groupAfter.size());
+
+    if (undoable)
+    {
+        this->getUndoStack()->
+            perform(new ClipsGroupChangeAction(*this->getProject(),
+                this->getTrackId(), groupBefore, groupAfter));
+    }
+    else
+    {
+        for (int i = 0; i < groupBefore.size(); ++i)
+        {
+            const Clip &oldParams = groupBefore.getUnchecked(i);
+            const Clip &newParams = groupAfter.getUnchecked(i);
+            const int index = this->clips.indexOfSorted(oldParams, &oldParams);
+            jassert(index >= 0);
+            if (index >= 0)
+            {
+                const auto changedClip = static_cast<Clip *>(this->clips[index]);
+                changedClip->applyChanges(newParams);
+                this->clips.remove(index, false);
+                this->clips.addSorted(*changedClip, changedClip);
+                this->notifyClipChanged(oldParams, *changedClip);
+            }
+        }
+
+        this->updateBeatRange(true);
     }
 
     return true;
@@ -339,9 +422,9 @@ String Pattern::createUniqueClipId() const noexcept
 // Helpers
 //===----------------------------------------------------------------------===//
 
-String Pattern::getTrackId() const noexcept
+const String &Pattern::getTrackId() const noexcept
 {
-    return this->track.getTrackId().toString();
+    return this->track.getTrackId();
 }
 
 int Pattern::hashCode() const noexcept

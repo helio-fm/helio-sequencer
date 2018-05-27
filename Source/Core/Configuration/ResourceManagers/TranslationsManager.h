@@ -35,7 +35,7 @@ public:
 
     inline const Array<Translation::Ptr> getAvailableLocales() const
     {
-        return this->getResources<Translation::Ptr>();
+        return this->getResources<Translation>();
     }
 
     const Translation::Ptr getCurrentLocale() const noexcept;
@@ -47,7 +47,6 @@ public:
     //===------------------------------------------------------------------===//
     
     String translate(const String &text);
-    String translate(const String &text, const String &resultIfNotFound);
     String translate(const String &baseLiteral, int64 targetNumber);
     
 private:
@@ -69,7 +68,8 @@ private:
 
     SpinLock currentTranslationLock;
     Translation::Ptr currentTranslation;
-    
+    Translation::Ptr fallbackTranslation;
+
     String getSelectedLocaleId() const;
 
     friend struct PluralEquationWrapper;

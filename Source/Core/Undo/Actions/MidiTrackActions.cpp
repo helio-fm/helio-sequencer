@@ -26,10 +26,10 @@
 //===----------------------------------------------------------------------===//
 
 MidiTrackRenameAction::MidiTrackRenameAction(MidiTrackSource &source,
-    String targetTrackId, String newXPath) noexcept :
+    const String &trackId, const String &xPath) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId)),
-    xPathAfter(std::move(newXPath)) {}
+    trackId(trackId),
+    xPathAfter(xPath) {}
 
 bool MidiTrackRenameAction::perform()
 {
@@ -89,9 +89,9 @@ void MidiTrackRenameAction::reset()
 //===----------------------------------------------------------------------===//
 
 MidiTrackChangeColourAction::MidiTrackChangeColourAction(MidiTrackSource &source,
-    String targetTrackId, const Colour &newColour) noexcept :
+    const String &trackId, const Colour &newColour) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId)),
+    trackId(trackId),
     colourAfter(newColour) {}
 
 bool MidiTrackChangeColourAction::perform()
@@ -150,10 +150,10 @@ void MidiTrackChangeColourAction::reset()
 //===----------------------------------------------------------------------===//
 
 MidiTrackChangeInstrumentAction::MidiTrackChangeInstrumentAction(MidiTrackSource &source,
-    String targetTrackId, String newInstrumentId) noexcept :
+    const String &trackId, const String &instrumentId) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId)),
-    instrumentIdAfter(std::move(newInstrumentId)) {}
+    trackId(trackId),
+    instrumentIdAfter(instrumentId) {}
 
 bool MidiTrackChangeInstrumentAction::perform()
 {
@@ -211,9 +211,9 @@ void MidiTrackChangeInstrumentAction::reset()
 //===----------------------------------------------------------------------===//
 
 MidiTrackMuteAction::MidiTrackMuteAction(MidiTrackSource &source,
-    String targetTrackId, bool shouldBeMuted) noexcept :
+    const String &trackId, bool shouldBeMuted) noexcept :
     UndoAction(source),
-    trackId(std::move(targetTrackId)),
+    trackId(trackId),
     muteStateAfter(shouldBeMuted) {}
 
 bool MidiTrackMuteAction::perform()

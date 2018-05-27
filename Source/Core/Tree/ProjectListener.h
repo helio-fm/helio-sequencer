@@ -36,9 +36,9 @@ public:
     virtual void onRemoveMidiEvent(const MidiEvent &event) = 0;
     virtual void onPostRemoveMidiEvent(MidiSequence *const layer) {}
 
-    virtual void onAddClip(const Clip &clip) {}
-    virtual void onChangeClip(const Clip &oldClip, const Clip &newClip) {}
-    virtual void onRemoveClip(const Clip &clip) {}
+    virtual void onAddClip(const Clip &clip) = 0;
+    virtual void onChangeClip(const Clip &oldClip, const Clip &newClip) = 0;
+    virtual void onRemoveClip(const Clip &clip) = 0;
     virtual void onPostRemoveClip(Pattern *const pattern) {}
 
     virtual void onAddTrack(MidiTrack *const track) = 0;

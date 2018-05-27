@@ -37,7 +37,7 @@ public:
     String path;
     bool isLoaded;
 
-    typedef ReferenceCountedObjectPtr<RecentFileDescription> Ptr;
+    using Ptr = ReferenceCountedObjectPtr<RecentFileDescription>;
 
     static int compareElements(RecentFileDescription::Ptr first, RecentFileDescription::Ptr second)
     {

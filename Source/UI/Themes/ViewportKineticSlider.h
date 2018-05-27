@@ -39,7 +39,7 @@ private:
     
     struct Animator : ReferenceCountedObject
     {
-        typedef ReferenceCountedObjectPtr<Animator> Ptr;
+        using Ptr = ReferenceCountedObjectPtr<Animator>;
         
         Component::SafePointer<Viewport> viewport;
         
@@ -49,7 +49,7 @@ private:
     
     struct DragSpeedHolder : ReferenceCountedObject
     {
-        typedef ReferenceCountedObjectPtr<DragSpeedHolder> Ptr;
+        using Ptr = ReferenceCountedObjectPtr<DragSpeedHolder>;
         
         Component::SafePointer<Viewport> viewport;
         Point<float> force;

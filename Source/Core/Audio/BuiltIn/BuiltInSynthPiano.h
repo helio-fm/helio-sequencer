@@ -21,17 +21,12 @@
 
 struct GrandSample
 {
-    GrandSample() {}
-    
-    ~GrandSample()
-    {
-        //Logger::writeToLog("~GrandSample");
-    }
+    GrandSample() = default;
 
-    GrandSample(String keyName,
+    GrandSample(const String &keyName,
         int lowKey, int highKey, int rootKey,
-        const void* sourceData, size_t sourceDataSize) :
-        name(std::move(keyName)),
+        const void *sourceData, size_t sourceDataSize) :
+        name(keyName),
         midiNoteForNormalPitch(rootKey)
     {
         for (int i = lowKey; i <= highKey; ++i)
@@ -58,21 +53,16 @@ public:
     // @param empty: for creating a lightweight Helio instance
     // needed only to fill the description
     explicit BuiltInSynthPiano(bool empty = false);
-    
     ~BuiltInSynthPiano() override;
 
     const String getName() const override;
-
     void processBlock(AudioSampleBuffer &buffer, MidiBuffer &midiMessages) override;
-
     void reset() override;
 
 protected:
 
     void initVoices() override;
-
     void initSampler() override;
-
     void initSamples();
 
     OwnedArray<GrandSample> samples;

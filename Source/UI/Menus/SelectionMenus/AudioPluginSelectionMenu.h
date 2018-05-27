@@ -27,12 +27,13 @@ class AudioPluginSelectionMenu final : public MenuPanel
 public:
     
     AudioPluginSelectionMenu(const PluginDescription pluginDescription,
-        OrchestraPitTreeItem &orchestraNode);
+        OrchestraPitTreeItem &orchestraNode, PluginScanner &scanner);
 
 private:
 
     const PluginDescription pluginDescription;
     OrchestraPitTreeItem &orchestraNode;
+    PluginScanner &pluginScanner;
 
     MenuPanel::Menu createDefaultMenu();
     MenuPanel::Menu createInstrumentsMenu();

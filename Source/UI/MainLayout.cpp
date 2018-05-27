@@ -56,6 +56,9 @@ MainLayout::MainLayout() :
     // TODO make it able for user to select a scheme in settings page
     this->hotkeyScheme = HotkeySchemesManager::getInstance().getCurrentScheme();
 
+    this->setPaintingIsUnclipped(true);
+    this->setOpaque(false);
+
     this->setMouseClickGrabsKeyboardFocus(true);
     this->setWantsKeyboardFocus(true);
     this->setFocusContainer(true);
@@ -131,11 +134,7 @@ void MainLayout::showPage(Component *page, TreeItem *source)
     jassert(page != nullptr);
 
     App::dismissAllModalComponents();
-    
-#if HAS_FADING_PAGECHANGE
-    this->pageFader.cancelAllAnimations(true);
-#endif
-    
+
     if (source != nullptr)
     {
         hideMarkersRecursive(App::Workspace().getTreeRoot());
@@ -146,13 +145,6 @@ void MainLayout::showPage(Component *page, TreeItem *source)
 
     if (this->currentContent != nullptr)
     {
-        // FIXME: currentContent might be a composite layout,
-        // which is not destroyed yet, but has one of it's components destroyed
-#if HAS_FADING_PAGECHANGE
-        //this->currentContent->toFront(false);
-        //this->pageFader.animateComponent(this->currentContent, this->currentContent->getBounds(), 0.f, 200, true, 0.0, 0.0);
-#endif
-
         this->currentContent->setVisible(false);
         this->removeChildComponent(this->currentContent);
     }
@@ -164,30 +156,9 @@ void MainLayout::showPage(Component *page, TreeItem *source)
 
     this->currentContent->setExplicitFocusOrder(1);
 
-#if HAS_FADING_PAGECHANGE
-    {
-        this->currentContent->toFront(false);
-
-#if JUCE_WINDOWS
-        if (MainWindow::isOpenGLRendererEnabled())
-        {
-            this->currentContent->setAlpha(0.f);
-            this->pageFader.animateComponent(this->currentContent, this->currentContent->getBounds(), 1.f, 200, false, 0.0, 0.0);
-        }
-#else
-        this->currentContent->setAlpha(0.f);
-        this->pageFader.animateComponent(this->currentContent, this->currentContent->getBounds(), 1.f, 200, false, 0.0, 0.0);
-#endif
-
-    }
-#endif
-
     this->currentContent->toFront(false);
     
     Config::set(Serialization::Config::lastShownPageId, source->getItemIdentifierString());
-
-    //const Component *focused = Component::getCurrentlyFocusedComponent();
-    //Logger::outputDebugString(focused ? focused->getName() : "null");
 }
 
 void MainLayout::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSource)
@@ -347,7 +318,8 @@ void MainLayout::handleCommandMessage(int commandId)
 
 static void broadcastMessage(Component *root, int commandId)
 {
-    if (root->getComponentID().isNotEmpty())
+    if (root->isEnabled() && root->isShowing() &&
+        root->getComponentID().isNotEmpty())
     {
         root->postCommandMessage(commandId);
     }

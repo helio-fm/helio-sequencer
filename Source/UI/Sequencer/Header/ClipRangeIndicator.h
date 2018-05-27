@@ -18,42 +18,37 @@
 #pragma once
 
 //[Headers]
-#include "HighlightedComponent.h"
-#include "IconButton.h"
-#include "TreeItem.h"
-
-class IconComponent;
-class HeadlineDropdown;
 //[/Headers]
 
-#include "HeadlineItemArrow.h"
 
-class HeadlineNavigationPanel final : public Component
+class ClipRangeIndicator final : public Component
 {
 public:
 
-    HeadlineNavigationPanel();
-    ~HeadlineNavigationPanel();
+    ClipRangeIndicator();
+    ~ClipRangeIndicator();
 
     //[UserMethods]
-    void updateState(bool canGoPrevious, bool canGoNext);
+    float getFirstBeat() const noexcept { return this->firstBeat; }
+    float getLastBeat() const noexcept { return this->lastBeat; }
+
+    // Returns true if range is updated and component should be repositioned
+    bool updateWith(const Colour &colour, float firstBeat, float lastBeat);
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
-    void handleCommandMessage (int commandId) override;
 
 
 private:
 
     //[UserVariables]
-    ScopedPointer<HeadlineDropdown> dropdown;
-    Colour bgColour;
+    Colour paintColour;
+    Colour trackColour;
+    float firstBeat;
+    float lastBeat;
     //[/UserVariables]
 
-    ScopedPointer<IconButton> navigatePrevious;
-    ScopedPointer<IconButton> navigateNext;
-    ScopedPointer<HeadlineItemArrow> component;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (HeadlineNavigationPanel)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ClipRangeIndicator)
 };

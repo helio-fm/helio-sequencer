@@ -21,7 +21,7 @@
 #include "MidiTrack.h"
 #include "SerializationKeys.h"
 
-Clip::Clip() : pattern(nullptr)
+Clip::Clip() : pattern(nullptr), beat(0.f)
 {
     // needed for juce's Array to work
     //jassertfalse;
@@ -46,16 +46,16 @@ Clip::Clip(WeakReference<Pattern> owner, const Clip &parametersToCopy) :
 
 Pattern *Clip::getPattern() const noexcept
 {
-    jassert(this->pattern != nullptr);
+    //jassert(this->pattern != nullptr);
     return this->pattern;
 }
 
-float Clip::getStartBeat() const noexcept
+float Clip::getBeat() const noexcept
 {
     return this->beat;
 }
 
-String Clip::getId() const noexcept
+const String &Clip::getId() const noexcept
 {
     return this->id;
 }
@@ -65,10 +65,16 @@ bool Clip::isValid() const noexcept
     return this->pattern != nullptr && this->id.isNotEmpty();
 }
 
-Colour Clip::getColour() const noexcept
+Colour Clip::getTrackColour() const noexcept
 {
     jassert(this->pattern);
     return this->pattern->getTrack()->getTrackColour();
+}
+
+int Clip::getTrackControllerNumber() const noexcept
+{
+    jassert(this->pattern);
+    return this->pattern->getTrack()->getTrackControllerNumber();
 }
 
 Clip Clip::copyWithNewId(Pattern *newOwner) const
@@ -89,6 +95,13 @@ Clip Clip::withParameters(const ValueTree &tree) const
     Clip c(*this);
     c.deserialize(tree);
     return c;
+}
+
+Clip Clip::withBeat(float absPosition) const
+{
+    Clip other(*this);
+    other.beat = roundBeat(absPosition);
+    return other;
 }
 
 Clip Clip::withDeltaBeat(float deltaPosition) const
