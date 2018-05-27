@@ -58,9 +58,9 @@ public:
     // Always call notifyLayerChanged() when you're done using it.
     void silentImport(const Clip &clipToImport);
 
-    bool insert(Clip clip, const bool undoable);
-    bool remove(Clip clip, const bool undoable);
-    bool change(Clip clip, Clip newClip, const bool undoable);
+    bool insert(Clip clip, bool undoable);
+    bool remove(Clip clip, bool undoable);
+    bool change(Clip clip, Clip newClip, bool undoable);
 
     bool insertGroup(Array<Clip> &clips, bool undoable);
     bool removeGroup(Array<Clip> &clips, bool undoable);

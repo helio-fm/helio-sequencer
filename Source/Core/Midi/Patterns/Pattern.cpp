@@ -141,13 +141,13 @@ void Pattern::silentImport(const Clip &clip)
         return;
     }
 
-    const auto storedClip = new Clip(this, clip);
+    auto *storedClip = new Clip(this, clip);
     this->clips.addSorted(*storedClip, storedClip);
     this->usedClipIds.insert(storedClip->getId());
     this->updateBeatRange(false);
 }
 
-bool Pattern::insert(Clip clipParams, const bool undoable)
+bool Pattern::insert(Clip clipParams, bool undoable)
 {
     if (undoable)
     {
@@ -157,7 +157,7 @@ bool Pattern::insert(Clip clipParams, const bool undoable)
     }
     else
     {
-        const auto ownedClip = new Clip(this, clipParams);
+        auto *ownedClip = new Clip(this, clipParams);
         this->clips.addSorted(*ownedClip, ownedClip);
         this->notifyClipAdded(*ownedClip);
         this->updateBeatRange(true);
@@ -166,7 +166,7 @@ bool Pattern::insert(Clip clipParams, const bool undoable)
     return true;
 }
 
-bool Pattern::remove(Clip clipParams, const bool undoable)
+bool Pattern::remove(Clip clipParams, bool undoable)
 {
     if (undoable)
     {
@@ -180,7 +180,7 @@ bool Pattern::remove(Clip clipParams, const bool undoable)
         jassert(index >= 0);
         if (index >= 0)
         {
-            Clip *const removedClip = this->clips[index];
+            const auto *removedClip = this->clips[index];
             jassert(removedClip->isValid());
             this->notifyClipRemoved(*removedClip);
             this->clips.remove(index, true);
@@ -194,7 +194,7 @@ bool Pattern::remove(Clip clipParams, const bool undoable)
     return true;
 }
 
-bool Pattern::change(Clip oldParams, Clip newParams, const bool undoable)
+bool Pattern::change(Clip oldParams, Clip newParams, bool undoable)
 {
     if (undoable)
     {

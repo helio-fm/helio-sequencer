@@ -22,6 +22,7 @@
 #include "MidiEvent.h"
 #include "PatternRoll.h"
 #include "Pattern.h"
+#include "CommandIDs.h"
 
 static Pattern *getPattern(SelectionProxyArray::Ptr selection)
 {
@@ -40,6 +41,8 @@ ClipComponent::ClipComponent(HybridRoll &editor, const Clip &clip) :
     this->updateColours();
     this->toFront(false);
     this->setPaintingIsUnclipped(true);
+    this->setWantsKeyboardFocus(false);
+    this->setMouseClickGrabsKeyboardFocus(false);
     this->setFloatBounds(this->getRoll().getEventBounds(this));
 }
 
@@ -128,7 +131,7 @@ void ClipComponent::mouseDown(const MouseEvent &e)
 
         for (int i = 0; i < selection.getNumSelected(); i++)
         {
-            if (auto cc = dynamic_cast<ClipComponent *>(selection.getSelectedItem(i)))
+            if (auto *cc = dynamic_cast<ClipComponent *>(selection.getSelectedItem(i)))
             {
                 //if (selection.shouldDisplayGhostClips()) { cc->getRoll().showGhostClipFor(cc); }
                 cc->startDragging();

@@ -51,6 +51,8 @@ NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, const Clip &c
     this->updateColours();
     this->toFront(false);
     this->setPaintingIsUnclipped(true);
+    this->setWantsKeyboardFocus(false);
+    this->setMouseClickGrabsKeyboardFocus(false);
     this->setFloatBounds(this->getRoll().getEventBounds(this));
 }
 

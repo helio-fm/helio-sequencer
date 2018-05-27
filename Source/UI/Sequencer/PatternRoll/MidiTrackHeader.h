@@ -22,14 +22,12 @@ class MidiTrack;
 //[/Headers]
 
 
-class MidiTrackHeader  : public Component,
-                         public TextEditor::Listener,
-                         public Button::Listener
+class MidiTrackHeader final : public Component,
+                              public Button::Listener
 {
 public:
 
-    MidiTrackHeader (const MidiTrack *track);
-
+    MidiTrackHeader(MidiTrack *track);
     ~MidiTrackHeader();
 
     //[UserMethods]
@@ -46,11 +44,7 @@ public:
 private:
 
     //[UserVariables]
-    void textEditorReturnKeyPressed(TextEditor&) override;
-    void textEditorEscapeKeyPressed(TextEditor&) override;
-    void textEditorFocusLost(TextEditor&) override;
-
-    const MidiTrack *track;
+    MidiTrack *track;
 
     Image fillImage;
     Colour borderLightColour;
@@ -59,7 +53,6 @@ private:
     int textWidth;
     //[/UserVariables]
 
-    ScopedPointer<TextEditor> trackNameEditor;
     ScopedPointer<Label> trackNameLabel;
     ScopedPointer<ImageButton> setNameButton;
 

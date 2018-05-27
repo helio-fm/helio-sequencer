@@ -56,6 +56,7 @@ HybridRollHeader::HybridRollHeader(Transport &transportRef, HybridRoll &rollRef,
     this->bevelLightColour = this->findColour(ColourIDs::Common::borderLineLight).withMultipliedAlpha(0.35f);
     this->bevelDarkColour = this->findColour(ColourIDs::Common::borderLineDark);
 
+    this->setMouseClickGrabsKeyboardFocus(false);
     this->setWantsKeyboardFocus(false);
     this->setFocusContainer(false);
     this->setSize(this->getParentWidth(), HYBRID_ROLL_HEADER_HEIGHT);

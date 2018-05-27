@@ -318,7 +318,7 @@ static Rectangle<float> lerpRectangle(const Rectangle<float> &r1,
     const float lx2 = x2 + dx2 * factor;
     const float ly2 = y2 + dy2 * factor;
 
-    return Rectangle<float>(lx1, ly1, lx2 - lx1, ly2 - ly1);
+    return { lx1, ly1, lx2 - lx1, ly2 - ly1 };
 }
 
 static float getRectangleDistance(const Rectangle<float> &r1,
@@ -336,7 +336,7 @@ void TrackScroller::timerCallback()
     const auto mbLerp = lerpRectangle(this->oldMapBounds, mb, 0.2f);
     const auto ib = this->getIndicatorBounds();
     const auto ibLerp = lerpRectangle(this->oldAreaBounds, ib, 0.2f);
-    const bool shouldStop = (getRectangleDistance(this->oldAreaBounds, ib) < 0.5f);
+    const bool shouldStop = getRectangleDistance(this->oldAreaBounds, ib) < 0.5f;
     const auto targetAreaBounds = shouldStop ? ib : ibLerp;
     const auto targetMapBounds = shouldStop ? mb : mbLerp;
 

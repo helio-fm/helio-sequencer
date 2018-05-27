@@ -63,6 +63,7 @@ template class KeySignaturesTrackMap<KeySignatureSmallComponent>;
 #define MAX_NUM_SPLITSCREEN_EDITORS 2
 #define MINIMUM_ROLLS_HEIGHT 250
 #define VERTICAL_ROLLS_LAYOUT 1
+#define ROLLS_ANIMATION_START_SPEED 0.33f
 
 //===----------------------------------------------------------------------===//
 // Splitter
@@ -189,15 +190,10 @@ private:
     float deltaH;
     
     SafePointer<Component> roll;
-
     SafePointer<Origami> automations;
-
     ScopedPointer<ResizableEdgeComponent> resizer;
-    
     ScopedPointer<ResizeConstrainer> constrainer;
-    
 };
-
 
 //===----------------------------------------------------------------------===//
 // Automations Container
@@ -310,7 +306,6 @@ private:
     }
 };
 
-
 //===----------------------------------------------------------------------===//
 // Rolls container responsible for switching between piano and pattern roll
 //===----------------------------------------------------------------------===//
@@ -319,9 +314,6 @@ class RollsSwitchingProxy : public Component, private Timer
 {
 public:
     
-#define ROLLS_SWITCH_ANIMATION_SPEED 0.13f
-#define ROLLS_SWITCH_ANIMATION_ACCELERATION 0.87f
-
     RollsSwitchingProxy(HybridRoll *targetRoll1,
         HybridRoll *targetRoll2,
         Viewport *targetViewport1,
@@ -334,11 +326,12 @@ public:
         scroller(targetScroller),
         animationPosition(0.f),
         animationDirection(-1.f),
-        animationSpeed(0.f)
+        animationSpeed(0.f),
+        animationDeceleration(1.f)
     {
         this->setInterceptsMouseClicks(false, true);
         this->setPaintingIsUnclipped(true);
-        this->setOpaque(true);
+        this->setOpaque(false);
 
         this->addAndMakeVisible(this->pianoViewport);
         this->addAndMakeVisible(this->patternViewport);
@@ -357,7 +350,8 @@ public:
     void startRollSwitchAnimation()
     {
         this->animationDirection *= -1.f;
-        this->animationSpeed = ROLLS_SWITCH_ANIMATION_SPEED;
+        this->animationSpeed = ROLLS_ANIMATION_START_SPEED;
+        this->animationDeceleration = 1.f - this->animationSpeed;
         const bool patternMode = this->isPatternMode();
         this->scroller->switchToRoll(patternMode ? this->patternRoll : this->pianoRoll);
         // Disabling inactive prevents it from receiving keyboard events:
@@ -368,9 +362,6 @@ public:
         this->resized();
         this->startTimerHz(60);
     }
-
-    // This simply prevents a JUCE assertion about opaque component with no painting method
-    void paint(Graphics &g) {}
 
     void resized() override
     {
@@ -448,9 +439,11 @@ private:
     void timerCallback() override
     {
         this->animationPosition += this->animationDirection * this->animationSpeed;
-        this->animationSpeed *= ROLLS_SWITCH_ANIMATION_ACCELERATION;
+        this->animationSpeed *= this->animationDeceleration;
 
-        if (this->animationPosition < 0.001f || this->animationPosition > 0.999f)
+        if (this->animationPosition < 0.001f ||
+            this->animationPosition > 0.999f ||
+            this->animationSpeed < 0.001f)
         {
             this->stopTimer();
 
@@ -459,7 +452,10 @@ private:
             else
             { this->patternViewport->setVisible(false); }
 
-            this->animationPosition = jlimit(0.f, 1.f, this->animationPosition);
+            // Push to either 0 or 1:
+            this->animationPosition = jlimit(0.f, 1.f,
+                this->animationPosition + this->animationDirection);
+
             this->resized();
         }
         else
@@ -480,6 +476,7 @@ private:
     float animationPosition;
     float animationDirection;
     float animationSpeed;
+    float animationDeceleration;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RollsSwitchingProxy)
 };

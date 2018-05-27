@@ -279,11 +279,13 @@ Rectangle<float> PatternRoll::getEventBounds(const Clip &clip, float clipBeat) c
 
     const int trackIndex = this->tracks.indexOfSorted(*track, track);
     const float viewStartOffsetBeat = float(this->firstBar * BEATS_PER_BAR);
-    const float sequenceLength = sequence->getLengthInBeats();
-    const float sequenceStartBeat = sequence->getFirstBeat();
+    const float sequenceOffset = sequence->size() > 0 ? sequence->getFirstBeat() : 0.f;
+
+    // In case there are no events, still display a clip of some default length:
+    const float sequenceLength = jmax(sequence->getLengthInBeats(), float(BEATS_PER_BAR));
 
     const float w = this->barWidth * sequenceLength / BEATS_PER_BAR;
-    const float x = this->barWidth * (sequenceStartBeat + clipBeat - viewStartOffsetBeat) / BEATS_PER_BAR;
+    const float x = this->barWidth * (sequenceOffset + clipBeat - viewStartOffsetBeat) / BEATS_PER_BAR;
     const float y = float(trackIndex * rowHeight());
 
     return Rectangle<float>(x,
@@ -297,16 +299,16 @@ float PatternRoll::getBeatForClipByXPosition(const Clip &clip, float x) const
     const Pattern *pattern = clip.getPattern();
     const MidiTrack *track = pattern->getTrack();
     const MidiSequence *sequence = track->getSequence();
-    const float sequenceStartBeat = sequence->getFirstBeat();
-    return this->getRoundBeatByXPosition(int(x)) - sequenceStartBeat; /* - 0.5f ? */
+    const float sequenceOffset = sequence->size() > 0 ? sequence->getFirstBeat() : 0.f;
+    return this->getRoundBeatByXPosition(int(x)) - sequenceOffset; /* - 0.5f ? */
 }
 
 float PatternRoll::getBeatByMousePosition(const Pattern *pattern, int x) const
 {
     const MidiTrack *track = pattern->getTrack();
     const MidiSequence *sequence = track->getSequence();
-    const float sequenceStartBeat = sequence->getFirstBeat();
-    return this->getFloorBeatByXPosition(x) - sequenceStartBeat;
+    const float sequenceOffset = sequence->size() > 0 ? sequence->getFirstBeat() : 0.f;
+    return this->getFloorBeatByXPosition(x) - sequenceOffset;
 }
 
 Pattern *PatternRoll::getPatternByMousePosition(int y) const
@@ -734,7 +736,7 @@ void PatternRoll::parentSizeChanged()
 
 void PatternRoll::insertNewClipAt(const MouseEvent &e)
 {
-    const auto pattern = this->getPatternByMousePosition(e.y);
+    auto *pattern = this->getPatternByMousePosition(e.y);
     const float draggingBeat = this->getBeatByMousePosition(pattern, e.x);
     this->addNewClipMode = true;
     this->addClip(pattern, draggingBeat);
