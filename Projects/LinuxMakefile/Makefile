@@ -313,6 +313,7 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/ProgressTooltip_f470232a.o \
   $(JUCE_OBJDIR)/SuccessTooltip_7d75a6f6.o \
   $(JUCE_OBJDIR)/TooltipContainer_52ddacf4.o \
+  $(JUCE_OBJDIR)/ClipRangeIndicator_c202e394.o \
   $(JUCE_OBJDIR)/HeaderSelectionIndicator_5aed2562.o \
   $(JUCE_OBJDIR)/HybridRollHeader_e7c11898.o \
   $(JUCE_OBJDIR)/Playhead_49aa3d26.o \
@@ -408,7 +409,6 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/BinaryData7_8c658ee5.o \
   $(JUCE_OBJDIR)/BinaryData8_8c73a666.o \
   $(JUCE_OBJDIR)/BinaryData9_8c81bde7.o \
-  $(JUCE_OBJDIR)/BinaryData10_f61320fb.o \
   $(JUCE_OBJDIR)/include_juce_audio_basics_68629202.o \
   $(JUCE_OBJDIR)/include_juce_audio_devices_477c5a4a.o \
   $(JUCE_OBJDIR)/include_juce_audio_formats_fa635d49.o \
@@ -1457,6 +1457,11 @@ $(JUCE_OBJDIR)/TooltipContainer_52ddacf4.o: ../../Source/UI/Popups/TooltipContai
 	@echo "Compiling TooltipContainer.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
+$(JUCE_OBJDIR)/ClipRangeIndicator_c202e394.o: ../../Source/UI/Sequencer/Header/ClipRangeIndicator.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling ClipRangeIndicator.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
 $(JUCE_OBJDIR)/HeaderSelectionIndicator_5aed2562.o: ../../Source/UI/Sequencer/Header/HeaderSelectionIndicator.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling HeaderSelectionIndicator.cpp"
@@ -1930,11 +1935,6 @@ $(JUCE_OBJDIR)/BinaryData8_8c73a666.o: ../Projucer/JuceLibraryCode/BinaryData8.c
 $(JUCE_OBJDIR)/BinaryData9_8c81bde7.o: ../Projucer/JuceLibraryCode/BinaryData9.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling BinaryData9.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
-$(JUCE_OBJDIR)/BinaryData10_f61320fb.o: ../Projucer/JuceLibraryCode/BinaryData10.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling BinaryData10.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/include_juce_audio_basics_68629202.o: ../Projucer/JuceLibraryCode/include_juce_audio_basics.cpp

@@ -11738,7 +11738,6 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) noexc
         case 0x27e87b42:  numBytes = 164623; return F5v9_ogg;
         case 0x5cceb683:  numBytes = 84567; return F6v9_ogg;
         case 0x91b4f1c4:  numBytes = 66400; return F7v9_ogg;
-        case 0xaa76769d:  numBytes = 620041; return lato_fnt;
         case 0x5625a954:  numBytes = 360; return annotation_svg;
         case 0x844d0a13:  numBytes = 340; return apply_svg;
         case 0x4ab08df4:  numBytes = 345; return arpeggiate_svg;
@@ -11813,8 +11812,8 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) noexc
         case 0xb3e40b64:  numBytes = 317; return Noise_png;
         case 0x9d3ca20d:  numBytes = 64; return Arpeggiators_json;
         case 0xaf771725:  numBytes = 2664; return ColourSchemes_json;
-        case 0x932a5b4b:  numBytes = 10713; return HotkeySchemes_json;
-        case 0x67f906de:  numBytes = 5976; return Scales_json;
+        case 0x932a5b4b:  numBytes = 10867; return HotkeySchemes_json;
+        case 0x67f906de:  numBytes = 3513; return Scales_json;
         case 0xe3299f05:  numBytes = 282663; return Translations_json;
         default: break;
     }
@@ -11857,7 +11856,6 @@ const char* namedResourceList[] =
     "F5v9_ogg",
     "F6v9_ogg",
     "F7v9_ogg",
-    "lato_fnt",
     "annotation_svg",
     "apply_svg",
     "arpeggiate_svg",
@@ -11971,7 +11969,6 @@ const char* originalFilenames[] =
     "F#5v9.ogg",
     "F#6v9.ogg",
     "F#7v9.ogg",
-    "lato.fnt",
     "annotation.svg",
     "apply.svg",
     "arpeggiate.svg",
