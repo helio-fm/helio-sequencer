@@ -608,6 +608,8 @@ void SequencerLayout::showPatternEditor()
     {
         this->rollContainer->startRollSwitchAnimation();
     }
+
+    this->patternRoll->deselectAll();
 }
 
 void SequencerLayout::showLinearEditor(WeakReference<MidiTrack> track)
@@ -617,8 +619,14 @@ void SequencerLayout::showLinearEditor(WeakReference<MidiTrack> track)
         this->rollContainer->startRollSwitchAnimation();
     }
 
+    this->pianoRoll->deselectAll();
+    const Clip &activeClip = this->pianoRoll->getActiveClip();
+    const Clip *trackFirstClip = track->getPattern()->getClips().getFirst();
+    jassert(trackFirstClip);
+
+    const bool useActiveClip = (activeClip.getPattern() && activeClip.getPattern()->getTrack() == track);
     this->pianoRoll->setEditableScope(track,
-        *track->getPattern()->getClips().getFirst(), false);
+        useActiveClip ? activeClip : *trackFirstClip, false);
 }
 
 void SequencerLayout::setEditableScope(WeakReference<MidiTrack> track,

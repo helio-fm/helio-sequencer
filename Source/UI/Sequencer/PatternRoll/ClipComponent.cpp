@@ -69,7 +69,7 @@ void ClipComponent::updateColours()
     this->headColourDarker = this->headColour.darker(0.35f);
 
     this->fillColour =
-        headColour.withMultipliedAlpha(this->selectedState ? 0.7f : 0.6f);
+        headColour.withMultipliedAlpha(this->selectedState ? 0.65f : 0.55f);
 }
 
 //===----------------------------------------------------------------------===//
@@ -226,22 +226,22 @@ void ClipComponent::mouseUp(const MouseEvent &e)
 void ClipComponent::paint(Graphics& g)
 {
     g.setColour(this->fillColour);
-    g.fillRect(1.f, 1.f, float(this->getWidth() - 2), float(this->getHeight() - 2));
+    g.fillRect(1.f, 2.f, float(this->getWidth() - 2), float(this->getHeight() - 3));
 
     g.setColour(this->headColourLighter);
-    g.drawHorizontalLine(0, 1.f, float(this->getWidth() - 1));
+    g.drawHorizontalLine(1, 1.f, float(this->getWidth() - 1));
 
     if (this->selectedState)
     {
         g.setColour(this->headColour);
-        g.drawHorizontalLine(1, 0.f, float(this->getWidth()));
         g.drawHorizontalLine(2, 0.f, float(this->getWidth()));
         g.drawHorizontalLine(3, 0.f, float(this->getWidth()));
+        g.drawHorizontalLine(4, 0.f, float(this->getWidth()));
     }
 
     g.setColour(this->headColourDarker);
-    g.drawVerticalLine(0, 1.f, float(this->getHeight() - 1));
-    g.drawVerticalLine(this->getWidth() - 1, 1.f, float(this->getHeight() - 1));
+    g.drawVerticalLine(0, 2.f, float(this->getHeight() - 2));
+    g.drawVerticalLine(this->getWidth() - 1, 2.f, float(this->getHeight() - 2));
     g.drawHorizontalLine(this->getHeight() - 1, 1.f, float(this->getWidth() - 1));
 }
 

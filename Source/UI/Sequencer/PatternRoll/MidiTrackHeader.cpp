@@ -43,8 +43,6 @@ MidiTrackHeader::MidiTrackHeader(MidiTrack *track)
     trackNameLabel->setEditable (false, false, false);
     trackNameLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
 
-    trackNameLabel->setBounds (5, 5, 256, 20);
-
     addAndMakeVisible (setNameButton = new ImageButton (String()));
     setNameButton->addListener (this);
 
@@ -101,7 +99,7 @@ void MidiTrackHeader::paint (Graphics& g)
 
     const int x = 1; // JUCE_LIVE_CONSTANT(1);
     const float y1 = 2.f; // JUCE_LIVE_CONSTANT(2.f);
-    const float y2 = 29.f; // JUCE_LIVE_CONSTANT(29.f);
+    const float y2 = float(this->getHeight()) - y1 * 1.5f;
 
     g.drawVerticalLine(x, y1, y2);
     g.drawVerticalLine(x + 1, y1, y2);
@@ -123,6 +121,7 @@ void MidiTrackHeader::resized()
 #if 0
     //[/UserPreResize]
 
+    trackNameLabel->setBounds (5, 5, 256, getHeight() - 12);
     setNameButton->setBounds (8, 0, 256, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
 #endif
@@ -176,10 +175,11 @@ void MidiTrackHeader::updateContent()
     this->trackNameLabel->setColour(Label::textColourId, newLabelColour);
     this->trackNameLabel->setText(this->track ? this->track->getTrackName() : addTrackLabel, dontSendNotification);
 
-    this->textWidth = jmin(this->trackNameLabel->getWidth(),
-        this->trackNameLabel->getFont().getStringWidth(this->trackNameLabel->getText()));
+    this->textWidth = this->trackNameLabel->getFont().getStringWidth(this->trackNameLabel->getText());
 
-    this->setNameButton->setBounds(8, 0, this->textWidth, this->getHeight());
+    this->trackNameLabel->setBounds(5, 4, jmax(this->textWidth, 256), this->getHeight() - 12);
+    this->setNameButton->setBounds(8, 0, this->textWidth + 2, this->getHeight());
+    this->setNameButton->toFront(false);
 }
 
 const MidiTrack *MidiTrackHeader::getTrack() const noexcept
@@ -199,7 +199,7 @@ BEGIN_JUCER_METADATA
                  initialHeight="32">
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="d3d4f85f2ceefa1c" memberName="trackNameLabel" virtualName=""
-         explicitFocusOrder="0" pos="5 5 256 20" edBkgCol="0" labelText=""
+         explicitFocusOrder="0" pos="5 5 256 12M" edBkgCol="0" labelText=""
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default font" fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="33"/>
