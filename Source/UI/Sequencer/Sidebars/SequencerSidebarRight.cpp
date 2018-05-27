@@ -245,46 +245,6 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
     }
     break;
 
-    case CommandIDs::TransportStartPlayback:
-        if (HybridRoll *roll = this->project.getLastFocusedRoll())
-        {
-            this->project.getTransport().startPlayback();
-            roll->startFollowingPlayhead();
-        }
-        break;
-
-    case CommandIDs::TransportPausePlayback:
-        if (HybridRoll *roll = this->project.getLastFocusedRoll())
-        {
-            this->project.getTransport().stopPlayback();
-            roll->stopFollowingPlayhead();
-        }
-        break;
-
-    case CommandIDs::DeleteEvents:
-        if (PianoRoll *roll = dynamic_cast<PianoRoll *>(this->project.getLastFocusedRoll()))
-        {
-            SequencerOperations::deleteSelection(roll->getLassoSelection());
-        }
-        break;
-
-    case CommandIDs::CopyEvents:
-        if (HybridRoll *roll = this->project.getLastFocusedRoll())
-        {
-            SequencerOperations::copyToClipboard(App::Clipboard(), roll->getLassoSelection());
-        }
-        break;
-
-    case CommandIDs::PasteEvents:
-        // FIXME: paste to any roll
-        if (PianoRoll *roll = dynamic_cast<PianoRoll *>(this->project.getLastFocusedRoll()))
-        {
-            roll->deselectAll();
-            const float playheadBeat = roll->getBeatByTransportPosition(this->project.getTransport().getSeekPosition());
-            SequencerOperations::pasteFromClipboard(App::Clipboard(), this->project, roll->getActiveTrack(), playheadBeat);
-        }
-        break;
-
     case CommandIDs::CursorTool:
         this->project.getEditMode().setMode(HybridRollEditMode::defaultMode);
         break;
@@ -317,28 +277,6 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
         this->project.getEditMode().setMode(HybridRollEditMode::scissorsMode);
         break;
 
-    case CommandIDs::ZoomIn:
-        if (HybridRoll *roll = this->project.getLastFocusedRoll())
-        {
-            roll->zoomInImpulse();
-        }
-        break;
-
-    case CommandIDs::ZoomOut:
-        if (HybridRoll *roll = this->project.getLastFocusedRoll())
-        {
-            roll->zoomOutImpulse();
-        }
-        break;
-
-    case CommandIDs::Undo:
-        this->project.undo();
-        break;
-
-    case CommandIDs::Redo:
-        this->project.redo();
-        break;
-
     case CommandIDs::TweakNotesVolume:
         if (PianoRoll *roll = dynamic_cast<PianoRoll *>(this->project.getLastFocusedRoll()))
         {
@@ -358,19 +296,6 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
         break;
     }
     //[/UserCode_handleCommandMessage]
-}
-
-void SequencerSidebarRight::childrenChanged()
-{
-    //[UserCode_childrenChanged] -- Add your code here...
-    //this->updateButtonsImages();
-    //[/UserCode_childrenChanged]
-}
-
-void SequencerSidebarRight::mouseMove (const MouseEvent& e)
-{
-    //[UserCode_mouseMove] -- Add your code here...
-    //[/UserCode_mouseMove]
 }
 
 
@@ -397,15 +322,15 @@ void SequencerSidebarRight::recreateCommandDescriptions()
     this->commandDescriptions.add(MenuItem::item(Icons::cursorTool, CommandIDs::CursorTool)->toggled(defaultMode));
     this->commandDescriptions.add(MenuItem::item(Icons::drawTool, CommandIDs::DrawTool)->toggled(drawMode));
     this->commandDescriptions.add(MenuItem::item(Icons::selectionTool, CommandIDs::SelectionTool)->toggled(selectionMode));
-    //this->commandDescriptions.add(MenuItem::item(Icons::zoomTool, CommandIDs::ZoomTool)->toggled(zoomMode));
     this->commandDescriptions.add(MenuItem::item(Icons::dragTool, CommandIDs::DragTool)->toggled(dragMode));
     this->commandDescriptions.add(MenuItem::item(Icons::wipeSpaceTool, CommandIDs::WipeSpaceTool)->toggled(wipeSpaceMode));
     this->commandDescriptions.add(MenuItem::item(Icons::insertSpaceTool, CommandIDs::InsertSpaceTool)->toggled(insertSpaceMode));
 
-    //this->commandDescriptions.add(MenuItem::item(Icons::zoomIn, CommandIDs::ZoomIn));
-    //this->commandDescriptions.add(MenuItem::item(Icons::zoomOut, CommandIDs::ZoomOut));
     this->commandDescriptions.add(MenuItem::item(Icons::undo, CommandIDs::Undo));
     this->commandDescriptions.add(MenuItem::item(Icons::redo, CommandIDs::Redo));
+
+    this->commandDescriptions.add(MenuItem::item(Icons::zoomIn, CommandIDs::ZoomIn));
+    this->commandDescriptions.add(MenuItem::item(Icons::zoomOut, CommandIDs::ZoomOut));
 
     //this->commandDescriptions.add(MenuItem::item(Icons::volumeUp, CommandIDs::TweakNotesVolume));
     //this->commandDescriptions.add(MenuItem::item(Icons::switcher, CommandIDs::MoveEventsToLayer));
@@ -464,16 +389,16 @@ void SequencerSidebarRight::handleAsyncUpdate()
 {
     if (this->isTimerRunning())
     {
-        const double systemTimeOffset = (Time::getMillisecondCounter() - this->timerStartSystemTime);
-        const double currentTimeMs(this->timerStartSeekTime + systemTimeOffset);
+        const double systemTimeOffset = (Time::getMillisecondCounter() - this->timerStartSystemTime.get());
+        const double currentTimeMs(this->timerStartSeekTime.get() + systemTimeOffset);
         this->currentTime->setText(Transport::getTimeString(currentTimeMs), dontSendNotification);
     }
     else
     {
-        this->currentTime->setText(Transport::getTimeString(this->lastSeekTime), dontSendNotification);
+        this->currentTime->setText(Transport::getTimeString(this->lastSeekTime.get()), dontSendNotification);
     }
 
-    this->totalTime->setText(Transport::getTimeString(this->lastTotalTime), dontSendNotification);
+    this->totalTime->setText(Transport::getTimeString(this->lastTotalTime.get()), dontSendNotification);
 }
 
 //===----------------------------------------------------------------------===//
@@ -483,20 +408,17 @@ void SequencerSidebarRight::handleAsyncUpdate()
 void SequencerSidebarRight::onSeek(double absolutePosition,
     double currentTimeMs, double totalTimeMs)
 {
-    this->lastSeekTime = currentTimeMs; // todo locks?
+    this->lastSeekTime = currentTimeMs;
     this->lastTotalTime = totalTimeMs;
     this->triggerAsyncUpdate();
 }
 
-void SequencerSidebarRight::onTempoChanged(double newTempo)
-{
-
-}
+void SequencerSidebarRight::onTempoChanged(double newTempo) {}
 
 void SequencerSidebarRight::onTotalTimeChanged(double timeMs)
 {
     this->lastTotalTime = timeMs;
-    this->totalTime->setText(Transport::getTimeString(this->lastTotalTime), dontSendNotification);
+    this->totalTime->setText(Transport::getTimeString(this->lastTotalTime.get()), dontSendNotification);
 }
 
 void SequencerSidebarRight::onPlay()
@@ -552,45 +474,44 @@ void SequencerSidebarRight::emitAnnotationsCallout(Component *newAnnotationsMenu
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="SequencerSidebarRight" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="SequencerSidebarRight" template="../../../Template"
                  componentName="" parentClasses="public Component, protected TransportListener, protected AsyncUpdater, protected ListBoxModel, protected ChangeListener, protected Timer"
                  constructorParams="ProjectTreeItem &amp;parent" variableInitialisers="project(parent),&#10;lastSeekTime(0.0),&#10;lastTotalTime(0.0),&#10;timerStartSeekTime(0.0),&#10;timerStartSystemTime(0.0)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="64" initialHeight="640">
   <METHODS>
-    <METHOD name="childrenChanged()"/>
-    <METHOD name="mouseMove (const MouseEvent&amp; e)"/>
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
   <JUCERCOMP name="" id="19597a6a5daad55d" memberName="bodyBg" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../Themes/PanelBackgroundC.cpp"
+             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../../Themes/PanelBackgroundC.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="381fa571a3dfc5cd" memberName="listBox" virtualName=""
                     explicitFocusOrder="0" pos="0 41 0M 113M" class="ListBox" params=""/>
   <JUCERCOMP name="" id="28ce45d9e84b729c" memberName="headLine" virtualName=""
-             explicitFocusOrder="0" pos="0 39 0M 2" sourceFile="../Themes/SeparatorHorizontalReversed.cpp"
+             explicitFocusOrder="0" pos="0 39 0M 2" sourceFile="../../Themes/SeparatorHorizontalReversed.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="accf780c6ef7ae9e" memberName="shadow" virtualName=""
-             explicitFocusOrder="0" pos="0 71Rr 0M 6" sourceFile="../Themes/LighterShadowUpwards.cpp"
+             explicitFocusOrder="0" pos="0 71Rr 0M 6" sourceFile="../../Themes/LighterShadowUpwards.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="22d481533ce3ecd3" memberName="separator" virtualName=""
-             explicitFocusOrder="0" pos="0 70Rr 0M 2" sourceFile="../Themes/SeparatorHorizontal.cpp"
+             explicitFocusOrder="0" pos="0 70Rr 0M 2" sourceFile="../../Themes/SeparatorHorizontal.cpp"
              constructorParams=""/>
   <LABEL name="" id="700073f74a17c931" memberName="totalTime" virtualName=""
          explicitFocusOrder="0" pos="80Cc 9Rr 72 18" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default sans-serif font"
-         fontsize="14" kerning="0" bold="0" italic="0" justification="36"/>
+         fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="36"/>
   <LABEL name="" id="b9e867ece7f52ad8" memberName="currentTime" virtualName=""
          explicitFocusOrder="0" pos="80Cc 26Rr 72 22" labelText="..."
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
-         fontname="Default sans-serif font" fontsize="16" kerning="0"
-         bold="0" italic="0" justification="36"/>
+         fontname="Default sans-serif font" fontsize="16.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
   <JUCERCOMP name="" id="bb2e14336f795a57" memberName="playButton" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 12Rr 48 48" sourceFile="../Common/PlayButton.cpp"
+             explicitFocusOrder="0" pos="0Cc 12Rr 48 48" sourceFile="../../Common/PlayButton.cpp"
              constructorParams=""/>
   <JUCERCOMP name="" id="1d398dc12e2047bd" memberName="headShadow" virtualName=""
-             explicitFocusOrder="0" pos="0 40 0M 6" sourceFile="../Themes/LighterShadowDownwards.cpp"
+             explicitFocusOrder="0" pos="0 40 0M 6" sourceFile="../../Themes/LighterShadowDownwards.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="34c972d7b22acf17" memberName="annotationsButton"
                     virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 39" class="MenuItemComponent"
@@ -605,9 +526,9 @@ END_JUCER_METADATA
 // Binary resources - be careful not to edit any of these sections!
 
 // JUCER_RESOURCE: gray1x1_png, 150, "../../../../MainLayout/~icons/gray1x1.png"
-static const unsigned char resource_ToolsSidebar_gray1x1_png[] = { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,1,0,0,0,1,8,2,0,0,0,144,119,83,222,0,0,0,9,112,72,89,115,0,0,11,19,0,0,11,19,1,0,
-154,156,24,0,0,0,7,116,73,77,69,7,222,4,19,5,8,9,228,2,121,9,0,0,0,29,105,84,88,116,67,111,109,109,101,110,116,0,0,0,0,0,67,114,101,97,116,101,100,32,119,105,116,104,32,71,73,77,80,100,46,101,7,0,0,0,
-12,73,68,65,84,8,215,99,136,138,138,2,0,2,32,1,15,53,60,95,243,0,0,0,0,73,69,78,68,174,66,96,130,0,0};
+static const unsigned char resource_SequencerSidebarRight_gray1x1_png[] = { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,1,0,0,0,1,8,2,0,0,0,144,119,83,222,0,0,0,9,112,72,89,115,0,0,11,19,0,0,11,
+19,1,0,154,156,24,0,0,0,7,116,73,77,69,7,222,4,19,5,8,9,228,2,121,9,0,0,0,29,105,84,88,116,67,111,109,109,101,110,116,0,0,0,0,0,67,114,101,97,116,101,100,32,119,105,116,104,32,71,73,77,80,100,46,101,7,
+0,0,0,12,73,68,65,84,8,215,99,136,138,138,2,0,2,32,1,15,53,60,95,243,0,0,0,0,73,69,78,68,174,66,96,130,0,0};
 
-const char* SequencerSidebarRight::gray1x1_png = (const char*) resource_ToolsSidebar_gray1x1_png;
+const char* SequencerSidebarRight::gray1x1_png = (const char*) resource_SequencerSidebarRight_gray1x1_png;
 const int SequencerSidebarRight::gray1x1_pngSize = 150;

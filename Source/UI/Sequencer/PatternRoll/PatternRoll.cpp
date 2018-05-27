@@ -669,7 +669,7 @@ void PatternRoll::handleCommandMessage(int commandId)
     switch (commandId)
     {
     case CommandIDs::RenameTrack:
-        if (auto patternNode = dynamic_cast<PatternEditorTreeItem *>(this->project.findPrimaryActiveItem()))
+        if (auto *patternNode = dynamic_cast<PatternEditorTreeItem *>(this->project.findPrimaryActiveItem()))
         {
             // TODO check if all items in selection belong to one track
             // and if they do, find according tree node and rename it

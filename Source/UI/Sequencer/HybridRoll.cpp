@@ -1128,6 +1128,12 @@ void HybridRoll::handleCommandMessage(int commandId)
     case CommandIDs::Redo:
         this->project.redo();
         break;
+    case CommandIDs::ZoomIn:
+        this->zoomInImpulse();
+        break;
+    case CommandIDs::ZoomOut:
+        this->zoomOutImpulse();
+        break;
     case CommandIDs::SelectAllEvents:
         this->selectAll();
         break;

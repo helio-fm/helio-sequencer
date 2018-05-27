@@ -104,7 +104,7 @@ void Pattern::sort()
 
 void Pattern::checkpoint()
 {
-    this->getUndoStack()->beginNewTransaction(String::empty);
+    this->getUndoStack()->beginNewTransaction({});
 }
 
 void Pattern::undo()

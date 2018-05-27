@@ -883,12 +883,6 @@ void PianoRoll::handleCommandMessage(int commandId)
             App::Layout().showModalComponentUnowned(inputDialog.release());
         }
         break;
-    case CommandIDs::ZoomIn:
-        this->zoomInImpulse();
-        break;
-    case CommandIDs::ZoomOut:
-        this->zoomOutImpulse();
-        break;
     case CommandIDs::CopyEvents:
         SequencerOperations::copyToClipboard(App::Clipboard(), this->getLassoSelection());
         break;
