@@ -163,22 +163,49 @@ void PianoRoll::loadTrack(const MidiTrack *const track)
     }
 }
 
-void PianoRoll::setActiveSegment(WeakReference<MidiTrack> activeTrack, const Clip &activeClip)
+void PianoRoll::setEditableScope(WeakReference<MidiTrack> activeTrack, 
+    const Clip &activeClip, bool shouldZoomToArea)
 {
     this->selection.deselectAll();
 
     this->activeTrack = activeTrack;
     this->activeClip = activeClip;
 
+    int focusMinKey = INT_MAX;
+    int focusMaxKey = 0;
+    float focusMinBeat = FLT_MAX;
+    float focusMaxBeat = -FLT_MAX;
+
     forEachEventComponent(this->patternMap, e)
     {
-        const auto noteComponent = e.second.get();
-        const bool isActive = noteComponent->belongsTo(this->activeTrack, this->activeClip);
-        noteComponent->setActive(isActive, true);
+        const auto nc = e.second.get();
+        const bool isActive = nc->belongsTo(this->activeTrack, this->activeClip);
+        nc->setActive(isActive, true);
+
+        if (shouldZoomToArea && isActive)
+        {
+            focusMinKey = jmin(focusMinKey, nc->getKey());
+            focusMaxKey = jmax(focusMaxKey, nc->getKey());
+            focusMinBeat = jmin(focusMinBeat, nc->getBeat());
+            focusMaxBeat = jmax(focusMaxBeat, nc->getBeat() + nc->getLength());
+        }
     }
 
     this->updateActiveRangeIndicator();
-    this->repaint(this->viewport.getViewArea());
+
+    if (shouldZoomToArea)
+    {
+        this->zoomToArea(focusMinKey, focusMaxKey,
+            focusMinBeat + this->activeClip.getBeat(),
+            focusMaxBeat + this->activeClip.getBeat());
+
+        // TODO test usability:
+        //this->zoomOutImpulse();
+    }
+    else
+    {
+        this->repaint(this->viewport.getViewArea());
+    }
 }
 
 void PianoRoll::updateActiveRangeIndicator() const
@@ -204,11 +231,9 @@ void PianoRoll::setDefaultNoteVolume(float volume) noexcept
 
 void PianoRoll::setRowHeight(int newRowHeight)
 {
-    if (newRowHeight == this->rowHeight || newRowHeight <= 1) { return; }
-
-    this->rowHeight = newRowHeight;
-    this->setSize(this->getWidth(),
-        HYBRID_ROLL_HEADER_HEIGHT + this->numRows * this->rowHeight);
+    if (newRowHeight == this->rowHeight) { return; }
+    this->rowHeight = jlimit(PIANOROLL_MIN_ROW_HEIGHT, PIANOROLL_MAX_ROW_HEIGHT, newRowHeight);
+    this->setSize(this->getWidth(), HYBRID_ROLL_HEADER_HEIGHT + this->numRows * this->rowHeight);
 }
 
 //===----------------------------------------------------------------------===//
@@ -322,6 +347,22 @@ float PianoRoll::getZoomFactorY() const
 {
     const float &viewHeight = float(this->viewport.getViewHeight());
     return (viewHeight / float(this->getHeight()));
+}
+
+void PianoRoll::zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat)
+{
+    jassert(minKey >= 0);
+    jassert(maxKey > minKey);
+
+    const int margin = 2;
+    const float numKeysToFit = float(maxKey - minKey + margin);
+    const float heightToFit = float(this->viewport.getViewHeight());
+    this->setRowHeight(int(heightToFit / numKeysToFit));
+
+    const int maxKeyY = this->getRowHeight() * (128 - maxKey - margin);
+    this->viewport.setViewPosition(this->viewport.getViewPositionY() - HYBRID_ROLL_HEADER_HEIGHT, maxKeyY);
+
+    HybridRoll::zoomToArea(minBeat, maxBeat);
 }
 
 //===----------------------------------------------------------------------===//

@@ -35,8 +35,7 @@
 static PianoSequence *getPianoSequence(SelectionProxyArray::Ptr selection)
 {
     const auto &firstEvent = selection->getFirstAs<NoteComponent>()->getNote();
-    PianoSequence *pianoLayer = static_cast<PianoSequence *>(firstEvent.getSequence());
-    return pianoLayer;
+    return static_cast<PianoSequence *>(firstEvent.getSequence());;
 }
 
 NoteComponent::NoteComponent(PianoRoll &editor, const Note &event, const Clip &clip, bool ghostMode) :
@@ -762,7 +761,7 @@ bool NoteComponent::belongsTo(const WeakReference<MidiTrack> &track, const Clip 
 void NoteComponent::switchActiveSegmentToSelected() const
 {
     auto *track = this->getNote().getSequence()->getTrack();
-    this->roll.getProject().switchActiveSegment(track, this->getClip());
+    this->roll.getProject().setEditableScope(track, this->getClip());
 }
 
 //===----------------------------------------------------------------------===//

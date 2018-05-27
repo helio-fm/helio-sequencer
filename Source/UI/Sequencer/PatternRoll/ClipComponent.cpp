@@ -102,8 +102,8 @@ const String &ClipComponent::getId() const noexcept
 
 void ClipComponent::mouseDoubleClick(const MouseEvent &e)
 {
-    // TODO signal to switch to piano roll and focus on a clip area
-    //this->getRoll().
+    // signal to switch to piano roll and focus on a clip area
+    this->getRoll().postCommandMessage(CommandIDs::EditClip);
 }
 
 void ClipComponent::mouseDown(const MouseEvent &e)

@@ -324,7 +324,7 @@ void ProjectTreeItem::updateActiveGroupEditors()
     }
 }
 
-void ProjectTreeItem::switchActiveSegment(MidiTrack *track, const Clip &clip)
+void ProjectTreeItem::setEditableScope(MidiTrack *track, const Clip &clip, bool zoomToArea)
 {
     if (auto *item = dynamic_cast<PianoTrackTreeItem *>(track))
     {
@@ -333,7 +333,7 @@ void ProjectTreeItem::switchActiveSegment(MidiTrack *track, const Clip &clip)
         item->setSelected(true, true);
         // and then we have to update the scope to correct clip,
         // so that roll's scope is updated twice :(
-        this->sequencerLayout->switchActiveSegment(track, clip);
+        this->sequencerLayout->setEditableScope(track, clip, zoomToArea);
     }
 }
 

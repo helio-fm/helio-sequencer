@@ -472,21 +472,38 @@ void HybridRoll::startSmoothZoom(const Point<float> &origin, const Point<float> 
 
 void HybridRoll::zoomInImpulse()
 {
-    const Point<float> origin = this->getViewport().getLocalBounds().getCentre().toFloat();
+    const auto origin = this->getViewport().getLocalBounds().getCentre();
     const Point<float> factor(0.15f, 0.05f);
-    this->startSmoothZoom(origin, factor);
+    this->startSmoothZoom(origin.toFloat(), factor);
 }
 
 void HybridRoll::zoomOutImpulse()
 {
-    const Point<float> origin = this->getViewport().getLocalBounds().getCentre().toFloat();
+    const auto origin = this->getViewport().getLocalBounds().getCentre();
     const Point<float> factor(-0.15f, -0.05f);
-    this->startSmoothZoom(origin, factor);
+    this->startSmoothZoom(origin.toFloat(), factor);
+}
+
+void HybridRoll::zoomToArea(float minBeat, float maxBeat)
+{
+    jassert(maxBeat > minBeat);
+    jassert(minBeat >= this->getFirstBeat());
+    jassert(maxBeat <= this->getLastBeat());
+
+    const float margin = 4.f;
+    const float widthToFit = float(this->viewport.getViewWidth());
+    const float numBarsToFit = (maxBeat - minBeat + margin) / BEATS_PER_BAR;
+    this->setBarWidth(widthToFit / numBarsToFit);
+
+    const int minBeatX = this->getXPositionByBeat(minBeat - (margin / 2.f));
+    this->viewport.setViewPosition(minBeatX, this->viewport.getViewPositionY());
+
+    this->playheadOffset = this->findPlayheadOffsetFromViewCentre();
 }
 
 void HybridRoll::zoomAbsolute(const Point<float> &zoom)
 {
-//    this->stopFollowingPlayhead();
+    //this->stopFollowingPlayhead();
 
     const float &newWidth = this->getNumBars() * HYBRID_ROLL_MAX_BAR_WIDTH * zoom.getX();
     const float &barsOnNewScreen = float(newWidth / HYBRID_ROLL_MAX_BAR_WIDTH);

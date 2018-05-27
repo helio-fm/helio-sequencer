@@ -86,7 +86,7 @@ public:
     WeakReference<TreeItem> getLastShownTrack() const noexcept;
 
     void updateActiveGroupEditors();
-    void switchActiveSegment(MidiTrack *track, const Clip &clip);
+    void setEditableScope(MidiTrack *track, const Clip &clip, bool zoomToArea = false);
 
     //===------------------------------------------------------------------===//
     // Menu

@@ -49,7 +49,8 @@ public:
 
     void showPatternEditor();
     void showLinearEditor(WeakReference<MidiTrack> activeTrack);
-    void switchActiveSegment(WeakReference<MidiTrack> activeTrack, const Clip &clip);
+    void setEditableScope(WeakReference<MidiTrack> activeTrack,
+        const Clip &clip, bool zoomToArea);
 
     // returns true if editor was shown, else returns false
     bool toggleShowAutomationEditor(AutomationSequence *targetLayer);

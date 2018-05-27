@@ -683,6 +683,13 @@ void PatternRoll::handleCommandMessage(int commandId)
     case CommandIDs::DeleteClips:
         PatternOperations::deleteSelection(this->getLassoSelection());
         break;
+    case CommandIDs::EditClip:
+        if (this->selection.getNumSelected() > 0)
+        {
+            const auto &clip = this->selection.getFirstAs<ClipComponent>()->getClip();
+            this->project.setEditableScope(clip.getPattern()->getTrack(), clip, true);
+        }
+        break;
     //case CommandIDs::BeatShiftLeft:
     //    PatternOperations::shiftBeatRelative(this->getLassoSelection(), -1.f / BEATS_PER_BAR);
     //    break;

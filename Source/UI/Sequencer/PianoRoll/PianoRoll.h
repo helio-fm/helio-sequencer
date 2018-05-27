@@ -49,7 +49,9 @@ public:
               Viewport &viewportRef,
               WeakReference<AudioMonitor> clippingDetector);
     
-    void setActiveSegment(WeakReference<MidiTrack> activeTrack, const Clip &activeClip);
+    void setEditableScope(WeakReference<MidiTrack> activeTrack,
+        const Clip &activeClip, bool zoomToArea);
+
     WeakReference<MidiTrack> getActiveTrack() const noexcept;
     const Clip &getActiveClip() const noexcept;
 
@@ -82,6 +84,8 @@ public:
     void zoomRelative(const Point<float> &origin, const Point<float> &factor) override;
     void zoomAbsolute(const Point<float> &zoom) override;
     float getZoomFactorY() const override;
+
+    void zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat);
 
     //===------------------------------------------------------------------===//
     // Note management

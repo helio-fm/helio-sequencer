@@ -88,6 +88,7 @@ namespace CommandIDs
         CopyClips                       = 0x1612,
         CutClips                        = 0x1613,
         PasteClips                      = 0x1614,
+        EditClip                        = 0x1615,
 
         CursorTool                      = 0x2000,
         DrawTool                        = 0x2001,

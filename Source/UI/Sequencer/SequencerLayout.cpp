@@ -617,13 +617,14 @@ void SequencerLayout::showLinearEditor(WeakReference<MidiTrack> track)
         this->rollContainer->startRollSwitchAnimation();
     }
 
-    this->pianoRoll->setActiveSegment(track,
-        *track->getPattern()->getClips().getFirst());
+    this->pianoRoll->setEditableScope(track,
+        *track->getPattern()->getClips().getFirst(), false);
 }
 
-void SequencerLayout::switchActiveSegment(WeakReference<MidiTrack> track, const Clip &clip)
+void SequencerLayout::setEditableScope(WeakReference<MidiTrack> track,
+    const Clip &clip, bool zoomToArea)
 {
-    this->pianoRoll->setActiveSegment(track, clip);
+    this->pianoRoll->setEditableScope(track, clip, zoomToArea);
 }
 
 void SequencerLayout::hideAutomationEditor(AutomationSequence *sequence)
