@@ -253,13 +253,11 @@ void Transport::probeSoundAt(double absTrackPosition, const MidiSequence *limitT
     const double targetFlatTime = round(this->getTotalTime() * absTrackPosition);
     const auto sequencesToProbe(this->sequences.getAllFor(limitToLayer));
     
-    for (auto && i : sequencesToProbe)
+    for (const auto &seq : sequencesToProbe)
     {
-        SequenceWrapper::Ptr seq(i);
-
-        for (int j = 0; j < seq->sequence.getNumEvents(); ++j)
+        for (int j = 0; j < seq->midiMessages.getNumEvents(); ++j)
         {
-            MidiMessageSequence::MidiEventHolder *noteOnHolder = seq->sequence.getEventPointer(j);
+            MidiMessageSequence::MidiEventHolder *noteOnHolder = seq->midiMessages.getEventPointer(j);
             
             if (MidiMessageSequence::MidiEventHolder *noteOffHolder = noteOnHolder->noteOffObject)
             {
@@ -291,8 +289,8 @@ void Transport::probeSequence(const MidiMessageSequence &sequence)
     // using the last instrument (TODO something more clever in the future)
     Instrument *targetInstrument = this->orchestra.getInstruments().getLast();
     auto wrapper = new SequenceWrapper();
-    wrapper->layer = nullptr;
-    wrapper->sequence = fixedSequence;
+    wrapper->track = nullptr;
+    wrapper->midiMessages = fixedSequence;
     wrapper->currentIndex = 0;
     wrapper->instrument = targetInstrument;
     wrapper->listener = &targetInstrument->getProcessorPlayer().getMidiMessageCollector();
@@ -745,19 +743,34 @@ void Transport::rebuildSequencesIfNeeded()
         
         for (int i = 0; i < this->tracksCache.size(); ++i)
         {
-            const auto layer = this->tracksCache.getUnchecked(i)->getSequence();
-            MidiMessageSequence sequence(layer->exportMidi());
-            sequence.addTimeToMessages(-this->trackStartMs.get());
-            
-            if (sequence.getNumEvents() > 0)
+            const auto *track = this->tracksCache.getUnchecked(i);
+            MidiMessageSequence midiMessages;
+
+            if (track->getPattern() != nullptr)
             {
-                Instrument *targetInstrument = this->linksCache[layer->getTrackId()];
+                for (const auto *clip : track->getPattern()->getClips())
+                {
+                    const double clipOffset = round(double(clip->getBeat()) * MS_PER_BEAT);
+                    midiMessages.addSequence(track->getSequence()->exportMidi(),
+                        clipOffset - this->trackStartMs.get());
+                }
+            }
+            else
+            {
+                midiMessages.addSequence(track->getSequence()->exportMidi(),
+                    -this->trackStartMs.get());
+            }
+
+            if (midiMessages.getNumEvents() > 0)
+            {
+                Instrument *instrument = this->linksCache[track->getTrackId()];
+                jassert(instrument != nullptr);
                 auto wrapper = new SequenceWrapper();
-                wrapper->layer = layer;
-                wrapper->sequence = sequence;
+                wrapper->track = track->getSequence();
+                wrapper->midiMessages = midiMessages;
                 wrapper->currentIndex = 0;
-                wrapper->instrument = targetInstrument;
-                wrapper->listener = &targetInstrument->getProcessorPlayer().getMidiMessageCollector();
+                wrapper->instrument = instrument;
+                wrapper->listener = &instrument->getProcessorPlayer().getMidiMessageCollector();
                 this->sequences.addWrapper(wrapper);
             }
         }

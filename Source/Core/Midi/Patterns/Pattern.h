@@ -72,19 +72,13 @@ public:
 
     void sort();
 
-    inline int size() const
+    inline int size() const noexcept
     { return this->clips.size(); }
-
-    inline Clip** begin() const noexcept
-    { return this->clips.begin(); }
-    
-    inline Clip** end() const noexcept
-    { return this->clips.end(); }
     
     inline Clip *getUnchecked(const int index) const noexcept
     { return this->clips.getUnchecked(index); }
     
-    inline OwnedArray<Clip> &getClips() noexcept
+    inline const OwnedArray<Clip> &getClips() const noexcept
     { return this->clips; }
 
     //===------------------------------------------------------------------===//

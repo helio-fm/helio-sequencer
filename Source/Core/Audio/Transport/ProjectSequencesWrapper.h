@@ -21,17 +21,17 @@
 
 class MidiSequence;
 
-struct SequenceWrapper : public ReferenceCountedObject
+struct SequenceWrapper final : public ReferenceCountedObject
 {
-    MidiMessageSequence sequence;
+    MidiMessageSequence midiMessages;
     int currentIndex;
     MidiMessageCollector *listener;
     Instrument *instrument;
-    const MidiSequence *layer;
+    const MidiSequence *track;
     using Ptr = ReferenceCountedObjectPtr<SequenceWrapper>;
 };
 
-struct MessageWrapper : public ReferenceCountedObject
+struct MessageWrapper final : public ReferenceCountedObject
 {
     MidiMessage message;
     MidiMessageCollector *listener;
@@ -115,7 +115,7 @@ public:
         return this->sequences[0]->instrument->getProcessorGraph()->getTotalNumInputChannels();
     }
 
-    ReferenceCountedArray<SequenceWrapper> getAllFor(const MidiSequence *midiLayer)
+    ReferenceCountedArray<SequenceWrapper> getAllFor(const MidiSequence *midiTrack)
     {
         const SpinLock::ScopedLockType lock(this->sequencesLock);
 
@@ -123,7 +123,7 @@ public:
         for (int i = 0; i < this->sequences.size(); ++i)
         {
             SequenceWrapper::Ptr seq(this->sequences[i]);
-            if (midiLayer == nullptr || midiLayer == seq->layer)
+            if (midiTrack == nullptr || midiTrack == seq->track)
             {
                 result.add(seq);
             }
@@ -139,7 +139,7 @@ public:
         for (int i = 0; i < this->sequences.size(); ++i)
         {
             SequenceWrapper *wrapper = this->sequences.getUnchecked(i);
-            wrapper->currentIndex = this->getNextIndexAtTime(wrapper->sequence, (position - DBL_MIN));
+            wrapper->currentIndex = this->getNextIndexAtTime(wrapper->midiMessages, (position - DBL_MIN));
         }
     }
     
@@ -164,9 +164,9 @@ public:
         {
             SequenceWrapper *wrapper = this->sequences.getUnchecked(i);
 
-            if (wrapper->currentIndex < wrapper->sequence.getNumEvents())
+            if (wrapper->currentIndex < wrapper->midiMessages.getNumEvents())
             {
-                MidiMessage &message = wrapper->sequence.getEventPointer(wrapper->currentIndex)->message;
+                MidiMessage &message = wrapper->midiMessages.getEventPointer(wrapper->currentIndex)->message;
 
                 if (message.getTimeStamp() < minTimeStamp)
                 {
@@ -180,7 +180,7 @@ public:
         { return false; }
 
         SequenceWrapper *foundWrapper = this->sequences.getUnchecked(targetSequenceIndex);
-        MidiMessage &foundMessage = foundWrapper->sequence.getEventPointer(foundWrapper->currentIndex)->message;
+        MidiMessage &foundMessage = foundWrapper->midiMessages.getEventPointer(foundWrapper->currentIndex)->message;
         foundWrapper->currentIndex++;
                 
         target.message = foundMessage;
