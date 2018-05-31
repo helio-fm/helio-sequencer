@@ -11813,8 +11813,8 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) noexc
         case 0x9d3ca20d:  numBytes = 64; return Arpeggiators_json;
         case 0xaf771725:  numBytes = 2664; return ColourSchemes_json;
         case 0x932a5b4b:  numBytes = 10867; return HotkeySchemes_json;
-        case 0x67f906de:  numBytes = 3513; return Scales_json;
-        case 0xe3299f05:  numBytes = 282663; return Translations_json;
+        case 0x67f906de:  numBytes = 5976; return Scales_json;
+        case 0xe3299f05:  numBytes = 394369; return Translations_json;
         default: break;
     }
 

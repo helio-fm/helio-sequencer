@@ -53,8 +53,9 @@ All Helio logos and translations are also distrubuted under [CC-BY](https://crea
 
 #### Translation and proofreading credits (in alphabetical order)
 
-Claudio Stano - Italian  
-Dario Silva - Brazilian Portuguese  
-Dawid Bugajski - Polish  
-Jacques Viviers - Afrikaans  
-Kotone Itaya - Japanese  
+Afrikaans - Jacques Viviers  
+Brazilian Portuguese - Dario Silva  
+Italian - Claudio Stano  
+Japanese - Kotone Itaya  
+Korean - YoungGwang Jeon, DaYeon Lee, HyoHee Jeon  
+Polish - Dawid Bugajski  
