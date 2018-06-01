@@ -3350,6 +3350,8 @@
     <None Include="..\..\Resources\Icons\mute.svg"/>
     <None Include="..\..\Resources\Icons\microphone.svg"/>
     <None Include="..\..\Resources\Icons\orchestraPit.svg"/>
+    <None Include="..\..\Resources\Icons\pageDown.svg"/>
+    <None Include="..\..\Resources\Icons\pageUp.svg"/>
     <None Include="..\..\Resources\Icons\paste.svg"/>
     <None Include="..\..\Resources\Icons\patterns.svg"/>
     <None Include="..\..\Resources\Icons\pause.svg"/>

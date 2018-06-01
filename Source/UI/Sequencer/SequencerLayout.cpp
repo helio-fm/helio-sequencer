@@ -63,7 +63,7 @@ template class KeySignaturesTrackMap<KeySignatureSmallComponent>;
 #define MAX_NUM_SPLITSCREEN_EDITORS 2
 #define MINIMUM_ROLLS_HEIGHT 250
 #define VERTICAL_ROLLS_LAYOUT 1
-#define ROLLS_ANIMATION_START_SPEED 0.33f
+#define ROLLS_ANIMATION_START_SPEED 0.3f
 
 //===----------------------------------------------------------------------===//
 // Splitter
@@ -546,7 +546,7 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
     
     // создаем тулбар и компонуем его с контейнером
     this->rollToolsSidebar = new SequencerSidebarRight(this->project);
-    this->rollNavSidebar = new SequencerSidebarLeft();
+    this->rollNavSidebar = new SequencerSidebarLeft(this->project);
     this->rollNavSidebar->setSize(SEQUENCER_SIDEBAR_WIDTH, this->getParentHeight());
     // Hopefully this doesn't crash, since sequencer layout is only created by a loaded project:
     this->rollNavSidebar->setAudioMonitor(App::Workspace().getAudioCore().getMonitor());
@@ -609,6 +609,8 @@ void SequencerLayout::showPatternEditor()
         this->rollContainer->startRollSwitchAnimation();
     }
 
+    this->rollToolsSidebar->setPatternMode();
+    this->rollNavSidebar->setPatternMode();
     this->patternRoll->deselectAll();
 }
 
@@ -619,6 +621,8 @@ void SequencerLayout::showLinearEditor(WeakReference<MidiTrack> track)
         this->rollContainer->startRollSwitchAnimation();
     }
 
+    this->rollToolsSidebar->setLinearMode();
+    this->rollNavSidebar->setLinearMode();
     this->pianoRoll->deselectAll();
     const Clip &activeClip = this->pianoRoll->getActiveClip();
     const Clip *trackFirstClip = track->getPattern()->getClips().getFirst();

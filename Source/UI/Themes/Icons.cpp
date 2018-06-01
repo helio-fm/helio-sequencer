@@ -130,6 +130,8 @@ void Icons::initBuiltInImages()
     setIconForKey(down);
     setIconForKey(back);
     setIconForKey(forward);
+    setIconForKey(pageUp);
+    setIconForKey(pageDown);
 
     setIconForKey(menu);
     setIconForKey(submenu);

@@ -24,12 +24,11 @@ class ProjectTreeItem;
 #include "MenuPanel.h"
 //[/Headers]
 
-#include "../../Themes/PanelBackgroundC.h"
 #include "../../Themes/SeparatorHorizontalReversed.h"
 #include "../../Themes/LighterShadowUpwards.h"
 #include "../../Themes/SeparatorHorizontal.h"
-#include "../../Common/PlayButton.h"
 #include "../../Themes/LighterShadowDownwards.h"
+#include "../../Common/PlayButton.h"
 
 class SequencerSidebarRight final : public Component,
                                     protected TransportListener,
@@ -44,7 +43,8 @@ public:
     ~SequencerSidebarRight();
 
     //[UserMethods]
-    void paintOverChildren(Graphics& g) override;
+    void setLinearMode();
+    void setPatternMode();
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -70,7 +70,14 @@ private:
     Atomic<double> timerStartSeekTime;
     Atomic<double> timerStartSystemTime;
 
-    MenuPanel::Menu commandDescriptions;
+    enum MenuMode
+    {
+        PianoRollTools,
+        PatternRollTools
+    };
+
+    MenuMode menuMode;
+    MenuPanel::Menu menu;
 
     void updateModeButtons();
     void emitAnnotationsCallout(Component *newAnnotationsMenu);
@@ -115,16 +122,15 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<PanelBackgroundC> bodyBg;
     ScopedPointer<ListBox> listBox;
     ScopedPointer<SeparatorHorizontalReversed> headLine;
     ScopedPointer<LighterShadowUpwards> shadow;
     ScopedPointer<SeparatorHorizontal> separator;
     ScopedPointer<Label> totalTime;
     ScopedPointer<Label> currentTime;
-    ScopedPointer<PlayButton> playButton;
     ScopedPointer<LighterShadowDownwards> headShadow;
     ScopedPointer<MenuItemComponent> annotationsButton;
+    ScopedPointer<PlayButton> playButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SequencerSidebarRight)
 };

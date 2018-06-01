@@ -101,6 +101,8 @@ struct Icons final
         down,
         back,
         forward,
+        pageUp,
+        pageDown,
 
         menu,
         submenu,

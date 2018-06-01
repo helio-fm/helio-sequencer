@@ -22,29 +22,32 @@ class GenericAudioMonitorComponent;
 class WaveformAudioMonitorComponent;
 class SpectrogramAudioMonitorComponent;
 class ModeIndicatorComponent;
+class MenuItemComponent;
+class ProjectTreeItem;
 class AudioMonitor;
 
+#include "ComponentFader.h"
 #include "ModeIndicatorComponent.h"
 //[/Headers]
 
-#include "../Themes/PanelBackgroundC.h"
-#include "../Themes/LighterShadowUpwards.h"
-#include "../Themes/SeparatorHorizontalReversed.h"
-#include "../Themes/LighterShadowDownwards.h"
-#include "../Themes/SeparatorHorizontal.h"
+#include "../../Themes/LighterShadowUpwards.h"
+#include "../../Themes/SeparatorHorizontalReversed.h"
+#include "../../Themes/LighterShadowDownwards.h"
+#include "../../Themes/SeparatorHorizontal.h"
 
-class SequencerSidebarLeft  : public ModeIndicatorOwnerComponent
+class SequencerSidebarLeft final : public ModeIndicatorOwnerComponent
 {
 public:
 
-    SequencerSidebarLeft ();
-
+    SequencerSidebarLeft(ProjectTreeItem &project);
     ~SequencerSidebarLeft();
 
     //[UserMethods]
     void setAudioMonitor(AudioMonitor *audioMonitor);
     void handleChangeMode() override;
-    void paintOverChildren(Graphics& g) override;
+
+    void setLinearMode();
+    void setPatternMode();
     //[/UserMethods]
 
     void paint (Graphics& g) override;
@@ -57,6 +60,9 @@ public:
 private:
 
     //[UserVariables]
+    ProjectTreeItem &project;
+
+    ComponentFader buttonFader;
     ComponentAnimator animator;
     void switchMonitorsAnimated(Component *oldOne, Component *newOne);
 
@@ -65,13 +71,14 @@ private:
     ScopedPointer<SpectrogramAudioMonitorComponent> spectrogramMonitor;
     //[/UserVariables]
 
-    ScopedPointer<PanelBackgroundC> background;
     ScopedPointer<LighterShadowUpwards> shadow;
     ScopedPointer<SeparatorHorizontalReversed> headLine;
     ScopedPointer<LighterShadowDownwards> headShadow;
     ScopedPointer<SeparatorHorizontal> separator;
     ScopedPointer<ModeIndicatorTrigger> modeIndicatorSelector;
     ScopedPointer<ModeIndicatorComponent> modeIndicator;
+    ScopedPointer<MenuItemComponent> switchPatternModeButton;
+    ScopedPointer<MenuItemComponent> switchLinearModeButton;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SequencerSidebarLeft)
 };

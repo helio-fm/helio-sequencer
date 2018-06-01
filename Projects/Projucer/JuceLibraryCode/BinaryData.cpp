@@ -11770,6 +11770,8 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) noexc
         case 0x33c78b3e:  numBytes = 1481; return mute_svg;
         case 0xf53ee1cf:  numBytes = 467; return microphone_svg;
         case 0x51884f53:  numBytes = 2838; return orchestraPit_svg;
+        case 0xe9dbb8f6:  numBytes = 699; return pageDown_svg;
+        case 0x4fe11e2f:  numBytes = 706; return pageUp_svg;
         case 0xc95d8ab8:  numBytes = 3086; return paste_svg;
         case 0xf53d4b08:  numBytes = 192; return patterns_svg;
         case 0x3175289b:  numBytes = 359; return pause_svg;
@@ -11786,7 +11788,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) noexc
         case 0x41800429:  numBytes = 423; return remove_svg;
         case 0x4731743b:  numBytes = 2997; return render_svg;
         case 0x78a5cb74:  numBytes = 489; return reset_svg;
-        case 0xb57c4000:  numBytes = 525; return revision_svg;
+        case 0xb57c4000:  numBytes = 1018; return revision_svg;
         case 0x82fa7b6b:  numBytes = 743; return routing_svg;
         case 0x756354e9:  numBytes = 1639; return selectionTool_svg;
         case 0x3df9b931:  numBytes = 1983; return selection_svg;
@@ -11812,8 +11814,8 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) noexc
         case 0xb3e40b64:  numBytes = 317; return Noise_png;
         case 0x9d3ca20d:  numBytes = 64; return Arpeggiators_json;
         case 0xaf771725:  numBytes = 2664; return ColourSchemes_json;
-        case 0x932a5b4b:  numBytes = 10867; return HotkeySchemes_json;
-        case 0x67f906de:  numBytes = 5976; return Scales_json;
+        case 0x932a5b4b:  numBytes = 11048; return HotkeySchemes_json;
+        case 0x67f906de:  numBytes = 3513; return Scales_json;
         case 0xe3299f05:  numBytes = 394369; return Translations_json;
         default: break;
     }
@@ -11888,6 +11890,8 @@ const char* namedResourceList[] =
     "mute_svg",
     "microphone_svg",
     "orchestraPit_svg",
+    "pageDown_svg",
+    "pageUp_svg",
     "paste_svg",
     "patterns_svg",
     "pause_svg",
@@ -12001,6 +12005,8 @@ const char* originalFilenames[] =
     "mute.svg",
     "microphone.svg",
     "orchestraPit.svg",
+    "pageDown.svg",
+    "pageUp.svg",
     "paste.svg",
     "patterns.svg",
     "pause.svg",

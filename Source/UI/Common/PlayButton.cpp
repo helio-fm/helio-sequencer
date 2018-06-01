@@ -22,6 +22,8 @@
 #include "PlayButton.h"
 
 //[MiscUserDefs]
+#include "App.h"
+#include "MainLayout.h"
 #include "HelioTheme.h"
 #include "ColourIDs.h"
 #include "CommandIDs.h"
@@ -67,6 +69,8 @@ PlayButton::PlayButton()
     this->pauseIcon->setInterceptsMouseClicks(false, false);
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
+    this->setPaintingIsUnclipped(true);
+    this->setOpaque(false);
     //[/UserPreSize]
 
     setSize (64, 64);
@@ -112,11 +116,11 @@ void PlayButton::mouseDown (const MouseEvent& e)
     //[UserCode_mouseDown] -- Add your code here...
     if (this->playing)
     {
-        this->getParentComponent()->postCommandMessage(CommandIDs::TransportPausePlayback);
+        App::Layout().broadcastCommandMessage(CommandIDs::TransportPausePlayback);
     }
     else
     {
-        this->getParentComponent()->postCommandMessage(CommandIDs::TransportStartPlayback);
+        App::Layout().broadcastCommandMessage(CommandIDs::TransportStartPlayback);
     }
     //[/UserCode_mouseDown]
 }

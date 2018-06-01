@@ -81,6 +81,8 @@
         <FILE id="oF6DEi" name="microphone.svg" compile="0" resource="1" file="../../Resources/Icons/microphone.svg"/>
         <FILE id="TWchuX" name="orchestraPit.svg" compile="0" resource="1"
               file="../../Resources/Icons/orchestraPit.svg"/>
+        <FILE id="kQgJ4h" name="pageDown.svg" compile="0" resource="1" file="../../Resources/Icons/pageDown.svg"/>
+        <FILE id="EfbAt9" name="pageUp.svg" compile="0" resource="1" file="../../Resources/Icons/pageUp.svg"/>
         <FILE id="VDY34K" name="paste.svg" compile="0" resource="1" file="../../Resources/Icons/paste.svg"/>
         <FILE id="kykHC8" name="patterns.svg" compile="0" resource="1" file="../../Resources/Icons/patterns.svg"/>
         <FILE id="cC5z70" name="pause.svg" compile="0" resource="1" file="../../Resources/Icons/pause.svg"/>

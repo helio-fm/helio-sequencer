@@ -828,6 +828,7 @@
 		94D9563DCF9FE174D54308C8 = {isa = PBXFileReference; lastKnownFileType = file.ogg; name = "F#2v9.ogg"; path = "../../Resources/PianoSamples/F#2v9.ogg"; sourceTree = "SOURCE_ROOT"; };
 		94E8F208F0103510907E7976 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SeparatorHorizontal.h; path = ../../Source/UI/Themes/SeparatorHorizontal.h; sourceTree = "SOURCE_ROOT"; };
 		9526D9A539E55BFECCD2C081 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AutomationEventComponent.h; path = ../../Source/UI/Sequencer/TrackMaps/AutomationMap/AutomationEventComponent.h; sourceTree = "SOURCE_ROOT"; };
+		95409C31DDE8245FD494CD85 = {isa = PBXFileReference; lastKnownFileType = file.svg; name = pageDown.svg; path = ../../Resources/Icons/pageDown.svg; sourceTree = "SOURCE_ROOT"; };
 		954420DC3D679DBD10FF2E02 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = ThemeSettingsItem.cpp; path = ../../Source/UI/Pages/Settings/ThemeSettingsItem.cpp; sourceTree = "SOURCE_ROOT"; };
 		95B31CEFF3D85FB2C7052D31 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = OrigamiHorizontal.h; path = ../../Source/UI/Common/Origami/OrigamiHorizontal.h; sourceTree = "SOURCE_ROOT"; };
 		969EDFA7CEE6B7DE476ECB9F = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = VersionControl.h; path = ../../Source/Core/VCS/VersionControl.h; sourceTree = "SOURCE_ROOT"; };
@@ -912,6 +913,7 @@
 		AEBD1ABF516620A88157621E = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TimeSignatureLargeComponent.h; path = ../../Source/UI/Sequencer/TrackMaps/TimeSignaturesMap/TimeSignatureLargeComponent.h; sourceTree = "SOURCE_ROOT"; };
 		AF30E0C21EDB351EA71A892C = {isa = PBXFileReference; lastKnownFileType = file.svg; name = patterns.svg; path = ../../Resources/Icons/patterns.svg; sourceTree = "SOURCE_ROOT"; };
 		AF475EC4FBFF72C3C51900D4 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = HeadlineDropdown.cpp; path = ../../Source/UI/Headline/HeadlineDropdown.cpp; sourceTree = "SOURCE_ROOT"; };
+		AF5B9D3AA339A5C55251E164 = {isa = PBXFileReference; lastKnownFileType = file.svg; name = pageUp.svg; path = ../../Resources/Icons/pageUp.svg; sourceTree = "SOURCE_ROOT"; };
 		AF75EE47FEFC2A343CFC147B = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NoteComponent.h; path = ../../Source/UI/Sequencer/PianoRoll/NoteComponent.h; sourceTree = "SOURCE_ROOT"; };
 		B01481C8E39AD377E82E3F10 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Delta.h; path = ../../Source/Core/VCS/Delta.h; sourceTree = "SOURCE_ROOT"; };
 		B0758F45D32EB1F3DE9E5F41 = {isa = PBXFileReference; lastKnownFileType = file; name = "juce_audio_utils"; path = "../../ThirdParty/JUCE/modules/juce_audio_utils"; sourceTree = "SOURCE_ROOT"; };
@@ -1208,6 +1210,8 @@
 					38F77D254EEDB3C3C286D7B0,
 					3CC7631E816D9B32F9530D72,
 					7320F2DA76039762ED764BDA,
+					95409C31DDE8245FD494CD85,
+					AF5B9D3AA339A5C55251E164,
 					C3F0F6FA0ECF6EB4DAD589AF,
 					AF30E0C21EDB351EA71A892C,
 					44F7CB213970E0330D5288C6,

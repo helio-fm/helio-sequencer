@@ -58,6 +58,7 @@ public:
     
     void paint(Graphics &g) override
     {
+        g.setColour(Colours::black);
         if (this->image.isNull())
         {
             Image i(Icons::findByName(this->iconId, this->getHeight()));

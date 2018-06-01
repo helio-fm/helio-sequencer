@@ -61,7 +61,6 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectTreeItem &parent)
       timerStartSeekTime(0.0),
       timerStartSystemTime(0.0)
 {
-    addAndMakeVisible (bodyBg = new PanelBackgroundC());
     addAndMakeVisible (listBox = new ListBox());
 
     addAndMakeVisible (headLine = new SeparatorHorizontalReversed());
@@ -79,17 +78,15 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectTreeItem &parent)
     currentTime->setJustificationType (Justification::centred);
     currentTime->setEditable (false, false, false);
 
-    addAndMakeVisible (playButton = new PlayButton());
     addAndMakeVisible (headShadow = new LighterShadowDownwards());
     addAndMakeVisible (annotationsButton = new MenuItemComponent (this, nullptr, MenuItem::item(Icons::menu, CommandIDs::ShowAnnotations)));
 
+    addAndMakeVisible (playButton = new PlayButton());
 
     //[UserPreSize]
     this->setOpaque(true);
     this->setPaintingIsUnclipped(true);
     this->setInterceptsMouseClicks(false, true);
-
-    this->recreateCommandDescriptions();
 
     this->listBox->setModel(this);
     this->listBox->setMultipleSelectionEnabled(false);
@@ -105,7 +102,7 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectTreeItem &parent)
 
     //[/UserPreSize]
 
-    setSize (64, 640);
+    setSize (48, 640);
 
     //[Constructor]
     for (int i = 0; i < this->getNumChildComponents(); ++i)
@@ -130,16 +127,15 @@ SequencerSidebarRight::~SequencerSidebarRight()
     this->project.getTransport().removeTransportListener(this);
     //[/Destructor_pre]
 
-    bodyBg = nullptr;
     listBox = nullptr;
     headLine = nullptr;
     shadow = nullptr;
     separator = nullptr;
     totalTime = nullptr;
     currentTime = nullptr;
-    playButton = nullptr;
     headShadow = nullptr;
     annotationsButton = nullptr;
+    playButton = nullptr;
 
     //[Destructor]
     //[/Destructor]
@@ -148,9 +144,14 @@ SequencerSidebarRight::~SequencerSidebarRight()
 void SequencerSidebarRight::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
+    auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
+    g.setFillType({ theme.getBgCache3(), {} });
+    g.fillRect(this->getLocalBounds());
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..
+    g.setColour(this->findColour(ColourIDs::Common::borderLineLight));
+    g.drawVerticalLine(0, 0.f, float(this->getHeight()));
     //[/UserPaint]
 }
 
@@ -159,16 +160,15 @@ void SequencerSidebarRight::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    bodyBg->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
     listBox->setBounds (0, 41, getWidth() - 0, getHeight() - 113);
     headLine->setBounds (0, 39, getWidth() - 0, 2);
     shadow->setBounds (0, getHeight() - 71 - 6, getWidth() - 0, 6);
     separator->setBounds (0, getHeight() - 70 - 2, getWidth() - 0, 2);
     totalTime->setBounds ((getWidth() / 2) + 80 - (72 / 2), getHeight() - 9 - 18, 72, 18);
     currentTime->setBounds ((getWidth() / 2) + 80 - (72 / 2), getHeight() - 26 - 22, 72, 22);
-    playButton->setBounds ((getWidth() / 2) - (48 / 2), getHeight() - 12 - 48, 48, 48);
     headShadow->setBounds (0, 40, getWidth() - 0, 6);
     annotationsButton->setBounds ((getWidth() / 2) - ((getWidth() - 0) / 2), 0, getWidth() - 0, 39);
+    playButton->setBounds ((getWidth() / 2) - (48 / 2), getHeight() - 12 - 48, 48, 48);
     //[UserResized] Add your own custom resize handling here..
     //Logger::writeToLog("HybridRollCommandPanel updateContent");
     // a hack for themes changing
@@ -300,15 +300,9 @@ void SequencerSidebarRight::handleCommandMessage (int commandId)
 
 
 //[MiscUserCode]
-void SequencerSidebarRight::paintOverChildren(Graphics& g)
-{
-    g.setColour(this->findColour(ColourIDs::Common::borderLineLight));
-    g.drawVerticalLine(0, 0.f, float(this->getHeight()));
-}
-
 void SequencerSidebarRight::recreateCommandDescriptions()
 {
-    this->commandDescriptions.clear();
+    this->menu.clear();
 
     const bool defaultMode = this->project.getEditMode().isMode(HybridRollEditMode::defaultMode);
     const bool drawMode = this->project.getEditMode().isMode(HybridRollEditMode::drawMode);
@@ -319,27 +313,34 @@ void SequencerSidebarRight::recreateCommandDescriptions()
     const bool insertSpaceMode = this->project.getEditMode().isMode(HybridRollEditMode::insertSpaceMode);
     const bool scissorsMode = this->project.getEditMode().isMode(HybridRollEditMode::scissorsMode);
 
-    this->commandDescriptions.add(MenuItem::item(Icons::cursorTool, CommandIDs::CursorTool)->toggled(defaultMode));
-    this->commandDescriptions.add(MenuItem::item(Icons::drawTool, CommandIDs::DrawTool)->toggled(drawMode));
-    this->commandDescriptions.add(MenuItem::item(Icons::selectionTool, CommandIDs::SelectionTool)->toggled(selectionMode));
-    this->commandDescriptions.add(MenuItem::item(Icons::dragTool, CommandIDs::DragTool)->toggled(dragMode));
-    this->commandDescriptions.add(MenuItem::item(Icons::wipeSpaceTool, CommandIDs::WipeSpaceTool)->toggled(wipeSpaceMode));
-    this->commandDescriptions.add(MenuItem::item(Icons::insertSpaceTool, CommandIDs::InsertSpaceTool)->toggled(insertSpaceMode));
+#if HELIO_MOBILE
+    this->menu.add(MenuItem::item(Icons::selectionTool, CommandIDs::SelectionTool)->toggled(selectionMode));
+#endif
 
-    this->commandDescriptions.add(MenuItem::item(Icons::undo, CommandIDs::Undo));
-    this->commandDescriptions.add(MenuItem::item(Icons::redo, CommandIDs::Redo));
+    this->menu.add(MenuItem::item(Icons::cursorTool, CommandIDs::CursorTool)->toggled(defaultMode));
+    this->menu.add(MenuItem::item(Icons::drawTool, CommandIDs::DrawTool)->toggled(drawMode));
+    this->menu.add(MenuItem::item(Icons::dragTool, CommandIDs::DragTool)->toggled(dragMode));
 
-    this->commandDescriptions.add(MenuItem::item(Icons::zoomIn, CommandIDs::ZoomIn));
-    this->commandDescriptions.add(MenuItem::item(Icons::zoomOut, CommandIDs::ZoomOut));
+    if (this->menuMode == PianoRollTools)
+    {
+        this->menu.add(MenuItem::item(Icons::wipeSpaceTool, CommandIDs::WipeSpaceTool)->toggled(wipeSpaceMode));
+        this->menu.add(MenuItem::item(Icons::insertSpaceTool, CommandIDs::InsertSpaceTool)->toggled(insertSpaceMode));
+    }
 
-    //this->commandDescriptions.add(MenuItem::item(Icons::volumeUp, CommandIDs::TweakNotesVolume));
-    //this->commandDescriptions.add(MenuItem::item(Icons::switcher, CommandIDs::MoveEventsToLayer));
-    //this->commandDescriptions.add(MenuItem::item(Icons::ellipsis, CommandIDs::RefactorNotes));
-    //this->commandDescriptions.add(MenuItem::item(Icons::arpeggiator, CommandIDs::ArpNotes));
+    this->menu.add(MenuItem::item(Icons::undo, CommandIDs::Undo));
+    this->menu.add(MenuItem::item(Icons::redo, CommandIDs::Redo));
 
-    //this->commandDescriptions.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents));
-    //this->commandDescriptions.add(MenuItem::item(Icons::paste, CommandIDs::PasteEvents));
-    //this->commandDescriptions.add(MenuItem::item(Icons::trash, CommandIDs::DeleteEvents));
+    this->menu.add(MenuItem::item(Icons::zoomIn, CommandIDs::ZoomIn));
+    this->menu.add(MenuItem::item(Icons::zoomOut, CommandIDs::ZoomOut));
+
+    //this->menu.add(MenuItem::item(Icons::volumeUp, CommandIDs::TweakNotesVolume));
+    //this->menu.add(MenuItem::item(Icons::switcher, CommandIDs::MoveEventsToLayer));
+    //this->menu.add(MenuItem::item(Icons::ellipsis, CommandIDs::RefactorNotes));
+    //this->menu.add(MenuItem::item(Icons::arpeggiator, CommandIDs::ArpNotes));
+
+    //this->menu.add(MenuItem::item(Icons::copy, CommandIDs::CopyEvents));
+    //this->menu.add(MenuItem::item(Icons::paste, CommandIDs::PasteEvents));
+    //this->menu.add(MenuItem::item(Icons::trash, CommandIDs::DeleteEvents));
 }
 
 //===----------------------------------------------------------------------===//
@@ -349,12 +350,12 @@ void SequencerSidebarRight::recreateCommandDescriptions()
 Component *SequencerSidebarRight::refreshComponentForRow(int rowNumber,
     bool isRowSelected, Component *existingComponentToUpdate)
 {
-    if (rowNumber >= this->commandDescriptions.size())
+    if (rowNumber >= this->menu.size())
     {
         return existingComponentToUpdate;
     }
 
-    const MenuItem::Ptr itemDescription = this->commandDescriptions[rowNumber];
+    const MenuItem::Ptr itemDescription = this->menu[rowNumber];
 
     if (existingComponentToUpdate != nullptr)
     {
@@ -378,7 +379,7 @@ Component *SequencerSidebarRight::refreshComponentForRow(int rowNumber,
 
 int SequencerSidebarRight::getNumRows()
 {
-    return this->commandDescriptions.size();
+    return this->menu.size();
 }
 
 //===----------------------------------------------------------------------===//
@@ -468,6 +469,20 @@ void SequencerSidebarRight::emitAnnotationsCallout(Component *newAnnotationsMenu
     HelioCallout::emit(newAnnotationsMenu, this->annotationsButton);
 }
 
+void SequencerSidebarRight::setLinearMode()
+{
+    this->menuMode = PianoRollTools;
+    this->recreateCommandDescriptions();
+    this->listBox->updateContent();
+}
+
+void SequencerSidebarRight::setPatternMode()
+{
+    this->menuMode = PatternRollTools;
+    this->recreateCommandDescriptions();
+    this->listBox->updateContent();
+}
+
 //[/MiscUserCode]
 
 #if 0
@@ -478,14 +493,11 @@ BEGIN_JUCER_METADATA
                  componentName="" parentClasses="public Component, protected TransportListener, protected AsyncUpdater, protected ListBoxModel, protected ChangeListener, protected Timer"
                  constructorParams="ProjectTreeItem &amp;parent" variableInitialisers="project(parent),&#10;lastSeekTime(0.0),&#10;lastTotalTime(0.0),&#10;timerStartSeekTime(0.0),&#10;timerStartSystemTime(0.0)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="64" initialHeight="640">
+                 fixedSize="1" initialWidth="48" initialHeight="640">
   <METHODS>
     <METHOD name="handleCommandMessage (int commandId)"/>
   </METHODS>
   <BACKGROUND backgroundColour="0"/>
-  <JUCERCOMP name="" id="19597a6a5daad55d" memberName="bodyBg" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../../Themes/PanelBackgroundC.cpp"
-             constructorParams=""/>
   <GENERICCOMPONENT name="" id="381fa571a3dfc5cd" memberName="listBox" virtualName=""
                     explicitFocusOrder="0" pos="0 41 0M 113M" class="ListBox" params=""/>
   <JUCERCOMP name="" id="28ce45d9e84b729c" memberName="headLine" virtualName=""
@@ -507,15 +519,15 @@ BEGIN_JUCER_METADATA
          editableSingleClick="0" editableDoubleClick="0" focusDiscardsChanges="0"
          fontname="Default sans-serif font" fontsize="16.00000000000000000000"
          kerning="0.00000000000000000000" bold="0" italic="0" justification="36"/>
-  <JUCERCOMP name="" id="bb2e14336f795a57" memberName="playButton" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 12Rr 48 48" sourceFile="../../Common/PlayButton.cpp"
-             constructorParams=""/>
   <JUCERCOMP name="" id="1d398dc12e2047bd" memberName="headShadow" virtualName=""
              explicitFocusOrder="0" pos="0 40 0M 6" sourceFile="../../Themes/LighterShadowDownwards.cpp"
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="34c972d7b22acf17" memberName="annotationsButton"
                     virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 39" class="MenuItemComponent"
                     params="this, nullptr, MenuItem::item(Icons::menu, CommandIDs::ShowAnnotations)"/>
+  <JUCERCOMP name="" id="bb2e14336f795a57" memberName="playButton" virtualName=""
+             explicitFocusOrder="0" pos="0Cc 12Rr 48 48" sourceFile="../../Common/PlayButton.cpp"
+             constructorParams=""/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

@@ -60,13 +60,13 @@ InstrumentEditorNode::~InstrumentEditorNode()
 
 void InstrumentEditorNode::mouseDown(const MouseEvent &e)
 {
-    originalPos = this->localPointToGlobal(Point<int>());
+    this->originalPos = this->localPointToGlobal(Point<int>());
     this->toFront(false);
 }
 
 void InstrumentEditorNode::mouseDrag(const MouseEvent &e)
 {
-    Point<int> pos(originalPos + Point<int>(e.getDistanceFromDragStartX(), e.getDistanceFromDragStartY()));
+    Point<int> pos(this->originalPos + Point<int>(e.getDistanceFromDragStartX(), e.getDistanceFromDragStartY()));
 
     if (this->getParentComponent() != nullptr)
     {
@@ -87,7 +87,8 @@ void InstrumentEditorNode::mouseUp(const MouseEvent &e)
 
     if (e.mouseWasClicked())
     {
-        if (this->instrument->isNodeStandardIOProcessor(this->nodeId))
+        if (this->instrument->isNodeStandardIOProcessor(this->nodeId) ||
+            e.mods.isRightButtonDown() || e.mods.isAnyModifierKeyDown())
         {
             this->getParentEditor()->selectNode(this->nodeId);
             return;

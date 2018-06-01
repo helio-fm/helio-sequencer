@@ -320,21 +320,6 @@ void NotesTuningPanel::handleCommandMessage (int commandId)
             this->hasMadeChanges = false;
         }
     }
-    else if (commandId == CommandIDs::TransportStartPlayback)
-    {
-        const float startBeat = SequencerOperations::findStartBeat(this->roll.getLassoSelection());
-        const float endBeat = SequencerOperations::findEndBeat(this->roll.getLassoSelection());
-
-        const double loopStart = this->roll.getTransportPositionByBeat(startBeat);
-        const double loopEnd = this->roll.getTransportPositionByBeat(endBeat);
-
-        this->project.getTransport().startPlaybackLooped(loopStart, loopEnd);
-    }
-    else if (commandId == CommandIDs::TransportPausePlayback)
-    {
-        this->project.getTransport().stopPlayback();
-    }
-
     //[/UserCode_handleCommandMessage]
 }
 
