@@ -33,20 +33,20 @@ public:
 private:
 
     ProjectTreeItem &project;
-    WeakReference<Instrument> lastSelectedInstrument;
 
-    void initMainMenu(AnimationType animationType);
-    void initBatchMenu(AnimationType animationType);
-    void initRenderMenu();
-    void initInstrumentSelection();
-    
-    void initNewSubItemsMenu(AnimationType animationType);
-    void initSubItemTypeSelectionMenu();
+    void showMainMenu(AnimationType animationType);
+    void showBatchActionsMenu(AnimationType animationType);
+    void showRenderMenu();
+    void showSetInstrumentMenu();
 
-    bool haveSetBatchCheckpoint;
+    void showCreateItemsMenu(AnimationType animationType);
+    void showNewTrackMenu(AnimationType animationType);
+    void showNewAutomationMenu(AnimationType animationType);
+    void showControllersMenuForInstrument(WeakReference<Instrument> instrument);
     
-    ValueTree createPianoTrackTempate(const String &name) const;
-    ValueTree createAutoLayerTempate(const String &name, int controllerNumber, const String &instrumentId = "") const;
+    ValueTree createPianoTrackTempate(const String &name, const String &instrumentId) const;
+    ValueTree createAutoTrackTempate(const String &name, int controllerNumber,
+        const String &instrumentId = "") const;
     
     void proceedToRenderDialog(const String &extension);
 

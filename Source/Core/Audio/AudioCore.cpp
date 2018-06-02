@@ -180,7 +180,7 @@ void AudioCore::initDefaultInstrument()
     format.findAllTypesForFile(descriptions, BuiltInSynth::pianoId);
 
     PluginDescription desc(*descriptions[0]);
-    this->addInstrument(desc, "Default", [](Instrument *) {});
+    this->addInstrument(desc, "Helio Piano", [](Instrument *) {});
 }
 
 //===----------------------------------------------------------------------===//
