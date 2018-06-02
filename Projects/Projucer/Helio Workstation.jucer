@@ -121,6 +121,7 @@
         <FILE id="b3kVn6" name="up.svg" compile="0" resource="1" file="../../Resources/Icons/up.svg"/>
         <FILE id="gFGVNu" name="versionControl.svg" compile="0" resource="1"
               file="../../Resources/Icons/versionControl.svg"/>
+        <FILE id="EcPJkd" name="volume.svg" compile="0" resource="1" file="../../Resources/Icons/volume.svg"/>
         <FILE id="CYlwe1" name="wipeSpaceTool.svg" compile="0" resource="1"
               file="../../Resources/Icons/wipeSpaceTool.svg"/>
         <FILE id="reSgr3" name="workspace.svg" compile="0" resource="1" file="../../Resources/Icons/workspace.svg"/>

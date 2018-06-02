@@ -134,28 +134,9 @@ int HelioCallout::getBorderSize() const noexcept
 
 void HelioCallout::drawBackground(Graphics &g, const Path &path, Image &cachedImage)
 {
-#if HELIO_DESKTOP
-    
-    if (cachedImage.isNull())
-    {
-        cachedImage = Image(Image::ARGB, this->getWidth(), this->getHeight(), true);
-        Graphics g2(cachedImage);
-        DropShadow(this->findColour(ColourIDs::Callout::blur), 7, Point<int> (0, 1)).drawForPath(g2, path);
-    }
-    
-    g.setColour(Colours::black);
-    g.drawImageAt(cachedImage, 0, 0);
-    
     g.setColour(this->findColour(ColourIDs::Callout::fill));
     g.fillPath(path);
-    
-#elif HELIO_MOBILE
-    
-    g.setColour(this->findColour(HelioCallout::blurColourId).withMultipliedAlpha(1.2f));
-    g.fillPath(path);
-    
-#endif
-    
+
     g.setColour(this->findColour(ColourIDs::Callout::frame));
     g.strokePath(path, PathStrokeType(1.0f));
 }

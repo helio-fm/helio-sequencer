@@ -69,7 +69,7 @@ void PianoSequenceMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEv
     {
         const Note &note = static_cast<const Note &>(oldEvent);
         const Note &newNote = static_cast<const Note &>(newEvent);
-        if (note.getSequence() != this->sequence) { return; }
+        if (newNote.getSequence() != this->sequence) { return; }
 
         if (const auto component = this->componentsMap[note].release())
         {

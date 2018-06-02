@@ -38,7 +38,6 @@
 #include "HybridRollEditMode.h"
 #include "SerializationKeys.h"
 #include "ModalDialogInput.h"
-#include "NotesTuningPanel.h"
 #include "SequencerOperations.h"
 #include "SerializationKeys.h"
 #include "PianoSequence.h"
@@ -226,7 +225,7 @@ void PatternRoll::updateChildrenPositions()
 }
 
 //===----------------------------------------------------------------------===//
-// Ghost notes
+// Ghost clips
 //===----------------------------------------------------------------------===//
 
 void PatternRoll::showGhostClipFor(ClipComponent *targetClipComponent)

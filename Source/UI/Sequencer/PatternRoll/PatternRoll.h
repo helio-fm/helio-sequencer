@@ -49,7 +49,7 @@ public:
     void zoomViewToClip(const Clip &clip) const;
 
     //===------------------------------------------------------------------===//
-    // Ghost notes
+    // Ghost clips
     //===------------------------------------------------------------------===//
     
     void showGhostClipFor(ClipComponent *targetClipComponent);

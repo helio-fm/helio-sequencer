@@ -60,9 +60,9 @@ SequencerSidebarLeft::SequencerSidebarLeft(ProjectTreeItem &project)
 
     addAndMakeVisible (modeIndicator = new ModeIndicatorComponent (3));
 
-    addAndMakeVisible (switchPatternModeButton = new MenuItemComponent (this, nullptr, MenuItem::item(Icons::pageUp, CommandIDs::SwitchBetweenRolls)));
+    addAndMakeVisible (switchPatternModeButton = new MenuItemComponent (this, nullptr, MenuItem::item(Icons::patterns, CommandIDs::SwitchBetweenRolls)));
 
-    addAndMakeVisible (switchLinearModeButton = new MenuItemComponent (this, nullptr, MenuItem::item(Icons::pageDown, CommandIDs::SwitchBetweenRolls)));
+    addAndMakeVisible (switchLinearModeButton = new MenuItemComponent (this, nullptr, MenuItem::item(Icons::piano, CommandIDs::SwitchBetweenRolls)));
 
 
     //[UserPreSize]
@@ -236,10 +236,10 @@ BEGIN_JUCER_METADATA
                     params="3"/>
   <GENERICCOMPONENT name="" id="34c972d7b22acf17" memberName="switchPatternModeButton"
                     virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 39" class="MenuItemComponent"
-                    params="this, nullptr, MenuItem::item(Icons::pageUp, CommandIDs::SwitchBetweenRolls)"/>
+                    params="this, nullptr, MenuItem::item(Icons::patterns, CommandIDs::SwitchBetweenRolls)"/>
   <GENERICCOMPONENT name="" id="bbe7f83219439c7f" memberName="switchLinearModeButton"
                     virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 39" class="MenuItemComponent"
-                    params="this, nullptr, MenuItem::item(Icons::pageDown, CommandIDs::SwitchBetweenRolls)"/>
+                    params="this, nullptr, MenuItem::item(Icons::piano, CommandIDs::SwitchBetweenRolls)"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

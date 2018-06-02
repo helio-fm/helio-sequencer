@@ -78,7 +78,7 @@ SequencerSidebarRight::SequencerSidebarRight(ProjectTreeItem &parent)
     currentTime->setEditable (false, false, false);
 
     addAndMakeVisible (headShadow = new LighterShadowDownwards());
-    addAndMakeVisible (annotationsButton = new MenuItemComponent (this, nullptr, MenuItem::item(Icons::menu, CommandIDs::ShowAnnotations)));
+    addAndMakeVisible (annotationsButton = new MenuItemComponent (this, nullptr, MenuItem::item(Icons::ellipsis, CommandIDs::ShowAnnotations)));
 
     addAndMakeVisible (playButton = new PlayButton());
 
@@ -523,7 +523,7 @@ BEGIN_JUCER_METADATA
              constructorParams=""/>
   <GENERICCOMPONENT name="" id="34c972d7b22acf17" memberName="annotationsButton"
                     virtualName="" explicitFocusOrder="0" pos="0Cc 0 0M 39" class="MenuItemComponent"
-                    params="this, nullptr, MenuItem::item(Icons::menu, CommandIDs::ShowAnnotations)"/>
+                    params="this, nullptr, MenuItem::item(Icons::ellipsis, CommandIDs::ShowAnnotations)"/>
   <JUCERCOMP name="" id="bb2e14336f795a57" memberName="playButton" virtualName=""
              explicitFocusOrder="0" pos="0Cc 12Rr 48 48" sourceFile="../../Common/PlayButton.cpp"
              constructorParams=""/>

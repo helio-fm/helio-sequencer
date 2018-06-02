@@ -53,9 +53,8 @@ namespace ColourIDs
 
     namespace Callout
     {
-        static const int blur                   = 0x2000200;
-        static const int fill                   = 0x2000201;
-        static const int frame                  = 0x2000202;
+        static const int fill                   = 0x2000200;
+        static const int frame                  = 0x2000201;
     }
     
     namespace HelperRectangle

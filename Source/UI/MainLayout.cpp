@@ -211,6 +211,7 @@ Rectangle<int> MainLayout::getPageBounds() const
     Rectangle<int> r(this->getLocalBounds());
     r.removeFromLeft(SEQUENCER_SIDEBAR_WIDTH);
     r.removeFromRight(SEQUENCER_SIDEBAR_WIDTH);
+    r.removeFromTop(this->headline->getHeight());
     return r;
 }
 

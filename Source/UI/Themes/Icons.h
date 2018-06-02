@@ -55,6 +55,7 @@ struct Icons final
 
         piano,
         microphone,
+        volume,
 
         list,
         ellipsis,

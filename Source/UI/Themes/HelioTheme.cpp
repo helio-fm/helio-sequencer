@@ -890,9 +890,8 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Common::borderLineDark, Colours::black.withAlpha(0.2f));
 
     // CallOutBox
-    this->setColour(ColourIDs::Callout::blur, s->getSecondaryGradientColourB().darker(2.0f).withAlpha(0.35f));
-    this->setColour(ColourIDs::Callout::fill, s->getPrimaryGradientColourB().darker(2.0f).withAlpha(0.65f));
-    this->setColour(ColourIDs::Callout::frame, s->getPrimaryGradientColourB().brighter(0.75f).withAlpha(0.14f));
+    this->setColour(ColourIDs::Callout::fill, s->getPrimaryGradientColourB().darker(1.0f).withAlpha(0.925f));
+    this->setColour(ColourIDs::Callout::frame, s->getPrimaryGradientColourB().darker(2.0f).withAlpha(1.f));
 
     // HybridRoll
     this->setColour(ColourIDs::Roll::blackKey, s->getBlackKeyColour());
