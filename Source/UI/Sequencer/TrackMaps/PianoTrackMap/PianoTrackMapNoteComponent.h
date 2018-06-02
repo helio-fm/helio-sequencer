@@ -38,6 +38,8 @@ public:
     inline float getBeat() const noexcept        { return this->note.getBeat(); }
     inline float getLength() const noexcept      { return this->note.getLength(); }
     inline float getVelocity() const noexcept    { return this->note.getVelocity(); }
+    inline const Note &getNote() const noexcept  { return this->note; }
+
     inline void updateColour()
     {
         this->colour = this->note.getTrackColour().

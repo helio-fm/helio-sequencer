@@ -17,19 +17,61 @@
 
 #pragma once
 
-class MidiTrack;
+class MidiSequence;
+class ProjectTreeItem;
 
+#include "ProjectListener.h"
 #include "ClipComponent.h"
+#include "PianoTrackMapNoteComponent.h"
 
-class PianoClipComponent final : public ClipComponent
+class PianoClipComponent final :
+    public ClipComponent,
+    public ProjectListener
 {
 public:
 
-    PianoClipComponent(MidiTrack *track, HybridRoll &editor, const Clip &clip);
+    PianoClipComponent(ProjectTreeItem &project, MidiSequence *sequence,
+        HybridRoll &roll, const Clip &clip);
+    ~PianoClipComponent() override;
+
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
+
+    void resized() override;
+
+    //===------------------------------------------------------------------===//
+    // ProjectListener
+    //===------------------------------------------------------------------===//
+
+    void onChangeMidiEvent(const MidiEvent &e1, const MidiEvent &e2) override;
+    void onAddMidiEvent(const MidiEvent &event) override;
+    void onRemoveMidiEvent(const MidiEvent &event) override;
+
+    void onAddClip(const Clip &clip) override {}
+    void onChangeClip(const Clip &oldClip, const Clip &newClip) override {}
+    void onRemoveClip(const Clip &clip) override {}
+
+    void onAddTrack(MidiTrack *const track) override;
+    void onRemoveTrack(MidiTrack *const track) override;
+    void onChangeTrackProperties(MidiTrack *const track) override;
+
+    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override {}
+    void onChangeViewBeatRange(float firstBeat, float lastBeat) override {}
+    void onReloadProjectContent(const Array<MidiTrack *> &tracks) override;
 
 protected:
 
-    MidiTrack *track;
+    void applyNoteBounds(PianoTrackMapNoteComponent *nc);
+    void reloadTrackMap();
+
+    HybridRoll &roll;
+    ProjectTreeItem &project;
+    MidiSequence *sequence;
+
+    float componentHeight;
+
+    SparseHashMap<Note, UniquePointer<PianoTrackMapNoteComponent>, MidiEventHash> componentsMap;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoClipComponent)
 };

@@ -25,9 +25,9 @@
 #include "AnnotationEvent.h"
 #include "MidiTrack.h"
 
-PianoTrackMap::PianoTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll) :
-    project(parentProject),
-    roll(parentRoll),
+PianoTrackMap::PianoTrackMap(ProjectTreeItem &project, HybridRoll &roll) :
+    project(project),
+    roll(roll),
     projectFirstBeat(0.f),
     projectLastBeat(0.f),
     rollFirstBeat(0.f),

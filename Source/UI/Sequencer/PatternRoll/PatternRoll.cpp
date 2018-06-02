@@ -136,7 +136,7 @@ void PatternRoll::reloadRollContent()
 
                 if (auto pianoLayer = dynamic_cast<PianoSequence *>(sequence))
                 {
-                    clipComponent = new PianoClipComponent(track, *this, clip);
+                    clipComponent = new PianoClipComponent(this->project, sequence, *this, clip);
                 }
                 else if (auto autoLayer = dynamic_cast<AutomationSequence *>(sequence))
                 {
@@ -367,7 +367,7 @@ void PatternRoll::onAddTrack(MidiTrack *const track)
 
             if (auto pianoLayer = dynamic_cast<PianoSequence *>(sequence))
             {
-                clipComponent = new PianoClipComponent(track, *this, clip);
+                clipComponent = new PianoClipComponent(this->project, sequence, *this, clip);
             }
             else if (auto autoLayer = dynamic_cast<AutomationSequence *>(sequence))
             {
@@ -447,7 +447,7 @@ void PatternRoll::onAddClip(const Clip &clip)
 
     if (dynamic_cast<PianoSequence *>(sequence))
     {
-        clipComponent = new PianoClipComponent(track, *this, clip);
+        clipComponent = new PianoClipComponent(this->project, sequence, *this, clip);
     }
     else if (dynamic_cast<AutomationSequence *>(sequence))
     {

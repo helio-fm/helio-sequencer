@@ -47,6 +47,10 @@ public:
     void onAddMidiEvent(const MidiEvent &event) override;
     void onRemoveMidiEvent(const MidiEvent &event) override;
 
+    void onAddClip(const Clip &clip) override {}
+    void onChangeClip(const Clip &oldClip, const Clip &newClip) override {}
+    void onRemoveClip(const Clip &clip) override {}
+
     void onAddTrack(MidiTrack *const track) override;
     void onRemoveTrack(MidiTrack *const track) override;
     void onChangeTrackProperties(MidiTrack *const track) override;
@@ -60,6 +64,9 @@ private:
     void applyNoteBounds(PianoTrackMapNoteComponent *nc);
     void reloadTrackMap();
 
+    HybridRoll &roll;
+    ProjectTreeItem &project;
+
     float projectFirstBeat;
     float projectLastBeat;
 
@@ -67,9 +74,6 @@ private:
     float rollLastBeat;
     
     float componentHeight;
-    
-    HybridRoll &roll;
-    ProjectTreeItem &project;
     
     SparseHashMap<Note, UniquePointer<PianoTrackMapNoteComponent>, MidiEventHash> componentsMap;
     

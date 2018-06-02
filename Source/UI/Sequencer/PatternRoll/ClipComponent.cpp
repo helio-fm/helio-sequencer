@@ -68,8 +68,8 @@ void ClipComponent::updateColours()
     this->headColourLighter = this->headColour.brighter(0.125f);
     this->headColourDarker = this->headColour.darker(0.35f);
 
-    this->fillColour =
-        headColour.withMultipliedAlpha(this->selectedState ? 0.65f : 0.55f);
+    this->fillColour = Colours::black.withAlpha(0.15f);
+        //headColour.withMultipliedAlpha(this->selectedState ? 0.25f : 0.15f);
 }
 
 //===----------------------------------------------------------------------===//
@@ -240,8 +240,8 @@ void ClipComponent::paint(Graphics& g)
     }
 
     g.setColour(this->headColourDarker);
-    g.drawVerticalLine(0, 2.f, float(this->getHeight() - 2));
-    g.drawVerticalLine(this->getWidth() - 1, 2.f, float(this->getHeight() - 2));
+    g.drawVerticalLine(0, 2.f, float(this->getHeight() - 1));
+    g.drawVerticalLine(this->getWidth() - 1, 2.f, float(this->getHeight() - 1));
     g.drawHorizontalLine(this->getHeight() - 1, 1.f, float(this->getWidth() - 1));
 }
 
