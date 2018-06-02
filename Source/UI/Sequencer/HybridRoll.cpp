@@ -29,7 +29,6 @@
 #include "MidiSequence.h"
 #include "SelectionComponent.h"
 #include "ProjectTreeItem.h"
-#include "TriggersTrackMap.h"
 
 #include "LightShadowDownwards.h"
 #include "LightShadowUpwards.h"
@@ -80,16 +79,16 @@
 #endif
 
 // force compile template
-#include "AnnotationsTrackMap.cpp"
-template class AnnotationsTrackMap<AnnotationLargeComponent>;
+#include "AnnotationsProjectMap.cpp"
+template class AnnotationsProjectMap<AnnotationLargeComponent>;
 
 // force compile template
-#include "TimeSignaturesTrackMap.cpp"
-template class TimeSignaturesTrackMap<TimeSignatureLargeComponent>;
+#include "TimeSignaturesProjectMap.cpp"
+template class TimeSignaturesProjectMap<TimeSignatureLargeComponent>;
 
 // force compile template
-#include "KeySignaturesTrackMap.cpp"
-template class KeySignaturesTrackMap<KeySignatureLargeComponent>;
+#include "KeySignaturesProjectMap.cpp"
+template class KeySignaturesProjectMap<KeySignatureLargeComponent>;
 
 
 HybridRoll::HybridRoll(ProjectTreeItem &parentProject, Viewport &viewportRef,

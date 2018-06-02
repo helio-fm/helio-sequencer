@@ -25,9 +25,7 @@
 #include "PianoTrackTreeItem.h"
 #include "PatternEditorTreeItem.h"
 #include "TrackScroller.h"
-#include "ProjectMap.h"
-#include "AutomationTrackMap.h"
-#include "TriggersTrackMap.h"
+#include "PianoProjectMap.h"
 #include "SerializationKeys.h"
 #include "AnnotationSmallComponent.h"
 #include "TimeSignatureSmallComponent.h"
@@ -49,16 +47,16 @@
 #include "ColourIDs.h"
 
 // force compile template
-#include "AnnotationsTrackMap.cpp"
-template class AnnotationsTrackMap<AnnotationSmallComponent>;
+#include "AnnotationsProjectMap.cpp"
+template class AnnotationsProjectMap<AnnotationSmallComponent>;
 
 // force compile template
-#include "TimeSignaturesTrackMap.cpp"
-template class TimeSignaturesTrackMap<TimeSignatureSmallComponent>;
+#include "TimeSignaturesProjectMap.cpp"
+template class TimeSignaturesProjectMap<TimeSignatureSmallComponent>;
 
 // force compile template
-#include "KeySignaturesTrackMap.cpp"
-template class KeySignaturesTrackMap<KeySignatureSmallComponent>;
+#include "KeySignaturesProjectMap.cpp"
+template class KeySignaturesProjectMap<KeySignatureSmallComponent>;
 
 #define MAX_NUM_SPLITSCREEN_EDITORS 2
 #define MINIMUM_ROLLS_HEIGHT 250
@@ -278,10 +276,10 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
         *this->patternViewport, clippingDetector);
 
     this->scroller = new TrackScroller(this->project.getTransport(), this->pianoRoll);
-    this->scroller->addOwnedMap(new ProjectMap(this->project, *this->pianoRoll), false);
-    this->scroller->addOwnedMap(new AnnotationsTrackMap<AnnotationSmallComponent>(this->project, *this->pianoRoll), false);
-    this->scroller->addOwnedMap(new TimeSignaturesTrackMap<TimeSignatureSmallComponent>(this->project, *this->pianoRoll), false);
-    //this->scroller->addOwnedMap(new KeySignaturesTrackMap<KeySignatureSmallComponent>(this->project, *this->pianoRoll), false);
+    this->scroller->addOwnedMap(new PianoProjectMap(this->project, *this->pianoRoll), false);
+    this->scroller->addOwnedMap(new AnnotationsProjectMap<AnnotationSmallComponent>(this->project, *this->pianoRoll), false);
+    this->scroller->addOwnedMap(new TimeSignaturesProjectMap<TimeSignatureSmallComponent>(this->project, *this->pianoRoll), false);
+    //this->scroller->addOwnedMap(new KeySignaturesProjectMap<KeySignatureSmallComponent>(this->project, *this->pianoRoll), false);
     //this->scroller->addOwnedMap(new AutomationTrackMap(this->project, *this->roll, this->project.getDefaultTempoTrack()->getLayer()), true);
 
     this->pianoRoll->setBarWidth(HYBRID_ROLL_MAX_BAR_WIDTH);

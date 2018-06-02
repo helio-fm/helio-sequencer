@@ -27,7 +27,7 @@ class SmoothZoomController;
 class MultiTouchController;
 class OverlayShadow;
 class HybridRollHeader;
-class TriggersTrackMap;
+class AutomationStepsSequenceMap;
 class Transport;
 class HybridRollListener;
 class WipeSpaceHelper;
@@ -35,9 +35,9 @@ class InsertSpaceHelper;
 class TimelineWarningMarker;
 
 #include "ComponentFader.h"
-#include "AnnotationsTrackMap.h"
+#include "AnnotationsProjectMap.h"
 #include "AnnotationLargeComponent.h"
-#include "TimeSignaturesTrackMap.h"
+#include "TimeSignaturesProjectMap.h"
 #include "TimeSignatureLargeComponent.h"
 #include "KeySignatureLargeComponent.h"
 #include "Playhead.h"
@@ -389,13 +389,13 @@ protected:
     ScopedPointer<HybridRollHeader> header;
     ScopedPointer<Playhead> playhead;
     
-    using AnnotationsLargeMap = AnnotationsTrackMap<AnnotationLargeComponent>;
+    using AnnotationsLargeMap = AnnotationsProjectMap<AnnotationLargeComponent>;
     ScopedPointer<AnnotationsLargeMap> annotationsTrack;
 
-    using TimeSignaturesLargeMap = TimeSignaturesTrackMap<TimeSignatureLargeComponent>;
+    using TimeSignaturesLargeMap = TimeSignaturesProjectMap<TimeSignatureLargeComponent>;
     ScopedPointer<TimeSignaturesLargeMap> timeSignaturesTrack;
 
-    using KeySignaturesLargeMap = KeySignaturesTrackMap<KeySignatureLargeComponent>;
+    using KeySignaturesLargeMap = KeySignaturesProjectMap<KeySignatureLargeComponent>;
     ScopedPointer<KeySignaturesLargeMap> keySignaturesTrack;
 
     ScopedPointer<Component> topShadow;

@@ -44,7 +44,7 @@
 #include "PianoSequence.h"
 #include "PianoClipComponent.h"
 #include "AutomationSequence.h"
-#include "AutomationClipComponent.h"
+#include "AutomationCurveClipComponent.h"
 #include "DummyClipComponent.h"
 #include "LassoListeners.h"
 
@@ -140,7 +140,7 @@ void PatternRoll::reloadRollContent()
                 }
                 else if (auto autoLayer = dynamic_cast<AutomationSequence *>(sequence))
                 {
-                    clipComponent = new AutomationClipComponent(this->project, sequence, *this, clip);
+                    clipComponent = new AutomationCurveClipComponent(this->project, sequence, *this, clip);
                 }
 
                 if (clipComponent != nullptr)
@@ -371,7 +371,7 @@ void PatternRoll::onAddTrack(MidiTrack *const track)
             }
             else if (auto autoLayer = dynamic_cast<AutomationSequence *>(sequence))
             {
-                clipComponent = new AutomationClipComponent(this->project, sequence, *this, clip);
+                clipComponent = new AutomationCurveClipComponent(this->project, sequence, *this, clip);
             }
 
             if (clipComponent != nullptr)
@@ -451,7 +451,7 @@ void PatternRoll::onAddClip(const Clip &clip)
     }
     else if (dynamic_cast<AutomationSequence *>(sequence))
     {
-        clipComponent = new AutomationClipComponent(this->project, sequence, *this, clip);
+        clipComponent = new AutomationCurveClipComponent(this->project, sequence, *this, clip);
     }
 
     if (clipComponent != nullptr)
@@ -498,10 +498,7 @@ void PatternRoll::onRemoveClip(const Clip &clip)
     }
 }
 
-void PatternRoll::onPostRemoveClip(Pattern *const pattern)
-{
-    //
-}
+void PatternRoll::onPostRemoveClip(Pattern *const pattern) {}
 
 void PatternRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
