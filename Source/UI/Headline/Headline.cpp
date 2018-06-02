@@ -25,6 +25,8 @@
 #include "HeadlineItem.h"
 #include "IconComponent.h"
 #include "MainWindow.h"
+#include "HelioTheme.h"
+#include "ColourIDs.h"
 
 #define HEADLINE_ITEMS_OVERLAP (16)
 #define HEADLINE_ROOT_X (50)
@@ -32,8 +34,6 @@
 
 Headline::Headline()
 {
-    addAndMakeVisible (bg = new PanelBackgroundB());
-    addAndMakeVisible (separator = new SeparatorHorizontalReversed());
     addAndMakeVisible (navPanel = new HeadlineNavigationPanel());
 
     //[UserPreSize]
@@ -54,8 +54,6 @@ Headline::~Headline()
     this->chain.clearQuick(true);
     //[/Destructor_pre]
 
-    bg = nullptr;
-    separator = nullptr;
     navPanel = nullptr;
 
     //[Destructor]
@@ -65,9 +63,16 @@ Headline::~Headline()
 void Headline::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
+    auto &theme = static_cast<HelioTheme &>(this->getLookAndFeel());
+    g.setFillType({ theme.getBgCache2(), {} });
+    g.fillRect(this->getLocalBounds());
     //[/UserPrePaint]
 
     //[UserPaint] Add your own custom painting code here..
+    g.setColour(this->findColour(ColourIDs::Common::borderLineLight));
+    g.drawHorizontalLine(this->getHeight() - 2, 0.f, float(this->getWidth()));
+    g.setColour(this->findColour(ColourIDs::Common::borderLineDark));
+    g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth()));
     //[/UserPaint]
 }
 
@@ -76,8 +81,6 @@ void Headline::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    bg->setBounds (0, 0, getWidth() - 0, getHeight() - 0);
-    separator->setBounds (0, getHeight() - 2, getWidth() - 0, 2);
     navPanel->setBounds (0, 0, 66, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
@@ -136,7 +139,6 @@ void Headline::handleAsyncUpdate()
         this->animator.cancelAnimation(this->selectionItem, false);
         this->animator.animateComponent(this->selectionItem, finalPos, 1.f, 250, false, 1.f, 0.f);
         this->selectionItem->toBack();
-        this->bg->toBack();
         this->navPanel->toFront(false);
     }
 }
@@ -216,7 +218,6 @@ int Headline::rebuildChain(WeakReference<TreeItem> leaf)
         this->animator.animateComponent(child, finalPos, 1.f, 300, false, 1.f, 0.f);
     }
 
-    this->bg->toBack();
     this->navPanel->toFront(false);
 
     return lastPosX;
@@ -250,7 +251,6 @@ void Headline::showSelectionMenu(WeakReference<HeadlineItemDataSource> menuSourc
     const auto finalPos = this->selectionItem->getBounds().withX(x);
     this->animator.animateComponent(this->selectionItem, finalPos, 1.f, 150, false, 1.f, 0.f);
 
-    this->bg->toBack();
     this->navPanel->toFront(false);
 }
 
@@ -295,12 +295,6 @@ BEGIN_JUCER_METADATA
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="600"
                  initialHeight="34">
   <BACKGROUND backgroundColour="0"/>
-  <JUCERCOMP name="" id="e14a947c03465d1b" memberName="bg" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../Themes/PanelBackgroundB.cpp"
-             constructorParams=""/>
-  <JUCERCOMP name="" id="e5efefc65cac6ba7" memberName="separator" virtualName=""
-             explicitFocusOrder="0" pos="0 0Rr 0M 2" sourceFile="../Themes/SeparatorHorizontalReversed.cpp"
-             constructorParams=""/>
   <JUCERCOMP name="" id="666c39451424e53c" memberName="navPanel" virtualName=""
              explicitFocusOrder="0" pos="0 0 66 0M" sourceFile="HeadlineNavigationPanel.cpp"
              constructorParams=""/>

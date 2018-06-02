@@ -66,247 +66,6 @@ template class KeySignaturesTrackMap<KeySignatureSmallComponent>;
 #define ROLLS_ANIMATION_START_SPEED 0.3f
 
 //===----------------------------------------------------------------------===//
-// Splitter
-//===----------------------------------------------------------------------===//
-
-class MidiEditorSplitContainer : public Component, private Timer
-{
-public:
-    
-    class ResizeConstrainer : public ComponentBoundsConstrainer
-    {
-    public:
-        explicit ResizeConstrainer(MidiEditorSplitContainer &splitterRef) : splitter(splitterRef) { }
-        
-        void applyBoundsToComponent(Component &component, Rectangle<int> bounds) override
-        {
-            ComponentBoundsConstrainer::applyBoundsToComponent(component, bounds);
-            this->splitter.resizedByUser();
-        }
-        
-    private:
-        MidiEditorSplitContainer &splitter;
-    };
-    
-    MidiEditorSplitContainer(Component *targetRoll,
-                             Origami *targetAutomations) :
-        roll(targetRoll),
-        automations(targetAutomations),
-        deltaH(0.f)
-    {
-        this->setInterceptsMouseClicks(false, true);
-        this->setOpaque(true);
-        
-        this->constrainer = new ResizeConstrainer(*this);
-        this->constrainer->setMinimumHeight(MINIMUM_ROLLS_HEIGHT);
-        this->constrainer->setMaximumHeight(1024);
-        
-        this->resizer = new ResizableEdgeComponent(this->automations, this->constrainer, ResizableEdgeComponent::bottomEdge);
-        this->resizer->setAlwaysOnTop(true);
-        
-        // FIXME: disabled resizing for now, need to implement a good automations editor
-        this->resizer->setInterceptsMouseClicks(false, false);
-        
-        this->resizer->setFocusContainer(false);
-        this->resizer->setWantsKeyboardFocus(false);
-
-        this->addAndMakeVisible(this->roll);
-        this->addAndMakeVisible(this->automations);
-        this->addAndMakeVisible(this->resizer);
-    }
-    
-    ~MidiEditorSplitContainer() override
-    {
-        this->resizer = nullptr;
-        this->constrainer = nullptr;
-    }
-    
-    void focusGained(FocusChangeType cause) override
-    {
-        if (Origami *parentOrigami = this->findParentComponentOfClass<Origami>())
-        {
-            parentOrigami->focusOfChildComponentChanged(cause);
-        }
-    }
-    
-    void paint(Graphics &g) override
-    {
-        const Colour backCol(this->findColour(ColourIDs::Roll::headerFill).darker(0.05f));
-        g.fillRect(this->getLocalBounds());
-    }
-    
-    void resized() override
-    {
-        const int autosMinHeight = this->automations->getMinimumCommonSize();
-        const int autosMaxHeight = jmin(this->automations->getMaximumCommonSize(), this->getHeight() - MINIMUM_ROLLS_HEIGHT);
-        
-        const int rollMinHeight = this->getHeight() - autosMaxHeight;
-        const int rollMaxHeight = this->getHeight() - autosMinHeight;
-        
-        const int newRollHeight = jmin(rollMaxHeight, jmax(rollMinHeight, this->roll->getHeight()));
-        const int newAutosHeight = jmin(autosMaxHeight, jmax(autosMinHeight, this->automations->getHeight()));
-        
-        this->constrainer->setMinimumHeight(autosMinHeight);
-        this->constrainer->setMaximumHeight(autosMaxHeight);
-        
-        Rectangle<int> r(this->getLocalBounds().withTop(int(-this->deltaH)));
-        
-        this->automations->setBounds(r.removeFromTop(newAutosHeight));
-        auto resizerBounds = r;
-        this->resizer->setBounds(resizerBounds.removeFromTop(1));
-        this->roll->setBounds(r);
-    }
-    
-    void resizedByUser()
-    {
-        this->resized();
-    }
-    
-    void resizeAutomations(int heightOffset)
-    {
-        if (heightOffset != 0)
-        {
-            this->deltaH = float(heightOffset);
-            this->automations->setSize(this->automations->getWidth(), this->automations->getHeight() + heightOffset);
-            this->automations->setTopLeftPosition(0, this->automations->getY() - heightOffset);
-            this->startTimerHz(60);
-        }
-    }
-    
-private:
-    
-    void timerCallback() override
-    {
-        this->deltaH = this->deltaH / 1.6f;
-        this->resized();
-        
-        if (fabs(this->deltaH) < 0.1f)
-        {
-            this->deltaH = 0.f;
-            this->stopTimer();
-        }
-    }
-    
-    float deltaH;
-    
-    SafePointer<Component> roll;
-    SafePointer<Origami> automations;
-    ScopedPointer<ResizableEdgeComponent> resizer;
-    ScopedPointer<ResizeConstrainer> constrainer;
-};
-
-//===----------------------------------------------------------------------===//
-// Automations Container
-//===----------------------------------------------------------------------===//
-
-class AutomationTrackMapProxy : public Component, public HybridRollListener, private AsyncUpdater
-{
-public:
-    
-    AutomationTrackMapProxy(HybridRoll &parentRoll,
-                            Component *newOwnedComponent) :
-        roll(parentRoll),
-        target(newOwnedComponent)
-    {
-        this->setInterceptsMouseClicks(false, true);
-        this->setOpaque(true);
-
-        this->roll.addRollListener(this);
-        this->addAndMakeVisible(this->target);
-
-        this->setSize(newOwnedComponent->getWidth(), newOwnedComponent->getHeight());
-    }
-    
-    ~AutomationTrackMapProxy() override
-    {
-        this->removeChildComponent(this->target);
-        this->roll.removeRollListener(this);
-    }
-    
-    void resized() override
-    {
-        this->updateTargetBounds();
-    }
-    
-    void paint(Graphics &g) override
-    {
-        const Colour backCol(this->findColour(ColourIDs::Roll::headerFill));
-        const Colour frontCol(backCol.contrasting().withMultipliedAlpha(0.5f));
-        const float pX = float(this->roll.getViewport().getViewPositionX());
-        
-        g.setGradientFill(ColourGradient(backCol,
-                                         0.f,
-                                         4.f,
-                                         backCol.darker(0.06f),
-                                         0.f,
-                                         float(this->getHeight() - 4), false));
-        
-        g.fillRect(this->getLocalBounds());
-        g.setColour(frontCol);
-        
-        for (const auto f : this->roll.getVisibleBars())
-        {
-            g.drawLine(f - pX, 0.f, f - pX, float(this->getHeight() - 1), 0.4f);
-        }
-        
-        for (const auto f : this->roll.getVisibleBeats())
-        {
-            g.drawLine(f - pX, 0.f, f - pX, float(this->getHeight() - 1), 0.1f);
-        }
-        
-        for (const auto f : this->roll.getVisibleSnaps())
-        {
-            g.drawLine(f - pX, 0.f, f - pX, float(this->getHeight() - 1), 0.025f);
-        }
-        
-        g.setColour(Colours::white.withAlpha(0.07f));
-        g.drawHorizontalLine(this->getHeight() - 1, 0.f, float(this->getWidth()));
-        
-        g.setColour(Colours::black.withAlpha(0.11f));
-        g.drawHorizontalLine(this->getHeight() - 2, 0.f, float(this->getWidth()));
-    }
-    
-    void onMidiRollMoved(HybridRoll *targetRoll) override
-    {
-        this->updateTargetPosition();
-    }
-    
-    void onMidiRollResized(HybridRoll *targetRoll) override
-    {
-        this->updateTargetBounds();
-        this->target->repaint();
-    }
-    
-    HybridRoll &getRoll()
-    {
-        return this->roll;
-    }
-    
-private:
-    
-    HybridRoll &roll;
-    
-    ScopedPointer<Component> target;
-    
-    void handleAsyncUpdate() override
-    {
-        this->updateTargetBounds();
-    }
-    
-    void updateTargetPosition()
-    {
-        const int x = this->roll.getViewport().getViewPositionX();
-        this->target->setTopLeftPosition(-x, 0);
-    }
-    
-    void updateTargetBounds()
-    {
-        const int x = this->roll.getViewport().getViewPositionX();
-        this->target->setBounds(this->getLocalBounds().withWidth(this->roll.getWidth()).withX(-x));
-    }
-};
-
-//===----------------------------------------------------------------------===//
 // Rolls container responsible for switching between piano and pattern roll
 //===----------------------------------------------------------------------===//
 
@@ -330,8 +89,8 @@ public:
         animationDeceleration(1.f)
     {
         this->setInterceptsMouseClicks(false, true);
-        this->setPaintingIsUnclipped(true);
-        this->setOpaque(false);
+        this->setPaintingIsUnclipped(false);
+        this->setOpaque(true);
 
         this->addAndMakeVisible(this->pianoViewport);
         this->addAndMakeVisible(this->patternViewport);
@@ -481,9 +240,8 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(RollsSwitchingProxy)
 };
 
-
 //===----------------------------------------------------------------------===//
-// Editor Itself
+// Sequencer Itself
 //===----------------------------------------------------------------------===//
 
 SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
@@ -534,63 +292,43 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
     this->patternViewport->setViewedComponent(this->patternRoll, false);
     this->patternRoll->addRollListener(this->scroller);
 
-    // захардкодим дефолтную позицию по y (не с самого верха, так стремно)
+    // hard-code default y view position
     const int defaultY = (this->pianoRoll->getHeight() / 3);
     this->pianoViewport->setViewPosition(this->pianoViewport->getViewPositionX(), defaultY);
     
-    
-    // затем помещаем их в контейнер
+    // create a container with 2 editors
     this->rollContainer = new RollsSwitchingProxy(this->pianoRoll, this->patternRoll,
         this->pianoViewport, this->patternViewport,
         this->scroller);
     
-    // создаем тулбар и компонуем его с контейнером
+    // add sidebars
     this->rollToolsSidebar = new SequencerSidebarRight(this->project);
     this->rollNavSidebar = new SequencerSidebarLeft(this->project);
     this->rollNavSidebar->setSize(SEQUENCER_SIDEBAR_WIDTH, this->getParentHeight());
     // Hopefully this doesn't crash, since sequencer layout is only created by a loaded project:
     this->rollNavSidebar->setAudioMonitor(App::Workspace().getAudioCore().getMonitor());
 
+    // combine sidebars with editors
+    this->sequencerLayout = new OrigamiVertical();
+    this->sequencerLayout->addFixedPage(this->rollNavSidebar);
+    this->sequencerLayout->addFlexiblePage(this->rollContainer);
+    this->sequencerLayout->addShadowAtTheStart();
+    this->sequencerLayout->addShadowAtTheEnd();
+    this->sequencerLayout->addFixedPage(this->rollToolsSidebar);
 
-    // TODO we may have multiple roll editors here
-    //this->rollsOrigami = new OrigamiVertical();
-    //this->rollsOrigami->addPage(this->rollContainer, false, false, false);
-    // TODO fix focus troubles
-    //this->rollsOrigami->setFocusContainer(false);
-    
-    // создаем стек редакторов автоматизации
-    this->automationsOrigami = new OrigamiHorizontal();
-    
-    // и объединяем все редакторы в один лейаут
-    //this->allEditorsContainer = new MidiEditorSplitContainer(this->rollsOrigami, this->automationsOrigami);
-    this->allEditorsContainer = new MidiEditorSplitContainer(this->rollContainer, this->automationsOrigami);
-
-    // добавляем тулбар справа
-    this->allEditorsAndCommandPanel = new OrigamiVertical();
-    this->allEditorsAndCommandPanel->addFixedPage(this->rollNavSidebar);
-    this->allEditorsAndCommandPanel->addFlexiblePage(this->allEditorsContainer);
-    this->allEditorsAndCommandPanel->addShadowAtTheStart();
-    this->allEditorsAndCommandPanel->addShadowAtTheEnd();
-    this->allEditorsAndCommandPanel->addFixedPage(this->rollToolsSidebar);
-
-    this->addAndMakeVisible(this->allEditorsAndCommandPanel);
+    this->addAndMakeVisible(this->sequencerLayout);
 }
 
 SequencerLayout::~SequencerLayout()
 {
-    this->allEditorsAndCommandPanel = nullptr;
-    this->allEditorsContainer = nullptr;
+    this->sequencerLayout = nullptr;
     
-    this->automationsOrigami = nullptr;
-    
-    //this->rollsOrigami = nullptr;
     this->rollToolsSidebar = nullptr;
     this->rollNavSidebar = nullptr;
     this->rollContainer = nullptr;
 
     this->patternRoll->removeRollListener(this->scroller);
     this->pianoRoll->removeRollListener(this->scroller);
-    //this->roll->removeAllChangeListeners();
     
     this->scroller = nullptr;
 
@@ -633,112 +371,9 @@ void SequencerLayout::showLinearEditor(WeakReference<MidiTrack> track)
         useActiveClip ? activeClip : *trackFirstClip, false);
 }
 
-void SequencerLayout::setEditableScope(WeakReference<MidiTrack> track,
-    const Clip &clip, bool zoomToArea)
+void SequencerLayout::setEditableScope(WeakReference<MidiTrack> track, const Clip &clip, bool zoomToArea)
 {
     this->pianoRoll->setEditableScope(track, clip, zoomToArea);
-}
-
-void SequencerLayout::hideAutomationEditor(AutomationSequence *sequence)
-{
-    if (this->automationEditorsLinks.contains(sequence->getTrackId()))
-    {
-        this->toggleShowAutomationEditor(sequence);
-    }
-}
-
-bool SequencerLayout::toggleShowAutomationEditor(AutomationSequence *sequence)
-{
-    const String &trackId = sequence->getTrackId();
-    
-    // special case for the tempo track - let's show it on the scroller
-    //if (targetLayer->isTempoLayer())
-    //{
-    //    AutomationTrackMap *existingTrackMap = this->scroller->findOwnedMapOfType<AutomationTrackMap>();
-    //    const bool addTrackMode = (existingTrackMap == nullptr);
-    //    
-    //    if (addTrackMode)
-    //    {
-    //        AutomationTrackMapCommon *newTrackMap = new AutomationTrackMap(this->project, *this->roll, targetLayer);
-    //        newTrackMap->reloadTrack();
-    //        this->scroller->addOwnedMap(newTrackMap, true);
-    //    }
-    //    else
-    //    {
-    //        this->scroller->removeOwnedMap(existingTrackMap);
-    //    }
-    //    
-    //    return addTrackMode;
-    //}
-    
-    if (sequence->getTrack()->isSustainPedalTrack())
-    {
-        TriggersTrackMap *existingTrackMap = this->pianoRoll->findOwnedMapOfType<TriggersTrackMap>();
-        const bool addTrackMode = (existingTrackMap == nullptr);
-        
-        if (addTrackMode)
-        {
-            TriggersTrackMap *newTrackMap = new TriggersTrackMap(this->project, *this->pianoRoll, sequence);
-            newTrackMap->reloadTrack();
-            this->pianoRoll->addOwnedMap(newTrackMap);
-        }
-        else
-        {
-            this->pianoRoll->removeOwnedMap(existingTrackMap);
-        }
-        
-        return addTrackMode;
-    }
-    
-    if (this->automationEditorsLinks.contains(trackId))
-    {
-        AutomationTrackMapProxy *trackMapProxy = this->automationEditorsLinks[trackId];
-
-        this->automationsOrigami->removePageContaining(trackMapProxy);
-
-        // здесь уменьшить высоту automationsOrigami на высоту trackMapProxy
-        this->allEditorsContainer->resizeAutomations(-trackMapProxy->getHeight());
-        this->allEditorsContainer->resized();
-        
-        this->automationEditorsLinks.remove(trackId);
-        this->automationEditors.removeObject(trackMapProxy);
-        
-        this->resized();
-        return false;
-    }
-    
-    AutomationTrackMapCommon *newTrackMap = nullptr;
-    
-    if (sequence->getTrack()->isOnOffTrack())
-    {
-        newTrackMap = new TriggersTrackMap(this->project, *this->pianoRoll, sequence);
-    }
-    else
-    {
-        newTrackMap = new AutomationTrackMap(this->project, *this->pianoRoll, sequence);
-    }
-    
-    if (newTrackMap != nullptr)
-    {
-        newTrackMap->reloadTrack();
-        auto newTrackMapProxy = new AutomationTrackMapProxy(*this->pianoRoll, newTrackMap);
-        
-        this->automationEditors.add(newTrackMapProxy);
-        this->automationEditorsLinks.set(trackId, newTrackMapProxy);
-        
-        // здесь увеличить размер automationsOrigami на высоту newTrackMap
-        this->allEditorsContainer->resizeAutomations(newTrackMap->getHeight());
-        
-        const int hNormal = newTrackMap->getHeight();
-        const int hMax = sequence->getTrack()->isOnOffTrack() ? hNormal : (hNormal * 3);
-        //const bool isFixedSize = sequence->getTrack()->isOnOffTrack();
-        this->automationsOrigami->addFixedPage(newTrackMapProxy);
-        
-        this->resized();
-        return true;
-    }
-
-    return false;
 }
 
 HybridRoll *SequencerLayout::getRoll() const
@@ -776,7 +411,7 @@ void SequencerLayout::filesDropped(const StringArray &filenames,
 
 void SequencerLayout::resized()
 {
-    this->allEditorsAndCommandPanel->setBounds(this->getLocalBounds());
+    this->sequencerLayout->setBounds(this->getLocalBounds());
 
     // a hack for themes changing
     this->rollToolsSidebar->resized();

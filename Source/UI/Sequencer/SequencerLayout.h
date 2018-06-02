@@ -22,14 +22,10 @@ class PatternRoll;
 class HybridRoll;
 class RollsSwitchingProxy;
 class MidiTrack;
-class AutomationSequence;
 class TrackScroller;
 class ProjectTreeItem;
 class SequencerSidebarRight;
 class SequencerSidebarLeft;
-class AutomationTrackMap;
-class AutomationTrackMapProxy;
-class MidiEditorSplitContainer;
 class Origami;
 class Headline;
 class Clip;
@@ -51,10 +47,6 @@ public:
     void showLinearEditor(WeakReference<MidiTrack> activeTrack);
     void setEditableScope(WeakReference<MidiTrack> activeTrack,
         const Clip &clip, bool zoomToArea);
-
-    // returns true if editor was shown, else returns false
-    bool toggleShowAutomationEditor(AutomationSequence *targetLayer);
-    void hideAutomationEditor(AutomationSequence *targetLayer);
     
     HybridRoll *getRoll() const;
 
@@ -91,19 +83,12 @@ private:
 
     ScopedPointer<PianoRoll> pianoRoll;
     ScopedPointer<PatternRoll> patternRoll;
-    ScopedPointer<RollsSwitchingProxy> rollContainer; // лейаут для вьюпорта с роллом и минимап-скроллера внизу
+    ScopedPointer<RollsSwitchingProxy> rollContainer;
 
     ScopedPointer<SequencerSidebarLeft> rollNavSidebar;
-    ScopedPointer<SequencerSidebarRight> rollToolsSidebar; // тублар справа от роллов
+    ScopedPointer<SequencerSidebarRight> rollToolsSidebar;
 
-    using AutomationEditorsHashMap = HashMap<String, AutomationTrackMapProxy *>;
-    AutomationEditorsHashMap automationEditorsLinks; // связки id слоев и редакторов автоматизации
-    OwnedArray<AutomationTrackMapProxy> automationEditors; // сами редакторы автоматизации
-
-    ScopedPointer<Origami> rollsOrigami; // вертикальный стек rollContainer'ов
-    ScopedPointer<Origami> automationsOrigami; // горизонтальный стек редакторов автоматизации
-    ScopedPointer<MidiEditorSplitContainer> allEditorsContainer; // разделяет automationsOrigami вверху и rollContainer внизу
-    ScopedPointer<Origami> allEditorsAndCommandPanel; // вертикальный стек, содержит все редакторы + тулбар справа
+    ScopedPointer<Origami> sequencerLayout; // all editors combined with sidebars
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(SequencerLayout);
 };
