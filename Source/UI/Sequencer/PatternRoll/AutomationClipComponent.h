@@ -17,21 +17,19 @@
 
 #pragma once
 
-class MidiTrack;
+class MidiSequence;
 
 #include "ClipComponent.h"
+#include "AutomationTrackMap.h"
 
-// TODO: this one should also act as a mini-editor for cc curves
-class AutomationClipComponent final : public ClipComponent
+class AutomationClipComponent final : public ClipComponent, public AutomationTrackMap
 {
 public:
 
-    AutomationClipComponent(MidiTrack *track,
-        HybridRoll &editor, const Clip &clip);
+    AutomationClipComponent(ProjectTreeItem &project, MidiSequence *sequence,
+        HybridRoll &roll, const Clip &clip);
 
 protected:
-
-    MidiTrack *track;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationClipComponent)
 };

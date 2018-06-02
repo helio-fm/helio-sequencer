@@ -140,7 +140,7 @@ void PatternRoll::reloadRollContent()
                 }
                 else if (auto autoLayer = dynamic_cast<AutomationSequence *>(sequence))
                 {
-                    clipComponent = new AutomationClipComponent(track, *this, clip);
+                    clipComponent = new AutomationClipComponent(this->project, sequence, *this, clip);
                 }
 
                 if (clipComponent != nullptr)
@@ -371,7 +371,7 @@ void PatternRoll::onAddTrack(MidiTrack *const track)
             }
             else if (auto autoLayer = dynamic_cast<AutomationSequence *>(sequence))
             {
-                clipComponent = new AutomationClipComponent(track, *this, clip);
+                clipComponent = new AutomationClipComponent(this->project, sequence, *this, clip);
             }
 
             if (clipComponent != nullptr)
@@ -451,7 +451,7 @@ void PatternRoll::onAddClip(const Clip &clip)
     }
     else if (dynamic_cast<AutomationSequence *>(sequence))
     {
-        clipComponent = new AutomationClipComponent(track, *this, clip);
+        clipComponent = new AutomationClipComponent(this->project, sequence, *this, clip);
     }
 
     if (clipComponent != nullptr)

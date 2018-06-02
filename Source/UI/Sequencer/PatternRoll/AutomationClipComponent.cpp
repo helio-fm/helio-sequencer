@@ -24,10 +24,10 @@
 #include "Pattern.h"
 #include "MidiTrack.h"
 
-AutomationClipComponent::AutomationClipComponent(MidiTrack *targetTrack,
-    HybridRoll &editor, const Clip &clip) :
-    ClipComponent(editor, clip),
-    track(targetTrack)
+AutomationClipComponent::AutomationClipComponent(ProjectTreeItem &project,
+    MidiSequence *sequence, HybridRoll &roll, const Clip &clip) :
+    AutomationTrackMap(project, roll, sequence),
+    ClipComponent(roll, clip)
 {
     //
 }

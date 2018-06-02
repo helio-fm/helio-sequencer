@@ -25,7 +25,7 @@
 #include "PianoTrackTreeItem.h"
 #include "PatternEditorTreeItem.h"
 #include "TrackScroller.h"
-#include "PianoTrackMap.h"
+#include "ProjectMap.h"
 #include "AutomationTrackMap.h"
 #include "TriggersTrackMap.h"
 #include "SerializationKeys.h"
@@ -278,7 +278,7 @@ SequencerLayout::SequencerLayout(ProjectTreeItem &parentProject) :
         *this->patternViewport, clippingDetector);
 
     this->scroller = new TrackScroller(this->project.getTransport(), this->pianoRoll);
-    this->scroller->addOwnedMap(new PianoTrackMap(this->project, *this->pianoRoll), false);
+    this->scroller->addOwnedMap(new ProjectMap(this->project, *this->pianoRoll), false);
     this->scroller->addOwnedMap(new AnnotationsTrackMap<AnnotationSmallComponent>(this->project, *this->pianoRoll), false);
     this->scroller->addOwnedMap(new TimeSignaturesTrackMap<TimeSignatureSmallComponent>(this->project, *this->pianoRoll), false);
     //this->scroller->addOwnedMap(new KeySignaturesTrackMap<KeySignatureSmallComponent>(this->project, *this->pianoRoll), false);

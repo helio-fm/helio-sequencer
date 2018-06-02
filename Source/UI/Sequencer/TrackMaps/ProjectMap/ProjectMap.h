@@ -17,21 +17,22 @@
 
 #pragma once
 
+#include "Clip.h"
 #include "Note.h"
 #include "ProjectListener.h"
-#include "PianoTrackMapNoteComponent.h"
+#include "ProjectMapNoteComponent.h"
 
 class HybridRoll;
 class ProjectTreeItem;
 
-class PianoTrackMap :
+class ProjectMap :
     public Component,
     public ProjectListener
 {
 public:
 
-    PianoTrackMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll);
-    ~PianoTrackMap() override;
+    ProjectMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll);
+    ~ProjectMap() override;
 
     //===------------------------------------------------------------------===//
     // Component
@@ -43,9 +44,13 @@ public:
     // ProjectListener
     //===------------------------------------------------------------------===//
 
-    void onChangeMidiEvent(const MidiEvent &e1, const MidiEvent &e2) override;
     void onAddMidiEvent(const MidiEvent &event) override;
+    void onChangeMidiEvent(const MidiEvent &e1, const MidiEvent &e2) override;
     void onRemoveMidiEvent(const MidiEvent &event) override;
+
+    void onAddClip(const Clip &clip) override;
+    void onChangeClip(const Clip &oldClip, const Clip &newClip) override;
+    void onRemoveClip(const Clip &clip) override;
 
     void onAddTrack(MidiTrack *const track) override;
     void onRemoveTrack(MidiTrack *const track) override;
@@ -57,8 +62,9 @@ public:
 
 private:
 
-    void applyNoteBounds(PianoTrackMapNoteComponent *nc);
+    void applyNoteBounds(ProjectMapNoteComponent *nc);
     void reloadTrackMap();
+    void loadTrack(const MidiTrack *const track);
 
     float projectFirstBeat;
     float projectLastBeat;
@@ -71,7 +77,9 @@ private:
     HybridRoll &roll;
     ProjectTreeItem &project;
     
-    SparseHashMap<Note, UniquePointer<PianoTrackMapNoteComponent>, MidiEventHash> componentsMap;
-    
-    JUCE_LEAK_DETECTOR(PianoTrackMap)
+    using SequenceMap = SparseHashMap<Note, UniquePointer<ProjectMapNoteComponent>, MidiEventHash>;
+    using PatternMap = SparseHashMap<const Clip, UniquePointer<SequenceMap>, ClipHash>;
+    PatternMap patternMap;
+
+    JUCE_LEAK_DETECTOR(ProjectMap)
 };

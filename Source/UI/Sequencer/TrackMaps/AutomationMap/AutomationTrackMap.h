@@ -39,8 +39,7 @@ class AutomationTrackMap : public AutomationTrackMapCommon
 {
 public:
     
-    AutomationTrackMap(ProjectTreeItem &parentProject,
-        HybridRoll &parentRoll, WeakReference<MidiSequence> targetLayer);
+    AutomationTrackMap(ProjectTreeItem &project, HybridRoll &roll, WeakReference<MidiSequence> sequence);
     ~AutomationTrackMap() override;
     
     void insertNewEventAt(const MouseEvent &e);

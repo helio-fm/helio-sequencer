@@ -28,7 +28,7 @@
 
 #include "HelioTheme.h"
 #include "ProjectTreeItem.h"
-#include "PianoTrackMap.h"
+#include "ProjectMap.h"
 
 TrackScroller::TrackScroller(Transport &transportRef, HybridRoll *targetRoll) :
     transport(transportRef),

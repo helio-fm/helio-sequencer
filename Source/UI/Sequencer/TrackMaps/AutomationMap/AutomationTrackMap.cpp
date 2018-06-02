@@ -39,10 +39,10 @@
 
 #define DEFAULT_TRACKMAP_HEIGHT 128
 
-AutomationTrackMap::AutomationTrackMap(ProjectTreeItem &parentProject,
-    HybridRoll &parentRoll, WeakReference<MidiSequence> sequence) :
-    project(parentProject),
-    roll(parentRoll),
+AutomationTrackMap::AutomationTrackMap(ProjectTreeItem &project,
+    HybridRoll &roll, WeakReference<MidiSequence> sequence) :
+    project(project),
+    roll(roll),
     sequence(sequence),
     projectFirstBeat(0.f),
     projectLastBeat(16.f),
@@ -153,23 +153,23 @@ void AutomationTrackMap::insertNewEventAt(const MouseEvent &e)
                                      e.y - int(this->getEventDiameter() / 2),
                                      draggingValue, draggingBeat);
     
-    AutomationSequence *activeAutoLayer = static_cast<AutomationSequence *>(this->sequence.get());
+    AutomationSequence *autoSequence = static_cast<AutomationSequence *>(this->sequence.get());
     {
         this->addNewEventMode = true;
-        activeAutoLayer->checkpoint();
-        AutomationEvent event(activeAutoLayer, draggingBeat, draggingValue);
-        activeAutoLayer->insert(event, true);
+        autoSequence->checkpoint();
+        AutomationEvent event(autoSequence, draggingBeat, draggingValue);
+        autoSequence->insert(event, true);
     }
 }
 
 void AutomationTrackMap::removeEventIfPossible(const AutomationEvent &e)
 {
-    AutomationSequence *autoLayer = static_cast<AutomationSequence *>(e.getSequence());
+    AutomationSequence *autoSequence = static_cast<AutomationSequence *>(e.getSequence());
     
-    if (autoLayer->size() > 1)
+    if (autoSequence->size() > 1)
     {
-        autoLayer->checkpoint();
-        autoLayer->remove(e, true);
+        autoSequence->checkpoint();
+        autoSequence->remove(e, true);
     }
 }
 
@@ -418,13 +418,13 @@ void AutomationTrackMap::onChangeProjectBeatRange(float firstBeat, float lastBea
     }
 
     // move first event to the first projects's beat
-//    if (AutomationSequence *autoLayer = dynamic_cast<AutomationSequence *>(this->layer.get()))
+//    if (AutomationSequence *autoSequence = dynamic_cast<AutomationSequence *>(this->layer.get()))
 //    {
-//        if (autoLayer->size() > 1)
+//        if (autoSequence->size() > 1)
 //        {
-//            if (AutomationEvent *event = dynamic_cast<AutomationEvent *>(autoLayer->getUnchecked(0)))
+//            if (AutomationEvent *event = dynamic_cast<AutomationEvent *>(autoSequence->getUnchecked(0)))
 //            {
-//                autoLayer->change(*event, event->withParameters(firstBeat, event->getControllerValue()), false);
+//                autoSequence->change(*event, event->withParameters(firstBeat, event->getControllerValue()), false);
 //            }
 //        }
 //    }
