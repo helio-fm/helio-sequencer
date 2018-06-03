@@ -26,9 +26,10 @@
 #include "MenuItemComponentMarker.h"
 #include "MenuPanel.h"
 #include "HelioTheme.h"
-#include "Icons.h"
+#include "HotkeyScheme.h"
 #include "IconComponent.h"
 #include "MainLayout.h"
+#include "Icons.h"
 #include "App.h"
 
 #define ICON_MARGIN 8
@@ -58,12 +59,23 @@ MenuItem::Ptr MenuItem::empty()
     return description;
 }
 
-MenuItem::Ptr MenuItem::item(Icons::Id iconId, int returnedId, const String &text /*= ""*/)
+inline static String findHotkeyText(int commandId)
+{
+#if HELIO_DESKTOP
+    return App::Layout().getCurrentHotkeyScheme()->findHotkeyDescription(commandId);
+#elif HELIO_MOBILE
+    // Don't show any hotkeys on mobile devices
+    return {};
+#endif
+}
+
+MenuItem::Ptr MenuItem::item(Icons::Id iconId, int commandId, const String &text /*= ""*/)
 {
     MenuItem::Ptr description(new MenuItem());
     description->iconId = iconId;
     description->commandText = text;
-    description->commandId = returnedId;
+    description->commandId = commandId;
+    description->hotkeyText = findHotkeyText(commandId);
     description->isToggled = false;
     description->isDisabled = false;
     description->shouldCloseMenu = false;
@@ -72,12 +84,13 @@ MenuItem::Ptr MenuItem::item(Icons::Id iconId, int returnedId, const String &tex
     return description;
 }
 
-MenuItem::Ptr MenuItem::item(Image image, int returnedId, const String &text /*= ""*/)
+MenuItem::Ptr MenuItem::item(Image image, int commandId, const String &text /*= ""*/)
 {
     MenuItem::Ptr description(new MenuItem());
     description->image = image;
     description->commandText = text;
-    description->commandId = returnedId;
+    description->commandId = commandId;
+    description->hotkeyText = findHotkeyText(commandId);
     description->isToggled = false;
     description->isDisabled = false;
     description->shouldCloseMenu = false;
@@ -88,7 +101,7 @@ MenuItem::Ptr MenuItem::item(Image image, int returnedId, const String &text /*=
 
 MenuItem::Ptr MenuItem::item(Icons::Id iconId, const String &text)
 {
-    return MenuItem::item(iconId, 0, text);
+    return MenuItem::item(iconId, -1, text);
 }
 
 MenuItem::Ptr MenuItem::withAlignment(Alignment alignment)
@@ -117,13 +130,6 @@ MenuItem::Ptr MenuItem::toggled(bool shouldBeToggled)
 {
     MenuItem::Ptr description(this);
     description->isToggled = shouldBeToggled;
-    return description;
-}
-
-MenuItem::Ptr MenuItem::withSubLabel(const String &text)
-{
-    MenuItem::Ptr description(this);
-    description->subText = text;
     return description;
 }
 
@@ -160,7 +166,7 @@ MenuItem::Ptr MenuItem::closesMenu()
 // Highlighters
 //===----------------------------------------------------------------------===//
 
-class ColourHighlighter : public Component
+class ColourHighlighter final : public Component
 {
 public:
 
@@ -168,6 +174,7 @@ public:
         colour(targetColour/*.interpolatedWith(Colours::white, 0.5f)*/)
     {
         this->setInterceptsMouseClicks(false, false);
+        this->setMouseClickGrabsKeyboardFocus(false);
         this->setPaintingIsUnclipped(true);
     }
 
@@ -186,13 +193,14 @@ private:
 
 };
 
-class CommandDragHighlighter : public Component
+class CommandDragHighlighter final : public Component
 {
 public:
 
     CommandDragHighlighter()
     {
         this->setInterceptsMouseClicks(false, false);
+        this->setMouseClickGrabsKeyboardFocus(false);
         this->setPaintingIsUnclipped(true);
     }
 
@@ -203,19 +211,21 @@ public:
     }
 };
 
-class CommandItemSelector : public Component
+class CommandItemSelector final  : public Component
 {
 public:
 
     CommandItemSelector()
     {
         this->setInterceptsMouseClicks(false, false);
+        this->setMouseClickGrabsKeyboardFocus(false);
+        this->setPaintingIsUnclipped(true);
     }
 
     void paint(Graphics &g) override
     {
         g.setColour(Colours::white.withAlpha(0.075f));
-        g.fillRect(this->getLocalBounds().toFloat());
+        g.fillRect(this->getLocalBounds());
     }
 };
 
@@ -246,6 +256,10 @@ MenuItemComponent::MenuItemComponent(Component *parentCommandReceiver, Viewport 
     this->toggleMarker = nullptr;
     this->lastMouseScreenPosition = { 0, 0 };
     this->textLabel->setInterceptsMouseClicks(false, false);
+
+    this->subLabel->setColour(Label::textColourId,
+        desc->colour.interpolatedWith(Colours::white, 0.4f).withMultipliedAlpha(0.5f));
+
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setInterceptsMouseClicks(true, true);
     this->setPaintingIsUnclipped(true);
@@ -515,13 +529,13 @@ void MenuItemComponent::update(const MenuItem::Ptr desc)
     if (desc->colour.getAlpha() > 0)
     {
         this->textLabel->setColour(Label::textColourId,
-            desc->colour.interpolatedWith(Colour(0xbaffffff), 0.5)
+            desc->colour.interpolatedWith(Colours::white, 0.4f)
                 .withMultipliedAlpha(desc->isDisabled ? 0.5f : 1.f));
     }
     else if (desc->colour.getAlpha() == 0)
     {
         this->textLabel->setColour(Label::textColourId,
-            Colour(0xbaffffff).withMultipliedAlpha(desc->isDisabled ? 0.5f : 1.f));
+            Colours::white.withMultipliedAlpha(desc->isDisabled ? 0.5f : 1.f));
     }
 
     this->textLabel->setJustificationType(desc->alignment == MenuItem::Left ?
@@ -534,7 +548,7 @@ void MenuItemComponent::update(const MenuItem::Ptr desc)
     {
         this->textLabel->setText(desc->commandText, dontSendNotification);
         this->textLabel->setVisible(true);
-        this->subLabel->setText(desc->subText, dontSendNotification);
+        this->subLabel->setText(desc->hotkeyText, dontSendNotification);
         this->subLabel->setVisible(true);
     }
     else
@@ -546,6 +560,11 @@ void MenuItemComponent::update(const MenuItem::Ptr desc)
     this->resized();
 }
 
+bool MenuItemComponent::hasText() const noexcept
+{
+    return this->description->commandText.isNotEmpty();
+}
+
 Component *MenuItemComponent::createHighlighterComponent()
 {
     if (!this->description->isDisabled)
@@ -554,7 +573,7 @@ Component *MenuItemComponent::createHighlighterComponent()
         desc2->image = this->description->image;
         desc2->iconId = this->description->iconId;
         desc2->commandText = this->description->commandText;
-        desc2->subText = this->description->subText;
+        //desc2->hotkeyText = this->description->hotkeyText;
         desc2->hasSubmenu = this->description->hasSubmenu;
         desc2->colour = this->description->colour;
         desc2->alignment = this->description->alignment;

@@ -36,6 +36,8 @@ public:
         int commandId;
     };
 
+    String findHotkeyDescription(int commandId) const noexcept;
+
     bool dispatchKeyPress(KeyPress keyPress,
         WeakReference<Component> keyPressReceiver,
         WeakReference<Component> messageReceiverParent);

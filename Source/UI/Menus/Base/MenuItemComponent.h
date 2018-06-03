@@ -37,7 +37,7 @@ struct MenuItem final : public ReferenceCountedObject
     Image image;
     Icons::Id iconId;
     String commandText;
-    String subText;
+    String hotkeyText;
     Colour colour;
     Alignment alignment;
     int commandId;
@@ -53,7 +53,6 @@ struct MenuItem final : public ReferenceCountedObject
     MenuItem::Ptr withSubmenu();
     MenuItem::Ptr withTimer();
     MenuItem::Ptr toggled(bool shouldBeToggled);
-    MenuItem::Ptr withSubLabel(const String &text);
     MenuItem::Ptr colouredWith(const Colour &colour);
     MenuItem::Ptr disabledIf(bool condition);
     MenuItem::Ptr closesMenu();
@@ -64,9 +63,6 @@ struct MenuItem final : public ReferenceCountedObject
 
     // All other menu items should use command ids,
     // which are passed to the component the same way that hotkeys pass their command id's.
-
-    // TODO: it should be straightforward to display hotkey description (if there's any)
-    // on a menu item (as a grayed-out label, or as a tooltip on mouse-over, or something).
     MenuItem::Ptr withAction(const Callback &lambda);
 
     static MenuItem::Ptr empty();
@@ -125,11 +121,7 @@ private:
 
     Component *createHighlighterComponent() override;
     void timerCallback() override;
-    inline bool hasText() const noexcept
-    {
-        return this->description->commandText.isNotEmpty() ||
-            this->description->subText.isNotEmpty();
-    }
+    bool hasText() const noexcept;
 
     // workaround странного поведения juce
     // возможна ситуация, когда mousedown'а не было, а mouseup срабатывает

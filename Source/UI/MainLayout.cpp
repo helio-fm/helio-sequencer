@@ -155,7 +155,6 @@ void MainLayout::showPage(Component *page, TreeItem *source)
     this->resized();
 
     this->currentContent->setExplicitFocusOrder(1);
-
     this->currentContent->toFront(false);
     
     Config::set(Serialization::Config::lastShownPageId, source->getItemIdentifierString());
@@ -334,4 +333,9 @@ static void broadcastMessage(Component *root, int commandId)
 void MainLayout::broadcastCommandMessage(int commandId) const
 {
     broadcastMessage(this->currentContent.getComponent(), commandId);
+}
+
+HotkeyScheme::Ptr MainLayout::getCurrentHotkeyScheme() const noexcept
+{
+    return this->hotkeyScheme;
 }

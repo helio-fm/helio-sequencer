@@ -211,7 +211,7 @@ void MenuPanel::updateContent(const Menu &commands,
         for (auto && command : commands)
         {
             const int stringWidth = stringFont.getStringWidth(command->commandText) +
-                stringFont.getStringWidth(command->subText);
+                stringFont.getStringWidth(command->hotkeyText);
 
             if (estimatedWidth < stringWidth)
             {
