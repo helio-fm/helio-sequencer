@@ -30,10 +30,7 @@ public:
         return Instance;
     }
 
-    inline const Array<Scale::Ptr> getScales() const
-    {
-        return this->getResources<Scale>(false);
-    }
+    const Array<Scale::Ptr> getScales() const;
 
 private:
 
@@ -43,8 +40,22 @@ private:
 
     ValueTree serialize() const override;
     void deserialize(const ValueTree &tree) override;
+    void reset() override;
 
 private:
+
+    struct ScalesComparator final : public DummyBaseResource
+    {
+        ScalesComparator(const StringArray &order);
+        int compareElements(const BaseResource::Ptr first,
+            const BaseResource::Ptr second) const override;
+        const StringArray &order;
+    };
+
+    ScalesComparator scalesComparator;
+    const BaseResource &getResourceComparator() const override;
+
+    StringArray order;
 
     ScalesManager();
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ScalesManager)

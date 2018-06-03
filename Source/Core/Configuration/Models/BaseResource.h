@@ -26,9 +26,19 @@ public:
 
     using Ptr = ReferenceCountedObjectPtr<BaseResource>;
 
-    static int compareElements(const BaseResource::Ptr first, const BaseResource::Ptr second)
+    virtual int compareElements(const BaseResource::Ptr first,
+        const BaseResource::Ptr second) const
     {
         return first->getResourceId().compare(second->getResourceId());
     }
+};
 
+class DummyBaseResource : public BaseResource
+{
+public:
+    String getResourceId() const override { return {}; }
+    Identifier getResourceIdProperty() const override { return {}; }
+    ValueTree serialize() const override { return {}; }
+    void deserialize(const ValueTree &tree) override {}
+    void reset() override {}
 };

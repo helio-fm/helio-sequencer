@@ -39,20 +39,14 @@ public:
     virtual void shutdown();
 
     template<typename T>
-    const Array<typename T::Ptr> getResources(bool sorted = true) const
+    const Array<typename T::Ptr> getResources() const
     {
         Array<typename T::Ptr> result;
         Resources::Iterator i(this->resources);
         while (i.next())
         {
-            if (sorted)
-            {
-                result.addSorted(this->comparator, typename T::Ptr(static_cast<T *>(i.getValue().get())));
-            }
-            else
-            {
-                result.add(typename T::Ptr(static_cast<T *>(i.getValue().get())));
-            }
+            result.addSorted(this->getResourceComparator(),
+                typename T::Ptr(static_cast<T *>(i.getValue().get())));
         }
 
         return result;
@@ -81,6 +75,7 @@ protected:
     virtual File getDownloadedResourceFile() const;
     virtual File getUsersResourceFile() const;
     virtual String getBuiltInResourceString() const;
+    virtual const BaseResource &getResourceComparator() const;
 
     using Resources = HashMap<String, BaseResource::Ptr>;
     Resources resources;
@@ -89,19 +84,9 @@ private:
 
     const Identifier resourceName;
 
-    struct BaseResourceComparator final : public BaseResource
-    {
-        String getResourceId() const override { return {}; }
-        Identifier getResourceIdProperty() const override { return {}; }
-        ValueTree serialize() const override { return {}; }
-        void deserialize(const ValueTree &tree) override {}
-        void reset() override {}
-    };
-
     // Just keep user's data so that we are able to append
     // more to it and re-save back:
     ValueTree userResources;
 
-    BaseResourceComparator comparator;
-
+    DummyBaseResource comparator;
 };

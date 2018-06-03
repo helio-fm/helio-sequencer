@@ -24,7 +24,37 @@
 #include "Config.h"
 
 ScalesManager::ScalesManager() :
-    ResourceManager(Serialization::Resources::scales) {}
+    ResourceManager(Serialization::Resources::scales),
+    scalesComparator(this->order) {}
+
+const Array<Scale::Ptr> ScalesManager::getScales() const
+{
+    return this->getResources<Scale>();
+}
+
+ScalesManager::ScalesComparator::ScalesComparator(const StringArray &order) :
+    order(order) {}
+
+// Any other scales, including user's, are displayed below and sorted alphabetically:
+int ScalesManager::ScalesComparator::compareElements(const BaseResource::Ptr first,
+    const BaseResource::Ptr second) const
+{
+    const int i1 = this->order.indexOf(first->getResourceId());
+    const int i2 = this->order.indexOf(second->getResourceId());
+
+    const int mixedDiff = (i2 != -1) - (i1 != -1);
+    if (mixedDiff != 0) { return mixedDiff; }
+
+    const int indexDiff = ((i1 - i2) > 0) - ((i1 - i2) < 0);
+    if (indexDiff != 0) { return indexDiff; }
+
+    return first->getResourceId().compare(second->getResourceId());
+}
+
+const BaseResource &ScalesManager::getResourceComparator() const
+{
+    return this->scalesComparator;
+}
 
 //===----------------------------------------------------------------------===//
 // Serializable
@@ -43,6 +73,11 @@ ValueTree ScalesManager::serialize() const
     return tree;
 }
 
+// The comparator just makes sure that some most common scale names
+// have priorities over others, and such scales, if present,
+// should be displayed at the top of the list with the following order.
+#define NUM_ORDERED_SCALES 17
+
 void ScalesManager::deserialize(const ValueTree &tree)
 {
     const auto root = tree.hasType(Serialization::Midi::scales) ?
@@ -55,7 +90,16 @@ void ScalesManager::deserialize(const ValueTree &tree)
         Scale::Ptr scale(new Scale());
         scale->deserialize(scaleNode);
         this->resources.set(scale->getResourceId(), scale);
-    }
 
-    // Logger::writeToLog("Number of scales available: " + String(this->resources.size()));
+        if (this->order.size() < NUM_ORDERED_SCALES)
+        {
+            this->order.add(scale->getResourceId());
+        }
+    }
+}
+
+void ScalesManager::reset()
+{
+    this->order.clearQuick();
+    ResourceManager::reset();
 }

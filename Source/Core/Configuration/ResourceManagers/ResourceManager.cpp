@@ -100,6 +100,11 @@ String ResourceManager::getBuiltInResourceString() const
     return {};
 }
 
+const BaseResource &ResourceManager::getResourceComparator() const
+{
+    return this->comparator;
+}
+
 void ResourceManager::reloadResources()
 {
     bool shouldBroadcastChange = false;
