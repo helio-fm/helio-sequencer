@@ -70,10 +70,10 @@ public:
     // ProjectListener
     //===------------------------------------------------------------------===//
 
-    void onAddMidiEvent(const MidiEvent &event) override;
-    void onChangeMidiEvent(const MidiEvent &e1, const MidiEvent &e2) override;
-    void onRemoveMidiEvent(const MidiEvent &event) override;
-    void onPostRemoveMidiEvent(MidiSequence *const layer) override;
+    void onAddMidiEvent(const MidiEvent &event) override {}
+    void onChangeMidiEvent(const MidiEvent &e1, const MidiEvent &e2) override {}
+    void onRemoveMidiEvent(const MidiEvent &event) override {}
+    void onPostRemoveMidiEvent(MidiSequence *const layer) override {}
 
     void onAddClip(const Clip &clip) override;
     void onChangeClip(const Clip &oldClip, const Clip &newClip) override;

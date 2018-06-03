@@ -114,13 +114,13 @@ void PatternRoll::reloadRollContent()
 
     this->tracks.clearQuick();
 
-    for (auto track : this->project.getTracks())
+    for (auto *track : this->project.getTracks())
     {
-        auto sequence = track->getSequence();
+        auto *sequence = track->getSequence();
         jassert(sequence != nullptr);
 
         // Only show tracks with patterns (i.e. ignore timeline tracks)
-        if (auto pattern = track->getPattern())
+        if (const auto *pattern = track->getPattern())
         {
             this->tracks.addSorted(*track, track);
 
@@ -133,11 +133,11 @@ void PatternRoll::reloadRollContent()
                 const Clip &clip = *pattern->getUnchecked(j);
                 ClipComponent *clipComponent = nullptr;
 
-                if (auto pianoLayer = dynamic_cast<PianoSequence *>(sequence))
+                if (auto *pianoLayer = dynamic_cast<PianoSequence *>(sequence))
                 {
                     clipComponent = new PianoClipComponent(this->project, sequence, *this, clip);
                 }
-                else if (auto autoLayer = dynamic_cast<AutomationSequence *>(sequence))
+                else if (auto *autoLayer = dynamic_cast<AutomationSequence *>(sequence))
                 {
                     clipComponent = new AutomationCurveClipComponent(this->project, sequence, *this, clip);
                 }
@@ -183,6 +183,8 @@ void PatternRoll::updateRollSize()
 
 void PatternRoll::updateChildrenBounds()
 {
+    HYBRID_ROLL_BULK_REPAINT_START
+
     const int viewX = this->getViewport().getViewPositionX();
     const int viewW = this->getViewport().getViewWidth();
 
@@ -202,10 +204,14 @@ void PatternRoll::updateChildrenBounds()
     }
 
     HybridRoll::updateChildrenBounds();
+
+    HYBRID_ROLL_BULK_REPAINT_END
 }
 
 void PatternRoll::updateChildrenPositions()
 {
+    HYBRID_ROLL_BULK_REPAINT_START
+
     const int viewX = this->getViewport().getViewPositionX();
 
     const int insertTrackHelperY = this->tracks.size() * rowHeight();
@@ -222,6 +228,8 @@ void PatternRoll::updateChildrenPositions()
     }
 
     HybridRoll::updateChildrenPositions();
+
+    HYBRID_ROLL_BULK_REPAINT_END
 }
 
 //===----------------------------------------------------------------------===//
@@ -323,29 +331,6 @@ Pattern *PatternRoll::getPatternByMousePosition(int y) const
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-void PatternRoll::onAddMidiEvent(const MidiEvent &event)
-{
-    // the question is:
-    // is pattern roll supposed to monitor single event changes?
-    // or it just reloads the whole sequence on show?
-    //this->reloadRollContent();
-}
-
-void PatternRoll::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
-{
-    //
-}
-
-void PatternRoll::onRemoveMidiEvent(const MidiEvent &event)
-{
-    //
-}
-
-void PatternRoll::onPostRemoveMidiEvent(MidiSequence *const layer)
-{
-    //
-}
-
 void PatternRoll::onAddTrack(MidiTrack *const track)
 {
     if (Pattern *pattern = track->getPattern())
@@ -379,8 +364,19 @@ void PatternRoll::onAddTrack(MidiTrack *const track)
                 this->addAndMakeVisible(clipComponent);
             }
         }
+
+        this->resized();
     }
 }
+
+//void debugTracksOrder(Array<MidiTrack *> tracks)
+//{
+//    Logger::writeToLog("---------------------");
+//    for (const auto *track : tracks)
+//    {
+//        Logger::writeToLog(track->getTrackName());
+//    }
+//}
 
 void PatternRoll::onChangeTrackProperties(MidiTrack *const track)
 {
@@ -395,9 +391,9 @@ void PatternRoll::onChangeTrackProperties(MidiTrack *const track)
     if (Pattern *pattern = track->getPattern())
     {
         // track name could change here so we have to keep track array sorted by name:
-        //this->tracks.removeAllInstancesOf(track);
-        //this->tracks.addSorted(*track, track);
-        this->tracks.sort();
+        //debugTracksOrder(this->tracks);
+        this->tracks.sort(*track);
+        //debugTracksOrder(this->tracks);
 
         // TODO only repaint clips of a changed track?
         for (const auto &e : this->clipComponents)
@@ -407,7 +403,7 @@ void PatternRoll::onChangeTrackProperties(MidiTrack *const track)
         }
     }
 
-    this->repaint();
+    this->resized();
 }
 
 void PatternRoll::onRemoveTrack(MidiTrack *const track)

@@ -109,7 +109,11 @@ void PianoProjectMap::onAddMidiEvent(const MidiEvent &event)
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
             auto &componentsMap = *c.second.get();
-            auto component = new ProjectMapNoteComponent(note, c.first);
+            const int i = track->getPattern()->indexOfSorted(&c.first);
+            jassert(i >= 0);
+
+            const Clip *clip = track->getPattern()->getUnchecked(i);
+            auto component = new ProjectMapNoteComponent(note, *clip);
             componentsMap[note] = UniquePointer<ProjectMapNoteComponent>(component);
             this->addAndMakeVisible(component);
             this->applyNoteBounds(component);

@@ -1222,7 +1222,6 @@ void HybridRoll::handleCommandMessage(int commandId)
 void HybridRoll::resized()
 {
     this->updateChildrenBounds();
-    //this->sendChangeMessage();
 }
 
 void HybridRoll::paint(Graphics &g)

@@ -337,7 +337,6 @@ SequencerLayout::~SequencerLayout()
     this->pianoViewport = nullptr;
 }
 
-
 void SequencerLayout::showPatternEditor()
 {
     if (! this->rollContainer->isPatternMode())
@@ -348,6 +347,7 @@ void SequencerLayout::showPatternEditor()
     this->rollToolsSidebar->setPatternMode();
     this->rollNavSidebar->setPatternMode();
     this->patternRoll->deselectAll();
+    this->pianoRoll->deselectAll();
 }
 
 void SequencerLayout::showLinearEditor(WeakReference<MidiTrack> track)
@@ -359,12 +359,16 @@ void SequencerLayout::showLinearEditor(WeakReference<MidiTrack> track)
 
     this->rollToolsSidebar->setLinearMode();
     this->rollNavSidebar->setLinearMode();
+    this->patternRoll->deselectAll();
     this->pianoRoll->deselectAll();
+
     const Clip &activeClip = this->pianoRoll->getActiveClip();
     const Clip *trackFirstClip = track->getPattern()->getClips().getFirst();
     jassert(trackFirstClip);
 
-    const bool useActiveClip = (activeClip.getPattern() && activeClip.getPattern()->getTrack() == track);
+    const bool useActiveClip = (activeClip.getPattern() &&
+        activeClip.getPattern()->getTrack() == track);
+
     this->pianoRoll->setEditableScope(track,
         useActiveClip ? activeClip : *trackFirstClip, false);
 }

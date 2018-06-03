@@ -352,7 +352,7 @@ float PianoRoll::getZoomFactorY() const
 void PianoRoll::zoomToArea(int minKey, int maxKey, float minBeat, float maxBeat)
 {
     jassert(minKey >= 0);
-    jassert(maxKey > minKey);
+    jassert(maxKey >= minKey);
 
     const int margin = 2;
     const float numKeysToFit = float(maxKey - minKey + margin);
@@ -514,8 +514,12 @@ void PianoRoll::onAddMidiEvent(const MidiEvent &event)
         forEachSequenceMapOfGivenTrack(this->patternMap, c, track)
         {
             auto &sequenceMap = *c.second.get();
-
-            auto component = new NoteComponent(*this, note, c.first);
+            const auto *targetParams = &c.first;
+            const int i = track->getPattern()->indexOfSorted(targetParams);
+            jassert(i >= 0);
+            
+            const Clip *realClip = track->getPattern()->getUnchecked(i);
+            auto component = new NoteComponent(*this, note, *realClip);
             sequenceMap[note] = UniquePointer<NoteComponent>(component);
             this->addAndMakeVisible(component);
 
