@@ -272,7 +272,7 @@ void ProjectTreeItem::recreatePage()
         this->projectPage = new ProjectPageDefault(*this);
     }
     
-    //this->broadcastChangeProjectBeatRange(); // let rolls update themselves
+    this->broadcastChangeProjectBeatRange(); // let rolls update view ranges
     this->sequencerLayout->deserialize(layoutState);
 }
 
