@@ -88,7 +88,6 @@ public:
     {
         this->setInterceptsMouseClicks(false, true);
         this->setPaintingIsUnclipped(false);
-        this->setOpaque(true);
 
         this->addAndMakeVisible(this->pianoViewport);
         this->addAndMakeVisible(this->patternViewport);

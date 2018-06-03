@@ -67,7 +67,7 @@ MidiTrackHeader::MidiTrackHeader(MidiTrack *track)
     this->setNameButton->setWantsKeyboardFocus(false);
     //[/UserPreSize]
 
-    setSize (400, 32);
+    setSize (400, 20);
 
     //[Constructor]
     this->updateContent();
@@ -99,10 +99,12 @@ void MidiTrackHeader::paint (Graphics& g)
 
     const int x = 1; // JUCE_LIVE_CONSTANT(1);
     const float y1 = 2.f; // JUCE_LIVE_CONSTANT(2.f);
-    const float y2 = float(this->getHeight()) - y1 * 1.5f;
+    const float y2 = float(this->getHeight()) - y1 - 1;
 
     g.drawVerticalLine(x, y1, y2);
     g.drawVerticalLine(x + 1, y1, y2);
+    g.drawVerticalLine(x + 2, y1, y2);
+    g.drawVerticalLine(x + 3, y1, y2);
 
     //g.drawVerticalLine(this->getWidth() - x - 1, y1, y2);
     //g.drawVerticalLine(this->getWidth() - x - 2, y1, y2);
@@ -177,7 +179,7 @@ void MidiTrackHeader::updateContent()
 
     this->textWidth = this->trackNameLabel->getFont().getStringWidth(this->trackNameLabel->getText());
 
-    this->trackNameLabel->setBounds(5, 4, jmax(this->textWidth, 256), this->getHeight() - 12);
+    this->trackNameLabel->setBounds(4, 0, jmax(this->textWidth, 256), this->getHeight() - 2);
     this->setNameButton->setBounds(8, 0, this->textWidth + 2, this->getHeight());
     this->setNameButton->toFront(false);
 }
@@ -196,7 +198,7 @@ BEGIN_JUCER_METADATA
                  componentName="" parentClasses="public Component" constructorParams="MidiTrack *track"
                  variableInitialisers="track(track)" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="400"
-                 initialHeight="32">
+                 initialHeight="20">
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="d3d4f85f2ceefa1c" memberName="trackNameLabel" virtualName=""
          explicitFocusOrder="0" pos="5 5 256 12M" edBkgCol="0" labelText=""

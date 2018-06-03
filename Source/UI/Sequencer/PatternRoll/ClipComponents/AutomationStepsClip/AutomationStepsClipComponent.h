@@ -62,8 +62,8 @@ public:
     void onRemoveTrack(MidiTrack *const track) override;
     void onChangeTrackProperties(MidiTrack *const track) override;
 
-    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
-    void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
+    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override {}
+    void onChangeViewBeatRange(float firstBeat, float lastBeat) override {}
     void onReloadProjectContent(const Array<MidiTrack *> &tracks) override;
 
 protected:
@@ -77,7 +77,8 @@ protected:
     AutomationStepEventComponent *getNextEventComponent(int indexOfSorted) const;
 
     Rectangle<float> getEventBounds(AutomationStepEventComponent *c) const;
-    Rectangle<float> getEventBounds(float targetBeat, bool isPedalDown, float anchor) const;
+    Rectangle<float> getEventBounds(float targetBeat, float sequenceLength,
+        bool isPedalDown, float anchor) const;
 
     friend class AutomationStepEventComponent;
     friend class AutomationStepEventsConnector;
@@ -87,15 +88,8 @@ private:
     void updateEventComponent(AutomationStepEventComponent *component) const;
     void reloadTrack();
 
-    float projectFirstBeat;
-    float projectLastBeat;
-
-    float rollFirstBeat;
-    float rollLastBeat;
-
     HybridRoll &roll;
     ProjectTreeItem &project;
-
     WeakReference<MidiSequence> sequence;
 
     ScopedPointer<AutomationStepEventsConnector> leadingConnector;

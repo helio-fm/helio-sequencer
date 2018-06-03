@@ -68,7 +68,7 @@ private:
 
     HybridRoll &roll;
     ProjectTreeItem &project;
-    MidiSequence *sequence;
+    WeakReference<MidiSequence> sequence;
 
     float componentHeight;
 

@@ -36,10 +36,8 @@ public:
 
     static float getAnchor();
 
-    AutomationStepsClipComponent *getEditor() const
-    {
-        return &this->editor;
-    }
+    inline AutomationStepsClipComponent *getEditor() const noexcept { return &this->editor; }
+    inline const AutomationEvent &getEvent() const noexcept { return this->event; };
 
     bool isPedalDownEvent() const;
     float getBeat() const;

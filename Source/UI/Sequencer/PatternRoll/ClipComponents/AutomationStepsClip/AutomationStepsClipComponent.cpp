@@ -26,35 +26,25 @@
 #include "AutomationStepEventsConnector.h"
 #include "MidiTrack.h"
 
-#define DEFAULT_TRACKMAP_HEIGHT 16
-
 AutomationStepsClipComponent::AutomationStepsClipComponent(ProjectTreeItem &project,
     MidiSequence *sequence, HybridRoll &roll, const Clip &clip) :
     ClipComponent(roll, clip),
     project(project),
     roll(roll),
-    sequence(sequence),
-    projectFirstBeat(0.f),
-    projectLastBeat(16.f),
-    rollFirstBeat(0.f),
-    rollLastBeat(16.f)
+    sequence(sequence)
 {
     this->setAlwaysOnTop(true);
     this->setPaintingIsUnclipped(true);
+    this->setMouseClickGrabsKeyboardFocus(false);
+    this->setInterceptsMouseClicks(true, true);
+    this->setMouseCursor(MouseCursor::CopyingCursor);
 
     this->leadingConnector = new AutomationStepEventsConnector(nullptr, nullptr, DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE);
     this->addAndMakeVisible(this->leadingConnector);
-    
-    this->setMouseCursor(MouseCursor::CopyingCursor);
-    
-    this->setInterceptsMouseClicks(true, true);
-    this->setMouseClickGrabsKeyboardFocus(false);
 
     this->reloadTrack();
     
     this->project.addListener(this);
-
-    this->setSize(1, DEFAULT_TRACKMAP_HEIGHT);
 }
 
 AutomationStepsClipComponent::~AutomationStepsClipComponent()
@@ -103,25 +93,21 @@ void AutomationStepsClipComponent::mouseWheelMove(const MouseEvent &event, const
 
 Rectangle<float> AutomationStepsClipComponent::getEventBounds(AutomationStepEventComponent *c) const
 {
-    return this->getEventBounds(c->getBeat(), c->isPedalDownEvent(), c->getAnchor());
+    const auto *seqence = c->getEvent().getSequence();
+    const float sequenceLength = seqence->getLengthInBeats();
+    const float beat = c->getBeat() - seqence->getFirstBeat();
+    return this->getEventBounds(beat, sequenceLength, c->isPedalDownEvent(), c->getAnchor());
 }
 
 static const float kComponentLengthInBeats = 0.5f;
 
-Rectangle<float> AutomationStepsClipComponent::getEventBounds(float targetBeat, bool isPedalDown, float anchor) const
+Rectangle<float> AutomationStepsClipComponent::getEventBounds(float beat,
+    float sequenceLength, bool isPedalDown, float anchor) const
 {
-    const float rollLengthInBeats = (this->rollLastBeat - this->rollFirstBeat);
-    const float projectLengthInBeats = (this->projectLastBeat - this->projectFirstBeat);
-    
-    const float beat = (targetBeat - this->rollFirstBeat);
-    const float mapWidth = float(this->getWidth()) * (projectLengthInBeats / rollLengthInBeats);
-    
-    const float x = (mapWidth * (beat / projectLengthInBeats));
-
     const float minWidth = 2.f;
-    const float w = jmax(minWidth, (mapWidth * (kComponentLengthInBeats / projectLengthInBeats)));
-    
-    return Rectangle<float>(x - (w * anchor), 0.f, w, float(this->getHeight()));
+    const float w = jmax(minWidth, float(this->getWidth()) * (kComponentLengthInBeats / sequenceLength));
+    const float x = (float(this->getWidth()) * (beat / sequenceLength));
+    return { x - (w * anchor), 0.f, w, float(this->getHeight()) };
 }
 
 //===----------------------------------------------------------------------===//
@@ -130,29 +116,26 @@ Rectangle<float> AutomationStepsClipComponent::getEventBounds(float targetBeat, 
 
 void AutomationStepsClipComponent::insertNewEventAt(const MouseEvent &e, bool shouldAddTriggeredEvent)
 {
-    const float rollLengthInBeats = (this->rollLastBeat - this->rollFirstBeat);
-    const float projectLengthInBeats = (this->projectLastBeat - this->projectFirstBeat);
-    const float mapWidth = float(this->getWidth()) * (projectLengthInBeats / rollLengthInBeats);
-    const float w = mapWidth * (kComponentLengthInBeats / projectLengthInBeats);
+    const float sequenceLength = this->sequence->getLengthInBeats();
+    const float w = float(this->getWidth()) * (kComponentLengthInBeats / sequenceLength);
     const float draggingBeat = this->getBeatByXPosition(int(e.x + w / 2));
     
-    if (AutomationSequence *activeAutoLayer =
-        dynamic_cast<AutomationSequence *>(this->sequence.get()))
+    if (auto *autoSequence = dynamic_cast<AutomationSequence *>(this->sequence.get()))
     {
-        const AutomationEvent *firstEvent = static_cast<AutomationEvent *>(activeAutoLayer->getUnchecked(0));
+        const auto *firstEvent = static_cast<AutomationEvent *>(autoSequence->getUnchecked(0));
         float prevEventCV = firstEvent->getControllerValue();
         float prevBeat = -FLT_MAX;
         float nextBeat = FLT_MAX;
         
-        for (int i = 0; i < activeAutoLayer->size(); ++i)
+        for (int i = 0; i < autoSequence->size(); ++i)
         {
-            const AutomationEvent *event = static_cast<AutomationEvent *>(activeAutoLayer->getUnchecked(i));
+            const auto *event = static_cast<AutomationEvent *>(autoSequence->getUnchecked(i));
             prevEventCV = event->getControllerValue();
             prevBeat = event->getBeat();
             
-            if (i < (activeAutoLayer->size() - 1))
+            if (i < (autoSequence->size() - 1))
             {
-                const AutomationEvent *nextEvent = static_cast<AutomationEvent *>(activeAutoLayer->getUnchecked(i + 1));
+                const auto *nextEvent = static_cast<AutomationEvent *>(autoSequence->getUnchecked(i + 1));
                 nextBeat = nextEvent->getBeat();
                 
                 if (event->getBeat() < draggingBeat &&
@@ -170,54 +153,46 @@ void AutomationStepsClipComponent::insertNewEventAt(const MouseEvent &e, bool sh
         const float invertedCV = (1.f - prevEventCV);
         const float alignedBeat = jmin((nextBeat - kComponentLengthInBeats), jmax((prevBeat + kComponentLengthInBeats), draggingBeat));
         
-        activeAutoLayer->checkpoint();
-        AutomationEvent event(activeAutoLayer, alignedBeat, invertedCV);
-        activeAutoLayer->insert(event, true);
+        autoSequence->checkpoint();
+        AutomationEvent event(autoSequence, alignedBeat, invertedCV);
+        autoSequence->insert(event, true);
         
         if (shouldAddTriggeredEvent)
         {
-            AutomationEvent triggerEvent(activeAutoLayer, alignedBeat + 0.75f, (1.f - invertedCV));
-            activeAutoLayer->insert(triggerEvent, true);
+            AutomationEvent triggerEvent(autoSequence, alignedBeat + 0.75f, (1.f - invertedCV));
+            autoSequence->insert(triggerEvent, true);
         }
     }
 }
 
 void AutomationStepsClipComponent::removeEventIfPossible(const AutomationEvent &e)
 {
-    AutomationSequence *autoLayer = static_cast<AutomationSequence *>(e.getSequence());
-    
-    if (autoLayer->size() > 1)
+    auto *autoSequence = static_cast<AutomationSequence *>(e.getSequence());
+    if (autoSequence->size() > 1)
     {
-        autoLayer->checkpoint();
-        autoLayer->remove(e, true);
+        autoSequence->checkpoint();
+        autoSequence->remove(e, true);
     }
 }
 
 AutomationStepEventComponent *AutomationStepsClipComponent::getPreviousEventComponent(int indexOfSorted) const
 {
     const int indexOfPrevious = indexOfSorted - 1;
-    
-    return
-        isPositiveAndBelow(indexOfPrevious, this->eventComponents.size()) ?
-        this->eventComponents.getUnchecked(indexOfPrevious) :
-        nullptr;
+    return isPositiveAndBelow(indexOfPrevious, this->eventComponents.size()) ?
+        this->eventComponents.getUnchecked(indexOfPrevious) : nullptr;
 }
 
 AutomationStepEventComponent *AutomationStepsClipComponent::getNextEventComponent(int indexOfSorted) const
 {
     const int indexOfNext = indexOfSorted + 1;
-    
-    return
-        isPositiveAndBelow(indexOfNext, this->eventComponents.size()) ?
-        this->eventComponents.getUnchecked(indexOfNext) :
-        nullptr;
+    return isPositiveAndBelow(indexOfNext, this->eventComponents.size()) ?
+        this->eventComponents.getUnchecked(indexOfNext) : nullptr;
 }
 
 float AutomationStepsClipComponent::getBeatByXPosition(int x) const
 {
     const int xRoll = int(roundf(float(x) / float(this->getWidth()) * float(this->roll.getWidth())));
-    const float targetBeat = this->roll.getRoundBeatByXPosition(xRoll);
-    return jmin(jmax(targetBeat, this->rollFirstBeat), this->rollLastBeat);
+    return this->roll.getRoundBeatByXPosition(xRoll);
 }
 
 //===----------------------------------------------------------------------===//
@@ -231,13 +206,13 @@ void AutomationStepsClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, 
         const AutomationEvent &autoEvent = static_cast<const AutomationEvent &>(oldEvent);
         const AutomationEvent &newAutoEvent = static_cast<const AutomationEvent &>(newEvent);
         
-        if (AutomationStepEventComponent *component = this->eventsHash[autoEvent])
+        if (auto *component = this->eventsHash[autoEvent])
         {
             // update links and connectors
             this->eventComponents.sort(*component);
             const int indexOfSorted = this->eventComponents.indexOfSorted(*component, component);
-            AutomationStepEventComponent *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
-            AutomationStepEventComponent *nextEventComponent(this->getNextEventComponent(indexOfSorted));
+            auto *previousEventComponent = this->getPreviousEventComponent(indexOfSorted);
+            auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
             
             component->setNextNeighbour(nextEventComponent);
             component->setPreviousNeighbour(previousEventComponent);
@@ -249,7 +224,7 @@ void AutomationStepsClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, 
             {
                 previousEventComponent->setNextNeighbour(component);
                 
-                AutomationStepEventComponent *oneMorePrevious = this->getPreviousEventComponent(indexOfSorted - 1);
+                auto *oneMorePrevious = this->getPreviousEventComponent(indexOfSorted - 1);
                 previousEventComponent->setPreviousNeighbour(oneMorePrevious);
                 
                 if (oneMorePrevious)
@@ -260,7 +235,7 @@ void AutomationStepsClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, 
             {
                 nextEventComponent->setPreviousNeighbour(component);
 
-                AutomationStepEventComponent *oneMoreNext = this->getNextEventComponent(indexOfSorted + 1);
+                auto *oneMoreNext = this->getNextEventComponent(indexOfSorted + 1);
                 nextEventComponent->setNextNeighbour(oneMoreNext);
                 
                 if (oneMoreNext)
@@ -275,6 +250,8 @@ void AutomationStepsClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, 
                 this->leadingConnector->retargetAndUpdate(nullptr, this->eventComponents[0], DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE);
                 // false - потому, что по умолчанию, с начала трека педаль не нажата
             }
+
+            this->roll.triggerBatchRepaintFor(this);
         }
     }
 }
@@ -285,14 +262,14 @@ void AutomationStepsClipComponent::onAddMidiEvent(const MidiEvent &event)
     {
         const AutomationEvent &autoEvent = static_cast<const AutomationEvent &>(event);
         
-        auto component = new AutomationStepEventComponent(*this, autoEvent);
+        auto *component = new AutomationStepEventComponent(*this, autoEvent);
         this->addAndMakeVisible(component);
         
         // update links and connectors
         const int indexOfSorted = this->eventComponents.addSorted(*component, component);
-        AutomationStepEventComponent *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
-        AutomationStepEventComponent *nextEventComponent(this->getNextEventComponent(indexOfSorted));
-        
+        auto *previousEventComponent = this->getPreviousEventComponent(indexOfSorted);
+        auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
+
         component->setNextNeighbour(nextEventComponent);
         component->setPreviousNeighbour(previousEventComponent);
 
@@ -311,6 +288,8 @@ void AutomationStepsClipComponent::onAddMidiEvent(const MidiEvent &event)
         {
             this->leadingConnector->retargetAndUpdate(nullptr, this->eventComponents[0], DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE);
         }
+
+        this->roll.triggerBatchRepaintFor(this);
     }
 }
 
@@ -320,7 +299,7 @@ void AutomationStepsClipComponent::onRemoveMidiEvent(const MidiEvent &event)
     {
         const AutomationEvent &autoEvent = static_cast<const AutomationEvent &>(event);
         
-        if (AutomationStepEventComponent *component = this->eventsHash[autoEvent])
+        if (auto *component = this->eventsHash[autoEvent])
         {
             //this->eventAnimator.fadeOut(component, 150);
             this->removeChildComponent(component);
@@ -328,9 +307,9 @@ void AutomationStepsClipComponent::onRemoveMidiEvent(const MidiEvent &event)
             
             // update links and connectors for neighbors
             const int indexOfSorted = this->eventComponents.indexOfSorted(*component, component);
-            AutomationStepEventComponent *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
-            AutomationStepEventComponent *nextEventComponent(this->getNextEventComponent(indexOfSorted));
-            
+            auto *previousEventComponent = this->getPreviousEventComponent(indexOfSorted);
+            auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
+
             if (previousEventComponent)
             { previousEventComponent->setNextNeighbour(nextEventComponent); }
             
@@ -343,6 +322,8 @@ void AutomationStepsClipComponent::onRemoveMidiEvent(const MidiEvent &event)
             {
                 this->leadingConnector->retargetAndUpdate(nullptr, this->eventComponents[0], DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE);
             }
+
+            this->roll.triggerBatchRepaintFor(this);
         }
     }
 }
@@ -362,7 +343,6 @@ void AutomationStepsClipComponent::onReloadProjectContent(const Array<MidiTrack 
 
 void AutomationStepsClipComponent::onAddTrack(MidiTrack *const track)
 {
-    // TODO remove?
     if (this->sequence != nullptr && track->getSequence() == this->sequence)
     {
         this->reloadTrack();
@@ -375,27 +355,6 @@ void AutomationStepsClipComponent::onRemoveTrack(MidiTrack *const track)
     {
         this->reloadTrack();
     }
-}
-
-void AutomationStepsClipComponent::onChangeProjectBeatRange(float firstBeat, float lastBeat)
-{
-    this->projectFirstBeat = firstBeat;
-    this->projectLastBeat = lastBeat;
-
-    if (this->rollFirstBeat > firstBeat ||
-        this->rollLastBeat < lastBeat)
-    {
-        this->rollFirstBeat = firstBeat;
-        this->rollLastBeat = lastBeat;
-        this->resized();
-    }
-}
-
-void AutomationStepsClipComponent::onChangeViewBeatRange(float firstBeat, float lastBeat)
-{
-    this->rollFirstBeat = firstBeat;
-    this->rollLastBeat = lastBeat;
-    this->resized();
 }
 
 //===----------------------------------------------------------------------===//
@@ -433,8 +392,8 @@ void AutomationStepsClipComponent::reloadTrack()
             
             // update links and connectors
             const int indexOfSorted = this->eventComponents.addSorted(*component, component);
-            AutomationStepEventComponent *previousEventComponent(this->getPreviousEventComponent(indexOfSorted));
-            AutomationStepEventComponent *nextEventComponent(this->getNextEventComponent(indexOfSorted));
+            auto *previousEventComponent = this->getPreviousEventComponent(indexOfSorted);
+            auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
             
             component->setNextNeighbour(nextEventComponent);
             component->setPreviousNeighbour(previousEventComponent);
@@ -456,6 +415,6 @@ void AutomationStepsClipComponent::reloadTrack()
         this->leadingConnector->retargetAndUpdate(nullptr, this->eventComponents[0], DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE);
     }
     
-    this->resized();
+    this->roll.triggerBatchRepaintFor(this);
     this->setVisible(true);
 }

@@ -263,7 +263,7 @@ AutomationEvent AutomationEvent::pedalDownEvent(MidiSequence *owner, float beatV
 ValueTree AutomationEvent::serialize() const noexcept
 {
     using namespace Serialization;
-    ValueTree tree(Midi::automation);
+    ValueTree tree(Midi::automationEvent);
     tree.setProperty(Midi::id, this->id, nullptr);
     tree.setProperty(Midi::value, this->controllerValue, nullptr);
     tree.setProperty(Midi::curve, this->curvature, nullptr);

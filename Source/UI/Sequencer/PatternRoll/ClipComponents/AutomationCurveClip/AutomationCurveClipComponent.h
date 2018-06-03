@@ -66,8 +66,8 @@ public:
     void onRemoveTrack(MidiTrack *const track) override;
     void onChangeTrackProperties(MidiTrack *const track) override;
 
-    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
-    void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
+    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override {}
+    void onChangeViewBeatRange(float firstBeat, float lastBeat) override {}
     void onReloadProjectContent(const Array<MidiTrack *> &tracks) override;
 
 protected:
@@ -75,7 +75,7 @@ protected:
     void removeEventIfPossible(const AutomationEvent &e);
 
     Rectangle<int> getEventBounds(AutomationCurveEventComponent *event) const;
-    Rectangle<int> getEventBounds(float eventBeat, double controllerValue) const;
+    Rectangle<int> getEventBounds(float beat, float sequenceLength, double controllerValue) const;
 
     void getRowsColsByMousePosition(int x, int y, float &targetValue, float &targetBeat) const;
     float getEventDiameter() const;
@@ -92,15 +92,8 @@ private:
     void updateTempoComponent(AutomationCurveEventComponent *);
     void reloadTrack();
 
-    float projectFirstBeat;
-    float projectLastBeat;
-
-    float rollFirstBeat;
-    float rollLastBeat;
-
     HybridRoll &roll;
     ProjectTreeItem &project;
-
     WeakReference<MidiSequence> sequence;
 
     ScopedPointer<ComponentConnectorCurve> leadingConnector;

@@ -37,6 +37,7 @@ public:
 
     inline float getBeat() const noexcept { return this->event.getBeat(); }
     inline float getControllerValue() const noexcept { return this->event.getControllerValue(); }
+    inline const AutomationEvent &getEvent() const noexcept { return this->event; };
 
     void updateConnector();
     void updateHelper();

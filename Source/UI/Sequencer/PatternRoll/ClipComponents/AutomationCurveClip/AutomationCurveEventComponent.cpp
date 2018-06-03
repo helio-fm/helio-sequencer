@@ -245,10 +245,9 @@ void AutomationCurveEventComponent::setNextNeighbour(AutomationCurveEventCompone
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // Editing
-//
+//===----------------------------------------------------------------------===//
 
 void AutomationCurveEventComponent::startDragging()
 {
@@ -267,10 +266,7 @@ bool AutomationCurveEventComponent::getDraggingDelta(const MouseEvent &e, float 
 
     float newValue = -1;
     float newBeat = -1;
-
-    this->editor.getRowsColsByMousePosition(this->getX(),
-                                            this->getY(),
-                                            newValue, newBeat);
+    this->editor.getRowsColsByMousePosition(this->getX(), this->getY(), newValue, newBeat);
 
     deltaValue = (newValue - this->anchor.getControllerValue());
     deltaBeat = (newBeat - this->anchor.getBeat());
@@ -284,7 +280,7 @@ bool AutomationCurveEventComponent::getDraggingDelta(const MouseEvent &e, float 
 AutomationEvent AutomationCurveEventComponent::continueDragging(const float deltaBeat, const float deltaValue)
 {
     const float &newValue = this->anchor.getControllerValue() + deltaValue;
-    const float &newBeat = jmax(this->anchor.getBeat() + deltaBeat, float(this->editor.rollFirstBeat));
+    const float &newBeat = this->anchor.getBeat() + deltaBeat;
     return this->event.withParameters(newBeat, newValue);
 }
 
