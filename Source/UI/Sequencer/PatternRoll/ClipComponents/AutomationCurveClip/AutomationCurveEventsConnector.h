@@ -17,15 +17,13 @@
 
 #pragma once
 
-class AutomationCurveSequenceMap;
-
 #include "ComponentConnectorCurve.h"
 
 class AutomationCurveEventsConnector : public ComponentConnectorCurve
 {
 public:
 
-    AutomationCurveEventsConnector(AutomationCurveSequenceMap &parentTrack, Component *c1, Component *c2);
+    AutomationCurveEventsConnector(Component *c1, Component *c2);
     
     //===------------------------------------------------------------------===//
     // Component
@@ -38,8 +36,6 @@ public:
 private:
 
     float xAnchor;
-    
-    AutomationCurveSequenceMap &editor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationCurveEventsConnector)
 };

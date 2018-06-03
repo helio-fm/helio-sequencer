@@ -290,7 +290,7 @@ float AnnotationLargeComponent::getTextWidth() const
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="AnnotationLargeComponent"
-                 template="../../../Template" componentName="" parentClasses="public Component"
+                 template="../../../../Template" componentName="" parentClasses="public Component"
                  constructorParams="AnnotationsProjectMap&lt;AnnotationLargeComponent&gt; &amp;parent, const AnnotationEvent &amp;targetEvent"
                  variableInitialisers="event(targetEvent),&#10;anchor(targetEvent),&#10;editor(parent),&#10;mouseDownWasTriggered(false),&#10;textWidth(0.f)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
@@ -304,15 +304,15 @@ BEGIN_JUCER_METADATA
   </METHODS>
   <BACKGROUND backgroundColour="0">
     <TEXT pos="2 1 6M 8M" fill="solid: 88ffffff" hasStroke="0" text="..."
-          fontname="Default font" fontsize="16" kerning="0" bold="0" italic="0"
-          justification="33"/>
+          fontname="Default font" fontsize="16.00000000000000000000" kerning="0.00000000000000000000"
+          bold="0" italic="0" justification="33"/>
     <RECT pos="0 0 0M 3" fill="solid: 20ffffff" hasStroke="0"/>
   </BACKGROUND>
   <LABEL name="annotationLabel" id="3dbd8cef4b61c2fe" memberName="annotationLabel"
          virtualName="" explicitFocusOrder="0" pos="4 -40 6M 8M" labelText=""
          editableSingleClick="1" editableDoubleClick="1" focusDiscardsChanges="0"
-         fontname="Default font" fontsize="16" kerning="0" bold="0" italic="0"
-         justification="33"/>
+         fontname="Default font" fontsize="16.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

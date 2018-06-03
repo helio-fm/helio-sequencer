@@ -41,6 +41,8 @@ KeySignatureLargeComponent::KeySignatureLargeComponent(KeySignaturesProjectMap<K
     signatureLabel->setJustificationType (Justification::centredLeft);
     signatureLabel->setEditable (false, false, false);
 
+    signatureLabel->setBounds (-2, 1, 192, 24);
+
 
     //[UserPreSize]
     this->setInterceptsMouseClicks(true, false);
@@ -89,7 +91,6 @@ void KeySignatureLargeComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    signatureLabel->setBounds (-2, 1, 192, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -238,7 +239,7 @@ void KeySignatureLargeComponent::updateContent()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="KeySignatureLargeComponent"
-                 template="../../../Template" componentName="" parentClasses="public Component"
+                 template="../../../../Template" componentName="" parentClasses="public Component"
                  constructorParams="KeySignaturesProjectMap&lt;KeySignatureLargeComponent&gt; &amp;parent, const KeySignatureEvent &amp;targetEvent"
                  variableInitialisers="event(targetEvent),&#10;editor(parent),&#10;anchor(targetEvent),&#10;textWidth(0.f),&#10;mouseDownWasTriggered(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
@@ -254,7 +255,8 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="signatureLabel" virtualName=""
          explicitFocusOrder="0" pos="-2 1 192 24" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="16" kerning="0" bold="0" italic="0" justification="33"/>
+         fontsize="16.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

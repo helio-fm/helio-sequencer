@@ -1080,6 +1080,10 @@
           <GROUP id="{B0892F63-3E45-E55C-AC0C-2854CEBBAA2E}" name="PatternRoll">
             <GROUP id="{B0907F47-84ED-36AB-6C8C-C52ABB97E9A8}" name="ClipComponents">
               <GROUP id="{2714C61D-4765-E8EE-7865-30682F3C56EE}" name="AutomationCurveClip">
+                <FILE id="yCkEn9" name="AutomationCurveClipComponent.cpp" compile="1"
+                      resource="0" file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip/AutomationCurveClipComponent.cpp"/>
+                <FILE id="u8eC37" name="AutomationCurveClipComponent.h" compile="0"
+                      resource="0" file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip/AutomationCurveClipComponent.h"/>
                 <FILE id="seKUnv" name="AutomationCurveHelper.cpp" compile="1" resource="0"
                       file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip/AutomationCurveHelper.cpp"/>
                 <FILE id="OrowWJ" name="AutomationCurveHelper.h" compile="0" resource="0"
@@ -1092,14 +1096,12 @@
                       resource="0" file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip/AutomationCurveEventsConnector.cpp"/>
                 <FILE id="lKEdRP" name="AutomationCurveEventsConnector.h" compile="0"
                       resource="0" file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip/AutomationCurveEventsConnector.h"/>
-                <FILE id="b0lOZI" name="AutomationCurveSequenceMap.cpp" compile="1"
-                      resource="0" file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip/AutomationCurveSequenceMap.cpp"/>
-                <FILE id="CXpNNW" name="AutomationCurveSequenceMap.h" compile="0" resource="0"
-                      file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip/AutomationCurveSequenceMap.h"/>
-                <FILE id="u8eC37" name="AutomationCurveClipComponent.h" compile="0"
-                      resource="0" file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationCurveClip/AutomationCurveClipComponent.h"/>
               </GROUP>
               <GROUP id="{8CBC7B63-E247-B7CC-2A3E-AB97306B5E17}" name="AutomationStepsClip">
+                <FILE id="Z9AuDp" name="AutomationStepsClipComponent.cpp" compile="1"
+                      resource="0" file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip/AutomationStepsClipComponent.cpp"/>
+                <FILE id="uxbP7n" name="AutomationStepsClipComponent.h" compile="0"
+                      resource="0" file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip/AutomationStepsClipComponent.h"/>
                 <FILE id="PHAeqf" name="AutomationStepEventComponent.cpp" compile="1"
                       resource="0" file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip/AutomationStepEventComponent.cpp"/>
                 <FILE id="KG97Zu" name="AutomationStepEventComponent.h" compile="0"
@@ -1108,20 +1110,12 @@
                       resource="0" file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip/AutomationStepEventsConnector.cpp"/>
                 <FILE id="YAe3RN" name="AutomationStepEventsConnector.h" compile="0"
                       resource="0" file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip/AutomationStepEventsConnector.h"/>
-                <FILE id="MpdhcI" name="AutomationStepsSequenceMap.cpp" compile="1"
-                      resource="0" file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip/AutomationStepsSequenceMap.cpp"/>
-                <FILE id="PJYRVc" name="AutomationStepsSequenceMap.h" compile="0" resource="0"
-                      file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip/AutomationStepsSequenceMap.h"/>
-                <FILE id="uxbP7n" name="AutomationStepsClipComponent.h" compile="0"
-                      resource="0" file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/AutomationStepsClip/AutomationStepsClipComponent.h"/>
               </GROUP>
               <GROUP id="{E71955F3-B109-8BFC-155C-6B3AA38F0AB4}" name="PianoClip">
+                <FILE id="dDE6ic" name="PianoClipComponent.cpp" compile="1" resource="0"
+                      file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip/PianoClipComponent.cpp"/>
                 <FILE id="WtsJ2m" name="PianoClipComponent.h" compile="0" resource="0"
                       file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip/PianoClipComponent.h"/>
-                <FILE id="k2NXa9" name="PianoSequenceMap.cpp" compile="1" resource="0"
-                      file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip/PianoSequenceMap.cpp"/>
-                <FILE id="Hm0Bt0" name="PianoSequenceMap.h" compile="0" resource="0"
-                      file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip/PianoSequenceMap.h"/>
                 <FILE id="XlUe9t" name="PianoSequenceMapNoteComponent.h" compile="0"
                       resource="0" file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/PianoClip/PianoSequenceMapNoteComponent.h"/>
               </GROUP>

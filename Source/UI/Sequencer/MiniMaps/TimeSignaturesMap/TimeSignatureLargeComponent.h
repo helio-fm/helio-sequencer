@@ -24,12 +24,11 @@ class TimeSignatureEvent;
 //[/Headers]
 
 
-class TimeSignatureLargeComponent  : public Component
+class TimeSignatureLargeComponent final : public Component
 {
 public:
 
-    TimeSignatureLargeComponent (TimeSignaturesProjectMap<TimeSignatureLargeComponent> &parent, const TimeSignatureEvent &targetEvent);
-
+    TimeSignatureLargeComponent(TimeSignaturesProjectMap<TimeSignatureLargeComponent> &parent, const TimeSignatureEvent &targetEvent);
     ~TimeSignatureLargeComponent();
 
     //[UserMethods]

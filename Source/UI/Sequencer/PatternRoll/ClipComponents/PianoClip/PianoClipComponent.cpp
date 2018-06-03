@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "PianoSequenceMap.h"
+#include "PianoClipComponent.h"
 #include "ProjectTreeItem.h"
 #include "MidiSequence.h"
 #include "PianoSequence.h"
@@ -25,7 +25,9 @@
 #include "AnnotationEvent.h"
 #include "MidiTrack.h"
 
-PianoSequenceMap::PianoSequenceMap(ProjectTreeItem &project, MidiSequence *sequence, HybridRoll &roll) :
+PianoClipComponent::PianoClipComponent(ProjectTreeItem &project, MidiSequence *sequence,
+    HybridRoll &roll, const Clip &clip) :
+    ClipComponent(roll, clip),
     project(project),
     roll(roll),
     sequence(sequence),
@@ -36,7 +38,7 @@ PianoSequenceMap::PianoSequenceMap(ProjectTreeItem &project, MidiSequence *seque
     this->project.addListener(this);
 }
 
-PianoSequenceMap::~PianoSequenceMap()
+PianoClipComponent::~PianoClipComponent()
 {
     this->project.removeListener(this);
 }
@@ -45,7 +47,7 @@ PianoSequenceMap::~PianoSequenceMap()
 // Component
 //===----------------------------------------------------------------------===//
 
-void PianoSequenceMap::resized()
+void PianoClipComponent::resized()
 {
     this->componentHeight = float(this->getHeight()) / 128.f; // TODO remove hard-coded value
     
@@ -63,7 +65,7 @@ void PianoSequenceMap::resized()
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-void PianoSequenceMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void PianoClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     if (oldEvent.isTypeOf(MidiEvent::Note))
     {
@@ -80,7 +82,7 @@ void PianoSequenceMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEv
     }
 }
 
-void PianoSequenceMap::onAddMidiEvent(const MidiEvent &event)
+void PianoClipComponent::onAddMidiEvent(const MidiEvent &event)
 {
     if (event.isTypeOf(MidiEvent::Note))
     {
@@ -96,7 +98,7 @@ void PianoSequenceMap::onAddMidiEvent(const MidiEvent &event)
     }
 }
 
-void PianoSequenceMap::onRemoveMidiEvent(const MidiEvent &event)
+void PianoClipComponent::onRemoveMidiEvent(const MidiEvent &event)
 {
     if (event.isTypeOf(MidiEvent::Note))
     {
@@ -110,7 +112,7 @@ void PianoSequenceMap::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
-void PianoSequenceMap::onChangeTrackProperties(MidiTrack *const track)
+void PianoClipComponent::onChangeTrackProperties(MidiTrack *const track)
 {
     if (track->getSequence() != this->sequence) { return; }
 
@@ -125,12 +127,12 @@ void PianoSequenceMap::onChangeTrackProperties(MidiTrack *const track)
     this->repaint();
 }
 
-void PianoSequenceMap::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+void PianoClipComponent::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
     this->reloadTrackMap();
 }
 
-void PianoSequenceMap::onAddTrack(MidiTrack *const track)
+void PianoClipComponent::onAddTrack(MidiTrack *const track)
 {
     if (track->getSequence() == this->sequence &&
         track->getSequence()->size() > 0)
@@ -139,7 +141,7 @@ void PianoSequenceMap::onAddTrack(MidiTrack *const track)
     }
 }
 
-void PianoSequenceMap::onRemoveTrack(MidiTrack *const track)
+void PianoClipComponent::onRemoveTrack(MidiTrack *const track)
 {
     if (track->getSequence() != this->sequence) { return; }
 
@@ -157,7 +159,7 @@ void PianoSequenceMap::onRemoveTrack(MidiTrack *const track)
 // Private
 //===----------------------------------------------------------------------===//
 
-void PianoSequenceMap::reloadTrackMap()
+void PianoClipComponent::reloadTrackMap()
 {
     this->componentsMap.clear();
 
@@ -185,7 +187,7 @@ void PianoSequenceMap::reloadTrackMap()
     this->setVisible(true);
 }
 
-void PianoSequenceMap::applyNoteBounds(PianoSequenceMapNoteComponent *nc)
+void PianoClipComponent::applyNoteBounds(PianoSequenceMapNoteComponent *nc)
 {
     const auto *ns = nc->getNote().getSequence();
     const float sequenceLength = ns->getLengthInBeats();

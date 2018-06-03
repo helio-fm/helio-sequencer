@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "AutomationStepsSequenceMap.h"
+#include "AutomationStepsClipComponent.h"
 #include "ProjectTreeItem.h"
 #include "MidiSequence.h"
 #include "AutomationSequence.h"
@@ -28,9 +28,11 @@
 
 #define DEFAULT_TRACKMAP_HEIGHT 16
 
-AutomationStepsSequenceMap::AutomationStepsSequenceMap(ProjectTreeItem &parentProject, HybridRoll &parentRoll, WeakReference<MidiSequence> sequence) :
-    project(parentProject),
-    roll(parentRoll),
+AutomationStepsClipComponent::AutomationStepsClipComponent(ProjectTreeItem &project,
+    MidiSequence *sequence, HybridRoll &roll, const Clip &clip) :
+    ClipComponent(roll, clip),
+    project(project),
+    roll(roll),
     sequence(sequence),
     projectFirstBeat(0.f),
     projectLastBeat(16.f),
@@ -55,23 +57,22 @@ AutomationStepsSequenceMap::AutomationStepsSequenceMap(ProjectTreeItem &parentPr
     this->setSize(1, DEFAULT_TRACKMAP_HEIGHT);
 }
 
-AutomationStepsSequenceMap::~AutomationStepsSequenceMap()
+AutomationStepsClipComponent::~AutomationStepsClipComponent()
 {
     this->project.removeListener(this);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
 
-void AutomationStepsSequenceMap::mouseDown(const MouseEvent &e)
+void AutomationStepsClipComponent::mouseDown(const MouseEvent &e)
 {
     const bool shouldAddTriggeredEvent = (! e.mods.isLeftButtonDown());
     this->insertNewEventAt(e, shouldAddTriggeredEvent);
 }
 
-void AutomationStepsSequenceMap::resized()
+void AutomationStepsClipComponent::resized()
 {
     this->setVisible(false);
     
@@ -95,22 +96,19 @@ void AutomationStepsSequenceMap::resized()
     this->setVisible(true);
 }
 
-void AutomationStepsSequenceMap::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
+void AutomationStepsClipComponent::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
 {
     this->roll.mouseWheelMove(event.getEventRelativeTo(&this->roll), wheel);
 }
 
-
-Rectangle<float> AutomationStepsSequenceMap::getEventBounds(AutomationStepEventComponent *c) const
+Rectangle<float> AutomationStepsClipComponent::getEventBounds(AutomationStepEventComponent *c) const
 {
-    return this->getEventBounds(c->getBeat(),
-                                c->isPedalDownEvent(),
-                                c->getAnchor());
+    return this->getEventBounds(c->getBeat(), c->isPedalDownEvent(), c->getAnchor());
 }
 
 static const float kComponentLengthInBeats = 0.5f;
 
-Rectangle<float> AutomationStepsSequenceMap::getEventBounds(float targetBeat, bool isPedalDown, float anchor) const
+Rectangle<float> AutomationStepsClipComponent::getEventBounds(float targetBeat, bool isPedalDown, float anchor) const
 {
     const float rollLengthInBeats = (this->rollLastBeat - this->rollFirstBeat);
     const float projectLengthInBeats = (this->projectLastBeat - this->projectFirstBeat);
@@ -126,12 +124,11 @@ Rectangle<float> AutomationStepsSequenceMap::getEventBounds(float targetBeat, bo
     return Rectangle<float>(x - (w * anchor), 0.f, w, float(this->getHeight()));
 }
 
-
 //===----------------------------------------------------------------------===//
 // Event Helpers
 //===----------------------------------------------------------------------===//
 
-void AutomationStepsSequenceMap::insertNewEventAt(const MouseEvent &e, bool shouldAddTriggeredEvent)
+void AutomationStepsClipComponent::insertNewEventAt(const MouseEvent &e, bool shouldAddTriggeredEvent)
 {
     const float rollLengthInBeats = (this->rollLastBeat - this->rollFirstBeat);
     const float projectLengthInBeats = (this->projectLastBeat - this->projectFirstBeat);
@@ -185,7 +182,7 @@ void AutomationStepsSequenceMap::insertNewEventAt(const MouseEvent &e, bool shou
     }
 }
 
-void AutomationStepsSequenceMap::removeEventIfPossible(const AutomationEvent &e)
+void AutomationStepsClipComponent::removeEventIfPossible(const AutomationEvent &e)
 {
     AutomationSequence *autoLayer = static_cast<AutomationSequence *>(e.getSequence());
     
@@ -196,7 +193,7 @@ void AutomationStepsSequenceMap::removeEventIfPossible(const AutomationEvent &e)
     }
 }
 
-AutomationStepEventComponent *AutomationStepsSequenceMap::getPreviousEventComponent(int indexOfSorted) const
+AutomationStepEventComponent *AutomationStepsClipComponent::getPreviousEventComponent(int indexOfSorted) const
 {
     const int indexOfPrevious = indexOfSorted - 1;
     
@@ -206,7 +203,7 @@ AutomationStepEventComponent *AutomationStepsSequenceMap::getPreviousEventCompon
         nullptr;
 }
 
-AutomationStepEventComponent *AutomationStepsSequenceMap::getNextEventComponent(int indexOfSorted) const
+AutomationStepEventComponent *AutomationStepsClipComponent::getNextEventComponent(int indexOfSorted) const
 {
     const int indexOfNext = indexOfSorted + 1;
     
@@ -216,19 +213,18 @@ AutomationStepEventComponent *AutomationStepsSequenceMap::getNextEventComponent(
         nullptr;
 }
 
-float AutomationStepsSequenceMap::getBeatByXPosition(int x) const
+float AutomationStepsClipComponent::getBeatByXPosition(int x) const
 {
     const int xRoll = int(roundf(float(x) / float(this->getWidth()) * float(this->roll.getWidth())));
     const float targetBeat = this->roll.getRoundBeatByXPosition(xRoll);
     return jmin(jmax(targetBeat, this->rollFirstBeat), this->rollLastBeat);
 }
 
-
 //===----------------------------------------------------------------------===//
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-void AutomationStepsSequenceMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void AutomationStepsClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     if (newEvent.getSequence() == this->sequence)
     {
@@ -283,7 +279,7 @@ void AutomationStepsSequenceMap::onChangeMidiEvent(const MidiEvent &oldEvent, co
     }
 }
 
-void AutomationStepsSequenceMap::onAddMidiEvent(const MidiEvent &event)
+void AutomationStepsClipComponent::onAddMidiEvent(const MidiEvent &event)
 {
     if (event.getSequence() == this->sequence)
     {
@@ -318,7 +314,7 @@ void AutomationStepsSequenceMap::onAddMidiEvent(const MidiEvent &event)
     }
 }
 
-void AutomationStepsSequenceMap::onRemoveMidiEvent(const MidiEvent &event)
+void AutomationStepsClipComponent::onRemoveMidiEvent(const MidiEvent &event)
 {
     if (event.getSequence() == this->sequence)
     {
@@ -351,7 +347,7 @@ void AutomationStepsSequenceMap::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
-void AutomationStepsSequenceMap::onChangeTrackProperties(MidiTrack *const track)
+void AutomationStepsClipComponent::onChangeTrackProperties(MidiTrack *const track)
 {
     if (this->sequence != nullptr && track->getSequence() == this->sequence)
     {
@@ -359,12 +355,12 @@ void AutomationStepsSequenceMap::onChangeTrackProperties(MidiTrack *const track)
     }
 }
 
-void AutomationStepsSequenceMap::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+void AutomationStepsClipComponent::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
     this->reloadTrack();
 }
 
-void AutomationStepsSequenceMap::onAddTrack(MidiTrack *const track)
+void AutomationStepsClipComponent::onAddTrack(MidiTrack *const track)
 {
     // TODO remove?
     if (this->sequence != nullptr && track->getSequence() == this->sequence)
@@ -373,7 +369,7 @@ void AutomationStepsSequenceMap::onAddTrack(MidiTrack *const track)
     }
 }
 
-void AutomationStepsSequenceMap::onRemoveTrack(MidiTrack *const track)
+void AutomationStepsClipComponent::onRemoveTrack(MidiTrack *const track)
 {
     if (this->sequence != nullptr && track->getSequence() == this->sequence)
     {
@@ -381,7 +377,7 @@ void AutomationStepsSequenceMap::onRemoveTrack(MidiTrack *const track)
     }
 }
 
-void AutomationStepsSequenceMap::onChangeProjectBeatRange(float firstBeat, float lastBeat)
+void AutomationStepsClipComponent::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
@@ -395,25 +391,24 @@ void AutomationStepsSequenceMap::onChangeProjectBeatRange(float firstBeat, float
     }
 }
 
-void AutomationStepsSequenceMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
+void AutomationStepsClipComponent::onChangeViewBeatRange(float firstBeat, float lastBeat)
 {
     this->rollFirstBeat = firstBeat;
     this->rollLastBeat = lastBeat;
     this->resized();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Private
 //===----------------------------------------------------------------------===//
 
-void AutomationStepsSequenceMap::updateEventComponent(AutomationStepEventComponent *component)
+void AutomationStepsClipComponent::updateEventComponent(AutomationStepEventComponent *component) const
 {
     component->setRealBounds(this->getEventBounds(component));
     component->updateConnector();
 }
 
-void AutomationStepsSequenceMap::reloadTrack()
+void AutomationStepsClipComponent::reloadTrack()
 {
     //Logger::writeToLog("TriggersTrackMap::reloadSustainPedalTrack");
     

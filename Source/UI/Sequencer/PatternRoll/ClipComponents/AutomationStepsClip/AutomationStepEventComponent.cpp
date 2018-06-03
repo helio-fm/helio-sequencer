@@ -22,7 +22,7 @@
 #include "AutomationStepEventComponent.h"
 
 //[MiscUserDefs]
-#include "AutomationStepsSequenceMap.h"
+#include "AutomationStepsClipComponent.h"
 #include "AutomationStepEventsConnector.h"
 #include "AutomationSequence.h"
 
@@ -32,7 +32,7 @@
 
 //[/MiscUserDefs]
 
-AutomationStepEventComponent::AutomationStepEventComponent(AutomationStepsSequenceMap &parent, const AutomationEvent &targetEvent)
+AutomationStepEventComponent::AutomationStepEventComponent(AutomationStepsClipComponent &parent, const AutomationEvent &targetEvent)
     : event(targetEvent),
       editor(parent)
 {
@@ -386,7 +386,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="AutomationStepEventComponent"
                  template="../../../../../Template" componentName="" parentClasses="public Component"
-                 constructorParams="AutomationStepsSequenceMap &amp;parent, const AutomationEvent &amp;targetEvent"
+                 constructorParams="AutomationStepsClipComponent &amp;parent, const AutomationEvent &amp;targetEvent"
                  variableInitialisers="event(targetEvent),&#10;editor(parent)"
                  snapPixels="8" snapActive="0" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="64" initialHeight="32">

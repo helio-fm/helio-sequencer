@@ -22,14 +22,12 @@
 #include "AutomationCurveHelper.h"
 
 //[MiscUserDefs]
-#include "AutomationCurveSequenceMap.h"
 #include "ComponentConnectorCurve.h"
 #include "AutomationSequence.h"
 //[/MiscUserDefs]
 
-AutomationCurveHelper::AutomationCurveHelper(AutomationCurveSequenceMap &parent, const AutomationEvent &targetEvent, Component *target1, Component *target2)
-    : editor(parent),
-      event(targetEvent),
+AutomationCurveHelper::AutomationCurveHelper(const AutomationEvent &targetEvent, Component *target1, Component *target2)
+    : event(targetEvent),
       component1(target1),
       component2(target2),
       draggingState(false)
@@ -231,8 +229,8 @@ float AutomationCurveHelper::constrainPosition()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="AutomationCurveHelper" template="../../../Template"
-                 componentName="" parentClasses="public Component" constructorParams="AutomationCurveSequenceMap &amp;parent, const AutomationEvent &amp;targetEvent, Component *target1, Component *target2"
-                 variableInitialisers="editor(parent),&#10;event(targetEvent),&#10;component1(target1),&#10;component2(target2),&#10;draggingState(false)"
+                 componentName="" parentClasses="public Component" constructorParams="const AutomationEvent &amp;targetEvent, Component *target1, Component *target2"
+                 variableInitialisers="event(targetEvent),&#10;component1(target1),&#10;component2(target2),&#10;draggingState(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="32" initialHeight="32">
   <METHODS>

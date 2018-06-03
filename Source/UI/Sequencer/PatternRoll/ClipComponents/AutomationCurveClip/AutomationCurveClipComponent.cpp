@@ -16,7 +16,7 @@
 */
 
 #include "Common.h"
-#include "AutomationCurveSequenceMap.h"
+#include "AutomationCurveClipComponent.h"
 #include "AutomationCurveEventComponent.h"
 #include "AutomationCurveHelper.h"
 #include "ProjectTreeItem.h"
@@ -37,10 +37,9 @@
 #   define TRACKMAP_TEMPO_HELPER_DIAMETER (28.f)
 #endif
 
-#define DEFAULT_TRACKMAP_HEIGHT 128
-
-AutomationCurveSequenceMap::AutomationCurveSequenceMap(ProjectTreeItem &project,
-    HybridRoll &roll, WeakReference<MidiSequence> sequence) :
+AutomationCurveClipComponent::AutomationCurveClipComponent(ProjectTreeItem &project,
+    MidiSequence *sequence, HybridRoll &roll, const Clip &clip) :
+    ClipComponent(roll, clip),
     project(project),
     roll(roll),
     sequence(sequence),
@@ -63,21 +62,18 @@ AutomationCurveSequenceMap::AutomationCurveSequenceMap(ProjectTreeItem &project,
     this->reloadTrack();
     
     this->project.addListener(this);
-    
-    this->setSize(1, DEFAULT_TRACKMAP_HEIGHT);
 }
 
-AutomationCurveSequenceMap::~AutomationCurveSequenceMap()
+AutomationCurveClipComponent::~AutomationCurveClipComponent()
 {
     this->project.removeListener(this);
 }
-
 
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
 
-void AutomationCurveSequenceMap::mouseDown(const MouseEvent &e)
+void AutomationCurveClipComponent::mouseDown(const MouseEvent &e)
 {
     if (e.mods.isLeftButtonDown())
     {
@@ -85,7 +81,7 @@ void AutomationCurveSequenceMap::mouseDown(const MouseEvent &e)
     }
 }
 
-void AutomationCurveSequenceMap::mouseDrag(const MouseEvent &e)
+void AutomationCurveClipComponent::mouseDrag(const MouseEvent &e)
 {
     if (this->draggingEvent)
     {
@@ -101,7 +97,7 @@ void AutomationCurveSequenceMap::mouseDrag(const MouseEvent &e)
     }
 }
 
-void AutomationCurveSequenceMap::mouseUp(const MouseEvent &e)
+void AutomationCurveClipComponent::mouseUp(const MouseEvent &e)
 {
     if (this->draggingEvent != nullptr)
     {
@@ -111,7 +107,7 @@ void AutomationCurveSequenceMap::mouseUp(const MouseEvent &e)
     }
 }
 
-void AutomationCurveSequenceMap::resized()
+void AutomationCurveClipComponent::resized()
 {
     this->setVisible(false);
     
@@ -135,7 +131,7 @@ void AutomationCurveSequenceMap::resized()
     this->setVisible(true);
 }
 
-void AutomationCurveSequenceMap::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
+void AutomationCurveClipComponent::mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel)
 {
     this->roll.mouseWheelMove(event.getEventRelativeTo(&this->roll), wheel);
 }
@@ -145,7 +141,7 @@ void AutomationCurveSequenceMap::mouseWheelMove(const MouseEvent &event, const M
 // Event Helpers
 //===----------------------------------------------------------------------===//
 
-void AutomationCurveSequenceMap::insertNewEventAt(const MouseEvent &e)
+void AutomationCurveClipComponent::insertNewEventAt(const MouseEvent &e)
 {
     float draggingValue = 0;
     float draggingBeat = 0.f;
@@ -162,7 +158,7 @@ void AutomationCurveSequenceMap::insertNewEventAt(const MouseEvent &e)
     }
 }
 
-void AutomationCurveSequenceMap::removeEventIfPossible(const AutomationEvent &e)
+void AutomationCurveClipComponent::removeEventIfPossible(const AutomationEvent &e)
 {
     AutomationSequence *autoSequence = static_cast<AutomationSequence *>(e.getSequence());
     
@@ -173,27 +169,27 @@ void AutomationCurveSequenceMap::removeEventIfPossible(const AutomationEvent &e)
     }
 }
 
-float AutomationCurveSequenceMap::getEventDiameter() const
+float AutomationCurveClipComponent::getEventDiameter() const
 {
     return TRACKMAP_TEMPO_EVENT_DIAMETER;
 }
 
-float AutomationCurveSequenceMap::getHelperDiameter() const
+float AutomationCurveClipComponent::getHelperDiameter() const
 {
     return TRACKMAP_TEMPO_HELPER_DIAMETER;
 }
 
-int AutomationCurveSequenceMap::getAvailableHeight() const
+int AutomationCurveClipComponent::getAvailableHeight() const
 {
     return this->getHeight();
 }
 
-Rectangle<int> AutomationCurveSequenceMap::getEventBounds(AutomationCurveEventComponent *event) const
+Rectangle<int> AutomationCurveClipComponent::getEventBounds(AutomationCurveEventComponent *event) const
 {
     return this->getEventBounds(event->getBeat(), event->getControllerValue());
 }
 
-Rectangle<int> AutomationCurveSequenceMap::getEventBounds(float eventBeat, double controllerValue) const
+Rectangle<int> AutomationCurveClipComponent::getEventBounds(float eventBeat, double controllerValue) const
 {
     // hardcoded multiplier
     //const double multipliedCV = (controllerValue * 2.0) - 0.5;
@@ -216,7 +212,7 @@ Rectangle<int> AutomationCurveSequenceMap::getEventBounds(float eventBeat, doubl
                            int(diameter));
 }
 
-void AutomationCurveSequenceMap::getRowsColsByMousePosition(int x, int y, float &targetValue, float &targetBeat) const
+void AutomationCurveClipComponent::getRowsColsByMousePosition(int x, int y, float &targetValue, float &targetBeat) const
 {
     const float diameter = this->getEventDiameter();
     const float xRoll = float(x + (diameter / 2.f)) / float(this->getWidth()) * float(this->roll.getWidth());
@@ -231,8 +227,7 @@ void AutomationCurveSequenceMap::getRowsColsByMousePosition(int x, int y, float 
     targetValue = jmin(jmax(targetValue, 0.f), 1.f);
 }
 
-
-AutomationCurveEventComponent *AutomationCurveSequenceMap::getPreviousEventComponent(int indexOfSorted) const
+AutomationCurveEventComponent *AutomationCurveClipComponent::getPreviousEventComponent(int indexOfSorted) const
 {
     const int indexOfPrevious = indexOfSorted - 1;
     
@@ -242,7 +237,7 @@ AutomationCurveEventComponent *AutomationCurveSequenceMap::getPreviousEventCompo
         nullptr;
 }
 
-AutomationCurveEventComponent *AutomationCurveSequenceMap::getNextEventComponent(int indexOfSorted) const
+AutomationCurveEventComponent *AutomationCurveClipComponent::getNextEventComponent(int indexOfSorted) const
 {
     const int indexOfNext = indexOfSorted + 1;
     
@@ -257,7 +252,7 @@ AutomationCurveEventComponent *AutomationCurveSequenceMap::getNextEventComponent
 // ProjectListener
 //===----------------------------------------------------------------------===//
 
-void AutomationCurveSequenceMap::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
+void AutomationCurveClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, const MidiEvent &newEvent)
 {
     if (newEvent.getSequence() == this->sequence)
     {
@@ -303,7 +298,7 @@ void AutomationCurveSequenceMap::onChangeMidiEvent(const MidiEvent &oldEvent, co
     }
 }
 
-void AutomationCurveSequenceMap::onAddMidiEvent(const MidiEvent &event)
+void AutomationCurveClipComponent::onAddMidiEvent(const MidiEvent &event)
 {
     if (event.getSequence() == this->sequence)
     {
@@ -342,7 +337,7 @@ void AutomationCurveSequenceMap::onAddMidiEvent(const MidiEvent &event)
     }
 }
 
-void AutomationCurveSequenceMap::onRemoveMidiEvent(const MidiEvent &event)
+void AutomationCurveClipComponent::onRemoveMidiEvent(const MidiEvent &event)
 {
     if (event.getSequence() == this->sequence)
     {
@@ -374,7 +369,7 @@ void AutomationCurveSequenceMap::onRemoveMidiEvent(const MidiEvent &event)
     }
 }
 
-void AutomationCurveSequenceMap::onChangeTrackProperties(MidiTrack *const track)
+void AutomationCurveClipComponent::onChangeTrackProperties(MidiTrack *const track)
 {
     if (this->sequence != nullptr && track->getSequence() == this->sequence)
     {
@@ -382,12 +377,12 @@ void AutomationCurveSequenceMap::onChangeTrackProperties(MidiTrack *const track)
     }
 }
 
-void AutomationCurveSequenceMap::onReloadProjectContent(const Array<MidiTrack *> &tracks)
+void AutomationCurveClipComponent::onReloadProjectContent(const Array<MidiTrack *> &tracks)
 {
     this->reloadTrack();
 }
 
-void AutomationCurveSequenceMap::onAddTrack(MidiTrack *const track)
+void AutomationCurveClipComponent::onAddTrack(MidiTrack *const track)
 {
     // TODO remove?
     if (this->sequence != nullptr && track->getSequence() == this->sequence)
@@ -396,7 +391,7 @@ void AutomationCurveSequenceMap::onAddTrack(MidiTrack *const track)
     }
 }
 
-void AutomationCurveSequenceMap::onRemoveTrack(MidiTrack *const track)
+void AutomationCurveClipComponent::onRemoveTrack(MidiTrack *const track)
 {
     if (this->sequence != nullptr && track->getSequence() == this->sequence)
     {
@@ -404,7 +399,7 @@ void AutomationCurveSequenceMap::onRemoveTrack(MidiTrack *const track)
     }
 }
 
-void AutomationCurveSequenceMap::onChangeProjectBeatRange(float firstBeat, float lastBeat)
+void AutomationCurveClipComponent::onChangeProjectBeatRange(float firstBeat, float lastBeat)
 {
     this->projectFirstBeat = firstBeat;
     this->projectLastBeat = lastBeat;
@@ -430,26 +425,25 @@ void AutomationCurveSequenceMap::onChangeProjectBeatRange(float firstBeat, float
 //    }
 }
 
-void AutomationCurveSequenceMap::onChangeViewBeatRange(float firstBeat, float lastBeat)
+void AutomationCurveClipComponent::onChangeViewBeatRange(float firstBeat, float lastBeat)
 {
     this->rollFirstBeat = firstBeat;
     this->rollLastBeat = lastBeat;
     this->resized();
 }
 
-
 //===----------------------------------------------------------------------===//
 // Private
 //===----------------------------------------------------------------------===//
 
-void AutomationCurveSequenceMap::updateTempoComponent(AutomationCurveEventComponent *component)
+void AutomationCurveClipComponent::updateTempoComponent(AutomationCurveEventComponent *component)
 {
     component->setBounds(this->getEventBounds(component));
     component->updateConnector();
     component->updateHelper();
 }
 
-void AutomationCurveSequenceMap::reloadTrack()
+void AutomationCurveClipComponent::reloadTrack()
 {
     for (int i = 0; i < this->eventComponents.size(); ++i)
     {

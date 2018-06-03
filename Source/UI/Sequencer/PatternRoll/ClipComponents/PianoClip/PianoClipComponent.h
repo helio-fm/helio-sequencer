@@ -17,28 +17,62 @@
 
 #pragma once
 
-#include "PianoSequenceMap.h"
+#include "Note.h"
 #include "ClipComponent.h"
+#include "ProjectListener.h"
+#include "PianoSequenceMapNoteComponent.h"
 
-class PianoClipComponent final : public ClipComponent, public PianoSequenceMap
+class HybridRoll;
+class MidiSequence;
+class ProjectTreeItem;
+
+class PianoClipComponent final : public ClipComponent, public ProjectListener
 {
 public:
 
     PianoClipComponent(ProjectTreeItem &project, MidiSequence *sequence,
-        HybridRoll &roll, const Clip &clip) :
-        ClipComponent(roll, clip),
-        PianoSequenceMap(project, sequence, roll) {}
+        HybridRoll &roll, const Clip &clip);
 
-    // Avoid `inherits via dominance` warnings
-    // and be more explicit in general, when it comes to multiple inheritance:
-    void resized() override { PianoSequenceMap::resized(); }
-    void mouseDoubleClick(const MouseEvent &e) override { ClipComponent::mouseDoubleClick(e); }
-    void mouseDown(const MouseEvent &e) override { ClipComponent::mouseDown(e); }
-    void mouseDrag(const MouseEvent &e) override { ClipComponent::mouseDrag(e); }
-    void mouseUp(const MouseEvent &e) override { ClipComponent::mouseUp(e); }
-    void paint(Graphics &g) override { ClipComponent::paint(g); }
+    ~PianoClipComponent() override;
 
-protected:
-    
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
+
+    void resized() override;
+
+    //===------------------------------------------------------------------===//
+    // ProjectListener
+    //===------------------------------------------------------------------===//
+
+    void onChangeMidiEvent(const MidiEvent &e1, const MidiEvent &e2) override;
+    void onAddMidiEvent(const MidiEvent &event) override;
+    void onRemoveMidiEvent(const MidiEvent &event) override;
+
+    void onAddClip(const Clip &clip) override {}
+    void onChangeClip(const Clip &oldClip, const Clip &newClip) override {}
+    void onRemoveClip(const Clip &clip) override {}
+
+    void onAddTrack(MidiTrack *const track) override;
+    void onRemoveTrack(MidiTrack *const track) override;
+    void onChangeTrackProperties(MidiTrack *const track) override;
+
+    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override {}
+    void onChangeViewBeatRange(float firstBeat, float lastBeat) override {}
+    void onReloadProjectContent(const Array<MidiTrack *> &tracks) override;
+
+private:
+
+    void applyNoteBounds(PianoSequenceMapNoteComponent *nc);
+    void reloadTrackMap();
+
+    HybridRoll &roll;
+    ProjectTreeItem &project;
+    MidiSequence *sequence;
+
+    float componentHeight;
+
+    SparseHashMap<Note, UniquePointer<PianoSequenceMapNoteComponent>, MidiEventHash> componentsMap;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PianoClipComponent)
 };

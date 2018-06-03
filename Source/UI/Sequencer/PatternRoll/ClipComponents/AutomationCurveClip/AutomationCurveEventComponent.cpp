@@ -22,13 +22,13 @@
 #include "AutomationCurveEventComponent.h"
 
 //[MiscUserDefs]
-#include "AutomationCurveSequenceMap.h"
+#include "AutomationCurveClipComponent.h"
 #include "AutomationCurveHelper.h"
 #include "AutomationCurveEventsConnector.h"
 #include "AutomationSequence.h"
 //[/MiscUserDefs]
 
-AutomationCurveEventComponent::AutomationCurveEventComponent(AutomationCurveSequenceMap &parent, const AutomationEvent &targetEvent)
+AutomationCurveEventComponent::AutomationCurveEventComponent(AutomationCurveClipComponent &parent, const AutomationEvent &targetEvent)
     : event(targetEvent),
       anchor(targetEvent),
       editor(parent),
@@ -194,14 +194,14 @@ void AutomationCurveEventComponent::mouseUp (const MouseEvent& e)
 
 void AutomationCurveEventComponent::recreateConnector()
 {
-    this->connector = new AutomationCurveEventsConnector(this->editor, this, this->nextEventHolder);
+    this->connector = new AutomationCurveEventsConnector(this, this->nextEventHolder);
     this->editor.addAndMakeVisible(this->connector);
     this->updateConnector();
 }
 
 void AutomationCurveEventComponent::recreateHelper()
 {
-    this->helper = new AutomationCurveHelper(this->editor, this->event, this, this->nextEventHolder);
+    this->helper = new AutomationCurveHelper(this->event, this, this->nextEventHolder);
     this->editor.addAndMakeVisible(this->helper);
     this->updateHelper();
 }
@@ -301,7 +301,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="AutomationCurveEventComponent"
                  template="../../../../../Template" componentName="" parentClasses="public Component"
-                 constructorParams="AutomationCurveSequenceMap &amp;parent, const AutomationEvent &amp;targetEvent"
+                 constructorParams="AutomationCurveClipComponent &amp;parent, const AutomationEvent &amp;targetEvent"
                  variableInitialisers="event(targetEvent),&#10;anchor(targetEvent),&#10;editor(parent),&#10;draggingState(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="32" initialHeight="32">

@@ -21,7 +21,6 @@
 #include "AutomationEvent.h"
 
 class ComponentConnectorCurve;
-class AutomationCurveSequenceMap;
 //[/Headers]
 
 
@@ -29,7 +28,7 @@ class AutomationCurveHelper  : public Component
 {
 public:
 
-    AutomationCurveHelper (AutomationCurveSequenceMap &parent, const AutomationEvent &targetEvent, Component *target1, Component *target2);
+    AutomationCurveHelper (const AutomationEvent &targetEvent, Component *target1, Component *target2);
 
     ~AutomationCurveHelper();
 
@@ -50,7 +49,6 @@ private:
     //[UserVariables]
 
     const AutomationEvent &event;
-    AutomationCurveSequenceMap &editor;
 
     ComponentDragger dragger;
     bool draggingState;

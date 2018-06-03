@@ -24,13 +24,12 @@ class AnnotationEvent;
 //[/Headers]
 
 
-class AnnotationLargeComponent  : public Component,
-                                  public Label::Listener
+class AnnotationLargeComponent final : public Component,
+                                       public Label::Listener
 {
 public:
 
-    AnnotationLargeComponent (AnnotationsProjectMap<AnnotationLargeComponent> &parent, const AnnotationEvent &targetEvent);
-
+    AnnotationLargeComponent(AnnotationsProjectMap<AnnotationLargeComponent> &parent, const AnnotationEvent &targetEvent);
     ~AnnotationLargeComponent();
 
     //[UserMethods]

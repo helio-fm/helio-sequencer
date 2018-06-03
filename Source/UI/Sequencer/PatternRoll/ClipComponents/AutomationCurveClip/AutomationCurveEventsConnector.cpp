@@ -17,11 +17,10 @@
 
 #include "Common.h"
 #include "AutomationCurveEventsConnector.h"
-#include "AutomationCurveSequenceMap.h"
+#include "AutomationCurveClipComponent.h"
 
-AutomationCurveEventsConnector::AutomationCurveEventsConnector(AutomationCurveSequenceMap &parentTrack, Component *c1, Component *c2) :
+AutomationCurveEventsConnector::AutomationCurveEventsConnector(Component *c1, Component *c2) :
     ComponentConnectorCurve(c1, c2),
-    editor(parentTrack),
     xAnchor(0.f)
 {
     this->setFocusContainer(false);

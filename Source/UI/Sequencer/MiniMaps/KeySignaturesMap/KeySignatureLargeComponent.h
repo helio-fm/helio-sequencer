@@ -26,12 +26,11 @@ class KeySignatureEvent;
 //[/Headers]
 
 
-class KeySignatureLargeComponent  : public Component
+class KeySignatureLargeComponent final : public Component
 {
 public:
 
-    KeySignatureLargeComponent (KeySignaturesProjectMap<KeySignatureLargeComponent> &parent, const KeySignatureEvent &targetEvent);
-
+    KeySignatureLargeComponent(KeySignaturesProjectMap<KeySignatureLargeComponent> &parent, const KeySignatureEvent &targetEvent);
     ~KeySignatureLargeComponent();
 
     //[UserMethods]

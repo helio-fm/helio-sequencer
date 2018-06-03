@@ -23,14 +23,13 @@ class TimeSignatureEvent;
 #include "TimeSignaturesProjectMap.h"
 //[/Headers]
 
-#include "../../Themes/SeparatorVertical.h"
+#include "../../../Themes/SeparatorVertical.h"
 
-class TimeSignatureSmallComponent  : public Component
+class TimeSignatureSmallComponent final : public Component
 {
 public:
 
-    TimeSignatureSmallComponent (TimeSignaturesProjectMap<TimeSignatureSmallComponent> &parent, const TimeSignatureEvent &targetEvent);
-
+    TimeSignatureSmallComponent(TimeSignaturesProjectMap<TimeSignatureSmallComponent> &parent, const TimeSignatureEvent &targetEvent);
     ~TimeSignatureSmallComponent();
 
     //[UserMethods]

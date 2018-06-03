@@ -17,21 +17,99 @@
 
 #pragma once
 
+class HybridRoll;
 class MidiSequence;
+class ProjectTreeItem;
+class ComponentConnectorCurve;
+class AutomationCurveEventComponent;
 
 #include "ClipComponent.h"
-#include "AutomationCurveSequenceMap.h"
+#include "AutomationEvent.h"
+#include "ProjectListener.h"
 
-class AutomationCurveClipComponent final : public ClipComponent, public AutomationCurveSequenceMap
+class AutomationCurveClipComponent final : public ClipComponent, public ProjectListener
 {
 public:
 
     AutomationCurveClipComponent(ProjectTreeItem &project, MidiSequence *sequence,
-        HybridRoll &roll, const Clip &clip) :
-        AutomationCurveSequenceMap(project, roll, sequence),
-        ClipComponent(roll, clip) {}
+        HybridRoll &roll, const Clip &clip);
+
+    ~AutomationCurveClipComponent() override;
+
+    void insertNewEventAt(const MouseEvent &e);
+
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
+
+    void mouseDown(const MouseEvent &e) override;
+    void mouseDrag(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
+    void resized() override;
+    void mouseWheelMove(const MouseEvent &event, const MouseWheelDetails &wheel) override;
+
+    //===------------------------------------------------------------------===//
+    // ProjectListener
+    //===------------------------------------------------------------------===//
+
+    void onChangeMidiEvent(const MidiEvent &oldEvent,
+        const MidiEvent &newEvent) override;
+    void onAddMidiEvent(const MidiEvent &event) override;
+    void onRemoveMidiEvent(const MidiEvent &event) override;
+
+    // TODO! As a part of `automation editors` story
+    void onAddClip(const Clip &clip) override {}
+    void onChangeClip(const Clip &oldClip, const Clip &newClip) override {}
+    void onRemoveClip(const Clip &clip) override {}
+
+    void onAddTrack(MidiTrack *const track) override;
+    void onRemoveTrack(MidiTrack *const track) override;
+    void onChangeTrackProperties(MidiTrack *const track) override;
+
+    void onChangeProjectBeatRange(float firstBeat, float lastBeat) override;
+    void onChangeViewBeatRange(float firstBeat, float lastBeat) override;
+    void onReloadProjectContent(const Array<MidiTrack *> &tracks) override;
 
 protected:
+
+    void removeEventIfPossible(const AutomationEvent &e);
+
+    Rectangle<int> getEventBounds(AutomationCurveEventComponent *event) const;
+    Rectangle<int> getEventBounds(float eventBeat, double controllerValue) const;
+
+    void getRowsColsByMousePosition(int x, int y, float &targetValue, float &targetBeat) const;
+    float getEventDiameter() const;
+    float getHelperDiameter() const;
+    int getAvailableHeight() const;
+
+    AutomationCurveEventComponent *getPreviousEventComponent(int indexOfSorted) const;
+    AutomationCurveEventComponent *getNextEventComponent(int indexOfSorted) const;
+
+    friend class AutomationCurveEventComponent;
+
+private:
+
+    void updateTempoComponent(AutomationCurveEventComponent *);
+    void reloadTrack();
+
+    float projectFirstBeat;
+    float projectLastBeat;
+
+    float rollFirstBeat;
+    float rollLastBeat;
+
+    HybridRoll &roll;
+    ProjectTreeItem &project;
+
+    WeakReference<MidiSequence> sequence;
+
+    ScopedPointer<ComponentConnectorCurve> leadingConnector;
+
+    OwnedArray<AutomationCurveEventComponent> eventComponents;
+    SparseHashMap<AutomationEvent, AutomationCurveEventComponent *, MidiEventHash> eventsHash;
+
+    AutomationCurveEventComponent *draggingEvent;
+    bool addNewEventMode;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationCurveClipComponent)
 };

@@ -24,12 +24,11 @@ class AnnotationEvent;
 //[/Headers]
 
 
-class AnnotationSmallComponent  : public Component
+class AnnotationSmallComponent final : public Component
 {
 public:
 
-    AnnotationSmallComponent (AnnotationsProjectMap<AnnotationSmallComponent> &parent, const AnnotationEvent &targetEvent);
-
+    AnnotationSmallComponent(AnnotationsProjectMap<AnnotationSmallComponent> &parent, const AnnotationEvent &targetEvent);
     ~AnnotationSmallComponent();
 
     //[UserMethods]

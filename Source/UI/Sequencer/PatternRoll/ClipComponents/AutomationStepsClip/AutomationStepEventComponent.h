@@ -21,7 +21,7 @@
 #include "AutomationEvent.h"
 
 class AutomationStepEventsConnector;
-class AutomationStepsSequenceMap;
+class AutomationStepsClipComponent;
 //[/Headers]
 
 
@@ -29,14 +29,14 @@ class AutomationStepEventComponent final : public Component
 {
 public:
 
-    AutomationStepEventComponent(AutomationStepsSequenceMap &parent, const AutomationEvent &targetEvent);
+    AutomationStepEventComponent(AutomationStepsClipComponent &parent, const AutomationEvent &targetEvent);
     ~AutomationStepEventComponent();
 
     //[UserMethods]
 
     static float getAnchor();
 
-    AutomationStepsSequenceMap *getEditor() const
+    AutomationStepsClipComponent *getEditor() const
     {
         return &this->editor;
     }
@@ -81,7 +81,7 @@ private:
     void dragByDelta(float deltaBeat);
 
     const AutomationEvent &event;
-    AutomationStepsSequenceMap &editor;
+    AutomationStepsClipComponent &editor;
 
     Rectangle<float> realBounds;
 

@@ -36,6 +36,8 @@ TimeSignatureSmallComponent::TimeSignatureSmallComponent(TimeSignaturesProjectMa
     signatureLabel->setJustificationType (Justification::centredLeft);
     signatureLabel->setEditable (false, false, false);
 
+    signatureLabel->setBounds (0, 4, 48, 16);
+
     addAndMakeVisible (component = new SeparatorVertical());
 
     //[UserPreSize]
@@ -78,7 +80,6 @@ void TimeSignatureSmallComponent::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    signatureLabel->setBounds (0, 4, 48, 16);
     component->setBounds (0, 0, 2, getHeight() - 0);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
@@ -127,7 +128,7 @@ void TimeSignatureSmallComponent::updateContent()
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="TimeSignatureSmallComponent"
-                 template="../../../Template" componentName="" parentClasses="public Component"
+                 template="../../../../Template" componentName="" parentClasses="public Component"
                  constructorParams="TimeSignaturesProjectMap&lt;TimeSignatureSmallComponent&gt; &amp;parent, const TimeSignatureEvent &amp;targetEvent"
                  variableInitialisers="event(targetEvent),&#10;editor(parent)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
@@ -139,9 +140,10 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="signatureLabel" virtualName=""
          explicitFocusOrder="0" pos="0 4 48 16" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="14" kerning="0" bold="0" italic="0" justification="33"/>
+         fontsize="14.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="33"/>
   <JUCERCOMP name="" id="1e5a57ee127ef53d" memberName="component" virtualName=""
-             explicitFocusOrder="0" pos="0 0 2 0M" sourceFile="../../Themes/SeparatorVertical.cpp"
+             explicitFocusOrder="0" pos="0 0 2 0M" sourceFile="../../../Themes/SeparatorVertical.cpp"
              constructorParams=""/>
 </JUCER_COMPONENT>
 

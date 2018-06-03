@@ -22,7 +22,7 @@
 
 class AutomationCurveEventsConnector;
 class AutomationCurveHelper;
-class AutomationCurveSequenceMap;
+class AutomationCurveClipComponent;
 //[/Headers]
 
 
@@ -30,7 +30,7 @@ class AutomationCurveEventComponent final : public Component
 {
 public:
 
-    AutomationCurveEventComponent(AutomationCurveSequenceMap &parent, const AutomationEvent &targetEvent);
+    AutomationCurveEventComponent(AutomationCurveClipComponent &parent, const AutomationEvent &targetEvent);
     ~AutomationCurveEventComponent();
 
     //[UserMethods]
@@ -78,10 +78,10 @@ private:
     AutomationEvent continueDragging(const float deltaBeat, const float deltaValue);
     void endDragging();
 
-    friend class AutomationCurveSequenceMap;
+    friend class AutomationCurveClipComponent;
 
     const AutomationEvent &event;
-    AutomationCurveSequenceMap &editor;
+    AutomationCurveClipComponent &editor;
 
     ComponentDragger dragger;
     AutomationEvent anchor;

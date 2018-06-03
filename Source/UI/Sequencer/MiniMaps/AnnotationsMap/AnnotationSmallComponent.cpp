@@ -143,7 +143,7 @@ float AnnotationSmallComponent::getTextWidth() const
 BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="AnnotationSmallComponent"
-                 template="../../../Template" componentName="" parentClasses="public Component"
+                 template="../../../../Template" componentName="" parentClasses="public Component"
                  constructorParams="AnnotationsProjectMap&lt;AnnotationSmallComponent&gt; &amp;parent, const AnnotationEvent &amp;targetEvent"
                  variableInitialisers="event(targetEvent),&#10;editor(parent),&#10;textWidth(0.f)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
@@ -155,7 +155,8 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="3dbd8cef4b61c2fe" memberName="annotationLabel" virtualName=""
          explicitFocusOrder="0" pos="-2 4Rr 160 16" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
-         fontsize="12" kerning="0" bold="0" italic="0" justification="33"/>
+         fontsize="12.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

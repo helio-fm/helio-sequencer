@@ -24,12 +24,11 @@ class KeySignatureEvent;
 //[/Headers]
 
 
-class KeySignatureSmallComponent  : public Component
+class KeySignatureSmallComponent final : public Component
 {
 public:
 
-    KeySignatureSmallComponent (KeySignaturesProjectMap<KeySignatureSmallComponent> &parent, const KeySignatureEvent &targetEvent);
-
+    KeySignatureSmallComponent(KeySignaturesProjectMap<KeySignatureSmallComponent> &parent, const KeySignatureEvent &targetEvent);
     ~KeySignatureSmallComponent();
 
     //[UserMethods]

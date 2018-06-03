@@ -18,7 +18,7 @@
 #include "Common.h"
 #include "AutomationStepEventsConnector.h"
 #include "AutomationStepEventComponent.h"
-#include "AutomationStepsSequenceMap.h"
+#include "AutomationStepsClipComponent.h"
 
 AutomationStepEventsConnector::AutomationStepEventsConnector(AutomationStepEventComponent *c1,
                                              AutomationStepEventComponent *c2,
@@ -202,4 +202,3 @@ AutomationStepEventComponent *AutomationStepEventsConnector::anyAliveChild() con
 {
     return (this->component1 ? this->component1 : this->component2);
 }
-
