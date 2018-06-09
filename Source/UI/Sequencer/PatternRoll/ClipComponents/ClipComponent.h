@@ -87,8 +87,6 @@ protected:
     State state;
 
     Colour headColour;
-    Colour headColourLighter;
-    Colour headColourDarker;
     Colour fillColour;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ClipComponent)

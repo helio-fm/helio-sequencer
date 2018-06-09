@@ -60,16 +60,11 @@ PatternRoll &ClipComponent::getRoll() const noexcept
 void ClipComponent::updateColours()
 {
     jassert(clip.isValid());
+    this->fillColour = Colours::black.withAlpha(0.2f);
     this->headColour = Colours::white
         .interpolatedWith(this->getClip().getTrackColour(), 0.55f)
-        .withAlpha(this->ghostMode ? 0.2f : 0.75f)
+        .withAlpha(this->ghostMode ? 0.2f : 0.7f)
         .brighter(this->selectedState ? 0.25f : 0.f);
-
-    this->headColourLighter = this->headColour.brighter(0.1f);
-    this->headColourDarker = this->headColour.darker(0.45f);
-
-    this->fillColour = Colours::black.withAlpha(0.15f);
-        //headColour.withMultipliedAlpha(this->selectedState ? 0.25f : 0.15f);
 }
 
 //===----------------------------------------------------------------------===//
@@ -226,23 +221,21 @@ void ClipComponent::mouseUp(const MouseEvent &e)
 void ClipComponent::paint(Graphics& g)
 {
     g.setColour(this->fillColour);
-    g.fillRect(1.f, 2.f, float(this->getWidth() - 2), float(this->getHeight() - 3));
+    g.fillRect(1.f, 0.f, float(this->getWidth() - 2), float(this->getHeight()));
 
-    g.setColour(this->headColourLighter);
-    g.drawHorizontalLine(1, 1.f, float(this->getWidth() - 1));
+    g.setColour(this->headColour);
 
     if (this->selectedState)
     {
-        g.setColour(this->headColour);
-        g.drawHorizontalLine(2, 0.f, float(this->getWidth()));
-        g.drawHorizontalLine(3, 0.f, float(this->getWidth()));
-        g.drawHorizontalLine(4, 0.f, float(this->getWidth()));
+        g.drawHorizontalLine(1, 1.f, float(this->getWidth() - 1));
+        g.drawHorizontalLine(2, 1.f, float(this->getWidth() - 1));
+        g.drawHorizontalLine(3, 1.f, float(this->getWidth() - 1));
+        g.drawHorizontalLine(4, 1.f, float(this->getWidth() - 1));
+        g.drawHorizontalLine(this->getHeight() - 1, 1.f, float(this->getWidth() - 1));
     }
 
-    g.setColour(this->headColourDarker);
     g.drawVerticalLine(0, 2.f, float(this->getHeight() - 1));
     g.drawVerticalLine(this->getWidth() - 1, 2.f, float(this->getHeight() - 1));
-    g.drawHorizontalLine(this->getHeight() - 1, 1.f, float(this->getWidth() - 1));
 }
 
 //===----------------------------------------------------------------------===//

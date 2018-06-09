@@ -32,8 +32,6 @@
 #include "ModeIndicatorComponent.h"
 #include "MenuItemComponent.h"
 #include "ProjectTreeItem.h"
-#include "PatternRoll.h"
-#include "PianoRoll.h"
 #include "HelioTheme.h"
 #include "IconComponent.h"
 #include "Icons.h"

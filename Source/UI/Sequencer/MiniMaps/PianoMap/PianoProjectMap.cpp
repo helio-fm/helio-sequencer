@@ -237,18 +237,12 @@ void PianoProjectMap::onRemoveTrack(MidiTrack *const track)
 {
     if (!dynamic_cast<const PianoSequence *>(track->getSequence())) { return; }
 
-    for (int i = 0; i < track->getSequence()->size(); ++i)
+    for (int i = 0; i < track->getPattern()->size(); ++i)
     {
-        const auto *event = track->getSequence()->getUnchecked(i);
-        const Note &note = static_cast<const Note &>(*event);
-
-        for (const auto &c : this->patternMap)
+        const auto &clip = *track->getPattern()->getUnchecked(i);
+        if (const auto *deletedMap = this->patternMap[clip].get())
         {
-            auto &componentsMap = *c.second.get();
-            if (const auto *deletedComponent = componentsMap[note].get())
-            {
-                componentsMap.erase(note);
-            }
+            this->patternMap.erase(clip);
         }
     }
 }

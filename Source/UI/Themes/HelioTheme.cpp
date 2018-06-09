@@ -899,16 +899,16 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Roll::whiteKey, s->getWhiteKeyColour());
     this->setColour(ColourIDs::Roll::whiteKeyAlt, s->getWhiteKeyColour().withMultipliedBrightness(1.15f));
     this->setColour(ColourIDs::Roll::rowLine, s->getRowColour());
-    this->setColour(ColourIDs::Roll::barLine, s->getBarColour().withAlpha(0.9f));
+    this->setColour(ColourIDs::Roll::barLine, s->getBarColour().withAlpha(0.8f));
     this->setColour(ColourIDs::Roll::barLineBevel, Colours::white.withAlpha(0.015f));
-    this->setColour(ColourIDs::Roll::beatLine, s->getBarColour().withAlpha(0.45f));
+    this->setColour(ColourIDs::Roll::beatLine, s->getBarColour().withAlpha(0.4f));
     this->setColour(ColourIDs::Roll::snapLine, s->getBarColour().withAlpha(0.1f));
     this->setColour(ColourIDs::Roll::headerFill, s->getPrimaryGradientColourB().darker(0.025f));
     this->setColour(ColourIDs::Roll::headerSnaps, s->getPrimaryGradientColourB().darker(0.025f).contrasting().withMultipliedAlpha(0.37f));
     this->setColour(ColourIDs::Roll::playhead, s->getLassoBorderColour().withAlpha(0.6f));
     this->setColour(ColourIDs::Roll::playheadShade, Colours::black.withAlpha(0.1f));
-    this->setColour(ColourIDs::Roll::trackHeaderFill, s->getWhiteKeyColour().darker(0.035f));
-    this->setColour(ColourIDs::Roll::trackHeaderBorderLight, Colours::white.withAlpha(0.03f));
+    this->setColour(ColourIDs::Roll::trackHeaderFill, s->getWhiteKeyColour());
+    this->setColour(ColourIDs::Roll::trackHeaderBorderLight, Colours::white.withAlpha(0.055f));
     this->setColour(ColourIDs::Roll::trackHeaderBorderDark, Colours::black.withAlpha(0.15f));
 
     this->setColour(ColourIDs::HelperRectangle::fill, s->getLassoFillColour().withAlpha(0.08f));

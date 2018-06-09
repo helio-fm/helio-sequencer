@@ -704,27 +704,23 @@ void PianoRoll::onRemoveTrack(MidiTrack *const track)
     for (int i = 0; i < track->getSequence()->size(); ++i)
     {
         const auto *event = track->getSequence()->getUnchecked(i);
-        if (event->isTypeOf(MidiEvent::Note))
-        {
-            const Note &note = static_cast<const Note &>(*event);
-            for (const auto &c : this->patternMap)
-            {
-                auto &sequenceMap = *c.second.get();
-                if (auto *deletedComponent = sequenceMap[note].get())
-                {
-                    this->fader.fadeOut(deletedComponent, 150);
-                    this->selection.deselect(deletedComponent);
-                    sequenceMap.erase(note);
-                }
-            }
-        }
-        else if (event->isTypeOf(MidiEvent::KeySignature))
+        if (event->isTypeOf(MidiEvent::KeySignature))
         {
             const KeySignatureEvent &key = static_cast<const KeySignatureEvent &>(*event);
             this->removeBackgroundCacheFor(key);
-            this->repaint();
         }
     }
+
+    for (int i = 0; i < track->getPattern()->size(); ++i)
+    {
+        const auto &clip = *track->getPattern()->getUnchecked(i);
+        if (const auto *deletedMap = this->patternMap[clip].get())
+        {
+            this->patternMap.erase(clip);
+        }
+    }
+
+    this->repaint();
 }
 
 void PianoRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks)

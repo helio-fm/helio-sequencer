@@ -1130,10 +1130,6 @@
               <FILE id="CMhzcm" name="DummyClipComponent.h" compile="0" resource="0"
                     file="../../Source/UI/Sequencer/PatternRoll/ClipComponents/DummyClipComponent.h"/>
             </GROUP>
-            <FILE id="iw3RJL" name="MidiTrackHeader.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/PatternRoll/MidiTrackHeader.cpp"/>
-            <FILE id="dia7oD" name="MidiTrackHeader.h" compile="0" resource="0"
-                  file="../../Source/UI/Sequencer/PatternRoll/MidiTrackHeader.h"/>
             <FILE id="Fq4aoW" name="PatternRoll.cpp" compile="1" resource="0" file="../../Source/UI/Sequencer/PatternRoll/PatternRoll.cpp"/>
             <FILE id="MXsdDW" name="PatternRoll.h" compile="0" resource="0" file="../../Source/UI/Sequencer/PatternRoll/PatternRoll.h"/>
           </GROUP>

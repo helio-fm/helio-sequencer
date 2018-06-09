@@ -21,7 +21,6 @@
 #include "Workspace.h"
 #include "AudioCore.h"
 #include "HybridRollHeader.h"
-#include "MidiTrackHeader.h"
 #include "Pattern.h"
 #include "PianoTrackTreeItem.h"
 #include "AutomationTrackTreeItem.h"
@@ -81,9 +80,6 @@ PatternRoll::PatternRoll(ProjectTreeItem &parentProject,
 
     this->setComponentID(ComponentIDs::patternRollId);
 
-    this->insertTrackHelper = new MidiTrackHeader(nullptr);
-    this->addAndMakeVisible(this->insertTrackHelper);
-
     this->repaintBackgroundsCache();
     this->reloadRollContent();
     this->setBarRange(0, 8);
@@ -97,19 +93,11 @@ void PatternRoll::selectAll()
     }
 }
 
-void PatternRoll::zoomViewToClip(const Clip &clip) const
-{
-    // TODO
-    //const Pattern *pattern = clip.getPattern();
-    //const MidiTrack *track = pattern->getTrack();
-    //const MidiSequence *sequence = track->getSequence();
-}
-
 void PatternRoll::reloadRollContent()
 {
     this->selection.deselectAll();
 
-    this->trackHeaders.clear();
+    //this->trackHeaders.clear();
     this->clipComponents.clear();
 
     this->tracks.clearQuick();
@@ -123,10 +111,6 @@ void PatternRoll::reloadRollContent()
         if (const auto *pattern = track->getPattern())
         {
             this->tracks.addSorted(*track, track);
-
-            MidiTrackHeader *const trackHeader = new MidiTrackHeader(track);
-            this->trackHeaders[track] = UniquePointer<MidiTrackHeader>(trackHeader);
-            this->addAndMakeVisible(trackHeader);
 
             for (int j = 0; j < pattern->size(); ++j)
             {
@@ -151,7 +135,7 @@ void PatternRoll::reloadRollContent()
         }
     }
 
-    this->updateRollSize();
+    this->resized();
     this->repaint(this->viewport.getViewArea());
 }
 
@@ -179,57 +163,6 @@ void PatternRoll::updateRollSize()
     const int addTrackHelper = PATTERN_ROLL_TRACK_HEADER_HEIGHT;
     const int h = HYBRID_ROLL_HEADER_HEIGHT + this->getNumRows() * rowHeight() + addTrackHelper;
     this->setSize(this->getWidth(), jmax(h, this->viewport.getHeight()));
-}
-
-void PatternRoll::updateChildrenBounds()
-{
-    HYBRID_ROLL_BULK_REPAINT_START
-
-    const int viewX = this->getViewport().getViewPositionX();
-    const int viewW = this->getViewport().getViewWidth();
-
-    const int insertTrackHelperY = this->tracks.size() * rowHeight();
-    this->insertTrackHelper->setBounds(viewX,
-        HYBRID_ROLL_HEADER_HEIGHT + insertTrackHelperY,
-        viewW, PATTERN_ROLL_TRACK_HEADER_HEIGHT);
-
-    for (const auto &e : this->trackHeaders)
-    {
-        const auto component = e.second.get();
-        const auto track = component->getTrack();
-        const int trackIndex = this->tracks.indexOfSorted(*track, track);
-        const int y = trackIndex * rowHeight();
-        component->setBounds(viewX, HYBRID_ROLL_HEADER_HEIGHT + y,
-            viewW, PATTERN_ROLL_TRACK_HEADER_HEIGHT);
-    }
-
-    HybridRoll::updateChildrenBounds();
-
-    HYBRID_ROLL_BULK_REPAINT_END
-}
-
-void PatternRoll::updateChildrenPositions()
-{
-    HYBRID_ROLL_BULK_REPAINT_START
-
-    const int viewX = this->getViewport().getViewPositionX();
-
-    const int insertTrackHelperY = this->tracks.size() * rowHeight();
-    this->insertTrackHelper->setTopLeftPosition(viewX,
-        HYBRID_ROLL_HEADER_HEIGHT + insertTrackHelperY);
-
-    for (const auto &e : this->trackHeaders)
-    {
-        const auto component = e.second.get();
-        const auto track = component->getTrack();
-        const int trackIndex = this->tracks.indexOfSorted(*track, track);
-        const int y = trackIndex * rowHeight();
-        component->setTopLeftPosition(viewX, HYBRID_ROLL_HEADER_HEIGHT + y);
-    }
-
-    HybridRoll::updateChildrenPositions();
-
-    HYBRID_ROLL_BULK_REPAINT_END
 }
 
 //===----------------------------------------------------------------------===//
@@ -340,10 +273,6 @@ void PatternRoll::onAddTrack(MidiTrack *const track)
 
         this->tracks.addSorted(*track, track);
 
-        MidiTrackHeader *const trackHeader = new MidiTrackHeader(track);
-        this->trackHeaders[track] = UniquePointer<MidiTrackHeader>(trackHeader);
-        this->addAndMakeVisible(trackHeader);
-
         for (int j = 0; j < pattern->size(); ++j)
         {
             const Clip &clip = *pattern->getUnchecked(j);
@@ -380,14 +309,6 @@ void PatternRoll::onAddTrack(MidiTrack *const track)
 
 void PatternRoll::onChangeTrackProperties(MidiTrack *const track)
 {
-    if (MidiTrackHeader *header = this->trackHeaders[track].get())
-    {
-        if (header->getTrack() == track)
-        {
-            header->updateContent();
-        }
-    }
-
     if (Pattern *pattern = track->getPattern())
     {
         // track name could change here so we have to keep track array sorted by name:
@@ -413,11 +334,6 @@ void PatternRoll::onRemoveTrack(MidiTrack *const track)
 
     this->tracks.removeAllInstancesOf(track);
 
-    if (MidiTrackHeader *deletedHeader = this->trackHeaders[track].get())
-    {
-        this->trackHeaders.erase(track);
-    }
-
     if (Pattern *pattern = track->getPattern())
     {
         for (int i = 0; i < pattern->size(); ++i)
@@ -429,9 +345,9 @@ void PatternRoll::onRemoveTrack(MidiTrack *const track)
                 this->clipComponents.erase(clip);
             }
         }
-
-        this->updateRollSize();
     }
+
+    this->resized();
 }
 
 void PatternRoll::onAddClip(const Clip &clip)
@@ -796,39 +712,56 @@ void PatternRoll::reset() {}
 // Background image cache
 //===----------------------------------------------------------------------===//
 
-Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height) const
+Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height)
 {
-    const int width = 128;
-    const int shadowHeight = 16;
+    const int width = 256;
+    const int shadowHeight = PATTERN_ROLL_TRACK_HEADER_HEIGHT * 2;
     Image patternImage(Image::RGB, width, height, false);
     Graphics g(patternImage);
 
-    const Colour fillColour = theme.findColour(ColourIDs::Roll::blackKey).brighter(0.035f);
+    const Colour fillColour = theme.findColour(ColourIDs::Roll::blackKey).brighter(0.03f);
     g.setColour(fillColour);
     g.fillRect(patternImage.getBounds());
 
+    // FIXME no hard-coded colours please
+    const Colour shadowColour(Colours::black.withAlpha(0.125f));
+
+    g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderFill));
+    g.fillRect(patternImage.getBounds().withHeight(PATTERN_ROLL_TRACK_HEADER_HEIGHT));
+
+    g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderBorderLight));
+    g.drawHorizontalLine(0, 0.f, float(width));
+    g.drawHorizontalLine(PATTERN_ROLL_TRACK_HEADER_HEIGHT - 1, 0.f, float(width));
+
     {
         float x = 0, y = PATTERN_ROLL_TRACK_HEADER_HEIGHT;
-        g.setGradientFill(ColourGradient(Colour(0x0c000000),
-            x, y,
-            Colours::transparentBlack,
-            x, float(shadowHeight + y),
-            false));
+        g.setGradientFill(ColourGradient(shadowColour, x, y,
+            Colours::transparentBlack, x, float(shadowHeight + y), false));
         g.fillRect(int(x), int(y), width, shadowHeight);
     }
 
     {
         float x = 0, y = PATTERN_ROLL_TRACK_HEADER_HEIGHT;
-        g.setGradientFill(ColourGradient(Colour(0x0c000000),
-            x, y,
-            Colours::transparentBlack,
-            x, float((shadowHeight / 2) + y),
-            false));
+        g.setGradientFill(ColourGradient(shadowColour, x, y,
+            Colours::transparentBlack, x, float((shadowHeight / 2) + y), false));
+        g.fillRect(int(x), int(y), width, shadowHeight);
+    }
+
+    {
+        float x = 0, y = float(height - shadowHeight);
+        g.setGradientFill(ColourGradient(Colours::transparentBlack, x, y,
+            shadowColour, x, float(height), false));
+        g.fillRect(int(x), int(y), width, shadowHeight);
+    }
+
+    {
+        float x = 0, y = float(height - shadowHeight / 2);
+        g.setGradientFill(ColourGradient(Colours::transparentBlack, x, y,
+            shadowColour, x, float(height), false));
         g.fillRect(int(x), int(y), width, shadowHeight);
     }
 
     HelioTheme::drawNoise(theme, g, 1.75f);
-
     return patternImage;
 }
 

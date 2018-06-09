@@ -58,10 +58,10 @@ class TimelineWarningMarker;
 #define DEFAULT_NUM_BARS 8
 
 #define HYBRID_ROLL_BULK_REPAINT_START \
-    this->setVisible(false);
+    if (this->isEnabled()) { this->setVisible(false); }
 
 #define HYBRID_ROLL_BULK_REPAINT_END \
-    this->setVisible(true);
+    if (this->isEnabled()) { this->setVisible(true); }
 
 class HybridRoll :
     public Component,

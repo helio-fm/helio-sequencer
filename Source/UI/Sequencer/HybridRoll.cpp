@@ -1870,6 +1870,8 @@ static const int shadowSize = 15;
 
 void HybridRoll::updateChildrenBounds()
 {
+    HYBRID_ROLL_BULK_REPAINT_START
+
     const int &viewHeight = this->viewport.getViewHeight();
     const int &viewWidth = this->viewport.getViewWidth();
     const int &viewX = this->viewport.getViewPositionX();
@@ -1912,10 +1914,14 @@ void HybridRoll::updateChildrenBounds()
     }
 
     this->broadcastRollResized();
+
+    HYBRID_ROLL_BULK_REPAINT_END
 }
 
 void HybridRoll::updateChildrenPositions()
 {
+    HYBRID_ROLL_BULK_REPAINT_START
+
     const int &viewHeight = this->viewport.getViewHeight();
     const int &viewX = this->viewport.getViewPositionX();
     const int &viewY = this->viewport.getViewPositionY();
@@ -1956,6 +1962,8 @@ void HybridRoll::updateChildrenPositions()
     }
 
     this->broadcastRollMoved();
+
+    HYBRID_ROLL_BULK_REPAINT_END
 }
 
 //===----------------------------------------------------------------------===//

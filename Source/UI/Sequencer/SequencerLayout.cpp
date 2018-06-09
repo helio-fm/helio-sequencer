@@ -36,7 +36,6 @@
 #include "OrigamiVertical.h"
 #include "NoteComponent.h"
 #include "ClipComponent.h"
-#include "MidiTrackHeader.h"
 #include "PanelBackgroundC.h"
 #include "App.h"
 #include "Workspace.h"

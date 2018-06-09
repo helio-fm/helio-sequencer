@@ -18,15 +18,14 @@
 #pragma once
 
 #if HELIO_DESKTOP
-#   define PATTERN_ROLL_CLIP_HEIGHT 72
-#   define PATTERN_ROLL_TRACK_HEADER_HEIGHT 20
+#   define PATTERN_ROLL_CLIP_HEIGHT 64
+#   define PATTERN_ROLL_TRACK_HEADER_HEIGHT 4
 #elif HELIO_MOBILE
 #   define PATTERN_ROLL_CLIP_HEIGHT 72
-#   define PATTERN_ROLL_TRACK_HEADER_HEIGHT 20
+#   define PATTERN_ROLL_TRACK_HEADER_HEIGHT 4
 #endif
 
 class ClipComponent;
-class MidiTrackHeader;
 class PatternRollSelectionMenuManager;
 
 #include "HelioTheme.h"
@@ -45,8 +44,6 @@ public:
 
     void selectAll() override;
     int getNumRows() const noexcept;
-
-    void zoomViewToClip(const Clip &clip) const;
 
     //===------------------------------------------------------------------===//
     // Ghost clips
@@ -129,15 +126,13 @@ protected:
     // HybridRoll
     //===------------------------------------------------------------------===//
 
-    void updateChildrenBounds() override;
-    void updateChildrenPositions() override;
     void setChildrenInteraction(bool interceptsMouse, MouseCursor c) override;
     void updateRollSize();
 
 public:
 
     Image rowPattern;
-    Image renderRowsPattern(const HelioTheme &theme, int height) const;
+    static Image renderRowsPattern(const HelioTheme &theme, int height);
     void repaintBackgroundsCache();
 
     void reloadRollContent();
@@ -158,12 +153,7 @@ private:
 
     OwnedArray<ClipComponent> ghostClips;
 
-    ScopedPointer<MidiTrackHeader> insertTrackHelper;
-
     ScopedPointer<PatternRollSelectionMenuManager> selectedClipsMenuManager;
-
-    using TrackHeadersMap = SparseHashMap<const MidiTrack *, UniquePointer<MidiTrackHeader>, MidiTrackHash>;
-    TrackHeadersMap trackHeaders;
 
     using ClipComponentsMap = SparseHashMap<Clip, UniquePointer<ClipComponent>, ClipHash>;
     ClipComponentsMap clipComponents;
