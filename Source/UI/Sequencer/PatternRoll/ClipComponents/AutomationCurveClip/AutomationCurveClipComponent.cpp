@@ -49,7 +49,6 @@ AutomationCurveClipComponent::AutomationCurveClipComponent(ProjectTreeItem &proj
     this->setAlwaysOnTop(true);
     this->setInterceptsMouseClicks(true, true);
     this->setPaintingIsUnclipped(true);
-    this->setMouseCursor(MouseCursor::CopyingCursor);
 
     this->leadingConnector = new ComponentConnectorCurve(nullptr, nullptr);
     this->addAndMakeVisible(this->leadingConnector);
@@ -70,6 +69,12 @@ AutomationCurveClipComponent::~AutomationCurveClipComponent()
 
 void AutomationCurveClipComponent::mouseDown(const MouseEvent &e)
 {
+    if (!this->project.getEditMode().forcesAddingEvents())
+    {
+        ClipComponent::mouseDown(e);
+        return;
+    }
+
     if (e.mods.isLeftButtonDown())
     {
         this->insertNewEventAt(e);
@@ -78,6 +83,12 @@ void AutomationCurveClipComponent::mouseDown(const MouseEvent &e)
 
 void AutomationCurveClipComponent::mouseDrag(const MouseEvent &e)
 {
+    if (!this->project.getEditMode().forcesAddingEvents())
+    {
+        ClipComponent::mouseDrag(e);
+        return;
+    }
+
     if (this->draggingEvent)
     {
         if (this->draggingEvent->isDragging())
@@ -87,13 +98,19 @@ void AutomationCurveClipComponent::mouseDrag(const MouseEvent &e)
         else
         {
             this->draggingEvent->mouseDown(e.getEventRelativeTo(this->draggingEvent));
-            this->setMouseCursor(MouseCursor(MouseCursor::DraggingHandCursor));
+            this->setMouseCursor(MouseCursor::DraggingHandCursor);
         }
     }
 }
 
 void AutomationCurveClipComponent::mouseUp(const MouseEvent &e)
 {
+    if (!this->project.getEditMode().forcesAddingEvents())
+    {
+        ClipComponent::mouseUp(e);
+        return;
+    }
+
     if (this->draggingEvent != nullptr)
     {
         this->draggingEvent->mouseUp(e.getEventRelativeTo(this->draggingEvent));

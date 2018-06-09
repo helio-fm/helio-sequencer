@@ -43,6 +43,7 @@
 #include "PianoClipComponent.h"
 #include "AutomationSequence.h"
 #include "AutomationCurveClipComponent.h"
+#include "AutomationStepsClipComponent.h"
 #include "DummyClipComponent.h"
 #include "LassoListeners.h"
 
@@ -93,6 +94,31 @@ void PatternRoll::selectAll()
     }
 }
 
+static ClipComponent *createClipComponentFor(MidiTrack *track,
+    const Clip &clip, ProjectTreeItem &project, HybridRoll &roll)
+{
+    auto *sequence = track->getSequence();
+    jassert(sequence != nullptr);
+
+    if (auto *pianoLayer = dynamic_cast<PianoSequence *>(sequence))
+    {
+        return new PianoClipComponent(project, sequence, roll, clip);
+    }
+    else if (auto *autoLayer = dynamic_cast<AutomationSequence *>(sequence))
+    {
+        if (track->isOnOffAutomationTrack())
+        {
+            return new AutomationStepsClipComponent(project, sequence, roll, clip);
+        }
+        else
+        {
+            return new AutomationCurveClipComponent(project, sequence, roll, clip);
+        }
+    }
+
+    return nullptr;
+}
+
 void PatternRoll::reloadRollContent()
 {
     this->selection.deselectAll();
@@ -104,9 +130,6 @@ void PatternRoll::reloadRollContent()
 
     for (auto *track : this->project.getTracks())
     {
-        auto *sequence = track->getSequence();
-        jassert(sequence != nullptr);
-
         // Only show tracks with patterns (i.e. ignore timeline tracks)
         if (const auto *pattern = track->getPattern())
         {
@@ -115,18 +138,7 @@ void PatternRoll::reloadRollContent()
             for (int j = 0; j < pattern->size(); ++j)
             {
                 const Clip &clip = *pattern->getUnchecked(j);
-                ClipComponent *clipComponent = nullptr;
-
-                if (auto *pianoLayer = dynamic_cast<PianoSequence *>(sequence))
-                {
-                    clipComponent = new PianoClipComponent(this->project, sequence, *this, clip);
-                }
-                else if (auto *autoLayer = dynamic_cast<AutomationSequence *>(sequence))
-                {
-                    clipComponent = new AutomationCurveClipComponent(this->project, sequence, *this, clip);
-                }
-
-                if (clipComponent != nullptr)
+                if (auto *clipComponent = createClipComponentFor(track, clip, this->project, *this))
                 {
                     this->clipComponents[clip] = UniquePointer<ClipComponent>(clipComponent);
                     this->addAndMakeVisible(clipComponent);
@@ -268,26 +280,12 @@ void PatternRoll::onAddTrack(MidiTrack *const track)
 {
     if (Pattern *pattern = track->getPattern())
     {
-        auto sequence = track->getSequence();
-        jassert(sequence != nullptr);
-
         this->tracks.addSorted(*track, track);
 
         for (int j = 0; j < pattern->size(); ++j)
         {
             const Clip &clip = *pattern->getUnchecked(j);
-            ClipComponent *clipComponent = nullptr;
-
-            if (auto pianoLayer = dynamic_cast<PianoSequence *>(sequence))
-            {
-                clipComponent = new PianoClipComponent(this->project, sequence, *this, clip);
-            }
-            else if (auto autoLayer = dynamic_cast<AutomationSequence *>(sequence))
-            {
-                clipComponent = new AutomationCurveClipComponent(this->project, sequence, *this, clip);
-            }
-
-            if (clipComponent != nullptr)
+            if (auto *clipComponent = createClipComponentFor(track, clip, this->project, *this))
             {
                 this->clipComponents[clip] = UniquePointer<ClipComponent>(clipComponent);
                 this->addAndMakeVisible(clipComponent);
@@ -339,7 +337,7 @@ void PatternRoll::onRemoveTrack(MidiTrack *const track)
         for (int i = 0; i < pattern->size(); ++i)
         {
             const Clip &clip = *pattern->getUnchecked(i);
-            if (const auto deletedComponent = this->clipComponents[clip].get())
+            if (auto *deletedComponent = this->clipComponents[clip].get())
             {
                 this->selection.deselect(deletedComponent);
                 this->clipComponents.erase(clip);
@@ -352,20 +350,8 @@ void PatternRoll::onRemoveTrack(MidiTrack *const track)
 
 void PatternRoll::onAddClip(const Clip &clip)
 {
-    ClipComponent *clipComponent = nullptr;
-    auto track = clip.getPattern()->getTrack();
-    auto sequence = track->getSequence();
-
-    if (dynamic_cast<PianoSequence *>(sequence))
-    {
-        clipComponent = new PianoClipComponent(this->project, sequence, *this, clip);
-    }
-    else if (dynamic_cast<AutomationSequence *>(sequence))
-    {
-        clipComponent = new AutomationCurveClipComponent(this->project, sequence, *this, clip);
-    }
-
-    if (clipComponent != nullptr)
+    auto *track = clip.getPattern()->getTrack();
+    if (auto *clipComponent = createClipComponentFor(track, clip, this->project, *this))
     {
         this->clipComponents[clip] = UniquePointer<ClipComponent>(clipComponent);
         this->addAndMakeVisible(clipComponent);
@@ -536,7 +522,7 @@ void PatternRoll::mouseDrag(const MouseEvent &e)
             // adding one and resizing it afterwards, so two checkpoints would happen
             // which we don't want, as adding a note should appear to user as a single transaction
             this->newClipDragging->setNoCheckpointNeededForNextAction();
-            this->setMouseCursor(MouseCursor(MouseCursor::DraggingHandCursor));
+            this->setMouseCursor(MouseCursor::DraggingHandCursor);
         }
     }
 

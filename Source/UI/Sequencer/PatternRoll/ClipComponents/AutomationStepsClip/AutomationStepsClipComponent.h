@@ -77,8 +77,7 @@ protected:
     AutomationStepEventComponent *getNextEventComponent(int indexOfSorted) const;
 
     Rectangle<float> getEventBounds(AutomationStepEventComponent *c) const;
-    Rectangle<float> getEventBounds(float targetBeat, float sequenceLength,
-        bool isPedalDown, float anchor) const;
+    Rectangle<float> getEventBounds(float targetBeat, float sequenceLength, bool isPedalDown) const;
 
     friend class AutomationStepEventComponent;
     friend class AutomationStepEventsConnector;

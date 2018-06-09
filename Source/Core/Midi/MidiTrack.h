@@ -85,8 +85,7 @@ public:
     };
 
     bool isTempoTrack() const noexcept;
-    bool isSustainPedalTrack() const noexcept;
-    bool isOnOffTrack() const noexcept;
+    bool isOnOffAutomationTrack() const noexcept;
 
     String getTrackMuteStateAsString() const;
     static bool isTrackMuted(const String &muteState);

@@ -33,9 +33,7 @@ public:
     ~AutomationStepEventComponent();
 
     //[UserMethods]
-
-    static float getAnchor();
-
+    
     inline AutomationStepsClipComponent *getEditor() const noexcept { return &this->editor; }
     inline const AutomationEvent &getEvent() const noexcept { return this->event; };
 

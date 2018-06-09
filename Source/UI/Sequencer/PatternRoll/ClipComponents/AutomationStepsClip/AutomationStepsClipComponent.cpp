@@ -37,7 +37,6 @@ AutomationStepsClipComponent::AutomationStepsClipComponent(ProjectTreeItem &proj
     this->setPaintingIsUnclipped(true);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setInterceptsMouseClicks(true, true);
-    this->setMouseCursor(MouseCursor::CopyingCursor);
 
     this->leadingConnector = new AutomationStepEventsConnector(nullptr, nullptr, DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE);
     this->addAndMakeVisible(this->leadingConnector);
@@ -58,6 +57,12 @@ AutomationStepsClipComponent::~AutomationStepsClipComponent()
 
 void AutomationStepsClipComponent::mouseDown(const MouseEvent &e)
 {
+    if (!this->project.getEditMode().forcesAddingEvents())
+    {
+        ClipComponent::mouseDown(e);
+        return;
+    }
+
     const bool shouldAddTriggeredEvent = (! e.mods.isLeftButtonDown());
     this->insertNewEventAt(e, shouldAddTriggeredEvent);
 }
@@ -96,18 +101,18 @@ Rectangle<float> AutomationStepsClipComponent::getEventBounds(AutomationStepEven
     const auto *seqence = c->getEvent().getSequence();
     const float sequenceLength = seqence->getLengthInBeats();
     const float beat = c->getBeat() - seqence->getFirstBeat();
-    return this->getEventBounds(beat, sequenceLength, c->isPedalDownEvent(), c->getAnchor());
+    return this->getEventBounds(beat, sequenceLength, c->isPedalDownEvent());
 }
 
 static const float kComponentLengthInBeats = 0.5f;
 
 Rectangle<float> AutomationStepsClipComponent::getEventBounds(float beat,
-    float sequenceLength, bool isPedalDown, float anchor) const
+    float sequenceLength, bool isPedalDown) const
 {
     const float minWidth = 2.f;
     const float w = jmax(minWidth, float(this->getWidth()) * (kComponentLengthInBeats / sequenceLength));
     const float x = (float(this->getWidth()) * (beat / sequenceLength));
-    return { x - (w * anchor), 0.f, w, float(this->getHeight()) };
+    return { x - w / 2, 0.f, w, float(this->getHeight()) };
 }
 
 //===----------------------------------------------------------------------===//
@@ -191,8 +196,8 @@ AutomationStepEventComponent *AutomationStepsClipComponent::getNextEventComponen
 
 float AutomationStepsClipComponent::getBeatByXPosition(int x) const
 {
-    const int xRoll = int(roundf(float(x) / float(this->getWidth()) * float(this->roll.getWidth())));
-    return this->roll.getRoundBeatByXPosition(xRoll);
+    const int xRoll = this->getX() + x;
+    return this->roll.getRoundBeatByXPosition(xRoll) - this->clip.getBeat();
 }
 
 //===----------------------------------------------------------------------===//

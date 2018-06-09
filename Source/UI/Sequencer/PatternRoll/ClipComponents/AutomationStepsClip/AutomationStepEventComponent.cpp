@@ -197,7 +197,7 @@ void AutomationStepEventComponent::mouseDrag (const MouseEvent& e)
         {
             this->setMouseCursor(MouseCursor::DraggingHandCursor);
             this->dragger.dragComponent(this, e, nullptr);
-            float newRoundBeat = this->editor.getBeatByXPosition(this->getX() + int(this->getAnchor() * this->getWidth()));
+            float newRoundBeat = this->editor.getBeatByXPosition(this->getX() + this->getWidth() / 2);
             this->drag(newRoundBeat);
         }
     }
@@ -349,11 +349,6 @@ void AutomationStepEventComponent::setPreviousNeighbour(AutomationStepEventCompo
     // todo logic
     this->prevEventHolder = prev;
     //this->recreateConnector();
-}
-
-float AutomationStepEventComponent::getAnchor()
-{
-    return 1.0f;
 }
 
 bool AutomationStepEventComponent::isPedalDownEvent() const

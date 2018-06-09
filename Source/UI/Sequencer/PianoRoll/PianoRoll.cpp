@@ -836,7 +836,7 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
         else
         {
             this->newNoteDragging->startInitializing();
-            this->setMouseCursor(MouseCursor(MouseCursor::LeftRightResizeCursor));
+            this->setMouseCursor(MouseCursor::LeftRightResizeCursor);
         }
     }
 
