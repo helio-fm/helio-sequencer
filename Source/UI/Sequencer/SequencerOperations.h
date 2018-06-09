@@ -21,6 +21,7 @@ class Transport;
 class ProjectTreeItem;
 class Lasso;
 class MidiSequence;
+class MidiTrackTreeItem;
 class MidiTrack;
 class Clipboard;
 
@@ -84,6 +85,9 @@ struct SequencerOperations final
     static bool findHarmonicContext(const Lasso &selection,
         WeakReference<MidiTrack> keySignatures,
         Scale::Ptr &outScale, Note::Key &outRootKey);
+
+    static ScopedPointer<MidiTrackTreeItem> createPianoTrack(const Lasso &selection);
+
 };
 
 struct PatternOperations final

@@ -64,9 +64,12 @@
         // Cut
         { "receiver": "PianoRoll", "command": "CutEvents", "key": "Command + X" },
         { "receiver": "PianoRoll", "command": "CutEvents", "key": "Control + X" },
+        { "receiver": "PianoRoll", "command": "CutEvents", "key": "Shift + Delete" },
+
+        // Cut to new track
+        { "receiver": "PianoRoll", "command": "NewTrackFromSelection", "key": "+" },
 
         // Delete
-        { "receiver": "PianoRoll", "command": "CutEvents", "key": "Shift + Delete" },
         { "receiver": "PianoRoll", "command": "DeleteEvents", "key": "X" },
         { "receiver": "PianoRoll", "command": "DeleteEvents", "key": "Delete" },
         { "receiver": "PianoRoll", "command": "DeleteEvents", "key": "Backspace" },

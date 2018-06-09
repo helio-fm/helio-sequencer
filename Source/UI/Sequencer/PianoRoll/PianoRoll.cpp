@@ -56,6 +56,8 @@
 #include "Arpeggiator.h"
 #include "HeadlineItemDataSource.h"
 #include "LassoListeners.h"
+#include "UndoStack.h"
+#include "PianoTrackActions.h"
 
 #define ROWS_OF_TWO_OCTAVES 24
 #define DEFAULT_NOTE_LENGTH 0.25f
@@ -903,6 +905,22 @@ void PianoRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::DeleteEvents:
         SequencerOperations::deleteSelection(this->getLassoSelection());
+        break;
+    case CommandIDs::NewTrackFromSelection:
+        if (this->getLassoSelection().getNumSelected() > 0)
+        {
+            const auto track = SequencerOperations::createPianoTrack(this->getLassoSelection());
+            const ValueTree trackTemplate = track->serialize();
+            auto inputDialog = ModalDialogInput::Presets::newTrack();
+            inputDialog->onOk = [trackTemplate, this](const String &input)
+            {
+                SequencerOperations::deleteSelection(this->getLassoSelection(), true);
+                this->project.getUndoStack()->perform(new PianoTrackInsertAction(this->project,
+                    &this->project, trackTemplate, input));
+            };
+
+            App::Layout().showModalComponentUnowned(inputDialog.release());
+        }
         break;
     case CommandIDs::BeatShiftLeft:
         SequencerOperations::shiftBeatRelative(this->getLassoSelection(), -1.f / BEATS_PER_BAR);
