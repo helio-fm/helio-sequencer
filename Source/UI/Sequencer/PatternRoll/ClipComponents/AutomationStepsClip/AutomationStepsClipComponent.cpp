@@ -34,7 +34,7 @@ AutomationStepsClipComponent::AutomationStepsClipComponent(ProjectTreeItem &proj
     sequence(sequence)
 {
     this->setAlwaysOnTop(true);
-    this->setPaintingIsUnclipped(true);
+    this->setPaintingIsUnclipped(false);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setInterceptsMouseClicks(true, true);
 
@@ -104,15 +104,13 @@ Rectangle<float> AutomationStepsClipComponent::getEventBounds(AutomationStepEven
     return this->getEventBounds(beat, sequenceLength, c->isPedalDownEvent());
 }
 
-static const float kComponentLengthInBeats = 0.5f;
-
 Rectangle<float> AutomationStepsClipComponent::getEventBounds(float beat,
     float sequenceLength, bool isPedalDown) const
 {
     const float minWidth = 2.f;
-    const float w = jmax(minWidth, float(this->getWidth()) * (kComponentLengthInBeats / sequenceLength));
+    const float w = jmax(minWidth, float(this->getWidth()) * (STEP_EVENT_MIN_LENGTH_IN_BEATS / sequenceLength));
     const float x = (float(this->getWidth()) * (beat / sequenceLength));
-    return { x - w / 2, 0.f, w, float(this->getHeight()) };
+    return { x - w + STEP_EVENT_POINT_OFFSET, 0.f, w, float(this->getHeight()) };
 }
 
 //===----------------------------------------------------------------------===//
@@ -122,7 +120,7 @@ Rectangle<float> AutomationStepsClipComponent::getEventBounds(float beat,
 void AutomationStepsClipComponent::insertNewEventAt(const MouseEvent &e, bool shouldAddTriggeredEvent)
 {
     const float sequenceLength = this->sequence->getLengthInBeats();
-    const float w = float(this->getWidth()) * (kComponentLengthInBeats / sequenceLength);
+    const float w = float(this->getWidth()) * (STEP_EVENT_MIN_LENGTH_IN_BEATS / sequenceLength);
     const float draggingBeat = this->getBeatByXPosition(int(e.x + w / 2));
     
     if (auto *autoSequence = dynamic_cast<AutomationSequence *>(this->sequence.get()))
@@ -156,7 +154,8 @@ void AutomationStepsClipComponent::insertNewEventAt(const MouseEvent &e, bool sh
         }
         
         const float invertedCV = (1.f - prevEventCV);
-        const float alignedBeat = jmin((nextBeat - kComponentLengthInBeats), jmax((prevBeat + kComponentLengthInBeats), draggingBeat));
+        const float alignedBeat = jmin((nextBeat - STEP_EVENT_MIN_LENGTH_IN_BEATS),
+            jmax((prevBeat + STEP_EVENT_MIN_LENGTH_IN_BEATS), draggingBeat));
         
         autoSequence->checkpoint();
         AutomationEvent event(autoSequence, alignedBeat, invertedCV);

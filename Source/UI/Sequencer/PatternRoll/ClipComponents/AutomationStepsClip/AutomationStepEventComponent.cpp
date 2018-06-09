@@ -15,198 +15,111 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "AutomationStepEventComponent.h"
-
-//[MiscUserDefs]
 #include "AutomationStepsClipComponent.h"
 #include "AutomationStepEventsConnector.h"
 #include "AutomationSequence.h"
 
-// a hack
-//#define proportionOfWidth(x) ((this->getWidth() * x) + (this->getWidth() - this->realBounds.getWidth()))
-#define proportionOfWidth(x) (this->realBounds.getWidth() * (x))
-
-//[/MiscUserDefs]
-
-AutomationStepEventComponent::AutomationStepEventComponent(AutomationStepsClipComponent &parent, const AutomationEvent &targetEvent)
-    : event(targetEvent),
-      editor(parent)
+AutomationStepEventComponent::AutomationStepEventComponent(AutomationStepsClipComponent &parent,
+    const AutomationEvent &targetEvent) :
+    event(targetEvent),
+    editor(parent)
 {
-
-    //[UserPreSize]
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
     this->recreateConnector();
     this->setMouseCursor(MouseCursor::PointingHandCursor);
-    //[/UserPreSize]
-
-    setSize (64, 32);
-
-    //[Constructor]
-    //[/Constructor]
 }
 
-AutomationStepEventComponent::~AutomationStepEventComponent()
+void AutomationStepEventComponent::paint(Graphics &g)
 {
-    //[Destructor_pre]
-    //[/Destructor_pre]
+    const bool prevDownState = this->prevEventHolder ?
+        this->prevEventHolder->isPedalDownEvent() : DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE;
 
+    const float threshold = STEP_EVENT_MIN_LENGTH_IN_BEATS * 3.f;
 
-    //[Destructor]
-    //[/Destructor]
-}
+    const bool isCloseToPrevious = this->prevEventHolder ?
+        (this->getBeat() - this->prevEventHolder->getBeat()) <= threshold : false;
 
-void AutomationStepEventComponent::paint (Graphics& g)
-{
-    //[UserPrePaint] Add your own custom painting code here..
-#if 0
-    //[/UserPrePaint]
+    const bool isCloseToNext = this->nextEventHolder ?
+        (this->nextEventHolder->getBeat() - this->getBeat()) <= threshold : false;
 
-    {
-        float x = 0, y = 0;
-        Colour strokeColour = Colours::black;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (strokeColour);
-        g.strokePath (internalPath1, PathStrokeType (1.000f), AffineTransform::translation(x, y));
-    }
-
-    {
-        float x = 0, y = 0;
-        Colour strokeColour = Colour (0xff002dff);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (strokeColour);
-        g.strokePath (internalPath2, PathStrokeType (1.000f), AffineTransform::translation(x, y));
-    }
-
-    {
-        float x = 0, y = 0;
-        Colour strokeColour = Colours::red;
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (strokeColour);
-        g.strokePath (internalPath3, PathStrokeType (1.000f), AffineTransform::translation(x, y));
-    }
-
-    {
-        float x = 0, y = 0;
-        Colour strokeColour = Colour (0xff00ff03);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (strokeColour);
-        g.strokePath (internalPath4, PathStrokeType (1.000f), AffineTransform::translation(x, y));
-    }
-
-    //[UserPaint] Add your own custom painting code here..
-#endif
-
-    const bool prevDownState = (this->prevEventHolder) ? this->prevEventHolder->isPedalDownEvent() : DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE;
-
-    g.setColour(Colours::white.withAlpha(0.15f));
+    g.setColour(Colours::white.withAlpha(0.4f));
+    const float r = STEP_EVENT_POINT_OFFSET;
+    const float d = r * 2.f;
+    const float bottom = this->realBounds.getHeight() - r - STEP_EVENT_MARGIN;
+    const float left = this->realBounds.getX() - float(this->getX());
+    const float right = jmax(left + 0.5f, this->realBounds.getWidth() - r);
+    const float top = r + STEP_EVENT_MARGIN;
 
     if (this->event.isPedalDownEvent() && !prevDownState)
     {
-        g.fillPath(internalPath2);
-        //g.strokePath (internalPath2, PathStrokeType (2.0f));
+        const bool compact = isCloseToPrevious && this->hasCompactMode();
+        if (!compact)
+        {
+            g.drawLine(right + 0.5f, top, right + 0.5f, bottom - r - 1.f);
+            g.drawLine(right - 0.5f, top + 1.f, right - 0.5f, bottom - r - 1.f);
+            g.drawHorizontalLine(int(top), left, right + 0.5f);
+            g.drawHorizontalLine(int(top) + 1, left - 1.f, right - 0.5f);
+        }
+        g.fillEllipse(right - r, bottom - r + 1.f, d, d);
     }
     else if (this->event.isPedalUpEvent() && prevDownState)
     {
-        g.fillPath(internalPath1);
-        //g.strokePath (internalPath1, PathStrokeType (2.0f));
+        const bool compact = isCloseToNext && this->hasCompactMode();
+        g.drawLine(right, top + d, right, compact ? bottom - r - 1.f : bottom);
+        g.drawLine(right + 1.f, top + d, right + 1.f, compact ? bottom - r - 1.f : bottom + 1.f);
+        g.drawHorizontalLine(int(bottom), left, compact ? right - d : right + 0.5f);
+        g.drawHorizontalLine(int(bottom) + 1, left - 1.f, compact ? right - d : right + 1.5f);
+        g.fillEllipse(right - r, top - r + 1.f, d, d);
     }
     else if (this->event.isPedalDownEvent() && prevDownState)
     {
-        g.fillPath(internalPath4);
-        //g.strokePath (internalPath4, PathStrokeType (2.0f));
+        g.drawHorizontalLine(int(bottom), left, right - d);
+        g.drawHorizontalLine(int(bottom) + 1, left - 1.f, right - d);
+        g.fillEllipse(right - r, bottom - r + 1.f, d, d);
     }
     else if (this->event.isPedalUpEvent() && !prevDownState)
     {
-        g.fillPath(internalPath3);
-        //g.strokePath (internalPath3, PathStrokeType (2.0f));
+        g.drawHorizontalLine(int(top), left, right - d);
+        g.drawHorizontalLine(int(top) + 1, left - 1.f, right - d);
+        g.fillEllipse(right - r, top - r + 1.f, d, d);
     }
-
-    //[/UserPaint]
-}
-
-void AutomationStepEventComponent::resized()
-{
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    internalPath1.clear();
-    internalPath1.startNewSubPath (static_cast<float> (proportionOfWidth (0.0000f)), static_cast<float> (getHeight()));
-    internalPath1.lineTo (static_cast<float> (proportionOfWidth (1.0000f)), 1.0f);
-    internalPath1.lineTo (static_cast<float> (proportionOfWidth (1.0000f)), static_cast<float> (getHeight()));
-    internalPath1.closeSubPath();
-
-    internalPath2.clear();
-    internalPath2.startNewSubPath (static_cast<float> (proportionOfWidth (0.0000f)), 1.0f);
-    internalPath2.lineTo (static_cast<float> (proportionOfWidth (1.0000f)), static_cast<float> (getHeight()));
-    internalPath2.lineTo (static_cast<float> (proportionOfWidth (0.0000f)), static_cast<float> (getHeight()));
-    internalPath2.closeSubPath();
-
-    internalPath3.clear();
-    internalPath3.startNewSubPath (static_cast<float> (proportionOfWidth (0.0000f)), 1.0f);
-    internalPath3.lineTo (static_cast<float> (proportionOfWidth (0.5000f)), static_cast<float> (getHeight() - 1));
-    internalPath3.lineTo (static_cast<float> (proportionOfWidth (1.0000f)), 1.0f);
-    internalPath3.lineTo (static_cast<float> (proportionOfWidth (1.0000f)), static_cast<float> (getHeight()));
-    internalPath3.lineTo (static_cast<float> (proportionOfWidth (0.0000f)), static_cast<float> (getHeight()));
-    internalPath3.closeSubPath();
-
-    internalPath4.clear();
-    internalPath4.startNewSubPath (static_cast<float> (proportionOfWidth (0.0000f)), static_cast<float> (getHeight()));
-    internalPath4.lineTo (static_cast<float> (proportionOfWidth (0.5000f)), 1.0f);
-    internalPath4.lineTo (static_cast<float> (proportionOfWidth (1.0000f)), static_cast<float> (getHeight()));
-    internalPath4.closeSubPath();
-
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
 }
 
 void AutomationStepEventComponent::moved()
 {
-    //[UserCode_moved] -- Add your code here...
     this->updateConnector();
-    //[/UserCode_moved]
 }
 
-void AutomationStepEventComponent::mouseDown (const MouseEvent& e)
+void AutomationStepEventComponent::mouseDown(const MouseEvent &e)
 {
-    //[UserCode_mouseDown] -- Add your code here...
     if (e.mods.isLeftButtonDown())
     {
         this->event.getSequence()->checkpoint();
         this->dragger.startDraggingComponent(this, e);
         this->draggingState = true;
     }
-    //[/UserCode_mouseDown]
 }
 
-void AutomationStepEventComponent::mouseDrag (const MouseEvent& e)
+void AutomationStepEventComponent::mouseDrag(const MouseEvent &e)
 {
-    //[UserCode_mouseDrag] -- Add your code here...
     if (e.mods.isLeftButtonDown())
     {
         if (this->draggingState)
         {
             this->setMouseCursor(MouseCursor::DraggingHandCursor);
             this->dragger.dragComponent(this, e, nullptr);
-            float newRoundBeat = this->editor.getBeatByXPosition(this->getX() + this->getWidth() / 2);
+            float newRoundBeat = this->editor.getBeatByXPosition(this->getX() + this->getWidth());
             this->drag(newRoundBeat);
         }
     }
-    //[/UserCode_mouseDrag]
 }
 
-void AutomationStepEventComponent::mouseUp (const MouseEvent& e)
+void AutomationStepEventComponent::mouseUp(const MouseEvent &e)
 {
-    //[UserCode_mouseUp] -- Add your code here...
     if (e.mods.isLeftButtonDown())
     {
         if (this->draggingState)
@@ -263,11 +176,7 @@ void AutomationStepEventComponent::mouseUp (const MouseEvent& e)
     {
         this->editor.removeEventIfPossible(this->event);
     }
-    //[/UserCode_mouseUp]
 }
-
-
-//[MiscUserCode]
 
 void AutomationStepEventComponent::drag(float targetBeat)
 {
@@ -278,17 +187,15 @@ void AutomationStepEventComponent::drag(float targetBeat)
     const int myIndex = autoLayer->indexOfSorted(&this->event);
     const bool hasPreviousEvent = (myIndex > 0);
     const bool hasNextEvent = (myIndex < (autoLayer->size() - 1));
-    const float minBeatOffset = 0.5f;
-
 
     if (hasPreviousEvent)
     {
-        newRoundBeat = jmax(autoLayer->getUnchecked(myIndex - 1)->getBeat() + minBeatOffset, newRoundBeat);
+        newRoundBeat = jmax(autoLayer->getUnchecked(myIndex - 1)->getBeat() + STEP_EVENT_MIN_LENGTH_IN_BEATS, newRoundBeat);
     }
 
     if (hasNextEvent)
     {
-        newRoundBeat = jmin(autoLayer->getUnchecked(myIndex + 1)->getBeat() - minBeatOffset, newRoundBeat);
+        newRoundBeat = jmin(autoLayer->getUnchecked(myIndex + 1)->getBeat() - STEP_EVENT_MIN_LENGTH_IN_BEATS, newRoundBeat);
     }
 
     const float newRoundDeltaBeat = (newRoundBeat - this->event.getBeat());
@@ -342,67 +249,30 @@ void AutomationStepEventComponent::setPreviousNeighbour(AutomationStepEventCompo
 {
     if (prev == this->prevEventHolder)
     {
-        //this->updateConnector();
         return;
     }
 
     // todo logic
     this->prevEventHolder = prev;
-    //this->recreateConnector();
 }
 
-bool AutomationStepEventComponent::isPedalDownEvent() const
+bool AutomationStepEventComponent::isPedalDownEvent() const noexcept
 {
     return this->event.isPedalDownEvent();
 }
 
-float AutomationStepEventComponent::getBeat() const
+float AutomationStepEventComponent::getBeat() const noexcept
 {
     return this->event.getBeat();
 }
 
 void AutomationStepEventComponent::setRealBounds(const Rectangle<float> bounds)
 {
-    Rectangle<int> intBounds(bounds.toType<int>());
     this->realBounds = bounds;
-    this->setBounds(intBounds);
+    this->setBounds(bounds.toType<int>());
 }
 
-Rectangle<float> AutomationStepEventComponent::getRealBounds() const
+Rectangle<float> AutomationStepEventComponent::getRealBounds() const noexcept
 {
     return this->realBounds;
 }
-
-//[/MiscUserCode]
-
-#if 0
-/*
-BEGIN_JUCER_METADATA
-
-<JUCER_COMPONENT documentType="Component" className="AutomationStepEventComponent"
-                 template="../../../../../Template" componentName="" parentClasses="public Component"
-                 constructorParams="AutomationStepsClipComponent &amp;parent, const AutomationEvent &amp;targetEvent"
-                 variableInitialisers="event(targetEvent),&#10;editor(parent)"
-                 snapPixels="8" snapActive="0" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="64" initialHeight="32">
-  <METHODS>
-    <METHOD name="moved()"/>
-    <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseDrag (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0">
-    <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="1" stroke="1, mitered, butt"
-          strokeColour="solid: ff000000" nonZeroWinding="1">s 0% 0R l 100% 1 l 100% 0R x</PATH>
-    <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="1" stroke="1, mitered, butt"
-          strokeColour="solid: ff002dff" nonZeroWinding="1">s 0% 1 l 100% 0R l 0% 0R x</PATH>
-    <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="1" stroke="1, mitered, butt"
-          strokeColour="solid: ffff0000" nonZeroWinding="1">s 0% 1 l 50% 1R l 100% 1 l 100% 0R l 0% 0R x</PATH>
-    <PATH pos="0 0 100 100" fill="solid: 0" hasStroke="1" stroke="1, mitered, butt"
-          strokeColour="solid: ff00ff03" nonZeroWinding="1">s 0% 0R l 50% 1 l 100% 0R x</PATH>
-  </BACKGROUND>
-</JUCER_COMPONENT>
-
-END_JUCER_METADATA
-*/
-#endif

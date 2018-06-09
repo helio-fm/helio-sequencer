@@ -21,47 +21,31 @@
 #include "AutomationStepsClipComponent.h"
 
 AutomationStepEventsConnector::AutomationStepEventsConnector(AutomationStepEventComponent *c1,
-                                             AutomationStepEventComponent *c2,
-                                             bool isEventTriggered)
-    : component1(c1),
-      component2(c2),
-      isTriggered(isEventTriggered),
-      draggingState(false),
-      anchorBeat(0.f),
-      anchorBeatChild1(0.f),
-      anchorBeatChild2(0.f)
+    AutomationStepEventComponent *c2, bool isEventTriggered) :
+    component1(c1),
+    component2(c2),
+    isTriggered(isEventTriggered),
+    draggingState(false),
+    anchorBeat(0.f),
+    anchorBeatChild1(0.f),
+    anchorBeatChild2(0.f)
 {
+    this->setWantsKeyboardFocus(false);
     this->setInterceptsMouseClicks(true, false);
     this->setMouseClickGrabsKeyboardFocus(false);
+    this->setPaintingIsUnclipped(true);
     this->setMouseCursor(MouseCursor::CopyingCursor);
-    
-    this->setSize(600, 32);
 }
 
 void AutomationStepEventsConnector::getPoints(float &x1, float &x2, float &y1, float &y2) const
 {
-    jassert(this->component1 || this->component2);
-
-    if (this->component1 == nullptr)
-    {
-        x1 = 0;
-        y1 = float(this->component2->getRealBounds().getY());
-    }
-    else
+    if (this->component1 != nullptr)
     {
         x1 = float(this->component1->getRealBounds().getRight());
         y1 = float(this->component1->getRealBounds().getY());
     }
 
-    if (this->component2 == nullptr)
-    {
-        if (this->component1->getParentComponent())
-        {
-            x2 = float(this->component1->getParentWidth());
-            y2 = float(this->component1->getRealBounds().getBottom());
-        }
-    }
-    else
+    if (this->component2 != nullptr)
     {
         x2 = float(this->component2->getRealBounds().getX());
         y2 = float(this->component2->getRealBounds().getBottom());
@@ -69,15 +53,12 @@ void AutomationStepEventsConnector::getPoints(float &x1, float &x2, float &y1, f
 }
 
 void AutomationStepEventsConnector::retargetAndUpdate(AutomationStepEventComponent *c1,
-                                              AutomationStepEventComponent *c2,
-                                              bool isEventTriggered)
+    AutomationStepEventComponent *c2, bool isEventTriggered)
 {
     this->component1 = c1;
     this->component2 = c2;
     this->resizeToFit(isEventTriggered);
 }
-
-#define SUSTAIN_PEDAL_CONNECTOR_HEIGHT 12
 
 void AutomationStepEventsConnector::resizeToFit(bool isEventTriggered)
 {
@@ -87,16 +68,19 @@ void AutomationStepEventsConnector::resizeToFit(bool isEventTriggered)
     }
 
     const bool shouldRepaint = (this->isTriggered != isEventTriggered);
-
     this->isTriggered = isEventTriggered;
 
-    float x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+    const float r = STEP_EVENT_POINT_OFFSET;
+    float x1 = 0.f, x2 = 0.f, y1 = 0.f, y2 = 0.f;
     this->getPoints(x1, x2, y1, y2);
 
-    this->realBounds = Rectangle<float>(jmin(x1, x2) - 1.f,
-                                        this->isTriggered ? y2 : 0,
-                                        fabsf(x1 - x2) + 2.f,
-                                        this->isTriggered ? 0.f : float(this->getHeight()));
+    const bool compact = this->component1 ? this->component1->hasCompactMode() : false;
+    const float top = r + STEP_EVENT_MARGIN;
+    const float bottom = y2 - r - STEP_EVENT_MARGIN;
+    this->realBounds = { jmin(x1, x2) + (compact ? (r + 1.f) : (r - 1.5f)),
+        this->isTriggered ? bottom : top,
+        fabsf(x1 - x2) - (compact ? r * 2.f : 0.5f),
+        this->isTriggered ? top : bottom };
     
     this->setBounds(this->realBounds.toType<int>());
     
@@ -106,20 +90,19 @@ void AutomationStepEventsConnector::resizeToFit(bool isEventTriggered)
     }
 }
 
-
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
 
-void AutomationStepEventsConnector::paint(Graphics& g)
+void AutomationStepEventsConnector::paint(Graphics &g)
 {
-    g.setColour(Colours::white.withAlpha(0.1f));
-    g.fillAll();
-}
-
-void AutomationStepEventsConnector::resized()
-{
-    const float delta = this->realBounds.getX() - float(this->getBounds().getX());
+    if (this->realBounds.getWidth() > STEP_EVENT_POINT_OFFSET)
+    {
+        g.setColour(Colours::white.withAlpha(0.4f));
+        const float left = this->realBounds.getX() - float(this->getX());
+        g.drawHorizontalLine(0, left, this->realBounds.getWidth());
+        g.drawHorizontalLine(1, left, this->realBounds.getWidth() - 1.f);
+    }
 }
 
 void AutomationStepEventsConnector::mouseMove(const MouseEvent &e)

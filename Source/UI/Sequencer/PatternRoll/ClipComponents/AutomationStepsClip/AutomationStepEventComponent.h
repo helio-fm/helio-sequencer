@@ -17,31 +17,31 @@
 
 #pragma once
 
-//[Headers]
 #include "AutomationEvent.h"
 
 class AutomationStepEventsConnector;
 class AutomationStepsClipComponent;
-//[/Headers]
 
+#define STEP_EVENT_POINT_OFFSET (3.f)
+#define STEP_EVENT_MIN_LENGTH_IN_BEATS (0.25f)
+#define STEP_EVENT_MARGIN (6.f)
 
 class AutomationStepEventComponent final : public Component
 {
 public:
 
     AutomationStepEventComponent(AutomationStepsClipComponent &parent, const AutomationEvent &targetEvent);
-    ~AutomationStepEventComponent();
-
-    //[UserMethods]
     
     inline AutomationStepsClipComponent *getEditor() const noexcept { return &this->editor; }
     inline const AutomationEvent &getEvent() const noexcept { return this->event; };
 
-    bool isPedalDownEvent() const;
-    float getBeat() const;
+    bool isPedalDownEvent() const noexcept;
+    float getBeat() const noexcept;
 
     void setRealBounds(const Rectangle<float> bounds);
-    Rectangle<float> getRealBounds() const;
+    Rectangle<float> getRealBounds() const noexcept;
+    inline bool hasCompactMode() const noexcept
+    { return this->realBounds.getWidth() <= 2.f; }
 
     void updateConnector();
     void setNextNeighbour(AutomationStepEventComponent *next);
@@ -59,19 +59,17 @@ public:
         return first->event.getId().compare(second->event.getId());
     }
 
-    //[/UserMethods]
+    //===------------------------------------------------------------------===//
+    // Component
+    //===------------------------------------------------------------------===//
 
     void paint (Graphics& g) override;
-    void resized() override;
     void moved() override;
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
 
-
 private:
-
-    //[UserVariables]
 
     void drag(float targetBeat);
     void dragByDelta(float deltaBeat);
@@ -91,13 +89,6 @@ private:
     SafePointer<AutomationStepEventComponent> prevEventHolder;
 
     friend class AutomationStepEventsConnector;
-
-    //[/UserVariables]
-
-    Path internalPath1;
-    Path internalPath2;
-    Path internalPath3;
-    Path internalPath4;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AutomationStepEventComponent)
 };
