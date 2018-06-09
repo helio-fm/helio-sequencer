@@ -18,7 +18,7 @@
 #pragma once
 
 //[Headers]
-class WorkspaceMenu;
+class DashboardMenu;
 class IconComponent;
 
 #include "RecentFilesList.h"
@@ -30,7 +30,7 @@ class RecentProjectRow  : public DraggingListBoxComponent
 {
 public:
 
-    RecentProjectRow (WorkspaceMenu &parent, ListBox &parentListBox);
+    RecentProjectRow (DashboardMenu &parent, ListBox &parentListBox);
 
     ~RecentProjectRow();
 
@@ -52,7 +52,7 @@ private:
 
     Component *createHighlighterComponent() override;
 
-    WorkspaceMenu &parentList;
+    DashboardMenu &parentList;
     RecentFileDescription::Ptr targetFile;
     bool isSelected;
 

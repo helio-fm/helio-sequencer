@@ -339,13 +339,12 @@ void ProjectMenu::showNewTrackMenu(AnimationType animationType)
     for (int i = 0; i < instruments.size(); ++i)
     {
         menu.add(MenuItem::item(Icons::instrument,
-            instruments[i]->getName())->withAction([this, i, instruments]()
+            instruments[i]->getName())->withAction([this, instrumentId = instruments[i]->getIdAndHash()]()
             {
                 auto &project = this->project;
-                const String instrumentId = instruments[i]->getIdAndHash();
                 const ValueTree trackTemplate = this->createPianoTrackTempate("", instrumentId);
                 auto inputDialog = ModalDialogInput::Presets::newTrack();
-                inputDialog->onOk = [&project, trackTemplate](const String &input)
+                inputDialog->onOk = [trackTemplate, &project](const String &input)
                 {
                     project.checkpoint();
                     project.getUndoStack()->perform(new PianoTrackInsertAction(project,
@@ -377,9 +376,9 @@ void ProjectMenu::showNewAutomationMenu(AnimationType animationType)
     for (int i = 0; i < instruments.size(); ++i)
     {
         menu.add(MenuItem::item(Icons::instrument,
-            instruments[i]->getName())->withSubmenu()->withAction([this, i, instruments]()
+            instruments[i]->getName())->withSubmenu()->withAction([this, instrument = instruments[i]]()
             {
-                this->showControllersMenuForInstrument(instruments[i]);
+                this->showControllersMenuForInstrument(instrument);
             }));
     }
 
@@ -401,9 +400,8 @@ void ProjectMenu::showControllersMenuForInstrument(WeakReference<Instrument> ins
         if (controllerName.isNotEmpty())
         {
             menu.add(MenuItem::item(Icons::automationTrack,
-                String(i) + ": " + TRANS(controllerName))->withAction([this, i, instrument]()
+                String(i) + ": " + TRANS(controllerName))->withAction([this, controllerNumber = i, instrument]()
                 {
-                    const int controllerNumber = i;
                     const String instrumentId = instrument ? instrument->getIdAndHash() : "";
                     const String trackName = TreeItem::createSafeName(MidiMessage::getControllerName(controllerNumber));
                     const ValueTree autoTrackParams = this->createAutoTrackTempate(trackName, controllerNumber, instrumentId);

@@ -160,7 +160,7 @@ bool TreeItem::deleteItem(TreeItem *itemToDelete)
         WeakReference<TreeItem> switchTo = nullptr;
         WeakReference<TreeItem> parent = dynamic_cast<TreeItem *>(itemToDelete->getParentItem());
 
-        const TreeItem *const markerItem = TreeItem::getActiveItem<TreeItem>(itemToDelete->getRootTreeItem());
+        const auto *markerItem = TreeItem::getActiveItem<TreeItem>(itemToDelete->getRootTreeItem());
         const bool markerItemIsDeleted = (markerItem == nullptr);
 
         if (itemToDelete->isMarkerVisible() || markerItemIsDeleted)
@@ -416,6 +416,18 @@ String TreeItem::getUniqueName() const
 bool TreeItem::mightContainSubItems()
 {
     return (this->getNumSubItems() > 0);
+}
+
+bool TreeItem::isSelectedOrHasSelectedChild() const
+{
+    if (this->isSelected())
+    {
+        return true;
+    }
+
+    Array<TreeItem *> children;
+    TreeItem::collectChildrenOfType<TreeItem, Array<TreeItem *>>(this, children, true);
+    return !children.isEmpty();
 }
 
 void TreeItem::recreateSubtreePages()

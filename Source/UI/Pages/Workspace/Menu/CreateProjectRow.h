@@ -20,7 +20,7 @@
 //[Headers]
 class IconComponent;
 #include "DraggingListBoxComponent.h"
-#include "WorkspaceMenu.h"
+#include "DashboardMenu.h"
 #include "CommandIDs.h"
 //[/Headers]
 

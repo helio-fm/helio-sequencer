@@ -33,13 +33,13 @@ class Workspace;
 #include "../../../Themes/SeparatorHorizontalFadingReversed.h"
 #include "../../../Themes/SeparatorHorizontalFading.h"
 
-class WorkspaceMenu final : public Component,
+class DashboardMenu final : public Component,
                             public ListBoxModel
 {
 public:
 
-    WorkspaceMenu(Workspace *parentWorkspace);
-    ~WorkspaceMenu();
+    DashboardMenu(Workspace *parentWorkspace);
+    ~DashboardMenu();
 
     //[UserMethods]
 
@@ -73,5 +73,5 @@ private:
     ScopedPointer<SeparatorHorizontalFadingReversed> separator1;
     ScopedPointer<SeparatorHorizontalFading> separator2;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WorkspaceMenu)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DashboardMenu)
 };

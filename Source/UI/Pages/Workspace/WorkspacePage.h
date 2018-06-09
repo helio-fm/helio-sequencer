@@ -33,7 +33,7 @@ class Log;
 #include "../../Themes/PanelBackgroundA.h"
 #include "../../Common/MenuButton.h"
 #include "../../Themes/LightShadowRightwards.h"
-#include "Menu/WorkspaceMenu.h"
+#include "Menu/DashboardMenu.h"
 
 class WorkspacePage  : public Component,
                        public Button::Listener
@@ -67,7 +67,7 @@ private:
     ScopedPointer<LogoFader> logoImage;
     ScopedPointer<LightShadowRightwards> shadow;
     ScopedPointer<TextButton> settingsButton;
-    ScopedPointer<WorkspaceMenu> component;
+    ScopedPointer<DashboardMenu> component;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WorkspacePage)
 };

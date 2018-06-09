@@ -27,7 +27,7 @@
 #include "SessionService.h"
 #include "Icons.h"
 #include "IconComponent.h"
-#include "WorkspaceMenu.h"
+#include "DashboardMenu.h"
 #include "CommandIDs.h"
 
 class SignInHighlighter : public Component

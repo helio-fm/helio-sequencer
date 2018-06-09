@@ -72,8 +72,8 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetI
             .getStringWidth(this->titleLabel->getText());
         this->setSize(textWidth + 64, this->getHeight());
 
-        // Create tree panel for the root, and generic menu for the rest
-        // (FIXME in the future, tree should not be exposed)
+        // Debug: create tree panel for the root
+        /*
         if (RootTreeItem *rootItem = dynamic_cast<RootTreeItem *>(this->item.get()))
         {
             ScopedPointer<TreeView> treeView(new TreeView());
@@ -95,20 +95,18 @@ HeadlineDropdown::HeadlineDropdown(WeakReference<HeadlineItemDataSource> targetI
             this->content = treeView.release();
             this->addAndMakeVisible(this->content);
             this->syncWidthWithContent();
-        }
-        else if (ScopedPointer<Component> menu = this->item->createMenu())
+        } else
+        */
+
+        if (ScopedPointer<Component> menu = this->item->createMenu())
         {
             this->content = menu.release();
             this->addAndMakeVisible(this->content);
             this->syncWidthWithContent();
         }
-        else
-        {
-            // TODO dismiss immediately?
-        }
     }
 
-    this->startTimer(200);
+    this->startTimer(175);
     //[/Constructor]
 }
 
@@ -307,7 +305,7 @@ void HeadlineDropdown::timerCallback()
         this->stopTimer();
         this->exitModalState(0);
         Desktop::getInstance().getAnimator()
-            .animateComponent(this, this->getBounds(), 0.f, 150, true, 0.f, 1.f);
+            .animateComponent(this, this->getBounds(), 0.f, 100, true, 0.f, 1.f);
         delete this;
     }
 }

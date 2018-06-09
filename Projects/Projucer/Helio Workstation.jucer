@@ -797,6 +797,9 @@
                 file="../../Source/UI/Menus/VersionControlMenu.cpp"/>
           <FILE id="qrKFgt" name="VersionControlMenu.h" compile="0" resource="0"
                 file="../../Source/UI/Menus/VersionControlMenu.h"/>
+          <FILE id="DZFCn7" name="WorkspaceMenu.cpp" compile="1" resource="0"
+                file="../../Source/UI/Menus/WorkspaceMenu.cpp"/>
+          <FILE id="nKGHgF" name="WorkspaceMenu.h" compile="0" resource="0" file="../../Source/UI/Menus/WorkspaceMenu.h"/>
         </GROUP>
         <GROUP id="{B9AEC376-3BE9-2D8B-8315-5C9D02A78A83}" name="Pages">
           <GROUP id="{244063AE-D7BB-2E7F-F88C-F6B87D3750F0}" name="Instruments">
@@ -946,6 +949,9 @@
           </GROUP>
           <GROUP id="{32159434-9874-6B08-9036-448BF1932A94}" name="Workspace">
             <GROUP id="{95E5F2DA-E6EB-7B2B-D706-085B3DCBBCC7}" name="Menu">
+              <FILE id="tB359c" name="DashboardMenu.cpp" compile="1" resource="0"
+                    file="../../Source/UI/Pages/Workspace/Menu/DashboardMenu.cpp"/>
+              <FILE id="AIxzo3" name="DashboardMenu.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/Menu/DashboardMenu.h"/>
               <FILE id="VvVVMm" name="CreateProjectRow.cpp" compile="1" resource="0"
                     file="../../Source/UI/Pages/Workspace/Menu/CreateProjectRow.cpp"/>
               <FILE id="hc7Ie4" name="CreateProjectRow.h" compile="0" resource="0"
@@ -960,9 +966,6 @@
                     file="../../Source/UI/Pages/Workspace/Menu/RecentProjectRow.h"/>
               <FILE id="k8Pcdn" name="SignInRow.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Workspace/Menu/SignInRow.cpp"/>
               <FILE id="xWKY9O" name="SignInRow.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/Menu/SignInRow.h"/>
-              <FILE id="ETCjLf" name="WorkspaceMenu.cpp" compile="1" resource="0"
-                    file="../../Source/UI/Pages/Workspace/Menu/WorkspaceMenu.cpp"/>
-              <FILE id="f77IW9" name="WorkspaceMenu.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/Menu/WorkspaceMenu.h"/>
             </GROUP>
             <FILE id="nrMPWq" name="LogoFader.cpp" compile="1" resource="0" file="../../Source/UI/Pages/Workspace/LogoFader.cpp"/>
             <FILE id="cmDJdH" name="LogoFader.h" compile="0" resource="0" file="../../Source/UI/Pages/Workspace/LogoFader.h"/>

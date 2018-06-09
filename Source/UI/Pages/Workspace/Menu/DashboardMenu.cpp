@@ -19,7 +19,7 @@
 #include "Common.h"
 //[/Headers]
 
-#include "WorkspaceMenu.h"
+#include "DashboardMenu.h"
 
 //[MiscUserDefs]
 #include "RecentProjectRow.h"
@@ -47,7 +47,7 @@
 
 //[/MiscUserDefs]
 
-WorkspaceMenu::WorkspaceMenu(Workspace *parentWorkspace)
+DashboardMenu::DashboardMenu(Workspace *parentWorkspace)
     : workspace(parentWorkspace)
 {
     addAndMakeVisible (component = new ShadowHorizontalFading());
@@ -72,7 +72,7 @@ WorkspaceMenu::WorkspaceMenu(Workspace *parentWorkspace)
     //[/Constructor]
 }
 
-WorkspaceMenu::~WorkspaceMenu()
+DashboardMenu::~DashboardMenu()
 {
     //[Destructor_pre]
     //[/Destructor_pre]
@@ -86,7 +86,7 @@ WorkspaceMenu::~WorkspaceMenu()
     //[/Destructor]
 }
 
-void WorkspaceMenu::paint (Graphics& g)
+void DashboardMenu::paint (Graphics& g)
 {
     //[UserPrePaint] Add your own custom painting code here..
     //[/UserPrePaint]
@@ -95,7 +95,7 @@ void WorkspaceMenu::paint (Graphics& g)
     //[/UserPaint]
 }
 
-void WorkspaceMenu::resized()
+void DashboardMenu::resized()
 {
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
@@ -108,7 +108,7 @@ void WorkspaceMenu::resized()
     //[/UserResized]
 }
 
-void WorkspaceMenu::handleCommandMessage (int commandId)
+void DashboardMenu::handleCommandMessage (int commandId)
 {
     //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::CreateNewProject)
@@ -142,7 +142,7 @@ void WorkspaceMenu::handleCommandMessage (int commandId)
 
 //[MiscUserCode]
 
-void WorkspaceMenu::loadFile(RecentFileDescription::Ptr fileDescription)
+void DashboardMenu::loadFile(RecentFileDescription::Ptr fileDescription)
 {
     if (!this->workspace->onClickedLoadRecentFile(fileDescription))
     {
@@ -152,13 +152,13 @@ void WorkspaceMenu::loadFile(RecentFileDescription::Ptr fileDescription)
     this->listBox->updateContent();
 
 #if HAS_OPEN_PROJECT_ROW
-    this->listBox->scrollToEnsureRowIsOnscreen(3);
-#else
     this->listBox->scrollToEnsureRowIsOnscreen(2);
+#else
+    this->listBox->scrollToEnsureRowIsOnscreen(1);
 #endif
 }
 
-void WorkspaceMenu::unloadFile(RecentFileDescription::Ptr fileDescription)
+void DashboardMenu::unloadFile(RecentFileDescription::Ptr fileDescription)
 {
     this->workspace->onClickedUnloadRecentFile(fileDescription);
     this->listBox->updateContent();
@@ -169,41 +169,17 @@ void WorkspaceMenu::unloadFile(RecentFileDescription::Ptr fileDescription)
 // ListBoxModel
 //===----------------------------------------------------------------------===//
 
-Component *WorkspaceMenu::refreshComponentForRow(int rowNumber, bool isRowSelected,
+Component *DashboardMenu::refreshComponentForRow(int rowNumber, bool isRowSelected,
     Component *existingComponentToUpdate)
 {
 #if HAS_OPEN_PROJECT_ROW
-    const int signInRowIndex = 0;
-    const int openProjectRowIndex = 1;
-    const int createProjectRowIndex = 2;
-    const int numStaticCells = 3;
-#else
-    const int signInRowIndex = 0;
+    const int openProjectRowIndex = 0;
     const int createProjectRowIndex = 1;
     const int numStaticCells = 2;
+#else
+    const int createProjectRowIndex = 0;
+    const int numStaticCells = 1;
 #endif
-
-    if (rowNumber == signInRowIndex)
-    {
-        if (existingComponentToUpdate != nullptr)
-        {
-            if (nullptr == dynamic_cast<SignInRow *>(existingComponentToUpdate))
-            {
-                delete existingComponentToUpdate;
-                existingComponentToUpdate = new SignInRow(*this, *this->listBox);
-                return existingComponentToUpdate;
-            }
-            else if (SignInRow *row = dynamic_cast<SignInRow *>(existingComponentToUpdate))
-            {
-                row->updateContent();
-            }
-        }
-        else
-        {
-            auto row = new SignInRow(*this, *this->listBox);
-            return row;
-        }
-    }
 
 #if HAS_OPEN_PROJECT_ROW
     if (rowNumber == openProjectRowIndex)
@@ -280,13 +256,10 @@ Component *WorkspaceMenu::refreshComponentForRow(int rowNumber, bool isRowSelect
     return existingComponentToUpdate;
 }
 
-void WorkspaceMenu::listBoxItemClicked(int row, const MouseEvent &e)
-{
-}
+void DashboardMenu::listBoxItemClicked(int row, const MouseEvent &e) {}
 
-int WorkspaceMenu::getNumRows()
+int DashboardMenu::getNumRows()
 {
-    const int signInRow = 1;
     const int createProjectRow = 1;
 #if HAS_OPEN_PROJECT_ROW
     const int openProjectRow = 1;
@@ -294,12 +267,11 @@ int WorkspaceMenu::getNumRows()
     const int openProjectRow = 0;
 #endif
 
-    return this->workspace->getRecentFilesList().getNumItems() + signInRow + openProjectRow + createProjectRow;
+    return this->workspace->getRecentFilesList().getNumItems() + openProjectRow + createProjectRow;
 }
 
-void WorkspaceMenu::paintListBoxItem(int rowNumber, Graphics &g, int width, int height, bool rowIsSelected)
-{
-}
+void DashboardMenu::paintListBoxItem(int rowNumber, Graphics &g,
+    int width, int height, bool rowIsSelected) {}
 
 //[/MiscUserCode]
 

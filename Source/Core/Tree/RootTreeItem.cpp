@@ -25,19 +25,20 @@
 #include "TrackGroupTreeItem.h"
 #include "PianoTrackTreeItem.h"
 #include "AutomationTrackTreeItem.h"
-#include "WorkspacePage.h"
-#include "MainLayout.h"
-#include "Icons.h"
+
+#include "MidiTrack.h"
 #include "MidiSequence.h"
+#include "AutomationSequence.h"
 #include "AutomationEvent.h"
 #include "RecentFilesList.h"
 #include "ProjectInfo.h"
-#include "WorkspaceMenu.h"
-#include "AutomationEvent.h"
-#include "AutomationSequence.h"
-#include "MidiTrack.h"
-#include "App.h"
+
+#include "MainLayout.h"
 #include "Workspace.h"
+#include "WorkspaceMenu.h"
+#include "WorkspacePage.h"
+#include "Icons.h"
+#include "App.h"
 
 RootTreeItem::RootTreeItem(const String &name) :
     TreeItem(name, Serialization::Core::root)
@@ -291,7 +292,7 @@ bool RootTreeItem::hasMenu() const noexcept
 
 ScopedPointer<Component> RootTreeItem::createMenu()
 {
-    return new WorkspaceMenu(&App::Workspace());
+    return new WorkspaceMenu(App::Workspace());
 }
 
 //===----------------------------------------------------------------------===//
