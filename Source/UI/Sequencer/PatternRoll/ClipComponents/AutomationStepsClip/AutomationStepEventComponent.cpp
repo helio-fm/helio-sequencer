@@ -36,7 +36,7 @@ AutomationStepEventComponent::AutomationStepEventComponent(AutomationStepsClipCo
 void AutomationStepEventComponent::paint(Graphics &g)
 {
     const bool prevDownState = this->prevEventHolder ?
-        this->prevEventHolder->isPedalDownEvent() : DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE;
+        this->prevEventHolder->isPedalDownEvent() : DEFAULT_ON_OFF_EVENT_STATE;
 
     const float threshold = STEP_EVENT_MIN_LENGTH_IN_BEATS * 3.f;
 

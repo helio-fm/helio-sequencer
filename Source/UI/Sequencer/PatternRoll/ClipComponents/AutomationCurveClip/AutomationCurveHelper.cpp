@@ -22,7 +22,6 @@
 #include "AutomationCurveHelper.h"
 
 //[MiscUserDefs]
-#include "ComponentConnectorCurve.h"
 #include "AutomationSequence.h"
 //[/MiscUserDefs]
 

@@ -20,7 +20,6 @@
 class HybridRoll;
 class MidiSequence;
 class ProjectTreeItem;
-class ComponentConnectorCurve;
 class AutomationCurveEventComponent;
 
 #include "ClipComponent.h"
@@ -89,14 +88,12 @@ protected:
 
 private:
 
-    void updateTempoComponent(AutomationCurveEventComponent *);
+    void updateCurveComponent(AutomationCurveEventComponent *);
     void reloadTrack();
 
     HybridRoll &roll;
     ProjectTreeItem &project;
     WeakReference<MidiSequence> sequence;
-
-    ScopedPointer<ComponentConnectorCurve> leadingConnector;
 
     OwnedArray<AutomationCurveEventComponent> eventComponents;
     SparseHashMap<AutomationEvent, AutomationCurveEventComponent *, MidiEventHash> eventsHash;

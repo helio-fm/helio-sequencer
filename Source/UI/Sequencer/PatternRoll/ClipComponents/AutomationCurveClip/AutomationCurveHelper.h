@@ -19,8 +19,6 @@
 
 //[Headers]
 #include "AutomationEvent.h"
-
-class ComponentConnectorCurve;
 //[/Headers]
 
 

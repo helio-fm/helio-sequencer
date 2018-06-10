@@ -17,23 +17,17 @@
 
 #pragma once
 
-//[Headers]
 #include "AutomationEvent.h"
 
 class AutomationCurveEventsConnector;
 class AutomationCurveHelper;
 class AutomationCurveClipComponent;
-//[/Headers]
-
 
 class AutomationCurveEventComponent final : public Component
 {
 public:
 
     AutomationCurveEventComponent(AutomationCurveClipComponent &parent, const AutomationEvent &targetEvent);
-    ~AutomationCurveEventComponent();
-
-    //[UserMethods]
 
     inline float getBeat() const noexcept { return this->event.getBeat(); }
     inline float getControllerValue() const noexcept { return this->event.getControllerValue(); }
@@ -43,35 +37,15 @@ public:
     void updateHelper();
     void setNextNeighbour(AutomationCurveEventComponent *next);
 
-    static int compareElements(const AutomationCurveEventComponent *first, const AutomationCurveEventComponent *second)
-    {
-        if (first == second) { return 0; }
-
-        const float beatDiff = first->getBeat() - second->getBeat();
-        const int beatResult = (beatDiff > 0.f) - (beatDiff < 0.f);
-        if (beatResult != 0) { return beatResult; }
-
-        const float cvDiff = first->getControllerValue() - second->getControllerValue();
-        const int cvResult = (cvDiff > 0.f) - (cvDiff < 0.f); // sorted by cv, if beats are the same
-        if (cvResult != 0) { return cvResult; }
-
-        return first->event.getId().compare(second->event.getId());
-    }
-
-    //[/UserMethods]
+    static int compareElements(const AutomationCurveEventComponent *first, const AutomationCurveEventComponent *second);
 
     void paint (Graphics& g) override;
-    void resized() override;
-    void moved() override;
     bool hitTest (int x, int y) override;
     void mouseDown (const MouseEvent& e) override;
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
 
-
 private:
-
-    //[UserVariables]
 
     void startDragging();
     bool isDragging() const;
@@ -96,9 +70,6 @@ private:
     ScopedPointer<AutomationCurveEventsConnector> connector;
     ScopedPointer<AutomationCurveHelper> helper;
     SafePointer<AutomationCurveEventComponent> nextEventHolder;
-
-    //[/UserVariables]
-
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AutomationCurveEventComponent)
 };

@@ -15,27 +15,20 @@
     along with Helio. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//[Headers]
 #include "Common.h"
-//[/Headers]
-
 #include "AutomationCurveEventComponent.h"
-
-//[MiscUserDefs]
 #include "AutomationCurveClipComponent.h"
 #include "AutomationCurveHelper.h"
 #include "AutomationCurveEventsConnector.h"
 #include "AutomationSequence.h"
-//[/MiscUserDefs]
 
-AutomationCurveEventComponent::AutomationCurveEventComponent(AutomationCurveClipComponent &parent, const AutomationEvent &targetEvent)
-    : event(targetEvent),
-      anchor(targetEvent),
-      editor(parent),
-      draggingState(false)
+AutomationCurveEventComponent::AutomationCurveEventComponent(AutomationCurveClipComponent &parent,
+    const AutomationEvent &targetEvent) :
+    event(targetEvent),
+    anchor(targetEvent),
+    editor(parent),
+    draggingState(false)
 {
-
-    //[UserPreSize]
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
 
@@ -45,76 +38,27 @@ AutomationCurveEventComponent::AutomationCurveEventComponent(AutomationCurveClip
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setPaintingIsUnclipped(true);
     this->recreateConnector();
-    //[/UserPreSize]
-
-    setSize (32, 32);
-
-    //[Constructor]
-    //[/Constructor]
-}
-
-AutomationCurveEventComponent::~AutomationCurveEventComponent()
-{
-    //[Destructor_pre]
-    //[/Destructor_pre]
-
-
-    //[Destructor]
-    //[/Destructor]
 }
 
 void AutomationCurveEventComponent::paint (Graphics& g)
 {
-    //[UserPrePaint] Add your own custom painting code here..
-    //[/UserPrePaint]
-
     {
-        float x = 0.0f, y = 0.0f, width = static_cast<float> (getWidth() - 0), height = static_cast<float> (getHeight() - 0);
-        Colour fillColour = Colour (0x2bfefefe);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillEllipse (x, y, width, height);
+        g.fillEllipse (0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
     }
 
     {
-        float x = 5.0f, y = 5.0f, width = static_cast<float> (getWidth() - 10), height = static_cast<float> (getHeight() - 10);
-        Colour fillColour = Colour (0x3affffff);
-        //[UserPaintCustomArguments] Customize the painting arguments here..
-        //[/UserPaintCustomArguments]
-        g.setColour (fillColour);
-        g.fillEllipse (x, y, width, height);
+        const auto centre = this->getLocalBounds().getCentre();
+        g.fillEllipse(centre.getX() - 4.f, centre.getY() - 4.f, 8.f, 8.f);
     }
 
-    //[UserPaint] Add your own custom painting code here..
     if (this->draggingState)
     {
-        g.setColour (Colour (0x2bfefefe));
-        g.fillEllipse (0.0f, 0.0f, static_cast<float> (getWidth() - 0), static_cast<float> (getHeight() - 0));
+        g.fillEllipse(0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
     }
-    //[/UserPaint]
 }
 
-void AutomationCurveEventComponent::resized()
+bool AutomationCurveEventComponent::hitTest(int x, int y)
 {
-    //[UserPreResize] Add your own custom resize code here..
-    //[/UserPreResize]
-
-    //[UserResized] Add your own custom resize handling here..
-    //[/UserResized]
-}
-
-void AutomationCurveEventComponent::moved()
-{
-    //[UserCode_moved] -- Add your code here...
-//    this->updateConnector();
-//    this->updateHelper();
-    //[/UserCode_moved]
-}
-
-bool AutomationCurveEventComponent::hitTest (int x, int y)
-{
-    //[UserCode_hitTest] -- Add your code here...
     const int xCenter = this->getWidth() / 2;
     const int yCenter = this->getHeight() / 2;
 
@@ -123,24 +67,20 @@ bool AutomationCurveEventComponent::hitTest (int x, int y)
     const int r = (this->getWidth() + this->getHeight()) / 4;
 
     return (dx * dx) + (dy * dy) < (r * r);
-    //[/UserCode_hitTest]
 }
 
-void AutomationCurveEventComponent::mouseDown (const MouseEvent& e)
+void AutomationCurveEventComponent::mouseDown(const MouseEvent &e)
 {
-    //[UserCode_mouseDown] -- Add your code here...
     if (e.mods.isLeftButtonDown())
     {
         this->event.getSequence()->checkpoint();
         this->dragger.startDraggingComponent(this, e);
         this->startDragging();
     }
-    //[/UserCode_mouseDown]
 }
 
-void AutomationCurveEventComponent::mouseDrag (const MouseEvent& e)
+void AutomationCurveEventComponent::mouseDrag(const MouseEvent &e)
 {
-    //[UserCode_mouseDrag] -- Add your code here...
     if (e.mods.isLeftButtonDown())
     {
         if (this->draggingState)
@@ -157,16 +97,14 @@ void AutomationCurveEventComponent::mouseDrag (const MouseEvent& e)
             }
             else
             {
-                this->editor.updateTempoComponent(this); // возвращаем на место активное событие
+                this->editor.updateCurveComponent(this); // возвращаем на место активное событие
             }
         }
     }
-    //[/UserCode_mouseDrag]
 }
 
-void AutomationCurveEventComponent::mouseUp (const MouseEvent& e)
+void AutomationCurveEventComponent::mouseUp(const MouseEvent &e)
 {
-    //[UserCode_mouseUp] -- Add your code here...
     if (e.mods.isLeftButtonDown())
     {
         if (this->draggingState)
@@ -176,7 +114,7 @@ void AutomationCurveEventComponent::mouseUp (const MouseEvent& e)
             float deltaValue = 0.f;
             float deltaBeat = 0.f;
             this->getDraggingDelta(e, deltaBeat, deltaValue);
-            this->editor.updateTempoComponent(this);
+            this->editor.updateCurveComponent(this);
             this->endDragging();
         }
 
@@ -186,11 +124,7 @@ void AutomationCurveEventComponent::mouseUp (const MouseEvent& e)
     {
         this->editor.removeEventIfPossible(this->event);
     }
-    //[/UserCode_mouseUp]
 }
-
-
-//[MiscUserCode]
 
 void AutomationCurveEventComponent::recreateConnector()
 {
@@ -289,31 +223,17 @@ void AutomationCurveEventComponent::endDragging()
     this->draggingState = false;
 }
 
-//[/MiscUserCode]
+int AutomationCurveEventComponent::compareElements(const AutomationCurveEventComponent *first, const AutomationCurveEventComponent *second)
+{
+    if (first == second) { return 0; }
 
-#if 0
-/*
-BEGIN_JUCER_METADATA
+    const float beatDiff = first->getBeat() - second->getBeat();
+    const int beatResult = (beatDiff > 0.f) - (beatDiff < 0.f);
+    if (beatResult != 0) { return beatResult; }
 
-<JUCER_COMPONENT documentType="Component" className="AutomationCurveEventComponent"
-                 template="../../../../../Template" componentName="" parentClasses="public Component"
-                 constructorParams="AutomationCurveClipComponent &amp;parent, const AutomationEvent &amp;targetEvent"
-                 variableInitialisers="event(targetEvent),&#10;anchor(targetEvent),&#10;editor(parent),&#10;draggingState(false)"
-                 snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
-                 fixedSize="1" initialWidth="32" initialHeight="32">
-  <METHODS>
-    <METHOD name="moved()"/>
-    <METHOD name="mouseDown (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseDrag (const MouseEvent&amp; e)"/>
-    <METHOD name="mouseUp (const MouseEvent&amp; e)"/>
-    <METHOD name="hitTest (int x, int y)"/>
-  </METHODS>
-  <BACKGROUND backgroundColour="0">
-    <ELLIPSE pos="0 0 0M 0M" fill="solid: 2bfefefe" hasStroke="0"/>
-    <ELLIPSE pos="5 5 10M 10M" fill="solid: 3affffff" hasStroke="0"/>
-  </BACKGROUND>
-</JUCER_COMPONENT>
+    const float cvDiff = first->getControllerValue() - second->getControllerValue();
+    const int cvResult = (cvDiff > 0.f) - (cvDiff < 0.f); // sorted by cv, if beats are the same
+    if (cvResult != 0) { return cvResult; }
 
-END_JUCER_METADATA
-*/
-#endif
+    return first->event.getId().compare(second->event.getId());
+}

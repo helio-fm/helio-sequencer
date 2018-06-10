@@ -18,23 +18,21 @@
 #include "Common.h"
 #include "AutomationCurveClipComponent.h"
 #include "AutomationCurveEventComponent.h"
+#include "AutomationCurveEventsConnector.h"
 #include "AutomationCurveHelper.h"
 #include "ProjectTreeItem.h"
 #include "MidiSequence.h"
 #include "AutomationSequence.h"
 #include "PlayerThread.h"
 #include "HybridRoll.h"
-#include "ComponentConnectorCurve.h"
 #include "MidiTrack.h"
 
 #if HELIO_DESKTOP
-#   define TRACKMAP_NOTE_COMPONENT_HEIGHT (1)
-#   define TRACKMAP_TEMPO_EVENT_DIAMETER (25.f)
-#   define TRACKMAP_TEMPO_HELPER_DIAMETER (15.f)
+#   define TRACKMAP_TEMPO_EVENT_DIAMETER (16.f)
+#   define TRACKMAP_TEMPO_HELPER_DIAMETER (10.f)
 #elif HELIO_MOBILE
-#   define TRACKMAP_NOTE_COMPONENT_HEIGHT (1)
-#   define TRACKMAP_TEMPO_EVENT_DIAMETER (40.f)
-#   define TRACKMAP_TEMPO_HELPER_DIAMETER (28.f)
+#   define TRACKMAP_TEMPO_EVENT_DIAMETER (24.f)
+#   define TRACKMAP_TEMPO_HELPER_DIAMETER (20.f)
 #endif
 
 AutomationCurveClipComponent::AutomationCurveClipComponent(ProjectTreeItem &project,
@@ -49,10 +47,7 @@ AutomationCurveClipComponent::AutomationCurveClipComponent(ProjectTreeItem &proj
     this->setAlwaysOnTop(true);
     this->setInterceptsMouseClicks(true, true);
     this->setPaintingIsUnclipped(true);
-
-    this->leadingConnector = new ComponentConnectorCurve(nullptr, nullptr);
-    this->addAndMakeVisible(this->leadingConnector);
-   
+       
     this->reloadTrack();
     
     this->project.addListener(this);
@@ -137,8 +132,6 @@ void AutomationCurveClipComponent::resized()
         c->updateConnector();
         c->updateHelper();
     }
-    
-    this->leadingConnector->resizeToFit();
     
     this->setVisible(true);
 }
@@ -256,7 +249,7 @@ void AutomationCurveClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, 
             
             component->setNextNeighbour(nextEventComponent);
             //component->setVisible(false);
-            this->updateTempoComponent(component);
+            this->updateCurveComponent(component);
             //component->setVisible(true);
             
             if (previousEventComponent)
@@ -277,11 +270,6 @@ void AutomationCurveClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, 
             this->eventsHash.erase(autoEvent);
             this->eventsHash[newAutoEvent] = component;
             
-            if (indexOfSorted == 0 || indexOfSorted == 1)
-            {
-                this->leadingConnector->retargetAndUpdate(nullptr, this->eventComponents[0]);
-            }
-
             this->roll.triggerBatchRepaintFor(this);
         }
     }
@@ -302,7 +290,7 @@ void AutomationCurveClipComponent::onAddMidiEvent(const MidiEvent &event)
         auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
 
         component->setNextNeighbour(nextEventComponent);
-        this->updateTempoComponent(component);
+        this->updateCurveComponent(component);
         component->toFront(false);
         //this->eventAnimator.fadeIn(component, 150);
         
@@ -312,12 +300,7 @@ void AutomationCurveClipComponent::onAddMidiEvent(const MidiEvent &event)
         }
 
         this->eventsHash[autoEvent] = component;
-        
-        if (indexOfSorted == 0)
-        {
-            this->leadingConnector->retargetAndUpdate(nullptr, this->eventComponents[0]);
-        }
-        
+                
         if (this->addNewEventMode)
         {
             this->draggingEvent = component;
@@ -352,11 +335,6 @@ void AutomationCurveClipComponent::onRemoveMidiEvent(const MidiEvent &event)
             
             this->eventComponents.removeObject(component, true);
             
-            if (this->eventComponents.size() > 0)
-            {
-                this->leadingConnector->retargetAndUpdate(nullptr, this->eventComponents[0]);
-            }
-
             this->roll.triggerBatchRepaintFor(this);
         }
     }
@@ -396,7 +374,7 @@ void AutomationCurveClipComponent::onRemoveTrack(MidiTrack *const track)
 // Private
 //===----------------------------------------------------------------------===//
 
-void AutomationCurveClipComponent::updateTempoComponent(AutomationCurveEventComponent *component)
+void AutomationCurveClipComponent::updateCurveComponent(AutomationCurveEventComponent *component)
 {
     component->setBounds(this->getEventBounds(component));
     component->updateConnector();
@@ -430,7 +408,7 @@ void AutomationCurveClipComponent::reloadTrack()
             auto *nextEventComponent = this->getNextEventComponent(indexOfSorted);
             
             component->setNextNeighbour(nextEventComponent);
-            //this->updateTempoComponent(component);
+            //this->updateCurveComponent(component);
             component->toFront(false);
             
             if (previousEventComponent)
@@ -441,12 +419,7 @@ void AutomationCurveClipComponent::reloadTrack()
             this->eventsHash[*autoEvent] = component;
         }
     }
-    
-    if (this->eventComponents.size() > 0)
-    {
-        this->leadingConnector->retargetAndUpdate(nullptr, this->eventComponents[0]);
-    }
-    
+        
     this->roll.triggerBatchRepaintFor(this);
     this->setVisible(true);
 }

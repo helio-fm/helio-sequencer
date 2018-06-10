@@ -16,24 +16,76 @@
 */
 
 #include "Common.h"
+#include "AutomationEvent.h"
 #include "AutomationCurveEventsConnector.h"
 #include "AutomationCurveClipComponent.h"
 
-AutomationCurveEventsConnector::AutomationCurveEventsConnector(Component *c1, Component *c2) :
-    ComponentConnectorCurve(c1, c2),
+#define CURVE_CONNECTOR_LINE_HEIGHT 2.0f
+
+AutomationCurveEventsConnector::AutomationCurveEventsConnector(
+    AutomationCurveEventComponent *c1,
+    AutomationCurveEventComponent *c2) :
+    component1(c1),
+    component2(c2),
+    curvature(0.5f),
     xAnchor(0.f)
 {
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
-    
-    this->setInterceptsMouseClicks(true, false);
+    this->setPaintingIsUnclipped(true);
+    this->setInterceptsMouseClicks(false, false);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setMouseCursor(MouseCursor::UpDownResizeCursor);
+}
+
+void AutomationCurveEventsConnector::retargetAndUpdate(AutomationCurveEventComponent *c1,
+    AutomationCurveEventComponent *c2)
+{
+    this->component1 = c1;
+    this->component2 = c2;
+    this->resizeToFit();
+}
+
+void AutomationCurveEventsConnector::resizeToFit(float newCurvature)
+{
+    if (this->component1 == nullptr || this->component2 == nullptr)
+    {
+        return;
+    }
+
+    const float x1 = float(this->component1->getBounds().getCentreX());
+    const float x2 = float(this->component2->getBounds().getCentreX());
+    const Rectangle<int> newBounds(int(jmin(x1, x2)), 0,
+        int(fabsf(x1 - x2)), this->getParentHeight());
+
+    this->curvature = newCurvature;
+    this->setBounds(newBounds);
+    this->rebuildLinePath();
+}
+
+Point<float> AutomationCurveEventsConnector::getCentrePoint() const
+{
+    return this->linePath.getPointAlongPath(this->linePath.getLength() / 2.f);
 }
 
 //===----------------------------------------------------------------------===//
 // Component
 //===----------------------------------------------------------------------===//
+
+void AutomationCurveEventsConnector::paint(Graphics &g)
+{
+    g.fillPath(this->linePath);
+}
+
+void AutomationCurveEventsConnector::resized()
+{
+    this->rebuildLinePath();
+}
+
+bool AutomationCurveEventsConnector::hitTest(int x, int y)
+{
+    return this->linePath.contains(float(x), float(y) - (CURVE_CONNECTOR_LINE_HEIGHT / 2.f));
+}
 
 void AutomationCurveEventsConnector::mouseDown(const MouseEvent &e)
 {
@@ -82,5 +134,42 @@ void AutomationCurveEventsConnector::mouseUp(const MouseEvent &e)
         {
             this->component2->mouseUp(e.withNewPosition(e.position.withX(this->xAnchor)).getEventRelativeTo(this->component2));
         }
+    }
+}
+
+void AutomationCurveEventsConnector::rebuildLinePath()
+{
+    jassert(this->component1);
+    jassert(this->component2);
+
+    if (this->getParentWidth() == 0 ||
+        this->component1 == nullptr || this->component2 == nullptr)
+    {
+        return;
+    }
+
+    const float x1 = float(this->component1->getBounds().getCentreX());
+    const float x2 = float(this->component2->getBounds().getCentreX());
+
+    this->linePath.clear();
+
+    const float r = 1.f;
+    const auto &e1 = this->component1->getEvent();
+    const auto &e2 = this->component2->getEvent();
+    float interpolatedBeat = e1.getBeat() + CURVE_INTERPOLATION_STEP_BEAT;
+    while (interpolatedBeat < e2.getBeat())
+    {
+        const float factor = (interpolatedBeat - e1.getBeat()) / (e2.getBeat() - e1.getBeat());
+        const float interpolatedValue =
+            AutomationEvent::interpolateEvents(e1.getControllerValue(),
+                e2.getControllerValue(), factor, e1.getCurvature());
+
+        const float x = ((x2 - x1) * factor);
+        const float y = float(this->getParentHeight()) * (1.f - interpolatedValue);
+
+        this->linePath.addEllipse(x - r, y - r, r * 2.f, r * 2.f);
+        //this->linePath.addTriangle(x - r, y, x + r, y + r, x - r, y + r);
+
+        interpolatedBeat += CURVE_INTERPOLATION_STEP_BEAT;
     }
 }

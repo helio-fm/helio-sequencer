@@ -1063,10 +1063,6 @@
                   file="../../Source/UI/Sequencer/Header/TrackStartIndicator.h"/>
           </GROUP>
           <GROUP id="{8144406F-1438-BE00-DA08-A94FC6424392}" name="Helpers">
-            <FILE id="SJ8OZZ" name="ComponentConnectorCurve.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/ComponentConnectorCurve.cpp"/>
-            <FILE id="DFfYY7" name="ComponentConnectorCurve.h" compile="0" resource="0"
-                  file="../../Source/UI/Sequencer/Helpers/ComponentConnectorCurve.h"/>
             <FILE id="ZJCh08" name="HybridRollExpandMark.cpp" compile="1" resource="0"
                   file="../../Source/UI/Sequencer/Helpers/HybridRollExpandMark.cpp"/>
             <FILE id="iM3cEX" name="HybridRollExpandMark.h" compile="0" resource="0"

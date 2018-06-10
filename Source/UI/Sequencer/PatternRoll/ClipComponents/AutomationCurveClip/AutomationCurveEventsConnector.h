@@ -17,17 +17,27 @@
 
 #pragma once
 
-#include "ComponentConnectorCurve.h"
+#include "AutomationCurveEventComponent.h"
 
-class AutomationCurveEventsConnector : public ComponentConnectorCurve
+class AutomationCurveEventsConnector final : public Component
 {
 public:
 
-    AutomationCurveEventsConnector(Component *c1, Component *c2);
-    
+    AutomationCurveEventsConnector(AutomationCurveEventComponent *c1,
+        AutomationCurveEventComponent *c2);
+
+    Point<float> getCentrePoint() const;
+    void resizeToFit(float newCurvature = 0.5f);
+    void retargetAndUpdate(AutomationCurveEventComponent *c1,
+        AutomationCurveEventComponent *c2);
+
     //===------------------------------------------------------------------===//
     // Component
     //===------------------------------------------------------------------===//
+
+    void paint(Graphics &g) override;
+    void resized() override;
+    bool hitTest(int x, int y) override;
 
     void mouseDown(const MouseEvent &e) override;
     void mouseDrag(const MouseEvent &e) override;
@@ -35,6 +45,13 @@ public:
     
 private:
 
+    SafePointer<AutomationCurveEventComponent> component1;
+    SafePointer<AutomationCurveEventComponent> component2;
+
+    Path linePath;
+    void rebuildLinePath();
+
+    float curvature;
     float xAnchor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AutomationCurveEventsConnector)
