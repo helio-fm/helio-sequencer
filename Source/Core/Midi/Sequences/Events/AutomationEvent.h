@@ -20,8 +20,8 @@
 #include "MidiEvent.h"
 
 #define DEFAULT_ON_OFF_EVENT_STATE (false)
-#define CURVE_INTERPOLATION_STEP_BEAT (1.f)
-#define CURVE_INTERPOLATION_THRESHOLD (0.01f)
+#define CURVE_INTERPOLATION_STEP_BEAT (0.5f)
+#define CURVE_INTERPOLATION_THRESHOLD (0.0025f)
 
 class AutomationEvent final : public MidiEvent
 {

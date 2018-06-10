@@ -112,22 +112,22 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
     if (!isOnOff && indexOfThis >= 0 && indexOfThis < (this->getSequence()->size() - 1))
     {
         const auto *nextEvent = static_cast<AutomationEvent *>(this->getSequence()->getUnchecked(indexOfThis + 1));
-        const float controllerDelta = fabs(this->controllerValue - nextEvent->controllerValue);
+        const double nextTime = nextEvent->beat * MS_PER_BEAT;
+        float interpolatedBeat = this->beat + CURVE_INTERPOLATION_STEP_BEAT;
+        float lastAppliedValue = this->controllerValue;
 
-        if (controllerDelta > CURVE_INTERPOLATION_THRESHOLD)
+        while (interpolatedBeat < nextEvent->beat)
         {
-            const double nextTime = nextEvent->beat * MS_PER_BEAT;
-            float interpolatedBeat = this->beat + CURVE_INTERPOLATION_STEP_BEAT;
+            const double interpolatedEventTs = round(interpolatedBeat * MS_PER_BEAT);
+            const float factor = (interpolatedBeat - this->beat) / (nextEvent->beat - this->beat);
 
-            while (interpolatedBeat < nextEvent->beat)
+            const float interpolatedValue =
+                AutomationEvent::interpolateEvents(this->controllerValue,
+                    nextEvent->controllerValue, factor, this->curvature);
+
+            const float controllerDelta = fabs(interpolatedValue - lastAppliedValue);
+            if (controllerDelta > CURVE_INTERPOLATION_THRESHOLD)
             {
-                const double interpolatedEventTs = round(interpolatedBeat * MS_PER_BEAT);
-                const float factor = (interpolatedBeat - this->beat) / (nextEvent->beat - this->beat);
-
-                const float interpolatedValue =
-                    AutomationEvent::interpolateEvents(this->controllerValue,
-                        nextEvent->controllerValue, factor, this->curvature);
-
                 if (isTempoTrack)
                 {
                     const auto tempo = int((1.f - interpolatedValue) * MS_PER_BEAT * 1000);
@@ -143,8 +143,10 @@ Array<MidiMessage> AutomationEvent::toMidiMessages() const
                     result.add(ci);
                 }
 
-                interpolatedBeat += CURVE_INTERPOLATION_STEP_BEAT;
+                lastAppliedValue = interpolatedValue;
             }
+
+            interpolatedBeat += CURVE_INTERPOLATION_STEP_BEAT;
         }
     }
 

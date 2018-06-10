@@ -65,7 +65,12 @@ void AutomationCurveEventsConnector::resizeToFit(float newCurvature)
 
 Point<float> AutomationCurveEventsConnector::getCentrePoint() const
 {
-    return this->linePath.getPointAlongPath(this->linePath.getLength() / 2.f);
+    const auto c1 = this->component1->getBounds().getCentre();
+    const auto c2 = this->component2->getBounds().getCentre();
+    const auto curve = this->component1->getEvent().getCurvature();
+    const auto y1 = jmin(c1.getY(), c2.getY()) + 2;
+    const auto y2 = jmax(c1.getY(), c2.getY()) - 2;
+    return { (c2.getX() - c1.getX()) / 2.f, y1 + (y2 - y1) * (1.f - curve) };
 }
 
 //===----------------------------------------------------------------------===//
@@ -74,7 +79,10 @@ Point<float> AutomationCurveEventsConnector::getCentrePoint() const
 
 void AutomationCurveEventsConnector::paint(Graphics &g)
 {
-    g.fillPath(this->linePath);
+    for (const auto &p : this->linePath)
+    {
+        g.fillRect(p.getX() - 1.f, p.getY() - 0.75f, 2.f, 1.5f);
+    }
 }
 
 void AutomationCurveEventsConnector::resized()
@@ -82,6 +90,7 @@ void AutomationCurveEventsConnector::resized()
     this->rebuildLinePath();
 }
 
+/*
 bool AutomationCurveEventsConnector::hitTest(int x, int y)
 {
     return this->linePath.contains(float(x), float(y) - (CURVE_CONNECTOR_LINE_HEIGHT / 2.f));
@@ -136,6 +145,7 @@ void AutomationCurveEventsConnector::mouseUp(const MouseEvent &e)
         }
     }
 }
+*/
 
 void AutomationCurveEventsConnector::rebuildLinePath()
 {
@@ -153,10 +163,11 @@ void AutomationCurveEventsConnector::rebuildLinePath()
 
     this->linePath.clear();
 
-    const float r = 1.f;
+    const float r = 2.f;
     const auto &e1 = this->component1->getEvent();
     const auto &e2 = this->component2->getEvent();
-    float interpolatedBeat = e1.getBeat() + CURVE_INTERPOLATION_STEP_BEAT;
+    float lastAppliedValue = e1.getControllerValue();
+    float interpolatedBeat = e1.getBeat(); // + CURVE_INTERPOLATION_STEP_BEAT;
     while (interpolatedBeat < e2.getBeat())
     {
         const float factor = (interpolatedBeat - e1.getBeat()) / (e2.getBeat() - e1.getBeat());
@@ -167,8 +178,12 @@ void AutomationCurveEventsConnector::rebuildLinePath()
         const float x = ((x2 - x1) * factor);
         const float y = float(this->getParentHeight()) * (1.f - interpolatedValue);
 
-        this->linePath.addEllipse(x - r, y - r, r * 2.f, r * 2.f);
-        //this->linePath.addTriangle(x - r, y, x + r, y + r, x - r, y + r);
+        const float controllerDelta = fabs(interpolatedValue - lastAppliedValue);
+        if (controllerDelta > CURVE_INTERPOLATION_THRESHOLD)
+        {
+            this->linePath.add({ x, y });
+            lastAppliedValue = interpolatedValue;
+        }
 
         interpolatedBeat += CURVE_INTERPOLATION_STEP_BEAT;
     }

@@ -37,18 +37,18 @@ public:
 
     void paint(Graphics &g) override;
     void resized() override;
-    bool hitTest(int x, int y) override;
-
-    void mouseDown(const MouseEvent &e) override;
-    void mouseDrag(const MouseEvent &e) override;
-    void mouseUp(const MouseEvent &e) override;
+    //bool hitTest(int x, int y) override;
+    //void mouseDown(const MouseEvent &e) override;
+    //void mouseDrag(const MouseEvent &e) override;
+    //void mouseUp(const MouseEvent &e) override;
     
 private:
 
     SafePointer<AutomationCurveEventComponent> component1;
     SafePointer<AutomationCurveEventComponent> component2;
 
-    Path linePath;
+    //Path linePath;
+    Array<Point<float>> linePath;
     void rebuildLinePath();
 
     float curvature;

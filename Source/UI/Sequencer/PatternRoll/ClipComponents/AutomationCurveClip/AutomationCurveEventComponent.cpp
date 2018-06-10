@@ -40,16 +40,11 @@ AutomationCurveEventComponent::AutomationCurveEventComponent(AutomationCurveClip
     this->recreateConnector();
 }
 
-void AutomationCurveEventComponent::paint (Graphics& g)
+void AutomationCurveEventComponent::paint(Graphics &g)
 {
-    {
-        g.fillEllipse (0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
-    }
-
-    {
-        const auto centre = this->getLocalBounds().getCentre();
-        g.fillEllipse(centre.getX() - 4.f, centre.getY() - 4.f, 8.f, 8.f);
-    }
+    g.fillEllipse (0.f, 0.f, float(this->getWidth()), float(this->getHeight()));
+    const auto centre = this->getLocalBounds().getCentre();
+    g.fillEllipse(centre.getX() - 2.f, centre.getY() - 2.f, 4.f, 4.f);
 
     if (this->draggingState)
     {
@@ -152,8 +147,9 @@ void AutomationCurveEventComponent::updateHelper()
         const float d = this->editor.getHelperDiameter();
         const Point<int> linePos(this->connector->getPosition());
         const Point<float> lineCentre(this->connector->getCentrePoint());
-        Rectangle<int> bounds(0, 0, int(d), int(d));
-        this->helper->setBounds(bounds.withPosition(lineCentre.toInt()).translated(linePos.getX() - int(d / 2), linePos.getY() - int(d / 2)));
+        Rectangle<int> bounds(linePos.getX() + int(lineCentre.getX()) - int(d / 2),
+            linePos.getY() + int(lineCentre.getY()) - int(d / 2) + 1, int(d), int(d));
+        this->helper->setBounds(bounds);
     }
 }
 
