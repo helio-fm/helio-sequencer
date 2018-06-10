@@ -46,6 +46,7 @@ void MidiEventComponent::setActive(bool val, bool force)
     }
 
     this->activeState = val;
+    this->updateColours();
 
     if (this->activeState)
     {

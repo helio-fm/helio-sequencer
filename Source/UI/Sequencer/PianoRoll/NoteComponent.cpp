@@ -66,14 +66,16 @@ PianoRoll &NoteComponent::getRoll() const noexcept
 
 void NoteComponent::updateColours()
 {
-    this->colour = Colours::white
-        .interpolatedWith(this->getNote().getTrackColour(), 0.5f)
-        .withAlpha(this->ghostMode ? 0.2f : 0.95f)
-        .darker(this->selectedState ? 0.5f : 0.f);
+    const bool ghost = this->ghostMode || !this->activeState;
 
-    this->colourLighter = this->colour.brighter(0.125f);
-    this->colourDarker = this->colour.darker(0.175f);
-    this->colourVolume = Colours::black.withAlpha(0.4f);
+    this->colour = this->getNote().getTrackColour()
+        .interpolatedWith(Colours::white, ghost ? 0.35f : 0.5f)
+        .brighter(this->selectedState ? 0.95f : (ghost ? 0.55f : 0.f))
+        .withAlpha(this->selectedState ? 1.f : (ghost ? 0.35f : .95f));
+
+    this->colourLighter = this->colour.brighter(0.125f).withMultipliedAlpha(1.45f);
+    this->colourDarker = this->colour.darker(0.175f).withMultipliedAlpha(1.45f);
+    this->colourVolume = this->colour.darker(0.75f).withAlpha(ghost ? 0.f : 0.8f);
 }
 
 bool NoteComponent::canResize() const noexcept
@@ -629,90 +631,35 @@ void NoteComponent::mouseUp(const MouseEvent &e)
     }
 }
 
-void NoteComponent::mouseDoubleClick(const MouseEvent &e)
-{
-    // Not this action is free
-    // TODO something useful
-}
+// This action is still free - TODO something useful:
+void NoteComponent::mouseDoubleClick(const MouseEvent &e) {}
 
 //===----------------------------------------------------------------------===//
-// Notes painting, the very bottleneck of all rendering process
+// Notes painting
 //===----------------------------------------------------------------------===//
 
-// Drawing note as a number of lines, not just rounded rect,
-// gives an overwhelming performance boost on OpenGL and DirectX
-// CoreGraphics, though, performs very badly this way
-
+// Always use only either drawHorizontalLine/drawVerticalLine,
+// or fillRect - these are the ones with minimal overhead:
 void NoteComponent::paint(Graphics &g)
 {
-#if JUCE_MAC
-    if (MainWindow::isOpenGLRendererEnabled())
-    {
-        this->paintNewLook(g);
-    }
-    else
-    {
-        this->paintLegacyLook(g);
-    }
-#else
-    this->paintNewLook(g);
-#endif
-}
-
-// Really fast approximation, we don't need accuracy here:
-// (using Bhaskara I's sine approximation, ~5% error)
-static constexpr float piSqr5 = static_cast<float>(49.3480220f);
-static constexpr float fastSine(float x)
-{
-    return (16.f * x * (MathConstants<float>::pi - x)) /
-        (piSqr5 - 4.f * x * (MathConstants<float>::pi - x));
-}
-
-void NoteComponent::paintNewLook(Graphics &g)
-{
-    const float w = this->floatLocalBounds.getWidth() - .75f; // a small gap between notes
+    const float w = this->floatLocalBounds.getWidth() - .5f; // a small gap between notes
     const float h = this->floatLocalBounds.getHeight();
     const float x1 = this->floatLocalBounds.getX();
     const float x2 = x1 + w;
     const float y1 = this->floatLocalBounds.getY();
     const float y2 = y1 + h - 1;
-    const float yh = (y2 - y1);
-    
-    // Bevel depends on a note size (so that small notes don't disappear):
-    const float bevelCoeff = 1.f - jmax(0.f, (6.f - w) / 6.f);
-    
-    if (! this->activeState)
-    {
-        g.setColour(this->colourLighter);
-        g.drawHorizontalLine(int(y1), x1 + 1.f, x2 - 1.f);
-        g.setColour(this->colourDarker);
-        g.drawHorizontalLine(int(y2), x1 + 1.f, x2 - 1.f);
-        
-        g.setColour(this->colour);
-        for (float y = y1 + 1.f; y <= y2 - 1.f; y += 1.f)
-        {
-            const float yMap = (y - y1) / yh * MathConstants<float>::pi;
-            const float bevel = bevelCoeff * (1.f - (fastSine(yMap) - fastSine(yMap) / 2.5f));
-            g.drawHorizontalLine(int(y), x1 + bevel, x1 + bevel + 1.f);
-            g.drawHorizontalLine(int(y), x2 - bevel - 1.f, x2 - bevel);
-        }
-
-        return;
-    }
     
     g.setColour(this->colourLighter);
-    g.drawHorizontalLine(int(y1), x1 + 1.f, x2 - 1.f);
+    g.drawHorizontalLine(int(y1), x1 + 1.25f, x2 - 1.f);
+
     g.setColour(this->colourDarker);
-    g.drawHorizontalLine(int(y2), x1 + 1.f, x2 - 1.f);
-    
+    g.drawHorizontalLine(int(y2), x1 + 1.25f, x2 - 1.f);
+
     g.setColour(this->colour);
-    for (float y = y1 + 1.f; y <= y2 - 1.f; y += 1.f)
-    {
-        const float yMap = (y - y1) / yh * MathConstants<float>::pi;
-        const float bevel = bevelCoeff * (1.f - (sin(yMap) - sin(yMap) / 2.5f));
-        g.drawHorizontalLine(int(y), x1 + bevel, x2 - bevel);
-    }
-    
+    g.fillRect(x1 + 0.5f, y1 + h / 6.f, 0.5f, h / 1.5f);
+    g.fillRect(jmax(x1 + 0.5f, x2 - 0.75f), y1 + h / 6.f, 0.5f, h / 1.5f);
+    g.fillRect(x1 + 0.75f, y1 + 1.f, jmax(0.f, w - 1.25f), h - 2.f);
+
 //#ifdef DEBUG
 //    g.setColour(Colours::black);
 //    g.drawText(this->note.getId() + " " + this->clip.getId(),
@@ -720,33 +667,11 @@ void NoteComponent::paintNewLook(Graphics &g)
 //        Justification::centredLeft, false);
 //#else
     const float sx = x1 + 2.f;
-    const float sw = (w - 2.f) * this->getVelocity();
+    const float sy = float(this->getHeight() - 4);
+    const float sw = jmax(0.f, (w - 4.f)) * this->getVelocity();
     g.setColour(this->colourVolume);
-    g.drawHorizontalLine(this->getHeight() - 2, sx, sw);
-    g.drawHorizontalLine(this->getHeight() - 3, sx, sw);
-    g.drawHorizontalLine(this->getHeight() - 4, sx, sw);
+    g.fillRect(sx, sy, sw, 3.f);
 //#endif
-}
-
-void NoteComponent::paintLegacyLook(Graphics &g)
-{
-    g.setColour(this->colour);
-
-    if (! this->activeState)
-    {
-        g.drawRoundedRectangle(this->floatLocalBounds.reduced(0.5f, 0.5f), 2.f, 1.0f);
-        return;
-    }
-    
-    g.fillRoundedRectangle(this->floatLocalBounds, 2.f);
-    
-    const float sx = this->floatLocalBounds.getX() + 2.f;
-    const float sw = (this->floatLocalBounds.getWidth() - 2.f - .75f) * this->getVelocity();
-
-    g.setColour(this->colourVolume);
-    g.drawHorizontalLine(this->getHeight() - 2, sx, sw);
-    g.drawHorizontalLine(this->getHeight() - 3, sx, sw);
-    g.drawHorizontalLine(this->getHeight() - 4, sx, sw);
 }
 
 //===----------------------------------------------------------------------===//
