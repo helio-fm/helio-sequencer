@@ -37,10 +37,7 @@ AutomationStepsClipComponent::AutomationStepsClipComponent(ProjectTreeItem &proj
     this->setPaintingIsUnclipped(false);
     this->setMouseClickGrabsKeyboardFocus(false);
     this->setInterceptsMouseClicks(true, true);
-
-    this->leadingConnector = new AutomationStepEventsConnector(nullptr, nullptr, DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE);
-    this->addAndMakeVisible(this->leadingConnector);
-
+    
     this->reloadTrack();
     
     this->project.addListener(this);
@@ -85,8 +82,6 @@ void AutomationStepsClipComponent::resized()
         AutomationStepEventComponent *const c = this->eventComponents.getUnchecked(i);
         c->updateConnector();
     }
-    
-    this->leadingConnector->resizeToFit(DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE);
     
     this->setVisible(true);
 }
@@ -249,12 +244,6 @@ void AutomationStepsClipComponent::onChangeMidiEvent(const MidiEvent &oldEvent, 
             this->eventsHash.erase(autoEvent);
             this->eventsHash[newAutoEvent] = component;
             
-            if (indexOfSorted == 0 || indexOfSorted == 1)
-            {
-                this->leadingConnector->retargetAndUpdate(nullptr, this->eventComponents[0], DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE);
-                // false - потому, что по умолчанию, с начала трека педаль не нажата
-            }
-
             this->roll.triggerBatchRepaintFor(this);
         }
     }
@@ -288,11 +277,6 @@ void AutomationStepsClipComponent::onAddMidiEvent(const MidiEvent &event)
 
         this->eventsHash[autoEvent] = component;
         
-        if (indexOfSorted == 0)
-        {
-            this->leadingConnector->retargetAndUpdate(nullptr, this->eventComponents[0], DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE);
-        }
-
         this->roll.triggerBatchRepaintFor(this);
     }
 }
@@ -322,11 +306,6 @@ void AutomationStepsClipComponent::onRemoveMidiEvent(const MidiEvent &event)
             
             this->eventComponents.removeObject(component, true);
             
-            if (this->eventComponents.size() > 0)
-            {
-                this->leadingConnector->retargetAndUpdate(nullptr, this->eventComponents[0], DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE);
-            }
-
             this->roll.triggerBatchRepaintFor(this);
         }
     }
@@ -336,6 +315,8 @@ void AutomationStepsClipComponent::onChangeTrackProperties(MidiTrack *const trac
 {
     if (this->sequence != nullptr && track->getSequence() == this->sequence)
     {
+        if (track->getSequence() != this->sequence) { return; }
+        this->updateColours();
         this->repaint();
     }
 }
@@ -413,12 +394,7 @@ void AutomationStepsClipComponent::reloadTrack()
             this->eventsHash[*autoEvent] = component;
         }
     }
-    
-    if (this->eventComponents.size() > 0)
-    {
-        this->leadingConnector->retargetAndUpdate(nullptr, this->eventComponents[0], DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE);
-    }
-    
+        
     this->roll.triggerBatchRepaintFor(this);
     this->setVisible(true);
 }

@@ -65,6 +65,9 @@ void ClipComponent::updateColours()
         .interpolatedWith(this->getClip().getTrackColour(), 0.55f)
         .withAlpha(this->ghostMode ? 0.2f : 0.7f)
         .brighter(this->selectedState ? 0.25f : 0.f);
+    this->eventColour = this->getClip().getTrackColour()
+        .interpolatedWith(Colours::white, .35f)
+        .withAlpha(.55f);
 }
 
 //===----------------------------------------------------------------------===//
@@ -236,6 +239,9 @@ void ClipComponent::paint(Graphics& g)
 
     g.drawVerticalLine(0, 2.f, float(this->getHeight() - 1));
     g.drawVerticalLine(this->getWidth() - 1, 2.f, float(this->getHeight() - 1));
+
+    // Set colour to be used by all child events
+    g.setColour(this->eventColour);
 }
 
 //===----------------------------------------------------------------------===//

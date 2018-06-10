@@ -46,46 +46,54 @@ void AutomationStepEventComponent::paint(Graphics &g)
     const bool isCloseToNext = this->nextEventHolder ?
         (this->nextEventHolder->getBeat() - this->getBeat()) <= threshold : false;
 
-    g.setColour(Colours::white.withAlpha(0.4f));
+    g.setColour(this->editor.getEventColour());
     const float r = STEP_EVENT_POINT_OFFSET;
     const float d = r * 2.f;
-    const float bottom = this->realBounds.getHeight() - r - STEP_EVENT_MARGIN;
+    const float bottom = this->realBounds.getHeight() - r - STEP_EVENT_MARGIN + 1.f;
     const float left = this->realBounds.getX() - float(this->getX());
     const float right = jmax(left + 0.5f, this->realBounds.getWidth() - r);
-    const float top = r + STEP_EVENT_MARGIN;
+    const float top = r + STEP_EVENT_MARGIN + 1.f;
 
     if (this->event.isPedalDownEvent() && !prevDownState)
     {
         const bool compact = isCloseToPrevious && this->hasCompactMode();
         if (!compact)
         {
-            g.drawLine(right + 0.5f, top, right + 0.5f, bottom - r - 1.f);
-            g.drawLine(right - 0.5f, top + 1.f, right - 0.5f, bottom - r - 1.f);
+            g.drawLine(right + 0.5f, top, right + 0.5f, bottom - d + 1.f);
             g.drawHorizontalLine(int(top), left, right + 0.5f);
+#if STEP_EVENT_THICK_LINES
+            g.drawLine(right - 0.5f, top + 1.f, right - 0.5f, bottom - d + 1.f);
             g.drawHorizontalLine(int(top) + 1, left - 1.f, right - 0.5f);
+#endif
         }
-        g.fillEllipse(right - r, bottom - r + 1.f, d, d);
+        g.fillEllipse(right - r + 0.5f, bottom - r, d, d);
     }
     else if (this->event.isPedalUpEvent() && prevDownState)
     {
         const bool compact = isCloseToNext && this->hasCompactMode();
-        g.drawLine(right, top + d, right, compact ? bottom - r - 1.f : bottom);
-        g.drawLine(right + 1.f, top + d, right + 1.f, compact ? bottom - r - 1.f : bottom + 1.f);
+        g.drawLine(right, top + d, right, compact ? bottom - d + 1.f : bottom);
         g.drawHorizontalLine(int(bottom), left, compact ? right - d : right + 0.5f);
+#if STEP_EVENT_THICK_LINES
+        g.drawLine(right + 1.f, top + d, right + 1.f, compact ? bottom - d + 1.f : bottom + 1.f);
         g.drawHorizontalLine(int(bottom) + 1, left - 1.f, compact ? right - d : right + 1.5f);
-        g.fillEllipse(right - r, top - r + 1.f, d, d);
+#endif
+        g.fillEllipse(right - r, top - r, d, d);
     }
     else if (this->event.isPedalDownEvent() && prevDownState)
     {
         g.drawHorizontalLine(int(bottom), left, right - d);
+#if STEP_EVENT_THICK_LINES
         g.drawHorizontalLine(int(bottom) + 1, left - 1.f, right - d);
-        g.fillEllipse(right - r, bottom - r + 1.f, d, d);
+#endif
+        g.fillEllipse(right - r + 0.5f, bottom - r, d, d);
     }
     else if (this->event.isPedalUpEvent() && !prevDownState)
     {
         g.drawHorizontalLine(int(top), left, right - d);
+#if STEP_EVENT_THICK_LINES
         g.drawHorizontalLine(int(top) + 1, left - 1.f, right - d);
-        g.fillEllipse(right - r, top - r + 1.f, d, d);
+#endif
+        g.fillEllipse(right - r, top - r, d, d);
     }
 }
 

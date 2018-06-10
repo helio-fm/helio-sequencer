@@ -53,7 +53,6 @@ public:
     void onAddMidiEvent(const MidiEvent &event) override;
     void onRemoveMidiEvent(const MidiEvent &event) override;
 
-    // TODO! As a part of `automation editors` story
     void onAddClip(const Clip &clip) override {}
     void onChangeClip(const Clip &oldClip, const Clip &newClip) override {}
     void onRemoveClip(const Clip &clip) override {}
@@ -90,8 +89,6 @@ private:
     HybridRoll &roll;
     ProjectTreeItem &project;
     WeakReference<MidiSequence> sequence;
-
-    ScopedPointer<AutomationStepEventsConnector> leadingConnector;
 
     OwnedArray<AutomationStepEventComponent> eventComponents;
     SparseHashMap<AutomationEvent, AutomationStepEventComponent *, MidiEventHash> eventsHash;

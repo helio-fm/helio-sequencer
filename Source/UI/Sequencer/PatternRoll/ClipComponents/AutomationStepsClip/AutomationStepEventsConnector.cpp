@@ -74,12 +74,12 @@ void AutomationStepEventsConnector::resizeToFit(bool isEventTriggered)
     float x1 = 0.f, x2 = 0.f, y1 = 0.f, y2 = 0.f;
     this->getPoints(x1, x2, y1, y2);
 
-    const bool compact = this->component1 ? this->component1->hasCompactMode() : false;
-    const float top = r + STEP_EVENT_MARGIN;
-    const float bottom = y2 - r - STEP_EVENT_MARGIN;
-    this->realBounds = { jmin(x1, x2) + (compact ? (r + 1.f) : (r - 1.5f)),
+    const bool compact = this->anyAliveChild()->hasCompactMode();
+    const float top = r + STEP_EVENT_MARGIN + 1.f;
+    const float bottom = y2 - r - STEP_EVENT_MARGIN + 1.f;
+    this->realBounds = { jmin(x1, x2) + (compact ? (r + 1.f) : (r - 1.f)),
         this->isTriggered ? bottom : top,
-        fabsf(x1 - x2) - (compact ? r * 2.f : 0.5f),
+        fabsf(x1 - x2) - (compact ? r * 2.f : 1.f),
         this->isTriggered ? top : bottom };
     
     this->setBounds(this->realBounds.toType<int>());
@@ -98,10 +98,12 @@ void AutomationStepEventsConnector::paint(Graphics &g)
 {
     if (this->realBounds.getWidth() > STEP_EVENT_POINT_OFFSET)
     {
-        g.setColour(Colours::white.withAlpha(0.4f));
+        g.setColour(this->anyAliveChild()->getEditor()->getEventColour());
         const float left = this->realBounds.getX() - float(this->getX());
         g.drawHorizontalLine(0, left, this->realBounds.getWidth());
+#if STEP_EVENT_THICK_LINES
         g.drawHorizontalLine(1, left, this->realBounds.getWidth() - 1.f);
+#endif
     }
 }
 
@@ -183,5 +185,6 @@ void AutomationStepEventsConnector::applyCursorForEvent(const MouseEvent &e)
 
 AutomationStepEventComponent *AutomationStepEventsConnector::anyAliveChild() const
 {
+    jassert(this->component1 || this->component2);
     return (this->component1 ? this->component1 : this->component2);
 }

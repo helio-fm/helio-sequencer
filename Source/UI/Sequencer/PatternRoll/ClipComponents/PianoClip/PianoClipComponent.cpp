@@ -116,14 +116,13 @@ void PianoClipComponent::onChangeTrackProperties(MidiTrack *const track)
 {
     if (track->getSequence() != this->sequence) { return; }
 
-    this->setVisible(false);
+    //this->setVisible(false);
+    //for (const auto &e : this->componentsMap)
+    //{
+    //    e.second->updateColour();
+    //}
+    //this->setVisible(true);
 
-    for (const auto &e : this->componentsMap)
-    {
-        e.second->updateColour();
-    }
-
-    this->setVisible(true);
     this->repaint();
 }
 

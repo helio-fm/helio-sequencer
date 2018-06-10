@@ -44,6 +44,8 @@ public:
     PatternRoll &getRoll() const noexcept;
 
     void updateColours() override;
+    inline const Colour &getEventColour() const noexcept
+    { return this->eventColour; }
 
     //===------------------------------------------------------------------===//
     // MidiEventComponent
@@ -88,6 +90,7 @@ protected:
 
     Colour headColour;
     Colour fillColour;
+    Colour eventColour;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(ClipComponent)
 };

@@ -28,7 +28,7 @@ public:
         dx(0.f),
         dw(0.f)
     {
-        this->updateColour();
+        //this->updateColour();
         this->setInterceptsMouseClicks(false, false);
         this->setMouseClickGrabsKeyboardFocus(false);
         this->setPaintingIsUnclipped(true);
@@ -40,12 +40,12 @@ public:
     inline float getVelocity() const noexcept    { return this->note.getVelocity(); }
     inline const Note &getNote() const noexcept  { return this->note; }
 
-    inline void updateColour()
-    {
-        this->colour = this->note.getTrackColour().
-            interpolatedWith(Colours::white, .35f).
-            withAlpha(.55f);
-    }
+    //inline void updateColour()
+    //{
+    //    this->colour = this->note.getTrackColour().
+    //        interpolatedWith(Colours::white, .35f).
+    //        withAlpha(.55f);
+    //}
 
     void setRealBounds(float x, int y, float w, int h)
     {
@@ -56,15 +56,15 @@ public:
     
     void paint(Graphics &g) override
     {
-        g.setColour(this->colour);
+        // will just use a colour set by its parent:
+        //g.setColour(this->colour);
         g.drawHorizontalLine(0, this->dx, float(this->getWidth()) - this->dw);
     }
 
 private:
 
     const Note &note;
-    
-    Colour colour;
+    //Colour colour;
 
     float dx;
     float dw;

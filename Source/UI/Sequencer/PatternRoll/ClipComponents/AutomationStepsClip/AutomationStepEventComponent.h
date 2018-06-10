@@ -22,9 +22,10 @@
 class AutomationStepEventsConnector;
 class AutomationStepsClipComponent;
 
-#define STEP_EVENT_POINT_OFFSET (3.f)
+#define STEP_EVENT_POINT_OFFSET (2.5f)
 #define STEP_EVENT_MIN_LENGTH_IN_BEATS (0.25f)
-#define STEP_EVENT_MARGIN (6.f)
+#define STEP_EVENT_MARGIN (8.f)
+#define STEP_EVENT_THICK_LINES 0
 
 class AutomationStepEventComponent final : public Component
 {
