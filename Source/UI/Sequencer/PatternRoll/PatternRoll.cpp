@@ -715,7 +715,7 @@ Image PatternRoll::renderRowsPattern(const HelioTheme &theme, int height)
     g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderFill));
     g.fillRect(patternImage.getBounds().withHeight(PATTERN_ROLL_TRACK_HEADER_HEIGHT));
 
-    g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderBorderLight));
+    g.setColour(theme.findColour(ColourIDs::Roll::trackHeaderBorder));
     g.drawHorizontalLine(0, 0.f, float(width));
     g.drawHorizontalLine(PATTERN_ROLL_TRACK_HEADER_HEIGHT - 1, 0.f, float(width));
 
