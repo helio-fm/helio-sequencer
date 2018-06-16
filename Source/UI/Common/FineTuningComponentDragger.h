@@ -23,7 +23,6 @@ public:
 
     enum Mode
     {
-        DragXY,
         DragOnlyX,
         DragOnlyY,
         AutoSelect,
@@ -45,7 +44,7 @@ public:
 
 private:
 
-    Mode dragMode = DragXY;
+    Mode dragMode = AutoSelect;
 
     double valueOnMouseDown = 0.0;
     double valueWhenLastDragged = 0.0;

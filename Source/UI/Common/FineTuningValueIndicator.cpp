@@ -73,7 +73,7 @@ void FineTuningValueIndicator::resized()
     //[UserPreResize] Add your own custom resize code here..
     //[/UserPreResize]
 
-    valueLabel->setBounds ((getWidth() / 2) - ((getWidth() - 8) / 2), getHeight() - 4 - 24, getWidth() - 8, 24);
+    valueLabel->setBounds ((getWidth() / 2) - ((getWidth() - 8) / 2), getHeight() - 2 - 24, getWidth() - 8, 24);
     //[UserResized] Add your own custom resize handling here..
     //[/UserResized]
 }
@@ -111,7 +111,7 @@ BEGIN_JUCER_METADATA
                  fixedSize="1" initialWidth="64" initialHeight="64">
   <BACKGROUND backgroundColour="0"/>
   <LABEL name="" id="546fff7dc132314d" memberName="valueLabel" virtualName=""
-         explicitFocusOrder="0" pos="0Cc 4Rr 8M 24" labelText="0.0" editableSingleClick="0"
+         explicitFocusOrder="0" pos="0Cc 2Rr 8M 24" labelText="0.0" editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
          fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
          bold="0" italic="0" justification="36"/>

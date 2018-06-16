@@ -169,7 +169,7 @@ void AutomationCurveEventComponent::updateHelper()
         const Point<int> linePos(this->connector->getPosition());
         const Point<float> lineCentre(this->connector->getCentrePoint());
         Rectangle<int> bounds(linePos.getX() + int(lineCentre.getX()) - int(d / 2),
-            linePos.getY() + int(lineCentre.getY()) - int(d / 2) + 1, int(d), int(d));
+            linePos.getY() + int(lineCentre.getY() + 0.5f - (d / 2.f)), int(d), int(d));
         this->helper->setBounds(bounds);
     }
 }

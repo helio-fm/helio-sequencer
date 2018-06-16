@@ -23,7 +23,7 @@ class HelioCallout;
 #define SHORT_FADE_TIME(component) (static_cast<HelioTheme &>((component)->getLookAndFeel()).getShortAnimationLength());
 #define LONG_FADE_TIME(component) (static_cast<HelioTheme &>((component)->getLookAndFeel()).getLongAnimationLength());
 
-class HelioTheme : public LookAndFeel_V4
+class HelioTheme final : public LookAndFeel_V4
 {
 public:
 
@@ -112,19 +112,13 @@ public:
         bool isMouseOver, bool isMouseDown) override;
 
     //===------------------------------------------------------------------===//
-    // Menus
+    // Sliders
     //===------------------------------------------------------------------===//
 
-    Font getPopupMenuFont() override;
-    void drawPopupMenuBackground(Graphics &g, int width, int height) override;
-    void drawPopupMenuItem(Graphics&, const Rectangle<int>& area,
-                           bool isSeparator, bool isActive, bool isHighlighted,
-                           bool isTicked, bool hasSubMenu,
-                           const String &text,
-                           const String &shortcutKeyText,
-                           const Drawable *icon,
-                           const Colour *textColour) override;
-    
+    void drawRotarySlider(Graphics&, int x, int y, int width, int height,
+        float sliderPosProportional, float rotaryStartAngle,
+        float rotaryEndAngle, Slider&) override;
+        
     //===------------------------------------------------------------------===//
     // Window
     //===------------------------------------------------------------------===//

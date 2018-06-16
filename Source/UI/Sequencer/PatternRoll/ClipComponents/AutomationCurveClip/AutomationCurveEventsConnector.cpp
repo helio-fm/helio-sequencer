@@ -68,8 +68,8 @@ Point<float> AutomationCurveEventsConnector::getCentrePoint() const
     const auto c1 = this->component1->getBounds().getCentre();
     const auto c2 = this->component2->getBounds().getCentre();
     const auto curve = this->component1->getEvent().getCurvature();
-    const auto y1 = jmin(c1.getY(), c2.getY()) + 2;
-    const auto y2 = jmax(c1.getY(), c2.getY()) - 2;
+    const auto y1 = jmin(c1.getY(), c2.getY());
+    const auto y2 = jmax(c1.getY(), c2.getY());
     return { (c2.getX() - c1.getX()) / 2.f, y1 + (y2 - y1) * (1.f - curve) };
 }
 

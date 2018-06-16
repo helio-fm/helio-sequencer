@@ -61,12 +61,11 @@ void FineTuningComponentDragger::dragComponent(Component *const component, const
         // Once having enough data to guess, try to auto-detect dragging mode:
         if (this->dragMode == AutoSelect && (absDiffX > 1.0 || absDiffY > 1.0))
         {
-            this->dragMode = (absDiffX - absDiffY) > 1.0 ? DragOnlyX :
-                ((absDiffY - absDiffX) > 1.0 ? DragOnlyY : DragXY);
+            this->dragMode = (absDiffX - absDiffY) > 1.0 ? DragOnlyX : DragOnlyY;
         }
 
         // Adjust X position (simple linear drag)
-        if ((this->dragMode == DragOnlyX || this->dragMode == DragXY) && speedX != 0.0)
+        if ((this->dragMode == DragOnlyX) && speedX != 0.0)
         {
             Rectangle<int> bounds(component->getBounds());
             const auto shift = e.getEventRelativeTo(component).getPosition() - this->mouseDownWithinTarget;
@@ -74,7 +73,7 @@ void FineTuningComponentDragger::dragComponent(Component *const component, const
         }
 
         // Adjust Y position (velocity-based drag)
-        if ((this->dragMode == DragOnlyY || this->dragMode == DragXY) && speedY != 0.0)
+        if ((this->dragMode == DragOnlyY) && speedY != 0.0)
         {
             speedY = -DRAG_SPEED_SENSIVITY * (1.0 + std::sin(MathConstants<double>::pi *
                 (1.5 + jmin(0.5, jmax(0.0, (speedY - DRAG_SPEED_THRESHOLD)) / DRAG_MAX_SPEED))));
