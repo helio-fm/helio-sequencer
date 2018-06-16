@@ -58,33 +58,65 @@ void IntroSettingsWrapper::paint (Graphics& g)
     {
     //[/UserPrePaint]
 
-    g.setGradientFill (ColourGradient (Colour (0x35000000),
-                                       static_cast<float> ((getWidth() / 2)), static_cast<float> (getHeight()),
-                                       Colour (0x00000000),
-                                       0.0f, static_cast<float> (getHeight()),
+    {
+        int x = 0, y = getHeight() - 2 - 1, width = getWidth() - 0, height = 1;
+        Colour fillColour1 = Colour (0x35000000), fillColour2 = Colour (0x00000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       static_cast<float> ((getWidth() / 2)) - 0.0f + x,
+                                       static_cast<float> (getHeight()) - static_cast<float> (getHeight() - 2 - 1) + y,
+                                       fillColour2,
+                                       0.0f - 0.0f + x,
+                                       static_cast<float> (getHeight()) - static_cast<float> (getHeight() - 2 - 1) + y,
                                        true));
-    g.fillRect (0, getHeight() - 2 - 1, getWidth() - 0, 1);
+        g.fillRect (x, y, width, height);
+    }
 
-    g.setGradientFill (ColourGradient (Colour (0x15ffffff),
-                                       static_cast<float> ((getWidth() / 2)), static_cast<float> (getHeight()),
-                                       Colour (0x00ffffff),
-                                       0.0f, static_cast<float> (getHeight()),
+    {
+        int x = 0, y = getHeight() - 1 - 1, width = getWidth() - 0, height = 1;
+        Colour fillColour1 = Colour (0x15ffffff), fillColour2 = Colour (0x00ffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       static_cast<float> ((getWidth() / 2)) - 0.0f + x,
+                                       static_cast<float> (getHeight()) - static_cast<float> (getHeight() - 1 - 1) + y,
+                                       fillColour2,
+                                       0.0f - 0.0f + x,
+                                       static_cast<float> (getHeight()) - static_cast<float> (getHeight() - 1 - 1) + y,
                                        true));
-    g.fillRect (0, getHeight() - 1 - 1, getWidth() - 0, 1);
+        g.fillRect (x, y, width, height);
+    }
 
-    g.setGradientFill (ColourGradient (Colour (0x35000000),
-                                       static_cast<float> ((getWidth() / 2)), 0.0f,
-                                       Colour (0x00000000),
-                                       0.0f, 0.0f,
+    {
+        int x = 0, y = 1, width = getWidth() - 0, height = 1;
+        Colour fillColour1 = Colour (0x35000000), fillColour2 = Colour (0x00000000);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       static_cast<float> ((getWidth() / 2)) - 0.0f + x,
+                                       0.0f - 1.0f + y,
+                                       fillColour2,
+                                       0.0f - 0.0f + x,
+                                       0.0f - 1.0f + y,
                                        true));
-    g.fillRect (0, 1, getWidth() - 0, 1);
+        g.fillRect (x, y, width, height);
+    }
 
-    g.setGradientFill (ColourGradient (Colour (0x15ffffff),
-                                       static_cast<float> ((getWidth() / 2)), 0.0f,
-                                       Colour (0x00ffffff),
-                                       0.0f, 0.0f,
+    {
+        int x = 0, y = 2, width = getWidth() - 0, height = 1;
+        Colour fillColour1 = Colour (0x15ffffff), fillColour2 = Colour (0x00ffffff);
+        //[UserPaintCustomArguments] Customize the painting arguments here..
+        //[/UserPaintCustomArguments]
+        g.setGradientFill (ColourGradient (fillColour1,
+                                       static_cast<float> ((getWidth() / 2)) - 0.0f + x,
+                                       0.0f - 2.0f + y,
+                                       fillColour2,
+                                       0.0f - 0.0f + x,
+                                       0.0f - 2.0f + y,
                                        true));
-    g.fillRect (0, 2, getWidth() - 0, 1);
+        g.fillRect (x, y, width, height);
+    }
 
     //[UserPaint] Add your own custom painting code here..
     }
@@ -136,7 +168,7 @@ void IntroSettingsWrapper::showNonOwned(Component *targetComponent)
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="IntroSettingsWrapper" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="IntroSettingsWrapper" template="../../../Template"
                  componentName="" parentClasses="public Component" constructorParams=""
                  variableInitialisers="hasPreviousTarget(false)" snapPixels="8"
                  snapActive="1" snapShown="1" overlayOpacity="0.330" fixedSize="1"

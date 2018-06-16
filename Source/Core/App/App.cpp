@@ -217,10 +217,12 @@ String App::getHumanReadableDate(const Time &date)
 void App::recreateLayout()
 {
     this->window->dismissLayoutComponent();
+
     if (TreeItem *root = this->workspace->getTreeRoot())
     {
         root->recreateSubtreePages();
     }
+
     this->window->createLayoutComponent();
 }
 
@@ -249,12 +251,12 @@ void App::initialise(const String &commandLine)
         
         Logger::setCurrentLogger(&this->logger);
         Logger::writeToLog("Helio v" + App::getAppReadableVersion());
-        
+
+        this->config = new class Config();
+
         this->theme = new HelioTheme();
         this->theme->initResources();
         LookAndFeel::setDefaultLookAndFeel(this->theme);
-
-        this->config = new class Config();
     
         // TODO: get rid of singletons someday
         using namespace Serialization;

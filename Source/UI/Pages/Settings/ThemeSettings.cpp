@@ -150,7 +150,7 @@ int ThemeSettings::getNumRows()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="ThemeSettings" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="ThemeSettings" template="../../../Template"
                  componentName="" parentClasses="public Component, public ListBoxModel, private ChangeListener"
                  constructorParams="" variableInitialisers="" snapPixels="8" snapActive="1"
                  snapShown="1" overlayOpacity="0.330" fixedSize="1" initialWidth="600"

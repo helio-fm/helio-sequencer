@@ -29,8 +29,9 @@ SettingsPage::SettingsPage(Component *settingsList)
     addAndMakeVisible (background = new PanelBackgroundB());
     addAndMakeVisible (viewport = new Viewport (String()));
     viewport->setScrollBarsShown (true, false);
+    viewport->setScrollBarThickness (18);
 
-    addAndMakeVisible (shadow = new LightShadowRightwards());
+    addAndMakeVisible (shadow = new Component());
 
     //[UserPreSize]
     this->viewport->setViewedComponent(settingsList, false);
@@ -97,13 +98,13 @@ void SettingsPage::resized()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="SettingsPage" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="SettingsPage" template="../../../Template"
                  componentName="" parentClasses="public Component" constructorParams="Component *settingsList"
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
                  overlayOpacity="0.330" fixedSize="0" initialWidth="600" initialHeight="400">
   <BACKGROUND backgroundColour="ffffffff"/>
   <JUCERCOMP name="" id="e130bb0b9ed67f09" memberName="background" virtualName=""
-             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../Themes/PanelBackgroundB.cpp"
+             explicitFocusOrder="0" pos="0 0 0M 0M" sourceFile="../../Themes/PanelBackgroundB.cpp"
              constructorParams=""/>
   <VIEWPORT name="" id="1df16503f554b532" memberName="viewport" virtualName=""
             explicitFocusOrder="0" pos="20 20 40M 40M" vscroll="1" hscroll="0"

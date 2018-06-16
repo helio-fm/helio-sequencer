@@ -22,14 +22,13 @@
 //[/Headers]
 
 
-class ThemeSettings  : public Component,
-                       public ListBoxModel,
-                       private ChangeListener
+class ThemeSettings final : public Component,
+                            public ListBoxModel,
+                            private ChangeListener
 {
 public:
 
-    ThemeSettings ();
-
+    ThemeSettings();
     ~ThemeSettings();
 
     //[UserMethods]

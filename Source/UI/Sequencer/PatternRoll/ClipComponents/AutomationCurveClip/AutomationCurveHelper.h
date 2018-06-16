@@ -17,38 +17,28 @@
 
 #pragma once
 
-//[Headers]
 #include "AutomationEvent.h"
 #include "FineTuningComponentDragger.h"
 #include "FineTuningValueIndicator.h"
 #include "ComponentFader.h"
 
 class AutomationCurveClipComponent;
-//[/Headers]
-
 
 class AutomationCurveHelper final : public Component
 {
 public:
 
     AutomationCurveHelper(const AutomationEvent &event, const AutomationCurveClipComponent &editor, Component *target1, Component *target2);
-    ~AutomationCurveHelper();
 
-    //[UserMethods]
     float getCurvature() const;
-    //[/UserMethods]
 
-    void paint (Graphics& g) override;
-    void resized() override;
-    bool hitTest (int x, int y) override;
-    void mouseDown (const MouseEvent& e) override;
-    void mouseDrag (const MouseEvent& e) override;
-    void mouseUp (const MouseEvent& e) override;
-
+    void paint(Graphics &g) override;
+    bool hitTest(int x, int y) override;
+    void mouseDown(const MouseEvent &e) override;
+    void mouseDrag(const MouseEvent &e) override;
+    void mouseUp(const MouseEvent &e) override;
 
 private:
-
-    //[UserVariables]
 
     const AutomationEvent &event;
     const AutomationCurveClipComponent &editor;
@@ -63,9 +53,6 @@ private:
 
     SafePointer<Component> component1;
     SafePointer<Component> component2;
-
-    //[/UserVariables]
-
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AutomationCurveHelper)
 };

@@ -164,7 +164,7 @@ void OpenGLSettings::updateButtons()
 /*
 BEGIN_JUCER_METADATA
 
-<JUCER_COMPONENT documentType="Component" className="OpenGLSettings" template="../../Template"
+<JUCER_COMPONENT documentType="Component" className="OpenGLSettings" template="../../../Template"
                  componentName="" parentClasses="public Component" constructorParams=""
                  variableInitialisers="" snapPixels="8" snapActive="1" snapShown="1"
                  overlayOpacity="0.330" fixedSize="1" initialWidth="600" initialHeight="64">

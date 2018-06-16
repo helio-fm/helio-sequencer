@@ -22,13 +22,12 @@ class ShapeComponent;
 //[/Headers]
 
 
-class AuthSettings  : public Component,
-                               public Label::Listener
+class AuthSettings final : public Component,
+                           public Label::Listener
 {
 public:
 
-    AuthSettings ();
-
+    AuthSettings();
     ~AuthSettings();
 
     //[UserMethods]

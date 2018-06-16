@@ -21,12 +21,11 @@
 //[/Headers]
 
 
-class IntroSettingsWrapper  : public Component
+class IntroSettingsWrapper final : public Component
 {
 public:
 
-    IntroSettingsWrapper ();
-
+    IntroSettingsWrapper();
     ~IntroSettingsWrapper();
 
     //[UserMethods]

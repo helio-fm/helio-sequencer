@@ -20,15 +20,14 @@
 //[Headers]
 //[/Headers]
 
-#include "../Themes/PanelBackgroundB.h"
+#include "../../Themes/PanelBackgroundB.h"
 #include "../Themes/LightShadowRightwards.h"
 
-class SettingsPage  : public Component
+class SettingsPage final : public Component
 {
 public:
 
-    SettingsPage (Component *settingsList);
-
+    SettingsPage(Component *settingsList);
     ~SettingsPage();
 
     //[UserMethods]
@@ -45,7 +44,7 @@ private:
 
     ScopedPointer<PanelBackgroundB> background;
     ScopedPointer<Viewport> viewport;
-    ScopedPointer<LightShadowRightwards> shadow;
+    ScopedPointer<Component> shadow;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SettingsPage)
 };

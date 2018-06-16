@@ -22,15 +22,14 @@
 
 #include "../../Themes/SeparatorHorizontal.h"
 
-class TranslationSettings  : public Component,
-                             public ListBoxModel,
-                             private ChangeListener,
-                             public Button::Listener
+class TranslationSettings final : public Component,
+                                  public ListBoxModel,
+                                  private ChangeListener,
+                                  public Button::Listener
 {
 public:
 
-    TranslationSettings ();
-
+    TranslationSettings();
     ~TranslationSettings();
 
     //[UserMethods]

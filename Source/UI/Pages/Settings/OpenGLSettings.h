@@ -21,13 +21,12 @@
 //[/Headers]
 
 
-class OpenGLSettings  : public Component,
-                        public Button::Listener
+class OpenGLSettings final : public Component,
+                             public Button::Listener
 {
 public:
 
-    OpenGLSettings ();
-
+    OpenGLSettings();
     ~OpenGLSettings();
 
     //[UserMethods]

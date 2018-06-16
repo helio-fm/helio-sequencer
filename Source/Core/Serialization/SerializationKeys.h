@@ -62,9 +62,6 @@ namespace Serialization
 
         static const Identifier machineID = "deviceId";
         static const Identifier globalConfig = "config";
-        static const Identifier openGLState = "openGL";
-        static const Identifier enabledState = "enabled";
-        static const Identifier disabledState = "disabled";
 
         static const Identifier recentFiles = "recentFiles";
         static const Identifier recentFileItem = "file";
@@ -184,10 +181,15 @@ namespace Serialization
         static const Identifier activeColourScheme = "activeColourScheme";
         static const Identifier activeHotkeyScheme = "activeHotkeyScheme";
         static const Identifier currentLocale = "currentLocale";
+
         static const Identifier lastShownPageId = "lastShownPageId";
         static const Identifier lastUsedScale = "lastUsedScale";
         static const Identifier lastUsedLogin = "lastUsedLogin";
         static const Identifier lastUpdatesInfo = "lastUpdatesInfo";
+
+        static const Identifier openGLState = "openGL";
+        static const Identifier enabledState = "enabled";
+        static const Identifier disabledState = "disabled";
     } // namespace Config
 
     // Available types of dynamically fetched resources/configs

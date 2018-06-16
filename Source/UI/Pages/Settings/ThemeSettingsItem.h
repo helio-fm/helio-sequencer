@@ -26,12 +26,11 @@ class HelioTheme;
 //[/Headers]
 
 
-class ThemeSettingsItem  : public DraggingListBoxComponent
+class ThemeSettingsItem final : public DraggingListBoxComponent
 {
 public:
 
-    ThemeSettingsItem (ListBox &parentListBox);
-
+    ThemeSettingsItem(ListBox &parentListBox);
     ~ThemeSettingsItem();
 
     //[UserMethods]

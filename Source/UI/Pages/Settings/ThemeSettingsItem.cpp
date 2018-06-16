@@ -365,8 +365,8 @@ BEGIN_JUCER_METADATA
                  fixedSize="1" initialWidth="400" initialHeight="40">
   <BACKGROUND backgroundColour="0">
     <RECT pos="41 4 207 10M" fill="solid: ff2a50a5" hasStroke="0"/>
-    <ROUNDRECT pos="40 3 43M 8M" cornerSize="6" fill="solid: 0" hasStroke="1"
-               stroke="1, mitered, butt" strokeColour="solid: ff234aff"/>
+    <ROUNDRECT pos="40 3 43M 8M" cornerSize="6.00000000000000000000" fill="solid: 0"
+               hasStroke="1" stroke="1, mitered, butt" strokeColour="solid: ff234aff"/>
     <RECT pos="248 4 20 10M" fill="linear: 248 0, 268 0, 0=15000000, 1=0"
           hasStroke="0"/>
     <RECT pos="248 4 12 10M" fill="linear: 248 0, 260 0, 0=15000000, 1=0"
@@ -377,7 +377,8 @@ BEGIN_JUCER_METADATA
   <LABEL name="" id="c261305e2de1ebf2" memberName="schemeNameLabel" virtualName=""
          explicitFocusOrder="0" pos="67 2 174 6M" labelText="..." editableSingleClick="0"
          editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default serif font"
-         fontsize="18" kerning="0" bold="0" italic="0" justification="33"/>
+         fontsize="18.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="33"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

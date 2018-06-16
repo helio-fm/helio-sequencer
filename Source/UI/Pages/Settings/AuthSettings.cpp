@@ -162,22 +162,24 @@ BEGIN_JUCER_METADATA
          virtualName="" explicitFocusOrder="0" pos="58.5Cc -28Cc 317 40"
          posRelativeY="e96b77baef792d3a" labelText="..." editableSingleClick="1"
          editableDoubleClick="1" focusDiscardsChanges="0" fontname="Default serif font"
-         fontsize="37" kerning="0" bold="0" italic="0" justification="33"/>
+         fontsize="37.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="33"/>
   <LABEL name="" id="cf32360d33639f7f" memberName="authorLabel" virtualName=""
          explicitFocusOrder="0" pos="-163.5Cc -37Cc 113 22" posRelativeY="e96b77baef792d3a"
          labelText="dialog::auth::email" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
-         kerning="0" bold="0" italic="0" justification="34"/>
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="34"/>
   <LABEL name="" id="fd5279a09ac6b052" memberName="passwordEditor" virtualName=""
          explicitFocusOrder="0" pos="58.5Cc 28Cc 317 40" posRelativeY="e96b77baef792d3a"
          labelText="dialog::auth::defaultlogin::mobile" editableSingleClick="1"
          editableDoubleClick="1" focusDiscardsChanges="0" fontname="Default serif font"
-         fontsize="37" kerning="0" bold="0" italic="0" justification="33"/>
+         fontsize="37.00000000000000000000" kerning="0.00000000000000000000"
+         bold="0" italic="0" justification="33"/>
   <LABEL name="" id="c134a00c2bb2de66" memberName="passwordLabel" virtualName=""
          explicitFocusOrder="0" pos="-163.5Cc 19Cc 113 22" posRelativeY="e96b77baef792d3a"
          labelText="dialog::auth::password" editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21"
-         kerning="0" bold="0" italic="0" justification="34"/>
+         focusDiscardsChanges="0" fontname="Default serif font" fontsize="21.00000000000000000000"
+         kerning="0.00000000000000000000" bold="0" italic="0" justification="34"/>
 </JUCER_COMPONENT>
 
 END_JUCER_METADATA

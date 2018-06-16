@@ -23,12 +23,11 @@ class AudioCore;
 //[/Headers]
 
 
-class AudioSettings  : public Component
+class AudioSettings final : public Component
 {
 public:
 
-    AudioSettings (AudioCore &core);
-
+    AudioSettings(AudioCore &core);
     ~AudioSettings();
 
     //[UserMethods]

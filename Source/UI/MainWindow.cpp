@@ -105,7 +105,7 @@ MainWindow::MainWindow() :
         ht->initColours(ColourSchemesManager::getInstance().getCurrentScheme());
     }
 
-    const String openGLState = Config::get(Serialization::Core::openGLState);
+    const String openGLState = Config::get(Serialization::Config::openGLState);
 
 #if JUCE_MAC || JUCE_ANDROID
     const bool shouldEnableOpenGLByDefault = openGLState.isEmpty();
@@ -113,7 +113,7 @@ MainWindow::MainWindow() :
     const bool shouldEnableOpenGLByDefault = false;
 #endif
 
-    if ((openGLState == Serialization::Core::enabledState.toString()) || shouldEnableOpenGLByDefault)
+    if ((openGLState == Serialization::Config::enabledState.toString()) || shouldEnableOpenGLByDefault)
     {
         this->setOpenGLRendererEnabled(true);
     }
@@ -225,12 +225,12 @@ void MainWindow::setOpenGLRendererEnabled(bool shouldBeEnabled)
     if (shouldBeEnabled && (kOpenGLContext == nullptr))
     {
         this->attachOpenGLContext();
-        Config::set(Serialization::Core::openGLState, Serialization::Core::enabledState.toString());
+        Config::set(Serialization::Config::openGLState, Serialization::Config::enabledState.toString());
     }
     else if (!shouldBeEnabled && (kOpenGLContext != nullptr))
     {
         this->detachOpenGLContext();
-        Config::set(Serialization::Core::openGLState, Serialization::Core::disabledState.toString());
+        Config::set(Serialization::Config::openGLState, Serialization::Config::disabledState.toString());
     }
 }
 

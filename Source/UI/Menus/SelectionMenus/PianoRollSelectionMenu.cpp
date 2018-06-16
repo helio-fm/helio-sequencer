@@ -84,7 +84,7 @@ MenuPanel::Menu PianoRollSelectionMenu::createRefactoringPanel()
     }));
 
     menu.add(MenuItem::item(Icons::cut, CommandIDs::NewTrackFromSelection,
-        TRANS("menu::selection::totrack"))->closesMenu());
+        TRANS("menu::selection::notes::totrack"))->closesMenu());
 
     // TODO
     // Cleanup
