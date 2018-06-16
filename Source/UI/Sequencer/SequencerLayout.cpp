@@ -112,6 +112,8 @@ public:
         // Disabling inactive prevents it from receiving keyboard events:
         this->patternRoll->setEnabled(patternMode);
         this->pianoRoll->setEnabled(!patternMode);
+        this->patternRoll->setVisible(true);
+        this->pianoRoll->setVisible(true);
         this->patternViewport->setVisible(true);
         this->pianoViewport->setVisible(true);
         this->resized();
@@ -155,15 +157,15 @@ public:
 #if VERTICAL_ROLLS_LAYOUT
         const float rollViewportHeight = float(r.getHeight() - scrollerHeight + 1);
         const Rectangle<int> rollSize(r.withBottom(r.getBottom() - scrollerHeight));
-        const int viewport1Pos = int(this->animationPosition * rollViewportHeight);
-        const int viewport2Pos = int(this->animationPosition * rollViewportHeight - rollViewportHeight);
+        const int viewport1Pos = int(-this->animationPosition * rollViewportHeight);
+        const int viewport2Pos = int(-this->animationPosition * rollViewportHeight + rollViewportHeight);
         this->pianoViewport->setBounds(rollSize.withY(viewport1Pos));
         this->patternViewport->setBounds(rollSize.withY(viewport2Pos));
 #else
         const float rollViewportWidth = float(r.getWidth());
         const Rectangle<int> rollSize(r.withBottom(r.getBottom() - scrollerHeight));
         const int viewport1Pos = int(this->animationPosition * rollViewportWidth);
-        const int viewport2Pos = int(this->animationPosition * rollViewportWidth - rollViewportWidth);
+        const int viewport2Pos = int(this->animationPosition * rollViewportWidth + rollViewportWidth);
         this->pianoViewport->setBounds(rollSize.withX(viewport1Pos));
         this->patternViewport->setBounds(rollSize.withX(viewport2Pos));
 #endif
@@ -176,14 +178,14 @@ public:
 
 #if VERTICAL_ROLLS_LAYOUT
         const float rollViewportHeight = float(r.getHeight() - scrollerHeight + 1);
-        const int viewport1Pos = int(this->animationPosition * rollViewportHeight);
-        const int viewport2Pos = int(this->animationPosition * rollViewportHeight - rollViewportHeight);
+        const int viewport1Pos = int(-this->animationPosition * rollViewportHeight);
+        const int viewport2Pos = int(-this->animationPosition * rollViewportHeight + rollViewportHeight);
         this->pianoViewport->setTopLeftPosition(0, viewport1Pos);
         this->patternViewport->setTopLeftPosition(0, viewport2Pos);
 #else
         const float rollViewportWidth = float(r.getWidth());
         const int viewport1Pos = int(this->animationPosition * rollViewportWidth);
-        const int viewport2Pos = int(this->animationPosition * rollViewportWidth - rollViewportWidth);
+        const int viewport2Pos = int(this->animationPosition * rollViewportWidth + rollViewportWidth);
         this->pianoViewport->setTopLeftPosition(viewport1Pos, 0);
         this->patternViewport->setTopLeftPosition(viewport2Pos, 0);
 #endif
@@ -203,9 +205,15 @@ private:
             this->stopTimer();
 
             if (this->isPatternMode())
-            { this->pianoViewport->setVisible(false); }
+            { 
+                this->pianoRoll->setVisible(false);
+                this->pianoViewport->setVisible(false);
+            }
             else
-            { this->patternViewport->setVisible(false); }
+            {
+                this->patternRoll->setVisible(false);
+                this->patternViewport->setVisible(false);
+            }
 
             // Push to either 0 or 1:
             this->animationPosition = jlimit(0.f, 1.f,
