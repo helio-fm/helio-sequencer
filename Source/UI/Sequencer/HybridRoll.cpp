@@ -1134,9 +1134,6 @@ void HybridRoll::handleCommandMessage(int commandId)
     case CommandIDs::ZoomOut:
         this->zoomOutImpulse();
         break;
-    case CommandIDs::SelectAllEvents:
-        this->selectAll();
-        break;
     case CommandIDs::StartDragViewport:
         this->header->setSoundProbeMode(true);
         //if (!this->project.getEditMode().isMode(HybridRollEditMode::dragMode))

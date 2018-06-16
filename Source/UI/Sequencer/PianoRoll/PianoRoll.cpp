@@ -877,6 +877,9 @@ void PianoRoll::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {
+    case CommandIDs::SelectAllEvents:
+        this->selectAll();
+        break;
     case CommandIDs::RenameTrack:
         if (auto trackNode = dynamic_cast<MidiTrackTreeItem *>(this->project.findPrimaryActiveItem()))
         {
@@ -962,14 +965,14 @@ void PianoRoll::handleCommandMessage(int commandId)
     case CommandIDs::EditModePan:
         this->project.getEditMode().setMode(HybridRollEditMode::dragMode);
         break;
+    case CommandIDs::EditModeSelect:
+        this->project.getEditMode().setMode(HybridRollEditMode::selectionMode);
+        break;
     case CommandIDs::EditModeWipeSpace:
         this->project.getEditMode().setMode(HybridRollEditMode::wipeSpaceMode);
         break;
     case CommandIDs::EditModeInsertSpace:
         this->project.getEditMode().setMode(HybridRollEditMode::insertSpaceMode);
-        break;
-    case CommandIDs::EditModeSelect:
-        this->project.getEditMode().setMode(HybridRollEditMode::selectionMode);
         break;
     case CommandIDs::CreateArpeggiatorFromSelection:
         {

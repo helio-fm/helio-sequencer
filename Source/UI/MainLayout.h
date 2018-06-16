@@ -50,8 +50,7 @@ public:
     void hideSelectionMenu();
 
     // Posts command id recursively to all components that have non-empty command id
-    void broadcastCommandMessage(int commandId) const;
-    HotkeyScheme::Ptr getCurrentHotkeyScheme() const noexcept;
+    void broadcastCommandMessage(int commandId);
 
     //===------------------------------------------------------------------===//
     // UI

@@ -562,6 +562,9 @@ void PatternRoll::handleCommandMessage(int commandId)
     // TODO pattern roll-specific commands switch
     switch (commandId)
     {
+    case CommandIDs::SelectAllClips:
+        this->selectAll();
+        break;
     case CommandIDs::RenameTrack:
         if (auto *patternNode = dynamic_cast<PatternEditorTreeItem *>(this->project.findPrimaryActiveItem()))
         {
@@ -596,6 +599,20 @@ void PatternRoll::handleCommandMessage(int commandId)
     //case CommandIDs::BarShiftRight:
     //    PatternOperations::shiftBeatRelative(this->getLassoSelection(), 1.f);
     //    break;
+
+    case CommandIDs::EditModeDefault:
+        this->project.getEditMode().setMode(HybridRollEditMode::defaultMode);
+        break;
+    case CommandIDs::EditModeDraw:
+        this->project.getEditMode().setMode(HybridRollEditMode::drawMode);
+        break;
+    case CommandIDs::EditModePan:
+        this->project.getEditMode().setMode(HybridRollEditMode::dragMode);
+        break;
+    case CommandIDs::EditModeSelect:
+        this->project.getEditMode().setMode(HybridRollEditMode::selectionMode);
+        break;
+
     default:
         break;
     }

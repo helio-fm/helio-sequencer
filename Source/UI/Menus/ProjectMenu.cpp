@@ -250,30 +250,14 @@ void ProjectMenu::showMainMenu(AnimationType animationType)
 {
     MenuPanel::Menu menu;
 
-    menu.add(MenuItem::item(Icons::piano,
-        TRANS("menu::project::editor::linear"))->withAction([this]()
-        {
-            if (this->project.getLastShownTrack() == nullptr)
-            {
-                this->project.selectChildOfType<PianoTrackTreeItem>();
-            }
-            else
-            {
-                this->project.getLastShownTrack()->setSelected(true, true);
-            }
-        }));
+    menu.add(MenuItem::item(Icons::piano, CommandIDs::SwitchToEditMode,
+        TRANS("menu::project::editor::linear"))->closesMenu());
 
-    menu.add(MenuItem::item(Icons::patterns,
-        TRANS("menu::project::editor::pattern"))->withAction([this]()
-        {
-            this->project.selectChildOfType<PatternEditorTreeItem>();
-        }));
+    menu.add(MenuItem::item(Icons::patterns, CommandIDs::SwitchToArrangeMode,
+        TRANS("menu::project::editor::pattern"))->closesMenu());
 
-    menu.add(MenuItem::item(Icons::versionControl,
-        TRANS("menu::project::editor::vcs"))->withAction([this]()
-        {
-            this->project.selectChildOfType<VersionControlTreeItem>();
-        }));
+    menu.add(MenuItem::item(Icons::versionControl, CommandIDs::SwitchToVersioningMode,
+        TRANS("menu::project::editor::vcs"))->closesMenu());
 
     menu.add(MenuItem::item(Icons::create,
         TRANS("menu::project::additems"))->withSubmenu()->withAction([this]()

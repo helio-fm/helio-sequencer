@@ -29,6 +29,10 @@
 #include "RootTreeItem.h"
 #include "GenericTooltip.h"
 #include "MidiTrackTreeItem.h"
+#include "ProjectTreeItem.h"
+#include "PianoTrackTreeItem.h"
+#include "PatternEditorTreeItem.h"
+#include "VersionControlTreeItem.h"
 #include "InitScreen.h"
 #include "SequencerLayout.h"
 #include "ColourSchemesManager.h"
@@ -298,10 +302,52 @@ void MainLayout::modifierKeysChanged(const ModifierKeys &modifiers)
     // TODO do I need to handle this?
 }
 
+static ProjectTreeItem *findParentProjectOfSelectedNode()
+{
+    if (auto *active = TreeItem::getActiveItem<TreeItem>(App::Workspace().getTreeRoot()))
+    {
+        if (auto *projectItself = dynamic_cast<ProjectTreeItem *>(active))
+        {
+            return projectItself;
+        }
+        else if (auto *projectParent = active->findParentOfType<ProjectTreeItem>())
+        {
+            return projectParent;
+        }
+    }
+
+    return nullptr;
+}
+
 void MainLayout::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {
+    case CommandIDs::SwitchToEditMode:
+        if (auto *project = findParentProjectOfSelectedNode())
+        {
+            if (project->getLastShownTrack() == nullptr)
+            {
+                project->selectChildOfType<PianoTrackTreeItem>();
+            }
+            else
+            {
+                project->getLastShownTrack()->setSelected(true, true);
+            }
+        }
+        break;
+    case CommandIDs::SwitchToArrangeMode:
+        if (auto *project = findParentProjectOfSelectedNode())
+        {
+            project->selectChildOfType<PatternEditorTreeItem>();
+        }
+        break;
+    case CommandIDs::SwitchToVersioningMode:
+        if (auto *project = findParentProjectOfSelectedNode())
+        {
+            project->selectChildOfType<VersionControlTreeItem>();
+        }
+        break;
     case CommandIDs::ShowPreviousPage:
         App::Workspace().navigateBackwardIfPossible();
         break;
@@ -330,12 +376,8 @@ static void broadcastMessage(Component *root, int commandId)
     }
 }
 
-void MainLayout::broadcastCommandMessage(int commandId) const
+void MainLayout::broadcastCommandMessage(int commandId)
 {
+    this->postCommandMessage(commandId);
     broadcastMessage(this->currentContent.getComponent(), commandId);
-}
-
-HotkeyScheme::Ptr MainLayout::getCurrentHotkeyScheme() const noexcept
-{
-    return this->hotkeyScheme;
 }

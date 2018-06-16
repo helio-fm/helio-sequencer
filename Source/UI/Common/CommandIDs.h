@@ -68,10 +68,11 @@ namespace CommandIDs
         SelectTrackColour               = 0x1005,
         SelectTrackInstrument           = 0x1006,
         SelectAllEvents                 = 0x1007,
-        DuplicateTrackTo                = 0x1008,
-        NewTrackFromSelection           = 0x1009,
+        SelectAllClips                  = 0x1008,
+        DuplicateTrackTo                = 0x1009,
+        NewTrackFromSelection           = 0x100a,
 
-        SetTrackColour                  = 0x100a, // more ids reserved for colours
+        SetTrackColour                  = 0x100b, // more ids reserved for colours
         SetTrackInstrument              = 0x1100, // more ids reserved for instruments
         MoveTrackToProject              = 0x1500, // more ids reserved for projects
 
@@ -171,13 +172,16 @@ namespace CommandIDs
         SelectTimeSignature             = 0x3200, // more ids reserved for sub-items
 
         SwitchBetweenRolls              = 0x3300,
-        ShowPreviousPage                = 0x3301,
-        ShowNextPage                    = 0x3302,
-        ToggleShowHideConsole           = 0x3303,
-        ToggleShowHideCombo             = 0x3304,
+        SwitchToEditMode                = 0x3301,
+        SwitchToArrangeMode             = 0x3302,
+        SwitchToVersioningMode          = 0x3303,
+        ShowPreviousPage                = 0x3304,
+        ShowNextPage                    = 0x3305,
+        ToggleShowHideConsole           = 0x3306,
+        ToggleShowHideCombo             = 0x3307,
 
-        StartDragViewport               = 0x3305,
-        EndDragViewport                 = 0x3306,
+        StartDragViewport               = 0x3308,
+        EndDragViewport                 = 0x3309,
 
         SelectAudioDeviceType           = 0x3400,
         SelectAudioDevice               = 0x3500,

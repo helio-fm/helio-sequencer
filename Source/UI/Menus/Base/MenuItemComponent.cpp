@@ -26,10 +26,11 @@
 #include "MenuItemComponentMarker.h"
 #include "MenuPanel.h"
 #include "HelioTheme.h"
-#include "HotkeyScheme.h"
 #include "IconComponent.h"
-#include "MainLayout.h"
 #include "Icons.h"
+#include "HotkeyScheme.h"
+#include "HotkeySchemesManager.h"
+#include "MainLayout.h"
 #include "App.h"
 
 #define ICON_MARGIN 8
@@ -62,7 +63,7 @@ MenuItem::Ptr MenuItem::empty()
 inline static String findHotkeyText(int commandId)
 {
 #if HELIO_DESKTOP
-    return App::Layout().getCurrentHotkeyScheme()->findHotkeyDescription(commandId);
+    return HotkeySchemesManager::getInstance().getCurrentScheme()->findHotkeyDescription(commandId);
 #elif HELIO_MOBILE
     // Don't show any hotkeys on mobile devices
     return {};
