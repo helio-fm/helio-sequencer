@@ -111,6 +111,7 @@ public:
     void redo();
     void clearUndoHistory();
     UndoStack *getUndoStack() const noexcept;
+    void removeTrack(const MidiTrack &track);
 
     //===------------------------------------------------------------------===//
     // Accessors

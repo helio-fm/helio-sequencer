@@ -92,5 +92,5 @@ struct SequencerOperations final
 
 struct PatternOperations final
 {
-    static void deleteSelection(const Lasso &selection, bool shouldCheckpoint = true);
+    static void deleteSelection(const Lasso &selection, ProjectTreeItem &project, bool shouldCheckpoint = true);
 };

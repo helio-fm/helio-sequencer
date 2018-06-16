@@ -85,19 +85,8 @@ void MidiTrackMenu::handleCommandMessage(int commandId)
         case CommandIDs::DeleteTrack:
         {
             ProjectTreeItem *project = this->trackItem.getProject();
-            const String &layerId = this->trackItem.getSequence()->getTrackId();
-            
-            project->getUndoStack()->beginNewTransaction();
-            
-            if (dynamic_cast<PianoTrackTreeItem *>(&this->trackItem))
-            {
-                project->getUndoStack()->perform(new PianoTrackRemoveAction(*project, project, layerId));
-            }
-            else if (dynamic_cast<AutomationTrackTreeItem *>(&this->trackItem))
-            {
-                project->getUndoStack()->perform(new AutomationTrackRemoveAction(*project, project, layerId));
-            }
-            
+            project->checkpoint();
+            project->removeTrack(this->trackItem);
             this->dismiss();
             return;
         }

@@ -1901,7 +1901,7 @@ ScopedPointer<MidiTrackTreeItem> SequencerOperations::createPianoTrack(const Las
 
 // Pattern operations
 
-void PatternOperations::deleteSelection(const Lasso &selection, bool shouldCheckpoint /*= true*/)
+void PatternOperations::deleteSelection(const Lasso &selection, ProjectTreeItem &project, bool shouldCheckpoint /*= true*/)
 {
     if (selection.getNumSelected() == 0)
     {
@@ -1909,7 +1909,6 @@ void PatternOperations::deleteSelection(const Lasso &selection, bool shouldCheck
     }
 
     OwnedArray<Array<Clip>> selections;
-
     for (int i = 0; i < selection.getNumSelected(); ++i)
     {
         const Clip clip = selection.getItemAs<ClipComponent>(i)->getClip();
@@ -1948,13 +1947,22 @@ void PatternOperations::deleteSelection(const Lasso &selection, bool shouldCheck
             pattern->checkpoint();
         }
 
-        for (Clip &c : *selections.getUnchecked(i))
+        // Delete the entire track if all its clips have been selected:
+        if (pattern->size() == selections.getUnchecked(i)->size())
         {
+            project.removeTrack(*pattern->getTrack());
+        }
+        else
+        {
+            pattern->removeGroup(*selections.getUnchecked(i), true);
             // At least one clip should always remain:
-            if (pattern->size() > 1)
-            {
-                pattern->remove(c, true);
-            }
+            //for (Clip &c : *selections.getUnchecked(i))
+            //{
+            //    if (pattern->size() > 1)
+            //    {
+            //        pattern->remove(c, true);
+            //    }
+            //}
         }
     }
 }

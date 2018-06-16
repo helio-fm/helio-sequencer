@@ -281,7 +281,10 @@ void PianoProjectMap::reloadTrackMap()
     const auto &tracks = this->project.getTracks();
     for (const auto *track : tracks)
     {
-        this->loadTrack(track);
+        if (dynamic_cast<const PianoSequence *>(track->getSequence()))
+        {
+            this->loadTrack(track);
+        }
     }
 
     this->setVisible(true);

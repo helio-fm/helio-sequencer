@@ -26,6 +26,9 @@
 #include "VersionControlTreeItem.h"
 #include "VersionControl.h"
 
+#include "PianoTrackActions.h"
+#include "AutomationTrackActions.h"
+
 #include "Autosaver.h"
 #include "Document.h"
 #include "DocumentHelpers.h"
@@ -395,6 +398,20 @@ void ProjectTreeItem::redo()
 void ProjectTreeItem::clearUndoHistory()
 {
     this->getUndoStack()->clearUndoHistory();
+}
+
+void ProjectTreeItem::removeTrack(const MidiTrack &track)
+{
+    const String &trackId = track.getTrackId();
+
+    if (dynamic_cast<const PianoTrackTreeItem *>(&track))
+    {
+        this->getUndoStack()->perform(new PianoTrackRemoveAction(*this, this, trackId));
+    }
+    else if (dynamic_cast<const AutomationTrackTreeItem *>(&track))
+    {
+        this->getUndoStack()->perform(new AutomationTrackRemoveAction(*this, this, trackId));
+    }
 }
 
 //===----------------------------------------------------------------------===//
