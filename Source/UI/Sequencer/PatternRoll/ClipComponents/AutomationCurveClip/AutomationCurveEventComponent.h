@@ -19,6 +19,8 @@
 
 #include "AutomationEvent.h"
 #include "FineTuningComponentDragger.h"
+#include "FineTuningValueIndicator.h"
+#include "ComponentFader.h"
 
 class AutomationCurveEventsConnector;
 class AutomationCurveHelper;
@@ -38,7 +40,8 @@ public:
     void updateHelper();
     void setNextNeighbour(AutomationCurveEventComponent *next);
 
-    static int compareElements(const AutomationCurveEventComponent *first, const AutomationCurveEventComponent *second);
+    static int compareElements(const AutomationCurveEventComponent *first,
+        const AutomationCurveEventComponent *second);
 
     void paint (Graphics& g) override;
     bool hitTest (int x, int y) override;
@@ -50,8 +53,10 @@ private:
 
     void startDragging();
     bool isDragging() const;
-    bool getDraggingDelta(const MouseEvent &e, float &deltaBeat, float &deltaValue);
     AutomationEvent continueDragging(const float deltaBeat, const float deltaValue);
+    void getDraggingDeltas(const MouseEvent &e,
+        float &deltaBeat, float &deltaValue,
+        bool &beatChanged, bool &valueChanged);
     void endDragging();
 
     friend class AutomationCurveClipComponent;
@@ -59,8 +64,11 @@ private:
     const AutomationEvent &event;
     AutomationCurveClipComponent &editor;
 
-    FineTuningComponentDragger dragger;
     AutomationEvent anchor;
+    FineTuningComponentDragger dragger;
+
+    ScopedPointer<FineTuningValueIndicator> tuningIndicator;
+    ComponentFader fader;
 
     Point<int> clickOffset;
     bool draggingState;

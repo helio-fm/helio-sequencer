@@ -69,9 +69,7 @@ void AutomationCurveEventComponent::mouseDown(const MouseEvent &e)
     {
         this->event.getSequence()->checkpoint();
 
-        // TODO when started dragging Y, display some kind of a slider around this component
-
-        this->dragger.startDraggingComponent(this, e, this->event.getControllerValue(),
+       this->dragger.startDraggingComponent(this, e, this->event.getControllerValue(),
             0.f, 1.f, CURVE_INTERPOLATION_THRESHOLD);
 
         this->startDragging();
@@ -84,11 +82,20 @@ void AutomationCurveEventComponent::mouseDrag(const MouseEvent &e)
     {
         if (this->draggingState)
         {
-            float deltaValue = 0.f;
             float deltaBeat = 0.f;
-            const bool eventChanged = this->getDraggingDelta(e, deltaBeat, deltaValue);
+            float deltaValue = 0.f;
+            bool beatChanged = false;
+            bool valueChanged = false;
+            this->getDraggingDeltas(e, deltaBeat, deltaValue, beatChanged, valueChanged);
 
-            if (eventChanged)
+            if (valueChanged && this->tuningIndicator == nullptr)
+            {
+                this->tuningIndicator = new FineTuningValueIndicator(this->event.getControllerValue());
+                this->editor.getParentComponent()->addAndMakeVisible(this->tuningIndicator);
+                this->fader.fadeIn(this->tuningIndicator, 200);
+            }
+
+            if (beatChanged || valueChanged)
             {
                 this->setMouseCursor(MouseCursor::DraggingHandCursor);
                 AutomationSequence *autoLayer = static_cast<AutomationSequence *>(this->event.getSequence());
@@ -96,7 +103,13 @@ void AutomationCurveEventComponent::mouseDrag(const MouseEvent &e)
             }
             else
             {
-                this->editor.updateCurveComponent(this); // возвращаем на место активное событие
+                this->editor.updateCurveComponent(this); // update position anyway
+            }
+
+            if (this->tuningIndicator != nullptr)
+            {
+                this->tuningIndicator->setValue(this->event.getControllerValue());
+                this->tuningIndicator->repositionToTargetAt(this, this->editor.getPosition());
             }
         }
     }
@@ -109,11 +122,13 @@ void AutomationCurveEventComponent::mouseUp(const MouseEvent &e)
         if (this->draggingState)
         {
             this->setMouseCursor(MouseCursor::PointingHandCursor);
-
-            float deltaValue = 0.f;
-            float deltaBeat = 0.f;
-            this->getDraggingDelta(e, deltaBeat, deltaValue);
             this->editor.updateCurveComponent(this);
+
+            if (this->tuningIndicator != nullptr)
+            {
+                this->fader.fadeOut(this->tuningIndicator, 200);
+                this->tuningIndicator = nullptr;
+            }
 
             this->dragger.endDraggingComponent(this, e);
             this->endDragging();
@@ -136,7 +151,7 @@ void AutomationCurveEventComponent::recreateConnector()
 
 void AutomationCurveEventComponent::recreateHelper()
 {
-    this->helper = new AutomationCurveHelper(this->event, this, this->nextEventHolder);
+    this->helper = new AutomationCurveHelper(this->event, this->editor, this, this->nextEventHolder);
     this->editor.addAndMakeVisible(this->helper);
     this->updateHelper();
 }
@@ -196,25 +211,20 @@ bool AutomationCurveEventComponent::isDragging() const
     return this->draggingState;
 }
 
-bool AutomationCurveEventComponent::getDraggingDelta(const MouseEvent &e, float &deltaBeat, float &deltaValue)
+void AutomationCurveEventComponent::getDraggingDeltas(const MouseEvent &e,
+    float &deltaBeat, float &deltaValue, bool &beatChanged, bool &valueChanged)
 {
     this->dragger.dragComponent(this, e);
 
-    float newBeat = -1;
-    float newValue = -1; // shouldn't be used
+    float newBeat = -1.f;
+    float newValue = -1.f; // shouldn't be used here
     this->editor.getRowsColsByMousePosition(this->getX(), this->getY(), newValue, newBeat);
-
-    // TODO get beat by Y position
-    // get value from dragger
-    // update slider view to match actual data
 
     deltaValue = (this->dragger.getValue() - this->anchor.getControllerValue());
     deltaBeat = (newBeat - this->anchor.getBeat());
 
-    const bool valueChanged = (this->getControllerValue() != this->dragger.getValue());
-    const bool beatChanged = (this->getBeat() != newBeat);
-
-    return (valueChanged || beatChanged);
+    valueChanged = this->getControllerValue() != this->dragger.getValue();
+    beatChanged = this->getBeat() != newBeat;
 }
 
 AutomationEvent AutomationCurveEventComponent::continueDragging(const float deltaBeat, const float deltaValue)

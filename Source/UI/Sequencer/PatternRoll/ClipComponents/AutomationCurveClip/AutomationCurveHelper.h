@@ -20,15 +20,18 @@
 //[Headers]
 #include "AutomationEvent.h"
 #include "FineTuningComponentDragger.h"
+#include "FineTuningValueIndicator.h"
+#include "ComponentFader.h"
+
+class AutomationCurveClipComponent;
 //[/Headers]
 
 
-class AutomationCurveHelper  : public Component
+class AutomationCurveHelper final : public Component
 {
 public:
 
-    AutomationCurveHelper (const AutomationEvent &targetEvent, Component *target1, Component *target2);
-
+    AutomationCurveHelper(const AutomationEvent &event, const AutomationCurveClipComponent &editor, Component *target1, Component *target2);
     ~AutomationCurveHelper();
 
     //[UserMethods]
@@ -48,12 +51,16 @@ private:
     //[UserVariables]
 
     const AutomationEvent &event;
+    const AutomationCurveClipComponent &editor;
 
-    FineTuningComponentDragger dragger;
-    bool draggingState;
     Point<int> anchor;
     float curveAnchor;
-    
+    bool draggingState;
+    FineTuningComponentDragger dragger;
+
+    ScopedPointer<FineTuningValueIndicator> tuningIndicator;
+    ComponentFader fader;
+
     SafePointer<Component> component1;
     SafePointer<Component> component2;
 

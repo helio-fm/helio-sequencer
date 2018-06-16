@@ -611,6 +611,10 @@
                 resource="0" file="../../Source/UI/Common/FineTuningComponentDragger.cpp"/>
           <FILE id="bFxJCZ" name="FineTuningComponentDragger.h" compile="0" resource="0"
                 file="../../Source/UI/Common/FineTuningComponentDragger.h"/>
+          <FILE id="VXYw6N" name="FineTuningValueIndicator.cpp" compile="1" resource="0"
+                file="../../Source/UI/Common/FineTuningValueIndicator.cpp"/>
+          <FILE id="GqLApi" name="FineTuningValueIndicator.h" compile="0" resource="0"
+                file="../../Source/UI/Common/FineTuningValueIndicator.h"/>
           <FILE id="wZlPKT" name="KeySelector.cpp" compile="1" resource="0" file="../../Source/UI/Common/KeySelector.cpp"/>
           <FILE id="beAclV" name="KeySelector.h" compile="0" resource="0" file="../../Source/UI/Common/KeySelector.h"/>
           <FILE id="KlCL6B" name="FloatBoundsComponent.h" compile="0" resource="0"
