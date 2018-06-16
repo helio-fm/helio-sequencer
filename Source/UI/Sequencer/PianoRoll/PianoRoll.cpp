@@ -56,6 +56,8 @@
 #include "Arpeggiator.h"
 #include "HeadlineItemDataSource.h"
 #include "LassoListeners.h"
+#include "UndoStack.h"
+#include "PianoTrackActions.h"
 
 #define ROWS_OF_TWO_OCTAVES 24
 #define DEFAULT_NOTE_LENGTH 0.25f
@@ -702,27 +704,23 @@ void PianoRoll::onRemoveTrack(MidiTrack *const track)
     for (int i = 0; i < track->getSequence()->size(); ++i)
     {
         const auto *event = track->getSequence()->getUnchecked(i);
-        if (event->isTypeOf(MidiEvent::Note))
-        {
-            const Note &note = static_cast<const Note &>(*event);
-            for (const auto &c : this->patternMap)
-            {
-                auto &sequenceMap = *c.second.get();
-                if (auto *deletedComponent = sequenceMap[note].get())
-                {
-                    this->fader.fadeOut(deletedComponent, 150);
-                    this->selection.deselect(deletedComponent);
-                    sequenceMap.erase(note);
-                }
-            }
-        }
-        else if (event->isTypeOf(MidiEvent::KeySignature))
+        if (event->isTypeOf(MidiEvent::KeySignature))
         {
             const KeySignatureEvent &key = static_cast<const KeySignatureEvent &>(*event);
             this->removeBackgroundCacheFor(key);
-            this->repaint();
         }
     }
+
+    for (int i = 0; i < track->getPattern()->size(); ++i)
+    {
+        const auto &clip = *track->getPattern()->getUnchecked(i);
+        if (const auto *deletedMap = this->patternMap[clip].get())
+        {
+            this->patternMap.erase(clip);
+        }
+    }
+
+    this->repaint();
 }
 
 void PianoRoll::onReloadProjectContent(const Array<MidiTrack *> &tracks)
@@ -838,7 +836,7 @@ void PianoRoll::mouseDrag(const MouseEvent &e)
         else
         {
             this->newNoteDragging->startInitializing();
-            this->setMouseCursor(MouseCursor(MouseCursor::LeftRightResizeCursor));
+            this->setMouseCursor(MouseCursor::LeftRightResizeCursor);
         }
     }
 
@@ -903,6 +901,22 @@ void PianoRoll::handleCommandMessage(int commandId)
         break;
     case CommandIDs::DeleteEvents:
         SequencerOperations::deleteSelection(this->getLassoSelection());
+        break;
+    case CommandIDs::NewTrackFromSelection:
+        if (this->getLassoSelection().getNumSelected() > 0)
+        {
+            const auto track = SequencerOperations::createPianoTrack(this->getLassoSelection());
+            const ValueTree trackTemplate = track->serialize();
+            auto inputDialog = ModalDialogInput::Presets::newTrack();
+            inputDialog->onOk = [trackTemplate, this](const String &input)
+            {
+                SequencerOperations::deleteSelection(this->getLassoSelection(), true);
+                this->project.getUndoStack()->perform(new PianoTrackInsertAction(this->project,
+                    &this->project, trackTemplate, input));
+            };
+
+            App::Layout().showModalComponentUnowned(inputDialog.release());
+        }
         break;
     case CommandIDs::BeatShiftLeft:
         SequencerOperations::shiftBeatRelative(this->getLassoSelection(), -1.f / BEATS_PER_BAR);

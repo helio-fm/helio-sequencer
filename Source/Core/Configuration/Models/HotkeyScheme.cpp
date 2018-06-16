@@ -26,11 +26,24 @@ HotkeyScheme::HotkeyScheme(const HotkeyScheme &other)
     operator= (other);
 }
 
+String HotkeyScheme::findHotkeyDescription(int commandId) const noexcept
+{
+    for (const auto &key : this->keyPresses)
+    {
+        if (key.commandId == commandId)
+        {
+            return key.keyPress.getTextDescriptionWithIcons();
+        }
+    }
+
+    return {};
+}
+
 bool HotkeyScheme::dispatchKeyPress(KeyPress keyPress,
     WeakReference<Component> keyPressReceiver,
     WeakReference<Component> messageReceiver)
 {
-    for (const auto key : this->keyPresses)
+    for (const auto &key : this->keyPresses)
     {
         if (keyPress == key.keyPress)
         {
@@ -52,7 +65,7 @@ bool HotkeyScheme::dispatchKeyStateChange(bool isKeyDown,
 
     if (isKeyDown)
     {
-        for (const auto key : this->keyDowns)
+        for (const auto &key : this->keyDowns)
         {
             if (key.keyPress.isCurrentlyDown() &&
                 this->sendHotkeyCommand(key, keyPressReceiver, messageReceiver))
@@ -64,7 +77,7 @@ bool HotkeyScheme::dispatchKeyStateChange(bool isKeyDown,
     }
     else
     {
-        for (const auto key : this->keyUps)
+        for (const auto &key : this->keyUps)
         {
             if (!key.keyPress.isCurrentlyDown() && 
                 this->holdKeys.contains(key.keyPress) &&
@@ -86,7 +99,7 @@ static Component *findMessageReceiver(Component *root, const String &id)
         return root;
     }
 
-    for (const auto child : root->getChildren())
+    for (auto *child : root->getChildren())
     {
         if (Component *found = findMessageReceiver(child, id))
         {

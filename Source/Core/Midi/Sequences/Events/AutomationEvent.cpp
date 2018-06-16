@@ -23,8 +23,6 @@
 #include "MidiTrack.h"
 
 #define AUTOEVENT_DEFAULT_CURVATURE (0.5f)
-#define MIN_INTERPOLATED_CONTROLLER_DELTA (0.01f)
-#define INTERPOLATED_EVENTS_STEP_MS (350)
 
 AutomationEvent::AutomationEvent() noexcept : MidiEvent(nullptr, MidiEvent::Auto, 0.f)
 {
@@ -54,110 +52,101 @@ float linearTween(float delta, float factor)
 
 float easeInExpo(float delta, float factor)
 {
-    return delta * powf(2.f, 16.f * (factor - 1.f));
+    return delta * powf(2.f, 8.f * (factor - 1.f));
 };
 
 float easeOutExpo(float delta, float factor)
 {
-    return delta * (-powf(2.f, -16.f * factor) + 1.f);
+    return delta * (-powf(2.f, -8.f * factor) + 1.f);
 };
 
 // easing == 0: ease out
 // easing == 1: ease in
-float exponentalInterpolation(float y0, float y1, float factor, float easing)
+float AutomationEvent::interpolateEvents(float cv1, float cv2, float factor, float curvature)
 {
-    const float delta = y1 - y0;
-    
-//    const float e = (easing * 2.f) - 1.f;
-//
-//    if (e > 0)
-//    {
-//        const float easeIn = easeInExpo(delta, factor) * e;
-//        const float linear = linearTween(delta, factor) * (1.f - e);
-//        return y0 + (easeIn + linear);
-//    }
-//    
-//    const float easeOut = easeOutExpo(delta, factor) * -e;
-//    const float linear = linearTween(delta, factor) * (1.f + e);
-//    return y0 + (easeOut + linear);
-    
+    const float delta = cv2 - cv1;
+    const float easing = (cv1 > cv2) ? curvature : (1.f - curvature);
+
+    //const float e = (easing * 2.f) - 1.f;
+
+    //if (e > 0)
+    //{
+    //    const float easeIn = easeInExpo(delta, factor) * e;
+    //    const float linear = linearTween(delta, factor) * (1.f - e);
+    //    return cv1 + (easeIn + linear);
+    //}
+
+    //const float easeOut = easeOutExpo(delta, factor) * -e;
+    //const float linear = linearTween(delta, factor) * (1.f + e);
+    //return cv1 + (easeOut + linear);
+
     const float easeIn = easeInExpo(delta, factor) * easing;
     const float easeOut = easeOutExpo(delta, factor) * (1.f - easing);
-    return y0 + (easeIn + easeOut);
+    return cv1 + (easeIn + easeOut);
 }
-
 
 Array<MidiMessage> AutomationEvent::toMidiMessages() const
 {
     Array<MidiMessage> result;
-    
-    // теперь пусть все треки автоматизации ведут себя одинаково
-    //if (this->getSequence()->isTempoLayer())
+
+    MidiMessage cc;
+    const bool isTempoTrack = this->getSequence()->getTrack()->isTempoTrack();
+
+    if (isTempoTrack)
     {
-        MidiMessage cc;
-        const bool isTempoTrack = this->getSequence()->getTrack()->isTempoTrack();
+        cc = MidiMessage::tempoMetaEvent(int((1.f - this->controllerValue) * MS_PER_BEAT * 1000));
+    }
+    else
+    {
+        cc = MidiMessage::controllerEvent(this->getTrackChannel(),
+            this->getTrackControllerNumber(),int(this->controllerValue * 127));
+    }
 
-        if (isTempoTrack)
-        {
-            cc = MidiMessage::tempoMetaEvent(int((1.f - this->controllerValue) * MS_PER_BEAT * 1000));
-        }
-        else
-        {
-            cc = MidiMessage::controllerEvent(this->getTrackChannel(),
-                                              this->getTrackControllerNumber(),
-                                              int(this->controllerValue * 127));
-        
-        }
+    const double startTime = round(this->beat * MS_PER_BEAT);
+    cc.setTimeStamp(startTime);
+    result.add(cc);
 
-        const double startTime = round(this->beat * MS_PER_BEAT);
-        cc.setTimeStamp(startTime);
-        result.add(cc);
-        
-        // добавить интерполированные события, если таковые должны быть
-        const int indexOfThis = this->getSequence()->indexOfSorted(this);
-        
-        if (indexOfThis >= 0 && indexOfThis < (this->getSequence()->size() - 1))
+    // add interpolated events, if needed
+    const int indexOfThis = this->getSequence()->indexOfSorted(this);
+    const bool isOnOff = this->getSequence()->getTrack()->isOnOffAutomationTrack();
+    if (!isOnOff && indexOfThis >= 0 && indexOfThis < (this->getSequence()->size() - 1))
+    {
+        const auto *nextEvent = static_cast<AutomationEvent *>(this->getSequence()->getUnchecked(indexOfThis + 1));
+        const double nextTime = nextEvent->beat * MS_PER_BEAT;
+        float interpolatedBeat = this->beat + CURVE_INTERPOLATION_STEP_BEAT;
+        float lastAppliedValue = this->controllerValue;
+
+        while (interpolatedBeat < nextEvent->beat)
         {
-            const AutomationEvent *nextEvent = static_cast<AutomationEvent *>(this->getSequence()->getUnchecked(indexOfThis + 1));
-            const float controllerDelta = fabs(this->controllerValue - nextEvent->controllerValue);
-            
-            if (controllerDelta > MIN_INTERPOLATED_CONTROLLER_DELTA)
+            const double interpolatedEventTs = round(interpolatedBeat * MS_PER_BEAT);
+            const float factor = (interpolatedBeat - this->beat) / (nextEvent->beat - this->beat);
+
+            const float interpolatedValue =
+                AutomationEvent::interpolateEvents(this->controllerValue,
+                    nextEvent->controllerValue, factor, this->curvature);
+
+            const float controllerDelta = fabs(interpolatedValue - lastAppliedValue);
+            if (controllerDelta > CURVE_INTERPOLATION_THRESHOLD)
             {
-                const double nextTime = nextEvent->beat * MS_PER_BEAT;
-                double interpolatedEventTimeStamp = round(startTime + INTERPOLATED_EVENTS_STEP_MS);
-                
-                while (interpolatedEventTimeStamp < nextTime)
+                if (isTempoTrack)
                 {
-                    const float lerpFactor = float(interpolatedEventTimeStamp - startTime) / float(nextTime - startTime);
-                    const float c = (this->controllerValue > nextEvent->controllerValue) ? this->curvature : (1.f - this->curvature);
-                    
-                    const float interpolatedControllerValue = exponentalInterpolation(this->controllerValue,
-                                                                                      nextEvent->controllerValue,
-                                                                                      lerpFactor,
-                                                                                      c);
-                    
-                    //Logger::writeToLog(String(this->curvature) + " :: " + String((interpolatedControllerValue - this->controllerValue) / (nextEvent->controllerValue - this->controllerValue) - lerpFactor));
-                    
-                    //Logger::writeToLog(String(this->controllerValue) + " - " + String(interpolatedControllerValue) + " - " + String(nextEvent->controllerValue));
-                    
-                    if (isTempoTrack)
-                    {
-                        MidiMessage ci(MidiMessage::tempoMetaEvent(int((1.f - interpolatedControllerValue) * MS_PER_BEAT * 1000)));
-                        ci.setTimeStamp(interpolatedEventTimeStamp);
-                        result.add(ci);
-                    }
-                    else
-                    {
-                        MidiMessage ci(MidiMessage::controllerEvent(this->getTrackChannel(),
-                                                                    this->getTrackControllerNumber(),
-                                                                    int(this->controllerValue * 127)));
-                        ci.setTimeStamp(interpolatedEventTimeStamp);
-                        result.add(ci);
-                    }
-                    
-                    interpolatedEventTimeStamp += INTERPOLATED_EVENTS_STEP_MS;
+                    const auto tempo = int((1.f - interpolatedValue) * MS_PER_BEAT * 1000);
+                    MidiMessage ci(MidiMessage::tempoMetaEvent(tempo));
+                    ci.setTimeStamp(interpolatedEventTs);
+                    result.add(ci);
                 }
+                else
+                {
+                    MidiMessage ci(MidiMessage::controllerEvent(this->getTrackChannel(),
+                        this->getTrackControllerNumber(), int(this->controllerValue * 127)));
+                    ci.setTimeStamp(interpolatedEventTs);
+                    result.add(ci);
+                }
+
+                lastAppliedValue = interpolatedValue;
             }
+
+            interpolatedBeat += CURVE_INTERPOLATION_STEP_BEAT;
         }
     }
 
@@ -228,7 +217,6 @@ float AutomationEvent::getCurvature() const noexcept
     return this->curvature;
 }
 
-
 //===----------------------------------------------------------------------===//
 // Pedal helpers
 //===----------------------------------------------------------------------===//
@@ -263,7 +251,7 @@ AutomationEvent AutomationEvent::pedalDownEvent(MidiSequence *owner, float beatV
 ValueTree AutomationEvent::serialize() const noexcept
 {
     using namespace Serialization;
-    ValueTree tree(Midi::automation);
+    ValueTree tree(Midi::automationEvent);
     tree.setProperty(Midi::id, this->id, nullptr);
     tree.setProperty(Midi::value, this->controllerValue, nullptr);
     tree.setProperty(Midi::curve, this->curvature, nullptr);

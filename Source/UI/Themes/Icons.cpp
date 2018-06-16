@@ -84,6 +84,7 @@ void Icons::initBuiltInImages()
 
     setIconForKey(piano);
     setIconForKey(microphone);
+    setIconForKey(volume);
 
     setIconForKey(list);
     setIconForKey(ellipsis);

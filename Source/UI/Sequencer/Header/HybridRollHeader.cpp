@@ -20,7 +20,7 @@
 #include "HybridRoll.h"
 #include "MidiSequence.h"
 #include "Transport.h"
-#include "AnnotationsTrackMap.h"
+#include "AnnotationsProjectMap.h"
 #include "Origami.h"
 #include "SelectionComponent.h"
 #include "SoundProbeIndicator.h"

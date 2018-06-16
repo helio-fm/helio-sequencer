@@ -184,7 +184,7 @@ void RevisionComponent::resized()
 void RevisionComponent::mouseMove (const MouseEvent& e)
 {
     //[UserCode_mouseMove] -- Add your code here...
-    this->setMouseCursor(MouseCursor(MouseCursor::NormalCursor));
+    this->setMouseCursor(MouseCursor::NormalCursor);
     //[/UserCode_mouseMove]
 }
 

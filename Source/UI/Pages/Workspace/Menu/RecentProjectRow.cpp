@@ -23,7 +23,7 @@
 
 //[MiscUserDefs]
 
-#include "WorkspaceMenu.h"
+#include "DashboardMenu.h"
 #include "PanelBackgroundA.h"
 #include "HelioTheme.h"
 #include "Icons.h"
@@ -49,7 +49,7 @@ public:
 
 //[/MiscUserDefs]
 
-RecentProjectRow::RecentProjectRow(WorkspaceMenu &parent, ListBox &parentListBox)
+RecentProjectRow::RecentProjectRow(DashboardMenu &parent, ListBox &parentListBox)
     : DraggingListBoxComponent(parentListBox.getViewport()),
       parentList(parent),
       isSelected(false)
@@ -172,7 +172,7 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="RecentProjectRow" template="../../../../Template"
                  componentName="" parentClasses="public DraggingListBoxComponent"
-                 constructorParams="WorkspaceMenu &amp;parent, ListBox &amp;parentListBox"
+                 constructorParams="DashboardMenu &amp;parent, ListBox &amp;parentListBox"
                  variableInitialisers="DraggingListBoxComponent(parentListBox.getViewport()),&#10;parentList(parent),&#10;isSelected(false)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="350" initialHeight="56">

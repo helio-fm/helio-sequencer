@@ -25,6 +25,7 @@
 #include "AutomationEvent.h"
 #include "NoteComponent.h"
 #include "ClipComponent.h"
+#include "PianoTrackTreeItem.h"
 #include "AutomationSequence.h"
 #include "PianoSequence.h"
 #include "AnnotationsSequence.h"
@@ -1832,10 +1833,7 @@ bool SequencerOperations::findHarmonicContext(const Lasso &selection,
 
 void SequencerOperations::duplicateSelection(const Lasso &selection, bool shouldCheckpoint)
 {
-    if (selection.getNumSelected() == 0)
-    {
-        return;
-    }
+    if (selection.getNumSelected() == 0) { return; }
 
     OwnedArray<PianoChangeGroup> selectionsByTrack;
     for (int i = 0; i < selection.getNumSelected(); ++i)
@@ -1854,8 +1852,6 @@ void SequencerOperations::duplicateSelection(const Lasso &selection, bool should
                 }
             }
         }
-
-        // TODO! fix duplicate notes for different clips
 
         if (arrayToAddTo == nullptr)
         {
@@ -1880,6 +1876,27 @@ void SequencerOperations::duplicateSelection(const Lasso &selection, bool should
 
         sequence->insertGroup(*selectionsByTrack.getUnchecked(i), true);
     }
+}
+
+ScopedPointer<MidiTrackTreeItem> SequencerOperations::createPianoTrack(const Lasso &selection)
+{
+    if (selection.getNumSelected() == 0) { return {}; }
+
+    PianoChangeGroup copiedContent;
+    for (int i = 0; i < selection.getNumSelected(); ++i)
+    {
+        const Note &note = selection.getItemAs<NoteComponent>(i)->getNote();
+        copiedContent.add(note.copyWithNewId());
+    }
+
+    const auto &instrumentId = selection.getFirstAs<NoteComponent>()->getNote()
+        .getSequence()->getTrack()->getTrackInstrumentId();
+
+    ScopedPointer<MidiTrackTreeItem> newItem = new PianoTrackTreeItem("");
+    newItem->setTrackInstrumentId(instrumentId, false);
+    auto *sequence = static_cast<PianoSequence *>(newItem->getSequence());
+    sequence->insertGroup(copiedContent, false);
+    return newItem;
 }
 
 // Pattern operations

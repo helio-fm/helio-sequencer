@@ -83,6 +83,9 @@ MenuPanel::Menu PianoRollSelectionMenu::createRefactoringPanel()
         this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
     }));
 
+    menu.add(MenuItem::item(Icons::cut, CommandIDs::NewTrackFromSelection,
+        TRANS("menu::selection::totrack"))->closesMenu());
+
     // TODO
     // Cleanup
     // Invert up
@@ -107,11 +110,16 @@ MenuPanel::Menu PianoRollSelectionMenu::createTimeDivisionsPanel()
         this->updateContent(this->createDefaultPanel(), MenuPanel::SlideRight);
     }));
 
-    menu.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents, TRANS("menu::divisions::merge")));
-    menu.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents, TRANS("menu::divisions::tuplet")));
-    menu.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents, TRANS("menu::divisions::triplet")));
-    menu.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents, TRANS("menu::divisions::quadruplet")));
-    menu.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents, TRANS("menu::divisions::quintuplet")));
+    menu.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents,
+        TRANS("menu::divisions::merge"))->closesMenu());
+    menu.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents,
+        TRANS("menu::divisions::tuplet"))->closesMenu());
+    menu.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents,
+        TRANS("menu::divisions::triplet"))->closesMenu());
+    menu.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents,
+        TRANS("menu::divisions::quadruplet"))->closesMenu());
+    menu.add(MenuItem::item(Icons::cut, CommandIDs::CutEvents,
+        TRANS("menu::divisions::quintuplet"))->closesMenu());
 
     return menu;
 }

@@ -183,6 +183,7 @@ public:
 
     String getUniqueName() const override;
     bool mightContainSubItems() override;
+    bool isSelectedOrHasSelectedChild() const;
 
     //===------------------------------------------------------------------===//
     // Page stuff

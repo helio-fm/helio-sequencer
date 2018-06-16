@@ -33,7 +33,7 @@
 #include "ComponentsList.h"
 #include "SettingsPage.h"
 #include "SerializationKeys.h"
-#include "WorkspaceMenu.h"
+#include "DashboardMenu.h"
 #include "LogoFader.h"
 #include "App.h"
 #include "SettingsTreeItem.h"
@@ -54,7 +54,7 @@ WorkspacePage::WorkspacePage(MainLayout &workspaceRef)
     settingsButton->setButtonText (TRANS("Settings"));
     settingsButton->addListener (this);
 
-    addAndMakeVisible (component = new WorkspaceMenu (&App::Workspace()));
+    addAndMakeVisible (component = new DashboardMenu (&App::Workspace()));
 
     //[UserPreSize]
     //[/UserPreSize]
@@ -145,7 +145,7 @@ void WorkspacePage::handleCommandMessage (int commandId)
     //[UserCode_handleCommandMessage] -- Add your code here...
     if (commandId == CommandIDs::MenuButtonPressed)
     {
-        auto cs = new WorkspaceMenu(&App::Workspace());
+        auto cs = new DashboardMenu(&App::Workspace());
         HelioCallout::emit(cs, this->menuButton);
     }
     //[/UserCode_handleCommandMessage]
@@ -189,7 +189,7 @@ BEGIN_JUCER_METADATA
               explicitFocusOrder="0" pos="-100 -100 56 48" buttonText="Settings"
               connectedEdges="0" needsCallback="1" radioGroupId="0"/>
   <JUCERCOMP name="" id="25591a755b533290" memberName="component" virtualName=""
-             explicitFocusOrder="0" pos="0Cc 40C 450 40.033%" sourceFile="Menu/WorkspaceMenu.cpp"
+             explicitFocusOrder="0" pos="0Cc 40C 450 40.033%" sourceFile="Menu/DashboardMenu.cpp"
              constructorParams="&amp;App::Workspace()"/>
 </JUCER_COMPONENT>
 

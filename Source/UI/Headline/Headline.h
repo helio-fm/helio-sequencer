@@ -26,8 +26,6 @@ class HeadlineItemDataSource;
 
 //[/Headers]
 
-#include "../Themes/PanelBackgroundB.h"
-#include "../Themes/SeparatorHorizontalReversed.h"
 #include "HeadlineNavigationPanel.h"
 
 class Headline final : public Component,
@@ -70,8 +68,6 @@ private:
 
     //[/UserVariables]
 
-    ScopedPointer<PanelBackgroundB> bg;
-    ScopedPointer<SeparatorHorizontalReversed> separator;
     ScopedPointer<HeadlineNavigationPanel> navPanel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Headline)

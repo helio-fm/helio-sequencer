@@ -36,6 +36,7 @@
 #include "MenuPanel.h"
 #include "BinaryData.h"
 #include "Icons.h"
+#include "ColourIDs.h"
 
 #define NEWCHORD_POPUP_MENU_SIZE            (500)
 #define NEWCHORD_POPUP_LABEL_SIZE           (32)
@@ -216,6 +217,7 @@ void ChordBuilder::paint (Graphics& g)
         float x = static_cast<float> ((getWidth() / 2) + 140 - (180 / 2)), y = static_cast<float> ((getHeight() / 2) - (237 / 2)), width = 180.0f, height = 237.0f;
         Colour fillColour = Colour (0x77000000);
         //[UserPaintCustomArguments] Customize the painting arguments here..
+        fillColour = this->findColour(ColourIDs::Callout::fill);
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRoundedRectangle (x, y, width, height, 2.000f);
@@ -225,6 +227,7 @@ void ChordBuilder::paint (Graphics& g)
         float x = static_cast<float> ((getWidth() / 2) + -140 - (180 / 2)), y = static_cast<float> ((getHeight() / 2) - (237 / 2)), width = 180.0f, height = 237.0f;
         Colour fillColour = Colour (0x77000000);
         //[UserPaintCustomArguments] Customize the painting arguments here..
+        fillColour = this->findColour(ColourIDs::Callout::fill);
         //[/UserPaintCustomArguments]
         g.setColour (fillColour);
         g.fillRoundedRectangle (x, y, width, height, 2.000f);

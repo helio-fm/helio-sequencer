@@ -47,15 +47,13 @@ namespace ColourIDs
         static const int playhead               = 0x2000111;
         static const int playheadShade          = 0x2000112;
         static const int trackHeaderFill        = 0x2000113;
-        static const int trackHeaderBorderLight = 0x2000114;
-        static const int trackHeaderBorderDark  = 0x2000115;
+        static const int trackHeaderBorder      = 0x2000114;
     }
 
     namespace Callout
     {
-        static const int blur                   = 0x2000200;
-        static const int fill                   = 0x2000201;
-        static const int frame                  = 0x2000202;
+        static const int fill                   = 0x2000200;
+        static const int frame                  = 0x2000201;
     }
     
     namespace HelperRectangle

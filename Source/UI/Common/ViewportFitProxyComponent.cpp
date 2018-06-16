@@ -94,11 +94,11 @@ void ViewportFitProxyComponent::mouseMove(const MouseEvent &e)
 {
     if (meFitsViewport())
     {
-        this->setMouseCursor(MouseCursor(MouseCursor::NormalCursor));
+        this->setMouseCursor(MouseCursor::NormalCursor);
     }
     else
     {
-        this->setMouseCursor(MouseCursor(MouseCursor::DraggingHandCursor));
+        this->setMouseCursor(MouseCursor::DraggingHandCursor);
     }
 }
 

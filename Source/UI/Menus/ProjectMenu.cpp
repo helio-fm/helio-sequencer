@@ -46,59 +46,15 @@
 #define NUM_CONTROLLERS_TO_SHOW 80
 
 ProjectMenu::ProjectMenu(ProjectTreeItem &parentProject, AnimationType animationType) :
-    project(parentProject),
-    haveSetBatchCheckpoint(false)
+    project(parentProject)
 {
-    this->initMainMenu(animationType);
+    this->showMainMenu(animationType);
 }
 
 void ProjectMenu::handleCommandMessage(int commandId)
 {
     switch (commandId)
     {
-        case CommandIDs::Back:
-            this->initMainMenu(MenuPanel::SlideRight);
-            return;
-
-        case CommandIDs::ProjectPatternEditor:
-            this->project.selectChildOfType<PatternEditorTreeItem>();
-            return;
-
-        case CommandIDs::ProjectLinearEditor:
-            if (this->project.getLastShownTrack() == nullptr)
-            {
-                this->project.selectChildOfType<PianoTrackTreeItem>();
-            }
-            else
-            {
-                this->project.getLastShownTrack()->setSelected(true, true);
-            }
-            return;
-
-        case CommandIDs::ProjectVersionsEditor:
-            this->project.selectChildOfType<VersionControlTreeItem>();
-            return;
-
-        case CommandIDs::ProjectRenderMenu:
-            this->initRenderMenu();
-            return;
-            
-        case CommandIDs::ProjectBatchMenu:
-            this->initBatchMenu(MenuPanel::SlideLeft);
-            return;
-
-        case CommandIDs::ProjectBatchMenuBack:
-            this->initBatchMenu(MenuPanel::SlideRight);
-            return;
-
-        case CommandIDs::AddItemsMenu:
-            this->initNewSubItemsMenu(MenuPanel::SlideLeft);
-            return;
-
-        case CommandIDs::AddItemsMenuBack:
-            this->initNewSubItemsMenu(MenuPanel::SlideRight);
-            return;
-            
         case CommandIDs::RenderToFLAC:
             this->proceedToRenderDialog("FLAC");
             return;
@@ -109,10 +65,6 @@ void ProjectMenu::handleCommandMessage(int commandId)
 
         case CommandIDs::RenderToWAV:
             this->proceedToRenderDialog("WAV");
-            return;
-            
-        case CommandIDs::BatchChangeInstrument:
-            this->initInstrumentSelection();
             return;
         
         case CommandIDs::AddTempoController:
@@ -136,7 +88,7 @@ void ProjectMenu::handleCommandMessage(int commandId)
             else
             {
                 const auto autoLayerParams =
-                    this->createAutoLayerTempate(TRANS("defaults::tempotrack::name"),
+                    this->createAutoTrackTempate(TRANS("defaults::tempotrack::name"),
                         MidiTrack::tempoController);
                 
                 this->project.getUndoStack()->beginNewTransaction();
@@ -144,24 +96,6 @@ void ProjectMenu::handleCommandMessage(int commandId)
                     &this->project, autoLayerParams,  TRANS("defaults::tempotrack::name")));
             }
 
-            this->dismiss();
-            return;
-        }
-            
-        case CommandIDs::AddMidiTrack:
-        {
-            auto &project = this->project;
-            const auto trackTemplate = this->createPianoTrackTempate("");
-            auto inputDialog = ModalDialogInput::Presets::newTrack();
-            inputDialog->onOk = [&project, trackTemplate](const String &input)
-            {
-                project.setOpen(true);
-                project.getUndoStack()->beginNewTransaction();
-                project.getUndoStack()->perform(new PianoTrackInsertAction(project,
-                    &project, trackTemplate, input));
-            };
-
-            App::Layout().showModalComponentUnowned(inputDialog.release());
             this->dismiss();
             return;
         }
@@ -263,60 +197,6 @@ void ProjectMenu::handleCommandMessage(int commandId)
             return;
         }
     }
-    
-    const Array<Instrument *> &instruments = App::Workspace().getAudioCore().getInstruments();
-    
-    if (commandId >= CommandIDs::BatchSetInstrument &&
-        commandId <= (CommandIDs::BatchSetInstrument + instruments.size()))
-    {
-        const int instrumentIndex = commandId - CommandIDs::BatchSetInstrument;
-        if (instrumentIndex >= 0 && instrumentIndex < instruments.size())
-        {
-            Logger::writeToLog(instruments[instrumentIndex]->getIdAndHash());
-            
-            const Array<MidiTrackTreeItem *> tracks =
-            this->project.findChildrenOfType<MidiTrackTreeItem>();
-            
-            if (tracks.size() > 0)
-            {
-                this->project.getUndoStack()->beginNewTransaction();
-                
-                for (auto track : tracks)
-                {
-                    const String instrumentId = instruments[instrumentIndex]->getIdAndHash();
-                    this->project.getUndoStack()->perform(new MidiTrackChangeInstrumentAction(this->project, track->getTrackId(), instrumentId));
-                }
-            }
-            
-            this->dismiss();
-            return;
-        }
-    }
-    
-    if (commandId >= CommandIDs::ProjectInstrumentsMenu &&
-        commandId < (CommandIDs::ProjectInstrumentsMenu + instruments.size()))
-    {
-        const int instrumentIndex = (commandId - CommandIDs::ProjectInstrumentsMenu);
-        this->lastSelectedInstrument = instruments[instrumentIndex];
-        this->initSubItemTypeSelectionMenu();
-        return;
-    }
-    
-    if (commandId >= CommandIDs::AddCustomController &&
-        commandId < (CommandIDs::AddCustomController + NUM_CONTROLLERS_TO_SHOW))
-    {
-        const int controllerNumber = (commandId - CommandIDs::AddCustomController);
-        const String instrumentId = this->lastSelectedInstrument ? this->lastSelectedInstrument->getIdAndHash() : "";
-        const String layerName = TreeItem::createSafeName(MidiMessage::getControllerName(controllerNumber));
-        const auto autoLayerParams = this->createAutoLayerTempate(layerName, controllerNumber, instrumentId);
-        
-        this->project.getUndoStack()->beginNewTransaction();
-        this->project.getUndoStack()->perform(new AutomationTrackInsertAction(this->project,
-            &this->project, autoLayerParams, layerName));
-        
-        this->dismiss();
-        return;
-    }
 }
 
 void ProjectMenu::proceedToRenderDialog(const String &extension)
@@ -340,13 +220,14 @@ void ProjectMenu::proceedToRenderDialog(const String &extension)
     this->dismiss();
 }
 
-ValueTree ProjectMenu::createPianoTrackTempate(const String &name) const
+ValueTree ProjectMenu::createPianoTrackTempate(const String &name, const String &instrumentId) const
 {
     ScopedPointer<MidiTrackTreeItem> newItem = new PianoTrackTreeItem(name);
+    newItem->setTrackInstrumentId(instrumentId, false);
     return newItem->serialize();
 }
 
-ValueTree ProjectMenu::createAutoLayerTempate(const String &name, int controllerNumber, const String &instrumentId) const
+ValueTree ProjectMenu::createAutoTrackTempate(const String &name, int controllerNumber, const String &instrumentId) const
 {
     ScopedPointer<MidiTrackTreeItem> newItem = new AutomationTrackTreeItem(name);
     auto itemLayer = static_cast<AutomationSequence *>(newItem->getSequence());
@@ -355,120 +236,297 @@ ValueTree ProjectMenu::createAutoLayerTempate(const String &name, int controller
     newItem->setTrackInstrumentId(instrumentId, false);
     newItem->setTrackColour(Colours::royalblue, false);
     
-    // init with one event
-    const float defaultCV = newItem->isOnOffTrack() ? 1.f : 0.5f;
+    // init with a couple of events
+    const float cv1 = newItem->isOnOffAutomationTrack() ? 1.f : 0.5f;
+    const float cv2 = newItem->isOnOffAutomationTrack() ? 0.f : 0.5f;
     const float firstBeat = this->project.getProjectRangeInBeats().getX();
-    itemLayer->insert(AutomationEvent(itemLayer, firstBeat, defaultCV), false);
-    
+    itemLayer->insert(AutomationEvent(itemLayer, firstBeat, cv1), false);
+    itemLayer->insert(AutomationEvent(itemLayer, firstBeat + BEATS_PER_BAR, cv2), false);
+
     return newItem->serialize();
 }
 
-void ProjectMenu::initMainMenu(AnimationType animationType)
+void ProjectMenu::showMainMenu(AnimationType animationType)
 {
-    MenuPanel::Menu cmds;
+    MenuPanel::Menu menu;
 
-    cmds.add(MenuItem::item(Icons::trackGroup, CommandIDs::ProjectLinearEditor, TRANS("menu::project::editor::linear")));
-    cmds.add(MenuItem::item(Icons::patterns, CommandIDs::ProjectPatternEditor, TRANS("menu::project::editor::pattern")));
-    cmds.add(MenuItem::item(Icons::versionControl, CommandIDs::ProjectVersionsEditor, TRANS("menu::project::editor::vcs")));
+    menu.add(MenuItem::item(Icons::piano,
+        TRANS("menu::project::editor::linear"))->withAction([this]()
+        {
+            if (this->project.getLastShownTrack() == nullptr)
+            {
+                this->project.selectChildOfType<PianoTrackTreeItem>();
+            }
+            else
+            {
+                this->project.getLastShownTrack()->setSelected(true, true);
+            }
+        }));
 
-    // TODO separators
-    cmds.add(MenuItem::item(Icons::create, CommandIDs::AddItemsMenu, TRANS("menu::project::additems"))->withSubmenu());
-    //cmds.add(MenuItem::item(Icons::create, CommandIDs::AddMidiTrack, TRANS("menu::project::addlayer")));
+    menu.add(MenuItem::item(Icons::patterns,
+        TRANS("menu::project::editor::pattern"))->withAction([this]()
+        {
+            this->project.selectChildOfType<PatternEditorTreeItem>();
+        }));
 
-#if HELIO_DESKTOP
-    //cmds.add(MenuItem::item(Icons::automationTrack, CommandIDs::AddAutomationTrack, TRANS("menu::project::addautomation"))->withSubmenu());
-    //cmds.add(MenuItem::item(Icons::browse, CommandIDs::ImportMidi, TRANS("menu::project::import::midi")));
-    cmds.add(MenuItem::item(Icons::render, CommandIDs::ProjectRenderMenu, TRANS("menu::project::render"))->withSubmenu());
-#endif
+    menu.add(MenuItem::item(Icons::versionControl,
+        TRANS("menu::project::editor::vcs"))->withAction([this]()
+        {
+            this->project.selectChildOfType<VersionControlTreeItem>();
+        }));
 
-    cmds.add(MenuItem::item(Icons::refactor, CommandIDs::ProjectBatchMenu, TRANS("menu::project::refactor"))->withSubmenu());
+    menu.add(MenuItem::item(Icons::create,
+        TRANS("menu::project::additems"))->withSubmenu()->withAction([this]()
+        {
+            this->showCreateItemsMenu(MenuPanel::SlideLeft);
+        }));
+
+    menu.add(MenuItem::item(Icons::render,
+        TRANS("menu::project::render"))->withSubmenu()->withAction([this]()
+        {
+            this->showRenderMenu();
+        }));
+
+    menu.add(MenuItem::item(Icons::refactor,
+        TRANS("menu::project::refactor"))->withSubmenu()->withAction([this]()
+        {
+            this->showBatchActionsMenu(MenuPanel::SlideLeft);
+        }));
     
-#if JUCE_IOS
-    cmds.add(MenuItem::item(Icons::commit, CommandIDs::ExportMidi, TRANS("menu::project::render::midi")));
-#endif
-    
-    cmds.add(MenuItem::item(Icons::close, CommandIDs::UnloadProject, TRANS("menu::project::unload")));
-    cmds.add(MenuItem::item(Icons::remove, CommandIDs::DeleteProject, TRANS("menu::project::delete")));
-    this->updateContent(cmds, animationType);
+    menu.add(MenuItem::item(Icons::close, CommandIDs::UnloadProject, TRANS("menu::project::unload")));
+    menu.add(MenuItem::item(Icons::remove, CommandIDs::DeleteProject, TRANS("menu::project::delete")));
+    this->updateContent(menu, animationType);
 }
 
-void ProjectMenu::initNewSubItemsMenu(AnimationType animationType)
+void ProjectMenu::showCreateItemsMenu(AnimationType animationType)
 {
-    MenuPanel::Menu cmds;
-    cmds.add(MenuItem::item(Icons::back, CommandIDs::Back, TRANS("menu::back"))->withTimer());
-    cmds.add(MenuItem::item(Icons::pianoTrack, CommandIDs::AddMidiTrack, TRANS("menu::project::addlayer")));
-#if HELIO_DESKTOP
-    cmds.add(MenuItem::item(Icons::browse, CommandIDs::ImportMidi, TRANS("menu::project::import::midi")));
-#endif
-    cmds.add(MenuItem::item(Icons::automationTrack, CommandIDs::AddTempoController, TRANS("menu::project::addtempo")));
+    MenuPanel::Menu menu;
+    menu.add(MenuItem::item(Icons::back,
+        TRANS("menu::back"))->withTimer()->withAction([this]()
+        {
+            this->showMainMenu(MenuPanel::SlideRight);
+        }));
 
-    const Array<Instrument *> &instruments = App::Workspace().getAudioCore().getInstruments();
-    
+#if HELIO_DESKTOP
+    menu.add(MenuItem::item(Icons::browse,
+        CommandIDs::ImportMidi,
+        TRANS("menu::project::import::midi")));
+#endif
+
+    menu.add(MenuItem::item(Icons::pianoTrack,
+        TRANS("menu::project::addlayer"))->withSubmenu()->withAction([this]()
+        {
+            this->showNewTrackMenu(MenuPanel::SlideLeft);
+        }));
+
+    menu.add(MenuItem::item(Icons::automationTrack,
+        TRANS("menu::project::addautomation"))->withSubmenu()->withAction([this]()
+        {
+            this->showNewAutomationMenu(MenuPanel::SlideLeft);
+        }));
+
+    this->updateContent(menu, animationType);
+}
+
+void ProjectMenu::showNewTrackMenu(AnimationType animationType)
+{
+    MenuPanel::Menu menu;
+    menu.add(MenuItem::item(Icons::back,
+        TRANS("menu::back"))->withTimer()->withAction([this]()
+        {
+            this->showCreateItemsMenu(MenuPanel::SlideRight);
+        }));
+
+    const auto &instruments = App::Workspace().getAudioCore().getInstruments();
     for (int i = 0; i < instruments.size(); ++i)
     {
-        cmds.add(MenuItem::item(Icons::instrument, CommandIDs::ProjectInstrumentsMenu + i, instruments[i]->getName())->withSubmenu());
+        menu.add(MenuItem::item(Icons::instrument,
+            instruments[i]->getName())->withAction([this, instrumentId = instruments[i]->getIdAndHash()]()
+            {
+                auto &project = this->project;
+                const ValueTree trackTemplate = this->createPianoTrackTempate("", instrumentId);
+                auto inputDialog = ModalDialogInput::Presets::newTrack();
+                inputDialog->onOk = [trackTemplate, &project](const String &input)
+                {
+                    project.checkpoint();
+                    project.getUndoStack()->perform(new PianoTrackInsertAction(project,
+                        &project, trackTemplate, input));
+                };
+
+                App::Layout().showModalComponentUnowned(inputDialog.release());
+                this->dismiss();
+            }));
     }
 
-    this->updateContent(cmds, animationType);
+    this->updateContent(menu, animationType);
 }
 
-void ProjectMenu::initSubItemTypeSelectionMenu()
+void ProjectMenu::showNewAutomationMenu(AnimationType animationType)
 {
-    MenuPanel::Menu cmds;
-    cmds.add(MenuItem::item(Icons::back, CommandIDs::AddItemsMenuBack, TRANS("menu::back"))->withTimer());
-    
+    MenuPanel::Menu menu;
+    menu.add(MenuItem::item(Icons::back,
+        TRANS("menu::back"))->withTimer()->withAction([this]()
+        {
+            this->showCreateItemsMenu(MenuPanel::SlideRight);
+        }));
+
+    menu.add(MenuItem::item(Icons::automationTrack,
+        CommandIDs::AddTempoController,
+        TRANS("menu::project::addtempo")));
+
+    const auto &instruments = App::Workspace().getAudioCore().getInstruments();
+    for (int i = 0; i < instruments.size(); ++i)
+    {
+        menu.add(MenuItem::item(Icons::instrument,
+            instruments[i]->getName())->withSubmenu()->withAction([this, instrument = instruments[i]]()
+            {
+                this->showControllersMenuForInstrument(instrument);
+            }));
+    }
+
+    this->updateContent(menu, animationType);
+}
+
+void ProjectMenu::showControllersMenuForInstrument(WeakReference<Instrument> instrument)
+{
+    MenuPanel::Menu menu;
+    menu.add(MenuItem::item(Icons::back,
+        TRANS("menu::back"))->withTimer()->withAction([this]()
+        {
+            this->showNewAutomationMenu(MenuPanel::SlideRight);
+        }));
+
     for (int i = 0; i < NUM_CONTROLLERS_TO_SHOW; ++i)
     {
         const String controllerName = MidiMessage::getControllerName(i);
-        
         if (controllerName.isNotEmpty())
         {
-            cmds.add(MenuItem::item(Icons::automationTrack, CommandIDs::AddCustomController + i, String(i) + ": " + TRANS(controllerName)));
+            menu.add(MenuItem::item(Icons::automationTrack,
+                String(i) + ": " + TRANS(controllerName))->withAction([this, controllerNumber = i, instrument]()
+                {
+                    const String instrumentId = instrument ? instrument->getIdAndHash() : "";
+                    const String trackName = TreeItem::createSafeName(MidiMessage::getControllerName(controllerNumber));
+                    const ValueTree autoTrackParams = this->createAutoTrackTempate(trackName, controllerNumber, instrumentId);
+
+                    this->project.getUndoStack()->beginNewTransaction();
+                    this->project.getUndoStack()->perform(new AutomationTrackInsertAction(this->project,
+                        &this->project, autoTrackParams, trackName));
+
+                    this->dismiss();
+                }));
         }
     }
     
-    this->updateContent(cmds, MenuPanel::SlideLeft);
+    this->updateContent(menu, MenuPanel::SlideLeft);
 }
 
-void ProjectMenu::initRenderMenu()
+void ProjectMenu::showRenderMenu()
 {
-    MenuPanel::Menu cmds;
-    cmds.add(MenuItem::item(Icons::back, CommandIDs::Back, TRANS("menu::back"))->withTimer());
-    cmds.add(MenuItem::item(Icons::render, CommandIDs::RenderToWAV, TRANS("menu::project::render::wav")));
-    cmds.add(MenuItem::item(Icons::render, CommandIDs::RenderToOGG, TRANS("menu::project::render::ogg")));
-    cmds.add(MenuItem::item(Icons::render, CommandIDs::RenderToFLAC, TRANS("menu::project::render::flac")));
-    cmds.add(MenuItem::item(Icons::commit, CommandIDs::ExportMidi, TRANS("menu::project::render::midi")));
-    this->updateContent(cmds, MenuPanel::SlideLeft);
+    MenuPanel::Menu menu;
+
+    // TODO! save rendered wavs on mobile in the same way as midi export
+#if HELIO_DESKTOP
+    const bool noRender = false;
+#else
+    const bool noRender = true;
+#endif
+
+    menu.add(MenuItem::item(Icons::back,
+        TRANS("menu::back"))->withTimer()->withAction([this]()
+        {
+            this->showMainMenu(MenuPanel::SlideRight);
+        }));
+
+    menu.add(MenuItem::item(Icons::render,
+        CommandIDs::RenderToWAV,
+        TRANS("menu::project::render::wav"))->disabledIf(noRender));
+
+    menu.add(MenuItem::item(Icons::render,
+        CommandIDs::RenderToOGG,
+        TRANS("menu::project::render::ogg"))->disabledIf(noRender));
+
+    menu.add(MenuItem::item(Icons::render,
+        CommandIDs::RenderToFLAC,
+        TRANS("menu::project::render::flac"))->disabledIf(noRender));
+
+    menu.add(MenuItem::item(Icons::commit,
+        CommandIDs::ExportMidi,
+        TRANS("menu::project::render::midi")));
+
+    this->updateContent(menu, MenuPanel::SlideLeft);
 }
 
-void ProjectMenu::initBatchMenu(AnimationType animationType)
+void ProjectMenu::showBatchActionsMenu(AnimationType animationType)
 {
-    MenuPanel::Menu cmds;
-    cmds.add(MenuItem::item(Icons::back, CommandIDs::Back, TRANS("menu::back"))->withTimer());
-    cmds.add(MenuItem::item(Icons::up, CommandIDs::RefactorTransposeUp, TRANS("menu::project::refactor::halftoneup")));
-    cmds.add(MenuItem::item(Icons::down, CommandIDs::RefactorTransposeDown, TRANS("menu::project::refactor::halftonedown")));
-    //cmds.add(MenuItem::item(Icons::group, CommandIDs::RefactorRemoveOverlaps, TRANS("menu::project::refactor::cleanup")));
+    MenuPanel::Menu menu;
+    menu.add(MenuItem::item(Icons::back,
+        TRANS("menu::back"))->withTimer()->withAction([this]()
+        {
+            this->showMainMenu(MenuPanel::SlideRight);
+        }));
 
-    const Array<MidiTrackTreeItem *> &layers = this->project.findChildrenOfType<MidiTrackTreeItem>();
-    const Array<Instrument *> &instruments = App::Workspace().getAudioCore().getInstruments();
-    if (instruments.size() > 1 && layers.size() > 0)
+    menu.add(MenuItem::item(Icons::up,
+        CommandIDs::RefactorTransposeUp,
+        TRANS("menu::project::refactor::halftoneup")));
+
+    menu.add(MenuItem::item(Icons::down,
+        CommandIDs::RefactorTransposeDown,
+        TRANS("menu::project::refactor::halftonedown")));
+
+    //menu.add(MenuItem::item(Icons::group, CommandIDs::RefactorRemoveOverlaps, TRANS("menu::project::refactor::cleanup")));
+
+    const auto &tracks = this->project.findChildrenOfType<MidiTrackTreeItem>();
+    const auto &instruments = App::Workspace().getAudioCore().getInstruments();
+    if (instruments.size() > 1 && tracks.size() > 0)
     {
-        cmds.add(MenuItem::item(Icons::instrument, CommandIDs::BatchChangeInstrument, TRANS("menu::project::change::instrument"))->withSubmenu());
+        menu.add(MenuItem::item(Icons::instrument,
+            TRANS("menu::project::change::instrument"))->withSubmenu()->withAction([this]()
+            {
+                this->showSetInstrumentMenu();
+            }));
     }
 
-    this->updateContent(cmds, animationType);
+    this->updateContent(menu, animationType);
 }
 
-void ProjectMenu::initInstrumentSelection()
+void ProjectMenu::showSetInstrumentMenu()
 {
-    MenuPanel::Menu cmds;
-    cmds.add(MenuItem::item(Icons::back, CommandIDs::ProjectBatchMenuBack, TRANS("menu::back"))->withTimer());
-    const Array<Instrument *> &info = App::Workspace().getAudioCore().getInstruments();
-    
-    for (int i = 0; i < info.size(); ++i)
+    MenuPanel::Menu menu;
+    menu.add(MenuItem::item(Icons::back,
+        TRANS("menu::back"))->withTimer()->withAction([this]()
+        {
+            this->showBatchActionsMenu(MenuPanel::SlideRight);
+        }));
+
+    const auto &instruments = App::Workspace().getAudioCore().getInstruments();
+    for (int i = 0; i < instruments.size(); ++i)
     {
-        cmds.add(MenuItem::item(Icons::instrument, CommandIDs::BatchSetInstrument + i, info[i]->getName()));
+        menu.add(MenuItem::item(Icons::instrument, instruments[i]->getName())->withAction([this, i, instruments]()
+        {
+            if (i >= 0 && i < instruments.size())
+            {
+                Logger::writeToLog(instruments[i]->getIdAndHash());
+
+                const Array<MidiTrackTreeItem *> tracks =
+                    this->project.findChildrenOfType<MidiTrackTreeItem>();
+
+                if (tracks.size() > 0)
+                {
+                    this->project.getUndoStack()->beginNewTransaction();
+
+                    for (auto *track : tracks)
+                    {
+                        const String instrumentId = instruments[i]->getIdAndHash();
+                        this->project.getUndoStack()->
+                            perform(new MidiTrackChangeInstrumentAction(this->project,
+                                track->getTrackId(), instrumentId));
+                    }
+                }
+
+                this->dismiss();
+            }
+        }));
     }
     
-    this->updateContent(cmds, MenuPanel::SlideLeft);
+    this->updateContent(menu, MenuPanel::SlideLeft);
 }

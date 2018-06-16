@@ -70,12 +70,7 @@ bool MidiTrack::isTempoTrack() const noexcept
     return (this->getTrackControllerNumber() == MidiTrack::tempoController);
 }
 
-bool MidiTrack::isSustainPedalTrack() const noexcept
-{
-    return (this->getTrackControllerNumber() == MidiTrack::sustainPedalController);
-}
-
-bool MidiTrack::isOnOffTrack() const noexcept
+bool MidiTrack::isOnOffAutomationTrack() const noexcept
 {
     // hardcoded for now
     return (this->getTrackControllerNumber() >= 64 &&

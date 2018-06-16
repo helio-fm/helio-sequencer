@@ -76,17 +76,23 @@ TimelineMenu::TimelineMenu(ProjectTreeItem &parentProject) :
     
     if (selectedAnnotation == nullptr)
     {
-        cmds.add(MenuItem::item(Icons::create, CommandIDs::AddAnnotation, TRANS("menu::annotation::add"))->closesMenu());
+        cmds.add(MenuItem::item(Icons::create,
+            CommandIDs::AddAnnotation,
+            TRANS("menu::annotation::add"))->closesMenu());
     }
 
     if (selectedKeySignature == nullptr)
     {
-        cmds.add(MenuItem::item(Icons::create, CommandIDs::AddKeySignature, TRANS("menu::keysignature::add"))->closesMenu());
+        cmds.add(MenuItem::item(Icons::create,
+            CommandIDs::AddKeySignature,
+            TRANS("menu::keysignature::add"))->closesMenu());
     }
 
     if (selectedTimeSignature == nullptr)
     {
-        cmds.add(MenuItem::item(Icons::create, CommandIDs::AddTimeSignature, TRANS("menu::timesignature::add"))->closesMenu());
+        cmds.add(MenuItem::item(Icons::create,
+            CommandIDs::AddTimeSignature,
+            TRANS("menu::timesignature::add"))->closesMenu());
     }
 
     if (HybridRoll *roll = dynamic_cast<HybridRoll *>(this->project.getLastFocusedRoll()))
@@ -98,13 +104,13 @@ TimelineMenu::TimelineMenu(ProjectTreeItem &parentProject) :
             if (AnnotationEvent *annotation =
                 dynamic_cast<AnnotationEvent *>(annotationsSequence->getUnchecked(i)))
             {
-                double outTimeMs = 0.0;
-                double outTempo = 0.0;
-                const double seekPos = roll->getTransportPositionByBeat(annotation->getBeat());
-                this->project.getTransport().calcTimeAndTempoAt(seekPos, outTimeMs, outTempo);
+                //double outTimeMs = 0.0;
+                //double outTempo = 0.0;
+                //const double seekPos = roll->getTransportPositionByBeat(annotation->getBeat());
+                //this->project.getTransport().calcTimeAndTempoAt(seekPos, outTimeMs, outTempo);
                 
                 cmds.add(MenuItem::item(Icons::annotation, annotation->getDescription())->
-                    withSubLabel(Transport::getTimeString(outTimeMs))->
+                    //withSubLabel(Transport::getTimeString(outTimeMs))->
                     colouredWith(annotation->getTrackColour())->withAction([this, i]()
                 {
                     const auto timeline = this->project.getTimeline();

@@ -84,9 +84,6 @@ protected:
     const Note &note;
     const Clip &clip;
 
-    inline void paintNewLook(Graphics &g);
-    inline void paintLegacyLook(Graphics &g);
-    
     Note anchor;
     Note groupScalingAnchor;
 

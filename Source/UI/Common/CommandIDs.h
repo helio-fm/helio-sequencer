@@ -50,9 +50,7 @@ namespace CommandIDs
         AddKeySignatureConfirmed        = 0x0106,
         JumpToAnnotation                = 0x0107, // more ids reserved for annotations
 
-        // Arpeggiators
         CreateArpeggiatorFromSelection  = 0x0200,
-        ApplyArpeggiator                = 0x0201, // more ids reserved for arps
 
         InitWorkspace                   = 0x0500,
 
@@ -62,9 +60,7 @@ namespace CommandIDs
 
         ScanAllPlugins                  = 0x0504,
         ScanPluginsFolder               = 0x0505,
-        CreateInstrument                = 0x0506, // more ids reserved for instruments
 
-        // MidiTrackCommandPanel
         DeleteTrack                     = 0x1000,
         MuteTrack                       = 0x1001,
         UnmuteTrack                     = 0x1002,
@@ -73,8 +69,9 @@ namespace CommandIDs
         SelectTrackInstrument           = 0x1006,
         SelectAllEvents                 = 0x1007,
         DuplicateTrackTo                = 0x1008,
+        NewTrackFromSelection           = 0x1009,
 
-        SetTrackColour                  = 0x1009, // more ids reserved for colours
+        SetTrackColour                  = 0x100a, // more ids reserved for colours
         SetTrackInstrument              = 0x1100, // more ids reserved for instruments
         MoveTrackToProject              = 0x1500, // more ids reserved for projects
 
@@ -163,13 +160,9 @@ namespace CommandIDs
         ProjectRenderMenu               = 0x2091,
         ProjectBatchMenu                = 0x2092,
         ProjectBatchMenuBack            = 0x2093,
-        ProjectInstrumentsMenu          = 0x2094, // more ids reserved for instruments
 
         AddTempoController              = 0x2500,
-        AddCustomController             = 0x2501, // more ids reserved for controllers
-
         BatchChangeInstrument           = 0x2600,
-        BatchSetInstrument              = 0x2601, // more ids reserved for instruments
 
         DismissModalDialogAsync         = 0x3000,
 

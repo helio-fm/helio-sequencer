@@ -19,7 +19,9 @@
 
 #include "MidiEvent.h"
 
-#define DEFAULT_TRIGGER_AUTOMATION_EVENT_STATE (false)
+#define DEFAULT_ON_OFF_EVENT_STATE (false)
+#define CURVE_INTERPOLATION_STEP_BEAT (0.5f)
+#define CURVE_INTERPOLATION_THRESHOLD (0.0025f)
 
 class AutomationEvent final : public MidiEvent
 {
@@ -34,7 +36,8 @@ public:
         float controllerValue = 0.f) noexcept;
 
     Array<MidiMessage> toMidiMessages() const override;
-    
+    static float interpolateEvents(float cv1, float cv2, float factor, float easing);
+
     AutomationEvent copyWithNewId() const noexcept;
     AutomationEvent withBeat(float newBeat) const noexcept;
     AutomationEvent withDeltaBeat(float deltaBeat) const noexcept;

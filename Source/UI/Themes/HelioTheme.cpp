@@ -44,11 +44,9 @@
 
 #if HELIO_DESKTOP
 #   define SCROLLBAR_WIDTH (17)
-#   define POPUP_MENU_FONT (18.f)
 #   define TEXTBUTTON_FONT (21.f)
 #elif HELIO_MOBILE
 #   define SCROLLBAR_WIDTH (50)
-#   define POPUP_MENU_FONT (23.f)
 #   define TEXTBUTTON_FONT (23.f)
 #endif
 
@@ -450,118 +448,30 @@ void HelioTheme::drawScrollbar(Graphics &g, ScrollBar &scrollbar,
     g.strokePath(thumbPath, PathStrokeType(1.0f));
 }
 
-
 //===----------------------------------------------------------------------===//
-// Menus
+// Sliders
 //===----------------------------------------------------------------------===//
 
-Font HelioTheme::getPopupMenuFont()
+void HelioTheme::drawRotarySlider(Graphics &g, int x, int y, int width, int height,
+    float sliderPos, float rotaryStartAngle, float rotaryEndAngle, Slider &slider)
 {
-    return Font(Font(Font::getDefaultSansSerifFontName(), POPUP_MENU_FONT, Font::plain));
-}
+    const auto fill = slider.findColour(Slider::rotarySliderFillColourId);
+    const auto bounds = Rectangle<int>(x, y, width, height).toFloat().reduced(8);
+    const auto radius = jmin(bounds.getWidth(), bounds.getHeight()) / 2.0f;
+    const auto toAngle = rotaryStartAngle + sliderPos * (rotaryEndAngle - rotaryStartAngle);
+    const auto lineW = jmin(8.0f, radius * 0.25f);
+    const auto arcRadius = radius - lineW * 0.5f;
 
-void HelioTheme::drawPopupMenuBackground(Graphics &g, int width, int height)
-{
-    g.setColour(findColour(TextEditor::backgroundColourId));
-    g.fillRect(0, 0, width, height);
-    
-    g.setColour(findColour(TextEditor::outlineColourId));
-    g.drawRect(0.0f, 0.0f, static_cast<float>(width), static_cast<float>(height), 1.000f);
-}
+    if (slider.isEnabled())
+    {
+        Path valueArc;
+        valueArc.addCentredArc(bounds.getCentreX(), bounds.getCentreY(),
+            arcRadius, arcRadius, 0.0f, rotaryStartAngle, toAngle, true);
 
-void HelioTheme::drawPopupMenuItem(Graphics& g, const Rectangle<int>& area,
-                                   const bool isSeparator, const bool isActive,
-                                   const bool isHighlighted, const bool isTicked,
-                                   const bool hasSubMenu, const String& text,
-                                   const String& shortcutKeyText,
-                                   const Drawable* icon, const Colour* const textColourToUse)
-{
-    if (isSeparator)
-    {
-        Rectangle<int> r (area.reduced (5, 0));
-        r.removeFromTop (r.getHeight() / 2 - 1);
-        
-        g.setColour (Colour (0x33000000));
-        g.fillRect (r.removeFromTop (1));
-        
-        g.setColour (Colour (0x66ffffff));
-        g.fillRect (r.removeFromTop (1));
-    }
-    else
-    {
-        Colour textColour (findColour (PopupMenu::textColourId));
-        
-        if (textColourToUse != nullptr)
-            textColour = *textColourToUse;
-        
-        Rectangle<int> r (area.reduced (1));
-        
-        if (isHighlighted)
-        {
-            g.setColour (findColour (PopupMenu::highlightedBackgroundColourId));
-            g.fillRect (r);
-            
-            g.setColour (findColour (PopupMenu::highlightedTextColourId));
-        }
-        else
-        {
-            g.setColour (textColour);
-        }
-        
-        if (! isActive)
-            g.setOpacity (0.3f);
-        
-        Font font (getPopupMenuFont());
-        
-        const float maxFontHeight = area.getHeight() / 1.3f;
-        
-        if (font.getHeight() > maxFontHeight)
-            font.setHeight (maxFontHeight);
-        
-        g.setFont (font);
-        
-        Rectangle<float> iconArea (r.removeFromLeft ((r.getHeight() * 5) / 4).reduced (3).toFloat());
-        
-        if (icon != nullptr)
-        {
-            icon->drawWithin (g, iconArea, RectanglePlacement::centred | RectanglePlacement::onlyReduceInSize, 1.0f);
-        }
-        else if (isTicked)
-        {
-            //const Path tick (getTickShape (1.0f));
-            //g.fillPath (tick, tick.getTransformToScaleToFit (iconArea, true));
-        }
-        
-        if (hasSubMenu)
-        {
-            const float arrowH = 0.6f * getPopupMenuFont().getAscent();
-            
-            const float x = (float) r.removeFromRight ((int) arrowH).getX();
-            const float halfH = (float) r.getCentreY();
-            
-            Path p;
-            p.addTriangle (x, halfH - arrowH * 0.5f,
-                           x, halfH + arrowH * 0.5f,
-                           x + arrowH * 0.6f, halfH);
-            
-            g.fillPath (p);
-        }
-        
-        r.removeFromRight (3);
-        g.drawFittedText (text, r, Justification::centredLeft, 1);
-        
-        if (shortcutKeyText.isNotEmpty())
-        {
-            Font f2 (font);
-            f2.setHeight (f2.getHeight() * 0.75f);
-            f2.setHorizontalScale (0.95f);
-            g.setFont (f2);
-            
-            g.drawText (shortcutKeyText, r, Justification::centredRight, true);
-        }
+        g.setColour(fill);
+        g.strokePath(valueArc, PathStrokeType(lineW, PathStrokeType::curved, PathStrokeType::rounded));
     }
 }
-
 
 //===----------------------------------------------------------------------===//
 // Window
@@ -807,6 +717,7 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     // Sliders
     this->setColour(Slider::rotarySliderOutlineColourId, Colours::transparentBlack);
     this->setColour(Slider::rotarySliderFillColourId, s->getTextColour());
+    this->setColour(Slider::thumbColourId, s->getTextColour());
 
     // Labels
     this->setColour(Label::textColourId, s->getTextColour());
@@ -822,12 +733,6 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(TextButton::buttonOnColourId, s->getPanelBorderColour());
     this->setColour(TextButton::textColourOnId, s->getTextColour().withMultipliedAlpha(0.75f));
     this->setColour(TextButton::textColourOffId, s->getTextColour().withMultipliedAlpha(0.5f));
-
-    // PopupMenu
-    this->setColour(PopupMenu::backgroundColourId, s->getSecondaryGradientColourA().darker(0.05f));
-    this->setColour(PopupMenu::highlightedBackgroundColourId, s->getSecondaryGradientColourA());
-    this->setColour(PopupMenu::textColourId, s->getTextColour());
-    this->setColour(PopupMenu::highlightedTextColourId, s->getTextColour().brighter(0.1f));
 
     // TextEditor
     this->setColour(TextEditor::textColourId, s->getTextColour());
@@ -890,9 +795,8 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Common::borderLineDark, Colours::black.withAlpha(0.2f));
 
     // CallOutBox
-    this->setColour(ColourIDs::Callout::blur, s->getSecondaryGradientColourB().darker(2.0f).withAlpha(0.35f));
-    this->setColour(ColourIDs::Callout::fill, s->getPrimaryGradientColourB().darker(2.0f).withAlpha(0.65f));
-    this->setColour(ColourIDs::Callout::frame, s->getPrimaryGradientColourB().brighter(0.75f).withAlpha(0.14f));
+    this->setColour(ColourIDs::Callout::fill, s->getPrimaryGradientColourB().darker(1.0f).withAlpha(0.925f));
+    this->setColour(ColourIDs::Callout::frame, s->getPrimaryGradientColourB().darker(2.0f).withAlpha(1.f));
 
     // HybridRoll
     this->setColour(ColourIDs::Roll::blackKey, s->getBlackKeyColour());
@@ -900,17 +804,16 @@ void HelioTheme::initColours(const ::ColourScheme::Ptr s)
     this->setColour(ColourIDs::Roll::whiteKey, s->getWhiteKeyColour());
     this->setColour(ColourIDs::Roll::whiteKeyAlt, s->getWhiteKeyColour().withMultipliedBrightness(1.15f));
     this->setColour(ColourIDs::Roll::rowLine, s->getRowColour());
-    this->setColour(ColourIDs::Roll::barLine, s->getBarColour().withAlpha(0.9f));
+    this->setColour(ColourIDs::Roll::barLine, s->getBarColour().withAlpha(0.8f));
     this->setColour(ColourIDs::Roll::barLineBevel, Colours::white.withAlpha(0.015f));
-    this->setColour(ColourIDs::Roll::beatLine, s->getBarColour().withAlpha(0.45f));
+    this->setColour(ColourIDs::Roll::beatLine, s->getBarColour().withAlpha(0.4f));
     this->setColour(ColourIDs::Roll::snapLine, s->getBarColour().withAlpha(0.1f));
     this->setColour(ColourIDs::Roll::headerFill, s->getPrimaryGradientColourB().darker(0.025f));
     this->setColour(ColourIDs::Roll::headerSnaps, s->getPrimaryGradientColourB().darker(0.025f).contrasting().withMultipliedAlpha(0.37f));
     this->setColour(ColourIDs::Roll::playhead, s->getLassoBorderColour().withAlpha(0.6f));
     this->setColour(ColourIDs::Roll::playheadShade, Colours::black.withAlpha(0.1f));
-    this->setColour(ColourIDs::Roll::trackHeaderFill, s->getWhiteKeyColour().darker(0.035f));
-    this->setColour(ColourIDs::Roll::trackHeaderBorderLight, Colours::white.withAlpha(0.03f));
-    this->setColour(ColourIDs::Roll::trackHeaderBorderDark, Colours::black.withAlpha(0.15f));
+    this->setColour(ColourIDs::Roll::trackHeaderFill, s->getWhiteKeyColour());
+    this->setColour(ColourIDs::Roll::trackHeaderBorder, Colours::white.withAlpha(0.065f));
 
     this->setColour(ColourIDs::HelperRectangle::fill, s->getLassoFillColour().withAlpha(0.08f));
     this->setColour(ColourIDs::HelperRectangle::outline, s->getLassoBorderColour().withAlpha(0.3f));
