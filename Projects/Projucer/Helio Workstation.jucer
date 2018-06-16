@@ -607,10 +607,10 @@
                 file="../../Source/UI/Common/FatalErrorScreen.cpp"/>
           <FILE id="nq0jKL" name="FatalErrorScreen.h" compile="0" resource="0"
                 file="../../Source/UI/Common/FatalErrorScreen.h"/>
-          <FILE id="QPGwhs" name="FineTuningSlider.cpp" compile="1" resource="0"
-                file="../../Source/UI/Common/FineTuningSlider.cpp"/>
-          <FILE id="txWoj6" name="FineTuningSlider.h" compile="0" resource="0"
-                file="../../Source/UI/Common/FineTuningSlider.h"/>
+          <FILE id="thBDR2" name="FineTuningComponentDragger.cpp" compile="1"
+                resource="0" file="../../Source/UI/Common/FineTuningComponentDragger.cpp"/>
+          <FILE id="bFxJCZ" name="FineTuningComponentDragger.h" compile="0" resource="0"
+                file="../../Source/UI/Common/FineTuningComponentDragger.h"/>
           <FILE id="wZlPKT" name="KeySelector.cpp" compile="1" resource="0" file="../../Source/UI/Common/KeySelector.cpp"/>
           <FILE id="beAclV" name="KeySelector.h" compile="0" resource="0" file="../../Source/UI/Common/KeySelector.h"/>
           <FILE id="KlCL6B" name="FloatBoundsComponent.h" compile="0" resource="0"

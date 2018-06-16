@@ -110,7 +110,8 @@ void AutomationCurveHelper::mouseDown (const MouseEvent& e)
     if (e.mods.isLeftButtonDown())
     {
         this->event.getSequence()->checkpoint();
-        this->dragger.startDraggingComponent(this, e);
+        this->dragger.startDraggingComponent(this, e, this->getCurvature(),
+            0.f, 1.f, CURVE_INTERPOLATION_THRESHOLD, FineTuningComponentDragger::DragOnlyY);
         this->anchor = this->getBounds().getCentre();
         this->curveAnchor = this->getCurvature();
         this->draggingState = true;
@@ -131,21 +132,13 @@ void AutomationCurveHelper::mouseDrag (const MouseEvent& e)
     {
         if (this->draggingState)
         {
-            this->dragger.dragComponent(this, e, nullptr);
-            const float newCurvature = this->constrainPosition();
-
-            //const bool xReverse = e.getMouseDownPosition().getX() < e.getPosition().getX();
-            //const bool yReverse = e.getMouseDownPosition().getY() > e.getPosition().getY();
-            //const float newCurvature = this->curveAnchor + ((float(e.getDistanceFromDragStart()) / 512.f) * ((xReverse || yReverse) ? 1.f : -1.f));
-
-            //const float dragDistance = 0.05f; //float(e.getDistanceFromDragStart()) / 512.f;
-            //const float flattenCurvature = (newCurvature < this->getCurvature()) ? this->getCurvature() - dragDistance : this->getCurvature() + dragDistance;
-
-            //Logger::writeToLog(String(newCurvature));
-
-            // todo! right helper dragging
-            AutomationSequence *autoLayer = static_cast<AutomationSequence *>(this->event.getSequence());
-            autoLayer->change(this->event, this->event.withCurvature(newCurvature), true);
+            this->dragger.dragComponent(this, e);
+            const float newCurvature = this->dragger.getValue();
+            if (newCurvature != this->getCurvature())
+            {
+                auto *sequence = static_cast<AutomationSequence *>(this->event.getSequence());
+                sequence->change(this->event, this->event.withCurvature(newCurvature), true);
+            }
         }
     }
     //[/UserCode_mouseDrag]
@@ -178,47 +171,6 @@ void AutomationCurveHelper::mouseUp (const MouseEvent& e)
 float AutomationCurveHelper::getCurvature() const
 {
     return this->event.getCurvature();
-}
-
-float AutomationCurveHelper::constrainPosition()
-{
-    if (this->component1 == nullptr || this->component2 == nullptr)
-    {
-        return 0.5f;
-    }
-
-    const int yCentreAnchor(this->anchor.getY());
-    const int yCentreMy(this->getBounds().getCentre().getY());
-    const int yCentre1(this->component1->getBounds().getCentre().getY());
-    const int yCentre2(this->component2->getBounds().getCentre().getY());
-
-    const int yMin = jmin(yCentre1, yCentre2);
-    const int yMax = jmax(yCentre1, yCentre2);
-    const int yLength = yMax - yMin;
-
-    const int newCenterY = jmin(yMax, jmax(yMin, yCentreMy));
-
-
-    const float upperAnchorLength = float(yCentreAnchor - yMin);
-    const float lowerAnchorLength = float(yMax - yCentreAnchor);
-
-    const float upperCurveDelta = float(1.f - this->curveAnchor);
-    const float lowerCurveDelta = float(this->curveAnchor);
-
-    const float upperAnchorDragDelta = float(newCenterY - yCentreAnchor);
-    const float lowerAnchorDragDelta = float(yCentreAnchor - newCenterY);
-
-    const float upperCurveDragDelta = (upperAnchorLength > 0.f) ? (upperCurveDelta * (upperAnchorDragDelta / upperAnchorLength)) : 0.f;
-    const float lowerCurveDragDelta = (lowerAnchorLength > 0.f) ? (lowerCurveDelta * (lowerAnchorDragDelta / lowerAnchorLength)) : 0.f;
-
-    //Logger::writeToLog("upperCurveDragDelta: " + String(upperCurveDragDelta));
-    //Logger::writeToLog("lowerCurveDragDelta: " + String(lowerCurveDragDelta));
-    //this->setCentrePosition(this->anchor.getX(), newCenterY);
-
-    float newCurviness = this->curveAnchor - upperCurveDragDelta + lowerCurveDragDelta;
-
-    return newCurviness;
-    //return 1.f - (float(newCenterY - yMin) / float(yLength));
 }
 
 //[/MiscUserCode]

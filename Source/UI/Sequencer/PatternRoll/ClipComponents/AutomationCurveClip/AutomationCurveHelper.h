@@ -19,6 +19,7 @@
 
 //[Headers]
 #include "AutomationEvent.h"
+#include "FineTuningComponentDragger.h"
 //[/Headers]
 
 
@@ -48,13 +49,11 @@ private:
 
     const AutomationEvent &event;
 
-    ComponentDragger dragger;
+    FineTuningComponentDragger dragger;
     bool draggingState;
     Point<int> anchor;
     float curveAnchor;
-
-    float constrainPosition();
-
+    
     SafePointer<Component> component1;
     SafePointer<Component> component2;
 

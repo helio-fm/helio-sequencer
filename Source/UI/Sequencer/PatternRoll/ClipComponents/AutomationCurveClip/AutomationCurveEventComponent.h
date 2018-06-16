@@ -18,6 +18,7 @@
 #pragma once
 
 #include "AutomationEvent.h"
+#include "FineTuningComponentDragger.h"
 
 class AutomationCurveEventsConnector;
 class AutomationCurveHelper;
@@ -58,7 +59,7 @@ private:
     const AutomationEvent &event;
     AutomationCurveClipComponent &editor;
 
-    ComponentDragger dragger;
+    FineTuningComponentDragger dragger;
     AutomationEvent anchor;
 
     Point<int> clickOffset;

@@ -31,7 +31,6 @@ AutomationCurveEventComponent::AutomationCurveEventComponent(AutomationCurveClip
 {
     this->setFocusContainer(false);
     this->setWantsKeyboardFocus(false);
-
     this->setMouseCursor(MouseCursor::PointingHandCursor);
 
     this->setInterceptsMouseClicks(true, false);
@@ -69,7 +68,12 @@ void AutomationCurveEventComponent::mouseDown(const MouseEvent &e)
     if (e.mods.isLeftButtonDown())
     {
         this->event.getSequence()->checkpoint();
-        this->dragger.startDraggingComponent(this, e);
+
+        // TODO when started dragging Y, display some kind of a slider around this component
+
+        this->dragger.startDraggingComponent(this, e, this->event.getControllerValue(),
+            0.f, 1.f, CURVE_INTERPOLATION_THRESHOLD);
+
         this->startDragging();
     }
 }
@@ -110,6 +114,8 @@ void AutomationCurveEventComponent::mouseUp(const MouseEvent &e)
             float deltaBeat = 0.f;
             this->getDraggingDelta(e, deltaBeat, deltaValue);
             this->editor.updateCurveComponent(this);
+
+            this->dragger.endDraggingComponent(this, e);
             this->endDragging();
         }
 
@@ -192,16 +198,20 @@ bool AutomationCurveEventComponent::isDragging() const
 
 bool AutomationCurveEventComponent::getDraggingDelta(const MouseEvent &e, float &deltaBeat, float &deltaValue)
 {
-    this->dragger.dragComponent(this, e, nullptr);
+    this->dragger.dragComponent(this, e);
 
-    float newValue = -1;
     float newBeat = -1;
+    float newValue = -1; // shouldn't be used
     this->editor.getRowsColsByMousePosition(this->getX(), this->getY(), newValue, newBeat);
 
-    deltaValue = (newValue - this->anchor.getControllerValue());
+    // TODO get beat by Y position
+    // get value from dragger
+    // update slider view to match actual data
+
+    deltaValue = (this->dragger.getValue() - this->anchor.getControllerValue());
     deltaBeat = (newBeat - this->anchor.getBeat());
 
-    const bool valueChanged = (this->getControllerValue() != newValue);
+    const bool valueChanged = (this->getControllerValue() != this->dragger.getValue());
     const bool beatChanged = (this->getBeat() != newBeat);
 
     return (valueChanged || beatChanged);
