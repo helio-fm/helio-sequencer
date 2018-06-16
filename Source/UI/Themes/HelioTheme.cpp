@@ -682,29 +682,42 @@ void HelioTheme::positionDocumentWindowButtons(DocumentWindow &,
 
 void HelioTheme::initResources()
 {
-    // Search for Noto if present,
-    // Or fallback to default sans serif font
+    // Search for Noto if present, or fallback to default sans serif font
 
     Logger::writeToLog("Fonts search started");
     Array<Font> systemFonts;
     Font::findFonts(systemFonts);
-    
+    const Font *notoLike = nullptr;
+    const Font *exactlyNoto = nullptr;
+
     for (const auto &systemFont : systemFonts)
     {
-        if (systemFont.getTypeface()->getName().startsWithIgnoreCase("Noto Sans"))
+        if (systemFont.getTypeface()->getName() == "Noto Sans")
+        {
+            Logger::writeToLog("Found Noto Sans");
+            exactlyNoto = &systemFont;
+        }
+        else if (systemFont.getTypeface()->getName().startsWithIgnoreCase("Noto Sans"))
         {
             Logger::writeToLog("Found " + systemFont.getTypeface()->getName());
-            this->textTypefaceCache = Typeface::createSystemTypefaceFor({ systemFont });
+            notoLike = &systemFont;
         }
     }
-    
-    if (this->textTypefaceCache == nullptr)
+
+    if (exactlyNoto != nullptr)
     {
-        // Verdana on win32, Bitstream Vera Sans or something on Linux,
-        // Lucida Grande on mac, Helvetica on iOS
-        Logger::writeToLog("Falling back to system sans serif");
+        this->textTypefaceCache = Typeface::createSystemTypefaceFor(*exactlyNoto);
+    }
+    else if (notoLike != nullptr)
+    {
+        this->textTypefaceCache = Typeface::createSystemTypefaceFor(*notoLike);
+    }
+    else
+    {
+        // Verdana on Windows, Bitstream Vera Sans or something on Linux,
+        // Lucida Grande on macOS, Helvetica on iOS:
+        Logger::writeToLog("Falling back to system sans serif font");
         this->textTypefaceCache = Font::getDefaultTypefaceForFont({ Font::getDefaultSansSerifFontName(), 0, 0 });
-        Logger::writeToLog("Done with fonts");
     }
 
     Icons::initBuiltInImages();
