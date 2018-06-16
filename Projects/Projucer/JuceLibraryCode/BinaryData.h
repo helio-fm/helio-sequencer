@@ -210,7 +210,7 @@ namespace BinaryData
     const int            paste_svgSize = 3086;
 
     extern const char*   patterns_svg;
-    const int            patterns_svgSize = 192;
+    const int            patterns_svgSize = 215;
 
     extern const char*   pause_svg;
     const int            pause_svgSize = 359;
@@ -308,6 +308,9 @@ namespace BinaryData
     extern const char*   versionControl_svg;
     const int            versionControl_svgSize = 1378;
 
+    extern const char*   volume_svg;
+    const int            volume_svgSize = 262;
+
     extern const char*   wipeSpaceTool_svg;
     const int            wipeSpaceTool_svgSize = 1093;
 
@@ -327,22 +330,22 @@ namespace BinaryData
     const int            Noise_pngSize = 317;
 
     extern const char*   Arpeggiators_json;
-    const int            Arpeggiators_jsonSize = 64;
+    const int            Arpeggiators_jsonSize = 70;
 
     extern const char*   ColourSchemes_json;
-    const int            ColourSchemes_jsonSize = 2664;
+    const int            ColourSchemes_jsonSize = 2753;
 
     extern const char*   HotkeySchemes_json;
-    const int            HotkeySchemes_jsonSize = 11048;
+    const int            HotkeySchemes_jsonSize = 11368;
 
     extern const char*   Scales_json;
-    const int            Scales_jsonSize = 3513;
+    const int            Scales_jsonSize = 3563;
 
     extern const char*   Translations_json;
     const int            Translations_jsonSize = 394369;
 
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 111;
+    const int namedResourceListSize = 112;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

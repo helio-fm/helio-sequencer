@@ -4864,7 +4864,7 @@ const char* paste_svg = (const char*) temp_binary_data_66;
 //================== patterns.svg ==================
 static const unsigned char temp_binary_data_67[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\">\n"
-"<path d=\"M5 13h14v-3h-14v2zM3 19h14v-3h-14v2zM7 5v2h14v-3h-14z\" fill=\"#000000\"></path>\n"
+"<path d=\"M3 5.016h18.984v6h-18.984v-6zM9.984 18.984v-6.984h12v6.984h-12zM3 18.984v-6.984h6v6.984h-6z\"></path>\n"
 "</svg>\n";
 
 const char* patterns_svg = (const char*) temp_binary_data_67;
@@ -5277,8 +5277,16 @@ static const unsigned char temp_binary_data_99[] =
 
 const char* versionControl_svg = (const char*) temp_binary_data_99;
 
-//================== wipeSpaceTool.svg ==================
+//================== volume.svg ==================
 static const unsigned char temp_binary_data_100[] =
+"<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" width=\"20\" height=\"20\" viewBox=\"0 0 20 20\">\n"
+"<path d=\"M19 13.805c0 0.657-0.538 1.195-1.195 1.195h-16.272c-0.88 0-0.982-0.371-0.229-0.822l16.323-9.055c0.755-0.453 1.373-0.104 1.373 0.777v7.905z\"></path>\n"
+"</svg>\n";
+
+const char* volume_svg = (const char*) temp_binary_data_100;
+
+//================== wipeSpaceTool.svg ==================
+static const unsigned char temp_binary_data_101[] =
 "<svg width=\"128px\" height=\"128px\" viewBox=\"0 0 128 128\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n"
 "    <g id=\"Controls\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n"
 "        <g id=\"wipe-space\" fill=\"#000000\">\n"
@@ -5291,10 +5299,10 @@ static const unsigned char temp_binary_data_100[] =
 "    </g>\n"
 "</svg>";
 
-const char* wipeSpaceTool_svg = (const char*) temp_binary_data_100;
+const char* wipeSpaceTool_svg = (const char*) temp_binary_data_101;
 
 //================== workspace.svg ==================
-static const unsigned char temp_binary_data_101[] =
+static const unsigned char temp_binary_data_102[] =
 "<svg xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"863.58342\" height=\"842.08977\" viewBox=\"0 0 863.58342 842.08977\">\n"
 "  <defs>\n"
 "    <linearGradient id=\"20794d0d-ea67-4249-b501-c4565899937f\" x1=\"514.055\" y1=\"262.93742\" x2=\"462.28089\" y2=\"58.19437\" gradientUnits=\"userSpaceOnUse\">\n"
@@ -5501,10 +5509,10 @@ static const unsigned char temp_binary_data_101[] =
 "  </g>\n"
 "</svg>\n";
 
-const char* workspace_svg = (const char*) temp_binary_data_101;
+const char* workspace_svg = (const char*) temp_binary_data_102;
 
 //================== zoomIn.svg ==================
-static const unsigned char temp_binary_data_102[] =
+static const unsigned char temp_binary_data_103[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"32\" height=\"32\" viewBox=\"0 0 32 32\">\n"
 "\t<path d=\"M17.333 14.667h-2.667v-2.667c0-0.368-0.299-0.667-0.667-0.667s-0.667 0.299-0.667 0.667v2.667h-2.667c-0.368 0-0.667 0.299-0.667 0.667s0.299 0.667 0.667 0.667h2.667v2.667c0 0.368 0.299 0.667 0.667 0.667s0.667-0.299 0.667-0.667v-2.667h2.667c0"
 ".368 0 0.667-0.299 0.667-0.667s-0.299-0.667-0.667-0.667z\" fill=\"#000000\"></path>\n"
@@ -5512,20 +5520,20 @@ static const unsigned char temp_binary_data_102[] =
 "301 0 4.173-1.872 4.173-4.175 0-1.12-0.437-2.171-1.232-2.957l-1.267-1.315zM7.333 15.333c0-3.676 2.991-6.667 6.667-6.667s6.667 2.991 6.667 6.667-2.991 6.667-6.667 6.667-6.667-2.991-6.667-6.667z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* zoomIn_svg = (const char*) temp_binary_data_102;
+const char* zoomIn_svg = (const char*) temp_binary_data_103;
 
 //================== zoomOut.svg ==================
-static const unsigned char temp_binary_data_103[] =
+static const unsigned char temp_binary_data_104[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"32\" height=\"32\" viewBox=\"0 0 32 32\">\n"
 "\t<path d=\"M17.333 14.667h-6.667c-0.368 0-0.667 0.299-0.667 0.667s0.299 0.667 0.667 0.667h6.667c0.368 0 0.667-0.299 0.667-0.667s-0.299-0.667-0.667-0.667z\" fill=\"#000000\"></path>\n"
 "\t<path d=\"M25.841 21.275l-1.265-1.315-1.715-1.716c0.303-0.917 0.472-1.893 0.472-2.911 0-5.145-4.187-9.333-9.333-9.333s-9.333 4.188-9.333 9.333 4.187 9.333 9.333 9.333c1.017 0 1.995-0.169 2.912-0.472l3.096 3.093 0.087 0.073c0.801 0.675 1.797 1.045 2"
 ".805 1.045 2.301 0 4.173-1.872 4.173-4.175 0-1.12-0.437-2.171-1.232-2.957zM7.333 15.333c0-3.676 2.991-6.667 6.667-6.667s6.667 2.991 6.667 6.667-2.991 6.667-6.667 6.667-6.667-2.991-6.667-6.667z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* zoomOut_svg = (const char*) temp_binary_data_103;
+const char* zoomOut_svg = (const char*) temp_binary_data_104;
 
 //================== zoomTool.svg ==================
-static const unsigned char temp_binary_data_104[] =
+static const unsigned char temp_binary_data_105[] =
 "<svg version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\" width=\"32\" height=\"32\" viewBox=\"0 0 32 32\">\n"
 "\t<path d=\"M17.333 14.667h-2.667v-2.667c0-0.368-0.299-0.667-0.667-0.667s-0.667 0.299-0.667 0.667v2.667h-2.667c-0.368 0-0.667 0.299-0.667 0.667s0.299 0.667 0.667 0.667h2.667v2.667c0 0.368 0.299 0.667 0.667 0.667s0.667-0.299 0.667-0.667v-2.667h2.667c0"
 ".368 0 0.667-0.299 0.667-0.667s-0.299-0.667-0.667-0.667z\" fill=\"#000000\"></path>\n"
@@ -5533,127 +5541,127 @@ static const unsigned char temp_binary_data_104[] =
 "301 0 4.173-1.872 4.173-4.175 0-1.12-0.437-2.171-1.232-2.957l-1.267-1.315zM7.333 15.333c0-3.676 2.991-6.667 6.667-6.667s6.667 2.991 6.667 6.667-2.991 6.667-6.667 6.667-6.667-2.991-6.667-6.667z\" fill=\"#000000\"></path>\n"
 "</svg>\n";
 
-const char* zoomTool_svg = (const char*) temp_binary_data_104;
+const char* zoomTool_svg = (const char*) temp_binary_data_105;
 
 //================== Noise.png ==================
-static const unsigned char temp_binary_data_105[] =
+static const unsigned char temp_binary_data_106[] =
 { 137,80,78,71,13,10,26,10,0,0,0,13,73,72,68,82,0,0,0,48,0,0,0,48,8,6,0,0,0,87,2,249,135,0,0,0,4,103,65,77,65,0,0,177,143,11,252,97,5,0,0,0,244,73,68,65,84,104,5,213,146,201,13,192,48,16,2,211,131,235,117,143,238,40,7,18,145,64,219,192,228,99,145,215,176,
 204,181,247,190,175,247,251,222,181,214,77,203,31,251,255,157,115,84,198,63,104,217,220,172,151,170,142,85,215,181,105,170,52,47,75,153,166,245,20,84,149,162,79,79,67,203,81,6,19,168,234,88,125,29,154,166,74,243,98,108,25,65,61,5,85,165,40,213,211,208,
 114,148,193,4,170,58,86,95,135,166,169,210,188,24,91,70,80,79,65,85,41,74,245,52,180,28,101,48,129,170,142,213,215,161,105,170,52,47,198,150,17,212,83,80,85,138,82,61,13,45,71,25,76,160,170,99,245,117,104,154,42,205,139,177,101,4,245,20,84,149,162,84,
 79,67,203,81,6,19,168,234,88,125,29,154,166,74,243,98,108,25,65,61,5,85,165,40,213,211,208,114,148,193,4,170,58,86,95,135,166,169,210,188,24,91,70,80,79,65,85,41,74,245,52,180,28,101,48,129,170,142,213,215,161,105,170,52,47,198,150,9,244,1,171,21,46,
 170,68,251,251,242,0,0,0,0,73,69,78,68,174,66,96,130,0,0 };
 
-const char* Noise_png = (const char*) temp_binary_data_105;
+const char* Noise_png = (const char*) temp_binary_data_106;
 
 //================== Arpeggiators.json ==================
-static const unsigned char temp_binary_data_106[] =
-"{\n"
-"  // TODO\n"
-"  \"arpeggiators\": {\n"
-"    \"arpeggiator\": [\n"
-"    ]\n"
-"  }\n"
+static const unsigned char temp_binary_data_107[] =
+"{\r\n"
+"  // TODO\r\n"
+"  \"arpeggiators\": {\r\n"
+"    \"arpeggiator\": [\r\n"
+"    ]\r\n"
+"  }\r\n"
 "}";
 
-const char* Arpeggiators_json = (const char*) temp_binary_data_106;
+const char* Arpeggiators_json = (const char*) temp_binary_data_107;
 
 //================== ColourSchemes.json ==================
-static const unsigned char temp_binary_data_107[] =
-"{\n"
-"  \"colourSchemes\": {\n"
-"    \"colourScheme\": [\n"
-"      {\n"
-"        \"name\": \"Black Book\",\n"
-"        \"colourMap\": {\n"
-"          \"text\": \"ffffffff\",\n"
-"          \"primaryGradientA\": \"ff25252e\",\n"
-"          \"primaryGradientB\": \"ff25252e\",\n"
-"          \"secondaryGradientA\": \"ff27262f\",\n"
-"          \"secondaryGradientB\": \"ff27262f\",\n"
-"          \"lassoFill\": \"17000000\",\n"
-"          \"lassoBorder\": \"ffad7fff\",\n"
-"          \"whiteKey\": \"ff33323c\",\n"
-"          \"blackKey\": \"ff1b1a1f\",\n"
-"          \"beat\": \"bf1b1923\",\n"
-"          \"bar\": \"271b1923\",\n"
-"          \"row\": \"ff1b1923\",\n"
-"          \"panelFill\": \"18ffffff\",\n"
-"          \"panelBorder\": \"afffffff\",\n"
-"          \"iconBase\": \"29ffffff\",\n"
-"          \"iconShadow\": \"ff000000\"\n"
-"        }\n"
-"      },\n"
-"      {\n"
-"        \"name\": \"Helio Theme\",\n"
-"        \"colourMap\": {\n"
-"          \"text\": \"ffffffff\",\n"
-"          \"primaryGradientA\": \"ff373c6e\",\n"
-"          \"primaryGradientB\": \"ff373c6e\",\n"
-"          \"secondaryGradientA\": \"ff3d4277\",\n"
-"          \"secondaryGradientB\": \"ff3d4277\",\n"
-"          \"lassoFill\": \"70000000\",\n"
-"          \"lassoBorder\": \"9ff0087\",\n"
-"          \"whiteKey\": \"ff333875\",\n"
-"          \"blackKey\": \"ff1e1d51\",\n"
-"          \"beat\": \"bf151240\",\n"
-"          \"bar\": \"27151240\",\n"
-"          \"row\": \"ff151240\",\n"
-"          \"panelFill\": \"20ffffff\",\n"
-"          \"panelBorder\": \"18ffffff\",\n"
-"          \"iconBase\": \"3f000000\",\n"
-"          \"iconShadow\": \"1dffffff\"\n"
-"        }\n"
-"      },\n"
-"      {\n"
-"        \"name\": \"Grayscale\",\n"
-"        \"colourMap\": {\n"
-"          \"text\": \"ffffffff\",\n"
-"          \"primaryGradientA\": \"ff464555\",\n"
-"          \"primaryGradientB\": \"ff464555\",\n"
-"          \"secondaryGradientA\": \"ff494858\",\n"
-"          \"secondaryGradientB\": \"ff494858\",\n"
-"          \"lassoFill\": \"17000000\",\n"
-"          \"lassoBorder\": \"ff5867ff\",\n"
-"          \"whiteKey\": \"ff43424e\",\n"
-"          \"blackKey\": \"ff2b2a32\",\n"
-"          \"beat\": \"bf282635\",\n"
-"          \"bar\": \"27282635\",\n"
-"          \"row\": \"ff282635\",\n"
-"          \"panelFill\": \"18ffffff\",\n"
-"          \"panelBorder\": \"afffffff\",\n"
-"          \"iconBase\": \"3f000000\",\n"
-"          \"iconShadow\": \"1dffffff\"\n"
-"        }\n"
-"      },\n"
-"      {\n"
-"        \"name\": \"Midnight Tracking\",\n"
-"        \"colourMap\": {\n"
-"          \"text\": \"ffffffff\",\n"
-"          \"primaryGradientA\": \"ff473a7e\",\n"
-"          \"primaryGradientB\": \"ff473a7e\",\n"
-"          \"secondaryGradientA\": \"ff473a7e\",\n"
-"          \"secondaryGradientB\": \"ff473a7e\",\n"
-"          \"lassoFill\": \"70000000\",\n"
-"          \"lassoBorder\": \"9815fff\",\n"
-"          \"whiteKey\": \"ff372e67\",\n"
-"          \"blackKey\": \"ff1e1b45\",\n"
-"          \"beat\": \"bf1e1b45\",\n"
-"          \"bar\": \"271e1b45\",\n"
-"          \"row\": \"ff1e1b45\",\n"
-"          \"panelFill\": \"18ffffff\",\n"
-"          \"panelBorder\": \"afffffff\",\n"
-"          \"iconBase\": \"3f000000\",\n"
-"          \"iconShadow\": \"1dffffff\"\n"
-"        }\n"
-"      }\n"
-"    ]\n"
-"  }\n"
+static const unsigned char temp_binary_data_108[] =
+"{\r\n"
+"  \"colourSchemes\": {\r\n"
+"    \"colourScheme\": [\r\n"
+"      {\r\n"
+"        \"name\": \"Black Book\",\r\n"
+"        \"colourMap\": {\r\n"
+"          \"text\": \"ffffffff\",\r\n"
+"          \"primaryGradientA\": \"ff25252e\",\r\n"
+"          \"primaryGradientB\": \"ff25252e\",\r\n"
+"          \"secondaryGradientA\": \"ff27262f\",\r\n"
+"          \"secondaryGradientB\": \"ff27262f\",\r\n"
+"          \"lassoFill\": \"17000000\",\r\n"
+"          \"lassoBorder\": \"ffad7fff\",\r\n"
+"          \"whiteKey\": \"ff33323c\",\r\n"
+"          \"blackKey\": \"ff1b1a1f\",\r\n"
+"          \"beat\": \"bf1b1923\",\r\n"
+"          \"bar\": \"271b1923\",\r\n"
+"          \"row\": \"ff1b1923\",\r\n"
+"          \"panelFill\": \"18ffffff\",\r\n"
+"          \"panelBorder\": \"afffffff\",\r\n"
+"          \"iconBase\": \"29ffffff\",\r\n"
+"          \"iconShadow\": \"ff000000\"\r\n"
+"        }\r\n"
+"      },\r\n"
+"      {\r\n"
+"        \"name\": \"Helio Theme\",\r\n"
+"        \"colourMap\": {\r\n"
+"          \"text\": \"ffffffff\",\r\n"
+"          \"primaryGradientA\": \"ff373c6e\",\r\n"
+"          \"primaryGradientB\": \"ff373c6e\",\r\n"
+"          \"secondaryGradientA\": \"ff3d4277\",\r\n"
+"          \"secondaryGradientB\": \"ff3d4277\",\r\n"
+"          \"lassoFill\": \"70000000\",\r\n"
+"          \"lassoBorder\": \"9ff0087\",\r\n"
+"          \"whiteKey\": \"ff333875\",\r\n"
+"          \"blackKey\": \"ff1e1d51\",\r\n"
+"          \"beat\": \"bf151240\",\r\n"
+"          \"bar\": \"27151240\",\r\n"
+"          \"row\": \"ff151240\",\r\n"
+"          \"panelFill\": \"20ffffff\",\r\n"
+"          \"panelBorder\": \"18ffffff\",\r\n"
+"          \"iconBase\": \"3f000000\",\r\n"
+"          \"iconShadow\": \"1dffffff\"\r\n"
+"        }\r\n"
+"      },\r\n"
+"      {\r\n"
+"        \"name\": \"Grayscale\",\r\n"
+"        \"colourMap\": {\r\n"
+"          \"text\": \"ffffffff\",\r\n"
+"          \"primaryGradientA\": \"ff464555\",\r\n"
+"          \"primaryGradientB\": \"ff464555\",\r\n"
+"          \"secondaryGradientA\": \"ff494858\",\r\n"
+"          \"secondaryGradientB\": \"ff494858\",\r\n"
+"          \"lassoFill\": \"17000000\",\r\n"
+"          \"lassoBorder\": \"ff5867ff\",\r\n"
+"          \"whiteKey\": \"ff43424e\",\r\n"
+"          \"blackKey\": \"ff2b2a32\",\r\n"
+"          \"beat\": \"bf282635\",\r\n"
+"          \"bar\": \"27282635\",\r\n"
+"          \"row\": \"ff282635\",\r\n"
+"          \"panelFill\": \"18ffffff\",\r\n"
+"          \"panelBorder\": \"afffffff\",\r\n"
+"          \"iconBase\": \"3f000000\",\r\n"
+"          \"iconShadow\": \"1dffffff\"\r\n"
+"        }\r\n"
+"      },\r\n"
+"      {\r\n"
+"        \"name\": \"Midnight Tracking\",\r\n"
+"        \"colourMap\": {\r\n"
+"          \"text\": \"ffffffff\",\r\n"
+"          \"primaryGradientA\": \"ff473a7e\",\r\n"
+"          \"primaryGradientB\": \"ff473a7e\",\r\n"
+"          \"secondaryGradientA\": \"ff473a7e\",\r\n"
+"          \"secondaryGradientB\": \"ff473a7e\",\r\n"
+"          \"lassoFill\": \"70000000\",\r\n"
+"          \"lassoBorder\": \"9815fff\",\r\n"
+"          \"whiteKey\": \"ff372e67\",\r\n"
+"          \"blackKey\": \"ff1e1b45\",\r\n"
+"          \"beat\": \"bf1e1b45\",\r\n"
+"          \"bar\": \"271e1b45\",\r\n"
+"          \"row\": \"ff1e1b45\",\r\n"
+"          \"panelFill\": \"18ffffff\",\r\n"
+"          \"panelBorder\": \"afffffff\",\r\n"
+"          \"iconBase\": \"3f000000\",\r\n"
+"          \"iconShadow\": \"1dffffff\"\r\n"
+"        }\r\n"
+"      }\r\n"
+"    ]\r\n"
+"  }\r\n"
 "}";
 
-const char* ColourSchemes_json = (const char*) temp_binary_data_107;
+const char* ColourSchemes_json = (const char*) temp_binary_data_108;
 
 //================== HotkeySchemes.json ==================
-static const unsigned char temp_binary_data_108[] =
+static const unsigned char temp_binary_data_109[] =
 "{\n"
 "  \"hotkeySchemes\": {\n"
 "\n"
@@ -5689,6 +5697,8 @@ static const unsigned char temp_binary_data_108[] =
 "        { \"receiver\": \"MainLayout\", \"command\": \"ShowNextPage\", \"key\": \"Command + Cursor Right\" },\n"
 "        { \"receiver\": \"MainLayout\", \"command\": \"ShowNextPage\", \"key\": \"Alt + Cursor Right\" },\n"
 "        { \"receiver\": \"SequencerLayout\", \"command\": \"SwitchBetweenRolls\", \"key\": \"Tab\" },\n"
+"        { \"receiver\": \"SequencerLayout\", \"command\": \"SwitchToPatternRoll\", \"key\": \"Alt + Cursor Up\" },\n"
+"        { \"receiver\": \"SequencerLayout\", \"command\": \"SwitchToPianoRoll\", \"key\": \"Alt + Cursor Down\" },\n"
 "\n"
 "        // ------------------------------------\n"
 "        // Version control page\n"
@@ -5720,9 +5730,12 @@ static const unsigned char temp_binary_data_108[] =
 "        // Cut\n"
 "        { \"receiver\": \"PianoRoll\", \"command\": \"CutEvents\", \"key\": \"Command + X\" },\n"
 "        { \"receiver\": \"PianoRoll\", \"command\": \"CutEvents\", \"key\": \"Control + X\" },\n"
+"        { \"receiver\": \"PianoRoll\", \"command\": \"CutEvents\", \"key\": \"Shift + Delete\" },\n"
+"\n"
+"        // Cut to new track\n"
+"        { \"receiver\": \"PianoRoll\", \"command\": \"NewTrackFromSelection\", \"key\": \"+\" },\n"
 "\n"
 "        // Delete\n"
-"        { \"receiver\": \"PianoRoll\", \"command\": \"CutEvents\", \"key\": \"Shift + Delete\" },\n"
 "        { \"receiver\": \"PianoRoll\", \"command\": \"DeleteEvents\", \"key\": \"X\" },\n"
 "        { \"receiver\": \"PianoRoll\", \"command\": \"DeleteEvents\", \"key\": \"Delete\" },\n"
 "        { \"receiver\": \"PianoRoll\", \"command\": \"DeleteEvents\", \"key\": \"Backspace\" },\n"
@@ -5856,66 +5869,66 @@ static const unsigned char temp_binary_data_108[] =
 "  }\n"
 "}";
 
-const char* HotkeySchemes_json = (const char*) temp_binary_data_108;
+const char* HotkeySchemes_json = (const char*) temp_binary_data_109;
 
 //================== Scales.json ==================
-static const unsigned char temp_binary_data_109[] =
-"{\n"
-"  /*\n"
-"    This is the list of most common scales (and their modes),\n"
-"    borrowed from a book called 'The Scale Omnibus', which is highly recommended.\n"
-"    For simplicity I've only taken heptatonic scales from there.\n"
-"  */\n"
-"  \"scales\": {\n"
-"    \"scale\": [\n"
-"      { \"period\": \"12\", \"name\": \"Ionian\", \"intervals\": \"2 2 1 2 2 2 1\" },\n"
-"      { \"period\": \"12\", \"name\": \"Aeolian\", \"intervals\": \"2 1 2 2 1 2 2\" },\n"
-"      { \"period\": \"12\", \"name\": \"Lydian\", \"intervals\": \"2 2 2 1 2 2 1\" },\n"
-"      { \"period\": \"12\", \"name\": \"Mixolydian\", \"intervals\": \"2 2 1 2 2 1 2\" },\n"
-"      { \"period\": \"12\", \"name\": \"Dorian\", \"intervals\": \"2 1 2 2 2 1 2\" },\n"
-"      { \"period\": \"12\", \"name\": \"Phrygian\", \"intervals\": \"1 2 2 2 1 2 2\" },\n"
-"      { \"period\": \"12\", \"name\": \"Locrian\", \"intervals\": \"1 2 2 1 2 2 2\" },\n"
-"      { \"period\": \"12\", \"name\": \"Melodic Major\", \"intervals\": \"2 2 1 2 1 2 2\" },\n"
-"      { \"period\": \"12\", \"name\": \"Melodic Minor\", \"intervals\": \"2 1 2 2 2 2 1\" },\n"
-"      { \"period\": \"12\", \"name\": \"Harmonic Major\", \"intervals\": \"2 2 1 2 1 3 1\" },\n"
-"      { \"period\": \"12\", \"name\": \"Harmonic Minor\", \"intervals\": \"2 1 2 2 1 3 1\" },\n"
-"      { \"period\": \"12\", \"name\": \"Hungarian Major\", \"intervals\": \"3 1 2 1 2 1 2\" },\n"
-"      { \"period\": \"12\", \"name\": \"Hungarian Minor\", \"intervals\": \"2 1 1 3 1 3 1\" },\n"
-"      { \"period\": \"12\", \"name\": \"Neapolitan Major\", \"intervals\": \"1 2 2 2 2 2 1\" },\n"
-"      { \"period\": \"12\", \"name\": \"Neapolitan Minor\", \"intervals\": \"1 2 2 2 1 3 1\" },\n"
-"      { \"period\": \"12\", \"name\": \"Romanian Major\", \"intervals\": \"1 3 2 1 2 1 2\" },\n"
-"      { \"period\": \"12\", \"name\": \"Romanian Minor\", \"intervals\": \"2 1 3 1 2 1 2\" },\n"
-"      { \"period\": \"12\", \"name\": \"Enigmatic\", \"intervals\": \"1 3 2 2 2 1 1\" },\n"
-"      { \"period\": \"12\", \"name\": \"Enigmatic Minor\", \"intervals\": \"1 2 3 2 2 1 1\" },\n"
-"      { \"period\": \"12\", \"name\": \"Ionian Augmented\", \"intervals\": \"2 2 1 3 1 2 1\" },\n"
-"      { \"period\": \"12\", \"name\": \"Lydian Augmented\", \"intervals\": \"2 2 2 2 1 2 1\" },\n"
-"      { \"period\": \"12\", \"name\": \"Lydian Diminished\", \"intervals\": \"2 1 3 1 2 2 1\" },\n"
-"      { \"period\": \"12\", \"name\": \"Lydian Dominant\", \"intervals\": \"2 2 2 1 2 1 2\" },\n"
-"      { \"period\": \"12\", \"name\": \"Mixolydian Augmented\", \"intervals\": \"2 2 1 3 1 1 2\" },\n"
-"      { \"period\": \"12\", \"name\": \"Phrygian Dominant\", \"intervals\": \"1 3 1 2 1 2 2\" },\n"
-"      { \"period\": \"12\", \"name\": \"Ultraphrygian\", \"intervals\": \"1 2 1 3 1 1 3\" },\n"
-"      { \"period\": \"12\", \"name\": \"Locrian Dominant\", \"intervals\": \"1 3 1 1 2 2 2\" },\n"
-"      { \"period\": \"12\", \"name\": \"Superlocrian\", \"intervals\": \"1 1 2 2 2 2 2\" },\n"
-"      { \"period\": \"12\", \"name\": \"Ultralocrian\", \"intervals\": \"1 2 1 2 2 1 3\" },\n"
-"      { \"period\": \"12\", \"name\": \"Major Locrian\", \"intervals\": \"2 2 1 1 2 2 2\" },\n"
-"      { \"period\": \"12\", \"name\": \"Leading Whole-Tone\", \"intervals\": \"2 2 2 2 2 1 1\" },\n"
-"      { \"period\": \"12\", \"name\": \"Double Harmonic\", \"intervals\": \"1 3 1 2 1 3 1\" },\n"
-"      { \"period\": \"12\", \"name\": \"Half Diminished\", \"intervals\": \"2 1 2 1 2 2 2\" },\n"
-"      { \"period\": \"12\", \"name\": \"Altered Dominant\", \"intervals\": \"1 2 1 2 2 2 2\" },\n"
-"      { \"period\": \"12\", \"name\": \"Blues Heptatonic\", \"intervals\": \"2 1 2 1 3 1 2\" },\n"
-"      { \"period\": \"12\", \"name\": \"Blues Phrygian\", \"intervals\": \"1 2 2 1 1 3 2\" },\n"
-"      { \"period\": \"12\", \"name\": \"Blues Modified\", \"intervals\": \"2 1 2 1 1 3 2\" },\n"
-"      { \"period\": \"12\", \"name\": \"Blues Mixed\", \"intervals\": \"3 1 1 1 1 3 2\" },\n"
-"      { \"period\": \"12\", \"name\": \"Blues Leading Tone\", \"intervals\": \"3 2 1 1 3 1 1\" },\n"
-"      { \"period\": \"12\", \"name\": \"Rock'n'Roll\", \"intervals\": \"3 1 1 2 2 1 2\" }\n"
-"    ]\n"
-"  }\n"
+static const unsigned char temp_binary_data_110[] =
+"{\r\n"
+"  /*\r\n"
+"    This is the list of most common scales (and their modes),\r\n"
+"    borrowed from a book called 'The Scale Omnibus', which is highly recommended.\r\n"
+"    For simplicity I've only taken heptatonic scales from there.\r\n"
+"  */\r\n"
+"  \"scales\": {\r\n"
+"    \"scale\": [\r\n"
+"      { \"period\": \"12\", \"name\": \"Ionian\", \"intervals\": \"2 2 1 2 2 2 1\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Aeolian\", \"intervals\": \"2 1 2 2 1 2 2\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Lydian\", \"intervals\": \"2 2 2 1 2 2 1\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Mixolydian\", \"intervals\": \"2 2 1 2 2 1 2\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Dorian\", \"intervals\": \"2 1 2 2 2 1 2\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Phrygian\", \"intervals\": \"1 2 2 2 1 2 2\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Locrian\", \"intervals\": \"1 2 2 1 2 2 2\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Melodic Major\", \"intervals\": \"2 2 1 2 1 2 2\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Melodic Minor\", \"intervals\": \"2 1 2 2 2 2 1\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Harmonic Major\", \"intervals\": \"2 2 1 2 1 3 1\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Harmonic Minor\", \"intervals\": \"2 1 2 2 1 3 1\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Hungarian Major\", \"intervals\": \"3 1 2 1 2 1 2\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Hungarian Minor\", \"intervals\": \"2 1 1 3 1 3 1\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Neapolitan Major\", \"intervals\": \"1 2 2 2 2 2 1\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Neapolitan Minor\", \"intervals\": \"1 2 2 2 1 3 1\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Romanian Major\", \"intervals\": \"1 3 2 1 2 1 2\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Romanian Minor\", \"intervals\": \"2 1 3 1 2 1 2\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Enigmatic\", \"intervals\": \"1 3 2 2 2 1 1\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Enigmatic Minor\", \"intervals\": \"1 2 3 2 2 1 1\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Ionian Augmented\", \"intervals\": \"2 2 1 3 1 2 1\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Lydian Augmented\", \"intervals\": \"2 2 2 2 1 2 1\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Lydian Diminished\", \"intervals\": \"2 1 3 1 2 2 1\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Lydian Dominant\", \"intervals\": \"2 2 2 1 2 1 2\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Mixolydian Augmented\", \"intervals\": \"2 2 1 3 1 1 2\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Phrygian Dominant\", \"intervals\": \"1 3 1 2 1 2 2\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Ultraphrygian\", \"intervals\": \"1 2 1 3 1 1 3\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Locrian Dominant\", \"intervals\": \"1 3 1 1 2 2 2\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Superlocrian\", \"intervals\": \"1 1 2 2 2 2 2\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Ultralocrian\", \"intervals\": \"1 2 1 2 2 1 3\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Major Locrian\", \"intervals\": \"2 2 1 1 2 2 2\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Leading Whole-Tone\", \"intervals\": \"2 2 2 2 2 1 1\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Double Harmonic\", \"intervals\": \"1 3 1 2 1 3 1\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Half Diminished\", \"intervals\": \"2 1 2 1 2 2 2\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Altered Dominant\", \"intervals\": \"1 2 1 2 2 2 2\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Blues Heptatonic\", \"intervals\": \"2 1 2 1 3 1 2\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Blues Phrygian\", \"intervals\": \"1 2 2 1 1 3 2\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Blues Modified\", \"intervals\": \"2 1 2 1 1 3 2\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Blues Mixed\", \"intervals\": \"3 1 1 1 1 3 2\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Blues Leading Tone\", \"intervals\": \"3 2 1 1 3 1 1\" },\r\n"
+"      { \"period\": \"12\", \"name\": \"Rock'n'Roll\", \"intervals\": \"3 1 1 2 2 1 2\" }\r\n"
+"    ]\r\n"
+"  }\r\n"
 "}";
 
-const char* Scales_json = (const char*) temp_binary_data_109;
+const char* Scales_json = (const char*) temp_binary_data_110;
 
 //================== Translations.json ==================
-static const unsigned char temp_binary_data_110[] =
+static const unsigned char temp_binary_data_111[] =
 { 123,13,10,32,32,34,116,114,97,110,115,108,97,116,105,111,110,115,34,58,32,123,13,10,32,32,32,32,34,108,111,99,97,108,101,34,58,32,91,13,10,32,32,32,32,32,32,123,13,10,32,32,32,32,32,32,32,32,34,105,100,34,58,32,34,101,110,34,44,13,10,32,32,32,32,32,32,
 32,32,34,110,97,109,101,34,58,32,34,69,110,103,108,105,115,104,34,44,13,10,32,32,32,32,32,32,32,32,34,112,108,117,114,97,108,69,113,117,97,116,105,111,110,34,58,32,34,40,123,120,125,61,61,49,32,63,32,49,32,58,32,50,41,34,44,13,10,32,32,32,32,32,32,32,
 32,34,108,105,116,101,114,97,108,34,58,32,91,13,10,32,32,32,32,32,32,32,32,32,32,123,32,34,110,97,109,101,34,58,32,34,100,101,102,97,117,108,116,115,58,58,110,101,119,112,114,111,106,101,99,116,58,58,102,105,114,115,116,99,111,109,109,105,116,34,44,32,
@@ -11271,5 +11284,5 @@ static const unsigned char temp_binary_data_110[] =
 32,32,32,32,32,32,32,32,32,32,34,112,108,117,114,97,108,70,111,114,109,34,58,32,34,49,34,13,10,32,32,32,32,32,32,32,32,32,32,32,32,125,13,10,32,32,32,32,32,32,32,32,32,32,125,13,10,32,32,32,32,32,32,32,32,93,13,10,32,32,32,32,32,32,125,13,10,32,32,32,
 32,93,13,10,32,32,125,13,10,125,0,0 };
 
-const char* Translations_json = (const char*) temp_binary_data_110;
+const char* Translations_json = (const char*) temp_binary_data_111;
 }

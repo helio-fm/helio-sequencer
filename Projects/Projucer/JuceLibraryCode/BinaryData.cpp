@@ -11773,7 +11773,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) noexc
         case 0xe9dbb8f6:  numBytes = 699; return pageDown_svg;
         case 0x4fe11e2f:  numBytes = 706; return pageUp_svg;
         case 0xc95d8ab8:  numBytes = 3086; return paste_svg;
-        case 0xf53d4b08:  numBytes = 192; return patterns_svg;
+        case 0xf53d4b08:  numBytes = 215; return patterns_svg;
         case 0x3175289b:  numBytes = 359; return pause_svg;
         case 0x46869e6e:  numBytes = 441; return piano_svg;
         case 0x1829c627:  numBytes = 1336; return pianoTrack_svg;
@@ -11806,16 +11806,17 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) noexc
         case 0x8ebff0d7:  numBytes = 2482; return unmute_svg;
         case 0xcdfe36c0:  numBytes = 466; return up_svg;
         case 0x9916f08a:  numBytes = 1378; return versionControl_svg;
+        case 0xa37ab7bf:  numBytes = 262; return volume_svg;
         case 0x4dca255c:  numBytes = 1093; return wipeSpaceTool_svg;
         case 0x64a287ba:  numBytes = 25191; return workspace_svg;
         case 0xc82285fd:  numBytes = 942; return zoomIn_svg;
         case 0x86a456a0:  numBytes = 790; return zoomOut_svg;
         case 0x100cd030:  numBytes = 942; return zoomTool_svg;
         case 0xb3e40b64:  numBytes = 317; return Noise_png;
-        case 0x9d3ca20d:  numBytes = 64; return Arpeggiators_json;
-        case 0xaf771725:  numBytes = 2664; return ColourSchemes_json;
-        case 0x932a5b4b:  numBytes = 11048; return HotkeySchemes_json;
-        case 0x67f906de:  numBytes = 3513; return Scales_json;
+        case 0x9d3ca20d:  numBytes = 70; return Arpeggiators_json;
+        case 0xaf771725:  numBytes = 2753; return ColourSchemes_json;
+        case 0x932a5b4b:  numBytes = 11368; return HotkeySchemes_json;
+        case 0x67f906de:  numBytes = 3563; return Scales_json;
         case 0xe3299f05:  numBytes = 394369; return Translations_json;
         default: break;
     }
@@ -11926,6 +11927,7 @@ const char* namedResourceList[] =
     "unmute_svg",
     "up_svg",
     "versionControl_svg",
+    "volume_svg",
     "wipeSpaceTool_svg",
     "workspace_svg",
     "zoomIn_svg",
@@ -12041,6 +12043,7 @@ const char* originalFilenames[] =
     "unmute.svg",
     "up.svg",
     "versionControl.svg",
+    "volume.svg",
     "wipeSpaceTool.svg",
     "workspace.svg",
     "zoomIn.svg",
