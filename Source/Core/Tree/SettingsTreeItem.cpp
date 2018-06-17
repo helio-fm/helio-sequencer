@@ -23,8 +23,7 @@
 #include "SerializationKeys.h"
 #include "AuthSettings.h"
 #include "AudioSettings.h"
-#include "ThemeSettings.h"
-#include "OpenGLSettings.h"
+#include "UserInterfaceSettings.h"
 #include "TranslationSettings.h"
 #include "ComponentsList.h"
 #include "LabeledSettingsWrapper.h"
@@ -72,10 +71,8 @@ void SettingsTreeItem::recreatePage()
     this->authSettings = nullptr;
     this->translationSettingsWrapper = nullptr;
     this->translationSettings = nullptr;
-    this->openGLSettingsWrapper = nullptr;
-    this->openGLSettings = nullptr;
-    this->themeSettingsWrapper = nullptr;
-    this->themeSettings = nullptr;
+    this->uiSettingsWrapper = nullptr;
+    this->uiSettings = nullptr;
     this->audioSettingsWrapper = nullptr;
     this->audioSettings = nullptr;
     this->settingsList = nullptr;
@@ -91,19 +88,13 @@ void SettingsTreeItem::recreatePage()
     //this->authSettingsWrapper = new LabeledSettingsWrapper(this->authSettings, TRANS("settings::auth"));
     //this->settingsList->addAndMakeVisible(this->authSettingsWrapper);
 
-    this->themeSettings = new ThemeSettings();
-    this->themeSettingsWrapper = new LabeledSettingsWrapper(this->themeSettings, TRANS("settings::ui"));
-    this->settingsList->addAndMakeVisible(this->themeSettingsWrapper);
-    
+    this->uiSettings = new UserInterfaceSettings();
+    this->uiSettingsWrapper = new LabeledSettingsWrapper(this->uiSettings, TRANS("settings::ui"));
+    this->settingsList->addAndMakeVisible(this->uiSettingsWrapper);
+
     this->audioSettings = new AudioSettings(App::Workspace().getAudioCore());
     this->audioSettingsWrapper = new LabeledSettingsWrapper(this->audioSettings, TRANS("settings::audio"));
     this->settingsList->addAndMakeVisible(this->audioSettingsWrapper);
-    
-#if ! HELIO_MOBILE
-    this->openGLSettings = new OpenGLSettings();
-    this->openGLSettingsWrapper = new LabeledSettingsWrapper(this->openGLSettings, TRANS("settings::renderer"));
-    this->settingsList->addAndMakeVisible(this->openGLSettingsWrapper);
-#endif
 
     this->settingsPage = new SettingsPage(this->settingsList);
 }

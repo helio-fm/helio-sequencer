@@ -22,6 +22,8 @@
 #include "BinaryData.h"
 #include "Icons.h"
 #include "ColourIDs.h"
+#include "Config.h"
+#include "SerializationKeys.h"
 
 #include "MainWindow.h"
 #include "HybridRoll.h"
@@ -619,7 +621,6 @@ void HelioTheme::drawDocumentWindowTitleBar(DocumentWindow &window,
 #endif
 }
 
-
 Button *HelioTheme::createDocumentWindowButton(int buttonType)
 {
     Path shape;
@@ -648,7 +649,6 @@ Button *HelioTheme::createDocumentWindowButton(int buttonType)
     jassertfalse;
     return nullptr;
 }
-
 
 void HelioTheme::positionDocumentWindowButtons(DocumentWindow &,
         int titleBarX,
@@ -679,34 +679,34 @@ void HelioTheme::positionDocumentWindowButtons(DocumentWindow &,
         minimiseButton->setBounds(x, titleBarY, buttonW, buttonW);
 }
 
-
 void HelioTheme::initResources()
 {
-    // Search for Noto if present, or fallback to default sans serif font
-
     Logger::writeToLog("Fonts search started");
     Array<Font> systemFonts;
     Font::findFonts(systemFonts);
-    const Font *notoLike = nullptr;
-    const Font *exactlyNoto = nullptr;
 
+    const Font *lastUsedFont = nullptr;
+    const Font *notoLike = nullptr;
+
+    const String fallbackFont = "Noto Sans";
+    const String lastUsedFontName = Config::get(Serialization::Config::lastUsedFont, fallbackFont);
+
+    // Search for Noto if present, or fallback to default sans serif font
     for (const auto &systemFont : systemFonts)
     {
-        if (systemFont.getTypeface()->getName() == "Noto Sans")
+        if (systemFont.getTypeface()->getName() == lastUsedFontName)
         {
-            Logger::writeToLog("Found Noto Sans");
-            exactlyNoto = &systemFont;
+            lastUsedFont = &systemFont;
         }
-        else if (systemFont.getTypeface()->getName().startsWithIgnoreCase("Noto Sans"))
+        else if (systemFont.getTypeface()->getName().startsWithIgnoreCase(fallbackFont))
         {
-            Logger::writeToLog("Found " + systemFont.getTypeface()->getName());
             notoLike = &systemFont;
         }
     }
 
-    if (exactlyNoto != nullptr)
+    if (lastUsedFont != nullptr)
     {
-        this->textTypefaceCache = Typeface::createSystemTypefaceFor(*exactlyNoto);
+        this->textTypefaceCache = Typeface::createSystemTypefaceFor(*lastUsedFont);
     }
     else if (notoLike != nullptr)
     {
@@ -714,13 +714,22 @@ void HelioTheme::initResources()
     }
     else
     {
-        // Verdana on Windows, Bitstream Vera Sans or something on Linux,
-        // Lucida Grande on macOS, Helvetica on iOS:
-        Logger::writeToLog("Falling back to system sans serif font");
+        // Verdana on Windows, Bitstream Vera Sans or something on Linux, Lucida Grande on macOS, Helvetica on iOS:
         this->textTypefaceCache = Font::getDefaultTypefaceForFont({ Font::getDefaultSansSerifFontName(), 0, 0 });
     }
 
+    Logger::writeToLog("Using font: " + this->textTypefaceCache->getName());
+    Config::set(Serialization::Config::lastUsedFont, this->textTypefaceCache->getName());
+
     Icons::initBuiltInImages();
+}
+
+void HelioTheme::updateFont(const Font &font)
+{
+    Typeface::clearTypefaceCache();
+    this->textTypefaceCache = Typeface::createSystemTypefaceFor(font);
+    const String fontName = font.getTypeface()->getName();
+    Config::set(Serialization::Config::lastUsedFont, fontName);
 }
 
 void HelioTheme::initColours(const ::ColourScheme::Ptr s)

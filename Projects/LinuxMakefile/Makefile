@@ -281,14 +281,13 @@ OBJECTS_APP := \
   $(JUCE_OBJDIR)/IntroSettingsWrapper_2fdb093.o \
   $(JUCE_OBJDIR)/LabeledSettingsWrapper_3ae3ca8c.o \
   $(JUCE_OBJDIR)/LogComponent_cf667f48.o \
-  $(JUCE_OBJDIR)/OpenGLSettings_5037d421.o \
   $(JUCE_OBJDIR)/SettingsListItemHighlighter_e14317a8.o \
   $(JUCE_OBJDIR)/SettingsListItemSelection_3054dbd3.o \
   $(JUCE_OBJDIR)/SettingsPage_ab9efe01.o \
-  $(JUCE_OBJDIR)/ThemeSettings_1f7e5e07.o \
   $(JUCE_OBJDIR)/ThemeSettingsItem_c2b282ba.o \
   $(JUCE_OBJDIR)/TranslationSettings_f4a7f26f.o \
   $(JUCE_OBJDIR)/TranslationSettingsItem_6aba322.o \
+  $(JUCE_OBJDIR)/UserInterfaceSettings_8b19486c.o \
   $(JUCE_OBJDIR)/HistoryComponent_115e47f9.o \
   $(JUCE_OBJDIR)/RevisionComponent_51e2497c.o \
   $(JUCE_OBJDIR)/RevisionConnectorComponent_a2024cdb.o \
@@ -1296,11 +1295,6 @@ $(JUCE_OBJDIR)/LogComponent_cf667f48.o: ../../Source/UI/Pages/Settings/LogCompon
 	@echo "Compiling LogComponent.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/OpenGLSettings_5037d421.o: ../../Source/UI/Pages/Settings/OpenGLSettings.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling OpenGLSettings.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/SettingsListItemHighlighter_e14317a8.o: ../../Source/UI/Pages/Settings/SettingsListItemHighlighter.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling SettingsListItemHighlighter.cpp"
@@ -1316,11 +1310,6 @@ $(JUCE_OBJDIR)/SettingsPage_ab9efe01.o: ../../Source/UI/Pages/Settings/SettingsP
 	@echo "Compiling SettingsPage.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
-$(JUCE_OBJDIR)/ThemeSettings_1f7e5e07.o: ../../Source/UI/Pages/Settings/ThemeSettings.cpp
-	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
-	@echo "Compiling ThemeSettings.cpp"
-	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
-
 $(JUCE_OBJDIR)/ThemeSettingsItem_c2b282ba.o: ../../Source/UI/Pages/Settings/ThemeSettingsItem.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling ThemeSettingsItem.cpp"
@@ -1334,6 +1323,11 @@ $(JUCE_OBJDIR)/TranslationSettings_f4a7f26f.o: ../../Source/UI/Pages/Settings/Tr
 $(JUCE_OBJDIR)/TranslationSettingsItem_6aba322.o: ../../Source/UI/Pages/Settings/TranslationSettingsItem.cpp
 	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
 	@echo "Compiling TranslationSettingsItem.cpp"
+	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
+
+$(JUCE_OBJDIR)/UserInterfaceSettings_8b19486c.o: ../../Source/UI/Pages/Settings/UserInterfaceSettings.cpp
+	-$(V_AT)mkdir -p $(JUCE_OBJDIR)
+	@echo "Compiling UserInterfaceSettings.cpp"
 	$(V_AT)$(CXX) $(JUCE_CXXFLAGS) $(JUCE_CPPFLAGS_APP) $(JUCE_CFLAGS_APP) -o "$@" -c "$<"
 
 $(JUCE_OBJDIR)/HistoryComponent_115e47f9.o: ../../Source/UI/Pages/VCS/HistoryComponent.cpp

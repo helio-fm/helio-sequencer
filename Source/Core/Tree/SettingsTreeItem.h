@@ -52,10 +52,8 @@ private:
     ScopedPointer<ComponentsList> settingsList;
     ScopedPointer<Component> audioSettings;
     ScopedPointer<Component> audioSettingsWrapper;
-    ScopedPointer<Component> themeSettings;
-    ScopedPointer<Component> themeSettingsWrapper;
-    ScopedPointer<Component> openGLSettings;
-    ScopedPointer<Component> openGLSettingsWrapper;
+    ScopedPointer<Component> uiSettings;
+    ScopedPointer<Component> uiSettingsWrapper;
     ScopedPointer<Component> translationSettings;
     ScopedPointer<Component> translationSettingsWrapper;
     ScopedPointer<Component> authSettings;

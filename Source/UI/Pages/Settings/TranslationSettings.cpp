@@ -171,7 +171,7 @@ Component *TranslationSettings::refreshComponentForRow(int rowNumber, bool isRow
 
     if (existingComponentToUpdate != nullptr)
     {
-        if (TranslationSettingsItem *row = dynamic_cast<TranslationSettingsItem *>(existingComponentToUpdate))
+        if (auto *row = dynamic_cast<TranslationSettingsItem *>(existingComponentToUpdate))
         {
             row->updateDescription(isLastRow, isCurrentLocale,
                                    locales[rowNumber]->getName(),

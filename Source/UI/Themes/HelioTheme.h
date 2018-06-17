@@ -33,11 +33,9 @@ public:
     void initColours(const ::ColourScheme::Ptr colours);
     void updateBackgroundRenders(bool force = false);
 
+    void updateFont(const Font &font);
     Typeface::Ptr getTextTypeface() const
     { return this->textTypefaceCache; }
-    
-    Typeface::Ptr getHeaderTypeface() const
-    { return this->headerTypefaceCache; }
         
     virtual int getShortAnimationLength() { return 150; }
     virtual int getLongAnimationLength() { return 250; }
@@ -153,7 +151,6 @@ protected:
     Image cachedBackground;
     
     Typeface::Ptr textTypefaceCache;
-    Typeface::Ptr headerTypefaceCache;
     
     Image bgCache1;
     Image bgCache2;

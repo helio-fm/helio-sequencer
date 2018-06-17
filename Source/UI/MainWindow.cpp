@@ -24,7 +24,6 @@
 #include "FatalErrorScreen.h"
 #include "HelioTheme.h"
 #include "BinaryData.h"
-#include "ThemeSettings.h"
 #include "ColourSchemesManager.h"
 #include "App.h"
 

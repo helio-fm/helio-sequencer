@@ -19,17 +19,21 @@
 
 //[Headers]
 #include "ColourScheme.h"
+#include "MobileComboBox.h"
 //[/Headers]
 
+#include "../../Themes/SeparatorHorizontalFading.h"
+#include "../../Themes/SeparatorHorizontalFading.h"
 
-class ThemeSettings final : public Component,
-                            public ListBoxModel,
-                            private ChangeListener
+class UserInterfaceSettings final : public Component,
+                                    public ListBoxModel,
+                                    private ChangeListener,
+                                    public Button::Listener
 {
 public:
 
-    ThemeSettings();
-    ~ThemeSettings();
+    UserInterfaceSettings();
+    ~UserInterfaceSettings();
 
     //[UserMethods]
 
@@ -38,19 +42,17 @@ public:
     //===------------------------------------------------------------------===//
 
     Component *refreshComponentForRow(int, bool, Component*) override;
-
     int getNumRows() override;
-
-    void paintListBoxItem(int rowNumber, Graphics &g,
-        int width, int height,
-        bool rowIsSelected) override {}
-
-    void listBoxItemClicked(int rowNumber, const MouseEvent &e) override {}
+    void paintListBoxItem(int, Graphics&, int, int, bool) override {}
+    void listBoxItemClicked(int, const MouseEvent &) override {}
 
     //[/UserMethods]
 
     void paint (Graphics& g) override;
     void resized() override;
+    void buttonClicked (Button* buttonThatWasClicked) override;
+    void visibilityChanged() override;
+    void handleCommandMessage (int commandId) override;
 
 
 private:
@@ -62,12 +64,20 @@ private:
     //===------------------------------------------------------------------===//
 
     void changeListenerCallback(ChangeBroadcaster *source) override;
+    void updateButtons();
 
     ColourScheme::Ptr currentScheme;
+    Array<Font> systemFonts;
 
     //[/UserVariables]
 
+    ScopedPointer<MobileComboBox::Primer> fontComboPrimer;
     ScopedPointer<ListBox> themesList;
+    ScopedPointer<ToggleButton> openGLRendererButton;
+    ScopedPointer<ToggleButton> defaultRendererButton;
+    ScopedPointer<SeparatorHorizontalFading> separator2;
+    ScopedPointer<TextEditor> fontEditor;
+    ScopedPointer<SeparatorHorizontalFading> separator3;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ThemeSettings)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UserInterfaceSettings)
 };

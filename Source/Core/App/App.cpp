@@ -29,7 +29,6 @@
 #include "ScalesManager.h"
 
 #include "HelioTheme.h"
-#include "ThemeSettings.h"
 #include "PluginScanner.h"
 #include "Config.h"
 #include "FontSerializer.h"
@@ -314,8 +313,8 @@ void App::shutdown()
         this->window = nullptr;
         this->workspace = nullptr;
 
-        this->config = nullptr;
         this->theme = nullptr;
+        this->config = nullptr;
 
         const File tempFolder(DocumentHelpers::getTemporaryFolder());
         if (tempFolder.exists())

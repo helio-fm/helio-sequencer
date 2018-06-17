@@ -886,10 +886,6 @@
             <FILE id="Dt6gTd" name="LogComponent.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/LogComponent.cpp"/>
             <FILE id="ImgYBs" name="LogComponent.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/LogComponent.h"/>
-            <FILE id="hmbJ3w" name="OpenGLSettings.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Pages/Settings/OpenGLSettings.cpp"/>
-            <FILE id="mP9NCr" name="OpenGLSettings.h" compile="0" resource="0"
-                  file="../../Source/UI/Pages/Settings/OpenGLSettings.h"/>
             <FILE id="Lq3FxT" name="SettingsListItemHighlighter.cpp" compile="1"
                   resource="0" file="../../Source/UI/Pages/Settings/SettingsListItemHighlighter.cpp"/>
             <FILE id="weL74E" name="SettingsListItemHighlighter.h" compile="0"
@@ -901,9 +897,6 @@
             <FILE id="NQm5bG" name="SettingsPage.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/SettingsPage.cpp"/>
             <FILE id="KbKtdO" name="SettingsPage.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/SettingsPage.h"/>
-            <FILE id="dRiPAr" name="ThemeSettings.cpp" compile="1" resource="0"
-                  file="../../Source/UI/Pages/Settings/ThemeSettings.cpp"/>
-            <FILE id="SSPYoV" name="ThemeSettings.h" compile="0" resource="0" file="../../Source/UI/Pages/Settings/ThemeSettings.h"/>
             <FILE id="Ep8NCS" name="ThemeSettingsItem.cpp" compile="1" resource="0"
                   file="../../Source/UI/Pages/Settings/ThemeSettingsItem.cpp"/>
             <FILE id="Jkf4Uy" name="ThemeSettingsItem.h" compile="0" resource="0"
@@ -916,6 +909,10 @@
                   file="../../Source/UI/Pages/Settings/TranslationSettingsItem.cpp"/>
             <FILE id="YESMIX" name="TranslationSettingsItem.h" compile="0" resource="0"
                   file="../../Source/UI/Pages/Settings/TranslationSettingsItem.h"/>
+            <FILE id="dRiPAr" name="UserInterfaceSettings.cpp" compile="1" resource="0"
+                  file="../../Source/UI/Pages/Settings/UserInterfaceSettings.cpp"/>
+            <FILE id="SSPYoV" name="UserInterfaceSettings.h" compile="0" resource="0"
+                  file="../../Source/UI/Pages/Settings/UserInterfaceSettings.h"/>
           </GROUP>
           <GROUP id="{4F9CA999-5D1A-1BFC-3E71-0CC812F6B1F1}" name="VCS">
             <FILE id="U2akKA" name="HistoryComponent.cpp" compile="1" resource="0"

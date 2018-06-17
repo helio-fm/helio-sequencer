@@ -186,6 +186,7 @@ namespace Serialization
         static const Identifier lastUsedScale = "lastUsedScale";
         static const Identifier lastUsedLogin = "lastUsedLogin";
         static const Identifier lastUpdatesInfo = "lastUpdatesInfo";
+        static const Identifier lastUsedFont = "lastUsedFont";
 
         static const Identifier openGLState = "openGL";
         static const Identifier enabledState = "enabled";
